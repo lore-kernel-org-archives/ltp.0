@@ -1,12 +1,13 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 27 Apr 2017 04:28:27 -0400 (EDT)
-Subject: [LTP] [RFC] [PATCH] tst_kvcmp: Add support for extra kernel
-	versions
-In-Reply-To: <20170426150641.GA6165@rei.suse.de>
-References: <20170421155244.29773-1-chrubis@suse.cz>
- <343130515.905228.1493020687050.JavaMail.zimbra@redhat.com>
- <20170426150641.GA6165@rei.suse.de>
-Message-ID: <1624205915.3497140.1493281707439.JavaMail.zimbra@redhat.com>
+Date: Thu, 27 Apr 2017 04:52:40 -0400 (EDT)
+Subject: [LTP] LTP release
+In-Reply-To: <CAEemH2c1Chx4pR38JUG1Gqz2q6DWNsdq6krJwkPOuP6rRG6cyg@mail.gmail.com>
+References: <20170424162534.GA13616@rei.lan>
+ <CAEemH2fOjPpfHrNy73q69whA8vX7ozN0ea=Hufr7CB-UZos6Lg@mail.gmail.com>
+ <20170426090805.GA16024@rei.lan>
+ <1148677109.2856278.1493211577427.JavaMail.zimbra@redhat.com>
+ <CAEemH2c1Chx4pR38JUG1Gqz2q6DWNsdq6krJwkPOuP6rRG6cyg@mail.gmail.com>
+Message-ID: <462785677.3504954.1493283160489.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,60 +17,51 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> Hi!
-> > > Jan can you please check that everything works fine when specifying extra
-> > > version on RHEL? It seems that the only systems that are supported by
-> > > extra
-> > > kernel versions are RHEL5 and RHEL6 at the moment.
-> > 
-> > Should we print an error also if invalid distro is passed as parameter?
+> On Wed, Apr 26, 2017 at 8:59 PM, Jan Stancek <jstancek@redhat.com> wrote:
+> >
+> >
+> > ----- Original Message -----
+> >> Hi!
+> >> > > It's about a time we should prepare for another release, hence as
+> >> > > usuall, lets start with pointing out any patches that should be part
+> >> > > of
+> >> > > it and I would like to start with pre-release testing at the end of
+> >> > > this
+> >> > > week. Does that sound OK to everyone?
+> >> >
+> >> > ioctl06 always failed on aarch64(others PASS) with upstream
+> >> > kernel-4.11-rc[1-7]. Not sure if it is a bug or not, since i'm still
+> >> > on debugging way. Just report here to let you know this.
+> >
+> > I'm seeing it fail on ppc as well (64k pages), with older RHEL7 kernels:
+> >
+> >> Looks like the value is rounded to be multiple of 128, that may be just
+> >> intentional limitation, but we should better check with the kernel
+> >> source or ask kernel devs.
+> >
+> > block/ioctl.c:
+> >         case BLKRASET:
+> >         case BLKFRASET:
+> >                 if(!capable(CAP_SYS_ADMIN))
+> >                         return -EACCES;
+> >                 bdev->bd_bdi->ra_pages = (arg * 512) / PAGE_SIZE;
+> >                 return 0;
+> >
 > 
-> That would need a table of known distros stored into the tst_kvercmp.c
-> and function to validate a distribution name, or do I miss something?
+> 
+> how about makes change as:
+> 
+> --- a/testcases/kernel/syscalls/ioctl/ioctl06.c
+> +++ b/testcases/kernel/syscalls/ioctl/ioctl06.c
+> @@ -31,12 +31,13 @@ static int fd;
+>  static void verify_ioctl(void)
+>  {
+>         unsigned long ra, rab, rao;
+> +       unsigned long ra_shift = getpagesize() / 512;
 
-+static int compare_kver(const char *cur_kver, char *kver)
-+{
-+        const char *ver, *exver;
-+        const char *distname = tst_kvcmp_distname(cur_kver);
-+        int v1, v2, v3;
-+
-+        ver = strtok(kver, " ");
-+
-+        while ((exver = strtok(NULL, " "))) {
-+                char *exkver = strchr(exver, ':');
-+
-+                if (!exkver) {
-+                        fprintf(stderr, "Invalid extra version '%s'\n", exver);
-+                        exit(2);
-+                }
-+
-+                *(exkver++) = '\0';
-+
-+                if (!distname || strcmp(distname, exver))
-+                        continue;
-+
-+                return tst_kvexcmp(exkver, cur_kver);
-+        }
-
-If distname != NULL, that means that this is a distro we recognize.
-And if we reached here, after while loop, that means we didn't
-match any distro specified in "kver", correct?
-
-So, is it OK to make conclusion, that there is a problem in kver?
-
-if (distname)
-    fprintf(stderr, "distname: %s didn't match any distro in kver: %s\n", distname, kver);
+This is just "8" for 4k pages. I'd go with increase
+by 512 bytes - which is also what blockdev(8) allows
+via --setra.
 
 Regards,
 Jan
-
-> 
-> I guess that we can rewrite the code so that the kernel version
-> substring and distro name are stored in an array of structures and loop
-> over it so that we can say if it's valid or not but I'm not sure that
-> it's worth the work.
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
