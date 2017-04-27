@@ -1,160 +1,69 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 27 Apr 2017 07:21:01 -0400 (EDT)
-Subject: [LTP] [PATCH] mmapstress04: rewrite to fix heap overwrite
-In-Reply-To: <20170426185549.GC6165@rei.suse.de>
-References: <ed1531bad36a25628f7737b9975ed5b4a92922f1.1493201294.git.jstancek@redhat.com>
- <20170426185549.GC6165@rei.suse.de>
-Message-ID: <2093543954.3542946.1493292061476.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 27 Apr 2017 15:01:52 +0200
+Subject: [LTP] [RFC] [PATCH] tst_kvcmp: Add support for extra kernel
+	versions
+In-Reply-To: <1624205915.3497140.1493281707439.JavaMail.zimbra@redhat.com>
+References: <20170421155244.29773-1-chrubis@suse.cz>
+ <343130515.905228.1493020687050.JavaMail.zimbra@redhat.com>
+ <20170426150641.GA6165@rei.suse.de>
+ <1624205915.3497140.1493281707439.JavaMail.zimbra@redhat.com>
+Message-ID: <20170427130152.GA14404@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> +static int compare_kver(const char *cur_kver, char *kver)
+> +{
+> +        const char *ver, *exver;
+> +        const char *distname = tst_kvcmp_distname(cur_kver);
+> +        int v1, v2, v3;
+> +
+> +        ver = strtok(kver, " ");
+> +
+> +        while ((exver = strtok(NULL, " "))) {
+> +                char *exkver = strchr(exver, ':');
+> +
+> +                if (!exkver) {
+> +                        fprintf(stderr, "Invalid extra version '%s'\n", exver);
+> +                        exit(2);
+> +                }
+> +
+> +                *(exkver++) = '\0';
+> +
+> +                if (!distname || strcmp(distname, exver))
+> +                        continue;
+> +
+> +                return tst_kvexcmp(exkver, cur_kver);
+> +        }
+> 
+> If distname != NULL, that means that this is a distro we recognize.
+> And if we reached here, after while loop, that means we didn't
+> match any distro specified in "kver", correct?
 
+Correct.
 
------ Original Message -----
-> Hi!
-> > +
-> > +static void write_fully(int fd, void *buf, int len)
-> > +{
-> > +	do {
-> > +		len -= SAFE_WRITE(0, fd, buf, len);
-> 
-> Not that this matters here, since the buf is filled with 'a' bytes
-> anyway, but we should probably add a offset to the buffer on subsequent
-> writes or at least add a comment that we do not care. As it is the code
-> looks buggy.
+> So, is it OK to make conclusion, that there is a problem in kver?
 
-Will fix that.
+Not at all. Even if we recognize the distro and the distname is non-NULL
+we can have any subset of distribution specific kernel versions
+(including empty one) in the input string. Hence if the loop does not
+mach any extra version against the currently detected distribution we
+simply fall back to the generic kernel version that should be at the
+start of the string.
 
-> 
-> > +	} while (len > 0);
-> > +}
-> > +
-> > +static void mmapstress04(void)
-> > +{
-> > +	int i, j, rofd, rwfd, ret = 0;
-> > +	char *buf;
-> > +
-> > +	if (tst_fill_file(TEST_FILE, 'b', page_size, 1))
-> > +		tst_brk(TBROK | TERRNO, "fill_file");
-> > +
-> > +	rofd = SAFE_OPEN(TEST_FILE, O_RDONLY | O_CREAT, 0777);
-> > +	/*
-> > +	 * Assuming disk blocks are 8k, and logical pages are 4k, there are
-> > +	 * two maps per page. In order to test mapping at the beginning and
->                         ^
-> 			block
-> > +	 * ends of the block, mapping the whole block, or none of the block
-> > +	 * with different mappings on preceding and following blocks, each
-> > +	 * 3 blocks with 6 pages can be thought of as a binary number from 0 to
-> > +	 * 64 with a bit set for mapped or cleared for unmapped. This number
-> > +	 * is represented by i. The value j is used to look at the bits of i
-> > +	 * and decided to map the page or not.
-> > +	 * NOTE: None of the above assumptions are critical.
-> > +	 */
-> > +	for (i = 0; i < 64; i++) {
-> > +		for (j = 0; j < 6; j++) {
-> > +			off_t mapoff;
-> > +
-> > +			if (!(i & (1 << j)))
-> > +				continue;
-> > +
-> > +			mapoff = page_size * (off_t)(6 + i + j);
->                                                        ^
-> 						   Should be '*'?
+Think about the distribution specific versions as of overrides that
+apply only if the distribution version is matched, otherwise we use the
+generic kernel version to make the decision.
 
-I took this as-is from original. Will need to have a closed look.
+The only thing that should probably be validated here are the
+distribution names passed in the kver string. As it is everything that
+is not matched is skipped including possible typos. Hence I was speaking
+about adding a function that would check if given distribution name is
+valid (known to the library code).
 
-> > +			SAFE_MMAP(mmap_area + page_size * (6 * i + j),
-> > +				 page_size, PROT_READ,
-> > +				 MAP_FILE | MAP_PRIVATE | MAP_FIXED,
-> > +				 rofd, mapoff);
-> 
-> I wonder if we can just keep a counter for the offset in the mmaped area
-> here, something as:
-> 
-> 			mmapped_pages = 0;
-> 
-> 			SAFE_MMAP(mmap_area + page_size * mapped_pages++, ...
-
-We can, mmap_area isn't used for anything.
-
-> 
-> 
-> Then the loop that checks the data could be just a simple for() loop.
-> 
-> > +		}
-> > +	}
-> > +	SAFE_CLOSE(rofd);
-> > +
-> > +	/* write out 6 pages of stuff into each of the 64 six page sections */
-> > +	rwfd = SAFE_OPEN(TEST_FILE, O_RDWR);
-> > +	buf = SAFE_MALLOC(page_size);
-> > +	memset(buf, 'a', page_size);
-> > +	for (i = 0; i < 6 * 64; i++)
-> > +		write_fully(rwfd, buf, page_size);
-> > +	free(buf);
-> > +	SAFE_CLOSE(rwfd);
-> > +
-> > +	/*
-> > +	 * Just finished scribbling all over interwoven mmapped and unmapped
-> > +	 * regions. Check the data.
-> > +	 */
-> > +	for (i = 0; i < 64; i++) {
-> > +		for (j = 0; j < 6; j++) {
-> > +			unsigned char val;
-> > +
-> > +			if (!(i & (1 << j)))
-> > +				continue;
-> > +
-> > +			val = *(mmap_area + page_size * (6 * i + j));
-> > +			if (val != 'a') {
-> > +				tst_res(TFAIL, "unexpected value in map, "
-> > +					"i=%d,j=%d,val=0x%x", i, j, val);
-> > +				ret = 1;
-> > +				goto done;
-> > +			}
-> 
-> Maybe we should check whole page, not just first byte.
-
-Yes.
-
-> 
-> > +		}
-> > +	}
-> > +done:
-> > +	tst_res(ret ? TFAIL : TPASS, "blocks have expected data");
-> 
-> This would produce failing message with 'block have expected data' text
-> if we get to the goto above. Why isn't the done: label pointing just
-> before the SAFE_UNLIK()? It does to make any sense to print the failure
-> message twice here.
-
-OK, I'll move label.
-
-Regards,
-Jan
-
-> 
-> > +	SAFE_UNLINK(TEST_FILE);
-> > +}
-> > +
-> > +static struct tst_test test = {
-> > +	.tid = "mmapstress04",
-> > +	.needs_tmpdir = 1,
-> > +	.test_all = mmapstress04,
-> > +	.setup = setup,
-> > +};
-> > --
-> > 1.8.3.1
-> > 
-> > 
-> > --
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
