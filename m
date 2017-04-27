@@ -1,33 +1,26 @@
-From: Liu, Wenlong <liuwl.fnst@cn.fujitsu.com>
-Date: Thu, 27 Apr 2017 13:03:41 +0000
-Subject: [LTP] About the testcase "dma_thread_diotest" of LTP
-Message-ID: <F40213214988A94A9DDBFC5F7146FC5E0121D2D033@G08CNEXMBPEKD01.g08.fujitsu.local>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 27 Apr 2017 15:10:33 +0200
+Subject: [LTP] [RFC PATCH 1/1] config.mk: Explicitly set used C and C++
+ standard
+In-Reply-To: <20170414122312.22734-1-pvorel@suse.cz>
+References: <20170414122312.22734-1-pvorel@suse.cz>
+Message-ID: <20170427131032.GB14404@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello all,
+Hi!
+> IMHO If we really want to require old standard, we should explicitly say which one.
+> I suppose passing a flag is appropriate way than to use c89 as CC variable.
 
-I am doing the LTP test for aarch64 platform.
-But there is something troubled me recently, which is mainly about the dma_thread_diotest.
-Those testcases were failed on the target board(Board: Renesas M3 Starter Kit Pro), which has 2 CPUs.
+Where do we say that we require old standard?
 
-I have seen the description of this testcase, and someone told me that:
-This test suite was created by this LTP commit:https://github.com/linux-test-project/ltp/commit/52de6e2616951ddafc760138f99a1195295bbfdc.
-Once there was already a discussion in kernel mm community in 2008, please see this url:http://thread.gmane.org/gmane.linux.file-systems/27358.
-But unfortunately this bug was not fixed and it still exists in the latest upstream kernel. Some engineers from mm community think it's one whose fix would cause more troulbe than it's worth and MADV_DONTFORK is a good enough workaround. I will follow up this discussion to try to reach a conclusion whether it's worth to fix this issue.
+All I can think of is that we should produce portable code, which is
+something completely different that sticking to a single C standard
+revision...
 
-But I wonder whether this bug have been fixed and what I can do except‘don't do this test’.
-Looking for your reply at your convenience.
-Thanks in advance.
-
-B.R.
-Liu
-
-
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170427/3defa6b2/attachment.html>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
