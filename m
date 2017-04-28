@@ -1,37 +1,38 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 28 Apr 2017 18:24:56 +0300
-Subject: [LTP] [PATCH] runtest/net.nfs: fix version typo
-In-Reply-To: <1489575310-3488-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1489575310-3488-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <ede2fc8b-4486-ce87-4742-92ad4ea00d28@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 28 Apr 2017 17:47:14 +0200
+Subject: [LTP] LTP release
+In-Reply-To: <20170424162534.GA13616@rei.lan>
+References: <20170424162534.GA13616@rei.lan>
+Message-ID: <20170428154714.GB4741@rei.suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 15.03.2017 13:55, Xiao Yang wrote:
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  runtest/net.nfs | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/runtest/net.nfs b/runtest/net.nfs
-> index f5984c0..a0781a5 100644
-> --- a/runtest/net.nfs
-> +++ b/runtest/net.nfs
-> @@ -12,7 +12,7 @@ nfs41_ipv6_01 nfs01 -6 -v 4.1 -t tcp
->  nfs42_ipv6_01 nfs01 -6 -v 4.2 -t tcp
->  
->  nfs3_02 nfs02 -v 3 -t udp
-> -nfs4_02 nfs02 -v 3 -t tcp
-> +nfs4_02 nfs02 -v 4 -t tcp
+Hi!
+Here is a short list of problems I've found by pre-release testing:
 
-I wonder if we should add back test-cases with NFSv3 over TCP,
-something like this:
-nfs3t_02  nfs01 -v 3 -t tcp
-...
+* utimensat01 - We reverted the fix before the last release and started
+                discussion on LKML but it seems that nobody cares so I
+		guess that we should reapply the patch and forget.
 
-Thanks,
-Alexey
+* pselect01   - There seems to be some outliners, at least on SLES where
+                the test request 200us sleep and ends up with up to
+		1500us, I will have to have a closer look into this.
+
+* syslog*     - Ends up with TBROK on Tumbleweed as it does not find
+                any syslog running, possibly systemd related, needs
+		to be investigated.
+
+* madvise09   - Ends up with memsg.limits_in_bytes missing on kernel
+                with unset CONFIG_MEMCG_SWAP_ENABLED (Tumbleweed again)
+		I will have to look into that.
+
+Anything else?
+
+Any other patches that should go in before the release?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
