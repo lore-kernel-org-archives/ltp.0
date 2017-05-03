@@ -1,73 +1,37 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed,  3 May 2017 17:58:17 +0300
-Subject: [LTP] [PATCH v2] net: use LTP ns_create/ns_exec to support OS with
-	legacy iproute
-Message-ID: <1493823497-22391-1-git-send-email-alexey.kodanev@oracle.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed,  3 May 2017 18:07:49 +0200
+Subject: [LTP] [RFC PATCH v5 1/3] gitignore: Prefixing filenames
+In-Reply-To: <20170503160751.1634-1-pvorel@suse.cz>
+References: <20170503160751.1634-1-pvorel@suse.cz>
+Message-ID: <20170503160751.1634-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-v2: move creation of veth pair out of 'if/else'
+ testcases/lib/.gitignore | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
- testcases/lib/test_net.sh |   28 +++++++++++++++++++++++-----
- 1 files changed, 23 insertions(+), 5 deletions(-)
-
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index 3c5f068..42809e9 100644
---- a/testcases/lib/test_net.sh
-+++ b/testcases/lib/test_net.sh
-@@ -1,5 +1,5 @@
- #!/bin/sh
--# Copyright (c) 2014-2016 Oracle and/or its affiliates. All Rights Reserved.
-+# Copyright (c) 2014-2017 Oracle and/or its affiliates. All Rights Reserved.
- # Copyright (c) 2016-2017 Petr Vorel <pvorel@suse.cz>
- #
- # This program is free software; you can redistribute it and/or
-@@ -23,18 +23,36 @@
- 
- init_ltp_netspace()
- {
-+	local pid=
-+
- 	if [ ! -f /var/run/netns/ltp_ns ]; then
--		ROD ip net add ltp_ns
- 		ROD ip li add name ltp_ns_veth1 type veth peer name ltp_ns_veth2
--		ROD ip li set dev ltp_ns_veth1 netns ltp_ns
--		ROD ip netns exec ltp_ns ip li set lo up
-+		if ! ip netns list >/dev/null 2>&1; then
-+			pid="$(ROD ns_create net,mnt)"
-+			mkdir -p /var/run/netns
-+			ROD ln -s /proc/$pid/ns/net /var/run/netns/ltp_ns
-+			ROD ns_exec $pid net,mnt umount /sys
-+			ROD ns_exec $pid net,mnt mount -t sysfs none /sys
-+			ROD ns_ifmove ltp_ns_veth1 $pid
-+			ROD ns_exec $pid net,mnt ip li set lo up
-+		else
-+			ROD ip net add ltp_ns
-+			ROD ip li set dev ltp_ns_veth1 netns ltp_ns
-+			ROD ip netns exec ltp_ns ip li set lo up
-+		fi
- 	fi
- 
- 	LHOST_IFACES="${LHOST_IFACES:-ltp_ns_veth2}"
- 	RHOST_IFACES="${RHOST_IFACES:-ltp_ns_veth1}"
- 
- 	export TST_INIT_NETNS="no"
--	export LTP_NETNS="${LTP_NETNS:-ip netns exec ltp_ns}"
-+
-+	if [ -h /var/run/netns/ltp_ns ]; then
-+		pid="$(echo $(readlink /var/run/netns/ltp_ns) | cut -f3 -d'/')"
-+		export LTP_NETNS="${LTP_NETNS:-ns_exec $pid net,mnt}"
-+	else
-+		export LTP_NETNS="${LTP_NETNS:-ip netns exec ltp_ns}"
-+	fi
- 
- 	tst_restore_ipaddr
- 	tst_restore_ipaddr rhost
+diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
+index 920817cac..522889bed 100644
+--- a/testcases/lib/.gitignore
++++ b/testcases/lib/.gitignore
+@@ -1,6 +1,6 @@
+-tst_sleep
+-tst_random
+-tst_checkpoint
+-tst_rod
+-tst_kvcmp
+-tst_device
++/tst_sleep
++/tst_random
++/tst_checkpoint
++/tst_rod
++/tst_kvcmp
++/tst_device
 -- 
-1.7.1
+2.12.2
 
