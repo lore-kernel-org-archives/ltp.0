@@ -1,34 +1,49 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed,  3 May 2017 14:00:36 +0200
-Subject: [LTP] [PATCH] mtest01: fix max_pids formula
-Message-ID: <6277f7e6653785a9e5aa89267377fa57df8e6d8f.1493812735.git.jstancek@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 3 May 2017 14:35:41 +0200
+Subject: [LTP] [PATCH v2] mmapstress04: rewrite to fix heap overwrite
+In-Reply-To: <3cd0bc26ccba6d0bc890952e12ee312f95eaeebc.1493801364.git.jstancek@redhat.com>
+References: <3cd0bc26ccba6d0bc890952e12ee312f95eaeebc.1493801364.git.jstancek@redhat.com>
+Message-ID: <20170503123541.GA794@rei.suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Values returned by sysinfo() are in multiple of mem_unit bytes.
+Hi!
+> +static void setup(void)
+> +{
+> +	page_size = getpagesize();
+> +
+> +	/*
+> +	 * Pick large enough area, PROT_NONE doesn't matter,
+> +	 * because we remap it later.
+> +	 */
+> +	mmap_area = SAFE_MMAP(NULL, page_size * NUM_PAGES, PROT_NONE,
+> +		MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+> +}
+> +
+> +static void write_fully(int fd, void *buf, int len)
+> +{
+> +	do {
+> +		len -= SAFE_WRITE(0, fd, buf, len);
+> +		buf += len;
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/mem/mtest01/mtest01.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This appears to be wrong. If SAFE_WRITE() writes 1 byte we end up with
+offset len - 1 and lenght len - 1 which will cause reads outside of the
+buffer.
 
-diff --git a/testcases/kernel/mem/mtest01/mtest01.c b/testcases/kernel/mem/mtest01/mtest01.c
-index f3fba044c529..6225d7d7b671 100644
---- a/testcases/kernel/mem/mtest01/mtest01.c
-+++ b/testcases/kernel/mem/mtest01/mtest01.c
-@@ -152,7 +152,8 @@ int main(int argc, char *argv[])
- 	total_free = sstats.freeram + sstats.freeswap;
- 	/* Total Free Pre-Test RAM */
- 	pre_mem = sstats.mem_unit * total_free;
--	max_pids = total_ram / (unsigned long)FIVE_HUNDRED_MB + 10;
-+	max_pids = total_ram * sstats.mem_unit
-+		/ (unsigned long)FIVE_HUNDRED_MB + 10;
- 
- 	if ((pid_list = malloc(max_pids * sizeof(pid_t))) == NULL)
- 		tst_brkm(TBROK | TERRNO, NULL, "malloc failed.");
+We have to do:
+
+		ret = SAFE_WRITE(...);
+		buf += ret;
+		len -= ret;
+
+> +	} while (len > 0);
+> +}
+
+Otherwise it's fine. Acked with the write function fixed.
+
 -- 
-1.8.3.1
-
+Cyril Hrubis
+chrubis@suse.cz
