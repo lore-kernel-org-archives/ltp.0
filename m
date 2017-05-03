@@ -1,53 +1,37 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed,  3 May 2017 14:42:33 +0200
-Subject: [LTP] [RFC] [PATCH] syscalls/move_pages12: Two fixes.
-Message-ID: <20170503124233.18585-1-chrubis@suse.cz>
+Date: Wed, 3 May 2017 14:44:56 +0200
+Subject: [LTP] [PATCH] mtest01: fix max_pids formula
+In-Reply-To: <6277f7e6653785a9e5aa89267377fa57df8e6d8f.1493812735.git.jstancek@redhat.com>
+References: <6277f7e6653785a9e5aa89267377fa57df8e6d8f.1493812735.git.jstancek@redhat.com>
+Message-ID: <20170503124456.GB794@rei.suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-* Do not multiply free ram with 1024
+Hi!
+> Values returned by sysinfo() are in multiple of mem_unit bytes.
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  testcases/kernel/mem/mtest01/mtest01.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/mem/mtest01/mtest01.c b/testcases/kernel/mem/mtest01/mtest01.c
+> index f3fba044c529..6225d7d7b671 100644
+> --- a/testcases/kernel/mem/mtest01/mtest01.c
+> +++ b/testcases/kernel/mem/mtest01/mtest01.c
+> @@ -152,7 +152,8 @@ int main(int argc, char *argv[])
+>  	total_free = sstats.freeram + sstats.freeswap;
+>  	/* Total Free Pre-Test RAM */
+>  	pre_mem = sstats.mem_unit * total_free;
+> -	max_pids = total_ram / (unsigned long)FIVE_HUNDRED_MB + 10;
+> +	max_pids = total_ram * sstats.mem_unit
+> +		/ (unsigned long)FIVE_HUNDRED_MB + 10;
 
-  - Since we get overflow even on fairly modest
-    machine with a few GB of RAM and the test
-    will always report "Not enough RAM".
+Looks OK.
 
-* Drop caches before the test
-
-  - Otherwise the move_pages() syscalls may
-    fail with ENOMEM.
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/syscalls/move_pages/move_pages12.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages12.c b/testcases/kernel/syscalls/move_pages/move_pages12.c
-index eeec489..b3ebb7c 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages12.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages12.c
-@@ -139,13 +139,17 @@ static void setup(void)
- 
- 	pgsz = (int)get_page_size();
- 	SAFE_FILE_LINES_SCANF(PATH_MEMINFO, "Hugepagesize: %d", &hpsz);
--	hpsz *= 1024;
-+
-+	SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "1");
- 
- 	SAFE_FILE_LINES_SCANF(PATH_MEMINFO, "MemFree: %d", &memfree);
--	memfree *= 1024;
-+	tst_res(TINFO, "Free RAM %d kB", memfree);
-+
- 	if (4 * hpsz > memfree)
- 		tst_brk(TBROK, "Not enough free RAM");
- 
-+	hpsz *= 1024;
-+
- 	SAFE_FILE_SCANF(PATH_NR_HUGEPAGES, "%ld", &orig_hugepages);
- 	SAFE_FILE_PRINTF(PATH_NR_HUGEPAGES, "%ld", orig_hugepages + 4);
- 
 -- 
-2.7.3
-
+Cyril Hrubis
+chrubis@suse.cz
