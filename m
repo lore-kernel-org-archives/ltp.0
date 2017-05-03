@@ -1,37 +1,57 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 3 May 2017 14:44:56 +0200
-Subject: [LTP] [PATCH] mtest01: fix max_pids formula
-In-Reply-To: <6277f7e6653785a9e5aa89267377fa57df8e6d8f.1493812735.git.jstancek@redhat.com>
-References: <6277f7e6653785a9e5aa89267377fa57df8e6d8f.1493812735.git.jstancek@redhat.com>
-Message-ID: <20170503124456.GB794@rei.suse.de>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 3 May 2017 08:49:46 -0400 (EDT)
+Subject: [LTP] [PATCH v2] mmapstress04: rewrite to fix heap overwrite
+In-Reply-To: <20170503123541.GA794@rei.suse.de>
+References: <3cd0bc26ccba6d0bc890952e12ee312f95eaeebc.1493801364.git.jstancek@redhat.com>
+ <20170503123541.GA794@rei.suse.de>
+Message-ID: <1681486633.6527722.1493815786828.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Values returned by sysinfo() are in multiple of mem_unit bytes.
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  testcases/kernel/mem/mtest01/mtest01.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/mem/mtest01/mtest01.c b/testcases/kernel/mem/mtest01/mtest01.c
-> index f3fba044c529..6225d7d7b671 100644
-> --- a/testcases/kernel/mem/mtest01/mtest01.c
-> +++ b/testcases/kernel/mem/mtest01/mtest01.c
-> @@ -152,7 +152,8 @@ int main(int argc, char *argv[])
->  	total_free = sstats.freeram + sstats.freeswap;
->  	/* Total Free Pre-Test RAM */
->  	pre_mem = sstats.mem_unit * total_free;
-> -	max_pids = total_ram / (unsigned long)FIVE_HUNDRED_MB + 10;
-> +	max_pids = total_ram * sstats.mem_unit
-> +		/ (unsigned long)FIVE_HUNDRED_MB + 10;
 
-Looks OK.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+----- Original Message -----
+> Hi!
+> > +static void setup(void)
+> > +{
+> > +	page_size = getpagesize();
+> > +
+> > +	/*
+> > +	 * Pick large enough area, PROT_NONE doesn't matter,
+> > +	 * because we remap it later.
+> > +	 */
+> > +	mmap_area = SAFE_MMAP(NULL, page_size * NUM_PAGES, PROT_NONE,
+> > +		MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+> > +}
+> > +
+> > +static void write_fully(int fd, void *buf, int len)
+> > +{
+> > +	do {
+> > +		len -= SAFE_WRITE(0, fd, buf, len);
+> > +		buf += len;
+> 
+> This appears to be wrong. If SAFE_WRITE() writes 1 byte we end up with
+> offset len - 1 and lenght len - 1 which will cause reads outside of the
+> buffer.
+
+You're right, it's wrong :-(.
+
+> 
+> We have to do:
+> 
+> 		ret = SAFE_WRITE(...);
+> 		buf += ret;
+> 		len -= ret;
+> 
+> > +	} while (len > 0);
+> > +}
+> 
+> Otherwise it's fine. Acked with the write function fixed.
+
+Fixed and pushed.
+
+Regards,
+Jan
