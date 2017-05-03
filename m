@@ -1,62 +1,34 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 3 May 2017 06:10:01 -0400 (EDT)
-Subject: [LTP] [PATCH v3 1/2] syscalls/splice04: add test for splice()
- from	pipe to pipe
-In-Reply-To: <1493707700-9845-2-git-send-email-bxue@redhat.com>
-References: <1493707700-9845-1-git-send-email-bxue@redhat.com>
- <1493707700-9845-2-git-send-email-bxue@redhat.com>
-Message-ID: <1582503914.6358995.1493806201010.JavaMail.zimbra@redhat.com>
+Date: Wed,  3 May 2017 14:00:36 +0200
+Subject: [LTP] [PATCH] mtest01: fix max_pids formula
+Message-ID: <6277f7e6653785a9e5aa89267377fa57df8e6d8f.1493812735.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1254"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogQm95YW5nIFh1ZSA8Ynh1ZUBy
-ZWRoYXQuY29tPgo+IAo+IFRoaXMgdGVzdCBjYXNlIGNvdmVycyBwaXBlIHRvIHBpcGUgc3BsaWNl
-IG9wZXJhdGlvbiwgd2hpY2ggd2FzIGludHJvZHVjZWQKPiBpbiBrZXJuZWwgY29tbWl0IDdjNzdm
-MGIzZjkyMCAoInNwbGljZTogaW1wbGVtZW50IHBpcGUgdG8gcGlwZSBzcGxpY2luZyIpLgo+IAo+
-IFNpZ25lZC1vZmYtYnk6IEJveWFuZyBYdWUgPGJ4dWVAcmVkaGF0LmNvbT4KCkhpLAoKTWFueSBs
-aW5lcyBnbyBvdmVyIDgwIGNoYXJhY3RlcnMuCgo+ICtzdGF0aWMgdm9pZCBzZXR1cCh2b2lkKQo+
-ICt7Cj4gKwlpbnQgaSwgZmQsIHBpcGVfbWF4X3VucHJpdiwgcGlwZV9saW1pdDsKPiArCUZJTEUg
-KnM7Cj4gKwo+ICsJZmQgPSBTQUZFX09QRU4oIi9wcm9jL3N5cy9mcy9waXBlLW1heC1zaXplIiwg
-T19SRE9OTFkpOwo+ICsJcyA9IGZkb3BlbihmZCwgInIiKTsKPiArCWlmIChzID09IE5VTEwpCj4g
-KwkJdHN0X2JyayhUQlJPSywgImZkb3BlbigpIGVycm9yIik7Cj4gKwlpZiAoZnNjYW5mKHMsICIl
-ZCIsICZwaXBlX21heF91bnByaXYpICE9IDEpCj4gKwkJdHN0X2JyayhUQlJPSywgIkZhaWwgdG8g
-Z2V0IHZhbHVlIG9mIC9wcm9jL3N5cy9mcy9waXBlLW1heC1zaXplIik7Cj4gKwllbHNlIHsKPiAr
-CQlwaXBlX2xpbWl0ID0gcGlwZV9tYXhfdW5wcml2IDwgbnVtX2xlbl9kYXRhID8gcGlwZV9tYXhf
-dW5wcml2IDoKPiBudW1fbGVuX2RhdGE7Cj4gKwkJbnVtX2xlbl9kYXRhID0gcGlwZV9saW1pdDsK
-PiArCX0KPiArCWlmIChmY2xvc2UocykgPT0gRU9GKQo+ICsJCXRzdF9icmsoVEJST0ssICJGYWls
-IHRvIGNsb3NlIGZpbGUiKTsKCllvdSBjYW4gdXNlIGhlbHBlciBtYWNybzogU0FGRV9GSUxFX1ND
-QU5GCgo+ICsKPiArCWlmICh0c3RfcGFyc2VfaW50KHN0cl9sZW5fZGF0YSwgJm51bV9sZW5fZGF0
-YSwgMSwgcGlwZV9saW1pdCkpCj4gKwkJdHN0X2JyayhUQlJPSywgIkludmFsaWQgbGVuZ3RoIG9m
-IGRhdGE6ICclcycsIHZhbGlkIHZhbHVlOiBbMSwgJWRdIiwKPiBzdHJfbGVuX2RhdGEsIHBpcGVf
-bGltaXQpOwo+ICsJdHN0X3JlcyhUSU5GTywgInNwbGljZSBzaXplID0gJWQiLCBudW1fbGVuX2Rh
-dGEpOwo+ICsJYXJyX2luID0gU0FGRV9NQUxMT0MobnVtX2xlbl9kYXRhKTsKPiArCWFycl9vdXQg
-PSBTQUZFX01BTExPQyhudW1fbGVuX2RhdGEpOwo+ICsJZm9yIChpID0gMDsgaSA8IG51bV9sZW5f
-ZGF0YTsgaSsrKQo+ICsJCWFycl9pbltpXSA9IGkgJiAweGZmOwo+ICt9Ci4uLgo+ICtzdGF0aWMg
-dm9pZCBwaXBlX3BpcGUodm9pZCkKPiArewo+ICsJaW50IHBwMVsyXSwgcHAyWzJdLCBpLCByZXQ7
-Cj4gKwo+ICsJU0FGRV9QSVBFKHBwMSk7Cj4gKwlTQUZFX1BJUEUocHAyKTsKPiArCVNBRkVfV1JJ
-VEUoMSwgcHAxWzFdLCBhcnJfaW4sIG51bV9sZW5fZGF0YSk7Cj4gKwlkbyB7Cj4gKwkJcmV0ID0g
-c3BsaWNlKHBwMVswXSwgTlVMTCwgcHAyWzFdLCBOVUxMLCBudW1fbGVuX2RhdGEsIFNQTElDRV9G
-X01PVkUpOwoKWW91IGFsd2F5cyB0cnkgdG8gc3BsaWNlIG51bV9sZW5fZGF0YSBieXRlcywgd2hp
-Y2ggY2FuIGxlYWQgdG8gaGFuZwppZiB0aGlzIGxvb3AgcnVucyBtdWx0aXBsZSB0aW1lcywgYmVj
-YXVzZSB0aGVyZSBhcmVuJ3QgZW5vdWdoIGJ5dGVzCmluIHBpcGUgYWZ0ZXIgZmlyc3Qgc3BsaWNl
-LgoKRm9yIGV4YW1wbGUsIG9uIDQuMTA6CltwaWQgIDI5ODddIDExOjU1OjQ5LjA5MDAwMSBzcGxp
-Y2UoMywgTlVMTCwgNiwgTlVMTCwgNjU1MzYsIFNQTElDRV9GX01PVkUpID0gMzI3NjgKW3BpZCAg
-Mjk4N10gMTE6NTU6NDkuMDkwMDczIHNwbGljZSgzLCBOVUxMLCA2LCBOVUxMLCA2NTUzNiwgU1BM
-SUNFX0ZfTU9WRTxoYW5ncz4KCldlIGhhdmUgNjU1MzYgYnl0ZXMgaW4gcGlwZSwgZmlyc3Qgc3Bs
-aWNlIHRyYW5zZmVyZWQgaGFsZiBvZiB0aGF0LApzZWNvbmQgc3BsaWNlIGlzIGFnYWluIHRyeWlu
-ZyB0byB0cmFuc2ZlciA2NTUzNiBieXRlcy4KCj4gKwkJaWYgKHJldCA9PSAwKQo+ICsJCQlicmVh
-azsKCmZyb20gbWFuMiBzcGxpY2U6CiJBICByZXR1cm4gdmFsdWUgb2YgMCBtZWFucyBlbmQgb2Yg
-aW5wdXQuICBJZiBmZF9pbiByZWZlcnMgdG8gYSBwaXBlLCB0aGVuIHRoaXMgbWVhbnMgdGhhdCB0
-aGVyZSB3YXMgbm8gZGF0YSB0byB0cmFuc+KAkApmZXIsIGFuZCBpdCB3b3VsZCBub3QgbWFrZSBz
-ZW5zZSB0byBibG9jayBiZWNhdXNlIHRoZXJlIGFyZSBubyB3cml0ZXJzIGNvbm5lY3RlZCB0byB0
-aGUgd3JpdGUgZW5kIG9mIHRoZSBwaXBlLiIKClNpbmNlIHlvdSBzdGlsbCBoYXZlIHdyaXRlIGVu
-ZCBvcGVuZWQgaXQgY2FuIGJsb2NrIHJhdGhlciB0aGFuIHJldHVybiAwLgpBbHNvLCBpdCBtYWtl
-cyBzZW5zZSBvbmx5IGlmIGZkX2luIGlzIHBpcGUsIHdoaWNoIGlzIG5vdCB0aGUgY2FzZSBvZgpz
-cGxpY2UwNSB0ZXN0Y2FzZS4KCj4gKwkJZWxzZSBpZiAocmV0ID09IC0xKSB7Cj4gKwkJCXRzdF9y
-ZXMoVEZBSUwgfCBURVJSTk8sICJzcGxpY2UgZXJyb3IiKTsKPiArCQkJZ290byBleGl0Owo+ICsJ
-CX0KPiArCX0gd2hpbGUgKG51bV9sZW5fZGF0YSAtIHJldCk7CgpVbmxlc3MgZmlyc3Qgc3BsaWNl
-IHRyYW5zZmVycyBhbGwsIHRoaXMgY29uZGl0aW9uIGlzIGFsd2F5cyB0cnVlLgoKUmVnYXJkcywK
-SmFuCg==
+Values returned by sysinfo() are in multiple of mem_unit bytes.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/mem/mtest01/mtest01.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/mem/mtest01/mtest01.c b/testcases/kernel/mem/mtest01/mtest01.c
+index f3fba044c529..6225d7d7b671 100644
+--- a/testcases/kernel/mem/mtest01/mtest01.c
++++ b/testcases/kernel/mem/mtest01/mtest01.c
+@@ -152,7 +152,8 @@ int main(int argc, char *argv[])
+ 	total_free = sstats.freeram + sstats.freeswap;
+ 	/* Total Free Pre-Test RAM */
+ 	pre_mem = sstats.mem_unit * total_free;
+-	max_pids = total_ram / (unsigned long)FIVE_HUNDRED_MB + 10;
++	max_pids = total_ram * sstats.mem_unit
++		/ (unsigned long)FIVE_HUNDRED_MB + 10;
+ 
+ 	if ((pid_list = malloc(max_pids * sizeof(pid_t))) == NULL)
+ 		tst_brkm(TBROK | TERRNO, NULL, "malloc failed.");
+-- 
+1.8.3.1
+
