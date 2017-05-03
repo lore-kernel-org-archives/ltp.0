@@ -1,60 +1,73 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed,  3 May 2017 16:50:16 +0200
-Subject: [LTP] [RFC] [PATCH] commands/which01.sh: Fix test for debian.
-Message-ID: <20170503145016.27519-1-chrubis@suse.cz>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed,  3 May 2017 17:58:17 +0300
+Subject: [LTP] [PATCH v2] net: use LTP ns_create/ns_exec to support OS with
+	legacy iproute
+Message-ID: <1493823497-22391-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The which binary on Debian comes from debianutils package and not from
-the which package (like it is on the most of the distros). It does not
-support most of the options, which is fine, since the test produces
-TCONF for these but also returns relative path instead of absolute one.
-
-So this patch adds alternate version for the expected path and the test
-passes if at least one of them matches.
-
-Fixes #151.
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/commands/which/which01.sh | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+v2: move creation of veth pair out of 'if/else'
 
-diff --git a/testcases/commands/which/which01.sh b/testcases/commands/which/which01.sh
-index 579ac5b..eb87095 100755
---- a/testcases/commands/which/which01.sh
-+++ b/testcases/commands/which/which01.sh
-@@ -42,8 +42,13 @@ which_verify()
+ testcases/lib/test_net.sh |   28 +++++++++++++++++++++++-----
+ 1 files changed, 23 insertions(+), 5 deletions(-)
+
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index 3c5f068..42809e9 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -1,5 +1,5 @@
+ #!/bin/sh
+-# Copyright (c) 2014-2016 Oracle and/or its affiliates. All Rights Reserved.
++# Copyright (c) 2014-2017 Oracle and/or its affiliates. All Rights Reserved.
+ # Copyright (c) 2016-2017 Petr Vorel <pvorel@suse.cz>
+ #
+ # This program is free software; you can redistribute it and/or
+@@ -23,18 +23,36 @@
+ 
+ init_ltp_netspace()
  {
- 	until [ -z "$1" ]
- 	do
--		grep -q "$1" temp
--		if [ $? -ne 0 ]; then
-+		found="no"
-+		for i in $1; do
-+			if grep -q "$i" temp; then
-+				found="yes"
-+			fi
-+		done
-+		if [ "$found" != "yes" ]; then
- 			echo "'$1' not found in:"
- 			cat temp
- 			echo
-@@ -93,9 +98,9 @@ which_test()
- do_test()
- {
- 	case $1 in
--	1) which_test "" "pname" "$PWD/pname";;
-+	1) which_test "" "pname" "$PWD/pname ./pname";;
- 	2) which_test "--all" "pname" "$PWD/bin/pname" "$PWD/pname";;
--	3) which_test "-a" "pname" "$PWD/bin/pname" "$PWD/pname";;
-+	3) which_test "-a" "pname" "$PWD/bin/pname ./bin/pname" "$PWD/pname ./pname";;
- 	4) which_test "--read-alias" "pname" "pname='pname -i'" "$PWD/pname";;
- 	5) which_test "-i" "pname" "pname='pname -i'" "$PWD/pname";;
- 	6) alias which='which --read-alias';
++	local pid=
++
+ 	if [ ! -f /var/run/netns/ltp_ns ]; then
+-		ROD ip net add ltp_ns
+ 		ROD ip li add name ltp_ns_veth1 type veth peer name ltp_ns_veth2
+-		ROD ip li set dev ltp_ns_veth1 netns ltp_ns
+-		ROD ip netns exec ltp_ns ip li set lo up
++		if ! ip netns list >/dev/null 2>&1; then
++			pid="$(ROD ns_create net,mnt)"
++			mkdir -p /var/run/netns
++			ROD ln -s /proc/$pid/ns/net /var/run/netns/ltp_ns
++			ROD ns_exec $pid net,mnt umount /sys
++			ROD ns_exec $pid net,mnt mount -t sysfs none /sys
++			ROD ns_ifmove ltp_ns_veth1 $pid
++			ROD ns_exec $pid net,mnt ip li set lo up
++		else
++			ROD ip net add ltp_ns
++			ROD ip li set dev ltp_ns_veth1 netns ltp_ns
++			ROD ip netns exec ltp_ns ip li set lo up
++		fi
+ 	fi
+ 
+ 	LHOST_IFACES="${LHOST_IFACES:-ltp_ns_veth2}"
+ 	RHOST_IFACES="${RHOST_IFACES:-ltp_ns_veth1}"
+ 
+ 	export TST_INIT_NETNS="no"
+-	export LTP_NETNS="${LTP_NETNS:-ip netns exec ltp_ns}"
++
++	if [ -h /var/run/netns/ltp_ns ]; then
++		pid="$(echo $(readlink /var/run/netns/ltp_ns) | cut -f3 -d'/')"
++		export LTP_NETNS="${LTP_NETNS:-ns_exec $pid net,mnt}"
++	else
++		export LTP_NETNS="${LTP_NETNS:-ip netns exec ltp_ns}"
++	fi
+ 
+ 	tst_restore_ipaddr
+ 	tst_restore_ipaddr rhost
 -- 
-2.10.2
+1.7.1
 
