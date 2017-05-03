@@ -1,49 +1,53 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 3 May 2017 14:35:41 +0200
-Subject: [LTP] [PATCH v2] mmapstress04: rewrite to fix heap overwrite
-In-Reply-To: <3cd0bc26ccba6d0bc890952e12ee312f95eaeebc.1493801364.git.jstancek@redhat.com>
-References: <3cd0bc26ccba6d0bc890952e12ee312f95eaeebc.1493801364.git.jstancek@redhat.com>
-Message-ID: <20170503123541.GA794@rei.suse.de>
+Date: Wed,  3 May 2017 14:42:33 +0200
+Subject: [LTP] [RFC] [PATCH] syscalls/move_pages12: Two fixes.
+Message-ID: <20170503124233.18585-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +static void setup(void)
-> +{
-> +	page_size = getpagesize();
-> +
-> +	/*
-> +	 * Pick large enough area, PROT_NONE doesn't matter,
-> +	 * because we remap it later.
-> +	 */
-> +	mmap_area = SAFE_MMAP(NULL, page_size * NUM_PAGES, PROT_NONE,
-> +		MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
-> +}
-> +
-> +static void write_fully(int fd, void *buf, int len)
-> +{
-> +	do {
-> +		len -= SAFE_WRITE(0, fd, buf, len);
-> +		buf += len;
+* Do not multiply free ram with 1024
 
-This appears to be wrong. If SAFE_WRITE() writes 1 byte we end up with
-offset len - 1 and lenght len - 1 which will cause reads outside of the
-buffer.
+  - Since we get overflow even on fairly modest
+    machine with a few GB of RAM and the test
+    will always report "Not enough RAM".
 
-We have to do:
+* Drop caches before the test
 
-		ret = SAFE_WRITE(...);
-		buf += ret;
-		len -= ret;
+  - Otherwise the move_pages() syscalls may
+    fail with ENOMEM.
 
-> +	} while (len > 0);
-> +}
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/move_pages/move_pages12.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Otherwise it's fine. Acked with the write function fixed.
-
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages12.c b/testcases/kernel/syscalls/move_pages/move_pages12.c
+index eeec489..b3ebb7c 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages12.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages12.c
+@@ -139,13 +139,17 @@ static void setup(void)
+ 
+ 	pgsz = (int)get_page_size();
+ 	SAFE_FILE_LINES_SCANF(PATH_MEMINFO, "Hugepagesize: %d", &hpsz);
+-	hpsz *= 1024;
++
++	SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "1");
+ 
+ 	SAFE_FILE_LINES_SCANF(PATH_MEMINFO, "MemFree: %d", &memfree);
+-	memfree *= 1024;
++	tst_res(TINFO, "Free RAM %d kB", memfree);
++
+ 	if (4 * hpsz > memfree)
+ 		tst_brk(TBROK, "Not enough free RAM");
+ 
++	hpsz *= 1024;
++
+ 	SAFE_FILE_SCANF(PATH_NR_HUGEPAGES, "%ld", &orig_hugepages);
+ 	SAFE_FILE_PRINTF(PATH_NR_HUGEPAGES, "%ld", orig_hugepages + 4);
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.7.3
+
