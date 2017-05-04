@@ -1,47 +1,92 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 4 May 2017 16:03:19 +0200
-Subject: [LTP] [RFC PATCH v5 0/3] Simplify network setup
-In-Reply-To: <fa243a13-7677-f8cd-15ca-de873af0d7da@oracle.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Thu, 4 May 2017 16:41:36 +0200
+Subject: [LTP] [RFC PATCH v5 2/3] network: Add tool for setup IP
+ variables
+In-Reply-To: <20170503160751.1634-3-pvorel@suse.cz>
 References: <20170503160751.1634-1-pvorel@suse.cz>
- <8a43347a-716f-7ce6-2758-e5eda838e265@oracle.com>
- <fa243a13-7677-f8cd-15ca-de873af0d7da@oracle.com>
-Message-ID: <20170504140319.747xtmehwshjw3b6@dell5510>
+ <20170503160751.1634-3-pvorel@suse.cz>
+Message-ID: <20170504164136.46444e27@linux-v3j5>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi,
 
-> Regarding IPV{4,6}_NETWORK calculation, I believe it would much
-> simpler ifwe saved the same part of address from IPV{4,6}_HOST
-> variables to_NETWORK variable and what is differ to the other
-> variables.There is no need to any additional checks for these
-> environment variables or I'm missing something?
-You're right - calculating just network part and then get host part by substring operation
-will be probably less error-prone. I planned to write some tests latter (sorry for not
-including it now), but this is really better solution.
+Just a couple of minor comments, I haven't properly read it.
 
-> Hmm, I didn't find how the patch is getting network prefix
-> on the remote host, is it because of the assumption that they
-> should be the same on both hosts?
-Yes. So far we have just one IPV{4,6}_NETWORK variable for both, so I guess this makes us to use
-the same network for both.
+On Wed,  3 May 2017 18:07:50 +0200
+"Petr Vorel" <pvorel@suse.cz> wrote:
 
-> It is fine for now as it's
-> not so common for a test environment to have different ones,
-> so the better approach in the future is to make a separate tool
-> (installed on both hosts with LTP) and get prefixes from
-> local and remote host similar to tst_get_hwaddrs() in test_net.sh.
-I'm ok to make C binary which reads prefix, which will be run on both local and remote
-hosts. But to be actually used, we'd need to change all tests using IPV{4,6}_NETWORK to
-use different variables for local and remote hosts. I'd like to do it after having this
-merged. I have also in my TODO list creating tst_net_reverse_ip binary for
-stress/multicast and stress/route tests groups.
+> +/*
+> + * Function prefix2mask is from ipcalc project, ipcalc.c.
+> + */
+> +struct in_addr prefix2mask(int prefix)
+> +{
+> +	struct in_addr mask;
+> +
+> +	memset(&mask, 0, sizeof(mask));
 
-BTW is there a better/simpler way to get prefix than what I wrote?
+FYI for these memsets you could use 'struct foo bar = { 0 }' instead. Although
+it generates warnings on older compilers if the struct starts with another
+composite data type.
 
+> +
+> +static int read_prefix(const char *ip_str, int is_ipv6)
+> +{
+> +	uint8_t family = is_ipv6 ? AF_INET6 : AF_INET;
+> +
+> +	char buf[16384];
+> +	int len;
+> +
+> +	struct {
+> +		struct nlmsghdr nlhdr;
+> +		struct ifaddrmsg addrmsg;
+> +	} msg;
+> +
+> +	struct nlmsghdr *retmsg;
+> +
+> +	int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
+> +
+> +	memset(&msg, 0, sizeof(msg));
+> +	msg.nlhdr.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifaddrmsg));
+> +	msg.nlhdr.nlmsg_flags = NLM_F_REQUEST | NLM_F_ROOT;
+> +	msg.nlhdr.nlmsg_type = RTM_GETADDR;
+> +	msg.addrmsg.ifa_family = family;
+> +
+> +	send(sock, &msg, msg.nlhdr.nlmsg_len, 0);
+> +	len = recv(sock, buf, sizeof(buf), 0);
+> +	retmsg = (struct nlmsghdr *)buf;
 
-Kind regards,
-Petr
+No error checking? I suppose it is unlikely to fail, but it can't hurt.
+
+> +
+> +	while NLMSG_OK(retmsg, len) {
+> +		struct ifaddrmsg *retaddr;
+> +		struct rtattr *retrta;
+> +		char pradd[128];
+> +		int attlen;
+> +
+> +		retaddr = (struct ifaddrmsg *)NLMSG_DATA(retmsg);
+> +		retrta = (struct rtattr *)IFA_RTA(retaddr);
+> +		attlen = IFA_PAYLOAD(retmsg);
+> +
+> +		while RTA_OK(retrta, attlen) {
+> +			if (retrta->rta_type == IFA_ADDRESS) {
+> +				inet_ntop(family, RTA_DATA(retrta), pradd, sizeof(pradd));
+> +				if (!strcmp(pradd, ip_str))
+> +					return retaddr->ifa_prefixlen;
+> +			}
+> +			retrta = RTA_NEXT(retrta, attlen);
+> +
+> +		}
+> +		retmsg = NLMSG_NEXT(retmsg, len);
+> +	}
+> +
+> +	return -1;
+> +}
+> +
+
+Thank you,
+Richard.
