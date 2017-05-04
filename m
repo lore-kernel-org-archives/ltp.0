@@ -1,33 +1,85 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 4 May 2017 21:25:41 +0200
-Subject: [LTP] [RFC PATCH v5 0/3] Simplify network setup
-In-Reply-To: <7643d4a3-2aa5-7713-a634-4344f0d64233@oracle.com>
+Date: Thu, 4 May 2017 21:51:52 +0200
+Subject: [LTP] [RFC PATCH v5 2/3] network: Add tool for setup IP
+	variables
+In-Reply-To: <20170504164136.46444e27@linux-v3j5>
 References: <20170503160751.1634-1-pvorel@suse.cz>
- <8a43347a-716f-7ce6-2758-e5eda838e265@oracle.com>
- <20170504134613.tyinrlvw4iagn2lh@dell5510>
- <7643d4a3-2aa5-7713-a634-4344f0d64233@oracle.com>
-Message-ID: <20170504192541.d27ovqyzyz2pdkvu@dell5510>
+ <20170503160751.1634-3-pvorel@suse.cz>
+ <20170504164136.46444e27@linux-v3j5>
+Message-ID: <20170504195152.fuflgxom4vqjlbwg@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi Richard,
 
-> > Right, I'll remove requirement network prefix to be < 8 (IPv4) resp. 16 (IPv6).
-> > There are other restrictions you probably don't like:
-> > * Don't use 32 (IPv4) and 128 (IPv6): I'd keep this restriction. What do you think?
-> > * Require to use the same prefix: I'd keep it for now.
+> > +	struct in_addr mask;
+> > +
+> > +	memset(&mask, 0, sizeof(mask));
 
-> I'm for a warning message that some network/stress tests not supporting
-> such config.
-Although I think prefix (mask) 32 resp. 128 doesn't make much sense, I'll remove both
-restrictions. If I have enough time I'll implement use of different network variables for
-local and remote hosts.
+> FYI for these memsets you could use 'struct foo bar = { 0 }' instead. Although
+> it generates warnings on older compilers if the struct starts with another
+> composite data type.
 
-Thanks for your time and comments!
+Right, I used it for struct in_addr and in6_addr. Not used it for struct msg as it
+contains another struct (even it does not produce a warning when compiled with
+--std=gnu89).
+
+> > +	struct {
+> > +		struct nlmsghdr nlhdr;
+> > +		struct ifaddrmsg addrmsg;
+> > +	} msg;
 
 
-Kind regards,
+
+> > +	msg.nlhdr.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifaddrmsg));
+> > +	msg.nlhdr.nlmsg_flags = NLM_F_REQUEST | NLM_F_ROOT;
+> > +	msg.nlhdr.nlmsg_type = RTM_GETADDR;
+> > +	msg.addrmsg.ifa_family = family;
+> > +
+> > +	send(sock, &msg, msg.nlhdr.nlmsg_len, 0);
+> > +	len = recv(sock, buf, sizeof(buf), 0);
+> > +	retmsg = (struct nlmsghdr *)buf;
+
+> No error checking? I suppose it is unlikely to fail, but it can't hurt.
+IMHO NLMSG_OK RTA_NEXT macros do some sort of checks [1], [2]. Sample code [3] checks for
+more, but that's IMHO irrelevant.
+
+> > +
+> > +	while NLMSG_OK(retmsg, len) {
+> > +		struct ifaddrmsg *retaddr;
+> > +		struct rtattr *retrta;
+> > +		char pradd[128];
+> > +		int attlen;
+> > +
+> > +		retaddr = (struct ifaddrmsg *)NLMSG_DATA(retmsg);
+> > +		retrta = (struct rtattr *)IFA_RTA(retaddr);
+> > +		attlen = IFA_PAYLOAD(retmsg);
+> > +
+> > +		while RTA_OK(retrta, attlen) {
+> > +			if (retrta->rta_type == IFA_ADDRESS) {
+> > +				inet_ntop(family, RTA_DATA(retrta), pradd, sizeof(pradd));
+> > +				if (!strcmp(pradd, ip_str))
+> > +					return retaddr->ifa_prefixlen;
+> > +			}
+> > +			retrta = RTA_NEXT(retrta, attlen);
+> > +
+> > +		}
+> > +		retmsg = NLMSG_NEXT(retmsg, len);
+> > +	}
+> > +
+> > +	return -1;
+> > +}
+> > +
+
+> Thank you,
+> Richard.
+Thanks for your comments and time!
 Petr
+
+
+[1] http://man7.org/linux/man-pages/man3/netlink.3.html
+[2] http://man7.org/linux/man-pages/man3/rtnetlink.3.html
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/samples/bpf/bpf_load.c?id=refs/tags/v4.11#n535
