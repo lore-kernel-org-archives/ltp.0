@@ -1,92 +1,37 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu, 4 May 2017 16:41:36 +0200
-Subject: [LTP] [RFC PATCH v5 2/3] network: Add tool for setup IP
- variables
-In-Reply-To: <20170503160751.1634-3-pvorel@suse.cz>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 4 May 2017 17:52:13 +0300
+Subject: [LTP] [RFC PATCH v5 0/3] Simplify network setup
+In-Reply-To: <20170504134613.tyinrlvw4iagn2lh@dell5510>
 References: <20170503160751.1634-1-pvorel@suse.cz>
- <20170503160751.1634-3-pvorel@suse.cz>
-Message-ID: <20170504164136.46444e27@linux-v3j5>
+ <8a43347a-716f-7ce6-2758-e5eda838e265@oracle.com>
+ <20170504134613.tyinrlvw4iagn2lh@dell5510>
+Message-ID: <7643d4a3-2aa5-7713-a634-4344f0d64233@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+On 04.05.2017 16:46, Petr Vorel wrote:
+> Hi Alexey,
+>
+>>> There is still requirement network prefix to be < 8 (IPv4) resp. 16 (IPv6) as
+>>> then IPV{4,6}_NETWORK variables would be empty, which is not expected by tests
+>>> (they join it with address separators with {L,R}HOST_IPV{4,6}_HOST. Even we got
+>>> rid of reverse related variables we still need IPV{4,6}_NETWORK variables for
+>>> some tests.
+>> Hi Petr,
+>> But you removed such dependency on the prefix from test_net.sh  in
+>> the third patch... so we could just print the warning that configuration
+>> is not appropriate for the old tests, that is for stress/multicast,
+>> stress/route groups only.
+> Right, I'll remove requirement network prefix to be < 8 (IPv4) resp. 16 (IPv6).
+> There are other restrictions you probably don't like:
+> * Don't use 32 (IPv4) and 128 (IPv6): I'd keep this restriction. What do you think?
+> * Require to use the same prefix: I'd keep it for now.
 
-Just a couple of minor comments, I haven't properly read it.
+I'm for a warning message that some network/stress tests not supporting
+such config.
 
-On Wed,  3 May 2017 18:07:50 +0200
-"Petr Vorel" <pvorel@suse.cz> wrote:
-
-> +/*
-> + * Function prefix2mask is from ipcalc project, ipcalc.c.
-> + */
-> +struct in_addr prefix2mask(int prefix)
-> +{
-> +	struct in_addr mask;
-> +
-> +	memset(&mask, 0, sizeof(mask));
-
-FYI for these memsets you could use 'struct foo bar = { 0 }' instead. Although
-it generates warnings on older compilers if the struct starts with another
-composite data type.
-
-> +
-> +static int read_prefix(const char *ip_str, int is_ipv6)
-> +{
-> +	uint8_t family = is_ipv6 ? AF_INET6 : AF_INET;
-> +
-> +	char buf[16384];
-> +	int len;
-> +
-> +	struct {
-> +		struct nlmsghdr nlhdr;
-> +		struct ifaddrmsg addrmsg;
-> +	} msg;
-> +
-> +	struct nlmsghdr *retmsg;
-> +
-> +	int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
-> +
-> +	memset(&msg, 0, sizeof(msg));
-> +	msg.nlhdr.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifaddrmsg));
-> +	msg.nlhdr.nlmsg_flags = NLM_F_REQUEST | NLM_F_ROOT;
-> +	msg.nlhdr.nlmsg_type = RTM_GETADDR;
-> +	msg.addrmsg.ifa_family = family;
-> +
-> +	send(sock, &msg, msg.nlhdr.nlmsg_len, 0);
-> +	len = recv(sock, buf, sizeof(buf), 0);
-> +	retmsg = (struct nlmsghdr *)buf;
-
-No error checking? I suppose it is unlikely to fail, but it can't hurt.
-
-> +
-> +	while NLMSG_OK(retmsg, len) {
-> +		struct ifaddrmsg *retaddr;
-> +		struct rtattr *retrta;
-> +		char pradd[128];
-> +		int attlen;
-> +
-> +		retaddr = (struct ifaddrmsg *)NLMSG_DATA(retmsg);
-> +		retrta = (struct rtattr *)IFA_RTA(retaddr);
-> +		attlen = IFA_PAYLOAD(retmsg);
-> +
-> +		while RTA_OK(retrta, attlen) {
-> +			if (retrta->rta_type == IFA_ADDRESS) {
-> +				inet_ntop(family, RTA_DATA(retrta), pradd, sizeof(pradd));
-> +				if (!strcmp(pradd, ip_str))
-> +					return retaddr->ifa_prefixlen;
-> +			}
-> +			retrta = RTA_NEXT(retrta, attlen);
-> +
-> +		}
-> +		retmsg = NLMSG_NEXT(retmsg, len);
-> +	}
-> +
-> +	return -1;
-> +}
-> +
-
-Thank you,
-Richard.
+Thanks,
+Alexey
