@@ -1,34 +1,35 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 4 May 2017 15:38:48 +0200
+Date: Thu, 4 May 2017 15:46:13 +0200
 Subject: [LTP] [RFC PATCH v5 0/3] Simplify network setup
-In-Reply-To: <9bcd22dc-ba31-8423-8f93-fc856905a83b@oracle.com>
+In-Reply-To: <8a43347a-716f-7ce6-2758-e5eda838e265@oracle.com>
 References: <20170503160751.1634-1-pvorel@suse.cz>
- <20170504132747.3d799242@linux-v3j5>
- <9bcd22dc-ba31-8423-8f93-fc856905a83b@oracle.com>
-Message-ID: <20170504133848.shqxjkj2ru5kks6k@dell5510>
+ <8a43347a-716f-7ce6-2758-e5eda838e265@oracle.com>
+Message-ID: <20170504134613.tyinrlvw4iagn2lh@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey, Richard,
+Hi Alexey,
 
-> >> BTW: I probably have source lines > 80 chars. My Vim doesn't highlight
-> >> anything, but checkpatch.pl complain. I might have wrong vim configuration.
-> > Are you using checkpatch.pl from kernel 4.11? It was recently changed to
-> > follow the actual style guidelines which say lines over 80 chars are
-> > preferable to strings being split over multiple lines. Maybe Vim is aware of
-> > that?
+> > There is still requirement network prefix to be < 8 (IPv4) resp. 16 (IPv6) as
+> > then IPV{4,6}_NETWORK variables would be empty, which is not expected by tests
+> > (they join it with address separators with {L,R}HOST_IPV{4,6}_HOST. Even we got
+> > rid of reverse related variables we still need IPV{4,6}_NETWORK variables for
+> > some tests.
 
-> Or may be vim's configuration has wrong tab size, should be 8 characters
-> for Linux coding style.
-I'm using recent version of checkpatch.pl.
-My fault, I've installed linuxsty plugin [1], but default is off, so I had these options:
-tabstop=4 softtabstop=4 shiftwidth=4
+> Hi Petr,
 
-[1]: https://github.com/vivien/vim-linux-coding-style/blob/master/plugin/linuxsty.vim
+> But you removed such dependency on the prefix from test_net.sh  in
+> the third patch... so we could just print the warning that configuration
+> is not appropriate for the old tests, that is for stress/multicast,
+> stress/route groups only.
+Right, I'll remove requirement network prefix to be < 8 (IPv4) resp. 16 (IPv6).
+There are other restrictions you probably don't like:
+* Don't use 32 (IPv4) and 128 (IPv6): I'd keep this restriction. What do you think?
+* Require to use the same prefix: I'd keep it for now.
 
-Thank you both for tips!
 
+Kind regards,
 Petr
