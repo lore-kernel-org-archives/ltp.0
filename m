@@ -1,9 +1,10 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 4 May 2017 14:57:59 -0400 (EDT)
-Subject: [LTP] [RFC] [PATCH] syscalls/move_pages12: Two fixes.
-In-Reply-To: <20170503124233.18585-1-chrubis@suse.cz>
-References: <20170503124233.18585-1-chrubis@suse.cz>
-Message-ID: <959115821.7379621.1493924279254.JavaMail.zimbra@redhat.com>
+Date: Thu, 4 May 2017 14:59:00 -0400 (EDT)
+Subject: [LTP] [RFC] [PATCH] syslog-lib.sh: Produce TCONF instead of
+ TBROK	for journald
+In-Reply-To: <20170502181749.16375-1-chrubis@suse.cz>
+References: <20170502181749.16375-1-chrubis@suse.cz>
+Message-ID: <240867630.7382524.1493924340310.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,28 +14,35 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> * Do not multiply free ram with 1024
+> If there is no traditional syslog daemon installed these testcaess exit
+> with TBROK which is not correct since these tests are simply not
+> applicable if no syslog daemon is installed.
 > 
->   - Since we get overflow even on fairly modest
->     machine with a few GB of RAM and the test
->     will always report "Not enough RAM".
-
-This is obviously ok.
-
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  testcases/kernel/syscalls/syslog/syslog-lib.sh | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> * Drop caches before the test
-> 
->   - Otherwise the move_pages() syscalls may
->     fail with ENOMEM.
-> 
+> diff --git a/testcases/kernel/syscalls/syslog/syslog-lib.sh
+> b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+> index e166d3a45..35c13daf7 100755
+> --- a/testcases/kernel/syscalls/syslog/syslog-lib.sh
+> +++ b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+> @@ -86,8 +86,8 @@ EOF
+>  )
+>  		fi
+>  	else
+> -		tst_resm TBROK "Couldn't find syslogd, syslog-ng or rsyslogd"
+> -		cleanup 1
+> +		tst_resm TCONF "Couldn't find syslogd, syslog-ng or rsyslogd"
+> +		cleanup 32
+>  	fi
+>  
+>  	# Back up configuration file
+> --
+> 2.12.2
 
-How about we try to allocate/touch couple MB worth of pages
-on node, we are going to move to (alloc_pages_on_node())?
-If we can't allocate, exit with TCONF.
-
-Otherwise we free those pages just before move_pages().
-Wouldn't that give us better guarantee, there are some
-free pages on target node?
+ACK
 
 Regards,
 Jan
