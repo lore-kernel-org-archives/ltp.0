@@ -1,85 +1,67 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 4 May 2017 21:51:52 +0200
-Subject: [LTP] [RFC PATCH v5 2/3] network: Add tool for setup IP
-	variables
-In-Reply-To: <20170504164136.46444e27@linux-v3j5>
-References: <20170503160751.1634-1-pvorel@suse.cz>
- <20170503160751.1634-3-pvorel@suse.cz>
- <20170504164136.46444e27@linux-v3j5>
-Message-ID: <20170504195152.fuflgxom4vqjlbwg@dell5510>
+From: Hoang Nguyen <the_hoang0709@yahoo.com>
+Date: Fri, 5 May 2017 03:11:06 +0000 (UTC)
+Subject: [LTP] [PATCH] setpriority01: Fix failure on read-only machine
+In-Reply-To: <e624587a-7440-0df2-2884-c30b045f37ca@oracle.com>
+References: <1491727085-3873-1-git-send-email-the_hoang0709@yahoo.com>
+ <1491727085-3873-2-git-send-email-the_hoang0709@yahoo.com>
+ <e624587a-7440-0df2-2884-c30b045f37ca@oracle.com>
+Message-ID: <1894056224.3391041.1493953866962@mail.yahoo.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi Richard,
-
-> > +	struct in_addr mask;
-> > +
-> > +	memset(&mask, 0, sizeof(mask));
-
-> FYI for these memsets you could use 'struct foo bar = { 0 }' instead. Although
-> it generates warnings on older compilers if the struct starts with another
-> composite data type.
-
-Right, I used it for struct in_addr and in6_addr. Not used it for struct msg as it
-contains another struct (even it does not produce a warning when compiled with
---std=gnu89).
-
-> > +	struct {
-> > +		struct nlmsghdr nlhdr;
-> > +		struct ifaddrmsg addrmsg;
-> > +	} msg;
+Hi Alexey
+I've realized that tst_brk did not exist immediately and it makes the return value become 36, while we need 32. cleanup() does not need to run in this case.
 
 
+root@mx6q:~# ./setpriority01
 
-> > +	msg.nlhdr.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifaddrmsg));
-> > +	msg.nlhdr.nlmsg_flags = NLM_F_REQUEST | NLM_F_ROOT;
-> > +	msg.nlhdr.nlmsg_type = RTM_GETADDR;
-> > +	msg.addrmsg.ifa_family = family;
-> > +
-> > +	send(sock, &msg, msg.nlhdr.nlmsg_len, 0);
-> > +	len = recv(sock, buf, sizeof(buf), 0);
-> > +	retmsg = (struct nlmsghdr *)buf;
+tst_test.c:847: INFO: Timeout per run is 0h 05m 00s
 
-> No error checking? I suppose it is unlikely to fail, but it can't hurt.
-IMHO NLMSG_OK RTA_NEXT macros do some sort of checks [1], [2]. Sample code [3] checks for
-more, but that's IMHO irrelevant.
+setpriority01.c:120: CONF: /etc/passwd is not accessible
 
-> > +
-> > +	while NLMSG_OK(retmsg, len) {
-> > +		struct ifaddrmsg *retaddr;
-> > +		struct rtattr *retrta;
-> > +		char pradd[128];
-> > +		int attlen;
-> > +
-> > +		retaddr = (struct ifaddrmsg *)NLMSG_DATA(retmsg);
-> > +		retrta = (struct rtattr *)IFA_RTA(retaddr);
-> > +		attlen = IFA_PAYLOAD(retmsg);
-> > +
-> > +		while RTA_OK(retrta, attlen) {
-> > +			if (retrta->rta_type == IFA_ADDRESS) {
-> > +				inet_ntop(family, RTA_DATA(retrta), pradd, sizeof(pradd));
-> > +				if (!strcmp(pradd, ip_str))
-> > +					return retaddr->ifa_prefixlen;
-> > +			}
-> > +			retrta = RTA_NEXT(retrta, attlen);
-> > +
-> > +		}
-> > +		retmsg = NLMSG_NEXT(retmsg, len);
-> > +	}
-> > +
-> > +	return -1;
-> > +}
-> > +
+userdel: user 'ltp_setpriority01' does not exist
 
-> Thank you,
-> Richard.
-Thanks for your comments and time!
-Petr
+setpriority01.c:133: WARN: 'userdel -r ltp_setpriority01' failed: ENOENT
 
+ 
 
-[1] http://man7.org/linux/man-pages/man3/netlink.3.html
-[2] http://man7.org/linux/man-pages/man3/rtnetlink.3.html
-[3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/samples/bpf/bpf_load.c?id=refs/tags/v4.11#n535
+Summary:
+
+passed   0
+
+failed   0
+
+skipped  0
+
+warnings 1
+
+root@mx6q:~# echo $?
+
+36
+
+Could you please to check it again?
+Thanks and regards,
+Hoang
+
+ 
+ 
+  On Tue, Apr 11, 2017 at 16:46, Alexey Kodanev<alexey.kodanev@oracle.com> wrote:   Hi,
+On 09.04.2017 11:38, the_hoang0709@yahoo.com wrote:
+> Return 32 if /etc/passwd is read-only.
+> Fixes: #137
+> See also: #88
+
+Applied both patches, thanks! Modified the last one a little bit:
+added __GNU_SOURCE foreaccess() and renamed tst_brkm() to
+tst_brk() as the test converted to newer LTP API.
+
+Thanks,
+Alexey
+
+  
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170505/739f273c/attachment.html>
