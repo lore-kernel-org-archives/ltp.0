@@ -1,54 +1,44 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri,  5 May 2017 13:44:32 +0300
-Subject: [LTP] [PATCH] setpriority01: check in cleanup that user was created
-In-Reply-To: <1894056224.3391041.1493953866962@mail.yahoo.com>
-References: <1894056224.3391041.1493953866962@mail.yahoo.com>
-Message-ID: <1493981072-23999-1-git-send-email-alexey.kodanev@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 5 May 2017 14:55:39 +0200
+Subject: [LTP] [RFC] [PATCH] syscalls/move_pages12: Two fixes.
+In-Reply-To: <959115821.7379621.1493924279254.JavaMail.zimbra@redhat.com>
+References: <20170503124233.18585-1-chrubis@suse.cz>
+ <959115821.7379621.1493924279254.JavaMail.zimbra@redhat.com>
+Message-ID: <20170505125539.GC16729@rei.suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
+Hi!
+> > * Do not multiply free ram with 1024
+> > 
+> >   - Since we get overflow even on fairly modest
+> >     machine with a few GB of RAM and the test
+> >     will always report "Not enough RAM".
+> 
+> This is obviously ok.
 
-Could you try this patch?
+I've pushed this part.
 
- .../kernel/syscalls/setpriority/setpriority01.c    |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
+> > 
+> > * Drop caches before the test
+> > 
+> >   - Otherwise the move_pages() syscalls may
+> >     fail with ENOMEM.
+> > 
+> 
+> How about we try to allocate/touch couple MB worth of pages
+> on node, we are going to move to (alloc_pages_on_node())?
+> If we can't allocate, exit with TCONF.
+> 
+> Otherwise we free those pages just before move_pages().
+> Wouldn't that give us better guarantee, there are some
+> free pages on target node?
 
-diff --git a/testcases/kernel/syscalls/setpriority/setpriority01.c b/testcases/kernel/syscalls/setpriority/setpriority01.c
-index 70e8264..df02bce 100644
---- a/testcases/kernel/syscalls/setpriority/setpriority01.c
-+++ b/testcases/kernel/syscalls/setpriority/setpriority01.c
-@@ -31,7 +31,7 @@
- #include "tst_test.h"
- 
- static const char *username = "ltp_setpriority01";
--static int pid, uid;
-+static int pid, uid, user_added;
- 
- static struct tcase {
- 	int which;
-@@ -120,6 +120,7 @@ static void setup(void)
- 		tst_brk(TCONF, "/etc/passwd is not accessible");
- 
- 	tst_run_cmd(cmd_useradd, NULL, NULL, 0);
-+	user_added = 1;
- 
- 	ltpuser = SAFE_GETPWNAM(username);
- 	uid = ltpuser->pw_uid;
-@@ -127,6 +128,9 @@ static void setup(void)
- 
- static void cleanup(void)
- {
-+	if (!user_added)
-+		return;
-+
- 	const char *const cmd_userdel[] = {"userdel", "-r", username, NULL};
- 
- 	if (tst_run_cmd(cmd_userdel, NULL, NULL, 1))
+Sounds reasonable, I will look into this.
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
