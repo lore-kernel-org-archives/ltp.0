@@ -1,60 +1,54 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 5 May 2017 11:34:12 +0200
-Subject: [LTP] [PATCH] Fix getcwd03 testcase by zeroing target buffer
- for readlink()
-In-Reply-To: <20170504182346.GA4959@ls3530.fritz.box>
-References: <20170504182346.GA4959@ls3530.fritz.box>
-Message-ID: <20170505093412.GB16729@rei.suse.de>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri,  5 May 2017 13:44:32 +0300
+Subject: [LTP] [PATCH] setpriority01: check in cleanup that user was created
+In-Reply-To: <1894056224.3391041.1493953866962@mail.yahoo.com>
+References: <1894056224.3391041.1493953866962@mail.yahoo.com>
+Message-ID: <1493981072-23999-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> According to the man(2) page of readlink(), a null byte is not appended to the
-> target buffer. So applications need to make sure that the target buffer is
-> zero-initialized, otherwise random bytes at the end of the returned string may
-> exist. 
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
 
-Good catch.
+Could you try this patch?
 
-> This patch zero-initializes the on-stack char array "link" and thus fixes the
-> testcase failure of getcwd03 on the hppa/parisc architecture (and maybe others).
+ .../kernel/syscalls/setpriority/setpriority01.c    |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
 
-Can we use the return value form the readlink instead?
-
-	r = SAFE_READLINK(.., buf, sizeof(buf)-1);
-	buf[r] = '\0';
-
-The SAFE_READLINK() does catch the case where readlink() returns -1 and
-passing size decreased by one should handle the corner case where the
-path is truncated and return value is the size of the buffer we passed
-to the readlink() call.
-
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> 
-> --
->  testcases/kernel/syscalls/getcwd/getcwd03.c |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> 
-> diff --git a/testcases/kernel/syscalls/getcwd/getcwd03.c b/testcases/kernel/syscalls/getcwd/getcwd03.c
-> index 4f8f872cf..ec1cacea9 100644
-> --- a/testcases/kernel/syscalls/getcwd/getcwd03.c
-> +++ b/testcases/kernel/syscalls/getcwd/getcwd03.c
-> @@ -74,6 +74,7 @@ static void verify_getcwd(void)
->  	}
->  
->  	SAFE_CHDIR("..");
-> +	memset(link, 0, sizeof(link));
->  	SAFE_READLINK(dir_link, link, sizeof(link));
->  
->  	if (strcmp(link, SAFE_BASENAME(res1))) {
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/testcases/kernel/syscalls/setpriority/setpriority01.c b/testcases/kernel/syscalls/setpriority/setpriority01.c
+index 70e8264..df02bce 100644
+--- a/testcases/kernel/syscalls/setpriority/setpriority01.c
++++ b/testcases/kernel/syscalls/setpriority/setpriority01.c
+@@ -31,7 +31,7 @@
+ #include "tst_test.h"
+ 
+ static const char *username = "ltp_setpriority01";
+-static int pid, uid;
++static int pid, uid, user_added;
+ 
+ static struct tcase {
+ 	int which;
+@@ -120,6 +120,7 @@ static void setup(void)
+ 		tst_brk(TCONF, "/etc/passwd is not accessible");
+ 
+ 	tst_run_cmd(cmd_useradd, NULL, NULL, 0);
++	user_added = 1;
+ 
+ 	ltpuser = SAFE_GETPWNAM(username);
+ 	uid = ltpuser->pw_uid;
+@@ -127,6 +128,9 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
++	if (!user_added)
++		return;
++
+ 	const char *const cmd_userdel[] = {"userdel", "-r", username, NULL};
+ 
+ 	if (tst_run_cmd(cmd_userdel, NULL, NULL, 1))
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
