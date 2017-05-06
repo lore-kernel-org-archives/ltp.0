@@ -1,84 +1,96 @@
-From: Hoang Nguyen <the_hoang0709@yahoo.com>
-Date: Sat, 6 May 2017 03:14:46 +0000 (UTC)
-Subject: [LTP] [PATCH] setpriority01: check in cleanup that user was
- created
-In-Reply-To: <1493981072-23999-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1894056224.3391041.1493953866962@mail.yahoo.com>
- <1493981072-23999-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1526561217.4364992.1494040486979@mail.yahoo.com>
+From: Helge Deller <deller@gmx.de>
+Date: Sat, 6 May 2017 09:00:42 +0200
+Subject: [LTP] [PATCH] Fix getcwd03 testcase by zeroing target buffer
+ for readlink()
+In-Reply-To: <20170505093412.GB16729@rei.suse.de>
+References: <20170504182346.GA4959@ls3530.fritz.box>
+ <20170505093412.GB16729@rei.suse.de>
+Message-ID: <20170506070042.GA30720@ls3530.fritz.box>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
-Sorry I tried on a remote machine yesterday and forget to get $? value, but I guess it already worked. Could you help to push it? I'll ping you if I found any issues on Monday.
-Many thanks,
-Hoang
+* Cyril Hrubis <chrubis@suse.cz>:
+> Hi!
+> > According to the man(2) page of readlink(), a null byte is not appended to the
+> > target buffer. So applications need to make sure that the target buffer is
+> > zero-initialized, otherwise random bytes at the end of the returned string may
+> > exist. 
+> 
+> Good catch.
+> 
+> > This patch zero-initializes the on-stack char array "link" and thus fixes the
+> > testcase failure of getcwd03 on the hppa/parisc architecture (and maybe others).
+> 
+> Can we use the return value form the readlink instead?
+> 
+> 	r = SAFE_READLINK(.., buf, sizeof(buf)-1);
+> 	buf[r] = '\0';
 
-root@mx6q:~# ./setpriority01
+Yes, that's possible.
+But we have in total three testcase which exhibit the same problem:
 
-tst_test.c:847: INFO: Timeout per run is 0h 05m 00s
+testcases/kernel/syscalls/openat/openat03.c:    SAFE_READLINK(cleanup, path, tmp, PATH_MAX);
+testcases/kernel/syscalls/getcwd/getcwd03.c:    SAFE_READLINK(dir_link, link, sizeof(link));
+testcases/kernel/syscalls/open/open14.c:        SAFE_READLINK(cleanup, path, tmp, PATH_MAX);
 
-setpriority01.c:120: CONF: /etc/passwd is not accessible
+All of those use a temporary un-initialized buffer on the stack, so all
+would need this fix. On the hppa architecture I found those testcases
+failing randomly.
 
- 
+> The SAFE_READLINK() does catch the case where readlink() returns -1 and
+> passing size decreased by one should handle the corner case where the
+> path is truncated and return value is the size of the buffer we passed
+> to the readlink() call.
 
-Summary:
+This still doesn't zero-terminate the buffer (which is on stack).
 
-passed   0
+Instead I'd propose the patch below. It always zero-terminates the
+buffer and as such we would handle newly added testcases in future which
+will probably miss this readlink behaviour too.
 
-failed   0
+Helge
 
-skipped  0
+----------------
 
-warnings 0
-Sent from Yahoo Mail on Android 
+[PATCH] SAFE_READLINK() should return zero-terminated target buffer
+
+According to the man(2) page of readlink(), a null byte is not appended
+to the target buffer. So applications need to make sure that the target
+buffer is zero-initialized, otherwise random bytes at the end of the
+returned string may exist.
+
+Currently all users of SAFE_READLINK() get it wrong. This include the
+openat03, getcwd03 and open14 testcases which pass a temporary,
+un-initialized on-stack buffer to readlink().
+
+This patch fixes SAFE_READLINK to always return a zero-terminated string
+and thus fixes the the failure of getcwd03 on the hppa/parisc
+architecture (and probably others).
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index bffc5a17a..1267b0098 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -408,9 +408,17 @@ ssize_t safe_readlink(const char *file, const int lineno,
+ 	rval = readlink(path, buf, bufsize);
  
-  On Fri, May 5, 2017 at 17:38, Alexey Kodanev<alexey.kodanev@oracle.com> wrote:   Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
-
-Could you try this patch?
-
- .../kernel/syscalls/setpriority/setpriority01.c    |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/setpriority/setpriority01.c b/testcases/kernel/syscalls/setpriority/setpriority01.c
-index 70e8264..df02bce 100644
---- a/testcases/kernel/syscalls/setpriority/setpriority01.c
-+++ b/testcases/kernel/syscalls/setpriority/setpriority01.c
-@@ -31,7 +31,7 @@
- #include "tst_test.h"
+ 	if (rval == -1) {
++		buf[0] = 0; /* clear buffer on error */
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn,
+ 			 "%s:%d: readlink(%s,%p,%zu) failed",
+ 			 file, lineno, path, buf, bufsize);
++	} else {
++		/* readlink does not append a null byte to the buffer.
++		 * Add it now. */
++		if ((size_t) rval < bufsize)
++			buf[rval] = 0;
++		else
++			buf[bufsize-1] = 0;
+ 	}
  
- static const char *username = "ltp_setpriority01";
--static int pid, uid;
-+static int pid, uid, user_added;
- 
- static struct tcase {
-     int which;
-@@ -120,6 +120,7 @@ static void setup(void)
-         tst_brk(TCONF, "/etc/passwd is not accessible");
- 
-     tst_run_cmd(cmd_useradd, NULL, NULL, 0);
-+    user_added = 1;
- 
-     ltpuser = SAFE_GETPWNAM(username);
-     uid = ltpuser->pw_uid;
-@@ -127,6 +128,9 @@ static void setup(void)
- 
- static void cleanup(void)
- {
-+    if (!user_added)
-+        return;
-+
-     const char *const cmd_userdel[] = {"userdel", "-r", username, NULL};
- 
-     if (tst_run_cmd(cmd_userdel, NULL, NULL, 1))
--- 
-1.7.1
-
-  
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170506/e52a28e6/attachment-0001.html>
+ 	return rval;
