@@ -1,41 +1,93 @@
-From: Helge Deller <deller@gmx.de>
-Date: Sat, 6 May 2017 10:52:06 +0200
-Subject: [LTP] [PATCH] Add terminating NUL after calling readlink()
-Message-ID: <20170506085206.GA3058@ls3530.fritz.box>
+From: Hoang Nguyen <the_hoang0709@yahoo.com>
+Date: Mon, 8 May 2017 02:44:30 +0000 (UTC)
+Subject: [LTP] [PATCH] setpriority01: check in cleanup that user was
+ created
+In-Reply-To: <1526561217.4364992.1494040486979@mail.yahoo.com>
+References: <1894056224.3391041.1493953866962@mail.yahoo.com>
+ <1493981072-23999-1-git-send-email-alexey.kodanev@oracle.com>
+ <1526561217.4364992.1494040486979@mail.yahoo.com>
+Message-ID: <260726087.5486521.1494211470403@mail.yahoo.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-readlink() does not append a NUL byte to the target buffer. Fix it in
-the pidns03 and fsstress testcases to avoid wrong test results.
+Hi again,
+The return value is already 32 as expected. I think we can push the patch.
+Thanks and regards,
+Hoang.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/testcases/kernel/containers/pidns/pidns03.c b/testcases/kernel/containers/pidns/pidns03.c
-index c4dca66d0..553c65aad 100644
---- a/testcases/kernel/containers/pidns/pidns03.c
-+++ b/testcases/kernel/containers/pidns/pidns03.c
-@@ -63,7 +63,7 @@ int child_func(void *arg)
- 	}
  
- 	/* self is symlink to directory named after current pid number */
--	if (readlink(PROCDIR"/self", buf, sizeof(buf)) == -1) {
-+	if (SAFE_READLINK(NULL, PROCDIR"/self", buf, sizeof(buf)) == -1) {
- 		perror("readlink");
- 		umount(PROCDIR);
- 		return 1;
-diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
-index 629bcf4d1..bfdffd52b 100644
---- a/testcases/kernel/fs/fsstress/fsstress.c
-+++ b/testcases/kernel/fs/fsstress/fsstress.c
-@@ -1143,6 +1143,8 @@ int readlink_path(pathname_t * name, char *lbuf, size_t lbufsiz)
- 	int rval;
+  On Sat, May 6, 2017 at 10:14, Hoang Nguyen<the_hoang0709@yahoo.com> wrote:   Hi Alexey,
+Sorry I tried on a remote machine yesterday and forget to get $? value, but I guess it already worked. Could you help to push it? I'll ping you if I found any issues on Monday.
+Many thanks,
+Hoang
+
+root@mx6q:~# ./setpriority01
+
+tst_test.c:847: INFO: Timeout per run is 0h 05m 00s
+
+setpriority01.c:120: CONF: /etc/passwd is not accessible
+
+ 
+
+Summary:
+
+passed   0
+
+failed   0
+
+skipped  0
+
+warnings 0
+Sent from Yahoo Mail on Android 
  
- 	rval = readlink(name->path, lbuf, lbufsiz);
-+	if (rval >= 0)
-+		lbuf[rval] = 0; /* add terminating NUL */
- 	if (rval >= 0 || errno != ENAMETOOLONG)
- 		return rval;
- 	separate_pathname(name, buf, &newname);
+  On Fri, May 5, 2017 at 17:38, Alexey Kodanev<alexey.kodanev@oracle.com> wrote:   Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+
+Could you try this patch?
+
+ .../kernel/syscalls/setpriority/setpriority01.c    |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/setpriority/setpriority01.c b/testcases/kernel/syscalls/setpriority/setpriority01.c
+index 70e8264..df02bce 100644
+--- a/testcases/kernel/syscalls/setpriority/setpriority01.c
++++ b/testcases/kernel/syscalls/setpriority/setpriority01.c
+@@ -31,7 +31,7 @@
+ #include "tst_test.h"
+ 
+ static const char *username = "ltp_setpriority01";
+-static int pid, uid;
++static int pid, uid, user_added;
+ 
+ static struct tcase {
+     int which;
+@@ -120,6 +120,7 @@ static void setup(void)
+         tst_brk(TCONF, "/etc/passwd is not accessible");
+ 
+     tst_run_cmd(cmd_useradd, NULL, NULL, 0);
++    user_added = 1;
+ 
+     ltpuser = SAFE_GETPWNAM(username);
+     uid = ltpuser->pw_uid;
+@@ -127,6 +128,9 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
++    if (!user_added)
++        return;
++
+     const char *const cmd_userdel[] = {"userdel", "-r", username, NULL};
+ 
+     if (tst_run_cmd(cmd_userdel, NULL, NULL, 1))
+-- 
+1.7.1
+
+  
+  
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170508/5991f366/attachment.html>
