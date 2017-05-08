@@ -1,93 +1,38 @@
-From: Hoang Nguyen <the_hoang0709@yahoo.com>
-Date: Mon, 8 May 2017 02:44:30 +0000 (UTC)
-Subject: [LTP] [PATCH] setpriority01: check in cleanup that user was
- created
-In-Reply-To: <1526561217.4364992.1494040486979@mail.yahoo.com>
-References: <1894056224.3391041.1493953866962@mail.yahoo.com>
- <1493981072-23999-1-git-send-email-alexey.kodanev@oracle.com>
- <1526561217.4364992.1494040486979@mail.yahoo.com>
-Message-ID: <260726087.5486521.1494211470403@mail.yahoo.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon,  8 May 2017 13:42:47 +0800
+Subject: [LTP] [PATCH] move_pages12: fix Warning on system which not support
+	hugepage
+Message-ID: <20170508054247.994-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi again,
-The return value is already 32 as expected. I think we can push the patch.
-Thanks and regards,
-Hoang.
+WARNING:
+ tst_test.c:847: INFO: Timeout per run is 0h 05m 00s
+ move_pages_support.c:407: CONF: at least 2 allowed NUMA nodes are required
+ safe_file_ops.c:301: WARN: Failed to close FILE '/proc/sys/vm/nr_hugepages' at move_pages12.c:159: EOPNOTSUPP
 
-
- 
-  On Sat, May 6, 2017 at 10:14, Hoang Nguyen<the_hoang0709@yahoo.com> wrote:   Hi Alexey,
-Sorry I tried on a remote machine yesterday and forget to get $? value, but I guess it already worked. Could you help to push it? I'll ping you if I found any issues on Monday.
-Many thanks,
-Hoang
-
-root@mx6q:~# ./setpriority01
-
-tst_test.c:847: INFO: Timeout per run is 0h 05m 00s
-
-setpriority01.c:120: CONF: /etc/passwd is not accessible
-
- 
-
-Summary:
-
-passed   0
-
-failed   0
-
-skipped  0
-
-warnings 0
-Sent from Yahoo Mail on Android 
- 
-  On Fri, May 5, 2017 at 17:38, Alexey Kodanev<alexey.kodanev@oracle.com> wrote:   Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Li Wang <liwang@redhat.com>
 ---
+ testcases/kernel/syscalls/move_pages/move_pages12.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Could you try this patch?
-
- .../kernel/syscalls/setpriority/setpriority01.c    |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/setpriority/setpriority01.c b/testcases/kernel/syscalls/setpriority/setpriority01.c
-index 70e8264..df02bce 100644
---- a/testcases/kernel/syscalls/setpriority/setpriority01.c
-+++ b/testcases/kernel/syscalls/setpriority/setpriority01.c
-@@ -31,7 +31,7 @@
- #include "tst_test.h"
- 
- static const char *username = "ltp_setpriority01";
--static int pid, uid;
-+static int pid, uid, user_added;
- 
- static struct tcase {
-     int which;
-@@ -120,6 +120,7 @@ static void setup(void)
-         tst_brk(TCONF, "/etc/passwd is not accessible");
- 
-     tst_run_cmd(cmd_useradd, NULL, NULL, 0);
-+    user_added = 1;
- 
-     ltpuser = SAFE_GETPWNAM(username);
-     uid = ltpuser->pw_uid;
-@@ -127,6 +128,9 @@ static void setup(void)
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages12.c b/testcases/kernel/syscalls/move_pages/move_pages12.c
+index de00346..f93311f 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages12.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages12.c
+@@ -158,7 +158,8 @@ static void setup(void)
  
  static void cleanup(void)
  {
-+    if (!user_added)
-+        return;
-+
-     const char *const cmd_userdel[] = {"userdel", "-r", username, NULL};
+-	SAFE_FILE_PRINTF(PATH_NR_HUGEPAGES, "%ld", orig_hugepages);
++	if (!access(PATH_HUGEPAGES, F_OK))
++		SAFE_FILE_PRINTF(PATH_NR_HUGEPAGES, "%ld", orig_hugepages);
+ }
  
-     if (tst_run_cmd(cmd_userdel, NULL, NULL, 1))
+ static struct tst_test test = {
 -- 
-1.7.1
+2.9.3
 
-  
-  
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170508/5991f366/attachment.html>
