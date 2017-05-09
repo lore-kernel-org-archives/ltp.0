@@ -1,70 +1,71 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 9 May 2017 11:31:01 +0200
-Subject: [LTP] [PATCH] Add terminating NUL after calling readlink()
-In-Reply-To: <20170506085206.GA3058@ls3530.fritz.box>
-References: <20170506085206.GA3058@ls3530.fritz.box>
-Message-ID: <20170509093101.GB4150@rei.suse.de>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Tue, 9 May 2017 18:05:36 +0800
+Subject: [LTP] [PATCH 1/2] SAFE_MACROS: Add SAFE_UNAME()
+Message-ID: <1494324337-10706-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> diff --git a/testcases/kernel/containers/pidns/pidns03.c b/testcases/kernel/containers/pidns/pidns03.c
-> index c4dca66d0..553c65aad 100644
-> --- a/testcases/kernel/containers/pidns/pidns03.c
-> +++ b/testcases/kernel/containers/pidns/pidns03.c
-> @@ -63,7 +63,7 @@ int child_func(void *arg)
->  	}
->  
->  	/* self is symlink to directory named after current pid number */
-> -	if (readlink(PROCDIR"/self", buf, sizeof(buf)) == -1) {
-> +	if (SAFE_READLINK(NULL, PROCDIR"/self", buf, sizeof(buf)) == -1) {
->  		perror("readlink");
->  		umount(PROCDIR);
->  		return 1;
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+---
+ include/tst_safe_macros.h |  4 ++++
+ lib/safe_macros.c         | 15 +++++++++++++++
+ 2 files changed, 19 insertions(+)
 
-SAFE_READLINK() will newer return -1 here, it will abort the test with
-TBROK as a exit value.
-
-If we want to use it here it should look as:
-
-static void child_cleanup(void)
-{
-	umount(PROCDIR);
-}
-
-...
-
-	SAFE_READLINK(child_cleanup, PROCDIR"/self", buf, sizeof(buf));
-
-	umount(PROC_DIR);
-
-...
-
-I also wonder if we have to umount the "/proc" in the child or if the
-kernel will umount it automatically once the child exits, which would
-allow us to simplify the child function...
-
-> diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
-> index 629bcf4d1..bfdffd52b 100644
-> --- a/testcases/kernel/fs/fsstress/fsstress.c
-> +++ b/testcases/kernel/fs/fsstress/fsstress.c
-> @@ -1143,6 +1143,8 @@ int readlink_path(pathname_t * name, char *lbuf, size_t lbufsiz)
->  	int rval;
->  
->  	rval = readlink(name->path, lbuf, lbufsiz);
-> +	if (rval >= 0)
-> +		lbuf[rval] = 0; /* add terminating NUL */
-
-Shouldn't we check here that the rval < lbufsiz? Or pass lbufsiz - 1 to
-the readlink() call?
-
->  	if (rval >= 0 || errno != ENAMETOOLONG)
->  		return rval;
->  	separate_pathname(name, buf, &newname);
-
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index a25a4f0..c6530e0 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -24,6 +24,7 @@
+ #include <sys/time.h>
+ #include <sys/resource.h>
+ #include <sys/stat.h>
++#include <sys/utsname.h>
+ #include <fcntl.h>
+ #include <libgen.h>
+ #include <signal.h>
+@@ -430,4 +431,7 @@ int safe_removexattr(const char *file, const int lineno, const char *path,
+ int safe_fsync(const char *file, const int lineno, int fd);
+ #define SAFE_FSYNC(fd) safe_fsync(__FILE__, __LINE__, (fd))
+ 
++int safe_uname(const char *file, const int lineno, struct utsname *buf);
++#define SAFE_UNAME(buf) safe_uname(__FILE__, __LINE__, (buf))
++
+ #endif /* SAFE_MACROS_H__ */
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index bffc5a1..aec0195 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -6,6 +6,7 @@
+ #include <sys/wait.h>
+ #include <sys/mount.h>
+ #include <sys/xattr.h>
++#include <sys/utsname.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <libgen.h>
+@@ -888,3 +889,17 @@ int safe_fsync(const char *file, const int lineno, int fd)
+ 
+ 	return rval;
+ }
++
++int safe_uname(const char *file, const int lineno, struct utsname *buf)
++{
++	int rval;
++
++	rval = uname(buf);
++
++	if (rval) {
++		tst_brkm(TBROK | TERRNO, NULL,
++			 "%s:%d: uname(%p) failed", file, lineno, buf);
++	}
++
++	return rval;
++}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.4.2
+
+
+
