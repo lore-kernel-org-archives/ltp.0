@@ -1,38 +1,32 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon,  8 May 2017 13:42:47 +0800
-Subject: [LTP] [PATCH] move_pages12: fix Warning on system which not support
-	hugepage
-Message-ID: <20170508054247.994-1-liwang@redhat.com>
+From: Liu, Wenlong <liuwl.fnst@cn.fujitsu.com>
+Date: Tue, 9 May 2017 01:27:38 +0000
+Subject: [LTP] About the testcase "dma_thread_diotest" of LTP
+Message-ID: <F40213214988A94A9DDBFC5F7146FC5E0121D2EC1F@G08CNEXMBPEKD01.g08.fujitsu.local>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-WARNING:
- tst_test.c:847: INFO: Timeout per run is 0h 05m 00s
- move_pages_support.c:407: CONF: at least 2 allowed NUMA nodes are required
- safe_file_ops.c:301: WARN: Failed to close FILE '/proc/sys/vm/nr_hugepages' at move_pages12.c:159: EOPNOTSUPP
+Hi Ping, thanks.
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/syscalls/move_pages/move_pages12.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> Hello all,
+>
+> I am doing the LTP test for aarch64 platform.
+> But there is something troubled me recently, which is mainly about the dma_thread_diotest.
+> Those testcases were failed on the target board(Board: Renesas M3 Starter Kit Pro), which has 2 CPUs.
+>
+> I have seen the description of this testcase, and someone told me that:
+> This test suite was created by this LTP commit:https://github.com/linux-test-project/ltp/commit/52de6e2616951ddafc760138f99a1195295bbfdc. 
+> Once there was already a discussion in kernel mm community in 2008, please see this url:http://thread.gmane.org/gmane.linux.file-systems/27358.
+> But unfortunately this bug was not fixed and it still exists in the latest upstream kernel. Some engineers from mm community think it's one whose fix would cause more troulbe than it's worth and MADV_DONTFORK is a good enough workaround. I will follow up this discussion to try to reach a conclusion whether it's worth to fix this issue.
+>
+> But I wonder whether this bug have been fixed and what I can do except‘don't do this test’.
+> Looking for your reply at your convenience.
+> Thanks in advance.
 
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages12.c b/testcases/kernel/syscalls/move_pages/move_pages12.c
-index de00346..f93311f 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages12.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages12.c
-@@ -158,7 +158,8 @@ static void setup(void)
- 
- static void cleanup(void)
- {
--	SAFE_FILE_PRINTF(PATH_NR_HUGEPAGES, "%ld", orig_hugepages);
-+	if (!access(PATH_HUGEPAGES, F_OK))
-+		SAFE_FILE_PRINTF(PATH_NR_HUGEPAGES, "%ld", orig_hugepages);
- }
- 
- static struct tst_test test = {
--- 
-2.9.3
+B.R.
+Liu
+
+
 
