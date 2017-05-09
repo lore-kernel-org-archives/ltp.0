@@ -1,81 +1,50 @@
 From: Helge Deller <deller@gmx.de>
-Date: Tue, 9 May 2017 22:36:09 +0200
-Subject: [LTP] [PATCH] Add terminating NUL after calling readlink()
-In-Reply-To: <20170509093101.GB4150@rei.suse.de>
-References: <20170506085206.GA3058@ls3530.fritz.box>
- <20170509093101.GB4150@rei.suse.de>
-Message-ID: <fac271c7-6b76-876f-1d6e-e6474dc2ff9c@gmx.de>
+Date: Tue, 9 May 2017 23:03:26 +0200
+Subject: [LTP] [PATCH v2] SAFE_READLINK() should return zero-terminated
+ target buffer
+Message-ID: <20170509210326.GA18553@ls3530.fritz.box>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 09.05.2017 11:31, Cyril Hrubis wrote:
-> Hi!
->> diff --git a/testcases/kernel/containers/pidns/pidns03.c b/testcases/kernel/containers/pidns/pidns03.c
->> index c4dca66d0..553c65aad 100644
->> --- a/testcases/kernel/containers/pidns/pidns03.c
->> +++ b/testcases/kernel/containers/pidns/pidns03.c
->> @@ -63,7 +63,7 @@ int child_func(void *arg)
->>  	}
->>  
->>  	/* self is symlink to directory named after current pid number */
->> -	if (readlink(PROCDIR"/self", buf, sizeof(buf)) == -1) {
->> +	if (SAFE_READLINK(NULL, PROCDIR"/self", buf, sizeof(buf)) == -1) {
->>  		perror("readlink");
->>  		umount(PROCDIR);
->>  		return 1;
-> 
-> SAFE_READLINK() will newer return -1 here, it will abort the test with
-> TBROK as a exit value.
+According to the man(2) page of readlink(), a null byte is not appended
+to the target buffer. So applications need to make sure that the target
+buffer is zero-initialized, otherwise random bytes at the end of the
+returned string may exist.
 
-Ah, right.
+Currently all users of SAFE_READLINK() get it wrong. This include the
+openat03, getcwd03 and open14 testcases which pass a temporary,
+un-initialized on-stack buffer to readlink().
+
+This patch fixes SAFE_READLINK to always return a zero-terminated string
+and thus fixes the the failure of getcwd03 on the hppa/parisc
+architecture (and probably others).
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+--
+Changes in v2 patch:
+- dron't append NUL when tst_brkm() will be called later on.
+- changed setting NUL from 0 to '\0'
+
+
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index bffc5a1..a6b4ff7 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -411,6 +411,13 @@ ssize_t safe_readlink(const char *file, const int lineno,
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn,
+ 			 "%s:%d: readlink(%s,%p,%zu) failed",
+ 			 file, lineno, path, buf, bufsize);
++	} else {
++		/* readlink does not append a NUL byte to the buffer.
++		 * Add it now. */
++		if ((size_t) rval < bufsize)
++			buf[rval] = '\0';
++		else
++			buf[bufsize-1] = '\0';
+ 	}
  
-> ...
-> 
-> I also wonder if we have to umount the "/proc" in the child or if the
-> kernel will umount it automatically once the child exits,
-
-No, this doesn't happen.
-
-> which would
-> allow us to simplify the child function...
-
-It's probably best to stick with readlink() instead of SAFE_READLINK().
-Here is my new proposal, I'll send a full patch in a few moments:
- 
--       if (readlink(PROCDIR"/self", buf, sizeof(buf)) == -1) {
-+       r = readlink(PROCDIR"/self", buf, sizeof(buf)-1);
-+       if (r == -1) {
-                perror("readlink");
-                umount(PROCDIR);
-                return 1;
--       }
-+       } else
-+               buf[r] = '\0';
-
-
-
-
->> diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
->> index 629bcf4d1..bfdffd52b 100644
->> --- a/testcases/kernel/fs/fsstress/fsstress.c
->> +++ b/testcases/kernel/fs/fsstress/fsstress.c
->> @@ -1143,6 +1143,8 @@ int readlink_path(pathname_t * name, char *lbuf, size_t lbufsiz)
->>  	int rval;
->>  
->>  	rval = readlink(name->path, lbuf, lbufsiz);
->> +	if (rval >= 0)
->> +		lbuf[rval] = 0; /* add terminating NUL */
-> 
-> Shouldn't we check here that the rval < lbufsiz? Or pass lbufsiz - 1 to
-> the readlink() call?
-
-I like the latter, and will change adding the NUL to: 
-		buf[r] = '\0';
-(as suggested by Petr Vorel <pvorel@suse.cz>).
- 
-Will send new patch...
-Thanks,
-Helge
+ 	return rval;
