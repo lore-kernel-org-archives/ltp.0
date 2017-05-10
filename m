@@ -1,95 +1,54 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 10 May 2017 12:15:33 +0200
-Subject: [LTP] TWARN and "ltp-pan reported PASS"
-In-Reply-To: <20170510090428.GC29838@rei.suse.de>
-References: <20170509120935.q2v6dqhwmecy265w@dell5510>
- <20170510090428.GC29838@rei.suse.de>
-Message-ID: <20170510101533.zu7x642tzfn73u4v@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 10 May 2017 14:21:40 +0200
+Subject: [LTP] [RFC] [PATCH] move_pages12: Allocate and free hugepages
+ prior	the test
+In-Reply-To: <510505896.9544779.1494406598104.JavaMail.zimbra@redhat.com>
+References: <20170509140458.26343-1-chrubis@suse.cz>
+ <510505896.9544779.1494406598104.JavaMail.zimbra@redhat.com>
+Message-ID: <20170510122130.GD29838@rei.suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril!
-> Are you sure that ltp-pan actually passes the test return value? As far
-> as I can tell it actually increments the exit_stat variable on error
-> then does exit(exit_stat).
+Hi!
+> I'm still getting sporadic failures with 4.11 kernel. It's freshly
+> booted system, so I would expect fragmentation to be low:
+> 
+> # numactl -H; ./move_pages12 
+> available: 2 nodes (0-1)
+> node 0 cpus: 0 2 4 6 8 10 12 14 16 18 20 22
+> node 0 size: 31963 MB
+> node 0 free: 31600 MB
+> node 1 cpus: 1 3 5 7 9 11 13 15 17 19 21 23
+> node 1 size: 32251 MB
+> node 1 free: 31915 MB
+> node distances:
+> node   0   1 
+>   0:  10  20 
+>   1:  20  10
+> 
+> tst_test.c:847: INFO: Timeout per run is 0h 05m 00s
+> move_pages12.c:184: INFO: Free RAM 65040204 kB
+> move_pages12.c:139: INFO: Allocating and freeing 2 hugepages on node 0
+> move_pages12.c:139: INFO: Allocating and freeing 2 hugepages on node 1
+> nodes: 0 1
+> move_pages12.c:87: FAIL: move_pages failed: ENOMEM
 
-> So I would say that the only guarantee that you have is that non-zero
-> return value from ltp-pan means "everything went ok" and non-zero
-> "something went wrong".
+Hmm, reproduced here as well. One of the 100 runs failed for me as well.
 
-do_test() in shell testcases/network/multicast/mc_cmds/mc_cmds with TWARN:
-		tst_resm TWARN "'ip maddr show $(tst_iface)' failed," \
-			       " parsing 'ip maddr show'"
+I've looked at the code in mm/migrate.c but so far I could not spot a
+place where it could fail with ENOMEM (apart from very unlikely single
+page allocation which is used to store the parameters passed to the
+syscall).
 
-reports termination_id=4 => FAIL:
+If I comment out the memset() in the test main loop the failure does not
+seem to happen. So my guess is that the failure happens when we try to
+isolate a page that is in the process of teardown and we get the ENOMEM
+somewhere from the memory management internals and that it's OK to
+ignore this failure. But that is just a wild guess.
 
-$ /opt/ltp/testscripts/network.sh -m
-network_settings 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface
-network_settings 1 TINFO: set local addr 10.0.0.2/24
-network_settings 1 TINFO: set local addr fd00:1:1:1::2/64
-network_settings 1 TINFO: initialize 'rhost' 'ltp_ns_veth1' interface
-network_settings 1 TINFO: set remote addr 10.0.0.1/24
-network_settings 1 TINFO: set remote addr fd00:1:1:1::1/64
-network_settings 1 TINFO: wait for IPv6 DAD completion 1/5 sec
-<<<test_start>>>
-tag=mc_cmds stime=1494410089
-cmdline="mc_cmds"
-contacts=""
-analysis=exit
-<<<test_output>>>
-incrementing stop
-mc_cmds 1 TWARN: 'ip maddr show ltp_ns_veth2' failed,  parsing 'ip maddr show'
-mc_cmds 1 TINFO: Ping all-host-groups over specified interface
-ping: unknown iface 10.0.0.2
-mc_cmds 1 TINFO: Trying to ping with ltp_ns_veth2 with the -I option instead of IP address
-mc_cmds 1 TPASS: Test Successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=4 corefile=no
-cutime=3 cstime=1
-<<<test_end>>>
-ltp-pan reported FAIL
-
-Changing it into TINFO it returns termination_id=0 => PASS:
------
-diff --git testcases/network/multicast/mc_cmds/mc_cmds testcases/network/multicast/mc_cmds/mc_cmds
-index 8077b1f15..e66890019 100755
---- testcases/network/multicast/mc_cmds/mc_cmds
-+++ testcases/network/multicast/mc_cmds/mc_cmds
-@@ -51,7 +51,7 @@ do_test()
- 
-        ip maddr show $(tst_iface) | grep -q '224.0.0.1'
-        if [ $? -ne 0 ]; then
--               tst_resm TWARN "'ip maddr show $(tst_iface)' failed," \
-+               tst_resm TINFO "'ip maddr show $(tst_iface)' failed," \
-                               " parsing 'ip maddr show'"
-                ip maddr show | sed -ne "/\s$(tst_iface)/,/^[0-9]/p" | \
-                        grep -q 224.0.0.1 || \
------
-
-$ /opt/ltp/testscripts/network.sh -m
-<snip>
-mc_cmds 1 TINFO: Trying to ping with ltp_ns_veth2 with the -I option instead of IP address
-mc_cmds 1 TPASS: Test Successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=0 corefile=no
-cutime=2 cstime=1
-<<<test_end>>>
-ltp-pan reported PASS
------
-So I don't see any other reason than TWARN causing the exit value.
-
-> Frankly at this point I would rather kept the old test execution scripts
-> as they are and put more effort into the new execution framework.
-> Hopefully I will have a bit time to invest into it once we are done with
-> the release.
-I understand and agree with that. I'll be also glad when the old scripts will go away. I
-just wanted to consult what is the expected behaviour.
-
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
