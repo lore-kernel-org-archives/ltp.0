@@ -1,30 +1,31 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 11 May 2017 10:12:17 +0200
-Subject: [LTP] tst_atomic_add_return() implementation for sparc
-In-Reply-To: <20170511073312.kjcyveu7qlipxgbh@dell5510>
-References: <20170510162157.rqanvu46hfkvffpa@dell5510>
- <20170510192510.GA29900@rei.suse.de>
- <20170511073312.kjcyveu7qlipxgbh@dell5510>
-Message-ID: <20170511081217.GB306@rei.lan>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 11 May 2017 13:43:17 +0300
+Subject: [LTP] [PATCH] setpriority01: check in cleanup that user was
+ created
+In-Reply-To: <260726087.5486521.1494211470403@mail.yahoo.com>
+References: <1894056224.3391041.1493953866962@mail.yahoo.com>
+ <1493981072-23999-1-git-send-email-alexey.kodanev@oracle.com>
+ <1526561217.4364992.1494040486979@mail.yahoo.com>
+ <260726087.5486521.1494211470403@mail.yahoo.com>
+Message-ID: <62b8749b-5699-b11e-da3c-588c2949f4c4@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > 	int ret;
-> > 	__asm__ __volatile__("": : :"memory");
-> > 	ret = (counter = counter + 1);
-> >         __asm__ __volatile__("": : :"memory");
-> > 	return ret;
-> 
-> > Should work, but I do not have any sparc hardware for testing...
-> Thanks a lot! I'll try to find some sparc to test it :).
+Hi,
 
-There is a lib/newlib_tests/test09.c that is supposed to assert correct
-implementation of the atomic operation.
+On 05/08/2017 05:44 AM, Hoang Nguyen wrote:
+> Hi again,
+>
+> The return value is already 32 as expected. I think we can push the patch.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks, applied.
+
+Best regards,
+Alexey
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170511/dc9b68af/attachment.html>
