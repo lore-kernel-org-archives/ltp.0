@@ -1,16 +1,9 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 11 May 2017 08:50:49 -0400 (EDT)
-Subject: [LTP] [RFC] [PATCH] move_pages12: Allocate and free hugepages
- prior	the test
-In-Reply-To: <20170511122636.GA27575@rei.lan>
-References: <20170509140458.26343-1-chrubis@suse.cz>
- <510505896.9544779.1494406598104.JavaMail.zimbra@redhat.com>
- <20170510130125.GE29838@rei.suse.de>
- <1251960161.9665123.1494425698679.JavaMail.zimbra@redhat.com>
- <20170510150807.GF29838@rei.suse.de>
- <57874670.10114549.1494484804573.JavaMail.zimbra@redhat.com>
- <20170511122636.GA27575@rei.lan>
-Message-ID: <1977457874.10364325.1494507049706.JavaMail.zimbra@redhat.com>
+Date: Thu, 11 May 2017 11:54:45 -0400 (EDT)
+Subject: [LTP] [RFC] [PATCH] pselect01: Tune thresholds
+In-Reply-To: <20170505131855.32545-1-chrubis@suse.cz>
+References: <20170505131855.32545-1-chrubis@suse.cz>
+Message-ID: <2075581666.10581422.1494518085371.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,37 +13,16 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> Hi!
-> > > Well that is a few forks away after the failure, if the race window is
-> > > small enough we will never see the real value but maybe doing open() and
-> > > read() directly would show us different values.
-> > 
-> > For free/reserved, sure. But is the number of reserved huge pages on
-> > each node going to change over time?
-> 
-> Of course I was speaking about the number of currently free huge pages.
-> The pool limit will not change unless something from userspace writes to
-> the sysfs file...
-> 
-> > ---
-> > 
-> > I was running with 20+20 huge pages over night and it hasn't failed
-> > single time. So I'm thinking we allocate 3+3 or 4+4 to avoid any
-> > issues related to lazy/deffered updates.
-> 
-> But we have to lift the per node limits as well, right?
+> +static int compute_threshold(long long requested_us, unsigned int
+> iterations)
+> +{
+> +	unsigned int slack_per_run = MIN(100000, requested_us / 1000);
+> +
+> +	return (40 + slack_per_run) * iterations + 20000 / (iterations/200 + 1);
+> +}
 
-Sorry, what I meant by 'allocate' was configuring per node limits.
-I was using your patch as-is, with 2 huge pages allocated/touched
-on each node. 
+  requested_us = tst_timespec_to_us(t->tv) * t->iterations;
 
-> 
-> So what about lifting the per node limit to something as 20 and then try
-> to allocate 4 hugepages on each node prior the test?
+If slack_per_run is slack of all iterations, why is it multiplied
+again with number of iterations?
 
-per node limit 8 and allocate 4 hugepages on each? What worries
-me are architectures, where default huge page is very large
-(e.g. 512M on aarch64).
-
-Regards,
-Jan
