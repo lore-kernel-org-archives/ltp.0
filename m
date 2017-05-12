@@ -1,104 +1,86 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Fri, 12 May 2017 19:54:41 +0530
-Subject: [LTP] LTP: readahead02 failed
-Message-ID: <CA+G9fYvHus+AB1CD4AGxw3pOAKavO=gQ0W2zfPSZ-qkUac9U-w@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 12 May 2017 17:38:25 +0200
+Subject: [LTP] [RFC] [PATCH] pselect01: Tune thresholds
+In-Reply-To: <1049610106.10797216.1494574389728.JavaMail.zimbra@redhat.com>
+References: <20170505131855.32545-1-chrubis@suse.cz>
+ <2075581666.10581422.1494518085371.JavaMail.zimbra@redhat.com>
+ <20170512065131.GA24762@rei.lan>
+ <1541549049.10767477.1494573107488.JavaMail.zimbra@redhat.com>
+ <20170512071719.GB24762@rei.lan>
+ <1049610106.10797216.1494574389728.JavaMail.zimbra@redhat.com>
+Message-ID: <20170512153825.GC25149@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Team,
+Hi!
+> > > If it's per iteration, shouldn't this function be passed time per
+> > > iteration?
+> > > At the moment, it's time of all iterations:
+> > >   requested_us = tst_timespec_to_us(t->tv) * t->iterations;
+> > >   threshold = compute_threshold(requested_us, t->iterations);
+> > > 
+> > > Should it be ... ?
+> > >   threshold = compute_threshold(tst_timespec_to_us(t->tv), t->iterations);
+> > 
+> > Good catch, I will fix that, retest and send v2.
+> 
+> OK, if we agree, it's supposed to be time of single iteration,
+> isn't new function (in some cases) more strict than it used to be?
+> 
+> Before we had:
+>   threshold = requested_us / 100 + 200 * t->iterations;
+> which was 1% slack plus small number (200) that scales with iterations.
 
-readahead02 failed on HiKey board with below error message.
-1. Any minimal limitation of Buffers size or Cached size should have
-to pass this test case ?  if yes we would change test logic to detect
-and skip test run.
-2. The first FAIL message is not giving enough information (*) there
-is a room for improvement here.
-3.  strace output show Invalid argument for readahead()
+The slack has to be multiplied by the number of iterations. I did
+several measurements with the attached program and on x86 the mean seems
+to consist of constant offset that is somewhere between 50us and 250us
+and slack that does follow 0.1% of the sleep time.
 
-readahead(3, 0, 67108864)               = -1 EINVAL (Invalid argument)
-write(1, "readahead02    1  TFAIL  :  read"..., 100readahead02    1
-TFAIL  :  readahead02.c:86: unexpected failure - returned value = -1,
-expected: 0
-) = 100
+Here are measurements on otherwise idle AMD Phenom Quad-Core:
 
-The man page have explanation of EINVAL is
-EINVAL fd  does  not  refer  to a file type to which readahead() can be applied.
+min 112 max 301 median 154 mean 154.56 0.1% 0.10
+min 520 max 595 median 555 mean 555.37 0.1% 0.50
+min 1015 max 1126 median 1056 mean 1056.13 0.1% 1.00
+min 2014 max 2128 median 2056 mean 2056.89 0.1% 2.00
+min 3018 max 3219 median 3057 mean 3057.80 0.1% 3.00
+min 4008 max 4072 median 4057 mean 4056.28 0.1% 4.00
+min 10015 max 10275 median 10057 mean 10058.41 0.1% 10.00
+min 100010 max 100354 median 100111 mean 100153.25 0.1% 100.00
+min 500014 max 500702 median 500499 mean 500474.65 0.1% 500.00
+min 1000652 max 1001351 median 1001000 mean 1000999.24 0.1% 1000.00
 
-Test output:
------------------
-readahead02    0  TINFO  :  creating test file of size: 67108864
-readahead02    0  TINFO  :  read_testfile(0)
-readahead02    0  TINFO  :  read_testfile(1)
-readahead02    1  TFAIL  :  readahead02.c:86: unexpected failure -
-returned value = -1, expected: 0 (*)
-readahead02    0  TINFO  :  readahead calls made: 0
-readahead02    2  TPASS  :  offset is still at 0 as expected
-readahead02    0  TINFO  :  read_testfile(0) took: 124831 usec
-readahead02    0  TINFO  :  read_testfile(1) took: 124712 usec
-readahead02    0  TINFO  :  read_testfile(0) read: 0 bytes
-readahead02    0  TINFO  :  read_testfile(1) read: 0 bytes
-readahead02    3  TFAIL  :  readahead02.c:333: readahead failed to save any I/O
-readahead02    0  TINFO  :  cache can hold at least: 19068 kB
-readahead02    0  TINFO  :  read_testfile(0) used cache: 0 kB
-readahead02    0  TINFO  :  read_testfile(1) used cache: 0 kB
-readahead02    4  TCONF  :  readahead02.c:354: Page cache on your
-system is too small to hold whole testfile.
+It looks like the offset is 50us and that the mean more or less follows
+the slack. The offset seems to be closer to 250us for virtual machines.
 
-Meminfo
-------------
-root@hikey:~# cat /proc/meminfo
-MemTotal:        1922076 kB
-MemFree:         1736568 kB
-MemAvailable:    1780900 kB
-Buffers:            5272 kB
-Cached:            92676 kB
-SwapCached:            0 kB
-Active:            30416 kB
-Inactive:          83260 kB
-Active(anon):      16244 kB
-Inactive(anon):     8348 kB
-Active(file):      14172 kB
-Inactive(file):    74912 kB
-Unevictable:           0 kB
-Mlocked:               0 kB
-SwapTotal:             0 kB
-SwapFree:              0 kB
-Dirty:                84 kB
-Writeback:             0 kB
-AnonPages:         15832 kB
-Mapped:            21860 kB
-Shmem:              8828 kB
-Slab:              45048 kB
-SReclaimable:      23132 kB
-SUnreclaim:        21916 kB
-KernelStack:        3056 kB
-PageTables:          660 kB
-NFS_Unstable:          0 kB
-Bounce:                0 kB
-WritebackTmp:          0 kB
-CommitLimit:      961036 kB
-Committed_AS:     153972 kB
-VmallocTotal:   258867136 kB
-VmallocUsed:           0 kB
-VmallocChunk:          0 kB
-AnonHugePages:      6144 kB
-CmaTotal:          65536 kB
-CmaFree:           59036 kB
-HugePages_Total:       0
-HugePages_Free:        0
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-Hugepagesize:       2048 kB
+On machines that use only jiffies the timer overshoot is close to twice
+of the monotonic clock resolution.
 
-Linux kernel Version:
-----------------------------
-Linux Version is 4.11.0-next-20170512, #1 SMP PREEMPT Fri May 12
-03:26:58 UTC 2017
+> Now we have 0.1% slack plus small number (40) that scales
+> with iterations plus big number (20000) that scales inverse
+> to number number of iterations.
+> 
+> Say for 1000 us and 1000 iterations we used to have slack
+> 10000 + 200*1000 =~ 210000. And now it's
+> (40 + 1) * 1000 + 20000 / (1000/200+1) = 41000 + 3333 =~ 44333
 
-Thank you.
+See v2. It's more complicated now but looks like I've managed to break
+it into several pieces and the new formula works fine but there has to
+be at least one idle CPU. When machine is under heavy load the sleep
+times are affected by scheduler slices...
 
-Best regards
-Naresh Kamboju
+Looking at it again we can also play it safe and allow 0.2% slack but otherwise
+I think that I got it right this time.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: measure.c
+Type: text/x-c
+Size: 2371 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170512/16580293/attachment-0001.bin>
