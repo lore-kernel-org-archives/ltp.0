@@ -1,8 +1,10 @@
 From: bxue@redhat.com <bxue@redhat.com>
-Date: Fri, 12 May 2017 17:14:34 +0800
-Subject: [LTP] [PATCH v4 1/2] syscalls/splice04: add test for splice() from
-	pipe to pipe
-Message-ID: <1494580475-3522-1-git-send-email-bxue@redhat.com>
+Date: Fri, 12 May 2017 17:14:35 +0800
+Subject: [LTP] [PATCH v4 2/2] syscalls/splice05: add test for splice()
+	between pipe and socket
+In-Reply-To: <1494580475-3522-1-git-send-email-bxue@redhat.com>
+References: <1494580475-3522-1-git-send-email-bxue@redhat.com>
+Message-ID: <1494580475-3522-2-git-send-email-bxue@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,47 +13,46 @@ To: ltp@lists.linux.it
 
 From: Boyang Xue <bxue@redhat.com>
 
-This test case covers pipe to pipe splice operation, which was introduced
-in kernel commit 7c77f0b3f920 ("splice: implement pipe to pipe splicing").
+This test case covers splice operation between pipe and socket.
 
 Signed-off-by: Boyang Xue <bxue@redhat.com>
 ---
  runtest/syscalls                            |   1 +
  testcases/kernel/syscalls/.gitignore        |   1 +
- testcases/kernel/syscalls/splice/splice04.c | 106 ++++++++++++++++++++++++++++
- 3 files changed, 108 insertions(+)
- create mode 100644 testcases/kernel/syscalls/splice/splice04.c
+ testcases/kernel/syscalls/splice/splice05.c | 122 ++++++++++++++++++++++++++++
+ 3 files changed, 124 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/splice/splice05.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 5909456..d6c9ab4 100644
+index d6c9ab4..0fae11a 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -1224,6 +1224,7 @@ sockioctl01 sockioctl01
- splice01 splice01
+@@ -1225,6 +1225,7 @@ splice01 splice01
  splice02 seq 1 20000 | splice02 splice02-temp
  splice03 splice03
-+splice04 splice04
+ splice04 splice04
++splice05 splice05
  
  tee01 tee01
  tee02 tee02
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index d5985cd..92ddbbe 100644
+index 92ddbbe..604730f 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
-@@ -976,6 +976,7 @@
- /splice/splice01
+@@ -977,6 +977,7 @@
  /splice/splice02
  /splice/splice03
-+/splice/splice04
+ /splice/splice04
++/splice/splice05
  /ssetmask/ssetmask01
  /stat/stat01
  /stat/stat01_64
-diff --git a/testcases/kernel/syscalls/splice/splice04.c b/testcases/kernel/syscalls/splice/splice04.c
+diff --git a/testcases/kernel/syscalls/splice/splice05.c b/testcases/kernel/syscalls/splice/splice05.c
 new file mode 100644
-index 0000000..4fd8226
+index 0000000..ea6ca7c
 --- /dev/null
-+++ b/testcases/kernel/syscalls/splice/splice04.c
-@@ -0,0 +1,106 @@
++++ b/testcases/kernel/syscalls/splice/splice05.c
+@@ -0,0 +1,122 @@
 +/*
 + * Copyright (c) 2017 Red Hat, Inc.
 + *
@@ -72,14 +73,19 @@ index 0000000..4fd8226
 + */
 +
 +/*
-+ * Functional test for splice(2): pipe to pipe
++ * Functional test for splice(2): pipe <-> socket
 + *
-+ * This test case tests splice(2) from a pipe to another
++ * This test case tests splice(2) from a pipe to a socket and vice versa
 + */
 +
 +#define _GNU_SOURCE
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <sys/stat.h>
++#include <sys/wait.h>
 +#include <fcntl.h>
 +#include <stdlib.h>
++#include <unistd.h>
 +#include "tst_test.h"
 +
 +#define PIPE_MAX (64*1024)
@@ -110,6 +116,7 @@ index 0000000..4fd8226
 +	arr_out = SAFE_MALLOC(num_len_data);
 +	for (i = 0; i < num_len_data; i++)
 +		arr_in[i] = i & 0xff;
++
 +}
 +
 +static void cleanup(void)
@@ -118,15 +125,25 @@ index 0000000..4fd8226
 +	free(arr_out);
 +}
 +
-+static void pipe_pipe(void)
++static void pipe_socket(void)
 +{
-+	int pp1[2], pp2[2], i, ret;
++	int pp1[2], pp2[2], sv[2], i, ret;
 +
 +	SAFE_PIPE(pp1);
 +	SAFE_PIPE(pp2);
++	if (socketpair(AF_UNIX, SOCK_STREAM, 0, sv))
++		tst_brk(TBROK | TERRNO, "fail to create socket pair.");
++
 +	SAFE_WRITE(1, pp1[1], arr_in, num_len_data);
 +	for (i = 0; i < num_len_data; i++) {
-+		ret = splice(pp1[0], NULL, pp2[1], NULL, 1, SPLICE_F_MOVE);
++		ret = splice(pp1[0], NULL, sv[0], 0, 1, SPLICE_F_MOVE);
++		if (ret == -1) {
++			tst_res(TFAIL | TERRNO, "splice error");
++			goto exit;
++		}
++	}
++	for (i = 0; i < num_len_data; i++) {
++		ret = splice(sv[1], 0, pp2[1], NULL, 1, SPLICE_F_MOVE);
 +		if (ret == -1) {
 +			tst_res(TFAIL | TERRNO, "splice error");
 +			goto exit;
@@ -137,26 +154,26 @@ index 0000000..4fd8226
 +	for (i = 0; i < num_len_data; i++) {
 +		if (arr_in[i] != arr_out[i]) {
 +			tst_res(TFAIL, "wrong data@%d: expected: %d, "
-+				"actual: %d", i, arr_in[i], arr_out[i]);
++				"actual %d", i, arr_in[i], arr_out[i]);
 +			goto exit;
 +		}
 +	}
-+	tst_res(TPASS, "splice(2) from pipe to pipe run pass.");
-+
++	tst_res(TPASS, "splice(2): pipe <-> socket run pass.");
 +exit:
-+	SAFE_CLOSE(pp1[1]);
-+	SAFE_CLOSE(pp1[0]);
-+	SAFE_CLOSE(pp2[1]);
-+	SAFE_CLOSE(pp2[0]);
++	for (i = 0; i < 2; i++) {
++		SAFE_CLOSE(pp1[i]);
++		SAFE_CLOSE(pp2[i]);
++		SAFE_CLOSE(sv[i]);
++	}
 +}
 +
 +static struct tst_test test = {
-+	.tid = "splice04",
-+	.test_all = pipe_pipe,
++	.tid = "splice05",
++	.test_all = pipe_socket,
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.options = options,
-+	.min_kver = "2.6.31"
++	.min_kver = "2.6.17"
 +};
 -- 
 1.8.3.1
