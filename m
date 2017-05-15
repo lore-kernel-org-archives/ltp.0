@@ -1,12 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 15 May 2017 15:23:04 +0200
-Subject: [LTP] [PATCH v2] [RFC] pselect01: Tune thresholds
-In-Reply-To: <623640767.11529328.1494854136525.JavaMail.zimbra@redhat.com>
-References: <20170512141658.26810-1-chrubis@suse.cz>
- <495691788.11461692.1494842630946.JavaMail.zimbra@redhat.com>
- <59198103.4070308@cn.fujitsu.com>
- <623640767.11529328.1494854136525.JavaMail.zimbra@redhat.com>
-Message-ID: <20170515132304.GB12586@rei.suse.de>
+Date: Mon, 15 May 2017 16:49:45 +0200
+Subject: [LTP] ltp-pan failing
+In-Reply-To: <CALp+=PD4_zLu_ctpaZuTgWHsq3q90RKn_wYuBXS8c=-G+FYfQw@mail.gmail.com>
+References: <CALp+=PD4_zLu_ctpaZuTgWHsq3q90RKn_wYuBXS8c=-G+FYfQw@mail.gmail.com>
+Message-ID: <20170515144828.GA17237@rei.suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,15 +11,18 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > It seems that pselect woke up early on RHEL5.11GA.
-> 
-> Yes, I see that too. It fails pretty often, even on KVM guest.
-> 
-> pselect6(0, [], NULL, NULL, {0, 2000000}, {NULL, 8}) = 0 (Timeout) <0.001822>
-> pselect6(0, [], NULL, NULL, {0, 10000000}, {NULL, 8}) = 0 (Timeout) <0.009775>
-> pselect6(0, [], NULL, NULL, {0, 100000000}, {NULL, 8}) = 0 (Timeout) <0.099808>
+> I'm trying to run the LTP in embedded environment. (Having ramdisk as
+> files system and n/w shared directory for file storage)
+> The LTP version is ''ltp-full-20120401'' and ran simple command as below:
+> # ./ltp-pan -n exp1  -a /tmp/test -x 3 echo hello
+> And above command failed as:
+> "pan(exp1): failed to unlock zoo file, errno:9 Bad file descriptor"
 
-Looks like a bug to me, the timers are not allowed to wake up sooner.
+That looks like a problem with possibly unsupported file fcntl() locks on /tmp/test.
+
+> Are there any specific configuration to run LTP in embedded environment?
+
+There shouldn't be any.
 
 -- 
 Cyril Hrubis
