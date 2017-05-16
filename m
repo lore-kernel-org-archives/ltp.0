@@ -1,29 +1,35 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 16 May 2017 16:29:24 +0200
-Subject: [LTP] [PATCH v2] move_pages12: Make sure hugepages are available
-In-Reply-To: <364825081.12577806.1494944124022.JavaMail.zimbra@redhat.com>
-References: <20170516100759.10355-1-chrubis@suse.cz>
- <1420231349.12458178.1494937684196.JavaMail.zimbra@redhat.com>
- <20170516133233.GB2897@rei.lan>
- <1571565362.12569976.1494943541160.JavaMail.zimbra@redhat.com>
- <364825081.12577806.1494944124022.JavaMail.zimbra@redhat.com>
-Message-ID: <20170516142924.GE2897@rei.lan>
+From: Travis CI <builds@travis-ci.org>
+Date: Tue, 16 May 2017 15:04:07 +0000
+Subject: [LTP] Errored: linux-test-project/ltp#198 (master - aa5a3b8)
+In-Reply-To: <linux-test-project/ltp+232853948+errored@travis-ci.org>
+Message-ID: <591b1513e8188_43f88655db7f410058b8@f5140cca-b6a9-4ad1-a478-133f9cd3dbc2.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Correction: "hpsz / 1024", we multiply it in setup() by 1024.
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-I've moved the multiplication down in the setup so that we end up with
-correct value without the divison. And I've also added you Signed-off-by
-to the patch, since you did non-trivial amount of work on it and finally
-pushed it. Thanks for you help.
+Build: #198
+Status: Errored
 
-Now I will tag the git, upload tarballs, etc...
+Duration: 15 minutes and 51 seconds
+Commit: aa5a3b8 (master)
+Author: Cyril Hrubis
+Message: LTP 20171605
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+
+View the changeset: https://github.com/linux-test-project/ltp/compare/925bc8c6c336...aa5a3b84bd01
+
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/232853948?utm_source=email&utm_medium=notification
+
+--
+
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170516/e4248bd4/attachment.html>
