@@ -1,73 +1,51 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 16 May 2017 08:28:04 -0400 (EDT)
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 16 May 2017 15:32:33 +0200
 Subject: [LTP] [PATCH v2] move_pages12: Make sure hugepages are available
-In-Reply-To: <20170516100759.10355-1-chrubis@suse.cz>
+In-Reply-To: <1420231349.12458178.1494937684196.JavaMail.zimbra@redhat.com>
 References: <20170516100759.10355-1-chrubis@suse.cz>
-Message-ID: <1420231349.12458178.1494937684196.JavaMail.zimbra@redhat.com>
+ <1420231349.12458178.1494937684196.JavaMail.zimbra@redhat.com>
+Message-ID: <20170516133233.GB2897@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> "hugepages-2048kB" in path above will work only on systems with 2M huge pages.
 
+Do you have a ppc64 numa machine with more than two nodes at hand? Since
+that is the only one where the current code may fail. Both x86_64 and
+aarch64 seems to have 2MB huge pages.
 
------ Original Message -----
-> +
->  static void setup(void)
->  {
->  	int memfree, ret;
-> @@ -137,6 +181,10 @@ static void setup(void)
->  	if (access(PATH_HUGEPAGES, F_OK))
->  		tst_brk(TCONF, "Huge page not supported");
->  
-> +	ret = get_allowed_nodes(NH_MEMS, TEST_NODES, &node1, &node2);
-> +	if (ret < 0)
-> +		tst_brk(TBROK | TERRNO, "get_allowed_nodes: %d", ret);
-> +
->  	pgsz = (int)get_page_size();
->  	SAFE_FILE_LINES_SCANF(PATH_MEMINFO, "Hugepagesize: %d", &hpsz);
->  
-> @@ -148,18 +196,56 @@ static void setup(void)
->  
->  	hpsz *= 1024;
->  
-> -	SAFE_FILE_SCANF(PATH_NR_HUGEPAGES, "%ld", &orig_hugepages);
-> -	SAFE_FILE_PRINTF(PATH_NR_HUGEPAGES, "%ld", orig_hugepages + 4);
-> +	snprintf(path_hugepages_node1, sizeof(path_hugepages_node1),
-> +
-> 		 "/sys/devices/system/node/node%u/hugepages/hugepages-2048kB/nr_hugepages",
-> +		 node1);
-> +
-> +	snprintf(path_hugepages_node2, sizeof(path_hugepages_node2),
-> +
-> 		 "/sys/devices/system/node/node%u/hugepages/hugepages-2048kB/nr_hugepages",
-> +		 node2);
+I would just go with this patch now, and possibly fix more complicated
+corner cases after the release, since this patch is the last problem
+that holds the release from my side.
 
-Hi,
+Anything else that should be taken care of before the release?
 
-"hugepages-2048kB" in path above will work only on systems with 2M huge pages.
+> > +
+> > +	if (!access(path_hugepages_node1, F_OK)) {
+> > +		SAFE_FILE_SCANF(path_hugepages_node1,
+> > +				"%ld", &orig_hugepages_node1);
+> > +		tst_res(TINFO, "Increasing hugepages pool on node %u to %ld",
+> > +			node1, orig_hugepages_node1 + 4);
+> > +		SAFE_FILE_PRINTF(path_hugepages_node1,
+> > +				 "%ld", orig_hugepages_node1 + 4);
+> 
+> There doesn't seem to be any error if you ask for more:
+> 
+> # echo 20000 > /sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages
+> # cat /sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages
+> 11650
+> 
+> So, maybe we can just read it back and if it doesn't match what we requested,
+> we can TCONF.
 
-> +
-> +	if (!access(path_hugepages_node1, F_OK)) {
-> +		SAFE_FILE_SCANF(path_hugepages_node1,
-> +				"%ld", &orig_hugepages_node1);
-> +		tst_res(TINFO, "Increasing hugepages pool on node %u to %ld",
-> +			node1, orig_hugepages_node1 + 4);
-> +		SAFE_FILE_PRINTF(path_hugepages_node1,
-> +				 "%ld", orig_hugepages_node1 + 4);
+Or we may try to allocate 4 huge pages on both nodes even in a case that
+we set the per-node limits that should catch the problem as well. Is
+that OK with you?
 
-There doesn't seem to be any error if you ask for more:
-
-# echo 20000 > /sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages
-# cat /sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages
-11650
-
-So, maybe we can just read it back and if it doesn't match what we requested,
-we can TCONF.
-
-Rest looks good to me.
-I've tested so far only on x86, no issues there.
-
-Regards,
-Jan
+-- 
+Cyril Hrubis
+chrubis@suse.cz
