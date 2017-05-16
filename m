@@ -1,70 +1,32 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 16 May 2017 17:56:09 +0200
-Subject: [LTP] [ANNOUNCE] The Linux Test Project has been released for May
-	2017
-Message-ID: <20170516155609.GA26861@rei.lan>
+From: Jiri Jaburek <jjaburek@redhat.com>
+Date: Tue, 16 May 2017 18:00:20 +0200
+Subject: [LTP] [RFC] [PATCH v2] lib32: Add support for linking 32bit
+ programs on 64bit
+In-Reply-To: <20170406124641.30179-1-chrubis@suse.cz>
+References: <20170406124641.30179-1-chrubis@suse.cz>
+Message-ID: <fef4d18a-8a38-1295-eb77-fceb192dc1ae@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Good news everyone,
+On 04/06/17 14:46, Cyril Hrubis wrote:
+> This is proof of concept for building 32bit testcases on 64bit platform.
 
-the Linux Test Project test suite stable release for *May 2017*
-has been released.
+Not sure if LTP is supposed to run on these or if lib32 accounts for
+them, just letting you know that they exist (and if the code doesn't
+support them and adding support is easy, you might want to consider it):
 
-Since the last release 264 patches by 28 authors were merged.
+* IBM System z (S390) has 31bit mode, not 32bit and the corresponding
+  gcc flag is -m31, not -m32
 
-Notable changes are:
+* Some distros (ie. RHEL5 on PPC) have 32bit userspace by default, but
+  have a secondary 64bit userspace mode - here, both -m32 and -m64 work,
+  just the default is not -m64
 
-o New tests for:
-  - quotaclt() regression test
-  - quotactl() Q_XGETNEXTQUOTA
-  - lseek() SEEK_HOLE and SEEK_DATA
-  - keyctl() regression tests
-  - memfd_create() tests
-  - madvise() MADV_FREE, MADV_DONTDUMP, MADV_HWPOISON
-  - recvmsg() regression test
-  - getxattr() regression test
-  - ioctl() BLKGETSIZE/BLKGETSIZE64, BLKRAGET/BLKRASET, BLKROSET/BLKROGET
-  - move_pages() regression test
+* Some distros use the x32 ABI for userspace, -mx32, still being 32bit,
+  but not -m32
 
-o Additional 47 testcases were cleaned up and converted to the new test library.
+Jiri
 
-o SAFE_MACROS() can now be used in test cleanup which significantly simplifies
-  test cleanup functions.
-
-o Numa memory migration testcases were cleaned up and fixed.
-
-o Minimal testing device size was bumped to 256MB in order to support modern
-  filesystems.
-
-o Initiall ANDROID support was merged in.
-
-o Test output is now colorized in case that we print to terminal.
-
-+ The usuall amount of fixes all around the place
-
-The latest version of the test-suite contains 3000+ tests for the Linux
-and can be downloaded at:
-
-https://github.com/linux-test-project/ltp/releases/tag/20170516
-
-The project pages as well as GIT repository are hosted on GitHub:
-
-https://github.com/linux-test-project/ltp
-http://linux-test-project.github.io/
-
-If you ever wondered how to write a LTP testcase, don't miss our
-developer documentation at:
-
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
-https://github.com/linux-test-project/ltp/wiki/BuildSystem
-
-Patches, new tests, bugs, comments or questions should go to to our
-mailing list at ltp@lists.linux.it.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
