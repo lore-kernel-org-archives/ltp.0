@@ -1,8 +1,8 @@
 From: Travis CI <builds@travis-ci.org>
-Date: Tue, 16 May 2017 15:05:54 +0000
-Subject: [LTP] Errored: linux-test-project/ltp#199 (20171605 - aa5a3b8)
-In-Reply-To: <linux-test-project/ltp+232853975+errored@travis-ci.org>
-Message-ID: <591b1550b1c8b_43f9d36de8e34106346d@966a5b6b-27e7-4550-9478-051f01dfabe9.mail>
+Date: Tue, 16 May 2017 15:36:19 +0000
+Subject: [LTP] Passed: linux-test-project/ltp#201 (20170516 - 6c6c6ca)
+In-Reply-To: <linux-test-project/ltp+232860074+passed@travis-ci.org>
+Message-ID: <591b1c7c440e6_43f9d36cdf65011224f5@966a5b6b-27e7-4550-9478-051f01dfabe9.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,19 +12,19 @@ To: ltp@lists.linux.it
 Build Update for linux-test-project/ltp
 -------------------------------------
 
-Build: #199
-Status: Errored
+Build: #201
+Status: Passed
 
-Duration: 16 minutes and 53 seconds
-Commit: aa5a3b8 (20171605)
+Duration: 20 minutes and 49 seconds
+Commit: 6c6c6ca (20170516)
 Author: Cyril Hrubis
-Message: LTP 20171605
+Message: LTP 20170516
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
-View the changeset: https://github.com/linux-test-project/ltp/compare/20171605
+View the changeset: https://github.com/linux-test-project/ltp/compare/20170516
 
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/232853975?utm_source=email&utm_medium=notification
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/232860074?utm_source=email&utm_medium=notification
 
 --
 
@@ -32,4 +32,4 @@ You can configure recipients for build notifications in your .travis.yml file. S
 
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170516/f926fdc1/attachment.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170516/6863ad61/attachment-0001.html>
