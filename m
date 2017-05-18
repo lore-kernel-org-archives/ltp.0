@@ -1,108 +1,109 @@
-From: Eryu Guan <eguan@redhat.com>
-Date: Thu, 18 May 2017 01:09:56 +0800
-Subject: [LTP] [PATCH] syscalls/flock: open test file with O_RDWR mode
-Message-ID: <20170517170956.27118-1-eguan@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 18 May 2017 10:57:07 +0200
+Subject: [LTP] [RFC] [PATCH] tst_test: Be more verbose on timeout
+Message-ID: <20170518085707.30523-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-NFS requires the open mode to match the lock type, i.e. for LOCK_SH
-file must be opened for read, and for LOCK_EX file must be opened
-for write. Otherwise flock01 and flock04 fail on NFS with EBADF.
+I've recently stumbled upon a test that caused deadlock in the kernel
+and the test processes could not be killed because of that. This was
+while testing fanotify07 testcase on unpatched kernel.
 
-So open all test files in flock tests with O_RDWR mode that both
-lock type requirements can be met.
+In that case the test library just slept in the waitpid() call forever without
+producing any output. That was since the alarm handler that sends the SIGKILL
+to the test processes has fired but the processes stayed alive due to the
+kernel bug.
 
-Signed-off-by: Eryu Guan <eguan@redhat.com>
+This patch makes this situation more verbose we:
+
+* Print a message that we are about to kill the test process once it has
+  timeouted so that the user knows that something unexpected is
+  happening
+
+* We retry 10 times with 5 second delay between tries
+
+* And finally if we are out of retries and if the test processes are
+  stil alive we congratulate user on hitting a kernel bug and exit
+  uncleanly with TFAIL
+
+Example test output:
+
+$ ./fanotify07
+tst_test.c:862: INFO: Timeout per run is 0h 05m 00s
+Test timeouted, sending SIGKILL!
+Test timeouted, sending SIGKILL!
+Test timeouted, sending SIGKILL!
+Test timeouted, sending SIGKILL!
+Test timeouted, sending SIGKILL!
+Test timeouted, sending SIGKILL!
+Test timeouted, sending SIGKILL!
+Test timeouted, sending SIGKILL!
+Test timeouted, sending SIGKILL!
+Test timeouted, sending SIGKILL!
+Test timeouted, sending SIGKILL!
+Cannot kill test processes!
+Congratulation, likely test hit a kernel bug.
+Exitting uncleanly...
+$ echo $?
+1
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/flock/flock01.c | 2 +-
- testcases/kernel/syscalls/flock/flock02.c | 2 +-
- testcases/kernel/syscalls/flock/flock03.c | 2 +-
- testcases/kernel/syscalls/flock/flock04.c | 2 +-
- testcases/kernel/syscalls/flock/flock05.c | 2 +-
- testcases/kernel/syscalls/flock/flock06.c | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
+ lib/tst_test.c | 25 ++++++++++++++++++++-----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/flock/flock01.c b/testcases/kernel/syscalls/flock/flock01.c
-index a7ecba1..3e17be4 100644
---- a/testcases/kernel/syscalls/flock/flock01.c
-+++ b/testcases/kernel/syscalls/flock/flock01.c
-@@ -153,7 +153,7 @@ void setup(void)
- 	sprintf(filename, "flock01.%d", getpid());
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index fa1417f..14a47d6 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -805,24 +805,39 @@ static void testrun(void)
  
- 	/* creating temporary file */
--	fd = creat(filename, 0644);
-+	fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0644);
- 	if (fd < 0)
- 		tst_brkm(TBROK, tst_rmdir, "creating a new file failed");
+ static pid_t test_pid;
+ 
++
++static volatile sig_atomic_t sigkill_retries;
++
++#define WRITE_MSG(msg) do { \
++	if (write(2, msg, sizeof(msg) - 1)) { \
++		/* https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66425 */ \
++	} \
++} while (0)
++
+ static void alarm_handler(int sig LTP_ATTRIBUTE_UNUSED)
+ {
++	WRITE_MSG("Test timeouted, sending SIGKILL!\n");
+ 	kill(-test_pid, SIGKILL);
++	alarm(5);
++
++	if (++sigkill_retries > 10) {
++		WRITE_MSG("Cannot kill test processes!\n");
++		WRITE_MSG("Congratulation, likely test hit a kernel bug.\n");
++		WRITE_MSG("Exitting uncleanly...\n");
++		_exit(TFAIL);
++	}
  }
-diff --git a/testcases/kernel/syscalls/flock/flock02.c b/testcases/kernel/syscalls/flock/flock02.c
-index 971160d..414df68 100644
---- a/testcases/kernel/syscalls/flock/flock02.c
-+++ b/testcases/kernel/syscalls/flock/flock02.c
-@@ -150,7 +150,7 @@ void setup(void)
  
- 	sprintf(filename, "flock02.%d", getpid());
- 
--	fd = creat(filename, 0666);
-+	fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0666);
- 	if (fd < 0)
- 		tst_brkm(TFAIL | TERRNO, cleanup, "creat failed");
+ static void heartbeat_handler(int sig LTP_ATTRIBUTE_UNUSED)
+ {
+ 	alarm(results->timeout);
++	sigkill_retries = 0;
  }
-diff --git a/testcases/kernel/syscalls/flock/flock03.c b/testcases/kernel/syscalls/flock/flock03.c
-index e53b3b7..420f509 100644
---- a/testcases/kernel/syscalls/flock/flock03.c
-+++ b/testcases/kernel/syscalls/flock/flock03.c
-@@ -181,7 +181,7 @@ static void setup(void)
  
- 	TST_CHECKPOINT_INIT(tst_rmdir);
- 
--	fd = creat(FILE_NAME, 0666);
-+	fd = open(FILE_NAME, O_CREAT | O_TRUNC | O_RDWR, 0666);
- 	if (fd < 0) {
- 		tst_resm(TBROK, "creating a new file failed");
- 		cleanup();
-diff --git a/testcases/kernel/syscalls/flock/flock04.c b/testcases/kernel/syscalls/flock/flock04.c
-index 5dafaa4..87f1dfb 100644
---- a/testcases/kernel/syscalls/flock/flock04.c
-+++ b/testcases/kernel/syscalls/flock/flock04.c
-@@ -164,7 +164,7 @@ void setup(void)
- 
- 	sprintf(filename, "flock04.%d", getpid());
- 
--	fd = creat(filename, 0666);
-+	fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0666);
- 	if (fd == -1)
- 		tst_brkm(TFAIL, cleanup, "creating a new file failed");
+-#define SIGINT_MSG "Sending SIGKILL to test process...\n"
+-
+ static void sigint_handler(int sig LTP_ATTRIBUTE_UNUSED)
+ {
+ 	if (test_pid > 0) {
+-		if (write(2, SIGINT_MSG, sizeof(SIGINT_MSG) - 1)) {
+-			/* https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66425 */
+-		}
++		WRITE_MSG("Sending SIGKILL to test process...\n");
+ 		kill(-test_pid, SIGKILL);
+ 	}
  }
-diff --git a/testcases/kernel/syscalls/flock/flock05.c b/testcases/kernel/syscalls/flock/flock05.c
-index d9d3d00..13ae2f6 100644
---- a/testcases/kernel/syscalls/flock/flock05.c
-+++ b/testcases/kernel/syscalls/flock/flock05.c
-@@ -182,7 +182,7 @@ void setup(void)
- 	sprintf(filename, "flock05.%d", getpid());
- 
- 	/* creating temporary file */
--	fd = creat(filename, 0666);
-+	fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0666);
- 	if (fd == -1) {
- 		tst_resm(TFAIL, "creating a new file failed");
- 
-diff --git a/testcases/kernel/syscalls/flock/flock06.c b/testcases/kernel/syscalls/flock/flock06.c
-index d9c1d2d..a35c8cf 100644
---- a/testcases/kernel/syscalls/flock/flock06.c
-+++ b/testcases/kernel/syscalls/flock/flock06.c
-@@ -158,7 +158,7 @@ void setup(void)
- 	sprintf(filename, "flock06.%d", getpid());
- 
- 	/* creating temporary file */
--	fd = creat(filename, 0666);
-+	fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0666);
- 	if (fd < 0)
- 		tst_brkm(TBROK, tst_rmdir, "creating a new file failed");
- 	close(fd);
 -- 
-2.9.4
+2.10.2
 
