@@ -1,109 +1,38 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 18 May 2017 10:57:07 +0200
-Subject: [LTP] [RFC] [PATCH] tst_test: Be more verbose on timeout
-Message-ID: <20170518085707.30523-1-chrubis@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 18 May 2017 12:42:23 +0200
+Subject: [LTP] TWARN and "ltp-pan reported PASS"
+In-Reply-To: <20170517134131.GA21784@rei.lan>
+References: <20170509120935.q2v6dqhwmecy265w@dell5510>
+ <20170510090428.GC29838@rei.suse.de>
+ <20170510101533.zu7x642tzfn73u4v@dell5510>
+ <20170517134131.GA21784@rei.lan>
+Message-ID: <20170518104222.wqcnc3eykmhxo24b@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-I've recently stumbled upon a test that caused deadlock in the kernel
-and the test processes could not be killed because of that. This was
-while testing fanotify07 testcase on unpatched kernel.
+Hi Cyril,
 
-In that case the test library just slept in the waitpid() call forever without
-producing any output. That was since the alarm handler that sends the SIGKILL
-to the test processes has fired but the processes stayed alive due to the
-kernel bug.
+> Looks like I've haven't been clear enough. The ltp-pan mapped any
+> non-zero test exit value to a failure. Partly becasuse there were (and
+> possibly still may be some) testcases that do not use LTP exit bitflags
+> and partly because ltp-pan predates LTP, at least that's what I remeber
+> from some CVS archeology.
 
-This patch makes this situation more verbose we:
+> Then we added special support for the TCONF exit status, since otherwise
+> skipped testcases were listed as failed as well.
 
-* Print a message that we are about to kill the test process once it has
-  timeouted so that the user knows that something unexpected is
-  happening
+> So yes the TWARN still maps to a failure in ltp-pan and we use TWARN
+> mostly for non-fatal (to the test execution) failures, mostly in test
+> cleanups. Is that clear enough?
 
-* We retry 10 times with 5 second delay between tries
+Thanks for an explanation.
+I still wish TWARN wouldn't be considered as error (and find and fix these tests which
+don't exit bitflags). And I don't wouldn't like to introduce some kind of soft warning flag,
+which would lead to exit 0 which could be an alternative solution.
 
-* And finally if we are out of retries and if the test processes are
-  stil alive we congratulate user on hitting a kernel bug and exit
-  uncleanly with TFAIL
 
-Example test output:
-
-$ ./fanotify07
-tst_test.c:862: INFO: Timeout per run is 0h 05m 00s
-Test timeouted, sending SIGKILL!
-Test timeouted, sending SIGKILL!
-Test timeouted, sending SIGKILL!
-Test timeouted, sending SIGKILL!
-Test timeouted, sending SIGKILL!
-Test timeouted, sending SIGKILL!
-Test timeouted, sending SIGKILL!
-Test timeouted, sending SIGKILL!
-Test timeouted, sending SIGKILL!
-Test timeouted, sending SIGKILL!
-Test timeouted, sending SIGKILL!
-Cannot kill test processes!
-Congratulation, likely test hit a kernel bug.
-Exitting uncleanly...
-$ echo $?
-1
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- lib/tst_test.c | 25 ++++++++++++++++++++-----
- 1 file changed, 20 insertions(+), 5 deletions(-)
-
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index fa1417f..14a47d6 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -805,24 +805,39 @@ static void testrun(void)
- 
- static pid_t test_pid;
- 
-+
-+static volatile sig_atomic_t sigkill_retries;
-+
-+#define WRITE_MSG(msg) do { \
-+	if (write(2, msg, sizeof(msg) - 1)) { \
-+		/* https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66425 */ \
-+	} \
-+} while (0)
-+
- static void alarm_handler(int sig LTP_ATTRIBUTE_UNUSED)
- {
-+	WRITE_MSG("Test timeouted, sending SIGKILL!\n");
- 	kill(-test_pid, SIGKILL);
-+	alarm(5);
-+
-+	if (++sigkill_retries > 10) {
-+		WRITE_MSG("Cannot kill test processes!\n");
-+		WRITE_MSG("Congratulation, likely test hit a kernel bug.\n");
-+		WRITE_MSG("Exitting uncleanly...\n");
-+		_exit(TFAIL);
-+	}
- }
- 
- static void heartbeat_handler(int sig LTP_ATTRIBUTE_UNUSED)
- {
- 	alarm(results->timeout);
-+	sigkill_retries = 0;
- }
- 
--#define SIGINT_MSG "Sending SIGKILL to test process...\n"
--
- static void sigint_handler(int sig LTP_ATTRIBUTE_UNUSED)
- {
- 	if (test_pid > 0) {
--		if (write(2, SIGINT_MSG, sizeof(SIGINT_MSG) - 1)) {
--			/* https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66425 */
--		}
-+		WRITE_MSG("Sending SIGKILL to test process...\n");
- 		kill(-test_pid, SIGKILL);
- 	}
- }
--- 
-2.10.2
-
+Kind regards,
+Petr
