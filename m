@@ -1,55 +1,45 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 18 May 2017 15:46:55 +0200
-Subject: [LTP] [PATCH 1/2] ltp/numa: add new test11
-In-Reply-To: <1488526490-22120-1-git-send-email-liwang@redhat.com>
-References: <1488526490-22120-1-git-send-email-liwang@redhat.com>
-Message-ID: <20170518134655.GD29477@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 18 May 2017 16:36:56 +0200
+Subject: [LTP] [PATCH 1/1] network/mc_cmds: Use TINFO when error is caused
+	by old version of ip command
+Message-ID: <20170518143656.2348-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> @@ -52,16 +52,43 @@ static void help(void)
->  	printf("Input:	Describe input arguments to this program\n");
->  	printf("	argv[1] == 1 then allocate 1MB of memory\n");
->  	printf("	argv[1] == 2 then allocate 1MB of share memory\n");
-> -	printf("	argv[1] == 3 then pause the program to catch sigint\n");
-> +	printf("        argv[1] == 3 then allocate 1HUGE PAGE SIZE of memory\n");
-> +	printf("        argv[1] == 4 then pause the program to catch sigint\n");
->  	printf("Exit:	On failure - Exits with non-zero value\n");
->  	printf("	On success - exits with 0 exit value\n");
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/network/multicast/mc_cmds/mc_cmds | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-Can we, pretty please, change this parameter to a string that describes
-the operation?
-
-Something as:
-	argv[1] == "alloc_1MB"
-	argv[1] == "alloc_1MB_shared"
-	argv[1] == "alloc_huge_page"
-	argv[1] == "pause"
-
-So that we can use the helper as:
-
-numactl --cpunodebind=$node --membind=$node support_numa alloc_1MB &
-
-The helper would then do the classical if else:
-
-	if (!strcmp(argv[1], "alloc_1MB")) {
-
-		...
-
-	} else if (!strcmp(argv[1], "alloc_1MB_shared")) {
-
-	...
-
-	} else {
-		help();
-	}
-
-Otherwise it looks fine.
-
+diff --git a/testcases/network/multicast/mc_cmds/mc_cmds b/testcases/network/multicast/mc_cmds/mc_cmds
+index 8077b1f15..d798bdf0a 100755
+--- a/testcases/network/multicast/mc_cmds/mc_cmds
++++ b/testcases/network/multicast/mc_cmds/mc_cmds
+@@ -46,13 +46,19 @@ setup()
+ 
+ do_test()
+ {
++	local ip_fixed_version=170220
++
+ 	ip addr show $(tst_iface) | grep -q 'MULTICAST' || \
+ 		tst_brkm TFAIL "Multicast not listed for $(tst_iface)"
+ 
+ 	ip maddr show $(tst_iface) | grep -q '224.0.0.1'
+ 	if [ $? -ne 0 ]; then
+-		tst_resm TWARN "'ip maddr show $(tst_iface)' failed," \
+-			       " parsing 'ip maddr show'"
++		[ `ip -V | cut -d's' -f3` -lt $ip_fixed_version ] && \
++			tst_resm TINFO "'ip maddr show $(tst_iface)' failed "\
++					"(caused by old ip command version, fixed in"\
++					"$ip_fixed_version), parsing 'ip maddr show'" || \
++			tst_resm TWARN "'ip maddr show $(tst_iface)' failed,"\
++					"parsing 'ip maddr show'"
+ 		ip maddr show | sed -ne "/\s$(tst_iface)/,/^[0-9]/p" | \
+ 			grep -q 224.0.0.1 || \
+ 			tst_brkm TFAIL "$(tst_iface) not joined 224.0.0.1"
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.12.2
+
