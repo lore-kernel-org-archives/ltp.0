@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 18 May 2017 14:21:10 +0200
-Subject: [LTP] [PATCH v3] fanotify: Add test for permission event
-	destruction
-In-Reply-To: <20170504155433.16736-1-jack@suse.cz>
-References: <20170504155433.16736-1-jack@suse.cz>
-Message-ID: <20170518122110.GC29477@rei.lan>
+Date: Thu, 18 May 2017 15:46:55 +0200
+Subject: [LTP] [PATCH 1/2] ltp/numa: add new test11
+In-Reply-To: <1488526490-22120-1-git-send-email-liwang@redhat.com>
+References: <1488526490-22120-1-git-send-email-liwang@redhat.com>
+Message-ID: <20170518134655.GD29477@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,18 +11,44 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Pushed with minor changes, thanks.
+> @@ -52,16 +52,43 @@ static void help(void)
+>  	printf("Input:	Describe input arguments to this program\n");
+>  	printf("	argv[1] == 1 then allocate 1MB of memory\n");
+>  	printf("	argv[1] == 2 then allocate 1MB of share memory\n");
+> -	printf("	argv[1] == 3 then pause the program to catch sigint\n");
+> +	printf("        argv[1] == 3 then allocate 1HUGE PAGE SIZE of memory\n");
+> +	printf("        argv[1] == 4 then pause the program to catch sigint\n");
+>  	printf("Exit:	On failure - Exits with non-zero value\n");
+>  	printf("	On success - exits with 0 exit value\n");
 
-What I did:
+Can we, pretty please, change this parameter to a string that describes
+the operation?
 
-* Updated the copyright year to 2017
+Something as:
+	argv[1] == "alloc_1MB"
+	argv[1] == "alloc_1MB_shared"
+	argv[1] == "alloc_huge_page"
+	argv[1] == "pause"
 
-* Added the kernel commit ids to the top level comment in the test source
+So that we can use the helper as:
 
-* Removed the fd_notify = -1 after SAFE_CLOSE(fd_notify)
-  SAFE_CLOSE() sets the fd to -1 already
+numactl --cpunodebind=$node --membind=$node support_numa alloc_1MB &
 
-* Updated syscalls/.gitignore
+The helper would then do the classical if else:
+
+	if (!strcmp(argv[1], "alloc_1MB")) {
+
+		...
+
+	} else if (!strcmp(argv[1], "alloc_1MB_shared")) {
+
+	...
+
+	} else {
+		help();
+	}
+
+Otherwise it looks fine.
 
 -- 
 Cyril Hrubis
