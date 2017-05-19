@@ -1,34 +1,33 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Fri, 19 May 2017 14:31:47 +0200
-Subject: [LTP] [PATCH 01/10] Add fuzzy synchronisation library for
-	triggering races
-Message-ID: <20170519123156.8462-1-rpalethorpe@suse.com>
+Date: Fri, 19 May 2017 14:31:50 +0200
+Subject: [LTP] [PATCH 04/10] Test for uname26 exploit CVE-2012-0957
+In-Reply-To: <20170519123156.8462-1-rpalethorpe@suse.com>
+References: <20170519123156.8462-1-rpalethorpe@suse.com>
+Message-ID: <20170519123156.8462-4-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Provide some functions for starting two actions at approximately the same time
-on different threads or processes. This is intended to amalgamate
-functionality built into at least three CVE tests. As well as conforming to
-DRY it is intended to help make reasoning about each test easier by
-abstracting away the synchronisation mechanism.
+Attempt to exploit the uname kernel memory leak which occurred when the
+UNAME26 personality was set.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- include/tst_fuzzy_sync.h | 189 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 189 insertions(+)
- create mode 100644 include/tst_fuzzy_sync.h
+ testcases/cve/cve-2012-0957.c | 90 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 90 insertions(+)
+ create mode 100644 testcases/cve/cve-2012-0957.c
 
-diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
+diff --git a/testcases/cve/cve-2012-0957.c b/testcases/cve/cve-2012-0957.c
 new file mode 100644
-index 000000000..ab8092d72
+index 000000000..3a2afe08e
 --- /dev/null
-+++ b/include/tst_fuzzy_sync.h
-@@ -0,0 +1,189 @@
++++ b/testcases/cve/cve-2012-0957.c
+@@ -0,0 +1,90 @@
 +/*
 + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
++ * Copyright (c) 2012, Kees Cook <keescook@chromium.org>
 + *
 + * This program is free software: you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
@@ -44,178 +43,78 @@ index 000000000..ab8092d72
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
 +/*
-+ * Fuzzy Synchronisation - abreviated to fzsync
++ * Check that memory after the string terminator in all the utsname fields has
++ * been zeroed. cve-2012-0957 leaked kernel memory through the release field
++ * when the UNAME26 personality was set.
 + *
-+ * This library is intended to help reproduce race conditions while running in
-+ * a loop. You can use it to measure the time at which two functions are
-+ * called in different threads. Then calculate the average time gap between
-+ * the function calls and introduce a delay in one thread to synchronise the
-+ * calls.
-+ *
-+ * It is called 'fuzzy' synchronisation because the time gap will naturally vary
-+ * due to environmental factors. It is not a 'hard' synchronisation mechanism
-+ * like lockstepping.
-+ *
-+ * For a usage example see testcases/cve/cve-2017-2671.c
++ * Thanks to Kees Cook for the original proof of concept:
++ * http://www.securityfocus.com/bid/55855/info
 + */
 +
-+#include <sys/time.h>
-+#include <time.h>
++#include <string.h>
++#include <sys/utsname.h>
++#include <sys/personality.h>
++#include "tst_test.h"
 +
-+#ifndef CLOCK_MONOTONIC_RAW
-+#define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
-+#endif
++#define UNAME26 0x0020000
 +
-+/**
-+ * struct tst_fzsync_pair - the state of a two way synchronisation
-+ * @avg_diff: The average time difference over multiple iterations
-+ * @avg_diff_trgt: The desired average time difference, defaults to 0
-+ * @avg_alpha: The rate at which old diff samples are forgotten,
-+ *             defaults to 0.25
-+ * @a: The time at which call site A was last passed
-+ * @b: The time at which call site B was last passed
-+ * @delay: The size of the delay, positive to delay A, negative to delay B
-+ * @delay_inc: The step size of a delay increment, defaults to 10
-+ * @update_gap: The number of iterations between recalculating the delay.
-+ *              Defaults to 0xF and must be of the form $2^n - 1$
-+ *
-+ * This contains all the necessary state for synchronising two points A and
-+ * B. Where A is the time of an event in one process and B is the time of an
-+ * event in another process.
-+ */
-+struct tst_fzsync_pair {
-+	double avg_diff;
-+	double avg_diff_trgt;
-+	double avg_alpha;
-+	struct timespec a;
-+	struct timespec b;
-+	long delay;
-+	long delay_inc;
-+	int update_gap;
-+};
-+
-+/**
-+ * tst_fzsync_pair_init - Set default values if they are zero
-+ * @pair: Zeroed fuzzy pair state struct
-+ */
-+static void tst_fzsync_pair_init(struct tst_fzsync_pair *pair)
++static int check_field(char *bytes, size_t length, char *field)
 +{
-+	if (pair->avg_alpha == 0)
-+		pair->avg_alpha = 0.25;
-+	if (pair->delay_inc == 0)
-+		pair->delay_inc = 10;
-+	if (pair->update_gap == 0)
-+		pair->update_gap = 0xF;
-+}
++	size_t i = strlen(bytes) + 1;
 +
-+static void tst_fzsync_pair_info(struct tst_fzsync_pair *pair)
-+{
-+	tst_res(TINFO, "avg_diff = %.5gns, delay = %05ld loops",
-+		pair->avg_diff, pair->delay);
-+}
-+
-+/**
-+ * tst_fzsync_delay_a - Perform spin delay for A, if needed
-+ *
-+ * Usually called just before the point you want to synchronise.
-+ */
-+static inline void tst_fzsync_delay_a(struct tst_fzsync_pair *pair)
-+{
-+	volatile long spin_delay = pair->delay;
-+
-+	while (spin_delay > 0)
-+		spin_delay--;
-+}
-+
-+/**
-+ * tst_fzsync_delay_b - Perform spin delay for B, if needed
-+ *
-+ * Usually called just before the point you want to synchronise.
-+ */
-+static inline void tst_fzsync_delay_b(struct tst_fzsync_pair *pair)
-+{
-+	volatile long spin_delay = pair->delay;
-+
-+	while (spin_delay < 0)
-+		spin_delay++;
-+}
-+
-+static inline void tst_fzsync_time(struct timespec *t)
-+{
-+	clock_gettime(CLOCK_MONOTONIC_RAW, t);
-+}
-+
-+/**
-+ * tst_fzsync_time_a - Set A's time to now.
-+ *
-+ * Called@the point you want to synchronise.
-+ */
-+static inline void tst_fzsync_time_a(struct tst_fzsync_pair *pair)
-+{
-+	tst_fzsync_time(&pair->a);
-+}
-+
-+/**
-+ * tst_fzsync_time_b - Set B's call time to now.
-+ *
-+ * Called at the point you want to synchronise.
-+ */
-+static inline void tst_fzsync_time_b(struct tst_fzsync_pair *pair)
-+{
-+	tst_fzsync_time(&pair->b);
-+}
-+
-+/**
-+ * tst_exp_moving_avg - Exponential moving average
-+ * @alpha: The preference for receant samples over old ones.
-+ * @sample: The current sample
-+ * @prev_avg: The average of the all the previous samples
-+ *
-+ * Returns average including the current sample.
-+ */
-+static inline double tst_exp_moving_avg(double alpha, long sample,
-+					double prev_avg)
-+{
-+	return alpha * sample + (1.0 - alpha) * prev_avg;
-+}
-+
-+/**
-+ * tst_fzsync_pair_update - Recalculate the delay
-+ * @loop_index: The i in "for(i = 0;..." or zero to ignore update_gap
-+ * @pair: The state necessary for calculating the delay
-+ *
-+ * This should be called at the end of each loop to update the average
-+ * measured time difference (between A and B) and update the delay. It is
-+ * assumed that A and B are less than a second apart.
-+ *
-+ * The values of update_gap, avg_alpha and delay_inc decide the speed at which
-+ * the algorithm approaches the optimum delay value and whether it is
-+ * stable. If your test is behaving strangely, it could be because this
-+ * algorithm is behaving chaotically and flip-flopping between large positve
-+ * and negative delay values. You can call tst_fzysync_pair_info every few
-+ * loops to check whether the average difference and delay values are stable.
-+ */
-+static void tst_fzsync_pair_update(int loop_index, struct tst_fzsync_pair *pair)
-+{
-+	long diff;
-+	long inc = pair->delay_inc;
-+	long delay = pair->delay;
-+	double target = pair->avg_diff_trgt;
-+	double avg = pair->avg_diff;
-+
-+	diff = pair->a.tv_nsec - pair->b.tv_nsec;
-+	avg = tst_exp_moving_avg(pair->avg_alpha, diff, avg);
-+
-+	if (!(loop_index & pair->update_gap)) {
-+		if (avg > target)
-+			delay -= inc;
-+		else if (avg < target)
-+			delay += inc;
++	for (; i < length; i++) {
++		if (bytes[i]) {
++			tst_res(TFAIL, "Bytes leaked in %s!", field);
++			return 1;
++		}
 +	}
-+
-+	pair->avg_diff = avg;
-+	pair->delay = delay;
++	return 0;
 +}
++
++
++static void try_leak_bytes(void)
++{
++	struct utsname buf;
++
++	if (uname(&buf))
++		tst_brk(TBROK | TERRNO, "Call to uname failed");
++
++#define CHECK_FIELD(field_name) \
++	(check_field(buf.field_name, ARRAY_SIZE(buf.field_name), #field_name))
++
++	if (!(CHECK_FIELD(release) |
++	    CHECK_FIELD(sysname) |
++	    CHECK_FIELD(nodename) |
++	    CHECK_FIELD(version) |
++	    CHECK_FIELD(machine) |
++#ifdef _GNU_SOURCE
++	    CHECK_FIELD(domainname) |
++#endif
++		    0)) {
++		tst_res(TPASS, "All fields zeroed after string terminator");
++	}
++#undef CHECK_FIELD
++}
++
++static void run(unsigned int test_nr)
++{
++	if (!test_nr) {
++		tst_res(TINFO, "Calling uname with default personality");
++		try_leak_bytes();
++	} else {
++		if (personality(PER_LINUX | UNAME26) < 0)
++			tst_brk(TCONF | TERRNO,
++				"Could not change personality to UNAME26");
++		tst_res(TINFO, "Calling uname with UNAME26 personality");
++		try_leak_bytes();
++	}
++}
++
++static struct tst_test test = {
++	.tid = "cve-2012-0957",
++	.test = run,
++	.tcnt = 2,
++};
 -- 
 2.12.2
 
