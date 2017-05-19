@@ -1,24 +1,51 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 19 May 2017 09:24:41 +0200
-Subject: [LTP] [RFC] [PATCH] tst_test: Be more verbose on timeout
-In-Reply-To: <1877075389.14609671.1495176115788.JavaMail.zimbra@redhat.com>
-References: <20170518085707.30523-1-chrubis@suse.cz>
- <1877075389.14609671.1495176115788.JavaMail.zimbra@redhat.com>
-Message-ID: <20170519072440.GA6940@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 19 May 2017 03:34:15 -0400 (EDT)
+Subject: [LTP] [PATCH v3] syscalls: add new test for copy_file_range(2)
+In-Reply-To: <CAEemH2fitknhoBXcY6s_uxSvvoC1bqoiLixZhpmrrtY==0QTew@mail.gmail.com>
+References: <20170420082416.25508-1-liwang@redhat.com>
+ <917701187.946745.1493024025288.JavaMail.zimbra@redhat.com>
+ <CAEemH2fKm5nrMj=ubnE1_D=o5M+1f0deBrstoAjyR9ASN1VLjA@mail.gmail.com>
+ <CAEemH2fPXez4K=hY+8hC3jMOfGkqL14PkhKF0VmrtsayzQASQw@mail.gmail.com>
+ <a98697fc-9a64-1d4a-7875-d010f0b21ac2@redhat.com>
+ <CAEemH2cx63BoV+iTm86WCCXstY8SdQx6fVA0U7Rt3VCDwugF_Q@mail.gmail.com>
+ <1437131164.2599351.1493190346623.JavaMail.zimbra@redhat.com>
+ <CAEemH2fitknhoBXcY6s_uxSvvoC1bqoiLixZhpmrrtY==0QTew@mail.gmail.com>
+Message-ID: <958518333.14643587.1495179255369.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > * And finally if we are out of retries and if the test processes are
-> >   stil alive we congratulate user ...
+
+----- Original Message -----
+> On Wed, Apr 26, 2017 at 3:05 PM, Jan Stancek <jstancek@redhat.com> wrote:
+> >
+> >
+> > ----- Original Message -----
+> >> On Mon, Apr 24, 2017 at 02:23:41PM +0200, Jan Stancek wrote:
+> >> > On 04/24/2017 12:46 PM, Li Wang wrote:
+> >> > >>> These variables names are a bit confusing. But larger problem is
+> >> > >
+> >> > > Currently have no idea to improve the confusing issue.
+> >> > >
+> >> >
+> >> > I'm attaching copy_file_range01.c, that I made from your v3 version.
+> >> > It doesn't use static list of parameters, but instead iterates
+> >> > over possible values for len/off_in/off_out in all possible
+> >> > combinations.
+> >> >
+> >> > Let me know what you think about this approach.
+> >>
+> >> To split data structure into arrays is more clear than before, and involve
+> >> the different function make things simple too. I agree to use this
+> >> approach.
+> >
+> > OK, can this wait after release?
 > 
-> :-), looks good to me.
+> Yes, It's OK to me.
 
-Thanks, pushed.
+Pushed.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Jan
