@@ -1,51 +1,112 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 19 May 2017 03:34:15 -0400 (EDT)
-Subject: [LTP] [PATCH v3] syscalls: add new test for copy_file_range(2)
-In-Reply-To: <CAEemH2fitknhoBXcY6s_uxSvvoC1bqoiLixZhpmrrtY==0QTew@mail.gmail.com>
-References: <20170420082416.25508-1-liwang@redhat.com>
- <917701187.946745.1493024025288.JavaMail.zimbra@redhat.com>
- <CAEemH2fKm5nrMj=ubnE1_D=o5M+1f0deBrstoAjyR9ASN1VLjA@mail.gmail.com>
- <CAEemH2fPXez4K=hY+8hC3jMOfGkqL14PkhKF0VmrtsayzQASQw@mail.gmail.com>
- <a98697fc-9a64-1d4a-7875-d010f0b21ac2@redhat.com>
- <CAEemH2cx63BoV+iTm86WCCXstY8SdQx6fVA0U7Rt3VCDwugF_Q@mail.gmail.com>
- <1437131164.2599351.1493190346623.JavaMail.zimbra@redhat.com>
- <CAEemH2fitknhoBXcY6s_uxSvvoC1bqoiLixZhpmrrtY==0QTew@mail.gmail.com>
-Message-ID: <958518333.14643587.1495179255369.JavaMail.zimbra@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 19 May 2017 16:25:18 +0800
+Subject: [LTP] [PATCH v3 2/3] ltp/numa: Kill the support_numa if FAILED
+In-Reply-To: <20170519082519.9471-1-liwang@redhat.com>
+References: <20170519082519.9471-1-liwang@redhat.com>
+Message-ID: <20170519082519.9471-2-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/numa/numa01.sh | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
------ Original Message -----
-> On Wed, Apr 26, 2017 at 3:05 PM, Jan Stancek <jstancek@redhat.com> wrote:
-> >
-> >
-> > ----- Original Message -----
-> >> On Mon, Apr 24, 2017 at 02:23:41PM +0200, Jan Stancek wrote:
-> >> > On 04/24/2017 12:46 PM, Li Wang wrote:
-> >> > >>> These variables names are a bit confusing. But larger problem is
-> >> > >
-> >> > > Currently have no idea to improve the confusing issue.
-> >> > >
-> >> >
-> >> > I'm attaching copy_file_range01.c, that I made from your v3 version.
-> >> > It doesn't use static list of parameters, but instead iterates
-> >> > over possible values for len/off_in/off_out in all possible
-> >> > combinations.
-> >> >
-> >> > Let me know what you think about this approach.
-> >>
-> >> To split data structure into arrays is more clear than before, and involve
-> >> the different function make things simple too. I agree to use this
-> >> approach.
-> >
-> > OK, can this wait after release?
-> 
-> Yes, It's OK to me.
+diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
+index 69e5357..93d74cc 100755
+--- a/testcases/kernel/numa/numa01.sh
++++ b/testcases/kernel/numa/numa01.sh
+@@ -56,7 +56,7 @@ extract_numastat_p()
+ 	local pid=$1
+ 	local node=$(($2 + 2))
+ 
+-	echo $(numastat -p $pid |grep '^Total' |awk '{print $'$node'}')
++	echo $(numastat -p $pid |awk '/^Total/ {print $'$node'}')
+ }
+ 
+ wait_for_support_numa()
+@@ -121,6 +121,7 @@ test1()
+ 		if [ $(echo "$Mem_curr < $MB" | bc) -eq 1 ]; then
+ 			tst_res TFAIL \
+ 				"NUMA memory allocated in node$node is less than expected"
++			kill -CONT $pid >/dev/null 2>&1
+ 			return
+ 		fi
+ 
+@@ -154,6 +155,7 @@ test2()
+ 		if [ $(echo "$Mem_curr < $MB" |bc ) -eq 1 ]; then
+ 			tst_res TFAIL \
+ 				"NUMA memory allocated in node$Preferred_node is less than expected"
++			kill -CONT $pid >/dev/null 2>&1
+ 			return
+ 		fi
+ 
+@@ -189,6 +191,7 @@ test3()
+ 		if [ $(echo "$Mem_curr < $MB" |bc ) -eq 1 ]; then
+ 			tst_res TFAIL \
+ 				"NUMA share memory allocated in node$Preferred_node is less than expected"
++			kill -CONT $pid >/dev/null 2>&1
+ 			return
+ 		fi
+ 
+@@ -217,6 +220,7 @@ test4()
+ 		if [ $(echo "$Mem_curr < $Exp_incr" |bc ) -eq 1 ]; then
+ 			tst_res TFAIL \
+ 				"NUMA interleave memory allocated in node$node is less than expected"
++			kill -CONT $pid >/dev/null 2>&1
+ 			return
+ 		fi
+ 	done
+@@ -243,6 +247,7 @@ test5()
+ 		if [ $(echo "$Mem_curr < $Exp_incr" |bc ) -eq 1 ]; then
+ 			tst_res TFAIL \
+ 				"NUMA interleave share memory allocated in node$node is less than expected"
++			kill -CONT $pid >/dev/null 2>&1
+ 			return
+ 		fi
+ 	done
+@@ -299,6 +304,7 @@ test7()
+ 		if [ $(echo "$Mem_curr < $MB" |bc ) -eq 1 ]; then
+ 			tst_res TFAIL \
+ 				"NUMA localnode memory allocated in node$node is less than expected"
++			kill -CONT $pid >/dev/null 2>&1
+ 			return
+ 		fi
+ 
+@@ -324,11 +330,12 @@ test8()
+ 		if [ $(echo "$Mem_curr < $Exp_incr" |bc ) -eq 1 ]; then
+ 			tst_res TFAIL \
+ 				"NUMA interleave memhog in node$node is less than expected"
++			kill -KILL $pid >/dev/null 2>&1
+ 			return
+ 		fi
+ 	done
+ 
+-	kill -9 $pid >/dev/null 2>&1
++	kill -KILL $pid >/dev/null 2>&1
+ 	tst_res TPASS "NUMA MEMHOG policy"
+ }
+ 
+@@ -392,6 +399,7 @@ test10()
+ 		if [ $(echo "$Mem_curr < $MB" |bc ) -eq 1 ]; then
+ 			tst_res TFAIL \
+ 				"NUMA migratepages is not working fine"
++			kill -CONT $pid >/dev/null 2>&1
+ 			return
+ 		fi
+ 
+@@ -428,7 +436,7 @@ test11()
+ 		pid=$!
+ 		wait_for_support_numa $pid
+ 
+-		Mem_huge=$(echo $(numastat -p $pid |awk '/Huge/ {print $'$((node+2))'}'))
++		Mem_huge=$(echo $(numastat -p $pid |awk '/^Huge/ {print $'$((node+2))'}'))
+ 		Mem_huge=$((${Mem_huge%.*} * 1024))
+ 
+ 		if [ "$Mem_huge" -lt "$HPAGE_SIZE" ]; then
+-- 
+2.9.3
 
-Pushed.
-
-Regards,
-Jan
