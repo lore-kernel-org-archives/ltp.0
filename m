@@ -1,150 +1,78 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 19 May 2017 09:19:50 +0800
-Subject: [LTP] [PATCH 1/3] tst_safe_sysv_ipc: add shared memory related
-	macros
-In-Reply-To: <1492164917-9329-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1492164917-9329-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <591E4836.5080901@cn.fujitsu.com>
+From: Daniel Sangorrin <daniel.sangorrin@toshiba.co.jp>
+Date: Fri, 19 May 2017 13:26:40 +0900
+Subject: [LTP] LTP release
+In-Reply-To: <1639910547.7946506.1493998892960.JavaMail.zimbra@redhat.com>
+References: <20170424162534.GA13616@rei.lan>
+ <20170428154714.GB4741@rei.suse.de> <20170505144116.GE16729@rei.suse.de>
+ <1639910547.7946506.1493998892960.JavaMail.zimbra@redhat.com>
+Message-ID: <003f01d2d058$1c828160$55878420$@toshiba.co.jp>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril
+Hi,
 
-Ping, :-)
+This is my first e-mail to the list. My name is Daniel and I've been integrating LTP into
+the Fuego test framework.
+
+> -----Original Message-----
+> From: ltp [mailto:ltp-bounces+daniel.sangorrin=toshiba.co.jp@lists.linux.it] On Behalf Of Jan Stancek
+> Sent: Saturday, May 06, 2017 12:42 AM
+> > Hi!
+> > > * utimensat01 - We reverted the fix before the last release and started
+> > >                 discussion on LKML but it seems that nobody cares so I
+> > > 		guess that we should reapply the patch and forget.
+> >
+> > Jan will you reapply the patch?
+> 
+> Tested on 4.11 and pushed.
+
+I read your conversation here
+http://www.spinics.net/lists/linux-fsdevel/msg106449.html
+and it seems that the final conclusion was that EPERM was the right return 
+value (that's the reason you reapplied this patch I suppose). 
+
+Q1: Does the man page for utimensat need an update then?
+Ref: https://github.com/mkerrisk/man-pages/blob/master/man2/utimensat.2
+
+This LTP patch introduces a kernel version check (if tst_kvcmp -lt "4.8.0"; then). 
+Patch: https://github.com/linux-test-project/ltp/commit/b9157aee8fdeed1ef808fb490e5910e8750d7587
+
+That seems fine if you are testing vanilla kernels only. I was wondering what 
+happens with LTS or Distro kernels though, because they usually have many backported patches.
+In particular the linux-stable kernel branch "linux-4.4.y" does include 
+commit f2b20f6ee842313a0d681dbbf7f87b70291a6a3b and I confirmed that
+that patch alone causes the LTP utimensat to return EPERM instead of EACESS.
+# I tested it by reverting the patch and running LTP again
+
+Q2: Is there any mechanism in LTP for taking care of these kernels?
+
+I was thinking about it and I could only think of 2 solutions:
+  1) Add such support manually (e.g. test against kernel 4.4.27 as well).
+  2) Add an optional parameter to LTP with the location of the kernel git repository
+       and branch. This way LTP tests could test against the existence of specific commit ids.
+
+The second solution would be very generic and work for any kernel but it's kind of 
+cumbersome. The first solution requires manual work so maybe too time consuming (I could help).
+What do you think?
 
 Thanks,
-Xiao Yang
-On 2017/04/14 18:15, Xiao Yang wrote:
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  include/tst_safe_sysv_ipc.h | 25 +++++++++++++++++++
->  lib/tst_safe_sysv_ipc.c     | 58 ++++++++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 82 insertions(+), 1 deletion(-)
->
-> diff --git a/include/tst_safe_sysv_ipc.h b/include/tst_safe_sysv_ipc.h
-> index cbdefb9..e01957f 100644
-> --- a/include/tst_safe_sysv_ipc.h
-> +++ b/include/tst_safe_sysv_ipc.h
-> @@ -18,6 +18,11 @@
->  #ifndef TST_SAFE_SYSV_IPC_H__
->  #define TST_SAFE_SYSV_IPC_H__
->  
-> +#include <sys/types.h>
-> +#include <sys/ipc.h>
-> +#include <sys/msg.h>
-> +#include <sys/shm.h>
-> +
->  int safe_msgget(const char *file, const int lineno, key_t key, int msgflg);
->  #define SAFE_MSGGET(key, msgflg) \
->  	safe_msgget(__FILE__, __LINE__, (key), (msgflg))
-> @@ -39,4 +44,24 @@ int safe_msgctl(const char *file, const int lineno, int msqid, int cmd,
->  	(msqid) = ((cmd) == IPC_RMID ? -1 : (msqid)); \
->  	} while (0)
->  
-> +int safe_shmget(const char *file, const int lineno, key_t key, size_t size,
-> +		int shmflg);
-> +#define SAFE_SHMGET(key, size, shmflg) \
-> +	safe_shmget(__FILE__, __LINE__, (key), (size), (shmflg))
-> +
-> +void *safe_shmat(const char *file, const int lineno, int shmid,
-> +		const void *shmaddr, int shmflg);
-> +#define SAFE_SHMAT(shmid, shmaddr, shmflg) \
-> +	safe_shmat(__FILE__, __LINE__, (shmid), (shmaddr), (shmflg))
-> +
-> +int safe_shmdt(const char *file, const int lineno, const void *shmaddr);
-> +#define SAFE_SHMDT(shmaddr)	safe_shmdt(__FILE__, __LINE__, (shmaddr))
-> +
-> +int safe_shmctl(const char *file, const int lineno, int shmid, int cmd,
-> +		struct shmid_ds *buf);
-> +#define SAFE_SHMCTL(shmid, cmd, buf) do { \
-> +	safe_shmctl(__FILE__, __LINE__, (shmid), (cmd), (buf)); \
-> +	(shmid) = ((cmd) == IPC_RMID ? -1 : (shmid)); \
-> +	} while (0)
-> +
->  #endif /* TST_SAFE_SYSV_IPC_H__ */
-> diff --git a/lib/tst_safe_sysv_ipc.c b/lib/tst_safe_sysv_ipc.c
-> index cb2b304..b2b132b 100644
-> --- a/lib/tst_safe_sysv_ipc.c
-> +++ b/lib/tst_safe_sysv_ipc.c
-> @@ -18,6 +18,7 @@
->  #include <sys/types.h>
->  #include <sys/ipc.h>
->  #include <sys/msg.h>
-> +#include <sys/shm.h>
->  #define TST_NO_DEFAULT_MAIN
->  #include "tst_test.h"
->  #include "tst_safe_sysv_ipc.h"
-> @@ -68,7 +69,7 @@ ssize_t safe_msgrcv(const char *file, const int lineno, int msqid, void *msgp,
->  int safe_msgctl(const char *file, const int lineno, int msqid, int cmd,
->  		struct msqid_ds *buf)
->  {
-> -	int  rval;
-> +	int rval;
->  
->  	rval = msgctl(msqid, cmd, buf);
->  	if (rval == -1) {
-> @@ -78,3 +79,58 @@ int safe_msgctl(const char *file, const int lineno, int msqid, int cmd,
->  
->  	return rval;
->  }
-> +
-> +int safe_shmget(const char *file, const int lineno, key_t key, size_t size,
-> +		int shmflg)
-> +{
-> +	int rval;
-> +
-> +	rval = shmget(key, size, shmflg);
-> +	if (rval == -1) {
-> +		tst_brk(TBROK | TERRNO, "%s:%d: shmget(%i, %li, %x) failed",
-> +			file, lineno, (int)key, size, shmflg);
-> +	}
-> +
-> +	return rval;
-> +}
-> +
-> +void *safe_shmat(const char *file, const int lineno, int shmid,
-> +		const void *shmaddr, int shmflg)
-> +{
-> +	void *rval;
-> +
-> +	rval = shmat(shmid, shmaddr, shmflg);
-> +	if (rval == (void *)-1) {
-> +		tst_brk(TBROK | TERRNO, "%s:%d: shmat(%i, %p, %x) failed",
-> +			file, lineno, shmid, shmaddr, shmflg);
-> +	}
-> +
-> +	return rval;
-> +}
-> +
-> +int safe_shmdt(const char *file, const int lineno, const void *shmaddr)
-> +{
-> +	int rval;
-> +
-> +	rval = shmdt(shmaddr);
-> +	if (rval == -1) {
-> +		tst_brk(TBROK | TERRNO, "%s:%d: shmdt(%p) failed",
-> +			file, lineno, shmaddr);
-> +	}
-> +
-> +	return rval;
-> +}
-> +
-> +int safe_shmctl(const char *file, const int lineno, int shmid, int cmd,
-> +		struct shmid_ds *buf)
-> +{
-> +	int rval;
-> +
-> +	rval = shmctl(shmid, cmd, buf);
-> +	if (rval == -1) {
-> +		tst_brk(TBROK | TERRNO, "%s:%d: shmctl(%i, %i, %p) failed",
-> +			file, lineno, shmid, cmd, buf);
-> +	}
-> +
-> +	return rval;
-> +}
+Daniel
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
