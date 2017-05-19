@@ -1,7 +1,9 @@
 From: Li Wang <liwang@redhat.com>
-Date: Fri, 19 May 2017 16:25:17 +0800
-Subject: [LTP] [PATCH v3 1/3] ltp/numa: add new test11
-Message-ID: <20170519082519.9471-1-liwang@redhat.com>
+Date: Fri, 19 May 2017 16:25:19 +0800
+Subject: [LTP] [PATCH v3 3/3] ltp/numa: use string to describe operation
+In-Reply-To: <20170519082519.9471-1-liwang@redhat.com>
+References: <20170519082519.9471-1-liwang@redhat.com>
+Message-ID: <20170519082519.9471-3-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,192 +12,171 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/kernel/numa/README         |  2 ++
- testcases/kernel/numa/numa01.sh      | 51 ++++++++++++++++++++++++++++++++--
- testcases/kernel/numa/support_numa.c | 53 ++++++++++++++++++++++++++++++++++--
- 3 files changed, 101 insertions(+), 5 deletions(-)
+ testcases/kernel/numa/numa01.sh      | 24 +++++++++---------------
+ testcases/kernel/numa/support_numa.c | 23 +++++++++--------------
+ 2 files changed, 18 insertions(+), 29 deletions(-)
 
-diff --git a/testcases/kernel/numa/README b/testcases/kernel/numa/README
-index 57b12f7..a5c3f1b 100644
---- a/testcases/kernel/numa/README
-+++ b/testcases/kernel/numa/README
-@@ -54,6 +54,8 @@ Verifies the numa_node_size api with hardware checking.
- TestCase10:
- Verifieds the NUMA migratepages policy.
- 
-+TestCase11:
-+Verifies the hugepage memory allocated from the node we specify.
- 
- Pre-requisites
- ====================================================================================================================
 diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
-index f0f6139..69e5357 100755
+index 93d74cc..4eda3f1 100755
 --- a/testcases/kernel/numa/numa01.sh
 +++ b/testcases/kernel/numa/numa01.sh
-@@ -31,11 +31,12 @@
- #               Test #8: Verifies memhog                                     #
- #               Test #9: Verifies numa_node_size api                         #
- #               Test #10:Verifies Migratepages                               #
-+#               Test #11:Verifies hugepage alloacted on specified node       #
- #                                                                            #
- ##############################################################################
- 
- TST_ID="numa01"
--TST_CNT=10
-+TST_CNT=11
- TST_SETUP=setup
- TST_TESTFUNC=test
- TST_NEEDS_TMPDIR=1
-@@ -83,11 +84,13 @@ setup()
- {
- 	export MB=$((1024*1024))
+@@ -86,12 +86,6 @@ setup()
  	export PAGE_SIZE=$(getconf PAGE_SIZE)
-+	export HPAGE_SIZE=$(awk '/Hugepagesize:/ {print $2}' /proc/meminfo)
+ 	export HPAGE_SIZE=$(awk '/Hugepagesize:/ {print $2}' /proc/meminfo)
  
- 	# arguments to memory exercise program support_numa.c
- 	ALLOC_1MB=1
- 	SHARE_1MB=2
--	PAUSE=3
-+	HUGE_PAGE=3
-+	PAUSE=4
- 
+-	# arguments to memory exercise program support_numa.c
+-	ALLOC_1MB=1
+-	SHARE_1MB=2
+-	HUGE_PAGE=3
+-	PAUSE=4
+-
  	total_nodes=0
  
-@@ -399,4 +402,48 @@ test10()
- 	tst_res TPASS "NUMA MIGRATEPAGES policy"
- }
+ 	nodes_list=$(numactl --show | grep nodebind | cut -d ':' -f 2)
+@@ -112,7 +106,7 @@ test1()
+ 	Mem_curr=0
  
-+# Verification of hugepage memory allocated on a node
-+test11()
-+{
-+	Mem_huge=0
-+	Sys_node=/sys/devices/system/node
-+
-+	if [ ! -d "/sys/kernel/mm/hugepages/" ]; then
-+		tst_res TCONF "hugepage is not supported"
-+		return
-+	fi
-+
-+	for node in $nodes_list; do
-+		Ori_hpgs=$(cat ${Sys_node}/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages)
-+		New_hpgs=$((Ori_hpgs + 1))
-+		echo $New_hpgs >${Sys_node}/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages
-+
-+		Chk_hpgs=$(cat ${Sys_node}/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages)
-+		if [ "$Chk_hpgs" -ne "$New_hpgs" ]; then
-+			tst_res TCONF "hugepage is not enough to test"
-+			return
-+		fi
-+
-+		numactl --cpunodebind=$node --membind=$node support_numa $HUGE_PAGE &
-+		pid=$!
-+		wait_for_support_numa $pid
-+
-+		Mem_huge=$(echo $(numastat -p $pid |awk '/Huge/ {print $'$((node+2))'}'))
-+		Mem_huge=$((${Mem_huge%.*} * 1024))
-+
-+		if [ "$Mem_huge" -lt "$HPAGE_SIZE" ]; then
-+			tst_res TFAIL \
-+				"NUMA memory allocated in node$node is less than expected"
-+			kill -CONT $pid >/dev/null 2>&1
-+			echo $Ori_hpgs >${Sys_node}/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages
-+			return
-+		fi
-+
-+		kill -CONT $pid >/dev/null 2>&1
-+		echo $Ori_hpgs >${Sys_node}/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages
-+	done
-+
-+	tst_res TPASS "NUMA local node hugepage memory allocated"
-+}
-+
- tst_run
+ 	for node in $nodes_list; do
+-		numactl --cpunodebind=$node --membind=$node support_numa $ALLOC_1MB &
++		numactl --cpunodebind=$node --membind=$node support_numa alloc_1MB &
+ 		pid=$!
+ 
+ 		wait_for_support_numa $pid
+@@ -146,7 +140,7 @@ test2()
+ 			Preferred_node=$(echo $nodes_list | cut -d ' ' -f $((COUNTER+1)))
+ 		fi
+ 
+-		numactl --cpunodebind=$node --preferred=$Preferred_node support_numa $ALLOC_1MB &
++		numactl --cpunodebind=$node --preferred=$Preferred_node support_numa alloc_1MB &
+ 		pid=$!
+ 
+ 		wait_for_support_numa $pid
+@@ -182,7 +176,7 @@ test3()
+ 			Preferred_node=$(echo $nodes_list | cut -d ' ' -f $((COUNTER+1)))
+ 		fi
+ 
+-		numactl --cpunodebind=$node --preferred=$Preferred_node support_numa $SHARE_1MB &
++		numactl --cpunodebind=$node --preferred=$Preferred_node support_numa alloc_1MB_shared &
+ 		pid=$!
+ 
+ 		wait_for_support_numa $pid
+@@ -209,7 +203,7 @@ test4()
+ 	# Memory will be allocated using round robin on nodes.
+ 	Exp_incr=$(echo "$MB / $total_nodes" |bc)
+ 
+-	numactl --interleave=all support_numa $ALLOC_1MB &
++	numactl --interleave=all support_numa alloc_1MB &
+ 	pid=$!
+ 
+ 	wait_for_support_numa $pid
+@@ -236,7 +230,7 @@ test5()
+ 	# Memory will be allocated using round robin on nodes.
+ 	Exp_incr=$(echo "$MB / $total_nodes" |bc)
+ 
+-	numactl --interleave=all support_numa $SHARE_1MB &
++	numactl --interleave=all support_numa alloc_1MB_shared &
+ 	pid=$!
+ 
+ 	wait_for_support_numa $pid
+@@ -267,7 +261,7 @@ test6()
+ 	no_of_cpus=$(tst_ncpus)
+ 	# not sure whether cpu's can't be in odd number
+ 	run_on_cpu=$(($((no_of_cpus+1))/2))
+-	numactl --physcpubind=$run_on_cpu support_numa $PAUSE & #just waits for sigint
++	numactl --physcpubind=$run_on_cpu support_numa pause & #just waits for sigint
+ 	pid=$!
+ 	var=`awk '{ print $2 }' /proc/$pid/stat`
+ 	while [ $var = '(numactl)' ]; do
+@@ -295,7 +289,7 @@ test7()
+ 	Mem_curr=0
+ 
+ 	for node in $nodes_list; do
+-		numactl --cpunodebind=$node --localalloc support_numa $ALLOC_1MB &
++		numactl --cpunodebind=$node --localalloc support_numa alloc_1MB &
+ 		pid=$!
+ 
+ 		wait_for_support_numa $pid
+@@ -388,7 +382,7 @@ test10()
+ 			Preferred_node=$(echo $nodes_list | cut -d ' ' -f $((COUNTER+1)))
+ 		fi
+ 
+-		numactl --preferred=$node support_numa $ALLOC_1MB &
++		numactl --preferred=$node support_numa alloc_1MB &
+ 		pid=$!
+ 
+ 		wait_for_support_numa $pid
+@@ -432,7 +426,7 @@ test11()
+ 			return
+ 		fi
+ 
+-		numactl --cpunodebind=$node --membind=$node support_numa $HUGE_PAGE &
++		numactl --cpunodebind=$node --membind=$node support_numa alloc_1huge_page &
+ 		pid=$!
+ 		wait_for_support_numa $pid
+ 
 diff --git a/testcases/kernel/numa/support_numa.c b/testcases/kernel/numa/support_numa.c
-index eaf63e3..97f3008 100644
+index 97f3008..fef8277 100644
 --- a/testcases/kernel/numa/support_numa.c
 +++ b/testcases/kernel/numa/support_numa.c
-@@ -22,7 +22,7 @@
- /*                                                                            */
- /* File:        support_numa.c                                                */
- /*                                                                            */
--/* Description: Allocates 1MB of memory and touches it to verify numa         */
-+/* Description: Allocates memory and touches it to verify numa                */
- /*                                                                            */
- /* Author:      Sivakumar Chinnaiah  Sivakumar.C@in.ibm.com                   */
- /*                                                                            */
-@@ -52,16 +52,43 @@ static void help(void)
+@@ -50,10 +50,10 @@
+ static void help(void)
+ {
  	printf("Input:	Describe input arguments to this program\n");
- 	printf("	argv[1] == 1 then allocate 1MB of memory\n");
- 	printf("	argv[1] == 2 then allocate 1MB of share memory\n");
--	printf("	argv[1] == 3 then pause the program to catch sigint\n");
-+	printf("        argv[1] == 3 then allocate 1HUGE PAGE SIZE of memory\n");
-+	printf("        argv[1] == 4 then pause the program to catch sigint\n");
+-	printf("	argv[1] == 1 then allocate 1MB of memory\n");
+-	printf("	argv[1] == 2 then allocate 1MB of share memory\n");
+-	printf("        argv[1] == 3 then allocate 1HUGE PAGE SIZE of memory\n");
+-	printf("        argv[1] == 4 then pause the program to catch sigint\n");
++	printf("	argv[1] == "alloc_1MB" then allocate 1MB of memory\n");
++	printf("	argv[1] == "alloc_1MB_shared" then allocate 1MB of share memory\n");
++	printf("        argv[1] == "alloc_1huge_page" then allocate 1HUGE PAGE SIZE of memory\n");
++	printf("        argv[1] == "pause" then pause the program to catch sigint\n");
  	printf("Exit:	On failure - Exits with non-zero value\n");
  	printf("	On success - exits with 0 exit value\n");
  
- 	exit(1);
- }
+@@ -97,8 +97,7 @@ int main(int argc, char *argv[])
+ 		exit(1);
+ 	}
  
-+static int read_hugepagesize(void)
-+{
-+	FILE *fp;
-+	char line[BUFSIZ], buf[BUFSIZ];
-+	int val;
-+
-+	fp = fopen("/proc/meminfo", "r");
-+	if (fp == NULL) {
-+		fprintf(stderr, "Failed to open /proc/meminfo");
-+		return 0;
-+	}
-+
-+	while (fgets(line, BUFSIZ, fp) != NULL) {
-+		if (sscanf(line, "%64s %d", buf, &val) == 2)
-+			if (strcmp(buf, "Hugepagesize:") == 0) {
-+				fclose(fp);
-+				return 1024 * val;
-+			}
-+	}
-+
-+	fclose(fp);
-+	fprintf(stderr, "can't find \"%s\" in %s", "Hugepagesize:", "/proc/meminfo");
-+
-+	return 0;
-+}
-+
- int main(int argc, char *argv[])
- {
--	int i, fd, rc;
-+	int i, fd, rc, hpsz;
- 	char *buf = NULL;
- 	struct stat sb;
- 
-@@ -114,6 +141,26 @@ int main(int argc, char *argv[])
- 		remove(TEST_SFILE);
- 		break;
- 	case 3:
-+		hpsz = read_hugepagesize();
-+		if (hpsz == 0)
-+			exit(1);
-+
-+		buf = mmap(NULL, hpsz, PROT_READ | PROT_WRITE,
-+				MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
-+				-1, 0);
-+
-+		if (buf == MAP_FAILED) {
-+			perror("mmap failed");
-+			exit(1);
-+		}
-+
-+		memset(buf, 'a', hpsz);
-+
-+		raise(SIGSTOP);
-+
-+		munmap(buf, hpsz);
-+		break;
-+	case 4:
+-	switch (atoi(argv[1])) {
+-	case 1:
++	if (!strcmp(argv[1], "alloc_1MB")) {
+ 		buf = malloc(MB);
+ 		if (!buf) {
+ 			fprintf(stderr, "Memory is not available\n");
+@@ -112,8 +111,7 @@ int main(int argc, char *argv[])
  		raise(SIGSTOP);
- 		break;
- 	default:
+ 
+ 		free(buf);
+-		break;
+-	case 2:
++	} else if (!strcmp(argv[1], "alloc_1MB_shared")) {
+ 		fd = open(TEST_SFILE, O_RDWR | O_CREAT, 0666);
+ 		/* Writing 1MB of random data into this file [32 * 32768 = 1024 * 1024] */
+ 		for (i = 0; i < 32768; i++){
+@@ -139,8 +137,7 @@ int main(int argc, char *argv[])
+ 		munmap(buf, sb.st_size);
+ 		close(fd);
+ 		remove(TEST_SFILE);
+-		break;
+-	case 3:
++	} else if (!strcmp(argv[1], "alloc_1huge_page")) {
+ 		hpsz = read_hugepagesize();
+ 		if (hpsz == 0)
+ 			exit(1);
+@@ -159,11 +156,9 @@ int main(int argc, char *argv[])
+ 		raise(SIGSTOP);
+ 
+ 		munmap(buf, hpsz);
+-		break;
+-	case 4:
++	} else if (!strcmp(argv[1], "pause")) {
+ 		raise(SIGSTOP);
+-		break;
+-	default:
++	} else {
+ 		help();
+ 	}
+ 
 -- 
 2.9.3
 
