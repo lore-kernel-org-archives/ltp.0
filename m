@@ -1,11 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 19 May 2017 15:05:43 +0200
-Subject: [LTP] [PATCH 02/10] Test for vulnerability CVE-2016-7117 in
- recvmmsg error return path
-In-Reply-To: <20170519123156.8462-2-rpalethorpe@suse.com>
+Date: Fri, 19 May 2017 15:06:16 +0200
+Subject: [LTP] [PATCH 05/10] Add CVE .gitignore,
+ Makefile and runtest files
+In-Reply-To: <20170519123156.8462-5-rpalethorpe@suse.com>
 References: <20170519123156.8462-1-rpalethorpe@suse.com>
- <20170519123156.8462-2-rpalethorpe@suse.com>
-Message-ID: <20170519130543.GB17258@rei.lan>
+ <20170519123156.8462-5-rpalethorpe@suse.com>
+Message-ID: <20170519130616.GC17258@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,14 +13,18 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +AC_DEFUN([LTP_CHECK_MMSGHDR],[
-> +AC_CHECK_TYPES([struct mmsghdr],,,[
-> +#include <sys/types.h>
-> +#define __USE_GNU
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +
+> +CFLAGS			+= -D_GNU_SOURCE
+> +
+> +<<<<<<< HEAD
+> +cve-2016-7117:	LDFLAGS += -lpthread
+> +=======
+> +cve-2014-0196:	LDFLAGS += -lpthread -lutil -lrt
+> +cve-2016-7117:	LDFLAGS += -lpthread -lrt
+> +>>>>>>> 4dbfb8e79... Add -lrt
 
-Don't do that, the double underscore one is library internal macro. The
-correct way is to define _GNU_SOURCE before you include any glibc
-header.
+Unsolved merge conflict here and in the next file.
 
 -- 
 Cyril Hrubis
