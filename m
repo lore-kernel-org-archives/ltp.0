@@ -1,60 +1,68 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 22 May 2017 09:47:27 +0200
-Subject: [LTP] [COMMITTED PATCH] pipeio: avoid SAFE macros in cleanup()
-Message-ID: <d96efcf348d74718bdde273efe8a680f7397dd86.1495439195.git.jstancek@redhat.com>
+Date: Mon, 22 May 2017 04:39:12 -0400 (EDT)
+Subject: [LTP] [PATCH v2] [RFC] pselect01: Tune thresholds
+In-Reply-To: <20170515131329.GA12586@rei.suse.de>
+References: <20170512141658.26810-1-chrubis@suse.cz>
+ <495691788.11461692.1494842630946.JavaMail.zimbra@redhat.com>
+ <20170515123556.GA8280@rei.lan>
+ <1832031935.11522951.1494853219630.JavaMail.zimbra@redhat.com>
+ <20170515131329.GA12586@rei.suse.de>
+Message-ID: <1308561590.18511159.1495442352952.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Only newlib testcases support SAFE macros in cleanup().
-When SAFE_UNLINK fails, it creates infinite loop between
-tst_brk_ and cleanup:
 
- #0  tst_res__ at tst_res.c:153
- #1  0x0000000000407ba8 in tst_brk__ at tst_res.c:480
- #2  0x00000000004081fe in tst_brkm_ at tst_res.c:577
- #3  0x000000000040a7c9 in safe_unlink at safe_macros.c:358
- #4  0x0000000000404abd in cleanup () at pipeio.c:497
- #5  0x0000000000407bc7 in tst_brk__ at tst_res.c:498
- #6  0x00000000004081fe in tst_brkm_ at tst_res.c:577
- #7  0x000000000040c1d6 in def_handler at tst_sig.c:231
- #8  <signal handler called>
- #9  0x00007f29c2cbd1f7 in __GI_raise at ../nptl/sysdeps/unix/sysv/linux/raise.c:56
- #10 0x00007f29c2cbe8e8 in __GI_abort () at abort.c:90
- #11 0x00000000004081af in tst_brkm_ at tst_res.c:581
- #12 0x000000000040a7c9 in safe_unlink at safe_macros.c:358
- #13 0x0000000000404abd in cleanup () at pipeio.c:497
- #14 0x0000000000407bc7 in tst_brk__ at tst_res.c:498
- #15 0x00000000004081fe in tst_brkm_ at tst_res.c:577
- #16 0x000000000040c1d6 in def_handler at tst_sig.c:231
- #17 <signal handler called>
- #18 0x00007f29c2cbd1f7 in __GI_raise at ../nptl/sysdeps/unix/sysv/linux/raise.c:56
- #19 0x00007f29c2cbe8e8 in __GI_abort () at abort.c:90
- #20 0x00000000004081af in tst_brkm_ at tst_res.c:581
- #21 0x000000000040a7c9 in safe_unlink at safe_macros.c:358
- #22 0x0000000000404abd in cleanup () at pipeio.c:497
- ...
+----- Original Message -----
+> Hi!
+> > > I guess that the 50us is included in the 250us already. So what about
+> > > adding the line you sugests and decreasing the 250us to 200us?
+> > 
+> > We can do that, but looking again at  PR_GET_TIMERSLACK, it is supported
+> > since 2.6.28, so we'd need to skip older kernels or fall back to a
+> > default of 50us.
+> 
+> Let's sort that out after the release, I will commit v2 as it is, ok?
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/ipc/pipeio/pipeio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'm seeing this test failing a lot now on RHEL6/7 as some cases are
+now more strict. 
 
-diff --git a/testcases/kernel/ipc/pipeio/pipeio.c b/testcases/kernel/ipc/pipeio/pipeio.c
-index 8426fb0e6b53..5aa082fd579b 100644
---- a/testcases/kernel/ipc/pipeio/pipeio.c
-+++ b/testcases/kernel/ipc/pipeio/pipeio.c
-@@ -494,7 +494,7 @@ static void cleanup(void)
- 	semctl(sem_id, 0, IPC_RMID);
- 
- 	if (!unpipe)
--		SAFE_UNLINK(NULL, pname);
-+		unlink(pname);
- 
- 	tst_rmdir();
- }
--- 
-1.8.3.1
+ppc KVM guest
+pselect01.c:131: FAIL: pselect() slept for too long 1006090us, expected 1000000us, threshold 2750
 
+slow x86 bare metal system
+pselect01.c:145: INFO: CLOCK_MONOTONIC resolution 1 ns
+pselect01.c:86: INFO: pselect() sleeping for 0 secs 1000000 nsec 500 iterations
+pselect01.c:118: INFO: Mean sleep time 1237.06 us, expected 1000 us, threshold 251.00
+pselect01.c:136: PASS: pselect() slept for 618532us, requested 500000us, treshold 125500
+pselect01.c:86: INFO: pselect() sleeping for 0 secs 2000000 nsec 500 iterations
+pselect01.c:118: INFO: Mean sleep time 2610.75 us, expected 2000 us, threshold 252.00
+pselect01.c:131: FAIL: pselect() slept for too long 1305373us, expected 1000000us, threshold 126000
+pselect01.c:86: INFO: pselect() sleeping for 0 secs 10000000 nsec 300 iterations
+pselect01.c:118: INFO: Mean sleep time 10590.66 us, expected 10000 us, threshold 260.00
+pselect01.c:131: FAIL: pselect() slept for too long 3177198us, expected 3000000us, threshold 78000
+pselect01.c:86: INFO: pselect() sleeping for 0 secs 100000000 nsec 1 iterations
+pselect01.c:136: PASS: pselect() slept for 100670us, requested 100000us, treshold 1850
+pselect01.c:86: INFO: pselect() sleeping for 1 secs 0 nsec 1 iterations
+pselect01.c:136: PASS: pselect() slept for 1001063us, requested 1000000us, treshold 2750
+
+x86 kvm guest
+pselect01.c:145: INFO: CLOCK_MONOTONIC resolution 1 ns
+pselect01.c:86: INFO: pselect() sleeping for 0 secs 1000000 nsec 500 iterations
+pselect01.c:118: INFO: Mean sleep time 1251.76 us, expected 1000 us, threshold 251.00
+pselect01.c:131: FAIL: pselect() slept for too long 625882us, expected 500000us, threshold 125500
+pselect01.c:86: INFO: pselect() sleeping for 0 secs 2000000 nsec 500 iterations
+pselect01.c:118: INFO: Mean sleep time 2256.17 us, expected 2000 us, threshold 252.00
+pselect01.c:131: FAIL: pselect() slept for too long 1128083us, expected 1000000us, threshold 126000
+pselect01.c:86: INFO: pselect() sleeping for 0 secs 10000000 nsec 300 iterations
+pselect01.c:118: INFO: Mean sleep time 10257.38 us, expected 10000 us, threshold 260.00
+pselect01.c:136: PASS: pselect() slept for 3077214us, requested 3000000us, treshold 78000
+pselect01.c:86: INFO: pselect() sleeping for 0 secs 100000000 nsec 1 iterations
+pselect01.c:136: PASS: pselect() slept for 100283us, requested 100000us, treshold 1850
+pselect01.c:86: INFO: pselect() sleeping for 1 secs 0 nsec 1 iterations
+pselect01.c:136: PASS: pselect() slept for 1001068us, requested 1000000us, treshold 2750
+
+Regards,
+Jan
