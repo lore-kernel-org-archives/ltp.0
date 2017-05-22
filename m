@@ -1,34 +1,70 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 22 May 2017 14:13:32 +0200
-Subject: [LTP] [PATCH v2 01/10] Add fuzzy synchronisation library for
-	triggering races
+Date: Mon, 22 May 2017 14:13:33 +0200
+Subject: [LTP] [PATCH v2 02/10] Test for vulnerability CVE-2016-7117 in
+	recvmmsg error return path
 In-Reply-To: <20170522121341.4663-1-rpalethorpe@suse.com>
 References: <20170522121341.4663-1-rpalethorpe@suse.com>
-Message-ID: <20170522121341.4663-2-rpalethorpe@suse.com>
+Message-ID: <20170522121341.4663-3-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Provide some functions for starting two actions at approximately the same time
-on different threads or processes. This is intended to amalgamate
-functionality built into at least three CVE tests. As well as conforming to
-DRY it is intended to help make reasoning about each test easier by
-abstracting away the synchronisation mechanism.
-
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- include/tst_fuzzy_sync.h | 189 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 189 insertions(+)
- create mode 100644 include/tst_fuzzy_sync.h
+ configure.ac                  |   1 +
+ m4/ltp-mmsghdr.m4             |  22 ++++++
+ testcases/cve/cve-2016-7117.c | 165 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 188 insertions(+)
+ create mode 100644 m4/ltp-mmsghdr.m4
+ create mode 100644 testcases/cve/cve-2016-7117.c
 
-diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
+diff --git a/configure.ac b/configure.ac
+index ecc9a2699..ddfc683a3 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -189,5 +189,6 @@ LTP_CHECK_EPOLL_PWAIT
+ LTP_CHECK_KEYUTILS_SUPPORT
+ LTP_CHECK_SYNC_ADD_AND_FETCH
+ LTP_CHECK_BUILTIN_CLEAR_CACHE
++LTP_CHECK_MMSGHDR
+ 
+ AC_OUTPUT
+diff --git a/m4/ltp-mmsghdr.m4 b/m4/ltp-mmsghdr.m4
 new file mode 100644
-index 000000000..ab8092d72
+index 000000000..05522180e
 --- /dev/null
-+++ b/include/tst_fuzzy_sync.h
-@@ -0,0 +1,189 @@
++++ b/m4/ltp-mmsghdr.m4
+@@ -0,0 +1,22 @@
++dnl Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
++dnl
++dnl This program is free software;  you can redistribute it and/or modify
++dnl it under the terms of the GNU General Public License as published by
++dnl the Free Software Foundation; either version 2 of the License, or
++dnl (at your option) any later version.
++dnl
++dnl This program is distributed in the hope that it will be useful,
++dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++dnl the GNU General Public License for more details.
++dnl
++dnl You should have received a copy of the GNU General Public License
++dnl along with this program. If not, see <http://www.gnu.org/licenses/>.
++
++AC_DEFUN([LTP_CHECK_MMSGHDR],[
++AC_CHECK_TYPES([struct mmsghdr],,,[
++#define _GNU_SOURCE
++#include <sys/types.h>
++#include <sys/socket.h>
++])
++])
+diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
+new file mode 100644
+index 000000000..721e31a45
+--- /dev/null
++++ b/testcases/cve/cve-2016-7117.c
+@@ -0,0 +1,165 @@
 +/*
 + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
 + *
@@ -46,178 +82,154 @@ index 000000000..ab8092d72
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
 +/*
-+ * Fuzzy Synchronisation - abreviated to fzsync
++ * CVE-2016-7117
 + *
-+ * This library is intended to help reproduce race conditions while running in
-+ * a loop. You can use it to measure the time at which two functions are
-+ * called in different threads. Then calculate the average time gap between
-+ * the function calls and introduce a delay in one thread to synchronise the
-+ * calls.
++ * This tests for a use after free caused by a race between recvmmsg() and
++ * close(). The exit path for recvmmsg() in (a2e2725541f: net: Introduce
++ * recvmmsg socket syscall) called fput() on the active file descriptor before
++ * checking the error state and setting the socket's error field.
 + *
-+ * It is called 'fuzzy' synchronisation because the time gap will naturally vary
-+ * due to environmental factors. It is not a 'hard' synchronisation mechanism
-+ * like lockstepping.
++ * If one or more messages are received by recvmmsg() followed by one which
++ * fails, the socket's error field will be set. If just after recvmmsg() calls
++ * fput(), a call to close() is made on the same file descriptor there is a
++ * race between close() releasing the socket object and recvmmsg() setting its
++ * error field.
 + *
-+ * For a usage example see testcases/cve/cve-2017-2671.c
++ * fput() does not release a file descriptor's resources (e.g. a socket)
++ * immediatly, it queues them to be released just before a system call returns
++ * to user land. So the close() system call must call fput() after it is
++ * called in recvmmsg(), exit and release the resources all before the socket
++ * error is set.
++ *
++ * Usually if the vulnerability is present the test will be killed with a
++ * kernel null pointer exception. However this is not guaranteed to happen
++ * every time.
++ *
++ * The following was used for reference
++ * https://blog.lizzie.io/notes-about-cve-2016-7117.html
 + */
 +
-+#include <sys/time.h>
-+#include <time.h>
++#include <sys/wait.h>
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <sys/syscall.h>
++#include <stdlib.h>
++#include <errno.h>
 +
-+#ifndef CLOCK_MONOTONIC_RAW
-+#define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
++#include "tst_test.h"
++#include "tst_safe_net.h"
++#include "tst_safe_pthread.h"
++#include "tst_timer.h"
++#include "tst_fuzzy_sync.h"
++
++/* The bug was present in the kernel before recvmmsg was exposed by glibc */
++#include "linux_syscall_numbers.h"
++
++#define MSG "abcdefghijklmnop"
++#define RECV_TIMEOUT 1
++#define ATTEMPTS 0x1FFFFF
++
++#ifndef HAVE_STRUCT_MMSGHDR
++struct mmsghdr {
++	struct msghdr msg_hdr;
++	unsigned int msg_len;
++};
 +#endif
 +
-+/**
-+ * struct tst_fzsync_pair - the state of a two way synchronisation
-+ * @avg_diff: The average time difference over multiple iterations
-+ * @avg_diff_trgt: The desired average time difference, defaults to 0
-+ * @avg_alpha: The rate at which old diff samples are forgotten,
-+ *             defaults to 0.25
-+ * @a: The time at which call site A was last passed
-+ * @b: The time at which call site B was last passed
-+ * @delay: The size of the delay, positive to delay A, negative to delay B
-+ * @delay_inc: The step size of a delay increment, defaults to 10
-+ * @update_gap: The number of iterations between recalculating the delay.
-+ *              Defaults to 0xF and must be of the form $2^n - 1$
-+ *
-+ * This contains all the necessary state for synchronising two points A and
-+ * B. Where A is the time of an event in one process and B is the time of an
-+ * event in another process.
-+ */
-+struct tst_fzsync_pair {
-+	double avg_diff;
-+	double avg_diff_trgt;
-+	double avg_alpha;
-+	struct timespec a;
-+	struct timespec b;
-+	long delay;
-+	long delay_inc;
-+	int update_gap;
++static int socket_fds[2];
++static struct mmsghdr msghdrs[2] = {
++	{
++		.msg_hdr = {
++			.msg_iov = &(struct iovec) {
++				.iov_len = sizeof(MSG),
++			},
++			.msg_iovlen = 1
++		}
++	},
++	{
++		.msg_hdr = {
++			.msg_iov = &(struct iovec) {
++				.iov_base = (void *)(0xbadadd),
++				.iov_len = ~0,
++			},
++			.msg_iovlen = 1
++		}
++	}
 +};
++static char rbuf[sizeof(MSG)];
++static struct timespec timeout = { .tv_sec = RECV_TIMEOUT };
++static struct tst_fzsync_pair fzsync_pair;
 +
-+/**
-+ * tst_fzsync_pair_init - Set default values if they are zero
-+ * @pair: Zeroed fuzzy pair state struct
-+ */
-+static void tst_fzsync_pair_init(struct tst_fzsync_pair *pair)
++static void setup(void)
 +{
-+	if (pair->avg_alpha == 0)
-+		pair->avg_alpha = 0.25;
-+	if (pair->delay_inc == 0)
-+		pair->delay_inc = 10;
-+	if (pair->update_gap == 0)
-+		pair->update_gap = 0xF;
++	tst_fzsync_pair_init(&fzsync_pair);
 +}
 +
-+static void tst_fzsync_pair_info(struct tst_fzsync_pair *pair)
++static void cleanup(void)
 +{
-+	tst_res(TINFO, "avg_diff = %.5gns, delay = %05ld loops",
-+		pair->avg_diff, pair->delay);
++	close(socket_fds[0]);
++	close(socket_fds[1]);
 +}
 +
-+/**
-+ * tst_fzsync_delay_a - Perform spin delay for A, if needed
-+ *
-+ * Usually called just before the point you want to synchronise.
-+ */
-+static inline void tst_fzsync_delay_a(struct tst_fzsync_pair *pair)
++static void *send_and_close(void *arg)
 +{
-+	volatile long spin_delay = pair->delay;
++	send(socket_fds[0], MSG, sizeof(MSG), 0);
++	send(socket_fds[0], MSG, sizeof(MSG), 0);
 +
-+	while (spin_delay > 0)
-+		spin_delay--;
++	tst_fzsync_delay_b(&fzsync_pair);
++
++	close(socket_fds[0]);
++	close(socket_fds[1]);
++	tst_fzsync_time_b(&fzsync_pair);
++
++	return arg;
 +}
 +
-+/**
-+ * tst_fzsync_delay_b - Perform spin delay for B, if needed
-+ *
-+ * Usually called just before the point you want to synchronise.
-+ */
-+static inline void tst_fzsync_delay_b(struct tst_fzsync_pair *pair)
++static void run(void)
 +{
-+	volatile long spin_delay = pair->delay;
++	pthread_t pt_send;
++	int i, stat, too_early_count = 0;
 +
-+	while (spin_delay < 0)
-+		spin_delay++;
-+}
++	msghdrs[0].msg_hdr.msg_iov->iov_base = (void *)&rbuf;
 +
-+static inline void tst_fzsync_time(struct timespec *t)
-+{
-+	clock_gettime(CLOCK_MONOTONIC_RAW, t);
-+}
++	for (i = 1; i < ATTEMPTS; i++) {
++		if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, socket_fds))
++			tst_brk(TBROK | TERRNO, "Socket creation failed");
 +
-+/**
-+ * tst_fzsync_time_a - Set A's time to now.
-+ *
-+ * Called@the point you want to synchronise.
-+ */
-+static inline void tst_fzsync_time_a(struct tst_fzsync_pair *pair)
-+{
-+	tst_fzsync_time(&pair->a);
-+}
++		SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, 0);
 +
-+/**
-+ * tst_fzsync_time_b - Set B's call time to now.
-+ *
-+ * Called at the point you want to synchronise.
-+ */
-+static inline void tst_fzsync_time_b(struct tst_fzsync_pair *pair)
-+{
-+	tst_fzsync_time(&pair->b);
-+}
++		tst_fzsync_delay_a(&fzsync_pair);
 +
-+/**
-+ * tst_exp_moving_avg - Exponential moving average
-+ * @alpha: The preference for receant samples over old ones.
-+ * @sample: The current sample
-+ * @prev_avg: The average of the all the previous samples
-+ *
-+ * Returns average including the current sample.
-+ */
-+static inline double tst_exp_moving_avg(double alpha, long sample,
-+					double prev_avg)
-+{
-+	return alpha * sample + (1.0 - alpha) * prev_avg;
-+}
++		stat = tst_syscall(__NR_recvmmsg,
++				   socket_fds[1], msghdrs, 2, 0, &timeout);
++		tst_fzsync_time_a(&fzsync_pair);
++		if (stat < 0 && errno == EBADF)
++			too_early_count++;
++		else if (stat == 0)
++			tst_res(TWARN, "No messages received, should be one");
++		else if (stat < 0)
++			tst_res(TWARN | TERRNO, "recvmmsg failed unexpectedly");
 +
-+/**
-+ * tst_fzsync_pair_update - Recalculate the delay
-+ * @loop_index: The i in "for(i = 0;..." or zero to ignore update_gap
-+ * @pair: The state necessary for calculating the delay
-+ *
-+ * This should be called at the end of each loop to update the average
-+ * measured time difference (between A and B) and update the delay. It is
-+ * assumed that A and B are less than a second apart.
-+ *
-+ * The values of update_gap, avg_alpha and delay_inc decide the speed at which
-+ * the algorithm approaches the optimum delay value and whether it is
-+ * stable. If your test is behaving strangely, it could be because this
-+ * algorithm is behaving chaotically and flip-flopping between large positve
-+ * and negative delay values. You can call tst_fzysync_pair_info every few
-+ * loops to check whether the average difference and delay values are stable.
-+ */
-+static void tst_fzsync_pair_update(int loop_index, struct tst_fzsync_pair *pair)
-+{
-+	long diff;
-+	long inc = pair->delay_inc;
-+	long delay = pair->delay;
-+	double target = pair->avg_diff_trgt;
-+	double avg = pair->avg_diff;
++		SAFE_PTHREAD_JOIN(pt_send, 0);
 +
-+	diff = pair->a.tv_nsec - pair->b.tv_nsec;
-+	avg = tst_exp_moving_avg(pair->avg_alpha, diff, avg);
-+
-+	if (!(loop_index & pair->update_gap)) {
-+		if (avg > target)
-+			delay -= inc;
-+		else if (avg < target)
-+			delay += inc;
++		tst_fzsync_pair_update(i, &fzsync_pair);
++		if (!(i & 0x7FFFF)) {
++			tst_res(TINFO, "Too early: %.1f%%",
++				100 * too_early_count / (float)i);
++			tst_fzsync_pair_info(&fzsync_pair);
++		}
 +	}
 +
-+	pair->avg_diff = avg;
-+	pair->delay = delay;
++	tst_res(TPASS, "Nothing happened after %d attempts", ATTEMPTS);
 +}
++
++static struct tst_test test = {
++	.tid = "cve-2016-7117",
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.min_kver = "2.6.33",
++};
 -- 
 2.12.2
 
