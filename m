@@ -1,70 +1,60 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 22 May 2017 11:54:41 +0800
-Subject: [LTP] [PATCH v3 3/3] ltp/numa: use string to describe operation
-In-Reply-To: <20170519122326.GA17258@rei.lan>
-References: <20170519082724.10232-1-liwang@redhat.com>
- <20170519122326.GA17258@rei.lan>
-Message-ID: <CAEemH2c2zzixjetBj8hKCgD_2tCiSN9FrE=0aNUmo4P9vDwD2A@mail.gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 22 May 2017 09:47:27 +0200
+Subject: [LTP] [COMMITTED PATCH] pipeio: avoid SAFE macros in cleanup()
+Message-ID: <d96efcf348d74718bdde273efe8a680f7397dd86.1495439195.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, May 19, 2017 at 8:23 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
-> Hi!
-> I've tested and pushed the patchset, thanks.
->
-> And also found that memhog test fails on first iteration (when the
-> memhog binary is not in the page cache) because the test script runs too
-> fast and looks at the statistics even befor the memmhog binary has a
-> chance to run. The problem can be simulated for me by dropping caches by
->
-> echo 3 > /proc/sys/vm/drop_caches
->
-> then running the test.
->
-> I guess that the best solution would be to wait for the memhog to print
-> at least one dot before we start the actuall test. Unfortunatelly I
-> cannot think of any better solution than redirectiong the output to a
-> file and then checking the content in the script in a loop.
+Only newlib testcases support SAFE macros in cleanup().
+When SAFE_UNLINK fails, it creates infinite loop between
+tst_brk_ and cleanup:
 
-Although I didn't hit this problem,  I believe the situation is easy
-to reproduce. As you said above, something changes like:
+ #0  tst_res__ at tst_res.c:153
+ #1  0x0000000000407ba8 in tst_brk__ at tst_res.c:480
+ #2  0x00000000004081fe in tst_brkm_ at tst_res.c:577
+ #3  0x000000000040a7c9 in safe_unlink at safe_macros.c:358
+ #4  0x0000000000404abd in cleanup () at pipeio.c:497
+ #5  0x0000000000407bc7 in tst_brk__ at tst_res.c:498
+ #6  0x00000000004081fe in tst_brkm_ at tst_res.c:577
+ #7  0x000000000040c1d6 in def_handler at tst_sig.c:231
+ #8  <signal handler called>
+ #9  0x00007f29c2cbd1f7 in __GI_raise at ../nptl/sysdeps/unix/sysv/linux/raise.c:56
+ #10 0x00007f29c2cbe8e8 in __GI_abort () at abort.c:90
+ #11 0x00000000004081af in tst_brkm_ at tst_res.c:581
+ #12 0x000000000040a7c9 in safe_unlink at safe_macros.c:358
+ #13 0x0000000000404abd in cleanup () at pipeio.c:497
+ #14 0x0000000000407bc7 in tst_brk__ at tst_res.c:498
+ #15 0x00000000004081fe in tst_brkm_ at tst_res.c:577
+ #16 0x000000000040c1d6 in def_handler at tst_sig.c:231
+ #17 <signal handler called>
+ #18 0x00007f29c2cbd1f7 in __GI_raise at ../nptl/sysdeps/unix/sysv/linux/raise.c:56
+ #19 0x00007f29c2cbe8e8 in __GI_abort () at abort.c:90
+ #20 0x00000000004081af in tst_brkm_ at tst_res.c:581
+ #21 0x000000000040a7c9 in safe_unlink at safe_macros.c:358
+ #22 0x0000000000404abd in cleanup () at pipeio.c:497
+ ...
 
-$ git diff
-diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
-index 4eda3f1..e3fe854 100755
---- a/testcases/kernel/numa/numa01.sh
-+++ b/testcases/kernel/numa/numa01.sh
-@@ -315,9 +315,20 @@ test8()
-        # Memory will be allocated using round robin on nodes.
-        Exp_incr=$(echo "$MB / $total_nodes" |bc)
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/ipc/pipeio/pipeio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--       numactl --interleave=all memhog -r1000000 1MB 2>&1 >/dev/null &
-+       numactl --interleave=all memhog -r1000000 1MB 2>&1 >ltp_numa_test8.log &
-        pid=$!
-
-+       local retries=20
-+       while [ $retries -gt 0 ]; do
-+
-+               if grep -m1 -q '.' ltp_numa_test8.log; then
-+                       break
-+               fi
-+
-+               retries=$((retries-1))
-+               tst_sleep 50ms
-+       done
-+
-        for node in $nodes_list; do
-                Mem_curr=$(echo "$(extract_numastat_p $pid $node) * $MB" |bc)
-
-
-
-Comment?
-
-
+diff --git a/testcases/kernel/ipc/pipeio/pipeio.c b/testcases/kernel/ipc/pipeio/pipeio.c
+index 8426fb0e6b53..5aa082fd579b 100644
+--- a/testcases/kernel/ipc/pipeio/pipeio.c
++++ b/testcases/kernel/ipc/pipeio/pipeio.c
+@@ -494,7 +494,7 @@ static void cleanup(void)
+ 	semctl(sem_id, 0, IPC_RMID);
+ 
+ 	if (!unpipe)
+-		SAFE_UNLINK(NULL, pname);
++		unlink(pname);
+ 
+ 	tst_rmdir();
+ }
 -- 
-Regards,
-Li Wang
-Email: liwang@redhat.com
+1.8.3.1
+
