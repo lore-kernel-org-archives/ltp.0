@@ -1,30 +1,33 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 22 May 2017 14:13:34 +0200
-Subject: [LTP] [PATCH v2 03/10] Test for CVE-2016-4997 on setsockopt
+Date: Mon, 22 May 2017 14:13:35 +0200
+Subject: [LTP] [PATCH v2 04/10] Test for uname26 exploit CVE-2012-0957
 In-Reply-To: <20170522121341.4663-1-rpalethorpe@suse.com>
 References: <20170522121341.4663-1-rpalethorpe@suse.com>
-Message-ID: <20170522121341.4663-4-rpalethorpe@suse.com>
+Message-ID: <20170522121341.4663-5-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Attempt to exploit the uname kernel memory leak which occurred when the
+UNAME26 personality was set.
+
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- testcases/cve/cve-2016-4997.c | 93 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 93 insertions(+)
- create mode 100644 testcases/cve/cve-2016-4997.c
+ testcases/cve/cve-2012-0957.c | 90 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 90 insertions(+)
+ create mode 100644 testcases/cve/cve-2012-0957.c
 
-diff --git a/testcases/cve/cve-2016-4997.c b/testcases/cve/cve-2016-4997.c
+diff --git a/testcases/cve/cve-2012-0957.c b/testcases/cve/cve-2012-0957.c
 new file mode 100644
-index 000000000..69424e1a5
+index 000000000..3a2afe08e
 --- /dev/null
-+++ b/testcases/cve/cve-2016-4997.c
-@@ -0,0 +1,93 @@
++++ b/testcases/cve/cve-2012-0957.c
+@@ -0,0 +1,90 @@
 +/*
 + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ * Based on repro-compatReleaseEntry.c by NCC group
++ * Copyright (c) 2012, Kees Cook <keescook@chromium.org>
 + *
 + * This program is free software: you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
@@ -40,80 +43,77 @@ index 000000000..69424e1a5
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
 +/*
-+ * Test for CVE-2016-4997
++ * Check that memory after the string terminator in all the utsname fields has
++ * been zeroed. cve-2012-0957 leaked kernel memory through the release field
++ * when the UNAME26 personality was set.
 + *
-+ * For a full explanation of how the vulnerability works see:
-+ * https://github.com/nccgroup/TriforceLinuxSyscallFuzzer/tree/master/crash_reports/report_compatIpt
-+ *
-+ * The original vulnerability was present in the 32-bit compatibility system
-+ * call, so the test should be compiled with -m32 and run on a 64-bit kernel.
-+ * For simplicities sake the test requests root privliges instead of creating
-+ * a user namespace.
++ * Thanks to Kees Cook for the original proof of concept:
++ * http://www.securityfocus.com/bid/55855/info
 + */
 +
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <netinet/in.h>
-+#include <net/if.h>
-+#include <limits.h>
-+#include <linux/netfilter_ipv4/ip_tables.h>
-+
++#include <string.h>
++#include <sys/utsname.h>
++#include <sys/personality.h>
 +#include "tst_test.h"
-+#include "tst_safe_net.h"
-+#include "tst_kernel.h"
 +
-+#define TOO_SMALL_OFFSET 74
-+#define OFFSET_OVERWRITE 0xFFFF
-+#define NEXT_OFFSET (sizeof(struct ipt_entry)		\
-+		     + sizeof(struct xt_entry_match)	\
-+		     + sizeof(struct xt_entry_target))
-+#define PADDING (OFFSET_OVERWRITE - NEXT_OFFSET)
++#define UNAME26 0x0020000
 +
-+struct payload {
-+	struct ipt_replace repl;
-+	struct ipt_entry ent;
-+	struct xt_entry_match match;
-+	struct xt_entry_target targ;
-+	char padding[PADDING];
-+	struct xt_entry_target targ2;
-+};
-+
-+static void setup(void)
++static int check_field(char *bytes, size_t length, char *field)
 +{
-+	if (tst_kernel_bits() == 32 || sizeof(long) > 4)
-+		tst_res(TCONF,
-+			"The vulnerability was only present in 32-bit compat mode");
++	size_t i = strlen(bytes) + 1;
++
++	for (; i < length; i++) {
++		if (bytes[i]) {
++			tst_res(TFAIL, "Bytes leaked in %s!", field);
++			return 1;
++		}
++	}
++	return 0;
 +}
 +
-+static void run(void)
++
++static void try_leak_bytes(void)
 +{
-+	int ret, sock_fd;
-+	struct payload p = { 0 };
++	struct utsname buf;
 +
-+	sock_fd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, 0);
++	if (uname(&buf))
++		tst_brk(TBROK | TERRNO, "Call to uname failed");
 +
-+	strncpy(p.match.u.user.name, "icmp", sizeof(p.match.u.user.name));
-+	p.match.u.match_size = OFFSET_OVERWRITE;
++#define CHECK_FIELD(field_name) \
++	(check_field(buf.field_name, ARRAY_SIZE(buf.field_name), #field_name))
 +
-+	p.ent.next_offset = NEXT_OFFSET;
-+	p.ent.target_offset = TOO_SMALL_OFFSET;
++	if (!(CHECK_FIELD(release) |
++	    CHECK_FIELD(sysname) |
++	    CHECK_FIELD(nodename) |
++	    CHECK_FIELD(version) |
++	    CHECK_FIELD(machine) |
++#ifdef _GNU_SOURCE
++	    CHECK_FIELD(domainname) |
++#endif
++		    0)) {
++		tst_res(TPASS, "All fields zeroed after string terminator");
++	}
++#undef CHECK_FIELD
++}
 +
-+	p.repl.num_entries = 2;
-+	p.repl.num_counters = 1;
-+	p.repl.size = sizeof(struct payload);
-+	p.repl.valid_hooks = 0;
-+
-+	ret = setsockopt(sock_fd, SOL_IP, IPT_SO_SET_REPLACE,
-+			 &p, sizeof(struct payload));
-+	tst_res(TPASS | TERRNO, "We didn't cause a crash, setsockopt returned %d", ret);
++static void run(unsigned int test_nr)
++{
++	if (!test_nr) {
++		tst_res(TINFO, "Calling uname with default personality");
++		try_leak_bytes();
++	} else {
++		if (personality(PER_LINUX | UNAME26) < 0)
++			tst_brk(TCONF | TERRNO,
++				"Could not change personality to UNAME26");
++		tst_res(TINFO, "Calling uname with UNAME26 personality");
++		try_leak_bytes();
++	}
 +}
 +
 +static struct tst_test test = {
-+	.tid = "cve-2016-4997",
-+	.min_kver = "2.6.32",
-+	.setup = setup,
-+	.test_all = run,
-+	.needs_root = 1,
++	.tid = "cve-2012-0957",
++	.test = run,
++	.tcnt = 2,
 +};
 -- 
 2.12.2
