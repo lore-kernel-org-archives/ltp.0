@@ -1,71 +1,62 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 22 May 2017 14:04:00 +0200
-Subject: [LTP] [PATCH v2] [RFC] pselect01: Tune thresholds
-In-Reply-To: <1308561590.18511159.1495442352952.JavaMail.zimbra@redhat.com>
-References: <20170512141658.26810-1-chrubis@suse.cz>
- <495691788.11461692.1494842630946.JavaMail.zimbra@redhat.com>
- <20170515123556.GA8280@rei.lan>
- <1832031935.11522951.1494853219630.JavaMail.zimbra@redhat.com>
- <20170515131329.GA12586@rei.suse.de>
- <1308561590.18511159.1495442352952.JavaMail.zimbra@redhat.com>
-Message-ID: <20170522120400.GB11771@rei.lan>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Mon, 22 May 2017 14:13:31 +0200
+Subject: [LTP] [PATCH v2 00/10] CVE Tests
+Message-ID: <20170522121341.4663-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I'm seeing this test failing a lot now on RHEL6/7 as some cases are
-> now more strict. 
-> 
-> ppc KVM guest
-> pselect01.c:131: FAIL: pselect() slept for too long 1006090us, expected 1000000us, threshold 2750
->
-> slow x86 bare metal system
-> pselect01.c:145: INFO: CLOCK_MONOTONIC resolution 1 ns
-> pselect01.c:86: INFO: pselect() sleeping for 0 secs 1000000 nsec 500 iterations
-> pselect01.c:118: INFO: Mean sleep time 1237.06 us, expected 1000 us, threshold 251.00
-> pselect01.c:136: PASS: pselect() slept for 618532us, requested 500000us, treshold 125500
-> pselect01.c:86: INFO: pselect() sleeping for 0 secs 2000000 nsec 500 iterations
-> pselect01.c:118: INFO: Mean sleep time 2610.75 us, expected 2000 us, threshold 252.00
-> pselect01.c:131: FAIL: pselect() slept for too long 1305373us, expected 1000000us, threshold 126000
-> pselect01.c:86: INFO: pselect() sleeping for 0 secs 10000000 nsec 300 iterations
-> pselect01.c:118: INFO: Mean sleep time 10590.66 us, expected 10000 us, threshold 260.00
-> pselect01.c:131: FAIL: pselect() slept for too long 3177198us, expected 3000000us, threshold 78000
+Version 2:
+* Remove unresolved merge conflict from two commits
+* Use _GNU_SOURCE instead of __USE_GNU
 
-What kind of a system is that (hardware/kernel)?
+P.s. Sorry for spamming the mailing list.
 
-Have you tried that measure.c program I've send you there as well?
+Richard Palethorpe (10):
+  Add fuzzy synchronisation library for triggering races
+  Test for vulnerability CVE-2016-7117 in recvmmsg error return path
+  Test for CVE-2016-4997 on setsockopt
+  Test for uname26 exploit CVE-2012-0957
+  Add CVE .gitignore, Makefile and runtest files
+  Test for CVE-2014-0196 PTY echo race
+  Test for CVE-2017-5669 in shmat
+  Test for CVE-2017-6951 in request_key
+  Test for CVE-2017-7277 SOF_TIMESTAMPING_OPT_STATS
+  Test for CVE-2017-2671 on ping sockets
 
-Maybe we should just try to discard something as 5% of the outliners as
-well. I.e. storing the measured times in an array, sort it and discard
-some of the measurements.
-
-> pselect01.c:86: INFO: pselect() sleeping for 0 secs 100000000 nsec 1 iterations
-> pselect01.c:136: PASS: pselect() slept for 100670us, requested 100000us, treshold 1850
-> pselect01.c:86: INFO: pselect() sleeping for 1 secs 0 nsec 1 iterations
-> pselect01.c:136: PASS: pselect() slept for 1001063us, requested 1000000us, treshold 2750
-> 
-> x86 kvm guest
-> pselect01.c:145: INFO: CLOCK_MONOTONIC resolution 1 ns
-> pselect01.c:86: INFO: pselect() sleeping for 0 secs 1000000 nsec 500 iterations
-> pselect01.c:118: INFO: Mean sleep time 1251.76 us, expected 1000 us, threshold 251.00
-> pselect01.c:131: FAIL: pselect() slept for too long 625882us, expected 500000us, threshold 125500
-> pselect01.c:86: INFO: pselect() sleeping for 0 secs 2000000 nsec 500 iterations
-> pselect01.c:118: INFO: Mean sleep time 2256.17 us, expected 2000 us, threshold 252.00
-> pselect01.c:131: FAIL: pselect() slept for too long 1128083us, expected 1000000us, threshold 126000
-> pselect01.c:86: INFO: pselect() sleeping for 0 secs 10000000 nsec 300 iterations
-> pselect01.c:118: INFO: Mean sleep time 10257.38 us, expected 10000 us, threshold 260.00
-> pselect01.c:136: PASS: pselect() slept for 3077214us, requested 3000000us, treshold 78000
-> pselect01.c:86: INFO: pselect() sleeping for 0 secs 100000000 nsec 1 iterations
-> pselect01.c:136: PASS: pselect() slept for 100283us, requested 100000us, treshold 1850
-> pselect01.c:86: INFO: pselect() sleeping for 1 secs 0 nsec 1 iterations
-> pselect01.c:136: PASS: pselect() slept for 1001068us, requested 1000000us, treshold 2750
-
-These are failing just by a small bit, does the test work fine there if
-you increase the static part of the threshold by 50?
+ configure.ac                  |   1 +
+ include/tst_fuzzy_sync.h      | 189 ++++++++++++++++++
+ m4/ltp-mmsghdr.m4             |  22 +++
+ runtest/cve                   |  10 +
+ runtest/syscalls              |   4 +
+ scenario_groups/default       |   1 +
+ testcases/cve/.gitignore      |   8 +
+ testcases/cve/Makefile        |  26 +++
+ testcases/cve/cve-2012-0957.c |  90 +++++++++
+ testcases/cve/cve-2014-0196.c | 163 +++++++++++++++
+ testcases/cve/cve-2016-4997.c |  93 +++++++++
+ testcases/cve/cve-2016-7117.c | 165 ++++++++++++++++
+ testcases/cve/cve-2017-2671.c | 123 ++++++++++++
+ testcases/cve/cve-2017-5669.c |  90 +++++++++
+ testcases/cve/cve-2017-6951.c |  47 +++++
+ testcases/cve/cve-2017-7277.c | 449 ++++++++++++++++++++++++++++++++++++++++++
+ 16 files changed, 1481 insertions(+)
+ create mode 100644 include/tst_fuzzy_sync.h
+ create mode 100644 m4/ltp-mmsghdr.m4
+ create mode 100644 runtest/cve
+ create mode 100644 testcases/cve/.gitignore
+ create mode 100644 testcases/cve/Makefile
+ create mode 100644 testcases/cve/cve-2012-0957.c
+ create mode 100644 testcases/cve/cve-2014-0196.c
+ create mode 100644 testcases/cve/cve-2016-4997.c
+ create mode 100644 testcases/cve/cve-2016-7117.c
+ create mode 100644 testcases/cve/cve-2017-2671.c
+ create mode 100644 testcases/cve/cve-2017-5669.c
+ create mode 100644 testcases/cve/cve-2017-6951.c
+ create mode 100644 testcases/cve/cve-2017-7277.c
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.12.2
+
