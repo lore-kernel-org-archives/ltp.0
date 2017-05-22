@@ -1,40 +1,70 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 19 May 2017 16:38:02 +0200
-Subject: [LTP] [PATCH v4 1/2] syscalls/splice04: add test for splice()
- from pipe to pipe
-In-Reply-To: <20170519142542.GD17258@rei.lan>
-References: <1494580475-3522-1-git-send-email-bxue@redhat.com>
- <20170519142542.GD17258@rei.lan>
-Message-ID: <20170519143801.GF17258@rei.lan>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 22 May 2017 11:54:41 +0800
+Subject: [LTP] [PATCH v3 3/3] ltp/numa: use string to describe operation
+In-Reply-To: <20170519122326.GA17258@rei.lan>
+References: <20170519082724.10232-1-liwang@redhat.com>
+ <20170519122326.GA17258@rei.lan>
+Message-ID: <CAEemH2c2zzixjetBj8hKCgD_2tCiSN9FrE=0aNUmo4P9vDwD2A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > +	SAFE_PIPE(pp1);
-> > +	SAFE_PIPE(pp2);
-> > +	SAFE_WRITE(1, pp1[1], arr_in, num_len_data);
-> > +	for (i = 0; i < num_len_data; i++) {
-> > +		ret = splice(pp1[0], NULL, pp2[1], NULL, 1, SPLICE_F_MOVE);
-> > +		if (ret == -1) {
-> > +			tst_res(TFAIL | TERRNO, "splice error");
-> > +			goto exit;
-> > +		}
-> > +		SAFE_READ(1, pp2[0], arr_out + i, 1);
-> > +	}
-> 
-> I do not understand why we are moving the data byte by byte here?
-> 
-> And also the SPLICE_F_MOVE flag, even if that was correctly implemented,
-> would be useless here.
+On Fri, May 19, 2017 at 8:23 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
+> Hi!
+> I've tested and pushed the patchset, thanks.
+>
+> And also found that memhog test fails on first iteration (when the
+> memhog binary is not in the page cache) because the test script runs too
+> fast and looks at the statistics even befor the memmhog binary has a
+> chance to run. The problem can be simulated for me by dropping caches by
+>
+> echo 3 > /proc/sys/vm/drop_caches
+>
+> then running the test.
+>
+> I guess that the best solution would be to wait for the memhog to print
+> at least one dot before we start the actuall test. Unfortunatelly I
+> cannot think of any better solution than redirectiong the output to a
+> file and then checking the content in the script in a loop.
 
-Looked at the previous version of the patch and the comment from Jan.
+Although I didn't hit this problem,  I believe the situation is easy
+to reproduce. As you said above, something changes like:
 
-What he meant there was that we should decrease the number of requested
-bytes by the number of bytes we spliced already.
+$ git diff
+diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
+index 4eda3f1..e3fe854 100755
+--- a/testcases/kernel/numa/numa01.sh
++++ b/testcases/kernel/numa/numa01.sh
+@@ -315,9 +315,20 @@ test8()
+        # Memory will be allocated using round robin on nodes.
+        Exp_incr=$(echo "$MB / $total_nodes" |bc)
+
+-       numactl --interleave=all memhog -r1000000 1MB 2>&1 >/dev/null &
++       numactl --interleave=all memhog -r1000000 1MB 2>&1 >ltp_numa_test8.log &
+        pid=$!
+
++       local retries=20
++       while [ $retries -gt 0 ]; do
++
++               if grep -m1 -q '.' ltp_numa_test8.log; then
++                       break
++               fi
++
++               retries=$((retries-1))
++               tst_sleep 50ms
++       done
++
+        for node in $nodes_list; do
+                Mem_curr=$(echo "$(extract_numastat_p $pid $node) * $MB" |bc)
+
+
+
+Comment?
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+Email: liwang@redhat.com
