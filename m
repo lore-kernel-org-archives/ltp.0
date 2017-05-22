@@ -1,10 +1,9 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 22 May 2017 14:13:40 +0200
-Subject: [LTP] [PATCH v2 09/10] Test for CVE-2017-7277
-	SOF_TIMESTAMPING_OPT_STATS
+Date: Mon, 22 May 2017 14:13:41 +0200
+Subject: [LTP] [PATCH v2 10/10] Test for CVE-2017-2671 on ping sockets
 In-Reply-To: <20170522121341.4663-1-rpalethorpe@suse.com>
 References: <20170522121341.4663-1-rpalethorpe@suse.com>
-Message-ID: <20170522121341.4663-10-rpalethorpe@suse.com>
+Message-ID: <20170522121341.4663-11-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,36 +14,55 @@ Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
  runtest/cve                   |   1 +
  testcases/cve/.gitignore      |   1 +
- testcases/cve/cve-2017-7277.c | 449 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 451 insertions(+)
- create mode 100644 testcases/cve/cve-2017-7277.c
+ testcases/cve/Makefile        |   1 +
+ testcases/cve/cve-2017-2671.c | 123 ++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 126 insertions(+)
+ create mode 100644 testcases/cve/cve-2017-2671.c
 
 diff --git a/runtest/cve b/runtest/cve
-index ee0614a9c..359958ca9 100644
+index 359958ca9..5958d6c39 100644
 --- a/runtest/cve
 +++ b/runtest/cve
-@@ -6,3 +6,4 @@ cve-2016-5195 dirtyc0w
+@@ -4,6 +4,7 @@ cve-2014-0196 cve-2014-0196
+ cve-2016-4997 cve-2016-4997
+ cve-2016-5195 dirtyc0w
  cve-2016-7117 cve-2016-7117
++cve-2017-2671 cve-2017-2671
  cve-2017-5669 cve-2017-5669
  cve-2017-6951 cve-2017-6951
-+cve-2017-7277 cve-2017-7277
+ cve-2017-7277 cve-2017-7277
 diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
-index 979d18369..516ea62a5 100644
+index 516ea62a5..376964266 100644
 --- a/testcases/cve/.gitignore
 +++ b/testcases/cve/.gitignore
-@@ -4,3 +4,4 @@ cve-2016-4997
+@@ -2,6 +2,7 @@ cve-2012-0957
+ cve-2014-0196
+ cve-2016-4997
  cve-2016-7117
++cve-2017-2671
  cve-2017-5669
  cve-2017-6951
-+cve-2017-7277
-diff --git a/testcases/cve/cve-2017-7277.c b/testcases/cve/cve-2017-7277.c
+ cve-2017-7277
+diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
+index d642b73b4..e9d9044d5 100644
+--- a/testcases/cve/Makefile
++++ b/testcases/cve/Makefile
+@@ -21,5 +21,6 @@ CFLAGS			+= -D_GNU_SOURCE
+ 
+ cve-2014-0196:	LDFLAGS += -lpthread -lutil -lrt
+ cve-2016-7117:	LDFLAGS += -lpthread -lrt
++cve-2017-2671:	LDFLAGS += -lpthread -lrt
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/cve/cve-2017-2671.c b/testcases/cve/cve-2017-2671.c
 new file mode 100644
-index 000000000..9fdbec445
+index 000000000..e76a87fd5
 --- /dev/null
-+++ b/testcases/cve/cve-2017-7277.c
-@@ -0,0 +1,449 @@
++++ b/testcases/cve/cve-2017-2671.c
+@@ -0,0 +1,123 @@
 +/*
 + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
++ * Original POC by Daniel Jiang
 + *
 + * This program is free software: you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
@@ -60,437 +78,110 @@ index 000000000..9fdbec445
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
 +/*
-+ * Test for CVE-2017-7277
++ * Test for CVE-2017-2671 faulty locking on ping socket
 + *
-+ * There are two bugs:
++ * When sys_connect() is called with sockaddr.sin_family set to AF_UNSPEC on a
++ * ping socket; __udp_disconnect() gets called, which in turn calls the buggy
++ * function ping_unhashed(). This function does not obtain a rwlock before
++ * checking if the socket is hashed allowing the socket data to be pulled from
++ * underneath it in the time between calling sk_hashed() and gaining the write
++ * lock.
 + *
-+ *   1) __sock_recv_timestamp does not expect SOF_TIMESTAMPING_RX_* to be set
-+ *      with SOF_TIMESTAMPING_OPT_STATS. So just assumes it is handling a
-+ *      packet from the error queue which will contain TX stats if the socket
-+ *      option SOF_TIMESTAMPING_OPT_STATS is set. However if RX timestamping
-+ *      is enabled then although there may be an RX timestamp there will be no
-+ *      TX stats, so the kernel ends up copying whatever is in the socket
-+ *      buffer which could be private or invalid data. Fixed by commit
-+ *      8605330aac5a5785630aec8f64378a54891937cc
++ * Fixed in commit 43a6684519ab0a6c52024b5e25322476cabad893
 + *
-+ *   2) __sock_recv_timestamp only checks the socket's
-+ *      SOF_TIMESTAMPING_OPT_STATS flag which may be enabled while timestamp
-+ *      error packets without stats are still in the pipeline. Fixed by commit
-+ *      4ef1b2869447411ad3ef91ad7d4891a83c1a509a
++ * This test repeatedly 'connects' a ping socket correctly then calls
++ * connect() with AF_UNSPEC in two seperate threads to trigger the race
++ * condition. If the bug is present, then the test will most likely crash the
++ * system.
 + *
-+ * To detect the first bug we receive some packets on a socket with
-+ * SOF_TIMESTAMPING_OPT_STATS set and check the control messages to see if
-+ * they contain the message data or malformed timestamp stats.
-+ *
-+ * To detect the second bug we transmit some packets while toggling
-+ * timestamping on and off. Then we check the error message queue for control
-+ * messages with malformed timestamp stats. Unfortunately this does not appear
-+ * to replicate the bug on my computer, but I have left it in anyway to
-+ * provide some coverage for timestamping.
-+ *
-+ * Feature was introduced by commit 1c885808e45601b2b6f68b30ac1d999e10b6f606
-+ * For more information see https://lkml.org/lkml/2017/3/15/485
-+ *
-+ * The test works with both TCP and UDP which can be changed at compile
-+ * time. It probably works with other protocols as well.
++ * The test requests root privileges so that it can ensure ping sockets are
++ * enabled. On distributions (including Android) where ping sockets are
++ * enabled by default, root privileges are not required.
 + */
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <sys/wait.h>
++
++#include <stdio.h>
 +#include <sys/socket.h>
-+#include <linux/socket.h>
-+#include <linux/tcp.h>
-+#include <linux/netlink.h>
 +#include <arpa/inet.h>
-+#include <netinet/in.h>
-+#include <netinet/ip.h>
++#include <stdlib.h>
 +
 +#include "tst_test.h"
 +#include "tst_safe_net.h"
++#include "tst_safe_pthread.h"
 +
-+#define MSG_STR "This is not a control message"
-+#define MSG_SIZE sizeof(MSG_STR)
-+#define PROT SOCK_STREAM
-+#define STATS_LEN ((NLA_HDRLEN + NLA_ALIGN(sizeof(__u64))) * 3)
++#include "tst_fuzzy_sync.h"
 +
-+#ifndef SCM_TIMESTAMPING_OPT_STATS
++#define ATTEMPTS 0xFFFF
++#define PING_SYSCTL_PATH "/proc/sys/net/ipv4/ping_group_range"
 +
-+#if defined(__sparc__)
-+#define SCM_TIMESTAMPING_OPT_STATS 0x0038
-+#elif defined(__hppa__)
-+#define SCM_TIMESTAMPING_OPT_STATS 0x402F
-+#else
-+#define SCM_TIMESTAMPING_OPT_STATS 54
-+#endif
-+
-+/* From <linux/tcp.h> */
-+enum {
-+	TCP_NLA_PAD,
-+	TCP_NLA_BUSY,		/* Time (usec) busy sending data */
-+	TCP_NLA_RWND_LIMITED,	/* Time (usec) limited by receive window */
-+	TCP_NLA_SNDBUF_LIMITED,	/* Time (usec) limited by send buffer */
++static int sockfd;
++static unsigned int ping_min_grp = 1, ping_max_grp;
++static struct tst_fzsync_pair fzsync_pair = {
++	.delay_inc = 1,
 +};
-+#endif	/* ifndef SCM_TIMESTAMPING_OPT_STATS */
-+
-+/* From <linux/net_tstamp.h> */
-+enum {
-+	SOF_TIMESTAMPING_TX_HARDWARE = (1<<0),
-+	SOF_TIMESTAMPING_TX_SOFTWARE = (1<<1),
-+	SOF_TIMESTAMPING_RX_HARDWARE = (1<<2),
-+	SOF_TIMESTAMPING_RX_SOFTWARE = (1<<3),
-+	SOF_TIMESTAMPING_SOFTWARE = (1<<4),
-+	SOF_TIMESTAMPING_RAW_HARDWARE = (1<<6),
-+	SOF_TIMESTAMPING_OPT_ID = (1<<7),
-+	SOF_TIMESTAMPING_TX_SCHED = (1<<8),
-+	SOF_TIMESTAMPING_TX_ACK = (1<<9),
-+	SOF_TIMESTAMPING_OPT_CMSG = (1<<10),
-+	SOF_TIMESTAMPING_OPT_TSONLY = (1<<11),
-+	SOF_TIMESTAMPING_OPT_STATS = (1<<12),
-+};
-+
-+struct sockaddr_in srv_addr = {
-+	.sin_family = AF_INET,
-+	.sin_port = 0,
-+	.sin_addr = { 0 },
-+};
-+
-+static char buf[MSG_SIZE];
-+static int srv_lsn_sock;
++static struct sockaddr_in iaddr, uaddr;
 +
 +static void setup(void)
 +{
-+	socklen_t addr_len = (socklen_t)sizeof(srv_addr);
++	iaddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
++	uaddr = iaddr;
++	iaddr.sin_family = AF_INET;
++	uaddr.sin_family = AF_UNSPEC;
++	tst_fzsync_pair_init(&fzsync_pair);
 +
-+	srv_addr.sin_addr = (struct in_addr){
-+		htonl(INADDR_LOOPBACK)
-+	};
-+	srv_lsn_sock = SAFE_SOCKET(AF_INET, PROT, 0);
-+	SAFE_BIND(srv_lsn_sock,
-+		  (struct sockaddr *)&srv_addr, addr_len);
-+	SAFE_GETSOCKNAME(srv_lsn_sock,
-+			 (struct sockaddr *)&srv_addr, &addr_len);
-+	if ((socklen_t)sizeof(srv_addr) < addr_len)
-+		tst_brk(TBROK, "ABI breakage?");
-+
-+	if (PROT == SOCK_STREAM) {
-+		SAFE_LISTEN(srv_lsn_sock, 1);
-+		tst_res(TINFO, "Listening on 127.0.0.1:%d",
-+			ntohs(srv_addr.sin_port));
-+	} else {
-+		tst_res(TINFO, "Bound to 127.0.0.1:%d",
-+			ntohs(srv_addr.sin_port));
-+	}
-+
-+	strcpy(buf, MSG_STR);
++	SAFE_FILE_SCANF(PING_SYSCTL_PATH, "%u %u",
++			&ping_min_grp, &ping_max_grp);
++	SAFE_FILE_PRINTF(PING_SYSCTL_PATH, "0 0");
 +}
 +
 +static void cleanup(void)
 +{
-+	close(srv_lsn_sock);
-+	srv_addr.sin_port = 0;
++	if (ping_min_grp | ping_max_grp)
++		SAFE_FILE_PRINTF(PING_SYSCTL_PATH, "%u %u",
++				 ping_min_grp, ping_max_grp);
 +}
 +
-+static struct nlattr *nla_next(struct nlattr *nla, int *remaining)
++static void *connect_b(void * param LTP_ATTRIBUTE_UNUSED)
 +{
-+	int len = NLA_ALIGN(nla->nla_len);
-+
-+	*remaining -= len;
-+	if (*remaining < NLA_HDRLEN)
-+		return 0;
-+
-+	return (struct nlattr *)((char *)nla + len);
-+}
-+
-+static int check_cmsg(struct msghdr *msgh)
-+{
-+	struct cmsghdr *cmsg;
-+	char *data;
-+	struct nlattr *nla;
-+	int remaining;
-+
-+	for (cmsg = CMSG_FIRSTHDR(msgh);
-+	     cmsg != NULL;
-+	     cmsg = CMSG_NXTHDR(msgh, cmsg)) {
-+
-+		data = (char *)CMSG_DATA(cmsg);
-+		if (!strncmp(data, MSG_STR, cmsg->cmsg_len))
-+			return TFAIL;
-+
-+		if (cmsg->cmsg_type != SCM_TIMESTAMPING_OPT_STATS)
-+			continue;
-+
-+		if (cmsg->cmsg_len < STATS_LEN) {
-+			tst_res(TFAIL,
-+				"Control message is not big enough to contain stats");
-+			continue;
-+		}
-+
-+		nla = (struct nlattr *)CMSG_DATA(cmsg);
-+		if (nla->nla_type != TCP_NLA_BUSY) {
-+			tst_res(TFAIL,
-+				"First nlattr should be TCP_NLA_BUSY");
-+			continue;
-+		}
-+
-+		remaining = cmsg->cmsg_len;
-+		nla = nla_next(nla, &remaining);
-+		if (!nla) {
-+			tst_res(TFAIL, "TCP_NLA_BUSY length is too long");
-+			continue;
-+		}
-+		if (nla->nla_type != TCP_NLA_RWND_LIMITED) {
-+			tst_res(TFAIL,
-+				"Second nlattr should be TCP_NLA_RWND_LIMITED");
-+			continue;
-+		}
-+
-+		nla = nla_next(nla, &remaining);
-+		if (!nla) {
-+			tst_res(TFAIL,
-+				"TCP_NLA_RWND_LIMITED length is too long");
-+			continue;
-+		}
-+		if (nla->nla_type != TCP_NLA_SNDBUF_LIMITED)
-+			tst_res(TFAIL,
-+				"Third nlattr should be TCP_NLA_SNDBUF_LIMITED");
-+	}
-+
-+	return TPASS;
-+}
-+
-+static ssize_t write_read(int sock,
-+			  int flags,
-+			  struct sockaddr_in *peer_addr,
-+			  int check)
-+{
-+	static char cbuf[CMSG_ALIGN(4096)];
-+	ssize_t sstat, total = 0;
-+	struct iovec vec = {
-+		.iov_base = (void *)buf,
-+		.iov_len = sizeof(buf)
-+	};
-+	struct msghdr msg = {
-+		.msg_iov = &vec,
-+		.msg_iovlen = 1,
-+		.msg_control = (void *)cbuf,
-+		.msg_controllen = sizeof(cbuf)
-+	};
-+
-+	if (peer_addr != 0) {
-+		msg.msg_name = (void *)peer_addr;
-+		msg.msg_namelen = (socklen_t)sizeof(struct sockaddr_in);
-+	}
-+
-+	do {
-+		sstat = recvmsg(sock, &msg, flags);
-+		if (sstat < 0 && errno != EAGAIN) {
-+			sstat = -errno;
-+			tst_res(TINFO | TERRNO, "recv(%d, %d, %p) < 0",
-+				sock, flags, (void *)peer_addr);
-+			return sstat;
-+		}
-+		total += sstat;
-+		if (check && check_cmsg(&msg) == TFAIL)
-+			tst_res(TFAIL, "Receive msg has bad control message");
-+	} while ((size_t)total < MSG_SIZE * 2 && !(flags & MSG_DONTWAIT));
-+
-+	msg.msg_controllen = 0;
-+
-+	do {
-+		sstat = sendmsg(sock, &msg, flags);
-+		if (sstat < 0 && peer_addr != 0 && errno == EDESTADDRREQ)
-+			break;
-+		if (sstat < 0 && errno != EAGAIN) {
-+			sstat = -errno;
-+			tst_res(TINFO | TERRNO, "send(%d, %d, %p) < 0",
-+				sock, flags, (void *)peer_addr);
-+			return sstat;
-+		}
-+		total += sstat;
-+		if (check && check_cmsg(&msg) == TFAIL)
-+			tst_res(TFAIL, "Transmit msg has bad control message");
-+	} while ((size_t)total < MSG_SIZE && !(flags & MSG_DONTWAIT));
-+
-+	return total;
-+}
-+
-+static void server(void)
-+{
-+	int srv_sock;
-+	struct sockaddr_in cln_addr;
-+	socklen_t addr_len = (socklen_t)sizeof(cln_addr);
-+	ssize_t sstat;
-+
-+	if (PROT == SOCK_STREAM) {
-+		srv_sock = accept(srv_lsn_sock,
-+				  (struct sockaddr *)&cln_addr, &addr_len);
-+		if (srv_sock < 0)
-+			tst_brk(TBROK | TERRNO, "Accept failed");
-+		tst_res(TINFO,
-+			"Server accepted connection, on sock %d", srv_sock);
-+	} else {
-+		srv_sock = srv_lsn_sock;
-+	}
-+
-+	while (1) {
-+		if (PROT == SOCK_STREAM)
-+			sstat = write_read(srv_sock, 0, 0, 0);
-+		else
-+			sstat = write_read(srv_sock, 0, &cln_addr, 0);
-+		if (sstat < 0) {
-+			close(srv_sock);
-+			if (sstat != -ECONNRESET)
-+				exit(TBROK);
-+			else
-+				exit(0);
-+		}
-+	}
-+}
-+
-+static int inspect_timestamps(int cln_sock)
-+{
-+	char cbuf[CMSG_ALIGN(4096)];
-+	struct sockaddr_in addr;
-+	ssize_t sstat;
-+	struct msghdr errq_msg = { 0 };
-+
-+	errq_msg.msg_name = (void *)&addr;
-+	errq_msg.msg_namelen = (socklen_t)sizeof(addr);
-+	errq_msg.msg_control = (void *)cbuf;
-+	errq_msg.msg_controllen = sizeof(cbuf);
-+
-+	while (1) {
-+		sstat = recvmsg(cln_sock, &errq_msg,
-+				MSG_ERRQUEUE | MSG_DONTWAIT);
-+		if (sstat < 0 && errno == EAGAIN)
-+			break;
-+		else if (sstat < 0) {
-+			tst_res(TBROK | TERRNO,
-+				"recvmsg(cln_sock,... , MSG_ERRQUEUE) == -1");
-+			return -1;
-+		}
-+
-+		if (check_cmsg(&errq_msg) == TFAIL) {
-+			tst_res(TFAIL,
-+				"Error queue contains bad control message");
-+			break;
-+		}
-+	}
++	tst_fzsync_delay_b(&fzsync_pair);
++	connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
++	tst_fzsync_time_b(&fzsync_pair);
 +
 +	return 0;
 +}
 +
-+static void client(void)
-+{
-+	const unsigned int tsopts_no_stats =
-+		SOF_TIMESTAMPING_TX_SOFTWARE
-+		| SOF_TIMESTAMPING_TX_SCHED
-+		| SOF_TIMESTAMPING_RX_SOFTWARE
-+		| SOF_TIMESTAMPING_SOFTWARE
-+		| SOF_TIMESTAMPING_TX_HARDWARE
-+		| SOF_TIMESTAMPING_RX_HARDWARE
-+		| SOF_TIMESTAMPING_RAW_HARDWARE
-+		| SOF_TIMESTAMPING_OPT_TSONLY;
-+	const unsigned int tsopts_stats =
-+		tsopts_no_stats
-+		| SOF_TIMESTAMPING_OPT_STATS;
-+	int cln_sock;
-+	int i, stat;
-+	const void *which_opts;
-+	pid_t chld;
-+
-+	cln_sock = SAFE_SOCKET(AF_INET, PROT, 0);
-+	tst_res(TINFO, "Created client socket %d", cln_sock);
-+	stat = setsockopt(cln_sock, SOL_SOCKET, SO_TIMESTAMPING,
-+			  (void *)&tsopts_stats, sizeof(tsopts_stats));
-+	if (stat < 0 && errno == EINVAL) {
-+		tst_res(TCONF, "SOF_TIMESTAMPING_OPT_STATS not supported");
-+		close(cln_sock);
-+		exit(0);
-+	} else if (stat < 0) {
-+		tst_res(TBROK | TERRNO,
-+			"setsockopt(cln_sock, SOL_SOCKET, SO_TIMESTAMPING,...) == -1");
-+		close(cln_sock);
-+		exit(TBROK);
-+	}
-+
-+	stat = connect(cln_sock,
-+		       (struct sockaddr *)&srv_addr,
-+		       (socklen_t)sizeof(srv_addr));
-+	if (stat < 0) {
-+		tst_res(TBROK | TERRNO,
-+			"connect(cln_sock, srv_addr, ...) < 0");
-+		goto error;
-+	}
-+
-+	if (write_read(cln_sock, MSG_DONTWAIT, 0, 1) < 0)
-+		goto error;
-+
-+	chld = SAFE_FORK();
-+	if (chld == 0) {
-+		for (i = 0; i < 0xFFF; i++) {
-+			if (i & 1)
-+				which_opts = &tsopts_no_stats;
-+			else
-+				which_opts = &tsopts_stats;
-+			SAFE_SETSOCKOPT(cln_sock, SOL_SOCKET, SO_TIMESTAMPING,
-+					which_opts, sizeof(tsopts_stats));
-+		}
-+		exit(0);
-+	}
-+
-+	for (i = 0; i < 0xFFF; i++)
-+		write_read(cln_sock, MSG_DONTWAIT, 0, 0);
-+
-+	SAFE_WAITPID(chld, &stat, 0);
-+
-+	if (inspect_timestamps(cln_sock) < 0)
-+		goto error;
-+
-+	close(cln_sock);
-+	exit(0);
-+error:
-+	close(cln_sock);
-+	exit(TBROK);
-+}
-+
 +static void run(void)
 +{
-+	pid_t srv_pid, cln_pid, trm_pid;
-+	int stat, brok;
++	pthread_t thrd;
++	int i;
 +
-+	srv_pid = SAFE_FORK();
-+	if (srv_pid == 0)
-+		server();
++	sockfd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, IPPROTO_ICMP);
++	tst_res(TINFO, "Created ping socket, attempting to race...");
 +
-+	cln_pid = SAFE_FORK();
-+	if (cln_pid == 0)
-+		client();
++	for (i = 0; i < ATTEMPTS; i++) {
++		SAFE_CONNECT(sockfd,
++			     (struct sockaddr *)&iaddr, sizeof(iaddr));
++		SAFE_PTHREAD_CREATE(&thrd, 0, connect_b, 0);
 +
-+	trm_pid = SAFE_WAITPID(-1, &stat, 0);
-+	brok = WIFEXITED(stat) && WEXITSTATUS(stat) != 0;
-+	if (trm_pid == srv_pid)
-+		SAFE_KILL(cln_pid, SIGTERM);
-+	else
-+		SAFE_KILL(srv_pid, SIGTERM);
++		tst_fzsync_delay_a(&fzsync_pair);
++		connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
++		tst_fzsync_time_a(&fzsync_pair);
 +
-+	trm_pid = SAFE_WAITPID(-1, &stat, 0);
-+	brok |= WIFEXITED(stat) && WEXITSTATUS(stat) != 0;
++		SAFE_PTHREAD_JOIN(thrd, 0);
++		tst_fzsync_pair_update(i, &fzsync_pair);
 +
-+	if (brok)
-+		tst_brk(TBROK, "Propogating child TBROK");
-+	else
-+		tst_res(TPASS, "We didn't crash");
++		if (!(i & 0x7FFF))
++			tst_fzsync_pair_info(&fzsync_pair);
++	}
++
++	tst_res(TPASS, "We didn't crash");
 +}
 +
 +static struct tst_test test = {
-+	.tid = "cve-2017-7277",
++	.tid = "cve-2017-2671",
 +	.setup = setup,
-+	.cleanup = cleanup,
 +	.test_all = run,
-+	.forks_child = 1,
++	.cleanup = cleanup,
++	.needs_root = 1,
 +};
 -- 
 2.12.2
