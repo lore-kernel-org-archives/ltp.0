@@ -1,62 +1,223 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 22 May 2017 14:13:31 +0200
-Subject: [LTP] [PATCH v2 00/10] CVE Tests
-Message-ID: <20170522121341.4663-1-rpalethorpe@suse.com>
+Date: Mon, 22 May 2017 14:13:32 +0200
+Subject: [LTP] [PATCH v2 01/10] Add fuzzy synchronisation library for
+	triggering races
+In-Reply-To: <20170522121341.4663-1-rpalethorpe@suse.com>
+References: <20170522121341.4663-1-rpalethorpe@suse.com>
+Message-ID: <20170522121341.4663-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Version 2:
-* Remove unresolved merge conflict from two commits
-* Use _GNU_SOURCE instead of __USE_GNU
+Provide some functions for starting two actions at approximately the same time
+on different threads or processes. This is intended to amalgamate
+functionality built into at least three CVE tests. As well as conforming to
+DRY it is intended to help make reasoning about each test easier by
+abstracting away the synchronisation mechanism.
 
-P.s. Sorry for spamming the mailing list.
-
-Richard Palethorpe (10):
-  Add fuzzy synchronisation library for triggering races
-  Test for vulnerability CVE-2016-7117 in recvmmsg error return path
-  Test for CVE-2016-4997 on setsockopt
-  Test for uname26 exploit CVE-2012-0957
-  Add CVE .gitignore, Makefile and runtest files
-  Test for CVE-2014-0196 PTY echo race
-  Test for CVE-2017-5669 in shmat
-  Test for CVE-2017-6951 in request_key
-  Test for CVE-2017-7277 SOF_TIMESTAMPING_OPT_STATS
-  Test for CVE-2017-2671 on ping sockets
-
- configure.ac                  |   1 +
- include/tst_fuzzy_sync.h      | 189 ++++++++++++++++++
- m4/ltp-mmsghdr.m4             |  22 +++
- runtest/cve                   |  10 +
- runtest/syscalls              |   4 +
- scenario_groups/default       |   1 +
- testcases/cve/.gitignore      |   8 +
- testcases/cve/Makefile        |  26 +++
- testcases/cve/cve-2012-0957.c |  90 +++++++++
- testcases/cve/cve-2014-0196.c | 163 +++++++++++++++
- testcases/cve/cve-2016-4997.c |  93 +++++++++
- testcases/cve/cve-2016-7117.c | 165 ++++++++++++++++
- testcases/cve/cve-2017-2671.c | 123 ++++++++++++
- testcases/cve/cve-2017-5669.c |  90 +++++++++
- testcases/cve/cve-2017-6951.c |  47 +++++
- testcases/cve/cve-2017-7277.c | 449 ++++++++++++++++++++++++++++++++++++++++++
- 16 files changed, 1481 insertions(+)
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ include/tst_fuzzy_sync.h | 189 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 189 insertions(+)
  create mode 100644 include/tst_fuzzy_sync.h
- create mode 100644 m4/ltp-mmsghdr.m4
- create mode 100644 runtest/cve
- create mode 100644 testcases/cve/.gitignore
- create mode 100644 testcases/cve/Makefile
- create mode 100644 testcases/cve/cve-2012-0957.c
- create mode 100644 testcases/cve/cve-2014-0196.c
- create mode 100644 testcases/cve/cve-2016-4997.c
- create mode 100644 testcases/cve/cve-2016-7117.c
- create mode 100644 testcases/cve/cve-2017-2671.c
- create mode 100644 testcases/cve/cve-2017-5669.c
- create mode 100644 testcases/cve/cve-2017-6951.c
- create mode 100644 testcases/cve/cve-2017-7277.c
 
+diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
+new file mode 100644
+index 000000000..ab8092d72
+--- /dev/null
++++ b/include/tst_fuzzy_sync.h
+@@ -0,0 +1,189 @@
++/*
++ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++/*
++ * Fuzzy Synchronisation - abreviated to fzsync
++ *
++ * This library is intended to help reproduce race conditions while running in
++ * a loop. You can use it to measure the time at which two functions are
++ * called in different threads. Then calculate the average time gap between
++ * the function calls and introduce a delay in one thread to synchronise the
++ * calls.
++ *
++ * It is called 'fuzzy' synchronisation because the time gap will naturally vary
++ * due to environmental factors. It is not a 'hard' synchronisation mechanism
++ * like lockstepping.
++ *
++ * For a usage example see testcases/cve/cve-2017-2671.c
++ */
++
++#include <sys/time.h>
++#include <time.h>
++
++#ifndef CLOCK_MONOTONIC_RAW
++#define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
++#endif
++
++/**
++ * struct tst_fzsync_pair - the state of a two way synchronisation
++ * @avg_diff: The average time difference over multiple iterations
++ * @avg_diff_trgt: The desired average time difference, defaults to 0
++ * @avg_alpha: The rate at which old diff samples are forgotten,
++ *             defaults to 0.25
++ * @a: The time at which call site A was last passed
++ * @b: The time at which call site B was last passed
++ * @delay: The size of the delay, positive to delay A, negative to delay B
++ * @delay_inc: The step size of a delay increment, defaults to 10
++ * @update_gap: The number of iterations between recalculating the delay.
++ *              Defaults to 0xF and must be of the form $2^n - 1$
++ *
++ * This contains all the necessary state for synchronising two points A and
++ * B. Where A is the time of an event in one process and B is the time of an
++ * event in another process.
++ */
++struct tst_fzsync_pair {
++	double avg_diff;
++	double avg_diff_trgt;
++	double avg_alpha;
++	struct timespec a;
++	struct timespec b;
++	long delay;
++	long delay_inc;
++	int update_gap;
++};
++
++/**
++ * tst_fzsync_pair_init - Set default values if they are zero
++ * @pair: Zeroed fuzzy pair state struct
++ */
++static void tst_fzsync_pair_init(struct tst_fzsync_pair *pair)
++{
++	if (pair->avg_alpha == 0)
++		pair->avg_alpha = 0.25;
++	if (pair->delay_inc == 0)
++		pair->delay_inc = 10;
++	if (pair->update_gap == 0)
++		pair->update_gap = 0xF;
++}
++
++static void tst_fzsync_pair_info(struct tst_fzsync_pair *pair)
++{
++	tst_res(TINFO, "avg_diff = %.5gns, delay = %05ld loops",
++		pair->avg_diff, pair->delay);
++}
++
++/**
++ * tst_fzsync_delay_a - Perform spin delay for A, if needed
++ *
++ * Usually called just before the point you want to synchronise.
++ */
++static inline void tst_fzsync_delay_a(struct tst_fzsync_pair *pair)
++{
++	volatile long spin_delay = pair->delay;
++
++	while (spin_delay > 0)
++		spin_delay--;
++}
++
++/**
++ * tst_fzsync_delay_b - Perform spin delay for B, if needed
++ *
++ * Usually called just before the point you want to synchronise.
++ */
++static inline void tst_fzsync_delay_b(struct tst_fzsync_pair *pair)
++{
++	volatile long spin_delay = pair->delay;
++
++	while (spin_delay < 0)
++		spin_delay++;
++}
++
++static inline void tst_fzsync_time(struct timespec *t)
++{
++	clock_gettime(CLOCK_MONOTONIC_RAW, t);
++}
++
++/**
++ * tst_fzsync_time_a - Set A's time to now.
++ *
++ * Called@the point you want to synchronise.
++ */
++static inline void tst_fzsync_time_a(struct tst_fzsync_pair *pair)
++{
++	tst_fzsync_time(&pair->a);
++}
++
++/**
++ * tst_fzsync_time_b - Set B's call time to now.
++ *
++ * Called at the point you want to synchronise.
++ */
++static inline void tst_fzsync_time_b(struct tst_fzsync_pair *pair)
++{
++	tst_fzsync_time(&pair->b);
++}
++
++/**
++ * tst_exp_moving_avg - Exponential moving average
++ * @alpha: The preference for receant samples over old ones.
++ * @sample: The current sample
++ * @prev_avg: The average of the all the previous samples
++ *
++ * Returns average including the current sample.
++ */
++static inline double tst_exp_moving_avg(double alpha, long sample,
++					double prev_avg)
++{
++	return alpha * sample + (1.0 - alpha) * prev_avg;
++}
++
++/**
++ * tst_fzsync_pair_update - Recalculate the delay
++ * @loop_index: The i in "for(i = 0;..." or zero to ignore update_gap
++ * @pair: The state necessary for calculating the delay
++ *
++ * This should be called at the end of each loop to update the average
++ * measured time difference (between A and B) and update the delay. It is
++ * assumed that A and B are less than a second apart.
++ *
++ * The values of update_gap, avg_alpha and delay_inc decide the speed at which
++ * the algorithm approaches the optimum delay value and whether it is
++ * stable. If your test is behaving strangely, it could be because this
++ * algorithm is behaving chaotically and flip-flopping between large positve
++ * and negative delay values. You can call tst_fzysync_pair_info every few
++ * loops to check whether the average difference and delay values are stable.
++ */
++static void tst_fzsync_pair_update(int loop_index, struct tst_fzsync_pair *pair)
++{
++	long diff;
++	long inc = pair->delay_inc;
++	long delay = pair->delay;
++	double target = pair->avg_diff_trgt;
++	double avg = pair->avg_diff;
++
++	diff = pair->a.tv_nsec - pair->b.tv_nsec;
++	avg = tst_exp_moving_avg(pair->avg_alpha, diff, avg);
++
++	if (!(loop_index & pair->update_gap)) {
++		if (avg > target)
++			delay -= inc;
++		else if (avg < target)
++			delay += inc;
++	}
++
++	pair->avg_diff = avg;
++	pair->delay = delay;
++}
 -- 
 2.12.2
 
