@@ -1,40 +1,70 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 22 May 2017 17:15:55 +0200
-Subject: [LTP] [PATCH v2] [RFC] pselect01: Tune thresholds
-In-Reply-To: <297220533.19197153.1495465050258.JavaMail.zimbra@redhat.com>
-References: <20170512141658.26810-1-chrubis@suse.cz>
- <495691788.11461692.1494842630946.JavaMail.zimbra@redhat.com>
- <20170515123556.GA8280@rei.lan>
- <1832031935.11522951.1494853219630.JavaMail.zimbra@redhat.com>
- <20170515131329.GA12586@rei.suse.de>
- <1308561590.18511159.1495442352952.JavaMail.zimbra@redhat.com>
- <20170522131944.GC11771@rei.lan>
- <297220533.19197153.1495465050258.JavaMail.zimbra@redhat.com>
-Message-ID: <20170522151555.GD11771@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 23 May 2017 00:47:07 +0200
+Subject: [LTP] tst_atomic_add_return() implementation for sparc
+In-Reply-To: <20170510192510.GA29900@rei.suse.de>
+References: <20170510162157.rqanvu46hfkvffpa@dell5510>
+ <20170510192510.GA29900@rei.suse.de>
+Message-ID: <20170522224707.jisupuud7jhexjaz@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > New measure script attached, now with gnuplot frequency graphs.
-> > 
-> > Can you, pretty please run that on the slow x86 machine, so that we know
-> > if the failure is caused by a few outliners of if the measured times are
-> > simply skeewed there?
-> 
-> Attached.
+Hi Cyril,
 
-Hmm, strange, it looks like for 100us we got more or less all samples
-close to 160us but for 500us half of the samples are close to 560us and
-about 400 is more than 1000us, that does not look right. I wonder what
-happens there. And the same for the rest of the measurements everything
-but 100us sleeps has two peaks that are more or less 500us apart. So far
-my machines, even VMs, had one peak and some outliners.
+> And the smp_bm_*() macros are translated just to barrier() in case of sparc in
+> arch/sparc/include/asm/barrier_64.h which is defined in
+The implementation is for 32 bit sparc (sparc v8), but __smp_mb__*() in asm-generic/barrier.h also define it as barrier().
+> include/linux/compiler-gcc.h:
 
-Can you try to rerun the test with a realtime priority?
+> 	#define barrier() __asm__ __volatile__("": : :"memory")
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Then the atomic_add_return_relaxed() translates to atomic_add_return() which is defined in include/asm-generic/atomic.h and translates to:
+
+
+>         raw_local_irq_save(flags);                                      \
+>         ret = (v->counter = v->counter + i);                            \
+>         raw_local_irq_restore(flags);                                   \
+>                                                                         \
+
+
+> So something as:
+
+> 	int ret;
+> 	__asm__ __volatile__("": : :"memory");
+> 	ret = (counter = counter + 1);
+>         __asm__ __volatile__("": : :"memory");
+> 	return ret;
+
+> Should work, but I do not have any sparc hardware for testing...
+
+I tried this, but lib/newlib_tests/test09 (tested with 32 bit uClibc on sparc 64) fails
+:-(. Do you see any obvious error? I hope the problem isn't 64 bit architecture.
+
+diff --git a/include/tst_atomic.h b/include/tst_atomic.h
+index 35a3b3411..8f4903bf6 100644
+--- a/include/tst_atomic.h
++++ b/include/tst_atomic.h
+@@ -152,6 +152,17 @@ static inline int tst_atomic_add_return(int i, int *v)
+ 	return result;
+ }
+ 
++#elif defined(__sparc__) && !defined(__arch64__)
++static inline int tst_atomic_add_return(int i, int *v)
++{
++	/* taken from include/asm-generic/atomic.h */
++	int ret;
++	__asm__ __volatile__("": : :"memory");
++	ret = ((*v) = (*v) + i);
++	__asm__ __volatile__("": : :"memory");
++	return ret;
++}
++
+ #else /* HAVE_SYNC_ADD_AND_FETCH == 1 */
+ # error Your compiler does not provide __sync_add_and_fetch and LTP\
+ 	implementation is missing for your architecture.
+------
+
+Kind regards,
+Petr
