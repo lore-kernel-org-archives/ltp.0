@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 23 May 2017 13:49:47 +0200
-Subject: [LTP] [PATCH] tst_test.c: set the test id automatically
-In-Reply-To: <CAEemH2eXNxvG8nJqagABb6x+iinSOcTxTC9XUDHU+NzUcW=WJA@mail.gmail.com>
-References: <20170522141611.19386-1-chrubis@suse.cz>
- <CAEemH2eXNxvG8nJqagABb6x+iinSOcTxTC9XUDHU+NzUcW=WJA@mail.gmail.com>
-Message-ID: <20170523114947.GB19602@rei.suse.cz>
+Date: Tue, 23 May 2017 14:15:15 +0200
+Subject: [LTP] [PATCH v3 3/3] ltp/numa: use string to describe operation
+In-Reply-To: <CAEemH2c2zzixjetBj8hKCgD_2tCiSN9FrE=0aNUmo4P9vDwD2A@mail.gmail.com>
+References: <20170519082724.10232-1-liwang@redhat.com>
+ <20170519122326.GA17258@rei.lan>
+ <CAEemH2c2zzixjetBj8hKCgD_2tCiSN9FrE=0aNUmo4P9vDwD2A@mail.gmail.com>
+Message-ID: <20170523121515.GC19602@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,20 +13,35 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > diff --git a/lib/tst_test.c b/lib/tst_test.c
-> > index 14a47d6..0bbcbf7 100644
-> > --- a/lib/tst_test.c
-> > +++ b/lib/tst_test.c
-> > @@ -616,6 +616,22 @@ static void copy_resources(void)
-> >                 TST_RESOURCE_COPY(NULL, tst_test->resource_files[i], NULL);
-> >  }
-> >
-> > +static void get_tid(char *argv[])
+> $ git diff
+> diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
+> index 4eda3f1..e3fe854 100755
+> --- a/testcases/kernel/numa/numa01.sh
+> +++ b/testcases/kernel/numa/numa01.sh
+> @@ -315,9 +315,20 @@ test8()
+>         # Memory will be allocated using round robin on nodes.
+>         Exp_incr=$(echo "$MB / $total_nodes" |bc)
 > 
-> Ah, forgot to mention that the return type should be "char *".
+> -       numactl --interleave=all memhog -r1000000 1MB 2>&1 >/dev/null &
+> +       numactl --interleave=all memhog -r1000000 1MB 2>&1 >ltp_numa_test8.log &
+>         pid=$!
+> 
+> +       local retries=20
+> +       while [ $retries -gt 0 ]; do
+> +
+> +               if grep -m1 -q '.' ltp_numa_test8.log; then
+> +                       break
+> +               fi
+> +
+> +               retries=$((retries-1))
+> +               tst_sleep 50ms
+> +       done
+> +
+>         for node in $nodes_list; do
+>                 Mem_curr=$(echo "$(extract_numastat_p $pid $node) * $MB" |bc)
 
-My bad, I did last minute changes to the patch. I will fix that before
-pushing.
+This fixes the problem for me, can you, pretty please, send a signed
+patch?
 
 -- 
 Cyril Hrubis
