@@ -1,54 +1,31 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 23 May 2017 05:45:13 -0400 (EDT)
-Subject: [LTP] [PATCH v2] [RFC] pselect01: Tune thresholds
-In-Reply-To: <20170523091608.GA18460@rei.lan>
-References: <20170512141658.26810-1-chrubis@suse.cz>
- <20170515131329.GA12586@rei.suse.de>
- <1308561590.18511159.1495442352952.JavaMail.zimbra@redhat.com>
- <20170522131944.GC11771@rei.lan>
- <297220533.19197153.1495465050258.JavaMail.zimbra@redhat.com>
- <20170522151555.GD11771@rei.lan>
- <24535361.19636257.1495526084444.JavaMail.zimbra@redhat.com>
- <20170523091608.GA18460@rei.lan>
-Message-ID: <833996051.19688092.1495532713977.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 23 May 2017 13:14:34 +0200
+Subject: [LTP] tst_atomic_add_return() implementation for sparc
+In-Reply-To: <20170522224707.jisupuud7jhexjaz@dell5510>
+References: <20170510162157.rqanvu46hfkvffpa@dell5510>
+ <20170510192510.GA29900@rei.suse.de>
+ <20170522224707.jisupuud7jhexjaz@dell5510>
+Message-ID: <20170523111433.GA19602@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
------ Original Message -----
-> Hi!
-> > > Hmm, strange, it looks like for 100us we got more or less all samples
-> > > close to 160us but for 500us half of the samples are close to 560us and
-> > > about 400 is more than 1000us, that does not look right. I wonder what
-> > > happens there. And the same for the rest of the measurements everything
-> > > but 100us sleeps has two peaks that are more or less 500us apart. So far
-> > > my machines, even VMs, had one peak and some outliners.
-> > > 
-> > > Can you try to rerun the test with a realtime priority?
-> > 
-> > Ran as "chrt -f 50 ./measure", results attached.
-> > 
+Hi!
+> > Should work, but I do not have any sparc hardware for testing...
 > 
-> Looks more or less the same and I still cannot reproduce the issue on
-> any of the machines I have here.
-> 
-> Looking at errata for AMD cpus #778 says that TSC may drift under some
-> circumstances:
-> http://support.amd.com/TechDocs/51810_16h_00h-0Fh_Rev_Guide.pdf#unique_29
-> 
-> Can you try to disable P-state in BIOS or set cpufreq to performance?
+> I tried this, but lib/newlib_tests/test09 (tested with 32 bit uClibc on sparc 64) fails
+> :-(. Do you see any obvious error? I hope the problem isn't 64 bit architecture.
 
-Not sure if I can get easily to BIOS, it's a system in remote location.
-As for cpufreq, it already was set to performance:
+Looks like the real implementation is in arch/sparc/lib/atomic32.c and
+arch/sparc/lib/atomic_64.S.
 
-# cat /sys/devices/system/cpu/cpufreq/policy*/scaling_governor
-performance
-performance
-performance
-performance
+The 32bit implementation uses spinlocks, the 64bit v9 CPU has
+instruction for atomic operations. See for instance this discussion:
 
-Regards,
-Jan
+https://forums.gentoo.org/viewtopic-t-97011-start-0.html
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
