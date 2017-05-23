@@ -1,44 +1,24 @@
-From: Rajesh <rajeshkuri@gmail.com>
-Date: Tue, 23 May 2017 15:08:30 +0530
-Subject: [LTP] ltp-pan failing
-In-Reply-To: <20170515144828.GA17237@rei.suse.de>
-References: <CALp+=PD4_zLu_ctpaZuTgWHsq3q90RKn_wYuBXS8c=-G+FYfQw@mail.gmail.com>
- <20170515144828.GA17237@rei.suse.de>
-Message-ID: <CALp+=PBk_j_TeiOACfDZdfmKP5bkXOQrOFk7swYXc35TvM31jQ@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 23 May 2017 17:37:38 +0200
+Subject: [LTP] [PATCH] tst_test.c: set the test id automatically
+In-Reply-To: <CAEemH2eXNxvG8nJqagABb6x+iinSOcTxTC9XUDHU+NzUcW=WJA@mail.gmail.com>
+References: <20170522141611.19386-1-chrubis@suse.cz>
+ <CAEemH2eXNxvG8nJqagABb6x+iinSOcTxTC9XUDHU+NzUcW=WJA@mail.gmail.com>
+Message-ID: <20170523153738.GA3194@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Thank you for the reply.
+Hi!
+> > +static void get_tid(char *argv[])
+> 
+> Ah, forgot to mention that the return type should be "char *".
 
-The problem was to do with code change I made in ltp-pan.c, to use
-vfork() instead of fork().
+I've changed the patch to update test-writing-guidelines as well and
+pushed.
 
-The child process was closing the active file descriptor and hence
-when parent try to access the file descriptor hitting with "Bad file
-descriptor".
-Issue was fixed by commenting out the statement in child code.
-
---Regards,
-rajesh
-
-On Mon, May 15, 2017 at 8:19 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
-> Hi!
->> I'm trying to run the LTP in embedded environment. (Having ramdisk as
->> files system and n/w shared directory for file storage)
->> The LTP version is ''ltp-full-20120401'' and ran simple command as below:
->> # ./ltp-pan -n exp1  -a /tmp/test -x 3 echo hello
->> And above command failed as:
->> "pan(exp1): failed to unlock zoo file, errno:9 Bad file descriptor"
->
-> That looks like a problem with possibly unsupported file fcntl() locks on /tmp/test.
->
->> Are there any specific configuration to run LTP in embedded environment?
->
-> There shouldn't be any.
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+-- 
+Cyril Hrubis
+chrubis@suse.cz
