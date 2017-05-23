@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 23 May 2017 13:14:34 +0200
-Subject: [LTP] tst_atomic_add_return() implementation for sparc
-In-Reply-To: <20170522224707.jisupuud7jhexjaz@dell5510>
-References: <20170510162157.rqanvu46hfkvffpa@dell5510>
- <20170510192510.GA29900@rei.suse.de>
- <20170522224707.jisupuud7jhexjaz@dell5510>
-Message-ID: <20170523111433.GA19602@rei.suse.cz>
+Date: Tue, 23 May 2017 13:49:47 +0200
+Subject: [LTP] [PATCH] tst_test.c: set the test id automatically
+In-Reply-To: <CAEemH2eXNxvG8nJqagABb6x+iinSOcTxTC9XUDHU+NzUcW=WJA@mail.gmail.com>
+References: <20170522141611.19386-1-chrubis@suse.cz>
+ <CAEemH2eXNxvG8nJqagABb6x+iinSOcTxTC9XUDHU+NzUcW=WJA@mail.gmail.com>
+Message-ID: <20170523114947.GB19602@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,18 +12,20 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > Should work, but I do not have any sparc hardware for testing...
+> > diff --git a/lib/tst_test.c b/lib/tst_test.c
+> > index 14a47d6..0bbcbf7 100644
+> > --- a/lib/tst_test.c
+> > +++ b/lib/tst_test.c
+> > @@ -616,6 +616,22 @@ static void copy_resources(void)
+> >                 TST_RESOURCE_COPY(NULL, tst_test->resource_files[i], NULL);
+> >  }
+> >
+> > +static void get_tid(char *argv[])
 > 
-> I tried this, but lib/newlib_tests/test09 (tested with 32 bit uClibc on sparc 64) fails
-> :-(. Do you see any obvious error? I hope the problem isn't 64 bit architecture.
+> Ah, forgot to mention that the return type should be "char *".
 
-Looks like the real implementation is in arch/sparc/lib/atomic32.c and
-arch/sparc/lib/atomic_64.S.
-
-The 32bit implementation uses spinlocks, the 64bit v9 CPU has
-instruction for atomic operations. See for instance this discussion:
-
-https://forums.gentoo.org/viewtopic-t-97011-start-0.html
+My bad, I did last minute changes to the patch. I will fix that before
+pushing.
 
 -- 
 Cyril Hrubis
