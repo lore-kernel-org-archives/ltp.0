@@ -1,48 +1,44 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 23 May 2017 14:15:15 +0200
-Subject: [LTP] [PATCH v3 3/3] ltp/numa: use string to describe operation
-In-Reply-To: <CAEemH2c2zzixjetBj8hKCgD_2tCiSN9FrE=0aNUmo4P9vDwD2A@mail.gmail.com>
-References: <20170519082724.10232-1-liwang@redhat.com>
- <20170519122326.GA17258@rei.lan>
- <CAEemH2c2zzixjetBj8hKCgD_2tCiSN9FrE=0aNUmo4P9vDwD2A@mail.gmail.com>
-Message-ID: <20170523121515.GC19602@rei.suse.cz>
+From: Rajesh <rajeshkuri@gmail.com>
+Date: Tue, 23 May 2017 15:08:30 +0530
+Subject: [LTP] ltp-pan failing
+In-Reply-To: <20170515144828.GA17237@rei.suse.de>
+References: <CALp+=PD4_zLu_ctpaZuTgWHsq3q90RKn_wYuBXS8c=-G+FYfQw@mail.gmail.com>
+ <20170515144828.GA17237@rei.suse.de>
+Message-ID: <CALp+=PBk_j_TeiOACfDZdfmKP5bkXOQrOFk7swYXc35TvM31jQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> $ git diff
-> diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
-> index 4eda3f1..e3fe854 100755
-> --- a/testcases/kernel/numa/numa01.sh
-> +++ b/testcases/kernel/numa/numa01.sh
-> @@ -315,9 +315,20 @@ test8()
->         # Memory will be allocated using round robin on nodes.
->         Exp_incr=$(echo "$MB / $total_nodes" |bc)
-> 
-> -       numactl --interleave=all memhog -r1000000 1MB 2>&1 >/dev/null &
-> +       numactl --interleave=all memhog -r1000000 1MB 2>&1 >ltp_numa_test8.log &
->         pid=$!
-> 
-> +       local retries=20
-> +       while [ $retries -gt 0 ]; do
-> +
-> +               if grep -m1 -q '.' ltp_numa_test8.log; then
-> +                       break
-> +               fi
-> +
-> +               retries=$((retries-1))
-> +               tst_sleep 50ms
-> +       done
-> +
->         for node in $nodes_list; do
->                 Mem_curr=$(echo "$(extract_numastat_p $pid $node) * $MB" |bc)
+Thank you for the reply.
 
-This fixes the problem for me, can you, pretty please, send a signed
-patch?
+The problem was to do with code change I made in ltp-pan.c, to use
+vfork() instead of fork().
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+The child process was closing the active file descriptor and hence
+when parent try to access the file descriptor hitting with "Bad file
+descriptor".
+Issue was fixed by commenting out the statement in child code.
+
+--Regards,
+rajesh
+
+On Mon, May 15, 2017 at 8:19 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
+> Hi!
+>> I'm trying to run the LTP in embedded environment. (Having ramdisk as
+>> files system and n/w shared directory for file storage)
+>> The LTP version is ''ltp-full-20120401'' and ran simple command as below:
+>> # ./ltp-pan -n exp1  -a /tmp/test -x 3 echo hello
+>> And above command failed as:
+>> "pan(exp1): failed to unlock zoo file, errno:9 Bad file descriptor"
+>
+> That looks like a problem with possibly unsupported file fcntl() locks on /tmp/test.
+>
+>> Are there any specific configuration to run LTP in embedded environment?
+>
+> There shouldn't be any.
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
