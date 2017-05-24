@@ -1,42 +1,40 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 24 May 2017 11:40:26 +0300
-Subject: [LTP] [PATCH 0/4] lib/shell: run commands with 'timeout'
-Message-ID: <1495615230-29045-1-git-send-email-alexey.kodanev@oracle.com>
+Date: Wed, 24 May 2017 11:40:27 +0300
+Subject: [LTP] [PATCH 1/4] lib/test_net: print TPASS/TFAIL inside tst_ping()
+In-Reply-To: <1495615230-29045-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1495615230-29045-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1495615230-29045-2-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The first three patches remove usage of shell functions with
-'ROD' based functions and the last one adds 'timeout' command
-to the both shell libraries.
+Since there is no usage of 'expected fail' in the tests with
+tst_ping() and new shell library doesn't support passing shell
+functions to EXPECT_PASS, set test result inside tst_ping.
 
-Alexey Kodanev (4):
-  lib/test_net: print TPASS/TFAIL inside tst_ping()
-  net: remove EXPECT_PASS usage with tst_ping()
-  net/virt_lib.sh: don't use ROD_SILENT with shell function
-  lib/test: run ROD_BASE() & tst_rod() with 'timeout' cmd
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/lib/test_net.sh |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
- testcases/lib/test.sh                              |    7 +++++--
- testcases/lib/test_net.sh                          |    4 ++--
- testcases/lib/tst_test.sh                          |   11 +++++++----
- .../network/stress/broken_ip/broken_ip4-checksum   |    2 +-
- .../network/stress/broken_ip/broken_ip4-dstaddr    |    2 +-
- .../network/stress/broken_ip/broken_ip4-fragment   |    2 +-
- testcases/network/stress/broken_ip/broken_ip4-ihl  |    2 +-
- .../network/stress/broken_ip/broken_ip4-protcol    |    2 +-
- .../network/stress/broken_ip/broken_ip4-totlen     |    2 +-
- .../network/stress/broken_ip/broken_ip4-version    |    2 +-
- .../network/stress/broken_ip/broken_ip6-dstaddr    |    2 +-
- .../network/stress/broken_ip/broken_ip6-nexthdr    |    2 +-
- testcases/network/stress/broken_ip/broken_ip6-plen |    2 +-
- .../network/stress/broken_ip/broken_ip6-version    |    2 +-
- testcases/network/stress/icmp/icmp-uni-basic.sh    |    5 -----
- testcases/network/stress/icmp/icmp-uni-vti.sh      |    2 +-
- testcases/network/stress/interface/if-lib.sh       |    7 +------
- testcases/network/stress/interface/if-mtu-change   |    2 +-
- testcases/network/stress/interface/if4-addr-change |    4 ++--
- testcases/network/virt/virt_lib.sh                 |    9 ++++++---
- 20 files changed, 36 insertions(+), 37 deletions(-)
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index dae066b..2ed6fb4 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -426,9 +426,9 @@ tst_ping()
+ 			-s $size -i 0 > /dev/null 2>&1
+ 		ret=$?
+ 		if [ $ret -eq 0 ]; then
+-			tst_resm TINFO "tst_ping IPv${TST_IPV6:-4} msg_size $size pass"
++			tst_resm TPASS "tst_ping IPv${TST_IPV6:-4} msg_size $size pass"
+ 		else
+-			tst_resm TINFO "tst_ping IPv${TST_IPV6:-4} msg_size $size fail"
++			tst_resm TFAIL "tst_ping IPv${TST_IPV6:-4} msg_size $size fail"
+ 			break
+ 		fi
+ 	done
+-- 
+1.7.1
 
