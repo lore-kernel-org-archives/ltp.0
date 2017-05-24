@@ -1,38 +1,43 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 24 May 2017 14:05:54 +0200
-Subject: [LTP] [COMMITTED] [PATCH 1/2] tst_test: TST_TEST_TCONF() do no set
-	tid
-Message-ID: <20170524120555.26571-1-chrubis@suse.cz>
+Date: Wed, 24 May 2017 14:05:55 +0200
+Subject: [LTP] [COMMITTED] [PATCH 2/2] fallocate02: Fix compilation
+In-Reply-To: <20170524120555.26571-1-chrubis@suse.cz>
+References: <20170524120555.26571-1-chrubis@suse.cz>
+Message-ID: <20170524120555.26571-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-It's not needed since we set tid based on argv[0] now.
+This fixes commit:
+
+commit a14f756d5890cee192f1cffe403b7607074a9b72
+Author: Cyril Hrubis <chrubis@suse.cz>
+Date:   Tue May 23 16:25:25 2017 +02001
+
+    Unify MIN()/MAX() implementation + cleanup
+
+The LLONG_MAX definition is missing on some distributions unless the
+test includes limits.h as well.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- include/tst_test.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ testcases/kernel/syscalls/fallocate/fallocate02.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index eec8e1257..666109550 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -192,9 +192,9 @@ int main(int argc, char *argv[])
+diff --git a/testcases/kernel/syscalls/fallocate/fallocate02.c b/testcases/kernel/syscalls/fallocate/fallocate02.c
+index bee0863a8..4840eaf28 100644
+--- a/testcases/kernel/syscalls/fallocate/fallocate02.c
++++ b/testcases/kernel/syscalls/fallocate/fallocate02.c
+@@ -36,6 +36,7 @@
+ #include <fcntl.h>
+ #include <inttypes.h>
+ #include <sys/utsname.h>
++#include <limits.h>
  
- #endif /* TST_NO_DEFAULT_MAIN */
- 
--#define TST_TEST_TCONF(message)                                              \
--        static void tst_do_test(void) { tst_brk(TCONF, "%s", message); };    \
--        static struct tst_test test = { .test_all = tst_do_test, .tid = "" } \
-+#define TST_TEST_TCONF(message)                                           \
-+        static void tst_do_test(void) { tst_brk(TCONF, "%s", message); }; \
-+        static struct tst_test test = { .test_all = tst_do_test }         \
- /*
-  * This is a hack to make the testcases link without defining TCID
-  */
+ #include "test.h"
+ #include "safe_macros.h"
 -- 
 2.13.0
 
