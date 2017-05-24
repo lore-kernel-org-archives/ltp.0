@@ -1,41 +1,41 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 24 May 2017 17:29:55 +0800
-Subject: [LTP] [PATCH] syscalls/fanotify07.c: Fix compilation without
-	fanotify
-Message-ID: <1495618195-4139-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Wed, 24 May 2017 17:38:09 +0800
+Subject: [LTP] [PATCH] memcg_lib.sh: cosmetic fix for
+ orig_memory_use_hierarchy variable
+In-Reply-To: <1493344361-3181-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1493344361-3181-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <59255481.3020100@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Compilation failed becasue main function is defined in new API.
-We should use TST_TEST_TCONF instead of main function to skip
-this case in new API.
+Hi
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/fanotify/fanotify07.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+Ping :-)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify07.c b/testcases/kernel/syscalls/fanotify/fanotify07.c
-index 5cb5bbb..79ff455 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify07.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify07.c
-@@ -240,10 +240,5 @@ static struct tst_test test = {
- };
- 
- #else
--
--int main(void)
--{
--	tst_brk(TCONF, "system doesn't have required fanotify support");
--}
--
-+	TST_TEST_TCONF("system doesn't have required fanotify support");
- #endif
--- 
-1.8.3.1
+Thanks,
+Xiao Yang
+On 2017/04/28 9:52, Xiao Yang wrote:
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/controllers/memcg/functional/memcg_lib.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> index b785fe3..d4724c3 100755
+> --- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> +++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> @@ -506,7 +506,7 @@ setup_test()
+>  	# while there are distributions (RHEL7U0Beta for example) that sets
+>  	# it to 1.
+>  	orig_memory_use_hierarchy=$(cat /dev/memcg/memory.use_hierarchy)
+> -	if [ -z "orig_memory_use_hierarchy" ];then
+> +	if [ -z "$orig_memory_use_hierarchy" ];then
+>  		tst_resm TINFO "cat /dev/memcg/memory.use_hierarchy failed"
+>  	elif [ "$orig_memory_use_hierarchy" = "0" ];then
+>  		orig_memory_use_hierarchy=""
 
 
 
