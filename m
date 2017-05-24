@@ -1,92 +1,41 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 24 May 2017 11:40:30 +0300
-Subject: [LTP] [PATCH 4/4] lib/test: run ROD_BASE() & tst_rod() with
-	'timeout' cmd
-In-Reply-To: <1495615230-29045-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1495615230-29045-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1495615230-29045-5-git-send-email-alexey.kodanev@oracle.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 24 May 2017 17:29:55 +0800
+Subject: [LTP] [PATCH] syscalls/fanotify07.c: Fix compilation without
+	fanotify
+Message-ID: <1495618195-4139-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/lib/test.sh     |    7 +++++--
- testcases/lib/tst_test.sh |   11 +++++++----
- 2 files changed, 12 insertions(+), 6 deletions(-)
+Compilation failed becasue main function is defined in new API.
+We should use TST_TEST_TCONF instead of main function to skip
+this case in new API.
 
-diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
-index 2e4d868..5247873 100644
---- a/testcases/lib/test.sh
-+++ b/testcases/lib/test.sh
-@@ -253,9 +253,9 @@ ROD_BASE()
- 	done
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/fanotify/fanotify07.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify07.c b/testcases/kernel/syscalls/fanotify/fanotify07.c
+index 5cb5bbb..79ff455 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify07.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify07.c
+@@ -240,10 +240,5 @@ static struct tst_test test = {
+ };
  
- 	if [ -n "$flag" ]; then
--		$cmd > $file
-+		$TST_TIMECMD $cmd > $file
- 	else
--		$@
-+		$TST_TIMECMD $@
- 	fi
- }
- 
-@@ -425,3 +425,6 @@ if [ "$TST_NEEDS_CHECKPOINTS" = "1" ]; then
- 	ROD_SILENT chmod 600 "$LTP_IPC_PATH"
- 	export LTP_IPC_PATH
- fi
-+
-+command -v timeout > /dev/null 2>&1 && \
-+	TST_TIMECMD="timeout -s 9 $((300 * ${LTP_TIMEOUT_MUL:-1}))s"
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 087adda..c4fbe86 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -116,7 +116,7 @@ tst_brk()
- 
- ROD_SILENT()
- {
--	tst_rod $@ > /dev/null 2>&1
-+	$TST_TIMECMD tst_rod $@ > /dev/null 2>&1
- 	if [ $? -ne 0 ]; then
- 		tst_brk TBROK "$@ failed"
- 	fi
-@@ -124,7 +124,7 @@ ROD_SILENT()
- 
- ROD()
- {
--	tst_rod "$@"
-+	$TST_TIMECMD tst_rod "$@"
- 	if [ $? -ne 0 ]; then
- 		tst_brk TBROK "$@ failed"
- 	fi
-@@ -132,7 +132,7 @@ ROD()
- 
- EXPECT_PASS()
- {
--	tst_rod "$@"
-+	$TST_TIMECMD tst_rod "$@"
- 	if [ $? -eq 0 ]; then
- 		tst_res TPASS "$@ passed as expected"
- 	else
-@@ -143,7 +143,7 @@ EXPECT_PASS()
- EXPECT_FAIL()
- {
- 	# redirect stderr since we expect the command to fail
--	tst_rod "$@" 2> /dev/null
-+	$TST_TIMECMD tst_rod "$@" 2> /dev/null
- 	if [ $? -ne 0 ]; then
- 		tst_res TPASS "$@ failed as expected"
- 	else
-@@ -430,3 +430,6 @@ else
- 		tst_brk TBROK "Unexpected positional arguments '$@'"
- 	fi
- fi
-+
-+command -v timeout > /dev/null 2>&1 && \
-+	TST_TIMECMD="timeout -s 9 $((300 * ${LTP_TIMEOUT_MUL:-1}))s"
+ #else
+-
+-int main(void)
+-{
+-	tst_brk(TCONF, "system doesn't have required fanotify support");
+-}
+-
++	TST_TEST_TCONF("system doesn't have required fanotify support");
+ #endif
 -- 
-1.7.1
+1.8.3.1
+
+
 
