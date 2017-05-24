@@ -1,323 +1,577 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 24 May 2017 13:34:04 +0200
-Subject: [LTP] [COMMITTED] [PATCH 2/2] lib,
-	testcases: Make use of MIN() and MAX()
-In-Reply-To: <20170524113404.8894-1-chrubis@suse.cz>
-References: <20170524113404.8894-1-chrubis@suse.cz>
-Message-ID: <20170524113404.8894-2-chrubis@suse.cz>
+Date: Wed, 24 May 2017 13:34:03 +0200
+Subject: [LTP] [COMMITTED] [PATCH 1/2] Unify MIN()/MAX() implementation +
+	cleanup
+Message-ID: <20170524113404.8894-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Produced by variations on coccinelle spatch:
+The oldlib tests had defined MIN() and MAX() macros via <sys/param.h>
+that was included from usctest.h that is included from test.h.
 
-@@
-expression E1,E2;
-@@
+This patch adds tst_minmax.h that has safer versions of these macros
+(expressions passed to the macros are evaluated only once) which is
+then included from both tst_test.h and test.h.
 
-- (E1 > E2 ? E1 : E2)
-+ MAX(E1, E2)
-
-@@
-expression E1,E2;
-identifier V;
-@@
-
-- if (E1 < E2)
-- V = E1;
-- else
-- V = E2;
-+ V = MIN(E1, E2);
-
-...
+Some of the testcases were relying on the usctest.h to include
+sys/param.h or indirecly include limits.h which is included from
+sys/param.h. This patch fixes such tests to include respective headers
+directly.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- lib/tst_device.c                                   |  4 ++--
- .../controllers/cpuset/cpuset_lib/libbitmask.c     | 10 +++++-----
- .../controllers/cpuset/cpuset_lib/libcpuset.c      | 23 ++++++++++------------
- testcases/kernel/fs/doio/growfiles.c               |  5 +----
- testcases/kernel/fs/inode/inode02.c                |  5 +----
- testcases/kernel/mem/cpuset/cpuset01.c             |  2 +-
- testcases/kernel/mem/mtest01/mtest01.c             |  5 +----
- testcases/kernel/syscalls/brk/brk01.c              |  5 +----
- testcases/kernel/syscalls/mprotect/mprotect02.c    |  8 +++-----
- .../network/can/filter-tests/can_rcv_own_msgs.c    |  5 ++---
- 10 files changed, 27 insertions(+), 45 deletions(-)
+ include/old/test.h                                 |  1 +
+ include/old/usctest.h                              |  2 --
+ include/tst_minmax.h                               | 37 ++++++++++++++++++++++
+ include/tst_test.h                                 |  1 +
+ lib/get_path.c                                     |  6 +---
+ testcases/kernel/fs/ftest/ftest01.c                |  1 +
+ testcases/kernel/fs/ftest/ftest05.c                |  1 +
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c |  2 ++
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c |  2 ++
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c |  2 ++
+ .../kernel/mem/hugetlb/hugeshmat/hugeshmat01.c     |  1 +
+ .../kernel/mem/hugetlb/hugeshmat/hugeshmat02.c     |  1 +
+ .../kernel/mem/hugetlb/hugeshmat/hugeshmat03.c     |  1 +
+ .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c   |  1 +
+ .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c   |  1 +
+ .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c   |  1 +
+ .../kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c     |  1 +
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget01.c   |  1 +
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget02.c   |  2 +-
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget03.c   |  1 +
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget05.c   |  1 +
+ testcases/kernel/mem/ksm/ksm06.c                   |  1 +
+ testcases/kernel/mem/tunable/overcommit_memory.c   |  1 +
+ testcases/kernel/mem/vma/vma02.c                   |  1 +
+ testcases/kernel/mem/vma/vma04.c                   |  1 +
+ testcases/kernel/syscalls/cma/process_vm_readv03.c |  1 +
+ .../kernel/syscalls/cma/process_vm_writev02.c      |  1 +
+ testcases/kernel/syscalls/futex/futex_wake01.c     |  1 +
+ .../kernel/syscalls/getrusage/getrusage03_child.c  |  1 +
+ testcases/kernel/syscalls/inotify/inotify02.c      |  1 +
+ .../kernel/syscalls/move_pages/move_pages08.c      |  1 +
+ testcases/kernel/syscalls/pselect/pselect01.c      |  2 --
+ testcases/kernel/syscalls/sendmsg/sendmsg02.c      |  1 +
+ testcases/kernel/syscalls/setgroups/setgroups02.c  |  1 +
+ testcases/kernel/syscalls/setgroups/setgroups04.c  |  1 +
+ testcases/kernel/syscalls/vmsplice/vmsplice02.c    |  1 +
+ testcases/network/lib6/asapi_01.c                  |  4 ---
+ testcases/network/lib6/getaddrinfo_01.c            |  1 +
+ 38 files changed, 74 insertions(+), 14 deletions(-)
+ create mode 100644 include/tst_minmax.h
 
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index 5c91a54..936bbfd 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -41,7 +41,7 @@
- #define LOOP_CONTROL_FILE "/dev/loop-control"
- 
- #define DEV_FILE "test_dev.img"
--#define DEV_SIZE_MB 256
-+#define DEV_SIZE_MB 256u
- 
- static char dev_path[1024];
- static int device_acquired;
-@@ -205,7 +205,7 @@ const char *tst_acquire_device__(unsigned int size)
- 	unsigned int acq_dev_size;
- 	uint64_t ltp_dev_size;
- 
--	acq_dev_size = size > DEV_SIZE_MB ? size : DEV_SIZE_MB;
-+	acq_dev_size = MAX(size, DEV_SIZE_MB);
- 
- 	dev = getenv("LTP_DEV");
- 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_lib/libbitmask.c b/testcases/kernel/controllers/cpuset/cpuset_lib/libbitmask.c
-index 57faf78..dbae375 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_lib/libbitmask.c
-+++ b/testcases/kernel/controllers/cpuset/cpuset_lib/libbitmask.c
-@@ -28,6 +28,7 @@
- #include <stdint.h>
- 
- #include "bitmask.h"
+diff --git a/include/old/test.h b/include/old/test.h
+index b36764d..137ebb1 100644
+--- a/include/old/test.h
++++ b/include/old/test.h
+@@ -62,6 +62,7 @@
+ #include "tst_clone.h"
+ #include "old_device.h"
+ #include "old_tmpdir.h"
 +#include "tst_minmax.h"
- 
- struct bitmask {
- 	unsigned int size;
-@@ -112,7 +113,6 @@ void bitmask_free(struct bitmask *bmp)
- 
- #define HEXCHUNKSZ 32		/* hex binary format shows 32 bits per chunk */
- #define HEXCHARSZ 8		/* hex ascii format has up to 8 chars per chunk */
--#define max(a,b) ((a) > (b) ? (a) : (b))
  
  /*
-  * Write hex word representation of bmp to buf, 32 bits per
-@@ -139,7 +139,7 @@ int bitmask_displayhex(char *buf, int buflen, const struct bitmask *bmp)
+  * Ensure that NUMSIGS is defined.
+diff --git a/include/old/usctest.h b/include/old/usctest.h
+index 9241d78..9b9446d 100644
+--- a/include/old/usctest.h
++++ b/include/old/usctest.h
+@@ -34,8 +34,6 @@
+ #ifndef __USCTEST_H__
+ #define __USCTEST_H__
  
- 		for (bit = HEXCHUNKSZ - 1; bit >= 0; bit--)
- 			val = val << 1 | _getbit(bmp, chunk * HEXCHUNKSZ + bit);
--		cnt += snprintf(buf + cnt, max(buflen - cnt, 0), "%s%0*x",
-+		cnt += snprintf(buf + cnt, MAX(buflen - cnt, 0), "%s%0*x",
- 				sep, HEXCHARSZ, val);
- 		sep = ",";
- 	}
-@@ -158,12 +158,12 @@ int bitmask_displayhex(char *buf, int buflen, const struct bitmask *bmp)
- static inline int emit(char *buf, int buflen, int rbot, int rtop, int len)
- {
- 	if (len > 0)
--		len += snprintf(buf + len, max(buflen - len, 0), ",");
-+		len += snprintf(buf + len, MAX(buflen - len, 0), ",");
- 	if (rbot == rtop)
--		len += snprintf(buf + len, max(buflen - len, 0), "%d", rbot);
-+		len += snprintf(buf + len, MAX(buflen - len, 0), "%d", rbot);
- 	else
- 		len +=
--		    snprintf(buf + len, max(buflen - len, 0), "%d-%d", rbot,
-+		    snprintf(buf + len, MAX(buflen - len, 0), "%d-%d", rbot,
- 			     rtop);
- 	return len;
- }
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c b/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c
-index 83ff5cd..e46bd2e 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c
-+++ b/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c
-@@ -138,9 +138,6 @@ static const char *mapfile = "/var/run/cpunodemap";
- /* The primary source for the cpunodemap[] is available below here. */
- static const char *sysdevices = "/sys/devices/system";
- 
--#define max(a,b) ((a) > (b) ? (a) : (b))
--#define min(a,b) ((a) < (b) ? @ : (b))
+-#include <sys/param.h>
 -
- /* small buffer size - for reading boolean flags or map file (1 or 2 ints) */
- #define SMALL_BUFSZ 16
- 
-@@ -2499,7 +2496,7 @@ int cpuset_nuke(const char *relpath, unsigned int seconds)
- 		if (secs_loop < 10)
- 			secs_loop++;
- 
--		secs_loop = min(secs_left, secs_loop);
-+		secs_loop = MIN(secs_left, secs_loop);
- 	}
- 
- took_too_long:
-@@ -3484,39 +3481,39 @@ int cpuset_export(const struct cpuset *cp, char *buf, int buflen)
- 	int n = 0;
- 
- 	if (cp->cpu_exclusive)
--		n += snprintf(buf + n, max(buflen - n, 0), "cpu_exclusive\n");
-+		n += snprintf(buf + n, MAX(buflen - n, 0), "cpu_exclusive\n");
- 
- 	if (cp->mem_exclusive)
--		n += snprintf(buf + n, max(buflen - n, 0), "mem_exclusive\n");
-+		n += snprintf(buf + n, MAX(buflen - n, 0), "mem_exclusive\n");
- 
- 	if (cp->notify_on_release)
--		n += snprintf(buf + n, max(buflen - n, 0),
-+		n += snprintf(buf + n, MAX(buflen - n, 0),
- 			      "notify_on_release\n");
- 
- 	if (cp->memory_pressure_enabled)
--		n += snprintf(buf + n, max(buflen - n, 0),
-+		n += snprintf(buf + n, MAX(buflen - n, 0),
- 			      "memory_pressure_enabled\n");
- 
- 	if (cp->memory_migrate)
--		n += snprintf(buf + n, max(buflen - n, 0), "memory_migrate\n");
-+		n += snprintf(buf + n, MAX(buflen - n, 0), "memory_migrate\n");
- 
- 	if (cp->memory_spread_page)
--		n += snprintf(buf + n, max(buflen - n, 0),
-+		n += snprintf(buf + n, MAX(buflen - n, 0),
- 			      "memory_spread_page\n");
- 
- 	if (cp->memory_spread_slab)
--		n += snprintf(buf + n, max(buflen - n, 0),
-+		n += snprintf(buf + n, MAX(buflen - n, 0),
- 			      "memory_spread_slab\n");
- 
- 	if ((tmp = sprint_mask_buf(cp->cpus)) == NULL)
- 		return -1;
--	n += snprintf(buf + n, max(buflen - n, 0), "cpus %s\n", tmp);
-+	n += snprintf(buf + n, MAX(buflen - n, 0), "cpus %s\n", tmp);
- 	free(tmp);
- 	tmp = NULL;
- 
- 	if ((tmp = sprint_mask_buf(cp->mems)) == NULL)
- 		return -1;
--	n += snprintf(buf + n, max(buflen - n, 0), "mems %s\n", tmp);
-+	n += snprintf(buf + n, MAX(buflen - n, 0), "mems %s\n", tmp);
- 	free(tmp);
- 	tmp = NULL;
- 
-diff --git a/testcases/kernel/fs/doio/growfiles.c b/testcases/kernel/fs/doio/growfiles.c
-index bbad230..02df1b2 100644
---- a/testcases/kernel/fs/doio/growfiles.c
-+++ b/testcases/kernel/fs/doio/growfiles.c
-@@ -2756,10 +2756,7 @@ int check_file(int fd, int cf_inter, char *filename, int no_file_check)
- 
- 		rd_cnt = 0;
- 		while (rd_cnt < fsize) {
--			if (fsize - rd_cnt > MAX_FC_READ)
--				rd_size = MAX_FC_READ;
--			else
--				rd_size = fsize - rd_cnt;
-+			rd_size = MIN(MAX_FC_READ, fsize - rd_cnt);
- 
- #if NEWIO
- 			ret = lio_read_buffer(fd, io_type, buf, rd_size,
-diff --git a/testcases/kernel/fs/inode/inode02.c b/testcases/kernel/fs/inode/inode02.c
-index 0e42085..78495ec 100644
---- a/testcases/kernel/fs/inode/inode02.c
-+++ b/testcases/kernel/fs/inode/inode02.c
-@@ -346,10 +346,7 @@ int tree()
- 
- 	ch_ret_val = check();
- 
--	if (gen_ret_val > ch_ret_val)
--		exit_val = ch_ret_val;
--	else
--		exit_val = gen_ret_val;
-+	exit_val = MIN(ch_ret_val, gen_ret_val);
- 
- 	status = fclose(list_stream);
- 	if (status != 0) {
-diff --git a/testcases/kernel/mem/cpuset/cpuset01.c b/testcases/kernel/mem/cpuset/cpuset01.c
-index 558420f..e6e3c01 100644
---- a/testcases/kernel/mem/cpuset/cpuset01.c
-+++ b/testcases/kernel/mem/cpuset/cpuset01.c
-@@ -109,7 +109,7 @@ static void testcpuset(void)
- 		}
- 		if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1)
- 			tst_brkm(TBROK | TERRNO, cleanup, "set_mempolicy");
--		exit(mem_hog_cpuset(ncpus > 1 ? ncpus : 1));
-+		exit(mem_hog_cpuset(MAX(ncpus, 1)));
- 	}
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
-diff --git a/testcases/kernel/mem/mtest01/mtest01.c b/testcases/kernel/mem/mtest01/mtest01.c
-index 6225d7d..ca9073a 100644
---- a/testcases/kernel/mem/mtest01/mtest01.c
-+++ b/testcases/kernel/mem/mtest01/mtest01.c
-@@ -250,10 +250,7 @@ int main(int argc, char *argv[])
- 			pid_list[i] = pid;
- 		}
- 	}
--	if (maxbytes > THREE_GB)
--		alloc_bytes = THREE_GB;
--	else
--		alloc_bytes = maxbytes;
-+	alloc_bytes = MIN(THREE_GB, maxbytes);
- #endif
- 
- 	if (pid == 0) {
-diff --git a/testcases/kernel/syscalls/brk/brk01.c b/testcases/kernel/syscalls/brk/brk01.c
-index 3b38f1e..775bc15 100644
---- a/testcases/kernel/syscalls/brk/brk01.c
-+++ b/testcases/kernel/syscalls/brk/brk01.c
-@@ -179,10 +179,7 @@ void setup(void)
- 	 * never attempt to take more than a * 1/4 of memory (by single test)
- 	 */
- 
--	if (ulim_sz < usr_mem_sz)
--		max_size = ulim_sz;
--	else
--		max_size = usr_mem_sz;
-+	max_size = MIN(ulim_sz, usr_mem_sz);
- 
- 	max_size = max_size / (2 * ncpus);
- 
-diff --git a/testcases/kernel/syscalls/mprotect/mprotect02.c b/testcases/kernel/syscalls/mprotect/mprotect02.c
-index a513493..31455c7 100644
---- a/testcases/kernel/syscalls/mprotect/mprotect02.c
-+++ b/testcases/kernel/syscalls/mprotect/mprotect02.c
-@@ -59,7 +59,8 @@ int main(int ac, char **av)
- {
- 	int lc;
- 
--	int bytes_to_write, fd, num_bytes;
-+	int bytes_to_write, fd;
-+	unsigned int num_bytes;
- 	pid_t pid;
- 
- 	tst_parse_opts(ac, av, NULL, NULL);
-@@ -76,10 +77,7 @@ int main(int ac, char **av)
- 
- 		do {
- 
--			if (num_bytes > strlen(buf))
--				bytes_to_write = strlen(buf);
--			else
--				bytes_to_write = num_bytes;
-+			bytes_to_write = MIN(strlen(buf), num_bytes);
- 
- 			num_bytes -=
- 			    SAFE_WRITE(cleanup, 1, fd, buf, bytes_to_write);
-diff --git a/testcases/network/can/filter-tests/can_rcv_own_msgs.c b/testcases/network/can/filter-tests/can_rcv_own_msgs.c
-index 2f9cbf2..8ad51d2 100644
---- a/testcases/network/can/filter-tests/can_rcv_own_msgs.c
-+++ b/testcases/network/can/filter-tests/can_rcv_own_msgs.c
-@@ -53,14 +53,13 @@
- #include <net/if.h>
- #include "config.h"
- #include "tst_res_flags.h"
+ /*
+  * Ensure that PATH_MAX is defined
+  */
+diff --git a/include/tst_minmax.h b/include/tst_minmax.h
+new file mode 100644
+index 0000000..838c3a8
+--- /dev/null
++++ b/include/tst_minmax.h
+@@ -0,0 +1,37 @@
++/*
++ * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#ifndef TST_MINMAX_H__
++#define TST_MINMAX_H__
++
++#ifndef MIN
++# define MIN(a, b) ({ \
++	typeof(a) _a = (a); \
++	typeof(b) _b = (b); \
++	_a < _b ? _a : _b; \
++})
++#endif /* MIN */
++
++#ifndef MAX
++# define MAX(a, b) ({ \
++	typeof(a) _a = @; \
++	typeof(b) _b = (b); \
++	_a > _b ? _a : _b; \
++})
++#endif /* MAX */
++
++#endif	/* TST_MINMAX_H__ */
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 335c826..eec8e12 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -38,6 +38,7 @@
+ #include "tst_kvercmp.h"
+ #include "tst_clone.h"
+ #include "tst_kernel.h"
 +#include "tst_minmax.h"
  
- #ifdef HAVE_LINUX_CAN_H
+ /*
+  * Reports testcase result.
+diff --git a/lib/get_path.c b/lib/get_path.c
+index cb8a3b5..aafbc2c 100644
+--- a/lib/get_path.c
++++ b/lib/get_path.c
+@@ -31,8 +31,6 @@
+   * $PATH.
+   */
  
- #include <linux/can.h>
- #include <linux/can/raw.h>
- 
--#define max(a, b) ((a) > (b) ? (a) : (b))
+-#include "test.h"
 -
- struct rxs {
- 	int s;
- 	int t;
-@@ -70,7 +69,7 @@ struct rxs test_sockets(int s, int t, canid_t can_id)
+ #include <stdio.h>
+ #include <string.h>
+ #include <stdlib.h>
+@@ -40,9 +38,7 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ 
+-#ifndef MIN
+-#define MIN(a, b) ((a)<(b)?@:(b))
+-#endif
++#include "test.h"
+ 
+ static int file_exist(const char *path)
  {
- 	fd_set rdfs;
- 	struct timeval tv;
--	int m = max(s, t) + 1;
-+	int m = MAX(s, t) + 1;
- 	int have_rx = 1;
- 	struct can_frame frame;
- 	struct rxs rx;
+diff --git a/testcases/kernel/fs/ftest/ftest01.c b/testcases/kernel/fs/ftest/ftest01.c
+index f4fcd60..2dfc92a 100644
+--- a/testcases/kernel/fs/ftest/ftest01.c
++++ b/testcases/kernel/fs/ftest/ftest01.c
+@@ -52,6 +52,7 @@
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #include <sys/stat.h>
++#include <sys/param.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <signal.h>
+diff --git a/testcases/kernel/fs/ftest/ftest05.c b/testcases/kernel/fs/ftest/ftest05.c
+index fe3145c..da15c97 100644
+--- a/testcases/kernel/fs/ftest/ftest05.c
++++ b/testcases/kernel/fs/ftest/ftest05.c
+@@ -61,6 +61,7 @@
+ #include <signal.h>
+ #include <unistd.h>
+ #include <inttypes.h>
++#include <sys/param.h>
+ #include "test.h"
+ #include "libftest.h"
+ 
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+index da8bdb1..71418f1 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+@@ -58,6 +58,8 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
++#include <limits.h>
++#include <sys/param.h>
+ 
+ #include "test.h"
+ #include "hugetlb.h"
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+index d31609d..157ff28 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+@@ -51,6 +51,8 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
++#include <limits.h>
++#include <sys/param.h>
+ 
+ #include "test.h"
+ #include "safe_macros.h"
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
+index e1f2986..9401650 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
+@@ -59,6 +59,8 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
++#include <limits.h>
++#include <sys/param.h>
+ 
+ #include "test.h"
+ #include "safe_macros.h"
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
+index cfb4d72..3208f5c 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
+@@ -56,6 +56,7 @@
+  *	none
+  */
+ 
++#include <limits.h>
+ #include "hugetlb.h"
+ #include "safe_macros.h"
+ #include "mem.h"
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
+index e644178..a8546b1 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
+@@ -51,6 +51,7 @@
+  */
+ 
+ #include <pwd.h>
++#include <limits.h>
+ #include "hugetlb.h"
+ #include "safe_macros.h"
+ #include "mem.h"
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
+index a0cea9a..48f454c 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
+@@ -57,6 +57,7 @@
+  *	test must be run at root
+  */
+ 
++#include <limits.h>
+ #include "hugetlb.h"
+ #include "safe_macros.h"
+ #include "mem.h"
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+index a54077a..f1e9195 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+@@ -61,6 +61,7 @@
+  *	none
+  */
+ 
++#include <limits.h>
+ #include "test.h"
+ #include "safe_macros.h"
+ #include "mem.h"
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
+index f5ae366..785c5ca 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
+@@ -53,6 +53,7 @@
+  */
+ 
+ #include <pwd.h>
++#include <limits.h>
+ #include "test.h"
+ #include "safe_macros.h"
+ #include "mem.h"
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
+index bb2b7e7..1e73027 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
+@@ -60,6 +60,7 @@
+ 
+ #include <sys/types.h>
+ #include <sys/wait.h>
++#include <limits.h>
+ #include "test.h"
+ #include "safe_macros.h"
+ #include "mem.h"
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c b/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
+index 0ebcca6..45ff286 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
+@@ -58,6 +58,7 @@
+  */
+ 
+ #include <setjmp.h>
++#include <limits.h>
+ #include "hugetlb.h"
+ #include "safe_macros.h"
+ #include "mem.h"
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+index 2367c4d..9da79c1 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+@@ -58,6 +58,7 @@
+  *	none
+  */
+ 
++#include <limits.h>
+ #include "hugetlb.h"
+ #include "safe_macros.h"
+ #include "mem.h"
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
+index 5f2cb31..8b18466 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
+@@ -50,7 +50,7 @@
+  * RESTRICTIONS
+  *	none
+  */
+-
++#include <limits.h>
+ #include "hugetlb.h"
+ #include "safe_macros.h"
+ #include "mem.h"
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+index 402313a..481e26b 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+@@ -52,6 +52,7 @@
+  *	none
+  */
+ 
++#include <limits.h>
+ #include "hugetlb.h"
+ #include "safe_macros.h"
+ #include "mem.h"
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
+index 1a96c3c..8ec4b9e 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
+@@ -60,6 +60,7 @@
+ 
+ #include <sys/types.h>
+ #include <sys/wait.h>
++#include <limits.h>
+ #include "hugetlb.h"
+ #include "safe_macros.h"
+ #include "mem.h"
+diff --git a/testcases/kernel/mem/ksm/ksm06.c b/testcases/kernel/mem/ksm/ksm06.c
+index 2092746..cc34024 100644
+--- a/testcases/kernel/mem/ksm/ksm06.c
++++ b/testcases/kernel/mem/ksm/ksm06.c
+@@ -43,6 +43,7 @@
+ #include <signal.h>
+ #include <stdio.h>
+ #include <unistd.h>
++#include <limits.h>
+ #include "numa_helper.h"
+ #include "test.h"
+ #include "safe_macros.h"
+diff --git a/testcases/kernel/mem/tunable/overcommit_memory.c b/testcases/kernel/mem/tunable/overcommit_memory.c
+index 79a3034..5d45fd6 100644
+--- a/testcases/kernel/mem/tunable/overcommit_memory.c
++++ b/testcases/kernel/mem/tunable/overcommit_memory.c
+@@ -79,6 +79,7 @@
+ #include <errno.h>
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <limits.h>
+ #include "test.h"
+ #include "safe_macros.h"
+ #include "mem.h"
+diff --git a/testcases/kernel/mem/vma/vma02.c b/testcases/kernel/mem/vma/vma02.c
+index d3c436a..ae35b2a 100644
+--- a/testcases/kernel/mem/vma/vma02.c
++++ b/testcases/kernel/mem/vma/vma02.c
+@@ -41,6 +41,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
++#include <limits.h>
+ #include "test.h"
+ #include "safe_macros.h"
+ #include "numa_helper.h"
+diff --git a/testcases/kernel/mem/vma/vma04.c b/testcases/kernel/mem/vma/vma04.c
+index f4f3809..5e2cc91 100644
+--- a/testcases/kernel/mem/vma/vma04.c
++++ b/testcases/kernel/mem/vma/vma04.c
+@@ -45,6 +45,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
++#include <limits.h>
+ #include "test.h"
+ #include "safe_macros.h"
+ #include "numa_helper.h"
+diff --git a/testcases/kernel/syscalls/cma/process_vm_readv03.c b/testcases/kernel/syscalls/cma/process_vm_readv03.c
+index 102bcd9..17f0a5d 100644
+--- a/testcases/kernel/syscalls/cma/process_vm_readv03.c
++++ b/testcases/kernel/syscalls/cma/process_vm_readv03.c
+@@ -28,6 +28,7 @@
+ #include <string.h>
+ #include <time.h>
+ #include <unistd.h>
++#include <limits.h>
+ 
+ #include "test.h"
+ #include "safe_macros.h"
+diff --git a/testcases/kernel/syscalls/cma/process_vm_writev02.c b/testcases/kernel/syscalls/cma/process_vm_writev02.c
+index c37c02c..04cf6d1 100644
+--- a/testcases/kernel/syscalls/cma/process_vm_writev02.c
++++ b/testcases/kernel/syscalls/cma/process_vm_writev02.c
+@@ -26,6 +26,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
++#include <limits.h>
+ 
+ #include "test.h"
+ #include "safe_macros.h"
+diff --git a/testcases/kernel/syscalls/futex/futex_wake01.c b/testcases/kernel/syscalls/futex/futex_wake01.c
+index b5f1904..42ea6f6 100644
+--- a/testcases/kernel/syscalls/futex/futex_wake01.c
++++ b/testcases/kernel/syscalls/futex/futex_wake01.c
+@@ -21,6 +21,7 @@
+   */
+ 
+ #include <errno.h>
++#include <limits.h>
+ 
+ #include "test.h"
+ #include "futextest.h"
+diff --git a/testcases/kernel/syscalls/getrusage/getrusage03_child.c b/testcases/kernel/syscalls/getrusage/getrusage03_child.c
+index 24a6f33..972c38e4 100644
+--- a/testcases/kernel/syscalls/getrusage/getrusage03_child.c
++++ b/testcases/kernel/syscalls/getrusage/getrusage03_child.c
+@@ -31,6 +31,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <limits.h>
+ 
+ #include "test.h"
+ #include "safe_macros.h"
+diff --git a/testcases/kernel/syscalls/inotify/inotify02.c b/testcases/kernel/syscalls/inotify/inotify02.c
+index fde104f..4c51d2b 100644
+--- a/testcases/kernel/syscalls/inotify/inotify02.c
++++ b/testcases/kernel/syscalls/inotify/inotify02.c
+@@ -38,6 +38,7 @@
+ #include <errno.h>
+ #include <string.h>
+ #include <sys/syscall.h>
++#include <limits.h>
+ #include "test.h"
+ #include "linux_syscall_numbers.h"
+ #include "inotify.h"
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages08.c b/testcases/kernel/syscalls/move_pages/move_pages08.c
+index e0705a2..66544eb 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages08.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages08.c
+@@ -54,6 +54,7 @@
+ #include <sys/wait.h>
+ #include <unistd.h>
+ #include <errno.h>
++#include <limits.h>
+ #include "test.h"
+ #include "move_pages_support.h"
+ 
+diff --git a/testcases/kernel/syscalls/pselect/pselect01.c b/testcases/kernel/syscalls/pselect/pselect01.c
+index 9a6a309..1e8ecce 100644
+--- a/testcases/kernel/syscalls/pselect/pselect01.c
++++ b/testcases/kernel/syscalls/pselect/pselect01.c
+@@ -51,8 +51,6 @@ static struct tcase tcases[] = {
+ 	{{1, 0},          1},
+ };
+ 
+-#define MIN(a, b) ((a) < (b) ? @ : (b))
+-
+ /*
+  * The threshold per one syscall is computed as a sum of:
+  *
+diff --git a/testcases/kernel/syscalls/sendmsg/sendmsg02.c b/testcases/kernel/syscalls/sendmsg/sendmsg02.c
+index 0285352..aa3c88d 100644
+--- a/testcases/kernel/syscalls/sendmsg/sendmsg02.c
++++ b/testcases/kernel/syscalls/sendmsg/sendmsg02.c
+@@ -41,6 +41,7 @@
+ #include <sys/wait.h>
+ #include <errno.h>
+ #include <signal.h>
++#include <limits.h>
+ #include "config.h"
+ #include "test.h"
+ #include "safe_macros.h"
+diff --git a/testcases/kernel/syscalls/setgroups/setgroups02.c b/testcases/kernel/syscalls/setgroups/setgroups02.c
+index d7667b9..de23a4a 100644
+--- a/testcases/kernel/syscalls/setgroups/setgroups02.c
++++ b/testcases/kernel/syscalls/setgroups/setgroups02.c
+@@ -69,6 +69,7 @@
+ #include <errno.h>
+ #include <pwd.h>
+ #include <grp.h>
++#include <sys/param.h>
+ 
+ #include "test.h"
+ 
+diff --git a/testcases/kernel/syscalls/setgroups/setgroups04.c b/testcases/kernel/syscalls/setgroups/setgroups04.c
+index 2af410f..971c86b 100644
+--- a/testcases/kernel/syscalls/setgroups/setgroups04.c
++++ b/testcases/kernel/syscalls/setgroups/setgroups04.c
+@@ -62,6 +62,7 @@
+  *
+  */
+ #include <sys/types.h>
++#include <sys/param.h>
+ #include <unistd.h>
+ #include <errno.h>
+ #include <pwd.h>
+diff --git a/testcases/kernel/syscalls/vmsplice/vmsplice02.c b/testcases/kernel/syscalls/vmsplice/vmsplice02.c
+index bd14b00..f8af0ac 100644
+--- a/testcases/kernel/syscalls/vmsplice/vmsplice02.c
++++ b/testcases/kernel/syscalls/vmsplice/vmsplice02.c
+@@ -33,6 +33,7 @@
+ #include <unistd.h>
+ #include <fcntl.h>
+ #include <sys/uio.h>
++#include <limits.h>
+ 
+ #include "test.h"
+ #include "safe_macros.h"
+diff --git a/testcases/network/lib6/asapi_01.c b/testcases/network/lib6/asapi_01.c
+index ff310ea..a34b8ae 100644
+--- a/testcases/network/lib6/asapi_01.c
++++ b/testcases/network/lib6/asapi_01.c
+@@ -373,10 +373,6 @@ static void isocketpair(int pf, int type, int proto, int fd[2])
+ 	fd[1] = connect_fd;
+ }
+ 
+-#ifndef MAX
+-#define MAX(a, b) ((a) >= (b) ? (a) : (b))
+-#endif /* MAX */
+-
+ static void csum_test(void)
+ {
+ 	fd_set rset, rset_save;
+diff --git a/testcases/network/lib6/getaddrinfo_01.c b/testcases/network/lib6/getaddrinfo_01.c
+index bbf8f77..db252a9 100644
+--- a/testcases/network/lib6/getaddrinfo_01.c
++++ b/testcases/network/lib6/getaddrinfo_01.c
+@@ -24,6 +24,7 @@
+ #include <sys/socket.h>
+ #include <netdb.h>
+ #include <arpa/inet.h>
++#include <sys/param.h>
+ 
+ #include "test.h"
+ 
 -- 
 2.10.2
 
