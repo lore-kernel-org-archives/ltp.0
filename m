@@ -1,12 +1,24 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 24 May 2017 15:08:01 +0300
-Subject: [LTP] [COMMITTED][PATCH] rup01: fix test for hostname length > 24
-Message-ID: <1495627681-30087-1-git-send-email-alexey.kodanev@oracle.com>
+From: Travis CI <builds@travis-ci.org>
+Date: Wed, 24 May 2017 12:05:41 +0000
+Subject: [LTP] Still Failing: linux-test-project/ltp#214 (master - f652f65)
+In-Reply-To: <linux-test-project/ltp+235611553+still failing@travis-ci.org>
+Message-ID: <59257714756ba_43fcb090ba9b4724470@17e68c0e-9823-4cdc-9f5f-73097272f2a4.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
+
+Build Update for linux-test-project/ltp
+-------------------------------------
+
+Build: #214
+Status: Still Failing
+
+Duration: 5 minutes and 5 seconds
+Commit: f652f65 (master)
+Author: Alexey Kodanev
+Message: rup01: fix test for hostname length > 24
 
 'rup' limits the length of host name in output:
 
@@ -17,23 +29,15 @@ To: ltp@lists.linux.it
   printf("%-*.*s", HOST_WIDTH, HOST_WIDTH, host);
 
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/network/rpc/basic_tests/rup/rup01 |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/testcases/network/rpc/basic_tests/rup/rup01 b/testcases/network/rpc/basic_tests/rup/rup01
-index 99916d4..ed99040 100755
---- a/testcases/network/rpc/basic_tests/rup/rup01
-+++ b/testcases/network/rpc/basic_tests/rup/rup01
-@@ -94,7 +94,7 @@ echo "Test rusers with options set...please be patient"
- # Go through matrix of rup options:
- 
- echo "rup $RHOST"
--rup $RHOST | grep $RHOST
-+rup $RHOST
- [ $? -eq 0 ] || end_testcase "rup $RHOST - failed"
- 
- echo "rup -d"
--- 
-1.7.1
+View the changeset: https://github.com/linux-test-project/ltp/compare/6229357c252a...f652f6583783
 
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/235611553?utm_source=email&utm_medium=notification
+
+--
+
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170524/e96b9d40/attachment.html>
