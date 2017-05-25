@@ -1,48 +1,110 @@
-From: Zorro Lang <zlang@redhat.com>
-Date: Wed, 24 May 2017 21:33:03 +0800
-Subject: [LTP] [PATCH] syscalls/lseek11: take EOPNOTSUPP as not
-	supported too
-In-Reply-To: <20170524132348.8564-1-eguan@redhat.com>
-References: <20170524132348.8564-1-eguan@redhat.com>
-Message-ID: <20170524133303.GS19070@dhcp12-143.nay.redhat.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Thu, 25 May 2017 13:57:43 +0200
+Subject: [LTP] [PATCH 1/2] docs: Add running the tests section
+Message-ID: <20170525115744.21720-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, May 24, 2017 at 09:23:48PM +0800, Eryu Guan wrote:
-> Filesystems could set errno to EOPNOTSUPP to indicate SEEK_DATA/HOLE
-> operations are not supported by this fs, e.g. NFSv4.0/v4.1, so exit
-> test with TCONF when EOPNOTSUPP is returned.
+The simplest/shortest possible guide to installing from source and running the tests.
 
-Wow, I didn't test on NFS-4.X when I wrote this case, thanks for
-finding this.
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
 
-Reviewed-by: Zorro Lang <zlang@redhat.com>
+In the common case, LTP is now easy to install and use. The documentation is
+also thorough. However I have had feedback from a few developers that they
+find installing the LTP and running a single test very difficult.
 
-Thanks,
-Zorro
+I think the reason for this is that the documentation is too spread out and
+difficult to navigate. Even while writing this I discovered new things which I
+have not seen before.
 
-> 
-> Signed-off-by: Eryu Guan <eguan@redhat.com>
-> ---
->  testcases/kernel/syscalls/lseek/lseek11.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/syscalls/lseek/lseek11.c b/testcases/kernel/syscalls/lseek/lseek11.c
-> index 47987c1..54d5da6 100644
-> --- a/testcases/kernel/syscalls/lseek/lseek11.c
-> +++ b/testcases/kernel/syscalls/lseek/lseek11.c
-> @@ -119,7 +119,7 @@ static void get_blocksize(void)
->  		SAFE_FSYNC(fd);
->  		pos = lseek(fd, 0, SEEK_DATA);
->  		if (pos == -1) {
-> -			if (errno == EINVAL) {
-> +			if (errno == EINVAL || errno == EOPNOTSUPP) {
->  				tst_brk(TCONF | TERRNO, "SEEK_DATA "
->  					"and SEEK_HOLE not implemented");
->  			}
-> -- 
-> 2.9.4
-> 
+This guide is aimed at the casual LTP user, who just wants to fix some failing
+test case (usually from syscalls), so their work flow will be:
+
+* Patch Kernel
+* Install it in VM
+* Install LTP in VM
+* Run test to see if it still fails
+
+Users who are just curious will probably just want to run syscalls as well.
+
+I think it is best to have a short end-to-end guide as the first thing people
+see when coming to the project. Then link off into more detailed documentation
+for people who fall off the happy path.
+
+ README | 56 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
+
+diff --git a/README b/README
+index bf0061c41..5c3236783 100644
+--- a/README
++++ b/README
+@@ -30,6 +30,62 @@ Don't run them on production systems. Growfiles, doio, and iogen in particular
+ stress the I/O capabilities of systems and while they should not cause problems
+ on properly functioning systems, they are intended to find (or cause) problems.
+ 
++Quick guide to running the tests
++--------------------------------
++
++If you have Git, autoconf, automake, m4, the linux headers and the common
++developer packages installed, the chances are the following will
++work.
++
++$ git clone https://github.com/the-linux-test-project/ltp.git
++$ cd ltp
++$ make autotools
++$ ./configure
++$ make
++$ make install
++
++This will install LTP to /opt/ltp.
++- If you have a problem see doc/mini-howto-building-ltp-from-git.txt.
++- If you still have a problem see INSTALL and './configure --help'.
++- Failing that, ask for help on the mailing list or Github.
++
++Some tests will be disabled if the configure script can not find their build
++dependencies.
++- If a test fails due to a missing component, check the ./configure output.
++- If a tests fails due to a missing user or group, see the Quick Start section
++  of INSTALL.
++
++To run all the test suites
++
++$ cd /opt/ltp
++$ ./runltp
++
++Note that many test cases have to be executed as root.
++
++To run a particular test suite
++
++$ ./runltp -f syscalls
++
++To run all tests with 'madvise' in the name
++
++$ ./runltp -f syscalls -s madvise
++
++Also see
++
++$ ./runltp --help
++
++Test suites (e.g. syscalls) are defined in the runtest directory. Each file
++contains a list of test cases in a simple format, see doc/ltp-run-files.txt.
++
++Each test case has its own executable or script, these can be executed
++directly
++
++$ testcases/bin/abort01
++
++Some have arguments
++
++$ testcases/bin/fork13 -i 37
++
+ Developers corner
+ -----------------
+ 
+-- 
+2.12.2
+
