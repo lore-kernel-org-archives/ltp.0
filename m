@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 26 May 2017 21:20:08 +0200
-Subject: [LTP] [PATCH v2 04/10] Test for uname26 exploit CVE-2012-0957
-In-Reply-To: <20170522121341.4663-5-rpalethorpe@suse.com>
+Date: Fri, 26 May 2017 21:33:37 +0200
+Subject: [LTP] [PATCH v2 05/10] Add CVE .gitignore,
+ Makefile and runtest files
+In-Reply-To: <20170522121341.4663-6-rpalethorpe@suse.com>
 References: <20170522121341.4663-1-rpalethorpe@suse.com>
- <20170522121341.4663-5-rpalethorpe@suse.com>
-Message-ID: <20170526192008.GB16233@rei.lan>
+ <20170522121341.4663-6-rpalethorpe@suse.com>
+Message-ID: <20170526193301.GA18654@rei.suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,58 +13,44 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +static void try_leak_bytes(void)
-> +{
-> +	struct utsname buf;
+> +++ b/testcases/cve/Makefile
+> @@ -0,0 +1,25 @@
+> +# Copyright (c) 2017 Linux Test Project
+> +#
+> +# This program is free software; you can redistribute it and/or
+> +# modify it under the terms of the GNU General Public License as
+> +# published by the Free Software Foundation; either version 2 of
+> +# the License, or (at your option) any later version.
+> +#
+> +# This program is distributed in the hope that it would be useful,
+> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +# GNU General Public License for more details.
+> +#
+> +# You should have received a copy of the GNU General Public License
+> +# along with this program. If not, see <http://www.gnu.org/licenses/>.
 > +
-> +	if (uname(&buf))
-> +		tst_brk(TBROK | TERRNO, "Call to uname failed");
+> +top_srcdir		?= ../..
 > +
-> +#define CHECK_FIELD(field_name) \
-> +	(check_field(buf.field_name, ARRAY_SIZE(buf.field_name), #field_name))
+> +include $(top_srcdir)/include/mk/testcases.mk
 > +
-> +	if (!(CHECK_FIELD(release) |
-> +	    CHECK_FIELD(sysname) |
-> +	    CHECK_FIELD(nodename) |
-> +	    CHECK_FIELD(version) |
-> +	    CHECK_FIELD(machine) |
-> +#ifdef _GNU_SOURCE
-> +	    CHECK_FIELD(domainname) |
-> +#endif
+> +CFLAGS			+= -D_GNU_SOURCE
 
-The _GNU_SOURCE does not get defined automatically, unless you include a
-header defines it. So I guess that we should better do a configure check
-if the field is present when _GNU_SOURCE is defined. Define _GNU_SOURCE
-at the start of this file and ifdef around macro that has been defined
-by the configure script here. Or we can simply avoid checking the
-domainname, since I guess that all the fields are filled with the same
-function anyway.
+Ah, you define _GNU_SOURCE here for all the tests. That should be fine,
+but we should still check if the domainname field is present if
+_GNU_SOURCE is defined, otherwise it may fail with alternative glibc (we
+have at least three these days).
 
-> +		    0)) {
-> +		tst_res(TPASS, "All fields zeroed after string terminator");
-> +	}
-> +#undef CHECK_FIELD
-> +}
+> +cve-2014-0196:	LDFLAGS += -lpthread -lutil -lrt
+
+Here you are adding LDFLAGS for test that does not exist yet, but at
+least that should not break anything.
+
+BTW what is the -lutil needed for?
+
+> +cve-2016-7117:	LDFLAGS += -lpthread -lrt
 > +
-> +static void run(unsigned int test_nr)
-> +{
-> +	if (!test_nr) {
-> +		tst_res(TINFO, "Calling uname with default personality");
-> +		try_leak_bytes();
-> +	} else {
-> +		if (personality(PER_LINUX | UNAME26) < 0)
-> +			tst_brk(TCONF | TERRNO,
-> +				"Could not change personality to UNAME26");
-> +		tst_res(TINFO, "Calling uname with UNAME26 personality");
-> +		try_leak_bytes();
-> +	}
-> +}
-> +
-> +static struct tst_test test = {
-> +	.tid = "cve-2012-0957",
-> +	.test = run,
-> +	.tcnt = 2,
-> +};
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
 > -- 
 > 2.12.2
 > 
