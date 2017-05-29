@@ -1,87 +1,153 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 29 May 2017 17:51:10 +0200
-Subject: [LTP] [PATCH] syscalls/syslog: mitigate reading syslog issue in
- multiple files
-In-Reply-To: <1491317717-14113-1-git-send-email-jracek@redhat.com>
-References: <1491317717-14113-1-git-send-email-jracek@redhat.com>
-Message-ID: <20170529155110.GD6618@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 29 May 2017 11:53:25 -0400 (EDT)
+Subject: [LTP] [RFC] [PATCH] syscalls: Add timer measurement library
+In-Reply-To: <20170526123354.8564-1-chrubis@suse.cz>
+References: <20170526123354.8564-1-chrubis@suse.cz>
+Message-ID: <775099814.23313843.1496073205696.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> diff --git a/testcases/kernel/syscalls/syslog/syslog-lib.sh b/testcases/kernel/syscalls/syslog/syslog-lib.sh
-> index e166d3a..3afd80f 100755
-> --- a/testcases/kernel/syscalls/syslog/syslog-lib.sh
-> +++ b/testcases/kernel/syscalls/syslog/syslog-lib.sh
-> @@ -151,6 +151,37 @@ restart_syslog_daemon()
->  	fi
+
+
+
+----- Original Message -----
+> This commit adds a timer measurement library, mostly based on changes
+> done to the pselect01.c test and changes all tests that measure timer
+> precision to use it.
+> 
+> The timer testcases that measure timeouts now just define sampling function
+> and
+> optional setup and cleanup. The rest of the functionality is implemented in
+> the
+> lib/tst_timer_test.c library. This change not only removes fair amount of
+> duplicated code but also allows us to tune thresholds and define testcases in
+> a
+> single place for all testcases.
+> 
+> The timer measurement library also supports for passing sleep time and
+> number of iterations as a command-line parameters, can print nifty
+> frequency plot into the terminal, as well as save test measurements into
+> a text file.
+> 
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  include/tst_timer.h                                |  26 ++
+>  include/tst_timer_test.h                           |  74 ++++
+>  lib/tst_timer_test.c                               | 434
+>  +++++++++++++++++++++
+>  runtest/syscalls                                   |   1 +
+>  testcases/kernel/syscalls/.gitignore               |   1 +
+>  .../syscalls/clock_nanosleep/clock_nanosleep01.c   |  67 +---
+>  .../syscalls/clock_nanosleep/clock_nanosleep02.c   |  49 +++
+>  .../kernel/syscalls/epoll_wait/epoll_wait02.c      | 125 ++----
+>  testcases/kernel/syscalls/futex/futex_wait05.c     |  61 +--
+>  testcases/kernel/syscalls/nanosleep/nanosleep01.c  |  56 +--
+>  testcases/kernel/syscalls/poll/poll02.c            | 104 ++---
+>  testcases/kernel/syscalls/pselect/pselect01.c      | 161 ++------
+>  testcases/kernel/syscalls/select/select04.c        | 103 ++---
+>  13 files changed, 746 insertions(+), 516 deletions(-)
+>  create mode 100644 include/tst_timer_test.h
+>  create mode 100644 lib/tst_timer_test.c
+>  create mode 100644
+>  testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep02.c
+> 
+> diff --git a/include/tst_timer.h b/include/tst_timer.h
+> index f0a10bd45..0448f4428 100644
+> --- a/include/tst_timer.h
+> +++ b/include/tst_timer.h
+> @@ -77,6 +77,32 @@ static inline struct timeval tst_us_to_timeval(long long
+> us)
 >  }
 >  
-> +check_syslog_content()
+>  /*
+> + * Converts ms to struct timespec
+> + */
+> +static inline struct timespec tst_ms_to_timespec(long long us)
+
+Hi,
+
+us -> ms
+
 > +{
-> +	logfile=$1
-> +	newvalue_getter=$2
-> +	oldvalue_getter=$3
-
-The oldvalue seems to be constant, at least I haven't noticed any
-different getter than 'echo $value', why don't we pass it as constant
-instead?
-
-> +	cond=$4
-> +	attempts=$5
-
-The 'attempts' value seems to be 25 in all cases, why do we pass it as a
-parameter in the first place.
-
-> +	for i in `seq 1 $attempts`;
-> +	do
-> +		tst_resm TINFO "reading $logfile, attempt $i"
+> +	struct timespec ret;
 > +
-> +		if [ $(( `eval $newvalue_getter` - `eval $oldvalue_getter` )) $cond ]; then
-> +			return 0
-
-What about returning the difference instead of passing the $cond to this
-fucntion, then we could do something as:
-
-	res=check_syslog_content "$LOG" "$getter" "$oldval"
-	if [ $res -ge 1 ]; then
-		tst_resm TPASS ...
-	else
-		tst_resm TFAIL ...
-
-> +		fi
-> +		sleep 1
-
-Can we shorten the sleep (use tst_sleep with subsecond interval) and
-increase number of attempts accordingly?
-
-> +	done
+> +	ret.tv_sec = us / 1000;
+> +	ret.tv_nsec = (us % 1000) * 1000000;
 > +
-> +	tst_resm TFAIL "expected line is not in syslog - giving up."
-> +	get_info_on_fail "$logfile"
-> +	return 1
-> +}
-> +
-> +get_info_on_fail()
-> +{
-> +	status_daemon systemd-journald
-
-We should first check that systemd-journal is even installed, possibly
-with command  if systemd-journal is a binary that is present in one of
-the directories in $PATH.
-
-> +	status_daemon rsyslog
-
-This should use $SYSLOG_DAEMON instead of rsyslog.
-
-> +	cat $1
-> +	set -x
+> +	return ret;
 > +}
 > +
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+<snip>
+
+> +
+> +struct tst_timer_test {
+> +	const char *scall;
+> +	int (*sample)(int clk_id, long long usec);
+> +	void (*setup)(void);
+> +	void (*cleanup)(void);
+> +};
+
+I'd rather keep tst_test struct and expose some new function,
+that would do all of this. 
+
+void test_all()
+{
+    tst_timer_test("select()", test_sample_function);
+}
+
+void tst_timer_test(fn_name, test_sample_function)
+{
+  timer_parse_options();
+  timer_setup();
+  for n ... {
+     do_timer_test(timer_tcases[n].usec, timer_tcases[n].samples, test_sample_function);
+  }
+  timer_cleanup();
+}
+
+What I'm afraid of is that we end up mirror-ing lot of functionality
+in tst_test struct: needsroot, tmpdir, kernelversion, extra parameter
+
+
+> +void do_timer_test(long long usec, unsigned int nsamples)
+> +{
+> +	long long trunc_mean, median;
+> +	unsigned int discard = compute_discard(nsamples);
+> +	unsigned int keep_samples = nsamples - discard;
+> +	long long threshold = compute_threshold(usec, keep_samples);
+> +	unsigned int i;
+> +	int failed = 0;
+> +
+> +	tst_res(TINFO,
+> +		"%s sleeping for %llius %u iterations, threshold %.2fus",
+> +		timer_test->scall, usec, nsamples,
+> +		1.00 * threshold / (keep_samples));
+> +
+> +	cur_sample = 0;
+> +	for (i = 0; i < nsamples; i++) {
+> +		if (timer_test->sample(CLOCK_REALTIME, usec)) {
+
+Since we use resolution of monotonic clock, should we also
+measure with it here?
+
+> +			tst_res(TINFO, "sampling function failed, exitting");
+> +			return;
+> +		}
+> +	}
+> +
+> +	qsort(samples, nsamples, sizeof(samples[0]), cmp);
+> +
+> +	write_to_file();
+> +
+> +	for (i = 0; samples[i] > 10 * usec; i++) {
+
+This could also use a range check for length of samples array,
+just in case all samples are outliners.
+
+Regards,
+Jan
+
