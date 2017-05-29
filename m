@@ -1,21 +1,101 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 29 May 2017 17:42:04 +0300
-Subject: [LTP] [PATCH 1/1] network/mc_cmds: Use TINFO when error is
- caused by old version of ip command
-In-Reply-To: <20170518143656.2348-1-pvorel@suse.cz>
-References: <20170518143656.2348-1-pvorel@suse.cz>
-Message-ID: <5aa0ea96-6acf-dd8f-3826-469f0863ed6e@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 29 May 2017 16:57:09 +0200
+Subject: [LTP] [PATCH 3/3] syscalls/shmat03.c: add new regression test
+In-Reply-To: <1492164917-9329-3-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1492164917-9329-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1492164917-9329-3-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20170529145709.GC6618@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 05/18/2017 05:36 PM, Petr Vorel wrote:
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  testcases/network/multicast/mc_cmds/mc_cmds | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
+Hi!
+> +	addr = shmat(shm_id, LOCATION, SHM_RND);
+> +	if (addr != (void *)-1)
+> +		tst_res(TINFO, "shmat() attached a nil-page unexpectedly");
+> +	else
+> +		tst_res(TINFO, "shmat() didn't attach a nil-page");
+> +
+> +	((char *)addr)[0] = 'A';
 
-Fixed 'over 80 chars' warnings and applied, thanks!
+
+So if shmat() fails we try to write to (char*)-1 address, that does not
+sound right. Why don't we exit the test with TPASS in that case and skip
+the part that tries to write to invalid address?
+
+Or at least dereference NULL here instead of the address returned from
+shmat() since that is guaranteed to SEGFAULT.
+
+> +	tst_res(TINFO, "shmat() wrote data to shmaddr:%p unexpectedly", addr);
+> +
+> +	SAFE_SHMDT(addr);
+> +
+> +	exit(0);
+> +}
+> +
+> +static void do_shmat(unsigned int n)
+> +{
+> +	pid_t pid;
+> +	int status;
+> +	struct tcase *tc = &tcases[n];
+> +
+> +	pid = SAFE_FORK();
+> +	if (!pid)
+> +		verify_shmat(tc->exp_usr);
+> +
+> +	SAFE_WAITPID(pid, &status, 0);
+> +
+> +	if (WIFEXITED(status)) {
+> +		tst_res(TFAIL, "%s mapped nil-page in shmat() unexpectedly",
+> +			tc->des);
+> +		return;
+> +	}
+> +
+> +	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV) {
+> +		tst_res(TPASS, "%s didn't map nil-page in shmat(), and was "
+> +			"killed by %s as expected", tc->des,
+> +			tst_strsig(WTERMSIG(status)));
+> +	} else {
+> +		tst_res(TFAIL, "%s didn't map nil-page in shmat(), and was "
+> +			"killed by %s unexpectedly", tc->des,
+> +			tst_strsig(WTERMSIG(status)));
+> +	}
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	key_t shm_key;
+> +
+> +	shm_key = GETIPCKEY();
+> +	shm_id = SAFE_SHMGET(shm_key, 4096, 0777 | IPC_CREAT);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (shm_id != -1)
+> +		SAFE_SHMCTL(shm_id, IPC_RMID, NULL);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.tid = "shmat03",
+> +	.needs_root = 1,
+> +	.forks_child = 1,
+> +	.test = do_shmat,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.setup = setup,
+> +	.cleanup = cleanup
+> +};
+> -- 
+> 1.8.3.1
+> 
+> 
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
