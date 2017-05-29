@@ -1,71 +1,63 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 29 May 2017 10:25:20 +0200
-Subject: [LTP] [PATCH v2 2/2] docs: Add description of runtest file format
-In-Reply-To: <20170529082520.1976-1-rpalethorpe@suse.com>
-References: <20170529082520.1976-1-rpalethorpe@suse.com>
-Message-ID: <20170529082520.1976-2-rpalethorpe@suse.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Mon, 29 May 2017 10:44:30 +0200
+Subject: [LTP] [PATCH v2 05/10] Add CVE .gitignore,
+	Makefile and runtest files
+In-Reply-To: <20170526193301.GA18654@rei.suse.de>
+References: <20170522121341.4663-1-rpalethorpe@suse.com>
+ <20170522121341.4663-6-rpalethorpe@suse.com>
+ <20170526193301.GA18654@rei.suse.de>
+Message-ID: <87h9046oi9.fsf@our.domain.is.not.set>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-An informal description of the runtest file contents.
+Hi,
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- doc/ltp-run-files.txt | 41 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 40 insertions(+), 1 deletion(-)
+Cyril Hrubis writes:
 
-diff --git a/doc/ltp-run-files.txt b/doc/ltp-run-files.txt
-index 36180b97b..f8cc36b9e 100644
---- a/doc/ltp-run-files.txt
-+++ b/doc/ltp-run-files.txt
-@@ -1,4 +1,43 @@
--List of scripts or executables that need to be run for complete LTP execution.
-+The runtest files contain a list of test cases to be executed.
-+
-+File Format
-+-----------
-+
-+Lines starting with a '#' are comments and blank lines are ignored.
-+
-+Otherwise, lines start with a test name followed by white space, then some
-+shell script to be executed. For example
-+
-+Test Name
-+|       Delimiter               Test case argument
-+|       |                       |
-+v       v                       v
-+splice02 seq 1 20000 | splice02 splice02-temp
-+         ^             ^                    ^
-+         |             |                    |
-+         |             Test case executable |
-+         -----------Shell script-------------
-+
-+So the splice02 runtest entry pipes the output of seq into the splice02 test
-+executable. Most runtest entries are simpler than this, for example
-+
-+splice03 splice03
-+
-+Here the test name and executable have the same name and no arguments have
-+been supplied.
-+
-+Run test files should start with a comment describing the tests they contain,
-+e.g.
-+
-+#DESCRIPTION:Kernel system calls
-+
-+Note that the LTP has absorbed a number of other projects. Some of these have
-+been fully converted to the LTP format, others have runtest files generated
-+for them during installation, while some use a shell script to integrate them
-+with the other tests.
-+
-+Test suites
-+-----------
- 
-  - syscalls  (except epoll, see below)
-  - fs
+> Hi!
+>> +++ b/testcases/cve/Makefile
+>> @@ -0,0 +1,25 @@
+>> +# Copyright (c) 2017 Linux Test Project
+>> +#
+>> +# This program is free software; you can redistribute it and/or
+>> +# modify it under the terms of the GNU General Public License as
+>> +# published by the Free Software Foundation; either version 2 of
+>> +# the License, or (at your option) any later version.
+>> +#
+>> +# This program is distributed in the hope that it would be useful,
+>> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>> +# GNU General Public License for more details.
+>> +#
+>> +# You should have received a copy of the GNU General Public License
+>> +# along with this program. If not, see <http://www.gnu.org/licenses/>.
+>> +
+>> +top_srcdir		?= ../..
+>> +
+>> +include $(top_srcdir)/include/mk/testcases.mk
+>> +
+>> +CFLAGS			+= -D_GNU_SOURCE
+>
+> Ah, you define _GNU_SOURCE here for all the tests. That should be fine,
+> but we should still check if the domainname field is present if
+> _GNU_SOURCE is defined, otherwise it may fail with alternative glibc (we
+> have at least three these days).
+
+Ok, I will check for the struct field explicitly. 
+
+>
+>> +cve-2014-0196:	LDFLAGS += -lpthread -lutil -lrt
+>
+> Here you are adding LDFLAGS for test that does not exist yet, but at
+> least that should not break anything.
+>
+> BTW what is the -lutil needed for?
+
+At least openpty on older systems.
+
 -- 
-2.12.2
-
+Thank you,
+Richard.
