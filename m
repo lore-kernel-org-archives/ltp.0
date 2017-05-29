@@ -1,172 +1,78 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 29 May 2017 10:56:37 +0200
-Subject: [LTP] [PATCH v2 07/10] Test for CVE-2017-5669 in shmat
-In-Reply-To: <20170526195619.GC18654@rei.suse.de>
-References: <20170522121341.4663-1-rpalethorpe@suse.com>
- <20170522121341.4663-8-rpalethorpe@suse.com>
- <20170526195619.GC18654@rei.suse.de>
-Message-ID: <87fufo6ny2.fsf@our.domain.is.not.set>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 29 May 2017 09:12:52 -0400 (EDT)
+Subject: [LTP] [PATCH v2] move_pages12: Make sure hugepages are available
+In-Reply-To: <20170516142924.GE2897@rei.lan>
+References: <20170516100759.10355-1-chrubis@suse.cz>
+ <1420231349.12458178.1494937684196.JavaMail.zimbra@redhat.com>
+ <20170516133233.GB2897@rei.lan>
+ <1571565362.12569976.1494943541160.JavaMail.zimbra@redhat.com>
+ <364825081.12577806.1494944124022.JavaMail.zimbra@redhat.com>
+ <20170516142924.GE2897@rei.lan>
+Message-ID: <877971945.23275711.1496063572967.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+
+
+----- Original Message -----
+> Hi!
+> > Correction: "hpsz / 1024", we multiply it in setup() by 1024.
+> 
+> I've moved the multiplication down in the setup so that we end up with
+> correct value without the divison. And I've also added you Signed-off-by
+> to the patch, since you did non-trivial amount of work on it and finally
+> pushed it. Thanks for you help.
+
 Hi,
 
-Cyril Hrubis writes:
+I'm sporadically running into SIGBUS in this testcase, not sure if it's 
+because of low memory or something else. Do you see it too?
 
-> Hi!
->> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
->> ---
->>  runtest/cve                   |  2 +
->>  runtest/syscalls              |  1 +
->>  testcases/cve/.gitignore      |  1 +
->>  testcases/cve/cve-2017-5669.c | 90 +++++++++++++++++++++++++++++++++++++++++++
->>  4 files changed, 94 insertions(+)
->>  create mode 100644 testcases/cve/cve-2017-5669.c
->> 
->> diff --git a/runtest/cve b/runtest/cve
->> index 6556ffb0f..ee0614a9c 100644
->> --- a/runtest/cve
->> +++ b/runtest/cve
->> @@ -4,3 +4,5 @@ cve-2014-0196 cve-2014-0196
->>  cve-2016-4997 cve-2016-4997
->>  cve-2016-5195 dirtyc0w
->>  cve-2016-7117 cve-2016-7117
->> +cve-2017-5669 cve-2017-5669
->> +cve-2017-6951 cve-2017-6951
->
-> Here you are adding test out of order again...
+I wonder if we should replace memset with MAP_POPULATE.
 
-Sorry, I probably did this while sorting them by CVE number.
+(gdb) bt
+#0  0x00003fffb16ac620 in .__memset_power8 () from /lib64/libc.so.6
+#1  0x0000000010003344 in memset (__len=67108864, __ch=0, __dest=0x3efffc000000) at /usr/include/bits/string3.h:84
+#2  alloc_free_huge_on_node (node=<optimized out>, size=67108864) at move_pages12.c:170
+#3  0x0000000010003648 in setup () at move_pages12.c:235
+#4  0x0000000010006ad4 in do_test_setup () at tst_test.c:705
+#5  testrun () at tst_test.c:778
+#6  tst_run_tcases (argc=<optimized out>, argv=0x3fffd1c7e488, self=<optimized out>) at tst_test.c:884
+#7  0x0000000010002f58 in main (argc=<optimized out>, argv=<optimized out>) at ../../../../include/tst_test.h:189
 
->
->> diff --git a/runtest/syscalls b/runtest/syscalls
->> index e72ed0166..0f3c45ada 100644
->> --- a/runtest/syscalls
->> +++ b/runtest/syscalls
->> @@ -1164,6 +1164,7 @@ setxattr03 setxattr03
->>  shmat01 shmat01
->>  shmat02 shmat02
->>  shmat03 shmat03
->> +cve-2017-5669 cve-2017-5669
->>  
->>  shmctl01 shmctl01
->>  shmctl02 shmctl02
->> diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
->> index ff5844263..715cbab38 100644
->> --- a/testcases/cve/.gitignore
->> +++ b/testcases/cve/.gitignore
->> @@ -2,3 +2,4 @@ cve-2012-0957
->>  cve-2014-0196
->>  cve-2016-4997
->>  cve-2016-7117
->> +cve-2017-5669
->> diff --git a/testcases/cve/cve-2017-5669.c b/testcases/cve/cve-2017-5669.c
->> new file mode 100644
->> index 000000000..a2ad7f8e3
->> --- /dev/null
->> +++ b/testcases/cve/cve-2017-5669.c
->> @@ -0,0 +1,90 @@
->> +/*
->> + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
->> + *
->> + * This program is free software: you can redistribute it and/or modify
->> + * it under the terms of the GNU General Public License as published by
->> + * the Free Software Foundation, either version 2 of the License, or
->> + * (at your option) any later version.
->> + *
->> + * This program is distributed in the hope that it will be useful,
->> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->> + * GNU General Public License for more details.
->> + *
->> + * You should have received a copy of the GNU General Public License
->> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
->> + */
->> +/*
->> + * Test for CVE-2017-5669 which allows us to map the nil page using shmat.
->> + *
->> + * When the bug is present shmat(..., (void *)1, SHM_RND) will round address
->> + * 0x1 down to zero and give us the (nil/null) page. With the current bug fix
->> + * in place, shmat it will return EINVAL instead. We also check to see if the
->> + * returned address is outside the nil page in case an alternative fix has
->> + * been applied.
->> + *
->> + * In any case we manage to map some memory we also try to write to it. This
->> + * is just to see if we get an access error or some other unexpected behaviour.
->> + *
->> + * See commit 95e91b831f (ipc/shm: Fix shmat mmap nil-page protection)
->> + */
->> +#include <sys/types.h>
->> +#include <sys/ipc.h>
->> +#include <sys/shm.h>
->> +
->> +#include <stdio.h>
->> +#include <errno.h>
->> +#include <string.h>
->> +
->> +#include "tst_test.h"
->> +
->> +static int shm_id;
->> +static void *shm_addr;
->> +
->> +static void cleanup(void)
->> +{
->> +	if (shm_addr && shmdt(shm_addr) == -1)
->> +		tst_res(TWARN | TERRNO, "shmdt(shm_addr) == -1");
->> +	shm_addr = 0;
->> +
->> +	if (shm_id && shmctl(shm_id, IPC_RMID, 0) == -1)
->> +		tst_res(TWARN | TERRNO, "shmctl(shm_id) == -1");
->> +	shm_id = 0;
->> +}
->> +
->> +static void run(void)
->> +{
->> +	shm_id = shmget(IPC_PRIVATE, getpagesize(), 0777);
->> +	if (shm_id == -1)
->> +		tst_brk(TBROK | TERRNO,
->> +			"shmget(shm_key, PAGE_SIZE, IPC_CREATE | 0777) = -1");
->> +
->> +	tst_res(TINFO, "Attempting to attach shared memory to null page");
->> +	shm_addr = shmat(shm_id, ((void *)1), SHM_RND);
->> +	if (shm_addr == (void *)-1) {
->> +		if (errno == EINVAL) {
->> +			tst_res(TPASS, "shmat returned EINVAL");
->> +			shm_addr = 0;
->> +			return;
->> +		}
->> +		tst_brk(TBROK | TERRNO,
->> +			"The bug was not triggered, but the shmat error is unexpected");
->> +	}
->> +
->> +	tst_res(TINFO, "Mapped shared memory to %p", shm_addr);
->> +
->> +	if (!((size_t)shm_addr & (~0U << 16)))
->> +		tst_res(TFAIL,
->> +			"We have mapped a VM address within the first 64Kb");
->> +	else
->> +		tst_res(TPASS,
->> +			"The kernel assigned a different VM address");
->> +
->> +	((char *)shm_addr)[0] = 'P';
->> +}
->> +
->> +static struct tst_test test = {
->> +	.tid = "cve-2017-5669",
->> +	.cleanup = cleanup,
->> +	.test_all = run,
->> +};
->
-> There is a patch that adds sysv shm related function as safe macros on
-> ML. I will merge it probably next week. Can you please make use of these
-> macros in this test as well?
+[pid 48425] 08:45:57.151242 write(2, "move_pages12.c:143: \33[1;34mINFO:"..., 82move_pages12.c:143: INFO: Allocating and freeing 4 hug
+epages on node 2
+) = 82
+[pid 48425] 08:45:57.151287 mmap(NULL, 67108864, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_HUGETLB, -1, 0) = 0x3efffc000000
+[pid 48425] 08:45:57.151442 mbind(0x3efffc000000, 67108864, MPOL_BIND, [0x0000000000000004, 000000000000000000, 000000000000000000, 00
+0000000000000000], 257, 0) = 0
+[pid 48425] 08:45:57.167377 munmap(0x3efffc000000, 67108864) = 0
+[pid 48425] 08:45:57.167486 write(2, "move_pages12.c:143: \33[1;34mINFO:"..., 82move_pages12.c:143: INFO: Allocating and freeing 4 hug
+epages on node 3
+) = 82
+[pid 48425] 08:45:57.167554 mmap(NULL, 67108864, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_HUGETLB, -1, 0) = 0x3efffc000000
+[pid 48425] 08:45:57.167648 mbind(0x3efffc000000, 67108864, MPOL_BIND, [0x0000000000000008, 000000000000000000, 000000000000000000, 00
+0000000000000000], 257, 0) = 0
+[pid 48425] 08:45:57.172293 --- SIGBUS {si_signo=SIGBUS, si_code=BUS_ADRERR, si_addr=0x3efffe000000} ---
 
-Yes, I will be away for three weeks anyway. So I can do that when I get
-back.
+available: 3 nodes (0,2-3)
+node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+node 0 size: 0 MB
+node 0 free: 0 MB
+node 2 cpus:
+node 2 size: 16384 MB
+node 2 free: 12969 MB
+node 3 cpus:
+node 3 size: 2048 MB
+node 3 free: 58 MB
+node distances:
+node   0   2   3
+  0:  10  40  10
+  2:  40  10  40
+  3:  10  40  10
 
--- 
-Thank you,
-Richard.
+Regards,
+Jan
