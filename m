@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 30 May 2017 14:15:02 +0200
-Subject: [LTP] [RFC] [PATCH] syscalls: Add timer measurement library
-In-Reply-To: <775099814.23313843.1496073205696.JavaMail.zimbra@redhat.com>
-References: <20170526123354.8564-1-chrubis@suse.cz>
- <775099814.23313843.1496073205696.JavaMail.zimbra@redhat.com>
-Message-ID: <20170530121501.GC24720@rei.lan>
+Date: Tue, 30 May 2017 15:02:17 +0200
+Subject: [LTP] [PATCH v2 2/2] controllers/memcg_test_3: Add new
+ regression test
+In-Reply-To: <1494328891-15634-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <5911A4B9.5070408@cn.fujitsu.com>
+ <1494328891-15634-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20170530130217.GA25921@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,85 +13,135 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > +
-> > +struct tst_timer_test {
-> > +	const char *scall;
-> > +	int (*sample)(int clk_id, long long usec);
-> > +	void (*setup)(void);
-> > +	void (*cleanup)(void);
-> > +};
-> 
-> I'd rather keep tst_test struct and expose some new function,
-> that would do all of this. 
-> 
-> void test_all()
-> {
->     tst_timer_test("select()", test_sample_function);
-> }
-> 
-> void tst_timer_test(fn_name, test_sample_function)
-> {
->   timer_parse_options();
->   timer_setup();
->   for n ... {
->      do_timer_test(timer_tcases[n].usec, timer_tcases[n].samples, test_sample_function);
->   }
->   timer_cleanup();
-> }
-> 
-> What I'm afraid of is that we end up mirror-ing lot of functionality
-> in tst_test struct: needsroot, tmpdir, kernelversion, extra parameter
+> +/*
+> + * This is a regression test for a crash caused by memcg function
+> + * reentrant on RHEL6.  When doing rmdir(), a pending signal can
+> + * interrupt the execution and lead to cgroup_clear_css_refs()
+> + * being entered repeatedly, this results in a BUG_ON().
+> + *
+> + * This bug was introduced by following RHEL6 patch on 2.6.32-488.el6:
+> + *
+> + *  [mm] memcg: fix race condition between memcg teardown and swapin
+> + *  Bugzilla: 1001197
 
-Hmm, we can also fill in the standard tst_test structure in the test
-then "override" some of the fields in the timer test library.
+Can you rather add a link here instead? Just "Bugzilla:" is too vague.
 
-I.e. test defines tst_test structure and the sampling function, timer
-library main() stores and replaces setup & cleanup, sets the test
-function then calls the tst_run_tcases() function. Does that sound
-better?
+> + * This test can crash the buggy kernel on RHEL6.6GA, and the bug
+> + * was fixed by following patch on 2.6.32-536.el6:
+> + *
+> + *  [mm] memcg: fix crash in re-entrant cgroup_clear_css_refs()
+> + *  Bugzilla: 1168185
+> + */
+> +
+> +#include <errno.h>
+> +#include <unistd.h>
+> +#include <stdlib.h>
+> +#include <sys/types.h>
+> +#include <sys/wait.h>
+> +#include "tst_test.h"
+> +
+> +#define MNTPOINT	"memcg"
+> +#define SUBDIR	"memcg/testdir"
+> +
+> +static int mount_flag;
+> +
+> +static struct tst_kern_exv kvers[] = {
+> +	{"RHEL6", "2.6.32-488"},
+> +	{NULL, NULL}
+> +};
+> +
+> +static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
+> +{
+> +
+> +}
+> +
+> +static void do_child(void)
+> +{
+> +	while (1)
+> +		SAFE_KILL(getppid(), SIGUSR1);
+> +
+> +	exit(0);
+> +}
+> +
+> +static void do_test(void)
+> +{
+> +	int i;
+> +	pid_t cpid = -1;
+> +
+> +	SAFE_SIGNAL(SIGUSR1, sighandler);
+> +
+> +	cpid = SAFE_FORK();
+> +	if (cpid == 0)
+> +		do_child();
 
-> > +void do_timer_test(long long usec, unsigned int nsamples)
-> > +{
-> > +	long long trunc_mean, median;
-> > +	unsigned int discard = compute_discard(nsamples);
-> > +	unsigned int keep_samples = nsamples - discard;
-> > +	long long threshold = compute_threshold(usec, keep_samples);
-> > +	unsigned int i;
-> > +	int failed = 0;
-> > +
-> > +	tst_res(TINFO,
-> > +		"%s sleeping for %llius %u iterations, threshold %.2fus",
-> > +		timer_test->scall, usec, nsamples,
-> > +		1.00 * threshold / (keep_samples));
-> > +
-> > +	cur_sample = 0;
-> > +	for (i = 0; i < nsamples; i++) {
-> > +		if (timer_test->sample(CLOCK_REALTIME, usec)) {
+Shouldn't we wait here untill the child is actually running?
+
+I think that with just 10 iteration in the code below we may as well
+finish the loop too fast.
+
+So what about incrementing a counter in the signal handler and loop
+until it reaches some small value (50 or something)?
+
+> +	for (i = 0; i < 10; i++) {
+> +		if (access(SUBDIR, F_OK))
+> +			SAFE_MKDIR(SUBDIR, 0644);
+> +		rmdir(SUBDIR);
+> +	}
+> +
+> +	SAFE_KILL(cpid, SIGKILL);
+> +	SAFE_WAIT(NULL);
+> +
+> +	tst_res(TPASS, "Bug not reproduced");
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	struct utsname buf;
+> +
+> +	SAFE_UNAME(&buf);
+> +	if (!strstr(buf.release, ".el6"))
+> +		tst_brk(TCONF, "This test can only run on RHEL6");
+> +
+> +	if (tst_kvercmp2(2, 6, 24, kvers) < 0)
+> +		tst_brk(TCONF, "This test requires kernel >= 2.6.32-488.el6");
+
+Why do we skip this test on anything but RHEL6? It does not seem to me
+that the test actually does something that couldn't be tested on any
+other Linux distribution. We only have to check for memcg support here
+instead.
+
+> +	SAFE_MKDIR(MNTPOINT, 0644);
+> +
+> +	SAFE_MOUNT("memcg", MNTPOINT, "cgroup", 0, "memory");
+> +	mount_flag = 1;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (!access(SUBDIR, F_OK))
+> +		SAFE_RMDIR(SUBDIR);
+> +
+> +	if (mount_flag)
+> +		tst_umount(MNTPOINT);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.tid = "memcg_test_3",
+> +	.needs_root = 1,
+> +	.needs_tmpdir = 1,
+> +	.forks_child = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = do_test,
+> +};
+> -- 
+> 1.8.4.2
 > 
-> Since we use resolution of monotonic clock, should we also
-> measure with it here?
-
-Ah, my bad, I've put wrong clock ID here by accident. Also I've been
-thinking if we should use CLOCK_MONOTONIC_RAW if it's available then
-fallback to CLOCK_MONOTONIC. Since CLOCK_MONOTONIC may be subject to
-ntpd adjustements. Also can you try with CLOCK_MONOTONIC_RAW on moonshot
-to see if that makes any difference?
-
-> > +			tst_res(TINFO, "sampling function failed, exitting");
-> > +			return;
-> > +		}
-> > +	}
-> > +
-> > +	qsort(samples, nsamples, sizeof(samples[0]), cmp);
-> > +
-> > +	write_to_file();
-> > +
-> > +	for (i = 0; samples[i] > 10 * usec; i++) {
 > 
-> This could also use a range check for length of samples array,
-> just in case all samples are outliners.
-
-Good catch.
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
