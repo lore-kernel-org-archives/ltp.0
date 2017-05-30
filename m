@@ -1,15 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 30 May 2017 13:50:32 +0200
-Subject: [LTP] [PATCH v2] move_pages12: Make sure hugepages are available
-In-Reply-To: <877971945.23275711.1496063572967.JavaMail.zimbra@redhat.com>
-References: <20170516100759.10355-1-chrubis@suse.cz>
- <1420231349.12458178.1494937684196.JavaMail.zimbra@redhat.com>
- <20170516133233.GB2897@rei.lan>
- <1571565362.12569976.1494943541160.JavaMail.zimbra@redhat.com>
- <364825081.12577806.1494944124022.JavaMail.zimbra@redhat.com>
- <20170516142924.GE2897@rei.lan>
- <877971945.23275711.1496063572967.JavaMail.zimbra@redhat.com>
-Message-ID: <20170530115032.GB24720@rei.lan>
+Date: Tue, 30 May 2017 14:15:02 +0200
+Subject: [LTP] [RFC] [PATCH] syscalls: Add timer measurement library
+In-Reply-To: <775099814.23313843.1496073205696.JavaMail.zimbra@redhat.com>
+References: <20170526123354.8564-1-chrubis@suse.cz>
+ <775099814.23313843.1496073205696.JavaMail.zimbra@redhat.com>
+Message-ID: <20170530121501.GC24720@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -17,49 +12,85 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> I'm sporadically running into SIGBUS in this testcase, not sure if it's 
-> because of low memory or something else. Do you see it too?
-
-None so far, but I haven't been running the test on anything else than
-machines with just two numa nodes so far.
-
-> I wonder if we should replace memset with MAP_POPULATE.
-
-Isn't MAP_POPULATE best effort only?
-
-I guess that we can then call mincore() to check if MAP_POPULATE really
-populated the pages and possibly try dropping system caches and retry
-again then produce TCONF if we happen to fail again.
-
-> (gdb) bt
-> #0  0x00003fffb16ac620 in .__memset_power8 () from /lib64/libc.so.6
-> #1  0x0000000010003344 in memset (__len=67108864, __ch=0, __dest=0x3efffc000000) at /usr/include/bits/string3.h:84
-> #2  alloc_free_huge_on_node (node=<optimized out>, size=67108864) at move_pages12.c:170
-> #3  0x0000000010003648 in setup () at move_pages12.c:235
-> #4  0x0000000010006ad4 in do_test_setup () at tst_test.c:705
-> #5  testrun () at tst_test.c:778
-> #6  tst_run_tcases (argc=<optimized out>, argv=0x3fffd1c7e488, self=<optimized out>) at tst_test.c:884
-> #7  0x0000000010002f58 in main (argc=<optimized out>, argv=<optimized out>) at ../../../../include/tst_test.h:189
+> > +
+> > +struct tst_timer_test {
+> > +	const char *scall;
+> > +	int (*sample)(int clk_id, long long usec);
+> > +	void (*setup)(void);
+> > +	void (*cleanup)(void);
+> > +};
 > 
-> [pid 48425] 08:45:57.151242 write(2, "move_pages12.c:143: \33[1;34mINFO:"..., 82move_pages12.c:143: INFO: Allocating and freeing 4 hug
-> epages on node 2
-> ) = 82
-> [pid 48425] 08:45:57.151287 mmap(NULL, 67108864, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_HUGETLB, -1, 0) = 0x3efffc000000
-> [pid 48425] 08:45:57.151442 mbind(0x3efffc000000, 67108864, MPOL_BIND, [0x0000000000000004, 000000000000000000, 000000000000000000, 00
-> 0000000000000000], 257, 0) = 0
-> [pid 48425] 08:45:57.167377 munmap(0x3efffc000000, 67108864) = 0
-> [pid 48425] 08:45:57.167486 write(2, "move_pages12.c:143: \33[1;34mINFO:"..., 82move_pages12.c:143: INFO: Allocating and freeing 4 hug
-> epages on node 3
-> ) = 82
-> [pid 48425] 08:45:57.167554 mmap(NULL, 67108864, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_HUGETLB, -1, 0) = 0x3efffc000000
-> [pid 48425] 08:45:57.167648 mbind(0x3efffc000000, 67108864, MPOL_BIND, [0x0000000000000008, 000000000000000000, 000000000000000000, 00
-> 0000000000000000], 257, 0) = 0
-> [pid 48425] 08:45:57.172293 --- SIGBUS {si_signo=SIGBUS, si_code=BUS_ADRERR, si_addr=0x3efffe000000} ---
+> I'd rather keep tst_test struct and expose some new function,
+> that would do all of this. 
+> 
+> void test_all()
+> {
+>     tst_timer_test("select()", test_sample_function);
+> }
+> 
+> void tst_timer_test(fn_name, test_sample_function)
+> {
+>   timer_parse_options();
+>   timer_setup();
+>   for n ... {
+>      do_timer_test(timer_tcases[n].usec, timer_tcases[n].samples, test_sample_function);
+>   }
+>   timer_cleanup();
+> }
+> 
+> What I'm afraid of is that we end up mirror-ing lot of functionality
+> in tst_test struct: needsroot, tmpdir, kernelversion, extra parameter
 
-Looks like we happen to got the signal when we try to fault third page,
-at least if the si_addr is correct it points in the middle of the
-mapping. So I guess that there is not enough continuous blocks to back
-the mapping.
+Hmm, we can also fill in the standard tst_test structure in the test
+then "override" some of the fields in the timer test library.
+
+I.e. test defines tst_test structure and the sampling function, timer
+library main() stores and replaces setup & cleanup, sets the test
+function then calls the tst_run_tcases() function. Does that sound
+better?
+
+> > +void do_timer_test(long long usec, unsigned int nsamples)
+> > +{
+> > +	long long trunc_mean, median;
+> > +	unsigned int discard = compute_discard(nsamples);
+> > +	unsigned int keep_samples = nsamples - discard;
+> > +	long long threshold = compute_threshold(usec, keep_samples);
+> > +	unsigned int i;
+> > +	int failed = 0;
+> > +
+> > +	tst_res(TINFO,
+> > +		"%s sleeping for %llius %u iterations, threshold %.2fus",
+> > +		timer_test->scall, usec, nsamples,
+> > +		1.00 * threshold / (keep_samples));
+> > +
+> > +	cur_sample = 0;
+> > +	for (i = 0; i < nsamples; i++) {
+> > +		if (timer_test->sample(CLOCK_REALTIME, usec)) {
+> 
+> Since we use resolution of monotonic clock, should we also
+> measure with it here?
+
+Ah, my bad, I've put wrong clock ID here by accident. Also I've been
+thinking if we should use CLOCK_MONOTONIC_RAW if it's available then
+fallback to CLOCK_MONOTONIC. Since CLOCK_MONOTONIC may be subject to
+ntpd adjustements. Also can you try with CLOCK_MONOTONIC_RAW on moonshot
+to see if that makes any difference?
+
+> > +			tst_res(TINFO, "sampling function failed, exitting");
+> > +			return;
+> > +		}
+> > +	}
+> > +
+> > +	qsort(samples, nsamples, sizeof(samples[0]), cmp);
+> > +
+> > +	write_to_file();
+> > +
+> > +	for (i = 0; samples[i] > 10 * usec; i++) {
+> 
+> This could also use a range check for length of samples array,
+> just in case all samples are outliners.
+
+Good catch.
 
 -- 
 Cyril Hrubis
