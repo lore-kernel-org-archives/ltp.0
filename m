@@ -1,34 +1,35 @@
-From: khushbu sharma <sharma.khushbu850@gmail.com>
-Date: Wed, 31 May 2017 15:12:05 +0530
-Subject: [LTP] Fwd: LTP compilation with UCLibC Toolchain
-In-Reply-To: <CAJ_4j45XaQTfA02kxYHa6XeRCmD5TxCP1n5nAMSivf-iWSBYOA@mail.gmail.com>
-References: <CAJ_4j45XaQTfA02kxYHa6XeRCmD5TxCP1n5nAMSivf-iWSBYOA@mail.gmail.com>
-Message-ID: <CAJ_4j44etZ3dUgNTjbNtxLa9SEU9hcVg1c6zH6tiaQhVL9ba4w@mail.gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 31 May 2017 18:35:52 +0800
+Subject: [LTP] [PATCH] ltp/numa: Fix compilation without MAP_HUGETLB
+Message-ID: <1496226952-15147-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-hi,
-    I'am cross-compiling LTP with attitude_adjustment UCLibc toolchain, but
-getting compilation error "undefined reference" for "fsetxattr", "setxattr"
-and "lsetxattr" functions.
+Compilation failed on some older distributions due to undefined
+MAP_HUGETLB, so we include lapi/mmap.h to fix it.
 
-I checked the common config file "include/bits/uClibc_config.h" of
-attitude_adjustment  toolchain and macro "__UCLIBC_HAS_XATTR__" is
-undefined.
-But this macro is defined in toolchain of "chaos calmer" release.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/numa/support_numa.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I am stuck at this point as it seems attitude_adjustment toolchain does not
-have XATTR support.
-Is there any way to enable this macro, so that i can compile LTP
-successfully.
+diff --git a/testcases/kernel/numa/support_numa.c b/testcases/kernel/numa/support_numa.c
+index b6aa8bd..4904cc5 100644
+--- a/testcases/kernel/numa/support_numa.c
++++ b/testcases/kernel/numa/support_numa.c
+@@ -39,6 +39,7 @@
+ #include <sys/stat.h>
+ #include <sys/mman.h>
+ #include <fcntl.h>
++#include "lapi/mmap.h"
+ 
+ /* Global Variables */
+ #define MB (1<<20)
+-- 
+1.8.3.1
 
-Any kind of help is appreciated.
 
-Thanks
-Khushboo
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170531/91f92ac9/attachment.html>
+
