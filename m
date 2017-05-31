@@ -1,33 +1,54 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 31 May 2017 03:46:49 -0400 (EDT)
-Subject: [LTP] [PATCH v2] move_pages12: Make sure hugepages are available
-In-Reply-To: <20170530134825.GB25921@rei.lan>
-References: <20170516100759.10355-1-chrubis@suse.cz>
- <1571565362.12569976.1494943541160.JavaMail.zimbra@redhat.com>
- <364825081.12577806.1494944124022.JavaMail.zimbra@redhat.com>
- <20170516142924.GE2897@rei.lan>
- <877971945.23275711.1496063572967.JavaMail.zimbra@redhat.com>
- <20170530115032.GB24720@rei.lan>
- <555141962.23713496.1496149870415.JavaMail.zimbra@redhat.com>
- <20170530134825.GB25921@rei.lan>
-Message-ID: <953066031.24402986.1496216809604.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 31 May 2017 10:30:45 +0200
+Subject: [LTP] [RFC] [PATCH] syscalls: Add timer measurement library
+In-Reply-To: <502320923.23716336.1496150233908.JavaMail.zimbra@redhat.com>
+References: <20170526123354.8564-1-chrubis@suse.cz>
+ <775099814.23313843.1496073205696.JavaMail.zimbra@redhat.com>
+ <20170530121501.GC24720@rei.lan>
+ <502320923.23716336.1496150233908.JavaMail.zimbra@redhat.com>
+Message-ID: <20170531083045.GA2276@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
------ Original Message -----
-> See:
+Hi!
+> > Hmm, we can also fill in the standard tst_test structure in the test
+> > then "override" some of the fields in the timer test library.
+> > 
+> > I.e. test defines tst_test structure and the sampling function, timer
+> > library main() stores and replaces setup & cleanup, sets the test
+> > function then calls the tst_run_tcases() function. Does that sound
+> > better?
 > 
-> http://www.serverphorums.com/read.php?12,1204538,1204539#msg-1204539
+> Yes. This would mean we extend tst_test struct and add sampling function.
+> As long as rest of fields continue to work (with some exceptions [1]),
+> it sounds good.
 
-Thanks for link.
+We can setup the test/sample functions as an union. As we can then
+distinguish between them based on .tcnt being non-zero in a case of
+standard test and expect sampling function to be set in a case of the
+timer test. However this makes the whole interface less type safe and
+also much harder to extend. I was thinking of adding support for NULL
+terminated array of test funcitons as well since we have some testcases
+that use the test() function as dispatcher with a long switch()
+statement...
 
-> LGTM.
+So maybe we should just add a few more function pointers there.
 
-Pushed with your ack.
+> I see you still want to keep timer library main(), but I'm not sure
+> how you are going to select it instead of tst_test main.
 
-Regards,
-Jan
+Only the tst_timer_test.h should be included in the timer testcases
+which includes tst_test.h after defining TST_NO_DEFAULT_MAIN, then we
+can define timer specific main that saves cleanup/setup and replaces
+these with the timer test cleanup/setup that calls the test specifc
+cleanup/setup functions. The timer library main also has to set up the
+test function and test options in the tst_test structure since I want to
+avoid setting these in each of the testcases to avoid copy & paste
+errors.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
