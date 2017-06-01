@@ -1,143 +1,215 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 1 Jun 2017 19:49:11 +0800
-Subject: [LTP] [PATCH v2 1/3] tst_safe_sysv_ipc: add shared memory related
-	macros
-In-Reply-To: <20170529145709.GC6618@rei.lan>
+Date: Thu, 1 Jun 2017 19:49:13 +0800
+Subject: [LTP] [PATCH v2 3/3] syscalls/shmat03.c: add new regression test
+In-Reply-To: <1496317753-2871-1-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <20170529145709.GC6618@rei.lan>
-Message-ID: <1496317753-2871-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1496317753-2871-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1496317753-2871-3-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+This kernel bug has been fixed in:
+
+commit 95e91b831f87ac8e1f8ed50c14d709089b4e01b8
+Author: Davidlohr Bueso <dave@stgolabs.net>
+Date:   Mon Feb 27 14:28:24 2017 -0800
+
+	ipc/shm: Fix shmat mmap nil-page protection
+
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- include/tst_safe_sysv_ipc.h | 25 +++++++++++++++++++
- lib/tst_safe_sysv_ipc.c     | 58 ++++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 82 insertions(+), 1 deletion(-)
+ runtest/ltplite                               |   1 +
+ runtest/stress.part3                          |   1 +
+ runtest/syscalls                              |   1 +
+ runtest/syscalls-ipc                          |   1 +
+ testcases/kernel/syscalls/.gitignore          |   1 +
+ testcases/kernel/syscalls/ipc/shmat/shmat03.c | 114 ++++++++++++++++++++++++++
+ 6 files changed, 119 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/ipc/shmat/shmat03.c
 
-diff --git a/include/tst_safe_sysv_ipc.h b/include/tst_safe_sysv_ipc.h
-index cbdefb9..e01957f 100644
---- a/include/tst_safe_sysv_ipc.h
-+++ b/include/tst_safe_sysv_ipc.h
-@@ -18,6 +18,11 @@
- #ifndef TST_SAFE_SYSV_IPC_H__
- #define TST_SAFE_SYSV_IPC_H__
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 03bba7f..0c2e5be 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -828,6 +828,7 @@ setuid04 setuid04
  
+ shmat01 shmat01
+ shmat02 shmat02
++shmat03 shmat03
+ 
+ shmctl01 shmctl01
+ shmctl02 shmctl02
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index b028a7f..bd84752 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -718,6 +718,7 @@ setuid04 setuid04
+ 
+ shmat01 shmat01
+ shmat02 shmat02
++shmat03 shmat03
+ 
+ shmctl02 shmctl02
+ shmctl03 shmctl03
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 004ae42..fe52272 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1163,6 +1163,7 @@ setxattr03 setxattr03
+ 
+ shmat01 shmat01
+ shmat02 shmat02
++shmat03 shmat03
+ 
+ shmctl01 shmctl01
+ shmctl02 shmctl02
+diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
+index de32c6b..91060b9 100644
+--- a/runtest/syscalls-ipc
++++ b/runtest/syscalls-ipc
+@@ -52,6 +52,7 @@ semop05 semop05
+ 
+ shmat01 shmat01
+ shmat02 shmat02
++shmat03 shmat03
+ 
+ shmctl01 shmctl01
+ shmctl02 shmctl02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index d60f15c..c14c4e6 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -439,6 +439,7 @@
+ /ipc/semop/semop05
+ /ipc/shmat/shmat01
+ /ipc/shmat/shmat02
++/ipc/shmat/shmat03
+ /ipc/shmctl/shmctl01
+ /ipc/shmctl/shmctl02
+ /ipc/shmctl/shmctl03
+diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat03.c b/testcases/kernel/syscalls/ipc/shmat/shmat03.c
+new file mode 100644
+index 0000000..e5852d3
+--- /dev/null
++++ b/testcases/kernel/syscalls/ipc/shmat/shmat03.c
+@@ -0,0 +1,114 @@
++/*
++ * Copyright (c) 2017 Fujitsu Ltd.
++ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++
++/*
++ * DESCRIPTION
++ * This is a regression test for nil-page protection mechanisms implemented
++ * in shmat(). Both root user and regular user shouldn't map nil-page in
++ * shmat() and was killed by SIGSEGV when writing data to nil-page.  However
++ * root user could succeed to map nil-page.
++ *
++ * This bug has been fixed in:
++ * commit 95e91b831f87ac8e1f8ed50c14d709089b4e01b8
++ * Author: Davidlohr Bueso <dave@stgolabs.net>
++ * Date:   Mon Feb 27 14:28:24 2017 -0800
++ *
++ *     ipc/shm: Fix shmat mmap nil-page protection
++ */
++
++#include <errno.h>
++#include <stdlib.h>
++#include <sys/wait.h>
 +#include <sys/types.h>
 +#include <sys/ipc.h>
-+#include <sys/msg.h>
 +#include <sys/shm.h>
++#include <pwd.h>
 +
- int safe_msgget(const char *file, const int lineno, key_t key, int msgflg);
- #define SAFE_MSGGET(key, msgflg) \
- 	safe_msgget(__FILE__, __LINE__, (key), (msgflg))
-@@ -39,4 +44,24 @@ int safe_msgctl(const char *file, const int lineno, int msqid, int cmd,
- 	(msqid) = ((cmd) == IPC_RMID ? -1 : (msqid)); \
- 	} while (0)
- 
-+int safe_shmget(const char *file, const int lineno, key_t key, size_t size,
-+		int shmflg);
-+#define SAFE_SHMGET(key, size, shmflg) \
-+	safe_shmget(__FILE__, __LINE__, (key), (size), (shmflg))
++#include "tst_test.h"
++#include "tst_safe_sysv_ipc.h"
++#include "libnewipc.h"
 +
-+void *safe_shmat(const char *file, const int lineno, int shmid,
-+		const void *shmaddr, int shmflg);
-+#define SAFE_SHMAT(shmid, shmaddr, shmflg) \
-+	safe_shmat(__FILE__, __LINE__, (shmid), (shmaddr), (shmflg))
++#define LOCATION ((void *)1)
 +
-+int safe_shmdt(const char *file, const int lineno, const void *shmaddr);
-+#define SAFE_SHMDT(shmaddr)	safe_shmdt(__FILE__, __LINE__, (shmaddr))
++static int shm_id = -1;
++static struct passwd *pw;
 +
-+int safe_shmctl(const char *file, const int lineno, int shmid, int cmd,
-+		struct shmid_ds *buf);
-+#define SAFE_SHMCTL(shmid, cmd, buf) do { \
-+	safe_shmctl(__FILE__, __LINE__, (shmid), (cmd), (buf)); \
-+	(shmid) = ((cmd) == IPC_RMID ? -1 : (shmid)); \
-+	} while (0)
++static struct tcase {
++	int exp_usr;
++	char *des;
++} tcases[] = {
++	{0, "root user"},
++	{1, "regular user"}
++};
 +
- #endif /* TST_SAFE_SYSV_IPC_H__ */
-diff --git a/lib/tst_safe_sysv_ipc.c b/lib/tst_safe_sysv_ipc.c
-index cb2b304..b2b132b 100644
---- a/lib/tst_safe_sysv_ipc.c
-+++ b/lib/tst_safe_sysv_ipc.c
-@@ -18,6 +18,7 @@
- #include <sys/types.h>
- #include <sys/ipc.h>
- #include <sys/msg.h>
-+#include <sys/shm.h>
- #define TST_NO_DEFAULT_MAIN
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
-@@ -68,7 +69,7 @@ ssize_t safe_msgrcv(const char *file, const int lineno, int msqid, void *msgp,
- int safe_msgctl(const char *file, const int lineno, int msqid, int cmd,
- 		struct msqid_ds *buf)
- {
--	int  rval;
-+	int rval;
- 
- 	rval = msgctl(msqid, cmd, buf);
- 	if (rval == -1) {
-@@ -78,3 +79,58 @@ int safe_msgctl(const char *file, const int lineno, int msqid, int cmd,
- 
- 	return rval;
- }
-+
-+int safe_shmget(const char *file, const int lineno, key_t key, size_t size,
-+		int shmflg)
++static void verify_shmat(struct tcase *tc)
 +{
-+	int rval;
++	void *addr;
 +
-+	rval = shmget(key, size, shmflg);
-+	if (rval == -1) {
-+		tst_brk(TBROK | TERRNO, "%s:%d: shmget(%i, %li, %x) failed",
-+			file, lineno, (int)key, size, shmflg);
++	if (tc->exp_usr)
++		SAFE_SETUID(pw->pw_uid);
++
++	addr = shmat(shm_id, LOCATION, SHM_RND);
++	if (addr != (void *)-1) {
++		((char *)addr)[0] = 'A';
++		tst_res(TFAIL, "%s mmaped a nil-page in shmat() and wrote"
++			" data to shmaddr:%p ", tc->des, addr);
++		SAFE_SHMDT(addr);
++	} else {
++		tst_res(TPASS, "%s didn't map a nil-page in shmat()", tc->des);
 +	}
 +
-+	return rval;
++	exit(0);
 +}
 +
-+void *safe_shmat(const char *file, const int lineno, int shmid,
-+		const void *shmaddr, int shmflg)
++static void do_shmat(unsigned int n)
 +{
-+	void *rval;
++	pid_t pid;
++	struct tcase *tc = &tcases[n];
 +
-+	rval = shmat(shmid, shmaddr, shmflg);
-+	if (rval == (void *)-1) {
-+		tst_brk(TBROK | TERRNO, "%s:%d: shmat(%i, %p, %x) failed",
-+			file, lineno, shmid, shmaddr, shmflg);
-+	}
-+
-+	return rval;
++	pid = SAFE_FORK();
++	if (!pid)
++		verify_shmat(tc);
++	else
++		tst_reap_children();
 +}
 +
-+int safe_shmdt(const char *file, const int lineno, const void *shmaddr)
++static void setup(void)
 +{
-+	int rval;
++	key_t shm_key;
 +
-+	rval = shmdt(shmaddr);
-+	if (rval == -1) {
-+		tst_brk(TBROK | TERRNO, "%s:%d: shmdt(%p) failed",
-+			file, lineno, shmaddr);
-+	}
++	shm_key = GETIPCKEY();
++	shm_id = SAFE_SHMGET(shm_key, 4096, 0777 | IPC_CREAT);
 +
-+	return rval;
++	pw = SAFE_GETPWNAM("nobody");
 +}
 +
-+int safe_shmctl(const char *file, const int lineno, int shmid, int cmd,
-+		struct shmid_ds *buf)
++static void cleanup(void)
 +{
-+	int rval;
-+
-+	rval = shmctl(shmid, cmd, buf);
-+	if (rval == -1) {
-+		tst_brk(TBROK | TERRNO, "%s:%d: shmctl(%i, %i, %p) failed",
-+			file, lineno, shmid, cmd, buf);
-+	}
-+
-+	return rval;
++	if (shm_id != -1)
++		SAFE_SHMCTL(shm_id, IPC_RMID, NULL);
 +}
++
++static struct tst_test test = {
++	.needs_root = 1,
++	.forks_child = 1,
++	.test = do_shmat,
++	.tcnt = ARRAY_SIZE(tcases),
++	.setup = setup,
++	.cleanup = cleanup
++};
 -- 
 1.8.3.1
 
