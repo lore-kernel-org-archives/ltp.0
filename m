@@ -1,207 +1,145 @@
-From: Jakub Racek <jracek@redhat.com>
-Date: Thu,  1 Jun 2017 13:34:10 +0200
-Subject: [LTP] [PATCH] syscalls/memfd_create: test memfd flags separately
-Message-ID: <1496316850-12188-1-git-send-email-jracek@redhat.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 1 Jun 2017 19:49:11 +0800
+Subject: [LTP] [PATCH v2 1/3] tst_safe_sysv_ipc: add shared memory related
+	macros
+In-Reply-To: <20170529145709.GC6618@rei.lan>
+References: <20170529145709.GC6618@rei.lan>
+Message-ID: <1496317753-2871-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This patch fixes the test on some kernels where memfd_create doesn't
-have  have sealing support. Calls to memfd_create are done so that we
-know what flags are available. Depending on that, some tests are skipped
-instead of incorrectly reporting breakage.
-
-Signed-off-by: Jakub Racek <jracek@redhat.com>
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- .../kernel/syscalls/memfd_create/memfd_create01.c  | 16 ++++++-
- .../kernel/syscalls/memfd_create/memfd_create02.c  | 13 +++++-
- .../syscalls/memfd_create/memfd_create_common.c    | 50 +++++++++++++++++++---
- .../syscalls/memfd_create/memfd_create_common.h    | 19 ++++++--
- 4 files changed, 86 insertions(+), 12 deletions(-)
+ include/tst_safe_sysv_ipc.h | 25 +++++++++++++++++++
+ lib/tst_safe_sysv_ipc.c     | 58 ++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 82 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create01.c b/testcases/kernel/syscalls/memfd_create/memfd_create01.c
-index 54c817b..c5e76f2 100644
---- a/testcases/kernel/syscalls/memfd_create/memfd_create01.c
-+++ b/testcases/kernel/syscalls/memfd_create/memfd_create01.c
-@@ -22,6 +22,7 @@
+diff --git a/include/tst_safe_sysv_ipc.h b/include/tst_safe_sysv_ipc.h
+index cbdefb9..e01957f 100644
+--- a/include/tst_safe_sysv_ipc.h
++++ b/include/tst_safe_sysv_ipc.h
+@@ -18,6 +18,11 @@
+ #ifndef TST_SAFE_SYSV_IPC_H__
+ #define TST_SAFE_SYSV_IPC_H__
  
- #define _GNU_SOURCE
++#include <sys/types.h>
++#include <sys/ipc.h>
++#include <sys/msg.h>
++#include <sys/shm.h>
++
+ int safe_msgget(const char *file, const int lineno, key_t key, int msgflg);
+ #define SAFE_MSGGET(key, msgflg) \
+ 	safe_msgget(__FILE__, __LINE__, (key), (msgflg))
+@@ -39,4 +44,24 @@ int safe_msgctl(const char *file, const int lineno, int msqid, int cmd,
+ 	(msqid) = ((cmd) == IPC_RMID ? -1 : (msqid)); \
+ 	} while (0)
  
-+#include <errno.h>
++int safe_shmget(const char *file, const int lineno, key_t key, size_t size,
++		int shmflg);
++#define SAFE_SHMGET(key, size, shmflg) \
++	safe_shmget(__FILE__, __LINE__, (key), (size), (shmflg))
++
++void *safe_shmat(const char *file, const int lineno, int shmid,
++		const void *shmaddr, int shmflg);
++#define SAFE_SHMAT(shmid, shmaddr, shmflg) \
++	safe_shmat(__FILE__, __LINE__, (shmid), (shmaddr), (shmflg))
++
++int safe_shmdt(const char *file, const int lineno, const void *shmaddr);
++#define SAFE_SHMDT(shmaddr)	safe_shmdt(__FILE__, __LINE__, (shmaddr))
++
++int safe_shmctl(const char *file, const int lineno, int shmid, int cmd,
++		struct shmid_ds *buf);
++#define SAFE_SHMCTL(shmid, cmd, buf) do { \
++	safe_shmctl(__FILE__, __LINE__, (shmid), (cmd), (buf)); \
++	(shmid) = ((cmd) == IPC_RMID ? -1 : (shmid)); \
++	} while (0)
++
+ #endif /* TST_SAFE_SYSV_IPC_H__ */
+diff --git a/lib/tst_safe_sysv_ipc.c b/lib/tst_safe_sysv_ipc.c
+index cb2b304..b2b132b 100644
+--- a/lib/tst_safe_sysv_ipc.c
++++ b/lib/tst_safe_sysv_ipc.c
+@@ -18,6 +18,7 @@
+ #include <sys/types.h>
+ #include <sys/ipc.h>
+ #include <sys/msg.h>
++#include <sys/shm.h>
+ #define TST_NO_DEFAULT_MAIN
  #include "tst_test.h"
- #include "memfd_create_common.h"
- 
-@@ -259,7 +260,20 @@ static void verify_memfd_create(unsigned int n)
- 
- static void setup(void)
+ #include "tst_safe_sysv_ipc.h"
+@@ -68,7 +69,7 @@ ssize_t safe_msgrcv(const char *file, const int lineno, int msqid, void *msgp,
+ int safe_msgctl(const char *file, const int lineno, int msqid, int cmd,
+ 		struct msqid_ds *buf)
  {
--	ASSERT_HAVE_MEMFD_CREATE();
-+
-+	int available_flags;
-+
-+	/*
-+	 * For now, all tests in this file require MFD_ALLOW_SEALING flag
-+	 * to be implemented, even though that flag isn't always set when
-+	 * memfd is created. So don't check anything else and TCONF right away
-+	 * is this flag is missing.
-+	 */
-+	available_flags = GET_MFD_ALL_AVAILABLE_FLAGS();
-+	if ((available_flags & MFD_ALLOW_SEALING) != MFD_ALLOW_SEALING) {
-+		tst_brk(TCONF | TTERRNO,
-+			"memfd_create(%u) not implemented", MFD_ALLOW_SEALING);
-+	}
+-	int  rval;
++	int rval;
+ 
+ 	rval = msgctl(msqid, cmd, buf);
+ 	if (rval == -1) {
+@@ -78,3 +79,58 @@ int safe_msgctl(const char *file, const int lineno, int msqid, int cmd,
+ 
+ 	return rval;
  }
- 
- static struct tst_test test = {
-diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create02.c b/testcases/kernel/syscalls/memfd_create/memfd_create02.c
-index d65e496..bc01e44 100644
---- a/testcases/kernel/syscalls/memfd_create/memfd_create02.c
-+++ b/testcases/kernel/syscalls/memfd_create/memfd_create02.c
-@@ -31,6 +31,8 @@
- static char buf[2048];
- static char term_buf[2048];
- 
-+static int available_flags;
 +
- static const struct tcase {
- 	char *descr;
- 	char *memfd_name;
-@@ -62,7 +64,8 @@ static const struct tcase {
- 
- static void setup(void)
- {
--	ASSERT_HAVE_MEMFD_CREATE();
++int safe_shmget(const char *file, const int lineno, key_t key, size_t size,
++		int shmflg)
++{
++	int rval;
 +
-+	available_flags = GET_MFD_ALL_AVAILABLE_FLAGS();
- 
- 	memset(buf, 0xff, sizeof(buf));
- 
-@@ -73,8 +76,16 @@ static void setup(void)
- static void verify_memfd_create_errno(unsigned int n)
- {
- 	const struct tcase *tc;
-+	int needed_flags;
- 
- 	tc = &tcases[n];
-+	needed_flags = tc->flags & FLAGS_ALL_MASK;
-+
-+	if ((available_flags & needed_flags) != needed_flags) {
-+		tst_res(TCONF, "test '%s' skipped, flag not implemented",
-+					tc->descr);
-+		return;
-+	}
- 
- 	TEST(sys_memfd_create(tc->memfd_name, tc->flags));
- 	if (TEST_ERRNO != tc->memfd_create_exp_err)
-diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create_common.c b/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
-index 4cf3bd5..939b046 100644
---- a/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
-+++ b/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
-@@ -103,20 +103,56 @@ void check_ftruncate_fail(const char *filename, const int lineno,
- 		"ftruncate(%d, %ld) failed as expected", fd, length);
- }
- 
--void assert_have_memfd_create(const char *filename, const int lineno)
-+int get_mfd_all_available_flags(const char *filename, const int lineno)
- {
--	TEST(sys_memfd_create("dummy_call", 0));
-+	unsigned int i;
-+	int flag;
-+	int flags2test[] = FLAGS_ALL_ARRAY_INITIALIZER;
-+	int flags_available = 0;
-+	int any_available = 0;
-+
-+	if (!IS_MFD_AVAILABLE_WITH_FLAGS(0)) {
-+		tst_brk_(filename, lineno, TCONF,
-+				"memfd_create(0) not implemented");
++	rval = shmget(key, size, shmflg);
++	if (rval == -1) {
++		tst_brk(TBROK | TERRNO, "%s:%d: shmget(%i, %li, %x) failed",
++			file, lineno, (int)key, size, shmflg);
 +	}
 +
-+	for (i = 0; i < ARRAY_SIZE(flags2test); i++) {
-+		flag = flags2test[i];
-+
-+		TEST(IS_MFD_AVAILABLE_WITH_FLAGS(flag));
-+		if (!TEST_RETURN) {
-+			tst_res_(filename, lineno, TINFO | TTERRNO,
-+				"memfd_create(%u) not implemented", flag);
-+		} else {
-+			flags_available |= flag;
-+			any_available = 1;
-+		}
-+	}
-+
-+	if (!any_available) {
-+		tst_brk_(filename, lineno, TCONF,
-+				"memfd_create() not implemented@all");
-+	}
-+
-+	return flags_available;
++	return rval;
 +}
 +
-+int is_mfd_available_with_flags(const char *filename, const int lineno,
-+		unsigned int flags)
++void *safe_shmat(const char *file, const int lineno, int shmid,
++		const void *shmaddr, int shmflg)
 +{
-+	TEST(sys_memfd_create("dummy_call", flags));
- 	if (TEST_RETURN < 0) {
--		if (TEST_ERRNO == EINVAL) {
--			tst_brk_(filename, lineno, TCONF | TTERRNO,
--				"memfd_create() not implemented");
-+		if (TEST_ERRNO != EINVAL) {
-+			tst_brk_(filename, lineno, TBROK | TTERRNO,
-+					"memfd_create() failed");
- 		}
- 
--		tst_brk_(filename, lineno, TBROK | TTERRNO,
--			"memfd_create() failed");
-+		return 0;
- 	}
- 
- 	SAFE_CLOSE(TEST_RETURN);
++	void *rval;
 +
-+	return 1;
- }
- 
- int check_mfd_new(const char *filename, const int lineno,
-diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create_common.h b/testcases/kernel/syscalls/memfd_create/memfd_create_common.h
-index 6329ac3..616c7ef 100644
---- a/testcases/kernel/syscalls/memfd_create/memfd_create_common.h
-+++ b/testcases/kernel/syscalls/memfd_create/memfd_create_common.h
-@@ -20,10 +20,19 @@
- #include <lapi/fcntl.h>
- #include <lapi/memfd.h>
- 
-+#define COMMA 					,
-+#define BITWISE_OR 				|
-+#define OPERATE_ON_FLAGS(x)			MFD_CLOEXEC x MFD_ALLOW_SEALING
-+#define FLAGS_ALL_ARRAY_INITIALIZER		{OPERATE_ON_FLAGS(COMMA)}
-+#define FLAGS_ALL_MASK				(OPERATE_ON_FLAGS(BITWISE_OR))
++	rval = shmat(shmid, shmaddr, shmflg);
++	if (rval == (void *)-1) {
++		tst_brk(TBROK | TERRNO, "%s:%d: shmat(%i, %p, %x) failed",
++			file, lineno, shmid, shmaddr, shmflg);
++	}
 +
- #define MFD_DEF_SIZE 8192
- 
--#define ASSERT_HAVE_MEMFD_CREATE() \
--	assert_have_memfd_create(__FILE__, __LINE__)
-+#define GET_MFD_ALL_AVAILABLE_FLAGS() \
-+	get_mfd_all_available_flags(__FILE__, __LINE__)
++	return rval;
++}
 +
-+#define IS_MFD_AVAILABLE_WITH_FLAGS(flags) \
-+	is_mfd_available_with_flags(__FILE__, __LINE__, (flags))
- 
- #define CHECK_MFD_NEW(name, sz, flags) \
- 	check_mfd_new(__FILE__, __LINE__, (name), (sz), (flags))
-@@ -89,7 +98,11 @@
- #define CHECK_MFD_NON_GROWABLE_BY_WRITE(fd) \
- 	check_mfd_non_growable_by_write(__FILE__, __LINE__, (fd))
- 
--void assert_have_memfd_create(const char *filename, const int lineno);
-+int is_mfd_available_with_flags(const char *filename, const int lineno,
-+		unsigned int flags);
++int safe_shmdt(const char *file, const int lineno, const void *shmaddr)
++{
++	int rval;
 +
-+int get_mfd_all_available_flags(const char *filename, const int lineno);
++	rval = shmdt(shmaddr);
++	if (rval == -1) {
++		tst_brk(TBROK | TERRNO, "%s:%d: shmdt(%p) failed",
++			file, lineno, shmaddr);
++	}
 +
- int sys_memfd_create(const char *name, unsigned int flags);
- 
- int check_fallocate(const char *filename, const int lineno, int fd,
++	return rval;
++}
++
++int safe_shmctl(const char *file, const int lineno, int shmid, int cmd,
++		struct shmid_ds *buf)
++{
++	int rval;
++
++	rval = shmctl(shmid, cmd, buf);
++	if (rval == -1) {
++		tst_brk(TBROK | TERRNO, "%s:%d: shmctl(%i, %i, %p) failed",
++			file, lineno, shmid, cmd, buf);
++	}
++
++	return rval;
++}
 -- 
 1.8.3.1
+
+
 
