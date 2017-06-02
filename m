@@ -1,62 +1,23 @@
-From: Martin Karac <martin.karac@oracle.com>
-Date: Fri, 02 Jun 2017 14:11:42 +0200
-Subject: [LTP] [PATCH 1/1] do not test undefined behavior
-In-Reply-To: <2137559651.27716748.1496403948863.JavaMail.zimbra@redhat.com>
-References: <59302FE8.5020502@oracle.com>
- <2137559651.27716748.1496403948863.JavaMail.zimbra@redhat.com>
-Message-ID: <593155FE.4070704@oracle.com>
+From: David Howells <dhowells@redhat.com>
+Date: Fri, 02 Jun 2017 14:43:52 +0100
+Subject: [LTP] [lkp-robot] [KEYS] bdf7c0f8bf: ltp.add_key02.fail
+In-Reply-To: <20170421044304.GB626@zzz>
+References: <20170421044304.GB626@zzz>
+ <20170401213428.17097-1-ebiggers3@gmail.com>
+ <20170417062641.GN31394@yexl-desktop> <20170417172955.GA31469@gmail.com>
+ <20170420125750.GD10246@rei.lan>
+Message-ID: <7358.1496411032@warthog.procyon.org.uk>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
+Eric Biggers <ebiggers3@gmail.com> wrote:
 
-thank you very much for your comments. This is my first ever attempt to send a patch.
-I did not send it with git send-email, but I will definitely try.
+> I'll plan to send a patch.  Also, it looks like the testing that LTP does of
+> add_key() is very sparse, so I'll try to extend it a bit.
 
-With regards,
-Martin Karac
+There's more testing in the testsuite that's with the keyutils package.
 
-On 06/ 2/17 01:45 PM, Jan Stancek wrote:
-> 
-> 
-> ----- Original Message -----
->> The test_flags() function's first test for each file is an attempt
->> to write a space character into that file (NULL translates to " ").
->> The test expects that this attempt will be successful and that the flag
->> will get set to 0.
->>
->> This behavior was changed in Linux kernel between versions 3.13.74 and
->> 3.14. with the commit a742c59de66ea080afa3edaf3428b3cdd5aa87cd
->> "cgroup: unify cgroup_write_X64() and cgroup_write_string()".
->> With the new behavior, attempting to write a space character into
->> a flag file returns EINVAL; I find this behavior more consistent.
->>
->> Flag files are an interface which is known to expect numeric values.
->> We already have a test in test_flags() which covers invalid input.
->> We should not attempt to write a space into a flag file because
->> the resulting behavior is not strictly defined anywhere.
->> Therefore, it would be best to drop the first test.
-> 
-> Hi,
-> 
-> no objections to change you are proposing, just comments on format:
-> 
-> You're missing Signed-off-by line. 
-> Patch appears to be mangled, all tabs were replaced by spaces.
-> 
-> Did you send the patch with git send-email? Would you care to
-> try resend? 
-> 
-> Regards,
-> Jan
-> 
-
-
--- 
-Martin Karac
-PLQA - Prague Linux QA
-Oracle Czech s.r.o.
-Prague, Czech Republic
+David
