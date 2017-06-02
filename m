@@ -1,179 +1,62 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Mon, 5 Jun 2017 17:23:45 +0800
-Subject: [LTP] [PATCH v3] controllers/memcg_test_3: Add new regression test
-In-Reply-To: <59352249.3080904@cn.fujitsu.com>
-References: <59352249.3080904@cn.fujitsu.com>
-Message-ID: <1496654625-14821-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+From: Martin Karac <martin.karac@oracle.com>
+Date: Fri, 02 Jun 2017 14:11:42 +0200
+Subject: [LTP] [PATCH 1/1] do not test undefined behavior
+In-Reply-To: <2137559651.27716748.1496403948863.JavaMail.zimbra@redhat.com>
+References: <59302FE8.5020502@oracle.com>
+ <2137559651.27716748.1496403948863.JavaMail.zimbra@redhat.com>
+Message-ID: <593155FE.4070704@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This kernel bug is about RHEL6 BZ1168185 and has been fixed in:
+Hi Jan,
 
-[PATCH RHEL6] [mm] memcg: fix crash in re-entrant cgroup_clear_css_refs()
+thank you very much for your comments. This is my first ever attempt to send a patch.
+I did not send it with git send-email, but I will definitely try.
 
-Link: https://bugzilla.redhat.com/show_bug.cgi?id=1168185
-Patch: ftp://partners.redhat.com/1c5d859a/de6aafa8185ed8fd934f2debc72b79eb/kernel-individual-patch/rhel6/v2.6.32-to-kernel-2.6.32-536.el6.tar.bz2
-       35944-mm-memcg-fix-crash-in-re-entrant-cgroup_clear_css_r.patch
+With regards,
+Martin Karac
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
----
- runtest/controllers                                |   1 +
- testcases/kernel/controllers/memcg/.gitignore      |   1 +
- .../controllers/memcg/regression/memcg_test_3.c    | 117 +++++++++++++++++++++
- 3 files changed, 119 insertions(+)
- create mode 100644 testcases/kernel/controllers/memcg/regression/memcg_test_3.c
+On 06/ 2/17 01:45 PM, Jan Stancek wrote:
+> 
+> 
+> ----- Original Message -----
+>> The test_flags() function's first test for each file is an attempt
+>> to write a space character into that file (NULL translates to " ").
+>> The test expects that this attempt will be successful and that the flag
+>> will get set to 0.
+>>
+>> This behavior was changed in Linux kernel between versions 3.13.74 and
+>> 3.14. with the commit a742c59de66ea080afa3edaf3428b3cdd5aa87cd
+>> "cgroup: unify cgroup_write_X64() and cgroup_write_string()".
+>> With the new behavior, attempting to write a space character into
+>> a flag file returns EINVAL; I find this behavior more consistent.
+>>
+>> Flag files are an interface which is known to expect numeric values.
+>> We already have a test in test_flags() which covers invalid input.
+>> We should not attempt to write a space into a flag file because
+>> the resulting behavior is not strictly defined anywhere.
+>> Therefore, it would be best to drop the first test.
+> 
+> Hi,
+> 
+> no objections to change you are proposing, just comments on format:
+> 
+> You're missing Signed-off-by line. 
+> Patch appears to be mangled, all tabs were replaced by spaces.
+> 
+> Did you send the patch with git send-email? Would you care to
+> try resend? 
+> 
+> Regards,
+> Jan
+> 
 
-diff --git a/runtest/controllers b/runtest/controllers
-index b904e05..2c43d0b 100644
---- a/runtest/controllers
-+++ b/runtest/controllers
-@@ -1,6 +1,7 @@
- #DESCRIPTION:Resource Management testing
- cgroup		cgroup_regression_test.sh
- memcg_regression	memcg_regression_test.sh
-+memcg_test_3	memcg_test_3
- memcg_failcnt memcg_failcnt.sh
- memcg_force_empty memcg_force_empty.sh
- memcg_limit_in_bytes memcg_limit_in_bytes.sh
-diff --git a/testcases/kernel/controllers/memcg/.gitignore b/testcases/kernel/controllers/memcg/.gitignore
-index 8730251..c0b6d07 100644
---- a/testcases/kernel/controllers/memcg/.gitignore
-+++ b/testcases/kernel/controllers/memcg/.gitignore
-@@ -2,5 +2,6 @@
- /functional/memcg_process
- /regression/memcg_test_1
- /regression/memcg_test_2
-+/regression/memcg_test_3
- /regression/memcg_test_4
- /stress/memcg_process_stress
-diff --git a/testcases/kernel/controllers/memcg/regression/memcg_test_3.c b/testcases/kernel/controllers/memcg/regression/memcg_test_3.c
-new file mode 100644
-index 0000000..c698c12
---- /dev/null
-+++ b/testcases/kernel/controllers/memcg/regression/memcg_test_3.c
-@@ -0,0 +1,117 @@
-+/*
-+ * Copyright (c) 2017 Fujitsu Ltd.
-+ *  Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program, if not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+/*
-+ * This is a regression test for a crash caused by memcg function
-+ * reentrant on RHEL6.  When doing rmdir(), a pending signal can
-+ * interrupt the execution and lead to cgroup_clear_css_refs()
-+ * being entered repeatedly, this results in a BUG_ON().
-+ *
-+ * This bug was introduced by following RHEL6 patch on 2.6.32-488.el6:
-+ *
-+ *  [mm] memcg: fix race condition between memcg teardown and swapin
-+ *  Link: https://bugzilla.redhat.com/show_bug.cgi?id=1001197
-+ *  Patch: ftp://partners.redhat.com/1c5d859a/de6aafa8185ed8fd934f2debc72b79eb/kernel-individual-patch/rhel6/v2.6.32-to-kernel-2.6.32-488.el6.tar.bz2
-+ *         31675-mm-memcg-fix-race-condition-between-memcg-teardown-.patch
-+ *
-+ * This test can crash the buggy kernel on RHEL6.6GA, and the bug
-+ * was fixed by following patch on 2.6.32-536.el6:
-+ *
-+ *  [mm] memcg: fix crash in re-entrant cgroup_clear_css_refs()
-+ *  Link: https://bugzilla.redhat.com/show_bug.cgi?id=1168185
-+ *  Patch: ftp://partners.redhat.com/1c5d859a/de6aafa8185ed8fd934f2debc72b79eb/kernel-individual-patch/rhel6/v2.6.32-to-kernel-2.6.32-536.el6.tar.bz2
-+ *         35944-mm-memcg-fix-crash-in-re-entrant-cgroup_clear_css_r.patch
-+ */
-+
-+#include <errno.h>
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <sys/types.h>
-+#include "tst_test.h"
-+
-+#define MNTPOINT	"memcg"
-+#define SUBDIR	"memcg/testdir"
-+
-+static int mount_flag;
-+static volatile int sigcounter;
-+
-+static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
-+{
-+	sigcounter++;
-+}
-+
-+static void do_child(void)
-+{
-+	while (1)
-+		SAFE_KILL(getppid(), SIGUSR1);
-+
-+	exit(0);
-+}
-+
-+static void do_test(void)
-+{
-+	pid_t cpid = -1;
-+
-+	SAFE_SIGNAL(SIGUSR1, sighandler);
-+
-+	cpid = SAFE_FORK();
-+	if (cpid == 0)
-+		do_child();
-+
-+	while (sigcounter < 50000) {
-+		if (access(SUBDIR, F_OK))
-+			SAFE_MKDIR(SUBDIR, 0644);
-+		rmdir(SUBDIR);
-+	}
-+
-+	SAFE_KILL(cpid, SIGKILL);
-+	SAFE_WAIT(NULL);
-+
-+	tst_res(TPASS, "Bug not reproduced");
-+}
-+
-+static void setup(void)
-+{
-+	if (tst_kvercmp(2, 6, 24) < 0)
-+		tst_brk(TCONF, "This test can only run on kernels "
-+			"that are 2.6.24 or higher");
-+
-+	SAFE_MKDIR(MNTPOINT, 0644);
-+
-+	SAFE_MOUNT("memcg", MNTPOINT, "cgroup", 0, "memory");
-+	mount_flag = 1;
-+}
-+
-+static void cleanup(void)
-+{
-+	if (!access(SUBDIR, F_OK))
-+		SAFE_RMDIR(SUBDIR);
-+
-+	if (mount_flag)
-+		tst_umount(MNTPOINT);
-+}
-+
-+static struct tst_test test = {
-+	.tid = "memcg_test_3",
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.forks_child = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = do_test,
-+};
+
 -- 
-1.8.4.2
-
-
-
+Martin Karac
+PLQA - Prague Linux QA
+Oracle Czech s.r.o.
+Prague, Czech Republic
