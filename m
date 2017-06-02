@@ -1,10 +1,9 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 2 Jun 2017 07:31:02 -0400 (EDT)
-Subject: [LTP] [PATCH] ltp/numa: Fix compilation without MAP_HUGETLB
-In-Reply-To: <5930C079.5010307@cn.fujitsu.com>
-References: <1496226952-15147-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <5930C079.5010307@cn.fujitsu.com>
-Message-ID: <1635934817.27708421.1496403062394.JavaMail.zimbra@redhat.com>
+Date: Fri, 2 Jun 2017 07:45:48 -0400 (EDT)
+Subject: [LTP] [PATCH 1/1] do not test undefined behavior
+In-Reply-To: <59302FE8.5020502@oracle.com>
+References: <59302FE8.5020502@oracle.com>
+Message-ID: <2137559651.27716748.1496403948863.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,45 +11,34 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
+
 ----- Original Message -----
-> Hi Cyril, Jan
+> The test_flags() function's first test for each file is an attempt
+> to write a space character into that file (NULL translates to " ").
+> The test expects that this attempt will be successful and that the flag
+> will get set to 0.
 > 
-> Ping. :-)
+> This behavior was changed in Linux kernel between versions 3.13.74 and
+> 3.14. with the commit a742c59de66ea080afa3edaf3428b3cdd5aa87cd
+> "cgroup: unify cgroup_write_X64() and cgroup_write_string()".
+> With the new behavior, attempting to write a space character into
+> a flag file returns EINVAL; I find this behavior more consistent.
 > 
-> Compilation failed on RHEL5.11GA.
+> Flag files are an interface which is known to expect numeric values.
+> We already have a test in test_flags() which covers invalid input.
+> We should not attempt to write a space into a flag file because
+> the resulting behavior is not strictly defined anywhere.
+> Therefore, it would be best to drop the first test.
 
-Pushed.
+Hi,
 
-Thanks,
+no objections to change you are proposing, just comments on format:
+
+You're missing Signed-off-by line. 
+Patch appears to be mangled, all tabs were replaced by spaces.
+
+Did you send the patch with git send-email? Would you care to
+try resend? 
+
+Regards,
 Jan
-
-> 
-> Thanks,
-> Xiao Yang
-> 
-> On 2017/05/31 18:35, Xiao Yang wrote:
-> > Compilation failed on some older distributions due to undefined
-> > MAP_HUGETLB, so we include lapi/mmap.h to fix it.
-> >
-> > Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> > ---
-> >  testcases/kernel/numa/support_numa.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/testcases/kernel/numa/support_numa.c
-> > b/testcases/kernel/numa/support_numa.c
-> > index b6aa8bd..4904cc5 100644
-> > --- a/testcases/kernel/numa/support_numa.c
-> > +++ b/testcases/kernel/numa/support_numa.c
-> > @@ -39,6 +39,7 @@
-> >  #include <sys/stat.h>
-> >  #include <sys/mman.h>
-> >  #include <fcntl.h>
-> > +#include "lapi/mmap.h"
-> >  
-> >  /* Global Variables */
-> >  #define MB (1<<20)
-> 
-> 
-> 
-> 
