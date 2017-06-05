@@ -1,164 +1,117 @@
-From: Eric Biggers <ebiggers3@gmail.com>
-Date: Mon,  5 Jun 2017 10:48:11 -0700
-Subject: [LTP] [PATCH 2/2] syscalls/add_key03: add test for NULL payload
-	with nonzero length
-In-Reply-To: <20170605174811.95267-1-ebiggers3@gmail.com>
-References: <20170605174811.95267-1-ebiggers3@gmail.com>
-Message-ID: <20170605174811.95267-3-ebiggers3@gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon,  5 Jun 2017 22:05:47 +0200
+Subject: [LTP] [PATCH 1/3] syscalls/mq_timedreceive: Add check data returned
+	from mq_timedreceive
+Message-ID: <20170605200549.3832-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Eric Biggers <ebiggers@google.com>
+This is a regression from
+commit 5c266719126b0e770102b787a904cf90ece922ec
+Author: Petr Vorel <pvorel@suse.cz>
+Date:   Wed Mar 8 15:21:52 2017 +0100
 
-Add a new test program to test that the add_key() syscall correctly
-handles a NULL payload with nonzero length.  Note that may cause a NULL
-pointer dereference in unpatched kernels.
+    syscalls/mq_timedreceive: convert to new API
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/.gitignore          |   1 +
- testcases/kernel/syscalls/add_key/add_key03.c | 104 ++++++++++++++++++++++++++
- 3 files changed, 106 insertions(+)
- create mode 100644 testcases/kernel/syscalls/add_key/add_key03.c
+ .../syscalls/mq_timedreceive/mq_timedreceive01.c   | 32 ++++++++++++++--------
+ 1 file changed, 20 insertions(+), 12 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 0c3c46e57..618089801 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -12,6 +12,7 @@ access04 access04
- acct01 acct01
+diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+index f6ff4a5a4..6ed670464 100644
+--- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
++++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+@@ -28,6 +28,10 @@
+ #include "tst_sig_proc.h"
+ #include "tst_safe_posix_ipc.h"
  
- add_key01 add_key01
-+add_key03 add_key03
++#define MAX_MSGSIZE     8192
++#define QUEUE_NAME	"/test_mqueue"
++
++static char smsg[MAX_MSGSIZE];
+ static struct sigaction act;
+ static pid_t pid;
+ static int fd, fd_root;
+@@ -35,7 +39,7 @@ static struct timespec timeout_ts;
+ static struct timespec eintr_ts;
  
- adjtimex01 adjtimex01
- adjtimex02 adjtimex02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 5b8df06f5..b5b428df5 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -7,6 +7,7 @@
- /access/access04
- /acct/acct01
- /add_key/add_key01
-+/add_key/add_key03
- /adjtimex/adjtimex01
- /adjtimex/adjtimex02
- /alarm/alarm01
-diff --git a/testcases/kernel/syscalls/add_key/add_key03.c b/testcases/kernel/syscalls/add_key/add_key03.c
-new file mode 100644
-index 000000000..21812710f
---- /dev/null
-+++ b/testcases/kernel/syscalls/add_key/add_key03.c
-@@ -0,0 +1,104 @@
-+/*
-+ * Copyright (c) 2017 Google, Inc.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ */
+ struct test_case {
+-	int len;
++	unsigned int len;
+ 	unsigned prio;
+ 	struct timespec *rq;
+ 	int fd;
+@@ -47,10 +51,6 @@ struct test_case {
+ 	void (*cleanup)(void);
+ };
+ 
+-#define MAX_MSGSIZE     8192
+-
+-#define QUEUE_NAME	"/test_mqueue"
+-
+ static void create_queue(void);
+ static void create_queue_nonblock(void);
+ static void create_queue_sig(void);
+@@ -175,10 +175,15 @@ static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
+ 
+ static void setup(void)
+ {
++	unsigned int i;
 +
-+#include "config.h"
-+#ifdef HAVE_LINUX_KEYCTL_H
-+# include <linux/keyctl.h>
-+#endif
-+#include "tst_test.h"
-+#include "linux_syscall_numbers.h"
+ 	act.sa_handler = sighandler;
+ 	sigaction(SIGINT, &act, NULL);
+ 
+ 	fd_root = SAFE_OPEN("/", O_RDONLY);
 +
-+/*
-+ * Test that the add_key() syscall correctly handles a NULL payload with nonzero
-+ * length.  Specifically, it should fail with EFAULT rather than oopsing the
-+ * kernel with a NULL pointer dereference or failing with EINVAL, as it did
-+ * before (depending on the key type).  This is a regression test for "KEYS: fix
-+ * dereferencing NULL payload with nonzero length".
-+ *
-+ * Note that none of the key types that exhibited the NULL pointer dereference
-+ * are guaranteed to be built into the kernel, so we just test as many as we
-+ * can, in the hope of catching one.  We also test with the "user" key type for
-+ * good measure, although it was one of the types that failed with EINVAL rather
-+ * than dereferencing NULL.
-+ */
-+
-+#ifdef HAVE_LINUX_KEYCTL_H
-+struct tcase {
-+	const char *type;
-+	size_t plen;
-+} tcases[] = {
-+	/*
-+	 * The payload length we test for each key type needs to pass initial
-+	 * validation but is otherwise arbitrary.  Note: the "rxrpc_s" key type
-+	 * requires a payload of exactly 8 bytes.
-+	 */
-+	{ "asymmetric",		64 },
-+	{ "cifs.idmap",		64 },
-+	{ "cifs.spnego",	64 },
-+	{ "pkcs7_test",		64 },
-+	{ "rxrpc",		64 },
-+	{ "rxrpc_s",		 8 },
-+	{ "user",		64 },
-+};
-+#endif /* HAVE_LINUX_KEYCTL_H */
-+
-+static void verify_add_key(unsigned int i)
-+{
-+#ifdef HAVE_LINUX_KEYCTL_H
-+	TEST(tst_syscall(__NR_add_key, tcases[i].type, "abc:def",
-+			 NULL, tcases[i].plen, KEY_SPEC_PROCESS_KEYRING));
-+
-+	if (TEST_RETURN != -1) {
-+		tst_res(TFAIL,
-+			"add_key() with key type \"%s\" unexpectedly succeeded",
-+			tcases[i].type);
-+		return;
++	for (i = 0; i < MAX_MSGSIZE; i++)
++		smsg[i] = i;
+ }
+ 
+ static void cleanup(void)
+@@ -227,12 +232,6 @@ static void open_fd(void)
+ 
+ static void send_msg(int fd, int len, int prio)
+ {
+-	char smsg[MAX_MSGSIZE];
+-	int i;
+-
+-	for (i = 0; i < len; i++)
+-		smsg[i] = i;
+-
+ 	if (mq_timedsend(fd, smsg, len, prio,
+ 		&((struct timespec){0})) < 0)
+ 		tst_brk(TBROK | TERRNO, "mq_timedsend failed");
+@@ -256,9 +255,10 @@ static void unlink_queue_sig(void)
+ 
+ static void do_test(unsigned int i)
+ {
++	unsigned int j;
+ 	const struct test_case *tc = &tcase[i];
+ 	char rmsg[MAX_MSGSIZE];
+-	unsigned prio;
++	unsigned int prio;
+ 	size_t msg_len = MAX_MSGSIZE;
+ 
+ 	/*
+@@ -308,6 +308,14 @@ static void do_test(unsigned int i)
+ 		return;
+ 	}
+ 
++	for (j = 0; j < tc->len; j++) {
++		if (rmsg[j] != smsg[j]) {
++			tst_res(TFAIL | TTERRNO, "mq_timedreceive wrong data in loop %d returned %d, expected %d",
++			i, rmsg[j], smsg[j]);
++			return;
++		}
 +	}
 +
-+	if (TEST_ERRNO == EFAULT) {
-+		tst_res(TPASS, "received expected EFAULT with key type \"%s\"",
-+			tcases[i].type);
-+		return;
-+	}
-+
-+	if (TEST_ERRNO == ENODEV) {
-+		tst_res(TCONF, "kernel doesn't support key type \"%s\"",
-+			tcases[i].type);
-+		return;
-+	}
-+
-+	/*
-+	 * It's possible for the "asymmetric" key type to be supported, but with
-+	 * no asymmetric key parsers registered.  In that case, attempting to
-+	 * add a key of type asymmetric will fail with EBADMSG.
-+	 */
-+	if (TEST_ERRNO == EBADMSG && !strcmp(tcases[i].type, "asymmetric")) {
-+		tst_res(TCONF, "no asymmetric key parsers are registered");
-+		return;
-+	}
-+
-+	tst_res(TFAIL | TTERRNO, "unexpected error with key type \"%s\"",
-+		tcases[i].type);
-+#else
-+	tst_brk(TCONF, "linux/keyctl.h was missing upon compilation.");
-+#endif /* HAVE_LINUX_KEYCTL_H */
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_add_key,
-+};
+ 	tst_res(TPASS, "mq_timedreceive returned %ld prio %u", TEST_RETURN, prio);
+ }
+ 
 -- 
-2.13.0.506.g27d5fe0cd-goog
+2.12.2
 
