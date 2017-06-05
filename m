@@ -1,209 +1,117 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 5 Jun 2017 16:03:36 +0200
-Subject: [LTP] [PATCH] syscalls/fanotify08: add sanity check for
- FAN_CLOEXEC
-In-Reply-To: <1496395455-6778-1-git-send-email-xzhou@redhat.com>
-References: <1496395455-6778-1-git-send-email-xzhou@redhat.com>
-Message-ID: <20170605140332.GB24454@rei.lan>
+From: Eryu Guan <eguan@redhat.com>
+Date: Mon, 5 Jun 2017 22:25:40 +0800
+Subject: [LTP] [PATCH] syscalls/flock: open test file with O_RDWR mode
+In-Reply-To: <20170517170956.27118-1-eguan@redhat.com>
+References: <20170517170956.27118-1-eguan@redhat.com>
+Message-ID: <20170605142540.GL19952@eguan.usersys.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Signed-off-by: Xiong Zhou <xzhou@redhat.com>
+On Thu, May 18, 2017 at 01:09:56AM +0800, Eryu Guan wrote:
+> NFS requires the open mode to match the lock type, i.e. for LOCK_SH
+> file must be opened for read, and for LOCK_EX file must be opened
+> for write. Otherwise flock01 and flock04 fail on NFS with EBADF.
+> 
+> So open all test files in flock tests with O_RDWR mode that both
+> lock type requirements can be met.
+> 
+> Signed-off-by: Eryu Guan <eguan@redhat.com>
 
-First of all, new testcases has to be coded using the new library API,
-that's the one you get with including the tst_test.h header instead of
-test.h.
+ping on this one.
+
+Thanks,
+Eryu
 
 > ---
->  testcases/kernel/syscalls/fanotify/fanotify08.c | 144 ++++++++++++++++++++++++
->  1 file changed, 144 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/fanotify/fanotify08.c
+>  testcases/kernel/syscalls/flock/flock01.c | 2 +-
+>  testcases/kernel/syscalls/flock/flock02.c | 2 +-
+>  testcases/kernel/syscalls/flock/flock03.c | 2 +-
+>  testcases/kernel/syscalls/flock/flock04.c | 2 +-
+>  testcases/kernel/syscalls/flock/flock05.c | 2 +-
+>  testcases/kernel/syscalls/flock/flock06.c | 2 +-
+>  6 files changed, 6 insertions(+), 6 deletions(-)
 > 
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify08.c b/testcases/kernel/syscalls/fanotify/fanotify08.c
-> new file mode 100644
-> index 0000000..1bcef7d
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify08.c
-> @@ -0,0 +1,144 @@
-> +/*
-> + * Copyright (c) 2017 RedHat.  All Rights Reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of version 2 of the GNU General Public License as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that it is
-> + * free of the rightful claim of any third person regarding infringement
-> + * or the like.  Any license provided herein, whether implied or
-> + * otherwise, applies only to this software file.  Patent licenses, if
-> + * any, provided herein do not apply to combinations of this program with
-> + * other software, or any other product whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write the Free Software Foundation, Inc.,
-> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> + *
-> + * Started by Xiong Zhou <xzhou@redhat.com>
-> + *
-> + * DESCRIPTION
-> + *     Check fanotify_init flag O_CLOEXEC.
-> + */
-> +#define _GNU_SOURCE
-> +#include "config.h"
-> +
-> +#include <stdio.h>
-> +#include <sys/stat.h>
-> +#include <sys/types.h>
-> +#include <fcntl.h>
-> +#include <errno.h>
-> +#include <string.h>
-> +#include <sys/syscall.h>
-> +#include "test.h"
-> +#include "linux_syscall_numbers.h"
-> +#include "fanotify.h"
-> +#include "safe_macros.h"
-> +
-> +char *TCID = "fanotify01";
-> +int TST_TOTAL = 12;
-> +
-> +#if defined(HAVE_SYS_FANOTIFY_H)
-> +#include <sys/fanotify.h>
-> +
-> +#define EVENT_MAX 1024
-> +/* size of the event structure, not counting name */
-> +#define EVENT_SIZE  (sizeof (struct fanotify_event_metadata))
-> +/* reasonable guess as to size of 1024 events */
-> +#define EVENT_BUF_LEN        (EVENT_MAX * EVENT_SIZE)
-
-These macros are unused.
-
-> +static void setup(void);
-> +static void cleanup(void);
-> +
-> +#define BUF_SIZE 256
-> +static int fd_notify;
-> +
-> +int main(int ac, char **av)
-> +{
-> +	int lc;
-> +
-> +	tst_parse_opts(ac, av, NULL, NULL);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		int coe;
-> +
-> +		tst_count = 0;
-> +
-> +		if ((fd_notify = fanotify_init(FAN_CLASS_NOTIF,
-> +						O_RDONLY)) < 0) {
-> +			if (errno == ENOSYS) {
-> +				tst_brkm(TCONF, cleanup,
-> +				"fanotify is not configured in this kernel.");
-> +			} else {
-> +				tst_brkm(TBROK | TERRNO, cleanup,
-> +					 "fanotify_init failed");
-
-Else branch in a case that the if () branch calls tst_brkm() is useless.
-The tst_brkm() exit the test so the test will not exit the if () branch
-once it gets there.
-
-> +			}
-> +		}
-> +
-> +		coe = fcntl(fd_notify, F_GETFD);
-> +		if (coe == -1) {
-> +			tst_brkm(TBROK | TERRNO, cleanup,
-> +				 "fcntl failed");
-> +		}
-
-Don't we have SAFE_FCNTL()?
-
-> +		if (coe & FD_CLOEXEC) {
-> +			tst_brkm(TFAIL, cleanup,
-> +				 "fanotify_init set close-on-exit");
-
-This should be tst_res() instead.
-
-> +		}
-
-And here should be tst_res() with TPASS.
-
-> +		close(fd_notify);
-> +
-> +		if ((fd_notify = fanotify_init(FAN_CLASS_NOTIF|FAN_CLOEXEC,
-> +							O_RDONLY)) < 0) {
-> +			if (errno == ENOSYS) {
-> +				tst_brkm(TCONF, cleanup,
-> +				"fanotify is not configured in this kernel.");
-> +			} else {
-> +				tst_brkm(TBROK | TERRNO, cleanup,
-> +				"fanotify_init(FAN_CLOEXEC) failed");
-> +			}
-> +		}
-> +
-> +		coe = fcntl(fd_notify, F_GETFD);
-> +		if (coe == -1) {
-> +			tst_brkm(TBROK | TERRNO, cleanup, "fcntl failed");
-> +		} else if ((coe & FD_CLOEXEC) == 0) {
-> +			tst_brkm(TFAIL, cleanup,
-> +				 "fanotify_init set close-on-exit");
-> +		} else {
-> +			tst_resm(TPASS, "fanotify_init(FAN_CLOEXEC) PASSED");
-> +		}
-> +		close(fd_notify);
-
-
-This part is more or less the same, maybe the code should be put into a
-function that gets either FAN_CLOEXEC or 0 as a parameter.
-
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> +
-> +	TEST_PAUSE;
-> +
-> +	tst_tmpdir();
-
-Do we really need to create temporary directory for this test?
-
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	tst_rmdir();
-> +}
-> +
-> +#else
-> +
-> +int main(void)
-> +{
-> +	tst_brkm(TCONF, NULL, "system doesn't have required fanotify support");
-> +}
-> +
-> +#endif
+> diff --git a/testcases/kernel/syscalls/flock/flock01.c b/testcases/kernel/syscalls/flock/flock01.c
+> index a7ecba1..3e17be4 100644
+> --- a/testcases/kernel/syscalls/flock/flock01.c
+> +++ b/testcases/kernel/syscalls/flock/flock01.c
+> @@ -153,7 +153,7 @@ void setup(void)
+>  	sprintf(filename, "flock01.%d", getpid());
+>  
+>  	/* creating temporary file */
+> -	fd = creat(filename, 0644);
+> +	fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0644);
+>  	if (fd < 0)
+>  		tst_brkm(TBROK, tst_rmdir, "creating a new file failed");
+>  }
+> diff --git a/testcases/kernel/syscalls/flock/flock02.c b/testcases/kernel/syscalls/flock/flock02.c
+> index 971160d..414df68 100644
+> --- a/testcases/kernel/syscalls/flock/flock02.c
+> +++ b/testcases/kernel/syscalls/flock/flock02.c
+> @@ -150,7 +150,7 @@ void setup(void)
+>  
+>  	sprintf(filename, "flock02.%d", getpid());
+>  
+> -	fd = creat(filename, 0666);
+> +	fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0666);
+>  	if (fd < 0)
+>  		tst_brkm(TFAIL | TERRNO, cleanup, "creat failed");
+>  }
+> diff --git a/testcases/kernel/syscalls/flock/flock03.c b/testcases/kernel/syscalls/flock/flock03.c
+> index e53b3b7..420f509 100644
+> --- a/testcases/kernel/syscalls/flock/flock03.c
+> +++ b/testcases/kernel/syscalls/flock/flock03.c
+> @@ -181,7 +181,7 @@ static void setup(void)
+>  
+>  	TST_CHECKPOINT_INIT(tst_rmdir);
+>  
+> -	fd = creat(FILE_NAME, 0666);
+> +	fd = open(FILE_NAME, O_CREAT | O_TRUNC | O_RDWR, 0666);
+>  	if (fd < 0) {
+>  		tst_resm(TBROK, "creating a new file failed");
+>  		cleanup();
+> diff --git a/testcases/kernel/syscalls/flock/flock04.c b/testcases/kernel/syscalls/flock/flock04.c
+> index 5dafaa4..87f1dfb 100644
+> --- a/testcases/kernel/syscalls/flock/flock04.c
+> +++ b/testcases/kernel/syscalls/flock/flock04.c
+> @@ -164,7 +164,7 @@ void setup(void)
+>  
+>  	sprintf(filename, "flock04.%d", getpid());
+>  
+> -	fd = creat(filename, 0666);
+> +	fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0666);
+>  	if (fd == -1)
+>  		tst_brkm(TFAIL, cleanup, "creating a new file failed");
+>  }
+> diff --git a/testcases/kernel/syscalls/flock/flock05.c b/testcases/kernel/syscalls/flock/flock05.c
+> index d9d3d00..13ae2f6 100644
+> --- a/testcases/kernel/syscalls/flock/flock05.c
+> +++ b/testcases/kernel/syscalls/flock/flock05.c
+> @@ -182,7 +182,7 @@ void setup(void)
+>  	sprintf(filename, "flock05.%d", getpid());
+>  
+>  	/* creating temporary file */
+> -	fd = creat(filename, 0666);
+> +	fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0666);
+>  	if (fd == -1) {
+>  		tst_resm(TFAIL, "creating a new file failed");
+>  
+> diff --git a/testcases/kernel/syscalls/flock/flock06.c b/testcases/kernel/syscalls/flock/flock06.c
+> index d9c1d2d..a35c8cf 100644
+> --- a/testcases/kernel/syscalls/flock/flock06.c
+> +++ b/testcases/kernel/syscalls/flock/flock06.c
+> @@ -158,7 +158,7 @@ void setup(void)
+>  	sprintf(filename, "flock06.%d", getpid());
+>  
+>  	/* creating temporary file */
+> -	fd = creat(filename, 0666);
+> +	fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0666);
+>  	if (fd < 0)
+>  		tst_brkm(TBROK, tst_rmdir, "creating a new file failed");
+>  	close(fd);
 > -- 
-> 1.8.3.1
+> 2.9.4
 > 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
