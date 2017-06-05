@@ -1,76 +1,208 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 5 Jun 2017 15:48:23 +0200
-Subject: [LTP] kernel of next-20170602 call trace when run add_key02 in
-	LTP
-In-Reply-To: <CACsHhCKXwfo3hn3uNwQUWTg-MS9Ja5_5USO--Df3kRi2Z0b-hg@mail.gmail.com>
-References: <CACsHhCKXwfo3hn3uNwQUWTg-MS9Ja5_5USO--Df3kRi2Z0b-hg@mail.gmail.com>
-Message-ID: <20170605134823.GA24454@rei.lan>
+Date: Mon, 5 Jun 2017 16:03:36 +0200
+Subject: [LTP] [PATCH] syscalls/fanotify08: add sanity check for
+ FAN_CLOEXEC
+In-Reply-To: <1496395455-6778-1-git-send-email-xzhou@redhat.com>
+References: <1496395455-6778-1-git-send-email-xzhou@redhat.com>
+Message-ID: <20170605140332.GB24454@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-> Compile kernel (next-20170602) and run ltp, find:
+Hi!
+> Signed-off-by: Xiong Zhou <xzhou@redhat.com>
+
+First of all, new testcases has to be coded using the new library API,
+that's the one you get with including the tst_test.h header instead of
+test.h.
+
+> ---
+>  testcases/kernel/syscalls/fanotify/fanotify08.c | 144 ++++++++++++++++++++++++
+>  1 file changed, 144 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/fanotify/fanotify08.c
 > 
-> / # ./add_key02
-> tst_test.c:878: INFO: Timeout per run is 0h 05m 00s
-> [  341.183219] BUG: unable to handle kernel NULL pointer dereference at   (null)
-> [  341.183850] IP: memset+0x10/0x20
-> [  341.184550] *pdpt = 0000000035441001 *pde = 0000000000000000
-> [  341.184550]
-> [  341.184550] Oops: 0002 [#2] SMP
-> [  341.184550] Modules linked in:
-> [  341.184550] CPU: 0 PID: 124 Comm: add_key02 Tainted: G S    D W
->   4.12.0-rc3-next-20170602 #3
-> [  341.184550] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> BIOS Bochs 01/01/2011
-> [  341.184550] task: f5b9ca00 task.stack: f6514000
-> [  341.184550] EIP: memset+0x10/0x20
-> [  341.184550] EFLAGS: 00000246 CPU: 0
-> [  341.184550] EAX: 00000000 EBX: 00000000 ECX: 00000001 EDX: 00000000
-> [  341.184550] ESI: 00000000 EDI: 00000000 EBP: f6515f24 ESP: f6515f1c
-> [  341.184550]  DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
-> [  341.184550] CR0: 80050033 CR2: 00000000 CR3: 36404920 CR4: 000006f0
-> [  341.184550] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-> [  341.184550] DR6: 00000000 DR7: 00000000
-> [  341.184550] Call Trace:
-> [  341.184550]  memzero_explicit+0xf/0x20
-> [  341.184550]  SyS_add_key+0x11f/0x1c0
-> [  341.184550]  ? change_pid+0x13/0x50
-> [  341.184550]  do_fast_syscall_32+0x8b/0x130
-> [  341.184550]  entry_SYSENTER_32+0x4e/0x7c
-> [  341.184550] EIP: 0xb772ddc1
-> [  341.184550] EFLAGS: 00000246 CPU: 0
-> [  341.184550] EAX: ffffffda EBX: 080de341 ECX: 080de346 EDX: 00000000
-> [  341.184550] ESI: 00000001 EDI: fffffffc EBP: 0808aa97 ESP: bfe3636c
-> [  341.184550]  DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b
-> [  341.184550] Code: 8a 0e 88 0f 8d b4 26 00 00 00 00 8b 45 f0 83 c4
-> 04 5b 5e 5f 5d c3 90 8d 74 26 00 3e 8d 74 26 00 55 89 e5 57 89 c7 53
-> 89 c3 89 d0 <f3> aa 89 d8 5b 5f 5d c3 90 90 90 90 90 90 90 90 3e 8d 74
-> 26 00
-> [  341.184550] EIP: memset+0x10/0x20 SS:ESP: 0068:f6515f1c
-> [  341.184550] CR2: 0000000000000000
-> [  341.219144] ---[ end trace e3963c970d107f91 ]---
-> tst_test.c:928: INFO: If you are running on slow machine, try
-> exporting LTP_TIMEOUT_MUL > 1
-> tst_test.c:929: BROK: Test killed! (timeout?)
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify08.c b/testcases/kernel/syscalls/fanotify/fanotify08.c
+> new file mode 100644
+> index 0000000..1bcef7d
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify08.c
+> @@ -0,0 +1,144 @@
+> +/*
+> + * Copyright (c) 2017 RedHat.  All Rights Reserved.
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * Further, this software is distributed without any warranty that it is
+> + * free of the rightful claim of any third person regarding infringement
+> + * or the like.  Any license provided herein, whether implied or
+> + * otherwise, applies only to this software file.  Patent licenses, if
+> + * any, provided herein do not apply to combinations of this program with
+> + * other software, or any other product whatsoever.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, write the Free Software Foundation, Inc.,
+> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> + *
+> + * Started by Xiong Zhou <xzhou@redhat.com>
+> + *
+> + * DESCRIPTION
+> + *     Check fanotify_init flag O_CLOEXEC.
+> + */
+> +#define _GNU_SOURCE
+> +#include "config.h"
+> +
+> +#include <stdio.h>
+> +#include <sys/stat.h>
+> +#include <sys/types.h>
+> +#include <fcntl.h>
+> +#include <errno.h>
+> +#include <string.h>
+> +#include <sys/syscall.h>
+> +#include "test.h"
+> +#include "linux_syscall_numbers.h"
+> +#include "fanotify.h"
+> +#include "safe_macros.h"
+> +
+> +char *TCID = "fanotify01";
+> +int TST_TOTAL = 12;
+> +
+> +#if defined(HAVE_SYS_FANOTIFY_H)
+> +#include <sys/fanotify.h>
+> +
+> +#define EVENT_MAX 1024
+> +/* size of the event structure, not counting name */
+> +#define EVENT_SIZE  (sizeof (struct fanotify_event_metadata))
+> +/* reasonable guess as to size of 1024 events */
+> +#define EVENT_BUF_LEN        (EVENT_MAX * EVENT_SIZE)
+
+These macros are unused.
+
+> +static void setup(void);
+> +static void cleanup(void);
+> +
+> +#define BUF_SIZE 256
+> +static int fd_notify;
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int lc;
+> +
+> +	tst_parse_opts(ac, av, NULL, NULL);
+> +
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		int coe;
+> +
+> +		tst_count = 0;
+> +
+> +		if ((fd_notify = fanotify_init(FAN_CLASS_NOTIF,
+> +						O_RDONLY)) < 0) {
+> +			if (errno == ENOSYS) {
+> +				tst_brkm(TCONF, cleanup,
+> +				"fanotify is not configured in this kernel.");
+> +			} else {
+> +				tst_brkm(TBROK | TERRNO, cleanup,
+> +					 "fanotify_init failed");
+
+Else branch in a case that the if () branch calls tst_brkm() is useless.
+The tst_brkm() exit the test so the test will not exit the if () branch
+once it gets there.
+
+> +			}
+> +		}
+> +
+> +		coe = fcntl(fd_notify, F_GETFD);
+> +		if (coe == -1) {
+> +			tst_brkm(TBROK | TERRNO, cleanup,
+> +				 "fcntl failed");
+> +		}
+
+Don't we have SAFE_FCNTL()?
+
+> +		if (coe & FD_CLOEXEC) {
+> +			tst_brkm(TFAIL, cleanup,
+> +				 "fanotify_init set close-on-exit");
+
+This should be tst_res() instead.
+
+> +		}
+
+And here should be tst_res() with TPASS.
+
+> +		close(fd_notify);
+> +
+> +		if ((fd_notify = fanotify_init(FAN_CLASS_NOTIF|FAN_CLOEXEC,
+> +							O_RDONLY)) < 0) {
+> +			if (errno == ENOSYS) {
+> +				tst_brkm(TCONF, cleanup,
+> +				"fanotify is not configured in this kernel.");
+> +			} else {
+> +				tst_brkm(TBROK | TERRNO, cleanup,
+> +				"fanotify_init(FAN_CLOEXEC) failed");
+> +			}
+> +		}
+> +
+> +		coe = fcntl(fd_notify, F_GETFD);
+> +		if (coe == -1) {
+> +			tst_brkm(TBROK | TERRNO, cleanup, "fcntl failed");
+> +		} else if ((coe & FD_CLOEXEC) == 0) {
+> +			tst_brkm(TFAIL, cleanup,
+> +				 "fanotify_init set close-on-exit");
+> +		} else {
+> +			tst_resm(TPASS, "fanotify_init(FAN_CLOEXEC) PASSED");
+> +		}
+> +		close(fd_notify);
+
+
+This part is more or less the same, maybe the code should be put into a
+function that gets either FAN_CLOEXEC or 0 as a parameter.
+
+> +	}
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> +
+> +	TEST_PAUSE;
+> +
+> +	tst_tmpdir();
+
+Do we really need to create temporary directory for this test?
+
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	tst_rmdir();
+> +}
+> +
+> +#else
+> +
+> +int main(void)
+> +{
+> +	tst_brkm(TCONF, NULL, "system doesn't have required fanotify support");
+> +}
+> +
+> +#endif
+> -- 
+> 1.8.3.1
 > 
-> I try to use other tags and kernel on next-20170427 is ok, but
-> next-20170502 fail.
-> Is it bug?
-
-Looks like a kernel bug to me.
-
-The test is a very simple one that just does:
-
-add_key("keyring", "wjkey", NULL, 0, KEY_SPEC_THREAD_KEYRING));
-
-And expects success.
-
-
-Also CCing LTP ML and relevant maintainers.
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
