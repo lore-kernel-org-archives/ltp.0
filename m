@@ -1,11 +1,12 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 6 Jun 2017 15:23:00 +0200
-Subject: [LTP] [RFC PATCH v6 00/11] Simplify network setup + fix some
- network stress tests
-In-Reply-To: <a3f5cc71-bd91-3de2-4951-ac853e1106e4@oracle.com>
+Date: Tue, 6 Jun 2017 15:45:02 +0200
+Subject: [LTP] [RFC PATCH v6 06/11] network/stress: Add library
+ test_stress_net.sh for general usage
+In-Reply-To: <f1376e76-b9bf-8386-8a40-0a374fdf1697@oracle.com>
 References: <20170603120022.13415-1-pvorel@suse.cz>
- <a3f5cc71-bd91-3de2-4951-ac853e1106e4@oracle.com>
-Message-ID: <20170606132233.fpotse6pwwgp7xsb@dell5510>
+ <20170603120022.13415-7-pvorel@suse.cz>
+ <f1376e76-b9bf-8386-8a40-0a374fdf1697@oracle.com>
+Message-ID: <20170606134322.lkz6mmjxxmceeepb@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,24 +15,43 @@ To: ltp@lists.linux.it
 
 Hi Alexey,
 
-thanks for your input.
+> > +tst_check_cmds ifconfig killall
 
-> tst_rhost_run() with "two hosts" setup is using just RHOST
-> variable (management link) for rsh/ssh, it can have the same
-> route as IP_RHOST or better something different that won't be
-> affected by the tests.
+> ifconfig is deprecated, it's not a good idea to have it in
+> the library. Moreover, I think the new tests or updated ones
+> shouldn't test it too. The same for 'route' command.
+I know, it's deprecated for Linux. Although we're testing Linux kernel, and net-tools for
+linux are IMHO abandoned project, there are still people using it (see Ted Ts'o reaction
+in Debian ML [1]).
+Is it using removing ifconfig and route the only concern about these tests you have?
+Wouldn't be worth to rewrite these test into C, using netlink/rtnetlink/libnfnetlink/libnl API?
 
-Ok, for ssh/rsh, if prefix isn't defined in IPV{4,6}_LHOST I'll read it with
-tst_rhost_run, using RHOST. That means to have separate binary for rtnetlink code.
+> > +
+> > +# NOTE: More information about these network variables can be found
+> > +# in testcases/network/stress/README
+> > +
+> > +# TODO: Test expects prefix to be 24, which can get wrong when called
+> > +# with different prefix for IPV4_NETWORK.
+> > +
+> > +# Netmask of for the tested network
+> > +IPV4_NETMASK="255.255.255.0"
+> > +IPV4_NETMASK_NUM=24
+> > +
+> > +# Broadcast address of the tested network
+> > +IPV4_BROADCAST=${IPV4_NETWORK}.255
 
-I'll move default prefix values (24 and 64) from tst_net_vars.c to test_net.sh, these
-values will be used as default for netns and used for rsh/ssh only if prefixes aren't
-specified in IPV{4,6}_LHOST and nothing found with rtnetlink.
-
-I also want to find via rtnetlink getting lhost and rhost iface. I wonder whether founded
-ifaces (rhost and lhost) should be also added into {L,R}HOST_IFACES even if variables are
-already specified by user and don't contain them.
+> We shouldn't use IPV4_NETWORK for broadcast or adding
+> new addresses on the interface, this might affect other
+> hosts on this network, this is why we have IPV4_NET16_UNUSED
+> and IPV6_NET32_UNUSED variables. This also simplifies adding
+> new addresses/routes as we have fixed network with needed IP
+> address range that doesn't overlap with IP_RHOST/IP_LHOST
+> addresses.
+Good point, thanks! Actually, I've experienced problems with local network affected by the
+tests. Silly mistake :-(.
 
 
 Kind regards,
 Petr
+
+[1] http://www.mail-archive.com/debian-devel@lists.debian.org/msg344777.html
