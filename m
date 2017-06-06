@@ -1,31 +1,31 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue,  6 Jun 2017 14:21:59 +0300
-Subject: [LTP] [COMMITTED][PATCH 4/6] net/rpcinfo01: convert to test_net.sh
-	lib
+Date: Tue,  6 Jun 2017 14:21:57 +0300
+Subject: [LTP] [COMMITTED][PATCH 2/6] net/rup01: convert to test_net.sh
+	library
 In-Reply-To: <1496748121-10782-1-git-send-email-alexey.kodanev@oracle.com>
 References: <1496748121-10782-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1496748121-10782-4-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1496748121-10782-2-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-* remove broadcast test-cases, and also with option '-d'
-  which deletes registration
+* remove broadcast test-cases, send requests to
+  configured host only;
 
-* TCONF if service not available or not started
+* don't start/stop rstatd and TCONF if rstatd not started;
 
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- .../network/rpc/basic_tests/rpcinfo/rpcinfo01      |  319 ++++----------------
- 1 files changed, 60 insertions(+), 259 deletions(-)
+ testcases/network/rpc/basic_tests/rup/rup01 |  192 +++++----------------------
+ 1 files changed, 34 insertions(+), 158 deletions(-)
 
-diff --git a/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01 b/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01
-index 512465b..afcf1b8 100755
---- a/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01
-+++ b/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01
-@@ -1,279 +1,80 @@
+diff --git a/testcases/network/rpc/basic_tests/rup/rup01 b/testcases/network/rpc/basic_tests/rup/rup01
+index ed99040..da944c6 100755
+--- a/testcases/network/rpc/basic_tests/rup/rup01
++++ b/testcases/network/rpc/basic_tests/rup/rup01
+@@ -1,174 +1,50 @@
  #!/bin/sh
 +# Copyright (c) 2017 Oracle and/or its affiliates. All Rights Reserved.
 +# Copyright (c) International Business Machines  Corp., 2000
@@ -57,47 +57,34 @@ index 512465b..afcf1b8 100755
 -#
 -#
 -#
--#  FILE             : rpcinfo
+-#  FILE             : rup
 -#
--#  TEST DESCRIPTION : Basic test for the `rpcinfo` command.
+-#  TEST DESCRIPTION : Basic test for the `rup` command.
 -#
 -#  SETUP: The home directory of root on the machine exported as "RHOST"
 -#         MUST have a ".rhosts" file with the hostname of the machine
 -#         where the test is executed.
 -#
 -#  HISTORY:
--#    04/20/01 Robbie Williamson (robbiew@us.ibm.com)
+-#    04/18/01 Robbie Williamson (robbiew@us.ibm.com)
 -#      -Written
--#    11/20/08 Aime Le Rouzic (aime.lerouzic@bull.net)
--#      - Adapt to rpcbind
 -#
 -# CMD      FLAG      ARGS
--# rpcinfo   -p
--# rpcinfo   -p       rem_host
--# rpcinfo   -b
--# rpcinfo   -d       prog_num   ver_num
--# rpcinfo   -t       rem_host   prog_num
--# rpcinfo   -t       rem_host   prog_num     ver_num
--# rpcinfo   -t       rem_host   prog_name
--# rpcinfo   -t       rem_host   prog_name    ver_num
--# rpcinfo   -u       rem_host   prog_num
--# rpcinfo   -u       rem_host   prog_num     ver_num
--# rpcinfo   -u       rem_host   prog_name
--# rpcinfo   -u       rem_host   prog_name    ver_num
--# rpcinfo
--# rpcinfo   -bogus_flag
--# rpcinfo   -u         rem_host
--# rpcinfo   -u         rem_host   bogus_prog   ver_num
--# rpcinfo   -u         rem_host   prog_num     bogus_num
+-# rup
+-# rup                rem_host
+-# rup	    -d
+-# rup       -h
+-# rup       -t
+-# rup       -l
+-# rup                bogus_host
+-# rup      -bogus_flag
 -#***********************************************************************
 -#Uncomment line below for debug output.
 -#trace_logic=${trace_logic:-"set -x"}
-+# You should have received a copy of the GNU General Public License
-+# along with this program. If not, see <http://www.gnu.org/licenses/>.
- 
+-
 -$trace_logic
 -this_file=${0##*/}
--TC=rpcinfo01
+-TC=rup01
 -TCtmp=${TCtmp:=`pwd`}
 -TCbin=${TCbin:=`pwd`}
 -TCsrc=${TCsrc:=$TCbin}
@@ -108,10 +95,7 @@ index 512465b..afcf1b8 100755
 -export TCID=$TC
 -export TST_TOTAL=1
 -export TST_COUNT=1
-+TCID="rpcinfo01"
-+TST_TOTAL=16
-+TST_CLEANUP=tst_rmdir
- 
+-
 -#=============================================================================
 -# FUNCTION NAME:        do_test
 -#
@@ -122,175 +106,70 @@ index 512465b..afcf1b8 100755
 -# RETURNS:              None.
 -#=============================================================================
 -do_test()
-+. test_net.sh
-+
-+do_setup()
- {
+-{
 -$trace_logic
-+	tst_resm TINFO "Checking for portmap or rpcbind"
- 
--echo "Checking for portmap or rpcbind daemon on `hostname` and $RHOST"
--ps -ewf | grep portmap | grep -v grep > /dev/null
--if [ $? -eq 0 ]
--then
--	PORTMAPPER="portmap"
--else
--	ps -ewf | grep rpcbind | grep -v grep > /dev/null
--	if [ $? -eq 0 ]
--	then
--		PORTMAPPER="rpcbind"
-+	if pgrep portmap > /dev/null; then
-+		PORTMAPPER="portmap"
- 	else
--		echo "The portmap or rpcbind daemon is NOT running"
-+		pgrep rpcbind > /dev/null && PORTMAPPER="rpcbind" || \
-+			tst_brkm TCONF "portmap or rpcbind is not running"
- 	fi
+-
+-echo "Checking for rstatd on $RHOST"
+-
+-rpcinfo -u $RHOST rstatd 3 > /dev/null 2>&1
+-if [ $? -ne 0 ]; then
+-  echo "Attempting to start rstatd on $RHOST"
+-  rsh -n -l root $RHOST "/usr/sbin/rpc.rstatd &"
+-  [ $? -eq 0 ] || end_testcase "rstatd is inactive on $RHOST"
+-  PID=`rsh -n $RHOST ps -ewf | grep rstatd | awk '{print $2 }'`
+-  echo "rstatd started on $RHOST"
 -fi
 -
--rsh -n $RHOST "ps -ewf" | grep portmap | grep -v grep > /dev/null
--[ $? -eq 0 ] || rsh -n $RHOST "ps -ewf" | grep rpcbind | grep -v grep > /dev/null
--[ $? -eq 0 ] || end_testcase "The portmap or rpcbind daemon is NOT running on $RHOST"
--
--echo "Test rpcinfo with default options"
--echo "rpcinfo -p"
--rpcinfo -p $RHOST | grep portmapper
--[ $? -eq 0 ] || end_testcase "rpcinfo -p failed"
--
--echo "Test rpcinfo with options"
--
--
--# Create file with 1 tcp and 1 udp line. Use for variable assignments.
--rpcinfo -p $RHOST | grep tcp | sed -n 2p > $TCtmp/rpc_out
--rpcinfo -p $RHOST | grep udp | sed -n 2p >> $TCtmp/rpc_out
--
--wc -l $TCtmp/rpc_out | grep "2" > /dev/null
--[ $? -eq 0 ] || end_testcase "Not enough programs registered on $RHOST for test"
--
--# Using "rpc_out" file created above, assign variables for rpcinfo options.
--TPNUM=`grep tcp $TCtmp/rpc_out | awk '{print $1}'`
--TVNUM=`grep tcp $TCtmp/rpc_out | awk '{print $2}'`
--TCPNAME=`grep tcp $TCtmp/rpc_out | awk '{print $5}'`
--UPNUM=`grep udp $TCtmp/rpc_out | awk '{print $1}'`
--UVNUM=`grep udp $TCtmp/rpc_out | awk '{print $2}'`
--UDPNAME=`grep udp $TCtmp/rpc_out | awk '{print $5}'`
--
--# Go through the matrix of remaining rpcinfo options
--# -d option
--ps -ewf | grep rusersd | grep -v grep
--if [ $? = 1 ]; then
--  /usr/sbin/rpc.rusersd
--  if [ $? = 0 ]; then
--    rpcinfo -p | grep 100002
--    echo "rpcinfo -d <prog num> <ver num>"
--    rpcinfo -d 100002 3
--    rpcinfo -p | grep 100002
--    rpcinfo -p | grep 100002 | wc -l | grep "1" > /dev/null
--    [ $? = 0 ] || end_testcase "rpcinfo -d <prog num> <ver num> - failed"
--    RUSERSD_PID=`ps -ewf | grep rusersd | grep -v grep | awk '{print $2}'`
--    kill -9 $RUSERSD_PID > /dev/null 2>&1
--  else
--    echo "Could not start rusersd daemon...skipping -d option test"
--  fi
--else
--  echo "rusersd is currently running, so may be used...skipping -d option test"
--fi
--
--# -t options
--echo "rpcinfo -t <hostname> <tcp prog num>"
--rpcinfo -t $RHOST $TPNUM
--[ $? -eq 0 ] || end_testcase "rpcinfo -t <hostname> <tcp prog num> - failed"
--
--echo "rpcinfo -t <hostname> <tcp prog num> <ver num>"
--rpcinfo -t $RHOST $TPNUM $TVNUM
--[ $? -eq 0 ] || end_testcase "rpcinfo -t <hostname> <tcp prog num> <ver num> - failed"
--
--echo "rpcinfo -t <hostname> <tcp prog name>"
--rpcinfo -t $RHOST $TCPNAME
--[ $? -eq 0 ] || end_testcase "rpcinfo -t <hostname> <tcp prog name> -  failed"
--
--echo "rpcinfo -t <hostname> <tcp prog name> <ver num>"
--rpcinfo -t $RHOST $TCPNAME $TVNUM
--[ $? -eq 0 ] || end_testcase "rpcinfo -t <hostname> <tcp prog name> <ver num> - failed"
+-echo "Test rup with defaults....please be patient"
+-# rusers with no options broadcasts over the net and reports
+-# responses as it receives them. Time-out for responses is approx. 2 minutes.
++# You should have received a copy of the GNU General Public License
++# along with this program. If not, see <http://www.gnu.org/licenses/>.
  
--# -u options
--echo "rpcinfo -u <hostname> <udp prog num>"
--rpcinfo -u $RHOST 100000
--[ $? -eq 0 ] || end_testcase "rpcinfo -u <hostname> <udp prog num> - failed"
-+	tst_tmpdir
+-echo "rup"
+-rup
+-[ $? -eq 0 ] || end_testcase "rup with defaults - failed"
++TCID="rup01"
++TST_TOTAL=7
  
--echo "rpcinfo -u <hostname> <udp prog num> <ver num>"
--rpcinfo -u $RHOST 100000 2
--[ $? -eq 0 ] || end_testcase "rpcinfo -u <hostname> <udp prog num> <ver num> - failed"
-+	# Create file with 1 tcp and 1 udp line. Use for variable assignments.
-+	tst_rhost_run -c "rpcinfo -p $thost | grep tcp | sed -n 2p" > rpc_out
-+	tst_rhost_run -c "rpcinfo -p $thost | grep udp | sed -n 2p" >> rpc_out
+-echo "Test rusers with options set...please be patient"
+-# Go through matrix of rup options:
++. test_net.sh
  
--echo "rpcinfo -u <hostname> <udp prog name>"
--rpcinfo -u $RHOST portmapper
--[ $? -eq 0 ] || end_testcase "rpcinfo -u <hostname> <udp prog name> - failed"
-+	wc -l rpc_out | grep "2" > /dev/null || \
-+		tst_brkm TBROK "Not enough programs registered on $thost"
- 
--echo "rpcinfo -u <hostname> <udp prog name> <ver num>"
--rpcinfo -u $RHOST portmapper 2
--[ $? -eq 0 ] || end_testcase "rpcinfo -u <hostname> <udp prog name> <ver num> - failed"
+-echo "rup $RHOST"
+-rup $RHOST
+-[ $? -eq 0 ] || end_testcase "rup $RHOST - failed"
 -
--echo "Test rpcinfo with missing or bad options"
+-echo "rup -d"
+-rup -d
+-[ $? -eq 0 ] || end_testcase "rup -d - failed"
 -
--# Check the following: noflag, bogushost, bogusflag, no prog for -u or -t,
--# bogusprog, 99999 as versnum.
+-echo "rup -h"
+-rup -h
+-[ $? -eq 0 ] || end_testcase "rup -h - failed"
 -
--echo "rpcinfo <no flags>"
--case $PORTMAPPER in
--	portmap)
--		rpcinfo
--		[ $? -eq 1 ] || end_testcase "rpcinfo <no flags> should fail"
--		;;
--	rpcbind)
--		rpcinfo
--		[ $? -eq 0 ]|| end_testcase "rpcinfo <no flags> should not fail"
--		;;
--	*)
--		echo " portmap or rpcbind not running"
--		exit 1
--		;;
--esac
+-echo "rup -l"
+-rup -l
+-[ $? -eq 0 ] || end_testcase "rup -l - failed"
 -
--echo "rpcinfo -p <bad hostname>"
--rpcinfo -p bogushost
--[ $? -eq 1 ] || end_testcase "rpcinfo <bad hostname> should fail"
+-echo "rup -t"
+-rup -t
+-[ $? -eq 0 ] || end_testcase "rup -t - failed"
 -
--echo "rpcinfo <bad flag>"
--rpcinfo -bogusflag
--[ $? -eq 1 ] || end_testcase "rpcinfo <bad flag> should fail"
+-echo "Test rusers with bad options"
+-echo "rup <invalid hostname>"
+-rup bogushost > /dev/null 2>&1
+-[ $? -ne 0 ] || end_testcase "rup <invalid hostname> should fail"
 -
--echo "rpcinfo -t <hostname> <no prognum>"
--rpcinfo -t $RHOST
--[ $? -eq 1 ] || end_testcase "rpcinfo -t <hostname> <no prognum> should fail"
--
--echo "rpcinfo -u <hostname> <no prognum>"
--rpcinfo -u $RHOST
--[ $? -eq 1 ] || end_testcase "rpcinfo -u <hostname> <no prognum> should fail"
--
--echo "rpcinfo -u <hostname> <bad prog name>"
--rpcinfo -u $RHOST bogusprog
--[ $? -eq 1 ] || end_testcase "rpcinfo -u <hostname> <invalid program name> should fail"
--
--echo "rpcinfo -u <hostname> <bad prog num>"
--rpcinfo -u $RHOST 11579
--[ $? -eq 1 ] || end_testcase "rpcinfo -u <hostname> 11579 should fail"
--
--echo "rpcinfo -u <hostname> <prog num> <bad ver num>"
--rpcinfo -u $RHOST 100000 5
--[ $? -eq 1 ] || end_testcase "rpcinfo -u <hostname> <prog num> <bad ver num> should fail"
-+	# Using "rpc_out" file created above, assign variables for rpcinfo opts
-+	TPNUM=`grep tcp rpc_out | awk '{print $1}'`
-+	TVNUM=`grep tcp rpc_out | awk '{print $2}'`
-+	TCPNAME=`grep tcp rpc_out | awk '{print $5}'`
-+	UPNUM=`grep udp rpc_out | awk '{print $1}'`
-+	UVNUM=`grep udp rpc_out | awk '{print $2}'`
-+	UDPNAME=`grep udp rpc_out | awk '{print $5}'`
+-echo "rup -<invalid flag>"
+-rup -bogusflag > /dev/null 2>&1
+-[ $? -eq 1 ] || end_testcase "rup -<invalid flag> should fail"
++do_setup()
++{
++	tst_resm TINFO "Checking for rstatd on $(tst_ipaddr)"
++	tst_rhost_run -c "rpcinfo -u $(tst_ipaddr) rstatd 3" \
++		> /dev/null 2>&1 || \
++		tst_brkm TCONF "rstatd is inactive on $(tst_ipaddr)"
  }
  
 -#=============================================================================
@@ -303,15 +182,19 @@ index 512465b..afcf1b8 100755
 -# RETURNS:              None.
 -#=============================================================================
 -do_cleanup()
--{
++do_test()
+ {
 -    $trace_logic
--
++	tst_resm TINFO "Test rup with options set"
+ 
 -    if [ "$PID" != 0 ]; then
--      kill -9 $PID
+-        # Kill rup on remote machine
+-        rsh -n $RHOST kill -15 $PID
+-        echo "rstatd daemon stopped on $RHOST"
 -    fi
--    rm -f $TCtmp/rpc_out
 -}
--
++	EXPECT_RHOST_PASS rup $(tst_ipaddr)
+ 
 -#=============================================================================
 -# FUNCTION NAME:        end_testcase
 -#
@@ -321,10 +204,13 @@ index 512465b..afcf1b8 100755
 -#
 -# RETURNS:              None.
 -#=============================================================================
--
++	local opts="-d -h -l -t"
++	for opt in $opts; do
++		EXPECT_RHOST_PASS rup $opt $(tst_ipaddr)
++	done
+ 
 -end_testcase()
-+do_test()
- {
+-{
 -   $trace_logic
 -   echo "$this_file: doing $0."
 -   if [ "$CLEANUP" = "ON" ]; then
@@ -334,26 +220,9 @@ index 512465b..afcf1b8 100755
 -   [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
 -   tst_resm TFAIL "Test Failed: $@"
 -   exit 1
-+	local thost="$(tst_ipaddr)"
-+
-+	EXPECT_RHOST_PASS rpcinfo -p $thost | grep -q portmapper
-+	EXPECT_RHOST_PASS rpcinfo -t $thost $TPNUM
-+	EXPECT_RHOST_PASS rpcinfo -t $thost $TPNUM $TVNUM
-+	EXPECT_RHOST_PASS rpcinfo -t $thost $TCPNAME
-+	EXPECT_RHOST_PASS rpcinfo -t $thost $TCPNAME $TVNUM
-+	EXPECT_RHOST_PASS rpcinfo -u $thost 100000
-+	EXPECT_RHOST_PASS rpcinfo -u $thost 100000 2
-+	EXPECT_RHOST_PASS rpcinfo -u $thost portmapper
-+	EXPECT_RHOST_PASS rpcinfo -u $thost portmapper 2
-+
-+	tst_resm TINFO "Test rpcinfo with missing or bad options"
-+	EXPECT_RHOST_FAIL rpcinfo -p bogushost
-+	EXPECT_RHOST_FAIL rpcinfo -bogusflag
-+	EXPECT_RHOST_FAIL rpcinfo -t $thost
-+	EXPECT_RHOST_FAIL rpcinfo -u $thost
-+	EXPECT_RHOST_FAIL rpcinfo -u $thost bogusprog
-+	EXPECT_RHOST_FAIL rpcinfo -u $thost 11579
-+	EXPECT_RHOST_FAIL rpcinfo -u $thost 100000 5
++	tst_resm TINFO "Test rup with bad options"
++	EXPECT_RHOST_FAIL rup bogushost
++	EXPECT_RHOST_FAIL rup -bogusflag $(tst_ipaddr)
  }
  
 -#=============================================================================
