@@ -1,246 +1,37 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 6 Jun 2017 15:15:06 +0200
-Subject: [LTP] [PATCH] syscalls/memfd_create: test memfd flags separately
-In-Reply-To: <1496316850-12188-1-git-send-email-jracek@redhat.com>
-References: <1496316850-12188-1-git-send-email-jracek@redhat.com>
-Message-ID: <20170606131506.GD5208@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 6 Jun 2017 15:23:00 +0200
+Subject: [LTP] [RFC PATCH v6 00/11] Simplify network setup + fix some
+ network stress tests
+In-Reply-To: <a3f5cc71-bd91-3de2-4951-ac853e1106e4@oracle.com>
+References: <20170603120022.13415-1-pvorel@suse.cz>
+ <a3f5cc71-bd91-3de2-4951-ac853e1106e4@oracle.com>
+Message-ID: <20170606132233.fpotse6pwwgp7xsb@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> This patch fixes the test on some kernels where memfd_create doesn't
-> have  have sealing support. Calls to memfd_create are done so that we
-> know what flags are available. Depending on that, some tests are skipped
-> instead of incorrectly reporting breakage.
-> 
-> Signed-off-by: Jakub Racek <jracek@redhat.com>
-> ---
->  .../kernel/syscalls/memfd_create/memfd_create01.c  | 16 ++++++-
->  .../kernel/syscalls/memfd_create/memfd_create02.c  | 13 +++++-
->  .../syscalls/memfd_create/memfd_create_common.c    | 50 +++++++++++++++++++---
->  .../syscalls/memfd_create/memfd_create_common.h    | 19 ++++++--
->  4 files changed, 86 insertions(+), 12 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create01.c b/testcases/kernel/syscalls/memfd_create/memfd_create01.c
-> index 54c817b..c5e76f2 100644
-> --- a/testcases/kernel/syscalls/memfd_create/memfd_create01.c
-> +++ b/testcases/kernel/syscalls/memfd_create/memfd_create01.c
-> @@ -22,6 +22,7 @@
->  
->  #define _GNU_SOURCE
->  
-> +#include <errno.h>
->  #include "tst_test.h"
->  #include "memfd_create_common.h"
->  
-> @@ -259,7 +260,20 @@ static void verify_memfd_create(unsigned int n)
->  
->  static void setup(void)
->  {
-> -	ASSERT_HAVE_MEMFD_CREATE();
-> +
-> +	int available_flags;
-> +
-> +	/*
-> +	 * For now, all tests in this file require MFD_ALLOW_SEALING flag
-> +	 * to be implemented, even though that flag isn't always set when
-> +	 * memfd is created. So don't check anything else and TCONF right away
-> +	 * is this flag is missing.
-> +	 */
-> +	available_flags = GET_MFD_ALL_AVAILABLE_FLAGS();
-> +	if ((available_flags & MFD_ALLOW_SEALING) != MFD_ALLOW_SEALING) {
-> +		tst_brk(TCONF | TTERRNO,
-> +			"memfd_create(%u) not implemented", MFD_ALLOW_SEALING);
-> +	}
+Hi Alexey,
 
-Can't we call the IS_MFD_AVAILABLE_WITH_FLAGS(flag) here directly
-instead? That would be more straightforward way to figure out if we
-support sealing.
+thanks for your input.
 
-Also better name would be MFD_FLAGS_AVAILABLE() or something and the
-function name to get all available flags should be shorther and to the
-point as well, maybe MFD_ALL_AVAILABLE_FLAGS().
+> tst_rhost_run() with "two hosts" setup is using just RHOST
+> variable (management link) for rsh/ssh, it can have the same
+> route as IP_RHOST or better something different that won't be
+> affected by the tests.
 
->  }
->  
->  static struct tst_test test = {
-> diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create02.c b/testcases/kernel/syscalls/memfd_create/memfd_create02.c
-> index d65e496..bc01e44 100644
-> --- a/testcases/kernel/syscalls/memfd_create/memfd_create02.c
-> +++ b/testcases/kernel/syscalls/memfd_create/memfd_create02.c
-> @@ -31,6 +31,8 @@
->  static char buf[2048];
->  static char term_buf[2048];
->  
-> +static int available_flags;
-> +
->  static const struct tcase {
->  	char *descr;
->  	char *memfd_name;
-> @@ -62,7 +64,8 @@ static const struct tcase {
->  
->  static void setup(void)
->  {
-> -	ASSERT_HAVE_MEMFD_CREATE();
-> +
-> +	available_flags = GET_MFD_ALL_AVAILABLE_FLAGS();
->  
->  	memset(buf, 0xff, sizeof(buf));
->  
-> @@ -73,8 +76,16 @@ static void setup(void)
->  static void verify_memfd_create_errno(unsigned int n)
->  {
->  	const struct tcase *tc;
-> +	int needed_flags;
->  
->  	tc = &tcases[n];
-> +	needed_flags = tc->flags & FLAGS_ALL_MASK;
-> +
-> +	if ((available_flags & needed_flags) != needed_flags) {
-> +		tst_res(TCONF, "test '%s' skipped, flag not implemented",
-> +					tc->descr);
-> +		return;
-> +	}
->  
->  	TEST(sys_memfd_create(tc->memfd_name, tc->flags));
->  	if (TEST_ERRNO != tc->memfd_create_exp_err)
-> diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create_common.c b/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
-> index 4cf3bd5..939b046 100644
-> --- a/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
-> +++ b/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
-> @@ -103,20 +103,56 @@ void check_ftruncate_fail(const char *filename, const int lineno,
->  		"ftruncate(%d, %ld) failed as expected", fd, length);
->  }
->  
-> -void assert_have_memfd_create(const char *filename, const int lineno)
-> +int get_mfd_all_available_flags(const char *filename, const int lineno)
->  {
-> -	TEST(sys_memfd_create("dummy_call", 0));
-> +	unsigned int i;
-> +	int flag;
-> +	int flags2test[] = FLAGS_ALL_ARRAY_INITIALIZER;
-> +	int flags_available = 0;
-> +	int any_available = 0;
-> +
-> +	if (!IS_MFD_AVAILABLE_WITH_FLAGS(0)) {
-> +		tst_brk_(filename, lineno, TCONF,
-> +				"memfd_create(0) not implemented");
-> +	}
-> +
-> +	for (i = 0; i < ARRAY_SIZE(flags2test); i++) {
-> +		flag = flags2test[i];
-> +
-> +		TEST(IS_MFD_AVAILABLE_WITH_FLAGS(flag));
+Ok, for ssh/rsh, if prefix isn't defined in IPV{4,6}_LHOST I'll read it with
+tst_rhost_run, using RHOST. That means to have separate binary for rtnetlink code.
 
-Since we check errno in the is_mfd_...() function and call tst_brk_() on
-failure there is no point in doing anything else here than:
+I'll move default prefix values (24 and 64) from tst_net_vars.c to test_net.sh, these
+values will be used as default for netns and used for rsh/ssh only if prefixes aren't
+specified in IPV{4,6}_LHOST and nothing found with rtnetlink.
 
-		if (is_mfd_...(flag))
-			flags_available |= flag;
+I also want to find via rtnetlink getting lhost and rhost iface. I wonder whether founded
+ifaces (rhost and lhost) should be also added into {L,R}HOST_IFACES even if variables are
+already specified by user and don't contain them.
 
-> +		if (!TEST_RETURN) {
-> +			tst_res_(filename, lineno, TINFO | TTERRNO,
-> +				"memfd_create(%u) not implemented", flag);
-> +		} else {
-> +			flags_available |= flag;
-> +			any_available = 1;
-> +		}
-> +	}
-> +
-> +	if (!any_available) {
-> +		tst_brk_(filename, lineno, TCONF,
-> +				"memfd_create() not implemented at all");
-> +	}
 
-Isn't this check useless now? Since we assert that at least 0 passed as
-flags is supported at the start of this function we should just return
-flags_available here which would be 0 in this case.
-
-> +	return flags_available;
-> +}
-> +
-> +int is_mfd_available_with_flags(const char *filename, const int lineno,
-> +		unsigned int flags)
-> +{
-> +	TEST(sys_memfd_create("dummy_call", flags));
->  	if (TEST_RETURN < 0) {
-> -		if (TEST_ERRNO == EINVAL) {
-> -			tst_brk_(filename, lineno, TCONF | TTERRNO,
-> -				"memfd_create() not implemented");
-> +		if (TEST_ERRNO != EINVAL) {
-> +			tst_brk_(filename, lineno, TBROK | TTERRNO,
-> +					"memfd_create() failed");
->  		}
->  
-> -		tst_brk_(filename, lineno, TBROK | TTERRNO,
-> -			"memfd_create() failed");
-> +		return 0;
->  	}
->  
->  	SAFE_CLOSE(TEST_RETURN);
-> +
-> +	return 1;
->  }
->  
->  int check_mfd_new(const char *filename, const int lineno,
-> diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create_common.h b/testcases/kernel/syscalls/memfd_create/memfd_create_common.h
-> index 6329ac3..616c7ef 100644
-> --- a/testcases/kernel/syscalls/memfd_create/memfd_create_common.h
-> +++ b/testcases/kernel/syscalls/memfd_create/memfd_create_common.h
-> @@ -20,10 +20,19 @@
->  #include <lapi/fcntl.h>
->  #include <lapi/memfd.h>
->  
-> +#define COMMA 					,
-> +#define BITWISE_OR 				|
-> +#define OPERATE_ON_FLAGS(x)			MFD_CLOEXEC x MFD_ALLOW_SEALING
-> +#define FLAGS_ALL_ARRAY_INITIALIZER		{OPERATE_ON_FLAGS(COMMA)}
-> +#define FLAGS_ALL_MASK				(OPERATE_ON_FLAGS(BITWISE_OR))
-
-Really?
-
-Do you realize that just defining the FLAGS_ALL_MASK and array
-initializer directly as MFD_CLOEXEC | MFD_ALLOW_SEALING and
-{MFD_CLOEXEC, MFD_ALLOW_SEALING} is not only less complex but shorther
-as well?
-
-What do we need this macro obscurity for?
-
->  #define MFD_DEF_SIZE 8192
->  
-> -#define ASSERT_HAVE_MEMFD_CREATE() \
-> -	assert_have_memfd_create(__FILE__, __LINE__)
-> +#define GET_MFD_ALL_AVAILABLE_FLAGS() \
-> +	get_mfd_all_available_flags(__FILE__, __LINE__)
-> +
-> +#define IS_MFD_AVAILABLE_WITH_FLAGS(flags) \
-> +	is_mfd_available_with_flags(__FILE__, __LINE__, (flags))
->  
->  #define CHECK_MFD_NEW(name, sz, flags) \
->  	check_mfd_new(__FILE__, __LINE__, (name), (sz), (flags))
-> @@ -89,7 +98,11 @@
->  #define CHECK_MFD_NON_GROWABLE_BY_WRITE(fd) \
->  	check_mfd_non_growable_by_write(__FILE__, __LINE__, (fd))
->  
-> -void assert_have_memfd_create(const char *filename, const int lineno);
-> +int is_mfd_available_with_flags(const char *filename, const int lineno,
-> +		unsigned int flags);
-> +
-> +int get_mfd_all_available_flags(const char *filename, const int lineno);
-> +
->  int sys_memfd_create(const char *name, unsigned int flags);
->  
->  int check_fallocate(const char *filename, const int lineno, int fd,
-> -- 
-> 1.8.3.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
