@@ -1,22 +1,26 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 6 Jun 2017 14:32:06 +0300
-Subject: [LTP] [PATCH v2] net: use LTP ns_create/ns_exec to support OS
- with legacy iproute
-In-Reply-To: <1493823497-22391-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1493823497-22391-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <7dbae235-5fec-9ffe-d39f-49a6927c4c83@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 6 Jun 2017 13:55:52 +0200
+Subject: [LTP] [PATCH 0/2] ltp: update add_key tests for nonempty NULL
+ payload fix
+In-Reply-To: <20170605174811.95267-1-ebiggers3@gmail.com>
+References: <20170605174811.95267-1-ebiggers3@gmail.com>
+Message-ID: <20170606114416.GA5208@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 05/03/2017 05:58 PM, Alexey Kodanev wrote:
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> ---
-> v2: move creation of veth pair out of 'if/else'
+Hi!
+> (The reason I'm not simply changing the add_key02 test is that I don't want it
+> to appear as a regression on old kernels.  I'm not sure exactly how this kind of
+> thing is typically handled in LTP, though.)
 
-Applied v3 where 'ip' command not used. Also we can still run
-'ip netns ex ltp_ns...' on the created network namespace.
+What exactly do you mean by a regression here? The fact that it may
+crash older kernels? That is pretty much fine, when test fails/kernel
+crashes manual intervention is required and one of the first things you
+do is git log for the test.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
