@@ -1,184 +1,27 @@
-From: Jakub Racek <jracek@redhat.com>
-Date: Wed,  7 Jun 2017 14:14:03 +0200
-Subject: [LTP] [PATCH v3] syscalls/memfd_create: test memfd flags separately
-Message-ID: <1496837643-3947-1-git-send-email-jracek@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 7 Jun 2017 15:51:06 +0200
+Subject: [LTP] [PATCH 0/2] ltp: update add_key tests for nonempty NULL
+ payload fix
+In-Reply-To: <20170606170425.GA88445@gmail.com>
+References: <20170605174811.95267-1-ebiggers3@gmail.com>
+ <20170606114416.GA5208@rei> <20170606170425.GA88445@gmail.com>
+Message-ID: <20170607135106.GC26322@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Jakub Racek <jracek@redhat.com>
----
- .../kernel/syscalls/memfd_create/memfd_create01.c  | 12 ++++++-
- .../kernel/syscalls/memfd_create/memfd_create02.c  | 13 +++++++-
- .../syscalls/memfd_create/memfd_create_common.c    | 38 ++++++++++++++++++----
- .../syscalls/memfd_create/memfd_create_common.h    | 17 ++++++++--
- 4 files changed, 68 insertions(+), 12 deletions(-)
+Hi!
+> Personally, I don't align quite as strongly with that viewpoint (and maybe you
+> and the other LTP developers don't either) because this can, after all, only be
+> a problem in cases where the test suite is upgraded, and furthermore if a test
+> fails it's helpful to 'git log' the test anyway.
+> 
+> Would you suggest I simply update add_key02 instead?
 
-diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create01.c b/testcases/kernel/syscalls/memfd_create/memfd_create01.c
-index 54c817b..6a84899 100644
---- a/testcases/kernel/syscalls/memfd_create/memfd_create01.c
-+++ b/testcases/kernel/syscalls/memfd_create/memfd_create01.c
-@@ -22,6 +22,7 @@
- 
- #define _GNU_SOURCE
- 
-+#include <errno.h>
- #include "tst_test.h"
- #include "memfd_create_common.h"
- 
-@@ -259,7 +260,16 @@ static void verify_memfd_create(unsigned int n)
- 
- static void setup(void)
- {
--	ASSERT_HAVE_MEMFD_CREATE();
-+	/*
-+	 * For now, all tests in this file require MFD_ALLOW_SEALING flag
-+	 * to be implemented, even though that flag isn't always set when
-+	 * memfd is created. So don't check anything else and TCONF right away
-+	 * is this flag is missing.
-+	 */
-+	if (!MFD_FLAGS_AVAILABLE(MFD_ALLOW_SEALING)) {
-+		tst_brk(TCONF | TTERRNO,
-+			"memfd_create(%u) not implemented", MFD_ALLOW_SEALING);
-+	}
- }
- 
- static struct tst_test test = {
-diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create02.c b/testcases/kernel/syscalls/memfd_create/memfd_create02.c
-index d65e496..bc01e44 100644
---- a/testcases/kernel/syscalls/memfd_create/memfd_create02.c
-+++ b/testcases/kernel/syscalls/memfd_create/memfd_create02.c
-@@ -31,6 +31,8 @@
- static char buf[2048];
- static char term_buf[2048];
- 
-+static int available_flags;
-+
- static const struct tcase {
- 	char *descr;
- 	char *memfd_name;
-@@ -62,7 +64,8 @@ static const struct tcase {
- 
- static void setup(void)
- {
--	ASSERT_HAVE_MEMFD_CREATE();
-+
-+	available_flags = GET_MFD_ALL_AVAILABLE_FLAGS();
- 
- 	memset(buf, 0xff, sizeof(buf));
- 
-@@ -73,8 +76,16 @@ static void setup(void)
- static void verify_memfd_create_errno(unsigned int n)
- {
- 	const struct tcase *tc;
-+	int needed_flags;
- 
- 	tc = &tcases[n];
-+	needed_flags = tc->flags & FLAGS_ALL_MASK;
-+
-+	if ((available_flags & needed_flags) != needed_flags) {
-+		tst_res(TCONF, "test '%s' skipped, flag not implemented",
-+					tc->descr);
-+		return;
-+	}
- 
- 	TEST(sys_memfd_create(tc->memfd_name, tc->flags));
- 	if (TEST_ERRNO != tc->memfd_create_exp_err)
-diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create_common.c b/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
-index 4cf3bd5..79fc02e 100644
---- a/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
-+++ b/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
-@@ -103,20 +103,44 @@ void check_ftruncate_fail(const char *filename, const int lineno,
- 		"ftruncate(%d, %ld) failed as expected", fd, length);
- }
- 
--void assert_have_memfd_create(const char *filename, const int lineno)
-+int get_mfd_all_available_flags(const char *filename, const int lineno)
- {
--	TEST(sys_memfd_create("dummy_call", 0));
-+	unsigned int i;
-+	int flag;
-+	int flags2test[] = FLAGS_ALL_ARRAY_INITIALIZER;
-+	int flags_available = 0;
-+
-+	if (!MFD_FLAGS_AVAILABLE(0)) {
-+		tst_brk_(filename, lineno, TCONF,
-+				"memfd_create(0) not implemented");
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(flags2test); i++) {
-+		flag = flags2test[i];
-+
-+		if (MFD_FLAGS_AVAILABLE(flag))
-+			flags_available |= flag;
-+	}
-+
-+	return flags_available;
-+}
-+
-+int mfd_flags_available(const char *filename, const int lineno,
-+		unsigned int flags)
-+{
-+	TEST(sys_memfd_create("dummy_call", flags));
- 	if (TEST_RETURN < 0) {
--		if (TEST_ERRNO == EINVAL) {
--			tst_brk_(filename, lineno, TCONF | TTERRNO,
--				"memfd_create() not implemented");
-+		if (TEST_ERRNO != EINVAL) {
-+			tst_brk_(filename, lineno, TBROK | TTERRNO,
-+					"memfd_create() failed");
- 		}
- 
--		tst_brk_(filename, lineno, TBROK | TTERRNO,
--			"memfd_create() failed");
-+		return 0;
- 	}
- 
- 	SAFE_CLOSE(TEST_RETURN);
-+
-+	return 1;
- }
- 
- int check_mfd_new(const char *filename, const int lineno,
-diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create_common.h b/testcases/kernel/syscalls/memfd_create/memfd_create_common.h
-index 6329ac3..60ad895 100644
---- a/testcases/kernel/syscalls/memfd_create/memfd_create_common.h
-+++ b/testcases/kernel/syscalls/memfd_create/memfd_create_common.h
-@@ -20,10 +20,17 @@
- #include <lapi/fcntl.h>
- #include <lapi/memfd.h>
- 
-+/* change macros accordingly if any flags need to be added in the future */
-+#define FLAGS_ALL_ARRAY_INITIALIZER {MFD_CLOEXEC, MFD_ALLOW_SEALING}
-+#define FLAGS_ALL_MASK              (MFD_CLOEXEC | MFD_ALLOW_SEALING)
-+
- #define MFD_DEF_SIZE 8192
- 
--#define ASSERT_HAVE_MEMFD_CREATE() \
--	assert_have_memfd_create(__FILE__, __LINE__)
-+#define GET_MFD_ALL_AVAILABLE_FLAGS() \
-+	get_mfd_all_available_flags(__FILE__, __LINE__)
-+
-+#define MFD_FLAGS_AVAILABLE(flags) \
-+	mfd_flags_available(__FILE__, __LINE__, (flags))
- 
- #define CHECK_MFD_NEW(name, sz, flags) \
- 	check_mfd_new(__FILE__, __LINE__, (name), (sz), (flags))
-@@ -89,7 +96,11 @@
- #define CHECK_MFD_NON_GROWABLE_BY_WRITE(fd) \
- 	check_mfd_non_growable_by_write(__FILE__, __LINE__, (fd))
- 
--void assert_have_memfd_create(const char *filename, const int lineno);
-+int mfd_flags_available(const char *filename, const int lineno,
-+		unsigned int flags);
-+
-+int get_mfd_all_available_flags(const char *filename, const int lineno);
-+
- int sys_memfd_create(const char *name, unsigned int flags);
- 
- int check_fallocate(const char *filename, const int lineno, int fd,
+Yes, I would have done that as well.
+
 -- 
-1.8.3.1
-
+Cyril Hrubis
+chrubis@suse.cz
