@@ -1,139 +1,112 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 8 Jun 2017 14:41:13 +0800
-Subject: [LTP] [PATCH 1/2] syscalls/splice04,05: fix max limit for pipe
-Message-ID: <1496904074-25394-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 8 Jun 2017 12:36:37 +0300
+Subject: [LTP] [PATCH 1/3] clone08: convert to new LTP API
+In-Reply-To: <20170607154631.GB30168@rei.suse.de>
+References: <1492443894-3127-1-git-send-email-alexey.kodanev@oracle.com>
+ <20170607154631.GB30168@rei.suse.de>
+Message-ID: <8fe5e403-bbf8-59a6-c692-c914bf97ff3c@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-These cases fail on some older kernel(e.g, 2.6.32 and
-2.6.35-rc1) because the pipe-max-size file does not exist.
+Hi,
+On 06/07/2017 06:46 PM, Cyril Hrubis wrote:
+> Hi!
+>>  static long clone_child(const struct test_case *t, int use_tst)
+>> @@ -121,16 +97,16 @@ static long clone_child(const struct test_case *t, int use_tst)
+>>  		child_stack, &ptid, NULL, &ctid));
+>>  
+>>  	if (TEST_RETURN == -1 && TTERRNO == ENOSYS)
+>> -		tst_brkm(TCONF, cleanup, "clone does not support 7 args");
+>> +		tst_brk(TCONF, "clone does not support 7 args");
+>>  
+>>  	if (TEST_RETURN == -1) {
+>>  		if (use_tst) {
+>> -			tst_brkm(TBROK | TTERRNO, cleanup, "%s clone() failed",
+>> +			tst_brk(TBROK | TTERRNO, "%s clone() failed",
+>>  				 t->name);
+>>  		} else {
+>>  			printf("%s clone() failed, errno: %d",
+>>  			       t->name, TEST_ERRNO);
+>> -			exit(1);
+>> +			_exit(1);
+>>  		}
+>>  	}
+> Do we still need the use_tst flag here? Calling tst_* functions in child
+> works fine with the new library.
 
-The pipe-max-pages is introduced in kernel:
-'b492e95be0ae(pipe: set lower and upper limit on max pages
-in the pipe page array)'
+Great, this simplifies things.
 
-The pipe-max-pages is renamed to pipe-max-size in kernel:
-'ff9da691c049(pipe: change /proc/sys/fs/pipe-max-pages to
-byte sized interface)'
+>
+>>  	return TEST_RETURN;
+>> @@ -140,8 +116,8 @@ static int wait4child(pid_t child)
+>>  {
+>>  	int status;
+>>  
+>> -	if (waitpid(child, &status, 0) == -1)
+>> -		tst_resm(TBROK|TERRNO, "waitpid");
+>> +	SAFE_WAITPID(child, &status, 0);
+>> +
+>>  	if (WIFEXITED(status))
+>>  		return WEXITSTATUS(status);
+>>  	else
+>> @@ -150,77 +126,55 @@ static int wait4child(pid_t child)
+>>  
+>>  static void test_clone_parent(int t)
+>>  {
+>> -	int status;
+>>  	pid_t child;
+>>  
+>> -	fflush(stdout);
+>> -	child = FORK_OR_VFORK();
+>> -	switch (child) {
+>> -	case 0:
+>> +	child = SAFE_FORK();
+>> +	if (!child) {
+>>  		parent_ppid = getppid();
+>>  		clone_child(&test_cases[t], 0);
+>> -		exit(0);
+>> -	case -1:
+>> -		tst_brkm(TBROK | TERRNO, NULL, "test_clone_parent fork");
+>> -	default:
+>> -		status = wait4child(child);
+>> -		if (status == 0) {
+>> -			/* wait for CLONE_PARENT child */
+>> -			status = wait4child(-1);
+>> -			if (status == 0) {
+>> -				tst_resm(TPASS, "test %s", test_cases[t].name);
+>> -			} else {
+>> -				tst_resm(TFAIL, "test %s, status: %d",
+>> -					 test_cases[t].name, status);
+>> -			}
+>> -		} else {
+>> -			tst_resm(TFAIL, "test %s, status: %d",
+>> -				 test_cases[t].name, status);
+>> -		}
+>> -	};
+>> +		_exit(0);
+>> +	}
+>> +	tst_reap_children();
+>> +	tst_res(TPASS, "clone and forked child has the same parent");
+> Hmm, so supposedly we produce TBROK in the tst_reap_childer() if the
+> child_clone_parent() has failed, right?
+>
+> The test failures are accounted for in the structure stored in the
+> shared memory. Only exit statuses that are propagated correctly are
+> these that should exit the test immediately which are TBROK and TCONF.
+>
+> So if a test child fails it should call the tst_res(TFAIL, ...) function
+> and then exit with 0. Or exit with non-zero value while the parent waits
+> for it and calls the tst_res() function accordingly. At least this is
+> how the code in tst_test.c is structured now.
+>
+> Moreover even if the code in tst_test was able to cope with tests
+> exitting with TFAIL this would still produce TPASS message even if the
+> child reported a failure.
 
-We add get_max_limit function to check whether pipe-max-pages
-or pipe-max-size exists.  If both pipe-max-pages and pipe-max-size
-don't exist, the max limit is set to default PIPE_MAX.
+Agree, I'll move tst_res() to a child function and make it exit with 0.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/splice/splice.h   | 45 +++++++++++++++++++++++++++++
- testcases/kernel/syscalls/splice/splice04.c |  6 ++--
- testcases/kernel/syscalls/splice/splice05.c |  6 ++--
- 3 files changed, 51 insertions(+), 6 deletions(-)
- create mode 100644 testcases/kernel/syscalls/splice/splice.h
-
-diff --git a/testcases/kernel/syscalls/splice/splice.h b/testcases/kernel/syscalls/splice/splice.h
-new file mode 100644
-index 0000000..681f657
---- /dev/null
-+++ b/testcases/kernel/syscalls/splice/splice.h
-@@ -0,0 +1,45 @@
-+/*
-+ * Copyright (c) 2017 Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#ifndef SPLICE_H__
-+#define SPLICE_H__
-+
-+#include <unistd.h>
-+#include "tst_safe_file_ops.h"
-+#include "tst_minmax.h"
-+
-+static inline int get_max_limit(int default_len_data)
-+{
-+	int pipe_max_unpriv;
-+	int pipe_max_limit;
-+
-+	if (!access("/proc/sys/fs/pipe-max-size", F_OK)) {
-+		SAFE_FILE_SCANF("/proc/sys/fs/pipe-max-size", "%d", &pipe_max_unpriv);
-+		pipe_max_limit = MIN(pipe_max_unpriv, default_len_data);
-+		return pipe_max_limit;
-+	}
-+
-+	if (!access("/proc/sys/fs/pipe-max-pages", F_OK)) {
-+		SAFE_FILE_SCANF("/proc/sys/fs/pipe-max-pages", "%d", &pipe_max_unpriv);
-+		pipe_max_limit = MIN(pipe_max_unpriv * getpagesize(), default_len_data);
-+		return pipe_max_limit;
-+	}
-+
-+	return default_len_data;
-+}
-+
-+#endif  /* SPLICE_H__ */
-diff --git a/testcases/kernel/syscalls/splice/splice04.c b/testcases/kernel/syscalls/splice/splice04.c
-index da0d3e1..2c94a29 100644
---- a/testcases/kernel/syscalls/splice/splice04.c
-+++ b/testcases/kernel/syscalls/splice/splice04.c
-@@ -27,6 +27,7 @@
- #include <fcntl.h>
- #include <stdlib.h>
- #include "tst_test.h"
-+#include "splice.h"
- 
- #define PIPE_MAX (64*1024)
- 
-@@ -41,10 +42,9 @@ static struct tst_option options[] = {
- 
- static void setup(void)
- {
--	int i, pipe_max_unpriv, pipe_limit;
-+	int i, pipe_limit;
- 
--	SAFE_FILE_SCANF("/proc/sys/fs/pipe-max-size", "%d", &pipe_max_unpriv);
--	pipe_limit = MIN(pipe_max_unpriv, num_len_data);
-+	pipe_limit = get_max_limit(num_len_data);
- 	num_len_data = pipe_limit;
- 
- 	if (tst_parse_int(str_len_data, &num_len_data, 1, pipe_limit)) {
-diff --git a/testcases/kernel/syscalls/splice/splice05.c b/testcases/kernel/syscalls/splice/splice05.c
-index 7f312e7..d7edf8d 100644
---- a/testcases/kernel/syscalls/splice/splice05.c
-+++ b/testcases/kernel/syscalls/splice/splice05.c
-@@ -32,6 +32,7 @@
- #include <stdlib.h>
- #include <unistd.h>
- #include "tst_test.h"
-+#include "splice.h"
- 
- #define PIPE_MAX (64*1024)
- 
-@@ -46,10 +47,9 @@ static struct tst_option options[] = {
- 
- static void setup(void)
- {
--	int i, pipe_max_unpriv, pipe_limit;
-+	int i, pipe_limit;
- 
--	SAFE_FILE_SCANF("/proc/sys/fs/pipe-max-size", "%d", &pipe_max_unpriv);
--	pipe_limit = MIN(pipe_max_unpriv, num_len_data);
-+	pipe_limit = get_max_limit(num_len_data);
- 	num_len_data = pipe_limit;
- 
- 	if (tst_parse_int(str_len_data, &num_len_data, 1, pipe_limit)) {
--- 
-1.8.3.1
-
-
-
+Thanks,
+Alexey
