@@ -1,37 +1,59 @@
-From: Khem Raj <raj.khem@gmail.com>
-Date: Fri,  9 Jun 2017 09:35:30 -0700
-Subject: [LTP] [PATCH] dirtyc0w: Include stdint.h
-Message-ID: <20170609163530.29056-1-raj.khem@gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri,  9 Jun 2017 21:12:52 +0200
+Subject: [LTP] [PATCH v2 4/4] syscalls/mq_*: Cleanup unused _POSIX_C_SOURCE
+	macro
+In-Reply-To: <20170609191252.9870-1-pvorel@suse.cz>
+References: <20170609191252.9870-1-pvorel@suse.cz>
+Message-ID: <20170609191252.9870-4-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-uintptr_t is defined in stdint.h
-
-Fixes
-| dirtyc0w_child.c:76:15: error: 'uintptr_t' undeclared (first use in this function); did you mean 'intptr_t'?
-|    lseek(mfd, (uintptr_t) map, SEEK_SET);
-|                ^~~~~~~~~
-
-Signed-off-by: Khem Raj <raj.khem@gmail.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/security/dirtyc0w/dirtyc0w_child.c | 1 +
- 1 file changed, 1 insertion(+)
+ testcases/kernel/syscalls/mq_notify/Makefile       | 1 -
+ testcases/kernel/syscalls/mq_timedreceive/Makefile | 1 -
+ testcases/kernel/syscalls/mq_unlink/Makefile       | 1 -
+ 3 files changed, 3 deletions(-)
 
-diff --git a/testcases/kernel/security/dirtyc0w/dirtyc0w_child.c b/testcases/kernel/security/dirtyc0w/dirtyc0w_child.c
-index 5328a9bc4..49abdd6ba 100644
---- a/testcases/kernel/security/dirtyc0w/dirtyc0w_child.c
-+++ b/testcases/kernel/security/dirtyc0w/dirtyc0w_child.c
-@@ -23,6 +23,7 @@
- #include <sys/stat.h>
- #include <string.h>
- #include <stdlib.h>
-+#include <stdint.h>
- #include <pwd.h>
+diff --git a/testcases/kernel/syscalls/mq_notify/Makefile b/testcases/kernel/syscalls/mq_notify/Makefile
+index 1b4a564e0..7b9304212 100644
+--- a/testcases/kernel/syscalls/mq_notify/Makefile
++++ b/testcases/kernel/syscalls/mq_notify/Makefile
+@@ -20,7 +20,6 @@ top_srcdir		?= ../../../..
  
- #include "tst_safe_pthread.h"
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-CPPFLAGS		?= -D_POSIX_C_SOURCE=$(shell getconf _POSIX_MESSAGE_PASSING)L
+ CPPFLAGS		+= -I$(abs_srcdir)/../utils
+ LDLIBS			+= -lpthread -lrt
+ 
+diff --git a/testcases/kernel/syscalls/mq_timedreceive/Makefile b/testcases/kernel/syscalls/mq_timedreceive/Makefile
+index 1b4a564e0..7b9304212 100644
+--- a/testcases/kernel/syscalls/mq_timedreceive/Makefile
++++ b/testcases/kernel/syscalls/mq_timedreceive/Makefile
+@@ -20,7 +20,6 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-CPPFLAGS		?= -D_POSIX_C_SOURCE=$(shell getconf _POSIX_MESSAGE_PASSING)L
+ CPPFLAGS		+= -I$(abs_srcdir)/../utils
+ LDLIBS			+= -lpthread -lrt
+ 
+diff --git a/testcases/kernel/syscalls/mq_unlink/Makefile b/testcases/kernel/syscalls/mq_unlink/Makefile
+index 2e1628e9f..71ebae98b 100644
+--- a/testcases/kernel/syscalls/mq_unlink/Makefile
++++ b/testcases/kernel/syscalls/mq_unlink/Makefile
+@@ -20,7 +20,6 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-CPPFLAGS		?= -D_POSIX_C_SOURCE=$(shell getconf _POSIX_MESSAGE_PASSING)L
+ LDLIBS			+= -lpthread -lrt
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
 -- 
-2.13.1
+2.12.2
 
