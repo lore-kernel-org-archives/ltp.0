@@ -1,36 +1,37 @@
-From: Helge Deller <deller@gmx.de>
-Date: Fri, 9 Jun 2017 16:53:28 +0200
-Subject: [LTP] [PATCH] Fix mmap01 testcase on hppa architecture
-Message-ID: <20170609145328.GA7129@ls3530>
+From: Khem Raj <raj.khem@gmail.com>
+Date: Fri,  9 Jun 2017 09:35:30 -0700
+Subject: [LTP] [PATCH] dirtyc0w: Include stdint.h
+Message-ID: <20170609163530.29056-1-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The mmap() syscall to map a file at any given page-aligned address (via the
-MAP_FIXED flag) can fail on the hppa architecture due to cache colouring
-requirements of the architecture.
+uintptr_t is defined in stdint.h
 
-This patch drops the MAP_FIXED flag and thus maps the file instead at
-some convenient address based on the hint as given by the addr
-parameter. The tests covered by mmap01 check the *end* of the mmaped
-file for consistency, so mapping the beginning of the file at any
-address is okay without breaking the main intention of the mmap01
-testcase.
+Fixes
+| dirtyc0w_child.c:76:15: error: 'uintptr_t' undeclared (first use in this function); did you mean 'intptr_t'?
+|    lseek(mfd, (uintptr_t) map, SEEK_SET);
+|                ^~~~~~~~~
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+---
+ testcases/kernel/security/dirtyc0w/dirtyc0w_child.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/syscalls/mmap/mmap01.c b/testcases/kernel/syscalls/mmap/mmap01.c
-index 41183d109..a508edb10 100644
---- a/testcases/kernel/syscalls/mmap/mmap01.c
-+++ b/testcases/kernel/syscalls/mmap/mmap01.c
-@@ -81,7 +81,7 @@ int main(int ac, char **av)
- 		 */
- 		errno = 0;
- 		addr = mmap(addr, page_sz, PROT_READ | PROT_WRITE,
--			    MAP_FILE | MAP_SHARED | MAP_FIXED, fildes, 0);
-+			    MAP_FILE | MAP_SHARED, fildes, 0);
+diff --git a/testcases/kernel/security/dirtyc0w/dirtyc0w_child.c b/testcases/kernel/security/dirtyc0w/dirtyc0w_child.c
+index 5328a9bc4..49abdd6ba 100644
+--- a/testcases/kernel/security/dirtyc0w/dirtyc0w_child.c
++++ b/testcases/kernel/security/dirtyc0w/dirtyc0w_child.c
+@@ -23,6 +23,7 @@
+ #include <sys/stat.h>
+ #include <string.h>
+ #include <stdlib.h>
++#include <stdint.h>
+ #include <pwd.h>
  
- 		/* Check for the return value of mmap() */
- 		if (addr == MAP_FAILED) {
+ #include "tst_safe_pthread.h"
+-- 
+2.13.1
+
