@@ -1,39 +1,142 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 12 Jun 2017 17:04:23 +0200
-Subject: [LTP] [PATCH] Make getrusage04 be able to loop more times
-In-Reply-To: <2050137840.17454791.1496994121958.JavaMail.zimbra@redhat.com>
-References: <1496388495-30584-1-git-send-email-chuhu@redhat.com>
- <20170607151315.GA30168@rei.suse.de>
- <2050137840.17454791.1496994121958.JavaMail.zimbra@redhat.com>
-Message-ID: <20170612150423.GA32564@rei.lan>
+From: Eric Biggers <ebiggers3@gmail.com>
+Date: Mon, 12 Jun 2017 11:55:21 -0700
+Subject: [LTP] [PATCH] syscalls/add_key02: update to test fix for nonempty
+	NULL payload
+Message-ID: <20170612185521.90355-1-ebiggers3@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Do we have? I think we need something like below, not clear
-> about if this can be done with function or macro ;).
-> 
-> timval_minus(tv1, tv2) 
-> and
-> timeval_gt
-> timeval_lt
-> timeval_e
+From: Eric Biggers <ebiggers@google.com>
 
-We only need to add tst_timeval_diff_us() into tst_timer.h then we can
-compare the resulting values in microsenconds. Which would mean adding
-tst_timeval_to_us() and tst_timeval_diff(), then adding the
-tst_timeval_diff_us() that combines these two.
+add_key02 was supposed to be a "Basic test for the add_key() syscall",
+but it actually happened to test the obscure case of passing a NULL
+payload with nonzero length.  This case was mishandled by the kernel,
+which either returned EINVAL or crashed with a NULL pointer dereference,
+depending on the key type.  (The former applied to the test, as it used
+the "user" key type.)  The expected behavior in this case is that the
+syscall fail with EFAULT.
 
-It should be staturated difference though, i.e. the conversion from
-timeval to microseconds should return LONG_LONG_MAX in a case that the
-end result would overflow long long.
+Update the test to expect the fixed behavior from v4.12-rc5, and make
+the test more thorough by testing additional key types, including ones
+that caused a NULL pointer dereference in unfixed kernels.
 
-As I said I can add these into the tst_timer.h, and also fix the
-timespec to us and ms conversions to be saturated.
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ testcases/kernel/syscalls/add_key/add_key02.c | 69 ++++++++++++++++++++-------
+ 1 file changed, 51 insertions(+), 18 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/add_key/add_key02.c b/testcases/kernel/syscalls/add_key/add_key02.c
+index 866800d6f..a0ccbdeb1 100644
+--- a/testcases/kernel/syscalls/add_key/add_key02.c
++++ b/testcases/kernel/syscalls/add_key/add_key02.c
+@@ -1,5 +1,6 @@
+ /******************************************************************************
+  * Copyright (c) Crackerjack Project., 2007				      *
++ * Copyright (c) 2017 Google, Inc.
+  *									      *
+  * This program is free software;  you can redistribute it and/or modify      *
+  * it under the terms of the GNU General Public License as published by       *
+@@ -18,10 +19,17 @@
+  ******************************************************************************/
+ 
+ /*
+- * Basic test for the add_key() syscall.
++ * Test that the add_key() syscall correctly handles a NULL payload with nonzero
++ * length.  Specifically, it should fail with EFAULT rather than oopsing the
++ * kernel with a NULL pointer dereference or failing with EINVAL, as it did
++ * before (depending on the key type).  This is a regression test for commit
++ * 5649645d725c ("KEYS: fix dereferencing NULL payload with nonzero length").
+  *
+- * History:   Porting from Crackerjack to LTP is done by
+- *	      Manas Kumar Nayak maknayak@in.ibm.com>
++ * Note that none of the key types that exhibited the NULL pointer dereference
++ * are guaranteed to be built into the kernel, so we just test as many as we
++ * can, in the hope of catching one.  We also test with the "user" key type for
++ * good measure, although it was one of the types that failed with EINVAL rather
++ * than dereferencing NULL.
+  */
+ 
+ #include "config.h"
+@@ -33,36 +41,61 @@
+ 
+ #ifdef HAVE_LINUX_KEYCTL_H
+ struct tcase {
+-	char *type;
+-	char *desc;
+-	void *payload;
+-	int plen;
+-	int exp_errno;
++	const char *type;
++	size_t plen;
+ } tcases[] = {
+-	{"user", "firstkey", NULL, 1, EINVAL}
++	/*
++	 * The payload length we test for each key type needs to pass initial
++	 * validation but is otherwise arbitrary.  Note: the "rxrpc_s" key type
++	 * requires a payload of exactly 8 bytes.
++	 */
++	{ "asymmetric",		64 },
++	{ "cifs.idmap",		64 },
++	{ "cifs.spnego",	64 },
++	{ "pkcs7_test",		64 },
++	{ "rxrpc",		64 },
++	{ "rxrpc_s",		 8 },
++	{ "user",		64 },
+ };
+ #endif /* HAVE_LINUX_KEYCTL_H */
+ 
+ static void verify_add_key(unsigned int i)
+ {
+ #ifdef HAVE_LINUX_KEYCTL_H
+-	TEST(tst_syscall(__NR_add_key, tcases[i].type, tcases[i].desc,
+-	                 tcases[i].payload, tcases[i].plen,
+-	                 KEY_SPEC_USER_KEYRING));
++	TEST(tst_syscall(__NR_add_key, tcases[i].type, "abc:def",
++			 NULL, tcases[i].plen, KEY_SPEC_PROCESS_KEYRING));
+ 
+ 	if (TEST_RETURN != -1) {
+-		tst_res(TFAIL, "add_key() passed unexpectedly");
++		tst_res(TFAIL,
++			"add_key() with key type '%s' unexpectedly succeeded",
++			tcases[i].type);
+ 		return;
+ 	}
+ 
+-	if (TEST_ERRNO == tcases[i].exp_errno) {
+-		tst_res(TPASS | TTERRNO, "add_key() failed expectedly");
++	if (TEST_ERRNO == EFAULT) {
++		tst_res(TPASS, "received expected EFAULT with key type '%s'",
++			tcases[i].type);
+ 		return;
+ 	}
+ 
+-	tst_res(TFAIL | TTERRNO,
+-	        "add_key() failed unexpectedly, expected %s",
+-	        tst_strerrno(tcases[i].exp_errno));
++	if (TEST_ERRNO == ENODEV) {
++		tst_res(TCONF, "kernel doesn't support key type '%s'",
++			tcases[i].type);
++		return;
++	}
++
++	/*
++	 * It's possible for the "asymmetric" key type to be supported, but with
++	 * no asymmetric key parsers registered.  In that case, attempting to
++	 * add a key of type asymmetric will fail with EBADMSG.
++	 */
++	if (TEST_ERRNO == EBADMSG && !strcmp(tcases[i].type, "asymmetric")) {
++		tst_res(TCONF, "no asymmetric key parsers are registered");
++		return;
++	}
++
++	tst_res(TFAIL | TTERRNO, "unexpected error with key type '%s'",
++		tcases[i].type);
+ #else
+ 	tst_brk(TCONF, "linux/keyctl.h was missing upon compilation.");
+ #endif /* HAVE_LINUX_KEYCTL_H */
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.13.1.508.gb3defc5cc-goog
+
