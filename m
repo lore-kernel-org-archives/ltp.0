@@ -1,47 +1,125 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 14 Jun 2017 11:38:30 +0800
-Subject: [LTP] [PATCH] dio: reduce the number of cycles
-Message-ID: <20170614033830.12736-1-liwang@redhat.com>
+From: Chunyu Hu <chuhu@redhat.com>
+Date: Wed, 14 Jun 2017 13:19:45 +0800
+Subject: [LTP] [PATCH v2] syscalls/getrusage04: make getrusage04 be able to
+	loop more times
+Message-ID: <1497417585-17588-1-git-send-email-chuhu@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-These two cases (dio29/30) takes a bit long time in dio test, but they're not stress
-test, so I suggest reducing the number of cycles.
+The -i or -I will break when the tv_usec of timeval gets to 1000000,
+as a carry-over to second from usec happens there. So usually we can't
+loop for too many times with -i or -I. Approximately 1000 times test
+will break with a false positive failure in my x86 box:
 
-On my RHEL-7.3 (23G RAM, 24 CPU(s), x86_64) box, it takes almost 9 mins.
+getrusage04    0  TINFO  :  utime:       53636us; stime:      989510us
+getrusage04    0  TINFO  :  utime:       53682us; stime:      999301us
+getrusage04    0  TINFO  :  utime:       53718us; stime:        8906us
+getrusage04    1  TFAIL  :  getrusage04.c:133: stime increased > 11000us:
 
-  diotest06    1  TPASS  :  Read with Direct IO, Write without
-  diotest06    2  TPASS  :  Write with Direct IO, Read without
-  diotest06    3  TPASS  :  Read, Write with Direct IO
-  diotest06    0  TINFO  :  3 testblocks 1000 iterations with 100 children completed
+Use ltp new timer compare api to fix this. First use new api to get
+the diff timeval direclty, then use new api to convert diff timeval
+to us. And print out the second info of utime and stime for providing
+needed test info.
 
-  real	8m4.805s
-  user	71m36.722s
-  sys	8m51.649s
+After the patch, warn caused by the var types with '-Wsign-compare'
+is fixed as well.
 
-Signed-off-by: Li Wang <liwang@redhat.com>
+getrusage04.c:121:16: warning: comparison between signed and...
+     if (udelta > 1000 + (BIAS_MAX * factor_nr)) {
+
+Signed-off-by: Chunyu Hu <chuhu@redhat.com>
 ---
- runtest/dio | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/syscalls/getrusage/getrusage04.c | 37 ++++++++++++-----------
+ 1 file changed, 19 insertions(+), 18 deletions(-)
 
-diff --git a/runtest/dio b/runtest/dio
-index a26e001..185cd57 100644
---- a/runtest/dio
-+++ b/runtest/dio
-@@ -40,8 +40,8 @@ dio27 diotest6 -b 8192 -o 1024000 -i 1000 -v 100
- dio28 diotest6 -b 8192 -o 1024000 -i 1000 -v 200
+diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c b/testcases/kernel/syscalls/getrusage/getrusage04.c
+index a5b3f65..7289fe0 100644
+--- a/testcases/kernel/syscalls/getrusage/getrusage04.c
++++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
+@@ -43,15 +43,13 @@
+ #define _GNU_SOURCE
+ #include <sys/types.h>
+ #include <sys/resource.h>
+-#include <sys/time.h>
+ #include <errno.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+-#include <time.h>
  
- ### Run the tests with more children
--dio29 diotest3 -b 65536 -n 100 -i 1000 -o 1024000
--dio30 diotest6 -b 65536 -n 100 -i 1000 -o 1024000
-+dio29 diotest3 -b 65536 -n 100 -i 100 -o 1024000
-+dio30 diotest6 -b 65536 -n 100 -i 100 -o 1024000
- #
- # RAW DEVICE TEST SECTION
- #   DEV1 and DEV2 should be exported prior to execution or
+ #include "test.h"
+ #include "safe_macros.h"
+-#include "lapi/posix_clocks.h"
++#include "tst_timer.h"
+ 
+ char *TCID = "getrusage04";
+ int TST_TOTAL = 1;
+@@ -82,7 +80,8 @@ static void cleanup(void);
+ int main(int argc, char *argv[])
+ {
+ 	struct rusage usage;
+-	unsigned long ulast, udelta, slast, sdelta;
++	struct timeval ulast, slast, udelta, sdelta;
++
+ 	int i, lc;
+ 	char msg_string[BUFSIZ];
+ 
+@@ -104,28 +103,30 @@ int main(int argc, char *argv[])
+ 		tst_count = 0;
+ 		i = 0;
+ 		SAFE_GETRUSAGE(cleanup, RUSAGE_THREAD, &usage);
+-		tst_resm(TINFO, "utime:%12luus; stime:%12luus",
+-			 usage.ru_utime.tv_usec, usage.ru_stime.tv_usec);
+-		ulast = usage.ru_utime.tv_usec;
+-		slast = usage.ru_stime.tv_usec;
++		tst_resm(TINFO, "utime: %lus %12luus; stime: %lus %12luus",
++			 usage.ru_utime.tv_sec, usage.ru_utime.tv_usec,
++				usage.ru_stime.tv_sec, usage.ru_stime.tv_usec);
++		ulast = usage.ru_utime;
++		slast = usage.ru_stime;
+ 
+ 		while (i < RECORD_MAX) {
+ 			SAFE_GETRUSAGE(cleanup, RUSAGE_THREAD, &usage);
+-			udelta = usage.ru_utime.tv_usec - ulast;
+-			sdelta = usage.ru_stime.tv_usec - slast;
+-			if (udelta > 0 || sdelta > 0) {
++			udelta = tst_timeval_diff(usage.ru_utime, ulast);
++			sdelta = tst_timeval_diff(usage.ru_stime, slast);
++			if (tst_timeval_to_us(udelta) > 0 ||
++					tst_timeval_to_us(sdelta) > 0) {
+ 				i++;
+-				tst_resm(TINFO, "utime:%12luus; stime:%12luus",
+-					 usage.ru_utime.tv_usec,
+-					 usage.ru_stime.tv_usec);
+-				if (udelta > 1000 + (BIAS_MAX * factor_nr)) {
++				tst_resm(TINFO, "utime: %lus %12luus; stime: %lus %12luus",
++					usage.ru_utime.tv_sec, usage.ru_utime.tv_usec,
++					usage.ru_stime.tv_sec, usage.ru_stime.tv_usec);
++				if (tst_timeval_to_us(udelta) > 1000 + (BIAS_MAX * factor_nr)) {
+ 					sprintf(msg_string,
+ 						"utime increased > %ldus:",
+ 						1000 + BIAS_MAX * factor_nr);
+ 					tst_brkm(TFAIL, cleanup, msg_string,
+ 						 " delta = %luus", udelta);
+ 				}
+-				if (sdelta > 1000 + (BIAS_MAX * factor_nr)) {
++				if (tst_timeval_to_us(sdelta) > 1000 + (BIAS_MAX * factor_nr)) {
+ 					sprintf(msg_string,
+ 						"stime increased > %ldus:",
+ 						1000 + BIAS_MAX * factor_nr);
+@@ -133,8 +134,8 @@ int main(int argc, char *argv[])
+ 						 " delta = %luus", sdelta);
+ 				}
+ 			}
+-			ulast = usage.ru_utime.tv_usec;
+-			slast = usage.ru_stime.tv_usec;
++			ulast = usage.ru_utime;
++			slast = usage.ru_stime;
+ 			busyloop(100000);
+ 		}
+ 	}
 -- 
-2.9.3
+1.8.3.1
 
