@@ -1,70 +1,79 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 14 Jun 2017 09:52:22 +0200
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 14 Jun 2017 16:17:49 +0800
 Subject: [LTP] [PATCH] recvmsg03: avoid close() and recvmsg() racing
-Message-ID: <b8b28551f48a4a849de1f39be9a480462aabe2ba.1497426579.git.jstancek@redhat.com>
+In-Reply-To: <b8b28551f48a4a849de1f39be9a480462aabe2ba.1497426579.git.jstancek@redhat.com>
+References: <b8b28551f48a4a849de1f39be9a480462aabe2ba.1497426579.git.jstancek@redhat.com>
+Message-ID: <5940F12D.1000309@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Sabrina Dubroca <sdubroca@redhat.com>
+Hi Jan,
 
-This testcase rarely hangs on single CPU systems. Problem
-appears to be between recvmsg() and close():
-1. sendmsg(), packet gets queued
-2. close(), packet is dropped
-3. recvmsg(), nothing to fetch
+Thanks for this fix, it looks good to me. :-)
 
-strace of a buggy run:
-  [pid 17284] 16:04:41.042617 socket(AF_RDS, SOCK_SEQPACKET, 0) = 3
-  [pid 17284] 16:04:41.049549 close(3)    = 0
-  strace: Process 17290 attached
-  [pid 17284] 16:04:41.050765 socket(AF_RDS, SOCK_SEQPACKET, 0 <unfinished ...>
-  [pid 17290] 16:04:41.050894 futex(0x7f95dfc57014, FUTEX_WAIT, 0, {tv_sec=10, tv_nsec=0} <unfinished ...>
-  [pid 17284] 16:04:41.051001 <... socket resumed> ) = 3
-  [pid 17284] 16:04:41.051111 bind(3, {sa_family=AF_INET, sin_port=htons(4000), sin_addr=inet_addr("127.0.0.1")}, 16) = 0
-  [pid 17284] 16:04:41.051374 futex(0x7f95dfc57014, FUTEX_WAKE, 2147483647) = 1
-  [pid 17290] 16:04:41.051432 <... futex resumed> ) = 0
-  [pid 17284] 16:04:41.051442 recvmsg(3,  <unfinished ...>
-  [pid 17290] 16:04:41.051455 socket(AF_RDS, SOCK_SEQPACKET, 0) = 3
-  [pid 17290] 16:04:41.051666 bind(3, {sa_family=AF_INET, sin_port=htons(4001), sin_addr=inet_addr("127.0.0.1")}, 16) = 0
-  [pid 17290] 16:04:41.051724 sendmsg(3, {msg_name={sa_family=AF_INET, sin_port=htons(4000), sin_addr=inet_addr("127.0.0.1")}, msg_namelen=16, msg_iov=[{iov_base="hello world\0", iov_len=12}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, 0) = 12
-  [pid 17290] 16:04:41.051975 close(3)    = 0
-  [pid 17290] 16:04:41.052492 +++ exited with 0 +++
-  [pid 17284] 16:04:41.052598 <... recvmsg resumed> {msg_namelen=32}, 0) = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
-  [pid 17284] 16:04:41.052631 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=17290, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
-  [pid 17284] 16:04:41.052718 recvmsg(3, // hang
+Thanks,
+Xiao Yang.
+On 2017/06/14 15:52, Jan Stancek wrote:
+> From: Sabrina Dubroca<sdubroca@redhat.com>
+>
+> This testcase rarely hangs on single CPU systems. Problem
+> appears to be between recvmsg() and close():
+> 1. sendmsg(), packet gets queued
+> 2. close(), packet is dropped
+> 3. recvmsg(), nothing to fetch
+>
+> strace of a buggy run:
+>    [pid 17284] 16:04:41.042617 socket(AF_RDS, SOCK_SEQPACKET, 0) = 3
+>    [pid 17284] 16:04:41.049549 close(3)    = 0
+>    strace: Process 17290 attached
+>    [pid 17284] 16:04:41.050765 socket(AF_RDS, SOCK_SEQPACKET, 0<unfinished ...>
+>    [pid 17290] 16:04:41.050894 futex(0x7f95dfc57014, FUTEX_WAIT, 0, {tv_sec=10, tv_nsec=0}<unfinished ...>
+>    [pid 17284] 16:04:41.051001<... socket resumed>  ) = 3
+>    [pid 17284] 16:04:41.051111 bind(3, {sa_family=AF_INET, sin_port=htons(4000), sin_addr=inet_addr("127.0.0.1")}, 16) = 0
+>    [pid 17284] 16:04:41.051374 futex(0x7f95dfc57014, FUTEX_WAKE, 2147483647) = 1
+>    [pid 17290] 16:04:41.051432<... futex resumed>  ) = 0
+>    [pid 17284] 16:04:41.051442 recvmsg(3,<unfinished ...>
+>    [pid 17290] 16:04:41.051455 socket(AF_RDS, SOCK_SEQPACKET, 0) = 3
+>    [pid 17290] 16:04:41.051666 bind(3, {sa_family=AF_INET, sin_port=htons(4001), sin_addr=inet_addr("127.0.0.1")}, 16) = 0
+>    [pid 17290] 16:04:41.051724 sendmsg(3, {msg_name={sa_family=AF_INET, sin_port=htons(4000), sin_addr=inet_addr("127.0.0.1")}, msg_namelen=16, msg_iov=[{iov_base="hello world\0", iov_len=12}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, 0) = 12
+>    [pid 17290] 16:04:41.051975 close(3)    = 0
+>    [pid 17290] 16:04:41.052492 +++ exited with 0 +++
+>    [pid 17284] 16:04:41.052598<... recvmsg resumed>  {msg_namelen=32}, 0) = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
+>    [pid 17284] 16:04:41.052631 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=17290, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+>    [pid 17284] 16:04:41.052718 recvmsg(3, // hang
+>
+> Signed-off-by: Sabrina Dubroca<sdubroca@redhat.com>
+> [ wrote changelog message ]
+> Acked-by: Jan Stancek<jstancek@redhat.com>
+> ---
+>   testcases/kernel/syscalls/recvmsg/recvmsg03.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+>
+> diff --git a/testcases/kernel/syscalls/recvmsg/recvmsg03.c b/testcases/kernel/syscalls/recvmsg/recvmsg03.c
+> index 31e7585b66ab..8bbdaceeb464 100644
+> --- a/testcases/kernel/syscalls/recvmsg/recvmsg03.c
+> +++ b/testcases/kernel/syscalls/recvmsg/recvmsg03.c
+> @@ -90,6 +90,8 @@ static void client(void)
+>   			"sendmsg() failed to send data to server");
+>   	}
+>
+> +	TST_CHECKPOINT_WAIT(1);
+> +
+>   	SAFE_CLOSE(sock_fd1);
+>   }
+>
+> @@ -137,6 +139,8 @@ static void server(void)
+>   			msg.msg_namelen);
+>   	}
+>
+> +	TST_CHECKPOINT_WAKE(1);
+> +
+>   	SAFE_CLOSE(sock_fd2);
+>   }
+>
 
-Signed-off-by: Sabrina Dubroca <sdubroca@redhat.com>
-[ wrote changelog message ]
-Acked-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/recvmsg/recvmsg03.c | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/recvmsg/recvmsg03.c b/testcases/kernel/syscalls/recvmsg/recvmsg03.c
-index 31e7585b66ab..8bbdaceeb464 100644
---- a/testcases/kernel/syscalls/recvmsg/recvmsg03.c
-+++ b/testcases/kernel/syscalls/recvmsg/recvmsg03.c
-@@ -90,6 +90,8 @@ static void client(void)
- 			"sendmsg() failed to send data to server");
- 	}
- 
-+	TST_CHECKPOINT_WAIT(1);
-+
- 	SAFE_CLOSE(sock_fd1);
- }
- 
-@@ -137,6 +139,8 @@ static void server(void)
- 			msg.msg_namelen);
- 	}
- 
-+	TST_CHECKPOINT_WAKE(1);
-+
- 	SAFE_CLOSE(sock_fd2);
- }
- 
--- 
-1.8.3.1
 
