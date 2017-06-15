@@ -1,60 +1,81 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 15 Jun 2017 16:31:13 +0200
-Subject: [LTP] [PATCH 2/2] sched/autogroup01: Add new regression test
-In-Reply-To: <1497520655-12426-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <1497520655-12426-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <1497520655-12426-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <20170615143113.GD2832@rei.lan>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 15 Jun 2017 18:00:20 +0300
+Subject: [LTP] [RFC PATCH v6 10/11] network: Add tools for setup IP
+ related environment variables
+In-Reply-To: <20170603120022.13415-11-pvorel@suse.cz>
+References: <20170603120022.13415-1-pvorel@suse.cz>
+ <20170603120022.13415-11-pvorel@suse.cz>
+Message-ID: <c1797439-042a-c395-d74a-6d91f66463d3@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-> +static void do_test(void)
-> +{
-> +	int i;
-> +
-> +	if (!SAFE_FORK()) {
-> +		SAFE_FILE_PRINTF(PATH_AUTOGROUP, "%d", 1);
-> +		SAFE_SETSID();
-> +
-> +		if (SAFE_FORK()) {
-> +			pause();
-> +			exit(0);
+Hi,
+On 06/03/2017 03:00 PM, Petr Vorel wrote:
+> tst_net_vars take input of local and remote address and setup most of
+> test link (IP related) environment variables.
+>
+> For full list of environment variables which it setup run:
+> tst_net_vars -h
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/lib/.gitignore     |   1 +
+>  testcases/lib/Makefile       |   4 +-
+>  testcases/lib/tst_net_vars.c | 802 +++++++++++++++++++++++++++++++++++++++++++
 
-                     Do we really reach this exit(0)?
+Looks good, minor comments below.
 
-		     We are sending SIGKILL to this process after all...
-
-> +		}
-> +
-> +		SAFE_KILL(getppid(), SIGKILL);
-> +		usleep(1000);
-> +
-> +		SAFE_FILE_PRINTF(PATH_AUTOGROUP, "%d", 0);
-> +		SAFE_SETSID();
-> +
-> +		for (i = 0; i < LOOPS; i++)
-> +			usleep(10);
-> +
-> +		TST_CHECKPOINT_WAKE(0);
-> +
-> +		exit(0);
-> +	}
-> +
-> +	SAFE_WAIT(NULL);
-> +
-> +	TST_CHECKPOINT_WAIT(0);
-> +
-> +	tst_res(TPASS, "Bug not reproduced");
 > +}
+> +
+> +static int read_prefix_iface(const char *ip_str, int is_ipv6)
+> +{
+> +	uint8_t family = is_ipv6 ? AF_INET6 : AF_INET;
+> +
+> +	char buf[16384];
+> +	int len;
+> +
+> +	struct {
+> +		struct nlmsghdr nlhdr;
+> +		struct ifaddrmsg addrmsg;
+> +	} msg;
+> +
+> +	struct nlmsghdr *retmsg;
+> +
+> +	int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
 
-Otherwise it looks fine. We may as well include the comments that were
-present in the original reproducer as that makes the code a bit easier
-to understand.
+Can we change it to SAFE_SOCKET and use other 'safe' functions in
+tst_net_vars?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> +
+> +	memset(&msg, 0, sizeof(msg));
+> +	msg.nlhdr.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifaddrmsg));
+> +	msg.nlhdr.nlmsg_flags = NLM_F_REQUEST | NLM_F_ROOT;
+> +	msg.nlhdr.nlmsg_type = RTM_GETADDR;
+> +	msg.addrmsg.ifa_family = family;
+> +
+> +	send(sock, &msg, msg.nlhdr.nlmsg_len, 0);
+> +	len = recv(sock, buf, sizeof(buf), 0);
+
+Here as well.
+
+
+Also I got a couple of warnings from gcc:
+
+tst_net_vars.c: In function ‘get_ipv6_net32_unused’:
+tst_net_vars.c:239: warning: missing braces around initializer
+tst_net_vars.c:239: warning: (near initialization for ‘mask.__in6_u’)
+
+better use memset() for portability with older gcc.
+
+tst_net_vars.c: In function ‘read_prefix_iface’:
+tst_net_vars.c:592: warning: comparison between signed and unsigned
+integer expressions
+
+Please also check the patch with checkpatch utility.
+
+Thanks,
+Alexey
+
