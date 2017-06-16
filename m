@@ -1,49 +1,45 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 16 Jun 2017 03:56:51 +0200
-Subject: [LTP] [RFC PATCH v6 1/2] lib/test_net.sh: reset_ltp_netspace()
-In-Reply-To: <20170616015652.11169-1-pvorel@suse.cz>
-References: <20170616015652.11169-1-pvorel@suse.cz>
-Message-ID: <20170616015652.11169-2-pvorel@suse.cz>
+Date: Fri, 16 Jun 2017 03:56:50 +0200
+Subject: [LTP] [RFC PATCH v6 0/2] *** Rmmod causes failures of netns based
+	tests ***
+Message-ID: <20170616015652.11169-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This function is useful when we know we broke netns (e.g. unloading
-network driver).
+Hi Alexey,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/lib/test_net.sh | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+this patch tries to fix problems with dhcp based tests when they call TCONF:
+/opt/ltp/testscripts/network.sh -6
+dhcpd 1 TCONF: 'dhcpd' not found
+...
+cat: /sys/class/net/ltp_ns_veth2/address: No such file or directory
 
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index 10cf6da3a..53e3b5995 100644
---- a/testcases/lib/test_net.sh
-+++ b/testcases/lib/test_net.sh
-@@ -50,12 +50,20 @@ init_ltp_netspace()
- 	tst_wait_ipv6_dad
- }
- 
-+# Force to reset netns.
-+reset_ltp_netspace()
-+{
-+	[ -n "$TST_USE_NETNS" ] || return
-+	rm -f /var/run/netns/ltp_ns
-+	pkill ns_create
-+	init_ltp_netspace
-+}
-+
- # Run command on remote host.
- # Options:
- # -b run in background
- # -s safe option, if something goes wrong, will exit with TBROK
- # -c specify command to run
--
- tst_rhost_run()
- {
- 	local pre_cmd=
+With this patchset:
+/opt/ltp/testscripts/network.sh -6
+dhcpd 1 TCONF: 'dhcpd' not found
+...
+ns_exec     0  TINFO  :  no namespace entries in /proc/2699/ns/
+
+It doesn't help to kill also ns_exec. reset_ltp_netspace() is obviously wrong.
+IMHO without trying to manually call reset_ltp_netspace() we should have better
+detection of netns problems in init_ltp_netspace().
+
+
+Kind regards,
+Petr
+
+
+Petr Vorel (2):
+  lib/test_net.sh: reset_ltp_netspace()
+  network/dhcp: Fix netns after removing kernel module
+
+ testcases/lib/test_net.sh          | 10 +++++++++-
+ testcases/network/dhcp/dhcp_lib.sh |  2 +-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
 -- 
 2.12.2
 
