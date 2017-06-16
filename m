@@ -1,47 +1,69 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 16 Jun 2017 10:03:29 -0400 (EDT)
-Subject: [LTP] [PATCH] Fix mmap01 testcase on hppa architecture
-In-Reply-To: <0a7d9ad3-c1fc-1936-15e2-cef6e0b8e56e@gmx.de>
-References: <20170609145328.GA7129@ls3530>
- <2130257221.33914320.1497352715953.JavaMail.zimbra@redhat.com>
- <0a7d9ad3-c1fc-1936-15e2-cef6e0b8e56e@gmx.de>
-Message-ID: <1366594617.36983858.1497621809398.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 16 Jun 2017 20:39:08 +0200
+Subject: [LTP] [RFC PATCH v6 0/2] *** Rmmod causes failures of netns
+ based tests ***
+In-Reply-To: <4f361d07-3ee7-2b6b-8775-3641dcc30bf1@oracle.com>
+References: <20170616015652.11169-1-pvorel@suse.cz>
+ <66ae64fd-d7e2-45cc-002e-8c952ae68579@oracle.com>
+ <4f361d07-3ee7-2b6b-8775-3641dcc30bf1@oracle.com>
+Message-ID: <20170616183908.eh2k7gxni76vdv3a@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Alexey,
+
+> diff --git a/testcases/network/dhcp/dhcp_lib.sh
+> b/testcases/network/dhcp/dhcp_lib.sh
+> index 85f9b88..5001232 100755
+> --- a/testcases/network/dhcp/dhcp_lib.sh
+> +++ b/testcases/network/dhcp/dhcp_lib.sh
+> @@ -40,8 +40,7 @@ init()
+>         tst_require_root
+>         tst_check_cmds cat $dhcp_name awk ip pgrep pkill dhclient
+
+> -       veth_loaded=
+> -       lsmod | grep -q '^veth ' && veth_loaded=1
+> +       lsmod | grep -q '^veth ' && veth_loaded=yes || veth_loaded=no
+
+>         tst_resm TINFO "create veth interfaces"
+>         ip li add $iface0 type veth peer name $iface1 || \
+> @@ -68,6 +67,8 @@ init()
+
+>  cleanup()
+>  {
+> +       [ -z "$veth_loaded" ] && return
+> +
+>         stop_dhcp
 
 
------ Original Message -----
-> On 13.06.2017 13:18, Jan Stancek wrote:
-> >> The mmap() syscall to map a file at any given page-aligned address (via
-> >> the
-> >> MAP_FIXED flag) can fail on the hppa architecture due to cache colouring
-> >> requirements of the architecture.
-> >>
-> >> This patch drops the MAP_FIXED flag and thus maps the file instead at
-> >> some convenient address based on the hint as given by the addr
-> >> parameter.
-> > 
-> > It looks like we don't need addr at all. Test is remapping part
-> > of heap with MAP_FIXED, which looks risky. I'd drop that page
-> > initialisation inside heap too. Now, without MAP_FIXED, it's
-> > just completely unrelated page. What do you think?
-> 
-> Yes, that's probably the best choice.
-> The original code tries to initialize the area where the file is going
-> to be mapped with non-zero values to be able to check if after the mapping
-> the memory area beyond the EOF was zero-initialized by the kernel.
-> This part of the check was already changed by my initial patch, with
-> your suggestion we would now drop the initialization completely.
-> I think your suggestion is fair.
-> 
-> New patch is attached.
 
-Pushed.
+        stop_dhcp
++
++       [ -z "$veth_loaded" ] && return
 
-Thanks,
-Jan
 
+>         pkill -f "dhclient -$ipv $iface1"
+> @@ -81,9 +82,7 @@ cleanup()
+
+>         [ $veth_added ] && ip li del $iface0
+
+> -       if [ -z $veth_loaded ]; then
+> -               lsmod | grep -q '^veth ' && rmmod veth
+> -       fi
+> +       [ "$veth_loaded" = "no" ] && lsmod | grep -q '^veth ' && rmmod veth
+
+>         tst_rmdir
+>  }
+
+Thank you for a quick fix. This looks good, just one thing: I suppose stop_dhcp in
+cleanup() must be run before return.
+
+Could you please push it?
+
+Sorry for putting wrong version (v6) in subject.
+
+Kind regards,
+Petr
