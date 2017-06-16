@@ -1,45 +1,55 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 16 Jun 2017 03:56:50 +0200
-Subject: [LTP] [RFC PATCH v6 0/2] *** Rmmod causes failures of netns based
-	tests ***
-Message-ID: <20170616015652.11169-1-pvorel@suse.cz>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Fri, 16 Jun 2017 15:57:09 +0800
+Subject: [LTP] [PATCH] syscalls/fcntl35.c: fix wrong fds[0] && cleanup
+Message-ID: <1497599829-21718-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/fcntl/fcntl35.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-this patch tries to fix problems with dhcp based tests when they call TCONF:
-/opt/ltp/testscripts/network.sh -6
-dhcpd 1 TCONF: 'dhcpd' not found
-...
-cat: /sys/class/net/ltp_ns_veth2/address: No such file or directory
-
-With this patchset:
-/opt/ltp/testscripts/network.sh -6
-dhcpd 1 TCONF: 'dhcpd' not found
-...
-ns_exec     0  TINFO  :  no namespace entries in /proc/2699/ns/
-
-It doesn't help to kill also ns_exec. reset_ltp_netspace() is obviously wrong.
-IMHO without trying to manually call reset_ltp_netspace() we should have better
-detection of netns problems in init_ltp_netspace().
-
-
-Kind regards,
-Petr
-
-
-Petr Vorel (2):
-  lib/test_net.sh: reset_ltp_netspace()
-  network/dhcp: Fix netns after removing kernel module
-
- testcases/lib/test_net.sh          | 10 +++++++++-
- testcases/network/dhcp/dhcp_lib.sh |  2 +-
- 2 files changed, 10 insertions(+), 2 deletions(-)
-
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl35.c b/testcases/kernel/syscalls/fcntl/fcntl35.c
+index 087e779..b984584 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl35.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl35.c
+@@ -46,7 +46,7 @@
+ 
+ static int pipe_max_unpriv;
+ static int test_max_unpriv = 4096;
+-struct passwd *pw;
++static struct passwd *pw;
+ static struct tcase {
+ 	int exp_sz;
+ 	int exp_usr;
+@@ -78,7 +78,7 @@ static void cleanup(void)
+ static int verify_pipe_size(int exp_pip_sz, char *desp)
+ {
+ 	int get_size;
+-	int fds[0];
++	int fds[2];
+ 
+ 	SAFE_PIPE(fds);
+ 
+@@ -109,11 +109,9 @@ end:
+ 
+ static void do_test(unsigned int n)
+ {
+-	pid_t pid;
+ 	struct tcase *tc = &tcases[n];
+ 
+-	pid = SAFE_FORK();
+-	if (!pid) {
++	if (!SAFE_FORK()) {
+ 		if (tc->exp_usr)
+ 			SAFE_SETUID(pw->pw_uid);
+ 
 -- 
-2.12.2
+1.8.3.1
+
+
 
