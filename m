@@ -1,138 +1,34 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 16 Jun 2017 09:44:24 +0800
-Subject: [LTP] [PATCH v3 1/2] syscalls/splice04,05: fix max limit for pipe
-In-Reply-To: <20170615124639.GC2832@rei.lan>
-References: <20170615124639.GC2832@rei.lan>
-Message-ID: <1497577465-4673-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 16 Jun 2017 03:56:52 +0200
+Subject: [LTP] [RFC PATCH v6 2/2] network/dhcp: Fix netns after removing
+	kernel module
+In-Reply-To: <20170616015652.11169-1-pvorel@suse.cz>
+References: <20170616015652.11169-1-pvorel@suse.cz>
+Message-ID: <20170616015652.11169-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-These cases fail on some older kernel(e.g, 2.6.32 and
-2.6.35-rc1) because the pipe-max-size file does not exist.
-
-The pipe-max-pages is introduced in kernel:
-'b492e95be0ae(pipe: set lower and upper limit on max pages
-in the pipe page array)'
-
-The pipe-max-pages is renamed to pipe-max-size in kernel:
-'ff9da691c049(pipe: change /proc/sys/fs/pipe-max-pages to
-byte sized interface)'
-
-We add get_max_limit function to check whether pipe-max-pages
-or pipe-max-size exists.  If both pipe-max-pages and pipe-max-size
-don't exist, the max limit is set to default PIPE_MAX.
-
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/syscalls/splice/splice.h   | 42 +++++++++++++++++++++++++++++
- testcases/kernel/syscalls/splice/splice04.c |  6 ++---
- testcases/kernel/syscalls/splice/splice05.c |  6 ++---
- 3 files changed, 48 insertions(+), 6 deletions(-)
- create mode 100644 testcases/kernel/syscalls/splice/splice.h
+ testcases/network/dhcp/dhcp_lib.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/splice/splice.h b/testcases/kernel/syscalls/splice/splice.h
-new file mode 100644
-index 0000000..16e4c98
---- /dev/null
-+++ b/testcases/kernel/syscalls/splice/splice.h
-@@ -0,0 +1,42 @@
-+/*
-+ * Copyright (c) 2017 Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#ifndef SPLICE_H__
-+#define SPLICE_H__
-+
-+#include <unistd.h>
-+#include "tst_safe_file_ops.h"
-+#include "tst_minmax.h"
-+
-+static inline int get_max_limit(int default_len_data)
-+{
-+	int pipe_max_unpriv;
-+
-+	if (!access("/proc/sys/fs/pipe-max-size", F_OK)) {
-+		SAFE_FILE_SCANF("/proc/sys/fs/pipe-max-size", "%d", &pipe_max_unpriv);
-+		return MIN(pipe_max_unpriv, default_len_data);
-+	}
-+
-+	if (!access("/proc/sys/fs/pipe-max-pages", F_OK)) {
-+		SAFE_FILE_SCANF("/proc/sys/fs/pipe-max-pages", "%d", &pipe_max_unpriv);
-+		return MIN(pipe_max_unpriv * getpagesize(), default_len_data);
-+	}
-+
-+	return default_len_data;
-+}
-+
-+#endif  /* SPLICE_H__ */
-diff --git a/testcases/kernel/syscalls/splice/splice04.c b/testcases/kernel/syscalls/splice/splice04.c
-index 91f5425..dbdc104 100644
---- a/testcases/kernel/syscalls/splice/splice04.c
-+++ b/testcases/kernel/syscalls/splice/splice04.c
-@@ -27,6 +27,7 @@
- #include <fcntl.h>
- #include <stdlib.h>
- #include "tst_test.h"
-+#include "splice.h"
+diff --git a/testcases/network/dhcp/dhcp_lib.sh b/testcases/network/dhcp/dhcp_lib.sh
+index 85f9b88bf..eb502efbd 100755
+--- a/testcases/network/dhcp/dhcp_lib.sh
++++ b/testcases/network/dhcp/dhcp_lib.sh
+@@ -82,7 +82,7 @@ cleanup()
+ 	[ $veth_added ] && ip li del $iface0
  
- #define PIPE_MAX (64*1024)
+ 	if [ -z $veth_loaded ]; then
+-		lsmod | grep -q '^veth ' && rmmod veth
++		lsmod | grep -q '^veth ' && { rmmod veth; reset_ltp_netspace; }
+ 	fi
  
-@@ -41,10 +42,9 @@ static struct tst_option options[] = {
- 
- static void setup(void)
- {
--	int i, pipe_max_unpriv, pipe_limit;
-+	int i, pipe_limit;
- 
--	SAFE_FILE_SCANF("/proc/sys/fs/pipe-max-size", "%d", &pipe_max_unpriv);
--	pipe_limit = MIN(pipe_max_unpriv, num_len_data);
-+	pipe_limit = get_max_limit(num_len_data);
- 	num_len_data = pipe_limit;
- 
- 	if (tst_parse_int(str_len_data, &num_len_data, 1, pipe_limit)) {
-diff --git a/testcases/kernel/syscalls/splice/splice05.c b/testcases/kernel/syscalls/splice/splice05.c
-index b8a21b9..decf7ae 100644
---- a/testcases/kernel/syscalls/splice/splice05.c
-+++ b/testcases/kernel/syscalls/splice/splice05.c
-@@ -32,6 +32,7 @@
- #include <stdlib.h>
- #include <unistd.h>
- #include "tst_test.h"
-+#include "splice.h"
- 
- #define PIPE_MAX (64*1024)
- 
-@@ -46,10 +47,9 @@ static struct tst_option options[] = {
- 
- static void setup(void)
- {
--	int i, pipe_max_unpriv, pipe_limit;
-+	int i, pipe_limit;
- 
--	SAFE_FILE_SCANF("/proc/sys/fs/pipe-max-size", "%d", &pipe_max_unpriv);
--	pipe_limit = MIN(pipe_max_unpriv, num_len_data);
-+	pipe_limit = get_max_limit(num_len_data);
- 	num_len_data = pipe_limit;
- 
- 	if (tst_parse_int(str_len_data, &num_len_data, 1, pipe_limit)) {
+ 	tst_rmdir
 -- 
-1.8.3.1
-
-
+2.12.2
 
