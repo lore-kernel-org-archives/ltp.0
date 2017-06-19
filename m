@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 19 Jun 2017 18:51:59 +0200
-Subject: [LTP] [PATCH 1/2] syscalls/lseek01,
- 06: cleanup && convert to new API
-In-Reply-To: <1497848431-30404-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Mon, 19 Jun 2017 19:09:28 +0200
+Subject: [LTP] [PATCH 2/2] syscalls/lseek0[2-5]: cleanup && convert to
+ new API
+In-Reply-To: <1497848431-30404-2-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <1497848431-30404-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20170619165158.GB29153@rei.lan>
+ <1497848431-30404-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20170619170928.GC29153@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,39 +13,42 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +static int fd;
+> +#include <stdio.h>
+> +#include "tst_test.h"
+> +
+> +static char fname[255], pname[255];
+> +static int bad_fd = -1;
+> +static int fd, pfd;
+> +static int pfds[2];
+> +
 > +static struct tcase {
-> +	off_t off;
+> +	int *fd;
 > +	int whence;
-> +	off_t exp_off;
-> +	char *exp_data;
+> +	int exp_err;
 > +} tcases[] = {
-> +	{4, SEEK_SET, 4, "efg"},
-> +	{-2, SEEK_CUR, 5, "fg"},
-
-This part actually depends on the fact that the file has been seeked and
-read in the previous test. I wonder if it would be less confusing if we
-reset the offset to a defined position (start of the file) before the
-the test.
-
-> +	{-4, SEEK_END, 3, "defg"},
+> +	{&bad_fd, SEEK_SET, EBADF},
+> +	{&bad_fd, SEEK_CUR, EBADF},
+> +	{&bad_fd, SEEK_END, EBADF},
+> +	{&fd, 5, EINVAL},
+> +	{&fd, -1, EINVAL},
+> +	{&fd, 7, EINVAL},
+> +	{&pfd, SEEK_SET, ESPIPE},
+> +	{&pfd, SEEK_CUR, ESPIPE},
+> +	{&pfd, SEEK_END, ESPIPE},
+> +	{&pfds[0], SEEK_SET, ESPIPE},
+> +	{&pfds[0], SEEK_CUR, ESPIPE},
+> +	{&pfds[0], SEEK_END, ESPIPE},
 > +};
 > +
 > +static void verify_lseek(unsigned int n)
 >  {
 > -	int lc;
 > -
-> -	int ind;
-> -	int offset;
-> +	char read_buf[64];
-> +	struct tcase *tc = &tcases[n];
->  
 > -    /***************************************************************
 > -     * parse standard options
 > -     ***************************************************************/
 > -	tst_parse_opts(ac, av, NULL, NULL);
-> +	memset(read_buf, 0, sizeof(read_buf));
->  
+> -
 > -    /***************************************************************
 > -     * perform global setup for test
 > -     ***************************************************************/
@@ -57,55 +61,48 @@ the test.
 > -
 > -		tst_count = 0;
 > -
-> -		offset = (lc % 100) * 4096;	/* max size is 100 blocks */
+> -		/*
+> -		 *  Call lseek(2)
+> -		 */
+> -		TEST(lseek(-1, (long)1, SEEK_SET));
 > -
-> -		for (ind = 0; Whence[ind] >= 0; ind++) {
-> +	TEST(lseek(fd, tc->off, tc->whence));
-> +	if (TEST_RETURN == (off_t) -1) {
-> +		tst_res(TFAIL | TTERRNO, "lseek(%d, %ld, %d) failed", fd,
-> +			tc->off, tc->whence);
-> +		return;
-> +	}
->  
-> -			/*
-> -			 *  Call lseek(2)
-> -			 */
-> -			TEST(lseek(Fd, (long)offset, Whence[ind]));
-> +	if (TEST_RETURN != tc->exp_off) {
-> +		tst_res(TFAIL, "lseek(%d, %ld, %d) returned %ld, expected %ld",
-> +			fd, tc->off, tc->whence, TEST_RETURN, tc->exp_off);
-> +		return;
-> +	}
->  
-> -			/* check return code */
-> -			if (TEST_RETURN == -1) {
-> -				tst_resm(TFAIL,
-> -					 "lseek(%s, %d, 0) Failed, errno=%d : %s",
-> -					 Fname, offset, TEST_ERRNO,
-> -					 strerror(TEST_ERRNO));
-> -			} else {
+> -		/* check return code */
+> -		if (TEST_RETURN == -1) {
+> -			if (TEST_ERRNO == EBADF)
+> -
 > -				tst_resm(TPASS,
-> -					 "lseek(%s, %d, %d) returned %ld",
-> -					 Fname, offset, Whence[ind],
-> -					 TEST_RETURN);
-> -			}
-> -		}
-> +	SAFE_READ(0, fd, &read_buf, sizeof(read_buf));
->  
-> +	if (strcmp(read_buf, tc->exp_data)) {
-> +		tst_res(TFAIL, "lseek(%d, %ld, %d) read incorrect data", fd,
-> +			tc->off, tc->whence);
-> +	} else {
-> +		tst_res(TPASS, "lseek(%d, %ld, %d) read correct data", fd,
-> +			tc->off, tc->whence);
-
-I guess that the fd here is not that useful and it may be a bit better
-to to translate the whence to its name, but that is very minor.
-
->  	}
+> -					 "lseek(-1, 1, SEEK_SET) Failed, errno=%d : %s",
+> -					 TEST_ERRNO,
+> -					 strerror(TEST_ERRNO));
+> -			else
+> -				tst_resm(TFAIL,
+> -					 "lseek(-1, 1, SEEK_SET) Failed, errno=%d : %s, expected %d(EBADF)",
+> -					 TEST_ERRNO,
+> -					 strerror(TEST_ERRNO), EBADF);
+> -		} else {
 > -
+> -			tst_resm(TFAIL, "lseek(-1, 1, SEEK_SET) returned %ld",
+> -				 TEST_RETURN);
+> -		}
+> +	struct tcase *tc = &tcases[n];
+>  
+> +	TEST(lseek(*tc->fd, (off_t) 1, tc->whence));
+> +	if (TEST_RETURN != (off_t) -1) {
+> +		tst_res(TFAIL, "lseek(%d, 1, %d) succeeded unexpectedly",
+> +			*tc->fd, tc->whence);
+> +			return;
+>  	}
+>  
 > -	cleanup();
 > -	tst_exit();
+> +	if (TEST_ERRNO == tc->exp_err) {
+> +		tst_res(TPASS | TTERRNO, "lseek(%d, 1, %d) failed as expected",
+> +			*tc->fd, tc->whence);
+> +	} else {
+> +		tst_res(TFAIL | TTERRNO, "lseek(%d, 1, %d) failed "
+> +			"unexpectedly, expected %s", *tc->fd, tc->whence,
+> +			tst_strerrno(tc->exp_err));
+> +	}
 >  }
 >  
 > -/***************************************************************
@@ -114,37 +111,25 @@ to to translate the whence to its name, but that is very minor.
 > -void setup(void)
 > +static void setup(void)
 >  {
-> +	char write_buf[64];
->  
+> +	sprintf(fname, "tfile_%d", getpid());
+> +	sprintf(pname, "tpipe_%d", getpid());
+
+Well there is no need to "randomize" the file names since the test has
+it's own temporary directory...
+
 > -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> +	strcpy(write_buf, "abcdefg");
-
-There is no need for that. Just define the string and use sizeof instead
-of strlen, i.e.
-
-#define WRITE_STR "abcdefg"
-
-...
-	SAFE_WRITE(1, fd, WRITE_STR, sizeof(WRITE_STR) - 1);
-...
-
-Or use SAFE_FILE_PRINTF(), then open() the fd.
-
+> -
 > -	TEST_PAUSE;
-> +	fd = SAFE_OPEN("tmp_file", O_RDWR | O_CREAT, 0644);
->  
+> -
 > -	tst_tmpdir();
 > -
-> -	sprintf(Fname, "tfile_%d", getpid());
-> -	if ((Fd = open(Fname, O_RDWR | O_CREAT, 0700)) == -1) {
-> -		tst_brkm(TBROK, cleanup,
-> -			 "open(%s, O_RDWR|O_CREAT,0700) Failed, errno=%d : %s",
-> -			 Fname, errno, strerror(errno));
-> -	}
-> +	SAFE_WRITE(1, fd, write_buf, strlen(write_buf));
+> +	fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0777);
+> +	SAFE_MKFIFO(pname, 0777);
+> +	pfd = SAFE_OPEN(pname, O_RDWR, 0777);
+> +	SAFE_PIPE(pfds);
 >  }
 
-Otherwise it looks fine.
+Otherwise it looks good.
 
 -- 
 Cyril Hrubis
