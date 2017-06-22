@@ -1,151 +1,120 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 22 Jun 2017 17:41:00 +0800
-Subject: [LTP] [PATCH v2 1/3] tst_safe_sysv_ipc: add shared memory
-	related macros
-In-Reply-To: <1496317753-2871-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <20170529145709.GC6618@rei.lan>
- <1496317753-2871-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <594B90AC.9060505@cn.fujitsu.com>
+Date: Thu, 22 Jun 2017 18:09:44 +0800
+Subject: [LTP] [PATCH 3/3] syscalls/shmat03.c: add new regression test
+In-Reply-To: <59300056.1020107@cn.fujitsu.com>
+References: <1492164917-9329-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1492164917-9329-3-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20170529145709.GC6618@rei.lan> <59300056.1020107@cn.fujitsu.com>
+Message-ID: <594B9768.8090108@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi
-
-Ping, thanks! :-)
-
-Best Regards,
-Xiao Yang.
-On 2017/06/01 19:49, Xiao Yang wrote:
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  include/tst_safe_sysv_ipc.h | 25 +++++++++++++++++++
->  lib/tst_safe_sysv_ipc.c     | 58 ++++++++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 82 insertions(+), 1 deletion(-)
+On 2017/06/01 19:53, Xiao Yang wrote:
+> On 2017/05/29 22:57, Cyril Hrubis wrote:
+>> Hi!
+>>> +    addr = shmat(shm_id, LOCATION, SHM_RND);
+>>> +    if (addr != (void *)-1)
+>>> +        tst_res(TINFO, "shmat() attached a nil-page unexpectedly");
+>>> +    else
+>>> +        tst_res(TINFO, "shmat() didn't attach a nil-page");
+>>> +
+>>> +    ((char *)addr)[0] = 'A';
+>>
+>> So if shmat() fails we try to write to (char*)-1 address, that does not
+>> sound right. Why don't we exit the test with TPASS in that case and skip
+>> the part that tries to write to invalid address?
+>>
+>> Or at least dereference NULL here instead of the address returned from
+>> shmat() since that is guaranteed to SEGFAULT.
+> Hi Cyril
 >
-> diff --git a/include/tst_safe_sysv_ipc.h b/include/tst_safe_sysv_ipc.h
-> index cbdefb9..e01957f 100644
-> --- a/include/tst_safe_sysv_ipc.h
-> +++ b/include/tst_safe_sysv_ipc.h
-> @@ -18,6 +18,11 @@
->  #ifndef TST_SAFE_SYSV_IPC_H__
->  #define TST_SAFE_SYSV_IPC_H__
->  
-> +#include <sys/types.h>
-> +#include <sys/ipc.h>
-> +#include <sys/msg.h>
-> +#include <sys/shm.h>
-> +
->  int safe_msgget(const char *file, const int lineno, key_t key, int msgflg);
->  #define SAFE_MSGGET(key, msgflg) \
->  	safe_msgget(__FILE__, __LINE__, (key), (msgflg))
-> @@ -39,4 +44,24 @@ int safe_msgctl(const char *file, const int lineno, int msqid, int cmd,
->  	(msqid) = ((cmd) == IPC_RMID ? -1 : (msqid)); \
->  	} while (0)
->  
-> +int safe_shmget(const char *file, const int lineno, key_t key, size_t size,
-> +		int shmflg);
-> +#define SAFE_SHMGET(key, size, shmflg) \
-> +	safe_shmget(__FILE__, __LINE__, (key), (size), (shmflg))
-> +
-> +void *safe_shmat(const char *file, const int lineno, int shmid,
-> +		const void *shmaddr, int shmflg);
-> +#define SAFE_SHMAT(shmid, shmaddr, shmflg) \
-> +	safe_shmat(__FILE__, __LINE__, (shmid), (shmaddr), (shmflg))
-> +
-> +int safe_shmdt(const char *file, const int lineno, const void *shmaddr);
-> +#define SAFE_SHMDT(shmaddr)	safe_shmdt(__FILE__, __LINE__, (shmaddr))
-> +
-> +int safe_shmctl(const char *file, const int lineno, int shmid, int cmd,
-> +		struct shmid_ds *buf);
-> +#define SAFE_SHMCTL(shmid, cmd, buf) do { \
-> +	safe_shmctl(__FILE__, __LINE__, (shmid), (cmd), (buf)); \
-> +	(shmid) = ((cmd) == IPC_RMID ? -1 : (shmid)); \
-> +	} while (0)
-> +
->  #endif /* TST_SAFE_SYSV_IPC_H__ */
-> diff --git a/lib/tst_safe_sysv_ipc.c b/lib/tst_safe_sysv_ipc.c
-> index cb2b304..b2b132b 100644
-> --- a/lib/tst_safe_sysv_ipc.c
-> +++ b/lib/tst_safe_sysv_ipc.c
-> @@ -18,6 +18,7 @@
->  #include <sys/types.h>
->  #include <sys/ipc.h>
->  #include <sys/msg.h>
-> +#include <sys/shm.h>
->  #define TST_NO_DEFAULT_MAIN
->  #include "tst_test.h"
->  #include "tst_safe_sysv_ipc.h"
-> @@ -68,7 +69,7 @@ ssize_t safe_msgrcv(const char *file, const int lineno, int msqid, void *msgp,
->  int safe_msgctl(const char *file, const int lineno, int msqid, int cmd,
->  		struct msqid_ds *buf)
->  {
-> -	int  rval;
-> +	int rval;
->  
->  	rval = msgctl(msqid, cmd, buf);
->  	if (rval == -1) {
-> @@ -78,3 +79,58 @@ int safe_msgctl(const char *file, const int lineno, int msqid, int cmd,
->  
->  	return rval;
->  }
-> +
-> +int safe_shmget(const char *file, const int lineno, key_t key, size_t size,
-> +		int shmflg)
-> +{
-> +	int rval;
-> +
-> +	rval = shmget(key, size, shmflg);
-> +	if (rval == -1) {
-> +		tst_brk(TBROK | TERRNO, "%s:%d: shmget(%i, %li, %x) failed",
-> +			file, lineno, (int)key, size, shmflg);
-> +	}
-> +
-> +	return rval;
-> +}
-> +
-> +void *safe_shmat(const char *file, const int lineno, int shmid,
-> +		const void *shmaddr, int shmflg)
-> +{
-> +	void *rval;
-> +
-> +	rval = shmat(shmid, shmaddr, shmflg);
-> +	if (rval == (void *)-1) {
-> +		tst_brk(TBROK | TERRNO, "%s:%d: shmat(%i, %p, %x) failed",
-> +			file, lineno, shmid, shmaddr, shmflg);
-> +	}
-> +
-> +	return rval;
-> +}
-> +
-> +int safe_shmdt(const char *file, const int lineno, const void *shmaddr)
-> +{
-> +	int rval;
-> +
-> +	rval = shmdt(shmaddr);
-> +	if (rval == -1) {
-> +		tst_brk(TBROK | TERRNO, "%s:%d: shmdt(%p) failed",
-> +			file, lineno, shmaddr);
-> +	}
-> +
-> +	return rval;
-> +}
-> +
-> +int safe_shmctl(const char *file, const int lineno, int shmid, int cmd,
-> +		struct shmid_ds *buf)
-> +{
-> +	int rval;
-> +
-> +	rval = shmctl(shmid, cmd, buf);
-> +	if (rval == -1) {
-> +		tst_brk(TBROK | TERRNO, "%s:%d: shmctl(%i, %i, %p) failed",
-> +			file, lineno, shmid, cmd, buf);
-> +	}
-> +
-> +	return rval;
-> +}
+> I failed to call shmat() as root and returned EACCES if selinux is 
+> Enforcing.
+> Do you know how to fix this problem?
+Hi Cyril
+
+Sorry, I have fixed this issue, I will send v3 patch soon.
+
+Thanks,
+Xiao Yang.
+>
+> Thanks,
+> Xiao Yang.
+>>> +    tst_res(TINFO, "shmat() wrote data to shmaddr:%p unexpectedly", 
+>>> addr);
+>>> +
+>>> +    SAFE_SHMDT(addr);
+>>> +
+>>> +    exit(0);
+>>> +}
+>>> +
+>>> +static void do_shmat(unsigned int n)
+>>> +{
+>>> +    pid_t pid;
+>>> +    int status;
+>>> +    struct tcase *tc =&tcases[n];
+>>> +
+>>> +    pid = SAFE_FORK();
+>>> +    if (!pid)
+>>> +        verify_shmat(tc->exp_usr);
+>>> +
+>>> +    SAFE_WAITPID(pid,&status, 0);
+>>> +
+>>> +    if (WIFEXITED(status)) {
+>>> +        tst_res(TFAIL, "%s mapped nil-page in shmat() unexpectedly",
+>>> +            tc->des);
+>>> +        return;
+>>> +    }
+>>> +
+>>> +    if (WIFSIGNALED(status)&&  WTERMSIG(status) == SIGSEGV) {
+>>> +        tst_res(TPASS, "%s didn't map nil-page in shmat(), and was "
+>>> +            "killed by %s as expected", tc->des,
+>>> +            tst_strsig(WTERMSIG(status)));
+>>> +    } else {
+>>> +        tst_res(TFAIL, "%s didn't map nil-page in shmat(), and was "
+>>> +            "killed by %s unexpectedly", tc->des,
+>>> +            tst_strsig(WTERMSIG(status)));
+>>> +    }
+>>> +}
+>>> +
+>>> +static void setup(void)
+>>> +{
+>>> +    key_t shm_key;
+>>> +
+>>> +    shm_key = GETIPCKEY();
+>>> +    shm_id = SAFE_SHMGET(shm_key, 4096, 0777 | IPC_CREAT);
+>>> +}
+>>> +
+>>> +static void cleanup(void)
+>>> +{
+>>> +    if (shm_id != -1)
+>>> +        SAFE_SHMCTL(shm_id, IPC_RMID, NULL);
+>>> +}
+>>> +
+>>> +static struct tst_test test = {
+>>> +    .tid = "shmat03",
+>>> +    .needs_root = 1,
+>>> +    .forks_child = 1,
+>>> +    .test = do_shmat,
+>>> +    .tcnt = ARRAY_SIZE(tcases),
+>>> +    .setup = setup,
+>>> +    .cleanup = cleanup
+>>> +};
+>>> -- 
+>>> 1.8.3.1
+>>>
+>>>
+>>>
+>>>
+>>> -- 
+>>> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+>
+>
+>
 
 
 
