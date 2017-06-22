@@ -1,95 +1,135 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 22 Jun 2017 06:32:31 -0400 (EDT)
-Subject: [LTP] [PATCH 2/2] syscalls: Add timer measurement library
-In-Reply-To: <1505342784.40797880.1498048926551.JavaMail.zimbra@redhat.com>
-References: <20170620134218.13461-1-chrubis@suse.cz>
- <20170620134218.13461-2-chrubis@suse.cz>
- <1505342784.40797880.1498048926551.JavaMail.zimbra@redhat.com>
-Message-ID: <432037044.41235917.1498127551219.JavaMail.zimbra@redhat.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 22 Jun 2017 19:08:03 +0800
+Subject: [LTP] [PATCH 3/3] syscalls/shmat03.c: add new regression test
+In-Reply-To: <594B9768.8090108@cn.fujitsu.com>
+References: <1492164917-9329-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1492164917-9329-3-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20170529145709.GC6618@rei.lan> <59300056.1020107@cn.fujitsu.com>
+ <594B9768.8090108@cn.fujitsu.com>
+Message-ID: <594BA513.5010705@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
+On 2017/06/22 18:09, Xiao Yang wrote:
+> On 2017/06/01 19:53, Xiao Yang wrote:
+>> On 2017/05/29 22:57, Cyril Hrubis wrote:
+>>> Hi!
+>>>> +    addr = shmat(shm_id, LOCATION, SHM_RND);
+>>>> +    if (addr != (void *)-1)
+>>>> +        tst_res(TINFO, "shmat() attached a nil-page unexpectedly");
+>>>> +    else
+>>>> +        tst_res(TINFO, "shmat() didn't attach a nil-page");
+>>>> +
+>>>> +    ((char *)addr)[0] = 'A';
+>>>
+>>> So if shmat() fails we try to write to (char*)-1 address, that does not
+>>> sound right. Why don't we exit the test with TPASS in that case and 
+>>> skip
+>>> the part that tries to write to invalid address?
+>>>
+>>> Or at least dereference NULL here instead of the address returned from
+>>> shmat() since that is guaranteed to SEGFAULT.
+>> Hi Cyril
+>>
+>> I failed to call shmat() as root and returned EACCES if selinux is 
+>> Enforcing.
+>> Do you know how to fix this problem?
+> Hi Cyril
+>
+> Sorry, I have fixed this issue, I will send v3 patch soon.
+Hi Cyril and jan
+
+Sorry， i tried to fix this issue， but failed.  Could you help me to 
+look into it? Thanks a lot! :-(
+shmat（） only attached a nil-page as root when selinux is not Enforcing.
+
+Thanks,
+Xiao Yang.
+>
+> Thanks,
+> Xiao Yang.
+>>
+>> Thanks,
+>> Xiao Yang.
+>>>> +    tst_res(TINFO, "shmat() wrote data to shmaddr:%p 
+>>>> unexpectedly", addr);
+>>>> +
+>>>> +    SAFE_SHMDT(addr);
+>>>> +
+>>>> +    exit(0);
+>>>> +}
+>>>> +
+>>>> +static void do_shmat(unsigned int n)
+>>>> +{
+>>>> +    pid_t pid;
+>>>> +    int status;
+>>>> +    struct tcase *tc =&tcases[n];
+>>>> +
+>>>> +    pid = SAFE_FORK();
+>>>> +    if (!pid)
+>>>> +        verify_shmat(tc->exp_usr);
+>>>> +
+>>>> +    SAFE_WAITPID(pid,&status, 0);
+>>>> +
+>>>> +    if (WIFEXITED(status)) {
+>>>> +        tst_res(TFAIL, "%s mapped nil-page in shmat() unexpectedly",
+>>>> +            tc->des);
+>>>> +        return;
+>>>> +    }
+>>>> +
+>>>> +    if (WIFSIGNALED(status)&&  WTERMSIG(status) == SIGSEGV) {
+>>>> +        tst_res(TPASS, "%s didn't map nil-page in shmat(), and was "
+>>>> +            "killed by %s as expected", tc->des,
+>>>> +            tst_strsig(WTERMSIG(status)));
+>>>> +    } else {
+>>>> +        tst_res(TFAIL, "%s didn't map nil-page in shmat(), and was "
+>>>> +            "killed by %s unexpectedly", tc->des,
+>>>> +            tst_strsig(WTERMSIG(status)));
+>>>> +    }
+>>>> +}
+>>>> +
+>>>> +static void setup(void)
+>>>> +{
+>>>> +    key_t shm_key;
+>>>> +
+>>>> +    shm_key = GETIPCKEY();
+>>>> +    shm_id = SAFE_SHMGET(shm_key, 4096, 0777 | IPC_CREAT);
+>>>> +}
+>>>> +
+>>>> +static void cleanup(void)
+>>>> +{
+>>>> +    if (shm_id != -1)
+>>>> +        SAFE_SHMCTL(shm_id, IPC_RMID, NULL);
+>>>> +}
+>>>> +
+>>>> +static struct tst_test test = {
+>>>> +    .tid = "shmat03",
+>>>> +    .needs_root = 1,
+>>>> +    .forks_child = 1,
+>>>> +    .test = do_shmat,
+>>>> +    .tcnt = ARRAY_SIZE(tcases),
+>>>> +    .setup = setup,
+>>>> +    .cleanup = cleanup
+>>>> +};
+>>>> -- 
+>>>> 1.8.3.1
+>>>>
+>>>>
+>>>>
+>>>>
+>>>> -- 
+>>>> Mailing list info: https://lists.linux.it/listinfo/ltp
+>>
+>>
+>>
+>>
+>
+>
+>
+>
 
 
------ Original Message -----
-> 
-> 
-> ----- Original Message -----
-> > From: "Cyril Hrubis" <chrubis@suse.cz>
-> > To: ltp@lists.linux.it
-> > Sent: Tuesday, 20 June, 2017 3:42:18 PM
-> > Subject: [LTP] [PATCH 2/2] syscalls: Add timer measurement library
-> > 
-> > This commit adds a timer measurement library, mostly based on changes
-> > done to the pselect01.c test and changes all tests that measure timer
-> > precision to use it.
-> > 
-> > The timer testcases that measure timeouts now just define sampling function
-> > and
-> > optional setup and cleanup. The rest of the functionality is implemented in
-> > the
-> > lib/tst_timer_test.c library. This change not only removes fair amount of
-> > duplicated code but also allows us to tune thresholds and define testcases
-> > in
-> > a
-> > single place for all testcases.
-> > 
-> > The timer measurement library also supports for passing sleep time and
-> > number of iterations as a command-line parameters, can print nifty
-> > frequency plot into the terminal, as well as save test measurements into
-> > a text file.
-> > 
-> 
-> Hi,
-> 
-> looks good to me.
-> 
-> It compiled fine across RHEL 5/6/7 x86_64. No failures when I run it
-> on my laptop.
-> 
-> I plan to also run it across multiple arches/distros on randomly
-> picked systems from lab.
 
-Results from ~35 random RHEL6/7 systems look OK. I've hit
-one failure in RHEL6, but that looks like bug in older kernel,
-because the delays are huge:
-
-tst_test.c:870: INFO: Timeout per run is 0h 05m 00s
-tst_timer_test.c:345: INFO: CLOCK_MONOTONIC resolution 1ns
-tst_timer_test.c:357: INFO: prctl(PR_GET_TIMERSLACK) = 50us
-tst_timer_test.c:275: INFO: nanosleep() sleeping for 1000us 500 iterations, threshold 450.01us
-tst_timer_test.c:296: INFO: Found 488 outliners in [500430,12493] range
-tst_timer_test.c:318: INFO: min 1056us, max 500430us, median 500198us, trunc mean 466362.70us (discarded 25)
-tst_timer_test.c:321: FAIL: nanosleep() slept for too long
-
- Time: us | Frequency
---------------------------------------------------------------------------------
-     1056 | **+
-    27339 | -
-    53622 | -
-    79905 | .
-   106188 | -
-   132471 | .
-   158754 | .
-   185037 | -
-   211320 | .
-   237603 | -
-   263886 | .
-   290169 | -
-   316452 | .
-   342735 | -
-   369018 | -
-   395301 | .
-   421584 | -
-   447867 | -
-   474150 | ********************************************************************
---------------------------------------------------------------------------------
-  26283us | 1 sample = 0.15044 '*', 0.30088 '+', 0.60177 '-', non-zero '.'
-
-Not reproducible when I try to run it by hand.
-
-Regards,
-Jan
