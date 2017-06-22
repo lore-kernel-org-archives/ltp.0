@@ -1,67 +1,71 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 22 Jun 2017 08:02:16 -0400 (EDT)
-Subject: [LTP] [PATCH 3/3] syscalls/shmat03.c: add new regression test
-In-Reply-To: <594BA513.5010705@cn.fujitsu.com>
-References: <1492164917-9329-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1492164917-9329-3-git-send-email-yangx.jy@cn.fujitsu.com>
- <20170529145709.GC6618@rei.lan> <59300056.1020107@cn.fujitsu.com>
- <594B9768.8090108@cn.fujitsu.com> <594BA513.5010705@cn.fujitsu.com>
-Message-ID: <1869831182.41262364.1498132936147.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 22 Jun 2017 15:45:13 +0200
+Subject: [LTP] [PATCH 2/2] syscalls: Add timer measurement library
+In-Reply-To: <432037044.41235917.1498127551219.JavaMail.zimbra@redhat.com>
+References: <20170620134218.13461-1-chrubis@suse.cz>
+ <20170620134218.13461-2-chrubis@suse.cz>
+ <1505342784.40797880.1498048926551.JavaMail.zimbra@redhat.com>
+ <432037044.41235917.1498127551219.JavaMail.zimbra@redhat.com>
+Message-ID: <20170622134512.GB8678@rei.suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> > Hi,
+> > 
+> > looks good to me.
 
+Pushed with your ack.
 
------ Original Message -----
-> From: "Xiao Yang" <yangx.jy@cn.fujitsu.com>
-> To: "Cyril Hrubis" <chrubis@suse.cz>, "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Thursday, 22 June, 2017 1:08:03 PM
-> Subject: Re: [LTP] [PATCH 3/3] syscalls/shmat03.c: add new regression test
+> > It compiled fine across RHEL 5/6/7 x86_64. No failures when I run it
+> > on my laptop.
+> > 
+> > I plan to also run it across multiple arches/distros on randomly
+> > picked systems from lab.
 > 
-> On 2017/06/22 18:09, Xiao Yang wrote:
-> > On 2017/06/01 19:53, Xiao Yang wrote:
-> >> On 2017/05/29 22:57, Cyril Hrubis wrote:
-> >>> Hi!
-> >>>> +    addr = shmat(shm_id, LOCATION, SHM_RND);
-> >>>> +    if (addr != (void *)-1)
-> >>>> +        tst_res(TINFO, "shmat() attached a nil-page unexpectedly");
-> >>>> +    else
-> >>>> +        tst_res(TINFO, "shmat() didn't attach a nil-page");
-> >>>> +
-> >>>> +    ((char *)addr)[0] = 'A';
-> >>>
-> >>> So if shmat() fails we try to write to (char*)-1 address, that does not
-> >>> sound right. Why don't we exit the test with TPASS in that case and
-> >>> skip
-> >>> the part that tries to write to invalid address?
-> >>>
-> >>> Or at least dereference NULL here instead of the address returned from
-> >>> shmat() since that is guaranteed to SEGFAULT.
-> >> Hi Cyril
-> >>
-> >> I failed to call shmat() as root and returned EACCES if selinux is
-> >> Enforcing.
-> >> Do you know how to fix this problem?
-> > Hi Cyril
-> >
-> > Sorry, I have fixed this issue, I will send v3 patch soon.
-> Hi Cyril and jan
+> Results from ~35 random RHEL6/7 systems look OK. I've hit
+> one failure in RHEL6, but that looks like bug in older kernel,
+> because the delays are huge:
 > 
-> Sorry， i tried to fix this issue， but failed.  Could you help me to
-> look into it? Thanks a lot! :-(
-> shmat（） only attached a nil-page as root when selinux is not Enforcing.
+> tst_test.c:870: INFO: Timeout per run is 0h 05m 00s
+> tst_timer_test.c:345: INFO: CLOCK_MONOTONIC resolution 1ns
+> tst_timer_test.c:357: INFO: prctl(PR_GET_TIMERSLACK) = 50us
+> tst_timer_test.c:275: INFO: nanosleep() sleeping for 1000us 500 iterations, threshold 450.01us
+> tst_timer_test.c:296: INFO: Found 488 outliners in [500430,12493] range
+> tst_timer_test.c:318: INFO: min 1056us, max 500430us, median 500198us, trunc mean 466362.70us (discarded 25)
+> tst_timer_test.c:321: FAIL: nanosleep() slept for too long
+> 
+>  Time: us | Frequency
+> --------------------------------------------------------------------------------
+>      1056 | **+
+>     27339 | -
+>     53622 | -
+>     79905 | .
+>    106188 | -
+>    132471 | .
+>    158754 | .
+>    185037 | -
+>    211320 | .
+>    237603 | -
+>    263886 | .
+>    290169 | -
+>    316452 | .
+>    342735 | -
+>    369018 | -
+>    395301 | .
+>    421584 | -
+>    447867 | -
+>    474150 | ********************************************************************
+> --------------------------------------------------------------------------------
+>   26283us | 1 sample = 0.15044 '*', 0.30088 '+', 0.60177 '-', non-zero '.'
+> 
+> Not reproducible when I try to run it by hand.
 
-Hi,
+That indeed looks like a kernel bug, isn't there something in dmesg?
 
-as Richard mentioned already, this appears to be same test as his:
-  http://lists.linux.it/pipermail/ltp/2017-May/004568.html
-
-so I guess we can drop 3/3 from your set, and use Richard's
-version, which is doing what Cyril suggested.
-
-Regards,
-Jan
+-- 
+Cyril Hrubis
+chrubis@suse.cz
