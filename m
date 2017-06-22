@@ -1,14 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 22 Jun 2017 16:25:06 +0200
-Subject: [LTP] [PATCH 2/2] syscalls: Add timer measurement library
-In-Reply-To: <1763007177.41308824.1498139900018.JavaMail.zimbra@redhat.com>
-References: <20170620134218.13461-1-chrubis@suse.cz>
- <20170620134218.13461-2-chrubis@suse.cz>
- <1505342784.40797880.1498048926551.JavaMail.zimbra@redhat.com>
- <432037044.41235917.1498127551219.JavaMail.zimbra@redhat.com>
- <20170622134512.GB8678@rei.suse.de>
- <1763007177.41308824.1498139900018.JavaMail.zimbra@redhat.com>
-Message-ID: <20170622142506.GA28231@rei.lan>
+Date: Thu, 22 Jun 2017 17:01:18 +0200
+Subject: [LTP] [PATCH v2 1/2] clone08: convert to new LTP API
+In-Reply-To: <1496915851-5222-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1496915851-5222-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20170622150117.GB28231@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,29 +11,21 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> No, nothing at the time nanosleep01 was running.
-> 
-> We carry patch below in our tests, so it's easier to link some dmesg
-> output with testcases.
-> 
-> diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
-> index cee71aa..79dc3fa 100644
-> --- a/pan/ltp-pan.c
-> +++ b/pan/ltp-pan.c
-> @@ -1360,6 +1360,12 @@ static void write_test_start(struct tag_pgrp *running)
->  		     running->cmd->cmdline, "", "exit", "<<<test_output>>>");
+>  
+> -	stopped_flag = 0;
+> -	child = clone_child(&test_cases[t], 1);
+> +	child = clone_child(&test_cases[t]);
+>  
+>  	/* give the kernel scheduler chance to run the CLONE_STOPPED thread*/
+>  	for (i = 0; i < 100; i++) {
+> @@ -246,23 +178,22 @@ static void test_clone_stopped(int t)
+>  		usleep(1000);
 >  	}
->  	fflush(stdout);
-> +
-> +	FILE *f = fopen("/dev/kmsg", "w");
-> +	if (f) {
-> +		fprintf(f, "ltptest %s start\n", running->cmd->name);
-> +		fclose(f);
-> +	}
->  }
 
-That sounds reasonable. Maybe we can add an option to ltp-pan and runltp
-to enable this.
+Can't we check the /proc/$pid/state here to assert that the child is in
+'T' state here? We do have PROCESS_STATE_WAIT() for that.
+
+Otherwise this looks good.
 
 -- 
 Cyril Hrubis
