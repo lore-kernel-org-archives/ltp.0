@@ -1,10 +1,13 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 22 Jun 2017 17:09:32 +0200
+Date: Thu, 22 Jun 2017 17:11:31 +0200
 Subject: [LTP] [PATCH v2 2/2] clone09: add a test for CLONE_NEWNET flag
-In-Reply-To: <1496915851-5222-2-git-send-email-alexey.kodanev@oracle.com>
-References: <1496915851-5222-1-git-send-email-alexey.kodanev@oracle.com>
- <1496915851-5222-2-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20170622150932.GC28231@rei.lan>
+In-Reply-To: <1869831182.41262364.1498132936147.JavaMail.zimbra@redhat.com>
+References: <1492164917-9329-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1492164917-9329-3-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20170529145709.GC6618@rei.lan> <59300056.1020107@cn.fujitsu.com>
+ <594B9768.8090108@cn.fujitsu.com> <594BA513.5010705@cn.fujitsu.com>
+ <1869831182.41262364.1498132936147.JavaMail.zimbra@redhat.com>
+Message-ID: <20170622151131.GD28231@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,34 +15,15 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +static void do_test(void)
-> +{
-> +	int def_val;
-> +
-> +	tst_res(TINFO, "create clone in a new netns with 'CLONE_NEWNET' flag");
-> +
-> +	SAFE_FILE_SCANF(sysctl_path, "%d", &sysctl_net);
-> +	SAFE_FILE_PRINTF(sysctl_path, "%d", sysctl_net + 1);
-> +
-> +	clone_child();
-> +	tst_reap_children();
-> +
-> +	if (sysctl_net_new == (sysctl_net + 1)) {
-> +		tst_res(TFAIL, "sysctl params equal: %s=%d",
-> +			sysctl_path, sysctl_net_new);
-> +	}
-> +
-> +	SAFE_FILE_SCANF(sysctl_path_def, "%d", &def_val);
-> +
-> +	if (sysctl_net_new != def_val) {
-> +		tst_res(TFAIL, "netns param init to non-default value %d",
-> +			sysctl_net_new);
-> +	}
+> as Richard mentioned already, this appears to be same test as his:
+>   http://lists.linux.it/pipermail/ltp/2017-May/004568.html
+> 
+> so I guess we can drop 3/3 from your set, and use Richard's
+> version, which is doing what Cyril suggested.
 
-We should restore the sysctl_path value here, in a case that we are
-looping (the -i or -I options).
-
-Otherwise it looks fine.
+Sounds reasonable to me as well. We should probably include credits for
+both you for the signed-off-by and copyright lines for that test
+though.
 
 -- 
 Cyril Hrubis
