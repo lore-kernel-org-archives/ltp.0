@@ -1,67 +1,107 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Fri, 23 Jun 2017 14:22:02 +0200
-Subject: [LTP] [PATCH v3 0/9] CVE Tests
-Message-ID: <20170623122211.29575-1-rpalethorpe@suse.com>
+Date: Fri, 23 Jun 2017 14:22:07 +0200
+Subject: [LTP] [PATCH v3 5/9] Add CVE .gitignore, Makefile and runtest files
+In-Reply-To: <20170623122211.29575-1-rpalethorpe@suse.com>
+References: <20170623122211.29575-1-rpalethorpe@suse.com>
+Message-ID: <20170623122211.29575-6-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Version 3:
-* Move .gitignore and runtest additions to correct commits
-* Replace tst_fzsync_init() with static declaration
-* Remove packet time stamping test cve-2017-7277
-* Remove explicit tid struct members
-* Use new SAFE_SHM* macros
-* Add Xiao Yang/Fujitsu to copyright notice for CVE-2017-5669
-
-Version 2:
-* Remove unresolved merge conflict from two commits
-* Use _GNU_SOURCE instead of __USE_GNU
-
-Richard Palethorpe (9):
-  Add fuzzy synchronisation library for triggering races
-  Test for vulnerability CVE-2016-7117 in recvmmsg error return path
-  Test for CVE-2016-4997 on setsockopt
-  Test for uname26 exploit CVE-2012-0957
-  Add CVE .gitignore, Makefile and runtest files
-  Test for CVE-2014-0196 PTY echo race
-  Test for CVE-2017-5669 in shmat
-  Test for CVE-2017-6951 in request_key
-  Test for CVE-2017-2671 on ping sockets
-
- configure.ac                  |   2 +
- include/tst_fuzzy_sync.h      | 184 ++++++++++++++++++++++++++++++++++++++++++
- m4/ltp-mmsghdr.m4             |  22 +++++
- m4/ltp-uname.m4               |  20 +++++
- runtest/cve                   |   9 +++
- runtest/syscalls              |   4 +
- scenario_groups/default       |   1 +
- testcases/cve/.gitignore      |   7 ++
- testcases/cve/Makefile        |  26 ++++++
- testcases/cve/cve-2012-0957.c |  89 ++++++++++++++++++++
- testcases/cve/cve-2014-0196.c | 161 ++++++++++++++++++++++++++++++++++++
- testcases/cve/cve-2016-4997.c |  92 +++++++++++++++++++++
- testcases/cve/cve-2016-7117.c | 158 ++++++++++++++++++++++++++++++++++++
- testcases/cve/cve-2017-2671.c | 120 +++++++++++++++++++++++++++
- testcases/cve/cve-2017-5669.c |  88 ++++++++++++++++++++
- testcases/cve/cve-2017-6951.c |  46 +++++++++++
- 16 files changed, 1029 insertions(+)
- create mode 100644 include/tst_fuzzy_sync.h
- create mode 100644 m4/ltp-mmsghdr.m4
- create mode 100644 m4/ltp-uname.m4
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ runtest/cve              |  5 +++++
+ runtest/syscalls         |  2 ++
+ scenario_groups/default  |  1 +
+ testcases/cve/.gitignore |  3 +++
+ testcases/cve/Makefile   | 25 +++++++++++++++++++++++++
+ 5 files changed, 36 insertions(+)
  create mode 100644 runtest/cve
  create mode 100644 testcases/cve/.gitignore
  create mode 100644 testcases/cve/Makefile
- create mode 100644 testcases/cve/cve-2012-0957.c
- create mode 100644 testcases/cve/cve-2014-0196.c
- create mode 100644 testcases/cve/cve-2016-4997.c
- create mode 100644 testcases/cve/cve-2016-7117.c
- create mode 100644 testcases/cve/cve-2017-2671.c
- create mode 100644 testcases/cve/cve-2017-5669.c
- create mode 100644 testcases/cve/cve-2017-6951.c
 
+diff --git a/runtest/cve b/runtest/cve
+new file mode 100644
+index 000000000..83b53d906
+--- /dev/null
++++ b/runtest/cve
+@@ -0,0 +1,5 @@
++# Tests which check for vulnerabilities by CVE number
++cve-2012-0957 cve-2012-0957
++cve-2016-4997 cve-2016-4997
++cve-2016-5195 dirtyc0w
++cve-2016-7117 cve-2016-7117
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 08d299a5b..85755eb12 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1143,6 +1143,7 @@ set_tid_address01 set_tid_address01
+ setsid01 setsid01
+ 
+ setsockopt01 setsockopt01
++cve-2016-4997 cve-2016-4997
+ 
+ settimeofday01 settimeofday01
+ settimeofday02 settimeofday02
+@@ -1356,6 +1357,7 @@ umask01 umask01
+ uname01 uname01
+ uname02 uname02
+ uname03 uname03
++cve-2012-0957 cve-2012-0957
+ 
+ unlink01 symlink01 -T unlink01
+ unlink05 unlink05
+diff --git a/scenario_groups/default b/scenario_groups/default
+index b0d770171..5658a618b 100644
+--- a/scenario_groups/default
++++ b/scenario_groups/default
+@@ -32,3 +32,4 @@ can
+ cpuhotplug
+ net.ipv6_lib
+ input
++cve
+diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
+new file mode 100644
+index 000000000..9c24b83ec
+--- /dev/null
++++ b/testcases/cve/.gitignore
+@@ -0,0 +1,3 @@
++cve-2012-0957
++cve-2016-4997
++cve-2016-7117
+diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
+new file mode 100644
+index 000000000..d642b73b4
+--- /dev/null
++++ b/testcases/cve/Makefile
+@@ -0,0 +1,25 @@
++# Copyright (c) 2017 Linux Test Project
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program. If not, see <http://www.gnu.org/licenses/>.
++
++top_srcdir		?= ../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++CFLAGS			+= -D_GNU_SOURCE
++
++cve-2014-0196:	LDFLAGS += -lpthread -lutil -lrt
++cve-2016-7117:	LDFLAGS += -lpthread -lrt
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
 -- 
 2.12.2
 
