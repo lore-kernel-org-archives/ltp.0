@@ -1,67 +1,73 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Fri, 23 Jun 2017 14:22:09 +0200
-Subject: [LTP] [PATCH v3 7/9] Test for CVE-2017-5669 in shmat
+Date: Fri, 23 Jun 2017 14:22:06 +0200
+Subject: [LTP] [PATCH v3 4/9] Test for uname26 exploit CVE-2012-0957
 In-Reply-To: <20170623122211.29575-1-rpalethorpe@suse.com>
 References: <20170623122211.29575-1-rpalethorpe@suse.com>
-Message-ID: <20170623122211.29575-8-rpalethorpe@suse.com>
+Message-ID: <20170623122211.29575-5-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Xiao Yang and myself independently wrote the same test. Xiao's version can be
-seen here: http://lists.linux.it/pipermail/ltp/2017-June/004695.html
+Attempt to exploit the uname kernel memory leak which occurred when the
+UNAME26 personality was set.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- runtest/cve                   |  1 +
- runtest/syscalls              |  1 +
- testcases/cve/.gitignore      |  1 +
- testcases/cve/cve-2017-5669.c | 88 +++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 91 insertions(+)
- create mode 100644 testcases/cve/cve-2017-5669.c
+ configure.ac                  |  1 +
+ m4/ltp-uname.m4               | 20 ++++++++++
+ testcases/cve/cve-2012-0957.c | 89 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 110 insertions(+)
+ create mode 100644 m4/ltp-uname.m4
+ create mode 100644 testcases/cve/cve-2012-0957.c
 
-diff --git a/runtest/cve b/runtest/cve
-index 6556ffb0f..166c98c8a 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -4,3 +4,4 @@ cve-2014-0196 cve-2014-0196
- cve-2016-4997 cve-2016-4997
- cve-2016-5195 dirtyc0w
- cve-2016-7117 cve-2016-7117
-+cve-2017-5669 cve-2017-5669
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 85755eb12..12ef696f1 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1164,6 +1164,7 @@ setxattr03 setxattr03
- shmat01 shmat01
- shmat02 shmat02
- shmat03 shmat03
-+cve-2017-5669 cve-2017-5669
+diff --git a/configure.ac b/configure.ac
+index 326da8ece..658003972 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -193,5 +193,6 @@ LTP_CHECK_KEYUTILS_SUPPORT
+ LTP_CHECK_SYNC_ADD_AND_FETCH
+ LTP_CHECK_BUILTIN_CLEAR_CACHE
+ LTP_CHECK_MMSGHDR
++LTP_CHECK_UNAME_DOMAINNAME
  
- shmctl01 shmctl01
- shmctl02 shmctl02
-diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
-index ff5844263..715cbab38 100644
---- a/testcases/cve/.gitignore
-+++ b/testcases/cve/.gitignore
-@@ -2,3 +2,4 @@ cve-2012-0957
- cve-2014-0196
- cve-2016-4997
- cve-2016-7117
-+cve-2017-5669
-diff --git a/testcases/cve/cve-2017-5669.c b/testcases/cve/cve-2017-5669.c
+ AC_OUTPUT
+diff --git a/m4/ltp-uname.m4 b/m4/ltp-uname.m4
 new file mode 100644
-index 000000000..62e12e236
+index 000000000..5a3002200
 --- /dev/null
-+++ b/testcases/cve/cve-2017-5669.c
-@@ -0,0 +1,88 @@
++++ b/m4/ltp-uname.m4
+@@ -0,0 +1,20 @@
++dnl Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
++dnl
++dnl This program is free software;  you can redistribute it and/or modify
++dnl it under the terms of the GNU General Public License as published by
++dnl the Free Software Foundation; either version 2 of the License, or
++dnl (at your option) any later version.
++dnl
++dnl This program is distributed in the hope that it will be useful,
++dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++dnl the GNU General Public License for more details.
++dnl
++dnl You should have received a copy of the GNU General Public License
++dnl along with this program. If not, see <http://www.gnu.org/licenses/>.
++
++AC_DEFUN([LTP_CHECK_UNAME_DOMAINNAME],[
++AC_CHECK_MEMBERS([struct utsname.domainname],,,[
++#define _GNU_SOURCE
++#include <sys/utsname.h>
++])])
+diff --git a/testcases/cve/cve-2012-0957.c b/testcases/cve/cve-2012-0957.c
+new file mode 100644
+index 000000000..f065735a1
+--- /dev/null
++++ b/testcases/cve/cve-2012-0957.c
+@@ -0,0 +1,89 @@
 +/*
 + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ * Copyright (c) 2017 Fujitsu Ltd. (Xiao Yang <yangx.jy@cn.fujitsu.com>)
++ * Copyright (c) 2012, Kees Cook <keescook@chromium.org>
 + *
 + * This program is free software: you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
@@ -77,75 +83,76 @@ index 000000000..62e12e236
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
 +/*
-+ * Test for CVE-2017-5669 which allows us to map the nil page using shmat.
++ * Check that memory after the string terminator in all the utsname fields has
++ * been zeroed. cve-2012-0957 leaked kernel memory through the release field
++ * when the UNAME26 personality was set.
 + *
-+ * When the bug is present shmat(..., (void *)1, SHM_RND) will round address
-+ * 0x1 down to zero and give us the (nil/null) page. With the current bug fix
-+ * in place, shmat it will return EINVAL instead. We also check to see if the
-+ * returned address is outside the nil page in case an alternative fix has
-+ * been applied.
-+ *
-+ * In any case we manage to map some memory we also try to write to it. This
-+ * is just to see if we get an access error or some other unexpected behaviour.
-+ *
-+ * See commit 95e91b831f (ipc/shm: Fix shmat mmap nil-page protection)
++ * Thanks to Kees Cook for the original proof of concept:
++ * http://www.securityfocus.com/bid/55855/info
 + */
-+#include <sys/types.h>
-+#include <sys/ipc.h>
-+#include <sys/shm.h>
 +
-+#include <stdio.h>
-+#include <errno.h>
 +#include <string.h>
-+
++#include <sys/utsname.h>
++#include <sys/personality.h>
 +#include "tst_test.h"
-+#include "tst_safe_sysv_ipc.h"
 +
-+static int shm_id;
-+static void *shm_addr;
++#define UNAME26 0x0020000
 +
-+static void cleanup(void)
++static int check_field(char *bytes, size_t length, char *field)
 +{
-+	if (shm_addr)
-+		SAFE_SHMDT(shm_addr);
-+	shm_addr = 0;
++	size_t i = strlen(bytes) + 1;
 +
-+	if (shm_id)
-+		SAFE_SHMCTL(shm_id, IPC_RMID, 0);
-+	shm_id = 0;
++	for (; i < length; i++) {
++		if (bytes[i]) {
++			tst_res(TFAIL, "Bytes leaked in %s!", field);
++			return 1;
++		}
++	}
++	return 0;
 +}
 +
-+static void run(void)
++
++static void try_leak_bytes(void)
 +{
-+	shm_id = SAFE_SHMGET(IPC_PRIVATE, getpagesize(), 0777);
++	struct utsname buf;
 +
-+	tst_res(TINFO, "Attempting to attach shared memory to null page");
-+	shm_addr = shmat(shm_id, ((void *)1), SHM_RND);
-+	if (shm_addr == (void *)-1) {
-+		if (errno == EINVAL) {
-+			tst_res(TPASS, "shmat returned EINVAL");
-+			shm_addr = 0;
-+			return;
-+		}
-+		tst_brk(TBROK | TERRNO,
-+			"The bug was not triggered, but the shmat error is unexpected");
++	if (uname(&buf))
++		tst_brk(TBROK | TERRNO, "Call to uname failed");
++
++#define CHECK_FIELD(field_name) \
++	(check_field(buf.field_name, ARRAY_SIZE(buf.field_name), #field_name))
++
++	if (!(CHECK_FIELD(release) |
++	    CHECK_FIELD(sysname) |
++	    CHECK_FIELD(nodename) |
++	    CHECK_FIELD(version) |
++	    CHECK_FIELD(machine) |
++#ifdef HAVE_STRUCT_UTSNAME_DOMAINNAME
++	    CHECK_FIELD(domainname) |
++#endif
++		    0)) {
++		tst_res(TPASS, "All fields zeroed after string terminator");
 +	}
++#undef CHECK_FIELD
++}
 +
-+	tst_res(TINFO, "Mapped shared memory to %p", shm_addr);
-+
-+	if (!((size_t)shm_addr & (~0U << 16)))
-+		tst_res(TFAIL,
-+			"We have mapped a VM address within the first 64Kb");
-+	else
-+		tst_res(TPASS,
-+			"The kernel assigned a different VM address");
-+
-+	((char *)shm_addr)[0] = 'P';
++static void run(unsigned int test_nr)
++{
++	if (!test_nr) {
++		tst_res(TINFO, "Calling uname with default personality");
++		try_leak_bytes();
++	} else {
++		if (personality(PER_LINUX | UNAME26) < 0)
++			tst_brk(TCONF | TERRNO,
++				"Could not change personality to UNAME26");
++		tst_res(TINFO, "Calling uname with UNAME26 personality");
++		try_leak_bytes();
++	}
 +}
 +
 +static struct tst_test test = {
-+	.cleanup = cleanup,
-+	.test_all = run,
++	.test = run,
++	.tcnt = 2,
 +};
 -- 
 2.12.2
