@@ -1,9 +1,10 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Fri, 23 Jun 2017 14:22:11 +0200
-Subject: [LTP] [PATCH v3 9/9] Test for CVE-2017-2671 on ping sockets
+Date: Fri, 23 Jun 2017 14:22:04 +0200
+Subject: [LTP] [PATCH v3 2/9] Test for vulnerability CVE-2016-7117 in
+	recvmmsg error return path
 In-Reply-To: <20170623122211.29575-1-rpalethorpe@suse.com>
 References: <20170623122211.29575-1-rpalethorpe@suse.com>
-Message-ID: <20170623122211.29575-10-rpalethorpe@suse.com>
+Message-ID: <20170623122211.29575-3-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,55 +13,60 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- runtest/cve                   |   1 +
- testcases/cve/.gitignore      |   1 +
- testcases/cve/Makefile        |   1 +
- testcases/cve/cve-2017-2671.c | 120 ++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 123 insertions(+)
- create mode 100644 testcases/cve/cve-2017-2671.c
+ configure.ac                  |   1 +
+ m4/ltp-mmsghdr.m4             |  22 ++++++
+ testcases/cve/cve-2016-7117.c | 158 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 181 insertions(+)
+ create mode 100644 m4/ltp-mmsghdr.m4
+ create mode 100644 testcases/cve/cve-2016-7117.c
 
-diff --git a/runtest/cve b/runtest/cve
-index ee0614a9c..32a39cf80 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -4,5 +4,6 @@ cve-2014-0196 cve-2014-0196
- cve-2016-4997 cve-2016-4997
- cve-2016-5195 dirtyc0w
- cve-2016-7117 cve-2016-7117
-+cve-2017-2671 cve-2017-2671
- cve-2017-5669 cve-2017-5669
- cve-2017-6951 cve-2017-6951
-diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
-index 979d18369..b83372b08 100644
---- a/testcases/cve/.gitignore
-+++ b/testcases/cve/.gitignore
-@@ -2,5 +2,6 @@ cve-2012-0957
- cve-2014-0196
- cve-2016-4997
- cve-2016-7117
-+cve-2017-2671
- cve-2017-5669
- cve-2017-6951
-diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
-index d642b73b4..e9d9044d5 100644
---- a/testcases/cve/Makefile
-+++ b/testcases/cve/Makefile
-@@ -21,5 +21,6 @@ CFLAGS			+= -D_GNU_SOURCE
+diff --git a/configure.ac b/configure.ac
+index cbe01d34f..326da8ece 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -192,5 +192,6 @@ LTP_CHECK_EPOLL_PWAIT
+ LTP_CHECK_KEYUTILS_SUPPORT
+ LTP_CHECK_SYNC_ADD_AND_FETCH
+ LTP_CHECK_BUILTIN_CLEAR_CACHE
++LTP_CHECK_MMSGHDR
  
- cve-2014-0196:	LDFLAGS += -lpthread -lutil -lrt
- cve-2016-7117:	LDFLAGS += -lpthread -lrt
-+cve-2017-2671:	LDFLAGS += -lpthread -lrt
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/cve/cve-2017-2671.c b/testcases/cve/cve-2017-2671.c
+ AC_OUTPUT
+diff --git a/m4/ltp-mmsghdr.m4 b/m4/ltp-mmsghdr.m4
 new file mode 100644
-index 000000000..4e3a446b5
+index 000000000..05522180e
 --- /dev/null
-+++ b/testcases/cve/cve-2017-2671.c
-@@ -0,0 +1,120 @@
++++ b/m4/ltp-mmsghdr.m4
+@@ -0,0 +1,22 @@
++dnl Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
++dnl
++dnl This program is free software;  you can redistribute it and/or modify
++dnl it under the terms of the GNU General Public License as published by
++dnl the Free Software Foundation; either version 2 of the License, or
++dnl (at your option) any later version.
++dnl
++dnl This program is distributed in the hope that it will be useful,
++dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++dnl the GNU General Public License for more details.
++dnl
++dnl You should have received a copy of the GNU General Public License
++dnl along with this program. If not, see <http://www.gnu.org/licenses/>.
++
++AC_DEFUN([LTP_CHECK_MMSGHDR],[
++AC_CHECK_TYPES([struct mmsghdr],,,[
++#define _GNU_SOURCE
++#include <sys/types.h>
++#include <sys/socket.h>
++])
++])
+diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
+new file mode 100644
+index 000000000..25937edd1
+--- /dev/null
++++ b/testcases/cve/cve-2016-7117.c
+@@ -0,0 +1,158 @@
 +/*
 + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ * Original POC by Daniel Jiang
 + *
 + * This program is free software: you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
@@ -76,107 +82,146 @@ index 000000000..4e3a446b5
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
 +/*
-+ * Test for CVE-2017-2671 faulty locking on ping socket
++ * CVE-2016-7117
 + *
-+ * When sys_connect() is called with sockaddr.sin_family set to AF_UNSPEC on a
-+ * ping socket; __udp_disconnect() gets called, which in turn calls the buggy
-+ * function ping_unhashed(). This function does not obtain a rwlock before
-+ * checking if the socket is hashed allowing the socket data to be pulled from
-+ * underneath it in the time between calling sk_hashed() and gaining the write
-+ * lock.
++ * This tests for a use after free caused by a race between recvmmsg() and
++ * close(). The exit path for recvmmsg() in (a2e2725541f: net: Introduce
++ * recvmmsg socket syscall) called fput() on the active file descriptor before
++ * checking the error state and setting the socket's error field.
 + *
-+ * Fixed in commit 43a6684519ab0a6c52024b5e25322476cabad893
++ * If one or more messages are received by recvmmsg() followed by one which
++ * fails, the socket's error field will be set. If just after recvmmsg() calls
++ * fput(), a call to close() is made on the same file descriptor there is a
++ * race between close() releasing the socket object and recvmmsg() setting its
++ * error field.
 + *
-+ * This test repeatedly 'connects' a ping socket correctly then calls
-+ * connect() with AF_UNSPEC in two seperate threads to trigger the race
-+ * condition. If the bug is present, then the test will most likely crash the
-+ * system.
++ * fput() does not release a file descriptor's resources (e.g. a socket)
++ * immediatly, it queues them to be released just before a system call returns
++ * to user land. So the close() system call must call fput() after it is
++ * called in recvmmsg(), exit and release the resources all before the socket
++ * error is set.
 + *
-+ * The test requests root privileges so that it can ensure ping sockets are
-+ * enabled. On distributions (including Android) where ping sockets are
-+ * enabled by default, root privileges are not required.
++ * Usually if the vulnerability is present the test will be killed with a
++ * kernel null pointer exception. However this is not guaranteed to happen
++ * every time.
++ *
++ * The following was used for reference
++ * https://blog.lizzie.io/notes-about-cve-2016-7117.html
 + */
 +
-+#include <stdio.h>
++#include <sys/wait.h>
++#include <sys/types.h>
 +#include <sys/socket.h>
-+#include <arpa/inet.h>
++#include <sys/syscall.h>
 +#include <stdlib.h>
++#include <errno.h>
 +
 +#include "tst_test.h"
 +#include "tst_safe_net.h"
 +#include "tst_safe_pthread.h"
-+
++#include "tst_timer.h"
 +#include "tst_fuzzy_sync.h"
 +
-+#define ATTEMPTS 0xFFFF
-+#define PING_SYSCTL_PATH "/proc/sys/net/ipv4/ping_group_range"
++/* The bug was present in the kernel before recvmmsg was exposed by glibc */
++#include "linux_syscall_numbers.h"
 +
-+static int sockfd;
-+static unsigned int ping_min_grp = 1, ping_max_grp;
++#define MSG "abcdefghijklmnop"
++#define RECV_TIMEOUT 1
++#define ATTEMPTS 0x1FFFFF
++
++#ifndef HAVE_STRUCT_MMSGHDR
++struct mmsghdr {
++	struct msghdr msg_hdr;
++	unsigned int msg_len;
++};
++#endif
++
++static int socket_fds[2];
++static struct mmsghdr msghdrs[2] = {
++	{
++		.msg_hdr = {
++			.msg_iov = &(struct iovec) {
++				.iov_len = sizeof(MSG),
++			},
++			.msg_iovlen = 1
++		}
++	},
++	{
++		.msg_hdr = {
++			.msg_iov = &(struct iovec) {
++				.iov_base = (void *)(0xbadadd),
++				.iov_len = ~0,
++			},
++			.msg_iovlen = 1
++		}
++	}
++};
++static char rbuf[sizeof(MSG)];
++static struct timespec timeout = { .tv_sec = RECV_TIMEOUT };
 +static struct tst_fzsync_pair fzsync_pair = TST_FZSYNC_PAIR_INIT;
-+static struct sockaddr_in iaddr, uaddr;
-+
-+static void setup(void)
-+{
-+	iaddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-+	uaddr = iaddr;
-+	iaddr.sin_family = AF_INET;
-+	uaddr.sin_family = AF_UNSPEC;
-+	fzsync_pair.delay_inc = 1;
-+
-+	SAFE_FILE_SCANF(PING_SYSCTL_PATH, "%u %u",
-+			&ping_min_grp, &ping_max_grp);
-+	SAFE_FILE_PRINTF(PING_SYSCTL_PATH, "0 0");
-+}
 +
 +static void cleanup(void)
 +{
-+	if (ping_min_grp | ping_max_grp)
-+		SAFE_FILE_PRINTF(PING_SYSCTL_PATH, "%u %u",
-+				 ping_min_grp, ping_max_grp);
++	close(socket_fds[0]);
++	close(socket_fds[1]);
 +}
 +
-+static void *connect_b(void * param LTP_ATTRIBUTE_UNUSED)
++static void *send_and_close(void *arg)
 +{
++	send(socket_fds[0], MSG, sizeof(MSG), 0);
++	send(socket_fds[0], MSG, sizeof(MSG), 0);
++
 +	tst_fzsync_delay_b(&fzsync_pair);
-+	connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
++
++	close(socket_fds[0]);
++	close(socket_fds[1]);
 +	tst_fzsync_time_b(&fzsync_pair);
 +
-+	return 0;
++	return arg;
 +}
 +
 +static void run(void)
 +{
-+	pthread_t thrd;
-+	int i;
++	pthread_t pt_send;
++	int i, stat, too_early_count = 0;
 +
-+	sockfd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, IPPROTO_ICMP);
-+	tst_res(TINFO, "Created ping socket, attempting to race...");
++	msghdrs[0].msg_hdr.msg_iov->iov_base = (void *)&rbuf;
 +
-+	for (i = 0; i < ATTEMPTS; i++) {
-+		SAFE_CONNECT(sockfd,
-+			     (struct sockaddr *)&iaddr, sizeof(iaddr));
-+		SAFE_PTHREAD_CREATE(&thrd, 0, connect_b, 0);
++	for (i = 1; i < ATTEMPTS; i++) {
++		if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, socket_fds))
++			tst_brk(TBROK | TERRNO, "Socket creation failed");
++
++		SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, 0);
 +
 +		tst_fzsync_delay_a(&fzsync_pair);
-+		connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
++
++		stat = tst_syscall(__NR_recvmmsg,
++				   socket_fds[1], msghdrs, 2, 0, &timeout);
 +		tst_fzsync_time_a(&fzsync_pair);
++		if (stat < 0 && errno == EBADF)
++			too_early_count++;
++		else if (stat == 0)
++			tst_res(TWARN, "No messages received, should be one");
++		else if (stat < 0)
++			tst_res(TWARN | TERRNO, "recvmmsg failed unexpectedly");
 +
-+		SAFE_PTHREAD_JOIN(thrd, 0);
++		SAFE_PTHREAD_JOIN(pt_send, 0);
++
 +		tst_fzsync_pair_update(i, &fzsync_pair);
-+
-+		if (!(i & 0x7FFF))
++		if (!(i & 0x7FFFF)) {
++			tst_res(TINFO, "Too early: %.1f%%",
++				100 * too_early_count / (float)i);
 +			tst_fzsync_pair_info(&fzsync_pair);
++		}
 +	}
 +
-+	tst_res(TPASS, "We didn't crash");
++	tst_res(TPASS, "Nothing happened after %d attempts", ATTEMPTS);
 +}
 +
 +static struct tst_test test = {
-+	.setup = setup,
 +	.test_all = run,
 +	.cleanup = cleanup,
-+	.needs_root = 1,
++	.min_kver = "2.6.33",
 +};
 -- 
 2.12.2
