@@ -1,54 +1,51 @@
-From: ankit gupta <ankitrtk@gmail.com>
-Date: Fri, 23 Jun 2017 11:55:23 +0530
-Subject: [LTP] LTP Ipv6_lib failures
-Message-ID: <CACUy5SN4anXf9wE+wCTjSHK5O6EXtTCTfL96tvJJHtcOS3KSBA@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 26 Jun 2017 10:29:35 +0200
+Subject: [LTP] [PATCH] network/stress: Reduce the default number of cycles
+	for various tests
+Message-ID: <20170626082935.2868-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi All,
+Reducing value to one fifth resp. one tenth should be enough even for
+stress testing.
 
-I am executing the LTP(20160126) tests for one of my board, and in it
-Ipv6_lib is failing. below is the tests results and logs.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/test_net.sh | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Test Start Time: Thu Jun 22 18:22:27 2017
------------------------------------------
-Testcase                       Result     Exit Value
---------                       ------     ----------
-in6_01                         PASS       0
-in6_02                         FAIL       4
-getaddrinfo_01                 FAIL       1
-asapi_01                       FAIL       2
-asapi_02                       FAIL       2
-asapi_03                       FAIL       2
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index 651f5c895..0b31ce409 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -558,19 +558,19 @@ export FTP_UPLOAD_URLDIR="${FTP_UPLOAD_URLDIR:-pub}"
+ 
+ # network/stress tests require additional parameters
+ export NS_DURATION="${NS_DURATION:-3600}"
+-export NS_TIMES="${NS_TIMES:-10000}"
++export NS_TIMES="${NS_TIMES:-2000}"
+ export CONNECTION_TOTAL="${CONNECTION_TOTAL:-4000}"
+-export IP_TOTAL="${IP_TOTAL:-10000}"
++export IP_TOTAL="${IP_TOTAL:-2000}"
+ export IP_TOTAL_FOR_TCPIP="${IP_TOTAL_FOR_TCPIP:-100}"
+-export ROUTE_TOTAL="${ROUTE_TOTAL:-10000}"
++export ROUTE_TOTAL="${ROUTE_TOTAL:-2000}"
+ export MTU_CHANGE_TIMES="${MTU_CHANGE_TIMES:-1000}"
+-export IF_UPDOWN_TIMES="${IF_UPDOWN_TIMES:-10000}"
++export IF_UPDOWN_TIMES="${IF_UPDOWN_TIMES:-2000}"
+ export DOWNLOAD_BIGFILESIZE="${DOWNLOAD_BIGFILESIZE:-2147483647}"
+ export DOWNLOAD_REGFILESIZE="${DOWNLOAD_REGFILESIZE:-1048576}"
+ export UPLOAD_BIGFILESIZE="${UPLOAD_BIGFILESIZE:-2147483647}"
+ export UPLOAD_REGFILESIZE="${UPLOAD_REGFILESIZE:-1024}"
+ export MCASTNUM_NORMAL="${MCASTNUM_NORMAL:-20}"
+-export MCASTNUM_HEAVY="${MCASTNUM_HEAVY:-40000}"
++export MCASTNUM_HEAVY="${MCASTNUM_HEAVY:-4000}"
+ 
+ [ -n "$TST_USE_NETNS" -a "$TST_INIT_NETNS" != "no" ] && init_ltp_netspace
+ 
+-- 
+2.12.2
 
------------------------------------------------
-Total Tests: 6
-Total Skipped Tests: 0
-Total Failures: 5
-Kernel Version: 4.1.29-4.1-1.0.x-imx-dms-ba16+g8eaed11
-Machine Architecture: armv7l
-Hostname: Development-board
-
-
-In this* getaddrinfo_01* is passing after I make entry of my host name in
-/etc/hosts file, but rest 4 tests are still failing. I did not find any
-failure reason in LTP bugs list.
-
-Please see the attachment for individual tests execution logs and let me
-know if something else is required from my side?
-
-Thanks & Regards,
-Ankit Gupta
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170623/64b4662d/attachment.html>
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: ipv6_lib_console_logs
-Type: application/octet-stream
-Size: 11131 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170623/64b4662d/attachment.obj>
