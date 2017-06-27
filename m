@@ -1,11 +1,11 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 27 Jun 2017 16:53:33 +0200
-Subject: [LTP] [PATCH 4/4] lib/test: run ROD_BASE() & tst_rod() with
- 'timeout' cmd
-In-Reply-To: <1495615230-29045-5-git-send-email-alexey.kodanev@oracle.com>
-References: <1495615230-29045-1-git-send-email-alexey.kodanev@oracle.com>
- <1495615230-29045-5-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20170627145333.GA2625@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 27 Jun 2017 18:06:23 +0200
+Subject: [LTP] [PATCH 1/1] ver_linux: Print sysctl settings
+In-Reply-To: <20170627122049.GA12689@rei.lan>
+References: <20170425100335.20017-1-pvorel@suse.cz>
+ <20170626100447.f3kviwhmtjy2qbdu@dell5510>
+ <20170627122049.GA12689@rei.lan>
+Message-ID: <20170627160623.dc5ok6ckuxahxnvl@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,63 +13,28 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> index 087adda..c4fbe86 100644
-> --- a/testcases/lib/tst_test.sh
-> +++ b/testcases/lib/tst_test.sh
-> @@ -116,7 +116,7 @@ tst_brk()
->  
->  ROD_SILENT()
->  {
-> -	tst_rod $@ > /dev/null 2>&1
-> +	$TST_TIMECMD tst_rod $@ > /dev/null 2>&1
+> > > +echo
+> > > +echo 'sysctl settings:'
+> > > +sysctl -a
 
-It would be a bit cleaner to add the timeout capability to the tst_rod
-and pass timeout to tst_rod as a first parameter here. Which would fix
-the second (below) that I have for this patch.
+> > Ping.
+> > It might be useful to get output of env to see environment variables.
 
->  	if [ $? -ne 0 ]; then
->  		tst_brk TBROK "$@ failed"
->  	fi
-> @@ -124,7 +124,7 @@ ROD_SILENT()
->  
->  ROD()
->  {
-> -	tst_rod "$@"
-> +	$TST_TIMECMD tst_rod "$@"
->  	if [ $? -ne 0 ]; then
->  		tst_brk TBROK "$@ failed"
->  	fi
-> @@ -132,7 +132,7 @@ ROD()
->  
->  EXPECT_PASS()
->  {
-> -	tst_rod "$@"
-> +	$TST_TIMECMD tst_rod "$@"
->  	if [ $? -eq 0 ]; then
->  		tst_res TPASS "$@ passed as expected"
->  	else
-> @@ -143,7 +143,7 @@ EXPECT_PASS()
->  EXPECT_FAIL()
->  {
->  	# redirect stderr since we expect the command to fail
-> -	tst_rod "$@" 2> /dev/null
-> +	$TST_TIMECMD tst_rod "$@" 2> /dev/null
->  	if [ $? -ne 0 ]; then
->  		tst_res TPASS "$@ failed as expected"
->  	else
-> @@ -430,3 +430,6 @@ else
->  		tst_brk TBROK "Unexpected positional arguments '$@'"
->  	fi
->  fi
-> +
-> +command -v timeout > /dev/null 2>&1 && \
-> +	TST_TIMECMD="timeout -s 9 $((300 * ${LTP_TIMEOUT_MUL:-1}))s"
+> Hmm, I find this to be a bit too verbose, do we really have to print all
+> the variables?
 
-I do not like that we silently disable the timeout if 'timeout' command
-is not available. I would rather add tst_timeout.c helper to the lib/ as
-we do for instance for tst_sleep to support sub-second sleep intervals.
+> Can't we grep a few interesting ones and limit the output to something
+> as 20 lines?
+You're right. I'd grep something like:
+env |grep -m 20 -e PATH -e LTP -e RHOST -e IPV4 -e IPV6
+These are just for network related tests, would you propose some more?
+The problem with environment variables (at least for network.sh) is that they are set for
+subshell (child process), so they are not visible when env is running in ver_linux. We
+need to put it into scripts which set them. Either simple echo, or use 'set -x' before
+exporting variables and 'set +x' after.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Do you want to limit sysctl output somehow as well?
+
+
+Kind regards,
+Petr
