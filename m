@@ -1,12 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 28 Jun 2017 16:04:06 +0200
-Subject: [LTP] [PATCH 1/1] ver_linux: Print sysctl settings
-In-Reply-To: <20170627160623.dc5ok6ckuxahxnvl@dell5510>
-References: <20170425100335.20017-1-pvorel@suse.cz>
- <20170626100447.f3kviwhmtjy2qbdu@dell5510>
- <20170627122049.GA12689@rei.lan>
- <20170627160623.dc5ok6ckuxahxnvl@dell5510>
-Message-ID: <20170628140406.GA27262@rei.lan>
+Date: Wed, 28 Jun 2017 18:18:22 +0200
+Subject: [LTP] [PATCH 3/3] syscalls/lseek10: cleanup && convert to new
+	API
+In-Reply-To: <1498025539-24441-3-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1498025539-24441-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1498025539-24441-3-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20170628161822.GB27262@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,42 +13,32 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > > > +echo
-> > > > +echo 'sysctl settings:'
-> > > > +sysctl -a
-> 
-> > > Ping.
-> > > It might be useful to get output of env to see environment variables.
-> 
-> > Hmm, I find this to be a bit too verbose, do we really have to print all
-> > the variables?
-> 
-> > Can't we grep a few interesting ones and limit the output to something
-> > as 20 lines?
-> You're right. I'd grep something like:
-> env |grep -m 20 -e PATH -e LTP -e RHOST -e IPV4 -e IPV6
-> These are just for network related tests, would you propose some more?
-> The problem with environment variables (at least for network.sh) is that they are set for
-> subshell (child process), so they are not visible when env is running in ver_linux. We
-> need to put it into scripts which set them. Either simple echo, or use 'set -x' before
-> exporting variables and 'set +x' after.
-> 
-> Do you want to limit sysctl output somehow as well?
+> +#define SAFE_MKNOD(pathname, mode, dev) \
+> +	safe_mknod(__FILE__, __LINE__, (pathname), (mode), (dev))
+> +
+>  #endif /* SAFE_MACROS_H__ */
+> diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+> index 3ef9266..7ca1849 100644
+> --- a/lib/safe_macros.c
+> +++ b/lib/safe_macros.c
+> @@ -908,3 +908,17 @@ pid_t safe_setsid(const char *file, const int lineno)
+>  
+>  	return rval;
+>  }
+> +
+> +int safe_mknod(const char *file, const int lineno, const char *pathname,
+> +	mode_t mode, dev_t dev)
+> +{
+> +	int rval;
+> +
+> +	rval = mknod(pathname, mode, dev);
+> +	if (rval == -1) {
+> +		tst_brkm(TBROK | TERRNO, NULL,
+> +			 "%s:%d: mknod() failed", file, lineno);
 
-I would do that as well, I doubt that values such as cdrom speed are of
-any value for us. Maybe we should just create a whitelist and print only
-these variables that we find interesting.
-
-For sysctl that would be as easy as:
-
-for knob in foo.bar1 foo.bar2 ...; do
-	sysclt $knob
-done
-
-The question is of course which ones. Looking at the sysctl output
-settings related to vm overcommit and few from kernel.* namespace looks
-most relevant to me. I suppose you want to add some network knobs as
-well.
+I've changed this line to include the parameters passed to the
+safe_mknod() to be included in the error message as well and pushed the
+whole patchset, thanks.
 
 -- 
 Cyril Hrubis
