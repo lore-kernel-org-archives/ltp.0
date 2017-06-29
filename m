@@ -1,303 +1,211 @@
-From: James Morse <james.morse@arm.com>
-Date: Thu, 29 Jun 2017 16:50:34 +0100
-Subject: [LTP] [PATCH] ptrace/ptrace07: Add test for PTRACE_{G,S}ETSIGMASK
-Message-ID: <20170629155034.11773-1-james.morse@arm.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 29 Jun 2017 18:14:11 +0200
+Subject: [LTP] [PATCH v2 2/3] syscalls/shmat0*: cleanup && convert to
+	new API
+In-Reply-To: <1496317753-2871-2-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20170529145709.GC6618@rei.lan>
+ <1496317753-2871-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1496317753-2871-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20170629161411.GD3233@rei.suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-PTRACE_{G,S}ETSIGMASK allows a ptrace()ing process to read and
-modify the tracee's signal mask. Add a new test for the behaviour
-of these calls.
+Hi!
+> --- a/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.c
+> +++ b/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.c
+> @@ -26,6 +26,8 @@
+>  #include <stdlib.h>
+>  #include <sys/types.h>
+>  #include <sys/ipc.h>
+> +#include <sys/msg.h>
+> +#include <sys/shm.h>
+>  
+>  #define	TST_NO_DEFAULT_MAIN
+>  
+> @@ -79,3 +81,33 @@ int get_used_queues(const char *file, const int lineno)
+>  
+>  	return used_queues;
+>  }
+> +
+> +void *probe_free_addr(const char *file, const int lineno)
+> +{
+> +	void *addr;
+> +	int shm_id = -1;
+> +	key_t probe_key = 0;
+> +
+> +	if (!probe_key)
+> +		probe_key = GETIPCKEY();
+> +
+> +	shm_id = shmget(probe_key, SHMLBA * 2, SHM_RW | IPC_CREAT | IPC_EXCL);
+> +	if (shm_id == -1)
+> +		tst_brk(TBROK, "probe: shmget() failed at %s:%d", file, lineno);
+> +
+> +	addr = shmat(shm_id, NULL, 0);
+> +	if (addr == (void *) -1)
+> +		tst_brk(TBROK, "probe: shmat() failed at %s:%d", file, lineno);
+> +
+> +	if (shmdt(addr) == -1)
+> +		tst_brk(TBROK, "probe: shmdt() failed at %s:%d", file, lineno);
+> +
+> +	if (shm_id != -1 && shmctl(shm_id, IPC_RMID, NULL) == -1) {
+> +		tst_brk(TWARN, "probe: shmctl() failed at %s:%d", file, lineno);
+> +		shm_id == -1;
+> +	}
 
-The test fork()s a child, which masks SIGUSR1, then waits for the
-parent to send it this signal. The parent attaches with ptrace(),
-tests that SIGUSR1 is masked, then clears the childs signal mask.
-Child is then restarted and delivered SIGUSR1.
+Huh, this part does not really make any sense.
 
-Signed-off-by: James Morse <james.morse@arm.com>
----
- testcases/kernel/syscalls/ptrace/ptrace07.c | 269 ++++++++++++++++++++++++++++
- 1 file changed, 269 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ptrace/ptrace07.c
+Not only shm_id cannot be -1 since we check for that earlier (and exit
+with tst_brk() in case that it is). The shm_id == -1; here is no-op.
 
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace07.c b/testcases/kernel/syscalls/ptrace/ptrace07.c
-new file mode 100644
-index 000000000..1a37579a7
---- /dev/null
-+++ b/testcases/kernel/syscalls/ptrace/ptrace07.c
-@@ -0,0 +1,269 @@
-+/*
-+ * Copyright (c) ARM Limited, 2017.
-+ *
-+ * Based on ptrace02.c:
-+ * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ */
-+
-+/*
-+ * Child masks SIGUSR1 then waits to receive this signal from its parent.
-+ * Parent ptrace()s child to unmask SIGUSR1 then sends this signal.
-+ */
-+
-+#include <sys/types.h>
-+
-+/*
-+ * We need to know how big the kernel's sigset_t is:
-+ */
-+#define sigset_t kernel_sigset_t
-+#define sigaltstack kernel_sigaltstack
-+#define sigaction kernel_sigaction
-+#define stack_t kernel_stack_t
-+#include <asm-generic/signal.h>
-+#undef sigset_t
-+#undef sigaltstack
-+#undef sigaction
-+#undef stack_t
-+
-+#include <errno.h>
-+#include <sched.h>
-+#include <signal.h>
-+#include <sys/time.h>
-+#include <sys/wait.h>
-+#include <unistd.h>
-+
-+#include <config.h>
-+#include "ptrace.h"
-+
-+#include "test.h"
-+
-+static int do_child(void);
-+static void setup(void);
-+static void cleanup(void);
-+
-+static void parent_handler(int signo, siginfo_t *si, void *ctx);
-+static void child_handler(int signo, siginfo_t *si, void *ctx);
-+
-+char *TCID = "ptrace07";
-+int TST_TOTAL = 1;
-+
-+#define PIPE_READ  0
-+#define PIPE_WRITE 1
-+static int pipefd[2];
-+
-+int main(int ac, char **av)
-+{
-+	fd_set fds;
-+	sigset_t sigs;
-+	int rv, status;
-+	pid_t child_pid;
-+	struct timeval tv;
-+
-+	tst_parse_opts(ac, av, NULL, NULL);
-+
-+	setup();
-+
-+	if (pipe(pipefd) == -1) {
-+		tst_resm(TBROK, "pipe() failed");
-+		tst_exit();
-+	}
-+
-+	switch (child_pid = fork()) {
-+	case -1:
-+		/* fork() failed */
-+		tst_resm(TBROK, "fork() failed");
-+	case 0:		/* Child */
-+		close(pipefd[PIPE_READ]);
-+		do_child();
-+		abort();
-+	default:	/* Parent */
-+		close(pipefd[PIPE_WRITE]);
-+
-+		/* Wait for child to become ready */
-+		rv = read(pipefd[PIPE_READ], &rv, 1);
-+		if (rv != 1) {
-+			tst_resm(TBROK, "failed to read from pipe: %u", errno);
-+			break;
-+		}
-+
-+		/* Attach to child */
-+		rv = ptrace(PTRACE_ATTACH, child_pid, NULL, NULL);
-+		if (rv) {
-+			tst_resm(TBROK, "ptrace() failed to attach: %u", errno);
-+			break;
-+		}
-+
-+		/* Wait for the child to stop */
-+		rv = waitpid(child_pid, &status, 0);
-+		if (rv == -1) {
-+			tst_resm(TBROK, "waitpid() failed: %u", errno);
-+			break;
-+		}
-+
-+		/* Inspect child signals: SIGUSR1 should be masked */
-+		rv = ptrace(PTRACE_GETSIGMASK, child_pid,
-+			    sizeof(kernel_sigset_t), &sigs);
-+		if (rv) {
-+			tst_resm(TBROK, "ptrace() failed: %u", errno);
-+			break;
-+		}
-+		if (!sigismember(&sigs, SIGUSR1)) {
-+			tst_resm(TFAIL, "Child SIGUSR1 not masked");
-+			break;
-+		}
-+
-+		/* Unmask child signals */
-+		rv = sigemptyset(&sigs);
-+		if (rv) {
-+			tst_resm(TBROK, "sigemptyset() failed: %u", errno);
-+			break;
-+		}
-+		rv = ptrace(PTRACE_SETSIGMASK, child_pid,
-+			    sizeof(kernel_sigset_t), &sigs);
-+		if (rv) {
-+			tst_resm(TBROK, "ptrace() failed: %u", errno);
-+			break;
-+		}
-+
-+		/* Restart child and deliver signal */
-+		rv = ptrace(PTRACE_CONT, child_pid, NULL, SIGUSR1);
-+		if (rv) {
-+			tst_resm(TBROK, "ptrace() failed: %u", errno);
-+			break;
-+		}
-+
-+		/* Wait for the child to signal receipt, or timeout */
-+		FD_ZERO(&fds);
-+		FD_SET(pipefd[PIPE_READ], &fds);
-+		tv.tv_sec = 1;
-+		tv.tv_usec = 0;
-+
-+		do {
-+			errno = 0;
-+			rv = select(pipefd[PIPE_READ]+1, &fds, NULL, NULL, &tv);
-+		} while (errno == EINTR);
-+
-+		if (rv == -1) {
-+			tst_resm(TBROK, "select() failed: %u", errno);
-+		} else if (rv == 0) {
-+			/* Timeout */
-+			tst_resm(TFAIL, "timeout: Signals not delivered");
-+		} else {
-+			/* Write from child indicates signal received */
-+			tst_resm(TPASS,
-+				 "ptrace() successfully unmasked signal");
-+		}
-+	}
-+
-+	if (child_pid != -1)
-+		kill(child_pid, SIGKILL);
-+
-+	/* cleanup and exit */
-+	cleanup();
-+	tst_exit();
-+
-+}
-+
-+static int do_child(void)
-+{
-+	long rv;
-+	sigset_t sigs;
-+	struct sigaction act = {0};
-+
-+	act.sa_sigaction = &child_handler;
-+	act.sa_flags = SA_SIGINFO;
-+	sigemptyset(&act.sa_mask);
-+
-+	rv = sigaction(SIGUSR1, &act, NULL);
-+	if (rv) {
-+		tst_resm(TBROK, "sigaction() failed in child");
-+		tst_exit();
-+	}
-+
-+	/* Mask SIGUSR1 */
-+	rv = sigemptyset(&sigs);
-+	if (rv) {
-+		tst_resm(TBROK, "sigemptyset() failed");
-+		tst_exit();
-+	}
-+	rv = sigaddset(&sigs, SIGUSR1);
-+	if (rv) {
-+		tst_resm(TBROK, "sigaddset() failed");
-+		tst_exit();
-+	}
-+	rv = sigprocmask(SIG_BLOCK, &sigs, NULL);
-+	if (rv) {
-+		tst_resm(TBROK, "sigprocmask() failed");
-+		tst_exit();
-+	}
-+
-+	/* Ready */
-+	rv = write(pipefd[PIPE_WRITE], &rv, 1);
-+	if (rv == -1) {
-+		tst_resm(TBROK, "Failed to write to parent: %u", errno);
-+		tst_exit();
-+	}
-+
-+	/* Receive signals from parent */
-+	while (1)
-+		sched_yield();
-+}
-+
-+void setup(void)
-+{
-+	int rv;
-+	struct sigaction act = {0};
-+
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
-+
-+	act.sa_sigaction = &parent_handler;
-+	act.sa_flags = SA_SIGINFO;
-+	sigemptyset(&act.sa_mask);
-+
-+	rv = sigaction(SIGCHLD, &act, NULL);
-+	if (rv) {
-+		tst_resm(TFAIL, "sigaction() failed");
-+		tst_exit();
-+	}
-+
-+	TEST_PAUSE;
-+}
-+
-+void cleanup(void)
-+{
-+
-+}
-+
-+static void parent_handler(int signo, __attribute__((unused)) siginfo_t *si,
-+			   __attribute__((unused)) void *ctx)
-+{
-+	if (signo != SIGCHLD) {
-+		tst_resm(TBROK, "parent_handler() received unexpected signal.");
-+		tst_exit();
-+	}
-+}
-+
-+static void child_handler(int signo, __attribute__((unused)) siginfo_t *si,
-+			  __attribute__((unused)) void *ctx)
-+{
-+	int rv = 1;
-+
-+	if (signo == SIGUSR1) {
-+		rv = write(pipefd[PIPE_WRITE], &rv, 1);
-+		if (rv == -1)
-+			tst_resm(TBROK, "Failed to write to parent: %u", errno);
-+	}
-+
-+	exit(rv);
-+}
+I guess that what we really wanted to do here is just:
+
+	if (shmctl(shm_id, IPC_RMID, NULL) == -1)
+		tst_brk(TBROK, "...");
+
+> +	addr = (void *)(((unsigned long)(addr) + (SHMLBA - 1)) & ~(SHMLBA - 1));
+> +
+> +	return addr;
+> +}
+> diff --git a/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.h b/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.h
+> index 39148be..660be80 100644
+> --- a/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.h
+> +++ b/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.h
+> @@ -50,4 +50,8 @@ int get_used_queues(const char *file, const int lineno);
+>  #define GET_USED_QUEUES() \
+>  	get_used_queues(__FILE__, __LINE__)
+>  
+> +void *probe_free_addr(const char *file, const int lineno);
+> +#define PROBE_FREE_ADDR() \
+> +	probe_free_addr(__FILE__, __LINE__)
+> +
+>  #endif /* newlibipc.h */
+> diff --git a/testcases/kernel/syscalls/ipc/shmat/Makefile b/testcases/kernel/syscalls/ipc/shmat/Makefile
+> index f467389..f9ee8d2 100644
+> --- a/testcases/kernel/syscalls/ipc/shmat/Makefile
+> +++ b/testcases/kernel/syscalls/ipc/shmat/Makefile
+> @@ -19,5 +19,5 @@
+>  top_srcdir              ?= ../../../../..
+>  
+>  include $(top_srcdir)/include/mk/testcases.mk
+> -include $(abs_srcdir)/../Makefile.inc
+> +include $(abs_srcdir)/../Makefile2.inc
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat01.c b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
+> index 6de1872..75958a9 100644
+> --- a/testcases/kernel/syscalls/ipc/shmat/shmat01.c
+> +++ b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
+> @@ -17,225 +17,142 @@
+>   */
+>  
+>  /*
+> - * NAME
+> - *	shmat01.c
+> - *
+>   * DESCRIPTION
+> - *	shmat01 - test that shmat() works correctly
+>   *
+> - * ALGORITHM
+> - *	create a shared memory resouce with read/write permissions
+> - *	loop if that option was specified
+> - *	call shmat() with the TEST() macro using three valid conditions
+> - *	check the return code
+> - *	  if failure, issue a FAIL message.
+> - *	otherwise,
+> - *	  if doing functionality testing
+> - *		check for the correct conditions after the call
+> - *		if correct,
+> - *			issue a PASS message
+> - *		otherwise
+> - *			issue a FAIL message
+> - *	call cleanup
+> + * 1) shmat() chooses a suitable (unused) address when shmaddr is NULL.
+> + * 2) shmat() attaches shm segment to the shmaddr when shmaddr is a
+> + *    page-aligned address.
+> + * 3) shmat() attaches shm segment to the address equal to shmaddr rounded
+> + *    down to the nearest multiple of SHMLBA when shmaddr is a page-unaligned
+> + *    address and shmflg is set to SHM_RND.
+> + * 4) shmat() attaches shm segment to the shmaddr for reading when shmflg
+> + *    is set to SHM_RDONLY.
+>   */
+>  
+> -#include "ipcshm.h"
+> -#include "shmat_common.h"
+> -
+> -#define CASE0		10
+> -#define CASE1		20
+> +#include <errno.h>
+> +#include <sys/types.h>
+> +#include <sys/ipc.h>
+> +#include <sys/shm.h>
+> +#include <sys/wait.h>
+> +#include <stdlib.h>
+>  
+> -char *TCID = "shmat01";
+> -int TST_TOTAL = 4;
+> +#include "tst_test.h"
+> +#include "tst_safe_sysv_ipc.h"
+> +#include "libnewipc.h"
+>  
+> -int shm_id_1 = -1;
+> +#define ALIGN_DOWN(in_addr) ((void *)(((intptr_t)in_addr / SHMLBA) * SHMLBA))
+>  
+> -/*
+> - * By probing this address first, we can make
+> - * non-aligned addresses from it for different
+> - * architectures without explicitly code it.
+> - */
+> -void *base_addr;
+> -void *addr;
+> +static int shm_id = -1;
+> +static key_t shm_key;
+> +static void *null_addr;
+> +static void *aligned_addr;
+> +static void *unaligned_addr;
+>  
+>  static struct test_case_t {
+> -	int *shmid;
+> -	int offset;
+> -	int flags;
+> -	int getbase;
+> -} *TC;
+> -
+> -static void check_functionality(int);
+> -
+> -int main(int argc, char *argv[])
+> +	void **shmaddr;
+> +	int flag;
+> +	int exp_status;
+> +} tcases[] = {
+> +	{&null_addr, 0, 0},
+> +	{&aligned_addr, 0, 0},
+> +	{&unaligned_addr, SHM_RND, 0},
+> +	{&aligned_addr, SHM_RDONLY, SIGSEGV}
+> +};
+
+Can we, pretty please, include some testcase description here as well?
+Since otherwise we cannot tell what was tested given the test output.
+
+Something as:
+
+static struct test_case_t {
+        void **shmaddr;
+        int flag;
+        int exp_status;
+        const char *desc;
+} tcases[] = {
+        {&null_addr, 0, 0, "NULL address"},
+        {&aligned_addr, 0, 0, "Aligned address"},
+        {&unaligned_addr, SHM_RND, 0, "Unaligned address with SHM_RND"},
+        {&aligned_addr, SHM_RDONLY, SIGSEGV, "SIGSEGV on write with SHM_READONLY"}
+};
+
+Then use that in the PASS/FAIL message at the end of the test.
+
+Otherwise it looks fine.
+
 -- 
-2.11.0
-
+Cyril Hrubis
+chrubis@suse.cz
