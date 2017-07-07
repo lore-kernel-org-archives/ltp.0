@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 7 Jul 2017 15:13:44 +0200
-Subject: [LTP] [PATCH 3/3] commands/keyctl01: Enable this test for RHEL6
-In-Reply-To: <1494483656-15971-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <1494483656-15971-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <1494483656-15971-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <20170707131344.GD28534@rei.lan>
+Date: Fri, 7 Jul 2017 16:49:45 +0200
+Subject: [LTP] [PATCH V2 04/14] mem/ksm: convert to new API
+In-Reply-To: <20170410100556.4465-5-liwang@redhat.com>
+References: <20170410100556.4465-1-liwang@redhat.com>
+ <20170410100556.4465-5-liwang@redhat.com>
+Message-ID: <20170707144945.GE28534@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,23 +12,34 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> diff --git a/testcases/commands/keyctl/keyctl01.sh b/testcases/commands/keyctl/keyctl01.sh
-> index 8ea2b25..40183b0 100644
-> --- a/testcases/commands/keyctl/keyctl01.sh
-> +++ b/testcases/commands/keyctl/keyctl01.sh
-> @@ -37,8 +37,9 @@ TST_NEEDS_CMDS="keyctl"
->  
->  setup()
->  {
-> -	if tst_kvcmp -le 2.6.33; then
-> -		tst_brk TCONF "Kernel newer than 2.6.33 is needed"
-> +	if tst_kvcmp -le '2.6.33 RHEL6:2.6.32-254'; then
-> +		tst_brk TCONF \
-> +			"Kernel newer than 2.6.33 or 2.6.32-254.el6 is needed"
+> -	tst_parse_opts(argc, argv, ksm_options, ksm_usage);
+> -	setup();
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> -		check_ksm_options(&size, &num, &unit);
+> -		create_same_memory(size, num, unit);
+> -	}
+> -	cleanup();
+> -	tst_exit();
+> +	check_ksm_options(&size, &num, &unit);
 
-I would be a bit happier if we could check if keyctl operations we need
-for the test are supported (if that is reasonably easy to do) insetad of
-listing minimal kernel versions per distribution.
+There is no need to parse the test options on every test iteration, this
+should be called once in the test setup.
+
+Moreover passing things around in global variables is messy. What about
+we (ideally in a separate patch) created a function(s) to parse the KSM
+options and pass the string values explicitily.
+
+setup(void)
+{
+	...
+	parse_ksm_options(str_size, &size, str_num, &num, str_unit, &unit);
+	...
+}
+
+Also could we define the ksm_options array in one place instead of
+repeating it in each test. What about putting it into ksh_common.h in
+the mem/ksm/ directory and including it in each test?
 
 -- 
 Cyril Hrubis
