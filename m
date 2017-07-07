@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 7 Jul 2017 17:11:37 +0200
-Subject: [LTP] [PATCH V2 03/14] mem/oom: fix the timeout issue
-In-Reply-To: <20170410100556.4465-4-liwang@redhat.com>
+Date: Fri, 7 Jul 2017 17:27:14 +0200
+Subject: [LTP] [PATCH V2 05/14] mem/thp: convert to new API
+In-Reply-To: <20170410100556.4465-6-liwang@redhat.com>
 References: <20170410100556.4465-1-liwang@redhat.com>
- <20170410100556.4465-4-liwang@redhat.com>
-Message-ID: <20170707151137.GF28534@rei.lan>
+ <20170410100556.4465-6-liwang@redhat.com>
+Message-ID: <20170707152714.GG28534@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,197 +12,370 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> OOM spend time is depend on amount of RAM+Swap, it's hard to get a standard
-> to measure how long it takes, so that we cann't set tst_test->timeout easily.
-> 
-> In this patch, we divide the tests into two part:
-> 
-> 1. OOM takes original way on small(mem_total <= 100G) RAM, and with setting
->    the .timeout according to the worst spending on 100G system. Here gives
->    double(.timeout = 1200) cost in order to make sure time is long enough.
-> 
-> 2. If system RAM is larger than 100G, OOM goes to the cgroup limited way.
+> +	switch (pid = SAFE_FORK()) {
+>  		case 0:
+>  			memset(arg, 'c', length - 1);
+>  			arg[length - 1] = '\0';
+> @@ -91,29 +72,31 @@ int main(int argc, char **argv)
+>  			}
+>  		default:
+>  			if (waitpid(pid, &st, 0) == -1)
+> -				tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
+> +				tst_brk(TBROK | TERRNO, "waitpid");
+>  			if (!WIFEXITED(st) || WEXITSTATUS(st) != 0)
+> -				tst_brkm(TBROK, cleanup,
+> -					 "child exited abnormally");
+> -		}
+> +				tst_brk(TBROK, "child exited abnormally");
+>  	}
 
-I wonder if it's really OK to limit these tests to 100G of RAM. Since as
-it is these tests can really stress the system on low memory conditions,
-if we limit them to run inside of a cgroup we are testing cgroup
-implementation instead, which is we should probably do as well.
+We do have SAFE_WAITPID() as well, but in this case we can simply call
+tst_reap_children() that would take care of the exit status as well.
 
-I'm starting to think that OOM tests are special enough so that we can
-add functionality to disable timeouts for these, i.e. set the .timeout
-to -1 and change the test library so that the alarm() is not set in such
-case.
-
-Jan do you have anything to add?
-
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  testcases/kernel/mem/oom/oom01.c | 12 ++++++++++++
->  testcases/kernel/mem/oom/oom02.c | 12 ++++++++++++
->  testcases/kernel/mem/oom/oom03.c |  1 +
->  testcases/kernel/mem/oom/oom04.c | 11 +++++++++++
->  testcases/kernel/mem/oom/oom05.c |  1 +
->  5 files changed, 37 insertions(+)
-> 
-> diff --git a/testcases/kernel/mem/oom/oom01.c b/testcases/kernel/mem/oom/oom01.c
-> index 64a368e..056e02a 100644
-> --- a/testcases/kernel/mem/oom/oom01.c
-> +++ b/testcases/kernel/mem/oom/oom01.c
-> @@ -29,6 +29,8 @@
+> -	tst_resm(TPASS, "system didn't crash, pass.");
+> -	cleanup();
+> -	tst_exit();
+> +
+> +	tst_res(TPASS, "system didn't crash, pass.");
+>  }
+>  
+>  static void setup(void)
+>  {
+>  	ps = sysconf(_SC_PAGESIZE);
+>  	length = 32 * ps;
+> -	arg = malloc(length);
+> -	if (arg == NULL)
+> -		tst_brkm(TBROK | TERRNO, NULL, "malloc");
+> -
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> -	TEST_PAUSE;
+> +	arg = SAFE_MALLOC(length);
+>  }
+>  
+>  static void cleanup(void)
+>  {
+> +	free(arg);
+>  }
+> +
+> +static struct tst_test test = {
+> +	.tid = "thp01",
+> +	.needs_root = 1,
+> +	.forks_child = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = thp_test,
+> +};
+> diff --git a/testcases/kernel/mem/thp/thp02.c b/testcases/kernel/mem/thp/thp02.c
+> index eb919aa..45cfbe5 100644
+> --- a/testcases/kernel/mem/thp/thp02.c
+> +++ b/testcases/kernel/mem/thp/thp02.c
+> @@ -1,24 +1,15 @@
+>  /*
+> - * Copyright (C) 2011  Red Hat, Inc.
+> - * This program is free software; you can redistribute it and/or
+> - * modify it under the terms of version 2 of the GNU General Public
+> - * License as published by the Free Software Foundation.
+> + * Copyright (C) 2011-2017  Red Hat, Inc.
+>   *
+> - * This program is distributed in the hope that it would be useful,
+> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + * This program is free software;  you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+>   *
+> - * Further, this software is distributed without any warranty that it
+> - * is free of the rightful claim of any third person regarding
+> - * infringement or the like.  Any license provided herein, whether
+> - * implied or otherwise, applies only to this software file.  Patent
+> - * licenses, if any, provided herein do not apply to combinations of
+> - * this program with other software, or any other product whatsoever.
+> - *
+> - * You should have received a copy of the GNU General Public License
+> - * along with this program; if not, write the Free Software
+> - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> - * 02110-1301, USA.
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> + * the GNU General Public License for more details.
+>   *
+>   * thp02 - detect mremap bug when THP is enabled.
+>   *
+> @@ -52,36 +43,11 @@
 >  #include <unistd.h>
 >  #include "mem.h"
 >  
-> +static unsigned long mem_total;
-> +
->  static void verify_oom(void)
->  {
->  #if __WORDSIZE == 32
-> @@ -50,11 +52,20 @@ static void verify_oom(void)
+> -char *TCID = "thp02";
+> -int TST_TOTAL = 1;
+> -
+>  #ifdef HAVE_MREMAP_FIXED
+>  static int ps;
+>  static long hps, size;
+>  static void *p, *p2, *p3, *p4;
 >  
->  static void setup(void)
+> -static void do_mremap(void);
+> -
+> -int main(int argc, char **argv)
+> -{
+> -	int lc;
+> -
+> -	tst_parse_opts(argc, argv, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> -
+> -		do_mremap();
+> -	}
+> -	tst_resm(TPASS, "Still alive.");
+> -
+> -	cleanup();
+> -	tst_exit();
+> -
+> -}
+> -
+>  static void do_mremap(void)
 >  {
-> +	mem_total = SAFE_READ_MEMINFO("MemTotal:");
-> +	if (mem_total > TESTMEM/1024*100L) {
-> +		tst_res(TINFO, "System RAM is larger than 100G, test in memory cgroup");
-> +		mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
-> +		write_memcg();
-> +	}
+>  	int i;
+> @@ -89,11 +55,11 @@ static void do_mremap(void)
+>  
+>  	for (i = 0; i < 4; i++) {
+>  		if (posix_memalign(&p, hps, size))
+> -			tst_brkm(TBROK | TERRNO, cleanup, "memalign p");
+> +			tst_brk(TBROK | TERRNO, "memalign p");
+>  		if (posix_memalign(&p2, hps, size))
+> -			tst_brkm(TBROK | TERRNO, cleanup, "memalign p2");
+> +			tst_brk(TBROK | TERRNO, "memalign p2");
+>  		if (posix_memalign(&p3, hps, size))
+> -			tst_brkm(TBROK | TERRNO, cleanup, "memalign p3");
+> +			tst_brk(TBROK | TERRNO, "memalign p3");
+
+The posix_memalign() returns errno hence this will print bogus values
+with TERRNO. We can either use SAFE_MEMALIGN() or possibly add
+POSIX_MEMALIGN() to the safe_macros and use that one instead.
+
+>  		memset(p, 0xff, size);
+>  		memset(p2, 0xff, size);
+> @@ -108,37 +74,36 @@ static void do_mremap(void)
+>  		 */
+>  		old_addr = p + ps * (i >> 1);
+>  		new_addr = p3 + ps * (i & 1);
+> -		tst_resm(TINFO, "mremap %p to %p", old_addr, new_addr);
+> +		tst_res(TINFO, "mremap %p to %p", old_addr, new_addr);
+>  
+>  		p4 = mremap(old_addr, size - ps, size - ps,
+>  			    MREMAP_FIXED | MREMAP_MAYMOVE, new_addr);
+>  		if (p4 == MAP_FAILED)
+> -			tst_brkm(TBROK | TERRNO, cleanup, "mremap");
+> +			tst_brk(TBROK | TERRNO, "mremap");
+>  		if (memcmp(p4, p2, size - ps))
+> -			tst_brkm(TBROK, cleanup, "mremap bug");
+> +			tst_brk(TBROK, "mremap bug");
+>  	}
 > +
->  	overcommit = get_sys_tune("overcommit_memory");
+> +	tst_res(TPASS, "Still alive.");
 >  }
 >  
->  static void cleanup(void)
+> -void setup(void)
+> +static void setup(void)
 >  {
-> +	if (mem_total > TESTMEM/1024*100L)
-> +		umount_mem(MEMCG_PATH, MEMCG_PATH_NEW);
->  	set_sys_tune("overcommit_memory", overcommit, 0);
+>  	if (access(PATH_THP, F_OK) == -1)
+> -		tst_brkm(TCONF, NULL, "THP not enabled in kernel?");
+> -
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> -	TEST_PAUSE;
+> +		tst_brk(TCONF, "THP not enabled in kernel?");
+>  
+>  	ps = sysconf(_SC_PAGESIZE);
+> -	hps = read_meminfo("Hugepagesize:") * 1024;
+> +	hps = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+>  	size = hps * 4;
 >  }
 >  
-> @@ -62,6 +73,7 @@ static struct tst_test test = {
->  	.tid = "oom01",
->  	.needs_root = 1,
->  	.forks_child = 1,
-> +	.timeout = 1200,
->  	.setup = setup,
->  	.cleanup = cleanup,
->  	.test_all = verify_oom,
-> diff --git a/testcases/kernel/mem/oom/oom02.c b/testcases/kernel/mem/oom/oom02.c
-> index f315ee2..a1be806 100644
-> --- a/testcases/kernel/mem/oom/oom02.c
-> +++ b/testcases/kernel/mem/oom/oom02.c
-> @@ -32,6 +32,8 @@
->  #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
->  	&& HAVE_MPOL_CONSTANTS
+> -void cleanup(void)
+> -{
+> -}
+> +static struct tst_test test = {
+> +	.tid = "thp02",
+> +	.needs_root = 1,
+> +	.setup = setup,
+> +	.test_all = do_mremap,
+> +};
 >  
-> +static unsigned long mem_total;
+>  #else
+> -int main(void)
+> -{
+> -	tst_brkm(TCONF, NULL, "MREMAP_FIXED not present in <sys/mman.h>");
+> -}
+> +	TST_TEST_TCONF("MREMAP_FIXED not present in <sys/mman.h>");
+>  #endif /* HAVE_MREMAP_FIXED */
+> diff --git a/testcases/kernel/mem/thp/thp03.c b/testcases/kernel/mem/thp/thp03.c
+> index 6b0f829..44541d9 100644
+> --- a/testcases/kernel/mem/thp/thp03.c
+> +++ b/testcases/kernel/mem/thp/thp03.c
+> @@ -1,24 +1,15 @@
+>  /*
+> - * Copyright (C) 2012  Red Hat, Inc.
+> - * This program is free software; you can redistribute it and/or
+> - * modify it under the terms of version 2 of the GNU General Public
+> - * License as published by the Free Software Foundation.
+> + * Copyright (C) 2012-2017  Red Hat, Inc.
+>   *
+> - * This program is distributed in the hope that it would be useful,
+> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + * This program is free software;  you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+>   *
+> - * Further, this software is distributed without any warranty that it
+> - * is free of the rightful claim of any third person regarding
+> - * infringement or the like.  Any license provided herein, whether
+> - * implied or otherwise, applies only to this software file.  Patent
+> - * licenses, if any, provided herein do not apply to combinations of
+> - * this program with other software, or any other product whatsoever.
+> - *
+> - * You should have received a copy of the GNU General Public License
+> - * along with this program; if not, write the Free Software
+> - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> - * 02110-1301, USA.
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> + * the GNU General Public License for more details.
+>   *
+>   * thp03 - Case for spliting unaligned memory.
+>   *       - System will panic if failed.
+> @@ -46,11 +37,6 @@
+>  #include <string.h>
+>  #include <errno.h>
+>  #include "mem.h"
+> -#include "safe_macros.h"
+> -#include "test.h"
+> -
+> -char *TCID = "thp03";
+> -int TST_TOTAL = 1;
+>  
+>  #ifdef MADV_MERGEABLE
+>  
+> @@ -60,24 +46,6 @@ static long hugepage_size;
+>  static long unaligned_size;
+>  static long page_size;
+>  
+> -int main(int argc, char **argv)
+> -{
+> -	int lc;
+> -
+> -	tst_parse_opts(argc, argv, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> -
+> -		thp_test();
+> -	}
+> -	tst_resm(TPASS, "system didn't crash, pass.");
+> -	cleanup();
+> -	tst_exit();
+> -}
+> -
+>  static void thp_test(void)
+>  {
+>  	void *p;
+> @@ -85,53 +53,53 @@ static void thp_test(void)
+>  	p = mmap(NULL, unaligned_size, PROT_READ | PROT_WRITE,
+>  		 MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+>  	if (p == MAP_FAILED)
+> -		tst_brkm(TBROK | TERRNO, cleanup, "mmap");
+> +		tst_brk(TBROK | TERRNO, "mmap");
+
+Use SAFE_MMAP() here instead.
+
+>  	memset(p, 0x00, unaligned_size);
+>  	if (mprotect(p, unaligned_size, PROT_NONE) == -1)
+> -		tst_brkm(TBROK | TERRNO, cleanup, "mprotect");
+> +		tst_brk(TBROK | TERRNO, "mprotect");
+>  
+>  	if (madvise(p + hugepage_size, page_size, MADV_MERGEABLE) == -1) {
+>  		if (errno == EINVAL) {
+> -			tst_brkm(TCONF, cleanup,
+> +			tst_brk(TCONF,
+>  			         "MADV_MERGEABLE is not enabled/supported");
+>  		} else {
+> -			tst_brkm(TBROK | TERRNO, cleanup, "madvise");
+> +			tst_brk(TBROK | TERRNO, "madvise");
+>  		}
+>  	}
+>  
+> -	switch (fork()) {
+> -	case -1:
+> -		tst_brkm(TBROK | TERRNO, cleanup, "fork");
+> +	switch (SAFE_FORK()) {
+>  	case 0:
+>  		exit(0);
+>  	default:
+>  		if (waitpid(-1, NULL, 0) == -1)
+> -			tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
+> +			tst_brk(TBROK | TERRNO, "waitpid");
+
+And SAFE_WAITPID() here.
+
+>  	}
 > +
->  static void verify_oom(void)
->  {
->  #if __WORDSIZE == 32
-> @@ -50,6 +52,13 @@ static void verify_oom(void)
->  
->  static void setup(void)
->  {
-> +	mem_total = SAFE_READ_MEMINFO("MemTotal:");
-> +	if (mem_total > TESTMEM/1024*100L) {
-> +		tst_res(TINFO, "System RAM is larger than 100G, test in memory cgroup");
-> +		mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
-> +		write_memcg();
-> +	}
-> +
->  	if (!is_numa(NULL, NH_MEMS, 2))
->  		tst_brk(TCONF, "The case need a NUMA system.");
->  
-> @@ -59,6 +68,8 @@ static void setup(void)
->  
->  static void cleanup(void)
->  {
-> +	if (mem_total > TESTMEM/1024*100L)
-> +		umount_mem(MEMCG_PATH, MEMCG_PATH_NEW);
->  	set_sys_tune("overcommit_memory", overcommit, 0);
+> +	tst_res(TPASS, "system didn't crash, pass.");
+> +	munmap(p, unaligned_size);
 >  }
 >  
-> @@ -66,6 +77,7 @@ static struct tst_test test = {
->  	.tid = "oom02",
->  	.needs_root = 1,
->  	.forks_child = 1,
-> +	.timeout = 1200,
->  	.setup = setup,
->  	.cleanup = cleanup,
->  	.test_all = verify_oom,
-> diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
-> index d3aed60..48c1ea5 100644
-> --- a/testcases/kernel/mem/oom/oom03.c
-> +++ b/testcases/kernel/mem/oom/oom03.c
-> @@ -79,6 +79,7 @@ static struct tst_test test = {
->  	.tid = "oom03",
->  	.needs_root = 1,
->  	.forks_child = 1,
-> +	.timeout = 1200,
->  	.setup = setup,
->  	.cleanup = cleanup,
->  	.test_all = verify_oom,
-> diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
-> index afe35b2..179a98a 100644
-> --- a/testcases/kernel/mem/oom/oom04.c
-> +++ b/testcases/kernel/mem/oom/oom04.c
-> @@ -32,6 +32,8 @@
->  #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
->  	&& HAVE_MPOL_CONSTANTS
->  
-> +static unsigned long mem_total;
-> +
->  static void verify_oom(void)
+> -void setup(void)
+> +static void setup(void)
 >  {
->  #if __WORDSIZE == 32
-> @@ -63,6 +65,12 @@ static void setup(void)
->  	overcommit = get_sys_tune("overcommit_memory");
->  	set_sys_tune("overcommit_memory", 1, 1);
+>  	if (access(PATH_THP, F_OK) == -1)
+> -		tst_brkm(TCONF, NULL, "THP not enabled in kernel?");
+> +		tst_brk(TCONF, "THP not enabled in kernel?");
 >  
-> +	mem_total = SAFE_READ_MEMINFO("MemTotal:");
-> +	if (mem_total > TESTMEM/1024*100L) {
-> +		tst_res(TINFO, "System RAM is larger than 100G, test in memory cgroup");
-> +		mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
-> +		write_memcg();
-> +	}
->  	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
->  
->  	/*
-> @@ -80,6 +88,8 @@ static void setup(void)
->  
->  static void cleanup(void)
->  {
-> +	if (mem_total > TESTMEM/1024*100L)
-> +		umount_mem(MEMCG_PATH, MEMCG_PATH_NEW);
->  	set_sys_tune("overcommit_memory", overcommit, 0);
->  	umount_mem(CPATH, CPATH_NEW);
+> -	hugepage_size = read_meminfo("Hugepagesize:") * KB;
+> +	hugepage_size = SAFE_READ_MEMINFO("Hugepagesize:") * KB;
+>  	unaligned_size = hugepage_size * 4 - 1;
+> -	page_size = SAFE_SYSCONF(NULL, _SC_PAGESIZE);
+> -
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> -	TEST_PAUSE;
+> +	page_size = SAFE_SYSCONF(_SC_PAGESIZE);
 >  }
-> @@ -88,6 +98,7 @@ static struct tst_test test = {
->  	.tid = "oom04",
->  	.needs_root = 1,
->  	.forks_child = 1,
-> +	.timeout = 1200,
->  	.setup = setup,
->  	.cleanup = cleanup,
->  	.test_all = verify_oom,
-> diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
-> index d97fe7d..39361a9 100644
-> --- a/testcases/kernel/mem/oom/oom05.c
-> +++ b/testcases/kernel/mem/oom/oom05.c
-> @@ -116,6 +116,7 @@ static struct tst_test test = {
->  	.tid = "oom05",
->  	.needs_root = 1,
->  	.forks_child = 1,
-> +	.timeout = 1200,
->  	.setup = setup,
->  	.cleanup = cleanup,
->  	.test_all = verify_oom,
-> -- 
-> 2.9.3
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+>  
+> -void cleanup(void)
+> -{
+> -}
+> +static struct tst_test test = {
+> +	.tid = "thp03",
+> +	.needs_root = 1,
+> +	.forks_child = 1,
+> +	.setup = setup,
+> +	.test_all = thp_test,
+> +};
+>  
+>  #else
+> -int main(void)
+> -{
+> -	tst_brkm(TCONF, NULL, "Kernel doesn't support MADV_MERGEABLE"
+> +	TST_TEST_TCONF("Kernel doesn't support MADV_MERGEABLE"
+>  		 " or you need to update your glibc-headers");
+
+Hmm, if we get here the problem was MADV_MERGEABLE missing in system
+headers. The kernel part is checked at runtime (that is the EINVAL check
+from madvise()).
+
+And we have lapi/mmap.h with fallback definition for it, so what about
+we get rid of the ifdefs and include the fallback header lapi/mmap.h
+instead?
+
+>  }
+>  #endif
 
 -- 
 Cyril Hrubis
