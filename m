@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 7 Jul 2017 15:08:28 +0200
-Subject: [LTP] [PATCH 2/3] commands/keyctl01: Fix getting key serial
- number
-In-Reply-To: <1494483656-15971-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Date: Fri, 7 Jul 2017 15:13:44 +0200
+Subject: [LTP] [PATCH 3/3] commands/keyctl01: Enable this test for RHEL6
+In-Reply-To: <1494483656-15971-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
 References: <1494483656-15971-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <1494483656-15971-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <20170707130827.GC28534@rei.lan>
+ <1494483656-15971-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20170707131344.GD28534@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,44 +12,23 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> So fix this by adding a match with "inaccessible".
-> 
-> Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-> ---
->  testcases/commands/keyctl/keyctl01.sh | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
 > diff --git a/testcases/commands/keyctl/keyctl01.sh b/testcases/commands/keyctl/keyctl01.sh
-> index 5a97499..8ea2b25 100644
+> index 8ea2b25..40183b0 100644
 > --- a/testcases/commands/keyctl/keyctl01.sh
 > +++ b/testcases/commands/keyctl/keyctl01.sh
-> @@ -77,6 +77,11 @@ do_test()
->  		fi
+> @@ -37,8 +37,9 @@ TST_NEEDS_CMDS="keyctl"
 >  
->  		local key=`keyctl show | awk '/debug:fred/ {print $1}'`
-> +		if [ -z "$key" ]; then
-> +			key=`keyctl show | \
-> +				awk -F ':' '/inaccessible/ {print $1}'`
-> +		fi
+>  setup()
+>  {
+> -	if tst_kvcmp -le 2.6.33; then
+> -		tst_brk TCONF "Kernel newer than 2.6.33 is needed"
+> +	if tst_kvcmp -le '2.6.33 RHEL6:2.6.32-254'; then
+> +		tst_brk TCONF \
+> +			"Kernel newer than 2.6.33 or 2.6.32-254.el6 is needed"
 
-Can't we rather split the keyctl request and keyctl negate operations
-into two and get the key after the key has been requested but before it
-was negated?
-
-Or is it required to do the request and negate operation in a signle
-keyctl command in order to reproduce the kernel crash?
-
->  		if [ -n "$key" ]; then
->  			keyctl unlink $key @s >/dev/null
->  			tst_sleep 50ms
-> -- 
-> 1.8.4.2
-> 
-> 
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+I would be a bit happier if we could check if keyctl operations we need
+for the test are supported (if that is reasonably easy to do) insetad of
+listing minimal kernel versions per distribution.
 
 -- 
 Cyril Hrubis
