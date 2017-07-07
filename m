@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 7 Jul 2017 14:55:46 +0200
-Subject: [LTP] [PATCH 1/3] commands/keyctl01: Fix potential infinite loop
-In-Reply-To: <1494483656-15971-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Date: Fri, 7 Jul 2017 15:08:28 +0200
+Subject: [LTP] [PATCH 2/3] commands/keyctl01: Fix getting key serial
+ number
+In-Reply-To: <1494483656-15971-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
 References: <1494483656-15971-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <20170707125546.GB28534@rei.lan>
+ <1494483656-15971-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20170707130827.GC28534@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,25 +13,44 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
+> So fix this by adding a match with "inaccessible".
+> 
+> Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+> ---
+>  testcases/commands/keyctl/keyctl01.sh | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
 > diff --git a/testcases/commands/keyctl/keyctl01.sh b/testcases/commands/keyctl/keyctl01.sh
-> index 076a130..5a97499 100644
+> index 5a97499..8ea2b25 100644
 > --- a/testcases/commands/keyctl/keyctl01.sh
 > +++ b/testcases/commands/keyctl/keyctl01.sh
-> @@ -62,15 +62,17 @@ cleanup()
+> @@ -77,6 +77,11 @@ do_test()
+>  		fi
 >  
->  do_test()
->  {
-> +	local quota_excd=0
->  	local maxkeysz=$((ORIG_KEYSZ + 100))
->  
-> -	while true
-> +	while [ $maxkeysz -gt $ORIG_KEYSZ ]
+>  		local key=`keyctl show | awk '/debug:fred/ {print $1}'`
+> +		if [ -z "$key" ]; then
+> +			key=`keyctl show | \
+> +				awk -F ':' '/inaccessible/ {print $1}'`
+> +		fi
 
-This may still be incorrect if some keys has been deleted after we
-executed the setup() function though. This is quite unlikely but still
-may happen. What about we ended the loop once $maxkeysz < 0?
+Can't we rather split the keyctl request and keyctl negate operations
+into two and get the key after the key has been requested but before it
+was negated?
 
-Otherwise it looks fine.
+Or is it required to do the request and negate operation in a signle
+keyctl command in order to reproduce the kernel crash?
+
+>  		if [ -n "$key" ]; then
+>  			keyctl unlink $key @s >/dev/null
+>  			tst_sleep 50ms
+> -- 
+> 1.8.4.2
+> 
+> 
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
