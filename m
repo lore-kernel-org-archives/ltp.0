@@ -1,50 +1,79 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 10 Jul 2017 03:38:10 -0400 (EDT)
-Subject: [LTP] [PATCH V2 03/14] mem/oom: fix the timeout issue
-In-Reply-To: <20170707151137.GF28534@rei.lan>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 11 Jul 2017 12:32:19 +0800
+Subject: [LTP] [PATCH V2 05/14] mem/thp: convert to new API
+In-Reply-To: <20170707152714.GG28534@rei.lan>
 References: <20170410100556.4465-1-liwang@redhat.com>
- <20170410100556.4465-4-liwang@redhat.com> <20170707151137.GF28534@rei.lan>
-Message-ID: <1535335729.48523755.1499672290436.JavaMail.zimbra@redhat.com>
+ <20170410100556.4465-6-liwang@redhat.com>
+ <20170707152714.GG28534@rei.lan>
+Message-ID: <CAEemH2d8HqO-_Uq=acqU2MdoJ231J7izdm_AHe=vTmEXcr+fYA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
------ Original Message -----
+On Fri, Jul 7, 2017 at 11:27 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
 > Hi!
-> > OOM spend time is depend on amount of RAM+Swap, it's hard to get a standard
-> > to measure how long it takes, so that we cann't set tst_test->timeout
-> > easily.
-> > 
-> > In this patch, we divide the tests into two part:
-> > 
-> > 1. OOM takes original way on small(mem_total <= 100G) RAM, and with setting
-> >    the .timeout according to the worst spending on 100G system. Here gives
-> >    double(.timeout = 1200) cost in order to make sure time is long enough.
-> > 
-> > 2. If system RAM is larger than 100G, OOM goes to the cgroup limited way.
-> 
-> I wonder if it's really OK to limit these tests to 100G of RAM. Since as
-> it is these tests can really stress the system on low memory conditions,
-> if we limit them to run inside of a cgroup we are testing cgroup
-> implementation instead, which is we should probably do as well.
-> 
-> I'm starting to think that OOM tests are special enough so that we can
-> add functionality to disable timeouts for these, i.e. set the .timeout
-> to -1 and change the test library so that the alarm() is not set in such
-> case.
-> 
-> Jan do you have anything to add?
+>> +     switch (pid = SAFE_FORK()) {
+>>               case 0:
+>>                       memset(arg, 'c', length - 1);
+>>                       arg[length - 1] = '\0';
+>> @@ -91,29 +72,31 @@ int main(int argc, char **argv)
+>>                       }
+>>               default:
+>>                       if (waitpid(pid, &st, 0) == -1)
+>> -                             tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
+>> +                             tst_brk(TBROK | TERRNO, "waitpid");
+>>                       if (!WIFEXITED(st) || WEXITSTATUS(st) != 0)
+>> -                             tst_brkm(TBROK, cleanup,
+>> -                                      "child exited abnormally");
+>> -             }
+>> +                             tst_brk(TBROK, "child exited abnormally");
+>>       }
+>
+> We do have SAFE_WAITPID() as well, but in this case we can simply call
+> tst_reap_children() that would take care of the exit status as well.
 
-I'm OK with timeout -1. 
+Great function.
 
-I'm thinking if we should introduce a parameter to TCONF on large RAM systems
-anyway and split mm runtest file into "fast" and "stress". The "fast" one
-would contain tests that can complete in ~minutes (including oom tests with
-parameter) and then "stress" one would be for all those slow that can take
-several hours (oom tests with no parameter) to complete.
+>>       for (i = 0; i < 4; i++) {
+>>               if (posix_memalign(&p, hps, size))
+>> -                     tst_brkm(TBROK | TERRNO, cleanup, "memalign p");
+>> +                     tst_brk(TBROK | TERRNO, "memalign p");
+>>               if (posix_memalign(&p2, hps, size))
+>> -                     tst_brkm(TBROK | TERRNO, cleanup, "memalign p2");
+>> +                     tst_brk(TBROK | TERRNO, "memalign p2");
+>>               if (posix_memalign(&p3, hps, size))
+>> -                     tst_brkm(TBROK | TERRNO, cleanup, "memalign p3");
+>> +                     tst_brk(TBROK | TERRNO, "memalign p3");
+>
+> The posix_memalign() returns errno hence this will print bogus values
+> with TERRNO. We can either use SAFE_MEMALIGN() or possibly add
+> POSIX_MEMALIGN() to the safe_macros and use that one instead.
 
-Regards,
-Jan
+Sure, I choose the obsolete one here.
+  p = SAFE_MEMALIGN(hps, size);
+
+
+>>  #else
+>> -int main(void)
+>> -{
+>> -     tst_brkm(TCONF, NULL, "Kernel doesn't support MADV_MERGEABLE"
+>> +     TST_TEST_TCONF("Kernel doesn't support MADV_MERGEABLE"
+>>                " or you need to update your glibc-headers");
+>
+> Hmm, if we get here the problem was MADV_MERGEABLE missing in system
+> headers. The kernel part is checked at runtime (that is the EINVAL check
+> from madvise()).
+>
+> And we have lapi/mmap.h with fallback definition for it, so what about
+> we get rid of the ifdefs and include the fallback header lapi/mmap.h
+> instead?
+
+Good suggestion. And no objection to the rest comments.
+
+Thanks for reviewing patiently.
+
+-- 
+Li Wang
+liwang@redhat.com
