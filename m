@@ -1,11 +1,10 @@
 From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Tue, 11 Jul 2017 19:47:45 +0800
-Subject: [LTP] [PATCH 3/3] commands/keyctl01: Enable this test for RHEL6
-In-Reply-To: <20170707131344.GD28534@rei.lan>
+Date: Tue, 11 Jul 2017 19:48:33 +0800
+Subject: [LTP] [PATCH 1/3] commands/keyctl01: Fix potential infinite loop
+In-Reply-To: <20170707125546.GB28534@rei.lan>
 References: <1494483656-15971-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <1494483656-15971-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <20170707131344.GD28534@rei.lan>
-Message-ID: <df96436c-278c-8e91-6c64-9c1413f66d80@cn.fujitsu.com>
+ <20170707125546.GB28534@rei.lan>
+Message-ID: <f5e0db40-9fac-13d9-8ecf-5ecaab9e6131@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -16,30 +15,34 @@ Hi!
 
 Thanks for your review.
 
-在 07/07/2017 09:13 PM, Cyril Hrubis 写道:
+在 07/07/2017 08:55 PM, Cyril Hrubis 写道:
 > Hi!
 >> diff --git a/testcases/commands/keyctl/keyctl01.sh b/testcases/commands/keyctl/keyctl01.sh
->> index 8ea2b25..40183b0 100644
+>> index 076a130..5a97499 100644
 >> --- a/testcases/commands/keyctl/keyctl01.sh
 >> +++ b/testcases/commands/keyctl/keyctl01.sh
->> @@ -37,8 +37,9 @@ TST_NEEDS_CMDS="keyctl"
+>> @@ -62,15 +62,17 @@ cleanup()
 >>  
->>  setup()
+>>  do_test()
 >>  {
->> -	if tst_kvcmp -le 2.6.33; then
->> -		tst_brk TCONF "Kernel newer than 2.6.33 is needed"
->> +	if tst_kvcmp -le '2.6.33 RHEL6:2.6.32-254'; then
->> +		tst_brk TCONF \
->> +			"Kernel newer than 2.6.33 or 2.6.32-254.el6 is needed"
+>> +	local quota_excd=0
+>>  	local maxkeysz=$((ORIG_KEYSZ + 100))
+>>  
+>> -	while true
+>> +	while [ $maxkeysz -gt $ORIG_KEYSZ ]
 > 
-> I would be a bit happier if we could check if keyctl operations we need
-> for the test are supported (if that is reasonably easy to do) insetad of
-> listing minimal kernel versions per distribution.
+> This may still be incorrect if some keys has been deleted after we
+> executed the setup() function though. This is quite unlikely but still
+> may happen. What about we ended the loop once $maxkeysz < 0?
 
-OK, I see.
-I will check if they are supported and drop the tst_kvcmp, thanks.
+Yes, it sounds more reasonable,
+I got it, thanks.
 
 Best Regards,
 Guangwen Feng
+
+> 
+> Otherwise it looks fine.
+> 
 
 
