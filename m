@@ -1,52 +1,98 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 13 Jul 2017 15:12:17 +0200
-Subject: [LTP] [PATCH v2] tutorial: Add a step-by-step C test tutorial
-In-Reply-To: <20170713122843.m7ppgjyoqtf5ipyl@x230>
-References: <20170711132509.22971-1-rpalethorpe@suse.com>
- <20170713122843.m7ppgjyoqtf5ipyl@x230>
-Message-ID: <87iniwiiq6.fsf@our.domain.is.not.set>
+From: Dan Rue <dan.rue@linaro.org>
+Date: Thu, 13 Jul 2017 12:16:10 -0500
+Subject: [LTP] [PATCH] su: Remove 'catch close'
+Message-ID: <20170713171610.32370-1-dan.rue@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Introduced in d97c827e3e, the exit codes captured by 'set codes [wait]' are
+getting lost due to the 'catch close' call, causing tests 2, 4, 6, and 7 to
+fail.
 
-Hello Petr,
+Signed-off-by: Dan Rue <dan.rue@linaro.org>
+---
+ testcases/commands/su/su01_s1 | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-Petr Vorel writes:
-
-> Hi Richard,
->
->> A tutorial for writing a complete, if simple test.
->
->> You can see the final formatted version here:
->> https://github.com/richiejp/ltp/wiki/C-Test-Case-Tutorial
-> Very nice in depth tutorial, thanks! I think this is great not only for newcomers :-).
-> I hope we wrote one day some networking tutorial.
-
-Thanks. May do networking after multi-threaded and forking tutorials.
->
->> +LTP tests can be written in C or Shell script. This tutorial is only for tests
->> +written in C using the new LTP test API. Note that while we go into some
->> +detail on using Git, this is not intended as a cannonical or complete guide
->> +additions where possible.
-> Isn't it 'canonical'? (I'm not a native speaker).
-
-Good spot.
-
->
-> Apart from that I'd appreciate to have links (to "test writing guide" or checkpatch.pl) as
-> I'm lazy and like to click, but thats only detail.
-
-OK and I better link to this from the README as well.
-
->
->
-> Kind regards,
-> Petr
-
-
+diff --git a/testcases/commands/su/su01_s1 b/testcases/commands/su/su01_s1
+index fd2e485da..313207b64 100755
+--- a/testcases/commands/su/su01_s1
++++ b/testcases/commands/su/su01_s1
+@@ -135,7 +135,6 @@ expect {
+   }
+ }
+ 
+-catch close
+ # capture result code
+ set codes [wait]
+ set pid [lindex $codes 0]
+@@ -152,7 +151,6 @@ if { $i_am_root==1 } {
+ 		}
+ 	}
+ 	expect eof
+-	catch close
+ 	wait
+ 
+ 	set test_env_var [exec cat $TEST_ENV_FILE]
+@@ -198,7 +196,6 @@ expect {
+   }
+ }
+ 
+-catch close
+ # capture result code
+ set codes [wait]
+ set pid [lindex $codes 0]
+@@ -237,7 +234,6 @@ expect {
+   }
+ }
+ 
+-catch close
+ # capture result code
+ set codes [wait]
+ set pid [lindex $codes 0]
+@@ -292,7 +288,6 @@ expect {
+   }
+ }
+ 
+-catch close
+ # capture result code
+ set codes [wait]
+ set pid [lindex $codes 0]
+@@ -325,7 +320,6 @@ expect {
+   }
+ }
+ 
+-catch close
+ # capture result code
+ set codes [wait]
+ set pid [lindex $codes 0]
+@@ -384,7 +378,6 @@ expect {
+   }
+ }
+ 
+-catch close
+ # capture result code
+ set codes [wait]
+ set pid [lindex $codes 0]
+@@ -447,7 +440,6 @@ expect {
+   }
+ }
+ 
+-catch close
+ # capture result code
+ set codes [wait]
+ set pid [lindex $codes 0]
+@@ -481,7 +473,6 @@ expect {
+   }
+ }
+ 
+-catch close
+ } else {
+ 
+ 	send_user "TEST:  su to user1 with the user1 password expired. (FAILED),see more next line.\n"
 -- 
-Thank you,
-Richard.
+2.11.0
+
