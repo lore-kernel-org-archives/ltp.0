@@ -1,117 +1,33 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Thu, 13 Jul 2017 20:15:33 +0800
-Subject: [LTP] [PATCH 2/3] commands/keyctl01: Fix getting key serial
- number
-In-Reply-To: <ffc2e37b-0464-f2f5-4757-a4378b48f501@cn.fujitsu.com>
-References: <1494483656-15971-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <1494483656-15971-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <20170707130827.GC28534@rei.lan>
- <50b2e9a3-bf31-1765-c2e8-9487f7d09fa3@cn.fujitsu.com>
- <ffc2e37b-0464-f2f5-4757-a4378b48f501@cn.fujitsu.com>
-Message-ID: <42df2a59-d9de-30dd-2aa7-486dba24452e@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 13 Jul 2017 14:28:43 +0200
+Subject: [LTP] [PATCH v2] tutorial: Add a step-by-step C test tutorial
+In-Reply-To: <20170711132509.22971-1-rpalethorpe@suse.com>
+References: <20170711132509.22971-1-rpalethorpe@suse.com>
+Message-ID: <20170713122843.m7ppgjyoqtf5ipyl@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+Hi Richard,
 
-在 07/13/2017 06:55 PM, Guangwen Feng 写道:
-> Hi!
-> 
-> 在 07/11/2017 08:27 PM, Guangwen Feng 写道:
->> Hi!
->>
->> Thanks for your review.
->>
->> 在 07/07/2017 09:08 PM, Cyril Hrubis 写道:
->>> Hi!
->>>> So fix this by adding a match with "inaccessible".
->>>>
->>>> Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
->>>> ---
->>>>  testcases/commands/keyctl/keyctl01.sh | 5 +++++
->>>>  1 file changed, 5 insertions(+)
->>>>
->>>> diff --git a/testcases/commands/keyctl/keyctl01.sh b/testcases/commands/keyctl/keyctl01.sh
->>>> index 5a97499..8ea2b25 100644
->>>> --- a/testcases/commands/keyctl/keyctl01.sh
->>>> +++ b/testcases/commands/keyctl/keyctl01.sh
->>>> @@ -77,6 +77,11 @@ do_test()
->>>>  		fi
->>>>  
->>>>  		local key=`keyctl show | awk '/debug:fred/ {print $1}'`
->>>> +		if [ -z "$key" ]; then
->>>> +			key=`keyctl show | \
->>>> +				awk -F ':' '/inaccessible/ {print $1}'`
->>>> +		fi
->>>
->>> Can't we rather split the keyctl request and keyctl negate operations
->>> into two and get the key after the key has been requested but before it
->>> was negated?
->>>
->>> Or is it required to do the request and negate operation in a signle
->>> keyctl command in order to reproduce the kernel crash?
->>
->> I think it is required to do the operations in one command...
->> I will try to split them and reproduce the kernel crash, thanks.
-> 
-> Without using a single keyctl command, this bug cannot be triggered,
-> so I want to keep it this way.
-> 
-> I think the problem is that we cannot get the keyid by matching
-> "debug:fred" via "keyctl show" when the key is expired, I find that
-> in /proc/keys even the key is expired, we can still see the key's
-> description, so we can just look it up this way.
+> A tutorial for writing a complete, if simple test.
 
-Sorry, but there are also some old kernels like 2.6.18-398.el5 do not
-show user key in /proc/keys: 
+> You can see the final formatted version here:
+> https://github.com/richiejp/ltp/wiki/C-Test-Case-Tutorial
+Very nice in depth tutorial, thanks! I think this is great not only for newcomers :-).
+I hope we wrote one day some networking tutorial.
 
-[root@rhel5 ~]# cat /proc/keys
-00000001 I-----     1 perm 1f3f0000     0     0 keyring   _uid_ses.0: 1/4
-00000002 I-----     3 perm 1f3f0000     0     0 keyring   _uid.0: empty
-039d3f23 I--Q--     3 perm 1f3f0000     0     0 keyring   _ses.2742: 6/8
-                                                                     ^
-                                                        6 keys in this keyring
+> +LTP tests can be written in C or Shell script. This tutorial is only for tests
+> +written in C using the new LTP test API. Note that while we go into some
+> +detail on using Git, this is not intended as a cannonical or complete guide
+> +additions where possible.
+Isn't it 'canonical'? (I'm not a native speaker).
 
-It only shows how many keys in a keyring, so this is unreliable...
-
-Can we just use "keyctl show" to match "inaccessible" when this
-happens?
+Apart from that I'd appreciate to have links (to "test writing guide" or checkpatch.pl) as
+I'm lazy and like to click, but thats only detail.
 
 
-Best Regards,
-Guangwen Feng
-
-> 
-> I will send a V2 soon.
-> 
-> Best Regards,
-> Guangwen Feng
-> 
->>
->> Best Regards,
->> Guangwen Feng
->>
->>>
->>>>  		if [ -n "$key" ]; then
->>>>  			keyctl unlink $key @s >/dev/null
->>>>  			tst_sleep 50ms
->>>> -- 
->>>> 1.8.4.2
->>>>
->>>>
->>>>
->>>>
->>>> -- 
->>>> Mailing list info: https://lists.linux.it/listinfo/ltp
->>>
->>
->>
->>
-> 
-> 
-> 
-
-
+Kind regards,
+Petr
