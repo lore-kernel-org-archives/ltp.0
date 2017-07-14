@@ -1,98 +1,42 @@
-From: Dan Rue <dan.rue@linaro.org>
-Date: Thu, 13 Jul 2017 12:16:10 -0500
-Subject: [LTP] [PATCH] su: Remove 'catch close'
-Message-ID: <20170713171610.32370-1-dan.rue@linaro.org>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 14 Jul 2017 11:16:08 +0800
+Subject: [LTP] [PATCH V2 03/14] mem/oom: fix the timeout issue
+In-Reply-To: <87lgnsiu3f.fsf@our.domain.is.not.set>
+References: <20170410100556.4465-1-liwang@redhat.com>
+ <20170410100556.4465-4-liwang@redhat.com>
+ <20170707151137.GF28534@rei.lan>
+ <CAEemH2fbJmvYQapOJ1A-1BqeGa5QuY_03ncNY_3qbk7by3XufA@mail.gmail.com>
+ <87lgnsiu3f.fsf@our.domain.is.not.set>
+Message-ID: <CAEemH2dvgWj0NaiGOLHauMzYu1g-zK9q1UomSF+AXomXqfB+-w@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Introduced in d97c827e3e, the exit codes captured by 'set codes [wait]' are
-getting lost due to the 'catch close' call, causing tests 2, 4, 6, and 7 to
-fail.
+On Thu, Jul 13, 2017 at 5:06 PM, Richard Palethorpe <rpalethorpe@suse.de> wrote:
+>
+> Li Wang writes:
+>
+>> +       if (tst_test->timeout) {
+>> +               if (tst_test->timeout > 0)
+>> +                       tst_set_timeout(tst_test->timeout);
+>> +       } else {
+>>                 tst_set_timeout(300);
+>> +       }
+>
+> Only a minor nit, but it is easier to read without nesting, so we could have:
+>
+> if (tst_test->timeout > 0) {
+>    tst_set_timeout(tst_test->timeout);
+> } else if (tst_test->timeout == 0) {
+>    tst_set_timeout(300);
+> }
 
-Signed-off-by: Dan Rue <dan.rue@linaro.org>
----
- testcases/commands/su/su01_s1 | 9 ---------
- 1 file changed, 9 deletions(-)
+Yes, seems the brace is also redundant.
 
-diff --git a/testcases/commands/su/su01_s1 b/testcases/commands/su/su01_s1
-index fd2e485da..313207b64 100755
---- a/testcases/commands/su/su01_s1
-+++ b/testcases/commands/su/su01_s1
-@@ -135,7 +135,6 @@ expect {
-   }
- }
- 
--catch close
- # capture result code
- set codes [wait]
- set pid [lindex $codes 0]
-@@ -152,7 +151,6 @@ if { $i_am_root==1 } {
- 		}
- 	}
- 	expect eof
--	catch close
- 	wait
- 
- 	set test_env_var [exec cat $TEST_ENV_FILE]
-@@ -198,7 +196,6 @@ expect {
-   }
- }
- 
--catch close
- # capture result code
- set codes [wait]
- set pid [lindex $codes 0]
-@@ -237,7 +234,6 @@ expect {
-   }
- }
- 
--catch close
- # capture result code
- set codes [wait]
- set pid [lindex $codes 0]
-@@ -292,7 +288,6 @@ expect {
-   }
- }
- 
--catch close
- # capture result code
- set codes [wait]
- set pid [lindex $codes 0]
-@@ -325,7 +320,6 @@ expect {
-   }
- }
- 
--catch close
- # capture result code
- set codes [wait]
- set pid [lindex $codes 0]
-@@ -384,7 +378,6 @@ expect {
-   }
- }
- 
--catch close
- # capture result code
- set codes [wait]
- set pid [lindex $codes 0]
-@@ -447,7 +440,6 @@ expect {
-   }
- }
- 
--catch close
- # capture result code
- set codes [wait]
- set pid [lindex $codes 0]
-@@ -481,7 +473,6 @@ expect {
-   }
- }
- 
--catch close
- } else {
- 
- 	send_user "TEST:  su to user1 with the user1 password expired. (FAILED),see more next line.\n"
+
+
 -- 
-2.11.0
-
+Li Wang
+liwang@redhat.com
