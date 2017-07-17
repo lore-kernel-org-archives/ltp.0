@@ -1,46 +1,46 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 17 Jul 2017 03:01:40 -0400 (EDT)
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 17 Jul 2017 15:50:33 +0800
 Subject: [LTP] [PATCH] syscalls/setrlimit: add setrlimit04
-In-Reply-To: <87h8yfi3v6.fsf@our.domain.is.not.set>
+In-Reply-To: <1008257811.53320687.1500274229249.JavaMail.zimbra@redhat.com>
 References: <efe5be914c757f391b9f0eba0630548dea309f1b.1500030543.git.jstancek@redhat.com>
- <87h8yfi3v6.fsf@our.domain.is.not.set>
-Message-ID: <812380836.53324474.1500274900880.JavaMail.zimbra@redhat.com>
+ <CAEemH2eH7tYAzwbcBt+Ootjw3eEWx3xuwKWiYiF6YA4q0=9X3w@mail.gmail.com>
+ <1008257811.53320687.1500274229249.JavaMail.zimbra@redhat.com>
+Message-ID: <CAEemH2dznQRLRdKAL4HOR49WBDahB8WSXVLCGwgZNyFu22r0hA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On Mon, Jul 17, 2017 at 2:50 PM, Jan Stancek <jstancek@redhat.com> wrote:
+>
+>
+> ----- Original Message -----
+>> On Fri, Jul 14, 2017 at 7:12 PM, Jan Stancek <jstancek@redhat.com> wrote:
+>> > Early patches for stack guard gap caused that gap size was contributing
+>> > towards stack limit. This caused failures for new processes (E2BIG) when
+>> > ulimit was set to anything lower than size of gap.
+> ...
+>> > +static struct tst_test test = {
+>> > +       .test_all     = test_setrlimit,
+>> > +       .forks_child  = 1,
+>> > +       .needs_root = 1,
+>>
+>> seems we need to filter out the suitable kernel:
+>>
+>> .min_kver = "4.12.0",
+>
+> Why, shouldn't this work on any kernel version?
 
------ Original Message -----
-> 
-> Hi Jan,
-> 
-> Jan Stancek writes:
-> 
-> > + *   DESCRIPTION
-> > + *     Attempt to run a trivial binary with stack < 1MB.
-> > + *
-> > + *     Early patches for stack guard gap caused that gap size was
-> > + *     contributing towards stack limit. This caused failures
-> > + *     for new processes (E2BIG) when ulimit was set to anything
-> > + *     lower than size of gap. commit 1be7107fbe18 "mm: larger
-> > + *     stack guard gap, between vmas" sets default gap size to 1M
-> > + *     (for systems with 4k pages), so let's set stack limit to 512kB
-> > + *     and confirm we can still run some trivial binary.
-> > + */
-> 
-> The first sentance is difficult to parse. I think you are saying that in
-> the early patches the stack gaurd gap was included in the stack
-> size.
+My bad. The "Early patches" has been reverted. I mistook this issue in versions.
 
-Yes. I didn't dig into details, but I think your formula below
-is close.
+You are right. please ignore my comments in last mail. :)
 
-> The stack size is then compared to the stack limit, so a process
-> would fail to start if
-> 
-> [initial process stack usage] + [stack gap] > [stack limit].
-> 
-> However the stack gap should not be included in this calculation.
 
+Another question come to my mind is that, if a system reboot with
+kernel parameter "stack_guard_gap=xxx", this case setrlimit04 still
+runs well and getting PASS, right?
+
+-- 
+Li Wang
+liwang@redhat.com
