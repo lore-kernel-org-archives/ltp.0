@@ -1,41 +1,40 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue, 18 Jul 2017 09:33:15 +0200
-Subject: [LTP] [PATCH 0/4] CVE-2016-10044 and SAFE_PERSONALITY
-Message-ID: <20170718073319.23543-1-rpalethorpe@suse.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 18 Jul 2017 03:58:29 -0400 (EDT)
+Subject: [LTP] [PATCH 4/4] Test for CVE-2016-10044 mark AIO pseudo-fs
+ noexec
+In-Reply-To: <20170718073319.23543-5-rpalethorpe@suse.com>
+References: <20170718073319.23543-1-rpalethorpe@suse.com>
+ <20170718073319.23543-5-rpalethorpe@suse.com>
+Message-ID: <1513116395.54444036.1500364708984.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This patch requires the previous CVE patch set!
 
-It adds a test for CVE-2016-10044 and introduces the SAFE_PERSONALITY macro
-since this is the second test I have written which uses the personality
-syscall.
+----- Original Message -----
+...
+> +
+> +#include "tst_test.h"
+> +
+> +#ifdef HAVE_LINUX_AIO_ABI_H
+> +
+> +#include <stdio.h>
+> +#include <string.h>
+> +#include <linux_syscall_numbers.h>
+> +#include <linux/aio_abi.h>
 
-Richard Palethorpe (4):
-  configure.ac: Add check for aio_abi.h
-  lib: Add personality fallback and SAFE macro
-  CVE-2012-0957: Use SAFE_PERSONALITY
-  Test for CVE-2016-10044 mark AIO pseudo-fs noexec
+Hi,
 
- configure.ac                   |  4 ++
- include/lapi/personality.h     | 48 ++++++++++++++++++++++
- include/tst_personality.h      | 28 +++++++++++++
- lib/tst_personality.c          | 33 +++++++++++++++
- m4/ltp-personality.m4          | 24 +++++++++++
- runtest/cve                    |  1 +
- testcases/cve/.gitignore       |  1 +
- testcases/cve/cve-2012-0957.c  |  8 +---
- testcases/cve/cve-2016-10044.c | 92 ++++++++++++++++++++++++++++++++++++++++++
- 9 files changed, 233 insertions(+), 6 deletions(-)
- create mode 100644 include/lapi/personality.h
- create mode 100644 include/tst_personality.h
- create mode 100644 lib/tst_personality.c
- create mode 100644 m4/ltp-personality.m4
- create mode 100644 testcases/cve/cve-2016-10044.c
+from LTP docs:
+"Don't use +linux/+ headers if at all possible. Usually they are replaced with
++sys/+ headers as things work their way into glibc.  Furthermore, +linux/+
+headers get shuffled around a lot more than their +sys/+ counterparts it
+seems."
 
--- 
-2.13.2
+If we really have to use linux header then I'd suggest a configure check
+that also checks it's compilable.
 
+Regards,
+Jan
