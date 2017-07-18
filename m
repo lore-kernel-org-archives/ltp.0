@@ -1,9 +1,9 @@
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 18 Jul 2017 16:23:07 +0800
-Subject: [LTP] [PATCH v3 10/15] mem/hugeshmctl: convert to new API
+Date: Tue, 18 Jul 2017 16:23:10 +0800
+Subject: [LTP] [PATCH v3 13/15] mem/cpuset: convert to new API
 In-Reply-To: <20170718082312.3946-1-liwang@redhat.com>
 References: <20170718082312.3946-1-liwang@redhat.com>
-Message-ID: <20170718082312.3946-11-liwang@redhat.com>
+Message-ID: <20170718082312.3946-14-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,872 +12,292 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c   | 210 +++++++++------------
- .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c   | 151 ++++++---------
- .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c   | 149 ++++++---------
- 3 files changed, 207 insertions(+), 303 deletions(-)
+ testcases/kernel/mem/cpuset/cpuset01.c | 167 ++++++++++++---------------------
+ 1 file changed, 60 insertions(+), 107 deletions(-)
 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-index f1e9195..0e37b8f 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-@@ -1,27 +1,19 @@
+diff --git a/testcases/kernel/mem/cpuset/cpuset01.c b/testcases/kernel/mem/cpuset/cpuset01.c
+index e6e3c01..a103df4 100644
+--- a/testcases/kernel/mem/cpuset/cpuset01.c
++++ b/testcases/kernel/mem/cpuset/cpuset01.c
+@@ -1,4 +1,16 @@
  /*
-+ * Copyright (c) International Business Machines  Corp., 2004
-+ * Copyright (c) Linux Test Project, 2004-2017
-  *
-- *   Copyright (c) International Business Machines  Corp., 2004
++ * Copyright (C) 2010-2017  Red Hat, Inc.
++ *
 + * This program is free software;  you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
 + * the Free Software Foundation; either version 2 of the License, or
 + * (at your option) any later version.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *
 + * This program is distributed in the hope that it will be useful,
 + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
 + * the GNU General Public License for more details.
++ *
+  * Out Of Memory when changing cpuset's mems on NUMA. There was a
+  * problem reported upstream that the allocator may see an empty
+  * nodemask when changing cpuset's mems.
+@@ -6,55 +18,18 @@
+  * http://lkml.org/lkml/2010/5/4/79
+  * http://lkml.org/lkml/2010/5/4/80
+  * This test is based on the reproducers for the above issue.
+- *
+- * Copyright (C) 2010  Red Hat, Inc.
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of version 2 of the GNU General Public
+- * License as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it
+- * is free of the rightful claim of any third person regarding
+- * infringement or the like.  Any license provided herein, whether
+- * implied or otherwise, applies only to this software file.  Patent
+- * licenses, if any, provided herein do not apply to combinations of
+- * this program with other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+- * 02110-1301, USA.
   */
- 
- /*
-- * NAME
-- *	hugeshmctl01.c
-- *
-  * DESCRIPTION
-  *	hugeshmctl01 - test the IPC_STAT, IPC_SET and IPC_RMID commands as
-  *		   they are used with shmctl()
-@@ -44,32 +36,15 @@
-  *	    issue a PASS message
-  *	call cleanup
-  *
-- * USAGE:  <for command-line>
-- *  hugeshmctl01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-  * HISTORY
-  *	03/2001 - Written by Wayne Boyer
-  *	04/2004 - Updated by Robbie Williamson
-- *
-- * RESTRICTIONS
-- *	none
-  */
- 
- #include <limits.h>
--#include "test.h"
--#include "safe_macros.h"
- #include "mem.h"
- #include "hugetlb.h"
- 
--char *TCID = "hugeshmctl01";
--int TST_TOTAL = 4;
--
- #define FIRST		0
- #define SECOND		1
- #define N_ATTACH	4
-@@ -93,67 +68,54 @@ static void func_rmid(void);
- static void *set_shmat(void);
- 
- static long hugepages = 128;
--static option_t options[] = {
--	{"s:", &sflag, &nr_opt},
 +
-+static struct tst_option options[] = {
-+	{"s:", &nr_opt, "-s   num  Set the number of the been allocated hugepages"},
- 	{NULL, NULL, NULL}
- };
+ #include "config.h"
+-#include <sys/types.h>
+-#include <sys/mman.h>
+-#include <sys/mount.h>
+-#include <sys/stat.h>
++#include <stdio.h>
+ #include <sys/wait.h>
+-#include <ctype.h>
+-#include <err.h>
+-#include <errno.h>
+-#include <fcntl.h>
+-#include <math.h>
+ #if HAVE_NUMAIF_H
+ #include <numaif.h>
+ #endif
+-#include <signal.h>
+-#include <stdarg.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <unistd.h>
  
--struct test_case_t {
-+struct tcase {
- 	int cmd;
- 	void (*func_test) (void);
- 	void (*func_setup) (void);
--} TC[] = {
--	{
--	IPC_STAT, func_stat, stat_setup}, {
--	IPC_STAT, func_stat, stat_setup}, {
--	IPC_SET, func_set, set_setup}, {
--	IPC_RMID, func_rmid, NULL}
-+} tcases[] = {
-+	{IPC_STAT, func_stat, stat_setup},
-+	{IPC_STAT, func_stat, stat_setup},
-+	{IPC_SET,  func_set,  set_setup},
-+	{IPC_RMID, func_rmid, NULL}
- };
+-#include "test.h"
+ #include "mem.h"
+ #include "numa_helper.h"
  
--int main(int ac, char **av)
-+static void test_hugeshmctl(void)
+-char *TCID = "cpuset01";
+-int TST_TOTAL = 1;
+-
+ #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
+ 	&& HAVE_MPOL_CONSTANTS
+ volatile int end;
+@@ -62,32 +37,13 @@ static int *nodes;
+ static int nnodes;
+ static long ncpus;
+ 
+-static void testcpuset(void);
+ static void sighandler(int signo LTP_ATTRIBUTE_UNUSED);
+ static int mem_hog(void);
+ static int mem_hog_cpuset(int ntasks);
+ static long count_cpu(void);
+ 
+-int main(int argc, char *argv[])
++static void test_cpuset(void)
  {
--	int lc, i;
-+	unsigned int i;
- 
--	tst_parse_opts(ac, av, options, NULL);
-+	/* initialize stat_time */
-+	stat_time = FIRST;
- 
--	if (sflag)
--		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
+-
+-	tst_parse_opts(argc, argv, NULL, NULL);
+-
+-	ncpus = count_cpu();
+-	if (get_allowed_nodes_arr(NH_MEMS | NH_CPUS, &nnodes, &nodes) < 0)
+-		tst_brkm(TBROK | TERRNO, NULL, "get_allowed_nodes_arr");
+-	if (nnodes <= 1)
+-		tst_brkm(TCONF, NULL, "requires a NUMA system.");
 -
 -	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		/* initialize stat_time */
--		stat_time = FIRST;
-+	/*
-+	 * Create a shared memory segment with read and write
-+	 * permissions.  Do this here instead of in setup()
-+	 * so that looping (-i) will work correctly.
-+	 */
-+	shm_id_1 = shmget(shmkey, shm_size,
-+			SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW);
-+	if (shm_id_1 == -1)
-+		tst_brk(TBROK | TERRNO, "shmget #main");
- 
-+	for (i = 0; i < ARRAY_SIZE(tcases); i++) {
- 		/*
--		 * Create a shared memory segment with read and write
--		 * permissions.  Do this here instead of in setup()
--		 * so that looping (-i) will work correctly.
-+		 * if needed, set up any required conditions by
-+		 * calling the appropriate setup function
- 		 */
--		shm_id_1 = shmget(shmkey, shm_size,
--				  SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW);
--		if (shm_id_1 == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "shmget #main");
-+		if (tcases[i].func_setup != NULL)
-+			(*tcases[i].func_setup) ();
- 
--		for (i = 0; i < TST_TOTAL; i++) {
--			/*
--			 * if needed, set up any required conditions by
--			 * calling the appropriate setup function
--			 */
--			if (TC[i].func_setup != NULL)
--				(*TC[i].func_setup) ();
--
--			if (shmctl(shm_id_1, TC[i].cmd, &buf) == -1) {
--				tst_resm(TFAIL | TERRNO, "shmctl #main");
--				continue;
--			}
--			(*TC[i].func_test) ();
-+		if (shmctl(shm_id_1, tcases[i].cmd, &buf) == -1) {
-+			tst_res(TFAIL | TERRNO, "shmctl #main");
-+			continue;
- 		}
-+		(*tcases[i].func_test) ();
- 	}
+-	testcpuset();
 -	cleanup();
 -	tst_exit();
- }
- 
- /*
-@@ -167,7 +129,7 @@ void *set_shmat(void)
- 
- 	rval = shmat(shm_id_1, 0, 0);
- 	if (rval == (void *)-1)
--		tst_brkm(TBROK | TERRNO, cleanup, "set shmat");
-+		tst_brk(TBROK | TERRNO, "set shmat");
- 
- 	return rval;
- }
-@@ -183,7 +145,15 @@ static void stat_setup(void)
- 	void *test;
- 	pid_t pid;
- 	sigset_t newmask, oldmask;
--
-+	struct sigaction sa;
-+
-+	memset (&sa, '\0', sizeof(sa));
-+	sa.sa_handler = sighandler;
-+	sa.sa_flags = 0;
-+	TEST(sigaction(SIGUSR1, &sa, NULL));
-+	if (TEST_RETURN == -1)
-+		tst_brk(TBROK | TRERRNO,
-+				"SIGSEGV signal setup failed");
- 	/*
- 	 * The first time through, let the children attach the memory.
- 	 * The second time through, attach the memory first and let
-@@ -211,12 +181,10 @@ static void stat_setup(void)
- 	sigemptyset(&newmask);
- 	sigaddset(&newmask, SIGUSR1);
- 	if (sigprocmask(SIG_BLOCK, &newmask, &oldmask) < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "block SIGUSR1 error");
-+		tst_brk(TBROK | TERRNO, "block SIGUSR1 error");
- 
- 	for (i = 0; i < N_ATTACH; i++) {
--		switch (pid = fork()) {
--		case -1:
--			tst_brkm(TBROK | TERRNO, cleanup, "fork");
-+		switch (pid = SAFE_FORK()) {
- 		case 0:
- 			test = (stat_time == FIRST) ? set_shmat() : set_shared;
- 
-@@ -230,19 +198,19 @@ static void stat_setup(void)
- 			 */
- 			rval = sigsuspend(&oldmask);
- 			if (rval != -1)
--				tst_brkm(TBROK | TERRNO, cleanup, "sigsuspend");
-+				tst_brk(TBROK | TERRNO, "sigsuspend");
- 
- 			/*
- 			 * don't have to block SIGUSR1 any more,
- 			 * recover the mask
- 			 */
- 			if (sigprocmask(SIG_SETMASK, &oldmask, NULL) < 0)
--				tst_brkm(TBROK | TERRNO, cleanup,
-+				tst_brk(TBROK | TERRNO,
- 					 "child sigprocmask");
- 
- 			/* now we're back - detach the memory and exit */
- 			if (shmdt(test) == -1)
--				tst_brkm(TBROK | TERRNO, cleanup,
-+				tst_brk(TBROK | TERRNO,
- 					 "shmdt in stat_setup()");
- 			exit(0);
- 		default:
-@@ -253,7 +221,7 @@ static void stat_setup(void)
- 
- 	/* parent doesn't have to block SIGUSR1, recover the mask */
- 	if (sigprocmask(SIG_SETMASK, &oldmask, NULL) < 0)
--		tst_brkm(TBROK, cleanup, "parent sigprocmask");
-+		tst_brk(TBROK, "parent sigprocmask");
- 
- 	usleep(250000);
- }
-@@ -271,12 +239,12 @@ static void func_stat(void)
- 	pid = getpid();
- 
- 	if (buf.shm_cpid != pid) {
--		tst_resm(TFAIL, "creator pid is incorrect");
-+		tst_res(TFAIL, "creator pid is incorrect");
- 		goto fail;
- 	}
- 
- 	if (buf.shm_segsz != shm_size) {
--		tst_resm(TFAIL, "segment size is incorrect");
-+		tst_res(TFAIL, "segment size is incorrect");
- 		goto fail;
- 	}
- 
-@@ -287,18 +255,18 @@ static void func_stat(void)
- 	 * that memory so the attaches equal N_ATTACH + stat_time (1).
- 	 */
- 	if (buf.shm_nattch != N_ATTACH + stat_time) {
--		tst_resm(TFAIL, "# of attaches is incorrect - %lu",
-+		tst_res(TFAIL, "# of attaches is incorrect - %lu",
- 			 (unsigned long)buf.shm_nattch);
- 		goto fail;
- 	}
- 
- 	/* use MODE_MASK to make sure we are comparing the last 9 bits */
- 	if ((buf.shm_perm.mode & MODE_MASK) != ((SHM_RW) & MODE_MASK)) {
--		tst_resm(TFAIL, "segment mode is incorrect");
-+		tst_res(TFAIL, "segment mode is incorrect");
- 		goto fail;
- 	}
- 
--	tst_resm(TPASS, "pid, size, # of attaches and mode are correct "
-+	tst_res(TPASS, "pid, size, # of attaches and mode are correct "
- 		 "- pass #%d", stat_time);
- 
- fail:
-@@ -320,15 +288,21 @@ static void stat_cleanup(void)
- 	/* wake up the childern so they can detach the memory and exit */
- 	for (i = 0; i < N_ATTACH; i++)
- 		if (kill(pid_arr[i], SIGUSR1) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "kill with SIGUSR1");
-+			tst_brk(TBROK | TERRNO, "kill with SIGUSR1");
- 
- 	/* remove the parent's shared memory the second time through */
- 	if (stat_time == SECOND)
- 		if (shmdt(set_shared) == -1)
--			tst_resm(TBROK | TERRNO, "shmdt in stat_cleanup()");
-+			tst_res(TBROK | TERRNO, "shmdt in stat_cleanup()");
- 	stat_time++;
- }
- 
-+static void sighandler(int sig)
-+{
-+	if (sig != SIGUSR1)
-+		tst_res(TFAIL, "received unexpected signal %d", sig);
-+}
-+
- /*
-  * set_setup() - set up for the IPC_SET command with shmctl()
-  */
-@@ -348,21 +322,21 @@ static void func_set(void)
- {
- 	/* first stat the shared memory to get the new data */
- 	if (shmctl(shm_id_1, IPC_STAT, &buf) == -1) {
--		tst_resm(TBROK | TERRNO, "shmctl in func_set()");
-+		tst_res(TBROK | TERRNO, "shmctl in func_set()");
- 		return;
- 	}
- 
- 	if ((buf.shm_perm.mode & MODE_MASK) != ((SHM_RW | NEWMODE) & MODE_MASK)) {
--		tst_resm(TFAIL, "new mode is incorrect");
-+		tst_res(TFAIL, "new mode is incorrect");
- 		return;
- 	}
- 
- 	if (save_time >= buf.shm_ctime) {
--		tst_resm(TFAIL, "change time is incorrect");
-+		tst_res(TFAIL, "change time is incorrect");
- 		return;
- 	}
- 
--	tst_resm(TPASS, "new mode and change time are correct");
-+	tst_res(TPASS, "new mode and change time are correct");
- }
- 
- /*
-@@ -372,48 +346,46 @@ static void func_rmid(void)
- {
- 	/* Do another shmctl() - we should get EINVAL */
- 	if (shmctl(shm_id_1, IPC_STAT, &buf) != -1)
--		tst_brkm(TBROK, cleanup, "shmctl in func_rmid() "
-+		tst_brk(TBROK, "shmctl in func_rmid() "
- 			 "succeeded unexpectedly");
- 	if (errno != EINVAL)
--		tst_resm(TFAIL | TERRNO, "shmctl in func_rmid() failed "
-+		tst_res(TFAIL | TERRNO, "shmctl in func_rmid() failed "
- 			 "unexpectedly - expect errno=EINVAL, got");
- 	else
--		tst_resm(TPASS, "shmctl in func_rmid() failed as expected, "
-+		tst_res(TPASS, "shmctl in func_rmid() failed as expected, "
- 			 "shared memory appears to be removed");
- 	shm_id_1 = -1;
- }
- 
--static void sighandler(int sig)
--{
--	if (sig != SIGUSR1)
--		tst_resm(TFAIL, "received unexpected signal %d", sig);
 -}
 -
- void setup(void)
- {
- 	long hpage_size;
+-static void testcpuset(void)
+-{
+-	int lc;
+ 	int child, i, status;
+ 	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
+ 	char mems[BUFSIZ], buf[BUFSIZ];
+@@ -96,11 +52,11 @@ static void testcpuset(void)
+ 	write_cpuset_files(CPATH_NEW, "cpus", buf);
+ 	read_cpuset_files(CPATH, "mems", mems);
+ 	write_cpuset_files(CPATH_NEW, "mems", mems);
+-	SAFE_FILE_PRINTF(cleanup, CPATH_NEW "/tasks", "%d", getpid());
++	SAFE_FILE_PRINTF(CPATH_NEW "/tasks", "%d", getpid());
  
--	tst_require_root();
- 	check_hugepage();
--	tst_sig(FORK, sighandler, cleanup);
--	tst_tmpdir();
-+	if (nr_opt)
-+		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
- 
- 	orig_hugepages = get_sys_tune("nr_hugepages");
- 	set_sys_tune("nr_hugepages", hugepages, 1);
--	hpage_size = read_meminfo("Hugepagesize:") * 1024;
-+	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
- 
- 	shm_size = hpage_size * hugepages / 2;
- 	update_shm_size(&shm_size);
--	shmkey = getipckey(cleanup);
--
--	TEST_PAUSE;
-+	shmkey = getipckey();
- }
- 
- void cleanup(void)
- {
- 	rm_shm(shm_id_1);
--
- 	set_sys_tune("nr_hugepages", orig_hugepages, 0);
--
--	tst_rmdir();
- }
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.forks_child = 1,
-+	.needs_tmpdir = 1,
-+	.options = options,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = test_hugeshmctl,
-+};
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-index 785c5ca..6079d99 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-@@ -1,26 +1,19 @@
- /*
-+ * Copyright (c) International Business Machines  Corp., 2004
-+ * Copyright (c) Linux Test Project, 2004-2017
-  *
-- *   Copyright (c) International Business Machines  Corp., 2004
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-  */
- 
- /*
-- * NAME
-- *	hugeshmctl02.c
-- *
-  * DESCRIPTION
-  *	hugeshmctl02 - check for EACCES, EFAULT and EINVAL errors
-  *
-@@ -35,33 +28,16 @@
-  *	    issue a FAIL message
-  *	call cleanup
-  *
-- * USAGE:  <for command-line>
-- *  hugeshmctl02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-  * HISTORY
-  *	03/2001 - Written by Wayne Boyer
-  *	04/2004 - Updated by Robbie Williamson
-- *
-- * RESTRICTIONS
-- *	none
-  */
- 
- #include <pwd.h>
- #include <limits.h>
--#include "test.h"
--#include "safe_macros.h"
- #include "mem.h"
- #include "hugetlb.h"
- 
--char *TCID = "hugeshmctl02";
--int TST_TOTAL = 4;
--
- static size_t shm_size;
- static int shm_id_1 = -1;
- static int shm_id_2 = -1;
-@@ -69,101 +45,90 @@ static int shm_id_3 = -1;
- static struct shmid_ds buf;
- 
- static long hugepages = 128;
--static option_t options[] = {
--	{"s:", &sflag, &nr_opt},
-+
-+static struct tst_option options[] = {
-+	{"s:", &nr_opt, "-s   num  Set the number of the been allocated hugepages"},
- 	{NULL, NULL, NULL}
- };
- 
--struct test_case_t {
-+struct tcase {
- 	int *shmid;
- 	int cmd;
- 	struct shmid_ds *sbuf;
- 	int error;
--} TC[] = {
-+} tcases[] = {
- 	/* EFAULT - IPC_SET & buf isn't valid */
--	{
--	&shm_id_2, IPC_SET, (struct shmid_ds *)-1, EFAULT},
--	    /* EFAULT - IPC_STAT & buf isn't valid */
--	{
--	&shm_id_2, IPC_STAT, (struct shmid_ds *)-1, EFAULT},
--	    /* EINVAL - the shmid is not valid */
--	{
--	&shm_id_3, IPC_STAT, &buf, EINVAL},
--	    /* EINVAL - the command is not valid */
--	{
--&shm_id_2, -1, &buf, EINVAL},};
--
--int main(int ac, char **av)
-+	{&shm_id_2, IPC_SET, (struct shmid_ds *)-1, EFAULT},
-+	/* EFAULT - IPC_STAT & buf isn't valid */
-+	{&shm_id_2, IPC_STAT, (struct shmid_ds *)-1, EFAULT},
-+	/* EINVAL - the shmid is not valid */
-+	{&shm_id_3, IPC_STAT, &buf, EINVAL},
-+	/* EINVAL - the command is not valid */
-+	{&shm_id_2, -1, &buf, EINVAL},
-+};
-+
-+static void test_hugeshmctl(void)
- {
--	int lc, i;
--
--	tst_parse_opts(ac, av, options, NULL);
--
--	if (sflag)
--		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
--
--	setup();
--
+-	switch (child = fork()) {
++	switch (child = SAFE_FORK()) {
+ 	case -1:
+-		tst_brkm(TBROK | TERRNO, cleanup, "fork");
++		tst_brk(TBROK | TERRNO, "fork");
+ 	case 0:
+ 		for (i = 0; i < nnodes; i++) {
+ 			if (nodes[i] >= MAXNODES)
+@@ -108,37 +64,36 @@ static void testcpuset(void)
+ 			set_node(nmask, nodes[i]);
+ 		}
+ 		if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "set_mempolicy");
+-		exit(mem_hog_cpuset(MAX(ncpus, 1)));
+-	}
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++) {
--			TEST(shmctl(*(TC[i].shmid), TC[i].cmd, TC[i].sbuf));
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "shmctl succeeded "
--					 "unexpectedly");
--				continue;
--			}
--			if (TEST_ERRNO == TC[i].error)
--				tst_resm(TPASS | TTERRNO, "shmctl failed "
--					 "as expected");
--			else
--				tst_resm(TFAIL | TTERRNO, "shmctl failed "
--					 "unexpectedly - expect errno = "
--					 "%d, got", TC[i].error);
-+	unsigned int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(tcases); i++) {
-+		TEST(shmctl(*(tcases[i].shmid), tcases[i].cmd, tcases[i].sbuf));
-+		if (TEST_RETURN != -1) {
-+			tst_res(TFAIL, "shmctl succeeded "
-+					"unexpectedly");
-+			continue;
-+		}
-+		if (TEST_ERRNO == tcases[i].error) {
-+			tst_res(TPASS | TTERRNO, "shmctl failed "
-+					"as expected");
-+		} else {
-+			tst_res(TFAIL | TTERRNO, "shmctl failed "
-+					"unexpectedly - expect errno = "
-+					"%d, got", tcases[i].error);
- 		}
+-		snprintf(buf, BUFSIZ, "%d", nodes[0]);
+-		write_cpuset_files(CPATH_NEW, "mems", buf);
+-		snprintf(buf, BUFSIZ, "%d", nodes[1]);
+-		write_cpuset_files(CPATH_NEW, "mems", buf);
++			tst_brk(TBROK | TERRNO, "set_mempolicy");
++		exit(mem_hog_cpuset(ncpus > 1 ? ncpus : 1));
  	}
--	cleanup();
--	tst_exit();
+ 
++	snprintf(buf, BUFSIZ, "%d", nodes[0]);
++	write_cpuset_files(CPATH_NEW, "mems", buf);
++	snprintf(buf, BUFSIZ, "%d", nodes[1]);
++	write_cpuset_files(CPATH_NEW, "mems", buf);
++
+ 	if (waitpid(child, &status, WUNTRACED | WCONTINUED) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
+-	if (WEXITSTATUS(status) != 0)
+-		tst_resm(TFAIL, "child exit status is %d", WEXITSTATUS(status));
++		tst_brk(TBROK | TERRNO, "waitpid");
++	if (WEXITSTATUS(status) != 0) {
++		tst_res(TFAIL, "child exit status is %d", WEXITSTATUS(status));
++		return;
++	}
++
++	tst_res(TPASS, "cpuset test pass");
  }
  
 -void setup(void)
 +static void setup(void)
  {
- 	long hpage_size;
- 
 -	tst_require_root();
- 	check_hugepage();
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--	tst_tmpdir();
-+	if (nr_opt)
-+		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
- 
- 	orig_hugepages = get_sys_tune("nr_hugepages");
- 	set_sys_tune("nr_hugepages", hugepages, 1);
--	hpage_size = read_meminfo("Hugepagesize:") * 1024;
-+	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
- 
- 	shm_size = hpage_size * hugepages / 2;
- 	update_shm_size(&shm_size);
--	shmkey = getipckey(cleanup);
-+	shmkey = getipckey();
- 
- 	/* create a shared memory segment without read or write permissions */
- 	shm_id_1 = shmget(shmkey, shm_size, SHM_HUGETLB | IPC_CREAT | IPC_EXCL);
- 	if (shm_id_1 == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "shmget #1");
-+		tst_brk(TBROK | TERRNO, "shmget #1");
- 
- 	/* create a shared memory segment with read and write permissions */
- 	shm_id_2 = shmget(shmkey + 1, shm_size,
- 			  SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW);
- 	if (shm_id_2 == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "shmget #2");
 -
+-	if (tst_kvercmp(2, 6, 32) < 0)
+-		tst_brkm(TCONF, NULL, "2.6.32 or greater kernel required");
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
 -	TEST_PAUSE;
-+		tst_brk(TBROK | TERRNO, "shmget #2");
+-
+ 	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
++	ncpus = count_cpu();
++	if (get_allowed_nodes_arr(NH_MEMS | NH_CPUS, &nnodes, &nodes) < 0)
++		tst_brk(TBROK | TERRNO, "get_allowed_nodes_arr");
++	if (nnodes <= 1)
++		tst_brk(TCONF, "requires a NUMA system.");
  }
  
 -void cleanup(void)
 +static void cleanup(void)
  {
- 	rm_shm(shm_id_1);
- 	rm_shm(shm_id_2);
--
- 	set_sys_tune("nr_hugepages", orig_hugepages, 0);
--
--	tst_rmdir();
+ 	umount_mem(CPATH, CPATH_NEW);
  }
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.options = options,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = test_hugeshmctl,
-+};
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
-index 1e73027..19df79f 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
-@@ -1,26 +1,19 @@
- /*
-+ * Copyright (c) International Business Machines  Corp., 2004
-+ * Copyright (c) Linux Test Project, 2004-2017
-  *
-- *   Copyright (c) International Business Machines  Corp., 2004
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-  */
+@@ -156,41 +111,34 @@ static int mem_hog(void)
  
- /*
-- * NAME
-- *	hugeshmctl03.c
-- *
-  * DESCRIPTION
-  *	hugeshmctl03 - check for EACCES, and EPERM errors
-  *
-@@ -41,15 +34,6 @@
-  *	  wait for child to exit
-  *	  remove the large shared memory segment
-  *
-- * USAGE:  <for command-line>
-- *  hugeshmctl03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-  * HISTORY
-  *	03/2001 - Written by Wayne Boyer
-  *	04/2004 - Updated by Robbie Williamson
-@@ -61,14 +45,9 @@
- #include <sys/types.h>
- #include <sys/wait.h>
- #include <limits.h>
--#include "test.h"
--#include "safe_macros.h"
- #include "mem.h"
- #include "hugetlb.h"
- 
--char *TCID = "hugeshmctl03";
--int TST_TOTAL = 3;
--
- static size_t shm_size;
- static int shm_id_1 = -1;
- static struct shmid_ds buf;
-@@ -76,80 +55,64 @@ static uid_t ltp_uid;
- static char *ltp_user = "nobody";
- 
- static long hugepages = 128;
--static option_t options[] = {
--	{"s:", &sflag, &nr_opt},
-+
-+static struct tst_option options[] = {
-+	{"s:", &nr_opt, "-s   num  Set the number of the been allocated hugepages"},
- 	{NULL, NULL, NULL}
- };
- 
--struct test_case_t {
-+struct tcase {
- 	int *shmid;
- 	int cmd;
- 	struct shmid_ds *sbuf;
- 	int error;
--} TC[] = {
-+} tcases[] = {
- 	/* EACCES - child has no read permission for segment */
--	{
--	&shm_id_1, IPC_STAT, &buf, EACCES},
--	    /* EPERM - IPC_SET - child doesn't have permission to change segment */
--	{
--	&shm_id_1, IPC_SET, &buf, EPERM},
--	    /* EPERM - IPC_RMID - child can not remove the segment */
--	{
--&shm_id_1, IPC_RMID, &buf, EPERM},};
-+	{&shm_id_1, IPC_STAT, &buf, EACCES},
-+	/* EPERM - IPC_SET - child doesn't have permission to change segment */
-+	{&shm_id_1, IPC_SET, &buf, EPERM},
-+	/* EPERM - IPC_RMID - child can not remove the segment */
-+	{&shm_id_1, IPC_RMID, &buf, EPERM},
-+};
- 
- static void do_child(void);
- 
--int main(int ac, char **av)
-+static void test_hugeshmctl(void)
- {
- 	pid_t pid;
- 	int status;
- 
--	tst_parse_opts(ac, av, options, NULL);
--
--	if (sflag)
--		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
--
--	setup();
--
--	switch (pid = fork()) {
--	case -1:
--		tst_brkm(TBROK | TERRNO, cleanup, "fork");
-+	switch (pid = SAFE_FORK()) {
- 	case 0:
--		/* set  the user ID of the child to the non root user */
-+		/* set the user ID of the child to the non root user */
- 		if (setuid(ltp_uid) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "setuid");
-+			tst_brk(TBROK | TERRNO, "setuid");
- 		do_child();
--		tst_exit();
-+		exit(0);
- 	default:
- 		if (waitpid(pid, &status, 0) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
-+			tst_brk(TBROK | TERRNO, "waitpid");
+ 	pagesize = getpagesize();
+ 	while (!end) {
+-		addr = mmap(NULL, pagesize * 10, PROT_READ | PROT_WRITE,
++		addr = SAFE_MMAP(NULL, pagesize * 10, PROT_READ | PROT_WRITE,
+ 			    MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+-		if (addr == MAP_FAILED) {
+-			ret = 1;
+-			tst_resm(TFAIL | TERRNO, "mmap");
+-			break;
+-		}
+ 		memset(addr, 0xF7, pagesize * 10);
+-		munmap(addr, pagesize * 10);
++		SAFE_MUNMAP(addr, pagesize * 10);
  	}
--	cleanup();
--	tst_exit();
+ 	return ret;
  }
  
- static void do_child(void)
+ static int mem_hog_cpuset(int ntasks)
  {
--	int i, lc;
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++) {
--			TEST(shmctl(*(TC[i].shmid), TC[i].cmd, TC[i].sbuf));
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "shmctl succeeded "
--					 "unexpectedly");
--				continue;
--			}
--			if (TEST_ERRNO == TC[i].error)
--				tst_resm(TPASS | TTERRNO, "shmctl failed "
--					 "as expected");
--			else
--				tst_resm(TFAIL | TTERRNO, "shmctl failed "
--					 "unexpectedly - expect errno = "
--					 "%d, got", TC[i].error);
-+	unsigned int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(tcases); i++) {
-+		TEST(shmctl(*(tcases[i].shmid), tcases[i].cmd, tcases[i].sbuf));
-+		if (TEST_RETURN != -1) {
-+			tst_res(TFAIL, "shmctl succeeded "
-+					"unexpectedly");
-+			continue;
+-	int i, lc, status, ret = 0;
++	int i, status, ret = 0;
+ 	struct sigaction sa;
+ 	pid_t *pids;
+ 
+ 	if (ntasks <= 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "ntasks is small.");
++		tst_brk(TBROK | TERRNO, "ntasks is small.");
+ 	sa.sa_handler = sighandler;
+ 	if (sigemptyset(&sa.sa_mask) < 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "sigemptyset");
++		tst_brk(TBROK | TERRNO, "sigemptyset");
+ 	sa.sa_flags = 0;
+ 	if (sigaction(SIGUSR1, &sa, NULL) < 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "sigaction");
++		tst_brk(TBROK | TERRNO, "sigaction");
+ 
+-	pids = malloc(sizeof(pid_t) * ntasks);
+-	if (pids == NULL)
+-		tst_brkm(TBROK | TERRNO, cleanup, "malloc");
++	pids = SAFE_MALLOC(sizeof(pid_t) * ntasks);
+ 	for (i = 0; i < ntasks; i++) {
+ 		switch (pids[i] = fork()) {
+ 		case -1:
+-			tst_resm(TFAIL | TERRNO, "fork %d", pids[i]);
++			tst_res(TFAIL | TERRNO, "fork %d", pids[i]);
+ 			ret = 1;
+ 			break;
+ 		case 0:
+@@ -200,22 +148,22 @@ static int mem_hog_cpuset(int ntasks)
+ 			break;
  		}
-+		if (TEST_ERRNO == tcases[i].error)
-+			tst_res(TPASS | TTERRNO, "shmctl failed "
-+					"as expected");
-+		else
-+			tst_res(TFAIL | TTERRNO, "shmctl failed "
-+					"unexpectedly - expect errno = "
-+					"%d, got", tcases[i].error);
  	}
- }
- 
-@@ -157,34 +120,38 @@ void setup(void)
- {
- 	long hpage_size;
- 
--	tst_require_root();
- 	check_hugepage();
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--	tst_tmpdir();
-+	if (nr_opt)
-+		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
- 
- 	orig_hugepages = get_sys_tune("nr_hugepages");
- 	set_sys_tune("nr_hugepages", hugepages, 1);
--	hpage_size = read_meminfo("Hugepagesize:") * 1024;
-+	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
- 
- 	shm_size = hpage_size * hugepages / 2;
- 	update_shm_size(&shm_size);
--	shmkey = getipckey(cleanup);
-+	shmkey = getipckey();
- 	shm_id_1 = shmget(shmkey, shm_size,
- 			  SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW);
- 	if (shm_id_1 == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "shmget");
-+		tst_brk(TBROK | TERRNO, "shmget");
- 
- 	/* get the userid for a non root user */
--	ltp_uid = getuserid(cleanup, ltp_user);
--
--	TEST_PAUSE;
-+	ltp_uid = getuserid(ltp_user);
- }
- 
- void cleanup(void)
- {
- 	rm_shm(shm_id_1);
--
- 	set_sys_tune("nr_hugepages", orig_hugepages, 0);
--
--	tst_rmdir();
- }
+-	for (lc = 0; TEST_LOOPING(lc); lc++) ;
 +
+ 	while (i--) {
+ 		if (kill(pids[i], SIGUSR1) == -1) {
+-			tst_resm(TFAIL | TERRNO, "kill %d", pids[i]);
++			tst_res(TFAIL | TERRNO, "kill %d", pids[i]);
+ 			ret = 1;
+ 		}
+ 	}
+ 	while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0) {
+ 		if (WIFEXITED(status)) {
+ 			if (WEXITSTATUS(status) != 0) {
+-				tst_resm(TFAIL, "child exit status is %d",
++				tst_res(TFAIL, "child exit status is %d",
+ 					 WEXITSTATUS(status));
+ 				ret = 1;
+ 			}
+ 		} else if (WIFSIGNALED(status)) {
+-			tst_resm(TFAIL, "child caught signal %d",
++			tst_res(TFAIL, "child caught signal %d",
+ 				 WTERMSIG(status));
+ 			ret = 1;
+ 		}
+@@ -233,9 +181,14 @@ static long count_cpu(void)
+ 	return ncpus;
+ }
+ 
 +static struct tst_test test = {
 +	.needs_root = 1,
-+	.forks_child = 1,
-+	.needs_tmpdir = 1,
-+	.options = options,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = test_hugeshmctl,
++	.test_all = test_cpuset,
++	.min_kver = "2.6.32",
 +};
++
+ #else /* no NUMA */
+-int main(void)
+-{
+-	tst_brkm(TCONF, NULL, "no NUMA development packages installed.");
+-}
++	TST_TEST_TCONF("no NUMA development packages installed.");
+ #endif
 -- 
 2.9.3
 
