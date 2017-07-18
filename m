@@ -1,55 +1,60 @@
 From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Tue, 18 Jul 2017 14:31:43 +0800
-Subject: [LTP] [PATCH v2 2/3] commands/keyctl01: Fix getting key serial
-	number
-In-Reply-To: <20170718063144.18856-1-fenggw-fnst@cn.fujitsu.com>
+Date: Tue, 18 Jul 2017 14:31:42 +0800
+Subject: [LTP] [PATCH v2 1/3] commands/keyctl01: Fix potential infinite loop
+In-Reply-To: <20170717114235.GB11059@rei.lan>
 References: <20170717114235.GB11059@rei.lan>
- <20170718063144.18856-1-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <20170718063144.18856-2-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20170718063144.18856-1-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We expect to get the key serial number by matching "debug:fred":
+End the loop once the max key quota is less than zero, in case
+some errors happen and result in endless loop.
 
-Session Keyring
-1072563454 --alswrv      0     0  keyring: _ses
- 340758544 --alswrv      0 65534   \_ keyring: _uid.0
- 783746283 --alswrv      0     0   \_ user: debug:fred
-
-But in some kernels the key will be inaccessible immediately
-after being requested with "debug:fred negate":
-
-Session Keyring
-        -3 --alswrv      0     0  keyring: _ses
- 842289032 --alswrv      0    -1   \_ keyring: _uid.0
-877125164: key inaccessible (Permission denied)
-
-So fix this by adding a match with "inaccessible".
+We expect the test to trigger key quota excess which breaks the
+loop but it may not happen, so add a TWARN message for this.
 
 Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 ---
- testcases/commands/keyctl/keyctl01.sh | 5 +++++
- 1 file changed, 5 insertions(+)
+ testcases/commands/keyctl/keyctl01.sh | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/testcases/commands/keyctl/keyctl01.sh b/testcases/commands/keyctl/keyctl01.sh
-index 238b117..76226ae 100644
+index 690fbbf..238b117 100644
 --- a/testcases/commands/keyctl/keyctl01.sh
 +++ b/testcases/commands/keyctl/keyctl01.sh
-@@ -76,6 +76,11 @@ do_test()
+@@ -61,15 +61,17 @@ cleanup()
+ 
+ do_test()
+ {
++	local quota_excd=0
+ 	local maxkeysz=$((ORIG_KEYSZ + 100))
+ 
+-	while true
++	while [ $maxkeysz -ge 0 ]
+ 	do
+ 		echo $maxkeysz >$PATH_KEYQUOTA
+ 
+ 		keyctl request2 user debug:fred negate @t >temp 2>&1
+ 		grep -q -E "quota exceeded" temp
+ 		if [ $? -eq 0 ]; then
++			quota_excd=1
+ 			break
  		fi
  
- 		local key=`keyctl show | awk '/debug:fred/ {print $1}'`
-+		if [ -z "$key" ]; then
-+			key=`keyctl show | \
-+				awk -F ':' '/inaccessible/ {print $1}'`
-+		fi
+@@ -82,6 +84,10 @@ do_test()
+ 		((maxkeysz -= 4))
+ 	done
+ 
++	if [ $quota_excd -eq 0 ]; then
++		tst_res TWARN "Failed to trigger the quota excess"
++	fi
 +
- 		if [ -n "$key" ]; then
- 			keyctl unlink $key @s >/dev/null
- 			tst_sleep 50ms
+ 	tst_res TPASS "Bug not reproduced"
+ }
+ 
 -- 
 2.9.4
 
