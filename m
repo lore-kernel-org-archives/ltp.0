@@ -1,9 +1,9 @@
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 18 Jul 2017 16:23:08 +0800
-Subject: [LTP] [PATCH v3 11/15] mm/hugeshmdt: convert to new API
+Date: Tue, 18 Jul 2017 16:23:09 +0800
+Subject: [LTP] [PATCH v3 12/15] mem/hugeshmget: convert to new API
 In-Reply-To: <20170718082312.3946-1-liwang@redhat.com>
 References: <20170718082312.3946-1-liwang@redhat.com>
-Message-ID: <20170718082312.3946-12-liwang@redhat.com>
+Message-ID: <20170718082312.3946-13-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,13 +12,16 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- .../kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c     | 122 ++++++++-------------
- 1 file changed, 46 insertions(+), 76 deletions(-)
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget01.c   | 166 ++++++++-------------
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget02.c   | 154 ++++++++-----------
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget03.c   | 116 +++++---------
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget05.c   | 117 +++++----------
+ 4 files changed, 203 insertions(+), 350 deletions(-)
 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c b/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
-index 45ff286..796d6df 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+index 9da79c1..0997e8b 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
 @@ -1,26 +1,19 @@
  /*
 + * Copyright (c) International Business Machines  Corp., 2004
@@ -51,19 +54,20 @@ index 45ff286..796d6df 100644
  
  /*
 - * NAME
-- *	hugeshmdt01.c
+- *	hugeshmget01.c
 - *
   * DESCRIPTION
-  *	hugeshmdt01 - check that largr shared memory is detached correctly
-  *
-@@ -41,30 +34,16 @@
-  *			issue a FAIL message
+  *	hugeshmget01 - test that shmget() correctly creates a large
+  *			shared memory segment
+@@ -41,129 +34,94 @@
+  *	  else issue a PASS message
   *	call cleanup
   *
 - * USAGE:  <for command-line>
-- *  hugeshmdt01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *  shmget01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
 - *             -f   : Turn off functionality Testing.
+- *	       -i n : Execute test n times.
 - *	       -I x : Execute test for x seconds.
 - *	       -P x : Pause for x seconds between iterations.
 - *	       -t   : Turn on syscall timing.
@@ -76,20 +80,17 @@ index 45ff286..796d6df 100644
 - *	none
   */
  
- #include <setjmp.h>
  #include <limits.h>
  #include "hugetlb.h"
 -#include "safe_macros.h"
  #include "mem.h"
 -
--char *TCID = "hugeshmdt01";
+-char *TCID = "hugeshmget01";
 -int TST_TOTAL = 1;
 +#include "hugetlb.h"
  
  static size_t shm_size;
  static int shm_id_1 = -1;
-@@ -74,54 +53,43 @@ static int pass;
- static sigjmp_buf env;
  
  static long hugepages = 128;
 -static option_t options[] = {
@@ -99,96 +100,109 @@ index 45ff286..796d6df 100644
  	{NULL, NULL, NULL}
  };
  
- static void check_functionality(void);
- static void sighandler(int sig);
- 
 -int main(int ac, char **av)
-+static void hugeshmdt_test(void)
++static void test_hugeshmget(void)
  {
 -	int lc;
--
+ 	struct shmid_ds buf;
+ 
 -	tst_parse_opts(ac, av, options, NULL);
 -
 -	if (sflag)
 -		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
 -
 -	setup();
-+	struct sigaction sa;
- 
+-
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
-+	sa.sa_handler = sighandler;
-+	sigaction(SIGSEGV, &sa, NULL);
- 
--		if (shmdt(shared) == -1) {
--			tst_resm(TFAIL | TERRNO, "shmdt");
+-
+-		shm_id_1 = shmget(shmkey, shm_size,
+-				  SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW);
+-		if (shm_id_1 == -1) {
+-			tst_resm(TFAIL | TERRNO, "shmget");
 -		} else {
--			check_functionality();
+-			/* do a STAT and check some info */
+-			if (shmctl(shm_id_1, IPC_STAT, &buf) == -1) {
+-				tst_resm(TBROK | TERRNO,
+-					 "shmctl(IPC_STAT)");
+-				continue;
+-			}
+-			/* check the seqment size */
+-			if (buf.shm_segsz != shm_size) {
+-				tst_resm(TFAIL, "seqment size is not "
+-					 "correct");
+-				continue;
+-			}
+-			/* check the pid of the creator */
+-			if (buf.shm_cpid != getpid()) {
+-				tst_resm(TFAIL, "creator pid is not "
+-					 "correct");
+-				continue;
+-			}
+-			/*
+-			 * check the mode of the seqment
+-			 * mask out all but the lower 9 bits
+-			 */
+-			if ((buf.shm_perm.mode & MODE_MASK) !=
+-			    ((SHM_RW) & MODE_MASK)) {
+-				tst_resm(TFAIL, "segment mode is not "
+-					 "correct");
+-				continue;
+-			}
+-			/* if we get here, everything looks good */
+-			tst_resm(TPASS, "size, pid & mode are correct");
 -		}
-+	if (shmdt(shared) == -1)
-+		tst_res(TFAIL | TERRNO, "shmdt");
-+	else
-+		check_functionality();
- 
--		/* reattach the shared memory segment in case we are looping */
--		shared = shmat(shm_id_1, 0, 0);
--		if (shared == (void *)-1)
--			tst_brkm(TBROK | TERRNO, cleanup, "shmat #2: reattach");
-+	/* reattach the shared memory segment in case we are looping */
-+	shared = shmat(shm_id_1, 0, 0);
-+	if (shared == (void *)-1)
-+		tst_brk(TBROK | TERRNO, "shmat #2: reattach");
- 
--		/* also reset pass */
--		pass = 0;
--	}
+-
+-		/*
+-		 * clean up things in case we are looping
+-		 */
+-		if (shmctl(shm_id_1, IPC_RMID, NULL) == -1)
+-			tst_resm(TBROK | TERRNO, "shmctl(IPC_RMID)");
+-		else
+-			shm_id_1 = -1;
++	/* do a STAT and check some info */
++	if (shmctl(shm_id_1, IPC_STAT, &buf) == -1) {
++		tst_res(TFAIL | TERRNO,
++				"shmctl(IPC_STAT)");
++		return;
++	}
++	/* check the seqment size */
++	if (buf.shm_segsz != shm_size) {
++		tst_res(TFAIL, "seqment size is not "
++				"correct");
++		return;
++	}
++	/* check the pid of the creator */
++	if (buf.shm_cpid != getpid()) {
++		tst_res(TFAIL, "creator pid is not "
++				"correct");
++		return;
++	}
++	/*
++	 * check the mode of the seqment
++	 * mask out all but the lower 9 bits
++	 */
++	if ((buf.shm_perm.mode & MODE_MASK) !=
++			((SHM_RW) & MODE_MASK)) {
++		tst_res(TFAIL, "segment mode is not "
++				"correct");
++		return;
+ 	}
 -	cleanup();
 -	tst_exit();
-+	/* also reset pass */
-+	pass = 0;
++
++	/* if we get here, everything looks good */
++	tst_res(TPASS, "size, pid & mode are correct");
  }
  
- static void check_functionality(void)
- {
- 	/* stat the shared memory segment */
- 	if (shmctl(shm_id_1, IPC_STAT, &buf) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "shmctl");
-+		tst_brk(TBROK | TERRNO, "shmctl");
- 
- 	if (buf.shm_nattch != 0) {
--		tst_resm(TFAIL, "# of attaches is incorrect");
-+		tst_res(TFAIL, "# of attaches is incorrect");
- 		return;
- 	}
- 
-@@ -143,9 +111,9 @@ static void check_functionality(void)
- 		*shared = 2;
- 
- 	if (pass)
--		tst_resm(TPASS, "huge shared memory detached correctly");
-+		tst_res(TPASS, "huge shared memory detached correctly");
- 	else
--		tst_resm(TFAIL, "huge shared memory was not detached "
-+		tst_res(TFAIL, "huge shared memory was not detached "
- 			 "correctly");
- }
- 
-@@ -157,7 +125,7 @@ static void sighandler(int sig)
- 		pass = 1;
- 		siglongjmp(env, 1);
- 	} else {
--		tst_brkm(TBROK, cleanup, "unexpected signal received: %d", sig);
-+		tst_brk(TBROK, "unexpected signal received: %d", sig);
- 	}
- }
- 
-@@ -165,41 +133,43 @@ void setup(void)
+-void setup(void)
++static void setup(void)
  {
  	long hpage_size;
  
 -	tst_require_root();
  	check_hugepage();
--	tst_sig(NOFORK, sighandler, cleanup);
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -	tst_tmpdir();
 +	if (nr_opt)
 +		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
@@ -203,23 +217,238 @@ index 45ff286..796d6df 100644
 -	shmkey = getipckey(cleanup);
 +	shmkey = getipckey();
  
- 	/* create a shared memory resource with read and write permissions */
- 	shm_id_1 = shmget(shmkey, shm_size,
- 			  SHM_HUGETLB | SHM_RW | IPC_CREAT | IPC_EXCL);
- 	if (shm_id_1 == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "shmget");
+-	TEST_PAUSE;
++	shm_id_1 = shmget(shmkey, shm_size,
++			SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW);
++	if (shm_id_1 == -1)
 +		tst_brk(TBROK | TERRNO, "shmget");
+ }
  
- 	/* attach the shared memory segment */
- 	shared = shmat(shm_id_1, 0, 0);
- 	if (shared == (void *)-1)
--		tst_brkm(TBROK | TERRNO, cleanup, "shmat #1");
-+		tst_brk(TBROK | TERRNO, "shmat #1");
+-void cleanup(void)
++static void cleanup(void)
+ {
+ 	rm_shm(shm_id_1);
+-
+ 	set_sys_tune("nr_hugepages", orig_hugepages, 0);
+-
+-	tst_rmdir();
+ }
++
++static struct tst_test test = {
++	.needs_root = 1,
++	.options = options,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = test_hugeshmget,
++};
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
+index 8b18466..4eac410 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
+@@ -1,26 +1,19 @@
+ /*
++ * Copyright (c) International Business Machines  Corp., 2004
++ * Copyright (c) Linux Test Project, 2004-2017
+  *
+- *   Copyright (c) International Business Machines  Corp., 2004
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
+  */
  
- 	/* give a value to the shared memory integer */
- 	*shared = 4;
+ /*
+- * NAME
+- *	hugeshmget02.c
+- *
+  * DESCRIPTION
+  *	hugeshmget02 - check for ENOENT, EEXIST and EINVAL errors
+  *
+@@ -34,29 +27,15 @@
+  *	    issue a FAIL message
+  *	call cleanup
+  *
+- * USAGE:  <for command-line>
+- *  hugeshmget02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+  * HISTORY
+  *	03/2001 - Written by Wayne Boyer
+  *	04/2004 - Updated by Robbie Williamson
+- *
+- * RESTRICTIONS
+- *	none
+  */
+ #include <limits.h>
+ #include "hugetlb.h"
+-#include "safe_macros.h"
+-#include "mem.h"
+ 
+-char *TCID = "hugeshmget02";
+-int TST_TOTAL = 4;
++#include "mem.h"
++#include "hugetlb.h"
+ 
+ static size_t shm_size;
+ static int shm_id_1 = -1;
+@@ -64,105 +43,90 @@ static int shm_nonexistent_key = -1;
+ static key_t shmkey2;
+ 
+ static long hugepages = 128;
+-static option_t options[] = {
+-	{"s:", &sflag, &nr_opt},
++static struct tst_option options[] = {
++	{"s:", &nr_opt, "-s   num  Set the number of the been allocated hugepages"},
+ 	{NULL, NULL, NULL}
+ };
+ 
+-struct test_case_t {
++static struct tcase {
+ 	int *skey;
+ 	int size_coe;
+ 	int flags;
+ 	int error;
+-} TC[] = {
++} tcases[] = {
+ 	/* EINVAL - size is 0 */
+-	{
+-	&shmkey2, 0, SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW, EINVAL},
+-	    /* EINVAL - size is larger than created segment */
+-	{
+-	&shmkey, 2, SHM_HUGETLB | SHM_RW, EINVAL},
+-	    /* EEXIST - the segment exists and IPC_CREAT | IPC_EXCL is given */
+-	{
+-	&shmkey, 1, SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW, EEXIST},
+-	    /* ENOENT - no segment exists for the key and IPC_CREAT is not given */
+-	    /* use shm_nonexistend_key (-1) as the key */
+-	{
+-	&shm_nonexistent_key, 1, SHM_HUGETLB | SHM_RW, ENOENT}
++	{&shmkey2, 0, SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW, EINVAL},
++	/* EINVAL - size is larger than created segment */
++	{&shmkey, 2, SHM_HUGETLB | SHM_RW, EINVAL},
++	/* EEXIST - the segment exists and IPC_CREAT | IPC_EXCL is given */
++	{&shmkey, 1, SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW, EEXIST},
++	/* ENOENT - no segment exists for the key and IPC_CREAT is not given */
++	/* use shm_nonexistend_key (-1) as the key */
++	{&shm_nonexistent_key, 1, SHM_HUGETLB | SHM_RW, ENOENT}
+ };
+ 
+-int main(int ac, char **av)
++static void test_hugeshmget(void)
+ {
+-	int lc, i;
++	unsigned int i;
+ 	int shm_id_2 = -1;
+ 
+-	tst_parse_opts(ac, av, options, NULL);
+-
+-	if (sflag)
+-		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		for (i = 0; i < TST_TOTAL; i++) {
+-			/* If this key is existent, just remove it */
+-			if (*TC[i].skey == -1) {
+-				shm_id_2 = shmget(*(TC[i].skey), 0, 0);
+-				if (shm_id_2 != -1)
+-					shmctl(shm_id_2, IPC_RMID, NULL);
+-			}
++	for (i = 0; i < ARRAY_SIZE(tcases); i++) {
++		/* If this key is existent, just remove it */
++		if (*tcases[i].skey == -1) {
++			shm_id_2 = shmget(*(tcases[i].skey), 0, 0);
++			if (shm_id_2 != -1)
++				shmctl(shm_id_2, IPC_RMID, NULL);
++		}
+ 
+-			TEST(shmget(*(TC[i].skey), TC[i].size_coe * shm_size,
+-				    TC[i].flags));
+-			if (TEST_RETURN != -1) {
+-				tst_resm(TFAIL, "shmget succeeded "
+-					 "unexpectedly");
+-				continue;
+-			}
+-			if (TEST_ERRNO == TC[i].error)
+-				tst_resm(TPASS | TTERRNO, "shmget failed "
+-					 "as expected");
+-			else
+-				tst_resm(TFAIL | TTERRNO, "shmget failed "
+-					 "unexpectedly - expect errno=%d, "
+-					 "got", TC[i].error);
++		TEST(shmget(*(tcases[i].skey), tcases[i].size_coe * shm_size,
++					tcases[i].flags));
++		if (TEST_RETURN != -1) {
++			tst_res(TFAIL, "shmget succeeded "
++					"unexpectedly");
++			continue;
+ 		}
++		if (TEST_ERRNO == tcases[i].error)
++			tst_res(TPASS | TTERRNO, "shmget failed "
++					"as expected");
++		else
++			tst_res(TFAIL | TTERRNO, "shmget failed "
++					"unexpectedly - expect errno=%d, "
++					"got", tcases[i].error);
+ 	}
+-	cleanup();
+-	tst_exit();
+ }
+ 
+ void setup(void)
+ {
+ 	long hpage_size;
+ 
+-	tst_require_root();
+ 	check_hugepage();
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-	tst_tmpdir();
++	if (nr_opt)
++		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+ 
+ 	orig_hugepages = get_sys_tune("nr_hugepages");
+ 	set_sys_tune("nr_hugepages", hugepages, 1);
+-	hpage_size = read_meminfo("Hugepagesize:") * 1024;
++	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+ 
+ 	shm_size = hpage_size * hugepages / 2;
+ 	update_shm_size(&shm_size);
+ 
+-	shmkey = getipckey(cleanup);
++	shmkey = getipckey();
+ 	shmkey2 = shmkey + 1;
+ 	shm_id_1 = shmget(shmkey, shm_size, IPC_CREAT | IPC_EXCL | SHM_RW);
+ 	if (shm_id_1 == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "shmget #setup");
 -
 -	TEST_PAUSE;
++		tst_brk(TBROK | TERRNO, "shmget #setup");
  }
  
  void cleanup(void)
@@ -236,7 +465,397 @@ index 45ff286..796d6df 100644
 +	.options = options,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = hugeshmdt_test,
++	.test_all = test_hugeshmget,
++};
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+index 481e26b..7d7c3cb 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+@@ -1,26 +1,19 @@
+ /*
++ * Copyright (c) International Business Machines  Corp., 2004
++ * Copyright (c) Linux Test Project, 2004-2017
+  *
+- *   Copyright (c) International Business Machines  Corp., 2004
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
+  */
+ 
+ /*
+- * NAME
+- *	hugeshmget03.c
+- *
+  * DESCRIPTION
+  *	hugeshmget03 - test for ENOSPC error
+  *
+@@ -35,30 +28,15 @@
+  *	    issue a FAIL message
+  *	call cleanup
+  *
+- * USAGE:  <for command-line>
+- *  hugeshmget03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+  * HISTORY
+  *	03/2001 - Written by Wayne Boyer
+  *	04/2004 - Updated by Robbie Williamson
+- *
+- * RESTRICTIONS
+- *	none
+  */
+ 
+ #include <limits.h>
+ #include "hugetlb.h"
+-#include "safe_macros.h"
+ #include "mem.h"
+-
+-char *TCID = "hugeshmget03";
+-int TST_TOTAL = 1;
++#include "hugetlb.h"
+ 
+ /*
+  * The MAXIDS value is somewhat arbitrary and may need to be increased
+@@ -74,57 +52,41 @@ static int shm_id_arr[MAXIDS];
+ 
+ static long hugepages = 128;
+ static long orig_shmmni;
+-static option_t options[] = {
+-	{"s:", &sflag, &nr_opt},
++static struct tst_option options[] = {
++	{"s:", &nr_opt, "-s   num  Set the number of the been allocated hugepages"},
+ 	{NULL, NULL, NULL}
+ };
+ 
+-int main(int ac, char **av)
++static void test_hugeshmget(void)
+ {
+-	int lc;
+-
+-	tst_parse_opts(ac, av, options, NULL);
+-
+-	if (sflag)
+-		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		TEST(shmget(IPC_PRIVATE, shm_size,
+-			    SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW));
+-		if (TEST_RETURN != -1) {
+-			tst_resm(TFAIL, "shmget succeeded unexpectedly");
+-			continue;
+-		}
+-		if (TEST_ERRNO == ENOSPC)
+-			tst_resm(TPASS | TTERRNO, "shmget failed as expected");
+-		else
+-			tst_resm(TFAIL | TTERRNO, "shmget failed unexpectedly "
+-				 "- expect errno=ENOSPC, got");
++	TEST(shmget(IPC_PRIVATE, shm_size,
++				SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW));
++	if (TEST_RETURN != -1) {
++		tst_res(TFAIL, "shmget succeeded unexpectedly");
++		return;
+ 	}
+-	cleanup();
+-	tst_exit();
++	if (TEST_ERRNO == ENOSPC)
++		tst_res(TPASS | TTERRNO, "shmget failed as expected");
++	else
++		tst_res(TFAIL | TTERRNO, "shmget failed unexpectedly "
++				"- expect errno=ENOSPC, got");
+ }
+ 
+-void setup(void)
++static void setup(void)
+ {
+ 	long hpage_size;
+ 
+-	tst_require_root();
+ 	check_hugepage();
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-	tst_tmpdir();
++	if (nr_opt)
++		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+ 
+ 	orig_hugepages = get_sys_tune("nr_hugepages");
+-	SAFE_FILE_SCANF(NULL, PATH_SHMMNI, "%ld", &orig_shmmni);
++	SAFE_FILE_SCANF(PATH_SHMMNI, "%ld", &orig_shmmni);
+ 
+ 	set_sys_tune("nr_hugepages", hugepages, 1);
+-	SAFE_FILE_PRINTF(NULL, PATH_SHMMNI, "%ld", hugepages / 2);
++	SAFE_FILE_PRINTF(PATH_SHMMNI, "%ld", hugepages / 2);
+ 
+-	hpage_size = read_meminfo("Hugepagesize:") * 1024;
++	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+ 	shm_size = hpage_size;
+ 
+ 	/*
+@@ -137,7 +99,7 @@ void setup(void)
+ 	while (shm_id_1 != -1) {
+ 		shm_id_arr[num_shms++] = shm_id_1;
+ 		if (num_shms == MAXIDS)
+-			tst_brkm(TBROK, cleanup, "The maximum number of "
++			tst_brk(TBROK, "The maximum number of "
+ 				 "shared memory ID's has been reached. "
+ 				 "Please increase the MAXIDS value in "
+ 				 "the test.");
+@@ -145,12 +107,10 @@ void setup(void)
+ 				  SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW);
+ 	}
+ 	if (errno != ENOSPC)
+-		tst_brkm(TBROK | TERRNO, cleanup, "shmget #setup");
+-
+-	TEST_PAUSE;
++		tst_brk(TBROK | TERRNO, "shmget #setup");
+ }
+ 
+-void cleanup(void)
++static void cleanup(void)
+ {
+ 	int i;
+ 
+@@ -159,6 +119,12 @@ void cleanup(void)
+ 
+ 	FILE_PRINTF(PATH_SHMMNI, "%ld", orig_shmmni);
+ 	set_sys_tune("nr_hugepages", orig_hugepages, 0);
+-
+-	tst_rmdir();
+ }
++
++static struct tst_test test = {
++	.needs_root = 1,
++	.options = options,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = test_hugeshmget,
++};
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
+index 8ec4b9e..1aed406 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
+@@ -1,26 +1,19 @@
+ /*
++ * Copyright (c) International Business Machines  Corp., 2004
++ * Copyright (c) Linux Test Project, 2004-2017
+  *
+- *   Copyright (c) International Business Machines  Corp., 2004
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
+  */
+ 
+ /*
+- * NAME
+- *	hugeshmget05.c
+- *
+  * DESCRIPTION
+  *	hugeshmget05 - test for EACCES error
+  *
+@@ -41,32 +34,17 @@
+  *	  wait for child to exit
+  *	  remove the shared memory segment
+  *
+- * USAGE:  <for command-line>
+- *  hugeshmget05 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+  * HISTORY
+  *	03/2001 - Written by Wayne Boyer
+  *	04/2004 - Updated by Robbie Williamson
+- *
+- * RESTRICTIONS
+- *	test must be run at root
+  */
+ 
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #include <limits.h>
+ #include "hugetlb.h"
+-#include "safe_macros.h"
+ #include "mem.h"
+-
+-char *TCID = "hugeshmget05";
+-int TST_TOTAL = 1;
++#include "hugetlb.h"
+ 
+ static size_t shm_size;
+ static int shm_id_1 = -1;
+@@ -74,95 +52,82 @@ static uid_t ltp_uid;
+ static char *ltp_user = "nobody";
+ 
+ static long hugepages = 128;
+-static option_t options[] = {
+-	{"s:", &sflag, &nr_opt},
++static struct tst_option options[] = {
++	{"s:", &nr_opt, "-s   num  Set the number of the been allocated hugepages"},
+ 	{NULL, NULL, NULL}
+ };
+ 
+ static void do_child(void);
+ 
+-int main(int ac, char **av)
++static void test_hugeshmget(void)
+ {
+ 	pid_t pid;
+ 	int status;
+ 
+-	tst_parse_opts(ac, av, options, NULL);
+-
+-	if (sflag)
+-		hugepages = SAFE_STRTOL(NULL, nr_opt, 0, LONG_MAX);
+-
+-	setup();
+-
+ 	switch (pid = fork()) {
+ 	case -1:
+-		tst_brkm(TBROK | TERRNO, cleanup, "fork");
++		tst_brk(TBROK | TERRNO, "fork");
+ 	case 0:
+ 		/* set the user ID of the child to the non root user */
+ 		if (setuid(ltp_uid) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "setuid");
++			tst_brk(TBROK | TERRNO, "setuid");
+ 		do_child();
+-		tst_exit();
++		exit(0);
+ 	default:
+ 		/* wait for the child to return */
+ 		if (waitpid(pid, &status, 0) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
++			tst_brk(TBROK | TERRNO, "waitpid");
+ 	}
+-	cleanup();
+-	tst_exit();
+ }
+ 
+ static void do_child(void)
+ {
+-	int lc;
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		TEST(shmget(shmkey, shm_size, SHM_HUGETLB | SHM_RW));
+-		if (TEST_RETURN != -1) {
+-			tst_resm(TFAIL, "shmget succeeded unexpectedly");
+-			continue;
+-		}
+-		if (TEST_ERRNO == EACCES)
+-			tst_resm(TPASS | TTERRNO, "shmget failed as expected");
+-		else
+-			tst_resm(TFAIL | TTERRNO, "shmget failed unexpectedly "
+-				 "- expect errno=EACCES, got");
++	TEST(shmget(shmkey, shm_size, SHM_HUGETLB | SHM_RW));
++	if (TEST_RETURN != -1) {
++		tst_res(TFAIL, "shmget succeeded unexpectedly");
++		return;
+ 	}
++	if (TEST_ERRNO == EACCES)
++		tst_res(TPASS | TTERRNO, "shmget failed as expected");
++	else
++		tst_res(TFAIL | TTERRNO, "shmget failed unexpectedly "
++				"- expect errno=EACCES, got");
+ }
+ 
+ void setup(void)
+ {
+ 	long hpage_size;
+ 
+-	tst_require_root();
+ 	check_hugepage();
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-	tst_tmpdir();
++	if (nr_opt)
++		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+ 
+ 	orig_hugepages = get_sys_tune("nr_hugepages");
+ 	set_sys_tune("nr_hugepages", hugepages, 1);
+-	hpage_size = read_meminfo("Hugepagesize:") * 1024;
++	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+ 
+ 	shm_size = hpage_size * hugepages / 2;
+ 	update_shm_size(&shm_size);
+-	shmkey = getipckey(cleanup);
++	shmkey = getipckey();
+ 	shm_id_1 = shmget(shmkey, shm_size,
+ 			  SHM_HUGETLB | SHM_RW | IPC_CREAT | IPC_EXCL);
+ 	if (shm_id_1 == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "shmget #setup");
++		tst_brk(TBROK | TERRNO, "shmget #setup");
+ 
+ 	/* get the userid for a non-root user */
+-	ltp_uid = getuserid(cleanup, ltp_user);
+-
+-	TEST_PAUSE;
++	ltp_uid = getuserid(ltp_user);
+ }
+ 
+ void cleanup(void)
+ {
+ 	rm_shm(shm_id_1);
+-
+ 	set_sys_tune("nr_hugepages", orig_hugepages, 0);
+-
+-	tst_rmdir();
+ }
++
++static struct tst_test test = {
++	.needs_root = 1,
++	.options = options,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = test_hugeshmget,
 +};
 -- 
 2.9.3
