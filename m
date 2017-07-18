@@ -1,29 +1,46 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 18 Jul 2017 15:40:29 +0200
-Subject: [LTP] [PATCH 4/4] Test for CVE-2016-10044 mark AIO pseudo-fs
- noexec
-In-Reply-To: <8760eqqffy.fsf@our.domain.is.not.set>
-References: <20170718073319.23543-1-rpalethorpe@suse.com>
- <20170718073319.23543-5-rpalethorpe@suse.com>
- <1513116395.54444036.1500364708984.JavaMail.zimbra@redhat.com>
- <8760eqqffy.fsf@our.domain.is.not.set>
-Message-ID: <20170718134028.GB22620@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 18 Jul 2017 16:24:59 +0200
+Subject: [LTP] [PATCH v2 1/2] lib/test.sh: Remove temporary directory only
+	if we know the location
+Message-ID: <20170718142500.2725-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> As far as I am aware the alternatives are to use libaio, which seems
-> like overkill for this test. Or to include the AIO ABI definitions
-> inside the test. I don't think there is a comparable sys/ header.
-> 
-> I don't really mind using libaio if that is preferred?
+This is a problem when a test TCONF before calling tst_tmpdir, but has
+tst_rmdir in cleanup function (e.g. dhcp_lib.sh when failing on
+tst_check_cmds).
 
-The test only needs aio context type we may as well pass a pointer to
-unsigned long to the syscall and be done with it...
+Now it has the same behaviour as deleting $TST_TMPDIR in tst_do_exit
+in tst_test.sh.
 
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Ping old commit:
+Changes v1->v2: just commit message.
+---
+ testcases/lib/test.sh | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
+index 642f7eacf..d16444efa 100644
+--- a/testcases/lib/test.sh
++++ b/testcases/lib/test.sh
+@@ -132,8 +132,10 @@ tst_tmpdir()
+ 
+ tst_rmdir()
+ {
+-	cd "$LTPROOT"
+-	rm -r "$TST_TMPDIR"
++	if [ -n "$TST_TMPDIR" ]; then
++		cd "$LTPROOT"
++		rm -r "$TST_TMPDIR"
++	fi
+ }
+ 
+ #
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.13.2
+
