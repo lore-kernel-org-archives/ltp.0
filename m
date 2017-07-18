@@ -1,27 +1,41 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 17 Jul 2017 13:42:35 +0200
-Subject: [LTP] [PATCH 2/3] commands/keyctl01: Fix getting key serial
- number
-In-Reply-To: <42df2a59-d9de-30dd-2aa7-486dba24452e@cn.fujitsu.com>
-References: <1494483656-15971-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <1494483656-15971-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <20170707130827.GC28534@rei.lan>
- <50b2e9a3-bf31-1765-c2e8-9487f7d09fa3@cn.fujitsu.com>
- <ffc2e37b-0464-f2f5-4757-a4378b48f501@cn.fujitsu.com>
- <42df2a59-d9de-30dd-2aa7-486dba24452e@cn.fujitsu.com>
-Message-ID: <20170717114235.GB11059@rei.lan>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Tue, 18 Jul 2017 14:31:44 +0800
+Subject: [LTP] [PATCH v2 3/3] commands/keyctl01: Check keyctl support
+	instead of kernel version
+In-Reply-To: <20170718063144.18856-1-fenggw-fnst@cn.fujitsu.com>
+References: <20170717114235.GB11059@rei.lan>
+ <20170718063144.18856-1-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20170718063144.18856-3-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Can we just use "keyctl show" to match "inaccessible" when this
-> happens?
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+---
+ testcases/commands/keyctl/keyctl01.sh | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Sure, if there is no better way let's go with the original version.
-
+diff --git a/testcases/commands/keyctl/keyctl01.sh b/testcases/commands/keyctl/keyctl01.sh
+index 76226ae..8e96622 100644
+--- a/testcases/commands/keyctl/keyctl01.sh
++++ b/testcases/commands/keyctl/keyctl01.sh
+@@ -36,8 +36,10 @@ TST_NEEDS_CMDS="keyctl"
+ 
+ setup()
+ {
+-	if tst_kvcmp -le 2.6.33; then
+-		tst_brk TCONF "Kernel newer than 2.6.33 is needed"
++	keyctl 2>&1 | tr '\n' ' ' | grep "request2" | grep "negate" | \
++		grep "show" | grep "unlink" >/dev/null
++	if [ $? -ne 0 ]; then
++		tst_brk TCONF "keyctl operations not supported"
+ 	fi
+ 
+ 	PATH_KEYSTAT="/proc/key-users"
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.9.4
+
+
+
