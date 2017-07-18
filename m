@@ -1,61 +1,64 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue, 18 Jul 2017 09:33:19 +0200
-Subject: [LTP] [PATCH 4/4] Test for CVE-2016-10044 mark AIO pseudo-fs noexec
+Date: Tue, 18 Jul 2017 09:33:17 +0200
+Subject: [LTP] [PATCH 2/4] lib: Add personality fallback and SAFE macro
 In-Reply-To: <20170718073319.23543-1-rpalethorpe@suse.com>
 References: <20170718073319.23543-1-rpalethorpe@suse.com>
-Message-ID: <20170718073319.23543-5-rpalethorpe@suse.com>
+Message-ID: <20170718073319.23543-3-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Add the macro SAFE_PERSONALITY as well as fallback logic for if
+<sys/personality.h> is missing or incomplete.
+
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
+ configure.ac               |  3 +++
+ include/lapi/personality.h | 48 ++++++++++++++++++++++++++++++++++++++++++++++
+ include/tst_personality.h  | 28 +++++++++++++++++++++++++++
+ lib/tst_personality.c      | 33 +++++++++++++++++++++++++++++++
+ m4/ltp-personality.m4      | 24 +++++++++++++++++++++++
+ 5 files changed, 136 insertions(+)
+ create mode 100644 include/lapi/personality.h
+ create mode 100644 include/tst_personality.h
+ create mode 100644 lib/tst_personality.c
+ create mode 100644 m4/ltp-personality.m4
 
-The parsing of the maps file is a bit messy. I originally tried using
-SAFE_FILE_LINES_SCANF, but the problem is that scanf fills in the arguments
-even if it didn't match the whole line.
-
- runtest/cve                    |  1 +
- testcases/cve/.gitignore       |  1 +
- testcases/cve/cve-2016-10044.c | 92 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 94 insertions(+)
- create mode 100644 testcases/cve/cve-2016-10044.c
-
-diff --git a/runtest/cve b/runtest/cve
-index 32a39cf80..c8b90de70 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -4,6 +4,7 @@ cve-2014-0196 cve-2014-0196
- cve-2016-4997 cve-2016-4997
- cve-2016-5195 dirtyc0w
- cve-2016-7117 cve-2016-7117
-+cve-2016-10044 cve-2016-10044
- cve-2017-2671 cve-2017-2671
- cve-2017-5669 cve-2017-5669
- cve-2017-6951 cve-2017-6951
-diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
-index b83372b08..9bbf7bdb2 100644
---- a/testcases/cve/.gitignore
-+++ b/testcases/cve/.gitignore
-@@ -2,6 +2,7 @@ cve-2012-0957
- cve-2014-0196
- cve-2016-4997
- cve-2016-7117
-+cve-2016-10044
- cve-2017-2671
- cve-2017-5669
- cve-2017-6951
-diff --git a/testcases/cve/cve-2016-10044.c b/testcases/cve/cve-2016-10044.c
+diff --git a/configure.ac b/configure.ac
+index a5032bf42..02b24e18c 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -37,11 +37,13 @@ AC_CHECK_HEADERS([ \
+     mm.h \
+     pthread.h \
+     sys/xattr.h \
++    sys/personality.h \
+     linux/aio_abi.h \
+     linux/genetlink.h \
+     linux/mempolicy.h \
+     linux/module.h \
+     linux/netlink.h \
++    linux/personality.h \
+     sys/epoll.h \
+     sys/inotify.h \
+     sys/fanotify.h \
+@@ -195,5 +197,6 @@ LTP_CHECK_SYNC_ADD_AND_FETCH
+ LTP_CHECK_BUILTIN_CLEAR_CACHE
+ LTP_CHECK_MMSGHDR
+ LTP_CHECK_UNAME_DOMAINNAME
++LTP_CHECK_PERSONALITY
+ 
+ AC_OUTPUT
+diff --git a/include/lapi/personality.h b/include/lapi/personality.h
 new file mode 100644
-index 000000000..fcfb89710
+index 000000000..1168d0744
 --- /dev/null
-+++ b/testcases/cve/cve-2016-10044.c
-@@ -0,0 +1,92 @@
++++ b/include/lapi/personality.h
+@@ -0,0 +1,48 @@
 +/*
 + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ * Copyright (c) 2016 Jan Horn <jann@thejh.net>
 + *
 + * This program is free software: you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
@@ -70,81 +73,141 @@ index 000000000..fcfb89710
 + * You should have received a copy of the GNU General Public License
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
-+/*
-+ * Test for CVE-2016-10044, which was fixed in commit
-+ * 22f6b4d34fcf039c aio: mark AIO pseudo-fs noexec.
-+ *
-+ * The test checks that we can not implicitly mark AIO mappings as
-+ * executable using the READ_IMPLIES_EXEC personality.
++/* In the Linux kernel and glibc enums are (mostly) used for the constants,
++ * but in musl macros are used.
 + */
 +
-+#include "tst_test.h"
++#include "config.h"
 +
-+#ifdef HAVE_LINUX_AIO_ABI_H
++#if defined(HAVE_SYS_PERSONALITY_H)
++#include <sys/personality.h>
++#elif defined(HAVE_LINUX_PERSONALITY_H)
++#include <linux/personality.h>
++#endif
 +
-+#include <stdio.h>
-+#include <string.h>
-+#include <linux_syscall_numbers.h>
-+#include <linux/aio_abi.h>
-+#include "tst_personality.h"
-+#include "tst_safe_stdio.h"
++#ifndef HAVE_SYS_PERSONALITY_H
++#include "linux_syscall_numbers.h"
 +
-+#define CONV_STR "%*x-%*x %s7"
-+
-+static FILE *f;
-+
-+static void cleanup(void)
++static int personality(unsigned long persona)
 +{
-+	if (f != NULL)
-+		SAFE_FCLOSE(f);
++	return tst_syscall(__NR_personality, persona);
 +}
++#endif
 +
-+static void run(void)
-+{
-+	aio_context_t ctx = 0;
-+	pid_t pid = getpid();
-+	char perms[8], line[BUFSIZ];
-+	char maps_path[256];
++#if !(HAVE_DECL_UNAME26 == 1 || defined(UNAME26))
++#define UNAME26 0x0020000
++#endif
 +
-+	SAFE_PERSONALITY(READ_IMPLIES_EXEC);
-+	if (tst_syscall(__NR_io_setup, 1, &ctx))
-+		tst_brk(TBROK | TERRNO, "Failed to create AIO context");
++#if !(HAVE_DECL_READ_IMPLIES_EXEC == 1 || defined(READ_IMPLIES_EXEC))
++#define READ_IMPLIES_EXEC 0x0400000
++#endif
 +
-+	snprintf(maps_path, sizeof(maps_path), "/proc/%d/maps", pid);
-+	f = SAFE_FOPEN(maps_path, "r");
-+	while (fgets(line, BUFSIZ, f) != NULL) {
-+		if (strstr(line, "/[aio]") != NULL)
-+			goto found_mapping;
-+	}
-+	tst_brk(TBROK, "Could not find mapping in %s", maps_path);
++#if !(HAVE_DECL_PER_LINUX == 1 || defined(PER_LINUX))
++#define PER_LINUX 0
++#endif
+diff --git a/include/tst_personality.h b/include/tst_personality.h
+new file mode 100644
+index 000000000..ff61f4607
+--- /dev/null
++++ b/include/tst_personality.h
+@@ -0,0 +1,28 @@
++/*
++ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
 +
-+found_mapping:
-+	if (sscanf(line, CONV_STR, perms) < 0)
-+		tst_brk(TBROK, "failed find permission string in %s", line);
-+	if (strchr(perms, (int)'x'))
-+		tst_res(TFAIL, "AIO mapping is executable: %s!", perms);
-+	else
-+		tst_res(TPASS, "AIO mapping is not executable: %s", perms);
-+}
++#ifndef TST_PERSONALITY__
++#define TST_PERSONALITY__
 +
-+static struct tst_test test = {
-+	.test_all = run,
-+	.cleanup = cleanup,
-+	.min_kver = "2.6.8",
-+};
++#include "lapi/personality.h"
 +
-+#else
++int tst_personality(const char *filename, unsigned int lineno,
++		    unsigned long persona);
 +
-+static void run(void)
-+{
-+	tst_res(TCONF, "<linux/aio_abi.h> is missing");
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+};
++#define SAFE_PERSONALITY(persona) tst_personality(__FILE__, __LINE__, persona)
 +
 +#endif
+diff --git a/lib/tst_personality.c b/lib/tst_personality.c
+new file mode 100644
+index 000000000..3f64331db
+--- /dev/null
++++ b/lib/tst_personality.c
+@@ -0,0 +1,33 @@
++/*
++ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++#include "tst_personality.h"
++
++int tst_personality(const char *filename, unsigned int lineno,
++		    unsigned long persona)
++{
++	int prev_persona = personality(persona);
++
++	if (prev_persona < 0) {
++		tst_brk_(filename, lineno, TBROK | TERRNO,
++			 "persona(%ld) failed", persona);
++	}
++
++	return prev_persona;
++}
+diff --git a/m4/ltp-personality.m4 b/m4/ltp-personality.m4
+new file mode 100644
+index 000000000..78a3bc231
+--- /dev/null
++++ b/m4/ltp-personality.m4
+@@ -0,0 +1,24 @@
++dnl Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
++dnl
++dnl This program is free software;  you can redistribute it and/or modify
++dnl it under the terms of the GNU General Public License as published by
++dnl the Free Software Foundation; either version 2 of the License, or
++dnl (at your option) any later version.
++dnl
++dnl This program is distributed in the hope that it will be useful,
++dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++dnl the GNU General Public License for more details.
++dnl
++dnl You should have received a copy of the GNU General Public License
++dnl along with this program. If not, see <http://www.gnu.org/licenses/>.
++
++AC_DEFUN([LTP_CHECK_PERSONALITY],[
++AC_CHECK_DECLS([UNAME26,READ_IMPLIES_EXEC,PER_LINUX],,,[
++#if defined(HAVE_SYS_PERSONALITY_H)
++#include <sys/personality.h>
++#elif defined(HAVE_LINUX_PERSONALITY_H)
++#include <linux/personality.h>
++#endif
++])
++])
 -- 
 2.13.2
 
