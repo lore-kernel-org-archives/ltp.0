@@ -1,32 +1,60 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 18 Jul 2017 14:12:23 +0200
-Subject: [LTP] [RFC PATCH v6 09/11] network/stress: Fix and cleanup
- route IPv4 tests
-In-Reply-To: <fa66bd09-d7a3-d609-7213-c3adb7e08218@oracle.com>
-References: <20170603120022.13415-1-pvorel@suse.cz>
- <20170603120022.13415-10-pvorel@suse.cz>
- <bf219efe-a926-aa08-c24c-376fc4676556@oracle.com>
- <20170627060404.mcj3jzq6mq3bfuja@dell5510>
- <fa66bd09-d7a3-d609-7213-c3adb7e08218@oracle.com>
-Message-ID: <20170718121223.xpy2mhkcer7ctdxe@dell5510>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 18 Jul 2017 16:28:43 +0300
+Subject: [LTP] [PATCH] network/stress: Reduce the default number of
+ cycles for various tests
+In-Reply-To: <20170626082935.2868-1-pvorel@suse.cz>
+References: <20170626082935.2868-1-pvorel@suse.cz>
+Message-ID: <6f6abb62-d010-0919-a9b3-61c0f5c8477a@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
-> Hi Petr,
+On 06/26/2017 11:29 AM, Petr Vorel wrote:
+> Reducing value to one fifth resp. one tenth should be enough even for
+> stress testing.
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/lib/test_net.sh | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+> index 651f5c895..0b31ce409 100644
+> --- a/testcases/lib/test_net.sh
+> +++ b/testcases/lib/test_net.sh
+> @@ -558,19 +558,19 @@ export FTP_UPLOAD_URLDIR="${FTP_UPLOAD_URLDIR:-pub}"
+>  
+>  # network/stress tests require additional parameters
+>  export NS_DURATION="${NS_DURATION:-3600}"
 
-> Right, the usage of 'initialize_if' is replaced in route4 patch, so
-> the question was why we need this change in 'initialize_if' here?
+What about changing NS_DURATION as well? If I remember correctly
+it's one hour for each test-case in 'Application' & 'broken_ip'
+groups.
 
-Thank you for your comment. But please don't spend your time with reviewing v6. I'm
-finishing v7, where I did more radical cleanup (I got inspiration with your interface
-tests - if-lib.sh).
-ATM I'm fixing issues for SSH based testing (previously I run it only with netns, some
-things got broken).
+Thanks,
+Alexey
 
+> -export NS_TIMES="${NS_TIMES:-10000}"
+> +export NS_TIMES="${NS_TIMES:-2000}"
+>  export CONNECTION_TOTAL="${CONNECTION_TOTAL:-4000}"
+> -export IP_TOTAL="${IP_TOTAL:-10000}"
+> +export IP_TOTAL="${IP_TOTAL:-2000}"
+>  export IP_TOTAL_FOR_TCPIP="${IP_TOTAL_FOR_TCPIP:-100}"
+> -export ROUTE_TOTAL="${ROUTE_TOTAL:-10000}"
+> +export ROUTE_TOTAL="${ROUTE_TOTAL:-2000}"
+>  export MTU_CHANGE_TIMES="${MTU_CHANGE_TIMES:-1000}"
+> -export IF_UPDOWN_TIMES="${IF_UPDOWN_TIMES:-10000}"
+> +export IF_UPDOWN_TIMES="${IF_UPDOWN_TIMES:-2000}"
+>  export DOWNLOAD_BIGFILESIZE="${DOWNLOAD_BIGFILESIZE:-2147483647}"
+>  export DOWNLOAD_REGFILESIZE="${DOWNLOAD_REGFILESIZE:-1048576}"
+>  export UPLOAD_BIGFILESIZE="${UPLOAD_BIGFILESIZE:-2147483647}"
+>  export UPLOAD_REGFILESIZE="${UPLOAD_REGFILESIZE:-1024}"
+>  export MCASTNUM_NORMAL="${MCASTNUM_NORMAL:-20}"
+> -export MCASTNUM_HEAVY="${MCASTNUM_HEAVY:-40000}"
+> +export MCASTNUM_HEAVY="${MCASTNUM_HEAVY:-4000}"
+>  
+>  [ -n "$TST_USE_NETNS" -a "$TST_INIT_NETNS" != "no" ] && init_ltp_netspace
+>  
 
-Kind regards,
-Petr
