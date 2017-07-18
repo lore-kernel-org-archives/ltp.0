@@ -1,213 +1,47 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue, 18 Jul 2017 09:33:17 +0200
-Subject: [LTP] [PATCH 2/4] lib: Add personality fallback and SAFE macro
+Date: Tue, 18 Jul 2017 09:33:18 +0200
+Subject: [LTP] [PATCH 3/4] CVE-2012-0957: Use SAFE_PERSONALITY
 In-Reply-To: <20170718073319.23543-1-rpalethorpe@suse.com>
 References: <20170718073319.23543-1-rpalethorpe@suse.com>
-Message-ID: <20170718073319.23543-3-rpalethorpe@suse.com>
+Message-ID: <20170718073319.23543-4-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add the macro SAFE_PERSONALITY as well as fallback logic for if
-<sys/personality.h> is missing or incomplete.
-
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- configure.ac               |  3 +++
- include/lapi/personality.h | 48 ++++++++++++++++++++++++++++++++++++++++++++++
- include/tst_personality.h  | 28 +++++++++++++++++++++++++++
- lib/tst_personality.c      | 33 +++++++++++++++++++++++++++++++
- m4/ltp-personality.m4      | 24 +++++++++++++++++++++++
- 5 files changed, 136 insertions(+)
- create mode 100644 include/lapi/personality.h
- create mode 100644 include/tst_personality.h
- create mode 100644 lib/tst_personality.c
- create mode 100644 m4/ltp-personality.m4
+ testcases/cve/cve-2012-0957.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index a5032bf42..02b24e18c 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -37,11 +37,13 @@ AC_CHECK_HEADERS([ \
-     mm.h \
-     pthread.h \
-     sys/xattr.h \
-+    sys/personality.h \
-     linux/aio_abi.h \
-     linux/genetlink.h \
-     linux/mempolicy.h \
-     linux/module.h \
-     linux/netlink.h \
-+    linux/personality.h \
-     sys/epoll.h \
-     sys/inotify.h \
-     sys/fanotify.h \
-@@ -195,5 +197,6 @@ LTP_CHECK_SYNC_ADD_AND_FETCH
- LTP_CHECK_BUILTIN_CLEAR_CACHE
- LTP_CHECK_MMSGHDR
- LTP_CHECK_UNAME_DOMAINNAME
-+LTP_CHECK_PERSONALITY
+diff --git a/testcases/cve/cve-2012-0957.c b/testcases/cve/cve-2012-0957.c
+index f065735a1..3b92325d6 100644
+--- a/testcases/cve/cve-2012-0957.c
++++ b/testcases/cve/cve-2012-0957.c
+@@ -26,10 +26,8 @@
  
- AC_OUTPUT
-diff --git a/include/lapi/personality.h b/include/lapi/personality.h
-new file mode 100644
-index 000000000..1168d0744
---- /dev/null
-+++ b/include/lapi/personality.h
-@@ -0,0 +1,48 @@
-+/*
-+ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+/* In the Linux kernel and glibc enums are (mostly) used for the constants,
-+ * but in musl macros are used.
-+ */
-+
-+#include "config.h"
-+
-+#if defined(HAVE_SYS_PERSONALITY_H)
-+#include <sys/personality.h>
-+#elif defined(HAVE_LINUX_PERSONALITY_H)
-+#include <linux/personality.h>
-+#endif
-+
-+#ifndef HAVE_SYS_PERSONALITY_H
-+#include "linux_syscall_numbers.h"
-+
-+static int personality(unsigned long persona)
-+{
-+	return tst_syscall(__NR_personality, persona);
-+}
-+#endif
-+
-+#if !(HAVE_DECL_UNAME26 == 1 || defined(UNAME26))
-+#define UNAME26 0x0020000
-+#endif
-+
-+#if !(HAVE_DECL_READ_IMPLIES_EXEC == 1 || defined(READ_IMPLIES_EXEC))
-+#define READ_IMPLIES_EXEC 0x0400000
-+#endif
-+
-+#if !(HAVE_DECL_PER_LINUX == 1 || defined(PER_LINUX))
-+#define PER_LINUX 0
-+#endif
-diff --git a/include/tst_personality.h b/include/tst_personality.h
-new file mode 100644
-index 000000000..ff61f4607
---- /dev/null
-+++ b/include/tst_personality.h
-@@ -0,0 +1,28 @@
-+/*
-+ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#ifndef TST_PERSONALITY__
-+#define TST_PERSONALITY__
-+
-+#include "lapi/personality.h"
-+
-+int tst_personality(const char *filename, unsigned int lineno,
-+		    unsigned long persona);
-+
-+#define SAFE_PERSONALITY(persona) tst_personality(__FILE__, __LINE__, persona)
-+
-+#endif
-diff --git a/lib/tst_personality.c b/lib/tst_personality.c
-new file mode 100644
-index 000000000..3f64331db
---- /dev/null
-+++ b/lib/tst_personality.c
-@@ -0,0 +1,33 @@
-+/*
-+ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#define TST_NO_DEFAULT_MAIN
-+#include "tst_test.h"
+ #include <string.h>
+ #include <sys/utsname.h>
+-#include <sys/personality.h>
+ #include "tst_test.h"
+-
+-#define UNAME26 0x0020000
 +#include "tst_personality.h"
-+
-+int tst_personality(const char *filename, unsigned int lineno,
-+		    unsigned long persona)
-+{
-+	int prev_persona = personality(persona);
-+
-+	if (prev_persona < 0) {
-+		tst_brk_(filename, lineno, TBROK | TERRNO,
-+			 "persona(%ld) failed", persona);
-+	}
-+
-+	return prev_persona;
-+}
-diff --git a/m4/ltp-personality.m4 b/m4/ltp-personality.m4
-new file mode 100644
-index 000000000..78a3bc231
---- /dev/null
-+++ b/m4/ltp-personality.m4
-@@ -0,0 +1,24 @@
-+dnl Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+dnl
-+dnl This program is free software;  you can redistribute it and/or modify
-+dnl it under the terms of the GNU General Public License as published by
-+dnl the Free Software Foundation; either version 2 of the License, or
-+dnl (at your option) any later version.
-+dnl
-+dnl This program is distributed in the hope that it will be useful,
-+dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+dnl the GNU General Public License for more details.
-+dnl
-+dnl You should have received a copy of the GNU General Public License
-+dnl along with this program. If not, see <http://www.gnu.org/licenses/>.
-+
-+AC_DEFUN([LTP_CHECK_PERSONALITY],[
-+AC_CHECK_DECLS([UNAME26,READ_IMPLIES_EXEC,PER_LINUX],,,[
-+#if defined(HAVE_SYS_PERSONALITY_H)
-+#include <sys/personality.h>
-+#elif defined(HAVE_LINUX_PERSONALITY_H)
-+#include <linux/personality.h>
-+#endif
-+])
-+])
+ 
+ static int check_field(char *bytes, size_t length, char *field)
+ {
+@@ -75,9 +73,7 @@ static void run(unsigned int test_nr)
+ 		tst_res(TINFO, "Calling uname with default personality");
+ 		try_leak_bytes();
+ 	} else {
+-		if (personality(PER_LINUX | UNAME26) < 0)
+-			tst_brk(TCONF | TERRNO,
+-				"Could not change personality to UNAME26");
++		SAFE_PERSONALITY(PER_LINUX | UNAME26);
+ 		tst_res(TINFO, "Calling uname with UNAME26 personality");
+ 		try_leak_bytes();
+ 	}
 -- 
 2.13.2
 
