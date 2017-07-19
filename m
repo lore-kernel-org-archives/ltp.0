@@ -1,61 +1,47 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Wed, 19 Jul 2017 11:42:39 +0800
-Subject: [LTP] [PATCH v2 3/3] commands/keyctl01: Check keyctl support
- instead of kernel version
-In-Reply-To: <20170718132719.GA22620@rei.lan>
-References: <20170717114235.GB11059@rei.lan>
- <20170718063144.18856-1-fenggw-fnst@cn.fujitsu.com>
- <20170718063144.18856-3-fenggw-fnst@cn.fujitsu.com>
- <20170718132719.GA22620@rei.lan>
-Message-ID: <f659c98f-f3bc-72f8-0c51-14dc956beba8@cn.fujitsu.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Wed, 19 Jul 2017 11:08:30 +0200
+Subject: [LTP] [PATCH v2 2/3] CVE-2012-0957: Use SAFE_PERSONALITY
+In-Reply-To: <20170719090831.2326-1-rpalethorpe@suse.com>
+References: <20170719090831.2326-1-rpalethorpe@suse.com>
+Message-ID: <20170719090831.2326-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ testcases/cve/cve-2012-0957.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-在 07/18/2017 09:27 PM, Cyril Hrubis 写道:
-> Hi!
-> I've pushed the first two patches, thanks.
-
-Thanks!
-
-> 
->>  setup()
->>  {
->> -	if tst_kvcmp -le 2.6.33; then
->> -		tst_brk TCONF "Kernel newer than 2.6.33 is needed"
->> +	keyctl 2>&1 | tr '\n' ' ' | grep "request2" | grep "negate" | \
->> +		grep "show" | grep "unlink" >/dev/null
-> 
-> Uh, what are we grepping here for exactly?
-
-We need to check the keyctl operations "request2", "negate",
-"show", "unlink" are all available...
-
-> Can't we do that with a single regular expression?
-
-Yes, we can do:
-
-keyctl 2>&1 | sort | tr '\n' ' ' | grep -P "\bnegate\b.*\brequest2\b.*\bshow\b.*\bunlink\b" >/dev/null
-
-
-Best Regards,
-Guangwen Feng
-
-> 
->> +	if [ $? -ne 0 ]; then
->> +		tst_brk TCONF "keyctl operations not supported"
->>  	fi
->>  
->>  	PATH_KEYSTAT="/proc/key-users"
->> -- 
->> 2.9.4
->>
->>
->>
-> 
-
+diff --git a/testcases/cve/cve-2012-0957.c b/testcases/cve/cve-2012-0957.c
+index f065735a1..3b92325d6 100644
+--- a/testcases/cve/cve-2012-0957.c
++++ b/testcases/cve/cve-2012-0957.c
+@@ -26,10 +26,8 @@
+ 
+ #include <string.h>
+ #include <sys/utsname.h>
+-#include <sys/personality.h>
+ #include "tst_test.h"
+-
+-#define UNAME26 0x0020000
++#include "tst_personality.h"
+ 
+ static int check_field(char *bytes, size_t length, char *field)
+ {
+@@ -75,9 +73,7 @@ static void run(unsigned int test_nr)
+ 		tst_res(TINFO, "Calling uname with default personality");
+ 		try_leak_bytes();
+ 	} else {
+-		if (personality(PER_LINUX | UNAME26) < 0)
+-			tst_brk(TCONF | TERRNO,
+-				"Could not change personality to UNAME26");
++		SAFE_PERSONALITY(PER_LINUX | UNAME26);
+ 		tst_res(TINFO, "Calling uname with UNAME26 personality");
+ 		try_leak_bytes();
+ 	}
+-- 
+2.13.2
 
