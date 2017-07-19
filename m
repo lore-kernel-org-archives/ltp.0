@@ -1,64 +1,40 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 19 Jul 2017 14:15:57 +0200
-Subject: [LTP] [PATCH] lib/tst_timer_test.c: fix unsigned int overflow
- on RHEL5.11GA
-In-Reply-To: <1500274437-26154-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1500274437-26154-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20170719121557.GG1015@rei.lan>
+From: Travis CI <builds@travis-ci.org>
+Date: Wed, 19 Jul 2017 12:17:26 +0000
+Subject: [LTP] Broken: linux-test-project/ltp#316 (master - 9ebed1f)
+In-Reply-To: <linux-test-project/ltp+255229332+broken@travis-ci.org>
+Message-ID: <596f4dd6413fc_43fcd4b113b3815738d3@bfe034bd-2c61-42ec-8b19-bf3405812bba.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> On RHEL5.11GA, pselect01 gets signal SIGSEGV due to unsigned int
-> overflow when all members of the samples array are less than usec
-> in do_timer_test().  all tests which apply timer measurement library
-> could trigger this issue on RHEL5.11GA regularly.
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-Ah righ, I've forgotten to add check for the array boundary there as
-well.
+Build: #316
+Status: Broken
 
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  lib/tst_timer_test.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/lib/tst_timer_test.c b/lib/tst_timer_test.c
-> index f30ad73..178e232 100644
-> --- a/lib/tst_timer_test.c
-> +++ b/lib/tst_timer_test.c
-> @@ -295,9 +295,9 @@ void do_timer_test(long long usec, unsigned int nsamples)
->  			i, samples[0], samples[i-1]);
->  	}
->  
-> -	for (i = nsamples - 1; samples[i] < usec; i--);
-> +	for (i = nsamples - 1; i < nsamples && samples[i] < usec; i--);
+Duration: 12 minutes and 58 seconds
+Commit: 9ebed1f (master)
+Author: Xiao Yang
+Message: syscalls/clone09.c: Fix compilation without CLONE_NEWNET
 
-But this does not seem right, we are decrementing i, hence we should
-check that i > 0, otherwise we overflow anyway. With i < nsamples we
-will break the cycle after the overflow, which is wrong and works only
-by accident (since i is unsigned we overflow to UINT_MAX if we decrement
-0).
+Compilation failed on some older distributions(e.g. RHEL5.11) due
+to undefined CLONE_NEWNET, so we include namespaces_constants.h to
+fix it.
 
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
-This should be the correct patch to fix the problem:
+View the changeset: https://github.com/linux-test-project/ltp/compare/1140e920ef74...9ebed1fefc2a
 
-diff --git a/lib/tst_timer_test.c b/lib/tst_timer_test.c
-index f30ad73dc..0b675f78d 100644
---- a/lib/tst_timer_test.c
-+++ b/lib/tst_timer_test.c
-@@ -295,7 +295,7 @@ void do_timer_test(long long usec, unsigned int nsamples)
-                        i, samples[0], samples[i-1]);
-        }
- 
--       for (i = nsamples - 1; samples[i] < usec; i--);
-+       for (i = nsamples - 1; samples[i] < usec && i > 0; i--);
- 
-        if (i < nsamples - 1) {
-                tst_res(TFAIL, "%s woken up early %u times range: [%lli,%lli]",
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/255229332?utm_source=email&utm_medium=notification
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+--
+
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170719/10254a82/attachment.html>
