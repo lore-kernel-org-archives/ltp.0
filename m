@@ -1,210 +1,69 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Wed, 19 Jul 2017 11:08:29 +0200
-Subject: [LTP] [PATCH v2 1/3] lib: Add personality fallback and SAFE macro
-Message-ID: <20170719090831.2326-1-rpalethorpe@suse.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 19 Jul 2017 11:13:48 +0200
+Subject: [LTP] [PATCH v3 1/9] Add fuzzy synchronisation library for
+ triggering races
+In-Reply-To: <20170623122211.29575-2-rpalethorpe@suse.com>
+References: <20170623122211.29575-1-rpalethorpe@suse.com>
+ <20170623122211.29575-2-rpalethorpe@suse.com>
+Message-ID: <20170719091348.GA1015@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add the macro SAFE_PERSONALITY as well as fallback logic for if
-<sys/personality.h> is missing or incomplete.
+Hi!
+Pushed with minor changes (see diff below), thanks.
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- configure.ac               |  3 +++
- include/lapi/personality.h | 48 ++++++++++++++++++++++++++++++++++++++++++++++
- include/tst_personality.h  | 28 +++++++++++++++++++++++++++
- lib/tst_personality.c      | 33 +++++++++++++++++++++++++++++++
- m4/ltp-personality.m4      | 24 +++++++++++++++++++++++
- 5 files changed, 136 insertions(+)
- create mode 100644 include/lapi/personality.h
- create mode 100644 include/tst_personality.h
- create mode 100644 lib/tst_personality.c
- create mode 100644 m4/ltp-personality.m4
-
-diff --git a/configure.ac b/configure.ac
-index 658003972..421b8b0f3 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -37,10 +37,12 @@ AC_CHECK_HEADERS([ \
-     mm.h \
-     pthread.h \
-     sys/xattr.h \
-+    sys/personality.h \
-     linux/genetlink.h \
-     linux/mempolicy.h \
-     linux/module.h \
-     linux/netlink.h \
-+    linux/personality.h \
-     sys/epoll.h \
-     sys/inotify.h \
-     sys/fanotify.h \
-@@ -194,5 +196,6 @@ LTP_CHECK_SYNC_ADD_AND_FETCH
- LTP_CHECK_BUILTIN_CLEAR_CACHE
- LTP_CHECK_MMSGHDR
- LTP_CHECK_UNAME_DOMAINNAME
-+LTP_CHECK_PERSONALITY
+diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
+index 122a6d736..229217495 100644
+--- a/include/tst_fuzzy_sync.h
++++ b/include/tst_fuzzy_sync.h
+@@ -34,7 +34,7 @@
+ #include <time.h>
  
- AC_OUTPUT
-diff --git a/include/lapi/personality.h b/include/lapi/personality.h
-new file mode 100644
-index 000000000..1168d0744
---- /dev/null
-+++ b/include/lapi/personality.h
-@@ -0,0 +1,48 @@
-+/*
-+ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+/* In the Linux kernel and glibc enums are (mostly) used for the constants,
-+ * but in musl macros are used.
-+ */
-+
-+#include "config.h"
-+
-+#if defined(HAVE_SYS_PERSONALITY_H)
-+#include <sys/personality.h>
-+#elif defined(HAVE_LINUX_PERSONALITY_H)
-+#include <linux/personality.h>
-+#endif
-+
-+#ifndef HAVE_SYS_PERSONALITY_H
-+#include "linux_syscall_numbers.h"
-+
-+static int personality(unsigned long persona)
-+{
-+	return tst_syscall(__NR_personality, persona);
-+}
-+#endif
-+
-+#if !(HAVE_DECL_UNAME26 == 1 || defined(UNAME26))
-+#define UNAME26 0x0020000
-+#endif
-+
-+#if !(HAVE_DECL_READ_IMPLIES_EXEC == 1 || defined(READ_IMPLIES_EXEC))
-+#define READ_IMPLIES_EXEC 0x0400000
-+#endif
-+
-+#if !(HAVE_DECL_PER_LINUX == 1 || defined(PER_LINUX))
-+#define PER_LINUX 0
-+#endif
-diff --git a/include/tst_personality.h b/include/tst_personality.h
-new file mode 100644
-index 000000000..ff61f4607
---- /dev/null
-+++ b/include/tst_personality.h
-@@ -0,0 +1,28 @@
-+/*
-+ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#ifndef TST_PERSONALITY__
-+#define TST_PERSONALITY__
-+
-+#include "lapi/personality.h"
-+
-+int tst_personality(const char *filename, unsigned int lineno,
-+		    unsigned long persona);
-+
-+#define SAFE_PERSONALITY(persona) tst_personality(__FILE__, __LINE__, persona)
-+
-+#endif
-diff --git a/lib/tst_personality.c b/lib/tst_personality.c
-new file mode 100644
-index 000000000..3f64331db
---- /dev/null
-+++ b/lib/tst_personality.c
-@@ -0,0 +1,33 @@
-+/*
-+ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#define TST_NO_DEFAULT_MAIN
-+#include "tst_test.h"
-+#include "tst_personality.h"
-+
-+int tst_personality(const char *filename, unsigned int lineno,
-+		    unsigned long persona)
-+{
-+	int prev_persona = personality(persona);
-+
-+	if (prev_persona < 0) {
-+		tst_brk_(filename, lineno, TBROK | TERRNO,
-+			 "persona(%ld) failed", persona);
-+	}
-+
-+	return prev_persona;
-+}
-diff --git a/m4/ltp-personality.m4 b/m4/ltp-personality.m4
-new file mode 100644
-index 000000000..78a3bc231
---- /dev/null
-+++ b/m4/ltp-personality.m4
-@@ -0,0 +1,24 @@
-+dnl Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+dnl
-+dnl This program is free software;  you can redistribute it and/or modify
-+dnl it under the terms of the GNU General Public License as published by
-+dnl the Free Software Foundation; either version 2 of the License, or
-+dnl (at your option) any later version.
-+dnl
-+dnl This program is distributed in the hope that it will be useful,
-+dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+dnl the GNU General Public License for more details.
-+dnl
-+dnl You should have received a copy of the GNU General Public License
-+dnl along with this program. If not, see <http://www.gnu.org/licenses/>.
-+
-+AC_DEFUN([LTP_CHECK_PERSONALITY],[
-+AC_CHECK_DECLS([UNAME26,READ_IMPLIES_EXEC,PER_LINUX],,,[
-+#if defined(HAVE_SYS_PERSONALITY_H)
-+#include <sys/personality.h>
-+#elif defined(HAVE_LINUX_PERSONALITY_H)
-+#include <linux/personality.h>
-+#endif
-+])
-+])
--- 
-2.13.2
+ #ifndef CLOCK_MONOTONIC_RAW
+-#define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
++# define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
+ #endif
+ 
+ /**
+@@ -133,7 +133,7 @@ static inline void tst_fzsync_time_b(struct tst_fzsync_pair *pair)
+ 
+ /**
+  * tst_exp_moving_avg - Exponential moving average
+- * @alpha: The preference for receant samples over old ones.
++ * @alpha: The preference for recent samples over old ones.
+  * @sample: The current sample
+  * @prev_avg: The average of the all the previous samples
+  *
+@@ -165,7 +165,6 @@ static void tst_fzsync_pair_update(int loop_index, struct tst_fzsync_pair *pair)
+ {
+        long diff;
+        long inc = pair->delay_inc;
+-       long delay = pair->delay;
+        double target = pair->avg_diff_trgt;
+        double avg = pair->avg_diff;
+ 
+@@ -174,11 +173,10 @@ static void tst_fzsync_pair_update(int loop_index, struct tst_fzsync_pair *pair)
+ 
+        if (!(loop_index & pair->update_gap)) {
+                if (avg > target)
+-                       delay -= inc;
++                       pair->delay -= inc;
+                else if (avg < target)
+-                       delay += inc;
++                       pair->delay += inc;
+        }
+ 
+        pair->avg_diff = avg;
+-       pair->delay = delay;
+ }
 
+Apart from fixing obvious typo and minor style issue I've changed this function
+not to tuch the pair->delay unless we recalculated it, as the code is a bit
+easier to understand that way.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
