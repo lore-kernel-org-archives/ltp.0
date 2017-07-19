@@ -1,8 +1,8 @@
 From: Travis CI <builds@travis-ci.org>
-Date: Wed, 19 Jul 2017 12:17:26 +0000
-Subject: [LTP] Broken: linux-test-project/ltp#316 (master - 9ebed1f)
-In-Reply-To: <linux-test-project/ltp+255229332+broken@travis-ci.org>
-Message-ID: <596f4dd6413fc_43fcd4b113b3815738d3@bfe034bd-2c61-42ec-8b19-bf3405812bba.mail>
+Date: Wed, 19 Jul 2017 12:40:21 +0000
+Subject: [LTP] Still Failing: linux-test-project/ltp#317 (master - 81cc0b3)
+In-Reply-To: <linux-test-project/ltp+255239913+still failing@travis-ci.org>
+Message-ID: <596f5335c65b_43fb95256566c12420ae@8d97d202-482c-4637-955b-9a730e0b38cd.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,24 +12,22 @@ To: ltp@lists.linux.it
 Build Update for linux-test-project/ltp
 -------------------------------------
 
-Build: #316
-Status: Broken
+Build: #317
+Status: Still Failing
 
-Duration: 12 minutes and 58 seconds
-Commit: 9ebed1f (master)
-Author: Xiao Yang
-Message: syscalls/clone09.c: Fix compilation without CLONE_NEWNET
+Duration: 9 minutes and 8 seconds
+Commit: 81cc0b3 (master)
+Author: Cyril Hrubis
+Message: cve/Makefile: Fix build.
 
-Compilation failed on some older distributions(e.g. RHEL5.11) due
-to undefined CLONE_NEWNET, so we include namespaces_constants.h to
-fix it.
+When compiling with pthreads we should set CFLAGS+=-pthread rather than
+LDFLAGS+=-lpthread.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
-View the changeset: https://github.com/linux-test-project/ltp/compare/1140e920ef74...9ebed1fefc2a
+View the changeset: https://github.com/linux-test-project/ltp/compare/9ebed1fefc2a...81cc0b3353ca
 
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/255229332?utm_source=email&utm_medium=notification
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/255239913?utm_source=email&utm_medium=notification
 
 --
 
@@ -37,4 +35,4 @@ You can configure recipients for build notifications in your .travis.yml file. S
 
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170719/10254a82/attachment.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170719/d8af2fcd/attachment.html>
