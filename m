@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 19 Jul 2017 15:01:09 +0200
-Subject: [LTP] [PATCH v3 6/9] Test for CVE-2014-0196 PTY echo race
-In-Reply-To: <20170623122211.29575-7-rpalethorpe@suse.com>
+Date: Wed, 19 Jul 2017 15:19:53 +0200
+Subject: [LTP] [PATCH v3 7/9] Test for CVE-2017-5669 in shmat
+In-Reply-To: <20170623122211.29575-8-rpalethorpe@suse.com>
 References: <20170623122211.29575-1-rpalethorpe@suse.com>
- <20170623122211.29575-7-rpalethorpe@suse.com>
-Message-ID: <20170719130108.GH1015@rei.lan>
+ <20170623122211.29575-8-rpalethorpe@suse.com>
+Message-ID: <20170719131953.GI1015@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,65 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-I've added CFLAGS and LDLIBS to the Makefile (since I removed these
-while I was fixing the build) and pushed, thanks.
+> +static void cleanup(void)
+> +{
+> +	if (shm_addr)
+> +		SAFE_SHMDT(shm_addr);
+> +	shm_addr = 0;
+> +
+> +	if (shm_id)
+> +		SAFE_SHMCTL(shm_id, IPC_RMID, 0);
+> +	shm_id = 0;
+> +}
+> +
+> +static void run(void)
+> +{
+> +	shm_id = SAFE_SHMGET(IPC_PRIVATE, getpagesize(), 0777);
+
+Shouldn't be this done once in the test setup()?
+
+> +	tst_res(TINFO, "Attempting to attach shared memory to null page");
+> +	shm_addr = shmat(shm_id, ((void *)1), SHM_RND);
+> +	if (shm_addr == (void *)-1) {
+> +		if (errno == EINVAL) {
+> +			tst_res(TPASS, "shmat returned EINVAL");
+> +			shm_addr = 0;
+> +			return;
+> +		}
+> +		tst_brk(TBROK | TERRNO,
+> +			"The bug was not triggered, but the shmat error is unexpected");
+> +	}
+> +
+> +	tst_res(TINFO, "Mapped shared memory to %p", shm_addr);
+> +
+> +	if (!((size_t)shm_addr & (~0U << 16)))
+> +		tst_res(TFAIL,
+> +			"We have mapped a VM address within the first 64Kb");
+> +	else
+> +		tst_res(TPASS,
+> +			"The kernel assigned a different VM address");
+> +
+> +	((char *)shm_addr)[0] = 'P';
+
+Why do we try to write to the addres at all?
+
+We do PASS/FAIL decision based only on the addres returned from shmat().
+
+Also we should detach the memory here in case that the test was called
+with -i parameter.
+
+> +}
+> +
+> +static struct tst_test test = {
+> +	.cleanup = cleanup,
+> +	.test_all = run,
+> +};
+> -- 
+> 2.12.2
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
