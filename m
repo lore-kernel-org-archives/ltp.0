@@ -1,69 +1,193 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 19 Jul 2017 11:13:48 +0200
-Subject: [LTP] [PATCH v3 1/9] Add fuzzy synchronisation library for
- triggering races
-In-Reply-To: <20170623122211.29575-2-rpalethorpe@suse.com>
-References: <20170623122211.29575-1-rpalethorpe@suse.com>
- <20170623122211.29575-2-rpalethorpe@suse.com>
-Message-ID: <20170719091348.GA1015@rei.lan>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Wed, 19 Jul 2017 11:26:39 +0200
+Subject: [LTP] [PATCH] getsockopt: Add test for SO_PEERCRED
+In-Reply-To: <1500392093-23272-1-git-send-email-vkabatov@redhat.com>
+References: <1500392093-23272-1-git-send-email-vkabatov@redhat.com>
+Message-ID: <874lu8rd4g.fsf@our.domain.is.not.set>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with minor changes (see diff below), thanks.
 
-diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-index 122a6d736..229217495 100644
---- a/include/tst_fuzzy_sync.h
-+++ b/include/tst_fuzzy_sync.h
-@@ -34,7 +34,7 @@
- #include <time.h>
- 
- #ifndef CLOCK_MONOTONIC_RAW
--#define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
-+# define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
- #endif
- 
- /**
-@@ -133,7 +133,7 @@ static inline void tst_fzsync_time_b(struct tst_fzsync_pair *pair)
- 
- /**
-  * tst_exp_moving_avg - Exponential moving average
-- * @alpha: The preference for receant samples over old ones.
-+ * @alpha: The preference for recent samples over old ones.
-  * @sample: The current sample
-  * @prev_avg: The average of the all the previous samples
-  *
-@@ -165,7 +165,6 @@ static void tst_fzsync_pair_update(int loop_index, struct tst_fzsync_pair *pair)
- {
-        long diff;
-        long inc = pair->delay_inc;
--       long delay = pair->delay;
-        double target = pair->avg_diff_trgt;
-        double avg = pair->avg_diff;
- 
-@@ -174,11 +173,10 @@ static void tst_fzsync_pair_update(int loop_index, struct tst_fzsync_pair *pair)
- 
-        if (!(loop_index & pair->update_gap)) {
-                if (avg > target)
--                       delay -= inc;
-+                       pair->delay -= inc;
-                else if (avg < target)
--                       delay += inc;
-+                       pair->delay += inc;
-        }
- 
-        pair->avg_diff = avg;
--       pair->delay = delay;
- }
+Hi Veronika,
 
-Apart from fixing obvious typo and minor style issue I've changed this function
-not to tuch the pair->delay unless we recalculated it, as the code is a bit
-easier to understand that way.
+vkabatov@redhat.com writes:
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> From: Veronika Kabatova <vkabatov@redhat.com>
+>
+> Connect to a socket from a thread anf check SO_PEERCRED returns
+> correct PID.
+>
+> Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
+> ---
+>  runtest/syscalls                                   |   1 +
+>  testcases/kernel/syscalls/.gitignore               |   1 +
+>  testcases/kernel/syscalls/getsockopt/Makefile      |   2 +
+>  .../kernel/syscalls/getsockopt/getsockopt02.c      | 102 +++++++++++++++++++++
+>  4 files changed, 106 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/getsockopt/getsockopt02.c
+>
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 91aba85..11055cf 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -433,6 +433,7 @@ getsid02 getsid02
+>  getsockname01 getsockname01
+>
+>  getsockopt01 getsockopt01
+> +getsockopt02 getsockopt02
+>
+>  gettid01 gettid01
+>
+> diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+> index 3d9bb75..c0e5218 100644
+> --- a/testcases/kernel/syscalls/.gitignore
+> +++ b/testcases/kernel/syscalls/.gitignore
+> @@ -361,6 +361,7 @@
+>  /getsid/getsid02
+>  /getsockname/getsockname01
+>  /getsockopt/getsockopt01
+> +/getsockopt/getsockopt02
+>  /gettid/gettid01
+>  /gettimeofday/gettimeofday01
+>  /gettimeofday/gettimeofday02
+> diff --git a/testcases/kernel/syscalls/getsockopt/Makefile b/testcases/kernel/syscalls/getsockopt/Makefile
+> index bd617d8..033d73f 100644
+> --- a/testcases/kernel/syscalls/getsockopt/Makefile
+> +++ b/testcases/kernel/syscalls/getsockopt/Makefile
+> @@ -18,6 +18,8 @@
+>
+>  top_srcdir		?= ../../../..
+>
+> +getsockopt02: CFLAGS+=-pthread
+> +
+>  include $(top_srcdir)/include/mk/testcases.mk
+>
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/syscalls/getsockopt/getsockopt02.c b/testcases/kernel/syscalls/getsockopt/getsockopt02.c
+> new file mode 100644
+> index 0000000..27942b9
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/getsockopt/getsockopt02.c
+> @@ -0,0 +1,102 @@
+> +/*
+> + * Copyright (C) 2017 Red Hat, Inc.
+> + *
+> + * This program is free software;  you can redistribute it and/or modify it
+> + * under the terms of the GNU General Public License as published by the Free
+> + * Software Foundation; either version 2 of the License, or (at your option)
+> + * any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful, but WITHOUT
+> + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+> + * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+> + * more details.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, see <http://www.gnu.org/licenses/>.
+> + */
+> +
+> +/*
+> + * Test description: Test retrieving of peer credentials (SO_PEERCRED)
+> + *
+> + */
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include <errno.h>
+> +#include <pthread.h>
+> +#include "tst_safe_pthread.h"
+> +#include "tst_test.h"
+> +
+> +static int socket_fd, thread_socket_fd, accepted;
+> +static struct sockaddr_un sun;
+> +
+> +#define SOCKNAME	"testsocket"
+> +
+> +static void setup(void)
+> +{
+> +	sun.sun_family = AF_UNIX;
+> +	(void)strcpy(sun.sun_path, SOCKNAME);
+> +	socket_fd = SAFE_SOCKET(sun.sun_family, SOCK_STREAM, 0);
+> +	SAFE_BIND(socket_fd, (struct sockaddr *)&sun, sizeof(sun));
+> +	SAFE_LISTEN(socket_fd, SOMAXCONN);
+> +}
+
+FYI, this could be simplified with socketpair() although I don't think
+there is a SAFE_* function for that yet, but it shouldn't be hard to
+implement.
+
+> +
+> +void *thread_func(void *args __attribute__((unused)))
+> +{
+> +	thread_socket_fd = SAFE_SOCKET(sun.sun_family, SOCK_STREAM, 0);
+> +	SAFE_CONNECT(thread_socket_fd, (struct sockaddr *)&sun, sizeof(sun));
+> +	return NULL;
+> +}
+> +
+> +static void test_function(void)
+> +{
+> +	pthread_t thread_id;
+> +	struct ucred cred;
+> +	socklen_t cred_len = sizeof(cred);
+> +
+> +	SAFE_PTHREAD_CREATE(&thread_id, NULL, thread_func, NULL);
+
+I am wondering if fork() would make for a stronger test? As we are then
+communicating between processes.
+
+> +	accepted = accept(socket_fd, NULL, NULL);
+> +	if (accepted < 0) {
+> +		tst_res(TFAIL | TERRNO, "Error with accepting connection");
+> +		return;
+> +	}
+> +	if (getsockopt(accepted, SOL_SOCKET,
+> +				SO_PEERCRED, &cred, &cred_len) < 0) {
+> +		tst_res(TFAIL | TERRNO, "Error while getting socket options");
+> +		return;
+> +	}
+> +
+> +	SAFE_PTHREAD_JOIN(thread_id, NULL);
+> +	if (accepted >= 0) {
+> +		(void)shutdown(accepted, SHUT_RDWR);
+> +		SAFE_CLOSE(accepted);
+> +	}
+> +	if (thread_socket_fd >= 0)
+> +		SAFE_CLOSE(thread_socket_fd);
+> +
+> +	if (getpid() != cred.pid) {
+> +		tst_res(TFAIL, "Received wrong PID %d, expected %d",
+> +				cred.pid, getpid());
+> +	} else
+> +		tst_res(TPASS, "Test passed");
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (accepted >= 0) {
+> +		(void)shutdown(accepted, SHUT_RDWR);
+> +		SAFE_CLOSE(accepted);
+> +	}
+> +	if (thread_socket_fd >= 0)
+> +		SAFE_CLOSE(thread_socket_fd);
+> +	if (socket_fd >= 0)
+> +		SAFE_CLOSE(socket_fd);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.tid = "getsockopt02",
+
+This is not necessary anymore, the tid is taken from the file name.
+
+> +	.test_all = test_function,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.needs_tmpdir = 1,
+> +};
+> --
+> 2.7.4
+--
+Thank you,
+Richard.
