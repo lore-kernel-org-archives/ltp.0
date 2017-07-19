@@ -1,172 +1,61 @@
-From: vkabatov@redhat.com <vkabatov@redhat.com>
-Date: Tue, 18 Jul 2017 17:34:53 +0200
-Subject: [LTP]  [PATCH] getsockopt: Add test for SO_PEERCRED
-Message-ID: <1500392093-23272-1-git-send-email-vkabatov@redhat.com>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Wed, 19 Jul 2017 11:42:39 +0800
+Subject: [LTP] [PATCH v2 3/3] commands/keyctl01: Check keyctl support
+ instead of kernel version
+In-Reply-To: <20170718132719.GA22620@rei.lan>
+References: <20170717114235.GB11059@rei.lan>
+ <20170718063144.18856-1-fenggw-fnst@cn.fujitsu.com>
+ <20170718063144.18856-3-fenggw-fnst@cn.fujitsu.com>
+ <20170718132719.GA22620@rei.lan>
+Message-ID: <f659c98f-f3bc-72f8-0c51-14dc956beba8@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-From: Veronika Kabatova <vkabatov@redhat.com>
+Hi!
 
-Connect to a socket from a thread anf check SO_PEERCRED returns
-correct PID.
+在 07/18/2017 09:27 PM, Cyril Hrubis 写道:
+> Hi!
+> I've pushed the first two patches, thanks.
 
-Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
----
- runtest/syscalls                                   |   1 +
- testcases/kernel/syscalls/.gitignore               |   1 +
- testcases/kernel/syscalls/getsockopt/Makefile      |   2 +
- .../kernel/syscalls/getsockopt/getsockopt02.c      | 102 +++++++++++++++++++++
- 4 files changed, 106 insertions(+)
- create mode 100644 testcases/kernel/syscalls/getsockopt/getsockopt02.c
+Thanks!
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 91aba85..11055cf 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -433,6 +433,7 @@ getsid02 getsid02
- getsockname01 getsockname01
- 
- getsockopt01 getsockopt01
-+getsockopt02 getsockopt02
- 
- gettid01 gettid01
- 
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 3d9bb75..c0e5218 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -361,6 +361,7 @@
- /getsid/getsid02
- /getsockname/getsockname01
- /getsockopt/getsockopt01
-+/getsockopt/getsockopt02
- /gettid/gettid01
- /gettimeofday/gettimeofday01
- /gettimeofday/gettimeofday02
-diff --git a/testcases/kernel/syscalls/getsockopt/Makefile b/testcases/kernel/syscalls/getsockopt/Makefile
-index bd617d8..033d73f 100644
---- a/testcases/kernel/syscalls/getsockopt/Makefile
-+++ b/testcases/kernel/syscalls/getsockopt/Makefile
-@@ -18,6 +18,8 @@
- 
- top_srcdir		?= ../../../..
- 
-+getsockopt02: CFLAGS+=-pthread
-+
- include $(top_srcdir)/include/mk/testcases.mk
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/getsockopt/getsockopt02.c b/testcases/kernel/syscalls/getsockopt/getsockopt02.c
-new file mode 100644
-index 0000000..27942b9
---- /dev/null
-+++ b/testcases/kernel/syscalls/getsockopt/getsockopt02.c
-@@ -0,0 +1,102 @@
-+/*
-+ * Copyright (C) 2017 Red Hat, Inc.
-+ *
-+ * This program is free software;  you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License as published by the Free
-+ * Software Foundation; either version 2 of the License, or (at your option)
-+ * any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-+ * more details.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+/*
-+ * Test description: Test retrieving of peer credentials (SO_PEERCRED)
-+ *
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <errno.h>
-+#include <pthread.h>
-+#include "tst_safe_pthread.h"
-+#include "tst_test.h"
-+
-+static int socket_fd, thread_socket_fd, accepted;
-+static struct sockaddr_un sun;
-+
-+#define SOCKNAME	"testsocket"
-+
-+static void setup(void)
-+{
-+	sun.sun_family = AF_UNIX;
-+	(void)strcpy(sun.sun_path, SOCKNAME);
-+	socket_fd = SAFE_SOCKET(sun.sun_family, SOCK_STREAM, 0);
-+	SAFE_BIND(socket_fd, (struct sockaddr *)&sun, sizeof(sun));
-+	SAFE_LISTEN(socket_fd, SOMAXCONN);
-+}
-+
-+void *thread_func(void *args __attribute__((unused)))
-+{
-+	thread_socket_fd = SAFE_SOCKET(sun.sun_family, SOCK_STREAM, 0);
-+	SAFE_CONNECT(thread_socket_fd, (struct sockaddr *)&sun, sizeof(sun));
-+	return NULL;
-+}
-+
-+static void test_function(void)
-+{
-+	pthread_t thread_id;
-+	struct ucred cred;
-+	socklen_t cred_len = sizeof(cred);
-+
-+	SAFE_PTHREAD_CREATE(&thread_id, NULL, thread_func, NULL);
-+	accepted = accept(socket_fd, NULL, NULL);
-+	if (accepted < 0) {
-+		tst_res(TFAIL | TERRNO, "Error with accepting connection");
-+		return;
-+	}
-+	if (getsockopt(accepted, SOL_SOCKET,
-+				SO_PEERCRED, &cred, &cred_len) < 0) {
-+		tst_res(TFAIL | TERRNO, "Error while getting socket options");
-+		return;
-+	}
-+
-+	SAFE_PTHREAD_JOIN(thread_id, NULL);
-+	if (accepted >= 0) {
-+		(void)shutdown(accepted, SHUT_RDWR);
-+		SAFE_CLOSE(accepted);
-+	}
-+	if (thread_socket_fd >= 0)
-+		SAFE_CLOSE(thread_socket_fd);
-+
-+	if (getpid() != cred.pid) {
-+		tst_res(TFAIL, "Received wrong PID %d, expected %d",
-+				cred.pid, getpid());
-+	} else
-+		tst_res(TPASS, "Test passed");
-+}
-+
-+static void cleanup(void)
-+{
-+	if (accepted >= 0) {
-+		(void)shutdown(accepted, SHUT_RDWR);
-+		SAFE_CLOSE(accepted);
-+	}
-+	if (thread_socket_fd >= 0)
-+		SAFE_CLOSE(thread_socket_fd);
-+	if (socket_fd >= 0)
-+		SAFE_CLOSE(socket_fd);
-+}
-+
-+static struct tst_test test = {
-+	.tid = "getsockopt02",
-+	.test_all = test_function,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_tmpdir = 1,
-+};
--- 
-2.7.4
+> 
+>>  setup()
+>>  {
+>> -	if tst_kvcmp -le 2.6.33; then
+>> -		tst_brk TCONF "Kernel newer than 2.6.33 is needed"
+>> +	keyctl 2>&1 | tr '\n' ' ' | grep "request2" | grep "negate" | \
+>> +		grep "show" | grep "unlink" >/dev/null
+> 
+> Uh, what are we grepping here for exactly?
+
+We need to check the keyctl operations "request2", "negate",
+"show", "unlink" are all available...
+
+> Can't we do that with a single regular expression?
+
+Yes, we can do:
+
+keyctl 2>&1 | sort | tr '\n' ' ' | grep -P "\bnegate\b.*\brequest2\b.*\bshow\b.*\bunlink\b" >/dev/null
+
+
+Best Regards,
+Guangwen Feng
+
+> 
+>> +	if [ $? -ne 0 ]; then
+>> +		tst_brk TCONF "keyctl operations not supported"
+>>  	fi
+>>  
+>>  	PATH_KEYSTAT="/proc/key-users"
+>> -- 
+>> 2.9.4
+>>
+>>
+>>
+> 
+
 
