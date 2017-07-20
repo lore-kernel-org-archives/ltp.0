@@ -1,71 +1,53 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 20 Jul 2017 17:25:04 +0800
-Subject: [LTP] [PATCH] syscalls/clone09.c: skip this test if net ns is not
-	supported
-Message-ID: <1500542704-4889-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Thu, 20 Jul 2017 17:25:30 +0800
+Subject: [LTP] [PATCH] lib/tst_timer_test.c: fix unsigned int overflow
+ on RHEL5.11GA
+In-Reply-To: <20170720091359.GA27245@rei>
+References: <1500274437-26154-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20170719121557.GG1015@rei.lan> <597013C1.8030405@cn.fujitsu.com>
+ <20170720091359.GA27245@rei>
+Message-ID: <5970770A.4000703@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-If net namespace is supported and disable, clone(CLONE_NEWNET) fails
-and sets errno to EINVAL as expected.  However, If net namespace is
-not supported(e.g. RHEL5.11GA), clone(CLONE_NEWNET) succeeds abnormally.
-We add check if a new process has new network namespace to fix it.
+On 2017/07/20 17:13, Cyril Hrubis wrote:
+> Hi!
+>> It sounds better, but this change leads that samples[0] could not be
+>> checked if the whole samples array
+>> is less than usec.
+>>
+>> Could we fix this issue as below:
+>> ------------------------------------------------------------------------------------------------------------------------
+>> -    for (i = nsamples - 1; samples[i]<  usec; i--);
+>> +    for (i = nsamples - 1; samples[i]<  usec&&  i>  0; i--);
+>>
+>>        if (i<  nsamples - 1) {
+>> -        tst_res(TFAIL, "%s woken up early %u times range: [%lli,%lli]",
+>> -            scall, nsamples - 1 - i,
+>> -            samples[i+1], samples[nsamples-1]);
+>> +        if (i == 0&&  samples[i]<  usec) {
+>> +            tst_res(TFAIL, "%s woken up early %u times range: [%lli,%lli]",
+>> +                scall, nsamples - i, samples[i],
+>> +                samples[nsamples-1]);
+>> +        } else {
+>> +            tst_res(TFAIL, "%s woken up early %u times range: [%lli,%lli]",
+>> +                scall, nsamples - 1 - i, samples[i+1],
+>> +                samples[nsamples-1]);
+>> +        }
+>> ------------------------------------------------------------------------------------------------------------------------
+> That is still unnecessarily complex. I do not care that much about this
+> corner case, but if we want to fix it correctly we can simply change the
+> i to be signed integer and check for i>  -1 in the loop and everything
+> would work fine.
+Hi Cyril,
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/clone/clone09.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Thanks for your explanation.  I will send v2 patch as you said.
 
-diff --git a/testcases/kernel/syscalls/clone/clone09.c b/testcases/kernel/syscalls/clone/clone09.c
-index 870c225..3456748 100644
---- a/testcases/kernel/syscalls/clone/clone09.c
-+++ b/testcases/kernel/syscalls/clone/clone09.c
-@@ -18,6 +18,9 @@
- #define _GNU_SOURCE
- #include <sched.h>
- #include <stdlib.h>
-+#include <stdio.h>
-+#include <sys/types.h>
-+#include <unistd.h>
- #include <errno.h>
- 
- #include "tst_test.h"
-@@ -28,6 +31,7 @@
- static void *child_stack;
- static int sysctl_net = -1;
- static int sysctl_net_new = -1;
-+static int ns_supported = 1;
- static const char sysctl_path[] = "/proc/sys/net/ipv4/conf/lo/tag";
- static const char sysctl_path_def[] = "/proc/sys/net/ipv4/conf/default/tag";
- static int flags = CLONE_NEWNET | CLONE_VM | SIGCHLD;
-@@ -47,6 +51,12 @@ static void cleanup(void)
- 
- static int newnet(void *arg LTP_ATTRIBUTE_UNUSED)
- {
-+	char path[PATH_MAX];
-+
-+	sprintf(path, "/proc/%d/ns", getpid());
-+	if (access(path, F_OK))
-+		ns_supported = 0;
-+
- 	SAFE_FILE_SCANF(sysctl_path, "%d", &sysctl_net_new);
- 	tst_syscall(__NR_exit, 0);
- 	return 0;
-@@ -77,6 +87,9 @@ static void do_test(void)
- 	clone_child();
- 	tst_reap_children();
- 
-+	if (!ns_supported)
-+		tst_brk(TCONF, "Kernel does not support net ns");
-+
- 	if (sysctl_net_new == (sysctl_net + 1)) {
- 		tst_res(TFAIL, "sysctl params equal: %s=%d",
- 			sysctl_path, sysctl_net_new);
--- 
-1.8.3.1
+Thanks,
+Xiao Yang
 
 
 
