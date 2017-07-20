@@ -1,37 +1,60 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 20 Jul 2017 17:35:29 +0300
-Subject: [LTP] [PATCH 1/2] cpuhotplug05.sh: call sar -P $CPU_TO_TEST
-In-Reply-To: <20170720134022.GA11392@rei.lan>
-References: <1499265258-25521-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <20170720134022.GA11392@rei.lan>
-Message-ID: <84e3e0b4-8353-827f-a3f6-d0b99270e974@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 20 Jul 2017 17:01:44 +0200
+Subject: [LTP] [PATCH v2 1/3] lib: Add personality fallback and SAFE
+	macro
+In-Reply-To: <87y3rjp4c5.fsf@our.domain.is.not.set>
+References: <20170719090831.2326-1-rpalethorpe@suse.com>
+ <87y3rjp4c5.fsf@our.domain.is.not.set>
+Message-ID: <20170720150144.GD11392@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
-On 07/20/2017 04:40 PM, Cyril Hrubis wrote:
-> Hi!
->> +	online_status=$(tail -n 1 "$LOG_FILE")
->> +	check_passed=0
->> +	for i in $(seq 3 8); do
->> +		field_offline=$(get_field "$offline_status" "$i")
->> +		field_online=$(get_field "$online_status" "$i")
->> +
->> +		if [ "$field_online" != "$field_offline" ]; then
+Hi!
+> > +#include "config.h"
+> > +
+> > +#if defined(HAVE_SYS_PERSONALITY_H)
+> > +#include <sys/personality.h>
+> > +#elif defined(HAVE_LINUX_PERSONALITY_H)
+> > +#include <linux/personality.h>
+> > +#endif
+> > +
+> > +#ifndef HAVE_SYS_PERSONALITY_H
+> > +#include "linux_syscall_numbers.h"
+> > +
+> > +static int personality(unsigned long persona)
+> > +{
+> > +	return tst_syscall(__NR_personality, persona);
+> > +}
+> > +#endif
+> > +
 > 
-> Hmm, we did assert that $field_offline == 0.00 in the previous loop,
-> didn't we? Why don't we simply compare $field_online against "0.00"
-> here?
+> Oops, linux_syscall_numbers.h is not available to the LTP library. I am
+> wondering if we can just add it to the include path?
 
-Indeed. That's my miss. I've updated it to $field_online != "0.00" and
-pushed the series.
+I was wondering the same. But we would have to tweek the build
+system.
 
-Thank you.
+See include/mk/testcases.mk that makes every test depend on the header.
 
-> 
-> Otherwise it looks fine.
-> 
+We also have special rule to make lib/ first if we start the build from
+the top level Makefile.
+
+And lastly but not least recenlty we started to run the regen.sh script
+from the configure script to avoid races on parallel build.
+
+If code in lib/ makes use of that header we have to make sure that the
+header is create before we start building the lib.
+
+And given that the header is not removed on make clean we may as well
+remove all the dependencies from makefiles and depend on configure
+script to create it. And possibly move the whole thing somewhere into
+include/lapi/ so that we can drop one of the -I directives and maybe
+rename the hader to something shorther, maybe lapi/syscalls.h or
+something.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
