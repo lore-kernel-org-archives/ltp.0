@@ -1,53 +1,51 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 20 Jul 2017 17:25:30 +0800
-Subject: [LTP] [PATCH] lib/tst_timer_test.c: fix unsigned int overflow
- on RHEL5.11GA
+Date: Thu, 20 Jul 2017 17:38:34 +0800
+Subject: [LTP] [PATCH v2] lib/tst_timer_test.c: fix unsigned int overflow on
+	RHEL5.11GA
 In-Reply-To: <20170720091359.GA27245@rei>
-References: <1500274437-26154-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20170719121557.GG1015@rei.lan> <597013C1.8030405@cn.fujitsu.com>
- <20170720091359.GA27245@rei>
-Message-ID: <5970770A.4000703@cn.fujitsu.com>
+References: <20170720091359.GA27245@rei>
+Message-ID: <1500543514-5800-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2017/07/20 17:13, Cyril Hrubis wrote:
-> Hi!
->> It sounds better, but this change leads that samples[0] could not be
->> checked if the whole samples array
->> is less than usec.
->>
->> Could we fix this issue as below:
->> ------------------------------------------------------------------------------------------------------------------------
->> -    for (i = nsamples - 1; samples[i]<  usec; i--);
->> +    for (i = nsamples - 1; samples[i]<  usec&&  i>  0; i--);
->>
->>        if (i<  nsamples - 1) {
->> -        tst_res(TFAIL, "%s woken up early %u times range: [%lli,%lli]",
->> -            scall, nsamples - 1 - i,
->> -            samples[i+1], samples[nsamples-1]);
->> +        if (i == 0&&  samples[i]<  usec) {
->> +            tst_res(TFAIL, "%s woken up early %u times range: [%lli,%lli]",
->> +                scall, nsamples - i, samples[i],
->> +                samples[nsamples-1]);
->> +        } else {
->> +            tst_res(TFAIL, "%s woken up early %u times range: [%lli,%lli]",
->> +                scall, nsamples - 1 - i, samples[i+1],
->> +                samples[nsamples-1]);
->> +        }
->> ------------------------------------------------------------------------------------------------------------------------
-> That is still unnecessarily complex. I do not care that much about this
-> corner case, but if we want to fix it correctly we can simply change the
-> i to be signed integer and check for i>  -1 in the loop and everything
-> would work fine.
-Hi Cyril,
+On RHEL5.11GA, pselect01 gets signal SIGSEGV due to unsigned int
+overflow when all members of the samples array are less than usec
+in do_timer_test().  all tests which apply timer measurement library
+could trigger this issue on RHEL5.11GA regularly.  We add check the
+array boundary to fix it.
 
-Thanks for your explanation.  I will send v2 patch as you said.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ lib/tst_timer_test.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
-Xiao Yang
+diff --git a/lib/tst_timer_test.c b/lib/tst_timer_test.c
+index f30ad73..c8e2d38 100644
+--- a/lib/tst_timer_test.c
++++ b/lib/tst_timer_test.c
+@@ -266,7 +266,7 @@ void do_timer_test(long long usec, unsigned int nsamples)
+ 	unsigned int discard = compute_discard(nsamples);
+ 	unsigned int keep_samples = nsamples - discard;
+ 	long long threshold = compute_threshold(usec, keep_samples);
+-	unsigned int i;
++	int i;
+ 	int failed = 0;
+ 
+ 	tst_res(TINFO,
+@@ -295,7 +295,7 @@ void do_timer_test(long long usec, unsigned int nsamples)
+ 			i, samples[0], samples[i-1]);
+ 	}
+ 
+-	for (i = nsamples - 1; samples[i] < usec; i--);
++	for (i = nsamples - 1; samples[i] < usec && i > -1; i--);
+ 
+ 	if (i < nsamples - 1) {
+ 		tst_res(TFAIL, "%s woken up early %u times range: [%lli,%lli]",
+-- 
+1.8.3.1
 
 
 
