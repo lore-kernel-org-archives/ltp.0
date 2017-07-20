@@ -1,11 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 20 Jul 2017 15:40:35 +0200
-Subject: [LTP] [PATCH 2/2] cpuhotplug05.sh: bring up the cpu after
-	testing
-In-Reply-To: <1499265258-25521-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1499265258-25521-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1499265258-25521-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-Message-ID: <20170720134035.GB11392@rei.lan>
+Date: Thu, 20 Jul 2017 16:26:15 +0200
+Subject: [LTP] [PATCH] su: Remove 'catch close'
+In-Reply-To: <20170713171610.32370-1-dan.rue@linaro.org>
+References: <20170713171610.32370-1-dan.rue@linaro.org>
+Message-ID: <20170720142615.GC11392@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,7 +11,7 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Looks fine.
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
