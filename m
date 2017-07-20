@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 20 Jul 2017 09:59:45 +0200
-Subject: [LTP] Build error for LTP project
-In-Reply-To: <c8ced4c0-637a-3b95-d5e8-5c521b866dba@de.bosch.com>
-References: <c8ced4c0-637a-3b95-d5e8-5c521b866dba@de.bosch.com>
-Message-ID: <20170720075944.GA20380@rei>
+Date: Thu, 20 Jul 2017 11:13:59 +0200
+Subject: [LTP] [PATCH] lib/tst_timer_test.c: fix unsigned int overflow
+ on RHEL5.11GA
+In-Reply-To: <597013C1.8030405@cn.fujitsu.com>
+References: <1500274437-26154-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20170719121557.GG1015@rei.lan> <597013C1.8030405@cn.fujitsu.com>
+Message-ID: <20170720091359.GA27245@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,79 +13,34 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> tai1hi@HI-Z0EMX:~/Git_Repos/ltp_git$ make -j8
-> make -C "lib" \
-> 		-f "/home/tai1hi/Git_Repos/ltp_git/lib/Makefile" all
-> if git describe >/dev/null 2>&1; then \
-> 		git describe > "Version"; \
-> 	else \
-> 		cp /home/tai1hi/Git_Repos/ltp_git/VERSION "Version"; \
-> 	fi
-> make[1]: Entering directory `/home/tai1hi/Git_Repos/ltp_git/lib'
-> make[2]: Entering directory 
-> `/home/tai1hi/Git_Repos/ltp_git/lib/newlib_tests'
-> arm-none-linux-gnueabi-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe 
-> -Wall -W -Wold-style-definition -W -Wall -D_FORTIFY_SOURCE=2 
-> -I../../include -I../../include -I../../include/old/   -L../../lib 
-> test01.c   -lltp -o test01
-> arm-none-linux-gnueabi-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe 
-> -Wall -W -Wold-style-definition -W -Wall -D_FORTIFY_SOURCE=2 
-> -I../../include -I../../include -I../../include/old/   -L../../lib 
-> test02.c   -lltp -o test02
-> arm-none-linux-gnueabi-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe 
-> -Wall -W -Wold-style-definition -W -Wall -D_FORTIFY_SOURCE=2 
-> -I../../include -I../../include -I../../include/old/   -L../../lib 
-> test03.c   -lltp -o test03
-> arm-none-linux-gnueabi-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe 
-> -Wall -W -Wold-style-definition -W -Wall -D_FORTIFY_SOURCE=2 
-> -I../../include -I../../include -I../../include/old/   -L../../lib 
-> test04.c   -lltp -o test04
-> arm-none-linux-gnueabi-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe 
-> -Wall -W -Wold-style-definition -W -Wall -D_FORTIFY_SOURCE=2 
-> -I../../include -I../../include -I../../include/old/   -L../../lib 
-> test05.c   -lltp -o test05
-> arm-none-linux-gnueabi-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe 
-> -Wall -W -Wold-style-definition -W -Wall -D_FORTIFY_SOURCE=2 
-> -I../../include -I../../include -I../../include/old/   -L../../lib 
-> test06.c   -lltp -o test06
-> arm-none-linux-gnueabi-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe 
-> -Wall -W -Wold-style-definition -W -Wall -D_FORTIFY_SOURCE=2 
-> -I../../include -I../../include -I../../include/old/   -L../../lib 
-> test07.c   -lltp -o test07
-> arm-none-linux-gnueabi-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe 
-> -Wall -W -Wold-style-definition -W -Wall -pthread -D_FORTIFY_SOURCE=2 
-> -I../../include -I../../include -I../../include/old/   -L../../lib 
-> test08.c   -lltp -o test08
-> /tmp/cc0cEnWR.o: In function `do_test':
-> /home/tai1hi/Git_Repos/ltp_git/lib/newlib_tests/test01.c:29: undefined 
-> reference to `tst_exit'
-> ../../lib/libltp.a(tst_test.o): In function `print_result':
-> /home/tai1hi/Git_Repos/ltp_git/lib/tst_test.c:213: undefined reference 
-> to `tst_color_enabled'
-> /home/tai1hi/Git_Repos/ltp_git/lib/tst_test.c:214: undefined reference 
-> to `tst_ttype2color'
-> /home/tai1hi/Git_Repos/ltp_git/lib/tst_test.c:204: undefined reference 
-> to `tst_strerrno'
-> /home/tai1hi/Git_Repos/ltp_git/lib/tst_test.c:207: undefined reference 
-> to `tst_strerrno'
-> ../../lib/libltp.a(tst_test.o): In function `snprintf':
-> /opt/tooling/codesourcery/MGC-2014.05-74-arm-gcc-4.8.3/Sourcery_CodeBench_for_ARM_Embedded/arm-none-linux-gnueabi/libc/usr/include/bits/stdio2.h:64: 
-> undefined reference to `TEST_ERRNO'
+> It sounds better, but this change leads that samples[0] could not be 
+> checked if the whole samples array
+> is less than usec.
+> 
+> Could we fix this issue as below:
+> ------------------------------------------------------------------------------------------------------------------------
+> -    for (i = nsamples - 1; samples[i] < usec; i--);
+> +    for (i = nsamples - 1; samples[i] < usec && i > 0; i--);
+> 
+>       if (i < nsamples - 1) {
+> -        tst_res(TFAIL, "%s woken up early %u times range: [%lli,%lli]",
+> -            scall, nsamples - 1 - i,
+> -            samples[i+1], samples[nsamples-1]);
+> +        if (i == 0 && samples[i] < usec) {
+> +            tst_res(TFAIL, "%s woken up early %u times range: [%lli,%lli]",
+> +                scall, nsamples - i, samples[i],
+> +                samples[nsamples-1]);
+> +        } else {
+> +            tst_res(TFAIL, "%s woken up early %u times range: [%lli,%lli]",
+> +                scall, nsamples - 1 - i, samples[i+1],
+> +                samples[nsamples-1]);
+> +        }
+> ------------------------------------------------------------------------------------------------------------------------
 
-...
-
-<snapped>
-
-This looks like some kind of file corruption to me. The libltp.a should
-contain all symbols that are listed here as missing.
-
-Also is this log from the first attempt to build LTP after configure
-script was executed? Since if that is so it should have been building
-the libltp.a first, which is not the case here so that it looks like a
-subsequent attempt to me.
-
-Can you try to do a make clean in the lib/ directory and then try to
-rebuild the libltp.a again? Maybe that would help.
+That is still unnecessarily complex. I do not care that much about this
+corner case, but if we want to fix it correctly we can simply change the
+i to be signed integer and check for i > -1 in the loop and everything
+would work fine.
 
 -- 
 Cyril Hrubis
