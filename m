@@ -1,186 +1,89 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 21 Jul 2017 06:03:59 +0200
-Subject: [LTP] [RFC PATCH v7 03/11] network/stress: Simplify
-	make_background_tcp_traffic usage
-In-Reply-To: <20170721040407.868-1-pvorel@suse.cz>
-References: <20170721040407.868-1-pvorel@suse.cz>
-Message-ID: <20170721040407.868-4-pvorel@suse.cz>
+Date: Fri, 21 Jul 2017 06:03:56 +0200
+Subject: [LTP] [RFC PATCH v7 0/7] Simplify network setup + fix some network
+	stress tests
+Message-ID: <20170721040407.868-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/network/stress/interface/if-addr-adddel    | 6 +-----
- testcases/network/stress/interface/if-addr-addlarge  | 6 +-----
- testcases/network/stress/interface/if-mtu-change     | 7 ++-----
- testcases/network/stress/interface/if-route-adddel   | 7 ++-----
- testcases/network/stress/interface/if-route-addlarge | 6 +-----
- testcases/network/stress/ns-tools/test_net_stress.sh | 2 ++
- 6 files changed, 9 insertions(+), 25 deletions(-)
+Hi,
 
-diff --git a/testcases/network/stress/interface/if-addr-adddel b/testcases/network/stress/interface/if-addr-adddel
-index 42c2d5afa..3b1ab50bb 100644
---- a/testcases/network/stress/interface/if-addr-adddel
-+++ b/testcases/network/stress/interface/if-addr-adddel
-@@ -53,10 +53,9 @@ test_body()
- 		return
- 	fi
- 
--	make_background_tcp_traffic
--
- 	local cnt=1
- 	while [ $cnt -le $NS_TIMES ]; do
-+		make_background_tcp_traffic
- 
- 		case $cmd_type in
- 		if_cmd)
-@@ -85,9 +84,6 @@ test_body()
- 
- 		cnt=$(($cnt + 1))
- 
--		# Check the background TCP traffic
--		pgrep -x netstress > /dev/null || make_background_tcp_traffic
--
- 		case $cmd_type in
- 		if_cmd)
- 			if [ "$TST_IPV6" ]; then
-diff --git a/testcases/network/stress/interface/if-addr-addlarge b/testcases/network/stress/interface/if-addr-addlarge
-index e667d9138..c3cdb8fa9 100644
---- a/testcases/network/stress/interface/if-addr-addlarge
-+++ b/testcases/network/stress/interface/if-addr-addlarge
-@@ -47,8 +47,6 @@ test_body()
- 		return
- 	fi
- 
--	make_background_tcp_traffic
--
- 	local x=1
- 	local y=1
- 	local cnt=1
-@@ -61,6 +59,7 @@ test_body()
- 	fi
- 
- 	while [ $cnt -le $IP_TOTAL ]; do
-+		make_background_tcp_traffic
- 
- 		if [ "$TST_IPV6" ]; then
- 			local hex_x=$(printf '%x' $x)
-@@ -95,9 +94,6 @@ test_body()
- 
- 		check_connectivity_interval $cnt || return
- 
--		# Check the background TCP traffic
--		pgrep -x netstress > /dev/null || make_background_tcp_traffic
--
- 		case $cmd_type in
- 		if_cmd)
- 			if [ "$TST_IPV6" ]; then
-diff --git a/testcases/network/stress/interface/if-mtu-change b/testcases/network/stress/interface/if-mtu-change
-index 5900f546a..62837ae74 100644
---- a/testcases/network/stress/interface/if-mtu-change
-+++ b/testcases/network/stress/interface/if-mtu-change
-@@ -65,8 +65,6 @@ test_body()
- 	tst_resm TINFO "'$cmd_name changes MTU $MTU_CHANGE_TIMES times" \
- 	               "every $CHANGE_INTERVAL seconds"
- 
--	make_background_tcp_traffic
--
- 	mtu_array_len=$(echo $CHANGE_VALUES | wc -w)
- 	local cnt=0
- 	while [ $cnt -lt $MTU_CHANGE_TIMES ]; do
-@@ -76,6 +74,8 @@ test_body()
- 		mtu=$(echo $CHANGE_VALUES | cut -d ' ' -f $field)
- 		[ $cnt -eq $MTU_CHANGE_TIMES ] && mtu="$saved_mtu"
- 
-+		make_background_tcp_traffic
-+
- 		tst_resm TINFO "set MTU to $mtu $cnt/$MTU_CHANGE_TIMES"
- 		local ret=0
- 		case $cmd_type in
-@@ -95,9 +95,6 @@ test_body()
- 		tst_sleep $CHANGE_INTERVAL
- 
- 		EXPECT_PASS tst_ping $(tst_ipaddr) $(tst_ipaddr rhost) "1 1000 65507"
--
--		# Check the background TCP traffic
--		pgrep -x netstress > /dev/null || make_background_tcp_traffic
- 	done
- }
- 
-diff --git a/testcases/network/stress/interface/if-route-adddel b/testcases/network/stress/interface/if-route-adddel
-index 1b6830433..2db74aaa2 100644
---- a/testcases/network/stress/interface/if-route-adddel
-+++ b/testcases/network/stress/interface/if-route-adddel
-@@ -57,10 +57,10 @@ test_body()
- 		return
- 	fi
- 
--	make_background_tcp_traffic
--
- 	local cnt=1
- 	while [ $cnt -le $NS_TIMES ]; do
-+		make_background_tcp_traffic
-+
- 		case $cmd_type in
- 		rt_cmd) route -A $inet add ${new_rt}${opt_rt} dev $iface ;;
- 		ip_cmd) ip route add ${new_rt}${opt_rt} dev $iface ;;
-@@ -81,9 +81,6 @@ test_body()
- 
- 		check_connectivity_interval $cnt || return
- 
--		# Check the background TCP traffic
--		pgrep -x netstress > /dev/null || make_background_tcp_traffic
--
- 		cnt=$(($cnt + 1))
- 	done
- 
-diff --git a/testcases/network/stress/interface/if-route-addlarge b/testcases/network/stress/interface/if-route-addlarge
-index 3337b7225..b7e6952c2 100644
---- a/testcases/network/stress/interface/if-route-addlarge
-+++ b/testcases/network/stress/interface/if-route-addlarge
-@@ -54,8 +54,6 @@ test_body()
- 		return
- 	fi
- 
--	make_background_tcp_traffic
--
- 	local x=1
- 	local y=1
- 	local cnt=1
-@@ -68,6 +66,7 @@ test_body()
- 	fi
- 
- 	while [ $cnt -le $ROUTE_TOTAL ]; do
-+		make_background_tcp_traffic
- 
- 		if [ "$TST_IPV6" ]; then
- 			local hex_x=$(printf '%x' $x)
-@@ -88,9 +87,6 @@ test_body()
- 
- 		check_connectivity_interval $cnt || return
- 
--		# Check the background TCP traffic
--		pgrep -x netstress > /dev/null || make_background_tcp_traffic
--
- 		cnt=$(($cnt + 1))
- 		y=$(($y + 1))
- 		if [ $y -gt $xymax ]; then
-diff --git a/testcases/network/stress/ns-tools/test_net_stress.sh b/testcases/network/stress/ns-tools/test_net_stress.sh
-index eef9f12f9..5ab3304db 100644
---- a/testcases/network/stress/ns-tools/test_net_stress.sh
-+++ b/testcases/network/stress/ns-tools/test_net_stress.sh
-@@ -152,6 +152,8 @@ check_connectivity_interval()
- # IP: server IP. Default value is $(tst_ipaddr)
- make_background_tcp_traffic()
- {
-+	pgrep -x netstress > /dev/null && return
-+
- 	local port=$(tst_get_unused_port ipv${ipver} stream)
- 	local ip="${1:-$(tst_ipaddr)}"
- 
+as it might be uncomfortable to see patches on mailing list, you can also see
+them on github: https://github.com/pevik/ltp/tree/tst_net_vars.v7
+
+Changes v6->v7:
+* I more radically cleanup IPV4 multicast and route scripts. Also changed a bit
+  interfaces tests. I spent a lot of time with cleanup and testing. Cleaned
+  scripts should work under SSH and netns.
+* I split tst_net_vars into 3 tools. This was necessary to have reading of
+* rtnetlink on rhost.
+
+TODO:
+* Add more test links for netns (for route4-change-if).
+* Fix also IPv6 scripts.
+
+Alexey Kodanev (1):
+  network/dhcp: Fix removing veth kernel module
+
+Petr Vorel (10):
+  network/stress: Add library test_net_stress.sh
+  network/stress: Simplify make_background_tcp_traffic usage
+  network/stress: Reduce the default number of cycles for various tests
+  lib/test_net.sh: tst_rhost_run: Add testcases/bin into PATH for
+    SSH/RSH
+  network/stress: Fix and cleanup part of multicast IPv4 tests
+  lib/test_net.sh: Add function reset_ltp_netspace()
+  network/stress: Fix and cleanup route IPv4 tests
+  network/stress: Further enhancements for route4-rmmod
+  network: Add tools for setup IP related environment variables
+  network: Use tools to set up IPv4 and IPv6 related variables
+
+ include/tst_net.h                                  | 140 +++++
+ testcases/lib/.gitignore                           |   3 +
+ testcases/lib/Makefile                             |   2 +-
+ testcases/lib/test_net.sh                          | 149 +++--
+ testcases/lib/tst_net_iface_prefix.c               | 173 ++++++
+ testcases/lib/tst_net_ip_prefix.c                  | 116 ++++
+ testcases/lib/tst_net_vars.c                       | 655 +++++++++++++++++++++
+ testcases/network/dhcp/dhcp_lib.sh                 |   9 +-
+ testcases/network/stress/interface/if-addr-adddel  |  21 +-
+ .../network/stress/interface/if-addr-addlarge      |  22 +-
+ testcases/network/stress/interface/if-lib.sh       |  73 ---
+ testcases/network/stress/interface/if-mtu-change   |  30 +-
+ testcases/network/stress/interface/if-route-adddel |  24 +-
+ .../network/stress/interface/if-route-addlarge     |  21 +-
+ testcases/network/stress/interface/if-updown       |   9 +-
+ testcases/network/stress/interface/if4-addr-change |  21 +-
+ .../stress/multicast/grp-operation/mcast4-grpope01 | 221 +------
+ .../stress/multicast/grp-operation/mcast4-grpope02 | 230 +-------
+ .../stress/multicast/grp-operation/mcast4-grpope03 | 217 +------
+ .../stress/multicast/grp-operation/mcast4-grpope04 | 236 +-------
+ .../stress/multicast/grp-operation/mcast4-lib.sh   | 129 ++++
+ testcases/network/stress/ns-tools/Makefile         |   2 +-
+ testcases/network/stress/ns-tools/initialize_if    |   3 -
+ .../network/stress/ns-tools/test_net_stress.sh     | 172 ++++++
+ testcases/network/stress/route/00_Descriptions.txt |  23 +-
+ testcases/network/stress/route/route4-change-dst   | 283 +--------
+ testcases/network/stress/route/route4-change-gw    | 302 +---------
+ testcases/network/stress/route/route4-change-if    | 336 ++---------
+ testcases/network/stress/route/route4-ifdown       | 283 ++-------
+ testcases/network/stress/route/route4-lib.sh       | 206 +++++++
+ testcases/network/stress/route/route4-redirect     | 220 ++-----
+ testcases/network/stress/route/route4-rmmod        | 305 ++--------
+ testcases/network/stress/route/route6-change-dst   |   2 +-
+ 33 files changed, 2106 insertions(+), 2532 deletions(-)
+ create mode 100644 include/tst_net.h
+ create mode 100644 testcases/lib/tst_net_iface_prefix.c
+ create mode 100644 testcases/lib/tst_net_ip_prefix.c
+ create mode 100644 testcases/lib/tst_net_vars.c
+ delete mode 100644 testcases/network/stress/interface/if-lib.sh
+ create mode 100644 testcases/network/stress/multicast/grp-operation/mcast4-lib.sh
+ create mode 100644 testcases/network/stress/ns-tools/test_net_stress.sh
+ create mode 100644 testcases/network/stress/route/route4-lib.sh
+
 -- 
 2.13.2
 
