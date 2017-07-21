@@ -1,89 +1,73 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 21 Jul 2017 06:03:56 +0200
-Subject: [LTP] [RFC PATCH v7 0/7] Simplify network setup + fix some network
-	stress tests
-Message-ID: <20170721040407.868-1-pvorel@suse.cz>
+Date: Fri, 21 Jul 2017 06:03:57 +0200
+Subject: [LTP] [RFC PATCH v7 01/11] network/dhcp: Fix removing veth kernel
+	module
+In-Reply-To: <20170721040407.868-1-pvorel@suse.cz>
+References: <20170721040407.868-1-pvorel@suse.cz>
+Message-ID: <20170721040407.868-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
 
-as it might be uncomfortable to see patches on mailing list, you can also see
-them on github: https://github.com/pevik/ltp/tree/tst_net_vars.v7
+This patch fixes problems with dhcp based tests run via netns when they
+call TCONF:
 
-Changes v6->v7:
-* I more radically cleanup IPV4 multicast and route scripts. Also changed a bit
-  interfaces tests. I spent a lot of time with cleanup and testing. Cleaned
-  scripts should work under SSH and netns.
-* I split tst_net_vars into 3 tools. This was necessary to have reading of
-* rtnetlink on rhost.
+$ /opt/ltp/testscripts/network.sh -6
+dhcpd 1 TCONF: 'dhcpd' not found
+...
+cat: /sys/class/net/ltp_ns_veth2/address: No such file or directory
 
-TODO:
-* Add more test links for netns (for route4-change-if).
-* Fix also IPv6 scripts.
+This also fixes other tests run after dhcp tests which are broken as
+netns setup got broken.
 
-Alexey Kodanev (1):
-  network/dhcp: Fix removing veth kernel module
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Tested-by: Petr Vorel <pvorel@suse.cz>
+---
+Alexey, this is your proposed patch from mailing list [1]. I've tested it.
 
-Petr Vorel (10):
-  network/stress: Add library test_net_stress.sh
-  network/stress: Simplify make_background_tcp_traffic usage
-  network/stress: Reduce the default number of cycles for various tests
-  lib/test_net.sh: tst_rhost_run: Add testcases/bin into PATH for
-    SSH/RSH
-  network/stress: Fix and cleanup part of multicast IPv4 tests
-  lib/test_net.sh: Add function reset_ltp_netspace()
-  network/stress: Fix and cleanup route IPv4 tests
-  network/stress: Further enhancements for route4-rmmod
-  network: Add tools for setup IP related environment variables
-  network: Use tools to set up IPv4 and IPv6 related variables
+[1]: http://lists.linux.it/pipermail/ltp/2017-June/004850.html
+---
+ testcases/network/dhcp/dhcp_lib.sh | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
- include/tst_net.h                                  | 140 +++++
- testcases/lib/.gitignore                           |   3 +
- testcases/lib/Makefile                             |   2 +-
- testcases/lib/test_net.sh                          | 149 +++--
- testcases/lib/tst_net_iface_prefix.c               | 173 ++++++
- testcases/lib/tst_net_ip_prefix.c                  | 116 ++++
- testcases/lib/tst_net_vars.c                       | 655 +++++++++++++++++++++
- testcases/network/dhcp/dhcp_lib.sh                 |   9 +-
- testcases/network/stress/interface/if-addr-adddel  |  21 +-
- .../network/stress/interface/if-addr-addlarge      |  22 +-
- testcases/network/stress/interface/if-lib.sh       |  73 ---
- testcases/network/stress/interface/if-mtu-change   |  30 +-
- testcases/network/stress/interface/if-route-adddel |  24 +-
- .../network/stress/interface/if-route-addlarge     |  21 +-
- testcases/network/stress/interface/if-updown       |   9 +-
- testcases/network/stress/interface/if4-addr-change |  21 +-
- .../stress/multicast/grp-operation/mcast4-grpope01 | 221 +------
- .../stress/multicast/grp-operation/mcast4-grpope02 | 230 +-------
- .../stress/multicast/grp-operation/mcast4-grpope03 | 217 +------
- .../stress/multicast/grp-operation/mcast4-grpope04 | 236 +-------
- .../stress/multicast/grp-operation/mcast4-lib.sh   | 129 ++++
- testcases/network/stress/ns-tools/Makefile         |   2 +-
- testcases/network/stress/ns-tools/initialize_if    |   3 -
- .../network/stress/ns-tools/test_net_stress.sh     | 172 ++++++
- testcases/network/stress/route/00_Descriptions.txt |  23 +-
- testcases/network/stress/route/route4-change-dst   | 283 +--------
- testcases/network/stress/route/route4-change-gw    | 302 +---------
- testcases/network/stress/route/route4-change-if    | 336 ++---------
- testcases/network/stress/route/route4-ifdown       | 283 ++-------
- testcases/network/stress/route/route4-lib.sh       | 206 +++++++
- testcases/network/stress/route/route4-redirect     | 220 ++-----
- testcases/network/stress/route/route4-rmmod        | 305 ++--------
- testcases/network/stress/route/route6-change-dst   |   2 +-
- 33 files changed, 2106 insertions(+), 2532 deletions(-)
- create mode 100644 include/tst_net.h
- create mode 100644 testcases/lib/tst_net_iface_prefix.c
- create mode 100644 testcases/lib/tst_net_ip_prefix.c
- create mode 100644 testcases/lib/tst_net_vars.c
- delete mode 100644 testcases/network/stress/interface/if-lib.sh
- create mode 100644 testcases/network/stress/multicast/grp-operation/mcast4-lib.sh
- create mode 100644 testcases/network/stress/ns-tools/test_net_stress.sh
- create mode 100644 testcases/network/stress/route/route4-lib.sh
-
+diff --git a/testcases/network/dhcp/dhcp_lib.sh b/testcases/network/dhcp/dhcp_lib.sh
+index 85f9b88bf..500123284 100755
+--- a/testcases/network/dhcp/dhcp_lib.sh
++++ b/testcases/network/dhcp/dhcp_lib.sh
+@@ -40,8 +40,7 @@ init()
+ 	tst_require_root
+ 	tst_check_cmds cat $dhcp_name awk ip pgrep pkill dhclient
+ 
+-	veth_loaded=
+-	lsmod | grep -q '^veth ' && veth_loaded=1
++	lsmod | grep -q '^veth ' && veth_loaded=yes || veth_loaded=no
+ 
+ 	tst_resm TINFO "create veth interfaces"
+ 	ip li add $iface0 type veth peer name $iface1 || \
+@@ -68,6 +67,8 @@ init()
+ 
+ cleanup()
+ {
++	[ -z "$veth_loaded" ] && return
++
+ 	stop_dhcp
+ 
+ 	pkill -f "dhclient -$ipv $iface1"
+@@ -81,9 +82,7 @@ cleanup()
+ 
+ 	[ $veth_added ] && ip li del $iface0
+ 
+-	if [ -z $veth_loaded ]; then
+-		lsmod | grep -q '^veth ' && rmmod veth
+-	fi
++	[ "$veth_loaded" = "no" ] && lsmod | grep -q '^veth ' && rmmod veth
+ 
+ 	tst_rmdir
+ }
 -- 
 2.13.2
 
