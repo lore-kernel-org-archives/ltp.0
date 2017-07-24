@@ -1,7 +1,7 @@
 From: vkabatov@redhat.com <vkabatov@redhat.com>
-Date: Mon, 24 Jul 2017 16:03:18 +0200
-Subject: [LTP]  [PATCH v2] getsockopt: Add test for SO_PEERCRED
-Message-ID: <1500904998-24947-1-git-send-email-vkabatov@redhat.com>
+Date: Mon, 24 Jul 2017 16:47:01 +0200
+Subject: [LTP]  [PATCH v2] Add msync04: verify msync() writes back to file
+Message-ID: <1500907621-2544-1-git-send-email-vkabatov@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,65 +10,53 @@ To: ltp@lists.linux.it
 
 From: Veronika Kabatova <vkabatov@redhat.com>
 
-Connect to a socket from a fork and check SO_PEERCRED returns
-correct PID.
+Creating a testcase for checking whether msync() succeeds in writing
+dirty page back to allocated file. Pagemap interface is used to get
+information about a successful write because of caching mechanisms.
 
 Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
 ---
- runtest/syscalls                                   |   1 +
- testcases/kernel/syscalls/.gitignore               |   1 +
- testcases/kernel/syscalls/getsockopt/Makefile      |   2 +
- .../kernel/syscalls/getsockopt/getsockopt02.c      | 106 +++++++++++++++++++++
- 4 files changed, 110 insertions(+)
- create mode 100644 testcases/kernel/syscalls/getsockopt/getsockopt02.c
+ runtest/syscalls                          |   1 +
+ testcases/kernel/syscalls/.gitignore      |   1 +
+ testcases/kernel/syscalls/msync/msync04.c | 106 ++++++++++++++++++++++++++++++
+ 3 files changed, 108 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/msync/msync04.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 2e79ab9..c85c713 100644
+index 2e79ab9..8e1f587 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -434,6 +434,7 @@ getsid02 getsid02
- getsockname01 getsockname01
+@@ -705,6 +705,7 @@ msgsnd06 msgsnd06
+ msync01 msync01
+ msync02 msync02
+ msync03 msync03
++msync04 msync04
  
- getsockopt01 getsockopt01
-+getsockopt02 getsockopt02
- 
- gettid01 gettid01
- 
+ munlock01 munlock01
+ munlock02 munlock02
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index fdb01f9..958bd7a 100644
+index fdb01f9..6e0af31 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
-@@ -362,6 +362,7 @@
- /getsid/getsid02
- /getsockname/getsockname01
- /getsockopt/getsockopt01
-+/getsockopt/getsockopt02
- /gettid/gettid01
- /gettimeofday/gettimeofday01
- /gettimeofday/gettimeofday02
-diff --git a/testcases/kernel/syscalls/getsockopt/Makefile b/testcases/kernel/syscalls/getsockopt/Makefile
-index bd617d8..033d73f 100644
---- a/testcases/kernel/syscalls/getsockopt/Makefile
-+++ b/testcases/kernel/syscalls/getsockopt/Makefile
-@@ -18,6 +18,8 @@
- 
- top_srcdir		?= ../../../..
- 
-+getsockopt02: CFLAGS+=-pthread
-+
- include $(top_srcdir)/include/mk/testcases.mk
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/getsockopt/getsockopt02.c b/testcases/kernel/syscalls/getsockopt/getsockopt02.c
+@@ -612,6 +612,7 @@
+ /msync/msync01
+ /msync/msync02
+ /msync/msync03
++/msync/msync04
+ /munlock/munlock01
+ /munlock/munlock02
+ /munlockall/munlockall01
+diff --git a/testcases/kernel/syscalls/msync/msync04.c b/testcases/kernel/syscalls/msync/msync04.c
 new file mode 100644
-index 0000000..50e9034
+index 0000000..741bcfe
 --- /dev/null
-+++ b/testcases/kernel/syscalls/getsockopt/getsockopt02.c
++++ b/testcases/kernel/syscalls/msync/msync04.c
 @@ -0,0 +1,106 @@
 +/*
 + * Copyright (C) 2017 Red Hat, Inc.
 + *
-+ * This program is free software;  you can redistribute it and/or modify it
++ *
++ * This program is free software; you can redistribute it and/or modify it
 + * under the terms of the GNU General Public License as published by the Free
 + * Software Foundation; either version 2 of the License, or (at your option)
 + * any later version.
@@ -83,93 +71,92 @@ index 0000000..50e9034
 + */
 +
 +/*
-+ * Test description: Test retrieving of peer credentials (SO_PEERCRED)
++ * Test description: Verify msync() after writing into mmap()-ed file works.
 + *
++ * Write to mapped region and sync the memory back with file. Check the page
++ * is no longer dirty after msync() call.
 + */
 +
-+#define _GNU_SOURCE
-+
 +#include <errno.h>
-+#include <stdlib.h>
 +#include "tst_test.h"
 +
-+static int socket_fd, fork_socket_fd, accepted;
-+static struct sockaddr_un sun;
++static int test_fd;
++static char *mmaped_area;
++static long pagesize;
 +
-+#define SOCKNAME	"testsocket"
++#define STRING_TO_WRITE	"AAAAAAAAAA"
 +
-+static void setup(void)
++uint64_t get_dirty_bit(void *data)
 +{
-+	sun.sun_family = AF_UNIX;
-+	(void)strcpy(sun.sun_path, SOCKNAME);
-+	socket_fd = SAFE_SOCKET(sun.sun_family, SOCK_STREAM, 0);
-+	SAFE_BIND(socket_fd, (struct sockaddr *)&sun, sizeof(sun));
-+	SAFE_LISTEN(socket_fd, SOMAXCONN);
++	int pagemap_fd, pageflags_fd;
++	unsigned long addr;
++	uint64_t pagemap_entry, pageflag_entry, pfn, index;
++
++	addr = (unsigned long)data;
++	index = (addr / pagesize) * sizeof(uint64_t);
++	pagemap_fd = SAFE_OPEN("/proc/self/pagemap", O_RDONLY);
++	SAFE_LSEEK(pagemap_fd, index, SEEK_SET);
++	SAFE_READ(1, pagemap_fd, &pagemap_entry, sizeof(pagemap_entry));
++	SAFE_CLOSE(pagemap_fd);
++	pfn = pagemap_entry & ((1ULL << 55) - 1);
++	if (!pfn)
++		return 0;
++	pageflags_fd = SAFE_OPEN("/proc/kpageflags", O_RDONLY);
++	index = pfn * sizeof(uint64_t);
++	SAFE_LSEEK(pageflags_fd, index, SEEK_SET);
++	SAFE_READ(1, pageflags_fd, &pageflag_entry, sizeof(pageflag_entry));
++	SAFE_CLOSE(pageflags_fd);
++	return pageflag_entry & (1ULL << 4);
 +}
 +
-+static void fork_func(void)
++static void test_msync(void)
 +{
-+	fork_socket_fd = SAFE_SOCKET(sun.sun_family, SOCK_STREAM, 0);
-+	SAFE_CONNECT(fork_socket_fd, (struct sockaddr *)&sun, sizeof(sun));
-+}
++	uint64_t dirty;
 +
-+static void test_function(void)
-+{
-+	pid_t fork_id;
-+	struct ucred cred;
-+	int status;
-+	socklen_t cred_len = sizeof(cred);
-+
-+	fork_id = SAFE_FORK();
-+	if (!fork_id) {
-+		fork_func();
-+		exit(0);
++	pagesize = (off_t)SAFE_SYSCONF(_SC_PAGESIZE);
++	test_fd = SAFE_OPEN("msync04/testfile", O_CREAT | O_TRUNC | O_RDWR);
++	SAFE_WRITE(0, test_fd, STRING_TO_WRITE, strlen(STRING_TO_WRITE));
++	mmaped_area = SAFE_MMAP(NULL, pagesize, PROT_READ | PROT_WRITE,
++			MAP_SHARED, test_fd, 0);
++	SAFE_CLOSE(test_fd);
++	mmaped_area[8] = 'B';
++	dirty = get_dirty_bit(mmaped_area);
++	if (!dirty) {
++		tst_res(TFAIL, "Expected dirty bit to be set after writing to"
++				" mmap()-ed area");
++		goto clean;
 +	}
-+
-+	SAFE_WAITPID(fork_id, &status, 0);
-+	accepted = accept(socket_fd, NULL, NULL);
-+	if (accepted < 0) {
-+		tst_res(TFAIL | TERRNO, "Error with accepting connection");
-+		return;
++	if (msync(mmaped_area, pagesize, MS_SYNC) < 0) {
++		tst_res(TFAIL | TERRNO, "msync() failed");
++		goto clean;
 +	}
-+	if (getsockopt(accepted, SOL_SOCKET,
-+				SO_PEERCRED, &cred, &cred_len) < 0) {
-+		tst_res(TFAIL | TERRNO, "Error while getting socket options");
-+		return;
-+	}
++	dirty = get_dirty_bit(mmaped_area);
++	if (dirty)
++		tst_res(TFAIL, "msync() failed to write dirty page despite"
++				" succeeding");
++	else
++		tst_res(TPASS, "msync() working correctly");
 +
-+	if (accepted >= 0) {
-+		(void)shutdown(accepted, SHUT_RDWR);
-+		SAFE_CLOSE(accepted);
-+	}
-+	if (fork_socket_fd >= 0)
-+		SAFE_CLOSE(fork_socket_fd);
-+
-+	if (fork_id != cred.pid) {
-+		tst_res(TFAIL, "Received wrong PID %d, expected %d",
-+				cred.pid, getpid());
-+	} else
-+		tst_res(TPASS, "Test passed");
++clean:
++	SAFE_MUNMAP(mmaped_area, pagesize);
 +}
 +
 +static void cleanup(void)
 +{
-+	if (accepted >= 0) {
-+		(void)shutdown(accepted, SHUT_RDWR);
-+		SAFE_CLOSE(accepted);
-+	}
-+	if (fork_socket_fd >= 0)
-+		SAFE_CLOSE(fork_socket_fd);
-+	if (socket_fd >= 0)
-+		SAFE_CLOSE(socket_fd);
++	SAFE_MUNMAP(mmaped_area, pagesize);
++	if (test_fd > 0)
++		SAFE_CLOSE(test_fd);
 +}
 +
 +static struct tst_test test = {
-+	.test_all = test_function,
-+	.setup = setup,
++	.test_all = test_msync,
 +	.cleanup = cleanup,
 +	.needs_tmpdir = 1,
-+	.forks_child = 1,
++	.needs_root = 1,
++	.format_device = 1,
++	.mntpoint = "msync04",
++	.mount_device = 1,
++	.min_kver = "2.6.25",
 +};
 -- 
 2.7.4
