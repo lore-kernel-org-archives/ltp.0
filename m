@@ -1,188 +1,234 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 24 Jul 2017 10:53:06 +0200
-Subject: [LTP] [PATCH v4] Test for CVE-2017-2671 on ping sockets
-In-Reply-To: <20170720120807.GE32092@rei>
-References: <20170720120807.GE32092@rei>
-Message-ID: <20170724085306.11529-1-rpalethorpe@suse.com>
+From: Veronika Kabatova <vkabatov@redhat.com>
+Date: Mon, 24 Jul 2017 09:59:24 -0400 (EDT)
+Subject: [LTP] [PATCH] getsockopt: Add test for SO_PEERCRED
+In-Reply-To: <874lu8rd4g.fsf@our.domain.is.not.set>
+References: <1500392093-23272-1-git-send-email-vkabatov@redhat.com>
+ <874lu8rd4g.fsf@our.domain.is.not.set>
+Message-ID: <7724874.29947905.1500904764802.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
 
-V4 - Move socket creation and destruction to setup and cleanup. Also fix Makefile.
 
- runtest/cve                   |   1 +
- testcases/cve/.gitignore      |   1 +
- testcases/cve/Makefile        |   3 ++
- testcases/cve/cve-2017-2671.c | 121 ++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 126 insertions(+)
- create mode 100644 testcases/cve/cve-2017-2671.c
+----- Original Message -----
+> From: "Richard Palethorpe" <rpalethorpe@suse.de>
+> To: vkabatov@redhat.com
+> Cc: ltp@lists.linux.it
+> Sent: Wednesday, July 19, 2017 11:26:39 AM
+> Subject: Re: [LTP]  [PATCH] getsockopt: Add test for SO_PEERCRED
+> 
+> 
+> Hi Veronika,
+> 
 
-diff --git a/runtest/cve b/runtest/cve
-index ee0614a9c..32a39cf80 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -4,5 +4,6 @@ cve-2014-0196 cve-2014-0196
- cve-2016-4997 cve-2016-4997
- cve-2016-5195 dirtyc0w
- cve-2016-7117 cve-2016-7117
-+cve-2017-2671 cve-2017-2671
- cve-2017-5669 cve-2017-5669
- cve-2017-6951 cve-2017-6951
-diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
-index bdb73f33b..1577cf914 100644
---- a/testcases/cve/.gitignore
-+++ b/testcases/cve/.gitignore
-@@ -2,5 +2,6 @@ cve-2012-0957
- cve-2014-0196
- cve-2016-4997
- cve-2016-7117
-+cve-2017-2671
- cve-2017-6951
- cve-2017-5669
-diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
-index 31f19d871..04abc1f9c 100644
---- a/testcases/cve/Makefile
-+++ b/testcases/cve/Makefile
-@@ -25,4 +25,7 @@ cve-2016-7117:	LDLIBS += -lrt
- cve-2014-0196:  CFLAGS += -pthread
- cve-2014-0196:  LDLIBS += -lrt -lutil
- 
-+cve-2017-2671:	CFLAGS += -pthread
-+cve-2017-2671:	LDLIBS += -lrt
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/cve/cve-2017-2671.c b/testcases/cve/cve-2017-2671.c
-new file mode 100644
-index 000000000..21485121d
---- /dev/null
-+++ b/testcases/cve/cve-2017-2671.c
-@@ -0,0 +1,121 @@
-+/*
-+ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ * Original POC by Daniel Jiang
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+/*
-+ * Test for CVE-2017-2671 faulty locking on ping socket
-+ *
-+ * When sys_connect() is called with sockaddr.sin_family set to AF_UNSPEC on a
-+ * ping socket; __udp_disconnect() gets called, which in turn calls the buggy
-+ * function ping_unhashed(). This function does not obtain a rwlock before
-+ * checking if the socket is hashed allowing the socket data to be pulled from
-+ * underneath it in the time between calling sk_hashed() and gaining the write
-+ * lock.
-+ *
-+ * Fixed in commit 43a6684519ab0a6c52024b5e25322476cabad893
-+ *
-+ * This test repeatedly 'connects' a ping socket correctly then calls
-+ * connect() with AF_UNSPEC in two seperate threads to trigger the race
-+ * condition. If the bug is present, then the test will most likely crash the
-+ * system.
-+ *
-+ * The test requests root privileges so that it can ensure ping sockets are
-+ * enabled. On distributions (including Android) where ping sockets are
-+ * enabled by default, root privileges are not required.
-+ */
-+
-+#include <stdio.h>
-+#include <sys/socket.h>
-+#include <arpa/inet.h>
-+#include <stdlib.h>
-+
-+#include "tst_test.h"
-+#include "tst_safe_net.h"
-+#include "tst_safe_pthread.h"
-+
-+#include "tst_fuzzy_sync.h"
-+
-+#define ATTEMPTS 0xFFFF
-+#define PING_SYSCTL_PATH "/proc/sys/net/ipv4/ping_group_range"
-+
-+static int sockfd;
-+static unsigned int ping_min_grp = 1, ping_max_grp;
-+static struct tst_fzsync_pair fzsync_pair = TST_FZSYNC_PAIR_INIT;
-+static struct sockaddr_in iaddr, uaddr;
-+
-+static void setup(void)
-+{
-+	iaddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-+	uaddr = iaddr;
-+	iaddr.sin_family = AF_INET;
-+	uaddr.sin_family = AF_UNSPEC;
-+	fzsync_pair.delay_inc = 1;
-+
-+	SAFE_FILE_SCANF(PING_SYSCTL_PATH, "%u %u",
-+			&ping_min_grp, &ping_max_grp);
-+	SAFE_FILE_PRINTF(PING_SYSCTL_PATH, "0 0");
-+
-+	sockfd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, IPPROTO_ICMP);
-+	tst_res(TINFO, "Created ping socket, attempting to race...");
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_CLOSE(sockfd);
-+	if (ping_min_grp | ping_max_grp)
-+		SAFE_FILE_PRINTF(PING_SYSCTL_PATH, "%u %u",
-+				 ping_min_grp, ping_max_grp);
-+}
-+
-+static void *connect_b(void * param LTP_ATTRIBUTE_UNUSED)
-+{
-+	tst_fzsync_delay_b(&fzsync_pair);
-+	connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
-+	tst_fzsync_time_b(&fzsync_pair);
-+
-+	return 0;
-+}
-+
-+static void run(void)
-+{
-+	pthread_t thrd;
-+	int i;
-+
-+	for (i = 0; i < ATTEMPTS; i++) {
-+		SAFE_CONNECT(sockfd,
-+			     (struct sockaddr *)&iaddr, sizeof(iaddr));
-+		SAFE_PTHREAD_CREATE(&thrd, 0, connect_b, 0);
-+
-+		tst_fzsync_delay_a(&fzsync_pair);
-+		connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
-+		tst_fzsync_time_a(&fzsync_pair);
-+
-+		SAFE_PTHREAD_JOIN(thrd, 0);
-+		tst_fzsync_pair_update(i, &fzsync_pair);
-+
-+		if (!(i & 0x7FFF))
-+			tst_fzsync_pair_info(&fzsync_pair);
-+	}
-+
-+	tst_res(TPASS, "We didn't crash");
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+};
--- 
-2.13.2
+Hello, thanks for the feedback.
 
+> vkabatov@redhat.com writes:
+> 
+> > From: Veronika Kabatova <vkabatov@redhat.com>
+> >
+> > Connect to a socket from a thread anf check SO_PEERCRED returns
+> > correct PID.
+> >
+> > Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
+> > ---
+> >  runtest/syscalls                                   |   1 +
+> >  testcases/kernel/syscalls/.gitignore               |   1 +
+> >  testcases/kernel/syscalls/getsockopt/Makefile      |   2 +
+> >  .../kernel/syscalls/getsockopt/getsockopt02.c      | 102
+> >  +++++++++++++++++++++
+> >  4 files changed, 106 insertions(+)
+> >  create mode 100644 testcases/kernel/syscalls/getsockopt/getsockopt02.c
+> >
+> > diff --git a/runtest/syscalls b/runtest/syscalls
+> > index 91aba85..11055cf 100644
+> > --- a/runtest/syscalls
+> > +++ b/runtest/syscalls
+> > @@ -433,6 +433,7 @@ getsid02 getsid02
+> >  getsockname01 getsockname01
+> >
+> >  getsockopt01 getsockopt01
+> > +getsockopt02 getsockopt02
+> >
+> >  gettid01 gettid01
+> >
+> > diff --git a/testcases/kernel/syscalls/.gitignore
+> > b/testcases/kernel/syscalls/.gitignore
+> > index 3d9bb75..c0e5218 100644
+> > --- a/testcases/kernel/syscalls/.gitignore
+> > +++ b/testcases/kernel/syscalls/.gitignore
+> > @@ -361,6 +361,7 @@
+> >  /getsid/getsid02
+> >  /getsockname/getsockname01
+> >  /getsockopt/getsockopt01
+> > +/getsockopt/getsockopt02
+> >  /gettid/gettid01
+> >  /gettimeofday/gettimeofday01
+> >  /gettimeofday/gettimeofday02
+> > diff --git a/testcases/kernel/syscalls/getsockopt/Makefile
+> > b/testcases/kernel/syscalls/getsockopt/Makefile
+> > index bd617d8..033d73f 100644
+> > --- a/testcases/kernel/syscalls/getsockopt/Makefile
+> > +++ b/testcases/kernel/syscalls/getsockopt/Makefile
+> > @@ -18,6 +18,8 @@
+> >
+> >  top_srcdir		?= ../../../..
+> >
+> > +getsockopt02: CFLAGS+=-pthread
+> > +
+> >  include $(top_srcdir)/include/mk/testcases.mk
+> >
+> >  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> > diff --git a/testcases/kernel/syscalls/getsockopt/getsockopt02.c
+> > b/testcases/kernel/syscalls/getsockopt/getsockopt02.c
+> > new file mode 100644
+> > index 0000000..27942b9
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/getsockopt/getsockopt02.c
+> > @@ -0,0 +1,102 @@
+> > +/*
+> > + * Copyright (C) 2017 Red Hat, Inc.
+> > + *
+> > + * This program is free software;  you can redistribute it and/or modify
+> > it
+> > + * under the terms of the GNU General Public License as published by the
+> > Free
+> > + * Software Foundation; either version 2 of the License, or (at your
+> > option)
+> > + * any later version.
+> > + *
+> > + * This program is distributed in the hope that it will be useful, but
+> > WITHOUT
+> > + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+> > + * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+> > for
+> > + * more details.
+> > + *
+> > + * You should have received a copy of the GNU General Public License along
+> > + * with this program; if not, see <http://www.gnu.org/licenses/>.
+> > + */
+> > +
+> > +/*
+> > + * Test description: Test retrieving of peer credentials (SO_PEERCRED)
+> > + *
+> > + */
+> > +
+> > +#define _GNU_SOURCE
+> > +
+> > +#include <errno.h>
+> > +#include <pthread.h>
+> > +#include "tst_safe_pthread.h"
+> > +#include "tst_test.h"
+> > +
+> > +static int socket_fd, thread_socket_fd, accepted;
+> > +static struct sockaddr_un sun;
+> > +
+> > +#define SOCKNAME	"testsocket"
+> > +
+> > +static void setup(void)
+> > +{
+> > +	sun.sun_family = AF_UNIX;
+> > +	(void)strcpy(sun.sun_path, SOCKNAME);
+> > +	socket_fd = SAFE_SOCKET(sun.sun_family, SOCK_STREAM, 0);
+> > +	SAFE_BIND(socket_fd, (struct sockaddr *)&sun, sizeof(sun));
+> > +	SAFE_LISTEN(socket_fd, SOMAXCONN);
+> > +}
+> 
+> FYI, this could be simplified with socketpair() although I don't think
+> there is a SAFE_* function for that yet, but it shouldn't be hard to
+> implement.
+> 
+
+I like the idea with fork()-ing the process you mentioned lower (and will
+send an updated patch soon) and in that case I don't think using
+socketpair() makes sense. As per manpage, credentials for socketpair() are
+the ones that were in effect at the time of call. This means both socket
+ends will return credentials for the main process, no matter whether we
+use fork() or not.
+
+I agree that socketpair() can make the implementation easier, but I don't
+think it would be the right solution for this use case.
+
+> > +
+> > +void *thread_func(void *args __attribute__((unused)))
+> > +{
+> > +	thread_socket_fd = SAFE_SOCKET(sun.sun_family, SOCK_STREAM, 0);
+> > +	SAFE_CONNECT(thread_socket_fd, (struct sockaddr *)&sun, sizeof(sun));
+> > +	return NULL;
+> > +}
+> > +
+> > +static void test_function(void)
+> > +{
+> > +	pthread_t thread_id;
+> > +	struct ucred cred;
+> > +	socklen_t cred_len = sizeof(cred);
+> > +
+> > +	SAFE_PTHREAD_CREATE(&thread_id, NULL, thread_func, NULL);
+> 
+> I am wondering if fork() would make for a stronger test? As we are then
+> communicating between processes.
+> 
+> > +	accepted = accept(socket_fd, NULL, NULL);
+> > +	if (accepted < 0) {
+> > +		tst_res(TFAIL | TERRNO, "Error with accepting connection");
+> > +		return;
+> > +	}
+> > +	if (getsockopt(accepted, SOL_SOCKET,
+> > +				SO_PEERCRED, &cred, &cred_len) < 0) {
+> > +		tst_res(TFAIL | TERRNO, "Error while getting socket options");
+> > +		return;
+> > +	}
+> > +
+> > +	SAFE_PTHREAD_JOIN(thread_id, NULL);
+> > +	if (accepted >= 0) {
+> > +		(void)shutdown(accepted, SHUT_RDWR);
+> > +		SAFE_CLOSE(accepted);
+> > +	}
+> > +	if (thread_socket_fd >= 0)
+> > +		SAFE_CLOSE(thread_socket_fd);
+> > +
+> > +	if (getpid() != cred.pid) {
+> > +		tst_res(TFAIL, "Received wrong PID %d, expected %d",
+> > +				cred.pid, getpid());
+> > +	} else
+> > +		tst_res(TPASS, "Test passed");
+> > +}
+> > +
+> > +static void cleanup(void)
+> > +{
+> > +	if (accepted >= 0) {
+> > +		(void)shutdown(accepted, SHUT_RDWR);
+> > +		SAFE_CLOSE(accepted);
+> > +	}
+> > +	if (thread_socket_fd >= 0)
+> > +		SAFE_CLOSE(thread_socket_fd);
+> > +	if (socket_fd >= 0)
+> > +		SAFE_CLOSE(socket_fd);
+> > +}
+> > +
+> > +static struct tst_test test = {
+> > +	.tid = "getsockopt02",
+> 
+> This is not necessary anymore, the tid is taken from the file name.
+> 
+
+I'll remove the line.
+
+> > +	.test_all = test_function,
+> > +	.setup = setup,
+> > +	.cleanup = cleanup,
+> > +	.needs_tmpdir = 1,
+> > +};
+> > --
+> > 2.7.4
+> --
+> Thank you,
+> Richard.
+> 
+
+Thanks,
+
+Veronika
