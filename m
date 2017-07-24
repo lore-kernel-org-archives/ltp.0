@@ -1,163 +1,118 @@
-From: vkabatov@redhat.com <vkabatov@redhat.com>
-Date: Mon, 24 Jul 2017 16:47:01 +0200
-Subject: [LTP]  [PATCH v2] Add msync04: verify msync() writes back to file
-Message-ID: <1500907621-2544-1-git-send-email-vkabatov@redhat.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Mon, 24 Jul 2017 17:38:46 +0200
+Subject: [LTP] [RFC PATCH 3/3] Remove linux_syscall_numbers.h Makefile
+In-Reply-To: <20170724153846.18840-1-rpalethorpe@suse.com>
+References: <20170724153846.18840-1-rpalethorpe@suse.com>
+Message-ID: <20170724153846.18840-3-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Veronika Kabatova <vkabatov@redhat.com>
-
-Creating a testcase for checking whether msync() succeeds in writing
-dirty page back to allocated file. Pagemap interface is used to get
-information about a successful write because of caching mechanisms.
-
-Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
 ---
- runtest/syscalls                          |   1 +
- testcases/kernel/syscalls/.gitignore      |   1 +
- testcases/kernel/syscalls/msync/msync04.c | 106 ++++++++++++++++++++++++++++++
- 3 files changed, 108 insertions(+)
- create mode 100644 testcases/kernel/syscalls/msync/msync04.c
+ include/lapi/syscalls/Makefile | 35 -----------------------------------
+ include/mk/testcases.mk        | 14 ++------------
+ testcases/kernel/Makefile      | 11 -----------
+ 3 files changed, 2 insertions(+), 58 deletions(-)
+ delete mode 100644 include/lapi/syscalls/Makefile
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 2e79ab9..8e1f587 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -705,6 +705,7 @@ msgsnd06 msgsnd06
- msync01 msync01
- msync02 msync02
- msync03 msync03
-+msync04 msync04
+diff --git a/include/lapi/syscalls/Makefile b/include/lapi/syscalls/Makefile
+deleted file mode 100644
+index d6e7175c1..000000000
+--- a/include/lapi/syscalls/Makefile
++++ /dev/null
+@@ -1,35 +0,0 @@
+-#
+-#    kernel test suite include Makefile.
+-#
+-#    Copyright (C) 2009, Cisco Systems Inc.
+-#
+-#    This program is free software; you can redistribute it and/or modify
+-#    it under the terms of the GNU General Public License as published by
+-#    the Free Software Foundation; either version 2 of the License, or
+-#    (at your option) any later version.
+-#
+-#    This program is distributed in the hope that it will be useful,
+-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#    GNU General Public License for more details.
+-#
+-#    You should have received a copy of the GNU General Public License along
+-#    with this program; if not, write to the Free Software Foundation, Inc.,
+-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-# Ngie Cooper, July 2009
+-#
+-
+-top_srcdir		?= ../../..
+-
+-include $(top_srcdir)/include/mk/env_pre.mk
+-
+-INSTALL_DIR		:= $(includedir)
+-
+-MAKE_TARGETS		:= linux_syscall_numbers.h
+-
+-linux_syscall_numbers.h: $(abs_srcdir)/regen.sh $(wildcard $(abs_srcdir)/*.in)
+-	@touch linux_syscall_numbers.h
+-	$(SHELL) "$<"
+-
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/include/mk/testcases.mk b/include/mk/testcases.mk
+index f453f4e35..bf97384a7 100644
+--- a/include/mk/testcases.mk
++++ b/include/mk/testcases.mk
+@@ -25,10 +25,6 @@ include $(top_srcdir)/include/mk/functions.mk
  
- munlock01 munlock01
- munlock02 munlock02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index fdb01f9..6e0af31 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -612,6 +612,7 @@
- /msync/msync01
- /msync/msync02
- /msync/msync03
-+/msync/msync04
- /munlock/munlock01
- /munlock/munlock02
- /munlockall/munlockall01
-diff --git a/testcases/kernel/syscalls/msync/msync04.c b/testcases/kernel/syscalls/msync/msync04.c
-new file mode 100644
-index 0000000..741bcfe
---- /dev/null
-+++ b/testcases/kernel/syscalls/msync/msync04.c
-@@ -0,0 +1,106 @@
-+/*
-+ * Copyright (C) 2017 Red Hat, Inc.
-+ *
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License as published by the Free
-+ * Software Foundation; either version 2 of the License, or (at your option)
-+ * any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-+ * more details.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+/*
-+ * Test description: Verify msync() after writing into mmap()-ed file works.
-+ *
-+ * Write to mapped region and sync the memory back with file. Check the page
-+ * is no longer dirty after msync() call.
-+ */
-+
-+#include <errno.h>
-+#include "tst_test.h"
-+
-+static int test_fd;
-+static char *mmaped_area;
-+static long pagesize;
-+
-+#define STRING_TO_WRITE	"AAAAAAAAAA"
-+
-+uint64_t get_dirty_bit(void *data)
-+{
-+	int pagemap_fd, pageflags_fd;
-+	unsigned long addr;
-+	uint64_t pagemap_entry, pageflag_entry, pfn, index;
-+
-+	addr = (unsigned long)data;
-+	index = (addr / pagesize) * sizeof(uint64_t);
-+	pagemap_fd = SAFE_OPEN("/proc/self/pagemap", O_RDONLY);
-+	SAFE_LSEEK(pagemap_fd, index, SEEK_SET);
-+	SAFE_READ(1, pagemap_fd, &pagemap_entry, sizeof(pagemap_entry));
-+	SAFE_CLOSE(pagemap_fd);
-+	pfn = pagemap_entry & ((1ULL << 55) - 1);
-+	if (!pfn)
-+		return 0;
-+	pageflags_fd = SAFE_OPEN("/proc/kpageflags", O_RDONLY);
-+	index = pfn * sizeof(uint64_t);
-+	SAFE_LSEEK(pageflags_fd, index, SEEK_SET);
-+	SAFE_READ(1, pageflags_fd, &pageflag_entry, sizeof(pageflag_entry));
-+	SAFE_CLOSE(pageflags_fd);
-+	return pageflag_entry & (1ULL << 4);
-+}
-+
-+static void test_msync(void)
-+{
-+	uint64_t dirty;
-+
-+	pagesize = (off_t)SAFE_SYSCONF(_SC_PAGESIZE);
-+	test_fd = SAFE_OPEN("msync04/testfile", O_CREAT | O_TRUNC | O_RDWR);
-+	SAFE_WRITE(0, test_fd, STRING_TO_WRITE, strlen(STRING_TO_WRITE));
-+	mmaped_area = SAFE_MMAP(NULL, pagesize, PROT_READ | PROT_WRITE,
-+			MAP_SHARED, test_fd, 0);
-+	SAFE_CLOSE(test_fd);
-+	mmaped_area[8] = 'B';
-+	dirty = get_dirty_bit(mmaped_area);
-+	if (!dirty) {
-+		tst_res(TFAIL, "Expected dirty bit to be set after writing to"
-+				" mmap()-ed area");
-+		goto clean;
-+	}
-+	if (msync(mmaped_area, pagesize, MS_SYNC) < 0) {
-+		tst_res(TFAIL | TERRNO, "msync() failed");
-+		goto clean;
-+	}
-+	dirty = get_dirty_bit(mmaped_area);
-+	if (dirty)
-+		tst_res(TFAIL, "msync() failed to write dirty page despite"
-+				" succeeding");
-+	else
-+		tst_res(TPASS, "msync() working correctly");
-+
-+clean:
-+	SAFE_MUNMAP(mmaped_area, pagesize);
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_MUNMAP(mmaped_area, pagesize);
-+	if (test_fd > 0)
-+		SAFE_CLOSE(test_fd);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = test_msync,
-+	.cleanup = cleanup,
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
-+	.format_device = 1,
-+	.mntpoint = "msync04",
-+	.mount_device = 1,
-+	.min_kver = "2.6.25",
-+};
+ APICMDS_DIR	:= $(abs_top_builddir)/tools/apicmds
+ 
+-TKI_DIR		:= testcases/kernel/include
+-
+-LSN_H		:= $(abs_top_builddir)/$(TKI_DIR)/linux_syscall_numbers.h
+-
+ LIBLTP_DIR	:= $(abs_top_builddir)/lib
+ 
+ LIBLTP		:= $(LIBLTP_DIR)/libltp.a
+@@ -39,17 +35,11 @@ $(APICMDS_DIR)/tst_kvercmp: $(APICMDS_DIR)
+ $(LIBLTP): $(LIBLTP_DIR)
+ 	$(MAKE) -C "$^" -f "$(abs_top_srcdir)/lib/Makefile" all
+ 
+-$(LSN_H): $(abs_top_builddir)/$(TKI_DIR)
+-	$(MAKE) -C "$^" -f "$(abs_top_srcdir)/$(TKI_DIR)/Makefile" all
+-
+-MAKE_DEPS	:= $(LIBLTP) $(LSN_H)
+-
+-# For linux_syscall_numbers.h
+-CPPFLAGS	+= -I$(abs_top_builddir)/$(TKI_DIR)
++MAKE_DEPS	:= $(LIBLTP)
+ 
+ INSTALL_DIR	:= testcases/bin
+ 
+ LDLIBS		+= -lltp
+ 
+-$(APICMDS_DIR) $(LIBLTP_DIR) $(abs_top_builddir)/$(TKI_DIR): %:
++$(APICMDS_DIR) $(LIBLTP_DIR): %:
+ 	mkdir -p "$@"
+diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
+index 4dd11296f..11aae96fe 100644
+--- a/testcases/kernel/Makefile
++++ b/testcases/kernel/Makefile
+@@ -66,15 +66,4 @@ FILTER_OUT_DIRS		+= containers controllers device-drivers fs io ipc mem \
+ 				sched security timers
+ endif
+ 
+-MAKE_DEPS		:= include/linux_syscall_numbers.h
+-
+-include:
+-	mkdir -p "$@"
+-
+-linux-syscall-numbers-clean:: include
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
+-
+-include/linux_syscall_numbers.h: include
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+-
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
 -- 
-2.7.4
+2.13.3
 
