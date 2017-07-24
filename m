@@ -1,234 +1,176 @@
-From: Veronika Kabatova <vkabatov@redhat.com>
-Date: Mon, 24 Jul 2017 09:59:24 -0400 (EDT)
-Subject: [LTP] [PATCH] getsockopt: Add test for SO_PEERCRED
-In-Reply-To: <874lu8rd4g.fsf@our.domain.is.not.set>
-References: <1500392093-23272-1-git-send-email-vkabatov@redhat.com>
- <874lu8rd4g.fsf@our.domain.is.not.set>
-Message-ID: <7724874.29947905.1500904764802.JavaMail.zimbra@redhat.com>
+From: vkabatov@redhat.com <vkabatov@redhat.com>
+Date: Mon, 24 Jul 2017 16:03:18 +0200
+Subject: [LTP]  [PATCH v2] getsockopt: Add test for SO_PEERCRED
+Message-ID: <1500904998-24947-1-git-send-email-vkabatov@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+From: Veronika Kabatova <vkabatov@redhat.com>
 
+Connect to a socket from a fork and check SO_PEERCRED returns
+correct PID.
 
------ Original Message -----
-> From: "Richard Palethorpe" <rpalethorpe@suse.de>
-> To: vkabatov@redhat.com
-> Cc: ltp@lists.linux.it
-> Sent: Wednesday, July 19, 2017 11:26:39 AM
-> Subject: Re: [LTP]  [PATCH] getsockopt: Add test for SO_PEERCRED
-> 
-> 
-> Hi Veronika,
-> 
+Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
+---
+ runtest/syscalls                                   |   1 +
+ testcases/kernel/syscalls/.gitignore               |   1 +
+ testcases/kernel/syscalls/getsockopt/Makefile      |   2 +
+ .../kernel/syscalls/getsockopt/getsockopt02.c      | 106 +++++++++++++++++++++
+ 4 files changed, 110 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/getsockopt/getsockopt02.c
 
-Hello, thanks for the feedback.
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 2e79ab9..c85c713 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -434,6 +434,7 @@ getsid02 getsid02
+ getsockname01 getsockname01
+ 
+ getsockopt01 getsockopt01
++getsockopt02 getsockopt02
+ 
+ gettid01 gettid01
+ 
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index fdb01f9..958bd7a 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -362,6 +362,7 @@
+ /getsid/getsid02
+ /getsockname/getsockname01
+ /getsockopt/getsockopt01
++/getsockopt/getsockopt02
+ /gettid/gettid01
+ /gettimeofday/gettimeofday01
+ /gettimeofday/gettimeofday02
+diff --git a/testcases/kernel/syscalls/getsockopt/Makefile b/testcases/kernel/syscalls/getsockopt/Makefile
+index bd617d8..033d73f 100644
+--- a/testcases/kernel/syscalls/getsockopt/Makefile
++++ b/testcases/kernel/syscalls/getsockopt/Makefile
+@@ -18,6 +18,8 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++getsockopt02: CFLAGS+=-pthread
++
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/getsockopt/getsockopt02.c b/testcases/kernel/syscalls/getsockopt/getsockopt02.c
+new file mode 100644
+index 0000000..50e9034
+--- /dev/null
++++ b/testcases/kernel/syscalls/getsockopt/getsockopt02.c
+@@ -0,0 +1,106 @@
++/*
++ * Copyright (C) 2017 Red Hat, Inc.
++ *
++ * This program is free software;  you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by the Free
++ * Software Foundation; either version 2 of the License, or (at your option)
++ * any later version.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, see <http://www.gnu.org/licenses/>.
++ */
++
++/*
++ * Test description: Test retrieving of peer credentials (SO_PEERCRED)
++ *
++ */
++
++#define _GNU_SOURCE
++
++#include <errno.h>
++#include <stdlib.h>
++#include "tst_test.h"
++
++static int socket_fd, fork_socket_fd, accepted;
++static struct sockaddr_un sun;
++
++#define SOCKNAME	"testsocket"
++
++static void setup(void)
++{
++	sun.sun_family = AF_UNIX;
++	(void)strcpy(sun.sun_path, SOCKNAME);
++	socket_fd = SAFE_SOCKET(sun.sun_family, SOCK_STREAM, 0);
++	SAFE_BIND(socket_fd, (struct sockaddr *)&sun, sizeof(sun));
++	SAFE_LISTEN(socket_fd, SOMAXCONN);
++}
++
++static void fork_func(void)
++{
++	fork_socket_fd = SAFE_SOCKET(sun.sun_family, SOCK_STREAM, 0);
++	SAFE_CONNECT(fork_socket_fd, (struct sockaddr *)&sun, sizeof(sun));
++}
++
++static void test_function(void)
++{
++	pid_t fork_id;
++	struct ucred cred;
++	int status;
++	socklen_t cred_len = sizeof(cred);
++
++	fork_id = SAFE_FORK();
++	if (!fork_id) {
++		fork_func();
++		exit(0);
++	}
++
++	SAFE_WAITPID(fork_id, &status, 0);
++	accepted = accept(socket_fd, NULL, NULL);
++	if (accepted < 0) {
++		tst_res(TFAIL | TERRNO, "Error with accepting connection");
++		return;
++	}
++	if (getsockopt(accepted, SOL_SOCKET,
++				SO_PEERCRED, &cred, &cred_len) < 0) {
++		tst_res(TFAIL | TERRNO, "Error while getting socket options");
++		return;
++	}
++
++	if (accepted >= 0) {
++		(void)shutdown(accepted, SHUT_RDWR);
++		SAFE_CLOSE(accepted);
++	}
++	if (fork_socket_fd >= 0)
++		SAFE_CLOSE(fork_socket_fd);
++
++	if (fork_id != cred.pid) {
++		tst_res(TFAIL, "Received wrong PID %d, expected %d",
++				cred.pid, getpid());
++	} else
++		tst_res(TPASS, "Test passed");
++}
++
++static void cleanup(void)
++{
++	if (accepted >= 0) {
++		(void)shutdown(accepted, SHUT_RDWR);
++		SAFE_CLOSE(accepted);
++	}
++	if (fork_socket_fd >= 0)
++		SAFE_CLOSE(fork_socket_fd);
++	if (socket_fd >= 0)
++		SAFE_CLOSE(socket_fd);
++}
++
++static struct tst_test test = {
++	.test_all = test_function,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_tmpdir = 1,
++	.forks_child = 1,
++};
+-- 
+2.7.4
 
-> vkabatov@redhat.com writes:
-> 
-> > From: Veronika Kabatova <vkabatov@redhat.com>
-> >
-> > Connect to a socket from a thread anf check SO_PEERCRED returns
-> > correct PID.
-> >
-> > Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
-> > ---
-> >  runtest/syscalls                                   |   1 +
-> >  testcases/kernel/syscalls/.gitignore               |   1 +
-> >  testcases/kernel/syscalls/getsockopt/Makefile      |   2 +
-> >  .../kernel/syscalls/getsockopt/getsockopt02.c      | 102
-> >  +++++++++++++++++++++
-> >  4 files changed, 106 insertions(+)
-> >  create mode 100644 testcases/kernel/syscalls/getsockopt/getsockopt02.c
-> >
-> > diff --git a/runtest/syscalls b/runtest/syscalls
-> > index 91aba85..11055cf 100644
-> > --- a/runtest/syscalls
-> > +++ b/runtest/syscalls
-> > @@ -433,6 +433,7 @@ getsid02 getsid02
-> >  getsockname01 getsockname01
-> >
-> >  getsockopt01 getsockopt01
-> > +getsockopt02 getsockopt02
-> >
-> >  gettid01 gettid01
-> >
-> > diff --git a/testcases/kernel/syscalls/.gitignore
-> > b/testcases/kernel/syscalls/.gitignore
-> > index 3d9bb75..c0e5218 100644
-> > --- a/testcases/kernel/syscalls/.gitignore
-> > +++ b/testcases/kernel/syscalls/.gitignore
-> > @@ -361,6 +361,7 @@
-> >  /getsid/getsid02
-> >  /getsockname/getsockname01
-> >  /getsockopt/getsockopt01
-> > +/getsockopt/getsockopt02
-> >  /gettid/gettid01
-> >  /gettimeofday/gettimeofday01
-> >  /gettimeofday/gettimeofday02
-> > diff --git a/testcases/kernel/syscalls/getsockopt/Makefile
-> > b/testcases/kernel/syscalls/getsockopt/Makefile
-> > index bd617d8..033d73f 100644
-> > --- a/testcases/kernel/syscalls/getsockopt/Makefile
-> > +++ b/testcases/kernel/syscalls/getsockopt/Makefile
-> > @@ -18,6 +18,8 @@
-> >
-> >  top_srcdir		?= ../../../..
-> >
-> > +getsockopt02: CFLAGS+=-pthread
-> > +
-> >  include $(top_srcdir)/include/mk/testcases.mk
-> >
-> >  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> > diff --git a/testcases/kernel/syscalls/getsockopt/getsockopt02.c
-> > b/testcases/kernel/syscalls/getsockopt/getsockopt02.c
-> > new file mode 100644
-> > index 0000000..27942b9
-> > --- /dev/null
-> > +++ b/testcases/kernel/syscalls/getsockopt/getsockopt02.c
-> > @@ -0,0 +1,102 @@
-> > +/*
-> > + * Copyright (C) 2017 Red Hat, Inc.
-> > + *
-> > + * This program is free software;  you can redistribute it and/or modify
-> > it
-> > + * under the terms of the GNU General Public License as published by the
-> > Free
-> > + * Software Foundation; either version 2 of the License, or (at your
-> > option)
-> > + * any later version.
-> > + *
-> > + * This program is distributed in the hope that it will be useful, but
-> > WITHOUT
-> > + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-> > + * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
-> > for
-> > + * more details.
-> > + *
-> > + * You should have received a copy of the GNU General Public License along
-> > + * with this program; if not, see <http://www.gnu.org/licenses/>.
-> > + */
-> > +
-> > +/*
-> > + * Test description: Test retrieving of peer credentials (SO_PEERCRED)
-> > + *
-> > + */
-> > +
-> > +#define _GNU_SOURCE
-> > +
-> > +#include <errno.h>
-> > +#include <pthread.h>
-> > +#include "tst_safe_pthread.h"
-> > +#include "tst_test.h"
-> > +
-> > +static int socket_fd, thread_socket_fd, accepted;
-> > +static struct sockaddr_un sun;
-> > +
-> > +#define SOCKNAME	"testsocket"
-> > +
-> > +static void setup(void)
-> > +{
-> > +	sun.sun_family = AF_UNIX;
-> > +	(void)strcpy(sun.sun_path, SOCKNAME);
-> > +	socket_fd = SAFE_SOCKET(sun.sun_family, SOCK_STREAM, 0);
-> > +	SAFE_BIND(socket_fd, (struct sockaddr *)&sun, sizeof(sun));
-> > +	SAFE_LISTEN(socket_fd, SOMAXCONN);
-> > +}
-> 
-> FYI, this could be simplified with socketpair() although I don't think
-> there is a SAFE_* function for that yet, but it shouldn't be hard to
-> implement.
-> 
-
-I like the idea with fork()-ing the process you mentioned lower (and will
-send an updated patch soon) and in that case I don't think using
-socketpair() makes sense. As per manpage, credentials for socketpair() are
-the ones that were in effect at the time of call. This means both socket
-ends will return credentials for the main process, no matter whether we
-use fork() or not.
-
-I agree that socketpair() can make the implementation easier, but I don't
-think it would be the right solution for this use case.
-
-> > +
-> > +void *thread_func(void *args __attribute__((unused)))
-> > +{
-> > +	thread_socket_fd = SAFE_SOCKET(sun.sun_family, SOCK_STREAM, 0);
-> > +	SAFE_CONNECT(thread_socket_fd, (struct sockaddr *)&sun, sizeof(sun));
-> > +	return NULL;
-> > +}
-> > +
-> > +static void test_function(void)
-> > +{
-> > +	pthread_t thread_id;
-> > +	struct ucred cred;
-> > +	socklen_t cred_len = sizeof(cred);
-> > +
-> > +	SAFE_PTHREAD_CREATE(&thread_id, NULL, thread_func, NULL);
-> 
-> I am wondering if fork() would make for a stronger test? As we are then
-> communicating between processes.
-> 
-> > +	accepted = accept(socket_fd, NULL, NULL);
-> > +	if (accepted < 0) {
-> > +		tst_res(TFAIL | TERRNO, "Error with accepting connection");
-> > +		return;
-> > +	}
-> > +	if (getsockopt(accepted, SOL_SOCKET,
-> > +				SO_PEERCRED, &cred, &cred_len) < 0) {
-> > +		tst_res(TFAIL | TERRNO, "Error while getting socket options");
-> > +		return;
-> > +	}
-> > +
-> > +	SAFE_PTHREAD_JOIN(thread_id, NULL);
-> > +	if (accepted >= 0) {
-> > +		(void)shutdown(accepted, SHUT_RDWR);
-> > +		SAFE_CLOSE(accepted);
-> > +	}
-> > +	if (thread_socket_fd >= 0)
-> > +		SAFE_CLOSE(thread_socket_fd);
-> > +
-> > +	if (getpid() != cred.pid) {
-> > +		tst_res(TFAIL, "Received wrong PID %d, expected %d",
-> > +				cred.pid, getpid());
-> > +	} else
-> > +		tst_res(TPASS, "Test passed");
-> > +}
-> > +
-> > +static void cleanup(void)
-> > +{
-> > +	if (accepted >= 0) {
-> > +		(void)shutdown(accepted, SHUT_RDWR);
-> > +		SAFE_CLOSE(accepted);
-> > +	}
-> > +	if (thread_socket_fd >= 0)
-> > +		SAFE_CLOSE(thread_socket_fd);
-> > +	if (socket_fd >= 0)
-> > +		SAFE_CLOSE(socket_fd);
-> > +}
-> > +
-> > +static struct tst_test test = {
-> > +	.tid = "getsockopt02",
-> 
-> This is not necessary anymore, the tid is taken from the file name.
-> 
-
-I'll remove the line.
-
-> > +	.test_all = test_function,
-> > +	.setup = setup,
-> > +	.cleanup = cleanup,
-> > +	.needs_tmpdir = 1,
-> > +};
-> > --
-> > 2.7.4
-> --
-> Thank you,
-> Richard.
-> 
-
-Thanks,
-
-Veronika
