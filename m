@@ -1,121 +1,133 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 25 Jul 2017 18:19:27 +0200
-Subject: [LTP] [RFC PATCH v7 06/11] network/stress: Fix and cleanup part
- of multicast IPv4 tests
-In-Reply-To: <0dcefc85-5c3e-f8e4-12f0-4b3f61a63bde@oracle.com>
+Date: Tue, 25 Jul 2017 18:37:00 +0200
+Subject: [LTP] [RFC PATCH v7 02/11] network/stress: Add library
+ test_net_stress.sh
+In-Reply-To: <7e2fb82c-38e4-e15d-7800-c253dd36d6ca@oracle.com>
 References: <20170721040407.868-1-pvorel@suse.cz>
- <20170721040407.868-7-pvorel@suse.cz>
- <0dcefc85-5c3e-f8e4-12f0-4b3f61a63bde@oracle.com>
-Message-ID: <20170725161927.h2ufen4cji3iluux@dell5510>
+ <20170721040407.868-3-pvorel@suse.cz>
+ <fddf6fa1-3a12-5035-482f-08fe83fcb47e@oracle.com>
+ <20170725095735.nhde7e6nezqeo3nn@dell5510>
+ <4b453a16-1e16-c7e3-3b03-20b0d065fe2a@oracle.com>
+ <20170725145222.k7yl6yia6fs26rm6@dell5510>
+ <7e2fb82c-38e4-e15d-7800-c253dd36d6ca@oracle.com>
+Message-ID: <20170725163700.msorpfj3uagndukq@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+> On 07/25/2017 05:52 PM, Petr Vorel wrote:
+> >> On 07/25/2017 12:57 PM, Petr Vorel wrote:
+> >>> Hi Alexey,
+> >>>>> +export OCTET_3_IPV4_UNUSED=${OCTET_3_IPV4_UNUSED:-23} # x.x.N.x
+> >>>>> +export OCTET_4_LHOST_IPV4_HOST_UNUSED=${OCTET_4_LHOST_IPV4_HOST_UNUSED:-2} # x.x.x.N
+> >>>>> +export OCTET_4_RHOST_IPV4_HOST_UNUSED=${OCTET_4_RHOST_IPV4_HOST_UNUSED:-1} # x.x.x.N
+> >>>>> +export LHOST_IPV4_HOST_UNUSED="${OCTET_3_IPV4_UNUSED}.${OCTET_4_LHOST_IPV4_HOST_UNUSED}"
+> >>>>> +export RHOST_IPV4_HOST_UNUSED="${OCTET_3_IPV4_UNUSED}.${OCTET_4_RHOST_IPV4_HOST_UNUSED}"
+> >>>>> +export LHOST_IPV4_UNUSED="${IPV4_NET16_UNUSED}.$LHOST_IPV4_HOST_UNUSED"
+> >>>>> +export RHOST_IPV4_UNUSED="${IPV4_NET16_UNUSED}.$RHOST_IPV4_HOST_UNUSED"
+> >>>>> +
+> >>>>> +export OCTET_3_IPV6_UNUSED="${OCTET_3_IPV6_UNUSED:-:0}"
+> >>>>> +export OCTET_4_LHOST_IPV6_HOST_UNUSED=${OCTET_4_LHOST_IPV6_HOST_UNUSED:-2}
+> >>>>> +export OCTET_4_RHOST_IPV6_HOST_UNUSED=${OCTET_4_RHOST_IPV6_HOST_UNUSED:-1}
+> >>>>> +export LHOST_IPV6_HOST_UNUSED="${OCTET_3_IPV6_UNUSED}:${OCTET_4_LHOST_IPV6_HOST_UNUSED}"
+> >>>>> +export RHOST_IPV6_HOST_UNUSED="${OCTET_3_IPV6_UNUSED}:${OCTET_4_RHOST_IPV6_HOST_UNUSED}"
+> >>>>> +export LHOST_IPV6_UNUSED="${IPV6_NET32_UNUSED}:$LHOST_IPV6_HOST_UNUSED"
+> >>>>> +export RHOST_IPV6_UNUSED="${IPV6_NET32_UNUSED}:$RHOST_IPV6_HOST_UNUSED"
+> >>>> Hmm, what is the purpose of adding these variables to the library?
+> >>>> Why someone would need to redefine any of them?
+> >>> I thought someone might appreciate ability to full control of IP
+> >>> addresses, but you're right it's probably useless.
+> >>> If you don't mind, I'll keep {L,R}HOST_IPV{4,6}_UNUSED variables as they are used in many scripts
+> >>> (DRY approach) and delete the rest of variables.
 
-thank you for your review.
+> >> What about adding a new function similar to tst_ipaddr()?
+> >> tst_ipaddr_un(), tst_ipaddr_new(), etc.? Probably we would need to add
+> >> some optional counter parameter along with lhost/rhost...
+> > How about this?
 
-> > +	if [ "$increase_max" ]; then
-> > +		# Increase the maximum number of open file descriptors
-> > +		[ `ulimit -n` -lt $igmp_max_memberships ] && ROD ulimit -n $igmp_max_memberships
-> > +	fi
-> > +
-> > +	tst_add_ipaddr_stress
-> > +	tst_add_ipaddr_stress rhost
+> > tst_ipaddr_un()
+> > {
+> > 	local type="${1:-lhost}"
+> > 	local counter="${2:-1}"
+> > 	local host net max_counter max_net max_host tmp
 
- This is very strange, the test adds a new pair of addresses and then
-> runs ping in setup. After that they not used...
+> > 	[ "$TST_IPV6" ] && max_net=65536 || max_net=256
+> > 	max_host=$((max_net - 2))
+> > 	max_counter=$((max_host * max_net / 2))
 
-> By the way, we already have IP addresses defined by IPV4_HOST variables,
-> better use them if needed.
-I thought that it'd be more secure to use "unused network" also for multicast. OK, I'll
-use regular IP addresses.
-BTW would you use "unused network"? with tests in testcases/network/stress/ than route and
-interface?
+> > 	if [ $counter -gt $max_counter ]; then
+> > 		tst_resm TCONF "'$counter' higher than max counter limit '$max_counter'"
+> > 	fi
 
-> > +	check_connectivity $iface $RHOST_IPV4_UNUSED
-
-> No need for this test.
-OK (copied from your interface tests).
-
-
-...
-> > +mcast_cleanup()
-> > +{
-> > +	local iface=$(tst_iface)
-...
-
-> > +do_multicast_test_multiple_join()
-> > +{
-> > +	local igmp_max_memberships="$1"
-> > +	local iface=$(tst_iface)
-> > +	local riface=$(tst_iface rhost)
-
-> I would rather use those functions inline.
+> I guess we can safely omit this check.
 OK.
 
-> > +	local param_multi_socket ret tmpfile
-> > +
-> > +	[ "${2:-}" = true ] && param_multi_socket="-m"
-> > +
-> > +	# Run a multicast join tool
-> > +	tmpfile=ns-mcast_join.$$
-> > +
-> > +	EXPECT_PASS ns-mcast_join $param_multi_socket -f 4 -I $iface -n $igmp_max_memberships -p $MCAST_IPV4_ADDR_PREFIX > $tmpfile
 
-> EXPECT_PASS ... \> $tmpfile
-Eh, silly mistake.
+> > 	tmp=$((counter * 2))
+> > 	[ "$type" = "rhost" ] && tmp=$((tmp - 1))
 
-> > +
-> > +	tst_resm TINFO "joined $(grep groups $tmpfile)"
-> > +
-> > +	# Send IGMP General Query from the remote host
-> > +	EXPECT_RHOST_PASS ns-igmp_querier -I $riface -o -r 1
+> > 	host=$((tmp % max_host))
+> > 	net=$((tmp / max_host))
+> > 	[ $host -eq 0 ] && { host=$max_host; net=$((net - 1)); }
 
-> We need to use the address defined with the prefix
-> $MCAST_IPV4_ADDR_PREFIX above otherwise we won't get a reply, i.e. "-m
-> $MCAST_IPV4_ADDR"
-Right, thanks. It was broken in original code. Trying to read ns-mcast_join.c and
-ns-igmp_querier.c, but still not sure I fully understand tham. Hope the other flags are
-correct (e.g. not missing MCAST_IPV4_ADDR_PREFIX resp. MCAST_IPV4_ADDR).
+> > 	if [ "$TST_IPV6" ]; then
+> > 		echo "${IPV6_NET32_UNUSED}::$(printf %x:%x ${net} ${host})"
+> > 	else
+> > 		echo "${IPV4_NET16_UNUSED}.${net}.${host}"
+> > 	fi
+> > }
 
-> > +}
-> > +
-> > +do_multicast_test_join_leave()
-> > +{
-> > +	local iface=$(tst_iface)
-> > +	local riface=$(tst_iface rhost)
-> > +	local define_source_address filter num ret source_addr x y
-> > +
-> > +	[ "$1" = true ] && define_source_address=true
-> > +
-> > +	# Send IGMP General Query from the remote host
-> > +	tst_rhost_run -s -c "ns-igmp_querier -I $riface -i 1000000000 -r 1 -b"
-> > +
-> > +	# Run a multicast join tool
-> > +	num=0
-> > +	while [ $num -lt $MCASTNUM_NORMAL ]; do
-> > +		if [ "$define_source_address" ]; then
-> > +			x=$(($num / 254))
-> > +			y=$(($num % 254 + 1))
-> > +			if [ $x -gt 254 ]; then
-> > +				tst_resm TINFO "the number of the connection is less than $num"
-> > +				break
-> > +			fi
-> > +			source_addr="${IPV4_NET16_UNUSED}.${x}.${y}"
-> > +
-> > +			[ $(($num % 5)) -ne 2 ] && filter="include" || filter="exclude"
-> > +			params="-F $filter -s $source_addr"
-> > +		fi
-> > +
-> > +		ROD ns-mcast_join -f 4 -I $iface -l $NS_TIMES -a $MCAST_IPV4_ADDR $params &
+> Looks good to me.
+Thanks. It will be all in v8. I'd like to send it ASAP as I'm on holiday since next week
+for two weeks.
 
+> > And if we want to work with more than last octet, we might appreciate to be able to
+> > specify (optionally) third octet as well ($net variable).
+> > Scripts which could benefit from it are at least:
+> > if-{addr,route}-addlarge, route4-change-if.
+Do we want to get rid of direct usage of IPV4_NET16_UNUSED and IPV6_NET32_UNUSED (at least
+in most of the scripts) and use tst_ipaddr_un()? I'm not sure if this is useful, but, as I
+wrote before, tests in if-{addr,route}-addlarge, route4-change-if require change in third
+octet.
 
-> just ns-mcast_join ... &
-OK
+So how about this (I also added security check, even it's close to impossible that will be
+needed):
 
+# Get IP address of unused network
+# tst_ipaddr_un [TYPE] [COUNTER] [OCTET_3]
+# TYPE: { lhost | rhost }; Default value is 'lhost'.
+# COUNTER: Integer value; Default is 1.
+# OCTET_3: Specify third octet; Default is calculated from counter.
+tst_ipaddr_un()
+{
+	local type="${1:-lhost}"
+	local counter="${2:-1}"
+	local octet_3="${3:-}"
+	local host net max_net max_host tmp
+
+	[ "$TST_IPV6" ] && max_net=65536 || max_net=256
+	max_host=$((max_net - 2))
+
+	tmp=$((counter * 2))
+	[ "$type" = "rhost" ] && tmp=$((tmp - 1))
+
+	host=$((tmp % max_host))
+	net=$((tmp / max_host))
+	[ $host -eq 0 ] && { host=$max_host; net=$((net - 1)); }
+
+	[ -n "$octet_3" ] && net=$octet_3
+
+	[ $host -gt $max_host ] && host=$max_host
+	[ $net -gt $max_net ] && net=$max_net
+
+	if [ "$TST_IPV6" ]; then
+		echo "${IPV6_NET32_UNUSED}::$(printf %x:%x ${net} ${host})"
+	else
+		echo "${IPV4_NET16_UNUSED}.${net}.${host}"
+	fi
+}
 
 
 Kind regards,
