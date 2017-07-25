@@ -1,209 +1,176 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue, 25 Jul 2017 10:36:57 +0200
-Subject: [LTP] [PATCH] Add test for CVE-2017-7308 on a raw socket's ring
-	buffer
-Message-ID: <20170725083657.3581-1-rpalethorpe@suse.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 25 Jul 2017 11:14:00 +0200
+Subject: [LTP] [PATCH v2] getsockopt: Add test for SO_PEERCRED
+In-Reply-To: <1500904998-24947-1-git-send-email-vkabatov@redhat.com>
+References: <1500904998-24947-1-git-send-email-vkabatov@redhat.com>
+Message-ID: <87h8y0anfr.fsf@our.domain.is.not.set>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This test uses a Linux only interface which has not been fully integrated into
-glibc and it is not clear if it ever will be. So I have kept the fallback
-logic relatively simple and use only the Linux headers if they are present or
-just define what is needed in the test.
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- configure.ac                  |   3 ++
- m4/ltp-tpacket-v3.m4          |  22 +++++++++
- runtest/cve                   |   1 +
- testcases/cve/.gitignore      |   1 +
- testcases/cve/cve-2017-7308.c | 107 ++++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 134 insertions(+)
- create mode 100644 m4/ltp-tpacket-v3.m4
- create mode 100644 testcases/cve/cve-2017-7308.c
+Hi Veronika,
 
-diff --git a/configure.ac b/configure.ac
-index 658003972..22b884078 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -38,6 +38,8 @@ AC_CHECK_HEADERS([ \
-     pthread.h \
-     sys/xattr.h \
-     linux/genetlink.h \
-+    linux/if_packet.h \
-+    linux/if_ether.h \
-     linux/mempolicy.h \
-     linux/module.h \
-     linux/netlink.h \
-@@ -194,5 +196,6 @@ LTP_CHECK_SYNC_ADD_AND_FETCH
- LTP_CHECK_BUILTIN_CLEAR_CACHE
- LTP_CHECK_MMSGHDR
- LTP_CHECK_UNAME_DOMAINNAME
-+LTP_CHECK_TPACKET_V3
- 
- AC_OUTPUT
-diff --git a/m4/ltp-tpacket-v3.m4 b/m4/ltp-tpacket-v3.m4
-new file mode 100644
-index 000000000..fce2e0ebf
---- /dev/null
-+++ b/m4/ltp-tpacket-v3.m4
-@@ -0,0 +1,22 @@
-+dnl Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+dnl
-+dnl This program is free software;  you can redistribute it and/or modify
-+dnl it under the terms of the GNU General Public License as published by
-+dnl the Free Software Foundation; either version 2 of the License, or
-+dnl (at your option) any later version.
-+dnl
-+dnl This program is distributed in the hope that it will be useful,
-+dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+dnl the GNU General Public License for more details.
-+dnl
-+dnl You should have received a copy of the GNU General Public License
-+dnl along with this program. If not, see <http://www.gnu.org/licenses/>.
-+
-+AC_DEFUN([LTP_CHECK_TPACKET_V3],[
-+AC_CHECK_TYPES([struct tpacket_req3],,,[
-+#ifdef HAVE_LINUX_IF_PACKET_H
-+# include <linux/if_packet.h>
-+#endif
-+])
-+])
-diff --git a/runtest/cve b/runtest/cve
-index ee0614a9c..24062cfa6 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -6,3 +6,4 @@ cve-2016-5195 dirtyc0w
- cve-2016-7117 cve-2016-7117
- cve-2017-5669 cve-2017-5669
- cve-2017-6951 cve-2017-6951
-+cve-2017-7308 cve-2017-7308
-diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
-index bdb73f33b..eb2e0af5f 100644
---- a/testcases/cve/.gitignore
-+++ b/testcases/cve/.gitignore
-@@ -4,3 +4,4 @@ cve-2016-4997
- cve-2016-7117
- cve-2017-6951
- cve-2017-5669
-+cve-2017-7308
-diff --git a/testcases/cve/cve-2017-7308.c b/testcases/cve/cve-2017-7308.c
-new file mode 100644
-index 000000000..31df97d2a
---- /dev/null
-+++ b/testcases/cve/cve-2017-7308.c
-@@ -0,0 +1,107 @@
-+/*
-+ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+/* Test for CVE-2017-7308 on a raw socket's ring buffer
-+ *
-+ * Try to set tpacket_req3.tp_sizeof_priv to a value with the high bit set. So
-+ * that tp_block_size < tp_sizeof_priv. If the vulnerability is present then
-+ * this will cause an integer arithmatic overflow and the absurd
-+ * tp_sizeof_priv value will be allowed. If it has been fixed then setsockopt
-+ * will fail with EINVAL.
-+ *
-+ * We also try a good configuration to make sure it is not failing with EINVAL
-+ * for some other reason.
-+ *
-+ * For a better and more interesting discussion of this CVE see:
-+ * https://googleprojectzero.blogspot.com/2017/05/exploiting-linux-kernel-via-packet.html
-+ */
-+
-+#include <errno.h>
-+#include "tst_test.h"
-+#include "tst_safe_net.h"
-+#include "config.h"
-+
-+#ifdef HAVE_LINUX_IF_PACKET_H
-+# include <linux/if_packet.h>
-+#endif
-+
-+#ifdef HAVE_LINUX_IF_ETHER_H
-+# include <linux/if_ether.h>
-+#endif
-+
-+#ifndef ETH_P_ALL
-+# define ETH_P_ALL 0x0003
-+#endif
-+
-+#ifndef PACKET_RX_RING
-+# define PACKET_RX_RING 5
-+#endif
-+
-+#ifndef PACKET_VERSION
-+# define PACKET_VERSION 10
-+#endif
-+
-+#ifndef HAVE_STRUCT_TPACKET_REQ3
-+# define TPACKET_V3 2
-+
-+struct tpacket_req3 {
-+	unsigned int	tp_block_size;
-+	unsigned int	tp_block_nr;
-+	unsigned int	tp_frame_size;
-+	unsigned int	tp_frame_nr;
-+	unsigned int	tp_retire_blk_tov;
-+	unsigned int	tp_sizeof_priv;
-+	unsigned int	tp_feature_req_word;
-+};
-+#endif
-+
-+static void run(void)
-+{
-+	int sk[2], i, ver = TPACKET_V3;
-+	struct tpacket_req3 req = {};
-+
-+	req.tp_block_size = 4096;
-+	req.tp_block_nr = 2;
-+	req.tp_frame_size = req.tp_block_size;
-+	req.tp_frame_nr = req.tp_block_nr;
-+	req.tp_retire_blk_tov = 100;
-+	req.tp_sizeof_priv = 1024;
-+
-+	for (i = 0; i < 2; i++) {
-+		sk[i] = SAFE_SOCKET(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
-+		SAFE_SETSOCKOPT(sk[i], SOL_PACKET, PACKET_VERSION,
-+				&ver, sizeof(ver));
-+	}
-+
-+	TEST(setsockopt(sk[0], SOL_PACKET, PACKET_RX_RING, &req, sizeof(req)));
-+	if (TEST_RETURN)
-+		tst_brk(TBROK | TTERRNO,
-+			"Can't create ring buffer with good settings");
-+
-+	req.tp_sizeof_priv += (3U << 30);
-+	TEST(setsockopt(sk[1], SOL_PACKET, PACKET_RX_RING, &req, sizeof(req)));
-+	if (TEST_RETURN && TEST_ERRNO == EINVAL)
-+		tst_res(TPASS | TTERRNO, "Refused bad tp_sizeof_priv value");
-+	else if (TEST_RETURN)
-+		tst_brk(TBROK | TTERRNO, "Unexpected setsockopt() error");
-+	else
-+		tst_res(TFAIL, "Allowed bad tp_sizeof_priv value");
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.needs_root = 1,
-+};
--- 
-2.13.3
+vkabatov@redhat.com writes:
 
+> diff --git a/testcases/kernel/syscalls/getsockopt/Makefile b/testcases/kernel/syscalls/getsockopt/Makefile
+> index bd617d8..033d73f 100644
+> --- a/testcases/kernel/syscalls/getsockopt/Makefile
+> +++ b/testcases/kernel/syscalls/getsockopt/Makefile
+> @@ -18,6 +18,8 @@
+>
+>  top_srcdir		?= ../../../..
+>
+> +getsockopt02: CFLAGS+=-pthread
+> +
+
+You don't need this anymore.
+
+>  include $(top_srcdir)/include/mk/testcases.mk
+>
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/syscalls/getsockopt/getsockopt02.c b/testcases/kernel/syscalls/getsockopt/getsockopt02.c
+> new file mode 100644
+> index 0000000..50e9034
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/getsockopt/getsockopt02.c
+> @@ -0,0 +1,106 @@
+> +/*
+> + * Copyright (C) 2017 Red Hat, Inc.
+> + *
+> + * This program is free software;  you can redistribute it and/or modify it
+> + * under the terms of the GNU General Public License as published by the Free
+> + * Software Foundation; either version 2 of the License, or (at your option)
+> + * any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful, but WITHOUT
+> + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+> + * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+> + * more details.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, see <http://www.gnu.org/licenses/>.
+> + */
+> +
+> +/*
+> + * Test description: Test retrieving of peer credentials (SO_PEERCRED)
+> + *
+> + */
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include <errno.h>
+> +#include <stdlib.h>
+> +#include "tst_test.h"
+> +
+> +static int socket_fd, fork_socket_fd, accepted;
+> +static struct sockaddr_un sun;
+> +
+> +#define SOCKNAME	"testsocket"
+> +
+> +static void setup(void)
+> +{
+> +	sun.sun_family = AF_UNIX;
+> +	(void)strcpy(sun.sun_path, SOCKNAME);
+> +	socket_fd = SAFE_SOCKET(sun.sun_family, SOCK_STREAM, 0);
+> +	SAFE_BIND(socket_fd, (struct sockaddr *)&sun, sizeof(sun));
+> +	SAFE_LISTEN(socket_fd, SOMAXCONN);
+> +}
+> +
+> +static void fork_func(void)
+> +{
+> +	fork_socket_fd = SAFE_SOCKET(sun.sun_family, SOCK_STREAM, 0);
+> +	SAFE_CONNECT(fork_socket_fd, (struct sockaddr *)&sun, sizeof(sun));
+> +}
+
+To avoid race conditions you probably want to keep the child process
+alive until the parent has read the peer creds.
+
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#229-fork-and-parent-child-synchronization
+
+> +
+> +static void test_function(void)
+> +{
+> +	pid_t fork_id;
+> +	struct ucred cred;
+> +	int status;
+> +	socklen_t cred_len = sizeof(cred);
+> +
+> +	fork_id = SAFE_FORK();
+> +	if (!fork_id) {
+> +		fork_func();
+> +		exit(0);
+> +	}
+> +
+> +	SAFE_WAITPID(fork_id, &status, 0);
+
+I'm surprised this works. It is waiting for the child to exit (or
+receive some other signal, but I can't see what) then accepts the
+connection from the child, but after the child is dead. If it works then
+I would guess that some race is happening within the kernel between
+socket and process cleanup.
+
+> +	accepted = accept(socket_fd, NULL, NULL);
+> +	if (accepted < 0) {
+> +		tst_res(TFAIL | TERRNO, "Error with accepting connection");
+> +		return;
+> +	}
+> +	if (getsockopt(accepted, SOL_SOCKET,
+> +				SO_PEERCRED, &cred, &cred_len) < 0) {
+> +		tst_res(TFAIL | TERRNO, "Error while getting socket options");
+> +		return;
+> +	}
+> +
+> +	if (accepted >= 0) {
+> +		(void)shutdown(accepted, SHUT_RDWR);
+> +		SAFE_CLOSE(accepted);
+> +	}
+> +	if (fork_socket_fd >= 0)
+> +		SAFE_CLOSE(fork_socket_fd);
+
+Unlike with threads, fork does not share memory with the child
+process. So fork_socket_fd will always be zero in the parent. You could
+just call SAFE_CLOSE at the end of fork_func().
+
+> +
+> +	if (fork_id != cred.pid) {
+> +		tst_res(TFAIL, "Received wrong PID %d, expected %d",
+> +				cred.pid, getpid());
+> +	} else
+> +		tst_res(TPASS, "Test passed");
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (accepted >= 0) {
+> +		(void)shutdown(accepted, SHUT_RDWR);
+
+This is probably overkill.
+
+> +		SAFE_CLOSE(accepted);
+> +	}
+> +	if (fork_socket_fd >= 0)
+> +		SAFE_CLOSE(fork_socket_fd);
+
+Again this will always be zero as cleanup() is not called by the child.
+
+> +	if (socket_fd >= 0)
+> +		SAFE_CLOSE(socket_fd);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = test_function,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.needs_tmpdir = 1,
+> +	.forks_child = 1,
+> +};
+> --
+> 2.7.4
+
+
+--
+Thank you,
+Richard.
