@@ -1,90 +1,179 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 25 Jul 2017 16:52:22 +0200
-Subject: [LTP] [RFC PATCH v7 02/11] network/stress: Add library
- test_net_stress.sh
-In-Reply-To: <4b453a16-1e16-c7e3-3b03-20b0d065fe2a@oracle.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 25 Jul 2017 18:21:27 +0300
+Subject: [LTP] [RFC PATCH v7 06/11] network/stress: Fix and cleanup part
+ of multicast IPv4 tests
+In-Reply-To: <20170721040407.868-7-pvorel@suse.cz>
 References: <20170721040407.868-1-pvorel@suse.cz>
- <20170721040407.868-3-pvorel@suse.cz>
- <fddf6fa1-3a12-5035-482f-08fe83fcb47e@oracle.com>
- <20170725095735.nhde7e6nezqeo3nn@dell5510>
- <4b453a16-1e16-c7e3-3b03-20b0d065fe2a@oracle.com>
-Message-ID: <20170725145222.k7yl6yia6fs26rm6@dell5510>
+ <20170721040407.868-7-pvorel@suse.cz>
+Message-ID: <0dcefc85-5c3e-f8e4-12f0-4b3f61a63bde@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> On 07/25/2017 12:57 PM, Petr Vorel wrote:
-> > Hi Alexey,
+On 07/21/2017 07:04 AM, Petr Vorel wrote:
+> * Fix test for SSH and netns based testing.
+> * Remove hardcoded rsh dependency.
+> * Create shell library mcast4-lib.sh (multicast IPv4 specific)
+>   to reduce duplicity in tests. Library uses test_stress_net.sh
+>   (and therefore test_net.sh).
+> * Cleanup code + fixed typos.
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  .../stress/multicast/grp-operation/mcast4-grpope01 | 221 ++-----------------
+>  .../stress/multicast/grp-operation/mcast4-grpope02 | 230 ++------------------
+>  .../stress/multicast/grp-operation/mcast4-grpope03 | 217 ++-----------------
+>  .../stress/multicast/grp-operation/mcast4-grpope04 | 236 ++-------------------
+>  .../stress/multicast/grp-operation/mcast4-lib.sh   | 129 +++++++++++
+>  5 files changed, 207 insertions(+), 826 deletions(-)
+>  create mode 100644 testcases/network/stress/multicast/grp-operation/mcast4-lib.sh
+>
+...
+> +#
+> +# You should have received a copy of the GNU General Public License
+> +# along with this program. If not, see <http://www.gnu.org/licenses/>.
+> +#
+> +# Author: Petr Vorel <pvorel@suse.cz>
+> +#
+> +# Setup script for mcast4-grpope* tests.
+> +
+> +TST_TOTAL=1
+> +TST_CLEANUP="mcast_cleanup"
+> +
+> +. test_net_stress.sh
+> +
+> +mcast_setup()
+> +{
+> +	local igmp_max_memberships="$1"
+> +	local increase_max="${2:-}"
+> +	local iface=$(tst_iface)
+> +
+> +	netstress_setup
+> +	tst_tmpdir
+> +
+> +	SYSFS_IGMP_MAX_MEMBERSHIPS=$(sysctl -b net.ipv4.igmp_max_memberships)
+> +	SYSFS_IGMP_MAX_MSF=$(sysctl -b net.ipv4.igmp_max_msf)
+> +	SYSFS_FORCE_IGMP_VERSION=$(sysctl -b net.ipv4.conf.${iface}.force_igmp_version)
+> +	SYSFS_ALL_FORCE_IGMP_VERSION=$(sysctl -b net.ipv4.conf.all.force_igmp_version)
+> +
+> +	if [ "$increase_max" ]; then
+> +		# Increase the maximum number of open file descriptors
+> +		[ `ulimit -n` -lt $igmp_max_memberships ] && ROD ulimit -n $igmp_max_memberships
+> +	fi
+> +
+> +	tst_add_ipaddr_stress
+> +	tst_add_ipaddr_stress rhost
 
-> >>> +export OCTET_3_IPV4_UNUSED=${OCTET_3_IPV4_UNUSED:-23} # x.x.N.x
-> >>> +export OCTET_4_LHOST_IPV4_HOST_UNUSED=${OCTET_4_LHOST_IPV4_HOST_UNUSED:-2} # x.x.x.N
-> >>> +export OCTET_4_RHOST_IPV4_HOST_UNUSED=${OCTET_4_RHOST_IPV4_HOST_UNUSED:-1} # x.x.x.N
-> >>> +export LHOST_IPV4_HOST_UNUSED="${OCTET_3_IPV4_UNUSED}.${OCTET_4_LHOST_IPV4_HOST_UNUSED}"
-> >>> +export RHOST_IPV4_HOST_UNUSED="${OCTET_3_IPV4_UNUSED}.${OCTET_4_RHOST_IPV4_HOST_UNUSED}"
-> >>> +export LHOST_IPV4_UNUSED="${IPV4_NET16_UNUSED}.$LHOST_IPV4_HOST_UNUSED"
-> >>> +export RHOST_IPV4_UNUSED="${IPV4_NET16_UNUSED}.$RHOST_IPV4_HOST_UNUSED"
-> >>> +
-> >>> +export OCTET_3_IPV6_UNUSED="${OCTET_3_IPV6_UNUSED:-:0}"
-> >>> +export OCTET_4_LHOST_IPV6_HOST_UNUSED=${OCTET_4_LHOST_IPV6_HOST_UNUSED:-2}
-> >>> +export OCTET_4_RHOST_IPV6_HOST_UNUSED=${OCTET_4_RHOST_IPV6_HOST_UNUSED:-1}
-> >>> +export LHOST_IPV6_HOST_UNUSED="${OCTET_3_IPV6_UNUSED}:${OCTET_4_LHOST_IPV6_HOST_UNUSED}"
-> >>> +export RHOST_IPV6_HOST_UNUSED="${OCTET_3_IPV6_UNUSED}:${OCTET_4_RHOST_IPV6_HOST_UNUSED}"
-> >>> +export LHOST_IPV6_UNUSED="${IPV6_NET32_UNUSED}:$LHOST_IPV6_HOST_UNUSED"
-> >>> +export RHOST_IPV6_UNUSED="${IPV6_NET32_UNUSED}:$RHOST_IPV6_HOST_UNUSED"
-> >> Hmm, what is the purpose of adding these variables to the library?
-> >> Why someone would need to redefine any of them?
-> > I thought someone might appreciate ability to full control of IP
-> > addresses, but you're right it's probably useless.
-> > If you don't mind, I'll keep {L,R}HOST_IPV{4,6}_UNUSED variables as they are used in many scripts
-> > (DRY approach) and delete the rest of variables.
+This is very strange, the test adds a new pair of addresses and then
+runs ping in setup. After that they not used...
 
-
-> What about adding a new function similar to tst_ipaddr()?
-
-> tst_ipaddr_un(), tst_ipaddr_new(), etc.? Probably we would need to add
-> some optional counter parameter along with lhost/rhost...
-
-How about this?
-
-tst_ipaddr_un()
-{
-	local type="${1:-lhost}"
-	local counter="${2:-1}"
-	local host net max_counter max_net max_host tmp
-
-	[ "$TST_IPV6" ] && max_net=65536 || max_net=256
-	max_host=$((max_net - 2))
-	max_counter=$((max_host * max_net / 2))
-
-	if [ $counter -gt $max_counter ]; then
-		tst_resm TCONF "'$counter' higher than max counter limit '$max_counter'"
-	fi
-
-	tmp=$((counter * 2))
-	[ "$type" = "rhost" ] && tmp=$((tmp - 1))
-
-	host=$((tmp % max_host))
-	net=$((tmp / max_host))
-	[ $host -eq 0 ] && { host=$max_host; net=$((net - 1)); }
-
-	if [ "$TST_IPV6" ]; then
-		echo "${IPV6_NET32_UNUSED}::$(printf %x:%x ${net} ${host})"
-	else
-		echo "${IPV4_NET16_UNUSED}.${net}.${host}"
-	fi
-}
-
-Given the fact that most of the tests needs just one IP address (the
-exception are route4-change-{if,gw}, if-{addr,route}-{adddel,addlarge}) it's probably too
-overhead and error prone. I mean working with last octet/hextet might be enough.
-
-And if we want to work with more than last octet, we might appreciate to be able to
-specify (optionally) third octet as well ($net variable).
-Scripts which could benefit from it are at least:
-if-{addr,route}-addlarge, route4-change-if.
+By the way, we already have IP addresses defined by IPV4_HOST variables,
+better use them if needed.
 
 
-Kind regards,
-Petr
+> +	check_connectivity $iface $RHOST_IPV4_UNUSED
+
+No need for this test.
+
+> +
+> +	ROD sysctl -qw net.ipv4.igmp_max_memberships=$igmp_max_memberships
+> +	ROD sysctl -qw net.ipv4.igmp_max_msf=10
+> +	ROD sysctl -qw net.ipv4.conf.${iface}.force_igmp_version=0
+> +	ROD sysctl -qw net.ipv4.conf.all.force_igmp_version=0
+> +}
+> +
+> +mcast_cleanup()
+> +{
+> +	local iface=$(tst_iface)
+> +
+> +	[ -n "$SYSFS_IGMP_MAX_MEMBERSHIPS" ] && sysctl -qw net.ipv4.igmp_max_memberships=$SYSFS_IGMP_MAX_MEMBERSHIPS
+> +	[ -n "$SYSFS_IGMP_MAX_MSF" ] && sysctl -qw net.ipv4.igmp_max_msf=$SYSFS_IGMP_MAX_MSF
+> +	[ -n "$SYSFS_FORCE_IGMP_VERSION" ] && sysctl -qw net.ipv4.conf.${iface}.force_igmp_version=$SYSFS_FORCE_IGMP_VERSION
+> +	[ -n "$SYSFS_ALL_FORCE_IGMP_VERSION" ] && sysctl -qw net.ipv4.conf.all.force_igmp_version=$SYSFS_ALL_FORCE_IGMP_VERSION
+> +
+> +	pkill -SIGHUP -x ns-mcast_join
+> +	tst_sleep 10ms
+> +	pkill -9 -x ns-mcast_join
+> +
+> +	tst_rhost_run -c "pkill -SIGHUP -x ns-igmp_querier"
+> +
+> +	restore_ipaddr
+> +	restore_ipaddr rhost
+> +}
+> +
+> +do_multicast_test_multiple_join()
+> +{
+> +	local igmp_max_memberships="$1"
+> +	local iface=$(tst_iface)
+> +	local riface=$(tst_iface rhost)
+
+I would rather use those functions inline.
+
+> +	local param_multi_socket ret tmpfile
+> +
+> +	[ "${2:-}" = true ] && param_multi_socket="-m"
+> +
+> +	# Run a multicast join tool
+> +	tmpfile=ns-mcast_join.$$
+> +
+> +	EXPECT_PASS ns-mcast_join $param_multi_socket -f 4 -I $iface -n $igmp_max_memberships -p $MCAST_IPV4_ADDR_PREFIX > $tmpfile
+
+EXPECT_PASS ... \> $tmpfile
+
+> +
+> +	tst_resm TINFO "joined $(grep groups $tmpfile)"
+> +
+> +	# Send IGMP General Query from the remote host
+> +	EXPECT_RHOST_PASS ns-igmp_querier -I $riface -o -r 1
+
+We need to use the address defined with the prefix
+$MCAST_IPV4_ADDR_PREFIX above otherwise we won't get a reply, i.e. "-m
+$MCAST_IPV4_ADDR"
+
+> +}
+> +
+> +do_multicast_test_join_leave()
+> +{
+> +	local iface=$(tst_iface)
+> +	local riface=$(tst_iface rhost)
+> +	local define_source_address filter num ret source_addr x y
+> +
+> +	[ "$1" = true ] && define_source_address=true
+> +
+> +	# Send IGMP General Query from the remote host
+> +	tst_rhost_run -s -c "ns-igmp_querier -I $riface -i 1000000000 -r 1 -b"
+> +
+> +	# Run a multicast join tool
+> +	num=0
+> +	while [ $num -lt $MCASTNUM_NORMAL ]; do
+> +		if [ "$define_source_address" ]; then
+> +			x=$(($num / 254))
+> +			y=$(($num % 254 + 1))
+> +			if [ $x -gt 254 ]; then
+> +				tst_resm TINFO "the number of the connection is less than $num"
+> +				break
+> +			fi
+> +			source_addr="${IPV4_NET16_UNUSED}.${x}.${y}"
+> +
+> +			[ $(($num % 5)) -ne 2 ] && filter="include" || filter="exclude"
+> +			params="-F $filter -s $source_addr"
+> +		fi
+> +
+> +		ROD ns-mcast_join -f 4 -I $iface -l $NS_TIMES -a $MCAST_IPV4_ADDR $params &
+
+
+just ns-mcast_join ... &
+
+> +		num=$(($num + 1))
+> +	done
+> +
+> +	wait
+> +
+> +	tst_resm TPASS "test is finished successfully"
+> +}
+
+
+Thanks,
+Alexey
