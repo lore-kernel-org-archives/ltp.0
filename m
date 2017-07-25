@@ -1,77 +1,73 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 25 Jul 2017 15:40:45 +0200
-Subject: [LTP] [COMMITTED] [PATCH 2/2] syscalls/fchdir03: Rewrite.
-In-Reply-To: <20170725134045.13656-1-chrubis@suse.cz>
-References: <20170725134045.13656-1-chrubis@suse.cz>
-Message-ID: <20170725134045.13656-2-chrubis@suse.cz>
+Date: Tue, 25 Jul 2017 15:40:44 +0200
+Subject: [LTP] [COMMITTED] [PATCH 1/2] syscalls/chdir03: Rewrite.
+Message-ID: <20170725134045.13656-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Rewrite test to the new library
+Rewrite test to the new library.
 
-Also fixes second part of issue #181.
+Also fixes first part of issue #181.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/fchdir/fchdir03.c | 173 ++++++----------------------
- 1 file changed, 35 insertions(+), 138 deletions(-)
+ testcases/kernel/syscalls/chdir/chdir03.c | 190 ++++++++----------------------
+ 1 file changed, 46 insertions(+), 144 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fchdir/fchdir03.c b/testcases/kernel/syscalls/fchdir/fchdir03.c
-index a7c32c418..59685f814 100644
---- a/testcases/kernel/syscalls/fchdir/fchdir03.c
-+++ b/testcases/kernel/syscalls/fchdir/fchdir03.c
-@@ -1,27 +1,24 @@
+diff --git a/testcases/kernel/syscalls/chdir/chdir03.c b/testcases/kernel/syscalls/chdir/chdir03.c
+index fbf1a4f02..aa0720626 100644
+--- a/testcases/kernel/syscalls/chdir/chdir03.c
++++ b/testcases/kernel/syscalls/chdir/chdir03.c
+@@ -1,26 +1,23 @@
  /*
-- *
-  * Copyright (C) Bull S.A. 2001
-  * Copyright (c) International Business Machines  Corp., 2001
++ * Copyright (c) International Business Machines  Corp., 2001
 + * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
   *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
+- *   Copyright (c) International Business Machines  Corp., 2001
 + * This program is free software;  you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
 + * the Free Software Foundation; either version 2 of the License, or
 + * (at your option) any later version.
   *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
 + * This program is distributed in the hope that it will be useful,
 + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
 + * the GNU General Public License for more details.
   *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
 - *   You should have received a copy of the GNU General Public License
 - *   along with this program;  if not, write to the Free Software
 - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 + * You should have received a copy of the GNU General Public License
-+ * along with this program;  if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * along with this program;  if not, write to the Free Software Foundation,
++ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
   */
  
  /*
 - * NAME
-- *	fchdir03
+- *	chdir03
 - *
   * DESCRIPTION
-  *	Testcase for testing that fchdir(2) sets EACCES errno
+  *	Testcase for testing that chdir(2) sets EACCES errno
   *
-@@ -31,147 +28,47 @@
-  *	3.	this child opens the directory and gets a file descriptor
-  *	4.	this child attempts to fchdir(2) to the directory created in 2.
+@@ -30,160 +27,65 @@
+  *	3.	create another child process, sets its uid to ltpuser2
+  *	4.	this child attempts to chdir(2) to the directory created in 2.
   *		and expects to get an EACCES.
-- *	5.	finally this child checks the return code,
-- *		resets the process ID to root and calls cleanup.
 - *
 - * USAGE:  <for command-line>
-- *  fchdir03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *  chdir03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
 - *             -e   : Turn on errno logging.
 - *             -i n : Execute test n times.
@@ -80,136 +76,153 @@ index a7c32c418..59685f814 100644
 - *             -t   : Turn on syscall timing.
 - *
 - * HISTORY
-- *	04/2002 Ported by Jacky Malcles
+- *	07/2001 Ported by Wayne Boyer
 - *
 - * RESTRICTIONS
 - *	This test must be run as root.
   */
  
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <sys/wait.h>
- #include <errno.h>
--#include <fcntl.h>
- #include <pwd.h>
 -#include <stdio.h>
--#include <string.h>
+-#include <sys/types.h>
 -#include <unistd.h>
+ #include <pwd.h>
+ #include <errno.h>
+-#include <sys/wait.h>
+ #include <stdlib.h>
+-#include <string.h>
+-#include <sys/stat.h>
+-#include <sys/types.h>
 -
 -#include "test.h"
 -#include "safe_macros.h"
 -
--char *TCID = "fchdir03";
+-char *TCID = "chdir03";
 -int TST_TOTAL = 1;
-+#include "tst_test.h"
- 
+-
 -void setup(void);
 -void cleanup(void);
-+#define DIRNAME "fchdir03_dir"
++#include "tst_test.h"
  
 -char good_dir[100];
--int fd;
-+static int fd;
++#define DIRNAME "chdir03_dir"
  
--static uid_t nobody_uid;
--
+ static uid_t nobody_uid, bin_uid;
+ 
 -int main(int ac, char **av)
-+void verify_fchdir(void)
++void verify_chdir(void)
  {
 -	int lc;
--
--	pid_t pid;
++	pid_t pid;
+ 
+-	pid_t pid, pid1;
 -	int status;
--
++	pid = SAFE_FORK();
++	if (!pid) {
++		SAFE_SETUID(bin_uid);
+ 
 -	tst_parse_opts(ac, av, NULL, NULL);
--
++		TEST(chdir(DIRNAME));
+ 
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
 -
--		if ((pid = FORK_OR_VFORK()) == -1)
--			tst_brkm(TBROK, cleanup, "fork failed");
--
+-		if ((pid = FORK_OR_VFORK()) < 0) {
+-			tst_brkm(TBROK, cleanup, "first fork failed");
++		if (TEST_RETURN != -1) {
++			tst_res(TFAIL, "chdir() succeeded unexpectedly");
++			return;
+ 		}
+ 
 -		if (pid == 0) {
--			/*
--			 * set the child's ID to ltpuser1 using seteuid()
--			 * so that the ID can be changed back after the
--			 * TEST call is made.
--			 */
--			if (seteuid(nobody_uid) != 0) {
+-			if (setreuid(nobody_uid, nobody_uid) != 0) {
 -				perror("setreuid failed in child #1");
 -				exit(1);
 -			}
--			if (mkdir(good_dir, 00400) != 0) {
+-			if (mkdir(good_dir, 00700) != 0) {
 -				perror("mkdir failed in child #1");
 -				exit(1);
 -			}
--			if ((fd = open(good_dir, O_RDONLY)) == -1) {
--				perror("opening directory failed");
+-			exit(0);
++		if (TEST_ERRNO != EACCES) {
++			tst_res(TFAIL | TTERRNO,
++				"chdir() should fail with EACCES");
++			return;
+ 		}
+-		wait(&status);
+-
+-		if ((pid1 = FORK_OR_VFORK()) < 0)
+-			tst_brkm(TBROK, cleanup, "second fork failed");
+-
+-		if (pid1 == 0) {	/* second child */
+-
+-			int rval;
+-
+-			/*
+-			 * set the child's ID to ltpuser2 using seteuid()
+-			 * so that the ID can be changed back after the
+-			 * TEST call is made.
+-			 */
+-			if (seteuid(bin_uid) != 0) {
+-				perror("setreuid failed in child #2");
+-				exit(1);
 -			}
-+	TEST(fchdir(fd));
+-
+-			TEST(chdir(good_dir));
  
--			TEST(fchdir(fd));
--
 -			if (TEST_RETURN != -1) {
--				printf("Call succeeded unexpectedly\n");
--				exit(1);
+-				printf("call succeeded unexpectedly\n");
+-				rval = 1;
 -			} else if (TEST_ERRNO != EACCES) {
--				printf("Expected %d - got %d\n",
--				       EACCES, TEST_ERRNO);
--				exit(1);
--			} else
--				printf("Got EACCES as expected\n");
+-				printf("didn't get EACCES as expected; got ");
+-				rval = 1;
+-			} else {
+-				printf("got EACCES as expected\n");
+-				rval = 0;
+-			}
+-			/* Only really required with vfork. */
+-			if (seteuid(0) != 0) {
+-				perror("seteuid(0) failed");
+-				rval = 1;
+-			}
 -
--			/* reset the UID to root */
--			if (setuid(0) == -1)
--				perror("setuid(0) failed");
+-			exit(rval);
 -
 -		} else {
 -			if (wait(&status) == -1)
 -				tst_brkm(TBROK | TERRNO, cleanup,
 -					 "wait failed");
--			else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+-			if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 -				tst_brkm(TBROK, cleanup,
--					 "child exited abnormally (wait status = "
--					 "%d", status);
--			else {
--				/* let the child carry on */
--				exit(0);
--			}
+-					 "child exited abnormally");
+-			tst_resm(TPASS, "child reported success");
 -		}
--
--		if (rmdir(good_dir) == -1)
--			tst_brkm(TBROK, cleanup, "rmdir failed");
-+	if (TEST_RETURN != -1) {
-+		tst_res(TFAIL, "fchdir() succeeded unexpectedly");
-+		return;
-+	}
- 
-+	if (TEST_ERRNO != EACCES) {
-+		tst_res(TFAIL | TTERRNO, "fchdir() should fail with EACCES");
-+		return;
+-		if (rmdir(good_dir) == -1) {
+-			tst_brkm(TBROK | TERRNO, cleanup,
+-				 "rmdir(%s) failed", good_dir);
+-		}
++		tst_res(TPASS | TTERRNO, "chdir() failed expectedly");
  	}
+-
 -	cleanup();
- 
 -	tst_exit();
-+	tst_res(TPASS | TTERRNO, "fchdir() failed expectedly");
  }
  
  void setup(void)
  {
  	struct passwd *pw;
- 
 -	char *cur_dir = NULL;
 -
 -	tst_require_root();
--
++	pid_t pid;
+ 
 -	pw = SAFE_GETPWNAM(NULL, "nobody");
--	nobody_uid = pw->pw_uid;
 +	pw = SAFE_GETPWNAM("nobody");
-+	SAFE_SETEUID(pw->pw_uid);
-+	SAFE_MKDIR(DIRNAME, 0400);
+ 	nobody_uid = pw->pw_uid;
+-	pw = SAFE_GETPWNAM(NULL, "bin");
++	pw = SAFE_GETPWNAM("bin");
+ 	bin_uid = pw->pw_uid;
  
 -	tst_sig(FORK, DEF_HANDLER, cleanup);
 -
@@ -220,19 +233,27 @@ index a7c32c418..59685f814 100644
 -	if ((cur_dir = getcwd(cur_dir, 0)) == NULL)
 -		tst_brkm(TBROK | TERRNO, cleanup, "getcwd failed");
 -
--	sprintf(good_dir, "%s.%d", cur_dir, getpid());
-+	fd = SAFE_OPEN(DIRNAME, O_RDONLY);
+-	sprintf(good_dir, "%s/%d", cur_dir, getpid());
++	pid = SAFE_FORK();
++	if (!pid) {
++		SAFE_SETEUID(nobody_uid);
++		SAFE_MKDIR(DIRNAME, 0700);
++		exit(0);
++	}
++	tst_reap_children();
  }
  
 -void cleanup(void)
 -{
 -	tst_rmdir();
+-
 -}
 +static struct tst_test test = {
 +	.setup = setup,
-+	.test_all = verify_fchdir,
++	.test_all = verify_chdir,
 +	.needs_tmpdir = 1,
 +	.needs_root = 1,
++	.forks_child = 1,
 +};
 -- 
 2.13.0
