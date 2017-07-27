@@ -1,12 +1,12 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 27 Jul 2017 10:35:30 +0200
-Subject: [LTP] [RFC PATCH v7 10/11] network: Add tools for setup IP
- related environment variables
-In-Reply-To: <778792d9-e201-f64d-f8f1-cb5ebe783aa9@oracle.com>
+Date: Thu, 27 Jul 2017 11:03:31 +0200
+Subject: [LTP] [RFC PATCH v7 11/11] network: Use tools to set up IPv4
+ and IPv6 related variables
+In-Reply-To: <2255e31f-0d8f-5aed-e288-6dde615d98a4@oracle.com>
 References: <20170721040407.868-1-pvorel@suse.cz>
- <20170721040407.868-11-pvorel@suse.cz>
- <778792d9-e201-f64d-f8f1-cb5ebe783aa9@oracle.com>
-Message-ID: <20170727083530.exjmur6emuurbqwm@dell5510>
+ <20170721040407.868-12-pvorel@suse.cz>
+ <2255e31f-0d8f-5aed-e288-6dde615d98a4@oracle.com>
+Message-ID: <20170727090331.olg3buhrhhs6h532@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,79 +15,99 @@ To: ltp@lists.linux.it
 
 Hi Alexey,
 
-> On 21.07.2017 7:04, Petr Vorel wrote:
-> > New tools:
-> > * tst_net_ip_prefix
-> > Strip prefix from IP address and save both
-> > If no prefix found sets default prefix.
+> > +# For full list of exported environment variables see:
+> > +# tst_net_ip_prefix -h
+> > +# tst_net_iface_prefix -h
+> > +# tst_net_vars -h
+> > +if [ -z "$TST_PARSE_VARIABLES" ]; then
+> > +	tst_resm TINFO "Parsing IP and prefixes"
+> > +	set -x
 
-> > * tst_net_iface_prefix
-> > tst_net_iface_prefix reads prefix and interface from rtnetlink.
+> It might be useful just for debugging, please remove it.
+OK, I'll remove it, because you don't like it. But I have to admit, I think it's important
+to see values of automatic setup.
+If user reports a bug/problem we have ver_linux, which is suitable for most of the
+scripts, but not for networking.  And printing values of automatic configuration doesn't
+have to be by 'set -x', that was just a quick way how to achieve it.
 
-> > * tst_net_vars takes input of local and remote address and setup most of
-> > test link (IP related) environment variables.
+> > +	eval "$(tst_net_ip_prefix $IPV4_LHOST)" || exit $?
 
-> Have you checked my comments for the previous version?
-Sure :-). I've spent quite some time to think about that and test it, but of course I
-might overlook something.
-Anything particular you don't agree with?
+> Not quite right, if you want to deal with the status of
+> tst_net_ip_prefix, you have to set 'exit' on error inside $(...)
+
+> eval "$(tst_net_ip_prefix $IPV4_LHOST || echo 'exit $?')"
+Am I missing something? Are you sure, you're right? POSIX defines [1]:
+EXIT STATUS
+If there are no arguments, or only null arguments, eval shall return a zero exit status;
+otherwise, it shall return the exit status of the command defined by the string of
+concatenated arguments separated by <space> characters, or a non-zero exit status if the
+concatenation could not be parsed as a command and the shell is interactive (and therefore
+did not abort).
+
+[1]: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_19
+
+And bash, dash and busybox shell all implement this behaviour correctly. So both ways
+deals correctly with tst_net_ip_prefix exit status and I consider mine form a bit clearer.
+
+
+> > +	if [ "$TST_USE_NETNS" != "yes" ]; then
+> > +		tst_resm TINFO "Parsing prefixes and ifaces from rtnetlink"
+> > +		set -x
+> > +		eval "$(tst_net_iface_prefix $IPV4_LHOST)" || exit $?
+> > +		eval "$(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV4_RHOST)" || exit $?
+> > +		eval "$(tst_net_iface_prefix $IPV6_LHOST)" || exit $?
+> > +		eval "$(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV6_RHOST)" || exit $?
+> > +		set +x
+> > +	fi
+
+> Why netns is not working in the above case or it's an optimization?
+Chicken or the egg problem. We need tst_rhost_run, but it requires LTP_NETNS being set =>
+that requires init_ltp_netspace() call. But in init_ltp_netspace() we set remote IP. Does
+it make sense to move tst_net_iface_prefix behind netns initialization and call 'tst_restore_ipaddr'
+and 'tst_restore_ipaddr rhost' again?
 
 ...
-> > +int main(int argc, char *argv[])
-> > +{
-> > +	char *ip_str = NULL, *prefix_str = NULL;
-> > +	int is_ipv6, is_rhost = 0;
-> > +
-> > +	int is_usage = argc > 1 && (!strcmp(argv[1], "-h") ||
-> > +		!strcmp(argv[1], "--help"));
-> > +	if (argc < 2 || is_usage) {
-> > +		usage(argv[0]);
-> > +		exit(is_usage ? EXIT_SUCCESS : EXIT_FAILURE);
-> > +	}
-> > +	if (!strcmp(argv[1], "-r"))
-> > +		is_rhost = 1;
-> > +
-> > +	ip_str = argv[is_rhost ? 2 : 1];
-> > +	is_ipv6 = !!strchr(ip_str, ':');
-> > +
-> > +	prefix_str = strchr(ip_str, '/');
-> > +	if (prefix_str)
-> > +		vars.prefix = get_prefix(ip_str, is_ipv6);
-> > +	else {
-> > +		vars.prefix = is_ipv6 ? DEFAULT_IPV6_PREFIX : DEFAULT_IPV4_PREFIX;
-> > +		tst_res_comment(TBROK,
-> > +				"prefix and interface not found for '%s'. Using default value %d.\n",
-> > +				ip_str, vars.prefix);
+> > diff --git a/testcases/network/stress/interface/if4-addr-change b/testcases/network/stress/interface/if4-addr-change
+> > index 567f86643..a7469c252 100644
+> > --- a/testcases/network/stress/interface/if4-addr-change
+> > +++ b/testcases/network/stress/interface/if4-addr-change
+> > @@ -48,12 +48,19 @@ while [ $cnt -lt $NS_TIMES ]; do
 
-> The message is misleading, after tst_net_ip_prefix the script
-> calls tst_net_iface_prefix.So better remove it, looks like
-> it will be printed every time if you relies on auto configuration.
-OK.
+> >  	[ $num -eq $RHOST_IPV4_HOST ] && continue
 
-...
-> > +static void print_vars(int is_ipv6)
-> > +{
-> > +	if (is_ipv6) {
-> > +		print_svar("IPV6_LHOST", vars.ipv6_lhost);
-> > +		print_svar("IPV6_RHOST", vars.ipv6_rhost);
+> > -	# Change IPv4 address
+> > -	lhost_ipv4addr="${IPV4_NETWORK}.${num}"
+> > +	# check prefix and fix values for prefix != 24
+> > +	add_to_net=
+> > +	if [ $IPV4_LPREFIX -lt 8 -o $IPV4_LPREFIX -ge 32 ] ; then
+> > +		tst_brkm TCONF "test must be with prefix >= 8 and prefix < 32 ($IPV4_LPREFIX)"
+> > +	elif [ $IPV4_LPREFIX -lt 16 ]; then # N.x.x.num
+> > +		add_to_net=".0.1"
+> > +	elif [ $IPV4_LPREFIX -lt 24 ]; then # N.N.x.num
+> > +		add_to_net=".1"
+> > +	fi
 
-> It is already done by tst_net_ip_prefix
-Oh, good catch, sorry.
+> > -	ifconfig $(tst_iface) $lhost_ipv4addr netmask 255.255.255.0 \
+> > -		broadcast 255.255.255.255 || \
+> > -		tst_brkm TFAIL "Failed to change into ${lhost_ipv4addr}"
+> > +	# Change IPv4 address
+> > +	ROD ifconfig $(tst_iface) ${IPV4_LNETWORK}${add_to_net}.${num} netmask \
+> > +		$IPV4_LNETMASK broadcast $IPV4_LBROADCAST
 
-> > +		print_svar("IPV6_LNETMASK", vars.ipv6_lnetmask);
-> > +		print_svar_change("IPV6_RNETMASK", vars.ipv6_rnetmask);
-> > +		print_svar("IPV6_LNETWORK", vars.ipv6_lnetwork);
-> > +		print_svar("IPV6_RNETWORK", vars.ipv6_rnetwork);
-> > +		print_svar("LHOST_IPV6_HOST", vars.lhost_ipv6_host);
-> > +		print_svar("RHOST_IPV6_HOST", vars.rhost_ipv6_host);
-> > +		print_svar("IPV6_NET32_UNUSED", vars.ipv6_net32_unused);
-> > +	} else {
-> > +		print_svar("IPV4_LHOST", vars.ipv4_lhost);
-> > +		print_svar("IPV4_RHOST", vars.ipv4_rhost);
 
-> Here the same.
+> Could you make a separate patch for this? It looks completely
+> unrelated to the rest in this patch.
+No, it is related: IPV4_NETWORK disappeared and was replaced by IPV4_LNETWORK and
+IPV4_RNETWORK. If we split the commit into two, if4-addr-change will not work in the first
+commit (and we break principle of atomic commits).
+Of course, we can temporarily (for one commit) define IPV4_NETWORK locally in
+if4-addr-change in the first commit in order not to break the script, but does it make
+much sense?
+I didn't mention in commit message that I'm updating all scripts which use old variables
+(the ones which disappeared) with new ones. If you agree to keep it all in one commit, I
+put the info in the message.
 
-Thanks for your review!
+Thanks for your review, I really appreciate it!
 
 Kind regards,
 Petr
