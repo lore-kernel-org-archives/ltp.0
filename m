@@ -1,174 +1,93 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 27 Jul 2017 10:14:37 +0200
-Subject: [LTP] [PATCH] [RFC] tst_test: Add support for array of test
-	functions
-Message-ID: <20170727081437.27995-1-chrubis@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 27 Jul 2017 10:35:30 +0200
+Subject: [LTP] [RFC PATCH v7 10/11] network: Add tools for setup IP
+ related environment variables
+In-Reply-To: <778792d9-e201-f64d-f8f1-cb5ebe783aa9@oracle.com>
+References: <20170721040407.868-1-pvorel@suse.cz>
+ <20170721040407.868-11-pvorel@suse.cz>
+ <778792d9-e201-f64d-f8f1-cb5ebe783aa9@oracle.com>
+Message-ID: <20170727083530.exjmur6emuurbqwm@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This commits add third option for specifying the test functions in an
-NULL terminated array of function pointers + converts two testcases.
+Hi Alexey,
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- include/tst_test.h                            | 11 ++++----
- lib/tst_test.c                                | 38 ++++++++++++++++++++++-----
- testcases/kernel/syscalls/syscall/syscall01.c | 20 +++++---------
- testcases/kernel/syscalls/waitpid/waitpid09.c | 12 +++------
- 4 files changed, 47 insertions(+), 34 deletions(-)
+> On 21.07.2017 7:04, Petr Vorel wrote:
+> > New tools:
+> > * tst_net_ip_prefix
+> > Strip prefix from IP address and save both
+> > If no prefix found sets default prefix.
 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index c1eab3294..aa1554d34 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -140,17 +140,18 @@ struct tst_test {
- 	/* override default timeout per test run */
- 	unsigned int timeout;
- 
-+	/* NULL terminated array of resource file names */
-+	const char *const *resource_files;
-+
- 	void (*setup)(void);
- 	void (*cleanup)(void);
- 
--	void (*test)(unsigned int test_nr);
--	void (*test_all)(void);
--
- 	/* Sampling function for timer measurement testcases */
- 	int (*sample)(int clk_id, long long usec);
- 
--	/* NULL terminated array of resource file names */
--	const char *const *resource_files;
-+	void (*test)(unsigned int test_nr);
-+	void (*test_all)(void);
-+	void (**tests)(void);
- };
- 
- /*
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 16ea64fe9..f482de116 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -649,6 +649,15 @@ static void assert_test_fn(void)
- 	if (tst_test->sample)
- 		cnt++;
- 
-+	if (tst_test->tests) {
-+		cnt++;
-+
-+		if (!tst_test->tests[0]) {
-+			tst_brk(TBROK,
-+				"The tests[] must have at least one function");
-+		}
-+	}
-+
- 	if (!cnt)
- 		tst_brk(TBROK, "No test function speficied");
- 
-@@ -763,22 +772,39 @@ static void do_cleanup(void)
- 
- static void run_tests(void)
- {
--	unsigned int i;
-+	unsigned int i = 0, go = 1;
- 	struct results saved_results;
- 
--	if (!tst_test->test) {
-+
-+	while (go) {
- 		saved_results = *results;
--		tst_test->test_all();
- 
--		if (getpid() != main_pid) {
--			exit(0);
-+		if (tst_test->test_all) {
-+			tst_test->test_all();
-+			go = 0;
- 		}
- 
-+		if (tst_test->test) {
-+			tst_test->test(i);
-+
-+			if (++i >= tst_test->tcnt)
-+				go = 0;
-+		}
-+
-+		if (tst_test->tests) {
-+			tst_test->tests[i]();
-+
-+			if (!tst_test->tests[++i])
-+				go = 0;
-+		}
-+
-+		if (getpid() != main_pid)
-+			exit(0);
-+
- 		tst_reap_children();
- 
- 		if (results_equal(&saved_results, results))
- 			tst_brk(TBROK, "Test haven't reported results!");
--		return;
- 	}
- 
- 	for (i = 0; i < tst_test->tcnt; i++) {
-diff --git a/testcases/kernel/syscalls/syscall/syscall01.c b/testcases/kernel/syscalls/syscall/syscall01.c
-index 728f538cc..98a381b9b 100644
---- a/testcases/kernel/syscalls/syscall/syscall01.c
-+++ b/testcases/kernel/syscalls/syscall/syscall01.c
-@@ -75,20 +75,12 @@ static void verify_getgid(void)
- 	}
- }
- 
--
--static void (*tcases[])(void) = {
--	verify_getpid,
--	verify_getuid,
--	verify_getgid,
--};
--
--static void verify_syscall(unsigned int n)
--{
--	tcases[n]();
--}
--
- static struct tst_test test = {
--	.test = verify_syscall,
--	.tcnt = ARRAY_SIZE(tcases),
-+	.tests = (void (*[])(void)) {
-+		verify_getpid,
-+		verify_getuid,
-+		verify_getgid,
-+		NULL,
-+	}
- };
- 
-diff --git a/testcases/kernel/syscalls/waitpid/waitpid09.c b/testcases/kernel/syscalls/waitpid/waitpid09.c
-index 78119379f..8d3b2e40b 100644
---- a/testcases/kernel/syscalls/waitpid/waitpid09.c
-+++ b/testcases/kernel/syscalls/waitpid/waitpid09.c
-@@ -162,16 +162,10 @@ static void case3(void)
- 	tst_res(TPASS, "waitpid(-1, WNOHANG) = -1 with ECHILD if no children");
- }
- 
--static void (*tests[])(void) = { case0, case1, case2, case3 };
--
--static void waitpid09_test(unsigned int id)
--{
--	tests[id]();
--}
--
- static struct tst_test test = {
- 	.forks_child = 1,
- 	.needs_checkpoints = 1,
--	.test = waitpid09_test,
--	.tcnt = ARRAY_SIZE(tests),
-+	.tests = (void (*[])(void)) {
-+		case0, case1, case2, case3, NULL,
-+	}
- };
--- 
-2.13.0
+> > * tst_net_iface_prefix
+> > tst_net_iface_prefix reads prefix and interface from rtnetlink.
 
+> > * tst_net_vars takes input of local and remote address and setup most of
+> > test link (IP related) environment variables.
+
+> Have you checked my comments for the previous version?
+Sure :-). I've spent quite some time to think about that and test it, but of course I
+might overlook something.
+Anything particular you don't agree with?
+
+...
+> > +int main(int argc, char *argv[])
+> > +{
+> > +	char *ip_str = NULL, *prefix_str = NULL;
+> > +	int is_ipv6, is_rhost = 0;
+> > +
+> > +	int is_usage = argc > 1 && (!strcmp(argv[1], "-h") ||
+> > +		!strcmp(argv[1], "--help"));
+> > +	if (argc < 2 || is_usage) {
+> > +		usage(argv[0]);
+> > +		exit(is_usage ? EXIT_SUCCESS : EXIT_FAILURE);
+> > +	}
+> > +	if (!strcmp(argv[1], "-r"))
+> > +		is_rhost = 1;
+> > +
+> > +	ip_str = argv[is_rhost ? 2 : 1];
+> > +	is_ipv6 = !!strchr(ip_str, ':');
+> > +
+> > +	prefix_str = strchr(ip_str, '/');
+> > +	if (prefix_str)
+> > +		vars.prefix = get_prefix(ip_str, is_ipv6);
+> > +	else {
+> > +		vars.prefix = is_ipv6 ? DEFAULT_IPV6_PREFIX : DEFAULT_IPV4_PREFIX;
+> > +		tst_res_comment(TBROK,
+> > +				"prefix and interface not found for '%s'. Using default value %d.\n",
+> > +				ip_str, vars.prefix);
+
+> The message is misleading, after tst_net_ip_prefix the script
+> calls tst_net_iface_prefix.So better remove it, looks like
+> it will be printed every time if you relies on auto configuration.
+OK.
+
+...
+> > +static void print_vars(int is_ipv6)
+> > +{
+> > +	if (is_ipv6) {
+> > +		print_svar("IPV6_LHOST", vars.ipv6_lhost);
+> > +		print_svar("IPV6_RHOST", vars.ipv6_rhost);
+
+> It is already done by tst_net_ip_prefix
+Oh, good catch, sorry.
+
+> > +		print_svar("IPV6_LNETMASK", vars.ipv6_lnetmask);
+> > +		print_svar_change("IPV6_RNETMASK", vars.ipv6_rnetmask);
+> > +		print_svar("IPV6_LNETWORK", vars.ipv6_lnetwork);
+> > +		print_svar("IPV6_RNETWORK", vars.ipv6_rnetwork);
+> > +		print_svar("LHOST_IPV6_HOST", vars.lhost_ipv6_host);
+> > +		print_svar("RHOST_IPV6_HOST", vars.rhost_ipv6_host);
+> > +		print_svar("IPV6_NET32_UNUSED", vars.ipv6_net32_unused);
+> > +	} else {
+> > +		print_svar("IPV4_LHOST", vars.ipv4_lhost);
+> > +		print_svar("IPV4_RHOST", vars.ipv4_rhost);
+
+> Here the same.
+
+Thanks for your review!
+
+Kind regards,
+Petr
