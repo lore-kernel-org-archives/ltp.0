@@ -1,46 +1,36 @@
 From: Eric Biggers <ebiggers3@gmail.com>
-Date: Mon, 31 Jul 2017 13:57:04 -0700
-Subject: [LTP] [PATCH] syscalls/keyctl04: new test for thread keyring
- memory leak
-In-Reply-To: <87mv7lghr8.fsf@our.domain.is.not.set>
-References: <20170728211313.89836-1-ebiggers3@gmail.com>
- <87mv7lghr8.fsf@our.domain.is.not.set>
-Message-ID: <20170731205704.GA41369@gmail.com>
+Date: Mon, 31 Jul 2017 14:09:54 -0700
+Subject: [LTP] [PATCH] syscalls/keyctl05: new test for key_update() crash
+In-Reply-To: <87lgn5gezv.fsf@our.domain.is.not.set>
+References: <20170729010718.42236-1-ebiggers3@gmail.com>
+ <87lgn5gezv.fsf@our.domain.is.not.set>
+Message-ID: <20170731210954.GB41369@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richard, thanks for reviewing!
-
-On Mon, Jul 31, 2017 at 09:58:19AM +0200, Richard Palethorpe wrote:
+On Mon, Jul 31, 2017 at 10:57:56AM +0200, Richard Palethorpe wrote:
+> > +	for (i = 0; i < 10000; i++) {
+> > +		TEST(tst_syscall(__NR_keyctl, KEYCTL_UPDATE, keyid,
+> > +				 payload, sizeof(payload)));
+> > +		if (TEST_RETURN < 0 && TEST_ERRNO != EACCES) {
+> > +			tst_res(TFAIL | TTERRNO, "failed to update 'user' key");
+> > +			return;
+> > +		}
+> > +	}
 > 
-> Thanks for contributing this test! We now have a directory
-> (testcases/cve) and runtest file dedicated to CVE regression tests. So
-> please atleast add it to the CVE runtest file.
-> 
-
-I'll add it to 'runtest/cve' but will leave it in the syscalls/keyctl directory.
-I don't like the idea of putting "CVE regression tests" in a separate directory
-because then it will be harder to find all the tests for a given syscall or
-feature.
-
-> > +#include "config.h"
-> > +#ifdef HAVE_LINUX_KEYCTL_H
-> > +# include <linux/keyctl.h>
-> > +#endif
-> 
-> Please just include the definitions for keyctl in the test like:
-> https://github.com/richiejp/ltp/blob/cve/testcases/cve/cve-2016-7042.c
-> The vulnerability is still exploitable on systems without this header.
-> 
-> On a related note; we should create a fallback header in include/lapi
-> for keyutils as there are a few tests which use it.
+> There is a library for causing race conditions (tst_fuzzy_sync.h), but
+> it only works with threads at the moment. I'm not entirely sure whether
+> to ask you to use it or not at this stage. How reliable is the test at
+> crashing a vulnerable system currently?
 > 
 
-It's including the Linux UAPI header (from include/uapi/linux/keyctl.h), not
-even the libkeyutils header.  Is using UAPI headers really not allowed in LTP?
-I see tons of other tests that include <linux/${foo}.h>.
+It happens either very reliably or not at all, depending on how the kernel stack
+is laid out which the test has no control over.  And if it *can* happen, it
+doesn't need any fancy synchronization to trigger the crash.
+
+(Also this test could use threads; it just seemed that forking was simpler.)
 
 Eric
