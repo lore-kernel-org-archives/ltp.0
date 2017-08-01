@@ -1,70 +1,47 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 01 Aug 2017 09:42:55 +0200
-Subject: [LTP] [PATCH] syscalls/keyctl04: new test for thread keyring
-	memory leak
-In-Reply-To: <20170731205704.GA41369@gmail.com>
-References: <20170728211313.89836-1-ebiggers3@gmail.com>
- <87mv7lghr8.fsf@our.domain.is.not.set> <20170731205704.GA41369@gmail.com>
-Message-ID: <87fudbhgxs.fsf@our.domain.is.not.set>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Tue,  1 Aug 2017 15:27:00 +0200
+Subject: [LTP] [PATCH v3 2/3] CVE-2012-0957: Use SAFE_PERSONALITY
+In-Reply-To: <20170801132701.16317-1-rpalethorpe@suse.com>
+References: <20170801132701.16317-1-rpalethorpe@suse.com>
+Message-ID: <20170801132701.16317-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ testcases/cve/cve-2012-0957.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-Eric Biggers writes:
+diff --git a/testcases/cve/cve-2012-0957.c b/testcases/cve/cve-2012-0957.c
+index f065735a1..3b92325d6 100644
+--- a/testcases/cve/cve-2012-0957.c
++++ b/testcases/cve/cve-2012-0957.c
+@@ -26,10 +26,8 @@
+ 
+ #include <string.h>
+ #include <sys/utsname.h>
+-#include <sys/personality.h>
+ #include "tst_test.h"
+-
+-#define UNAME26 0x0020000
++#include "tst_personality.h"
+ 
+ static int check_field(char *bytes, size_t length, char *field)
+ {
+@@ -75,9 +73,7 @@ static void run(unsigned int test_nr)
+ 		tst_res(TINFO, "Calling uname with default personality");
+ 		try_leak_bytes();
+ 	} else {
+-		if (personality(PER_LINUX | UNAME26) < 0)
+-			tst_brk(TCONF | TERRNO,
+-				"Could not change personality to UNAME26");
++		SAFE_PERSONALITY(PER_LINUX | UNAME26);
+ 		tst_res(TINFO, "Calling uname with UNAME26 personality");
+ 		try_leak_bytes();
+ 	}
+-- 
+2.13.3
 
-> Hi Richard, thanks for reviewing!
->
-> On Mon, Jul 31, 2017 at 09:58:19AM +0200, Richard Palethorpe wrote:
->>
->> Thanks for contributing this test! We now have a directory
->> (testcases/cve) and runtest file dedicated to CVE regression tests. So
->> please atleast add it to the CVE runtest file.
->>
->
-> I'll add it to 'runtest/cve' but will leave it in the syscalls/keyctl directory.
-> I don't like the idea of putting "CVE regression tests" in a separate directory
-> because then it will be harder to find all the tests for a given syscall or
-> feature.
-
-OK, this is fine. There is no particular filing structure which fits
-every test and usage case. I was never particularly sure if having all
-the tests with a CVE number in the same place would be a good idea,
-although it makes filing some of them a lot easier.
-
->
->> > +#include "config.h"
->> > +#ifdef HAVE_LINUX_KEYCTL_H
->> > +# include <linux/keyctl.h>
->> > +#endif
->>
->> Please just include the definitions for keyctl in the test like:
->> https://github.com/richiejp/ltp/blob/cve/testcases/cve/cve-2016-7042.c
->> The vulnerability is still exploitable on systems without this header.
->>
->> On a related note; we should create a fallback header in include/lapi
->> for keyutils as there are a few tests which use it.
->>
->
-> It's including the Linux UAPI header (from include/uapi/linux/keyctl.h), not
-> even the libkeyutils header.  Is using UAPI headers really not allowed in LTP?
-> I see tons of other tests that include <linux/${foo}.h>.
->
-> Eric
-
-The sys headers are preferred (or whatever user land library is most
-commonly used) if there is one available because they are deemed to be
-more stable and commonly available. Failing that the linux UAPI headers
-can be used, but usually we will try to ensure the test will still run
-even if the headers are missing or incomplete. Which, unfortunately, is
-not that uncommon amongst LTP users even with the glibc headers.
-
-There are a few tests using either keyutils or keyctl.h, so maybe we can
-abstract them both away behind headers in the LTP lib, but that is not
-necessarily your concern, I'm just writing it for the record.
-
---
-Thank you,
-Richard.
