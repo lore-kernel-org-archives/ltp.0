@@ -1,340 +1,102 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue,  1 Aug 2017 17:42:31 +0200
-Subject: [LTP] [RFC] [PATCH 2/2] tst_timer.h: Make time conversions saturated
-Message-ID: <20170801154231.32367-1-chrubis@suse.cz>
+From: Yury Norov <ynorov@caviumnetworks.com>
+Date: Wed, 2 Aug 2017 00:39:31 +0300
+Subject: [LTP] LTP build issues
+Message-ID: <20170801213931.gajssq5kldsv46rz@yury-thinkpad>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The conversions of struct timeval and struct timespec to us and ms are
-now saturated so instead of overflowing/underflowing long long these
-return LLONG_MAX/LLONG_MIN.
+Hi all,
 
-This commit also adds tst_us_to_timespec(), tst_ms_to_timespec() and
-newlib_tests/tst_timer test to assert that the saturated conversion
-actually works.
+I just pulled latest LTP sources and try to build it for the arm64/ilp32 with
+toolchain provided by Linaro.
+http://people.linaro.org/~maxim.kuvyrkov/experimental/preview-cross-aarch64-linux-gnu_ilp32.tar.xz
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- include/tst_timer.h          | 129 ++++++++++++++++++++++++++++++++++++++++---
- lib/newlib_tests/.gitignore  |   1 +
- lib/newlib_tests/tst_timer.c | 126 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 248 insertions(+), 8 deletions(-)
- create mode 100644 lib/newlib_tests/tst_timer.c
+And I see that build fails due to multiple reasons. At first I had to revert
+patches 817d8095f (Rename linux_syscall_numbers.h to lapi/syscalls.h)
+and 4d0d149c4 (Remove linux_syscall_numbers.h Makefile)
+because there'ds no lapi/syscalls.h file, and so build becomes broken.
 
-diff --git a/include/tst_timer.h b/include/tst_timer.h
-index f294b0eb7..b1f595bd4 100644
---- a/include/tst_timer.h
-+++ b/include/tst_timer.h
-@@ -33,37 +33,124 @@
- 
- #include <sys/time.h>
- #include <time.h>
-+#include <limits.h>
-+
-+#define LLONG_MAX_USEC_OVERFLOW(sec, usec) \
-+	(sizeof(time_t) == 8 && ((sec == LLONG_MAX/1000000 && usec > LLONG_MAX%1000000) \
-+	 || (sec > LLONG_MAX/1000000)))
-+
-+#define LLONG_MIN_USEC_UNDERFLOW(sec, usec) \
-+	((sec == LLONG_MIN/1000000 && usec < LLONG_MIN%1000000) \
-+	 || (sec < LLONG_MIN/1000000))
-+
-+#define LLONG_MAX_MSEC_OVERFLOW(sec, msec) \
-+	((sec == LLONG_MAX/1000 && msec > LLONG_MAX%1000) \
-+	 || (sec > LLONG_MAX/1000))
-+
-+#define LLONG_MIN_MSEC_UNDERFLOW(sec, msec) \
-+	((sec == LLONG_MIN/1000 && msec < LLONG_MIN%1000) \
-+	 || (sec < LLONG_MIN/1000))
-+
-+/*
-+ * Normalize timespec so that abs(tv_nsec) is smaller than 1s.
-+ */
-+static inline struct timespec tst_normalize_timespec(struct timespec t)
-+{
-+	t.tv_sec += t.tv_nsec / 1000000000;
-+	t.tv_nsec %= 1000000000;
-+
-+	return t;
-+}
-+
-+/*
-+ * Normalize timeval so that abs(tv_usec) is smaller than 1s.
-+ */
-+static inline struct timeval tst_normalize_timeval(struct timeval t)
-+{
-+	t.tv_sec += t.tv_usec / 1000000;
-+	t.tv_usec %= 1000000;
-+
-+	return t;
-+}
- 
- /*
-- * Converts timespec to microseconds.
-+ * Saturated conversion from timespec to microseconds.
-  */
- static inline long long tst_timespec_to_us(struct timespec t)
- {
--	return t.tv_sec * 1000000 + (t.tv_nsec + 500) / 1000;
-+	t = tst_normalize_timespec(t);
-+
-+	long long usec = (t.tv_nsec + 500) / 1000;
-+
-+#if LONG_MAX > 0xffffffff
-+	if (LLONG_MAX_USEC_OVERFLOW(t.tv_sec, usec))
-+		return LLONG_MAX;
-+
-+	if (LLONG_MIN_USEC_UNDERFLOW(t.tv_sec, usec))
-+		return LLONG_MIN;
-+#endif
-+
-+	return t.tv_sec * 1000000 + usec;
- }
- 
- /*
-- * Converts timespec to miliseconds.
-+ * Saturated conversion from timespec to miliseconds.
-  */
- static inline long long tst_timespec_to_ms(struct timespec t)
- {
--	return t.tv_sec * 1000 + (t.tv_nsec + 500000) / 1000000;
-+	t = tst_normalize_timespec(t);
-+
-+	long long msec = (t.tv_nsec + 500000) / 1000000;
-+
-+#if LONG_MAX > 0xffffffff
-+	if (LLONG_MAX_MSEC_OVERFLOW(t.tv_sec, msec))
-+		return LLONG_MAX;
-+
-+	if (LLONG_MIN_MSEC_UNDERFLOW(t.tv_sec, msec))
-+		return LLONG_MIN;
-+#endif
-+
-+	return t.tv_sec * 1000 + msec;
- }
- 
- /*
-- * Converts timeval to microseconds.
-+ * Saturated conversion from timeval to microseconds.
-  */
- static inline long long tst_timeval_to_us(struct timeval t)
- {
--	return t.tv_sec * 1000000 + t.tv_usec;
-+	t = tst_normalize_timeval(t);
-+
-+	long long usec = t.tv_usec;
-+
-+#if LONG_MAX > 0xffffffff
-+	if (LLONG_MAX_USEC_OVERFLOW(t.tv_sec, usec))
-+		return LLONG_MAX;
-+
-+	if (LLONG_MIN_USEC_UNDERFLOW(t.tv_sec, usec))
-+		return LLONG_MIN;
-+#endif
-+
-+	return t.tv_sec * 1000000 + usec;
- }
- 
- /*
-- * Converts timeval to miliseconds.
-+ * Saturated conversion from timeval to miliseconds.
-  */
- static inline long long tst_timeval_to_ms(struct timeval t)
- {
--	return t.tv_sec * 1000 + (t.tv_usec + 500) / 1000;
-+	t = tst_normalize_timeval(t);
-+
-+	long long msec = (t.tv_usec + 500) / 1000;
-+
-+#if LONG_MAX > 0xffffffff
-+	if (LLONG_MAX_MSEC_OVERFLOW(t.tv_sec, msec))
-+		return LLONG_MAX;
-+
-+	if (LLONG_MIN_MSEC_UNDERFLOW(t.tv_sec, msec))
-+		return LLONG_MIN;
-+#endif
-+
-+	return t.tv_sec * 1000 + msec;
- }
- 
- /*
-@@ -93,6 +180,32 @@ static inline struct timeval tst_us_to_timeval(long long us)
- }
- 
- /*
-+ * Converts ms to struct timespec
-+ */
-+static inline struct timespec tst_ms_to_timespec(long long ms)
-+{
-+	struct timespec ret;
-+
-+	ret.tv_sec = ms / 1000;
-+	ret.tv_nsec = (ms % 1000) * 1000000;
-+
-+	return ret;
-+}
-+
-+/*
-+ * Converts us to struct timespec
-+ */
-+static inline struct timespec tst_us_to_timespec(long long us)
-+{
-+	struct timespec ret;
-+
-+	ret.tv_sec = us / 1000000;
-+	ret.tv_nsec = (us % 1000000) * 1000;
-+
-+	return ret;
-+}
-+
-+/*
-  * Comparsions
-  */
- static inline int tst_timespec_lt(struct timespec t1, struct timespec t2)
-diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
-index 8e120074e..0405c3e2e 100644
---- a/lib/newlib_tests/.gitignore
-+++ b/lib/newlib_tests/.gitignore
-@@ -15,3 +15,4 @@ test14
- tst_device
- tst_safe_fileops
- tst_res_hexd
-+tst_timer
-diff --git a/lib/newlib_tests/tst_timer.c b/lib/newlib_tests/tst_timer.c
-new file mode 100644
-index 000000000..d29ac263b
---- /dev/null
-+++ b/lib/newlib_tests/tst_timer.c
-@@ -0,0 +1,126 @@
-+/*
-+ * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+ /*
-+  * Tests saturated timeval and timespec to us and ms conversions.
-+  */
-+
-+#include "tst_test.h"
-+#include "tst_timer.h"
-+
-+static void timeval_overflow_us_test(long long us_add)
-+{
-+	struct timeval tv;
-+	long long us;
-+
-+	tst_res(TINFO, "Testing for timeval overflow by %llius", us_add);
-+
-+	tv = tst_us_to_timeval(LLONG_MAX);
-+	tv.tv_usec += us_add;
-+
-+	tst_res(TINFO, "tv_sec=%li tv_usec=%li", tv.tv_sec, tv.tv_usec);
-+
-+	us = tst_timeval_to_us(tv);
-+
-+	long long expected = LLONG_MAX;
-+
-+	if (us_add < 0)
-+		expected = LLONG_MAX + us_add;
-+
-+	if (us != expected)
-+		tst_res(TFAIL, "Got %lli, expected %lli", us, expected);
-+	else
-+		tst_res(TPASS, "Got %lli", expected);
-+}
-+
-+static void timeval_underflow_us_test(long long us_add)
-+{
-+	struct timeval tv;
-+	long long us;
-+
-+	tst_res(TINFO, "Testing for timeval underflow by %llius", us_add);
-+
-+	tv = tst_us_to_timeval(LLONG_MIN);
-+	tv.tv_usec += us_add;
-+
-+	tst_res(TINFO, "tv_sec=%li tv_usec=%li", tv.tv_sec, tv.tv_usec);
-+
-+	us = tst_timeval_to_us(tv);
-+
-+	long long expected = LLONG_MIN;
-+
-+	if (us_add > 0)
-+		expected = LLONG_MIN + us_add;
-+
-+	if (us != expected)
-+		tst_res(TFAIL, "Got %lli, expected %lli", us, expected);
-+	else
-+		tst_res(TPASS, "Got %lli", expected);
-+}
-+
-+static void timespec_overflow_us_test(long long us_add)
-+{
-+	struct timespec ts;
-+	long long us;
-+
-+	tst_res(TINFO, "Testing for timespec overflow by %llius", us_add);
-+
-+	ts = tst_us_to_timespec(LLONG_MAX);
-+	ts.tv_nsec += us_add * 1000;
-+
-+	tst_res(TINFO, "tv_sec=%li tv_nsec=%li", ts.tv_sec, ts.tv_nsec);
-+
-+	us = tst_timespec_to_us(ts);
-+
-+	long long expected = LLONG_MAX;
-+
-+	if (us_add < 0)
-+		expected = LLONG_MAX + us_add;
-+
-+	if (us != expected)
-+		tst_res(TFAIL, "Got %lli, expected %lli", us, expected);
-+	else
-+		tst_res(TPASS, "Got %lli", expected);
-+}
-+
-+static void do_test(void)
-+{
-+	if (sizeof(time_t) == 4)
-+		tst_brk(TCONF, "sizeof(time_t) == 4");
-+
-+	timeval_overflow_us_test(0);
-+	timeval_overflow_us_test(1);
-+	timeval_overflow_us_test(-1);
-+	timeval_overflow_us_test(1000000);
-+	timeval_overflow_us_test(-1000000);
-+
-+	timeval_underflow_us_test(0);
-+	timeval_underflow_us_test(1);
-+	timeval_underflow_us_test(-1);
-+	timeval_underflow_us_test(1000000);
-+	timeval_underflow_us_test(-1000000);
-+
-+	timespec_overflow_us_test(0);
-+	timespec_overflow_us_test(1);
-+	timespec_overflow_us_test(-1);
-+	timespec_overflow_us_test(100000);
-+	timespec_overflow_us_test(-100000);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = do_test,
-+};
--- 
-2.13.0
+There are also other reasons for build failures that dirty-fixed in patch
+below. Could someone comment it and/or share proper fix?
 
+Yury
+
+diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
+index 42e90da10..9f5d649b9 100644
+--- a/testcases/cve/cve-2016-7117.c
++++ b/testcases/cve/cve-2016-7117.c
+@@ -64,6 +64,7 @@
+ #define RECV_TIMEOUT 1
+ #define ATTEMPTS 0x1FFFFF
+ 
++#define HAVE_STRUCT_MMSGHDR
+ #ifndef HAVE_STRUCT_MMSGHDR
+ struct mmsghdr {
+ 	struct msghdr msg_hdr;
+diff --git a/testcases/kernel/syscalls/fstatat/fstatat01.c b/testcases/kernel/syscalls/fstatat/fstatat01.c
+index 840d7b60e..038577327 100644
+--- a/testcases/kernel/syscalls/fstatat/fstatat01.c
++++ b/testcases/kernel/syscalls/fstatat/fstatat01.c
+@@ -58,6 +58,7 @@ static const char *filenames[TEST_CASES];
+ static const int expected_errno[] = { 0, 0, ENOTDIR, EBADF, EINVAL, 0 };
+ static const int flags[] = { 0, 0, 0, 0, 9999, 0 };
+ 
++#define HAVE_FSTATAT
+ #if !defined(HAVE_FSTATAT)
+ #if (__NR_fstatat64 > 0)
+ int fstatat(int dirfd, const char *filename, struct stat64 *statbuf, int flags)
+diff --git a/testcases/kernel/syscalls/keyctl/Makefile b/testcases/kernel/syscalls/keyctl/Makefile
+index bb3d3a41d..654503e37 100644
+--- a/testcases/kernel/syscalls/keyctl/Makefile
++++ b/testcases/kernel/syscalls/keyctl/Makefile
+@@ -18,8 +18,8 @@
+ 
+ top_srcdir		?= ../../../..
+ 
+-keyctl02: LDLIBS	+=-lpthread $(KEYUTILS_LIBS)
+-keyctl03: LDLIBS	+=$(KEYUTILS_LIBS)
++keyctl02: LDLIBS	+=-lpthread #$(KEYUTILS_LIBS)
++#keyctl03: LDLIBS	+=$(KEYUTILS_LIBS)
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+diff --git a/testcases/kernel/syscalls/preadv/preadv.h b/testcases/kernel/syscalls/preadv/preadv.h
+index f3ac30db3..b00138983 100644
+--- a/testcases/kernel/syscalls/preadv/preadv.h
++++ b/testcases/kernel/syscalls/preadv/preadv.h
+@@ -21,6 +21,7 @@
+ #include "config.h"
+ #include "linux_syscall_numbers.h"
+ 
++#define HAVE_PREADV
+ #if !defined(HAVE_PREADV)
+ int preadv(int fd, const struct iovec *iov, int iovcnt, off_t offset)
+ {
+diff --git a/testcases/kernel/syscalls/pwritev/pwritev.h b/testcases/kernel/syscalls/pwritev/pwritev.h
+index 4970036ef..6fd01ad4c 100644
+--- a/testcases/kernel/syscalls/pwritev/pwritev.h
++++ b/testcases/kernel/syscalls/pwritev/pwritev.h
+@@ -21,6 +21,7 @@
+ #include "config.h"
+ #include "linux_syscall_numbers.h"
+ 
++#define HAVE_PWRITEV
+ #if !defined(HAVE_PWRITEV)
+ int pwritev(int fd, const struct iovec *iov, int iovcnt, off_t offset)
+ {
+diff --git a/testcases/kernel/syscalls/request_key/Makefile b/testcases/kernel/syscalls/request_key/Makefile
+index 9add429d4..4f3d6bbc6 100644
+--- a/testcases/kernel/syscalls/request_key/Makefile
++++ b/testcases/kernel/syscalls/request_key/Makefile
+@@ -19,6 +19,7 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-LDLIBS		+= $(KEYUTILS_LIBS)
++#LDLIBS		+= $(KEYUTILS_LIBS)
++#LDLIBS		+= -lkeyutils
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
