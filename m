@@ -1,49 +1,47 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 01 Aug 2017 16:32:56 +0200
-Subject: [LTP] [PATCH] syscalls/keyctl05: new test for key_update() crash
-In-Reply-To: <20170731210954.GB41369@gmail.com>
-References: <20170729010718.42236-1-ebiggers3@gmail.com>
- <87lgn5gezv.fsf@our.domain.is.not.set> <20170731210954.GB41369@gmail.com>
-Message-ID: <87d18fgxyf.fsf@our.domain.is.not.set>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 1 Aug 2017 17:04:32 +0200
+Subject: [LTP] [PATCH v3 00/15] Convert LTP mem/testcase to new API
+In-Reply-To: <20170718082312.3946-1-liwang@redhat.com>
+References: <20170718082312.3946-1-liwang@redhat.com>
+Message-ID: <20170801150432.GA3925@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+I've pushed this patches, after careful testing and with many changes,
+thanks.
 
-Hello Eric,
+Most of the changes were more or less cosmetic, such as removing -1
+handling after SAFE_FORK(), make use of more SAFE_MACROS() etc.
 
-Eric Biggers writes:
+But there were some problems as well. It introduced a compilation
+failure on 32bit for min_free_kbytes.c since it removed the total_mem
+variable that is used only on 32bit.
 
-> On Mon, Jul 31, 2017 at 10:57:56AM +0200, Richard Palethorpe wrote:
->> > +	for (i = 0; i < 10000; i++) {
->> > +		TEST(tst_syscall(__NR_keyctl, KEYCTL_UPDATE, keyid,
->> > +				 payload, sizeof(payload)));
->> > +		if (TEST_RETURN < 0 && TEST_ERRNO != EACCES) {
->> > +			tst_res(TFAIL | TTERRNO, "failed to update 'user' key");
->> > +			return;
->> > +		}
->> > +	}
->>
->> There is a library for causing race conditions (tst_fuzzy_sync.h), but
->> it only works with threads at the moment. I'm not entirely sure whether
->> to ask you to use it or not at this stage. How reliable is the test at
->> crashing a vulnerable system currently?
->>
->
-> It happens either very reliably or not at all, depending on how the kernel stack
-> is laid out which the test has no control over.  And if it *can* happen, it
-> doesn't need any fancy synchronization to trigger the crash.
->
-> (Also this test could use threads; it just seemed that forking was simpler.)
->
-> Eric
+The ksm06.c cleanup had to be changed, since in a case that
+merge_across_nodes is missing it attempted to run cleanup (previously
+there was NULL cleanup pointer for TCONF!) and failed the test. There is
+probably more unvanted cleanups possibly run for the ksm test, we should
+have a look at these later.
 
-OK, the updated patches look good to me. I may try refactoring the test
-at some date to use the library, but there doesn't seem to be any reason
-to do it at the moment.
+I've also reverted the change to the thp01 in the runtest file since I
+belive that the value was reduced only for testing and slipped to the
+patchset by accident.
 
---
-Thank you,
-Richard.
+I've changed the patch that adds possibility to disable timeouts, mainly
+so that the API is consistent, which means that the tst_set_timeout()
+takes -1 as parameter as well + wrote documentation for the change.
+
+Also unsolved is a problem with TCONF tests. At the moment newlib test
+fails if we pass any parameters to it, since the option parsing runs
+with the tst_test structure without the option stucture. This fails, for
+instance, ksm test if they were compiled out since we pass parameters to
+them in the runtest file. I will have to think about this a bit more and
+figure out a good solution.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
