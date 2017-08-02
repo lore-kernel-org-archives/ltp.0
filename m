@@ -1,19 +1,25 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 2 Aug 2017 15:38:24 +0200
-Subject: [LTP] [PATCH v4 1/2] tutorial: Add a step-by-step C test
-	tutorial
-In-Reply-To: <20170731121749.31271-1-rpalethorpe@suse.com>
-References: <20170731121749.31271-1-rpalethorpe@suse.com>
-Message-ID: <20170802133824.GA14460@rei>
+From: Yury Norov <ynorov@caviumnetworks.com>
+Date: Wed, 2 Aug 2017 16:41:27 +0300
+Subject: [LTP] LTP build issues
+In-Reply-To: <87bmnygz31.fsf@our.domain.is.not.set>
+References: <20170801213931.gajssq5kldsv46rz@yury-thinkpad>
+ <120904092.64905035.1501656185854.JavaMail.zimbra@redhat.com>
+ <87bmnygz31.fsf@our.domain.is.not.set>
+Message-ID: <20170802134127.v3ojkmmuomv4bb72@yury-thinkpad>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Both pushed, thanks.
+> > Did you re-run "make autotools" and "./configure"?
+> > ./include/lapi/syscalls.h should be generated during configure.
+> 
+> Maybe also try 'make distclean' first, then 'make autotools' etc. I
+> should have put that in the commit message as it is a change to the
+> build system itself.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+'git clean -f', 'make autotools' and './configure' did help. And all
+other failures did also disappear. Thank you, and sorry for the noise.
+
+Yury
