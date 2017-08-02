@@ -1,54 +1,66 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 02 Aug 2017 10:20:50 +0200
-Subject: [LTP] LTP build issues
-In-Reply-To: <120904092.64905035.1501656185854.JavaMail.zimbra@redhat.com>
-References: <20170801213931.gajssq5kldsv46rz@yury-thinkpad>
- <120904092.64905035.1501656185854.JavaMail.zimbra@redhat.com>
-Message-ID: <87bmnygz31.fsf@our.domain.is.not.set>
+From: Li Wang <liwang@redhat.com>
+Date: Wed,  2 Aug 2017 16:38:02 +0800
+Subject: [LTP] [PATCH] mem/ksm: fix two errors in ksm06.c
+Message-ID: <20170802083802.8706-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+1.
+If the default value of 'run', 'sleep_millisecs' and 'merge_across_nodes' are
+equal 0, that would be failed to recover them in cleanup(), because they are
+not satisfy with the condition(should '> 0', but '== 0') in comparing.
 
-Hello,
+2.
+tst_test.c:908: INFO: Timeout per run is 0h 05m 00s
+ksm06.c:71: CONF: The case needs a NUMA system.
+safe_file_ops.c:256: WARN: Failed to close FILE '/sys/kernel/mm/ksm/max_page_sharing' at mem.c:252
 
-Jan Stancek writes:
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/mem/ksm/ksm06.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-> ----- Original Message -----
->> Hi all,
->>
->> I just pulled latest LTP sources and try to build it for the arm64/ilp32 with
->> toolchain provided by Linaro.
->> http://people.linaro.org/~maxim.kuvyrkov/experimental/preview-cross-aarch64-linux-gnu_ilp32.tar.xz
->>
->> And I see that build fails due to multiple reasons. At first I had to revert
->> patches 817d8095f (Rename linux_syscall_numbers.h to lapi/syscalls.h)
->> and 4d0d149c4 (Remove linux_syscall_numbers.h Makefile)
->> because there'ds no lapi/syscalls.h file, and so build becomes broken.
->
-> Did you re-run "make autotools" and "./configure"?
-> ./include/lapi/syscalls.h should be generated during configure.
+diff --git a/testcases/kernel/mem/ksm/ksm06.c b/testcases/kernel/mem/ksm/ksm06.c
+index df7cd39..334a048 100644
+--- a/testcases/kernel/mem/ksm/ksm06.c
++++ b/testcases/kernel/mem/ksm/ksm06.c
+@@ -67,6 +67,8 @@ static void setup(void)
+ 	if (access(PATH_KSM "merge_across_nodes", F_OK) == -1)
+ 		tst_brk(TCONF, "no merge_across_nodes sysfs knob");
+ 
++	save_max_page_sharing();
++
+ 	if (!is_numa(NULL, NH_MEMS, 2))
+ 		tst_brk(TCONF, "The case needs a NUMA system.");
+ 
+@@ -76,21 +78,19 @@ static void setup(void)
+ 			"%d", &merge_across_nodes);
+ 	SAFE_FILE_SCANF(PATH_KSM "sleep_millisecs",
+ 			"%d", &sleep_millisecs);
+-
+-	save_max_page_sharing();
+ }
+ 
+ static void cleanup(void)
+ {
+-	if (merge_across_nodes > 0) {
++	if (merge_across_nodes != -1) {
+ 		FILE_PRINTF(PATH_KSM "merge_across_nodes",
+ 			    "%d", merge_across_nodes);
+ 	}
+ 
+-	if (sleep_millisecs > 0)
++	if (sleep_millisecs != -1)
+ 		FILE_PRINTF(PATH_KSM "sleep_millisecs", "%d", sleep_millisecs);
+ 
+-	if (run > 0)
++	if (run != -1)
+ 		FILE_PRINTF(PATH_KSM "run", "%d", run);
+ 
+ 	restore_max_page_sharing();
+-- 
+2.9.3
 
-Maybe also try 'make distclean' first, then 'make autotools' etc. I
-should have put that in the commit message as it is a change to the
-build system itself.
-
->
-> If that still doesn't work, you can try it by hand:
-> cd ./include/lapi/syscalls
-> ./regen.sh
->
->>
->> There are also other reasons for build failures that dirty-fixed in patch
->> below. Could someone comment it and/or share proper fix?
->
-> Can you also post build error messages?
->
-> Regards,
-> Jan
-
---
-Thank you,
-Richard.
