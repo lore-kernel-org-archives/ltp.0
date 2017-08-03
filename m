@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  3 Aug 2017 15:52:26 +0200
-Subject: [LTP] [COMMITTED] [PATCH 2/9] syscalls/splice02: Convert to the new
+Date: Thu,  3 Aug 2017 15:52:29 +0200
+Subject: [LTP] [COMMITTED] [PATCH 5/9] syscalls/tee02: Convert to the new
 	library
 In-Reply-To: <20170803135233.13676-1-chrubis@suse.cz>
 References: <20170803135233.13676-1-chrubis@suse.cz>
-Message-ID: <20170803135233.13676-2-chrubis@suse.cz>
+Message-ID: <20170803135233.13676-5-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,110 +13,142 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/syscalls                            |  2 +-
- testcases/kernel/syscalls/splice/splice02.c | 60 +++++++----------------------
- 2 files changed, 14 insertions(+), 48 deletions(-)
+ testcases/kernel/syscalls/tee/tee02.c | 91 ++++++++++++-----------------------
+ 1 file changed, 31 insertions(+), 60 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index e9dd3dec0..be617e337 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1224,7 +1224,7 @@ socketpair02 socketpair02
- sockioctl01 sockioctl01
- 
- splice01 splice01
--splice02 seq 1 20000 | splice02 splice02-temp
-+splice02 seq 1 20000 | splice02
- splice03 splice03
- splice04 splice04
- splice05 splice05
-diff --git a/testcases/kernel/syscalls/splice/splice02.c b/testcases/kernel/syscalls/splice/splice02.c
-index d2f843ae7..a9ca51539 100644
---- a/testcases/kernel/syscalls/splice/splice02.c
-+++ b/testcases/kernel/syscalls/splice/splice02.c
-@@ -19,17 +19,7 @@
- /*                                                                            */
- /******************************************************************************/
- /******************************************************************************/
--/*                                                                            */
--/* File:        splice02.c                                                    */
--/*                                                                            */
- /* Description: This tests the splice() syscall                               */
--/*                                                                            */
--/* Usage:  <for command-line>                                                 */
--/* echo "Test splice()" > <outfile>; splice02 <outfile>                       */
--/*                                                                            */
--/* Total Tests: 1                                                             */
--/*                                                                            */
--/* Test Name:   splice02                                                      */
- /******************************************************************************/
- #define _GNU_SOURCE
- 
-@@ -38,54 +28,30 @@
- #include <unistd.h>
+diff --git a/testcases/kernel/syscalls/tee/tee02.c b/testcases/kernel/syscalls/tee/tee02.c
+index 2173cd23c..d454f4adb 100644
+--- a/testcases/kernel/syscalls/tee/tee02.c
++++ b/testcases/kernel/syscalls/tee/tee02.c
+@@ -32,8 +32,7 @@
  #include <fcntl.h>
+ #include <unistd.h>
  
 -#include "test.h"
 -#include "safe_macros.h"
 +#include "tst_test.h"
- #include "lapi/splice.h"
+ #include "lapi/tee.h"
  
--char *TCID = "splice02";
--int TST_TOTAL = 1;
+ #define TEST_FILE "testfile"
+@@ -44,91 +43,63 @@
+ static int fd;
+ static int pipes[2];
+ 
+-static struct test_case_t {
++static struct tcase {
+ 	int *fdin;
+ 	int *fdout;
+ 	int exp_errno;
+-} test_cases[] = {
++} tcases[] = {
+ 	{ &fd, &pipes[1], EINVAL },
+ 	{ &pipes[0], &fd, EINVAL },
+ 	{ &pipes[0], &pipes[1], EINVAL },
+ };
+ 
+-static void setup(void);
+-static void cleanup(void);
+-static void tee_verify(const struct test_case_t *);
 -
--static void cleanup(void)
+-char *TCID = "tee02";
+-int TST_TOTAL = ARRAY_SIZE(test_cases);
+-
+-int main(int ac, char **av)
 -{
--	tst_rmdir();
+-	int i, lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		for (i = 0; i < TST_TOTAL; i++)
+-			tee_verify(&test_cases[i]);
+-	}
+-
+-	cleanup();
+-	tst_exit();
 -}
 -
--static void setup(void)
--{
+ static void setup(void)
+ {
 -	if ((tst_kvercmp(2, 6, 17)) < 0) {
 -		tst_brkm(TCONF, cleanup, "This test can only run on kernels "
 -			"that are 2.6.17 or higher");
 -	}
 -
 -	TEST_PAUSE;
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
 -	tst_tmpdir();
--}
 -
- #define SPLICE_SIZE (64*1024)
+-	fd = SAFE_OPEN(cleanup, TEST_FILE, O_RDWR | O_CREAT);
+-
+-	SAFE_PIPE(cleanup, pipes);
+-	SAFE_WRITE(cleanup, 1, pipes[1], STR, sizeof(STR) - 1);
++	fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT);
++	SAFE_PIPE(pipes);
++	SAFE_WRITE(1, pipes[1], STR, sizeof(STR) - 1);
+ }
  
--int main(int ac, char **av)
-+static void splice_test(void)
+-static void tee_verify(const struct test_case_t *tc)
++static void tee_verify(unsigned int n)
  {
- 	int fd;
++	struct tcase *tc = &tcases[n];
++
+ 	TEST(tee(*(tc->fdin), *(tc->fdout), TEE_TEST_LEN, 0));
  
--	setup();
--
--	if (ac < 2) {
--		tst_brkm(TFAIL, NULL, "%s failed - Usage: %s outfile", TCID,
--			 av[0]);
--	}
--
--	fd = SAFE_OPEN(cleanup, av[1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-+	fd = SAFE_OPEN("splice02-temp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
- 
- 	TEST(splice(STDIN_FILENO, NULL, fd, NULL, SPLICE_SIZE, 0));
- 	if (TEST_RETURN < 0) {
--		tst_resm(TFAIL, "splice failed - errno = %d : %s",
--			 TEST_ERRNO, strerror(TEST_ERRNO));
-+		tst_res(TFAIL, "splice failed - errno = %d : %s",
-+			TEST_ERRNO, strerror(TEST_ERRNO));
- 	} else {
--		tst_resm(TPASS, "splice() system call Passed");
-+		tst_res(TPASS, "splice() system call Passed");
+ 	if (TEST_RETURN != -1) {
+-		tst_resm(TFAIL, "tee() returned %ld, "
++		tst_res(TFAIL, "tee() returned %ld, "
+ 			"expected -1, errno:%d", TEST_RETURN,
+ 			tc->exp_errno);
+ 		return;
  	}
  
--	SAFE_CLOSE(cleanup, fd);
+-	if (TEST_ERRNO == tc->exp_errno) {
+-		tst_resm(TPASS | TTERRNO, "tee() failed as expected");
+-	} else {
+-		tst_resm(TFAIL | TTERRNO,
++	if (TEST_ERRNO != tc->exp_errno) {
++		tst_res(TFAIL | TTERRNO,
+ 			"tee() failed unexpectedly; expected: %d - %s",
+-			tc->exp_errno, strerror(tc->exp_errno));
++			tc->exp_errno, tst_strerrno(tc->exp_errno));
++		return;
+ 	}
++
++	tst_res(TPASS | TTERRNO, "tee() failed as expected");
+ }
+ 
+ static void cleanup(void)
+ {
+-	if (fd && close(fd) < 0)
+-		tst_resm(TWARN | TERRNO, "close fd failed");
 -
--	cleanup();
--	tst_exit();
-+	SAFE_CLOSE(fd);
+-	if (pipes[0] && close(pipes[0]) < 0)
+-		tst_resm(TWARN | TERRNO, "close pipes[0] failed");
++	if (fd > 0)
++		SAFE_CLOSE(fd);
+ 
+-	if (pipes[1] && close(pipes[1]) < 0)
+-		tst_resm(TWARN | TERRNO, "close pipes[1] failed");
++	if (pipes[0] > 0)
++		SAFE_CLOSE(pipes[0]);
+ 
+-	tst_rmdir();
++	if (pipes[1] > 0)
++		SAFE_CLOSE(pipes[1]);
  }
 +
 +static struct tst_test test = {
-+	.test_all = splice_test,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test = tee_verify,
++	.tcnt = ARRAY_SIZE(tcases),
 +	.needs_tmpdir = 1,
 +	.min_kver = "2.6.17",
 +};
