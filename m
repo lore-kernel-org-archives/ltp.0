@@ -1,8 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  3 Aug 2017 15:52:25 +0200
-Subject: [LTP] [COMMITTED] [PATCH 1/9] syscalls/splice01: Convert to the new
+Date: Thu,  3 Aug 2017 15:52:27 +0200
+Subject: [LTP] [COMMITTED] [PATCH 3/9] syscalls/splice03: Convert to the new
 	library
-Message-ID: <20170803135233.13676-1-chrubis@suse.cz>
+In-Reply-To: <20170803135233.13676-1-chrubis@suse.cz>
+References: <20170803135233.13676-1-chrubis@suse.cz>
+Message-ID: <20170803135233.13676-3-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,170 +13,170 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/splice/splice01.c | 97 ++++++++++-------------------
- 1 file changed, 32 insertions(+), 65 deletions(-)
+ testcases/kernel/syscalls/splice/splice03.c | 111 ++++++++++------------------
+ 1 file changed, 40 insertions(+), 71 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/splice/splice01.c b/testcases/kernel/syscalls/splice/splice01.c
-index 773639e1c..a975ccb9a 100644
---- a/testcases/kernel/syscalls/splice/splice01.c
-+++ b/testcases/kernel/syscalls/splice/splice01.c
-@@ -30,10 +30,8 @@
- #include <signal.h>
- #include <sys/types.h>
+diff --git a/testcases/kernel/syscalls/splice/splice03.c b/testcases/kernel/syscalls/splice/splice03.c
+index b18c52a46..86363dd96 100644
+--- a/testcases/kernel/syscalls/splice/splice03.c
++++ b/testcases/kernel/syscalls/splice/splice03.c
+@@ -40,8 +40,7 @@
  #include <fcntl.h>
--#include <sys/syscall.h>
+ #include <unistd.h>
  
 -#include "test.h"
 -#include "safe_macros.h"
 +#include "tst_test.h"
  #include "lapi/splice.h"
  
- #define TEST_BLOCK_SIZE 1024
-@@ -41,37 +39,16 @@
- #define TESTFILE1 "splice_testfile_1"
- #define TESTFILE2 "splice_testfile_2"
+ #define TEST_FILE "testfile"
+@@ -58,13 +57,13 @@ static int appendfd;
+ static int pipes[2];
+ static loff_t offset;
  
--static void splice_test(void);
+-static struct test_case_t {
++static struct tcase {
+ 	int *fdin;
+ 	loff_t *offin;
+ 	int *fdout;
+ 	loff_t *offout;
+ 	int exp_errno;
+-} test_cases[] = {
++} tcases[] = {
+ 	{ &badfd, NULL, &pipes[1], NULL, EBADF },
+ 	{ &pipes[0], NULL, &badfd, NULL, EBADF },
+ 	{ &wrfd, NULL, &pipes[1], NULL, EBADF },
+@@ -74,96 +73,66 @@ static struct test_case_t {
+ 	{ &rdfd, NULL, &pipes[1], &offset, ESPIPE },
+ };
+ 
 -static void setup(void);
 -static void cleanup(void);
- static char buffer[TEST_BLOCK_SIZE];
- static int fd_in, fd_out;
- 
--char *TCID = "splice01";
--int TST_TOTAL = 1;
+-static void splice_verify(const struct test_case_t *);
+-
+-char *TCID = "splice03";
+-int TST_TOTAL = ARRAY_SIZE(test_cases);
 -
 -int main(int ac, char **av)
--{
--	int lc;
--
++static void setup(void)
+ {
+-	int i, lc;
++	SAFE_FILE_PRINTF(TEST_FILE, STR);
++	rdfd = SAFE_OPEN(TEST_FILE, O_RDONLY);
+ 
 -	tst_parse_opts(ac, av, NULL, NULL);
--
++	wrfd = SAFE_OPEN(TEST_FILE2, O_WRONLY | O_CREAT, 0644);
+ 
 -	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++)
--		splice_test();
++	appendfd = SAFE_OPEN(TEST_FILE3, O_RDWR | O_CREAT | O_APPEND, 0644);
+ 
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
++	SAFE_PIPE(pipes);
+ 
+-		for (i = 0; i < TST_TOTAL; i++)
+-			splice_verify(&test_cases[i]);
+-	}
 -
 -	cleanup();
 -	tst_exit();
--}
--
- static void check_file(void)
- {
- 	int i;
- 	char splicebuffer[TEST_BLOCK_SIZE];
- 
--	fd_out = SAFE_OPEN(cleanup, TESTFILE2, O_RDONLY);
--	SAFE_READ(cleanup, 1, fd_out, splicebuffer, TEST_BLOCK_SIZE);
-+	fd_out = SAFE_OPEN(TESTFILE2, O_RDONLY);
-+	SAFE_READ(1, fd_out, splicebuffer, TEST_BLOCK_SIZE);
- 
- 	for (i = 0; i < TEST_BLOCK_SIZE; i++) {
- 		if (buffer[i] != splicebuffer[i])
-@@ -79,12 +56,11 @@ static void check_file(void)
- 	}
- 
- 	if (i < TEST_BLOCK_SIZE)
--		tst_resm(TFAIL, "Wrong data read from the buffer at %i", i);
-+		tst_res(TFAIL, "Wrong data read from the buffer@%i", i);
- 	else
--		tst_resm(TPASS, "Written data has been read back correctly");
-+		tst_res(TPASS, "Written data has been read back correctly");
- 
--	close(fd_out);
--	fd_out = 0;
-+	SAFE_CLOSE(fd_out);
++	SAFE_WRITE(1, pipes[1], STR, sizeof(STR) - 1);
  }
  
- static void splice_test(void)
-@@ -92,25 +68,22 @@ static void splice_test(void)
- 	int pipes[2];
- 	int ret;
- 
--	fd_in = SAFE_OPEN(cleanup, TESTFILE1, O_RDONLY);
--	SAFE_PIPE(cleanup, pipes);
--	fd_out = SAFE_OPEN(cleanup, TESTFILE2, O_WRONLY | O_CREAT | O_TRUNC, 0666);
-+	fd_in = SAFE_OPEN(TESTFILE1, O_RDONLY);
-+	fd_out = SAFE_OPEN(TESTFILE2, O_WRONLY | O_CREAT | O_TRUNC, 0666);
-+	SAFE_PIPE(pipes);
- 
- 	ret = splice(fd_in, NULL, pipes[1], NULL, TEST_BLOCK_SIZE, 0);
- 	if (ret < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "splice(fd_in, pipe) failed");
-+		tst_brk(TBROK | TERRNO, "splice(fd_in, pipe) failed");
- 
- 	ret = splice(pipes[0], NULL, fd_out, NULL, TEST_BLOCK_SIZE, 0);
- 	if (ret < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "splice(pipe, fd_out) failed");
-+		tst_brk(TBROK | TERRNO, "splice(pipe, fd_out) failed");
- 
--	close(fd_in);
--	close(fd_out);
--	close(pipes[0]);
--	close(pipes[1]);
--
--	fd_out = 0;
--	fd_in = 0;
-+	SAFE_CLOSE(fd_in);
-+	SAFE_CLOSE(fd_out);
-+	SAFE_CLOSE(pipes[0]);
-+	SAFE_CLOSE(pipes[1]);
- 
- 	check_file();
- }
-@@ -119,39 +92,33 @@ static void setup(void)
+-void setup(void)
++static void splice_verify(unsigned int n)
  {
- 	int i;
- 
 -	if ((tst_kvercmp(2, 6, 17)) < 0) {
--		tst_brkm(TCONF, NULL,
--		         "The splice is supported 2.6.17 and newer");
+-		tst_brkm(TCONF, cleanup, "This test can only run on kernels "
+-			"that are 2.6.17 or higher");
 -	}
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
 -
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
 -	tst_tmpdir();
 -
--	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC) {
-+	if (tst_fs_type(".") == TST_NFS_MAGIC) {
- 		if  (tst_kvercmp(2, 6, 32) < 0)
--			tst_brkm(TCONF, cleanup, "Cannot do splice on a file"
-+			tst_brk(TCONF, "Cannot do splice on a file"
- 				" on NFS filesystem before 2.6.32");
+-	SAFE_FILE_PRINTF(cleanup, TEST_FILE, STR);
+-	rdfd = SAFE_OPEN(cleanup, TEST_FILE, O_RDONLY);
+-
+-	wrfd = SAFE_OPEN(cleanup, TEST_FILE2,
+-		O_WRONLY | O_CREAT, 0644);
++	struct tcase *tc = &tcases[n];
+ 
+-	appendfd = SAFE_OPEN(cleanup, TEST_FILE3,
+-		O_RDWR | O_CREAT | O_APPEND, 0644);
+-
+-	SAFE_PIPE(cleanup, pipes);
+-
+-	SAFE_WRITE(cleanup, 1, pipes[1], STR, sizeof(STR) - 1);
+-}
+-
+-static void splice_verify(const struct test_case_t *tc)
+-{
+ 	TEST(splice(*(tc->fdin), tc->offin, *(tc->fdout),
+ 		tc->offout, SPLICE_TEST_LEN, 0));
+ 
+ 	if (TEST_RETURN != -1) {
+-		tst_resm(TFAIL, "splice() returned %ld, "
+-			"expected -1, errno:%d", TEST_RETURN,
+-			tc->exp_errno);
++		tst_res(TFAIL, "splice() returned %ld expected %s",
++			TEST_RETURN, tst_strerrno(tc->exp_errno));
+ 		return;
  	}
  
- 	for (i = 0; i < TEST_BLOCK_SIZE; i++)
- 		buffer[i] = i & 0xff;
- 
--	fd_in = SAFE_OPEN(cleanup, TESTFILE1, O_WRONLY | O_CREAT | O_TRUNC, 0777);
--	SAFE_WRITE(cleanup, 1, fd_in, buffer, TEST_BLOCK_SIZE);
--	SAFE_CLOSE(cleanup, fd_in);
--	fd_in = 0;
-+	fd_in = SAFE_OPEN(TESTFILE1, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-+	SAFE_WRITE(1, fd_in, buffer, TEST_BLOCK_SIZE);
-+	SAFE_CLOSE(fd_in);
+-	if (TEST_ERRNO == tc->exp_errno) {
+-		tst_resm(TPASS | TTERRNO, "splice() failed as expected");
+-	} else {
+-		tst_resm(TFAIL | TTERRNO,
++	if (TEST_ERRNO != tc->exp_errno) {
++		tst_res(TFAIL | TTERRNO,
+ 			"splice() failed unexpectedly; expected: %d - %s",
+-			tc->exp_errno, strerror(tc->exp_errno));
++			tc->exp_errno, tst_strerrno(tc->exp_errno));
++		return;
+ 	}
++
++	tst_res(TPASS | TTERRNO, "splice() failed as expected");
  }
  
- static void cleanup(void)
+-void cleanup(void)
++static void cleanup(void)
  {
--	if (fd_in > 0 && close(fd_in))
--		tst_resm(TWARN, "Failed to close fd_in");
-+	if (fd_in > 0)
-+		SAFE_CLOSE(fd_in);
- 
--	if (fd_out > 0 && close(fd_out))
--		tst_resm(TWARN, "Failed to close fd_out");
+-	if (rdfd && close(rdfd) < 0)
+-		tst_resm(TWARN | TERRNO, "close rdfd failed");
 -
+-	if (wrfd && close(wrfd) < 0)
+-		tst_resm(TWARN | TERRNO, "close wrfd failed");
++	if (rdfd > 0)
++		SAFE_CLOSE(rdfd);
+ 
+-	if (appendfd && close(appendfd) < 0)
+-		tst_resm(TWARN | TERRNO, "close appendfd failed");
++	if (wrfd > 0)
++		SAFE_CLOSE(wrfd);
+ 
+-	if (pipes[0] && close(pipes[0]) < 0)
+-		tst_resm(TWARN | TERRNO, "close pipes[0] failed");
++	if (appendfd > 0)
++		SAFE_CLOSE(appendfd);
+ 
+-	if (pipes[1] && close(pipes[1]) < 0)
+-		tst_resm(TWARN | TERRNO, "close pipes[1] failed");
++	if (pipes[0] > 0)
++		SAFE_CLOSE(pipes[0]);
+ 
 -	tst_rmdir();
-+	if (fd_out > 0)
-+		SAFE_CLOSE(fd_out);
++	if (pipes[1] > 0)
++		SAFE_CLOSE(pipes[1]);
  }
 +
 +static struct tst_test test = {
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = splice_test,
++	.test = splice_verify,
++	.tcnt = ARRAY_SIZE(tcases),
 +	.needs_tmpdir = 1,
 +	.min_kver = "2.6.17",
 +};
