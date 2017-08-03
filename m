@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  3 Aug 2017 15:52:28 +0200
-Subject: [LTP] [COMMITTED] [PATCH 4/9] syscalls/tee01: Convert to the new
-	library
+Date: Thu,  3 Aug 2017 15:52:30 +0200
+Subject: [LTP] [COMMITED] [PATCH 6/9] syscalls/vmsplice01: Convert to the
+	new library
 In-Reply-To: <20170803135233.13676-1-chrubis@suse.cz>
 References: <20170803135233.13676-1-chrubis@suse.cz>
-Message-ID: <20170803135233.13676-4-chrubis@suse.cz>
+Message-ID: <20170803135233.13676-6-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,39 +13,37 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/tee/tee01.c | 107 ++++++++++++----------------------
- 1 file changed, 36 insertions(+), 71 deletions(-)
+ testcases/kernel/syscalls/vmsplice/vmsplice01.c | 83 ++++++++-----------------
+ 1 file changed, 26 insertions(+), 57 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/tee/tee01.c b/testcases/kernel/syscalls/tee/tee01.c
-index ee337f868..7e64779ba 100644
---- a/testcases/kernel/syscalls/tee/tee01.c
-+++ b/testcases/kernel/syscalls/tee/tee01.c
-@@ -31,19 +31,12 @@
- #include <signal.h>
- #include <sys/types.h>
+diff --git a/testcases/kernel/syscalls/vmsplice/vmsplice01.c b/testcases/kernel/syscalls/vmsplice/vmsplice01.c
+index ef3d80bb1..882e198a6 100644
+--- a/testcases/kernel/syscalls/vmsplice/vmsplice01.c
++++ b/testcases/kernel/syscalls/vmsplice/vmsplice01.c
+@@ -33,49 +33,25 @@
  #include <fcntl.h>
--#include <sys/syscall.h>
+ #include <sys/poll.h>
  
 -#include "test.h"
 -#include "lapi/syscalls.h"
 -#include "safe_macros.h"
 +#include "tst_test.h"
  #include "lapi/fcntl.h"
- #include "lapi/tee.h"
  #include "lapi/splice.h"
+ #include "lapi/vmsplice.h"
  
--static void tee_test(void);
+ #define TEST_BLOCK_SIZE (1<<17)	/* 128K */
+ 
+-static void vmsplice_test(void);
 -static void setup(void);
 -static void cleanup(void);
 -
- #define TEST_BLOCK_SIZE 1024
+ #define TESTFILE "vmsplice_test_file"
  
- #define TESTFILE1 "tee_test_file_1"
-@@ -52,31 +45,13 @@ static void cleanup(void);
- static int fd_in, fd_out;
+ static int fd_out;
  static char buffer[TEST_BLOCK_SIZE];
  
--char *TCID = "tee01";
+-char *TCID = "vmsplice01";
 -int TST_TOTAL = 1;
 -
 -int main(int ac, char **av)
@@ -57,7 +55,7 @@ index ee337f868..7e64779ba 100644
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++)
--		tee_test();
+-		vmsplice_test();
 -
 -	cleanup();
 -	tst_exit();
@@ -66,16 +64,16 @@ index ee337f868..7e64779ba 100644
  static void check_file(void)
  {
  	int i;
- 	char teebuffer[TEST_BLOCK_SIZE];
+ 	char vmsplicebuffer[TEST_BLOCK_SIZE];
  
--	fd_out = SAFE_OPEN(cleanup, TESTFILE2, O_RDONLY);
--	SAFE_READ(cleanup, 1, fd_out, teebuffer, TEST_BLOCK_SIZE);
-+	fd_out = SAFE_OPEN(TESTFILE2, O_RDONLY);
-+	SAFE_READ(1, fd_out, teebuffer, TEST_BLOCK_SIZE);
+-	fd_out = SAFE_OPEN(cleanup, TESTFILE, O_RDONLY);
+-	SAFE_READ(cleanup, 1, fd_out, vmsplicebuffer, TEST_BLOCK_SIZE);
++	fd_out = SAFE_OPEN(TESTFILE, O_RDONLY);
++	SAFE_READ(1, fd_out, vmsplicebuffer, TEST_BLOCK_SIZE);
  
  	for (i = 0; i < TEST_BLOCK_SIZE; i++) {
- 		if (buffer[i] != teebuffer[i])
-@@ -84,12 +59,11 @@ static void check_file(void)
+ 		if (buffer[i] != vmsplicebuffer[i])
+@@ -83,12 +59,11 @@ static void check_file(void)
  	}
  
  	if (i < TEST_BLOCK_SIZE)
@@ -90,96 +88,79 @@ index ee337f868..7e64779ba 100644
 +	SAFE_CLOSE(fd_out);
  }
  
- static void tee_test(void)
-@@ -98,33 +72,30 @@ static void tee_test(void)
- 	int pipe2[2];
- 	int ret = 0;
+ static void vmsplice_test(void)
+@@ -103,8 +78,8 @@ static void vmsplice_test(void)
+ 	v.iov_base = buffer;
+ 	v.iov_len = TEST_BLOCK_SIZE;
  
--	fd_in = SAFE_OPEN(cleanup, TESTFILE1, O_RDONLY);
--	fd_out = SAFE_OPEN(cleanup, TESTFILE2, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-+	fd_in = SAFE_OPEN(TESTFILE1, O_RDONLY);
-+	fd_out = SAFE_OPEN(TESTFILE2, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+-	SAFE_PIPE(cleanup, pipes);
+-	fd_out = SAFE_OPEN(cleanup, TESTFILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
++	fd_out = SAFE_OPEN(TESTFILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
++	SAFE_PIPE(pipes);
  
--	SAFE_PIPE(cleanup, pipe1);
--	SAFE_PIPE(cleanup, pipe2);
-+	SAFE_PIPE(pipe1);
-+	SAFE_PIPE(pipe2);
+ 	struct pollfd pfd = {.fd = pipes[1], .events = POLLOUT};
+ 	offset = 0;
+@@ -116,11 +91,11 @@ static void vmsplice_test(void)
+ 		 * not using the free time for anything interesting.
+ 		 */
+ 		if (poll(&pfd, 1, -1) < 0)
+-			tst_brkm(TBROK | TERRNO, cleanup, "poll() failed");
++			tst_brk(TBROK | TERRNO, "poll() failed");
  
- 	ret = splice(fd_in, NULL, pipe1[1], NULL, TEST_BLOCK_SIZE, 0);
- 	if (ret < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "splice(fd_in, pipe1) failed");
-+		tst_brk(TBROK | TERRNO, "splice(fd_in, pipe1) failed");
+ 		written = vmsplice(pipes[1], &v, 1, 0);
+ 		if (written < 0) {
+-			tst_brkm(TBROK | TERRNO, cleanup, "vmsplice() failed");
++			tst_brk(TBROK | TERRNO, "vmsplice() failed");
+ 		} else {
+ 			if (written == 0) {
+ 				break;
+@@ -132,14 +107,13 @@ static void vmsplice_test(void)
  
- 	ret = tee(pipe1[0], pipe2[1], TEST_BLOCK_SIZE, SPLICE_F_NONBLOCK);
- 	if (ret < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "tee() failed");
-+		tst_brk(TBROK | TERRNO, "tee() failed");
+ 		ret = splice(pipes[0], NULL, fd_out, &offset, written, 0);
+ 		if (ret < 0)
+-			tst_brkm(TBROK | TERRNO, cleanup, "splice() failed");
++			tst_brk(TBROK | TERRNO, "splice() failed");
+ 		//printf("offset = %lld\n", (long long)offset);
+ 	}
  
- 	ret = splice(pipe2[0], NULL, fd_out, NULL, TEST_BLOCK_SIZE, 0);
- 	if (ret < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "splice(pipe2, fd_out) failed");
-+		tst_brk(TBROK | TERRNO, "splice(pipe2, fd_out) failed");
- 
--	close(pipe2[0]);
--	close(pipe2[1]);
--	close(pipe1[0]);
--	close(pipe1[1]);
+-	close(pipes[0]);
+-	close(pipes[1]);
 -	close(fd_out);
--	close(fd_in);
--
 -	fd_out = 0;
--	fd_in = 0;
-+	SAFE_CLOSE(pipe2[0]);
-+	SAFE_CLOSE(pipe2[1]);
-+	SAFE_CLOSE(pipe1[0]);
-+	SAFE_CLOSE(pipe1[1]);
++	SAFE_CLOSE(pipes[0]);
++	SAFE_CLOSE(pipes[1]);
 +	SAFE_CLOSE(fd_out);
-+	SAFE_CLOSE(fd_in);
  
  	check_file();
  }
-@@ -133,39 +104,33 @@ static void setup(void)
+@@ -148,30 +122,25 @@ static void setup(void)
  {
  	int i;
  
 -	if ((tst_kvercmp(2, 6, 17)) < 0) {
--		tst_brkm(TCONF, cleanup, "This test can only run on kernels "
--			"that are 2.6.17 or higher");
+-		tst_brkm(TCONF, NULL,
+-		         "The vmsplice is supported 2.6.17 and newer");
 -	}
 -
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
--	TEST_PAUSE;
--
 -	tst_tmpdir();
 -
 -	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC) {
+-		tst_brkm(TCONF, cleanup, "Cannot do splice() "
 +	if (tst_fs_type(".") == TST_NFS_MAGIC) {
- 		if ((tst_kvercmp(2, 6, 32)) < 0)
--			tst_brkm(TCONF, cleanup, "Cannot do tee on a file"
-+			tst_brk(TCONF, "Cannot do tee on a file"
- 				" on NFS filesystem before 2.6.32");
++		tst_brk(TCONF, "Cannot do splice() "
+ 			 "on a file located on an NFS filesystem");
  	}
  
  	for (i = 0; i < TEST_BLOCK_SIZE; i++)
  		buffer[i] = i & 0xff;
- 
--	fd_in = SAFE_OPEN(cleanup, TESTFILE1, O_WRONLY | O_CREAT | O_TRUNC, 0777);
--	SAFE_WRITE(cleanup, 1, fd_in, buffer, TEST_BLOCK_SIZE);
--	SAFE_CLOSE(cleanup, fd_in);
--	fd_in = 0;
-+	fd_in = SAFE_OPEN(TESTFILE1, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-+	SAFE_WRITE(1, fd_in, buffer, TEST_BLOCK_SIZE);
-+	SAFE_CLOSE(fd_in);
+-
+-	TEST_PAUSE;
  }
  
  static void cleanup(void)
  {
--	if (fd_in > 0 && close(fd_in))
--		tst_resm(TWARN, "Failed to close fd_in");
-+	if (fd_in > 0)
-+		SAFE_CLOSE(fd_in);
- 
 -	if (fd_out > 0 && close(fd_out))
 -		tst_resm(TWARN, "Failed to close fd_out");
 -
@@ -191,7 +172,7 @@ index ee337f868..7e64779ba 100644
 +static struct tst_test test = {
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = tee_test,
++	.test_all = vmsplice_test,
 +	.needs_tmpdir = 1,
 +	.min_kver = "2.6.17",
 +};
