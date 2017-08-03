@@ -1,27 +1,35 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 3 Aug 2017 14:44:09 +0300
-Subject: [LTP] [PATCH v2 1/5] netstress: add basic support for DCCP &
-	SCTP
-In-Reply-To: <1490285557-18122-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1490285557-18122-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <d6ea276e-22a7-2de9-1d85-a6de648103be@oracle.com>
+Date: Thu, 3 Aug 2017 14:45:59 +0300
+Subject: [LTP] [RFC PATCH v7 01/11] network/dhcp: Fix removing veth
+ kernel module
+In-Reply-To: <20170721040407.868-2-pvorel@suse.cz>
+References: <20170721040407.868-1-pvorel@suse.cz>
+ <20170721040407.868-2-pvorel@suse.cz>
+Message-ID: <b087c677-605c-1f57-3bc1-25927624b37a@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 03/23/2017 07:12 PM, Alexey Kodanev wrote:
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> ---
+On 07/21/2017 07:03 AM, Petr Vorel wrote:
+> From: Alexey Kodanev <alexey.kodanev@oracle.com>
 >
-> v2: add SCTP protocol and use '-T' option instead of -U and -D
+> This patch fixes problems with dhcp based tests run via netns when they
+> call TCONF:
 >
->  testcases/network/netstress/netstress.c |  123 ++++++++++++++++++++++++++-----
->  1 files changed, 103 insertions(+), 20 deletions(-)
+> $ /opt/ltp/testscripts/network.sh -6
+> dhcpd 1 TCONF: 'dhcpd' not found
+> ...
+> cat: /sys/class/net/ltp_ns_veth2/address: No such file or directory
+>
+> This also fixes other tests run after dhcp tests which are broken as
+> netns setup got broken.
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> Tested-by: Petr Vorel <pvorel@suse.cz>
 
-Applied patch-set + added new test-cases for IPsec and vti.
+Applied.
 
 Thanks,
 Alexey
