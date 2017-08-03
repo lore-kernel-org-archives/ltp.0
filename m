@@ -1,85 +1,45 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu,  3 Aug 2017 17:33:47 +0200
-Subject: [LTP] [RFC PATCH 2/4] Convert cve-2016-7117 test to use long
-	running threads
+Date: Thu,  3 Aug 2017 17:33:48 +0200
+Subject: [LTP] [RFC PATCH 3/4] fzsync: Correctly handle timestamps across
+	second boundaries
 In-Reply-To: <20170803153349.32766-1-rpalethorpe@suse.com>
 References: <20170803153349.32766-1-rpalethorpe@suse.com>
-Message-ID: <20170803153349.32766-3-rpalethorpe@suse.com>
+Message-ID: <20170803153349.32766-4-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
----
- testcases/cve/cve-2016-7117.c | 32 +++++++++++++++-----------------
- 1 file changed, 15 insertions(+), 17 deletions(-)
+Previously we only calculated the difference between timestamps based on
+tv_nsec so when a.tv_sec: 281122, a.tv_nsec: 999996364, b.tv_sec: 281123,
+b.tv_nsec: 31. The difference between a and b is incorrectly calculated
+as (a - b = 999996364 - 31) even though b happened after a.
 
-diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
-index deb667761..e047f5001 100644
---- a/testcases/cve/cve-2016-7117.c
-+++ b/testcases/cve/cve-2016-7117.c
-@@ -103,15 +103,18 @@ static void cleanup(void)
+Now, one second is added to b's tv_nsec so that the calculation in the above
+example becomes (999996364 - 1000000031). It is assumed that a and b will
+never be more than a second apart. However the average diff should not be too
+badly effected if they occasionally are.
+---
+ include/tst_fuzzy_sync.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
+index 5234c5aa5..5305f88e8 100644
+--- a/include/tst_fuzzy_sync.h
++++ b/include/tst_fuzzy_sync.h
+@@ -172,6 +172,12 @@ static void tst_fzsync_pair_update(int loop_index, struct tst_fzsync_pair *pair)
+ 	double target = pair->avg_diff_trgt;
+ 	double avg = pair->avg_diff;
  
- static void *send_and_close(void *arg)
- {
--	send(socket_fds[0], MSG, sizeof(MSG), 0);
--	send(socket_fds[0], MSG, sizeof(MSG), 0);
-+	while(tst_fzsync_pair_wait_update(&fzsync_pair)) {
-+		send(socket_fds[0], MSG, sizeof(MSG), 0);
-+		send(socket_fds[0], MSG, sizeof(MSG), 0);
- 
--	tst_fzsync_delay_b(&fzsync_pair);
--
--	close(socket_fds[0]);
--	close(socket_fds[1]);
--	tst_fzsync_time_b(&fzsync_pair);
-+		tst_fzsync_delay_b(&fzsync_pair);
- 
-+		close(socket_fds[0]);
-+		close(socket_fds[1]);
-+		tst_fzsync_time_b(&fzsync_pair);
-+		if (!tst_fzsync_pair_wait(&fzsync_pair))
-+			return arg;
++	if (pair->a.tv_sec > pair->b.tv_sec) {
++		pair->a.tv_nsec += 1000000000;
++	} else if (pair->a.tv_sec < pair->b.tv_sec) {
++		pair->b.tv_nsec += 1000000000;
 +	}
- 	return arg;
- }
- 
-@@ -121,13 +124,13 @@ static void run(void)
- 	int i, stat, too_early_count = 0;
- 
- 	msghdrs[0].msg_hdr.msg_iov->iov_base = (void *)&rbuf;
-+	SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, 0);
- 
- 	for (i = 1; i < ATTEMPTS; i++) {
- 		if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, socket_fds))
- 			tst_brk(TBROK | TERRNO, "Socket creation failed");
- 
--		SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, 0);
--
-+		tst_fzsync_pair_wait_update(&fzsync_pair);
- 		tst_fzsync_delay_a(&fzsync_pair);
- 
- 		stat = tst_syscall(__NR_recvmmsg,
-@@ -140,16 +143,11 @@ static void run(void)
- 		else if (stat < 0)
- 			tst_res(TWARN | TERRNO, "recvmmsg failed unexpectedly");
- 
--		SAFE_PTHREAD_JOIN(pt_send, 0);
--
--		tst_fzsync_pair_update(i, &fzsync_pair);
--		if (!(i & 0x7FFFF)) {
--			tst_res(TINFO, "Too early: %.1f%%",
--				100 * too_early_count / (float)i);
--			tst_fzsync_pair_info(&fzsync_pair);
--		}
-+		tst_fzsync_pair_wait(&fzsync_pair);
- 	}
- 
-+	tst_fzsync_pair_exit(&fzsync_pair);
-+	SAFE_PTHREAD_JOIN(pt_send, 0);
- 	tst_res(TPASS, "Nothing happened after %d attempts", ATTEMPTS);
- }
++
+ 	diff = pair->a.tv_nsec - pair->b.tv_nsec;
+ 	avg = tst_exp_moving_avg(pair->avg_alpha, diff, avg);
  
 -- 
 2.13.3
