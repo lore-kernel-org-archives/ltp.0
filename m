@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 4 Aug 2017 14:08:08 +0200
-Subject: [LTP] [PATCH v3] commands/keyctl01: Check keyctl support
- instead of kernel version
-In-Reply-To: <20170720053812.4394-1-fenggw-fnst@cn.fujitsu.com>
-References: <f659c98f-f3bc-72f8-0c51-14dc956beba8@cn.fujitsu.com>
- <20170720053812.4394-1-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <20170804120808.GA5400@rei>
+Date: Fri, 4 Aug 2017 15:32:30 +0200
+Subject: [LTP] [PATCH v3 1/3] lib: Add personality fallback and SAFE
+	macro
+In-Reply-To: <20170801132701.16317-1-rpalethorpe@suse.com>
+References: <20170801132701.16317-1-rpalethorpe@suse.com>
+Message-ID: <20170804133230.GA7915@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,41 +12,76 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Looking at this closer we only check that the keyctl binary understands
-these requests, shouldn't we as well try to request2 and unlink a key to
-seek if kernel is up to the task?
+> +#ifndef HAVE_SYS_PERSONALITY_H
+> +#include "lapi/syscalls.h"
+> +
+> +static int personality(unsigned long persona)
+> +{
+> +	return tst_syscall(__NR_personality, persona);
+> +}
+> +#endif
 
-And btw, it would be a bit cleaner to use a for loop to check for each
-flag separately and tell user what flag is not supported:
+Do we really need fallback personality() syscall? We do have tests that
+call personality() syscall in LTP tree since forever and I do not
+recall any problems.
 
-diff --git a/testcases/commands/keyctl/keyctl01.sh b/testcases/commands/keyctl/keyctl01.sh
-old mode 100644
-new mode 100755
-index 76226ae4d..f831acbfc
---- a/testcases/commands/keyctl/keyctl01.sh
-+++ b/testcases/commands/keyctl/keyctl01.sh
-@@ -34,11 +34,18 @@ TST_NEEDS_TMPDIR=1
- TST_NEEDS_CMDS="keyctl"
- . tst_test.sh
- 
-+check_keyctl()
-+{
-+       for op in $@; do
-+               if ! keyctl 2>&1 | grep -q "keyctl $op"; then
-+                       tst_brk TCONF "keyctl operation $op not supported"
-+               fi
-+       done
-+}
-+
- setup()
- {
--       if tst_kvcmp -le 2.6.33; then
--               tst_brk TCONF "Kernel newer than 2.6.33 is needed"
--       fi
-+       check_keyctl negate request2 show unlink
- 
-        PATH_KEYSTAT="/proc/key-users"
-        PATH_KEYQUOTA="/proc/sys/kernel/keys/root_maxbytes"
+All that should be needed here are plain old fallback definitions for
+the few constants that may not be present on older distros.
+
+I guess that UNAME26 would need it since that one is not present in the
+sys/personality header. PER_LINUX should be defined for years as well as
+READ_IMPLIES_EXEC.
+
+> +#if !(HAVE_DECL_UNAME26 == 1 || defined(UNAME26))
+> +#define UNAME26 0x0020000
+> +#endif
+> +
+> +#if !(HAVE_DECL_READ_IMPLIES_EXEC == 1 || defined(READ_IMPLIES_EXEC))
+> +#define READ_IMPLIES_EXEC 0x0400000
+> +#endif
+> +
+> +#if !(HAVE_DECL_PER_LINUX == 1 || defined(PER_LINUX))
+> +#define PER_LINUX 0
+> +#endif
+> +
+> +#endif	/* PERSONALITY_H */
+> diff --git a/include/tst_personality.h b/include/tst_personality.h
+> new file mode 100644
+> index 000000000..ff61f4607
+> --- /dev/null
+> +++ b/include/tst_personality.h
+> @@ -0,0 +1,28 @@
+> +/*
+> + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
+> + *
+> + * This program is free software: you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation, either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
+> + */
+> +
+> +#ifndef TST_PERSONALITY__
+> +#define TST_PERSONALITY__
+> +
+> +#include "lapi/personality.h"
+> +
+> +int tst_personality(const char *filename, unsigned int lineno,
+> +		    unsigned long persona);
+         ^
+	This should be called safe_personality() for consistency
+	reasons.
+
+And we may as well put it into the tst_safe_macros.h and safe_macros.c,
+there is no good reason to keep it in a separate file as far as I can
+tell.
 
 
 -- 
