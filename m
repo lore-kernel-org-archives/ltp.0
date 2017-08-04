@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 4 Aug 2017 15:32:30 +0200
-Subject: [LTP] [PATCH v3 1/3] lib: Add personality fallback and SAFE
-	macro
-In-Reply-To: <20170801132701.16317-1-rpalethorpe@suse.com>
+Date: Fri, 4 Aug 2017 15:47:14 +0200
+Subject: [LTP] [PATCH v3 3/3] Test for CVE-2016-10044 mark AIO pseudo-fs
+ noexec
+In-Reply-To: <20170801132701.16317-3-rpalethorpe@suse.com>
 References: <20170801132701.16317-1-rpalethorpe@suse.com>
-Message-ID: <20170804133230.GA7915@rei>
+ <20170801132701.16317-3-rpalethorpe@suse.com>
+Message-ID: <20170804134714.GB7915@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,77 +13,81 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +#ifndef HAVE_SYS_PERSONALITY_H
+> +#include <stdio.h>
+> +#include <stdint.h>
+> +#include <string.h>
 > +#include "lapi/syscalls.h"
+> +#include "tst_test.h"
+> +#include "tst_personality.h"
+> +#include "tst_safe_stdio.h"
 > +
-> +static int personality(unsigned long persona)
+> +#define CONV_STR "%*x-%*x %s7"
+> +
+> +static FILE *f;
+> +
+> +static void cleanup(void)
 > +{
-> +	return tst_syscall(__NR_personality, persona);
+> +	if (f != NULL)
+
+Could be just
+
+	if (f)
+		SAFE_CLOSE(f);
+
+> +		SAFE_FCLOSE(f);
 > +}
-> +#endif
-
-Do we really need fallback personality() syscall? We do have tests that
-call personality() syscall in LTP tree since forever and I do not
-recall any problems.
-
-All that should be needed here are plain old fallback definitions for
-the few constants that may not be present on older distros.
-
-I guess that UNAME26 would need it since that one is not present in the
-sys/personality header. PER_LINUX should be defined for years as well as
-READ_IMPLIES_EXEC.
-
-> +#if !(HAVE_DECL_UNAME26 == 1 || defined(UNAME26))
-> +#define UNAME26 0x0020000
-> +#endif
 > +
-> +#if !(HAVE_DECL_READ_IMPLIES_EXEC == 1 || defined(READ_IMPLIES_EXEC))
-> +#define READ_IMPLIES_EXEC 0x0400000
-> +#endif
+> +static void run(void)
+> +{
+> +	uint64_t ctx = 0;
+> +	pid_t pid = getpid();
+> +	char perms[8], line[BUFSIZ];
+> +	char maps_path[256];
 > +
-> +#if !(HAVE_DECL_PER_LINUX == 1 || defined(PER_LINUX))
-> +#define PER_LINUX 0
-> +#endif
+> +	SAFE_PERSONALITY(READ_IMPLIES_EXEC);
+> +	if (tst_syscall(__NR_io_setup, 1, &ctx))
+> +		tst_brk(TBROK | TERRNO, "Failed to create AIO context");
 > +
-> +#endif	/* PERSONALITY_H */
-> diff --git a/include/tst_personality.h b/include/tst_personality.h
-> new file mode 100644
-> index 000000000..ff61f4607
-> --- /dev/null
-> +++ b/include/tst_personality.h
-> @@ -0,0 +1,28 @@
-> +/*
-> + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-> + *
-> + * This program is free software: you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation, either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
-> + */
-> +
-> +#ifndef TST_PERSONALITY__
-> +#define TST_PERSONALITY__
-> +
-> +#include "lapi/personality.h"
-> +
-> +int tst_personality(const char *filename, unsigned int lineno,
-> +		    unsigned long persona);
-         ^
-	This should be called safe_personality() for consistency
-	reasons.
+> +	snprintf(maps_path, sizeof(maps_path), "/proc/%d/maps", pid);
 
-And we may as well put it into the tst_safe_macros.h and safe_macros.c,
-there is no good reason to keep it in a separate file as far as I can
-tell.
+You can use the "/proc/self/maps" insetad and save yourself getpid() and
+snprintf().
 
+> +	f = SAFE_FOPEN(maps_path, "r");
+> +	while (fgets(line, BUFSIZ, f) != NULL) {
+> +		if (strstr(line, "/[aio]") != NULL)
+> +			goto found_mapping;
+> +	}
+
+Here again, the != NULL is redundant.
+
+> +	tst_brk(TBROK, "Could not find mapping in %s", maps_path);
+> +
+> +found_mapping:
+> +	if (sscanf(line, CONV_STR, perms) < 0)
+> +		tst_brk(TBROK, "failed find permission string in %s", line);
+
+I fail to see why is the CONV_STR defined as a macro?
+
+It's not like we use it twice or something.
+
+> +	if (strchr(perms, (int)'x'))
+> +		tst_res(TFAIL, "AIO mapping is executable: %s!", perms);
+> +	else
+> +		tst_res(TPASS, "AIO mapping is not executable: %s", perms);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.cleanup = cleanup,
+> +	.min_kver = "2.6.8",
+> +};
+> -- 
+> 2.13.3
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
