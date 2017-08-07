@@ -1,19 +1,31 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 7 Aug 2017 14:57:55 +0200
-Subject: [LTP] [PATCH] syscalls/fcntl35: the pipe-max-size should be
- multiple of PAGE_SIZE
-In-Reply-To: <20170807071059.27653-1-liwang@redhat.com>
-References: <20170807071059.27653-1-liwang@redhat.com>
-Message-ID: <20170807125755.GA29405@rei.lan>
+Date: Mon,  7 Aug 2017 16:03:09 +0200
+Subject: [LTP] [PATCH] [COMMITTED] syscalls/madvise07: Fix typo.
+Message-ID: <20170807140309.2339-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed, thanks.
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/madvise/madvise07.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/testcases/kernel/syscalls/madvise/madvise07.c b/testcases/kernel/syscalls/madvise/madvise07.c
+index 29ac10e99..76adb2e06 100644
+--- a/testcases/kernel/syscalls/madvise/madvise07.c
++++ b/testcases/kernel/syscalls/madvise/madvise07.c
+@@ -53,7 +53,7 @@ static int maptypes[] = {
+ static char *mapname(int maptype)
+ {
+ 	switch (maptype) {
+-	case MAP_PRIVATE: return "MAP_SHARED";
++	case MAP_PRIVATE: return "MAP_PRIVATE";
+ 	case MAP_PRIVATE | MAP_POPULATE: return "MAP_PRIVATE | MAP_POPULATE";
+ 	case MAP_SHARED: return "MAP_SHARED";
+ 	default:
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.13.0
+
