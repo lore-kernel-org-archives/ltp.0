@@ -1,94 +1,69 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 4 Aug 2017 15:47:14 +0200
-Subject: [LTP] [PATCH v3 3/3] Test for CVE-2016-10044 mark AIO pseudo-fs
- noexec
-In-Reply-To: <20170801132701.16317-3-rpalethorpe@suse.com>
-References: <20170801132701.16317-1-rpalethorpe@suse.com>
- <20170801132701.16317-3-rpalethorpe@suse.com>
-Message-ID: <20170804134714.GB7915@rei>
+From: Li Wang <liwang@redhat.com>
+Date: Mon,  7 Aug 2017 15:10:59 +0800
+Subject: [LTP] [PATCH] syscalls/fcntl35: the pipe-max-size should be
+	multiple of PAGE_SIZE
+Message-ID: <20170807071059.27653-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +#include <stdio.h>
-> +#include <stdint.h>
-> +#include <string.h>
-> +#include "lapi/syscalls.h"
-> +#include "tst_test.h"
-> +#include "tst_personality.h"
-> +#include "tst_safe_stdio.h"
-> +
-> +#define CONV_STR "%*x-%*x %s7"
-> +
-> +static FILE *f;
-> +
-> +static void cleanup(void)
-> +{
-> +	if (f != NULL)
+It's very easy to get failures on a system which the PAGE_SIZE is larger than 4096.
 
-Could be just
+  # uname -r
+  4.13.0-rc3
+  # getconf PAGESIZE
+  65536
+  # echo 4096 >/proc/sys/fs/pipe-max-size
+  bash: echo: write error: Invalid argument
 
-	if (f)
-		SAFE_CLOSE(f);
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/syscalls/fcntl/fcntl35.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-> +		SAFE_FCLOSE(f);
-> +}
-> +
-> +static void run(void)
-> +{
-> +	uint64_t ctx = 0;
-> +	pid_t pid = getpid();
-> +	char perms[8], line[BUFSIZ];
-> +	char maps_path[256];
-> +
-> +	SAFE_PERSONALITY(READ_IMPLIES_EXEC);
-> +	if (tst_syscall(__NR_io_setup, 1, &ctx))
-> +		tst_brk(TBROK | TERRNO, "Failed to create AIO context");
-> +
-> +	snprintf(maps_path, sizeof(maps_path), "/proc/%d/maps", pid);
-
-You can use the "/proc/self/maps" insetad and save yourself getpid() and
-snprintf().
-
-> +	f = SAFE_FOPEN(maps_path, "r");
-> +	while (fgets(line, BUFSIZ, f) != NULL) {
-> +		if (strstr(line, "/[aio]") != NULL)
-> +			goto found_mapping;
-> +	}
-
-Here again, the != NULL is redundant.
-
-> +	tst_brk(TBROK, "Could not find mapping in %s", maps_path);
-> +
-> +found_mapping:
-> +	if (sscanf(line, CONV_STR, perms) < 0)
-> +		tst_brk(TBROK, "failed find permission string in %s", line);
-
-I fail to see why is the CONV_STR defined as a macro?
-
-It's not like we use it twice or something.
-
-> +	if (strchr(perms, (int)'x'))
-> +		tst_res(TFAIL, "AIO mapping is executable: %s!", perms);
-> +	else
-> +		tst_res(TPASS, "AIO mapping is not executable: %s", perms);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.cleanup = cleanup,
-> +	.min_kver = "2.6.8",
-> +};
-> -- 
-> 2.13.3
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl35.c b/testcases/kernel/syscalls/fcntl/fcntl35.c
+index b984584..675da71 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl35.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl35.c
+@@ -45,19 +45,23 @@
+ #include "tst_test.h"
+ 
+ static int pipe_max_unpriv;
+-static int test_max_unpriv = 4096;
++static int test_max_unpriv;
++static int test_max_priv;
+ static struct passwd *pw;
+ static struct tcase {
+-	int exp_sz;
++	int *exp_sz;
+ 	int exp_usr;
+ 	char *des;
+ } tcases[] = {
+-	{4096, 1, "an unprivileged user"},
+-	{65536, 0, "a privileged user"}
++	{&test_max_unpriv, 1, "an unprivileged user"},
++	{&test_max_priv, 0, "a privileged user"}
+ };
+ 
+ static void setup(void)
+ {
++	test_max_unpriv = getpagesize();
++	test_max_priv = test_max_unpriv * 16;
++
+ 	if (!access("/proc/sys/fs/pipe-max-size", F_OK)) {
+ 		SAFE_FILE_SCANF("/proc/sys/fs/pipe-max-size", "%d",
+ 				&pipe_max_unpriv);
+@@ -115,7 +119,7 @@ static void do_test(unsigned int n)
+ 		if (tc->exp_usr)
+ 			SAFE_SETUID(pw->pw_uid);
+ 
+-		verify_pipe_size(tc->exp_sz, tc->des);
++		verify_pipe_size(*tc->exp_sz, tc->des);
+ 	}
+ 
+ 	tst_reap_children();
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.9.3
+
