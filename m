@@ -1,79 +1,47 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 8 Aug 2017 09:03:48 +0800
-Subject: [LTP] [PATCH] syscalls/fcntl35: the pipe-max-size should be
- multiple of PAGE_SIZE
-In-Reply-To: <20170807071059.27653-1-liwang@redhat.com>
-References: <20170807071059.27653-1-liwang@redhat.com>
-Message-ID: <59890DF4.6090703@cn.fujitsu.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Tue,  8 Aug 2017 16:47:16 +0200
+Subject: [LTP] [PATCH v4 2/3] CVE-2012-0957: Use SAFE_PERSONALITY
+In-Reply-To: <20170808144717.27590-1-rpalethorpe@suse.com>
+References: <20170808144717.27590-1-rpalethorpe@suse.com>
+Message-ID: <20170808144717.27590-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ testcases/cve/cve-2012-0957.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-Thanks for fixing this issue! :-)
-
-Thanks,
-Xiao Yang.
-
-On 2017/08/07 15:10, Li Wang wrote:
-> It's very easy to get failures on a system which the PAGE_SIZE is larger than 4096.
->
->   # uname -r
->   4.13.0-rc3
->   # getconf PAGESIZE
->   65536
->   # echo 4096 >/proc/sys/fs/pipe-max-size
->   bash: echo: write error: Invalid argument
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  testcases/kernel/syscalls/fcntl/fcntl35.c | 14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/fcntl/fcntl35.c b/testcases/kernel/syscalls/fcntl/fcntl35.c
-> index b984584..675da71 100644
-> --- a/testcases/kernel/syscalls/fcntl/fcntl35.c
-> +++ b/testcases/kernel/syscalls/fcntl/fcntl35.c
-> @@ -45,19 +45,23 @@
->  #include "tst_test.h"
->  
->  static int pipe_max_unpriv;
-> -static int test_max_unpriv = 4096;
-> +static int test_max_unpriv;
-> +static int test_max_priv;
->  static struct passwd *pw;
->  static struct tcase {
-> -	int exp_sz;
-> +	int *exp_sz;
->  	int exp_usr;
->  	char *des;
->  } tcases[] = {
-> -	{4096, 1, "an unprivileged user"},
-> -	{65536, 0, "a privileged user"}
-> +	{&test_max_unpriv, 1, "an unprivileged user"},
-> +	{&test_max_priv, 0, "a privileged user"}
->  };
->  
->  static void setup(void)
->  {
-> +	test_max_unpriv = getpagesize();
-> +	test_max_priv = test_max_unpriv * 16;
-> +
->  	if (!access("/proc/sys/fs/pipe-max-size", F_OK)) {
->  		SAFE_FILE_SCANF("/proc/sys/fs/pipe-max-size", "%d",
->  				&pipe_max_unpriv);
-> @@ -115,7 +119,7 @@ static void do_test(unsigned int n)
->  		if (tc->exp_usr)
->  			SAFE_SETUID(pw->pw_uid);
->  
-> -		verify_pipe_size(tc->exp_sz, tc->des);
-> +		verify_pipe_size(*tc->exp_sz, tc->des);
->  	}
->  
->  	tst_reap_children();
-
-
+diff --git a/testcases/cve/cve-2012-0957.c b/testcases/cve/cve-2012-0957.c
+index f065735a1..096f49f69 100644
+--- a/testcases/cve/cve-2012-0957.c
++++ b/testcases/cve/cve-2012-0957.c
+@@ -26,10 +26,8 @@
+ 
+ #include <string.h>
+ #include <sys/utsname.h>
+-#include <sys/personality.h>
+ #include "tst_test.h"
+-
+-#define UNAME26 0x0020000
++#include "lapi/personality.h"
+ 
+ static int check_field(char *bytes, size_t length, char *field)
+ {
+@@ -75,9 +73,7 @@ static void run(unsigned int test_nr)
+ 		tst_res(TINFO, "Calling uname with default personality");
+ 		try_leak_bytes();
+ 	} else {
+-		if (personality(PER_LINUX | UNAME26) < 0)
+-			tst_brk(TCONF | TERRNO,
+-				"Could not change personality to UNAME26");
++		SAFE_PERSONALITY(PER_LINUX | UNAME26);
+ 		tst_res(TINFO, "Calling uname with UNAME26 personality");
+ 		try_leak_bytes();
+ 	}
+-- 
+2.13.3
 
