@@ -1,92 +1,189 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 9 Aug 2017 15:29:07 +0200
-Subject: [LTP] [PATCH v4 1/3] lib: Add personality fallback and SAFE
-	macro
-In-Reply-To: <20170808144717.27590-1-rpalethorpe@suse.com>
-References: <20170808144717.27590-1-rpalethorpe@suse.com>
-Message-ID: <20170809132907.GG32573@rei.lan>
+From: vkabatov@redhat.com <vkabatov@redhat.com>
+Date: Wed,  9 Aug 2017 16:39:34 +0200
+Subject: [LTP] [PATCH v3] [vma] Add regression tests for vsyscall and vdso
+Message-ID: <20170809143934.2875-1-vkabatov@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +#ifndef PERSONALITY_H
-> +#define PERSONALITY_H
-> +
-> +#include <sys/personality.h>
-> +
-> +#if !(HAVE_DECL_UNAME26 == 1 || defined(UNAME26))
-             ^
-	 Where is this macro from, I cannot see it anywhere.
+From: Veronika Kabatova <vkabatov@redhat.com>
 
-Have you forgotten git add on configure.ac or something?
+Test checks if vsyscall and vdso VMAs are reported correctly. vsyscall
+range and permissions were fixed with kernel commit 103efcd9aac1 ("fix
+perms/range of vsyscall vma in /proc/*/maps"). While some newer systems
+run with CONFIG_LEGACY_VSYSCALL_NONE, this test may serve to find
+regressions on systems still running with vsyscalls.
 
-And I doubt that we need anything else than:
+Second part of the test checks regression of vdso permissions bug
+(fixed with b6558c4a2378 ("fix [vdso] page permissions") and
+e5b97dde514f ("add VM_ALWAYSDUMP")). As a consequence of this bug, vdso
+pages were not included in core dumps which caused incomplete
+backtraces:
 
-#ifndef UNAME26
-# define UNAME26 0x0020000
-#endif
+    Program terminated with signal 11, Segmentation fault.
+    #0  0x005f0402 in ?? ()
 
-here...
+    Thread 1 (process 14859):
+    #0  0x005f0402 in ?? ()
+    #1  0x00336366 in ?? () from /lib/i686/nosegneg/libc.so.6
+    #2  0x0804845f in handle_alrm (signo=14) at small.c:9
+    #3  0x005f0420 in ?? ()
+    #4  0x0000000e in ?? ()
+    #5  0x00000033 in ?? ()
+    #6  0x00000000 in ?? ()
 
-> +#define UNAME26 0x0020000
-> +#endif
-> +
-> +#endif	/* PERSONALITY_H */
-> diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-> index 8245b68a3..a132d3f86 100644
-> --- a/include/tst_safe_macros.h
-> +++ b/include/tst_safe_macros.h
-> @@ -438,4 +438,9 @@ int safe_mknod(const char *file, const int lineno, const char *pathname,
->  #define SAFE_MKNOD(pathname, mode, dev) \
->  	safe_mknod(__FILE__, __LINE__, (pathname), (mode), (dev))
->  
-> +int safe_personality(const char *filename, unsigned int lineno,
-> +		    unsigned long persona);
-> +#define SAFE_PERSONALITY(persona) safe_personality(__FILE__, __LINE__, persona)
-> +
-> +
->  #endif /* SAFE_MACROS_H__ */
-> diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
-> index e7f5095e5..c928b8357 100644
-> --- a/lib/tst_safe_macros.c
-> +++ b/lib/tst_safe_macros.c
-> @@ -20,6 +20,7 @@
->  #define TST_NO_DEFAULT_MAIN
->  #include "tst_test.h"
->  #include "tst_safe_macros.h"
-> +#include "lapi/personality.h"
-                  ^
-Do we need this header there for something?
+Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
+---
+ runtest/mm                            |  1 +
+ testcases/kernel/mem/.gitignore       |  1 +
+ testcases/kernel/mem/vma/Makefile     |  2 +
+ testcases/kernel/mem/vma/vma05.sh     | 84 +++++++++++++++++++++++++++++++++++
+ testcases/kernel/mem/vma/vma05_vdso.c |  7 +++
+ 5 files changed, 95 insertions(+)
+ create mode 100755 testcases/kernel/mem/vma/vma05.sh
+ create mode 100644 testcases/kernel/mem/vma/vma05_vdso.c
 
->  int safe_setpgid(const char *file, const int lineno, pid_t pid, pid_t pgid)
->  {
-> @@ -47,3 +48,16 @@ pid_t safe_getpgid(const char *file, const int lineno, pid_t pid)
->  
->  	return pgid;
->  }
-> +
-> +int safe_personality(const char *filename, unsigned int lineno,
-> +		    unsigned long persona)
-> +{
-> +	int prev_persona = personality(persona);
-> +
-> +	if (prev_persona < 0) {
-> +		tst_brk_(filename, lineno, TBROK | TERRNO,
-> +			 "persona(%ld) failed", persona);
-> +	}
-> +
-> +	return prev_persona;
-> +}
-> -- 
-> 2.13.3
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/runtest/mm b/runtest/mm
+index d108d1897..55fc2cab0 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -89,6 +89,7 @@ vma01 vma01
+ vma02 vma02
+ vma03 vma03
+ vma04 vma04
++vma05 vma05.sh
+ 
+ overcommit_memory01 overcommit_memory
+ overcommit_memory02 overcommit_memory -R 0
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index 51701190a..ce21ca70f 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -72,5 +72,6 @@
+ /vma/vma02
+ /vma/vma03
+ /vma/vma04
++/vma/vma05_vdso
+ /vmtests/data_space
+ /vmtests/stack_space
+diff --git a/testcases/kernel/mem/vma/Makefile b/testcases/kernel/mem/vma/Makefile
+index b323dbfd5..966148cbd 100644
+--- a/testcases/kernel/mem/vma/Makefile
++++ b/testcases/kernel/mem/vma/Makefile
+@@ -19,6 +19,8 @@
+ 
+ top_srcdir              ?= ../../../..
+ 
++vma05_vdso: CFLAGS+=-ggdb3
++
+ include $(top_srcdir)/include/mk/testcases.mk
+ include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/vma/vma05.sh b/testcases/kernel/mem/vma/vma05.sh
+new file mode 100755
+index 000000000..5742fbc22
+--- /dev/null
++++ b/testcases/kernel/mem/vma/vma05.sh
+@@ -0,0 +1,84 @@
++#!/bin/sh
++
++# Copyright (C) 2017 Red Hat, Inc.
++#
++# This program is free software;  you can redistribute it and#or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful, but
++# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
++# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
++# for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, see <http://www.gnu.org/licenses/>.
++
++# Test description: [regression] Check if the vsyscall and vdso VMA regions are
++#                   reported correctly.
++#
++#       While [vsyscall] is mostly deprecated with newer systems, there is
++#       still plenty of kernels compiled with CONFIG_LEGACY_VSYSCALL_NATIVE and
++#       CONFIG_LEGACY_VSYSCALL_EMULATE (see linux/arch/x86/Kconfig for option
++#       descriptions). First part of the test will check eligible kernels for
++#       regression for a bug fixed by commit 103efcd9aac1 (fix perms/range of
++#       vsyscall vma in /proc/*/maps).
++#
++#       Second part of test checks [vdso] VMA permissions (fixed with commits
++#       b6558c4a2378 (fix [vdso] page permissions) and e5b97dde514f (Add
++#       VM_ALWAYSDUMP)). As a consequence of this bug, VMAs were not included
++#       in core dumps which resulted in eg. incomplete backtraces and invalid
++#       core dump files created by gdb.
++
++# Usage
++# ./vma05.sh
++
++TST_SETUP=setup
++TST_CLEANUP=cleanup
++TST_TESTFUNC=vma_report_check
++TST_NEEDS_ROOT=1
++TST_NEEDS_CMDS="gdb"
++
++. tst_test.sh
++
++CORE_LIMIT=$(ulimit -c)
++CORE_PATTERN=$(cat /proc/sys/kernel/core_pattern)
++
++setup()
++{
++	ulimit -c unlimited
++	echo "core" > /proc/sys/kernel/core_pattern
++}
++
++cleanup()
++{
++	ulimit -c "$CORE_LIMIT"
++	echo "$CORE_PATTERN" > /proc/sys/kernel/core_pattern
++}
++
++vma_report_check()
++{
++	if [ $(uname -m) == "x86_64" ] ; then
++		if LINE=$(grep "vsyscall" /proc/self/maps) ; then
++			RIGHT="ffffffffff600000-ffffffffff601000[[:space:]]r-xp"
++			if grep -q "$RIGHT" <<< "$LINE" ; then
++				tst_res TPASS "[vsyscall] reported correctly"
++			else
++				tst_res TFAIL "[vsyscall] reporting wrong"
++			fi
++		fi
++	fi
++
++	rm -rf core*
++	{ vma05_vdso; } >& /dev/null
++	TRACE=$(gdb -silent -ex="thread apply all backtrace" -ex="quit"\
++		vma05_vdso ./core* 2> /dev/null)
++	if grep -qF "??" <<< "$TRACE" ; then
++		tst_res TFAIL "[vdso] bug not patched"
++	else
++		tst_res TPASS "[vdso] backtrace complete"
++	fi
++}
++
++tst_run
+diff --git a/testcases/kernel/mem/vma/vma05_vdso.c b/testcases/kernel/mem/vma/vma05_vdso.c
+new file mode 100644
+index 000000000..507de50d5
+--- /dev/null
++++ b/testcases/kernel/mem/vma/vma05_vdso.c
+@@ -0,0 +1,7 @@
++#include <signal.h>
++
++int main(void)
++{
++	raise(SIGSEGV);
++	return 0;
++}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.13.3
+
