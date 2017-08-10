@@ -1,91 +1,52 @@
 From: Daniel Lezcano <daniel.lezcano@linaro.org>
-Date: Thu, 10 Aug 2017 08:01:27 +0000
-Subject: [LTP] [PATCH 1/2] ltp: Add the ability to specify the latency
-	constraint
-Message-ID: <1502352088-10136-1-git-send-email-daniel.lezcano@linaro.org>
+Date: Thu, 10 Aug 2017 08:01:28 +0000
+Subject: [LTP] [PATCH 2/2] syscalls/pselect: Add a zero latency constraint
+In-Reply-To: <1502352088-10136-1-git-send-email-daniel.lezcano@linaro.org>
+References: <1502352088-10136-1-git-send-email-daniel.lezcano@linaro.org>
+Message-ID: <1502352088-10136-2-git-send-email-daniel.lezcano@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The ltp test suites provides a set of tests. Some of them are checking the test
-happens in a specified amount of time.
+The pselect_01 testcase works well on an x86 as it is a fast platform, with
+fast exit latency idle routine.
 
-Unfortunately, some platforms have slow power management routines adding more
-than 1.5ms to wakeup from a deep idle state. This duration is far too long to
-be acceptable when we are trying the measure a speficied routine with a timeout
-reasonably delayed. For example, the testcases/kernel/syscalls/pselect_01 is
-failing for this reason.
+However on ARM[64] the idle routine can take much more time, for example
+1500us.
 
-This patch gives the opportunity to the testcase to specify the latency
-constraint when running. This option must be used with the needs_root in order
-to have the right privileges.
+The pselect fails on the ARM[64] platforms because of these slow exit latencies,
+the delay between the expected expiration and the observed one is not
+acceptable.
+
+The fix could be to increase the deviation on ARM64 but that wouldn't make
+sense as some platforms, for the same architecture, can have faster or
+different delays, hence we can potentially miss a bug.
+
+The simplest solution is to set the cpu_dma latency constraint to zero, so the
+idle driver will always choose the fastest idle state, thus fixing the issue
+above. The latency constraint will apply only for this test.
 
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 ---
- include/tst_test.h |  4 ++++
- lib/tst_test.c     | 18 ++++++++++++++++++
- 2 files changed, 22 insertions(+)
+ testcases/kernel/syscalls/pselect/pselect01.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index e90312a..519fd4c 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -124,6 +124,7 @@ struct tst_test {
- 	int needs_checkpoints:1;
- 	int format_device:1;
- 	int mount_device:1;
-+	int needs_latency:1;
+diff --git a/testcases/kernel/syscalls/pselect/pselect01.c b/testcases/kernel/syscalls/pselect/pselect01.c
+index a2b5339..42027b6 100644
+--- a/testcases/kernel/syscalls/pselect/pselect01.c
++++ b/testcases/kernel/syscalls/pselect/pselect01.c
+@@ -44,6 +44,9 @@ int sample_fn(int clk_id, long long usec)
+ }
  
- 	/* Minimal device size in megabytes */
- 	unsigned int dev_min_size;
-@@ -154,6 +155,9 @@ struct tst_test {
- 
- 	/* NULL terminated array of resource file names */
- 	const char *const *resource_files;
-+
-+	/* Latency constraint to be set for the test */
-+	int latency;
+ static struct tst_test test = {
++	.needs_root = 1,
++	.needs_latency = 1,
++	.latency = 0,
+ 	.tid = "pselect()",
+ 	.sample = sample_fn,
  };
- 
- /*
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 4c30eda..485515e 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -619,6 +619,21 @@ static void copy_resources(void)
- 		TST_RESOURCE_COPY(NULL, tst_test->resource_files[i], NULL);
- }
- 
-+static int set_latency(void)
-+{
-+	int fd, ret;
-+
-+	fd = open("/dev/cpu_dma_latency", O_WRONLY);
-+	if (fd < 0)
-+		return fd;
-+
-+	ret = write(fd, &tst_test->latency, sizeof(tst_test->latency));
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
- static const char *get_tid(char *argv[])
- {
- 	char *p;
-@@ -736,6 +751,9 @@ static void do_setup(int argc, char *argv[])
- 
- 	if (tst_test->resource_files)
- 		copy_resources();
-+
-+	if (tst_test->needs_latency && set_latency())
-+		tst_brk(TCONF, "Failed to set cpu latency");
- }
- 
- static void do_test_setup(void)
 -- 
 2.1.4
 
