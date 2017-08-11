@@ -1,101 +1,129 @@
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-Date: Thu, 10 Aug 2017 14:00:15 +0200
-Subject: [LTP] [PATCH 2/2] syscalls/pselect: Add a zero latency
-	constraint
-In-Reply-To: <1cbcc5dd-e060-94df-982e-198b3b342ec6@redhat.com>
-References: <1502352088-10136-1-git-send-email-daniel.lezcano@linaro.org>
- <1502352088-10136-2-git-send-email-daniel.lezcano@linaro.org>
- <1cbcc5dd-e060-94df-982e-198b3b342ec6@redhat.com>
-Message-ID: <ad947ee0-ee2a-840a-b9ac-74170d0ec7f3@linaro.org>
+From: Xiong Zhou <xzhou@redhat.com>
+Date: Fri, 11 Aug 2017 11:13:19 +0800
+Subject: [LTP] [PATCH v2] syscalls/fanotify08: add sanity check for
+	FAN_CLOEXEC
+In-Reply-To: <20170605140332.GB24454@rei.lan>
+References: <20170605140332.GB24454@rei.lan>
+Message-ID: <1502421199-6364-1-git-send-email-xzhou@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 10/08/2017 13:50, Jiri Jaburek wrote:
-> On 08/10/17 10:01, Daniel Lezcano wrote:
->> The pselect_01 testcase works well on an x86 as it is a fast platform, w=
-ith
->> fast exit latency idle routine.
->>
->> However on ARM[64] the idle routine can take much more time, for example
->> 1500us.
->>
->> The pselect fails on the ARM[64] platforms because of these slow exit la=
-tencies,
->> the delay between the expected expiration and the observed one is not
->> acceptable.
->>
->> The fix could be to increase the deviation on ARM64 but that wouldn't ma=
-ke
->> sense as some platforms, for the same architecture, can have faster or
->> different delays, hence we can potentially miss a bug.
->>
->> The simplest solution is to set the cpu_dma latency constraint to zero, =
-so the
->> idle driver will always choose the fastest idle state, thus fixing the i=
-ssue
->> above. The latency constraint will apply only for this test.
->=20
-> I think a more generic LTP-wide solution could be made; there are more
-> tests that fail ie. on virtualized environments because of CPU over-
-> provisioning on the host (x86, s390, ppc, etc.)
+Signed-off-by: Xiong Zhou <xzhou@redhat.com>
+---
+ testcases/kernel/syscalls/fanotify/fanotify08.c | 101 ++++++++++++++++++++++++
+ 1 file changed, 101 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify08.c
 
-Not sure a latency constraint will fix the above.
-
-> and I can imagine ie.
-> networking tests having similar needs as well (probably currently worked
-> around using big timeouts).
-
-Here you can set the network latency.
-
-> Basically some system that would allow a user to set some "latency
-> multiplier" based on the system under test, so that ie. dedicated x86
-> machines with fairly deterministic CPU/net/etc. scheduling could have it
-> set low, and so that other systems could still run tests that are now
-> deemed unsuitable for such hardware.
-
-Here the solution is to provide the cpu_dma latency, it will prevent the
-cpuidle driver to choose a deeper idle state introducing an excessive
-wakeup latency.
-
-The excessive idle exit latency is the root cause of the pselect to
-fail, setting the cpu_dma latency is the correct fix to let this test to
-do the right thing. It is the purpose of the cpu_dma latency constraint.
-
-
-
->> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->> ---
->>  testcases/kernel/syscalls/pselect/pselect01.c | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/testcases/kernel/syscalls/pselect/pselect01.c b/testcases/k=
-ernel/syscalls/pselect/pselect01.c
->> index a2b5339..42027b6 100644
->> --- a/testcases/kernel/syscalls/pselect/pselect01.c
->> +++ b/testcases/kernel/syscalls/pselect/pselect01.c
->> @@ -44,6 +44,9 @@ int sample_fn(int clk_id, long long usec)
->>  }
->> =20
->>  static struct tst_test test =3D {
->> +	.needs_root =3D 1,
->> +	.needs_latency =3D 1,
->> +	.latency =3D 0,
->>  	.tid =3D "pselect()",
->>  	.sample =3D sample_fn,
->>  };
->>
->=20
->=20
-
-
---=20
- <http://www.linaro.org/> Linaro.org =E2=94=82 Open source software for ARM=
- SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify08.c b/testcases/kernel/syscalls/fanotify/fanotify08.c
+new file mode 100644
+index 0000000..aa3a7c0
+--- /dev/null
++++ b/testcases/kernel/syscalls/fanotify/fanotify08.c
+@@ -0,0 +1,101 @@
++/*
++ * Copyright (c) 2017 RedHat.  All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it is
++ * free of the rightful claim of any third person regarding infringement
++ * or the like.  Any license provided herein, whether implied or
++ * otherwise, applies only to this software file.  Patent licenses, if
++ * any, provided herein do not apply to combinations of this program with
++ * other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ * Started by Xiong Zhou <xzhou@redhat.com>
++ *
++ * DESCRIPTION
++ *     Check fanotify_init flag O_CLOEXEC.
++ */
++#define _GNU_SOURCE
++#include "config.h"
++
++#include <stdio.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <fcntl.h>
++#include <errno.h>
++#include <string.h>
++#include <sys/syscall.h>
++#include "tst_test.h"
++#include "fanotify.h"
++
++#if defined(HAVE_SYS_FANOTIFY_H)
++#include <sys/fanotify.h>
++
++static void cleanup(void);
++static void test01(int flag);
++static int fd_notify;
++
++void test_coe(void)
++{
++	test01(FAN_CLOEXEC);
++	test01(0);
++}
++
++static void test01(int flag)
++{
++	int coe;
++
++	fd_notify = fanotify_init(FAN_CLASS_NOTIF|flag, O_RDONLY);
++
++	if (fd_notify < 0) {
++
++		if (errno == ENOSYS) {
++			tst_brk(TCONF,
++				"fanotify is not configured in this kernel.");
++		} else {
++			tst_brk(TBROK | TERRNO, "fanotify_init failed");
++		}
++	}
++
++	coe = SAFE_FCNTL(fd_notify, F_GETFD);
++
++	if (coe & FD_CLOEXEC) {
++		if (flag == 0)
++			tst_res(TFAIL, "set close-on-exit");
++		else
++			tst_res(TPASS, "set close-on-exit");
++	} else {
++		if (flag == 0)
++			tst_res(TPASS, "not set close-on-exit");
++		else
++			tst_res(TFAIL, "not set close-on-exit");
++	}
++
++	SAFE_CLOSE(fd_notify);
++}
++
++static void cleanup(void)
++{
++	if (fd_notify > 0)
++		SAFE_CLOSE(fd_notify);
++}
++
++static struct tst_test test = {
++	.test_all = test_coe,
++	.cleanup = cleanup,
++	.needs_root = 1,
++};
++
++#else
++	TST_TEST_TCONF("system doesn't have required fanotify support");
++#endif
+-- 
+1.8.3.1
 
