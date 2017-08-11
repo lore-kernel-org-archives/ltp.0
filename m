@@ -1,10 +1,13 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 11 Aug 2017 07:25:18 -0400 (EDT)
-Subject: [LTP] [PATCH 1/2] ltp: Add the ability to specify the
+Date: Fri, 11 Aug 2017 07:26:06 -0400 (EDT)
+Subject: [LTP] [PATCH 2/2] syscalls/pselect: Add a zero
 	latency	constraint
-In-Reply-To: <1502352088-10136-1-git-send-email-daniel.lezcano@linaro.org>
+In-Reply-To: <ad947ee0-ee2a-840a-b9ac-74170d0ec7f3@linaro.org>
 References: <1502352088-10136-1-git-send-email-daniel.lezcano@linaro.org>
-Message-ID: <337916262.70548323.1502450718721.JavaMail.zimbra@redhat.com>
+ <1502352088-10136-2-git-send-email-daniel.lezcano@linaro.org>
+ <1cbcc5dd-e060-94df-982e-198b3b342ec6@redhat.com>
+ <ad947ee0-ee2a-840a-b9ac-74170d0ec7f3@linaro.org>
+Message-ID: <1217268944.70548669.1502450766723.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,76 +17,41 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> The ltp test suites provides a set of tests. Some of them are checking the
-> test
-> happens in a specified amount of time.
+> On 10/08/2017 13:50, Jiri Jaburek wrote:
+> > On 08/10/17 10:01, Daniel Lezcano wrote:
+> >> The pselect_01 testcase works well on an x86 as it is a fast platform,
+> >> with
+> >> fast exit latency idle routine.
+> >>
+> >> However on ARM[64] the idle routine can take much more time, for example
+> >> 1500us.
+> >>
+> >> The pselect fails on the ARM[64] platforms because of these slow exit
+> >> latencies,
+> >> the delay between the expected expiration and the observed one is not
+> >> acceptable.
+> >>
+> >> The fix could be to increase the deviation on ARM64 but that wouldn't make
+> >> sense as some platforms, for the same architecture, can have faster or
+> >> different delays, hence we can potentially miss a bug.
+> >>
+> >> The simplest solution is to set the cpu_dma latency constraint to zero, so
+> >> the
+> >> idle driver will always choose the fastest idle state, thus fixing the
+> >> issue
+> >> above. The latency constraint will apply only for this test.
+> > 
+> > I think a more generic LTP-wide solution could be made; there are more
+> > tests that fail ie. on virtualized environments because of CPU over-
+> > provisioning on the host (x86, s390, ppc, etc.)
 > 
-> Unfortunately, some platforms have slow power management routines adding more
-> than 1.5ms to wakeup from a deep idle state. This duration is far too long to
-> be acceptable when we are trying the measure a speficied routine with a
-> timeout
-> reasonably delayed. For example, the testcases/kernel/syscalls/pselect_01 is
-> failing for this reason.
-> 
-> This patch gives the opportunity to the testcase to specify the latency
-> constraint when running. This option must be used with the needs_root in
-> order
-> to have the right privileges.
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->  include/tst_test.h |  4 ++++
->  lib/tst_test.c     | 18 ++++++++++++++++++
->  2 files changed, 22 insertions(+)
-> 
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index e90312a..519fd4c 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -124,6 +124,7 @@ struct tst_test {
->  	int needs_checkpoints:1;
->  	int format_device:1;
->  	int mount_device:1;
-> +	int needs_latency:1;
->  
->  	/* Minimal device size in megabytes */
->  	unsigned int dev_min_size;
-> @@ -154,6 +155,9 @@ struct tst_test {
->  
->  	/* NULL terminated array of resource file names */
->  	const char *const *resource_files;
-> +
-> +	/* Latency constraint to be set for the test */
-> +	int latency;
->  };
->  
->  /*
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 4c30eda..485515e 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -619,6 +619,21 @@ static void copy_resources(void)
->  		TST_RESOURCE_COPY(NULL, tst_test->resource_files[i], NULL);
->  }
->  
-> +static int set_latency(void)
-> +{
-> +	int fd, ret;
-> +
-> +	fd = open("/dev/cpu_dma_latency", O_WRONLY);
-> +	if (fd < 0)
-> +		return fd;
+> Not sure a latency constraint will fix the above.
 
-Hi,
+We could detect bare-metal / (some [1]) virt and adjust threshold
+for timer tests, but I'm assuming Daniel sees this on bare metal,
+so this patch would be useful anyway.
 
-so any kind of failure to open/write to this node will end test
-with TCONF. I'd rather not hide problems with open/write and
-instead report any trouble via TBROK:
-
-- if node doesn't exist (for example because kernels is too old),
-  we'll run the test anyway
-- if node exists but can't be opened -> TBROK
-- if node can be opened, but write fails -> TBROK
+[1] kvm/xen is easy to detect, lpars might be more tricky
 
 Regards,
 Jan
