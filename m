@@ -1,55 +1,43 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 14 Aug 2017 15:33:51 +0200
-Subject: [LTP] [PATCH V2 1/2] ltp: Add the ability to specify the
- latency constraint
-In-Reply-To: <a0a61ae1-15fe-fc0d-9bfb-b2efd94f3c42@linaro.org>
-References: <337916262.70548323.1502450718721.JavaMail.zimbra@redhat.com>
- <1502456086-14696-1-git-send-email-daniel.lezcano@linaro.org>
- <20170811140905.GB3341@rei.lan>
- <b11d663b-0afb-58a7-bc3d-14d3e61084c4@linaro.org>
- <20170811152855.GA14152@rei.lan>
- <a0a61ae1-15fe-fc0d-9bfb-b2efd94f3c42@linaro.org>
-Message-ID: <20170814133351.GA11524@rei>
+From: Xiong Zhou <xzhou@redhat.com>
+Date: Mon, 14 Aug 2017 22:01:48 +0800
+Subject: [LTP] [PATCH v3 0/3] add SAFE_FANOTIFY_INIT and FAN_CLOEXEC cases
+In-Reply-To: <20170811084138.GA3341@rei.lan>
+References: <20170811084138.GA3341@rei.lan>
+Message-ID: <1502719311-18774-1-git-send-email-xzhou@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > tests that should end up 
-> > using the same timer with the same slack formula in kernel and hence 
-> > should fail in the very same way. And possibly rest of the timer 
-> > testcases should likely fail as well since these are not that 
-> > different either.
-> 
-> The latencies introduced by the kernel energy saving framework can make
-> these tests to fail and it is impossible to get rid of that, except by
-> setting the latency to zero when running specific test cases.
-> 
-> 
-> > Are you, by any chance, using latest stable release? Since we had 
-> > rewritten all the timer precision tests recently in:
-> > 
-> > https://github.com/linux-test-project/ltp/commit/c459654db64cd29177a382ab178fdd5ad59664e4
-> 
-> Yes, I am.
+v3:
+  Add SAFE_FANOTIFY_INIT helper.
+  Rewrite old cases. Too big a patch, we can also split it.
+  Split FAN_CLOEXEC case to 2 separate cases.
 
-That explains it. Previously each of the timer testcases had it's own
-PASS/FAIL criteria and each of them was slightly different. We got rid
-of that mess recetly and so the latest git has a timer measurement
-library and the test only defines a sampling function now. We also did
-quite a lot of testing to make sure that the test are stable now.  And
-because of that we take more samples and apply discarded mean to get rid
-of random outliners. But we did most of the testing on x86 hardware so
-it's possible that it still needs some adjustements.
+Thanks for reviewing!
 
-Can you, please, try with the latest git to see if these tests works for
-you now? And then, in a case that they stil fail, we will figure out how
-to fix them. Most likely we will patch the timer test library, either
-to loosen the crieria or to keep the cpu_dma_latecy open while we sample
-the timers.
+Xiong Zhou (3):
+  lib: add helper SAFE_FANOTIFY_INIT
+  fanotify: rewrite old cases with new lib
+  syscalls/fanotify0[89]: add sanity check for FAN_CLOEXEC
+
+ include/tst_safe_macros.h                       |   5 +
+ lib/tst_safe_macros.c                           |  23 ++
+ runtest/syscalls                                |   2 +
+ testcases/kernel/syscalls/fanotify/fanotify01.c | 520 +++++++++++-------------
+ testcases/kernel/syscalls/fanotify/fanotify02.c | 320 +++++++--------
+ testcases/kernel/syscalls/fanotify/fanotify03.c | 248 +++++------
+ testcases/kernel/syscalls/fanotify/fanotify04.c | 159 +++-----
+ testcases/kernel/syscalls/fanotify/fanotify05.c | 153 +++----
+ testcases/kernel/syscalls/fanotify/fanotify06.c | 191 ++++-----
+ testcases/kernel/syscalls/fanotify/fanotify07.c |   9 +-
+ testcases/kernel/syscalls/fanotify/fanotify08.c |  77 ++++
+ testcases/kernel/syscalls/fanotify/fanotify09.c |  77 ++++
+ 12 files changed, 891 insertions(+), 893 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify08.c
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify09.c
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
