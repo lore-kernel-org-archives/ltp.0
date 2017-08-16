@@ -1,47 +1,72 @@
 From: Xiong Zhou <xzhou@redhat.com>
-Date: Wed, 16 Aug 2017 15:15:34 +0800
-Subject: [LTP] [PATCH v4 0/3] add SAFE_FANOTIFY_INIT and FAN_CLOEXEC check
-In-Reply-To: <20170815133616.GD30800@rei>
+Date: Wed, 16 Aug 2017 15:15:35 +0800
+Subject: [LTP] [PATCH v4 1/3] lib: add helper SAFE_FANOTIFY_INIT
+In-Reply-To: <1502867737-26158-1-git-send-email-xzhou@redhat.com>
 References: <20170815133616.GD30800@rei>
-Message-ID: <1502867737-26158-1-git-send-email-xzhou@redhat.com>
+ <1502867737-26158-1-git-send-email-xzhou@redhat.com>
+Message-ID: <1502867737-26158-2-git-send-email-xzhou@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-v4:
-  Delete else branch in helper.
-  Make TST_TOTAL a macro instead of integer.
-  Use SAFE_CLOSE in cleanup in old cases.
-  Use iteration of tst_test.test instead of 2 files.
+Signed-off-by: Xiong Zhou <xzhou@redhat.com>
+---
+ include/tst_safe_macros.h |  5 +++++
+ lib/tst_safe_macros.c     | 21 +++++++++++++++++++++
+ 2 files changed, 26 insertions(+)
 
-v3:
-  Add SAFE_FANOTIFY_INIT helper.
-  Rewrite old cases. Too big a patch, we can also split it.
-  Split FAN_CLOEXEC case to 2 separate cases.
-
-Thanks for reviewing!
-
-Xiong Zhou (3):
-  lib: add helper SAFE_FANOTIFY_INIT
-  fanotify: rewrite old cases with new lib
-  syscalls/fanotify08: add sanity check for FAN_CLOEXEC
-
- include/tst_safe_macros.h                       |   5 +
- lib/tst_safe_macros.c                           |  21 +
- runtest/syscalls                                |   1 +
- testcases/kernel/syscalls/fanotify/fanotify01.c | 526 +++++++++++-------------
- testcases/kernel/syscalls/fanotify/fanotify02.c | 326 +++++++--------
- testcases/kernel/syscalls/fanotify/fanotify03.c | 254 +++++-------
- testcases/kernel/syscalls/fanotify/fanotify04.c | 165 +++-----
- testcases/kernel/syscalls/fanotify/fanotify05.c | 155 +++----
- testcases/kernel/syscalls/fanotify/fanotify06.c | 193 ++++-----
- testcases/kernel/syscalls/fanotify/fanotify07.c |   9 +-
- testcases/kernel/syscalls/fanotify/fanotify08.c |  91 ++++
- 11 files changed, 838 insertions(+), 908 deletions(-)
- create mode 100644 testcases/kernel/syscalls/fanotify/fanotify08.c
-
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 8245b68..f23f765 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -438,4 +438,9 @@ int safe_mknod(const char *file, const int lineno, const char *pathname,
+ #define SAFE_MKNOD(pathname, mode, dev) \
+ 	safe_mknod(__FILE__, __LINE__, (pathname), (mode), (dev))
+ 
++int safe_fanotify_init(const char *file, const int lineno,
++	unsigned int flags, unsigned int event_f_flags);
++#define SAFE_FANOTIFY_INIT(fan, mode)  \
++	safe_fanotify_init(__FILE__, __LINE__, (fan), (mode))
++
+ #endif /* SAFE_MACROS_H__ */
+diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
+index e7f5095..ecd39f8 100644
+--- a/lib/tst_safe_macros.c
++++ b/lib/tst_safe_macros.c
+@@ -17,6 +17,7 @@
+ 
+ #define _GNU_SOURCE
+ #include <unistd.h>
++#include <errno.h>
+ #define TST_NO_DEFAULT_MAIN
+ #include "tst_test.h"
+ #include "tst_safe_macros.h"
+@@ -47,3 +48,23 @@ pid_t safe_getpgid(const char *file, const int lineno, pid_t pid)
+ 
+ 	return pgid;
+ }
++
++int safe_fanotify_init(const char *file, const int lineno,
++	unsigned int flags, unsigned int event_f_flags)
++{
++	int rval;
++
++	rval = fanotify_init(flags, event_f_flags);
++
++	if (rval == -1) {
++
++		if (errno == ENOSYS) {
++			tst_brk(TCONF,
++				"fanotify is not configured in this kernel.");
++		}
++		tst_brk(TBROK | TERRNO,
++			"%s:%d: fanotify_init() failed", file, lineno);
++	}
++
++	return rval;
++}
 -- 
 1.8.3.1
 
