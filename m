@@ -1,54 +1,47 @@
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-Date: Tue, 15 Aug 2017 22:15:11 +0200
-Subject: [LTP] [PATCH V2 1/2] ltp: Add the ability to specify the
- latency constraint
-In-Reply-To: <20170815110648.GC20715@rei.lan>
-References: <337916262.70548323.1502450718721.JavaMail.zimbra@redhat.com>
- <1502456086-14696-1-git-send-email-daniel.lezcano@linaro.org>
- <20170811140905.GB3341@rei.lan>
- <b11d663b-0afb-58a7-bc3d-14d3e61084c4@linaro.org>
- <20170811152855.GA14152@rei.lan>
- <a0a61ae1-15fe-fc0d-9bfb-b2efd94f3c42@linaro.org>
- <20170814133351.GA11524@rei>
- <99937465-7b6b-ce2c-6194-bf920b2994f4@linaro.org>
- <20170814143609.GB11524@rei>
- <a1f4e3bb-3b7d-c259-67d1-596ee6f2b142@linaro.org>
- <20170815110648.GC20715@rei.lan>
-Message-ID: <dafa7cdd-a9c6-1b1f-cbd8-b35d271d8d9f@linaro.org>
+From: Xiong Zhou <xzhou@redhat.com>
+Date: Wed, 16 Aug 2017 15:15:34 +0800
+Subject: [LTP] [PATCH v4 0/3] add SAFE_FANOTIFY_INIT and FAN_CLOEXEC check
+In-Reply-To: <20170815133616.GD30800@rei>
+References: <20170815133616.GD30800@rei>
+Message-ID: <1502867737-26158-1-git-send-email-xzhou@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 15/08/2017 13:06, Cyril Hrubis wrote:
-> Hi!
->>> And even if only subset of them fails I would still consider changing
->>> the timer library rather than individual testcases.
->>
->> Yes, that make sense.
->>
->> Do you want keep the latency option for future use?
->=20
-> I tend not to add anything just in case that we may need it later in
-> order to keep the test library as small as possible, it's complex enough
-> even as it is. Moreover we can always add it easily when we find a test
-> that requires it.
+v4:
+  Delete else branch in helper.
+  Make TST_TOTAL a macro instead of integer.
+  Use SAFE_CLOSE in cleanup in old cases.
+  Use iteration of tst_test.test instead of 2 files.
 
-Setting the latency to zero in tst_timer_start(), if the opening of the
-/dev/cpu_dma_latency file fails, we continue but issue a warning with =09
+v3:
+  Add SAFE_FANOTIFY_INIT helper.
+  Rewrite old cases. Too big a patch, we can also split it.
+  Split FAN_CLOEXEC case to 2 separate cases.
 
-	tst_resm(TWARN,
-		"Failed to open '/dev/cpu_dma_latency': %s',
-		strerror(errno));
+Thanks for reviewing!
 
-is ok ?
+Xiong Zhou (3):
+  lib: add helper SAFE_FANOTIFY_INIT
+  fanotify: rewrite old cases with new lib
+  syscalls/fanotify08: add sanity check for FAN_CLOEXEC
 
---=20
- <http://www.linaro.org/> Linaro.org =E2=94=82 Open source software for ARM=
- SoCs
+ include/tst_safe_macros.h                       |   5 +
+ lib/tst_safe_macros.c                           |  21 +
+ runtest/syscalls                                |   1 +
+ testcases/kernel/syscalls/fanotify/fanotify01.c | 526 +++++++++++-------------
+ testcases/kernel/syscalls/fanotify/fanotify02.c | 326 +++++++--------
+ testcases/kernel/syscalls/fanotify/fanotify03.c | 254 +++++-------
+ testcases/kernel/syscalls/fanotify/fanotify04.c | 165 +++-----
+ testcases/kernel/syscalls/fanotify/fanotify05.c | 155 +++----
+ testcases/kernel/syscalls/fanotify/fanotify06.c | 193 ++++-----
+ testcases/kernel/syscalls/fanotify/fanotify07.c |   9 +-
+ testcases/kernel/syscalls/fanotify/fanotify08.c |  91 ++++
+ 11 files changed, 838 insertions(+), 908 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify08.c
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+-- 
+1.8.3.1
 
