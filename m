@@ -1,72 +1,154 @@
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-Date: Thu, 17 Aug 2017 16:02:23 +0200
-Subject: [LTP] [PATCH V2 1/2] ltp: Add the ability to specify the
- latency constraint
-In-Reply-To: <20170817135029.GA31322@rei>
-References: <20170811140905.GB3341@rei.lan>
- <b11d663b-0afb-58a7-bc3d-14d3e61084c4@linaro.org>
- <20170811152855.GA14152@rei.lan>
- <a0a61ae1-15fe-fc0d-9bfb-b2efd94f3c42@linaro.org>
- <20170814133351.GA11524@rei>
- <99937465-7b6b-ce2c-6194-bf920b2994f4@linaro.org>
- <20170814143609.GB11524@rei>
- <a1f4e3bb-3b7d-c259-67d1-596ee6f2b142@linaro.org>
- <20170815110648.GC20715@rei.lan>
- <dafa7cdd-a9c6-1b1f-cbd8-b35d271d8d9f@linaro.org>
- <20170817135029.GA31322@rei>
-Message-ID: <159427fd-195a-8a6c-086f-2f01d829e8a7@linaro.org>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 17 Aug 2017 16:33:56 +0200
+Subject: [LTP] [RFC PATCH 1/2] lib/test_net.sh: Add unused IP address helper
+	functions
+In-Reply-To: <20170817143357.17241-1-pvorel@suse.cz>
+References: <20170817143357.17241-1-pvorel@suse.cz>
+Message-ID: <20170817143357.17241-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 17/08/2017 15:50, Cyril Hrubis wrote:
-> Hi!
->>>> Yes, that make sense.
->>>>
->>>> Do you want keep the latency option for future use?
->>>
->>> I tend not to add anything just in case that we may need it later in
->>> order to keep the test library as small as possible, it's complex enough
->>> even as it is. Moreover we can always add it easily when we find a test
->>> that requires it.
->>
->> Setting the latency to zero in tst_timer_start(), if the opening of the
->> /dev/cpu_dma_latency file fails, we continue but issue a warning with =09
->>
->> 	tst_resm(TWARN,
->> 		"Failed to open '/dev/cpu_dma_latency': %s',
->> 		strerror(errno));
->>
->> is ok ?
->=20
-> Issuing TWARN marks the test as a failure, you should go for TINFO if
-> you want just inform the user about non-fatal problem.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Changes from v7:
+We've been talking about tst_ipaddr_un function. I decided to split it into two
+functions as there is different requirement for creating "unused" based IP
+addresses. Keeping both usages in one function would require either to specify
+type parameter even if it's not needed or complicated checks if
+tst_ipaddr_un_host would have to different usages:
+tst_ipaddr_un_host [TYPE] [COUNTER]
+tst_ipaddr_un_host OCTET_3 [OCTET_4]
 
-Ok.
+You might don't see a reason for tst_ipaddr_un_ip as IP address can be created
+"inline" with IPV4_NET16_UNUSED/IPV6_NET32_UNUSED variables, like you do for
+example in testcases/network/stress/ipsec/ipsec_lib.sh or
+testcases/network/stress/interface/if-addr-addlarge.  I just feel strange to
+mixing these approaches (create IP address sometimes with function and
+sometimes "inline").
 
+Even unused addresses are used exclusively in stress tests I added these in
+general network library.
 
-> Also are you sure that tst_timer_start() is the right place to open the
-> file? That function is called ~1000 times in each timer test hence this
-> would add quite a bit of overhead. Why don't we just put it into the
-> timer_setup() in the lib/tst_timer_test.c that is called once at the
-> start of the test?
+I also added very simple IPv6 format address optimization (just don't include
+':0' on third hextet).
+---
+ testcases/lib/test_net.sh | 78 +++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 75 insertions(+), 3 deletions(-)
 
-Yes, absolutely.
-
-Thanks.
-
-  -- Daniel
-
-
-
-
---=20
- <http://www.linaro.org/> Linaro.org =E2=94=82 Open source software for ARM=
- SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index c11747a27..6575c77f4 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -219,7 +219,7 @@ tst_ipaddr()
+ {
+ 	local type="${1:-lhost}"
+ 	local ipv="${TST_IPV6:-4}"
+-	local tst_host=
++	local tst_host
+ 
+ 	if [ "$type" = "lhost" ]; then
+ 		eval "tst_host=\$LHOST_IPV${ipv}_HOST"
+@@ -234,6 +234,77 @@ tst_ipaddr()
+ 	fi
+ }
+ 
++# Get IP address of unused network, specified by type and counter.
++# This is useful for generating row of unique addresses based on lhost/rhost.
++# tst_ipaddr_un_host [TYPE] [COUNTER]
++# TYPE: { lhost | rhost }; Default value is 'lhost'.
++# COUNTER: Integer value for counting 4th octet and 3rd octet; Default is 1.
++tst_ipaddr_un_host()
++{
++	local type="${1:-lhost}"
++	local counter="${2:-1}"
++	local octet_3 octet_4 max_octet_3 max_octet_4 tmp
++
++	[ $counter -lt 1 ] && counter=1
++	[ "$TST_IPV6" ] && max_octet_3=65535 || max_octet_3=255
++	max_octet_4=$((max_octet_3 - 1))
++	tmp=$((counter * 2))
++	[ "$type" = "rhost" ] && tmp=$((tmp - 1))
++
++	octet_4=$((tmp % max_octet_4))
++	octet_3=$((tmp / max_octet_4))
++
++	if [ $octet_4 -eq 0 ]; then
++		octet_4=$max_octet_4
++		octet_3=$((octet_3 - 1))
++	fi
++
++	[ $octet_3 -gt $max_octet_3 ] && octet_3=$max_octet_3
++	[ $octet_4 -gt $max_octet_4 ] && octet_4=$max_octet_4
++
++	if [ "$TST_IPV6" ]; then
++		[ $octet_3 -gt 0 ] && octet_3="$(printf %x $octet_3)" || octet_3=
++		[ $octet_4 -gt 0 -o "$octet_3" ] && octet_4="$(printf %x $octet_4)" || octet_4=
++		[ "$octet_3" -a "$octet_4" ] && octet_4=":$octet_4"
++		echo "${IPV6_NET32_UNUSED}::${octet_3}${octet_4}"
++	else
++		echo "${IPV4_NET16_UNUSED}.${octet_3}.${octet_4}"
++	fi
++}
++
++# Get IP address of unused network, specified by 3rd and 4th octet.
++# This is useful when 3rd and/or 4th octet are needed to be defined.
++# tst_ipaddr_un_ip [OCTET_3] [OCTET_4]
++# OCTET_3: Integer or hex value of 3rd octet; Default value is 0.
++# OCTET_4: Integer or hex value of 4th octet; Default value is 0.
++tst_ipaddr_un_ip()
++{
++	local octet_3="${1:-0}"
++	local octet_4="${2:-0}"
++	local max
++
++	[ "$TST_IPV6" ] && max=65535 || max=255
++
++	if [ "$TST_IPV6" ]; then
++		octet_3=$(printf %d $octet_3)
++		octet_4=$(printf %d $octet_4)
++	fi
++
++	[ $octet_3 -lt 0 ] && octet_3=0
++	[ $octet_4 -lt 0 ] && octet_4=1
++	[ $octet_3 -gt $max ] && octet_3=$max
++	[ $octet_4 -gt $max ] && octet_4=$max
++
++	if [ "$TST_IPV6" ]; then
++		[ $octet_3 -gt 0 ] && octet_3="$(printf %x $octet_3)" || octet_3=
++		[ $octet_4 -gt 0 -o "$octet_3" ] && octet_4="$(printf %x $octet_4)" || octet_4=
++		[ "$octet_3" -a "$octet_4" ] && octet_4=":$octet_4"
++		echo "${IPV6_NET32_UNUSED}::${octet_3}${octet_4}"
++	else
++		echo "${IPV4_NET16_UNUSED}.${octet_3}.${octet_4}"
++	fi
++}
++
+ # tst_init_iface [TYPE] [LINK]
+ # TYPE: { lhost | rhost }; Default value is 'lhost'.
+ # LINK: link number starting from 0. Default value is '0'.
+@@ -436,6 +507,7 @@ tst_ping()
+ 	local src_iface="${1:-$(tst_iface)}"
+ 	local dst_addr="${2:-$(tst_ipaddr rhost)}"; shift $(( $# >= 2 ? 2 : 0 ))
+ 	local msg_sizes="$*"
++	local msg="tst_ping IPv${TST_IPV6:-4} iface $src_iface, msg_size"
+ 	local ret=0
+ 
+ 	# ping cmd use 56 as default message size
+@@ -444,9 +516,9 @@ tst_ping()
+ 			-s $size -i 0 > /dev/null 2>&1
+ 		ret=$?
+ 		if [ $ret -eq 0 ]; then
+-			tst_resm TINFO "tst_ping IPv${TST_IPV6:-4} msg_size $size pass"
++			tst_resm TINFO "$msg $size: pass"
+ 		else
+-			tst_resm TINFO "tst_ping IPv${TST_IPV6:-4} msg_size $size fail"
++			tst_resm TINFO "$msg $size: fail"
+ 			break
+ 		fi
+ 	done
+-- 
+2.13.2
 
