@@ -1,61 +1,53 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 17 Aug 2017 13:52:29 +0200
-Subject: [LTP] [PATCH 2/2] [COMMITTED] syscalls/setrlimit02: Remove the
-	EFAULT test
-In-Reply-To: <20170817115229.30598-1-chrubis@suse.cz>
-References: <20170817115229.30598-1-chrubis@suse.cz>
-Message-ID: <20170817115229.30598-2-chrubis@suse.cz>
+Date: Thu, 17 Aug 2017 15:50:30 +0200
+Subject: [LTP] [PATCH V2 1/2] ltp: Add the ability to specify the
+ latency constraint
+In-Reply-To: <dafa7cdd-a9c6-1b1f-cbd8-b35d271d8d9f@linaro.org>
+References: <20170811140905.GB3341@rei.lan>
+ <b11d663b-0afb-58a7-bc3d-14d3e61084c4@linaro.org>
+ <20170811152855.GA14152@rei.lan>
+ <a0a61ae1-15fe-fc0d-9bfb-b2efd94f3c42@linaro.org>
+ <20170814133351.GA11524@rei>
+ <99937465-7b6b-ce2c-6194-bf920b2994f4@linaro.org>
+ <20170814143609.GB11524@rei>
+ <a1f4e3bb-3b7d-c259-67d1-596ee6f2b142@linaro.org>
+ <20170815110648.GC20715@rei.lan>
+ <dafa7cdd-a9c6-1b1f-cbd8-b35d271d8d9f@linaro.org>
+Message-ID: <20170817135029.GA31322@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Glibc has to convert between 32bit and 64bit struct rlimit in some cases (looks
-like that happens when prlimit64 is not implemented in the kernel) which causes
-this test to SegFault.
+Hi!
+> >> Yes, that make sense.
+> >>
+> >> Do you want keep the latency option for future use?
+> > 
+> > I tend not to add anything just in case that we may need it later in
+> > order to keep the test library as small as possible, it's complex enough
+> > even as it is. Moreover we can always add it easily when we find a test
+> > that requires it.
+> 
+> Setting the latency to zero in tst_timer_start(), if the opening of the
+> /dev/cpu_dma_latency file fails, we continue but issue a warning with 	
+> 
+> 	tst_resm(TWARN,
+> 		"Failed to open '/dev/cpu_dma_latency': %s',
+> 		strerror(errno));
+> 
+> is ok ?
 
-See sysdeps/unix/sysv/linux/setrlimit*.c for reference:
+Issuing TWARN marks the test as a failure, you should go for TINFO if
+you want just inform the user about non-fatal problem.
 
-...
+Also are you sure that tst_timer_start() is the right place to open the
+file? That function is called ~1000 times in each timer test hence this
+would add quite a bit of overhead. Why don't we just put it into the
+timer_setup() in the lib/tst_timer_test.c that is called once at the
+start of the test?
 
-  if (rlimits->rlim_cur >= RLIM_INFINITY)
-    rlimits32.rlim_cur = RLIM_INFINITY;
-  else
-    rlimits32.rlim_cur = rlimits->rlim_cur;
-  if (rlimits->rlim_max >= RLIM_INFINITY)
-    rlimits32.rlim_max = RLIM_INFINITY;
-  else
-    rlimits32.rlim_max = rlimits->rlim_max;
-
-  return __setrlimit (resource, &rlimits32);
-
-...
-
-Hence we remove the EFAULT case from the test in order not to produce false
-possitives.
-
-Closes #193
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/syscalls/setrlimit/setrlimit02.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit02.c b/testcases/kernel/syscalls/setrlimit/setrlimit02.c
-index 92cc4f4c6..633279c6c 100644
---- a/testcases/kernel/syscalls/setrlimit/setrlimit02.c
-+++ b/testcases/kernel/syscalls/setrlimit/setrlimit02.c
-@@ -32,9 +32,6 @@ static struct tcase {
- 	struct rlimit *rlim;
- 	int exp_errno;
- } tcases[] = {
--#if !defined(UCLINUX)
--	{RLIMIT_NOFILE, (void *)-1, EFAULT},
--#endif
- 	{-1, &rlim, EINVAL},
- 	{RLIMIT_NOFILE, &rlim, EPERM}
- };
 -- 
-2.13.0
-
+Cyril Hrubis
+chrubis@suse.cz
