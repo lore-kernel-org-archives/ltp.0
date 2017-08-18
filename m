@@ -1,54 +1,90 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 18 Aug 2017 18:44:31 +0200
-Subject: [LTP] [RFC PATCH v8 05/11] lib/test_net.sh: tst_rhost_run: Add
-	testcases/bin into PATH for SSH/RSH
+Date: Fri, 18 Aug 2017 18:44:33 +0200
+Subject: [LTP] [RFC PATCH v8 07/11] lib/test_net.sh: Add function
+	reset_ltp_netspace()
 In-Reply-To: <20170818164437.13556-1-pvorel@suse.cz>
 References: <20170818164437.13556-1-pvorel@suse.cz>
-Message-ID: <20170818164437.13556-6-pvorel@suse.cz>
+Message-ID: <20170818164437.13556-8-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+This function is useful when we know we broke netns (e.g. by unloading
+network driver).
+
+It was necessary to introduce new variable LTP_NETNS_CUSTOM, as after
+resetting network namespace there is no way to reset LTP_NETNS variable
+for subsequent tests and therefore is (for non-custom variant) always
+needed to set it even if netns itself is setup.
+
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/lib/test_net.sh | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ testcases/lib/test_net.sh | 29 ++++++++++++++++++++++++++---
+ 1 file changed, 26 insertions(+), 3 deletions(-)
 
 diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index 1357ea5b5..c4399f637 100644
+index c4399f637..6c2fb6803 100644
 --- a/testcases/lib/test_net.sh
 +++ b/testcases/lib/test_net.sh
-@@ -55,7 +55,6 @@ init_ltp_netspace()
- # -b run in background
- # -s safe option, if something goes wrong, will exit with TBROK
- # -c specify command to run
--
- tst_rhost_run()
- {
- 	local pre_cmd=
-@@ -91,15 +90,16 @@ tst_rhost_run()
+@@ -21,6 +21,16 @@
  
- 	local output=
- 	local ret=0
-+	local newpath="$LTPROOT/testcases/bin"
- 	if [ -n "${TST_USE_SSH:-}" ]; then
--		output=`ssh -n -q $user@$RHOST "sh -c \
--			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
-+		output=`ssh -n -q $user@$RHOST "PATH=$newpath:\$PATH \
-+			sh -c '$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
- 	elif [ -n "$TST_USE_NETNS" ]; then
- 		output=`$LTP_NETNS sh -c \
- 			"$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR'`
- 	else
--		output=`rsh -n -l $user $RHOST "sh -c \
--			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
-+		output=`rsh -n -l $user $RHOST "PATH=$newpath:\$PATH \
-+			sh -c '$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
- 	fi
- 	echo "$output" | grep -q 'RTERR$' && ret=1
- 	if [ $ret -eq 1 ]; then
+ [ -z "$TST_LIB_LOADED" ] && . test.sh
+ 
++set_ltp_netns_var()
++{
++	if [ -z "$LTP_NETNS_CUSTOM" ]; then
++		pid="$(echo $(readlink /var/run/netns/ltp_ns) | cut -f3 -d'/')"
++		export LTP_NETNS="ns_exec $pid net,mnt"
++	else
++		export LTP_NETNS="$LTP_NETNS_CUSTOM"
++	fi
++}
++
+ init_ltp_netspace()
+ {
+ 	local pid=
+@@ -41,8 +51,7 @@ init_ltp_netspace()
+ 
+ 	export TST_INIT_NETNS="no"
+ 
+-	pid="$(echo $(readlink /var/run/netns/ltp_ns) | cut -f3 -d'/')"
+-	export LTP_NETNS="${LTP_NETNS:-ns_exec $pid net,mnt}"
++	set_ltp_netns_var
+ 
+ 	tst_restore_ipaddr
+ 	tst_restore_ipaddr rhost
+@@ -50,6 +59,18 @@ init_ltp_netspace()
+ 	tst_wait_ipv6_dad
+ }
+ 
++# Force to reset netns.
++reset_ltp_netspace()
++{
++	[ -n "$TST_USE_NETNS" ] || return
++
++	tst_resm TINFO "reset netns"
++	ip link delete ltp_ns_veth2 2> /dev/null
++	rm -f /var/run/netns/ltp_ns
++	pkill ns_create
++	init_ltp_netspace
++}
++
+ # Run command on remote host.
+ # Options:
+ # -b run in background
+@@ -636,7 +657,9 @@ export UPLOAD_REGFILESIZE="${UPLOAD_REGFILESIZE:-1024}"
+ export MCASTNUM_NORMAL="${MCASTNUM_NORMAL:-20}"
+ export MCASTNUM_HEAVY="${MCASTNUM_HEAVY:-4000}"
+ 
+-[ -n "$TST_USE_NETNS" -a "$TST_INIT_NETNS" != "no" ] && init_ltp_netspace
++if [ -n "$TST_USE_NETNS" ]; then
++	[ "$TST_INIT_NETNS" != "no" ] && init_ltp_netspace || set_ltp_netns_var
++fi
+ 
+ # Warning: make sure to set valid interface names and IP addresses below.
+ # Set names for test interfaces, e.g. "eth0 eth1"
 -- 
 2.13.2
 
