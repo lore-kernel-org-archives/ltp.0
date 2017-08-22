@@ -1,214 +1,199 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 22 Aug 2017 15:09:53 +0200
-Subject: [LTP] [PATCH] [dynamic debug] - Check interface and
-	functionality
-In-Reply-To: <20170822102244.6266-1-vkabatov@redhat.com>
-References: <20170822102244.6266-1-vkabatov@redhat.com>
-Message-ID: <20170822130953.GA23381@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 22 Aug 2017 15:33:46 +0200
+Subject: [LTP] [PATCH v3 1/3] ltp-pan: Log start of test in kernel log
+Message-ID: <20170822133348.5377-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +# Test description: Test functionality of dynamic debug feature by enabling
-> +#                   and disabling traces with available flags. Check that these
-> +#                   settings don't cause issues by searching dmesg.
-> +#
-> +#                   This test handles changes of dynamic debug interface from
-> +#                   commits 5ca7d2a6 (dynamic_debug: describe_flags with
-> +#                   '=[pmflt_]*') and 8ba6ebf5 (Dynamic debug: Add more flags)
-> +#
-> +# Usage
-> +# ./dynamic_debug01.sh
-> +
-> +TST_TESTFUNC=ddebug_test
-> +TST_NEEDS_CMDS="awk"
-> +TST_NEEDS_TMPDIR=1
-> +TST_NEEDS_ROOT=1
-> +TST_SETUP=setup
-> +TST_CLEANUP=cleanup
-> +
-> +. tst_test.sh
-> +
-> +
-> +DEBUGFS_WAS_MOUNTED=0
-> +DEBUGFS_PATH=""
-> +DEBUGFS_CONTROL=""
-> +DYNDEBUG_STATEMENTS="./debug_statements"
-> +EMPTY_FLAG=""
-> +NEW_INTERFACE=0
-> +
-> +
-> +mount_debugfs()
-> +{
-> +	if grep -q debugfs /proc/mounts ; then
-> +		DEBUGFS_WAS_MOUNTED=1
-> +		DEBUGFS_PATH=$(grep debugfs /proc/mounts | awk '{print $2}')
-                                    ^
-				  $(awk /debugfs/ '{print $2}' /proc/mounts)
+This can be switched by new '-Q' flag or by existing '-q' flag (quiet mode).
 
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ pan/ltp-pan.c | 58 +++++++++++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 43 insertions(+), 15 deletions(-)
 
-> +		tst_res TINFO "debugfs already mounted at $DEBUGFS_PATH"
-> +	else
-> +		if ! grep -q debugfs /proc/filesystems ; then
-> +			tst_res TCONF "debugfs not supported"
-> +		fi
-> +		DEBUGFS_PATH="$(pwd)/tst_debug"
-                                  ^
-				$PWD/tst_debug
-
-Or we may as well use relative path i.e. just ./tst_debugfs/
-
-> +		mkdir "$DEBUGFS_PATH"
-> +		if mount -t debugfs xxx "$DEBUGFS_PATH" ; then
-> +			tst_res TINFO "debugfs mounted at $DEBUGFS_PATH"
-> +		else
-> +			tst_res TFAIL "Unable to mount debugfs"
-> +		fi
-> +	fi
-> +}
-> +
-> +setup()
-> +{
-> +	if tst_kvcmp -lt 2.6.30 ; then
-> +		tst_brk TCONF "Dynamic debug is available since version 2.6.30"
-> +	fi
-> +
-> +	mount_debugfs
-> +	if [ ! -d "$DEBUGFS_PATH/dynamic_debug" ] ; then
-> +		tst_res TBROK "Unable to find $DEBUGFS_PATH/dynamic_debug"
-                ^
-		tst_brk?
-> +	fi
-> +	DEBUGFS_CONTROL="$DEBUGFS_PATH/dynamic_debug/control"
-> +	if [ ! -e "$DEBUGFS_CONTROL" ] ; then
-> +		tst_res TBROK "Unable to find $DEBUGFS_CONTROL"
-                ^
-		here as well?
-> +	fi
-> +
-> +	# Both patches with changes were backported to RHEL6 kernel 2.6.32-547
-> +	if tst_kvcmp -ge '3.4 RHEL6:2.6.32-547' ; then
-> +		NEW_INTERFACE=1
-> +	fi
-> +
-> +	EMPTY_FLAG=$([ $NEW_INTERFACE -eq 1 ] && echo "=_" || echo "-")
-
-Now, why don't we set empty flag to the old value on the top and set it
-to the new value in the if that sets the NEW_INTERFACE variable.
-
-We could even use the EMPTY_FLAG content in the conditions below, but I
-guess that having NEW_INTERFACE variable is more readable.
-
-> +	grep -v "^#" "$DEBUGFS_CONTROL" > "$DYNDEBUG_STATEMENTS"
-> +}
-> +
-> +do_flag()
-> +{
-> +	FLAG="$1"
-> +	OPTION_TO_SET="$2"
-> +	OPTION_VALUE="$3"
-
-It would be a sligtly better to declare these variables as local.
-
-> +	if ! echo "$OPTION_TO_SET $OPTION_VALUE $FLAG" > \
-> +		"$DEBUGFS_CONTROL" ; then
-> +		tst_res TFAIL "Setting '$OPTION_TO_SET $OPTION_VALUE " \
-> +			"$FLAG' failed with $?!"
-> +	fi
-
-We do have EXPECT_PASS and EXPECT_FAIL functions in the test library:
-
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#expect_pass-and-expect_fail
-
-> +}
-> +
-> +do_all_flags()
-> +{
-> +	OPTION="$1"
-> +	ALL_INPUTS="$2"
-> +
-> +	echo "$ALL_INPUTS" | while read -r INPUT_LINE ; do
-
-You can do just for input_line in $ALL_INPUTS; do here instead, the
-newlines were converted to spaces once the output from the awk/sort/uniq
-pipeline was assigned into a variable.
-
-> +		do_flag "+p" "$OPTION" "$INPUT_LINE"
-> +		if tst_kvcmp -ge 3.2 || [ $NEW_INTERFACE -eq 1 ] ; then
-> +			do_flag "+flmt" "$OPTION" "$INPUT_LINE"
-> +			do_flag "-flmt" "$OPTION" "$INPUT_LINE"
-> +		fi
-> +		do_flag "-p" "$OPTION" "$INPUT_LINE"
-> +	done
-> +
-> +	if awk -v emp="$EMPTY_FLAG" '$3 != emp' "$DEBUGFS_CONTROL" \
-> +		| grep -v -q "^#" ; then
-> +		tst_res TFAIL "Failed to remove all set flags"
-> +	fi
-> +
-> +}
-> +
-> +ddebug_test()
-> +{
-> +	dmesg > ./dmesg.old
-> +
-> +	DD_FUNCS=$(awk -F " |]" '{print $3}' "$DYNDEBUG_STATEMENTS" \
-> +		| sort | uniq)
-> +	DD_FILES=$(awk -F " |:" '{print $1}' "$DYNDEBUG_STATEMENTS" \
-> +		| sort | uniq)
-> +	DD_LINES=$(awk -F " |:" '{print $2}' "$DYNDEBUG_STATEMENTS" \
-> +		| sort | uniq)
-> +	DD_MODULES=$(awk -F [][] '{print $2}' "$DYNDEBUG_STATEMENTS" \
-> +		| sort | uniq)
-> +
-> +	do_all_flags "func" "$DD_FUNCS"
-> +	do_all_flags "file" "$DD_FILES"
-> +	do_all_flags "line" "$DD_LINES"
-> +	do_all_flags "module" "$DD_MODULES"
-> +
-> +	dmesg > ./dmesg.new
-> +	sed -i -e 1,`wc -l < ./dmesg.old`d ./dmesg.new
-> +	if grep -q -e "Kernel panic" -e "Oops" -e "general protection fault" \
-> +		-e "general protection handler: wrong gs" -e "\(XEN\) Panic" \
-> +		-e "fault" -e "warn" -e "BUG" ./dmesg.new ; then
-> +		tst_res TFAIL "Issues found in dmesg!"
-> +	else
-> +		tst_res TPASS "Dynamic debug OK"
-> +	fi
-> +}
-> +
-> +cleanup()
-> +{
-> +	if [ $DEBUGFS_WAS_MOUNTED -eq 0 ] ; then
-> +		tst_umount "$DEBUGFS_PATH"
-> +	else
-> +		FLAGS_SET=$(awk -v emp="$EMPTY_FLAG" '$3 != emp' \
-> +			$DYNDEBUG_STATEMENTS)
-> +		if [ "$FLAGS_SET" ] ; then
-> +			FLAG_PREFIX=$([ $NEW_INTERFACE -eq 1 ] \
-> +				&& echo "" || echo "+")
-> +			echo "$FLAGS_SET" | while read -r FLAG_LINE ; do
-> +				echo -n "$FLAG_LINE" \
-> +					| awk -v prf="$FLAG_PREFIX" -F " |:" \
-> +					'{print "file "$1" line "$2" "prf $4}' \
-> +					> "$DEBUGFS_CONTROL"
-> +			done
-> +		fi
-> +	fi
-
-I wonder if we should attempt to restore the values even if debugfs
-wasn't mounted and then umount it if it wasn't mounted once we are done.
-
-On my machine I have 45 values set to =p by default, although debugfs is
-mounted there...
-
-> +}
-> +
-> +tst_run
-
+diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
+index 1614c70ff..a2bb9b7ef 100644
+--- a/pan/ltp-pan.c
++++ b/pan/ltp-pan.c
+@@ -53,6 +53,7 @@
+ 
+ #include <sys/param.h>
+ #include <sys/stat.h>
++#include <stdarg.h>
+ #include <sys/times.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+@@ -97,7 +98,7 @@ struct orphan_pgrp {
+ 
+ static pid_t run_child(struct coll_entry *colle, struct tag_pgrp *active,
+ 		       int quiet_mode, int *failcnt, int fmt_print,
+-		       FILE * logfile);
++		       FILE * logfile, int no_kmsg);
+ static char *slurp(char *file);
+ static struct collection *get_collection(char *file, int optind, int argc,
+ 					 char **argv);
+@@ -106,7 +107,7 @@ static int check_pids(struct tag_pgrp *running, int *num_active,
+ 		      int keep_active, FILE * logfile, FILE * failcmdfile,
+ 		      FILE *tconfcmdfile, struct orphan_pgrp *orphans,
+ 		      int fmt_print, int *failcnt, int *tconfcnt,
+-		      int quiet_mode);
++		      int quiet_mode, int no_kmsg);
+ static void propagate_signal(struct tag_pgrp *running, int keep_active,
+ 			     struct orphan_pgrp *orphans);
+ static void dump_coll(struct collection *coll);
+@@ -116,7 +117,7 @@ static void orphans_running(struct orphan_pgrp *orphans);
+ static void check_orphans(struct orphan_pgrp *orphans, int sig);
+ 
+ static void copy_buffered_output(struct tag_pgrp *running);
+-static void write_test_start(struct tag_pgrp *running);
++static void write_test_start(struct tag_pgrp *running, int no_kmsg);
+ static void write_test_end(struct tag_pgrp *running, const char *init_status,
+ 			   time_t exit_time, char *term_type, int stat_loc,
+ 			   int term_id, struct tms *tms1, struct tms *tms2);
+@@ -180,12 +181,13 @@ int main(int argc, char **argv)
+ 	int track_exit_stats = 0;	/* exit non-zero if any test exits non-zero */
+ 	int fmt_print = 0;	/* enables formatted printing of logfiles. */
+ 	int quiet_mode = 0;	/* supresses test start and test end tags. */
++	int no_kmsg = 0;	/* don't log into /dev/kmsg */
+ 	int c;
+ 	pid_t cpid;
+ 	struct sigaction sa;
+ 
+ 	while ((c =
+-		getopt(argc, argv, "AO:Sa:C:T:d:ef:hl:n:o:pqr:s:t:x:y"))
++		getopt(argc, argv, "AO:Sa:C:QT:d:ef:hl:n:o:pqr:s:t:x:y"))
+ 		       != -1) {
+ 		switch (c) {
+ 		case 'A':	/* all-stop flag */
+@@ -204,6 +206,9 @@ int main(int argc, char **argv)
+ 		case 'C':	/* name of the file where all failed commands will be */
+ 			failcmdfilename = strdup(optarg);
+ 			break;
++		case 'Q':
++			no_kmsg = 1;
++			break;
+ 		case 'T':
+ 			/*
+ 			 * test cases that are not fully tested will be recorded
+@@ -222,7 +227,7 @@ int main(int argc, char **argv)
+ 			break;
+ 		case 'h':	/* help */
+ 			fprintf(stdout,
+-				"Usage: pan -n name [ -SyAehpq ] [ -s starts ]"
++				"Usage: pan -n name [ -SyAehpqQ ] [ -s starts ]"
+ 				" [-t time[s|m|h|d] [ -x nactive ] [ -l logfile ]\n\t"
+ 				"[ -a active-file ] [ -f command-file ] "
+ 				"[ -C fail-command-file ] "
+@@ -537,7 +542,7 @@ int main(int argc, char **argv)
+ 
+ 			cpid =
+ 			    run_child(coll->ary[c], running + i, quiet_mode,
+-				      &failcnt, fmt_print, logfile);
++				      &failcnt, fmt_print, logfile, no_kmsg);
+ 			if (cpid != -1)
+ 				++num_active;
+ 			if ((cpid != -1 || sequential) && starts > 0)
+@@ -586,7 +591,7 @@ int main(int argc, char **argv)
+ 
+ 		err = check_pids(running, &num_active, keep_active, logfile,
+ 				 failcmdfile, tconfcmdfile, orphans, fmt_print,
+-				 &failcnt, &tconfcnt, quiet_mode);
++				 &failcnt, &tconfcnt, quiet_mode, no_kmsg);
+ 		if (Debug & Drunning) {
+ 			pids_running(running, keep_active);
+ 			orphans_running(orphans);
+@@ -704,7 +709,7 @@ static int
+ check_pids(struct tag_pgrp *running, int *num_active, int keep_active,
+ 	   FILE *logfile, FILE *failcmdfile, FILE *tconfcmdfile,
+ 	   struct orphan_pgrp *orphans, int fmt_print, int *failcnt,
+-	   int *tconfcnt, int quiet_mode)
++	   int *tconfcnt, int quiet_mode, int no_kmsg)
+ {
+ 	int w;
+ 	pid_t cpid;
+@@ -847,7 +852,7 @@ check_pids(struct tag_pgrp *running, int *num_active, int keep_active,
+ 
+ 				if (test_out_dir) {
+ 					if (!quiet_mode)
+-						write_test_start(running + i);
++						write_test_start(running + i, no_kmsg);
+ 					copy_buffered_output(running + i);
+ 					unlink(running[i].output);
+ 				}
+@@ -893,7 +898,7 @@ check_pids(struct tag_pgrp *running, int *num_active, int keep_active,
+ 
+ static pid_t
+ run_child(struct coll_entry *colle, struct tag_pgrp *active, int quiet_mode,
+-	  int *failcnt, int fmt_print, FILE * logfile)
++	  int *failcnt, int fmt_print, FILE * logfile, int no_kmsg)
+ {
+ 	ssize_t errlen;
+ 	int cpid;
+@@ -945,9 +950,8 @@ run_child(struct coll_entry *colle, struct tag_pgrp *active, int quiet_mode,
+ 	time(&active->mystime);
+ 	active->cmd = colle;
+ 
+-	if (!test_out_dir)
+-		if (!quiet_mode)
+-			write_test_start(active);
++	if (!test_out_dir && !quiet_mode)
++		write_test_start(active, no_kmsg);
+ 
+ 	fflush(NULL);
+ 
+@@ -1109,7 +1113,6 @@ run_child(struct coll_entry *colle, struct tag_pgrp *active, int quiet_mode,
+ 		}
+ 
+ 		if (!quiet_mode) {
+-			//write_test_start(active, errbuf);
+ 			write_test_end(active, errbuf, end_time, termtype,
+ 				       status, termid, &notime, &notime);
+ 		}
+@@ -1352,7 +1355,24 @@ static void copy_buffered_output(struct tag_pgrp *running)
+ 	}
+ }
+ 
+-static void write_test_start(struct tag_pgrp *running)
++static void write_kmsg(const char *fmt, ...)
++{
++	FILE *kmsg;
++	va_list ap;
++
++	if ((kmsg = fopen("/dev/kmsg", "r+")) == NULL) {
++		fprintf(stderr, "Error %s: (%d) opening /dev/kmsg\n",
++				strerror(errno), errno);
++		exit(1);
++	}
++
++	va_start(ap, fmt);
++	vfprintf(kmsg, fmt, ap);
++	va_end(ap);
++	fclose(kmsg);
++}
++
++static void write_test_start(struct tag_pgrp *running, int no_kmsg)
+ {
+ 	if (!strcmp(reporttype, "rts")) {
+ 
+@@ -1362,6 +1382,14 @@ static void write_test_start(struct tag_pgrp *running)
+ 		     running->cmd->cmdline, "", "exit", "<<<test_output>>>");
+ 	}
+ 	fflush(stdout);
++	if (no_kmsg)
++		return;
++
++	if (strcmp(running->cmd->name, running->cmd->cmdline))
++		write_kmsg("LTP: starting %s (%s)\n", running->cmd->name,
++			   running->cmd->cmdline);
++	else
++		write_kmsg("LTP: starting %s\n", running->cmd->name);
+ }
+ 
+ static void
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.14.0
+
