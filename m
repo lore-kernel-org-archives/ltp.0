@@ -1,199 +1,156 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 22 Aug 2017 15:33:46 +0200
-Subject: [LTP] [PATCH v3 1/3] ltp-pan: Log start of test in kernel log
-Message-ID: <20170822133348.5377-1-pvorel@suse.cz>
+Date: Tue, 22 Aug 2017 15:33:47 +0200
+Subject: [LTP] [PATCH v3 2/3] runltp: Add -Q switch passed to ltp-pan +
+	cleanup
+In-Reply-To: <20170822133348.5377-1-pvorel@suse.cz>
+References: <20170822133348.5377-1-pvorel@suse.cz>
+Message-ID: <20170822133348.5377-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This can be switched by new '-Q' flag or by existing '-q' flag (quiet mode).
-
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- pan/ltp-pan.c | 58 +++++++++++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 43 insertions(+), 15 deletions(-)
+ runltp | 65 +++++++++++++++++++++++++++++++++++------------------------------
+ 1 file changed, 35 insertions(+), 30 deletions(-)
 
-diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
-index 1614c70ff..a2bb9b7ef 100644
---- a/pan/ltp-pan.c
-+++ b/pan/ltp-pan.c
-@@ -53,6 +53,7 @@
+diff --git a/runltp b/runltp
+index f519d56fa..8e40d6742 100755
+--- a/runltp
++++ b/runltp
+@@ -110,7 +110,7 @@ usage()
+     usage: ${0##*/} [ -a EMAIL_TO ] [ -c NUM_PROCS ] [ -C FAILCMDFILE ] [ -T TCONFCMDFILE ]
+     [ -d TMPDIR ] [ -D NUM_PROCS,NUM_FILES,NUM_BYTES,CLEAN_FLAG ] -e [ -f CMDFILES(,...) ]
+     [ -g HTMLFILE] [ -i NUM_PROCS ] [ -l LOGFILE ] [ -m NUM_PROCS,CHUNKS,BYTES,HANGUP_FLAG ]
+-    -N -n [ -o OUTPUTFILE ] -p -q [ -r LTPROOT ] [ -s PATTERN ] [ -t DURATION ]
++    -N -n [ -o OUTPUTFILE ] -p -q -Q [ -r LTPROOT ] [ -s PATTERN ] [ -t DURATION ]
+     -v [ -w CMDFILEADDR ] [ -x INSTANCES ] [ -b DEVICE ] [-B LTP_DEV_FS_TYPE]
+ 	[ -F LOOPS,PERCENTAGE ] [ -z BIG_DEVICE ] [-Z  LTP_BIG_DEV_FS_TYPE]
  
- #include <sys/param.h>
- #include <sys/stat.h>
-+#include <stdarg.h>
- #include <sys/times.h>
- #include <sys/types.h>
- #include <sys/wait.h>
-@@ -97,7 +98,7 @@ struct orphan_pgrp {
+@@ -151,7 +151,9 @@ usage()
+     -n              Run LTP with network traffic in background.
+     -o OUTPUTFILE   Redirect test output to a file.
+     -p              Human readable format logfiles.
+-    -q              Print less verbose output to screen.
++    -q              Print less verbose output to screen. This implies
++                    not logging start of the test in kernel log.
++    -Q              Don't log start of test in kernel log.
+     -r LTPROOT      Fully qualified path where testsuite is installed.
+     -R              Randomize test order.
+     -s PATTERN      Only run test cases which match PATTERN.
+@@ -182,8 +184,8 @@ exit 0
  
- static pid_t run_child(struct coll_entry *colle, struct tag_pgrp *active,
- 		       int quiet_mode, int *failcnt, int fmt_print,
--		       FILE * logfile);
-+		       FILE * logfile, int no_kmsg);
- static char *slurp(char *file);
- static struct collection *get_collection(char *file, int optind, int argc,
- 					 char **argv);
-@@ -106,7 +107,7 @@ static int check_pids(struct tag_pgrp *running, int *num_active,
- 		      int keep_active, FILE * logfile, FILE * failcmdfile,
- 		      FILE *tconfcmdfile, struct orphan_pgrp *orphans,
- 		      int fmt_print, int *failcnt, int *tconfcnt,
--		      int quiet_mode);
-+		      int quiet_mode, int no_kmsg);
- static void propagate_signal(struct tag_pgrp *running, int keep_active,
- 			     struct orphan_pgrp *orphans);
- static void dump_coll(struct collection *coll);
-@@ -116,7 +117,7 @@ static void orphans_running(struct orphan_pgrp *orphans);
- static void check_orphans(struct orphan_pgrp *orphans, int sig);
- 
- static void copy_buffered_output(struct tag_pgrp *running);
--static void write_test_start(struct tag_pgrp *running);
-+static void write_test_start(struct tag_pgrp *running, int no_kmsg);
- static void write_test_end(struct tag_pgrp *running, const char *init_status,
- 			   time_t exit_time, char *term_type, int stat_loc,
- 			   int term_id, struct tms *tms1, struct tms *tms2);
-@@ -180,12 +181,13 @@ int main(int argc, char **argv)
- 	int track_exit_stats = 0;	/* exit non-zero if any test exits non-zero */
- 	int fmt_print = 0;	/* enables formatted printing of logfiles. */
- 	int quiet_mode = 0;	/* supresses test start and test end tags. */
-+	int no_kmsg = 0;	/* don't log into /dev/kmsg */
- 	int c;
- 	pid_t cpid;
- 	struct sigaction sa;
- 
- 	while ((c =
--		getopt(argc, argv, "AO:Sa:C:T:d:ef:hl:n:o:pqr:s:t:x:y"))
-+		getopt(argc, argv, "AO:Sa:C:QT:d:ef:hl:n:o:pqr:s:t:x:y"))
- 		       != -1) {
- 		switch (c) {
- 		case 'A':	/* all-stop flag */
-@@ -204,6 +206,9 @@ int main(int argc, char **argv)
- 		case 'C':	/* name of the file where all failed commands will be */
- 			failcmdfilename = strdup(optarg);
- 			break;
-+		case 'Q':
-+			no_kmsg = 1;
-+			break;
- 		case 'T':
- 			/*
- 			 * test cases that are not fully tested will be recorded
-@@ -222,7 +227,7 @@ int main(int argc, char **argv)
- 			break;
- 		case 'h':	/* help */
- 			fprintf(stdout,
--				"Usage: pan -n name [ -SyAehpq ] [ -s starts ]"
-+				"Usage: pan -n name [ -SyAehpqQ ] [ -s starts ]"
- 				" [-t time[s|m|h|d] [ -x nactive ] [ -l logfile ]\n\t"
- 				"[ -a active-file ] [ -f command-file ] "
- 				"[ -C fail-command-file ] "
-@@ -537,7 +542,7 @@ int main(int argc, char **argv)
- 
- 			cpid =
- 			    run_child(coll->ary[c], running + i, quiet_mode,
--				      &failcnt, fmt_print, logfile);
-+				      &failcnt, fmt_print, logfile, no_kmsg);
- 			if (cpid != -1)
- 				++num_active;
- 			if ((cpid != -1 || sequential) && starts > 0)
-@@ -586,7 +591,7 @@ int main(int argc, char **argv)
- 
- 		err = check_pids(running, &num_active, keep_active, logfile,
- 				 failcmdfile, tconfcmdfile, orphans, fmt_print,
--				 &failcnt, &tconfcnt, quiet_mode);
-+				 &failcnt, &tconfcnt, quiet_mode, no_kmsg);
- 		if (Debug & Drunning) {
- 			pids_running(running, keep_active);
- 			orphans_running(orphans);
-@@ -704,7 +709,7 @@ static int
- check_pids(struct tag_pgrp *running, int *num_active, int keep_active,
- 	   FILE *logfile, FILE *failcmdfile, FILE *tconfcmdfile,
- 	   struct orphan_pgrp *orphans, int fmt_print, int *failcnt,
--	   int *tconfcnt, int quiet_mode)
-+	   int *tconfcnt, int quiet_mode, int no_kmsg)
+ main()
  {
- 	int w;
- 	pid_t cpid;
-@@ -847,7 +852,7 @@ check_pids(struct tag_pgrp *running, int *num_active, int keep_active,
+-    local CMDFILES=""
+-    local PRETTY_PRT=""
++    local CMDFILES=
++    local PRETTY_PRT=
+     local ALT_DIR_OUT=0
+     local ALT_DIR_RES=0
+     local ALT_HTML_OUT=0
+@@ -191,36 +193,37 @@ main()
+     local ALT_DMESG_OUT=0
+     local RUN_NETEST=0
+     local RUN_REPEATED=0
+-    local QUIET_MODE=""
++    local QUIET_MODE=
++    local NO_KMSG=
+     local NETPIPE=0
+     local GENLOAD=0
+     local MEMSIZE=0
+-    local DURATION=""
+-    local CMDFILEADDR=""
+-    local FAILCMDFILE=""
+-    local TCONFCMDFILE=""
+-    local INJECT_KERNEL_FAULT=""
+-    local INJECT_KERNEL_FAULT_PERCENTAGE=""
+-    local INJECT_FAULT_LOOPS_PER_TEST=""
+-    local VALGRIND_CHECK=""
+-    local VALGRIND_CHECK_TYPE=""
+-    local LOGFILE_NAME=""
+-    local LOGFILE=""
+-    local OUTPUTFILE_NAME=""
+-    local OUTPUTFILE=""
+-    local HTMLFILE_NAME=""
+-    local HTMLFILE=""
+-    local DMESG_DIR=""
+-    local EMAIL_TO=""
+-    local TAG_RESTRICT_STRING=""
+-    local PAN_COMMAND=""
++    local DURATION=
++    local CMDFILEADDR=
++    local FAILCMDFILE=
++    local TCONFCMDFILE=
++    local INJECT_KERNEL_FAULT=
++    local INJECT_KERNEL_FAULT_PERCENTAGE=
++    local INJECT_FAULT_LOOPS_PER_TEST=
++    local VALGRIND_CHECK=
++    local VALGRIND_CHECK_TYPE=
++    local LOGFILE_NAME=
++    local LOGFILE=
++    local OUTPUTFILE_NAME=
++    local OUTPUTFILE=
++    local HTMLFILE_NAME=
++    local HTMLFILE=
++    local DMESG_DIR=
++    local EMAIL_TO=
++    local TAG_RESTRICT_STRING=
++    local PAN_COMMAND=
+     local RANDOMRUN=0
+     local DEFAULT_FILE_NAME_GENERATION_TIME=`date +"%Y_%m_%d-%Hh_%Mm_%Ss"`
+     local scenfile=
  
- 				if (test_out_dir) {
- 					if (!quiet_mode)
--						write_test_start(running + i);
-+						write_test_start(running + i, no_kmsg);
- 					copy_buffered_output(running + i);
- 					unlink(running[i].output);
- 				}
-@@ -893,7 +898,7 @@ check_pids(struct tag_pgrp *running, int *num_active, int keep_active,
+     version_date=$(cat "$LTPROOT/Version")
  
- static pid_t
- run_child(struct coll_entry *colle, struct tag_pgrp *active, int quiet_mode,
--	  int *failcnt, int fmt_print, FILE * logfile)
-+	  int *failcnt, int fmt_print, FILE * logfile, int no_kmsg)
- {
- 	ssize_t errlen;
- 	int cpid;
-@@ -945,9 +950,8 @@ run_child(struct coll_entry *colle, struct tag_pgrp *active, int quiet_mode,
- 	time(&active->mystime);
- 	active->cmd = colle;
+-    while getopts a:c:C:T:d:D:f:F:ehi:I:K:g:l:m:M:No:pqr:Rs:S:t:T:w:x:b:B:z:Z: arg
++    while getopts a:b:B:c:C:T:d:D:ef:F:g:hi:I:K:l:m:M:No:pqQr:Rs:S:t:T:w:x:z:Z: arg
+     do  case $arg in
+         a)  EMAIL_TO=$OPTARG
+             ALT_EMAIL_OUT=1;;
+@@ -402,9 +405,11 @@ main()
+                 ALT_DIR_OUT=1 ;;
+             esac ;;
  
--	if (!test_out_dir)
--		if (!quiet_mode)
--			write_test_start(active);
-+	if (!test_out_dir && !quiet_mode)
-+		write_test_start(active, no_kmsg);
+-        p)  PRETTY_PRT=" -p ";;
++        p)  PRETTY_PRT="-p";;
  
- 	fflush(NULL);
- 
-@@ -1109,7 +1113,6 @@ run_child(struct coll_entry *colle, struct tag_pgrp *active, int quiet_mode,
- 		}
- 
- 		if (!quiet_mode) {
--			//write_test_start(active, errbuf);
- 			write_test_end(active, errbuf, end_time, termtype,
- 				       status, termid, &notime, &notime);
- 		}
-@@ -1352,7 +1355,24 @@ static void copy_buffered_output(struct tag_pgrp *running)
- 	}
- }
- 
--static void write_test_start(struct tag_pgrp *running)
-+static void write_kmsg(const char *fmt, ...)
-+{
-+	FILE *kmsg;
-+	va_list ap;
+-        q)  QUIET_MODE=" -q ";;
++        q)  QUIET_MODE="-q";;
 +
-+	if ((kmsg = fopen("/dev/kmsg", "r+")) == NULL) {
-+		fprintf(stderr, "Error %s: (%d) opening /dev/kmsg\n",
-+				strerror(errno), errno);
-+		exit(1);
-+	}
-+
-+	va_start(ap, fmt);
-+	vfprintf(kmsg, fmt, ap);
-+	va_end(ap);
-+	fclose(kmsg);
-+}
-+
-+static void write_test_start(struct tag_pgrp *running, int no_kmsg)
- {
- 	if (!strcmp(reporttype, "rts")) {
++        Q)  NO_KMSG="-Q";;
  
-@@ -1362,6 +1382,14 @@ static void write_test_start(struct tag_pgrp *running)
- 		     running->cmd->cmdline, "", "exit", "<<<test_output>>>");
- 	}
- 	fflush(stdout);
-+	if (no_kmsg)
-+		return;
-+
-+	if (strcmp(running->cmd->name, running->cmd->cmdline))
-+		write_kmsg("LTP: starting %s (%s)\n", running->cmd->name,
-+			   running->cmd->cmdline);
-+	else
-+		write_kmsg("LTP: starting %s\n", running->cmd->name);
- }
+         r)  LTPROOT=$OPTARG;;
  
- static void
+@@ -451,7 +456,7 @@ main()
+        LOGFILE_NAME="$DEFAULT_FILE_NAME_GENERATION_TIME"
+        LOGFILE="-l $LTPROOT/results/LTP_RUN_ON-$LOGFILE_NAME.log"
+        ALT_DIR_RES=1
+-       PRETTY_PRT=" -p "
++       PRETTY_PRT="-p"
+     fi
+ 
+     ## It would be nice if a Failed File is compulsorily created (gives User better Idea of Tests that failed)
+@@ -745,7 +750,7 @@ main()
+     fi
+ 
+     [ ! -z "$QUIET_MODE" ] && { echo "INFO: Test start time: $(date)" ; }
+-    PAN_COMMAND="${LTPROOT}/bin/ltp-pan $QUIET_MODE -e -S $INSTANCES $DURATION -a $$ \
++    PAN_COMMAND="${LTPROOT}/bin/ltp-pan $QUIET_MODE $NO_KMSG -e -S $INSTANCES $DURATION -a $$ \
+     -n $$ $PRETTY_PRT -f ${TMP}/alltests $LOGFILE $OUTPUTFILE $FAILCMDFILE $TCONFCMDFILE"
+     echo "COMMAND:    $PAN_COMMAND"
+     if [ ! -z "$TAG_RESTRICT_STRING" ] ; then
+@@ -841,7 +846,7 @@ main()
+ 	fi
+     # Some tests need to run inside the "bin" directory.
+     cd "${LTPROOT}/testcases/bin"
+-    "${LTPROOT}/bin/ltp-pan" $QUIET_MODE -e -S $INSTANCES $DURATION -a $$ -n $$ $PRETTY_PRT -f ${TMP}/alltests $LOGFILE $OUTPUTFILE $FAILCMDFILE $TCONFCMDFILE
++    "${LTPROOT}/bin/ltp-pan" $QUIET_MODE $NO_KMSG -e -S $INSTANCES $DURATION -a $$ -n $$ $PRETTY_PRT -f ${TMP}/alltests $LOGFILE $OUTPUTFILE $FAILCMDFILE $TCONFCMDFILE
+ 
+     if [ $? -eq 0 ]; then
+       echo "INFO: ltp-pan reported all tests PASS"
 -- 
 2.14.0
 
