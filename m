@@ -1,171 +1,214 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 22 Aug 2017 15:49:02 +0300
-Subject: [LTP] [RFC PATCH v8 11/11] network: Use tools to set up IPv4
- and IPv6 related variables
-In-Reply-To: <20170818164437.13556-12-pvorel@suse.cz>
-References: <20170818164437.13556-1-pvorel@suse.cz>
- <20170818164437.13556-12-pvorel@suse.cz>
-Message-ID: <4417cf63-8b1c-aba0-496d-b998223493e4@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 22 Aug 2017 15:09:53 +0200
+Subject: [LTP] [PATCH] [dynamic debug] - Check interface and
+	functionality
+In-Reply-To: <20170822102244.6266-1-vkabatov@redhat.com>
+References: <20170822102244.6266-1-vkabatov@redhat.com>
+Message-ID: <20170822130953.GA23381@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 08/18/2017 07:44 PM, Petr Vorel wrote:
-> Tools (tst_net_ip_prefix, tst_net_iface_prefix, tst_net_vars)
-> simplify setup as it only needs to have passed 4 IP addresses
-> (IPv4 lhost + rhost and IPv6 lhost + rhost).
->
-> It's possible to define different network part for local
-> and remote hosts.
->
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> I don't like we don't warn on exit, when error during parsing variables with
-> tst_net_vars/tst_net_ip_prefix/tst_net_iface_prefix.
+Hi!
+> +# Test description: Test functionality of dynamic debug feature by enabling
+> +#                   and disabling traces with available flags. Check that these
+> +#                   settings don't cause issues by searching dmesg.
+> +#
+> +#                   This test handles changes of dynamic debug interface from
+> +#                   commits 5ca7d2a6 (dynamic_debug: describe_flags with
+> +#                   '=[pmflt_]*') and 8ba6ebf5 (Dynamic debug: Add more flags)
+> +#
+> +# Usage
+> +# ./dynamic_debug01.sh
+> +
+> +TST_TESTFUNC=ddebug_test
+> +TST_NEEDS_CMDS="awk"
+> +TST_NEEDS_TMPDIR=1
+> +TST_NEEDS_ROOT=1
+> +TST_SETUP=setup
+> +TST_CLEANUP=cleanup
+> +
+> +. tst_test.sh
+> +
+> +
+> +DEBUGFS_WAS_MOUNTED=0
+> +DEBUGFS_PATH=""
+> +DEBUGFS_CONTROL=""
+> +DYNDEBUG_STATEMENTS="./debug_statements"
+> +EMPTY_FLAG=""
+> +NEW_INTERFACE=0
+> +
+> +
+> +mount_debugfs()
+> +{
+> +	if grep -q debugfs /proc/mounts ; then
+> +		DEBUGFS_WAS_MOUNTED=1
+> +		DEBUGFS_PATH=$(grep debugfs /proc/mounts | awk '{print $2}')
+                                    ^
+				  $(awk /debugfs/ '{print $2}' /proc/mounts)
 
-What stops you from printing TWARN/TBROK on error inside these commands?
 
-> ---
->  testcases/lib/test_net.sh                          | 94 ++++++++++++++--------
->  testcases/network/stress/interface/if4-addr-change | 17 ++--
->  2 files changed, 71 insertions(+), 40 deletions(-)
->
-> diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-> index 6c2fb6803..655045f95 100644
-> --- a/testcases/lib/test_net.sh
-> +++ b/testcases/lib/test_net.sh
-> @@ -239,19 +239,10 @@ tst_read_opts $*
->  tst_ipaddr()
->  {
->  	local type="${1:-lhost}"
-> -	local ipv="${TST_IPV6:-4}"
-> -	local tst_host
-> -
-> -	if [ "$type" = "lhost" ]; then
-> -		eval "tst_host=\$LHOST_IPV${ipv}_HOST"
-> -	else
-> -		eval "tst_host=\$RHOST_IPV${ipv}_HOST"
-> -	fi
-> -
->  	if [ "$TST_IPV6" ]; then
-> -		echo "${IPV6_NETWORK}:${tst_host}"
-> +		[ "$type" = "lhost" ] && echo "$IPV6_LHOST" || echo "$IPV6_RHOST"
->  	else
-> -		echo "${IPV4_NETWORK}.${tst_host}"
-> +		[ "$type" = "lhost" ] && echo "$IPV4_LHOST" || echo "$IPV4_RHOST"
->  	fi
->  }
->  
-> @@ -361,9 +352,13 @@ tst_add_ipaddr()
->  {
->  	local type="${1:-lhost}"
->  	local link_num="${2:-0}"
-> +	local mask
->  
-> -	local mask=24
-> -	[ "$TST_IPV6" ] && mask=64
-> +	if [ "$TST_IPV6" ]; then
-> +		[ "$type" = "lhost" ] && mask=$IPV6_LPREFIX || mask=$IPV6_RPREFIX
+> +		tst_res TINFO "debugfs already mounted at $DEBUGFS_PATH"
 > +	else
-> +		[ "$type" = "lhost" ] && mask=$IPV4_LPREFIX || mask=$IPV4_RPREFIX
+> +		if ! grep -q debugfs /proc/filesystems ; then
+> +			tst_res TCONF "debugfs not supported"
+> +		fi
+> +		DEBUGFS_PATH="$(pwd)/tst_debug"
+                                  ^
+				$PWD/tst_debug
+
+Or we may as well use relative path i.e. just ./tst_debugfs/
+
+> +		mkdir "$DEBUGFS_PATH"
+> +		if mount -t debugfs xxx "$DEBUGFS_PATH" ; then
+> +			tst_res TINFO "debugfs mounted at $DEBUGFS_PATH"
+> +		else
+> +			tst_res TFAIL "Unable to mount debugfs"
+> +		fi
 > +	fi
->  
->  	local iface=$(tst_iface $type $link_num)
->  
-> @@ -617,24 +612,54 @@ export PASSWD="${PASSWD:-}"
->  export LTP_RSH="${LTP_RSH:-rsh -n}"
->  
->  # Test Links
-> -# Set first three octets of the network address, default is '10.0.0'
-> -export IPV4_NETWORK="${IPV4_NETWORK:-10.0.0}"
-> -# Set local host last octet, default is '2'
-> -export LHOST_IPV4_HOST="${LHOST_IPV4_HOST:-2}"
-> -# Set remote host last octet, default is '1'
-> -export RHOST_IPV4_HOST="${RHOST_IPV4_HOST:-1}"
-> -# Set the reverse of IPV4_NETWORK
-> -export IPV4_NET_REV="${IPV4_NET_REV:-0.0.10}"
-> -# Set first three octets of the network address, default is 'fd00:1:1:1'
-> -export IPV6_NETWORK="${IPV6_NETWORK:-fd00:1:1:1}"
-> -# Set local host last octet, default is '2'
-> -export LHOST_IPV6_HOST="${LHOST_IPV6_HOST:-:2}"
-> -# Set remote host last octet, default is '1'
-> -export RHOST_IPV6_HOST="${RHOST_IPV6_HOST:-:1}"
-> -
-> -# Networks that aren't reachable through the test links
-> -export IPV4_NET16_UNUSED="${IPV4_NET16_UNUSED:-10.23}"
-> -export IPV6_NET32_UNUSED="${IPV6_NET32_UNUSED:-fd00:23}"
-> +# IPV{4,6}_{L,R}HOST can be set with or without prefix (e.g. IP or IP/prefix),
-> +# but if you use IP/prefix form, /prefix will be removed by tst_net_vars.
-> +IPV4_LHOST="${IPV4_LHOST:-10.0.0.2/24}"
-> +IPV4_RHOST="${IPV4_RHOST:-10.0.0.1/24}"
-> +IPV6_LHOST="${IPV6_LHOST:-fd00:1:1:1::2/64}"
-> +IPV6_RHOST="${IPV6_RHOST:-fd00:1:1:1::1/64}"
+> +}
 > +
-> +# tst_net_ip_prefix
-> +# Strip prefix from IP address and save both If no prefix found sets
-> +# default prefix.
-> +#
-> +# tst_net_iface_prefix reads prefix and interface from rtnetlink.
-> +# If nothing found sets default prefix value.
-> +#
-> +# tst_net_vars exports environment variables related to test links and
-> +# networks that aren't reachable through the test links.
-> +#
-> +# For full list of exported environment variables see:
-> +# tst_net_ip_prefix -h
-> +# tst_net_iface_prefix -h
-> +# tst_net_vars -h
-> +if [ -z "$TST_PARSE_VARIABLES" ]; then
-> +	tst_resm TINFO "Parsing IP and prefixes from IPv4 lhost: '$IPV4_LHOST'," \
-> +		"rhost: '$IPV4_RHOST', IPv6 lhost: '$IPV6_LHOST', rhost: '$IPV6_RHOST'"
-> +	eval $(tst_net_ip_prefix $IPV4_LHOST || echo "exit $?")
-> +	eval $(tst_net_ip_prefix -r $IPV4_RHOST || echo "exit $?")
-> +	eval $(tst_net_ip_prefix $IPV6_LHOST || echo "exit $?")
-> +	eval $(tst_net_ip_prefix -r $IPV6_RHOST || echo "exit $?")
-> +fi
+> +setup()
+> +{
+> +	if tst_kvcmp -lt 2.6.30 ; then
+> +		tst_brk TCONF "Dynamic debug is available since version 2.6.30"
+> +	fi
 > +
-> +if [ -n "$TST_USE_NETNS" ]; then
-> +	[ "$TST_INIT_NETNS" != "no" ] && init_ltp_netspace || set_ltp_netns_var
-> +fi
+> +	mount_debugfs
+> +	if [ ! -d "$DEBUGFS_PATH/dynamic_debug" ] ; then
+> +		tst_res TBROK "Unable to find $DEBUGFS_PATH/dynamic_debug"
+                ^
+		tst_brk?
+> +	fi
+> +	DEBUGFS_CONTROL="$DEBUGFS_PATH/dynamic_debug/control"
+> +	if [ ! -e "$DEBUGFS_CONTROL" ] ; then
+> +		tst_res TBROK "Unable to find $DEBUGFS_CONTROL"
+                ^
+		here as well?
+> +	fi
 > +
+> +	# Both patches with changes were backported to RHEL6 kernel 2.6.32-547
+> +	if tst_kvcmp -ge '3.4 RHEL6:2.6.32-547' ; then
+> +		NEW_INTERFACE=1
+> +	fi
 > +
-> +if [ -z "$TST_PARSE_VARIABLES" ]; then
-> +	tst_resm TINFO "Parsing prefixes and ifaces from rtnetlink"
-> +	eval $(tst_net_iface_prefix $IPV4_LHOST || echo "exit $?")
-> +	eval $(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV4_RHOST || echo "exit $?")
-> +	eval $(tst_net_iface_prefix $IPV6_LHOST || echo "exit $?")
-> +	eval $(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV6_RHOST || echo "exit $?")
-> +
-> +	tst_resm TINFO "Parsing all remaining variables"
-> +	eval $(tst_net_vars $IPV4_LHOST/$IPV4_LPREFIX $IPV4_RHOST/$IPV4_RPREFIX || echo "exit $?")
-> +	eval $(tst_net_vars $IPV6_LHOST/$IPV6_LPREFIX $IPV6_RHOST/$IPV6_RPREFIX || echo "exit $?")
-> +
-> +	export TST_PARSE_VARIABLES="yes"
-> +fi
->  
->  export HTTP_DOWNLOAD_DIR="${HTTP_DOWNLOAD_DIR:-/var/www/html}"
->  export FTP_DOWNLOAD_DIR="${FTP_DOWNLOAD_DIR:-/var/ftp}"
-> @@ -657,14 +682,13 @@ export UPLOAD_REGFILESIZE="${UPLOAD_REGFILESIZE:-1024}"
->  export MCASTNUM_NORMAL="${MCASTNUM_NORMAL:-20}"
->  export MCASTNUM_HEAVY="${MCASTNUM_HEAVY:-4000}"
->  
-> -if [ -n "$TST_USE_NETNS" ]; then
-> -	[ "$TST_INIT_NETNS" != "no" ] && init_ltp_netspace || set_ltp_netns_var
-> -fi
-> -
->  # Warning: make sure to set valid interface names and IP addresses below.
->  # Set names for test interfaces, e.g. "eth0 eth1"
-> +# This is fallback for LHOST_IFACES in case tst_net_vars finds nothing or we
-> +# want to use more ifaces.
->  export LHOST_IFACES="${LHOST_IFACES:-eth0}"
->  export RHOST_IFACES="${RHOST_IFACES:-eth0}"
-> +
+> +	EMPTY_FLAG=$([ $NEW_INTERFACE -eq 1 ] && echo "=_" || echo "-")
 
+Now, why don't we set empty flag to the old value on the top and set it
+to the new value in the if that sets the NEW_INTERFACE variable.
 
-Looks good. Could you also run checkpatch tool with this patch-set and
-fix warnings/errors?
+We could even use the EMPTY_FLAG content in the conditions below, but I
+guess that having NEW_INTERFACE variable is more readable.
 
-Thanks,
-Alexey
+> +	grep -v "^#" "$DEBUGFS_CONTROL" > "$DYNDEBUG_STATEMENTS"
+> +}
+> +
+> +do_flag()
+> +{
+> +	FLAG="$1"
+> +	OPTION_TO_SET="$2"
+> +	OPTION_VALUE="$3"
+
+It would be a sligtly better to declare these variables as local.
+
+> +	if ! echo "$OPTION_TO_SET $OPTION_VALUE $FLAG" > \
+> +		"$DEBUGFS_CONTROL" ; then
+> +		tst_res TFAIL "Setting '$OPTION_TO_SET $OPTION_VALUE " \
+> +			"$FLAG' failed with $?!"
+> +	fi
+
+We do have EXPECT_PASS and EXPECT_FAIL functions in the test library:
+
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#expect_pass-and-expect_fail
+
+> +}
+> +
+> +do_all_flags()
+> +{
+> +	OPTION="$1"
+> +	ALL_INPUTS="$2"
+> +
+> +	echo "$ALL_INPUTS" | while read -r INPUT_LINE ; do
+
+You can do just for input_line in $ALL_INPUTS; do here instead, the
+newlines were converted to spaces once the output from the awk/sort/uniq
+pipeline was assigned into a variable.
+
+> +		do_flag "+p" "$OPTION" "$INPUT_LINE"
+> +		if tst_kvcmp -ge 3.2 || [ $NEW_INTERFACE -eq 1 ] ; then
+> +			do_flag "+flmt" "$OPTION" "$INPUT_LINE"
+> +			do_flag "-flmt" "$OPTION" "$INPUT_LINE"
+> +		fi
+> +		do_flag "-p" "$OPTION" "$INPUT_LINE"
+> +	done
+> +
+> +	if awk -v emp="$EMPTY_FLAG" '$3 != emp' "$DEBUGFS_CONTROL" \
+> +		| grep -v -q "^#" ; then
+> +		tst_res TFAIL "Failed to remove all set flags"
+> +	fi
+> +
+> +}
+> +
+> +ddebug_test()
+> +{
+> +	dmesg > ./dmesg.old
+> +
+> +	DD_FUNCS=$(awk -F " |]" '{print $3}' "$DYNDEBUG_STATEMENTS" \
+> +		| sort | uniq)
+> +	DD_FILES=$(awk -F " |:" '{print $1}' "$DYNDEBUG_STATEMENTS" \
+> +		| sort | uniq)
+> +	DD_LINES=$(awk -F " |:" '{print $2}' "$DYNDEBUG_STATEMENTS" \
+> +		| sort | uniq)
+> +	DD_MODULES=$(awk -F [][] '{print $2}' "$DYNDEBUG_STATEMENTS" \
+> +		| sort | uniq)
+> +
+> +	do_all_flags "func" "$DD_FUNCS"
+> +	do_all_flags "file" "$DD_FILES"
+> +	do_all_flags "line" "$DD_LINES"
+> +	do_all_flags "module" "$DD_MODULES"
+> +
+> +	dmesg > ./dmesg.new
+> +	sed -i -e 1,`wc -l < ./dmesg.old`d ./dmesg.new
+> +	if grep -q -e "Kernel panic" -e "Oops" -e "general protection fault" \
+> +		-e "general protection handler: wrong gs" -e "\(XEN\) Panic" \
+> +		-e "fault" -e "warn" -e "BUG" ./dmesg.new ; then
+> +		tst_res TFAIL "Issues found in dmesg!"
+> +	else
+> +		tst_res TPASS "Dynamic debug OK"
+> +	fi
+> +}
+> +
+> +cleanup()
+> +{
+> +	if [ $DEBUGFS_WAS_MOUNTED -eq 0 ] ; then
+> +		tst_umount "$DEBUGFS_PATH"
+> +	else
+> +		FLAGS_SET=$(awk -v emp="$EMPTY_FLAG" '$3 != emp' \
+> +			$DYNDEBUG_STATEMENTS)
+> +		if [ "$FLAGS_SET" ] ; then
+> +			FLAG_PREFIX=$([ $NEW_INTERFACE -eq 1 ] \
+> +				&& echo "" || echo "+")
+> +			echo "$FLAGS_SET" | while read -r FLAG_LINE ; do
+> +				echo -n "$FLAG_LINE" \
+> +					| awk -v prf="$FLAG_PREFIX" -F " |:" \
+> +					'{print "file "$1" line "$2" "prf $4}' \
+> +					> "$DEBUGFS_CONTROL"
+> +			done
+> +		fi
+> +	fi
+
+I wonder if we should attempt to restore the values even if debugfs
+wasn't mounted and then umount it if it wasn't mounted once we are done.
+
+On my machine I have 45 values set to =p by default, although debugfs is
+mounted there...
+
+> +}
+> +
+> +tst_run
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
