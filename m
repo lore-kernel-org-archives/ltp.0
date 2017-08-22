@@ -1,97 +1,257 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 22 Aug 2017 10:53:56 +0200
-Subject: [LTP] [PATCH] input/input06: Ignore auto-repeat config events
-In-Reply-To: <20170814233205.10933-1-sspatil@google.com>
-References: <20170814233205.10933-1-sspatil@google.com>
-Message-ID: <20170822085356.GA22360@rei.lan>
+From: vkabatov@redhat.com <vkabatov@redhat.com>
+Date: Tue, 22 Aug 2017 12:22:44 +0200
+Subject: [LTP] [PATCH] [dynamic debug] - Check interface and functionality
+Message-ID: <20170822102244.6266-1-vkabatov@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> diff --git a/testcases/kernel/input/input06.c b/testcases/kernel/input/input06.c
-> index c4fc1ef57..8d04db8c6 100644
-> --- a/testcases/kernel/input/input06.c
-> +++ b/testcases/kernel/input/input06.c
-> @@ -137,12 +137,26 @@ static int check_events(void)
->  
->  	check_size(rd);
->  
-> +	/*
-> +	 * Ignore auto-repeat configuration codes
-> +	 * (EV_REP, {REP_PERIOD, REP_TYPE), value)
-> +	 */
-> +	while (iev[i].type == EV_REP) {
-> +		i++;
-> +		if (i == rd / sizeof(struct input_event)) {
-> +			i = 0;
-> +			rd = read(fd2, iev, sizeof(iev));
-> +			check_size(rd);
-> +		}
-> +	}
+From: Veronika Kabatova <vkabatov@redhat.com>
 
-I do not like much that we added a just another loop that fills in
-the event array here. Maybe we should rewrite this as a recursive
-descent parser now.
+Add a new test to verify enabling and disabling traces with supported
+flags works and doesn't cause any issues.
 
-I.e.
+Dynamic debug was added in kernel 2.6.30, the first version only
+supported "p" flag and used "-" as indicator for no flags set. In
+kernel 3.2, additional flags "flmt" were added. Finally, in kernel
+3.4, the indicator for no flags was changed to "=_".
 
-	while (have_events()) {
-		ev = next_event();
+The test takes into account different kernel versions and interface
+changes listed above.
 
-		switch (ev.type)
-		case EV_REP:
-			parse_rep(ev);
-		break;
-		case EV_KEY:
-			parse_key(ev);
-		break;
-	}
+Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
+---
+ runtest/tracing                                    |   1 +
+ testcases/kernel/tracing/dynamic_debug/Makefile    |  27 ++++
+ .../tracing/dynamic_debug/dynamic_debug01.sh       | 174 +++++++++++++++++++++
+ 3 files changed, 202 insertions(+)
+ create mode 100644 testcases/kernel/tracing/dynamic_debug/Makefile
+ create mode 100755 testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
 
-
-The parse_rep() would check that we got correct sequence of
-configuration events and the parse_key() would check that we have a
-correct sequence of key press events, i.e. key down (1) a few key repeat
-(2) and key up (0), which would be something as:
-
-parse_key()
-{
-	if (!check_event(ev, EV_KEY, KEY_X, 1))
-		tst_res(TFAIL, ...);
-
-	ev = next_event();
-
-	if (!check_event(ev, EV_KEY, KEY_X, 2))
-		tst_res(TFAIL, ...);
-
-	do {
-		ev = next_event();
-	} while (!check_event(ev, EV_KEY, KEY_X, 2);
-
-	if (!chek_event(ev, EV_KEY, KEY_X, 0))
-		tst_res(TFAIL, ...);
-}
-
->  	if (rd > 0 && check_event(&iev[i], EV_KEY, KEY_X, 1))
->  		i++;
->  
->  	while (check_bound(i, rd) && !check_event(&iev[i], EV_KEY, KEY_X, 0)) {
->  
->  		if (iev[i].type != EV_SYN
-> +			&& iev[i].type != EV_REP
-
-What is this here for? Shouldn't all the configuration events be read at
-this point?
-
->  			&& !check_event(&iev[i], EV_KEY, KEY_X, 2)) {
->  			tst_resm(TINFO,
->  				"Didn't receive EV_KEY KEY_X with value 2");
-> -- 
-> 2.14.0.434.g98096fd7a8-goog
-> 
-
+diff --git a/runtest/tracing b/runtest/tracing
+index 9f8d5c86a..8285eeb43 100644
+--- a/runtest/tracing
++++ b/runtest/tracing
+@@ -2,3 +2,4 @@
+ ftrace_regression01	ftrace_regression01.sh
+ ftrace_regression02	ftrace_regression02.sh
+ ftrace-stress-test	ftrace_stress_test.sh 90
++dynamic_debug01		dynamic_debug01.sh
+diff --git a/testcases/kernel/tracing/dynamic_debug/Makefile b/testcases/kernel/tracing/dynamic_debug/Makefile
+new file mode 100644
+index 000000000..2a6e53a11
+--- /dev/null
++++ b/testcases/kernel/tracing/dynamic_debug/Makefile
+@@ -0,0 +1,27 @@
++#
++#    tracing/dynamic_debug test suite Makefile.
++#
++#    Copyright (C) 2017 Red Hat, Inc.
++#
++#    This program is free software; you can redistribute it and/or modify
++#    it under the terms of the GNU General Public License as published by
++#    the Free Software Foundation; either version 2 of the License, or
++#    (at your option) any later version.
++#
++#    This program is distributed in the hope that it will be useful,
++#    but WITHOUT ANY WARRANTY; without even the implied warranty of
++#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
++#    General Public License for more details.
++#
++#    You should have received a copy of the GNU General Public License along
++#    with this program; if not, see <http://www.gnu.org/licenses/>.
++#
++
++top_srcdir		?= ../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++INSTALL_TARGETS		:= *.sh
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
++
+diff --git a/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh b/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
+new file mode 100755
+index 000000000..548063513
+--- /dev/null
++++ b/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
+@@ -0,0 +1,174 @@
++#!/bin/sh
++
++# Copyright (C) 2017 Red Hat, Inc.
++#
++# This program is free software;  you can redistribute it and#or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful, but
++# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
++# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
++# for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, see <http://www.gnu.org/licenses/>.
++#
++#
++# Test description: Test functionality of dynamic debug feature by enabling
++#                   and disabling traces with available flags. Check that these
++#                   settings don't cause issues by searching dmesg.
++#
++#                   This test handles changes of dynamic debug interface from
++#                   commits 5ca7d2a6 (dynamic_debug: describe_flags with
++#                   '=[pmflt_]*') and 8ba6ebf5 (Dynamic debug: Add more flags)
++#
++# Usage
++# ./dynamic_debug01.sh
++
++TST_TESTFUNC=ddebug_test
++TST_NEEDS_CMDS="awk"
++TST_NEEDS_TMPDIR=1
++TST_NEEDS_ROOT=1
++TST_SETUP=setup
++TST_CLEANUP=cleanup
++
++. tst_test.sh
++
++
++DEBUGFS_WAS_MOUNTED=0
++DEBUGFS_PATH=""
++DEBUGFS_CONTROL=""
++DYNDEBUG_STATEMENTS="./debug_statements"
++EMPTY_FLAG=""
++NEW_INTERFACE=0
++
++
++mount_debugfs()
++{
++	if grep -q debugfs /proc/mounts ; then
++		DEBUGFS_WAS_MOUNTED=1
++		DEBUGFS_PATH=$(grep debugfs /proc/mounts | awk '{print $2}')
++		tst_res TINFO "debugfs already mounted at $DEBUGFS_PATH"
++	else
++		if ! grep -q debugfs /proc/filesystems ; then
++			tst_res TCONF "debugfs not supported"
++		fi
++		DEBUGFS_PATH="$(pwd)/tst_debug"
++		mkdir "$DEBUGFS_PATH"
++		if mount -t debugfs xxx "$DEBUGFS_PATH" ; then
++			tst_res TINFO "debugfs mounted at $DEBUGFS_PATH"
++		else
++			tst_res TFAIL "Unable to mount debugfs"
++		fi
++	fi
++}
++
++setup()
++{
++	if tst_kvcmp -lt 2.6.30 ; then
++		tst_brk TCONF "Dynamic debug is available since version 2.6.30"
++	fi
++
++	mount_debugfs
++	if [ ! -d "$DEBUGFS_PATH/dynamic_debug" ] ; then
++		tst_res TBROK "Unable to find $DEBUGFS_PATH/dynamic_debug"
++	fi
++	DEBUGFS_CONTROL="$DEBUGFS_PATH/dynamic_debug/control"
++	if [ ! -e "$DEBUGFS_CONTROL" ] ; then
++		tst_res TBROK "Unable to find $DEBUGFS_CONTROL"
++	fi
++
++	# Both patches with changes were backported to RHEL6 kernel 2.6.32-547
++	if tst_kvcmp -ge '3.4 RHEL6:2.6.32-547' ; then
++		NEW_INTERFACE=1
++	fi
++
++	EMPTY_FLAG=$([ $NEW_INTERFACE -eq 1 ] && echo "=_" || echo "-")
++	grep -v "^#" "$DEBUGFS_CONTROL" > "$DYNDEBUG_STATEMENTS"
++}
++
++do_flag()
++{
++	FLAG="$1"
++	OPTION_TO_SET="$2"
++	OPTION_VALUE="$3"
++
++	if ! echo "$OPTION_TO_SET $OPTION_VALUE $FLAG" > \
++		"$DEBUGFS_CONTROL" ; then
++		tst_res TFAIL "Setting '$OPTION_TO_SET $OPTION_VALUE " \
++			"$FLAG' failed with $?!"
++	fi
++}
++
++do_all_flags()
++{
++	OPTION="$1"
++	ALL_INPUTS="$2"
++
++	echo "$ALL_INPUTS" | while read -r INPUT_LINE ; do
++		do_flag "+p" "$OPTION" "$INPUT_LINE"
++		if tst_kvcmp -ge 3.2 || [ $NEW_INTERFACE -eq 1 ] ; then
++			do_flag "+flmt" "$OPTION" "$INPUT_LINE"
++			do_flag "-flmt" "$OPTION" "$INPUT_LINE"
++		fi
++		do_flag "-p" "$OPTION" "$INPUT_LINE"
++	done
++
++	if awk -v emp="$EMPTY_FLAG" '$3 != emp' "$DEBUGFS_CONTROL" \
++		| grep -v -q "^#" ; then
++		tst_res TFAIL "Failed to remove all set flags"
++	fi
++}
++
++ddebug_test()
++{
++	dmesg > ./dmesg.old
++
++	DD_FUNCS=$(awk -F " |]" '{print $3}' "$DYNDEBUG_STATEMENTS" \
++		| sort | uniq)
++	DD_FILES=$(awk -F " |:" '{print $1}' "$DYNDEBUG_STATEMENTS" \
++		| sort | uniq)
++	DD_LINES=$(awk -F " |:" '{print $2}' "$DYNDEBUG_STATEMENTS" \
++		| sort | uniq)
++	DD_MODULES=$(awk -F [][] '{print $2}' "$DYNDEBUG_STATEMENTS" \
++		| sort | uniq)
++
++	do_all_flags "func" "$DD_FUNCS"
++	do_all_flags "file" "$DD_FILES"
++	do_all_flags "line" "$DD_LINES"
++	do_all_flags "module" "$DD_MODULES"
++
++	dmesg > ./dmesg.new
++	sed -i -e 1,`wc -l < ./dmesg.old`d ./dmesg.new
++	if grep -q -e "Kernel panic" -e "Oops" -e "general protection fault" \
++		-e "general protection handler: wrong gs" -e "\(XEN\) Panic" \
++		-e "fault" -e "warn" -e "BUG" ./dmesg.new ; then
++		tst_res TFAIL "Issues found in dmesg!"
++	else
++		tst_res TPASS "Dynamic debug OK"
++	fi
++}
++
++cleanup()
++{
++	if [ $DEBUGFS_WAS_MOUNTED -eq 0 ] ; then
++		tst_umount "$DEBUGFS_PATH"
++	else
++		FLAGS_SET=$(awk -v emp="$EMPTY_FLAG" '$3 != emp' \
++			$DYNDEBUG_STATEMENTS)
++		if [ "$FLAGS_SET" ] ; then
++			FLAG_PREFIX=$([ $NEW_INTERFACE -eq 1 ] \
++				&& echo "" || echo "+")
++			echo "$FLAGS_SET" | while read -r FLAG_LINE ; do
++				echo -n "$FLAG_LINE" \
++					| awk -v prf="$FLAG_PREFIX" -F " |:" \
++					'{print "file "$1" line "$2" "prf $4}' \
++					> "$DEBUGFS_CONTROL"
++			done
++		fi
++	fi
++}
++
++tst_run
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.13.3
+
