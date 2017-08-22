@@ -1,11 +1,11 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 22 Aug 2017 15:23:01 +0300
-Subject: [LTP] [RFC PATCH v8 10/11] network: Add tools for setup IP
- related environment variables
-In-Reply-To: <20170818164437.13556-11-pvorel@suse.cz>
+Date: Tue, 22 Aug 2017 15:49:02 +0300
+Subject: [LTP] [RFC PATCH v8 11/11] network: Use tools to set up IPv4
+ and IPv6 related variables
+In-Reply-To: <20170818164437.13556-12-pvorel@suse.cz>
 References: <20170818164437.13556-1-pvorel@suse.cz>
- <20170818164437.13556-11-pvorel@suse.cz>
-Message-ID: <139abe87-0496-8023-1386-788e289aaf2d@oracle.com>
+ <20170818164437.13556-12-pvorel@suse.cz>
+Message-ID: <4417cf63-8b1c-aba0-496d-b998223493e4@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,22 +13,159 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 On 08/18/2017 07:44 PM, Petr Vorel wrote:
-> New tools:
-> * tst_net_ip_prefix
-> Strip prefix from IP address and save both
-> If no prefix found sets default prefix.
+> Tools (tst_net_ip_prefix, tst_net_iface_prefix, tst_net_vars)
+> simplify setup as it only needs to have passed 4 IP addresses
+> (IPv4 lhost + rhost and IPv6 lhost + rhost).
 >
-> * tst_net_iface_prefix
-> tst_net_iface_prefix reads prefix and interface from rtnetlink.
+> It's possible to define different network part for local
+> and remote hosts.
 >
-> * tst_net_vars takes input of local and remote address and setup most of
-> test link (IP related) environment variables.
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> I don't like we don't warn on exit, when error during parsing variables with
+> tst_net_vars/tst_net_ip_prefix/tst_net_iface_prefix.
 
-Here is the thread with minor comments that still applicable to this
-version:
+What stops you from printing TWARN/TBROK on error inside these commands?
 
-http://lists.linux.it/pipermail/ltp/2017-June/004838.html
+> ---
+>  testcases/lib/test_net.sh                          | 94 ++++++++++++++--------
+>  testcases/network/stress/interface/if4-addr-change | 17 ++--
+>  2 files changed, 71 insertions(+), 40 deletions(-)
+>
+> diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+> index 6c2fb6803..655045f95 100644
+> --- a/testcases/lib/test_net.sh
+> +++ b/testcases/lib/test_net.sh
+> @@ -239,19 +239,10 @@ tst_read_opts $*
+>  tst_ipaddr()
+>  {
+>  	local type="${1:-lhost}"
+> -	local ipv="${TST_IPV6:-4}"
+> -	local tst_host
+> -
+> -	if [ "$type" = "lhost" ]; then
+> -		eval "tst_host=\$LHOST_IPV${ipv}_HOST"
+> -	else
+> -		eval "tst_host=\$RHOST_IPV${ipv}_HOST"
+> -	fi
+> -
+>  	if [ "$TST_IPV6" ]; then
+> -		echo "${IPV6_NETWORK}:${tst_host}"
+> +		[ "$type" = "lhost" ] && echo "$IPV6_LHOST" || echo "$IPV6_RHOST"
+>  	else
+> -		echo "${IPV4_NETWORK}.${tst_host}"
+> +		[ "$type" = "lhost" ] && echo "$IPV4_LHOST" || echo "$IPV4_RHOST"
+>  	fi
+>  }
+>  
+> @@ -361,9 +352,13 @@ tst_add_ipaddr()
+>  {
+>  	local type="${1:-lhost}"
+>  	local link_num="${2:-0}"
+> +	local mask
+>  
+> -	local mask=24
+> -	[ "$TST_IPV6" ] && mask=64
+> +	if [ "$TST_IPV6" ]; then
+> +		[ "$type" = "lhost" ] && mask=$IPV6_LPREFIX || mask=$IPV6_RPREFIX
+> +	else
+> +		[ "$type" = "lhost" ] && mask=$IPV4_LPREFIX || mask=$IPV4_RPREFIX
+> +	fi
+>  
+>  	local iface=$(tst_iface $type $link_num)
+>  
+> @@ -617,24 +612,54 @@ export PASSWD="${PASSWD:-}"
+>  export LTP_RSH="${LTP_RSH:-rsh -n}"
+>  
+>  # Test Links
+> -# Set first three octets of the network address, default is '10.0.0'
+> -export IPV4_NETWORK="${IPV4_NETWORK:-10.0.0}"
+> -# Set local host last octet, default is '2'
+> -export LHOST_IPV4_HOST="${LHOST_IPV4_HOST:-2}"
+> -# Set remote host last octet, default is '1'
+> -export RHOST_IPV4_HOST="${RHOST_IPV4_HOST:-1}"
+> -# Set the reverse of IPV4_NETWORK
+> -export IPV4_NET_REV="${IPV4_NET_REV:-0.0.10}"
+> -# Set first three octets of the network address, default is 'fd00:1:1:1'
+> -export IPV6_NETWORK="${IPV6_NETWORK:-fd00:1:1:1}"
+> -# Set local host last octet, default is '2'
+> -export LHOST_IPV6_HOST="${LHOST_IPV6_HOST:-:2}"
+> -# Set remote host last octet, default is '1'
+> -export RHOST_IPV6_HOST="${RHOST_IPV6_HOST:-:1}"
+> -
+> -# Networks that aren't reachable through the test links
+> -export IPV4_NET16_UNUSED="${IPV4_NET16_UNUSED:-10.23}"
+> -export IPV6_NET32_UNUSED="${IPV6_NET32_UNUSED:-fd00:23}"
+> +# IPV{4,6}_{L,R}HOST can be set with or without prefix (e.g. IP or IP/prefix),
+> +# but if you use IP/prefix form, /prefix will be removed by tst_net_vars.
+> +IPV4_LHOST="${IPV4_LHOST:-10.0.0.2/24}"
+> +IPV4_RHOST="${IPV4_RHOST:-10.0.0.1/24}"
+> +IPV6_LHOST="${IPV6_LHOST:-fd00:1:1:1::2/64}"
+> +IPV6_RHOST="${IPV6_RHOST:-fd00:1:1:1::1/64}"
+> +
+> +# tst_net_ip_prefix
+> +# Strip prefix from IP address and save both If no prefix found sets
+> +# default prefix.
+> +#
+> +# tst_net_iface_prefix reads prefix and interface from rtnetlink.
+> +# If nothing found sets default prefix value.
+> +#
+> +# tst_net_vars exports environment variables related to test links and
+> +# networks that aren't reachable through the test links.
+> +#
+> +# For full list of exported environment variables see:
+> +# tst_net_ip_prefix -h
+> +# tst_net_iface_prefix -h
+> +# tst_net_vars -h
+> +if [ -z "$TST_PARSE_VARIABLES" ]; then
+> +	tst_resm TINFO "Parsing IP and prefixes from IPv4 lhost: '$IPV4_LHOST'," \
+> +		"rhost: '$IPV4_RHOST', IPv6 lhost: '$IPV6_LHOST', rhost: '$IPV6_RHOST'"
+> +	eval $(tst_net_ip_prefix $IPV4_LHOST || echo "exit $?")
+> +	eval $(tst_net_ip_prefix -r $IPV4_RHOST || echo "exit $?")
+> +	eval $(tst_net_ip_prefix $IPV6_LHOST || echo "exit $?")
+> +	eval $(tst_net_ip_prefix -r $IPV6_RHOST || echo "exit $?")
+> +fi
+> +
+> +if [ -n "$TST_USE_NETNS" ]; then
+> +	[ "$TST_INIT_NETNS" != "no" ] && init_ltp_netspace || set_ltp_netns_var
+> +fi
+> +
+> +
+> +if [ -z "$TST_PARSE_VARIABLES" ]; then
+> +	tst_resm TINFO "Parsing prefixes and ifaces from rtnetlink"
+> +	eval $(tst_net_iface_prefix $IPV4_LHOST || echo "exit $?")
+> +	eval $(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV4_RHOST || echo "exit $?")
+> +	eval $(tst_net_iface_prefix $IPV6_LHOST || echo "exit $?")
+> +	eval $(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV6_RHOST || echo "exit $?")
+> +
+> +	tst_resm TINFO "Parsing all remaining variables"
+> +	eval $(tst_net_vars $IPV4_LHOST/$IPV4_LPREFIX $IPV4_RHOST/$IPV4_RPREFIX || echo "exit $?")
+> +	eval $(tst_net_vars $IPV6_LHOST/$IPV6_LPREFIX $IPV6_RHOST/$IPV6_RPREFIX || echo "exit $?")
+> +
+> +	export TST_PARSE_VARIABLES="yes"
+> +fi
+>  
+>  export HTTP_DOWNLOAD_DIR="${HTTP_DOWNLOAD_DIR:-/var/www/html}"
+>  export FTP_DOWNLOAD_DIR="${FTP_DOWNLOAD_DIR:-/var/ftp}"
+> @@ -657,14 +682,13 @@ export UPLOAD_REGFILESIZE="${UPLOAD_REGFILESIZE:-1024}"
+>  export MCASTNUM_NORMAL="${MCASTNUM_NORMAL:-20}"
+>  export MCASTNUM_HEAVY="${MCASTNUM_HEAVY:-4000}"
+>  
+> -if [ -n "$TST_USE_NETNS" ]; then
+> -	[ "$TST_INIT_NETNS" != "no" ] && init_ltp_netspace || set_ltp_netns_var
+> -fi
+> -
+>  # Warning: make sure to set valid interface names and IP addresses below.
+>  # Set names for test interfaces, e.g. "eth0 eth1"
+> +# This is fallback for LHOST_IFACES in case tst_net_vars finds nothing or we
+> +# want to use more ifaces.
+>  export LHOST_IFACES="${LHOST_IFACES:-eth0}"
+>  export RHOST_IFACES="${RHOST_IFACES:-eth0}"
+> +
+
+
+Looks good. Could you also run checkpatch tool with this patch-set and
+fix warnings/errors?
 
 Thanks,
 Alexey
-
