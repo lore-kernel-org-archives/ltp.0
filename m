@@ -1,34 +1,80 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 23 Aug 2017 15:34:46 +0200
-Subject: [LTP] [RFC PATCH v8 08/11] network/stress: Fix and cleanup
- route IPv4 tests
-In-Reply-To: <20170822212240.cj4rhya5s2mvlpgh@dell5510>
-References: <20170818164437.13556-1-pvorel@suse.cz>
- <20170818164437.13556-9-pvorel@suse.cz>
- <786265f7-ec89-e641-8fda-15f6844fb347@oracle.com>
- <20170822212240.cj4rhya5s2mvlpgh@dell5510>
-Message-ID: <20170823133445.xff3g5zx2am5hvos@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 23 Aug 2017 15:35:12 +0200
+Subject: [LTP] [PATCH v5] syscalls/fcntl36: add tests for OFD locks
+In-Reply-To: <1503494101-27530-1-git-send-email-xzhou@redhat.com>
+References: <20170823095312.GB17676@rei.lan>
+ <1503494101-27530-1-git-send-email-xzhou@redhat.com>
+Message-ID: <20170823133512.GA20766@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi!
+> +/* OFD write lock writing data*/
+> +static void *fn_ofd_w(void *arg)
+> +{
+> +	unsigned char buf[write_size];
+> +	struct param *pa = (struct param *)arg;
+> +	int fd = SAFE_OPEN(fname, O_RDWR);
+> +	long wt = pa->cnt;
+> +
+> +	struct flock64 lck = {
+> +		.l_whence = SEEK_SET,
+> +		.l_start  = pa->offset,
+> +		.l_len    = pa->length,
+> +		.l_pid    = 0,
+> +	};
+> +
+> +	while (loop_flag) {
+> +
+> +		memset(buf, wt, write_size);
+> +
+> +		lck.l_type = F_WRLCK;
+> +		SAFE_FCNTL(fd, F_OFD_SETLKW, &lck);
+> +
+> +		SAFE_LSEEK(fd, pa->offset, SEEK_SET);
+> +		SAFE_WRITE(1, fd, buf, pa->length);
 
-> > > +	while [ $cnt -lt $NS_TIMES ]; do
-> > > +		lhost_ifname2="$lhost_ifname"
-> > > +		gateway2="$gateway"
-> > > +
-> > > +		pre_dst_network="$dst_network"
-> > > +		if [ "$test_field" = 'dst' ]; then
-> > > +			dst_addr="$(tst_ipaddr_un_ip $(($cnt % 255)) $DST_HOST)"
-> > > +			dst_network="$(tst_ipaddr_un_ip $(($cnt % 255)))"
+Just a minor note, we use both write_size and pa->length randomly here
+and in all of the test functions. It would be a much cleaner to use only
+pa->lenght instead.
 
-> > tst_ipaddr_un() handles '$cnt' overrun already.
-> Thanks, silly error.
-No, I'll keep it, without it addresses for cnt > 254 would be always 254 (no real
-testing).
+> +/* Test different functions and verify data */
+> +static void test_fn(void *f0(void *), void *f1(void *), const char *msg)
+> +{
+> +	int i, k, fd;
+> +	pthread_t id0[thread_cnt];
+> +	pthread_t id1[thread_cnt];
+> +	struct param p0[thread_cnt];
+> +	struct param p1[thread_cnt];
+> +	unsigned char buf[write_size];
+> +
+> +	if (tst_fill_file(fname, 1, write_size, thread_cnt))
+> +		tst_brk(TBROK, "Failed to create tst file");
+> +
+> +	tst_res(TINFO, msg);
+> +
+> +	for (i = 0; i < thread_cnt; i++) {
+> +
+> +		p0[i].offset = i * write_size;
+> +		p0[i].length = write_size;
+> +		p0[i].cnt = i + 2;
+> +
+> +		p1[i].offset = i * write_size;
+> +		p1[i].offset += write_size / 2;
+> +		p1[i].length = write_size;
+> +		p1[i].cnt = i + 2;
+> +	}
 
-Kind regards,
-Petr
+We should reset the fail_cnt here. And it would be safer to rename it to
+fail_flag and set it to 1 on a failure because if we are terribly
+unlucky the incements can overflow and we may as well end up with a
+zero.
+
+Otherwise it looks good.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
