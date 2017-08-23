@@ -1,204 +1,168 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 23 Aug 2017 12:49:29 +0200
-Subject: [LTP] [PATCH v2] input/input06: Ignore auto-repeat config events
-In-Reply-To: <20170822220817.14088-1-sspatil@google.com>
-References: <20170822220817.14088-1-sspatil@google.com>
-Message-ID: <20170823104928.GA19747@rei.lan>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Wed, 23 Aug 2017 19:00:32 +0800
+Subject: [LTP] [PATCH 2/2] syscalls/keyctl: Make use of lapi/keyctl.h && Add
+	existing test to runtest/cve
+In-Reply-To: <20170823110032.1795-1-fenggw-fnst@cn.fujitsu.com>
+References: <20170823110032.1795-1-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20170823110032.1795-2-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> The test currently fails on some android devices because the kernel
-> sends the EV_REP event with the codes REP_DELAY and REP_PERIOD and
-> their corresponding values for the uinput device the test creates.
+* keyctl02 and keyctl03 make use of lapi/keyctl.h
+* Add keyctl02 to the CVE runtest file as cve-2015-7550
 
-Minor note, the patch has coding style violations, we do follow LKML
-coding style in LTP. You can use checkpatch.pl (from kernel source tree)
-to check for these.
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+---
+ runtest/cve                                 |  1 +
+ testcases/kernel/syscalls/keyctl/Makefile   |  3 +--
+ testcases/kernel/syscalls/keyctl/keyctl02.c | 21 ++++++++-------------
+ testcases/kernel/syscalls/keyctl/keyctl03.c | 22 ++++++++++------------
+ 4 files changed, 20 insertions(+), 27 deletions(-)
 
-> Signed-off-by: Sandeep Patil <sspatil@google.com>
-> ---
->  testcases/kernel/input/input06.c | 118 ++++++++++++++++++++++++++++++---------
->  1 file changed, 91 insertions(+), 27 deletions(-)
-> 
-> diff --git a/testcases/kernel/input/input06.c b/testcases/kernel/input/input06.c
-> index c4fc1ef57..962546ead 100644
-> --- a/testcases/kernel/input/input06.c
-> +++ b/testcases/kernel/input/input06.c
-> @@ -37,6 +37,9 @@ static void cleanup(void);
->  
->  static int fd;
->  static int fd2;
-> +struct input_event events[64];
-> +static int num_events;
-> +static int ev_iter;
->  
->  char *TCID = "input06";
->  
-> @@ -107,9 +110,9 @@ static int check_event(struct input_event *iev, int event, int code, int value)
->  	return iev->type == event && iev->code == code && iev->value == value;
->  }
->  
-> -static int check_bound(unsigned int i, unsigned int rd)
-> +static int check_config_event(struct input_event *iev, int event, int code)
->  {
-> -	return i <= rd / sizeof(struct input_event);
-> +	return iev->type == event && iev->code == code;
->  }
->  
->  static void check_size(int rd)
-> @@ -123,43 +126,104 @@ static void check_size(int rd)
->  	}
->  }
->  
-> -static int check_events(void)
-> +static void read_events(void)
->  {
-> -	struct input_event iev[64];
-> -	unsigned int i;
-> -	int nb;
-> -	int rd;
-> +	int rd = read(fd2, events, sizeof(events));
->  
-> -	i = 0;
-> -	nb = 0;
-> +	check_size(rd);
-
-The check_size() seems to be called only from this place now, hence
-there is no need to keep these two if conditions in a separate function
-anymore.
-
-> -	rd = read(fd2, iev, sizeof(iev));
-> +	ev_iter = 0;
-> +	num_events = rd / sizeof(struct input_event);
-> +}
->  
-> -	check_size(rd);
-> +static int have_events(void)
-> +{
-> +	return num_events !=0 && ev_iter < num_events;
-> +}
->  
-> -	if (rd > 0 && check_event(&iev[i], EV_KEY, KEY_X, 1))
-> -		i++;
-> +static struct input_event *next_event()
-> +{
-> +	struct input_event *ev = NULL;
->  
-> -	while (check_bound(i, rd) && !check_event(&iev[i], EV_KEY, KEY_X, 0)) {
-> +	if (!have_events()) {
-> +		read_events();
-> +	}
->  
-> -		if (iev[i].type != EV_SYN
-> -			&& !check_event(&iev[i], EV_KEY, KEY_X, 2)) {
-> -			tst_resm(TINFO,
-> -				"Didn't receive EV_KEY KEY_X with value 2");
-> +	ev = &events[ev_iter++];
-> +
-> +	return ev;
-> +}
-> +
-> +static int check_sync_event(void) {
-> +	return check_event(next_event(), EV_SYN, 0, 0);
-> +}
-> +
-> +static int parse_autorepeat_config(struct input_event *iev)
-> +{
-> +	if (!check_config_event(iev, EV_REP, REP_DELAY)) {
-> +		tst_resm(TFAIL,
-> +			"Didn't get EV_REP configuration with code REP_DELAY");
-> +		return 0;
-> +	}
-> +
-> +	if (!check_config_event(next_event(), EV_REP, REP_PERIOD)) {
-> +		tst_resm(TFAIL,
-> +			"Didn't get EV_REP configuration with code REP_PERIOD");
-> +		return 0;
-> +	}
-> +
-> +	return 1;
-> +}
-> +
-> +static int parse_key(struct input_event *iev)
-> +{
-> +	if (!check_event(iev, EV_KEY, KEY_X, 1) || !check_sync_event()) {
-> +		tst_resm(TFAIL, "Didn't get expected key press for KEY_X");
-> +		return 0;
-> +	}
-> +
-> +	iev = next_event();
-> +	while (check_event(iev, EV_KEY, KEY_X, 2))
-> +		iev = next_event();
-
-I guess that we should check here that we got at least one autorepeat,
-since as it is the test would pass even for just key_down + key_up
-events.
-
-> +	if (!check_event(iev, EV_KEY, KEY_X, 0) || !check_sync_event()) {
-> +		tst_resm(TFAIL,
-> +			"Didn't get expected key release for KEY_X");
-> +		return 0;
-> +	}
-> +
-> +	return 1;
-> +}
-> +
-> +static int check_events(void)
-> +{
-> +	struct input_event *iev;
-> +	int ret;
-> +
-> +	read_events();
-> +
-> +	while (have_events()) {
-> +		iev = next_event();
-> +		switch (iev->type) {
-> +		case EV_REP:
-> +			ret = parse_autorepeat_config(iev);
-> +			break;
-> +		case EV_KEY:
-> +			ret = parse_key(iev);
-> +			break;
-
-Here as well, we should make sure that we got here once before we exit
-the function.
-
-So we should add a counter here and check that it's value == 1 before
-we exit this function.
-
-> +		default:
-> +			tst_resm(TFAIL,
-> +				"Unexpected event type '0x%04x' received",
-> +				iev->type);
-> +			ret = 0;
->  			break;
->  		}
-> -		i++;
-> -		nb++;
->  
-> -		if (i == rd / sizeof(struct input_event)) {
-> -			i = 0;
-> -			rd = read(fd2, iev, sizeof(iev));
-> -			check_size(rd);
-> -		}
-> +		if (!ret)
-> +			break;
->  	}
->  
-> -	return (nb > 0 && check_bound(i, rd)
-> -		&& check_event(&iev[i], EV_KEY, KEY_X, 0));
-> +	return ret;
->  }
->  
->  static void cleanup(void)
-> -- 
-> 2.14.1.480.gb18f417b89-goog
-> 
-
+diff --git a/runtest/cve b/runtest/cve
+index 468f0b2..602f858 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -5,6 +5,7 @@ cve-2011-2496 vma03
+ cve-2012-0957 cve-2012-0957
+ cve-2014-0196 cve-2014-0196
+ cve-2015-0235 gethostbyname_r01
++cve-2015-7550 keyctl02
+ cve-2016-4997 cve-2016-4997
+ cve-2016-5195 dirtyc0w
+ cve-2016-7042 cve-2016-7042
+diff --git a/testcases/kernel/syscalls/keyctl/Makefile b/testcases/kernel/syscalls/keyctl/Makefile
+index bb3d3a4..b3f4f9a 100644
+--- a/testcases/kernel/syscalls/keyctl/Makefile
++++ b/testcases/kernel/syscalls/keyctl/Makefile
+@@ -18,8 +18,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
+-keyctl02: LDLIBS	+=-lpthread $(KEYUTILS_LIBS)
+-keyctl03: LDLIBS	+=$(KEYUTILS_LIBS)
++keyctl02: LDLIBS	+=-lpthread
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl02.c b/testcases/kernel/syscalls/keyctl/keyctl02.c
+index b783bf7..73ba25a 100644
+--- a/testcases/kernel/syscalls/keyctl/keyctl02.c
++++ b/testcases/kernel/syscalls/keyctl/keyctl02.c
+@@ -35,17 +35,16 @@
+  *  KEYS: Fix race between read and revoke
+  */
+ 
+-#include "config.h"
+ #include <errno.h>
+ #include <pthread.h>
+ #include <sys/types.h>
+-#ifdef HAVE_KEYUTILS_H
+-# include <keyutils.h>
+-#endif
++
+ #include "tst_safe_pthread.h"
+ #include "tst_test.h"
++#include "lapi/syscalls.h"
++#include "lapi/keyctl.h"
+ 
+-#ifdef HAVE_KEYUTILS_H
++typedef int32_t key_serial_t;
+ 
+ #define LOOPS	20000
+ #define PATH_KEY_COUNT_QUOTA	"/proc/sys/kernel/keys/root_maxkeys"
+@@ -57,7 +56,7 @@ static void *do_read(void *arg)
+ 	key_serial_t key = (unsigned long)arg;
+ 	char buffer[4] = { 0 };
+ 
+-	keyctl(KEYCTL_READ, key, buffer, 4);
++	tst_syscall(__NR_keyctl, KEYCTL_READ, key, buffer, 4);
+ 
+ 	return NULL;
+ }
+@@ -66,7 +65,7 @@ static void *do_revoke(void *arg)
+ {
+ 	key_serial_t key = (unsigned long)arg;
+ 
+-	keyctl(KEYCTL_REVOKE, key);
++	tst_syscall(__NR_keyctl, KEYCTL_REVOKE, key);
+ 
+ 	return NULL;
+ }
+@@ -78,8 +77,8 @@ static void do_test(void)
+ 	pthread_t pth[4];
+ 
+ 	for (i = 0; i < LOOPS; i++) {
+-		key = add_key("user", "ltptestkey", "foo", 3,
+-			KEY_SPEC_PROCESS_KEYRING);
++		key = tst_syscall(__NR_add_key, "user", "ltptestkey",
++			"foo", 3, KEY_SPEC_PROCESS_KEYRING);
+ 		if (key == -1)
+ 			tst_brk(TBROK | TERRNO, "Failed to add key");
+ 
+@@ -119,7 +118,3 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.test_all = do_test,
+ };
+-
+-#else
+-	TST_TEST_TCONF("keyutils.h does not exist");
+-#endif /* HAVE_KEYUTILS_H */
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl03.c b/testcases/kernel/syscalls/keyctl/keyctl03.c
+index 41d062e..bdc4b29 100644
+--- a/testcases/kernel/syscalls/keyctl/keyctl03.c
++++ b/testcases/kernel/syscalls/keyctl/keyctl03.c
+@@ -28,27 +28,29 @@
+  *        an uninstantiated keyring
+  */
+ 
+-#include "config.h"
+ #include <errno.h>
+ #include <sys/types.h>
+-#ifdef HAVE_KEYUTILS_H
+-# include <keyutils.h>
+-#endif
++
+ #include "tst_test.h"
++#include "lapi/syscalls.h"
++#include "lapi/keyctl.h"
+ 
+-#ifdef HAVE_KEYUTILS_H
++typedef int32_t key_serial_t;
+ 
+ static void do_test(void)
+ {
+ 	key_serial_t key;
+ 
+-	key = add_key("user", "ltptestkey", "a", 1, KEY_SPEC_SESSION_KEYRING);
++	key = tst_syscall(__NR_add_key,
++		"user", "ltptestkey", "a", 1, KEY_SPEC_SESSION_KEYRING);
+ 	if (key == -1)
+ 		tst_brk(TBROK, "Failed to add key");
+ 
+-	request_key("keyring", "foo", "bar", KEY_SPEC_THREAD_KEYRING);
++	tst_syscall(__NR_request_key,
++		"keyring", "foo", "bar", KEY_SPEC_THREAD_KEYRING);
+ 
+-	TEST(keyctl(KEYCTL_UNLINK, key, KEY_SPEC_SESSION_KEYRING));
++	TEST(tst_syscall(__NR_keyctl,
++		KEYCTL_UNLINK, key, KEY_SPEC_SESSION_KEYRING));
+ 	if (TEST_RETURN)
+ 		tst_res(TFAIL | TTERRNO, "keyctl unlink failed");
+ 	else
+@@ -58,7 +60,3 @@ static void do_test(void)
+ static struct tst_test test = {
+ 	.test_all = do_test,
+ };
+-
+-#else
+-	TST_TEST_TCONF("keyutils.h does not exist");
+-#endif /* HAVE_KEYUTILS_H */
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.9.4
+
+
+
