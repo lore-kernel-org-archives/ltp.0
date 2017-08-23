@@ -1,184 +1,81 @@
-From: Sandeep Patil <sspatil@google.com>
-Date: Tue, 22 Aug 2017 15:08:17 -0700
-Subject: [LTP] [PATCH v2] input/input06: Ignore auto-repeat config events
-Message-ID: <20170822220817.14088-1-sspatil@google.com>
+From: Xiong Zhou <xzhou@redhat.com>
+Date: Wed, 23 Aug 2017 12:15:58 +0800
+Subject: [LTP] [PATCH v3] syscalls/fcntl36: add tests for OFD locks
+In-Reply-To: <20170822142356.GB23381@rei.lan>
+References: <20170821160047.GB6479@rei.lan>
+ <1503390908-13620-1-git-send-email-xzhou@redhat.com>
+ <20170822142356.GB23381@rei.lan>
+Message-ID: <20170823041558.33vhtfsdswenhcfa@XZHOUW.usersys.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The test currently fails on some android devices because the kernel
-sends the EV_REP event with the codes REP_DELAY and REP_PERIOD and
-their corresponding values for the uinput device the test creates.
+On Tue, Aug 22, 2017 at 04:23:57PM +0200, Cyril Hrubis wrote:
+> Hi!
+> >  runtest/syscalls                          |   2 +
+> >  testcases/kernel/syscalls/fcntl/Makefile  |   3 +
+> >  testcases/kernel/syscalls/fcntl/fcntl36.c | 386 ++++++++++++++++++++++++++++++
+> 
+> Don't forget about .gitignore entry as well.
 
-This results in incorrect test failure as follows:
+Ha, now i found the right one, :)
 
- input06     0  TINFO  :  Didn't receive EV_KEY KEY_X with value 2
- input06     1  TFAIL  :  external/ltp/testcases/kernel/input/input06.c:64: Wrong data received in
-                         eventX
+> 
+> ...
+> 
+> > +#include <sys/types.h>
+> > +#include <sys/stat.h>
+...
+> > +		SAFE_READ(1, fd, buf, pa->length);
+> > +
+> > +		/* Verifying data read */
+> > +		for (i = 0; i < pa->length; i++) {
+> > +
+> > +			if (buf[i] < 1 || buf[i] > 254) {
+> > +
+> > +				tst_res(TFAIL, "Unexpected data "
+> > +					"offset %ld value %d",
+> > +					pa->offset + i, buf[i]);
+> > +				break;
+> > +			}
+> > +
+> > +			long tmp = pa->length / 2;
+> 
+> We can simplify this with:
+> 			int j = i / (pa->length/2);
+> 
+> 			if (buf[i] != buf[j]) {
+> 				...
+> 			}
 
-Signed-off-by: Sandeep Patil <sspatil@google.com>
----
- testcases/kernel/input/input06.c | 118 ++++++++++++++++++++++++++++++---------
- 1 file changed, 91 insertions(+), 27 deletions(-)
+After checking, this is not what I meant to check here about
+this data verifying.
 
-diff --git a/testcases/kernel/input/input06.c b/testcases/kernel/input/input06.c
-index c4fc1ef57..962546ead 100644
---- a/testcases/kernel/input/input06.c
-+++ b/testcases/kernel/input/input06.c
-@@ -37,6 +37,9 @@ static void cleanup(void);
- 
- static int fd;
- static int fd2;
-+struct input_event events[64];
-+static int num_events;
-+static int ev_iter;
- 
- char *TCID = "input06";
- 
-@@ -107,9 +110,9 @@ static int check_event(struct input_event *iev, int event, int code, int value)
- 	return iev->type == event && iev->code == code && iev->value == value;
- }
- 
--static int check_bound(unsigned int i, unsigned int rd)
-+static int check_config_event(struct input_event *iev, int event, int code)
- {
--	return i <= rd / sizeof(struct input_event);
-+	return iev->type == event && iev->code == code;
- }
- 
- static void check_size(int rd)
-@@ -123,43 +126,104 @@ static void check_size(int rd)
- 	}
- }
- 
--static int check_events(void)
-+static void read_events(void)
- {
--	struct input_event iev[64];
--	unsigned int i;
--	int nb;
--	int rd;
-+	int rd = read(fd2, events, sizeof(events));
- 
--	i = 0;
--	nb = 0;
-+	check_size(rd);
- 
--	rd = read(fd2, iev, sizeof(iev));
-+	ev_iter = 0;
-+	num_events = rd / sizeof(struct input_event);
-+}
- 
--	check_size(rd);
-+static int have_events(void)
-+{
-+	return num_events !=0 && ev_iter < num_events;
-+}
- 
--	if (rd > 0 && check_event(&iev[i], EV_KEY, KEY_X, 1))
--		i++;
-+static struct input_event *next_event()
-+{
-+	struct input_event *ev = NULL;
- 
--	while (check_bound(i, rd) && !check_event(&iev[i], EV_KEY, KEY_X, 0)) {
-+	if (!have_events()) {
-+		read_events();
-+	}
- 
--		if (iev[i].type != EV_SYN
--			&& !check_event(&iev[i], EV_KEY, KEY_X, 2)) {
--			tst_resm(TINFO,
--				"Didn't receive EV_KEY KEY_X with value 2");
-+	ev = &events[ev_iter++];
-+
-+	return ev;
-+}
-+
-+static int check_sync_event(void) {
-+	return check_event(next_event(), EV_SYN, 0, 0);
-+}
-+
-+static int parse_autorepeat_config(struct input_event *iev)
-+{
-+	if (!check_config_event(iev, EV_REP, REP_DELAY)) {
-+		tst_resm(TFAIL,
-+			"Didn't get EV_REP configuration with code REP_DELAY");
-+		return 0;
-+	}
-+
-+	if (!check_config_event(next_event(), EV_REP, REP_PERIOD)) {
-+		tst_resm(TFAIL,
-+			"Didn't get EV_REP configuration with code REP_PERIOD");
-+		return 0;
-+	}
-+
-+	return 1;
-+}
-+
-+static int parse_key(struct input_event *iev)
-+{
-+	if (!check_event(iev, EV_KEY, KEY_X, 1) || !check_sync_event()) {
-+		tst_resm(TFAIL, "Didn't get expected key press for KEY_X");
-+		return 0;
-+	}
-+
-+	iev = next_event();
-+	while (check_event(iev, EV_KEY, KEY_X, 2))
-+		iev = next_event();
-+
-+	if (!check_event(iev, EV_KEY, KEY_X, 0) || !check_sync_event()) {
-+		tst_resm(TFAIL,
-+			"Didn't get expected key release for KEY_X");
-+		return 0;
-+	}
-+
-+	return 1;
-+}
-+
-+static int check_events(void)
-+{
-+	struct input_event *iev;
-+	int ret;
-+
-+	read_events();
-+
-+	while (have_events()) {
-+		iev = next_event();
-+		switch (iev->type) {
-+		case EV_REP:
-+			ret = parse_autorepeat_config(iev);
-+			break;
-+		case EV_KEY:
-+			ret = parse_key(iev);
-+			break;
-+		default:
-+			tst_resm(TFAIL,
-+				"Unexpected event type '0x%04x' received",
-+				iev->type);
-+			ret = 0;
- 			break;
- 		}
--		i++;
--		nb++;
- 
--		if (i == rd / sizeof(struct input_event)) {
--			i = 0;
--			rd = read(fd2, iev, sizeof(iev));
--			check_size(rd);
--		}
-+		if (!ret)
-+			break;
- 	}
- 
--	return (nb > 0 && check_bound(i, rd)
--		&& check_event(&iev[i], EV_KEY, KEY_X, 0));
-+	return ret;
- }
- 
- static void cleanup(void)
--- 
-2.14.1.480.gb18f417b89-goog
+We could read 4k data that first half 2k of it have the same
+value and the another half 2k have a different value.
 
+> 
+> > +			if ((i < tmp && buf[i] != buf[0]) ||
+> > +			    (i >= tmp && buf[i] != buf[tmp])) {
+> > +
+> > +				tst_res(TFAIL, "Unexpected data "
+> > +					"offset %ld value %d",
+> > +					pa->offset + i, buf[i]);
+> > +				break;
+> > +			}
+> > +		}
+> > +
+...
+> > +	if (tst_fill_file(fname, 1, write_size, thread_cnt)) {
+> > +		tst_brk(TBROK, "Failed to create tst file");
+> > +	}
+> 
+> No need for the curly braces around single line statement here.
+
+I thought it's safer for a macro. Now it's one line function in
+the macro, not hurting to remove the braces.
+
+Thanks for reviewing!
+Xiong
