@@ -1,10 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 25 Aug 2017 01:44:30 +0200
-Subject: [LTP] [RFC PATCH v9 1/7] lib/test_net.sh: Add unused IP address
-	helper functions
+Date: Fri, 25 Aug 2017 01:44:32 +0200
+Subject: [LTP] [RFC PATCH v9 3/7] network/stress: Simplify
+	make_background_tcp_traffic usage
 In-Reply-To: <20170824234436.18145-1-pvorel@suse.cz>
 References: <20170824234436.18145-1-pvorel@suse.cz>
-Message-ID: <20170824234436.18145-2-pvorel@suse.cz>
+Message-ID: <20170824234436.18145-4-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,93 +13,174 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/lib/test_net.sh | 66 ++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 65 insertions(+), 1 deletion(-)
+ testcases/network/stress/interface/if-addr-adddel    | 6 +-----
+ testcases/network/stress/interface/if-addr-addlarge  | 6 +-----
+ testcases/network/stress/interface/if-mtu-change     | 7 ++-----
+ testcases/network/stress/interface/if-route-adddel   | 7 ++-----
+ testcases/network/stress/interface/if-route-addlarge | 6 +-----
+ testcases/network/stress/ns-tools/test_net_stress.sh | 2 ++
+ 6 files changed, 9 insertions(+), 25 deletions(-)
 
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index c11747a27..585ab51fe 100644
---- a/testcases/lib/test_net.sh
-+++ b/testcases/lib/test_net.sh
-@@ -219,7 +219,7 @@ tst_ipaddr()
- {
- 	local type="${1:-lhost}"
- 	local ipv="${TST_IPV6:-4}"
--	local tst_host=
-+	local tst_host
- 
- 	if [ "$type" = "lhost" ]; then
- 		eval "tst_host=\$LHOST_IPV${ipv}_HOST"
-@@ -234,6 +234,70 @@ tst_ipaddr()
+diff --git a/testcases/network/stress/interface/if-addr-adddel b/testcases/network/stress/interface/if-addr-adddel
+index 42c2d5afa..3b1ab50bb 100644
+--- a/testcases/network/stress/interface/if-addr-adddel
++++ b/testcases/network/stress/interface/if-addr-adddel
+@@ -53,10 +53,9 @@ test_body()
+ 		return
  	fi
+ 
+-	make_background_tcp_traffic
+-
+ 	local cnt=1
+ 	while [ $cnt -le $NS_TIMES ]; do
++		make_background_tcp_traffic
+ 
+ 		case $cmd_type in
+ 		if_cmd)
+@@ -85,9 +84,6 @@ test_body()
+ 
+ 		cnt=$(($cnt + 1))
+ 
+-		# Check the background TCP traffic
+-		pgrep -x netstress > /dev/null || make_background_tcp_traffic
+-
+ 		case $cmd_type in
+ 		if_cmd)
+ 			if [ "$TST_IPV6" ]; then
+diff --git a/testcases/network/stress/interface/if-addr-addlarge b/testcases/network/stress/interface/if-addr-addlarge
+index e667d9138..c3cdb8fa9 100644
+--- a/testcases/network/stress/interface/if-addr-addlarge
++++ b/testcases/network/stress/interface/if-addr-addlarge
+@@ -47,8 +47,6 @@ test_body()
+ 		return
+ 	fi
+ 
+-	make_background_tcp_traffic
+-
+ 	local x=1
+ 	local y=1
+ 	local cnt=1
+@@ -61,6 +59,7 @@ test_body()
+ 	fi
+ 
+ 	while [ $cnt -le $IP_TOTAL ]; do
++		make_background_tcp_traffic
+ 
+ 		if [ "$TST_IPV6" ]; then
+ 			local hex_x=$(printf '%x' $x)
+@@ -95,9 +94,6 @@ test_body()
+ 
+ 		check_connectivity_interval $cnt || return
+ 
+-		# Check the background TCP traffic
+-		pgrep -x netstress > /dev/null || make_background_tcp_traffic
+-
+ 		case $cmd_type in
+ 		if_cmd)
+ 			if [ "$TST_IPV6" ]; then
+diff --git a/testcases/network/stress/interface/if-mtu-change b/testcases/network/stress/interface/if-mtu-change
+index 03e6ba9d6..9a13e4f43 100644
+--- a/testcases/network/stress/interface/if-mtu-change
++++ b/testcases/network/stress/interface/if-mtu-change
+@@ -62,8 +62,6 @@ test_body()
+ 	tst_resm TINFO "'$cmd_name changes MTU $MTU_CHANGE_TIMES times" \
+ 	               "every $CHANGE_INTERVAL seconds"
+ 
+-	make_background_tcp_traffic
+-
+ 	mtu_array_len=$(echo $CHANGE_VALUES | wc -w)
+ 	local cnt=0
+ 	while [ $cnt -lt $MTU_CHANGE_TIMES ]; do
+@@ -73,6 +71,8 @@ test_body()
+ 		mtu=$(echo $CHANGE_VALUES | cut -d ' ' -f $field)
+ 		[ $cnt -eq $MTU_CHANGE_TIMES ] && mtu="$saved_mtu"
+ 
++		make_background_tcp_traffic
++
+ 		tst_resm TINFO "set MTU to $mtu $cnt/$MTU_CHANGE_TIMES"
+ 		local ret=0
+ 		case $cmd_type in
+@@ -92,9 +92,6 @@ test_body()
+ 		tst_sleep $CHANGE_INTERVAL
+ 
+ 		EXPECT_PASS tst_ping $(tst_ipaddr) $(tst_ipaddr rhost) "1 1000 65507"
+-
+-		# Check the background TCP traffic
+-		pgrep -x netstress > /dev/null || make_background_tcp_traffic
+ 	done
  }
  
-+# Get IP address of unused network, specified by either by type and
-+# counter or by net and host.
-+# tst_ipaddr_un [-cCOUNTER] [TYPE]
-+# tst_ipaddr_un NET_ID [HOST_ID]
-+# TYPE: { lhost | rhost }; Default value is 'lhost'.
-+# COUNTER: Integer value for counting HOST_ID and NET_ID. Default is 1.
-+# NET_ID: Integer or hex value of net. For IPv4 is 3rd octet, for IPv6 is 3rd
-+# hextet.
-+# HOST_ID: Integer or hex value of host. For IPv4 is 4th octet, for IPv6 is the
-+# last hextet. Default value is 0.
-+tst_ipaddr_un()
-+{
-+	local counter host_id net_id max_host_id max_net_id tmp type
-+	local OPTIND
+diff --git a/testcases/network/stress/interface/if-route-adddel b/testcases/network/stress/interface/if-route-adddel
+index e207c5d79..64366fc52 100644
+--- a/testcases/network/stress/interface/if-route-adddel
++++ b/testcases/network/stress/interface/if-route-adddel
+@@ -57,10 +57,10 @@ test_body()
+ 		return
+ 	fi
+ 
+-	make_background_tcp_traffic
+-
+ 	local cnt=1
+ 	while [ $cnt -le $NS_TIMES ]; do
++		make_background_tcp_traffic
 +
-+	while getopts "c:" opt; do
-+		case $opt in
-+			c) counter="$OPTARG";;
-+		esac
-+	done
-+	shift $(($OPTIND - 1))
+ 		case $cmd_type in
+ 		rt_cmd) route -A $inet add ${new_rt}${opt_rt} dev $iface ;;
+ 		ip_cmd) ip route add ${new_rt}${opt_rt} dev $iface ;;
+@@ -81,9 +81,6 @@ test_body()
+ 
+ 		check_connectivity_interval $cnt || return
+ 
+-		# Check the background TCP traffic
+-		pgrep -x netstress > /dev/null || make_background_tcp_traffic
+-
+ 		cnt=$(($cnt + 1))
+ 	done
+ 
+diff --git a/testcases/network/stress/interface/if-route-addlarge b/testcases/network/stress/interface/if-route-addlarge
+index 3337b7225..b7e6952c2 100644
+--- a/testcases/network/stress/interface/if-route-addlarge
++++ b/testcases/network/stress/interface/if-route-addlarge
+@@ -54,8 +54,6 @@ test_body()
+ 		return
+ 	fi
+ 
+-	make_background_tcp_traffic
+-
+ 	local x=1
+ 	local y=1
+ 	local cnt=1
+@@ -68,6 +66,7 @@ test_body()
+ 	fi
+ 
+ 	while [ $cnt -le $ROUTE_TOTAL ]; do
++		make_background_tcp_traffic
+ 
+ 		if [ "$TST_IPV6" ]; then
+ 			local hex_x=$(printf '%x' $x)
+@@ -88,9 +87,6 @@ test_body()
+ 
+ 		check_connectivity_interval $cnt || return
+ 
+-		# Check the background TCP traffic
+-		pgrep -x netstress > /dev/null || make_background_tcp_traffic
+-
+ 		cnt=$(($cnt + 1))
+ 		y=$(($y + 1))
+ 		if [ $y -gt $xymax ]; then
+diff --git a/testcases/network/stress/ns-tools/test_net_stress.sh b/testcases/network/stress/ns-tools/test_net_stress.sh
+index 065bc666f..472524731 100644
+--- a/testcases/network/stress/ns-tools/test_net_stress.sh
++++ b/testcases/network/stress/ns-tools/test_net_stress.sh
+@@ -128,6 +128,8 @@ check_connectivity_interval()
+ # IP: server IP; Default value is $(tst_ipaddr).
+ make_background_tcp_traffic()
+ {
++	pgrep -x netstress > /dev/null && return
 +
-+	[ "$TST_IPV6" ] && max_net_id=65535 || max_net_id=255
-+
-+	if [ $# -eq 0 -o "$1" = "lhost" -o "$1" = "rhost" ]; then
-+		[ -z "$counter" ] && counter=1
-+		[ $counter -lt 1 ] && counter=1
-+		type="${1:-lhost}"
-+		max_host_id=$((max_net_id - 1))
-+		tmp=$((counter * 2))
-+		[ "$type" = "rhost" ] && tmp=$((tmp - 1))
-+
-+		host_id=$((tmp % max_host_id))
-+		net_id=$((tmp / max_host_id))
-+
-+		if [ $host_id -eq 0 ]; then
-+			host_id=$max_host_id
-+			net_id=$((net_id - 1))
-+		fi
-+	else
-+		net_id="$1"
-+		host_id="${2:-0}"
-+		max_host_id=$max_net_id
-+		if [ "$TST_IPV6" ]; then
-+			net_id=$(printf %d $net_id)
-+			host_id=$(printf %d $host_id)
-+		fi
-+		[ $net_id -lt 0 ] && net_id=0
-+		[ $host_id -lt 0 ] && host_id=1
-+	fi
-+
-+	net_id=$((net_id % max_net_id))
-+	host_id=$((host_id % max_host_id))
-+
-+	if [ "$TST_IPV6" ]; then
-+		[ $host_id -gt 0 ] && host_id="$(printf %x $host_id)" || host_id=
-+		[ $net_id -gt 0 ] && net_id="$(printf %x $net_id)" || net_id=
-+		[ "$net_id" ] && net_id=":$net_id"
-+		echo "${IPV6_NET32_UNUSED}${net_id}::${host_id}"
-+	else
-+		echo "${IPV4_NET16_UNUSED}.${net_id}.${host_id}"
-+	fi
-+}
-+
- # tst_init_iface [TYPE] [LINK]
- # TYPE: { lhost | rhost }; Default value is 'lhost'.
- # LINK: link number starting from 0. Default value is '0'.
+ 	local ip="${1:-$(tst_ipaddr)}"
+ 	local port=$(tst_get_unused_port ipv${ipver} stream)
+ 
 -- 
 2.14.0
 
