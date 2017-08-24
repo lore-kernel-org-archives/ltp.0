@@ -1,10 +1,9 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu, 24 Aug 2017 13:08:01 +0200
-Subject: [LTP] [PATCH 4/6] Convert cve-2016-7117 test to use long running
-	threads
+Date: Thu, 24 Aug 2017 13:08:03 +0200
+Subject: [LTP] [PATCH 6/6] Convert cve-2017-2671 to use long running threads
 In-Reply-To: <20170824110803.9994-1-rpalethorpe@suse.com>
 References: <20170824110803.9994-1-rpalethorpe@suse.com>
-Message-ID: <20170824110803.9994-6-rpalethorpe@suse.com>
+Message-ID: <20170824110803.9994-8-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,99 +12,93 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- testcases/cve/cve-2016-7117.c | 43 +++++++++++++++++++++++++------------------
- 1 file changed, 25 insertions(+), 18 deletions(-)
+ testcases/cve/cve-2017-2671.c | 30 +++++++++++++++++++-----------
+ 1 file changed, 19 insertions(+), 11 deletions(-)
 
-diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
-index deb667761..e08f8cd20 100644
---- a/testcases/cve/cve-2016-7117.c
-+++ b/testcases/cve/cve-2016-7117.c
-@@ -94,30 +94,44 @@ static struct mmsghdr msghdrs[2] = {
- static char rbuf[sizeof(MSG)];
- static struct timespec timeout = { .tv_sec = RECV_TIMEOUT };
+diff --git a/testcases/cve/cve-2017-2671.c b/testcases/cve/cve-2017-2671.c
+index 77744db42..ce4e3f002 100644
+--- a/testcases/cve/cve-2017-2671.c
++++ b/testcases/cve/cve-2017-2671.c
+@@ -49,13 +49,15 @@
+ 
+ #include "tst_fuzzy_sync.h"
+ 
+-#define ATTEMPTS 0xFFFF
++#define ATTEMPTS 0x80000
+ #define PING_SYSCTL_PATH "/proc/sys/net/ipv4/ping_group_range"
+ 
+ static int sockfd;
+ static unsigned int ping_min_grp, ping_max_grp;
  static struct tst_fzsync_pair fzsync_pair = TST_FZSYNC_PAIR_INIT;
-+static pthread_t pt_send;
-+static void *send_and_close(void *);
-+
-+static void setup(void)
-+{
-+	SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, 0);
-+}
+ static struct sockaddr_in iaddr, uaddr;
++static pthread_t thrd;
++static void *connect_b(void *);
+ 
+ static void setup(void)
+ {
+@@ -73,13 +75,20 @@ static void setup(void)
+ 	SAFE_FILE_PRINTF(PING_SYSCTL_PATH, "0 0");
+ 
+ 	sockfd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, IPPROTO_ICMP);
++	SAFE_PTHREAD_CREATE(&thrd, 0, connect_b, 0);
+ 	tst_res(TINFO, "Created ping socket, attempting to race...");
+ }
  
  static void cleanup(void)
  {
- 	close(socket_fds[0]);
- 	close(socket_fds[1]);
-+
-+	if (pt_send) {
++	if (thrd) {
 +		tst_fzsync_pair_exit(&fzsync_pair);
-+		SAFE_PTHREAD_JOIN(pt_send, 0);
++		SAFE_PTHREAD_JOIN(thrd, NULL);
 +	}
- }
++
+ 	if (sockfd > 0)
+ 		SAFE_CLOSE(sockfd);
++
+ 	if (ping_min_grp | ping_max_grp)
+ 		SAFE_FILE_PRINTF(PING_SYSCTL_PATH, "%u %u",
+ 				 ping_min_grp, ping_max_grp);
+@@ -87,32 +96,31 @@ static void cleanup(void)
  
- static void *send_and_close(void *arg)
+ static void *connect_b(void * param LTP_ATTRIBUTE_UNUSED)
  {
--	send(socket_fds[0], MSG, sizeof(MSG), 0);
--	send(socket_fds[0], MSG, sizeof(MSG), 0);
--
 -	tst_fzsync_delay_b(&fzsync_pair);
-+	while(tst_fzsync_pair_wait_update(&fzsync_pair)) {
-+		send(socket_fds[0], MSG, sizeof(MSG), 0);
-+		send(socket_fds[0], MSG, sizeof(MSG), 0);
- 
--	close(socket_fds[0]);
--	close(socket_fds[1]);
+-	connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
 -	tst_fzsync_time_b(&fzsync_pair);
++	while(tst_fzsync_pair_wait_update(&fzsync_pair)) {
 +		tst_fzsync_delay_b(&fzsync_pair);
- 
-+		close(socket_fds[0]);
-+		close(socket_fds[1]);
++		connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
 +		tst_fzsync_time_b(&fzsync_pair);
 +		if (!tst_fzsync_pair_wait(&fzsync_pair))
 +			break;
 +	}
- 	return arg;
+ 
+ 	return 0;
  }
  
  static void run(void)
  {
--	pthread_t pt_send;
- 	int i, stat, too_early_count = 0;
+-	pthread_t thrd;
+ 	int i;
  
- 	msghdrs[0].msg_hdr.msg_iov->iov_base = (void *)&rbuf;
-@@ -126,8 +140,7 @@ static void run(void)
- 		if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, socket_fds))
- 			tst_brk(TBROK | TERRNO, "Socket creation failed");
+ 	for (i = 0; i < ATTEMPTS; i++) {
+ 		SAFE_CONNECT(sockfd,
+ 			     (struct sockaddr *)&iaddr, sizeof(iaddr));
+-		SAFE_PTHREAD_CREATE(&thrd, 0, connect_b, 0);
  
--		SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, 0);
--
 +		tst_fzsync_pair_wait_update(&fzsync_pair);
  		tst_fzsync_delay_a(&fzsync_pair);
+ 		connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
+ 		tst_fzsync_time_a(&fzsync_pair);
  
- 		stat = tst_syscall(__NR_recvmmsg,
-@@ -140,20 +153,14 @@ static void run(void)
- 		else if (stat < 0)
- 			tst_res(TWARN | TERRNO, "recvmmsg failed unexpectedly");
- 
--		SAFE_PTHREAD_JOIN(pt_send, 0);
--
+-		SAFE_PTHREAD_JOIN(thrd, 0);
 -		tst_fzsync_pair_update(i, &fzsync_pair);
--		if (!(i & 0x7FFFF)) {
--			tst_res(TINFO, "Too early: %.1f%%",
--				100 * too_early_count / (float)i);
+-
+-		if (!(i & 0x7FFF))
 -			tst_fzsync_pair_info(&fzsync_pair);
--		}
 +		tst_fzsync_pair_wait(&fzsync_pair);
  	}
  
- 	tst_res(TPASS, "Nothing happened after %d attempts", ATTEMPTS);
- }
- 
- static struct tst_test test = {
-+	.setup = setup,
- 	.test_all = run,
- 	.cleanup = cleanup,
- 	.min_kver = "2.6.33",
+ 	tst_res(TPASS, "We didn't crash");
 -- 
 2.14.1
 
