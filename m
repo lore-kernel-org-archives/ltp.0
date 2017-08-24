@@ -1,9 +1,10 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu, 24 Aug 2017 13:08:02 +0200
-Subject: [LTP] [PATCH 5/6] Convert cve-2014-0196 to use long running threads
+Date: Thu, 24 Aug 2017 13:08:01 +0200
+Subject: [LTP] [PATCH 4/6] Convert cve-2016-7117 test to use long running
+	threads
 In-Reply-To: <20170824110803.9994-1-rpalethorpe@suse.com>
 References: <20170824110803.9994-1-rpalethorpe@suse.com>
-Message-ID: <20170824110803.9994-7-rpalethorpe@suse.com>
+Message-ID: <20170824110803.9994-6-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,124 +13,99 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- testcases/cve/cve-2014-0196.c | 50 ++++++++++++++++++++++++-------------------
- 1 file changed, 28 insertions(+), 22 deletions(-)
+ testcases/cve/cve-2016-7117.c | 43 +++++++++++++++++++++++++------------------
+ 1 file changed, 25 insertions(+), 18 deletions(-)
 
-diff --git a/testcases/cve/cve-2014-0196.c b/testcases/cve/cve-2014-0196.c
-index 4e2b3f582..ffb0aad3f 100644
---- a/testcases/cve/cve-2014-0196.c
-+++ b/testcases/cve/cve-2014-0196.c
-@@ -51,11 +51,13 @@
- #define ATTEMPTS      0x7000
- #define BUFLEN        512
- 
--static int master_fd, slave_fd;
-+static volatile int master_fd, slave_fd;
- static int filler_ptys[ONEOFF_ALLOCS * 2];
- static int target_ptys[RUN_ALLOCS * 2];
- static char buf[BUFLEN];
- 
-+static pthread_t overwrite_thread;
-+static void *overwrite_thread_fn(void *);
+diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
+index deb667761..e08f8cd20 100644
+--- a/testcases/cve/cve-2016-7117.c
++++ b/testcases/cve/cve-2016-7117.c
+@@ -94,30 +94,44 @@ static struct mmsghdr msghdrs[2] = {
+ static char rbuf[sizeof(MSG)];
+ static struct timespec timeout = { .tv_sec = RECV_TIMEOUT };
  static struct tst_fzsync_pair fzsync_pair = TST_FZSYNC_PAIR_INIT;
- 
- static void create_pty(int *amaster, int *aslave)
-@@ -68,35 +70,40 @@ static void setup(void)
- {
- 	int i;
- 
--	fzsync_pair.delay_inc = 100;
- 	for (i = 0; i < ONEOFF_ALLOCS; i++) {
- 		create_pty(&filler_ptys[i],
- 			   &filler_ptys[i + ONEOFF_ALLOCS]);
- 	}
++static pthread_t pt_send;
++static void *send_and_close(void *);
 +
-+	fzsync_pair.info_gap = 0xFFF;
-+	SAFE_PTHREAD_CREATE(&overwrite_thread, NULL,
-+			    overwrite_thread_fn, NULL);
++static void setup(void)
++{
++	SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, 0);
++}
+ 
+ static void cleanup(void)
+ {
+ 	close(socket_fds[0]);
+ 	close(socket_fds[1]);
++
++	if (pt_send) {
++		tst_fzsync_pair_exit(&fzsync_pair);
++		SAFE_PTHREAD_JOIN(pt_send, 0);
++	}
  }
  
--static void *overwrite_thread_fn(void *p)
-+static void *overwrite_thread_fn(void *p LTP_ATTRIBUTE_UNUSED)
+ static void *send_and_close(void *arg)
  {
+-	send(socket_fds[0], MSG, sizeof(MSG), 0);
+-	send(socket_fds[0], MSG, sizeof(MSG), 0);
+-
 -	tst_fzsync_delay_b(&fzsync_pair);
--	tst_fzsync_time_b(&fzsync_pair);
--
--	SAFE_WRITE(0, slave_fd, buf, BUFLEN - 1);
--	SAFE_WRITE(0, slave_fd, buf, BUFLEN - 1);
--	SAFE_WRITE(0, slave_fd, buf, BUFLEN);
--
--	return p;
 +	while(tst_fzsync_pair_wait_update(&fzsync_pair)) {
++		send(socket_fds[0], MSG, sizeof(MSG), 0);
++		send(socket_fds[0], MSG, sizeof(MSG), 0);
+ 
+-	close(socket_fds[0]);
+-	close(socket_fds[1]);
+-	tst_fzsync_time_b(&fzsync_pair);
 +		tst_fzsync_delay_b(&fzsync_pair);
+ 
++		close(socket_fds[0]);
++		close(socket_fds[1]);
 +		tst_fzsync_time_b(&fzsync_pair);
-+
-+		SAFE_WRITE(0, slave_fd, buf, BUFLEN - 1);
-+		SAFE_WRITE(0, slave_fd, buf, BUFLEN - 1);
-+		SAFE_WRITE(0, slave_fd, buf, BUFLEN);
 +		if (!tst_fzsync_pair_wait(&fzsync_pair))
 +			break;
 +	}
-+	return 0;
+ 	return arg;
  }
  
  static void run(void)
  {
- 	struct termios t;
--	pthread_t overwrite_thread;
- 	int i, j;
+-	pthread_t pt_send;
+ 	int i, stat, too_early_count = 0;
  
- 	tst_res(TINFO, "Attempting to overflow into a tty_struct...");
+ 	msghdrs[0].msg_hdr.msg_iov->iov_base = (void *)&rbuf;
+@@ -126,8 +140,7 @@ static void run(void)
+ 		if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, socket_fds))
+ 			tst_brk(TBROK | TERRNO, "Socket creation failed");
  
- 	for (i = 0; i < ATTEMPTS; i++) {
--		create_pty(&master_fd, &slave_fd);
-+		create_pty((int *)&master_fd, (int *)&slave_fd);
- 
- 		for (j = 0; j < RUN_ALLOCS; j++)
- 			create_pty(&target_ptys[j],
-@@ -111,20 +118,12 @@ static void run(void)
- 		t.c_lflag |= ECHO;
- 		tcsetattr(master_fd, TCSANOW, &t);
- 
--		SAFE_PTHREAD_CREATE(&overwrite_thread, NULL,
--				    overwrite_thread_fn, NULL);
+-		SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, 0);
+-
 +		tst_fzsync_pair_wait_update(&fzsync_pair);
- 
  		tst_fzsync_delay_a(&fzsync_pair);
- 		tst_fzsync_time_a(&fzsync_pair);
- 		SAFE_WRITE(0, master_fd, "A", 1);
  
--		SAFE_PTHREAD_JOIN(overwrite_thread, NULL);
+ 		stat = tst_syscall(__NR_recvmmsg,
+@@ -140,20 +153,14 @@ static void run(void)
+ 		else if (stat < 0)
+ 			tst_res(TWARN | TERRNO, "recvmmsg failed unexpectedly");
+ 
+-		SAFE_PTHREAD_JOIN(pt_send, 0);
 -
 -		tst_fzsync_pair_update(i, &fzsync_pair);
--
--		if (!(i & 0x1FFF))
+-		if (!(i & 0x7FFFF)) {
+-			tst_res(TINFO, "Too early: %.1f%%",
+-				100 * too_early_count / (float)i);
 -			tst_fzsync_pair_info(&fzsync_pair);
--
- 		for (j = 0; j < RUN_ALLOCS; j++) {
- 			if (j == RUN_ALLOCS / 2)
- 				continue;
-@@ -139,6 +138,8 @@ static void run(void)
- 		ioctl(slave_fd, 0xdeadbeef);
- 		SAFE_CLOSE(master_fd);
- 		SAFE_CLOSE(slave_fd);
-+
+-		}
 +		tst_fzsync_pair_wait(&fzsync_pair);
  	}
  
- 	tst_res(TPASS, "Nothing bad happened, probably.");
-@@ -148,6 +149,11 @@ static void cleanup(void)
- {
- 	int i;
+ 	tst_res(TPASS, "Nothing happened after %d attempts", ATTEMPTS);
+ }
  
-+	if (overwrite_thread) {
-+		tst_fzsync_pair_exit(&fzsync_pair);
-+		SAFE_PTHREAD_JOIN(overwrite_thread, NULL);
-+	}
-+
- 	for (i = 0; i < ONEOFF_ALLOCS * 2; i++)
- 		close(filler_ptys[i]);
- 	close(master_fd);
+ static struct tst_test test = {
++	.setup = setup,
+ 	.test_all = run,
+ 	.cleanup = cleanup,
+ 	.min_kver = "2.6.33",
 -- 
 2.14.1
 
