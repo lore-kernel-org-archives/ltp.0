@@ -1,229 +1,105 @@
-From: Sandeep Patil <sspatil@google.com>
-Date: Thu, 24 Aug 2017 13:12:07 -0700
-Subject: [LTP] [PATCH v3] input/input06: Fix auto-repeat key test
-Message-ID: <20170824201207.62652-1-sspatil@google.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 25 Aug 2017 01:44:30 +0200
+Subject: [LTP] [RFC PATCH v9 1/7] lib/test_net.sh: Add unused IP address
+	helper functions
+In-Reply-To: <20170824234436.18145-1-pvorel@suse.cz>
+References: <20170824234436.18145-1-pvorel@suse.cz>
+Message-ID: <20170824234436.18145-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The test currently fails for various reasons.
-- The wait in the parent process is not long enough for kernel
-  to send the auto-repeated keys.
-- The test also fails when kernel sends auto-repeat configuration
-  events as it doesn't recognize them.
-
-Fix all that by refactoring the test and making sure we test for both the
-auto-repeat configuration events and the key press-repeat-release events.
-
-Signed-off-by: Sandeep Patil <sspatil@google.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-v2->v3
-======
-- Change the commit msg to reflect exactly what is being done.
-- Run checkpatch.pl on the patch to ensure there are no errors.
-- Make sure we test auto-repeat keys by increasing the sleep time in the parent process.
-- Make sure we test both the auto-repeat configuration AND KEY_X press-repeat-release.
-- Remove unnecessary check_size() function.
-- Add checks for EV_SYN events that were broken in PATCH v2. The value in an EV_SYN event is
-  undefined, and  we were checking the value.
+ testcases/lib/test_net.sh | 66 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 65 insertions(+), 1 deletion(-)
 
- testcases/kernel/input/input06.c | 142 ++++++++++++++++++++++++++++++---------
- 1 file changed, 112 insertions(+), 30 deletions(-)
-
-diff --git a/testcases/kernel/input/input06.c b/testcases/kernel/input/input06.c
-index c4fc1ef57..f9d46c2b9 100644
---- a/testcases/kernel/input/input06.c
-+++ b/testcases/kernel/input/input06.c
-@@ -37,6 +37,9 @@ static void cleanup(void);
- 
- static int fd;
- static int fd2;
-+struct input_event events[64];
-+static int num_events;
-+static int ev_iter;
- 
- char *TCID = "input06";
- 
-@@ -95,8 +98,13 @@ static void send_events(void)
- 	send_event(fd, EV_KEY, KEY_X, 1);
- 	send_event(fd, EV_SYN, 0, 0);
- 
--	/* sleep to keep the key pressed for some time (auto-repeat) */
--	usleep(1000);
-+	/*
-+	 * Sleep long enough to keep the key pressed for some time
-+	 * (auto-repeat).  Default kernel delay to start auto-repeat is 250ms
-+	 * and the period is 33ms. So, we wait for a generous 500ms to make
-+	 * sure we get the auto-repeated keys
-+	 */
-+	usleep(500000);
- 
- 	send_event(fd, EV_KEY, KEY_X, 0);
- 	send_event(fd, EV_SYN, 0, 0);
-@@ -107,13 +115,14 @@ static int check_event(struct input_event *iev, int event, int code, int value)
- 	return iev->type == event && iev->code == code && iev->value == value;
- }
- 
--static int check_bound(unsigned int i, unsigned int rd)
-+static int check_event_code(struct input_event *iev, int event, int code)
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index c11747a27..585ab51fe 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -219,7 +219,7 @@ tst_ipaddr()
  {
--	return i <= rd / sizeof(struct input_event);
-+	return iev->type == event && iev->code == code;
+ 	local type="${1:-lhost}"
+ 	local ipv="${TST_IPV6:-4}"
+-	local tst_host=
++	local tst_host
+ 
+ 	if [ "$type" = "lhost" ]; then
+ 		eval "tst_host=\$LHOST_IPV${ipv}_HOST"
+@@ -234,6 +234,70 @@ tst_ipaddr()
+ 	fi
  }
  
--static void check_size(int rd)
-+static void read_events(void)
- {
-+	int rd = read(fd2, events, sizeof(events));
- 	if (rd < 0)
- 		tst_brkm(TBROK | TERRNO, cleanup, "read() failed");
- 
-@@ -121,45 +130,118 @@ static void check_size(int rd)
- 		tst_brkm(TBROK, cleanup, "read size %i not multiple of %zu",
- 		         rd, sizeof(struct input_event));
- 	}
-+
-+	ev_iter = 0;
-+	num_events = rd / sizeof(struct input_event);
- }
- 
--static int check_events(void)
-+static int have_events(void)
- {
--	struct input_event iev[64];
--	unsigned int i;
--	int nb;
--	int rd;
-+	return num_events && ev_iter < num_events;
-+}
- 
--	i = 0;
--	nb = 0;
-+static struct input_event *next_event()
++# Get IP address of unused network, specified by either by type and
++# counter or by net and host.
++# tst_ipaddr_un [-cCOUNTER] [TYPE]
++# tst_ipaddr_un NET_ID [HOST_ID]
++# TYPE: { lhost | rhost }; Default value is 'lhost'.
++# COUNTER: Integer value for counting HOST_ID and NET_ID. Default is 1.
++# NET_ID: Integer or hex value of net. For IPv4 is 3rd octet, for IPv6 is 3rd
++# hextet.
++# HOST_ID: Integer or hex value of host. For IPv4 is 4th octet, for IPv6 is the
++# last hextet. Default value is 0.
++tst_ipaddr_un()
 +{
-+	struct input_event *ev = NULL;
- 
--	rd = read(fd2, iev, sizeof(iev));
-+	if (!have_events())
-+		read_events();
- 
--	check_size(rd);
-+	ev = &events[ev_iter++];
-+	return ev;
-+}
- 
--	if (rd > 0 && check_event(&iev[i], EV_KEY, KEY_X, 1))
--		i++;
-+static int check_sync_event(void)
-+{
-+	return check_event_code(next_event(), EV_SYN, SYN_REPORT);
-+}
- 
--	while (check_bound(i, rd) && !check_event(&iev[i], EV_KEY, KEY_X, 0)) {
-+static int parse_autorepeat_config(struct input_event *iev)
-+{
-+	if (!check_event_code(iev, EV_REP, REP_DELAY)) {
-+		tst_resm(TFAIL,
-+			 "Didn't get EV_REP configuration with code REP_DELAY");
-+		return 0;
-+	}
++	local counter host_id net_id max_host_id max_net_id tmp type
++	local OPTIND
 +
-+	if (!check_event_code(next_event(), EV_REP, REP_PERIOD)) {
-+		tst_resm(TFAIL,
-+			 "Didn't get EV_REP configuration with code REP_PERIOD");
-+		return 0;
-+	}
++	while getopts "c:" opt; do
++		case $opt in
++			c) counter="$OPTARG";;
++		esac
++	done
++	shift $(($OPTIND - 1))
 +
-+	return 1;
++	[ "$TST_IPV6" ] && max_net_id=65535 || max_net_id=255
++
++	if [ $# -eq 0 -o "$1" = "lhost" -o "$1" = "rhost" ]; then
++		[ -z "$counter" ] && counter=1
++		[ $counter -lt 1 ] && counter=1
++		type="${1:-lhost}"
++		max_host_id=$((max_net_id - 1))
++		tmp=$((counter * 2))
++		[ "$type" = "rhost" ] && tmp=$((tmp - 1))
++
++		host_id=$((tmp % max_host_id))
++		net_id=$((tmp / max_host_id))
++
++		if [ $host_id -eq 0 ]; then
++			host_id=$max_host_id
++			net_id=$((net_id - 1))
++		fi
++	else
++		net_id="$1"
++		host_id="${2:-0}"
++		max_host_id=$max_net_id
++		if [ "$TST_IPV6" ]; then
++			net_id=$(printf %d $net_id)
++			host_id=$(printf %d $host_id)
++		fi
++		[ $net_id -lt 0 ] && net_id=0
++		[ $host_id -lt 0 ] && host_id=1
++	fi
++
++	net_id=$((net_id % max_net_id))
++	host_id=$((host_id % max_host_id))
++
++	if [ "$TST_IPV6" ]; then
++		[ $host_id -gt 0 ] && host_id="$(printf %x $host_id)" || host_id=
++		[ $net_id -gt 0 ] && net_id="$(printf %x $net_id)" || net_id=
++		[ "$net_id" ] && net_id=":$net_id"
++		echo "${IPV6_NET32_UNUSED}${net_id}::${host_id}"
++	else
++		echo "${IPV4_NET16_UNUSED}.${net_id}.${host_id}"
++	fi
 +}
 +
-+static int parse_key(struct input_event *iev)
-+{
-+	int autorep_count = 0;
-+
-+	if (!check_event(iev, EV_KEY, KEY_X, 1) || !check_sync_event()) {
-+		tst_resm(TFAIL, "Didn't get expected key press for KEY_X");
-+		return 0;
-+	}
- 
--		if (iev[i].type != EV_SYN
--			&& !check_event(&iev[i], EV_KEY, KEY_X, 2)) {
--			tst_resm(TINFO,
--				"Didn't receive EV_KEY KEY_X with value 2");
-+	iev = next_event();
-+	while (check_event(iev, EV_KEY, KEY_X, 2) && check_sync_event()) {
-+		autorep_count++;
-+		iev = next_event();
-+	}
-+
-+	/* make sure we have atleast one auto-repeated key event */
-+	if (!autorep_count) {
-+		tst_resm(TFAIL,
-+			 "Didn't get autorepeat events for the key - KEY_X");
-+		return 0;
-+	}
-+
-+	if (!check_event(iev, EV_KEY, KEY_X, 0) || !check_sync_event()) {
-+		tst_resm(TFAIL,
-+			 "Didn't get expected key release for KEY_X");
-+		return 0;
-+	}
-+
-+	tst_resm(TINFO,
-+		 "Received %d repititions for KEY_X", autorep_count);
-+
-+	return 1;
-+}
-+
-+static int check_events(void)
-+{
-+	struct input_event *iev;
-+	int ret;
-+	int rep_config_done = 0;
-+	int rep_keys_done = 0;
-+
-+	read_events();
-+
-+	while (have_events()) {
-+		iev = next_event();
-+		switch (iev->type) {
-+		case EV_REP:
-+			ret = parse_autorepeat_config(iev);
-+			if (!rep_config_done)
-+				rep_config_done = 1;
-+			break;
-+		case EV_KEY:
-+			ret = parse_key(iev);
-+			if (!rep_keys_done)
-+				rep_keys_done = 1;
-+			break;
-+		default:
-+			tst_resm(TFAIL,
-+				 "Unexpected event type '0x%04x' received",
-+				iev->type);
-+			ret = 0;
- 			break;
- 		}
--		i++;
--		nb++;
- 
--		if (i == rd / sizeof(struct input_event)) {
--			i = 0;
--			rd = read(fd2, iev, sizeof(iev));
--			check_size(rd);
--		}
-+		if (!ret || (rep_config_done && rep_keys_done))
-+			break;
- 	}
- 
--	return (nb > 0 && check_bound(i, rd)
--		&& check_event(&iev[i], EV_KEY, KEY_X, 0));
-+	return ret;
- }
- 
- static void cleanup(void)
+ # tst_init_iface [TYPE] [LINK]
+ # TYPE: { lhost | rhost }; Default value is 'lhost'.
+ # LINK: link number starting from 0. Default value is '0'.
 -- 
-2.14.1.342.g6490525c54-goog
+2.14.0
 
