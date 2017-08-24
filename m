@@ -1,37 +1,135 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu, 24 Aug 2017 13:07:57 +0200
-Subject: [LTP] [PATCH] CVE: Add some existing tests to runtest file
+Date: Thu, 24 Aug 2017 13:08:02 +0200
+Subject: [LTP] [PATCH 5/6] Convert cve-2014-0196 to use long running threads
 In-Reply-To: <20170824110803.9994-1-rpalethorpe@suse.com>
 References: <20170824110803.9994-1-rpalethorpe@suse.com>
-Message-ID: <20170824110803.9994-2-rpalethorpe@suse.com>
+Message-ID: <20170824110803.9994-7-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add some CVE tests to the CVE runtest file from before it was created.
-
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- runtest/cve | 4 ++++
- 1 file changed, 4 insertions(+)
+ testcases/cve/cve-2014-0196.c | 50 ++++++++++++++++++++++++-------------------
+ 1 file changed, 28 insertions(+), 22 deletions(-)
 
-diff --git a/runtest/cve b/runtest/cve
-index 6e3e52d3a..6d7cb3f76 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -1,6 +1,10 @@
- # Tests which check for vulnerabilities by CVE number
-+cve-2011-0999 thp01 -I 120
-+cve-2011-2183 ksm05 -I 10
-+cve-2011-2496 vma03
- cve-2012-0957 cve-2012-0957
- cve-2014-0196 cve-2014-0196
-+cve-2015-0235 gethostbyname_r01
- cve-2016-4997 cve-2016-4997
- cve-2016-5195 dirtyc0w
- cve-2016-7117 cve-2016-7117
+diff --git a/testcases/cve/cve-2014-0196.c b/testcases/cve/cve-2014-0196.c
+index 4e2b3f582..ffb0aad3f 100644
+--- a/testcases/cve/cve-2014-0196.c
++++ b/testcases/cve/cve-2014-0196.c
+@@ -51,11 +51,13 @@
+ #define ATTEMPTS      0x7000
+ #define BUFLEN        512
+ 
+-static int master_fd, slave_fd;
++static volatile int master_fd, slave_fd;
+ static int filler_ptys[ONEOFF_ALLOCS * 2];
+ static int target_ptys[RUN_ALLOCS * 2];
+ static char buf[BUFLEN];
+ 
++static pthread_t overwrite_thread;
++static void *overwrite_thread_fn(void *);
+ static struct tst_fzsync_pair fzsync_pair = TST_FZSYNC_PAIR_INIT;
+ 
+ static void create_pty(int *amaster, int *aslave)
+@@ -68,35 +70,40 @@ static void setup(void)
+ {
+ 	int i;
+ 
+-	fzsync_pair.delay_inc = 100;
+ 	for (i = 0; i < ONEOFF_ALLOCS; i++) {
+ 		create_pty(&filler_ptys[i],
+ 			   &filler_ptys[i + ONEOFF_ALLOCS]);
+ 	}
++
++	fzsync_pair.info_gap = 0xFFF;
++	SAFE_PTHREAD_CREATE(&overwrite_thread, NULL,
++			    overwrite_thread_fn, NULL);
+ }
+ 
+-static void *overwrite_thread_fn(void *p)
++static void *overwrite_thread_fn(void *p LTP_ATTRIBUTE_UNUSED)
+ {
+-	tst_fzsync_delay_b(&fzsync_pair);
+-	tst_fzsync_time_b(&fzsync_pair);
+-
+-	SAFE_WRITE(0, slave_fd, buf, BUFLEN - 1);
+-	SAFE_WRITE(0, slave_fd, buf, BUFLEN - 1);
+-	SAFE_WRITE(0, slave_fd, buf, BUFLEN);
+-
+-	return p;
++	while(tst_fzsync_pair_wait_update(&fzsync_pair)) {
++		tst_fzsync_delay_b(&fzsync_pair);
++		tst_fzsync_time_b(&fzsync_pair);
++
++		SAFE_WRITE(0, slave_fd, buf, BUFLEN - 1);
++		SAFE_WRITE(0, slave_fd, buf, BUFLEN - 1);
++		SAFE_WRITE(0, slave_fd, buf, BUFLEN);
++		if (!tst_fzsync_pair_wait(&fzsync_pair))
++			break;
++	}
++	return 0;
+ }
+ 
+ static void run(void)
+ {
+ 	struct termios t;
+-	pthread_t overwrite_thread;
+ 	int i, j;
+ 
+ 	tst_res(TINFO, "Attempting to overflow into a tty_struct...");
+ 
+ 	for (i = 0; i < ATTEMPTS; i++) {
+-		create_pty(&master_fd, &slave_fd);
++		create_pty((int *)&master_fd, (int *)&slave_fd);
+ 
+ 		for (j = 0; j < RUN_ALLOCS; j++)
+ 			create_pty(&target_ptys[j],
+@@ -111,20 +118,12 @@ static void run(void)
+ 		t.c_lflag |= ECHO;
+ 		tcsetattr(master_fd, TCSANOW, &t);
+ 
+-		SAFE_PTHREAD_CREATE(&overwrite_thread, NULL,
+-				    overwrite_thread_fn, NULL);
++		tst_fzsync_pair_wait_update(&fzsync_pair);
+ 
+ 		tst_fzsync_delay_a(&fzsync_pair);
+ 		tst_fzsync_time_a(&fzsync_pair);
+ 		SAFE_WRITE(0, master_fd, "A", 1);
+ 
+-		SAFE_PTHREAD_JOIN(overwrite_thread, NULL);
+-
+-		tst_fzsync_pair_update(i, &fzsync_pair);
+-
+-		if (!(i & 0x1FFF))
+-			tst_fzsync_pair_info(&fzsync_pair);
+-
+ 		for (j = 0; j < RUN_ALLOCS; j++) {
+ 			if (j == RUN_ALLOCS / 2)
+ 				continue;
+@@ -139,6 +138,8 @@ static void run(void)
+ 		ioctl(slave_fd, 0xdeadbeef);
+ 		SAFE_CLOSE(master_fd);
+ 		SAFE_CLOSE(slave_fd);
++
++		tst_fzsync_pair_wait(&fzsync_pair);
+ 	}
+ 
+ 	tst_res(TPASS, "Nothing bad happened, probably.");
+@@ -148,6 +149,11 @@ static void cleanup(void)
+ {
+ 	int i;
+ 
++	if (overwrite_thread) {
++		tst_fzsync_pair_exit(&fzsync_pair);
++		SAFE_PTHREAD_JOIN(overwrite_thread, NULL);
++	}
++
+ 	for (i = 0; i < ONEOFF_ALLOCS * 2; i++)
+ 		close(filler_ptys[i]);
+ 	close(master_fd);
 -- 
-2.13.3
+2.14.1
 
