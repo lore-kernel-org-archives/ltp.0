@@ -1,604 +1,192 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 25 Aug 2017 01:44:31 +0200
-Subject: [LTP] [RFC PATCH v9 2/7] network/stress: Add library helper for
-	stress testing
+Date: Fri, 25 Aug 2017 01:44:36 +0200
+Subject: [LTP] [RFC PATCH v9 7/7] network: Use tools to set up IPv4 and IPv6
+	related variables
 In-Reply-To: <20170824234436.18145-1-pvorel@suse.cz>
 References: <20170824234436.18145-1-pvorel@suse.cz>
-Message-ID: <20170824234436.18145-3-pvorel@suse.cz>
+Message-ID: <20170824234436.18145-8-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-+ use it in interface stress tests
+Tools (tst_net_ip_prefix, tst_net_iface_prefix, tst_net_vars)
+simplify setup as it only needs to have passed 4 IP addresses
+(IPv4 lhost + rhost and IPv6 lhost + rhost).
 
-test_net_stress.sh:
-* test_net_stress.sh library is intended to be used throughout all
-  stress tests reduce duplicity and use code from test_net.sh where
-  possible instead of legacy scripts in testcases/network/stress/ns-tools/.
-* TCID set automatically from basename.
-* Add "unused network" related variables. So far used only IPv4 ones.
-* Functions from if-lib.sh moved and (and some renamed) to
-  test_net_stress.sh as they are going to be reused in other tests (not
-  just interface stress tests).
-
-Interfaces stress tests:
-* Interfaces tests use test_net_stress.sh.
-* Remove restore_ipaddr from cleanup functions as these functions would
-  break netns testing with RTNETLINK errors. Use them just in setup during
-  if-mtu-change where are really needed.
+It's possible to define different network part for local
+and remote hosts.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/lib/test_net.sh                          |   5 +-
- testcases/network/stress/interface/if-addr-adddel  |  15 +--
- .../network/stress/interface/if-addr-addlarge      |  16 +--
- testcases/network/stress/interface/if-lib.sh       |  73 -----------
- testcases/network/stress/interface/if-mtu-change   |  12 +-
- testcases/network/stress/interface/if-route-adddel |  19 +--
- .../network/stress/interface/if-route-addlarge     |  15 +--
- testcases/network/stress/interface/if-updown       |   9 +-
- testcases/network/stress/interface/if4-addr-change |   4 +-
- testcases/network/stress/ns-tools/Makefile         |   2 +-
- .../network/stress/ns-tools/test_net_stress.sh     | 136 +++++++++++++++++++++
- 11 files changed, 171 insertions(+), 135 deletions(-)
- delete mode 100644 testcases/network/stress/interface/if-lib.sh
- create mode 100644 testcases/network/stress/ns-tools/test_net_stress.sh
+ testcases/lib/test_net.sh                          | 95 ++++++++++++++--------
+ testcases/network/stress/interface/if4-addr-change | 17 ++--
+ 2 files changed, 74 insertions(+), 38 deletions(-)
 
 diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index 585ab51fe..b23c35553 100644
+index f72e4755f..654200c61 100644
 --- a/testcases/lib/test_net.sh
 +++ b/testcases/lib/test_net.sh
-@@ -500,6 +500,7 @@ tst_ping()
- 	local src_iface="${1:-$(tst_iface)}"
- 	local dst_addr="${2:-$(tst_ipaddr rhost)}"; shift $(( $# >= 2 ? 2 : 0 ))
- 	local msg_sizes="$*"
-+	local msg="tst_ping IPv${TST_IPV6:-4} iface $src_iface, msg_size"
- 	local ret=0
- 
- 	# ping cmd use 56 as default message size
-@@ -508,9 +509,9 @@ tst_ping()
- 			-s $size -i 0 > /dev/null 2>&1
- 		ret=$?
- 		if [ $ret -eq 0 ]; then
--			tst_resm TINFO "tst_ping IPv${TST_IPV6:-4} msg_size $size pass"
-+			tst_resm TINFO "$msg $size: pass"
- 		else
--			tst_resm TINFO "tst_ping IPv${TST_IPV6:-4} msg_size $size fail"
-+			tst_resm TINFO "$msg $size: fail"
- 			break
- 		fi
- 	done
-diff --git a/testcases/network/stress/interface/if-addr-adddel b/testcases/network/stress/interface/if-addr-adddel
-index dcc018a48..42c2d5afa 100644
---- a/testcases/network/stress/interface/if-addr-adddel
-+++ b/testcases/network/stress/interface/if-addr-adddel
-@@ -18,20 +18,13 @@
- # Author: Mitsuru Chinen <mitch@jp.ibm.com>
- 
- TST_TOTAL=2
--TCID=if-addr-adddel
- 
--. if-lib.sh
--
--TST_CLEANUP="do_cleanup"
-+TST_CLEANUP="netstress_cleanup"
- 
- # The interval of the check interface activity
- CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
- 
--do_cleanup()
--{
--	cleanup
--	restore_ipaddr
--}
-+. test_net_stress.sh
- 
- test_body()
+@@ -218,19 +218,10 @@ tst_read_opts $*
+ tst_ipaddr()
  {
-@@ -88,7 +81,7 @@ test_body()
- 			return
- 		fi
- 
--		check_connectivity $cnt || return
-+		check_connectivity_interval $cnt || return
- 
- 		cnt=$(($cnt + 1))
- 
-@@ -122,7 +115,7 @@ test_body()
- 	tst_resm TPASS "Test is finished correctly"
- }
- 
--setup
-+netstress_setup
- 
- tst_check_cmds ifconfig
- 
-diff --git a/testcases/network/stress/interface/if-addr-addlarge b/testcases/network/stress/interface/if-addr-addlarge
-index 9e550068b..e667d9138 100644
---- a/testcases/network/stress/interface/if-addr-addlarge
-+++ b/testcases/network/stress/interface/if-addr-addlarge
-@@ -18,20 +18,13 @@
- # Author: Mitsuru Chinen <mitch@jp.ibm.com>
- 
- TST_TOTAL=2
--TCID=if-addr-addlarge
- 
--. if-lib.sh
+ 	local type="${1:-lhost}"
+-	local ipv="${TST_IPV6:-4}"
+-	local tst_host
 -
--TST_CLEANUP="do_cleanup"
-+TST_CLEANUP="netstress_cleanup"
- 
- # The interval of the check interface activity
- CHECK_INTERVAL=${CHECK_INTERVAL:-$(($IP_TOTAL / 20))}
- 
--do_cleanup()
--{
--	cleanup
--	restore_ipaddr
--}
-+. test_net_stress.sh
- 
- test_body()
- {
-@@ -100,8 +93,7 @@ test_body()
- 			return
- 		fi
- 
--		# Check the connectivity
--		check_connectivity $cnt || return
-+		check_connectivity_interval $cnt || return
- 
- 		# Check the background TCP traffic
- 		pgrep -x netstress > /dev/null || make_background_tcp_traffic
-@@ -143,7 +135,7 @@ test_body()
- 	tst_resm TPASS "Test is finished correctly"
- }
- 
--setup
-+netstress_setup
- 
- tst_check_cmds ifconfig
- 
-diff --git a/testcases/network/stress/interface/if-lib.sh b/testcases/network/stress/interface/if-lib.sh
-deleted file mode 100644
-index 4168dd09f..000000000
---- a/testcases/network/stress/interface/if-lib.sh
-+++ /dev/null
-@@ -1,73 +0,0 @@
--#!/bin/sh
--# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
--#
--# This program is free software; you can redistribute it and/or
--# modify it under the terms of the GNU General Public License as
--# published by the Free Software Foundation; either version 2 of
--# the License, or (at your option) any later version.
--#
--# This program is distributed in the hope that it would be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--# GNU General Public License for more details.
--#
--# You should have received a copy of the GNU General Public License
--# along with this program. If not, see <http://www.gnu.org/licenses/>.
--#
--# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
--
--TST_CLEANUP="cleanup"
--
--. test_net.sh
--
--ipver=${TST_IPV6:-4}
--
--IPV4_NET16_UNUSED=${IPV4_NET16_UNUSED:-"10.23"}
--IPV6_NET32_UNUSED=${IPV6_NET32_UNUSED:-"fd00:23"}
--
--setup()
--{
--	tst_require_root
--	tst_check_cmds ip pgrep pkill
--	trap "tst_brkm TBROK 'test interrupted'" INT
--}
--
--cleanup()
--{
--	# Stop the background TCP traffic
--	pkill -13 -x netstress
--	tst_rhost_run -c "pkill -13 -x netstress"
--}
--
--make_background_tcp_traffic()
--{
--	port=$(tst_get_unused_port ipv${ipver} stream)
--	netstress -R 3 -g $port > /dev/null 2>&1 &
--	tst_rhost_run -b -c "netstress -l -H $(tst_ipaddr) -g $port"
--}
--
--check_connectivity()
--{
--	local cnt="$1"
--	local restore="$2"
--
--	[ $CHECK_INTERVAL -eq 0 ] && return
--	[ $(($cnt % $CHECK_INTERVAL)) -ne 0 ] && return
--
--	tst_resm TINFO "check connectivity through $(tst_iface) on step $cnt"
--
--	[ -n "$restore" ] && restore_ipaddr
--
--	tst_ping
--	if [ $? -ne 0 ]; then
--		tst_resm TFAIL "$(tst_iface) is broken"
--		return 1
+-	if [ "$type" = "lhost" ]; then
+-		eval "tst_host=\$LHOST_IPV${ipv}_HOST"
+-	else
+-		eval "tst_host=\$RHOST_IPV${ipv}_HOST"
 -	fi
--	return 0
--}
 -
--restore_ipaddr()
--{
--	tst_restore_ipaddr || return $?
--	tst_wait_ipv6_dad
--}
-diff --git a/testcases/network/stress/interface/if-mtu-change b/testcases/network/stress/interface/if-mtu-change
-index 637fa6389..03e6ba9d6 100644
---- a/testcases/network/stress/interface/if-mtu-change
-+++ b/testcases/network/stress/interface/if-mtu-change
-@@ -18,9 +18,6 @@
- # Author: Mitsuru Chinen <mitch@jp.ibm.com>
- 
- TST_TOTAL=2
--TCID=if-mtu-change
--
--. if-lib.sh
- 
- TST_CLEANUP="do_cleanup"
- 
-@@ -33,9 +30,12 @@ CHANGE6_VALUES="1280 1445 1335 1390 1500 1280 1500 1280 1335 1500"
- [ "$TST_IPV6" ] && CHANGE_VALUES=$CHANGE6_VALUES
- saved_mtu=
- 
-+. test_net_stress.sh
-+
-+
- do_cleanup()
- {
--	cleanup
-+	netstress_cleanup
- 	if [ "$saved_mtu" ]; then
- 		ip li set $(tst_iface) mtu $saved_mtu
- 		tst_rhost_run -c "ip li set $(tst_iface rhost) mtu $saved_mtu"
-@@ -59,7 +59,7 @@ test_body()
- 	local iface_rmt=$(tst_iface rhost)
- 	[ "$TST_IPV6" ] && local netmask=64 || local netmask=16
- 
--	tst_resm TINFO "'$cmd_name changes MTU $MTU_CHANGE_TIMES times " \
-+	tst_resm TINFO "'$cmd_name changes MTU $MTU_CHANGE_TIMES times" \
- 	               "every $CHANGE_INTERVAL seconds"
- 
- 	make_background_tcp_traffic
-@@ -98,7 +98,7 @@ test_body()
- 	done
- }
- 
--setup
-+netstress_setup
- 
- tst_check_cmds ifconfig
- 
-diff --git a/testcases/network/stress/interface/if-route-adddel b/testcases/network/stress/interface/if-route-adddel
-index 451674178..e207c5d79 100644
---- a/testcases/network/stress/interface/if-route-adddel
-+++ b/testcases/network/stress/interface/if-route-adddel
-@@ -18,19 +18,12 @@
- # Author: Mitsuru Chinen <mitch@jp.ibm.com>
- 
- TST_TOTAL=2
--TCID=if-route-adddel
- 
--. if-lib.sh
--
--TST_CLEANUP="do_cleanup"
-+TST_CLEANUP="netstress_cleanup"
- 
- CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
- 
--do_cleanup()
--{
--	cleanup
--	restore_ipaddr
--}
-+. test_net_stress.sh
- 
- test_body()
- {
-@@ -47,10 +40,10 @@ test_body()
- 	local new_rt=
- 	local opt_rt=
  	if [ "$TST_IPV6" ]; then
--		new_rt=${IPV6_NET32_UNUSED}::
-+		new_rt="$(TST_IPV6=6 tst_ipaddr_un 0)"
- 		opt_rt="/64"
+-		echo "${IPV6_NETWORK}:${tst_host}"
++		[ "$type" = "lhost" ] && echo "$IPV6_LHOST" || echo "$IPV6_RHOST"
  	else
--		new_rt="${IPV4_NET16_UNUSED}.23.0"
-+		new_rt="$(tst_ipaddr_un 23)"
- 		case $cmd_type in
- 		rt_cmd) ;;
- 		ip_cmd) opt_rt='/24' ;;
-@@ -86,7 +79,7 @@ test_body()
- 			return
- 		fi
- 
--		check_connectivity $cnt || return
-+		check_connectivity_interval $cnt || return
- 
- 		# Check the background TCP traffic
- 		pgrep -x netstress > /dev/null || make_background_tcp_traffic
-@@ -97,7 +90,7 @@ test_body()
- 	tst_resm TPASS "Test is finished correctly"
+-		echo "${IPV4_NETWORK}.${tst_host}"
++		[ "$type" = "lhost" ] && echo "$IPV4_LHOST" || echo "$IPV4_RHOST"
+ 	fi
  }
  
--setup
-+netstress_setup
+@@ -333,9 +324,13 @@ tst_add_ipaddr()
+ {
+ 	local type="${1:-lhost}"
+ 	local link_num="${2:-0}"
++	local mask
  
- tst_check_cmds route
+-	local mask=24
+-	[ "$TST_IPV6" ] && mask=64
++	if [ "$TST_IPV6" ]; then
++		[ "$type" = "lhost" ] && mask=$IPV6_LPREFIX || mask=$IPV6_RPREFIX
++	else
++		[ "$type" = "lhost" ] && mask=$IPV4_LPREFIX || mask=$IPV4_RPREFIX
++	fi
  
-diff --git a/testcases/network/stress/interface/if-route-addlarge b/testcases/network/stress/interface/if-route-addlarge
-index e83cf60a7..3337b7225 100644
---- a/testcases/network/stress/interface/if-route-addlarge
-+++ b/testcases/network/stress/interface/if-route-addlarge
-@@ -18,19 +18,12 @@
- # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+ 	local iface=$(tst_iface $type $link_num)
  
- TST_TOTAL=2
--TCID=if-route-addlarge
+@@ -589,24 +584,57 @@ export PASSWD="${PASSWD:-}"
+ export LTP_RSH="${LTP_RSH:-rsh -n}"
  
--. if-lib.sh
+ # Test Links
+-# Set first three octets of the network address, default is '10.0.0'
+-export IPV4_NETWORK="${IPV4_NETWORK:-10.0.0}"
+-# Set local host last octet, default is '2'
+-export LHOST_IPV4_HOST="${LHOST_IPV4_HOST:-2}"
+-# Set remote host last octet, default is '1'
+-export RHOST_IPV4_HOST="${RHOST_IPV4_HOST:-1}"
+-# Set the reverse of IPV4_NETWORK
+-export IPV4_NET_REV="${IPV4_NET_REV:-0.0.10}"
+-# Set first three octets of the network address, default is 'fd00:1:1:1'
+-export IPV6_NETWORK="${IPV6_NETWORK:-fd00:1:1:1}"
+-# Set local host last octet, default is '2'
+-export LHOST_IPV6_HOST="${LHOST_IPV6_HOST:-:2}"
+-# Set remote host last octet, default is '1'
+-export RHOST_IPV6_HOST="${RHOST_IPV6_HOST:-:1}"
 -
--TST_CLEANUP="do_cleanup"
-+TST_CLEANUP="netstress_cleanup"
- 
- CHECK_INTERVAL=${CHECK_INTERVAL:-$(($ROUTE_TOTAL / 20))}
- 
--do_cleanup()
--{
--	cleanup
--	restore_ipaddr
--}
-+. test_net_stress.sh
- 
- test_body()
- {
-@@ -93,7 +86,7 @@ test_body()
- 			return
- 		fi
- 
--		check_connectivity $cnt || return
-+		check_connectivity_interval $cnt || return
- 
- 		# Check the background TCP traffic
- 		pgrep -x netstress > /dev/null || make_background_tcp_traffic
-@@ -112,7 +105,7 @@ test_body()
- 	tst_resm TPASS "Test is finished correctly"
- }
- 
--setup
-+netstress_setup
- 
- tst_check_cmds route
- 
-diff --git a/testcases/network/stress/interface/if-updown b/testcases/network/stress/interface/if-updown
-index deefef639..5ab54a1f8 100644
---- a/testcases/network/stress/interface/if-updown
-+++ b/testcases/network/stress/interface/if-updown
-@@ -18,12 +18,13 @@
- # Author: Mitsuru Chinen <mitch@jp.ibm.com>
- 
- TST_TOTAL=2
--TCID=if-updown
- 
--. if-lib.sh
-+TST_CLEANUP="netstress_cleanup"
- 
- CHECK_INTERVAL=${CHECK_INTERVAL:-$(($IF_UPDOWN_TIMES / 20))}
- 
-+. test_net_stress.sh
+-# Networks that aren't reachable through the test links
+-export IPV4_NET16_UNUSED="${IPV4_NET16_UNUSED:-10.23}"
+-export IPV6_NET32_UNUSED="${IPV6_NET32_UNUSED:-fd00:23}"
++# IPV{4,6}_{L,R}HOST can be set with or without prefix (e.g. IP or IP/prefix),
++# but if you use IP/prefix form, /prefix will be removed by tst_net_vars.
++IPV4_LHOST="${IPV4_LHOST:-10.0.0.2/24}"
++IPV4_RHOST="${IPV4_RHOST:-10.0.0.1/24}"
++IPV6_LHOST="${IPV6_LHOST:-fd00:1:1:1::2/64}"
++IPV6_RHOST="${IPV6_RHOST:-fd00:1:1:1::1/64}"
 +
- test_body()
- {
- 	local cmd_type=$1
-@@ -59,7 +60,7 @@ test_body()
- 			return
- 		fi
++# tst_net_ip_prefix
++# Strip prefix from IP address and save both If no prefix found sets
++# default prefix.
++#
++# tst_net_iface_prefix reads prefix and interface from rtnetlink.
++# If nothing found sets default prefix value.
++#
++# tst_net_vars exports environment variables related to test links and
++# networks that aren't reachable through the test links.
++#
++# For full list of exported environment variables see:
++# tst_net_ip_prefix -h
++# tst_net_iface_prefix -h
++# tst_net_vars -h
++if [ -z "$TST_PARSE_VARIABLES" ]; then
++	tst_resm TINFO "Parsing IP and prefixes from IPv4 lhost: '$IPV4_LHOST'," \
++		"rhost: '$IPV4_RHOST', IPv6 lhost: '$IPV6_LHOST', rhost: '$IPV6_RHOST'"
++	eval $(tst_net_ip_prefix $IPV4_LHOST || echo "exit $?")
++	eval $(tst_net_ip_prefix -r $IPV4_RHOST || echo "exit $?")
++	eval $(tst_net_ip_prefix $IPV6_LHOST || echo "exit $?")
++	eval $(tst_net_ip_prefix -r $IPV6_RHOST || echo "exit $?")
++fi
++
++[ -n "$TST_USE_NETNS" -a "$TST_INIT_NETNS" != "no" ] && init_ltp_netspace
++
++if [ -z "$TST_PARSE_VARIABLES" ]; then
++	tst_resm TINFO "Parsing prefixes and ifaces from rtnetlink"
++	eval $(tst_net_iface_prefix $IPV4_LHOST || echo "exit $?")
++	eval $(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV4_RHOST \
++		|| echo "exit $?")
++	eval $(tst_net_iface_prefix $IPV6_LHOST || echo "exit $?")
++	eval $(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV6_RHOST \
++		|| echo "exit $?")
++
++	tst_resm TINFO "Parsing all remaining variables from IPv4 lhost:" \
++		"'$IPV4_LHOST/$IPV4_LPREFIX', rhost: '$IPV4_RHOST/$IPV4_RPREFIX'," \
++		"IPv6 lhost: '$IPV6_LHOST/$IPV6_LPREFIX', rhost: '$IPV6_RHOST/$IPV6_RPREFIX'"
++	eval $(tst_net_vars $IPV4_LHOST/$IPV4_LPREFIX $IPV4_RHOST/$IPV4_RPREFIX \
++		|| echo "exit $?")
++	eval $(tst_net_vars $IPV6_LHOST/$IPV6_LPREFIX $IPV6_RHOST/$IPV6_RPREFIX \
++		|| echo "exit $?")
++
++	export TST_PARSE_VARIABLES="yes"
++fi
  
--		check_connectivity $cnt restore_ip || return
-+		check_connectivity_interval $cnt restore_ip || return
+ export HTTP_DOWNLOAD_DIR="${HTTP_DOWNLOAD_DIR:-/var/www/html}"
+ export FTP_DOWNLOAD_DIR="${FTP_DOWNLOAD_DIR:-/var/ftp}"
+@@ -629,12 +657,13 @@ export UPLOAD_REGFILESIZE="${UPLOAD_REGFILESIZE:-1024}"
+ export MCASTNUM_NORMAL="${MCASTNUM_NORMAL:-20}"
+ export MCASTNUM_HEAVY="${MCASTNUM_HEAVY:-4000}"
  
- 		cnt=$(($cnt + 1))
- 	done
-@@ -67,7 +68,7 @@ test_body()
- 	tst_resm TPASS "Test is finished correctly"
- }
- 
--setup
-+netstress_setup
- 
- tst_check_cmds ifconfig
- 
+-[ -n "$TST_USE_NETNS" -a "$TST_INIT_NETNS" != "no" ] && init_ltp_netspace
+-
+ # Warning: make sure to set valid interface names and IP addresses below.
+ # Set names for test interfaces, e.g. "eth0 eth1"
++# This is fallback for LHOST_IFACES in case tst_net_vars finds nothing or we
++# want to use more ifaces.
+ export LHOST_IFACES="${LHOST_IFACES:-eth0}"
+ export RHOST_IFACES="${RHOST_IFACES:-eth0}"
++
+ # Set corresponding HW addresses, e.g. "00:00:00:00:00:01 00:00:00:00:00:02"
+ export LHOST_HWADDRS="${LHOST_HWADDRS:-$(tst_get_hwaddrs lhost)}"
+ export RHOST_HWADDRS="${RHOST_HWADDRS:-$(tst_get_hwaddrs rhost)}"
 diff --git a/testcases/network/stress/interface/if4-addr-change b/testcases/network/stress/interface/if4-addr-change
-index 54b8fd5fb..567f86643 100644
+index 567f86643..a7469c252 100644
 --- a/testcases/network/stress/interface/if4-addr-change
 +++ b/testcases/network/stress/interface/if4-addr-change
-@@ -21,12 +21,12 @@ TST_TOTAL=1
- TCID=if4-addr-change
- TST_CLEANUP="do_cleanup"
+@@ -48,12 +48,19 @@ while [ $cnt -lt $NS_TIMES ]; do
  
--. test_net.sh
--
- CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
- # Maximum host portion of the IPv4 address on the local host
- LHOST_IPV4_HOST_MAX="254"
+ 	[ $num -eq $RHOST_IPV4_HOST ] && continue
  
-+. test_net.sh
-+
- do_cleanup()
- {
- 	tst_restore_ipaddr
-diff --git a/testcases/network/stress/ns-tools/Makefile b/testcases/network/stress/ns-tools/Makefile
-index 61f85634a..1c186b232 100644
---- a/testcases/network/stress/ns-tools/Makefile
-+++ b/testcases/network/stress/ns-tools/Makefile
-@@ -29,7 +29,7 @@ INSTALL_TARGETS		:= check_envval get_ifname initialize_if set_ipv4addr \
- 			   check_icmpv6_connectivity check_netem check_setkey \
- 			   create_file find_portbundle killall_icmp_traffic \
- 			   killall_tcp_traffic killall_udp_traffic output_ipsec_conf \
--			   ns-echoclient
-+			   ns-echoclient test_net_stress.sh
- 
- FILTER_OUT_MAKE_TARGETS	:= ns-common
- 
-diff --git a/testcases/network/stress/ns-tools/test_net_stress.sh b/testcases/network/stress/ns-tools/test_net_stress.sh
-new file mode 100644
-index 000000000..065bc666f
---- /dev/null
-+++ b/testcases/network/stress/ns-tools/test_net_stress.sh
-@@ -0,0 +1,136 @@
-+#!/bin/sh
-+# Copyright (c) International Business Machines  Corp., 2006
-+# Copyright (c) 2015-2017 Oracle and/or its affiliates. All Rights Reserved.
-+# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program. If not, see <http://www.gnu.org/licenses/>.
-+#
-+# Author: Petr Vorel <pvorel@suse.cz>
-+# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+#
-+# Library for all network/stress/ tests.
-+# NOTE: More information about network variables can be found
-+# in test_net.sh and testcases/network/stress/README.
-+
-+export TCID="${TCID:-$(basename $0)}"
-+
-+# using variables IPV4_NET16_UNUSED and various functions
-+. test_net.sh
-+
-+# Netmask of for the tested network
-+IPV4_NETMASK="255.255.255.0"
-+IPV4_NETMASK_NUM=24
-+
-+# Prefix of the Multicast Address
-+MCAST_IPV4_ADDR_PREFIX="224.10"
-+# Multicast Address
-+MCAST_IPV4_ADDR="${MCAST_IPV4_ADDR_PREFIX}.10.1"
-+
-+LINK_TOTAL=$(echo $LHOST_HWADDRS | wc -w)
-+RHOST_LINK_TOTAL=$(echo $RHOST_HWADDRS | wc -w)
-+[ $LINK_TOTAL -ne $RHOST_LINK_TOTAL ] && \
-+	tst_brkm TBROK "the number of element in LHOST_HWADDRS differs from RHOST_HWADDRS" \
-+	"($LINK_TOTAL vs. $RHOST_LINK_TOTAL," \
-+	"LHOST_HWADDRS: '$LHOST_HWADDRS' RHOST_HWADDRS: '$RHOST_HWADDRS')"
-+
-+ipver=${TST_IPV6:-4}
-+
-+# Setup for tests using netstress.
-+netstress_setup()
-+{
-+	tst_require_root
-+	tst_check_cmds ip pgrep pkill
-+	trap "tst_brkm TBROK 'test interrupted'" INT
-+}
-+
-+# Cleanup for tests using netstress.
-+netstress_cleanup()
-+{
-+	# Stop the background TCP traffic
-+	pkill -13 -x netstress
-+	tst_rhost_run -c "pkill -13 -x netstress"
-+}
-+
-+# restore_ipaddr [TYPE] [LINK] [LOCAL_IFACE] [REMOTE_IFACE]
-+# TYPE: { lhost | rhost }; Default value is 'lhost'.
-+# LINK: link number starting from 0. Default value is '0'.
-+# LOCAL_IFACE: local iface name.
-+# REMOTE_IFACE: local iface name.
-+restore_ipaddr()
-+{
-+	local type="${1:-lhost}"
-+	local link_num="${2:-0}"
-+	local iface_loc=${3:-$(tst_iface lhost $link_num)}
-+	local iface_rmt=${4:-$(tst_iface rhost $link_num)}
-+
-+	tst_restore_ipaddr $type $link_num || return $?
-+	[ $type = "lhost" ] && tst_wait_ipv6_dad $iface_loc $iface_rmt
-+}
-+
-+# Check connectivity with tst_ping.
-+# check_connectivity SRC_IFACE DST_ADDR [CNT]
-+# SRC_IFACE: source interface name.
-+# DST_ADDR: destination IPv4 or IPv6 address.
-+# CNT: loop step.
-+check_connectivity()
-+{
-+	local src_iface="${1}"
-+	local dst_addr="${2}"
-+	local cnt="${3:-}"
-+	local cnt_msg
-+
-+	[ -n "$cnt" ] && cnt_msg=" (step $cnt)"
-+
-+	tst_resm TINFO "check connectivity through $src_iface iface to ${dst_addr}$cnt_msg"
-+
-+	tst_ping $src_iface $dst_addr
-+	if [ $? -ne 0 ]; then
-+		tst_resm TFAIL "$src_iface is broken"
-+		return 1
+-	# Change IPv4 address
+-	lhost_ipv4addr="${IPV4_NETWORK}.${num}"
++	# check prefix and fix values for prefix != 24
++	add_to_net=
++	if [ $IPV4_LPREFIX -lt 8 -o $IPV4_LPREFIX -ge 32 ] ; then
++		tst_brkm TCONF "test must be with prefix >= 8 and prefix < 32 ($IPV4_LPREFIX)"
++	elif [ $IPV4_LPREFIX -lt 16 ]; then # N.x.x.num
++		add_to_net=".0.1"
++	elif [ $IPV4_LPREFIX -lt 24 ]; then # N.N.x.num
++		add_to_net=".1"
 +	fi
-+	return 0
-+}
-+
-+# check_connectivity_interval CNT [RESTORE] [SRC_IFACE] [DST_ADDR]
-+# CNT: loop step.
-+# RESTORE: whether restore ip addr.
-+# SRC_IFACE: source interface name.
-+# DST_ADDR: destination IPv4 or IPv6 address.
-+check_connectivity_interval()
-+{
-+	local cnt="$1"
-+	local restore="${2:-false}"
-+	local src_iface="${3:-$(tst_iface)}"
-+	local dst_addr="${4:-$(tst_ipaddr rhost)}"
-+
-+	[ $CHECK_INTERVAL -eq 0 ] && return
-+
-+	[ $(($cnt % $CHECK_INTERVAL)) -ne 0 ] && return
-+
-+	[ "$restore" != "false" ] && restore_ipaddr
-+
-+	check_connectivity $src_iface $dst_addr $cnt
-+}
-+
-+# Run netstress process on both lhost and rhost.
-+# make_background_tcp_traffic [IP]
-+# IP: server IP; Default value is $(tst_ipaddr).
-+make_background_tcp_traffic()
-+{
-+	local ip="${1:-$(tst_ipaddr)}"
-+	local port=$(tst_get_unused_port ipv${ipver} stream)
-+
-+	netstress -R 3 -g $port > /dev/null 2>&1 &
-+	tst_rhost_run -b -c "netstress -l -H $ip -g $port"
-+}
+ 
+-	ifconfig $(tst_iface) $lhost_ipv4addr netmask 255.255.255.0 \
+-		broadcast 255.255.255.255 || \
+-		tst_brkm TFAIL "Failed to change into ${lhost_ipv4addr}"
++	# Change IPv4 address
++	ROD ifconfig $(tst_iface) ${IPV4_LNETWORK}${add_to_net}.${num} netmask \
++		$IPV4_LNETMASK broadcast $IPV4_LBROADCAST
+ 
+ 	cnt=$(($cnt + 1))
+ 
 -- 
 2.14.0
 
