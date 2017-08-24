@@ -1,92 +1,229 @@
-From: Andrea Arcangeli <aarcange@redhat.com>
-Date: Thu, 24 Aug 2017 19:54:51 +0200
-Subject: [LTP] [PATCH 2/2] mem: ksm: fixes for race conditions
-In-Reply-To: <20170824175451.13225-1-aarcange@redhat.com>
-References: <20170824175451.13225-1-aarcange@redhat.com>
-Message-ID: <20170824175451.13225-3-aarcange@redhat.com>
+From: Sandeep Patil <sspatil@google.com>
+Date: Thu, 24 Aug 2017 13:12:07 -0700
+Subject: [LTP] [PATCH v3] input/input06: Fix auto-repeat key test
+Message-ID: <20170824201207.62652-1-sspatil@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-stop_ksm_children doesn't actually stop the children, it waits the
-children to stop themselves after they finished setting up the memory.
+The test currently fails for various reasons.
+- The wait in the parent process is not long enough for kernel
+  to send the auto-repeated keys.
+- The test also fails when kernel sends auto-repeat configuration
+  events as it doesn't recognize them.
 
-Problem is the test was waiting for two passes of KSM (to merge all
-the memory) in wait_ksmd_full_scan before waiting the child to stop
-setting up the memory. Two passes of KSM aren't enough if the children
-aren't settled yet. This fixes it by waiting the children to stop
-operating before waiting KSM to merge the memory.
+Fix all that by refactoring the test and making sure we test for both the
+auto-repeat configuration events and the key press-repeat-release events.
 
-waitpid WCONTINUED also doesn't make sense, it's better and more
-strict to wait until all children truly exited, otherwise it would
-just return immediately because the children were waken by SIGCONT at
-the last resume. Removing WCONTINUED will let the parent truly wait
-the children to verify the memory and exit after it.
-
-These issues showed up after speeding up the wait_ksmd_full_scan and
-after removing other unnecessary wait times.
-
-The test is now faster and at the same time more accurate by waiting
-at least two passes of KSM which by the kernel implementation we know
-is enough to reach a settled merged state without the need of other
-artificial delays.
-
-In case of failure of the checks, this now also prints the actual
-value to provide more debug info in the log.
-
-Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
+Signed-off-by: Sandeep Patil <sspatil@google.com>
 ---
- testcases/kernel/mem/lib/mem.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+v2->v3
+======
+- Change the commit msg to reflect exactly what is being done.
+- Run checkpatch.pl on the patch to ensure there are no errors.
+- Make sure we test auto-repeat keys by increasing the sleep time in the parent process.
+- Make sure we test both the auto-repeat configuration AND KEY_X press-repeat-release.
+- Remove unnecessary check_size() function.
+- Add checks for EV_SYN events that were broken in PATCH v2. The value in an EV_SYN event is
+  undefined, and  we were checking the value.
 
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 6d8945081..4f9779ea5 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -261,7 +261,8 @@ static void check(char *path, long int value)
- 	SAFE_FILE_SCANF(fullpath, "%ld", &actual_val);
+ testcases/kernel/input/input06.c | 142 ++++++++++++++++++++++++++++++---------
+ 1 file changed, 112 insertions(+), 30 deletions(-)
+
+diff --git a/testcases/kernel/input/input06.c b/testcases/kernel/input/input06.c
+index c4fc1ef57..f9d46c2b9 100644
+--- a/testcases/kernel/input/input06.c
++++ b/testcases/kernel/input/input06.c
+@@ -37,6 +37,9 @@ static void cleanup(void);
  
- 	if (actual_val != value)
--		tst_res(TFAIL, "%s is not %ld.", path, value);
-+		tst_res(TFAIL, "%s is not %ld but %ld.", path, value,
-+			actual_val);
- 	else
- 		tst_res(TPASS, "%s is %ld.", path, actual_val);
+ static int fd;
+ static int fd2;
++struct input_event events[64];
++static int num_events;
++static int ev_iter;
+ 
+ char *TCID = "input06";
+ 
+@@ -95,8 +98,13 @@ static void send_events(void)
+ 	send_event(fd, EV_KEY, KEY_X, 1);
+ 	send_event(fd, EV_SYN, 0, 0);
+ 
+-	/* sleep to keep the key pressed for some time (auto-repeat) */
+-	usleep(1000);
++	/*
++	 * Sleep long enough to keep the key pressed for some time
++	 * (auto-repeat).  Default kernel delay to start auto-repeat is 250ms
++	 * and the period is 33ms. So, we wait for a generous 500ms to make
++	 * sure we get the auto-repeated keys
++	 */
++	usleep(500000);
+ 
+ 	send_event(fd, EV_KEY, KEY_X, 0);
+ 	send_event(fd, EV_SYN, 0, 0);
+@@ -107,13 +115,14 @@ static int check_event(struct input_event *iev, int event, int code, int value)
+ 	return iev->type == event && iev->code == code && iev->value == value;
  }
-@@ -523,21 +524,20 @@ void create_same_memory(int size, int num, int unit)
- 	SAFE_FILE_PRINTF(PATH_KSM "sleep_millisecs", "0");
  
- 	resume_ksm_children(child, num);
-+	stop_ksm_children(child, num);
- 	group_check(1, 2, size * num * pages - 2, 0, 0, 0, size * pages * num);
+-static int check_bound(unsigned int i, unsigned int rd)
++static int check_event_code(struct input_event *iev, int event, int code)
+ {
+-	return i <= rd / sizeof(struct input_event);
++	return iev->type == event && iev->code == code;
+ }
  
--	stop_ksm_children(child, num);
- 	resume_ksm_children(child, num);
-+	stop_ksm_children(child, num);
- 	group_check(1, 3, size * num * pages - 3, 0, 0, 0, size * pages * num);
+-static void check_size(int rd)
++static void read_events(void)
+ {
++	int rd = read(fd2, events, sizeof(events));
+ 	if (rd < 0)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "read() failed");
  
--	stop_ksm_children(child, num);
- 	resume_ksm_children(child, num);
-+	stop_ksm_children(child, num);
- 	group_check(1, 1, size * num * pages - 1, 0, 0, 0, size * pages * num);
+@@ -121,45 +130,118 @@ static void check_size(int rd)
+ 		tst_brkm(TBROK, cleanup, "read size %i not multiple of %zu",
+ 		         rd, sizeof(struct input_event));
+ 	}
++
++	ev_iter = 0;
++	num_events = rd / sizeof(struct input_event);
+ }
  
--	stop_ksm_children(child, num);
- 	resume_ksm_children(child, num);
--	group_check(1, 1, size * num * pages - 2, 0, 1, 0, size * pages * num);
--
- 	stop_ksm_children(child, num);
-+	group_check(1, 1, size * num * pages - 2, 0, 1, 0, size * pages * num);
+-static int check_events(void)
++static int have_events(void)
+ {
+-	struct input_event iev[64];
+-	unsigned int i;
+-	int nb;
+-	int rd;
++	return num_events && ev_iter < num_events;
++}
  
- 	tst_res(TINFO, "KSM unmerging...");
- 	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
-@@ -549,7 +549,7 @@ void create_same_memory(int size, int num, int unit)
- 	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
- 	final_group_check(0, 0, 0, 0, 0, 0, size * pages * num);
+-	i = 0;
+-	nb = 0;
++static struct input_event *next_event()
++{
++	struct input_event *ev = NULL;
  
--	while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0)
-+	while (waitpid(-1, &status, 0) > 0)
- 		if (WEXITSTATUS(status) != 0)
- 			tst_res(TFAIL, "child exit status is %d",
- 				 WEXITSTATUS(status));
+-	rd = read(fd2, iev, sizeof(iev));
++	if (!have_events())
++		read_events();
+ 
+-	check_size(rd);
++	ev = &events[ev_iter++];
++	return ev;
++}
+ 
+-	if (rd > 0 && check_event(&iev[i], EV_KEY, KEY_X, 1))
+-		i++;
++static int check_sync_event(void)
++{
++	return check_event_code(next_event(), EV_SYN, SYN_REPORT);
++}
+ 
+-	while (check_bound(i, rd) && !check_event(&iev[i], EV_KEY, KEY_X, 0)) {
++static int parse_autorepeat_config(struct input_event *iev)
++{
++	if (!check_event_code(iev, EV_REP, REP_DELAY)) {
++		tst_resm(TFAIL,
++			 "Didn't get EV_REP configuration with code REP_DELAY");
++		return 0;
++	}
++
++	if (!check_event_code(next_event(), EV_REP, REP_PERIOD)) {
++		tst_resm(TFAIL,
++			 "Didn't get EV_REP configuration with code REP_PERIOD");
++		return 0;
++	}
++
++	return 1;
++}
++
++static int parse_key(struct input_event *iev)
++{
++	int autorep_count = 0;
++
++	if (!check_event(iev, EV_KEY, KEY_X, 1) || !check_sync_event()) {
++		tst_resm(TFAIL, "Didn't get expected key press for KEY_X");
++		return 0;
++	}
+ 
+-		if (iev[i].type != EV_SYN
+-			&& !check_event(&iev[i], EV_KEY, KEY_X, 2)) {
+-			tst_resm(TINFO,
+-				"Didn't receive EV_KEY KEY_X with value 2");
++	iev = next_event();
++	while (check_event(iev, EV_KEY, KEY_X, 2) && check_sync_event()) {
++		autorep_count++;
++		iev = next_event();
++	}
++
++	/* make sure we have atleast one auto-repeated key event */
++	if (!autorep_count) {
++		tst_resm(TFAIL,
++			 "Didn't get autorepeat events for the key - KEY_X");
++		return 0;
++	}
++
++	if (!check_event(iev, EV_KEY, KEY_X, 0) || !check_sync_event()) {
++		tst_resm(TFAIL,
++			 "Didn't get expected key release for KEY_X");
++		return 0;
++	}
++
++	tst_resm(TINFO,
++		 "Received %d repititions for KEY_X", autorep_count);
++
++	return 1;
++}
++
++static int check_events(void)
++{
++	struct input_event *iev;
++	int ret;
++	int rep_config_done = 0;
++	int rep_keys_done = 0;
++
++	read_events();
++
++	while (have_events()) {
++		iev = next_event();
++		switch (iev->type) {
++		case EV_REP:
++			ret = parse_autorepeat_config(iev);
++			if (!rep_config_done)
++				rep_config_done = 1;
++			break;
++		case EV_KEY:
++			ret = parse_key(iev);
++			if (!rep_keys_done)
++				rep_keys_done = 1;
++			break;
++		default:
++			tst_resm(TFAIL,
++				 "Unexpected event type '0x%04x' received",
++				iev->type);
++			ret = 0;
+ 			break;
+ 		}
+-		i++;
+-		nb++;
+ 
+-		if (i == rd / sizeof(struct input_event)) {
+-			i = 0;
+-			rd = read(fd2, iev, sizeof(iev));
+-			check_size(rd);
+-		}
++		if (!ret || (rep_config_done && rep_keys_done))
++			break;
+ 	}
+ 
+-	return (nb > 0 && check_bound(i, rd)
+-		&& check_event(&iev[i], EV_KEY, KEY_X, 0));
++	return ret;
+ }
+ 
+ static void cleanup(void)
+-- 
+2.14.1.342.g6490525c54-goog
+
