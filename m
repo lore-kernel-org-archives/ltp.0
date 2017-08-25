@@ -1,254 +1,125 @@
-From: vkabatov@redhat.com <vkabatov@redhat.com>
-Date: Fri, 25 Aug 2017 12:09:50 +0200
-Subject: [LTP] [PATCH v2] [dynamic debug] - Check interface and functionality
-Message-ID: <20170825100950.20825-1-vkabatov@redhat.com>
+From: Sandeep Patil <sspatil@google.com>
+Date: Fri, 25 Aug 2017 14:33:03 -0700
+Subject: [LTP] [PATCH] android: getcwd0[12]: use temp dir from $TMPDIR if
+	present
+Message-ID: <20170825213303.38909-1-sspatil@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Veronika Kabatova <vkabatov@redhat.com>
+getcwd01/getcwd02 tests are broken on an Android system as the device
+doesn't have "/tmp". Instead of hardcoding the temporary directory
+to be "/tmp", look for it in 'TMPDIR' environment variable and fallback
+to "/tmp" if its not defined.
 
-Add a new test to verify enabling and disabling traces with supported
-flags works and doesn't cause any issues.
-
-Dynamic debug was added in kernel 2.6.30, the first version only
-supported "p" flag and used "-" as indicator for no flags set. In
-kernel 3.2, additional flags "flmt" were added. Finally, in kernel
-3.4, the indicator for no flags was changed to "=_".
-
-The test takes into account different kernel versions and interface
-changes listed above.
-
-Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
+Signed-off-by: Sandeep Patil <sspatil@google.com>
 ---
- runtest/tracing                                    |   1 +
- testcases/kernel/tracing/dynamic_debug/Makefile    |  27 ++++
- .../tracing/dynamic_debug/dynamic_debug01.sh       | 171 +++++++++++++++++++++
- 3 files changed, 199 insertions(+)
- create mode 100644 testcases/kernel/tracing/dynamic_debug/Makefile
- create mode 100755 testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
+ testcases/kernel/syscalls/getcwd/getcwd01.c      |  4 ++-
+ testcases/kernel/syscalls/getcwd/getcwd02.c      |  8 +++--
+ testcases/kernel/syscalls/getcwd/getcwd_helper.h | 39 ++++++++++++++++++++++++
+ 3 files changed, 47 insertions(+), 4 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/getcwd/getcwd_helper.h
 
-diff --git a/runtest/tracing b/runtest/tracing
-index 9f8d5c86a..8285eeb43 100644
---- a/runtest/tracing
-+++ b/runtest/tracing
-@@ -2,3 +2,4 @@
- ftrace_regression01	ftrace_regression01.sh
- ftrace_regression02	ftrace_regression02.sh
- ftrace-stress-test	ftrace_stress_test.sh 90
-+dynamic_debug01		dynamic_debug01.sh
-diff --git a/testcases/kernel/tracing/dynamic_debug/Makefile b/testcases/kernel/tracing/dynamic_debug/Makefile
+diff --git a/testcases/kernel/syscalls/getcwd/getcwd01.c b/testcases/kernel/syscalls/getcwd/getcwd01.c
+index fdf306103..cde4b1641 100644
+--- a/testcases/kernel/syscalls/getcwd/getcwd01.c
++++ b/testcases/kernel/syscalls/getcwd/getcwd01.c
+@@ -34,9 +34,11 @@
+  */
+ 
+ #include <errno.h>
++#include <stdlib.h>
+ #include <unistd.h>
+ #include <limits.h>
+ #include "tst_test.h"
++#include "getcwd_helper.h"
+ 
+ static char buffer[5];
+ 
+@@ -76,7 +78,7 @@ static void verify_getcwd(unsigned int n)
+ 
+ static void setup(void)
+ {
+-	SAFE_CHDIR("/tmp");
++	SAFE_CHDIR(get_tmpdir_path());
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/getcwd/getcwd02.c b/testcases/kernel/syscalls/getcwd/getcwd02.c
+index 384157d42..11480f14f 100644
+--- a/testcases/kernel/syscalls/getcwd/getcwd02.c
++++ b/testcases/kernel/syscalls/getcwd/getcwd02.c
+@@ -28,8 +28,8 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include "tst_test.h"
++#include "getcwd_helper.h"
+ 
+-#define TMPDIR "/tmp"
+ 
+ static char exp_buf[PATH_MAX];
+ static char buffer[PATH_MAX];
+@@ -71,9 +71,11 @@ end:
+ 
+ static void setup(void)
+ {
+-	SAFE_CHDIR(TMPDIR);
++	const char *tmpdir = get_tmpdir_path();
+ 
+-	if (!realpath(TMPDIR, exp_buf))
++	SAFE_CHDIR(tmpdir);
++
++	if (!realpath(tmpdir, exp_buf))
+ 		tst_brk(TBROK | TERRNO, "realpath() failed");
+ 
+ 	tst_res(TINFO, "Expected path '%s'", exp_buf);
+diff --git a/testcases/kernel/syscalls/getcwd/getcwd_helper.h b/testcases/kernel/syscalls/getcwd/getcwd_helper.h
 new file mode 100644
-index 000000000..2a6e53a11
+index 000000000..6a78ddbf5
 --- /dev/null
-+++ b/testcases/kernel/tracing/dynamic_debug/Makefile
-@@ -0,0 +1,27 @@
-+#
-+#    tracing/dynamic_debug test suite Makefile.
-+#
-+#    Copyright (C) 2017 Red Hat, Inc.
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-+#    General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License along
-+#    with this program; if not, see <http://www.gnu.org/licenses/>.
-+#
++++ b/testcases/kernel/syscalls/getcwd/getcwd_helper.h
+@@ -0,0 +1,39 @@
++/*
++ * Copyright (c) 2017 Google Inc.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software Foundation,
++ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
++ */
 +
-+top_srcdir		?= ../../..
++#ifndef GETCWD_HELPER_H
++#define GETCWD_HELPER_H
 +
-+include $(top_srcdir)/include/mk/env_pre.mk
++#include <stdlib.h>
 +
-+INSTALL_TARGETS		:= *.sh
++#define GETCWD_TMPDIR_PATH	"/tmp"
 +
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+
-diff --git a/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh b/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
-new file mode 100755
-index 000000000..ec58c69c5
---- /dev/null
-+++ b/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
-@@ -0,0 +1,171 @@
-+#!/bin/sh
-+
-+# Copyright (C) 2017 Red Hat, Inc.
-+#
-+# This program is free software;  you can redistribute it and#or modify
-+# it under the terms of the GNU General Public License as published by
-+# the Free Software Foundation; either version 2 of the License, or
-+# (at your option) any later version.
-+#
-+# This program is distributed in the hope that it will be useful, but
-+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-+# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
-+# for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program; if not, see <http://www.gnu.org/licenses/>.
-+#
-+#
-+# Test description: Test functionality of dynamic debug feature by enabling
-+#                   and disabling traces with available flags. Check that these
-+#                   settings don't cause issues by searching dmesg.
-+#
-+#                   This test handles changes of dynamic debug interface from
-+#                   commits 5ca7d2a6 (dynamic_debug: describe_flags with
-+#                   '=[pmflt_]*') and 8ba6ebf5 (Dynamic debug: Add more flags)
-+#
-+# Usage
-+# ./dynamic_debug01.sh
-+
-+TST_TESTFUNC=ddebug_test
-+TST_NEEDS_CMDS="awk /bin/echo"
-+TST_NEEDS_TMPDIR=1
-+TST_NEEDS_ROOT=1
-+TST_SETUP=setup
-+TST_CLEANUP=cleanup
-+
-+. tst_test.sh
-+
-+
-+DEBUGFS_WAS_MOUNTED=0
-+DEBUGFS_PATH=""
-+DEBUGFS_CONTROL=""
-+DYNDEBUG_STATEMENTS="./debug_statements"
-+EMPTY_FLAG="-"
-+NEW_INTERFACE=0
-+
-+
-+mount_debugfs()
++static const char *get_tmpdir_path(void)
 +{
-+	if grep -q debugfs /proc/mounts ; then
-+		DEBUGFS_WAS_MOUNTED=1
-+		DEBUGFS_PATH=$(awk '/debugfs/{print $2}' /proc/mounts)
-+		tst_res TINFO "debugfs already mounted at $DEBUGFS_PATH"
-+	else
-+		if ! grep -q debugfs /proc/filesystems ; then
-+			tst_res TCONF "debugfs not supported"
-+		fi
-+		DEBUGFS_PATH="./tst_debug"
-+		mkdir "$DEBUGFS_PATH"
-+		if mount -t debugfs xxx "$DEBUGFS_PATH" ; then
-+			tst_res TINFO "debugfs mounted at $DEBUGFS_PATH"
-+		else
-+			tst_res TFAIL "Unable to mount debugfs"
-+		fi
-+	fi
++	const char *tmpdir;
++
++	tmpdir = getenv("TMPDIR");
++	if (!tmpdir)
++		return GETCWD_TMPDIR_PATH;
++
++	/* $TMPDIR must be absolute path.. */
++	if (tmpdir[0] != '/')
++		return GETCWD_TMPDIR_PATH;
++
++	return tmpdir;
 +}
 +
-+setup()
-+{
-+	if tst_kvcmp -lt 2.6.30 ; then
-+		tst_brk TCONF "Dynamic debug is available since version 2.6.30"
-+	fi
-+
-+	mount_debugfs
-+	if [ ! -d "$DEBUGFS_PATH/dynamic_debug" ] ; then
-+		tst_brk TBROK "Unable to find $DEBUGFS_PATH/dynamic_debug"
-+	fi
-+	DEBUGFS_CONTROL="$DEBUGFS_PATH/dynamic_debug/control"
-+	if [ ! -e "$DEBUGFS_CONTROL" ] ; then
-+		tst_brk TBROK "Unable to find $DEBUGFS_CONTROL"
-+	fi
-+
-+	# Both patches with changes were backported to RHEL6 kernel 2.6.32-547
-+	if tst_kvcmp -ge '3.4 RHEL6:2.6.32-547' ; then
-+		NEW_INTERFACE=1
-+		EMPTY_FLAG="=_"
-+	fi
-+
-+	grep -v "^#" "$DEBUGFS_CONTROL" > "$DYNDEBUG_STATEMENTS"
-+}
-+
-+do_flag()
-+{
-+	local FLAG="$1"
-+	local OPTION_TO_SET="$2"
-+	local OPTION_VALUE="$3"
-+
-+	if ! echo "$OPTION_TO_SET $OPTION_VALUE $FLAG" > \
-+		"$DEBUGFS_CONTROL" ; then
-+		tst_res TFAIL "Setting '$OPTION_TO_SET $OPTION_VALUE " \
-+			"$FLAG' failed with $?!"
-+	fi
-+}
-+
-+do_all_flags()
-+{
-+	OPTION="$1"
-+	ALL_INPUTS="$2"
-+
-+	for INPUT_LINE in $ALL_INPUTS; do
-+		do_flag "+p" "$OPTION" "$INPUT_LINE"
-+		if tst_kvcmp -ge 3.2 || [ $NEW_INTERFACE -eq 1 ] ; then
-+			do_flag "+flmt" "$OPTION" "$INPUT_LINE"
-+			do_flag "-flmt" "$OPTION" "$INPUT_LINE"
-+		fi
-+		do_flag "-p" "$OPTION" "$INPUT_LINE"
-+	done
-+
-+	if awk -v emp="$EMPTY_FLAG" '$3 != emp' "$DEBUGFS_CONTROL" \
-+		| grep -v -q "^#" ; then
-+		tst_res TFAIL "Failed to remove all set flags"
-+	fi
-+}
-+
-+ddebug_test()
-+{
-+	dmesg > ./dmesg.old
-+
-+	DD_FUNCS=$(awk -F " |]" '{print $3}' "$DYNDEBUG_STATEMENTS" \
-+		| sort | uniq)
-+	DD_FILES=$(awk -F " |:" '{print $1}' "$DYNDEBUG_STATEMENTS" \
-+		| sort | uniq)
-+	DD_LINES=$(awk -F " |:" '{print $2}' "$DYNDEBUG_STATEMENTS" \
-+		| sort | uniq)
-+	DD_MODULES=$(awk -F [][] '{print $2}' "$DYNDEBUG_STATEMENTS" \
-+		| sort | uniq)
-+
-+	do_all_flags "func" "$DD_FUNCS"
-+	do_all_flags "file" "$DD_FILES"
-+	do_all_flags "line" "$DD_LINES"
-+	do_all_flags "module" "$DD_MODULES"
-+
-+	dmesg > ./dmesg.new
-+	sed -i -e 1,`wc -l < ./dmesg.old`d ./dmesg.new
-+	if grep -q -e "Kernel panic" -e "Oops" -e "general protection fault" \
-+		-e "general protection handler: wrong gs" -e "\(XEN\) Panic" \
-+		-e "fault" -e "warn" -e "BUG" ./dmesg.new ; then
-+		tst_res TFAIL "Issues found in dmesg!"
-+	else
-+		tst_res TPASS "Dynamic debug OK"
-+	fi
-+}
-+
-+cleanup()
-+{
-+	FLAGS_SET=$(awk -v emp="$EMPTY_FLAG" '$3 != emp' $DYNDEBUG_STATEMENTS)
-+	if [ "$FLAGS_SET" ] ; then
-+		FLAG_PREFIX=$([ $NEW_INTERFACE -eq 1 ] && echo "" || echo "+")
-+		/bin/echo "$FLAGS_SET" | while read -r FLAG_LINE ; do
-+			/bin/echo -n "$FLAG_LINE" \
-+				| awk -v prf="$FLAG_PREFIX" -F " |:" \
-+				'{print "file "$1" line "$2" "prf $4}' \
-+				> "$DEBUGFS_CONTROL"
-+		done
-+	fi
-+	if [ $DEBUGFS_WAS_MOUNTED -eq 0 ] ; then
-+		tst_umount "$DEBUGFS_PATH"
-+	fi
-+}
-+
-+tst_run
++#endif /* GETCWD_HELPER_H */
 -- 
-2.13.3
+2.14.1.342.g6490525c54-goog
 
