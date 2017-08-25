@@ -1,45 +1,92 @@
 From: Andrea Arcangeli <aarcange@redhat.com>
-Date: Fri, 25 Aug 2017 10:34:25 +0200
-Subject: [LTP] [PATCH 0/2] mem: ksm: race condition fixes
-Message-ID: <20170825083427.25745-1-aarcange@redhat.com>
+Date: Fri, 25 Aug 2017 10:34:27 +0200
+Subject: [LTP] [PATCH 2/2] mem: ksm: fixes for race conditions
+In-Reply-To: <20170825083427.25745-1-aarcange@redhat.com>
+References: <20170825083427.25745-1-aarcange@redhat.com>
+Message-ID: <20170825083427.25745-3-aarcange@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+stop_ksm_children doesn't actually stop the children, it waits the
+children to stop themselves after they finished setting up the memory.
 
-some false positives triggered the LTP ksm?? tests on some arch with
-slower CPU. The volatile pages weren't zero during the checks, as they
-should have been.
+Problem is the test was waiting for two passes of KSM (to merge all
+the memory) in wait_ksmd_full_scan before waiting the child to stop
+setting up the memory. Two passes of KSM aren't enough if the children
+aren't settled yet. This fixes it by waiting the children to stop
+operating before waiting KSM to merge the memory.
 
-Volatile pages left around means there are orphaned rmap_items, that
-can happen if the KSM scans aren't complete.
+waitpid WCONTINUED also doesn't make sense, it's better and more
+strict to wait until all children truly exited, otherwise it would
+just return immediately because the children were waken by SIGCONT at
+the last resume. Removing WCONTINUED will let the parent truly wait
+the children to verify the memory and exit after it.
 
-I believe the problem is with the waiting that wasn't waiting two full
-passes, but it only waited until the values stopped changing after 10
-seconds of wait time. Plus the ksm?? children were still running by
-the time the wait time started.
+These issues showed up after speeding up the wait_ksmd_full_scan and
+after removing other unnecessary wait times.
 
-The first patch takes care of waiting two scans (more efficiently,
-with a polling of 1 sec). That change then exposes the problem with
-the ksm?? children not being stopped before we start waiting, and the
-second patch fixes that.
+The test is now faster and at the same time more accurate by waiting
+at least two passes of KSM which by the kernel implementation we know
+is enough to reach a settled merged state without the need of other
+artificial delays.
 
-After applying these two fixes, we had hundred of successful runs on
-the same system that showed volatile pages not zero, without any
-further failures.
+In case of failure of the checks, this now also prints the actual
+value to provide more debug info in the log.
 
-Try #2, first submit bounced because I thought I subscribed, but I was
-still one click away.
+Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
+---
+ testcases/kernel/mem/lib/mem.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-Thanks,
-Andrea
-
-Andrea Arcangeli (2):
-  mem: ksm: fix volatile page false positive
-  mem: ksm: fixes for race conditions
-
- testcases/kernel/mem/lib/mem.c | 93 ++++++++++++++++++++++--------------------
- 1 file changed, 49 insertions(+), 44 deletions(-)
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 6d8945081..4f9779ea5 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -261,7 +261,8 @@ static void check(char *path, long int value)
+ 	SAFE_FILE_SCANF(fullpath, "%ld", &actual_val);
+ 
+ 	if (actual_val != value)
+-		tst_res(TFAIL, "%s is not %ld.", path, value);
++		tst_res(TFAIL, "%s is not %ld but %ld.", path, value,
++			actual_val);
+ 	else
+ 		tst_res(TPASS, "%s is %ld.", path, actual_val);
+ }
+@@ -523,21 +524,20 @@ void create_same_memory(int size, int num, int unit)
+ 	SAFE_FILE_PRINTF(PATH_KSM "sleep_millisecs", "0");
+ 
+ 	resume_ksm_children(child, num);
++	stop_ksm_children(child, num);
+ 	group_check(1, 2, size * num * pages - 2, 0, 0, 0, size * pages * num);
+ 
+-	stop_ksm_children(child, num);
+ 	resume_ksm_children(child, num);
++	stop_ksm_children(child, num);
+ 	group_check(1, 3, size * num * pages - 3, 0, 0, 0, size * pages * num);
+ 
+-	stop_ksm_children(child, num);
+ 	resume_ksm_children(child, num);
++	stop_ksm_children(child, num);
+ 	group_check(1, 1, size * num * pages - 1, 0, 0, 0, size * pages * num);
+ 
+-	stop_ksm_children(child, num);
+ 	resume_ksm_children(child, num);
+-	group_check(1, 1, size * num * pages - 2, 0, 1, 0, size * pages * num);
+-
+ 	stop_ksm_children(child, num);
++	group_check(1, 1, size * num * pages - 2, 0, 1, 0, size * pages * num);
+ 
+ 	tst_res(TINFO, "KSM unmerging...");
+ 	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
+@@ -549,7 +549,7 @@ void create_same_memory(int size, int num, int unit)
+ 	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
+ 	final_group_check(0, 0, 0, 0, 0, 0, size * pages * num);
+ 
+-	while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0)
++	while (waitpid(-1, &status, 0) > 0)
+ 		if (WEXITSTATUS(status) != 0)
+ 			tst_res(TFAIL, "child exit status is %d",
+ 				 WEXITSTATUS(status));
