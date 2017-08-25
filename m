@@ -1,92 +1,166 @@
 From: Andrea Arcangeli <aarcange@redhat.com>
-Date: Fri, 25 Aug 2017 10:34:27 +0200
-Subject: [LTP] [PATCH 2/2] mem: ksm: fixes for race conditions
+Date: Fri, 25 Aug 2017 10:34:26 +0200
+Subject: [LTP] [PATCH 1/2] mem: ksm: fix volatile page false positive
 In-Reply-To: <20170825083427.25745-1-aarcange@redhat.com>
 References: <20170825083427.25745-1-aarcange@redhat.com>
-Message-ID: <20170825083427.25745-3-aarcange@redhat.com>
+Message-ID: <20170825083427.25745-2-aarcange@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-stop_ksm_children doesn't actually stop the children, it waits the
-children to stop themselves after they finished setting up the memory.
+To guarantee all volatile rmap_items are collected, the full scan must
+run at least once. The other pages_* value not changing doesn't mean
+all volatile rmap_items have been taken down.
 
-Problem is the test was waiting for two passes of KSM (to merge all
-the memory) in wait_ksmd_full_scan before waiting the child to stop
-setting up the memory. Two passes of KSM aren't enough if the children
-aren't settled yet. This fixes it by waiting the children to stop
-operating before waiting KSM to merge the memory.
+To guarantee merging we need to wait two full scans as the first scan
+will only build the unstable tree.
 
-waitpid WCONTINUED also doesn't make sense, it's better and more
-strict to wait until all children truly exited, otherwise it would
-just return immediately because the children were waken by SIGCONT at
-the last resume. Removing WCONTINUED will let the parent truly wait
-the children to verify the memory and exit after it.
+So waiting at least two KSM scans is going to satisfy both above
+requirements.
 
-These issues showed up after speeding up the wait_ksmd_full_scan and
-after removing other unnecessary wait times.
-
-The test is now faster and at the same time more accurate by waiting
-at least two passes of KSM which by the kernel implementation we know
-is enough to reach a settled merged state without the need of other
-artificial delays.
-
-In case of failure of the checks, this now also prints the actual
-value to provide more debug info in the log.
+After setting run to "2" all KSM pages have been taken down already so
+no need to wait any further.
 
 Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
 ---
- testcases/kernel/mem/lib/mem.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ testcases/kernel/mem/lib/mem.c | 79 ++++++++++++++++++++++--------------------
+ 1 file changed, 42 insertions(+), 37 deletions(-)
 
 diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 6d8945081..4f9779ea5 100644
+index 9df3b17b6..6d8945081 100644
 --- a/testcases/kernel/mem/lib/mem.c
 +++ b/testcases/kernel/mem/lib/mem.c
-@@ -261,7 +261,8 @@ static void check(char *path, long int value)
- 	SAFE_FILE_SCANF(fullpath, "%ld", &actual_val);
- 
- 	if (actual_val != value)
--		tst_res(TFAIL, "%s is not %ld.", path, value);
-+		tst_res(TFAIL, "%s is not %ld but %ld.", path, value,
-+			actual_val);
- 	else
+@@ -266,46 +266,38 @@ static void check(char *path, long int value)
  		tst_res(TPASS, "%s is %ld.", path, actual_val);
  }
-@@ -523,21 +524,20 @@ void create_same_memory(int size, int num, int unit)
- 	SAFE_FILE_PRINTF(PATH_KSM "sleep_millisecs", "0");
  
- 	resume_ksm_children(child, num);
-+	stop_ksm_children(child, num);
- 	group_check(1, 2, size * num * pages - 2, 0, 0, 0, size * pages * num);
+-static void wait_ksmd_done(void)
++static void wait_ksmd_full_scan(void)
+ {
+-	long pages_shared, pages_sharing, pages_volatile, pages_unshared;
+-	long old_pages_shared = 0, old_pages_sharing = 0;
+-	long old_pages_volatile = 0, old_pages_unshared = 0;
+-	int changing = 1, count = 0;
++	unsigned long full_scans, at_least_one_full_scan;
++	int count = 0;
  
--	stop_ksm_children(child, num);
- 	resume_ksm_children(child, num);
-+	stop_ksm_children(child, num);
- 	group_check(1, 3, size * num * pages - 3, 0, 0, 0, size * pages * num);
- 
--	stop_ksm_children(child, num);
- 	resume_ksm_children(child, num);
-+	stop_ksm_children(child, num);
- 	group_check(1, 1, size * num * pages - 1, 0, 0, 0, size * pages * num);
- 
--	stop_ksm_children(child, num);
- 	resume_ksm_children(child, num);
--	group_check(1, 1, size * num * pages - 2, 0, 1, 0, size * pages * num);
+-	while (changing) {
+-		sleep(10);
++	SAFE_FILE_SCANF(PATH_KSM "full_scans", "%lu", &full_scans);
++	/*
++	 * The current scan is already in progress so we wouldn't
++	 * guarantee to call get_user_pages() on every existing
++	 * rmap_item if we only waited the remaining part of the
++	 * current scan.
++	 *
++	 * The actual merging happens after the unstable tree has been
++	 * built so we need to wait at least two full scans to
++	 * guarantee merging, so wait full_scans to increment by 3 so
++	 * at least two full scans will run.
++	 */
++	at_least_one_full_scan = full_scans + 3;
++	while (full_scans < at_least_one_full_scan) {
++		sleep(1);
+ 		count++;
 -
- 	stop_ksm_children(child, num);
-+	group_check(1, 1, size * num * pages - 2, 0, 1, 0, size * pages * num);
+-		SAFE_FILE_SCANF(PATH_KSM "pages_shared", "%ld", &pages_shared);
+-		SAFE_FILE_SCANF(PATH_KSM "pages_sharing", "%ld", &pages_sharing);
+-		SAFE_FILE_SCANF(PATH_KSM "pages_volatile", "%ld", &pages_volatile);
+-		SAFE_FILE_SCANF(PATH_KSM "pages_unshared", "%ld", &pages_unshared);
+-
+-		if (pages_shared != old_pages_shared ||
+-		    pages_sharing != old_pages_sharing ||
+-		    pages_volatile != old_pages_volatile ||
+-		    pages_unshared != old_pages_unshared) {
+-			old_pages_shared = pages_shared;
+-			old_pages_sharing = pages_sharing;
+-			old_pages_volatile = pages_volatile;
+-			old_pages_unshared = pages_unshared;
+-		} else {
+-			changing = 0;
+-		}
++		SAFE_FILE_SCANF(PATH_KSM "full_scans", "%lu", &full_scans);
+ 	}
  
- 	tst_res(TINFO, "KSM unmerging...");
+-	tst_res(TINFO, "ksm daemon takes %ds to scan all mergeable pages",
+-		 count * 10);
++	tst_res(TINFO, "ksm daemon takes %ds to run two full scans",
++		count);
+ }
+ 
+-static void group_check(int run, int pages_shared, int pages_sharing,
+-			 int pages_volatile, int pages_unshared,
+-			 int sleep_millisecs, int pages_to_scan)
++static void final_group_check(int run, int pages_shared, int pages_sharing,
++			  int pages_volatile, int pages_unshared,
++			  int sleep_millisecs, int pages_to_scan)
+ {
+-	/* wait for ksm daemon to scan all mergeable pages. */
+-	wait_ksmd_done();
+-
+ 	tst_res(TINFO, "check!");
+ 	check("run", run);
+ 	check("pages_shared", pages_shared);
+@@ -316,6 +308,22 @@ static void group_check(int run, int pages_shared, int pages_sharing,
+ 	check("pages_to_scan", pages_to_scan);
+ }
+ 
++static void group_check(int run, int pages_shared, int pages_sharing,
++			int pages_volatile, int pages_unshared,
++			int sleep_millisecs, int pages_to_scan)
++{
++	if (run != 1) {
++		tst_res(TFAIL, "group_check run is not 1, %d.", run);
++	} else {
++		/* wait for ksm daemon to scan all mergeable pages. */
++		wait_ksmd_full_scan();
++	}
++
++	final_group_check(run, pages_shared, pages_sharing,
++			  pages_volatile, pages_unshared,
++			  sleep_millisecs, pages_to_scan);
++}
++
+ static void verify(char **memory, char value, int proc,
+ 		    int start, int end, int start2, int end2)
+ {
+@@ -535,11 +543,11 @@ void create_same_memory(int size, int num, int unit)
  	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
-@@ -549,7 +549,7 @@ void create_same_memory(int size, int num, int unit)
- 	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
- 	final_group_check(0, 0, 0, 0, 0, 0, size * pages * num);
  
--	while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0)
-+	while (waitpid(-1, &status, 0) > 0)
+ 	resume_ksm_children(child, num);
+-	group_check(2, 0, 0, 0, 0, 0, size * pages * num);
++	final_group_check(2, 0, 0, 0, 0, 0, size * pages * num);
+ 
+ 	tst_res(TINFO, "stop KSM.");
+ 	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
+-	group_check(0, 0, 0, 0, 0, 0, size * pages * num);
++	final_group_check(0, 0, 0, 0, 0, 0, size * pages * num);
+ 
+ 	while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0)
  		if (WEXITSTATUS(status) != 0)
- 			tst_res(TFAIL, "child exit status is %d",
- 				 WEXITSTATUS(status));
+@@ -610,7 +618,6 @@ void test_ksm_merge_across_nodes(unsigned long nr_pages)
+ 	 * to remerge according to the new setting.
+ 	 */
+ 	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
+-	wait_ksmd_done();
+ 	tst_res(TINFO, "Start to test KSM with merge_across_nodes=1");
+ 	SAFE_FILE_PRINTF(PATH_KSM "merge_across_nodes", "1");
+ 	SAFE_FILE_PRINTF(PATH_KSM "run", "1");
+@@ -618,7 +625,6 @@ void test_ksm_merge_across_nodes(unsigned long nr_pages)
+ 		    nr_pages * num_nodes);
+ 
+ 	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
+-	wait_ksmd_done();
+ 	tst_res(TINFO, "Start to test KSM with merge_across_nodes=0");
+ 	SAFE_FILE_PRINTF(PATH_KSM "merge_across_nodes", "0");
+ 	SAFE_FILE_PRINTF(PATH_KSM "run", "1");
+@@ -626,7 +632,6 @@ void test_ksm_merge_across_nodes(unsigned long nr_pages)
+ 		    0, 0, 0, nr_pages * num_nodes);
+ 
+ 	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
+-	wait_ksmd_done();
+ }
+ 
+ /* THP */
