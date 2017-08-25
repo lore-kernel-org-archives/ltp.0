@@ -1,166 +1,254 @@
-From: Andrea Arcangeli <aarcange@redhat.com>
-Date: Fri, 25 Aug 2017 10:34:26 +0200
-Subject: [LTP] [PATCH 1/2] mem: ksm: fix volatile page false positive
-In-Reply-To: <20170825083427.25745-1-aarcange@redhat.com>
-References: <20170825083427.25745-1-aarcange@redhat.com>
-Message-ID: <20170825083427.25745-2-aarcange@redhat.com>
+From: vkabatov@redhat.com <vkabatov@redhat.com>
+Date: Fri, 25 Aug 2017 12:09:50 +0200
+Subject: [LTP] [PATCH v2] [dynamic debug] - Check interface and functionality
+Message-ID: <20170825100950.20825-1-vkabatov@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To guarantee all volatile rmap_items are collected, the full scan must
-run at least once. The other pages_* value not changing doesn't mean
-all volatile rmap_items have been taken down.
+From: Veronika Kabatova <vkabatov@redhat.com>
 
-To guarantee merging we need to wait two full scans as the first scan
-will only build the unstable tree.
+Add a new test to verify enabling and disabling traces with supported
+flags works and doesn't cause any issues.
 
-So waiting at least two KSM scans is going to satisfy both above
-requirements.
+Dynamic debug was added in kernel 2.6.30, the first version only
+supported "p" flag and used "-" as indicator for no flags set. In
+kernel 3.2, additional flags "flmt" were added. Finally, in kernel
+3.4, the indicator for no flags was changed to "=_".
 
-After setting run to "2" all KSM pages have been taken down already so
-no need to wait any further.
+The test takes into account different kernel versions and interface
+changes listed above.
 
-Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
+Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
 ---
- testcases/kernel/mem/lib/mem.c | 79 ++++++++++++++++++++++--------------------
- 1 file changed, 42 insertions(+), 37 deletions(-)
+ runtest/tracing                                    |   1 +
+ testcases/kernel/tracing/dynamic_debug/Makefile    |  27 ++++
+ .../tracing/dynamic_debug/dynamic_debug01.sh       | 171 +++++++++++++++++++++
+ 3 files changed, 199 insertions(+)
+ create mode 100644 testcases/kernel/tracing/dynamic_debug/Makefile
+ create mode 100755 testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
 
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 9df3b17b6..6d8945081 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -266,46 +266,38 @@ static void check(char *path, long int value)
- 		tst_res(TPASS, "%s is %ld.", path, actual_val);
- }
- 
--static void wait_ksmd_done(void)
-+static void wait_ksmd_full_scan(void)
- {
--	long pages_shared, pages_sharing, pages_volatile, pages_unshared;
--	long old_pages_shared = 0, old_pages_sharing = 0;
--	long old_pages_volatile = 0, old_pages_unshared = 0;
--	int changing = 1, count = 0;
-+	unsigned long full_scans, at_least_one_full_scan;
-+	int count = 0;
- 
--	while (changing) {
--		sleep(10);
-+	SAFE_FILE_SCANF(PATH_KSM "full_scans", "%lu", &full_scans);
-+	/*
-+	 * The current scan is already in progress so we wouldn't
-+	 * guarantee to call get_user_pages() on every existing
-+	 * rmap_item if we only waited the remaining part of the
-+	 * current scan.
-+	 *
-+	 * The actual merging happens after the unstable tree has been
-+	 * built so we need to wait at least two full scans to
-+	 * guarantee merging, so wait full_scans to increment by 3 so
-+	 * at least two full scans will run.
-+	 */
-+	at_least_one_full_scan = full_scans + 3;
-+	while (full_scans < at_least_one_full_scan) {
-+		sleep(1);
- 		count++;
--
--		SAFE_FILE_SCANF(PATH_KSM "pages_shared", "%ld", &pages_shared);
--		SAFE_FILE_SCANF(PATH_KSM "pages_sharing", "%ld", &pages_sharing);
--		SAFE_FILE_SCANF(PATH_KSM "pages_volatile", "%ld", &pages_volatile);
--		SAFE_FILE_SCANF(PATH_KSM "pages_unshared", "%ld", &pages_unshared);
--
--		if (pages_shared != old_pages_shared ||
--		    pages_sharing != old_pages_sharing ||
--		    pages_volatile != old_pages_volatile ||
--		    pages_unshared != old_pages_unshared) {
--			old_pages_shared = pages_shared;
--			old_pages_sharing = pages_sharing;
--			old_pages_volatile = pages_volatile;
--			old_pages_unshared = pages_unshared;
--		} else {
--			changing = 0;
--		}
-+		SAFE_FILE_SCANF(PATH_KSM "full_scans", "%lu", &full_scans);
- 	}
- 
--	tst_res(TINFO, "ksm daemon takes %ds to scan all mergeable pages",
--		 count * 10);
-+	tst_res(TINFO, "ksm daemon takes %ds to run two full scans",
-+		count);
- }
- 
--static void group_check(int run, int pages_shared, int pages_sharing,
--			 int pages_volatile, int pages_unshared,
--			 int sleep_millisecs, int pages_to_scan)
-+static void final_group_check(int run, int pages_shared, int pages_sharing,
-+			  int pages_volatile, int pages_unshared,
-+			  int sleep_millisecs, int pages_to_scan)
- {
--	/* wait for ksm daemon to scan all mergeable pages. */
--	wait_ksmd_done();
--
- 	tst_res(TINFO, "check!");
- 	check("run", run);
- 	check("pages_shared", pages_shared);
-@@ -316,6 +308,22 @@ static void group_check(int run, int pages_shared, int pages_sharing,
- 	check("pages_to_scan", pages_to_scan);
- }
- 
-+static void group_check(int run, int pages_shared, int pages_sharing,
-+			int pages_volatile, int pages_unshared,
-+			int sleep_millisecs, int pages_to_scan)
-+{
-+	if (run != 1) {
-+		tst_res(TFAIL, "group_check run is not 1, %d.", run);
-+	} else {
-+		/* wait for ksm daemon to scan all mergeable pages. */
-+		wait_ksmd_full_scan();
-+	}
+diff --git a/runtest/tracing b/runtest/tracing
+index 9f8d5c86a..8285eeb43 100644
+--- a/runtest/tracing
++++ b/runtest/tracing
+@@ -2,3 +2,4 @@
+ ftrace_regression01	ftrace_regression01.sh
+ ftrace_regression02	ftrace_regression02.sh
+ ftrace-stress-test	ftrace_stress_test.sh 90
++dynamic_debug01		dynamic_debug01.sh
+diff --git a/testcases/kernel/tracing/dynamic_debug/Makefile b/testcases/kernel/tracing/dynamic_debug/Makefile
+new file mode 100644
+index 000000000..2a6e53a11
+--- /dev/null
++++ b/testcases/kernel/tracing/dynamic_debug/Makefile
+@@ -0,0 +1,27 @@
++#
++#    tracing/dynamic_debug test suite Makefile.
++#
++#    Copyright (C) 2017 Red Hat, Inc.
++#
++#    This program is free software; you can redistribute it and/or modify
++#    it under the terms of the GNU General Public License as published by
++#    the Free Software Foundation; either version 2 of the License, or
++#    (at your option) any later version.
++#
++#    This program is distributed in the hope that it will be useful,
++#    but WITHOUT ANY WARRANTY; without even the implied warranty of
++#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
++#    General Public License for more details.
++#
++#    You should have received a copy of the GNU General Public License along
++#    with this program; if not, see <http://www.gnu.org/licenses/>.
++#
 +
-+	final_group_check(run, pages_shared, pages_sharing,
-+			  pages_volatile, pages_unshared,
-+			  sleep_millisecs, pages_to_scan);
++top_srcdir		?= ../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++INSTALL_TARGETS		:= *.sh
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
++
+diff --git a/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh b/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
+new file mode 100755
+index 000000000..ec58c69c5
+--- /dev/null
++++ b/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
+@@ -0,0 +1,171 @@
++#!/bin/sh
++
++# Copyright (C) 2017 Red Hat, Inc.
++#
++# This program is free software;  you can redistribute it and#or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful, but
++# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
++# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
++# for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, see <http://www.gnu.org/licenses/>.
++#
++#
++# Test description: Test functionality of dynamic debug feature by enabling
++#                   and disabling traces with available flags. Check that these
++#                   settings don't cause issues by searching dmesg.
++#
++#                   This test handles changes of dynamic debug interface from
++#                   commits 5ca7d2a6 (dynamic_debug: describe_flags with
++#                   '=[pmflt_]*') and 8ba6ebf5 (Dynamic debug: Add more flags)
++#
++# Usage
++# ./dynamic_debug01.sh
++
++TST_TESTFUNC=ddebug_test
++TST_NEEDS_CMDS="awk /bin/echo"
++TST_NEEDS_TMPDIR=1
++TST_NEEDS_ROOT=1
++TST_SETUP=setup
++TST_CLEANUP=cleanup
++
++. tst_test.sh
++
++
++DEBUGFS_WAS_MOUNTED=0
++DEBUGFS_PATH=""
++DEBUGFS_CONTROL=""
++DYNDEBUG_STATEMENTS="./debug_statements"
++EMPTY_FLAG="-"
++NEW_INTERFACE=0
++
++
++mount_debugfs()
++{
++	if grep -q debugfs /proc/mounts ; then
++		DEBUGFS_WAS_MOUNTED=1
++		DEBUGFS_PATH=$(awk '/debugfs/{print $2}' /proc/mounts)
++		tst_res TINFO "debugfs already mounted at $DEBUGFS_PATH"
++	else
++		if ! grep -q debugfs /proc/filesystems ; then
++			tst_res TCONF "debugfs not supported"
++		fi
++		DEBUGFS_PATH="./tst_debug"
++		mkdir "$DEBUGFS_PATH"
++		if mount -t debugfs xxx "$DEBUGFS_PATH" ; then
++			tst_res TINFO "debugfs mounted at $DEBUGFS_PATH"
++		else
++			tst_res TFAIL "Unable to mount debugfs"
++		fi
++	fi
 +}
 +
- static void verify(char **memory, char value, int proc,
- 		    int start, int end, int start2, int end2)
- {
-@@ -535,11 +543,11 @@ void create_same_memory(int size, int num, int unit)
- 	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
- 
- 	resume_ksm_children(child, num);
--	group_check(2, 0, 0, 0, 0, 0, size * pages * num);
-+	final_group_check(2, 0, 0, 0, 0, 0, size * pages * num);
- 
- 	tst_res(TINFO, "stop KSM.");
- 	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
--	group_check(0, 0, 0, 0, 0, 0, size * pages * num);
-+	final_group_check(0, 0, 0, 0, 0, 0, size * pages * num);
- 
- 	while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0)
- 		if (WEXITSTATUS(status) != 0)
-@@ -610,7 +618,6 @@ void test_ksm_merge_across_nodes(unsigned long nr_pages)
- 	 * to remerge according to the new setting.
- 	 */
- 	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
--	wait_ksmd_done();
- 	tst_res(TINFO, "Start to test KSM with merge_across_nodes=1");
- 	SAFE_FILE_PRINTF(PATH_KSM "merge_across_nodes", "1");
- 	SAFE_FILE_PRINTF(PATH_KSM "run", "1");
-@@ -618,7 +625,6 @@ void test_ksm_merge_across_nodes(unsigned long nr_pages)
- 		    nr_pages * num_nodes);
- 
- 	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
--	wait_ksmd_done();
- 	tst_res(TINFO, "Start to test KSM with merge_across_nodes=0");
- 	SAFE_FILE_PRINTF(PATH_KSM "merge_across_nodes", "0");
- 	SAFE_FILE_PRINTF(PATH_KSM "run", "1");
-@@ -626,7 +632,6 @@ void test_ksm_merge_across_nodes(unsigned long nr_pages)
- 		    0, 0, 0, nr_pages * num_nodes);
- 
- 	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
--	wait_ksmd_done();
- }
- 
- /* THP */
++setup()
++{
++	if tst_kvcmp -lt 2.6.30 ; then
++		tst_brk TCONF "Dynamic debug is available since version 2.6.30"
++	fi
++
++	mount_debugfs
++	if [ ! -d "$DEBUGFS_PATH/dynamic_debug" ] ; then
++		tst_brk TBROK "Unable to find $DEBUGFS_PATH/dynamic_debug"
++	fi
++	DEBUGFS_CONTROL="$DEBUGFS_PATH/dynamic_debug/control"
++	if [ ! -e "$DEBUGFS_CONTROL" ] ; then
++		tst_brk TBROK "Unable to find $DEBUGFS_CONTROL"
++	fi
++
++	# Both patches with changes were backported to RHEL6 kernel 2.6.32-547
++	if tst_kvcmp -ge '3.4 RHEL6:2.6.32-547' ; then
++		NEW_INTERFACE=1
++		EMPTY_FLAG="=_"
++	fi
++
++	grep -v "^#" "$DEBUGFS_CONTROL" > "$DYNDEBUG_STATEMENTS"
++}
++
++do_flag()
++{
++	local FLAG="$1"
++	local OPTION_TO_SET="$2"
++	local OPTION_VALUE="$3"
++
++	if ! echo "$OPTION_TO_SET $OPTION_VALUE $FLAG" > \
++		"$DEBUGFS_CONTROL" ; then
++		tst_res TFAIL "Setting '$OPTION_TO_SET $OPTION_VALUE " \
++			"$FLAG' failed with $?!"
++	fi
++}
++
++do_all_flags()
++{
++	OPTION="$1"
++	ALL_INPUTS="$2"
++
++	for INPUT_LINE in $ALL_INPUTS; do
++		do_flag "+p" "$OPTION" "$INPUT_LINE"
++		if tst_kvcmp -ge 3.2 || [ $NEW_INTERFACE -eq 1 ] ; then
++			do_flag "+flmt" "$OPTION" "$INPUT_LINE"
++			do_flag "-flmt" "$OPTION" "$INPUT_LINE"
++		fi
++		do_flag "-p" "$OPTION" "$INPUT_LINE"
++	done
++
++	if awk -v emp="$EMPTY_FLAG" '$3 != emp' "$DEBUGFS_CONTROL" \
++		| grep -v -q "^#" ; then
++		tst_res TFAIL "Failed to remove all set flags"
++	fi
++}
++
++ddebug_test()
++{
++	dmesg > ./dmesg.old
++
++	DD_FUNCS=$(awk -F " |]" '{print $3}' "$DYNDEBUG_STATEMENTS" \
++		| sort | uniq)
++	DD_FILES=$(awk -F " |:" '{print $1}' "$DYNDEBUG_STATEMENTS" \
++		| sort | uniq)
++	DD_LINES=$(awk -F " |:" '{print $2}' "$DYNDEBUG_STATEMENTS" \
++		| sort | uniq)
++	DD_MODULES=$(awk -F [][] '{print $2}' "$DYNDEBUG_STATEMENTS" \
++		| sort | uniq)
++
++	do_all_flags "func" "$DD_FUNCS"
++	do_all_flags "file" "$DD_FILES"
++	do_all_flags "line" "$DD_LINES"
++	do_all_flags "module" "$DD_MODULES"
++
++	dmesg > ./dmesg.new
++	sed -i -e 1,`wc -l < ./dmesg.old`d ./dmesg.new
++	if grep -q -e "Kernel panic" -e "Oops" -e "general protection fault" \
++		-e "general protection handler: wrong gs" -e "\(XEN\) Panic" \
++		-e "fault" -e "warn" -e "BUG" ./dmesg.new ; then
++		tst_res TFAIL "Issues found in dmesg!"
++	else
++		tst_res TPASS "Dynamic debug OK"
++	fi
++}
++
++cleanup()
++{
++	FLAGS_SET=$(awk -v emp="$EMPTY_FLAG" '$3 != emp' $DYNDEBUG_STATEMENTS)
++	if [ "$FLAGS_SET" ] ; then
++		FLAG_PREFIX=$([ $NEW_INTERFACE -eq 1 ] && echo "" || echo "+")
++		/bin/echo "$FLAGS_SET" | while read -r FLAG_LINE ; do
++			/bin/echo -n "$FLAG_LINE" \
++				| awk -v prf="$FLAG_PREFIX" -F " |:" \
++				'{print "file "$1" line "$2" "prf $4}' \
++				> "$DEBUGFS_CONTROL"
++		done
++	fi
++	if [ $DEBUGFS_WAS_MOUNTED -eq 0 ] ; then
++		tst_umount "$DEBUGFS_PATH"
++	fi
++}
++
++tst_run
+-- 
+2.13.3
+
