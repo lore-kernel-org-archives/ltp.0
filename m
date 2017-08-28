@@ -1,37 +1,31 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 28 Aug 2017 16:32:02 +0200
-Subject: [LTP] [PATCH 4/4] [COMMITTED] nfsv4/locktest: Remove send-bugs line
-	from help
-In-Reply-To: <20170828143202.24021-1-chrubis@suse.cz>
-References: <20170828143202.24021-1-chrubis@suse.cz>
-Message-ID: <20170828143202.24021-4-chrubis@suse.cz>
+From: Sandeep Patil <sspatil@google.com>
+Date: Mon, 28 Aug 2017 09:40:41 -0700
+Subject: [LTP] [PATCH v2 0/2] Fix getcwd0[12] tests for Android devices
+Message-ID: <20170828164043.93407-1-sspatil@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The ext.bull.net does not resolve to anything anyway and looking at
-webarchive the bull.net went defunct in 1999.
+Removes the unnecessary usage of temporary directory from getcwd01 and
+falls back to the directory pointed to by $TMPDIR if "/tmp" doesn't exist
+in getcwd02 test.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/network/nfsv4/locks/locktests.c | 2 --
- 1 file changed, 2 deletions(-)
+v1->v2
+------
+- Split the patch into separate patches for getcwd01 and getcwd02
+- Remove the unnecessary header added in v1 (getcwd_helper.h)
+- Change the fallback order for tmpdir in getcwd02 as pointed in v1 review
 
-diff --git a/testcases/network/nfsv4/locks/locktests.c b/testcases/network/nfsv4/locks/locktests.c
-index 869dbe3c8..330c23b3b 100644
---- a/testcases/network/nfsv4/locks/locktests.c
-+++ b/testcases/network/nfsv4/locks/locktests.c
-@@ -943,8 +943,6 @@ int usage(void)
- {
- 	printf("locktest -n <number of process> -f <test file> [-T]\n");
- 	printf("Number of child process must be higher than 1\n");
--	printf("\n");
--	printf("Send bugs to vincent.roqueta@ext.bull.net\n");
- 	exit(0);
- 	return 0;
- }
+Sandeep Patil (2):
+  getcwd01: Remove unnecessary usage of temporary directory
+  android: getcwd02: use temp dir from $TMPDIR if present
+
+ testcases/kernel/syscalls/getcwd/getcwd01.c |  6 ----
+ testcases/kernel/syscalls/getcwd/getcwd02.c | 43 +++++++++++++++++++++++++++--
+ 2 files changed, 40 insertions(+), 9 deletions(-)
+
 -- 
-2.13.0
+2.14.1.342.g6490525c54-goog
 
