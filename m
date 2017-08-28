@@ -1,40 +1,61 @@
 From: Sandeep Patil <sspatil@google.com>
-Date: Mon, 28 Aug 2017 11:26:10 -0700
-Subject: [LTP] [PATCH] android: pty01: Fix pty01 test for Android.
-Message-ID: <20170828182610.49079-1-sspatil@google.com>
+Date: Mon, 28 Aug 2017 14:24:44 -0700
+Subject: [LTP] [PATCH] android: madvise08: fix for android devices.
+Message-ID: <20170828212444.123677-1-sspatil@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The test fails because 'grantpt()' is a no-op in bionic and doesn't set
-the /dev/pts/X mode to '020600' as expected by the test. The change
-skips that check if __ANDROID__ is defined so the rest of the test(s)
-can proceed and detect other failures if any.
+The test uses '%m' conversion specifier for vfscanf() that is not
+supported in bionic. Use '%s' instead with a buffer that is
+substatially larger than the current maximum coredump file name length
+of 128 bytes.
 
 Signed-off-by: Sandeep Patil <sspatil@google.com>
 ---
- testcases/kernel/pty/pty01.c | 3 +++
- 1 file changed, 3 insertions(+)
+ testcases/kernel/syscalls/madvise/madvise08.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/testcases/kernel/pty/pty01.c b/testcases/kernel/pty/pty01.c
-index cbcc65c97..9fdbf0841 100644
---- a/testcases/kernel/pty/pty01.c
-+++ b/testcases/kernel/pty/pty01.c
-@@ -99,9 +99,12 @@ static int test1(void)
- 		tst_brkm(TBROK, NULL, "uid mismatch");
- 	}
+diff --git a/testcases/kernel/syscalls/madvise/madvise08.c b/testcases/kernel/syscalls/madvise/madvise08.c
+index 296c2bff3..813cd687a 100644
+--- a/testcases/kernel/syscalls/madvise/madvise08.c
++++ b/testcases/kernel/syscalls/madvise/madvise08.c
+@@ -49,10 +49,11 @@
+ #define CORE_FILTER "/proc/self/coredump_filter"
+ #define YCOUNT 0x500L
+ #define FMEMSIZE (YCOUNT + 0x2L)
++#define CORENAME_MAX_SIZE 512
  
-+	 /* grantpt() is a no-op in bionic / Android. */
-+#ifndef __ANDROID__
- 	if (st.st_mode != (S_IFCHR | S_IRUSR | S_IWUSR | S_IWGRP)) {
- 		tst_brkm(TBROK, NULL, "mode mismatch (mode=%o)", st.st_mode);
- 	}
-+#endif
+ static int dfd;
+ static void *fmem;
+-static char *cpattern;
++static char cpattern[CORENAME_MAX_SIZE];
  
- 	slavefd = open(slavename, O_RDWR);
- 	if (slavefd >= 0) {
+ static void setup(void)
+ {
+@@ -80,7 +81,7 @@ static void setup(void)
+ 	if (!(0x1 & filter))
+ 		tst_brk(TCONF, "Anonymous private memory is not dumpable.");
+ 
+-	SAFE_FILE_SCANF(CORE_PATTERN, "%m[^\n]", &cpattern);
++	SAFE_FILE_SCANF(CORE_PATTERN, "%s[^\n]", cpattern);
+ 	tst_res(TINFO, "System core pattern is '%s'", cpattern);
+ 
+ 	SAFE_GETCWD(cwd, sizeof(cwd));
+@@ -108,10 +109,7 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
+-	if (cpattern)
+-		SAFE_FILE_PRINTF(CORE_PATTERN, "%s", cpattern);
+-
+-	free(cpattern);
++	SAFE_FILE_PRINTF(CORE_PATTERN, "%s", cpattern);
+ 
+ 	if (fmem)
+ 		SAFE_MUNMAP(fmem, FMEMSIZE);
 -- 
 2.14.1.342.g6490525c54-goog
 
