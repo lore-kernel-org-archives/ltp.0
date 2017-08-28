@@ -1,54 +1,55 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 28 Aug 2017 13:02:38 +0200
-Subject: [LTP] [PATCH v2 4/7] fzsync: Add functionality test for library
+Date: Mon, 28 Aug 2017 13:02:36 +0200
+Subject: [LTP] [PATCH v2 2/7] tst_atomic: Add atomic store and load tests
 In-Reply-To: <20170828110241.30453-1-rpalethorpe@suse.com>
 References: <20170828110241.30453-1-rpalethorpe@suse.com>
-Message-ID: <20170828110241.30453-4-rpalethorpe@suse.com>
+Message-ID: <20170828110241.30453-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Similar to test09.
+
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
  lib/newlib_tests/.gitignore |   1 +
- lib/newlib_tests/Makefile   |   2 +
- lib/newlib_tests/test16.c   | 106 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 109 insertions(+)
- create mode 100644 lib/newlib_tests/test16.c
+ lib/newlib_tests/Makefile   |   1 +
+ lib/newlib_tests/test15.c   | 132 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 134 insertions(+)
+ create mode 100644 lib/newlib_tests/test15.c
 
 diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
-index 7d47a6531..d47a6ea12 100644
+index 8e120074e..7d47a6531 100644
 --- a/lib/newlib_tests/.gitignore
 +++ b/lib/newlib_tests/.gitignore
-@@ -13,6 +13,7 @@ test12
+@@ -12,6 +12,7 @@ test11
+ test12
  test13
  test14
- test15
-+test16
++test15
  tst_device
  tst_safe_fileops
  tst_res_hexd
 diff --git a/lib/newlib_tests/Makefile b/lib/newlib_tests/Makefile
-index e86d8f23a..afa09373e 100644
+index e9976e5ba..e86d8f23a 100644
 --- a/lib/newlib_tests/Makefile
 +++ b/lib/newlib_tests/Makefile
-@@ -8,6 +8,8 @@ LDLIBS			+= -lltp
+@@ -7,6 +7,7 @@ LDLIBS			+= -lltp
+ 
  test08: CFLAGS+=-pthread
  test09: CFLAGS+=-pthread
- test15: CFLAGS+=-pthread
-+test16: CFLAGS+=-pthread
-+test16: LDLIBS+=-lrt
++test15: CFLAGS+=-pthread
  
  ifeq ($(ANDROID),1)
  FILTER_OUT_MAKE_TARGETS	+= test08
-diff --git a/lib/newlib_tests/test16.c b/lib/newlib_tests/test16.c
+diff --git a/lib/newlib_tests/test15.c b/lib/newlib_tests/test15.c
 new file mode 100644
-index 000000000..f4cc74e46
+index 000000000..ba3cc963f
 --- /dev/null
-+++ b/lib/newlib_tests/test16.c
-@@ -0,0 +1,106 @@
++++ b/lib/newlib_tests/test15.c
+@@ -0,0 +1,132 @@
 +/*
 + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
 + *
@@ -65,95 +66,121 @@ index 000000000..f4cc74e46
 + * You should have received a copy of the GNU General Public License
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
-+/* Basic functionality test for tst_fuzzy_sync.h similar to the atomic tests
-+ * (test15.c). One thread writes to the odd indexes of an array while the
-+ * other writes to the even. If the threads are not synchronised then they
-+ * will probably write to the wrong indexes as they share an index variable
-+ * which they should take it in turns to update.
++
++/*
++ * A basic regression test for tst_atomic_{load,store}. Also provides a
++ * limited check that atomic stores and loads order non-atomic memory
++ * accesses. That is, we are checking that they implement memory fences or
++ * barriers.
++ *
++ * Many architectures/machines will still pass the test even if you remove the
++ * atomic functions. X86 in particular has strong memory ordering by default
++ * so that should always pass (if you use volatile). However Aarch64
++ * (Raspberry Pi 3 Model B) has been observed to fail without the atomic
++ * functions.
++ *
++ * A failure can occur if an update to seq_n is not made globally visible by
++ * the time the next thread needs to use it.
 + */
 +
-+#include <stdlib.h>
++#include <stdint.h>
++#include <pthread.h>
 +#include "tst_test.h"
-+#include "tst_safe_pthread.h"
-+#include "tst_fuzzy_sync.h"
++#include "tst_atomic.h"
 +
-+#define LOOPS 0xFFFFFF
++#define THREADS 64
++#define FILLER (1 << 20)
 +
-+static pthread_t thrd;
-+static volatile char seq[LOOPS * 2 + 1];
-+static struct tst_fzsync_pair pair = TST_FZSYNC_PAIR_INIT;
-+static volatile int seq_n;
++/* Uncomment these to see what happens without atomics. To prevent the compiler
++ * from removing/reording atomic and seq_n, mark them as volatile.
++ */
++/* #define tst_atomic_load(v) (*(v)) */
++/* #define tst_atomic_store(i, v) *(v) = (i) */
 +
-+static void *worker(void *v LTP_ATTRIBUTE_UNUSED)
++struct block {
++	int seq_n;
++	intptr_t id;
++	intptr_t filler[FILLER];
++};
++
++static int atomic;
++static int *seq_n;
++static struct block *m;
++
++static void *worker_load_store(void *_id)
 +{
-+	int i;
++	intptr_t id = (intptr_t)_id, i;
 +
-+	for (i = 0; tst_fzsync_wait_update_b(&pair) && i < LOOPS; i++) {
-+		tst_fzsync_delay_b(&pair);
-+		tst_fzsync_time_b(&pair);
-+		if (!tst_fzsync_wait_b(&pair))
-+			break;
-+		seq[seq_n] = 'B';
-+		seq_n = (i + 1) * 2;
-+	}
++	for (i = (intptr_t)tst_atomic_load(&atomic);
++	     i != id;
++	     i = (intptr_t)tst_atomic_load(&atomic))
++		;
 +
-+	if (i > LOOPS)
-+		tst_res(TWARN, "Worker performed too many iterations: %d > %d",
-+			i, LOOPS);
++	(m + (*seq_n))->id = id;
++	*seq_n += 1;
++	tst_atomic_store((int)i + 1, &atomic);
 +
 +	return NULL;
 +}
 +
-+static void setup(void)
++static void *cache_ruiner(void *vp LTP_ATTRIBUTE_UNUSED)
 +{
-+	SAFE_PTHREAD_CREATE(&thrd, NULL, worker, NULL);
-+}
++	intptr_t i = 0, j;
++	struct block *cur = m;
 +
-+static void run(void)
-+{
-+	int i, j, fail = 0;
++	tst_res(TINFO, "cache ruiner started");
++	while (tst_atomic_load(&atomic) > 0) {
++		for (j = 0; j < FILLER; j++)
++			cur->filler[j] = j;
 +
-+	for (i = 0; tst_fzsync_wait_update_a(&pair) && i < LOOPS; i++) {
-+		tst_fzsync_delay_a(&pair);
-+		seq[seq_n] = 'A';
-+		seq_n = i * 2 + 1;
-+		tst_fzsync_time_a(&pair);
-+		if (!tst_fzsync_wait_a(&pair))
-+			break;
-+	}
-+
-+	for (i = 0; i < LOOPS; i++) {
-+		j = i * 2;
-+		if (seq[j] != 'A') {
-+			tst_res(TFAIL, "Expected A, but found %c at %d",
-+				seq[j], j);
-+			fail = 1;
-+		}
-+		j = i * 2 + 1;
-+		if (seq[j] != 'B') {
-+			tst_res(TFAIL, "Expected A, but found %c@%d",
-+				seq[j], j);
-+			fail = 1;
++		if (i < THREADS - 1) {
++			cur = m + (++i);
++		} else {
++			i = 0;
++			cur = m;
 +		}
 +	}
 +
-+	if (!fail)
-+		tst_res(TPASS, "Sequence is correct");
-+
-+	if (labs(pair.delay) > 1000)
-+		tst_res(TFAIL, "Delay is suspiciously large");
++	return NULL;
 +}
 +
-+static void cleanup(void)
++static void do_test(void)
 +{
-+	tst_fzsync_pair_exit(&pair);
-+	SAFE_PTHREAD_JOIN(thrd, NULL);
++	intptr_t i, id;
++	pthread_t threads[THREADS + 1];
++
++	atomic = 0;
++	m = (struct block *)SAFE_MMAP(NULL, sizeof(*m) * THREADS,
++				      PROT_READ | PROT_WRITE,
++				      MAP_PRIVATE | MAP_ANONYMOUS,
++				      -1, 0);
++	seq_n = &((m + THREADS / 2)->seq_n);
++
++	pthread_create(threads+THREADS, NULL, cache_ruiner, NULL);
++	for (i = THREADS - 1; i >= 0; i--)
++		pthread_create(threads+i, NULL, worker_load_store, (void *)i);
++
++	for (i = 0; i < THREADS; i++) {
++		tst_res(TINFO, "Joining thread %li", i);
++		pthread_join(threads[i], NULL);
++	}
++	tst_atomic_store(-1, &atomic);
++	pthread_join(*(threads+THREADS), NULL);
++
++	tst_res(TINFO, "Expected\tFound");
++	for (i = 0; i < THREADS; i++) {
++		id = (m + i)->id;
++		if (id != i)
++			tst_res(TFAIL, "%d\t\t%d", (int)i, (int)id);
++		else
++			tst_res(TPASS, "%d\t\t%d", (int)i, (int)id);
++	}
++
++	SAFE_MUNMAP(m, sizeof(*m) * THREADS);
 +}
 +
 +static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run,
++	.test_all = do_test,
 +};
 -- 
 2.14.1
