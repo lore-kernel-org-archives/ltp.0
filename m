@@ -1,11 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 28 Aug 2017 13:02:06 +0200
-Subject: [LTP] [PATCH v3 1/2] lapi/keyctl.h: Add fallback definition of
- keyutil.h
-In-Reply-To: <20170825032423.21004-1-fenggw-fnst@cn.fujitsu.com>
+Date: Mon, 28 Aug 2017 13:04:57 +0200
+Subject: [LTP] [PATCH v3 2/2] syscalls/keyctl: Make use of lapi/keyctl.h
+ && Add existing test to runtest/cve
+In-Reply-To: <20170825032423.21004-2-fenggw-fnst@cn.fujitsu.com>
 References: <1d294342-1504-e66f-5fdc-f9cd7806afef@cn.fujitsu.com>
  <20170825032423.21004-1-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <20170828110206.GA21355@rei.lan>
+ <20170825032423.21004-2-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20170828110457.GB21355@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,76 +14,60 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +#ifdef HAVE_KEYUTILS_H
-> +# include <keyutils.h>
+> 1.syscalls/keyctl02 and syscalls/keyctl03 make use of lapi/keyctl.h
+> 
+> 2.syscalls/keyctl0* use keyutils.h fallback definition in lapi/keyctl.h
+>   instead of raw syscall, thus we would test the keyutils library if the
+>   header is present and these tests will not be disabled otherwise.
+> 
+> 3.Add syscalls/keyctl02 and commands/keyctl01 to the CVE runtest file as
+>   cve-2015-7550 and cve-2016-4470 respectively.
 
-We should also make sure we do not include both linux/keyctl.h and
-keyutils.h they both define KEY_* and KEYCTL_* constants.
+It would be a bit cleaner if the part 3. was send in a separate part.
 
-So the <linux/keyctl.h> include should be in the else branch of the
-HAVE_KEYUTILS_H.
-
-> +#else
-> +# include <stdarg.h>
-> +# include <stdint.h>
-> +# include "lapi/syscalls.h"
-> +# ifdef __TEST_H__
-> +#  define TST_SYSCALL_WRAPPER ltp_syscall
-> +# else
-> +#  define TST_SYSCALL_WRAPPER tst_syscall
-> +# endif /* __TEST_H__ */
-
-What do we need these ifdefs for?
-
-I've checked all the keyctl tests and they are all converted to new
-library and so we can call tst_syscall() directly.
-
-> +typedef int32_t key_serial_t;
-> +
-> +static inline key_serial_t add_key(const char *type,
-> +				   const char *description,
-> +				   const void *payload,
-> +				   size_t plen,
-> +				   key_serial_t ringid)
+>  static void do_test(void)
+>  {
+>  	key_serial_t key;
+>  
+> -	TEST(tst_syscall(__NR_keyctl, KEYCTL_GET_KEYRING_ID,
+> -		KEY_SPEC_USER_SESSION_KEYRING));
+> -
+> +	TEST(keyctl(KEYCTL_GET_KEYRING_ID, KEY_SPEC_USER_SESSION_KEYRING));
+>  	if (TEST_RETURN != -1)
+>  		tst_res(TPASS, "KEYCTL_GET_KEYRING_ID succeeded");
+>  	else
+>  		tst_res(TFAIL | TTERRNO, "KEYCTL_GET_KEYRING_ID failed");
+>  
+>  	for (key = INT32_MAX; key > INT32_MIN; key--) {
+> -		TEST(tst_syscall(__NR_keyctl, KEYCTL_READ, key));
+> +		TEST(keyctl(KEYCTL_READ, key));
+>  		if (TEST_RETURN == -1 && TEST_ERRNO == ENOKEY)
+>  			break;
+>  	}
+>  
+> -	TEST(tst_syscall(__NR_keyctl, KEYCTL_REVOKE, key));
+> -
+> +	TEST(keyctl(KEYCTL_REVOKE, key));
+>  	if (TEST_RETURN != -1) {
+>  		tst_res(TFAIL, "KEYCTL_REVOKE succeeded unexpectedly");
+>  		return;
+> @@ -66,6 +60,14 @@ static void do_test(void)
+>  	tst_res(TPASS | TTERRNO, "KEYCTL_REVOKE failed as expected");
+>  }
+>  
+> +static void setup(void)
 > +{
-> +	return TST_SYSCALL_WRAPPER(__NR_add_key,
-> +		type, description, payload, plen, ringid);
-> +}
-> +
-> +static inline key_serial_t request_key(const char *type,
-> +				       const char *description,
-> +				       const char *callout_info,
-> +				       key_serial_t destringid)
-> +{
-> +	return TST_SYSCALL_WRAPPER(__NR_request_key,
-> +		type, description, callout_info, destringid);
-> +}
-> +
-> +static inline long keyctl(int cmd, ...)
-> +{
-> +	va_list va;
-> +	unsigned long arg2, arg3, arg4, arg5;
-> +
-> +	va_start(va, cmd);
-> +	arg2 = va_arg(va, unsigned long);
-> +	arg3 = va_arg(va, unsigned long);
-> +	arg4 = va_arg(va, unsigned long);
-> +	arg5 = va_arg(va, unsigned long);
-> +	va_end(va);
-> +
-> +	return TST_SYSCALL_WRAPPER(__NR_keyctl,
-> +		cmd, arg2, arg3, arg4, arg5);
-> +}
+> +#ifndef HAVE_KEYUTILS_H
+> +	tst_res(TINFO, "keyutils.h does not exist, using fallback definition");
 > +#endif /* HAVE_KEYUTILS_H */
-> +
->  #ifndef KEYCTL_GET_KEYRING_ID
->  # define KEYCTL_GET_KEYRING_ID 0
->  #endif
-> -- 
-> 2.9.4
-> 
-> 
-> 
+> +}
+
+And I do not think that this message is necessary and if it is we should
+probably print it from the lapi call rather than adding it into each of
+the testcases.
+
+
+Otherwise it looks fine.
 
 -- 
 Cyril Hrubis
