@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 29 Aug 2017 14:08:53 +0200
-Subject: [LTP] [PATCH] android: access02: fix the executable shell path
-In-Reply-To: <20170828223100.66766-1-sspatil@google.com>
-References: <20170828223100.66766-1-sspatil@google.com>
-Message-ID: <20170829120853.GF31839@rei.lan>
+Date: Tue, 29 Aug 2017 14:13:50 +0200
+Subject: [LTP] [PATCH] android: madvise08: fix for android devices.
+In-Reply-To: <20170828212444.123677-1-sspatil@google.com>
+References: <20170828212444.123677-1-sspatil@google.com>
+Message-ID: <20170829121350.GG31839@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,16 +11,33 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> The test generated script used the hardcoded "/bin/sh" shell path
-> that doesn't exist on Android system. So fix that by using
-> "_PATH_BSHELL" variable defined in paths.h for both bionic and glibc.
+>  static void setup(void)
+>  {
+> @@ -80,7 +81,7 @@ static void setup(void)
+>  	if (!(0x1 & filter))
+>  		tst_brk(TCONF, "Anonymous private memory is not dumpable.");
+>  
+> -	SAFE_FILE_SCANF(CORE_PATTERN, "%m[^\n]", &cpattern);
+> +	SAFE_FILE_SCANF(CORE_PATTERN, "%s[^\n]", cpattern);
+>  	tst_res(TINFO, "System core pattern is '%s'", cpattern);
+>  
+>  	SAFE_GETCWD(cwd, sizeof(cwd));
+> @@ -108,10 +109,7 @@ static void setup(void)
+>  
+>  static void cleanup(void)
+>  {
+> -	if (cpattern)
+> -		SAFE_FILE_PRINTF(CORE_PATTERN, "%s", cpattern);
+> -
+> -	free(cpattern);
+> +	SAFE_FILE_PRINTF(CORE_PATTERN, "%s", cpattern);
 
-I checked that the header is defined on musl libc as well and pushed,
-thanks.
-
-BTW: There is _PATH_TMP defined in that header as well, is that one present
-     on android as well? If so and if it's pointing to something
-     sensible we could have used that one in the getcwd test...
+This change breaks the test in a case that tst_brk() is called before we
+read the cpattern successfully, as we will write and empty string to the
+cpattern file here in the test cleanup. We have to restore it only and
+only if it was read correctly. We may as well add a flag called
+restore_pattern and set it to 1 once we write with SAFE_FILE_PRINTF() in
+the test setup and use it here.
 
 -- 
 Cyril Hrubis
