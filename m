@@ -1,81 +1,43 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 29 Aug 2017 16:27:48 +0200
-Subject: [LTP] [PATCH v6] syscalls/fcntl36: add tests for OFD locks
-In-Reply-To: <1503560908-21618-1-git-send-email-xzhou@redhat.com>
-References: <20170823133512.GA20766@rei.lan>
- <1503560908-21618-1-git-send-email-xzhou@redhat.com>
-Message-ID: <20170829142748.GA18897@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 29 Aug 2017 16:58:08 +0200
+Subject: [LTP] [PATCH v2 1/7] tst_atomic: Add load,
+ store and use __atomic builtins
+In-Reply-To: <20170828110241.30453-1-rpalethorpe@suse.com>
+References: <20170828110241.30453-1-rpalethorpe@suse.com>
+Message-ID: <00e8fd78-6cc0-6e5d-4055-b255fc317aa1@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +} tcases[] = {
-> +
-> +	{fn_ofd_r,   fn_ofd_w,
-> +		NULL, NULL, "OFD read  locks vs OFD   write locks"},
-> +	{fn_ofd_w,   fn_posix_w,
-> +		NULL, NULL, "OFD write locks vs POSIX write locks"},
-> +	{fn_ofd_r,   fn_posix_w,
-> +		NULL, NULL, "OFD read  locks vs POSIX write locks"},
-> +	{fn_posix_r, fn_ofd_w,
-> +		NULL, NULL, "OFD write locks vs POSIX read  locks"},
-> +	{fn_ofd_w,   fn_ofd_w,
-> +		NULL, NULL, "OFD write locks vs OFD   write locks"},
-> +
-> +	{fn_ofd_r,   fn_ofd_w,   fn_posix_w,
-> +		      NULL, "OFD   r/w locks vs POSIX write locks"},
-> +	{fn_posix_r, fn_ofd_w,   fn_posix_w,
-> +		      NULL, "POSIX r/w locks vs OFD   write locks"},
-> +	{fn_ofd_r,   fn_posix_r, fn_ofd_w,
-> +		      NULL, "OFD   r/w locks vs POSIX read locks"},
-> +	{fn_ofd_r,   fn_posix_r, fn_posix_w,
-> +		      NULL, "POSIX r/w locks vs OFD   read locks"},
-> +
-> +	{fn_ofd_r,   fn_posix_r, fn_posix_w, fn_ofd_w,
-> +			    "OFD   r/w locks vs POSIX r/w locks"},
-
-The cases that concurently run posix read vs. posix write locks
-unfortunately does not work, since posix locks are process based we
-cannot have more than one lock on a file region per process (threads are
-counted as single process as well) and conflicting locks are converted
-i.e. the last two will fail with wrongly read data in the fn_posix_r
-funciton in a case that posix read and posix write locks were held
-concurently (which happens for me and the test fails on my testing
-machine).
-
-We can run as many threads with ofd locks as we want, since these are
-based on open file descriptors and we can add exactly one posix lock
-thread to the mix as well but no more than that.
-
-Moreover I think that we may need a pthread_barrier before we close the
-file descriptors in the test functions since the posix locks are dropped
-when any file descriptor asociated with the file is closed, since if we
-run more than two threads and ofd thread closes the fd, the posix thread
-looses it's lock and the remaining ofd thread(s) run concurently, it's
-unlikely that something like this would happen, but it's possible.
-
-> +};
-> +
-> +static void tests(unsigned int i)
-> +{
-> +	test_fn(tcases[i].fn0, tcases[i].fn1,
-> +		tcases[i].fn2, tcases[i].fn3, tcases[i].desc);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.min_kver = "3.15",
-> +	.needs_tmpdir = 1,
-> +	.test = tests,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.setup = setup
-> +};
-> -- 
-> 1.8.3.1
+On 08/28/2017 01:02 PM, Richard Palethorpe wrote:
+> Also add more fallback inline assembly for the existing architectures and add
+> SPARC64. Use the __atomic_* compiler intrinsics when available.
 > 
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Hi,
+
+I gave this patch a go on number of old/new distros, x86_64, ppc64le
+and s390 and I haven't ran into issues. My review is mostly only
+comparison against kernel sources as much of inline assembly is beyond me.
+
+I think we could use a comment about what sort of ordering do we expect
+from tst_atomic.h. I always assumed we care only for compiler barriers,
+and when we use __sync_* functions, it's more for convenience (not
+because we wanted full memory barrier).
+
+I don't quite understand tst_atomic_load/store() for aarch64, because
+when I look at kernel's arch/arm64/include/asm/atomic.h
+these are a lot simpler:
+#define atomic_read(v)                  READ_ONCE((v)->counter)
+#define atomic_set(v, i)                WRITE_ONCE(((v)->counter), (i))
+
+The rest of fallback functions looks good to me (at least for architectures
+I checked). I expect fallback is used only by very small fringe of users
+and their numbers will only go down in future.
+
+Regards,
+Jan
+
