@@ -1,47 +1,42 @@
 From: Sandeep Patil <sspatil@google.com>
-Date: Mon, 28 Aug 2017 15:31:00 -0700
-Subject: [LTP] [PATCH] android: access02: fix the executable shell path
-Message-ID: <20170828223100.66766-1-sspatil@google.com>
+Date: Mon, 28 Aug 2017 17:11:24 -0700
+Subject: [LTP] [RFC][PATCH 0/2] Add support to mount 'tmpfs' for EROFS
+	testing
+Message-ID: <20170829001126.142076-1-sspatil@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The test generated script used the hardcoded "/bin/sh" shell path
-that doesn't exist on Android system. So fix that by using
-"_PATH_BSHELL" variable defined in paths.h for both bionic and glibc.
+There are several tests in LTP (especially the syscalls) that test for EROFS
+error return in case of "read-only filesystem" that fail on Android (and possibly
+other systems) because of the fact that they need to find a free
+loopback device, create, format and mount a filesystem by default.
 
-Signed-off-by: Sandeep Patil <sspatil@google.com>
----
+This makes all those tests flaky for number of reasons
+ - Loopback device paths are different on Android (i.e. /dev/block/loopN)
+	- This is very easily fixable though.
+ - Filesystem tools are different on Android and in some cases non-existent.
 
-FWIW, I tested this both with an Android system as well as on an x86, ubuntu
-system to make sure this works with glibc as well as bionic.
+For a test that checks for EROFS, going through the whole filesystem generation
+and mounting is an overkill since the filesystem is unused after the mount anyway.
 
- testcases/kernel/syscalls/access/access02.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+So, add support to mount 'tmpfs' (read-only if required) in libltp instead
+of creating a filesystem and mounting a device. This simplifies a lot of tests
+as mentioned in the changelog for PATCH 1/2.
 
-diff --git a/testcases/kernel/syscalls/access/access02.c b/testcases/kernel/syscalls/access/access02.c
-index 0154b83a4..78449ca0b 100644
---- a/testcases/kernel/syscalls/access/access02.c
-+++ b/testcases/kernel/syscalls/access/access02.c
-@@ -38,6 +38,7 @@
- #include <pwd.h>
- #include <stdio.h>
- #include <stdlib.h>
-+#include <paths.h>
- #include "tst_test.h"
- 
- #define FNAME_F	"file_f"
-@@ -187,7 +188,7 @@ static void setup(void)
- 	SAFE_TOUCH(FNAME_R, 0444, NULL);
- 	SAFE_TOUCH(FNAME_W, 0222, NULL);
- 	SAFE_TOUCH(FNAME_X, 0555, NULL);
--	SAFE_FILE_PRINTF(FNAME_X, "#!/bin/sh\n");
-+	SAFE_FILE_PRINTF(FNAME_X, "#!%s\n", _PATH_BSHELL);
- 
- 	SAFE_SYMLINK(FNAME_F, SNAME_F);
- 	SAFE_SYMLINK(FNAME_R, SNAME_R);
+Note: I've tested this on Android system as well as an ubuntu based machine.
+
+Sandeep Patil (2):
+  libltp: add support to mount tmpfs
+  access04: use the new tmpfs mount for EROFS testing
+
+ include/tst_test.h                          |  6 ++++++
+ lib/tst_test.c                              | 17 +++++++++++++++++
+ testcases/kernel/syscalls/access/access04.c |  6 +++---
+ 3 files changed, 26 insertions(+), 3 deletions(-)
+
 -- 
 2.14.1.342.g6490525c54-goog
 
