@@ -1,27 +1,70 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 29 Aug 2017 17:25:53 +0200
-Subject: [LTP] [RFC] [PATCH] device-drivers/zram01: Fix failures on
- ppc64le
-In-Reply-To: <1599039302.5555940.1504019263297.JavaMail.zimbra@redhat.com>
-References: <20170821140746.15734-1-chrubis@suse.cz>
- <20170829112611.GD31839@rei.lan>
- <1599039302.5555940.1504019263297.JavaMail.zimbra@redhat.com>
-Message-ID: <20170829152553.GB18897@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 29 Aug 2017 17:35:08 +0200
+Subject: [LTP] [PATCH v2 1/2] numa_helper: Fix compiler warnings
+Message-ID: <20170829153509.12613-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Hi!
-> > Ping, any comments to this patch?
-> 
-> I don't see other options at the moment. We need to pick
-> some sane size, since number from mkfs is not reliable.
+about comparison between signed and unsigned integer
 
-Pushed with your ack.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/kernel/lib/numa_helper.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
+diff --git a/testcases/kernel/lib/numa_helper.c b/testcases/kernel/lib/numa_helper.c
+index a852f152f..afc09b8db 100644
+--- a/testcases/kernel/lib/numa_helper.c
++++ b/testcases/kernel/lib/numa_helper.c
+@@ -60,7 +60,7 @@ unsigned long get_max_node(void)
+ static void get_nodemask_allnodes(nodemask_t * nodemask, unsigned long max_node)
+ {
+ 	unsigned long nodemask_size = max_node / 8;
+-	int i;
++	unsigned int i;
+ 	char fn[64];
+ 	struct stat st;
+ 
+@@ -95,7 +95,7 @@ static int filter_nodemask_mem(nodemask_t * nodemask, unsigned long max_node)
+ 		return -2;
+ 	}
+ #else
+-	int i;
++	unsigned int i;
+ 	/*
+ 	 * old libnuma/kernel don't have MPOL_F_MEMS_ALLOWED, so let's assume
+ 	 * that we can use any node with memory > 0
+@@ -112,7 +112,7 @@ static int filter_nodemask_mem(nodemask_t * nodemask, unsigned long max_node)
+ 
+ static int cpumask_has_cpus(char *cpumask, size_t len)
+ {
+-	int j;
++	unsigned int j;
+ 	for (j = 0; j < len; j++)
+ 		if (cpumask[j] == '\0')
+ 			return 0;
+@@ -129,7 +129,8 @@ static void filter_nodemask_cpu(nodemask_t * nodemask, unsigned long max_node)
+ 	char fn[64];
+ 	FILE *f;
+ 	size_t len;
+-	int i, ret;
++	unsigned int i;
++	int ret;
+ 
+ 	for (i = 0; i < max_node; i++) {
+ 		if (!nodemask_isset(nodemask, i))
+@@ -164,7 +165,7 @@ int get_allowed_nodes_arr(int flag, int *num_nodes, int **nodes)
+ {
+ 	int ret = 0;
+ #if HAVE_NUMA_H
+-	int i;
++	unsigned int i;
+ 	nodemask_t *nodemask = NULL;
+ #endif
+ 	*num_nodes = 0;
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.14.0
+
