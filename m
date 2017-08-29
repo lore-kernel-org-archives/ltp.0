@@ -1,42 +1,101 @@
 From: Sandeep Patil <sspatil@google.com>
-Date: Mon, 28 Aug 2017 17:11:24 -0700
-Subject: [LTP] [RFC][PATCH 0/2] Add support to mount 'tmpfs' for EROFS
-	testing
-Message-ID: <20170829001126.142076-1-sspatil@google.com>
+Date: Mon, 28 Aug 2017 17:11:25 -0700
+Subject: [LTP] [RFC][PATCH 1/2] libltp: add support to mount tmpfs
+In-Reply-To: <20170829001126.142076-1-sspatil@google.com>
+References: <20170829001126.142076-1-sspatil@google.com>
+Message-ID: <20170829001126.142076-2-sspatil@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-There are several tests in LTP (especially the syscalls) that test for EROFS
-error return in case of "read-only filesystem" that fail on Android (and possibly
-other systems) because of the fact that they need to find a free
-loopback device, create, format and mount a filesystem by default.
+Some tests go through losetup, create, format and mount
+filesystems only to run tests for 'EROFS' return value from
+system calls. The tests end up being flaky depending on the tools
+available on the platform. e.g. mkfs.<filesystem> tool is required for
+mounting a device with filesystem.
 
-This makes all those tests flaky for number of reasons
- - Loopback device paths are different on Android (i.e. /dev/block/loopN)
-	- This is very easily fixable though.
- - Filesystem tools are different on Android and in some cases non-existent.
+If the test is only to check for EROFS, this can be achieved by simply
+doing a 'tmpfs' read-only mount in $tmpdir.
 
-For a test that checks for EROFS, going through the whole filesystem generation
-and mounting is an overkill since the filesystem is unused after the mount anyway.
+Example of tests that can benefit from this are:
+  access04, mkdirat02, mknodat02, acct01, fchown04, mknod07 etc.
 
-So, add support to mount 'tmpfs' (read-only if required) in libltp instead
-of creating a filesystem and mounting a device. This simplifies a lot of tests
-as mentioned in the changelog for PATCH 1/2.
+This also allows for these tests to successfully run on Android.
 
-Note: I've tested this on Android system as well as an ubuntu based machine.
+Signed-off-by: Sandeep Patil <sspatil@google.com>
+---
+ include/tst_test.h |  6 ++++++
+ lib/tst_test.c     | 17 +++++++++++++++++
+ 2 files changed, 23 insertions(+)
 
-Sandeep Patil (2):
-  libltp: add support to mount tmpfs
-  access04: use the new tmpfs mount for EROFS testing
-
- include/tst_test.h                          |  6 ++++++
- lib/tst_test.c                              | 17 +++++++++++++++++
- testcases/kernel/syscalls/access/access04.c |  6 +++---
- 3 files changed, 26 insertions(+), 3 deletions(-)
-
+diff --git a/include/tst_test.h b/include/tst_test.h
+index e90312ae3..abd787bd2 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -124,6 +124,7 @@ struct tst_test {
+ 	int needs_checkpoints:1;
+ 	int format_device:1;
+ 	int mount_device:1;
++	int mount_tmpfs:1;
+ 
+ 	/* Minimal device size in megabytes */
+ 	unsigned int dev_min_size;
+@@ -140,6 +141,11 @@ struct tst_test {
+ 	unsigned int mnt_flags;
+ 	void *mnt_data;
+ 
++	/* tmpfs mount options, used if mount_tmpfs is set */
++	const char *tmpfs_mntpoint;
++	unsigned int tmpfs_flags;
++	void *tmpfs_data;
++
+ 	/* override default timeout per test run, disabled == -1 */
+ 	int timeout;
+ 
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 4c30edab5..4404b27e0 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -42,6 +42,7 @@ static int iterations = 1;
+ static float duration = -1;
+ static pid_t main_pid, lib_pid;
+ static int device_mounted;
++static int tmpfs_mounted;
+ 
+ struct results {
+ 	int passed;
+@@ -734,6 +735,19 @@ static void do_setup(int argc, char *argv[])
+ 		}
+ 	}
+ 
++	if (tst_test->mount_tmpfs) {
++		if (!tst_test->tmpfs_mntpoint) {
++			tst_brk(TBROK,
++				"tst_test->tmpfs_mntpoint must be set!");
++		}
++
++		SAFE_MKDIR(tst_test->tmpfs_mntpoint, 0777);
++		SAFE_MOUNT("none", tst_test->tmpfs_mntpoint, "tmpfs",
++			   tst_test->tmpfs_flags, tst_test->tmpfs_data);
++
++		tmpfs_mounted = 1;
++	}
++
+ 	if (tst_test->resource_files)
+ 		copy_resources();
+ }
+@@ -751,6 +765,9 @@ static void do_test_setup(void)
+ 
+ static void do_cleanup(void)
+ {
++	if (tmpfs_mounted)
++		tst_umount(tst_test->tmpfs_mntpoint);
++
+ 	if (device_mounted)
+ 		tst_umount(tst_test->mntpoint);
+ 
 -- 
 2.14.1.342.g6490525c54-goog
 
