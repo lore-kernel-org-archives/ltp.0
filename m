@@ -1,29 +1,39 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 30 Aug 2017 09:06:19 +0200
-Subject: [LTP] [PATCH v2] android: pty01: Fix pty01 test for Android.
-In-Reply-To: <CAJgzZoqWAFonKprb2rWEXj47mus52Mj_kYtoFhu9EJ5sCkqUeA@mail.gmail.com>
-References: <20170829002637.25643-1-sspatil@google.com>
- <20170829090825.lgjzm5kqnnbhldhr@dell5510>
- <CAJgzZoqWAFonKprb2rWEXj47mus52Mj_kYtoFhu9EJ5sCkqUeA@mail.gmail.com>
-Message-ID: <20170830070619.34ejq2ohqqijmpbz@x230>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 30 Aug 2017 03:51:25 -0400 (EDT)
+Subject: [LTP] [PATCH] madvise07: Increase probability of testing
+	a	supported page type
+In-Reply-To: <20170828134827.5871-1-rpalethorpe@suse.com>
+References: <20170828134827.5871-1-rpalethorpe@suse.com>
+Message-ID: <1387821959.5916937.1504079485373.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+
+----- Original Message -----
+> We were attempting to poison page types which do not support it (e.g. the
+> zero
+> page) due to our usage of mmap. Now we map some anonymous memory and write to
+> it. Hopefully ensuring the underlying page is of a supported type.
+> + * If the underlying page type of the memory we have mapped does not support
+> + * poisoning then the test will fail. We try to map and write to the memory
+> in
+> + * such a way that by the time madvise is called the virtual memory address
+> + * points to a supported page. However there may be some rare circumstances
+> + * where the test produces the wrong result because we have somehow obtained
+> + * an unsupported page.
+
 Hi,
 
-> > I wonder, whether it's really better to use __BIONIC__ instead of __ANDROID__ (works with
-> > both), but assume it is if it's really bionic specific.
+Can you elaborate please? If we always do mmap+touch anonymous memory,
+how would we sometime end up with different page type?
 
-> yeah, grantpt unconditionally does nothing in bionic, regardless of
-> whether you're running on an Android device or a desktop/server Linux
-> box.
-OT: I didn't think there would be any use of bionic apart from Android (e.g. Linux /BSD
-distro using it), but there is one project (not very active now):
-https://github.com/gentoobionic/bionic
+I don't have objections to patch, but I'm thinking if we should go
+further if there's possibility the test still won't be reliable.
+We could relax the condition, for example by FAILing only if
+child dies unexpectedly (signal != SIGBUS).
 
-
-Kind regards,
-Petr
+Regards,
+Jan
