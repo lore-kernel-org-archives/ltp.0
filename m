@@ -1,34 +1,24 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 30 Aug 2017 16:58:04 +0200
-Subject: [LTP] [PATCH] [COMMITTED] tracing/dynamic_debug01: Fix Makefile
-Message-ID: <20170830145804.24468-1-chrubis@suse.cz>
+Date: Wed, 30 Aug 2017 17:00:00 +0200
+Subject: [LTP] [PATCH v2] [dynamic debug] - Check interface and
+ functionality
+In-Reply-To: <20170825100950.20825-1-vkabatov@redhat.com>
+References: <20170825100950.20825-1-vkabatov@redhat.com>
+Message-ID: <20170830150000.GC22607@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-I should have checked that the top_srcdir is set correctly and that the
-make && make install works, sorry.
+Hi!
+Just fyi, the text in [ ] gets removed when patch is applied via git am,
+so this patch description became just:
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/tracing/dynamic_debug/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+"- Check interface and functionality"
 
-diff --git a/testcases/kernel/tracing/dynamic_debug/Makefile b/testcases/kernel/tracing/dynamic_debug/Makefile
-index 2a6e53a11..d38138ed6 100644
---- a/testcases/kernel/tracing/dynamic_debug/Makefile
-+++ b/testcases/kernel/tracing/dynamic_debug/Makefile
-@@ -17,7 +17,7 @@
- #    with this program; if not, see <http://www.gnu.org/licenses/>.
- #
- 
--top_srcdir		?= ../../..
-+top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- 
+I should have caught that before I commited it to the repo...
+
 -- 
-2.13.0
-
+Cyril Hrubis
+chrubis@suse.cz
