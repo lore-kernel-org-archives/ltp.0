@@ -1,46 +1,34 @@
-From: Travis CI <builds@travis-ci.org>
-Date: Wed, 30 Aug 2017 14:45:51 +0000
-Subject: [LTP] Broken: linux-test-project/ltp#398 (master - 79ff360)
-In-Reply-To: <linux-test-project/ltp+270019296+broken@travis-ci.org>
-Message-ID: <59a6cf9f4960_43fc2581e4e201815666@02fdc155-d6b0-4e79-82af-3d7082557257.mail>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 30 Aug 2017 16:58:04 +0200
+Subject: [LTP] [PATCH] [COMMITTED] tracing/dynamic_debug01: Fix Makefile
+Message-ID: <20170830145804.24468-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Build Update for linux-test-project/ltp
--------------------------------------
+I should have checked that the top_srcdir is set correctly and that the
+make && make install works, sorry.
 
-Build: #398
-Status: Broken
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/tracing/dynamic_debug/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Duration: 4 minutes and 11 seconds
-Commit: 79ff360 (master)
-Author: Veronika Kabatova
-Message: - Check interface and functionality
+diff --git a/testcases/kernel/tracing/dynamic_debug/Makefile b/testcases/kernel/tracing/dynamic_debug/Makefile
+index 2a6e53a11..d38138ed6 100644
+--- a/testcases/kernel/tracing/dynamic_debug/Makefile
++++ b/testcases/kernel/tracing/dynamic_debug/Makefile
+@@ -17,7 +17,7 @@
+ #    with this program; if not, see <http://www.gnu.org/licenses/>.
+ #
+ 
+-top_srcdir		?= ../../..
++top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+-- 
+2.13.0
 
-Add a new test to verify enabling and disabling traces with supported
-flags works and doesn't cause any issues.
-
-Dynamic debug was added in kernel 2.6.30, the first version only
-supported "p" flag and used "-" as indicator for no flags set. In
-kernel 3.2, additional flags "flmt" were added. Finally, in kernel
-3.4, the indicator for no flags was changed to "=_".
-
-The test takes into account different kernel versions and interface
-changes listed above.
-
-Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
-
-View the changeset: https://github.com/linux-test-project/ltp/compare/29349f864f70...79ff3609ec94
-
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/270019296?utm_source=email&utm_medium=notification
-
---
-
-You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170830/f965e9d0/attachment.html>
