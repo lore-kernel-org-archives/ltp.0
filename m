@@ -1,38 +1,44 @@
-From: Travis CI <builds@travis-ci.org>
-Date: Wed, 30 Aug 2017 15:15:43 +0000
-Subject: [LTP] Fixed: linux-test-project/ltp#399 (master - 6bf30c6)
-In-Reply-To: <linux-test-project/ltp+270031988+fixed@travis-ci.org>
-Message-ID: <59a6d69fa2f52_43fc1de11d688118294@219c492c-e9bc-4db4-93f8-b8479e5f11a2.mail>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 30 Aug 2017 11:24:17 -0400 (EDT)
+Subject: [LTP] [PATCH v2 2/2] syscalls/mbind: cleanup and rewrite
+ mbind01 into new API
+In-Reply-To: <20170830143542.xigsd3b6f4npam6r@x230>
+References: <20170829153509.12613-1-pvorel@suse.cz>
+ <20170829153509.12613-2-pvorel@suse.cz>
+ <4aff45ce-f45f-147d-e9c2-80eca59d74ec@redhat.com>
+ <20170830123729.txs276jj5aus7qne@dell5510>
+ <740583648.6098356.1504102136816.JavaMail.zimbra@redhat.com>
+ <20170830143542.xigsd3b6f4npam6r@x230>
+Message-ID: <1243222796.6121570.1504106657531.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Build Update for linux-test-project/ltp
--------------------------------------
 
-Build: #399
-Status: Fixed
 
-Duration: 14 minutes and 16 seconds
-Commit: 6bf30c6 (master)
-Author: Cyril Hrubis
-Message: tracing/dynamic_debug01: Fix Makefile
+----- Original Message -----
+> Hi Jan,
+> 
+> > > I'm ok with all but this one. It's needed for a first case
+> > > (POLICY_DESC(MPOL_DEFAULT),),
+> > > no mater whether it's first or not. So I didn't put expected_nodemask to
+> > > it
+> > > in my v3. Or
+> > > am I'm missing something.
+> 
+> > It's not needed, because we compare against "empty_nodemask"
+> > in this case. "nodemask" is not used at all. mbind() doesn't use
+> > any mask (in test_none()) and numa_bitmask_equal() compares
+> > "getnodemask" with "empty_nodemask".
+> 
+> Thanks for an explanation. Please push it all.
 
-I should have checked that the top_srcdir is set correctly and that the
-make && make install works, sorry.
+Pushed.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+I used a version that adds int cast for 1/2,
+no additional changes in 2/2.
 
-View the changeset: https://github.com/linux-test-project/ltp/compare/79ff3609ec94...6bf30c65f088
-
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/270031988?utm_source=email&utm_medium=notification
-
---
-
-You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170830/2cb13700/attachment.html>
+Regards,
+Jan
