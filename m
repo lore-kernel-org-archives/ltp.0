@@ -1,35 +1,46 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 30 Aug 2017 16:35:42 +0200
-Subject: [LTP] [PATCH v2 2/2] syscalls/mbind: cleanup and rewrite
- mbind01 into new API
-In-Reply-To: <740583648.6098356.1504102136816.JavaMail.zimbra@redhat.com>
-References: <20170829153509.12613-1-pvorel@suse.cz>
- <20170829153509.12613-2-pvorel@suse.cz>
- <4aff45ce-f45f-147d-e9c2-80eca59d74ec@redhat.com>
- <20170830123729.txs276jj5aus7qne@dell5510>
- <740583648.6098356.1504102136816.JavaMail.zimbra@redhat.com>
-Message-ID: <20170830143542.xigsd3b6f4npam6r@x230>
+From: Travis CI <builds@travis-ci.org>
+Date: Wed, 30 Aug 2017 14:45:51 +0000
+Subject: [LTP] Broken: linux-test-project/ltp#398 (master - 79ff360)
+In-Reply-To: <linux-test-project/ltp+270019296+broken@travis-ci.org>
+Message-ID: <59a6cf9f4960_43fc2581e4e201815666@02fdc155-d6b0-4e79-82af-3d7082557257.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-> > I'm ok with all but this one. It's needed for a first case
-> > (POLICY_DESC(MPOL_DEFAULT),),
-> > no mater whether it's first or not. So I didn't put expected_nodemask to it
-> > in my v3. Or
-> > am I'm missing something.
+Build: #398
+Status: Broken
 
-> It's not needed, because we compare against "empty_nodemask"
-> in this case. "nodemask" is not used at all. mbind() doesn't use
-> any mask (in test_none()) and numa_bitmask_equal() compares
-> "getnodemask" with "empty_nodemask".
+Duration: 4 minutes and 11 seconds
+Commit: 79ff360 (master)
+Author: Veronika Kabatova
+Message: - Check interface and functionality
 
-Thanks for an explanation. Please push it all.
+Add a new test to verify enabling and disabling traces with supported
+flags works and doesn't cause any issues.
 
+Dynamic debug was added in kernel 2.6.30, the first version only
+supported "p" flag and used "-" as indicator for no flags set. In
+kernel 3.2, additional flags "flmt" were added. Finally, in kernel
+3.4, the indicator for no flags was changed to "=_".
 
-Kind regards,
-Petr
+The test takes into account different kernel versions and interface
+changes listed above.
+
+Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
+
+View the changeset: https://github.com/linux-test-project/ltp/compare/29349f864f70...79ff3609ec94
+
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/270019296?utm_source=email&utm_medium=notification
+
+--
+
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170830/f965e9d0/attachment.html>
