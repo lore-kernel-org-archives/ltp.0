@@ -1,36 +1,38 @@
-From: enh <enh@google.com>
-Date: Wed, 30 Aug 2017 08:07:15 -0700
-Subject: [LTP] [PATCH v2] android: pty01: Fix pty01 test for Android.
-In-Reply-To: <20170830070619.34ejq2ohqqijmpbz@x230>
-References: <20170829002637.25643-1-sspatil@google.com>
- <20170829090825.lgjzm5kqnnbhldhr@dell5510>
- <CAJgzZoqWAFonKprb2rWEXj47mus52Mj_kYtoFhu9EJ5sCkqUeA@mail.gmail.com>
- <20170830070619.34ejq2ohqqijmpbz@x230>
-Message-ID: <CAJgzZoq=dW8+U7R6Hybu69phdehnzC63kj1scXxrXO7Up=_d=w@mail.gmail.com>
+From: Travis CI <builds@travis-ci.org>
+Date: Wed, 30 Aug 2017 15:15:43 +0000
+Subject: [LTP] Fixed: linux-test-project/ltp#399 (master - 6bf30c6)
+In-Reply-To: <linux-test-project/ltp+270031988+fixed@travis-ci.org>
+Message-ID: <59a6d69fa2f52_43fc1de11d688118294@219c492c-e9bc-4db4-93f8-b8479e5f11a2.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Aug 30, 2017 at 12:06 AM, Petr Vorel <pvorel@suse.cz> wrote:
-> Hi,
->
->> > I wonder, whether it's really better to use __BIONIC__ instead of __ANDROID__ (works with
->> > both), but assume it is if it's really bionic specific.
->
->> yeah, grantpt unconditionally does nothing in bionic, regardless of
->> whether you're running on an Android device or a desktop/server Linux
->> box.
-> OT: I didn't think there would be any use of bionic apart from Android (e.g. Linux /BSD
-> distro using it), but there is one project (not very active now):
-> https://github.com/gentoobionic/bionic
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-we're moving towards it internally for more hermetic builds, which is
-why we've been running in to a lot of these lately. historically
-almost no-one ever made a distinction, and almost always chose
-__ANDROID__ for some reason. (even though __linux__ and __BIONIC__ are
-usually the more accurate choices.)
+Build: #399
+Status: Fixed
 
-> Kind regards,
-> Petr
+Duration: 14 minutes and 16 seconds
+Commit: 6bf30c6 (master)
+Author: Cyril Hrubis
+Message: tracing/dynamic_debug01: Fix Makefile
+
+I should have checked that the top_srcdir is set correctly and that the
+make && make install works, sorry.
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+
+View the changeset: https://github.com/linux-test-project/ltp/compare/79ff3609ec94...6bf30c65f088
+
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/270031988?utm_source=email&utm_medium=notification
+
+--
+
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170830/2cb13700/attachment.html>
