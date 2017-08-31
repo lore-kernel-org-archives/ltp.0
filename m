@@ -1,13 +1,15 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 31 Aug 2017 21:55:17 +0200
+Date: Thu, 31 Aug 2017 18:21:37 +0200
 Subject: [LTP] [PATCH 1/1] lib6/in6_01.c: Remove IPv6 addresses which do not
 	comply RFC 2373
-Message-ID: <20170831195517.22786-1-pvorel@suse.cz>
+Message-ID: <20170831162137.31948-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
+
+From: Petr Vorel <petr.vorel@gmail.com>
 
 glibc 2.26 starts rejecting IPv6 addresses which do not comply RFC 2373.
 
@@ -22,7 +24,7 @@ Date:   Fri Jun 23 22:51:00 2017 +0200
 See also:
 https://sourceware.org/bugzilla/show_bug.cgi?id=16637
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
 ---
  testcases/network/lib6/in6_01.c | 2 --
  1 file changed, 2 deletions(-)
@@ -41,5 +43,5 @@ index f7186b480..3a96ed17d 100644
  
  #define MAPSIZE (sizeof(maptab)/sizeof(maptab[0]))
 -- 
-2.14.0
+2.14.1
 
