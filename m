@@ -1,44 +1,40 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 30 Aug 2017 11:24:17 -0400 (EDT)
-Subject: [LTP] [PATCH v2 2/2] syscalls/mbind: cleanup and rewrite
- mbind01 into new API
-In-Reply-To: <20170830143542.xigsd3b6f4npam6r@x230>
-References: <20170829153509.12613-1-pvorel@suse.cz>
- <20170829153509.12613-2-pvorel@suse.cz>
- <4aff45ce-f45f-147d-e9c2-80eca59d74ec@redhat.com>
- <20170830123729.txs276jj5aus7qne@dell5510>
- <740583648.6098356.1504102136816.JavaMail.zimbra@redhat.com>
- <20170830143542.xigsd3b6f4npam6r@x230>
-Message-ID: <1243222796.6121570.1504106657531.JavaMail.zimbra@redhat.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 31 Aug 2017 10:59:39 +0800
+Subject: [LTP] [PATCH] hugemmap/hugemmap05.c: fix warnings in cleanup()
+Message-ID: <1504148379-8552-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+1) We only destroy the shared memory segment if it was still created.
+2) We only close and delete the test file if it was still created and opened.
+
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
+index 90389dd..c73a975 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
+@@ -178,9 +178,10 @@ static void test_overcommit(void)
+ 
+ static void cleanup(void)
+ {
+-	if (opt_shmid) {
++	if (opt_shmid && shmid != -1)
+ 		SAFE_SHMCTL(shmid, IPC_RMID, NULL);
+-	} else {
++
++	if (!opt_shmid && fd != -1) {
+ 		SAFE_CLOSE(fd);
+ 		SAFE_UNLINK(TEST_FILE);
+ 	}
+-- 
+1.8.3.1
 
 
------ Original Message -----
-> Hi Jan,
-> 
-> > > I'm ok with all but this one. It's needed for a first case
-> > > (POLICY_DESC(MPOL_DEFAULT),),
-> > > no mater whether it's first or not. So I didn't put expected_nodemask to
-> > > it
-> > > in my v3. Or
-> > > am I'm missing something.
-> 
-> > It's not needed, because we compare against "empty_nodemask"
-> > in this case. "nodemask" is not used at all. mbind() doesn't use
-> > any mask (in test_none()) and numa_bitmask_equal() compares
-> > "getnodemask" with "empty_nodemask".
-> 
-> Thanks for an explanation. Please push it all.
 
-Pushed.
-
-I used a version that adds int cast for 1/2,
-no additional changes in 2/2.
-
-Regards,
-Jan
