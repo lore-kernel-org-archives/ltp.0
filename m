@@ -1,8 +1,8 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 31 Aug 2017 21:46:42 +0200
+Date: Thu, 31 Aug 2017 21:55:17 +0200
 Subject: [LTP] [PATCH 1/1] lib6/in6_01.c: Remove IPv6 addresses which do not
 	comply RFC 2373
-Message-ID: <20170831194642.4320-1-pvorel@suse.cz>
+Message-ID: <20170831195517.22786-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -41,5 +41,5 @@ index f7186b480..3a96ed17d 100644
  
  #define MAPSIZE (sizeof(maptab)/sizeof(maptab[0]))
 -- 
-2.14.1
+2.14.0
 
