@@ -1,187 +1,122 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Fri,  1 Sep 2017 15:01:16 +0200
-Subject: [LTP] [PATCH v3 2/7] tst_atomic: Add atomic store and load tests
+Date: Fri,  1 Sep 2017 15:01:19 +0200
+Subject: [LTP] [PATCH v3 5/7] Convert cve-2016-7117 test to use long running
+	threads
 In-Reply-To: <20170901130121.22821-1-rpalethorpe@suse.com>
 References: <20170901130121.22821-1-rpalethorpe@suse.com>
-Message-ID: <20170901130121.22821-2-rpalethorpe@suse.com>
+Message-ID: <20170901130121.22821-5-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Similar to test09.
-
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- lib/newlib_tests/.gitignore |   1 +
- lib/newlib_tests/Makefile   |   1 +
- lib/newlib_tests/test15.c   | 132 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 134 insertions(+)
- create mode 100644 lib/newlib_tests/test15.c
+ testcases/cve/cve-2016-7117.c | 47 +++++++++++++++++++++++++------------------
+ 1 file changed, 27 insertions(+), 20 deletions(-)
 
-diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
-index 8e120074e..7d47a6531 100644
---- a/lib/newlib_tests/.gitignore
-+++ b/lib/newlib_tests/.gitignore
-@@ -12,6 +12,7 @@ test11
- test12
- test13
- test14
-+test15
- tst_device
- tst_safe_fileops
- tst_res_hexd
-diff --git a/lib/newlib_tests/Makefile b/lib/newlib_tests/Makefile
-index e9976e5ba..e86d8f23a 100644
---- a/lib/newlib_tests/Makefile
-+++ b/lib/newlib_tests/Makefile
-@@ -7,6 +7,7 @@ LDLIBS			+= -lltp
+diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
+index deb667761..3cb7efcdf 100644
+--- a/testcases/cve/cve-2016-7117.c
++++ b/testcases/cve/cve-2016-7117.c
+@@ -71,7 +71,7 @@ struct mmsghdr {
+ };
+ #endif
  
- test08: CFLAGS+=-pthread
- test09: CFLAGS+=-pthread
-+test15: CFLAGS+=-pthread
+-static int socket_fds[2];
++static volatile int socket_fds[2];
+ static struct mmsghdr msghdrs[2] = {
+ 	{
+ 		.msg_hdr = {
+@@ -94,40 +94,53 @@ static struct mmsghdr msghdrs[2] = {
+ static char rbuf[sizeof(MSG)];
+ static struct timespec timeout = { .tv_sec = RECV_TIMEOUT };
+ static struct tst_fzsync_pair fzsync_pair = TST_FZSYNC_PAIR_INIT;
++static pthread_t pt_send;
++static void *send_and_close(void *);
++
++static void setup(void)
++{
++	SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, 0);
++}
  
- ifeq ($(ANDROID),1)
- FILTER_OUT_MAKE_TARGETS	+= test08
-diff --git a/lib/newlib_tests/test15.c b/lib/newlib_tests/test15.c
-new file mode 100644
-index 000000000..ba3cc963f
---- /dev/null
-+++ b/lib/newlib_tests/test15.c
-@@ -0,0 +1,132 @@
-+/*
-+ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
+ static void cleanup(void)
+ {
+ 	close(socket_fds[0]);
+ 	close(socket_fds[1]);
 +
-+/*
-+ * A basic regression test for tst_atomic_{load,store}. Also provides a
-+ * limited check that atomic stores and loads order non-atomic memory
-+ * accesses. That is, we are checking that they implement memory fences or
-+ * barriers.
-+ *
-+ * Many architectures/machines will still pass the test even if you remove the
-+ * atomic functions. X86 in particular has strong memory ordering by default
-+ * so that should always pass (if you use volatile). However Aarch64
-+ * (Raspberry Pi 3 Model B) has been observed to fail without the atomic
-+ * functions.
-+ *
-+ * A failure can occur if an update to seq_n is not made globally visible by
-+ * the time the next thread needs to use it.
-+ */
-+
-+#include <stdint.h>
-+#include <pthread.h>
-+#include "tst_test.h"
-+#include "tst_atomic.h"
-+
-+#define THREADS 64
-+#define FILLER (1 << 20)
-+
-+/* Uncomment these to see what happens without atomics. To prevent the compiler
-+ * from removing/reording atomic and seq_n, mark them as volatile.
-+ */
-+/* #define tst_atomic_load(v) (*(v)) */
-+/* #define tst_atomic_store(i, v) *(v) = (i) */
-+
-+struct block {
-+	int seq_n;
-+	intptr_t id;
-+	intptr_t filler[FILLER];
-+};
-+
-+static int atomic;
-+static int *seq_n;
-+static struct block *m;
-+
-+static void *worker_load_store(void *_id)
-+{
-+	intptr_t id = (intptr_t)_id, i;
-+
-+	for (i = (intptr_t)tst_atomic_load(&atomic);
-+	     i != id;
-+	     i = (intptr_t)tst_atomic_load(&atomic))
-+		;
-+
-+	(m + (*seq_n))->id = id;
-+	*seq_n += 1;
-+	tst_atomic_store((int)i + 1, &atomic);
-+
-+	return NULL;
-+}
-+
-+static void *cache_ruiner(void *vp LTP_ATTRIBUTE_UNUSED)
-+{
-+	intptr_t i = 0, j;
-+	struct block *cur = m;
-+
-+	tst_res(TINFO, "cache ruiner started");
-+	while (tst_atomic_load(&atomic) > 0) {
-+		for (j = 0; j < FILLER; j++)
-+			cur->filler[j] = j;
-+
-+		if (i < THREADS - 1) {
-+			cur = m + (++i);
-+		} else {
-+			i = 0;
-+			cur = m;
-+		}
++	if (pt_send) {
++		tst_fzsync_pair_exit(&fzsync_pair);
++		SAFE_PTHREAD_JOIN(pt_send, 0);
 +	}
-+
-+	return NULL;
-+}
-+
-+static void do_test(void)
-+{
-+	intptr_t i, id;
-+	pthread_t threads[THREADS + 1];
-+
-+	atomic = 0;
-+	m = (struct block *)SAFE_MMAP(NULL, sizeof(*m) * THREADS,
-+				      PROT_READ | PROT_WRITE,
-+				      MAP_PRIVATE | MAP_ANONYMOUS,
-+				      -1, 0);
-+	seq_n = &((m + THREADS / 2)->seq_n);
-+
-+	pthread_create(threads+THREADS, NULL, cache_ruiner, NULL);
-+	for (i = THREADS - 1; i >= 0; i--)
-+		pthread_create(threads+i, NULL, worker_load_store, (void *)i);
-+
-+	for (i = 0; i < THREADS; i++) {
-+		tst_res(TINFO, "Joining thread %li", i);
-+		pthread_join(threads[i], NULL);
+ }
+ 
+ static void *send_and_close(void *arg)
+ {
+-	send(socket_fds[0], MSG, sizeof(MSG), 0);
+-	send(socket_fds[0], MSG, sizeof(MSG), 0);
+-
+-	tst_fzsync_delay_b(&fzsync_pair);
++	while (tst_fzsync_wait_update_b(&fzsync_pair)) {
++		send(socket_fds[0], MSG, sizeof(MSG), 0);
++		send(socket_fds[0], MSG, sizeof(MSG), 0);
+ 
+-	close(socket_fds[0]);
+-	close(socket_fds[1]);
+-	tst_fzsync_time_b(&fzsync_pair);
++		tst_fzsync_delay_b(&fzsync_pair);
+ 
++		close(socket_fds[0]);
++		close(socket_fds[1]);
++		tst_fzsync_time_b(&fzsync_pair);
++		if (!tst_fzsync_wait_b(&fzsync_pair))
++			break;
 +	}
-+	tst_atomic_store(-1, &atomic);
-+	pthread_join(*(threads+THREADS), NULL);
-+
-+	tst_res(TINFO, "Expected\tFound");
-+	for (i = 0; i < THREADS; i++) {
-+		id = (m + i)->id;
-+		if (id != i)
-+			tst_res(TFAIL, "%d\t\t%d", (int)i, (int)id);
-+		else
-+			tst_res(TPASS, "%d\t\t%d", (int)i, (int)id);
-+	}
-+
-+	SAFE_MUNMAP(m, sizeof(*m) * THREADS);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = do_test,
-+};
+ 	return arg;
+ }
+ 
+ static void run(void)
+ {
+-	pthread_t pt_send;
+ 	int i, stat, too_early_count = 0;
+ 
+ 	msghdrs[0].msg_hdr.msg_iov->iov_base = (void *)&rbuf;
+ 
+ 	for (i = 1; i < ATTEMPTS; i++) {
+-		if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, socket_fds))
++		if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, (int *)socket_fds))
+ 			tst_brk(TBROK | TERRNO, "Socket creation failed");
+ 
+-		SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, 0);
+-
++		tst_fzsync_wait_update_a(&fzsync_pair);
+ 		tst_fzsync_delay_a(&fzsync_pair);
+ 
+ 		stat = tst_syscall(__NR_recvmmsg,
+@@ -140,20 +153,14 @@ static void run(void)
+ 		else if (stat < 0)
+ 			tst_res(TWARN | TERRNO, "recvmmsg failed unexpectedly");
+ 
+-		SAFE_PTHREAD_JOIN(pt_send, 0);
+-
+-		tst_fzsync_pair_update(i, &fzsync_pair);
+-		if (!(i & 0x7FFFF)) {
+-			tst_res(TINFO, "Too early: %.1f%%",
+-				100 * too_early_count / (float)i);
+-			tst_fzsync_pair_info(&fzsync_pair);
+-		}
++		tst_fzsync_wait_a(&fzsync_pair);
+ 	}
+ 
+ 	tst_res(TPASS, "Nothing happened after %d attempts", ATTEMPTS);
+ }
+ 
+ static struct tst_test test = {
++	.setup = setup,
+ 	.test_all = run,
+ 	.cleanup = cleanup,
+ 	.min_kver = "2.6.33",
 -- 
 2.14.1
 
