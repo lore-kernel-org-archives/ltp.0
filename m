@@ -1,433 +1,171 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Fri,  1 Sep 2017 15:01:15 +0200
-Subject: [LTP] [PATCH v3 1/7] tst_atomic: Add load,
-	store and use __atomic builtins
-Message-ID: <20170901130121.22821-1-rpalethorpe@suse.com>
+Date: Fri,  1 Sep 2017 16:13:43 +0200
+Subject: [LTP] [PATCH v2] thp01: Find largest arguments size
+In-Reply-To: <20170901100319.GA26071@rei>
+References: <20170901100319.GA26071@rei>
+Message-ID: <20170901141343.27416-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Also add more fallback inline assembly for the existing architectures and add
-SPARC64. Use the __atomic_* compiler intrinsics when available.
+Because of kernel commit da029c11e6b1 the arguments size for exec has been
+reduced considerably. This causes exec to fail with E2BIG, so we call it
+repeatedly with a decreasing number of arguments until it is successful.
+
+As far as I know, there is no other reliable and easy way to determine the
+maximum argument length.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
 
-V3 - I have just updated the comments at the top of tst_atomic.h and tst_fuzzy_sync.h.
+V2 - Reduced the argument length, but increased the argument array and
+     switched to a binary search
 
- configure.ac             |   1 +
- include/tst_atomic.h     | 265 +++++++++++++++++++++++++++++++++++++++++------
- include/tst_fuzzy_sync.h |   1 +
- m4/ltp-atomic.m4         |  34 ++++++
- 4 files changed, 272 insertions(+), 29 deletions(-)
- create mode 100644 m4/ltp-atomic.m4
+ testcases/kernel/mem/thp/thp01.c | 96 ++++++++++++++++++++++++++++------------
+ 1 file changed, 67 insertions(+), 29 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index 23e583dd8..e4f26fe88 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -194,5 +194,6 @@ LTP_CHECK_BUILTIN_CLEAR_CACHE
- LTP_CHECK_MMSGHDR
- LTP_CHECK_UNAME_DOMAINNAME
- LTP_CHECK_X_TABLES
-+LTP_CHECK_ATOMIC_MEMORY_MODEL
- 
- AC_OUTPUT
-diff --git a/include/tst_atomic.h b/include/tst_atomic.h
-index 35a3b3411..ac8ad849f 100644
---- a/include/tst_atomic.h
-+++ b/include/tst_atomic.h
-@@ -14,18 +14,94 @@
-  * You should have received a copy of the GNU General Public License
-  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+diff --git a/testcases/kernel/mem/thp/thp01.c b/testcases/kernel/mem/thp/thp01.c
+index 101a9b5c8..cd14bec14 100644
+--- a/testcases/kernel/mem/thp/thp01.c
++++ b/testcases/kernel/mem/thp/thp01.c
+@@ -30,6 +30,7 @@
+  * ....
   */
-+/* The LTP library has some of its own atomic synchronisation primitives
-+ * contained in this file. Generally speaking these should not be used
-+ * directly in tests for synchronisation, instead use tst_checkpoint.h,
-+ * tst_fuzzy_sync.h or the POSIX library.
-+ *
-+ * Notes on compile and runtime memory barriers and atomics.
-+ *
-+ * Within the LTP library we have three concerns when accessing variables
-+ * shared by multiple threads or processes:
-+ *
-+ * (1) Removal or reordering of accesses by the compiler.
-+ * (2) Atomicity of addition.
-+ * (3) LOAD-STORE ordering between threads.
-+ *
-+ * The first (1) is the most likely to cause an error if not properly
-+ * handled. We avoid it by using volatile variables and statements which will
-+ * not be removed or reordered by the compiler during optimisation. This includes
-+ * the __atomic and __sync intrinsics and volatile asm statements marked with
-+ * "memory" as well as variables marked with volatile.
-+ *
-+ * On any platform Linux is likely to run on, a LOAD (fetch) or STORE of a
-+ * 32-bit integer will be atomic. However fetching and adding to a variable is
-+ * quite likely not; so for (2) we need to ensure we use atomic addition.
-+ *
-+ * Finally, for tst_fuzzy_sync at least, we need to ensure that LOADs and
-+ * STOREs of any shared variables (including non-atomics) that are made
-+ * between calls to tst_fzsync_wait are completed (globally visible) before
-+ * tst_fzsync_wait completes. For this, runtime memory and instruction
-+ * barriers are required in addition to compile time.
-+ *
-+ * We use full sequential ordering (__ATOMIC_SEQ_CST) for the sake of
-+ * simplicity. LTP tests tend to be syscall heavy so any performance gain from
-+ * using a weaker memory model is unlikely to result in a relatively large
-+ * performance improvement while at the same time being a potent source of
-+ * confusion.
-+ *
-+ * Likewise, for the fallback ASM, the simplest "definitely will work, always"
-+ * approach is preferred over anything more performant.
-+ *
-+ * Also see Documentation/memory-barriers.txt in the kernel tree and
-+ * https://gcc.gnu.org/onlinedocs/gcc/_005f_005fatomic-Builtins.html
-+ * terminology may vary between sources.
-+ */
  
- #ifndef TST_ATOMIC_H__
- #define TST_ATOMIC_H__
++#include <errno.h>
+ #include <sys/types.h>
+ #include <sys/resource.h>
+ #include <sys/wait.h>
+@@ -38,56 +39,92 @@
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include "mem.h"
++#include "tst_minmax.h"
++#include "tst_safe_sysv_ipc.h"
  
- #include "config.h"
+-#define ARRAY_SZ	256
++#define ARGS_SZ	256 * 32
  
--#if HAVE_SYNC_ADD_AND_FETCH == 1
-+#if HAVE_ATOMIC_MEMORY_MODEL == 1
-+static inline int tst_atomic_add_return(int i, int *v)
-+{
-+	return __atomic_add_fetch(v, i, __ATOMIC_SEQ_CST);
-+}
-+
-+static inline int tst_atomic_load(int *v)
-+{
-+	return __atomic_load_n(v, __ATOMIC_SEQ_CST);
-+}
-+
-+static inline void tst_atomic_store(int i, int *v)
-+{
-+	__atomic_store_n(v, i, __ATOMIC_SEQ_CST);
-+}
-+
-+#elif HAVE_SYNC_ADD_AND_FETCH == 1
- static inline int tst_atomic_add_return(int i, int *v)
+-static int ps;
+-static long length;
+-static char *array[ARRAY_SZ];
++static char *args[ARGS_SZ];
+ static char *arg;
+-static struct rlimit rl = {
+-	.rlim_cur = RLIM_INFINITY,
+-	.rlim_max = RLIM_INFINITY,
+-};
++static long *arg_count, *change, *arg_count_next;
+ 
+ static void thp_test(void)
  {
- 	return __sync_add_and_fetch(v, i);
- }
+-	int i;
+ 	pid_t pid;
  
-+static inline int tst_atomic_load(int *v)
-+{
-+	int ret;
+-	switch (pid = SAFE_FORK()) {
+-	case 0:
+-		memset(arg, 'c', length - 1);
+-		arg[length - 1] = '\0';
+-		array[0] = "true";
+-		for (i = 1; i < ARRAY_SZ - 1; i++)
+-			array[i] = arg;
+-		array[ARRAY_SZ - 1] = NULL;
+-		if (setrlimit(RLIMIT_STACK, &rl) == -1) {
+-			perror("setrlimit");
+-			exit(1);
+-		}
+-		if (execvp("true", array) == -1) {
+-			perror("execvp");
+-			exit(1);
++	while (*change > 1) {
++		*arg_count = *arg_count_next;
++		*change /= 2;
++		*arg_count_next = *arg_count + *change;
 +
-+	__sync_synchronize();
-+	ret = *v;
-+	__sync_synchronize();
-+	return ret;
-+}
++		pid = SAFE_FORK();
++		if (!pid) {
++			args[*arg_count] = NULL;
 +
-+static inline void tst_atomic_store(int i, int *v)
-+{
-+	__sync_synchronize();
-+	*v = i;
-+	__sync_synchronize();
-+}
++			TEST(execvp("true", args));
++			if (TEST_ERRNO != E2BIG)
++				tst_brk(TBROK | TTERRNO, "execvp(\"true\", ...)");
 +
- #elif defined(__i386__) || defined(__x86_64__)
- static inline int tst_atomic_add_return(int i, int *v)
- {
-@@ -33,36 +109,31 @@ static inline int tst_atomic_add_return(int i, int *v)
- 
- 	/*
- 	 * taken from arch/x86/include/asm/cmpxchg.h
--	 * Since we always pass int sized parameter, we can simplify it
--	 * and cherry-pick only that specific case.
--	 *
--	switch (sizeof(*v)) {
--	case 1:
--		asm volatile ("lock; xaddb %b0, %1\n"
--			: "+q" (__ret), "+m" (*v) : : "memory", "cc");
--		break;
--	case 2:
--		asm volatile ("lock; xaddw %w0, %1\n"
--			: "+r" (__ret), "+m" (*v) : : "memory", "cc");
--		break;
--	case 4:
--		asm volatile ("lock; xaddl %0, %1\n"
--			: "+r" (__ret), "+m" (*v) : : "memory", "cc");
--		break;
--	case 8:
--		asm volatile ("lock; xaddq %q0, %1\n"
--			: "+r" (__ret), "+m" (*v) : : "memory", "cc");
--		break;
++			*arg_count_next = *arg_count - *change;
++			exit(0);
+ 		}
 -	default:
--		__xadd_wrong_size();
--	}
--	*/
-+	 */
- 	asm volatile ("lock; xaddl %0, %1\n"
- 		: "+r" (__ret), "+m" (*v) : : "memory", "cc");
++		  tst_res(TINFO, "count: %ld, change: %ld, next: %ld",
++				*arg_count, *change, *arg_count_next);
+ 		tst_reap_children();
+ 	}
  
- 	return i + __ret;
++	pid = SAFE_FORK();
++	if (!pid) {
++		args[*arg_count] = NULL;
++		do {
++			TEST(execvp("true", args));
++			if (TEST_ERRNO != E2BIG)
++				tst_brk(TBROK | TTERRNO, "execvp(\"true\", ...)");
++			tst_res(TINFO, "Binary search finished on 2BIG value: %ld",
++				*arg_count);
++			args[--(*arg_count)] = NULL;
++		} while (*arg_count > 0);
++		exit(0);
++	}
++
+ 	tst_res(TPASS, "system didn't crash, pass.");
  }
  
-+static inline int tst_atomic_load(int *v)
-+{
-+	int ret;
-+
-+	asm volatile("" : : : "memory");
-+	ret = *v;
-+	asm volatile("" : : : "memory");
-+
-+	return ret;
-+}
-+
-+static inline void tst_atomic_store(int i, int *v)
-+{
-+	asm volatile("" : : : "memory");
-+	*v = i;
-+	asm volatile("" : : : "memory");
-+}
-+
- #elif defined(__powerpc__) || defined(__powerpc64__)
- static inline int tst_atomic_add_return(int i, int *v)
+ static void setup(void)
  {
-@@ -83,7 +154,26 @@ static inline int tst_atomic_add_return(int i, int *v)
- 	return t;
+-	ps = sysconf(_SC_PAGESIZE);
+-	length = 32 * ps;
+-	arg = SAFE_MALLOC(length);
++	struct rlimit rl = {
++		.rlim_cur = RLIM_INFINITY,
++		.rlim_max = RLIM_INFINITY,
++	};
++	int i;
++	long arg_len;
++
++	arg_count = SAFE_MMAP(NULL, sizeof(*arg_count) * 3,
++			      PROT_READ | PROT_WRITE,
++			      MAP_ANONYMOUS | MAP_SHARED, -1, 0);
++	arg_count_next = arg_count + 1;
++	change = arg_count + 2;
++
++	arg_len = sysconf(_SC_PAGESIZE);
++	arg = SAFE_MALLOC(arg_len);
++	memset(arg, 'c', arg_len - 1);
++	arg[arg_len - 1] = '\0';
++
++	args[0] = "true";
++	*change = (ARGS_SZ - 1) / 2;
++	for (i = 1; i < ARGS_SZ - 1; i++)
++		args[i] = arg;
++	*arg_count_next += *change;
++
++	SAFE_SETRLIMIT(RLIMIT_STACK, &rl);
  }
  
-+static inline int tst_atomic_load(int *v)
-+{
-+	int ret;
-+
-+	asm volatile("sync\n" : : : "memory");
-+	ret = *v;
-+	asm volatile("sync\n" : : : "memory");
-+
-+	return ret;
-+}
-+
-+static inline void tst_atomic_store(int i, int *v)
-+{
-+	asm volatile("sync\n" : : : "memory");
-+	*v = i;
-+	asm volatile("sync\n" : : : "memory");
-+}
-+
- #elif defined(__s390__) || defined(__s390x__)
-+
- static inline int tst_atomic_add_return(int i, int *v)
+ static void cleanup(void)
  {
- 	int old_val, new_val;
-@@ -102,11 +192,29 @@ static inline int tst_atomic_add_return(int i, int *v)
- 	return old_val + i;
+-	free(arg);
++	if (arg)
++		free(arg);
++	if (arg_count)
++		SAFE_MUNMAP(arg_count, sizeof(*arg_count));
  }
  
-+static inline int tst_atomic_load(int *v)
-+{
-+	int ret;
-+
-+	asm volatile("" : : : "memory");
-+	ret = *v;
-+	asm volatile("" : : : "memory");
-+
-+	return ret;
-+}
-+
-+static inline void tst_atomic_store(int i, int *v)
-+{
-+	asm volatile("" : : : "memory");
-+	*v = i;
-+	asm volatile("" : : : "memory");
-+}
-+
- #elif defined(__arc__)
- 
- /*ARCv2 defines the smp barriers */
- #ifdef __ARC700__
--#define smp_mb()
-+#define smp_mb()	asm volatile("" : : : "memory")
- #else
- #define smp_mb()	asm volatile("dmb 3\n" : : : "memory")
- #endif
-@@ -132,6 +240,24 @@ static inline int tst_atomic_add_return(int i, int *v)
- 	return val;
- }
- 
-+static inline int tst_atomic_load(int *v)
-+{
-+	int ret;
-+
-+	smp_mb();
-+	ret = *v;
-+	smp_mb();
-+
-+	return ret;
-+}
-+
-+static inline void tst_atomic_store(int i, int *v)
-+{
-+	smp_mb();
-+	*v = i;
-+	smp_mb();
-+}
-+
- #elif defined (__aarch64__)
- static inline int tst_atomic_add_return(int i, int *v)
- {
-@@ -140,7 +266,7 @@ static inline int tst_atomic_add_return(int i, int *v)
- 
- 	__asm__ __volatile__(
- "       prfm    pstl1strm, %2	\n"
--"1:     ldxr 	%w0, %2		\n"
-+"1:     ldaxr	%w0, %2		\n"
- "       add	%w0, %w0, %w3	\n"
- "       stlxr	%w1, %w0, %2	\n"
- "       cbnz	%w1, 1b		\n"
-@@ -152,9 +278,90 @@ static inline int tst_atomic_add_return(int i, int *v)
- 	return result;
- }
- 
-+/* We are using load and store exclusive (ldaxr & stlxr) instructions to try
-+ * and help prevent the tst_atomic_load and, more likely, tst_atomic_store
-+ * functions from interfering with tst_atomic_add_return which takes advantage
-+ * of exclusivity. It is not clear if this is a good idea or not, but does
-+ * mean that all three functions are very similar.
-+ */
-+static inline int tst_atomic_load(int *v)
-+{
-+	int ret;
-+	unsigned long tmp;
-+
-+	asm volatile("//atomic_load			\n"
-+		"	prfm	pstl1strm,  %[v]	\n"
-+		"1:	ldaxr	%w[ret], %[v]		\n"
-+		"	stlxr   %w[tmp], %w[ret], %[v]  \n"
-+		"	cbnz    %w[tmp], 1b		\n"
-+		"	dmb ish				\n"
-+		: [tmp] "=&r" (tmp), [ret] "=&r" (ret), [v] "+Q" (*v)
-+		: : "memory");
-+
-+	return ret;
-+}
-+
-+static inline void tst_atomic_store(int i, int *v)
-+{
-+	unsigned long tmp;
-+
-+	asm volatile("//atomic_store			\n"
-+		"	prfm	pstl1strm, %[v]		\n"
-+		"1:	ldaxr	%w[tmp], %[v]		\n"
-+		"	stlxr   %w[tmp], %w[i], %[v]	\n"
-+		"	cbnz    %w[tmp], 1b		\n"
-+		"	dmb ish				\n"
-+		: [tmp] "=&r" (tmp), [v] "+Q" (*v)
-+		: [i] "r" (i)
-+		: "memory");
-+}
-+
-+#elif defined(__sparc__) && defined(__arch64__)
-+static inline int tst_atomic_add_return(int i, int *v)
-+{
-+	int ret, tmp;
-+
-+	/* Based on arch/sparc/lib/atomic_64.S with the exponential backoff
-+	 * function removed because we are unlikely to have a large (>= 16?)
-+	 * number of cores continuously trying to update one variable.
-+	 */
-+	asm volatile("/*atomic_add_return*/		\n"
-+		"1:	ldsw	[%[v]], %[ret];		\n"
-+		"	add	%[ret], %[i], %[tmp];	\n"
-+		"	cas	[%[v]], %[ret], %[tmp];	\n"
-+		"	cmp	%[ret], %[tmp];		\n"
-+		"	bne,pn	%%icc, 1b;		\n"
-+		"	nop;				\n"
-+		"	add	%[ret], %[i], %[ret];	\n"
-+		: [ret] "=r&" (ret), [tmp] "=r&" (tmp)
-+		: [i] "r" (i), [v] "r" (v)
-+		: "memory", "cc");
-+
-+	return ret;
-+}
-+
-+static inline int tst_atomic_load(int *v)
-+{
-+	int ret;
-+
-+	/* See arch/sparc/include/asm/barrier_64.h */
-+	asm volatile("" : : : "memory");
-+	ret = *v;
-+	asm volatile("" : : : "memory");
-+
-+	return ret;
-+}
-+
-+static inline void tst_atomic_store(int i, int *v)
-+{
-+	asm volatile("" : : : "memory");
-+	*v = i;
-+	asm volatile("" : : : "memory");
-+}
-+
- #else /* HAVE_SYNC_ADD_AND_FETCH == 1 */
--# error Your compiler does not provide __sync_add_and_fetch and LTP\
--	implementation is missing for your architecture.
-+# error Your compiler does not provide __atomic_add_fetch, __sync_add_and_fetch \
-+        and an LTP implementation is missing for your architecture.
- #endif
- 
- static inline int tst_atomic_inc(int *v)
-diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-index 229217495..f97137c35 100644
---- a/include/tst_fuzzy_sync.h
-+++ b/include/tst_fuzzy_sync.h
-@@ -32,6 +32,7 @@
- 
- #include <sys/time.h>
- #include <time.h>
-+#include "tst_atomic.h"
- 
- #ifndef CLOCK_MONOTONIC_RAW
- # define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
-diff --git a/m4/ltp-atomic.m4 b/m4/ltp-atomic.m4
-new file mode 100644
-index 000000000..836f0a4fd
---- /dev/null
-+++ b/m4/ltp-atomic.m4
-@@ -0,0 +1,34 @@
-+dnl
-+dnl Copyright (c) Linux Test Project, 2016
-+dnl
-+dnl This program is free software;  you can redistribute it and/or modify
-+dnl it under the terms of the GNU General Public License as published by
-+dnl the Free Software Foundation; either version 2 of the License, or
-+dnl (at your option) any later version.
-+dnl
-+dnl This program is distributed in the hope that it will be useful,
-+dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+dnl the GNU General Public License for more details.
-+dnl
-+
-+AC_DEFUN([LTP_CHECK_ATOMIC_MEMORY_MODEL],[dnl
-+	AC_MSG_CHECKING([for __atomic_* compiler builtins])
-+	AC_LINK_IFELSE([AC_LANG_SOURCE([
-+int main(void) {
-+	int i = 0, j = 0;
-+	__atomic_add_fetch(&i, 1, __ATOMIC_ACQ_REL);
-+	__atomic_load_n(&i, __ATOMIC_SEQ_CST);
-+	__atomic_compare_exchange_n(&i, &j, 0, 0, __ATOMIC_RELEASE, __ATOMIC_ACQUIRE);
-+	__atomic_store_n(&i, 0, __ATOMIC_RELAXED);
-+	return i;
-+}])],[has_atomic_mm="yes"])
-+
-+if test "x$has_atomic_mm" = xyes; then
-+	AC_DEFINE(HAVE_ATOMIC_MEMORY_MODEL,1,
-+	          [Define to 1 if you have the __atomic_* compiler builtins])
-+	AC_MSG_RESULT(yes)
-+else
-+	AC_MSG_RESULT(no)
-+fi
-+])
+ static struct tst_test test = {
+@@ -96,4 +133,5 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.test_all = thp_test,
++	.min_kver = "2.4",
+ };
 -- 
 2.14.1
 
