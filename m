@@ -1,141 +1,115 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 1 Sep 2017 12:03:19 +0200
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 1 Sep 2017 18:44:25 +0800
 Subject: [LTP] [PATCH] thp01: Find largest arguments size
-In-Reply-To: <20170831083407.28402-1-rpalethorpe@suse.com>
+In-Reply-To: <87val2bw3j.fsf@our.domain.is.not.set>
 References: <20170831083407.28402-1-rpalethorpe@suse.com>
-Message-ID: <20170901100319.GA26071@rei>
+ <CAEemH2cdcy16cDifgMd=_pk=3z3M79Z=04iA4c0xfktgdONDog@mail.gmail.com>
+ <87val2bw3j.fsf@our.domain.is.not.set>
+Message-ID: <CAEemH2fca0n64ffaPB25gGxSaqrcougvzQbtF1MzZ3wGJtROdA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +#include <errno.h>
->  #include <sys/types.h>
->  #include <sys/resource.h>
->  #include <sys/wait.h>
-> @@ -38,56 +39,72 @@
->  #include <stdlib.h>
->  #include <unistd.h>
->  #include "mem.h"
-> +#include "tst_minmax.h"
-> +#include "tst_safe_sysv_ipc.h"
->  
-> -#define ARRAY_SZ	256
-> +#define ARGS_SZ	256
->  
-> -static int ps;
-> -static long length;
-> -static char *array[ARRAY_SZ];
-> +static int shm_id;
-> +static char *args[ARGS_SZ];
->  static char *arg;
-> -static struct rlimit rl = {
-> -	.rlim_cur = RLIM_INFINITY,
-> -	.rlim_max = RLIM_INFINITY,
-> -};
-> +static long *arg_count;
->  
->  static void thp_test(void)
->  {
-> -	int i;
-> -	pid_t pid;
-> -
-> -	switch (pid = SAFE_FORK()) {
-> -	case 0:
-> -		memset(arg, 'c', length - 1);
-> -		arg[length - 1] = '\0';
-> -		array[0] = "true";
-> -		for (i = 1; i < ARRAY_SZ - 1; i++)
-> -			array[i] = arg;
-> -		array[ARRAY_SZ - 1] = NULL;
-> -		if (setrlimit(RLIMIT_STACK, &rl) == -1) {
-> -			perror("setrlimit");
-> -			exit(1);
-> -		}
-> -		if (execvp("true", array) == -1) {
-> -			perror("execvp");
-> -			exit(1);
-> -		}
-> -	default:
-> -		tst_reap_children();
-> +	pid_t pid = SAFE_FORK();
-> +
-> +	if (!arg_count)
-> +		tst_brk(TBROK, "No shared memory");
-> +
-> +	if (!pid) {
-> +		args[*arg_count] = NULL;
-> +
-> +		do {
-> +			TEST(execvp("true", args));
-> +			args[--(*arg_count)] = NULL;
-> +		} while (*arg_count > 0 && TEST_ERRNO == E2BIG);
+On Fri, Sep 1, 2017 at 5:34 PM, Richard Palethorpe <rpalethorpe@suse.de> wrote:
+> Hello,
+>
+> Thanks for the review,
+>>
+>> 1. Can't we declare the arg_count just as a global variable? why
+>> should we take use of share memory, only for the loop counting?
+>
+> It forks so that it can call exec without overwriting the test process
+> image. Global variables are copy-on-write for a child process (unless we
+> use clone()), so the parent's memory would not be updated by the
+> child. We need the parent to be updated so that, when the next child is
+> run, it already has the correct argument count saving a lot of calls to
+> exec.
 
-		Hmm, for how long does this loop runs? If it's more than
-		half of a second or so we should consider using binary
-		search to reach the maximal size of arguments...
+Yep! But for this test, it does not need to update 'arg_count' in the
+parent process, and after fork a child, it call execvp() to create a
+new process image. So I think here is OK to take use of global
+variable.
 
-> +		tst_brk(TBROK | TTERRNO, "execvp(\"true\", ...)");
->  	}
->  
-> +	tst_reap_children();
->  	tst_res(TPASS, "system didn't crash, pass.");
->  }
->  
->  static void setup(void)
->  {
-> -	ps = sysconf(_SC_PAGESIZE);
-> -	length = 32 * ps;
-> -	arg = SAFE_MALLOC(length);
-> +	struct rlimit rl = {
-> +		.rlim_cur = RLIM_INFINITY,
-> +		.rlim_max = RLIM_INFINITY,
-> +	};
-> +	int i;
-> +	long arg_len;
-> +
-> +	shm_id = SAFE_SHMGET(IPC_PRIVATE, sizeof(long),
-> +				 IPC_CREAT | IPC_EXCL);
-> +	arg_count = SAFE_SHMAT(shm_id, NULL, 0);
+Did I miss anything?
 
-Can we, pretty please, use mmap() to map a page of shared memory instead
-of using the System V shared memory that has ugly API and system
-persistence?
 
-> +	arg_len = 32 * sysconf(_SC_PAGESIZE);
-> +	arg = SAFE_MALLOC(arg_len);
-> +	memset(arg, 'c', arg_len - 1);
-> +	arg[arg_len - 1] = '\0';
-> +
-> +	args[0] = "true";
-> +	*arg_count = ARGS_SZ - 1;
-> +	for (i = 1; i < *arg_count; i++)
-> +		args[i] = arg;
-> +
-> +	SAFE_SETRLIMIT(RLIMIT_STACK, &rl);
->  }
->  
->  static void cleanup(void)
->  {
-> -	free(arg);
-> +	if (arg)
-> +		free(arg);
-> +	if (arg_count)
-> +		SAFE_SHMDT(arg_count);
-> +	if (shm_id)
-> +		SAFE_SHMCTL(shm_id, IPC_RMID, NULL);
->  }
->  
->  static struct tst_test test = {
-> -- 
-> 2.14.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+I do change the 'arg_count' to a global variable and get pass:
+(see attachment)
+
+static void thp_test(void)
+{
+    pid_t pid = SAFE_FORK();
+
+    if (!pid) {
+        args[arg_count] = NULL;
+
+        do {
+            TEST(execvp("true", args));
+            args[--arg_count] = NULL;
+            printf("debuginfo: arg_count = %d\n", arg_count);
+        } while (arg_count > 0 && TEST_ERRNO == E2BIG);
+
+        tst_brk(TBROK | TTERRNO, "execvp(\"true\", ...)");
+    }
+
+    tst_reap_children();
+
+    tst_res(TPASS, "system didn't crash, pass.");
+}
+
+
+==========
+# ./thp01
+tst_test.c:908: INFO: Timeout per run is 0h 05m 00s
+debuginfo: arg_count = 254
+...
+debuginfo: arg_count = 49
+debuginfo: arg_count = 48
+thp01.c:69: PASS: system didn't crash, pass.
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+
+
+>>
+>>
+>> 2. The kernel patch limit all arg stack usage to at most 75% of _STK_LIM (6MB),
+>> and here the size of arg_len is 32*PAGE_SIZE.  So it means that there
+>> almost only have 6MB/(PAGE_SIZE*32) numbers can be accepted in
+>> args[(*arg_count)], if it is a ppc64 machine(*arg_count == 3) that's
+>> OK, but if a system PAGE_SIZE > 192KB, then the test will be break and
+>> your loop is absolutely useless. About that, if we shrink the arg_len
+>> size, things would be better I guess.
+>
+> That is true, but even on PPC64 with a default page size of 64Kb, the
+> default huge page size is 15MB (I think). So, on PPC64, we are only
+> doing a very basic test of exec on current kernels. Systems with page
+> sizes over 192KB seem even less likely to have huge pages smaller than
+> 6MB.
+>
+> However I don't see any harm in reducing the PAGE_SIZE coefficient to 1
+> and multiplying the ARGS_SZ by 32, this will make the test slower, but
+> more accurate at finding the maximum argument size while maintaining the
+> allocation size of the original reproducer.
+>
+> --
+> Thank you,
+> Richard.
+
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Li Wang
+liwang@redhat.com
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: thp01.c
+Type: text/x-csrc
+Size: 2434 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170901/27ea9726/attachment.c>
