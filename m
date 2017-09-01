@@ -1,115 +1,55 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 1 Sep 2017 18:44:25 +0800
-Subject: [LTP] [PATCH] thp01: Find largest arguments size
-In-Reply-To: <87val2bw3j.fsf@our.domain.is.not.set>
-References: <20170831083407.28402-1-rpalethorpe@suse.com>
- <CAEemH2cdcy16cDifgMd=_pk=3z3M79Z=04iA4c0xfktgdONDog@mail.gmail.com>
- <87val2bw3j.fsf@our.domain.is.not.set>
-Message-ID: <CAEemH2fca0n64ffaPB25gGxSaqrcougvzQbtF1MzZ3wGJtROdA@mail.gmail.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Fri, 01 Sep 2017 14:44:33 +0200
+Subject: [LTP] [PATCH] madvise07: Increase probability of testing a
+	supported page type
+In-Reply-To: <1387821959.5916937.1504079485373.JavaMail.zimbra@redhat.com>
+References: <20170828134827.5871-1-rpalethorpe@suse.com>
+ <1387821959.5916937.1504079485373.JavaMail.zimbra@redhat.com>
+Message-ID: <87tw0mbnbi.fsf@our.domain.is.not.set>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Sep 1, 2017 at 5:34 PM, Richard Palethorpe <rpalethorpe@suse.de> wrote:
-> Hello,
+Hello Jan,
+
+Jan Stancek writes:
+
+> ----- Original Message -----
+>> We were attempting to poison page types which do not support it (e.g. the
+>> zero
+>> page) due to our usage of mmap. Now we map some anonymous memory and write to
+>> it. Hopefully ensuring the underlying page is of a supported type.
+>> + * If the underlying page type of the memory we have mapped does not support
+>> + * poisoning then the test will fail. We try to map and write to the memory
+>> in
+>> + * such a way that by the time madvise is called the virtual memory address
+>> + * points to a supported page. However there may be some rare circumstances
+>> + * where the test produces the wrong result because we have somehow obtained
+>> + * an unsupported page.
 >
-> Thanks for the review,
->>
->> 1. Can't we declare the arg_count just as a global variable? why
->> should we take use of share memory, only for the loop counting?
+> Hi,
 >
-> It forks so that it can call exec without overwriting the test process
-> image. Global variables are copy-on-write for a child process (unless we
-> use clone()), so the parent's memory would not be updated by the
-> child. We need the parent to be updated so that, when the next child is
-> run, it already has the correct argument count saving a lot of calls to
-> exec.
+> Can you elaborate please? If we always do mmap+touch anonymous memory,
+> how would we sometime end up with different page type?
 
-Yep! But for this test, it does not need to update 'arg_count' in the
-parent process, and after fork a child, it call execvp() to create a
-new process image. So I think here is OK to take use of global
-variable.
+Possibly if the page is completely swapped out and it is not in the page
+cache. I am not sure if that is even possible, but my point was that we
+can't fully gaurantee that we are testing a valid page type because it
+is not something you can fully control from user land (unless there is some
+debug interface which allows it). I'm not sure if it is a helpful
+comment or not.
 
-Did I miss anything?
-
-
-I do change the 'arg_count' to a global variable and get pass:
-(see attachment)
-
-static void thp_test(void)
-{
-    pid_t pid = SAFE_FORK();
-
-    if (!pid) {
-        args[arg_count] = NULL;
-
-        do {
-            TEST(execvp("true", args));
-            args[--arg_count] = NULL;
-            printf("debuginfo: arg_count = %d\n", arg_count);
-        } while (arg_count > 0 && TEST_ERRNO == E2BIG);
-
-        tst_brk(TBROK | TTERRNO, "execvp(\"true\", ...)");
-    }
-
-    tst_reap_children();
-
-    tst_res(TPASS, "system didn't crash, pass.");
-}
-
-
-==========
-# ./thp01
-tst_test.c:908: INFO: Timeout per run is 0h 05m 00s
-debuginfo: arg_count = 254
-...
-debuginfo: arg_count = 49
-debuginfo: arg_count = 48
-thp01.c:69: PASS: system didn't crash, pass.
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-
-
->>
->>
->> 2. The kernel patch limit all arg stack usage to at most 75% of _STK_LIM (6MB),
->> and here the size of arg_len is 32*PAGE_SIZE.  So it means that there
->> almost only have 6MB/(PAGE_SIZE*32) numbers can be accepted in
->> args[(*arg_count)], if it is a ppc64 machine(*arg_count == 3) that's
->> OK, but if a system PAGE_SIZE > 192KB, then the test will be break and
->> your loop is absolutely useless. About that, if we shrink the arg_len
->> size, things would be better I guess.
 >
-> That is true, but even on PPC64 with a default page size of 64Kb, the
-> default huge page size is 15MB (I think). So, on PPC64, we are only
-> doing a very basic test of exec on current kernels. Systems with page
-> sizes over 192KB seem even less likely to have huge pages smaller than
-> 6MB.
->
-> However I don't see any harm in reducing the PAGE_SIZE coefficient to 1
-> and multiplying the ARGS_SZ by 32, this will make the test slower, but
-> more accurate at finding the maximum argument size while maintaining the
-> allocation size of the original reproducer.
->
-> --
-> Thank you,
-> Richard.
+> I don't have objections to patch, but I'm thinking if we should go
+> further if there's possibility the test still won't be reliable.
+> We could relax the condition, for example by FAILing only if
+> child dies unexpectedly (signal != SIGBUS).
 
+I think that if we see another failure and it is not a real bug, then we
+do that.
 
-
--- 
-Li Wang
-liwang@redhat.com
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: thp01.c
-Type: text/x-csrc
-Size: 2434 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170901/27ea9726/attachment.c>
+--
+Thank you,
+Richard.
