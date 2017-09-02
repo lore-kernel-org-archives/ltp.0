@@ -1,69 +1,54 @@
 From: Petr Vorel <petr.vorel@gmail.com>
-Date: Sat,  2 Sep 2017 02:59:24 +0200
-Subject: [LTP] [RFC PATCH 4/6] android: cve: Fix build of most of the tests
+Date: Sat,  2 Sep 2017 02:59:25 +0200
+Subject: [LTP] [RFC PATCH 5/6] android: cve/stack_clash: Fix PAGE_MASK
+	defined in <sys/user.h>
 In-Reply-To: <20170902005926.15923-1-petr.vorel@gmail.com>
 References: <20170902005926.15923-1-petr.vorel@gmail.com>
-Message-ID: <20170902005926.15923-5-petr.vorel@gmail.com>
+Message-ID: <20170902005926.15923-6-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+clash is caused by including <sys/wait.h>
+
 Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
 ---
- testcases/cve/Makefile        | 3 +++
- testcases/cve/cve-2014-0196.c | 9 +++++++++
- 2 files changed, 12 insertions(+)
+ testcases/cve/stack_clash.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
-index 5119c67cf..7c8917569 100644
---- a/testcases/cve/Makefile
-+++ b/testcases/cve/Makefile
-@@ -19,6 +19,7 @@ include $(top_srcdir)/include/mk/testcases.mk
+diff --git a/testcases/cve/stack_clash.c b/testcases/cve/stack_clash.c
+index 082d362e9..2d2984824 100644
+--- a/testcases/cve/stack_clash.c
++++ b/testcases/cve/stack_clash.c
+@@ -48,7 +48,7 @@
+ #include "tst_safe_stdio.h"
  
- CFLAGS			+= -D_GNU_SOURCE
+ static unsigned long page_size;
+-static unsigned long PAGE_MASK;
++static unsigned long page_mask;
+ static unsigned long GAP_PAGES = 256;
+ static unsigned long THRESHOLD;
+ static int STACK_GROWSDOWN;
+@@ -169,7 +169,7 @@ void do_child(void)
+ 	else
+ 		mapped_addr = stack_addr + gap;
  
-+ifneq ($(ANDROID),1)
- cve-2016-7117:	CFLAGS += -pthread
- cve-2016-7117:	LDLIBS += -lrt
+-	mapped_addr &= PAGE_MASK;
++	mapped_addr &= page_mask;
+ 	map = SAFE_MMAP((void *)mapped_addr, MAPPED_LEN,
+ 			PROT_READ|PROT_WRITE,
+ 			MAP_ANON|MAP_PRIVATE|MAP_FIXED, -1, 0);
+@@ -201,7 +201,7 @@ void setup(void)
+ 	char buf[4096], *p;
  
-@@ -27,9 +28,11 @@ cve-2014-0196:  LDLIBS += -lrt -lutil
+ 	page_size = sysconf(_SC_PAGESIZE);
+-	PAGE_MASK = ~(page_size - 1);
++	page_mask = ~(page_size - 1);
  
- cve-2017-2671:	CFLAGS += -pthread
- cve-2017-2671:	LDLIBS += -lrt
-+endif
- 
- ifeq ($(ANDROID),1)
- FILTER_OUT_MAKE_TARGETS	+= cve-2017-5669
-+CPPFLAGS		+= -I$(abs_srcdir)/../../include/android
- endif
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/cve/cve-2014-0196.c b/testcases/cve/cve-2014-0196.c
-index 4e2b3f582..87fea2781 100644
---- a/testcases/cve/cve-2014-0196.c
-+++ b/testcases/cve/cve-2014-0196.c
-@@ -34,6 +34,7 @@
-  * privilege escalation POC https://www.exploit-db.com/exploits/33516/
-  */
- 
-+#if !defined(__ANDROID_API__) || __ANDROID_API__ >= 23
- #include <pty.h>
- #include <stdio.h>
- #include <string.h>
-@@ -159,3 +160,11 @@ static struct tst_test test = {
- 	.cleanup = cleanup,
- 	.test_all = run,
- };
-+#else /* Android API < 23 */
-+#define TST_NO_DEFAULT_MAIN
-+#include "tst_test.h"
-+int main(void)
-+{
-+	tst_brk(TCONF, "test does not run on Android API < 23");
-+}
-+#endif
+ 	buf[4095] = '\0';
+ 	SAFE_FILE_SCANF("/proc/cmdline", "%4095[^\n]", buf);
 -- 
 2.14.0
 
