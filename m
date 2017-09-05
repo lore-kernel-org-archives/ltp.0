@@ -1,52 +1,52 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue,  5 Sep 2017 18:09:05 +0200
-Subject: [LTP] [RFC] [PATCH 02/15] lib: Add interface to list supported
-	filesystems
+Date: Tue,  5 Sep 2017 18:09:08 +0200
+Subject: [LTP] [RFC] [PATCH 05/15] lib/tst_fs: Add tst_fill_fs()
 In-Reply-To: <20170905160918.6477-1-chrubis@suse.cz>
 References: <20170905160918.6477-1-chrubis@suse.cz>
-Message-ID: <20170905160918.6477-2-chrubis@suse.cz>
+Message-ID: <20170905160918.6477-5-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-A filesystem is supported if kernel can mount it (we do not get ENODEV
-when we attempt to mount it) and if there is mkfs installed so that we
-can format a test device.
+Adds a simple helper to fill a filesystem.
 
-The function starts with a whitelist of filesystems to use and loops
-over them filtering out unsupported ones, then finally returns a list
-of filesystem that could be used for the testing.
+All the funciton does is to create and write to files in a given
+directory until write() fails with ENOSPC.
+
+This is intended to be used in various filesystem related tests such as
+fallocate and stress tests.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- include/tst_fs.h             |   4 ++
- lib/tst_supported_fs_types.c | 120 +++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 124 insertions(+)
- create mode 100644 lib/tst_supported_fs_types.c
+ include/tst_fs.h  |  5 +++++
+ lib/tst_fill_fs.c | 62 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 67 insertions(+)
+ create mode 100644 lib/tst_fill_fs.c
 
 diff --git a/include/tst_fs.h b/include/tst_fs.h
-index 52befbec9..1f6d2bab5 100644
+index 1f6d2bab5..6fda9ee41 100644
 --- a/include/tst_fs.h
 +++ b/include/tst_fs.h
-@@ -146,6 +146,10 @@ int tst_get_path(const char *prog_name, char *buf, size_t buf_len);
+@@ -151,6 +151,11 @@ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
   */
- int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
+ const char **tst_get_supported_fs_types(void);
  
 +/*
-+ * Returns NULL-terminated array of kernel-supported filesystems.
++ * Creates and writes to files on given path until write fails with ENOSPC
 + */
-+const char **tst_get_supported_fs_types(void);
- 
++void tst_fill_fs(const char *path);
++
  #ifdef TST_TEST_H__
  static inline long tst_fs_type(const char *path)
-diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+ {
+diff --git a/lib/tst_fill_fs.c b/lib/tst_fill_fs.c
 new file mode 100644
-index 000000000..fabc39111
+index 000000000..edbf5b94c
 --- /dev/null
-+++ b/lib/tst_supported_fs_types.c
-@@ -0,0 +1,120 @@
++++ b/lib/tst_fill_fs.c
+@@ -0,0 +1,62 @@
 +/*
 + * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
 + *
@@ -64,108 +64,50 @@ index 000000000..fabc39111
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
 +
-+/*
-+ */
-+
-+#include <stdio.h>
 +#include <errno.h>
++#include <stdio.h>
 +#include <stdlib.h>
-+#include <sys/mount.h>
 +
 +#define TST_NO_DEFAULT_MAIN
 +#include "tst_test.h"
 +#include "tst_fs.h"
 +
-+static const char *const fs_type_whitelist[] = {
-+	"ext2",
-+	"ext3",
-+	"ext4",
-+	"xfs",
-+	"btrfs",
-+	"vfat",
-+	"exfat",
-+	"ntfs",
-+	NULL
-+};
-+
-+static const char *fs_types[ARRAY_SIZE(fs_type_whitelist)];
-+
-+static int has_mkfs(const char *fs_type)
++void tst_fill_fs(const char *path)
 +{
-+	char buf[128];
-+	int ret;
++	int i = 0;
++	char file[PATH_MAX];
++	char buf[4096];
++	size_t len;
++	ssize_t ret;
++	int fd;
 +
-+	sprintf(buf, "mkfs.%s >/dev/null 2>&1", fs_type);
++	for (;;) {
++		len = random() % (1024 * 102400);
 +
-+	ret = tst_system(buf);
++		snprintf(file, sizeof(file), "%s/file%i", path, i++);
 +
-+	if (WEXITSTATUS(ret) == 127) {
-+		tst_res(TINFO, "mkfs.%s does not exits", fs_type);
-+		return 0;
++		tst_res(TINFO, "Creating file %s size %zu", file, len);
++
++		fd = SAFE_OPEN(file, O_WRONLY | O_CREAT, 0700);
++
++		while (len) {
++			ret = write(fd, buf, MIN(len, sizeof(buf)));
++
++			if (ret < 0) {
++				SAFE_CLOSE(fd);
++
++				if (errno != ENOSPC)
++					tst_brk(TBROK | TERRNO, "write()");
++
++				tst_res(TINFO | TERRNO, "write()");
++				return;
++			}
++
++			len -= ret;
++		}
++
++		SAFE_CLOSE(fd);
 +	}
-+
-+	tst_res(TINFO, "mkfs.%s does exits", fs_type);
-+	return 1;
-+}
-+
-+static int has_kernel_support(const char *fs_type)
-+{
-+	static int fuse_supported = -1;
-+	const char *tmpdir = getenv("TMPDIR");
-+	char buf[128];
-+	int ret;
-+
-+	if (!tmpdir)
-+		tmpdir = "/tmp";
-+
-+	mount("/dev/zero", tmpdir, fs_type, 0, NULL);
-+	if (errno != ENODEV) {
-+		tst_res(TINFO, "Kernel supports %s", fs_type);
-+		return 1;
-+	}
-+
-+	/* Is FUSE supported by kernel? */
-+	if (fuse_supported == -1) {
-+		ret = open("/dev/fuse", O_RDWR);
-+		if (ret < 0)
-+			fuse_supported = 0;
-+		else
-+			fuse_supported = 1;
-+
-+		SAFE_CLOSE(ret);
-+	}
-+
-+	if (!fuse_supported)
-+		return 0;
-+
-+	/* Is FUSE implementation installed? */
-+	sprintf(buf, "mount.%s >/dev/null 2>&1", fs_type);
-+
-+	ret = tst_system(buf);
-+	if (WEXITSTATUS(ret) == 127) {
-+		tst_res(TINFO, "Filesystem %s is not supported", fs_type);
-+		return 0;
-+	}
-+
-+	tst_res(TINFO, "FUSE does support %s", fs_type);
-+	return 1;
-+}
-+
-+static int is_supported(const char *fs_type)
-+{
-+	return has_kernel_support(fs_type) && has_mkfs(fs_type);
-+}
-+
-+const char **tst_get_supported_fs_types(void)
-+{
-+	unsigned int i, j = 0;
-+
-+	for (i = 0; fs_type_whitelist[i]; i++) {
-+		if (is_supported(fs_type_whitelist[i]))
-+			fs_types[j++] = fs_type_whitelist[i];
-+	}
-+
-+	return fs_types;
 +}
 -- 
 2.13.0
