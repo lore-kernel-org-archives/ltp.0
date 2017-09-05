@@ -1,52 +1,55 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue,  5 Sep 2017 18:09:08 +0200
-Subject: [LTP] [RFC] [PATCH 05/15] lib/tst_fs: Add tst_fill_fs()
+Date: Tue,  5 Sep 2017 18:09:09 +0200
+Subject: [LTP] [RFC] [PATCH 06/15] syscalls/fallocate05: New test
 In-Reply-To: <20170905160918.6477-1-chrubis@suse.cz>
 References: <20170905160918.6477-1-chrubis@suse.cz>
-Message-ID: <20170905160918.6477-5-chrubis@suse.cz>
+Message-ID: <20170905160918.6477-6-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Adds a simple helper to fill a filesystem.
-
-All the funciton does is to create and write to files in a given
-directory until write() fails with ENOSPC.
-
-This is intended to be used in various filesystem related tests such as
-fallocate and stress tests.
+Tests that fallocate() works fine when filesystem is full.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- include/tst_fs.h  |  5 +++++
- lib/tst_fill_fs.c | 62 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 67 insertions(+)
- create mode 100644 lib/tst_fill_fs.c
+ runtest/syscalls                                  |   1 +
+ testcases/kernel/syscalls/.gitignore              |   1 +
+ testcases/kernel/syscalls/fallocate/fallocate05.c | 103 ++++++++++++++++++++++
+ 3 files changed, 105 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fallocate/fallocate05.c
 
-diff --git a/include/tst_fs.h b/include/tst_fs.h
-index 1f6d2bab5..6fda9ee41 100644
---- a/include/tst_fs.h
-+++ b/include/tst_fs.h
-@@ -151,6 +151,11 @@ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
-  */
- const char **tst_get_supported_fs_types(void);
+diff --git a/runtest/syscalls b/runtest/syscalls
+index f2b2cbce9..e73633bfe 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -160,6 +160,7 @@ fallocate01 fallocate01
+ fallocate02 fallocate02
+ fallocate03 fallocate03
+ fallocate04 fallocate04
++fallocate05 fallocate05
  
-+/*
-+ * Creates and writes to files on given path until write fails with ENOSPC
-+ */
-+void tst_fill_fs(const char *path);
-+
- #ifdef TST_TEST_H__
- static inline long tst_fs_type(const char *path)
- {
-diff --git a/lib/tst_fill_fs.c b/lib/tst_fill_fs.c
+ #posix_fadvise test cases
+ posix_fadvise01                      posix_fadvise01
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 32193e157..735ee0e86 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -141,6 +141,7 @@
+ /fallocate/fallocate02
+ /fallocate/fallocate03
+ /fallocate/fallocate04
++/fallocate/fallocate05
+ /fchdir/fchdir01
+ /fchdir/fchdir02
+ /fchdir/fchdir03
+diff --git a/testcases/kernel/syscalls/fallocate/fallocate05.c b/testcases/kernel/syscalls/fallocate/fallocate05.c
 new file mode 100644
-index 000000000..edbf5b94c
+index 000000000..488ae82b3
 --- /dev/null
-+++ b/lib/tst_fill_fs.c
-@@ -0,0 +1,62 @@
++++ b/testcases/kernel/syscalls/fallocate/fallocate05.c
+@@ -0,0 +1,103 @@
 +/*
 + * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
 + *
@@ -64,51 +67,92 @@ index 000000000..edbf5b94c
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
 +
-+#include <errno.h>
++/*
++ * Tests that writing to fallocated file works when filesystem is full.
++ */
++
++#define _GNU_SOURCE
++
 +#include <stdio.h>
 +#include <stdlib.h>
-+
-+#define TST_NO_DEFAULT_MAIN
++#include <errno.h>
++#include <fcntl.h>
 +#include "tst_test.h"
-+#include "tst_fs.h"
 +
-+void tst_fill_fs(const char *path)
++#define MNTPOINT "mntpoint"
++#define FALLOCATE_SIZE 8192
++
++static int fd;
++
++static void run(void)
 +{
-+	int i = 0;
-+	char file[PATH_MAX];
-+	char buf[4096];
-+	size_t len;
++	char buf[FALLOCATE_SIZE];
 +	ssize_t ret;
-+	int fd;
 +
-+	for (;;) {
-+		len = random() % (1024 * 102400);
++	fd = SAFE_OPEN(MNTPOINT "/test_file", O_WRONLY | O_CREAT);
 +
-+		snprintf(file, sizeof(file), "%s/file%i", path, i++);
-+
-+		tst_res(TINFO, "Creating file %s size %zu", file, len);
-+
-+		fd = SAFE_OPEN(file, O_WRONLY | O_CREAT, 0700);
-+
-+		while (len) {
-+			ret = write(fd, buf, MIN(len, sizeof(buf)));
-+
-+			if (ret < 0) {
-+				SAFE_CLOSE(fd);
-+
-+				if (errno != ENOSPC)
-+					tst_brk(TBROK | TERRNO, "write()");
-+
-+				tst_res(TINFO | TERRNO, "write()");
-+				return;
-+			}
-+
-+			len -= ret;
++	if (fallocate(fd, 0, 0, FALLOCATE_SIZE)) {
++		if (errno == EOPNOTSUPP) {
++			tst_res(TCONF | TERRNO, "fallocate() not supported");
++			SAFE_CLOSE(fd);
++			return;
 +		}
 +
-+		SAFE_CLOSE(fd);
++		tst_brk(TBROK | TERRNO,
++			"fallocate(fd, 0, 0, %i)", FALLOCATE_SIZE);
 +	}
++
++	tst_fill_fs(MNTPOINT);
++
++	ret = write(fd, buf, sizeof(buf));
++
++	if (ret < 0)
++		tst_res(TFAIL | TERRNO, "write() failed unexpectedly");
++	else
++		tst_res(TPASS, "write() wrote %zu bytes", ret);
++
++	ret = fallocate(fd, 0, FALLOCATE_SIZE, FALLOCATE_SIZE);
++	if (ret != -1)
++		tst_brk(TFAIL, "fallocate() succeeded unexpectedly");
++
++	if (errno != ENOSPC)
++		tst_brk(TFAIL | TERRNO, "fallocate() should fail with ENOSPC");
++
++	tst_res(TPASS | TERRNO, "fallocate() on full FS");
++
++	ret = fallocate(fd, FALLOC_FL_PUNCH_HOLE, 0, FALLOCATE_SIZE);
++	if (ret == -1) {
++		if (errno == EOPNOTSUPP)
++			tst_brk(TCONF, "fallocate(FALLOC_FL_PUNCH_HOLE)");
++
++		tst_brk(TBROK | TERRNO, "fallocate(FALLOC_FL_PUNCH_HOLE)");
++	}
++	tst_res(TPASS, "fallocate(FALLOC_FL_PUNCH_HOLE)");
++
++	ret = write(fd, buf, 10);
++	if (ret == -1)
++		tst_res(TFAIL | TERRNO, "write()");
++	else
++		tst_res(TPASS, "write()");
++
++	SAFE_CLOSE(fd);
 +}
++
++static void cleanup(void)
++{
++	if (fd > 0)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++	.mount_device = 1,
++	.mntpoint = MNTPOINT,
++	.all_filesystems = 1,
++	.cleanup = cleanup,
++	.test_all = run,
++};
 -- 
 2.13.0
 
