@@ -1,71 +1,47 @@
-From: Steve Muckle <smuckle.linux@gmail.com>
-Date: Tue,  5 Sep 2017 13:40:29 -0700
-Subject: [LTP] [PATCH] syscalls/kcmp03: work around bug in C library
-Message-ID: <20170905204029.66280-1-smuckle.linux@gmail.com>
+From: Sandeep Patil <sspatil@google.com>
+Date: Tue, 5 Sep 2017 14:30:27 -0700
+Subject: [LTP] [RFC PATCH 1/6] android: cve: Disable building
+ cve-2017-5669
+In-Reply-To: <20170902005926.15923-2-petr.vorel@gmail.com>
+References: <20170902005926.15923-1-petr.vorel@gmail.com>
+ <20170902005926.15923-2-petr.vorel@gmail.com>
+Message-ID: <20170905213027.GP84377@sspatil-desktop.mtv.corp.google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Some versions of glibc and bionic report the same PID for parent and
-child when clone() is called with CLONE_VM but not CLONE_THREAD. This
-causes an issue in the cleanup path which is supposed to execute in the
-parent. If kcmp() support is not present, the child aborts and then
-erroneously runs the cleanup handler, freeing its own stack.
+On Sat, Sep 02, 2017 at 02:59:21AM +0200, Petr Vorel wrote:
+> shmat() is not available on Android/Binder
+> 
+> Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+> ---
+>  testcases/cve/Makefile | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
+> index 04abc1f9c..5119c67cf 100644
+> --- a/testcases/cve/Makefile
+> +++ b/testcases/cve/Makefile
+> @@ -28,4 +28,8 @@ cve-2014-0196:  LDLIBS += -lrt -lutil
+>  cve-2017-2671:	CFLAGS += -pthread
+>  cve-2017-2671:	LDLIBS += -lrt
+>  
+> +ifeq ($(ANDROID),1)
+> +FILTER_OUT_MAKE_TARGETS	+= cve-2017-5669
+> +endif
+> +
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
 
-Avoid this by statically allocating the stack.
+Do you have pointers to how you are build + testing with this? There seem to
+be some duplication of effort that I would like to avoid and make sure there
+is only 1 way in which tests like this are disabled out of build.
 
-Signed-off-by: Steve Muckle <smuckle.linux@gmail.com>
----
- testcases/kernel/syscalls/kcmp/kcmp03.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
+I am currently working through a list[1] of disabled tests to make sure
+nothing has changed and will love to have a unified way of maintaining that
+list instead of doing it out-of-tree.
 
-diff --git a/testcases/kernel/syscalls/kcmp/kcmp03.c b/testcases/kernel/syscalls/kcmp/kcmp03.c
-index b6ca40cff..465cb1e8b 100644
---- a/testcases/kernel/syscalls/kcmp/kcmp03.c
-+++ b/testcases/kernel/syscalls/kcmp/kcmp03.c
-@@ -40,7 +40,13 @@
- 
- static int pid1;
- static int pid2;
--static void *stack;
-+
-+/*
-+ * The cleanup handler may be run in the child due to a bug in some versions of
-+ * glibc and bionic when clone() is called with CLONE_VM but not CLONE_THREAD.
-+ * Use static allocation of stack to avoid this.
-+ */
-+static char stack[STACK_SIZE];
- 
- static struct tcase {
- 	int clone_type;
-@@ -52,16 +58,6 @@ static struct tcase {
- 	{CLONE_SYSVSEM, KCMP_SYSVSEM}
- };
- 
--static void setup(void)
--{
--	stack = SAFE_MALLOC(STACK_SIZE);
--}
--
--static void cleanup(void)
--{
--	free(stack);
--}
--
- static int do_child(void *arg)
- {
- 	pid2 = getpid();
-@@ -96,8 +92,6 @@ static void verify_kcmp(unsigned int n)
- 
- static struct tst_test test = {
- 	.tcnt = ARRAY_SIZE(tcases),
--	.setup = setup,
--	.cleanup = cleanup,
- 	.forks_child = 1,
- 	.test = verify_kcmp,
- 	.min_kver = "3.5.0"
--- 
-2.14.1.581.gf28d330327-goog
+- ssp
 
+1. https://android.googlesource.com/platform/external/ltp/+/master/android/tools/disabled_tests.txt
