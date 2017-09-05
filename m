@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue,  5 Sep 2017 18:09:13 +0200
-Subject: [LTP] [RFC] [PATCH 10/15] syscalls/setxattr01: Convert to the new
-	library.
+Date: Tue,  5 Sep 2017 18:09:15 +0200
+Subject: [LTP] [RFC] [PATCH 12/15] syscallse/setxattr02: Convert to the new
+	library
 In-Reply-To: <20170905160918.6477-1-chrubis@suse.cz>
 References: <20170905160918.6477-1-chrubis@suse.cz>
-Message-ID: <20170905160918.6477-10-chrubis@suse.cz>
+Message-ID: <20170905160918.6477-12-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,118 +13,36 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/setxattr/setxattr01.c | 144 +++++++++---------------
- 1 file changed, 52 insertions(+), 92 deletions(-)
+ testcases/kernel/syscalls/setxattr/setxattr02.c | 128 ++++++++----------------
+ 1 file changed, 41 insertions(+), 87 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/setxattr/setxattr01.c b/testcases/kernel/syscalls/setxattr/setxattr01.c
-index 478f99408..86df7ba73 100644
---- a/testcases/kernel/syscalls/setxattr/setxattr01.c
-+++ b/testcases/kernel/syscalls/setxattr/setxattr01.c
+diff --git a/testcases/kernel/syscalls/setxattr/setxattr02.c b/testcases/kernel/syscalls/setxattr/setxattr02.c
+index 0ae452bc2..0b6ecb3fa 100644
+--- a/testcases/kernel/syscalls/setxattr/setxattr02.c
++++ b/testcases/kernel/syscalls/setxattr/setxattr02.c
 @@ -57,9 +57,7 @@
  #ifdef HAVE_SYS_XATTR_H
  # include <sys/xattr.h>
  #endif
 -#include "test.h"
 -
--char *TCID = "setxattr01";
+-char *TCID = "setxattr02";
 +#include "tst_test.h"
  
  #ifdef HAVE_SYS_XATTR_H
- #define XATTR_NAME_MAX 255
-@@ -68,162 +66,124 @@ char *TCID = "setxattr01";
  #define XATTR_TEST_KEY "user.testkey"
- #define XATTR_TEST_VALUE "this is a test value"
- #define XATTR_TEST_VALUE_SIZE 20
-+#define FNAME "setxattr01testfile"
+@@ -74,9 +72,6 @@ char *TCID = "setxattr02";
+ #define BLK      "setxattr02blk"
+ #define SOCK     "setxattr02sock"
  
 -static void setup(void);
 -static void cleanup(void);
 -
--char filename[BUFSIZ];
--char long_key[XATTR_NAME_LEN];
--char *long_value;
-+static char long_key[XATTR_NAME_LEN];
-+static char *long_value;
-+static char *xattr_value = XATTR_TEST_VALUE;
- 
  struct test_case {
--	char *fname;
+ 	char *fname;
  	char *key;
--	char *value;
-+	char **value;
- 	size_t size;
- 	int flags;
- 	int exp_err;
- };
- struct test_case tc[] = {
- 	{			/* case 00, invalid flags */
--	 .fname = filename,
--	 .key = XATTR_TEST_KEY,
--	 .value = XATTR_TEST_VALUE,
-+	 .key = long_key,
-+	 .value = &xattr_value,
- 	 .size = XATTR_TEST_VALUE_SIZE,
- 	 .flags = ~0,
- 	 .exp_err = EINVAL,
+@@ -144,100 +139,59 @@ static struct test_case tc[] = {
  	 },
- 	{			/* case 01, replace non-existing attribute */
--	 .fname = filename,
- 	 .key = XATTR_TEST_KEY,
--	 .value = XATTR_TEST_VALUE,
-+	 .value = &xattr_value,
- 	 .size = XATTR_TEST_VALUE_SIZE,
- 	 .flags = XATTR_REPLACE,
- 	 .exp_err = ENODATA,
- 	 },
--	{			/* case 02, long key name, key will be set in setup() */
--	 .fname = filename,
--	 .key = NULL,
--	 .value = XATTR_TEST_VALUE,
-+	{			/* case 02, long key name */
-+	 .key = long_key,
-+	 .value = &xattr_value,
- 	 .size = XATTR_TEST_VALUE_SIZE,
- 	 .flags = XATTR_CREATE,
- 	 .exp_err = ERANGE,
- 	 },
--	{			/* case 03, long value, value will be set in setup() */
--	 .fname = filename,
-+	{			/* case 03, long value */
- 	 .key = XATTR_TEST_KEY,
--	 .value = NULL,
-+	 .value = &long_value,
- 	 .size = XATTR_SIZE_MAX + 1,
- 	 .flags = XATTR_CREATE,
- 	 .exp_err = E2BIG,
- 	 },
- 	{			/* case 04, zero length value */
--	 .fname = filename,
- 	 .key = XATTR_TEST_KEY,
--	 .value = XATTR_TEST_VALUE,
-+	 .value = &xattr_value,
- 	 .size = 0,
- 	 .flags = XATTR_CREATE,
- 	 .exp_err = 0,
- 	 },
- 	{			/* case 05, create existing attribute */
--	 .fname = filename,
- 	 .key = XATTR_TEST_KEY,
--	 .value = XATTR_TEST_VALUE,
-+	 .value = &xattr_value,
- 	 .size = XATTR_TEST_VALUE_SIZE,
- 	 .flags = XATTR_CREATE,
- 	 .exp_err = EEXIST,
- 	 },
- 	{			/* case 06, replace existing attribute */
--	 .fname = filename,
- 	 .key = XATTR_TEST_KEY,
--	 .value = XATTR_TEST_VALUE,
-+	 .value = &xattr_value,
- 	 .size = XATTR_TEST_VALUE_SIZE,
- 	 .flags = XATTR_REPLACE,
- 	 .exp_err = 0,
--	 },
-+	},
  };
  
 -int TST_TOTAL = sizeof(tc) / sizeof(tc[0]);
@@ -134,7 +52,7 @@ index 478f99408..86df7ba73 100644
  {
 -	int lc;
 -	int i;
-+	TEST(setxattr(FNAME, tc[i].key, *tc[i].value, tc[i].size, tc[i].flags));
++	TEST(setxattr(tc[i].fname, tc[i].key, tc[i].value, tc[i].size, tc[i].flags));
  
 -	tst_parse_opts(argc, argv, NULL, NULL);
 +	if (TEST_RETURN == -1 && TEST_ERRNO == EOPNOTSUPP)
@@ -184,6 +102,7 @@ index 478f99408..86df7ba73 100644
  static void setup(void)
  {
 -	int fd;
+-	dev_t dev;
 -
 -	tst_require_root();
 -
@@ -198,32 +117,50 @@ index 478f99408..86df7ba73 100644
 -		if (errno == ENOTSUP)
 -			tst_brkm(TCONF, cleanup, "No xattr support in fs or "
 -				 "mount without user_xattr option");
+-	unlink("testfile");
 -
--	/* Create test file */
--	snprintf(filename, BUFSIZ, "setxattr01testfile");
--	fd = creat(filename, 0644);
+-	/* Create test files */
+-	fd = creat(FILENAME, 0644);
 -	if (fd == -1)
 -		tst_brkm(TBROK | TERRNO, cleanup, "Create test file(%s) failed",
--			 filename);
+-			 FILENAME);
 -	close(fd);
 -
--	/* Prepare test cases */
-+	SAFE_TOUCH(FNAME, 0644, NULL);
-+
- 	snprintf(long_key, 6, "%s", "user.");
- 	memset(long_key + 5, 'k', XATTR_NAME_LEN - 5);
- 	long_key[XATTR_NAME_LEN - 1] = '\0';
--	tc[2].key = long_key;
- 
--	long_value = malloc(XATTR_SIZE_MAX + 2);
--	if (!long_value)
--		tst_brkm(TBROK | TERRNO, cleanup, "malloc failed");
-+	long_value = SAFE_MALLOC(XATTR_SIZE_MAX + 2);
- 	memset(long_value, 'v', XATTR_SIZE_MAX + 2);
- 	long_value[XATTR_SIZE_MAX + 1] = '\0';
--	tc[3].value = long_value;
+-	if (mkdir(DIRNAME, 0644) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "Create test dir(%s) failed",
+-			 DIRNAME);
+-
+-	if (symlink(FILENAME, SYMLINK) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "Create symlink(%s->%s)"
+-			 " failed", SYMLINK, FILENAME);
+-
+-	if (mknod(FIFO, S_IFIFO | 0777, 0) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "Create FIFO(%s) failed",
+-			 FIFO);
+-
+-	dev = makedev(1, 3);
+-	if (mknod(CHR, S_IFCHR | 0777, dev) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "Create char special(%s)"
+-			 " failed", CHR);
+-
+-	if (mknod(BLK, S_IFBLK | 0777, 0) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "Create block special(%s)"
+-			 " failed", BLK);
+-
+-	if (mknod(SOCK, S_IFSOCK | 0777, 0) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "Create socket(%s) failed",
+-			 SOCK);
 -
 -	TEST_PAUSE;
++	dev_t dev = makedev(1, 3);
++
++	SAFE_TOUCH(FILENAME, 0644, NULL);
++	SAFE_MKDIR(DIRNAME, 0644);
++	SAFE_SYMLINK(FILENAME, SYMLINK);
++	SAFE_MKNOD(FIFO, S_IFIFO | 0777, 0);
++	SAFE_MKNOD(CHR, S_IFCHR | 0777, dev);
++	SAFE_MKNOD(BLK, S_IFBLK | 0777, 0);
++	SAFE_MKNOD(SOCK, S_IFSOCK | 0777, 0);
  }
  
 -static void cleanup(void)
