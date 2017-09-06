@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 6 Sep 2017 15:31:16 +0200
-Subject: [LTP] [PATCH 1/1] configure: Remove checks for unused headers
-In-Reply-To: <20170906131659.6223-1-pvorel@suse.cz>
-References: <20170906131659.6223-1-pvorel@suse.cz>
-Message-ID: <20170906133115.GI24177@rei.lan>
+Date: Wed, 6 Sep 2017 15:34:38 +0200
+Subject: [LTP] [RFC PATCH 5/6] android: cve/stack_clash: Fix PAGE_MASK
+ defined in <sys/user.h>
+In-Reply-To: <20170902005926.15923-6-petr.vorel@gmail.com>
+References: <20170902005926.15923-1-petr.vorel@gmail.com>
+ <20170902005926.15923-6-petr.vorel@gmail.com>
+Message-ID: <20170906133438.GJ24177@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
