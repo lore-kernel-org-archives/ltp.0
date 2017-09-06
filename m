@@ -1,55 +1,71 @@
-From: Bhupesh Sharma <bhsharma@redhat.com>
-Date: Tue, 5 Sep 2017 07:52:17 +0530
-Subject: [LTP] [PATCH 0/2] mem: ksm: race condition fixes
-In-Reply-To: <20170825083427.25745-1-aarcange@redhat.com>
-References: <20170825083427.25745-1-aarcange@redhat.com>
-Message-ID: <CACi5LpNv0-ajX5k99gqXnVO6tKF5ceFqSHJEXxaP7nUFN1jVYQ@mail.gmail.com>
+From: Sumit Semwal <sumit.semwal@linaro.org>
+Date: Wed, 6 Sep 2017 20:59:18 +0530
+Subject: [LTP] [PATCH] utimensat_tests.sh: returns EPERM on 4.4.27 and
+	above
+In-Reply-To: <1059184676.9072017.1504698860809.JavaMail.zimbra@redhat.com>
+References: <1504697434-22974-1-git-send-email-naresh.kamboju@linaro.org>
+ <1059184676.9072017.1504698860809.JavaMail.zimbra@redhat.com>
+Message-ID: <CAO_48GG9k_MxhktOWptCkv1Y8xFfFN31w2ntcnkZL5LdhM7qxg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Andrea,
+On 6 September 2017 at 17:24, Jan Stancek <jstancek@redhat.com> wrote:
+>
+>
+> ----- Original Message -----
+>> From: Naresh Kamboju <naresh.kamboju@linaro.org>
+>>
+>> Test utimensat failed on 4.4 kernel is due to expected error is
+>> EACCES but got EPERM.
+>>
+>> The below LTP patch setting up expected error as EACCES for 4.8.0 below
+>> kernel
+>> b9157aee: utimensat: re-apply: fix immutable file retcodes for 4.8.0 and
+>> newer
+>>
+>> Amending patch to check 4.4.27 instead of 4.8.0 according to below patch
+>> tree: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
+>> branch: v4.4.27
+>> commit id: b3b4283
+>> vfs: move permission checking into notify_change() for utimes(NULL)
+>>
+>> Bug reported on this case,
+>> LKFT: linux-stable-4.4: LTP utimensat01 failed-EXPECTED: EACCES but got EPERM
+>> https://bugs.linaro.org/show_bug.cgi?id=3142
+>>
+>> Signed-off-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+>> ---
+>>  testcases/kernel/syscalls/utimensat/utimensat_tests.sh | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+>> b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+>> index 48154d6..a832433 100755
+>> --- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+>> +++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+>> @@ -30,9 +30,9 @@ if tst_kvcmp -lt "2.6.22"; then
+>>       tst_brkm TCONF "System kernel version is less than 2.6.22,cannot execute
+>>       test"
+>>  fi
+>>
+>> -# Starting with 4.8.0 operations on immutable files return EPERM instead of
+>> +# Starting with 4.4.27 operations on immutable files return EPERM instead of
+>>  # EACCES.
+>> -if tst_kvcmp -lt "4.8.0"; then
+>> +if tst_kvcmp -lt "4.4.27"; then
+>
+> Isn't this going to break the test for kernels 4.5 up to 4.7?
 
-On Fri, Aug 25, 2017 at 2:04 PM, Andrea Arcangeli <aarcange@redhat.com> wrote:
-> Hello,
+I'd think so too - perhaps a better check is to check for (if 4.4.X,
+then if > .27) OR (greater than 4.8.0)?
 >
-> some false positives triggered the LTP ksm?? tests on some arch with
-> slower CPU. The volatile pages weren't zero during the checks, as they
-> should have been.
->
-> Volatile pages left around means there are orphaned rmap_items, that
-> can happen if the KSM scans aren't complete.
->
-> I believe the problem is with the waiting that wasn't waiting two full
-> passes, but it only waited until the values stopped changing after 10
-> seconds of wait time. Plus the ksm?? children were still running by
-> the time the wait time started.
->
-> The first patch takes care of waiting two scans (more efficiently,
-> with a polling of 1 sec). That change then exposes the problem with
-> the ksm?? children not being stopped before we start waiting, and the
-> second patch fixes that.
->
-> After applying these two fixes, we had hundred of successful runs on
-> the same system that showed volatile pages not zero, without any
-> further failures.
->
-> Try #2, first submit bounced because I thought I subscribed, but I was
-> still one click away.
->
-> Thanks,
-> Andrea
->
-> Andrea Arcangeli (2):
->   mem: ksm: fix volatile page false positive
->   mem: ksm: fixes for race conditions
->
->  testcases/kernel/mem/lib/mem.c | 93 ++++++++++++++++++++++--------------------
->  1 file changed, 49 insertions(+), 44 deletions(-)
-
-Thanks for the patchset. I have tested the same on both  x86_64 and
-aarch64 host machine and also reviewed the same:
-
-Reviewed-by: Bhupesh Sharma <bhsharma@redhat.com>
+>>       imaccess=EACCES
+>>  else
+>>       imaccess=EPERM
+>> --
+>> 2.7.4
+>>
+>>
