@@ -1,11 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 6 Sep 2017 15:34:38 +0200
-Subject: [LTP] [RFC PATCH 5/6] android: cve/stack_clash: Fix PAGE_MASK
- defined in <sys/user.h>
-In-Reply-To: <20170902005926.15923-6-petr.vorel@gmail.com>
-References: <20170902005926.15923-1-petr.vorel@gmail.com>
- <20170902005926.15923-6-petr.vorel@gmail.com>
-Message-ID: <20170906133438.GJ24177@rei.lan>
+Date: Wed, 6 Sep 2017 16:02:56 +0200
+Subject: [LTP] [PATCH] hugemmap/hugemmap05.c: fix warnings in cleanup()
+In-Reply-To: <1504148379-8552-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1504148379-8552-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20170906140256.GA25855@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
