@@ -1,83 +1,37 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 7 Sep 2017 04:25:31 -0400 (EDT)
-Subject: [LTP] [RFC] [PATCH 02/15] lib: Add interface to list
-	supported	filesystems
-In-Reply-To: <20170905160918.6477-2-chrubis@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 7 Sep 2017 10:34:28 +0200
+Subject: [LTP] [RFC] [PATCH 01/15] lib/tst_mkfs: Clear first 512k of the
+ device
+In-Reply-To: <1786606525.10020364.1504770171451.JavaMail.zimbra@redhat.com>
 References: <20170905160918.6477-1-chrubis@suse.cz>
- <20170905160918.6477-2-chrubis@suse.cz>
-Message-ID: <810821313.10122426.1504772731732.JavaMail.zimbra@redhat.com>
+ <1786606525.10020364.1504770171451.JavaMail.zimbra@redhat.com>
+Message-ID: <20170907083428.GA32577@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
------ Original Message -----
-> A filesystem is supported if kernel can mount it (we do not get ENODEV
-> when we attempt to mount it) and if there is mkfs installed so that we
-> can format a test device.
+Hi!
+> > If we cal tst_mkfs() from a test more than once we end up with the very
+> > same bug we already fixed by clearing the device in
+> > tst_acquire_device(), i.e. some mkfs programs will not format it when
+> > there is a valid FS signature there.
+> > 
+> > So this commit moves the code to clear up the first 512k of the device
+> > from tst_acquire_device() to the tst_mkfs() where it rightfully belongs.
 > 
-> The function starts with a whitelist of filesystems to use and loops
-> over them filtering out unsupported ones, then finally returns a list
-> of filesystem that could be used for the testing.
-> 
+> Didn't we move the clearing to tst_acquire_device() because of shell library
+> some time ago? tst_mkfs() from tst_test.sh is not using tst_mkfs_().
 
-...
+Right, the shell mkfs test would fail in a case that we have a device
+passed via LTP_DEV because the start of the device wouldn't be cleaned
+at all.
 
-> +static int has_mkfs(const char *fs_type)
-> +{
-> +	char buf[128];
-> +	int ret;
-> +
-> +	sprintf(buf, "mkfs.%s >/dev/null 2>&1", fs_type);
-> +
-> +	ret = tst_system(buf);
-> +
-> +	if (WEXITSTATUS(ret) == 127) {
-> +		tst_res(TINFO, "mkfs.%s does not exits", fs_type);
+I guess that the easiest solution would be leaving the code to clear the
+start of the device in the acquire_device() as well. We would end up
+clearing it twice in some situations though.
 
-exits -> exist
-
-> +		return 0;
-> +	}
-> +
-> +	tst_res(TINFO, "mkfs.%s does exits", fs_type);
-
-same here
-
-> +	return 1;
-> +}
-> +
-> +static int has_kernel_support(const char *fs_type)
-> +{
-> +	static int fuse_supported = -1;
-> +	const char *tmpdir = getenv("TMPDIR");
-> +	char buf[128];
-> +	int ret;
-> +
-> +	if (!tmpdir)
-> +		tmpdir = "/tmp";
-> +
-> +	mount("/dev/zero", tmpdir, fs_type, 0, NULL);
-> +	if (errno != ENODEV) {
-> +		tst_res(TINFO, "Kernel supports %s", fs_type);
-> +		return 1;
-> +	}
-> +
-> +	/* Is FUSE supported by kernel? */
-> +	if (fuse_supported == -1) {
-> +		ret = open("/dev/fuse", O_RDWR);
-> +		if (ret < 0)
-> +			fuse_supported = 0;
-> +		else
-> +			fuse_supported = 1;
-> +
-> +		SAFE_CLOSE(ret);
-
-This TBROK if /dev/fuse does not exist.
-safe_macros.c:62: BROK: tst_supported_fs_types.c:87: close(-1) failed: EBADF
-
-Regards,
-Jan
+-- 
+Cyril Hrubis
+chrubis@suse.cz
