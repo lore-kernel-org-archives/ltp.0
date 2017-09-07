@@ -1,31 +1,27 @@
-From: Steve Muckle <smuckle.linux@gmail.com>
-Date: Thu, 7 Sep 2017 10:42:10 -0700
-Subject: [LTP] [PATCH] syscalls/kcmp03: work around bug in C library
-In-Reply-To: <20170906100923.GA23287@rei.lan>
-References: <20170905204029.66280-1-smuckle.linux@gmail.com>
- <20170906100923.GA23287@rei.lan>
-Message-ID: <c378bb66-f40e-42e2-1586-1b5c445a33dc@gmail.com>
+From: Sandeep Patil <sspatil@google.com>
+Date: Thu, 7 Sep 2017 12:53:41 -0700
+Subject: [LTP] LTP release
+In-Reply-To: <20170907105921.GB775@rei.lan>
+References: <20170907105921.GB775@rei.lan>
+Message-ID: <20170907195341.GA52328@sspatil-desktop.mtv.corp.google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 09/06/2017 03:09 AM, Cyril Hrubis wrote:
+On Thu, Sep 07, 2017 at 12:59:21PM +0200, Cyril Hrubis wrote:
 > Hi!
->> Some versions of glibc and bionic report the same PID for parent
->> and child when clone() is called with CLONE_VM but not
->> CLONE_THREAD.
+> It's about a time we should start preparing for another release.
 > 
-> Is that the result of the infamous pid caching?
+> As usuall let's start with pointing out patches that should be part of
+> it, then we will proceed with freezing the repo and round of pre-release
+> testing, etc.
 
-In bionic yes, I can't say for sure in glibc but I'd assume so. I
-haven't tested a glibc version that had pid caching removed.
+Following pending review/commit right now from me
 
-> Can we fix that by using the raw getpid() syscall in the test
-> library? If so I guess that using raw syscall in the test library may
-> be a safer bet.
-Probably. I'll try it.
+1. [LTP][RESEND][PATCH v2] android: pty01: Fix pty01 test for Android
+2. [LTP][PATCH v4] input/input06: Fix auto-repeat key test
+3. [LTP][PATCH v2] android: madvise08: fix for android devices
 
-thanks,
-Steve
+- ssp
