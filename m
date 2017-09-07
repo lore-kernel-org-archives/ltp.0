@@ -1,39 +1,38 @@
 From: Sandeep Patil <sspatil@google.com>
-Date: Thu,  7 Sep 2017 15:16:25 -0700
-Subject: [LTP] [PATCH v2 2/2] syscalls/access04: use .needs_rofs flag for
-	EROFS testing
-In-Reply-To: <20170907221625.13616-1-sspatil@google.com>
-References: <20170907221625.13616-1-sspatil@google.com>
-Message-ID: <20170907221625.13616-3-sspatil@google.com>
+Date: Thu,  7 Sep 2017 16:54:49 -0700
+Subject: [LTP] [PATCH] android: libltp: add new variant for loopback block
+	device paths
+Message-ID: <20170907235449.112545-1-sspatil@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Prefer to use the .needs_rofs flag instead of requiring format and mount a
-filesystem image for testing 'EROFS' return value from access()
+Android systems put loopback devices at "/dev/block/loopX", add that
+variant in libltp so they can be found by the tests that need them.
+
+E.g. of test getting fixed by this on Android, syscalls.ioctol05
 
 Signed-off-by: Sandeep Patil <sspatil@google.com>
 ---
- testcases/kernel/syscalls/access/access04.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ lib/tst_device.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/access/access04.c b/testcases/kernel/syscalls/access/access04.c
-index dbb6d271a..626e6df2c 100644
---- a/testcases/kernel/syscalls/access/access04.c
-+++ b/testcases/kernel/syscalls/access/access04.c
-@@ -125,9 +125,8 @@ static struct tst_test test = {
- 	.needs_tmpdir = 1,
- 	.needs_root = 1,
- 	.forks_child = 1,
--	.mount_device = 1,
-+	.needs_rofs = 1,
- 	.mntpoint = MNT_POINT,
--	.mnt_flags = MS_RDONLY,
- 	.setup = setup,
- 	.test = verify_access,
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index 936bbfd03..67432caf6 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -48,7 +48,8 @@ static int device_acquired;
+ 
+ static const char *dev_variants[] = {
+ 	"/dev/loop%i",
+-	"/dev/loop/%i"
++	"/dev/loop/%i",
++	"/dev/block/loop%i"
  };
+ 
+ static int set_dev_path(int dev)
 -- 
 2.14.1.581.gf28d330327-goog
 
