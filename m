@@ -1,17 +1,16 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 7 Sep 2017 03:48:23 -0400 (EDT)
+Date: Thu, 7 Sep 2017 04:25:31 -0400 (EDT)
 Subject: [LTP] [RFC] [PATCH 02/15] lib: Add interface to list
 	supported	filesystems
 In-Reply-To: <20170905160918.6477-2-chrubis@suse.cz>
 References: <20170905160918.6477-1-chrubis@suse.cz>
  <20170905160918.6477-2-chrubis@suse.cz>
-Message-ID: <493059632.10028491.1504770503631.JavaMail.zimbra@redhat.com>
+Message-ID: <810821313.10122426.1504772731732.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
-
 
 
 
@@ -24,48 +23,61 @@ To: ltp@lists.linux.it
 > over them filtering out unsupported ones, then finally returns a list
 > of filesystem that could be used for the testing.
 > 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
 ...
 
-> diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
-> new file mode 100644
-> index 000000000..fabc39111
-> --- /dev/null
-> +++ b/lib/tst_supported_fs_types.c
-> @@ -0,0 +1,120 @@
-> +/*
-> + * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
-> + *
-> + * This program is free software: you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation, either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
-> + */
+> +static int has_mkfs(const char *fs_type)
+> +{
+> +	char buf[128];
+> +	int ret;
 > +
-> +/*
-> + */
+> +	sprintf(buf, "mkfs.%s >/dev/null 2>&1", fs_type);
 > +
-> +#include <stdio.h>
-> +#include <errno.h>
-> +#include <stdlib.h>
-> +#include <sys/mount.h>
+> +	ret = tst_system(buf);
 > +
-> +#define TST_NO_DEFAULT_MAIN
-> +#include "tst_test.h"
-> +#include "tst_fs.h"
+> +	if (WEXITSTATUS(ret) == 127) {
+> +		tst_res(TINFO, "mkfs.%s does not exits", fs_type);
 
-I'm running into:
-  ltp/lib/tst_supported_fs_types.c:54: undefined reference to `WEXITSTATUS'
-on older distros, "#include <sys/wait.h>" fixes that.
+exits -> exist
+
+> +		return 0;
+> +	}
+> +
+> +	tst_res(TINFO, "mkfs.%s does exits", fs_type);
+
+same here
+
+> +	return 1;
+> +}
+> +
+> +static int has_kernel_support(const char *fs_type)
+> +{
+> +	static int fuse_supported = -1;
+> +	const char *tmpdir = getenv("TMPDIR");
+> +	char buf[128];
+> +	int ret;
+> +
+> +	if (!tmpdir)
+> +		tmpdir = "/tmp";
+> +
+> +	mount("/dev/zero", tmpdir, fs_type, 0, NULL);
+> +	if (errno != ENODEV) {
+> +		tst_res(TINFO, "Kernel supports %s", fs_type);
+> +		return 1;
+> +	}
+> +
+> +	/* Is FUSE supported by kernel? */
+> +	if (fuse_supported == -1) {
+> +		ret = open("/dev/fuse", O_RDWR);
+> +		if (ret < 0)
+> +			fuse_supported = 0;
+> +		else
+> +			fuse_supported = 1;
+> +
+> +		SAFE_CLOSE(ret);
+
+This TBROK if /dev/fuse does not exist.
+safe_macros.c:62: BROK: tst_supported_fs_types.c:87: close(-1) failed: EBADF
 
 Regards,
 Jan
