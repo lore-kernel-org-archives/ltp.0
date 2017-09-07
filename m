@@ -1,84 +1,83 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Thu, 7 Sep 2017 10:11:30 +0800
-Subject: [LTP] [PATCH v2] cve/cve-2016-7042: Make use of the fallback
-	functions in lapi/keyctl.h
-In-Reply-To: <20170906122921.GC24177@rei.lan>
-References: <20170906122921.GC24177@rei.lan>
-Message-ID: <20170907021130.14525-1-fenggw-fnst@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 7 Sep 2017 03:42:51 -0400 (EDT)
+Subject: [LTP] [RFC] [PATCH 01/15] lib/tst_mkfs: Clear first 512k of
+	the	device
+In-Reply-To: <20170905160918.6477-1-chrubis@suse.cz>
+References: <20170905160918.6477-1-chrubis@suse.cz>
+Message-ID: <1786606525.10020364.1504770171451.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
----
- testcases/cve/Makefile        |  2 ++
- testcases/cve/cve-2016-7042.c | 12 ++++--------
- 2 files changed, 6 insertions(+), 8 deletions(-)
-
-diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
-index 04abc1f..0905fd9 100644
---- a/testcases/cve/Makefile
-+++ b/testcases/cve/Makefile
-@@ -19,6 +19,8 @@ include $(top_srcdir)/include/mk/testcases.mk
- 
- CFLAGS			+= -D_GNU_SOURCE
- 
-+cve-2016-7042:	LDLIBS += $(KEYUTILS_LIBS)
-+
- cve-2016-7117:	CFLAGS += -pthread
- cve-2016-7117:	LDLIBS += -lrt
- 
-diff --git a/testcases/cve/cve-2016-7042.c b/testcases/cve/cve-2016-7042.c
-index ff9c057..8719eba 100644
---- a/testcases/cve/cve-2016-7042.c
-+++ b/testcases/cve/cve-2016-7042.c
-@@ -31,7 +31,6 @@
- #include <stdio.h>
- 
- #include "tst_test.h"
--#include "lapi/syscalls.h"
- #include "lapi/keyctl.h"
- 
- #define PATH_KEYS	"/proc/keys"
-@@ -43,12 +42,11 @@ static void do_test(void)
- {
- 	char buf[BUFSIZ];
- 
--	key = tst_syscall(__NR_add_key,
--		"user", "ltptestkey", "a", 1, KEY_SPEC_SESSION_KEYRING);
-+	key = add_key("user", "ltptestkey", "a", 1, KEY_SPEC_SESSION_KEYRING);
- 	if (key == -1)
- 		tst_brk(TBROK, "Failed to add key");
- 
--	if (tst_syscall(__NR_keyctl, KEYCTL_UPDATE, key, "b", 1))
-+	if (keyctl(KEYCTL_UPDATE, key, "b", 1))
- 		tst_brk(TBROK, "Failed to update key");
- 
- 	fd = SAFE_OPEN(PATH_KEYS, O_RDONLY);
-@@ -61,8 +59,7 @@ static void do_test(void)
- 
- 	SAFE_CLOSE(fd);
- 
--	if (tst_syscall(__NR_keyctl, KEYCTL_UNLINK, key,
--		KEY_SPEC_SESSION_KEYRING))
-+	if (keyctl(KEYCTL_UNLINK, key, KEY_SPEC_SESSION_KEYRING))
- 		tst_brk(TBROK, "Failed to unlink key");
- 	key = 0;
- }
-@@ -75,8 +72,7 @@ static void setup(void)
- 
- static void cleanup(void)
- {
--	if (key > 0 && tst_syscall(__NR_keyctl, KEYCTL_UNLINK, key,
--		KEY_SPEC_SESSION_KEYRING))
-+	if (key > 0 && keyctl(KEYCTL_UNLINK, key, KEY_SPEC_SESSION_KEYRING))
- 		tst_res(TWARN, "Failed to unlink key");
- 
- 	if (fd > 0)
--- 
-2.9.4
 
 
+----- Original Message -----
+> If we cal tst_mkfs() from a test more than once we end up with the very
+> same bug we already fixed by clearing the device in
+> tst_acquire_device(), i.e. some mkfs programs will not format it when
+> there is a valid FS signature there.
+> 
+> So this commit moves the code to clear up the first 512k of the device
+> from tst_acquire_device() to the tst_mkfs() where it rightfully belongs.
 
+Didn't we move the clearing to tst_acquire_device() because of shell library
+some time ago? tst_mkfs() from tst_test.sh is not using tst_mkfs_().
+
+Regards,
+Jan
+
+> 
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  lib/tst_device.c | 9 +--------
+>  lib/tst_mkfs.c   | 6 ++++++
+>  2 files changed, 7 insertions(+), 8 deletions(-)
+> 
+> diff --git a/lib/tst_device.c b/lib/tst_device.c
+> index 936bbfd03..c0d689dde 100644
+> --- a/lib/tst_device.c
+> +++ b/lib/tst_device.c
+> @@ -244,15 +244,8 @@ const char *tst_acquire_device__(unsigned int size)
+>  
+>  		ltp_dev_size = ltp_dev_size/1024/1024;
+>  
+> -		if (acq_dev_size <= ltp_dev_size) {
+> -			if (tst_fill_file(dev, 0, 1024, 512)) {
+> -				tst_resm(TWARN | TERRNO,
+> -					 "Failed to clear the first 512k of %s",
+> -					 dev);
+> -			}
+> -
+> +		if (acq_dev_size <= ltp_dev_size)
+>  			return dev;
+> -		}
+>  
+>  		tst_resm(TINFO, "Skipping $LTP_DEV size %"PRIu64"MB, requested size %uMB",
+>  				ltp_dev_size, acq_dev_size);
+> diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
+> index f2e40ecd6..a63ee5e68 100644
+> --- a/lib/tst_mkfs.c
+> +++ b/lib/tst_mkfs.c
+> @@ -75,6 +75,12 @@ void tst_mkfs_(const char *file, const int lineno, void
+> (cleanup_fn)(void),
+>  
+>  	argv[pos] = NULL;
+>  
+> +	if (tst_fill_file(dev, 0, 1024, 512)) {
+> +		tst_brkm(TBROK, cleanup_fn,
+> +			 "Failed to clear 512k block on %s", dev);
+> +		return;
+> +	}
+> +
+>  	tst_resm(TINFO, "Formatting %s with %s opts='%s' extra opts='%s'",
+>  	         dev, fs_type, fs_opts_str, extra_opt ? extra_opt : "");
+>  	ret = tst_run_cmd(cleanup_fn, argv, "/dev/null", NULL, 1);
+> --
+> 2.13.0
+> 
+> 
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
