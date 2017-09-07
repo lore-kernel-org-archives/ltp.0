@@ -1,71 +1,84 @@
-From: Sumit Semwal <sumit.semwal@linaro.org>
-Date: Wed, 6 Sep 2017 20:59:18 +0530
-Subject: [LTP] [PATCH] utimensat_tests.sh: returns EPERM on 4.4.27 and
-	above
-In-Reply-To: <1059184676.9072017.1504698860809.JavaMail.zimbra@redhat.com>
-References: <1504697434-22974-1-git-send-email-naresh.kamboju@linaro.org>
- <1059184676.9072017.1504698860809.JavaMail.zimbra@redhat.com>
-Message-ID: <CAO_48GG9k_MxhktOWptCkv1Y8xFfFN31w2ntcnkZL5LdhM7qxg@mail.gmail.com>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Thu, 7 Sep 2017 10:11:30 +0800
+Subject: [LTP] [PATCH v2] cve/cve-2016-7042: Make use of the fallback
+	functions in lapi/keyctl.h
+In-Reply-To: <20170906122921.GC24177@rei.lan>
+References: <20170906122921.GC24177@rei.lan>
+Message-ID: <20170907021130.14525-1-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 6 September 2017 at 17:24, Jan Stancek <jstancek@redhat.com> wrote:
->
->
-> ----- Original Message -----
->> From: Naresh Kamboju <naresh.kamboju@linaro.org>
->>
->> Test utimensat failed on 4.4 kernel is due to expected error is
->> EACCES but got EPERM.
->>
->> The below LTP patch setting up expected error as EACCES for 4.8.0 below
->> kernel
->> b9157aee: utimensat: re-apply: fix immutable file retcodes for 4.8.0 and
->> newer
->>
->> Amending patch to check 4.4.27 instead of 4.8.0 according to below patch
->> tree: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
->> branch: v4.4.27
->> commit id: b3b4283
->> vfs: move permission checking into notify_change() for utimes(NULL)
->>
->> Bug reported on this case,
->> LKFT: linux-stable-4.4: LTP utimensat01 failed-EXPECTED: EACCES but got EPERM
->> https://bugs.linaro.org/show_bug.cgi?id=3142
->>
->> Signed-off-by: Naresh Kamboju <naresh.kamboju@linaro.org>
->> ---
->>  testcases/kernel/syscalls/utimensat/utimensat_tests.sh | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
->> b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
->> index 48154d6..a832433 100755
->> --- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
->> +++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
->> @@ -30,9 +30,9 @@ if tst_kvcmp -lt "2.6.22"; then
->>       tst_brkm TCONF "System kernel version is less than 2.6.22,cannot execute
->>       test"
->>  fi
->>
->> -# Starting with 4.8.0 operations on immutable files return EPERM instead of
->> +# Starting with 4.4.27 operations on immutable files return EPERM instead of
->>  # EACCES.
->> -if tst_kvcmp -lt "4.8.0"; then
->> +if tst_kvcmp -lt "4.4.27"; then
->
-> Isn't this going to break the test for kernels 4.5 up to 4.7?
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+---
+ testcases/cve/Makefile        |  2 ++
+ testcases/cve/cve-2016-7042.c | 12 ++++--------
+ 2 files changed, 6 insertions(+), 8 deletions(-)
 
-I'd think so too - perhaps a better check is to check for (if 4.4.X,
-then if > .27) OR (greater than 4.8.0)?
->
->>       imaccess=EACCES
->>  else
->>       imaccess=EPERM
->> --
->> 2.7.4
->>
->>
+diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
+index 04abc1f..0905fd9 100644
+--- a/testcases/cve/Makefile
++++ b/testcases/cve/Makefile
+@@ -19,6 +19,8 @@ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ CFLAGS			+= -D_GNU_SOURCE
+ 
++cve-2016-7042:	LDLIBS += $(KEYUTILS_LIBS)
++
+ cve-2016-7117:	CFLAGS += -pthread
+ cve-2016-7117:	LDLIBS += -lrt
+ 
+diff --git a/testcases/cve/cve-2016-7042.c b/testcases/cve/cve-2016-7042.c
+index ff9c057..8719eba 100644
+--- a/testcases/cve/cve-2016-7042.c
++++ b/testcases/cve/cve-2016-7042.c
+@@ -31,7 +31,6 @@
+ #include <stdio.h>
+ 
+ #include "tst_test.h"
+-#include "lapi/syscalls.h"
+ #include "lapi/keyctl.h"
+ 
+ #define PATH_KEYS	"/proc/keys"
+@@ -43,12 +42,11 @@ static void do_test(void)
+ {
+ 	char buf[BUFSIZ];
+ 
+-	key = tst_syscall(__NR_add_key,
+-		"user", "ltptestkey", "a", 1, KEY_SPEC_SESSION_KEYRING);
++	key = add_key("user", "ltptestkey", "a", 1, KEY_SPEC_SESSION_KEYRING);
+ 	if (key == -1)
+ 		tst_brk(TBROK, "Failed to add key");
+ 
+-	if (tst_syscall(__NR_keyctl, KEYCTL_UPDATE, key, "b", 1))
++	if (keyctl(KEYCTL_UPDATE, key, "b", 1))
+ 		tst_brk(TBROK, "Failed to update key");
+ 
+ 	fd = SAFE_OPEN(PATH_KEYS, O_RDONLY);
+@@ -61,8 +59,7 @@ static void do_test(void)
+ 
+ 	SAFE_CLOSE(fd);
+ 
+-	if (tst_syscall(__NR_keyctl, KEYCTL_UNLINK, key,
+-		KEY_SPEC_SESSION_KEYRING))
++	if (keyctl(KEYCTL_UNLINK, key, KEY_SPEC_SESSION_KEYRING))
+ 		tst_brk(TBROK, "Failed to unlink key");
+ 	key = 0;
+ }
+@@ -75,8 +72,7 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
+-	if (key > 0 && tst_syscall(__NR_keyctl, KEYCTL_UNLINK, key,
+-		KEY_SPEC_SESSION_KEYRING))
++	if (key > 0 && keyctl(KEYCTL_UNLINK, key, KEY_SPEC_SESSION_KEYRING))
+ 		tst_res(TWARN, "Failed to unlink key");
+ 
+ 	if (fd > 0)
+-- 
+2.9.4
+
+
+
