@@ -1,43 +1,72 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 11 Sep 2017 16:35:55 +0300
-Subject: [LTP] [PATCH v2 2/2] lib6/in6_01: Fix compiler warning 'set but
- not used variable'
-In-Reply-To: <20170907112521.23881-2-pvorel@suse.cz>
-References: <20170907112521.23881-1-pvorel@suse.cz>
- <20170907112521.23881-2-pvorel@suse.cz>
-Message-ID: <7e985f2a-0c64-529a-12a8-685d2d0e9d04@oracle.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 11 Sep 2017 15:52:00 +0200
+Subject: [LTP] [RFC PATCH v9 5/7] network/stress: Fix and cleanup part
+ of multicast IPv4 tests
+In-Reply-To: <46938f85-d63c-42ae-35c8-97bdc7096fee@oracle.com>
+References: <20170824234436.18145-1-pvorel@suse.cz>
+ <20170824234436.18145-6-pvorel@suse.cz>
+ <46938f85-d63c-42ae-35c8-97bdc7096fee@oracle.com>
+Message-ID: <20170911135200.s7yg4tyea3byqjvl@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 09/07/2017 02:25 PM, Petr Vorel wrote:
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  testcases/network/lib6/in6_01.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/testcases/network/lib6/in6_01.c b/testcases/network/lib6/in6_01.c
-> index 70e771357..0b279dd10 100644
-> --- a/testcases/network/lib6/in6_01.c
-> +++ b/testcases/network/lib6/in6_01.c
-> @@ -117,7 +117,7 @@ static void test_sockaddr_in6(void)
->  	uint32_t ui16 = 2;
->  	uint32_t ui32 = 3;
->  	struct in6_addr in6;
-> -	struct sockaddr_in6 sin6;
-> +	LTP_ATTRIBUTE_UNUSED struct sockaddr_in6 sin6;
+Hi Alexey,
+
+> > +++ b/testcases/network/stress/multicast/grp-operation/mcast4-lib.sh
+...
+> > +do_multicast_test_join_leave()
+> > +{
+> > +	local cnt define_src_addr filter params ret src_addr x y
+> > +
+> > +	[ "$1" = true ] && define_src_addr=true
+> > +
+> > +	# Send IGMP General Query from the remote host
+> > +	tst_rhost_run -s -c "ns-igmp_querier -I $(tst_iface rhost) -i 1000000000 -r 1 -b"
+> > +
+> > +	# Run a multicast join tool
+> > +	cnt=0
+> > +	while [ $cnt -lt $NS_TIMES ]; do
+This is actually wrong variable ($MCASTNUM_NORMAL should be used or better variable passed by script which call this function). I'll plan to fix it in next version.
+With new version I also plan to switch it to be for both IPv4 and IPv6.
+
+> > +		if [ "$define_src_addr" ]; then
+> > +			x=$(($cnt / 254))
+> > +			y=$(($cnt % 254 + 1))
+> > +			if [ $x -gt 254 ]; then
+> > +				tst_resm TINFO "the number of the connection is less than $cnt"
+> > +				break
+> > +			fi
+> > +			src_addr=$(tst_ipaddr_un $x $y)
+> > +
+> > +			[ $((cnt % 5)) -ne 2 ] && filter="include" || filter="exclude"
+> > +			params="-F $filter -s $src_addr"
 
 
-May be extend this test-case a little bit and avoid compiler optimizations
-because the test-case just sets sockaddr_in6 fields... for example create
-a socket and try bind() with sin6?
+> Why not params="-F $filter -s $(tst_ipaddr_un -c$cnt)"?
+The original test runs:
+ns-mcast_join -f 4 -I  -l 65024 -a 224.10.10.1 -F include -s 10.10.0.1 &
+ns-mcast_join -f 4 -I  -l 65024 -a 224.10.10.1 -F include -s 10.10.0.2 &
+...
+ns-mcast_join -f 4 -I  -l 65024 -a 224.10.10.1 -F include -s 10.10.254.253 &
+ns-mcast_join -f 4 -I  -l 65024 -a 224.10.10.1 -F include -s 10.10.254.254 &
 
-int sd = SAFE_SOCKET(AF_INET6, SOCK_STREAM, 0);
-bind(sd, (struct sockaddr *)&sin6, sizeof(sin6));
-SAFE_CLOSE(sd);
+=> it breaks loop if $NS_TIMES (or whatever variable is used) > 254*254 (=64516).
 
-Thanks,
-Alexey
+With -c switch $(tst_ipaddr_un -c$cnt)" we get half of IP's for the limit (as we're using
+just lhost IP's)
+for cnt -lt $((254*255))
+
+ns-mcast_join -f 4 -I ltp_ns_veth2 -l 3 -a 224.10.10.1 -F include -s 10.23.251.2
+ns-mcast_join -f 4 -I ltp_ns_veth2 -l 3 -a 224.10.10.1 -F include -s 10.23.251.4
+...
+ns-mcast_join -f 4 -I ltp_ns_veth2 -l 3 -a 224.10.10.1 -F include -s 10.23.254.252
+ns-mcast_join -f 4 -I ltp_ns_veth2 -l 3 -a 224.10.10.1 -F include -s 10.23.254.254
+
+I suppose I can remove this limit.
+
+
+Kind regards,
+Petr
