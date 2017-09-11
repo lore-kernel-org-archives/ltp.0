@@ -1,134 +1,562 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 11 Sep 2017 17:11:04 +0200
-Subject: [LTP] [PATCH 1/1] network/stress: Fix using undefined variables in
-	interface tests
-Message-ID: <20170911151104.30692-1-pvorel@suse.cz>
+Date: Mon, 11 Sep 2017 22:00:16 +0200
+Subject: [LTP] [RFC PATCH 1/1] doc: Remove network stress related doc
+Message-ID: <20170911200016.16845-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This is a regression introduced in 364df04c8 ("network/stress: Add
-library helper for stress testing")
+File doc/network_stress.txt is outdated and duplicite (network stress
+related docs is in each directory in 00_Descriptions.txt files).
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-I'm sorry to introduce this bug.
+IMHO it doesn't make sense to have duplicity in docs.
+Next step could be rename 00_Descriptions.txt files to something reasonable (README ?).
 ---
- testcases/network/stress/interface/if-addr-adddel    | 4 ++--
- testcases/network/stress/interface/if-addr-addlarge  | 4 ++--
- testcases/network/stress/interface/if-mtu-change     | 4 ++--
- testcases/network/stress/interface/if-route-adddel   | 4 ++--
- testcases/network/stress/interface/if-route-addlarge | 4 ++--
- testcases/network/stress/interface/if-updown         | 4 ++--
- 6 files changed, 12 insertions(+), 12 deletions(-)
+ doc/network_stress.txt | 531 -------------------------------------------------
+ 1 file changed, 531 deletions(-)
+ delete mode 100644 doc/network_stress.txt
 
-diff --git a/testcases/network/stress/interface/if-addr-adddel b/testcases/network/stress/interface/if-addr-adddel
-index 3b1ab50bb..4a0501e09 100644
---- a/testcases/network/stress/interface/if-addr-adddel
-+++ b/testcases/network/stress/interface/if-addr-adddel
-@@ -21,11 +21,11 @@ TST_TOTAL=2
- 
- TST_CLEANUP="netstress_cleanup"
- 
-+. test_net_stress.sh
-+
- # The interval of the check interface activity
- CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
- 
--. test_net_stress.sh
+diff --git a/doc/network_stress.txt b/doc/network_stress.txt
+deleted file mode 100644
+index fb936ef79..000000000
+--- a/doc/network_stress.txt
++++ /dev/null
+@@ -1,531 +0,0 @@
+-interface
+----------
+-if4-updown
+-	Verify the IPv4 connectivity is not broken when the interface is
+-	upped and downed many times
+-		test01 - by ifconfig command
+-		test02 - by ip command
 -
- test_body()
- {
- 	local cmd_type=$1
-diff --git a/testcases/network/stress/interface/if-addr-addlarge b/testcases/network/stress/interface/if-addr-addlarge
-index c3cdb8fa9..a81cf6129 100644
---- a/testcases/network/stress/interface/if-addr-addlarge
-+++ b/testcases/network/stress/interface/if-addr-addlarge
-@@ -21,11 +21,11 @@ TST_TOTAL=2
- 
- TST_CLEANUP="netstress_cleanup"
- 
-+. test_net_stress.sh
-+
- # The interval of the check interface activity
- CHECK_INTERVAL=${CHECK_INTERVAL:-$(($IP_TOTAL / 20))}
- 
--. test_net_stress.sh
+-if4-addr-change
+-	Verify the IPv4 connectivity is not broken when the IPv4 address
+-	is changed many times
+-		test01 - by ifconfig command
 -
- test_body()
- {
- 	local cmd_type=$1
-diff --git a/testcases/network/stress/interface/if-mtu-change b/testcases/network/stress/interface/if-mtu-change
-index 3658f69ce..15293c4a9 100644
---- a/testcases/network/stress/interface/if-mtu-change
-+++ b/testcases/network/stress/interface/if-mtu-change
-@@ -21,11 +21,11 @@ TST_TOTAL=2
- 
- TST_CLEANUP="do_cleanup"
- 
-+. test_net_stress.sh
-+
- # The interval of the mtu change [second]
- CHANGE_INTERVAL=${CHANGE_INTERVAL:-5}
- 
--. test_net_stress.sh
+-if4-alias-adddel01
+-	Verify the IPv4 connectivity is not broken when an IPv4 alias is
+-	added, then deleted many times
+-		test01 - by `ifconfig add' command
+-		test02 - by `ifconfig ethn:n' command
+-		test03 - by ip command
 -
- # The array of the value which MTU is changed into sequentially
- # 552 - net.ipv4.route.min_pmtu
- CHANGE_VALUES="784 1142 552 1500 552 1500 552 748 552 1142 1500"
-diff --git a/testcases/network/stress/interface/if-route-adddel b/testcases/network/stress/interface/if-route-adddel
-index 64366fc52..8c1dfeee2 100644
---- a/testcases/network/stress/interface/if-route-adddel
-+++ b/testcases/network/stress/interface/if-route-adddel
-@@ -21,10 +21,10 @@ TST_TOTAL=2
- 
- TST_CLEANUP="netstress_cleanup"
- 
--CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
+-if4-alias-addlarge01
+-	Verify the IPv4 connectivity is not broken when a large number of
+-	IPv4 alias is created
+-		test01 - by `ifconfig add' command
+-		test02 - by `ifconfig ethn:n' command
+-		test03 - by ip command
 -
- . test_net_stress.sh
- 
-+CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
-+
- test_body()
- {
- 	local cmd_type=$1
-diff --git a/testcases/network/stress/interface/if-route-addlarge b/testcases/network/stress/interface/if-route-addlarge
-index b7e6952c2..eee0959c8 100644
---- a/testcases/network/stress/interface/if-route-addlarge
-+++ b/testcases/network/stress/interface/if-route-addlarge
-@@ -21,10 +21,10 @@ TST_TOTAL=2
- 
- TST_CLEANUP="netstress_cleanup"
- 
--CHECK_INTERVAL=${CHECK_INTERVAL:-$(($ROUTE_TOTAL / 20))}
+-if4-route-adddel01
+-	Verify the IPv4 connectivity is not broken when an IPv4 route is
+-	added, then deleted many times
+-		test01 - by route command
+-		test02 - by ip command
 -
- . test_net_stress.sh
- 
-+CHECK_INTERVAL=${CHECK_INTERVAL:-$(($ROUTE_TOTAL / 20))}
-+
- test_body()
- {
- 	local cmd_type=$1
-diff --git a/testcases/network/stress/interface/if-updown b/testcases/network/stress/interface/if-updown
-index 5ab54a1f8..264331adb 100644
---- a/testcases/network/stress/interface/if-updown
-+++ b/testcases/network/stress/interface/if-updown
-@@ -21,10 +21,10 @@ TST_TOTAL=2
- 
- TST_CLEANUP="netstress_cleanup"
- 
--CHECK_INTERVAL=${CHECK_INTERVAL:-$(($IF_UPDOWN_TIMES / 20))}
+-if4-route-addlarge01
+-	Verify the IPv4 connectivity is not broken when a large number of
+-	IPv6 route is created
+-		test01 - by route command
+-		test02 - by ip command
 -
- . test_net_stress.sh
- 
-+CHECK_INTERVAL=${CHECK_INTERVAL:-$(($IF_UPDOWN_TIMES / 20))}
-+
- test_body()
- {
- 	local cmd_type=$1
+-if4-mtu-change01
+-	Verify the IPv4 connectivity is not broken when the mtu of interface
+-	is changed many times every 5 seconds
+-		test01 - by ifconfig command
+-		test02 - by ip command
+-
+-if6-updown
+-	Verify the IPv6 connectivity is not broken when the interface is
+-	upped and downed many times
+-		test01 - by ifconfig command
+-		test02 - by ip command
+-
+-if6-alias-adddel01
+-	Verify the IPv6 connectivity is not broken when an IPv6 alias is
+-	added, then deleted many times
+-		test01 - by ifconfig command
+-		test02 - by ip command
+-
+-if6-alias-addlarge01
+-	Verify the IPv6 connectivity is not broken when a large number of
+-	IPv6 alias is created
+-		test01 - by ifconfig command
+-		test02 - by ip command
+-
+-if6-route-adddel01
+-	Verify the IPv6 connectivity is not broken when an IPv6 route is
+-	added, then deleted many times
+-		test01 - by route command
+-		test02 - by ip command
+-
+-if6-route-addlarge01
+-	Verify the IPv6 connectivity is not broken when a large number of
+-	IPv6 route is created
+-		test01 - by route command
+-		test02 - by ip command
+-
+-if6-mtu-change01
+-	Verify the IPv6 connectivity is not broken when the mtu of interface
+-	is changed many times every 5 seconds
+-		test01 - by ifconfig command
+-		test02 - by ip command
+-
+-routing table
+--------------
+-route4-change-dst
+-	Verify the kernel is not crashed when the destination of an IPv4 route
+-	is changed frequently
+-		test01 - by route command
+-		test02 - by ip command
+-
+-route4-change-gw
+-	Verify the kernel is not crashed when the gateway of an IPv4 route is
+-	changed frequently
+-		test01 - by route command
+-		test02 - by ip command
+-
+-route4-change-if
+-	Verify the kernel is not crashed when the interface of an IPv4 route is
+-	changed frequently
+-		test01 - by route command
+-		test02 - by ip command
+-
+-route4-redirect01
+-	Verify the kernel is not crashed when the IPv4 route is modified by
+-	ICMP Redirects frequently
+-
+-route4-ifdown
+-	Verify the kernel is not crashed when IPv4 route is add then it is
+-	deleted by the interface down
+-		test01 - by route command and ifconfig command
+-		test02 - by ip command
+-
+-route4-rmmod
+-	Verify the kernel is not crashed when IPv4 route is add then it is
+-	deleted by the removing network driver
+-		test01 - by route command
+-		test02 - by ip command
+-
+-route6-change-dst
+-	Verify the kernel is not crashed when the destination of an IPv6 route
+-	is changed frequently
+-		test01 - by route command
+-		test02 - by ip command
+-
+-route6-change-gw
+-	Verify the kernel is not crashed when the gateway of an IPv6 route is
+-	changed frequently
+-		test01 - by route command
+-		test02 - by ip command
+-
+-route6-change-if
+-	Verify the kernel is not crashed when the interface of an IPv6 route is
+-	changed frequently
+-		test01 - by route command
+-		test02 - by ip command
+-
+-route6-redirect01
+-	Verify the kernel is not crashed when the IPv6 route is modified by
+-	ICMP Redirects frequently
+-
+-route6-ifdown
+-	Verify the kernel is not crashed when IPv6 route is add then it is
+-	deleted by the interface down
+-		test01 - by route command and ifconfig command
+-		test02 - by ip command
+-
+-route6-rmmod
+-	Verify the kernel is not crashed when IPv6 route is add then it is
+-	deleted by the removing network driver
+-		test01 - by route command
+-		test02 - by ip command
+-
+-
+-broken_ip
+----------
+-broken_ip4-version01
+-	Verify that the kernel is not crashed with receiving a large number of
+-	IPv4 packets that have wrong value in version field
+-
+-broken_ip4-ihl01
+-	Verify that the kernel is not crashed with receiving a large number of
+-	IPv4 packets that have wrong value in the header length field
+-
+-broken_ip4-totlen01
+-	Verify that the kernel is not crashed with receiving a large number of
+-	IPv4 packets that have wrong value in the total length field
+-
+-broken_ip4-fragment01
+-	Verify that the kernel is not crashed with receiving a large number of
+-	IPv4 packets that have wrong fragment information
+-
+-broken_ip4-protcol01
+-	Verify that the kernel is not crashed with receiving a large number of
+-	IPv4 packets that have wrong value in the protocol field
+-
+-broken_ip4-checksum01
+-	Verify that the kernel is not crashed with receiving a large number of
+-	IPv4 packets that have wrong value in the checksum field
+-
+-broken_ip4-dstaddr01
+-	Verify that the kernel is not crashed with receiving a large number of
+-	IPv4 packets whose destination address is wrong
+-	(destination MAC address is correct)
+-
+-broken_ip6-version01
+-	Verify that the kernel is not crashed with receiving a large number of
+-	IPv6 packets that have wrong value in version field
+-
+-broken_ip6-plen01
+-	Verify that the kernel is not crashed with receiving a large number of
+-	IPv6 packets that have wrong value in the payload length field
+-
+-broken_ip6-nexthdr01
+-	Verify that the kernel is not crashed with receiving a large number of
+-	IPv6 packets that have wrong value in the next header field
+-
+-broken_ip6-dstaddr01
+-	Verify that the kernel is not crashed with receiving a large number of
+-	IPv6 packets whose destination address is wrong (destination MAC
+-	address is correct)
+-
+-
+-icmp
+-----
+-uni-basic
+-	Verify that the kernel is not crashed with receiving and sending various
+-	size of ICMP message
+-
+-multi-diffip
+-	Verify that the kernel is not crashed with receiving and sending various
+-	size of ICMP message at the different IP address(alias) simultaneously
+-
+-multi-diffnic
+-	Verify that the kernel is not crashed with receiving and sending various
+-	size of ICMP message at different NIC simultaneously
+-
+-    *) Each section have 7 testcases for IPv4 and 7 testcases for IPv6
+-	    test01 - without IPsec / IPComp
+-	    test02 - IPsec [ AH / transport ]
+-	    test03 - IPsec [ AH / tunnel ]
+-	    test04 - IPsec [ ESP / transport ]
+-	    test05 - IPsec [ ESP / tunnel ]
+-	    test06 - IPComp [ transport ]
+-	    test07 - IPComp [ tunnel ]
+-
+-
+-udp
+----
+-uni-basic
+-	Verify that the kernel is not crashed with receiving and sending UDP
+-	datagram with the following conditions
+-
+-multi-diffip
+-	Verify that the kernel is not crashed with receiving and sending UDP
+-	datagram at the different IP addresses(aliases)
+-
+-multi-diffnic
+-	Verify that the kernel is not crashed with receiving and sending UDP
+-	datagram at the different NICs with the following conditions
+-
+-multi-diffport
+-	Verify that the kernel is not crashed with receiving and sending UDP
+-	datagram at many different ports with the following conditions
+-
+-    *) Each section have 7 testcases for IPv4 and 7 testcases for IPv6
+-	    test01 - without IPsec / IPComp
+-	    test02 - IPsec [ AH / transport ]
+-	    test03 - IPsec [ AH / tunnel ]
+-	    test04 - IPsec [ ESP / transport ]
+-	    test05 - IPsec [ ESP / tunnel ]
+-	    test06 - IPComp [ transport ]
+-	    test07 - IPComp [ tunnel ]
+-
+-
+-tcp
+----
+-uni-basic
+-	Verify that the kernel is not crashed by a TCP connection
+-
+-uni-smallsend
+-	Verify that the kernel is not crashed by a connection disabling
+-	NAGLE algorithm
+-
+-uni-winscale
+-	Verify that the kernel is not crashed by a connection enabling TCP
+-	window scaling
+-
+-uni-tso
+-	Verify that the kernel, whose NIC supports TCP Segmentation Offload,
+-	is not crashed by a connection enabling TCP window scaling
+-
+-uni-pktlossdup
+-	Verify that the kernel is not crashed by a TCP connection on an
+-	unreliable network (Namely, some of the packets are lost, some of
+-	them is duplicated.)
+-
+-uni-dsackoff
+-	Verify that the kernel, when the Duplicate SACK support is off, is not
+-	crashed by a TCP connection on an unreliable network (Namely, some of
+-	the packet is lost, some of them is duplicated).
+-
+-uni-sackoff
+-	Verify that the kernel, when both SACK and Duplicate SACK supports are
+-	off, is not crashed by a TCP connection on an unreliable network
+-	(Namely, some of the packet is lost, some of them is duplicated).
+-
+-multi-sameport
+-	Verify that the kernel is not crashed with multiple connection to the
+-	same ports
+-
+-multi-diffport
+-	Verify that the kernel is not crashed with multiple connection to the
+-	different ports
+-
+-multi-diffip
+-	Verify that the kernel is not crashed with multiple connection to the
+-	different IP address(alias)
+-
+-multi-diffnic
+-	Verify that the kernel is not crashed with multiple connection to the
+-	different NIC
+-
+-    *) Each section have 14 testcases for IPv4 and 14 testcases for IPv6
+-	    test01 - without IPsec / IPComp
+-	    test02 - IPsec [ AH / transport ]
+-	    test03 - IPsec [ AH / tunnel ]
+-	    test04 - IPsec [ ESP / transport ]
+-	    test05 - IPsec [ ESP / tunnel ]
+-	    test06 - IPComp [ transport ]
+-	    test07 - IPComp [ tunnel ]
+-	    test08 - delayed network - without IPsec / IPComp
+-	    test09 - delayed network - IPsec [ AH / transport ]
+-	    test10 - delayed network - IPsec [ AH / tunnel ]
+-	    test11 - delayed network - IPsec [ ESP / transport ]
+-	    test12 - delayed network - IPsec [ ESP / tunnel ]
+-	    test13 - delayed network - IPComp [ transport ]
+-	    test14 - delayed network - IPComp [ tunnel ]
+-
+-
+-multicast
+----------
+-mcast4-grpope01
+-	Verify that the kernel is not crashed when joining lots of IPv4
+-	multicast groups on a single socket
+-
+-mcast4-grpope02
+-	Verify that the kernel is not crashed when joining lots of IPv4
+-	multicast groups on lots of sockets
+-
+-mcast4-grpope03
+-	Verify that the kernel is not crashed when joining and leaving the same
+-	IPv4 multicast group on multiple sockets lots of times
+-
+-mcast4-grpope04
+-	Verify that the kernel is not crashed when joining and leaving the same
+-	IPv4 multicast group with the different source filter on multiple
+-	sockets lots of times
+-
+-mcast4-pktfld01
+-	Verify that the kernel is not crashed when joining a IPv4 multicast
+-	group a single socket, then receiving a large number of UDP packets
+-	at the socket
+-
+-mcast4-pktfld02
+-	Verify that the kernel is not crashed when joining plural IPv4
+-	multicast groups on separate sockets, then receiving a large number
+-	of UDP packets at the each socket
+-
+-mcast4-queryfld01
+-	Verify that the kernel is not crashed when joining an IPv4 multicast
+-	group on a single socket, then receiving a large number of General Query
+-
+-mcast4-queryfld02
+-	Verify that the kernel is not crashed when joining an IPv4 multicast
+-	group on a single socket, then receiving a large number of Multicast
+-	Address Specific Query
+-
+-mcast4-queryfld03
+-	Verify that the kernel is not crashed when joining an IPv4 multicast
+-	group on a single socket, then receiving a large number of Multicast
+-	Address and Source Specific Query
+-
+-mcast4-queryfld04
+-	Verify that the kernel is not crashed when joining plural IPv4 multicast
+-	groups on separate socket, then receiving a large number of General
+-	Query
+-
+-mcast4-queryfld05
+-	Verify that the kernel is not crashed when joining joining plural IPv4
+-	multicast groups on separate socket, then receiving a large number of
+-	Multicast Address Specific Query
+-
+-mcast4-queryfld06
+-	Verify that the kernel is not crashed when joining joining plural IPv4
+-	multicast groups on separate socket, then receiving a large number of
+-	Multicast Address and Source Specific Query
+-
+-mcast6-grpope01
+-	Verify that the kernel is not crashed when joining lots of IPv6
+-	multicast groups on a single socket
+-
+-mcast6-grpope02
+-	Verify that the kernel is not crashed when joining lots of IPv6
+-	multicast groups on lots of sockets
+-
+-mcast6-grpope03
+-	Verify that the kernel is not crashed when joining and leaving the same
+-	IPv6 multicast group on multiple sockets lots of times
+-
+-mcast6-grpope04
+-	Verify that the kernel is not crashed when joining and leaving the same
+-	IPv6 multicast group with the different source filter on multiple
+-	sockets lots of times
+-
+-mcast6-pktfld01
+-	Verify that the kernel is not crashed when joining a IPv6 multicast
+-	group a single socket, then receiving a large number of UDP packets
+-	at the socket
+-
+-mcast6-pktfld02
+-	Verify that the kernel is not crashed when joining plural IPv6
+-	multicast groups on separate sockets, then receiving a large number
+-	of UDP packets at the each socket
+-
+-mcast6-queryfld01
+-	Verify that the kernel is not crashed when joining an IPv6 multicast
+-	group on a single socket, then receiving a large number of General Query
+-
+-mcast6-queryfld02
+-	Verify that the kernel is not crashed when joining an IPv6 multicast
+-	group on a single socket, then receiving a large number of Multicast
+-	Address Specific Query
+-
+-mcast6-queryfld03
+-	Verify that the kernel is not crashed when joining an IPv6 multicast
+-	group on a single socket, then receiving a large number of Multicast
+-	Address and Source Specific Query
+-
+-mcast6-queryfld04
+-	Verify that the kernel is not crashed when joining plural IPv6 multicast
+-	groups on separate socket, then receiving a large number of General
+-	Query
+-
+-mcast6-queryfld05
+-	Verify that the kernel is not crashed when joining joining plural IPv6
+-	multicast groups on separate socket, then receiving a large number of
+-	Multicast Address Specific Query
+-
+-mcast6-queryfld06
+-	Verify that the kernel is not crashed when joining joining plural IPv6
+-	multicast groups on separate socket, then receiving a large number of
+-	Multicast Address and Source Specific Query
+-
+-
+-ssh
+----
+-ssh4-stress01
+-        Verify the ssh connectivity over IPv4 is not broken after creating
+-	many ssh sessions
+-
+-ssh4-stress02
+-	Verify the ssh connectivity over IPv4 is not broken after logged
+-	in/out by many clients asynchronously for a long time
+-
+-ssh4-stress03
+-	Verify the ssh connectivity over IPv4 is not broken after forwarding
+-	TCP traffic for a long time
+-
+-ssh6-stress01
+-	Verify the ssh connectivity over IPv6 is not broken after creating
+-	many ssh sessions
+-
+-ssh6-stress02
+-	Verify the ssh connectivity over IPv6 is not broken after logged
+-	in/out by many clients asynchronously for a long time
+-
+-ssh6-stress03
+-	Verify the ssh connectivity over IPv6 is not broken after forwarding
+-	TCP traffic for a long time
+-
+-
+-dns
+----
+-dns4-stress01
+-        Verify the dns server or the kernel is not down after handling
+-	many name lookup queries
+-
+-dns4-stress02
+-	Verify the dns server or the kernel is not down after handling
+-	many reverse lookup queries
+-
+-dns6-stress01
+-	Verify the dns server or the kernel is not down after handling
+-	many name lookup queries
+-
+-dns6-stress02
+-	Verify the dns server or the kernel is not down after handling
+-	many reverse lookup queries
+-
+-
+-http
+-----
+-http4-stress01
+-        Verify the http server or the kernel is not down after a http client
+-	requests large data via IPv4
+-
+-http4-stress02
+-	Verify the http server or the kernel is not down after many http
+-	clients request data over IPv4 asynchronously for a long time
+-
+-http6-stress01
+-	Verify the http server or the kernel is not down after a http client
+-	requests large data via IPv6
+-
+-http6-stress02
+-	Verify the http server or the kernel is not down after many http
+-	clients request data over IPv6 asynchronously for a long time
+-
+-
+-ftp
+----
+-ftp4-download-stress01
+-	Verify the ftp server or the kernel is not down after a ftp client
+-	requests large data via IPv4
+-
+-ftp4-download-stress02
+-	Verify the ftp server or the kernel is not down after many ftp
+-	clients request data over IPv4 asynchronously for a long time
+-
+-ftp6-download-stress01
+-	Verify the ftp server or the kernel is not down after a ftp client
+-	requests large data via IPv6
+-
+-ftp6-download-stress02
+-	Verify the ftp server or the kernel is not down after many ftp
+-	clients request data over IPv6 asynchronously for a long time
+-
+-ftp4-upload-stress01
+-	Verify the ftp server or the kernel is not down after a ftp client
+-	uploads a large data via IPv4
+-
+-ftp4-upload-stress02
+-	Verify the ftp server or the kernel is not down after many ftp clients
+-	uploads data over IPv4 asynchronously for a long time
+-
+-ftp6-upload-stress01
+-	Verify the ftp server or the kernel is not down after a ftp client
+-	uploads a large data via IPv6
+-
+-ftp6-upload-stress02
+-	Verify the ftp server or the kernel is not down after many ftp clients
+-	uploads data over IPv6 asynchronously for a long time
 -- 
 2.14.1
 
