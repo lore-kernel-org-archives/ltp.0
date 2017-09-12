@@ -1,36 +1,30 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 12 Sep 2017 17:18:27 +0200
-Subject: [LTP] [PATCH 2/2] [COMMITTED] syscalls/shmat: Print expected and
-	actual address on failure
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 12 Sep 2017 11:24:31 -0400 (EDT)
+Subject: [LTP] [PATCH 1/2] [COMMITTED] syscalls/shmat01: Fix test on
+ 32bit
 In-Reply-To: <20170912151827.20551-1-chrubis@suse.cz>
 References: <20170912151827.20551-1-chrubis@suse.cz>
-Message-ID: <20170912151827.20551-2-chrubis@suse.cz>
+Message-ID: <1458338308.13858491.1505229871475.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/syscalls/ipc/shmat/shmat01.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat01.c b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-index 4c6ce58d3..b46ba6831 100644
---- a/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-+++ b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-@@ -129,7 +129,9 @@ static void verify_shmat(unsigned int n)
- 	}
- 
- 	if (expected_addr(*tc->shmaddr, addr) != addr) {
--		tst_res(TFAIL, "shared memory address was not correct");
-+		tst_res(TFAIL,
-+			"shared memory address %p is not correct, expected %p",
-+			addr, expected_addr(*tc->shmaddr, addr));
- 		goto end;
- 	}
- 
--- 
-2.13.0
 
+----- Original Message -----
+> The problem there is that the address casted to intptr_t yields negative
+> number which when divided then multiplied by SHMLBA aligns the value up
+> instead of down.
+> 
+> The fix is simple, we cast the pointer to uintptr_t instead of intptr_t
+> and also include stdint.h explicitly.
+> 
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+
+You have beat me by ~3 minutes. I was just going to push,
+did final 'git pull --rebase' and my commit disappeared :-).
+
+Regards,
+Jan
