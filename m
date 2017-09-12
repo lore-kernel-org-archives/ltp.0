@@ -1,37 +1,49 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 12 Sep 2017 10:11:32 +0200
-Subject: [LTP] [PATCH 1/2] mem: ksm: fix volatile page false positive
-In-Reply-To: <20170825083427.25745-2-aarcange@redhat.com>
-References: <20170825083427.25745-1-aarcange@redhat.com>
- <20170825083427.25745-2-aarcange@redhat.com>
-Message-ID: <87wp54z68b.fsf@our.domain.is.not.set>
+From: Bharamshetti, Amar <Amar.Bharamshetti@cavium.com>
+Date: Tue, 12 Sep 2017 09:08:04 +0000
+Subject: [LTP] Running syscall getcpu01 on aarm64 architecture.
+Message-ID: <CY4PR07MB2949527AF2E1AF449183CB3B83690@CY4PR07MB2949.namprd07.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Dear all,
 
-Andrea Arcangeli writes:
+I have created patch for /kernel/syscalls/getcpu test case.
 
-> +	/*
-> +	 * The current scan is already in progress so we wouldn't
-> +	 * guarantee to call get_user_pages() on every existing
-> +	 * rmap_item if we only waited the remaining part of the
-> +	 * current scan.
+     Issues which I fixed and tested on kernel 4.10  :
 
-Only a minor nit, but the wording is a bit unnatural here, it should
-probably be: "... in progress so we can't guarantee that
-get_user_pages() is is called on every existing rmap_item if ..."
 
-> +	 *
-> +	 * The actual merging happens after the unstable tree has been
-> +	 * built so we need to wait at least two full scans to
-> +	 * guarantee merging, so wait full_scans to increment by 3 so
-> +	 * at least two full scans will run.
-> +	 */
+  *   Currently test case checks if arch is _x86 or _i386 and skips the execution for other archs. Removing this conditional compilation to make it run on arm64 as well.
 
---
-Thank you,
-Richard.
+          -     Verified this on _86_64, aarch64 single node and aarch64 dual node systems. Works fine.
+
+  *   Retrieving the correct node id for given cpu number. Currently its done for only _i386. Hence test suit fails for multiple node system other than _i386 arch machines.
+
+          -    Verified this on _86_64, aarch64 single node and aarch64 dual node systems. Works fine.
+
+  *   Removing unnecessary TCONF   "/sys not mounted or not a numa system. Assuming one node"  .
+
+           -    Verified this on _86_64, aarch64 single node and aarch64 dual node systems. Works fine.
+
+
+Please review the patch and let me know,  if I have missed anything or something is wrong.
+
+
+
+Best Regards,
+
+Amar
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170912/1adcc390/attachment-0001.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Committer-Amar-Bharmshetti-amar.bharamshetti-cavium..patch
+Type: text/x-patch
+Size: 3208 bytes
+Desc: 0001-Committer-Amar-Bharmshetti-amar.bharamshetti-cavium..patch
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170912/1adcc390/attachment-0001.bin>
