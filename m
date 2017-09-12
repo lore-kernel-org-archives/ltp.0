@@ -1,49 +1,41 @@
-From: Bharamshetti, Amar <Amar.Bharamshetti@cavium.com>
-Date: Tue, 12 Sep 2017 09:08:04 +0000
-Subject: [LTP] Running syscall getcpu01 on aarm64 architecture.
-Message-ID: <CY4PR07MB2949527AF2E1AF449183CB3B83690@CY4PR07MB2949.namprd07.prod.outlook.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 12 Sep 2017 11:15:48 +0200
+Subject: [LTP] [PATCH] syscalls/shmat01: avoid dumping corefile for
+ expected crash
+In-Reply-To: <20170911122114.GB22586@rei.lan>
+References: <8df1dcaee102405b65fb575744323b3dfb348de1.1505129509.git.jstancek@redhat.com>
+ <20170911115349.GA22586@rei.lan>
+ <154541893.12328039.1505131686278.JavaMail.zimbra@redhat.com>
+ <20170911122114.GB22586@rei.lan>
+Message-ID: <20170912091548.GC13765@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Dear all,
+Hi!
+> > 1 is a special case, that disables also coredump-into-pipe,
+> > and it also happens to be small enough to skip coredump-to-file.
+> > 
+> > fs/coredump.c:
+> >   "if (cprm.limit == 1) {"
+> > 
+> > > The manual says that when we set it to 0 no core file are created. I
+> > > find that better than setting it to 1 which supposedly creates 1 byte
+> > > file...
+> > 
+> > That shouldn't happen because of this check:
+> >   if (cprm.limit < binfmt->min_coredump)
+> 
+> I guess that we should get the setrlimit manual page update then.
+> 
+> Looking at the kernel code it will skip the core-file creation silently
+> unless the minimal size > PAGE_SIZE for most of the binfmt handlers.
 
-I have created patch for /kernel/syscalls/getcpu test case.
+Also consider the patch acked, but please add a bit more descriptive
+commit message, i.e. why the limit is set to 1 and not 0.
 
-     Issues which I fixed and tested on kernel 4.10  :
-
-
-  *   Currently test case checks if arch is _x86 or _i386 and skips the execution for other archs. Removing this conditional compilation to make it run on arm64 as well.
-
-          -     Verified this on _86_64, aarch64 single node and aarch64 dual node systems. Works fine.
-
-  *   Retrieving the correct node id for given cpu number. Currently its done for only _i386. Hence test suit fails for multiple node system other than _i386 arch machines.
-
-          -    Verified this on _86_64, aarch64 single node and aarch64 dual node systems. Works fine.
-
-  *   Removing unnecessary TCONF   "/sys not mounted or not a numa system. Assuming one node"  .
-
-           -    Verified this on _86_64, aarch64 single node and aarch64 dual node systems. Works fine.
-
-
-Please review the patch and let me know,  if I have missed anything or something is wrong.
-
-
-
-Best Regards,
-
-Amar
-
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170912/1adcc390/attachment-0001.html>
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: 0001-Committer-Amar-Bharmshetti-amar.bharamshetti-cavium..patch
-Type: text/x-patch
-Size: 3208 bytes
-Desc: 0001-Committer-Amar-Bharmshetti-amar.bharamshetti-cavium..patch
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170912/1adcc390/attachment-0001.bin>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
