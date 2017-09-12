@@ -1,41 +1,53 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 12 Sep 2017 11:15:48 +0200
-Subject: [LTP] [PATCH] syscalls/shmat01: avoid dumping corefile for
- expected crash
-In-Reply-To: <20170911122114.GB22586@rei.lan>
-References: <8df1dcaee102405b65fb575744323b3dfb348de1.1505129509.git.jstancek@redhat.com>
- <20170911115349.GA22586@rei.lan>
- <154541893.12328039.1505131686278.JavaMail.zimbra@redhat.com>
- <20170911122114.GB22586@rei.lan>
-Message-ID: <20170912091548.GC13765@rei>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 12 Sep 2017 11:39:29 +0200
+Subject: [LTP] LTP release
+In-Reply-To: <20170907105921.GB775@rei.lan>
+References: <20170907105921.GB775@rei.lan>
+Message-ID: <87vakoz25q.fsf@our.domain.is.not.set>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > 1 is a special case, that disables also coredump-into-pipe,
-> > and it also happens to be small enough to skip coredump-to-file.
-> > 
-> > fs/coredump.c:
-> >   "if (cprm.limit == 1) {"
-> > 
-> > > The manual says that when we set it to 0 no core file are created. I
-> > > find that better than setting it to 1 which supposedly creates 1 byte
-> > > file...
-> > 
-> > That shouldn't happen because of this check:
-> >   if (cprm.limit < binfmt->min_coredump)
-> 
-> I guess that we should get the setrlimit manual page update then.
-> 
-> Looking at the kernel code it will skip the core-file creation silently
-> unless the minimal size > PAGE_SIZE for most of the binfmt handlers.
+Hello,
 
-Also consider the patch acked, but please add a bit more descriptive
-commit message, i.e. why the limit is set to 1 and not 0.
+Cyril Hrubis writes:
+
+> Hi!
+> It's about a time we should start preparing for another release.
+>
+> As usuall let's start with pointing out patches that should be part of
+> it, then we will proceed with freezing the repo and round of pre-release
+> testing, etc.
+>
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
+
+As you might expect, I am very keen to get the long lived thread support
+for fuzzy sync into this release:
+
+ tst_atomic: Add load, store and use __atomic builtins   
+ tst_atomic: Add atomic store and load tests   
+ fzsync: Add long running thread support and deviation stats   
+ fzsync: Add functionality test for library   
+ Convert cve-2016-7117 test to use long running threads   
+ Convert cve-2014-0196 to use long running threads   
+ Convert cve-2017-2671 to use long running threads   
+
+Also the following patches would be nice:
+
+ lib: Add personality fallback and SAFE macro   
+ CVE-2012-0957: Use SAFE_PERSONALITY   
+ Test for CVE-2016-10044 mark AIO pseudo-fs noexec   
+
+ thp01: Find largest arguments size   
+
+ Add test for CVE-2017-7308 on a raw socket's ring buffer   
+
+ madvise07: Increase probability of testing a supported page type   
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you,
+Richard.
