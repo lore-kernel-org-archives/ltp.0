@@ -1,38 +1,34 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 13 Sep 2017 15:42:42 +0200
-Subject: [LTP] [PATCH v5 3/3] Test for CVE-2016-10044 mark AIO pseudo-fs
- noexec
-In-Reply-To: <20170911115054.19982-3-rpalethorpe@suse.com>
-References: <20170911115054.19982-1-rpalethorpe@suse.com>
- <20170911115054.19982-3-rpalethorpe@suse.com>
-Message-ID: <20170913134241.GA29584@rei.lan>
+From: Andrea Arcangeli <aarcange@redhat.com>
+Date: Wed, 13 Sep 2017 15:47:27 +0200
+Subject: [LTP] [PATCH 1/2] mem: ksm: fix volatile page false positive
+In-Reply-To: <20170913115827.GA27706@rei.lan>
+References: <20170825083427.25745-1-aarcange@redhat.com>
+ <20170825083427.25745-2-aarcange@redhat.com>
+ <20170913115827.GA27706@rei.lan>
+Message-ID: <20170913134727.GC12833@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed whole patchset, thanks.
+Hello Cyril,
 
-And this test was pushed with a diff:
+On Wed, Sep 13, 2017 at 01:58:27PM +0200, Cyril Hrubis wrote:
+> > +	/*
+> > +	 * The current scan is already in progress so we wouldn't
+> > +	 * guarantee to call get_user_pages() on every existing
+> > +	 * rmap_item if we only waited the remaining part of the
+> > +	 * current scan.
+> > +	 *
+> > +	 * The actual merging happens after the unstable tree has been
+> > +	 * built so we need to wait at least two full scans to
+> > +	 * guarantee merging, so wait full_scans to increment by 3 so
+> > +	 * at least two full scans will run.
+> > +	 */
+> 
+> I've took a liberty in rewording this comment a bit and pushed the
+> patchset, thanks.
 
-diff --git a/testcases/cve/cve-2016-10044.c b/testcases/cve/cve-2016-10044.c
-index 4861647a0..7928d2765 100644
---- a/testcases/cve/cve-2016-10044.c
-+++ b/testcases/cve/cve-2016-10044.c
-@@ -62,6 +62,9 @@ found_mapping:
-                tst_res(TFAIL, "AIO mapping is executable: %s!", perms);
-        else
-                tst_res(TPASS, "AIO mapping is not executable: %s", perms);
-+
-+       SAFE_FCLOSE(f);
-+       f = NULL;
- }
-
-That closes the file in a case that someone will run the test with -i, which
-does not make much sense but I've added that for the sake of completness.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Perfect, thanks!
+Andrea
