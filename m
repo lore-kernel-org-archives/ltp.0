@@ -1,102 +1,40 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 13 Sep 2017 09:46:49 +0200
-Subject: [LTP] [PATCH 2/2] mem: ksm: fixes for race conditions
-In-Reply-To: <20170825083427.25745-3-aarcange@redhat.com>
-References: <20170825083427.25745-1-aarcange@redhat.com>
- <20170825083427.25745-3-aarcange@redhat.com>
-Message-ID: <87shfryr9y.fsf@our.domain.is.not.set>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Wed, 13 Sep 2017 15:48:43 +0800
+Subject: [LTP] [PATCH 2/2] commands/ar01: Fix misplaced test result
+	description
+In-Reply-To: <20170913074843.12212-1-fenggw-fnst@cn.fujitsu.com>
+References: <20170913074843.12212-1-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20170913074843.12212-2-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Signed-off-by: Fei Jie <feij.fnst@cn.fujitsu.com>
+---
+ testcases/commands/ar/ar01 | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Andrea Arcangeli writes:
-
-> stop_ksm_children doesn't actually stop the children, it waits the
-> children to stop themselves after they finished setting up the memory.
->
-> Problem is the test was waiting for two passes of KSM (to merge all
-> the memory) in wait_ksmd_full_scan before waiting the child to stop
-> setting up the memory. Two passes of KSM aren't enough if the children
-> aren't settled yet. This fixes it by waiting the children to stop
-> operating before waiting KSM to merge the memory.
->
-> waitpid WCONTINUED also doesn't make sense, it's better and more
-> strict to wait until all children truly exited, otherwise it would
-> just return immediately because the children were waken by SIGCONT at
-> the last resume. Removing WCONTINUED will let the parent truly wait
-> the children to verify the memory and exit after it.
->
-> These issues showed up after speeding up the wait_ksmd_full_scan and
-> after removing other unnecessary wait times.
->
-> The test is now faster and at the same time more accurate by waiting
-> at least two passes of KSM which by the kernel implementation we know
-> is enough to reach a settled merged state without the need of other
-> artificial delays.
->
-> In case of failure of the checks, this now also prints the actual
-> value to provide more debug info in the log.
->
-> Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
-> ---
->  testcases/kernel/mem/lib/mem.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-> index 6d8945081..4f9779ea5 100644
-> --- a/testcases/kernel/mem/lib/mem.c
-> +++ b/testcases/kernel/mem/lib/mem.c
-> @@ -261,7 +261,8 @@ static void check(char *path, long int value)
->  	SAFE_FILE_SCANF(fullpath, "%ld", &actual_val);
->  
->  	if (actual_val != value)
-> -		tst_res(TFAIL, "%s is not %ld.", path, value);
-> +		tst_res(TFAIL, "%s is not %ld but %ld.", path, value,
-> +			actual_val);
->  	else
->  		tst_res(TPASS, "%s is %ld.", path, actual_val);
->  }
-> @@ -523,21 +524,20 @@ void create_same_memory(int size, int num, int unit)
->  	SAFE_FILE_PRINTF(PATH_KSM "sleep_millisecs", "0");
->  
->  	resume_ksm_children(child, num);
-> +	stop_ksm_children(child, num);
->  	group_check(1, 2, size * num * pages - 2, 0, 0, 0, size * pages * num);
->  
-> -	stop_ksm_children(child, num);
->  	resume_ksm_children(child, num);
-> +	stop_ksm_children(child, num);
->  	group_check(1, 3, size * num * pages - 3, 0, 0, 0, size * pages * num);
->  
-> -	stop_ksm_children(child, num);
->  	resume_ksm_children(child, num);
-> +	stop_ksm_children(child, num);
->  	group_check(1, 1, size * num * pages - 1, 0, 0, 0, size * pages * num);
->  
-> -	stop_ksm_children(child, num);
->  	resume_ksm_children(child, num);
-> -	group_check(1, 1, size * num * pages - 2, 0, 1, 0, size * pages * num);
-> -
->  	stop_ksm_children(child, num);
-> +	group_check(1, 1, size * num * pages - 2, 0, 1, 0, size * pages * num);
->  
->  	tst_res(TINFO, "KSM unmerging...");
->  	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
-> @@ -549,7 +549,7 @@ void create_same_memory(int size, int num, int unit)
->  	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
->  	final_group_check(0, 0, 0, 0, 0, 0, size * pages * num);
->  
-> -	while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0)
-> +	while (waitpid(-1, &status, 0) > 0)
->  		if (WEXITSTATUS(status) != 0)
->  			tst_res(TFAIL, "child exit status is %d",
->  				 WEXITSTATUS(status));
-
-Ack, patch-set looks good to me.
-
+diff --git a/testcases/commands/ar/ar01 b/testcases/commands/ar/ar01
+index 4b00711..d688f76 100644
+--- a/testcases/commands/ar/ar01
++++ b/testcases/commands/ar/ar01
+@@ -289,9 +289,9 @@ test14()
+ 	file1_mtime2=$(ar -tv lib.a | grep file1.in)
+ 
+ 	if [ "$file0_mtime1" = "$file0_mtime2" ]; then
+-		tst_res TFAIL "ar updated modified file0 (-u)"
++		tst_res TFAIL "ar haven't updated modified file0 (-u)"
+ 	else
+-		tst_res TPASS "ar haven't updated modified file0 (-u)"
++		tst_res TPASS "ar updated modified file0 (-u)"
+ 	fi
+ 
+ 	if [ "$file1_mtime1" = "$file1_mtime2" ]; then
 -- 
-Thank you,
-Richard.
+1.8.3.1
+
+
+
