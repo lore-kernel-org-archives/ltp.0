@@ -1,92 +1,102 @@
-From: enh <enh@google.com>
-Date: Tue, 12 Sep 2017 16:58:54 -0700
-Subject: [LTP] [RFC PATCH 1/6] android: cve: Disable building
-	cve-2017-5669
-In-Reply-To: <20170912212752.qw24kjkjxg5qqpaq@x230>
-References: <20170902005926.15923-1-petr.vorel@gmail.com>
- <20170902005926.15923-2-petr.vorel@gmail.com>
- <20170905213027.GP84377@sspatil-desktop.mtv.corp.google.com>
- <20170911214149.4ongogs2asatw454@dell5510>
- <CAJgzZoqb1WTRctUYy+eqXqafBX5F4jd-XchHFQ97M=44qV6F3A@mail.gmail.com>
- <20170912212752.qw24kjkjxg5qqpaq@x230>
-Message-ID: <CAJgzZoptx4Dxj9fkq9bKqPxZEzqgJvG5fHGgx36tMQqwK0oGOA@mail.gmail.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Wed, 13 Sep 2017 09:46:49 +0200
+Subject: [LTP] [PATCH 2/2] mem: ksm: fixes for race conditions
+In-Reply-To: <20170825083427.25745-3-aarcange@redhat.com>
+References: <20170825083427.25745-1-aarcange@redhat.com>
+ <20170825083427.25745-3-aarcange@redhat.com>
+Message-ID: <87shfryr9y.fsf@our.domain.is.not.set>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Sep 12, 2017 at 2:27 PM, Petr Vorel <petr.vorel@gmail.com> wrote:
+
+Andrea Arcangeli writes:
+
+> stop_ksm_children doesn't actually stop the children, it waits the
+> children to stop themselves after they finished setting up the memory.
 >
-> Hi,
+> Problem is the test was waiting for two passes of KSM (to merge all
+> the memory) in wait_ksmd_full_scan before waiting the child to stop
+> setting up the memory. Two passes of KSM aren't enough if the children
+> aren't settled yet. This fixes it by waiting the children to stop
+> operating before waiting KSM to merge the memory.
 >
-> > (since none of the folks actually working on this seem to be responding...)
+> waitpid WCONTINUED also doesn't make sense, it's better and more
+> strict to wait until all children truly exited, otherwise it would
+> just return immediately because the children were waken by SIGCONT at
+> the last resume. Removing WCONTINUED will let the parent truly wait
+> the children to verify the memory and exit after it.
 >
-> > no, they don't, but effectively, yes: the standalone toolchain is the
-> > closest thing outside the platform build to what the platform build is
-> > like. (and it's almost always the right choice any time you're trying
-> > to build a non-Android linux project.)
-> Right, I should have realized from the link and Android.mk that you're building
-> in AOSP tree :-).
+> These issues showed up after speeding up the wait_ksmd_full_scan and
+> after removing other unnecessary wait times.
 >
-> > as for the API level, because they're part of the platform build, in
-> > NDK terms they're targeting "FUTURE", which isn't available in the
-> > NDK. so you'll want 26 for now and then 27 when it's available and so
-> > on.
+> The test is now faster and at the same time more accurate by waiting
+> at least two passes of KSM which by the kernel implementation we know
+> is enough to reach a settled merged state without the need of other
+> artificial delays.
 >
-> > if you *really* care, you can litter the code with stuff like
+> In case of failure of the checks, this now also prints the actual
+> value to provide more debug info in the log.
 >
-> >   #if defined(__BIONIC__) && __ANDROID_API_LEVEL__ > 21
-> >   // code that requires something that only appeared in Lollipop
-> >   #endif
-> Well, even I posted code like this, I realized that flood the code with many
-> ifdefs isn't desired for LTP upstream especially AOSP itself doesn't care about
-> old releases.
-
-yeah, i don't think anyone would thank you for it :-)
-
-> > but these VTS folks only care about the current platform release.
-> > (because we can't suddenly go to OEMs and say "oh, that device you
-> > shipped three or four years ago now has to pass this new test" for
-> > obvious reasons :-) .)
-> "Nice" embedded industry :-).
+> Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
+> ---
+>  testcases/kernel/mem/lib/mem.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
 >
-> > one thing that's a little slippery is that there's stuff like SysV IPC
-> > where the headers and functions are available and if you're on a
-> > rooted device with a custom kernel, you can use it just fine, but
-> > actual shipping Android devices MUST NOT ship with kernels that
-> > support SysV IPC and MUST NOT relax the selinux neverallows that would
-> > prevent you from using that stuff even if it was compiled in to your
-> > kernel and so on... so there's a bit of a distinction between "i want
-> > to be able to build this project" and "i want all these tests to
-> > pass".
-> Sure, successful build for android is the first step, IMHO the easier part.
-> And after fixing tests written in C there would be another challenging task:
-> make all this shell scripts working on Android (IMHO impossible with toolbox,
-> even with busybox would be hard).
+> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+> index 6d8945081..4f9779ea5 100644
+> --- a/testcases/kernel/mem/lib/mem.c
+> +++ b/testcases/kernel/mem/lib/mem.c
+> @@ -261,7 +261,8 @@ static void check(char *path, long int value)
+>  	SAFE_FILE_SCANF(fullpath, "%ld", &actual_val);
+>  
+>  	if (actual_val != value)
+> -		tst_res(TFAIL, "%s is not %ld.", path, value);
+> +		tst_res(TFAIL, "%s is not %ld but %ld.", path, value,
+> +			actual_val);
+>  	else
+>  		tst_res(TPASS, "%s is %ld.", path, actual_val);
+>  }
+> @@ -523,21 +524,20 @@ void create_same_memory(int size, int num, int unit)
+>  	SAFE_FILE_PRINTF(PATH_KSM "sleep_millisecs", "0");
+>  
+>  	resume_ksm_children(child, num);
+> +	stop_ksm_children(child, num);
+>  	group_check(1, 2, size * num * pages - 2, 0, 0, 0, size * pages * num);
+>  
+> -	stop_ksm_children(child, num);
+>  	resume_ksm_children(child, num);
+> +	stop_ksm_children(child, num);
+>  	group_check(1, 3, size * num * pages - 3, 0, 0, 0, size * pages * num);
+>  
+> -	stop_ksm_children(child, num);
+>  	resume_ksm_children(child, num);
+> +	stop_ksm_children(child, num);
+>  	group_check(1, 1, size * num * pages - 1, 0, 0, 0, size * pages * num);
+>  
+> -	stop_ksm_children(child, num);
+>  	resume_ksm_children(child, num);
+> -	group_check(1, 1, size * num * pages - 2, 0, 1, 0, size * pages * num);
+> -
+>  	stop_ksm_children(child, num);
+> +	group_check(1, 1, size * num * pages - 2, 0, 1, 0, size * pages * num);
+>  
+>  	tst_res(TINFO, "KSM unmerging...");
+>  	SAFE_FILE_PRINTF(PATH_KSM "run", "2");
+> @@ -549,7 +549,7 @@ void create_same_memory(int size, int num, int unit)
+>  	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
+>  	final_group_check(0, 0, 0, 0, 0, 0, size * pages * num);
+>  
+> -	while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0)
+> +	while (waitpid(-1, &status, 0) > 0)
+>  		if (WEXITSTATUS(status) != 0)
+>  			tst_res(TFAIL, "child exit status is %d",
+>  				 WEXITSTATUS(status));
 
-toolbox is [mostly] long dead. current status:
-https://android.googlesource.com/platform/system/core/+/master/shell_and_utilities/
-
-(looks like i should update that to say where "O" occurred...)
-
-if you have specific requests for missing commands/options, file them
-at the toybox github or android bug tracker (or just mail me
-directly).
-
-> OT: It'd be interesting to use LTP as a part of CTS to ensure that SysV IPC
-> doesn't work :-).
-
-i think they are using LTP as part of VTS
-(https://source.android.com/devices/architecture/treble), which is why
-they're interested in building LTP with bionic for Android.
-
-> Kind regards,
-> Petr
-
-
-
+Ack, patch-set looks good to me.
 
 -- 
-Elliott Hughes - http://who/enh - http://jessies.org/~enh/
-Android native code/tools questions? Mail me/drop by/add me as a reviewer.
+Thank you,
+Richard.
