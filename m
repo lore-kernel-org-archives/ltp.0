@@ -1,32 +1,25 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 14 Sep 2017 10:17:36 -0400 (EDT)
-Subject: [LTP] LTP release
-In-Reply-To: <20170907105921.GB775@rei.lan>
-References: <20170907105921.GB775@rei.lan>
-Message-ID: <1118211565.15787694.1505398656441.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 14 Sep 2017 17:05:31 +0200
+Subject: [LTP] [PATCH 2/2] [RFC] syscalls/mmap12: Do not fail on
+ non-present	pages
+In-Reply-To: <1279322628.15785758.1505398100444.JavaMail.zimbra@redhat.com>
+References: <20170817143310.11634-1-chrubis@suse.cz>
+ <20170817143310.11634-2-chrubis@suse.cz>
+ <1932775025.3810596.1503050454745.JavaMail.zimbra@redhat.com>
+ <20170818135035.GD18499@dhcp22.suse.cz> <20170914114452.GB3467@rei>
+ <1279322628.15785758.1505398100444.JavaMail.zimbra@redhat.com>
+Message-ID: <20170914150531.GB11303@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> Let's go with original for now.
 
+Pushed with your ack, thanks.
 
------ Original Message -----
-> Hi!
-> It's about a time we should start preparing for another release.
-> 
-> As usuall let's start with pointing out patches that should be part of
-> it, then we will proceed with freezing the repo and round of pre-release
-> testing, etc.
-
-I started running tests (syscalls, misc, commands, etc.) across RHELs:
-6.2-6.10(i386,x86_64,ppc64,s390x) and 7.0-7.4(x86_64, ppc64, ppc64le, s390x).
-
-Other than couple small issues that have been fixed, and known kernel bugs,
-it's looking good.
-
-I'm planning on repeating the tests after the freeze.
-
-Regards,
-Jan
+-- 
+Cyril Hrubis
+chrubis@suse.cz
