@@ -1,11 +1,11 @@
 From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 15 Sep 2017 11:10:54 +0200
+Date: Fri, 15 Sep 2017 12:05:44 +0200
 Subject: [LTP] [PATCH v3 3/7] fzsync: Add long running thread support
 	and deviation stats
-In-Reply-To: <20170912144137.GD29720@rei>
+In-Reply-To: <20170912144325.GE29720@rei>
 References: <20170901130121.22821-1-rpalethorpe@suse.com>
- <20170901130121.22821-3-rpalethorpe@suse.com> <20170912144137.GD29720@rei>
-Message-ID: <87poasz5r5.fsf@our.domain.is.not.set>
+ <20170901130121.22821-3-rpalethorpe@suse.com> <20170912144325.GE29720@rei>
+Message-ID: <87o9qcz37r.fsf@our.domain.is.not.set>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,45 +16,55 @@ Hello,
 
 Cyril Hrubis writes:
 
->> - * tst_exp_moving_avg - Exponential moving average
->> + * TST_EXP_MOVING_AVG - Exponential moving average
->>   * @alpha: The preference for recent samples over old ones.
->>   * @sample: The current sample
->>   * @prev_avg: The average of the all the previous samples
->>   *
->>   * Returns average including the current sample.
->>   */
->> -static inline double tst_exp_moving_avg(double alpha, long sample,
->> -					double prev_avg)
->> -{
->> -	return alpha * sample + (1.0 - alpha) * prev_avg;
->> -}
->> +#define TST_EXP_MOVING_AVG(alpha, sample, prev_avg)\
->> +	(alpha * sample + (1.0 - alpha) * prev_avg)
+> Hi!
+>> +/**
+>> + * tst_fzsync_pair_wait - Wait for the other thread
+>> + * @our_cntr: The counter for the thread we are on
+>> + * @other_cntr: The counter for the thread we are synchronising with
+>> + *
+>> + * Use this (through tst_fzsync_pair_wait_a() and tst_fzsync_pair_wait_b()) if
+>> + * you need an additional synchronisation point in a thread or you do not want
+>> + * to use the delay facility (not recommended). See
+>> + * tst_fzsync_pair_wait_update().
+>> + *
+>> + * Returns a non-zero value if the thread should continue otherwise the
+>> + * calling thread should exit.
+>> + */
+>> +static inline int tst_fzsync_pair_wait(struct tst_fzsync_pair *pair,
+>> +				       int *our_cntr, int *other_cntr)
+>> +{
+>> +	tst_atomic_inc(other_cntr);
+>> +	while (tst_atomic_load(our_cntr) < tst_atomic_load(other_cntr)
+>> +	       && !tst_atomic_load(&pair->exit))
+>> +		;
+>> +
+>> +	return !tst_atomic_load(&pair->exit);
+>> +}
 >
-> Why do we define this as a macro instead of static inline function? As
-> far as I can tell the only difference is that we loose type checks and
-> introduce possible side effects.
-
-Ah, I needed to drop type checking at some point, can't remember why,
-but it is not necessary now, so I will change it back.
-
+> Also what happens if the counters overflow?
 >
->>  /**
->>   * tst_fzsync_pair_update - Recalculate the delay
->> @@ -169,8 +194,16 @@ static void tst_fzsync_pair_update(int loop_index, struct tst_fzsync_pair *pair)
->>  	double target = pair->avg_diff_trgt;
->>  	double avg = pair->avg_diff;
->>  
->> +	if (pair->a.tv_sec > pair->b.tv_sec)
->> +		pair->a.tv_nsec += 1000000000;
->> +	else if (pair->a.tv_sec < pair->b.tv_sec)
->> +		pair->b.tv_nsec += 1000000000;
->
-> Why the else here? These two cases are mutually exclusive.
+> I guess that this will happen if we call the test with large enough -i
+> paramter, right?
 
-Because if (pair->a.tv_sec == pair->b.tv_sec) then we want to do
-nothing.
+Bad things will happen :-). It can probably be fixed with the following
+though:
+
+ static inline int tst_fzsync_pair_wait(struct tst_fzsync_pair *pair,
+ 				       int *our_cntr, int *other_cntr)
+ {
+-	tst_atomic_inc(other_cntr);
++	if (tst_atomic_inc(other_cntr) < 0) {
++		tst_atomic_store(0, other_cntr);
++		while (tst_atomic_load(our_cntr) > tst_atomic_load(other_cntr)
++		       && !tst_atomic_load(&pair->exit))
++			;
++	}
++
+ 	while (tst_atomic_load(our_cntr) < tst_atomic_load(other_cntr)
+ 	       && !tst_atomic_load(&pair->exit))
+
+Seems to work and any perf penality is insignificant; with or without
+branch prediction.
 
 -- 
 Thank you,
