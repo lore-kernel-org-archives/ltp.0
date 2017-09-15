@@ -1,71 +1,44 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 15 Sep 2017 12:05:44 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 15 Sep 2017 14:48:14 +0200
 Subject: [LTP] [PATCH v3 3/7] fzsync: Add long running thread support
-	and deviation stats
-In-Reply-To: <20170912144325.GE29720@rei>
+ and deviation stats
+In-Reply-To: <87poasz5r5.fsf@our.domain.is.not.set>
 References: <20170901130121.22821-1-rpalethorpe@suse.com>
- <20170901130121.22821-3-rpalethorpe@suse.com> <20170912144325.GE29720@rei>
-Message-ID: <87o9qcz37r.fsf@our.domain.is.not.set>
+ <20170901130121.22821-3-rpalethorpe@suse.com>
+ <20170912144137.GD29720@rei> <87poasz5r5.fsf@our.domain.is.not.set>
+Message-ID: <20170915124813.GC1168@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi!
+> >>  /**
+> >>   * tst_fzsync_pair_update - Recalculate the delay
+> >> @@ -169,8 +194,16 @@ static void tst_fzsync_pair_update(int loop_index, struct tst_fzsync_pair *pair)
+> >>  	double target = pair->avg_diff_trgt;
+> >>  	double avg = pair->avg_diff;
+> >>  
+> >> +	if (pair->a.tv_sec > pair->b.tv_sec)
+> >> +		pair->a.tv_nsec += 1000000000;
+> >> +	else if (pair->a.tv_sec < pair->b.tv_sec)
+> >> +		pair->b.tv_nsec += 1000000000;
+> >
+> > Why the else here? These two cases are mutually exclusive.
+> 
+> Because if (pair->a.tv_sec == pair->b.tv_sec) then we want to do
+> nothing.
 
-Cyril Hrubis writes:
+Ah right, missed that. I wonder if can compute the diff directly as:
 
-> Hi!
->> +/**
->> + * tst_fzsync_pair_wait - Wait for the other thread
->> + * @our_cntr: The counter for the thread we are on
->> + * @other_cntr: The counter for the thread we are synchronising with
->> + *
->> + * Use this (through tst_fzsync_pair_wait_a() and tst_fzsync_pair_wait_b()) if
->> + * you need an additional synchronisation point in a thread or you do not want
->> + * to use the delay facility (not recommended). See
->> + * tst_fzsync_pair_wait_update().
->> + *
->> + * Returns a non-zero value if the thread should continue otherwise the
->> + * calling thread should exit.
->> + */
->> +static inline int tst_fzsync_pair_wait(struct tst_fzsync_pair *pair,
->> +				       int *our_cntr, int *other_cntr)
->> +{
->> +	tst_atomic_inc(other_cntr);
->> +	while (tst_atomic_load(our_cntr) < tst_atomic_load(other_cntr)
->> +	       && !tst_atomic_load(&pair->exit))
->> +		;
->> +
->> +	return !tst_atomic_load(&pair->exit);
->> +}
->
-> Also what happens if the counters overflow?
->
-> I guess that this will happen if we call the test with large enough -i
-> paramter, right?
+	 pair->a.tv_nsec - pair->b.tv_nsec + 1000000000 *
+	 (pair->a.tv_sec - pair->b.tv_sec)
 
-Bad things will happen :-). It can probably be fixed with the following
-though:
+instead.
 
- static inline int tst_fzsync_pair_wait(struct tst_fzsync_pair *pair,
- 				       int *our_cntr, int *other_cntr)
- {
--	tst_atomic_inc(other_cntr);
-+	if (tst_atomic_inc(other_cntr) < 0) {
-+		tst_atomic_store(0, other_cntr);
-+		while (tst_atomic_load(our_cntr) > tst_atomic_load(other_cntr)
-+		       && !tst_atomic_load(&pair->exit))
-+			;
-+	}
-+
- 	while (tst_atomic_load(our_cntr) < tst_atomic_load(other_cntr)
- 	       && !tst_atomic_load(&pair->exit))
-
-Seems to work and any perf penality is insignificant; with or without
-branch prediction.
+Or do we care not to overflow here?
 
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
