@@ -1,41 +1,36 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 19 Sep 2017 10:48:49 +0200
-Subject: [LTP] LTP release and code freeze
-Message-ID: <20170919084849.GA14328@rei>
+From: Bixuan Cui <cuibixuan@huawei.com>
+Date: Tue, 19 Sep 2017 21:04:37 +0800
+Subject: [LTP]  [PATCH] syscalls/access01: Set umask value before run case
+Message-ID: <1505826277-33027-1-git-send-email-cuibixuan@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-We are getting closer to a release, here is the status as I see it.
+The case will fail when set the umask to 0077 acquiescently in system.
+Because the value of actual mode is 'set value' & ~'default value
+for the umask' when create dir.
+So add 'umask(0022)' in setup().
 
-Blockers:
+Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
+---
+ testcases/kernel/syscalls/access/access01.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-* thp01 failing on newer kernels
-  - I'm waiting for v4 from Ritchie
+diff --git a/testcases/kernel/syscalls/access/access01.c b/testcases/kernel/syscalls/access/access01.c
+index 7a92525..b679832 100644
+--- a/testcases/kernel/syscalls/access/access01.c
++++ b/testcases/kernel/syscalls/access/access01.c
+@@ -315,6 +315,8 @@ static void setup(void)
+ {
+ 	struct passwd *pw;
 
-* utimensat01 failing on stable kernels
-  - That thread on ML is kind of stuck,
-    I guess that we will have to accept
-    both errors for some range of kernels
++	umask(0022);
++
+ 	pw = SAFE_GETPWNAM("nobody");
 
+ 	uid = pw->pw_uid;
+--
+2.6.2
 
-Nice to have:
-
-* The clone09 patch to disable it on old kernels looks sane to me
-   - I will merge that one
-
-* CVE synchronization library
-   - depends if Ritchie can fix it fast enough
-
-* The .needs_rofs patchset looks good to me as well I guess that
-  it's safe enough to be included in the release as well
-
-
-Is there anything else I've missing?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
