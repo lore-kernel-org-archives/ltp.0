@@ -1,33 +1,44 @@
 From: Sandeep Patil <sspatil@google.com>
-Date: Fri, 22 Sep 2017 15:59:41 -0700
-Subject: [LTP] [PATCH] mm: mmapstress04: Remove arguments passed to the test.
-Message-ID: <20170922225941.100991-1-sspatil@google.com>
+Date: Fri, 22 Sep 2017 16:14:44 -0700
+Subject: [LTP] [PATCH] syscalls/cma: Make process_vm_{readv,
+ writev} tests bionic friendly
+In-Reply-To: <a46801be-c84a-a37c-2788-10cac3cba184@redhat.com>
+References: <20170921215755.85005-1-sspatil@google.com>
+ <a46801be-c84a-a37c-2788-10cac3cba184@redhat.com>
+Message-ID: <20170922231444.GA110151@sspatil-desktop.mtv.corp.google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The test doesn't take any arguments, so don't pass it any.
+On Fri, Sep 22, 2017 at 10:26:05AM +0200, Jan Stancek wrote:
+> On 09/21/2017 11:57 PM, Sandeep Patil wrote:
+> > All testcases under testcases/kernel/syscalls/cma depend on SysV
+> > semaphore to do event notification from parent<->child processes.
+> > Since bionic / android doesn't have SysV IPC, the tests cant be built
+> > against bionic.
+> > 
+> > Fix this by keeping the old behavior for non bionic builds and switch to
+> > using eventfd(EFD_SEMAPHORE) when building against bionic.
+> 
+> Hi,
+> 
+> If we can, we should use LTP's checkpoints for synchronization.
+> It's based on futexes and works well for simple cases, which
+> should fit all cma tests.
 
-Signed-off-by: Sandeep Patil <sspatil@google.com>
----
- runtest/mm | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Definitely, the eventfd(EFD_SEMAPHORE) was just an easier replacement since I
+wanted to keep the semantics similar assuming there are other tests that use
+SysV semaphores like these. Futex should definitely work for these tests ..
 
-diff --git a/runtest/mm b/runtest/mm
-index 55fc2cab0..76d233562 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -46,7 +46,7 @@ mallocstress01	mallocstress
- mmapstress01 mmapstress01 -p 20 -t 0.2
- mmapstress02 mmapstress02
- mmapstress03 mmapstress03
--mmapstress04 TMPFILE=`mktemp /tmp/example.XXXXXXXXXX`; ls -lR /usr/include/ > $TMPFILE; mmapstress04 $TMPFILE
-+mmapstress04 mmapstress04
- mmapstress05 mmapstress05
- mmapstress06 mmapstress06 20
- mmapstress07 TMPFILE=`mktemp /tmp/example.XXXXXXXXXXXX`; mmapstress07 $TMPFILE
--- 
-2.14.1.821.g8fa685d3b7-goog
+> 
+> Something like patch below. Would that work for you?
 
+
+Definitely, I'll re-spin and send out. Thanks for letting me know about the
+TEST_ macros.
+
+<snip>
+
+- ssp
