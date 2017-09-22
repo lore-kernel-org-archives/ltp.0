@@ -1,40 +1,33 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 22 Sep 2017 08:28:46 -0400 (EDT)
-Subject: [LTP] [PATCH] syscalls/access01: Set umask value before run case
-In-Reply-To: <1505826277-33027-1-git-send-email-cuibixuan@huawei.com>
-References: <1505826277-33027-1-git-send-email-cuibixuan@huawei.com>
-Message-ID: <875562.19773227.1506083326749.JavaMail.zimbra@redhat.com>
+From: Sandeep Patil <sspatil@google.com>
+Date: Fri, 22 Sep 2017 15:59:41 -0700
+Subject: [LTP] [PATCH] mm: mmapstress04: Remove arguments passed to the test.
+Message-ID: <20170922225941.100991-1-sspatil@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+The test doesn't take any arguments, so don't pass it any.
 
+Signed-off-by: Sandeep Patil <sspatil@google.com>
+---
+ runtest/mm | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
------ Original Message -----
-> The case will fail when set the umask to 0077 acquiescently in system.
-> Because the value of actual mode is 'set value' & ~'default value
-> for the umask' when create dir.
-> So add 'umask(0022)' in setup().
+diff --git a/runtest/mm b/runtest/mm
+index 55fc2cab0..76d233562 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -46,7 +46,7 @@ mallocstress01	mallocstress
+ mmapstress01 mmapstress01 -p 20 -t 0.2
+ mmapstress02 mmapstress02
+ mmapstress03 mmapstress03
+-mmapstress04 TMPFILE=`mktemp /tmp/example.XXXXXXXXXX`; ls -lR /usr/include/ > $TMPFILE; mmapstress04 $TMPFILE
++mmapstress04 mmapstress04
+ mmapstress05 mmapstress05
+ mmapstress06 mmapstress06 20
+ mmapstress07 TMPFILE=`mktemp /tmp/example.XXXXXXXXXXXX`; mmapstress07 $TMPFILE
+-- 
+2.14.1.821.g8fa685d3b7-goog
 
-We do umask(0) in ltp-pan:
-
-# umask
-0077
-
-# /opt/ltp/runltp -p -d results -l RUNTEST.log -o RUNTEST.run.log -s access01 -f syscalls > /dev/null
-
-# cat /opt/ltp/results/RUNTEST.log
-Test Start Time: Fri Sep 22 14:24:28 2017
------------------------------------------
-Testcase                       Result     Exit Value
---------                       ------     ----------
-access01                       PASS       0    
-
-I'm aware that running tests outside of ltp-pan is sometimes useful,
-so maybe we could add this to a library rather than in each test
-separately? What do you think Cyril?
-
-Regards,
-Jan
