@@ -1,57 +1,64 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 22 Sep 2017 04:57:40 -0400 (EDT)
-Subject: [LTP] [PATCH v2] syscalls/clone09.c: add kernel version check
-In-Reply-To: <1505785364-22465-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <20170720121717.GG32092@rei>
- <1505785364-22465-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <986027145.19743530.1506070660802.JavaMail.zimbra@redhat.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Fri, 22 Sep 2017 17:21:41 +0800
+Subject: [LTP] [PATCH] cve/cve-2016-10044.c: fix two errors
+Message-ID: <1506072101-4550-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+1) If the number of nr_events exceeds the limit of available events
+   defined in /proc/sys/fs/aio-max-nr, it returns EAGAIN.  We should
+   call io_destroy() to cleanup the AIO context after finishing test.
+
+   Steps to reproduce this error:
+      #echo 4 > /proc/sys/fs/aio-max-nr
+      # ./cve-2016-10044 -i 5
+      tst_test.c:908: INFO: Timeout per run is 0h 05m 00s
+      cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
+      cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
+      cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
+      cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
+      cve-2016-10044.c:49: BROK: Failed to create AIO context: EAGAIN/EWOULDBLOCK
+
+2) The kernel created an AIO pseudo-fs and introduced cve-2016-10044
+   by the following patch:
+   '71ad7490c1f3("rework aio migrate pages to use aio fs")'
+
+   We should return TCONF rather than TBROK when an AIO pseudo-fs is
+   not found in /proc/self/maps.
+
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/cve/cve-2016-10044.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/cve/cve-2016-10044.c b/testcases/cve/cve-2016-10044.c
+index 7928d27..a84590a 100644
+--- a/testcases/cve/cve-2016-10044.c
++++ b/testcases/cve/cve-2016-10044.c
+@@ -53,7 +53,7 @@ static void run(void)
+ 		if (strstr(line, "/[aio]") != NULL)
+ 			goto found_mapping;
+ 	}
+-	tst_brk(TBROK, "Could not find mapping in /proc/self/maps");
++	tst_brk(TCONF, "Could not find mapping in /proc/self/maps");
+ 
+ found_mapping:
+ 	if (sscanf(line, "%*x-%*x %s7", perms) < 0)
+@@ -63,6 +63,9 @@ found_mapping:
+ 	else
+ 		tst_res(TPASS, "AIO mapping is not executable: %s", perms);
+ 
++	if (tst_syscall(__NR_io_destroy, ctx))
++		tst_brk(TBROK | TERRNO, "Failed to destroy AIO context");
++
+ 	SAFE_FCLOSE(f);
+ 	f = NULL;
+ }
+-- 
+1.8.3.1
 
 
------ Original Message -----
-> 1) On all kernels which support CONFIG_NET_NS, clone(2) only could return
->    EINVAL due to disabled CONFIG_NET_NS instead of unknown flags.  Please
->    see the following kernel code in net/core/net_namespace.c:
->    --------------------------------------------------------------------
->    struct net *copy_net_ns(unsigned long flags, struct net *old_net)
->    ...
->         #ifndef CONFIG_NET_NS
->                 return ERR_PTR(-EINVAL);
->         #endif
->    --------------------------------------------------------------------
-> 
->    The support is introduced in kernel:
->    '9dd776b ("[NET]: Add network namespace clone & unshare support.")'
-> 
-> 2) Usually, a syscall flags should always include a check of the following
->    form in its implementation:
->    ---------------------------------
->    if (flags & ~(FL_XXX | FL_YYY))
->         return -EINVAL;
->    ---------------------------------
-> 
->    This check could verify unknown flags, but clone(2) does not have the
->    check and just returns 0, this issue has been around for several years,
->    and it is hardly to be fixed since doing so would break existing
->    applications.
-> 
->    Please see the following URL for detailed information:
->    https://lwn.net/Articles/588444/
-> 
->    It is hard to make out whether CLONE_NEWNET is supported or not by
->    returned value and errno.
-> 
->    According to above reasons and clone()'s manpage, i think we should
->    add kernel version check to skip this case on an old kernel and update
->    description about EINVAL.
-> 
 
-Pushed.
-
-Thanks,
-Jan
