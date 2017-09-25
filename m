@@ -1,127 +1,122 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 25 Sep 2017 17:24:01 +0300
-Subject: [LTP] [PATCH v2 1/1] network/stress: Fix and cleanup part of
- multicast group tests
-In-Reply-To: <20170922100253.3742-1-pvorel@suse.cz>
-References: <20170922100253.3742-1-pvorel@suse.cz>
-Message-ID: <26dafb9d-cb08-d9f8-9ec6-12e8308b6f3a@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 25 Sep 2017 16:46:24 +0200
+Subject: [LTP] [PATCH] utimensat_tests.sh: returns EPERM on 4.4.27 and
+	above
+In-Reply-To: <CAO_48GG9k_MxhktOWptCkv1Y8xFfFN31w2ntcnkZL5LdhM7qxg@mail.gmail.com>
+References: <1504697434-22974-1-git-send-email-naresh.kamboju@linaro.org>
+ <1059184676.9072017.1504698860809.JavaMail.zimbra@redhat.com>
+ <CAO_48GG9k_MxhktOWptCkv1Y8xFfFN31w2ntcnkZL5LdhM7qxg@mail.gmail.com>
+Message-ID: <20170925144624.GB31931@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 09/22/2017 01:02 PM, Petr Vorel wrote:
-...
-> diff --git a/testcases/network/stress/multicast/grp-operation/mcast-lib.sh b/testcases/network/stress/multicast/grp-operation/mcast-lib.sh
-> new file mode 100644
-> index 000000000..fe70cdefe
-> --- /dev/null
-> +++ b/testcases/network/stress/multicast/grp-operation/mcast-lib.sh
-> @@ -0,0 +1,155 @@
-> +#!/bin/sh
-> +# Copyright (c) International Business Machines  Corp., 2006
-> +# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
-> +#
-> +# This program is free software; you can redistribute it and/or
-> +# modify it under the terms of the GNU General Public License as
-> +# published by the Free Software Foundation; either version 2 of
-> +# the License, or (at your option) any later version.
-> +#
-> +# This program is distributed in the hope that it would be useful,
-> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +# GNU General Public License for more details.
-> +#
-> +# You should have received a copy of the GNU General Public License
-> +# along with this program. If not, see <http://www.gnu.org/licenses/>.
-> +#
-> +# Author: Petr Vorel <pvorel@suse.cz>
-> +#
-> +# Setup script for mcast4-grpope* tests.
-> +
-> +TST_TOTAL=1
-> +TST_CLEANUP="mcast_cleanup"
-> +
-> +. test_net_stress.sh
-> +
-> +MCAST_LCMD_BASE="ns-mcast_join"
-> +MCAST_RCMD_BASE="ns-igmp_querier"
-> +[ "$TST_IPV6" ] && MCAST_RCMD_BASE="ns-icmpv6_sender"
-> +
-> +MCAST_LCMD="$MCAST_LCMD_BASE -f $ipver -I $(tst_iface)"
-> +MCAST_RCMD="$MCAST_RCMD_BASE -I $(tst_iface rhost)"
-> +
-> +mcast_setup4()
-> +{
-> +	local igmp_max_memberships="$1"
-> +
-> +	SYSFS_IGMP_MAX_MEMBERSHIPS=$(sysctl -b net.ipv4.igmp_max_memberships)
-> +	SYSFS_IGMP_MAX_MSF=$(sysctl -b net.ipv4.igmp_max_msf)
-> +	SYSFS_FORCE_IGMP_VERSION=$(sysctl -b net.ipv4.conf.$(tst_iface).force_igmp_version)
-> +	SYSFS_ALL_FORCE_IGMP_VERSION=$(sysctl -b net.ipv4.conf.all.force_igmp_version)
-> +
-> +	[ "$igmp_max_memberships" -gt 5459 ] && tst_resm TWARN \
-> +		"\$1 shouldn't be set higher than 5459 as it's used to set /proc/sys/net/ipv4/igmp_max_memberships"
-> +
-> +	ROD sysctl -qw net.ipv4.igmp_max_memberships=$igmp_max_memberships
-> +	ROD sysctl -qw net.ipv4.igmp_max_msf=10
-> +	ROD sysctl -qw net.ipv4.conf.$(tst_iface).force_igmp_version=0
-> +	ROD sysctl -qw net.ipv4.conf.all.force_igmp_version=0
-> +}
-> +
-> +mcast_setup6()
-> +{
-> +	local default_mld_max_msf=64
-> +	tst_kvcmp -lt '2.6.15' && default_mld_max_msf=10
-> +
-> +	SYSCTL_ALL_FORCE_MLD_VERSION=$(sysctl -b net.ipv6.conf.all.force_mld_version)
-> +	SYSCTL_FORCE_MLD_VERSION=$(sysctl -b net.ipv6.conf.$(tst_iface).force_mld_version)
-> +	SYSCTL_MLD_MAX_MSF=$(sysctl -b net.ipv6.mld_max_msf)
-> +
-> +	ROD sysctl -qw net.ipv6.conf.all.force_mld_version=0
-> +	ROD sysctl -qw net.ipv6.conf.$(tst_iface).force_mld_version=0
-> +	ROD sysctl -qw net.ipv6.mld_max_msf=$default_mld_max_msf
-> +}
-> +
-> +mcast_setup()
-> +{
-> +	local max="$1"
-> +
-> +	netstress_setup
-> +	tst_tmpdir
-> +
-> +	[ "$TST_IPV6" ] && mcast_setup6 || mcast_setup4 $max
-> +}
-> +
-> +mcast_cleanup4()
-> +{
-> +	[ -n "$SYSFS_IGMP_MAX_MEMBERSHIPS" ] && sysctl -qw net.ipv4.igmp_max_memberships=$SYSFS_IGMP_MAX_MEMBERSHIPS
-> +	[ -n "$SYSFS_IGMP_MAX_MSF" ] && sysctl -qw net.ipv4.igmp_max_msf=$SYSFS_IGMP_MAX_MSF
-> +	[ -n "$SYSFS_FORCE_IGMP_VERSION" ] && sysctl -qw net.ipv4.conf.$(tst_iface).force_igmp_version=$SYSFS_FORCE_IGMP_VERSION
-> +	[ -n "$SYSFS_ALL_FORCE_IGMP_VERSION" ] && sysctl -qw net.ipv4.conf.all.force_igmp_version=$SYSFS_ALL_FORCE_IGMP_VERSION
-> +}
-> +
-> +mcast_cleanup6()
-> +{
-> +	[ -n "$SYSCTL_ALL_FORCE_MLD_VERSION" ] && sysctl -qw net.ipv6.conf.all.force_mld_version=$SYSCTL_ALL_FORCE_MLD_VERSION
-> +	[ -n "$SYSCTL_FORCE_MLD_VERSION" ] && sysctl -qw net.ipv6.conf.$(tst_iface).force_mld_version=$SYSCTL_FORCE_MLD_VERSION
-> +	[ -n "$SYSCTL_MLD_MAX_MSF" ] && sysctl -qw net.ipv6.mld_max_msf=$SYSCTL_MLD_MAX_MSF
-> +}
-> +
-> +mcast_cleanup()
-> +{
-> +	[ "$TST_IPV6" ] && mcast_cleanup6 || mcast_cleanup4
-> +
-> +	pkill -SIGHUP -x $MCAST_LCMD_BASE
+Hi!
+> I'd think so too - perhaps a better check is to check for (if 4.4.X,
+> then if > .27) OR (greater than 4.8.0)?
 
-Are *_BASE vars only needed here? We could search full command line with
-"-f"
-option, no need for adding new *_BASE variables:
+The safest bet would be allowing both for kernels between 4.4 and 4.8.
 
-  pkill -SIGHUP -f "$MCAST_LCMD"
+Something like this may work (beware untested):
 
-Thanks,
-Alexey
+diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+index 48154d6e6..41ea7997a 100755
+--- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
++++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+@@ -31,13 +31,18 @@ if tst_kvcmp -lt "2.6.22"; then
+ fi
+ 
+ # Starting with 4.8.0 operations on immutable files return EPERM instead of
+-# EACCES.
+-if tst_kvcmp -lt "4.8.0"; then
++# EACCES. The patch that changed the errno got as well backported to stable
++# kernel branches and so we cannot really say what is correct for kernels in
++# the range between 4.4 and 4.8.
++imaccess="EACCES EPERM"
++
++if tst_kvcmp -lt "4.4"; then
+ 	imaccess=EACCES
+-else
+-	imaccess=EPERM
+ fi
+ 
++if tst_kvcmp -ge "4.8"; then
++	imaccess=EPERM
++fi
+ 
+ RESULT_FILE=$TMPDIR/utimensat.result
+ 
+@@ -142,7 +147,13 @@ check_result()
+          "$EXPECT_MTIME_CHANGED"
+     echo "RESULT:   $res $atime $mtime"
+ 
+-    if test "$res" != "$EXPECTED_RESULT"; then
++    for err in $EXPECTED_RESULT; do
++	if test "$res" = "$err"; then
++	    errno_found="$err";
++	fi
++    done
++
++    if test -z "$errno_found"; then
+         test_failed
+         return
+     fi
+@@ -223,7 +234,7 @@ run_test()
+     CMD="./$TEST_PROG -q $FILE $4"
+     echo "$CMD"
+     sudo $s_arg -u $test_user $CMD > $RESULT_FILE
+-    check_result $? $5 $6 $7
++    check_result $? "$5" $6 $7
+     echo
+ 
+     if test $do_read_fd_test -ne 0; then
+@@ -232,7 +243,7 @@ run_test()
+         CMD="./$TEST_PROG -q -d $FILE NULL $4"
+         echo "$CMD"
+         sudo $s_arg -u $test_user $CMD > $RESULT_FILE
+-        check_result $? $5 $6 $7
++        check_result $? "$5" $6 $7
+         echo
+     fi
+ 
+@@ -245,7 +256,7 @@ run_test()
+         CMD="./$TEST_PROG -q -w -d $FILE NULL $4"
+         echo "$CMD"
+         sudo $s_arg -u $test_user $CMD > $RESULT_FILE
+-        check_result $? $5 $6 $7
++        check_result $? "$5" $6 $7
+         echo
+     fi
+ 
+@@ -424,10 +435,10 @@ echo "Testing immutable file, owned by self"
+ echo
+ 
+ echo "***** Testing times==NULL case *****"
+-run_test -W "" 600 "+i" "" $imaccess
++run_test -W "" 600 "+i" "" "$imaccess"
+ 
+ echo "***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****"
+-run_test -W "" 600 "+i" "0 n 0 n" $imaccess
++run_test -W "" 600 "+i" "0 n 0 n" "$imaccess"
+ 
+ echo "***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****"
+ run_test -W "" 600 "+i" "0 o 0 o" SUCCESS n n
+@@ -450,10 +461,10 @@ echo "Testing immutable append-only file, owned by self"
+ echo
+ 
+ echo "***** Testing times==NULL case *****"
+-run_test -W "" 600 "+ai" "" $imaccess
++run_test -W "" 600 "+ai" "" "$imaccess"
+ 
+ echo "***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****"
+-run_test -W "" 600 "+ai" "0 n 0 n" $imaccess
++run_test -W "" 600 "+ai" "0 n 0 n" "$imaccess"
+ 
+ echo "***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****"
+ run_test -W "" 600 "+ai" "0 o 0 o" SUCCESS n n
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
