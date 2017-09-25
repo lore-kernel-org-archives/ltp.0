@@ -1,104 +1,122 @@
-From: Orson Zhai =?unknown-8bit?b?57+f5Lqs?= <Orson.Zhai@spreadtrum.com>
-Date: Mon, 25 Sep 2017 06:23:20 +0000
-Subject: [LTP] io_submit test failed in latest kernel
-In-Reply-To: <x49lgl6gb0x.fsf@segfault.boston.devel.redhat.com>
-References: <20170915043644.GA27514@spreadtrum.com>
- <x49mv5w9nn9.fsf@segfault.boston.devel.redhat.com>
- <20170922093616.GB27514@spreadtrum.com>,
- <x49lgl6gb0x.fsf@segfault.boston.devel.redhat.com>
-Message-ID: <f6facbe34ead4b8db35bc2e13392531c@SHMBX04.spreadtrum.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Mon, 25 Sep 2017 11:51:35 +0200
+Subject: [LTP] [PATCH v4 5/7] Convert cve-2016-7117 test to use long running
+	threads
+In-Reply-To: <20170925095137.31491-1-rpalethorpe@suse.com>
+References: <20170925095137.31491-1-rpalethorpe@suse.com>
+Message-ID: <20170925095137.31491-5-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jeff,
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ testcases/cve/cve-2016-7117.c | 47 +++++++++++++++++++++++++------------------
+ 1 file changed, 27 insertions(+), 20 deletions(-)
 
-But all test itmes will pass on ARM64 test with hikey board (one kind of A53 SoC from Huawei).
-
-Regards,
-Orson
-
---------
-Good patches are always welcome!
-
-________________________________________
-From: Jeff Moyer <jmoyer@redhat.com>
-Sent: Friday, September 22, 2017 20:42
-To: Orson Zhai (翟京)
-Cc: linux-aio@kvack.org; sumit.semwal@linaro.org; ltp@lists.linux.it
-Subject: Re: io_submit test failed in latest kernel
-
-Hi, Orson,
-
-Orson Zhai <orson.zhai@spreadtrum.com> writes:
-
-> Hi Jeff,
->
-> On Fri, Sep 15, 2017 at 08:01:14AM -0400, Jeff Moyer wrote:
->> Orson Zhai <orson.zhai@spreadtrum.com> writes:
->>
->> > Hi Guys,
->> >
->> > We got some test failed when running ltp(linux test project) on the latest kernel (v4.13-next).
->> >
->> > It is only observed at x86 platform but nothing wrong for arm test.
->> >
->> > Does anyone here have any comments on this?
->>
->> What version of ltp are you using?  I don't see output like "expected
->> one of ..." in the latest github tree.  Can you please just send the
->> test code you are using?  Also, why are you using a linux-next tree from
->> August?  Can you try to reproduce this on the released 4.13?
->
-> Here is my latest test info:
->
-> root@harryfengpc:/home/zhai/ltp-full-20170516# uname -a
-> Linux harryfengpc 4.13.0 #3 SMP Thu Sep 14 14:21:05 CST 2017 x86_64 GNU/Linux
->                   ^^^^^^
-> root@harryfengpc:/home/zhai/ltp-full-20170516# ./testcases/kernel/syscalls/io_submit/io_submit01
->                                      ^^^^^^^^
-> io_submit01    1  TPASS  :  expected failure - returned value = -22 : Invalid argument
-> io_submit01    2  TPASS  :  expected failure - returned value = -22 : Invalid argument
-> io_submit01    3  TFAIL  :  io_submit01.c:138: unexpected failure - returned value = -95 : Operation not supported, expected one of -EINVAL, -EBADF, -EFAULT
-> io_submit01    4  TPASS  :  expected failure - returned value = -14 : Bad address
-> io_submit01    5  TPASS  :  expected failure - returned value = -22 : Invalid argument
-> io_submit01    6  TPASS  :  expected failure - returned value = -9 : Bad file descriptor
-> io_submit01    7  TPASS  :  expected success - returned value = 0
-> io_submit01    8  TPASS  :  expected success - returned value = 1
->
->
->
-> I use 4.13 final release and download ltp src code of stable release from official website.
-
-Thanks.  Basically, the test feeds in a garbage iocb, and expects one of
-the three errnos listed.  This change:
-
-commit b745fafaf70c0a98a2e1e7ac8cb14542889ceb0e
-Author: Goldwyn Rodrigues <rgoldwyn@suse.com>
-Date:   Tue Jun 20 07:05:43 2017 -0500
-
-    fs: Introduce RWF_NOWAIT and FMODE_AIO_NOWAIT
-
-...
-
-diff --git a/fs/aio.c b/fs/aio.c
-index 020fa00..34027b6 100644
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -1592,6 +1592,12 @@ static int io_submit_one(struct kioctx *ctx, struct iocb __user *user_iocb,
-                goto out_put_req;
-        }
-
-+       if ((req->common.ki_flags & IOCB_NOWAIT) &&
-+                       !(req->common.ki_flags & IOCB_DIRECT)) {
-+               ret = -EOPNOTSUPP;
-+               goto out_put_req;
-+       }
+diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
+index deb667761..3cb7efcdf 100644
+--- a/testcases/cve/cve-2016-7117.c
++++ b/testcases/cve/cve-2016-7117.c
+@@ -71,7 +71,7 @@ struct mmsghdr {
+ };
+ #endif
+ 
+-static int socket_fds[2];
++static volatile int socket_fds[2];
+ static struct mmsghdr msghdrs[2] = {
+ 	{
+ 		.msg_hdr = {
+@@ -94,40 +94,53 @@ static struct mmsghdr msghdrs[2] = {
+ static char rbuf[sizeof(MSG)];
+ static struct timespec timeout = { .tv_sec = RECV_TIMEOUT };
+ static struct tst_fzsync_pair fzsync_pair = TST_FZSYNC_PAIR_INIT;
++static pthread_t pt_send;
++static void *send_and_close(void *);
 +
++static void setup(void)
++{
++	SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, 0);
++}
+ 
+ static void cleanup(void)
+ {
+ 	close(socket_fds[0]);
+ 	close(socket_fds[1]);
++
++	if (pt_send) {
++		tst_fzsync_pair_exit(&fzsync_pair);
++		SAFE_PTHREAD_JOIN(pt_send, 0);
++	}
+ }
+ 
+ static void *send_and_close(void *arg)
+ {
+-	send(socket_fds[0], MSG, sizeof(MSG), 0);
+-	send(socket_fds[0], MSG, sizeof(MSG), 0);
+-
+-	tst_fzsync_delay_b(&fzsync_pair);
++	while (tst_fzsync_wait_update_b(&fzsync_pair)) {
++		send(socket_fds[0], MSG, sizeof(MSG), 0);
++		send(socket_fds[0], MSG, sizeof(MSG), 0);
+ 
+-	close(socket_fds[0]);
+-	close(socket_fds[1]);
+-	tst_fzsync_time_b(&fzsync_pair);
++		tst_fzsync_delay_b(&fzsync_pair);
+ 
++		close(socket_fds[0]);
++		close(socket_fds[1]);
++		tst_fzsync_time_b(&fzsync_pair);
++		if (!tst_fzsync_wait_b(&fzsync_pair))
++			break;
++	}
+ 	return arg;
+ }
+ 
+ static void run(void)
+ {
+-	pthread_t pt_send;
+ 	int i, stat, too_early_count = 0;
+ 
+ 	msghdrs[0].msg_hdr.msg_iov->iov_base = (void *)&rbuf;
+ 
+ 	for (i = 1; i < ATTEMPTS; i++) {
+-		if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, socket_fds))
++		if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, (int *)socket_fds))
+ 			tst_brk(TBROK | TERRNO, "Socket creation failed");
+ 
+-		SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, 0);
+-
++		tst_fzsync_wait_update_a(&fzsync_pair);
+ 		tst_fzsync_delay_a(&fzsync_pair);
+ 
+ 		stat = tst_syscall(__NR_recvmmsg,
+@@ -140,20 +153,14 @@ static void run(void)
+ 		else if (stat < 0)
+ 			tst_res(TWARN | TERRNO, "recvmmsg failed unexpectedly");
+ 
+-		SAFE_PTHREAD_JOIN(pt_send, 0);
+-
+-		tst_fzsync_pair_update(i, &fzsync_pair);
+-		if (!(i & 0x7FFFF)) {
+-			tst_res(TINFO, "Too early: %.1f%%",
+-				100 * too_early_count / (float)i);
+-			tst_fzsync_pair_info(&fzsync_pair);
+-		}
++		tst_fzsync_wait_a(&fzsync_pair);
+ 	}
+ 
+ 	tst_res(TPASS, "Nothing happened after %d attempts", ATTEMPTS);
+ }
+ 
+ static struct tst_test test = {
++	.setup = setup,
+ 	.test_all = run,
+ 	.cleanup = cleanup,
+ 	.min_kver = "2.6.33",
+-- 
+2.14.1
 
-could result in a 4th errno.  The test should be updated.
-
-Cheers,
-Jeff
