@@ -1,17 +1,34 @@
-From: Jeff Moyer <jmoyer@redhat.com>
-Date: Fri, 22 Sep 2017 08:42:22 -0400
+From: Orson Zhai =?unknown-8bit?b?57+f5Lqs?= <Orson.Zhai@spreadtrum.com>
+Date: Mon, 25 Sep 2017 06:23:20 +0000
 Subject: [LTP] io_submit test failed in latest kernel
-In-Reply-To: <20170922093616.GB27514@spreadtrum.com> (Orson Zhai's message of
- "Fri, 22 Sep 2017 17:36:16 +0800")
+In-Reply-To: <x49lgl6gb0x.fsf@segfault.boston.devel.redhat.com>
 References: <20170915043644.GA27514@spreadtrum.com>
  <x49mv5w9nn9.fsf@segfault.boston.devel.redhat.com>
- <20170922093616.GB27514@spreadtrum.com>
-Message-ID: <x49lgl6gb0x.fsf@segfault.boston.devel.redhat.com>
+ <20170922093616.GB27514@spreadtrum.com>,
+ <x49lgl6gb0x.fsf@segfault.boston.devel.redhat.com>
+Message-ID: <f6facbe34ead4b8db35bc2e13392531c@SHMBX04.spreadtrum.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
+
+Hi Jeff,
+
+But all test itmes will pass on ARM64 test with hikey board (one kind of A53 SoC from Huawei).
+
+Regards,
+Orson
+
+--------
+Good patches are always welcome!
+
+________________________________________
+From: Jeff Moyer <jmoyer@redhat.com>
+Sent: Friday, September 22, 2017 20:42
+To: Orson Zhai (翟京)
+Cc: linux-aio@kvack.org; sumit.semwal@linaro.org; ltp@lists.linux.it
+Subject: Re: io_submit test failed in latest kernel
 
 Hi, Orson,
 
@@ -21,7 +38,7 @@ Orson Zhai <orson.zhai@spreadtrum.com> writes:
 >
 > On Fri, Sep 15, 2017 at 08:01:14AM -0400, Jeff Moyer wrote:
 >> Orson Zhai <orson.zhai@spreadtrum.com> writes:
->> 
+>>
 >> > Hi Guys,
 >> >
 >> > We got some test failed when running ltp(linux test project) on the latest kernel (v4.13-next).
@@ -29,7 +46,7 @@ Orson Zhai <orson.zhai@spreadtrum.com> writes:
 >> > It is only observed at x86 platform but nothing wrong for arm test.
 >> >
 >> > Does anyone here have any comments on this?
->> 
+>>
 >> What version of ltp are you using?  I don't see output like "expected
 >> one of ..." in the latest github tree.  Can you please just send the
 >> test code you are using?  Also, why are you using a linux-next tree from
@@ -73,7 +90,7 @@ index 020fa00..34027b6 100644
 @@ -1592,6 +1592,12 @@ static int io_submit_one(struct kioctx *ctx, struct iocb __user *user_iocb,
                 goto out_put_req;
         }
- 
+
 +       if ((req->common.ki_flags & IOCB_NOWAIT) &&
 +                       !(req->common.ki_flags & IOCB_DIRECT)) {
 +               ret = -EOPNOTSUPP;
