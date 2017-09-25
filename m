@@ -1,105 +1,201 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 25 Sep 2017 11:51:37 +0200
-Subject: [LTP] [PATCH v4 7/7] Convert cve-2017-2671 to use long running
-	threads
+Date: Mon, 25 Sep 2017 11:51:32 +0200
+Subject: [LTP] [PATCH v4 2/7] tst_atomic: Add atomic store and load tests
 In-Reply-To: <20170925095137.31491-1-rpalethorpe@suse.com>
 References: <20170925095137.31491-1-rpalethorpe@suse.com>
-Message-ID: <20170925095137.31491-7-rpalethorpe@suse.com>
+Message-ID: <20170925095137.31491-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Similar to test09.
+
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- testcases/cve/cve-2017-2671.c | 30 +++++++++++++++++++-----------
- 1 file changed, 19 insertions(+), 11 deletions(-)
 
-diff --git a/testcases/cve/cve-2017-2671.c b/testcases/cve/cve-2017-2671.c
-index 77744db42..b0471bfff 100644
---- a/testcases/cve/cve-2017-2671.c
-+++ b/testcases/cve/cve-2017-2671.c
-@@ -49,13 +49,15 @@
+V4 - cleanup pointer usage and variable types. Also add comments about
+     functions only used for their side effects.
+
+ lib/newlib_tests/.gitignore |   1 +
+ lib/newlib_tests/Makefile   |   1 +
+ lib/newlib_tests/test15.c   | 142 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 144 insertions(+)
+ create mode 100644 lib/newlib_tests/test15.c
+
+diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
+index 8e120074e..7d47a6531 100644
+--- a/lib/newlib_tests/.gitignore
++++ b/lib/newlib_tests/.gitignore
+@@ -12,6 +12,7 @@ test11
+ test12
+ test13
+ test14
++test15
+ tst_device
+ tst_safe_fileops
+ tst_res_hexd
+diff --git a/lib/newlib_tests/Makefile b/lib/newlib_tests/Makefile
+index e9976e5ba..e86d8f23a 100644
+--- a/lib/newlib_tests/Makefile
++++ b/lib/newlib_tests/Makefile
+@@ -7,6 +7,7 @@ LDLIBS			+= -lltp
  
- #include "tst_fuzzy_sync.h"
+ test08: CFLAGS+=-pthread
+ test09: CFLAGS+=-pthread
++test15: CFLAGS+=-pthread
  
--#define ATTEMPTS 0xFFFF
-+#define ATTEMPTS 0x80000
- #define PING_SYSCTL_PATH "/proc/sys/net/ipv4/ping_group_range"
- 
- static int sockfd;
- static unsigned int ping_min_grp, ping_max_grp;
- static struct tst_fzsync_pair fzsync_pair = TST_FZSYNC_PAIR_INIT;
- static struct sockaddr_in iaddr, uaddr;
-+static pthread_t thrd;
-+static void *connect_b(void *);
- 
- static void setup(void)
- {
-@@ -73,13 +75,20 @@ static void setup(void)
- 	SAFE_FILE_PRINTF(PING_SYSCTL_PATH, "0 0");
- 
- 	sockfd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, IPPROTO_ICMP);
-+	SAFE_PTHREAD_CREATE(&thrd, 0, connect_b, 0);
- 	tst_res(TINFO, "Created ping socket, attempting to race...");
- }
- 
- static void cleanup(void)
- {
-+	if (thrd) {
-+		tst_fzsync_pair_exit(&fzsync_pair);
-+		SAFE_PTHREAD_JOIN(thrd, NULL);
+ ifeq ($(ANDROID),1)
+ FILTER_OUT_MAKE_TARGETS	+= test08
+diff --git a/lib/newlib_tests/test15.c b/lib/newlib_tests/test15.c
+new file mode 100644
+index 000000000..7563cb778
+--- /dev/null
++++ b/lib/newlib_tests/test15.c
+@@ -0,0 +1,142 @@
++/*
++ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++
++/*
++ * A basic regression test for tst_atomic_{load,store}. Also provides a
++ * limited check that atomic stores and loads order non-atomic memory
++ * accesses. That is, we are checking that they implement memory fences or
++ * barriers.
++ *
++ * Many architectures/machines will still pass the test even if you remove the
++ * atomic functions. X86 in particular has strong memory ordering by default
++ * so that should always pass (if you use volatile). However Aarch64
++ * (Raspberry Pi 3 Model B) has been observed to fail without the atomic
++ * functions.
++ *
++ * A failure can occur if an update to seq_n is not made globally visible by
++ * the time the next thread needs to use it.
++ */
++
++#include <stdint.h>
++#include <pthread.h>
++#include "tst_test.h"
++#include "tst_atomic.h"
++
++#define THREADS 64
++#define FILLER (1 << 20)
++
++/* Uncomment these to see what happens without atomics. To prevent the compiler
++ * from removing/reording atomic and seq_n, mark them as volatile.
++ */
++/* #define tst_atomic_load(v) (*(v)) */
++/* #define tst_atomic_store(i, v) *(v) = (i) */
++
++struct block {
++	int seq_n;
++	intptr_t id;
++	intptr_t filler[FILLER];
++};
++
++static int atomic;
++/* Instead of storing seq_n on the stack (probably next to the atomic variable
++ * above), we store it in the middle of some anonymous mapped memory and keep
++ * a pointer to it. This should decrease the probability that the value of
++ * seq_n will be synchronised between processors as a byproduct of the atomic
++ * variable being updated.
++ */
++static int *seq_n;
++static struct block *m;
++
++static void *worker_load_store(void *aid)
++{
++	int id = (intptr_t)aid, i;
++
++	for (i = tst_atomic_load(&atomic);
++	     i != id;
++	     i = tst_atomic_load(&atomic))
++		;
++
++	(m + (*seq_n))->id = id;
++	*seq_n += 1;
++	tst_atomic_store(i + 1, &atomic);
++
++	return NULL;
++}
++
++/* Attempt to stress the memory transport so that memory operations are
++ * contended and less predictable. This should increase the likelyhood of a
++ * failure if a memory fence is missing.
++ */
++static void *mem_spam(void *vp LTP_ATTRIBUTE_UNUSED)
++{
++	intptr_t i = 0, j;
++	struct block *cur = m;
++
++	tst_res(TINFO, "Memory spammer started");
++	while (tst_atomic_load(&atomic) > 0) {
++		for (j = 0; j < FILLER; j++)
++			cur->filler[j] = j;
++
++		if (i < THREADS - 1) {
++			cur = m + (++i);
++		} else {
++			i = 0;
++			cur = m;
++		}
 +	}
 +
- 	if (sockfd > 0)
- 		SAFE_CLOSE(sockfd);
++	return NULL;
++}
 +
- 	if (ping_min_grp | ping_max_grp)
- 		SAFE_FILE_PRINTF(PING_SYSCTL_PATH, "%u %u",
- 				 ping_min_grp, ping_max_grp);
-@@ -87,32 +96,31 @@ static void cleanup(void)
- 
- static void *connect_b(void * param LTP_ATTRIBUTE_UNUSED)
- {
--	tst_fzsync_delay_b(&fzsync_pair);
--	connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
--	tst_fzsync_time_b(&fzsync_pair);
-+	while(tst_fzsync_wait_update_b(&fzsync_pair)) {
-+		tst_fzsync_delay_b(&fzsync_pair);
-+		connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
-+		tst_fzsync_time_b(&fzsync_pair);
-+		if (!tst_fzsync_wait_b(&fzsync_pair))
-+			break;
++static void do_test(void)
++{
++	intptr_t i, id;
++	pthread_t threads[THREADS + 1];
++
++	atomic = 0;
++	m = SAFE_MMAP(NULL, sizeof(*m) * THREADS,
++		      PROT_READ | PROT_WRITE,
++		      MAP_PRIVATE | MAP_ANONYMOUS,
++		      -1, 0);
++	seq_n = &((m + THREADS / 2)->seq_n);
++
++	pthread_create(&threads[THREADS], NULL, mem_spam, NULL);
++	for (i = THREADS - 1; i >= 0; i--)
++		pthread_create(&threads[i], NULL, worker_load_store, (void *)i);
++
++	for (i = 0; i < THREADS; i++) {
++		tst_res(TINFO, "Joining thread %li", i);
++		pthread_join(threads[i], NULL);
 +	}
- 
- 	return 0;
- }
- 
- static void run(void)
- {
--	pthread_t thrd;
- 	int i;
- 
- 	for (i = 0; i < ATTEMPTS; i++) {
- 		SAFE_CONNECT(sockfd,
- 			     (struct sockaddr *)&iaddr, sizeof(iaddr));
--		SAFE_PTHREAD_CREATE(&thrd, 0, connect_b, 0);
- 
-+		tst_fzsync_wait_update_a(&fzsync_pair);
- 		tst_fzsync_delay_a(&fzsync_pair);
- 		connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
- 		tst_fzsync_time_a(&fzsync_pair);
- 
--		SAFE_PTHREAD_JOIN(thrd, 0);
--		tst_fzsync_pair_update(i, &fzsync_pair);
--
--		if (!(i & 0x7FFF))
--			tst_fzsync_pair_info(&fzsync_pair);
-+		tst_fzsync_wait_a(&fzsync_pair);
- 	}
- 
- 	tst_res(TPASS, "We didn't crash");
++	tst_atomic_store(-1, &atomic);
++	pthread_join(threads[THREADS], NULL);
++
++	tst_res(TINFO, "Expected\tFound");
++	for (i = 0; i < THREADS; i++) {
++		id = (m + i)->id;
++		if (id != i)
++			tst_res(TFAIL, "%d\t\t%d", (int)i, (int)id);
++		else
++			tst_res(TPASS, "%d\t\t%d", (int)i, (int)id);
++	}
++
++	SAFE_MUNMAP(m, sizeof(*m) * THREADS);
++}
++
++static struct tst_test test = {
++	.test_all = do_test,
++};
 -- 
 2.14.1
 
