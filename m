@@ -1,48 +1,77 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 25 Sep 2017 13:00:39 -0700
-Subject: [LTP] LTP release and code freeze
-In-Reply-To: <20170919080444.GA14080@rei>
-References: <CA+G9fYs59g3eHyucNRJQ1+vxmwykZ_hHaUbANREpHXJ9C9u=TQ@mail.gmail.com>
- <20170919080444.GA14080@rei>
-Message-ID: <CA+G9fYtTBa4rva8eBZoxoBb31r6hSVXbmOSBn=uFAGSLGqnwyQ@mail.gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Tue, 26 Sep 2017 10:04:09 +0800
+Subject: [LTP] [PATCH v2] cve/cve-2016-10044.c: fix two errors
+In-Reply-To: <87h8vryqo9.fsf@our.domain.is.not.set>
+References: <87h8vryqo9.fsf@our.domain.is.not.set>
+Message-ID: <1506391449-5646-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+1) If the number of nr_events exceeds the limit of available events
+   defined in /proc/sys/fs/aio-max-nr, it returns EAGAIN.  We should
+   call io_destroy() to cleanup the AIO context after finishing test.
 
-On 19 September 2017 at 01:04, Cyril Hrubis <chrubis@suse.cz> wrote:
-> Hi!
->> Regarding the LTP September 2017 release,
->> Identifying bugs / issues / limitation / pre-requirements of LTP
->> testing on ARM64 architecture is crucial at our end. We would like to
->> test LTP pre-release candidate on ARM64 architecture.
->> Please announce code freeze and allow time to validate test code.
->
-> I guess that you can start with the validation now. We haven't declared
-> the freeze formally yet, but there are only a few possible changes that
-> may get in the release. The thp01 is broken on new kernels, that one
-> should get in for sure. Then possibly something like ten tests may end
-> up affected by possible changes in the CVE tests, which should be easy
-> enough to retest if needed.
+   Steps to reproduce this error:
+      #echo 4 > /proc/sys/fs/aio-max-nr
+      # ./cve-2016-10044 -i 5
+      tst_test.c:908: INFO: Timeout per run is 0h 05m 00s
+      cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
+      cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
+      cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
+      cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
+      cve-2016-10044.c:49: BROK: Failed to create AIO context: EAGAIN/EWOULDBLOCK
 
-Tested LTP syscalls on ARM64 architecture and the results looks good
-on 4.12 and 4.13 kernel.
+2) This case fails with TBROK on an old kernel(e.g. v2.6.32) because
+   the mapping file does not exist.
 
-Summary,
-Total Tests: 1136
-Total Skipped Tests: 115
-Total Failures: 0
-Machine Architecture: aarch64
+   The old format of file is set to 'anon_inode:[aio]' by the following
+   patch set:
+   '55708698c5f1("fs/anon_inode: Introduce a new lib function anon_inode_getfile_private()")'
+   '36bc08cc0170("fs/aio: Add support to aio ring pages migration")'
 
-The reason for 115 skip are due to $(testcase)_16 and libnuma/NUMA
-related tests were skipped.
+   The current format of file is set to '/[aio]' by the following patch:
+   '71ad7490c1f3("rework aio migrate pages to use aio fs")'
 
-- Naresh
+   We change the keyword into '[aio]' to match as many formats as
+   possible, and return TCONF if the mapping file does not exist.
 
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/cve/cve-2016-10044.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/cve/cve-2016-10044.c b/testcases/cve/cve-2016-10044.c
+index 7928d27..14fa0a4 100644
+--- a/testcases/cve/cve-2016-10044.c
++++ b/testcases/cve/cve-2016-10044.c
+@@ -50,10 +50,10 @@ static void run(void)
+ 
+ 	f = SAFE_FOPEN("/proc/self/maps", "r");
+ 	while (fgets(line, BUFSIZ, f) != NULL) {
+-		if (strstr(line, "/[aio]") != NULL)
++		if (strstr(line, "[aio]") != NULL)
+ 			goto found_mapping;
+ 	}
+-	tst_brk(TBROK, "Could not find mapping in /proc/self/maps");
++	tst_brk(TCONF, "Could not find mapping in /proc/self/maps");
+ 
+ found_mapping:
+ 	if (sscanf(line, "%*x-%*x %s7", perms) < 0)
+@@ -63,6 +63,9 @@ found_mapping:
+ 	else
+ 		tst_res(TPASS, "AIO mapping is not executable: %s", perms);
+ 
++	if (tst_syscall(__NR_io_destroy, ctx))
++		tst_brk(TBROK | TERRNO, "Failed to destroy AIO context");
++
+ 	SAFE_FCLOSE(f);
+ 	f = NULL;
+ }
+-- 
+1.8.3.1
+
+
+
