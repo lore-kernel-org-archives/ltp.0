@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 27 Sep 2017 15:11:46 +0200
-Subject: [LTP] keyctl tests failing with EDQUOT
-In-Reply-To: <5c79ec8d-d93c-8588-5a94-ee09381de256@cn.fujitsu.com>
-References: <20170926155802.GG4884@rei.lan>
- <5c79ec8d-d93c-8588-5a94-ee09381de256@cn.fujitsu.com>
-Message-ID: <20170927131146.GB25847@rei>
+Date: Wed, 27 Sep 2017 15:17:59 +0200
+Subject: [LTP] LTP release and code freeze
+In-Reply-To: <20170919084849.GA14328@rei>
+References: <20170919084849.GA14328@rei>
+Message-ID: <20170927131758.GC25847@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,28 +11,20 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > The keyctl03 and sometimes keyctl05 fails with EDQUOT when executed
-> > right after keyctl02 which creates and revokes keys in the loop and also
-> > adjusts the quota temporarily. It fails for me on kernel 3.16 inside of
-> > a qemu virtual machine. Looks like the keys are not deleted after the
-> > keyctl02 test exits. Have anybody seen a failure like this one?
-> > 
-> 
-> I tested on RHEL7.4GA(Kernel 3.10.0-693.el7.x86_64) in my virtual
-> machine and physical machine, keyctl03 right after keyctl02 or
-> keyctl05 right after keyctl02, both worked well.
+Here is a status update for the release:
 
-I've managed to reproduce it on 3.12 as well. The problem is visible on
-SLES12 SP1 as well as Debian 8.8.
+o the cve patchset will not make it
 
-> On mainline kernel 3.16, keyctl02 and keyctl03 triggered the bug
-> and crashed the system.
+o I tested the utimensat patch I've done and it seems to work fine
+  - it would be nice if anybody else could have a look before it gets
+    commited
 
-You have to have the patch that fixes the kernel crash backported
-obviously, which happens mostly for distribution maintained kernels.
+o the cpuset should be considered for merge as well
 
-The question is if we care enough about these failures to do something
-about them before the release. I guess that we do not.
+Other than that I do not see any blockers.
+
+I would like to release LTP on Friday once the two outstanding issues
+are fixed. Is that OK with everyone?
 
 -- 
 Cyril Hrubis
