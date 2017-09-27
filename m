@@ -1,40 +1,53 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 27 Sep 2017 15:38:01 -0700
-Subject: [LTP] [PATCH] utimensat_tests.sh: returns EPERM on 4.4.27 and
-	above
-In-Reply-To: <20170927151218.GA31500@rei>
-References: <1504697434-22974-1-git-send-email-naresh.kamboju@linaro.org>
- <1059184676.9072017.1504698860809.JavaMail.zimbra@redhat.com>
- <CAO_48GG9k_MxhktOWptCkv1Y8xFfFN31w2ntcnkZL5LdhM7qxg@mail.gmail.com>
- <20170925144624.GB31931@rei>
- <1297668995.23147365.1506520513918.JavaMail.zimbra@redhat.com>
- <20170927151218.GA31500@rei>
-Message-ID: <CA+G9fYvTRfeLpcst47A34doA6zQu1gBW5ujSiXCyd3eiDZQqOQ@mail.gmail.com>
+From: naresh.kamboju@linaro.org <naresh.kamboju@linaro.org>
+Date: Wed, 27 Sep 2017 15:47:24 -0700
+Subject: [LTP] [PATCH v2] utimensat_tests.sh: returns EPERM above 4.4.27 and
+	below 4.5.0
+Message-ID: <1506552444-2399-1-git-send-email-naresh.kamboju@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 27 September 2017 at 08:12, Cyril Hrubis <chrubis@suse.cz> wrote:
-> Hi!
->> But also less strict. Why not just add check for 3rd digit?
->> We already do that in other tests.
->
-> If that works for everyone, let's go with it. I just want to avoid a
-> need to maintain a maze of kernel versions.
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-I have tested Jan 's patch there is a syntax problem.
+Test utimensat failed on 4.4 is due to expected error is EACCES but got EPERM.
 
-- else if
-+ elif
+With the reference to backported patch changing the test code to set error code
+EPERM when kernel version is above 4.4.27 and below 4.5.0
 
-I am sending v2 patch.
-Thanks for looking into this issue.
+The patch backported on 4.4 details
+tree: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
+branch: v4.4.27
+commit id: b3b4283
+vfs: move permission checking into notify_change() for utimes(NULL)
 
-- Naresh
+Bug reported on this case,
+LKFT: linux-stable-4.4: LTP utimensat01 failed-EXPECTED: EACCES but got EPERM
+https://bugs.linaro.org/show_bug.cgi?id=3142
 
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+Signed-off-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+---
+ testcases/kernel/syscalls/utimensat/utimensat_tests.sh | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+index 48154d6..46a0cc6 100755
+--- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
++++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+@@ -32,7 +32,11 @@ fi
+ 
+ # Starting with 4.8.0 operations on immutable files return EPERM instead of
+ # EACCES.
+-if tst_kvcmp -lt "4.8.0"; then
++# This patch has also been merged to stable 4.4 with
++# b3b4283 ("vfs: move permission checking into notify_change() for utimes(NULL)")
++if tst_kvcmp -ge "4.4.27" -a -lt "4.5.0"; then
++	imaccess=EPERM
++elif tst_kvcmp -lt "4.4.27"; then
+ 	imaccess=EACCES
+ else
+ 	imaccess=EPERM
+-- 
+2.7.4
+
