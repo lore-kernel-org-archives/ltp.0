@@ -1,36 +1,30 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 27 Sep 2017 12:11:50 +0200
-Subject: [LTP] Issue running cpuset_base_ops_testset shell script
-In-Reply-To: <1171612333.22940868.1506499575369.JavaMail.zimbra@redhat.com>
-References: <CALhEcWHtmEd+VHOOSHCzpLppCRVAe8pUYrJD1+aGim=4oA2T7g@mail.gmail.com>
- <1171612333.22940868.1506499575369.JavaMail.zimbra@redhat.com>
-Message-ID: <20170927101149.GD12153@rei>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 27 Sep 2017 14:06:32 +0300
+Subject: [LTP] [PATCH v3 1/1] network/stress: Fix and cleanup part of
+ multicast group tests
+In-Reply-To: <20170925165254.20595-1-pvorel@suse.cz>
+References: <20170925165254.20595-1-pvorel@suse.cz>
+Message-ID: <298e2e9a-7ff8-2c64-9ab6-62ff61d91e44@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Good day, i'm trying to run this test script
-> > "**cpuset_base_ops_testset.sh**" but when i do that i have multiple
-> > errors related to some missing devices under **/dev/cpuset/** here is
-> > the output:
-> > ```
-> > opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> > /dev/cpuset/cpus: Permission denied
-> 
-> And I assume you are running systemd, which mounts it elsewhere
-> and test can't cope with that.
-> 
-> I think there was a patch posted:
->   http://lists.linux.it/pipermail/ltp/2017-April/004348.html
-> but it looks it might have been forgotten after the last release.
+On 09/25/2017 07:52 PM, Petr Vorel wrote:
+> * Fix test for SSH and netns based testing.
+> * Remove hardcoded rsh dependency.
+> * Create shell library mcast-lib.sh (multicast specific) to reduce
+>   duplicity in tests. Library uses test_stress_net.sh (and therefore
+>   test_net.sh).
+> * Merged IPv4 and IPv6 group tests into one file.
+> * Renamed test names and files (readability).
+> * Cleanup code + fixed typos.
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
-My bad, I should have looked into that one. It looks more or less good
-(minus some bashism and style). Most of it is just adding a prefix to
-the paths anyway.
+Applied, thank you Petr.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Best regards,
+Alexey
+
