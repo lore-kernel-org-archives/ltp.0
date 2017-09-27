@@ -1,53 +1,78 @@
-From: naresh.kamboju@linaro.org <naresh.kamboju@linaro.org>
-Date: Wed, 27 Sep 2017 15:47:24 -0700
-Subject: [LTP] [PATCH v2] utimensat_tests.sh: returns EPERM above 4.4.27 and
-	below 4.5.0
-Message-ID: <1506552444-2399-1-git-send-email-naresh.kamboju@linaro.org>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 27 Sep 2017 19:18:49 -0400 (EDT)
+Subject: [LTP] Issue running cpuset_base_ops_testset shell script
+In-Reply-To: <CALhEcWG_gAbwBKOWzOLtxrrZEvKitRWa=01btGYRwKJJ7z9GkQ@mail.gmail.com>
+References: <CALhEcWHtmEd+VHOOSHCzpLppCRVAe8pUYrJD1+aGim=4oA2T7g@mail.gmail.com>
+ <1171612333.22940868.1506499575369.JavaMail.zimbra@redhat.com>
+ <CALhEcWG_gAbwBKOWzOLtxrrZEvKitRWa=01btGYRwKJJ7z9GkQ@mail.gmail.com>
+Message-ID: <1133715246.23655522.1506554329993.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-Test utimensat failed on 4.4 is due to expected error is EACCES but got EPERM.
 
-With the reference to backported patch changing the test code to set error code
-EPERM when kernel version is above 4.4.27 and below 4.5.0
 
-The patch backported on 4.4 details
-tree: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
-branch: v4.4.27
-commit id: b3b4283
-vfs: move permission checking into notify_change() for utimes(NULL)
+----- Original Message -----
+> Hi again :)
 
-Bug reported on this case,
-LKFT: linux-stable-4.4: LTP utimensat01 failed-EXPECTED: EACCES but got EPERM
-https://bugs.linaro.org/show_bug.cgi?id=3142
+Please CC also LTP list on replies.
 
-Signed-off-by: Naresh Kamboju <naresh.kamboju@linaro.org>
----
- testcases/kernel/syscalls/utimensat/utimensat_tests.sh | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> 2017-09-27 3:06 GMT-05:00 Jan Stancek <jstancek@redhat.com>:
+> >
+> > ----- Original Message -----
+> >> **LTP Version: 20160920
+> >
+> > This is quite old.
+> >
+> >> Kernel Version: 3.10.0-327.el7.x86_64
+> >> OS: CentOS Linux release 7.2.1511 (Core)**
+> >>
+> >> Good day, i'm trying to run this test script
+> >> "**cpuset_base_ops_testset.sh**" but when i do that i have multiple
+> >> errors related to some missing devices under **/dev/cpuset/** here is
+> >> the output:
+> >> ```
+> >> opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
+> >> /dev/cpuset/cpus: Permission denied
+> >
+> > And I assume you are running systemd, which mounts it elsewhere
+> > and test can't cope with that.
+> >
+> > I think there was a patch posted:
+> >   http://lists.linux.it/pipermail/ltp/2017-April/004348.html
+> > but it looks it might have been forgotten after the last release.
+> >
+> > Would you care to give it a try with latest LTP?
+> >
+> > Regards,
+> > Jan
+> 
+> Yes i'm using systemd and i already downloaded the last stable release
+> and I have this output, i changed the operative system below the
+> output and specs.
 
-diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
-index 48154d6..46a0cc6 100755
---- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
-+++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
-@@ -32,7 +32,11 @@ fi
- 
- # Starting with 4.8.0 operations on immutable files return EPERM instead of
- # EACCES.
--if tst_kvcmp -lt "4.8.0"; then
-+# This patch has also been merged to stable 4.4 with
-+# b3b4283 ("vfs: move permission checking into notify_change() for utimes(NULL)")
-+if tst_kvcmp -ge "4.4.27" -a -lt "4.5.0"; then
-+	imaccess=EPERM
-+elif tst_kvcmp -lt "4.4.27"; then
- 	imaccess=EACCES
- else
- 	imaccess=EPERM
--- 
-2.7.4
+Have you also applied the patch I mentioned?
 
+> 
+> OS: Red Hat Enterprise Linux Server release 7.2
+> Kernel: 3.10.0-327.el7.x86_64
+> LTP: 20170516
+> 
+> Running tests.......
+> <<<test_start>>>
+> tag=cpuset_base_ops stime=1453936149
+> cmdline="cpuset_base_ops_testset.sh"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
+> /dev/cpuset/cpus: Permission denied
+
+<snip>
+
+Regards,
+Jan
