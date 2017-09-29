@@ -1,9 +1,10 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Fri, 29 Sep 2017 12:23:12 +0200
-Subject: [LTP] [PATCH v5 4/7] fzsync: Add functionality test for library
+Date: Fri, 29 Sep 2017 12:23:15 +0200
+Subject: [LTP] [PATCH v5 7/7] Convert cve-2017-2671 to use long running
+	threads
 In-Reply-To: <20170929102315.32691-1-rpalethorpe@suse.com>
 References: <20170929102315.32691-1-rpalethorpe@suse.com>
-Message-ID: <20170929102315.32691-4-rpalethorpe@suse.com>
+Message-ID: <20170929102315.32691-7-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,155 +13,93 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- lib/newlib_tests/.gitignore |   1 +
- lib/newlib_tests/Makefile   |   2 +
- lib/newlib_tests/test16.c   | 112 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 115 insertions(+)
- create mode 100644 lib/newlib_tests/test16.c
+ testcases/cve/cve-2017-2671.c | 30 +++++++++++++++++++-----------
+ 1 file changed, 19 insertions(+), 11 deletions(-)
 
-diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
-index 7d47a6531..d47a6ea12 100644
---- a/lib/newlib_tests/.gitignore
-+++ b/lib/newlib_tests/.gitignore
-@@ -13,6 +13,7 @@ test12
- test13
- test14
- test15
-+test16
- tst_device
- tst_safe_fileops
- tst_res_hexd
-diff --git a/lib/newlib_tests/Makefile b/lib/newlib_tests/Makefile
-index e86d8f23a..afa09373e 100644
---- a/lib/newlib_tests/Makefile
-+++ b/lib/newlib_tests/Makefile
-@@ -8,6 +8,8 @@ LDLIBS			+= -lltp
- test08: CFLAGS+=-pthread
- test09: CFLAGS+=-pthread
- test15: CFLAGS+=-pthread
-+test16: CFLAGS+=-pthread
-+test16: LDLIBS+=-lrt
+diff --git a/testcases/cve/cve-2017-2671.c b/testcases/cve/cve-2017-2671.c
+index 77744db42..b0471bfff 100644
+--- a/testcases/cve/cve-2017-2671.c
++++ b/testcases/cve/cve-2017-2671.c
+@@ -49,13 +49,15 @@
  
- ifeq ($(ANDROID),1)
- FILTER_OUT_MAKE_TARGETS	+= test08
-diff --git a/lib/newlib_tests/test16.c b/lib/newlib_tests/test16.c
-new file mode 100644
-index 000000000..d80bd5369
---- /dev/null
-+++ b/lib/newlib_tests/test16.c
-@@ -0,0 +1,112 @@
-+/*
-+ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+/* Basic functionality test for tst_fuzzy_sync.h similar to the atomic tests
-+ * (test15.c). One thread writes to the odd indexes of an array while the
-+ * other writes to the even. If the threads are not synchronised then they
-+ * will probably write to the wrong indexes as they share an index variable
-+ * which they should take it in turns to update.
-+ */
-+
-+#include <stdlib.h>
-+#include "tst_test.h"
-+#include "tst_safe_pthread.h"
-+#include "tst_fuzzy_sync.h"
-+
-+/* LOOPS * 2 + 1 must be less than INT_MAX */
-+#define LOOPS 0xFFFFFFULL
-+
+ #include "tst_fuzzy_sync.h"
+ 
+-#define ATTEMPTS 0xFFFF
++#define ATTEMPTS 0x80000
+ #define PING_SYSCTL_PATH "/proc/sys/net/ipv4/ping_group_range"
+ 
+ static int sockfd;
+ static unsigned int ping_min_grp, ping_max_grp;
+ static struct tst_fzsync_pair fzsync_pair = TST_FZSYNC_PAIR_INIT;
+ static struct sockaddr_in iaddr, uaddr;
 +static pthread_t thrd;
-+static volatile char seq[LOOPS * 2 + 1];
-+static struct tst_fzsync_pair pair = TST_FZSYNC_PAIR_INIT;
-+static volatile int seq_n;
-+static volatile int iterations;
-+
-+static void *worker(void *v LTP_ATTRIBUTE_UNUSED)
-+{
-+	unsigned long long i;
-+
-+	for (i = 0; tst_fzsync_wait_update_b(&pair); i++) {
-+		tst_fzsync_delay_b(&pair);
-+		tst_fzsync_time_b(&pair);
-+		if (!tst_fzsync_wait_b(&pair))
-+			break;
-+		seq[seq_n] = 'B';
-+		seq_n = (i + 1) * 2 % (int)LOOPS * 2;
++static void *connect_b(void *);
+ 
+ static void setup(void)
+ {
+@@ -73,13 +75,20 @@ static void setup(void)
+ 	SAFE_FILE_PRINTF(PING_SYSCTL_PATH, "0 0");
+ 
+ 	sockfd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, IPPROTO_ICMP);
++	SAFE_PTHREAD_CREATE(&thrd, 0, connect_b, 0);
+ 	tst_res(TINFO, "Created ping socket, attempting to race...");
+ }
+ 
+ static void cleanup(void)
+ {
++	if (thrd) {
++		tst_fzsync_pair_exit(&fzsync_pair);
++		SAFE_PTHREAD_JOIN(thrd, NULL);
 +	}
 +
-+	if (i > LOOPS * iterations)
-+		tst_res(TWARN, "Worker performed too many iterations: %lld > %lld",
-+			i, LOOPS * iterations);
+ 	if (sockfd > 0)
+ 		SAFE_CLOSE(sockfd);
 +
-+	return NULL;
-+}
-+
-+static void setup(void)
-+{
-+	SAFE_PTHREAD_CREATE(&thrd, NULL, worker, NULL);
-+}
-+
-+static void run(void)
-+{
-+	unsigned int i, j, fail = 0;
-+
-+	for (i = 0; i < LOOPS; i++) {
-+		tst_fzsync_wait_update_a(&pair);
-+		tst_fzsync_delay_a(&pair);
-+		seq[seq_n] = 'A';
-+		seq_n = i * 2 + 1;
-+		tst_fzsync_time_a(&pair);
-+		if (!tst_fzsync_wait_a(&pair))
+ 	if (ping_min_grp | ping_max_grp)
+ 		SAFE_FILE_PRINTF(PING_SYSCTL_PATH, "%u %u",
+ 				 ping_min_grp, ping_max_grp);
+@@ -87,32 +96,31 @@ static void cleanup(void)
+ 
+ static void *connect_b(void * param LTP_ATTRIBUTE_UNUSED)
+ {
+-	tst_fzsync_delay_b(&fzsync_pair);
+-	connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
+-	tst_fzsync_time_b(&fzsync_pair);
++	while(tst_fzsync_wait_update_b(&fzsync_pair)) {
++		tst_fzsync_delay_b(&fzsync_pair);
++		connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
++		tst_fzsync_time_b(&fzsync_pair);
++		if (!tst_fzsync_wait_b(&fzsync_pair))
 +			break;
 +	}
-+
-+	tst_res(TINFO, "Checking sequence...");
-+	for (i = 0; i < LOOPS; i++) {
-+		j = i * 2;
-+		if (seq[j] != 'A') {
-+			tst_res(TFAIL, "Expected A, but found %c at %d",
-+				seq[j], j);
-+			fail = 1;
-+		}
-+		j = i * 2 + 1;
-+		if (seq[j] != 'B') {
-+			tst_res(TFAIL, "Expected A, but found %c@%d",
-+				seq[j], j);
-+			fail = 1;
-+		}
-+	}
-+
-+	if (!fail)
-+		tst_res(TPASS, "Sequence is correct");
-+
-+	if (labs(pair.delay) > 1000)
-+		tst_res(TFAIL, "Delay is suspiciously large");
-+
-+	iterations++;
-+}
-+
-+static void cleanup(void)
-+{
-+	tst_fzsync_pair_exit(&pair);
-+	SAFE_PTHREAD_JOIN(thrd, NULL);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run,
-+};
+ 
+ 	return 0;
+ }
+ 
+ static void run(void)
+ {
+-	pthread_t thrd;
+ 	int i;
+ 
+ 	for (i = 0; i < ATTEMPTS; i++) {
+ 		SAFE_CONNECT(sockfd,
+ 			     (struct sockaddr *)&iaddr, sizeof(iaddr));
+-		SAFE_PTHREAD_CREATE(&thrd, 0, connect_b, 0);
+ 
++		tst_fzsync_wait_update_a(&fzsync_pair);
+ 		tst_fzsync_delay_a(&fzsync_pair);
+ 		connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
+ 		tst_fzsync_time_a(&fzsync_pair);
+ 
+-		SAFE_PTHREAD_JOIN(thrd, 0);
+-		tst_fzsync_pair_update(i, &fzsync_pair);
+-
+-		if (!(i & 0x7FFF))
+-			tst_fzsync_pair_info(&fzsync_pair);
++		tst_fzsync_wait_a(&fzsync_pair);
+ 	}
+ 
+ 	tst_res(TPASS, "We didn't crash");
 -- 
 2.14.1
 
