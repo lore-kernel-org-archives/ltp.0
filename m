@@ -1,477 +1,722 @@
-From: Pako Fonseca <ratjar501@gmail.com>
-Date: Fri, 29 Sep 2017 15:44:13 -0500
-Subject: [LTP] Issue running cpuset_base_ops_testset shell script
-In-Reply-To: <CALhEcWGfV5ZUqe6tyipqNFaFVgdr632ig_Fpc7UJR8fQFWcjFA@mail.gmail.com>
-References: <CALhEcWHtmEd+VHOOSHCzpLppCRVAe8pUYrJD1+aGim=4oA2T7g@mail.gmail.com>
- <1171612333.22940868.1506499575369.JavaMail.zimbra@redhat.com>
- <CALhEcWGfV5ZUqe6tyipqNFaFVgdr632ig_Fpc7UJR8fQFWcjFA@mail.gmail.com>
-Message-ID: <CALhEcWEE0JePgjF1p07XXhHMLDhOBVKU9hsS26UJKi8DQzN+pg@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Sat, 30 Sep 2017 01:10:36 +0200
+Subject: [LTP] [PATCH 1/1] syscalls, lib: Use SAFE_{BIND, LISTEN,
+	SOCKET} macros
+Message-ID: <20170929231036.32262-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-I applied the patch and investigated a little bit more and resolved
-it! Apparently the cpuset route is different!
+instead of tst_brk{,m}(TBROK, ...)
 
-In centOS, RHEL and Suse cpuset is located in /sys/fs/cgroup/cpuset so
-when i unmounted and ran again the tests all of them were successful.
+Patch was made thanks to Coccinelle.
 
-Thanks a lot for your help all of you guys! :)
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+ lib/tst_net.c                                      | 12 ++-----
+ testcases/kernel/syscalls/accept/accept01.c        | 12 ++-----
+ testcases/kernel/syscalls/connect/connect01.c      | 17 +++------
+ .../kernel/syscalls/getpeername/getpeername01.c    |  7 ++--
+ .../kernel/syscalls/getsockname/getsockname01.c    | 13 +++----
+ .../kernel/syscalls/getsockopt/getsockopt01.c      | 13 +++----
+ testcases/kernel/syscalls/listen/listen01.c        |  8 ++---
+ testcases/kernel/syscalls/recv/recv01.c            | 17 +++------
+ testcases/kernel/syscalls/recvfrom/recvfrom01.c    | 17 +++------
+ testcases/kernel/syscalls/recvmsg/recvmsg01.c      | 23 +++---------
+ testcases/kernel/syscalls/send/send01.c            | 17 +++------
+ testcases/kernel/syscalls/sendfile/sendfile02.c    | 14 ++------
+ testcases/kernel/syscalls/sendfile/sendfile04.c    | 14 ++------
+ testcases/kernel/syscalls/sendfile/sendfile05.c    | 14 ++------
+ testcases/kernel/syscalls/sendfile/sendfile06.c    | 13 ++-----
+ testcases/kernel/syscalls/sendmsg/sendmsg01.c      | 42 ++++++----------------
+ testcases/kernel/syscalls/sendto/sendto01.c        | 17 +++------
+ .../kernel/syscalls/setsockopt/setsockopt01.c      | 13 +++----
+ testcases/kernel/syscalls/sockioctl/sockioctl01.c  | 20 ++++-------
+ 19 files changed, 75 insertions(+), 228 deletions(-)
 
-2017-09-27 18:21 GMT-05:00 Pako Fonseca <ratjar501@gmail.com>:
-> Hi again :)
->
-> 2017-09-27 3:06 GMT-05:00 Jan Stancek <jstancek@redhat.com>:
->>
->> ----- Original Message -----
->>> **LTP Version: 20160920
->>
->> This is quite old.
->>
->>> Kernel Version: 3.10.0-327.el7.x86_64
->>> OS: CentOS Linux release 7.2.1511 (Core)**
->>>
->>> Good day, i'm trying to run this test script
->>> "**cpuset_base_ops_testset.sh**" but when i do that i have multiple
->>> errors related to some missing devices under **/dev/cpuset/** here is
->>> the output:
->>> ```
->>> opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
->>> /dev/cpuset/cpus: Permission denied
->>
->> And I assume you are running systemd, which mounts it elsewhere
->> and test can't cope with that.
->>
->> I think there was a patch posted:
->>   http://lists.linux.it/pipermail/ltp/2017-April/004348.html
->> but it looks it might have been forgotten after the last release.
->>
->> Would you care to give it a try with latest LTP?
->>
->> Regards,
->> Jan
->
-> Yes i'm using systemd and i already downloaded the last stable release
-> and I have this output, i changed the operative system below the
-> output and specs.
->
-> OS: Red Hat Enterprise Linux Server release 7.2
-> Kernel: 3.10.0-327.el7.x86_64
-> LTP: 20170516
->
-> Running tests.......
-> <<<test_start>>>
-> tag=cpuset_base_ops stime=1453936149
-> cmdline="cpuset_base_ops_testset.sh"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/cpus: Permission denied
-> cat: /dev/cpuset/cpus: No such file or directory
-> cpuset_base_ops 1 TPASS: cpus(READONLY): Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/mems: Permission denied
-> cat: /dev/cpuset/mems: No such file or directory
-> cpuset_base_ops 3 TPASS: mems(READONLY): Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_pressure: Permission denied
-> cat: /dev/cpuset/memory_pressure: No such file or directory
-> cpuset_base_ops 5 TPASS: memory_pressure(READONLY): Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/cpus: Permission denied
-> cat: /dev/cpuset/1/cpus: No such file or directory
-> cpuset_base_ops 7 TFAIL: cpus: Test result -  Expected string - "EMPTY"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/cpus: Permission denied
-> cat: /dev/cpuset/1/cpus: No such file or directory
-> cpuset_base_ops 9 TFAIL: cpus: Test result -  Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/cpus: Permission denied
-> cat: /dev/cpuset/1/cpus: No such file or directory
-> cpuset_base_ops 11 TPASS: cpus: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/cpus: Permission denied
-> cat: /dev/cpuset/1/cpus: No such file or directory
-> cpuset_base_ops 13 TFAIL: cpus: Test result -  Expected string - "0-255"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/cpus: Permission denied
-> cat: /dev/cpuset/1/cpus: No such file or directory
-> cpuset_base_ops 15 TPASS: cpus: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/cpus: Permission denied
-> cat: /dev/cpuset/1/cpus: No such file or directory
-> cpuset_base_ops 17 TFAIL: cpus: Test result -  Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/cpus: Permission denied
-> cat: /dev/cpuset/1/cpus: No such file or directory
-> cpuset_base_ops 19 TFAIL: cpus: Test result -  Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/cpus: Permission denied
-> cat: /dev/cpuset/1/cpus: No such file or directory
-> cpuset_base_ops 21 TFAIL: cpus: Test result -  Expected string - "0-255"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/cpus: Permission denied
-> cat: /dev/cpuset/1/cpus: No such file or directory
-> cpuset_base_ops 23 TPASS: cpus: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/cpus: Permission denied
-> cat: /dev/cpuset/1/cpus: No such file or directory
-> cpuset_base_ops 25 TPASS: cpus: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/cpus: Permission denied
-> cat: /dev/cpuset/1/cpus: No such file or directory
-> cpuset_base_ops 27 TPASS: cpus: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/cpus: Permission denied
-> cat: /dev/cpuset/1/cpus: No such file or directory
-> cpuset_base_ops 29 TPASS: cpus: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/cpus: Permission denied
-> cat: /dev/cpuset/1/cpus: No such file or directory
-> cpuset_base_ops 31 TPASS: cpus: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/cpus: Permission denied
-> cat: /dev/cpuset/1/cpus: No such file or directory
-> cpuset_base_ops 33 TFAIL: cpus: Test result -  Expected string - "0-255"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/cpus: Permission denied
-> cat: /dev/cpuset/1/cpus: No such file or directory
-> cpuset_base_ops 35 TFAIL: cpus: Test result -  Expected string - "0-254"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/cpus: Permission denied
-> cat: /dev/cpuset/1/cpus: No such file or directory
-> cpuset_base_ops 37 TFAIL: cpus: Test result -  Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/mems: Permission denied
-> cat: /dev/cpuset/1/mems: No such file or directory
-> cpuset_base_ops 39 TFAIL: mems: Test result -  Expected string - "EMPTY"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/mems: Permission denied
-> cat: /dev/cpuset/1/mems: No such file or directory
-> cpuset_base_ops 41 TFAIL: mems: Test result -  Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/mems: Permission denied
-> cat: /dev/cpuset/1/mems: No such file or directory
-> cpuset_base_ops 43 TPASS: mems: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/mems: Permission denied
-> cat: /dev/cpuset/1/mems: No such file or directory
-> cpuset_base_ops 45 TFAIL: mems: Test result -  Expected string - "0-1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/mems: Permission denied
-> cat: /dev/cpuset/1/mems: No such file or directory
-> cpuset_base_ops 47 TPASS: mems: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/mems: Permission denied
-> cat: /dev/cpuset/1/mems: No such file or directory
-> cpuset_base_ops 49 TFAIL: mems: Test result -  Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/mems: Permission denied
-> cat: /dev/cpuset/1/mems: No such file or directory
-> cpuset_base_ops 51 TFAIL: mems: Test result -  Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/mems: Permission denied
-> cat: /dev/cpuset/1/mems: No such file or directory
-> cpuset_base_ops 53 TFAIL: mems: Test result -  Expected string - "0-1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/mems: Permission denied
-> cat: /dev/cpuset/1/mems: No such file or directory
-> cpuset_base_ops 55 TPASS: mems: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/mems: Permission denied
-> cat: /dev/cpuset/1/mems: No such file or directory
-> cpuset_base_ops 57 TPASS: mems: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/mems: Permission denied
-> cat: /dev/cpuset/1/mems: No such file or directory
-> cpuset_base_ops 59 TPASS: mems: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/mems: Permission denied
-> cat: /dev/cpuset/1/mems: No such file or directory
-> cpuset_base_ops 61 TPASS: mems: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/mems: Permission denied
-> cat: /dev/cpuset/1/mems: No such file or directory
-> cpuset_base_ops 63 TPASS: mems: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/1/mems: Permission denied
-> cat: /dev/cpuset/1/mems: No such file or directory
-> cpuset_base_ops 65 TFAIL: mems: Test result -  Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/cpu_exclusive: Permission denied
-> cat: /dev/cpuset/cpu_exclusive: No such file or directory
-> cpuset_base_ops 67 TFAIL: cpu_exclusive: Test result -  Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/cpu_exclusive: Permission denied
-> cat: /dev/cpuset/cpu_exclusive: No such file or directory
-> cpuset_base_ops 69 TFAIL: cpu_exclusive: Test result -  Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/cpu_exclusive: Permission denied
-> cat: /dev/cpuset/cpu_exclusive: No such file or directory
-> cpuset_base_ops 71 TFAIL: cpu_exclusive: Test result -  Expected string - "1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/cpu_exclusive: Permission denied
-> cat: /dev/cpuset/cpu_exclusive: No such file or directory
-> cpuset_base_ops 73 TPASS: cpu_exclusive: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/cpu_exclusive: Permission denied
-> cat: /dev/cpuset/cpu_exclusive: No such file or directory
-> cpuset_base_ops 75 TPASS: cpu_exclusive: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/cpu_exclusive: Permission denied
-> cat: /dev/cpuset/cpu_exclusive: No such file or directory
-> cpuset_base_ops 77 TFAIL: cpu_exclusive: Test result -  Expected string - "1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/mem_exclusive: Permission denied
-> cat: /dev/cpuset/mem_exclusive: No such file or directory
-> cpuset_base_ops 79 TFAIL: mem_exclusive: Test result -  Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/mem_exclusive: Permission denied
-> cat: /dev/cpuset/mem_exclusive: No such file or directory
-> cpuset_base_ops 81 TFAIL: mem_exclusive: Test result -  Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/mem_exclusive: Permission denied
-> cat: /dev/cpuset/mem_exclusive: No such file or directory
-> cpuset_base_ops 83 TFAIL: mem_exclusive: Test result -  Expected string - "1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/mem_exclusive: Permission denied
-> cat: /dev/cpuset/mem_exclusive: No such file or directory
-> cpuset_base_ops 85 TPASS: mem_exclusive: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/mem_exclusive: Permission denied
-> cat: /dev/cpuset/mem_exclusive: No such file or directory
-> cpuset_base_ops 87 TPASS: mem_exclusive: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/mem_exclusive: Permission denied
-> cat: /dev/cpuset/mem_exclusive: No such file or directory
-> cpuset_base_ops 89 TFAIL: mem_exclusive: Test result -  Expected string - "1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/mem_hardwall: Permission denied
-> cat: /dev/cpuset/mem_hardwall: No such file or directory
-> cpuset_base_ops 91 TFAIL: mem_hardwall: Test result -  Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/mem_hardwall: Permission denied
-> cat: /dev/cpuset/mem_hardwall: No such file or directory
-> cpuset_base_ops 93 TFAIL: mem_hardwall: Test result -  Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/mem_hardwall: Permission denied
-> cat: /dev/cpuset/mem_hardwall: No such file or directory
-> cpuset_base_ops 95 TFAIL: mem_hardwall: Test result -  Expected string - "1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/mem_hardwall: Permission denied
-> cat: /dev/cpuset/mem_hardwall: No such file or directory
-> cpuset_base_ops 97 TPASS: mem_hardwall: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/mem_hardwall: Permission denied
-> cat: /dev/cpuset/mem_hardwall: No such file or directory
-> cpuset_base_ops 99 TPASS: mem_hardwall: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/mem_hardwall: Permission denied
-> cat: /dev/cpuset/mem_hardwall: No such file or directory
-> cpuset_base_ops 101 TFAIL: mem_hardwall: Test result -  Expected string - "1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_migrate: Permission denied
-> cat: /dev/cpuset/memory_migrate: No such file or directory
-> cpuset_base_ops 103 TFAIL: memory_migrate: Test result -  Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_migrate: Permission denied
-> cat: /dev/cpuset/memory_migrate: No such file or directory
-> cpuset_base_ops 105 TFAIL: memory_migrate: Test result -  Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_migrate: Permission denied
-> cat: /dev/cpuset/memory_migrate: No such file or directory
-> cpuset_base_ops 107 TFAIL: memory_migrate: Test result -  Expected string - "1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_migrate: Permission denied
-> cat: /dev/cpuset/memory_migrate: No such file or directory
-> cpuset_base_ops 109 TPASS: memory_migrate: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_migrate: Permission denied
-> cat: /dev/cpuset/memory_migrate: No such file or directory
-> cpuset_base_ops 111 TPASS: memory_migrate: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_migrate: Permission denied
-> cat: /dev/cpuset/memory_migrate: No such file or directory
-> cpuset_base_ops 113 TFAIL: memory_migrate: Test result -  Expected string - "1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_spread_page: Permission denied
-> cat: /dev/cpuset/memory_spread_page: No such file or directory
-> cpuset_base_ops 115 TFAIL: memory_spread_page: Test result -  Expected
-> string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_spread_page: Permission denied
-> cat: /dev/cpuset/memory_spread_page: No such file or directory
-> cpuset_base_ops 117 TFAIL: memory_spread_page: Test result -  Expected
-> string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_spread_page: Permission denied
-> cat: /dev/cpuset/memory_spread_page: No such file or directory
-> cpuset_base_ops 119 TFAIL: memory_spread_page: Test result -  Expected
-> string - "1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_spread_page: Permission denied
-> cat: /dev/cpuset/memory_spread_page: No such file or directory
-> cpuset_base_ops 121 TPASS: memory_spread_page: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_spread_page: Permission denied
-> cat: /dev/cpuset/memory_spread_page: No such file or directory
-> cpuset_base_ops 123 TPASS: memory_spread_page: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_spread_page: Permission denied
-> cat: /dev/cpuset/memory_spread_page: No such file or directory
-> cpuset_base_ops 125 TFAIL: memory_spread_page: Test result -  Expected
-> string - "1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_spread_slab: Permission denied
-> cat: /dev/cpuset/memory_spread_slab: No such file or directory
-> cpuset_base_ops 127 TFAIL: memory_spread_slab: Test result -  Expected
-> string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_spread_slab: Permission denied
-> cat: /dev/cpuset/memory_spread_slab: No such file or directory
-> cpuset_base_ops 129 TFAIL: memory_spread_slab: Test result -  Expected
-> string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_spread_slab: Permission denied
-> cat: /dev/cpuset/memory_spread_slab: No such file or directory
-> cpuset_base_ops 131 TFAIL: memory_spread_slab: Test result -  Expected
-> string - "1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_spread_slab: Permission denied
-> cat: /dev/cpuset/memory_spread_slab: No such file or directory
-> cpuset_base_ops 133 TPASS: memory_spread_slab: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_spread_slab: Permission denied
-> cat: /dev/cpuset/memory_spread_slab: No such file or directory
-> cpuset_base_ops 135 TPASS: memory_spread_slab: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_spread_slab: Permission denied
-> cat: /dev/cpuset/memory_spread_slab: No such file or directory
-> cpuset_base_ops 137 TFAIL: memory_spread_slab: Test result -  Expected
-> string - "1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/sched_load_balance: Permission denied
-> cat: /dev/cpuset/sched_load_balance: No such file or directory
-> cpuset_base_ops 139 TFAIL: sched_load_balance: Test result -  Expected
-> string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/sched_load_balance: Permission denied
-> cat: /dev/cpuset/sched_load_balance: No such file or directory
-> cpuset_base_ops 141 TFAIL: sched_load_balance: Test result -  Expected
-> string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/sched_load_balance: Permission denied
-> cat: /dev/cpuset/sched_load_balance: No such file or directory
-> cpuset_base_ops 143 TFAIL: sched_load_balance: Test result -  Expected
-> string - "1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/sched_load_balance: Permission denied
-> cat: /dev/cpuset/sched_load_balance: No such file or directory
-> cpuset_base_ops 145 TPASS: sched_load_balance: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/sched_load_balance: Permission denied
-> cat: /dev/cpuset/sched_load_balance: No such file or directory
-> cpuset_base_ops 147 TPASS: sched_load_balance: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/sched_load_balance: Permission denied
-> cat: /dev/cpuset/sched_load_balance: No such file or directory
-> cpuset_base_ops 149 TFAIL: sched_load_balance: Test result -  Expected
-> string - "1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_pressure_enabled: Permission denied
-> cat: /dev/cpuset/memory_pressure_enabled: No such file or directory
-> cpuset_base_ops 151 TFAIL: memory_pressure_enabled: Test result -
-> Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_pressure_enabled: Permission denied
-> cat: /dev/cpuset/memory_pressure_enabled: No such file or directory
-> cpuset_base_ops 153 TFAIL: memory_pressure_enabled: Test result -
-> Expected string - "0"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_pressure_enabled: Permission denied
-> cat: /dev/cpuset/memory_pressure_enabled: No such file or directory
-> cpuset_base_ops 155 TFAIL: memory_pressure_enabled: Test result -
-> Expected string - "1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_pressure_enabled: Permission denied
-> cat: /dev/cpuset/memory_pressure_enabled: No such file or directory
-> cpuset_base_ops 157 TPASS: memory_pressure_enabled: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_pressure_enabled: Permission denied
-> cat: /dev/cpuset/memory_pressure_enabled: No such file or directory
-> cpuset_base_ops 159 TPASS: memory_pressure_enabled: Get the expected string
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
-> /dev/cpuset/memory_pressure_enabled: Permission denied
-> cat: /dev/cpuset/memory_pressure_enabled: No such file or directory
-> cpuset_base_ops 161 TFAIL: memory_pressure_enabled: Test result -
-> Expected string - "1"
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 223:
-> /dev/cpuset/sub_cpuset/cpus: Permission denied
-> cpuset_base_ops 163 TPASS: Attaching Task Test successed!!
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 197: 53295
-> Terminated              cat /dev/zero > /dev/null
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 223:
-> /dev/cpuset/sub_cpuset/cpus: Permission denied
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 226:
-> /dev/cpuset/sub_cpuset/mems: Permission denied
-> cpuset_base_ops 165 TFAIL: Attaching Task Test failed!! cpus - "0",
-> mems - "0", Expect - "0", Fact - "". (0 - Attach Success, 1 - Attach
-> Fail)
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 197: 53311
-> Terminated              cat /dev/zero > /dev/null
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 226:
-> /dev/cpuset/sub_cpuset/mems: Permission denied
-> cpuset_base_ops 167 TPASS: Attaching Task Test successed!!
-> /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 197: 53327
-> Terminated              cat /dev/zero > /dev/null
-> incrementing stop
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=5 termination_type=exited termination_id=1 corefile=no
-> cutime=174 cstime=504
-> <<<test_end>>>
-> INFO: ltp-pan reported some tests FAIL
-> LTP Version: 20170516
->
->        ###############################################################
->
->             Done executing testcases.
->             LTP Version:  20170516
->        ###############################################################
->
-> Apparently I still have that output related with permission denied,
-> what do you think?
-> A lot of thanks for your help!
->
-> 2017-09-27 3:06 GMT-05:00 Jan Stancek <jstancek@redhat.com>:
->>
->> ----- Original Message -----
->>> **LTP Version: 20160920
->>
->> This is quite old.
->>
->>> Kernel Version: 3.10.0-327.el7.x86_64
->>> OS: CentOS Linux release 7.2.1511 (Core)**
->>>
->>> Good day, i'm trying to run this test script
->>> "**cpuset_base_ops_testset.sh**" but when i do that i have multiple
->>> errors related to some missing devices under **/dev/cpuset/** here is
->>> the output:
->>> ```
->>> opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 58:
->>> /dev/cpuset/cpus: Permission denied
->>
->> And I assume you are running systemd, which mounts it elsewhere
->> and test can't cope with that.
->>
->> I think there was a patch posted:
->>   http://lists.linux.it/pipermail/ltp/2017-April/004348.html
->> but it looks it might have been forgotten after the last release.
->>
->> Would you care to give it a try with latest LTP?
->>
->> Regards,
->> Jan
+diff --git a/lib/tst_net.c b/lib/tst_net.c
+index f842e94a6..326b92e6f 100644
+--- a/lib/tst_net.c
++++ b/lib/tst_net.c
+@@ -25,6 +25,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ unsigned short tst_get_unused_port(void (cleanup_fn)(void),
+ 	unsigned short family, int type)
+@@ -57,16 +58,9 @@ unsigned short tst_get_unused_port(void (cleanup_fn)(void),
+ 		return -1;
+ 	}
+ 
+-	sock = socket(addr->sa_family, type, 0);
+-	if (sock < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup_fn, "socket failed");
+-		return -1;
+-	}
++	sock = SAFE_SOCKET(cleanup_fn, addr->sa_family, type, 0);
+ 
+-	if (bind(sock, addr, slen) < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup_fn, "bind failed");
+-		return -1;
+-	}
++	SAFE_BIND(cleanup_fn, sock, addr, slen);
+ 
+ 	if (getsockname(sock, addr, &slen) == -1) {
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn, "getsockname failed");
+diff --git a/testcases/kernel/syscalls/accept/accept01.c b/testcases/kernel/syscalls/accept/accept01.c
+index 986415897..b50056520 100644
+--- a/testcases/kernel/syscalls/accept/accept01.c
++++ b/testcases/kernel/syscalls/accept/accept01.c
+@@ -156,15 +156,9 @@ static void cleanup0(void)
+ 
+ static void setup1(void)
+ {
+-	s = socket(tdat[testno].domain, tdat[testno].type, tdat[testno].proto);
+-	if (s < 0) {
+-		tst_brkm(TBROK, cleanup, "socket setup failed for accept "
+-			 "test %d: %s", testno, strerror(errno));
+-	}
+-	if (bind(s, (struct sockaddr *)&sin0, sizeof(sin0)) < 0) {
+-		tst_brkm(TBROK, cleanup, "socket bind failed for accept "
+-			 "test %d: %s", testno, strerror(errno));
+-	}
++	s = SAFE_SOCKET(cleanup, tdat[testno].domain, tdat[testno].type,
++			tdat[testno].proto);
++	SAFE_BIND(cleanup, s, (struct sockaddr *)&sin0, sizeof(sin0));
+ 	sinlen = sizeof(fsin1);
+ }
+ 
+diff --git a/testcases/kernel/syscalls/connect/connect01.c b/testcases/kernel/syscalls/connect/connect01.c
+index af6035435..5880b0794 100644
+--- a/testcases/kernel/syscalls/connect/connect01.c
++++ b/testcases/kernel/syscalls/connect/connect01.c
+@@ -53,6 +53,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ char *TCID = "connect01";
+ int testno;
+@@ -230,19 +231,9 @@ pid_t start_server(struct sockaddr_in *sin0)
+ 	sin0->sin_port = 0; /* pick random free port */
+ 	sin0->sin_addr.s_addr = INADDR_ANY;
+ 
+-	sfd = socket(PF_INET, SOCK_STREAM, 0);
+-	if (sfd < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server socket failed");
+-		return -1;
+-	}
+-	if (bind(sfd, (struct sockaddr *)sin0, sizeof(*sin0)) < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server bind failed");
+-		return -1;
+-	}
+-	if (listen(sfd, 10) < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server listen failed");
+-		return -1;
+-	}
++	sfd = SAFE_SOCKET(cleanup, PF_INET, SOCK_STREAM, 0);
++	SAFE_BIND(cleanup, sfd, (struct sockaddr *)sin0, sizeof(*sin0));
++	SAFE_LISTEN(cleanup, sfd, 10);
+ 	if (getsockname(sfd, (struct sockaddr *)sin0, &slen) == -1)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "getsockname failed");
+ 
+diff --git a/testcases/kernel/syscalls/getpeername/getpeername01.c b/testcases/kernel/syscalls/getpeername/getpeername01.c
+index fd5d58d57..817cd38ad 100644
+--- a/testcases/kernel/syscalls/getpeername/getpeername01.c
++++ b/testcases/kernel/syscalls/getpeername/getpeername01.c
+@@ -153,11 +153,8 @@ static void setup3(int i)
+ 		tst_brkm(TBROK | TERRNO, cleanup,
+ 			 "socket setup failed for getpeername test %d", i);
+ 	}
+-	if (bind(test_cases[i].sockfd, (struct sockaddr *)&server_addr,
+-		 sizeof(server_addr)) < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "socket bind failed for getpeername test %d", i);
+-	}
++	SAFE_BIND(cleanup, test_cases[i].sockfd,
++		  (struct sockaddr *)&server_addr, sizeof(server_addr));
+ }
+ 
+ static void setup4(int i)
+diff --git a/testcases/kernel/syscalls/getsockname/getsockname01.c b/testcases/kernel/syscalls/getsockname/getsockname01.c
+index c4b6e9b1a..cce1543fd 100644
+--- a/testcases/kernel/syscalls/getsockname/getsockname01.c
++++ b/testcases/kernel/syscalls/getsockname/getsockname01.c
+@@ -52,6 +52,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ char *TCID = "getsockname01";
+ int testno;
+@@ -167,15 +168,9 @@ void cleanup0(void)
+ 
+ void setup1(void)
+ {
+-	s = socket(tdat[testno].domain, tdat[testno].type, tdat[testno].proto);
+-	if (s < 0) {
+-		tst_brkm(TBROK, cleanup, "socket setup failed for getsockname "
+-			 "test %d: %s", testno, strerror(errno));
+-	}
+-	if (bind(s, (struct sockaddr *)&sin0, sizeof(sin0)) < 0) {
+-		tst_brkm(TBROK, cleanup, "socket bind failed for getsockname "
+-			 "test %d: %s", testno, strerror(errno));
+-	}
++	s = SAFE_SOCKET(cleanup, tdat[testno].domain, tdat[testno].type,
++			tdat[testno].proto);
++	SAFE_BIND(cleanup, s, (struct sockaddr *)&sin0, sizeof(sin0));
+ 	sinlen = sizeof(fsin1);
+ }
+ 
+diff --git a/testcases/kernel/syscalls/getsockopt/getsockopt01.c b/testcases/kernel/syscalls/getsockopt/getsockopt01.c
+index 1195306a0..d1692fcd3 100644
+--- a/testcases/kernel/syscalls/getsockopt/getsockopt01.c
++++ b/testcases/kernel/syscalls/getsockopt/getsockopt01.c
+@@ -52,6 +52,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ char *TCID = "getsockopt01";
+ int testno;
+@@ -193,15 +194,9 @@ void cleanup0(void)
+ 
+ void setup1(void)
+ {
+-	s = socket(tdat[testno].domain, tdat[testno].type, tdat[testno].proto);
+-	if (s < 0) {
+-		tst_brkm(TBROK, cleanup, "socket setup failed for getsockopt: "
+-			 "%s", strerror(errno));
+-	}
+-	if (bind(s, (struct sockaddr *)&sin0, sizeof(sin0)) < 0) {
+-		tst_brkm(TBROK, cleanup, "socket bind failed for getsockopt: "
+-			 "%s", strerror(errno));
+-	}
++	s = SAFE_SOCKET(cleanup, tdat[testno].domain, tdat[testno].type,
++			tdat[testno].proto);
++	SAFE_BIND(cleanup, s, (struct sockaddr *)&sin0, sizeof(sin0));
+ 	sinlen = sizeof(fsin1);
+ 	optlen = sizeof(optval);
+ }
+diff --git a/testcases/kernel/syscalls/listen/listen01.c b/testcases/kernel/syscalls/listen/listen01.c
+index e421bb46d..b3dd7125d 100644
+--- a/testcases/kernel/syscalls/listen/listen01.c
++++ b/testcases/kernel/syscalls/listen/listen01.c
+@@ -53,6 +53,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ char *TCID = "listen01";
+ int testno;
+@@ -140,11 +141,8 @@ void cleanup0(void)
+ 
+ void setup1(void)
+ {
+-	s = socket(tdat[testno].domain, tdat[testno].type, tdat[testno].proto);
+-	if (s < 0) {
+-		tst_brkm(TBROK, cleanup, "socket setup failed for listen: "
+-			 "%s", strerror(errno));
+-	}
++	s = SAFE_SOCKET(cleanup, tdat[testno].domain, tdat[testno].type,
++			tdat[testno].proto);
+ }
+ 
+ void cleanup1(void)
+diff --git a/testcases/kernel/syscalls/recv/recv01.c b/testcases/kernel/syscalls/recv/recv01.c
+index 9c21dc206..470cf9a19 100644
+--- a/testcases/kernel/syscalls/recv/recv01.c
++++ b/testcases/kernel/syscalls/recv/recv01.c
+@@ -53,6 +53,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ char *TCID = "recv01";
+ int testno;
+@@ -225,19 +226,9 @@ pid_t start_server(struct sockaddr_in *sin0)
+ 	sin0->sin_port = 0; /* pick random free port */
+ 	sin0->sin_addr.s_addr = INADDR_ANY;
+ 
+-	sfd = socket(PF_INET, SOCK_STREAM, 0);
+-	if (sfd < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server socket failed");
+-		return -1;
+-	}
+-	if (bind(sfd, (struct sockaddr *)sin0, sizeof(*sin0)) < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server bind failed");
+-		return -1;
+-	}
+-	if (listen(sfd, 10) < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server listen failed");
+-		return -1;
+-	}
++	sfd = SAFE_SOCKET(cleanup, PF_INET, SOCK_STREAM, 0);
++	SAFE_BIND(cleanup, sfd, (struct sockaddr *)sin0, sizeof(*sin0));
++	SAFE_LISTEN(cleanup, sfd, 10);
+ 	if (getsockname(sfd, (struct sockaddr *)sin0, &slen) == -1)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "getsockname failed");
+ 
+diff --git a/testcases/kernel/syscalls/recvfrom/recvfrom01.c b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
+index 3bcf2a1fc..d95c28f9a 100644
+--- a/testcases/kernel/syscalls/recvfrom/recvfrom01.c
++++ b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
+@@ -53,6 +53,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ char *TCID = "recvfrom01";
+ int testno;
+@@ -254,19 +255,9 @@ pid_t start_server(struct sockaddr_in *sin0)
+ 	sin0->sin_port = 0; /* pick random free port */
+ 	sin0->sin_addr.s_addr = INADDR_ANY;
+ 
+-	sfd = socket(PF_INET, SOCK_STREAM, 0);
+-	if (sfd < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server socket failed");
+-		return -1;
+-	}
+-	if (bind(sfd, (struct sockaddr *)sin0, sizeof(*sin0)) < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server bind failed");
+-		return -1;
+-	}
+-	if (listen(sfd, 10) < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server listen failed");
+-		return -1;
+-	}
++	sfd = SAFE_SOCKET(cleanup, PF_INET, SOCK_STREAM, 0);
++	SAFE_BIND(cleanup, sfd, (struct sockaddr *)sin0, sizeof(*sin0));
++	SAFE_LISTEN(cleanup, sfd, 10);
+ 	if (getsockname(sfd, (struct sockaddr *)sin0, &slen) == -1)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "getsockname failed");
+ 
+diff --git a/testcases/kernel/syscalls/recvmsg/recvmsg01.c b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
+index 13bd58f4b..51b2a0061 100644
+--- a/testcases/kernel/syscalls/recvmsg/recvmsg01.c
++++ b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
+@@ -56,6 +56,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ char *TCID = "recvmsg01";
+ int testno;
+@@ -374,28 +375,14 @@ pid_t start_server(struct sockaddr_in *ssin, struct sockaddr_un *ssun)
+ 	ssin->sin_addr.s_addr = INADDR_ANY;
+ 
+ 	/* set up inet socket */
+-	sfd = socket(PF_INET, SOCK_STREAM, 0);
+-	if (sfd < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server socket failed");
+-		return -1;
+-	}
+-	if (bind(sfd, (struct sockaddr *)ssin, sizeof(*ssin)) < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server bind failed");
+-		return -1;
+-	}
+-	if (listen(sfd, 10) < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server listen failed");
+-		return -1;
+-	}
++	sfd = SAFE_SOCKET(cleanup, PF_INET, SOCK_STREAM, 0);
++	SAFE_BIND(cleanup, sfd, (struct sockaddr *)ssin, sizeof(*ssin));
++	SAFE_LISTEN(cleanup, sfd, 10);
+ 	if (getsockname(sfd, (struct sockaddr *)ssin, &slen) == -1)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "getsockname failed");
+ 
+ 	/* set up UNIX-domain socket */
+-	ufd = socket(PF_UNIX, SOCK_STREAM, 0);
+-	if (ufd < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server UD socket failed");
+-		return -1;
+-	}
++	ufd = SAFE_SOCKET(cleanup, PF_UNIX, SOCK_STREAM, 0);
+ 	if (bind(ufd, (struct sockaddr *)ssun, sizeof(*ssun))) {
+ 		tst_brkm(TBROK | TERRNO, cleanup, "server UD bind failed");
+ 		return -1;
+diff --git a/testcases/kernel/syscalls/send/send01.c b/testcases/kernel/syscalls/send/send01.c
+index 6f71300ce..cef0c90a0 100644
+--- a/testcases/kernel/syscalls/send/send01.c
++++ b/testcases/kernel/syscalls/send/send01.c
+@@ -42,6 +42,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ char *TCID = "send01";
+ int testno;
+@@ -169,19 +170,9 @@ static pid_t start_server(struct sockaddr_in *sin0)
+ 	sin0->sin_port = 0; /* pick random free port */
+ 	sin0->sin_addr.s_addr = INADDR_ANY;
+ 
+-	sfd = socket(PF_INET, SOCK_STREAM, 0);
+-	if (sfd < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server socket failed");
+-		return -1;
+-	}
+-	if (bind(sfd, (struct sockaddr *)sin0, sizeof(*sin0)) < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server bind failed");
+-		return -1;
+-	}
+-	if (listen(sfd, 10) < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server listen failed");
+-		return -1;
+-	}
++	sfd = SAFE_SOCKET(cleanup, PF_INET, SOCK_STREAM, 0);
++	SAFE_BIND(cleanup, sfd, (struct sockaddr *)sin0, sizeof(*sin0));
++	SAFE_LISTEN(cleanup, sfd, 10);
+ 	if (getsockname(sfd, (struct sockaddr *)sin0, &slen) == -1)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "getsockname failed");
+ 
+diff --git a/testcases/kernel/syscalls/sendfile/sendfile02.c b/testcases/kernel/syscalls/sendfile/sendfile02.c
+index ba12308b3..37680839f 100644
+--- a/testcases/kernel/syscalls/sendfile/sendfile02.c
++++ b/testcases/kernel/syscalls/sendfile/sendfile02.c
+@@ -57,6 +57,7 @@
+ #include <unistd.h>
+ #include <inttypes.h>
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ #ifndef OFF_T
+ #define OFF_T off_t
+@@ -214,21 +215,12 @@ int create_server(void)
+ 	static int count = 0;
+ 	socklen_t slen = sizeof(sin1);
+ 
+-	sockfd = socket(PF_INET, SOCK_DGRAM, 0);
+-	if (sockfd < 0) {
+-		tst_brkm(TBROK, cleanup, "call to socket() failed: %s",
+-			 strerror(errno));
+-		return -1;
+-	}
++	sockfd = SAFE_SOCKET(cleanup, PF_INET, SOCK_DGRAM, 0);
+ 	sin1.sin_family = AF_INET;
+ 	sin1.sin_port = 0; /* pick random free port */
+ 	sin1.sin_addr.s_addr = INADDR_ANY;
+ 	count++;
+-	if (bind(sockfd, (struct sockaddr *)&sin1, sizeof(sin1)) < 0) {
+-		tst_brkm(TBROK, cleanup, "call to bind() failed: %s",
+-			 strerror(errno));
+-		return -1;
+-	}
++	SAFE_BIND(cleanup, sockfd, (struct sockaddr *)&sin1, sizeof(sin1));
+ 	if (getsockname(sockfd, (struct sockaddr *)&sin1, &slen) == -1)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "getsockname failed");
+ 
+diff --git a/testcases/kernel/syscalls/sendfile/sendfile04.c b/testcases/kernel/syscalls/sendfile/sendfile04.c
+index 822c4688c..45c15df50 100644
+--- a/testcases/kernel/syscalls/sendfile/sendfile04.c
++++ b/testcases/kernel/syscalls/sendfile/sendfile04.c
+@@ -57,6 +57,7 @@
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ #ifndef OFF_T
+ #define OFF_T off_t
+@@ -212,21 +213,12 @@ int create_server(void)
+ 	static int count = 0;
+ 	socklen_t slen = sizeof(sin1);
+ 
+-	sockfd = socket(PF_INET, SOCK_DGRAM, 0);
+-	if (sockfd < 0) {
+-		tst_brkm(TBROK, cleanup, "call to socket() failed: %s",
+-			 strerror(errno));
+-		return -1;
+-	}
++	sockfd = SAFE_SOCKET(cleanup, PF_INET, SOCK_DGRAM, 0);
+ 	sin1.sin_family = AF_INET;
+ 	sin1.sin_port = 0; /* pick random free port */
+ 	sin1.sin_addr.s_addr = INADDR_ANY;
+ 	count++;
+-	if (bind(sockfd, (struct sockaddr *)&sin1, sizeof(sin1)) < 0) {
+-		tst_brkm(TBROK, cleanup, "call to bind() failed: %s",
+-			 strerror(errno));
+-		return -1;
+-	}
++	SAFE_BIND(cleanup, sockfd, (struct sockaddr *)&sin1, sizeof(sin1));
+ 	if (getsockname(sockfd, (struct sockaddr *)&sin1, &slen) == -1)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "getsockname failed");
+ 
+diff --git a/testcases/kernel/syscalls/sendfile/sendfile05.c b/testcases/kernel/syscalls/sendfile/sendfile05.c
+index 110194b84..d3222c19a 100644
+--- a/testcases/kernel/syscalls/sendfile/sendfile05.c
++++ b/testcases/kernel/syscalls/sendfile/sendfile05.c
+@@ -52,6 +52,7 @@
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ #ifndef OFF_T
+ #define OFF_T off_t
+@@ -176,21 +177,12 @@ int create_server(void)
+ 	static int count = 0;
+ 	socklen_t slen = sizeof(sin1);
+ 
+-	sockfd = socket(PF_INET, SOCK_DGRAM, 0);
+-	if (sockfd < 0) {
+-		tst_brkm(TBROK, cleanup, "call to socket() failed: %s",
+-			 strerror(errno));
+-		return -1;
+-	}
++	sockfd = SAFE_SOCKET(cleanup, PF_INET, SOCK_DGRAM, 0);
+ 	sin1.sin_family = AF_INET;
+ 	sin1.sin_port = 0; /* pick random free port */
+ 	sin1.sin_addr.s_addr = INADDR_ANY;
+ 	count++;
+-	if (bind(sockfd, (struct sockaddr *)&sin1, sizeof(sin1)) < 0) {
+-		tst_brkm(TBROK, cleanup, "call to bind() failed: %s",
+-			 strerror(errno));
+-		return -1;
+-	}
++	SAFE_BIND(cleanup, sockfd, (struct sockaddr *)&sin1, sizeof(sin1));
+ 	if (getsockname(sockfd, (struct sockaddr *)&sin1, &slen) == -1)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "getsockname failed");
+ 
+diff --git a/testcases/kernel/syscalls/sendfile/sendfile06.c b/testcases/kernel/syscalls/sendfile/sendfile06.c
+index 794519549..b77c193a4 100644
+--- a/testcases/kernel/syscalls/sendfile/sendfile06.c
++++ b/testcases/kernel/syscalls/sendfile/sendfile06.c
+@@ -154,21 +154,12 @@ static int create_server(void)
+ 	int s;
+ 	socklen_t slen = sizeof(sin1);
+ 
+-	sockfd = socket(PF_INET, SOCK_DGRAM, 0);
+-	if (sockfd < 0) {
+-		tst_brkm(TBROK, cleanup, "call to socket() failed: %s",
+-			 strerror(errno));
+-		return -1;
+-	}
++	sockfd = SAFE_SOCKET(cleanup, PF_INET, SOCK_DGRAM, 0);
+ 	sin1.sin_family = AF_INET;
+ 	sin1.sin_port = 0; /* pick random free port */
+ 	sin1.sin_addr.s_addr = INADDR_ANY;
+ 
+-	if (bind(sockfd, (struct sockaddr *)&sin1, sizeof(sin1)) < 0) {
+-		tst_brkm(TBROK, cleanup, "call to bind() failed: %s",
+-			 strerror(errno));
+-		return -1;
+-	}
++	SAFE_BIND(cleanup, sockfd, (struct sockaddr *)&sin1, sizeof(sin1));
+ 	if (getsockname(sockfd, (struct sockaddr *)&sin1, &slen) == -1)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "getsockname failed");
+ 
+diff --git a/testcases/kernel/syscalls/sendmsg/sendmsg01.c b/testcases/kernel/syscalls/sendmsg/sendmsg01.c
+index dcf3ab7e8..364c7e584 100644
+--- a/testcases/kernel/syscalls/sendmsg/sendmsg01.c
++++ b/testcases/kernel/syscalls/sendmsg/sendmsg01.c
+@@ -48,6 +48,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ char *TCID = "sendmsg01";
+ int testno;
+@@ -425,17 +426,8 @@ static pid_t start_server(struct sockaddr_in *sin0, struct sockaddr_un *sun0)
+ 	sin0->sin_addr.s_addr = INADDR_ANY;
+ 
+ 	/* set up inet socket */
+-	sfd = socket(PF_INET, SOCK_STREAM, 0);
+-	if (sfd < 0) {
+-		tst_brkm(TBROK, cleanup, "server socket failed: %s",
+-			 strerror(errno));
+-		return -1;
+-	}
+-	if (bind(sfd, (struct sockaddr *)sin0, sizeof(*sin0)) < 0) {
+-		tst_brkm(TBROK, cleanup, "server bind failed: %s",
+-			 strerror(errno));
+-		return -1;
+-	}
++	sfd = SAFE_SOCKET(cleanup, PF_INET, SOCK_STREAM, 0);
++	SAFE_BIND(cleanup, sfd, (struct sockaddr *)sin0, sizeof(*sin0));
+ 	if (listen(sfd, 10) < 0) {
+ 		tst_brkm(TBROK, cleanup, "server listen failed: %s",
+ 			 strerror(errno));
+@@ -445,12 +437,7 @@ static pid_t start_server(struct sockaddr_in *sin0, struct sockaddr_un *sun0)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "getsockname failed");
+ 
+ 	/* set up UNIX-domain socket */
+-	ufd = socket(PF_UNIX, SOCK_DGRAM, 0);
+-	if (ufd < 0) {
+-		tst_brkm(TBROK, cleanup, "server UD socket failed: %s",
+-			 strerror(errno));
+-		return -1;
+-	}
++	ufd = SAFE_SOCKET(cleanup, PF_UNIX, SOCK_DGRAM, 0);
+ 	if (bind(ufd, (struct sockaddr *)sun0, sizeof(*sun0))) {
+ 		tst_brkm(TBROK, cleanup, "server UD bind failed: %s",
+ 			 strerror(errno));
+@@ -589,11 +576,8 @@ static void cleanup0(void)
+ 
+ static void setup1(void)
+ {
+-	s = socket(tdat[testno].domain, tdat[testno].type, tdat[testno].proto);
+-	if (s < 0) {
+-		tst_brkm(TBROK, cleanup, "socket setup failed: %s",
+-			 strerror(errno));
+-	}
++	s = SAFE_SOCKET(cleanup, tdat[testno].domain, tdat[testno].type,
++			tdat[testno].proto);
+ 	if (tdat[testno].type == SOCK_STREAM &&
+ 	    connect(s, (struct sockaddr *)tdat[testno].to,
+ 		    tdat[testno].tolen) < 0) {
+@@ -618,11 +602,8 @@ static void setup2(void)
+ 
+ static void setup3(void)
+ {
+-	s = socket(tdat[testno].domain, tdat[testno].type, tdat[testno].proto);
+-	if (s < 0) {
+-		tst_brkm(TBROK, cleanup, "socket setup failed: %s",
+-			 strerror(errno));
+-	}
++	s = SAFE_SOCKET(cleanup, tdat[testno].domain, tdat[testno].type,
++			tdat[testno].proto);
+ }
+ 
+ static char tmpfilename[1024];
+@@ -659,11 +640,8 @@ static void cleanup4(void)
+ 
+ static void setup5(void)
+ {
+-	s = socket(tdat[testno].domain, tdat[testno].type, tdat[testno].proto);
+-	if (s < 0) {
+-		tst_brkm(TBROK, cleanup, "socket setup failed: %s",
+-			 strerror(errno));
+-	}
++	s = SAFE_SOCKET(cleanup, tdat[testno].domain, tdat[testno].type,
++			tdat[testno].proto);
+ 
+ 	if (connect(s, (struct sockaddr *)&sin1, sizeof(sin1)) < 0)
+ 		tst_brkm(TBROK, cleanup, "connect failed: %s", strerror(errno));
+diff --git a/testcases/kernel/syscalls/sendto/sendto01.c b/testcases/kernel/syscalls/sendto/sendto01.c
+index ec0766197..7753a4ffb 100644
+--- a/testcases/kernel/syscalls/sendto/sendto01.c
++++ b/testcases/kernel/syscalls/sendto/sendto01.c
+@@ -41,6 +41,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ char *TCID = "sendto01";
+ int testno;
+@@ -239,19 +240,9 @@ static pid_t start_server(struct sockaddr_in *sin0)
+ 	sin0->sin_port = 0; /* pick random free port */
+ 	sin0->sin_addr.s_addr = INADDR_ANY;
+ 
+-	sfd = socket(PF_INET, SOCK_STREAM, 0);
+-	if (sfd < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server socket failed");
+-		return -1;
+-	}
+-	if (bind(sfd, (struct sockaddr *)sin0, sizeof(*sin0)) < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server bind failed");
+-		return -1;
+-	}
+-	if (listen(sfd, 10) < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "server listen failed");
+-		return -1;
+-	}
++	sfd = SAFE_SOCKET(cleanup, PF_INET, SOCK_STREAM, 0);
++	SAFE_BIND(cleanup, sfd, (struct sockaddr *)sin0, sizeof(*sin0));
++	SAFE_LISTEN(cleanup, sfd, 10);
+ 	if (getsockname(sfd, (struct sockaddr *)sin0, &slen) == -1)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "getsockname failed");
+ 
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt01.c b/testcases/kernel/syscalls/setsockopt/setsockopt01.c
+index f25694a96..743c6be14 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt01.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt01.c
+@@ -54,6 +54,7 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ char *TCID = "setsockopt01";
+ int testno;
+@@ -200,15 +201,9 @@ void cleanup0(void)
+ 
+ void setup1(void)
+ {
+-	s = socket(tdat[testno].domain, tdat[testno].type, tdat[testno].proto);
+-	if (s < 0) {
+-		tst_brkm(TBROK, cleanup, "socket setup failed for setsockopt:"
+-			 " %s", strerror(errno));
+-	}
+-	if (bind(s, (struct sockaddr *)&sin0, sizeof(sin0)) < 0) {
+-		tst_brkm(TBROK, cleanup, "socket bind failed for setsockopt:"
+-			 " %s", strerror(errno));
+-	}
++	s = SAFE_SOCKET(cleanup, tdat[testno].domain, tdat[testno].type,
++			tdat[testno].proto);
++	SAFE_BIND(cleanup, s, (struct sockaddr *)&sin0, sizeof(sin0));
+ }
+ 
+ void cleanup1(void)
+diff --git a/testcases/kernel/syscalls/sockioctl/sockioctl01.c b/testcases/kernel/syscalls/sockioctl/sockioctl01.c
+index 50bdc935a..096f138a9 100644
+--- a/testcases/kernel/syscalls/sockioctl/sockioctl01.c
++++ b/testcases/kernel/syscalls/sockioctl/sockioctl01.c
+@@ -40,6 +40,7 @@
+ #include <net/if.h>
+ 
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ char *TCID = "sockioctl01";
+ int testno;
+@@ -204,15 +205,9 @@ static void cleanup0(void)
+ 
+ static void setup1(void)
+ {
+-	s = socket(tdat[testno].domain, tdat[testno].type, tdat[testno].proto);
+-	if (s < 0) {
+-		tst_brkm(TBROK, cleanup, "socket setup failed: %s",
+-			 strerror(errno));
+-	}
+-	if (bind(s, (struct sockaddr *)&sin0, sizeof(sin0)) < 0) {
+-		tst_brkm(TBROK, cleanup, "socket bind failed for: %s",
+-			 strerror(errno));
+-	}
++	s = SAFE_SOCKET(cleanup, tdat[testno].domain, tdat[testno].type,
++			tdat[testno].proto);
++	SAFE_BIND(cleanup, s, (struct sockaddr *)&sin0, sizeof(sin0));
+ 	sinlen = sizeof(fsin1);
+ 
+ 	if (strncmp(tdat[testno].desc, "ATMARK on UDP", 14) == 0) {
+@@ -223,11 +218,8 @@ static void setup1(void)
+ 
+ static void setup2(void)
+ {
+-	s = socket(tdat[testno].domain, tdat[testno].type, tdat[testno].proto);
+-	if (s < 0) {
+-		tst_brkm(TBROK, cleanup, "socket setup failed: %s",
+-			 strerror(errno));
+-	}
++	s = SAFE_SOCKET(cleanup, tdat[testno].domain, tdat[testno].type,
++			tdat[testno].proto);
+ 	ifc.ifc_len = sizeof(buf);
+ 	ifc.ifc_buf = buf;
+ }
+-- 
+2.14.1
+
