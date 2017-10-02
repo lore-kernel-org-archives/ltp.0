@@ -1,45 +1,50 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon,  2 Oct 2017 11:19:49 +0200
-Subject: [LTP] [RFC] [PATCH] lib/tst_test: Do TBROK on unexpected arguments.
-Message-ID: <20171002091949.21900-1-chrubis@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon,  2 Oct 2017 11:44:03 +0200
+Subject: [LTP] [PATCH 1/1] uClibc-ng has no profil() support
+Message-ID: <20171002094403.25417-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The argument parsing code in the test library ignored positional arguments and
-that lead to:
+From: Erico Nunes <nunes.erico@gmail.com>
 
-commit 8501feeb89e8a47e7feacd80179d852c3810249c
-Author: Sandeep Patil <sspatil@google.com>
-Date:   Fri Sep 22 15:59:41 2017 -0700
+Patch taken from buildroot project (thanks!).
 
-    mm: mmapstress04: Remove arguments passed to the test.
-
-Which removed leftover arguments from the testcase much later after the test
-was rewritten. The correct behavior for the library is to issue TBROK on
-unexpected command line parameters.
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Waldemar Brodkorb <wbx@openadk.org>
+Signed-off-by: Erico Nunes <nunes.erico@gmail.com>
 ---
- lib/tst_test.c | 3 +++
- 1 file changed, 3 insertions(+)
+I have rewritting to new API and use TST_TEST_TCONF() in my TODO list.
+---
+ testcases/kernel/syscalls/profil/profil01.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index a627242a6..26414e31c 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -491,6 +491,9 @@ static void parse_opts(int argc, char *argv[])
- 			parse_topt(topts_len, opt, optarg);
- 		}
- 	}
-+
-+	if (optind < argc)
-+		tst_brk(TBROK, "Unexpected argument(s) '%s'...", argv[optind]);
- }
+diff --git a/testcases/kernel/syscalls/profil/profil01.c b/testcases/kernel/syscalls/profil/profil01.c
+index 2fc47aaf5..f8afd57bf 100644
+--- a/testcases/kernel/syscalls/profil/profil01.c
++++ b/testcases/kernel/syscalls/profil/profil01.c
+@@ -37,6 +37,9 @@
+ #define PROFIL_BUFLEN (32*1024)
  
- int tst_parse_int(const char *str, int *val, int min, int max)
+ char *TCID = "profil01";
++
++#if !defined(__UCLIBC__)
++
+ int TST_TOTAL = 1;
+ 
+ static volatile sig_atomic_t profil_done;
+@@ -124,3 +127,9 @@ int main(int ac, char *av[])
+ 
+ 	tst_exit();
+ }
++#else /* systems that dont support profil */
++int main(void)
++{
++        tst_brkm(TCONF, NULL, "system doesn't have profil support");
++}
++#endif
 -- 
-2.13.5
+2.14.1
 
