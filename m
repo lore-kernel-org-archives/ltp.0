@@ -1,57 +1,45 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Sat, 30 Sep 2017 01:15:32 +0200
-Subject: [LTP] [PATCH 1/1] syscalls, lib: Use SAFE_{BIND, LISTEN,
-	SOCKET} macros
-In-Reply-To: <20170929231036.32262-1-pvorel@suse.cz>
-References: <20170929231036.32262-1-pvorel@suse.cz>
-Message-ID: <20170929231532.mrzjj26w5nxrj7q2@x230>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon,  2 Oct 2017 11:19:49 +0200
+Subject: [LTP] [RFC] [PATCH] lib/tst_test: Do TBROK on unexpected arguments.
+Message-ID: <20171002091949.21900-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> instead of tst_brk{,m}(TBROK, ...)
+The argument parsing code in the test library ignored positional arguments and
+that lead to:
 
-> Patch was made thanks to Coccinelle.
+commit 8501feeb89e8a47e7feacd80179d852c3810249c
+Author: Sandeep Patil <sspatil@google.com>
+Date:   Fri Sep 22 15:59:41 2017 -0700
 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
-Please ignore second sign.
+    mm: mmapstress04: Remove arguments passed to the test.
 
-<snip>
+Which removed leftover arguments from the testcase much later after the test
+was rewritten. The correct behavior for the library is to issue TBROK on
+unexpected command line parameters.
 
-> diff --git a/lib/tst_net.c b/lib/tst_net.c
-> index f842e94a6..326b92e6f 100644
-> --- a/lib/tst_net.c
-> +++ b/lib/tst_net.c
-> @@ -25,6 +25,7 @@
->  #include <netinet/in.h>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ lib/tst_test.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
->  #include "test.h"
-> +#include "safe_macros.h"
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index a627242a6..26414e31c 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -491,6 +491,9 @@ static void parse_opts(int argc, char *argv[])
+ 			parse_topt(topts_len, opt, optarg);
+ 		}
+ 	}
++
++	if (optind < argc)
++		tst_brk(TBROK, "Unexpected argument(s) '%s'...", argv[optind]);
+ }
+ 
+ int tst_parse_int(const char *str, int *val, int min, int max)
+-- 
+2.13.5
 
->  unsigned short tst_get_unused_port(void (cleanup_fn)(void),
->  	unsigned short family, int type)
-> @@ -57,16 +58,9 @@ unsigned short tst_get_unused_port(void (cleanup_fn)(void),
->  		return -1;
->  	}
-
-> -	sock = socket(addr->sa_family, type, 0);
-> -	if (sock < 0) {
-> -		tst_brkm(TBROK | TERRNO, cleanup_fn, "socket failed");
-> -		return -1;
-> -	}
-> +	sock = SAFE_SOCKET(cleanup_fn, addr->sa_family, type, 0);
-
-> -	if (bind(sock, addr, slen) < 0) {
-> -		tst_brkm(TBROK | TERRNO, cleanup_fn, "bind failed");
-> -		return -1;
-> -	}
-> +	SAFE_BIND(cleanup_fn, sock, addr, slen);
-I suppose tst_brkm(TBROK, ...) always exit testing, so we can have SAFE_* macros even here
-in lib.
-
-
-Kind regards,
-Petr
