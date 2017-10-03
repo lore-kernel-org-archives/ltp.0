@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue,  3 Oct 2017 16:20:05 +0200
-Subject: [LTP] [COMMITTED] [PATCH 32/40] Make use of SAFE_LSEEK()
+Date: Tue,  3 Oct 2017 16:20:06 +0200
+Subject: [LTP] [COMMITTED] [PATCH 33/40] Make use of SAFE_GETRLIMIT()
 In-Reply-To: <20171003142013.25230-1-chrubis@suse.cz>
 References: <20171003142013.25230-1-chrubis@suse.cz>
-Message-ID: <20171003142013.25230-32-chrubis@suse.cz>
+Message-ID: <20171003142013.25230-33-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,88 +12,79 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/fcntl/fcntl14.c   | 4 ++--
- testcases/kernel/syscalls/munmap/munmap01.c | 6 ++----
- testcases/kernel/syscalls/munmap/munmap02.c | 5 +----
- testcases/kernel/syscalls/readv/readv02.c   | 4 +---
- 4 files changed, 6 insertions(+), 13 deletions(-)
+ testcases/kernel/syscalls/brk/brk01.c             | 5 ++---
+ testcases/kernel/syscalls/mincore/mincore01.c     | 5 +----
+ testcases/kernel/syscalls/msync/msync03.c         | 3 +--
+ testcases/kernel/syscalls/setrlimit/setrlimit01.c | 3 +--
+ 4 files changed, 5 insertions(+), 11 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl14.c b/testcases/kernel/syscalls/fcntl/fcntl14.c
-index 179908433..5f99dc21e 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl14.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl14.c
-@@ -48,6 +48,7 @@
- #include <sys/wait.h>
+diff --git a/testcases/kernel/syscalls/brk/brk01.c b/testcases/kernel/syscalls/brk/brk01.c
+index 775bc15fe..9a364318c 100644
+--- a/testcases/kernel/syscalls/brk/brk01.c
++++ b/testcases/kernel/syscalls/brk/brk01.c
+@@ -43,6 +43,7 @@
  #include <inttypes.h>
- #include "test.h"
-+#include "safe_macros.h"
- 
- #define SKIP 0x0c00
- #if SKIP == F_RDLCK || SKIP== F_WRLCK
-@@ -786,8 +787,7 @@ void run_test(int file_flag, int file_mode, int seek, int start, int end)
- 			tst_brkm(TBROK, cleanup, "write() failed");
- 
- 		if (seek) {
--			if (lseek(fd, seek, 0) < 0)
--				tst_brkm(TBROK, cleanup, "lseek() failed");
-+			SAFE_LSEEK(cleanup, fd, seek, 0);
- 		}
- 
- 		thiscase = &testcases[test];
-diff --git a/testcases/kernel/syscalls/munmap/munmap01.c b/testcases/kernel/syscalls/munmap/munmap01.c
-index 62dbaffbc..2a5cfc90d 100644
---- a/testcases/kernel/syscalls/munmap/munmap01.c
-+++ b/testcases/kernel/syscalls/munmap/munmap01.c
-@@ -75,6 +75,7 @@
- #include <sys/mman.h>
  
  #include "test.h"
 +#include "safe_macros.h"
  
- #define TEMPFILE	"mmapfile"
+ #ifndef BSIZE
+ #define BSIZE  BBSIZE
+@@ -159,9 +160,7 @@ void setup(void)
+ 	/*if ((ulim_sz=ulimit(3,0)) == -1)
+ 	   tst_brkm(TBROK|TERRNO, cleanup, "ulimit(3,0) failed"); */
  
-@@ -181,10 +182,7 @@ void setup(void)
- 	 * move the file pointer to maplength position from the beginning
- 	 * of the file.
- 	 */
--	if (lseek(fildes, map_len, SEEK_SET) == -1) {
--		tst_brkm(TBROK, cleanup, "lseek() fails on %s, errno=%d : %s",
--			 TEMPFILE, errno, strerror(errno));
--	}
-+	SAFE_LSEEK(cleanup, fildes, map_len, SEEK_SET);
+-	if (getrlimit(RLIMIT_DATA, &lim) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "getrlimit(RLIMIT_DATA,%p) failed", &lim);
++	SAFE_GETRLIMIT(cleanup, RLIMIT_DATA, &lim);
+ 	ulim_sz = lim.rlim_cur;
  
- 	/* Write one byte into temporary file */
- 	if (write(fildes, "a", 1) != 1) {
-diff --git a/testcases/kernel/syscalls/munmap/munmap02.c b/testcases/kernel/syscalls/munmap/munmap02.c
-index a85c079c3..b43250512 100644
---- a/testcases/kernel/syscalls/munmap/munmap02.c
-+++ b/testcases/kernel/syscalls/munmap/munmap02.c
-@@ -186,10 +186,7 @@ void setup(void)
- 	 * move the file pointer to maplength position from the beginning
- 	 * of the file.
- 	 */
--	if (lseek(fildes, map_len, SEEK_SET) == -1) {
--		tst_brkm(TBROK, cleanup, "lseek() fails on %s, errno=%d : %s",
--			 TEMPFILE, errno, strerror(errno));
--	}
-+	SAFE_LSEEK(cleanup, fildes, map_len, SEEK_SET);
- 
- 	/* Write one byte into temporary file */
- 	if (write(fildes, "a", 1) != 1) {
-diff --git a/testcases/kernel/syscalls/readv/readv02.c b/testcases/kernel/syscalls/readv/readv02.c
-index be67c4ece..aa40e2c7d 100644
---- a/testcases/kernel/syscalls/readv/readv02.c
-+++ b/testcases/kernel/syscalls/readv/readv02.c
-@@ -279,8 +279,6 @@ int fill_mem(char *c_ptr, int c1, int c2)
- 
- long l_seek(int fdesc, long offset, int whence)
+ 	/*
+diff --git a/testcases/kernel/syscalls/mincore/mincore01.c b/testcases/kernel/syscalls/mincore/mincore01.c
+index fa426d163..1632c72ab 100644
+--- a/testcases/kernel/syscalls/mincore/mincore01.c
++++ b/testcases/kernel/syscalls/mincore/mincore01.c
+@@ -140,10 +140,7 @@ static void setup4(struct test_case_t *tc)
  {
--	if (lseek(fdesc, offset, whence) < 0) {
--		tst_brkm(TBROK, cleanup, "lseek Failed : errno = %d", errno);
+ 	struct rlimit as_lim;
+ 
+-	if (getrlimit(RLIMIT_AS, &as_lim) == -1) {
+-		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "getrlimit(RLIMIT_AS) failed");
 -	}
-+	SAFE_LSEEK(cleanup, fdesc, offset, whence);
- 	return 0;
- }
++	SAFE_GETRLIMIT(cleanup, RLIMIT_AS, &as_lim);
+ 
+ 	tc->addr = global_pointer;
+ 	tc->len = as_lim.rlim_cur - (rlim_t)global_pointer + pagesize;
+diff --git a/testcases/kernel/syscalls/msync/msync03.c b/testcases/kernel/syscalls/msync/msync03.c
+index 8bd35be0d..2e072ca92 100644
+--- a/testcases/kernel/syscalls/msync/msync03.c
++++ b/testcases/kernel/syscalls/msync/msync03.c
+@@ -132,8 +132,7 @@ static void setup(void)
+ 	addr2 = addr1 + 1;
+ 
+ 	/* addr3 is outside the address space of the process */
+-	if (getrlimit(RLIMIT_DATA, &rl) < 0)
+-		tst_brkm(TBROK | TERRNO, NULL, "getrlimit failed");
++	SAFE_GETRLIMIT(NULL, RLIMIT_DATA, &rl);
+ 	addr3 = (char *)rl.rlim_max;
+ 
+ #if !defined(UCLINUX)
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit01.c b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+index 05b4cf948..f66f99553 100644
+--- a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+@@ -194,8 +194,7 @@ static void test2(void)
+  */
+ static void test3(void)
+ {
+-	if (getrlimit(RLIMIT_NPROC, &save_rlim) < 0)
+-		tst_brkm(TBROK, cleanup, "getrlimit failed, errno: %d", errno);
++	SAFE_GETRLIMIT(cleanup, RLIMIT_NPROC, &save_rlim);
+ 
+ 	rlim.rlim_cur = 10;
+ 	rlim.rlim_max = 10;
 -- 
 2.13.5
 
