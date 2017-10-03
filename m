@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue,  3 Oct 2017 16:19:43 +0200
-Subject: [LTP] [COMMITTED] [PATCH 10/40] Make use of SAFE_SETUID()
+Date: Tue,  3 Oct 2017 16:19:38 +0200
+Subject: [LTP] [COMMITTED] [PATCH 05/40] Make use of SAFE_MUNMAP()
 In-Reply-To: <20171003142013.25230-1-chrubis@suse.cz>
 References: <20171003142013.25230-1-chrubis@suse.cz>
-Message-ID: <20171003142013.25230-10-chrubis@suse.cz>
+Message-ID: <20171003142013.25230-5-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,272 +12,203 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c          | 3 +--
- testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c        | 3 +--
- testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c        | 3 +--
- testcases/kernel/syscalls/chmod/chmod03.c                     | 4 +---
- testcases/kernel/syscalls/chroot/chroot04.c                   | 4 +---
- testcases/kernel/syscalls/cma/process_vm01.c                  | 4 +---
- testcases/kernel/syscalls/fstat/fstat05.c                     | 4 +---
- testcases/kernel/syscalls/get_robust_list/get_robust_list01.c | 4 ++--
- testcases/kernel/syscalls/migrate_pages/migrate_pages01.c     | 4 +---
- testcases/kernel/syscalls/open/open08.c                       | 6 ++----
- testcases/kernel/syscalls/setregid/setregid02.c               | 6 +-----
- testcases/kernel/syscalls/setresgid/setresgid03.c             | 7 ++-----
- testcases/kernel/syscalls/setreuid/setreuid03.c               | 4 ++--
- testcases/kernel/syscalls/setreuid/setreuid06.c               | 5 ++---
- 14 files changed, 19 insertions(+), 42 deletions(-)
+ testcases/kernel/mem/mtest06/mmap1.c                      | 4 ++--
+ testcases/kernel/mem/vma/vma01.c                          | 4 ++--
+ testcases/kernel/syscalls/cma/process_vm01.c              | 3 +--
+ testcases/kernel/syscalls/migrate_pages/migrate_pages01.c | 3 +--
+ testcases/kernel/syscalls/mlock/mlock04.c                 | 4 ++--
+ testcases/kernel/syscalls/mprotect/mprotect03.c           | 4 +---
+ testcases/kernel/syscalls/mremap/mremap05.c               | 4 ++--
+ testcases/kernel/syscalls/munmap/munmap02.c               | 5 +----
+ testcases/kernel/syscalls/readahead/readahead02.c         | 3 +--
+ testcases/kernel/syscalls/sendfile/sendfile04.c           | 6 +++---
+ 10 files changed, 16 insertions(+), 24 deletions(-)
 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
-index f628710ae..960bec184 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
-@@ -66,8 +66,7 @@ static void verify_hugeshmat(void)
+diff --git a/testcases/kernel/mem/mtest06/mmap1.c b/testcases/kernel/mem/mtest06/mmap1.c
+index f3eae9994..8894b0dbf 100644
+--- a/testcases/kernel/mem/mtest06/mmap1.c
++++ b/testcases/kernel/mem/mtest06/mmap1.c
+@@ -53,6 +53,7 @@
+ #include <signal.h>
+ #include <string.h>
+ #include "test.h"
++#include "safe_macros.h"
  
- 	switch (pid = SAFE_FORK()) {
- 	case 0:
--		if (setuid(ltp_uid) == -1)
--			tst_brk(TBROK | TERRNO, "setuid");
-+		SAFE_SETUID(ltp_uid);
+ #define DISTANT_MMAP_SIZE (64*1024*1024)
+ #define OPT_MISSING(prog, opt) do { \
+@@ -347,8 +348,7 @@ int main(int argc, char **argv)
+ 		MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+ 	if (distant_area == (void *)-1)
+ 		tst_brkm(TBROK | TERRNO, NULL, "distant_area: mmap()");
+-	if (munmap(distant_area, (size_t) DISTANT_MMAP_SIZE) == -1)
+-		tst_brkm(TBROK | TERRNO, NULL, "distant_area: munmap()");
++	SAFE_MUNMAP(NULL, distant_area, (size_t)DISTANT_MMAP_SIZE);
+ 	distant_area += DISTANT_MMAP_SIZE / 2;
  
- 		addr = shmat(shm_id_1, NULL, 0);
- 		if (addr != (void *)-1) {
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
-index 19df79f48..f58946fa0 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
-@@ -85,8 +85,7 @@ static void test_hugeshmctl(void)
- 	switch (pid = SAFE_FORK()) {
- 	case 0:
- 		/* set the user ID of the child to the non root user */
--		if (setuid(ltp_uid) == -1)
--			tst_brk(TBROK | TERRNO, "setuid");
-+		SAFE_SETUID(ltp_uid);
- 		do_child();
- 		exit(0);
- 	default:
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
-index b8aee0774..22138e354 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
-@@ -52,8 +52,7 @@ static void test_hugeshmget(void)
- 		tst_brk(TBROK | TERRNO, "fork");
- 	case 0:
- 		/* set the user ID of the child to the non root user */
--		if (setuid(ltp_uid) == -1)
--			tst_brk(TBROK | TERRNO, "setuid");
-+		SAFE_SETUID(ltp_uid);
- 		do_child();
- 		exit(0);
- 	default:
-diff --git a/testcases/kernel/syscalls/chmod/chmod03.c b/testcases/kernel/syscalls/chmod/chmod03.c
-index 1ea242396..f53e437e4 100644
---- a/testcases/kernel/syscalls/chmod/chmod03.c
-+++ b/testcases/kernel/syscalls/chmod/chmod03.c
-@@ -149,9 +149,7 @@ void setup(void)
- 	ltpuser = getpwnam(nobody_uid);
- 	if (ltpuser == NULL)
- 		tst_brkm(TBROK | TERRNO, NULL, "getpwnam failed");
--	if (setuid(ltpuser->pw_uid) == -1)
--		tst_brkm(TBROK | TERRNO, NULL, "setuid(%u) failed",
--			 ltpuser->pw_uid);
-+	SAFE_SETUID(NULL, ltpuser->pw_uid);
+ 	if (verbose_print)
+diff --git a/testcases/kernel/mem/vma/vma01.c b/testcases/kernel/mem/vma/vma01.c
+index f800ffaf8..bafbfff46 100644
+--- a/testcases/kernel/mem/vma/vma01.c
++++ b/testcases/kernel/mem/vma/vma01.c
+@@ -51,6 +51,7 @@
+ #include <string.h>
  
- 	TEST_PAUSE;
+ #include "test.h"
++#include "safe_macros.h"
  
-diff --git a/testcases/kernel/syscalls/chroot/chroot04.c b/testcases/kernel/syscalls/chroot/chroot04.c
-index 4bbdcd231..69fd213c8 100644
---- a/testcases/kernel/syscalls/chroot/chroot04.c
-+++ b/testcases/kernel/syscalls/chroot/chroot04.c
-@@ -126,9 +126,7 @@ void setup(void)
- void cleanup(void)
- {
- 	/* reset the process ID to the saved ID (root) */
--	if (setuid(0) == -1) {
--		tst_brkm(TBROK | TERRNO, NULL, "setuid(0) failed");
--	}
-+	SAFE_SETUID(NULL, 0);
- 	if (rmdir(TEST_TMPDIR) != 0) {
- 		tst_brkm(TFAIL | TERRNO, NULL, "rmdir(%s) failed", TEST_TMPDIR);
- 	}
+ #define MAPS_FILE "/proc/self/maps"
+ 
+@@ -155,8 +156,7 @@ static void create_bighole(void)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "mmap");
+ 	memset(t, 'a', ps);
+ 	p = t + 3 * ps;
+-	if (munmap(t, 9 * ps) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "munmap");
++	SAFE_MUNMAP(cleanup, t, 9 * ps);
+ }
+ 
+ static void *get_end_addr(void *addr_s)
 diff --git a/testcases/kernel/syscalls/cma/process_vm01.c b/testcases/kernel/syscalls/cma/process_vm01.c
-index 8ae16c41d..16a27e5b0 100644
+index 110db6e76..8ae16c41d 100644
 --- a/testcases/kernel/syscalls/cma/process_vm01.c
 +++ b/testcases/kernel/syscalls/cma/process_vm01.c
-@@ -349,9 +349,7 @@ static void cma_test_invalid_perm(void)
- 		ltpuser = getpwnam(nobody_uid);
- 		if (ltpuser == NULL)
- 			tst_brkm(TBROK | TERRNO, NULL, "getpwnam failed");
--		if (setuid(ltpuser->pw_uid) == -1)
--			tst_brkm(TBROK | TERRNO, NULL,
--				 "setuid(%u) failed", ltpuser->pw_uid);
-+		SAFE_SETUID(NULL, ltpuser->pw_uid);
+@@ -396,8 +396,7 @@ static void cma_test_invalid_protection(void)
+ 	cma_check_ret(-1, TEST_RETURN);
+ 	cma_check_errno(EFAULT);
  
- 		params = cma_alloc_sane_params();
- 		params->pid = parent_pid;
-diff --git a/testcases/kernel/syscalls/fstat/fstat05.c b/testcases/kernel/syscalls/fstat/fstat05.c
-index 69f746c73..29c253f48 100644
---- a/testcases/kernel/syscalls/fstat/fstat05.c
-+++ b/testcases/kernel/syscalls/fstat/fstat05.c
-@@ -206,9 +206,7 @@ void setup(void)
- 		signal(siglist[i], &sighandler);
+-	if (munmap(p, getpagesize()) < 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "munmap");
++	SAFE_MUNMAP(cleanup, p, getpagesize());
  
- 	ltpuser = getpwnam(nobody_uid);
--	if (setuid(ltpuser->pw_uid) == -1)
--		tst_brkm(TBROK | TERRNO, NULL, "setuid(%d) failed",
--			 ltpuser->pw_uid);
-+	SAFE_SETUID(NULL, ltpuser->pw_uid);
- 
- 	tst_tmpdir();
- 
-diff --git a/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c b/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
-index 6aa776f6a..222dc6f2e 100644
---- a/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
-+++ b/testcases/kernel/syscalls/get_robust_list/get_robust_list01.c
-@@ -51,6 +51,7 @@
- #include <stdlib.h>
- 
- #include "test.h"
-+#include "safe_macros.h"
- #include "lapi/syscalls.h"
- 
- char *TCID = "get_robust_list01";
-@@ -156,8 +157,7 @@ int main(int argc, char **argv)
- 			tst_resm(TFAIL | TTERRNO,
- 				 "get_robust_list failed unexpectedly");
- 
--		if (setuid(1) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "setuid(1) failed");
-+		SAFE_SETUID(cleanup, 1);
- 
- 		TEST(ltp_syscall(__NR_get_robust_list, 1,
- 				      (struct robust_list_head *)&head,
+ 	cma_free_params(sane_params);
+ }
 diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-index 591ff3365..c68f95d83 100644
+index 88a37219c..591ff3365 100644
 --- a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
 +++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-@@ -182,9 +182,7 @@ static void test_invalid_perm(void)
- 		ltpuser = getpwnam(nobody_uid);
- 		if (ltpuser == NULL)
- 			tst_brkm(TBROK | TERRNO, NULL, "getpwnam failed");
--		if (setuid(ltpuser->pw_uid) == -1)
--			tst_brkm(TBROK | TERRNO, NULL,
--				 "setuid(%u) failed", ltpuser->pw_uid);
-+		SAFE_SETUID(NULL, ltpuser->pw_uid);
- 		TEST(ltp_syscall(__NR_migrate_pages, parent_pid,
- 			     sane_max_node, sane_old_nodes, sane_new_nodes));
- 		ret |= check_ret(-1);
-diff --git a/testcases/kernel/syscalls/open/open08.c b/testcases/kernel/syscalls/open/open08.c
-index 6580b0cff..742771eef 100644
---- a/testcases/kernel/syscalls/open/open08.c
-+++ b/testcases/kernel/syscalls/open/open08.c
-@@ -57,6 +57,7 @@
- #include <signal.h>
- #include <pwd.h>
+@@ -117,8 +117,7 @@ static void test_invalid_mem(void)
+ 	check_ret(-1);
+ 	check_errno(EFAULT);
+ 
+-	if (munmap(p, getpagesize()) < 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "munmap");
++	SAFE_MUNMAP(cleanup, p, getpagesize());
+ 	tst_resm(TINFO, "test_invalid_mem unmmaped");
+ 	TEST(ltp_syscall(__NR_migrate_pages, 0, sane_max_node, p, p));
+ 	check_ret(-1);
+diff --git a/testcases/kernel/syscalls/mlock/mlock04.c b/testcases/kernel/syscalls/mlock/mlock04.c
+index a97bf491c..d1f3c9d0d 100644
+--- a/testcases/kernel/syscalls/mlock/mlock04.c
++++ b/testcases/kernel/syscalls/mlock/mlock04.c
+@@ -31,6 +31,7 @@
+  * 02110-1301, USA.
+  */
  #include "test.h"
 +#include "safe_macros.h"
+ #include "config.h"
  
- static void setup(void);
- static void cleanup(void);
-@@ -143,10 +144,7 @@ static void setup(void)
- 	if (setgid(ltpuser->pw_gid) == -1) {
- 		tst_brkm(TBROK | TERRNO, NULL, "setgid(%d) failed",
- 			 ltpuser->pw_gid);
--	} else if (setuid(ltpuser->pw_uid) == -1) {
--		tst_brkm(TBROK | TERRNO, NULL, "setuid(%d) failed",
--			 ltpuser->pw_uid);
--	}
-+	} else SAFE_SETUID(NULL, ltpuser->pw_uid);
+ char *TCID = "mlock04";
+@@ -72,8 +73,7 @@ int main(void)
+ 		if (munlock(buf, file_len) == -1)
+ 			tst_brkm(TBROK | TERRNO, cleanup, "munlock");
  
- 	tst_tmpdir();
+-		if (munmap(buf, file_len) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "munmap");
++		SAFE_MUNMAP(cleanup, buf, file_len);
+ 	}
  
-diff --git a/testcases/kernel/syscalls/setregid/setregid02.c b/testcases/kernel/syscalls/setregid/setregid02.c
-index 0eb3c408c..21d1c823a 100644
---- a/testcases/kernel/syscalls/setregid/setregid02.c
-+++ b/testcases/kernel/syscalls/setregid/setregid02.c
-@@ -137,11 +137,7 @@ static void setup(void)
- 		tst_brkm(TBROK, NULL, "getpwnam(\"nobody\") failed");
+ 	tst_resm(TPASS, "test succeeded.");
+diff --git a/testcases/kernel/syscalls/mprotect/mprotect03.c b/testcases/kernel/syscalls/mprotect/mprotect03.c
+index 099afb6bc..944b45e87 100644
+--- a/testcases/kernel/syscalls/mprotect/mprotect03.c
++++ b/testcases/kernel/syscalls/mprotect/mprotect03.c
+@@ -120,9 +120,7 @@ int main(int ac, char **av)
+ 		}
  
- 	SAFE_SETGID(NULL, ltpuser->pw_gid);
--	if (setuid(ltpuser->pw_uid) == -1) {
--		tst_brkm(TBROK | TERRNO, NULL,
--			 "setuid failed to to set the effective uid to %d",
--			 ltpuser->pw_uid);
--	}
-+	SAFE_SETUID(NULL, ltpuser->pw_uid);
- 
- 	root = get_group_by_name("root");
- 	ltpgroup = get_group_by_gid(ltpuser->pw_gid);
-diff --git a/testcases/kernel/syscalls/setresgid/setresgid03.c b/testcases/kernel/syscalls/setresgid/setresgid03.c
-index 199c1b127..b669feef7 100644
---- a/testcases/kernel/syscalls/setresgid/setresgid03.c
-+++ b/testcases/kernel/syscalls/setresgid/setresgid03.c
-@@ -80,6 +80,7 @@
- #include <sys/types.h>
+ 		/* clean up things in case we are looping */
+-		if (munmap(addr, strlen(buf)) == -1) {
+-			tst_brkm(TBROK, cleanup, "munamp failed");
+-		}
++		SAFE_MUNMAP(cleanup, addr, strlen(buf));
+ 		SAFE_CLOSE(cleanup, fd);
+ 		if (unlink(file1) == -1) {
+ 			tst_brkm(TBROK, cleanup, "unlink failed");
+diff --git a/testcases/kernel/syscalls/mremap/mremap05.c b/testcases/kernel/syscalls/mremap/mremap05.c
+index 079f281e5..d7e4e63e7 100644
+--- a/testcases/kernel/syscalls/mremap/mremap05.c
++++ b/testcases/kernel/syscalls/mremap/mremap05.c
+@@ -41,6 +41,7 @@
+ #include <errno.h>
  #include <unistd.h>
  #include "test.h"
 +#include "safe_macros.h"
- #include "compat_16.h"
  
- #define EXP_RET_VAL	-1
-@@ -217,11 +218,7 @@ void setup(void)
- 			 " setting real/effective/saved gid");
- 	}
- 	/* Set euid to nobody */
--	if (setuid(nobody.pw_uid) == -1) {
--		tst_brkm(TBROK, NULL, "setuid failed to "
--			 "to set the effective uid to nodody");
--
+ char *TCID = "mremap05";
+ 
+@@ -119,8 +120,7 @@ static int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
+ 
+ static void free_test_area(void *p, int size)
+ {
+-	if (munmap(p, size) < 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "free_test_area munmap");
++	SAFE_MUNMAP(cleanup, p, size);
+ }
+ 
+ static void *get_test_area(int size, int free_area)
+diff --git a/testcases/kernel/syscalls/munmap/munmap02.c b/testcases/kernel/syscalls/munmap/munmap02.c
+index 3997b445c..a85c079c3 100644
+--- a/testcases/kernel/syscalls/munmap/munmap02.c
++++ b/testcases/kernel/syscalls/munmap/munmap02.c
+@@ -264,10 +264,7 @@ void cleanup(void)
+ 	map_len = map_len - page_sz;
+ 
+ 	/* unmap the portion of the region of the file left unmapped */
+-	if (munmap(addr, map_len) < 0) {
+-		tst_brkm(TBROK, NULL,
+-			 "munmap() fails to unmap portion of mapped region");
 -	}
-+	SAFE_SETUID(NULL, nobody.pw_uid);
- 	/* Pause if that option was specified
- 	 * TEST_PAUSE contains the code to fork the test with the -c option.
- 	 */
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid03.c b/testcases/kernel/syscalls/setreuid/setreuid03.c
-index b62098eb7..ecf30d6ec 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid03.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid03.c
-@@ -28,6 +28,7 @@
- #include <stdlib.h>
++	SAFE_MUNMAP(NULL, addr, map_len);
  
+ 	/* Close the temporary file */
+ 	SAFE_CLOSE(NULL, fildes);
+diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
+index a5b01c756..d21bb9c45 100644
+--- a/testcases/kernel/syscalls/readahead/readahead02.c
++++ b/testcases/kernel/syscalls/readahead/readahead02.c
+@@ -273,8 +273,7 @@ static void read_testfile(int do_readahead, const char *fname, size_t fsize,
+ 	if (!do_readahead)
+ 		*cached = get_cached_size();
+ 
+-	if (munmap(p, fsize) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "munmap failed");
++	SAFE_MUNMAP(cleanup, p, fsize);
+ 
+ 	*read_bytes = get_bytes_read() - read_bytes_start;
+ 	if (gettimeofday(&now, NULL) == -1)
+diff --git a/testcases/kernel/syscalls/sendfile/sendfile04.c b/testcases/kernel/syscalls/sendfile/sendfile04.c
+index 822c4688c..779e7dc70 100644
+--- a/testcases/kernel/syscalls/sendfile/sendfile04.c
++++ b/testcases/kernel/syscalls/sendfile/sendfile04.c
+@@ -57,6 +57,7 @@
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
  #include "test.h"
 +#include "safe_macros.h"
- #include "compat_16.h"
  
- #define FAILED  1
-@@ -169,8 +170,7 @@ static void setup(void)
- 	bin = *(getpwnam("bin"));
- 	UID16_CHECK(bin.pw_uid, setreuid, cleanup);
+ #ifndef OFF_T
+ #define OFF_T off_t
+@@ -119,9 +120,8 @@ void do_sendfile(int prot, int pass_unmapped_buffer)
+ 	}
  
--	if (setuid(nobody.pw_uid) < 0)
--		tst_brkm(TBROK | TERRNO, NULL, "setuid() to nobody failed");
-+	SAFE_SETUID(NULL, nobody.pw_uid);
+ 	if (pass_unmapped_buffer) {
+-		if (munmap(protected_buffer, sizeof(*protected_buffer)) < 0) {
+-			tst_brkm(TBROK, cleanup, "munmap failed: %d", errno);
+-		}
++		SAFE_MUNMAP(cleanup, protected_buffer,
++			    sizeof(*protected_buffer));
+ 	}
  
- 	TEST_PAUSE;
- }
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid06.c b/testcases/kernel/syscalls/setreuid/setreuid06.c
-index 8dbeb2005..22acd996f 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid06.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid06.c
-@@ -33,6 +33,7 @@
- #include <sys/stat.h>
- 
- #include "test.h"
-+#include "safe_macros.h"
- #include "compat_16.h"
- 
- #define INVAL_USER		 (USHRT_MAX-2)
-@@ -84,9 +85,7 @@ static void setup(void)
- 	if (ltpuser == NULL)
- 		tst_brkm(TBROK, NULL, "nobody must be a valid user.");
- 
--	if (setuid(ltpuser->pw_uid) == -1)
--		tst_brkm(TBROK | TERRNO, NULL, "setuid failed to "
--			 "to set the effective uid to %d", ltpuser->pw_uid);
-+	SAFE_SETUID(NULL, ltpuser->pw_uid);
- 
- 	TEST_PAUSE;
- }
+ 	TEST(sendfile(out_fd, in_fd, protected_buffer, sb.st_size));
 -- 
 2.13.5
 
