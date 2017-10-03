@@ -1,24 +1,36 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 3 Oct 2017 16:41:57 +0200
-Subject: [LTP] [RFC PATCH] newlib: Allow sub-tests to be specified in a
- list
-In-Reply-To: <20171003135520.19580-1-rpalethorpe@suse.com>
-References: <20171003135520.19580-1-rpalethorpe@suse.com>
-Message-ID: <20171003144157.GD11692@rei>
+Date: Tue,  3 Oct 2017 17:40:49 +0200
+Subject: [LTP] [COMMITTED] [PATCH 02/13] Make use of SAFE_DUP()
+In-Reply-To: <20171003154100.807-1-chrubis@suse.cz>
+References: <20171003154100.807-1-chrubis@suse.cz>
+Message-ID: <20171003154100.807-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-That is even more complicated than my patch with array:
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/fanotify/fanotify03.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-http://lists.linux.it/pipermail/ltp/2017-July/005132.html
-
-And Jan didn't even liked mine because it adds complexity complexity
-that is uncalled for...
-
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
+index 1ab879843..ea5c02a7b 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify03.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
+@@ -154,10 +154,7 @@ void test01(void)
+ 	int ret, len = 0, i = 0, test_num = 0;
+ 
+ 	if (fd_notify_backup == -1) {
+-		fd_notify_backup = dup(fd_notify);
+-		if (fd_notify_backup < 0)
+-			tst_brk(TBROK | TERRNO,
+-				 "dup(%d) failed", fd_notify);
++		fd_notify_backup = SAFE_DUP(fd_notify);
+ 	}
+ 	run_child();
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.13.5
+
