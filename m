@@ -1,8 +1,8 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 3 Oct 2017 14:31:14 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 3 Oct 2017 14:56:53 +0200
 Subject: [LTP] [PATCH 1/1] syscalls, lib: Use SAFE_{BIND, LISTEN,
  SOCKET} macros
-In-Reply-To: <20171003114349.GA19124@rei>
+In-Reply-To: <20171003123114.4iylsq2c35hh4pmh@dell5510>
 References: <20170929231036.32262-1-pvorel@suse.cz>
  <87bmlpx195.fsf@our.domain.is.not.set>
  <20171002122920.rpurivi6x46duh4c@dell5510>
@@ -11,22 +11,26 @@ References: <20170929231036.32262-1-pvorel@suse.cz>
  <20171002152109.GA3736@rei>
  <20171002153616.k6fkz7fpzh2shzdc@dell5510>
  <20171003114349.GA19124@rei>
-Message-ID: <20171003123114.4iylsq2c35hh4pmh@dell5510>
+ <20171003123114.4iylsq2c35hh4pmh@dell5510>
+Message-ID: <20171003125653.GA11692@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi!
+> > Anyway I got an idea yesterday and implemented a shell script that
+> > generates a spatch based on function name and made it iterate over all
+> > safe macros we have implemented making a git commit for each. The script
+> > is attached for a reference.
+> Really nice solution :-).
+> This script is really worth of adding into LTP (even it requires to check formatting).
 
-> Anyway I got an idea yesterday and implemented a shell script that
-> generates a spatch based on function name and made it iterate over all
-> safe macros we have implemented making a git commit for each. The script
-> is attached for a reference.
-Really nice solution :-).
-This script is really worth of adding into LTP (even it requires to check formatting).
+I will strip the old library parts, then we can add it, maybe we can
+even use it as a commit hook or something to automatically check if
+we could have used a SAFE_MACRO() instead of custom error handling...
 
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
