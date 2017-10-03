@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue,  3 Oct 2017 16:19:38 +0200
-Subject: [LTP] [COMMITTED] [PATCH 05/40] Make use of SAFE_MUNMAP()
+Date: Tue,  3 Oct 2017 16:19:39 +0200
+Subject: [LTP] [COMMITTED] [PATCH 06/40] Make use of SAFE_PIPE()
 In-Reply-To: <20171003142013.25230-1-chrubis@suse.cz>
 References: <20171003142013.25230-1-chrubis@suse.cz>
-Message-ID: <20171003142013.25230-5-chrubis@suse.cz>
+Message-ID: <20171003142013.25230-6-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,203 +12,245 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/mem/mtest06/mmap1.c                      | 4 ++--
- testcases/kernel/mem/vma/vma01.c                          | 4 ++--
- testcases/kernel/syscalls/cma/process_vm01.c              | 3 +--
- testcases/kernel/syscalls/migrate_pages/migrate_pages01.c | 3 +--
- testcases/kernel/syscalls/mlock/mlock04.c                 | 4 ++--
- testcases/kernel/syscalls/mprotect/mprotect03.c           | 4 +---
- testcases/kernel/syscalls/mremap/mremap05.c               | 4 ++--
- testcases/kernel/syscalls/munmap/munmap02.c               | 5 +----
- testcases/kernel/syscalls/readahead/readahead02.c         | 3 +--
- testcases/kernel/syscalls/sendfile/sendfile04.c           | 6 +++---
- 10 files changed, 16 insertions(+), 24 deletions(-)
+ testcases/kernel/containers/sysvipc/shmem_2nstest.c | 7 +++----
+ testcases/kernel/syscalls/close/close01.c           | 5 ++---
+ testcases/kernel/syscalls/cma/process_vm_readv02.c  | 3 +--
+ testcases/kernel/syscalls/cma/process_vm_readv03.c  | 3 +--
+ testcases/kernel/syscalls/cma/process_vm_writev02.c | 3 +--
+ testcases/kernel/syscalls/dup/dup04.c               | 3 +--
+ testcases/kernel/syscalls/dup2/dup204.c             | 3 +--
+ testcases/kernel/syscalls/fsync/fsync03.c           | 5 ++---
+ testcases/kernel/syscalls/pipe/pipe04.c             | 5 ++---
+ testcases/kernel/syscalls/pread/pread02.c           | 5 +----
+ testcases/kernel/syscalls/select/select02.c         | 5 ++---
+ testcases/kernel/syscalls/setrlimit/setrlimit01.c   | 4 ++--
+ 12 files changed, 19 insertions(+), 32 deletions(-)
 
-diff --git a/testcases/kernel/mem/mtest06/mmap1.c b/testcases/kernel/mem/mtest06/mmap1.c
-index f3eae9994..8894b0dbf 100644
---- a/testcases/kernel/mem/mtest06/mmap1.c
-+++ b/testcases/kernel/mem/mtest06/mmap1.c
-@@ -53,6 +53,7 @@
- #include <signal.h>
- #include <string.h>
+diff --git a/testcases/kernel/containers/sysvipc/shmem_2nstest.c b/testcases/kernel/containers/sysvipc/shmem_2nstest.c
+index 49fe19b6f..b172ee07c 100644
+--- a/testcases/kernel/containers/sysvipc/shmem_2nstest.c
++++ b/testcases/kernel/containers/sysvipc/shmem_2nstest.c
+@@ -45,6 +45,7 @@
+ #include <sys/shm.h>
+ #include <libclone.h>
  #include "test.h"
 +#include "safe_macros.h"
+ #include "ipcns_helper.h"
  
- #define DISTANT_MMAP_SIZE (64*1024*1024)
- #define OPT_MISSING(prog, opt) do { \
-@@ -347,8 +348,7 @@ int main(int argc, char **argv)
- 		MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
- 	if (distant_area == (void *)-1)
- 		tst_brkm(TBROK | TERRNO, NULL, "distant_area: mmap()");
--	if (munmap(distant_area, (size_t) DISTANT_MMAP_SIZE) == -1)
--		tst_brkm(TBROK | TERRNO, NULL, "distant_area: munmap()");
-+	SAFE_MUNMAP(NULL, distant_area, (size_t)DISTANT_MMAP_SIZE);
- 	distant_area += DISTANT_MMAP_SIZE / 2;
- 
- 	if (verbose_print)
-diff --git a/testcases/kernel/mem/vma/vma01.c b/testcases/kernel/mem/vma/vma01.c
-index f800ffaf8..bafbfff46 100644
---- a/testcases/kernel/mem/vma/vma01.c
-+++ b/testcases/kernel/mem/vma/vma01.c
-@@ -51,6 +51,7 @@
- #include <string.h>
- 
- #include "test.h"
-+#include "safe_macros.h"
- 
- #define MAPS_FILE "/proc/self/maps"
- 
-@@ -155,8 +156,7 @@ static void create_bighole(void)
- 		tst_brkm(TBROK | TERRNO, cleanup, "mmap");
- 	memset(t, 'a', ps);
- 	p = t + 3 * ps;
--	if (munmap(t, 9 * ps) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "munmap");
-+	SAFE_MUNMAP(cleanup, t, 9 * ps);
- }
- 
- static void *get_end_addr(void *addr_s)
-diff --git a/testcases/kernel/syscalls/cma/process_vm01.c b/testcases/kernel/syscalls/cma/process_vm01.c
-index 110db6e76..8ae16c41d 100644
---- a/testcases/kernel/syscalls/cma/process_vm01.c
-+++ b/testcases/kernel/syscalls/cma/process_vm01.c
-@@ -396,8 +396,7 @@ static void cma_test_invalid_protection(void)
- 	cma_check_ret(-1, TEST_RETURN);
- 	cma_check_errno(EFAULT);
- 
--	if (munmap(p, getpagesize()) < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "munmap");
-+	SAFE_MUNMAP(cleanup, p, getpagesize());
- 
- 	cma_free_params(sane_params);
- }
-diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-index 88a37219c..591ff3365 100644
---- a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-+++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
-@@ -117,8 +117,7 @@ static void test_invalid_mem(void)
- 	check_ret(-1);
- 	check_errno(EFAULT);
- 
--	if (munmap(p, getpagesize()) < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "munmap");
-+	SAFE_MUNMAP(cleanup, p, getpagesize());
- 	tst_resm(TINFO, "test_invalid_mem unmmaped");
- 	TEST(ltp_syscall(__NR_migrate_pages, 0, sane_max_node, p, p));
- 	check_ret(-1);
-diff --git a/testcases/kernel/syscalls/mlock/mlock04.c b/testcases/kernel/syscalls/mlock/mlock04.c
-index a97bf491c..d1f3c9d0d 100644
---- a/testcases/kernel/syscalls/mlock/mlock04.c
-+++ b/testcases/kernel/syscalls/mlock/mlock04.c
-@@ -31,6 +31,7 @@
-  * 02110-1301, USA.
-  */
- #include "test.h"
-+#include "safe_macros.h"
- #include "config.h"
- 
- char *TCID = "mlock04";
-@@ -72,8 +73,7 @@ int main(void)
- 		if (munlock(buf, file_len) == -1)
- 			tst_brkm(TBROK | TERRNO, cleanup, "munlock");
- 
--		if (munmap(buf, file_len) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "munmap");
-+		SAFE_MUNMAP(cleanup, buf, file_len);
+ #define TESTKEY    124426L
+@@ -132,10 +133,8 @@ int main(int argc, char *argv[])
  	}
  
- 	tst_resm(TPASS, "test succeeded.");
-diff --git a/testcases/kernel/syscalls/mprotect/mprotect03.c b/testcases/kernel/syscalls/mprotect/mprotect03.c
-index 099afb6bc..944b45e87 100644
---- a/testcases/kernel/syscalls/mprotect/mprotect03.c
-+++ b/testcases/kernel/syscalls/mprotect/mprotect03.c
-@@ -120,9 +120,7 @@ int main(int ac, char **av)
- 		}
+ 	/* Using PIPE's to sync between containers and Parent */
+-	if (pipe(p1) == -1)
+-		tst_brkm(TBROK | TERRNO, NULL, "pipe1 error");
+-	if (pipe(p2) == -1)
+-		tst_brkm(TBROK | TERRNO, NULL, "pipe2 error");
++	SAFE_PIPE(NULL, p1);
++	SAFE_PIPE(NULL, p2);
  
- 		/* clean up things in case we are looping */
--		if (munmap(addr, strlen(buf)) == -1) {
--			tst_brkm(TBROK, cleanup, "munamp failed");
+ 	if (strcmp(argv[1], "clone") == 0) {
+ 		use_clone = T_CLONE;
+diff --git a/testcases/kernel/syscalls/close/close01.c b/testcases/kernel/syscalls/close/close01.c
+index 7b119ce44..c734ff7d2 100644
+--- a/testcases/kernel/syscalls/close/close01.c
++++ b/testcases/kernel/syscalls/close/close01.c
+@@ -27,6 +27,7 @@
+ #include <fcntl.h>
+ #include <sys/stat.h>
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ void cleanup(void);
+ void setup(void);
+@@ -72,9 +73,7 @@ int main(int ac, char **av)
+ 			tst_brkm(TBROK | TERRNO, cleanup,
+ 				 "can't dup the file des");
+ 
+-		if (pipe(pipefildes) == -1) {
+-			tst_brkm(TBROK | TERRNO, cleanup, "can't open pipe");
 -		}
-+		SAFE_MUNMAP(cleanup, addr, strlen(buf));
- 		SAFE_CLOSE(cleanup, fd);
- 		if (unlink(file1) == -1) {
- 			tst_brkm(TBROK, cleanup, "unlink failed");
-diff --git a/testcases/kernel/syscalls/mremap/mremap05.c b/testcases/kernel/syscalls/mremap/mremap05.c
-index 079f281e5..d7e4e63e7 100644
---- a/testcases/kernel/syscalls/mremap/mremap05.c
-+++ b/testcases/kernel/syscalls/mremap/mremap05.c
-@@ -41,6 +41,7 @@
++		SAFE_PIPE(cleanup, pipefildes);
+ 
+ 		for (i = 0; i < TST_TOTAL; i++) {
+ 
+diff --git a/testcases/kernel/syscalls/cma/process_vm_readv02.c b/testcases/kernel/syscalls/cma/process_vm_readv02.c
+index b7dd9b2e5..6bbfb62b0 100644
+--- a/testcases/kernel/syscalls/cma/process_vm_readv02.c
++++ b/testcases/kernel/syscalls/cma/process_vm_readv02.c
+@@ -56,8 +56,7 @@ int main(int argc, char **argv)
+ 		tst_count = 0;
+ 		len = strlen(tst_string);
+ 
+-		if (pipe(pipe_fd) < 0)
+-			tst_brkm(TBROK | TERRNO, cleanup, "pipe");
++		SAFE_PIPE(cleanup, pipe_fd);
+ 
+ 		/* the start of child_alloc and child_invoke is already
+ 		 * synchronized via pipe */
+diff --git a/testcases/kernel/syscalls/cma/process_vm_readv03.c b/testcases/kernel/syscalls/cma/process_vm_readv03.c
+index 17f0a5dcc..07a72d97d 100644
+--- a/testcases/kernel/syscalls/cma/process_vm_readv03.c
++++ b/testcases/kernel/syscalls/cma/process_vm_readv03.c
+@@ -72,8 +72,7 @@ int main(int argc, char **argv)
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		tst_count = 0;
+ 
+-		if (pipe(pipe_fd) < 0)
+-			tst_brkm(TBROK | TERRNO, cleanup, "pipe");
++		SAFE_PIPE(cleanup, pipe_fd);
+ 
+ 		bufsz_arr = SAFE_MALLOC(cleanup, nr_iovecs * sizeof(int));
+ 		gen_random_arr(bufsz_arr, nr_iovecs);
+diff --git a/testcases/kernel/syscalls/cma/process_vm_writev02.c b/testcases/kernel/syscalls/cma/process_vm_writev02.c
+index 04cf6d149..c681f9f8b 100644
+--- a/testcases/kernel/syscalls/cma/process_vm_writev02.c
++++ b/testcases/kernel/syscalls/cma/process_vm_writev02.c
+@@ -66,8 +66,7 @@ int main(int argc, char **argv)
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		tst_count = 0;
+ 
+-		if (pipe(pipe_fd) < 0)
+-			tst_brkm(TBROK | TERRNO, cleanup, "pipe");
++		SAFE_PIPE(cleanup, pipe_fd);
+ 
+ 		/* the start of child_init_and_verify and child_write is
+ 		 * already synchronized via pipe */
+diff --git a/testcases/kernel/syscalls/dup/dup04.c b/testcases/kernel/syscalls/dup/dup04.c
+index 4abe451c1..1414b2a9e 100644
+--- a/testcases/kernel/syscalls/dup/dup04.c
++++ b/testcases/kernel/syscalls/dup/dup04.c
+@@ -184,8 +184,7 @@ void setup(void)
+ 
+ 	tst_tmpdir();
+ 
+-	if (pipe(fd) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "pipe failed");
++	SAFE_PIPE(cleanup, fd);
+ }
+ 
+ void cleanup(void)
+diff --git a/testcases/kernel/syscalls/dup2/dup204.c b/testcases/kernel/syscalls/dup2/dup204.c
+index ab8de5d08..634bde8f2 100644
+--- a/testcases/kernel/syscalls/dup2/dup204.c
++++ b/testcases/kernel/syscalls/dup2/dup204.c
+@@ -116,8 +116,7 @@ void setup(void)
+ 
+ 	tst_tmpdir();
+ 
+-	if (pipe(fd) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "pipe failed");
++	SAFE_PIPE(cleanup, fd);
+ }
+ 
+ void cleanup(void)
+diff --git a/testcases/kernel/syscalls/fsync/fsync03.c b/testcases/kernel/syscalls/fsync/fsync03.c
+index 87c4e5ab4..60d15f429 100644
+--- a/testcases/kernel/syscalls/fsync/fsync03.c
++++ b/testcases/kernel/syscalls/fsync/fsync03.c
+@@ -47,6 +47,7 @@
+ #include <unistd.h>
  #include <errno.h>
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ void setup(void);
+ void cleanup(void);
+@@ -122,9 +123,7 @@ void setup(void)
+ 	/* make a temporary directory and cd to it */
+ 	tst_tmpdir();
+ 
+-	if (pipe(fd) < 0) {
+-		tst_brkm(TBROK, cleanup, "pipe call failed");
+-	}
++	SAFE_PIPE(cleanup, fd);
+ 
+ 	pfd = fd[1];
+ }
+diff --git a/testcases/kernel/syscalls/pipe/pipe04.c b/testcases/kernel/syscalls/pipe/pipe04.c
+index dc3deade8..b3d255b33 100644
+--- a/testcases/kernel/syscalls/pipe/pipe04.c
++++ b/testcases/kernel/syscalls/pipe/pipe04.c
+@@ -49,6 +49,7 @@
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ char *TCID = "pipe04";
+ int TST_TOTAL = 1;
+@@ -95,9 +96,7 @@ int main(int ac, char **av)
+ 		/* reset tst_count in case we are looping */
+ 		tst_count = 0;
+ 
+-		if (pipe(fildes) == -1)
+-			tst_brkm(TBROK, cleanup, "pipe() failed - errno %d",
+-				 errno);
++		SAFE_PIPE(cleanup, fildes);
+ 
+ 		if ((c1pid = FORK_OR_VFORK()) == -1)
+ 			tst_brkm(TBROK, cleanup, "fork() failed - "
+diff --git a/testcases/kernel/syscalls/pread/pread02.c b/testcases/kernel/syscalls/pread/pread02.c
+index d2da21f6c..aa194f607 100644
+--- a/testcases/kernel/syscalls/pread/pread02.c
++++ b/testcases/kernel/syscalls/pread/pread02.c
+@@ -212,10 +212,7 @@ int no_setup(void)
+ int setup1(void)
+ {
+ 	/* Create a pair of unnamed pipe */
+-	if (pipe(pfd) < 0) {
+-		tst_brkm(TBROK, cleanup, "pipe() failed to create pair of "
+-			 "pipe, error:%d", errno);
+-	}
++	SAFE_PIPE(cleanup, pfd);
+ 
+ 	/* Write known data (0's) of K1 bytes */
+ 	if (write(pfd[1], write_buf[0], K1) != K1) {
+diff --git a/testcases/kernel/syscalls/select/select02.c b/testcases/kernel/syscalls/select/select02.c
+index 3c9742777..7aa0107c0 100644
+--- a/testcases/kernel/syscalls/select/select02.c
++++ b/testcases/kernel/syscalls/select/select02.c
+@@ -47,6 +47,7 @@
+ #include <sys/time.h>
+ 
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ static void setup(void);
+ 
+@@ -104,9 +105,7 @@ static void setup(void)
+ 
+ 	TEST_PAUSE;
+ 
+-	if (pipe(Fd) == -1) {
+-		tst_brkm(TBROK, NULL, "pipe(&Fd) failed, errno=%d", errno);
+-	}
++	SAFE_PIPE(NULL, Fd);
+ 
+ 	FD_ZERO(&saved_Readfds);
+ 	FD_ZERO(&saved_Writefds);
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit01.c b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+index d0eb1b9d4..3118782f3 100644
+--- a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
+@@ -36,6 +36,7 @@
+ #include <stdlib.h>
  #include <unistd.h>
  #include "test.h"
 +#include "safe_macros.h"
  
- char *TCID = "mremap05";
+ char *TCID = "setrlimit01";
+ int TST_TOTAL = 1;
+@@ -124,8 +125,7 @@ static void test2(void)
+ 	 */
+ 	int pipefd[2];
+ 	fflush(stdout);
+-	if (pipe(pipefd) == -1)
+-		tst_brkm(TBROK | TERRNO, NULL, "pipe creation failed");
++	SAFE_PIPE(NULL, pipefd);
  
-@@ -119,8 +120,7 @@ static int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
- 
- static void free_test_area(void *p, int size)
- {
--	if (munmap(p, size) < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "free_test_area munmap");
-+	SAFE_MUNMAP(cleanup, p, size);
- }
- 
- static void *get_test_area(int size, int free_area)
-diff --git a/testcases/kernel/syscalls/munmap/munmap02.c b/testcases/kernel/syscalls/munmap/munmap02.c
-index 3997b445c..a85c079c3 100644
---- a/testcases/kernel/syscalls/munmap/munmap02.c
-+++ b/testcases/kernel/syscalls/munmap/munmap02.c
-@@ -264,10 +264,7 @@ void cleanup(void)
- 	map_len = map_len - page_sz;
- 
- 	/* unmap the portion of the region of the file left unmapped */
--	if (munmap(addr, map_len) < 0) {
--		tst_brkm(TBROK, NULL,
--			 "munmap() fails to unmap portion of mapped region");
--	}
-+	SAFE_MUNMAP(NULL, addr, map_len);
- 
- 	/* Close the temporary file */
- 	SAFE_CLOSE(NULL, fildes);
-diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
-index a5b01c756..d21bb9c45 100644
---- a/testcases/kernel/syscalls/readahead/readahead02.c
-+++ b/testcases/kernel/syscalls/readahead/readahead02.c
-@@ -273,8 +273,7 @@ static void read_testfile(int do_readahead, const char *fname, size_t fsize,
- 	if (!do_readahead)
- 		*cached = get_cached_size();
- 
--	if (munmap(p, fsize) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "munmap failed");
-+	SAFE_MUNMAP(cleanup, p, fsize);
- 
- 	*read_bytes = get_bytes_read() - read_bytes_start;
- 	if (gettimeofday(&now, NULL) == -1)
-diff --git a/testcases/kernel/syscalls/sendfile/sendfile04.c b/testcases/kernel/syscalls/sendfile/sendfile04.c
-index 822c4688c..779e7dc70 100644
---- a/testcases/kernel/syscalls/sendfile/sendfile04.c
-+++ b/testcases/kernel/syscalls/sendfile/sendfile04.c
-@@ -57,6 +57,7 @@
- #include <netinet/in.h>
- #include <arpa/inet.h>
- #include "test.h"
-+#include "safe_macros.h"
- 
- #ifndef OFF_T
- #define OFF_T off_t
-@@ -119,9 +120,8 @@ void do_sendfile(int prot, int pass_unmapped_buffer)
- 	}
- 
- 	if (pass_unmapped_buffer) {
--		if (munmap(protected_buffer, sizeof(*protected_buffer)) < 0) {
--			tst_brkm(TBROK, cleanup, "munmap failed: %d", errno);
--		}
-+		SAFE_MUNMAP(cleanup, protected_buffer,
-+			    sizeof(*protected_buffer));
- 	}
- 
- 	TEST(sendfile(out_fd, in_fd, protected_buffer, sb.st_size));
+ 	/*
+ 	 * Spawn a child process, and reduce the filesize to
 -- 
 2.13.5
 
