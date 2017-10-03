@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue,  3 Oct 2017 17:40:50 +0200
-Subject: [LTP] [COMMITTED] [PATCH 03/13] Make use of SAFE_MKDIR()
+Date: Tue,  3 Oct 2017 17:40:52 +0200
+Subject: [LTP] [COMMITTED] [PATCH 05/13] Make use of SAFE_PIPE()
 In-Reply-To: <20171003154100.807-1-chrubis@suse.cz>
 References: <20171003154100.807-1-chrubis@suse.cz>
-Message-ID: <20171003154100.807-3-chrubis@suse.cz>
+Message-ID: <20171003154100.807-5-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,24 +12,32 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/open/open11.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ testcases/kernel/containers/pidns/pidns05.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/open/open11.c b/testcases/kernel/syscalls/open/open11.c
-index c9239c6b4..9593671f2 100644
---- a/testcases/kernel/syscalls/open/open11.c
-+++ b/testcases/kernel/syscalls/open/open11.c
-@@ -396,9 +396,7 @@ static void setup(void)
- 		tst_brkm(TBROK | TERRNO, cleanup, "Symlink %s -> %s failed",
- 			 T_REG, T_SYMLINK_REG);
+diff --git a/testcases/kernel/containers/pidns/pidns05.c b/testcases/kernel/containers/pidns/pidns05.c
+index cdcf76a14..8462243cd 100644
+--- a/testcases/kernel/containers/pidns/pidns05.c
++++ b/testcases/kernel/containers/pidns/pidns05.c
+@@ -49,6 +49,7 @@
+ #include <errno.h>
+ #include "pidns_helper.h"
+ #include "test.h"
++#include "safe_macros.h"
  
--	ret = mkdir(T_DIR, 0755);
+ #define INIT_PID	1
+ #define CINIT_PID	1
+@@ -230,9 +231,7 @@ int main(int argc, char *argv[])
+ 
+ 	pid = getpid();
+ 	pgid = getpgid(pid);
+-	ret = pipe(fd);
 -	if (ret == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "mkdir %s failed", T_DIR);
-+	ret = SAFE_MKDIR(cleanup, T_DIR, 0755);
+-		tst_brkm(TBROK | TERRNO, NULL, "pipe failed");
++	SAFE_PIPE(NULL, fd);
  
- 	ret = symlink(T_DIR, T_SYMLINK_DIR);
- 	if (ret == -1)
+ 	TEST(do_clone_unshare_test(T_CLONE, CLONE_NEWPID,
+ 				   create_nested_container, (void *)&count));
 -- 
 2.13.5
 
