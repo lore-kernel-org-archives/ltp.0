@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue,  3 Oct 2017 16:19:39 +0200
-Subject: [LTP] [COMMITTED] [PATCH 06/40] Make use of SAFE_PIPE()
+Date: Tue,  3 Oct 2017 16:19:45 +0200
+Subject: [LTP] [COMMITTED] [PATCH 12/40] Make use of SAFE_UNLINK()
 In-Reply-To: <20171003142013.25230-1-chrubis@suse.cz>
 References: <20171003142013.25230-1-chrubis@suse.cz>
-Message-ID: <20171003142013.25230-6-chrubis@suse.cz>
+Message-ID: <20171003142013.25230-12-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,245 +12,303 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/containers/sysvipc/shmem_2nstest.c | 7 +++----
- testcases/kernel/syscalls/close/close01.c           | 5 ++---
- testcases/kernel/syscalls/cma/process_vm_readv02.c  | 3 +--
- testcases/kernel/syscalls/cma/process_vm_readv03.c  | 3 +--
- testcases/kernel/syscalls/cma/process_vm_writev02.c | 3 +--
- testcases/kernel/syscalls/dup/dup04.c               | 3 +--
- testcases/kernel/syscalls/dup2/dup204.c             | 3 +--
- testcases/kernel/syscalls/fsync/fsync03.c           | 5 ++---
- testcases/kernel/syscalls/pipe/pipe04.c             | 5 ++---
- testcases/kernel/syscalls/pread/pread02.c           | 5 +----
- testcases/kernel/syscalls/select/select02.c         | 5 ++---
- testcases/kernel/syscalls/setrlimit/setrlimit01.c   | 4 ++--
- 12 files changed, 19 insertions(+), 32 deletions(-)
+ testcases/kernel/syscalls/asyncio/asyncio02.c   |  5 +----
+ testcases/kernel/syscalls/chdir/chdir01.c       |  4 +---
+ testcases/kernel/syscalls/close/close08.c       |  6 ++----
+ testcases/kernel/syscalls/creat/creat08.c       | 13 +++----------
+ testcases/kernel/syscalls/fork/fork09.c         |  5 ++---
+ testcases/kernel/syscalls/inotify/inotify02.c   |  5 +----
+ testcases/kernel/syscalls/mprotect/mprotect03.c |  4 +---
+ testcases/kernel/syscalls/open/open03.c         |  5 ++---
+ testcases/kernel/syscalls/readv/readv02.c       |  5 +----
+ testcases/kernel/syscalls/rename/rename03.c     |  4 +---
+ testcases/kernel/syscalls/rename/rename09.c     |  8 ++------
+ testcases/kernel/syscalls/symlink/symlink02.c   |  7 ++-----
+ testcases/kernel/syscalls/symlink/symlink04.c   |  7 ++-----
+ testcases/kernel/syscalls/symlink/symlink05.c   |  7 ++-----
+ 14 files changed, 23 insertions(+), 62 deletions(-)
 
-diff --git a/testcases/kernel/containers/sysvipc/shmem_2nstest.c b/testcases/kernel/containers/sysvipc/shmem_2nstest.c
-index 49fe19b6f..b172ee07c 100644
---- a/testcases/kernel/containers/sysvipc/shmem_2nstest.c
-+++ b/testcases/kernel/containers/sysvipc/shmem_2nstest.c
-@@ -45,6 +45,7 @@
- #include <sys/shm.h>
- #include <libclone.h>
- #include "test.h"
-+#include "safe_macros.h"
- #include "ipcns_helper.h"
- 
- #define TESTKEY    124426L
-@@ -132,10 +133,8 @@ int main(int argc, char *argv[])
+diff --git a/testcases/kernel/syscalls/asyncio/asyncio02.c b/testcases/kernel/syscalls/asyncio/asyncio02.c
+index 9e3ca7ad4..6f7ef9110 100644
+--- a/testcases/kernel/syscalls/asyncio/asyncio02.c
++++ b/testcases/kernel/syscalls/asyncio/asyncio02.c
+@@ -256,10 +256,7 @@ int testrun(int flag, int bytes, int ti)
+ 		ret = (int)buffer.st_size;
  	}
  
- 	/* Using PIPE's to sync between containers and Parent */
--	if (pipe(p1) == -1)
--		tst_brkm(TBROK | TERRNO, NULL, "pipe1 error");
--	if (pipe(p2) == -1)
--		tst_brkm(TBROK | TERRNO, NULL, "pipe2 error");
-+	SAFE_PIPE(NULL, p1);
-+	SAFE_PIPE(NULL, p2);
+-	if (unlink(filename) == -1) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "unlink(%s) failed",
+-			 filename);
+-	}
++	SAFE_UNLINK(cleanup, filename);
  
- 	if (strcmp(argv[1], "clone") == 0) {
- 		use_clone = T_CLONE;
-diff --git a/testcases/kernel/syscalls/close/close01.c b/testcases/kernel/syscalls/close/close01.c
-index 7b119ce44..c734ff7d2 100644
---- a/testcases/kernel/syscalls/close/close01.c
-+++ b/testcases/kernel/syscalls/close/close01.c
-@@ -27,6 +27,7 @@
- #include <fcntl.h>
- #include <sys/stat.h>
+ 	return ret;
+ 
+diff --git a/testcases/kernel/syscalls/chdir/chdir01.c b/testcases/kernel/syscalls/chdir/chdir01.c
+index 1933377a4..81cf7c564 100644
+--- a/testcases/kernel/syscalls/chdir/chdir01.c
++++ b/testcases/kernel/syscalls/chdir/chdir01.c
+@@ -107,9 +107,7 @@ int main(int ac, char **av)
+ 		else
+ 			tst_resm(TPASS, "failed as expected with ENOTDIR");
+ 
+-		if (unlink(filname) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup,
+-				 "Couldn't remove file");
++		SAFE_UNLINK(cleanup, filname);
+ 
+ 		SAFE_CHDIR(cleanup, "..");
+ 
+diff --git a/testcases/kernel/syscalls/close/close08.c b/testcases/kernel/syscalls/close/close08.c
+index b8e899095..ccdefa173 100644
+--- a/testcases/kernel/syscalls/close/close08.c
++++ b/testcases/kernel/syscalls/close/close08.c
+@@ -115,6 +115,7 @@
+ #include <string.h>
+ #include <signal.h>
  #include "test.h"
 +#include "safe_macros.h"
  
- void cleanup(void);
- void setup(void);
-@@ -72,9 +73,7 @@ int main(int ac, char **av)
- 			tst_brkm(TBROK | TERRNO, cleanup,
- 				 "can't dup the file des");
+ void setup();
+ void cleanup();
+@@ -150,10 +151,7 @@ int main(int ac, char **av)
+ 				 TEST_RETURN);
+ 		}
  
--		if (pipe(pipefildes) == -1) {
--			tst_brkm(TBROK | TERRNO, cleanup, "can't open pipe");
+-		if (unlink(fname) == -1) {
+-			tst_brkm(TBROK | TERRNO, cleanup,
+-				 "unlink(%s) failed", fname);
 -		}
-+		SAFE_PIPE(cleanup, pipefildes);
++		SAFE_UNLINK(cleanup, fname);
+ 	}
  
- 		for (i = 0; i < TST_TOTAL; i++) {
+ 	cleanup();
+diff --git a/testcases/kernel/syscalls/creat/creat08.c b/testcases/kernel/syscalls/creat/creat08.c
+index 5f564273e..284ae5f1a 100644
+--- a/testcases/kernel/syscalls/creat/creat08.c
++++ b/testcases/kernel/syscalls/creat/creat08.c
+@@ -443,16 +443,9 @@ static void cleanup(void)
+ 		tst_resm(TBROK, "unlink %s failed", nosetgid_A);
+ 	}
+ 	SAFE_RMDIR(NULL, DIR_A);
+-	if (unlink(setgid_B) == -1) {
+-		tst_brkm(TBROK | TERRNO, NULL, "unlink %s failed", setgid_B);
+-	}
+-	if (unlink(root_setgid_B) == -1) {
+-		tst_brkm(TBROK | TERRNO, NULL, "unlink %s failed",
+-			 root_setgid_B);
+-	}
+-	if (unlink(nosetgid_B) == -1) {
+-		tst_brkm(TBROK | TERRNO, NULL, "unlink %s failed", nosetgid_B);
+-	}
++	SAFE_UNLINK(NULL, setgid_B);
++	SAFE_UNLINK(NULL, root_setgid_B);
++	SAFE_UNLINK(NULL, nosetgid_B);
+ 	SAFE_RMDIR(NULL, DIR_B);
  
-diff --git a/testcases/kernel/syscalls/cma/process_vm_readv02.c b/testcases/kernel/syscalls/cma/process_vm_readv02.c
-index b7dd9b2e5..6bbfb62b0 100644
---- a/testcases/kernel/syscalls/cma/process_vm_readv02.c
-+++ b/testcases/kernel/syscalls/cma/process_vm_readv02.c
-@@ -56,8 +56,7 @@ int main(int argc, char **argv)
- 		tst_count = 0;
- 		len = strlen(tst_string);
- 
--		if (pipe(pipe_fd) < 0)
--			tst_brkm(TBROK | TERRNO, cleanup, "pipe");
-+		SAFE_PIPE(cleanup, pipe_fd);
- 
- 		/* the start of child_alloc and child_invoke is already
- 		 * synchronized via pipe */
-diff --git a/testcases/kernel/syscalls/cma/process_vm_readv03.c b/testcases/kernel/syscalls/cma/process_vm_readv03.c
-index 17f0a5dcc..07a72d97d 100644
---- a/testcases/kernel/syscalls/cma/process_vm_readv03.c
-+++ b/testcases/kernel/syscalls/cma/process_vm_readv03.c
-@@ -72,8 +72,7 @@ int main(int argc, char **argv)
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
- 
--		if (pipe(pipe_fd) < 0)
--			tst_brkm(TBROK | TERRNO, cleanup, "pipe");
-+		SAFE_PIPE(cleanup, pipe_fd);
- 
- 		bufsz_arr = SAFE_MALLOC(cleanup, nr_iovecs * sizeof(int));
- 		gen_random_arr(bufsz_arr, nr_iovecs);
-diff --git a/testcases/kernel/syscalls/cma/process_vm_writev02.c b/testcases/kernel/syscalls/cma/process_vm_writev02.c
-index 04cf6d149..c681f9f8b 100644
---- a/testcases/kernel/syscalls/cma/process_vm_writev02.c
-+++ b/testcases/kernel/syscalls/cma/process_vm_writev02.c
-@@ -66,8 +66,7 @@ int main(int argc, char **argv)
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
- 
--		if (pipe(pipe_fd) < 0)
--			tst_brkm(TBROK | TERRNO, cleanup, "pipe");
-+		SAFE_PIPE(cleanup, pipe_fd);
- 
- 		/* the start of child_init_and_verify and child_write is
- 		 * already synchronized via pipe */
-diff --git a/testcases/kernel/syscalls/dup/dup04.c b/testcases/kernel/syscalls/dup/dup04.c
-index 4abe451c1..1414b2a9e 100644
---- a/testcases/kernel/syscalls/dup/dup04.c
-+++ b/testcases/kernel/syscalls/dup/dup04.c
-@@ -184,8 +184,7 @@ void setup(void)
- 
- 	tst_tmpdir();
- 
--	if (pipe(fd) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "pipe failed");
-+	SAFE_PIPE(cleanup, fd);
- }
- 
- void cleanup(void)
-diff --git a/testcases/kernel/syscalls/dup2/dup204.c b/testcases/kernel/syscalls/dup2/dup204.c
-index ab8de5d08..634bde8f2 100644
---- a/testcases/kernel/syscalls/dup2/dup204.c
-+++ b/testcases/kernel/syscalls/dup2/dup204.c
-@@ -116,8 +116,7 @@ void setup(void)
- 
- 	tst_tmpdir();
- 
--	if (pipe(fd) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "pipe failed");
-+	SAFE_PIPE(cleanup, fd);
- }
- 
- void cleanup(void)
-diff --git a/testcases/kernel/syscalls/fsync/fsync03.c b/testcases/kernel/syscalls/fsync/fsync03.c
-index 87c4e5ab4..60d15f429 100644
---- a/testcases/kernel/syscalls/fsync/fsync03.c
-+++ b/testcases/kernel/syscalls/fsync/fsync03.c
+ 	tst_rmdir();
+diff --git a/testcases/kernel/syscalls/fork/fork09.c b/testcases/kernel/syscalls/fork/fork09.c
+index 35ba01507..dedc8a41c 100644
+--- a/testcases/kernel/syscalls/fork/fork09.c
++++ b/testcases/kernel/syscalls/fork/fork09.c
 @@ -47,6 +47,7 @@
- #include <unistd.h>
  #include <errno.h>
+ #include <unistd.h>		/* for _SC_OPEN_MAX */
  #include "test.h"
 +#include "safe_macros.h"
  
- void setup(void);
- void cleanup(void);
-@@ -122,9 +123,7 @@ void setup(void)
- 	/* make a temporary directory and cd to it */
- 	tst_tmpdir();
- 
--	if (pipe(fd) < 0) {
--		tst_brkm(TBROK, cleanup, "pipe call failed");
--	}
-+	SAFE_PIPE(cleanup, fd);
- 
- 	pfd = fd[1];
- }
-diff --git a/testcases/kernel/syscalls/pipe/pipe04.c b/testcases/kernel/syscalls/pipe/pipe04.c
-index dc3deade8..b3d255b33 100644
---- a/testcases/kernel/syscalls/pipe/pipe04.c
-+++ b/testcases/kernel/syscalls/pipe/pipe04.c
-@@ -49,6 +49,7 @@
- #include <sys/types.h>
- #include <sys/wait.h>
- #include "test.h"
-+#include "safe_macros.h"
- 
- char *TCID = "pipe04";
+ char *TCID = "fork09";
  int TST_TOTAL = 1;
-@@ -95,9 +96,7 @@ int main(int ac, char **av)
- 		/* reset tst_count in case we are looping */
- 		tst_count = 0;
+@@ -91,9 +92,7 @@ int main(int ac, char **av)
  
--		if (pipe(fildes) == -1)
--			tst_brkm(TBROK, cleanup, "pipe() failed - errno %d",
--				 errno);
-+		SAFE_PIPE(cleanup, fildes);
+ 		tst_resm(TINFO, "first file descriptor is %d ", first);
  
- 		if ((c1pid = FORK_OR_VFORK()) == -1)
- 			tst_brkm(TBROK, cleanup, "fork() failed - "
-diff --git a/testcases/kernel/syscalls/pread/pread02.c b/testcases/kernel/syscalls/pread/pread02.c
-index d2da21f6c..aa194f607 100644
---- a/testcases/kernel/syscalls/pread/pread02.c
-+++ b/testcases/kernel/syscalls/pread/pread02.c
-@@ -212,10 +212,7 @@ int no_setup(void)
- int setup1(void)
- {
- 	/* Create a pair of unnamed pipe */
--	if (pipe(pfd) < 0) {
--		tst_brkm(TBROK, cleanup, "pipe() failed to create pair of "
--			 "pipe, error:%d", errno);
--	}
-+	SAFE_PIPE(cleanup, pfd);
+-		if (unlink(filname) == -1)
+-			tst_brkm(TBROK, cleanup, "Cannot unlink file %s, "
+-				 "errno = %d", filname, errno);
++		SAFE_UNLINK(cleanup, filname);
  
- 	/* Write known data (0's) of K1 bytes */
- 	if (write(pfd[1], write_buf[0], K1) != K1) {
-diff --git a/testcases/kernel/syscalls/select/select02.c b/testcases/kernel/syscalls/select/select02.c
-index 3c9742777..7aa0107c0 100644
---- a/testcases/kernel/syscalls/select/select02.c
-+++ b/testcases/kernel/syscalls/select/select02.c
-@@ -47,6 +47,7 @@
- #include <sys/time.h>
+ 		/*
+ 		 * now open all the files for the test
+diff --git a/testcases/kernel/syscalls/inotify/inotify02.c b/testcases/kernel/syscalls/inotify/inotify02.c
+index cb4b94e55..ff5be64ae 100644
+--- a/testcases/kernel/syscalls/inotify/inotify02.c
++++ b/testcases/kernel/syscalls/inotify/inotify02.c
+@@ -146,10 +146,7 @@ int main(int ac, char **av)
+ 		strcpy(event_set[tst_count].name, "");
+ 		tst_count++;
  
+-		if (unlink(FILE_NAME2) == -1) {
+-			tst_brkm(TBROK | TERRNO, cleanup,
+-				 "unlink(%s) failed", FILE_NAME2);
+-		}
++		SAFE_UNLINK(cleanup, FILE_NAME2);
+ 		event_set[tst_count].mask = IN_DELETE;
+ 		strcpy(event_set[tst_count].name, FILE_NAME2);
+ 		tst_count++;
+diff --git a/testcases/kernel/syscalls/mprotect/mprotect03.c b/testcases/kernel/syscalls/mprotect/mprotect03.c
+index 944b45e87..28f54c9ae 100644
+--- a/testcases/kernel/syscalls/mprotect/mprotect03.c
++++ b/testcases/kernel/syscalls/mprotect/mprotect03.c
+@@ -122,9 +122,7 @@ int main(int ac, char **av)
+ 		/* clean up things in case we are looping */
+ 		SAFE_MUNMAP(cleanup, addr, strlen(buf));
+ 		SAFE_CLOSE(cleanup, fd);
+-		if (unlink(file1) == -1) {
+-			tst_brkm(TBROK, cleanup, "unlink failed");
+-		}
++		SAFE_UNLINK(cleanup, file1);
+ 	}
+ 
+ 	cleanup();
+diff --git a/testcases/kernel/syscalls/open/open03.c b/testcases/kernel/syscalls/open/open03.c
+index 7e82a9ae7..80e43c6e9 100644
+--- a/testcases/kernel/syscalls/open/open03.c
++++ b/testcases/kernel/syscalls/open/open03.c
+@@ -31,6 +31,7 @@
+ #include <string.h>
+ #include <signal.h>
  #include "test.h"
 +#include "safe_macros.h"
  
  static void setup(void);
+ static void cleanup(void);
+@@ -66,9 +67,7 @@ int main(int ac, char **av)
+ 			if (close(fd) == -1)
+ 				tst_brkm(TBROK | TERRNO, cleanup,
+ 					 "close(%s) failed", fname);
+-			else if (unlink(fname) == -1)
+-				tst_brkm(TBROK | TERRNO, cleanup,
+-					 "unlink(%s) failed", fname);
++			else SAFE_UNLINK(cleanup, fname);
+ 		}
+ 	}
  
-@@ -104,9 +105,7 @@ static void setup(void)
- 
- 	TEST_PAUSE;
- 
--	if (pipe(Fd) == -1) {
--		tst_brkm(TBROK, NULL, "pipe(&Fd) failed, errno=%d", errno);
+diff --git a/testcases/kernel/syscalls/readv/readv02.c b/testcases/kernel/syscalls/readv/readv02.c
+index c37e629b8..be67c4ece 100644
+--- a/testcases/kernel/syscalls/readv/readv02.c
++++ b/testcases/kernel/syscalls/readv/readv02.c
+@@ -236,10 +236,7 @@ void setup(void)
+  */
+ void cleanup(void)
+ {
+-	if (unlink(f_name) < 0) {
+-		tst_brkm(TBROK, NULL, "unlink FAILED: file %s, errno %d",
+-			 f_name, errno);
 -	}
-+	SAFE_PIPE(NULL, Fd);
++	SAFE_UNLINK(NULL, f_name);
+ 	tst_rmdir();
  
- 	FD_ZERO(&saved_Readfds);
- 	FD_ZERO(&saved_Writefds);
-diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit01.c b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
-index d0eb1b9d4..3118782f3 100644
---- a/testcases/kernel/syscalls/setrlimit/setrlimit01.c
-+++ b/testcases/kernel/syscalls/setrlimit/setrlimit01.c
-@@ -36,6 +36,7 @@
- #include <stdlib.h>
- #include <unistd.h>
+ }
+diff --git a/testcases/kernel/syscalls/rename/rename03.c b/testcases/kernel/syscalls/rename/rename03.c
+index 4d4f78d60..6ffbe5628 100644
+--- a/testcases/kernel/syscalls/rename/rename03.c
++++ b/testcases/kernel/syscalls/rename/rename03.c
+@@ -164,9 +164,7 @@ int main(int ac, char **av)
+ 		/* reset things in case we are looping */
+ 
+ 		/* unlink the new file */
+-		if (unlink(mname) == -1) {
+-			tst_brkm(TBROK, cleanup, "unlink() failed");
+-		}
++		SAFE_UNLINK(cleanup, mname);
+ 
+ 		/* remove the new directory */
+ 		SAFE_RMDIR(cleanup, mdir);
+diff --git a/testcases/kernel/syscalls/rename/rename09.c b/testcases/kernel/syscalls/rename/rename09.c
+index 15e607981..9b2022592 100644
+--- a/testcases/kernel/syscalls/rename/rename09.c
++++ b/testcases/kernel/syscalls/rename/rename09.c
+@@ -195,12 +195,8 @@ int main(int ac, char **av)
+ 			}
+ 
+ 			/* clean up things in case we are looping */
+-			if (unlink(fname) == -1) {
+-				tst_brkm(TBROK, cleanup, "unlink() #1 failed");
+-			}
+-			if (unlink(mname) == -1) {
+-				tst_brkm(TBROK, cleanup, "unlink() #2 failed");
+-			}
++			SAFE_UNLINK(cleanup, fname);
++			SAFE_UNLINK(cleanup, mname);
+ 			SAFE_RMDIR(cleanup, fdir);
+ 			SAFE_RMDIR(cleanup, mdir);
+ 		} else {
+diff --git a/testcases/kernel/syscalls/symlink/symlink02.c b/testcases/kernel/syscalls/symlink/symlink02.c
+index fdf8e609c..c18db2b37 100644
+--- a/testcases/kernel/syscalls/symlink/symlink02.c
++++ b/testcases/kernel/syscalls/symlink/symlink02.c
+@@ -115,6 +115,7 @@
+ #include <string.h>
+ #include <signal.h>
  #include "test.h"
 +#include "safe_macros.h"
  
- char *TCID = "setrlimit01";
- int TST_TOTAL = 1;
-@@ -124,8 +125,7 @@ static void test2(void)
- 	 */
- 	int pipefd[2];
- 	fflush(stdout);
--	if (pipe(pipefd) == -1)
--		tst_brkm(TBROK | TERRNO, NULL, "pipe creation failed");
-+	SAFE_PIPE(NULL, pipefd);
+ void setup();
+ void cleanup();
+@@ -157,11 +158,7 @@ int main(int ac, char **av)
+ 				 fname, symlnk, TEST_ERRNO,
+ 				 strerror(TEST_ERRNO));
+ 		} else {
+-			if (unlink(symlnk) == -1) {
+-				tst_brkm(TBROK, cleanup,
+-					 "unlink(%s) Failed, errno=%d : %s",
+-					 symlnk, errno, strerror(errno));
+-			}
++			SAFE_UNLINK(cleanup, symlnk);
+ 		}
+ 	}
  
- 	/*
- 	 * Spawn a child process, and reduce the filesize to
+diff --git a/testcases/kernel/syscalls/symlink/symlink04.c b/testcases/kernel/syscalls/symlink/symlink04.c
+index ef284007c..2190b3b1b 100644
+--- a/testcases/kernel/syscalls/symlink/symlink04.c
++++ b/testcases/kernel/syscalls/symlink/symlink04.c
+@@ -76,6 +76,7 @@
+ #include <signal.h>
+ #include <sys/stat.h>
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ #define  TESTFILE	"testfile"
+ #define  SYMFILE	"slink_file"
+@@ -134,11 +135,7 @@ int main(int ac, char **av)
+ 		}
+ 
+ 		/* Unlink the symlink file for next loop */
+-		if (unlink(SYMFILE) == -1) {
+-			tst_brkm(TBROK, cleanup,
+-				 "unlink(%s) Failed, errno=%d : %s",
+-				 SYMFILE, errno, strerror(errno));
+-		}
++		SAFE_UNLINK(cleanup, SYMFILE);
+ 		tst_count++;	/* incr TEST_LOOP counter */
+ 	}
+ 
+diff --git a/testcases/kernel/syscalls/symlink/symlink05.c b/testcases/kernel/syscalls/symlink/symlink05.c
+index 89f8c8877..83b151f5d 100644
+--- a/testcases/kernel/syscalls/symlink/symlink05.c
++++ b/testcases/kernel/syscalls/symlink/symlink05.c
+@@ -77,6 +77,7 @@
+ #include <sys/stat.h>
+ 
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ #define  TESTFILE	"testfile"
+ #define  SYMFILE	"slink_file"
+@@ -135,11 +136,7 @@ int main(int ac, char **av)
+ 		}
+ 
+ 		/* Unlink the symlink file for next loop */
+-		if (unlink(SYMFILE) == -1) {
+-			tst_brkm(TBROK, cleanup,
+-				 "unlink(%s) Failed, errno=%d : %s",
+-				 SYMFILE, errno, strerror(errno));
+-		}
++		SAFE_UNLINK(cleanup, SYMFILE);
+ 		tst_count++;	/* incr TEST_LOOP counter */
+ 	}
+ 
 -- 
 2.13.5
 
