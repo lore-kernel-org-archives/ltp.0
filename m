@@ -1,27 +1,39 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 3 Oct 2017 14:59:58 +0200
-Subject: [LTP] [PATCH] [RFC] tst_test: Add support for array of test
- functions
-In-Reply-To: <860483630.25581747.1507017497043.JavaMail.zimbra@redhat.com>
-References: <20170727081437.27995-1-chrubis@suse.cz>
- <860483630.25581747.1507017497043.JavaMail.zimbra@redhat.com>
-Message-ID: <20171003125958.GB11692@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 3 Oct 2017 15:21:11 +0200
+Subject: [LTP] [PATCH 1/1] syscalls, lib: Use SAFE_{BIND, LISTEN,
+ SOCKET} macros
+In-Reply-To: <20171003125653.GA11692@rei>
+References: <20170929231036.32262-1-pvorel@suse.cz>
+ <87bmlpx195.fsf@our.domain.is.not.set>
+ <20171002122920.rpurivi6x46duh4c@dell5510>
+ <878tgtwqk7.fsf@our.domain.is.not.set>
+ <20171002150417.jodtfynklflxe5pl@dell5510>
+ <20171002152109.GA3736@rei>
+ <20171002153616.k6fkz7fpzh2shzdc@dell5510>
+ <20171003114349.GA19124@rei>
+ <20171003123114.4iylsq2c35hh4pmh@dell5510>
+ <20171003125653.GA11692@rei>
+Message-ID: <20171003132111.ev7tozwrvogjn2r4@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> What would be the benefits?
+> Hi!
+> > > Anyway I got an idea yesterday and implemented a shell script that
+> > > generates a spatch based on function name and made it iterate over all
+> > > safe macros we have implemented making a git commit for each. The script
+> > > is attached for a reference.
+> > Really nice solution :-).
+> > This script is really worth of adding into LTP (even it requires to check formatting).
 
-I was aiming to avoid the need to have a switch () in each testcase that
-implements a similar tests but cannot be easily data driven (as we do
-for most of tests that loop over an array of structures describing the
-test data).
+> I will strip the old library parts, then we can add it, maybe we can
+> even use it as a commit hook or something to automatically check if
+> we could have used a SAFE_MACRO() instead of custom error handling...
+Good idea. What a shame that post-receive hook on GitHub (aka "WebHooks") do not allow to
+execute anything on server side...
 
-The question is, of course, if the interface is worth the effort.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
