@@ -1,10 +1,8 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue,  3 Oct 2017 11:08:31 +0200
-Subject: [LTP] [PATCH v4] Add test for CVE-2017-7308 on a raw socket's ring
+Date: Tue,  3 Oct 2017 11:08:30 +0200
+Subject: [LTP] [PATCH] Add test for CVE-2017-7308 on a raw socket's ring
 	buffer
-In-Reply-To: <20171003090832.31643-1-rpalethorpe@suse.com>
-References: <20171003090832.31643-1-rpalethorpe@suse.com>
-Message-ID: <20171003090832.31643-2-rpalethorpe@suse.com>
+Message-ID: <20171003090832.31643-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -18,6 +16,9 @@ just define what is needed in the test.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
+
+
+
  configure.ac                  |   3 +
  m4/ltp-tpacket-v3.m4          |  22 +++++++
  runtest/cve                   |   1 +
