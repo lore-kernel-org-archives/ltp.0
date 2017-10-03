@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue,  3 Oct 2017 16:19:59 +0200
-Subject: [LTP] [COMMITTED] [PATCH 26/40] Make use of SAFE_CLOSEDIR()
+Date: Tue,  3 Oct 2017 16:20:00 +0200
+Subject: [LTP] [COMMITTED] [PATCH 27/40] Make use of SAFE_IOCTL()
 In-Reply-To: <20171003142013.25230-1-chrubis@suse.cz>
 References: <20171003142013.25230-1-chrubis@suse.cz>
-Message-ID: <20171003142013.25230-26-chrubis@suse.cz>
+Message-ID: <20171003142013.25230-27-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,23 +12,60 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ testcases/kernel/syscalls/ioctl/ioctl02.c         | 8 ++------
+ testcases/kernel/syscalls/sockioctl/sockioctl01.c | 6 ++----
+ 2 files changed, 4 insertions(+), 10 deletions(-)
 
-diff --git a/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c b/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
-index e165f6c9a..ad291a1eb 100644
---- a/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
-+++ b/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
-@@ -226,8 +226,7 @@ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl02.c b/testcases/kernel/syscalls/ioctl/ioctl02.c
+index 9201ce205..48e8eaa7f 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl02.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl02.c
+@@ -370,9 +370,7 @@ static int do_parent_setup(void)
+ 	closed = 0;
  
- 	int i;
- 	for (i = 0; i < odir_num; ++i) {
--		if (closedir(odir[i]) == -1)
--			tst_brkm(TBROK, NULL, "Failed to close dir\n");
-+		SAFE_CLOSEDIR(NULL, odir[i]);
- 	}
+ 	/* flush tty queues to remove old output */
+-	if (ioctl(pfd, TCFLSH, 2) < 0)
+-		tst_brkm(TBROK, cleanup, "ioctl TCFLSH failed : "
+-			 "errno = %d", errno);
++	SAFE_IOCTL(cleanup, pfd, TCFLSH, 2);
+ 	return pfd;
+ }
  
- 	char *cwd = tst_get_tmpdir();
+@@ -438,9 +436,7 @@ static void setup(void)
+ 			 "setup(), errno = %d", devname, errno);
+ 
+ 	/* Save the current device information - to be restored in cleanup() */
+-	if (ioctl(fd, TCGETA, &save_io) < 0)
+-		tst_brkm(TBROK, cleanup, "TCGETA ioctl failed in "
+-			 "do_parent_setup");
++	SAFE_IOCTL(cleanup, fd, TCGETA, &save_io);
+ 
+ 	/* Close the device */
+ 	SAFE_CLOSE(cleanup, fd);
+diff --git a/testcases/kernel/syscalls/sockioctl/sockioctl01.c b/testcases/kernel/syscalls/sockioctl/sockioctl01.c
+index 50bdc935a..ce1831cc8 100644
+--- a/testcases/kernel/syscalls/sockioctl/sockioctl01.c
++++ b/testcases/kernel/syscalls/sockioctl/sockioctl01.c
+@@ -40,6 +40,7 @@
+ #include <net/if.h>
+ 
+ #include "test.h"
++#include "safe_macros.h"
+ 
+ char *TCID = "sockioctl01";
+ int testno;
+@@ -235,10 +236,7 @@ static void setup2(void)
+ static void setup3(void)
+ {
+ 	setup2();
+-	if (ioctl(s, SIOCGIFCONF, &ifc) < 0) {
+-		tst_brkm(TBROK, cleanup, "socket setup failed: %s",
+-			 strerror(errno));
+-	}
++	SAFE_IOCTL(cleanup, s, SIOCGIFCONF, &ifc);
+ 	ifr = *(struct ifreq *)ifc.ifc_buf;
+ }
+ 
 -- 
 2.13.5
 
