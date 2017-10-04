@@ -1,38 +1,52 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 4 Oct 2017 08:25:00 -0400 (EDT)
-Subject: [LTP] [PATCH 2/2] security/dirtyc0w: synchronize parent and
- child
-In-Reply-To: <20171004120240.GA29423@rei>
-References: <94518262a76edca533440acb73611eb93184dc90.1507113734.git.jstancek@redhat.com>
- <1300ca0b5103f4f145af3be1a0295974a04dcae8.1507113734.git.jstancek@redhat.com>
- <20171004120240.GA29423@rei>
-Message-ID: <47778538.26248540.1507119900299.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed,  4 Oct 2017 15:24:54 +0200
+Subject: [LTP] [COMMITTED] [PATCH] syscalls/dup203: Fix make use of
+	SAFE_CLOSE()
+Message-ID: <20171004132454.23921-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+The patch:
 
------ Original Message -----
-> Hi!
-> > +static const char *const resource_files[] = {
-> > +	TEST_APP,
-> > +	NULL,
-> > +};
-> 
-> I do not get why we need the test binary to be listed as resource file,
-> the rest seems OK to me.
+commit df007542635aed8686b5ebc111b0807a67349b41
+Author: Cyril Hrubis <chrubis@suse.cz>
+Date:   Tue Oct 3 13:29:15 2017 +0200
 
-Since the test is using tmpdir, we either need exec*p* variant and
-set PATH or copy binary to tmpdir. I took inspiration from creat07.
+    Make use of SAFE_CLOSE()
 
-Copy approach is slightly more convenient when running test from git tree:
-# ./dirtyc0w
+Broke the test since it opens and closes a fd in order to get free file
+descriptor to pass to dup2() as newfd. The problem here is that
+SAFE_CLOSE() sets the file descriptor to -1, which is usually good
+thing.
 
-But I can replace it with execvpe() - user would just need to setup PATH
-before running it from git tree:
-# env PATH=`pwd`:$PATH ./dirtyc0w
+This patch fixes the problem by using temporary variable to store the fd
+to pass it to SAFE_CLOSE().
 
-Regards,
-Jan
+Fixes #219
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/dup2/dup203.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/dup2/dup203.c b/testcases/kernel/syscalls/dup2/dup203.c
+index d3c228362..e6f281adf 100644
+--- a/testcases/kernel/syscalls/dup2/dup203.c
++++ b/testcases/kernel/syscalls/dup2/dup203.c
+@@ -144,7 +144,9 @@ int main(int ac, char **av)
+ 			tst_brkm(TBROK, cleanup, "Cannot create second file");
+ 		}
+ 
+-		SAFE_CLOSE(cleanup, fd2);
++		/* SAFE_CLOSE() sets the fd to -1 avoid it here */
++		rval = fd2;
++		SAFE_CLOSE(cleanup, rval);
+ 
+ 		TEST(dup2(fd0, fd2));
+ 
+-- 
+2.13.5
+
