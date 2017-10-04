@@ -1,35 +1,34 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 04 Oct 2017 10:04:37 +0200
-Subject: [LTP] [RFC PATCH] newlib: Allow sub-tests to be specified in a
-	list
-In-Reply-To: <20171003144157.GD11692@rei>
-References: <20171003135520.19580-1-rpalethorpe@suse.com>
- <20171003144157.GD11692@rei>
-Message-ID: <8760bvwd7u.fsf@our.domain.is.not.set>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed,  4 Oct 2017 12:42:42 +0200
+Subject: [LTP] [PATCH 1/2] lib: allow checkpoints to be used by any uid
+Message-ID: <94518262a76edca533440acb73611eb93184dc90.1507113734.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Allow unprivileged child to synchronize with privileged parent.
+Use chmod after open, because effective permissions set by open()
+are modified by the process's umask: (mode & ~umask).
 
-Cyril Hrubis writes:
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ lib/tst_test.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> Hi!
-> That is even more complicated than my patch with array:
->
-> http://lists.linux.it/pipermail/ltp/2017-July/005132.html
->
-> And Jan didn't even liked mine because it adds complexity complexity
-> that is uncalled for...
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 26414e31ca77..233b370794a6 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -93,6 +93,7 @@ static void setup_ipc(void)
+ 	ipc_fd = open(shm_path, O_CREAT | O_EXCL | O_RDWR, 0600);
+ 	if (ipc_fd < 0)
+ 		tst_brk(TBROK | TERRNO, "open(%s)", shm_path);
++	SAFE_CHMOD(shm_path, 0666);
+ 
+ 	SAFE_FTRUNCATE(ipc_fd, size);
+ 
+-- 
+1.8.3.1
 
-I think it is called for (atleast the idea in general is) because it
-encourages people to write similar tests in a clean way which should
-save time in the long run.
-
-I am hoping someone comes up with an acceptable way of doing it.
-
---
-Thank you,
-Richard.
