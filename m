@@ -1,44 +1,45 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 3 Oct 2017 21:05:41 +0200
-Subject: [LTP] [PATCH 1/1] syscalls, lib: Use SAFE_{BIND, LISTEN,
- SOCKET} macros
-In-Reply-To: <778521072.25826642.1507054113445.JavaMail.zimbra@redhat.com>
-References: <20170929231036.32262-1-pvorel@suse.cz>
- <878tgtwqk7.fsf@our.domain.is.not.set>
- <20171002150417.jodtfynklflxe5pl@dell5510>
- <20171002152109.GA3736@rei>
- <20171002153616.k6fkz7fpzh2shzdc@dell5510>
- <20171003114349.GA19124@rei>
- <20171003123114.4iylsq2c35hh4pmh@dell5510>
- <20171003125653.GA11692@rei>
- <778521072.25826642.1507054113445.JavaMail.zimbra@redhat.com>
-Message-ID: <20171003190540.GA7210@rei>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 4 Oct 2017 13:51:59 +0800
+Subject: [LTP] [PATCH 1/2] syscalls/setrlimit02.c: Add a test for EFAULT
+Message-ID: <1507096320-9130-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > > Really nice solution :-).
-> > > This script is really worth of adding into LTP (even it requires to check
-> > > formatting).
-> > 
-> > I will strip the old library parts, then we can add it, maybe we can
-> > even use it as a commit hook or something to automatically check if
-> > we could have used a SAFE_MACRO() instead of custom error handling...
-> > 
-> 
-> As I was looking at changes, I came across:
->   tst_brkm(TFAIL | TERRNO, ...);
-> 
-> I guess most of these tst_brk TFAILs should be TBROKs, but that would be
-> likely difficult to script.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/setrlimit/setrlimit02.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Yes, we would have to review which of these are real TFAILs manually,
-which could be done, but would be quite time consuming. So I stuck with
-changes I can formally prove are equal.
-
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit02.c b/testcases/kernel/syscalls/setrlimit/setrlimit02.c
+index 633279c..abcf2bc 100644
+--- a/testcases/kernel/syscalls/setrlimit/setrlimit02.c
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit02.c
+@@ -18,7 +18,11 @@
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+ /*
+- * Testcase to test the different errnos set by setrlimit(2) system call.
++ * DESCRIPTION
++ *  1) Test for EINVAL when resource is invalid.
++ *  2) Test for EFAULT when rlim points outside the accessible address space.
++ *  3) Test for EPERM when an unprivileged process tried to use setrlimit() to
++ *     increase a soft or hard limit.
+  */
+ #include <pwd.h>
+ #include <errno.h>
+@@ -33,6 +37,7 @@ static struct tcase {
+ 	int exp_errno;
+ } tcases[] = {
+ 	{-1, &rlim, EINVAL},
++	{RLIMIT_NOFILE, (void *) -1, EFAULT},
+ 	{RLIMIT_NOFILE, &rlim, EPERM}
+ };
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
+
+
