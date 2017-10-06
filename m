@@ -1,36 +1,36 @@
-From: Dejan Jovicevic <dejan.jovicevic@rt-rk.com>
-Date: Thu,  5 Oct 2017 13:35:15 +0200
-Subject: [LTP] [PATCH] sync_file_range: add little endian support for mips
-Message-ID: <1507203315-22351-1-git-send-email-dejan.jovicevic@rt-rk.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri,  6 Oct 2017 03:53:31 +0200
+Subject: [LTP] [RFC PATCH 1/6] m4: Fix libkeyutils detection on 32-bit cross
+	build
+In-Reply-To: <20171006015336.29972-1-pvorel@suse.cz>
+References: <20171006015336.29972-1-pvorel@suse.cz>
+Message-ID: <20171006015336.29972-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Dejan Jovicevic <dejan.jovicevic@rt-rk.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/syscalls/sync_file_range/sync_file_range01.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ m4/ltp-keyutils.m4 | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c
-index 0a9fb8e..cebb919 100644
---- a/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c
-+++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c
-@@ -218,8 +218,13 @@ static inline long syncfilerange(int fd, off64_t offset, off64_t nbytes,
- 
- /* mips */
- #elif defined(__mips__) && __WORDSIZE == 32
-+#if __BYTE_ORDER == __BIG_ENDIAN
- 	return ltp_syscall(__NR_sync_file_range, fd, 0, (int)(offset >> 32),
- 		(int)offset, (int)(nbytes >> 32), (int)nbytes, flags);
-+#elif __BYTE_ORDER == __LITTLE_ENDIAN
-+	return ltp_syscall(__NR_sync_file_range, fd, 0, (int)offset,
-+		(int)(offset >> 32), (int)nbytes, (int)(nbytes >> 32), flags);
-+#endif
- 
- /* other */
- #else
+diff --git a/m4/ltp-keyutils.m4 b/m4/ltp-keyutils.m4
+index 74b7d3249..1434ca823 100644
+--- a/m4/ltp-keyutils.m4
++++ b/m4/ltp-keyutils.m4
+@@ -18,7 +18,7 @@ dnl
+ dnl LTP_CHECK_KEYUTILS_SUPPORT
+ dnl ----------------------------
+ dnl
+-AC_DEFUN([LTP_CHECK_KEYUTILS_SUPPORT],[
+-AC_CHECK_HEADERS([keyutils.h], [keyutils_libs="-lkeyutils"])
+-AC_SUBST([KEYUTILS_LIBS], [$keyutils_libs])
++AC_DEFUN([LTP_CHECK_KEYUTILS_SUPPORT], [
++	AC_CHECK_LIB([keyutils], [add_key], [keyutils_libs="-lkeyutils"])
++	AC_SUBST([KEYUTILS_LIBS], [$keyutils_libs])
+ ])
 -- 
-1.9.1
+2.14.2
 
