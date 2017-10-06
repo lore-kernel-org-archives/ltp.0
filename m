@@ -1,64 +1,73 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri,  6 Oct 2017 03:53:30 +0200
-Subject: [LTP] [RFC PATCH 0/6] Fix 32-bit cross compilation
-Message-ID: <20171006015336.29972-1-pvorel@suse.cz>
+Date: Fri,  6 Oct 2017 03:53:33 +0200
+Subject: [LTP] [RFC PATCH 3/6] m4: Simplify check for linux/can.h header
+In-Reply-To: <20171006015336.29972-1-pvorel@suse.cz>
+References: <20171006015336.29972-1-pvorel@suse.cz>
+Message-ID: <20171006015336.29972-4-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-
-these patches fixes 32-bit cross compilation build.
-I'm not an autotools expert so I tried to minimize changes.
-I extended header checks with library checks.
-
-NUMA sources would deserve to rechecks header dependencies. I tried that, but
-decided to postpone it.
-
-BTW I have to admit I'd wish we'd just filter out directories without missing
-libraries, as we could avoid #if/#ifdef in sources.  But I guess we cannot
-afford that as binaries are called from runtime files.
-
-Petr Vorel (6):
-  m4: Fix libkeyutils detection on 32-bit cross build
-  m4: Fix libacl detection on 32-bit cross build
-  m4: Simplify check for linux/can.h header
-  m4: Fix libcrypto detection on 32-bit cross build
-  make: Remove workarounds for build without libnuma
-  m4,kernel/lib: Detect libnuma presence in kernel libs
-
- configure.ac                                       |  9 ++++----
- m4/ltp-acl.m4                                      |  7 +++---
- m4/ltp-can.m4                                      | 25 ----------------------
- m4/ltp-crypto.m4                                   | 10 +++++----
- m4/ltp-keyutils.m4                                 |  6 +++---
- m4/ltp-numa.m4                                     |  6 +++++-
- .../cpuset_syscall_test/cpuset_syscall_test.c      |  4 ++--
- testcases/kernel/hotplug/memory_hotplug/commands.c |  2 +-
- testcases/kernel/hotplug/memory_hotplug/memtoy.c   |  9 ++++----
- testcases/kernel/hotplug/memory_hotplug/segment.c  |  2 +-
- testcases/kernel/include/numa_helper.h             |  2 +-
- testcases/kernel/lib/numa_helper.c                 | 14 ++++++------
- testcases/kernel/mem/cpuset/cpuset01.c             |  4 ++--
- testcases/kernel/mem/ksm/ksm02.c                   |  4 ++--
- testcases/kernel/mem/ksm/ksm04.c                   |  4 ++--
- testcases/kernel/mem/lib/mem.c                     |  6 +++---
- testcases/kernel/mem/vma/vma02.c                   | 17 ++++++---------
- testcases/kernel/mem/vma/vma04.c                   | 16 +++++---------
- .../integrity/ima/src/ima_boot_aggregate.c         | 13 +++++++----
- .../security/integrity/ima/src/ima_measure.c       | 17 +++++++--------
- .../syscalls/get_mempolicy/get_mempolicy01.c       |  4 ++--
- testcases/kernel/syscalls/mbind/Makefile           |  9 --------
- testcases/kernel/syscalls/mbind/mbind01.c          |  4 ++--
- testcases/kernel/syscalls/migrate_pages/Makefile   |  3 ---
- .../syscalls/migrate_pages/migrate_pages02.c       |  2 +-
- testcases/kernel/syscalls/move_pages/Makefile      |  5 -----
- .../syscalls/move_pages/move_pages_support.c       |  8 +++----
- 27 files changed, 84 insertions(+), 128 deletions(-)
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ configure.ac  |  2 +-
+ m4/ltp-can.m4 | 25 -------------------------
+ 2 files changed, 1 insertion(+), 26 deletions(-)
  delete mode 100644 m4/ltp-can.m4
 
+diff --git a/configure.ac b/configure.ac
+index 458a5b13f..56fc9248e 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -36,6 +36,7 @@ AC_CHECK_HEADERS([ \
+     mm.h \
+     pthread.h \
+     sys/xattr.h \
++    linux/can.h \
+     linux/genetlink.h \
+     linux/mempolicy.h \
+     linux/module.h \
+@@ -176,7 +177,6 @@ LTP_CHECK_TEE
+ LTP_CHECK_SPLICE
+ LTP_CHECK_VMSPLICE
+ LTP_CHECK_TIMERFD
+-LTP_CHECK_CAN_SUPPORT
+ LTP_CHECK_IOVEC
+ LTP_CHECK_KEYCTL
+ LTP_CHECK_LINUXRANDOM
+diff --git a/m4/ltp-can.m4 b/m4/ltp-can.m4
+deleted file mode 100644
+index af437ef5e..000000000
+--- a/m4/ltp-can.m4
++++ /dev/null
+@@ -1,25 +0,0 @@
+-dnl
+-dnl Copyright (c) Linux Test Project, 2014
+-dnl
+-dnl This program is free software;  you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program;  if not, write to the Free Software
+-dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_CAN_SUPPORT
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_CAN_SUPPORT],[
+-AC_CHECK_HEADERS([linux/can.h])
+-])
 -- 
 2.14.2
 
