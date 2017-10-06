@@ -1,56 +1,48 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri,  6 Oct 2017 12:38:39 +0200
-Subject: [LTP] [RFC] [PATCH] syscalls/madvise09: Fix TCONF propagation,
-	remove .min_kver
-Message-ID: <20171006103839.24544-1-chrubis@suse.cz>
+Date: Fri, 6 Oct 2017 13:37:44 +0200
+Subject: [LTP] [PATCH 2/2] security/dirtyc0w: synchronize parent and
+	child
+In-Reply-To: <47778538.26248540.1507119900299.JavaMail.zimbra@redhat.com>
+References: <94518262a76edca533440acb73611eb93184dc90.1507113734.git.jstancek@redhat.com>
+ <1300ca0b5103f4f145af3be1a0295974a04dcae8.1507113734.git.jstancek@redhat.com>
+ <20171004120240.GA29423@rei>
+ <47778538.26248540.1507119900299.JavaMail.zimbra@redhat.com>
+Message-ID: <20171006113744.GA8258@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This patch fixes TCONF propagation from the child to parent, the parent
-have to handle the TCONF exit value.
+Hi!
+> > > +static const char *const resource_files[] = {
+> > > +	TEST_APP,
+> > > +	NULL,
+> > > +};
+> > 
+> > I do not get why we need the test binary to be listed as resource file,
+> > the rest seems OK to me.
+> 
+> Since the test is using tmpdir, we either need exec*p* variant and
+> set PATH or copy binary to tmpdir. I took inspiration from creat07.
 
-And it also removes the .min_kver in order to enable the test on
-distribution kernels that backported the MADV_FREE. Older kernels are
-handled by the runtime EINVAL detection or will TCONF at the check for
-memory cgroup support, so there is no real need to keep the .min_kver in
-the source code.
+We actually copy the binary for creat07 since are are trying to
+overwrite it, which is supposed to fail, but I do not want to overwrite
+the installed files in a case that the kernel is buggy.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/syscalls/madvise/madvise09.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+> Copy approach is slightly more convenient when running test from git tree:
+> # ./dirtyc0w
+> 
+> But I can replace it with execvpe() - user would just need to setup PATH
+> before running it from git tree:
+> # env PATH=`pwd`:$PATH ./dirtyc0w
 
-diff --git a/testcases/kernel/syscalls/madvise/madvise09.c b/testcases/kernel/syscalls/madvise/madvise09.c
-index 7ad76f795..fc284accf 100644
---- a/testcases/kernel/syscalls/madvise/madvise09.c
-+++ b/testcases/kernel/syscalls/madvise/madvise09.c
-@@ -305,8 +305,13 @@ retry:
- 		goto retry;
- 	}
- 
--	if (WIFEXITED(status) && WEXITSTATUS(status))
--		tst_brk(TBROK, "Child exitted unexpectedly");
-+	if (WIFEXITED(status)) {
-+		if (WEXITSTATUS(status) == TCONF)
-+			tst_brk(TCONF, "MADV_FREE is not supported");
-+
-+		if (WEXITSTATUS(status))
-+			tst_brk(TBROK, "Child exitted unexpectedly");
-+	}
- }
- 
- static void setup(void)
-@@ -334,7 +339,6 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.test_all = run,
--	.min_kver = "4.5",
- 	.needs_root = 1,
- 	.forks_child = 1,
- };
+You are supposed to do that, but maybe we can add the code to change
+PATH to the test library itself, so it will include $PWD automatically,
+which would fix this problem for quite a lot of test without a need to
+modify these. Or add a modified exec function to the test library that
+locates the binary first.
+
 -- 
-2.13.5
-
+Cyril Hrubis
+chrubis@suse.cz
