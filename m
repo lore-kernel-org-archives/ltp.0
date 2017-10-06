@@ -1,55 +1,36 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 6 Oct 2017 07:57:11 -0400 (EDT)
-Subject: [LTP] [PATCH 2/2] security/dirtyc0w: synchronize parent and
- child
-In-Reply-To: <20171006113744.GA8258@rei>
-References: <94518262a76edca533440acb73611eb93184dc90.1507113734.git.jstancek@redhat.com>
- <1300ca0b5103f4f145af3be1a0295974a04dcae8.1507113734.git.jstancek@redhat.com>
- <20171004120240.GA29423@rei>
- <47778538.26248540.1507119900299.JavaMail.zimbra@redhat.com>
- <20171006113744.GA8258@rei>
-Message-ID: <1495509161.27338872.1507291031816.JavaMail.zimbra@redhat.com>
+Date: Fri,  6 Oct 2017 13:57:48 +0200
+Subject: [LTP] [PATCH 1/2 v2] lib: allow checkpoints to be used by any uid
+Message-ID: <94518262a76edca533440acb73611eb93184dc90.1507290372.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Allow unprivileged child to synchronize with privileged parent.
+Use chmod after open, because effective permissions set by open()
+are modified by the process's umask: (mode & ~umask).
 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ lib/tst_test.c | 1 +
+ 1 file changed, 1 insertion(+)
 
------ Original Message -----
-> Hi!
-> > > > +static const char *const resource_files[] = {
-> > > > +	TEST_APP,
-> > > > +	NULL,
-> > > > +};
-> > > 
-> > > I do not get why we need the test binary to be listed as resource file,
-> > > the rest seems OK to me.
-> > 
-> > Since the test is using tmpdir, we either need exec*p* variant and
-> > set PATH or copy binary to tmpdir. I took inspiration from creat07.
-> 
-> We actually copy the binary for creat07 since are are trying to
-> overwrite it, which is supposed to fail, but I do not want to overwrite
-> the installed files in a case that the kernel is buggy.
+No changes in v2.
 
-I see, I'll send v2 which drops resource_files.
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 26414e31ca77..233b370794a6 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -93,6 +93,7 @@ static void setup_ipc(void)
+ 	ipc_fd = open(shm_path, O_CREAT | O_EXCL | O_RDWR, 0600);
+ 	if (ipc_fd < 0)
+ 		tst_brk(TBROK | TERRNO, "open(%s)", shm_path);
++	SAFE_CHMOD(shm_path, 0666);
+ 
+ 	SAFE_FTRUNCATE(ipc_fd, size);
+ 
+-- 
+1.8.3.1
 
-> 
-> > Copy approach is slightly more convenient when running test from git tree:
-> > # ./dirtyc0w
-> > 
-> > But I can replace it with execvpe() - user would just need to setup PATH
-> > before running it from git tree:
-> > # env PATH=`pwd`:$PATH ./dirtyc0w
-> 
-> You are supposed to do that, but maybe we can add the code to change
-> PATH to the test library itself, so it will include $PWD automatically,
-> which would fix this problem for quite a lot of test without a need to
-> modify these. 
-
-We'd also have to make sure all tests use exec*p* variant, right?
-
-Regards,
-Jan
