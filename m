@@ -1,32 +1,23 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 6 Oct 2017 16:43:20 +0200
-Subject: [LTP] [RFC PATCH 0/6] Fix 32-bit cross compilation
-In-Reply-To: <874lrc4mrc.fsf@our.domain.is.not.set>
-References: <20171006015336.29972-1-pvorel@suse.cz>
- <874lrc4mrc.fsf@our.domain.is.not.set>
-Message-ID: <20171006144320.vqrg4i2bte7beklv@x230>
+From: Bixuan Cui <cuibixuan@huawei.com>
+Date: Mon, 9 Oct 2017 13:27:10 +0800
+Subject: [LTP] [PATCH] syscalls/access01: Set umask value before run case
+In-Reply-To: <20171003155216.GB27773@rei>
+References: <1505826277-33027-1-git-send-email-cuibixuan@huawei.com>
+ <20171003155216.GB27773@rei>
+Message-ID: <59DB08AE.5030105@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richard,
+On 2017/10/3 23:52, Cyril Hrubis wrote:
+> Hi!
+> I've reworded the commit message and pushed, thanks.
 
-thanks a lot for a feadback.
-> > these patches fixes 32-bit cross compilation build.
-> > I'm not an autotools expert so I tried to minimize changes.
-> > I extended header checks with library checks.
+Thanks,
+Bixuan Cui
 
-> Good stuff, I have briefly tested the patch and it seems to
-> work. However I am wondering whether it is a good idea to remove the
-> header checks. It is not clear to me that AC_CHECK_LIB also somehow
-> checks that the relevant header exists as well. Perhaps it guesses the
-> header path from the library name, but it doesn't quite make sense to
-> me.
-No, it an error, AC_CHECK_LIB doesn't check it. I'll put the relevant checks back in v2,
-into AC_CHECK_HEADERS in configure.ac.
+> 
 
 
-Kind regards,
-Petr
