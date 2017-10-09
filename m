@@ -1,10 +1,9 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon,  9 Oct 2017 13:01:00 +0200
-Subject: [LTP] [RFC PATCH v2 6/7] make: Remove workarounds for build without
-	libnuma
+Date: Mon,  9 Oct 2017 13:00:57 +0200
+Subject: [LTP] [RFC PATCH v2 3/7] m4: Simplify check for linux/can.h header
 In-Reply-To: <20171009110101.3329-1-pvorel@suse.cz>
 References: <20171009110101.3329-1-pvorel@suse.cz>
-Message-ID: <20171009110101.3329-7-pvorel@suse.cz>
+Message-ID: <20171009110101.3329-4-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,61 +12,62 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/syscalls/mbind/Makefile         | 9 ---------
- testcases/kernel/syscalls/migrate_pages/Makefile | 3 ---
- testcases/kernel/syscalls/move_pages/Makefile    | 5 -----
- 3 files changed, 17 deletions(-)
+ configure.ac  |  2 +-
+ m4/ltp-can.m4 | 25 -------------------------
+ 2 files changed, 1 insertion(+), 26 deletions(-)
+ delete mode 100644 m4/ltp-can.m4
 
-diff --git a/testcases/kernel/syscalls/mbind/Makefile b/testcases/kernel/syscalls/mbind/Makefile
-index 5132dffa4..1e2f5e4de 100644
---- a/testcases/kernel/syscalls/mbind/Makefile
-+++ b/testcases/kernel/syscalls/mbind/Makefile
-@@ -20,15 +20,6 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
--#
--# gcc complains about unused functions / variables when HAS_NUMA_H isn't
--# defined, so let's just skip the warning. It's nothing more than a few extra
--# variables and functions allocated on the stack, so meh... no harm, no foul.
--#
--ifeq ($(NUMA_LIBS),)
--CPPFLAGS		+= -Wno-unused
--endif
+diff --git a/configure.ac b/configure.ac
+index e9c61ef78..c99b1540e 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -37,6 +37,7 @@ AC_CHECK_HEADERS([ \
+     pthread.h \
+     sys/xattr.h \
+     keyutils.h \
++    linux/can.h \
+     linux/genetlink.h \
+     linux/mempolicy.h \
+     linux/module.h \
+@@ -178,7 +179,6 @@ LTP_CHECK_TEE
+ LTP_CHECK_SPLICE
+ LTP_CHECK_VMSPLICE
+ LTP_CHECK_TIMERFD
+-LTP_CHECK_CAN_SUPPORT
+ LTP_CHECK_IOVEC
+ LTP_CHECK_KEYCTL
+ LTP_CHECK_LINUXRANDOM
+diff --git a/m4/ltp-can.m4 b/m4/ltp-can.m4
+deleted file mode 100644
+index af437ef5e..000000000
+--- a/m4/ltp-can.m4
++++ /dev/null
+@@ -1,25 +0,0 @@
+-dnl
+-dnl Copyright (c) Linux Test Project, 2014
+-dnl
+-dnl This program is free software;  you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program;  if not, write to the Free Software
+-dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-dnl
 -
- CPPFLAGS		+= -I$(abs_srcdir)/../utils/
- 
- include $(top_srcdir)/testcases/kernel/include/lib.mk
-diff --git a/testcases/kernel/syscalls/migrate_pages/Makefile b/testcases/kernel/syscalls/migrate_pages/Makefile
-index 7168cd6e1..46a35d3e0 100644
---- a/testcases/kernel/syscalls/migrate_pages/Makefile
-+++ b/testcases/kernel/syscalls/migrate_pages/Makefile
-@@ -23,9 +23,6 @@ include $(top_srcdir)/include/mk/testcases.mk
- MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%,$(wildcard $(abs_srcdir)/*[0-9].c))
- $(MAKE_TARGETS): %: %.o migrate_pages_common.o
- 
--ifeq ($(NUMA_LIBS),)
--CPPFLAGS		+= -Wno-unused
--endif
- CPPFLAGS		+= -I$(abs_srcdir)/../utils/
- 
- include $(top_srcdir)/testcases/kernel/include/lib.mk
-diff --git a/testcases/kernel/syscalls/move_pages/Makefile b/testcases/kernel/syscalls/move_pages/Makefile
-index d4620e10a..989277019 100644
---- a/testcases/kernel/syscalls/move_pages/Makefile
-+++ b/testcases/kernel/syscalls/move_pages/Makefile
-@@ -26,11 +26,6 @@ INSTALL_TARGETS		:= move_pages.sh
- 
- MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%,$(wildcard $(abs_srcdir)/*[0-9].c))
- 
--# linux_syscall_numbers.h is forcing move_pages_support.o to complain about
--# cleanup being undefined [and when defined] unused. Let's just skip this
--# warning...
--move_pages_support.o: CFLAGS += -Wno-unused-function
--
- $(MAKE_TARGETS): %: %.o move_pages_support.o
- 
- LDLIBS			+= -lpthread -lrt
+-dnl
+-dnl LTP_CHECK_CAN_SUPPORT
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_CAN_SUPPORT],[
+-AC_CHECK_HEADERS([linux/can.h])
+-])
 -- 
 2.14.2
 
