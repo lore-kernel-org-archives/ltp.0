@@ -1,58 +1,74 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon,  9 Oct 2017 13:00:54 +0200
-Subject: [LTP] [RFC PATCH v2 0/7] Fix 32-bit cross compilation
-Message-ID: <20171009110101.3329-1-pvorel@suse.cz>
+Date: Mon,  9 Oct 2017 13:00:58 +0200
+Subject: [LTP] [RFC PATCH v2 4/7] m4: Simplify check for linux/keyctl.h
+	header
+In-Reply-To: <20171009110101.3329-1-pvorel@suse.cz>
+References: <20171009110101.3329-1-pvorel@suse.cz>
+Message-ID: <20171009110101.3329-5-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Minor changes v2->v2:
-* New commit "m4: Simplify check for linux/keyctl.h header".
-* Fix commits (accidentally remove check for keyutils.h and sys/acl.h headers).
-
-Petr Vorel (7):
-  m4: Fix libkeyutils detection on 32-bit cross build
-  m4: Fix libacl detection on 32-bit cross build
-  m4: Simplify check for linux/can.h header
-  m4: Simplify check for linux/keyctl.h header
-  m4: Fix libcrypto detection on 32-bit cross build
-  make: Remove workarounds for build without libnuma
-  m4,kernel/lib: Detect libnuma presence in kernel libs
-
- configure.ac                                       | 15 +++++++------
- m4/ltp-acl.m4                                      |  7 +++---
- m4/ltp-can.m4                                      | 25 ----------------------
- m4/ltp-crypto.m4                                   | 10 +++++----
- m4/ltp-keyctl.m4                                   | 25 ----------------------
- m4/ltp-keyutils.m4                                 |  6 +++---
- m4/ltp-numa.m4                                     |  6 +++++-
- .../cpuset_syscall_test/cpuset_syscall_test.c      |  4 ++--
- testcases/kernel/hotplug/memory_hotplug/commands.c |  2 +-
- testcases/kernel/hotplug/memory_hotplug/memtoy.c   |  9 ++++----
- testcases/kernel/hotplug/memory_hotplug/segment.c  |  2 +-
- testcases/kernel/include/numa_helper.h             |  2 +-
- testcases/kernel/lib/numa_helper.c                 | 14 ++++++------
- testcases/kernel/mem/cpuset/cpuset01.c             |  4 ++--
- testcases/kernel/mem/ksm/ksm02.c                   |  4 ++--
- testcases/kernel/mem/ksm/ksm04.c                   |  4 ++--
- testcases/kernel/mem/lib/mem.c                     |  6 +++---
- testcases/kernel/mem/vma/vma02.c                   | 17 ++++++---------
- testcases/kernel/mem/vma/vma04.c                   | 16 +++++---------
- .../integrity/ima/src/ima_boot_aggregate.c         | 13 +++++++----
- .../security/integrity/ima/src/ima_measure.c       | 17 +++++++--------
- .../syscalls/get_mempolicy/get_mempolicy01.c       |  4 ++--
- testcases/kernel/syscalls/mbind/Makefile           |  9 --------
- testcases/kernel/syscalls/mbind/mbind01.c          |  4 ++--
- testcases/kernel/syscalls/migrate_pages/Makefile   |  3 ---
- .../syscalls/migrate_pages/migrate_pages02.c       |  2 +-
- testcases/kernel/syscalls/move_pages/Makefile      |  5 -----
- .../syscalls/move_pages/move_pages_support.c       |  8 +++----
- 28 files changed, 88 insertions(+), 155 deletions(-)
- delete mode 100644 m4/ltp-can.m4
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ configure.ac     |  2 +-
+ m4/ltp-keyctl.m4 | 25 -------------------------
+ 2 files changed, 1 insertion(+), 26 deletions(-)
  delete mode 100644 m4/ltp-keyctl.m4
 
+diff --git a/configure.ac b/configure.ac
+index c99b1540e..4eb61e070 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -39,6 +39,7 @@ AC_CHECK_HEADERS([ \
+     keyutils.h \
+     linux/can.h \
+     linux/genetlink.h \
++    linux/keyctl.h \
+     linux/mempolicy.h \
+     linux/module.h \
+     linux/netlink.h \
+@@ -180,7 +181,6 @@ LTP_CHECK_SPLICE
+ LTP_CHECK_VMSPLICE
+ LTP_CHECK_TIMERFD
+ LTP_CHECK_IOVEC
+-LTP_CHECK_KEYCTL
+ LTP_CHECK_LINUXRANDOM
+ LTP_CHECK_IF_LINK
+ LTP_CHECK_KCMP
+diff --git a/m4/ltp-keyctl.m4 b/m4/ltp-keyctl.m4
+deleted file mode 100644
+index 6a239ca64..000000000
+--- a/m4/ltp-keyctl.m4
++++ /dev/null
+@@ -1,25 +0,0 @@
+-dnl
+-dnl Copyright (c) 2014 Linux Test Project
+-dnl
+-dnl This program is free software; you can redistribute it and/or
+-dnl modify it under the terms of the GNU General Public License as
+-dnl published by the Free Software Foundation; either version 2 of
+-dnl the License, or (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it would be useful,
+-dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-dnl GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program; if not, write the Free Software Foundation,
+-dnl Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_KEYCTL
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_KEYCTL],[
+-AC_CHECK_HEADERS([linux/keyctl.h])
+-])
 -- 
 2.14.2
 
