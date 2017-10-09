@@ -1,22 +1,26 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 9 Oct 2017 14:49:11 +0200
-Subject: [LTP] [RFC PATCH v2 0/7] Fix 32-bit cross compilation
-In-Reply-To: <87mv507eev.fsf@our.domain.is.not.set>
-References: <20171009110101.3329-1-pvorel@suse.cz>
- <87mv507eev.fsf@our.domain.is.not.set>
-Message-ID: <20171009124910.56ucyfavqmwcd7uh@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 9 Oct 2017 16:23:04 +0200
+Subject: [LTP] [PATCH 1/2] syscalls/setrlimit02.c: Add a test for EFAULT
+In-Reply-To: <1507096320-9130-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1507096320-9130-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20171009142304.GB25633@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richard,
+Hi!
+> + * DESCRIPTION
+> + *  1) Test for EINVAL when resource is invalid.
+> + *  2) Test for EFAULT when rlim points outside the accessible address space.
+> + *  3) Test for EPERM when an unprivileged process tried to use setrlimit() to
+> + *     increase a soft or hard limit.
 
-> I think this also requires a fix for libaio. Currently we just check for
-> libaio.h in configure.ac.
-Thanks! I'll include it in v3 (or in separate version in case v2 gets merged).
+We increase only the hard limit here hence this description is
+misleading, we should say here that unprivileged process is trying to
+increase the hard limit.
 
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
