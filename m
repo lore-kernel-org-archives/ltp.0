@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 9 Oct 2017 16:23:04 +0200
-Subject: [LTP] [PATCH 1/2] syscalls/setrlimit02.c: Add a test for EFAULT
-In-Reply-To: <1507096320-9130-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1507096320-9130-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20171009142304.GB25633@rei.lan>
+Date: Mon, 9 Oct 2017 16:43:07 +0200
+Subject: [LTP] [PATCH 2/2 v2] security/dirtyc0w: synchronize parent and
+ child
+In-Reply-To: <0d87a0f1b598e710e21ebbabf316c39610e5d47f.1507290372.git.jstancek@redhat.com>
+References: <94518262a76edca533440acb73611eb93184dc90.1507290372.git.jstancek@redhat.com>
+ <0d87a0f1b598e710e21ebbabf316c39610e5d47f.1507290372.git.jstancek@redhat.com>
+Message-ID: <20171009144307.GC25633@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,15 +13,12 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> + * DESCRIPTION
-> + *  1) Test for EINVAL when resource is invalid.
-> + *  2) Test for EFAULT when rlim points outside the accessible address space.
-> + *  3) Test for EPERM when an unprivileged process tried to use setrlimit() to
-> + *     increase a soft or hard limit.
+> +		(void)execvpe(TEST_APP, av, tst_ipc_envp);
+> +		tst_brk(TBROK|TERRNO, "exec failed");
 
-We increase only the hard limit here hence this description is
-misleading, we should say here that unprivileged process is trying to
-increase the hard limit.
+Can we please add SAFE_EXECVPE() to the library?
+
+Other than that it looks good to me, acked.
 
 -- 
 Cyril Hrubis
