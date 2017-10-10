@@ -1,76 +1,114 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 10 Oct 2017 17:18:52 +0200
-Subject: [LTP] [PATCH 4/6] lib: extend PATH as part of test setup
-In-Reply-To: <fe40d9a0263afff913c646a6bc1fad88e0ce9747.1507647255.git.jstancek@redhat.com>
-References: <7fe9947329b48673f7f9ee2e0b127619fdfe0c34.1507647255.git.jstancek@redhat.com>
- <fe40d9a0263afff913c646a6bc1fad88e0ce9747.1507647255.git.jstancek@redhat.com>
-Message-ID: <20171010151852.GA12028@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 10 Oct 2017 17:26:37 +0200
+Subject: [LTP] [PATCH 1/1] syscalls/ustat: Fix build for libc without
+	ustat() support
+Message-ID: <20171010152637.11194-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +static void add_paths(void)
-> +{
-> +	char *old_path = getenv("PATH");
-> +	const char *start_dir;
-> +	char *new_path;
-> +	int new_path_size;
-> +
-> +	start_dir = tst_get_startwd();
-> +
-> +	/* ".:" + "$start_dir" + '\0' */
-> +	new_path_size = 2 + strlen(start_dir) + 1;
-> +	if (old_path)
-> +		/* ":" + "$old_path" */
-> +		new_path_size += 1 + strlen(old_path);
-> +
-> +	new_path = SAFE_MALLOC(new_path_size);
-> +	strcpy(new_path, ".:");
-> +	strcat(new_path, start_dir);
-> +
-> +	if (old_path) {
-> +		strcat(new_path, ":");
-> +		strcat(new_path, old_path);
-> +	}
+This applies at least for uClibc/uClibc-ng with disabled __UCLIBC_SV4_DEPRECATED__.
 
-I do not like the strcat() function much, I would have probably handled
-these with asprintf();
+Patch taken from buildroot project (thanks!), adjusted it not to be
+only uClibc/uClibc-ng specific.
 
-	if (old_path)
-		SAFE_ASPRINTF(&new_path, "%s::%s", old_path, start_dir);
-	else
-		SAFE_ASPRINTF(&new_path, "::%s", start_dir);
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Reported-by: Erico Nunes <nunes.erico@gmail.com>
+---
+Another Buildroot patch, this one is hopefully correct.
+---
+ configure.ac                              |  6 +++++-
+ testcases/kernel/syscalls/ustat/ustat01.c | 14 ++++++++++++--
+ testcases/kernel/syscalls/ustat/ustat02.c | 10 +++++++++-
+ 3 files changed, 26 insertions(+), 4 deletions(-)
 
-
-The rest of the patchset looks good.
-
-BTW, we should also drop the note about setting $PATH from the
-documentation once this is merged.
-
-> +	SAFE_SETENV("PATH", new_path, 1);
-> +	free(new_path);
-> +}
-> +
->  static void testrun(void)
->  {
->  	unsigned int i = 0;
->  	unsigned long long stop_time = 0;
->  	int cont = 1;
->  
-> +	add_paths();
->  	do_test_setup();
->  
->  	if (duration > 0)
-> -- 
-> 1.8.3.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/configure.ac b/configure.ac
+index 465655e7b..17a02050a 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -44,9 +44,13 @@ AC_CHECK_HEADERS([ \
+     sys/inotify.h \
+     sys/fanotify.h \
+     sys/prctl.h \
++    sys/ustat.h \
+ ])
+ 
+-AC_CHECK_FUNCS([profil])
++AC_CHECK_FUNCS([ \
++    profil \
++    ustat \
++])
+ 
+ # Tools knobs
+ 
+diff --git a/testcases/kernel/syscalls/ustat/ustat01.c b/testcases/kernel/syscalls/ustat/ustat01.c
+index 494647bc2..74a880577 100644
+--- a/testcases/kernel/syscalls/ustat/ustat01.c
++++ b/testcases/kernel/syscalls/ustat/ustat01.c
+@@ -21,15 +21,19 @@
+ 
+ #include <unistd.h>
+ #include <errno.h>
+-#include <sys/ustat.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include "test.h"
+ #include "safe_macros.h"
++#include "config.h"
++
++char *TCID = "ustat01";
++
++#if defined(HAVE_SYS_USTAT_H) && defined(HAVE_USTAT)
++#include <sys/ustat.h>
+ 
+ static void setup(void);
+ 
+-char *TCID = "ustat01";
+ int TST_TOTAL = 1;
+ 
+ static dev_t dev_num;
+@@ -79,3 +83,9 @@ static void setup(void)
+ 
+ 	dev_num = buf.st_dev;
+ }
++#else /* systems without ustat() */
++int main(void)
++{
++	tst_brkm(TCONF, NULL, "system doesn't have ustat() support");
++}
++#endif
+diff --git a/testcases/kernel/syscalls/ustat/ustat02.c b/testcases/kernel/syscalls/ustat/ustat02.c
+index edada3107..cb2f0b828 100644
+--- a/testcases/kernel/syscalls/ustat/ustat02.c
++++ b/testcases/kernel/syscalls/ustat/ustat02.c
+@@ -22,12 +22,14 @@
+ 
+ #include <unistd.h>
+ #include <errno.h>
+-#include <sys/ustat.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+ #include "test.h"
+ #include "safe_macros.h"
+ 
++#if defined(HAVE_SYS_USTAT_H) && defined(HAVE_USTAT)
++#include <sys/ustat.h>
++
+ static void setup(void);
+ 
+ char *TCID = "ustat02";
+@@ -101,3 +103,9 @@ static void setup(void)
+ 
+ 	root_dev = buf.st_dev;
+ }
++#else /* systems without ustat() */
++int main(void)
++{
++	tst_brkm(TCONF, NULL, "system doesn't have ustat() support");
++}
++#endif
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.14.2
+
