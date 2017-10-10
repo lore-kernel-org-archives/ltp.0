@@ -1,70 +1,38 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 10 Oct 2017 17:05:12 +0200
-Subject: [LTP] [PATCH 4/6] lib: extend PATH as part of test setup
+Date: Tue, 10 Oct 2017 17:05:13 +0200
+Subject: [LTP] [PATCH 5/6] creat07: no need to pass tst_ipc_envp anymore
 In-Reply-To: <7fe9947329b48673f7f9ee2e0b127619fdfe0c34.1507647255.git.jstancek@redhat.com>
 References: <7fe9947329b48673f7f9ee2e0b127619fdfe0c34.1507647255.git.jstancek@redhat.com>
-Message-ID: <fe40d9a0263afff913c646a6bc1fad88e0ce9747.1507647255.git.jstancek@redhat.com>
+Message-ID: <70f47d3c63fb849eeba0a6bb4f2760d4815db3cb.1507647255.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This patch adds "." and "startdir" to $PATH during setup, so that exec*p()
-correctly finds child processes. And it also makes it convenient to run some
-tests directly from git tree.
+Now that env. variable LTP_IPC_PATH is inherited by default,
+it's not necessary to pass tst_ipc_envp anymore.
 
 Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- lib/tst_test.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ testcases/kernel/syscalls/creat/creat07.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 25cb234425ab..78cce19b6e4a 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -841,12 +841,41 @@ static unsigned long long get_time_ms(void)
- 	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
- }
+diff --git a/testcases/kernel/syscalls/creat/creat07.c b/testcases/kernel/syscalls/creat/creat07.c
+index e1b267661c39..236f4edf843f 100644
+--- a/testcases/kernel/syscalls/creat/creat07.c
++++ b/testcases/kernel/syscalls/creat/creat07.c
+@@ -38,9 +38,7 @@ static void verify_creat(void)
  
-+static void add_paths(void)
-+{
-+	char *old_path = getenv("PATH");
-+	const char *start_dir;
-+	char *new_path;
-+	int new_path_size;
-+
-+	start_dir = tst_get_startwd();
-+
-+	/* ".:" + "$start_dir" + '\0' */
-+	new_path_size = 2 + strlen(start_dir) + 1;
-+	if (old_path)
-+		/* ":" + "$old_path" */
-+		new_path_size += 1 + strlen(old_path);
-+
-+	new_path = SAFE_MALLOC(new_path_size);
-+	strcpy(new_path, ".:");
-+	strcat(new_path, start_dir);
-+
-+	if (old_path) {
-+		strcat(new_path, ":");
-+		strcat(new_path, old_path);
-+	}
-+
-+	SAFE_SETENV("PATH", new_path, 1);
-+	free(new_path);
-+}
-+
- static void testrun(void)
- {
- 	unsigned int i = 0;
- 	unsigned long long stop_time = 0;
- 	int cont = 1;
+ 	pid = SAFE_FORK();
+ 	if (pid == 0) {
+-		char *av[] = {TEST_APP, NULL};
+-		(void)execve(TEST_APP, av, tst_ipc_envp);
+-		perror("execve failed");
++		SAFE_EXECLP(TEST_APP, TEST_APP, NULL);
+ 		exit(1);
+ 	}
  
-+	add_paths();
- 	do_test_setup();
- 
- 	if (duration > 0)
 -- 
 1.8.3.1
 
