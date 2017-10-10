@@ -1,179 +1,207 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 10 Oct 2017 14:32:02 +0200
-Subject: [LTP] [PATCH v2 12/15] syscallse/setxattr02: Convert to the new
-	library
+Date: Tue, 10 Oct 2017 14:32:05 +0200
+Subject: [LTP] [PATCH v2 15/15] fs/fs_fill: Add a test to fill a FS in a few
+	threads
 In-Reply-To: <20171010123205.20147-1-chrubis@suse.cz>
 References: <20171010123205.20147-1-chrubis@suse.cz>
-Message-ID: <20171010123205.20147-12-chrubis@suse.cz>
+Message-ID: <20171010123205.20147-15-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Runs CPU+2 threads that write into FS until they got ENOSPC, then delete
+a file and continue.
+
+Older exfat fails with EIO instead of ENOSPC, it has been fixed in:
+
+commit ca112f07b115a419250b6526e71345dcd29e4d67
+Author: relan <relan@users.noreply.github.com>
+Date:   Tue Dec 27 17:22:12 2016 +0300
+
+    Propagate ENOSPC on write.
+
+at:
+
+https://github.com/relan/exfat/
+
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/setxattr/setxattr02.c | 120 ++++++++----------------
- 1 file changed, 41 insertions(+), 79 deletions(-)
+ runtest/fs                             |   2 +
+ testcases/kernel/fs/fs_fill/.gitignore |   1 +
+ testcases/kernel/fs/fs_fill/Makefile   |  22 +++++++
+ testcases/kernel/fs/fs_fill/fs_fill.c  | 114 +++++++++++++++++++++++++++++++++
+ 4 files changed, 139 insertions(+)
+ create mode 100644 testcases/kernel/fs/fs_fill/.gitignore
+ create mode 100644 testcases/kernel/fs/fs_fill/Makefile
+ create mode 100644 testcases/kernel/fs/fs_fill/fs_fill.c
 
-diff --git a/testcases/kernel/syscalls/setxattr/setxattr02.c b/testcases/kernel/syscalls/setxattr/setxattr02.c
-index 6d39236a3..0b6ecb3fa 100644
---- a/testcases/kernel/syscalls/setxattr/setxattr02.c
-+++ b/testcases/kernel/syscalls/setxattr/setxattr02.c
-@@ -57,10 +57,7 @@
- #ifdef HAVE_SYS_XATTR_H
- # include <sys/xattr.h>
- #endif
--#include "test.h"
--#include "safe_macros.h"
--
--char *TCID = "setxattr02";
-+#include "tst_test.h"
+diff --git a/runtest/fs b/runtest/fs
+index 33a8412fd..3fa210a9f 100644
+--- a/runtest/fs
++++ b/runtest/fs
+@@ -76,3 +76,5 @@ fs_racer fs_racer.sh -t 5
+ quota_remount_test01 quota_remount_test01.sh
  
- #ifdef HAVE_SYS_XATTR_H
- #define XATTR_TEST_KEY "user.testkey"
-@@ -75,9 +72,6 @@ char *TCID = "setxattr02";
- #define BLK      "setxattr02blk"
- #define SOCK     "setxattr02sock"
- 
--static void setup(void);
--static void cleanup(void);
--
- struct test_case {
- 	char *fname;
- 	char *key;
-@@ -145,91 +139,59 @@ static struct test_case tc[] = {
- 	 },
- };
- 
--int TST_TOTAL = sizeof(tc) / sizeof(tc[0]);
--
--int main(int argc, char *argv[])
-+static void verify_setxattr(unsigned int i)
- {
--	int lc;
--	int i;
-+	TEST(setxattr(tc[i].fname, tc[i].key, tc[i].value, tc[i].size, tc[i].flags));
- 
--	tst_parse_opts(argc, argv, NULL, NULL);
-+	if (TEST_RETURN == -1 && TEST_ERRNO == EOPNOTSUPP)
-+		tst_brk(TCONF, "setxattr() not supported");
- 
--	setup();
-+	if (!tc[i].exp_err) {
-+		if (TEST_RETURN) {
-+			tst_res(TFAIL | TTERRNO,
-+				"setxattr() failed with %li", TEST_RETURN);
-+			return;
-+		}
- 
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
-+		tst_res(TPASS, "setxattr() passed");
-+		return;
-+	}
- 
--		for (i = 0; i < TST_TOTAL; i++) {
--			TEST(setxattr(tc[i].fname, tc[i].key, tc[i].value,
--				      tc[i].size, tc[i].flags));
-+	if (TEST_RETURN == 0) {
-+		tst_res(TFAIL, "setxattr() passed unexpectedly");
-+		return;
-+	}
- 
--			if (TEST_ERRNO == tc[i].exp_err) {
--				tst_resm(TPASS | TTERRNO, "expected behavior");
--			} else {
--				tst_resm(TFAIL | TTERRNO, "unexpected behavior "
--					 "- expected errno %d - Got",
--					 tc[i].exp_err);
--			}
--		}
-+	if (TEST_ERRNO != tc[i].exp_err) {
-+		tst_res(TFAIL | TTERRNO, "setxattr() should fail with %s",
-+			tst_strerrno(tc[i].exp_err));
-+		return;
- 	}
- 
--	cleanup();
--	tst_exit();
-+	tst_res(TPASS | TTERRNO, "setxattr() failed");
- }
- 
- static void setup(void)
- {
--	int fd;
--	dev_t dev;
--
--	tst_require_root();
--
--	tst_tmpdir();
--
--	/* Test for xattr support */
--	fd = SAFE_CREAT(cleanup, "testfile", 0644);
--	close(fd);
--	if (setxattr("testfile", "user.test", "test", 4, XATTR_CREATE) == -1)
--		if (errno == ENOTSUP)
--			tst_brkm(TCONF, cleanup, "No xattr support in fs or "
--				 "mount without user_xattr option");
--	unlink("testfile");
--
--	/* Create test files */
--	fd = SAFE_CREAT(cleanup, FILENAME, 0644);
--	close(fd);
--
--	SAFE_MKDIR(cleanup, DIRNAME, 0644);
--
--	SAFE_SYMLINK(cleanup, FILENAME, SYMLINK);
--
--	if (mknod(FIFO, S_IFIFO | 0777, 0) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "Create FIFO(%s) failed",
--			 FIFO);
--
--	dev = makedev(1, 3);
--	if (mknod(CHR, S_IFCHR | 0777, dev) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "Create char special(%s)"
--			 " failed", CHR);
--
--	if (mknod(BLK, S_IFBLK | 0777, 0) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "Create block special(%s)"
--			 " failed", BLK);
--
--	if (mknod(SOCK, S_IFSOCK | 0777, 0) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "Create socket(%s) failed",
--			 SOCK);
--
--	TEST_PAUSE;
-+	dev_t dev = makedev(1, 3);
+ isofs isofs.sh
 +
-+	SAFE_TOUCH(FILENAME, 0644, NULL);
-+	SAFE_MKDIR(DIRNAME, 0644);
-+	SAFE_SYMLINK(FILENAME, SYMLINK);
-+	SAFE_MKNOD(FIFO, S_IFIFO | 0777, 0);
-+	SAFE_MKNOD(CHR, S_IFCHR | 0777, dev);
-+	SAFE_MKNOD(BLK, S_IFBLK | 0777, 0);
-+	SAFE_MKNOD(SOCK, S_IFSOCK | 0777, 0);
- }
- 
--static void cleanup(void)
--{
--	tst_rmdir();
--}
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test = verify_setxattr,
-+	.tcnt = ARRAY_SIZE(tc),
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
++fs_fill fs_fill
+diff --git a/testcases/kernel/fs/fs_fill/.gitignore b/testcases/kernel/fs/fs_fill/.gitignore
+new file mode 100644
+index 000000000..ebdfb439f
+--- /dev/null
++++ b/testcases/kernel/fs/fs_fill/.gitignore
+@@ -0,0 +1 @@
++fs_fill
+diff --git a/testcases/kernel/fs/fs_fill/Makefile b/testcases/kernel/fs/fs_fill/Makefile
+new file mode 100644
+index 000000000..f0e092b13
+--- /dev/null
++++ b/testcases/kernel/fs/fs_fill/Makefile
+@@ -0,0 +1,22 @@
++# Copyright (c) 2017 Linux Test Project
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program. If not, see <http://www.gnu.org/licenses/>.
++
++top_srcdir              ?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++CFLAGS += -pthread
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/fs/fs_fill/fs_fill.c b/testcases/kernel/fs/fs_fill/fs_fill.c
+new file mode 100644
+index 000000000..c9ce39619
+--- /dev/null
++++ b/testcases/kernel/fs/fs_fill/fs_fill.c
+@@ -0,0 +1,114 @@
++/*
++ * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++
++/*
++ * Runs several threads that fills up the filesystem repeatedly.
++ */
++
++#define _GNU_SOURCE
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <pthread.h>
++#include "tst_safe_pthread.h"
++#include "tst_test.h"
++
++#define MNTPOINT "mntpoint"
++
++static volatile int run;
++static unsigned int nthreads;
++static int enospc_cnt;
++
++struct worker {
++	char dir[PATH_MAX];
 +};
 +
- #else /* HAVE_SYS_XATTR_H */
--int main(int argc, char *argv[])
--{
--	tst_brkm(TCONF, NULL, "<sys/xattr.h> does not exist.");
--}
-+TST_TEST_TCONF("<sys/xattr.h> does not exist");
- #endif
++static void *worker(void *p)
++{
++	struct worker *w = p;
++	DIR *d;
++	struct dirent *ent;
++	char file[PATH_MAX];
++
++	SAFE_MKDIR(w->dir, 0700);
++
++	while (run) {
++		tst_fill_fs(w->dir, 0);
++
++		tst_atomic_inc(&enospc_cnt);
++
++		d = SAFE_OPENDIR(w->dir);
++		while ((ent = SAFE_READDIR(d))) {
++
++			if (!strcmp(ent->d_name, ".") ||
++			    !strcmp(ent->d_name, ".."))
++				continue;
++
++			snprintf(file, sizeof(file), "%s/%s",
++				 w->dir, ent->d_name);
++
++			tst_res(TINFO, "Unlinking %s", file);
++
++			SAFE_UNLINK(file);
++			break;
++		}
++		SAFE_CLOSEDIR(d);
++	}
++
++	return NULL;
++}
++
++static void testrun(void)
++{
++	struct worker workers[nthreads];
++	pthread_t threads[nthreads];
++	unsigned int i;
++
++	run = 1;
++	for (i = 0; i < nthreads; i++) {
++		snprintf(workers[i].dir, sizeof(workers[i].dir),
++			 MNTPOINT "/thread%i", i + 1);
++		SAFE_PTHREAD_CREATE(&threads[i], NULL, worker, &workers[i]);
++	}
++
++	sleep(2);
++
++	run = 0;
++	for (i = 0; i < nthreads; i++)
++		SAFE_PTHREAD_JOIN(threads[i], NULL);
++
++	tst_res(TPASS, "Got %i ENOSPC", enospc_cnt);
++}
++
++static void setup(void)
++{
++	nthreads = tst_ncpus_conf() + 2;
++
++	tst_res(TINFO, "Running %i writer threads", nthreads);
++}
++
++static struct tst_test test = {
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++	.mount_device = 1,
++	.mntpoint = MNTPOINT,
++	.all_filesystems = 1,
++	.setup = setup,
++	.test_all = testrun,
++};
 -- 
 2.13.5
 
