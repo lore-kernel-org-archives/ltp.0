@@ -1,170 +1,242 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 10 Oct 2017 14:31:52 +0200
-Subject: [LTP] [PATCH v2 02/15] lib: Add interface to list supported
-	filesystems
+Date: Tue, 10 Oct 2017 14:31:54 +0200
+Subject: [LTP] [PATCH v2 04/15] lib/tst_test: Add .all_filesystems flag
 In-Reply-To: <20171010123205.20147-1-chrubis@suse.cz>
 References: <20171010123205.20147-1-chrubis@suse.cz>
-Message-ID: <20171010123205.20147-2-chrubis@suse.cz>
+Message-ID: <20171010123205.20147-4-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-A filesystem is supported if kernel can mount it (we do not get ENODEV
-when we attempt to mount it) and if there is mkfs installed so that we
-can format a test device.
+This commit adds a support for re-runing a test on all available
+filesystems simply by turning on .all_filesystems flag in the tst_test
+structure.
 
-The function starts with a whitelist of filesystems to use and loops
-over them filtering out unsupported ones, then finally returns a list
-of filesystem that could be used for the testing.
+The .all_filesystems flag implies .needs_device, the .format_filesystem and
+.mount_filesystem works as usuall but the device is formatted and mounted for
+each filesystem before we run the test function. The .setup and .cleanup
+functions are executed for each filesystem. The currently tested filesystem
+type is stored in the tst_device->fs_type.
+
+This allows us to easily run a test that tests filesystem specific
+syscall for all supported filesystems without a need to hardcode all fs
+types into a runtest file and with a minimal changes to the test code.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- include/tst_fs.h             |   4 ++
- lib/tst_supported_fs_types.c | 118 +++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 122 insertions(+)
- create mode 100644 lib/tst_supported_fs_types.c
+ include/tst_test.h |   9 +++++
+ lib/tst_test.c     | 117 ++++++++++++++++++++++++++++++++++++++++-------------
+ 2 files changed, 97 insertions(+), 29 deletions(-)
 
-diff --git a/include/tst_fs.h b/include/tst_fs.h
-index 52befbec9..1f6d2bab5 100644
---- a/include/tst_fs.h
-+++ b/include/tst_fs.h
-@@ -146,6 +146,10 @@ int tst_get_path(const char *prog_name, char *buf, size_t buf_len);
-  */
- int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
+diff --git a/include/tst_test.h b/include/tst_test.h
+index ad468e8cf..e0dd12708 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -125,6 +125,15 @@ struct tst_test {
+ 	int format_device:1;
+ 	int mount_device:1;
+ 	int needs_rofs:1;
++	/*
++	 * If set the test function will be executed for all available
++	 * filesystems and the current filesytem type would be set in the
++	 * tst_device->fs_type.
++	 *
++	 * The test setup and cleanup are executed before/after __EACH__ call
++	 * to the test function.
++	 */
++	int all_filesystems:1;
  
-+/*
-+ * Returns NULL-terminated array of kernel-supported filesystems.
-+ */
-+const char **tst_get_supported_fs_types(void);
+ 	/* Minimal device size in megabytes */
+ 	unsigned int dev_min_size;
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 26414e31c..a0b4579dd 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -675,6 +675,20 @@ static void assert_test_fn(void)
+ 		tst_brk(TBROK, "You can define tcnt only for test()");
+ }
  
- #ifdef TST_TEST_H__
- static inline long tst_fs_type(const char *path)
-diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
-new file mode 100644
-index 000000000..a23b1ed52
---- /dev/null
-+++ b/lib/tst_supported_fs_types.c
-@@ -0,0 +1,118 @@
-+/*
-+ * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#include <stdio.h>
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <sys/mount.h>
-+#include <sys/wait.h>
-+
-+#define TST_NO_DEFAULT_MAIN
-+#include "tst_test.h"
-+#include "tst_fs.h"
-+
-+static const char *const fs_type_whitelist[] = {
-+	"ext2",
-+	"ext3",
-+	"ext4",
-+	"xfs",
-+	"btrfs",
-+	"vfat",
-+	"exfat",
-+	"ntfs",
-+	NULL
-+};
-+
-+static const char *fs_types[ARRAY_SIZE(fs_type_whitelist)];
-+
-+static int has_mkfs(const char *fs_type)
++static void prepare_device(void)
 +{
-+	char buf[128];
-+	int ret;
-+
-+	sprintf(buf, "mkfs.%s >/dev/null 2>&1", fs_type);
-+
-+	ret = tst_system(buf);
-+
-+	if (WEXITSTATUS(ret) == 127) {
-+		tst_res(TINFO, "mkfs.%s does not exist", fs_type);
-+		return 0;
++	if (tst_test->format_device) {
++		SAFE_MKFS(tdev.dev, tdev.fs_type, tst_test->dev_fs_opts,
++			  tst_test->dev_extra_opt);
 +	}
 +
-+	tst_res(TINFO, "mkfs.%s does exist", fs_type);
-+	return 1;
++	if (tst_test->mount_device) {
++		SAFE_MOUNT(tdev.dev, tst_test->mntpoint, tdev.fs_type,
++			   tst_test->mnt_flags, tst_test->mnt_data);
++		mntpoint_mounted = 1;
++	}
 +}
 +
-+static int has_kernel_support(const char *fs_type)
+ static void do_setup(int argc, char *argv[])
+ {
+ 	if (!tst_test)
+@@ -707,6 +721,9 @@ static void do_setup(int argc, char *argv[])
+ 		tst_test->format_device = 1;
+ 	}
+ 
++	if (tst_test->all_filesystems)
++		tst_test->needs_device = 1;
++
+ 	setup_ipc();
+ 
+ 	if (needs_tmpdir() && !tst_tmpdir_created())
+@@ -715,8 +732,8 @@ static void do_setup(int argc, char *argv[])
+ 	if (tst_test->mntpoint)
+ 		SAFE_MKDIR(tst_test->mntpoint, 0777);
+ 
+-	if ((tst_test->needs_rofs || tst_test->mount_device) &&
+-	    !tst_test->mntpoint) {
++	if ((tst_test->needs_rofs || tst_test->mount_device ||
++	     tst_test->all_filesystems) && !tst_test->mntpoint) {
+ 		tst_brk(TBROK, "tst_test->mntpoint must be set!");
+ 	}
+ 
+@@ -750,17 +767,8 @@ static void do_setup(int argc, char *argv[])
+ 		else
+ 			tdev.fs_type = tst_dev_fs_type();
+ 
+-		if (tst_test->format_device) {
+-			SAFE_MKFS(tdev.dev, tdev.fs_type,
+-			          tst_test->dev_fs_opts,
+-				  tst_test->dev_extra_opt);
+-		}
+-
+-		if (tst_test->mount_device) {
+-			SAFE_MOUNT(tdev.dev, tst_test->mntpoint, tdev.fs_type,
+-				   tst_test->mnt_flags, tst_test->mnt_data);
+-			mntpoint_mounted = 1;
+-		}
++		if (!tst_test->all_filesystems)
++			prepare_device();
+ 	}
+ 
+ 	if (tst_test->resource_files)
+@@ -839,6 +847,11 @@ static unsigned long long get_time_ms(void)
+ 	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
+ }
+ 
++static void heartbeat(void)
 +{
-+	static int fuse_supported = -1;
-+	const char *tmpdir = getenv("TMPDIR");
-+	char buf[128];
-+	int ret;
++	kill(getppid(), SIGUSR1);
++}
 +
-+	if (!tmpdir)
-+		tmpdir = "/tmp";
+ static void testrun(void)
+ {
+ 	unsigned int i = 0;
+@@ -865,8 +878,7 @@ static void testrun(void)
+ 			break;
+ 
+ 		run_tests();
+-
+-		kill(getppid(), SIGUSR1);
++		heartbeat();
+ 	}
+ 
+ 	do_test_cleanup();
+@@ -939,23 +951,13 @@ void tst_set_timeout(int timeout)
+ 	if (getpid() == lib_pid)
+ 		alarm(results->timeout);
+ 	else
+-		kill(getppid(), SIGUSR1);
++		heartbeat();
+ }
+ 
+-void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
++static int fork_testrun(void)
+ {
+ 	int status;
+ 
+-	lib_pid = getpid();
+-	tst_test = self;
+-
+-	do_setup(argc, argv);
+-
+-	TCID = tst_test->tid;
+-
+-	SAFE_SIGNAL(SIGALRM, alarm_handler);
+-	SAFE_SIGNAL(SIGUSR1, heartbeat_handler);
+-
+ 	if (tst_test->timeout)
+ 		tst_set_timeout(tst_test->timeout);
+ 	else
+@@ -980,7 +982,7 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
+ 	SAFE_SIGNAL(SIGINT, SIG_DFL);
+ 
+ 	if (WIFEXITED(status) && WEXITSTATUS(status))
+-		do_exit(WEXITSTATUS(status));
++		return WEXITSTATUS(status);
+ 
+ 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL) {
+ 		tst_res(TINFO, "If you are running on slow machine, "
+@@ -991,5 +993,62 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
+ 	if (WIFSIGNALED(status))
+ 		tst_brk(TBROK, "Test killed by %s!", tst_strsig(WTERMSIG(status)));
+ 
+-	do_exit(0);
++	return 0;
++}
 +
-+	mount("/dev/zero", tmpdir, fs_type, 0, NULL);
-+	if (errno != ENODEV) {
-+		tst_res(TINFO, "Kernel supports %s", fs_type);
-+		return 1;
-+	}
++static int run_tcases_per_fs(void)
++{
++	int ret = 0;
++	unsigned int i;
++	const char *const *filesystems = tst_get_supported_fs_types();
 +
-+	/* Is FUSE supported by kernel? */
-+	if (fuse_supported == -1) {
-+		ret = open("/dev/fuse", O_RDWR);
-+		if (ret < 0) {
-+			fuse_supported = 0;
-+		} else {
-+			fuse_supported = 1;
-+			SAFE_CLOSE(ret);
++	if (!filesystems[0])
++		tst_brk(TCONF, "There are no supported filesystems");
++
++	for (i = 0; filesystems[i]; i++) {
++		tdev.fs_type = filesystems[i];
++
++		prepare_device();
++
++		ret = fork_testrun();
++
++		if (mntpoint_mounted) {
++			tst_umount(tst_test->mntpoint);
++			mntpoint_mounted = 0;
 +		}
++
++		if (ret == TCONF) {
++			update_results(ret);
++			continue;
++		}
++
++		if (ret == 0)
++			continue;
++
++		do_exit(ret);
 +	}
 +
-+	if (!fuse_supported)
-+		return 0;
-+
-+	/* Is FUSE implementation installed? */
-+	sprintf(buf, "mount.%s >/dev/null 2>&1", fs_type);
-+
-+	ret = tst_system(buf);
-+	if (WEXITSTATUS(ret) == 127) {
-+		tst_res(TINFO, "Filesystem %s is not supported", fs_type);
-+		return 0;
-+	}
-+
-+	tst_res(TINFO, "FUSE does support %s", fs_type);
-+	return 1;
++	return ret;
 +}
 +
-+static int is_supported(const char *fs_type)
++void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
 +{
-+	return has_kernel_support(fs_type) && has_mkfs(fs_type);
-+}
++	int ret;
 +
-+const char **tst_get_supported_fs_types(void)
-+{
-+	unsigned int i, j = 0;
++	lib_pid = getpid();
++	tst_test = self;
 +
-+	for (i = 0; fs_type_whitelist[i]; i++) {
-+		if (is_supported(fs_type_whitelist[i]))
-+			fs_types[j++] = fs_type_whitelist[i];
-+	}
++	do_setup(argc, argv);
 +
-+	return fs_types;
-+}
++	TCID = tst_test->tid;
++
++	SAFE_SIGNAL(SIGALRM, alarm_handler);
++	SAFE_SIGNAL(SIGUSR1, heartbeat_handler);
++
++	if (tst_test->all_filesystems)
++		ret = run_tcases_per_fs();
++	else
++		ret = fork_testrun();
++
++	do_exit(ret);
+ }
 -- 
 2.13.5
 
