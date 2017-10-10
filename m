@@ -1,70 +1,66 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 10 Oct 2017 15:56:56 +0800
-Subject: [LTP] [PATCH] oom: fix oom04/5 Warning
-Message-ID: <20171010075656.18796-1-liwang@redhat.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 10 Oct 2017 08:17:19 -0400 (EDT)
+Subject: [LTP] [PATCH 2/2 v2] security/dirtyc0w: synchronize parent and
+ child
+In-Reply-To: <20171009144307.GC25633@rei.lan>
+References: <94518262a76edca533440acb73611eb93184dc90.1507290372.git.jstancek@redhat.com>
+ <0d87a0f1b598e710e21ebbabf316c39610e5d47f.1507290372.git.jstancek@redhat.com>
+ <20171009144307.GC25633@rei.lan>
+Message-ID: <1756862615.28187529.1507637839493.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To get rid of the warnings, do nothing in cleanup() if NUMA node is less than 1.
 
-oom04.c:61: CONF: requires NUMA with at least 1 node
-mem.c:854: INFO: set overcommit_memory to 0
-mem.c:761: WARN: open /dev/cpuset/tasks: ENOENT
-mem.c:766: WARN: fopen /dev/cpuset/1/tasks: ENOENT
-mem.c:778: WARN: rmdir /dev/cpuset/1: ENOENT
-mem.c:780: WARN: umount /dev/cpuset: ENOENT
-mem.c:782: WARN: rmdir /dev/cpuset: ENOENT
 
-oom05.c:84: CONF: requires NUMA with at least 1 node
-mem.c:854: INFO: set overcommit_memory to 0
-mem.c:761: WARN: open /dev/cpuset/tasks: ENOENT
-mem.c:766: WARN: fopen /dev/cpuset/1/tasks: ENOENT
-mem.c:778: WARN: rmdir /dev/cpuset/1: ENOENT
-mem.c:780: WARN: umount /dev/cpuset: ENOENT
-mem.c:782: WARN: rmdir /dev/cpuset: ENOENT
-mem.c:761: WARN: open /dev/cgroup/tasks: ENOENT
-mem.c:766: WARN: fopen /dev/cgroup/1/tasks: ENOENT
-mem.c:778: WARN: rmdir /dev/cgroup/1: ENOENT
-mem.c:780: WARN: umount /dev/cgroup: ENOENT
-mem.c:782: WARN: rmdir /dev/cgroup: ENOENT
+----- Original Message -----
+> Hi!
+> > +		(void)execvpe(TEST_APP, av, tst_ipc_envp);
+> > +		tst_brk(TBROK|TERRNO, "exec failed");
+> 
+> Can we please add SAFE_EXECVPE() to the library?
+> 
+> Other than that it looks good to me, acked.
 
-Signed-off-by: Li Wang <liwang@redhat.com>
+I ran into a problem with older distros - execvpe() does not
+exist there. How about we stay with execlp() and export
+LTP_IPC_PATH by default, so that child inherits it?
+
+Regards,
+Jan
+
 ---
- testcases/kernel/mem/oom/oom04.c | 3 +++
- testcases/kernel/mem/oom/oom05.c | 3 +++
- 2 files changed, 6 insertions(+)
 
-diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
-index e4e70e2..6da690a 100644
---- a/testcases/kernel/mem/oom/oom04.c
-+++ b/testcases/kernel/mem/oom/oom04.c
-@@ -80,6 +80,9 @@ static void setup(void)
- 
- static void cleanup(void)
- {
-+	if (!is_numa(NULL, NH_MEMS, 1))
-+		return;
-+
- 	set_sys_tune("overcommit_memory", overcommit, 0);
- 	umount_mem(CPATH, CPATH_NEW);
- }
-diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
-index bdf5d19..d874cc5 100644
---- a/testcases/kernel/mem/oom/oom05.c
-+++ b/testcases/kernel/mem/oom/oom05.c
-@@ -105,6 +105,9 @@ void setup(void)
- 
- void cleanup(void)
- {
-+	if (!is_numa(NULL, NH_MEMS, 1))
-+		return;
-+
- 	set_sys_tune("overcommit_memory", overcommit, 0);
- 	umount_mem(CPATH, CPATH_NEW);
- 	umount_mem(MEMCG_PATH, MEMCG_PATH_NEW);
--- 
-2.9.3
+Subject: [PATCH/RFC] lib: add LTP_IPC_PATH to env. variables by default
+
+Child started by exec() that needs to do tst_reinit() in order
+to use checkpoints will inherit LTP_IPC_PATH by default.
+Parent can choose to override/omit it in envp array when calling
+exec[lvp]e().
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ lib/tst_test.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 233b370794a6..27a0b7c36679 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -100,10 +100,12 @@ static void setup_ipc(void)
+        results = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, ipc_fd, 0);
+
+        /* Checkpoints needs to be accessible from processes started by exec() */
+-       if (tst_test->needs_checkpoints)
++       if (tst_test->needs_checkpoints) {
+                sprintf(ipc_path, IPC_ENV_VAR "=%s", shm_path);
+-       else
++               putenv(ipc_path);
++       } else {
+                SAFE_UNLINK(shm_path);
++       }
+
+        SAFE_CLOSE(ipc_fd);
 
