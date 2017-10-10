@@ -1,207 +1,60 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 10 Oct 2017 14:32:03 +0200
-Subject: [LTP] [PATCH v2 13/15] syscalls/fsync01: Convert to the new library.
-In-Reply-To: <20171010123205.20147-1-chrubis@suse.cz>
-References: <20171010123205.20147-1-chrubis@suse.cz>
-Message-ID: <20171010123205.20147-13-chrubis@suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 10 Oct 2017 14:36:12 +0200
+Subject: [LTP] [PATCH/RFC] lib: add LTP_IPC_PATH to env. variables by default
+Message-ID: <928440776c092e8a6da22c42b83606a142d90887.1507638841.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/syscalls/fsync/fsync01.c | 157 +++++-------------------------
- 1 file changed, 27 insertions(+), 130 deletions(-)
+Child started by exec() that needs to do tst_reinit() in order
+to use checkpoints will inherit LTP_IPC_PATH by default.
+Parent can choose to override/omit it in envp array when calling
+exec[lvp]e().
 
-diff --git a/testcases/kernel/syscalls/fsync/fsync01.c b/testcases/kernel/syscalls/fsync/fsync01.c
-index d7cc4f0a4..af35902bd 100644
---- a/testcases/kernel/syscalls/fsync/fsync01.c
-+++ b/testcases/kernel/syscalls/fsync/fsync01.c
-@@ -1,5 +1,7 @@
- /*
-  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-+ *    AUTHOR		: William Roske
-+ *    CO-PILOT		: Dave Fenner
-  *
-  * This program is free software; you can redistribute it and/or modify it
-  * under the terms of version 2 of the GNU General Public License as
-@@ -30,149 +32,44 @@
-  * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-  *
-  */
--/* $Id: fsync01.c,v 1.6 2009/10/26 14:55:47 subrata_modak Exp $ */
--/**********************************************************
-- *
-- *    OS Test - Silicon Graphics, Inc.
-- *
-- *    TEST IDENTIFIER	: fsync01
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Basic test for fsync(2)
-- *
-- *    PARENT DOCUMENT	: usctpl01
-- *
-- *    TEST CASE TOTAL	: 1
-- *
-- *    WALL CLOCK TIME	: 1
-- *
-- *    CPU TYPES		: ALL
-- *
-- *    AUTHOR		: William Roske
-- *
-- *    CO-PILOT		: Dave Fenner
-- *
-- *    DATE STARTED	: 03/30/92
-- *
-- *    INITIAL RELEASE	: UNICOS 7.0
-- *
-- *    TEST CASES
-- *
-- * 	1.) fsync(2) returns...(See Description)
-- *
-- *    INPUT SPECIFICATIONS
-- * 	The standard options for system call tests are accepted.
-- *	(See the parse_opts(3) man page).
-- *
-- *    OUTPUT SPECIFICATIONS
-- *$
-- *    DURATION
-- * 	Terminates - with frequency and infinite modes.
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    RESOURCES
-- * 	None
-- *
-- *    ENVIRONMENTAL NEEDS
-- *      No run-time environmental needs.
-- *
-- *    SPECIAL PROCEDURAL REQUIREMENTS
-- * 	None
-- *
-- *    INTERCASE DEPENDENCIES
-- * 	None
-- *
-- *    DETAILED DESCRIPTION
-- *	This is a Phase I test for the fsync(2) system call.  It is intended
-- *	to provide a limited exposure of the system call, for now.  It
-- *	should/will be extended when full functional tests are written for
-- *	fsync(2).
-- *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- * 	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
-- *
-- *
-- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
+Also fix couple places to use IPC_ENV_VAR define.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ lib/tst_test.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 233b370794a6..27a0b7c36679 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -100,10 +100,12 @@ static void setup_ipc(void)
+ 	results = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, ipc_fd, 0);
  
--#include <sys/types.h>
--#include <fcntl.h>
--#include <sys/statfs.h>
-+#include <unistd.h>
- #include <errno.h>
--#include <string.h>
--#include <signal.h>
--#include "test.h"
--
--void setup();
--void cleanup();
-+#include <stdio.h>
+ 	/* Checkpoints needs to be accessible from processes started by exec() */
+-	if (tst_test->needs_checkpoints)
++	if (tst_test->needs_checkpoints) {
+ 		sprintf(ipc_path, IPC_ENV_VAR "=%s", shm_path);
+-	else
++		putenv(ipc_path);
++	} else {
+ 		SAFE_UNLINK(shm_path);
++	}
  
--char *TCID = "fsync01";
--int TST_TOTAL = 1;
-+#include "tst_test.h"
+ 	SAFE_CLOSE(ipc_fd);
  
--char fname[255];
--int fd;
--char *buf = "davef";
-+static char fname[255];
-+static int fd;
-+#define BUF "davef"
+@@ -131,13 +133,13 @@ static void cleanup_ipc(void)
  
--int main(int ac, char **av)
-+static void verify_fsync(void)
+ void tst_reinit(void)
  {
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
-+	SAFE_WRITE(1, fd, BUF, sizeof(BUF));
+-	const char *path = getenv("LTP_IPC_PATH");
++	const char *path = getenv(IPC_ENV_VAR);
+ 	size_t size = getpagesize();
+ 	int fd;
+ 	void *ptr;
  
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+	TEST(fsync(fd));
+ 	if (!path)
+-		tst_brk(TBROK, "LTP_IPC_PATH is not defined");
++		tst_brk(TBROK, IPC_ENV_VAR" is not defined");
  
--		tst_count = 0;
--
--		if (write(fd, buf, strlen(buf)) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "write failed");
--		TEST(fsync(fd));
--
--		if (TEST_RETURN == -1)
--			tst_resm(TFAIL | TTERRNO, "fsync failed");
--		else
--			tst_resm(TPASS, "fsync returned %ld", TEST_RETURN);
--
--	}
--
--	cleanup();
--	tst_exit();
-+	if (TEST_RETURN == -1)
-+		tst_res(TFAIL | TTERRNO, "fsync failed");
-+	else
-+		tst_res(TPASS, "fsync() returned %ld", TEST_RETURN);
- }
- 
--void setup(void)
-+static void setup(void)
- {
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
- 	sprintf(fname, "tfile_%d", getpid());
--	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "open failed");
-+	fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0700);
- }
- 
--void cleanup(void)
-+static void cleanup(void)
- {
--	if (close(fd) == -1)
--		tst_resm(TWARN, "close failed");
--
--	tst_rmdir();
--
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
- }
-+
-+static struct tst_test test = {
-+	.cleanup = cleanup,
-+	.setup = setup,
-+	.test_all = verify_fsync,
-+	.needs_tmpdir = 1,
-+};
+ 	if (access(path, F_OK))
+ 		tst_brk(TBROK, "File %s does not exist!", path);
 -- 
-2.13.5
+1.8.3.1
 
