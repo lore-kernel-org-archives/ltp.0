@@ -1,206 +1,206 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 10 Oct 2017 14:32:05 +0200
-Subject: [LTP] [PATCH v2 15/15] fs/fs_fill: Add a test to fill a FS in a few
-	threads
+Date: Tue, 10 Oct 2017 14:32:03 +0200
+Subject: [LTP] [PATCH v2 13/15] syscalls/fsync01: Convert to the new library.
 In-Reply-To: <20171010123205.20147-1-chrubis@suse.cz>
 References: <20171010123205.20147-1-chrubis@suse.cz>
-Message-ID: <20171010123205.20147-15-chrubis@suse.cz>
+Message-ID: <20171010123205.20147-13-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Runs CPU+2 threads that write into FS until they got ENOSPC, then delete
-a file and continue.
-
-Older exfat fails with EIO instead of ENOSPC, it has been fixed in:
-
-commit ca112f07b115a419250b6526e71345dcd29e4d67
-Author: relan <relan@users.noreply.github.com>
-Date:   Tue Dec 27 17:22:12 2016 +0300
-
-    Propagate ENOSPC on write.
-
-at:
-
-https://github.com/relan/exfat/
-
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/fs                             |   2 +
- testcases/kernel/fs/fs_fill/.gitignore |   1 +
- testcases/kernel/fs/fs_fill/Makefile   |  22 +++++++
- testcases/kernel/fs/fs_fill/fs_fill.c  | 114 +++++++++++++++++++++++++++++++++
- 4 files changed, 139 insertions(+)
- create mode 100644 testcases/kernel/fs/fs_fill/.gitignore
- create mode 100644 testcases/kernel/fs/fs_fill/Makefile
- create mode 100644 testcases/kernel/fs/fs_fill/fs_fill.c
+ testcases/kernel/syscalls/fsync/fsync01.c | 157 +++++-------------------------
+ 1 file changed, 27 insertions(+), 130 deletions(-)
 
-diff --git a/runtest/fs b/runtest/fs
-index 33a8412fd..3fa210a9f 100644
---- a/runtest/fs
-+++ b/runtest/fs
-@@ -76,3 +76,5 @@ fs_racer fs_racer.sh -t 5
- quota_remount_test01 quota_remount_test01.sh
+diff --git a/testcases/kernel/syscalls/fsync/fsync01.c b/testcases/kernel/syscalls/fsync/fsync01.c
+index d7cc4f0a4..af35902bd 100644
+--- a/testcases/kernel/syscalls/fsync/fsync01.c
++++ b/testcases/kernel/syscalls/fsync/fsync01.c
+@@ -1,5 +1,7 @@
+ /*
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
++ *    AUTHOR		: William Roske
++ *    CO-PILOT		: Dave Fenner
+  *
+  * This program is free software; you can redistribute it and/or modify it
+  * under the terms of version 2 of the GNU General Public License as
+@@ -30,149 +32,44 @@
+  * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+  *
+  */
+-/* $Id: fsync01.c,v 1.6 2009/10/26 14:55:47 subrata_modak Exp $ */
+-/**********************************************************
+- *
+- *    OS Test - Silicon Graphics, Inc.
+- *
+- *    TEST IDENTIFIER	: fsync01
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Basic test for fsync(2)
+- *
+- *    PARENT DOCUMENT	: usctpl01
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    WALL CLOCK TIME	: 1
+- *
+- *    CPU TYPES		: ALL
+- *
+- *    AUTHOR		: William Roske
+- *
+- *    CO-PILOT		: Dave Fenner
+- *
+- *    DATE STARTED	: 03/30/92
+- *
+- *    INITIAL RELEASE	: UNICOS 7.0
+- *
+- *    TEST CASES
+- *
+- * 	1.) fsync(2) returns...(See Description)
+- *
+- *    INPUT SPECIFICATIONS
+- * 	The standard options for system call tests are accepted.
+- *	(See the parse_opts(3) man page).
+- *
+- *    OUTPUT SPECIFICATIONS
+- *$
+- *    DURATION
+- * 	Terminates - with frequency and infinite modes.
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    RESOURCES
+- * 	None
+- *
+- *    ENVIRONMENTAL NEEDS
+- *      No run-time environmental needs.
+- *
+- *    SPECIAL PROCEDURAL REQUIREMENTS
+- * 	None
+- *
+- *    INTERCASE DEPENDENCIES
+- * 	None
+- *
+- *    DETAILED DESCRIPTION
+- *	This is a Phase I test for the fsync(2) system call.  It is intended
+- *	to provide a limited exposure of the system call, for now.  It
+- *	should/will be extended when full functional tests are written for
+- *	fsync(2).
+- *
+- * 	Setup:
+- * 	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- * 	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
+- *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
+- *
+- *
+- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
  
- isofs isofs.sh
-+
-+fs_fill fs_fill
-diff --git a/testcases/kernel/fs/fs_fill/.gitignore b/testcases/kernel/fs/fs_fill/.gitignore
-new file mode 100644
-index 000000000..ebdfb439f
---- /dev/null
-+++ b/testcases/kernel/fs/fs_fill/.gitignore
-@@ -0,0 +1 @@
-+fs_fill
-diff --git a/testcases/kernel/fs/fs_fill/Makefile b/testcases/kernel/fs/fs_fill/Makefile
-new file mode 100644
-index 000000000..f0e092b13
---- /dev/null
-+++ b/testcases/kernel/fs/fs_fill/Makefile
-@@ -0,0 +1,22 @@
-+# Copyright (c) 2017 Linux Test Project
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program. If not, see <http://www.gnu.org/licenses/>.
-+
-+top_srcdir              ?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+CFLAGS += -pthread
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/fs/fs_fill/fs_fill.c b/testcases/kernel/fs/fs_fill/fs_fill.c
-new file mode 100644
-index 000000000..c9ce39619
---- /dev/null
-+++ b/testcases/kernel/fs/fs_fill/fs_fill.c
-@@ -0,0 +1,114 @@
-+/*
-+ * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+/*
-+ * Runs several threads that fills up the filesystem repeatedly.
-+ */
-+
-+#define _GNU_SOURCE
-+
+-#include <sys/types.h>
+-#include <fcntl.h>
+-#include <sys/statfs.h>
++#include <unistd.h>
+ #include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-#include "test.h"
+-
+-void setup();
+-void cleanup();
 +#include <stdio.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <pthread.h>
-+#include "tst_safe_pthread.h"
+ 
+-char *TCID = "fsync01";
+-int TST_TOTAL = 1;
 +#include "tst_test.h"
-+
-+#define MNTPOINT "mntpoint"
-+
-+static volatile int run;
-+static unsigned int nthreads;
-+static int enospc_cnt;
-+
-+struct worker {
-+	char dir[PATH_MAX];
-+};
-+
-+static void *worker(void *p)
-+{
-+	struct worker *w = p;
-+	DIR *d;
-+	struct dirent *ent;
-+	char file[PATH_MAX];
-+
-+	SAFE_MKDIR(w->dir, 0700);
-+
-+	while (run) {
-+		tst_fill_fs(w->dir, 0);
-+
-+		tst_atomic_inc(&enospc_cnt);
-+
-+		d = SAFE_OPENDIR(w->dir);
-+		while ((ent = SAFE_READDIR(d))) {
-+
-+			if (!strcmp(ent->d_name, ".") ||
-+			    !strcmp(ent->d_name, ".."))
-+				continue;
-+
-+			snprintf(file, sizeof(file), "%s/%s",
-+				 w->dir, ent->d_name);
-+
-+			tst_res(TINFO, "Unlinking %s", file);
-+
-+			SAFE_UNLINK(file);
-+			break;
-+		}
-+		SAFE_CLOSEDIR(d);
-+	}
-+
-+	return NULL;
-+}
-+
-+static void testrun(void)
-+{
-+	struct worker workers[nthreads];
-+	pthread_t threads[nthreads];
-+	unsigned int i;
-+
-+	run = 1;
-+	for (i = 0; i < nthreads; i++) {
-+		snprintf(workers[i].dir, sizeof(workers[i].dir),
-+			 MNTPOINT "/thread%i", i + 1);
-+		SAFE_PTHREAD_CREATE(&threads[i], NULL, worker, &workers[i]);
-+	}
-+
-+	sleep(2);
-+
-+	run = 0;
-+	for (i = 0; i < nthreads; i++)
-+		SAFE_PTHREAD_JOIN(threads[i], NULL);
-+
-+	tst_res(TPASS, "Got %i ENOSPC", enospc_cnt);
-+}
-+
+ 
+-char fname[255];
+-int fd;
+-char *buf = "davef";
++static char fname[255];
++static int fd;
++#define BUF "davef"
+ 
+-int main(int ac, char **av)
++static void verify_fsync(void)
+ {
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
++	SAFE_WRITE(1, fd, BUF, sizeof(BUF));
+ 
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
++	TEST(fsync(fd));
+ 
+-		tst_count = 0;
+-
+-		if (write(fd, buf, strlen(buf)) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "write failed");
+-		TEST(fsync(fd));
+-
+-		if (TEST_RETURN == -1)
+-			tst_resm(TFAIL | TTERRNO, "fsync failed");
+-		else
+-			tst_resm(TPASS, "fsync returned %ld", TEST_RETURN);
+-
+-	}
+-
+-	cleanup();
+-	tst_exit();
++	if (TEST_RETURN == -1)
++		tst_res(TFAIL | TTERRNO, "fsync failed");
++	else
++		tst_res(TPASS, "fsync() returned %ld", TEST_RETURN);
+ }
+ 
+-void setup(void)
 +static void setup(void)
-+{
-+	nthreads = tst_ncpus_conf() + 2;
-+
-+	tst_res(TINFO, "Running %i writer threads", nthreads);
-+}
+ {
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	tst_tmpdir();
+-
+ 	sprintf(fname, "tfile_%d", getpid());
+-	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "open failed");
++	fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0700);
+ }
+ 
+-void cleanup(void)
++static void cleanup(void)
+ {
+-	if (close(fd) == -1)
+-		tst_resm(TWARN, "close failed");
+-
+-	tst_rmdir();
+-
++	if (fd > 0)
++		SAFE_CLOSE(fd);
+ }
 +
 +static struct tst_test test = {
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.mount_device = 1,
-+	.mntpoint = MNTPOINT,
-+	.all_filesystems = 1,
++	.cleanup = cleanup,
 +	.setup = setup,
-+	.test_all = testrun,
++	.test_all = verify_fsync,
++	.needs_tmpdir = 1,
 +};
 -- 
 2.13.5
