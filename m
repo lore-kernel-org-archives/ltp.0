@@ -1,23 +1,37 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 10 Oct 2017 16:26:03 +0200
-Subject: [LTP] [PATCH v2 1/1] syscalls/profil01: Fix build for libc
- without profil() support
-In-Reply-To: <20171002133341.30855-1-pvorel@suse.cz>
-References: <20171002133341.30855-1-pvorel@suse.cz>
-Message-ID: <20171010142603.GA30675@rei>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 10 Oct 2017 17:05:11 +0200
+Subject: [LTP] [PATCH 3/6] safe_macros: add SAFE_SETENV()
+In-Reply-To: <7fe9947329b48673f7f9ee2e0b127619fdfe0c34.1507647255.git.jstancek@redhat.com>
+References: <7fe9947329b48673f7f9ee2e0b127619fdfe0c34.1507647255.git.jstancek@redhat.com>
+Message-ID: <afc1fe5555ccb1b3c331b39e494002f3d50935ab.1507647255.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-I've fixed the patch and pushed, thanks.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ include/tst_safe_macros.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-I've added #include "config.h" so that the test is actually enabled when
-configure finds that profil is implemented and also suffled the TCID
-before the #ifdef so that it's defined for the TCONF branch as well.
-
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 1e034b8e29d7..5d8952544be3 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -447,5 +447,12 @@ int safe_personality(const char *filename, unsigned int lineno,
+ 		    unsigned long persona);
+ #define SAFE_PERSONALITY(persona) safe_personality(__FILE__, __LINE__, persona)
+ 
++#define SAFE_SETENV(name, value, overwrite) do {		\
++	if (setenv(name, value, overwrite)) {			\
++		tst_brk_(__FILE__, __LINE__, TBROK | TERRNO,	\
++			"setenv(%s, %s, %d) failed",		\
++			name, value, overwrite);		\
++	}							\
++	} while (0)
+ 
+ #endif /* SAFE_MACROS_H__ */
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
