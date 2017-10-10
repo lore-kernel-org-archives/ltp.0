@@ -1,60 +1,49 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 10 Oct 2017 17:05:09 +0200
-Subject: [LTP] [PATCH 1/6] lib: add LTP_IPC_PATH to env. variables by default
-Message-ID: <7fe9947329b48673f7f9ee2e0b127619fdfe0c34.1507647255.git.jstancek@redhat.com>
+Date: Tue, 10 Oct 2017 17:05:10 +0200
+Subject: [LTP] [PATCH 2/6] lib: move tst_get_startwd() to old_tmpdir header
+In-Reply-To: <7fe9947329b48673f7f9ee2e0b127619fdfe0c34.1507647255.git.jstancek@redhat.com>
+References: <7fe9947329b48673f7f9ee2e0b127619fdfe0c34.1507647255.git.jstancek@redhat.com>
+Message-ID: <b9195e40257e0d6a3077969f26abbdd7c1ac9bbb.1507647255.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Child started by exec() that needs to do tst_reinit() in order
-to use checkpoints will inherit LTP_IPC_PATH by default.
-Parent can choose to override/omit it in envp array when calling
-exec[lvp]e().
-
-Also fix couple places to use LTP_IPC_PATH define.
+Newlib can't include ltp_priv.h due to conflicts with oldlib.
 
 Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- lib/tst_test.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ include/old/ltp_priv.h   | 3 ---
+ include/old/old_tmpdir.h | 3 +++
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 26414e31ca77..25cb234425ab 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -99,10 +99,12 @@ static void setup_ipc(void)
- 	results = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, ipc_fd, 0);
+diff --git a/include/old/ltp_priv.h b/include/old/ltp_priv.h
+index e678a28682eb..0552457e591f 100644
+--- a/include/old/ltp_priv.h
++++ b/include/old/ltp_priv.h
+@@ -24,9 +24,6 @@
  
- 	/* Checkpoints needs to be accessible from processes started by exec() */
--	if (tst_test->needs_checkpoints)
-+	if (tst_test->needs_checkpoints) {
- 		sprintf(ipc_path, IPC_ENV_VAR "=%s", shm_path);
--	else
-+		putenv(ipc_path);
-+	} else {
- 		SAFE_UNLINK(shm_path);
-+	}
+ #include <stdarg.h>
  
- 	SAFE_CLOSE(ipc_fd);
+-/* declared in tst_tmpdir.c */
+-const char *tst_get_startwd(void);
+-
+ /*
+  * This is the default temporary directory used by tst_tmpdir().
+  *
+diff --git a/include/old/old_tmpdir.h b/include/old/old_tmpdir.h
+index b39b615a8bdb..9c61172fd71c 100644
+--- a/include/old/old_tmpdir.h
++++ b/include/old/old_tmpdir.h
+@@ -50,4 +50,7 @@ char *tst_get_tmpdir(void);
+  */
+ int tst_tmpdir_created(void);
  
-@@ -130,13 +132,13 @@ static void cleanup_ipc(void)
- 
- void tst_reinit(void)
- {
--	const char *path = getenv("LTP_IPC_PATH");
-+	const char *path = getenv(IPC_ENV_VAR);
- 	size_t size = getpagesize();
- 	int fd;
- 	void *ptr;
- 
- 	if (!path)
--		tst_brk(TBROK, "LTP_IPC_PATH is not defined");
-+		tst_brk(TBROK, IPC_ENV_VAR" is not defined");
- 
- 	if (access(path, F_OK))
- 		tst_brk(TBROK, "File %s does not exist!", path);
++/* declared in tst_tmpdir.c */
++const char *tst_get_startwd(void);
++
+ #endif	/* OLD_TMPDIR_H__ */
 -- 
 1.8.3.1
 
