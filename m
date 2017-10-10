@@ -1,28 +1,76 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 10 Oct 2017 11:06:56 -0400 (EDT)
-Subject: [LTP] [PATCH/RFC] lib: add LTP_IPC_PATH to env. variables by
- default
-In-Reply-To: <20171010131059.GE4970@rei.lan>
-References: <928440776c092e8a6da22c42b83606a142d90887.1507638841.git.jstancek@redhat.com>
- <20171010131059.GE4970@rei.lan>
-Message-ID: <43494702.28232749.1507648016506.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 10 Oct 2017 17:18:52 +0200
+Subject: [LTP] [PATCH 4/6] lib: extend PATH as part of test setup
+In-Reply-To: <fe40d9a0263afff913c646a6bc1fad88e0ce9747.1507647255.git.jstancek@redhat.com>
+References: <7fe9947329b48673f7f9ee2e0b127619fdfe0c34.1507647255.git.jstancek@redhat.com>
+ <fe40d9a0263afff913c646a6bc1fad88e0ce9747.1507647255.git.jstancek@redhat.com>
+Message-ID: <20171010151852.GA12028@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> +static void add_paths(void)
+> +{
+> +	char *old_path = getenv("PATH");
+> +	const char *start_dir;
+> +	char *new_path;
+> +	int new_path_size;
+> +
+> +	start_dir = tst_get_startwd();
+> +
+> +	/* ".:" + "$start_dir" + '\0' */
+> +	new_path_size = 2 + strlen(start_dir) + 1;
+> +	if (old_path)
+> +		/* ":" + "$old_path" */
+> +		new_path_size += 1 + strlen(old_path);
+> +
+> +	new_path = SAFE_MALLOC(new_path_size);
+> +	strcpy(new_path, ".:");
+> +	strcat(new_path, start_dir);
+> +
+> +	if (old_path) {
+> +		strcat(new_path, ":");
+> +		strcat(new_path, old_path);
+> +	}
+
+I do not like the strcat() function much, I would have probably handled
+these with asprintf();
+
+	if (old_path)
+		SAFE_ASPRINTF(&new_path, "%s::%s", old_path, start_dir);
+	else
+		SAFE_ASPRINTF(&new_path, "::%s", start_dir);
 
 
------ Original Message -----
-> Hi!
-> Can you also remove the explicit passing of tst_ipc_envp in the
-> creat07.c? Then we may as well get rid of the tst_ipc_envp[] array
-> completely.
+The rest of the patchset looks good.
 
-Sent as new series except for 2 patches you already ACK-ed:
-  5deaf719987f security/dirtyc0w: synchronize parent and child
-  13b2549855af lib: allow checkpoints to be used by any uid
+BTW, we should also drop the note about setting $PATH from the
+documentation once this is merged.
 
-Regards,
-Jan
+> +	SAFE_SETENV("PATH", new_path, 1);
+> +	free(new_path);
+> +}
+> +
+>  static void testrun(void)
+>  {
+>  	unsigned int i = 0;
+>  	unsigned long long stop_time = 0;
+>  	int cont = 1;
+>  
+> +	add_paths();
+>  	do_test_setup();
+>  
+>  	if (duration > 0)
+> -- 
+> 1.8.3.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
