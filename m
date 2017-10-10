@@ -1,114 +1,36 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 10 Oct 2017 17:26:37 +0200
-Subject: [LTP] [PATCH 1/1] syscalls/ustat: Fix build for libc without
-	ustat() support
-Message-ID: <20171010152637.11194-1-pvorel@suse.cz>
+From: Eric Biggers <ebiggers3@gmail.com>
+Date: Tue, 10 Oct 2017 10:51:16 -0700
+Subject: [LTP] [PATCH 0/4] ltp: add tests for some recently-fixed keyrings
+	bugs
+Message-ID: <20171010175120.90586-1-ebiggers3@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This applies at least for uClibc/uClibc-ng with disabled __UCLIBC_SV4_DEPRECATED__.
+From: Eric Biggers <ebiggers@google.com>
 
-Patch taken from buildroot project (thanks!), adjusted it not to be
-only uClibc/uClibc-ng specific.
+Add tests to LTP for a few more longstanding bugs which were recently
+fixed in the kernel keyrings API.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
-Reported-by: Erico Nunes <nunes.erico@gmail.com>
----
-Another Buildroot patch, this one is hopefully correct.
----
- configure.ac                              |  6 +++++-
- testcases/kernel/syscalls/ustat/ustat01.c | 14 ++++++++++++--
- testcases/kernel/syscalls/ustat/ustat02.c | 10 +++++++++-
- 3 files changed, 26 insertions(+), 4 deletions(-)
+Eric Biggers (4):
+  lapi/keyctl.h: add a few missing definitions
+  syscalls/keyctl06: new test for keyring_read() buffer overrun
+  syscalls/keyctl07: new test for oops when reading negative key
+  syscalls/add_key03: new test for forging user keyrings
 
-diff --git a/configure.ac b/configure.ac
-index 465655e7b..17a02050a 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -44,9 +44,13 @@ AC_CHECK_HEADERS([ \
-     sys/inotify.h \
-     sys/fanotify.h \
-     sys/prctl.h \
-+    sys/ustat.h \
- ])
- 
--AC_CHECK_FUNCS([profil])
-+AC_CHECK_FUNCS([ \
-+    profil \
-+    ustat \
-+])
- 
- # Tools knobs
- 
-diff --git a/testcases/kernel/syscalls/ustat/ustat01.c b/testcases/kernel/syscalls/ustat/ustat01.c
-index 494647bc2..74a880577 100644
---- a/testcases/kernel/syscalls/ustat/ustat01.c
-+++ b/testcases/kernel/syscalls/ustat/ustat01.c
-@@ -21,15 +21,19 @@
- 
- #include <unistd.h>
- #include <errno.h>
--#include <sys/ustat.h>
- #include <sys/types.h>
- #include <sys/stat.h>
- #include "test.h"
- #include "safe_macros.h"
-+#include "config.h"
-+
-+char *TCID = "ustat01";
-+
-+#if defined(HAVE_SYS_USTAT_H) && defined(HAVE_USTAT)
-+#include <sys/ustat.h>
- 
- static void setup(void);
- 
--char *TCID = "ustat01";
- int TST_TOTAL = 1;
- 
- static dev_t dev_num;
-@@ -79,3 +83,9 @@ static void setup(void)
- 
- 	dev_num = buf.st_dev;
- }
-+#else /* systems without ustat() */
-+int main(void)
-+{
-+	tst_brkm(TCONF, NULL, "system doesn't have ustat() support");
-+}
-+#endif
-diff --git a/testcases/kernel/syscalls/ustat/ustat02.c b/testcases/kernel/syscalls/ustat/ustat02.c
-index edada3107..cb2f0b828 100644
---- a/testcases/kernel/syscalls/ustat/ustat02.c
-+++ b/testcases/kernel/syscalls/ustat/ustat02.c
-@@ -22,12 +22,14 @@
- 
- #include <unistd.h>
- #include <errno.h>
--#include <sys/ustat.h>
- #include <sys/stat.h>
- #include <sys/types.h>
- #include "test.h"
- #include "safe_macros.h"
- 
-+#if defined(HAVE_SYS_USTAT_H) && defined(HAVE_USTAT)
-+#include <sys/ustat.h>
-+
- static void setup(void);
- 
- char *TCID = "ustat02";
-@@ -101,3 +103,9 @@ static void setup(void)
- 
- 	root_dev = buf.st_dev;
- }
-+#else /* systems without ustat() */
-+int main(void)
-+{
-+	tst_brkm(TCONF, NULL, "system doesn't have ustat() support");
-+}
-+#endif
+ include/lapi/keyctl.h                         |  20 +++++
+ runtest/syscalls                              |   3 +
+ testcases/kernel/syscalls/.gitignore          |   3 +
+ testcases/kernel/syscalls/add_key/add_key03.c | 122 ++++++++++++++++++++++++++
+ testcases/kernel/syscalls/keyctl/keyctl06.c   |  68 ++++++++++++++
+ testcases/kernel/syscalls/keyctl/keyctl07.c   |  89 +++++++++++++++++++
+ 6 files changed, 305 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/add_key/add_key03.c
+ create mode 100644 testcases/kernel/syscalls/keyctl/keyctl06.c
+ create mode 100644 testcases/kernel/syscalls/keyctl/keyctl07.c
+
 -- 
-2.14.2
+2.14.2.920.gcf0c67979c-goog
 
