@@ -1,32 +1,170 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 10 Oct 2017 14:31:57 +0200
-Subject: [LTP] [PATCH v2 07/15] syscalls/msync04: Run test for all
+Date: Tue, 10 Oct 2017 14:31:52 +0200
+Subject: [LTP] [PATCH v2 02/15] lib: Add interface to list supported
 	filesystems
 In-Reply-To: <20171010123205.20147-1-chrubis@suse.cz>
 References: <20171010123205.20147-1-chrubis@suse.cz>
-Message-ID: <20171010123205.20147-7-chrubis@suse.cz>
+Message-ID: <20171010123205.20147-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+A filesystem is supported if kernel can mount it (we do not get ENODEV
+when we attempt to mount it) and if there is mkfs installed so that we
+can format a test device.
+
+The function starts with a whitelist of filesystems to use and loops
+over them filtering out unsupported ones, then finally returns a list
+of filesystem that could be used for the testing.
+
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/msync/msync04.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/tst_fs.h             |   4 ++
+ lib/tst_supported_fs_types.c | 118 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 122 insertions(+)
+ create mode 100644 lib/tst_supported_fs_types.c
 
-diff --git a/testcases/kernel/syscalls/msync/msync04.c b/testcases/kernel/syscalls/msync/msync04.c
-index 4f70ca1ef..9dec3c1d9 100644
---- a/testcases/kernel/syscalls/msync/msync04.c
-+++ b/testcases/kernel/syscalls/msync/msync04.c
-@@ -109,5 +109,6 @@ static struct tst_test test = {
- 	.needs_root = 1,
- 	.mntpoint = "msync04",
- 	.mount_device = 1,
-+	.all_filesystems = 1,
- 	.min_kver = "2.6.25",
- };
+diff --git a/include/tst_fs.h b/include/tst_fs.h
+index 52befbec9..1f6d2bab5 100644
+--- a/include/tst_fs.h
++++ b/include/tst_fs.h
+@@ -146,6 +146,10 @@ int tst_get_path(const char *prog_name, char *buf, size_t buf_len);
+  */
+ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
+ 
++/*
++ * Returns NULL-terminated array of kernel-supported filesystems.
++ */
++const char **tst_get_supported_fs_types(void);
+ 
+ #ifdef TST_TEST_H__
+ static inline long tst_fs_type(const char *path)
+diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+new file mode 100644
+index 000000000..a23b1ed52
+--- /dev/null
++++ b/lib/tst_supported_fs_types.c
+@@ -0,0 +1,118 @@
++/*
++ * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#include <stdio.h>
++#include <errno.h>
++#include <stdlib.h>
++#include <sys/mount.h>
++#include <sys/wait.h>
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++#include "tst_fs.h"
++
++static const char *const fs_type_whitelist[] = {
++	"ext2",
++	"ext3",
++	"ext4",
++	"xfs",
++	"btrfs",
++	"vfat",
++	"exfat",
++	"ntfs",
++	NULL
++};
++
++static const char *fs_types[ARRAY_SIZE(fs_type_whitelist)];
++
++static int has_mkfs(const char *fs_type)
++{
++	char buf[128];
++	int ret;
++
++	sprintf(buf, "mkfs.%s >/dev/null 2>&1", fs_type);
++
++	ret = tst_system(buf);
++
++	if (WEXITSTATUS(ret) == 127) {
++		tst_res(TINFO, "mkfs.%s does not exist", fs_type);
++		return 0;
++	}
++
++	tst_res(TINFO, "mkfs.%s does exist", fs_type);
++	return 1;
++}
++
++static int has_kernel_support(const char *fs_type)
++{
++	static int fuse_supported = -1;
++	const char *tmpdir = getenv("TMPDIR");
++	char buf[128];
++	int ret;
++
++	if (!tmpdir)
++		tmpdir = "/tmp";
++
++	mount("/dev/zero", tmpdir, fs_type, 0, NULL);
++	if (errno != ENODEV) {
++		tst_res(TINFO, "Kernel supports %s", fs_type);
++		return 1;
++	}
++
++	/* Is FUSE supported by kernel? */
++	if (fuse_supported == -1) {
++		ret = open("/dev/fuse", O_RDWR);
++		if (ret < 0) {
++			fuse_supported = 0;
++		} else {
++			fuse_supported = 1;
++			SAFE_CLOSE(ret);
++		}
++	}
++
++	if (!fuse_supported)
++		return 0;
++
++	/* Is FUSE implementation installed? */
++	sprintf(buf, "mount.%s >/dev/null 2>&1", fs_type);
++
++	ret = tst_system(buf);
++	if (WEXITSTATUS(ret) == 127) {
++		tst_res(TINFO, "Filesystem %s is not supported", fs_type);
++		return 0;
++	}
++
++	tst_res(TINFO, "FUSE does support %s", fs_type);
++	return 1;
++}
++
++static int is_supported(const char *fs_type)
++{
++	return has_kernel_support(fs_type) && has_mkfs(fs_type);
++}
++
++const char **tst_get_supported_fs_types(void)
++{
++	unsigned int i, j = 0;
++
++	for (i = 0; fs_type_whitelist[i]; i++) {
++		if (is_supported(fs_type_whitelist[i]))
++			fs_types[j++] = fs_type_whitelist[i];
++	}
++
++	return fs_types;
++}
 -- 
 2.13.5
 
