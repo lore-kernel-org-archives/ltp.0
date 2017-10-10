@@ -1,49 +1,70 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 10 Oct 2017 17:05:10 +0200
-Subject: [LTP] [PATCH 2/6] lib: move tst_get_startwd() to old_tmpdir header
+Date: Tue, 10 Oct 2017 17:05:12 +0200
+Subject: [LTP] [PATCH 4/6] lib: extend PATH as part of test setup
 In-Reply-To: <7fe9947329b48673f7f9ee2e0b127619fdfe0c34.1507647255.git.jstancek@redhat.com>
 References: <7fe9947329b48673f7f9ee2e0b127619fdfe0c34.1507647255.git.jstancek@redhat.com>
-Message-ID: <b9195e40257e0d6a3077969f26abbdd7c1ac9bbb.1507647255.git.jstancek@redhat.com>
+Message-ID: <fe40d9a0263afff913c646a6bc1fad88e0ce9747.1507647255.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Newlib can't include ltp_priv.h due to conflicts with oldlib.
+This patch adds "." and "startdir" to $PATH during setup, so that exec*p()
+correctly finds child processes. And it also makes it convenient to run some
+tests directly from git tree.
 
 Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- include/old/ltp_priv.h   | 3 ---
- include/old/old_tmpdir.h | 3 +++
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ lib/tst_test.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/include/old/ltp_priv.h b/include/old/ltp_priv.h
-index e678a28682eb..0552457e591f 100644
---- a/include/old/ltp_priv.h
-+++ b/include/old/ltp_priv.h
-@@ -24,9 +24,6 @@
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 25cb234425ab..78cce19b6e4a 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -841,12 +841,41 @@ static unsigned long long get_time_ms(void)
+ 	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
+ }
  
- #include <stdarg.h>
- 
--/* declared in tst_tmpdir.c */
--const char *tst_get_startwd(void);
--
- /*
-  * This is the default temporary directory used by tst_tmpdir().
-  *
-diff --git a/include/old/old_tmpdir.h b/include/old/old_tmpdir.h
-index b39b615a8bdb..9c61172fd71c 100644
---- a/include/old/old_tmpdir.h
-+++ b/include/old/old_tmpdir.h
-@@ -50,4 +50,7 @@ char *tst_get_tmpdir(void);
-  */
- int tst_tmpdir_created(void);
- 
-+/* declared in tst_tmpdir.c */
-+const char *tst_get_startwd(void);
++static void add_paths(void)
++{
++	char *old_path = getenv("PATH");
++	const char *start_dir;
++	char *new_path;
++	int new_path_size;
 +
- #endif	/* OLD_TMPDIR_H__ */
++	start_dir = tst_get_startwd();
++
++	/* ".:" + "$start_dir" + '\0' */
++	new_path_size = 2 + strlen(start_dir) + 1;
++	if (old_path)
++		/* ":" + "$old_path" */
++		new_path_size += 1 + strlen(old_path);
++
++	new_path = SAFE_MALLOC(new_path_size);
++	strcpy(new_path, ".:");
++	strcat(new_path, start_dir);
++
++	if (old_path) {
++		strcat(new_path, ":");
++		strcat(new_path, old_path);
++	}
++
++	SAFE_SETENV("PATH", new_path, 1);
++	free(new_path);
++}
++
+ static void testrun(void)
+ {
+ 	unsigned int i = 0;
+ 	unsigned long long stop_time = 0;
+ 	int cont = 1;
+ 
++	add_paths();
+ 	do_test_setup();
+ 
+ 	if (duration > 0)
 -- 
 1.8.3.1
 
