@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 10 Oct 2017 14:55:00 +0200
-Subject: [LTP] [PATCH v2 1/2] syscalls/setrlimit02.c: Add a test for
-	EFAULT
-In-Reply-To: <1507600371-29126-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <20171009142304.GB25633@rei.lan>
- <1507600371-29126-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20171010125459.GD4970@rei.lan>
+Date: Tue, 10 Oct 2017 15:10:59 +0200
+Subject: [LTP] [PATCH/RFC] lib: add LTP_IPC_PATH to env. variables by
+ default
+In-Reply-To: <928440776c092e8a6da22c42b83606a142d90887.1507638841.git.jstancek@redhat.com>
+References: <928440776c092e8a6da22c42b83606a142d90887.1507638841.git.jstancek@redhat.com>
+Message-ID: <20171010131059.GE4970@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,39 +12,9 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> + * DESCRIPTION
-> + *  1) Test for EINVAL when resource is invalid.
-> + *  2) Test for EFAULT when rlim points outside the accessible address space.
-> + *  3) Test for EPERM when an unprivileged process tries to increase the
-> + *     hard limit.
->   */
->  #include <pwd.h>
->  #include <errno.h>
-> @@ -33,6 +37,7 @@ static struct tcase {
->  	int exp_errno;
->  } tcases[] = {
->  	{-1, &rlim, EINVAL},
-> +	{RLIMIT_NOFILE, (void *) -1, EFAULT},
->  	{RLIMIT_NOFILE, &rlim, EPERM}
->  };
-
-I've rembered why there is no EFAULT test for the setrlimit:
-
-commit 259db6fed55f88ab32a0875e66803eee44d298be
-Author: Cyril Hrubis <chrubis@suse.cz>
-Date:   Thu Aug 17 13:42:20 2017 +0200
-
-    syscalls/setrlimit02: Remove the EFAULT test
-
-    ...
-
-https://github.com/linux-test-project/ltp/issues/193
-
-
-So if we really want to add this one, we have to either run the test in
-the child and produce PASS on SegFault or call the raw syscall for the
-EFAULT test. Either way I think that we should put it in a seprate
-testcase if the test is really needed.
+Can you also remove the explicit passing of tst_ipc_envp in the
+creat07.c? Then we may as well get rid of the tst_ipc_envp[] array
+completely.
 
 -- 
 Cyril Hrubis
