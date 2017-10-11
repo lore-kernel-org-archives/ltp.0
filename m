@@ -1,49 +1,135 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 11 Oct 2017 14:15:06 +0200
-Subject: [LTP] [PATCH] android: io/diotest4: remove dependency on
- <sys/shm.h>
-In-Reply-To: <20170919232713.57314-1-sspatil@google.com>
-References: <20170919232713.57314-1-sspatil@google.com>
-Message-ID: <20171011121505.GA12177@rei>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 11 Oct 2017 20:26:41 +0800
+Subject: [LTP] [PATCH v4 1/2] syscalls/setrlimit05.c: Add a test for EFAULT
+In-Reply-To: <20171011114615.GC19812@rei.lan>
+References: <20171011114615.GC19812@rei.lan>
+Message-ID: <1507724801-4974-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> The dependency causes the test to fail build when being compiled against
-> bionic. The code however only seem to need that header for 'SHMLBA'
-> constant used to set the mmap'ed segment size. That is replaced by
-> the page size with this change. Tested on both Android device and a
-> x86 workstation successfully.
+1) Usually, setrlimit() returns EFAULT when rlim points outside
+   the accessible address space.
+2) In some cases, setrlimit() could return SIGSEGV as expected
+   when rlim points outside the accessible address space.
+   Please see the following url for reasons:
+    https://github.com/linux-test-project/ltp/issues/193
 
-Looking at the test git log it contains reverse of this patch, the
-getpagesize() was replaced with SHMLBA, unfortunately the commit log
-does not say why.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ runtest/syscalls                                  |  1 +
+ testcases/kernel/syscalls/.gitignore              |  1 +
+ testcases/kernel/syscalls/setrlimit/setrlimit05.c | 73 +++++++++++++++++++++++
+ 3 files changed, 75 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/setrlimit/setrlimit05.c
 
-Digging up in LTP mailing list pointed to these:
-
-https://sourceforge.net/p/ltp/mailman/ltp-list/?viewmonth=200804
-
-
-Also see this commit:
-
-commit 512cb343ef35cb952b87405787f2325106b5f48c
-Author: Helge Deller <deller@gmx.de>
-Date:   Fri Jun 16 15:55:23 2017 +0200
-
-    mmap01: fix testcase on hppa architecture
-
-    The mmap() syscall to map a file at any given page-aligned address (via the
-    MAP_FIXED flag) can fail on the hppa architecture due to cache colouring
-    requirements of the architecture.
-
-
-So this will break on strange architectures such as sparc or hppa
-because we do MAP_FIXED with unsuitable address.
-
-
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 2362a23..dc1c452 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1142,6 +1142,7 @@ setrlimit01 setrlimit01
+ setrlimit02 setrlimit02
+ setrlimit03 setrlimit03
+ setrlimit04 setrlimit04
++setrlimit05 setrlimit05
+ 
+ set_robust_list01 set_robust_list01
+ set_thread_area01 set_thread_area01
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 930f3f9..e4a8df2 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -930,6 +930,7 @@
+ /setrlimit/setrlimit02
+ /setrlimit/setrlimit03
+ /setrlimit/setrlimit04
++/setrlimit/setrlimit05
+ /setsid/setsid01
+ /setsockopt/setsockopt01
+ /settimeofday/settimeofday01
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit05.c b/testcases/kernel/syscalls/setrlimit/setrlimit05.c
+new file mode 100644
+index 0000000..d690085
+--- /dev/null
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit05.c
+@@ -0,0 +1,73 @@
++/*
++ * Copyright (c) 2017 FUJITSU LIMITED. All rights reserved.
++ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ */
++
++/*
++ * Test for EFAULT when rlim points outside the accessible address space.
++ */
++
++#define _GNU_SOURCE
++#include <errno.h>
++#include <sys/resource.h>
++#include <sys/time.h>
++#include <sys/wait.h>
++#include <stdlib.h>
++
++#include "tst_test.h"
++
++static void verify_setrlimit(void)
++{
++	int status;
++	pid_t pid;
++
++	pid = SAFE_FORK();
++	if (!pid) {
++		TEST(setrlimit(RLIMIT_NOFILE, (void *) -1));
++		if (TEST_RETURN != -1) {
++			tst_res(TFAIL, "setrlimit()  succeeded unexpectedly");
++			goto end;
++		}
++
++		/* Usually, setrlimit() should return EFAULT */
++		if (TEST_ERRNO == EFAULT) {
++			tst_res(TPASS | TTERRNO,
++				"setrlimit() failed as expected");
++		} else {
++			tst_res(TFAIL | TTERRNO,
++				"setrlimit() should fail with EFAULT, got");
++		}
++end:
++		exit(0);
++	}
++
++	SAFE_WAITPID(pid, &status, 0);
++
++	/* If glibc has to convert between 32bit and 64bit struct rlimit
++	 * in some cases, it is possible to get SegFault.
++	 */
++	if (!WIFEXITED(status)) {
++		if (WIFSIGNALED(status) == SIGSEGV) {
++			tst_res(TPASS,
++				"setrlimit() returned SIGSEGV as expected");
++		} else {
++			tst_res(TFAIL, "setrlimit() did not return SIGSEGV");
++		}
++	}
++
++}
++
++static struct tst_test test = {
++	.test_all = verify_setrlimit,
++	.forks_child = 1,
++};
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
+
+
