@@ -1,126 +1,170 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 11 Oct 2017 16:41:15 +0200
-Subject: [LTP] [PATCH v3 01/16] lib/tst_mkfs: Clear first 512k of the device
-Message-ID: <20171011144130.29728-1-chrubis@suse.cz>
+Date: Wed, 11 Oct 2017 16:41:16 +0200
+Subject: [LTP] [PATCH v3 02/16] lib: Add interface to list supported
+	filesystems
+In-Reply-To: <20171011144130.29728-1-chrubis@suse.cz>
+References: <20171011144130.29728-1-chrubis@suse.cz>
+Message-ID: <20171011144130.29728-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-If we cal tst_mkfs() from a test more than once we end up with the very
-same bug we already fixed by clearing the device in
-tst_acquire_device(), i.e. some mkfs programs will not format it when
-there is a valid FS signature there. But we have to clear the device for
-the shell tests as well.
+A filesystem is supported if kernel can mount it (we do not get ENODEV
+when we attempt to mount it) and if there is mkfs installed so that we
+can format a test device.
 
-So this commit adds tst_clear_device() function that is both called from
-the tst_mkfs() and from the shell tst_device helper to clear up the
-first 512k of the device.
+The function starts with a whitelist of filesystems to use and loops
+over them filtering out unsupported ones, then finally returns a list
+of filesystem that could be used for the testing.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- include/tst_device.h       | 10 ++++++++++
- lib/tst_device.c           | 19 +++++++++++--------
- lib/tst_mkfs.c             |  4 ++++
- testcases/lib/tst_device.c |  5 +++++
- 4 files changed, 30 insertions(+), 8 deletions(-)
+ include/tst_fs.h             |   4 ++
+ lib/tst_supported_fs_types.c | 118 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 122 insertions(+)
+ create mode 100644 lib/tst_supported_fs_types.c
 
-diff --git a/include/tst_device.h b/include/tst_device.h
-index 897696dd9..7ac288368 100644
---- a/include/tst_device.h
-+++ b/include/tst_device.h
-@@ -34,4 +34,14 @@ extern struct tst_device *tst_device;
+diff --git a/include/tst_fs.h b/include/tst_fs.h
+index 52befbec9..1f6d2bab5 100644
+--- a/include/tst_fs.h
++++ b/include/tst_fs.h
+@@ -146,6 +146,10 @@ int tst_get_path(const char *prog_name, char *buf, size_t buf_len);
   */
- int tst_umount(const char *path);
+ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
  
 +/*
-+ * Clears a first few blocks of the device. This is needed when device has
-+ * already been formatted with a filesystems, subset of mkfs.foo utils aborts
-+ * the operation if it finds a filesystem signature there.
-+ *
-+ * Note that this is called from tst_mkfs() automatically, so you probably will
-+ * not need to use this from the test yourself.
++ * Returns NULL-terminated array of kernel-supported filesystems.
 + */
-+int tst_clear_device(const char *dev);
++const char **tst_get_supported_fs_types(void);
+ 
+ #ifdef TST_TEST_H__
+ static inline long tst_fs_type(const char *path)
+diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+new file mode 100644
+index 000000000..a23b1ed52
+--- /dev/null
++++ b/lib/tst_supported_fs_types.c
+@@ -0,0 +1,118 @@
++/*
++ * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
 +
- #endif	/* TST_DEVICE_H__ */
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index 67432caf6..6ad6c47f6 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -245,15 +245,8 @@ const char *tst_acquire_device__(unsigned int size)
- 
- 		ltp_dev_size = ltp_dev_size/1024/1024;
- 
--		if (acq_dev_size <= ltp_dev_size) {
--			if (tst_fill_file(dev, 0, 1024, 512)) {
--				tst_resm(TWARN | TERRNO,
--					 "Failed to clear the first 512k of %s",
--					 dev);
--			}
--
-+		if (acq_dev_size <= ltp_dev_size)
- 			return dev;
--		}
- 
- 		tst_resm(TINFO, "Skipping $LTP_DEV size %"PRIu64"MB, requested size %uMB",
- 				ltp_dev_size, acq_dev_size);
-@@ -319,6 +312,16 @@ int tst_release_device(const char *dev)
- 	return ret;
- }
- 
-+int tst_clear_device(const char *dev)
++#include <stdio.h>
++#include <errno.h>
++#include <stdlib.h>
++#include <sys/mount.h>
++#include <sys/wait.h>
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++#include "tst_fs.h"
++
++static const char *const fs_type_whitelist[] = {
++	"ext2",
++	"ext3",
++	"ext4",
++	"xfs",
++	"btrfs",
++	"vfat",
++	"exfat",
++	"ntfs",
++	NULL
++};
++
++static const char *fs_types[ARRAY_SIZE(fs_type_whitelist)];
++
++static int has_mkfs(const char *fs_type)
 +{
-+	if (tst_fill_file(dev, 0, 1024, 512)) {
-+		tst_resm(TWARN, "Failed to clear 512k block on %s", dev);
-+		return 1;
++	char buf[128];
++	int ret;
++
++	sprintf(buf, "mkfs.%s >/dev/null 2>&1", fs_type);
++
++	ret = tst_system(buf);
++
++	if (WEXITSTATUS(ret) == 127) {
++		tst_res(TINFO, "mkfs.%s does not exist", fs_type);
++		return 0;
 +	}
 +
-+	return 0;
++	tst_res(TINFO, "mkfs.%s does exist", fs_type);
++	return 1;
 +}
 +
- int tst_umount(const char *path)
- {
- 	int err, ret, i;
-diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
-index f2e40ecd6..7385a939f 100644
---- a/lib/tst_mkfs.c
-+++ b/lib/tst_mkfs.c
-@@ -18,6 +18,7 @@
- #include "test.h"
- #include "ltp_priv.h"
- #include "tst_mkfs.h"
-+#include "tst_device.h"
- 
- #define OPTS_MAX 32
- 
-@@ -75,6 +76,9 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
- 
- 	argv[pos] = NULL;
- 
-+	if (tst_clear_device(dev))
-+		tst_brkm(TBROK, cleanup_fn, "tst_clear_device() failed");
++static int has_kernel_support(const char *fs_type)
++{
++	static int fuse_supported = -1;
++	const char *tmpdir = getenv("TMPDIR");
++	char buf[128];
++	int ret;
 +
- 	tst_resm(TINFO, "Formatting %s with %s opts='%s' extra opts='%s'",
- 	         dev, fs_type, fs_opts_str, extra_opt ? extra_opt : "");
- 	ret = tst_run_cmd(cleanup_fn, argv, "/dev/null", NULL, 1);
-diff --git a/testcases/lib/tst_device.c b/testcases/lib/tst_device.c
-index d33cac613..9afaeb1ef 100644
---- a/testcases/lib/tst_device.c
-+++ b/testcases/lib/tst_device.c
-@@ -59,6 +59,11 @@ static int acquire_device(int argc, char *argv[])
- 	if (!device)
- 		return 1;
- 
-+	if (tst_clear_device(device)) {
-+		tst_release_device(device);
++	if (!tmpdir)
++		tmpdir = "/tmp";
++
++	mount("/dev/zero", tmpdir, fs_type, 0, NULL);
++	if (errno != ENODEV) {
++		tst_res(TINFO, "Kernel supports %s", fs_type);
 +		return 1;
 +	}
 +
- 	printf("%s", device);
- 
- 	return 0;
++	/* Is FUSE supported by kernel? */
++	if (fuse_supported == -1) {
++		ret = open("/dev/fuse", O_RDWR);
++		if (ret < 0) {
++			fuse_supported = 0;
++		} else {
++			fuse_supported = 1;
++			SAFE_CLOSE(ret);
++		}
++	}
++
++	if (!fuse_supported)
++		return 0;
++
++	/* Is FUSE implementation installed? */
++	sprintf(buf, "mount.%s >/dev/null 2>&1", fs_type);
++
++	ret = tst_system(buf);
++	if (WEXITSTATUS(ret) == 127) {
++		tst_res(TINFO, "Filesystem %s is not supported", fs_type);
++		return 0;
++	}
++
++	tst_res(TINFO, "FUSE does support %s", fs_type);
++	return 1;
++}
++
++static int is_supported(const char *fs_type)
++{
++	return has_kernel_support(fs_type) && has_mkfs(fs_type);
++}
++
++const char **tst_get_supported_fs_types(void)
++{
++	unsigned int i, j = 0;
++
++	for (i = 0; fs_type_whitelist[i]; i++) {
++		if (is_supported(fs_type_whitelist[i]))
++			fs_types[j++] = fs_type_whitelist[i];
++	}
++
++	return fs_types;
++}
 -- 
 2.13.5
 
