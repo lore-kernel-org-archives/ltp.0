@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 11 Oct 2017 16:41:22 +0200
-Subject: [LTP] [PATCH v3 08/16] syscalls/fallocate04: Convert to the new
-	library
+Date: Wed, 11 Oct 2017 16:41:24 +0200
+Subject: [LTP] [PATCH v3 10/16] syscalls/setxattr01: Convert to the new
+	library.
 In-Reply-To: <20171011144130.29728-1-chrubis@suse.cz>
 References: <20171011144130.29728-1-chrubis@suse.cz>
-Message-ID: <20171011144130.29728-8-chrubis@suse.cz>
+Message-ID: <20171011144130.29728-10-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,376 +13,233 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/fallocate/fallocate04.c | 169 ++++++++++------------
- 1 file changed, 77 insertions(+), 92 deletions(-)
+ testcases/kernel/syscalls/setxattr/setxattr01.c | 138 +++++++++---------------
+ 1 file changed, 51 insertions(+), 87 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c b/testcases/kernel/syscalls/fallocate/fallocate04.c
-index a6729161c..4916c8b47 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate04.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
-@@ -30,13 +30,9 @@
- #include <fcntl.h>
- #include <unistd.h>
- 
+diff --git a/testcases/kernel/syscalls/setxattr/setxattr01.c b/testcases/kernel/syscalls/setxattr/setxattr01.c
+index 359991e3f..86df7ba73 100644
+--- a/testcases/kernel/syscalls/setxattr/setxattr01.c
++++ b/testcases/kernel/syscalls/setxattr/setxattr01.c
+@@ -57,10 +57,7 @@
+ #ifdef HAVE_SYS_XATTR_H
+ # include <sys/xattr.h>
+ #endif
 -#include "test.h"
 -#include "safe_macros.h"
+-
+-char *TCID = "setxattr01";
 +#include "tst_test.h"
- #include "lapi/fallocate.h"
  
--char *TCID = "fallocate04";
--int TST_TOTAL = 5;
+ #ifdef HAVE_SYS_XATTR_H
+ #define XATTR_NAME_MAX 255
+@@ -69,157 +66,124 @@ char *TCID = "setxattr01";
+ #define XATTR_TEST_KEY "user.testkey"
+ #define XATTR_TEST_VALUE "this is a test value"
+ #define XATTR_TEST_VALUE_SIZE 20
++#define FNAME "setxattr01testfile"
+ 
+-static void setup(void);
+-static void cleanup(void);
 -
- static int fd;
- static const char fname[] = "fallocate04.txt";
- static size_t block_size;
-@@ -44,28 +40,18 @@ static size_t buf_size;
+-char filename[BUFSIZ];
+-char long_key[XATTR_NAME_LEN];
+-char *long_value;
++static char long_key[XATTR_NAME_LEN];
++static char *long_value;
++static char *xattr_value = XATTR_TEST_VALUE;
  
- #define NUM_OF_BLOCKS	3
+ struct test_case {
+-	char *fname;
+ 	char *key;
+-	char *value;
++	char **value;
+ 	size_t size;
+ 	int flags;
+ 	int exp_err;
+ };
+ struct test_case tc[] = {
+ 	{			/* case 00, invalid flags */
+-	 .fname = filename,
+-	 .key = XATTR_TEST_KEY,
+-	 .value = XATTR_TEST_VALUE,
++	 .key = long_key,
++	 .value = &xattr_value,
+ 	 .size = XATTR_TEST_VALUE_SIZE,
+ 	 .flags = ~0,
+ 	 .exp_err = EINVAL,
+ 	 },
+ 	{			/* case 01, replace non-existing attribute */
+-	 .fname = filename,
+ 	 .key = XATTR_TEST_KEY,
+-	 .value = XATTR_TEST_VALUE,
++	 .value = &xattr_value,
+ 	 .size = XATTR_TEST_VALUE_SIZE,
+ 	 .flags = XATTR_REPLACE,
+ 	 .exp_err = ENODATA,
+ 	 },
+-	{			/* case 02, long key name, key will be set in setup() */
+-	 .fname = filename,
+-	 .key = NULL,
+-	 .value = XATTR_TEST_VALUE,
++	{			/* case 02, long key name */
++	 .key = long_key,
++	 .value = &xattr_value,
+ 	 .size = XATTR_TEST_VALUE_SIZE,
+ 	 .flags = XATTR_CREATE,
+ 	 .exp_err = ERANGE,
+ 	 },
+-	{			/* case 03, long value, value will be set in setup() */
+-	 .fname = filename,
++	{			/* case 03, long value */
+ 	 .key = XATTR_TEST_KEY,
+-	 .value = NULL,
++	 .value = &long_value,
+ 	 .size = XATTR_SIZE_MAX + 1,
+ 	 .flags = XATTR_CREATE,
+ 	 .exp_err = E2BIG,
+ 	 },
+ 	{			/* case 04, zero length value */
+-	 .fname = filename,
+ 	 .key = XATTR_TEST_KEY,
+-	 .value = XATTR_TEST_VALUE,
++	 .value = &xattr_value,
+ 	 .size = 0,
+ 	 .flags = XATTR_CREATE,
+ 	 .exp_err = 0,
+ 	 },
+ 	{			/* case 05, create existing attribute */
+-	 .fname = filename,
+ 	 .key = XATTR_TEST_KEY,
+-	 .value = XATTR_TEST_VALUE,
++	 .value = &xattr_value,
+ 	 .size = XATTR_TEST_VALUE_SIZE,
+ 	 .flags = XATTR_CREATE,
+ 	 .exp_err = EEXIST,
+ 	 },
+ 	{			/* case 06, replace existing attribute */
+-	 .fname = filename,
+ 	 .key = XATTR_TEST_KEY,
+-	 .value = XATTR_TEST_VALUE,
++	 .value = &xattr_value,
+ 	 .size = XATTR_TEST_VALUE_SIZE,
+ 	 .flags = XATTR_REPLACE,
+ 	 .exp_err = 0,
+-	 },
++	},
+ };
  
--static int verbose;
--static const option_t options[] = {
--	{"v", &verbose, NULL},
--	{NULL, NULL, NULL}
--};
+-int TST_TOTAL = sizeof(tc) / sizeof(tc[0]);
 -
--static void help(void)
--{
--	printf("  -v      Verbose\n");
--}
-+static char *verbose;
- 
- static void cleanup(void)
+-int main(int argc, char *argv[])
++static void verify_setxattr(unsigned int i)
  {
--	close(fd);
--	tst_rmdir();
-+	SAFE_CLOSE(fd);
+-	int lc;
+-	int i;
++	TEST(setxattr(FNAME, tc[i].key, *tc[i].value, tc[i].size, tc[i].flags));
+ 
+-	tst_parse_opts(argc, argv, NULL, NULL);
++	if (TEST_RETURN == -1 && TEST_ERRNO == EOPNOTSUPP)
++		tst_brk(TCONF, "setxattr() not supported");
+ 
+-	setup();
++	if (!tc[i].exp_err) {
++		if (TEST_RETURN) {
++			tst_res(TFAIL | TTERRNO,
++				"setxattr() failed with %li", TEST_RETURN);
++			return;
++		}
+ 
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
++		tst_res(TPASS, "setxattr() passed");
++		return;
++	}
+ 
+-		for (i = 0; i < TST_TOTAL; i++) {
+-			TEST(setxattr(tc[i].fname, tc[i].key, tc[i].value,
+-				      tc[i].size, tc[i].flags));
++	if (TEST_RETURN == 0) {
++		tst_res(TFAIL, "setxattr() passed unexpectedly");
++		return;
++	}
+ 
+-			if (TEST_ERRNO == tc[i].exp_err) {
+-				tst_resm(TPASS | TTERRNO, "expected behavior");
+-			} else {
+-				tst_resm(TFAIL | TTERRNO, "unexpected behavior "
+-					 "- expected errno %d - Got",
+-					 tc[i].exp_err);
+-			}
+-		}
++	if (TEST_ERRNO != tc[i].exp_err) {
++		tst_res(TFAIL | TTERRNO, "setxattr() should fail with %s",
++			tst_strerrno(tc[i].exp_err));
++		return;
+ 	}
+ 
+-	cleanup();
+-	tst_exit();
++	tst_res(TPASS | TTERRNO, "setxattr() failed");
  }
- 
- static void get_blocksize(void)
- {
- 	struct stat file_stat;
- 
--	SAFE_FSTAT(cleanup, fd, &file_stat);
-+	SAFE_FSTAT(fd, &file_stat);
- 
- 	block_size = file_stat.st_blksize;
- 	buf_size = NUM_OF_BLOCKS * block_size;
-@@ -77,7 +63,7 @@ static size_t get_allocsize(void)
- 
- 	fsync(fd);
- 
--	SAFE_FSTAT(cleanup, fd, &file_stat);
-+	SAFE_FSTAT(fd, &file_stat);
- 
- 	return file_stat.st_blocks * 512;
- }
-@@ -93,9 +79,7 @@ static void fill_tst_buf(char buf[])
  
  static void setup(void)
  {
+-	int fd;
+-
+-	tst_require_root();
++	SAFE_TOUCH(FNAME, 0644, NULL);
+ 
 -	tst_tmpdir();
 -
--	fd = SAFE_OPEN(cleanup, fname, O_RDWR | O_CREAT, 0700);
-+	fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0700);
- 
- 	get_blocksize();
- }
-@@ -104,86 +88,86 @@ static void check_file_data(const char exp_buf[], size_t size)
- {
- 	char rbuf[size];
- 
--	tst_resm(TINFO, "reading the file, compare with expected buffer");
-+	tst_res(TINFO, "reading the file, compare with expected buffer");
- 
--	SAFE_LSEEK(cleanup, fd, 0, SEEK_SET);
--	SAFE_READ(cleanup, 1, fd, rbuf, size);
-+	SAFE_LSEEK(fd, 0, SEEK_SET);
-+	SAFE_READ(1, fd, rbuf, size);
- 
- 	if (memcmp(exp_buf, rbuf, size)) {
- 		if (verbose) {
--			tst_resm_hexd(TINFO, exp_buf, size, "expected:");
--			tst_resm_hexd(TINFO, rbuf, size, "but read:");
-+			tst_res_hexd(TINFO, exp_buf, size, "expected:");
-+			tst_res_hexd(TINFO, rbuf, size, "but read:");
- 		}
--		tst_brkm(TFAIL, cleanup, "not expected file data");
-+		tst_brk(TFAIL, "not expected file data");
- 	}
- }
- 
- static void test01(void)
- {
--	tst_resm(TINFO, "allocate '%zu' bytes", buf_size);
-+	tst_res(TINFO, "allocate '%zu' bytes", buf_size);
- 
- 	if (fallocate(fd, 0, 0, buf_size) == -1) {
- 		if (errno == ENOSYS || errno == EOPNOTSUPP)
--			tst_brkm(TCONF, cleanup, "fallocate() not supported");
--		tst_brkm(TFAIL | TERRNO, cleanup, "fallocate() failed");
-+			tst_brk(TCONF, "fallocate() not supported");
-+		tst_brk(TFAIL | TERRNO, "fallocate() failed");
- 	}
- 
- 	char buf[buf_size];
- 
- 	fill_tst_buf(buf);
- 
--	SAFE_WRITE(cleanup, 1, fd, buf, buf_size);
-+	SAFE_WRITE(1, fd, buf, buf_size);
- 
--	tst_resm(TPASS, "test-case succeeded");
-+	tst_res(TPASS, "test-case succeeded");
- }
- 
- static void test02(void)
- {
- 	size_t alloc_size0 = get_allocsize();
- 
--	tst_resm(TINFO, "read allocated file size '%zu'", alloc_size0);
--	tst_resm(TINFO, "make a hole with FALLOC_FL_PUNCH_HOLE");
-+	tst_res(TINFO, "read allocated file size '%zu'", alloc_size0);
-+	tst_res(TINFO, "make a hole with FALLOC_FL_PUNCH_HOLE");
- 
- 	if (tst_kvercmp(2, 6, 38) < 0) {
--		tst_brkm(TCONF, cleanup,
--			 "FALLOC_FL_PUNCH_HOLE needs Linux 2.6.38 or newer");
-+		tst_brk(TCONF,
-+			"FALLOC_FL_PUNCH_HOLE needs Linux 2.6.38 or newer");
- 	}
- 
- 	if (fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
- 	    block_size, block_size) == -1) {
- 		if (errno == EOPNOTSUPP) {
--			tst_brkm(TCONF, cleanup,
--			         "FALLOC_FL_PUNCH_HOLE not supported");
-+			tst_brk(TCONF,
-+			        "FALLOC_FL_PUNCH_HOLE not supported");
- 		}
--		tst_brkm(TFAIL | TERRNO, cleanup, "fallocate() failed");
-+		tst_brk(TFAIL | TERRNO, "fallocate() failed");
- 	}
- 
--	tst_resm(TINFO, "check that file has a hole with lseek(,,SEEK_HOLE)");
-+	tst_res(TINFO, "check that file has a hole with lseek(,,SEEK_HOLE)");
- 	off_t ret = lseek(fd, 0, SEEK_HOLE);
- 
- 	if (ret != (ssize_t)block_size) {
- 		/* exclude error when kernel doesn't have SEEK_HOLE support */
- 		if (errno != EINVAL) {
--			tst_brkm(TFAIL | TERRNO, cleanup,
-+			tst_brk(TFAIL | TERRNO,
- 				 "fallocate() or lseek() failed");
- 		}
- 		if (tst_kvercmp(3, 1, 0) < 0) {
--			tst_resm(TINFO, "lseek() doesn't support SEEK_HOLE, "
-+			tst_res(TINFO, "lseek() doesn't support SEEK_HOLE, "
- 				 "this is expected for < 3.1 kernels");
- 		} else {
--			tst_brkm(TBROK | TERRNO, cleanup,
-+			tst_brk(TBROK | TERRNO,
- 				 "lseek() doesn't support SEEK_HOLE");
- 		}
- 	} else {
--		tst_resm(TINFO, "found a hole at '%ld' offset", ret);
-+		tst_res(TINFO, "found a hole@'%ld' offset", ret);
- 	}
- 
- 	size_t alloc_size1 = get_allocsize();
- 
--	tst_resm(TINFO, "allocated file size before '%zu' and after '%zu'",
-+	tst_res(TINFO, "allocated file size before '%zu' and after '%zu'",
- 		 alloc_size0, alloc_size1);
- 	if ((alloc_size0 - block_size) != alloc_size1)
--		tst_brkm(TFAIL, cleanup, "not expected allocated size");
-+		tst_brk(TFAIL, "not expected allocated size");
- 
- 	char exp_buf[buf_size];
- 
-@@ -192,29 +176,29 @@ static void test02(void)
- 
- 	check_file_data(exp_buf, buf_size);
- 
--	tst_resm(TPASS, "test-case succeeded");
-+	tst_res(TPASS, "test-case succeeded");
- }
- 
- static void test03(void)
- {
--	tst_resm(TINFO, "zeroing file space with FALLOC_FL_ZERO_RANGE");
-+	tst_res(TINFO, "zeroing file space with FALLOC_FL_ZERO_RANGE");
- 
- 	if (tst_kvercmp(3, 15, 0) < 0) {
--		tst_brkm(TCONF, cleanup,
--			 "FALLOC_FL_ZERO_RANGE needs Linux 3.15 or newer");
-+		tst_brk(TCONF,
-+			"FALLOC_FL_ZERO_RANGE needs Linux 3.15 or newer");
- 	}
- 
- 	size_t alloc_size0 = get_allocsize();
- 
--	tst_resm(TINFO, "read current allocated file size '%zu'", alloc_size0);
-+	tst_res(TINFO, "read current allocated file size '%zu'", alloc_size0);
- 
- 	if (fallocate(fd, FALLOC_FL_ZERO_RANGE, block_size - 1,
- 	    block_size + 2) == -1) {
- 		if (errno == EOPNOTSUPP) {
--			tst_brkm(TCONF, cleanup,
--			         "FALLOC_FL_ZERO_RANGE not supported");
-+			tst_brk(TCONF,
-+			        "FALLOC_FL_ZERO_RANGE not supported");
- 		}
--		tst_brkm(TFAIL | TERRNO, cleanup, "fallocate failed");
-+		tst_brk(TFAIL | TERRNO, "fallocate failed");
- 	}
- 
- 	/* The file hole in the specified range must be allocated and
-@@ -222,10 +206,10 @@ static void test03(void)
- 	 */
- 	size_t alloc_size1 = get_allocsize();
- 
--	tst_resm(TINFO, "allocated file size before '%zu' and after '%zu'",
-+	tst_res(TINFO, "allocated file size before '%zu' and after '%zu'",
- 		 alloc_size0, alloc_size1);
- 	if ((alloc_size0 + block_size) != alloc_size1)
--		tst_brkm(TFAIL, cleanup, "not expected allocated size");
-+		tst_brk(TFAIL, "not expected allocated size");
- 
- 	char exp_buf[buf_size];
- 
-@@ -234,32 +218,32 @@ static void test03(void)
- 
- 	check_file_data(exp_buf, buf_size);
- 
--	tst_resm(TPASS, "test-case succeeded");
-+	tst_res(TPASS, "test-case succeeded");
- }
- 
- static void test04(void)
- {
--	tst_resm(TINFO, "collapsing file space with FALLOC_FL_COLLAPSE_RANGE");
-+	tst_res(TINFO, "collapsing file space with FALLOC_FL_COLLAPSE_RANGE");
- 
- 	size_t alloc_size0 = get_allocsize();
- 
--	tst_resm(TINFO, "read current allocated file size '%zu'", alloc_size0);
-+	tst_res(TINFO, "read current allocated file size '%zu'", alloc_size0);
- 
- 	if (fallocate(fd, FALLOC_FL_COLLAPSE_RANGE, block_size,
- 	    block_size) == -1) {
- 		if (errno == EOPNOTSUPP) {
--			tst_brkm(TCONF, cleanup,
--			         "FALLOC_FL_COLLAPSE_RANGE not supported");
-+			tst_brk(TCONF,
-+			        "FALLOC_FL_COLLAPSE_RANGE not supported");
- 		}
--		tst_brkm(TFAIL | TERRNO, cleanup, "fallocate failed");
-+		tst_brk(TFAIL | TERRNO, "fallocate failed");
- 	}
- 
- 	size_t alloc_size1 = get_allocsize();
- 
--	tst_resm(TINFO, "allocated file size before '%zu' and after '%zu'",
-+	tst_res(TINFO, "allocated file size before '%zu' and after '%zu'",
- 		 alloc_size0, alloc_size1);
- 	if ((alloc_size0 - block_size) != alloc_size1)
--		tst_brkm(TFAIL, cleanup, "not expected allocated size");
-+		tst_brk(TFAIL, "not expected allocated size");
- 
- 	size_t size = buf_size - block_size;
- 	char tmp_buf[buf_size];
-@@ -274,36 +258,36 @@ static void test04(void)
- 	exp_buf[block_size - 1] = exp_buf[block_size] = '\0';
- 	check_file_data(exp_buf, size);
- 
--	tst_resm(TPASS, "test-case succeeded");
-+	tst_res(TPASS, "test-case succeeded");
- }
- 
- static void test05(void)
- {
--	tst_resm(TINFO, "inserting space with FALLOC_FL_INSERT_RANGE");
-+	tst_res(TINFO, "inserting space with FALLOC_FL_INSERT_RANGE");
- 
- 	size_t alloc_size0 = get_allocsize();
- 
--	tst_resm(TINFO, "read current allocated file size '%zu'", alloc_size0);
-+	tst_res(TINFO, "read current allocated file size '%zu'", alloc_size0);
- 
- 	if (fallocate(fd, FALLOC_FL_INSERT_RANGE, block_size,
- 	    block_size) == -1) {
- 		if (errno == EOPNOTSUPP) {
--			tst_brkm(TCONF, cleanup,
--				 "FALLOC_FL_INSERT_RANGE not supported");
-+			tst_brk(TCONF,
-+				"FALLOC_FL_INSERT_RANGE not supported");
- 		}
--		tst_brkm(TFAIL | TERRNO, cleanup, "fallocate failed");
-+		tst_brk(TFAIL | TERRNO, "fallocate failed");
- 	}
- 
- 	/* allocate space and ensure that it filled with zeroes */
- 	if (fallocate(fd, FALLOC_FL_ZERO_RANGE, block_size, block_size) == -1)
--		tst_brkm(TFAIL | TERRNO, cleanup, "fallocate failed");
-+		tst_brk(TFAIL | TERRNO, "fallocate failed");
- 
- 	size_t alloc_size1 = get_allocsize();
- 
--	tst_resm(TINFO, "allocated file size before '%zu' and after '%zu'",
-+	tst_res(TINFO, "allocated file size before '%zu' and after '%zu'",
- 		 alloc_size0, alloc_size1);
- 	if ((alloc_size0 + block_size) != alloc_size1)
--		tst_brkm(TFAIL, cleanup, "not expected allocated size");
-+		tst_brk(TFAIL, "not expected allocated size");
- 
- 	char exp_buf[buf_size];
- 
-@@ -312,26 +296,27 @@ static void test05(void)
- 
- 	check_file_data(exp_buf, buf_size);
- 
--	tst_resm(TPASS, "test-case succeeded");
-+	tst_res(TPASS, "test-case succeeded");
- }
- 
--int main(int argc, char *argv[])
-+static void run(void)
- {
--	int lc;
+-	/* Test for xattr support */
+-	fd = SAFE_CREAT(cleanup, "testfile", 0644);
+-	close(fd);
+-	if (setxattr("testfile", "user.test", "test", 4, XATTR_CREATE) == -1)
+-		if (errno == ENOTSUP)
+-			tst_brkm(TCONF, cleanup, "No xattr support in fs or "
+-				 "mount without user_xattr option");
 -
--	tst_parse_opts(argc, argv, options, help);
+-	/* Create test file */
+-	snprintf(filename, BUFSIZ, "setxattr01testfile");
+-	fd = SAFE_CREAT(cleanup, filename, 0644);
+-	close(fd);
 -
--	setup();
+-	/* Prepare test cases */
+ 	snprintf(long_key, 6, "%s", "user.");
+ 	memset(long_key + 5, 'k', XATTR_NAME_LEN - 5);
+ 	long_key[XATTR_NAME_LEN - 1] = '\0';
+-	tc[2].key = long_key;
+ 
+-	long_value = malloc(XATTR_SIZE_MAX + 2);
+-	if (!long_value)
+-		tst_brkm(TBROK | TERRNO, cleanup, "malloc failed");
++	long_value = SAFE_MALLOC(XATTR_SIZE_MAX + 2);
+ 	memset(long_value, 'v', XATTR_SIZE_MAX + 2);
+ 	long_value[XATTR_SIZE_MAX + 1] = '\0';
+-	tc[3].value = long_value;
 -
--	for (lc = 0; TEST_LOOPING(lc); ++lc) {
--		test01();
--		test02();
--		test03();
--		test04();
--		test05();
--	}
-+	test01();
-+	test02();
-+	test03();
-+	test04();
-+	test05();
-+}
+-	TEST_PAUSE;
+ }
  
--	cleanup();
-+static struct tst_option opts[] = {
-+	{"v", &verbose, "-v       Turns on verbose mode"},
-+	{NULL, NULL, NULL}
-+};
- 
--	tst_exit();
+-static void cleanup(void)
+-{
+-	tst_rmdir();
 -}
 +static struct tst_test test = {
-+	.options = opts,
 +	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run,
++	.test = verify_setxattr,
++	.tcnt = ARRAY_SIZE(tc),
 +	.needs_tmpdir = 1,
++	.needs_root = 1,
 +};
++
+ #else /* HAVE_SYS_XATTR_H */
+-int main(int argc, char *argv[])
+-{
+-	tst_brkm(TCONF, NULL, "<sys/xattr.h> does not exist.");
+-}
++TST_TEST_TCONF("<sys/xattr.h> does not exist");
+ #endif
 -- 
 2.13.5
 
