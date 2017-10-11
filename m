@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 11 Oct 2017 13:46:15 +0200
-Subject: [LTP] [PATCH v3 1/2] syscalls/setrlimit05.c: Add a test for
-	EFAULT
-In-Reply-To: <1507697036-30535-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <20171010125459.GD4970@rei.lan>
- <1507697036-30535-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20171011114615.GC19812@rei.lan>
+Date: Wed, 11 Oct 2017 14:15:06 +0200
+Subject: [LTP] [PATCH] android: io/diotest4: remove dependency on
+ <sys/shm.h>
+In-Reply-To: <20170919232713.57314-1-sspatil@google.com>
+References: <20170919232713.57314-1-sspatil@google.com>
+Message-ID: <20171011121505.GA12177@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,66 +12,37 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +#define _GNU_SOURCE
-> +#include <errno.h>
-> +#include <sys/resource.h>
-> +#include <sys/time.h>
-> +#include <sys/wait.h>
-> +#include <stdlib.h>
-> +
-> +#include "tst_test.h"
-> +
-> +static void verify_setrlimit(void)
-> +{
-> +	int status;
-> +	pid_t pid;
-> +
-> +	pid = SAFE_FORK();
-> +	if (!pid) {
-> +		TEST(setrlimit(RLIMIT_NOFILE, (void *) -1));
-> +		if (TEST_RETURN == -1 && TEST_ERRNO == EFAULT)
-> +			exit(0);
-> +
-> +		exit(1);
+> The dependency causes the test to fail build when being compiled against
+> bionic. The code however only seem to need that header for 'SHMLBA'
+> constant used to set the mmap'ed segment size. That is replaced by
+> the page size with this change. Tested on both Android device and a
+> x86 workstation successfully.
 
-Can we do the PASS/FAIL for the expected errno here?
+Looking at the test git log it contains reverse of this patch, the
+getpagesize() was replaced with SHMLBA, unfortunately the commit log
+does not say why.
 
-Then we need to handle just the TPASS in the parent in case of SegFault.
+Digging up in LTP mailing list pointed to these:
 
-> +	}
-> +
-> +	SAFE_WAITPID(pid, &status, 0);
-> +
-> +	/* Usually, setrlimit() should return EFAULT */
-> +	if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-> +		tst_res(TPASS, "setrlimit() returned EFAULT as expected");
-> +		return;
-> +	}
-> +
-> +	/* If glibc has to convert between 32bit and 64bit struct rlimit
-> +	 * in some cases, it is possible to get SegFault.
-> +	 */
-> +	if (!WIFEXITED(status) && WIFSIGNALED(status) == SIGSEGV) {
-> +		tst_res(TPASS, "setrlimit() returned SIGSEGV as expected");
-> +		return;
-> +	}
-> +
-> +	tst_res(TFAIL, "setrlimit() did not return EFAULT or SIGSEGV");
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = verify_setrlimit,
-> +	.forks_child = 1,
-> +	.needs_root = 1,
+https://sourceforge.net/p/ltp/mailman/ltp-list/?viewmonth=200804
 
-Do we really need root?
 
-> +};
-> -- 
-> 1.8.3.1
-> 
-> 
-> 
+Also see this commit:
+
+commit 512cb343ef35cb952b87405787f2325106b5f48c
+Author: Helge Deller <deller@gmx.de>
+Date:   Fri Jun 16 15:55:23 2017 +0200
+
+    mmap01: fix testcase on hppa architecture
+
+    The mmap() syscall to map a file at any given page-aligned address (via the
+    MAP_FIXED flag) can fail on the hppa architecture due to cache colouring
+    requirements of the architecture.
+
+
+So this will break on strange architectures such as sparc or hppa
+because we do MAP_FIXED with unsuitable address.
+
 
 -- 
 Cyril Hrubis
