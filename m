@@ -1,201 +1,106 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 12 Oct 2017 17:33:37 +0200
-Subject: [LTP] [RFC] [PATCH 1/2] lib: Add tst_strstatus()
-Message-ID: <20171012153338.1233-1-chrubis@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 12 Oct 2017 20:33:17 +0200
+Subject: [LTP] [PATCH v3 00/18] Fix 32-bit cross compilation
+Message-ID: <20171012183335.24568-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This function returns a string describing status as returned by 'wait()'
-call. This is expected to be used when we want to TBROK a test if child
-haven't terminated in an expected way.
+Hi,
 
-The fucntion is not thread safe, since it uses static buffer, but I
-doubt that we actually care in this case and making it thread-safe would
-have complicated the nice and simple API.
+I tested HEAD against:
+./configure "CFLAGS=-m32" "CXXFLAGS=-m32" LDFLAGS="-m32" && make && make install
+(I know we don't really need CXXFLAGS)
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- doc/test-writing-guidelines.txt    |  9 ++++++
- include/tst_test.h                 |  6 ++++
- lib/newlib_tests/.gitignore        |  1 +
- lib/newlib_tests/test_str_status.c | 49 ++++++++++++++++++++++++++++++
- lib/tst_status.c                   | 62 ++++++++++++++++++++++++++++++++++++++
- 5 files changed, 127 insertions(+)
- create mode 100644 lib/newlib_tests/test_str_status.c
- create mode 100644 lib/tst_status.c
+and each commit against normal build.
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index 15d418954..edc1f602d 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -449,6 +449,15 @@ translate 'errno' values to strings is preferred. You should not use the
- 
- [source,c]
- -------------------------------------------------------------------------------
-+const char *tst_strstatus(int status);
-+-------------------------------------------------------------------------------
-+
-+Returns string describing the status as returned by 'wait()'.
-+
-+WARNING: This funciton is not thread safe.
-+
-+[source,c]
-+-------------------------------------------------------------------------------
- void tst_set_timeout(unsigned int timeout);
- -------------------------------------------------------------------------------
- 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index ad468e8cf..f9872d973 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -186,6 +186,12 @@ extern int TEST_ERRNO;
-  */
- const char *tst_strerrno(int err);
- const char *tst_strsig(int sig);
-+/*
-+ * Returns string describing status as returned by wait().
-+ *
-+ * BEWARE: Not thread safe.
-+ */
-+const char *tst_strstatus(int status);
- 
- void tst_set_timeout(int timeout);
- 
-diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
-index d47a6ea12..e10cbdb72 100644
---- a/lib/newlib_tests/.gitignore
-+++ b/lib/newlib_tests/.gitignore
-@@ -17,3 +17,4 @@ test16
- tst_device
- tst_safe_fileops
- tst_res_hexd
-+test_str_status
-diff --git a/lib/newlib_tests/test_str_status.c b/lib/newlib_tests/test_str_status.c
-new file mode 100644
-index 000000000..706ec1144
---- /dev/null
-+++ b/lib/newlib_tests/test_str_status.c
-@@ -0,0 +1,49 @@
-+/*
-+ * Copyright (c) 2016 Cyril Hrubis <chrubis@suse.cz>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ */
-+
-+/*
-+ * The test should abort when oldlib function is called from newlib.
-+ */
-+
-+#include "tst_test.h"
-+
-+static struct tcase {
-+	int status;
-+	const char *str;
-+} tcases[] = {
-+	{0x0100, "exitted with 1"},
-+	{0x0001, "killed by SIGHUP"},
-+	{0x137f, "is stopped"},
-+	{0xffff, "is resumed"},
-+	{0xff, "invalid status 0xff"},
-+};
-+
-+static void do_test(unsigned int n)
-+{
-+	const char *str_status = tst_strstatus(tcases[n].status);
-+
-+	if (strcmp(str_status, tcases[n].str))
-+		tst_res(TFAIL, "%s != %s", str_status, tcases[n].str);
-+	else
-+		tst_res(TPASS, "%s", str_status);
-+}
-+
-+static struct tst_test test = {
-+	.test = do_test,
-+	.tcnt = ARRAY_SIZE(tcases),
-+};
-diff --git a/lib/tst_status.c b/lib/tst_status.c
-new file mode 100644
-index 000000000..4bd38e547
---- /dev/null
-+++ b/lib/tst_status.c
-@@ -0,0 +1,62 @@
-+/*
-+ * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <stdio.h>
-+#define TST_NO_DEFAULT_MAIN
-+#include "tst_test.h"
-+
-+static char buf[32];
-+
-+const char *exited(int status)
-+{
-+	snprintf(buf, sizeof(buf), "exitted with %i", WEXITSTATUS(status));
-+
-+	return buf;
-+}
-+
-+const char *signaled(int status)
-+{
-+	snprintf(buf, sizeof(buf), "killed by %s", tst_strsig(status));
-+
-+	return buf;
-+}
-+
-+const char *invalid(int status)
-+{
-+	snprintf(buf, sizeof(buf), "invalid status 0x%x", status);
-+
-+	return buf;
-+}
-+
-+const char *tst_strstatus(int status)
-+{
-+	if (WIFEXITED(status))
-+		return exited(status);
-+
-+	if (WIFSIGNALED(status))
-+		return signaled(status);
-+
-+	if (WIFSTOPPED(status))
-+		return "is stopped";
-+
-+	if (WIFCONTINUED(status))
-+		return "is resumed";
-+
-+	return invalid(status);
-+}
+Petr Vorel (18):
+  configure.ac: Sort headers alphabetically
+  m4: Simplify check for linux/can.h header
+  m4: Simplify check for linux/keyctl.h header
+  lapi/keyctl.h: Add doc and reorder definitions
+  syscalls/request_key: Port to use lapi/keyctl.h header
+  m4: Fix libkeyutils detection on 32-bit cross build
+  nfsv4/acl1: Exit with TCONF when libacl not available
+  m4: Fix libacl detection on 32-bit cross build
+  m4: Fix libcrypto detection on 32-bit cross build
+  io/aiocp: Exit with TCONF when libaio is not available
+  m4: Fix libaio detection on 32-bit cross build
+  make: Remove workarounds for build without libnuma
+  numa: Drop NUMA API v1 support
+  numa: Drop NUMA_CPPFLAGS
+  hotplug/memory_hotplug: Update TODO
+  hotplug/memory_hotplug: Remove unused header
+  hotplug/memory_hotplug: Exit with TCONF when NUMA headers not
+    available
+  m4,kernel/lib: Detect libnuma presence in kernel libs
+
+ configure.ac                                       | 13 +++---
+ include/lapi/keyctl.h                              | 53 +++++++++++++++++-----
+ include/mk/config.mk.default                       |  1 -
+ include/mk/config.mk.in                            |  1 -
+ m4/ltp-acl.m4                                      | 12 +++--
+ m4/ltp-can.m4                                      | 25 ----------
+ m4/ltp-crypto.m4                                   | 11 +++--
+ m4/ltp-eventfd.m4                                  | 17 ++++---
+ m4/ltp-keyctl.m4                                   | 25 ----------
+ m4/ltp-keyutils.m4                                 |  7 +--
+ m4/ltp-numa.m4                                     | 45 ++++++++----------
+ .../controllers/cpuset/cpuset_lib/libcpuset.c      |  1 +
+ .../cpuset/cpuset_syscall_test/Makefile            |  1 -
+ .../cpuset_syscall_test/cpuset_syscall_test.c      |  5 +-
+ testcases/kernel/hotplug/memory_hotplug/TODO       |  5 --
+ testcases/kernel/hotplug/memory_hotplug/commands.c | 17 ++-----
+ testcases/kernel/hotplug/memory_hotplug/memtoy.c   | 17 ++++---
+ testcases/kernel/hotplug/memory_hotplug/segment.c  |  6 ++-
+ testcases/kernel/include/lib.mk                    |  2 +-
+ testcases/kernel/include/numa_helper.h             |  2 +-
+ testcases/kernel/io/aio/aio01/aio01.c              | 23 ++++------
+ testcases/kernel/io/aio/aio02/aio_tio.c            |  3 +-
+ testcases/kernel/io/aio/aio02/main.c               |  8 ++--
+ testcases/kernel/io/ltp-aiodio/aio-stress.c        | 15 +++++-
+ testcases/kernel/io/ltp-aiodio/aiocp.c             | 11 ++---
+ testcases/kernel/io/ltp-aiodio/aiodio_append.c     | 14 +++++-
+ testcases/kernel/io/ltp-aiodio/aiodio_sparse.c     | 18 ++++++--
+ testcases/kernel/lib/Makefile                      |  3 +-
+ testcases/kernel/lib/numa_helper.c                 | 25 +++-------
+ testcases/kernel/mem/cpuset/cpuset01.c             |  8 ++--
+ testcases/kernel/mem/ksm/ksm02.c                   |  9 ++--
+ testcases/kernel/mem/ksm/ksm04.c                   |  9 ++--
+ testcases/kernel/mem/ksm/ksm06.c                   | 12 +++--
+ testcases/kernel/mem/lib/mem.c                     | 13 +++---
+ testcases/kernel/mem/oom/oom02.c                   |  9 ++--
+ testcases/kernel/mem/oom/oom03.c                   | 10 ++--
+ testcases/kernel/mem/oom/oom04.c                   |  9 ++--
+ testcases/kernel/mem/oom/oom05.c                   |  9 ++--
+ testcases/kernel/mem/vma/vma02.c                   | 14 ++----
+ testcases/kernel/mem/vma/vma04.c                   | 13 ++----
+ testcases/kernel/numa/Makefile                     |  2 +-
+ .../integrity/ima/src/ima_boot_aggregate.c         | 21 +++++----
+ .../security/integrity/ima/src/ima_measure.c       | 24 +++++-----
+ testcases/kernel/syscalls/eventfd/eventfd01.c      | 16 +++++--
+ .../syscalls/get_mempolicy/get_mempolicy01.c       | 41 ++---------------
+ testcases/kernel/syscalls/io_cancel/io_cancel01.c  | 12 +++--
+ .../kernel/syscalls/io_destroy/io_destroy01.c      | 12 +++--
+ .../kernel/syscalls/io_getevents/io_getevents01.c  | 13 +++---
+ testcases/kernel/syscalls/io_setup/io_setup01.c    | 12 +++--
+ testcases/kernel/syscalls/io_submit/io_submit01.c  | 11 +++--
+ testcases/kernel/syscalls/mbind/Makefile           |  9 ----
+ testcases/kernel/syscalls/mbind/mbind01.c          |  9 ++--
+ testcases/kernel/syscalls/migrate_pages/Makefile   |  3 --
+ .../syscalls/migrate_pages/migrate_pages01.c       |  8 ++--
+ .../syscalls/migrate_pages/migrate_pages02.c       |  9 ++--
+ testcases/kernel/syscalls/move_pages/Makefile      |  5 --
+ .../syscalls/move_pages/move_pages_support.c       | 14 +++---
+ .../kernel/syscalls/request_key/request_key01.c    | 14 +-----
+ .../kernel/syscalls/request_key/request_key02.c    | 15 +-----
+ testcases/network/nfsv4/acl/acl1.c                 | 24 ++--------
+ 60 files changed, 359 insertions(+), 416 deletions(-)
+ delete mode 100644 m4/ltp-can.m4
+ delete mode 100644 m4/ltp-keyctl.m4
+
 -- 
-2.13.5
+2.14.2
 
