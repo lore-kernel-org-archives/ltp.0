@@ -1,80 +1,74 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 12 Oct 2017 20:33:23 +0200
-Subject: [LTP] [PATCH v3 06/18] m4: Fix libkeyutils detection on 32-bit
-	cross build
+Date: Thu, 12 Oct 2017 20:33:24 +0200
+Subject: [LTP] [PATCH v3 07/18] nfsv4/acl1: Exit with TCONF when libacl not
+	available
 In-Reply-To: <20171012183335.24568-1-pvorel@suse.cz>
 References: <20171012183335.24568-1-pvorel@suse.cz>
-Message-ID: <20171012183335.24568-7-pvorel@suse.cz>
+Message-ID: <20171012183335.24568-8-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
++ cleanup dos/windows headers
+
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- configure.ac          | 1 +
- include/lapi/keyctl.h | 6 ++++--
- m4/ltp-keyutils.m4    | 7 ++++---
- 3 files changed, 9 insertions(+), 5 deletions(-)
+ testcases/network/nfsv4/acl/acl1.c | 19 +++----------------
+ 1 file changed, 3 insertions(+), 16 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index 78d9da680..2356531cd 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -32,6 +32,7 @@ AC_PREFIX_DEFAULT(/opt/ltp)
+diff --git a/testcases/network/nfsv4/acl/acl1.c b/testcases/network/nfsv4/acl/acl1.c
+index b8b67b4e3..1693d4347 100644
+--- a/testcases/network/nfsv4/acl/acl1.c
++++ b/testcases/network/nfsv4/acl/acl1.c
+@@ -4,31 +4,20 @@
+  *	Purpose: setting an acl on a file a verifies that the accesses are right
+  */
  
- AC_CHECK_HEADERS([ \
-     ifaddrs.h \
-+    keyutils.h \
-     libaio.h \
-     linux/can.h \
-     linux/genetlink.h \
-diff --git a/include/lapi/keyctl.h b/include/lapi/keyctl.h
-index b48bc1a3e..60d233462 100644
---- a/include/lapi/keyctl.h
-+++ b/include/lapi/keyctl.h
-@@ -19,12 +19,14 @@
- #define KEYCTL_H__
+-#if defined (DOS) || defined (WIN32)
+-/* If Dos, Windows or Win32 */
+-#define DOSorWIN32
+-#endif
+-
+-#ifndef DOSorWIN32
+ #include <sys/param.h>
+-#endif
  
- #include "config.h"
--#ifdef HAVE_KEYUTILS_H
-+
-+#if defined(HAVE_KEYUTILS_H) && defined(HAVE_LIBKEYUTILS)
- # include <keyutils.h>
- #else
- # ifdef HAVE_LINUX_KEYCTL_H
- #  include <linux/keyctl.h>
- # endif /* HAVE_LINUX_KEYCTL_H */
-+
- # include <stdarg.h>
- # include <stdint.h>
- # include "lapi/syscalls.h"
-@@ -63,7 +65,7 @@ static inline long keyctl(int cmd, ...)
+ #include <stdlib.h>
+ #include <sys/types.h>
+-#ifdef DOSorWIN32
+-#include <time.h>
+-#else
+ #include <sys/time.h>
+-#endif
+ #include <sys/stat.h>
+ #include <stdio.h>
+ #include <string.h>
+-//#include "../tests.h"
+ #include <dirent.h>
+ #include <unistd.h>
+ #include <errno.h>
  
- 	return tst_syscall(__NR_keyctl, cmd, arg2, arg3, arg4, arg5);
+-#include <config.h>
++#include "config.h"
++#include "tst_res_flags.h"
+ 
+ #ifdef HAVE_SYS_ACL_H
+ 
+@@ -378,11 +367,9 @@ int main(int argc, char *argv[])
  }
--#endif /* HAVE_KEYUTILS_H */
-+#endif /* defined(HAVE_KEYUTILS_H) && defined(HAVE_LIBKEYUTILS) */
  
- /* special process keyring shortcut IDs */
- #ifndef KEY_SPEC_THREAD_KEYRING
-diff --git a/m4/ltp-keyutils.m4 b/m4/ltp-keyutils.m4
-index 74b7d3249..c65004947 100644
---- a/m4/ltp-keyutils.m4
-+++ b/m4/ltp-keyutils.m4
-@@ -18,7 +18,8 @@ dnl
- dnl LTP_CHECK_KEYUTILS_SUPPORT
- dnl ----------------------------
- dnl
--AC_DEFUN([LTP_CHECK_KEYUTILS_SUPPORT],[
--AC_CHECK_HEADERS([keyutils.h], [keyutils_libs="-lkeyutils"])
--AC_SUBST([KEYUTILS_LIBS], [$keyutils_libs])
-+AC_DEFUN([LTP_CHECK_KEYUTILS_SUPPORT], [
-+	AC_CHECK_LIB([keyutils], [add_key],
-+	[AC_DEFINE(HAVE_LIBKEYUTILS, 1, [Define to 1 if you have libkeyutils installed]),
-+	      AC_SUBST(KEYUTILS_LIBS, "-lkeyutils")])
- ])
+ #else
+-
+ int main(void)
+ {
+ 	printf("The acl library was missing upon compilation.\n");
+-	return 0;
++	return TCONF;
+ }
+-
+ #endif /* HAVE_SYS_ACL_H */
 -- 
 2.14.2
 
