@@ -1,8 +1,8 @@
 From: Li Zhijian <lizhijian@cn.fujitsu.com>
-Date: Thu, 12 Oct 2017 18:55:42 +0800
-Subject: [LTP] [PATCH] shmctl: enable subtest SHM_LOCK SHM_UNLOCK only if
+Date: Thu, 12 Oct 2017 18:57:08 +0800
+Subject: [LTP] [PATCH v2] shmctl: enable subtest SHM_LOCK SHM_UNLOCK only if
 	kernel < 2.6.9
-Message-ID: <1507805742-24837-1-git-send-email-lizhijian@cn.fujitsu.com>
+Message-ID: <1507805828-25302-1-git-send-email-lizhijian@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -23,7 +23,7 @@ Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
  1 file changed, 3 insertions(+)
 
 diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
-index 563f687..49bf846 100644
+index 563f687..5965a46 100644
 --- a/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
 +++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
 @@ -55,6 +55,7 @@
@@ -34,11 +34,12 @@ index 563f687..49bf846 100644
  #include "ipcshm.h"
  #include <pwd.h>
  
-@@ -90,11 +91,13 @@ struct test_case_t {
+@@ -89,12 +90,14 @@ struct test_case_t {
+ 	    /* EINVAL - the command is not valid */
  	{
  	&shm_id_2, -1, &buf, EINVAL},
- 	    /* EPERM - the command is only valid for the super-user */
 +#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 9)
+ 	    /* EPERM - the command is only valid for the super-user */
  	{
  	&shm_id_2, SHM_LOCK, &buf, EPERM},
  	    /* EPERM - the command is only valid for the super-user */
