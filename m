@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 12 Oct 2017 16:01:11 +0200
-Subject: [LTP] [PATCH 2/2] POSIX: Allow pthread_cond_destroy to block
-In-Reply-To: <20171009101824.17251-3-rpalethorpe@suse.com>
-References: <20171009101824.17251-1-rpalethorpe@suse.com>
- <20171009101824.17251-3-rpalethorpe@suse.com>
-Message-ID: <20171012140111.GC21253@rei>
+Date: Thu, 12 Oct 2017 16:15:34 +0200
+Subject: [LTP] [PATCH v4 1/2] syscalls/setrlimit05.c: Add a test for
+	EFAULT
+In-Reply-To: <1507724801-4974-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20171011114615.GC19812@rei.lan>
+ <1507724801-4974-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20171012141534.GA25576@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,63 +13,91 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Do I understand this correctly that this is a preemptive fix? Since this
-test seems to work fine for me, while the barrier one blocks.
-
-Can we have this kind of information included in the commit message as
-well?
-
->  int main(void)
->  {
-> -	pthread_t low_id;
-> +	pthread_t low_id, watchdog_thread;
->  	int rc = 0;
->  
-> -	/* Create a new thread with default attributes */
->  	rc = pthread_create(&low_id, NULL, thread, NULL);
->  	if (rc != 0) {
-> -		printf(ERROR_PREFIX "pthread_create\n");
-> +		perror("main: pthread_create");
->  		exit(PTS_UNRESOLVED);
->  	}
->  
-> -	/* Let the other thread run */
-> -	sleep(2);
-> +	sleep(1);
+> +/*
+> + * Test for EFAULT when rlim points outside the accessible address space.
+> + */
 > +
-> +	rc = pthread_create(&watchdog_thread, NULL, watchdog, NULL);
-> +	if (rc != 0) {
-> +		perror("main: pthread_create");
-> +		exit(PTS_UNRESOLVED);
+> +#define _GNU_SOURCE
+> +#include <errno.h>
+> +#include <sys/resource.h>
+> +#include <sys/time.h>
+> +#include <sys/wait.h>
+> +#include <stdlib.h>
+> +
+> +#include "tst_test.h"
+> +
+> +static void verify_setrlimit(void)
+> +{
+> +	int status;
+> +	pid_t pid;
+> +
+> +	pid = SAFE_FORK();
+> +	if (!pid) {
+> +		TEST(setrlimit(RLIMIT_NOFILE, (void *) -1));
+> +		if (TEST_RETURN != -1) {
+> +			tst_res(TFAIL, "setrlimit()  succeeded unexpectedly");
+> +			goto end;
+                         ^
+			 Why not just exit(0) here?
+
+> +		}
+> +
+> +		/* Usually, setrlimit() should return EFAULT */
+> +		if (TEST_ERRNO == EFAULT) {
+> +			tst_res(TPASS | TTERRNO,
+> +				"setrlimit() failed as expected");
+> +		} else {
+> +			tst_res(TFAIL | TTERRNO,
+> +				"setrlimit() should fail with EFAULT, got");
+> +		}
+> +end:
+> +		exit(0);
 > +	}
->  
-> -	/* Try to destroy the cond var. This should return an error */
->  	rc = pthread_cond_destroy(&cond);
->  	if (rc != EBUSY) {
-> -		printf(ERROR_PREFIX "Test PASS: Expected %d(EBUSY) got %d, "
-> -		       "though the standard states 'may' fail\n", EBUSY, rc);
-> -
-> -		exit(PTS_PASS);
-> +		printf("The standard recommends returning %d, EBUSY, but got %d, %s\n",
-> +		       EBUSY, rc, strerror(rc));
->  	}
-
-Here as well, I would consider checking either for succes or for EBUSY,
-it does not make any sense to return any other error than the one
-specified in the standard in a case that we do not return 0.
-
-> +	pthread_cancel(watchdog_thread);
-> +	pthread_cancel(low_id);
 > +
->  	printf("Test PASSED\n");
->  	exit(PTS_PASS);
->  }
+> +	SAFE_WAITPID(pid, &status, 0);
+> +
+> +	/* If glibc has to convert between 32bit and 64bit struct rlimit
+> +	 * in some cases, it is possible to get SegFault.
+> +	 */
+> +	if (!WIFEXITED(status)) {
+> +		if (WIFSIGNALED(status) == SIGSEGV) {
+                              ^
+			      This is wrong, we have to use
+			      WTERMSIG(status) == SIGSEGV
+> +			tst_res(TPASS,
+> +				"setrlimit() returned SIGSEGV as expected");
+> +		} else {
+> +			tst_res(TFAIL, "setrlimit() did not return SIGSEGV");
+> +		}
+> +	}
+
+We should generally do something as:
+
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV) {
+		tst_res(TPASS, "setrlimit() caused SIGSEGV");
+		return;
+	}
+
+	tst_brk(TBROK, "Child ended with status %i", status);
+
+But that prints the status as a number, which is hard to decipher. And
+this is not the first time pattern like this emerges in test code. Maybe
+we just need a library function to dissect the status as returned by
+wait and print it content, then we can print the status in
+human-readable format here and exit. I will try to sketch such function
+and send a patch to ML as RFC.
+
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = verify_setrlimit,
+> +	.forks_child = 1,
+> +};
 > -- 
-> 2.14.2
+> 1.8.3.1
 > 
 > 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
 
 -- 
 Cyril Hrubis
