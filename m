@@ -1,11 +1,12 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 12 Oct 2017 04:50:32 -0400 (EDT)
+Date: Thu, 12 Oct 2017 05:34:20 -0400 (EDT)
 Subject: [LTP] [PATCH 5/6] creat07: no need to pass tst_ipc_envp anymore
-In-Reply-To: <20171012080802.GA10492@rei>
+In-Reply-To: <223626151.28570387.1507798232961.JavaMail.zimbra@redhat.com>
 References: <7fe9947329b48673f7f9ee2e0b127619fdfe0c34.1507647255.git.jstancek@redhat.com>
  <70f47d3c63fb849eeba0a6bb4f2760d4815db3cb.1507647255.git.jstancek@redhat.com>
  <20171012080802.GA10492@rei>
-Message-ID: <223626151.28570387.1507798232961.JavaMail.zimbra@redhat.com>
+ <223626151.28570387.1507798232961.JavaMail.zimbra@redhat.com>
+Message-ID: <509176377.28577194.1507800860192.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,35 +14,47 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
------ Original Message -----
-> Hi!
-> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> > ---
-> >  testcases/kernel/syscalls/creat/creat07.c | 4 +---
-> >  1 file changed, 1 insertion(+), 3 deletions(-)
-> > 
-> > diff --git a/testcases/kernel/syscalls/creat/creat07.c
-> > b/testcases/kernel/syscalls/creat/creat07.c
-> > index e1b267661c39..236f4edf843f 100644
-> > --- a/testcases/kernel/syscalls/creat/creat07.c
-> > +++ b/testcases/kernel/syscalls/creat/creat07.c
-> > @@ -38,9 +38,7 @@ static void verify_creat(void)
-> >  
-> >  	pid = SAFE_FORK();
-> >  	if (pid == 0) {
-> > -		char *av[] = {TEST_APP, NULL};
-> > -		(void)execve(TEST_APP, av, tst_ipc_envp);
-> > -		perror("execve failed");
-> > +		SAFE_EXECLP(TEST_APP, TEST_APP, NULL);
-> 
-> And it looks like this broke the test when executed from installed LTP,
-> that is because the execlp() picks up the TEST_APP from
-> /opt/ltp/testcasese/bin/ instead of the local copy. I guess that we have
-> to use exec() variant without the p at the end here.
 
-Or we can switch order so that "." is searched as first:
-  SAFE_ASPRINTF(&new_path, ":%s:%s", start_dir, old_path);
-What do you think?
+----- Original Message -----
+> From: "Jan Stancek" <jstancek@redhat.com>
+> To: "Cyril Hrubis" <chrubis@suse.cz>
+> Cc: ltp@lists.linux.it
+> Sent: Thursday, 12 October, 2017 10:50:32 AM
+> Subject: Re: [LTP] [PATCH 5/6] creat07: no need to pass tst_ipc_envp anymore
+> 
+> 
+> ----- Original Message -----
+> > Hi!
+> > > Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> > > ---
+> > >  testcases/kernel/syscalls/creat/creat07.c | 4 +---
+> > >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > > 
+> > > diff --git a/testcases/kernel/syscalls/creat/creat07.c
+> > > b/testcases/kernel/syscalls/creat/creat07.c
+> > > index e1b267661c39..236f4edf843f 100644
+> > > --- a/testcases/kernel/syscalls/creat/creat07.c
+> > > +++ b/testcases/kernel/syscalls/creat/creat07.c
+> > > @@ -38,9 +38,7 @@ static void verify_creat(void)
+> > >  
+> > >  	pid = SAFE_FORK();
+> > >  	if (pid == 0) {
+> > > -		char *av[] = {TEST_APP, NULL};
+> > > -		(void)execve(TEST_APP, av, tst_ipc_envp);
+> > > -		perror("execve failed");
+> > > +		SAFE_EXECLP(TEST_APP, TEST_APP, NULL);
+> > 
+> > And it looks like this broke the test when executed from installed LTP,
+> > that is because the execlp() picks up the TEST_APP from
+> > /opt/ltp/testcasese/bin/ instead of the local copy. I guess that we have
+> > to use exec() variant without the p at the end here.
+> 
+> Or we can switch order so that "." is searched as first:
+>   SAFE_ASPRINTF(&new_path, ":%s:%s", start_dir, old_path);
+> What do you think?
+
+I pushed Li's version, while this is being discussed.
 
 Regards,
 Jan
+
