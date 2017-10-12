@@ -1,40 +1,32 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 12 Oct 2017 20:33:32 +0200
-Subject: [LTP] [PATCH v3 15/18] hotplug/memory_hotplug: Update TODO
+Date: Thu, 12 Oct 2017 20:33:33 +0200
+Subject: [LTP] [PATCH v3 16/18] hotplug/memory_hotplug: Remove unused header
 In-Reply-To: <20171012183335.24568-1-pvorel@suse.cz>
 References: <20171012183335.24568-1-pvorel@suse.cz>
-Message-ID: <20171012183335.24568-16-pvorel@suse.cz>
+Message-ID: <20171012183335.24568-17-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-_NEED_MIGRATE_PAGES definition was removed in commit 5ed9ed059
-("Address the issue reported in the following email by installing all .c files.")
-
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/hotplug/memory_hotplug/TODO | 5 -----
- 1 file changed, 5 deletions(-)
+ testcases/kernel/hotplug/memory_hotplug/commands.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/testcases/kernel/hotplug/memory_hotplug/TODO b/testcases/kernel/hotplug/memory_hotplug/TODO
-index 35c18aa57..1460eb6a2 100644
---- a/testcases/kernel/hotplug/memory_hotplug/TODO
-+++ b/testcases/kernel/hotplug/memory_hotplug/TODO
-@@ -1,12 +1,7 @@
- memtoy:
+diff --git a/testcases/kernel/hotplug/memory_hotplug/commands.c b/testcases/kernel/hotplug/memory_hotplug/commands.c
+index 7f271c341..2264346c7 100644
+--- a/testcases/kernel/hotplug/memory_hotplug/commands.c
++++ b/testcases/kernel/hotplug/memory_hotplug/commands.c
+@@ -30,7 +30,6 @@
  
--if migrate_pages(2) system call ever becomes standard, will need to change
--Makefile not to build and link against migrate_pages.o and not to define
--_NEED_MIGRATE_PAGES.
--
- More documentation?
- 
--
- Desired features?
- 
- 	+ verify contents after migration?
+ #include "config.h"
+ #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H
+-#include <linux/mempolicy.h>
+ #include <sys/types.h>
+ #include <sys/time.h>
+ #include <sys/mman.h>
 -- 
 2.14.2
 
