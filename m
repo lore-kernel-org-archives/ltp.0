@@ -1,8 +1,8 @@
 From: Li Zhijian <lizhijian@cn.fujitsu.com>
-Date: Thu, 12 Oct 2017 18:36:53 +0800
+Date: Thu, 12 Oct 2017 18:55:42 +0800
 Subject: [LTP] [PATCH] shmctl: enable subtest SHM_LOCK SHM_UNLOCK only if
 	kernel < 2.6.9
-Message-ID: <1507804613-18349-1-git-send-email-lizhijian@cn.fujitsu.com>
+Message-ID: <1507805742-24837-1-git-send-email-lizhijian@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
