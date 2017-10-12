@@ -1,10 +1,10 @@
 From: Eric Biggers <ebiggers3@gmail.com>
-Date: Thu, 12 Oct 2017 13:42:27 -0700
-Subject: [LTP] [PATCH v2 4/4] syscalls/add_key03: new test for forging user
-	keyrings
+Date: Thu, 12 Oct 2017 13:42:26 -0700
+Subject: [LTP] [PATCH v2 3/4] syscalls/keyctl07: new test for oops when
+	reading negative key
 In-Reply-To: <20171012204227.116510-1-ebiggers3@gmail.com>
 References: <20171012204227.116510-1-ebiggers3@gmail.com>
-Message-ID: <20171012204227.116510-5-ebiggers3@gmail.com>
+Message-ID: <20171012204227.116510-4-ebiggers3@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,47 +13,59 @@ To: ltp@lists.linux.it
 
 From: Eric Biggers <ebiggers@google.com>
 
-Add a test for a bug which allowed a user to create the user and user
-session keyrings for another user.
+Add a test for a bug which caused the kernel to dereference a bogus
+pointer when using KEYCTL_READ to read from a negative key.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- runtest/syscalls                              |  1 +
- testcases/kernel/syscalls/.gitignore          |  1 +
- testcases/kernel/syscalls/add_key/add_key03.c | 98 +++++++++++++++++++++++++++
- 3 files changed, 100 insertions(+)
- create mode 100644 testcases/kernel/syscalls/add_key/add_key03.c
+ runtest/cve                                 |  1 +
+ runtest/syscalls                            |  1 +
+ testcases/kernel/syscalls/.gitignore        |  1 +
+ testcases/kernel/syscalls/keyctl/keyctl07.c | 89 +++++++++++++++++++++++++++++
+ 4 files changed, 92 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/keyctl/keyctl07.c
 
+diff --git a/runtest/cve b/runtest/cve
+index d182e592a..b8e038112 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -17,5 +17,6 @@ cve-2017-2671 cve-2017-2671
+ cve-2017-5669 cve-2017-5669
+ cve-2017-6951 cve-2017-6951
+ cve-2017-7472 keyctl04
++cve-2017-12192 keyctl07
+ cve-2017-15274 add_key02
+ cve-2017-1000364 stack_clash
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 822608613..e345325a2 100644
+index fc6800abf..822608613 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -13,6 +13,7 @@ acct01 acct01
+@@ -503,6 +503,7 @@ keyctl03 keyctl03
+ keyctl04 keyctl04
+ keyctl05 keyctl05
+ keyctl06 keyctl06
++keyctl07 keyctl07
  
- add_key01 add_key01
- add_key02 add_key02
-+add_key03 add_key03
- 
- adjtimex01 adjtimex01
- adjtimex02 adjtimex02
+ kcmp01 kcmp01
+ kcmp02 kcmp02
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 8a2a8d21e..2a770a998 100644
+index a803986ef..8a2a8d21e 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
-@@ -8,6 +8,7 @@
- /acct/acct01
- /add_key/add_key01
- /add_key/add_key02
-+/add_key/add_key03
- /adjtimex/adjtimex01
- /adjtimex/adjtimex02
- /alarm/alarm01
-diff --git a/testcases/kernel/syscalls/add_key/add_key03.c b/testcases/kernel/syscalls/add_key/add_key03.c
+@@ -464,6 +464,7 @@
+ /keyctl/keyctl04
+ /keyctl/keyctl05
+ /keyctl/keyctl06
++/keyctl/keyctl07
+ /kcmp/kcmp01
+ /kcmp/kcmp02
+ /kcmp/kcmp03
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl07.c b/testcases/kernel/syscalls/keyctl/keyctl07.c
 new file mode 100644
-index 000000000..27edcb27f
+index 000000000..404e7a92f
 --- /dev/null
-+++ b/testcases/kernel/syscalls/add_key/add_key03.c
-@@ -0,0 +1,98 @@
++++ b/testcases/kernel/syscalls/keyctl/keyctl07.c
+@@ -0,0 +1,89 @@
 +/*
 + * Copyright (c) 2017 Google, Inc.
 + *
@@ -72,85 +84,76 @@ index 000000000..27edcb27f
 + */
 +
 +/*
-+ * Regression test for commit 237bbd29f7a0 ("KEYS: prevent creating a different
-+ * user's keyrings").  The bug allowed any random user to create a keyring named
-+ * "_uid.$UID" (or "_uid_ses.$UID"), and it would become the user keyring (or
-+ * user session keyring) for user $UID, provided that it hadn't already been
-+ * created.
-+ *
-+ * This test must be run as root so that it has permission to switch to another
-+ * user ID and check whether the keyrings are wrong.  However, the underlying
-+ * bug is actually reachable/exploitable by a non-root user.
++ * Regression test for commit 37863c43b2c6 ("KEYS: prevent KEYCTL_READ on
++ * negative key").  This is CVE-2017-12192.
 + */
 +
 +#include <errno.h>
-+#include <pwd.h>
-+#include <stdio.h>
 +
 +#include "tst_test.h"
 +#include "lapi/keyctl.h"
 +
-+static key_serial_t create_keyring(const char *description)
-+{
-+	TEST(add_key("keyring", description, NULL, 0,
-+		     KEY_SPEC_PROCESS_KEYRING));
-+	if (TEST_RETURN < 0) {
-+		tst_brk(TBROK | TTERRNO,
-+			"unable to create keyring '%s'", description);
-+	}
-+	return TEST_RETURN;
-+}
-+
-+static key_serial_t get_keyring_id(key_serial_t special_id)
-+{
-+	TEST(keyctl(KEYCTL_GET_KEYRING_ID, special_id, 1));
-+	if (TEST_RETURN < 0) {
-+		tst_brk(TBROK | TTERRNO,
-+			"unable to get ID of keyring %d", special_id);
-+	}
-+	return TEST_RETURN;
-+}
-+
 +static void do_test(void)
 +{
-+	uid_t uid = 1;
-+	char description[32];
-+	key_serial_t fake_user_keyring;
-+	key_serial_t fake_user_session_keyring;
++	key_serial_t key_id;
++	char buffer[128];
 +
 +	/*
-+	 * We need a user to forge the keyrings for.  But the bug is not
-+	 * reproducible for a UID which already has its keyrings, so find an
-+	 * unused UID.  Note that it would be better to directly check for the
-+	 * presence of the UID's keyrings than to search the passwd file.
-+	 * However, that's not easy to do given that even if we assumed the UID
-+	 * temporarily to check, KEYCTL_GET_KEYRING_ID for the user and user
-+	 * session keyrings will create them rather than failing (even if the
-+	 * 'create' argument is 0).
++	 * Create a negatively instantiated key of the "user" key type.  This
++	 * key type is chosen because it has a ->read() method (which makes the
++	 * bug reachable) and is available whenever CONFIG_KEYS is enabled.
++	 *
++	 * request_key() will result in the creation of a negative key provided
++	 * that /sbin/request-key isn't configured to positively instantiate the
++	 * key, based on the provided type, description, and callout_info.  If
++	 * /sbin/request-key doesn't exist, errno will be ENOENT; while if it
++	 * does exist and we specify some random unprefixed description, errno
++	 * should be ENOKEY (since /sbin/request-key should not be configured to
++	 * instantiate random user keys).  In either case a negative key should
++	 * be created and we can continue on with the test.  Negative keys last
++	 * for 60 seconds so there should be plenty of time for the test.
 +	 */
-+	while (getpwuid(uid))
-+		uid++;
++	TEST(request_key("user", "description", "callout_info",
++			 KEY_SPEC_PROCESS_KEYRING));
++	if (TEST_RETURN != -1)
++		tst_brk(TBROK, "request_key() unexpectedly succeeded");
 +
-+	sprintf(description, "_uid.%u", uid);
-+	fake_user_keyring = create_keyring(description);
-+	sprintf(description, "_uid_ses.%u", uid);
-+	fake_user_session_keyring = create_keyring(description);
++	if (TEST_ERRNO != ENOKEY && TEST_ERRNO != ENOENT) {
++		tst_brk(TBROK | TTERRNO,
++			"request_key() failed with unexpected error");
++	}
 +
-+	SAFE_SETUID(uid);
++	/* Get the ID of the negative key by reading the keyring */
++	TEST(keyctl(KEYCTL_READ, KEY_SPEC_PROCESS_KEYRING,
++		    &key_id, sizeof(key_id)));
++	if (TEST_RETURN < 0)
++		tst_brk(TBROK | TTERRNO, "KEYCTL_READ unexpectedly failed");
++	if (TEST_RETURN != sizeof(key_id)) {
++		tst_brk(TBROK, "KEYCTL_READ returned %ld but expected %zu",
++			TEST_RETURN, sizeof(key_id));
++	}
 +
-+	if (fake_user_keyring == get_keyring_id(KEY_SPEC_USER_KEYRING))
-+		tst_brk(TFAIL, "created user keyring for another user");
-+
-+	if (fake_user_session_keyring ==
-+	    get_keyring_id(KEY_SPEC_USER_SESSION_KEYRING))
-+		tst_brk(TFAIL, "created user session keyring for another user");
-+
-+	tst_res(TPASS, "expectedly could not create another user's keyrings");
++	/*
++	 * Now try to read the negative key.  Unpatched kernels will oops trying
++	 * to read from memory address 0x00000000ffffff92.
++	 */
++	tst_res(TINFO, "trying to read from the negative key...");
++	TEST(keyctl(KEYCTL_READ, key_id, buffer, sizeof(buffer)));
++	if (TEST_RETURN != -1) {
++		tst_res(TFAIL,
++			"KEYCTL_READ on negative key unexpectedly succeeded");
++		return;
++	}
++	if (TEST_ERRNO != ENOKEY) {
++		tst_res(TFAIL | TTERRNO,
++			"KEYCTL_READ on negative key failed with unexpected error");
++		return;
++	}
++	tst_res(TPASS, "KEYCTL_READ on negative key expectedly failed with ENOKEY");
 +}
 +
 +static struct tst_test test = {
 +	.test_all = do_test,
-+	.needs_root = 1,
 +};
 -- 
 2.15.0.rc0.271.g36b669edcc-goog
