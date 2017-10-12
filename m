@@ -1,9 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 12 Oct 2017 20:33:20 +0200
-Subject: [LTP] [PATCH v3 03/18] m4: Simplify check for linux/keyctl.h header
+Date: Thu, 12 Oct 2017 20:33:21 +0200
+Subject: [LTP] [PATCH v3 04/18] lapi/keyctl.h: Add doc and reorder
+	definitions
 In-Reply-To: <20171012183335.24568-1-pvorel@suse.cz>
 References: <20171012183335.24568-1-pvorel@suse.cz>
-Message-ID: <20171012183335.24568-4-pvorel@suse.cz>
+Message-ID: <20171012183335.24568-5-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,62 +13,60 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- configure.ac     |  2 +-
- m4/ltp-keyctl.m4 | 25 -------------------------
- 2 files changed, 1 insertion(+), 26 deletions(-)
- delete mode 100644 m4/ltp-keyctl.m4
+ include/lapi/keyctl.h | 31 +++++++++++++++++--------------
+ 1 file changed, 17 insertions(+), 14 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index 0884d1f76..78d9da680 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -35,6 +35,7 @@ AC_CHECK_HEADERS([ \
-     libaio.h \
-     linux/can.h \
-     linux/genetlink.h \
-+    linux/keyctl.h \
-     linux/mempolicy.h \
-     linux/module.h \
-     linux/netlink.h \
-@@ -184,7 +185,6 @@ LTP_CHECK_SPLICE
- LTP_CHECK_VMSPLICE
- LTP_CHECK_TIMERFD
- LTP_CHECK_IOVEC
--LTP_CHECK_KEYCTL
- LTP_CHECK_LINUXRANDOM
- LTP_CHECK_IF_LINK
- LTP_CHECK_KCMP
-diff --git a/m4/ltp-keyctl.m4 b/m4/ltp-keyctl.m4
-deleted file mode 100644
-index 6a239ca64..000000000
---- a/m4/ltp-keyctl.m4
-+++ /dev/null
-@@ -1,25 +0,0 @@
--dnl
--dnl Copyright (c) 2014 Linux Test Project
--dnl
--dnl This program is free software; you can redistribute it and/or
--dnl modify it under the terms of the GNU General Public License as
--dnl published by the Free Software Foundation; either version 2 of
--dnl the License, or (at your option) any later version.
--dnl
--dnl This program is distributed in the hope that it would be useful,
--dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
--dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--dnl GNU General Public License for more details.
--dnl
--dnl You should have received a copy of the GNU General Public License
--dnl along with this program; if not, write the Free Software Foundation,
--dnl Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--dnl
+diff --git a/include/lapi/keyctl.h b/include/lapi/keyctl.h
+index 3e7ce4708..021d94868 100644
+--- a/include/lapi/keyctl.h
++++ b/include/lapi/keyctl.h
+@@ -65,12 +65,23 @@ static inline long keyctl(int cmd, ...)
+ }
+ #endif /* HAVE_KEYUTILS_H */
+ 
+-#ifndef KEYCTL_GET_KEYRING_ID
+-# define KEYCTL_GET_KEYRING_ID 0
++/* special process keyring shortcut IDs */
++#ifndef KEY_SPEC_THREAD_KEYRING
++# define KEY_SPEC_THREAD_KEYRING -1
+ #endif
+ 
+-#ifndef KEYCTL_SET_REQKEY_KEYRING
+-# define KEYCTL_SET_REQKEY_KEYRING 14
++#ifndef KEY_SPEC_SESSION_KEYRING
++# define KEY_SPEC_SESSION_KEYRING -3
++#endif
++
++/* request-key default keyrings */
++#ifndef KEY_REQKEY_DEFL_THREAD_KEYRING
++# define KEY_REQKEY_DEFL_THREAD_KEYRING 1
++#endif
++
++/* keyctl commands */
++#ifndef KEYCTL_GET_KEYRING_ID
++# define KEYCTL_GET_KEYRING_ID 0
+ #endif
+ 
+ #ifndef KEYCTL_JOIN_SESSION_KEYRING
+@@ -89,16 +100,8 @@ static inline long keyctl(int cmd, ...)
+ # define KEYCTL_UNLINK 9
+ #endif
+ 
+-#ifndef KEY_SPEC_THREAD_KEYRING
+-# define KEY_SPEC_THREAD_KEYRING -1
+-#endif
 -
--dnl
--dnl LTP_CHECK_KEYCTL
--dnl ----------------------------
--dnl
--AC_DEFUN([LTP_CHECK_KEYCTL],[
--AC_CHECK_HEADERS([linux/keyctl.h])
--])
+-#ifndef KEY_SPEC_SESSION_KEYRING
+-# define KEY_SPEC_SESSION_KEYRING -3
+-#endif
+-
+-#ifndef KEY_REQKEY_DEFL_THREAD_KEYRING
+-# define KEY_REQKEY_DEFL_THREAD_KEYRING 1
++#ifndef KEYCTL_SET_REQKEY_KEYRING
++# define KEYCTL_SET_REQKEY_KEYRING 14
+ #endif
+ 
+ #endif	/* KEYCTL_H__ */
 -- 
 2.14.2
 
