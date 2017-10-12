@@ -1,155 +1,129 @@
-From: Lucas Boehm <lucas@opentech.at>
-Date: Thu, 12 Oct 2017 16:45:04 +0200
-Subject: [LTP] [PATCH] open_posix_testsuite/pthread_attr_init
-Message-ID: <20171012144504.11569-1-lucas@opentech.at>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 12 Oct 2017 17:33:38 +0200
+Subject: [LTP] [RFC] [PATCH 2/2] syscalls: Make use of tst_strstatus()
+In-Reply-To: <20171012153338.1233-1-chrubis@suse.cz>
+References: <20171012153338.1233-1-chrubis@suse.cz>
+Message-ID: <20171012153338.1233-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-new test of checking default attr of phtread_attr_init()
-
-Linux specific implementation
-
-Signed-off-by: Lucas Boehm <lucas@opentech.at>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- .../conformance/interfaces/pthread_attr_init/1-2.c | 126 +++++++++++++++++++++
- 1 file changed, 126 insertions(+)
- create mode 100644 testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_init/1-2.c
+ testcases/cve/stack_clash.c                       |  2 +-
+ testcases/kernel/syscalls/fanotify/fanotify03.c   | 17 ++++-------------
+ testcases/kernel/syscalls/madvise/madvise07.c     | 11 ++++++++---
+ testcases/kernel/syscalls/madvise/madvise09.c     |  4 ++--
+ testcases/kernel/syscalls/setrlimit/setrlimit04.c | 14 +++++---------
+ 5 files changed, 20 insertions(+), 28 deletions(-)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_init/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_init/1-2.c
-new file mode 100644
-index 000000000..ec740e78c
---- /dev/null
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_attr_init/1-2.c
-@@ -0,0 +1,126 @@
-+/*
-+ * Copyright (c) 2017, Opentech EDV Research GmbH. All rights reserved.
-+ * Created by:  lucas AT opentech DOT at
-+ * This file is licensed under the GPL license.  For the full content
-+ * of this license, see the COPYING file at the top level of this
-+ * source tree.
-+
-+ * Test that pthread_attr_init()
-+ *  shall initialize a thread attributes object 'attr' with the default value
-+ *  for all the individual attributes used by a given implementation.
-+
-+ *  Detache state:
-+ *  The default setting of the detach state attribute in a newly initialized 
-+ *  thread attributes object is PTHREAD_CREATE_JOINABLE.
-+ *  (man pthread_attr_getdetachstate)
-+ *  
-+ *  Scope:
-+ *  Linux supports PTHREAD_SCOPE_SYSTEM, but not PTHREAD_SCOPE_PROCESS.
-+ *  (man pthread_attr_setscope)
-+ *  
-+ *  Inherit Scheduler: 	
-+ *  The default setting of the inherit-scheduler attribute in a newly 
-+ *  initialized thread attributes object is PTHREAD_INHERIT_SCHED.
-+ *  (man phread_attr_getinheritsched)
-+ *
-+ *  Scheduling Policy:
-+ *  SCHED_OTHER is the standard Linux time-sharing scheduler that is
-+ *  intended for all threads that do not require the special real-time 
-+ *  mechanisms. 
-+ *  (man sched)
-+ *
-+ * Scheduling Priority:
-+ * For threads scheduled under one of the normal scheduling policies 
-+ * (SCHED_OTHER, SCHED_IDLE, SCHED_BATCH), sched_priority is not used 
-+ * in scheduling decisions (it must be specified as 0)
-+ * (man sched) 
-+ *
-+ * Steps:
-+ * 1.  Initialize a pthread_attr_t object using pthread_attr_init()
-+ * 2.  Using pthread_attr_getdetachstate(), test that the default value
-+ *     of the detachstate is PTHREAD_CREATE_JOINABLE (the default).
-+ * 3.  Using pthread_attr_getscope(), test that the default value
-+ *     of the scope is PTHREAD_SCOPE_SYSTEM (the default).
-+ * 4.  Using pthread_attr_getinheritsched(), test that the default value
-+ *     of the Inherit scheduler is PTHREAD_INHERIT_SCHED (the default).
-+ * 5.  Using pthread_attr_getschedpolicy(), test that the default value
-+ *     of the sched_policy is SCHED_OTHER (the default).
-+ * 6.  Using pthread_attr_getschedparam(), test that the default value
-+ *     of the sched_priority is 0 (the default).
-+ */
-+
-+#include <pthread.h>
-+#include <stdio.h>
-+#include "posixtest.h"
-+
-+
-+int main(void)
-+{
-+	pthread_attr_t new_attr;
-+	int detach_state;
-+	int scope;
-+	int inherit_sched;
-+	int sched_policy;
-+	struct sched_param sched_priority;
-+
-+
-+	/* Initialize attribute */
-+	if (pthread_attr_init(&new_attr) != 0) {
-+		perror("Cannot initialize attribute object\n");
-+		return PTS_UNRESOLVED;
+diff --git a/testcases/cve/stack_clash.c b/testcases/cve/stack_clash.c
+index 49c45ef74..f25e19b3f 100644
+--- a/testcases/cve/stack_clash.c
++++ b/testcases/cve/stack_clash.c
+@@ -256,7 +256,7 @@ void stack_clash_test(void)
+ 		}
+ 	}
+ 
+-	tst_brk(TBROK, "child did not exit gracefully");
++	tst_brk(TBROK, "Child %s", tst_strstatus(status));
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
+index ea5c02a7b..400042081 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify03.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
+@@ -132,19 +132,10 @@ static void check_child(void)
+ 	}
+ 	SAFE_WAITPID(-1, &child_ret, 0);
+ 
+-	if (WIFSIGNALED(child_ret)) {
+-		tst_res(TFAIL, "child exited due to signal %d",
+-			 WTERMSIG(child_ret));
+-	} else if (WIFEXITED(child_ret)) {
+-		if (WEXITSTATUS(child_ret) == 0)
+-			tst_res(TPASS, "child exited correctly");
+-		else
+-			tst_res(TFAIL, "child exited with status %d",
+-				 WEXITSTATUS(child_ret));
+-	} else {
+-		tst_res(TFAIL, "child exited for unknown reason (status %d)",
+-			 child_ret);
+-	}
++	if (WIFEXITED(child_ret) && WEXITSTATUS(child_ret) == 0)
++		tst_res(TPASS, "child exited correctly");
++	else
++		tst_res(TFAIL, "child %s", tst_strstatus(child_ret));
+ }
+ 
+ void test01(void)
+diff --git a/testcases/kernel/syscalls/madvise/madvise07.c b/testcases/kernel/syscalls/madvise/madvise07.c
+index ef9aa4a26..170642ada 100644
+--- a/testcases/kernel/syscalls/madvise/madvise07.c
++++ b/testcases/kernel/syscalls/madvise/madvise07.c
+@@ -91,10 +91,15 @@ static void run(void)
+ 	}
+ 
+ 	SAFE_WAITPID(pid, &status, 0);
+-	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGBUS)
++	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGBUS) {
+ 		tst_res(TPASS, "Received SIGBUS after accessing poisoned page");
+-	else if (WIFEXITED(status) && WEXITSTATUS(status) == TBROK)
+-		tst_res(TBROK, "Child exited abnormally");
++		return;
 +	}
 +
-+	/* The test passes if the attribute object has a detachstate of
-+	 * PTHREAD_CREATE_JOINABLE, which is the default value for this
-+	 * attribute. */
-+	if (pthread_attr_getdetachstate(&new_attr, &detach_state) != 0) {
-+		perror("Error obtaining the detachstate of the attribute\n");
-+		return PTS_UNRESOLVED;
-+	}
++	if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
++		return;
 +
-+	/* The test passes if the attribute object has a scope of
-+	 * PTHREAD_SCOPE_SYSTEM, which is the default value for this
-+	 * attribute. */
-+	if (pthread_attr_getscope(&new_attr, &scope) != 0) {
-+		perror("Error obtaining the scope of the attribute\n");
-+		return PTS_UNRESOLVED;
-+	}
++	tst_res(TFAIL, "Child %s", tst_strstatus(status));
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/madvise/madvise09.c b/testcases/kernel/syscalls/madvise/madvise09.c
+index 7ad76f795..4e887f5db 100644
+--- a/testcases/kernel/syscalls/madvise/madvise09.c
++++ b/testcases/kernel/syscalls/madvise/madvise09.c
+@@ -305,8 +305,8 @@ retry:
+ 		goto retry;
+ 	}
+ 
+-	if (WIFEXITED(status) && WEXITSTATUS(status))
+-		tst_brk(TBROK, "Child exitted unexpectedly");
++	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
++		tst_brk(TBROK, "Child %s", tst_strstatus(status));
+ }
+ 
+ static void setup(void)
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit04.c b/testcases/kernel/syscalls/setrlimit/setrlimit04.c
+index e366298a1..5b6c958c3 100644
+--- a/testcases/kernel/syscalls/setrlimit/setrlimit04.c
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit04.c
+@@ -48,16 +48,12 @@ static void test_setrlimit(void)
+ 		SAFE_EXECLP("/bin/true", "/bin/true", NULL);
+ 	SAFE_WAITPID(child, &status, 0);
+ 
+-	if (WIFEXITED(status)) {
+-		if ((WEXITSTATUS(status) == 0))
+-			tst_res(TPASS, "child process completed OK");
+-		else
+-			tst_res(TFAIL, "child process exited with %d",
+-				WEXITSTATUS(status));
+-	} else if (WIFSIGNALED(status)) {
+-		tst_res(TFAIL, "child exited with signal %s",
+-			tst_strsig(WTERMSIG(status)));
++	if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
++		tst_res(TPASS, "child process completed OK");
++		return;
+ 	}
 +
-+	/* The test passes if the attribute object has a inherit sched of
-+	 * PTHREAD_INHERIT_SCHED, which is the default value for this
-+	 * attribute. */
-+	if (pthread_attr_getinheritsched(&new_attr, &inherit_sched) != 0) {
-+		perror("Error obtaining the inherit scheduling of the attribute\n");
-+		return PTS_UNRESOLVED;
-+	}
-+
-+	/* The test passes if the attribute object has a sched policy of
-+	 * SCHED_OTHER, which is the default value for this
-+	 * attribute. */
-+	if (pthread_attr_getschedpolicy(&new_attr, &sched_policy) != 0) {
-+		perror("Error obtaining the sched policy of the attribute\n");
-+		return PTS_UNRESOLVED;
-+	}
-+
-+	/* The test passes if the attribute object has a inherit sched of
-+	 * pthread_attr_getschedparam, which is the default value for this
-+	 * attribute. */
-+	if (pthread_attr_getschedparam(&new_attr, &sched_priority) != 0) {
-+		perror("Error obtaining the sched policy of the attribute\n");
-+		return PTS_UNRESOLVED;
-+	}
-+
-+	if (
-+		detach_state == PTHREAD_CREATE_JOINABLE && \
-+		scope == PTHREAD_SCOPE_SYSTEM && \
-+		inherit_sched == PTHREAD_INHERIT_SCHED && \
-+		sched_policy == SCHED_OTHER && \
-+		sched_priority.sched_priority == 0) {
-+		printf("Test PASSED\n");
-+		return PTS_PASS;
-+	}
-+	else {
-+		printf("Test FAILED\n");
-+		return PTS_FAIL;
-+	}
-+}
++	tst_res(TFAIL, "child %s", tst_strstatus(status));
+ }
+ 
+ static struct tst_test test = {
 -- 
-2.11.0
+2.13.5
 
