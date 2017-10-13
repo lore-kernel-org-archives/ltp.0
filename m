@@ -1,10 +1,10 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 13 Oct 2017 09:25:12 +0200
-Subject: [LTP] [PATCH v2 0/4] ltp: add tests for some recently-fixed
- keyrings bugs
-In-Reply-To: <20171012204227.116510-1-ebiggers3@gmail.com>
-References: <20171012204227.116510-1-ebiggers3@gmail.com>
-Message-ID: <20171013072512.wtblpsavplae4vuk@dell5510>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Fri, 13 Oct 2017 15:48:11 +0800
+Subject: [LTP] [PATCH v2] cve/cve-2016-10044.c: fix two errors
+In-Reply-To: <1506391449-5646-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <87h8vryqo9.fsf@our.domain.is.not.set>
+ <1506391449-5646-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <59E06FBB.7030408@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,25 +13,71 @@ To: ltp@lists.linux.it
 
 Hi Cyril,
 
-> Eric Biggers (4):
->   lapi/keyctl.h: add a few missing definitions
->   syscalls/keyctl06: new test for keyring_read() buffer overrun
->   syscalls/keyctl07: new test for oops when reading negative key
->   syscalls/add_key03: new test for forging user keyrings
+Could you help me review this patch? Thanks a lot. :-)
 
->  include/lapi/keyctl.h                         | 20 ++++++
->  runtest/cve                                   |  1 +
->  runtest/syscalls                              |  3 +
->  testcases/kernel/syscalls/.gitignore          |  3 +
->  testcases/kernel/syscalls/add_key/add_key03.c | 98 +++++++++++++++++++++++++++
->  testcases/kernel/syscalls/keyctl/keyctl06.c   | 68 +++++++++++++++++++
->  testcases/kernel/syscalls/keyctl/keyctl07.c   | 89 ++++++++++++++++++++++++
-...
-This is going to create conflict with my patch-set v3 "Fix 32-bit cross compilation".
-If you accept this first, I can rebase my patch-set for you.
-BTW my patch-set is in github, if it's easier for you.
-https://github.com/pevik/ltp/tree/autotools/fix-32bit-build.v3
+Thanks,
+Xiao Yang
+On 2017/09/26 10:04, Xiao Yang wrote:
+> 1) If the number of nr_events exceeds the limit of available events
+>     defined in /proc/sys/fs/aio-max-nr, it returns EAGAIN.  We should
+>     call io_destroy() to cleanup the AIO context after finishing test.
+>
+>     Steps to reproduce this error:
+>        #echo 4>  /proc/sys/fs/aio-max-nr
+>        # ./cve-2016-10044 -i 5
+>        tst_test.c:908: INFO: Timeout per run is 0h 05m 00s
+>        cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
+>        cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
+>        cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
+>        cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
+>        cve-2016-10044.c:49: BROK: Failed to create AIO context: EAGAIN/EWOULDBLOCK
+>
+> 2) This case fails with TBROK on an old kernel(e.g. v2.6.32) because
+>     the mapping file does not exist.
+>
+>     The old format of file is set to 'anon_inode:[aio]' by the following
+>     patch set:
+>     '55708698c5f1("fs/anon_inode: Introduce a new lib function anon_inode_getfile_private()")'
+>     '36bc08cc0170("fs/aio: Add support to aio ring pages migration")'
+>
+>     The current format of file is set to '/[aio]' by the following patch:
+>     '71ad7490c1f3("rework aio migrate pages to use aio fs")'
+>
+>     We change the keyword into '[aio]' to match as many formats as
+>     possible, and return TCONF if the mapping file does not exist.
+>
+> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
+> ---
+>   testcases/cve/cve-2016-10044.c | 7 +++++--
+>   1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/testcases/cve/cve-2016-10044.c b/testcases/cve/cve-2016-10044.c
+> index 7928d27..14fa0a4 100644
+> --- a/testcases/cve/cve-2016-10044.c
+> +++ b/testcases/cve/cve-2016-10044.c
+> @@ -50,10 +50,10 @@ static void run(void)
+>
+>   	f = SAFE_FOPEN("/proc/self/maps", "r");
+>   	while (fgets(line, BUFSIZ, f) != NULL) {
+> -		if (strstr(line, "/[aio]") != NULL)
+> +		if (strstr(line, "[aio]") != NULL)
+>   			goto found_mapping;
+>   	}
+> -	tst_brk(TBROK, "Could not find mapping in /proc/self/maps");
+> +	tst_brk(TCONF, "Could not find mapping in /proc/self/maps");
+>
+>   found_mapping:
+>   	if (sscanf(line, "%*x-%*x %s7", perms)<  0)
+> @@ -63,6 +63,9 @@ found_mapping:
+>   	else
+>   		tst_res(TPASS, "AIO mapping is not executable: %s", perms);
+>
+> +	if (tst_syscall(__NR_io_destroy, ctx))
+> +		tst_brk(TBROK | TERRNO, "Failed to destroy AIO context");
+> +
+>   	SAFE_FCLOSE(f);
+>   	f = NULL;
+>   }
 
 
-Kind regards,
-Petr
+
