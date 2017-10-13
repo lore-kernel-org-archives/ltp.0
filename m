@@ -1,54 +1,37 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 13 Oct 2017 14:44:41 +0800
-Subject: [LTP] [PATCH v2] commands/mail: Fix a mismatched sender name in
-	mail0[23]
-In-Reply-To: <1507713804-8732-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1507713804-8732-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1507877081-3012-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 13 Oct 2017 09:25:12 +0200
+Subject: [LTP] [PATCH v2 0/4] ltp: add tests for some recently-fixed
+ keyrings bugs
+In-Reply-To: <20171012204227.116510-1-ebiggers3@gmail.com>
+References: <20171012204227.116510-1-ebiggers3@gmail.com>
+Message-ID: <20171013072512.wtblpsavplae4vuk@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-In some systems (e.g. debain), both mail02 and mail03 fail because the
-sender name of the returned letter is "Mail Deliver Syst" which does
-not match existed keywords.  we add the 'Syst' keyword to fix it.
+Hi Cyril,
 
-Signed-off-by: Shaoting Lei <leist.fnst@cn.fujitsu.com>
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- testcases/commands/mail/mail_tests.sh | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> Eric Biggers (4):
+>   lapi/keyctl.h: add a few missing definitions
+>   syscalls/keyctl06: new test for keyring_read() buffer overrun
+>   syscalls/keyctl07: new test for oops when reading negative key
+>   syscalls/add_key03: new test for forging user keyrings
 
-diff --git a/testcases/commands/mail/mail_tests.sh b/testcases/commands/mail/mail_tests.sh
-index 1652aa7..7cd5531 100755
---- a/testcases/commands/mail/mail_tests.sh
-+++ b/testcases/commands/mail/mail_tests.sh
-@@ -169,8 +169,8 @@ else
- 		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \
- 		    $LTPTMP/tst_mail.res)
- 	else
--		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5, "MailDelivery(Subsys|System)")}' \
--		    $LTPTMP/tst_mail.res)
-+		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5,
-+		    "MailDelivery(Subsys|System|Syst)")}' $LTPTMP/tst_mail.res)
- 	fi
- 
- 	##################################################################
-@@ -250,8 +250,8 @@ else
- 		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \
- 		    $LTPTMP/tst_mail.res)
- 	else
--		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5, "MailDelivery(Subsys|System)")}' \
--		    $LTPTMP/tst_mail.res)
-+		RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3 $4 $5,
-+		    "MailDelivery(Subsys|System|Syst)")}' $LTPTMP/tst_mail.res)
- 	fi
- 	##################################################################
- 	# In this testcase, mail will get "Returnedmail:", while mailx will
--- 
-1.8.3.1
+>  include/lapi/keyctl.h                         | 20 ++++++
+>  runtest/cve                                   |  1 +
+>  runtest/syscalls                              |  3 +
+>  testcases/kernel/syscalls/.gitignore          |  3 +
+>  testcases/kernel/syscalls/add_key/add_key03.c | 98 +++++++++++++++++++++++++++
+>  testcases/kernel/syscalls/keyctl/keyctl06.c   | 68 +++++++++++++++++++
+>  testcases/kernel/syscalls/keyctl/keyctl07.c   | 89 ++++++++++++++++++++++++
+...
+This is going to create conflict with my patch-set v3 "Fix 32-bit cross compilation".
+If you accept this first, I can rebase my patch-set for you.
+BTW my patch-set is in github, if it's easier for you.
+https://github.com/pevik/ltp/tree/autotools/fix-32bit-build.v3
 
 
-
+Kind regards,
+Petr
