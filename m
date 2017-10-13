@@ -1,83 +1,47 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 13 Oct 2017 15:48:11 +0800
-Subject: [LTP] [PATCH v2] cve/cve-2016-10044.c: fix two errors
-In-Reply-To: <1506391449-5646-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <87h8vryqo9.fsf@our.domain.is.not.set>
- <1506391449-5646-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <59E06FBB.7030408@cn.fujitsu.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Fri, 13 Oct 2017 10:58:55 +0200
+Subject: [LTP] [PATCH 1/2] POSIX: Allow pthread_barrier_destroy() to
+	block
+In-Reply-To: <20171012133442.GB21253@rei>
+References: <20171009101824.17251-1-rpalethorpe@suse.com>
+ <20171009101824.17251-2-rpalethorpe@suse.com> <20171012133442.GB21253@rei>
+Message-ID: <87infj77ao.fsf@our.domain.is.not.set>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hello,
 
-Could you help me review this patch? Thanks a lot. :-)
+Cyril Hrubis writes:
 
-Thanks,
-Xiao Yang
-On 2017/09/26 10:04, Xiao Yang wrote:
-> 1) If the number of nr_events exceeds the limit of available events
->     defined in /proc/sys/fs/aio-max-nr, it returns EAGAIN.  We should
->     call io_destroy() to cleanup the AIO context after finishing test.
+>> -	/* Cleanup (cancel thread in case it is still blocking */
+>> +	printf("Test PASSED\n");
 >
->     Steps to reproduce this error:
->        #echo 4>  /proc/sys/fs/aio-max-nr
->        # ./cve-2016-10044 -i 5
->        tst_test.c:908: INFO: Timeout per run is 0h 05m 00s
->        cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
->        cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
->        cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
->        cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
->        cve-2016-10044.c:49: BROK: Failed to create AIO context: EAGAIN/EWOULDBLOCK
+> What about we fail the test in a case that we do not get either of
+> success or EBUSY? I doubt that there is any harm in making this kind of
+> check here with the watchdog thread in place.
 >
-> 2) This case fails with TBROK on an old kernel(e.g. v2.6.32) because
->     the mapping file does not exist.
->
->     The old format of file is set to 'anon_inode:[aio]' by the following
->     patch set:
->     '55708698c5f1("fs/anon_inode: Introduce a new lib function anon_inode_getfile_private()")'
->     '36bc08cc0170("fs/aio: Add support to aio ring pages migration")'
->
->     The current format of file is set to '/[aio]' by the following patch:
->     '71ad7490c1f3("rework aio migrate pages to use aio fs")'
->
->     We change the keyword into '[aio]' to match as many formats as
->     possible, and return TCONF if the mapping file does not exist.
->
-> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
-> ---
->   testcases/cve/cve-2016-10044.c | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
->
-> diff --git a/testcases/cve/cve-2016-10044.c b/testcases/cve/cve-2016-10044.c
-> index 7928d27..14fa0a4 100644
-> --- a/testcases/cve/cve-2016-10044.c
-> +++ b/testcases/cve/cve-2016-10044.c
-> @@ -50,10 +50,10 @@ static void run(void)
->
->   	f = SAFE_FOPEN("/proc/self/maps", "r");
->   	while (fgets(line, BUFSIZ, f) != NULL) {
-> -		if (strstr(line, "/[aio]") != NULL)
-> +		if (strstr(line, "[aio]") != NULL)
->   			goto found_mapping;
->   	}
-> -	tst_brk(TBROK, "Could not find mapping in /proc/self/maps");
-> +	tst_brk(TCONF, "Could not find mapping in /proc/self/maps");
->
->   found_mapping:
->   	if (sscanf(line, "%*x-%*x %s7", perms)<  0)
-> @@ -63,6 +63,9 @@ found_mapping:
->   	else
->   		tst_res(TPASS, "AIO mapping is not executable: %s", perms);
->
-> +	if (tst_syscall(__NR_io_destroy, ctx))
-> +		tst_brk(TBROK | TERRNO, "Failed to destroy AIO context");
-> +
->   	SAFE_FCLOSE(f);
->   	f = NULL;
->   }
 
+I suppose it would be misleading if it returned EINVAL, but it would
+only be an error if it returned EINTR because that is specifically
+prohibited by the spec.
 
+Thinking about it, it is all undefined behaviour, but the test is to see
+if it complies with the recommended behviour. So maybe we should fail
+the test if it does not return EBUSY. If someone doesn't agree with the
+recommended behaviour they can ignore the test.
 
+I don't have a strong opinion on whether the test should pass or
+fail. However I would like to have some clear rules to follow for the
+POSIX tests. Like "If it is undefined behaviour then anything except a
+null pointer derefernce or buffer overflow is acceptable". So basically
+any behaviour that isn't obviously a security/integrity concern is OK. Or
+something like "If it is undefined behaviour then we check if it follows
+the recommended behaviour", and make it clear in the test description
+that this test may fail on a compliant implementation.
+
+-- 
+Thank you,
+Richard.
