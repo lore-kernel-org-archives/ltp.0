@@ -1,75 +1,51 @@
 From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Mon, 16 Oct 2017 13:09:58 +0800
-Subject: [LTP] [PATCH] Test for CVE-2017-2618 in setprocattr
-In-Reply-To: <87k2007ayp.fsf@our.domain.is.not.set>
-References: <20170831074404.26337-1-fenggw-fnst@cn.fujitsu.com>
- <87k2007ayp.fsf@our.domain.is.not.set>
-Message-ID: <34f4f25a-e6c2-39c3-a836-619e29729eae@cn.fujitsu.com>
+Date: Mon, 16 Oct 2017 13:30:49 +0800
+Subject: [LTP] [PATCH] cve/cve-2017-2618: Check for file fscreate existence
+Message-ID: <20171016053049.16409-1-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi, Richard
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+---
+ testcases/cve/cve-2017-2618.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-Thanks for your review, but it looks like this patch has been pushed.
-I will send a new patch to add the check.
+diff --git a/testcases/cve/cve-2017-2618.c b/testcases/cve/cve-2017-2618.c
+index e6b30e8..e1e94f6 100644
+--- a/testcases/cve/cve-2017-2618.c
++++ b/testcases/cve/cve-2017-2618.c
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 2017 Fujitsu Ltd.
++ * Copyright (c) 2017 FUJITSU LIMITED
+  * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+  *
+  * This program is free software: you can redistribute it and/or modify
+@@ -35,6 +35,12 @@
+ #define LOOPS	100
+ #define PATH_ATTRFS	"/proc/self/attr/fscreate"
+ 
++static void setup(void)
++{
++	if (access(PATH_ATTRFS, F_OK))
++		tst_brk(TCONF, "%s does not exist", PATH_ATTRFS);
++}
++
+ static void do_test(void)
+ {
+ 	int i, fd;
+@@ -55,5 +61,6 @@ static void do_test(void)
+ 
+ static struct tst_test test = {
+ 	.forks_child = 1,
++	.setup = setup,
+ 	.test_all = do_test,
+ };
+-- 
+2.9.5
 
-Best Regards,
-Guangwen Feng
-
-在 10/12/2017 09:27 PM, Richard Palethorpe 写道:
-> Hello,
-> 
-> Guangwen Feng writes:
-> 
->> +
->> +#include <errno.h>
->> +#include <stdlib.h>
->> +#include <unistd.h>
->> +#include "tst_test.h"
->> +
->> +#define LOOPS	100
->> +#define PATH_ATTRFS	"/proc/self/attr/fscreate"
-> 
-> Will this exist on all systems? I am guessing that if SELINUX is not
-> configured in the kernel then this won't exist. So it is probably best
-> to exit with TCONF if we can not find it.
-> 
->> +
->> +static void do_test(void)
->> +{
->> +	int i, fd;
->> +
->> +	for (i = 0; i < LOOPS; i++) {
->> +		if (!SAFE_FORK()) {
->> +			fd = SAFE_OPEN(PATH_ATTRFS, O_WRONLY);
->> +			write(fd, "\n", 1);
->> +			SAFE_CLOSE(fd);
->> +			exit(0);
->> +		}
->> +
->> +		tst_reap_children();
->> +	}
->> +
->> +	tst_res(TPASS, "Bug not reproduced");
->> +}
->> +
->> +static struct tst_test test = {
->> +	.forks_child = 1,
->> +	.test_all = do_test,
->> +};
->> --
->> 2.9.4
-> 
-> Otherwise this looks good.
-> 
-> --
-> Thank you,
-> Richard.
-> 
-> 
-> 
 
 
