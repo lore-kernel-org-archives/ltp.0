@@ -1,42 +1,75 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 16 Oct 2017 11:31:10 +0800
-Subject: [LTP] [PATCH] syscalls/ioctl07.c: Fix compilation && Cleanup
-Message-ID: <1508124670-11877-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Mon, 16 Oct 2017 13:09:58 +0800
+Subject: [LTP] [PATCH] Test for CVE-2017-2618 in setprocattr
+In-Reply-To: <87k2007ayp.fsf@our.domain.is.not.set>
+References: <20170831074404.26337-1-fenggw-fnst@cn.fujitsu.com>
+ <87k2007ayp.fsf@our.domain.is.not.set>
+Message-ID: <34f4f25a-e6c2-39c3-a836-619e29729eae@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-1) Fix compilation error on older kernels(e.g RHEL5.11GA) due to
-   undefined __u32, as below:
-   error: expected specifier-qualifier-list before ‘__u32’
-   error: expected specifier-qualifier-list before ‘__u32’
+Hi, Richard
 
-2) Remove unused tst_safe_stdio.h header file
+Thanks for your review, but it looks like this patch has been pushed.
+I will send a new patch to add the check.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/ioctl/ioctl07.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Best Regards,
+Guangwen Feng
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl07.c b/testcases/kernel/syscalls/ioctl/ioctl07.c
-index a159dbc..fb11178 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl07.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl07.c
-@@ -22,9 +22,9 @@
-  *
-  */
- 
-+#include <asm/types.h>
- #include <linux/random.h>
- #include <stdlib.h>
--#include "tst_safe_stdio.h"
- #include "tst_test.h"
- 
- static char *s_fuzz;
--- 
-1.8.3.1
-
+在 10/12/2017 09:27 PM, Richard Palethorpe 写道:
+> Hello,
+> 
+> Guangwen Feng writes:
+> 
+>> +
+>> +#include <errno.h>
+>> +#include <stdlib.h>
+>> +#include <unistd.h>
+>> +#include "tst_test.h"
+>> +
+>> +#define LOOPS	100
+>> +#define PATH_ATTRFS	"/proc/self/attr/fscreate"
+> 
+> Will this exist on all systems? I am guessing that if SELINUX is not
+> configured in the kernel then this won't exist. So it is probably best
+> to exit with TCONF if we can not find it.
+> 
+>> +
+>> +static void do_test(void)
+>> +{
+>> +	int i, fd;
+>> +
+>> +	for (i = 0; i < LOOPS; i++) {
+>> +		if (!SAFE_FORK()) {
+>> +			fd = SAFE_OPEN(PATH_ATTRFS, O_WRONLY);
+>> +			write(fd, "\n", 1);
+>> +			SAFE_CLOSE(fd);
+>> +			exit(0);
+>> +		}
+>> +
+>> +		tst_reap_children();
+>> +	}
+>> +
+>> +	tst_res(TPASS, "Bug not reproduced");
+>> +}
+>> +
+>> +static struct tst_test test = {
+>> +	.forks_child = 1,
+>> +	.test_all = do_test,
+>> +};
+>> --
+>> 2.9.4
+> 
+> Otherwise this looks good.
+> 
+> --
+> Thank you,
+> Richard.
+> 
+> 
+> 
 
 
