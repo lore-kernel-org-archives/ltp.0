@@ -1,47 +1,44 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 17 Oct 2017 20:53:12 +0800
-Subject: [LTP] [PATCH] syscalls/keyctl06: Print TFAIL if keyring_read()
-	returns wrong size
-Message-ID: <1508244792-10109-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 17 Oct 2017 15:29:45 +0200
+Subject: [LTP] [PATCH v4 04/14] m4: Fix libaio detection on 32-bit cross
+ build
+In-Reply-To: <20171016154205.4814-5-pvorel@suse.cz>
+References: <20171016154205.4814-1-pvorel@suse.cz>
+ <20171016154205.4814-5-pvorel@suse.cz>
+Message-ID: <20171017132945.GA31490@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-According to keyctl06's message, the mentioned bug is introduced
-by the following patch which is merged into kernel since v3.13:
-'b2a4df200d57 ("KEYS: Expand the capacity of a keyring")'
+Hi!
+> +		AC_TRY_LINK(... AC_DEFINE(HAVE_IO_SET_EVENTFD) ...)
+                 ^
+		 Is this a forgotten placeholder?
 
-However, we still got the following output before v3.13:
- tst_test.c:958: INFO: Timeout per run is 0h 05m 00s
- keyctl06.c:60: BROK: KEYCTL_READ returned 8 but expected 4
+>  		AC_TRY_LINK([#include <stdio.h>
+>                               #include <libaio.h>
+>  		            ],
+> -                            [io_set_eventfd(NULL, 0); return 0;
+> -			    ],
+> -			    [AC_DEFINE(HAVE_IO_SET_EVENTFD)
+> -			     AC_MSG_RESULT(yes)],
+> -                            [AC_MSG_RESULT(no)])],
+> -		AIO_LIBS="")])
+> -AC_SUBST(AIO_LIBS)
+> +		            [io_set_eventfd(NULL, 0); return 0;],
+> +		            [AC_DEFINE(HAVE_IO_SET_EVENTFD, 1, [Define to 1 if you have `io_set_eventfd' function.])])
 
-In old kernels, the output exposed that keyring_read() could not
-return the size of data read into buffer, because it just returned
-the size of a keyring.  So i think this issue should be targeted
-as TFAIL.
+Okay this AC_TRY_LINK() actually works, but does not produce any output,
+notice the AC_MSG_CHECKING() and AC_MSG_RESULT() in the original code.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/keyctl/keyctl06.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I was going to suggest to use AC_CHECK_LIB() but the io_set_eventfd() is
+inline function defined in the header so we have to stuck with
+AC_TRY_LINK().
 
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl06.c b/testcases/kernel/syscalls/keyctl/keyctl06.c
-index 8873431..bf30fb6 100644
---- a/testcases/kernel/syscalls/keyctl/keyctl06.c
-+++ b/testcases/kernel/syscalls/keyctl/keyctl06.c
-@@ -56,7 +56,7 @@ static void do_test(void)
- 		tst_brk(TBROK, "KEYCTL_READ didn't return correct key ID");
- 
- 	if (TEST_RETURN != sizeof(key_serial_t)) {
--		tst_brk(TBROK, "KEYCTL_READ returned %ld but expected %zu",
-+		tst_brk(TFAIL, "KEYCTL_READ returned %ld but expected %zu",
- 			TEST_RETURN, sizeof(key_serial_t));
- 	}
- 
+We also seem to have duplicit libaio.h check in configure.ac.
+
 -- 
-1.8.3.1
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
