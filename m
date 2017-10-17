@@ -1,36 +1,47 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 17 Oct 2017 14:42:42 +0200
-Subject: [LTP] [PATCH v4 03/14] m4: Fix libkeyutils detection on 32-bit
- cross build
-In-Reply-To: <20171016154205.4814-4-pvorel@suse.cz>
-References: <20171016154205.4814-1-pvorel@suse.cz>
- <20171016154205.4814-4-pvorel@suse.cz>
-Message-ID: <20171017124242.GA8823@rei>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Tue, 17 Oct 2017 20:53:12 +0800
+Subject: [LTP] [PATCH] syscalls/keyctl06: Print TFAIL if keyring_read()
+	returns wrong size
+Message-ID: <1508244792-10109-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +AC_DEFUN([LTP_CHECK_KEYUTILS_SUPPORT], [
-> +	AC_CHECK_LIB([keyutils], [add_key],
-> +	[AC_DEFINE(HAVE_LIBKEYUTILS, 1, [Define to 1 if you have libkeyutils installed.]),
-                                                                                         ^
-						I've removed this comma
-						otherwise it tries to
-						execute command ','
-						during the configure
-						run.
+According to keyctl06's message, the mentioned bug is introduced
+by the following patch which is merged into kernel since v3.13:
+'b2a4df200d57 ("KEYS: Expand the capacity of a keyring")'
 
-The [] is actually quotation not an array so the macros in [] are not
-separated by commas, only the macro parameters are.
+However, we still got the following output before v3.13:
+ tst_test.c:958: INFO: Timeout per run is 0h 05m 00s
+ keyctl06.c:60: BROK: KEYCTL_READ returned 8 but expected 4
 
-> +	      AC_SUBST(KEYUTILS_LIBS, "-lkeyutils")])
->  ])
+In old kernels, the output exposed that keyring_read() could not
+return the size of data read into buffer, because it just returned
+the size of a keyring.  So i think this issue should be targeted
+as TFAIL.
 
-And I've pushed the patchset up to this patch, thanks.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/keyctl/keyctl06.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl06.c b/testcases/kernel/syscalls/keyctl/keyctl06.c
+index 8873431..bf30fb6 100644
+--- a/testcases/kernel/syscalls/keyctl/keyctl06.c
++++ b/testcases/kernel/syscalls/keyctl/keyctl06.c
+@@ -56,7 +56,7 @@ static void do_test(void)
+ 		tst_brk(TBROK, "KEYCTL_READ didn't return correct key ID");
+ 
+ 	if (TEST_RETURN != sizeof(key_serial_t)) {
+-		tst_brk(TBROK, "KEYCTL_READ returned %ld but expected %zu",
++		tst_brk(TFAIL, "KEYCTL_READ returned %ld but expected %zu",
+ 			TEST_RETURN, sizeof(key_serial_t));
+ 	}
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
+
+
