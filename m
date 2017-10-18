@@ -1,46 +1,53 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 18 Oct 2017 15:50:00 +0200
-Subject: [LTP] [RFC PATCH 6/7] net/tcp_cmds: Remove finger test
+Date: Wed, 18 Oct 2017 15:50:01 +0200
+Subject: [LTP] [RFC PATCH 7/7] net/tcp_cmds: Remove echo test
 In-Reply-To: <20171018135001.30382-1-pvorel@suse.cz>
 References: <20171018135001.30382-1-pvorel@suse.cz>
-Message-ID: <20171018135001.30382-7-pvorel@suse.cz>
+Message-ID: <20171018135001.30382-8-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-finger is way too old to bother to test it.
+Purpose of the test is to stresses the inetd/xinetd daemon using
+the echo service.
+Echo service is usually disabled in distros these days and there
+is another test testing xinetd.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- runtest/net.tcp_cmds                       |   1 -
- testcases/network/tcp_cmds/finger/Makefile |  31 -----
- testcases/network/tcp_cmds/finger/finger01 | 203 -----------------------------
- 3 files changed, 235 deletions(-)
- delete mode 100644 testcases/network/tcp_cmds/finger/Makefile
- delete mode 100755 testcases/network/tcp_cmds/finger/finger01
+ runtest/net.tcp_cmds                         |   1 -
+ testcases/network/tcp_cmds/echo/Makefile     |  38 ---
+ testcases/network/tcp_cmds/echo/createfile.c |  52 ----
+ testcases/network/tcp_cmds/echo/echo01       | 127 ---------
+ testcases/network/tcp_cmds/echo/echoes.c     | 375 ---------------------------
+ 5 files changed, 593 deletions(-)
+ delete mode 100644 testcases/network/tcp_cmds/echo/Makefile
+ delete mode 100644 testcases/network/tcp_cmds/echo/createfile.c
+ delete mode 100755 testcases/network/tcp_cmds/echo/echo01
+ delete mode 100644 testcases/network/tcp_cmds/echo/echoes.c
 
 diff --git a/runtest/net.tcp_cmds b/runtest/net.tcp_cmds
-index 6d062ce76..0c565b055 100644
+index 0c565b055..131d31c2a 100644
 --- a/runtest/net.tcp_cmds
 +++ b/runtest/net.tcp_cmds
-@@ -6,7 +6,6 @@ ipneigh01 ipneigh01.sh
+@@ -5,7 +5,6 @@
+ ipneigh01 ipneigh01.sh
  arping01 arping01.sh
  clockdiff01 clockdiff01.sh
- echo export TCbin=$LTPROOT/testcases/network/tcp_cmds/echo; echo01
--finger finger01
+-echo export TCbin=$LTPROOT/testcases/network/tcp_cmds/echo; echo01
  ftp export TCbin=$LTPROOT/testcases/network/tcp_cmds/ftp; ftp01
  host host01
  netstat netstat01
-diff --git a/testcases/network/tcp_cmds/finger/Makefile b/testcases/network/tcp_cmds/finger/Makefile
+diff --git a/testcases/network/tcp_cmds/echo/Makefile b/testcases/network/tcp_cmds/echo/Makefile
 deleted file mode 100644
-index 891a44f00..000000000
---- a/testcases/network/tcp_cmds/finger/Makefile
+index f26c248e5..000000000
+--- a/testcases/network/tcp_cmds/echo/Makefile
 +++ /dev/null
-@@ -1,31 +0,0 @@
+@@ -1,38 +0,0 @@
 -#
--#    network/tcp_cmds/finger testcases Makefile.
+-#    network/tcp_cmds/echo testcases Makefile.
 -#
 -#    Copyright (C) 2009, Cisco Systems Inc.
 -#
@@ -63,20 +70,86 @@ index 891a44f00..000000000
 -
 -top_srcdir		?= ../../../..
 -
--include $(top_srcdir)/include/mk/env_pre.mk
+-include $(top_srcdir)/include/mk/testcases.mk
 -
--INSTALL_TARGETS		:= finger01
+-CPPFLAGS		+= -DDEBUG -I$(abs_srcdir)/../include
 -
--MAKE_TARGETS		:=
+-INSTALL_TARGETS		:= echo01
+-
+-MAKE_TARGETS		:= echoes echoes6 createfile
+-
+-%6: CPPFLAGS += -DINET6
+-
+-%6.o: %.c
+-	$(COMPILE.c) $(OUTPUT_OPTION) $<
 -
 -include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/tcp_cmds/finger/finger01 b/testcases/network/tcp_cmds/finger/finger01
-deleted file mode 100755
-index 59c239722..000000000
---- a/testcases/network/tcp_cmds/finger/finger01
+diff --git a/testcases/network/tcp_cmds/echo/createfile.c b/testcases/network/tcp_cmds/echo/createfile.c
+deleted file mode 100644
+index 485bedf7f..000000000
+--- a/testcases/network/tcp_cmds/echo/createfile.c
 +++ /dev/null
-@@ -1,203 +0,0 @@
+@@ -1,52 +0,0 @@
+-/*
+-@! # TESTCASE DESCRIPTION:
+-@! # 	Purpose: to create an input file of any size
+-@! # 	Command: none
+-@! # 	Subcommand: none
+-@! # 	Design: Write an array the size of BUFSIZ to created file until
+-@! # 		the file size matches the file size required
+-@! # SPEC. EXEC. REQS:  This  program is used by ctatcdt3.c and ctatcet3.c
+-*/
+-
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <fcntl.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-
+-int main(int argc, char *argv[])
+-{
+-
+-	int fd;
+-	int fsize;
+-	int count = 0;
+-	int n, remain;
+-	static char buf[BUFSIZ];
+-
+-	for (fsize = 0; fsize < BUFSIZ; fsize++) {
+-		if ((fsize % 2) == 0)
+-			buf[fsize++] = 'U';
+-		else
+-			buf[fsize++] = '\n';
+-	}
+-
+-	fsize = strtol(argv[1], NULL, 10);
+-
+-	if ((fd = creat(argv[2], 0644)) == -1)
+-		perror("createfile");
+-	if (fsize >= BUFSIZ) {
+-		count = fsize / BUFSIZ;
+-		remain = fsize % BUFSIZ;
+-	} else
+-		remain = fsize;
+-	while (count-- != 0) {
+-		if ((n = write(fd, buf, BUFSIZ)) != BUFSIZ)
+-			perror("createfile");
+-	}
+-	if ((n = write(fd, buf, remain)) != remain)
+-		perror("createfile");
+-	close(fd);
+-
+-	return 0;
+-}
+diff --git a/testcases/network/tcp_cmds/echo/echo01 b/testcases/network/tcp_cmds/echo/echo01
+deleted file mode 100755
+index c11102395..000000000
+--- a/testcases/network/tcp_cmds/echo/echo01
++++ /dev/null
+@@ -1,127 +0,0 @@
 -#!/bin/sh
+-unset LIBPATH
 -#
 -#   Copyright (c) International Business Machines  Corp., 2000
 -#
@@ -96,22 +169,19 @@ index 59c239722..000000000
 -#
 -#
 -#
--#  FILE   : finger
+-#  FILE   : echo
 -#
--#  PURPOSE: To test the basic functionality of the `finger` command.
+-#  PURPOSE: Stresses the inetd/xinetd daemon using the `echo` service.
 -#
--#  SETUP: The home directory of root on the machine exported as "RHOST"
--#         MUST have a ".rhosts" file with the hostname of the machine
--#         where the test is executed. Also, both machines MUST have
--#         the fingerd daemon active (see inetd or xinetd config file).
+-#  SETUP: The echo service MUST be active on the RHOST machine. This is
+-#         controlled by the inetd/xinetd daemon.
 -#
 -#  HISTORY:
--#    06/06/03 Manoj Iyer - manjo@mail.utexas.edu
--#      - Ported tests to use test macro
 -#    03/01 Robbie Williamson (robbiew@us.ibm.com)
 -#      -Ported
 -#
--#-----------------------------------------------------------------------
+-#
+-#***********************************************************************
 -
 -#-----------------------------------------------------------------------
 -#
@@ -122,163 +192,470 @@ index 59c239722..000000000
 -do_setup()
 -{
 -
--    # Start fingerd locally and remotely.
--    export TST_TOTAL=3
+-    NUMLOOPS=${NUMLOOPS:-2}
+-    TST_TOTAL=$NUMLOOPS
 -
+-    export TST_COUNT TST_TOTAL
+-
+-    exists hostname sum
 -    tst_setup
 -
--    exists awk finger hostname netstat rsh whoami
+-    TC=sine
+-    RHOST=${RHOST:-`hostname`}
+-    CLEANUP=${CLEANUP:-ON}
+-    CREATEFILE=createfile
+-    ECHOES=echoes${EXEC_SUFFIX}
 -
--    LHOST=$(hostname)
--    LUSER=$(whoami)
--    RUSER=root
--    RHOST=${RHOST:-$(hostname)}
--    SLEEPTIME=${SLEEPTIME:-1}
+-    ECHOFILE=${ECHOFILE:-echofile${EXEC_SUFFIX}}
+-    ECHOSIZE=${ECHOSIZE:-8192}
+-    NUMPROCESSES=${NUMPROCESSES:-10}
 -
--    exists awk finger netstat rsh whoami
--
--    [ "$LUSER" = "root" ] || end_testcase "MUST BE root to run the test!"
--
--    FINGER=$(netstat -a | grep ":finger" |awk '{print $6}')
--    if [ "$FINGER" != "LISTEN" ]; then
--        end_testcase "Please start fingerd locally."
--    fi
--
--    FINGER=$(rsh -n $RHOST netstat -a |grep ":finger"|awk '{print $6}')
--    if [ "$FINGER" != "LISTEN" ]; then
--        end_testcase "Please start fingerd on remote host."
--    fi
 -}
 -
 -#-----------------------------------------------------------------------
--# FUNCTION: do_test1
--# PURPOSE: Run finger with no flags
--# INPUT:    None.
--# OUTPUT:   Error messages are logged for all discrepancies found.
+-#
+-# FUNCTION:  do_test
+-# PURPOSE:   Loop until interrupted creating the echo file and then
+-#	     echoing it to RHOST.
+-# INPUT:     None.
+-# OUTPUT:    Informational messages are logged into the run log.
+-#
 -#-----------------------------------------------------------------------
 -
--do_test1()
+-do_test()
 -{
--    tst_resm TINFO "finger: do_test1 started"
--
--    finger @$LHOST  2>&1 1>/dev/null
--    [ $? = 0 ] || end_testcase "finger @$LHOST"
--    finger @$RHOST  2>&1 1>/dev/null
--    [ $? = 0 ] || end_testcase "finger @$RHOST"
--
--    # Testing finger command with user argument
--
--    finger $LUSER 2>&1 1>/dev/null || end_testcase "finger $LUSER"
--    if ! finger $LUSER@$LHOST  2>&1 1>/dev/null; then
--        end_testcase "finger $LUSER@$LHOST"
+-    echo  "Creating echo file $ECHOFILE"
+-    if ! "$LTPROOT/testcases/bin/$CREATEFILE" $ECHOSIZE "$TCtmp/$ECHOFILE"; then
+-        end_testcase "$ECHOFILE not created"
 -    fi
--    finger $RUSER@$RHOST 2>&1 1>/dev/null || end_testcase "finger @$RUSER"
+-
+-    echo "Compute the checksum of this file"
+-    csum1=$(sum $TCtmp/$ECHOFILE | awk '{print $1}')
+-    [ $csum1 ] || end_testcase "initial checksum computation failed"
+-
+-    while [ $TST_COUNT -le $NUMLOOPS ]; do
+-
+-        if ! $ECHOES $RHOST "$TCtmp/$ECHOFILE" $NUMPROCESSES; then
+-            end_testcase "Error in $ECHOES test in loop $TST_COUNT"
+-        fi
+-
+-        NUM=0
+-        while [ $NUM -lt $NUMPROCESSES ]
+-        do
+-            csum2=$(sum "$TCtmp/${ECHOFILE}${NUM}" | awk '{print $1}')
+-            if [ "$csum1" != "$csum2" ]; then
+-                end_testcase "Checksums differ in loop $TST_COUNT"
+-            fi
+-            NUM=$(( $NUM + 1 ))
+-        done
+-
+-        tst_resm TINFO "Execution $TST_COUNT passed."
+-
+-        incr_tst_count
+-        if [ $TST_COUNT -le $NUMLOOPS ]; then
+-            tst_resm TINFO "Sleeping 60 seconds to avoid hitting max. connections setting for service"
+-            sleep 60
+-        fi
+-    done
 -}
 -
 -#-----------------------------------------------------------------------
--# FUNCTION: do_test2
--# PURPOSE:  To run the "finger User@host" commands and verify that the
--#           "finger" command is functioning properly.
--# INPUT:    None.
--# OUTPUT:   Error messages are logged for all discrepancies found.
+-#
+-# FUNCTION:  MAIN
+-# PURPOSE:   To invoke functions that perform the tasks as described in
+-#	     the design in the prolog above.
+-# INPUT:     See SETUP in the prolog above.
+-# OUTPUT:    Logged run results written to testcase run log
+-#
 -#-----------------------------------------------------------------------
 -
--do_test2()
--{
--    tst_resm TINFO "finger: do_test2 (-bad flag) started"
--    BADUSER="uuuu"
--    BADHOST="xxxx"
--
--    tst_resm TINFO "finger -badflag default "
--    finger -x 2> /dev/null && end_testcase "finger -x should fail"
--
--    tst_resm TINFO "finger -bad user "
--    [ "$(finger $BADUSER 2>&1 1>/dev/null)" ] || end_testcase "finger $BADUSER"
--    [ "$(finger @$BADHOST 2>&1 1>/dev/null)" ] || \
--        end_testcase "finger @$BADHOST"
--    [ "$(finger $BADUSER@$BADHOST 2>&1 1>/dev/null)" ] || \
--        end_testcase "finger $BADUSER@$BADHOST"
--}
--
--#-----------------------------------------------------------------------
--# FUNCTION: do_test3
--# PURPOSE:  To run the "finger -flag User@Host" commands and verify that the
--#           "finger" command is functioning properly.
--# INPUT:    None.
--# OUTPUT:   Error messages are logged for all discrepancies found.
--#-----------------------------------------------------------------------
--
--do_test3()
--{
--    tst_resm TINFO "finger: do_test3 (-f flag) started"
--
--    tst_resm TINFO "finger -l : gives a long listing"
--    finger -l  2>&1 1>/dev/null || end_testcase "finger -l"
--    finger -l $LUSER 2>&1 1>/dev/null || end_testcase "finger -l $LUSER"
--    finger -l @$LHOST 2>&1 1>/dev/null || end_testcase "finger -l @$LHOST"
--    if ! finger -l $LUSER@$LHOST 2>&1 1>/dev/null; then
--        end_testcase "finger -l $LUSER@$LHOST"
--    fi
--    finger -l @$RHOST  2>&1 1>/dev/null || end_testcase "finger -l @$RHOST"
--    if ! finger -l $RUSER@$RHOST  2>&1 1>/dev/null; then
--        end_testcase "finger -l $RUSER@$RHOST"
--    fi
--
--    tst_resm TINFO "finger -m : assures that user is a user ID discretionary"
--    finger -m 2>&1 1>/dev/null || end_testcase "finger -m"
--    finger -m $LUSER 2>&1 1>/dev/null || end_testcase "finger -m $LUSER"
--    finger -m @$LHOST 2>&1 1>/dev/null || end_testcase "finger -m @$LHOST"
--    if ! finger -m $LUSER@$LHOST 2>&1 1>/dev/null; then
--        end_testcase "finger -m $LUSER@$LHOST"
--    fi
--    finger -m @$RHOST 2>&1 1>/dev/null || end_testcase "finger -m @$RHOST"
--    if ! finger -m $RUSER@$RHOST  2>&1 1>/dev/null; then
--        end_testcase "finger -m $RUSER@$RHOST"
--    fi
--
--    tst_resm TINFO "finger -p : suppresses printing of .plan files on long and \
--        brief long formats"
--    finger -p  2>&1 1>/dev/null || end_testcase "finger -p"
--    finger -p $LUSER  2>&1 1>/dev/null || end_testcase "finger -p $LUSER"
--    finger -p @$LHOST  2>&1 1>/dev/null || end_testcase "finger -p @$LHOST"
--    if ! finger -p $LUSER@$LHOST  2>&1 1>/dev/null; then
--        end_testcase "finger -p $LUSER@$LHOST"
--    fi
--    finger -p @$RHOST  2>&1 1>/dev/null || end_testcase "finger -p @$RHOST"
--    if ! finger -p $RUSER@$RHOST 2>&1 1>/dev/null; then
--        end_testcase "finger -p $RUSER@$RHOST"
--    fi
--
--    tst_resm TINFO "finger -s : gives a short format list"
--    finger -s  2>&1 1>/dev/null || end_testcase "finger -s"
--    finger -s $LUSER 2>&1 1>/dev/null || end_testcase "finger -s $LUSER "
--    finger -s @$LHOST 2>&1 1>/dev/null || end_testcase "finger -s @$LHOST"
--    if ! finger -s $LUSER@$LHOST 2>&1 1>/dev/null; then
--        end_testcase "finger -s $LUSER@$LHOST"
--    fi
--    finger -s @$RHOST 2>&1 1>/dev/null || end_testcase "finger -s @$RHOST"
--    if ! finger -s $RUSER@$RHOST 2>&1 1>/dev/null; then
--        end_testcase "finger -s $RUSER@$RHOST"
--    fi
--
--}
--
--#-----------------------------------------------------------------------
--# FUNCTION: MAIN
--# PURPOSE:  To invoke the functions to perform the tasks outlined in the
--#           prologue.
--# INPUT:    None.
--# OUTPUT:   None.
--#-----------------------------------------------------------------------
 -. net_cmdlib.sh
 -
 -read_opts $*
 -do_setup
--for TST_COUNT in 1 2 3; do
--    eval "do_test$TST_COUNT"
--    sleep $SLEEPTIME
--done
+-do_test
 -end_testcase
+diff --git a/testcases/network/tcp_cmds/echo/echoes.c b/testcases/network/tcp_cmds/echo/echoes.c
+deleted file mode 100644
+index e6aeb9eed..000000000
+--- a/testcases/network/tcp_cmds/echo/echoes.c
++++ /dev/null
+@@ -1,375 +0,0 @@
+-/*
+-@! # TEST TYPE(S): Concurrency, Load stress
+-@! # TESTCASE DESCRIPTION:
+-@! # 	Purpose: to send packets from the file to echo protocol on remote
+-@! #		 machine and read the echoing packets back and compare them
+-@! # 	Design: Connect to echo protocol on the remote machine
+-@! #		read from the file and send the file to remote machine
+-@! #		read the echoing  packets and store them in a file
+-@! #		repeat until file exhausted.
+-@! #		compare result
+-@! #
+-@! # SPEC. EXEC. REQS: May require multiple of this test to run
+-@! #		       to target machines from multiple machine in order
+-@! #		       to create stress condition
+-@! # 			echoes <REMOTE HOST> <echofile> <number of processes>
+-*/
+-#include <unistd.h>
+-#include <sys/types.h>
+-#include <sys/socket.h>
+-#include <sys/stat.h>
+-#include <sys/wait.h>
+-#include <errno.h>
+-#include <libgen.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <netdb.h>
+-#include <netinet/in.h>
+-#include <fcntl.h>
+-#include "test.h"
+-#include "netdefs.h"
+-
+-#if INET6
+-char *TCID = "echoes6";
+-#else
+-char *TCID = "echoes";
+-#endif
+-
+-int TST_TOTAL = 1;
+-
+-void echofile(struct servent *, struct addrinfo *, char *, char *);
+-int checkfile(char *, char *);
+-void cleanup(int);
+-
+-int main(int argc, char *argv[], char *env[])
+-{
+-
+-	unsigned int finish, i, j, k;
+-	int gai, wait_stat;
+-	pid_t pid;
+-	struct addrinfo hints, *hp;
+-	struct servent *sp;
+-	struct {
+-		char resultfile[FILENAME_MAX + 1];
+-		pid_t pid;
+-	} echo_struc[200];
+-
+-	memset(&hints, 0, sizeof(hints));
+-	hints.ai_family = PFI;
+-	hints.ai_socktype = SOCK_STREAM;
+-
+-	if (argc != 4)
+-		tst_brkm(TBROK, NULL, "usage: remote-addr file num-procs");
+-
+-	if ((sp = getservbyname("echo", "tcp")) == NULL)
+-		tst_brkm(TBROK | TERRNO, NULL, "getservbyname failed");
+-
+-	if ((gai = getaddrinfo(argv[1], NULL, &hints, &hp)) != 0)
+-		tst_brkm(TBROK, NULL, "unknown subject address %s: %s\n",
+-			 argv[1], gai_strerror(gai));
+-
+-	if (!hp || !hp->ai_addr || hp->ai_addr->sa_family != AFI)
+-		tst_brkm(TBROK, NULL, "getaddrinfo failed");
+-
+-	i = (unsigned int)strtol(argv[3], NULL, 10);
+-	j = 0;
+-	while (i-- > 0) {
+-		switch (pid = fork()) {
+-		case 0:
+-			snprintf(echo_struc[j].resultfile,
+-				 FILENAME_MAX, "%s%u", argv[2], j);
+-			echofile(sp, hp, echo_struc[j].resultfile, argv[2]);
+-			break;
+-		case -1:
+-			tst_resm(TBROK | TERRNO, "fork failed");
+-			break;
+-		default:
+-			echo_struc[j].pid = pid;
+-			j++;
+-			break;
+-		}
+-	}
+-	finish = (unsigned int)strtol(argv[3], NULL, 10);
+-	i = finish;
+-	/* Consume all operating threads until we're done... */
+-	while (finish != 0) {
+-
+-		if ((pid = wait(&wait_stat)) == -1)
+-			tst_resm(TFAIL | TERRNO, "wait failed");
+-		if (wait_stat == 0) {
+-			for (j = 0; j < i; j++) {
+-				if (echo_struc[j].pid == pid) {
+-					finish--;
+-					j = i;
+-				}
+-			}
+-		} else {
+-
+-			tst_resm(TFAIL, "wait(2) status was non-zero");
+-
+-			if (WIFEXITED(wait_stat)) {
+-				tst_resm(TINFO, "exit status: %d",
+-					 WEXITSTATUS(wait_stat));
+-			} else if (WIFSIGNALED(wait_stat)) {
+-				tst_resm(TINFO, "signaled: %d",
+-					 WTERMSIG(wait_stat));
+-			}
+-
+-			for (k = 0; k < i; k++) {
+-				if (kill(echo_struc[k].pid, 0) == 0) {
+-					kill(echo_struc[k].pid, 9);
+-				}
+-			}
+-			break;
+-		}
+-
+-	}
+-
+-	tst_exit();
+-}
+-
+-/* XXX (garrcoop): This shouldn't use libltp as it's a forked process. */
+-void
+-echofile(struct servent *sp, struct addrinfo *ai, char *resultfile,
+-	 char *srcfile)
+-{
+-	int n;
+-	int port;
+-	char wr_buffer[BUFSIZ];
+-	char rd_buffer[BUFSIZ];
+-	sai_t sa;
+-#ifdef DEBUG
+-	sa_t address;
+-	socklen_t addrlen;
+-#endif
+-	int s;
+-	int finish;
+-	int fdw, fdr;
+-	int nread, nwrite;
+-	int count;
+-	pid_t pid;
+-
+-#ifdef 	DEBUG
+-	printf("Creating socket .....\n");
+-#endif
+-
+-	pid = getpid();
+-	if ((s = socket(AFI, SOCK_STREAM, 0)) < 0) {
+-		tst_resm(TBROK, "Failed to create listener socket (pid=%d)",
+-			 pid);
+-		cleanup(s);
+-		tst_exit();
+-	}
+-	port = sp->s_port;
+-
+-	/*
+-	 * TODO: Old code did something of the form:
+-	 *
+-	 * struct hostent *hp;
+-	 *
+-	 * hp = gethostbyname(argv[1]);
+-	 *
+-	 * ...
+-	 *
+-	 * struct       in_addr hostaddr;
+-	 *
+-	 * memcpy(&hostaddr,hp->h_addr_list[0],sizeof(struct in_addr));
+-	 *
+-	 * This is all fine and dandy, but gethostbyname has been deprecated
+-	 * for some time, and doesn't work too well with IPV6 (from what I've
+-	 * read), so I have to push it over to getaddrinfo. getaddrinfo isn't
+-	 * a 1:1 mapping though, so I have to do some work to shoehorn the old
+-	 * code to fit the new code.
+-	 *
+-	 * Some notes (from a test app)...
+-	 *
+-	 * (gdb) set args 127.0.0.1
+-	 * (gdb) list
+-	 * 33              for (int i = 1; i < argc; i++) {
+-	 * 34
+-	 * 35                      gai = getaddrinfo(argv[i], NULL, &hints, &ai);
+-	 * 36                      hp = gethostbyname(argv[i]);
+-	 * 37
+-	 * 38                      if (gai != 0) {
+-	 * 39                              printf("Error: %s\n", gai_strerror(gai));
+-	 * 40                              error = 2;
+-	 * 41                      } else {
+-	 * 42                              printf("Host IP: 0x%x\n", ai->ai_addr);
+-	 * (gdb) p *hp
+-	 * $16 = {h_name = 0x1a60198 "127.0.0.1", h_aliases = 0x1a60190, h_addrtype = 2,
+-	 *   h_length = 4, h_addr_list = 0x1a60180}
+-	 * (gdb) p *hp->h_addr_list
+-	 * $14 = 0x1a60170 "\177"
+-	 * (gdb) p *ai
+-	 * $15 = {ai_flags = 0, ai_family = 2, ai_socktype = 1, ai_protocol = 6,
+-	 *   ai_addrlen = 16, ai_addr = 0x1a600b0, ai_canonname = 0x0,
+-	 *     ai_next = 0x1a600d0}
+-	 *
+-	 * If one continues down this path, SIGPIPE will get tossed at the first
+-	 * write(2), as opposed to Connection refused (the old code). So I'm not
+-	 * passing in the correct info to connect(2).
+-	 *
+-	 * That and using -DDEBUG with the getpeername(3) call below always fails
+-	 * (that alone should be a sufficient to note that my sockaddr* data is
+-	 * skewed).
+-	 *
+-	 * For now let's just mark it broken.
+-	 *
+-	 */
+-	//tst_resm(TBROK, "FIX ME GARRETT!");
+-	//tst_exit();
+-
+-	memset((char *)&sa, 0, sizeof(sa));
+-	memcpy(&sa, ai->ai_addr, ai->ai_addrlen);
+-
+-#if INET6
+-	sa.sin6_port = port;
+-#else
+-	sa.sin_port = port;
+-#endif
+-
+-	if (connect(s, (sa_t *) & sa, sizeof(sa)) == -1) {
+-		tst_resm(TBROK | TERRNO,
+-			 "failed to create connector socket (pid=%d)", pid);
+-		cleanup(s);
+-		tst_exit();
+-	}
+-#ifdef DEBUG
+-	addrlen = sizeof(struct sockaddr);
+-	/* printf("addrlen=%d\n", addrlen); */
+-	/* printf("ai->ai_addr=%s\n", inet_ntoa(ai->ai_addr)); */
+-	if (getsockname(s, &address, &addrlen) == -1) {
+-		tst_resm(TBROK | TERRNO, "getsockname call failed (pid=%d)",
+-			 pid);
+-		cleanup(s);
+-		tst_exit();
+-	}
+-
+-	printf("local port is: %d\n", port);
+-
+-	if (getpeername(s, &address, &addrlen) == -1) {
+-		tst_resm(TBROK | TERRNO, "getpeername call failed (pid=%d)",
+-			 pid);
+-		cleanup(s);
+-		tst_exit();
+-	}
+-
+-	tst_resm(TINFO, "The remote port is: %d\n", port);
+-#endif
+-	if ((fdr = open(srcfile, O_RDONLY)) < 0) {
+-		tst_resm(TBROK | TERRNO,
+-			 "failed to open input file (pid=%d)", pid);
+-		cleanup(s);
+-		tst_exit();
+-	}
+-
+-	if ((fdw = creat(resultfile, 0644)) < 0) {
+-		tst_resm(TBROK | TERRNO,
+-			 "failed to create a temporary file (pid=%d)", pid);
+-		cleanup(s);
+-		tst_exit();
+-	}
+-#if DEBUG
+-	tst_resm(TINFO, "creat(resultfile,...) done.");
+-#endif
+-	finish = FALSE;
+-	count = 0;
+-	while (finish == FALSE) {
+-
+-		if ((nwrite = read(fdr, wr_buffer, BUFSIZ)) == -1) {
+-			tst_resm(TFAIL | TERRNO,
+-				 "failed to read from file (pid=%d)", pid);
+-			cleanup(s);
+-		}
+-#if DEBUG
+-		tst_resm(TINFO, "Read %d bytes from file", nwrite);
+-#endif
+-		if (nwrite == 0)
+-			finish = TRUE;
+-		else {
+-			count++;
+-			if ((n = write(s, wr_buffer, nwrite)) != nwrite) {
+-				tst_resm(TFAIL | TERRNO,
+-					 "failed to write to socket (pid=%d)",
+-					 pid);
+-				cleanup(s);
+-			}
+-#ifdef 	DEBUG
+-			tst_resm(TINFO, "Writing %d bytes to remote socket",
+-				 count);
+-#endif
+-			while (nwrite != 0) {
+-
+-				nread = read(s, rd_buffer, BUFSIZ);
+-				if (nread == -1) {
+-					printf("read size: %d\n", n);
+-					tst_resm(TFAIL | TERRNO,
+-						 "failed to read from socket [2nd "
+-						 "time] (pid=%d)", pid);
+-					cleanup(s);
+-				}
+-#ifdef 	DEBUG
+-				printf("Reading ....... %d\n", count);
+-#endif
+-				n = write(fdw, rd_buffer, nread);
+-				if (n != nread) {
+-					tst_resm(TFAIL | TERRNO,
+-						 "ERROR during write to result "
+-						 "file (pid=%d); read amount: %d",
+-						 pid, n);
+-					cleanup(s);
+-				}
+-
+-				nwrite -= nread;
+-
+-			}
+-
+-		}		/* end of else */
+-
+-	}			/* end of while */
+-
+-	if ((n = close(s)) == -1) {
+-		tst_brkm(TBROK | TERRNO, NULL,
+-			 "failed to cleanly close socket (pid=%d)", pid);
+-	}
+-	if ((n = close(fdr)) == -1) {
+-		tst_brkm(TBROK | TERRNO, NULL,
+-			 "failed to cleanly close input file (pid=%d)", pid);
+-	}
+-	if ((n = close(fdw)) == -1) {
+-		tst_brkm(TBROK | TERRNO, NULL,
+-			 "failed to cleanly close temp file (pid=%d)", pid);
+-	}
+-	if (checkfile(srcfile, resultfile) != TRUE) {
+-		tst_brkm(TFAIL, NULL,
+-			 "Input file and output file are not equal (pid=%d)",
+-			 pid);
+-	}
+-	tst_resm(TINFO, "Finish .... (pid=%d)", pid);
+-	tst_exit();
+-}
+-
+-int checkfile(char *file1, char *file2)
+-{
+-	off_t n;
+-	struct stat buffer;
+-	stat(file1, &buffer);
+-	n = buffer.st_size;
+-#ifdef 	DEBUG
+-	printf("%s size=%lu\n", file1, n);
+-#endif
+-	stat(file2, &buffer);
+-#ifdef 	DEBUG
+-	printf("%s size=%lu\n", file2, buffer.st_size);
+-#endif
+-	if (n != buffer.st_size)
+-		return FALSE;
+-	else
+-		return TRUE;
+-}
+-
+-void cleanup(int s)
+-{
+-	close(s);
+-}
 -- 
 2.14.2
 
