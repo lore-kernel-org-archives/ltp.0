@@ -1,45 +1,33 @@
-From: Lei, Shaoting <leist.fnst@cn.fujitsu.com>
-Date: Wed, 18 Oct 2017 08:47:03 +0000
-Subject: [LTP] [PATCH] ltp/testcases/kernel/fs/doio/rwtest: fix rwtest
-In-Reply-To: <1508315410-18147-1-git-send-email-xiangx.dai@intel.com>
-References: <1508315410-18147-1-git-send-email-xiangx.dai@intel.com>
-Message-ID: <9A231BE5D02F5B4683229C96D4C5BF6601328D59A4@G08CNEXMBPEKD01.g08.fujitsu.local>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 18 Oct 2017 12:09:20 +0200
+Subject: [LTP] [RFC] [PATCH 1/2] lib: Add tst_strstatus()
+In-Reply-To: <59E48986.5080608@cn.fujitsu.com>
+References: <20171012153338.1233-1-chrubis@suse.cz>
+ <59E48986.5080608@cn.fujitsu.com>
+Message-ID: <20171018100920.GA25433@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-    fix the following issue:   rwtest01-rwtest04.fail
-    -----------
-    iogen(rwtest02): get_file_info():  Could not stat() /lkp/benchmarks/ltp/testcases/bin/rw-buffered-12736:  No such file or directory
-    iogen(rwtest02) warning:  Error getting file info for rw-buffered-12736
-    iogen(rwtest02):  Could not create, or gather info for any test files
-    rwtest(rwtest02) : iogen reported errors (r=2)
-    -----------
-    When the size of test file is 0, we should use the default size. But the code of LTP missed to deal with this situation.
+Hi!
+> > diff --git a/lib/newlib_tests/test_str_status.c b/lib/newlib_tests/test_str_status.c
+> > new file mode 100644
+> > index 000000000..706ec1144
+> > --- /dev/null
+> > +++ b/lib/newlib_tests/test_str_status.c
+> > @@ -0,0 +1,49 @@
+> > +/*
+> > + * Copyright (c) 2016 Cyril Hrubis<chrubis@suse.cz>
+> Hi Cyril,
+> 
+> The correct date is 2017 here.
+> 
 
-Signed-off-by: Shaoting Lei <leist.fnst@cn.fujitsu.com>
----
- testcases/kernel/fs/doio/rwtest | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ah right, and the top level comment in the test is wrong as well, will
+fix that.
 
-diff --git a/testcases/kernel/fs/doio/rwtest b/testcases/kernel/fs/doio/rwtest index 90b1658..d22b1ff 100644
---- a/testcases/kernel/fs/doio/rwtest
-+++ b/testcases/kernel/fs/doio/rwtest
-@@ -344,7 +344,7 @@ do
- 
- 			# check if blks is a number, else set a default value for blks
- 			default_sz=1000000
--			if [ $blks -eq $blks 2> /dev/null ]
-+			if [ $blks -eq $blks 2> /dev/null && $blks -ne 0 ]
- 			then
- 
- 				case $(uname) in
---
-2.7.4
-
-
-
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
