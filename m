@@ -1,129 +1,65 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 18 Oct 2017 15:40:41 +0200
-Subject: [LTP] [COMMITTED] [PATCH 2/2] syscalls: Make use of tst_strstatus()
-In-Reply-To: <20171018134041.2051-1-chrubis@suse.cz>
-References: <20171018134041.2051-1-chrubis@suse.cz>
-Message-ID: <20171018134041.2051-2-chrubis@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 18 Oct 2017 15:49:54 +0200
+Subject: [LTP] [RFC PATCH 0/7] Remove network test for ancient software
+Message-ID: <20171018135001.30382-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/cve/stack_clash.c                       |  2 +-
- testcases/kernel/syscalls/fanotify/fanotify03.c   | 17 ++++-------------
- testcases/kernel/syscalls/madvise/madvise07.c     | 11 ++++++++---
- testcases/kernel/syscalls/madvise/madvise09.c     |  4 ++--
- testcases/kernel/syscalls/setrlimit/setrlimit04.c | 14 +++++---------
- 5 files changed, 20 insertions(+), 28 deletions(-)
+Hi,
 
-diff --git a/testcases/cve/stack_clash.c b/testcases/cve/stack_clash.c
-index 49c45ef74..f25e19b3f 100644
---- a/testcases/cve/stack_clash.c
-+++ b/testcases/cve/stack_clash.c
-@@ -256,7 +256,7 @@ void stack_clash_test(void)
- 		}
- 	}
- 
--	tst_brk(TBROK, "child did not exit gracefully");
-+	tst_brk(TBROK, "Child %s", tst_strstatus(status));
- }
- 
- static struct tst_test test = {
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
-index ea5c02a7b..400042081 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify03.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
-@@ -132,19 +132,10 @@ static void check_child(void)
- 	}
- 	SAFE_WAITPID(-1, &child_ret, 0);
- 
--	if (WIFSIGNALED(child_ret)) {
--		tst_res(TFAIL, "child exited due to signal %d",
--			 WTERMSIG(child_ret));
--	} else if (WIFEXITED(child_ret)) {
--		if (WEXITSTATUS(child_ret) == 0)
--			tst_res(TPASS, "child exited correctly");
--		else
--			tst_res(TFAIL, "child exited with status %d",
--				 WEXITSTATUS(child_ret));
--	} else {
--		tst_res(TFAIL, "child exited for unknown reason (status %d)",
--			 child_ret);
--	}
-+	if (WIFEXITED(child_ret) && WEXITSTATUS(child_ret) == 0)
-+		tst_res(TPASS, "child exited correctly");
-+	else
-+		tst_res(TFAIL, "child %s", tst_strstatus(child_ret));
- }
- 
- void test01(void)
-diff --git a/testcases/kernel/syscalls/madvise/madvise07.c b/testcases/kernel/syscalls/madvise/madvise07.c
-index ef9aa4a26..170642ada 100644
---- a/testcases/kernel/syscalls/madvise/madvise07.c
-+++ b/testcases/kernel/syscalls/madvise/madvise07.c
-@@ -91,10 +91,15 @@ static void run(void)
- 	}
- 
- 	SAFE_WAITPID(pid, &status, 0);
--	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGBUS)
-+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGBUS) {
- 		tst_res(TPASS, "Received SIGBUS after accessing poisoned page");
--	else if (WIFEXITED(status) && WEXITSTATUS(status) == TBROK)
--		tst_res(TBROK, "Child exited abnormally");
-+		return;
-+	}
-+
-+	if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
-+		return;
-+
-+	tst_res(TFAIL, "Child %s", tst_strstatus(status));
- }
- 
- static struct tst_test test = {
-diff --git a/testcases/kernel/syscalls/madvise/madvise09.c b/testcases/kernel/syscalls/madvise/madvise09.c
-index 7ad76f795..4e887f5db 100644
---- a/testcases/kernel/syscalls/madvise/madvise09.c
-+++ b/testcases/kernel/syscalls/madvise/madvise09.c
-@@ -305,8 +305,8 @@ retry:
- 		goto retry;
- 	}
- 
--	if (WIFEXITED(status) && WEXITSTATUS(status))
--		tst_brk(TBROK, "Child exitted unexpectedly");
-+	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-+		tst_brk(TBROK, "Child %s", tst_strstatus(status));
- }
- 
- static void setup(void)
-diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit04.c b/testcases/kernel/syscalls/setrlimit/setrlimit04.c
-index e366298a1..5b6c958c3 100644
---- a/testcases/kernel/syscalls/setrlimit/setrlimit04.c
-+++ b/testcases/kernel/syscalls/setrlimit/setrlimit04.c
-@@ -48,16 +48,12 @@ static void test_setrlimit(void)
- 		SAFE_EXECLP("/bin/true", "/bin/true", NULL);
- 	SAFE_WAITPID(child, &status, 0);
- 
--	if (WIFEXITED(status)) {
--		if ((WEXITSTATUS(status) == 0))
--			tst_res(TPASS, "child process completed OK");
--		else
--			tst_res(TFAIL, "child process exited with %d",
--				WEXITSTATUS(status));
--	} else if (WIFSIGNALED(status)) {
--		tst_res(TFAIL, "child exited with signal %s",
--			tst_strsig(WTERMSIG(status)));
-+	if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-+		tst_res(TPASS, "child process completed OK");
-+		return;
- 	}
-+
-+	tst_res(TFAIL, "child %s", tst_strstatus(status));
- }
- 
- static struct tst_test test = {
+I'm proposing to remove tests for ancient software.
+I don't think we should be maintaining tests for something which hardly anyone use.
+
+Kind regards,
+Petr
+
+Petr Vorel (7):
+  net/tcp_cmds: Remove rwho test
+  net/tcp_cmds: Remove rdist test
+  net/tcp_cmds: Remove rlogin test
+  net/tcp_cmds: Remove rsh test
+  net/tcp_cmds: Remove rcp test
+  net/tcp_cmds: Remove finger test
+  net/tcp_cmds: Remove echo test
+
+ runtest/net.tcp_cmds                         |   7 -
+ testcases/network/tcp_cmds/echo/Makefile     |  38 ---
+ testcases/network/tcp_cmds/echo/createfile.c |  52 ----
+ testcases/network/tcp_cmds/echo/echo01       | 127 ---------
+ testcases/network/tcp_cmds/echo/echoes.c     | 375 ---------------------------
+ testcases/network/tcp_cmds/finger/Makefile   |  31 ---
+ testcases/network/tcp_cmds/finger/finger01   | 203 ---------------
+ testcases/network/tcp_cmds/rcp/Makefile      |  30 ---
+ testcases/network/tcp_cmds/rcp/rcp01         | 144 ----------
+ testcases/network/tcp_cmds/rdist/Makefile    |  30 ---
+ testcases/network/tcp_cmds/rdist/rdist01     | 187 -------------
+ testcases/network/tcp_cmds/rlogin/Makefile   |  31 ---
+ testcases/network/tcp_cmds/rlogin/rlogin01   |  90 -------
+ testcases/network/tcp_cmds/rsh/Makefile      |  31 ---
+ testcases/network/tcp_cmds/rsh/rsh01         | 115 --------
+ testcases/network/tcp_cmds/rwho/Makefile     |  31 ---
+ testcases/network/tcp_cmds/rwho/rwho01       |  91 -------
+ 17 files changed, 1613 deletions(-)
+ delete mode 100644 testcases/network/tcp_cmds/echo/Makefile
+ delete mode 100644 testcases/network/tcp_cmds/echo/createfile.c
+ delete mode 100755 testcases/network/tcp_cmds/echo/echo01
+ delete mode 100644 testcases/network/tcp_cmds/echo/echoes.c
+ delete mode 100644 testcases/network/tcp_cmds/finger/Makefile
+ delete mode 100755 testcases/network/tcp_cmds/finger/finger01
+ delete mode 100644 testcases/network/tcp_cmds/rcp/Makefile
+ delete mode 100755 testcases/network/tcp_cmds/rcp/rcp01
+ delete mode 100644 testcases/network/tcp_cmds/rdist/Makefile
+ delete mode 100755 testcases/network/tcp_cmds/rdist/rdist01
+ delete mode 100644 testcases/network/tcp_cmds/rlogin/Makefile
+ delete mode 100755 testcases/network/tcp_cmds/rlogin/rlogin01
+ delete mode 100644 testcases/network/tcp_cmds/rsh/Makefile
+ delete mode 100755 testcases/network/tcp_cmds/rsh/rsh01
+ delete mode 100644 testcases/network/tcp_cmds/rwho/Makefile
+ delete mode 100755 testcases/network/tcp_cmds/rwho/rwho01
+
 -- 
-2.13.5
+2.14.2
 
