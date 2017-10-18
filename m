@@ -1,104 +1,572 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 18 Oct 2017 13:10:54 +0200
-Subject: [LTP] [PATCH v5 00/12] Fix 32-bit cross compilation
-Message-ID: <20171018111106.17215-1-pvorel@suse.cz>
+Date: Wed, 18 Oct 2017 13:10:55 +0200
+Subject: [LTP] [PATCH v5 01/12] m4: Fix libaio detection on 32-bit cross
+	build
+In-Reply-To: <20171018111106.17215-1-pvorel@suse.cz>
+References: <20171018111106.17215-1-pvorel@suse.cz>
+Message-ID: <20171018111106.17215-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Changes v4->v5:
-* Removed left placeholder in m4/ltp-eventfd.m4
-* Removed duplicit libaio.h check in configure.ac.
-* Added new commit: kernel/io: Build all directories even without libaio
+This fixes link problems when libaio.h but but libaio not (e.g. on
+32-bit cross build).
 
-NOTE: this is also available as a branch on github:
-https://github.com/pevik/ltp/tree/autotools/fix-32bit-build.v5
++ remove duplicite check for libaio.h in configure.ac
+(added in ef77253961).
 
-Kind regards,
-Petr
-
-Petr Vorel (12):
-  m4: Fix libaio detection on 32-bit cross build
-  kernel/io: Build all directories even without libaio
-  make: Remove workarounds for build without libnuma
-  numa: Drop NUMA API v1 support
-  numa: Drop NUMA_CPPFLAGS
-  hotplug/memory_hotplug: Update TODO
-  hotplug/memory_hotplug: Remove unused header
-  hotplug/memory_hotplug: Exit with TCONF when NUMA headers not
-    available
-  m4,kernel/lib: Detect libnuma presence in kernel libs
-  numa: Check for API >= v2 with autoconf
-  numa: Remove HAVE_NUMA_ALLOC_ONNODE definition
-  numa: Remove HAVE_NUMA_MOVE_PAGES definition
-
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
  configure.ac                                       |  1 -
- include/config.h.default                           |  3 --
- include/mk/config.mk.default                       |  1 -
- include/mk/config.mk.in                            |  1 -
- m4/ltp-eventfd.m4                                  | 28 +++++++--------
- m4/ltp-numa.m4                                     | 42 +++++++++-------------
- .../controllers/cpuset/cpuset_lib/libcpuset.c      |  1 +
- .../cpuset/cpuset_syscall_test/Makefile            |  1 -
- .../cpuset_syscall_test/cpuset_syscall_test.c      |  5 ++-
- testcases/kernel/hotplug/memory_hotplug/TODO       |  5 ---
- testcases/kernel/hotplug/memory_hotplug/commands.c | 17 +++------
- testcases/kernel/hotplug/memory_hotplug/memtoy.c   | 18 ++++++----
- testcases/kernel/hotplug/memory_hotplug/segment.c  |  7 +++-
- testcases/kernel/include/lib.mk                    |  2 +-
- testcases/kernel/include/numa_helper.h             |  2 +-
- testcases/kernel/io/Makefile                       |  2 --
- testcases/kernel/io/aio/aio01/aio01.c              | 23 ++++++------
- testcases/kernel/io/aio/aio02/aio_tio.c            |  3 +-
- testcases/kernel/io/aio/aio02/main.c               |  8 ++---
- testcases/kernel/io/ltp-aiodio/aio-stress.c        | 15 ++++++--
- testcases/kernel/io/ltp-aiodio/aiocp.c             |  7 ++--
- testcases/kernel/io/ltp-aiodio/aiodio_append.c     | 14 ++++++--
- testcases/kernel/io/ltp-aiodio/aiodio_sparse.c     | 18 +++++++---
- testcases/kernel/lib/Makefile                      |  3 +-
- testcases/kernel/lib/numa_helper.c                 | 25 ++++---------
- testcases/kernel/mem/cpuset/cpuset01.c             | 11 +++---
- testcases/kernel/mem/ksm/ksm02.c                   | 10 +++---
- testcases/kernel/mem/ksm/ksm04.c                   | 10 +++---
- testcases/kernel/mem/ksm/ksm06.c                   | 13 ++++---
- testcases/kernel/mem/lib/mem.c                     | 13 ++++---
- testcases/kernel/mem/oom/oom02.c                   | 11 +++---
- testcases/kernel/mem/oom/oom03.c                   | 10 ++++--
- testcases/kernel/mem/oom/oom04.c                   | 11 +++---
- testcases/kernel/mem/oom/oom05.c                   | 11 +++---
- testcases/kernel/mem/vma/vma02.c                   | 16 +++------
- testcases/kernel/mem/vma/vma04.c                   | 15 +++-----
- testcases/kernel/numa/Makefile                     |  2 +-
- testcases/kernel/syscalls/eventfd/eventfd01.c      | 16 ++++++---
- .../syscalls/get_mempolicy/get_mempolicy01.c       | 41 +++------------------
- testcases/kernel/syscalls/io_cancel/io_cancel01.c  | 12 ++++---
- .../kernel/syscalls/io_destroy/io_destroy01.c      | 12 ++++---
- .../kernel/syscalls/io_getevents/io_getevents01.c  | 13 +++----
- testcases/kernel/syscalls/io_setup/io_setup01.c    | 12 ++++---
- testcases/kernel/syscalls/io_submit/io_submit01.c  | 11 +++---
- testcases/kernel/syscalls/mbind/Makefile           |  9 -----
- testcases/kernel/syscalls/mbind/mbind01.c          | 11 +++---
- testcases/kernel/syscalls/migrate_pages/Makefile   |  3 --
- .../syscalls/migrate_pages/migrate_pages01.c       |  9 ++---
- .../syscalls/migrate_pages/migrate_pages02.c       | 10 +++---
- testcases/kernel/syscalls/move_pages/Makefile      |  5 ---
- .../kernel/syscalls/move_pages/move_pages01.c      |  4 +--
- .../kernel/syscalls/move_pages/move_pages02.c      |  4 +--
- .../kernel/syscalls/move_pages/move_pages03.c      |  4 +--
- .../kernel/syscalls/move_pages/move_pages04.c      |  4 +--
- .../kernel/syscalls/move_pages/move_pages05.c      |  4 +--
- .../kernel/syscalls/move_pages/move_pages06.c      |  4 +--
- .../kernel/syscalls/move_pages/move_pages07.c      |  4 +--
- .../kernel/syscalls/move_pages/move_pages08.c      |  4 +--
- .../kernel/syscalls/move_pages/move_pages09.c      |  4 +--
- .../kernel/syscalls/move_pages/move_pages10.c      |  4 +--
- .../kernel/syscalls/move_pages/move_pages11.c      |  4 +--
- .../kernel/syscalls/move_pages/move_pages12.c      |  4 +--
- .../syscalls/move_pages/move_pages_support.c       | 18 +++++-----
- 63 files changed, 295 insertions(+), 320 deletions(-)
+ m4/ltp-eventfd.m4                                  | 28 +++++++++++-----------
+ testcases/kernel/io/aio/aio01/aio01.c              | 23 ++++++++----------
+ testcases/kernel/io/aio/aio02/aio_tio.c            |  3 +--
+ testcases/kernel/io/aio/aio02/main.c               |  8 +++----
+ testcases/kernel/io/ltp-aiodio/aio-stress.c        | 15 ++++++++++--
+ testcases/kernel/io/ltp-aiodio/aiocp.c             |  7 ++----
+ testcases/kernel/io/ltp-aiodio/aiodio_append.c     | 14 +++++++++--
+ testcases/kernel/io/ltp-aiodio/aiodio_sparse.c     | 18 ++++++++++----
+ testcases/kernel/syscalls/eventfd/eventfd01.c      | 16 +++++++++----
+ testcases/kernel/syscalls/io_cancel/io_cancel01.c  | 12 ++++++----
+ .../kernel/syscalls/io_destroy/io_destroy01.c      | 12 ++++++----
+ .../kernel/syscalls/io_getevents/io_getevents01.c  | 13 +++++-----
+ testcases/kernel/syscalls/io_setup/io_setup01.c    | 12 ++++++----
+ testcases/kernel/syscalls/io_submit/io_submit01.c  | 11 +++++----
+ 15 files changed, 115 insertions(+), 78 deletions(-)
 
+diff --git a/configure.ac b/configure.ac
+index 2356531cd..1e12889b7 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -33,7 +33,6 @@ AC_PREFIX_DEFAULT(/opt/ltp)
+ AC_CHECK_HEADERS([ \
+     ifaddrs.h \
+     keyutils.h \
+-    libaio.h \
+     linux/can.h \
+     linux/genetlink.h \
+     linux/keyctl.h \
+diff --git a/m4/ltp-eventfd.m4 b/m4/ltp-eventfd.m4
+index 923b9bde3..d06ddba66 100644
+--- a/m4/ltp-eventfd.m4
++++ b/m4/ltp-eventfd.m4
+@@ -16,28 +16,28 @@ dnl along with this program;  if not, write to the Free Software
+ dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ dnl
+ dnl Author: Masatake YAMATO <yamato@redhat.com>
++dnl Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
+ dnl
+ 
+ dnl
+ dnl LTP_CHECK_SYSCALL_EVENTFD
+ dnl ----------------------------
+ dnl
+-AC_DEFUN([LTP_CHECK_SYSCALL_EVENTFD],
+-[dnl
+-AH_TEMPLATE(HAVE_IO_SET_EVENTFD,
+-[Define to 1 if you have the `io_set_eventfd' function.])
+-AC_CHECK_HEADERS(libaio.h,[
+-	AC_CHECK_LIB(aio,io_setup,[
+-		AIO_LIBS="-laio"
++AC_DEFUN([LTP_CHECK_SYSCALL_EVENTFD], [
++	AC_CHECK_HEADERS(libaio.h, [have_libaio=yes])
++	AC_CHECK_LIB(aio, io_setup, [have_aio=yes])
++
++	if test "x$have_libaio" = "xyes" -a "x$have_aio" = "xyes"; then
++		AC_DEFINE(HAVE_LIBAIO, 1, [Define to 1 if you have libaio and it's headers installed.])
++		AC_SUBST(AIO_LIBS, "-laio")
++
+ 		AC_MSG_CHECKING([io_set_eventfd is defined in aio library or aio header])
+ 		AC_TRY_LINK([#include <stdio.h>
+                              #include <libaio.h>
+ 		            ],
+-                            [io_set_eventfd(NULL, 0); return 0;
+-			    ],
+-			    [AC_DEFINE(HAVE_IO_SET_EVENTFD)
+-			     AC_MSG_RESULT(yes)],
+-                            [AC_MSG_RESULT(no)])],
+-		AIO_LIBS="")])
+-AC_SUBST(AIO_LIBS)
++		            [io_set_eventfd(NULL, 0); return 0;],
++		            [AC_DEFINE(HAVE_IO_SET_EVENTFD, 1, [Define to 1 if you have `io_set_eventfd' function.])
++						AC_MSG_RESULT(yes)],
++		            [AC_MSG_RESULT(no)])
++	fi
+ ])
+diff --git a/testcases/kernel/io/aio/aio01/aio01.c b/testcases/kernel/io/aio/aio01/aio01.c
+index 2829b2485..ba23e226c 100644
+--- a/testcases/kernel/io/aio/aio01/aio01.c
++++ b/testcases/kernel/io/aio/aio01/aio01.c
+@@ -47,26 +47,26 @@
+ 
+ #define _XOPEN_SOURCE 600
+ 
+-#include "test.h"
+-#include "config.h"
+-
+-char *TCID = "aio01";
+-int TST_TOTAL = 6;
+-
+-#ifdef HAVE_LIBAIO_H
+-
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include <fcntl.h>
+ #include <time.h>
+ #include <errno.h>
+-#include <libaio.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/time.h>
+ #include <sys/resource.h>
+ 
++#include "test.h"
++#include "config.h"
++
++char *TCID = "aio01";
++int TST_TOTAL = 6;
++
++#ifdef HAVE_LIBAIO
++#include <libaio.h>
++
+ static void help(void);
+ static void setup(void);
+ static void cleanup(void);
+@@ -413,14 +413,11 @@ static void cleanup(void)
+ 	close(fd);
+ 	io_queue_release(io_ctx);
+ 	tst_rmdir();
+-
+ }
+ 
+ #else
+-
+ int main(void)
+ {
+-	tst_brkm(TCONF, NULL, "libaio missing");
++	tst_brkm(TCONF, NULL, "test requires libaio and it's development packages");
+ }
+-
+ #endif
+diff --git a/testcases/kernel/io/aio/aio02/aio_tio.c b/testcases/kernel/io/aio/aio02/aio_tio.c
+index 34fa9ed51..08fb04162 100644
+--- a/testcases/kernel/io/aio/aio02/aio_tio.c
++++ b/testcases/kernel/io/aio/aio02/aio_tio.c
+@@ -37,7 +37,7 @@
+ #include <string.h>
+ #include <errno.h>
+ 
+-#if HAVE_LIBAIO_H
++#ifdef HAVE_LIBAIO
+ 
+ #define AIO_MAXIO 32
+ #define AIO_BLKSIZE (64*1024)
+@@ -237,5 +237,4 @@ int test_main(void)
+ 
+ 	return status;
+ }
+-
+ #endif
+diff --git a/testcases/kernel/io/aio/aio02/main.c b/testcases/kernel/io/aio/aio02/main.c
+index 24ec17181..7b157f31b 100644
+--- a/testcases/kernel/io/aio/aio02/main.c
++++ b/testcases/kernel/io/aio/aio02/main.c
+@@ -6,16 +6,16 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+-#include "test.h"
++
+ #include "config.h"
++#include "test.h"
+ 
+ #define TEST_NAME "aio_tio"
+ 
+ char *TCID = "aio02/" TEST_NAME;
+ int TST_TOTAL = 0;
+ 
+-#if HAVE_LIBAIO_H
+-
++#ifdef HAVE_LIBAIO
+ #include <libaio.h>
+ 
+ int test_main(void);
+@@ -32,6 +32,6 @@ int main(void)
+ #else
+ int main(void)
+ {
+-	tst_brkm(TCONF, NULL, "libaio missing");
++	tst_brkm(TCONF, NULL, "test requires libaio and it's development packages");
+ }
+ #endif
+diff --git a/testcases/kernel/io/ltp-aiodio/aio-stress.c b/testcases/kernel/io/ltp-aiodio/aio-stress.c
+index d6d7b0880..348f398db 100644
+--- a/testcases/kernel/io/ltp-aiodio/aio-stress.c
++++ b/testcases/kernel/io/ltp-aiodio/aio-stress.c
+@@ -50,19 +50,23 @@
+ #include <errno.h>
+ #include <assert.h>
+ #include <stdlib.h>
+-
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <sys/time.h>
+-#include <libaio.h>
+ #include <sys/ipc.h>
+ #include <sys/shm.h>
+ #include <sys/mman.h>
+ #include <string.h>
+ #include <pthread.h>
+ 
++#include "config.h"
++#include "tst_res_flags.h"
++
++#ifdef HAVE_LIBAIO
++#include <libaio.h>
++
+ #define IO_FREE 0
+ #define IO_PENDING 1
+ #define RUN_FOREVER -1
+@@ -1557,3 +1561,10 @@ int main(int ac, char **av)
+ 	}
+ 	return status;
+ }
++#else
++int main(void)
++{
++	fprintf(stderr, "test requires libaio and it's development packages\n");
++	return TCONF;
++}
++#endif
+diff --git a/testcases/kernel/io/ltp-aiodio/aiocp.c b/testcases/kernel/io/ltp-aiodio/aiocp.c
+index 93984bf28..d315353d0 100644
+--- a/testcases/kernel/io/ltp-aiodio/aiocp.c
++++ b/testcases/kernel/io/ltp-aiodio/aiocp.c
+@@ -38,8 +38,7 @@
+ #include "config.h"
+ #include "tst_res_flags.h"
+ 
+-#if HAVE_LIBAIO_H
+-
++#ifdef HAVE_LIBAIO
+ #include <libaio.h>
+ 
+ #define AIO_BLKSIZE	(64*1024)
+@@ -600,11 +599,9 @@ int main(int argc, char *const *argv)
+  */
+ 
+ #else
+-
+ int main(void)
+ {
+-	fprintf(stderr, "System doesn't have libaio support.\n");
++	fprintf(stderr, "test requires libaio and it's development packages\n");
+ 	return TCONF;
+ }
+-
+ #endif
+diff --git a/testcases/kernel/io/ltp-aiodio/aiodio_append.c b/testcases/kernel/io/ltp-aiodio/aiodio_append.c
+index 39a529fa3..5d97ed941 100644
+--- a/testcases/kernel/io/ltp-aiodio/aiodio_append.c
++++ b/testcases/kernel/io/ltp-aiodio/aiodio_append.c
+@@ -32,10 +32,14 @@
+ #include <fcntl.h>
+ #include <unistd.h>
+ 
+-#include <libaio.h>
+-
++#include "config.h"
+ #include "test.h"
+ 
++char *TCID = "aiodio_append";
++
++#ifdef HAVE_LIBAIO
++#include <libaio.h>
++
+ #define NUM_CHILDREN 8
+ 
+ #include "common_checkzero.h"
+@@ -174,3 +178,9 @@ int main(int argc, char **argv)
+ 
+ 	return 0;
+ }
++#else
++int main(void)
++{
++	tst_brkm(TCONF, NULL, "test requires libaio and it's development packages");
++}
++#endif
+diff --git a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+index d40e45b1b..4767f49d2 100644
+--- a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
++++ b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+@@ -35,11 +35,17 @@
+ #include <limits.h>
+ #include <getopt.h>
+ 
+-#include <libaio.h>
+ 
++#include "config.h"
+ #include "test.h"
+ #include "safe_macros.h"
+ 
++char *TCID = "aiodio_sparse";
++int TST_TOTAL = 1;
++
++#ifdef HAVE_LIBAIO
++#include <libaio.h>
++
+ #define NUM_CHILDREN 1000
+ 
+ int debug;
+@@ -49,9 +55,6 @@ static void setup(void);
+ static void cleanup(void);
+ static void usage(void);
+ 
+-char *TCID = "aiodio_sparse";
+-int TST_TOTAL = 1;
+-
+ #include "common_sparse.h"
+ 
+ /*
+@@ -325,3 +328,10 @@ static void cleanup(void)
+ 
+ 	tst_rmdir();
+ }
++
++#else
++int main(void)
++{
++	tst_brkm(TCONF, NULL, "test requires libaio and it's development packages");
++}
++#endif
+diff --git a/testcases/kernel/syscalls/eventfd/eventfd01.c b/testcases/kernel/syscalls/eventfd/eventfd01.c
+index 37cca7d53..e4f9c804a 100644
+--- a/testcases/kernel/syscalls/eventfd/eventfd01.c
++++ b/testcases/kernel/syscalls/eventfd/eventfd01.c
+@@ -61,15 +61,14 @@
+ #define CLEANUP cleanup
+ #include "lapi/syscalls.h"
+ 
+-#ifdef HAVE_LIBAIO_H
++TCID_DEFINE(eventfd01);
++int TST_TOTAL = 15;
++
++#ifdef HAVE_LIBAIO
+ #include <libaio.h>
+-#endif
+ 
+ static void setup(void);
+ 
+-TCID_DEFINE(eventfd01);
+-int TST_TOTAL = 15;
+-
+ static int myeventfd(unsigned int initval, int flags)
+ {
+ 	/* eventfd2 uses FLAGS but eventfd doesn't take FLAGS. */
+@@ -727,3 +726,10 @@ static void cleanup(void)
+ {
+ 	tst_rmdir();
+ }
++
++#else
++int main(void)
++{
++	tst_brkm(TCONF, NULL, "test requires libaio and it's development packages");
++}
++#endif
+diff --git a/testcases/kernel/syscalls/io_cancel/io_cancel01.c b/testcases/kernel/syscalls/io_cancel/io_cancel01.c
+index 8d7ca2607..ed6af050b 100644
+--- a/testcases/kernel/syscalls/io_cancel/io_cancel01.c
++++ b/testcases/kernel/syscalls/io_cancel/io_cancel01.c
+@@ -21,6 +21,9 @@
+ /* Porting from Crackerjack to LTP is done
+    by Masatake YAMATO <yamato@redhat.com> */
+ 
++#include <errno.h>
++#include <string.h>
++
+ #include "config.h"
+ #include "test.h"
+ 
+@@ -28,10 +31,8 @@ char *TCID = "io_cancel01";
+ 
+ int TST_TOTAL = 1;
+ 
+-#ifdef HAVE_LIBAIO_H
++#ifdef HAVE_LIBAIO
+ #include <libaio.h>
+-#include <errno.h>
+-#include <string.h>
+ 
+ static void cleanup(void)
+ {
+@@ -105,9 +106,10 @@ int main(int argc, char *argv[])
+ 	cleanup();
+ 	tst_exit();
+ }
++
+ #else
+-int main(int argc, char *argv[])
++int main(void)
+ {
+-	tst_brkm(TCONF, NULL, "System doesn't have libaio support");
++	tst_brkm(TCONF, NULL, "test requires libaio and it's development packages");
+ }
+ #endif
+diff --git a/testcases/kernel/syscalls/io_destroy/io_destroy01.c b/testcases/kernel/syscalls/io_destroy/io_destroy01.c
+index 9de4987f4..88bef7ecf 100644
+--- a/testcases/kernel/syscalls/io_destroy/io_destroy01.c
++++ b/testcases/kernel/syscalls/io_destroy/io_destroy01.c
+@@ -21,6 +21,9 @@
+ /* Porting from Crackerjack to LTP is done
+    by Masatake YAMATO <yamato@redhat.com> */
+ 
++#include <errno.h>
++#include <string.h>
++
+ #include "config.h"
+ #include "test.h"
+ 
+@@ -28,10 +31,8 @@ char *TCID = "io_destroy01";
+ 
+ int TST_TOTAL = 1;
+ 
+-#ifdef HAVE_LIBAIO_H
++#ifdef HAVE_LIBAIO
+ #include <libaio.h>
+-#include <errno.h>
+-#include <string.h>
+ 
+ static void cleanup(void)
+ {
+@@ -99,9 +100,10 @@ int main(int argc, char *argv[])
+ 	cleanup();
+ 	tst_exit();
+ }
++
+ #else
+-int main(int argc, char *argv[])
++int main(void)
+ {
+-	tst_brkm(TCONF, NULL, "System doesn't support execution of the test");
++	tst_brkm(TCONF, NULL, "test requires libaio and it's development packages");
+ }
+ #endif
+diff --git a/testcases/kernel/syscalls/io_getevents/io_getevents01.c b/testcases/kernel/syscalls/io_getevents/io_getevents01.c
+index 0f31ece32..b34f17907 100644
+--- a/testcases/kernel/syscalls/io_getevents/io_getevents01.c
++++ b/testcases/kernel/syscalls/io_getevents/io_getevents01.c
+@@ -21,17 +21,17 @@
+ /* Porting from Crackerjack to LTP is done
+    by Masatake YAMATO <yamato@redhat.com> */
+ 
++#include <errno.h>
++#include <string.h>
++
+ #include "config.h"
+ #include "test.h"
+ 
+ char *TCID = "io_getevents01";
+-
+ int TST_TOTAL = 1;
+ 
+-#ifdef HAVE_LIBAIO_H
++#ifdef HAVE_LIBAIO
+ #include <libaio.h>
+-#include <errno.h>
+-#include <string.h>
+ 
+ static void cleanup(void)
+ {
+@@ -104,9 +104,10 @@ int main(int argc, char *argv[])
+ 	cleanup();
+ 	tst_exit();
+ }
++
+ #else
+-int main(int argc, char *argv[])
++int main(void)
+ {
+-	tst_brkm(TCONF, NULL, "System doesn't support execution of the test");
++	tst_brkm(TCONF, NULL, "test requires libaio and it's development packages");
+ }
+ #endif
+diff --git a/testcases/kernel/syscalls/io_setup/io_setup01.c b/testcases/kernel/syscalls/io_setup/io_setup01.c
+index 829cef516..22b91bc17 100644
+--- a/testcases/kernel/syscalls/io_setup/io_setup01.c
++++ b/testcases/kernel/syscalls/io_setup/io_setup01.c
+@@ -21,6 +21,9 @@
+ /* Porting from Crackerjack to LTP is done
+    by Masatake YAMATO <yamato@redhat.com> */
+ 
++#include <errno.h>
++#include <string.h>
++
+ #include "config.h"
+ #include "test.h"
+ 
+@@ -28,10 +31,8 @@ char *TCID = "io_setup01";
+ 
+ int TST_TOTAL = 4;
+ 
+-#ifdef HAVE_LIBAIO_H
++#ifdef HAVE_LIBAIO
+ #include <libaio.h>
+-#include <errno.h>
+-#include <string.h>
+ 
+ static void cleanup(void)
+ {
+@@ -131,9 +132,10 @@ int main(int argc, char *argv[])
+ 
+ 	tst_exit();
+ }
++
+ #else
+-int main(int argc, char *argv[])
++int main(void)
+ {
+-	tst_brkm(TCONF, NULL, "System doesn't support execution of the test");
++	tst_brkm(TCONF, NULL, "test requires libaio and it's development packages");
+ }
+ #endif
+diff --git a/testcases/kernel/syscalls/io_submit/io_submit01.c b/testcases/kernel/syscalls/io_submit/io_submit01.c
+index 9baf520b8..f4f9933f6 100644
+--- a/testcases/kernel/syscalls/io_submit/io_submit01.c
++++ b/testcases/kernel/syscalls/io_submit/io_submit01.c
+@@ -20,14 +20,15 @@
+ /* Porting from Crackerjack to LTP is done
+    by Masatake YAMATO <yamato@redhat.com> */
+ 
++#include <errno.h>
++#include <string.h>
++#include <fcntl.h>
++
+ #include "config.h"
+ #include "tst_test.h"
+ 
+-#ifdef HAVE_LIBAIO_H
++#ifdef HAVE_LIBAIO
+ #include <libaio.h>
+-#include <errno.h>
+-#include <string.h>
+-#include <fcntl.h>
+ 
+ static io_context_t ctx;
+ static io_context_t invalid_ctx;
+@@ -139,5 +140,5 @@ static struct tst_test test = {
+ };
+ 
+ #else
+-	TST_TEST_TCONF("libaio.h was mission upon compilation");
++	TST_TEST_TCONF("test requires libaio and it's development packages");
+ #endif
 -- 
 2.14.2
 
