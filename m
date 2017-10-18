@@ -1,47 +1,47 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 18 Oct 2017 15:49:58 +0200
-Subject: [LTP] [RFC PATCH 4/7] net/tcp_cmds: Remove rsh test
+Date: Wed, 18 Oct 2017 15:49:59 +0200
+Subject: [LTP] [RFC PATCH 5/7] net/tcp_cmds: Remove rcp test
 In-Reply-To: <20171018135001.30382-1-pvorel@suse.cz>
 References: <20171018135001.30382-1-pvorel@suse.cz>
-Message-ID: <20171018135001.30382-5-pvorel@suse.cz>
+Message-ID: <20171018135001.30382-6-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-rsh is way too old to bother to test it and it has been
-deprecated for many years in favour of ssh.
+rcp is way too old to bother to test it as it has been
+deprecated for many years in favour of scp.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
  runtest/net.tcp_cmds                    |   1 -
- testcases/network/tcp_cmds/rsh/Makefile |  31 ---------
- testcases/network/tcp_cmds/rsh/rsh01    | 115 --------------------------------
- 3 files changed, 147 deletions(-)
- delete mode 100644 testcases/network/tcp_cmds/rsh/Makefile
- delete mode 100755 testcases/network/tcp_cmds/rsh/rsh01
+ testcases/network/tcp_cmds/rcp/Makefile |  30 -------
+ testcases/network/tcp_cmds/rcp/rcp01    | 144 --------------------------------
+ 3 files changed, 175 deletions(-)
+ delete mode 100644 testcases/network/tcp_cmds/rcp/Makefile
+ delete mode 100755 testcases/network/tcp_cmds/rcp/rcp01
 
 diff --git a/runtest/net.tcp_cmds b/runtest/net.tcp_cmds
-index 0bbf95edd..d2535ed46 100644
+index d2535ed46..6d062ce76 100644
 --- a/runtest/net.tcp_cmds
 +++ b/runtest/net.tcp_cmds
-@@ -13,7 +13,6 @@ netstat netstat01
+@@ -12,7 +12,6 @@ host host01
+ netstat netstat01
  ping01 ping01.sh
  ping02 ping02.sh
- rcp export TCbin=$LTPROOT/testcases/network/tcp_cmds/rcp; rcp01
--rsh rsh01
+-rcp export TCbin=$LTPROOT/testcases/network/tcp_cmds/rcp; rcp01
  sendfile export TCbin=$LTPROOT/testcases/network/tcp_cmds/sendfile; sendfile01
  tcpdump tcpdump01
  telnet telnet01
-diff --git a/testcases/network/tcp_cmds/rsh/Makefile b/testcases/network/tcp_cmds/rsh/Makefile
+diff --git a/testcases/network/tcp_cmds/rcp/Makefile b/testcases/network/tcp_cmds/rcp/Makefile
 deleted file mode 100644
-index f8870a3ec..000000000
---- a/testcases/network/tcp_cmds/rsh/Makefile
+index 7cb00b096..000000000
+--- a/testcases/network/tcp_cmds/rcp/Makefile
 +++ /dev/null
-@@ -1,31 +0,0 @@
+@@ -1,30 +0,0 @@
 -#
--#    network/tcp_cmds/rsh testcases Makefile.
+-#    network/tcp_cmds/rcp testcases Makefile.
 -#
 -#    Copyright (C) 2009, Cisco Systems Inc.
 -#
@@ -59,24 +59,23 @@ index f8870a3ec..000000000
 -#    with this program; if not, write to the Free Software Foundation, Inc.,
 -#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 -#
--# Ngie Cooper, July 2009
+-# Ngie Cooper, September 2009
 -#
 -
 -top_srcdir		?= ../../../..
 -
--include $(top_srcdir)/include/mk/env_pre.mk
+-include $(top_srcdir)/include/mk/testcases.mk
+-include $(abs_srcdir)/../Makefile.inc
 -
--INSTALL_TARGETS		:= rsh01
--
--MAKE_TARGETS		:=
+-INSTALL_TARGETS		:= rcp01
 -
 -include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/tcp_cmds/rsh/rsh01 b/testcases/network/tcp_cmds/rsh/rsh01
+diff --git a/testcases/network/tcp_cmds/rcp/rcp01 b/testcases/network/tcp_cmds/rcp/rcp01
 deleted file mode 100755
-index 3968f9056..000000000
---- a/testcases/network/tcp_cmds/rsh/rsh01
+index 1f54471cd..000000000
+--- a/testcases/network/tcp_cmds/rcp/rcp01
 +++ /dev/null
-@@ -1,115 +0,0 @@
+@@ -1,144 +0,0 @@
 -#!/bin/sh
 -#
 -#   Copyright (c) International Business Machines  Corp., 2000
@@ -97,36 +96,48 @@ index 3968f9056..000000000
 -#
 -#
 -#
--#  FILE   : rsh
+-#  FILE   : rcp
 -#
--#  PURPOSE: To test the basic functionality of the `rsh` command.
+-#  PURPOSE: To test the basic functionality of the `rcp` command.
 -#
 -#  SETUP: The home directory of root on the machine exported as "RHOST"
 -#         MUST have a ".rhosts" file with the hostname of the machine
 -#         where the test is executed.
 -#
 -#  HISTORY:
+-#    06/06/03 Manoj Iyer manjo@mail.utexas.edu
+-#    - Modified testcases to use test APIS and fixed bugs
 -#    03/01 Robbie Williamson (robbiew@us.ibm.com)
 -#      -Ported
 -#
 -#
+-#-----------------------------------------------------------------------
+-
+-#-----------------------------------------------------------------------
 -#
--#----------------------------------------------------------------------
+-# FUNCTION:  do_setup
+-#
+-#-----------------------------------------------------------------------
 -
 -do_setup()
 -{
 -
--    FAIL_IMMEDIATELY=${FAIL_IMMEDIATELY:-1}
+-    TCtmp=${TCtmp:-$LTPROOT/testcases/bin/$TC${EXEC_SUFFIX}$$}
+-    TCdat=${TCdat:-$LTPROOT/testcases/bin/datafiles}
+-    LHOST=`hostname`
+-    RHOST=${RHOST:-$LHOST}
 -    SLEEPTIME=${SLEEPTIME:-0}
--    NUMLOOPS=${NUMLOOPS:-1}
--
--    export TST_TOTAL=$NUMLOOPS
+-    FILES=${FILES:-"bin.sm bin.med bin.lg bin.jmb"}
 -
 -    tst_setup
 -
--    exists awk hostname rsh
+-    exists awk rcp rsh sum
 -
--    RHOST=${RHOST:-`hostname`}
+-    if ! rsh -n -l root $RHOST mkdir -p $TCtmp 2>&1 1>/dev/null; then
+-        end_testcase "Remote mkdir failed"
+-    fi
+-
+-    trap do_cleanup EXIT
 -
 -}
 -
@@ -139,43 +150,60 @@ index 3968f9056..000000000
 -do_test()
 -{
 -
--    while [ $TST_COUNT -le $NUMLOOPS ]; do
+-    for j in $FILES; do
 -
--        PASSED=0
--
--        if OUT=$(rsh -n -l root $RHOST 'ls -l /etc/hosts'); then
--
--            #
--            # Successful output would be something of the form:
--            #
--            # gcooper@orangebox ~ $ ls -l /etc/hosts
--            # -rw-r--r-- 1 root root 463 Jul  5 09:26 /etc/hosts
--            #
--            echo "$OUT" |
--                awk 'BEGIN { RET=1 } NF == 9 && $NF == "/etc/hosts" { RET=0 } END { exit RET }' \
--                > /dev/null 2>&1
--
--            if [ $? -eq 0 ] ; then
--                tst_resm TPASS "rsh to $RHOST test succeeded"
--                PASSED=1
--            fi
--
+-        if ! rcp $TCdat/$j $RHOST:$TCtmp/$j; then
+-            end_testcase "Failed to rcp file."
 -        fi
 -
--        if [ $PASSED -ne 1 ] ; then
--            tst_resm TFAIL "rsh to $RHOST failed"
--            # If the first rsh failed, the likelihood that the rest will
--            # succeed is low.
--            if [ "$FAIL_IMMEDIATELY" = "1" ] && [ $TST_COUNT -eq 1 ]; then
--                exit 2
--            fi
+-        SUM1=`sum $TCdat/$j | awk '{print $1}'`
+-        SUM2=`rsh -n -l root $RHOST sum $TCtmp/$j | awk '{print $1}'`
+-        rsh -n -l root $RHOST "rm -f $TCtmp/$j"
+-        sleep $SLEEPTIME
+-
+-        if [ "$SUM1 = $SUM2" ]; then
+-            tst_resm TINFO "rcp $TCdat/$j $RHOST:$TCtmp/$j successful"
+-        else
+-            end_testcase "FAILED: wrong sum in transfer to $RHOST"
 -        fi
 -
 -        sleep $SLEEPTIME
--        incr_tst_count
 -
 -    done
 -
+-    for j in $FILES; do
+-
+-        tst_resm TINFO "remote copying $RHOST:$TCdat/$j to $TCtmp/$j"
+-        if ! rcp $RHOST:$TCdat/$j $TCtmp/$j 2>&1 1>/dev/null; then
+-            tst_resm TFAIL "Failed to rcp file."; continue
+-        fi
+-
+-        SUM1=`sum $TCtmp/$j | awk '{print $1}'`
+-        SUM2=`rsh -n -l root $RHOST sum $TCdat/$j | awk '{print $1}'`
+-        rm -f $TCtmp/$j
+-        sleep $SLEEPTIME
+-
+-        if [ "$SUM1" = "$SUM2" ]; then
+-            tst_resm TINFO "rcp $RHOST:$TCdat/$j $TCtmp/$j successful"
+-        else
+-            end_testcase "FAILED: wrong sum in transfer to $LHOST from $RHOST"
+-        fi
+-        sleep $SLEEPTIME
+-
+-    done
+-
+-}
+-
+-#-----------------------------------------------------------------------
+-#
+-# FUNCTION:  do_cleanup
+-#
+-#-----------------------------------------------------------------------
+-
+-do_cleanup()
+-{
+-    rsh -n -l root $RHOST rmdir $TCtmp
+-    tst_cleanup
 -}
 -
 -#----------------------------------------------------------------------
