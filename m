@@ -1,74 +1,104 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 18 Oct 2017 12:58:32 +0200
-Subject: [LTP] [PATCH] Increase threshold in timer measurement library
-In-Reply-To: <20170928164926.32415-1-ynorov@caviumnetworks.com>
-References: <20170928164926.32415-1-ynorov@caviumnetworks.com>
-Message-ID: <20171018105832.GB25433@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 18 Oct 2017 13:10:54 +0200
+Subject: [LTP] [PATCH v5 00/12] Fix 32-bit cross compilation
+Message-ID: <20171018111106.17215-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> On my system - arm64 emulated in QEMU, the following tests fail:
-> epoll_wait02, nanosleep01, pselect01 and select04  - all due to 
-> violation the threshold limit for sleeping in  do_timer_test().
-> 
-> If my understanding correct, the threshold per syscall is rather
-> empirical value. I tested LTP in ILP32 and LP64 modes, and despite
-> the random nature of time accounting, failures are reproducible very
-> stable.
+Changes v4->v5:
+* Removed left placeholder in m4/ltp-eventfd.m4
+* Removed duplicit libaio.h check in configure.ac.
+* Added new commit: kernel/io: Build all directories even without libaio
 
-It's more of an educated guess, we did quite a lot of measurements and
-so the final formula is both based on the understanding of the kernel
-internals and the empirical data.
+NOTE: this is also available as a branch on github:
+https://github.com/pevik/ltp/tree/autotools/fix-32bit-build.v5
 
-> Increasing threshold fixes my failures.
+Kind regards,
+Petr
 
-I'm a bit worried here that we would end up increasing the thresholds up
-to the point where we do not assert anything reasonable since for any
-treshold we can possibly find a slow enough emulated machine where it
-fails. I guess that the machine emulates arm64 on x86 right?
+Petr Vorel (12):
+  m4: Fix libaio detection on 32-bit cross build
+  kernel/io: Build all directories even without libaio
+  make: Remove workarounds for build without libnuma
+  numa: Drop NUMA API v1 support
+  numa: Drop NUMA_CPPFLAGS
+  hotplug/memory_hotplug: Update TODO
+  hotplug/memory_hotplug: Remove unused header
+  hotplug/memory_hotplug: Exit with TCONF when NUMA headers not
+    available
+  m4,kernel/lib: Detect libnuma presence in kernel libs
+  numa: Check for API >= v2 with autoconf
+  numa: Remove HAVE_NUMA_ALLOC_ONNODE definition
+  numa: Remove HAVE_NUMA_MOVE_PAGES definition
 
-I think that it would be much better if we solved this in a way that
-wouldn't increase the thresholds for most of the test targets. Simple
-way would be adding an interface to multiply the threshold when needed,
-we do have LTP_TIMEOUT_MUL already, we may as well use it here. Or we
-can try some kind of auto-tuning such as BogoMips but that would be
-quite complicated to get right.
-
-> Signed-off-by: Yury Norov <ynorov@caviumnetworks.com>
-> ---
->  lib/tst_timer_test.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/lib/tst_timer_test.c b/lib/tst_timer_test.c
-> index cd4ebcaa8..8e2881e24 100644
-> --- a/lib/tst_timer_test.c
-> +++ b/lib/tst_timer_test.c
-> @@ -176,7 +176,7 @@ static int cmp(const void *a, const void *b)
->  /*
->   * The threshold per one syscall is computed as a sum of:
->   *
-> - *  400 us                 - accomodates for context switches, process
-> + *  1500 us                - accomodates for context switches, process
->   *                           migrations between CPUs on SMP, etc.
->   *  2*monotonic_resolution - accomodates for granurality of the CLOCK_MONOTONIC
->   *  slack_per_scall        - max of 0.1% of the sleep capped on 100ms or
-> @@ -198,7 +198,7 @@ static long long compute_threshold(long long requested_us,
->  
->  	slack_per_scall = MAX(slack_per_scall, timerslack);
->  
-> -	return (400 + 2 * monotonic_resolution + slack_per_scall) * nsamples
-> +	return (1500 + 2 * monotonic_resolution + slack_per_scall) * nsamples
->  		+ 3000/nsamples;
->  }
->  
-> -- 
-> 2.11.0
-> 
+ configure.ac                                       |  1 -
+ include/config.h.default                           |  3 --
+ include/mk/config.mk.default                       |  1 -
+ include/mk/config.mk.in                            |  1 -
+ m4/ltp-eventfd.m4                                  | 28 +++++++--------
+ m4/ltp-numa.m4                                     | 42 +++++++++-------------
+ .../controllers/cpuset/cpuset_lib/libcpuset.c      |  1 +
+ .../cpuset/cpuset_syscall_test/Makefile            |  1 -
+ .../cpuset_syscall_test/cpuset_syscall_test.c      |  5 ++-
+ testcases/kernel/hotplug/memory_hotplug/TODO       |  5 ---
+ testcases/kernel/hotplug/memory_hotplug/commands.c | 17 +++------
+ testcases/kernel/hotplug/memory_hotplug/memtoy.c   | 18 ++++++----
+ testcases/kernel/hotplug/memory_hotplug/segment.c  |  7 +++-
+ testcases/kernel/include/lib.mk                    |  2 +-
+ testcases/kernel/include/numa_helper.h             |  2 +-
+ testcases/kernel/io/Makefile                       |  2 --
+ testcases/kernel/io/aio/aio01/aio01.c              | 23 ++++++------
+ testcases/kernel/io/aio/aio02/aio_tio.c            |  3 +-
+ testcases/kernel/io/aio/aio02/main.c               |  8 ++---
+ testcases/kernel/io/ltp-aiodio/aio-stress.c        | 15 ++++++--
+ testcases/kernel/io/ltp-aiodio/aiocp.c             |  7 ++--
+ testcases/kernel/io/ltp-aiodio/aiodio_append.c     | 14 ++++++--
+ testcases/kernel/io/ltp-aiodio/aiodio_sparse.c     | 18 +++++++---
+ testcases/kernel/lib/Makefile                      |  3 +-
+ testcases/kernel/lib/numa_helper.c                 | 25 ++++---------
+ testcases/kernel/mem/cpuset/cpuset01.c             | 11 +++---
+ testcases/kernel/mem/ksm/ksm02.c                   | 10 +++---
+ testcases/kernel/mem/ksm/ksm04.c                   | 10 +++---
+ testcases/kernel/mem/ksm/ksm06.c                   | 13 ++++---
+ testcases/kernel/mem/lib/mem.c                     | 13 ++++---
+ testcases/kernel/mem/oom/oom02.c                   | 11 +++---
+ testcases/kernel/mem/oom/oom03.c                   | 10 ++++--
+ testcases/kernel/mem/oom/oom04.c                   | 11 +++---
+ testcases/kernel/mem/oom/oom05.c                   | 11 +++---
+ testcases/kernel/mem/vma/vma02.c                   | 16 +++------
+ testcases/kernel/mem/vma/vma04.c                   | 15 +++-----
+ testcases/kernel/numa/Makefile                     |  2 +-
+ testcases/kernel/syscalls/eventfd/eventfd01.c      | 16 ++++++---
+ .../syscalls/get_mempolicy/get_mempolicy01.c       | 41 +++------------------
+ testcases/kernel/syscalls/io_cancel/io_cancel01.c  | 12 ++++---
+ .../kernel/syscalls/io_destroy/io_destroy01.c      | 12 ++++---
+ .../kernel/syscalls/io_getevents/io_getevents01.c  | 13 +++----
+ testcases/kernel/syscalls/io_setup/io_setup01.c    | 12 ++++---
+ testcases/kernel/syscalls/io_submit/io_submit01.c  | 11 +++---
+ testcases/kernel/syscalls/mbind/Makefile           |  9 -----
+ testcases/kernel/syscalls/mbind/mbind01.c          | 11 +++---
+ testcases/kernel/syscalls/migrate_pages/Makefile   |  3 --
+ .../syscalls/migrate_pages/migrate_pages01.c       |  9 ++---
+ .../syscalls/migrate_pages/migrate_pages02.c       | 10 +++---
+ testcases/kernel/syscalls/move_pages/Makefile      |  5 ---
+ .../kernel/syscalls/move_pages/move_pages01.c      |  4 +--
+ .../kernel/syscalls/move_pages/move_pages02.c      |  4 +--
+ .../kernel/syscalls/move_pages/move_pages03.c      |  4 +--
+ .../kernel/syscalls/move_pages/move_pages04.c      |  4 +--
+ .../kernel/syscalls/move_pages/move_pages05.c      |  4 +--
+ .../kernel/syscalls/move_pages/move_pages06.c      |  4 +--
+ .../kernel/syscalls/move_pages/move_pages07.c      |  4 +--
+ .../kernel/syscalls/move_pages/move_pages08.c      |  4 +--
+ .../kernel/syscalls/move_pages/move_pages09.c      |  4 +--
+ .../kernel/syscalls/move_pages/move_pages10.c      |  4 +--
+ .../kernel/syscalls/move_pages/move_pages11.c      |  4 +--
+ .../kernel/syscalls/move_pages/move_pages12.c      |  4 +--
+ .../syscalls/move_pages/move_pages_support.c       | 18 +++++-----
+ 63 files changed, 295 insertions(+), 320 deletions(-)
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.14.2
+
