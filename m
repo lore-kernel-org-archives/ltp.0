@@ -1,8 +1,8 @@
 From: Eric Biggers <ebiggers3@gmail.com>
-Date: Thu, 19 Oct 2017 10:28:27 -0700
-Subject: [LTP] [PATCH v4] syscalls/keyctl07: new test for oops when reading
-	negative key
-Message-ID: <20171019172827.25716-1-ebiggers3@gmail.com>
+Date: Thu, 19 Oct 2017 11:07:53 -0700
+Subject: [LTP] [PATCH v3] syscalls/ptrace07: new test for ptrace FPU state
+	corruption
+Message-ID: <20171019180753.101537-1-ebiggers3@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,63 +11,64 @@ To: ltp@lists.linux.it
 
 From: Eric Biggers <ebiggers@google.com>
 
-Add a test for a bug which caused the kernel to dereference a bogus
-pointer when using KEYCTL_READ to read from a negative key.
+Add a test for a bug which allowed a task to be assigned an invalid FPU
+state, causing the FPU registers to not be restored on context switch.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
 
-Changed since v3:
-    - Made do_test() use the suggested way of handling the exit status
-	
+Changed since v2:
+    - Added CVE number
+    - For compatibility with old kernels, don't fail the test if
+      PTRACE_SETREGSET succeeds
+
  runtest/cve                                 |   1 +
  runtest/syscalls                            |   1 +
  testcases/kernel/syscalls/.gitignore        |   1 +
- testcases/kernel/syscalls/keyctl/keyctl07.c | 115 ++++++++++++++++++++++++++++
- 4 files changed, 118 insertions(+)
- create mode 100644 testcases/kernel/syscalls/keyctl/keyctl07.c
+ testcases/kernel/syscalls/ptrace/ptrace07.c | 176 ++++++++++++++++++++++++++++
+ 4 files changed, 179 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/ptrace/ptrace07.c
 
 diff --git a/runtest/cve b/runtest/cve
-index d182e592a..b8e038112 100644
+index d182e592a..1bea38dfd 100644
 --- a/runtest/cve
 +++ b/runtest/cve
-@@ -17,5 +17,6 @@ cve-2017-2671 cve-2017-2671
- cve-2017-5669 cve-2017-5669
+@@ -18,4 +18,5 @@ cve-2017-5669 cve-2017-5669
  cve-2017-6951 cve-2017-6951
  cve-2017-7472 keyctl04
-+cve-2017-12192 keyctl07
  cve-2017-15274 add_key02
++cve-2017-15537 ptrace07
  cve-2017-1000364 stack_clash
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 780db6694..7cacac19f 100644
+index 780db6694..5d4312d2e 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -504,6 +504,7 @@ keyctl03 keyctl03
- keyctl04 keyctl04
- keyctl05 keyctl05
- keyctl06 keyctl06
-+keyctl07 keyctl07
+@@ -843,6 +843,7 @@ ptrace04 ptrace04
+ ptrace05 ptrace05
+ # Broken test; See: testcases/kernel/syscalls/ptrace/Makefile for more details.
+ #ptrace06 ptrace06
++ptrace07 ptrace07
  
- kcmp01 kcmp01
- kcmp02 kcmp02
+ pwrite01 pwrite01
+ pwrite02 pwrite02
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 2d17125d6..2343a4a6f 100644
+index 2d17125d6..37c38058b 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
-@@ -465,6 +465,7 @@
- /keyctl/keyctl04
- /keyctl/keyctl05
- /keyctl/keyctl06
-+/keyctl/keyctl07
- /kcmp/kcmp01
- /kcmp/kcmp02
- /kcmp/kcmp03
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl07.c b/testcases/kernel/syscalls/keyctl/keyctl07.c
+@@ -705,6 +705,7 @@
+ /ptrace/ptrace03
+ /ptrace/ptrace04
+ /ptrace/ptrace05
++/ptrace/ptrace07
+ /ptrace/simple_tracer
+ /pwrite/f
+ /pwrite/pwrite01
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace07.c b/testcases/kernel/syscalls/ptrace/ptrace07.c
 new file mode 100644
-index 000000000..39f07eb5f
+index 000000000..d561b300b
 --- /dev/null
-+++ b/testcases/kernel/syscalls/keyctl/keyctl07.c
-@@ -0,0 +1,115 @@
++++ b/testcases/kernel/syscalls/ptrace/ptrace07.c
+@@ -0,0 +1,176 @@
 +/*
 + * Copyright (c) 2017 Google, Inc.
 + *
@@ -86,103 +87,164 @@ index 000000000..39f07eb5f
 + */
 +
 +/*
-+ * Regression test for commit 37863c43b2c6 ("KEYS: prevent KEYCTL_READ on
-+ * negative key").  This is CVE-2017-12192.
++ * Regression test for commit 814fb7bb7db5 ("x86/fpu: Don't let userspace set
++ * bogus xcomp_bv"), or CVE-2017-15537.  This bug allowed ptrace(pid,
++ * PTRACE_SETREGSET, NT_X86_XSTATE, &iov) to assign a task an invalid FPU state
++ * --- specifically, by setting reserved bits in xstate_header.xcomp_bv.  This
++ * made restoring the FPU registers fail when switching to the task, causing the
++ * FPU registers to take on the values from other tasks.
++ *
++ * To detect the bug, we have a subprocess run a loop checking its xmm0 register
++ * for corruption.  This detects the case where the FPU state became invalid and
++ * the kernel is not restoring the process's registers.  Note that we have to
++ * set the expected value of xmm0 to all 0's since it is acceptable behavior for
++ * the kernel to simply reinitialize the FPU state upon seeing that it is
++ * invalid.  To increase the chance of detecting the problem, we also create
++ * additional subprocesses that spin with different xmm0 contents.
++ *
++ * Thus bug affected the x86 architecture only.  Other architectures could have
++ * similar bugs as well, but this test has to be x86-specific because it has to
++ * know about the architecture-dependent FPU state.
 + */
 +
 +#include <errno.h>
++#include <inttypes.h>
++#include <sched.h>
++#include <stdbool.h>
 +#include <stdlib.h>
-+#include <sys/wait.h>
++#include <sys/uio.h>
 +
++#include "config.h"
++#include "ptrace.h"
 +#include "tst_test.h"
-+#include "lapi/keyctl.h"
 +
-+static void try_to_read_negative_key(void)
++#ifndef PTRACE_GETREGSET
++# define PTRACE_GETREGSET 0x4204
++#endif
++
++#ifndef PTRACE_SETREGSET
++# define PTRACE_SETREGSET 0x4205
++#endif
++
++#ifndef NT_X86_XSTATE
++# define NT_X86_XSTATE 0x202
++#endif
++
++#ifdef __x86_64__
++static void check_regs_loop(uint32_t initval)
 +{
-+	key_serial_t key_id;
-+	char buffer[128];
++	const unsigned long num_iters = 1000000000;
++	uint32_t xmm0[4] = { initval, initval, initval, initval };
++	int status = 1;
 +
-+	/*
-+	 * Create a negatively instantiated key of the "user" key type.  This
-+	 * key type is chosen because it has a ->read() method (which makes the
-+	 * bug reachable) and is available whenever CONFIG_KEYS is enabled.
-+	 *
-+	 * request_key() will result in the creation of a negative key provided
-+	 * that /sbin/request-key isn't configured to positively instantiate the
-+	 * key, based on the provided type, description, and callout_info.  If
-+	 * /sbin/request-key doesn't exist, errno will be ENOENT; while if it
-+	 * does exist and we specify some random unprefixed description, errno
-+	 * should be ENOKEY (since /sbin/request-key should not be configured to
-+	 * instantiate random user keys).  In either case a negative key should
-+	 * be created and we can continue on with the test.  Negative keys last
-+	 * for 60 seconds so there should be plenty of time for the test.
-+	 */
-+	TEST(request_key("user", "description", "callout_info",
-+			 KEY_SPEC_PROCESS_KEYRING));
-+	if (TEST_RETURN != -1)
-+		tst_brk(TBROK, "request_key() unexpectedly succeeded");
++	asm volatile("   movdqu %0, %%xmm0\n"
++		     "   mov %0, %%rbx\n"
++		     "1: dec %2\n"
++		     "   jz 2f\n"
++		     "   movdqu %%xmm0, %0\n"
++		     "   mov %0, %%rax\n"
++		     "   cmp %%rax, %%rbx\n"
++		     "   je 1b\n"
++		     "   jmp 3f\n"
++		     "2: mov $0, %1\n"
++		     "3:\n"
++		     : "+m" (xmm0), "+r" (status)
++		     : "r" (num_iters) : "rax", "rbx", "xmm0");
 +
-+	if (TEST_ERRNO != ENOKEY && TEST_ERRNO != ENOENT) {
-+		tst_brk(TBROK | TTERRNO,
-+			"request_key() failed with unexpected error");
++	if (status) {
++		tst_res(TFAIL,
++			"xmm registers corrupted!  initval=%08X, xmm0=%08X%08X%08X%08X\n",
++			initval, xmm0[0], xmm0[1], xmm0[2], xmm0[3]);
 +	}
-+
-+	/* Get the ID of the negative key by reading the keyring */
-+	TEST(keyctl(KEYCTL_READ, KEY_SPEC_PROCESS_KEYRING,
-+		    &key_id, sizeof(key_id)));
-+	if (TEST_RETURN < 0)
-+		tst_brk(TBROK | TTERRNO, "KEYCTL_READ unexpectedly failed");
-+	if (TEST_RETURN != sizeof(key_id)) {
-+		tst_brk(TBROK, "KEYCTL_READ returned %ld but expected %zu",
-+			TEST_RETURN, sizeof(key_id));
-+	}
-+
-+	/*
-+	 * Now try to read the negative key.  Unpatched kernels will oops trying
-+	 * to read from memory address 0x00000000ffffff92.
-+	 */
-+	tst_res(TINFO, "trying to read from the negative key...");
-+	TEST(keyctl(KEYCTL_READ, key_id, buffer, sizeof(buffer)));
-+	if (TEST_RETURN != -1) {
-+		tst_brk(TFAIL,
-+			"KEYCTL_READ on negative key unexpectedly succeeded");
-+	}
-+	if (TEST_ERRNO != ENOKEY) {
-+		tst_brk(TFAIL | TTERRNO,
-+			"KEYCTL_READ on negative key failed with unexpected error");
-+	}
-+	tst_res(TPASS,
-+		"KEYCTL_READ on negative key expectedly failed with ENOKEY");
++	exit(status);
 +}
 +
 +static void do_test(void)
 +{
++	int i;
++	int num_cpus = tst_ncpus();
++	pid_t pid;
++	uint64_t xstate[512];
++	struct iovec iov = { .iov_base = xstate, .iov_len = sizeof(xstate) };
 +	int status;
++	bool okay;
 +
-+	if (SAFE_FORK() == 0) {
-+		try_to_read_negative_key();
-+		return;
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		TST_CHECKPOINT_WAKE(0);
++		check_regs_loop(0x00000000);
++	}
++	for (i = 0; i < num_cpus; i++) {
++		if (SAFE_FORK() == 0)
++			check_regs_loop(0xDEADBEEF);
 +	}
 +
-+	SAFE_WAIT(&status);
++	TST_CHECKPOINT_WAIT(0);
++	sched_yield();
 +
-+	if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-+		tst_res(TPASS, "didn't crash while reading from negative key");
-+		return;
++	TEST(ptrace(PTRACE_ATTACH, pid, 0, 0));
++	if (TEST_RETURN != 0)
++		tst_brk(TBROK | TTERRNO, "PTRACE_ATTACH failed");
++
++	SAFE_WAITPID(pid, NULL, 0);
++	TEST(ptrace(PTRACE_GETREGSET, pid, NT_X86_XSTATE, &iov));
++	if (TEST_RETURN != 0) {
++		if (TEST_ERRNO == EIO)
++			tst_brk(TCONF, "GETREGSET/SETREGSET is unsupported");
++
++		if (TEST_ERRNO == EINVAL)
++			tst_brk(TCONF, "NT_X86_XSTATE is unsupported");
++
++		if (TEST_ERRNO == ENODEV)
++			tst_brk(TCONF, "CPU doesn't support XSAVE instruction");
++
++		tst_brk(TBROK | TTERRNO,
++			"PTRACE_GETREGSET failed with unexpected error");
 +	}
 +
-+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL) {
-+		tst_res(TFAIL, "reading from negative key caused kernel oops");
-+		return;
++	xstate[65] = -1; /* sets all bits in xstate_header.xcomp_bv */
++
++	/*
++	 * Old kernels simply masked out all the reserved bits in the xstate
++	 * header (causing the PTRACE_SETREGSET command here to succeed), while
++	 * new kernels will reject them (causing the PTRACE_SETREGSET command
++	 * here to fail with EINVAL).  We accept either behavior, as neither
++	 * behavior reliably tells us whether the real bug (which we test for
++	 * below in either case) is present.
++	 */
++	TEST(ptrace(PTRACE_SETREGSET, pid, NT_X86_XSTATE, &iov));
++	if (TEST_RETURN == 0) {
++		tst_res(TINFO, "PTRACE_SETREGSET with reserved bits succeeded");
++	} else if (TEST_ERRNO == EINVAL) {
++		tst_res(TINFO,
++			"PTRACE_SETREGSET with reserved bits failed with EINVAL");
++	} else {
++		tst_brk(TBROK | TTERRNO,
++			"PTRACE_SETREGSET failed with unexpected error");
 +	}
 +
-+	tst_brk(TBROK, "Child %s", tst_strstatus(status));
++	TEST(ptrace(PTRACE_CONT, pid, 0, 0));
++	if (TEST_RETURN != 0)
++		tst_brk(TBROK | TTERRNO, "PTRACE_CONT failed");
++
++	okay = true;
++	for (i = 0; i < num_cpus + 1; i++) {
++		SAFE_WAIT(&status);
++		okay &= (WIFEXITED(status) && WEXITSTATUS(status) == 0);
++	}
++	if (okay)
++		tst_res(TPASS, "wasn't able to set invalid FPU state");
 +}
 +
 +static struct tst_test test = {
 +	.test_all = do_test,
 +	.forks_child = 1,
++	.needs_checkpoints = 1,
 +};
++
++#else /* !__x86_64__ */
++	TST_TEST_TCONF("this test is only supported on x86_64");
++#endif /* __x86_64__ */
 -- 
 2.15.0.rc1.287.g2b38de12cc-goog
 
