@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 25 Oct 2017 10:49:41 +0200
-Subject: [LTP] [PATCH 3/3] kmsg01: use lower timeout for
-	test_read_block()
-In-Reply-To: <2b7d8d133fa22483ab594e31aa4e3b6454eea04f.1508760897.git.jstancek@redhat.com>
-References: <0994c420a161f2bf97de060396abd915502fca4f.1508760897.git.jstancek@redhat.com>
- <2b7d8d133fa22483ab594e31aa4e3b6454eea04f.1508760897.git.jstancek@redhat.com>
-Message-ID: <20171025084941.GB5969@rei>
+Date: Wed, 25 Oct 2017 10:59:31 +0200
+Subject: [LTP] [RFC PATCH 0/7] Remove network test for ancient software
+In-Reply-To: <CAL+h-jATfeJYYLa26c8TR5msL+cr9SJBLjZX17OQpNuU5KVvyQ@mail.gmail.com>
+References: <20171018135001.30382-1-pvorel@suse.cz>
+ <CAL+h-jATfeJYYLa26c8TR5msL+cr9SJBLjZX17OQpNuU5KVvyQ@mail.gmail.com>
+Message-ID: <20171025085931.GC5969@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,13 +12,13 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Test is currently expecting that read will block for ~5 seconds.
-> This is a problem for busy systems, where there are many messages
-> periodically generated. One example is ie31200_edac module,
-> which periodically generates a message every second on debug
-> kernels.
+> fwiw, rsh/rcp are still used in the embedded world where security is not a
+> concern, but speed/size matters much more (e.g. development)
 
-Sounds reasonable to me. Consider the whole patchset acked.
+The question is how much do we care about maintaing the testcases for
+these. I guess that rsh and rcp may be still useful in a certain cases
+but for a general usage it has been replaced by scp and ssh long time
+ago.
 
 -- 
 Cyril Hrubis
