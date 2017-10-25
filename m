@@ -1,73 +1,53 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 23 Oct 2017 14:18:42 +0200
-Subject: [LTP] [PATCH 1/3] kmsg01: set/restore console log level
-Message-ID: <0994c420a161f2bf97de060396abd915502fca4f.1508760897.git.jstancek@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 25 Oct 2017 11:30:05 +0800
+Subject: [LTP] [PATCH 1/2] ltp: typos correction
+Message-ID: <20171025033006.32463-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-commit 497564c77836 "kmsg01: lower the volume of message going to console"
-lowered message priority for the flood of messages that try to overwrite
-whole buffer. This works only for default console_loglevel. If anything
-increases console_loglevel (for example a call to console_verbose()
-via lockdep) system starts flooding also console. This causes a failure
-on systems with slower serial console, because test is unable to
-complete in 5 minutes.
-
-Before patch:
-  <timeout>
-
-After patch:
-  real	0m9.219s
-  user	0m0.289s
-  sys	0m4.027s
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/kernel/logging/kmsg/kmsg01.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ include/tst_safe_macros.h                                     | 2 +-
+ testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep02.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/logging/kmsg/kmsg01.c b/testcases/kernel/logging/kmsg/kmsg01.c
-index 294d0a2d1495..393acdcc71c6 100644
---- a/testcases/kernel/logging/kmsg/kmsg01.c
-+++ b/testcases/kernel/logging/kmsg/kmsg01.c
-@@ -52,7 +52,10 @@
- #define NUM_READ_RETRY 10
- #define NUM_OVERWRITE_MSGS 1024
- #define READ_TIMEOUT 5
-+#define PRINTK "/proc/sys/kernel/printk"
-+#define CONSOLE_LOGLEVEL_QUIET   4
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 9562005..ed9c73c 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -406,7 +406,7 @@ static inline sighandler_t safe_signal(const char *file, const int lineno,
+ #define SAFE_EXECL(file, arg, ...) do {				\
+        execl((file), (arg), ##__VA_ARGS__);			\
+        tst_brk_(__FILE__, __LINE__, TBROK | TERRNO,		\
+-                "execlp(%s, %s, ...) failed", file, arg); 	\
++                "execl(%s, %s, ...) failed", file, arg); 	\
+        } while (0)
  
-+static int console_loglevel = -1;
+ int safe_getpriority(const char *file, const int lineno, int which, id_t who);
+diff --git a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep02.c b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep02.c
+index f114013..f52d853 100644
+--- a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep02.c
++++ b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep02.c
+@@ -36,7 +36,7 @@ int sample_fn(int clk_id, long long usec)
  
- /*
-  * inject_msg - write message to /dev/kmsg
-@@ -571,7 +574,23 @@ static void test_kmsg(void)
- 	test_seek();
+ 	if (TEST_RETURN != 0) {
+ 		tst_res(TFAIL | TERRNO,
+-			"nanosleep() returned %li", TEST_RETURN);
++			"clock_nanosleep() returned %li", TEST_RETURN);
+ 		return 1;
+ 	}
+ 
+@@ -44,6 +44,6 @@ int sample_fn(int clk_id, long long usec)
  }
  
-+static void setup(void)
-+{
-+	if (access(PRINTK, F_OK) == 0) {
-+		SAFE_FILE_SCANF(PRINTK, "%d", &console_loglevel);
-+		SAFE_FILE_PRINTF(PRINTK, "%d", CONSOLE_LOGLEVEL_QUIET);
-+	}
-+}
-+
-+static void cleanup(void)
-+{
-+	if (console_loglevel != -1)
-+		SAFE_FILE_PRINTF(PRINTK, "%d", console_loglevel);
-+}
-+
  static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
- 	.needs_root = 1,
- 	.test_all = test_kmsg,
- 	.min_kver = "3.5.0"
+-	.tid = "nanosleep()",
++	.tid = "clock_nanosleep()",
+ 	.sample = sample_fn,
+ };
 -- 
-1.8.3.1
+2.9.3
 
