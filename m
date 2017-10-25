@@ -1,25 +1,30 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 25 Oct 2017 10:59:31 +0200
-Subject: [LTP] [RFC PATCH 0/7] Remove network test for ancient software
-In-Reply-To: <CAL+h-jATfeJYYLa26c8TR5msL+cr9SJBLjZX17OQpNuU5KVvyQ@mail.gmail.com>
-References: <20171018135001.30382-1-pvorel@suse.cz>
- <CAL+h-jATfeJYYLa26c8TR5msL+cr9SJBLjZX17OQpNuU5KVvyQ@mail.gmail.com>
-Message-ID: <20171025085931.GC5969@rei>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 25 Oct 2017 17:01:25 +0800
+Subject: [LTP] [PATCH] ltp: keep the .tid hidden in the test library
+In-Reply-To: <20171025081150.11206-1-liwang@redhat.com>
+References: <20171025081150.11206-1-liwang@redhat.com>
+Message-ID: <CAEemH2ekrPr8OJAwKP4Zog+M1xNCR7wqW-QBt-6AOUiCxbMWPQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> fwiw, rsh/rcp are still used in the embedded world where security is not a
-> concern, but speed/size matters much more (e.g. development)
+Hi Cyril,
 
-The question is how much do we care about maintaing the testcases for
-these. I guess that rsh and rcp may be still useful in a certain cases
-but for a general usage it has been replaced by scp and ssh long time
-ago.
+Attaching a new patch to achieve the same target in another way. It
+just remove the .tid from test struct and take use of TCID to replace.
+
+Which one do you think is better?
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Li Wang
+liwang@redhat.com
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-ltp-remove-.tid-from-test-struct.patch
+Type: text/x-patch
+Size: 9335 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20171025/5b7a073b/attachment-0001.bin>
