@@ -1,36 +1,29 @@
-From: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
-Date: Thu, 26 Oct 2017 11:44:47 +0800
-Subject: [LTP] [PATCH] syscalls/ptrace07.c: Fix compilation without
-	WIFEXITED and WEXITSTATUS
-Message-ID: <1508989487-6715-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+From: Lucas Magasweran <lucas.magasweran@daqri.com>
+Date: Wed, 25 Oct 2017 14:32:04 -0700
+Subject: [LTP] [PATCH v2] testcases: fix file path to control access to
+	cron
+In-Reply-To: <20171025210846.byepu52ruacbzdq2@xps>
+References: <20171025210846.byepu52ruacbzdq2@xps>
+Message-ID: <1508967124.13513.16.camel@lucasmagasweran-vm>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Compilation failed on some older distributions due to undefined
-WIFEXITED and WEXITSTATUS, so we include sys/wait.h to fix it.
+On Wed, 2017-10-25 at 16:08 -0500, Dan Rue wrote:
+> I noticed that this change did not make the last LTP release. Is there
+> any reason why it has not been merged?
+> - PR: https://github.com/linux-test-project/ltp/pull/169
+> - patch file: https://github.com/linux-test-project/ltp/commit/9900c9451e04c1e1e9ddb53a10eec84cc31e0dea.patch
 
-Signed-off-by: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/ptrace/ptrace07.c | 1 +
- 1 file changed, 1 insertion(+)
+Hi Cyril and Jan,
 
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace07.c b/testcases/kernel/syscalls/ptrace/ptrace07.c
-index d561b30..82698a4 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace07.c
-+++ b/testcases/kernel/syscalls/ptrace/ptrace07.c
-@@ -42,6 +42,7 @@
- #include <stdbool.h>
- #include <stdlib.h>
- #include <sys/uio.h>
-+#include <sys/wait.h>
- 
- #include "config.h"
- #include "ptrace.h"
--- 
-1.8.3.1
+The PR is still compatible and ready to merge. This issue is affecting
+more people, as you can see from the new PR
+https://github.com/linux-test-project/ltp/pull/192 .
 
+Please let us know if there's anything else we can do to validate.
 
+Thanks for the bump Dan.
 
