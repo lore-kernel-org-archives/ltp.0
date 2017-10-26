@@ -1,47 +1,77 @@
 From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Thu, 26 Oct 2017 15:14:43 +0100
-Subject: [LTP] [PATCH 14/18] ioctl: fix stty usage for busybox
+Date: Thu, 26 Oct 2017 15:14:45 +0100
+Subject: [LTP] [PATCH 16/18] perf_event_open: Handle absence of PMU
+	gracefully
 In-Reply-To: <20171026141447.26749-1-punit.agrawal@arm.com>
 References: <20171026141447.26749-1-punit.agrawal@arm.com>
-Message-ID: <20171026141447.26749-15-punit.agrawal@arm.com>
+Message-ID: <20171026141447.26749-17-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Mark Rutland <mark.rutland@arm.com>
+From: "Suzuki K. Poulose" <suzuki.poulose@arm.com>
 
-The ioctl tests rely on stty to test if a tty is usable, and use the
-long form "--file=" flag to tell stty which tty to test. Busybox doesn't
-understand the long "--file=" flag, and this causes the LTP test harness
-to skip tests:
+The perf_event_open0{1,2} syscall tests fail for an absence of a
+PMU (which returns ENODEV). Handle the return code gracefully as we
+check for ENOENT.
 
-> stty: invalid argument '--file=/dev/tty0'
-> ioctl01_02    0  TINFO  :  Skipping ioctl01 with /dev/tty0
+Without the patch:
 
-Luckily, both busybox stty and GNU stty understand the equivalent "-F"
-flag. This patch makes LTP use this more common option.
+$ perf_event_open01
+perf_event_open01    1  TFAIL  :  perf_event_open01.c:162: perf_event_open \
+		failed unexpectedly: TEST_ERRNO=ENODEV(19): No such device
 
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+With the patch:
+
+$ perf_event_open01
+perf_event_open01    1  TCONF  :  perf_event_open01.c:159: perf_event_open for PERF_COUNT_HW_INSTRUCTIONS : No such device
+perf_event_open01    2  TCONF  :  perf_event_open01.c:159: perf_event_open for PERF_COUNT_HW_CACHE_REFERENCES : No such device
+perf_event_open01    3  TCONF  :  perf_event_open01.c:159: perf_event_open for PERF_COUNT_HW_CACHE_MISSES : No such device
+perf_event_open01    4  TCONF  :  perf_event_open01.c:159: perf_event_open for PERF_COUNT_HW_BRANCH_INSTRUCTIONS : No such file or directory
+perf_event_open01    5  TCONF  :  perf_event_open01.c:159: perf_event_open for PERF_COUNT_HW_BRANCH_MISSES : No such device
+perf_event_open01    0  TINFO  :  read event counter succeeded, value: 833765520
+perf_event_open01    6  TPASS  :  test PERF_TYPE_HARDWARE: PERF_COUNT_SW_CPU_CLOCK succeeded
+perf_event_open01    0  TINFO  :  read event counter succeeded, value: 833967380
+perf_event_open01    7  TPASS  :  test PERF_TYPE_HARDWARE: PERF_COUNT_SW_TASK_CLOCK succeeded
+
+Signed-off-by: Suzuki K. Poulose <suzuki.poulose@arm.com>
 Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
 ---
- testcases/kernel/syscalls/ioctl/test_ioctl | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ testcases/kernel/syscalls/perf_event_open/perf_event_open01.c | 3 ++-
+ testcases/kernel/syscalls/perf_event_open/perf_event_open02.c | 4 ++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ioctl/test_ioctl b/testcases/kernel/syscalls/ioctl/test_ioctl
-index 1151b55eb..923275433 100755
---- a/testcases/kernel/syscalls/ioctl/test_ioctl
-+++ b/testcases/kernel/syscalls/ioctl/test_ioctl
-@@ -26,7 +26,7 @@ export TST_COUNT=0
- has_tty()
- {
-     if command -v stty >/dev/null 2>&1; then
--        stty --file=$1 > /dev/null
-+        stty -F $1 > /dev/null
-         if [ $? -ne 0 ]; then
-             return 0
-         fi
+diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
+index 5c814b60c..5568035d9 100644
+--- a/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
++++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
+@@ -149,7 +149,8 @@ static void verify(struct test_case_t *tc)
+ 
+ 	TEST(perf_event_open(&pe, 0, -1, -1, 0));
+ 	if (TEST_RETURN == -1) {
+-		if (TEST_ERRNO == ENOENT || TEST_ERRNO == EOPNOTSUPP) {
++		if (TEST_ERRNO == ENOENT || TEST_ERRNO == EOPNOTSUPP ||
++		    TEST_ERRNO == ENODEV) {
+ 			tst_resm(TCONF | TTERRNO,
+ 			         "perf_event_open for %s not supported",
+ 			         tc->config_name);
+diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
+index 7d54cbd52..13a17948a 100644
+--- a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
++++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
+@@ -160,8 +160,8 @@ static int count_hardware_counters(void)
+ 	for (i = 0; i < MAX_CTRS; i++) {
+ 		fdarry[i] = perf_event_open(&hw_event, 0, -1, -1, 0);
+ 		if (fdarry[i] == -1) {
+-			if (errno == ENOENT) {
+-				tst_brkm(TCONF, cleanup,
++			if (errno == ENOENT || errno == ENODEV) {
++				tst_brkm(TCONF | TERRNO, cleanup,
+ 				         "PERF_COUNT_HW_INSTRUCTIONS not supported");
+ 			}
+ 			tst_brkm(TBROK | TERRNO, cleanup,
 -- 
 2.14.2
 
