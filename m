@@ -1,39 +1,35 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 26 Oct 2017 10:36:15 +0200
-Subject: [LTP] [RFC PATCH 1/7] net/tcp_cmds: Remove rwho test
-In-Reply-To: <2b595bc0-c7be-782f-9592-da206498f84a@oracle.com>
-References: <20171018135001.30382-1-pvorel@suse.cz>
- <20171018135001.30382-2-pvorel@suse.cz>
- <2b595bc0-c7be-782f-9592-da206498f84a@oracle.com>
-Message-ID: <20171026083615.g2nwz4kkf27z3h2d@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 26 Oct 2017 16:51:15 +0800
+Subject: [LTP] [PATCH] configure: complete the full path in configure.ac
+Message-ID: <20171026085115.28595-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Fix a error in cross-compilation:
+./config.status: line 1311: cd: include/lapi/syscalls: No such file or directory
+./config.status: line 1311: ./regen.sh: No such file or directory
 
-> On 10/18/2017 04:49 PM, Petr Vorel wrote:
-> > rwhod daemon is way too old to bother to test it.
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> As far as I remember, another problem with this test is that it's not
-> really applicable for automated runs because rwho requires someone to
-> be logged in to the machine for about 2 min to make it pass.
+diff --git a/configure.ac b/configure.ac
+index 2356531..39818cd 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -139,7 +139,7 @@ fi
+ 
+ AC_CONFIG_SUBDIRS([utils/ffsb-6.0-rc2])
+ 
+-AC_CONFIG_COMMANDS([syscalls.h], [cd include/lapi/syscalls; ./regen.sh])
++AC_CONFIG_COMMANDS([syscalls.h], [cd ${ac_top_srcdir}/include/lapi/syscalls; ./regen.sh])
+ 
+ # END testsuites knobs
+ LTP_CHECK_FORTIFY_SOURCE
+-- 
+2.9.3
 
-> I'm ok with removing it.
-
-> Thanks,
-> Alexey
-
-Thanks, I pushed it.
-
-Please if you agree with other tests to be deleted, ack it.
-I'd be for deleting at least finger, echo, rlogin and rdist, as Vapier asked for keeping rcp
-and rsh. IMHO these project should test their code themselves, I'd prefer LTP concern more
-about the Linux kernel itself, not about *anything* it runs on linux distribution
-(including networking).
-
-
-Kind regards,
-Petr
