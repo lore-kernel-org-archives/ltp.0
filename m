@@ -1,10 +1,9 @@
 From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Thu, 26 Oct 2017 15:14:37 +0100
-Subject: [LTP] [PATCH 08/18] creat08: ensure test directories are created in
-	/tmp/
+Date: Thu, 26 Oct 2017 15:14:38 +0100
+Subject: [LTP] [PATCH 09/18] kill05: fix race on getpwnam
 In-Reply-To: <20171026141447.26749-1-punit.agrawal@arm.com>
 References: <20171026141447.26749-1-punit.agrawal@arm.com>
-Message-ID: <20171026141447.26749-9-punit.agrawal@arm.com>
+Message-ID: <20171026141447.26749-10-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,31 +12,40 @@ To: ltp@lists.linux.it
 
 From: Will Deacon <will.deacon@arm.com>
 
-runltp runs tests in the ${LTP_ROOT}/bin directory. If this is NFS
-mounted, we can run into problems that need to use setgid. Fix this by
-ensuring that creat08 creates directories in /tmp/
+Two threads doing getpwnam to a static struct in the library, sometimes
+end up using the same UID. Fix this.
 
+Reported-by: Tony Thompson <anthony.thompson@arm.com>
 Signed-off-by: Will Deacon <will.deacon@arm.com>
 Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
 ---
- testcases/kernel/syscalls/creat/creat08.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/syscalls/kill/kill05.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/creat/creat08.c b/testcases/kernel/syscalls/creat/creat08.c
-index 284ae5f1a..bd8368e28 100644
---- a/testcases/kernel/syscalls/creat/creat08.c
-+++ b/testcases/kernel/syscalls/creat/creat08.c
-@@ -63,8 +63,8 @@ int local_flag;
+diff --git a/testcases/kernel/syscalls/kill/kill05.c b/testcases/kernel/syscalls/kill/kill05.c
+index ccef5afd6..2ae046130 100644
+--- a/testcases/kernel/syscalls/kill/kill05.c
++++ b/testcases/kernel/syscalls/kill/kill05.c
+@@ -174,15 +174,16 @@ void do_master_child(char **av)
+ 		do_child();
+ #endif
+ 	}
++
++	/* wait until child sets its euid (and has finished with the static getpwnam result struct) */
++	wait_for_flag(1);
++
+ 	ltpuser2 = SAFE_GETPWNAM(NULL, user2name);
+ 	if (setreuid(ltpuser2->pw_uid, ltpuser2->pw_uid) == -1) {
+ 		perror("seteuid failed");
+ 		exit(1);
+ 	}
  
- #define MODE_RWX        (S_IRWXU|S_IRWXG|S_IRWXO)
- #define MODE_SGID       (S_ISGID|S_IRWXU|S_IRWXG|S_IRWXO)
--#define DIR_A_TEMP	"testdir.A.%d"
--#define DIR_B_TEMP	"testdir.B.%d"
-+#define DIR_A_TEMP	"/tmp/testdir.A.%d"
-+#define DIR_B_TEMP	"/tmp/testdir.B.%d"
- #define SETGID		"setgid"
- #define NOSETGID	"nosetgid"
- #define ROOT_SETGID	"root_setgid"
+-	/* wait until child sets its euid */
+-	wait_for_flag(1);
+-
+ 	TEST(kill(pid1, TEST_SIG));
+ 
+ 	/* signal the child that we're done */
 -- 
 2.14.2
 
