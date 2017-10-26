@@ -1,83 +1,18 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 26 Oct 2017 17:02:05 +0800
-Subject: [LTP] [PATCH v2] cve/cve-2016-10044.c: fix two errors
-In-Reply-To: <1506391449-5646-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <87h8vryqo9.fsf@our.domain.is.not.set>
- <1506391449-5646-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <59F1A48D.6010801@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 26 Oct 2017 11:11:47 +0200
+Subject: [LTP] [PATCH] configure: complete the full path in configure.ac
+In-Reply-To: <20171026085115.28595-1-liwang@redhat.com>
+References: <20171026085115.28595-1-liwang@redhat.com>
+Message-ID: <20171026091147.GC3873@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi!
+Pushed, thanks.
 
-Could you help me review this patch? Thanks a lot. :-)
-
-Thanks,
-Xiao Yang
-On 2017/09/26 10:04, Xiao Yang wrote:
-> 1) If the number of nr_events exceeds the limit of available events
->    defined in /proc/sys/fs/aio-max-nr, it returns EAGAIN.  We should
->    call io_destroy() to cleanup the AIO context after finishing test.
->
->    Steps to reproduce this error:
->       #echo 4 > /proc/sys/fs/aio-max-nr
->       # ./cve-2016-10044 -i 5
->       tst_test.c:908: INFO: Timeout per run is 0h 05m 00s
->       cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
->       cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
->       cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
->       cve-2016-10044.c:62: FAIL: AIO mapping is executable: rwxs!
->       cve-2016-10044.c:49: BROK: Failed to create AIO context: EAGAIN/EWOULDBLOCK
->
-> 2) This case fails with TBROK on an old kernel(e.g. v2.6.32) because
->    the mapping file does not exist.
->
->    The old format of file is set to 'anon_inode:[aio]' by the following
->    patch set:
->    '55708698c5f1("fs/anon_inode: Introduce a new lib function anon_inode_getfile_private()")'
->    '36bc08cc0170("fs/aio: Add support to aio ring pages migration")'
->
->    The current format of file is set to '/[aio]' by the following patch:
->    '71ad7490c1f3("rework aio migrate pages to use aio fs")'
->
->    We change the keyword into '[aio]' to match as many formats as
->    possible, and return TCONF if the mapping file does not exist.
->
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  testcases/cve/cve-2016-10044.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
->
-> diff --git a/testcases/cve/cve-2016-10044.c b/testcases/cve/cve-2016-10044.c
-> index 7928d27..14fa0a4 100644
-> --- a/testcases/cve/cve-2016-10044.c
-> +++ b/testcases/cve/cve-2016-10044.c
-> @@ -50,10 +50,10 @@ static void run(void)
->  
->  	f = SAFE_FOPEN("/proc/self/maps", "r");
->  	while (fgets(line, BUFSIZ, f) != NULL) {
-> -		if (strstr(line, "/[aio]") != NULL)
-> +		if (strstr(line, "[aio]") != NULL)
->  			goto found_mapping;
->  	}
-> -	tst_brk(TBROK, "Could not find mapping in /proc/self/maps");
-> +	tst_brk(TCONF, "Could not find mapping in /proc/self/maps");
->  
->  found_mapping:
->  	if (sscanf(line, "%*x-%*x %s7", perms) < 0)
-> @@ -63,6 +63,9 @@ found_mapping:
->  	else
->  		tst_res(TPASS, "AIO mapping is not executable: %s", perms);
->  
-> +	if (tst_syscall(__NR_io_destroy, ctx))
-> +		tst_brk(TBROK | TERRNO, "Failed to destroy AIO context");
-> +
->  	SAFE_FCLOSE(f);
->  	f = NULL;
->  }
-
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
