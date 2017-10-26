@@ -1,10 +1,9 @@
 From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Thu, 26 Oct 2017 15:14:45 +0100
-Subject: [LTP] [PATCH 16/18] perf_event_open: Handle absence of PMU
-	gracefully
+Date: Thu, 26 Oct 2017 15:14:44 +0100
+Subject: [LTP] [PATCH 15/18] getdtablesize01: Handle ENFILE errno
 In-Reply-To: <20171026141447.26749-1-punit.agrawal@arm.com>
 References: <20171026141447.26749-1-punit.agrawal@arm.com>
-Message-ID: <20171026141447.26749-17-punit.agrawal@arm.com>
+Message-ID: <20171026141447.26749-16-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,65 +12,65 @@ To: ltp@lists.linux.it
 
 From: "Suzuki K. Poulose" <suzuki.poulose@arm.com>
 
-The perf_event_open0{1,2} syscall tests fail for an absence of a
-PMU (which returns ENODEV). Handle the return code gracefully as we
-check for ENOENT.
-
-Without the patch:
-
-$ perf_event_open01
-perf_event_open01    1  TFAIL  :  perf_event_open01.c:162: perf_event_open \
-		failed unexpectedly: TEST_ERRNO=ENODEV(19): No such device
-
-With the patch:
-
-$ perf_event_open01
-perf_event_open01    1  TCONF  :  perf_event_open01.c:159: perf_event_open for PERF_COUNT_HW_INSTRUCTIONS : No such device
-perf_event_open01    2  TCONF  :  perf_event_open01.c:159: perf_event_open for PERF_COUNT_HW_CACHE_REFERENCES : No such device
-perf_event_open01    3  TCONF  :  perf_event_open01.c:159: perf_event_open for PERF_COUNT_HW_CACHE_MISSES : No such device
-perf_event_open01    4  TCONF  :  perf_event_open01.c:159: perf_event_open for PERF_COUNT_HW_BRANCH_INSTRUCTIONS : No such file or directory
-perf_event_open01    5  TCONF  :  perf_event_open01.c:159: perf_event_open for PERF_COUNT_HW_BRANCH_MISSES : No such device
-perf_event_open01    0  TINFO  :  read event counter succeeded, value: 833765520
-perf_event_open01    6  TPASS  :  test PERF_TYPE_HARDWARE: PERF_COUNT_SW_CPU_CLOCK succeeded
-perf_event_open01    0  TINFO  :  read event counter succeeded, value: 833967380
-perf_event_open01    7  TPASS  :  test PERF_TYPE_HARDWARE: PERF_COUNT_SW_TASK_CLOCK succeeded
+getdtablesize01 testcase attempts to open RLIMIT_NOFILE-1 (Maximum open
+files for a process) file descriptors. However if we hit an
+ENFILE (system wide limit of maximum number of open files) we should
+break the test, rather than failing. This is more relevant for runs on
+VMs where the rootfs could be a 9p fs or any other emulated fs.
 
 Signed-off-by: Suzuki K. Poulose <suzuki.poulose@arm.com>
 Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
 ---
- testcases/kernel/syscalls/perf_event_open/perf_event_open01.c | 3 ++-
- testcases/kernel/syscalls/perf_event_open/perf_event_open02.c | 4 ++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ .../kernel/syscalls/getdtablesize/getdtablesize01.c     | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
-index 5c814b60c..5568035d9 100644
---- a/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
-+++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
-@@ -149,7 +149,8 @@ static void verify(struct test_case_t *tc)
+diff --git a/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c b/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
+index 7ee231adf..eecf44b18 100644
+--- a/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
++++ b/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
+@@ -54,7 +54,7 @@ int TST_TOTAL = 1;
  
- 	TEST(perf_event_open(&pe, 0, -1, -1, 0));
- 	if (TEST_RETURN == -1) {
--		if (TEST_ERRNO == ENOENT || TEST_ERRNO == EOPNOTSUPP) {
-+		if (TEST_ERRNO == ENOENT || TEST_ERRNO == EOPNOTSUPP ||
-+		    TEST_ERRNO == ENODEV) {
- 			tst_resm(TCONF | TTERRNO,
- 			         "perf_event_open for %s not supported",
- 			         tc->config_name);
-diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-index 7d54cbd52..13a17948a 100644
---- a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-+++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-@@ -160,8 +160,8 @@ static int count_hardware_counters(void)
- 	for (i = 0; i < MAX_CTRS; i++) {
- 		fdarry[i] = perf_event_open(&hw_event, 0, -1, -1, 0);
- 		if (fdarry[i] == -1) {
--			if (errno == ENOENT) {
--				tst_brkm(TCONF, cleanup,
-+			if (errno == ENOENT || errno == ENODEV) {
-+				tst_brkm(TCONF | TERRNO, cleanup,
- 				         "PERF_COUNT_HW_INSTRUCTIONS not supported");
- 			}
- 			tst_brkm(TBROK | TERRNO, cleanup,
+ int main(void)
+ {
+-	int table_size, loop, fd, count = 0;
++	int table_size, loop, fd = 0, count = 0;
+ 	int max_val_opfiles;
+ 	struct rlimit rlp;
+ 
+@@ -82,24 +82,27 @@ int main(void)
+ 		 "Checking Max num of files that can be opened by a process.Should be: RLIMIT_NOFILE - 1");
+ 	for (loop = 1; loop <= max_val_opfiles; loop++) {
+ 		fd = open("/etc/hosts", O_RDONLY);
++
++		if (fd == -1)
++			break;
++		count = fd;
+ #ifdef DEBUG
+ 		printf("Opened file num %d\n", fd);
+ #endif
+-		if (fd == -1)
+-			break;
+-		else
+-			count = fd;
+ 	}
+ 
+ //Now the max files opened should be RLIMIT_NOFILE - 1 , why ? read getdtablesize man page
+ 
+-	if (count > 0)
+-		close(count);
+ 	if (count == (max_val_opfiles - 1))
+ 		tst_resm(TPASS, "%d = %d", count, (max_val_opfiles - 1));
++	else if (fd < 0 && errno == ENFILE)
++		tst_brkm(TBROK, cleanup, "Reached maximum number of open files for the system");
+ 	else
+ 		tst_resm(TFAIL, "%d != %d", count, (max_val_opfiles - 1));
+ 
++	if (count > 0)
++		close(count);
++
+ 	cleanup();
+ 	tst_exit();
+ }
 -- 
 2.14.2
 
