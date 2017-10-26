@@ -1,55 +1,47 @@
 From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Thu, 26 Oct 2017 15:14:41 +0100
-Subject: [LTP] [PATCH 12/18] inotify: fix inotify.h breakage
+Date: Thu, 26 Oct 2017 15:14:42 +0100
+Subject: [LTP] [PATCH 13/18] syscalls/mount03: Copy setuid_test to execute
+	instead of 'TEST FILE'
 In-Reply-To: <20171026141447.26749-1-punit.agrawal@arm.com>
 References: <20171026141447.26749-1-punit.agrawal@arm.com>
-Message-ID: <20171026141447.26749-13-punit.agrawal@arm.com>
+Message-ID: <20171026141447.26749-14-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Mark Rutland <mark.rutland@arm.com>
+From: Will Deacon <will.deacon@arm.com>
 
-359980f68b: "rename syscall() macro to ltp_syscall()" renamed syscall()
-to ltp_syscall, but didn't update all callers. This had the side effect
-of making some callers refer to syscall.h's definition of syscall()
-instead. This caused some tests to start failing unexpectedly.
+When testing the MS_NOSUID mount flag, mount03 forgets to copy
+setuid_test into the new filesystem. Instead it writes 'TEST FILE' into
+a new file and attempts to execute it with S_ISUID. This fails, but not
+for the reasons ltp expects.
 
-This patch fixes up inotify.h to use ltp_syscall.
-
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Will Deacon <will.deacon@arm.com>
+[Added commit message, changed to use tst_resource_copy()]
+Signed-off-by: James Morse <james.morse@arm.com>
 Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
 ---
- testcases/kernel/syscalls/inotify/inotify.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ testcases/kernel/syscalls/mount/mount03.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/inotify/inotify.h b/testcases/kernel/syscalls/inotify/inotify.h
-index ac731bcb2..a364e1472 100644
---- a/testcases/kernel/syscalls/inotify/inotify.h
-+++ b/testcases/kernel/syscalls/inotify/inotify.h
-@@ -32,16 +32,16 @@
+diff --git a/testcases/kernel/syscalls/mount/mount03.c b/testcases/kernel/syscalls/mount/mount03.c
+index bf78c797f..abdef80fd 100644
+--- a/testcases/kernel/syscalls/mount/mount03.c
++++ b/testcases/kernel/syscalls/mount/mount03.c
+@@ -261,8 +261,10 @@ int test_rwflag(int i, int cnt)
+ 	case 5:
+ 		/* Validate MS_NOSUID flag of mount call */
  
- #if __NR_inotify_init != __LTP__NR_INVALID_SYSCALL
- #define	myinotify_init() \
--	syscall(__NR_inotify_init)
-+	ltp_syscall(__NR_inotify_init)
- #else
- #define	myinotify_init() \
--	syscall(__NR_inotify_init1, 0)
-+	ltp_syscall(__NR_inotify_init1, 0)
- #endif
++		tst_resource_copy(__FILE__, __LINE__, cleanup, "setuid_test",
++				  path_name);
++
+ 		snprintf(file, PATH_MAX, "%ssetuid_test", path_name);
+-		SAFE_FILE_PRINTF(cleanup, file, "TEST FILE");
  
- #define	myinotify_add_watch(fd, pathname, mask)	\
--	syscall(__NR_inotify_add_watch, fd, pathname, mask)
-+	ltp_syscall(__NR_inotify_add_watch, fd, pathname, mask)
+ 		SAFE_STAT(cleanup, file, &file_stat);
  
- #define	myinotify_rm_watch(fd, wd) \
--	syscall(__NR_inotify_rm_watch, fd, wd)
-+	ltp_syscall(__NR_inotify_rm_watch, fd, wd)
- 
- #endif /* _INOTIFY_H */
 -- 
 2.14.2
 
