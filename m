@@ -1,47 +1,47 @@
 From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Thu, 26 Oct 2017 15:14:42 +0100
-Subject: [LTP] [PATCH 13/18] syscalls/mount03: Copy setuid_test to execute
-	instead of 'TEST FILE'
+Date: Thu, 26 Oct 2017 15:14:43 +0100
+Subject: [LTP] [PATCH 14/18] ioctl: fix stty usage for busybox
 In-Reply-To: <20171026141447.26749-1-punit.agrawal@arm.com>
 References: <20171026141447.26749-1-punit.agrawal@arm.com>
-Message-ID: <20171026141447.26749-14-punit.agrawal@arm.com>
+Message-ID: <20171026141447.26749-15-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Will Deacon <will.deacon@arm.com>
+From: Mark Rutland <mark.rutland@arm.com>
 
-When testing the MS_NOSUID mount flag, mount03 forgets to copy
-setuid_test into the new filesystem. Instead it writes 'TEST FILE' into
-a new file and attempts to execute it with S_ISUID. This fails, but not
-for the reasons ltp expects.
+The ioctl tests rely on stty to test if a tty is usable, and use the
+long form "--file=" flag to tell stty which tty to test. Busybox doesn't
+understand the long "--file=" flag, and this causes the LTP test harness
+to skip tests:
 
-Signed-off-by: Will Deacon <will.deacon@arm.com>
-[Added commit message, changed to use tst_resource_copy()]
-Signed-off-by: James Morse <james.morse@arm.com>
+> stty: invalid argument '--file=/dev/tty0'
+> ioctl01_02    0  TINFO  :  Skipping ioctl01 with /dev/tty0
+
+Luckily, both busybox stty and GNU stty understand the equivalent "-F"
+flag. This patch makes LTP use this more common option.
+
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
 ---
- testcases/kernel/syscalls/mount/mount03.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ testcases/kernel/syscalls/ioctl/test_ioctl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/mount/mount03.c b/testcases/kernel/syscalls/mount/mount03.c
-index bf78c797f..abdef80fd 100644
---- a/testcases/kernel/syscalls/mount/mount03.c
-+++ b/testcases/kernel/syscalls/mount/mount03.c
-@@ -261,8 +261,10 @@ int test_rwflag(int i, int cnt)
- 	case 5:
- 		/* Validate MS_NOSUID flag of mount call */
- 
-+		tst_resource_copy(__FILE__, __LINE__, cleanup, "setuid_test",
-+				  path_name);
-+
- 		snprintf(file, PATH_MAX, "%ssetuid_test", path_name);
--		SAFE_FILE_PRINTF(cleanup, file, "TEST FILE");
- 
- 		SAFE_STAT(cleanup, file, &file_stat);
- 
+diff --git a/testcases/kernel/syscalls/ioctl/test_ioctl b/testcases/kernel/syscalls/ioctl/test_ioctl
+index 1151b55eb..923275433 100755
+--- a/testcases/kernel/syscalls/ioctl/test_ioctl
++++ b/testcases/kernel/syscalls/ioctl/test_ioctl
+@@ -26,7 +26,7 @@ export TST_COUNT=0
+ has_tty()
+ {
+     if command -v stty >/dev/null 2>&1; then
+-        stty --file=$1 > /dev/null
++        stty -F $1 > /dev/null
+         if [ $? -ne 0 ]; then
+             return 0
+         fi
 -- 
 2.14.2
 
