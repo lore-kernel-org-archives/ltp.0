@@ -1,9 +1,10 @@
 From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Thu, 26 Oct 2017 15:14:38 +0100
-Subject: [LTP] [PATCH 09/18] kill05: fix race on getpwnam
+Date: Thu, 26 Oct 2017 15:14:39 +0100
+Subject: [LTP] [PATCH 10/18] sigwaitinfo01: fix race between sending and
+	dequeueing RT signals
 In-Reply-To: <20171026141447.26749-1-punit.agrawal@arm.com>
 References: <20171026141447.26749-1-punit.agrawal@arm.com>
-Message-ID: <20171026141447.26749-10-punit.agrawal@arm.com>
+Message-ID: <20171026141447.26749-11-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,40 +13,42 @@ To: ltp@lists.linux.it
 
 From: Will Deacon <will.deacon@arm.com>
 
-Two threads doing getpwnam to a static struct in the library, sometimes
-end up using the same UID. Fix this.
+Although RT signals are dequeued in order, there is a race where only
+the higher signal may have been sent and will therefore be dequeued
+first, leading to a false failure.
 
-Reported-by: Tony Thompson <anthony.thompson@arm.com>
+This patch waits on the signal sending tasks so that we can be sure both
+of the signals have been sent before dequeuing them.
+
 Signed-off-by: Will Deacon <will.deacon@arm.com>
 Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
 ---
- testcases/kernel/syscalls/kill/kill05.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/kill/kill05.c b/testcases/kernel/syscalls/kill/kill05.c
-index ccef5afd6..2ae046130 100644
---- a/testcases/kernel/syscalls/kill/kill05.c
-+++ b/testcases/kernel/syscalls/kill/kill05.c
-@@ -174,15 +174,16 @@ void do_master_child(char **av)
- 		do_child();
- #endif
- 	}
-+
-+	/* wait until child sets its euid (and has finished with the static getpwnam result struct) */
-+	wait_for_flag(1);
-+
- 	ltpuser2 = SAFE_GETPWNAM(NULL, user2name);
- 	if (setreuid(ltpuser2->pw_uid, ltpuser2->pw_uid) == -1) {
- 		perror("seteuid failed");
- 		exit(1);
- 	}
+diff --git a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
+index 35acd67c4..16b5096b8 100644
+--- a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
++++ b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
+@@ -249,6 +249,7 @@ void test_masked_matching_rt(swi_func sigwaitinfo, int signo)
+ 	sigset_t sigs, oldmask;
+ 	siginfo_t si;
+ 	pid_t child[2];
++	int status;
  
--	/* wait until child sets its euid */
--	wait_for_flag(1);
--
- 	TEST(kill(pid1, TEST_SIG));
+ 	signo = SIGRTMIN + 1;
  
- 	/* signal the child that we're done */
+@@ -268,6 +269,10 @@ void test_masked_matching_rt(swi_func sigwaitinfo, int signo)
+ 	child[0] = create_sig_proc(0, signo, 1);
+ 	child[1] = create_sig_proc(0, signo + 1, 1);
+ 
++	/* Ensure that the signals have been sent */
++	waitpid(child[0], &status, 0);
++	waitpid(child[1], &status, 0);
++
+ 	TEST(sigwaitinfo(&sigs, &si, NULL));
+ 	REPORT_SUCCESS_COND(signo, 0, si.si_pid == child[0]
+ 			    && si.si_code == SI_USER
 -- 
 2.14.2
 
