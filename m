@@ -1,86 +1,88 @@
 From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Thu, 26 Oct 2017 15:14:29 +0100
-Subject: [LTP] [PATCH 00/18] Collection of fixes
-Message-ID: <20171026141447.26749-1-punit.agrawal@arm.com>
+Date: Thu, 26 Oct 2017 15:14:30 +0100
+Subject: [LTP] [PATCH 01/18] Move check_hugepage() helper to mem/lib
+In-Reply-To: <20171026141447.26749-1-punit.agrawal@arm.com>
+References: <20171026141447.26749-1-punit.agrawal@arm.com>
+Message-ID: <20171026141447.26749-2-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Move the check_hugepage() helper to mem/lib to be more widely available
+to testcases. Specifically, it will be used in a subsequent commit to
+check for the presence of hugepage support when running the thp tests.
 
-This series collects fixes for issues encountered when running ltp on
-internal test platforms. The fixes touch a variety of tests - I've
-grouped patches touching related tests togther.
+Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
+---
+ testcases/kernel/mem/hugetlb/lib/hugetlb.c | 6 ------
+ testcases/kernel/mem/hugetlb/lib/hugetlb.h | 1 -
+ testcases/kernel/mem/include/mem.h         | 2 ++
+ testcases/kernel/mem/lib/mem.c             | 6 ++++++
+ 4 files changed, 8 insertions(+), 7 deletions(-)
 
-The patches fix issue with missing kernel feature detection, improper
-synchronisation in certain scenarios, and executing on systems with
-minimal userspace such as busybox.
-
-Although the problems were encountered on internal platforms the
-patches improve the robustness of the tests and are applicable in wide
-ranging test scenarios.
-
-Please consider merging them.
-
-Thanks,
-Punit
-
-James Morse (2):
-  hotplug/cpu_hotplug: Repopulate cgroup:cpusets after testing hotplug
-  hotplug/cpu_hotplug: Remove bashism disown from kill_pid()
-
-Lorenzo Pieralisi (1):
-  hugeshmget02: add missing SHM_HUGETLB flag on segment creation
-
-Mark Rutland (2):
-  inotify: fix inotify.h breakage
-  ioctl: fix stty usage for busybox
-
-Punit Agrawal (1):
-  Move check_hugepage() helper to mem/lib
-
-Suzuki K. Poulose (5):
-  hugeshmctl01: Fix synchronisation with child processes
-  hugeshmctl01: Fix synchronization issue in parent process
-  hugeshmctl02: Fix allocation size for odd number of hugepages
-  getdtablesize01: Handle ENFILE errno
-  perf_event_open: Handle absence of PMU gracefully
-
-Will Deacon (7):
-  thp: ensure THP/hugetlbfs is available
-  vma03: accept ENOMEM return value from mremap
-  creat08: ensure test directories are created in /tmp/
-  kill05: fix race on getpwnam
-  sigwaitinfo01: fix race between sending and dequeueing RT signals
-  sigwaitinfo: catch SEGV and report success for bad_address2 testcase
-  syscalls/mount03: Copy setuid_test to execute instead of 'TEST FILE'
-
- .../cpu_hotplug/include/cpuhotplug_hotplug.sh      | 36 ++++++++++++
- .../cpu_hotplug/include/cpuhotplug_testsuite.sh    |  1 -
- .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c   | 64 ++++++++--------------
- .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c   |  2 +-
- .../kernel/mem/hugetlb/hugeshmget/hugeshmget02.c   |  3 +-
- testcases/kernel/mem/hugetlb/lib/hugetlb.c         |  6 --
- testcases/kernel/mem/hugetlb/lib/hugetlb.h         |  1 -
- testcases/kernel/mem/include/mem.h                 |  2 +
- testcases/kernel/mem/lib/mem.c                     |  6 ++
- testcases/kernel/mem/thp/thp01.c                   |  3 +
- testcases/kernel/mem/thp/thp02.c                   |  2 +
- testcases/kernel/mem/thp/thp03.c                   |  2 +
- testcases/kernel/mem/vma/vma03.c                   |  2 +-
- testcases/kernel/syscalls/creat/creat08.c          |  4 +-
- .../syscalls/getdtablesize/getdtablesize01.c       | 17 +++---
- testcases/kernel/syscalls/inotify/inotify.h        |  8 +--
- testcases/kernel/syscalls/ioctl/test_ioctl         |  2 +-
- testcases/kernel/syscalls/kill/kill05.c            |  7 ++-
- testcases/kernel/syscalls/mount/mount03.c          |  4 +-
- .../syscalls/perf_event_open/perf_event_open01.c   |  3 +-
- .../syscalls/perf_event_open/perf_event_open02.c   |  4 +-
- .../kernel/syscalls/sigwaitinfo/sigwaitinfo01.c    | 36 +++++++++++-
- 22 files changed, 141 insertions(+), 74 deletions(-)
-
+diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.c b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
+index 7afc7d4b4..2f86e3558 100644
+--- a/testcases/kernel/mem/hugetlb/lib/hugetlb.c
++++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
+@@ -40,12 +40,6 @@
+ #include <pwd.h>
+ #include "hugetlb.h"
+ 
+-void check_hugepage(void)
+-{
+-	if (access(PATH_HUGEPAGES, F_OK))
+-		tst_brk(TCONF, "Huge page is not supported.");
+-}
+-
+ /*
+  * getipckey() - generates and returns a message key used by the "get"
+  *		 calls to create an IPC resource.
+diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.h b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
+index c6d2016b7..f4a1a75d7 100644
+--- a/testcases/kernel/mem/hugetlb/lib/hugetlb.h
++++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
+@@ -45,7 +45,6 @@
+  * from shmid_ds.ipc_perm.mode
+  */
+ #define MODE_MASK	0x01FF
+-#define PATH_HUGEPAGES	"/sys/kernel/mm/hugepages/"
+ 
+ key_t shmkey;			/* an IPC key generated by ftok() */
+ 
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index 287f8b3f6..95d0bda72 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -56,8 +56,10 @@ void test_ksm_merge_across_nodes(unsigned long nr_pages);
+ 
+ /* HUGETLB */
+ 
++#define PATH_HUGEPAGES		"/sys/kernel/mm/hugepages/"
+ #define PATH_SHMMAX		"/proc/sys/kernel/shmmax"
+ 
++void check_hugepage(void);
+ void write_memcg(void);
+ 
+ /* cpuset/memcg */
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index dd82b08d2..9ac3160ac 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -346,6 +346,12 @@ static void verify(char **memory, char value, int proc,
+ 	free(s);
+ }
+ 
++void check_hugepage(void)
++{
++	if (access(PATH_HUGEPAGES, F_OK))
++		tst_brk(TCONF, "Huge page is not supported.");
++}
++
+ void write_memcg(void)
+ {
+ 	SAFE_FILE_PRINTF(MEMCG_LIMIT, "%ld", TESTMEM);
 -- 
 2.14.2
 
