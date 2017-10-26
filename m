@@ -1,48 +1,37 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 26 Oct 2017 13:04:40 +0200
-Subject: [LTP] [PATCH v5 08/12] hotplug/memory_hotplug: Exit with TCONF
- when NUMA headers not available
-In-Reply-To: <20171018111106.17215-9-pvorel@suse.cz>
-References: <20171018111106.17215-1-pvorel@suse.cz>
- <20171018111106.17215-9-pvorel@suse.cz>
-Message-ID: <20171026110440.GE7806@rei>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 26 Oct 2017 15:57:25 +0300
+Subject: [LTP] [RFC PATCH 1/7] net/tcp_cmds: Remove rwho test
+In-Reply-To: <20171026083615.g2nwz4kkf27z3h2d@dell5510>
+References: <20171018135001.30382-1-pvorel@suse.cz>
+ <20171018135001.30382-2-pvorel@suse.cz>
+ <2b595bc0-c7be-782f-9592-da206498f84a@oracle.com>
+ <20171026083615.g2nwz4kkf27z3h2d@dell5510>
+Message-ID: <ba581b16-797f-be55-03f6-4fe631588a7c@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> diff --git a/testcases/kernel/hotplug/memory_hotplug/memtoy.c b/testcases/kernel/hotplug/memory_hotplug/memtoy.c
-> index 1a96d914a..296788e30 100644
-> --- a/testcases/kernel/hotplug/memory_hotplug/memtoy.c
-> +++ b/testcases/kernel/hotplug/memory_hotplug/memtoy.c
-> @@ -24,6 +24,8 @@
->  
->  #include <stdio.h>
->  #include "config.h"
-> +#include "tst_res_flags.h"
-> +
->  /* Shortcut because the test requires numa and mempolicy support. */
->  #if HAVE_NUMA_H && HAVE_NUMAIF_H && HAVE_LINUX_MEMPOLICY_H
->  #include <sys/types.h>
-> @@ -495,6 +497,6 @@ int main(int argc, char *argv[])
->  int main(void)
->  {
->  	printf("System doesn't have required numa support.\n");
-> -	return 0;
-> +	return TCONF;
->  }
+On 10/26/2017 11:36 AM, Petr Vorel wrote:
+> ...
+> Please if you agree with other tests to be deleted, ack it.
+> I'd be for deleting at least finger, echo, rlogin and rdist, as Vapier asked for keeping rcp
+> and rsh. IMHO these project should test their code themselves, I'd prefer LTP concern more
+> about the Linux kernel itself, not about *anything* it runs on linux distribution
+> (including networking).
 
-I was trying to figure out how is this binary executed and it seems like
-it is not. There even seems to be some scripts for it. So in the long
-term we should investigate if it's worth keeping or not and maybe
-ressurect it.
+By running those tests youare also verifying kernel TCP stack and
+network drivers.
 
-So all in all I do not see if there is a value in patching it if we do
-not run it at all and it produces strange failures on non-numa machine
-anyways...
+Looking at rlogin, it's the only one among them which is convertedto
+newer API
+already, let's keep it along with the rcp, rsh, they are inthe same
+packages.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Acked the rest. I guess we should also change default network
+configuration to SSH.
+
+Best regards,
+Alexey
+
