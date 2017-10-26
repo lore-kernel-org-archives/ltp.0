@@ -1,10 +1,10 @@
 From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Thu, 26 Oct 2017 15:14:33 +0100
-Subject: [LTP] [PATCH 04/18] hugeshmctl01: Fix synchronization issue in
-	parent process
+Date: Thu, 26 Oct 2017 15:14:34 +0100
+Subject: [LTP] [PATCH 05/18] hugeshmctl02: Fix allocation size for odd
+	number of hugepages
 In-Reply-To: <20171026141447.26749-1-punit.agrawal@arm.com>
 References: <20171026141447.26749-1-punit.agrawal@arm.com>
-Message-ID: <20171026141447.26749-5-punit.agrawal@arm.com>
+Message-ID: <20171026141447.26749-6-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,38 +13,39 @@ To: ltp@lists.linux.it
 
 From: "Suzuki K. Poulose" <suzuki.poulose@arm.com>
 
-Wait for the children from the first test to detach and exit, before
-proceeding to the next round. Otherwise we could have incorrect
-references on the shm_id lying around from the previous run.
+The test tries to allocate 2 * (half the number of available hugepages).
+If we have odd number hugepages, the calculated allocation size is not
+page-aligned and allocation fails.
+
+e.g, (use -s option to trigger it manually)
+
+$ hugeshmctl02 -s 7 -i 5
+hugeshmctl02    0  TINFO  :  set nr_hugepages to 7
+hugeshmctl02    1  TBROK  :  hugeshmctl02.c:153: shmget #2: errno=ENOMEM(12): Cannot allocate memory
+hugeshmctl02    2  TBROK  :  hugeshmctl02.c:153: Remaining cases broken
+hugeshmctl02    0  TINFO  :  set nr_hugepages to 0
+
+Align the size to hugepage_size.
 
 Signed-off-by: Suzuki K. Poulose <suzuki.poulose@arm.com>
 Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
 ---
- testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-index 37a8a0d6f..ea249d1b6 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-@@ -260,10 +260,16 @@ fail:
- static void stat_cleanup(void)
- {
- 	int i;
-+	int status;
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
+index 6079d9937..82964a327 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
+@@ -101,7 +101,7 @@ static void setup(void)
+ 	set_sys_tune("nr_hugepages", hugepages, 1);
+ 	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
  
- 	/* wake up the childern so they can detach the memory and exit */
--	for (i = 0; i < N_ATTACH; i++)
-+	for (i = 0; i < N_ATTACH; i++) {
- 		SAFE_KILL(pid_arr[i], SIGCONT);
-+		/* Wait for the child to exit */
-+		if (waitpid(pid_arr[i], &status, 0) != pid_arr[i] &&
-+			!WIFEXITED(status))
-+			tst_brk(TBROK | TERRNO, "waitpid for exit");
-+	}
+-	shm_size = hpage_size * hugepages / 2;
++	shm_size = hpage_size * (hugepages / 2);
+ 	update_shm_size(&shm_size);
+ 	shmkey = getipckey();
  
- 	/* remove the parent's shared memory the second time through */
- 	if (stat_time == SECOND)
 -- 
 2.14.2
 
