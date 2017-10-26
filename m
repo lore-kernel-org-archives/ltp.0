@@ -1,9 +1,10 @@
 From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Thu, 26 Oct 2017 15:14:36 +0100
-Subject: [LTP] [PATCH 07/18] vma03: accept ENOMEM return value from mremap
+Date: Thu, 26 Oct 2017 15:14:37 +0100
+Subject: [LTP] [PATCH 08/18] creat08: ensure test directories are created in
+	/tmp/
 In-Reply-To: <20171026141447.26749-1-punit.agrawal@arm.com>
 References: <20171026141447.26749-1-punit.agrawal@arm.com>
-Message-ID: <20171026141447.26749-8-punit.agrawal@arm.com>
+Message-ID: <20171026141447.26749-9-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,28 +13,31 @@ To: ltp@lists.linux.it
 
 From: Will Deacon <will.deacon@arm.com>
 
-Attempting to map a wrapping region with mremap should fail (that's the
-whole point of this test). Accept ENOMEM as well as EINVAL.
+runltp runs tests in the ${LTP_ROOT}/bin directory. If this is NFS
+mounted, we can run into problems that need to use setgid. Fix this by
+ensuring that creat08 creates directories in /tmp/
 
 Signed-off-by: Will Deacon <will.deacon@arm.com>
 Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
 ---
- testcases/kernel/mem/vma/vma03.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ testcases/kernel/syscalls/creat/creat08.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/mem/vma/vma03.c b/testcases/kernel/mem/vma/vma03.c
-index 4b34ab0a0..5f231e5bb 100644
---- a/testcases/kernel/mem/vma/vma03.c
-+++ b/testcases/kernel/mem/vma/vma03.c
-@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
+diff --git a/testcases/kernel/syscalls/creat/creat08.c b/testcases/kernel/syscalls/creat/creat08.c
+index 284ae5f1a..bd8368e28 100644
+--- a/testcases/kernel/syscalls/creat/creat08.c
++++ b/testcases/kernel/syscalls/creat/creat08.c
+@@ -63,8 +63,8 @@ int local_flag;
  
- 		remap = mremap(map, pgsz, 2 * pgsz, 0);
- 		if (remap == MAP_FAILED) {
--			if (errno == EINVAL)
-+			if (errno == EINVAL || errno == ENOMEM)
- 				tst_resm(TPASS, "mremap failed as expected.");
- 			else
- 				tst_resm(TFAIL | TERRNO, "mremap");
+ #define MODE_RWX        (S_IRWXU|S_IRWXG|S_IRWXO)
+ #define MODE_SGID       (S_ISGID|S_IRWXU|S_IRWXG|S_IRWXO)
+-#define DIR_A_TEMP	"testdir.A.%d"
+-#define DIR_B_TEMP	"testdir.B.%d"
++#define DIR_A_TEMP	"/tmp/testdir.A.%d"
++#define DIR_B_TEMP	"/tmp/testdir.B.%d"
+ #define SETGID		"setgid"
+ #define NOSETGID	"nosetgid"
+ #define ROOT_SETGID	"root_setgid"
 -- 
 2.14.2
 
