@@ -1,46 +1,34 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue, 31 Oct 2017 14:05:14 +0100
-Subject: [LTP] [PATCH] fzsync: Prevent early exit
-Message-ID: <20171031130514.2823-1-rpalethorpe@suse.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 31 Oct 2017 14:41:07 +0100
+Subject: [LTP] [RFC] Users of memory_hotplug/memtoy
+Message-ID: <20171031134107.de3sdhy5ycu6gaqp@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Richard Palethorpe <richiejp@f-m.fm>
+Hi there,
 
-In some tests it may be possible for the child thread to exit before it has
-completed an equal number of iterations to main thread (the thread which sets
-the exit state). Due to the way most tests use the library this is unlikely to
-matter, but in theory it could cause some tests to exit uncleanly. To fix
-this, we only exit if we find that the thread has progressed to a wait() call
-which would spin indefinitely if exit were not set.
+does anyone use memtoy from testcases/kernel/hotplug/memory_hotplug/ ?
+Or know how to use it? Is it useful?
 
-I already suspected this bug existed, but confirmed while trying to formally
-verify the algorithm using Modex, see:
-https://github.com/richiejp/modex_models
+This was imported to LTP from linux foundation [1] long time ago.
+The project then moved into github [2] but it hasn't been updated for 9 years.
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- include/tst_fuzzy_sync.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+I have some tiny fixes touching it in my patch-set "fix 32 bit cross-compilation"
+[3] [4] [5] [6] [7], but as Cyril pointed out [8], we're not actually running it
+so it's a question whether is useful (and we should run it) or delete whole directory.
 
-diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-index d89f034f0..bcc625e24 100644
---- a/include/tst_fuzzy_sync.h
-+++ b/include/tst_fuzzy_sync.h
-@@ -265,7 +265,9 @@ static inline int tst_fzsync_pair_wait(struct tst_fzsync_pair *pair,
- 			;
- 	}
- 
--	return !tst_atomic_load(&pair->exit);
-+	/* Only exit if we have done the same amount of work as the other thread */
-+	return !tst_atomic_load(&pair->exit) ||
-+	  tst_atomic_load(other_cntr) <= tst_atomic_load(our_cntr);
- }
- 
- static inline int tst_fzsync_wait_a(struct tst_fzsync_pair *pair)
--- 
-2.14.2
 
+Kind regards,
+Petr
+
+[1] http://devresources.linux-foundation.org/dev/hotplug/
+[2] https://github.com/kosaki/memtoy
+[3] http://lists.linux.it/pipermail/ltp/2017-October/006143.html
+[4] http://lists.linux.it/pipermail/ltp/2017-October/006146.html
+[5] http://lists.linux.it/pipermail/ltp/2017-October/006147.html
+[6] http://lists.linux.it/pipermail/ltp/2017-October/006148.html
+[7] http://lists.linux.it/pipermail/ltp/2017-October/006149.html
+[8] http://lists.linux.it/pipermail/ltp/2017-October/006222.html
