@@ -1,80 +1,38 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 31 Oct 2017 09:25:43 +0100
-Subject: [LTP] [PATCH] syscalls/request_key03: new test for key
- instantiation races
-In-Reply-To: <20171030185036.126451-1-ebiggers3@gmail.com>
-References: <20171030185036.126451-1-ebiggers3@gmail.com>
-Message-ID: <20171031082543.udhds5dvuj42kcqr@dell5510>
+Date: Tue, 31 Oct 2017 11:18:48 +0100
+Subject: [LTP] [PATCH 2/3] lib: tst_rhost_run: new option -B for saving
+ background log
+In-Reply-To: <1507812041-2068-2-git-send-email-alexey.kodanev@oracle.com>
+References: <1507812041-2068-1-git-send-email-alexey.kodanev@oracle.com>
+ <1507812041-2068-2-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20171031101847.o5yimjvbwhkvecs7@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> From: Eric Biggers <ebiggers@google.com>
-
-> Add a test for two related bugs in the keyrings subsystem which each
-> allowed unprivileged local users to cause a kernel oops (at best) by
-> attempting to "add" a key concurrently with "requesting" it.
-
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-
-Looks very nice to me. Just two notes below.
-
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> ---
+>  testcases/lib/test_net.sh |   10 ++++++----
+>  1 files changed, 6 insertions(+), 4 deletions(-)
 <snip>
 
-> +
-> +	SAFE_WAITPID(add_key_pid, &status, 0);
-> +	if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-> +		tst_res(TPASS, "didn't crash while updating key of type '%s'",
-> +			type);
-> +	} else if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL) {
-> +		/* Probably CVE-2017-15299 */
-> +		tst_res(TFAIL, "kernel oops while updating key of type '%s'",
-> +			type);
-> +	} else {
-> +		tst_brk(TBROK, "add_key child %s", tst_strstatus(status));
-> +	}
-> +
-> +	SAFE_WAITPID(request_key_pid, &status, 0);
-> +	if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-> +		tst_res(TPASS, "didn't crash while requesting key of type '%s'",
-> +			type);
-> +	} else if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL) {
-> +		/* Probably CVE-2017-15951 */
-> +		tst_res(TFAIL, "kernel oops while requesting key of type '%s'",
-> +			type);
-> +	} else {
-> +		tst_brk(TBROK, "request_key child %s", tst_strstatus(status));
-> +	}
+>  		case "$opt" in
+> -		b) [ "$TST_USE_NETNS" ] && pre_cmd="" || pre_cmd="nohup"
+> -		   post_cmd=" > /dev/null 2>&1 &"
+> +		b|B) [ "$TST_USE_NETNS" ] && pre_cmd="" || pre_cmd="nohup"
+Minor nit: use cmd=
+		b|B) [ "$TST_USE_NETNS" ] && pre_cmd= || pre_cmd="nohup"
 
-You evaluate test twice: for add_key_pid and then for request_key_pid.
-This can lead to FAIL and PASS together. It's probably ok, it's just unusual for me.
-./request_key03 
-tst_test.c:958: INFO: Timeout per run is 0h 05m 00s
-request_key03.c:136: FAIL: kernel oops while updating key of type 'encrypted'
-request_key03.c:144: PASS: didn't crash while requesting key of type 'encrypted'
-...
+> +		   [ "$opt" = b ] && bg="/dev/null" || bg="$TST_TMPDIR/bg.cmd"
+> +		   post_cmd=" > $bg 2>&1 &"
+>  		   out="1> /dev/null"
+>  		;;
+>  		s) safe=1 ;;
 
+LGTM.
 
-> +static void do_test(void)
-> +{
-> +	/*
-> +	 * Briefly test the "encrypted" and/or "trusted" key types when
-> +	 * availaible, mainly to reproduce CVE-2017-15299.
-> +	 */
-> +	test_with_key_type("encrypted", "update user:foo 32", 2);
-> +	test_with_key_type("trusted", "update", 2);
-> +
-> +	/*
-> +	 * Test the "user" key type for longer, mainly in order to reproduce
-> +	 * CVE-2017-15951.  However, without the fix for CVE-2017-15299 as well,
-> +	 * WARNs may show up in the kernel log.
-> +	 */
-> +	test_with_key_type("user", "payload", 15);
-I wonder (out of curiosity how did you get values for effort (2 and 15).
-
-<snip>
 
 Kind regards,
 Petr
