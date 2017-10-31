@@ -1,34 +1,32 @@
-From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Tue, 31 Oct 2017 12:46:02 +0000
-Subject: [LTP] [PATCH 08/18] creat08: ensure test directories are
-	created in /tmp/
-In-Reply-To: <20171031110733.GF14550@rei.lan> (Cyril Hrubis's message of "Tue, 
- 31 Oct 2017 12:07:33 +0100")
-References: <20171026141447.26749-1-punit.agrawal@arm.com>
- <20171026141447.26749-9-punit.agrawal@arm.com>
- <20171031110733.GF14550@rei.lan>
-Message-ID: <8760aveb91.fsf@e105922-lin.cambridge.arm.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 31 Oct 2017 13:50:55 +0100
+Subject: [LTP] [PATCH v5 08/12] hotplug/memory_hotplug: Exit with TCONF
+ when NUMA headers not available
+In-Reply-To: <20171028164720.utteq22aykmzhe4x@x230>
+References: <20171018111106.17215-1-pvorel@suse.cz>
+ <20171018111106.17215-9-pvorel@suse.cz> <20171026110440.GE7806@rei>
+ <20171028164720.utteq22aykmzhe4x@x230>
+Message-ID: <20171031125055.GN14550@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+Hi!
+> How about deleting whole testcases/kernel/hotplug/memory_hotplug directory?
+> The only binary from that directory is memtoy, which is indeed not used in
+> any runtest file nor any script called by a runtest file.
+> 
+> It was taken from an upstream project from
+> http://devresources.linux-foundation.org/dev/hotplug/, which is now available
+> in https://github.com/kosaki/memtoy.
 
-> Hi!
->> runltp runs tests in the ${LTP_ROOT}/bin directory. If this is NFS
->> mounted, we can run into problems that need to use setgid. Fix this by
->> ensuring that creat08 creates directories in /tmp/
->
-> The test setup calls tst_tmpdir() which creates temporary directory in
-> /tmp/ and changes $PWD to point into it. So these directories has to be
-> created in /tmp/. If that is not the case something is wrong with the
-> test.
+That one seems to be last updated 9 years ago, so it's dead as well. So
+the real question is if it's useful or not. We may as well raise the
+question on LTP ML and possibly on LMKL as well. Maybe there is someone
+using it and can explain if it's useful and how.
 
-Hah.. it looks like we are carrying this one around since before
-tst_tmpdir() was used. Another reason to try and track upstream as
-closely as we can.
-
-I'll drop this from the next version after confirming that it is no
-longer needed.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
