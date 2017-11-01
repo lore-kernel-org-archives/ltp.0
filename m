@@ -1,163 +1,41 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Wed,  1 Nov 2017 11:34:50 +0100
-Subject: [LTP] [PATCH v2 2/2] POSIX: Allow pthread_cond_destroy to block
-In-Reply-To: <20171101103450.9942-1-rpalethorpe@suse.com>
-References: <20171101103450.9942-1-rpalethorpe@suse.com>
-Message-ID: <20171101103450.9942-2-rpalethorpe@suse.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 1 Nov 2017 11:59:35 +0100
+Subject: [LTP] [PATCH] syscalls/request_key03: new test for key
+ instantiation races
+In-Reply-To: <20171031180341.GC101782@gmail.com>
+References: <20171030185036.126451-1-ebiggers3@gmail.com>
+ <20171031082543.udhds5dvuj42kcqr@dell5510>
+ <20171031180341.GC101782@gmail.com>
+Message-ID: <20171101105935.GA12823@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- .../pthread_cond_destroy/speculative/4-1.c         | 86 +++++++++++++---------
- 1 file changed, 50 insertions(+), 36 deletions(-)
+Hi!
+> > You evaluate test twice: for add_key_pid and then for request_key_pid.
+> > This can lead to FAIL and PASS together. It's probably ok, it's just unusual for me.
+> > ./request_key03 
+> > tst_test.c:958: INFO: Timeout per run is 0h 05m 00s
+> > request_key03.c:136: FAIL: kernel oops while updating key of type 'encrypted'
+> > request_key03.c:144: PASS: didn't crash while requesting key of type 'encrypted'
+> > ...
+> > 
+> 
+> Would it be better if there was just one PASS, and it is only executed if
+> neither of the FAILs was reached?
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_destroy/speculative/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_destroy/speculative/4-1.c
-index 9df7c1993..b447a2ffe 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_destroy/speculative/4-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_cond_destroy/speculative/4-1.c
-@@ -1,19 +1,17 @@
- /*
-  * Copyright (c) 2004, QUALCOMM Inc. All rights reserved.
-+ * Copyright (c) 2017, Richard Palethorpe <rpalethorpe@suse.com>
-  * Created by:  abisain REMOVE-THIS AT qualcomm DOT com
-  * This file is licensed under the GPL license.  For the full content
-  * of this license, see the COPYING file at the top level of this
-  * source tree.
--
-- * Test that when  pthread_cond_destroy()
-- *   is called on a cond that some thread is waiting, then it returns
-- *   EBUSY
--
-- * Steps:
-- * 1. Create a condvar
-- * 2. Create a thread and make it wait on the condvar
-- * 3. Try to destroy the cond var in main
-- * 4. Check that pthread_cond_destroy returns EBUSY
-+ *
-+ * Test that EBUSY is returned when pthread_cond_destroy() is called on a cond
-+ * var that has waiters. POSIX only recommends this behaviour, the required
-+ * behaviour is undefined.
-+ *
-+ * This test is very similar to pthread_barrier_destroy 2-1 which has more
-+ * explanation attached.
-  */
- 
- #include <pthread.h>
-@@ -21,68 +19,84 @@
- #include <stdlib.h>
- #include <errno.h>
- #include <unistd.h>
-+#include <string.h>
- #include "posixtest.h"
- 
--#define TEST "4-1"
--#define FUNCTION "pthread_cond_destroy"
--#define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
--
--/* cond used by the two threads */
- pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
--
--/* cond used by the two threads */
- pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
- 
- void *thread(void *tmp)
- {
- 	int rc = 0;
- 
--	/* acquire the mutex */
-+	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-+
- 	rc = pthread_mutex_lock(&mutex);
- 	if (rc != 0) {
--		printf(ERROR_PREFIX "pthread_mutex_lock\n");
-+		perror("child: pthread_mutex_lock");
- 		exit(PTS_UNRESOLVED);
- 	}
- 
--	/* Wait on the cond var. This will not return, as nobody signals */
- 	rc = pthread_cond_wait(&cond, &mutex);
- 	if (rc != 0) {
--		printf(ERROR_PREFIX "pthread_cond_wait\n");
--		exit(PTS_UNRESOLVED);
-+		perror("child: pthread_cond_wait");
-+		exit(PTS_UNSUPPORTED);
- 	}
- 
- 	rc = pthread_mutex_unlock(&mutex);
- 	if (rc != 0) {
--		printf(ERROR_PREFIX "pthread_mutex_unlock\n");
-+		perror("child: pthread_mutex_unlock");
-+		exit(PTS_UNSUPPORTED);
-+	}
-+
-+	return tmp;
-+}
-+
-+void *watchdog(void *arg)
-+{
-+	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-+
-+	sleep(1);
-+	printf("watchdog: pthread_cond_destroy() appears to be blocking\n");
-+	if (pthread_cond_signal(&cond)) {
-+		perror("watchdog: pthread_cond_signal()");
- 		exit(PTS_UNRESOLVED);
- 	}
--	return NULL;
-+
-+	return arg;
- }
- 
- int main(void)
- {
--	pthread_t low_id;
-+	pthread_t low_id, watchdog_thread;
- 	int rc = 0;
- 
--	/* Create a new thread with default attributes */
- 	rc = pthread_create(&low_id, NULL, thread, NULL);
- 	if (rc != 0) {
--		printf(ERROR_PREFIX "pthread_create\n");
-+		perror("main: pthread_create");
- 		exit(PTS_UNRESOLVED);
- 	}
- 
--	/* Let the other thread run */
--	sleep(2);
-+	sleep(1);
-+
-+	rc = pthread_create(&watchdog_thread, NULL, watchdog, NULL);
-+	if (rc != 0) {
-+		perror("main: pthread_create");
-+		exit(PTS_UNRESOLVED);
-+	}
- 
--	/* Try to destroy the cond var. This should return an error */
- 	rc = pthread_cond_destroy(&cond);
- 	if (rc != EBUSY) {
--		printf(ERROR_PREFIX "Test PASS: Expected %d(EBUSY) got %d, "
--		       "though the standard states 'may' fail\n", EBUSY, rc);
--
--		exit(PTS_PASS);
-+		printf("UNSUPPORTED: The standard recommends returning %d, EBUSY, but got %d, %s\n",
-+		       EBUSY, rc, strerror(rc));
-+		rc = PTS_UNSUPPORTED;
-+	} else {
-+		printf("PASSED: received EBUSY as per recommendation\n");
-+		rc = PTS_PASS;
- 	}
- 
--	printf("Test PASSED\n");
--	exit(PTS_PASS);
-+	pthread_cancel(watchdog_thread);
-+	pthread_cancel(low_id);
-+
-+	exit(rc);
- }
+Frankly I do not care that much in this case, the messages are pretty
+clear on what is happening.
+
+The only thing I find a bit confusing is that we run the test twice for
+different CVEs and if one of them fails, both of them are marked as
+failed. It would be cleaner to pass optional parameter to the test for
+which CVE we are looking for and fail the test only if the operation we
+are interested in caused the oops. And, of course, fail on any if the
+test was executed without it. Otherwise I'm fine with the code as it is.
+
 -- 
-2.14.3
-
+Cyril Hrubis
+chrubis@suse.cz
