@@ -1,281 +1,159 @@
 From: Li Wang <liwang@redhat.com>
-Date: Wed,  1 Nov 2017 13:15:23 +0800
-Subject: [LTP] [PATCH v3 2/2] lib: keep the test id hidden in LTP library
-Message-ID: <20171101051523.373-2-liwang@redhat.com>
+Date: Wed,  1 Nov 2017 13:15:22 +0800
+Subject: [LTP] [PATCH v3 1/2] ltp: fix some frequent typoes
+Message-ID: <20171101051523.373-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To avoid introducing wrong tid's typos radically, this patch keep the tid
-hidden in library by moving out '.tid' variable from the test struct.
-
-Meanwhile, adding a newly string '.scall' to support LTP can get the correct
-syscall name for timer management library.
+These are high-frequency easily misspelled words: kernel|memory|filesystem|network.
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- include/tst_test.h                                          |  5 +++--
- include/tst_timer_test.h                                    |  2 +-
- lib/tst_test.c                                              | 13 +++++++------
- lib/tst_timer_test.c                                        |  4 ++--
- .../kernel/controllers/memcg/regression/memcg_test_3.c      |  1 -
- testcases/kernel/mem/ksm/ksm06.c                            |  1 -
- testcases/kernel/mem/tunable/max_map_count.c                |  1 -
- .../kernel/syscalls/clock_nanosleep/clock_nanosleep02.c     |  2 +-
- testcases/kernel/syscalls/epoll_wait/epoll_wait02.c         |  2 +-
- testcases/kernel/syscalls/futex/futex_wait05.c              |  2 +-
- testcases/kernel/syscalls/nanosleep/nanosleep01.c           |  2 +-
- testcases/kernel/syscalls/poll/poll02.c                     |  2 +-
- testcases/kernel/syscalls/pselect/pselect01.c               |  2 +-
- testcases/kernel/syscalls/select/select04.c                 |  2 +-
- testcases/lib/tst_device.c                                  |  1 -
- 15 files changed, 20 insertions(+), 22 deletions(-)
+ doc/test-writing-guidelines.txt                                  | 2 +-
+ include/old/old_device.h                                         | 2 +-
+ include/tst_safe_macros.h                                        | 2 +-
+ testcases/kernel/containers/TEST_PLAN.txt                        | 2 +-
+ testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh | 2 +-
+ testcases/kernel/device-drivers/agp/kernel_space/tagp.c          | 2 +-
+ testcases/kernel/device-drivers/agp/kernel_space/tagp.h          | 2 +-
+ testcases/kernel/device-drivers/agp/user_space/user_tagp.c       | 2 +-
+ testcases/kernel/fs/fs-bench/modaltr.sh                          | 2 +-
+ testcases/network/iptables/iptables_tests.sh                     | 2 +-
+ 10 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index f9872d9..9b940d6 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -105,8 +105,6 @@ int tst_parse_long(const char *str, long *val, long min, long max);
- int tst_parse_float(const char *str, float *val, float min, float max);
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index edc1f60..207eadd 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -822,7 +822,7 @@ Aligns the x to be next multiple of a. The a must be power of 2.
+ 2.2.12 Filesystem type detection
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  
- struct tst_test {
--	/* test id usually the same as test filename without file suffix */
--	const char *tid;
- 	/* number of tests available in test() function */
- 	unsigned int tcnt;
+-Some tests are known to fail on certain filesytems (you cannot swap on TMPFS,
++Some tests are known to fail on certain filesystems (you cannot swap on TMPFS,
+ there are unimplemented 'fcntl()' etc.).
  
-@@ -150,6 +148,9 @@ struct tst_test {
- 	void (*test)(unsigned int test_nr);
- 	void (*test_all)(void);
+ If your test needs to be skipped on certain filesystems, use the interface
+diff --git a/include/old/old_device.h b/include/old/old_device.h
+index 4dbb3ff..17da57e 100644
+--- a/include/old/old_device.h
++++ b/include/old/old_device.h
+@@ -21,7 +21,7 @@
+ /*
+  * Returns filesystem type to be used for the testing. Unless your test is
+  * designed for specific filesystem you should use this function to the tested
+- * filesytem.
++ * filesystem.
+  *
+  * If TST_DEV_FS_TYPE is set the function returns it's content,
+  * otherwise default fs type hardcoded in the library is returned.
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 9562005..ed9c73c 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -406,7 +406,7 @@ static inline sighandler_t safe_signal(const char *file, const int lineno,
+ #define SAFE_EXECL(file, arg, ...) do {				\
+        execl((file), (arg), ##__VA_ARGS__);			\
+        tst_brk_(__FILE__, __LINE__, TBROK | TERRNO,		\
+-                "execlp(%s, %s, ...) failed", file, arg); 	\
++                "execl(%s, %s, ...) failed", file, arg); 	\
+        } while (0)
  
-+	/* Syscall name will pass to timer measurement library*/
-+	const char *scall;
-+
- 	/* Sampling function for timer measurement testcases */
- 	int (*sample)(int clk_id, long long usec);
+ int safe_getpriority(const char *file, const int lineno, int which, id_t who);
+diff --git a/testcases/kernel/containers/TEST_PLAN.txt b/testcases/kernel/containers/TEST_PLAN.txt
+index 4b3d2bc..809abae 100644
+--- a/testcases/kernel/containers/TEST_PLAN.txt
++++ b/testcases/kernel/containers/TEST_PLAN.txt
+@@ -19,7 +19,7 @@ Following are tentative Testcases to be included into LTP-Containers in future:
+ NAME						TENTATIVE-TIME
+ =================================================================================
+ PID NAMESPACES					(NEAR FUTURE)
+-NETWROK NAMESPACES				(NEAR FUTURE)
++NETWORK NAMESPACES				(NEAR FUTURE)
+ POSIX IPC NAMESPACES				(NEAR FUTURE)
+ TTY+CONSOLE+DEVPTS NAMESPACES			(NEAR FUTURE)
+ PROC+SYSFS ISOLATION				(NEAR FUTURE)
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
+index 2c47a92..3bfc1da 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
+@@ -21,7 +21,7 @@
+ ################################################################################
+ #
+ # File :        memcg_stat_test.sh
+-# Description:  Tests memroy.stat.
++# Description:  Tests memory.stat.
+ # Author:       Peng Haitao <penght@cn.fujitsu.com>
+ # History:      2012/01/16 - Created.
+ #
+diff --git a/testcases/kernel/device-drivers/agp/kernel_space/tagp.c b/testcases/kernel/device-drivers/agp/kernel_space/tagp.c
+index 99e76f1..496c8a7 100644
+--- a/testcases/kernel/device-drivers/agp/kernel_space/tagp.c
++++ b/testcases/kernel/device-drivers/agp/kernel_space/tagp.c
+@@ -216,7 +216,7 @@ static int tagp_ioctl(struct inode *ino, struct file *f,
+ 	case TEST_GENERIC_FREE_GATT_TABLE:
+ 		rc = test_agp_generic_free_gatt_table();
+ 		break;
+-	case TEST_GENERIC_INSERT_MEMROY:
++	case TEST_GENERIC_INSERT_MEMORY:
+ 		rc = test_agp_generic_insert_memory();
+ 		break;
+ 	case TEST_GENERIC_ALLOC_BY_TYPE:
+diff --git a/testcases/kernel/device-drivers/agp/kernel_space/tagp.h b/testcases/kernel/device-drivers/agp/kernel_space/tagp.h
+index 3df13dc..b7b6303 100644
+--- a/testcases/kernel/device-drivers/agp/kernel_space/tagp.h
++++ b/testcases/kernel/device-drivers/agp/kernel_space/tagp.h
+@@ -55,7 +55,7 @@
+ #define TEST_NUM_ENTRIES			_IO(MAG_NUM, 12)
+ #define TEST_GENERIC_CREATE_GATT_TABLE		_IO(MAG_NUM, 13)
+ #define TEST_GENERIC_FREE_GATT_TABLE		_IO(MAG_NUM, 14)
+-#define TEST_GENERIC_INSERT_MEMROY		_IO(MAG_NUM, 15)
++#define TEST_GENERIC_INSERT_MEMORY		_IO(MAG_NUM, 15)
+ #define TEST_GENERIC_ALLOC_BY_TYPE		_IO(MAG_NUM, 16)
+ #define TEST_GENERIC_ALLOC_PAGE			_IO(MAG_NUM, 17)
+ #define TEST_ENABLE				_IO(MAG_NUM, 19)
+diff --git a/testcases/kernel/device-drivers/agp/user_space/user_tagp.c b/testcases/kernel/device-drivers/agp/user_space/user_tagp.c
+index 8d432b7..500067e 100644
+--- a/testcases/kernel/device-drivers/agp/user_space/user_tagp.c
++++ b/testcases/kernel/device-drivers/agp/user_space/user_tagp.c
+@@ -249,7 +249,7 @@ int main()
+ 		printf("Success on agp_generic_free_gatt_table\n");
  
-diff --git a/include/tst_timer_test.h b/include/tst_timer_test.h
-index 59931d3..23fc0ba 100644
---- a/include/tst_timer_test.h
-+++ b/include/tst_timer_test.h
-@@ -37,7 +37,7 @@
-     }
+ 	/* make test calls for agp_generic_insert_memory */
+-	if (ki_generic(tagp_fd, TEST_GENERIC_INSERT_MEMROY))
++	if (ki_generic(tagp_fd, TEST_GENERIC_INSERT_MEMORY))
+ 		printf("Fail on agp_generic_insert_memory\n");
+ 	else
+ 		printf("Success on agp_generic_insert_memory\n");
+diff --git a/testcases/kernel/fs/fs-bench/modaltr.sh b/testcases/kernel/fs/fs-bench/modaltr.sh
+index c4ea745..e44c17f 100755
+--- a/testcases/kernel/fs/fs-bench/modaltr.sh
++++ b/testcases/kernel/fs/fs-bench/modaltr.sh
+@@ -6,7 +6,7 @@
+ # 4.you should have fs-bench utility (http://h2np.net/tools/fs-bench-0.2.tar.gz)
+ # 5.results will be copied to /tmp/log and /tmp/log1 files
  
-     struct tst_test test = {
--	.tid = "syscall_name()",
-+	.scall = "syscall_name()",
- 	.sample = sample,
-     };
+-#DESCRIPTION: This testscript creates a jffs2 file system type and tests the filesytem test
++#DESCRIPTION: This testscript creates a jffs2 file system type and tests the filesystem test
+ #and places the log in the log directory.The file system test actually creates a tree of large
+ #directories and performs the delete and random delete operations as per the filesystem stress
+ #algorithim and gives a report of real time ,user time,system time taken to perform the file
+diff --git a/testcases/network/iptables/iptables_tests.sh b/testcases/network/iptables/iptables_tests.sh
+index a3f90a3..4a2a37c 100755
+--- a/testcases/network/iptables/iptables_tests.sh
++++ b/testcases/network/iptables/iptables_tests.sh
+@@ -36,7 +36,7 @@ init()
+ 	if [ $? -ne 0 ]; then
+ 		iptables -L > tst_iptables.out 2>&1
+ 		if [ $? -ne 0 ]; then
+-			tst_brkm TBROK "no iptables support in kenrel."
++			tst_brkm TBROK "no iptables support in kernel."
+ 		fi
+ 	fi
  
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index f8b3fb4..1b9f80c 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -41,6 +41,7 @@
- 
- struct tst_test *tst_test;
- 
-+static char *tid = NULL;
- static int iterations = 1;
- static float duration = -1;
- static pid_t main_pid, lib_pid;
-@@ -77,7 +78,7 @@ static void setup_ipc(void)
- 
- 	if (access("/dev/shm", F_OK) == 0) {
- 		snprintf(shm_path, sizeof(shm_path), "/dev/shm/ltp_%s_%d",
--		         tst_test->tid, getpid());
-+		         tid, getpid());
- 	} else {
- 		char *tmpdir;
- 
-@@ -86,7 +87,7 @@ static void setup_ipc(void)
- 
- 		tmpdir = tst_get_tmpdir();
- 		snprintf(shm_path, sizeof(shm_path), "%s/ltp_%s_%d",
--		         tmpdir, tst_test->tid, getpid());
-+		         tmpdir, tid, getpid());
- 		free(tmpdir);
- 	}
- 
-@@ -688,12 +689,12 @@ static void do_setup(int argc, char *argv[])
- 
- 	assert_test_fn();
- 
-+	if (!tid)
-+		tid = get_tid(argv);
-+
- 	if (tst_test->sample)
- 		tst_test = tst_timer_test_setup(tst_test);
- 
--	if (!tst_test->tid)
--		tst_test->tid = get_tid(argv);
--
- 	parse_opts(argc, argv);
- 
- 	if (tst_test->needs_root && geteuid() != 0)
-@@ -972,7 +973,7 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
- 
- 	do_setup(argc, argv);
- 
--	TCID = tst_test->tid;
-+	TCID = tid;
- 
- 	SAFE_SIGNAL(SIGALRM, alarm_handler);
- 	SAFE_SIGNAL(SIGUSR1, heartbeat_handler);
-diff --git a/lib/tst_timer_test.c b/lib/tst_timer_test.c
-index cd4ebca..2aa2792 100644
---- a/lib/tst_timer_test.c
-+++ b/lib/tst_timer_test.c
-@@ -459,10 +459,10 @@ struct tst_test *tst_timer_test_setup(struct tst_test *timer_test)
- {
- 	setup = timer_test->setup;
- 	cleanup = timer_test->cleanup;
--	scall = timer_test->tid;
-+	scall = timer_test->scall;
- 	sample = timer_test->sample;
- 
--	timer_test->tid = NULL;
-+	timer_test->scall = NULL;
- 	timer_test->setup = timer_setup;
- 	timer_test->cleanup = timer_cleanup;
- 	timer_test->test = timer_test_fn;
-diff --git a/testcases/kernel/controllers/memcg/regression/memcg_test_3.c b/testcases/kernel/controllers/memcg/regression/memcg_test_3.c
-index 994d87b..3b25f84 100644
---- a/testcases/kernel/controllers/memcg/regression/memcg_test_3.c
-+++ b/testcases/kernel/controllers/memcg/regression/memcg_test_3.c
-@@ -112,7 +112,6 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
--	.tid = "memcg_test_3",
- 	.needs_root = 1,
- 	.needs_tmpdir = 1,
- 	.forks_child = 1,
-diff --git a/testcases/kernel/mem/ksm/ksm06.c b/testcases/kernel/mem/ksm/ksm06.c
-index 334a048..4272a42 100644
---- a/testcases/kernel/mem/ksm/ksm06.c
-+++ b/testcases/kernel/mem/ksm/ksm06.c
-@@ -97,7 +97,6 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
--	.tid = "ksm06",
- 	.needs_root = 1,
- 	.options = ksm_options,
- 	.setup = setup,
-diff --git a/testcases/kernel/mem/tunable/max_map_count.c b/testcases/kernel/mem/tunable/max_map_count.c
-index e47543d..93a764d 100644
---- a/testcases/kernel/mem/tunable/max_map_count.c
-+++ b/testcases/kernel/mem/tunable/max_map_count.c
-@@ -208,7 +208,6 @@ static void max_map_count_test(void)
- }
- 
- static struct tst_test test = {
--	.tid = "max_map_count",
- 	.needs_root = 1,
- 	.forks_child = 1,
- 	.setup = setup,
-diff --git a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep02.c b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep02.c
-index f114013..9b0b243 100644
---- a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep02.c
-+++ b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep02.c
-@@ -44,6 +44,6 @@ int sample_fn(int clk_id, long long usec)
- }
- 
- static struct tst_test test = {
--	.tid = "nanosleep()",
-+	.scall = "clock_nanosleep()",
- 	.sample = sample_fn,
- };
-diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait02.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait02.c
-index aa1bd0d..70cddb9 100644
---- a/testcases/kernel/syscalls/epoll_wait/epoll_wait02.c
-+++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait02.c
-@@ -77,7 +77,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
--	.tid = "epoll_wait()",
-+	.scall = "epoll_wait()",
- 	.sample = sample_fn,
- 	.setup = setup,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/futex/futex_wait05.c b/testcases/kernel/syscalls/futex/futex_wait05.c
-index f6b0aa1..066944f 100644
---- a/testcases/kernel/syscalls/futex/futex_wait05.c
-+++ b/testcases/kernel/syscalls/futex/futex_wait05.c
-@@ -52,6 +52,6 @@ int sample_fn(int clk_id, long long usec)
- }
- 
- static struct tst_test test = {
--	.tid = "futex_wait()",
-+	.scall = "futex_wait()",
- 	.sample = sample_fn,
- };
-diff --git a/testcases/kernel/syscalls/nanosleep/nanosleep01.c b/testcases/kernel/syscalls/nanosleep/nanosleep01.c
-index 6d90a60..bcec1f8 100644
---- a/testcases/kernel/syscalls/nanosleep/nanosleep01.c
-+++ b/testcases/kernel/syscalls/nanosleep/nanosleep01.c
-@@ -47,6 +47,6 @@ int sample_fn(int clk_id, long long usec)
- }
- 
- static struct tst_test test = {
--	.tid = "nanosleep()",
-+	.scall = "nanosleep()",
- 	.sample = sample_fn,
- };
-diff --git a/testcases/kernel/syscalls/poll/poll02.c b/testcases/kernel/syscalls/poll/poll02.c
-index 0aa228c..b85df29 100644
---- a/testcases/kernel/syscalls/poll/poll02.c
-+++ b/testcases/kernel/syscalls/poll/poll02.c
-@@ -64,7 +64,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
--	.tid = "poll()",
-+	.scall = "poll()",
- 	.sample = sample_fn,
- 	.setup = setup,
- 	.cleanup = cleanup,
-diff --git a/testcases/kernel/syscalls/pselect/pselect01.c b/testcases/kernel/syscalls/pselect/pselect01.c
-index a2b5339..1392689 100644
---- a/testcases/kernel/syscalls/pselect/pselect01.c
-+++ b/testcases/kernel/syscalls/pselect/pselect01.c
-@@ -44,6 +44,6 @@ int sample_fn(int clk_id, long long usec)
- }
- 
- static struct tst_test test = {
--	.tid = "pselect()",
-+	.scall = "pselect()",
- 	.sample = sample_fn,
- };
-diff --git a/testcases/kernel/syscalls/select/select04.c b/testcases/kernel/syscalls/select/select04.c
-index 1431785..4ca7a31 100644
---- a/testcases/kernel/syscalls/select/select04.c
-+++ b/testcases/kernel/syscalls/select/select04.c
-@@ -66,7 +66,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
--	.tid = "select()",
-+	.scall = "select()",
- 	.sample = sample_fn,
- 	.setup = setup,
- 	.cleanup = cleanup,
-diff --git a/testcases/lib/tst_device.c b/testcases/lib/tst_device.c
-index d33cac6..1640662 100644
---- a/testcases/lib/tst_device.c
-+++ b/testcases/lib/tst_device.c
-@@ -27,7 +27,6 @@
- extern struct tst_test *tst_test;
- 
- static struct tst_test test = {
--	.tid = "tst_device"
- };
- 
- static void print_help(void)
 -- 
 2.9.3
 
