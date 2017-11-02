@@ -1,8 +1,8 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu,  2 Nov 2017 14:39:43 +0100
-Subject: [LTP] [PATCH v7] Add test for CVE-2017-7308 on a raw socket's ring
+Date: Thu,  2 Nov 2017 14:44:06 +0100
+Subject: [LTP] [PATCH v8] Add test for CVE-2017-7308 on a raw socket's ring
 	buffer
-Message-ID: <20171102133943.22297-1-rpalethorpe@suse.com>
+Message-ID: <20171102134406.22929-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,13 +16,16 @@ just define what is needed in the test.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
+
+I renamed the wrong test in V7...
+
  configure.ac                                       |   3 +
  m4/ltp-tpacket-v3.m4                               |  22 ++++
- runtest/cve                                        |   3 +-
+ runtest/cve                                        |   1 +
  runtest/syscalls                                   |   2 +-
  testcases/kernel/syscalls/.gitignore               |   1 +
  .../kernel/syscalls/setsockopt/setsockopt02.c      | 145 +++++++++++++++++++++
- 6 files changed, 174 insertions(+), 2 deletions(-)
+ 6 files changed, 173 insertions(+), 1 deletion(-)
  create mode 100644 m4/ltp-tpacket-v3.m4
  create mode 100644 testcases/kernel/syscalls/setsockopt/setsockopt02.c
 
@@ -75,19 +78,14 @@ index 000000000..fce2e0ebf
 +])
 +])
 diff --git a/runtest/cve b/runtest/cve
-index bea7b3b5b..766e6fb8e 100644
+index bea7b3b5b..f137fb3db 100644
 --- a/runtest/cve
 +++ b/runtest/cve
-@@ -13,10 +13,11 @@ cve-2016-7042 cve-2016-7042
- cve-2016-7117 cve-2016-7117
- cve-2016-9604 keyctl08
- cve-2016-10044 cve-2016-10044
--cve-2017-2618 cve-2017-2618
-+cve-2017-2618 setsockopt02
+@@ -17,6 +17,7 @@ cve-2017-2618 cve-2017-2618
  cve-2017-2671 cve-2017-2671
  cve-2017-5669 cve-2017-5669
  cve-2017-6951 cve-2017-6951
-+cve-2017-7308 cve-2017-7308
++cve-2017-7308 setsockopt02
  cve-2017-7472 keyctl04
  cve-2017-12192 keyctl07
  cve-2017-15274 add_key02
