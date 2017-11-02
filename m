@@ -1,107 +1,47 @@
 From: Eric Biggers <ebiggers3@gmail.com>
-Date: Thu,  2 Nov 2017 10:15:40 -0700
-Subject: [LTP] [PATCH] syscalls/keyctl06: update to test for follow-on fix
-Message-ID: <20171102171540.76665-1-ebiggers3@gmail.com>
+Date: Thu, 2 Nov 2017 12:13:48 -0700
+Subject: [LTP] [PATCH] syscalls/request_key03: new test for key
+ instantiation races
+In-Reply-To: <20171101105935.GA12823@rei.lan>
+References: <20171030185036.126451-1-ebiggers3@gmail.com>
+ <20171031082543.udhds5dvuj42kcqr@dell5510>
+ <20171031180341.GC101782@gmail.com>
+ <20171101105935.GA12823@rei.lan>
+Message-ID: <20171102191348.GD23035@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Eric Biggers <ebiggers@google.com>
+On Wed, Nov 01, 2017 at 11:59:35AM +0100, Cyril Hrubis wrote:
+> Hi!
+> > > You evaluate test twice: for add_key_pid and then for request_key_pid.
+> > > This can lead to FAIL and PASS together. It's probably ok, it's just unusual for me.
+> > > ./request_key03 
+> > > tst_test.c:958: INFO: Timeout per run is 0h 05m 00s
+> > > request_key03.c:136: FAIL: kernel oops while updating key of type 'encrypted'
+> > > request_key03.c:144: PASS: didn't crash while requesting key of type 'encrypted'
+> > > ...
+> > > 
+> > 
+> > Would it be better if there was just one PASS, and it is only executed if
+> > neither of the FAILs was reached?
+> 
+> Frankly I do not care that much in this case, the messages are pretty
+> clear on what is happening.
+> 
+> The only thing I find a bit confusing is that we run the test twice for
+> different CVEs and if one of them fails, both of them are marked as
+> failed. It would be cleaner to pass optional parameter to the test for
+> which CVE we are looking for and fail the test only if the operation we
+> are interested in caused the oops. And, of course, fail on any if the
+> test was executed without it. Otherwise I'm fine with the code as it is.
+> 
 
-The original fix for the buffer overflow bug changed keyring_read() to
-start returning a short value if the specified buffer is too small, but
-the documented behavior is actually to return the size needed.  Update
-the test to expect the documented behavior, as is provided by a
-follow-on fix.
+Hmm, I guess I'll do that.  It's not perfect because if you have the fix for
+"CVE-2017-15951" but not the fix for "CVE-2017-15299", the kernel log will still
+be spammed with WARN_ON()s in both cases.  Well, that's what you get for having
+unfixed bugs, I suppose...
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- testcases/kernel/syscalls/keyctl/keyctl06.c | 41 ++++++++++++++++++-----------
- 1 file changed, 25 insertions(+), 16 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl06.c b/testcases/kernel/syscalls/keyctl/keyctl06.c
-index 88734313d..c62010e0b 100644
---- a/testcases/kernel/syscalls/keyctl/keyctl06.c
-+++ b/testcases/kernel/syscalls/keyctl/keyctl06.c
-@@ -16,8 +16,16 @@
-  */
- 
- /*
-- * Regression test for commit e645016abc80 ("KEYS: fix writing past end of
-- * user-supplied buffer in keyring_read()").
-+ * Regression test for:
-+ *
-+ *	commit e645016abc80 ("KEYS: fix writing past end of user-supplied buffer
-+ *	in keyring_read()").
-+ *
-+ * as well as its follow-on fix:
-+ *
-+ *	commit 3239b6f29bdf ("KEYS: return full count in keyring_read() if
-+ *	buffer is too small")
-+ *
-  */
- 
- #include <errno.h>
-@@ -25,20 +33,20 @@
- #include "tst_test.h"
- #include "lapi/keyctl.h"
- 
--static key_serial_t add_test_key(const char *description)
-+static void add_test_key(const char *description)
- {
- 	TEST(add_key("user", description, "payload", 7,
- 		     KEY_SPEC_PROCESS_KEYRING));
- 	if (TEST_RETURN < 0)
- 		tst_brk(TBROK | TTERRNO, "Failed to add test key");
--	return TEST_RETURN;
- }
- 
- static void do_test(void)
- {
- 	key_serial_t key_ids[2];
--	key_serial_t key_id_1 = add_test_key("key1");
--	key_serial_t key_id_2 = add_test_key("key2");
-+
-+	add_test_key("key1");
-+	add_test_key("key2");
- 
- 	memset(key_ids, 0, sizeof(key_ids));
- 	TEST(keyctl(KEYCTL_READ, KEY_SPEC_PROCESS_KEYRING,
-@@ -46,21 +54,22 @@ static void do_test(void)
- 	if (TEST_RETURN < 0)
- 		tst_brk(TBROK | TTERRNO, "KEYCTL_READ failed");
- 
-+	/*
-+	 * Do not check key_ids[0], as the contents of the buffer are
-+	 * unspecified if it was too small.  However, key_ids[1] must not have
-+	 * been written to, as it was outside the buffer.
-+	 */
-+
- 	if (key_ids[1] != 0)
- 		tst_brk(TFAIL, "KEYCTL_READ overran the buffer");
- 
--	if (key_ids[0] == 0)
--		tst_brk(TBROK, "KEYCTL_READ didn't read anything");
--
--	if (key_ids[0] != key_id_1 && key_ids[0] != key_id_2)
--		tst_brk(TBROK, "KEYCTL_READ didn't return correct key ID");
--
--	if (TEST_RETURN != sizeof(key_serial_t)) {
--		tst_brk(TBROK, "KEYCTL_READ returned %ld but expected %zu",
--			TEST_RETURN, sizeof(key_serial_t));
-+	if (TEST_RETURN != sizeof(key_ids)) {
-+		tst_brk(TFAIL, "KEYCTL_READ returned %ld but expected %zu",
-+			TEST_RETURN, sizeof(key_ids));
- 	}
- 
--	tst_res(TPASS, "KEYCTL_READ didn't overrun the buffer");
-+	tst_res(TPASS,
-+		"KEYCTL_READ returned full count but didn't overrun the buffer");
- }
- 
- static struct tst_test test = {
--- 
-2.15.0.403.gc27cc4dac6-goog
-
+Eric
