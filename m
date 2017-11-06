@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 6 Nov 2017 16:00:58 +0100
-Subject: [LTP] [PATCH] Fix buffer overflow in print_result() function
-In-Reply-To: <20171103161322.15792-1-vkabatov@redhat.com>
-References: <20171103161322.15792-1-vkabatov@redhat.com>
-Message-ID: <20171106150058.GA1662@rei>
+Date: Mon, 6 Nov 2017 17:38:09 +0100
+Subject: [LTP] [PATCH 1/2] [mtest06] Fix race condition with signal
+ handling
+In-Reply-To: <20171103185941.17651-1-vkabatov@redhat.com>
+References: <20171103185941.17651-1-vkabatov@redhat.com>
+Message-ID: <20171106163809.GB1662@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,74 +12,47 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
->  lib/tst_test.c | 18 ++++++++++++++++--
->  1 file changed, 16 insertions(+), 2 deletions(-)
+> Very occasionally, we ran into unexpected failures with exit code 1
+> when running mtest06/mmap1. This was caused by a race condition during
+> unmap() - read with SIGSEGV - mmap() loop, where read after unmap was
+> attempted, but before the actual signal handling occurred the area was
+> mapped again and signal handler was changed back. Instead of test
+> continuation when a read after unmap happens, the handler which takes
+> SIGSEGV as fatal becomes active before it should and kills the test. See
+> simplified strace output:
 > 
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index c8baf2a43..09691031e 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -180,7 +180,7 @@ static void print_result(const char *file, const int lineno, int ttype,
->  {
->  	char buf[1024];
->  	char *str = buf;
-> -	int ret, size = sizeof(buf);
-> +	int ret, overflowed = 0, size = sizeof(buf);
->  	const char *str_errno = NULL;
->  	const char *res;
->  
-> @@ -227,17 +227,31 @@ static void print_result(const char *file, const int lineno, int ttype,
->  	size -= ret;
->  
->  	ret = vsnprintf(str, size, fmt, va);
-> +	if (ret >= size) {
-> +		overflowed = 1;
-> +		goto finish;
-> +	}
->  	str += ret;
->  	size -= ret;
->  
->  	if (str_errno) {
->  		ret = snprintf(str, size, ": %s", str_errno);
-> +		if (ret >= size) {
-> +			overflowed = 1;
-> +			goto finish;
-> +		}
->  		str += ret;
->  		size -= ret;
->  	}
+> [pid  8650] <... munmap resumed> ) ...
+> [pid  8651] --- SIGSEGV ...
+> [pid  8650] mmap ...
+> [pid  8651] write(1, "mmap1    0  TINFO :  created writing thread ...
+> [pid  8650] <... mmap resumed> ) ...
+> [pid  8651] <... write resumed> ) ...
+> [pid  8650] sched_yield ...
+> [pid  8651] exit_group(1 ...
+> [pid  8651] +++ exited with 1 +++
 
-We can simplify this a bit I guess.
+So the problem is that we have SIGSEGV pending in the kernel while the
+map_write_unmap() thread changes the signal handler to
+sig_handler_mapped() right?
 
-We may as well pass size-2 to the snprintf() functions here, then add
-MIN(ret, size-2) to the str. Then we don't have to use the overflowed
-variable since the str would point to the end of the composed string
-and there would be always at least two bytes in the buffer so that the
-last one can be just sprintf() or strcpy().
+> Fix the race condition by using a proper locking mechanism for thread
+> synchronization to prevent mapping changes before the caught signal is
+> actually handled, and simplify the test by using only a single handler.
 
-> -	snprintf(str, size, "\n");
-> +finish:
-> +	/* Keep space for newline and \0 if the buffer was filled */
-> +	if (overflowed) {
-> +		str += size - 2;
-> +		size = 2;
-> +	}
->  
-> +	snprintf(str, size, "\n");
->  	fputs(buf, stderr);
+Hmm, how much is the reading loop slowed down with the mutex_lock() and
+mutex_unlock() calls?
 
-What about printing TWARN message here in a case that the message was
-shortened, something as tst_res_(file, lineno, TWARN, "Previous message was too long!"),
-we would have to keep the overflow flag for that thought...
+I would expect that it would make up for the significant part of the
+loop which kind of defeats the purpose of stress test.
 
->  }
->  
-> -- 
-> 2.13.6
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+Maybe we can fix that by making sure that we got different address in
+two subsequent mmaps in the map_write_unmap() loop (for instance by
+unmaping the old one after we mapped a new one) then we can check the
+si_addr in the siginfo_t in the signal handler. If the address is
+different from the current one we know that the SEGFAULT has happened
+before we mmaped() the file again. If that works we don't have to
+implement any locking at all which would increase our chances of hitting
+some race condition in the kernel...
 
 -- 
 Cyril Hrubis
