@@ -1,69 +1,37 @@
-From: vkabatov@redhat.com <vkabatov@redhat.com>
-Date: Tue,  7 Nov 2017 17:10:42 +0100
-Subject: [LTP]  [PATCH v2] Fix buffer overflow in print_result() function
-Message-ID: <20171107161042.12825-1-vkabatov@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue,  7 Nov 2017 19:38:01 +0100
+Subject: [LTP] [COMMITTED] [PATCH 1/1] network/nfs_stress/nfs03: add -w to
+	the grep when calculate ORIG_NFSD
+Message-ID: <20171107183801.32005-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Veronika Kabatova <vkabatov@redhat.com>
+From: Yongcheng Yang <yoyang@redhat.com>
 
-From man page: "The functions snprintf() and vsnprintf() do not write
-more than size bytes (including the terminating null byte ('\0')). If
-the output was truncated due to this limit, then the return value is the
-number of characters (excluding the terminating null byte) which would
-have been written to the final string if enough space had been
-available. Thus, a return value of `size` or more means that the output
-was truncated."
+e.g. proccess nfsd4_callbacks
 
-The return value is not checked and blindly subtracted from available
-space in the buffer which may cause negative values (which are then
-converted to unsigned type size_t) in case the variables to print don't
-fit into buffer. The pointer to buffer is also moved forward the same
-amount, and writing into memory that is not allocated causes unexpected
-failures of tests with segfaults.
-
-This was discovered during rewriting of mtest06/mmap1 testcase to new
-library where verbose output tried to print out memory contents longer
-than space available in the buffer. The framework should be robust
-enough to handle these situations.
-
-Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
+Signed-off-by: Yongcheng Yang <yoyang@redhat.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- lib/tst_test.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ testcases/network/nfs/nfs_stress/nfs03 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index c8baf2a43..b43fb35f7 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -227,13 +227,18 @@ static void print_result(const char *file, const int lineno, int ttype,
- 	size -= ret;
+diff --git a/testcases/network/nfs/nfs_stress/nfs03 b/testcases/network/nfs/nfs_stress/nfs03
+index f8ee49ad7..e0d0d6e1a 100755
+--- a/testcases/network/nfs/nfs_stress/nfs03
++++ b/testcases/network/nfs/nfs_stress/nfs03
+@@ -102,7 +102,7 @@ nfs03_setup()
+ 	nfs_setup
  
- 	ret = vsnprintf(str, size, fmt, va);
--	str += ret;
--	size -= ret;
--
--	if (str_errno) {
-+	str += MIN(ret, size - 2);
-+	size -= MIN(ret, size - 2);
-+	if (ret >= size - 2) {
-+		tst_res_(file, lineno, TWARN,
-+				"Next message is too long and truncated:");
-+	} else if (str_errno) {
- 		ret = snprintf(str, size, ": %s", str_errno);
--		str += ret;
--		size -= ret;
-+		str += MIN(ret, size - 2);
-+		size -= MIN(ret, size - 2);
-+		if (ret >= size - 2)
-+			tst_res_(file, lineno, TWARN,
-+				"Next message is too long and truncated:");
- 	}
+ 	tst_resm TINFO "Setting server side nfsd count to $THREAD_NUM"
+-	ORIG_NFSD=$(tst_rhost_run -s -c 'ps -ef | grep nfsd | grep -v grep | wc -l')
++	ORIG_NFSD=$(tst_rhost_run -s -c 'ps -ef | grep -w nfsd | grep -v grep | wc -l')
+ 	tst_rhost_run -s -c "rpc.nfsd $THREAD_NUM"
+ }
  
- 	snprintf(str, size, "\n");
 -- 
-2.13.6
+2.14.2
 
