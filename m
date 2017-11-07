@@ -1,299 +1,89 @@
-From: Eric Biggers <ebiggers3@gmail.com>
-Date: Mon,  6 Nov 2017 21:26:29 -0800
-Subject: [LTP] [PATCH v3] syscalls/request_key03: new test for key
-	instantiation races
-Message-ID: <20171107052629.8518-1-ebiggers3@gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 7 Nov 2017 04:00:32 -0500 (EST)
+Subject: [LTP] [PATCH 1/2] [mtest06] Fix race condition with signal
+ handling
+In-Reply-To: <20171106163809.GB1662@rei>
+References: <20171103185941.17651-1-vkabatov@redhat.com>
+ <20171106163809.GB1662@rei>
+Message-ID: <1187592937.37117661.1510045232581.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Eric Biggers <ebiggers@google.com>
 
-Add a test for two related bugs in the keyrings subsystem which each
-allowed unprivileged local users to cause a kernel oops (at best) by
-attempting to "add" a key concurrently with "requesting" it.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
 
-Changed since v2:
-    - Ignore EDQUOT from add_key() and request_key().
+----- Original Message -----
+> Hi!
+> > Very occasionally, we ran into unexpected failures with exit code 1
+> > when running mtest06/mmap1. This was caused by a race condition during
+> > unmap() - read with SIGSEGV - mmap() loop, where read after unmap was
+> > attempted, but before the actual signal handling occurred the area was
+> > mapped again and signal handler was changed back. Instead of test
+> > continuation when a read after unmap happens, the handler which takes
+> > SIGSEGV as fatal becomes active before it should and kills the test. See
+> > simplified strace output:
+> > 
+> > [pid  8650] <... munmap resumed> ) ...
+> > [pid  8651] --- SIGSEGV ...
+> > [pid  8650] mmap ...
+> > [pid  8651] write(1, "mmap1    0  TINFO :  created writing thread ...
+> > [pid  8650] <... mmap resumed> ) ...
+> > [pid  8651] <... write resumed> ) ...
+> > [pid  8650] sched_yield ...
+> > [pid  8651] exit_group(1 ...
+> > [pid  8651] +++ exited with 1 +++
+> 
+> So the problem is that we have SIGSEGV pending in the kernel while the
+> map_write_unmap() thread changes the signal handler to
+> sig_handler_mapped() right?
+> 
+> > Fix the race condition by using a proper locking mechanism for thread
+> > synchronization to prevent mapping changes before the caught signal is
+> > actually handled, and simplify the test by using only a single handler.
+> 
+> Hmm, how much is the reading loop slowed down with the mutex_lock() and
+> mutex_unlock() calls?
+> 
+> I would expect that it would make up for the significant part of the
+> loop which kind of defeats the purpose of stress test.
+> 
 
-Changed since v1:
-    - Use an optional argument to indicate which crash to pay attention
-      to, used by the "cve" runtests file.
-    - Slightly increase the iteration count for the "user" key type.
+Hi,
 
- include/lapi/keyctl.h                              |   4 +
- runtest/cve                                        |   2 +
- runtest/syscalls                                   |   1 +
- testcases/kernel/syscalls/.gitignore               |   1 +
- .../kernel/syscalls/request_key/request_key03.c    | 203 +++++++++++++++++++++
- 5 files changed, 211 insertions(+)
- create mode 100644 testcases/kernel/syscalls/request_key/request_key03.c
+> Maybe we can fix that by making sure that we got different address in
+> two subsequent mmaps in the map_write_unmap() loop (for instance by
+> unmaping the old one after we mapped a new one) then we can check the
+> si_addr in the siginfo_t in the signal handler. If the address is
+> different from the current one we know that the SEGFAULT has happened
+> before we mmaped() the file again. If that works we don't have to
+> implement any locking at all which would increase our chances of hitting
+> some race condition in the kernel...
 
-diff --git a/include/lapi/keyctl.h b/include/lapi/keyctl.h
-index 328e55763..4b8098a59 100644
---- a/include/lapi/keyctl.h
-+++ b/include/lapi/keyctl.h
-@@ -124,6 +124,10 @@ static inline key_serial_t keyctl_join_session_keyring(const char *name) {
- # define KEYCTL_SETPERM 5
- #endif
- 
-+#ifndef KEYCTL_CLEAR
-+# define KEYCTL_CLEAR 7
-+#endif
-+
- #ifndef KEYCTL_UNLINK
- # define KEYCTL_UNLINK 9
- #endif
-diff --git a/runtest/cve b/runtest/cve
-index f137fb3db..1b0d13374 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -21,5 +21,7 @@ cve-2017-7308 setsockopt02
- cve-2017-7472 keyctl04
- cve-2017-12192 keyctl07
- cve-2017-15274 add_key02
-+cve-2017-15299 request_key03 -b cve-2017-15299
- cve-2017-15537 ptrace07
-+cve-2017-15951 request_key03 -b cve-2017-15951
- cve-2017-1000364 stack_clash
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 626853669..fc381eb16 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -932,6 +932,7 @@ renameat202 renameat202 -i 10
- 
- request_key01 request_key01
- request_key02 request_key02
-+request_key03 request_key03
- cve-2017-6951 cve-2017-6951
- 
- rmdir01 rmdir01
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 0ba38465f..0b3935880 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -773,6 +773,7 @@
- /renameat2/renameat202
- /request_key/request_key01
- /request_key/request_key02
-+/request_key/request_key03
- /rmdir/rmdir01
- /rmdir/rmdir02
- /rmdir/rmdir03
-diff --git a/testcases/kernel/syscalls/request_key/request_key03.c b/testcases/kernel/syscalls/request_key/request_key03.c
-new file mode 100644
-index 000000000..8711b1250
---- /dev/null
-+++ b/testcases/kernel/syscalls/request_key/request_key03.c
-@@ -0,0 +1,203 @@
-+/*
-+ * Copyright (c) 2017 Google, Inc.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program, if not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+/*
-+ * Regression test for two related bugs:
-+ *
-+ * (1) CVE-2017-15299, fixed by commit 60ff5b2f547a ("KEYS: don't let add_key()
-+ *     update an uninstantiated key")
-+ * (2) CVE-2017-15951, fixed by commit 363b02dab09b ("KEYS: Fix race between
-+ *     updating and finding a negative key")
-+ *
-+ * We test for the bugs together because the reproduction steps are essentially
-+ * the same: repeatedly try to add/update a key with add_key() while requesting
-+ * it with request_key() in another task.  This reproduces both bugs:
-+ *
-+ * For CVE-2017-15299, add_key() has to run while the key being created by
-+ * request_key() is still in the "uninstantiated" state.  For the "encrypted" or
-+ * "trusted" key types (not guaranteed to be available) this caused a NULL
-+ * pointer dereference in encrypted_update() or in trusted_update(),
-+ * respectively.  For the "user" key type, this caused the WARN_ON() in
-+ * construct_key() to be hit.
-+ *
-+ * For CVE-2017-15951, request_key() has to run while the key is "negatively
-+ * instantiated" (from a prior request_key()) and is being concurrently changed
-+ * to "positively instantiated" via add_key() updating it.  This race, which is
-+ * a bit more difficult to reproduce, caused the task executing request_key() to
-+ * dereference an invalid pointer in __key_link_begin().
-+ */
-+
-+#include <errno.h>
-+#include <stdbool.h>
-+#include <stdlib.h>
-+#include <sys/wait.h>
-+
-+#include "tst_test.h"
-+#include "lapi/keyctl.h"
-+
-+static char *opt_bug;
-+
-+static struct tst_option options[] = {
-+	{"b:", &opt_bug,  "-b       Bug to test for (cve-2017-15299 or cve-2017-15951; default is both)"},
-+	{NULL, NULL, NULL}
-+};
-+
-+static void test_with_key_type(const char *type, const char *payload,
-+			       int effort)
-+{
-+	int i;
-+	int status;
-+	pid_t add_key_pid;
-+	pid_t request_key_pid;
-+	bool info_only;
-+
-+	TEST(keyctl(KEYCTL_JOIN_SESSION_KEYRING, NULL));
-+	if (TEST_RETURN < 0)
-+		tst_brk(TBROK | TTERRNO, "failed to join new session keyring");
-+
-+	TEST(add_key(type, "desc", payload, strlen(payload),
-+		     KEY_SPEC_SESSION_KEYRING));
-+	if (TEST_RETURN < 0 && TEST_ERRNO != EINVAL) {
-+		if (TEST_ERRNO == ENODEV) {
-+			tst_res(TCONF, "kernel doesn't support key type '%s'",
-+				type);
-+			return;
-+		}
-+		tst_brk(TBROK | TTERRNO,
-+			"unexpected error checking whether key type '%s' is supported",
-+			type);
-+	}
-+
-+	/*
-+	 * Fork a subprocess which repeatedly tries to "add" a key of the given
-+	 * type.  This actually will try to update the key if it already exists.
-+	 * Depending on the state of the key, add_key() should either succeed or
-+	 * fail with one of several errors:
-+	 *
-+	 * (1) key didn't exist@all: either add_key() should succeed (if the
-+	 *     payload is valid), or it should fail with EINVAL (if the payload
-+	 *     is invalid; this is needed for the "encrypted" and "trusted" key
-+	 *     types because they have a quirk where the payload syntax differs
-+	 *     for creating new keys vs. updating existing keys)
-+	 *
-+	 * (2) key was negative: add_key() should succeed
-+	 *
-+	 * (3) key was uninstantiated: add_key() should wait for the key to be
-+	 *     negated, then fail with ENOKEY
-+	 *
-+	 * For now we also accept EDQUOT because the kernel frees up the keys
-+	 * quota asynchronously after keys are unlinked.  So it may be hit.
-+	 */
-+	add_key_pid = SAFE_FORK();
-+	if (add_key_pid == 0) {
-+		for (i = 0; i < 100 * effort; i++) {
-+			usleep(rand() % 1024);
-+			TEST(add_key(type, "desc", payload, strlen(payload),
-+				     KEY_SPEC_SESSION_KEYRING));
-+			if (TEST_RETURN < 0 && TEST_ERRNO != EINVAL &&
-+			    TEST_ERRNO != ENOKEY && TEST_ERRNO != EDQUOT) {
-+				tst_brk(TBROK | TTERRNO,
-+					"unexpected error adding key of type '%s'",
-+					type);
-+			}
-+			TEST(keyctl(KEYCTL_CLEAR, KEY_SPEC_SESSION_KEYRING));
-+			if (TEST_RETURN < 0) {
-+				tst_brk(TBROK | TTERRNO,
-+					"unable to clear keyring");
-+			}
-+		}
-+		exit(0);
-+	}
-+
-+	request_key_pid = SAFE_FORK();
-+	if (request_key_pid == 0) {
-+		for (i = 0; i < 5000 * effort; i++) {
-+			TEST(request_key(type, "desc", "callout_info",
-+					 KEY_SPEC_SESSION_KEYRING));
-+			if (TEST_RETURN < 0 && TEST_ERRNO != ENOKEY &&
-+			    TEST_ERRNO != ENOENT && TEST_ERRNO != EDQUOT) {
-+				tst_brk(TBROK | TTERRNO,
-+					"unexpected error requesting key of type '%s'",
-+					type);
-+			}
-+		}
-+		exit(0);
-+	}
-+
-+	/*
-+	 * Verify that neither the add_key() nor the request_key() process
-+	 * crashed.  If the add_key() process crashed it is likely due to
-+	 * CVE-2017-15299, while if the request_key() process crashed it is
-+	 * likely due to CVE-2017-15951.  If testing for one of the bugs
-+	 * specifically, only pay attention to the corresponding process.
-+	 */
-+
-+	SAFE_WAITPID(add_key_pid, &status, 0);
-+	info_only = (opt_bug && strcmp(opt_bug, "cve-2017-15299") != 0);
-+	if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-+		tst_res(info_only ? TINFO : TPASS,
-+			"didn't crash while updating key of type '%s'",
-+			type);
-+	} else if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL) {
-+		tst_res(info_only ? TINFO : TFAIL,
-+			"kernel oops while updating key of type '%s'",
-+			type);
-+	} else {
-+		tst_brk(TBROK, "add_key child %s", tst_strstatus(status));
-+	}
-+
-+	SAFE_WAITPID(request_key_pid, &status, 0);
-+	info_only = (opt_bug && strcmp(opt_bug, "cve-2017-15951") != 0);
-+	if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-+		tst_res(info_only ? TINFO : TPASS,
-+			"didn't crash while requesting key of type '%s'",
-+			type);
-+	} else if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL) {
-+		tst_res(info_only ? TINFO : TFAIL,
-+			"kernel oops while requesting key of type '%s'",
-+			type);
-+	} else {
-+		tst_brk(TBROK, "request_key child %s", tst_strstatus(status));
-+	}
-+}
-+
-+static void do_test(void)
-+{
-+	/*
-+	 * Briefly test the "encrypted" and/or "trusted" key types when
-+	 * availaible, mainly to reproduce CVE-2017-15299.
-+	 */
-+	test_with_key_type("encrypted", "update user:foo 32", 2);
-+	test_with_key_type("trusted", "update", 2);
-+
-+	/*
-+	 * Test the "user" key type for longer, mainly in order to reproduce
-+	 * CVE-2017-15951.  However, without the fix for CVE-2017-15299 as well,
-+	 * WARNs may show up in the kernel log.
-+	 *
-+	 * Note: the precise iteration count is arbitrary; it's just intended to
-+	 * be enough to give a decent chance of reproducing the bug, without
-+	 * wasting too much time.
-+	 */
-+	test_with_key_type("user", "payload", 20);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = do_test,
-+	.forks_child = 1,
-+	.options = options,
-+};
--- 
-2.15.0
+This doesn't capture the state of mapped area. When you're in signal
+handler you wouldn't know if area was mapped or not when you got SIGSEGV.
 
+I'd modify it in this way:
+- use just one singal handler
+- write thread will set 'mapped' flag when it maps/unmaps the area
+- based on 'mapped' flag read thread tries to read from a specific range of addresses
+  e.g. odd vs even bytes or odd vs. even blocks of bytes, such that
+  those blocks don't overlap
+- when signal handler triggers, it checks si_addr, and based on value
+  it can tell if this was an attempt to read mapped or unmapped area
+- if we tried to read mapped area and got SIGSEGV -> FAIL
+  otherwise keep running
+
+Regards,
+Jan
+
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
