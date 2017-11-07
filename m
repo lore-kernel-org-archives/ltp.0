@@ -1,43 +1,30 @@
-From: Sandeep Patil <sspatil@google.com>
-Date: Mon, 6 Nov 2017 10:37:10 -0800
-Subject: [LTP] [PATCH] android: io/diotest4: remove dependency on
-	<sys/shm.h>
-In-Reply-To: <20171026081654.GA3873@rei>
-References: <20170919232713.57314-1-sspatil@google.com>
- <20171011121505.GA12177@rei>
- <20171018054923.GJ21774@sspatil-macbookpro.roam.corp.google.com>
- <20171026081654.GA3873@rei>
-Message-ID: <CAJNQT8EjAL+Su+MSAy1a9_sBUmEKDqOQg2CBh6N15nim_4ABJw@mail.gmail.com>
+From: Eric Biggers <ebiggers3@gmail.com>
+Date: Mon, 6 Nov 2017 21:24:44 -0800
+Subject: [LTP] [PATCH v2] syscalls/request_key03: new test for key
+ instantiation races
+In-Reply-To: <20171103130428.GA22844@rei>
+References: <20171102191354.24733-1-ebiggers3@gmail.com>
+ <20171103130428.GA22844@rei>
+Message-ID: <20171107052444.GA6957@zzz.localdomain>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Oct 26, 2017 at 1:16 AM, Cyril Hrubis <chrubis@suse.cz> wrote:
-
+On Fri, Nov 03, 2017 at 02:04:28PM +0100, Cyril Hrubis wrote:
 > Hi!
-> > Thank you very much for the history. I guess I can make this change under
-> > __BIONIC__ check (like some of the other tests) and that should work
-> fine ..
->
-> Or we may as well fix this in a clean way and once for all. What about
-> adding a constant to include/lapi/mmap.h something as MMAP_GRANULARITY
-> and defining it to SHMLBA if the shm headers are present and to
-> getpagesize() if they are not?
->
->
-Ah, that sounds even better. Amending my patch to make it that
-way now.
+> When I run the test as an ordinary user I got EDQUOT from add_key() from
+> time to time. So we either have to add .needs_root = 1 so that quotas
+> does not apply or change the test to ignore the EDQUOT as well while we
+> are adding the key.
+> 
+> Otherwise the test is OK.
+> 
 
-- ssp
+Ugh, it seems this happens because the kernel frees space from the quota during
+an asynchronous garbage collection phase, rather than immediately when the keys
+are unlinked.  That's arguably a bug in its own right, but it's always been like
+that and for now I guess I'll just make the test ignore EDQUOT.
 
-
-
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
->
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20171106/71bf63dd/attachment.html>
+Eric
