@@ -1,12 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 7 Nov 2017 11:20:03 +0100
-Subject: [LTP] [PATCH v2] syscalls/request_key03: new test for key
- instantiation races
-In-Reply-To: <20171107052444.GA6957@zzz.localdomain>
-References: <20171102191354.24733-1-ebiggers3@gmail.com>
- <20171103130428.GA22844@rei>
- <20171107052444.GA6957@zzz.localdomain>
-Message-ID: <20171107102003.GA6126@rei.lan>
+Date: Tue, 7 Nov 2017 11:25:37 +0100
+Subject: [LTP] [PATCH 1/2] [mtest06] Fix race condition with signal
+ handling
+In-Reply-To: <1187592937.37117661.1510045232581.JavaMail.zimbra@redhat.com>
+References: <20171103185941.17651-1-vkabatov@redhat.com>
+ <20171106163809.GB1662@rei>
+ <1187592937.37117661.1510045232581.JavaMail.zimbra@redhat.com>
+Message-ID: <20171107102537.GB6126@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,25 +14,32 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > When I run the test as an ordinary user I got EDQUOT from add_key() from
-> > time to time. So we either have to add .needs_root = 1 so that quotas
-> > does not apply or change the test to ignore the EDQUOT as well while we
-> > are adding the key.
-> > 
-> > Otherwise the test is OK.
-> > 
+> > Maybe we can fix that by making sure that we got different address in
+> > two subsequent mmaps in the map_write_unmap() loop (for instance by
+> > unmaping the old one after we mapped a new one) then we can check the
+> > si_addr in the siginfo_t in the signal handler. If the address is
+> > different from the current one we know that the SEGFAULT has happened
+> > before we mmaped() the file again. If that works we don't have to
+> > implement any locking at all which would increase our chances of hitting
+> > some race condition in the kernel...
 > 
-> Ugh, it seems this happens because the kernel frees space from the quota during
-> an asynchronous garbage collection phase, rather than immediately when the keys
-> are unlinked.  That's arguably a bug in its own right, but it's always been like
-> that and for now I guess I'll just make the test ignore EDQUOT.
+> This doesn't capture the state of mapped area. When you're in signal
+> handler you wouldn't know if area was mapped or not when you got SIGSEGV.
+>
+> I'd modify it in this way:
+> - use just one singal handler
+> - write thread will set 'mapped' flag when it maps/unmaps the area
+> - based on 'mapped' flag read thread tries to read from a specific range of addresses
+>   e.g. odd vs even bytes or odd vs. even blocks of bytes, such that
+>   those blocks don't overlap
+> - when signal handler triggers, it checks si_addr, and based on value
+>   it can tell if this was an attempt to read mapped or unmapped area
+> - if we tried to read mapped area and got SIGSEGV -> FAIL
+>   otherwise keep running
 
-I guess that this is not that serious since I doubt that anybody will
-add keys in a tight loop like we do in the tests.
-
-I remeber that we had similar problems with the hugepage poll limits
-where we had to set the limits to be twice of the actual allocations to
-avoid failures when allocating and freeing these in a loop.
+I like the idea of encoding the information about the mapped/unmapped
+state into the actuall address we attempt to read, nice trick, let's do
+that.
 
 -- 
 Cyril Hrubis
