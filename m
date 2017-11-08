@@ -1,54 +1,56 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 8 Nov 2017 15:55:47 +0100
-Subject: [LTP] [PATCH v2] Fix buffer overflow in print_result() function
-In-Reply-To: <20171107161042.12825-1-vkabatov@redhat.com>
-References: <20171107161042.12825-1-vkabatov@redhat.com>
-Message-ID: <20171108145547.GA8343@rei>
+From: Travis CI <builds@travis-ci.org>
+Date: Wed, 08 Nov 2017 15:09:27 +0000
+Subject: [LTP] Passed: linux-test-project/ltp#535 (master - cecbd0c)
+In-Reply-To: <linux-test-project/ltp+299139951+passed@travis-ci.org>
+Message-ID: <5a031e26b2d96_43ff77424a2b01431587@403ca7e6-a06f-409a-bfe1-87df42680162.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index c8baf2a43..b43fb35f7 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -227,13 +227,18 @@ static void print_result(const char *file, const int lineno, int ttype,
->  	size -= ret;
->  
->  	ret = vsnprintf(str, size, fmt, va);
-> -	str += ret;
-> -	size -= ret;
-> -
-> -	if (str_errno) {
-> +	str += MIN(ret, size - 2);
-> +	size -= MIN(ret, size - 2);
-> +	if (ret >= size - 2) {
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-We modify the size before this condition, so the warning was triggered
-even for string that were half of the size of the buffer.
+Build: #535
+Status: Passed
 
-So I've changed the code to save the size-2 into a variable before we
-modify it so that we can use it in the condition.
+Duration: 14 minutes and 58 seconds
+Commit: cecbd0c (master)
+Author: Veronika Kabatova
+Message: Fix buffer overflow in print_result() function
 
-> +		tst_res_(file, lineno, TWARN,
-> +				"Next message is too long and truncated:");
-> +	} else if (str_errno) {
->  		ret = snprintf(str, size, ": %s", str_errno);
-> -		str += ret;
-> -		size -= ret;
-> +		str += MIN(ret, size - 2);
-> +		size -= MIN(ret, size - 2);
-> +		if (ret >= size - 2)
-> +			tst_res_(file, lineno, TWARN,
-> +				"Next message is too long and truncated:");
+From man page: "The functions snprintf() and vsnprintf() do not write
+more than size bytes (including the terminating null byte ('\0')). If
+the output was truncated due to this limit, then the return value is the
+number of characters (excluding the terminating null byte) which would
+have been written to the final string if enough space had been
+available. Thus, a return value of `size` or more means that the output
+was truncated."
 
-And here as well.
+The return value is not checked and blindly subtracted from available
+space in the buffer which may cause negative values (which are then
+converted to unsigned type size_t) in case the variables to print don't
+fit into buffer. The pointer to buffer is also moved forward the same
+amount, and writing into memory that is not allocated causes unexpected
+failures of tests with segfaults.
 
-I've also added a testcase and pushed, thanks.
+This was discovered during rewriting of mtest06/mmap1 testcase to new
+library where verbose output tried to print out memory contents longer
+than space available in the buffer. The framework should be robust
+enough to handle these situations.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+
+View the changeset: https://github.com/linux-test-project/ltp/compare/f11172e481dc...cecbd0cb36d6
+
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/299139951?utm_source=email&utm_medium=notification
+
+--
+
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20171108/9ac08f8a/attachment.html>
