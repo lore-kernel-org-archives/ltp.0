@@ -1,43 +1,38 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 8 Nov 2017 08:55:29 +0100
-Subject: [LTP] Errored: linux-test-project/ltp#534 (master - f11172e)
-In-Reply-To: <5a0214c493134_43fcd9f91ada01391594@caa397e9-8422-4638-9470-252a238f6ef0.mail>
-References: <linux-test-project/ltp+298736666+errored@travis-ci.org>
- <5a0214c493134_43fcd9f91ada01391594@caa397e9-8422-4638-9470-252a238f6ef0.mail>
-Message-ID: <20171108075529.b6cljknnudjrgh26@x230>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 8 Nov 2017 03:13:19 -0500 (EST)
+Subject: [LTP] [PATCH 2/2] mm: enlarge mmap HIGH_ADDR value for s390 arch
+In-Reply-To: <20171025033006.32463-2-liwang@redhat.com>
+References: <20171025033006.32463-1-liwang@redhat.com>
+ <20171025033006.32463-2-liwang@redhat.com>
+Message-ID: <436712851.37925655.1510128799182.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-
-> Build Update for linux-test-project/ltp
-> -------------------------------------
-
-> Build: #534
-> Status: Errored
-
-> Duration: 14 minutes and 29 seconds
-> Commit: f11172e (master)
-> Author: Petr Vorel
-> Message: numa: Remove HAVE_NUMA_MOVE_PAGES definition
-
-> numa_move_pages() was added in NUMA API v2 => replace with
-> HAVE_NUMA_V2 definition.
-
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-
-> View the changeset: https://github.com/linux-test-project/ltp/compare/c1493efe2357...f11172e481dc
-
-> View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/298736666?utm_source=email&utm_medium=notification
-
-This error isn't caused by code:
-apt-get install failed.
-
-Travis is here misleading :-(
 
 
-Kind regards,
-Petr
+----- Original Message -----
+> The kernel commit 1aea9b3f92 (s390/mm: implement 5 level pages tables)
+> enlarge the maximum address in the tasks address space from (1UL << 53)
+> to (-PAGE_SIZE) on s390 platform.
+> 
+> We have to increase the HIGH_ADDR in ltp testcases accordingly otherwise
+> that would be failed with succeeded mmap into high region:
+> 
+> mmap15.c:
+> mmap15  1  TFAIL  :  mmap15.c:77: mmap into high region succeeded
+> unexpectedly
+> 
+> mmapstress03.c:
+> mmapstress03: errno = 25: really large mmap didn't fail
+> mmapstress03    0  TINFO  :  uname.machine=s390x kernel is 32bit
+
+                                     Isn't this the problem? ^^
+
+> mmapstress03    1  TFAIL  :  mmapstress03.c:212: Test failed
+> 
+
+Regards,
+Jan
