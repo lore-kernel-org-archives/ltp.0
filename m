@@ -1,34 +1,40 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu,  9 Nov 2017 21:48:19 +0100
-Subject: [LTP] [COMMITTED][PATCH 1/1] network/ipsec: Fix parameter in help
-Message-ID: <20171109204819.30533-1-pvorel@suse.cz>
+Date: Thu, 9 Nov 2017 23:50:38 +0100
+Subject: [LTP] network/stress/ltp_net_stress_ipsec_tcp: problems with IP
+ Payload Compression (comp) transform protocol on VTI
+Message-ID: <20171109225038.iwrgxdt3qgeeg4sm@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-ipcomp is used in old network stress tests, which don't use
-ipsec_lib.sh.
+Hi Alexey,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/network/stress/ipsec/ipsec_lib.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'm trying to debug problems with IP Payload Compression (comp) transform protocol on VTI.
+I.e. tcp4_ipsec_vti03 and tcp6_ipsec_vti03 tests:
+tcp4_ipsec_vti03 tcp_ipsec_vti.sh -p comp -m tunnel -s "100 1000 65535"
+tcp6_ipsec_vti03 tcp_ipsec_vti.sh -6 -p comp -m tunnel -s "100 1000 65535"
 
-diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
-index c9ef1f637..2f10a3bd5 100644
---- a/testcases/network/stress/ipsec/ipsec_lib.sh
-+++ b/testcases/network/stress/ipsec/ipsec_lib.sh
-@@ -40,7 +40,7 @@ while getopts "hl:m:p:s:S:k:A:e:a:c:r:6" opt; do
- 		echo "h        help"
- 		echo "l n      n is the number of test link when tests run"
- 		echo "m x      x is ipsec mode, could be transport / tunnel"
--		echo "p x      x is ipsec protocol, could be ah / esp / ipcomp"
-+		echo "p x      x is ipsec protocol, could be ah / esp / comp"
- 		echo "s x      x is icmp messge size array"
- 		echo "S n      n is IPsec SPI value"
- 		echo "k x      key for vti interface"
--- 
-2.15.0
+netstress server gets killed after calling accept():
 
+write(2, "netstress.c:659: \33[1;34mINFO: \33["..., 106) = 106
+socket(AF_INET6, SOCK_STREAM, IPPROTO_IP) = 6
+setsockopt(6, SOL_SOCKET, SO_REUSEADDR, [1], 4) = 0
+write(2, "netstress.c:579: \33[1;34mINFO: \33["..., 75) = 75
+bind(6, {sa_family=AF_INET6, sin6_port=htons(27102), inet_pton(AF_INET6, "::", &sin6_addr), sin6_flowinfo=htonl(0), sin6_scope_id=0}, 28) = 0
+listen(6, 100)                    = 0
+write(2, "netstress.c:595: \33[1;34mINFO: \33["..., 73) = 73
+getpid()                          = 2127
+accept(6,  <unfinished ...>
+<... wait4 resumed> <unfinished ...>) = ?
++++ killed by SIGKILL +++
+<... accept resumed> <unfinished ...>) = ?
++++ killed by SIGKILL +++
+
+Any idea what can cause it? Tests tcp{4,6}_ipsec_vti02 running with esp protocol on VTI
+work well.
+
+
+Kind regards,
+Petr
