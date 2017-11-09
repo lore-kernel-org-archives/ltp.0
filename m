@@ -1,77 +1,122 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu,  9 Nov 2017 12:39:47 +0100
-Subject: [LTP] [RFC PATCH 4/4] lapi: Add lapi/dccp.h with definition moved
-	from netstress.c
-In-Reply-To: <20171109113947.24609-1-pvorel@suse.cz>
-References: <20171109113947.24609-1-pvorel@suse.cz>
-Message-ID: <20171109113947.24609-5-pvorel@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 9 Nov 2017 14:45:23 +0100
+Subject: [LTP] [PATCH v2] kernel/input: fix failure on an old kernel
+In-Reply-To: <1510137430-25555-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20171107142043.GA32659@rei.lan>
+ <1510137430-25555-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20171109134523.GA23734@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- include/lapi/dccp.h                     | 25 +++++++++++++++++++++++++
- testcases/network/netstress/netstress.c |  5 +----
- 2 files changed, 26 insertions(+), 4 deletions(-)
- create mode 100644 include/lapi/dccp.h
+Hi!
+> +/*
+> + * the value of sync_events_ignored:
+> + * 0: cannot ignore EV_SYN/SYN_REPORT events received in /dev/input/eventX
+> + * 1: ignore EV_SYN/SYN_REPORT events received in /dev/input/eventX
+> + * On an old kernel(before v3.7.0), EV_SYN/SYN_REPORT events are always
+> + * received even though we send empty moves.
+> + */
+> +int no_events_queued(int fd, int sync_events_ignored)
+>  {
+>  	struct pollfd fds = {.fd = fd, .events = POLLIN};
+>  	int ret, res;
+> @@ -241,9 +248,14 @@ int no_events_queued(int fd)
+>  		res = read(fd, &ev, sizeof(ev));
+>  
+>  		if (res == sizeof(ev)) {
+> -			tst_resm(TINFO,
+> -			         "Unexpected ev type=%i code=%i value=%i",
+> -			         ev.type, ev.code, ev.value);
+> +			if (sync_events_ignored && !ev.type &&
+> +			    !ev.code && !ev.value) {
 
-diff --git a/include/lapi/dccp.h b/include/lapi/dccp.h
-new file mode 100644
-index 000000000..e4b19f240
---- /dev/null
-+++ b/include/lapi/dccp.h
-@@ -0,0 +1,25 @@
-+/*
-+ * Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#ifndef DCCP_H__
-+#define DCCP_H__
-+
-+#ifndef DCCP_SOCKOPT_SERVICE
-+#define DCCP_SOCKOPT_SERVICE	2
-+#endif
-+
-+#endif	/* DCCP_H__ */
-diff --git a/testcases/network/netstress/netstress.c b/testcases/network/netstress/netstress.c
-index 8a9736a71..53a43fbef 100644
---- a/testcases/network/netstress/netstress.c
-+++ b/testcases/network/netstress/netstress.c
-@@ -30,6 +30,7 @@
- #include <unistd.h>
- #include <errno.h>
- 
-+#include "lapi/dccp.h"
- #include "lapi/in.h"
- #include "lapi/posix_clocks.h"
- #include "lapi/socket.h"
-@@ -39,10 +40,6 @@
- 
- static const int max_msg_len = (1 << 16) - 1;
- 
--#ifndef DCCP_SOCKOPT_SERVICE
--#define DCCP_SOCKOPT_SERVICE	2
--#endif
--
- enum {
- 	SERVER_HOST = 0,
- 	CLIENT_HOST,
+The ev.value is undefined for sync events, it's 0 most of the time but I
+remember that we had to fix the input06.c because it was failing for
+somebody, see check_sync_event() there. Maybe we should just move the
+check_event* and check_sync_event() helpers to the library so that we
+can use them here as well.
+
+> +				ret = 0;
+> +			} else {
+> +				tst_resm(TINFO,
+> +					 "Unexpected ev type=%i code=%i value=%i",
+> +					 ev.type, ev.code, ev.value);
+> +			}
+>  		}
+>  	}
+>  
+> @@ -264,7 +276,40 @@ static int check_device(void)
+>  			return 1;
+>  	}
+>  
+> +
+  ^
+  Please do not add useless empty lines.
+
+>  	fclose(file);
+>  
+>  	return 0;
+>  }
+> +
+> +/*
+> + * Use this function to check if the current kernel can get single
+> + * EV_SYN/SYN_REPORT events.
+> + */
+> +int check_single_sync_event(int fd1, int fd2)
+> +{
+> +	pid_t pid;
+> +	struct pollfd fds = {.fd = fd2, .events = POLLIN};
+> +	struct input_event ev;
+> +	int ret, ignored;
+> +
+> +	pid = tst_fork();
+> +
+> +	if (pid == -1)
+> +		tst_brkm(TBROK | TERRNO, NULL, "fork() failed");
+> +
+> +	if (!pid) {
+> +		send_event(fd1, EV_SYN, 0, 0);
+> +		exit(0);
+> +	}
+> +
+> +	ret = poll(&fds, 1, 30);
+> +	if (ret > 0 && SAFE_READ(NULL, 1, fd2, &ev, sizeof(ev)) == sizeof(ev)) {
+> +		if (!ev.type && !ev.code && !ev.value)
+> +			ignored = 1;
+> +	}
+> +
+> +	SAFE_WAITPID(NULL, pid, NULL, 0);
+> +
+> +	return ignored;
+> +}
+
+This still does not fix the problem. Even if new kernel started to
+produce stray sync events these testcases will still pass. What I think
+is a good solution is simply to define first fixed kernel version and
+expect that no stray sync events are produced on newer kernels.
+
+> diff --git a/testcases/kernel/input/input_helper.h b/testcases/kernel/input/input_helper.h
+> index 9b85dc9..1ef4d32 100644
+> --- a/testcases/kernel/input/input_helper.h
+> +++ b/testcases/kernel/input/input_helper.h
+> @@ -29,6 +29,7 @@ int open_uinput(void);
+>  void create_device(int fd);
+>  void setup_mouse_events(int fd);
+>  void destroy_device(int fd);
+> -int no_events_queued(int fd);
+> +int no_events_queued(int fd, int sync_events_ignored);
+> +int check_single_sync_event(int fd1, int fd2);
+>  
+>  #endif /* INPUT_HELPER_H */
+> -- 
+> 1.8.3.1
+> 
+> 
+> 
+
 -- 
-2.15.0
-
+Cyril Hrubis
+chrubis@suse.cz
