@@ -1,228 +1,166 @@
 From: Sandeep Patil <sspatil@google.com>
-Date: Wed,  8 Nov 2017 16:34:33 -0800
-Subject: [LTP] [PATCH v2 1/6] syscalls/cma: Make process_vm_{readv,
-	writev} tests bionic friendly
+Date: Wed,  8 Nov 2017 16:34:34 -0800
+Subject: [LTP] [PATCH 2/6] mm: mallocstress: use safe macros wherever
+	possible
 In-Reply-To: <20171109003438.130802-1-sspatil@google.com>
 References: <20171109003438.130802-1-sspatil@google.com>
-Message-ID: <20171109003438.130802-2-sspatil@google.com>
+Message-ID: <20171109003438.130802-3-sspatil@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-All testcases under testcases/kernel/syscalls/cma depend on SysV
-semaphore to do event notification from parent<->child processes.
-Since bionic / android doesn't have SysV IPC, the tests can't be built
-against bionic.
-
-Fix this by using the ltp TST_SAFE_CHECKPOINT APIs taht are based on
-futexes. The change enables following tests for Android devices.
-
-   process_vm01, process_vm_readv0[23], process_vm_writev02
+The test is currently doesn't use the test library at all and instead
+is a standlone program. While the conversion is being done, there is no
+reason why the program can't use SAFE_ macros. Make necessary changes
+to the program for the same, reducing the error check paths a lot.
 
 Signed-off-by: Sandeep Patil <sspatil@google.com>
 ---
-v1->v2
-------
-- Use TST_CHECKPOINT APIs instead of eventfd as suggested by Jan
+ testcases/kernel/mem/mtest07/mallocstress.c | 75 ++++++++++++++---------------
+ 1 file changed, 35 insertions(+), 40 deletions(-)
 
- testcases/kernel/syscalls/cma/process_vm.h         | 38 ----------------------
- testcases/kernel/syscalls/cma/process_vm_readv02.c | 10 +++---
- testcases/kernel/syscalls/cma/process_vm_readv03.c | 10 +++---
- .../kernel/syscalls/cma/process_vm_writev02.c      | 10 +++---
- 4 files changed, 15 insertions(+), 53 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/cma/process_vm.h b/testcases/kernel/syscalls/cma/process_vm.h
-index 7df9aacd0..1ecf325bb 100644
---- a/testcases/kernel/syscalls/cma/process_vm.h
-+++ b/testcases/kernel/syscalls/cma/process_vm.h
-@@ -59,42 +59,4 @@ static inline ssize_t test_process_vm_writev(pid_t pid,
- #endif
+diff --git a/testcases/kernel/mem/mtest07/mallocstress.c b/testcases/kernel/mem/mtest07/mallocstress.c
+index 9588fb495..78d8ace8a 100644
+--- a/testcases/kernel/mem/mtest07/mallocstress.c
++++ b/testcases/kernel/mem/mtest07/mallocstress.c
+@@ -73,6 +73,10 @@
+ #include <sys/ipc.h>
+ #include <sys/sem.h>
+ 
++#include "test.h"
++#include "safe_macros.h"
++#include "tst_safe_pthread.h"
++
+ #define MAXL    100		/* default number of loops to do malloc and free      */
+ #define MAXT     60		/* default number of threads to create.               */
+ 
+@@ -90,6 +94,8 @@
+ 
+ int num_loop = MAXL;		/* number of loops to perform                     */
+ int semid;
++pthread_t *thrdid;		/* the threads */
++int ret;			/* program return value, used by main thread */
+ 
+ /* Define SPEW_SIGNALS to tickle thread_create bug (it fails if interrupted). */
+ #define SPEW_SIGNALS
+@@ -272,6 +278,22 @@ void *alloc_mem(void *threadnum)
+ 	return (void *)(uintptr_t) (err ? -1 : 0);
  }
  
--void safe_semop(int id, unsigned short num, short op)
--{
--	int ret;
--	struct sembuf sem_op;
--	sem_op.sem_num = num,
--	sem_op.sem_op = op,
--	sem_op.sem_flg = 0;
--
--	do {
--		ret = semop(id, &sem_op, 1);
--	} while (ret == -1 && errno == EINTR);
--	if (ret == -1)
--		tst_brkm(TBROK|TERRNO, NULL, "semop(%d, (%d, %d)) failed",
--			id, num, op);
--}
--
--int init_sem(int num)
--{
--	int id, i;
--	union semun u;
--	if ((id = semget(IPC_PRIVATE, num, IPC_CREAT|S_IRWXU)) == -1)
--		tst_brkm(TBROK|TERRNO, NULL, "Couldn't allocate semaphore");
--
--	for (i = 0; i < num; i++) {
--		u.val = 0;
--		if (semctl(id, 0, SETVAL, u) == -1)
--			tst_brkm(TBROK|TERRNO, NULL,
--				"Couldn't initialize sem %d value", i);
++/* only ever called from main thread */
++static void cleanup(void)
++{
++	if (semid > 0) {
++		if (semctl(semid, 0, IPC_RMID) == -1) {
++			perror("semctl\n");
++			ret = -1;
++		}
++	}
++
++	if (thrdid) {
++		free(thrdid);
++		thrdid = NULL;
++	}
++}
++
+ /******************************************************************************/
+ /*								 	      */
+ /* Function:	main							      */
+@@ -294,10 +316,8 @@ int main(int argc,		/* number of input parameters                 */
+ 	int c;			/* command line options                       */
+ 	int num_thrd = MAXT;	/* number of threads to create                */
+ 	int thrd_ndx;		/* index into the array of thread ids         */
+-	pthread_t *thrdid;	/* the threads                                */
+ 	extern int optopt;	/* options to the program                     */
+ 	struct sembuf sop[1];
+-	int ret = 0;
+ 
+ 	while ((c = getopt(argc, argv, "hl:t:")) != -1) {
+ 		switch (c) {
+@@ -330,15 +350,13 @@ int main(int argc,		/* number of input parameters                 */
+ 
+ 	dprt(("number of times to loop in the thread = %d\n", num_loop));
+ 
+-	thrdid = malloc(sizeof(pthread_t) * num_thrd);
+-	if (thrdid == NULL) {
+-		perror("main(): allocating space for thrdid[] malloc()");
+-		return 1;
 -	}
--	return id;
--}
--
--void clean_sem(int id)
--{
--	if (semctl(id, 0, IPC_RMID) == -1)
--		tst_brkm(TBROK|TERRNO, NULL, "Couldn't remove sem");
--}
--
- #endif /* _PROCESS_VM_H_ */
-diff --git a/testcases/kernel/syscalls/cma/process_vm_readv02.c b/testcases/kernel/syscalls/cma/process_vm_readv02.c
-index f84f79ef7..aa81f17f7 100644
---- a/testcases/kernel/syscalls/cma/process_vm_readv02.c
-+++ b/testcases/kernel/syscalls/cma/process_vm_readv02.c
-@@ -38,7 +38,6 @@ static char *tst_string = "THIS IS A TEST";
- static int len;
- static int pipe_fd[2];
- static pid_t pids[2];
--static int semid;
++	thrdid = SAFE_MALLOC(cleanup, sizeof(pthread_t) * num_thrd);
  
- static void child_alloc(void);
- static void child_invoke(void);
-@@ -84,7 +83,7 @@ int main(int argc, char **argv)
- 			tst_resm(TFAIL, "child 1 returns %d", status);
+ 	semid = semget(IPC_PRIVATE, 1, IPC_CREAT | 0666);
+ 	if (semid < 0) {
+ 		perror("Semaphore creation failed  Reason:");
++		ret = -1;
++		goto out;
+ 	}
  
- 		/* child_alloc is free to exit now */
--		safe_semop(semid, 0, 1);
-+		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
+ 	sop[0].sem_num = 0;
+@@ -351,19 +369,8 @@ int main(int argc,		/* number of input parameters                 */
+ 	}
  
- 		SAFE_WAITPID(cleanup, pids[0], &status, 0);
- 		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-@@ -112,7 +111,7 @@ static void child_alloc(void)
- 	SAFE_CLOSE(tst_exit, pipe_fd[1]);
+ 	for (thrd_ndx = 0; thrd_ndx < num_thrd; thrd_ndx++) {
+-		if (pthread_create(&thrdid[thrd_ndx], NULL, alloc_mem,
+-				   (void *)(uintptr_t) thrd_ndx)) {
+-			int err = errno;
+-			if (err == EINTR) {
+-				fprintf(stderr,
+-					"main(): pthread_create failed with EINTR!\n");
+-				ret = -1;
+-				goto out;
+-			}
+-			perror("main(): pthread_create()");
+-			ret = -11;
+-			goto out;
+-		}
++		SAFE_PTHREAD_CREATE(&thrdid[thrd_ndx], NULL, alloc_mem,
++				    (void *)(uintptr_t)thrd_ndx);
+ 	}
+ 	my_yield();
  
- 	/* wait until child_invoke is done reading from our VM */
--	safe_semop(semid, 0, -1);
-+	TST_SAFE_CHECKPOINT_WAIT(cleanup, 0);
+@@ -376,32 +383,20 @@ int main(int argc,		/* number of input parameters                 */
+ 
+ 	for (thrd_ndx = 0; thrd_ndx < num_thrd; thrd_ndx++) {
+ 		void *th_status;	/* exit status of LWP */
+-		if (pthread_join(thrdid[thrd_ndx], &th_status) != 0) {
+-			perror("main(): pthread_join()");
++		SAFE_PTHREAD_JOIN(thrdid[thrd_ndx], &th_status);
++		if ((intptr_t)th_status != 0) {
++			fprintf(stderr,
++				"%s: thread [%d] - exited with errors\n",
++				__func__, thrd_ndx);
+ 			ret = -1;
+ 			goto out;
+-		} else {
+-			if ((intptr_t) th_status != 0) {
+-				fprintf(stderr,
+-					"main(): thread [%d] - exited with errors\n",
+-					thrd_ndx);
+-				ret = -1;
+-				goto out;
+-			}
+-			dprt(("main(): thread [%d]: exited without errors\n",
+-			      thrd_ndx));
+ 		}
++		dprt(("%s: thread [%d]: exited without errors\n",
++		      __func__, thrd_ndx));
+ 		my_yield();
+ 	}
+ 	printf("main(): test passed.\n");
+ out:
+-	if (semctl(semid, 0, IPC_RMID) == -1) {
+-		perror("semctl\n");
+-		ret = -1;
+-	}
+-	if (thrdid) {
+-		free(thrdid);
+-		thrdid = NULL;
+-	}
++	cleanup();
+ 	exit(ret);
  }
- 
- static void child_invoke(void)
-@@ -153,12 +152,13 @@ static void setup(void)
- 	tst_brkm(TCONF, NULL, "process_vm_readv does not exist "
- 		 "on your system");
- #endif
--	semid = init_sem(1);
-+	tst_tmpdir();
-+	TST_CHECKPOINT_INIT(cleanup);
- 
- 	TEST_PAUSE;
- }
- 
- static void cleanup(void)
- {
--	clean_sem(semid);
-+	tst_rmdir();
- }
-diff --git a/testcases/kernel/syscalls/cma/process_vm_readv03.c b/testcases/kernel/syscalls/cma/process_vm_readv03.c
-index 2e69f855f..d1ca87a14 100644
---- a/testcases/kernel/syscalls/cma/process_vm_readv03.c
-+++ b/testcases/kernel/syscalls/cma/process_vm_readv03.c
-@@ -51,7 +51,6 @@ static int nr_iovecs;
- static long bufsz;
- static int pipe_fd[2];
- static pid_t pids[2];
--static int semid;
- 
- static void gen_random_arr(int *arr, int arr_sz);
- static void child_alloc(int *bufsz_arr);
-@@ -103,7 +102,7 @@ int main(int argc, char **argv)
- 			tst_resm(TFAIL, "child 1 returns %d", status);
- 
- 		/* child_alloc is free to exit now */
--		safe_semop(semid, 0, 1);
-+		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
- 
- 		SAFE_WAITPID(cleanup, pids[0], &status, 0);
- 		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-@@ -157,7 +156,7 @@ static void child_alloc(int *bufsz_arr)
- 	SAFE_CLOSE(tst_exit, pipe_fd[1]);
- 
- 	/* wait until child_invoke is done reading from our VM */
--	safe_semop(semid, 0, -1);
-+	TST_SAFE_CHECKPOINT_WAIT(cleanup, 0);
- }
- 
- static long *fetch_remote_addrs(void)
-@@ -255,7 +254,8 @@ static void setup(void)
- 	tst_brkm(TCONF, NULL, "process_vm_readv does not exist "
- 		 "on your system");
- #endif
--	semid = init_sem(1);
-+	tst_tmpdir();
-+	TST_CHECKPOINT_INIT(cleanup);
- 	srand(time(NULL));
- 
- 	TEST_PAUSE;
-@@ -263,7 +263,7 @@ static void setup(void)
- 
- static void cleanup(void)
- {
--	clean_sem(semid);
-+	tst_rmdir();
- }
- 
- static void help(void)
-diff --git a/testcases/kernel/syscalls/cma/process_vm_writev02.c b/testcases/kernel/syscalls/cma/process_vm_writev02.c
-index 952081811..544bda8d5 100644
---- a/testcases/kernel/syscalls/cma/process_vm_writev02.c
-+++ b/testcases/kernel/syscalls/cma/process_vm_writev02.c
-@@ -48,7 +48,6 @@ static option_t options[] = {
- static long bufsz;
- static int pipe_fd[2];
- static pid_t pids[2];
--static int semid;
- 
- static void child_init_and_verify(void);
- static void child_write(void);
-@@ -97,7 +96,7 @@ int main(int argc, char **argv)
- 			tst_resm(TFAIL, "child 1 returns %d", status);
- 
- 		/* signal child_init_and_verify to verify its VM now */
--		safe_semop(semid, 0, 1);
-+		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
- 
- 		SAFE_WAITPID(cleanup, pids[0], &status, 0);
- 		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-@@ -126,7 +125,7 @@ static void child_init_and_verify(void)
- 	SAFE_CLOSE(tst_exit, pipe_fd[1]);
- 
- 	/* wait until child_write() is done writing to our VM */
--	safe_semop(semid, 0, -1);
-+	TST_SAFE_CHECKPOINT_WAIT(cleanup, 0);
- 
- 	nr_err = 0;
- 	for (i = 0; i < bufsz; i++) {
-@@ -189,14 +188,15 @@ static void setup(void)
- 	tst_brkm(TCONF, NULL, "process_vm_writev does not exist "
- 		 "on your system");
- #endif
--	semid = init_sem(1);
-+	tst_tmpdir();
-+	TST_CHECKPOINT_INIT(cleanup);
- 
- 	TEST_PAUSE;
- }
- 
- static void cleanup(void)
- {
--	clean_sem(semid);
-+	tst_rmdir();
- }
- 
- static void help(void)
 -- 
 2.15.0.448.gf294e3d99a-goog
 
