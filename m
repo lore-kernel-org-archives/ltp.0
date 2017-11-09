@@ -1,107 +1,106 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 09 Nov 2017 09:29:18 +0100
-Subject: [LTP] [PATCH] syscalls/add_key04: new test for associative
-	array bug
-In-Reply-To: <20171108211123.94429-1-ebiggers3@gmail.com>
-References: <20171108211123.94429-1-ebiggers3@gmail.com>
-Message-ID: <871sl7q2ht.fsf@rpws.prws.suse.cz>
+From: Lucas Boehm <lucas@opentech.at>
+Date: Thu,  9 Nov 2017 10:29:06 +0100
+Subject: [LTP] [PATCH] syscall/read: add new testcase for read
+Message-ID: <20171109092906.15715-1-lucas@opentech.at>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Eric,
+ Check the return value of read
+ 1. Count bytes are read from the current file
+ 2. Current offset is modified by lseek()
+ 3. Count bytes are read from the current file
 
-Eric Biggers writes:
+Signed-off-by: Lucas Boehm <lucas@opentech.at>
+---
+ testcases/kernel/syscalls/read/read05.c | 76 +++++++++++++++++++++++++++++++++
+ 1 file changed, 76 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/read/read05.c
 
-> From: Eric Biggers <ebiggers@google.com>
->
-> Add a test for a bug in the kernel's generic associative array
-> implementation which allowed users to cause a kernel oops (NULL pointer
-> dereference) by adding keys to a keyring in a certain pattern.
->
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  runtest/cve                                   |  1 +
->  runtest/syscalls                              |  1 +
->  testcases/kernel/syscalls/.gitignore          |  1 +
->  testcases/kernel/syscalls/add_key/add_key04.c | 90 +++++++++++++++++++++++++++
->  4 files changed, 93 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/add_key/add_key04.c
->
-> diff --git a/runtest/cve b/runtest/cve
-> index 1b0d13374..2873df906 100644
-> --- a/runtest/cve
-> +++ b/runtest/cve
-> @@ -20,6 +20,7 @@ cve-2017-6951 cve-2017-6951
->  cve-2017-7308 setsockopt02
->  cve-2017-7472 keyctl04
->  cve-2017-12192 keyctl07
-> +cve-2017-12193 add_key04
->  cve-2017-15274 add_key02
->  cve-2017-15299 request_key03 -b cve-2017-15299
->  cve-2017-15537 ptrace07
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index fc381eb16..14089ac2c 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -14,6 +14,7 @@ acct01 acct01
->  add_key01 add_key01
->  add_key02 add_key02
->  add_key03 add_key03
-> +add_key04 add_key04
->  
->  adjtimex01 adjtimex01
->  adjtimex02 adjtimex02
-> diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-> index 0b3935880..12a136edb 100644
-> --- a/testcases/kernel/syscalls/.gitignore
-> +++ b/testcases/kernel/syscalls/.gitignore
-> @@ -9,6 +9,7 @@
->  /add_key/add_key01
->  /add_key/add_key02
->  /add_key/add_key03
-> +/add_key/add_key04
->  /adjtimex/adjtimex01
->  /adjtimex/adjtimex02
->  /alarm/alarm01
-> diff --git a/testcases/kernel/syscalls/add_key/add_key04.c b/testcases/kernel/syscalls/add_key/add_key04.c
-> new file mode 100644
-> index 000000000..78f9701f1
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/add_key/add_key04.c
-> @@ -0,0 +1,90 @@
-> +/*
-> + * Copyright (c) 2017 Google, Inc.
-> + *
-> + * This program is free software: you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation, either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program, if not, see <http://www.gnu.org/licenses/>.
-> + */
-> +
-> +/*
-> + * Regression test for commit ea6789980fda ("assoc_array: Fix a buggy
-> + * node-splitting case"), or CVE-2017-12193.
-> + *
-> + * Reproducing this bug requires adding keys to a keyring in a certain way that
-> + * triggers a corner case in the kernel's "associative array" implementation,
-> + * which is the data structure used to hold keys in a keyring, indexed by type
-> + * and description.
-> + *
-> + * Specifically, the root node of a keyring's associative associative array must
-                                                             ^
-                                                     Is this a typo?
-
+diff --git a/testcases/kernel/syscalls/read/read05.c b/testcases/kernel/syscalls/read/read05.c
+new file mode 100644
+index 000000000..49ef053fc
+--- /dev/null
++++ b/testcases/kernel/syscalls/read/read05.c
+@@ -0,0 +1,76 @@
++/*
++ * Copyright (c) 2017 Lucas Boehm <lucas@opentech.at>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++
++ /* Check the return value of read
++ *
++ * 1. Count bytes are read from the current file
++ * 2. Current offset is modified by lseek()
++ * 3. Return value equals read
++ */
++
++#include <errno.h>
++#include "tst_test.h"
++#include <stdio.h>
++
++#define SIZE 512
++
++static int fd;
++static char buf[SIZE];
++int pos;
++
++static void verify_read(void)
++{
++	SAFE_LSEEK(fd, 0, SEEK_SET);
++
++	TEST(read(fd, buf, SIZE/2));
++
++	if (TEST_RETURN == -1)
++		tst_res(TFAIL | TTERRNO, "read(2) failed");
++	else
++		tst_res(TPASS, "read(2) returned %ld", TEST_RETURN);
++
++
++	SAFE_LSEEK(fd, 2, SEEK_CUR);
++
++	TEST(read(fd, buf, SIZE/2));
++
++
++	if (TEST_RETURN == -1)
++		tst_res(TFAIL | TTERRNO, "read(2) failed");
++	else
++		tst_res(TPASS, "read(2) returned %ld", TEST_RETURN);
++}
++
++static void setup(void)
++{
++	memset(buf, '*', SIZE);
++	fd = SAFE_OPEN("testfile", O_RDWR | O_CREAT, 0700);
++	SAFE_WRITE(1, fd, buf, SIZE);
++}
++
++static void cleanup(void)
++{
++	if (fd > 0)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.test_all = verify_read,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_tmpdir = 1,
++};
 -- 
-Thank you,
-Richard.
+2.11.0
+
