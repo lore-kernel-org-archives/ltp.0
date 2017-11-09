@@ -1,52 +1,51 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 9 Nov 2017 18:58:57 +0800
-Subject: [LTP] [PATCH v3 15/16] fs/fs_fill: Add a test to fill a FS in a
- few threads
-In-Reply-To: <20171109105053.GB7738@rei>
-References: <20171011144130.29728-1-chrubis@suse.cz>
- <20171011144130.29728-15-chrubis@suse.cz>
- <CAEemH2f8Dya2XUvZZ2t9XMbbVFo_tM5B=LuzjZqyB8ZCA6qvVA@mail.gmail.com>
- <20171109101915.GA7738@rei>
- <CAEemH2eNcwa6FpnEHVBtTp=rBFCVwrGBO6sZ9=P1m5hRb=zRDQ@mail.gmail.com>
- <20171109105053.GB7738@rei>
-Message-ID: <CAEemH2c4bjAEwrwOwY0QcW163rJmpOL7FXCYPYS-YS3vtq3wzA@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu,  9 Nov 2017 12:39:43 +0100
+Subject: [LTP] [RFC PATCH 0/4] Add headers in lapi
+Message-ID: <20171109113947.24609-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Nov 9, 2017 at 6:50 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
-> Hi!
->> > The correct fix is to use open() instead of SAFE_OPEN() in the
->> > tst_fill_fs() and just return from the function when we get ENOSPC. I
->> > can fix that, or you can send the patch. Either way thanks for pointing
->> > out the mistake.
->>
->> The broken are not only in tst_fills_fs() function but also come from
->> SAFE_MKDIR(w->dir, 0700),
->
-> Ok, we have to create the directories in the testrun() function before
-> we attempt to run the threads, that should fix this particular problem.
->
->> SAFE_OPENDIR(w->dir) and SAFE_UNLINK(file).
->
-> The opendir() should not fail with ENOSPC since that only reads the
-> directory content.
->
-> And the unlink() should not fail with ENOSPC as well. Since unlink()
-> actually deletes a file, if that breaks because filesystem is full
-> you lost since you cannot free any space by removing files...
->
-> So fixing the tst_fill_fs() and doing the mkdir() before we start these
-> threads should IMHO fix the test.
+Hi,
 
-OK, Thanks for your analysis. Let me try to fix the mistake and test
-on my system.
+I posted this originally in "netstress: Add imports for TCP_FASTOPEN definition" [1], got reply from Alexey [2].
 
-Will send a new patch if I can confirm the issue being fully fixed like this.
+Do we want to include system headers which originaly define definitions in lapi
+headers? (e.g. include <linux/falloc.h> in include/lapi/fallocate.h as it
+defines FALLOC_FL_KEEP_SIZE from linux/falloc.h)?
+Some of them do it, some not.
 
+If yes, do we want to check presence of them with autotools?
+
+What is the purpose of lapi anyway? I suppose just to backport missing features
+added in recent glibc to older versions or missing in other libc (musl, uclibc,
+binder).
+
+
+Kind regards,
+Petr
+
+[1] http://lists.linux.it/pipermail/ltp/2017-October/006275.html
+[2] http://lists.linux.it/pipermail/ltp/2017-November/006345.html
+
+Petr Vorel (4):
+  lapi: Add lapi/tcp.h with definitions moved from netstress.c
+  lapi/socket.h: Move definitions from netstress.c
+  lapi: Add lapi/in.h with definition moved from netstress.c
+  lapi: Add lapi/dccp.h with definition moved from netstress.c
+
+ include/lapi/dccp.h                     | 25 +++++++++++++++++++++++++
+ include/lapi/in.h                       | 25 +++++++++++++++++++++++++
+ include/lapi/socket.h                   | 18 +++++++++++++++++-
+ include/lapi/tcp.h                      | 25 +++++++++++++++++++++++++
+ testcases/network/netstress/netstress.c | 33 ++++-----------------------------
+ 5 files changed, 96 insertions(+), 30 deletions(-)
+ create mode 100644 include/lapi/dccp.h
+ create mode 100644 include/lapi/in.h
+ create mode 100644 include/lapi/tcp.h
 
 -- 
-Li Wang
-liwang@redhat.com
+2.15.0
+
