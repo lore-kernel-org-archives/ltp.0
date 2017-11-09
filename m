@@ -1,47 +1,70 @@
-From: Sandeep Patil <sspatil@google.com>
-Date: Thu, 9 Nov 2017 10:51:57 -0800
-Subject: [LTP] [PATCH v3 16/16] doc: Update device flags in
- test-writing-guidelines
-In-Reply-To: <20171011144130.29728-16-chrubis@suse.cz>
-References: <20171011144130.29728-1-chrubis@suse.cz>
- <20171011144130.29728-16-chrubis@suse.cz>
-Message-ID: <20171109185157.GN12564@sspatil-desktop.mtv.corp.google.com>
+From: Dan Rue <dan.rue@linaro.org>
+Date: Thu,  9 Nov 2017 14:38:41 -0600
+Subject: [LTP] [RFC] [PATCH] netns: Fix race in virtual interface bringup
+Message-ID: <20171109203841.28856-1-dan.rue@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Oct 11, 2017 at 04:41:30PM +0200, Cyril Hrubis wrote:
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
->  doc/test-writing-guidelines.txt | 19 +++++++++++++++++--
->  1 file changed, 17 insertions(+), 2 deletions(-)
-> 
-> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-> index 15d418954..133cb9372 100644
-> --- a/doc/test-writing-guidelines.txt
-> +++ b/doc/test-writing-guidelines.txt
-> @@ -914,12 +914,27 @@ then.
->  If '.format_device' flag is set the device is formatted with a filesystem as
->  well. You can use '.dev_fs_type' to override the default filesystem type if
->  needed and pass additional options to mkfs via '.dev_fs_opts' and
-> -'.dev_extra_opt' pointers.
-> +'.dev_extra_opt' pointers. Note that '.format_device' implies '.needs_device'
-> +there is no need to set both.
->  
->  If '.mount_device' is set, the device is mounted at '.mntpoint' which is used
->  to pass a directory name that will be created and used as mount destination.
->  You can pass additional flags and data to the mount command via '.mnt_flags'
-> -and '.mnt_data' pointers.
-> +and '.mnt_data' pointers. Note that '.mount_device' implies '.needs_device'
-> +and '.format_device' so there is no need to set the later two.
-> +
-> +If '.needs_rofs' is set, read-only filesystem is mounted at '.mntpoint' this
-> +one is supposed to be used for 'EROFS' tests.
+Symptoms (+ command, error):
+    netns_comm_ip_ipv6_ioctl:
+        + ip netns exec tst_net_ns1 ping6 -q -c2 -I veth1 fd00::2
+        connect: Cannot assign requested address
 
-I probably should have done this with the patches. :(
+    netns_comm_ip_ipv6_netlink:
+        + ip netns exec tst_net_ns0 ping6 -q -c2 -I veth0 fd00::3
+        connect: Cannot assign requested address
 
-<snip>
+    netns_comm_ns_exec_ipv6_ioctl:
+        + ns_exec 6689 net ping6 -q -c2 -I veth0 fd00::3
+        connect: Cannot assign requested address
 
-Acked-by: Sandeep Patil <sspatil@google.com>
+    netns_comm_ns_exec_ipv6_netlin:
+        + ns_exec 6891 net ping6 -q -c2 -I veth0 fd00::3
+        connect: Cannot assign requested address
+
+The error is coming from ping6, which is trying to get an IP address for
+veth0 (due to -I veth0), but cannot. Waiting for two seconds fixes the
+test in my testcases. 1 second is not long enough.
+
+dmesg shows the following during the test:
+
+    [Nov 7 15:39] LTP: starting netns_comm_ip_ipv6_ioctl (netns_comm.sh ip ipv6 ioctl)
+    [  +0.302401] IPv6: ADDRCONF(NETDEV_UP): veth0: link is not ready
+    [  +0.048059] IPv6: ADDRCONF(NETDEV_CHANGE): veth0: link becomes ready
+
+Signed-off-by: Dan Rue <dan.rue@linaro.org>
+---
+
+We've periodically hit this problem across many arm64 kernels and boards, and
+it seems to be caused by "ping6" running before the virtual interface is
+actually ready. "sleep 2" works around the issue and proves that it is a race
+condition, but I would prefer something faster and deterministic. Please
+suggest a better implementation.
+
+Also, is it correct that "ifconfig veth0 up" returns before the interface is
+actually ready?
+
+See also this isolated test script:
+https://gist.github.com/danrue/7b76bbcbc23a6296030b7295650b69f3
+
+ testcases/kernel/containers/netns/netns_helper.sh | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
+index a95cdf206..99172c0c0 100755
+--- a/testcases/kernel/containers/netns/netns_helper.sh
++++ b/testcases/kernel/containers/netns/netns_helper.sh
+@@ -285,6 +285,7 @@ netns_set_ip()
+ 			tst_brkm TBROK "enabling veth1 device failed"
+ 		;;
+ 	esac
++	sleep 2
+ }
+ 
+ netns_ns_exec_cleanup()
+-- 
+2.13.6
+
