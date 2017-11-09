@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 9 Nov 2017 14:45:23 +0100
-Subject: [LTP] [PATCH v2] kernel/input: fix failure on an old kernel
-In-Reply-To: <1510137430-25555-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <20171107142043.GA32659@rei.lan>
- <1510137430-25555-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20171109134523.GA23734@rei>
+Date: Thu, 9 Nov 2017 15:54:43 +0100
+Subject: [LTP] [RFC PATCH 0/4] Add headers in lapi
+In-Reply-To: <20171109113947.24609-1-pvorel@suse.cz>
+References: <20171109113947.24609-1-pvorel@suse.cz>
+Message-ID: <20171109145443.GA30136@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,110 +11,42 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +/*
-> + * the value of sync_events_ignored:
-> + * 0: cannot ignore EV_SYN/SYN_REPORT events received in /dev/input/eventX
-> + * 1: ignore EV_SYN/SYN_REPORT events received in /dev/input/eventX
-> + * On an old kernel(before v3.7.0), EV_SYN/SYN_REPORT events are always
-> + * received even though we send empty moves.
-> + */
-> +int no_events_queued(int fd, int sync_events_ignored)
->  {
->  	struct pollfd fds = {.fd = fd, .events = POLLIN};
->  	int ret, res;
-> @@ -241,9 +248,14 @@ int no_events_queued(int fd)
->  		res = read(fd, &ev, sizeof(ev));
->  
->  		if (res == sizeof(ev)) {
-> -			tst_resm(TINFO,
-> -			         "Unexpected ev type=%i code=%i value=%i",
-> -			         ev.type, ev.code, ev.value);
-> +			if (sync_events_ignored && !ev.type &&
-> +			    !ev.code && !ev.value) {
-
-The ev.value is undefined for sync events, it's 0 most of the time but I
-remember that we had to fix the input06.c because it was failing for
-somebody, see check_sync_event() there. Maybe we should just move the
-check_event* and check_sync_event() helpers to the library so that we
-can use them here as well.
-
-> +				ret = 0;
-> +			} else {
-> +				tst_resm(TINFO,
-> +					 "Unexpected ev type=%i code=%i value=%i",
-> +					 ev.type, ev.code, ev.value);
-> +			}
->  		}
->  	}
->  
-> @@ -264,7 +276,40 @@ static int check_device(void)
->  			return 1;
->  	}
->  
-> +
-  ^
-  Please do not add useless empty lines.
-
->  	fclose(file);
->  
->  	return 0;
->  }
-> +
-> +/*
-> + * Use this function to check if the current kernel can get single
-> + * EV_SYN/SYN_REPORT events.
-> + */
-> +int check_single_sync_event(int fd1, int fd2)
-> +{
-> +	pid_t pid;
-> +	struct pollfd fds = {.fd = fd2, .events = POLLIN};
-> +	struct input_event ev;
-> +	int ret, ignored;
-> +
-> +	pid = tst_fork();
-> +
-> +	if (pid == -1)
-> +		tst_brkm(TBROK | TERRNO, NULL, "fork() failed");
-> +
-> +	if (!pid) {
-> +		send_event(fd1, EV_SYN, 0, 0);
-> +		exit(0);
-> +	}
-> +
-> +	ret = poll(&fds, 1, 30);
-> +	if (ret > 0 && SAFE_READ(NULL, 1, fd2, &ev, sizeof(ev)) == sizeof(ev)) {
-> +		if (!ev.type && !ev.code && !ev.value)
-> +			ignored = 1;
-> +	}
-> +
-> +	SAFE_WAITPID(NULL, pid, NULL, 0);
-> +
-> +	return ignored;
-> +}
-
-This still does not fix the problem. Even if new kernel started to
-produce stray sync events these testcases will still pass. What I think
-is a good solution is simply to define first fixed kernel version and
-expect that no stray sync events are produced on newer kernels.
-
-> diff --git a/testcases/kernel/input/input_helper.h b/testcases/kernel/input/input_helper.h
-> index 9b85dc9..1ef4d32 100644
-> --- a/testcases/kernel/input/input_helper.h
-> +++ b/testcases/kernel/input/input_helper.h
-> @@ -29,6 +29,7 @@ int open_uinput(void);
->  void create_device(int fd);
->  void setup_mouse_events(int fd);
->  void destroy_device(int fd);
-> -int no_events_queued(int fd);
-> +int no_events_queued(int fd, int sync_events_ignored);
-> +int check_single_sync_event(int fd1, int fd2);
->  
->  #endif /* INPUT_HELPER_H */
-> -- 
-> 1.8.3.1
+> I posted this originally in "netstress: Add imports for TCP_FASTOPEN definition" [1], got reply from Alexey [2].
 > 
-> 
-> 
+> Do we want to include system headers which originaly define definitions in lapi
+> headers? (e.g. include <linux/falloc.h> in include/lapi/fallocate.h as it
+> defines FALLOC_FL_KEEP_SIZE from linux/falloc.h)?
+> Some of them do it, some not.
+
+I think that it's a bit cleaner to include the system header before we
+define the fallback definitions, since that way we are sure to pick the
+system ones even if test writer forgets to include the system header in
+the test.
+
+But be wary of combining the linux and glibc headers, sometimes that
+causes collisions and all kinds of problems.
+
+In the case of fallocate the bits/fcntl-linux.h which is included by
+bits/fcntl.h which is included from fcntl.h defines these constants (on
+older glibcs, newer include linux/fallocate.h in bits/fcntl-linux.h), so
+including both fcntl.h and linux/falloc.h will cause macro
+redefinitions in certain cases...
+
+> If yes, do we want to check presence of them with autotools?
+
+Most of the time we do not have to, since these headers are present
+everywhere. I do not think that we should be adding autoconf checks just
+in case. So until there is a breakage we should assume that check is not
+needed.
+
+> What is the purpose of lapi anyway? I suppose just to backport missing features
+> added in recent glibc to older versions or missing in other libc (musl, uclibc,
+> binder).
+
+The purpose is to have fallback definitions in a single place,
+previously these were repeated over and over in each testcase, and
+expecially with syscall wrappers that sometimes differ sublty between
+architectures this was quite complicated to maintain.
 
 -- 
 Cyril Hrubis
