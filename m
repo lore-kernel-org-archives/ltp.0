@@ -1,96 +1,107 @@
-From: Sandeep Patil <sspatil@google.com>
-Date: Wed,  8 Nov 2017 16:34:36 -0800
-Subject: [LTP] [PATCH v2 4/6] direct_io: diotest4: use getpagesize() for
-	mmap if shm header is absent
-In-Reply-To: <20171109003438.130802-1-sspatil@google.com>
-References: <20171109003438.130802-1-sspatil@google.com>
-Message-ID: <20171109003438.130802-5-sspatil@google.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Thu, 09 Nov 2017 09:29:18 +0100
+Subject: [LTP] [PATCH] syscalls/add_key04: new test for associative
+	array bug
+In-Reply-To: <20171108211123.94429-1-ebiggers3@gmail.com>
+References: <20171108211123.94429-1-ebiggers3@gmail.com>
+Message-ID: <871sl7q2ht.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-For some architectures, mmap(MAP_FIXED) has to be aligned to SHMLBA
-(instead of getpagesize()) --
+Hello Eric,
 
-   https://sourceforge.net/p/ltp/mailman/ltp-list/?viewmonth=200804
+Eric Biggers writes:
 
-This dependency on SHMLBA causes the test to fail building for Android
-due to absence of sys/shm.h. Make the header dependency configurable and
-use getpagesize() as mmap granularity if the header is absent allowing
-the test to work on Android while not breaking the architectures that
-depend on the shm headers.
+> From: Eric Biggers <ebiggers@google.com>
+>
+> Add a test for a bug in the kernel's generic associative array
+> implementation which allowed users to cause a kernel oops (NULL pointer
+> dereference) by adding keys to a keyring in a certain pattern.
+>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  runtest/cve                                   |  1 +
+>  runtest/syscalls                              |  1 +
+>  testcases/kernel/syscalls/.gitignore          |  1 +
+>  testcases/kernel/syscalls/add_key/add_key04.c | 90 +++++++++++++++++++++++++++
+>  4 files changed, 93 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/add_key/add_key04.c
+>
+> diff --git a/runtest/cve b/runtest/cve
+> index 1b0d13374..2873df906 100644
+> --- a/runtest/cve
+> +++ b/runtest/cve
+> @@ -20,6 +20,7 @@ cve-2017-6951 cve-2017-6951
+>  cve-2017-7308 setsockopt02
+>  cve-2017-7472 keyctl04
+>  cve-2017-12192 keyctl07
+> +cve-2017-12193 add_key04
+>  cve-2017-15274 add_key02
+>  cve-2017-15299 request_key03 -b cve-2017-15299
+>  cve-2017-15537 ptrace07
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index fc381eb16..14089ac2c 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -14,6 +14,7 @@ acct01 acct01
+>  add_key01 add_key01
+>  add_key02 add_key02
+>  add_key03 add_key03
+> +add_key04 add_key04
+>  
+>  adjtimex01 adjtimex01
+>  adjtimex02 adjtimex02
+> diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+> index 0b3935880..12a136edb 100644
+> --- a/testcases/kernel/syscalls/.gitignore
+> +++ b/testcases/kernel/syscalls/.gitignore
+> @@ -9,6 +9,7 @@
+>  /add_key/add_key01
+>  /add_key/add_key02
+>  /add_key/add_key03
+> +/add_key/add_key04
+>  /adjtimex/adjtimex01
+>  /adjtimex/adjtimex02
+>  /alarm/alarm01
+> diff --git a/testcases/kernel/syscalls/add_key/add_key04.c b/testcases/kernel/syscalls/add_key/add_key04.c
+> new file mode 100644
+> index 000000000..78f9701f1
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/add_key/add_key04.c
+> @@ -0,0 +1,90 @@
+> +/*
+> + * Copyright (c) 2017 Google, Inc.
+> + *
+> + * This program is free software: you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation, either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program, if not, see <http://www.gnu.org/licenses/>.
+> + */
+> +
+> +/*
+> + * Regression test for commit ea6789980fda ("assoc_array: Fix a buggy
+> + * node-splitting case"), or CVE-2017-12193.
+> + *
+> + * Reproducing this bug requires adding keys to a keyring in a certain way that
+> + * triggers a corner case in the kernel's "associative array" implementation,
+> + * which is the data structure used to hold keys in a keyring, indexed by type
+> + * and description.
+> + *
+> + * Specifically, the root node of a keyring's associative associative array must
+                                                             ^
+                                                     Is this a typo?
 
-Signed-off-by: Sandeep Patil <sspatil@google.com>
----
-v1->v2
-------
-- Instead of relying on __BIONIC__, fix by doing a header check for <sys/shm> and
-  if the header doesn't exist, use getpagesize() as mmap granularity, otherwise
-  use SHMBA (as before)
-
- configure.ac                             | 1 +
- include/lapi/mmap.h                      | 8 ++++++++
- testcases/kernel/io/direct_io/diotest4.c | 4 ++--
- 3 files changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/configure.ac b/configure.ac
-index ffcbf57c5..16c8e4692 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -47,6 +47,7 @@ AC_CHECK_HEADERS([ \
-     sys/fanotify.h \
-     sys/inotify.h \
-     sys/prctl.h \
-+    sys/shm.h \
-     sys/ustat.h \
-     sys/xattr.h \
- ])
-diff --git a/include/lapi/mmap.h b/include/lapi/mmap.h
-index 10065a4df..7a5580079 100644
---- a/include/lapi/mmap.h
-+++ b/include/lapi/mmap.h
-@@ -71,4 +71,12 @@
- # define MADV_FREE	8
- #endif
- 
-+#ifdef HAVE_SYS_SHM_H
-+# include <sys/shm.h>
-+# define MMAP_GRANULARITY SHMLBA
-+#else
-+# include <unistd.h>
-+# define MMAP_GRANULARITY getpagesize()
-+#endif /* HAVE_SYS_SHM_H */
-+
- #endif /* LAPI_MMAP_H__ */
-diff --git a/testcases/kernel/io/direct_io/diotest4.c b/testcases/kernel/io/direct_io/diotest4.c
-index dbcacf1ae..e4616e400 100644
---- a/testcases/kernel/io/direct_io/diotest4.c
-+++ b/testcases/kernel/io/direct_io/diotest4.c
-@@ -65,12 +65,12 @@
- #include <sys/mman.h>
- #include <sys/syscall.h>
- #include <errno.h>
--#include <sys/shm.h>
- 
- #include "diotest_routines.h"
- 
- #include "test.h"
- #include "safe_macros.h"
-+#include "lapi/mmap.h"
- 
- char *TCID = "diotest4";	/* Test program identifier.    */
- int TST_TOTAL = 17;		/* Total number of test conditions */
-@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
- 	int fd, newfd;
- 	int i, l_fail = 0, fail_count = 0, total = 0;
- 	int failed = 0;
--	int shmsz = SHMLBA;
-+	int shmsz = MMAP_GRANULARITY;
- 	int pagemask = ~(sysconf(_SC_PAGE_SIZE) - 1);
- 	char *buf0, *buf1, *buf2;
- 	caddr_t shm_base;
 -- 
-2.15.0.448.gf294e3d99a-goog
-
+Thank you,
+Richard.
