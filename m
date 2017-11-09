@@ -1,57 +1,96 @@
 From: Sandeep Patil <sspatil@google.com>
-Date: Wed,  8 Nov 2017 16:34:38 -0800
-Subject: [LTP] [PATCH 6/6] lib: mkfs: use 'mke2fs' on android systems for
-	formatting filesystems
+Date: Wed,  8 Nov 2017 16:34:36 -0800
+Subject: [LTP] [PATCH v2 4/6] direct_io: diotest4: use getpagesize() for
+	mmap if shm header is absent
 In-Reply-To: <20171109003438.130802-1-sspatil@google.com>
 References: <20171109003438.130802-1-sspatil@google.com>
-Message-ID: <20171109003438.130802-7-sspatil@google.com>
+Message-ID: <20171109003438.130802-5-sspatil@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Android does not have mkfs.extN symlinks and only extN filesystems
-images can be created on the device. So, make sure we use 'mke2fs -t
-<fs_type>' when being built for Android and filter out any non-ext
-filesystem type requests from tst_mkfs_() when built for Android.
+For some architectures, mmap(MAP_FIXED) has to be aligned to SHMLBA
+(instead of getpagesize()) --
 
-syscalls/mmap16, syscalls/rename11 are the tests the tests currently
-known to start working after this change on Android systems
+   https://sourceforge.net/p/ltp/mailman/ltp-list/?viewmonth=200804
+
+This dependency on SHMLBA causes the test to fail building for Android
+due to absence of sys/shm.h. Make the header dependency configurable and
+use getpagesize() as mmap granularity if the header is absent allowing
+the test to work on Android while not breaking the architectures that
+depend on the shm headers.
 
 Signed-off-by: Sandeep Patil <sspatil@google.com>
 ---
- lib/tst_mkfs.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+v1->v2
+------
+- Instead of relying on __BIONIC__, fix by doing a header check for <sys/shm> and
+  if the header doesn't exist, use getpagesize() as mmap granularity, otherwise
+  use SHMBA (as before)
 
-diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
-index 7385a939f..c46d07044 100644
---- a/lib/tst_mkfs.c
-+++ b/lib/tst_mkfs.c
-@@ -43,7 +43,23 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
- 		return;
- 	}
+ configure.ac                             | 1 +
+ include/lapi/mmap.h                      | 8 ++++++++
+ testcases/kernel/io/direct_io/diotest4.c | 4 ++--
+ 3 files changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index ffcbf57c5..16c8e4692 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -47,6 +47,7 @@ AC_CHECK_HEADERS([ \
+     sys/fanotify.h \
+     sys/inotify.h \
+     sys/prctl.h \
++    sys/shm.h \
+     sys/ustat.h \
+     sys/xattr.h \
+ ])
+diff --git a/include/lapi/mmap.h b/include/lapi/mmap.h
+index 10065a4df..7a5580079 100644
+--- a/include/lapi/mmap.h
++++ b/include/lapi/mmap.h
+@@ -71,4 +71,12 @@
+ # define MADV_FREE	8
+ #endif
  
-+#ifdef __ANDROID__
-+	if (strncmp(fs_type, "ext", 3)) {
-+		tst_brkm(TBROK, cleanup_fn,
-+			 "%s:%d: \'%s\' fs_type not supported", file, lineno, fs_type);
-+		return;
-+	}
-+	strcpy(mkfs, "mke2fs");
-+
-+	/* insert '-t <fs_type> in arguments here */
-+	argv[pos++] = "-t";
-+	strcat(fs_opts_str, "-t ");
-+	argv[pos++] = fs_type;
-+	strcat(fs_opts_str, fs_type);
-+	strcat(fs_opts_str, " ");
++#ifdef HAVE_SYS_SHM_H
++# include <sys/shm.h>
++# define MMAP_GRANULARITY SHMLBA
 +#else
- 	snprintf(mkfs, sizeof(mkfs), "mkfs.%s", fs_type);
-+#endif
++# include <unistd.h>
++# define MMAP_GRANULARITY getpagesize()
++#endif /* HAVE_SYS_SHM_H */
++
+ #endif /* LAPI_MMAP_H__ */
+diff --git a/testcases/kernel/io/direct_io/diotest4.c b/testcases/kernel/io/direct_io/diotest4.c
+index dbcacf1ae..e4616e400 100644
+--- a/testcases/kernel/io/direct_io/diotest4.c
++++ b/testcases/kernel/io/direct_io/diotest4.c
+@@ -65,12 +65,12 @@
+ #include <sys/mman.h>
+ #include <sys/syscall.h>
+ #include <errno.h>
+-#include <sys/shm.h>
  
- 	if (fs_opts) {
- 		for (i = 0; fs_opts[i]; i++) {
+ #include "diotest_routines.h"
+ 
+ #include "test.h"
+ #include "safe_macros.h"
++#include "lapi/mmap.h"
+ 
+ char *TCID = "diotest4";	/* Test program identifier.    */
+ int TST_TOTAL = 17;		/* Total number of test conditions */
+@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
+ 	int fd, newfd;
+ 	int i, l_fail = 0, fail_count = 0, total = 0;
+ 	int failed = 0;
+-	int shmsz = SHMLBA;
++	int shmsz = MMAP_GRANULARITY;
+ 	int pagemask = ~(sysconf(_SC_PAGE_SIZE) - 1);
+ 	char *buf0, *buf1, *buf2;
+ 	caddr_t shm_base;
 -- 
 2.15.0.448.gf294e3d99a-goog
 
