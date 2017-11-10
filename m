@@ -1,23 +1,79 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 10 Nov 2017 00:12:07 +0100
-Subject: [LTP] network/stress/ltp_net_stress_ipsec_tcp: problems with IP
- Payload Compression (comp) transform protocol on VTI
-In-Reply-To: <20171109225038.iwrgxdt3qgeeg4sm@dell5510>
-References: <20171109225038.iwrgxdt3qgeeg4sm@dell5510>
-Message-ID: <20171109231207.x6xaqt6pdl4b6676@x230>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 10 Nov 2017 11:18:46 +0800
+Subject: [LTP] [PATCH 2/2] mm: enlarge mmap HIGH_ADDR value for s390 arch
+In-Reply-To: <436712851.37925655.1510128799182.JavaMail.zimbra@redhat.com>
+References: <20171025033006.32463-1-liwang@redhat.com>
+ <20171025033006.32463-2-liwang@redhat.com>
+ <436712851.37925655.1510128799182.JavaMail.zimbra@redhat.com>
+Message-ID: <CAEemH2eX=pXhvV04RgAHN7DTnYxkv-9edv-2k1k60WtgOQpEpw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Hi Alexey,
+On Wed, Nov 8, 2017 at 4:13 PM, Jan Stancek <jstancek@redhat.com> wrote:
+>
+>
+> ----- Original Message -----
+>> The kernel commit 1aea9b3f92 (s390/mm: implement 5 level pages tables)
+>> enlarge the maximum address in the tasks address space from (1UL << 53)
+>> to (-PAGE_SIZE) on s390 platform.
+>>
+>> We have to increase the HIGH_ADDR in ltp testcases accordingly otherwise
+>> that would be failed with succeeded mmap into high region:
+>>
+>> mmap15.c:
+>> mmap15  1  TFAIL  :  mmap15.c:77: mmap into high region succeeded
+>> unexpectedly
+>>
+>> mmapstress03.c:
+>> mmapstress03: errno = 25: really large mmap didn't fail
+>> mmapstress03    0  TINFO  :  uname.machine=s390x kernel is 32bit
+>
+>                                      Isn't this the problem? ^^
 
-> I'm trying to debug problems with IP Payload Compression (comp) transform protocol on VTI.
-> I.e. tcp4_ipsec_vti03 and tcp6_ipsec_vti03 tests:
-> tcp4_ipsec_vti03 tcp_ipsec_vti.sh -p comp -m tunnel -s "100 1000 65535"
-> tcp6_ipsec_vti03 tcp_ipsec_vti.sh -6 -p comp -m tunnel -s "100 1000 65535"
-Using netns, running on various distros (behaving the same).
+No, It is an misinformation (for s390 platform) from LTP
+tst_kernel_bits() function.
 
-Kind regards,
-Petr
+====
+# uname -r
+3.10.0-514.el7.s390x
+
+# readelf -h mmapstress03
+ELF Header:
+  Magic:   7f 45 4c 46 02 02 01 00 00 00 00 00 00 00 00 00
+  Class:                             ELF64
+  Data:                              2's complement, big endian
+  Version:                           1 (current)
+...
+
+# ./mmapstress03
+mmapstress03    0  TINFO  :  uname.machine=s390x kernel is 32bit
+mmapstress03    1  TPASS  :  Test passed
+
+
+
+I'd suggest to fix this as:
+
+$ git diff
+diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
+index fd648b1..6d6fd38 100644
+--- a/lib/tst_kernel.c
++++ b/lib/tst_kernel.c
+@@ -35,7 +35,8 @@ int tst_kernel_bits(void)
+         * ARM64 (aarch64) defines 32-bit compatibility modes as
+         * armv8l and armv8b (little and big endian).
+         */
+-       if (!strcmp(buf.machine, "armv8l") || !strcmp(buf.machine, "armv8b"))
++       if (!strcmp(buf.machine, "armv8l") || !strcmp(buf.machine, "armv8b")
++                       || !strcmp(buf.machine, "s390x"))
+                kernel_bits = 64;
+
+        tst_resm(TINFO, "uname.machine=%s kernel is %ibit",
+
+
+
+-- 
+Li Wang
+liwang@redhat.com
