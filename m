@@ -1,58 +1,89 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 10 Nov 2017 16:14:24 +0300
-Subject: [LTP] [RFC PATCH 2/4] lapi/socket.h: Move definitions from
-	netstress.c
-In-Reply-To: <20171109113947.24609-3-pvorel@suse.cz>
-References: <20171109113947.24609-1-pvorel@suse.cz>
- <20171109113947.24609-3-pvorel@suse.cz>
-Message-ID: <e1337cca-539c-54ea-9af1-d27db3ee7db1@oracle.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 10 Nov 2017 09:48:18 -0500 (EST)
+Subject: [LTP] [PATCH 6/6] lib: mkfs: use 'mke2fs' on android systems
+ for formatting filesystems
+In-Reply-To: <20171109003438.130802-7-sspatil@google.com>
+References: <20171109003438.130802-1-sspatil@google.com>
+ <20171109003438.130802-7-sspatil@google.com>
+Message-ID: <1305521830.39040751.1510325298805.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11/09/2017 02:39 PM, Petr Vorel wrote:
-> + remove sys/socket.h from netstress.c
 
-What about including it in lapi/socket.h?
 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+----- Original Message -----
+> Android does not have mkfs.extN symlinks and only extN filesystems
+> images can be created on the device. So, make sure we use 'mke2fs -t
+> <fs_type>' when being built for Android and filter out any non-ext
+> filesystem type requests from tst_mkfs_() when built for Android.
+
+Hi,
+
+So we probably need something similar for:
+  d1f9382ba7c8 "lib: Add interface to list supported filesystems"
+that introduced ".all_filesystems" as it also checks for mkfs.XXX.
+
+> 
+> syscalls/mmap16, syscalls/rename11 are the tests the tests currently
+> known to start working after this change on Android systems
+> 
+> Signed-off-by: Sandeep Patil <sspatil@google.com>
 > ---
->  include/lapi/socket.h                   | 18 +++++++++++++++++-
->  testcases/network/netstress/netstress.c | 18 ++----------------
->  2 files changed, 19 insertions(+), 17 deletions(-)
->
-> diff --git a/include/lapi/socket.h b/include/lapi/socket.h
-> index 98263105e..af9448804 100644
-> --- a/include/lapi/socket.h
-> +++ b/include/lapi/socket.h
-> @@ -19,8 +19,24 @@
->  #ifndef __LAPI_SOCKET_H__
->  #define __LAPI_SOCKET_H__
+>  lib/tst_mkfs.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+> 
+> diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
+> index 7385a939f..c46d07044 100644
+> --- a/lib/tst_mkfs.c
+> +++ b/lib/tst_mkfs.c
+> @@ -43,7 +43,23 @@ void tst_mkfs_(const char *file, const int lineno, void
+> (cleanup_fn)(void),
+>  		return;
+>  	}
 >  
-> +#ifndef MSG_FASTOPEN
-> +#define MSG_FASTOPEN	0x20000000 /* Send data in TCP SYN */
-> +#endif
+> +#ifdef __ANDROID__
+> +	if (strncmp(fs_type, "ext", 3)) {
+> +		tst_brkm(TBROK, cleanup_fn,
+> +			 "%s:%d: \'%s\' fs_type not supported", file, lineno, fs_type);
+
+This looks like it should TCONF instead. TBROK suggests there's something broken
+about the test, but this is more property of the environment where it runs.
+
+We TCONF already if mkfs.XXX can't be found couple lines below.
+Maybe we could use it for android too, what do you think?
+
+#ifdef __ANDROID__
+if (!strncmp(fs_type, "ext", 3)) {
+  // use mke2fs
+}
+#endif
+
+if (pos == 1)
+  // use mkfs.XXX
+
+Regards,
+Jan
+
+> +		return;
+> +	}
+> +	strcpy(mkfs, "mke2fs");
 > +
-> +#ifndef SO_BUSY_POLL
-> +#define SO_BUSY_POLL	46
+> +	/* insert '-t <fs_type> in arguments here */
+> +	argv[pos++] = "-t";
+> +	strcat(fs_opts_str, "-t ");
+> +	argv[pos++] = fs_type;
+> +	strcat(fs_opts_str, fs_type);
+> +	strcat(fs_opts_str, " ");
+> +#else
+>  	snprintf(mkfs, sizeof(mkfs), "mkfs.%s", fs_type);
 > +#endif
-> +
->  #ifndef SOCK_CLOEXEC
-> -# define SOCK_CLOEXEC 02000000
-> +#define SOCK_CLOEXEC 02000000
-> +#endif
-> +
-> +#ifndef SOCK_DCCP
-> +#define SOCK_DCCP		6
-> +#endif
-
-The two above should probably be in ascending order...
-
-SOCK_CLOEXEC along with SOCK_NONBLOCK already defined in
-lapi/fcntl.h. I guess we should move them to lapi/socket.h instead.
-
-Thanks,
-Alexey
-
+>  
+>  	if (fs_opts) {
+>  		for (i = 0; fs_opts[i]; i++) {
+> --
+> 2.15.0.448.gf294e3d99a-goog
+> 
+> 
