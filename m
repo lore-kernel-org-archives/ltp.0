@@ -1,31 +1,58 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 10 Nov 2017 06:21:04 -0500 (EST)
-Subject: [LTP] [PATCH 5/6] syscalls/mkdir03: convert to new API and use
- .needsrofs for EROFS check
-In-Reply-To: <20171109003438.130802-6-sspatil@google.com>
-References: <20171109003438.130802-1-sspatil@google.com>
- <20171109003438.130802-6-sspatil@google.com>
-Message-ID: <320554694.38835277.1510312864075.JavaMail.zimbra@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri, 10 Nov 2017 16:14:24 +0300
+Subject: [LTP] [RFC PATCH 2/4] lapi/socket.h: Move definitions from
+	netstress.c
+In-Reply-To: <20171109113947.24609-3-pvorel@suse.cz>
+References: <20171109113947.24609-1-pvorel@suse.cz>
+ <20171109113947.24609-3-pvorel@suse.cz>
+Message-ID: <e1337cca-539c-54ea-9af1-d27db3ee7db1@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On 11/09/2017 02:39 PM, Petr Vorel wrote:
+> + remove sys/socket.h from netstress.c
 
+What about including it in lapi/socket.h?
 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  include/lapi/socket.h                   | 18 +++++++++++++++++-
+>  testcases/network/netstress/netstress.c | 18 ++----------------
+>  2 files changed, 19 insertions(+), 17 deletions(-)
+>
+> diff --git a/include/lapi/socket.h b/include/lapi/socket.h
+> index 98263105e..af9448804 100644
+> --- a/include/lapi/socket.h
+> +++ b/include/lapi/socket.h
+> @@ -19,8 +19,24 @@
+>  #ifndef __LAPI_SOCKET_H__
+>  #define __LAPI_SOCKET_H__
+>  
+> +#ifndef MSG_FASTOPEN
+> +#define MSG_FASTOPEN	0x20000000 /* Send data in TCP SYN */
+> +#endif
+> +
+> +#ifndef SO_BUSY_POLL
+> +#define SO_BUSY_POLL	46
+> +#endif
+> +
+>  #ifndef SOCK_CLOEXEC
+> -# define SOCK_CLOEXEC 02000000
+> +#define SOCK_CLOEXEC 02000000
+> +#endif
+> +
+> +#ifndef SOCK_DCCP
+> +#define SOCK_DCCP		6
+> +#endif
 
------ Original Message -----
-> The mkdir03 test is converted to the new API along with removing the
-> need to manually acquire and mount a loopback devices for EROFS checks.
-> This now makes it possible for the test to run on Android systems as
-> well.
-> 
-> Signed-off-by: Sandeep Patil <sspatil@google.com>
+The two above should probably be in ascending order...
 
-Pushed with 2 small changes:
-- drop UCLINUX support
-- keep the setupfunc, so that we don't hardcode indexes into tcase array
+SOCK_CLOEXEC along with SOCK_NONBLOCK already defined in
+lapi/fcntl.h. I guess we should move them to lapi/socket.h instead.
 
 Thanks,
-Jan
+Alexey
+
