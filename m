@@ -1,11 +1,11 @@
 From: Li Wang <liwang@redhat.com>
-Date: Fri, 10 Nov 2017 11:18:46 +0800
+Date: Fri, 10 Nov 2017 14:04:11 +0800
 Subject: [LTP] [PATCH 2/2] mm: enlarge mmap HIGH_ADDR value for s390 arch
 In-Reply-To: <436712851.37925655.1510128799182.JavaMail.zimbra@redhat.com>
 References: <20171025033006.32463-1-liwang@redhat.com>
  <20171025033006.32463-2-liwang@redhat.com>
  <436712851.37925655.1510128799182.JavaMail.zimbra@redhat.com>
-Message-ID: <CAEemH2eX=pXhvV04RgAHN7DTnYxkv-9edv-2k1k60WtgOQpEpw@mail.gmail.com>
+Message-ID: <CAEemH2fuCDa9zCEco5Cbc=AEG0=9TS8mX2szMtLLJJLF0E46Lw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -33,46 +33,50 @@ On Wed, Nov 8, 2017 at 4:13 PM, Jan Stancek <jstancek@redhat.com> wrote:
 >
 >                                      Isn't this the problem? ^^
 
-No, It is an misinformation (for s390 platform) from LTP
-tst_kernel_bits() function.
+I did more test on s390x platform with upstream kernel-v4.14-rc8. It
+has been proved that the mmapstress03.c failures was only caused by
+wrong kernel_bits value.
 
-====
-# uname -r
-3.10.0-514.el7.s390x
+So I think we have no need to raise the mmap high address in
+mmapstress03.c test, but mmap15 testcase should be fixed at least.
 
-# readelf -h mmapstress03
-ELF Header:
-  Magic:   7f 45 4c 46 02 02 01 00 00 00 00 00 00 00 00 00
-  Class:                             ELF64
-  Data:                              2's complement, big endian
-  Version:                           1 (current)
-...
+Just adding debugging sentence temporarily to show something:
+==============
+--- a/testcases/kernel/mem/mmapstress/mmapstress03.c
++++ b/testcases/kernel/mem/mmapstress/mmapstress03.c
+@@ -140,6 +140,14 @@ int main(void)
+                anyfail();
+        }
+
++# define HIGH_ADDR_MAX (void *)(-pagesize)
++printf("HIGH_ADDR_MAX = %p\n", HIGH_ADDR_MAX);
++
++void * map_addr = (void*) (((uintptr_t)1) << ((sizeof(void*)<<3) -
+1)) - pagesize;
++size_t map_size = (size_t) (1ULL << (kernel_bits - 1)) - pagesize;
++printf("map_addr = %p\n", map_addr);
++printf("map_size = %p\n", map_size);
++
+        /* Ask for a ridiculously large mmap region@a high address */
+        if (mmap((void*) (((uintptr_t)1) << ((sizeof(void*)<<3) - 1))
+- pagesize,
+                 (size_t) ((1ULL << (kernel_bits - 1)) - pagesize),
+
+
+
+============
+# uname -rm
+4.14.0-rc8+ s390x
 
 # ./mmapstress03
-mmapstress03    0  TINFO  :  uname.machine=s390x kernel is 32bit
+mmapstress03    0  TINFO  :  uname.machine=s390x kernel is 64bit
+HIGH_ADDR_MAX = 0xfffffffffffff000
+map_addr = 0x7ffffffffffff000
+map_size = 0x7ffffffffffff000
 mmapstress03    1  TPASS  :  Test passed
 
 
-
-I'd suggest to fix this as:
-
-$ git diff
-diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
-index fd648b1..6d6fd38 100644
---- a/lib/tst_kernel.c
-+++ b/lib/tst_kernel.c
-@@ -35,7 +35,8 @@ int tst_kernel_bits(void)
-         * ARM64 (aarch64) defines 32-bit compatibility modes as
-         * armv8l and armv8b (little and big endian).
-         */
--       if (!strcmp(buf.machine, "armv8l") || !strcmp(buf.machine, "armv8b"))
-+       if (!strcmp(buf.machine, "armv8l") || !strcmp(buf.machine, "armv8b")
-+                       || !strcmp(buf.machine, "s390x"))
-                kernel_bits = 64;
-
-        tst_resm(TINFO, "uname.machine=%s kernel is %ibit",
-
-
+I'd like to format two new patches for kernel-bit detection and mmap15 issue.
 
 -- 
 Li Wang
