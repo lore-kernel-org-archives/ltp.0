@@ -1,48 +1,21 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 10 Nov 2017 03:35:49 -0500 (EST)
-Subject: [LTP] [PATCH] cpuset_syscall_test/cpuset_syscall_test.c:
-	Fix	compilation with wrong macro definition
-In-Reply-To: <1510110794-7375-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-References: <1510110794-7375-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-Message-ID: <463400032.38709545.1510302949919.JavaMail.zimbra@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 10 Nov 2017 16:54:36 +0800
+Subject: [LTP] [PATCH] ksm: fix ksm06 warning
+In-Reply-To: <20171010071353.7627-1-liwang@redhat.com>
+References: <20171010071353.7627-1-liwang@redhat.com>
+Message-ID: <CAEemH2e6NwMdgx9eAjnLnLRSm8npr5+i4eqz4X1D_DXu300VMw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+ping for these small fixes.
 
+http://lists.linux.it/pipermail/ltp/2017-October/005956.html
+http://lists.linux.it/pipermail/ltp/2017-October/005957.html
+http://lists.linux.it/pipermail/ltp/2017-October/006245.html
 
------ Original Message -----
-> Signed-off-by: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
-> ---
->  .../kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c | 2
->  +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git
-> a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
-> b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
-> index 9e568a9..e2bc39b 100644
-> ---
-> a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
-> +++
-> b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
-> @@ -51,7 +51,7 @@
->  char *TCID = "cpuset_syscall_test";
->  int TST_TOTAL = 1;
->  
-> -#ifdef defined(HAVE_NUMA_V2) && defined(HAVE_LINUX_MEMPOLICY_H)
-> +#if defined(HAVE_NUMA_V2) && defined(HAVE_LINUX_MEMPOLICY_H)
->  
->  #include "../cpuset_lib/cpuset.h"
->  #include "../cpuset_lib/bitmask.h"
-> --
-> 1.8.3.1
-> 
-
-Pushed.
-
-Thanks,
-Jan
-
+-- 
+Li Wang
+liwang@redhat.com
