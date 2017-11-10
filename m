@@ -1,11 +1,11 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 10 Nov 2017 04:14:30 -0500 (EST)
-Subject: [LTP] [PATCH v2 1/6] syscalls/cma: Make process_vm_{readv,
- writev} tests bionic friendly
-In-Reply-To: <20171109003438.130802-2-sspatil@google.com>
+Date: Fri, 10 Nov 2017 04:41:19 -0500 (EST)
+Subject: [LTP] [PATCH 2/6] mm: mallocstress: use safe macros wherever
+ possible
+In-Reply-To: <20171109003438.130802-3-sspatil@google.com>
 References: <20171109003438.130802-1-sspatil@google.com>
- <20171109003438.130802-2-sspatil@google.com>
-Message-ID: <208847401.38716462.1510305270622.JavaMail.zimbra@redhat.com>
+ <20171109003438.130802-3-sspatil@google.com>
+Message-ID: <1815772652.38721463.1510306879320.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,24 +15,35 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> All testcases under testcases/kernel/syscalls/cma depend on SysV
-> semaphore to do event notification from parent<->child processes.
-> Since bionic / android doesn't have SysV IPC, the tests can't be built
-> against bionic.
-> 
-> Fix this by using the ltp TST_SAFE_CHECKPOINT APIs taht are based on
-> futexes. The change enables following tests for Android devices.
-> 
->    process_vm01, process_vm_readv0[23], process_vm_writev02
+> The test is currently doesn't use the test library at all and instead
+> is a standlone program. While the conversion is being done, there is no
+> reason why the program can't use SAFE_ macros. Make necessary changes
+> to the program for the same, reducing the error check paths a lot.
 > 
 > Signed-off-by: Sandeep Patil <sspatil@google.com>
 > ---
-> v1->v2
-> ------
-> - Use TST_CHECKPOINT APIs instead of eventfd as suggested by Jan
+>  testcases/kernel/mem/mtest07/mallocstress.c | 75
+>  ++++++++++++++---------------
+>  1 file changed, 35 insertions(+), 40 deletions(-)
 > 
+> diff --git a/testcases/kernel/mem/mtest07/mallocstress.c
+> b/testcases/kernel/mem/mtest07/mallocstress.c
+> index 9588fb495..78d8ace8a 100644
+> --- a/testcases/kernel/mem/mtest07/mallocstress.c
+> +++ b/testcases/kernel/mem/mtest07/mallocstress.c
+> @@ -73,6 +73,10 @@
+>  #include <sys/ipc.h>
+>  #include <sys/sem.h>
+>  
+> +#include "test.h"
+> +#include "safe_macros.h"
+> +#include "tst_safe_pthread.h"
 
-Pushed.
+This doesn't look entirely OK, because it's mixing oldlib and newlib.
+Some SAFE macros won't end up calling cleanup().
 
-Thanks,
+Would you care to create patch that converts it all to newlib?
+Using checkpoints is of course OK and preferred.
+
+Regards,
 Jan
