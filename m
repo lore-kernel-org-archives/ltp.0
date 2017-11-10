@@ -1,227 +1,86 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 13 Nov 2017 14:46:54 +0800
-Subject: [LTP] [PATCH] commands/unshare: Add new testcase to test
-	unshare(1)
-In-Reply-To: <1509615297-2798-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1509615297-2798-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <5A093FDE.6090803@cn.fujitsu.com>
+From: Na Nha <minhnhan0801@gmail.com>
+Date: Sat, 11 Nov 2017 00:14:41 +0700
+Subject: [LTP] Failling_Zram01&Zram02_LTP_testsuite
+Message-ID: <CAPiF6TiCjTVGNYH9EDkMFuVKvM-=qscQ0J4d-S8mfxi1-iA8Nw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Nice to meet you all.
+My name's Nhan. I am using some LTP test cases
 
-Ping :-)
+I faced 2 problems when running testcase "zram01.sh" & "zram02.sh" on
+my 32-bit ARM board.
 
-Thanks,
-Xiao Yang
-On 2017/11/02 17:34, Xiao Yang wrote:
-> Test unshare(1) command with some basic options.
->
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  runtest/commands                        |   1 +
->  testcases/commands/unshare/Makefile     |  22 +++++
->  testcases/commands/unshare/unshare01.sh | 150 ++++++++++++++++++++++++++++++++
->  3 files changed, 173 insertions(+)
->  create mode 100644 testcases/commands/unshare/Makefile
->  create mode 100755 testcases/commands/unshare/unshare01.sh
->
-> diff --git a/runtest/commands b/runtest/commands
-> index 00ae0d2..92df3af 100644
-> --- a/runtest/commands
-> +++ b/runtest/commands
-> @@ -43,3 +43,4 @@ insmod01 insmod01.sh
->  wc01 wc01.sh
->  keyctl01 keyctl01.sh
->  gdb01 gdb01.sh
-> +unshare01 unshare01.sh
-> diff --git a/testcases/commands/unshare/Makefile b/testcases/commands/unshare/Makefile
-> new file mode 100644
-> index 0000000..a175291
-> --- /dev/null
-> +++ b/testcases/commands/unshare/Makefile
-> @@ -0,0 +1,22 @@
-> +#
-> +# Copyright (c) 2017 FUJITSU LIMITED. All rights reserved.
-> +# Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> +#
-> +# This program is free software; you can redistribute it and/or modify
-> +# it under the terms of the GNU General Public License as published by
-> +# the Free Software Foundation; either version 2 of the License, or
-> +# (at your option) any later version.
-> +#
-> +# This program is distributed in the hope that it will be useful,
-> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +# GNU General Public License for more details.
-> +#
-> +
-> +top_srcdir		?= ../../..
-> +
-> +include $(top_srcdir)/include/mk/env_pre.mk
-> +
-> +INSTALL_TARGETS		:= unshare01.sh
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/commands/unshare/unshare01.sh b/testcases/commands/unshare/unshare01.sh
-> new file mode 100755
-> index 0000000..ba379df
-> --- /dev/null
-> +++ b/testcases/commands/unshare/unshare01.sh
-> @@ -0,0 +1,150 @@
-> +#!/bin/sh
-> +#
-> +# Copyright (c) 2017 FUJITSU LIMITED. All rights reserved.
-> +# Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> +#
-> +# This program is free software; you can redistribute it and/or modify
-> +# it under the terms of the GNU General Public License as published by
-> +# the Free Software Foundation; either version 2 of the License, or
-> +# (at your option) any later version.
-> +#
-> +# This program is distributed in the hope that it will be useful,
-> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-> +# the GNU General Public License for more details.
-> +#
-> +# Test unshare command with some basic options.
-> +# 1) If we run unshare with "--user", UID in the newly created user namespace
-> +#    is set to 65534.
-> +# 2) If we run unshare with "--user", GID in the newly created user namespace
-> +#    is set to 65534.
-> +# 3) If we run with "--user --map-root-user", UID in the newly created user
-> +#    namespace is set to 0.
-> +# 4) If we run with "--user --map-root-user", GID in the newly created user
-> +#    is set to 0.
-> +# 5) If we run with "--mount", mount and unmount events do not propagate to
-> +#    its parent mount namespace.
-> +# 6) If we run with "--mount --propagation shared", mount and unmount events
-> +#    propagate to its parent mount namespace.
-> +# 7) If we run with "--user --map-root-user --mount", mount and unmount events
-> +#    do not propagate to its parent mount namespace.
-> +# 8) Even if we run with "--user --map-root-user --mount --propagation shared",
-> +#    mount and unmount events do not propagate to its parent mount namespace
-> +#    because the shared mount is reduced to a slave mount.
-> +#
-> +#    Please see the following URL for detailed information:
-> +#    http://man7.org/linux/man-pages/man7/user_namespaces.7.html
-> +#    http://man7.org/linux/man-pages/man7/mount_namespaces.7.html
-> +#
-> +
-> +TST_CNT=8
-> +TST_SETUP=setup
-> +TST_CLEANUP=cleanup
-> +TST_TESTFUNC=do_test
-> +TST_NEEDS_ROOT=1
-> +TST_NEEDS_TMPDIR=1
-> +TST_NEEDS_CMDS="unshare id mount umount"
-> +. tst_test.sh
-> +
-> +max_userns_path="/proc/sys/user/max_user_namespaces"
-> +max_mntns_path="/proc/sys/user/max_mnt_namespaces"
-> +max_userns_zero=0
-> +max_mntns_zero=0
-> +
-> +setup()
-> +{
-> +	# On some distributions(e.g RHEL7.4), the default value of
-> +	# max_user_namespaces or max_mnt_namespaces is set to 0.
-> +	# We need to change the default value to run unshare command.
-> +	if [ -f "${max_userns_path}" ]; then
-> +		if [ $(cat "${max_userns_path}") -eq 0 ]; then
-> +			echo 1024 > "${max_userns_path}"
-> +			max_userns_zero=1
-> +		fi
-> +	fi
-> +
-> +	if [ -f "${max_mntns_path}" ]; then
-> +		if [ $(cat "${max_mntns_path}") -eq 0 ]; then
-> +			echo 1024 > "${max_mntns_path}"
-> +			max_mntns_zero=1
-> +		fi
-> +	fi
-> +
-> +	mkdir -p test_A test_B
-> +	touch test_A/A test_B/B
-> +}
-> +
-> +cleanup()
-> +{
-> +	# Restore the default value to 0.
-> +	[ ${max_userns_zero} -eq 1 ] && echo 0 > "${max_userns_path}"
-> +	[ ${max_mntns_zero} -eq 1 ] && echo 0 > "${max_mntns_zero}"
-> +}
-> +
-> +unshare_test()
-> +{
-> +	local unshare_opts=$1
-> +	local verify_cmd=$2
-> +	local exp_result=$3
-> +
-> +	local unshare_cmd="unshare ${unshare_opts} ${verify_cmd}"
-> +
-> +	eval ${unshare_cmd} > temp 2>&1
-> +	if [ $? -ne 0 ]; then
-> +		# unrecognized option or invalid option is returned if the
-> +		# option is not supported by unshare command(e.g. RHEL6).
-> +		# Invalid argument or Operation not permitted is returned
-> +		# if the feature is not supported by kernel(e.g. RHEL7).
-> +		grep -q -E "unrecognized option|invalid option|Invalid argument|Operation not permitted" temp
-> +		if [ $? -eq 0 ]; then
-> +			tst_res TCONF "${unshare_cmd} not supported."
-> +		else
-> +			tst_res TFAIL "${unshare_cmd} failed."
-> +		fi
-> +		return
-> +	fi
-> +
-> +	if [[ "${verify_cmd}" =~ 'id' ]]; then
-> +		if [ $(cat temp) -ne ${exp_result} ]; then
-> +			tst_res TFAIL "${unshare_cmd} got wrong uid/gid"
-> +			return
-> +		fi
-> +	fi
-> +
-> +	if [[ "${verify_cmd}" =~ 'mount' ]]; then
-> +		if [ "${exp_result}" = "unmounted" ]; then
-> +			if ls test_B | grep -q 'A'; then
-> +				tst_res TFAIL "${unshare_cmd} got bind info"
-> +				umount test_B
-> +				return
-> +			fi
-> +		else
-> +			if ! ls test_B | grep -q 'A'; then
-> +				tst_res TFAIL "${unshare_cmd} did not get bind info"
-> +				return
-> +			fi
-> +			umount test_B
-> +		fi
-> +	fi
-> +
-> +	tst_res TPASS "${unshare_cmd} succeeded as expected"
-> +}
-> +
-> +do_test()
-> +{
-> +	case $1 in
-> +	1) unshare_test "--user" "id -u" "65534";;
-> +	2) unshare_test "--user" "id -g" "65534";;
-> +	3) unshare_test "--user --map-root-user" "id -u" "0";;
-> +	4) unshare_test "--user --map-root-user" "id -g" "0";;
-> +	5) unshare_test "--mount" "mount --bind test_A test_B" "unmounted";;
-> +	6) unshare_test "--mount --propagation shared" \
-> +			"mount --bind test_A test_B" "mounted";;
-> +	7) unshare_test "--user --map-root-user --mount" \
-> +			"mount --bind test_A test_B" "unmounted";;
-> +	8) unshare_test "--user --map-root-user --mount --propagation shared" \
-> +			"mount --bind test_A test_B" "unmounted";;
-> +	esac
-> +}
-> +
-> +tst_run
+- First is regarding *Zram01*:
+
+My target is using a optimized version of dd command.
+In this testcase it use below command:
+" dd conv=notrunc if=/dev/zero of=zram${i}/file oflag=append count=1
+bs=1024 status=none > /dev/null 2>&1 || break "
+
+ However , my "dd --help" output:
 
 
 
+
+
+
+
+
+
+
+
+*BusyBox v1.24.1 (2017-09-26 20:41:13 CEST) multi-call binary.Usage: dd
+[if=FILE] [of=FILE] [bs=N] [count=N] [skip=N][seek=N]Copy a file with
+converting and formattingif=FILE Read from FILE instead of stdinof=FILE
+Write to FILE instead of stdoutbs=N Read and write N bytes at a timecount=N
+Copy only N input blocksskip=N Skip N input blocksseek=N Skip N output
+blocksN may be suffixed by c (1), w (2), b (512), kB (1000), k (1024), MB,
+M, GB, G*
+
+So I don't have conv, oflag & status" arguments for dd command
+Therefore, when I run "zram01.sh", it is failed
+But when I remove those argument, it is passed.
+Can I remove those arguments. Dose it make sense, still keep the
+meaning of this test case?
+
+- Second is regarding *Zram02*:
+This is the output when I execute this test:
+
+
+
+
+
+
+
+
+
+
+
+*root@arm:/opt/ltp/testcases/bin# ./zram02.shzram02 1 TINFO: create '1'
+zram device(s)zram02 1 TPASS: test succeededzram02 2 TCONF: The device
+attribute max_comp_streams was introducedin kernel 3.15 and deprecated in
+4.7zram02 2 TINFO: set disk size to zram
+device(s)/opt/ltp/testcases/bin/zram_lib.sh: line 121: echo: write
+error:Cannot allocate memoryzram02 2 TFAIL: can't set '107374182400' to
+/sys/block/zram0/disksizezram02 3 TINFO: zram cleanup*
+I think this testcase is not the kind of Stress test, so we don't need
+to configure disksize of zram with such 100GB (it is so large).
+We only need to confirm that we can configure disksize.
+
+So I think 10GB is fine , Is it OK?
+
+Please help me to clarify those problems(Zram 01&Zram02)?
+I look forward to any reply
+
+---------------------------------------------------------------------------------------------------------
+
+Thanks and best regard,
+
+Le Minh Nhan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20171111/d5ae3090/attachment.html>
