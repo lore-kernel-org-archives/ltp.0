@@ -1,86 +1,164 @@
-From: Na Nha <minhnhan0801@gmail.com>
-Date: Sat, 11 Nov 2017 00:14:41 +0700
-Subject: [LTP] Failling_Zram01&Zram02_LTP_testsuite
-Message-ID: <CAPiF6TiCjTVGNYH9EDkMFuVKvM-=qscQ0J4d-S8mfxi1-iA8Nw@mail.gmail.com>
+From: Eric Biggers <ebiggers3@gmail.com>
+Date: Mon, 13 Nov 2017 14:01:51 -0800
+Subject: [LTP] [PATCH v2] syscalls/add_key04: new test for associative array
+	bug
+Message-ID: <20171113220151.87599-1-ebiggers3@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Nice to meet you all.
-My name's Nhan. I am using some LTP test cases
+From: Eric Biggers <ebiggers@google.com>
 
-I faced 2 problems when running testcase "zram01.sh" & "zram02.sh" on
-my 32-bit ARM board.
+Add a test for a bug in the kernel's generic associative array
+implementation which allowed users to cause a kernel oops (NULL pointer
+dereference) by adding keys to a keyring in a certain pattern.
 
-- First is regarding *Zram01*:
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
 
-My target is using a optimized version of dd command.
-In this testcase it use below command:
-" dd conv=notrunc if=/dev/zero of=zram${i}/file oflag=append count=1
-bs=1024 status=none > /dev/null 2>&1 || break "
+Changed since v1: fixed a typo
 
- However , my "dd --help" output:
+ runtest/cve                                   |  1 +
+ runtest/syscalls                              |  1 +
+ testcases/kernel/syscalls/.gitignore          |  1 +
+ testcases/kernel/syscalls/add_key/add_key04.c | 90 +++++++++++++++++++++++++++
+ 4 files changed, 93 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/add_key/add_key04.c
 
+diff --git a/runtest/cve b/runtest/cve
+index 1b0d13374..2873df906 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -20,6 +20,7 @@ cve-2017-6951 cve-2017-6951
+ cve-2017-7308 setsockopt02
+ cve-2017-7472 keyctl04
+ cve-2017-12192 keyctl07
++cve-2017-12193 add_key04
+ cve-2017-15274 add_key02
+ cve-2017-15299 request_key03 -b cve-2017-15299
+ cve-2017-15537 ptrace07
+diff --git a/runtest/syscalls b/runtest/syscalls
+index fc381eb16..14089ac2c 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -14,6 +14,7 @@ acct01 acct01
+ add_key01 add_key01
+ add_key02 add_key02
+ add_key03 add_key03
++add_key04 add_key04
+ 
+ adjtimex01 adjtimex01
+ adjtimex02 adjtimex02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 0b3935880..12a136edb 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -9,6 +9,7 @@
+ /add_key/add_key01
+ /add_key/add_key02
+ /add_key/add_key03
++/add_key/add_key04
+ /adjtimex/adjtimex01
+ /adjtimex/adjtimex02
+ /alarm/alarm01
+diff --git a/testcases/kernel/syscalls/add_key/add_key04.c b/testcases/kernel/syscalls/add_key/add_key04.c
+new file mode 100644
+index 000000000..debf34942
+--- /dev/null
++++ b/testcases/kernel/syscalls/add_key/add_key04.c
+@@ -0,0 +1,90 @@
++/*
++ * Copyright (c) 2017 Google, Inc.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program, if not, see <http://www.gnu.org/licenses/>.
++ */
++
++/*
++ * Regression test for commit ea6789980fda ("assoc_array: Fix a buggy
++ * node-splitting case"), or CVE-2017-12193.
++ *
++ * Reproducing this bug requires adding keys to a keyring in a certain way that
++ * triggers a corner case in the kernel's "associative array" implementation,
++ * which is the data structure used to hold keys in a keyring, indexed by type
++ * and description.
++ *
++ * Specifically, the root node of a keyring's associative array must be
++ * completely filled with keys that all cluster together within the same slot.
++ * Then a key must be added which goes in a different slot.  On broken kernels,
++ * this caused a NULL pointer dereference in assoc_array_apply_edit().
++ *
++ * This can be done by carefully crafting key descriptions.  However, an easier
++ * way is to just add 16 keyrings and then a non-keyring, since keyrings all go
++ * into their own top-level slot.  This test takes the easier approach.
++ */
++
++#include <errno.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <sys/wait.h>
++
++#include "tst_test.h"
++#include "lapi/keyctl.h"
++
++#define ASSOC_ARRAY_FAN_OUT 16
++
++static void do_test(void)
++{
++	int status;
++
++	TEST(keyctl(KEYCTL_JOIN_SESSION_KEYRING, NULL));
++	if (TEST_RETURN < 0)
++		tst_brk(TBROK | TTERRNO, "failed to join new session keyring");
++
++	if (SAFE_FORK() == 0) {
++		char description[32];
++		const char payload[] = "payload";
++		int i;
++
++		for (i = 0; i < ASSOC_ARRAY_FAN_OUT; i++) {
++			sprintf(description, "keyring%d", i);
++			TEST(add_key("keyring", description, NULL, 0,
++				     KEY_SPEC_SESSION_KEYRING));
++			if (TEST_RETURN < 0) {
++				tst_brk(TBROK | TTERRNO,
++					"unable to create keyring %d", i);
++			}
++		}
++
++		TEST(add_key("user", "userkey", payload, sizeof(payload),
++			     KEY_SPEC_SESSION_KEYRING));
++		if (TEST_RETURN < 0)
++			tst_brk(TBROK | TTERRNO, "unable to create user key");
++
++		exit(0);
++	}
++
++	SAFE_WAIT(&status);
++	if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
++		tst_res(TPASS, "didn't crash while filling keyring");
++	else if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL)
++		tst_res(TFAIL, "kernel oops while filling keyring");
++	else
++		tst_brk(TBROK, "Child %s", tst_strstatus(status));
++}
++
++static struct tst_test test = {
++	.test_all = do_test,
++	.forks_child = 1,
++};
+-- 
+2.15.0.448.gf294e3d99a-goog
 
-
-
-
-
-
-
-
-
-
-*BusyBox v1.24.1 (2017-09-26 20:41:13 CEST) multi-call binary.Usage: dd
-[if=FILE] [of=FILE] [bs=N] [count=N] [skip=N][seek=N]Copy a file with
-converting and formattingif=FILE Read from FILE instead of stdinof=FILE
-Write to FILE instead of stdoutbs=N Read and write N bytes at a timecount=N
-Copy only N input blocksskip=N Skip N input blocksseek=N Skip N output
-blocksN may be suffixed by c (1), w (2), b (512), kB (1000), k (1024), MB,
-M, GB, G*
-
-So I don't have conv, oflag & status" arguments for dd command
-Therefore, when I run "zram01.sh", it is failed
-But when I remove those argument, it is passed.
-Can I remove those arguments. Dose it make sense, still keep the
-meaning of this test case?
-
-- Second is regarding *Zram02*:
-This is the output when I execute this test:
-
-
-
-
-
-
-
-
-
-
-
-*root@arm:/opt/ltp/testcases/bin# ./zram02.shzram02 1 TINFO: create '1'
-zram device(s)zram02 1 TPASS: test succeededzram02 2 TCONF: The device
-attribute max_comp_streams was introducedin kernel 3.15 and deprecated in
-4.7zram02 2 TINFO: set disk size to zram
-device(s)/opt/ltp/testcases/bin/zram_lib.sh: line 121: echo: write
-error:Cannot allocate memoryzram02 2 TFAIL: can't set '107374182400' to
-/sys/block/zram0/disksizezram02 3 TINFO: zram cleanup*
-I think this testcase is not the kind of Stress test, so we don't need
-to configure disksize of zram with such 100GB (it is so large).
-We only need to confirm that we can configure disksize.
-
-So I think 10GB is fine , Is it OK?
-
-Please help me to clarify those problems(Zram 01&Zram02)?
-I look forward to any reply
-
----------------------------------------------------------------------------------------------------------
-
-Thanks and best regard,
-
-Le Minh Nhan
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20171111/d5ae3090/attachment.html>
