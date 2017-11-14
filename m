@@ -1,52 +1,50 @@
 From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Tue, 14 Nov 2017 15:59:20 +0000
-Subject: [LTP] [PATCH v2 04/13] hugeshmctl01: Fix warning about
-	signed/unsigned comparison
+Date: Tue, 14 Nov 2017 15:59:21 +0000
+Subject: [LTP] [PATCH v2 05/13] hugeshmctl02: Fix allocation size for odd
+	number of hugepages
 In-Reply-To: <20171114155929.24237-1-punit.agrawal@arm.com>
 References: <20171114155929.24237-1-punit.agrawal@arm.com>
-Message-ID: <20171114155929.24237-5-punit.agrawal@arm.com>
+Message-ID: <20171114155929.24237-6-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The macro N_ATTACH is assumed to be a signed intenger which results in
-the below warning when compiling -
+From: "Suzuki K. Poulose" <suzuki.poulose@arm.com>
 
-warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
-  if (buf.shm_nattch != N_ATTACH + stat_time) {
-                     ^~
+The test tries to allocate 2 * (half the number of available hugepages).
+If we have odd number hugepages, the calculated allocation size is not
+page-aligned and allocation fails.
 
-Fix this by explicitly marking N_ATTACH to be an unsigned integer and
-fixing the resulting fallout.
+e.g, (use -s option to trigger it manually)
 
+$ hugeshmctl02 -s 7 -i 5
+hugeshmctl02    0  TINFO  :  set nr_hugepages to 7
+hugeshmctl02    1  TBROK  :  hugeshmctl02.c:153: shmget #2: errno=ENOMEM(12): Cannot allocate memory
+hugeshmctl02    2  TBROK  :  hugeshmctl02.c:153: Remaining cases broken
+hugeshmctl02    0  TINFO  :  set nr_hugepages to 0
+
+Align the size to hugepage_size.
+
+Signed-off-by: Suzuki K. Poulose <suzuki.poulose@arm.com>
 Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
 ---
- testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-index 1808995ed..3e7f12691 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-@@ -47,7 +47,7 @@
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
+index 6079d9937..82964a327 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
+@@ -101,7 +101,7 @@ static void setup(void)
+ 	set_sys_tune("nr_hugepages", hugepages, 1);
+ 	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
  
- #define FIRST		0
- #define SECOND		1
--#define N_ATTACH	4
-+#define N_ATTACH	4U
- #define NEWMODE		0066
- 
- static size_t shm_size;
-@@ -139,7 +139,7 @@ void *set_shmat(void)
-  */
- static void stat_setup(void)
- {
--	int i;
-+	unsigned int i;
- 	void *test;
- 	pid_t pid;
+-	shm_size = hpage_size * hugepages / 2;
++	shm_size = hpage_size * (hugepages / 2);
+ 	update_shm_size(&shm_size);
+ 	shmkey = getipckey();
  
 -- 
 2.14.2
