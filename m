@@ -1,77 +1,103 @@
 From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Tue, 14 Nov 2017 15:59:27 +0000
-Subject: [LTP] [PATCH v2 11/13] perf_event_open: Handle absence of PMU
-	gracefully
+Date: Tue, 14 Nov 2017 15:59:28 +0000
+Subject: [LTP] [PATCH v2 12/13] hotplug/cpu_hotplug: Repopulate
+	cgroup:cpusets after testing hotplug
 In-Reply-To: <20171114155929.24237-1-punit.agrawal@arm.com>
 References: <20171114155929.24237-1-punit.agrawal@arm.com>
-Message-ID: <20171114155929.24237-12-punit.agrawal@arm.com>
+Message-ID: <20171114155929.24237-13-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: "Suzuki K. Poulose" <suzuki.poulose@arm.com>
+From: James Morse <james.morse@arm.com>
 
-The perf_event_open0{1,2} syscall tests fail for an absence of a
-PMU (which returns ENODEV). Handle the return code gracefully as we
-check for ENOENT.
+When LTP is started over ssh, systemd will use cgroups to group all the
+tasks started by this session. LTPs cpuhotplug04 will remove all but one
+CPU as part of its test.
 
-Without the patch:
+In the kernel cpuset_hotplug_workfn() is documented thus: "Non-root
+cpusets are only affected by offlining". This means cpuhotplug04 will
+cause all future tasks to only have one available CPU. cpuhotplug04
+effectively looses those CPUs for all users until the next reboot.
 
-$ perf_event_open01
-perf_event_open01    1  TFAIL  :  perf_event_open01.c:162: perf_event_open \
-		failed unexpectedly: TEST_ERRNO=ENODEV(19): No such device
+This problem has been reported, and was fixed for the unified hierarchy
+by be4c9dd7aee5 ("cpuset: enable onlined cpu/node in effective
+masks"). Since v3.17, this behaviour could be selected by passing '-o
+__DEVEL__sane_behavior' to the cgroup mount.  Linux v4.4 grouped all the
+ABI breakage together into a new filesystem: cgroup2, removing the
+__DEVEL__sane_behavior flag.
 
-With the patch:
+With v226 Systemd can be forced to use cgroup2 by passing
+'systemd.unified_cgroup_hierarchy=1' on the kernel command line.
 
-$ perf_event_open01
-perf_event_open01    1  TCONF  :  perf_event_open01.c:159: perf_event_open for PERF_COUNT_HW_INSTRUCTIONS : No such device
-perf_event_open01    2  TCONF  :  perf_event_open01.c:159: perf_event_open for PERF_COUNT_HW_CACHE_REFERENCES : No such device
-perf_event_open01    3  TCONF  :  perf_event_open01.c:159: perf_event_open for PERF_COUNT_HW_CACHE_MISSES : No such device
-perf_event_open01    4  TCONF  :  perf_event_open01.c:159: perf_event_open for PERF_COUNT_HW_BRANCH_INSTRUCTIONS : No such file or directory
-perf_event_open01    5  TCONF  :  perf_event_open01.c:159: perf_event_open for PERF_COUNT_HW_BRANCH_MISSES : No such device
-perf_event_open01    0  TINFO  :  read event counter succeeded, value: 833765520
-perf_event_open01    6  TPASS  :  test PERF_TYPE_HARDWARE: PERF_COUNT_SW_CPU_CLOCK succeeded
-perf_event_open01    0  TINFO  :  read event counter succeeded, value: 833967380
-perf_event_open01    7  TPASS  :  test PERF_TYPE_HARDWARE: PERF_COUNT_SW_TASK_CLOCK succeeded
+Ubuntu 15.04 ships with systemd v219.
 
-Signed-off-by: Suzuki K. Poulose <suzuki.poulose@arm.com>
+LTP tests that online CPUs must test for the legacy cgroup hierarchy and
+update the cpusets for all users/sessions. Add this code the
+cpu_online() helper.
+
+Signed-off-by: James Morse <james.morse@arm.com>
 Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
 ---
- testcases/kernel/syscalls/perf_event_open/perf_event_open01.c | 3 ++-
- testcases/kernel/syscalls/perf_event_open/perf_event_open02.c | 4 ++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ .../cpu_hotplug/include/cpuhotplug_hotplug.sh      | 36 ++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
-index 5c814b60c..5568035d9 100644
---- a/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
-+++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open01.c
-@@ -149,7 +149,8 @@ static void verify(struct test_case_t *tc)
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+index 9f856e554..35ec7c86b 100644
+--- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+@@ -58,6 +58,39 @@ set_affinity()
+     return $?
+ }
  
- 	TEST(perf_event_open(&pe, 0, -1, -1, 0));
- 	if (TEST_RETURN == -1) {
--		if (TEST_ERRNO == ENOENT || TEST_ERRNO == EOPNOTSUPP) {
-+		if (TEST_ERRNO == ENOENT || TEST_ERRNO == EOPNOTSUPP ||
-+		    TEST_ERRNO == ENODEV) {
- 			tst_resm(TCONF | TTERRNO,
- 			         "perf_event_open for %s not supported",
- 			         tc->config_name);
-diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-index 7d54cbd52..13a17948a 100644
---- a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-+++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-@@ -160,8 +160,8 @@ static int count_hardware_counters(void)
- 	for (i = 0; i < MAX_CTRS; i++) {
- 		fdarry[i] = perf_event_open(&hw_event, 0, -1, -1, 0);
- 		if (fdarry[i] == -1) {
--			if (errno == ENOENT) {
--				tst_brkm(TCONF, cleanup,
-+			if (errno == ENOENT || errno == ENODEV) {
-+				tst_brkm(TCONF | TERRNO, cleanup,
- 				         "PERF_COUNT_HW_INSTRUCTIONS not supported");
- 			}
- 			tst_brkm(TBROK | TERRNO, cleanup,
++# repopulate_cpusets()
++#
++# If the legacy cgroup hierarchy is in use, and cpuset is mounted, copy
++# the permitted cpus from the root group, which always has all available
++# cpus and memory, into the other hierarchy nodes. This prevents hotplug
++# tests from losing CPUs, and affecting the results of later tests.
++#
++CPUSET="/sys/fs/cgroup/cpuset"
++repopulate_cpusets()
++{
++	# Only if we have cpusets
++	if [ ! -d ${CPUSET} ] ; then
++		return;
++	fi
++
++	# And then only legacy cpusets
++	if grep --quiet "/sys/fs/cgroup/cpuset[ ]*cgroup2" /proc/mounts ; then
++		return;
++	fi
++
++	# Copy root cpus into system and user slices
++	cat ${CPUSET}/cpuset.cpus > ${CPUSET}/system.slice/cpuset.cpus
++	cat ${CPUSET}/cpuset.cpus > ${CPUSET}/user.slice/cpuset.cpus
++
++	# Fix each session of each user
++	for TUSER in ${CPUSET}/user.slice/user-*.slice ; do
++		cat ${CPUSET}/cpuset.cpus > ${TUSER}/cpuset.cpus
++		for SESSION in ${TUSER}/session-*.scope; do
++			cat ${CPUSET}/cpuset.cpus > ${SESSION}/cpuset.cpus
++		done
++	done
++}
++
+ # online_cpu(CPU)
+ #
+ #  Onlines the given CPU.  Returns a true value if it was able
+@@ -77,6 +110,9 @@ online_cpu()
+ 
+     $TIME echo 1 > /sys/devices/system/cpu/cpu${CPU}/online
+     RC=$?
++
++    repopulate_cpusets
++
+     report_timing "Online cpu ${CPU}"
+     return $RC
+ }
 -- 
 2.14.2
 
