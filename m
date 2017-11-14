@@ -1,51 +1,60 @@
 From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Tue, 14 Nov 2017 15:59:21 +0000
-Subject: [LTP] [PATCH v2 05/13] hugeshmctl02: Fix allocation size for odd
-	number of hugepages
+Date: Tue, 14 Nov 2017 15:59:22 +0000
+Subject: [LTP] [PATCH v2 06/13] hugeshmget02: add missing SHM_HUGETLB flag
+	on segment creation
 In-Reply-To: <20171114155929.24237-1-punit.agrawal@arm.com>
 References: <20171114155929.24237-1-punit.agrawal@arm.com>
-Message-ID: <20171114155929.24237-6-punit.agrawal@arm.com>
+Message-ID: <20171114155929.24237-7-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: "Suzuki K. Poulose" <suzuki.poulose@arm.com>
+From: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 
-The test tries to allocate 2 * (half the number of available hugepages).
-If we have odd number hugepages, the calculated allocation size is not
-page-aligned and allocation fails.
+On test setup, hugeshmget02 detects the number of huge pages available
+and uses that number to size a shared memory segment that is allocated
+to carry out subsequent syscalls checks.
 
-e.g, (use -s option to trigger it manually)
+The setup() function detects the number of huge pages available so that
+it can size the share memory segment to allocate with a reasonable size
+value, but fails to pass the SHM_HUGETLB on shared memory segment
+creation which defeats the whole purpose of detecting the available
+number of huge pages before creating the segment.
 
-$ hugeshmctl02 -s 7 -i 5
-hugeshmctl02    0  TINFO  :  set nr_hugepages to 7
-hugeshmctl02    1  TBROK  :  hugeshmctl02.c:153: shmget #2: errno=ENOMEM(12): Cannot allocate memory
-hugeshmctl02    2  TBROK  :  hugeshmctl02.c:153: Remaining cases broken
-hugeshmctl02    0  TINFO  :  set nr_hugepages to 0
+This omission can result in test failures, eg:
 
-Align the size to hugepage_size.
+hugeshmget02    0  TINFO  :  set nr_hugepages to 128
+hugeshmget02    0  TINFO  :  Using 21 hugepages
+hugeshmget02    1  TBROK  :  hugeshmget02.c:155: shmget #setup:
+errno=ENOMEM(12): Cannot allocate memory
+hugeshmget02    2  TBROK  :  hugeshmget02.c:155: Remaining cases broken
+hugeshmget02    0  TINFO  :  set nr_hugepages to 0
 
-Signed-off-by: Suzuki K. Poulose <suzuki.poulose@arm.com>
+This patch adds the missing SHM_HUGETLB flag to the shmget call in the
+setup() function.
+
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
 ---
- testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-index 6079d9937..82964a327 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-@@ -101,7 +101,7 @@ static void setup(void)
- 	set_sys_tune("nr_hugepages", hugepages, 1);
- 	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
+index 7db8b4ede..0abd1aaf8 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
+@@ -99,7 +99,8 @@ void setup(void)
  
--	shm_size = hpage_size * hugepages / 2;
-+	shm_size = hpage_size * (hugepages / 2);
- 	update_shm_size(&shm_size);
  	shmkey = getipckey();
- 
+ 	shmkey2 = shmkey + 1;
+-	shm_id_1 = shmget(shmkey, shm_size, IPC_CREAT | IPC_EXCL | SHM_RW);
++	shm_id_1 = shmget(shmkey, shm_size,
++			  SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW);
+ 	if (shm_id_1 == -1)
+ 		tst_brk(TBROK | TERRNO, "shmget #setup");
+ }
 -- 
 2.14.2
 
