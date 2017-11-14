@@ -1,182 +1,70 @@
-From: Sandeep Patil <sspatil@google.com>
-Date: Mon, 13 Nov 2017 18:11:18 -0800
-Subject: [LTP] [PATCH v2 4/4] lib: mkfs: use 'mke2fs' for formatting extN
-	filesystems
-In-Reply-To: <20171114021118.103786-1-sspatil@google.com>
-References: <20171114021118.103786-1-sspatil@google.com>
-Message-ID: <20171114021118.103786-5-sspatil@google.com>
+From: Punit Agrawal <punit.agrawal@arm.com>
+Date: Tue, 14 Nov 2017 13:10:47 +0000
+Subject: [LTP] [PATCH 07/18] vma03: accept ENOMEM return value from
+	mremap
+In-Reply-To: <20171031111144.GG14550@rei.lan> (Cyril Hrubis's message of "Tue, 
+ 31 Oct 2017 12:11:44 +0100")
+References: <20171026141447.26749-1-punit.agrawal@arm.com>
+ <20171026141447.26749-8-punit.agrawal@arm.com>
+ <20171031111144.GG14550@rei.lan>
+Message-ID: <87wp2tt38o.fsf@e105922-lin.cambridge.arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Android does not have mkfs.extN symlinks and only extN filesystems
-images can be created on the device. So, make sure we use 'mke2fs -t
-<fs_type>' when being built for Android and filter out any non-ext
-filesystem type requests from tst_mkfs_() when built for Android.
+Hi Cyril,
 
-In order to do this, we add a new "tst_get_mkfs()" api in the library
-that checks if the given filesystem is supported and automatically
-fills in the formatting tool's name in the buffer if it exists.
+Picking up where I'd left off after the previous posting.
 
-syscalls/mmap16, syscalls/rename11 are the tests the tests currently
-known to start working after this change on Android systems
+Cyril Hrubis <chrubis@suse.cz> writes:
 
-Signed-off-by: Sandeep Patil <sspatil@google.com>
----
+> Hi!
+>> Attempting to map a wrapping region with mremap should fail (that's the
+>> whole point of this test). Accept ENOMEM as well as EINVAL.
+>
+> I'm missing any background info here about the specific conditions where
+> this happens. The test is supposed to run only on 32bit kernel, so I
+> suppose that there is some older board with 32bit ARM that is able to
+> execute this test and that we get a different errno there, but that is
+> only speculation. Can you, pretty please, elaborate more on that?
 
-v1->v2
--------
-- Add the new tst_get_mkfs() API and use it in tst_mkfs_()
-- Limit the __ANDROID__ ifdef to tst_supported_fs_types only
-- Always use mke2fs for extN filesystem formatting instead of mkfs.extN
-  (This allows all the tests that do filesystem formatting to run on Android
-   systems)
+After digging into the patch history I've failed to find an explanation
+for why we are carrying the patch. Looks like the details of the issue
+it was fixing have been lost.
 
- include/tst_fs.h             | 13 +++++++++++++
- lib/tst_mkfs.c               | 17 +++++++++++++++--
- lib/tst_supported_fs_types.c | 38 ++++++++++++++++++++++++++++++++------
- 3 files changed, 60 insertions(+), 8 deletions(-)
+The unpatched version of the test passes on TC2 (a 32bit big.LITTLE ARM
+Platform).
 
-diff --git a/include/tst_fs.h b/include/tst_fs.h
-index 0ad535c2b..ad6979a58 100644
---- a/include/tst_fs.h
-+++ b/include/tst_fs.h
-@@ -151,6 +151,19 @@ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
-  */
- const char **tst_get_supported_fs_types(void);
- 
-+/*
-+ * Returns 1 if given filesystem is supported, 0 otherwise.
-+ */
-+int tst_is_supported_fs_type(const char *fs_type);
-+
-+/*
-+ * Test for the existence of filesystem formatting tool (mkfs.<fs_type>)
-+ * and return the name if found.
-+ *
-+ * Returns 0 on Success, 1 if the buffer was too small or the tool wasn't found.
-+ */
-+int tst_get_mkfs(const char *fs_type, char *buf, size_t buf_len);
-+
- /*
-  * Creates and writes to files on given path until write fails with ENOSPC
-  */
-diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
-index 7385a939f..99ab2cac7 100644
---- a/lib/tst_mkfs.c
-+++ b/lib/tst_mkfs.c
-@@ -15,6 +15,8 @@
-  * along with this program. If not, see <http://www.gnu.org/licenses/>.
-  */
- 
-+#include <limits.h>
-+
- #include "test.h"
- #include "ltp_priv.h"
- #include "tst_mkfs.h"
-@@ -27,7 +29,7 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
- 	       const char *const fs_opts[], const char *extra_opt)
- {
- 	int i, pos = 1, ret;
--	char mkfs[64];
-+	char mkfs[NAME_MAX];
- 	const char *argv[OPTS_MAX] = {mkfs};
- 	char fs_opts_str[1024] = "";
- 
-@@ -43,7 +45,18 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
- 		return;
- 	}
- 
--	snprintf(mkfs, sizeof(mkfs), "mkfs.%s", fs_type);
-+	if (tst_get_mkfs(fs_type, mkfs, NAME_MAX))
-+		tst_brkm(TCONF, cleanup_fn,
-+			 "mkfs.%s not found for %s", fs_type, fs_type);
-+
-+	if (!strcmp(mkfs, "mke2fs")) {
-+		/* insert '-t <fs_type> in arguments here */
-+		argv[pos++] = "-t";
-+		strcat(fs_opts_str, "-t ");
-+		argv[pos++] = fs_type;
-+		strcat(fs_opts_str, fs_type);
-+		strcat(fs_opts_str, " ");
-+	}
- 
- 	if (fs_opts) {
- 		for (i = 0; fs_opts[i]; i++) {
-diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
-index a23b1ed52..a62dda0da 100644
---- a/lib/tst_supported_fs_types.c
-+++ b/lib/tst_supported_fs_types.c
-@@ -29,31 +29,43 @@ static const char *const fs_type_whitelist[] = {
- 	"ext2",
- 	"ext3",
- 	"ext4",
-+#ifndef __ANDROID__
- 	"xfs",
- 	"btrfs",
- 	"vfat",
- 	"exfat",
- 	"ntfs",
-+#endif
- 	NULL
- };
- 
- static const char *fs_types[ARRAY_SIZE(fs_type_whitelist)];
- 
-+static void to_mkfs(char *buf, const char *fs_type)
-+{
-+	/* Use mke2fs instead of the mkfs.extN symlinks
-+	 * so the same code works for Android systems
-+	 */
-+	if (!strncmp(fs_type, "ext", 3))
-+		strcpy(buf, "mke2fs");
-+	else
-+		sprintf(buf, "mkfs.%s >/dev/null 2>&1", fs_type);
-+}
-+
- static int has_mkfs(const char *fs_type)
- {
--	char buf[128];
-+	char buf[NAME_MAX];
- 	int ret;
- 
--	sprintf(buf, "mkfs.%s >/dev/null 2>&1", fs_type);
--
-+	to_mkfs(buf, fs_type);
- 	ret = tst_system(buf);
--
- 	if (WEXITSTATUS(ret) == 127) {
--		tst_res(TINFO, "mkfs.%s does not exist", fs_type);
-+		tst_res(TINFO, "%s for formatting %s does not exist",
-+			buf, fs_type);
- 		return 0;
- 	}
- 
--	tst_res(TINFO, "mkfs.%s does exist", fs_type);
-+	tst_res(TINFO, "%s for formatting %s does exist", buf, fs_type);
- 	return 1;
- }
- 
-@@ -116,3 +128,17 @@ const char **tst_get_supported_fs_types(void)
- 
- 	return fs_types;
- }
-+
-+int tst_get_mkfs(const char *fs_type, char *buf, size_t buf_len)
-+{
-+	tst_res(TINFO, "Checking for mkfs - %s", fs_type);
-+	if (!is_supported(fs_type))
-+		return 1;
-+
-+	/* make sure we have big enough buffer */
-+	if (buf_len <= strlen(fs_type) + 5)
-+		return 1;
-+
-+	to_mkfs(buf, fs_type);
-+	return 0;
-+}
--- 
-2.15.0.448.gf294e3d99a-goog
+I'll drop this patch from the next version.
 
+Thanks,
+Punit
+
+>
+>> Signed-off-by: Will Deacon <will.deacon@arm.com>
+>> Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
+>> ---
+>>  testcases/kernel/mem/vma/vma03.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/testcases/kernel/mem/vma/vma03.c b/testcases/kernel/mem/vma/vma03.c
+>> index 4b34ab0a0..5f231e5bb 100644
+>> --- a/testcases/kernel/mem/vma/vma03.c
+>> +++ b/testcases/kernel/mem/vma/vma03.c
+>> @@ -100,7 +100,7 @@ int main(int argc, char *argv[])
+>>  
+>>  		remap = mremap(map, pgsz, 2 * pgsz, 0);
+>>  		if (remap == MAP_FAILED) {
+>> -			if (errno == EINVAL)
+>> +			if (errno == EINVAL || errno == ENOMEM)
+>>  				tst_resm(TPASS, "mremap failed as expected.");
+>>  			else
+>>  				tst_resm(TFAIL | TERRNO, "mremap");
+>> -- 
+>> 2.14.2
+>> 
+>> 
+>> -- 
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
