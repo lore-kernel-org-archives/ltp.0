@@ -1,134 +1,182 @@
 From: Sandeep Patil <sspatil@google.com>
-Date: Mon, 13 Nov 2017 18:11:17 -0800
-Subject: [LTP] [PATCH v2 3/4] mm: mallocstress: use futexes instead of SysV
-	semaphores
+Date: Mon, 13 Nov 2017 18:11:18 -0800
+Subject: [LTP] [PATCH v2 4/4] lib: mkfs: use 'mke2fs' for formatting extN
+	filesystems
 In-Reply-To: <20171114021118.103786-1-sspatil@google.com>
 References: <20171114021118.103786-1-sspatil@google.com>
-Message-ID: <20171114021118.103786-4-sspatil@google.com>
+Message-ID: <20171114021118.103786-5-sspatil@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Start using TST_CHECKPOINT_WAIT/WAKE macros that are based on futexes
-instead of SysV semaphore. This allows the test to build and run on an
-Android system.
+Android does not have mkfs.extN symlinks and only extN filesystems
+images can be created on the device. So, make sure we use 'mke2fs -t
+<fs_type>' when being built for Android and filter out any non-ext
+filesystem type requests from tst_mkfs_() when built for Android.
+
+In order to do this, we add a new "tst_get_mkfs()" api in the library
+that checks if the given filesystem is supported and automatically
+fills in the formatting tool's name in the buffer if it exists.
+
+syscalls/mmap16, syscalls/rename11 are the tests the tests currently
+known to start working after this change on Android systems
 
 Signed-off-by: Sandeep Patil <sspatil@google.com>
 ---
 
 v1->v2
-------
- - use the correct SAFE_ macros (that don't require cleanup functions)
+-------
+- Add the new tst_get_mkfs() API and use it in tst_mkfs_()
+- Limit the __ANDROID__ ifdef to tst_supported_fs_types only
+- Always use mke2fs for extN filesystem formatting instead of mkfs.extN
+  (This allows all the tests that do filesystem formatting to run on Android
+   systems)
 
- testcases/kernel/mem/mtest07/mallocstress.c | 59 +++++++----------------------
- 1 file changed, 14 insertions(+), 45 deletions(-)
+ include/tst_fs.h             | 13 +++++++++++++
+ lib/tst_mkfs.c               | 17 +++++++++++++++--
+ lib/tst_supported_fs_types.c | 38 ++++++++++++++++++++++++++++++++------
+ 3 files changed, 60 insertions(+), 8 deletions(-)
 
-diff --git a/testcases/kernel/mem/mtest07/mallocstress.c b/testcases/kernel/mem/mtest07/mallocstress.c
-index 0f495a6b3..63df7c70e 100644
---- a/testcases/kernel/mem/mtest07/mallocstress.c
-+++ b/testcases/kernel/mem/mtest07/mallocstress.c
-@@ -192,20 +192,10 @@ int allocate_free(int scheme)
+diff --git a/include/tst_fs.h b/include/tst_fs.h
+index 0ad535c2b..ad6979a58 100644
+--- a/include/tst_fs.h
++++ b/include/tst_fs.h
+@@ -151,6 +151,19 @@ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
+  */
+ const char **tst_get_supported_fs_types(void);
  
- void *alloc_mem(void *threadnum)
++/*
++ * Returns 1 if given filesystem is supported, 0 otherwise.
++ */
++int tst_is_supported_fs_type(const char *fs_type);
++
++/*
++ * Test for the existence of filesystem formatting tool (mkfs.<fs_type>)
++ * and return the name if found.
++ *
++ * Returns 0 on Success, 1 if the buffer was too small or the tool wasn't found.
++ */
++int tst_get_mkfs(const char *fs_type, char *buf, size_t buf_len);
++
+ /*
+  * Creates and writes to files on given path until write fails with ENOSPC
+  */
+diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
+index 7385a939f..99ab2cac7 100644
+--- a/lib/tst_mkfs.c
++++ b/lib/tst_mkfs.c
+@@ -15,6 +15,8 @@
+  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
++#include <limits.h>
++
+ #include "test.h"
+ #include "ltp_priv.h"
+ #include "tst_mkfs.h"
+@@ -27,7 +29,7 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
+ 	       const char *const fs_opts[], const char *extra_opt)
  {
--	struct sembuf sop[1];
- 	int err;
+ 	int i, pos = 1, ret;
+-	char mkfs[64];
++	char mkfs[NAME_MAX];
+ 	const char *argv[OPTS_MAX] = {mkfs};
+ 	char fs_opts_str[1024] = "";
  
- 	/* waiting for other threads starting */
--	sop[0].sem_num = 0;
--	sop[0].sem_op = 0;
--	sop[0].sem_flg = 0;
--	TEST(semop(semid, sop, 1));
--	if (TEST_RETURN == -1 && TEST_ERRNO != EIDRM) {
--		tst_res(TBROK | TTERRNO,
--			"Thread [%d] failed to wait on semaphore",
--			(int)(uintptr_t)threadnum);
--		return (void *)-1;
--	}
-+	TST_CHECKPOINT_WAIT(0);
+@@ -43,7 +45,18 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
+ 		return;
+ 	}
  
- 	/* thread N will use growth scheme N mod 4 */
- 	err = allocate_free(((uintptr_t)threadnum) % 4);
-@@ -216,19 +206,21 @@ void *alloc_mem(void *threadnum)
- 	return (void *)(uintptr_t) (err ? -1 : 0);
- }
- 
-+static void cleanup(void)
-+{
-+	if (thread_id) {
-+		free(thread_id);
-+		thread_id = NULL;
+-	snprintf(mkfs, sizeof(mkfs), "mkfs.%s", fs_type);
++	if (tst_get_mkfs(fs_type, mkfs, NAME_MAX))
++		tst_brkm(TCONF, cleanup_fn,
++			 "mkfs.%s not found for %s", fs_type, fs_type);
++
++	if (!strcmp(mkfs, "mke2fs")) {
++		/* insert '-t <fs_type> in arguments here */
++		argv[pos++] = "-t";
++		strcat(fs_opts_str, "-t ");
++		argv[pos++] = fs_type;
++		strcat(fs_opts_str, fs_type);
++		strcat(fs_opts_str, " ");
 +	}
+ 
+ 	if (fs_opts) {
+ 		for (i = 0; fs_opts[i]; i++) {
+diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+index a23b1ed52..a62dda0da 100644
+--- a/lib/tst_supported_fs_types.c
++++ b/lib/tst_supported_fs_types.c
+@@ -29,31 +29,43 @@ static const char *const fs_type_whitelist[] = {
+ 	"ext2",
+ 	"ext3",
+ 	"ext4",
++#ifndef __ANDROID__
+ 	"xfs",
+ 	"btrfs",
+ 	"vfat",
+ 	"exfat",
+ 	"ntfs",
++#endif
+ 	NULL
+ };
+ 
+ static const char *fs_types[ARRAY_SIZE(fs_type_whitelist)];
+ 
++static void to_mkfs(char *buf, const char *fs_type)
++{
++	/* Use mke2fs instead of the mkfs.extN symlinks
++	 * so the same code works for Android systems
++	 */
++	if (!strncmp(fs_type, "ext", 3))
++		strcpy(buf, "mke2fs");
++	else
++		sprintf(buf, "mkfs.%s >/dev/null 2>&1", fs_type);
 +}
 +
- static void stress_malloc(unsigned int n)
+ static int has_mkfs(const char *fs_type)
  {
--	struct sembuf sop[1];
- 	int thread_index;
+-	char buf[128];
++	char buf[NAME_MAX];
+ 	int ret;
+ 
+-	sprintf(buf, "mkfs.%s >/dev/null 2>&1", fs_type);
 -
- 	(void)n;
--	/* kick off all the waiting threads */
--	sop[0].sem_num = 0;
--	sop[0].sem_op = -1;
--	sop[0].sem_flg = 0;
--	TEST(semop(semid, sop, 1));
--	if (TEST_RETURN == -1)
--		tst_res(TBROK | TTERRNO, "Failed to wakeup all threads");
-+
-+	/* Wake up all threads */
-+	TST_CHECKPOINT_WAKE2(0, NUM_THREADS);
- 
- 	/* wait for all threads to finish */
- 	for (thread_index = 0; thread_index < NUM_THREADS; thread_index++) {
-@@ -246,21 +238,11 @@ static void stress_malloc(unsigned int n)
- 
- static void setup(void)
- {
--	struct sembuf sop[1];
- 	int thread_index;
- 
- 	thread_id = SAFE_MALLOC(sizeof(pthread_t) * NUM_THREADS);
- 
--	semid = semget(IPC_PRIVATE, 1, IPC_CREAT | 0666);
--	if (semid < 0)
--		tst_res(TBROK | TTERRNO, "Semaphore creation failed");
++	to_mkfs(buf, fs_type);
+ 	ret = tst_system(buf);
 -
--	sop[0].sem_num = 0;
--	sop[0].sem_op = 1;
--	sop[0].sem_flg = 0;
--	TEST(semop(semid, sop, 1));
--	if (TEST_RETURN == -1)
--		tst_res(TBROK | TTERRNO, "Failed to initialize semaphore");
-+	TST_CHECKPOINT_INIT();
- 
- 	for (thread_index = 0; thread_index < NUM_THREADS; thread_index++) {
- 		SAFE_PTHREAD_CREATE(&thread_id[thread_index], NULL, alloc_mem,
-@@ -268,22 +250,9 @@ static void setup(void)
+ 	if (WEXITSTATUS(ret) == 127) {
+-		tst_res(TINFO, "mkfs.%s does not exist", fs_type);
++		tst_res(TINFO, "%s for formatting %s does not exist",
++			buf, fs_type);
+ 		return 0;
  	}
+ 
+-	tst_res(TINFO, "mkfs.%s does exist", fs_type);
++	tst_res(TINFO, "%s for formatting %s does exist", buf, fs_type);
+ 	return 1;
  }
  
--static void cleanup(void)
--{
--	if (semid > 0) {
--		TEST(semctl(semid, 0, IPC_RMID));
--		if (TEST_RETURN == -1)
--			tst_res(TWARN, "Failed to destroy semaphore");
--	}
--
--	if (thread_id) {
--		free(thread_id);
--		thread_id = NULL;
--	}
--}
--
- static struct tst_test test = {
- 	.tcnt = 1,
-+	.needs_tmpdir = 1,
- 	.cleanup = cleanup,
- 	.setup = setup,
- 	.test = stress_malloc,
+@@ -116,3 +128,17 @@ const char **tst_get_supported_fs_types(void)
+ 
+ 	return fs_types;
+ }
++
++int tst_get_mkfs(const char *fs_type, char *buf, size_t buf_len)
++{
++	tst_res(TINFO, "Checking for mkfs - %s", fs_type);
++	if (!is_supported(fs_type))
++		return 1;
++
++	/* make sure we have big enough buffer */
++	if (buf_len <= strlen(fs_type) + 5)
++		return 1;
++
++	to_mkfs(buf, fs_type);
++	return 0;
++}
 -- 
 2.15.0.448.gf294e3d99a-goog
 
