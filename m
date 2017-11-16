@@ -1,108 +1,76 @@
-From: Dan Rue <dan.rue@linaro.org>
-Date: Wed, 15 Nov 2017 13:04:23 -0600
-Subject: [LTP] [RFC] [PATCH] netns: Fix race in virtual interface bringup
-In-Reply-To: <20171109203841.28856-1-dan.rue@linaro.org>
-References: <20171109203841.28856-1-dan.rue@linaro.org>
-Message-ID: <20171115190423.kcrzl2odqtdr6ghg@xps>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 16 Nov 2017 15:48:54 +0800
+Subject: [LTP] [PATCH] syscalls/fallocate[4,
+	5]: Fix failure when using old mkfs.btrfs
+Message-ID: <1510818534-7378-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Adding CC netdev
+We always got the following error when using mkfs.btrfs(v0.20-rc1)
+on RHEL6.9GA.
+---------------------------------------------------------------------------
+...
+tst_mkfs.c:83: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+error checking /dev/loop0 mount status
+tst_mkfs.c:94: BROK: mkfs.btrfs:1: tst_test.c failed with 693
+---------------------------------------------------------------------------
 
-Can someone comment on the expected behavior of this test case?
+After just calling LOOP_SET_FD to set up loopdev, newer mkfs.btrfs can
+get associated filename by backing_file successfully.  However older
+one cannot get associated filename by LOOP_GET_STATUS which is replaced
+by backing_file since btrfs-progs v3.12.  So we call LOOP_SET_FD and
+LOOP_SET_STATUS to set up loopdev when using all kinds of mkfs.btrfs.
 
-Here's the isolated test:
+The backing_file was produced in kernel(since v2.6.37):
+'ee86273062cb("loop: add some basic read-only sysfs attributes")'
 
-    ip netns del tst_net_ns0
-    ip netns del tst_net_ns1
-    ip netns add tst_net_ns0
-    ip netns add tst_net_ns1
-    ip netns exec tst_net_ns0 ip link add veth0 type veth peer name veth1
-    ip netns exec tst_net_ns0 ip link set veth1 netns tst_net_ns1
+The backing_file began to be used by mkfs.btrfs on btrfs_progs(v3.12):
+'abdb0ced0123("Btrfs-progs: fix resolving of loop devices")'
 
-    ip netns exec tst_net_ns0 ifconfig veth0 inet6 add fd00::2/64
-    ip netns exec tst_net_ns1 ifconfig veth1 inet6 add fd00::3/64
-    ip netns exec tst_net_ns0 ifconfig veth0 up
-    ip netns exec tst_net_ns1 ifconfig veth1 up
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ lib/tst_device.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-    #sleep 2
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index 6ad6c47..4a72925 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -134,6 +134,7 @@ static int find_free_loopdev(void)
+ static int attach_device(const char *dev, const char *file)
+ {
+ 	int dev_fd, file_fd;
++	struct loop_info loopinfo;
+ 
+ 	dev_fd = open(dev, O_RDWR);
+ 	if (dev_fd < 0) {
+@@ -156,6 +157,21 @@ static int attach_device(const char *dev, const char *file)
+ 		return 1;
+ 	}
+ 
++	/* Old mkfs.btrfs use LOOP_GET_STATUS instead of backing_file to get
++	 * associated filename, so we need to set up the device by calling
++	 * LOOP_SET_FD and LOOP_SET_STATUS.
++	 */
++	memset(&loopinfo, 0, sizeof(loopinfo));
++	strcpy((char *)loopinfo.lo_name, file);
++
++	if (ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo)) {
++		close(dev_fd);
++		close(file_fd);
++		tst_resm(TWARN | TERRNO,
++			 "ioctl(%s, LOOP_SET_STATUS, %s) failed", dev, file);
++		return 1;
++	}
++
+ 	close(dev_fd);
+ 	close(file_fd);
+ 	return 0;
+-- 
+1.8.3.1
 
-    ip netns exec tst_net_ns0 ping6 -q -c2 -I veth0 fd00::3
 
-This is essentially what LTP is running. Sometimes, on some systems,
-ping6 fails with "connect: Cannot assign requested address". Adding a
-"sleep 2" always fixes it (but we'd obviously like to avoid a hard coded
-sleep in the test).
 
-Questions:
-1) Is the behavior of "ifconfig up" intentionally asynchronous (I
-believe so, based on dmesg)? If so, what is the correct way to find out
-when the interface is available?
-
-Thank you!
-Dan
-
-On Thu, Nov 09, 2017 at 02:38:41PM -0600, Dan Rue wrote:
-> Symptoms (+ command, error):
->     netns_comm_ip_ipv6_ioctl:
->         + ip netns exec tst_net_ns1 ping6 -q -c2 -I veth1 fd00::2
->         connect: Cannot assign requested address
-> 
->     netns_comm_ip_ipv6_netlink:
->         + ip netns exec tst_net_ns0 ping6 -q -c2 -I veth0 fd00::3
->         connect: Cannot assign requested address
-> 
->     netns_comm_ns_exec_ipv6_ioctl:
->         + ns_exec 6689 net ping6 -q -c2 -I veth0 fd00::3
->         connect: Cannot assign requested address
-> 
->     netns_comm_ns_exec_ipv6_netlin:
->         + ns_exec 6891 net ping6 -q -c2 -I veth0 fd00::3
->         connect: Cannot assign requested address
-> 
-> The error is coming from ping6, which is trying to get an IP address for
-> veth0 (due to -I veth0), but cannot. Waiting for two seconds fixes the
-> test in my testcases. 1 second is not long enough.
-> 
-> dmesg shows the following during the test:
-> 
->     [Nov 7 15:39] LTP: starting netns_comm_ip_ipv6_ioctl (netns_comm.sh ip ipv6 ioctl)
->     [  +0.302401] IPv6: ADDRCONF(NETDEV_UP): veth0: link is not ready
->     [  +0.048059] IPv6: ADDRCONF(NETDEV_CHANGE): veth0: link becomes ready
-> 
-> Signed-off-by: Dan Rue <dan.rue@linaro.org>
-> ---
-> 
-> We've periodically hit this problem across many arm64 kernels and boards, and
-> it seems to be caused by "ping6" running before the virtual interface is
-> actually ready. "sleep 2" works around the issue and proves that it is a race
-> condition, but I would prefer something faster and deterministic. Please
-> suggest a better implementation.
-> 
-> Also, is it correct that "ifconfig veth0 up" returns before the interface is
-> actually ready?
-> 
-> See also this isolated test script:
-> https://gist.github.com/danrue/7b76bbcbc23a6296030b7295650b69f3
-> 
->  testcases/kernel/containers/netns/netns_helper.sh | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
-> index a95cdf206..99172c0c0 100755
-> --- a/testcases/kernel/containers/netns/netns_helper.sh
-> +++ b/testcases/kernel/containers/netns/netns_helper.sh
-> @@ -285,6 +285,7 @@ netns_set_ip()
->  			tst_brkm TBROK "enabling veth1 device failed"
->  		;;
->  	esac
-> +	sleep 2
->  }
->  
->  netns_ns_exec_cleanup()
-> -- 
-> 2.13.6
-> 
