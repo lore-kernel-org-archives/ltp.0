@@ -1,96 +1,131 @@
-From: Veronika Kabatova <vkabatov@redhat.com>
-Date: Thu, 16 Nov 2017 10:03:05 -0500 (EST)
-Subject: [LTP] [PATCH 1/2] [mtest06] Fix race condition with signal
- handling
-In-Reply-To: <20171107102537.GB6126@rei.lan>
-References: <20171103185941.17651-1-vkabatov@redhat.com>
- <20171106163809.GB1662@rei>
- <1187592937.37117661.1510045232581.JavaMail.zimbra@redhat.com>
- <20171107102537.GB6126@rei.lan>
-Message-ID: <197806265.17273314.1510844585297.JavaMail.zimbra@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 17 Nov 2017 14:09:13 +0800
+Subject: [LTP] [RFC] [PATCH] netns: Fix race in virtual interface bringup
+In-Reply-To: <20171109203841.28856-1-dan.rue@linaro.org>
+References: <20171109203841.28856-1-dan.rue@linaro.org>
+Message-ID: <CAEemH2eiHo8EfyMqVhS=iee8Hfxw7_ygeKtGHBo_AFGW1QEYGw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Dan,
+
+On Fri, Nov 10, 2017 at 4:38 AM, Dan Rue <dan.rue@linaro.org> wrote:
+> Symptoms (+ command, error):
+>     netns_comm_ip_ipv6_ioctl:
+>         + ip netns exec tst_net_ns1 ping6 -q -c2 -I veth1 fd00::2
+>         connect: Cannot assign requested address
+>
+>     netns_comm_ip_ipv6_netlink:
+>         + ip netns exec tst_net_ns0 ping6 -q -c2 -I veth0 fd00::3
+>         connect: Cannot assign requested address
+>
+>     netns_comm_ns_exec_ipv6_ioctl:
+>         + ns_exec 6689 net ping6 -q -c2 -I veth0 fd00::3
+>         connect: Cannot assign requested address
+>
+>     netns_comm_ns_exec_ipv6_netlin:
+>         + ns_exec 6891 net ping6 -q -c2 -I veth0 fd00::3
+>         connect: Cannot assign requested address
+>
+> The error is coming from ping6, which is trying to get an IP address for
+> veth0 (due to -I veth0), but cannot. Waiting for two seconds fixes the
+> test in my testcases. 1 second is not long enough.
+>
+> dmesg shows the following during the test:
+>
+>     [Nov 7 15:39] LTP: starting netns_comm_ip_ipv6_ioctl (netns_comm.sh ip ipv6 ioctl)
+>     [  +0.302401] IPv6: ADDRCONF(NETDEV_UP): veth0: link is not ready
+>     [  +0.048059] IPv6: ADDRCONF(NETDEV_CHANGE): veth0: link becomes ready
+>
+> Signed-off-by: Dan Rue <dan.rue@linaro.org>
+> ---
+>
+> We've periodically hit this problem across many arm64 kernels and boards, and
+> it seems to be caused by "ping6" running before the virtual interface is
+> actually ready. "sleep 2" works around the issue and proves that it is a race
+> condition, but I would prefer something faster and deterministic. Please
+> suggest a better implementation.
+
+Just FYI:
+
+I'm not good at network things, but one method I copied from ltp/numa
+test is to split the '2s' into many smaller pieces of time.
+
+which something like:
+
+--- a/testcases/kernel/containers/netns/netns_helper.sh
++++ b/testcases/kernel/containers/netns/netns_helper.sh
+@@ -240,6 +240,22 @@ netns_ip_setup()
+                tst_brkm TBROK "unable to add device veth1 to the
+separate network namespace"
+ }
+
++wait_for_set_ip()
++{
++       local dev=$1
++       local retries=200
++
++       while [ $retries -gt 0 ]; do
++               dmesg -c | grep -q "IPv6: ADDRCONF(NETDEV_CHANGE):
+$dev: link becomes ready"
++               if [ $? -eq 0 ]; then
++                       break
++               fi
++
++               retries=$((retries-1))
++               tst_sleep 10ms
++       done
++}
++
+ ##
+ # Enables virtual ethernet devices and assigns IP addresses for both
+ # of them (IPv4/IPv6 variant is decided by netns_setup() function).
+@@ -285,6 +301,9 @@ netns_set_ip()
+                        tst_brkm TBROK "enabling veth1 device failed"
+                ;;
+        esac
++
++       wait_for_set_ip veth0
++       wait_for_set_ip veth1
+ }
+
+ netns_ns_exec_cleanup()
 
 
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: vkabatov@redhat.com, ltp@lists.linux.it
-> Sent: Tuesday, November 7, 2017 11:25:37 AM
-> Subject: Re: [LTP] [PATCH 1/2] [mtest06] Fix race condition with signal handling
-> 
-> Hi!
-> > > Maybe we can fix that by making sure that we got different address in
-> > > two subsequent mmaps in the map_write_unmap() loop (for instance by
-> > > unmaping the old one after we mapped a new one) then we can check the
-> > > si_addr in the siginfo_t in the signal handler. If the address is
-> > > different from the current one we know that the SEGFAULT has happened
-> > > before we mmaped() the file again. If that works we don't have to
-> > > implement any locking at all which would increase our chances of hitting
-> > > some race condition in the kernel...
-> > 
-> > This doesn't capture the state of mapped area. When you're in signal
-> > handler you wouldn't know if area was mapped or not when you got SIGSEGV.
-> >
-> > I'd modify it in this way:
-> > - use just one singal handler
-> > - write thread will set 'mapped' flag when it maps/unmaps the area
-> > - based on 'mapped' flag read thread tries to read from a specific range of
-> > addresses
-> >   e.g. odd vs even bytes or odd vs. even blocks of bytes, such that
-> >   those blocks don't overlap
-> > - when signal handler triggers, it checks si_addr, and based on value
-> >   it can tell if this was an attempt to read mapped or unmapped area
-> > - if we tried to read mapped area and got SIGSEGV -> FAIL
-> >   otherwise keep running
-> 
-> I like the idea of encoding the information about the mapped/unmapped
-> state into the actuall address we attempt to read, nice trick, let's do
-> that.
-> 
-
-Hi, I finally got around to properly check this out.
-
-While this is indeed a nice trick, it doesn't work well with s390x arch
-where si_addr is masked and only shows which page the SIGSEGV happened
-at, not the actual address. Since we can't mmap() to address that is
-not a page boundary and (by default) we are mapping less than a page
-worth of memory, no matter how we divide the addresses they would be
-treated the same way.
-
-To work around this feature we could use two pages and access one when
-the area is mapped and the other one when it's not. This way we can
-clearly distinguish between expected and unexpected segfaults on all
-architectures.
-
-This method would however deprecate the test option for file size (-s).
-I'm not sure how widely this option is used but because of the possible
-change of the interface, I'm writing this message to gather feedback
-first.
-
-I would also like to mention that we need to use locking at least when
-the address computation and actual access to it is happening:
-
-read thread                                          write thread
-<compute and load address based on active mapping>
-                                                     unmap()
-<access address thinking it should be mapped>
-<unexpected SIGSEGV>
-
-There should be no issues with leaving out locking for the other parts
-of code, but I found no feasible way to get around this one.
-
-I'd be happy to hear any feedback or different ideas how to tackle both
-issues if anybody has them.
-
-Thanks,
-Veronika Kabatova
-
+>
+> Also, is it correct that "ifconfig veth0 up" returns before the interface is
+> actually ready?
+>
+> See also this isolated test script:
+> https://gist.github.com/danrue/7b76bbcbc23a6296030b7295650b69f3
+>
+>  testcases/kernel/containers/netns/netns_helper.sh | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
+> index a95cdf206..99172c0c0 100755
+> --- a/testcases/kernel/containers/netns/netns_helper.sh
+> +++ b/testcases/kernel/containers/netns/netns_helper.sh
+> @@ -285,6 +285,7 @@ netns_set_ip()
+>                         tst_brkm TBROK "enabling veth1 device failed"
+>                 ;;
+>         esac
+> +       sleep 2
+>  }
+>
+>  netns_ns_exec_cleanup()
 > --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+> 2.13.6
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+
+
+-- 
+Li Wang
+liwang@redhat.com
