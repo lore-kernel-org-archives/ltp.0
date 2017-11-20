@@ -1,45 +1,32 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 20 Nov 2017 18:14:58 +0300
-Subject: [LTP] network/stress/ltp_net_stress_ipsec_tcp: problems with IP
- Payload Compression (comp) transform protocol on VTI
-In-Reply-To: <20171110193109.jpsy3w47ffh4y5fs@x230>
-References: <20171109225038.iwrgxdt3qgeeg4sm@dell5510>
- <760c45ad-6802-400d-c527-818d599ffa12@oracle.com>
- <20171110193109.jpsy3w47ffh4y5fs@x230>
-Message-ID: <2a2ec01b-f374-835f-ba32-a65c370c4cd5@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 20 Nov 2017 17:10:29 +0100
+Subject: [LTP] Towards 4.14 LTS
+In-Reply-To: <5E1947BC-9D22-42EB-BA29-96EA15A9C817@linaro.org>
+References: <5E1947BC-9D22-42EB-BA29-96EA15A9C817@linaro.org>
+Message-ID: <20171120161029.GA2188@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11/10/2017 10:31 PM, Petr Vorel wrote:
-> Hi Alexey,
->
->>> Any idea what can cause it? Tests tcp{4,6}_ipsec_vti02 running with esp protocol on VTI
->>> work well.
->> Server killed by LTP timeout in this case, looks like there
->> is no incoming connections... I'll take a look.
-> If it helps you I can send you strace logs from both client and server.
->
-> Client cannot connect and it also fails with timeout:
-> safe_net.c:216: BROK: netstress.c:272: connect(5, 10.23.1.2:7108, 16) failed: ETIMEDOUT
+Hi!
+> So why didn???t we report these? As mentioned we???ve been tossing out dodgy
+> test cases to get to a clean baseline. We don???t need or want noise. 
+> 
+> For LTS, I want the system when it detects a failure to enable a quick 
+> bisect involving the affected test bucket. Given the nature of kernel 
+> bugs tho, there is that class of bug which only happens occasionally.
 
-ipcomp actually works with vti, what doesn't work is the packets that
-are not compressed/transformed (small packets skipped onthreshold)
-and sent as is... and vti doesn't register any hooksfor handling them
-(only ah, esp, comp) + xfrm stats XfrmInNoPols increased.
+From my experience debugging kernel bugs requires an actuall human
+interaction and there is only certain level of automation that can be
+achieved. Don't take me wrong, automatic bisection and other bells and
+whistles are a nice to have, but at the end of the day you usually need
+someone to reproduce/look at the problem, possibly check the source
+code, report a bug, etc. Hence it does not make much sense to have an
+automated system without dedicated engineers assigned to review the test
+results.
 
-As a workaround we could add to ipcomp setup:
-ROD sysctl net.ipv4.conf.$(tst_iface).disable_policy=1
-
-Though I think the packet should be handled by vti device and the
-proper hook registered... I'll try to prepare the patch for netdev
-and we can continue discussion there about this problem.
-
-Also we could change/add the test-case with a more real-life scenario
-where the packet compressed, then encrypted.
-
-Thanks,
-Alexey
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
