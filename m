@@ -1,149 +1,33 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 20 Nov 2017 07:36:53 -0500 (EST)
-Subject: [LTP] [PATCH v2 3/4] mm: mallocstress: use futexes instead of
- SysV semaphores
-In-Reply-To: <20171114021118.103786-4-sspatil@google.com>
-References: <20171114021118.103786-1-sspatil@google.com>
- <20171114021118.103786-4-sspatil@google.com>
-Message-ID: <862867765.42579558.1511181413030.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 20 Nov 2017 14:19:52 +0100
+Subject: [LTP] [PATCH] fs_fill: switch the SAFE MACROs back to
+	ordinary	syscall
+In-Reply-To: <1515676468.42550872.1511176722601.JavaMail.zimbra@redhat.com>
+References: <20171110111519.27872-1-liwang@redhat.com>
+ <1515676468.42550872.1511176722601.JavaMail.zimbra@redhat.com>
+Message-ID: <20171120131952.GA22113@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-mallocstress set pushed with following changes:
-- 2/3 patch dropped, replaced with ".needs_checkpoints = 1"
-- int semid made static and initialized to -1
-- changed .test to .test_all
-- moved semop/checkpoint to stress_malloc(), so that -i parameter works
-- 3/3 patch rebased
+Hi!
+> >   safe_macros.c:225: BROK: tst_fill_fs.c:43:
+> >   open(mntpoint/thread48/file0,65,0700) failed: ENOSPC
+> >   safe_macros.c:169: BROK: fs_fill.c:49: mkdir(mntpoint/thread21,0700)
+> >   failed: ENOSPC
+> > 
+> > Signed-off-by: Li Wang <liwang@redhat.com>
+> 
+> Pushed.
 
-Regards,
-Jan
+I do not like that the worker exits prematurely here if the mkdir fails,
+that's why I suggested to mkdir() all the directories before we attempt
+to run the the worker threads.
 
------ Original Message -----
-> Start using TST_CHECKPOINT_WAIT/WAKE macros that are based on futexes
-> instead of SysV semaphore. This allows the test to build and run on an
-> Android system.
-> 
-> Signed-off-by: Sandeep Patil <sspatil@google.com>
-> ---
-> 
-> v1->v2
-> ------
->  - use the correct SAFE_ macros (that don't require cleanup functions)
-> 
->  testcases/kernel/mem/mtest07/mallocstress.c | 59
->  +++++++----------------------
->  1 file changed, 14 insertions(+), 45 deletions(-)
-> 
-> diff --git a/testcases/kernel/mem/mtest07/mallocstress.c
-> b/testcases/kernel/mem/mtest07/mallocstress.c
-> index 0f495a6b3..63df7c70e 100644
-> --- a/testcases/kernel/mem/mtest07/mallocstress.c
-> +++ b/testcases/kernel/mem/mtest07/mallocstress.c
-> @@ -192,20 +192,10 @@ int allocate_free(int scheme)
->  
->  void *alloc_mem(void *threadnum)
->  {
-> -	struct sembuf sop[1];
->  	int err;
->  
->  	/* waiting for other threads starting */
-> -	sop[0].sem_num = 0;
-> -	sop[0].sem_op = 0;
-> -	sop[0].sem_flg = 0;
-> -	TEST(semop(semid, sop, 1));
-> -	if (TEST_RETURN == -1 && TEST_ERRNO != EIDRM) {
-> -		tst_res(TBROK | TTERRNO,
-> -			"Thread [%d] failed to wait on semaphore",
-> -			(int)(uintptr_t)threadnum);
-> -		return (void *)-1;
-> -	}
-> +	TST_CHECKPOINT_WAIT(0);
->  
->  	/* thread N will use growth scheme N mod 4 */
->  	err = allocate_free(((uintptr_t)threadnum) % 4);
-> @@ -216,19 +206,21 @@ void *alloc_mem(void *threadnum)
->  	return (void *)(uintptr_t) (err ? -1 : 0);
->  }
->  
-> +static void cleanup(void)
-> +{
-> +	if (thread_id) {
-> +		free(thread_id);
-> +		thread_id = NULL;
-> +	}
-> +}
-> +
->  static void stress_malloc(unsigned int n)
->  {
-> -	struct sembuf sop[1];
->  	int thread_index;
-> -
->  	(void)n;
-> -	/* kick off all the waiting threads */
-> -	sop[0].sem_num = 0;
-> -	sop[0].sem_op = -1;
-> -	sop[0].sem_flg = 0;
-> -	TEST(semop(semid, sop, 1));
-> -	if (TEST_RETURN == -1)
-> -		tst_res(TBROK | TTERRNO, "Failed to wakeup all threads");
-> +
-> +	/* Wake up all threads */
-> +	TST_CHECKPOINT_WAKE2(0, NUM_THREADS);
->  
->  	/* wait for all threads to finish */
->  	for (thread_index = 0; thread_index < NUM_THREADS; thread_index++) {
-> @@ -246,21 +238,11 @@ static void stress_malloc(unsigned int n)
->  
->  static void setup(void)
->  {
-> -	struct sembuf sop[1];
->  	int thread_index;
->  
->  	thread_id = SAFE_MALLOC(sizeof(pthread_t) * NUM_THREADS);
->  
-> -	semid = semget(IPC_PRIVATE, 1, IPC_CREAT | 0666);
-> -	if (semid < 0)
-> -		tst_res(TBROK | TTERRNO, "Semaphore creation failed");
-> -
-> -	sop[0].sem_num = 0;
-> -	sop[0].sem_op = 1;
-> -	sop[0].sem_flg = 0;
-> -	TEST(semop(semid, sop, 1));
-> -	if (TEST_RETURN == -1)
-> -		tst_res(TBROK | TTERRNO, "Failed to initialize semaphore");
-> +	TST_CHECKPOINT_INIT();
->  
->  	for (thread_index = 0; thread_index < NUM_THREADS; thread_index++) {
->  		SAFE_PTHREAD_CREATE(&thread_id[thread_index], NULL, alloc_mem,
-> @@ -268,22 +250,9 @@ static void setup(void)
->  	}
->  }
->  
-> -static void cleanup(void)
-> -{
-> -	if (semid > 0) {
-> -		TEST(semctl(semid, 0, IPC_RMID));
-> -		if (TEST_RETURN == -1)
-> -			tst_res(TWARN, "Failed to destroy semaphore");
-> -	}
-> -
-> -	if (thread_id) {
-> -		free(thread_id);
-> -		thread_id = NULL;
-> -	}
-> -}
-> -
->  static struct tst_test test = {
->  	.tcnt = 1,
-> +	.needs_tmpdir = 1,
->  	.cleanup = cleanup,
->  	.setup = setup,
->  	.test = stress_malloc,
-> --
-> 2.15.0.448.gf294e3d99a-goog
-> 
-> 
+But I can always change that in a follow up patch...
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
