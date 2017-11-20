@@ -1,42 +1,42 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Date: Sun, 19 Nov 2017 08:09:46 -0800
-Subject: [LTP] Towards 4.14 LTS
-In-Reply-To: <20171119112051.GA10015@kroah.com>
-References: <5E1947BC-9D22-42EB-BA29-96EA15A9C817@linaro.org>
- <20171119112051.GA10015@kroah.com>
-Message-ID: <7a73bb41-8372-57d3-2aca-6840ca231167@roeck-us.net>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 20 Nov 2017 14:52:14 +0300
+Subject: [LTP] [PATCH] runpwtests03:skip read check for
+ cpufreq/stats/reset file
+In-Reply-To: <1511164904-10019-1-git-send-email-shuang.qiu@oracle.com>
+References: <1511164904-10019-1-git-send-email-shuang.qiu@oracle.com>
+Message-ID: <1db5e071-42ca-5cc7-f9d9-e28abd25e01e@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11/19/2017 03:20 AM, Greg Kroah-Hartman wrote:
-> On Thu, Nov 16, 2017 at 10:50:23PM -0600, Tom Gall wrote:
->> At Linaro we’ve been putting effort into regularly running kernel tests over
->> arm, arm64 and x86_64 targets. On those targets we’re running mainline, -next,
->> 4.4, and 4.9 kernels and yes we are adding to this list as the hardware
->> capacity grows.
->>
->> For test buckets we’re using just LTP, kselftest and libhugetlbfs and
->> like kernels we will add to this list.
-> 
-> I'm sorry, I don't understand this sentance.
-> 
-My parsing of it is that they will add to the list of tests as well as
-to the list of supported kernel versions (and/or maybe architectures ?).
+On 11/20/2017 11:01 AM, shuang.qiu@oracle.com wrote:
+> From: Shuang Qiu <shuang.qiu@oracle.com>
+>
+> According to the cpufreq-stats doc,cpufreq/stats/reset is
+> write-only attribute of cpu freq sysfs file.
+> So skip the cat checking for this file.
+>
+> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+> ---
+>  testcases/kernel/power_management/runpwtests03.sh |    1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/testcases/kernel/power_management/runpwtests03.sh b/testcases/kernel/power_management/runpwtests03.sh
+> index d4ea88b..00f6e02 100755
+> --- a/testcases/kernel/power_management/runpwtests03.sh
+> +++ b/testcases/kernel/power_management/runpwtests03.sh
+> @@ -35,6 +35,7 @@ check_cpufreq_sysfs_files() {
+>  			-name "*" -type f)
+>  		for files in ${cpufiles}
+>  		do
+> +			[ "$files" = "/sys/devices/system/cpu/cpu${cpu}/cpufreq/stats/reset" ] && continue
+>  			cat ${files} >/dev/null 2>&1
 
-Guenter
+May be better update the above 'find' command to match only files that
+have read permission, e.g. add '-readable' option?
 
->> With the 4.14 cycle being a little ‘different’ in so much as the goal to
->> have it be an LTS kernel I think it’s important to take a look at some
->> 4.14 test results.
->>
->> Grab a beverage, this is a bit of a long post. But quick summery 4.14 as
->> released looks just as good as 4.13, for the test buckets I named above.
-> 
-> Thanks for doing this testing and letting us know.
-> 
-> greg k-h
-> 
+Thanks,
+Alexey
 
