@@ -1,10 +1,10 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 20 Nov 2017 10:09:03 +0100
-Subject: [LTP] [PATCH] syscalls/add_key04: new test for associative
-	array bug
-In-Reply-To: <20171108211123.94429-1-ebiggers3@gmail.com>
-References: <20171108211123.94429-1-ebiggers3@gmail.com>
-Message-ID: <87shd9iafk.fsf@rpws.prws.suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 20 Nov 2017 06:18:42 -0500 (EST)
+Subject: [LTP] [PATCH] fs_fill: switch the SAFE MACROs back to
+	ordinary	syscall
+In-Reply-To: <20171110111519.27872-1-liwang@redhat.com>
+References: <20171110111519.27872-1-liwang@redhat.com>
+Message-ID: <1515676468.42550872.1511176722601.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,12 +12,16 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
-Hello,
+----- Original Message -----
+> To fix those brokens:
+>   safe_macros.c:225: BROK: tst_fill_fs.c:43:
+>   open(mntpoint/thread48/file0,65,0700) failed: ENOSPC
+>   safe_macros.c:169: BROK: fs_fill.c:49: mkdir(mntpoint/thread21,0700)
+>   failed: ENOSPC
+> 
+> Signed-off-by: Li Wang <liwang@redhat.com>
 
-This looks good to me, except for some nit picking: sprintf could be
-snprintf and probably you only need one 'associative'. However I would
-be happy for this to be merged as-is.
+Pushed.
 
--- 
-Thank you,
-Richard.
+Thanks,
+Jan
