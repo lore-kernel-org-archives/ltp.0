@@ -1,37 +1,26 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 21 Nov 2017 12:51:35 +0100
-Subject: [LTP] [RFC PATCH 3/4] lapi: Add lapi/in.h with definition moved
- from netstress.c
-In-Reply-To: <20171109160528.ceuxteessmjfbiy7@dell5510>
-References: <20171109113947.24609-1-pvorel@suse.cz>
- <20171109113947.24609-4-pvorel@suse.cz>
- <20171109151837.GC30136@rei>
- <20171109160528.ceuxteessmjfbiy7@dell5510>
-Message-ID: <20171121115135.f5zjyrzxgid5y2cu@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 21 Nov 2017 13:41:47 +0100
+Subject: [LTP] Towards 4.14 LTS
+In-Reply-To: <EF258C71-3F2A-449C-8283-EA4F715C81C0@linaro.org>
+References: <5E1947BC-9D22-42EB-BA29-96EA15A9C817@linaro.org>
+ <20171119112051.GA10015@kroah.com>
+ <EF258C71-3F2A-449C-8283-EA4F715C81C0@linaro.org>
+Message-ID: <20171121124147.GA10420@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> For instance 4.13-rc just was added to the mix.
+> 
+> For test buckets, I???m currently dorking around with some make check targets
+> for a few interesting packages. 
 
-> > Maybe we should rename this file to netinet_in.h or create netinet
-> > directory in lapi. Including just lapi/in.h is a bit confusing.
-> Is it because in.h is also in bits/ directory (not only in linux and some glibc directory)?
-> /usr/include/bits/in.h
-> /usr/include/netinet/in.h
-> /usr/include/linux/in.h
+You may want to look into xfstests as well, we found a few kernel oopses
+recently related to backported FS patches for SLES kernels.
 
-> As the same we have with lapi/tcp.h (in both kernel and glibc)...
-> /usr/include/netinet/tcp.h
-> /usr/include/linux/tcp.h
-
-> And I'm for directory.
-Actually I'd be for just plain "in.h" as other fileas in lapi/ directory don't prefix
-anything, aren't in any special directory.
-But if you really don't like that, I'll put it into netinet_in.h.
-
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
