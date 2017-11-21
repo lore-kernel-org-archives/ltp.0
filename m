@@ -1,58 +1,68 @@
 From: Dan Rue <dan.rue@linaro.org>
-Date: Tue, 21 Nov 2017 15:12:37 -0600
-Subject: [LTP] [RFC] [PATCH] netns: Fix race in virtual interface bringup
-In-Reply-To: <c9276a9b-16f4-338f-e51f-abebc4181fed@6wind.com>
-References: <20171109203841.28856-1-dan.rue@linaro.org>
- <20171115190423.kcrzl2odqtdr6ghg@xps>
- <c9276a9b-16f4-338f-e51f-abebc4181fed@6wind.com>
-Message-ID: <CAGm4vTMJumdJMzmejQNeo8w50neWBD9v1fAcOtP28FLCLSmfSw@mail.gmail.com>
+Date: Tue, 21 Nov 2017 15:36:41 -0600
+Subject: [LTP] [PATCH] netns: Fix duplicate address detection (dad)
+Message-ID: <20171121213641.27837-1-dan.rue@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Nov 16, 2017 at 3:56 AM, Nicolas Dichtel
-<nicolas.dichtel@6wind.com> wrote:
-> Le 15/11/2017 à 20:04, Dan Rue a écrit :
->> Adding CC netdev
->>
->> Can someone comment on the expected behavior of this test case?
->>
->> Here's the isolated test:
->>
->>     ip netns del tst_net_ns0
->>     ip netns del tst_net_ns1
->>     ip netns add tst_net_ns0
->>     ip netns add tst_net_ns1
->>     ip netns exec tst_net_ns0 ip link add veth0 type veth peer name veth1
->>     ip netns exec tst_net_ns0 ip link set veth1 netns tst_net_ns1
->>
->>     ip netns exec tst_net_ns0 ifconfig veth0 inet6 add fd00::2/64
->>     ip netns exec tst_net_ns1 ifconfig veth1 inet6 add fd00::3/64
-> ip netns exec tst_net_ns0 sysctl -w net.ipv6.conf.all.accept_dad=0
-> ip netns exec tst_net_ns0 sysctl -w net.ipv6.conf.veth0.accept_dad=0
-> ip netns exec tst_net_ns1 sysctl -w net.ipv6.conf.all.accept_dad=0
-> ip netns exec tst_net_ns1 sysctl -w net.ipv6.conf.veth1.accept_dad=0
->
->>     ip netns exec tst_net_ns0 ifconfig veth0 up
->>     ip netns exec tst_net_ns1 ifconfig veth1 up
->>
->>     #sleep 2>
->>     ip netns exec tst_net_ns0 ping6 -q -c2 -I veth0 fd00::3
->>
->> This is essentially what LTP is running. Sometimes, on some systems,
->> ping6 fails with "connect: Cannot assign requested address". Adding a
->> "sleep 2" always fixes it (but we'd obviously like to avoid a hard coded
->> sleep in the test).
-> Probably due to DAD. By disabling DAD, you should be able to use immediately the
-> ipv6 addrs.
+Symptoms (+ command, error):
+    netns_comm_ip_ipv6_ioctl:
+        + ip netns exec tst_net_ns1 ping6 -q -c2 -I veth1 fd00::2
+        connect: Cannot assign requested address
 
-Oh, that does work! I was trying to disable dad using
-'echo 0 > /proc/sys/net/ipv6/conf/veth0/accept_dad' and I guess it was
-not sufficient.
-Using your example, it did work.
+    netns_comm_ip_ipv6_netlink:
+        + ip netns exec tst_net_ns0 ping6 -q -c2 -I veth0 fd00::3
+        connect: Cannot assign requested address
 
-Thanks! I will submit this patch.
+    netns_comm_ns_exec_ipv6_ioctl:
+        + ns_exec 6689 net ping6 -q -c2 -I veth0 fd00::3
+        connect: Cannot assign requested address
 
-Dan
+    netns_comm_ns_exec_ipv6_netlin:
+        + ns_exec 6891 net ping6 -q -c2 -I veth0 fd00::3
+        connect: Cannot assign requested address
+
+The error is coming from ping6, which is trying to get an IP address for
+veth0 (due to -I veth0), but cannot, because the interface is not
+immediately available due to dad. The existing code to disable dad is
+disables it for the virtual interfaces, but it needs to be disabled for
+all interfaces in the network namespace to be effective.
+
+Also, changed it to use sysctl -w because I think it is a little cleaner
+to read and understand.
+
+Lastly, dropped setting accept_ra. It does not seem to be necessary to
+disable.
+
+Signed-off-by: Dan Rue <dan.rue@linaro.org>
+---
+ testcases/kernel/containers/netns/netns_helper.sh | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
+index a95cdf206..95add0544 100755
+--- a/testcases/kernel/containers/netns/netns_helper.sh
++++ b/testcases/kernel/containers/netns/netns_helper.sh
+@@ -256,12 +256,10 @@ netns_set_ip()
+ 	# there is no other host with the same address, the address is
+ 	# considered to be "tentative" (attempts to bind() to the address fail
+ 	# with EADDRNOTAVAIL) which may cause problems for tests using ipv6.
+-	echo 0 | $NS_EXEC $NS_HANDLE0 $NS_TYPE \
+-		tee /proc/sys/net/ipv6/conf/veth0/accept_dad \
+-		/proc/sys/net/ipv6/conf/veth0/accept_ra >/dev/null
+-	echo 0 | $NS_EXEC $NS_HANDLE1 $NS_TYPE \
+-		tee /proc/sys/net/ipv6/conf/veth1/accept_dad \
+-		/proc/sys/net/ipv6/conf/veth1/accept_ra >/dev/null
++	$NS_EXEC $NS_HANDLE0 $NS_TYPE sysctl -w net.ipv6.conf.all.accept_dad=0
++	$NS_EXEC $NS_HANDLE0 $NS_TYPE sysctl -w net.ipv6.conf.veth0.accept_dad=0
++	$NS_EXEC $NS_HANDLE1 $NS_TYPE sysctl -w net.ipv6.conf.all.accept_dad=0
++	$NS_EXEC $NS_HANDLE1 $NS_TYPE sysctl -w net.ipv6.conf.veth1.accept_dad=0
+ 
+ 	case $USE_IFCONFIG in
+ 	1)
+-- 
+2.14.3
+
