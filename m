@@ -1,16 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 22 Nov 2017 14:29:09 +0100
-Subject: [LTP] [PATCH] fs_fill: switch the SAFE MACROs back to ordinary
- syscall
-In-Reply-To: <1410675646.43959033.1511355089017.JavaMail.zimbra@redhat.com>
-References: <20171110111519.27872-1-liwang@redhat.com>
- <1515676468.42550872.1511176722601.JavaMail.zimbra@redhat.com>
- <20171120131952.GA22113@rei.lan>
- <CAEemH2ei8WXrpWLN5J_+tb4cZiZGeE1ovd43TnbUtb=seEdf3Q@mail.gmail.com>
- <20171121094445.GA9443@rei.lan>
- <1075630177.43956420.1511354910460.JavaMail.zimbra@redhat.com>
- <1410675646.43959033.1511355089017.JavaMail.zimbra@redhat.com>
-Message-ID: <20171122132909.GD2389@rei.lan>
+Date: Wed, 22 Nov 2017 15:31:56 +0100
+Subject: [LTP] [PROBLEM_WITH_CPUACCT.SH_100_100_LTP_TESTSUITE]
+In-Reply-To: <CAPiF6ThOKV6egQ8nhxKoiUba1S8UzLP3h0LOB+HO8T9vc0vemg@mail.gmail.com>
+References: <CAPiF6ThOKV6egQ8nhxKoiUba1S8UzLP3h0LOB+HO8T9vc0vemg@mail.gmail.com>
+Message-ID: <20171122143156.GE2389@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -18,20 +11,38 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > But perhaps this should go to setup(), otherwise with "-i 2"
-> > it hits TBROK on mkdir.
-> > 
-> > I tried adding RMDIR after join, but unlink doesn't seem to remove
-> > everything:
-> > safe_macros.c:184: BROK: fs_fill.c:108: rmdir(mntpoint/thread4) failed:
-> > ENOTEMPTY
+> I had run the test case ???./cpuacct.sh 100 100??? on my ARM board.
 > 
-> I see, there's "break" in loop that does unlink. Which is likely by design,
-> so we hit ENOSPC sooner.
+> Afterward,  I have gotten a problem as bellow:
+> 
+> 
+> 
+> *1 TINFO: Creating 100 subgroups each with 100 processes*
+> 
+> *[69402.212655] imx2_wdt_interrupt: pretimer*
+> 
+> *[69402.212777] The following is the list of last 50 interrupts for each
+> CPU*
+> 
+> *[69402.212868] [69402.145532]: irqnumber 1023 cpuid 0*
+> 
+> *[69402.212960] [69402.145727]: irqnumber 99 cpuid 0*
+> 
+> 
+> 
+> And my ARM board restarted immediately.
 
-That was the intention. The initial idea is that many threads race on
-writing into nearly full filesystem. I guess I should have written
-better description in the top level comment.
+If that happens the odds are that you hardware/kernel is buggy.
+
+> I think the test case had made my board run out of CPU power(CPU
+> overloading ), so the watchdog timer has identified this problem and
+> restarted the board.
+
+There is no such thing CPU overload as far as I can tell. For small
+system it may be the case that you are running out of memory but if
+adding sleep to the loop fixes the problem that shouldn't be the case.
+
+So all in all this looks like buggy kernel to me.
 
 -- 
 Cyril Hrubis
