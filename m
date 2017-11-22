@@ -1,39 +1,75 @@
-From: shuang.qiu@oracle.com <shuang.qiu@oracle.com>
-Date: Wed, 22 Nov 2017 18:17:03 +0800
-Subject: [LTP] [PATCH] runpwtests03:skip read check for the files without
-	read permission
-Message-ID: <1511345823-11979-1-git-send-email-shuang.qiu@oracle.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 22 Nov 2017 15:40:10 +0300
+Subject: [LTP] [PATCH] netns: Fix duplicate address detection (dad)
+In-Reply-To: <20171121213641.27837-1-dan.rue@linaro.org>
+References: <20171121213641.27837-1-dan.rue@linaro.org>
+Message-ID: <c6b48004-fa68-e7f8-dfd3-e3da7af9922d@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Shuang Qiu <shuang.qiu@oracle.com>
+On 11/22/2017 12:36 AM, Dan Rue wrote:
+> Symptoms (+ command, error):
+>     netns_comm_ip_ipv6_ioctl:
+>         + ip netns exec tst_net_ns1 ping6 -q -c2 -I veth1 fd00::2
+>         connect: Cannot assign requested address
+>
+>     netns_comm_ip_ipv6_netlink:
+>         + ip netns exec tst_net_ns0 ping6 -q -c2 -I veth0 fd00::3
+>         connect: Cannot assign requested address
+>
+>     netns_comm_ns_exec_ipv6_ioctl:
+>         + ns_exec 6689 net ping6 -q -c2 -I veth0 fd00::3
+>         connect: Cannot assign requested address
+>
+>     netns_comm_ns_exec_ipv6_netlin:
+>         + ns_exec 6891 net ping6 -q -c2 -I veth0 fd00::3
+>         connect: Cannot assign requested address
+>
+> The error is coming from ping6, which is trying to get an IP address for
+> veth0 (due to -I veth0), but cannot, because the interface is not
+> immediately available due to dad. The existing code to disable dad is
+> disables it for the virtual interfaces, but it needs to be disabled for
+> all interfaces in the network namespace to be effective.
 
-According to the cpufreq-stats doc,cpufreq/stats/reset is
-write-only attribute of cpu freq sysfs file.
-So skip the cat checking for the files like this file which
-has not read permission.
 
-Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
----
- testcases/kernel/power_management/runpwtests03.sh |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Looks like Linux 4.14 specific and it's fixed with the following patch:
+094009531612 ("ipv6: set all.accept_dad to 0 by default")
 
-diff --git a/testcases/kernel/power_management/runpwtests03.sh b/testcases/kernel/power_management/runpwtests03.sh
-index d4ea88b..1119793 100755
---- a/testcases/kernel/power_management/runpwtests03.sh
-+++ b/testcases/kernel/power_management/runpwtests03.sh
-@@ -32,7 +32,7 @@ check_cpufreq_sysfs_files() {
- 	for cpu in $(seq 0 "${total_cpus}" )
- 	do
- 		cpufiles=$(find /sys/devices/system/cpu/cpu"${cpu}"/cpufreq/ \
--			-name "*" -type f)
-+			-name "*" -type f -perm /400)
- 		for files in ${cpufiles}
- 		do
- 			cat ${files} >/dev/null 2>&1
--- 
-1.7.9.5
+I'm not sure if we need to change the test-case if we want to catch
+similar bug with backward compatibility...
 
+Thanks,
+Alexey
+
+> Also, changed it to use sysctl -w because I think it is a little cleaner
+> to read and understand.
+>
+> Lastly, dropped setting accept_ra. It does not seem to be necessary to
+> disable.
+>
+> Signed-off-by: Dan Rue <dan.rue@linaro.org>
+> ---
+>  testcases/kernel/containers/netns/netns_helper.sh | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+>
+> diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
+> index a95cdf206..95add0544 100755
+> --- a/testcases/kernel/containers/netns/netns_helper.sh
+> +++ b/testcases/kernel/containers/netns/netns_helper.sh
+> @@ -256,12 +256,10 @@ netns_set_ip()
+>  	# there is no other host with the same address, the address is
+>  	# considered to be "tentative" (attempts to bind() to the address fail
+>  	# with EADDRNOTAVAIL) which may cause problems for tests using ipv6.
+> -	echo 0 | $NS_EXEC $NS_HANDLE0 $NS_TYPE \
+> -		tee /proc/sys/net/ipv6/conf/veth0/accept_dad \
+> -		/proc/sys/net/ipv6/conf/veth0/accept_ra >/dev/null
+> -	echo 0 | $NS_EXEC $NS_HANDLE1 $NS_TYPE \
+> -		tee /proc/sys/net/ipv6/conf/veth1/accept_dad \
+> -		/proc/sys/net/ipv6/conf/veth1/accept_ra >/dev/null
+> +	$NS_EXEC $NS_HANDLE0 $NS_TYPE sysctl -w net.ipv6.conf.all.accept_dad=0
+> +	$NS_EXEC $NS_HANDLE0 $NS_TYPE sysctl -w net.ipv6.conf.veth0.accept_dad=0
+> +	$NS_EXEC $NS_HANDLE1 $NS_TYPE sysctl -w net.ipv6.conf.all.accept_dad=0
+> +	$NS_EXEC $NS_HANDLE1 $NS_TYPE sysctl -w net.ipv6.conf.veth1.accept_dad=0
