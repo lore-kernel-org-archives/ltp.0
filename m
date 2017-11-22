@@ -1,87 +1,105 @@
 From: Li Wang <liwang@redhat.com>
-Date: Wed, 22 Nov 2017 11:09:33 +0800
-Subject: [LTP] [PATCH] netns: Fix duplicate address detection (dad)
-In-Reply-To: <20171121213641.27837-1-dan.rue@linaro.org>
-References: <20171121213641.27837-1-dan.rue@linaro.org>
-Message-ID: <CAEemH2c5VU3u4KoHnRWQqAXAm8O_LfKCtP7=eHG0afAaFVPqgQ@mail.gmail.com>
+Date: Wed, 22 Nov 2017 12:59:09 +0800
+Subject: [LTP] <Failling_on_memcg_usage_in_bytes_test.sh>
+In-Reply-To: <CAPiF6Th1sDgRJH2bFb3jX-cBJNVO0s4zmMSH3ezifK7Y9nQCWw@mail.gmail.com>
+References: <CAPiF6Th1sDgRJH2bFb3jX-cBJNVO0s4zmMSH3ezifK7Y9nQCWw@mail.gmail.com>
+Message-ID: <CAEemH2c08B6QaXuqV=a3FT8V6O-yd8WPqR4=d+yME6iubF70Xw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-On Wed, Nov 22, 2017 at 5:36 AM, Dan Rue <dan.rue@linaro.org> wrote:
-> Symptoms (+ command, error):
->     netns_comm_ip_ipv6_ioctl:
->         + ip netns exec tst_net_ns1 ping6 -q -c2 -I veth1 fd00::2
->         connect: Cannot assign requested address
+On Wed, Nov 22, 2017 at 1:10 AM, Na Nha <minhnhan0801@gmail.com> wrote:
+> Hello LTP team,
 >
->     netns_comm_ip_ipv6_netlink:
->         + ip netns exec tst_net_ns0 ping6 -q -c2 -I veth0 fd00::3
->         connect: Cannot assign requested address
 >
->     netns_comm_ns_exec_ipv6_ioctl:
->         + ns_exec 6689 net ping6 -q -c2 -I veth0 fd00::3
->         connect: Cannot assign requested address
 >
->     netns_comm_ns_exec_ipv6_netlin:
->         + ns_exec 6891 net ping6 -q -c2 -I veth0 fd00::3
->         connect: Cannot assign requested address
+> There is an issue as below when I ran “./memcg_usage_in_bytes_test.sh” on my
+> ARM board
 >
-> The error is coming from ping6, which is trying to get an IP address for
-> veth0 (due to -I veth0), but cannot, because the interface is not
-> immediately available due to dad. The existing code to disable dad is
-> disables it for the virtual interfaces, but it needs to be disabled for
-> all interfaces in the network namespace to be effective.
 >
-> Also, changed it to use sysctl -w because I think it is a little cleaner
-> to read and understand.
 >
-> Lastly, dropped setting accept_ra. It does not seem to be necessary to
-> disable.
+> mx6q:/opt/ltp/testcases/bin# ./memcg_usage_in_bytes_test.sh
 >
-> Signed-off-by: Dan Rue <dan.rue@linaro.org>
-> ---
->  testcases/kernel/containers/netns/netns_helper.sh | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
+> memcg_usage_in_bytes_test 1 TINFO: Starting test 1
 >
-> diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
-> index a95cdf206..95add0544 100755
-> --- a/testcases/kernel/containers/netns/netns_helper.sh
-> +++ b/testcases/kernel/containers/netns/netns_helper.sh
-> @@ -256,12 +256,10 @@ netns_set_ip()
->         # there is no other host with the same address, the address is
->         # considered to be "tentative" (attempts to bind() to the address fail
->         # with EADDRNOTAVAIL) which may cause problems for tests using ipv6.
-> -       echo 0 | $NS_EXEC $NS_HANDLE0 $NS_TYPE \
-> -               tee /proc/sys/net/ipv6/conf/veth0/accept_dad \
-> -               /proc/sys/net/ipv6/conf/veth0/accept_ra >/dev/null
-> -       echo 0 | $NS_EXEC $NS_HANDLE1 $NS_TYPE \
-> -               tee /proc/sys/net/ipv6/conf/veth1/accept_dad \
-> -               /proc/sys/net/ipv6/conf/veth1/accept_ra >/dev/null
-> +       $NS_EXEC $NS_HANDLE0 $NS_TYPE sysctl -w net.ipv6.conf.all.accept_dad=0
-> +       $NS_EXEC $NS_HANDLE0 $NS_TYPE sysctl -w net.ipv6.conf.veth0.accept_dad=0
+> memcg_usage_in_bytes_test 1 TINFO: Running memcg_process --mmap-anon -s
+> 4194304
+>
+> memcg_usage_in_bytes_test 1 TINFO: Warming up pid: 19889
+>
+> memcg_usage_in_bytes_test 1 TINFO: Process is still here after warm up:
+> 19889
+>
+> memcg_usage_in_bytes_test 1 TPASS: memory.usage_in_bytes is 4194304 as
+> expected
+>
+> memcg_usage_in_bytes_test 2 TINFO: Starting test 2
+>
+> memcg_usage_in_bytes_test 2 TINFO: Running memcg_process --mmap-anon -s
+> 4194304
+>
+> memcg_usage_in_bytes_test 2 TINFO: Warming up pid: 19909
+>
+> memcg_usage_in_bytes_test 2 TINFO: Process is still here after warm up:
+> 19909
+>
+> memcg_usage_in_bytes_test 2 TFAIL: memory.memsw.usage_in_bytes is 4325376,
+> 4194304 expected
+>
 
-Seems we have already disabled DAD for all interfaces via
-'net.ipv6.conf.all.accept_dad=0', I wonder if it's necessary to do the
-repeat setting for veth0 device?
-
-> +       $NS_EXEC $NS_HANDLE1 $NS_TYPE sysctl -w net.ipv6.conf.all.accept_dad=0
-> +       $NS_EXEC $NS_HANDLE1 $NS_TYPE sysctl -w net.ipv6.conf.veth1.accept_dad=0
-
-Here as well.
+Did you see any other write errors during the test?
+such as:
+/opt/ltp/testcases/bin/memcg_lib.sh: line 514: echo: write error:
+Device or resource busy
 
 
->
->         case $USE_IFCONFIG in
->         1)
-> --
-> 2.14.3
+If so, that's probably because the 'memory.use_hierarchy' value is not '0' on
+your ARM board, or memcg_lib.sh failed to set it to '0' at the beginning.
+AFAIK, if current cgroup directory is not cleanning(include any other
+directory),
+that would be always failed to set memory.use_hierarchy with device busy return.
 
-Anyway, this method works to me.
+Something like:
+# mount -t cgroup -omemory memcg /dev/memcg/
+# mkdir -p /dev/memcg/ltp-test
+# echo 0 >/dev/memcg/memory.use_hierarchy
+-bash: echo: write error: Device or resource busy
 
-
-
--- 
+Regards,
 Li Wang
-liwang@redhat.com
+
+>
+>
+> It is a dangling falling, sometimes the test result is pass and sometimes is
+> fail
+>
+>
+>
+> My kernel is
+>
+> root@mx6q:/dev/shm# uname -a
+>
+> Linux mx6q 3.14.79-01214-g76b5fd377784 #1 SMP PREEMPT Wed Nov 15 17:06:37
+> CET 2017 armv7l GNU/Linux
+>
+>
+>
+> Could you please help me to resolve the problem?
+>
+>
+>
+> I look forward any reply.
+>
+>
+>
+> Thanks / Best regards,
+>
+> Nhan Le Minh
+>
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
