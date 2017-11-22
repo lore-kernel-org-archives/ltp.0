@@ -1,53 +1,80 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 22 Nov 2017 15:58:22 +0100
-Subject: [LTP] [PATCH] syscalls/fallocate[4,
- 5]: Fix failure when using old mkfs.btrfs
-In-Reply-To: <1510818534-7378-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1510818534-7378-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20171122145822.GF2389@rei.lan>
+From: Dan Rue <dan.rue@linaro.org>
+Date: Wed, 22 Nov 2017 09:08:08 -0600
+Subject: [LTP] [PATCH] netns: Fix duplicate address detection (dad)
+In-Reply-To: <c6b48004-fa68-e7f8-dfd3-e3da7af9922d@oracle.com>
+References: <20171121213641.27837-1-dan.rue@linaro.org>
+ <c6b48004-fa68-e7f8-dfd3-e3da7af9922d@oracle.com>
+Message-ID: <20171122150808.vn2mtaxpbwlloz33@xps>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
->  static int attach_device(const char *dev, const char *file)
->  {
->  	int dev_fd, file_fd;
-> +	struct loop_info loopinfo;
->  
->  	dev_fd = open(dev, O_RDWR);
->  	if (dev_fd < 0) {
-> @@ -156,6 +157,21 @@ static int attach_device(const char *dev, const char *file)
->  		return 1;
->  	}
->  
-> +	/* Old mkfs.btrfs use LOOP_GET_STATUS instead of backing_file to get
-> +	 * associated filename, so we need to set up the device by calling
-> +	 * LOOP_SET_FD and LOOP_SET_STATUS.
-> +	 */
-> +	memset(&loopinfo, 0, sizeof(loopinfo));
-> +	strcpy((char *)loopinfo.lo_name, file);
-                 ^
-		 Why the cast here, as far as I can tell the lo_name is
-		 just array of chars which should be char * pointer
-		 compatible.
+On Wed, Nov 22, 2017 at 03:40:10PM +0300, Alexey Kodanev wrote:
+> On 11/22/2017 12:36 AM, Dan Rue wrote:
+> > Symptoms (+ command, error):
+> >     netns_comm_ip_ipv6_ioctl:
+> >         + ip netns exec tst_net_ns1 ping6 -q -c2 -I veth1 fd00::2
+> >         connect: Cannot assign requested address
+> >
+> >     netns_comm_ip_ipv6_netlink:
+> >         + ip netns exec tst_net_ns0 ping6 -q -c2 -I veth0 fd00::3
+> >         connect: Cannot assign requested address
+> >
+> >     netns_comm_ns_exec_ipv6_ioctl:
+> >         + ns_exec 6689 net ping6 -q -c2 -I veth0 fd00::3
+> >         connect: Cannot assign requested address
+> >
+> >     netns_comm_ns_exec_ipv6_netlin:
+> >         + ns_exec 6891 net ping6 -q -c2 -I veth0 fd00::3
+> >         connect: Cannot assign requested address
+> >
+> > The error is coming from ping6, which is trying to get an IP address for
+> > veth0 (due to -I veth0), but cannot, because the interface is not
+> > immediately available due to dad. The existing code to disable dad is
+> > disables it for the virtual interfaces, but it needs to be disabled for
+> > all interfaces in the network namespace to be effective.
+> 
+> 
+> Looks like Linux 4.14 specific and it's fixed with the following patch:
+> 094009531612 ("ipv6: set all.accept_dad to 0 by default")
+> 
+> I'm not sure if we need to change the test-case if we want to catch
+> similar bug with backward compatibility...
 
-> +	if (ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo)) {
-> +		close(dev_fd);
-> +		close(file_fd);
-> +		tst_resm(TWARN | TERRNO,
-> +			 "ioctl(%s, LOOP_SET_STATUS, %s) failed", dev, file);
-> +		return 1;
-> +	}
-> +
->  	close(dev_fd);
->  	close(file_fd);
->  	return 0;
+Good find! I'm happy withdrawing this patch.
 
-Otherwise it looks good.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> 
+> Thanks,
+> Alexey
+> 
+> > Also, changed it to use sysctl -w because I think it is a little cleaner
+> > to read and understand.
+> >
+> > Lastly, dropped setting accept_ra. It does not seem to be necessary to
+> > disable.
+> >
+> > Signed-off-by: Dan Rue <dan.rue@linaro.org>
+> > ---
+> >  testcases/kernel/containers/netns/netns_helper.sh | 10 ++++------
+> >  1 file changed, 4 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
+> > index a95cdf206..95add0544 100755
+> > --- a/testcases/kernel/containers/netns/netns_helper.sh
+> > +++ b/testcases/kernel/containers/netns/netns_helper.sh
+> > @@ -256,12 +256,10 @@ netns_set_ip()
+> >  	# there is no other host with the same address, the address is
+> >  	# considered to be "tentative" (attempts to bind() to the address fail
+> >  	# with EADDRNOTAVAIL) which may cause problems for tests using ipv6.
+> > -	echo 0 | $NS_EXEC $NS_HANDLE0 $NS_TYPE \
+> > -		tee /proc/sys/net/ipv6/conf/veth0/accept_dad \
+> > -		/proc/sys/net/ipv6/conf/veth0/accept_ra >/dev/null
+> > -	echo 0 | $NS_EXEC $NS_HANDLE1 $NS_TYPE \
+> > -		tee /proc/sys/net/ipv6/conf/veth1/accept_dad \
+> > -		/proc/sys/net/ipv6/conf/veth1/accept_ra >/dev/null
+> > +	$NS_EXEC $NS_HANDLE0 $NS_TYPE sysctl -w net.ipv6.conf.all.accept_dad=0
+> > +	$NS_EXEC $NS_HANDLE0 $NS_TYPE sysctl -w net.ipv6.conf.veth0.accept_dad=0
+> > +	$NS_EXEC $NS_HANDLE1 $NS_TYPE sysctl -w net.ipv6.conf.all.accept_dad=0
+> > +	$NS_EXEC $NS_HANDLE1 $NS_TYPE sysctl -w net.ipv6.conf.veth1.accept_dad=0
