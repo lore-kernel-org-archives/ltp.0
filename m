@@ -1,36 +1,39 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 22 Nov 2017 15:38:47 +0800
-Subject: [LTP] [PATCH 1/2] memcg_lib.sh: fix the shmmax value comparison
-Message-ID: <20171122073848.6172-1-liwang@redhat.com>
+From: shuang.qiu@oracle.com <shuang.qiu@oracle.com>
+Date: Wed, 22 Nov 2017 18:17:03 +0800
+Subject: [LTP] [PATCH] runpwtests03:skip read check for the files without
+	read permission
+Message-ID: <1511345823-11979-1-git-send-email-shuang.qiu@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The value of /proc/sys/kernel/shmmax is 18446744073692774399 which Dash/Bash
-fails to compare to the $HUGEPAGESIZE value and report error:
+From: Shuang Qiu <shuang.qiu@oracle.com>
 
-  memcg_lib.sh: line 81: [: 18446744073692774399: integer expression expected
+According to the cpufreq-stats doc,cpufreq/stats/reset is
+write-only attribute of cpu freq sysfs file.
+So skip the cat checking for the files like this file which
+has not read permission.
 
-Signed-off-by: Li Wang <liwang@redhat.com>
+Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
 ---
- testcases/kernel/controllers/memcg/functional/memcg_lib.sh | 2 +-
+ testcases/kernel/power_management/runpwtests03.sh |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-index d4724c3..6a6af85 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-@@ -78,7 +78,7 @@ TST_CLEANUP=cleanup
- shmmax_setup()
- {
- 	shmmax=`cat /proc/sys/kernel/shmmax`
--	if [ $shmmax -lt $HUGEPAGESIZE ]; then
-+	if [ $(echo "$shmmax < $HUGEPAGESIZE" |bc) -eq 1 ]; then
- 		ROD echo "$HUGEPAGESIZE" \> /proc/sys/kernel/shmmax
- 	fi
- }
+diff --git a/testcases/kernel/power_management/runpwtests03.sh b/testcases/kernel/power_management/runpwtests03.sh
+index d4ea88b..1119793 100755
+--- a/testcases/kernel/power_management/runpwtests03.sh
++++ b/testcases/kernel/power_management/runpwtests03.sh
+@@ -32,7 +32,7 @@ check_cpufreq_sysfs_files() {
+ 	for cpu in $(seq 0 "${total_cpus}" )
+ 	do
+ 		cpufiles=$(find /sys/devices/system/cpu/cpu"${cpu}"/cpufreq/ \
+-			-name "*" -type f)
++			-name "*" -type f -perm /400)
+ 		for files in ${cpufiles}
+ 		do
+ 			cat ${files} >/dev/null 2>&1
 -- 
-2.9.3
+1.7.9.5
 
