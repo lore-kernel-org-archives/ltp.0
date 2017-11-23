@@ -1,79 +1,107 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 23 Nov 2017 09:36:13 +0800
-Subject: [LTP] [PATCH v2] lib/tst_device.c: Fix failure when using old
-	mkfs.btrfs
-In-Reply-To: <20171122145822.GF2389@rei.lan>
-References: <20171122145822.GF2389@rei.lan>
-Message-ID: <1511400973-23446-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 23 Nov 2017 18:32:50 +0800
+Subject: [LTP] [PATCH] fs_fill: create all the directories in setup()
+	function
+Message-ID: <20171123103250.18716-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We always got the following error when using mkfs.btrfs(v0.20-rc1)
-on RHEL6.9GA.  For example:
----------------------------------------------------------------------------
-./fallocate04
-...
-tst_mkfs.c:83: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
-error checking /dev/loop0 mount status
-tst_mkfs.c:94: BROK: mkfs.btrfs:1: tst_test.c failed with 693
----------------------------------------------------------------------------
+This is a follow up change for:
+  commit 55a3c56bc6 (fs_fill: switch the SAFE MACROs back to ordinary syscall
 
-After just calling LOOP_SET_FD to set up loopdev, newer mkfs.btrfs can
-get associated filename by backing_file successfully.  However older
-one cannot get associated filename by LOOP_GET_STATUS which is replaced
-by backing_file since btrfs-progs v3.12.  So we call LOOP_SET_FD and
-LOOP_SET_STATUS to set up loopdev when using all kinds of mkfs.btrfs.
-
-The backing_file was produced in kernel(since v2.6.37):
-'ee86273062cb("loop: add some basic read-only sysfs attributes")'
-
-The backing_file began to be used by mkfs.btrfs on btrfs_progs(v3.12):
-'abdb0ced0123("Btrfs-progs: fix resolving of loop devices")'
-
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- lib/tst_device.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ testcases/kernel/fs/fs_fill/fs_fill.c | 32 +++++++++++++++++---------------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
 
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index 6ad6c47..4b73f0b 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -134,6 +134,7 @@ static int find_free_loopdev(void)
- static int attach_device(const char *dev, const char *file)
+diff --git a/testcases/kernel/fs/fs_fill/fs_fill.c b/testcases/kernel/fs/fs_fill/fs_fill.c
+index f592cd5..bb07ede 100644
+--- a/testcases/kernel/fs/fs_fill/fs_fill.c
++++ b/testcases/kernel/fs/fs_fill/fs_fill.c
+@@ -34,6 +34,7 @@
+ static volatile int run;
+ static unsigned int nthreads;
+ static int enospc_cnt;
++static struct worker *workers;
+ 
+ struct worker {
+ 	char dir[PATH_MAX];
+@@ -41,21 +42,11 @@ struct worker {
+ 
+ static void *worker(void *p)
  {
- 	int dev_fd, file_fd;
-+	struct loop_info loopinfo;
+-	int ret;
+ 	struct worker *w = p;
+ 	DIR *d;
+ 	struct dirent *ent;
+ 	char file[PATH_MAX];
  
- 	dev_fd = open(dev, O_RDWR);
- 	if (dev_fd < 0) {
-@@ -156,6 +157,21 @@ static int attach_device(const char *dev, const char *file)
- 		return 1;
- 	}
+-	ret = mkdir(w->dir, 0700);
+-	if (ret == -1) {
+-		if (errno != ENOSPC)
+-			tst_brk(TBROK | TERRNO, "mkdir()");
+-
+-		tst_res(TINFO | TERRNO, "mkdir()");
+-		return NULL;
+-	}
+-
+ 	while (run) {
+ 		tst_fill_fs(w->dir, 0);
  
-+	/* Old mkfs.btrfs use LOOP_GET_STATUS instead of backing_file to get
-+	 * associated filename, so we need to set up the device by calling
-+	 * LOOP_SET_FD and LOOP_SET_STATUS.
-+	 */
-+	memset(&loopinfo, 0, sizeof(loopinfo));
-+	strcpy(loopinfo.lo_name, file);
+@@ -84,16 +75,12 @@ static void *worker(void *p)
+ 
+ static void testrun(void)
+ {
+-	struct worker workers[nthreads];
+ 	pthread_t threads[nthreads];
+ 	unsigned int i, ms;
+ 
+ 	run = 1;
+-	for (i = 0; i < nthreads; i++) {
+-		snprintf(workers[i].dir, sizeof(workers[i].dir),
+-			 MNTPOINT "/thread%i", i + 1);
++	for (i = 0; i < nthreads; i++)
+ 		SAFE_PTHREAD_CREATE(&threads[i], NULL, worker, &workers[i]);
+-	}
+ 
+ 	for (ms = 0; ; ms++) {
+ 		usleep(1000);
+@@ -114,11 +101,25 @@ static void testrun(void)
+ 
+ static void setup(void)
+ {
++	unsigned int i;
 +
-+	if (ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo)) {
-+		close(dev_fd);
-+		close(file_fd);
-+		tst_resm(TWARN | TERRNO,
-+			 "ioctl(%s, LOOP_SET_STATUS, %s) failed", dev, file);
-+		return 1;
+ 	nthreads = tst_ncpus_conf() + 2;
++	workers = SAFE_MALLOC(sizeof(struct worker) * nthreads);
++
++	for (i = 0; i < nthreads; i++) {
++		snprintf(workers[i].dir, sizeof(workers[i].dir),
++			 MNTPOINT "/thread%i", i + 1);
++		SAFE_MKDIR(workers[i].dir, 0700);
 +	}
+ 
+ 	tst_res(TINFO, "Running %i writer threads", nthreads);
+ }
+ 
++static void cleanup(void)
++{
++	free(workers);
++}
 +
- 	close(dev_fd);
- 	close(file_fd);
- 	return 0;
+ static struct tst_test test = {
+ 	.needs_root = 1,
+ 	.needs_tmpdir = 1,
+@@ -126,5 +127,6 @@ static struct tst_test test = {
+ 	.mntpoint = MNTPOINT,
+ 	.all_filesystems = 1,
+ 	.setup = setup,
++	.cleanup = cleanup,
+ 	.test_all = testrun,
+ };
 -- 
-1.8.3.1
-
-
+2.9.3
 
