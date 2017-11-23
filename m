@@ -1,115 +1,56 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 23 Nov 2017 16:03:24 +0100
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 23 Nov 2017 17:44:12 +0100
 Subject: [LTP] [RFC PATCH] scripts: Dump /proc and /sys
-In-Reply-To: <20171108134221.5ogyueuisylmmmci@x230>
+In-Reply-To: <87bmjt9gw3.fsf@rpws.prws.suse.cz>
 References: <20171107140219.5606-1-rpalethorpe@suse.com>
  <20171108134221.5ogyueuisylmmmci@x230>
-Message-ID: <87bmjt9gw3.fsf@rpws.prws.suse.cz>
+ <87bmjt9gw3.fsf@rpws.prws.suse.cz>
+Message-ID: <20171123164412.vv54gc2j4bgu5xc3@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Richard,
 
-Hello Petr
+> > IMHO this script should be run as root, or lots of sensitive info will be lost.
+> > It's not also installed to SUT (but it's meant to be used on SUT).
 
-Petr Vorel writes:
+> Well I won't force it to be run as root, but I can document that.
+ok.
 
-> Hi Richard,
->
-> the script does quite a big load:
->
-> I'd set it executable bit (0755 instead of 0644).
+> >> +     proc_files=$(find -L /proc -maxdepth 4 -readable -not -regex '/proc/[0-9]+/.*' -not -type d 2> /dev/null)
+> > This gets files in /proc/self and /proc/thread-self. I don't think we want it.
+> > Also it gets symlinks (maybe not a problem),
 
-OK.
+> > and files not readable:
+> > dd: error reading '/proc/sys/fs/binfmt_misc/register': Invalid argument
+> > dd: error reading '/proc/sysrq-trigger': Input/output error
+> > ls -l /proc/sys/fs/binfmt_misc/register /proc/sysrq-trigger
+> > --w------- 1 root root 0 lis  8 07:45 /proc/sys/fs/binfmt_misc/register
+> > --w------- 1 root root 0 lis  8 07:45 /proc/sysrq-trigger
+> > Maybe using -perm instead of -readable (find(1) says that
 
-> IMHO this script should be run as root, or lots of sensitive info will be lost.
-> It's not also installed to SUT (but it's meant to be used on SUT).
+> Says what ? :-)
+Sorry for missing text. Says that -readable takes into account access control lists and other permissions artefacts which the -perm test ignores. But it's not relevant for us.
 
-Well I won't force it to be run as root, but I can document that.
+> I have changed it to use -perm, but it doesn't make any difference. I
+> think the read bits are fairly useless in procfs and sysfs.
+Sorry for confusing, find is really correct (I got is running with root).
+Maybe it would be worth to not to copy empty files:
+$ file /proc/sys/fs/binfmt_misc/register
+/proc/sys/fs/binfmt_misc/register: empty
+Even you don't care about it it would be avoid dumping at least /proc/self/* and
+/proc/thread-self/* at least.
 
->
->> +usage: ${0##*/}	[ [ -d dump_dir ]
->> + 			[ -w white_list ] [ -u use_white_list ]
->> + 			[ -t timeout ]
->> + 			[ -b batch_size ]
->> + 			|  -h ]
-> How about this?
-> USAGE:
-> ${0##*/} [ -d dump_dir ] [ -w white_list ] [ -u use_white_list ] [ -t timeout ]
-> 		 [ -b batch_size ]
-> ${0##*/} -h
+> > But I don't like the whole block being run in background.
 
-OK
+> I'm still not sure how else to do a time out. Also it probably speeds up
+> the process a lot because many of the files block on read.
+I don't have better solution either.
+In coreutils there is timeout command, but I guess we don't want to depend on coreutils.
 
->
-> ...
->> +if [ ! $use_white_list ]
->> +then echo Finding files in /proc and /sys
-> IMHO this syntax is more common, but it's a matter of taste:
-> if [ ! $use_white_list ]; then
-> 	echo Finding files in /proc and /sys
-> ...
 
-OK
-
->
->> +     proc_files=$(find -L /proc -maxdepth 4 -readable -not -regex '/proc/[0-9]+/.*' -not -type d 2> /dev/null)
-> This gets files in /proc/self and /proc/thread-self. I don't think we want it.
-> Also it gets symlinks (maybe not a problem),
->
-> and files not readable:
-> dd: error reading '/proc/sys/fs/binfmt_misc/register': Invalid argument
-> dd: error reading '/proc/sysrq-trigger': Input/output error
-> ls -l /proc/sys/fs/binfmt_misc/register /proc/sysrq-trigger
-> --w------- 1 root root 0 lis  8 07:45 /proc/sys/fs/binfmt_misc/register
-> --w------- 1 root root 0 lis  8 07:45 /proc/sysrq-trigger
-> Maybe using -perm instead of -readable (find(1) says that
-
-Says what ? :-)
-
-I have changed it to use -perm, but it doesn't make any difference. I
-think the read bits are fairly useless in procfs and sysfs.
-
->
->> +     sys_files=$(find -L /sys -maxdepth 4 -readable -not -type d 2> /dev/null)
->> +     files="$proc_files $sys_files"
->> +else echo Using file list $use_white_list
->> +     files=$(cat $use_white_list)
->> +fi
->> +
->> +dump_dir=${dump_dir%/}
->> +echo Dumping to $dump_dir
-> IMHO it's better to quote string for echo, even not required.
-> echo "Dumping to $dump_dir"
-
-OK
-
->> +rm -rf $dump_dir
->> +mkdir $dump_dir
->> +
->> +count=$batch_size
->> +for f in $files
->> +do
-> Again here:
-> for f in $files; do
->
->> +    mkdir -p $dump_dir$(dirname $f)
->> +    ({
-> Wouldn't be using '(' enough? (I suppose using subshell is safer than '{') and you don't
-> need to use '&'.
-
-OK
-
-> But I don't like the whole block being run in background.
->
-> Kind regards,
-> Petr
-
-I'm still not sure how else to do a time out. Also it probably speeds up
-the process a lot because many of the files block on read.
-
--- 
-Thank you,
-Richard.
+Kind regards,
+Petr
