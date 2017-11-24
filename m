@@ -1,72 +1,87 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 24 Nov 2017 09:32:50 +0100
-Subject: [LTP] [RFC PATCH] scripts: Dump /proc and /sys
-In-Reply-To: <20171123164412.vv54gc2j4bgu5xc3@dell5510>
-References: <20171107140219.5606-1-rpalethorpe@suse.com>
- <20171108134221.5ogyueuisylmmmci@x230> <87bmjt9gw3.fsf@rpws.prws.suse.cz>
- <20171123164412.vv54gc2j4bgu5xc3@dell5510>
-Message-ID: <87a7zc9ivh.fsf@rpws.prws.suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 24 Nov 2017 19:15:24 +0800
+Subject: [LTP] <Failling_on_memcg_usage_in_bytes_test.sh>
+In-Reply-To: <CAPiF6TgVWEt4u+5TmoePBb2=T91j54cFao6LUB2n+jyKT=AatQ@mail.gmail.com>
+References: <CAPiF6Th1sDgRJH2bFb3jX-cBJNVO0s4zmMSH3ezifK7Y9nQCWw@mail.gmail.com>
+ <CAEemH2c08B6QaXuqV=a3FT8V6O-yd8WPqR4=d+yME6iubF70Xw@mail.gmail.com>
+ <CAPiF6TgVWEt4u+5TmoePBb2=T91j54cFao6LUB2n+jyKT=AatQ@mail.gmail.com>
+Message-ID: <CAEemH2ccstsUJm+YgGhNy00S54Uki0qDJoKdafHGtsvKJ5CukQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hello,
+On Thu, Nov 23, 2017 at 1:38 AM, Na Nha <minhnhan0801@gmail.com> wrote:
+> Hello Li,
+>
+>
+>
+> Actually, I saw the below log:
 
-Petr Vorel writes:
-
-> Hi Richard,
->
->> > IMHO this script should be run as root, or lots of sensitive info will be lost.
->> > It's not also installed to SUT (but it's meant to be used on SUT).
->
->> Well I won't force it to be run as root, but I can document that.
-> ok.
->
->> >> +     proc_files=$(find -L /proc -maxdepth 4 -readable -not -regex '/proc/[0-9]+/.*' -not -type d 2> /dev/null)
->> > This gets files in /proc/self and /proc/thread-self. I don't think we want it.
->> > Also it gets symlinks (maybe not a problem),
->
->> > and files not readable:
->> > dd: error reading '/proc/sys/fs/binfmt_misc/register': Invalid argument
->> > dd: error reading '/proc/sysrq-trigger': Input/output error
->> > ls -l /proc/sys/fs/binfmt_misc/register /proc/sysrq-trigger
->> > --w------- 1 root root 0 lis  8 07:45 /proc/sys/fs/binfmt_misc/register
->> > --w------- 1 root root 0 lis  8 07:45 /proc/sysrq-trigger
->> > Maybe using -perm instead of -readable (find(1) says that
->
->> Says what ? :-)
-> Sorry for missing text. Says that -readable takes into account access control lists and other permissions artefacts which the -perm test ignores. But it's not relevant for us.
->
->> I have changed it to use -perm, but it doesn't make any difference. I
->> think the read bits are fairly useless in procfs and sysfs.
-> Sorry for confusing, find is really correct (I got is running with root).
-> Maybe it would be worth to not to copy empty files:
-> $ file /proc/sys/fs/binfmt_misc/register
-> /proc/sys/fs/binfmt_misc/register: empty
-> Even you don't care about it it would be avoid dumping at least /proc/self/* and
-> /proc/thread-self/* at least.
-
-I have specifically filtered those out now. The problem with proc and
-sys is that each file only has a subset of read, write, seek and stat
-(etc.) implemented for it and that these functions don't necessarily
-behave as they normally would. Stat certainly does not return the correct
-file size for the majority of files.
-
-So the only way to find out if any given file can be read from is to try
-reading it.
+That's it. I doubt you hit the same problem as this:
+  https://github.com/linux-test-project/ltp/issues/93
 
 >
->> > But I don't like the whole block being run in background.
 >
->> I'm still not sure how else to do a time out. Also it probably speeds up
->> the process a lot because many of the files block on read.
-> I don't have better solution either.
-> In coreutils there is timeout command, but I guess we don't want to depend on coreutils.
+>
+> /opt/ltp/testcases/bin/memcg_lib.sh: line 514: echo: write error:
+> Device or resource busy
+>
+> Or
+>
+> Something like:
+> # mount -t cgroup -omemory memcg /dev/memcg/
+> # mkdir -p /dev/memcg/ltp-test
+> # echo 0 >/dev/memcg/memory.use_hierarchy
+> -bash: echo: write error: Device or resource busy
+>
+>
+>
+> But so strangle, it has just appeared for the first time and it has been
+> passed not failed.
 
-I think that might work, it is already depends on dd and find.
+Can you, confirm that whether this test is still failed when
+memory.use_hierarchy is 0?
 
---
-Thank you,
-Richard.
+
+Test A:
+1, reboot your system
+2, ehco 0 >/sys/fs/cgroup/memory/memory.use_hierarchy
+3, Run the ltp testcase: memcg_usage_in_bytes_test.sh
+
+
+Test B:
+1, reboot
+2, ehco 1 >/sys/fs/cgroup/memory/memory.use_hierarchy
+3, Run the ltp testcase: memcg_usage_in_bytes_test.sh
+
+
+Which one(Test A or B?) you can get PASS on your ARM board?
+
+
+>
+> And the following times, it’s still passed. But sometime it’s failed.
+>
+> As mentioned previously, it is a dangling falling, sometimes the test result
+> is pass and sometimes is failed
+>
+>
+>
+> I have attached 2 logs file (1 failed, 1 passed log) when I run command : sh
+> –x  memcg_usage_in_bytes_test.sh for more detail log.
+>
+> Could you please review those and let me know what I should do next?
+>
+>
+>
+> Trân trọng / Best regards,
+>
+> Nhan Le Minh
+>
+
+Btw, please CC' LTP maillist when response email related to ltp thing. :)
+
+-- 
+Li Wang
+liwang@redhat.com
