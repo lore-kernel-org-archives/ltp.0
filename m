@@ -1,27 +1,67 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 27 Nov 2017 14:06:05 +0100
-Subject: [LTP] [PATCH 1/1] network/ipsec: TCONF instead of TFAIL when
- operation not supported
-In-Reply-To: <c0b4f298-bc1d-0e5f-2df9-73e96079f772@oracle.com>
-References: <20171123115027.12966-1-pvorel@suse.cz>
- <c0b4f298-bc1d-0e5f-2df9-73e96079f772@oracle.com>
-Message-ID: <20171127130605.6j3zhvxxsq353v5s@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 27 Nov 2017 17:20:00 +0100
+Subject: [LTP] [PATCH v2 02/13] thp: ensure THP/hugetlbfs is available
+In-Reply-To: <20171114155929.24237-3-punit.agrawal@arm.com>
+References: <20171114155929.24237-1-punit.agrawal@arm.com>
+ <20171114155929.24237-3-punit.agrawal@arm.com>
+Message-ID: <20171127162000.GA20047@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> diff --git a/testcases/kernel/mem/thp/thp01.c b/testcases/kernel/mem/thp/thp01.c
+> index 2f2bb2bdb..939c01b98 100644
+> --- a/testcases/kernel/mem/thp/thp01.c
+> +++ b/testcases/kernel/mem/thp/thp01.c
+> @@ -116,6 +116,9 @@ static void setup(void)
+>  	int i;
+>  	long arg_len, arg_count;
+>  
+> +	if (access(PATH_THP, F_OK) == -1)
+> +		tst_brk(TCONF, "THP not enabled in kernel?");
+> +
+>  	bst = SAFE_MMAP(NULL, sizeof(*bst),
+>  			   PROT_READ | PROT_WRITE,
+>  			   MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 
-> On 11/23/2017 02:50 PM, Petr Vorel wrote:
-> > This happens when kernel module ip_vti resp. ip6_vti is missing.
+I do not get what is the problem with this test on a machine without
+hugepages or transparent hugepages. The test just tries to execute true
+with excessively large array of command line arguments, if that fails
+without hugepages it's a kernel bug.
 
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-...
-> Right, we should handle this case.Acked.
-Pushed, thanks!
+> diff --git a/testcases/kernel/mem/thp/thp02.c b/testcases/kernel/mem/thp/thp02.c
+> index acc70e215..6502210e5 100644
+> --- a/testcases/kernel/mem/thp/thp02.c
+> +++ b/testcases/kernel/mem/thp/thp02.c
+> @@ -90,6 +90,8 @@ static void setup(void)
+>  	if (access(PATH_THP, F_OK) == -1)
+>  		tst_brk(TCONF, "THP not enabled in kernel?");
+>  
+> +	check_hugepage();
+> +
+>  	ps = sysconf(_SC_PAGESIZE);
+>  	hps = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+>  	size = hps * 4;
+> diff --git a/testcases/kernel/mem/thp/thp03.c b/testcases/kernel/mem/thp/thp03.c
+> index 19db44944..c6062505f 100644
+> --- a/testcases/kernel/mem/thp/thp03.c
+> +++ b/testcases/kernel/mem/thp/thp03.c
+> @@ -82,6 +82,8 @@ static void setup(void)
+>  	if (access(PATH_THP, F_OK) == -1)
+>  		tst_brk(TCONF, "THP not enabled in kernel?");
+>  
+> +	check_hugepage();
+> +
+>  	hugepage_size = SAFE_READ_MEMINFO("Hugepagesize:") * KB;
+>  	unaligned_size = hugepage_size * 4 - 1;
+>  	page_size = SAFE_SYSCONF(_SC_PAGESIZE);
 
+Does this two fail on an attempt to find "Hugepagesize:" in meminfo
+file? Otherwise I do not see how they can fail.
 
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
