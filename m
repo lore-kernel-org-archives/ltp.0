@@ -1,28 +1,42 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 28 Nov 2017 15:50:20 +0300
-Subject: [LTP] [PATCH 1/4] tst_safe_net: add new wrapper for
- safe_setsockopt
-In-Reply-To: <20171031141252.3rbemkjfksaqmrp5@dell5510>
-References: <1508947919-3553-1-git-send-email-alexey.kodanev@oracle.com>
- <20171031141252.3rbemkjfksaqmrp5@dell5510>
-Message-ID: <82230fc1-aec2-1256-1bd5-ed9687db2584@oracle.com>
+Date: Tue, 28 Nov 2017 16:08:23 +0300
+Subject: [LTP] [PATCH 1/6] network/sctp: use TST_NETLOAD_* parameters
+Message-ID: <1511874508-12360-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 10/31/2017 05:12 PM, Petr Vorel wrote:
-> Hi Alexey,
->
->> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
->> ---
->>  include/tst_safe_net.h |    6 ++++++
->>  1 files changed, 6 insertions(+), 0 deletions(-)
-> Whole patch-set looks good to me.
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/network/sctp/sctp01.sh |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-Applied.
-
-Thanks,
-Alexey
+diff --git a/testcases/network/sctp/sctp01.sh b/testcases/network/sctp/sctp01.sh
+index 68a872a..197c819 100755
+--- a/testcases/network/sctp/sctp01.sh
++++ b/testcases/network/sctp/sctp01.sh
+@@ -31,16 +31,17 @@ cleanup()
+ setup()
+ {
+ 	tst_require_root
++	TST_NETLOAD_MAX_SRV_REPLIES=3
+ }
+ 
+ test_run()
+ {
+ 	tst_resm TINFO "compare TCP/SCTP performance"
+ 
+-	tst_netload -H $(tst_ipaddr rhost) -a 3 -R 3 -T tcp
++	tst_netload -H $(tst_ipaddr rhost) -T tcp
+ 	local res0="$(cat tst_netload.res)"
+ 
+-	tst_netload -H $(tst_ipaddr rhost) -a 3 -R 3 -T sctp
++	tst_netload -H $(tst_ipaddr rhost) -T sctp
+ 	local res1="$(cat tst_netload.res)"
+ 
+ 	local per=$(( $res0 * 100 / $res1 - 100 ))
+-- 
+1.7.1
 
