@@ -1,63 +1,66 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 28 Nov 2017 16:08:26 +0300
-Subject: [LTP] [PATCH 4/6] tst_netload: support -S and -A netstress options
+Date: Tue, 28 Nov 2017 16:08:27 +0300
+Subject: [LTP] [PATCH 5/6] sctp: fix tests when hosts have multi-paths with
+	diff MTU
 In-Reply-To: <1511874508-12360-1-git-send-email-alexey.kodanev@oracle.com>
 References: <1511874508-12360-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1511874508-12360-4-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1511874508-12360-5-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Setup source address in sctp tests and bind to it, which
+allows to avoid sending additional host IP addresses in
+INIT/INIT ACK packets (sctp sets min MTU b/w those paths),
+and bind the traffic to one path.
+
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/lib/test_net.sh |   12 ++++++++++--
- 1 files changed, 10 insertions(+), 2 deletions(-)
+ testcases/network/sctp/sctp01.sh                |    2 +-
+ testcases/network/stress/sctp/sctp_ipsec.sh     |    2 +-
+ testcases/network/stress/sctp/sctp_ipsec_vti.sh |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index 83639e2..1e001f7 100644
---- a/testcases/lib/test_net.sh
-+++ b/testcases/lib/test_net.sh
-@@ -402,6 +402,8 @@ tst_netload()
- 	local expect_res="pass"
- 	local ret=0
- 	local type="tcp"
-+	local hostopt=
-+	local setup_srchost=0
- 	# common options for client and server
- 	local cs_opts=
+diff --git a/testcases/network/sctp/sctp01.sh b/testcases/network/sctp/sctp01.sh
+index 197c819..99dcce8 100755
+--- a/testcases/network/sctp/sctp01.sh
++++ b/testcases/network/sctp/sctp01.sh
+@@ -41,7 +41,7 @@ test_run()
+ 	tst_netload -H $(tst_ipaddr rhost) -T tcp
+ 	local res0="$(cat tst_netload.res)"
  
-@@ -414,15 +416,19 @@ tst_netload()
- 	local s_opts=
+-	tst_netload -H $(tst_ipaddr rhost) -T sctp
++	tst_netload -S $(tst_ipaddr) -H $(tst_ipaddr rhost) -T sctp
+ 	local res1="$(cat tst_netload.res)"
  
- 	OPTIND=0
--	while getopts :a:H:d:n:N:r:R:b:t:T:fFe:m: opt; do
-+	while getopts :a:H:d:n:N:r:R:S:b:t:T:fFe:m:A: opt; do
- 		case "$opt" in
- 		a) c_num="$OPTARG" ;;
--		H) c_opts="${c_opts}-H $OPTARG " ;;
-+		H) c_opts="${c_opts}-H $OPTARG "
-+		   hostopt="$OPTARG" ;;
- 		d) rfile="$OPTARG" ;;
- 		n) c_opts="${c_opts}-n $OPTARG " ;;
- 		N) c_opts="${c_opts}-N $OPTARG " ;;
- 		r) c_requests="$OPTARG" ;;
-+		A) c_opts="${c_opts}-A $OPTARG " ;;
- 		R) s_replies="$OPTARG" ;;
-+		S) c_opts="${c_opts}-S $OPTARG "
-+		   setup_srchost=1 ;;
- 		b) cs_opts="${cs_opts}-b $OPTARG " ;;
- 		t) cs_opts="${cs_opts}-t $OPTARG " ;;
- 		T) cs_opts="${cs_opts}-T $OPTARG "
-@@ -436,6 +442,8 @@ tst_netload()
+ 	local per=$(( $res0 * 100 / $res1 - 100 ))
+diff --git a/testcases/network/stress/sctp/sctp_ipsec.sh b/testcases/network/stress/sctp/sctp_ipsec.sh
+index 0b60238..677ccbf 100755
+--- a/testcases/network/stress/sctp/sctp_ipsec.sh
++++ b/testcases/network/stress/sctp/sctp_ipsec.sh
+@@ -36,7 +36,7 @@ do_test()
+ {
+ 	for p in $IPSEC_SIZE_ARRAY; do
+ 		tst_netload -H $(tst_ipaddr rhost) -T sctp -n $p -N $p \
+-			-r $IPSEC_REQUESTS
++			-r $IPSEC_REQUESTS -S $(tst_ipaddr)
  	done
- 	OPTIND=0
+ }
  
-+	[ "$setup_srchost" = 1 ] && s_opts="${s_opts}-S $hostopt "
-+
- 	local expect_ret=0
- 	[ "$expect_res" != "pass" ] && expect_ret=1
+diff --git a/testcases/network/stress/sctp/sctp_ipsec_vti.sh b/testcases/network/stress/sctp/sctp_ipsec_vti.sh
+index ddb4784..ab9ddc3 100755
+--- a/testcases/network/stress/sctp/sctp_ipsec_vti.sh
++++ b/testcases/network/stress/sctp/sctp_ipsec_vti.sh
+@@ -27,7 +27,7 @@ do_test()
+ {
+ 	for p in $IPSEC_SIZE_ARRAY; do
+ 		tst_netload -H $ip_rmt_tun -T sctp -n $p -N $p \
+-			-r $IPSEC_REQUESTS
++			-r $IPSEC_REQUESTS -S $ip_src_tun
+ 	done
+ }
  
 -- 
 1.7.1
