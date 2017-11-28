@@ -1,188 +1,193 @@
-From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Mon, 27 Nov 2017 17:34:37 +0000
-Subject: [LTP] [PATCH v2 03/13] hugeshmctl01: Convert to LTP
-	synchronisation primitives
-In-Reply-To: <20171127165244.GB20047@rei.lan> (Cyril Hrubis's message of "Mon, 
- 27 Nov 2017 17:52:44 +0100")
-References: <20171114155929.24237-1-punit.agrawal@arm.com>
- <20171114155929.24237-4-punit.agrawal@arm.com>
- <20171127165244.GB20047@rei.lan>
-Message-ID: <87374z39si.fsf@e105922-lin.cambridge.arm.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Tue, 28 Nov 2017 10:06:44 +0100
+Subject: [LTP] [PATCH v2] scripts: Dump /proc and /sys
+Message-ID: <20171128090644.27648-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+When a test fails during automated testing, the state of the system may be
+lost due to storage constraints or hardware availability. For example, if the
+system under test is virtualized, then the VM image may no longer be available
+due to storage capacity limits. Or if one is testing a bare metal system then the
+hardware may no longer be accessible for whatever reason.
 
-> Hi!
->>  static void stat_setup(void);
->>  static void stat_cleanup(void);
->>  static void set_setup(void);
->> @@ -141,19 +139,10 @@ void *set_shmat(void)
->>   */
->>  static void stat_setup(void)
->>  {
->> -	int i, rval;
->> +	int i;
->>  	void *test;
->>  	pid_t pid;
->> -	sigset_t newmask, oldmask;
->> -	struct sigaction sa;
->> -
->> -	memset (&sa, '\0', sizeof(sa));
->> -	sa.sa_handler = sighandler;
->> -	sa.sa_flags = 0;
->> -	TEST(sigaction(SIGUSR1, &sa, NULL));
->> -	if (TEST_RETURN == -1)
->> -		tst_brk(TBROK | TRERRNO,
->> -				"SIGSEGV signal setup failed");
->> +
->>  	/*
->>  	 * The first time through, let the children attach the memory.
->>  	 * The second time through, attach the memory first and let
->> @@ -168,21 +157,6 @@ static void stat_setup(void)
->>  		set_shared = set_shmat();
->>  	}
->>  
->> -	/*
->> -	 * Block SIGUSR1 before children pause for a signal
->> -	 * Doing so to avoid the risk that the parent cleans up
->> -	 * children by calling stat_cleanup() before children call
->> -	 * call pause() so that children sleep forever(this is a
->> -	 * side effect of the arbitrary usleep time below).
->> -	 * In FIRST, children call shmat. If children sleep forever,
->> -	 * those attached shm can't be released so some other shm
->> -	 * tests will fail a lot.
->> -	 */
->> -	sigemptyset(&newmask);
->> -	sigaddset(&newmask, SIGUSR1);
->> -	if (sigprocmask(SIG_BLOCK, &newmask, &oldmask) < 0)
->> -		tst_brk(TBROK | TERRNO, "block SIGUSR1 error");
->> -
->>  	for (i = 0; i < N_ATTACH; i++) {
->>  		switch (pid = SAFE_FORK()) {
->>  		case 0:
->> @@ -191,39 +165,24 @@ static void stat_setup(void)
->>  			/* do an assignement for fun */
->>  			*(int *)test = i;
->>  
->> -			/*
->> -			 * sigsuspend until we get a signal from stat_cleanup()
->> -			 * use sigsuspend instead of pause to avoid children
->> -			 * infinite sleep without getting SIGUSR1 from parent
->> -			 */
->> -			rval = sigsuspend(&oldmask);
->> -			if (rval != -1)
->> -				tst_brk(TBROK | TERRNO, "sigsuspend");
->> -
->> -			/*
->> -			 * don't have to block SIGUSR1 any more,
->> -			 * recover the mask
->> -			 */
->> -			if (sigprocmask(SIG_SETMASK, &oldmask, NULL) < 0)
->> -				tst_brk(TBROK | TERRNO,
->> -					 "child sigprocmask");
->> +			/* If last child then wake the parent */
->> +			if (i == N_ATTACH - 1)
->> +				TST_CHECKPOINT_WAKE(0);
->
-> As far as I can tell the assumption that the children are executed in
-> any order does not hold at all. So the parent should wait for _each_ of
-> them separately.
+The serial console output may be available, but lacking some information. So
+in order to retain more information (about the kernel at least), we can
+systematically copy the contents of /proc and /sys.
 
-Good catch. I see the problem with the patch in the scenario where the
-N-1 th child executes TST_CHECKPOINT_WAKE(0) before the other children
-have progressed past the write to "test".
+Not all sysfs or proc files are meant to be read or block indefinitely or are
+infinitely large etc. So the script only tries to copy ~256K from each file
+and times out after a second. Files which appear to be OK to read from are
+saved to a white list which can be used during future invocations to save some
+time.
 
-I'll fix it as per your suggestion below.
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
 
->
-> I guess that we have to suspend the parent process with
-> TST_CHECKPOINT_WAIT() after each fork() and wait till the children wakes
-> up the parent before we attempt to fork next child.
->
+V2:
+* Fixed numerous style problems
+* Instead of spawning X subshells per iteration I now only spawn $(nproc)
+  subshells and pass files to them to through named pipes. This is much faster.
+* Add some extra options
 
->> +			TST_CHECKPOINT_WAIT(1);
->>  
->>  			/* now we're back - detach the memory and exit */
->>  			if (shmdt(test) == -1)
->>  				tst_brk(TBROK | TERRNO,
->>  					 "shmdt in stat_setup()");
->> +
->> +			/* Child process quits here */
->
-> Please avoid adding obvious comments like this one. The original code is
-> not a good example and should be cleaned up.
+ scripts/proc_sys_dump.sh | 145 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 145 insertions(+)
+ create mode 100755 scripts/proc_sys_dump.sh
 
-Dropped :)
+diff --git a/scripts/proc_sys_dump.sh b/scripts/proc_sys_dump.sh
+new file mode 100755
+index 000000000..a6be95c2e
+--- /dev/null
++++ b/scripts/proc_sys_dump.sh
+@@ -0,0 +1,145 @@
++#!/bin/sh
++
++my_name=${0##*/}
++dump_dir=/tmp/dump
++dump_tar=
++white_list=/tmp/dump/white.list
++use_white_list=
++timeout=1
++proc_exclude="/proc/\(self\|thread-self\|[0-9]+\)/.*"
++page_sz=$(getconf PAGESIZE)
++nproc=$(nproc)
++
++echo "Dump /proc and /sys script, written by rpalethorpe@suse.com"
++
++while getopts d:c:w:u:t:b:h arg; do
++    case $arg in
++       d) dump_dir="$OPTARG" ;;
++       c) dump_tar="$OPTARG" ;;
++       w) white_list="$OPTARG" ;;
++       u) use_white_list="$OPTARG" ;;
++       t) timeout="$OPTARG" ;;
++       b) batch_size="$OPTARG" ;;
++       h) cat <<-EOF >&1
++
++This script partially dumps the contents of /proc and /sys to a folder. It can
++attempt to dump all the contents and then write out which files were
++successful to a white list. Or use a previously generated white list.
++
++usage:
++$my_name	[ -d dump_dir ]
++ 	 		[ -w white_list ] [ -u use_white_list ]
++ 			[ -t timeout ]
++ 			[ -b batch_size ]
++$my_name	-h
++
++-d dump_dir	  The output directory, note that this will be recreated.
++   		  Set to $dump_dir
++
++-c dump_tar	  Compress the output directory contents into a tar file
++		  specified by dump_tar.
++
++-w white_list	  The white list to output after dumping the files.
++   		  Set to $white_list
++
++-u use_white_list The list of files to dump, if this is unset then 'find' is
++   		  used to create a list.
++
++-t timeout	  How long, in seconds, we should wait for operations to finish.
++   		  Set to $timeout.
++
++-h		  Print this help message and exit.
++
++Files are added to the white list if they are small, but not empty and can be
++copied quickly. The idea is that when running the script with -w white_list
++the majority of useful information can be quickly saved during automated
++testing.
++
++It is best to run this script as root otherwise sensitive information will be
++filtered out by the kernel e.g. memory layout. Which happens to be the most
++useful information in most situations.
++
++EOF
++	  exit 0 ;;
++   esac
++done
++
++files=
++if [ ! $use_white_list ]; then
++    echo "Finding files in /proc and /sys"
++    proc_files=$(find -L /proc -maxdepth 4 -perm /u=r,g=r -not -regex "$proc_exclude" -not -type d 2> /dev/null)
++    sys_files=$(find -L /sys -maxdepth 4 -perm /u=r,g=r -not -type d 2> /dev/null)
++    files="$proc_files $sys_files"
++else
++    echo "Using file list $use_white_list"
++    files=$(cat $use_white_list)
++fi
++
++dump_dir=${dump_dir%/}
++echo "Dumping to $dump_dir"
++rm -rf $dump_dir
++mkdir $dump_dir
++
++# This is run inside background subshells with stdin redirected to a named pipe.
++spawn_dd () {
++    local f=
++
++    read -r f
++    until [ "$f" = "EXIT" ]; do
++	mkdir -p $dump_dir$(dirname $f)
++	timeout $timeout dd if=$f of=$dump_dir$f bs=$page_sz count=63 status=none
++	if [ $? -eq 124 ]; then
++	    echo "dd $f took too long"
++	    rm $dump_dir$f
++	fi
++	read -r f
++    done
++}
++
++for i in $(seq $nproc); do
++    mkfifo "$dump_dir/fifo$i"
++    ( spawn_dd ) < "$dump_dir/fifo$i" &
++done
++
++count=$nproc
++for f in $files; do
++    if [ $count -gt 0 ]; then
++	echo "$f" > "$dump_dir/fifo$count"
++	count=$((count - 1))
++    else
++	count=$nproc
++    fi
++done
++
++for i in $(seq $nproc); do
++    echo "EXIT" > "$dump_dir/fifo$i"
++done
++
++wait
++
++for i in $(seq $nproc); do
++    rm "$dump_dir/fifo$i"
++done
++
++if [ $white_list ]; then
++    echo "Finished copying files, now generating $white_list"
++    for f in $(find $dump_dir -not -type d); do
++	size=$(stat -c '%s' $f)
++
++	if [ ${size:=0} -gt 0 -a $size -lt 256000 ]; then
++	    echo "${f#$dump_dir}" >> $white_list
++	else
++	    echo "$f has invalid file size: ${size:=0}"
++	fi
++    done
++else
++    echo "Finished copying files."
++fi
++
++if [ $dump_tar ]; then
++    echo "Compressing dumped files into $dump_tar"
++    oldpwd=${pwd}
++    cd $dump_dir
++    tar -cJf $dump_tar *
++    cd $oldpwd
++fi
+-- 
+2.15.0
 
->
->>  			exit(0);
->> -		default:
->> -			/* save the child's pid for cleanup later */
->> -			pid_arr[i] = pid;
->>  		}
->>  	}
->>  
->> -	/* parent doesn't have to block SIGUSR1, recover the mask */
->> -	if (sigprocmask(SIG_SETMASK, &oldmask, NULL) < 0)
->> -		tst_brk(TBROK, "parent sigprocmask");
->> -
->> -	usleep(250000);
->> +	/* Wait for all the children to attach to shared memory */
->> +	TST_CHECKPOINT_WAIT(0);
->>  }
->>  
->>  /*
->> @@ -283,11 +242,8 @@ fail:
->>   */
->>  static void stat_cleanup(void)
->>  {
->> -	int i;
->> -
->>  	/* wake up the childern so they can detach the memory and exit */
->> -	for (i = 0; i < N_ATTACH; i++)
->> -		SAFE_KILL(pid_arr[i], SIGUSR1);
->> +	TST_CHECKPOINT_WAKE2(1, N_ATTACH);
->
-> We should still SAFE_WAIT() each of the processses here otherwise we
-> cannot guarantee that the memory was detached and that the child really
-> exitted.
-
-Makes sense. I've added a SAFE_WAITPID() after the
-TST_CHECKPOINT_WAKE2().
-
-I'll wait for you to go through the remaining patches before sending an
-update.
-
-Thanks for the review.
-
-Punit
-
->
->>  	/* remove the parent's shared memory the second time through */
->>  	if (stat_time == SECOND)
->> @@ -296,12 +252,6 @@ static void stat_cleanup(void)
->>  	stat_time++;
->>  }
->>  
->> -static void sighandler(int sig)
->> -{
->> -	if (sig != SIGUSR1)
->> -		tst_res(TFAIL, "received unexpected signal %d", sig);
->> -}
->> -
->>  /*
->>   * set_setup() - set up for the IPC_SET command with shmctl()
->>   */
->> @@ -387,4 +337,5 @@ static struct tst_test test = {
->>  	.setup = setup,
->>  	.cleanup = cleanup,
->>  	.test_all = test_hugeshmctl,
->> +	.needs_checkpoints = 1,
->>  };
->> -- 
->> 2.14.2
->> 
