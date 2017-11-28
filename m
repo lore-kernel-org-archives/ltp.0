@@ -1,112 +1,116 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 29 Nov 2017 00:21:27 +0100
-Subject: [LTP] [RFC PATCH 1/4] travis: Add build script
+Date: Wed, 29 Nov 2017 00:21:28 +0100
+Subject: [LTP] [RFC PATCH 2/4] travis: Add 32 cross-compile build + use
+	build.sh
 In-Reply-To: <20171128232130.4843-1-pvorel@suse.cz>
 References: <20171128232130.4843-1-pvorel@suse.cz>
-Message-ID: <20171128232130.4843-2-pvorel@suse.cz>
+Message-ID: <20171128232130.4843-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This script is to be used for travis build, but can be used for local
-builds as well.
-
-For usage run
-./build.sh -h
-
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- .travis.yml |  2 +-
- build.sh    | 68 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 69 insertions(+), 1 deletion(-)
- create mode 100755 build.sh
+ .travis.yml | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
 diff --git a/.travis.yml b/.travis.yml
-index d937f9dcf..f2d51f131 100644
+index f2d51f131..347cae5e8 100644
 --- a/.travis.yml
 +++ b/.travis.yml
-@@ -72,4 +72,4 @@ notifications:
+@@ -3,6 +3,7 @@ language: c
+ matrix:
+     include:
+         - os: linux
++          env: BUILD="normal"
+           compiler: gcc-4.6
+           addons:
+               apt:
+@@ -10,6 +11,7 @@ matrix:
+                   packages: ['gcc-4.6']
+ 
+         - os: linux
++          env: BUILD="normal"
+           compiler: gcc-4.7
+           addons:
+               apt:
+@@ -17,6 +19,7 @@ matrix:
+                   packages: ['gcc-4.7']
+ 
+         - os: linux
++          env: BUILD="normal"
+           compiler: gcc-4.8
+           addons:
+               apt:
+@@ -24,6 +27,7 @@ matrix:
+                   packages: ['gcc-4.8']
+ 
+         - os: linux
++          env: BUILD="normal"
+           compiler: gcc-4.9
+           addons:
+               apt:
+@@ -31,6 +35,7 @@ matrix:
+                   packages: ['gcc-4.9']
+ 
+         - os: linux
++          env: BUILD="normal"
+           compiler: gcc-5
+           addons:
+               apt:
+@@ -38,6 +43,7 @@ matrix:
+                   packages: ['gcc-5']
+ 
+         - os: linux
++          env: BUILD="normal"
+           compiler: gcc-6
+           addons:
+               apt:
+@@ -45,6 +51,7 @@ matrix:
+                   packages: ['gcc-6']
+ 
+         - os: linux
++          env: BUILD="normal"
+           compiler: clang-3.5
+           addons:
+               apt:
+@@ -52,6 +59,7 @@ matrix:
+                   packages: ['clang-3.5']
+ 
+         - os: linux
++          env: BUILD="normal"
+           compiler: clang-3.8
+           addons:
+               apt:
+@@ -59,6 +67,7 @@ matrix:
+                   packages: ['clang-3.8']
+ 
+         - os: linux
++          env: BUILD="normal"
+           compiler: clang-3.9
+           addons:
+               apt:
+@@ -68,8 +77,17 @@ matrix:
+                       - 'ubuntu-toolchain-r-test'
+                   packages: ['clang-3.9']
+ 
++        - os: linux
++          env: BUILD="32"
++          compiler: gcc-6
++          addons:
++              apt:
++                  sources: ['ubuntu-toolchain-r-test']
++                  packages: ['gcc-6', 'gcc-6-multilib', 'linux-libc-dev:i386']
++
+ notifications:
      email:
          secure: "b/xcA/K5OyQvPPnd0PRahTH5LJu8lgz8goGHvhXpHo+ZPsPgTDXNFo5cX9fSOkMuFKeoW8iGl0wOgK2+ptc8mbYDw277K4RFIHRHeV/KIoE1EzjQnEFiL8J0oHCAvDj12o0AXeriTyY9gICXKbR31Br6Zh5eKViDJe2OAGeHeDU="
  
--script: make autotools && ./configure --prefix $HOME/ltp --with-open-posix-testsuite --with-realtime-testsuite && make -j$(getconf _NPROCESSORS_ONLN) && make -j$(getconf _NPROCESSORS_ONLN) install
-+script: ./build.sh
-diff --git a/build.sh b/build.sh
-new file mode 100755
-index 000000000..3387c120d
---- /dev/null
-+++ b/build.sh
-@@ -0,0 +1,68 @@
-+#!/bin/sh
-+#
-+# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
-+#
-+# Script used for travis builds and for local test builds.
-+
-+set -e
-+
-+PREFIX="$HOME/ltp"
-+CONFIGURE_OPTS="--with-open-posix-testsuite --with-realtime-testsuite --prefix=$PREFIX"
-+
-+build_32()
-+{
-+	echo "===== 32 bit in tree build into $PREFIX ====="
-+	build CFLAGS="-m32" CXXFLAGS="-m32" LDFLAGS="-m32"
-+}
-+
-+build_native()
-+{
-+	echo "===== native in tree build into $PREFIX ====="
-+	build
-+}
-+
-+build()
-+{
-+	echo "=== autotools ==="
-+	make autotools
-+
-+	echo "=== configure ==="
-+	if ! ./configure $CONFIGURE_OPTS $@; then
-+		echo "configure failed, config log:"
-+		cat config.log
-+		exit 1
-+	fi
-+
-+	echo "=== build ==="
-+	make -j$(getconf _NPROCESSORS_ONLN)
-+
-+	echo "=== install ==="
-+	make -j$(getconf _NPROCESSORS_ONLN) install
-+}
-+
-+usage()
-+{
-+	cat << EOF
-+Usage:
-+$0 [ BUILD_TYPE ]
-+$0 -h|--help|help
-+
-+Options:
-+-h|--help|help  Print this help
-+
-+BUILD TYPES:
-+32      32 bit build
-+
-+Default build is native build.
-+EOF
-+}
-+
-+case "$1" in
-+	-h|--help|help) usage; exit 0;;
-+	32) build="build_32";;
-+	*) build="build_native";;
-+esac
-+
-+$build
-+
-+# vim: set ft=sh ts=4 sts=4 sw=4 noet:
+-script: ./build.sh
++before_install:
++script: ./build.sh $BUILD
 -- 
 2.15.0
 
