@@ -1,40 +1,112 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 29 Nov 2017 00:21:26 +0100
-Subject: [LTP] [RFC PATCH 0/4] Travis enhancements
-Message-ID: <20171128232130.4843-1-pvorel@suse.cz>
+Date: Wed, 29 Nov 2017 00:21:27 +0100
+Subject: [LTP] [RFC PATCH 1/4] travis: Add build script
+In-Reply-To: <20171128232130.4843-1-pvorel@suse.cz>
+References: <20171128232130.4843-1-pvorel@suse.cz>
+Message-ID: <20171128232130.4843-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+This script is to be used for travis build, but can be used for local
+builds as well.
 
-I've added several travis enhancements, most notably added 32bit cross-compile
-build and added more compilers (add gcc-7, clang-4.0, clang-5.0, remove clang-3.9).
-Now there is 12 builds instead of 9, speed increased from ~13 min [1] to ~26 min [2],
-which is maybe to much.  If we don't like it, we can decide which compilers to have.
+For usage run
+./build.sh -h
 
-BTW I have more plans: adding cross-compile arm build and out of tree build
-(this one needs to be fixed).
-
-[1] https://travis-ci.org/pevik-travis/ltp/builds/197584686
-[2] https://travis-ci.org/pevik-travis/ltp/builds/308683533
-
-Kind regards,
-Petr
-
-Petr Vorel (4):
-  travis: Add build script
-  travis: Add 32 cross-compile build + use build.sh
-  travis: Add gcc-7, clang-4.0, clang-5.0, remove clang-3.9
-  travis: Install all dependencies (headers and libraries)
-
- .travis.yml | 74 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++----
- build.sh    | 68 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 138 insertions(+), 4 deletions(-)
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ .travis.yml |  2 +-
+ build.sh    | 68 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 69 insertions(+), 1 deletion(-)
  create mode 100755 build.sh
 
+diff --git a/.travis.yml b/.travis.yml
+index d937f9dcf..f2d51f131 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -72,4 +72,4 @@ notifications:
+     email:
+         secure: "b/xcA/K5OyQvPPnd0PRahTH5LJu8lgz8goGHvhXpHo+ZPsPgTDXNFo5cX9fSOkMuFKeoW8iGl0wOgK2+ptc8mbYDw277K4RFIHRHeV/KIoE1EzjQnEFiL8J0oHCAvDj12o0AXeriTyY9gICXKbR31Br6Zh5eKViDJe2OAGeHeDU="
+ 
+-script: make autotools && ./configure --prefix $HOME/ltp --with-open-posix-testsuite --with-realtime-testsuite && make -j$(getconf _NPROCESSORS_ONLN) && make -j$(getconf _NPROCESSORS_ONLN) install
++script: ./build.sh
+diff --git a/build.sh b/build.sh
+new file mode 100755
+index 000000000..3387c120d
+--- /dev/null
++++ b/build.sh
+@@ -0,0 +1,68 @@
++#!/bin/sh
++#
++# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
++#
++# Script used for travis builds and for local test builds.
++
++set -e
++
++PREFIX="$HOME/ltp"
++CONFIGURE_OPTS="--with-open-posix-testsuite --with-realtime-testsuite --prefix=$PREFIX"
++
++build_32()
++{
++	echo "===== 32 bit in tree build into $PREFIX ====="
++	build CFLAGS="-m32" CXXFLAGS="-m32" LDFLAGS="-m32"
++}
++
++build_native()
++{
++	echo "===== native in tree build into $PREFIX ====="
++	build
++}
++
++build()
++{
++	echo "=== autotools ==="
++	make autotools
++
++	echo "=== configure ==="
++	if ! ./configure $CONFIGURE_OPTS $@; then
++		echo "configure failed, config log:"
++		cat config.log
++		exit 1
++	fi
++
++	echo "=== build ==="
++	make -j$(getconf _NPROCESSORS_ONLN)
++
++	echo "=== install ==="
++	make -j$(getconf _NPROCESSORS_ONLN) install
++}
++
++usage()
++{
++	cat << EOF
++Usage:
++$0 [ BUILD_TYPE ]
++$0 -h|--help|help
++
++Options:
++-h|--help|help  Print this help
++
++BUILD TYPES:
++32      32 bit build
++
++Default build is native build.
++EOF
++}
++
++case "$1" in
++	-h|--help|help) usage; exit 0;;
++	32) build="build_32";;
++	*) build="build_native";;
++esac
++
++$build
++
++# vim: set ft=sh ts=4 sts=4 sw=4 noet:
 -- 
 2.15.0
 
