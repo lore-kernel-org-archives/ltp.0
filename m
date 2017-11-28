@@ -1,9 +1,9 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 28 Nov 2017 16:08:25 +0300
-Subject: [LTP] [PATCH 3/6] netstress: support setting local source address
+Date: Tue, 28 Nov 2017 16:08:26 +0300
+Subject: [LTP] [PATCH 4/6] tst_netload: support -S and -A netstress options
 In-Reply-To: <1511874508-12360-1-git-send-email-alexey.kodanev@oracle.com>
 References: <1511874508-12360-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1511874508-12360-3-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1511874508-12360-4-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,110 +12,53 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/network/netstress/netstress.c |   41 ++++++++++++++++++++++---------
- 1 files changed, 29 insertions(+), 12 deletions(-)
+ testcases/lib/test_net.sh |   12 ++++++++++--
+ 1 files changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/network/netstress/netstress.c b/testcases/network/netstress/netstress.c
-index 5d7c657..41d5952 100644
---- a/testcases/network/netstress/netstress.c
-+++ b/testcases/network/netstress/netstress.c
-@@ -33,6 +33,7 @@
- #include <errno.h>
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index 83639e2..1e001f7 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -402,6 +402,8 @@ tst_netload()
+ 	local expect_res="pass"
+ 	local ret=0
+ 	local type="tcp"
++	local hostopt=
++	local setup_srchost=0
+ 	# common options for client and server
+ 	local cs_opts=
  
- #include "lapi/posix_clocks.h"
-+#include "tst_safe_stdio.h"
- #include "tst_safe_pthread.h"
- #include "tst_test.h"
+@@ -414,15 +416,19 @@ tst_netload()
+ 	local s_opts=
  
-@@ -108,6 +109,7 @@ static int client_max_requests	= 10;
- static int clients_num;
- static char *tcp_port		= "61000";
- static char *server_addr	= "localhost";
-+static char *source_addr;
- static int busy_poll		= -1;
- static int max_etime_cnt = 12; /* ~30 sec max timeout if no connection */
+ 	OPTIND=0
+-	while getopts :a:H:d:n:N:r:R:b:t:T:fFe:m: opt; do
++	while getopts :a:H:d:n:N:r:R:S:b:t:T:fFe:m:A: opt; do
+ 		case "$opt" in
+ 		a) c_num="$OPTARG" ;;
+-		H) c_opts="${c_opts}-H $OPTARG " ;;
++		H) c_opts="${c_opts}-H $OPTARG "
++		   hostopt="$OPTARG" ;;
+ 		d) rfile="$OPTARG" ;;
+ 		n) c_opts="${c_opts}-n $OPTARG " ;;
+ 		N) c_opts="${c_opts}-N $OPTARG " ;;
+ 		r) c_requests="$OPTARG" ;;
++		A) c_opts="${c_opts}-A $OPTARG " ;;
+ 		R) s_replies="$OPTARG" ;;
++		S) c_opts="${c_opts}-S $OPTARG "
++		   setup_srchost=1 ;;
+ 		b) cs_opts="${cs_opts}-b $OPTARG " ;;
+ 		t) cs_opts="${cs_opts}-t $OPTARG " ;;
+ 		T) cs_opts="${cs_opts}-T $OPTARG "
+@@ -436,6 +442,8 @@ tst_netload()
+ 	done
+ 	OPTIND=0
  
-@@ -278,6 +280,10 @@ static int client_connect_send(const char *msg, int size)
- 		SAFE_SENDTO(1, cfd, msg, size, MSG_FASTOPEN | MSG_NOSIGNAL,
- 			remote_addrinfo->ai_addr, remote_addrinfo->ai_addrlen);
- 	} else {
-+		if (local_addrinfo) {
-+			SAFE_BIND(cfd, local_addrinfo->ai_addr,
-+				  local_addrinfo->ai_addrlen);
-+		}
- 		/* old TCP API */
- 		SAFE_CONNECT(cfd, remote_addrinfo->ai_addr,
- 			     remote_addrinfo->ai_addrlen);
-@@ -390,6 +396,19 @@ static int parse_client_request(const char *msg)
- static struct timespec tv_client_start;
- static struct timespec tv_client_end;
- 
-+static void setup_addrinfo(const char *src_addr, const char *port,
-+			   const struct addrinfo *hints,
-+			   struct addrinfo **addr_info)
-+{
-+	int err = getaddrinfo(src_addr, port, hints, addr_info);
++	[ "$setup_srchost" = 1 ] && s_opts="${s_opts}-S $hostopt "
 +
-+	if (err)
-+		tst_brk(TBROK, "getaddrinfo failed, %s", gai_strerror(err));
-+
-+	if (!*addr_info)
-+		tst_brk(TBROK, "failed to get the address");
-+}
-+
- static void client_init(void)
- {
- 	if (clients_num >= MAX_THREADS) {
-@@ -406,11 +425,9 @@ static void client_init(void)
- 	hints.ai_flags = 0;
- 	hints.ai_protocol = 0;
+ 	local expect_ret=0
+ 	[ "$expect_res" != "pass" ] && expect_ret=1
  
--	int err = getaddrinfo(server_addr, tcp_port, &hints, &remote_addrinfo);
--	if (err) {
--		tst_brk(TBROK, "getaddrinfo of '%s' failed, %s",
--			server_addr, gai_strerror(err));
--	}
-+	if (source_addr)
-+		setup_addrinfo(source_addr, NULL, &hints, &local_addrinfo);
-+	setup_addrinfo(server_addr, tcp_port, &hints, &remote_addrinfo);
- 
- 	tst_res(TINFO, "Running the test over IPv%s",
- 		(remote_addrinfo->ai_family == AF_INET6) ? "6" : "4");
-@@ -570,6 +587,7 @@ static pthread_t server_thread_add(intptr_t client_fd)
- 
- static void server_init(void)
- {
-+	char *src_addr = NULL;
- 	struct addrinfo hints;
- 
- 	memset(&hints, 0, sizeof(struct addrinfo));
-@@ -577,13 +595,11 @@ static void server_init(void)
- 	hints.ai_socktype = sock_type;
- 	hints.ai_flags = AI_PASSIVE;
- 
--	int err = getaddrinfo(NULL, tcp_port, &hints, &local_addrinfo);
--
--	if (err)
--		tst_brk(TBROK, "getaddrinfo failed, %s", gai_strerror(err));
--
--	if (!local_addrinfo)
--		tst_brk(TBROK, "failed to get the address");
-+	if (source_addr && !strchr(source_addr, ':'))
-+		SAFE_ASPRINTF(&src_addr, "::ffff:%s", source_addr);
-+	setup_addrinfo(src_addr ? src_addr : source_addr, tcp_port,
-+		       &hints, &local_addrinfo);
-+	free(src_addr);
- 
- 	/* IPv6 socket is also able to access IPv4 protocol stack */
- 	sfd = SAFE_SOCKET(family, sock_type, protocol);
-@@ -842,6 +858,7 @@ static struct tst_option options[] = {
- 		"-F       TCP_FASTOPEN_CONNECT socket option and standard API"},
- 	{"t:", &targ, "-t x     Set tcp_fastopen value"},
- 
-+	{"S:", &source_addr, "-S x     Source address to bind"},
- 	{"g:", &tcp_port, "-g x     x - server port"},
- 	{"b:", &barg, "-b x     x - low latency busy poll timeout"},
- 	{"T:", &type, "-T x     tcp (default), udp, dccp, sctp\n"},
 -- 
 1.7.1
 
