@@ -1,73 +1,137 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 29 Nov 2017 00:21:30 +0100
-Subject: [LTP] [RFC PATCH 4/4] travis: Install all dependencies (headers and
-	libraries)
-In-Reply-To: <20171128232130.4843-1-pvorel@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 29 Nov 2017 16:13:27 +0800
+Subject: [LTP] [RFC PATCH 1/4] travis: Add build script
+In-Reply-To: <20171128232130.4843-2-pvorel@suse.cz>
 References: <20171128232130.4843-1-pvorel@suse.cz>
-Message-ID: <20171128232130.4843-5-pvorel@suse.cz>
+ <20171128232130.4843-2-pvorel@suse.cz>
+Message-ID: <CAEemH2evorTPAHpnYjydKcvwYha27zYSPZGKLZe+97Mni7N7vA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Before it was checked building the code without dependencies (i.e.
-warning about missing libraries => testing autotools checks) which
-we don't now, but it's better test building the code with installed
-dependencies.
+On Wed, Nov 29, 2017 at 7:21 AM, Petr Vorel <pvorel@suse.cz> wrote:
+> This script is to be used for travis build, but can be used for local
+> builds as well.
+>
+> For usage run
+> ./build.sh -h
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  .travis.yml |  2 +-
+>  build.sh    | 68 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 69 insertions(+), 1 deletion(-)
+>  create mode 100755 build.sh
+>
+> diff --git a/.travis.yml b/.travis.yml
+> index d937f9dcf..f2d51f131 100644
+> --- a/.travis.yml
+> +++ b/.travis.yml
+> @@ -72,4 +72,4 @@ notifications:
+>      email:
+>          secure: "b/xcA/K5OyQvPPnd0PRahTH5LJu8lgz8goGHvhXpHo+ZPsPgTDXNFo5cX9fSOkMuFKeoW8iGl0wOgK2+ptc8mbYDw277K4RFIHRHeV/KIoE1EzjQnEFiL8J0oHCAvDj12o0AXeriTyY9gICXKbR31Br6Zh5eKViDJe2OAGeHeDU="
+>
+> -script: make autotools && ./configure --prefix $HOME/ltp --with-open-posix-testsuite --with-realtime-testsuite && make -j$(getconf _NPROCESSORS_ONLN) && make -j$(getconf _NPROCESSORS_ONLN) install
+> +script: ./build.sh
+> diff --git a/build.sh b/build.sh
+> new file mode 100755
+> index 000000000..3387c120d
+> --- /dev/null
+> +++ b/build.sh
+> @@ -0,0 +1,68 @@
+> +#!/bin/sh
+> +#
+> +# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
+> +#
+> +# Script used for travis builds and for local test builds.
+> +
+> +set -e
+> +
+> +PREFIX="$HOME/ltp"
+> +CONFIGURE_OPTS="--with-open-posix-testsuite --with-realtime-testsuite --prefix=$PREFIX"
+> +
+> +build_32()
+> +{
+> +       echo "===== 32 bit in tree build into $PREFIX ====="
+> +       build CFLAGS="-m32" CXXFLAGS="-m32" LDFLAGS="-m32"
+> +}
+> +
+> +build_native()
+> +{
+> +       echo "===== native in tree build into $PREFIX ====="
+> +       build
+> +}
+> +
 
-The only exception is selinux support on 32bit build as as
-libsepol1-dev:i386 conflict with libsepol1-dev:amd64, thus
-libselinux1-dev:i386 cannot be installed:
-The following packages have unmet dependencies:
- libsepol1-dev : Conflicts: libsepol1-dev:i386 but 2.2-1ubuntu0.1 is to be installed
- libsepol1-dev:i386 : Conflicts: libsepol1-dev but 2.2-1ubuntu0.1 is to be installed
-E: Unable to correct problems, you have held broken packages.
+How about adding a new function for ltp build out of tree?
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- .travis.yml | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+build_out_of_tree()
+{
+       echo "===== build ltp out of tree ====="
+...
+}
 
-diff --git a/.travis.yml b/.travis.yml
-index 2c186b71c..7e4fdb2c3 100644
---- a/.travis.yml
-+++ b/.travis.yml
-@@ -108,4 +108,34 @@ notifications:
-         secure: "b/xcA/K5OyQvPPnd0PRahTH5LJu8lgz8goGHvhXpHo+ZPsPgTDXNFo5cX9fSOkMuFKeoW8iGl0wOgK2+ptc8mbYDw277K4RFIHRHeV/KIoE1EzjQnEFiL8J0oHCAvDj12o0AXeriTyY9gICXKbR31Br6Zh5eKViDJe2OAGeHeDU="
- 
- before_install:
-+    - sudo apt install -f -y
-+      libacl1-dev
-+      libacl1:amd64
-+      libacl1:i386
-+      libaio-dev
-+      libaio1:amd64
-+      libaio1:i386
-+      libcap-dev
-+      libcap2:amd64
-+      libcap2:i386
-+      libc6
-+      libc6-dev
-+      libc6-dev-i386
-+      libc6:i386
-+      libkeyutils-dev
-+      libkeyutils1:amd64
-+      libkeyutils1:i386
-+      libmm-dev
-+      libnuma-dev
-+      libnuma1:amd64
-+      libnuma1:i386
-+      libselinux1-dev:amd64
-+      libssl-dev:amd64
-+      libssl-dev:i386
-+      libsepol1-dev:amd64
-+      libssl-dev
-+      libtirpc1:amd64
-+      libtirpc1:i386
-+      linux-libc-dev
-+
- script: ./build.sh $BUILD
+> +build()
+> +{
+> +       echo "=== autotools ==="
+> +       make autotools
+> +
+> +       echo "=== configure ==="
+> +       if ! ./configure $CONFIGURE_OPTS $@; then
+> +               echo "configure failed, config log:"
+> +               cat config.log
+> +               exit 1
+> +       fi
+> +
+> +       echo "=== build ==="
+> +       make -j$(getconf _NPROCESSORS_ONLN)
+> +
+> +       echo "=== install ==="
+> +       make -j$(getconf _NPROCESSORS_ONLN) install
+> +}
+> +
+> +usage()
+> +{
+> +       cat << EOF
+> +Usage:
+> +$0 [ BUILD_TYPE ]
+> +$0 -h|--help|help
+> +
+> +Options:
+> +-h|--help|help  Print this help
+> +
+> +BUILD TYPES:
+> +32      32 bit build
+> +
+> +Default build is native build.
+> +EOF
+> +}
+> +
+> +case "$1" in
+> +       -h|--help|help) usage; exit 0;;
+
+
+            -o|--out) build="build_out_of_tree";;
+
+
+> +       32) build="build_32";;
+> +       *) build="build_native";;
+> +esac
+> +
+> +$build
+> +
+> +# vim: set ft=sh ts=4 sts=4 sw=4 noet:
+> --
+> 2.15.0
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+
+
 -- 
-2.15.0
-
+Li Wang
+liwang@redhat.com
