@@ -1,57 +1,33 @@
-From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Wed, 29 Nov 2017 16:50:30 +0000
-Subject: [LTP] [PATCH v2 09/13] syscalls/mount03: Copy setuid_test to
-	execute instead of 'TEST FILE'
-In-Reply-To: <20171129132019.GC18489@rei> (Cyril Hrubis's message of "Wed, 29
- Nov 2017 14:20:19 +0100")
-References: <20171114155929.24237-1-punit.agrawal@arm.com>
- <20171114155929.24237-10-punit.agrawal@arm.com>
- <20171129132019.GC18489@rei>
-Message-ID: <87609t112h.fsf@e105922-lin.cambridge.arm.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 29 Nov 2017 19:31:48 +0100
+Subject: [LTP] [RFC PATCH 1/4] travis: Add build script
+In-Reply-To: <20171129154227.GB15160@rei>
+References: <20171128232130.4843-1-pvorel@suse.cz>
+ <20171128232130.4843-2-pvorel@suse.cz>
+ <CAEemH2evorTPAHpnYjydKcvwYha27zYSPZGKLZe+97Mni7N7vA@mail.gmail.com>
+ <20171129082743.d5i5stufxmn25twr@dell5510>
+ <CAEemH2fG=O7vVj=xyY58gwQLkq5JUw4fa4yaUEMAyoJfWE0V_A@mail.gmail.com>
+ <20171129145249.6wfxny7sqnwchrjk@dell5510>
+ <20171129154227.GB15160@rei>
+Message-ID: <20171129183148.GA3573@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+Hi Li, Cyril,
 
-> Hi!
->> When testing the MS_NOSUID mount flag, mount03 forgets to copy
->> setuid_test into the new filesystem. Instead it writes 'TEST FILE' into
->> a new file and attempts to execute it with S_ISUID. This fails, but not
->> for the reasons ltp expects.
->
-> What is the exact error here? I guess that the file does not have
-> execute bit set and that check kicks in first?
+> > You're running configure without flags. For travis we run full build, e.g. with
+> > --with-open-posix-testsuite --with-realtime-testsuite flags.
 
-I have a feeling that we might be cross-talking on this one.
+> Can we, pretty please, have out-of-tree build without the realtime and
+> openposix testsuite for now. That way we will not break what is
+> supposedly working for now...
+Sure
 
-IIUC, the intention for the test is to try and execute the binary
-setuid_test (built from setuid_test.c). Instead, the test creates a file
-named "setuid_test" at the mount location and writes "TEST FILE" into
-it.
+If you don't mind Li, I'll propose in v2 mine version of out-of-tree function and not yours due things I've noted. But thanks a lot for your input!
 
-       snprintf(file, PATH_MAX, "%ssetuid_test", path_name);
-       SAFE_FILE_PRINTF(cleanup, file, "TEST FILE");
 
-It then tries to execute this file containing the text string which
-fails with the message -
-
-/bin/sh: 0: Can't open /tmp/mouc0EQuB/mntpoint/setuid_test
-mount03     6  TPASS  :  mount(2) passed with rwflag = 2
-
-The patch copies the file setuid_test into the mounted filesystem at
-which point we no longer get the "/bin/sh:" message.
-
->
-> Anyway we really should check the errno from the exec() is EPERM which
-> should have caught this problem.
-
-I would argue that this is another problem with the test and should be
-fixed in a separate patch on top.
-
-Let me now if that makes sense. Or have I missed something?
-
-Thanks,
-Punit
+Kind regards,
+Petr
