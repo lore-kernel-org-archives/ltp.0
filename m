@@ -1,35 +1,55 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 29 Nov 2017 13:11:25 +0300
-Subject: [LTP] [PATCH] ipsec: fix vti ipcomp test-cases
-In-Reply-To: <20171128223615.4u5tl6icpmzz6byc@dell5510>
-References: <1511881504-13160-1-git-send-email-alexey.kodanev@oracle.com>
- <20171128223615.4u5tl6icpmzz6byc@dell5510>
-Message-ID: <250f5dc3-2cb4-19ea-e2d2-4e87c63f1ec6@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 29 Nov 2017 11:29:59 +0100
+Subject: [LTP] [PATCH v2 08/13] sigwaitinfo01: catch SEGV and report
+ success for bad_address2 testcase
+In-Reply-To: <20171114155929.24237-9-punit.agrawal@arm.com>
+References: <20171114155929.24237-1-punit.agrawal@arm.com>
+ <20171114155929.24237-9-punit.agrawal@arm.com>
+Message-ID: <20171129102959.GA18489@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11/29/2017 01:36 AM, Petr Vorel wrote:
-> Hi Alexey,
->> VTI is not designed to handle ipcomp when packets sent without
->> transformation, see also: https://patchwork.ozlabs.org/patch/840445/
->> Adjust test-cases so that ipcomp header always used.
->                                           ^ Do you mean never?
+Hi!
+>  void test_bad_address2(swi_func sigwaitinfo, int signo)
+>  {
+> -	TEST(sigwaitinfo((void *)1, NULL, NULL));
+> -	REPORT_SUCCESS(-1, EFAULT);
+> +	pid_t pid;
+> +	int status;
+> +
+> +	switch (pid = FORK_OR_VFORK()) {
+> +	case -1:
+> +		tst_brkm(TBROK | TERRNO, NULL, "fork() failed");
+> +	case 0:
+> +		signal(SIGSEGV, segv_handler);
+> +		TEST(sigwaitinfo((void *)1, NULL, NULL));
+> +
+> +		_exit(0);
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	SUCCEED_OR_DIE(waitpid, "waitpid failed", pid, &status, 0);
+> +	if (WIFEXITED(status) && WEXITSTATUS(status) == 0xff)
+> +		tst_resm(TPASS, "Test passed");
 
-No, vti only works with ipcomp, esp or ah packets.
+Why don't we just check for WIFSIGNALED() and WTERMSIG() instead?
 
-Thanks,
-Alexey
+We do not have to install any handler that way...
 
+> +	else
+> +		tst_resm(TFAIL, "Unrecognised child exit code");
+>  }
+>  
+>  void test_bad_address3(swi_func sigwaitinfo, int signo)
+> -- 
+> 2.14.2
+> 
 
->
->> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> Acked-by: Petr Vorel <pvorel@suse.cz>
->
-> Thanks for taking care of it!
->
-> Kind regards,
-> Petr
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
