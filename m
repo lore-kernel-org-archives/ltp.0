@@ -1,46 +1,27 @@
-From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Fri, 01 Dec 2017 12:26:40 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 1 Dec 2017 14:23:55 +0100
 Subject: [LTP] [PATCH v2] hugetlb: fix warnings in cleanup()
-In-Reply-To: <20171201035559.11478-1-liwang@redhat.com> (Li Wang's message of
- "Fri, 1 Dec 2017 11:55:59 +0800")
+In-Reply-To: <20171201035559.11478-1-liwang@redhat.com>
 References: <20171201035559.11478-1-liwang@redhat.com>
-Message-ID: <87a7z2zla7.fsf@e105922-lin.cambridge.arm.com>
+Message-ID: <20171201132354.GA30225@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Hi!
+> +void save_nr_hugepages(void)
+> +{
+> +	check_hugepage();
+> +	orig_hugepages = get_sys_tune("nr_hugepages");
+> +}
 
-Li Wang <liwang@redhat.com> writes:
+I've changed this function to return the orig_hugepages instead of void
+so that we can use it in the testcases when needed. Since I find this a
+bit cleaner solution than having the library internal variable exported
+in header file. Pushed, thanks a lot.
 
-> Adding two functions [save|restore]_nr_hugepages() to the hugetlb
-> library, and meanwhile initialize the 'orig_hugepages' to '-1', then
-> we can make use of that to avoid those warnings on a system without
-> huge page supporting.
->
-> WARNING:
->    safe_file_ops.c:283: WARN: Failed to open FILE '/proc/sys/vm/nr_hugepages'
->    for writing at mem.c:853: ENOENT
->
-> Also, including "mem.h" in hugetlb lib to get rid of compile warnings.
->
-
-Thanks for cc'ing me on the patch. It conflicts with a couple of patches
-I have in flight. I am happy to rebase on top if this one is ready for
-merging.
-
-One of the patches in the series, moves check_hugepage() from
-hugetlb/lib/hugetlb.c into lib/mem.c[0] so that the hugepage check can
-be added to thp tests.
-
-Thanks,
-Punit
-
-
-[0] http://lists.linux.it/pipermail/ltp/2017-November/006415.html
-
-
-[...]
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
