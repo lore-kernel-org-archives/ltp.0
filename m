@@ -1,158 +1,104 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri,  1 Dec 2017 16:46:37 +0100
-Subject: [LTP] [RFC PATCH v2 1/5] travis: Add build script and use it in
-	travis
+Date: Fri,  1 Dec 2017 16:46:38 +0100
+Subject: [LTP] [RFC PATCH v2 2/5] travis: Drop old compilers, add new ones
 In-Reply-To: <20171201154641.27407-1-pvorel@suse.cz>
 References: <20171201154641.27407-1-pvorel@suse.cz>
-Message-ID: <20171201154641.27407-2-pvorel@suse.cz>
+Message-ID: <20171201154641.27407-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This script handles native build, 32-bit cross-compile build and
-out-of-tree build.
+Dropped: gcc 4.6, 4.7, 4.8 and clang 3.5, 3.8
+Added: gcc 6, 7 and clang 4.0, 5.0
 
-Script is for travis build, but can be used for local builds as well.
-
-For usage run
-./build.sh -h
++ simplify code for clang 3.9 as distro trusty is default in travis
+since August 2017, see:
+https://docs.travis-ci.com/user/reference/overview/
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- .travis.yml |   2 +-
- build.sh    | 111 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 112 insertions(+), 1 deletion(-)
- create mode 100755 build.sh
+ .travis.yml | 49 ++++++++++++++++---------------------------------
+ 1 file changed, 16 insertions(+), 33 deletions(-)
 
 diff --git a/.travis.yml b/.travis.yml
-index d937f9dcf..f2d51f131 100644
+index f2d51f131..8aea22d01 100644
 --- a/.travis.yml
 +++ b/.travis.yml
-@@ -72,4 +72,4 @@ notifications:
-     email:
-         secure: "b/xcA/K5OyQvPPnd0PRahTH5LJu8lgz8goGHvhXpHo+ZPsPgTDXNFo5cX9fSOkMuFKeoW8iGl0wOgK2+ptc8mbYDw277K4RFIHRHeV/KIoE1EzjQnEFiL8J0oHCAvDj12o0AXeriTyY9gICXKbR31Br6Zh5eKViDJe2OAGeHeDU="
+@@ -2,27 +2,6 @@ language: c
  
--script: make autotools && ./configure --prefix $HOME/ltp --with-open-posix-testsuite --with-realtime-testsuite && make -j$(getconf _NPROCESSORS_ONLN) && make -j$(getconf _NPROCESSORS_ONLN) install
-+script: ./build.sh
-diff --git a/build.sh b/build.sh
-new file mode 100755
-index 000000000..9e057f73b
---- /dev/null
-+++ b/build.sh
-@@ -0,0 +1,111 @@
-+#!/bin/sh
-+# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
-+# Script for travis builds.
-+#
-+# TODO: Implement comparison of installed files. List of installed files can
-+# be used only for local builds as Travis currently doesn't support sharing
-+# file between jobs, see
-+# https://github.com/travis-ci/travis-ci/issues/6054
+ matrix:
+     include:
+-        - os: linux
+-          compiler: gcc-4.6
+-          addons:
+-              apt:
+-                  sources: ['ubuntu-toolchain-r-test']
+-                  packages: ['gcc-4.6']
+-
+-        - os: linux
+-          compiler: gcc-4.7
+-          addons:
+-              apt:
+-                  sources: ['ubuntu-toolchain-r-test']
+-                  packages: ['gcc-4.7']
+-
+-        - os: linux
+-          compiler: gcc-4.8
+-          addons:
+-              apt:
+-                  sources: ['ubuntu-toolchain-r-test']
+-                  packages: ['gcc-4.8']
+-
+         - os: linux
+           compiler: gcc-4.9
+           addons:
+@@ -45,28 +24,32 @@ matrix:
+                   packages: ['gcc-6']
+ 
+         - os: linux
+-          compiler: clang-3.5
++          compiler: gcc-7
++          addons:
++              apt:
++                  sources: ['ubuntu-toolchain-r-test']
++                  packages: ['gcc-7']
 +
-+set -e
-+
-+PREFIX="$HOME/ltp"
-+
-+CONFIGURE_OPTS_IN_TREE="--with-open-posix-testsuite --with-realtime-testsuite --prefix=$PREFIX"
-+
-+# TODO: open posix testsuite is currently broken in out-tree-build. Enable it once it's fixed.
-+CONFIGURE_OPTS_OUT_TREE="--with-realtime-testsuite"
-+
-+MAKE_OPTS="-j$(getconf _NPROCESSORS_ONLN)"
-+
-+build_32()
-+{
-+	echo "===== 32-bit in-tree build into $PREFIX ====="
-+	build_in_tree CFLAGS="-m32" CXXFLAGS="-m32" LDFLAGS="-m32"
-+}
-+
-+build_native()
-+{
-+	echo "===== native in tree build into $PREFIX ====="
-+	build_in_tree
-+}
-+
-+build_out_tree()
-+{
-+	local tree="$PWD"
-+	local build="$tree/../ltp-build"
-+	local dest="$tree/../ltp-install"
-+	local make_opts="$MAKE_OPTS -C $build -f $tree/Makefile top_srcdir=$tree top_builddir=$build"
-+
-+	echo "===== native out-of-tree build into $dest ====="
-+	mkdir -p $build
-+
-+	echo "=== autotools ==="
-+	make autotools
-+
-+	cd $build
-+	if ! $tree/configure $CONFIGURE_OPTS; then
-+		echo "== ERROR: configure failed, config.log =="
-+		cat config.log
-+		exit 1
-+	fi
-+
-+	echo "== config.log =="
-+	cat config.log
-+
-+    make $make_opts
-+    make $make_opts DESTDIR="$dest" SKIP_IDCHECK=1 install
-+}
-+
-+build_in_tree()
-+{
-+	echo "=== autotools ==="
-+	make autotools
-+
-+	echo "=== configure ==="
-+	if ! ./configure $CONFIGURE_OPTS_IN_TREE $@; then
-+		echo "== ERROR: configure failed, config.log =="
-+		cat config.log
-+		exit 1
-+	fi
-+
-+	echo "== config.log =="
-+	cat config.log
-+
-+	echo "=== build ==="
-+	make $MAKE_OPTS
-+
-+	echo "=== install ==="
-+	make $MAKE_OPTS install
-+}
-+
-+usage()
-+{
-+	cat << EOF
-+Usage:
-+$0 [ BUILD_TYPE ]
-+$0 -h|--help|help
-+
-+Options:
-+-h|--help|help  Print this help
-+
-+BUILD TYPES:
-+32      32-bit in-tree build
-+native  native in-tree build
-+out     out-of-tree build
-+
-+Default build is native in-tree build.
-+EOF
-+}
-+
-+case "$1" in
-+	-h|--help|help) usage; exit 0;;
-+	32) build="build_32";;
-+	out) build="build_out_tree";;
-+	*) build="build_native";;
-+esac
-+
-+cd `dirname $0`
-+$build
-+
-+# vim: set ft=sh ts=4 sts=4 sw=4 noet:
++        - os: linux
++          compiler: clang-3.9
+           addons:
+               apt:
+-                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5']
+-                  packages: ['clang-3.5']
++                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-3.9']
++                  packages: ['clang-3.9']
+ 
+         - os: linux
+-          compiler: clang-3.8
++          compiler: clang-4.0
+           addons:
+               apt:
+-                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
+-                  packages: ['clang-3.8']
++                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
++                  packages: ['clang-4.0']
+ 
+         - os: linux
+-          compiler: clang-3.9
++          compiler: clang-5.0
+           addons:
+               apt:
+-                  sources:
+-                      - sourceline: "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.9 main"
+-                        key_url: "http://apt.llvm.org/llvm-snapshot.gpg.key"
+-                      - 'ubuntu-toolchain-r-test'
+-                  packages: ['clang-3.9']
++                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
++                  packages: ['clang-5.0']
+ 
+ notifications:
+     email:
 -- 
 2.15.0
 
