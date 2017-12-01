@@ -1,45 +1,29 @@
-From: Suzuki K Poulose <Suzuki.Poulose@arm.com>
-Date: Thu, 30 Nov 2017 16:41:23 +0000
-Subject: [LTP] [PATCH v2 10/13] getdtablesize01: Handle ENFILE errno
-In-Reply-To: <20171130162048.GA18365@rei>
-References: <20171114155929.24237-1-punit.agrawal@arm.com>
- <20171114155929.24237-11-punit.agrawal@arm.com> <20171130131259.GB2924@rei>
- <87k1y7zr7a.fsf@e105922-lin.cambridge.arm.com> <20171130162048.GA18365@rei>
-Message-ID: <a41c16d3-54e2-5e03-4c62-574ccd92bebb@arm.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 1 Dec 2017 11:05:05 +0800
+Subject: [LTP] [PATCH] hugetlb: fix warnings in cleanup()
+In-Reply-To: <20171130145027.GG2924@rei>
+References: <20171027085632.18245-1-liwang@redhat.com>
+ <20171130145027.GG2924@rei>
+Message-ID: <CAEemH2diKYJtxST2bsW7fKeDPshG-X-kUXB+iKW_kOCrc_Nvwg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 30/11/17 16:20, Cyril Hrubis wrote:
+On Thu, Nov 30, 2017 at 10:50 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
 > Hi!
->>>>   //Now the max files opened should be RLIMIT_NOFILE - 1 , why ? read getdtablesize man page
->>>>   
->>>> -	if (count > 0)
->>>> -		close(count);
->>>>   	if (count == (max_val_opfiles - 1))
->>>>   		tst_resm(TPASS, "%d = %d", count, (max_val_opfiles - 1));
->>>
->>> We may also check for EMFILE here.
->>
->> I don't understand what you're suggesting here.
-> 
-> When process has exhausted the maximal number of file descriptors it can
-> open we are supposted to fail with EMFILE, when that happened to the
-> whole system before we hit the per process limit we get ENFILE. So I was
-> suggesting that we may as well check that we were able to open expected
-> number of file descriptors and that the last open() failed with EMFILE.
+> The fix is OK, but we may as well do it better, if we move completly the
+> logic to the library we do not have to repeat the code in each test.
+>
+> So what about adding two functions save_nr_hugepages() and
+> restore_nr_hugepages() to the library and call these from the test setup
+> and cleanup?
 
-But isn't that we check already ? I mean, the test already gets the limit
-on number of open files for this process and tries to open one less fd.
-So I don't think we should check that error. If we get that error, something
-else is wrong in the accounting and should be treated as an error.
-
-Suzuki
+Agree! Thanks a lot.
 
 
 
-> 
-
-
+-- 
+Li Wang
+liwang@redhat.com
