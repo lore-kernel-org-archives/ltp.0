@@ -1,28 +1,46 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 1 Dec 2017 14:30:40 +0300
-Subject: [LTP] [PATCH] ipsec: fix vti ipcomp test-cases
-In-Reply-To: <20171128223615.4u5tl6icpmzz6byc@dell5510>
-References: <1511881504-13160-1-git-send-email-alexey.kodanev@oracle.com>
- <20171128223615.4u5tl6icpmzz6byc@dell5510>
-Message-ID: <47596972-30ae-0ad6-70f3-9f1a14f51c95@oracle.com>
+From: Punit Agrawal <punit.agrawal@arm.com>
+Date: Fri, 01 Dec 2017 12:26:40 +0000
+Subject: [LTP] [PATCH v2] hugetlb: fix warnings in cleanup()
+In-Reply-To: <20171201035559.11478-1-liwang@redhat.com> (Li Wang's message of
+ "Fri, 1 Dec 2017 11:55:59 +0800")
+References: <20171201035559.11478-1-liwang@redhat.com>
+Message-ID: <87a7z2zla7.fsf@e105922-lin.cambridge.arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11/29/2017 01:36 AM, Petr Vorel wrote:
-> Hi Alexey,
->> VTI is not designed to handle ipcomp when packets sent without
->> transformation, see also: https://patchwork.ozlabs.org/patch/840445/
+Hi Li,
+
+Li Wang <liwang@redhat.com> writes:
+
+> Adding two functions [save|restore]_nr_hugepages() to the hugetlb
+> library, and meanwhile initialize the 'orig_hugepages' to '-1', then
+> we can make use of that to avoid those warnings on a system without
+> huge page supporting.
+>
+> WARNING:
+>    safe_file_ops.c:283: WARN: Failed to open FILE '/proc/sys/vm/nr_hugepages'
+>    for writing at mem.c:853: ENOENT
+>
+> Also, including "mem.h" in hugetlb lib to get rid of compile warnings.
 >
 
-> Acked-by: Petr Vorel <pvorel@suse.cz>
->
-> Thanks for taking care of it!
+Thanks for cc'ing me on the patch. It conflicts with a couple of patches
+I have in flight. I am happy to rebase on top if this one is ready for
+merging.
 
-Applied.
+One of the patches in the series, moves check_hugepage() from
+hugetlb/lib/hugetlb.c into lib/mem.c[0] so that the hugepage check can
+be added to thp tests.
 
 Thanks,
-Alexey
+Punit
+
+
+[0] http://lists.linux.it/pipermail/ltp/2017-November/006415.html
+
+
+[...]
 
