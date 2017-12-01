@@ -1,56 +1,158 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri,  1 Dec 2017 16:46:36 +0100
-Subject: [LTP] [RFC PATCH v2 0/5] Travis enhancements
-Message-ID: <20171201154641.27407-1-pvorel@suse.cz>
+Date: Fri,  1 Dec 2017 16:46:37 +0100
+Subject: [LTP] [RFC PATCH v2 1/5] travis: Add build script and use it in
+	travis
+In-Reply-To: <20171201154641.27407-1-pvorel@suse.cz>
+References: <20171201154641.27407-1-pvorel@suse.cz>
+Message-ID: <20171201154641.27407-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-TL;DR
-See https://travis-ci.org/pevik-travis/ltp/builds/310089523
+This script handles native build, 32-bit cross-compile build and
+out-of-tree build.
 
-Now we have 11 jobs testing 7 compilers in 3 different ways (mostly normal
-builds, 2x 32-bit cross-compile builds, 1x out-of-tree build, 1x build with
-minimal dependencies).
+Script is for travis build, but can be used for local builds as well.
 
-It seems to be rule running only 5 containers at a time, so 11th build slowes
-building about 4 min (18 min vs. 22 min). Which build would you remove?
+For usage run
+./build.sh -h
 
-I decided to specify dependencies in file (saves some duplicity).
-These files can be used for builds on Debian/Ubuntu (as we re
-
-Changes v1->v2:
-* Dropped compilers:
-  Dropped: gcc 4.6, 4.7, 4.8 and clang 3.5, 3.8
-* Added different types of builds (32-bit cross-compile builds, out-of-tree build)
-* Better handling of header and library dependencies (minimal build and build with full support).
-* Minor changes.
-
-Notes what I learned:
-* Travis needs sudo for using apt, but it does not allow to use it in script
-  (it must be in travis.yml)
-* Don't use $INSTALL environment variable (I haven't figured how, but it
-  reported build to be failed).
-
-
-Petr Vorel (5):
-  travis: Add build script and use it in travis
-  travis: Drop old compilers, add new ones
-  travis: Add 32-bit cross-compile builds
-  travis: Add out-of-tree build
-  travis: Install all dependencies + add build with minimal dependencies
-
- .travis.packages_i386   |   9 ++++
- .travis.packages_native |  18 ++++++++
- .travis.yml             |  87 ++++++++++++++++++++++++++-----------
- build.sh                | 111 ++++++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 201 insertions(+), 24 deletions(-)
- create mode 100644 .travis.packages_i386
- create mode 100644 .travis.packages_native
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ .travis.yml |   2 +-
+ build.sh    | 111 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 112 insertions(+), 1 deletion(-)
  create mode 100755 build.sh
 
+diff --git a/.travis.yml b/.travis.yml
+index d937f9dcf..f2d51f131 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -72,4 +72,4 @@ notifications:
+     email:
+         secure: "b/xcA/K5OyQvPPnd0PRahTH5LJu8lgz8goGHvhXpHo+ZPsPgTDXNFo5cX9fSOkMuFKeoW8iGl0wOgK2+ptc8mbYDw277K4RFIHRHeV/KIoE1EzjQnEFiL8J0oHCAvDj12o0AXeriTyY9gICXKbR31Br6Zh5eKViDJe2OAGeHeDU="
+ 
+-script: make autotools && ./configure --prefix $HOME/ltp --with-open-posix-testsuite --with-realtime-testsuite && make -j$(getconf _NPROCESSORS_ONLN) && make -j$(getconf _NPROCESSORS_ONLN) install
++script: ./build.sh
+diff --git a/build.sh b/build.sh
+new file mode 100755
+index 000000000..9e057f73b
+--- /dev/null
++++ b/build.sh
+@@ -0,0 +1,111 @@
++#!/bin/sh
++# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
++# Script for travis builds.
++#
++# TODO: Implement comparison of installed files. List of installed files can
++# be used only for local builds as Travis currently doesn't support sharing
++# file between jobs, see
++# https://github.com/travis-ci/travis-ci/issues/6054
++
++set -e
++
++PREFIX="$HOME/ltp"
++
++CONFIGURE_OPTS_IN_TREE="--with-open-posix-testsuite --with-realtime-testsuite --prefix=$PREFIX"
++
++# TODO: open posix testsuite is currently broken in out-tree-build. Enable it once it's fixed.
++CONFIGURE_OPTS_OUT_TREE="--with-realtime-testsuite"
++
++MAKE_OPTS="-j$(getconf _NPROCESSORS_ONLN)"
++
++build_32()
++{
++	echo "===== 32-bit in-tree build into $PREFIX ====="
++	build_in_tree CFLAGS="-m32" CXXFLAGS="-m32" LDFLAGS="-m32"
++}
++
++build_native()
++{
++	echo "===== native in tree build into $PREFIX ====="
++	build_in_tree
++}
++
++build_out_tree()
++{
++	local tree="$PWD"
++	local build="$tree/../ltp-build"
++	local dest="$tree/../ltp-install"
++	local make_opts="$MAKE_OPTS -C $build -f $tree/Makefile top_srcdir=$tree top_builddir=$build"
++
++	echo "===== native out-of-tree build into $dest ====="
++	mkdir -p $build
++
++	echo "=== autotools ==="
++	make autotools
++
++	cd $build
++	if ! $tree/configure $CONFIGURE_OPTS; then
++		echo "== ERROR: configure failed, config.log =="
++		cat config.log
++		exit 1
++	fi
++
++	echo "== config.log =="
++	cat config.log
++
++    make $make_opts
++    make $make_opts DESTDIR="$dest" SKIP_IDCHECK=1 install
++}
++
++build_in_tree()
++{
++	echo "=== autotools ==="
++	make autotools
++
++	echo "=== configure ==="
++	if ! ./configure $CONFIGURE_OPTS_IN_TREE $@; then
++		echo "== ERROR: configure failed, config.log =="
++		cat config.log
++		exit 1
++	fi
++
++	echo "== config.log =="
++	cat config.log
++
++	echo "=== build ==="
++	make $MAKE_OPTS
++
++	echo "=== install ==="
++	make $MAKE_OPTS install
++}
++
++usage()
++{
++	cat << EOF
++Usage:
++$0 [ BUILD_TYPE ]
++$0 -h|--help|help
++
++Options:
++-h|--help|help  Print this help
++
++BUILD TYPES:
++32      32-bit in-tree build
++native  native in-tree build
++out     out-of-tree build
++
++Default build is native in-tree build.
++EOF
++}
++
++case "$1" in
++	-h|--help|help) usage; exit 0;;
++	32) build="build_32";;
++	out) build="build_out_tree";;
++	*) build="build_native";;
++esac
++
++cd `dirname $0`
++$build
++
++# vim: set ft=sh ts=4 sts=4 sw=4 noet:
 -- 
 2.15.0
 
