@@ -1,46 +1,79 @@
-From: Eric Biggers <ebiggers@google.com>
-Date: Fri, 1 Dec 2017 11:21:52 -0800
-Subject: [LTP] 3239b6f29b ("KEYS: return full count in keyring_read() if
- buffer is too small"): ltp.keyctl06.fail
-In-Reply-To: <20171201024012.wsq3xnsbbdqwxwp2@wfg-t540p.sh.intel.com>
-References: <20171201024012.wsq3xnsbbdqwxwp2@wfg-t540p.sh.intel.com>
-Message-ID: <20171201192152.GD142348@google.com>
+From: Na Nha <minhnhan0801@gmail.com>
+Date: Sat, 2 Dec 2017 17:45:45 +0700
+Subject: [LTP] [PROBLEM_WITH_CPUACCT.SH_100_100_LTP_TESTSUITE]
+In-Reply-To: <20171122143156.GE2389@rei.lan>
+References: <CAPiF6ThOKV6egQ8nhxKoiUba1S8UzLP3h0LOB+HO8T9vc0vemg@mail.gmail.com>
+ <20171122143156.GE2389@rei.lan>
+Message-ID: <CAPiF6TiT_Sob2A=JXYNUUbOmqk3aGVqKj0MQF-kJE+z0MfsHoA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-On Fri, Dec 01, 2017 at 10:40:12AM +0800, Fengguang Wu wrote:
-> Hi Eric,
-> 
-> We noticed LTP keyctl06 test regression in
-> 
-> commit: 3239b6f29bdfb4b0a2ba59df995fc9e6f4df7f1f ("KEYS: return full count in keyring_read() if buffer is too small")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> on test machine: 48 threads Intel(R) Xeon(R) CPU E5-2697 v2 @ 2.70GHz with 64G memory
-> with following parameters:
-> 
-> 	disk: 1HDD
-> 	fs: ext4
-> 	test: syscalls_part2
-> 
-> test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
-> test-url: http://linux-test-project.github.io/
-> 
-> To reproduce:
-> 
->          git clone https://github.com/intel/lkp-tests.git
->          cd lkp-tests
->          bin/lkp install job.yaml  # job file is attached in this email
->          bin/lkp run     job.yaml
-> 
-> testcase/path_params/tbox_group/run: ltp/1HDD-ext4-syscalls_part2/ivb44
-> 
+Hi!
 
-Did this include LTP commit f21703fe45d3 ("syscalls/keyctl06: update to test for
-follow-on fix")?  It would be really helpful if these reports would include the
-LTP commit that was used.
 
-Eric
+Many thanks for your reply.
+
+Could you explain further to me that why it’s not kind of CPU overload?
+
+Actually, I had given it 2 tries for 2 cases: fresh cpuacct.sh
+(non-modified) and cpuacct.sh with delay function.
+
+Besides I had calculated the percentage of CPU usage from /proc/stat
+from this project https://github.com/pcolby/scripts along with.
+
+So what I have observed that the first case (without delay) always
+consumes 100% CPU usage and my ARM board was restarted immediately
+then.
+
+On the other hand, after adding delay function into cpuacct.sh, it was
+only 50% and nothing wrong happened.
+
+
+So I think it’s truly kind of CPU overload.
+
+
+Trân trọng / Best regards,
+
+Nhan Le Minh
+
+2017-11-22 21:31 GMT+07:00 Cyril Hrubis <chrubis@suse.cz>:
+> Hi!
+>> I had run the test case ???./cpuacct.sh 100 100??? on my ARM board.
+>>
+>> Afterward,  I have gotten a problem as bellow:
+>>
+>>
+>>
+>> *1 TINFO: Creating 100 subgroups each with 100 processes*
+>>
+>> *[69402.212655] imx2_wdt_interrupt: pretimer*
+>>
+>> *[69402.212777] The following is the list of last 50 interrupts for each
+>> CPU*
+>>
+>> *[69402.212868] [69402.145532]: irqnumber 1023 cpuid 0*
+>>
+>> *[69402.212960] [69402.145727]: irqnumber 99 cpuid 0*
+>>
+>>
+>>
+>> And my ARM board restarted immediately.
+>
+> If that happens the odds are that you hardware/kernel is buggy.
+>
+>> I think the test case had made my board run out of CPU power(CPU
+>> overloading ), so the watchdog timer has identified this problem and
+>> restarted the board.
+>
+> There is no such thing CPU overload as far as I can tell. For small
+> system it may be the case that you are running out of memory but if
+> adding sleep to the loop fixes the problem that shouldn't be the case.
+>
+> So all in all this looks like buggy kernel to me.
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
