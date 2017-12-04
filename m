@@ -1,193 +1,96 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 4 Dec 2017 11:52:36 -0500 (EST)
-Subject: [LTP] [PATCH v2 4/4] lib: mkfs: use 'mke2fs' for formatting
- extN filesystems
-In-Reply-To: <20171114021118.103786-5-sspatil@google.com>
-References: <20171114021118.103786-1-sspatil@google.com>
- <20171114021118.103786-5-sspatil@google.com>
-Message-ID: <455367801.51525915.1512406356197.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 4 Dec 2017 18:15:11 +0100
+Subject: [LTP] [RFC PATCH v3 1/5] travis: Add build script and use it in
+ travis
+In-Reply-To: <20171204122553.15338-2-pvorel@suse.cz>
+References: <20171204122553.15338-1-pvorel@suse.cz>
+ <20171204122553.15338-2-pvorel@suse.cz>
+Message-ID: <20171204171510.GE21055@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Cyril,
+Hi!
+Hi!
+> +	cd $build
+> +	if ! $tree/configure $CONFIGURE_OPTS; then
+> +		echo "== ERROR: configure failed, config.log =="
+> +		cat config.log
+> +		exit 1
+> +	fi
+> +
+> +	echo "== config.log =="
+> +	cat config.log
 
-when you get a chance, can you please also look at this one?
-It's the last unpushed patch from Sandeep's series, that
-touches newly added all_filesystems.
+I find this output to be a bit too verbose, frankly I do not remeber
+checking it content of the config.log ever.
 
-Regards,
-Jan
+> +    make $make_opts
+> +    make $make_opts DESTDIR="$PREFIX" SKIP_IDCHECK=1 install
+   ^
+   Here you use spaces instead of tabs.
 
------ Original Message -----
-Android does not have mkfs.extN symlinks and only extN filesystems
-images can be created on the device. So, make sure we use 'mke2fs -t
-<fs_type>' when being built for Android and filter out any non-ext
-filesystem type requests from tst_mkfs_() when built for Android.
+> +}
+> +
+> +build_in_tree()
+> +{
+> +	echo "=== autotools ==="
+> +	make autotools
+> +
+> +	echo "=== configure ==="
+> +	if ! ./configure $CONFIGURE_OPTS_IN_TREE $@; then
+> +		echo "== ERROR: configure failed, config.log =="
+> +		cat config.log
+> +		exit 1
+> +	fi
+> +
+> +	echo "== config.log =="
+> +	cat config.log
 
-In order to do this, we add a new "tst_get_mkfs()" api in the library
-that checks if the given filesystem is supported and automatically
-fills in the formatting tool's name in the buffer if it exists.
+Here as well.
 
-syscalls/mmap16, syscalls/rename11 are the tests the tests currently
-known to start working after this change on Android systems
+> +	echo "=== build ==="
+> +	make $MAKE_OPTS
+> +
+> +	echo "=== install ==="
+> +	make $MAKE_OPTS install
+> +}
+> +
+> +usage()
+> +{
+> +	cat << EOF
+> +Usage:
+> +$0 [ BUILD_TYPE ]
+> +$0 -h|--help|help
+> +
+> +Options:
+> +-h|--help|help  Print this help
+> +
+> +BUILD TYPES:
+> +32      32-bit in-tree build
+> +native  native in-tree build
+> +out     out-of-tree build
+> +
+> +Default build is native in-tree build.
+> +EOF
+> +}
+> +
+> +case "$1" in
+> +	-h|--help|help) usage; exit 0;;
+> +	32) build="build_32";;
+> +	out) build="build_out_tree";;
+> +	*) build="build_native";;
+> +esac
+> +
+> +cd `dirname $0`
+> +$build
+> +
+> +# vim: set ft=sh ts=4 sts=4 sw=4 noet:
 
-Signed-off-by: Sandeep Patil <sspatil@google.com>
----
+I prefer not to clobber source code with this kind of editor hints.
 
-v1->v2
--------
-- Add the new tst_get_mkfs() API and use it in tst_mkfs_()
-- Limit the __ANDROID__ ifdef to tst_supported_fs_types only
-- Always use mke2fs for extN filesystem formatting instead of mkfs.extN
-  (This allows all the tests that do filesystem formatting to run on Android
-   systems)
-
- include/tst_fs.h             | 13 +++++++++++++
- lib/tst_mkfs.c               | 17 +++++++++++++++--
- lib/tst_supported_fs_types.c | 38 ++++++++++++++++++++++++++++++++------
- 3 files changed, 60 insertions(+), 8 deletions(-)
-
-diff --git a/include/tst_fs.h b/include/tst_fs.h
-index 0ad535c2b..ad6979a58 100644
---- a/include/tst_fs.h
-+++ b/include/tst_fs.h
-@@ -151,6 +151,19 @@ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
-  */
- const char **tst_get_supported_fs_types(void);
- 
-+/*
-+ * Returns 1 if given filesystem is supported, 0 otherwise.
-+ */
-+int tst_is_supported_fs_type(const char *fs_type);
-+
-+/*
-+ * Test for the existence of filesystem formatting tool (mkfs.<fs_type>)
-+ * and return the name if found.
-+ *
-+ * Returns 0 on Success, 1 if the buffer was too small or the tool wasn't found.
-+ */
-+int tst_get_mkfs(const char *fs_type, char *buf, size_t buf_len);
-+
- /*
-  * Creates and writes to files on given path until write fails with ENOSPC
-  */
-diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
-index 7385a939f..99ab2cac7 100644
---- a/lib/tst_mkfs.c
-+++ b/lib/tst_mkfs.c
-@@ -15,6 +15,8 @@
-  * along with this program. If not, see <http://www.gnu.org/licenses/>.
-  */
- 
-+#include <limits.h>
-+
- #include "test.h"
- #include "ltp_priv.h"
- #include "tst_mkfs.h"
-@@ -27,7 +29,7 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
- 	       const char *const fs_opts[], const char *extra_opt)
- {
- 	int i, pos = 1, ret;
--	char mkfs[64];
-+	char mkfs[NAME_MAX];
- 	const char *argv[OPTS_MAX] = {mkfs};
- 	char fs_opts_str[1024] = "";
- 
-@@ -43,7 +45,18 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
- 		return;
- 	}
- 
--	snprintf(mkfs, sizeof(mkfs), "mkfs.%s", fs_type);
-+	if (tst_get_mkfs(fs_type, mkfs, NAME_MAX))
-+		tst_brkm(TCONF, cleanup_fn,
-+			 "mkfs.%s not found for %s", fs_type, fs_type);
-+
-+	if (!strcmp(mkfs, "mke2fs")) {
-+		/* insert '-t <fs_type> in arguments here */
-+		argv[pos++] = "-t";
-+		strcat(fs_opts_str, "-t ");
-+		argv[pos++] = fs_type;
-+		strcat(fs_opts_str, fs_type);
-+		strcat(fs_opts_str, " ");
-+	}
- 
- 	if (fs_opts) {
- 		for (i = 0; fs_opts[i]; i++) {
-diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
-index a23b1ed52..a62dda0da 100644
---- a/lib/tst_supported_fs_types.c
-+++ b/lib/tst_supported_fs_types.c
-@@ -29,31 +29,43 @@ static const char *const fs_type_whitelist[] = {
- 	"ext2",
- 	"ext3",
- 	"ext4",
-+#ifndef __ANDROID__
- 	"xfs",
- 	"btrfs",
- 	"vfat",
- 	"exfat",
- 	"ntfs",
-+#endif
- 	NULL
- };
- 
- static const char *fs_types[ARRAY_SIZE(fs_type_whitelist)];
- 
-+static void to_mkfs(char *buf, const char *fs_type)
-+{
-+	/* Use mke2fs instead of the mkfs.extN symlinks
-+	 * so the same code works for Android systems
-+	 */
-+	if (!strncmp(fs_type, "ext", 3))
-+		strcpy(buf, "mke2fs");
-+	else
-+		sprintf(buf, "mkfs.%s >/dev/null 2>&1", fs_type);
-+}
-+
- static int has_mkfs(const char *fs_type)
- {
--	char buf[128];
-+	char buf[NAME_MAX];
- 	int ret;
- 
--	sprintf(buf, "mkfs.%s >/dev/null 2>&1", fs_type);
--
-+	to_mkfs(buf, fs_type);
- 	ret = tst_system(buf);
--
- 	if (WEXITSTATUS(ret) == 127) {
--		tst_res(TINFO, "mkfs.%s does not exist", fs_type);
-+		tst_res(TINFO, "%s for formatting %s does not exist",
-+			buf, fs_type);
- 		return 0;
- 	}
- 
--	tst_res(TINFO, "mkfs.%s does exist", fs_type);
-+	tst_res(TINFO, "%s for formatting %s does exist", buf, fs_type);
- 	return 1;
- }
- 
-@@ -116,3 +128,17 @@ const char **tst_get_supported_fs_types(void)
- 
- 	return fs_types;
- }
-+
-+int tst_get_mkfs(const char *fs_type, char *buf, size_t buf_len)
-+{
-+	tst_res(TINFO, "Checking for mkfs - %s", fs_type);
-+	if (!is_supported(fs_type))
-+		return 1;
-+
-+	/* make sure we have big enough buffer */
-+	if (buf_len <= strlen(fs_type) + 5)
-+		return 1;
-+
-+	to_mkfs(buf, fs_type);
-+	return 0;
-+}
 -- 
-2.15.0.448.gf294e3d99a-goog
-
+Cyril Hrubis
+chrubis@suse.cz
