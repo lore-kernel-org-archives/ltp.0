@@ -1,79 +1,243 @@
-From: Na Nha <minhnhan0801@gmail.com>
-Date: Sat, 2 Dec 2017 17:45:45 +0700
-Subject: [LTP] [PROBLEM_WITH_CPUACCT.SH_100_100_LTP_TESTSUITE]
-In-Reply-To: <20171122143156.GE2389@rei.lan>
-References: <CAPiF6ThOKV6egQ8nhxKoiUba1S8UzLP3h0LOB+HO8T9vc0vemg@mail.gmail.com>
- <20171122143156.GE2389@rei.lan>
-Message-ID: <CAPiF6TiT_Sob2A=JXYNUUbOmqk3aGVqKj0MQF-kJE+z0MfsHoA@mail.gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Mon, 4 Dec 2017 13:35:34 +0800
+Subject: [LTP] [PATCH v2] commands/unshare: Add new testcase to test
+	unshare(1)
+In-Reply-To: <20171130142056.GF2924@rei>
+References: <20171130142056.GF2924@rei>
+Message-ID: <1512365734-17726-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+Test unshare(1) command with some basic options.
+
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ runtest/commands                        |   1 +
+ testcases/commands/unshare/Makefile     |  22 ++++
+ testcases/commands/unshare/unshare01.sh | 171 ++++++++++++++++++++++++++++++++
+ 3 files changed, 194 insertions(+)
+ create mode 100644 testcases/commands/unshare/Makefile
+ create mode 100755 testcases/commands/unshare/unshare01.sh
+
+diff --git a/runtest/commands b/runtest/commands
+index 00ae0d2..92df3af 100644
+--- a/runtest/commands
++++ b/runtest/commands
+@@ -43,3 +43,4 @@ insmod01 insmod01.sh
+ wc01 wc01.sh
+ keyctl01 keyctl01.sh
+ gdb01 gdb01.sh
++unshare01 unshare01.sh
+diff --git a/testcases/commands/unshare/Makefile b/testcases/commands/unshare/Makefile
+new file mode 100644
+index 0000000..a175291
+--- /dev/null
++++ b/testcases/commands/unshare/Makefile
+@@ -0,0 +1,22 @@
++#
++# Copyright (c) 2017 FUJITSU LIMITED. All rights reserved.
++# Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++#
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++
++top_srcdir		?= ../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++INSTALL_TARGETS		:= unshare01.sh
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/commands/unshare/unshare01.sh b/testcases/commands/unshare/unshare01.sh
+new file mode 100755
+index 0000000..71b50ba
+--- /dev/null
++++ b/testcases/commands/unshare/unshare01.sh
+@@ -0,0 +1,171 @@
++#!/bin/sh
++#
++# Copyright (c) 2017 FUJITSU LIMITED. All rights reserved.
++# Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++#
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++# the GNU General Public License for more details.
++#
++# Test unshare command with some basic options.
++# 1) If we run unshare with "--user", UID in the newly created user namespace
++#    is set to 65534.
++# 2) If we run unshare with "--user", GID in the newly created user namespace
++#    is set to 65534.
++# 3) If we run with "--user --map-root-user", UID in the newly created user
++#    namespace is set to 0.
++# 4) If we run with "--user --map-root-user", GID in the newly created user
++#    is set to 0.
++# 5) If we run with "--mount", mount and unmount events do not propagate to
++#    its parent mount namespace.
++# 6) If we run with "--mount --propagation shared", mount and unmount events
++#    propagate to its parent mount namespace.
++# 7) If we run with "--user --map-root-user --mount", mount and unmount events
++#    do not propagate to its parent mount namespace.
++# 8) Even if we run with "--user --map-root-user --mount --propagation shared",
++#    mount and unmount events do not propagate to its parent mount namespace
++#    because the shared mount is reduced to a slave mount.
++#
++#    Please see the following URL for detailed information:
++#    http://man7.org/linux/man-pages/man7/user_namespaces.7.html
++#    http://man7.org/linux/man-pages/man7/mount_namespaces.7.html
++#
++
++TST_CNT=8
++TST_SETUP=setup
++TST_CLEANUP=cleanup
++TST_TESTFUNC=do_test
++TST_NEEDS_ROOT=1
++TST_NEEDS_TMPDIR=1
++TST_NEEDS_CMDS="unshare id mount umount"
++. tst_test.sh
++
++max_userns_path="/proc/sys/user/max_user_namespaces"
++max_mntns_path="/proc/sys/user/max_mnt_namespaces"
++default_max_userns=-1
++default_max_mntns=-1
++
++setup()
++{
++	# On some distributions(e.g RHEL7.4), the default value of
++	# max_user_namespaces or max_mnt_namespaces is set to 0.
++	# We need to change the default value to run unshare command.
++	if [ -f "${max_userns_path}" ]; then
++		default_max_userns=$(cat "${max_userns_path}")
++		echo 1024 > "${max_userns_path}"
++	fi
++
++	if [ -f "${max_mntns_path}" ]; then
++		default_max_mntns=$(cat "${max_mntns_path}")
++		echo 1024 > "${max_mntns_path}"
++	fi
++
++	mkdir -p dir_A dir_B
++	touch dir_A/A dir_B/B
++}
++
++cleanup()
++{
++	# Restore the default value to 0.
++	[ ${default_max_userns} -ne -1 ] && \
++		echo ${default_max_userns} > "${max_userns_path}"
++	[ ${default_max_mntns} -ne -1 ] && \
++		echo ${default_max_mntns} > "${max_mntns_path}"
++}
++
++check_id()
++{
++	local act_id=$1
++	local exp_id=$2
++	local cmd=$3
++
++	if [ ${act_id} -ne ${exp_id} ]; then
++		tst_res TFAIL "$cmd got wrong uid/gid"
++	else
++		tst_res TPASS "$cmd got correct uid/gid"
++	fi
++}
++
++check_mount()
++{
++	local tst_dir=$1
++	local exp_stat=$2
++	local cmd=$3
++
++	case ${exp_stat} in
++	unmounted)
++		if ls "${tst_dir}" | grep -qw 'A'; then
++			tst_res TFAIL "$cmd got bind info"
++			umount ${tst_dir}
++			return
++		fi
++		;;
++	mounted)
++		if ! ls "${tst_dir}" | grep -qw 'A'; then
++			tst_res TFAIL "$cmd did not get bind info"
++			return
++		fi
++		umount ${tst_dir}
++		;;
++	esac
++
++	tst_res TPASS "$cmd got bind info as expected"
++}
++
++unshare_test()
++{
++	local unshare_opts=$1
++	local verify_cmd=$2
++	local exp_result=$3
++
++	local unshare_cmd="unshare ${unshare_opts} ${verify_cmd}"
++
++	eval ${unshare_cmd} > temp 2>&1
++	if [ $? -ne 0 ]; then
++		# unrecognized option or invalid option is returned if the
++		# option is not supported by unshare command(e.g. RHEL6).
++		# Invalid argument or Operation not permitted is returned
++		# if the feature is not supported by kernel(e.g. RHEL7).
++		grep -q -E "unrecognized option|invalid option|Invalid argument|Operation not permitted" temp
++		if [ $? -eq 0 ]; then
++			tst_res TCONF "${unshare_cmd} not supported."
++		else
++			tst_res TFAIL "${unshare_cmd} failed."
++		fi
++		return
++	fi
++
++	case ${verify_cmd} in
++	id*)
++		check_id "$(cat temp)" "${exp_result}" "${unshare_cmd}"
++		;;
++	mount*)
++		check_mount "dir_B" "${exp_result}" "${unshare_cmd}"
++		;;
++	esac
++}
++
++do_test()
++{
++	case $1 in
++	1) unshare_test "--user" "id -u" "65534";;
++	2) unshare_test "--user" "id -g" "65534";;
++	3) unshare_test "--user --map-root-user" "id -u" "0";;
++	4) unshare_test "--user --map-root-user" "id -g" "0";;
++	5) unshare_test "--mount" "mount --bind dir_A dir_B" "unmounted";;
++	6) unshare_test "--mount --propagation shared" \
++			"mount --bind dir_A dir_B" "mounted";;
++	7) unshare_test "--user --map-root-user --mount" \
++			"mount --bind dir_A dir_B" "unmounted";;
++	8) unshare_test "--user --map-root-user --mount --propagation shared" \
++			"mount --bind dir_A dir_B" "unmounted";;
++	esac
++}
++
++tst_run
+-- 
+1.8.3.1
 
 
-Many thanks for your reply.
 
-Could you explain further to me that why it’s not kind of CPU overload?
-
-Actually, I had given it 2 tries for 2 cases: fresh cpuacct.sh
-(non-modified) and cpuacct.sh with delay function.
-
-Besides I had calculated the percentage of CPU usage from /proc/stat
-from this project https://github.com/pcolby/scripts along with.
-
-So what I have observed that the first case (without delay) always
-consumes 100% CPU usage and my ARM board was restarted immediately
-then.
-
-On the other hand, after adding delay function into cpuacct.sh, it was
-only 50% and nothing wrong happened.
-
-
-So I think it’s truly kind of CPU overload.
-
-
-Trân trọng / Best regards,
-
-Nhan Le Minh
-
-2017-11-22 21:31 GMT+07:00 Cyril Hrubis <chrubis@suse.cz>:
-> Hi!
->> I had run the test case ???./cpuacct.sh 100 100??? on my ARM board.
->>
->> Afterward,  I have gotten a problem as bellow:
->>
->>
->>
->> *1 TINFO: Creating 100 subgroups each with 100 processes*
->>
->> *[69402.212655] imx2_wdt_interrupt: pretimer*
->>
->> *[69402.212777] The following is the list of last 50 interrupts for each
->> CPU*
->>
->> *[69402.212868] [69402.145532]: irqnumber 1023 cpuid 0*
->>
->> *[69402.212960] [69402.145727]: irqnumber 99 cpuid 0*
->>
->>
->>
->> And my ARM board restarted immediately.
->
-> If that happens the odds are that you hardware/kernel is buggy.
->
->> I think the test case had made my board run out of CPU power(CPU
->> overloading ), so the watchdog timer has identified this problem and
->> restarted the board.
->
-> There is no such thing CPU overload as far as I can tell. For small
-> system it may be the case that you are running out of memory but if
-> adding sleep to the loop fixes the problem that shouldn't be the case.
->
-> So all in all this looks like buggy kernel to me.
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
