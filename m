@@ -1,104 +1,108 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon,  4 Dec 2017 13:25:50 +0100
-Subject: [LTP] [RFC PATCH v3 2/5] travis: Drop old compilers, add new ones
+Date: Mon,  4 Dec 2017 13:25:51 +0100
+Subject: [LTP] [RFC PATCH v3 3/5] travis: Add 32-bit cross-compile builds
 In-Reply-To: <20171204122553.15338-1-pvorel@suse.cz>
 References: <20171204122553.15338-1-pvorel@suse.cz>
-Message-ID: <20171204122553.15338-3-pvorel@suse.cz>
+Message-ID: <20171204122553.15338-4-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Dropped: gcc 4.6, 4.7, 4.8 and clang 3.5, 3.8
-Added: gcc 6, 7 and clang 4.0, 5.0
-
-+ simplify code for clang 3.9 as distro trusty is default in travis
-since August 2017, see:
-https://docs.travis-ci.com/user/reference/overview/
+Choosen gcc 4.9 and 6 (to use old and some quite new version).
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- .travis.yml | 49 ++++++++++++++++---------------------------------
- 1 file changed, 16 insertions(+), 33 deletions(-)
+ .travis.yml | 26 +++++++++++++++++++++++++-
+ 1 file changed, 25 insertions(+), 1 deletion(-)
 
 diff --git a/.travis.yml b/.travis.yml
-index f2d51f131..8aea22d01 100644
+index 8aea22d01..3ca37e47a 100644
 --- a/.travis.yml
 +++ b/.travis.yml
-@@ -2,27 +2,6 @@ language: c
- 
+@@ -3,6 +3,7 @@ language: c
  matrix:
      include:
--        - os: linux
--          compiler: gcc-4.6
--          addons:
--              apt:
--                  sources: ['ubuntu-toolchain-r-test']
--                  packages: ['gcc-4.6']
--
--        - os: linux
--          compiler: gcc-4.7
--          addons:
--              apt:
--                  sources: ['ubuntu-toolchain-r-test']
--                  packages: ['gcc-4.7']
--
--        - os: linux
--          compiler: gcc-4.8
--          addons:
--              apt:
--                  sources: ['ubuntu-toolchain-r-test']
--                  packages: ['gcc-4.8']
--
          - os: linux
++          env: BUILD="native"
            compiler: gcc-4.9
            addons:
-@@ -45,28 +24,32 @@ matrix:
+               apt:
+@@ -10,6 +11,7 @@ matrix:
+                   packages: ['gcc-4.9']
+ 
+         - os: linux
++          env: BUILD="native"
+           compiler: gcc-5
+           addons:
+               apt:
+@@ -17,6 +19,7 @@ matrix:
+                   packages: ['gcc-5']
+ 
+         - os: linux
++          env: BUILD="native"
+           compiler: gcc-6
+           addons:
+               apt:
+@@ -24,6 +27,7 @@ matrix:
                    packages: ['gcc-6']
  
          - os: linux
--          compiler: clang-3.5
-+          compiler: gcc-7
++          env: BUILD="native"
+           compiler: gcc-7
+           addons:
+               apt:
+@@ -31,6 +35,7 @@ matrix:
+                   packages: ['gcc-7']
+ 
+         - os: linux
++          env: BUILD="native"
+           compiler: clang-3.9
+           addons:
+               apt:
+@@ -38,6 +43,7 @@ matrix:
+                   packages: ['clang-3.9']
+ 
+         - os: linux
++          env: BUILD="native"
+           compiler: clang-4.0
+           addons:
+               apt:
+@@ -45,14 +51,32 @@ matrix:
+                   packages: ['clang-4.0']
+ 
+         - os: linux
++          env: BUILD="native"
+           compiler: clang-5.0
+           addons:
+               apt:
+                   sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
+                   packages: ['clang-5.0']
+ 
++        - os: linux
++          env: BUILD="32"
++          compiler: gcc-4.9
 +          addons:
 +              apt:
 +                  sources: ['ubuntu-toolchain-r-test']
-+                  packages: ['gcc-7']
++                  packages: ['gcc-4.9', 'gcc-4.9-multilib', 'linux-libc-dev:i386']
 +
 +        - os: linux
-+          compiler: clang-3.9
-           addons:
-               apt:
--                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5']
--                  packages: ['clang-3.5']
-+                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-3.9']
-+                  packages: ['clang-3.9']
- 
-         - os: linux
--          compiler: clang-3.8
-+          compiler: clang-4.0
-           addons:
-               apt:
--                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
--                  packages: ['clang-3.8']
-+                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
-+                  packages: ['clang-4.0']
- 
-         - os: linux
--          compiler: clang-3.9
-+          compiler: clang-5.0
-           addons:
-               apt:
--                  sources:
--                      - sourceline: "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.9 main"
--                        key_url: "http://apt.llvm.org/llvm-snapshot.gpg.key"
--                      - 'ubuntu-toolchain-r-test'
--                  packages: ['clang-3.9']
-+                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
-+                  packages: ['clang-5.0']
- 
++          env: BUILD="32"
++          compiler: gcc-6
++          addons:
++              apt:
++                  sources: ['ubuntu-toolchain-r-test']
++                  packages: ['gcc-6', 'gcc-6-multilib', 'linux-libc-dev:i386']
++
  notifications:
      email:
+         secure: "b/xcA/K5OyQvPPnd0PRahTH5LJu8lgz8goGHvhXpHo+ZPsPgTDXNFo5cX9fSOkMuFKeoW8iGl0wOgK2+ptc8mbYDw277K4RFIHRHeV/KIoE1EzjQnEFiL8J0oHCAvDj12o0AXeriTyY9gICXKbR31Br6Zh5eKViDJe2OAGeHeDU="
+ 
+-script: ./build.sh
++before_install:
++script: ./build.sh $BUILD
 -- 
 2.15.0
 
