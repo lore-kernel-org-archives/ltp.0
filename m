@@ -1,61 +1,39 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 4 Dec 2017 12:24:18 +0100
-Subject: [LTP] [RFC PATCH v2 1/5] travis: Add build script and use it in
- travis
-In-Reply-To: <CAEemH2e+BMzZwt+F6mAgezb1Ty=CboPuvWx2oGn2zhbkZqSz1g@mail.gmail.com>
-References: <20171201154641.27407-1-pvorel@suse.cz>
- <20171201154641.27407-2-pvorel@suse.cz>
- <CAEemH2e+BMzZwt+F6mAgezb1Ty=CboPuvWx2oGn2zhbkZqSz1g@mail.gmail.com>
-Message-ID: <20171204112418.654t7e4pg2j26r72@dell5510>
+Date: Mon,  4 Dec 2017 13:25:48 +0100
+Subject: [LTP] [RFC PATCH v3 0/5] Travis enhancements
+Message-ID: <20171204122553.15338-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Hi,
 
-> > +PREFIX="$HOME/ltp"
-> > +
-> > +CONFIGURE_OPTS_IN_TREE="--with-open-posix-testsuite --with-realtime-testsuite --prefix=$PREFIX"
+see
+https://travis-ci.org/pevik-travis/ltp/builds/311256334
 
-> Here you set --prefix to current ltp path, why not "/opt/ltp"?
-Permissions (using containers => no sudo). We could have sudo, but it would be without
-containers (=slow).
-See
-https://docs.travis-ci.com/user/reference/overview/
+Changes v2->v3:
+* Changing prefix directory to 'ltp-install'. Previous ltp failed, if
+  repository was clonned to the root of home directory.  Reported by Li Wang
+  (thanks!).
 
-> And, I get some installing errors with this configuration for build in tree.
+Petr Vorel (5):
+  travis: Add build script and use it in travis
+  travis: Drop old compilers, add new ones
+  travis: Add 32-bit cross-compile builds
+  travis: Add out-of-tree build
+  travis: Install all dependencies + add build with minimal dependencies
 
-> # ./build.sh
-> [...]
-> install: ‘/root/ltp/testcases/realtime/perf/latency/disknoise.sh’ and
-> ‘/root/ltp/testcases/realtime/perf/latency/disknoise.sh’ are the same
-> file
-> make[4]: *** [/root/ltp/testcases/realtime/perf/latency/cpunoise2000.sh] Error 1
-> make[4]: *** [/root/ltp/testcases/realtime/perf/latency/pthread_cond_latency]
-> Error 1
-> make[4]: *** [/root/ltp/testcases/realtime/perf/latency/disknoise.sh] Error 1
-> make[4]: *** [/root/ltp/testcases/realtime/perf/latency/cpunoise.sh] Error 1
-> make[4]: Leaving directory `/root/ltp/testcases/realtime/perf/latency'
-> make[3]: *** [install] Error 2
-> make[3]: Leaving directory `/root/ltp/testcases/realtime/perf'
-> make[2]: *** [install] Error 2
-> make[2]: Leaving directory `/root/ltp/testcases/realtime'
-> make[1]: *** [install] Error 2
-> make[1]: Leaving directory `/root/ltp/testcases'
-> make: *** [testcases-install] Error 2
-> make: *** Waiting for unfinished jobs....
-> [...]
-Github clones into different directory:
-git clone --depth=50 --branch=master https://github.com/linux-test-project/ltp.git linux-test-project/ltp
-OK, you're building in the same directory as the prefix is set. I'll fix it so we can use
-it for local builds as well.
-BTW: I was thinking before using /tmp, but as whole directory has ~600MB, I'll use
-different name under $HOME).
+ .travis.packages_i386   |   9 ++++
+ .travis.packages_native |  18 ++++++++
+ .travis.yml             |  87 +++++++++++++++++++++++++++-----------
+ build.sh                | 110 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 200 insertions(+), 24 deletions(-)
+ create mode 100644 .travis.packages_i386
+ create mode 100644 .travis.packages_native
+ create mode 100755 build.sh
 
-Thanks for reporting it!
+-- 
+2.15.0
 
-
-Kind regards,
-Petr
