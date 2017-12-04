@@ -1,78 +1,77 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 4 Dec 2017 17:24:28 +0100
-Subject: [LTP] [PATCH v2 4/4] lib: mkfs: use 'mke2fs' for formatting
- extN filesystems
-In-Reply-To: <20171114021118.103786-5-sspatil@google.com>
-References: <20171114021118.103786-1-sspatil@google.com>
- <20171114021118.103786-5-sspatil@google.com>
-Message-ID: <20171204162428.GB21055@rei>
+From: Punit Agrawal <punit.agrawal@arm.com>
+Date: Mon,  4 Dec 2017 16:36:43 +0000
+Subject: [LTP] [PATCH v3 00/12] Collection of fixes
+Message-ID: <20171204163655.8838-1-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> @@ -43,7 +45,18 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
->  		return;
->  	}
->  
-> -	snprintf(mkfs, sizeof(mkfs), "mkfs.%s", fs_type);
-> +	if (tst_get_mkfs(fs_type, mkfs, NAME_MAX))
-> +		tst_brkm(TCONF, cleanup_fn,
-> +			 "mkfs.%s not found for %s", fs_type, fs_type);
-> +
-> +	if (!strcmp(mkfs, "mke2fs")) {
-> +		/* insert '-t <fs_type> in arguments here */
-> +		argv[pos++] = "-t";
-> +		strcat(fs_opts_str, "-t ");
-> +		argv[pos++] = fs_type;
-> +		strcat(fs_opts_str, fs_type);
-> +		strcat(fs_opts_str, " ");
-> +	}
+Hi again,
 
-Hmm, this is kind of ugly, why do we have tst_get_mkfs() function and
-then this if that fills it's arguments.
+This is the third posting of a collection of fixes for issues
+encountered when running ltp on internal test platforms. Previous
+versions can be found at [0][1]. This update addresses all the
+feedback received on the previous version.
 
-Well what about we rather exported the tst_fs_is_supported() function
-and used it here before we even try to assemble the command to format
-the filesystem.
+Changes from v2:
 
-I would have done it as following:
+* Dropped check for THP in Patch 2 for thp01.c
+* Updated parent/child synchronisation to cover for cases missed in
+  the previous version of Patch 3
+* Improved detection of successful child exit based on feedback in
+  Patch 8
+* Patch 9 - renamed helper binary and used TST_RESOURCE_COPY() to copy
+  the helper in setup and before usage
+* Patch 10 - Changed loop to open files to be infinite. Test still
+  breaks out of the loop if there is an error opening the file.
+* Dropped Patch 12
 
-Change the is_supported() to tst_fs_is_supported() what would check for
-mke2fs as a fallback command for ext*. Then the whole logic related to
-mkfs would go into the tst_mkfs() function, including again the fallback
-to mke2fs command for ext*.
+[0] http://lists.linux.it/pipermail/ltp/2017-November/006414.html
+[1] http://lists.linux.it/pipermail/ltp/2017-October/006225.html
 
-Or we can move the ttst_supported_fs_types.c code to tst_mkfs.c (in a
-separate patch) in order to get rid of the artificial boundary between
-the two modules. That should free us to draft better code without a need
-to draft publicly exposed interface between these two modules.
+James Morse (1):
+  hotplug/cpu_hotplug: Remove bashism disown from kill_pid()
 
->  	if (fs_opts) {
->  		for (i = 0; fs_opts[i]; i++) {
-> diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
-> index a23b1ed52..a62dda0da 100644
-> --- a/lib/tst_supported_fs_types.c
-> +++ b/lib/tst_supported_fs_types.c
-> @@ -29,31 +29,43 @@ static const char *const fs_type_whitelist[] = {
->  	"ext2",
->  	"ext3",
->  	"ext4",
-> +#ifndef __ANDROID__
->  	"xfs",
->  	"btrfs",
->  	"vfat",
->  	"exfat",
->  	"ntfs",
-> +#endif
->  	NULL
->  };
+Lorenzo Pieralisi (1):
+  hugeshmget02: add missing SHM_HUGETLB flag on segment creation
 
-What is the exact reason for this ifdef? Shouldn't the code handle the
-missing support gracefully even without it?
+Punit Agrawal (5):
+  Move check_hugepage() helper to mem/lib
+  hugeshmctl01: Convert to LTP synchronisation primitives
+  hugeshmctl01: Fix warning about signed/unsigned comparison
+  sigwaitinfo01: catch SEGV and report success for bad_address2 testcase
+  syscalls/mount03: Copy setuid_test to execute instead of 'TEST FILE'
+
+Suzuki K. Poulose (3):
+  hugeshmctl02: Fix allocation size for odd number of hugepages
+  getdtablesize01: Handle ENFILE errno
+  perf_event_open: Handle absence of PMU gracefully
+
+Will Deacon (2):
+  thp: ensure hugetlbfs is available
+  sigwaitinfo01: fix race between sending and dequeueing RT signals
+
+ .../cpu_hotplug/include/cpuhotplug_testsuite.sh    |  1 -
+ .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c   | 75 ++++------------------
+ .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c   |  2 +-
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget02.c   |  3 +-
+ testcases/kernel/mem/hugetlb/lib/hugetlb.c         |  7 --
+ testcases/kernel/mem/hugetlb/lib/hugetlb.h         |  1 -
+ testcases/kernel/mem/include/mem.h                 |  2 +
+ testcases/kernel/mem/lib/mem.c                     |  6 ++
+ testcases/kernel/mem/thp/thp02.c                   |  2 +
+ testcases/kernel/mem/thp/thp03.c                   |  2 +
+ .../syscalls/getdtablesize/getdtablesize01.c       | 15 +++--
+ testcases/kernel/syscalls/mount/mount03.c          | 11 ++--
+ .../mount/{setuid_test.c => mount03_setuid_test.c} |  0
+ .../syscalls/perf_event_open/perf_event_open01.c   |  3 +-
+ .../syscalls/perf_event_open/perf_event_open02.c   |  4 +-
+ .../kernel/syscalls/sigwaitinfo/sigwaitinfo01.c    | 28 +++++++-
+ 16 files changed, 75 insertions(+), 87 deletions(-)
+ rename testcases/kernel/syscalls/mount/{setuid_test.c => mount03_setuid_test.c} (100%)
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.15.0
+
