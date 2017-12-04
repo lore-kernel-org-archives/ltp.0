@@ -1,42 +1,23 @@
-From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Mon,  4 Dec 2017 16:36:55 +0000
-Subject: [LTP] [PATCH v3 12/12] hotplug/cpu_hotplug: Remove bashism disown
-	from kill_pid()
-In-Reply-To: <20171204163655.8838-1-punit.agrawal@arm.com>
-References: <20171204163655.8838-1-punit.agrawal@arm.com>
-Message-ID: <20171204163655.8838-13-punit.agrawal@arm.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 4 Dec 2017 17:44:22 +0100
+Subject: [LTP] [RFC PATCH v2 0/5] Travis enhancements
+In-Reply-To: <20171201154641.27407-1-pvorel@suse.cz>
+References: <20171201154641.27407-1-pvorel@suse.cz>
+Message-ID: <20171204164421.GD21055@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: James Morse <james.morse@arm.com>
+Hi!
+> It seems to be rule running only 5 containers at a time, so 11th build slowes
+> building about 4 min (18 min vs. 22 min). Which build would you remove?
 
-disown is a bashism not present in dash. kill_pid() already sends the
-process SIGKILL.
+Well we do the build without any additional libs with gcc-7, we may as
+well switch it to clang-3.9 and drop the build with clang-3.9 with the
+additional libraries, that way we wouldn't lost much coverage.
 
-Remove the "disown" to allow running in shells that don't support
-disown.
-
-Signed-off-by: James Morse <james.morse@arm.com>
-Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
----
- testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_testsuite.sh | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_testsuite.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_testsuite.sh
-index 2d0166cc6..7dd0ebaae 100644
---- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_testsuite.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_testsuite.sh
-@@ -74,7 +74,6 @@ pid_is_valid()
- kill_pid()
- {
-     PID=$1
--    disown $PID
-     kill -9 $PID > /dev/null 2>&1
- }
- 
 -- 
-2.15.0
-
+Cyril Hrubis
+chrubis@suse.cz
