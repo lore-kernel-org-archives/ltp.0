@@ -1,60 +1,54 @@
 From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Mon,  4 Dec 2017 16:36:49 +0000
-Subject: [LTP] [PATCH v3 06/12] hugeshmget02: add missing SHM_HUGETLB flag
-	on segment creation
+Date: Mon,  4 Dec 2017 16:36:50 +0000
+Subject: [LTP] [PATCH v3 07/12] sigwaitinfo01: fix race between sending and
+	dequeueing RT signals
 In-Reply-To: <20171204163655.8838-1-punit.agrawal@arm.com>
 References: <20171204163655.8838-1-punit.agrawal@arm.com>
-Message-ID: <20171204163655.8838-7-punit.agrawal@arm.com>
+Message-ID: <20171204163655.8838-8-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+From: Will Deacon <will.deacon@arm.com>
 
-On test setup, hugeshmget02 detects the number of huge pages available
-and uses that number to size a shared memory segment that is allocated
-to carry out subsequent syscalls checks.
+Although RT signals are dequeued in order, there is a race where only
+the higher signal may have been sent and will therefore be dequeued
+first, leading to a false failure.
 
-The setup() function detects the number of huge pages available so that
-it can size the share memory segment to allocate with a reasonable size
-value, but fails to pass the SHM_HUGETLB on shared memory segment
-creation which defeats the whole purpose of detecting the available
-number of huge pages before creating the segment.
+This patch waits on the signal sending tasks so that we can be sure both
+of the signals have been sent before dequeuing them.
 
-This omission can result in test failures, eg:
-
-hugeshmget02    0  TINFO  :  set nr_hugepages to 128
-hugeshmget02    0  TINFO  :  Using 21 hugepages
-hugeshmget02    1  TBROK  :  hugeshmget02.c:155: shmget #setup:
-errno=ENOMEM(12): Cannot allocate memory
-hugeshmget02    2  TBROK  :  hugeshmget02.c:155: Remaining cases broken
-hugeshmget02    0  TINFO  :  set nr_hugepages to 0
-
-This patch adds the missing SHM_HUGETLB flag to the shmget call in the
-setup() function.
-
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Signed-off-by: Will Deacon <will.deacon@arm.com>
 Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
 ---
- testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
-index 657b66eb3..8df943e0e 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
-@@ -97,7 +97,8 @@ void setup(void)
+diff --git a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
+index 35acd67c4..16b5096b8 100644
+--- a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
++++ b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
+@@ -249,6 +249,7 @@ void test_masked_matching_rt(swi_func sigwaitinfo, int signo)
+ 	sigset_t sigs, oldmask;
+ 	siginfo_t si;
+ 	pid_t child[2];
++	int status;
  
- 	shmkey = getipckey();
- 	shmkey2 = shmkey + 1;
--	shm_id_1 = shmget(shmkey, shm_size, IPC_CREAT | IPC_EXCL | SHM_RW);
-+	shm_id_1 = shmget(shmkey, shm_size,
-+			  SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW);
- 	if (shm_id_1 == -1)
- 		tst_brk(TBROK | TERRNO, "shmget #setup");
- }
+ 	signo = SIGRTMIN + 1;
+ 
+@@ -268,6 +269,10 @@ void test_masked_matching_rt(swi_func sigwaitinfo, int signo)
+ 	child[0] = create_sig_proc(0, signo, 1);
+ 	child[1] = create_sig_proc(0, signo + 1, 1);
+ 
++	/* Ensure that the signals have been sent */
++	waitpid(child[0], &status, 0);
++	waitpid(child[1], &status, 0);
++
+ 	TEST(sigwaitinfo(&sigs, &si, NULL));
+ 	REPORT_SUCCESS_COND(signo, 0, si.si_pid == child[0]
+ 			    && si.si_code == SI_USER
 -- 
 2.15.0
 
