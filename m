@@ -1,27 +1,37 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 5 Dec 2017 10:50:00 +0100
-Subject: [LTP] [PATCH v3 04/12] hugeshmctl01: Fix warning about
- signed/unsigned comparison
-In-Reply-To: <20171204163655.8838-5-punit.agrawal@arm.com>
+From: Punit Agrawal <punit.agrawal@arm.com>
+Date: Tue, 05 Dec 2017 10:20:50 +0000
+Subject: [LTP] [PATCH v3 12/12] hotplug/cpu_hotplug: Remove bashism
+	disown from kill_pid()
+In-Reply-To: <20171205082107.c3pfhqhtqe7c3kef@dell5510> (Petr Vorel's message
+ of "Tue, 5 Dec 2017 09:21:07 +0100")
 References: <20171204163655.8838-1-punit.agrawal@arm.com>
- <20171204163655.8838-5-punit.agrawal@arm.com>
-Message-ID: <20171205095000.adgiui7tqi76ktfq@dell5510>
+ <20171204163655.8838-13-punit.agrawal@arm.com>
+ <20171205082107.c3pfhqhtqe7c3kef@dell5510>
+Message-ID: <87po7twk59.fsf@e105922-lin.cambridge.arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> The macro N_ATTACH is assumed to be a signed integer which results in
-> the below warning when compiling -
+Hi Petr,
 
-> warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
->   if (buf.shm_nattch != N_ATTACH + stat_time) {
->                      ^~
+Petr Vorel <pvorel@suse.cz> writes:
 
-> Fix this by explicitly marking N_ATTACH to be an unsigned integer and
-> fixing the resulting fallout.
+>> From: James Morse <james.morse@arm.com>
+>
+>> disown is a bashism not present in dash. kill_pid() already sends the
+>> process SIGKILL.
+>
+>> Remove the "disown" to allow running in shells that don't support
+>> disown.
+>
+>> Signed-off-by: James Morse <james.morse@arm.com>
+>> Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
+>> ---
+> Acked-by: Petr Vorel <pvorel@suse.cz>
 
-> Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
-> ---
-Acked-by: Petr Vorel <pvorel@suse.cz>
+Thanks for looking through the patches and providing Acks.
+
+Regards,
+Punit
