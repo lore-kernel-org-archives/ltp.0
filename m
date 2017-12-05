@@ -1,37 +1,26 @@
-From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Tue, 05 Dec 2017 10:20:50 +0000
-Subject: [LTP] [PATCH v3 12/12] hotplug/cpu_hotplug: Remove bashism
-	disown from kill_pid()
-In-Reply-To: <20171205082107.c3pfhqhtqe7c3kef@dell5510> (Petr Vorel's message
- of "Tue, 5 Dec 2017 09:21:07 +0100")
-References: <20171204163655.8838-1-punit.agrawal@arm.com>
- <20171204163655.8838-13-punit.agrawal@arm.com>
- <20171205082107.c3pfhqhtqe7c3kef@dell5510>
-Message-ID: <87po7twk59.fsf@e105922-lin.cambridge.arm.com>
+From: Eric Biggers <ebiggers@google.com>
+Date: Tue, 5 Dec 2017 10:10:47 -0800
+Subject: [LTP] 3239b6f29b ("KEYS: return full count in keyring_read() if
+ buffer is too small"): ltp.keyctl06.fail
+In-Reply-To: <87a7yxmrwz.fsf@rpws.prws.suse.cz>
+References: <20171201024012.wsq3xnsbbdqwxwp2@wfg-t540p.sh.intel.com>
+ <20171201192152.GD142348@google.com>
+ <87a7yxmrwz.fsf@rpws.prws.suse.cz>
+Message-ID: <20171205181047.GA66710@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+On Tue, Dec 05, 2017 at 10:43:08AM +0100, Richard Palethorpe wrote:
+> 
+> We are getting the following result, even with the follow up patch:
+> 
+> keyctl06.c:68: FAIL: KEYCTL_READ returned 4 but expected 8
+> 
+> This is with SUSE SLE15 kernel 4.12.14. I haven't had chance to
+> investigate it yet.
+> 
 
-Petr Vorel <pvorel@suse.cz> writes:
-
->> From: James Morse <james.morse@arm.com>
->
->> disown is a bashism not present in dash. kill_pid() already sends the
->> process SIGKILL.
->
->> Remove the "disown" to allow running in shells that don't support
->> disown.
->
->> Signed-off-by: James Morse <james.morse@arm.com>
->> Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
->> ---
-> Acked-by: Petr Vorel <pvorel@suse.cz>
-
-Thanks for looking through the patches and providing Acks.
-
-Regards,
-Punit
+Does the kernel include *both* fixes the test tests for now?
