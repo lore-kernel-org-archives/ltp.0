@@ -1,50 +1,69 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 6 Dec 2017 11:42:32 +0100
-Subject: [LTP] IPsec DCCP stress tests: udp6_ipsec_vti[01]*,
- icmp4-uni-vti17: too big message size
-In-Reply-To: <4e2eae3b-1f8e-2f3e-a315-b87089bfc1f6@oracle.com>
-References: <20171204150031.6kjf2xn3zcs67sed@dell5510>
- <4e2eae3b-1f8e-2f3e-a315-b87089bfc1f6@oracle.com>
-Message-ID: <20171206104231.m44wbm3bus4cpmak@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 6 Dec 2017 11:52:34 +0100
+Subject: [LTP] [RFC] Showing skipped tests in results?
+In-Reply-To: <20171205221105.yobl5c4brhpu5tdo@xps>
+References: <20171205221105.yobl5c4brhpu5tdo@xps>
+Message-ID: <20171206105233.GD13979@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi!
+> When we skip tests in LTP using "./runltp -S SKIPFILE", they get removed
+> from the test list completely, leaving no trace in the results.
+> Meanwhile, tests that are not able to run due to configuration show up
+> as a "CONF" in the results file.
+> 
+> From our perspective, this is not ideal because we want to see tests
+> that are explicitly skipped as skipped in the results. Ideally, tests
+> that are skipped will still show up in the results as a SKIP.
+> 
+> It looks like there's some precedent in runltp for prepending a string
+> to a test name that can then later be picked up and interpreted by
+> individual tests.
+> 
+> Specifically, I noticed that if you use -I ITERATIONS to run tests
+> multiple times, it will prepend an iteration count and number in
+> alltests:
+> 
+> $ cat alltests
+> 1_ITERATION_gzip01 gzip_tests.sh
+> 2_ITERATION_gzip01 gzip_tests.sh
+> 3_ITERATION_gzip01 gzip_tests.sh
+> 
+> Which made me wonder if we could use a similar convention for SKIP,
+> rather than just removing the test from alltests (what currently
+> happens).
+> 
+> So for example, if you skip gzip01, the alltests file would end up with
+> something like: SKIP_gzip01 gzip_tests.sh
+> 
+> When I try that, it actually runs gzip01 still. I thought it would
+> fail. Which means that something is stripping the "SKIP_" (and
+> throwing it away).
 
-> > I found IPsec DCCP stress tests I've found that udp6_ipsec_vti[01]* tests have too big
-> > message size 65527.
+I think that you misunderstand how things works, the first string on
+each line in the alltests file that is parsed by ltp-pan is just test
+name that appears in the test result file, it does not affect anything
+but that.
 
-> Hi Petr,
+I guess that the easiest solution would be replacing the actuall command
+that is supposed to be executed with something that just reports
+skipped status.
 
-> Interesting, I'm using 9000 mtu on the underlying device and
-> it works fine (vti6 always sets 1500). I see that we not
-> adjusting mtu on the newly created vti device, it should be
-> less than output device but right now it's the same.
+Quick hack would be replacing these with something that just returns the
+right exit value:
 
-> > And icmp4-uni-vti17 has too big message size 1500.
+gzip01 gzip_tests.hs -> gzip01 exit 32
 
-> New test-case... I thought after compression it won't fragment
-> this, but ipcomp works after vti fragments icmp packets, so we
-> should lower the size (current ip_vti mtu is 1332).
+Something like this should mark the gzip01 as TCONF in test results,
+would that suffice for your purpose?
 
-> I'll prepare the patches.
-Thanks a lot for handling it!
+This should be as easy as changing the sed command from delete to
+replace in the runltp script.
 
-
-> > I tested it on several distros and got the same result. Should we lower / delete the value?
-
-> > I also think that tst_ipsec_setup_vti() (in ipsec_lib.sh) should has trap to int:
-> > trap "tst_brkm TBROK 'test interrupted'" INT
-
-> Yes, we could add it to the library.
-OK, I'll send a patch for it.
-
-> Thanks,
-> Alexey
-
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
