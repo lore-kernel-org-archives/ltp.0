@@ -1,55 +1,45 @@
-From: Dan Rue <dan.rue@linaro.org>
-Date: Tue, 5 Dec 2017 16:11:05 -0600
-Subject: [LTP] [RFC] Showing skipped tests in results?
-Message-ID: <20171205221105.yobl5c4brhpu5tdo@xps>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 6 Dec 2017 10:44:19 +0300
+Subject: [LTP] IPsec DCCP stress tests: udp6_ipsec_vti[01]*,
+ icmp4-uni-vti17: too big message size
+In-Reply-To: <20171204150031.6kjf2xn3zcs67sed@dell5510>
+References: <20171204150031.6kjf2xn3zcs67sed@dell5510>
+Message-ID: <4e2eae3b-1f8e-2f3e-a315-b87089bfc1f6@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello!
+On 12/04/2017 06:00 PM, Petr Vorel wrote:
+> Hi Alexey,
+>
+> I found IPsec DCCP stress tests I've found that udp6_ipsec_vti[01]* tests have too big
+> message size 65527.
 
-Before I submit any patches, I wanted to run this idea by the community
-for advice.
+Hi Petr,
 
-When we skip tests in LTP using "./runltp -S SKIPFILE", they get removed
-from the test list completely, leaving no trace in the results.
-Meanwhile, tests that are not able to run due to configuration show up
-as a "CONF" in the results file.
+Interesting, I'm using 9000 mtu on the underlying device and
+it works fine (vti6 always sets 1500). I see that we not
+adjusting mtu on the newly created vti device, it should be
+less than output device but right now it's the same.
 
-From our perspective, this is not ideal because we want to see tests
-that are explicitly skipped as skipped in the results. Ideally, tests
-that are skipped will still show up in the results as a SKIP.
+> And icmp4-uni-vti17 has too big message size 1500.
 
-It looks like there's some precedent in runltp for prepending a string
-to a test name that can then later be picked up and interpreted by
-individual tests.
+New test-case... I thought after compression it won't fragment
+this, but ipcomp works after vti fragments icmp packets, so we
+should lower the size (current ip_vti mtu is 1332).
 
-Specifically, I noticed that if you use -I ITERATIONS to run tests
-multiple times, it will prepend an iteration count and number in
-alltests:
+I'll prepare the patches.
 
-$ cat alltests
-1_ITERATION_gzip01 gzip_tests.sh
-2_ITERATION_gzip01 gzip_tests.sh
-3_ITERATION_gzip01 gzip_tests.sh
+>
+> I tested it on several distros and got the same result. Should we lower / delete the value?
+>
+> I also think that tst_ipsec_setup_vti() (in ipsec_lib.sh) should has trap to int:
+> trap "tst_brkm TBROK 'test interrupted'" INT
 
-Which made me wonder if we could use a similar convention for SKIP,
-rather than just removing the test from alltests (what currently
-happens).
+Yes, we could add it to the library.
 
-So for example, if you skip gzip01, the alltests file would end up with
-something like: SKIP_gzip01 gzip_tests.sh
+Thanks,
+Alexey
 
-When I try that, it actually runs gzip01 still. I thought it would
-fail. Which means that something is stripping the "SKIP_" (and
-throwing it away).
-
-I looked a bit and I'm guessing we'd need to patch lib/parse_opts.c
-and then probably stuff in testcases/lib (but maybe not).
-
-Any feedback on the concept or the implementation is really appreciated.
-Thank you!
-
-Dan
