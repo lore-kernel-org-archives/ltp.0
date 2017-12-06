@@ -1,24 +1,50 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 6 Dec 2017 11:27:01 +0100
-Subject: [LTP] [RFC PATCH v2 0/5] Travis enhancements
-In-Reply-To: <20171205185856.v77wzjlrvkgcwygu@dell5510>
-References: <20171201154641.27407-1-pvorel@suse.cz>
- <20171204164421.GD21055@rei>
- <20171205185856.v77wzjlrvkgcwygu@dell5510>
-Message-ID: <20171206102701.GC13979@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 6 Dec 2017 11:42:32 +0100
+Subject: [LTP] IPsec DCCP stress tests: udp6_ipsec_vti[01]*,
+ icmp4-uni-vti17: too big message size
+In-Reply-To: <4e2eae3b-1f8e-2f3e-a315-b87089bfc1f6@oracle.com>
+References: <20171204150031.6kjf2xn3zcs67sed@dell5510>
+ <4e2eae3b-1f8e-2f3e-a315-b87089bfc1f6@oracle.com>
+Message-ID: <20171206104231.m44wbm3bus4cpmak@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> BTW: I'm planning to add also arm32 cross-compile build in near
-> future. To keep only 10 jobs, I'll replace gcc-6 normal with all
-> dependencies by it.
+Hi Alexey,
 
-Sounds good to me.
+> > I found IPsec DCCP stress tests I've found that udp6_ipsec_vti[01]* tests have too big
+> > message size 65527.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Hi Petr,
+
+> Interesting, I'm using 9000 mtu on the underlying device and
+> it works fine (vti6 always sets 1500). I see that we not
+> adjusting mtu on the newly created vti device, it should be
+> less than output device but right now it's the same.
+
+> > And icmp4-uni-vti17 has too big message size 1500.
+
+> New test-case... I thought after compression it won't fragment
+> this, but ipcomp works after vti fragments icmp packets, so we
+> should lower the size (current ip_vti mtu is 1332).
+
+> I'll prepare the patches.
+Thanks a lot for handling it!
+
+
+> > I tested it on several distros and got the same result. Should we lower / delete the value?
+
+> > I also think that tst_ipsec_setup_vti() (in ipsec_lib.sh) should has trap to int:
+> > trap "tst_brkm TBROK 'test interrupted'" INT
+
+> Yes, we could add it to the library.
+OK, I'll send a patch for it.
+
+> Thanks,
+> Alexey
+
+
+Kind regards,
+Petr
