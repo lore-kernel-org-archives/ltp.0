@@ -1,92 +1,149 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 6 Dec 2017 17:55:58 +0100
-Subject: [LTP] [PATCH 1/2] [mtest06] Fix race condition with signal
- handling
-In-Reply-To: <689923703.42701689.1511190324217.JavaMail.zimbra@redhat.com>
-References: <20171103185941.17651-1-vkabatov@redhat.com>
- <20171106163809.GB1662@rei>
- <1187592937.37117661.1510045232581.JavaMail.zimbra@redhat.com>
- <20171107102537.GB6126@rei.lan>
- <197806265.17273314.1510844585297.JavaMail.zimbra@redhat.com>
- <689923703.42701689.1511190324217.JavaMail.zimbra@redhat.com>
-Message-ID: <20171206165558.GA5543@rei>
+From: Steve Muckle <smuckle.linux@gmail.com>
+Date: Wed,  6 Dec 2017 17:54:02 -0800
+Subject: [LTP] [PATCH] fs_racer: fix binary paths in fs_racer scripts
+Message-ID: <20171207015402.5131-1-smuckle.linux@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > I would also like to mention that we need to use locking at least when
-> > the address computation and actual access to it is happening:
-> > 
-> > read thread                                          write thread
-> > <compute and load address based on active mapping>
-> >                                                      unmap()
-> > <access address thinking it should be mapped>
-> > <unexpected SIGSEGV>
-> > 
-> > There should be no issues with leaving out locking for the other parts
-> > of code, but I found no feasible way to get around this one.
-> 
-> The idea me and Veronika were dicussing off-list was using just
-> pthread_mutex_trylock() without actual blocking to avoid race above.
-> 
-> > 
-> > I'd be happy to hear any feedback or different ideas how to tackle both
-> > issues if anybody has them.
-> 
-> I don't see problem using 2 pages.
-> I'd drop '-s' parameter until there's need for it.
+From: Hsin-Yi Chen <hsinyichen@google.com>
 
-Agreed.
+Replace /bin/true with true so as not to depend on the path of the
+true binary.
 
-> I'd try some minimal locking and measure how many iterations
-> are we able to do now vs. before.
+Signed-off-by: Hsin-Yi Chen <hsinyichen@google.com>
+Signed-off-by: Steve Muckle <smuckle.linux@gmail.com>
+---
+ testcases/kernel/fs/racer/fs_racer_dir_create.sh   | 2 +-
+ testcases/kernel/fs/racer/fs_racer_dir_test.sh     | 2 +-
+ testcases/kernel/fs/racer/fs_racer_file_concat.sh  | 2 +-
+ testcases/kernel/fs/racer/fs_racer_file_create.sh  | 2 +-
+ testcases/kernel/fs/racer/fs_racer_file_link.sh    | 2 +-
+ testcases/kernel/fs/racer/fs_racer_file_list.sh    | 2 +-
+ testcases/kernel/fs/racer/fs_racer_file_rename.sh  | 2 +-
+ testcases/kernel/fs/racer/fs_racer_file_rm.sh      | 2 +-
+ testcases/kernel/fs/racer/fs_racer_file_symlink.sh | 2 +-
+ 9 files changed, 9 insertions(+), 9 deletions(-)
 
-Sounds reasonable.
-
-I guess that it's impossible to make it 100% correct without any
-locking, so we should make it as lightweight as possible, maybe some
-spinlocks atomic operations and sched_yield().
-
-I was thinking of doing pthread_kill() to the reading thread with some
-other signal that would flip a flag in the signal handler before we
-unmap and after we map the memory, so we will use that signal as a some
-kind of barrier. But this may be tricky to get working and quite
-possibly will not work at all.
-
-> ---
-> Thinking loud about alternatives:
-> 
-> Signal handler could be replaced with write() to some temporary
-> file, which would use the ptr to mapped/unmapped area. If it's
-> not mapped we get EFAULT. This would also eliminate setjmp()/longjmp().
-
-I wonder if we should actually test both, but yes handling EFAULT would
-make this much easier than asynchronous signal delivery. On the other
-hand the signal handler code is much more complex so there is probably
-bigger room for triggering bugs.
-
-> If we stop looking at mapped status and only consider mapped data,
-> then this would turn into checking written pattern:
-> 1) create file A with some pattern
-> 2) thread1 maps/unmaps file into memory at X
-> 3) thread2 writes to file B, from memory X, this will either work or fail with EFAULT
-> 4) report PASS if all blocks in file B have same pattern as blocks in file A
-
-And thread2 retries on EFAULT with the same address again, right? This
-sounds interesting enough to be implemented as a test.
-
-> To address "read between mmap/munmap must succeed", there would probably also
-> need to be a write performed by thread1 to file C.
-
-But that runs synchronously between the mmap() and unmap() right? That
-kind of misses the point of the original test, however I wonder how
-important it is anyway. If one thread maps/unmaps memory the other
-threads has to be synchronized with mutexes anyway. So maybe it makes
-sense to test for this assertion with heavy locking in a separate test.
-
+diff --git a/testcases/kernel/fs/racer/fs_racer_dir_create.sh b/testcases/kernel/fs/racer/fs_racer_dir_create.sh
+index 54ec875b688d..1ac94408f1ce 100755
+--- a/testcases/kernel/fs/racer/fs_racer_dir_create.sh
++++ b/testcases/kernel/fs/racer/fs_racer_dir_create.sh
+@@ -26,7 +26,7 @@ create(){
+     echo "asdf" > $DIR/$file/$file/$file
+ }
+ 
+-while /bin/true ; do
++while true ; do
+     file=$(($RANDOM%$MAX))
+     mkdir -p $DIR/$file/$file/ 2> /dev/null
+     create 2> /dev/null
+diff --git a/testcases/kernel/fs/racer/fs_racer_dir_test.sh b/testcases/kernel/fs/racer/fs_racer_dir_test.sh
+index c2b55ab4ad12..a85506003c49 100755
+--- a/testcases/kernel/fs/racer/fs_racer_dir_test.sh
++++ b/testcases/kernel/fs/racer/fs_racer_dir_test.sh
+@@ -22,7 +22,7 @@
+ 
+ count=1
+ dir=""
+-while /bin/true ; do
++while true ; do
+     dir=$dir"/a"
+     mkdir race/$dir
+     count=$(($count + 1))
+diff --git a/testcases/kernel/fs/racer/fs_racer_file_concat.sh b/testcases/kernel/fs/racer/fs_racer_file_concat.sh
+index a077e071341f..b9cb5d385e8f 100755
+--- a/testcases/kernel/fs/racer/fs_racer_file_concat.sh
++++ b/testcases/kernel/fs/racer/fs_racer_file_concat.sh
+@@ -28,7 +28,7 @@ concat(){
+ 
+ }
+ 
+-while /bin/true ; do
++while true ; do
+     file=$(($RANDOM%$MAX))
+     new_file=$(($RANDOM%$MAX))
+     concat 2> /dev/null
+diff --git a/testcases/kernel/fs/racer/fs_racer_file_create.sh b/testcases/kernel/fs/racer/fs_racer_file_create.sh
+index 97789f44ba30..2d3b04d59fad 100755
+--- a/testcases/kernel/fs/racer/fs_racer_file_create.sh
++++ b/testcases/kernel/fs/racer/fs_racer_file_create.sh
+@@ -29,7 +29,7 @@ create() {
+     dd if=/dev/zero of=$DIR/$file bs=1k count=$SIZE
+ }
+ 
+-while /bin/true ; do
++while true ; do
+     file=$(($RANDOM%$MAX))
+     create 2> /dev/null
+ done
+diff --git a/testcases/kernel/fs/racer/fs_racer_file_link.sh b/testcases/kernel/fs/racer/fs_racer_file_link.sh
+index efe1b9f6ab08..9fb59059d3f4 100755
+--- a/testcases/kernel/fs/racer/fs_racer_file_link.sh
++++ b/testcases/kernel/fs/racer/fs_racer_file_link.sh
+@@ -22,7 +22,7 @@
+ DIR=$1
+ MAX=$2
+ 
+-while /bin/true ; do
++while true ; do
+     file=$(($RANDOM%$MAX))
+     new_file=$((($file + 1)%$MAX))
+     ln -s $file $DIR/$new_file 2> /dev/null
+diff --git a/testcases/kernel/fs/racer/fs_racer_file_list.sh b/testcases/kernel/fs/racer/fs_racer_file_list.sh
+index ec5deaa74259..9775d9544dad 100755
+--- a/testcases/kernel/fs/racer/fs_racer_file_list.sh
++++ b/testcases/kernel/fs/racer/fs_racer_file_list.sh
+@@ -22,7 +22,7 @@
+ DIR=$1
+ MAX=$2
+ 
+-while /bin/true ; do
++while true ; do
+     ls -R $DIR/ > /dev/null 2> /dev/null &
+     ls -R $DIR/ > /dev/null 2> /dev/null &
+     ls -R $DIR/ > /dev/null 2> /dev/null &
+diff --git a/testcases/kernel/fs/racer/fs_racer_file_rename.sh b/testcases/kernel/fs/racer/fs_racer_file_rename.sh
+index dd2a6a25dc8b..7e2e6b1b25c9 100755
+--- a/testcases/kernel/fs/racer/fs_racer_file_rename.sh
++++ b/testcases/kernel/fs/racer/fs_racer_file_rename.sh
+@@ -22,7 +22,7 @@
+ DIR=$1
+ MAX=$2
+ 
+-while /bin/true ; do
++while true ; do
+     file=$(($RANDOM%$MAX))
+     new_file=$((($file + 1)%$MAX))
+     mv $DIR/$file $DIR/$new_file 2> /dev/null
+diff --git a/testcases/kernel/fs/racer/fs_racer_file_rm.sh b/testcases/kernel/fs/racer/fs_racer_file_rm.sh
+index c26f823a7b39..2b28a96f2aef 100755
+--- a/testcases/kernel/fs/racer/fs_racer_file_rm.sh
++++ b/testcases/kernel/fs/racer/fs_racer_file_rm.sh
+@@ -22,7 +22,7 @@
+ DIR=$1
+ MAX=$2
+ 
+-while /bin/true ; do
++while true ; do
+     file=$(($RANDOM%$MAX))
+     rm -rf $DIR/$file 2> /dev/null
+     sleep 1
+diff --git a/testcases/kernel/fs/racer/fs_racer_file_symlink.sh b/testcases/kernel/fs/racer/fs_racer_file_symlink.sh
+index f9b14879c411..77b57ec3f73a 100755
+--- a/testcases/kernel/fs/racer/fs_racer_file_symlink.sh
++++ b/testcases/kernel/fs/racer/fs_racer_file_symlink.sh
+@@ -22,7 +22,7 @@
+ DIR=$1
+ MAX=$2
+ 
+-while /bin/true ; do
++while true ; do
+     file=$(($RANDOM%$MAX))
+     new_file=$((($file + 1)%$MAX))
+     ln -s $file $DIR/$new_file 2> /dev/null
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.13.6
+
