@@ -1,38 +1,34 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 8 Dec 2017 12:37:42 +0100
-Subject: [LTP] [PATCH v3 09/12] syscalls/mount03: Copy setuid_test to
- execute instead of 'TEST FILE'
-In-Reply-To: <87vahhv64c.fsf@e105922-lin.cambridge.arm.com>
+From: Punit Agrawal <punit.agrawal@arm.com>
+Date: Fri, 08 Dec 2017 11:49:41 +0000
+Subject: [LTP] [PATCH v3 08/12] sigwaitinfo01: catch SEGV and report
+	success for bad_address2 testcase
+In-Reply-To: <20171208102852.GC13286@rei> (Cyril Hrubis's message of "Fri, 8
+ Dec 2017 11:28:52 +0100")
 References: <20171204163655.8838-1-punit.agrawal@arm.com>
- <20171204163655.8838-10-punit.agrawal@arm.com>
- <20171208102658.GA13286@rei>
- <87609hwlkr.fsf@e105922-lin.cambridge.arm.com>
- <20171208104302.GD13286@rei>
- <87vahhv64c.fsf@e105922-lin.cambridge.arm.com>
-Message-ID: <20171208113741.GE13286@rei>
+ <20171204163655.8838-9-punit.agrawal@arm.com>
+ <20171208102852.GC13286@rei>
+Message-ID: <87fu8lv3qi.fsf@e105922-lin.cambridge.arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Apologies for not being more specific. We do it twice because in the
-> quoted text you say (emphasis mine) -
-> 
-> "it should be done _once_ in the test setup _as well as_ the code that
-> sets the actual setuid bit."
+Cyril Hrubis <chrubis@suse.cz> writes:
+
+> Hi!
+> I've also added a follow up patch that adds this test to the syscalls
+> runtest file.
 >
-> I took that to mean that you're asking for the file to be copied in
-> setup() as well as in the code before it gets used. Obviously I've
-> misunderstood your statement. What are you actually suggesting there?
+> Other than the two patches I've commented on the rest of the patchset
+> has been pushed, thanks!
 
-Ah, that's where the misunderstanding happened, "the code that sets the
-actual setuid bit" == chmod(file, SUID_MODE);
+Thanks for applying the patches.
 
-I was trying to state that the actual test setup that could be done only
-once should be put into the test setup.
+I don't see Patch 7 "sigwaitinfo01: fix race between sending and
+dequeueing RT signals" in the repo.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Did this one get missed out?
+
+Thanks,
+Punit
