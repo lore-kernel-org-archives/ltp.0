@@ -1,98 +1,76 @@
 From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Fri,  8 Dec 2017 14:07:37 +0000
-Subject: [LTP] [PATCH v4 1/2] syscalls/mount03: Copy setuid_test to execute
-	instead of 'TEST FILE'
-Message-ID: <20171208140738.7985-1-punit.agrawal@arm.com>
+Date: Fri,  8 Dec 2017 14:07:38 +0000
+Subject: [LTP] [PATCH v4 2/2] getdtablesize01: Handle ENFILE errno
+In-Reply-To: <20171208140738.7985-1-punit.agrawal@arm.com>
+References: <20171208140738.7985-1-punit.agrawal@arm.com>
+Message-ID: <20171208140738.7985-2-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When testing the MS_NOSUID mount flag, mount03 forgets to copy
-setuid_test into the new filesystem. Instead it writes 'TEST FILE' into
-a new file and attempts to execute it with S_ISUID. This fails, but not
-for the reasons ltp expects.
+From: "Suzuki K. Poulose" <suzuki.poulose@arm.com>
 
-Fix this by copying the test helper binary instead.
+getdtablesize01 testcase attempts to open RLIMIT_NOFILE-1 (Maximum open
+files for a process) file descriptors. However if we hit an
+ENFILE (system wide limit of maximum number of open files) we should
+break the test, rather than failing. This is more relevant for runs on
+VMs where the rootfs could be a 9p fs or any other emulated fs.
 
-While we're touching the test, also rename the helper to
-mount03_setuid_test so as to follow current ltp convention.
-
+Signed-off-by: Suzuki K. Poulose <suzuki.poulose@arm.com>
 Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
 ---
 Changes since v3:
-* Dropped the duplicate TST_RESOURCE_COPY()
-* Moved setting SUID_MODE to setup()
+* Dropped loop variable
 
- testcases/kernel/syscalls/mount/mount03.c          | 26 +++++++++++++---------
- .../mount/{setuid_test.c => mount03_setuid_test.c} |  0
- 2 files changed, 15 insertions(+), 11 deletions(-)
- rename testcases/kernel/syscalls/mount/{setuid_test.c => mount03_setuid_test.c} (100%)
+ testcases/kernel/syscalls/getdtablesize/getdtablesize01.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mount/mount03.c b/testcases/kernel/syscalls/mount/mount03.c
-index bf78c797f..6603fb77a 100644
---- a/testcases/kernel/syscalls/mount/mount03.c
-+++ b/testcases/kernel/syscalls/mount/mount03.c
-@@ -261,15 +261,7 @@ int test_rwflag(int i, int cnt)
- 	case 5:
- 		/* Validate MS_NOSUID flag of mount call */
+diff --git a/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c b/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
+index 7ee231adf..dabfd28bf 100644
+--- a/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
++++ b/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
+@@ -54,7 +54,7 @@ int TST_TOTAL = 1;
  
--		snprintf(file, PATH_MAX, "%ssetuid_test", path_name);
--		SAFE_FILE_PRINTF(cleanup, file, "TEST FILE");
--
--		SAFE_STAT(cleanup, file, &file_stat);
--
--		if (file_stat.st_mode != SUID_MODE &&
--		    chmod(file, SUID_MODE) < 0)
--			tst_brkm(TBROK, cleanup,
--				 "setuid for setuid_test failed");
-+		snprintf(file, PATH_MAX, "%smount03_setuid_test", path_name);
- 
- 		pid = fork();
- 		switch (pid) {
-@@ -291,9 +283,8 @@ int test_rwflag(int i, int cnt)
- 				/* reset the setup_uid */
- 				if (status)
- 					return 0;
--				else
--					return 1;
- 			}
-+			return 1;
- 		}
- 	case 6:
- 		/* Validate MS_NOATIME flag of mount call */
-@@ -346,6 +337,7 @@ int test_rwflag(int i, int cnt)
- static void setup(void)
+ int main(void)
  {
- 	char path[PATH_MAX];
-+	struct stat file_stat;
+-	int table_size, loop, fd, count = 0;
++	int table_size, fd = 0, count = 0;
+ 	int max_val_opfiles;
+ 	struct rlimit rlp;
  
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
+@@ -80,15 +80,16 @@ int main(void)
  
-@@ -373,6 +365,18 @@ static void setup(void)
- 	strncpy(path, path_name, PATH_MAX);
- 	snprintf(path_name, PATH_MAX, "%s/%s/", path, mntpoint);
- 
-+	SAFE_MOUNT(cleanup, device, mntpoint, fs_type, 0, NULL);
-+	TST_RESOURCE_COPY(cleanup, "mount03_setuid_test", path_name);
+ 	tst_resm(TINFO,
+ 		 "Checking Max num of files that can be opened by a process.Should be: RLIMIT_NOFILE - 1");
+-	for (loop = 1; loop <= max_val_opfiles; loop++) {
++	for (; ;) {
+ 		fd = open("/etc/hosts", O_RDONLY);
 +
-+	snprintf(file, PATH_MAX, "%smount03_setuid_test", path_name);
-+	SAFE_STAT(cleanup, file, &file_stat);
++		if (fd == -1)
++			break;
++		count = fd;
 +
-+	if (file_stat.st_mode != SUID_MODE &&
-+	    chmod(file, SUID_MODE) < 0)
-+		tst_brkm(TBROK, cleanup,
-+			 "setuid for setuid_test failed");
-+	SAFE_UMOUNT(cleanup, mntpoint);
-+
- 	TEST_PAUSE;
- }
+ #ifdef DEBUG
+ 		printf("Opened file num %d\n", fd);
+ #endif
+-		if (fd == -1)
+-			break;
+-		else
+-			count = fd;
+ 	}
  
-diff --git a/testcases/kernel/syscalls/mount/setuid_test.c b/testcases/kernel/syscalls/mount/mount03_setuid_test.c
-similarity index 100%
-rename from testcases/kernel/syscalls/mount/setuid_test.c
-rename to testcases/kernel/syscalls/mount/mount03_setuid_test.c
+ //Now the max files opened should be RLIMIT_NOFILE - 1 , why ? read getdtablesize man page
+@@ -97,6 +98,8 @@ int main(void)
+ 		close(count);
+ 	if (count == (max_val_opfiles - 1))
+ 		tst_resm(TPASS, "%d = %d", count, (max_val_opfiles - 1));
++	else if (fd < 0 && errno == ENFILE)
++		tst_brkm(TBROK, cleanup, "Reached maximum number of open files for the system");
+ 	else
+ 		tst_resm(TFAIL, "%d != %d", count, (max_val_opfiles - 1));
+ 
 -- 
 2.15.0
 
