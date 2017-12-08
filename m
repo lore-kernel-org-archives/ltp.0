@@ -1,73 +1,76 @@
 From: Xin Long <lucien.xin@gmail.com>
-Date: Fri, 8 Dec 2017 16:09:48 +0800
-Subject: [LTP] [lkp-robot] [sctp] ecca8f88da:
-	ltp.test_sctp_sendrecvmsg.fail
-In-Reply-To: <20171208052627.GP21779@yexl-desktop>
-References: <20171208052627.GP21779@yexl-desktop>
-Message-ID: <CADvbK_czg+Q4k0Wn9=PvQbCW_Ay4tfVzXHxoZ2V1kUBHVK6iOA@mail.gmail.com>
+Date: Fri, 8 Dec 2017 16:53:57 +0800
+Subject: [LTP] [PATCH] sctp: porting "tests: fix SMALL_MAXSEG" to
+	ltp/utils/sctp
+In-Reply-To: <1512722689-7248-1-git-send-email-lizhijian@cn.fujitsu.com>
+References: <1512722689-7248-1-git-send-email-lizhijian@cn.fujitsu.com>
+Message-ID: <CADvbK_dOujZu02er5BrOyA+LUtM4VNwqehhOgQBCuTooNmv_4Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Dec 8, 2017 at 1:26 PM, kernel test robot <xiaolong.ye@intel.com> wrote:
+On Fri, Dec 8, 2017 at 4:44 PM, Li Zhijian <lizhijian@cn.fujitsu.com> wrote:
+> LKP reported a sctp issue: https://lists.01.org/pipermail/lkp/2017-December/007830.html recently
+> we need to update sctp to fix this issue
 >
-> FYI, we noticed the following commit (built with gcc-6):
+> the origin patch: https://github.com/sctp/lksctp-tools/commit/723993d3e33100fa96245d2ed46611eb9cba5236
+> -----------------
+> tests: fix SMALL_MAXSEG
+> After Commit ecca8f88da5c ("sctp: set frag_point in sctp_setsockopt_maxseg
+> correctly") in kernel, sctp will not allow to set max_seg with a too small
+> value.
 >
-> commit: ecca8f88da5c4260cc2bccfefd2a24976704c366 ("sctp: set frag_point in sctp_setsockopt_maxseg correctly")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> Now it's using SMALL_MAXSEG in func_tests, with SMALL_MAXSEG = 100,
+> sctp_setsockopt always returns err and causes some tests to fail.
 >
-> in testcase: ltp
-> with following parameters:
+> This patch is to avoid it by defining SMALL_MAXSEG as 500 instead, 500
+> is a good value, as it's very close to the minimum and will not cause
+> the last frag's size is different from the others', which would also
+> lead to failure of some tests.
+> -----------------
 >
->         test: net.sctp
+> CC: lucien.xin@gmail.com
+> CC: xiaolong.ye@intel.com
+> CC: philip.li@intel.com
+> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+> ---
+>  utils/sctp/func_tests/test_sctp_sendrecvmsg.c | 2 +-
+>  utils/sctp/func_tests/test_timetolive.c       | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 >
-> test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
-> test-url: http://linux-test-project.github.io/
+> diff --git a/utils/sctp/func_tests/test_sctp_sendrecvmsg.c b/utils/sctp/func_tests/test_sctp_sendrecvmsg.c
+> index 21ba867..70b0ce7 100644
+> --- a/utils/sctp/func_tests/test_sctp_sendrecvmsg.c
+> +++ b/utils/sctp/func_tests/test_sctp_sendrecvmsg.c
+> @@ -61,7 +61,7 @@ int TST_CNT = 0;
+>
+>  /* RCVBUF value, and indirectly RWND*2 */
+>  #define SMALL_RCVBUF 3000
+> -#define SMALL_MAXSEG 100
+> +#define SMALL_MAXSEG 500
+>  /* This is extra data length to ensure rwnd closes */
+>  #define RWND_SLOP    100
+>  static char *fillmsg = NULL;
+> diff --git a/utils/sctp/func_tests/test_timetolive.c b/utils/sctp/func_tests/test_timetolive.c
+> index d13168e..3a920d6 100644
+> --- a/utils/sctp/func_tests/test_timetolive.c
+> +++ b/utils/sctp/func_tests/test_timetolive.c
+> @@ -77,7 +77,7 @@ int TST_CNT = 0;
+>  #define SMALL_RCVBUF 3000
+>
+>  /* MAX segment size */
+> -#define SMALL_MAXSEG 100
+> +#define SMALL_MAXSEG 500
+>
+>  /* RWND_SLOP is the extra data that fills up the rwnd */
+>  #define RWND_SLOP 100
+> --
+> 2.7.4
 >
 >
-> on test machine: 48 threads Intel(R) Xeon(R) CPU E5-2697 v2 @ 2.70GHz with 64G memory
 >
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
->
->
-> <<<test_start>>>
-> tag=test_sctp_sendrecvmsg stime=1512621556
-> cmdline="test_sctp_sendrecvmsg"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> test_sctp_sendrecvmsg.c    1  TBROK  :  /tmp/build-ltp/ltp/utils/sctp/func_tests/../testlib/sctputil.h:258: setsockopt(13): Invalid argument
-> test_sctp_sendrecvmsg.c    2  TBROK  :  /tmp/build-ltp/ltp/utils/sctp/func_tests/../testlib/sctputil.h:258: Remaining cases broken
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=2 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
-> <<<test_start>>>
-> tag=test_sctp_sendrecvmsg_v6 stime=1512621556
-> cmdline="test_sctp_sendrecvmsg_v6"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> test_sctp_sendrecvmsg.c    1  TBROK  :  /tmp/build-ltp/ltp/utils/sctp/func_tests/../testlib/sctputil.h:258: setsockopt(13): Invalid argument
-> test_sctp_sendrecvmsg.c    2  TBROK  :  /tmp/build-ltp/ltp/utils/sctp/func_tests/../testlib/sctputil.h:258: Remaining cases broken
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=2 corefile=no
-> cutime=1 cstime=0
-> <<<test_end>>>
->
->
-> To reproduce:
->
->         git clone https://github.com/intel/lkp-tests.git
->         cd lkp-tests
->         bin/lkp install job.yaml  # job file is attached in this email
->         bin/lkp run     job.yaml
-Hi, please update the sctp case according to:
-
-https://github.com/sctp/lksctp-tools/commit/723993d3e33100fa96245d2ed46611eb9cba5236
-
 Thanks.
+
+Reviewed-by: Xin Long <lucien.xin@gmail.com>
