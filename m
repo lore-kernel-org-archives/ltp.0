@@ -1,76 +1,78 @@
-From: Xin Long <lucien.xin@gmail.com>
-Date: Fri, 8 Dec 2017 16:53:57 +0800
-Subject: [LTP] [PATCH] sctp: porting "tests: fix SMALL_MAXSEG" to
-	ltp/utils/sctp
-In-Reply-To: <1512722689-7248-1-git-send-email-lizhijian@cn.fujitsu.com>
-References: <1512722689-7248-1-git-send-email-lizhijian@cn.fujitsu.com>
-Message-ID: <CADvbK_dOujZu02er5BrOyA+LUtM4VNwqehhOgQBCuTooNmv_4Q@mail.gmail.com>
+From: Punit Agrawal <punit.agrawal@arm.com>
+Date: Fri, 08 Dec 2017 10:58:11 +0000
+Subject: [LTP] [PATCH v3 09/12] syscalls/mount03: Copy setuid_test to
+	execute instead of 'TEST FILE'
+In-Reply-To: <20171208104302.GD13286@rei> (Cyril Hrubis's message of "Fri, 8
+ Dec 2017 11:43:02 +0100")
+References: <20171204163655.8838-1-punit.agrawal@arm.com>
+ <20171204163655.8838-10-punit.agrawal@arm.com>
+ <20171208102658.GA13286@rei>
+ <87609hwlkr.fsf@e105922-lin.cambridge.arm.com>
+ <20171208104302.GD13286@rei>
+Message-ID: <87vahhv64c.fsf@e105922-lin.cambridge.arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Dec 8, 2017 at 4:44 PM, Li Zhijian <lizhijian@cn.fujitsu.com> wrote:
-> LKP reported a sctp issue: https://lists.01.org/pipermail/lkp/2017-December/007830.html recently
-> we need to update sctp to fix this issue
->
-> the origin patch: https://github.com/sctp/lksctp-tools/commit/723993d3e33100fa96245d2ed46611eb9cba5236
-> -----------------
-> tests: fix SMALL_MAXSEG
-> After Commit ecca8f88da5c ("sctp: set frag_point in sctp_setsockopt_maxseg
-> correctly") in kernel, sctp will not allow to set max_seg with a too small
-> value.
->
-> Now it's using SMALL_MAXSEG in func_tests, with SMALL_MAXSEG = 100,
-> sctp_setsockopt always returns err and causes some tests to fail.
->
-> This patch is to avoid it by defining SMALL_MAXSEG as 500 instead, 500
-> is a good value, as it's very close to the minimum and will not cause
-> the last frag's size is different from the others', which would also
-> lead to failure of some tests.
-> -----------------
->
-> CC: lucien.xin@gmail.com
-> CC: xiaolong.ye@intel.com
-> CC: philip.li@intel.com
-> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
-> ---
->  utils/sctp/func_tests/test_sctp_sendrecvmsg.c | 2 +-
->  utils/sctp/func_tests/test_timetolive.c       | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/utils/sctp/func_tests/test_sctp_sendrecvmsg.c b/utils/sctp/func_tests/test_sctp_sendrecvmsg.c
-> index 21ba867..70b0ce7 100644
-> --- a/utils/sctp/func_tests/test_sctp_sendrecvmsg.c
-> +++ b/utils/sctp/func_tests/test_sctp_sendrecvmsg.c
-> @@ -61,7 +61,7 @@ int TST_CNT = 0;
->
->  /* RCVBUF value, and indirectly RWND*2 */
->  #define SMALL_RCVBUF 3000
-> -#define SMALL_MAXSEG 100
-> +#define SMALL_MAXSEG 500
->  /* This is extra data length to ensure rwnd closes */
->  #define RWND_SLOP    100
->  static char *fillmsg = NULL;
-> diff --git a/utils/sctp/func_tests/test_timetolive.c b/utils/sctp/func_tests/test_timetolive.c
-> index d13168e..3a920d6 100644
-> --- a/utils/sctp/func_tests/test_timetolive.c
-> +++ b/utils/sctp/func_tests/test_timetolive.c
-> @@ -77,7 +77,7 @@ int TST_CNT = 0;
->  #define SMALL_RCVBUF 3000
->
->  /* MAX segment size */
-> -#define SMALL_MAXSEG 100
-> +#define SMALL_MAXSEG 500
->
->  /* RWND_SLOP is the extra data that fills up the rwnd */
->  #define RWND_SLOP 100
-> --
-> 2.7.4
->
->
->
-Thanks.
+Cyril Hrubis <chrubis@suse.cz> writes:
 
-Reviewed-by: Xin Long <lucien.xin@gmail.com>
+> Hi!
+>> >>  	case 5:
+>> >>  		/* Validate MS_NOSUID flag of mount call */
+>> >>  
+>> >> -		snprintf(file, PATH_MAX, "%ssetuid_test", path_name);
+>> >> -		SAFE_FILE_PRINTF(cleanup, file, "TEST FILE");
+>> >> +		TST_RESOURCE_COPY(cleanup, "mount03_setuid_test", path_name);
+>> >> +		snprintf(file, PATH_MAX, "%smount03_setuid_test", path_name);
+>> >>  
+>> >>  		SAFE_STAT(cleanup, file, &file_stat);
+>> >>  
+>> >> @@ -291,9 +291,8 @@ int test_rwflag(int i, int cnt)
+>> >>  				/* reset the setup_uid */
+>> >>  				if (status)
+>> >>  					return 0;
+>> >> -				else
+>> >> -					return 1;
+>> >>  			}
+>> >> +			return 1;
+>> >>  		}
+>> >>  	case 6:
+>> >>  		/* Validate MS_NOATIME flag of mount call */
+>> >> @@ -373,6 +372,10 @@ static void setup(void)
+>> >>  	strncpy(path, path_name, PATH_MAX);
+>> >>  	snprintf(path_name, PATH_MAX, "%s/%s/", path, mntpoint);
+>> >>  
+>> >> +	SAFE_MOUNT(cleanup, device, mntpoint, fs_type, 0, NULL);
+>> >> +	TST_RESOURCE_COPY(cleanup, "mount03_setuid_test", path_name);
+>> >> +	SAFE_UMOUNT(cleanup, mntpoint);
+>> >
+>> > I'm, a bit confused now, do we copy the file here in the setup or in the
+>> > actual test above? Surely we don't have to do both.
+>> 
+>> In an earlier email you said -
+>> 
+>> "... secondly you are supposed to use the TST_RESOURCE_COPY() macro
+>> instead of the function itself and it should be done once in the test
+>> setup as well as the code that sets the actual setuid bit."
+>> 
+>> And now I'm confused as I updated the patch as per your request (or so I
+>> thought). Where's the disconnect?
+>
+> As far as I can see, we do TST_RESOURCE_COPY() twice in this patch, once
+> in the test setup and once in the actual test, which is what confuses
+> me.
+
+Apologies for not being more specific. We do it twice because in the
+quoted text you say (emphasis mine) -
+
+"it should be done _once_ in the test setup _as well as_ the code that
+sets the actual setuid bit."
+
+I took that to mean that you're asking for the file to be copied in
+setup() as well as in the code before it gets used. Obviously I've
+misunderstood your statement. What are you actually suggesting there?
+
+If you aren't actually asking for the file to be copied twice, I am
+happy for the superfluous instance to be dropped. :)
