@@ -1,65 +1,73 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 8 Dec 2017 11:43:02 +0100
-Subject: [LTP] [PATCH v3 09/12] syscalls/mount03: Copy setuid_test to
- execute instead of 'TEST FILE'
-In-Reply-To: <87609hwlkr.fsf@e105922-lin.cambridge.arm.com>
-References: <20171204163655.8838-1-punit.agrawal@arm.com>
- <20171204163655.8838-10-punit.agrawal@arm.com>
- <20171208102658.GA13286@rei>
- <87609hwlkr.fsf@e105922-lin.cambridge.arm.com>
-Message-ID: <20171208104302.GD13286@rei>
+From: Xin Long <lucien.xin@gmail.com>
+Date: Fri, 8 Dec 2017 16:09:48 +0800
+Subject: [LTP] [lkp-robot] [sctp] ecca8f88da:
+	ltp.test_sctp_sendrecvmsg.fail
+In-Reply-To: <20171208052627.GP21779@yexl-desktop>
+References: <20171208052627.GP21779@yexl-desktop>
+Message-ID: <CADvbK_czg+Q4k0Wn9=PvQbCW_Ay4tfVzXHxoZ2V1kUBHVK6iOA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> >>  	case 5:
-> >>  		/* Validate MS_NOSUID flag of mount call */
-> >>  
-> >> -		snprintf(file, PATH_MAX, "%ssetuid_test", path_name);
-> >> -		SAFE_FILE_PRINTF(cleanup, file, "TEST FILE");
-> >> +		TST_RESOURCE_COPY(cleanup, "mount03_setuid_test", path_name);
-> >> +		snprintf(file, PATH_MAX, "%smount03_setuid_test", path_name);
-> >>  
-> >>  		SAFE_STAT(cleanup, file, &file_stat);
-> >>  
-> >> @@ -291,9 +291,8 @@ int test_rwflag(int i, int cnt)
-> >>  				/* reset the setup_uid */
-> >>  				if (status)
-> >>  					return 0;
-> >> -				else
-> >> -					return 1;
-> >>  			}
-> >> +			return 1;
-> >>  		}
-> >>  	case 6:
-> >>  		/* Validate MS_NOATIME flag of mount call */
-> >> @@ -373,6 +372,10 @@ static void setup(void)
-> >>  	strncpy(path, path_name, PATH_MAX);
-> >>  	snprintf(path_name, PATH_MAX, "%s/%s/", path, mntpoint);
-> >>  
-> >> +	SAFE_MOUNT(cleanup, device, mntpoint, fs_type, 0, NULL);
-> >> +	TST_RESOURCE_COPY(cleanup, "mount03_setuid_test", path_name);
-> >> +	SAFE_UMOUNT(cleanup, mntpoint);
-> >
-> > I'm, a bit confused now, do we copy the file here in the setup or in the
-> > actual test above? Surely we don't have to do both.
-> 
-> In an earlier email you said -
-> 
-> "... secondly you are supposed to use the TST_RESOURCE_COPY() macro
-> instead of the function itself and it should be done once in the test
-> setup as well as the code that sets the actual setuid bit."
-> 
-> And now I'm confused as I updated the patch as per your request (or so I
-> thought). Where's the disconnect?
+On Fri, Dec 8, 2017 at 1:26 PM, kernel test robot <xiaolong.ye@intel.com> wrote:
+>
+> FYI, we noticed the following commit (built with gcc-6):
+>
+> commit: ecca8f88da5c4260cc2bccfefd2a24976704c366 ("sctp: set frag_point in sctp_setsockopt_maxseg correctly")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>
+> in testcase: ltp
+> with following parameters:
+>
+>         test: net.sctp
+>
+> test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
+> test-url: http://linux-test-project.github.io/
+>
+>
+> on test machine: 48 threads Intel(R) Xeon(R) CPU E5-2697 v2 @ 2.70GHz with 64G memory
+>
+> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+>
+>
+> <<<test_start>>>
+> tag=test_sctp_sendrecvmsg stime=1512621556
+> cmdline="test_sctp_sendrecvmsg"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> test_sctp_sendrecvmsg.c    1  TBROK  :  /tmp/build-ltp/ltp/utils/sctp/func_tests/../testlib/sctputil.h:258: setsockopt(13): Invalid argument
+> test_sctp_sendrecvmsg.c    2  TBROK  :  /tmp/build-ltp/ltp/utils/sctp/func_tests/../testlib/sctputil.h:258: Remaining cases broken
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=0 termination_type=exited termination_id=2 corefile=no
+> cutime=0 cstime=0
+> <<<test_end>>>
+> <<<test_start>>>
+> tag=test_sctp_sendrecvmsg_v6 stime=1512621556
+> cmdline="test_sctp_sendrecvmsg_v6"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> test_sctp_sendrecvmsg.c    1  TBROK  :  /tmp/build-ltp/ltp/utils/sctp/func_tests/../testlib/sctputil.h:258: setsockopt(13): Invalid argument
+> test_sctp_sendrecvmsg.c    2  TBROK  :  /tmp/build-ltp/ltp/utils/sctp/func_tests/../testlib/sctputil.h:258: Remaining cases broken
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=0 termination_type=exited termination_id=2 corefile=no
+> cutime=1 cstime=0
+> <<<test_end>>>
+>
+>
+> To reproduce:
+>
+>         git clone https://github.com/intel/lkp-tests.git
+>         cd lkp-tests
+>         bin/lkp install job.yaml  # job file is attached in this email
+>         bin/lkp run     job.yaml
+Hi, please update the sctp case according to:
 
-As far as I can see, we do TST_RESOURCE_COPY() twice in this patch, once
-in the test setup and once in the actual test, which is what confuses
-me.
+https://github.com/sctp/lksctp-tools/commit/723993d3e33100fa96245d2ed46611eb9cba5236
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks.
