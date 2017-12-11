@@ -1,93 +1,26 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 12 Dec 2017 18:45:44 +0100
-Subject: [LTP] [RFC PATCH 2/2] travis: Add 2x cross-compile ARM build
-In-Reply-To: <20171212174544.12310-1-pvorel@suse.cz>
-References: <20171212174544.12310-1-pvorel@suse.cz>
-Message-ID: <20171212174544.12310-3-pvorel@suse.cz>
+From: Wang Long <wanglong19@meituan.com>
+Date: Mon, 11 Dec 2017 12:23:34 -0500
+Subject: [LTP] [PATCH 0/2] Adjust io-throttle testcases
+Message-ID: <1513013016-22819-1-git-send-email-wanglong19@meituan.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Use arm-linux-gnueabihf-gcc and aarch64-linux-gnu-gcc compilers.
+These two patches update io-throttle thestcases to use the new
+blkio cgroup interface.
 
-Cross-compile builds have just minimal dependencies (kernel and glibc
-headers).
+Wang Long (2):
+  adjust io-throttle testcases
+  Fix the way to check if the kernel has blkio cgroup enabled
 
-Builds replace native gcc-4.9 and gcc-6 builds to keep max 10 build
-jobs in travis.
+ .../io-throttle/io_throttle_testplan.txt           | 11 ++----
+ .../controllers/io-throttle/myfunctions-io.sh      | 43 +++++++++++++---------
+ .../io-throttle/run_io_throttle_test.sh            | 41 ++++++++-------------
+ testcases/kernel/controllers/test_controllers.sh   |  6 +--
+ 4 files changed, 48 insertions(+), 53 deletions(-)
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- .travis.yml | 33 ++++++++++++++++-----------------
- 1 file changed, 16 insertions(+), 17 deletions(-)
-
-diff --git a/.travis.yml b/.travis.yml
-index 2087e4174..74838be7c 100644
---- a/.travis.yml
-+++ b/.travis.yml
-@@ -4,14 +4,6 @@ matrix:
-     include:
- 
-         # normal native in-tree builds
--        - os: linux
--          env: BUILD="native" INSTALL_PACKAGES="$BUILD"
--          compiler: gcc-4.9
--          addons:
--              apt:
--                  sources: ['ubuntu-toolchain-r-test']
--                  packages: ['gcc-4.9']
--
-         - os: linux
-           env: BUILD="native" INSTALL_PACKAGES="$BUILD"
-           compiler: gcc-5
-@@ -20,14 +12,6 @@ matrix:
-                   sources: ['ubuntu-toolchain-r-test']
-                   packages: ['gcc-5']
- 
--        - os: linux
--          env: BUILD="native" INSTALL_PACKAGES="$BUILD"
--          compiler: gcc-6
--          addons:
--              apt:
--                  sources: ['ubuntu-toolchain-r-test']
--                  packages: ['gcc-6']
--
-         - os: linux
-           env: BUILD="native" INSTALL_PACKAGES="$BUILD"
-           compiler: gcc-7
-@@ -87,6 +71,21 @@ matrix:
-                   sources: ['ubuntu-toolchain-r-test']
-                   packages: ['gcc-7']
- 
-+        # cross-compile ARM builds
-+        - os: linux
-+          env: BUILD="cross" INSTALL_PACKAGES="$BUILD"
-+          compiler: arm-linux-gnueabihf-gcc
-+          addons:
-+              apt:
-+                  packages: ['gcc-arm-linux-gnueabihf', 'libc6-dev-armhf-cross']
-+
-+        - os: linux
-+          env: BUILD="cross" INSTALL_PACKAGES="$BUILD"
-+          compiler: aarch64-linux-gnu-gcc
-+          addons:
-+              apt:
-+                  packages: ['gcc-aarch64-linux-gnu', 'libc6-dev-arm64-cross']
-+
- notifications:
-     email:
-         secure: "b/xcA/K5OyQvPPnd0PRahTH5LJu8lgz8goGHvhXpHo+ZPsPgTDXNFo5cX9fSOkMuFKeoW8iGl0wOgK2+ptc8mbYDw277K4RFIHRHeV/KIoE1EzjQnEFiL8J0oHCAvDj12o0AXeriTyY9gICXKbR31Br6Zh5eKViDJe2OAGeHeDU="
-@@ -95,7 +94,7 @@ before_install:
-     # installing / removing dependencies
-     - if [ "$INSTALL_PACKAGES" = "" ]; then
-           sudo apt remove $(cat .travis.packages_native | grep -v -e 'libc6' -e 'libc6-dev' -e 'linux-libc-dev' -e 'libacl1')
--      ; else
-+      ; elif [ "$INSTALL_PACKAGES" != "cross" ]; then
-           sudo apt install -qq $(cat .travis.packages_native)
-       ; fi
- 
 -- 
-2.15.0
+1.8.3.1
 
