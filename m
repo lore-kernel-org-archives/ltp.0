@@ -1,53 +1,20 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 12 Dec 2017 11:20:48 +0100
-Subject: [LTP] [PATCH v3] scripts: Dump /proc and /sys
-In-Reply-To: <20171212074900.8150-1-rpalethorpe@suse.com>
-References: <20171212074900.8150-1-rpalethorpe@suse.com>
-Message-ID: <20171212102048.GB12279@rei.lan>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 12 Dec 2017 13:55:09 +0300
+Subject: [LTP] [PATCH] sctp: porting "tests: fix SMALL_MAXSEG" to
+ ltp/utils/sctp
+In-Reply-To: <CADvbK_dOujZu02er5BrOyA+LUtM4VNwqehhOgQBCuTooNmv_4Q@mail.gmail.com>
+References: <1512722689-7248-1-git-send-email-lizhijian@cn.fujitsu.com>
+ <CADvbK_dOujZu02er5BrOyA+LUtM4VNwqehhOgQBCuTooNmv_4Q@mail.gmail.com>
+Message-ID: <093ee096-e0a5-7eea-38be-34fec6619ea5@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +
-> +for i in $(seq $nproc); do
-> +    mkfifo "$dump_dir/fifo$i"
-> +    ( spawn_dd ) < "$dump_dir/fifo$i" &
-> +done
-> +
-> +count=$nproc
-> +for f in $files; do
-> +    if [ $count -gt 0 ]; then
-> +	count=$((count - 1))
-> +    else
-> +	count=$nproc
-> +    fi
-> +    echo "$f" > "$dump_dir/fifo$count"
-> +done
+On 12/08/2017 11:53 AM, Xin Long wrote:
+> On Fri, Dec 8, 2017 at 4:44 PM, Li Zhijian <lizhijian@cn.fujitsu.com> wrote:
+>> LKP reported a sctp issue: https://lists.01.org/pipermail/lkp/2017-December/007830.html recently
+>> we need to update sctp to fix this issue
 
-We still do have off-by-one here. The fifos are created for $(seq
-$nproc) which starts at 1 but the count here goes to 0 so instead of
-writing to fifo some we will write to a regular file here for
-$count == 0.
-
-
-Why not just:
-
-count=$nproc
-for f in $files; do
-	count=$((count - 1))
-
-	if [ $count -lt 1 ]; then
-	    count=$nproc
-	fi
-
-	...
-
-done
-
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Applied, thanks!
