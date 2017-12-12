@@ -1,50 +1,193 @@
-From: Li Zhijian <lizhijian@cn.fujitsu.com>
-Date: Tue, 12 Dec 2017 10:56:43 +0800
-Subject: [LTP] [PATCH 2/2] syscalls/brk: limit the largest requesting
- memory to UINT_MAX
-In-Reply-To: <20171211154806.GC12716@rei>
-References: <1508902611-28530-1-git-send-email-lizhijian@cn.fujitsu.com>
- <1508902611-28530-2-git-send-email-lizhijian@cn.fujitsu.com>
- <20171211154806.GC12716@rei>
-Message-ID: <b89015ff-ce0f-8387-39c8-f5c28258e05c@cn.fujitsu.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Tue, 12 Dec 2017 08:49:00 +0100
+Subject: [LTP] [PATCH v3] scripts: Dump /proc and /sys
+Message-ID: <20171212074900.8150-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+When a test fails during automated testing, the state of the system may be
+lost due to storage constraints or hardware availability. For example, if the
+system under test is virtualized, then the VM image may no longer be available
+due to storage capacity limits. Or if one is testing a bare metal system then the
+hardware may no longer be accessible for whatever reason.
 
+The serial console output may be available, but lacking some information. So
+in order to retain more information (about the kernel at least), we can
+systematically copy the contents of /proc and /sys.
 
-On 12/11/2017 11:48 PM, Cyril Hrubis wrote:
-> Hi!
->> sometimes(some platforms), sbrk(0) will return a huge address(e.g
->> Beg_brk_val=94392102215680), it will lead to the request a huge
->> memory by brk(size>1T) which beyonds most host memory size
-> I think that the code in the setup that determines the Max_brk_byte_size
-> does not make any sense to me, it seems to just multiply random value
-> (the initial break addres) by 4 and uses that as a base for increment. I
-> guess that it would be much better if we just choosen some multiple of
-> page size for the test.
+Not all sysfs or proc files are meant to be read or block indefinitely or are
+infinitely large etc. So the script only tries to copy ~256K from each file
+and times out after a second. Files which appear to be OK to read from are
+saved to a white list which can be used during future invocations to save some
+time.
 
-agree
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
 
+V3: Change dump_tar wording.
+    Fix missing file on counter reset.
+    Use bzip2 instead of xz
 
->
-> Also the test should be running several iterations but we run only one
-> by default.
->
-> All in all I think that it would be much better if we rewrote the test
-> from scratch using the new test library instead of applying band aids
-> to problems that are broken by design.
->
-> In short, do you want to take on rewriting the test or should I do that?
+Note, this was developed with Dash.
 
-it's great if you can help to rewrite it. :)
+ scripts/proc_sys_dump.sh | 145 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 145 insertions(+)
+ create mode 100755 scripts/proc_sys_dump.sh
 
-Thanks
-
-
->
-
-
+diff --git a/scripts/proc_sys_dump.sh b/scripts/proc_sys_dump.sh
+new file mode 100755
+index 000000000..6958c4f96
+--- /dev/null
++++ b/scripts/proc_sys_dump.sh
+@@ -0,0 +1,145 @@
++#!/bin/sh
++
++my_name=${0##*/}
++dump_dir=/tmp/dump
++dump_tar=
++white_list=/tmp/dump/white.list
++use_white_list=
++timeout=1
++proc_exclude="/proc/\(self\|thread-self\|[0-9]+\)/.*"
++page_sz=$(getconf PAGESIZE)
++nproc=$(nproc)
++
++echo "Dump /proc and /sys script, written by rpalethorpe@suse.com"
++
++while getopts d:c:w:u:t:b:h arg; do
++    case $arg in
++       d) dump_dir="$OPTARG" ;;
++       c) dump_tar="$OPTARG" ;;
++       w) white_list="$OPTARG" ;;
++       u) use_white_list="$OPTARG" ;;
++       t) timeout="$OPTARG" ;;
++       b) batch_size="$OPTARG" ;;
++       h) cat <<-EOF >&1
++
++This script partially dumps the contents of /proc and /sys to a folder. It can
++attempt to dump all the contents and then write out which files were
++successful to a white list. Or use a previously generated white list.
++
++usage:
++$my_name	[ -d dump_dir ]
++ 	 		[ -w white_list ] [ -u use_white_list ]
++ 			[ -t timeout ]
++ 			[ -b batch_size ]
++$my_name	-h
++
++-d dump_dir	  The output directory, note that this will be recreated.
++   		  Set to $dump_dir
++
++-c dump_tar	  Tar and compress the output directory contents into the file dump_tar.
++   		  Compression is performed using bzip2.
++
++-w white_list	  The white list to output after dumping the files.
++   		  Set to $white_list
++
++-u white_list	  The list of files to dump, if this is unset then 'find' is
++   		  used to create a list.
++
++-t timeout	  How long, in seconds, we should wait for operations to finish.
++   		  Set to $timeout.
++
++-h		  Print this help message and exit.
++
++Files are added to the white list if they are small, but not empty and can be
++copied quickly. The idea is that when running the script with -w white_list
++the majority of useful information can be quickly saved during automated
++testing.
++
++It is best to run this script as root otherwise sensitive information will be
++filtered out by the kernel e.g. memory layout. Which happens to be the most
++useful information in most situations.
++
++EOF
++	  exit 0 ;;
++   esac
++done
++
++files=
++if [ ! $use_white_list ]; then
++    echo "Finding files in /proc and /sys"
++    proc_files=$(find -L /proc -maxdepth 4 -perm /u=r,g=r -not -regex "$proc_exclude" -not -type d 2> /dev/null)
++    sys_files=$(find -L /sys -maxdepth 4 -perm /u=r,g=r -not -type d 2> /dev/null)
++    files="$proc_files $sys_files"
++else
++    echo "Using file list $use_white_list"
++    files=$(cat $use_white_list)
++fi
++
++dump_dir=${dump_dir%/}
++echo "Dumping to $dump_dir"
++rm -rf $dump_dir
++mkdir $dump_dir
++
++# This is run inside background subshells with stdin redirected to a named pipe.
++spawn_dd () {
++    local f=
++
++    read -r f
++    until [ "$f" = "EXIT" ]; do
++	mkdir -p $dump_dir$(dirname $f)
++	timeout $timeout dd if=$f of=$dump_dir$f bs=$page_sz count=63 status=none
++	if [ $? -eq 124 ]; then
++	    echo "dd $f took too long"
++	    rm $dump_dir$f
++	fi
++	read -r f
++    done
++}
++
++for i in $(seq $nproc); do
++    mkfifo "$dump_dir/fifo$i"
++    ( spawn_dd ) < "$dump_dir/fifo$i" &
++done
++
++count=$nproc
++for f in $files; do
++    if [ $count -gt 0 ]; then
++	count=$((count - 1))
++    else
++	count=$nproc
++    fi
++    echo "$f" > "$dump_dir/fifo$count"
++done
++
++for i in $(seq $nproc); do
++    echo "EXIT" > "$dump_dir/fifo$i"
++done
++
++wait
++
++for i in $(seq $nproc); do
++    rm "$dump_dir/fifo$i"
++done
++
++if [ $white_list ]; then
++    echo "Finished copying files, now generating $white_list"
++    for f in $(find $dump_dir -not -type d); do
++	size=$(stat -c '%s' $f)
++
++	if [ ${size:=0} -gt 0 -a $size -lt 256000 ]; then
++	    echo "${f#$dump_dir}" >> $white_list
++	else
++	    echo "$f has invalid file size: ${size:=0}"
++	fi
++    done
++else
++    echo "Finished copying files."
++fi
++
++if [ $dump_tar ]; then
++    echo "Compressing dumped files into $dump_tar"
++    oldpwd=${pwd}
++    cd $dump_dir
++    tar -cjf $dump_tar *
++    cd $oldpwd
++fi
+-- 
+2.15.1
 
