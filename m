@@ -1,239 +1,49 @@
 From: Na Nha <minhnhan0801@gmail.com>
-Date: Wed, 13 Dec 2017 23:14:04 +0700
+Date: Wed, 13 Dec 2017 23:19:53 +0700
 Subject: [LTP] <Failling_on_memcg_usage_in_bytes_test.sh>
-In-Reply-To: <CAEemH2ccstsUJm+YgGhNy00S54Uki0qDJoKdafHGtsvKJ5CukQ@mail.gmail.com>
-References: <CAPiF6Th1sDgRJH2bFb3jX-cBJNVO0s4zmMSH3ezifK7Y9nQCWw@mail.gmail.com>
- <CAEemH2c08B6QaXuqV=a3FT8V6O-yd8WPqR4=d+yME6iubF70Xw@mail.gmail.com>
- <CAPiF6TgVWEt4u+5TmoePBb2=T91j54cFao6LUB2n+jyKT=AatQ@mail.gmail.com>
- <CAEemH2ccstsUJm+YgGhNy00S54Uki0qDJoKdafHGtsvKJ5CukQ@mail.gmail.com>
-Message-ID: <CAPiF6ThJmpOdeh60y7dpLbk=czMOWi-tYDr9tEL9RyznEZ3Ugw@mail.gmail.com>
+Message-ID: <CAPiF6TjD8gD+puw=hJyGKBN37CQv-K84ukNxY_KrXWvGmW_3uQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="windows-1254"
+Content-Transfer-Encoding: base64
 To: ltp@lists.linux.it
 
-Hello ,
-
-
-
-It’s still failed for both cases. Please take a look on log file for both:
-
-=====================================================================================================
-
-
-
-root@mx6q:/opt/ltp/testcases/bin# echo 0 >
-/sys/fs/cgroup/memory/memory.use_hierarchy
-
-root@mx6q:/opt/ltp/testcases/bin# ./memcg_max_usage_in_bytes_test.sh
-
-memcg_max_usage_in_bytes_test 1 TINFO: Starting test 1
-
-memcg_max_usage_in_bytes_test 1 TINFO: Running memcg_process
---mmap-anon -s 4194304
-
-memcg_max_usage_in_bytes_test 1 TINFO: Warming up pid: 708
-
-memcg_max_usage_in_bytes_test 1 TINFO: Process is still here after warm up: 708
-
-memcg_max_usage_in_bytes_test 1 TPASS: memory.max_usage_in_bytes is
-4194304 as expected
-
-memcg_max_usage_in_bytes_test 2 TINFO: Starting test 2
-
-memcg_max_usage_in_bytes_test 2 TINFO: Running memcg_process
---mmap-anon -s 4194304
-
-memcg_max_usage_in_bytes_test 2 TINFO: Warming up pid: 728
-
-memcg_max_usage_in_bytes_test 2 TINFO: Process is still here after warm up: 728
-
-memcg_max_usage_in_bytes_test 2 TPASS: memory.memsw.max_usage_in_bytes
-is 4194304 as expected
-
-memcg_max_usage_in_bytes_test 3 TINFO: Starting test 3
-
-memcg_max_usage_in_bytes_test 3 TINFO: Running memcg_process
---mmap-anon -s 4194304
-
-memcg_max_usage_in_bytes_test 3 TINFO: Warming up pid: 748
-
-memcg_max_usage_in_bytes_test 3 TINFO: Process is still here after warm up: 748
-
-memcg_max_usage_in_bytes_test 3 TFAIL: memory.max_usage_in_bytes is
-4325376, 4194304 expected
-
-memcg_max_usage_in_bytes_test 4 TFAIL: memory.max_usage_in_bytes is
-131072, 0 expected
-
-memcg_max_usage_in_bytes_test 5 TINFO: Starting test 4
-
-memcg_max_usage_in_bytes_test 5 TINFO: Running memcg_process
---mmap-anon -s 4194304
-
-memcg_max_usage_in_bytes_test 5 TINFO: Warming up pid: 767
-
-memcg_max_usage_in_bytes_test 5 TINFO: Process is still here after warm up: 767
-
-memcg_max_usage_in_bytes_test 5 TPASS: memory.memsw.max_usage_in_bytes
-is 4194304 as expected
-
-memcg_max_usage_in_bytes_test 6 TPASS: memory.memsw.max_usage_in_bytes
-is 0 as expected
-
-=====================================================================================================
-
-
-
-root@mx6q:/opt/ltp/testcases/bin# echo 1 >
-/sys/fs/cgroup/memory/memory.use_hierarchy
-
-root@mx6q:/opt/ltp/testcases/bin# ./memcg_max_usage_in_bytes_test.sh
-
-memcg_max_usage_in_bytes_test 1 TINFO: Starting test 1
-
-memcg_max_usage_in_bytes_test 1 TINFO: Running memcg_process
---mmap-anon -s 4194304
-
-memcg_max_usage_in_bytes_test 1 TINFO: Warming up pid: 1014
-
-memcg_max_usage_in_bytes_test 1 TINFO: Process is still here after warm up: 1014
-
-memcg_max_usage_in_bytes_test 1 TFAIL: memory.max_usage_in_bytes is
-4325376, 4194304 expected
-
-/opt/ltp/testcases/bin/memcg_lib.sh: line 477: echo: write error:
-Device or resource busy
-
-memcg_max_usage_in_bytes_test 2 TINFO: restore
-/dev/memcg/memory.use_hierarchy failed
-
-memcg_max_usage_in_bytes_test 2 TINFO: Starting test 2
-
-memcg_max_usage_in_bytes_test 2 TINFO: Running memcg_process
---mmap-anon -s 4194304
-
-memcg_max_usage_in_bytes_test 2 TINFO: Warming up pid: 1034
-
-memcg_max_usage_in_bytes_test 2 TINFO: Process is still here after warm up: 1034
-
-memcg_max_usage_in_bytes_test 2 TFAIL: memory.memsw.max_usage_in_bytes
-is 4325376, 4194304 expected
-
-memcg_max_usage_in_bytes_test 3 TINFO: Starting test 3
-
-memcg_max_usage_in_bytes_test 3 TINFO: Running memcg_process
---mmap-anon -s 4194304
-
-memcg_max_usage_in_bytes_test 3 TINFO: Warming up pid: 1054
-
-memcg_max_usage_in_bytes_test 3 TINFO: Process is still here after warm up: 1054
-
-memcg_max_usage_in_bytes_test 3 TPASS: memory.max_usage_in_bytes is
-4194304 as expected
-
-memcg_max_usage_in_bytes_test 4 TPASS: memory.max_usage_in_bytes is 0
-as expected
-
-memcg_max_usage_in_bytes_test 5 TINFO: Starting test 4
-
-memcg_max_usage_in_bytes_test 5 TINFO: Running memcg_process
---mmap-anon -s 4194304
-
-memcg_max_usage_in_bytes_test 5 TINFO: Warming up pid: 1075
-
-memcg_max_usage_in_bytes_test 5 TINFO: Process is still here after warm up: 1075
-
-memcg_max_usage_in_bytes_test 5 TPASS: memory.memsw.max_usage_in_bytes
-is 4194304 as expected
-
-memcg_max_usage_in_bytes_test 6 TPASS: memory.memsw.max_usage_in_bytes
-is 0 as expected
-
-root@mx6q:/opt/ltp/testcases/bin#
-
-
-
-Please help me to resolve the problem!
-
-
-
-Trân trọng / Best regards,
-
-Nhan Le Minh
-
-2017-11-24 18:15 GMT+07:00 Li Wang <liwang@redhat.com>:
-> On Thu, Nov 23, 2017 at 1:38 AM, Na Nha <minhnhan0801@gmail.com> wrote:
->> Hello Li,
->>
->>
->>
->> Actually, I saw the below log:
->
-> That's it. I doubt you hit the same problem as this:
->   https://github.com/linux-test-project/ltp/issues/93
->
->>
->>
->>
->> /opt/ltp/testcases/bin/memcg_lib.sh: line 514: echo: write error:
->> Device or resource busy
->>
->> Or
->>
->> Something like:
->> # mount -t cgroup -omemory memcg /dev/memcg/
->> # mkdir -p /dev/memcg/ltp-test
->> # echo 0 >/dev/memcg/memory.use_hierarchy
->> -bash: echo: write error: Device or resource busy
->>
->>
->>
->> But so strangle, it has just appeared for the first time and it has been
->> passed not failed.
->
-> Can you, confirm that whether this test is still failed when
-> memory.use_hierarchy is 0?
->
->
-> Test A:
-> 1, reboot your system
-> 2, ehco 0 >/sys/fs/cgroup/memory/memory.use_hierarchy
-> 3, Run the ltp testcase: memcg_usage_in_bytes_test.sh
->
->
-> Test B:
-> 1, reboot
-> 2, ehco 1 >/sys/fs/cgroup/memory/memory.use_hierarchy
-> 3, Run the ltp testcase: memcg_usage_in_bytes_test.sh
->
->
-> Which one(Test A or B?) you can get PASS on your ARM board?
->
->
->>
->> And the following times, it’s still passed. But sometime it’s failed.
->>
->> As mentioned previously, it is a dangling falling, sometimes the test result
->> is pass and sometimes is failed
->>
->>
->>
->> I have attached 2 logs file (1 failed, 1 passed log) when I run command : sh
->> –x  memcg_usage_in_bytes_test.sh for more detail log.
->>
->> Could you please review those and let me know what I should do next?
->>
->>
->>
->> Trân trọng / Best regards,
->>
->> Nhan Le Minh
->>
->
-> Btw, please CC' LTP maillist when response email related to ltp thing. :)
->
-> --
-> Li Wang
-> liwang@redhat.com
+SGVsbG8gTFRQIHRlYW0sCgpUaGVyZSBpcyBhbiBpc3N1ZSBhcyBiZWxvdyB3aGVuIEkgcmFuICIu
+L21lbWNnX3VzYWdlX2luX2J5dGVzX3Rlc3Quc2jigJ0Kb24gbXkgQVJNIGJvYXJkCgpyb290QG14
+NnE6L29wdC9sdHAvdGVzdGNhc2VzL2JpbiMgY2F0IC9zeXMvZnMvY2dyb3VwL21lbW9yeS9tZW1v
+cnkudXNlX2hpZXJhcmNoeQowCnJvb3RAbXg2cTovb3B0L2x0cC90ZXN0Y2FzZXMvYmluIyAuL21l
+bWNnX21heF91c2FnZV9pbl9ieXRlc190ZXN0LnNoCm1lbWNnX21heF91c2FnZV9pbl9ieXRlc190
+ZXN0IDEgVElORk86IFN0YXJ0aW5nIHRlc3QgMQptZW1jZ19tYXhfdXNhZ2VfaW5fYnl0ZXNfdGVz
+dCAxIFRJTkZPOiBSdW5uaW5nIG1lbWNnX3Byb2Nlc3MKLS1tbWFwLWFub24gLXMgNDE5NDMwNApt
+ZW1jZ19tYXhfdXNhZ2VfaW5fYnl0ZXNfdGVzdCAxIFRJTkZPOiBXYXJtaW5nIHVwIHBpZDogNzA4
+Cm1lbWNnX21heF91c2FnZV9pbl9ieXRlc190ZXN0IDEgVElORk86IFByb2Nlc3MgaXMgc3RpbGwg
+aGVyZSBhZnRlciB3YXJtIHVwOiA3MDgKbWVtY2dfbWF4X3VzYWdlX2luX2J5dGVzX3Rlc3QgMSBU
+UEFTUzogbWVtb3J5Lm1heF91c2FnZV9pbl9ieXRlcyBpcwo0MTk0MzA0IGFzIGV4cGVjdGVkCm1l
+bWNnX21heF91c2FnZV9pbl9ieXRlc190ZXN0IDIgVElORk86IFN0YXJ0aW5nIHRlc3QgMgptZW1j
+Z19tYXhfdXNhZ2VfaW5fYnl0ZXNfdGVzdCAyIFRJTkZPOiBSdW5uaW5nIG1lbWNnX3Byb2Nlc3MK
+LS1tbWFwLWFub24gLXMgNDE5NDMwNAptZW1jZ19tYXhfdXNhZ2VfaW5fYnl0ZXNfdGVzdCAyIFRJ
+TkZPOiBXYXJtaW5nIHVwIHBpZDogNzI4Cm1lbWNnX21heF91c2FnZV9pbl9ieXRlc190ZXN0IDIg
+VElORk86IFByb2Nlc3MgaXMgc3RpbGwgaGVyZSBhZnRlciB3YXJtIHVwOiA3MjgKbWVtY2dfbWF4
+X3VzYWdlX2luX2J5dGVzX3Rlc3QgMiBUUEFTUzogbWVtb3J5Lm1lbXN3Lm1heF91c2FnZV9pbl9i
+eXRlcwppcyA0MTk0MzA0IGFzIGV4cGVjdGVkCm1lbWNnX21heF91c2FnZV9pbl9ieXRlc190ZXN0
+IDMgVElORk86IFN0YXJ0aW5nIHRlc3QgMwptZW1jZ19tYXhfdXNhZ2VfaW5fYnl0ZXNfdGVzdCAz
+IFRJTkZPOiBSdW5uaW5nIG1lbWNnX3Byb2Nlc3MKLS1tbWFwLWFub24gLXMgNDE5NDMwNAptZW1j
+Z19tYXhfdXNhZ2VfaW5fYnl0ZXNfdGVzdCAzIFRJTkZPOiBXYXJtaW5nIHVwIHBpZDogNzQ4Cm1l
+bWNnX21heF91c2FnZV9pbl9ieXRlc190ZXN0IDMgVElORk86IFByb2Nlc3MgaXMgc3RpbGwgaGVy
+ZSBhZnRlciB3YXJtIHVwOiA3NDgKbWVtY2dfbWF4X3VzYWdlX2luX2J5dGVzX3Rlc3QgMyBURkFJ
+TDogbWVtb3J5Lm1heF91c2FnZV9pbl9ieXRlcyBpcwo0MzI1Mzc2LCA0MTk0MzA0IGV4cGVjdGVk
+Cm1lbWNnX21heF91c2FnZV9pbl9ieXRlc190ZXN0IDQgVEZBSUw6IG1lbW9yeS5tYXhfdXNhZ2Vf
+aW5fYnl0ZXMgaXMKMTMxMDcyLCAwIGV4cGVjdGVkCm1lbWNnX21heF91c2FnZV9pbl9ieXRlc190
+ZXN0IDUgVElORk86IFN0YXJ0aW5nIHRlc3QgNAptZW1jZ19tYXhfdXNhZ2VfaW5fYnl0ZXNfdGVz
+dCA1IFRJTkZPOiBSdW5uaW5nIG1lbWNnX3Byb2Nlc3MKLS1tbWFwLWFub24gLXMgNDE5NDMwNApt
+ZW1jZ19tYXhfdXNhZ2VfaW5fYnl0ZXNfdGVzdCA1IFRJTkZPOiBXYXJtaW5nIHVwIHBpZDogNzY3
+Cm1lbWNnX21heF91c2FnZV9pbl9ieXRlc190ZXN0IDUgVElORk86IFByb2Nlc3MgaXMgc3RpbGwg
+aGVyZSBhZnRlciB3YXJtIHVwOiA3NjcKbWVtY2dfbWF4X3VzYWdlX2luX2J5dGVzX3Rlc3QgNSBU
+UEFTUzogbWVtb3J5Lm1lbXN3Lm1heF91c2FnZV9pbl9ieXRlcwppcyA0MTk0MzA0IGFzIGV4cGVj
+dGVkCm1lbWNnX21heF91c2FnZV9pbl9ieXRlc190ZXN0IDYgVFBBU1M6IG1lbW9yeS5tZW1zdy5t
+YXhfdXNhZ2VfaW5fYnl0ZXMKaXMgMCBhcyBleHBlY3RlZAoKTXkga2VybmVsIGlzOgpyb290QG14
+NnE6L2Rldi9zaG0jIHVuYW1lIC1hCkxpbnV4IG14NnEgMy4xNC43OS0wMTIxNC1nNzZiNWZkMzc3
+Nzg0ICMxIFNNUCBQUkVFTVBUIFdlZCBOb3YgMTUKMTc6MDY6MzcgQ0VUIDIwMTcgYXJtdjdsIEdO
+VS9MaW51eAoKQ291bGQgeW91IHBsZWFzZSBoZWxwIG1lIHRvIHJlc29sdmUgdGhlIHByb2JsZW0/
+CkkgbG9vayBmb3J3YXJkIGFueSByZXBseS4KCgpUaGFua3MgLyBCZXN0IHJlZ2FyZHMsCgpOaGFu
+IExlIE1pbmgK
