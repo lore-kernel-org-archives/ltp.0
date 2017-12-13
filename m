@@ -1,47 +1,95 @@
-From: Wang Long <wanglong19@meituan.com>
-Date: Mon, 11 Dec 2017 12:23:36 -0500
-Subject: [LTP] [PATCH 2/2] Fix the way to check if the kernel has blkio
- cgroup enabled
-In-Reply-To: <1513013016-22819-1-git-send-email-wanglong19@meituan.com>
-References: <1513013016-22819-1-git-send-email-wanglong19@meituan.com>
-Message-ID: <1513013016-22819-3-git-send-email-wanglong19@meituan.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 13 Dec 2017 14:13:34 +0100
+Subject: [LTP] [RFC PATCH 3/3] build.sh: Allow to overwrite prefix
+Message-ID: <20171213131334.26863-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This patch simple rename blockio to blkio.
+with LTP_PREFIX environment variable.
 
-Signed-off-by: Wang Long <wanglong19@meituan.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/controllers/test_controllers.sh | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Note about using environment variables and parameters not prefixed with '-' (no options):
+I like getopt(s) and the reason I didn't use them is:
+* I don't like short opts which provides getopts build-in (the one we use in LTP).
+* Long getopts are supported by getopt binary from util-linux which I didn't
+  want to depend on.
+---
+ build.sh | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/testcases/kernel/controllers/test_controllers.sh b/testcases/kernel/controllers/test_controllers.sh
-index 7aa974f..a5629a1 100755
---- a/testcases/kernel/controllers/test_controllers.sh
-+++ b/testcases/kernel/controllers/test_controllers.sh
-@@ -43,8 +43,8 @@ then
- 	CPU_CONTROLLER_VALUE=`grep -w cpu /proc/cgroups | cut -f4`;
- 	MEM_CONTROLLER=`grep -w memory /proc/cgroups | cut -f1`;
- 	MEM_CONTROLLER_VALUE=`grep -w memory /proc/cgroups | cut -f4`;
--	IOTHROTTLE_CONTROLLER=`grep -w blockio /proc/cgroups | cut -f1`;
--	IOTHROTTLE_CONTROLLER_VALUE=`grep -w blockio /proc/cgroups | cut -f4`;
-+	BLKIO_CONTROLLER=`grep -w blkio /proc/cgroups | cut -f1`;
-+	BLKIO_CONTROLLER_VALUE=`grep -w blkio /proc/cgroups | cut -f4`;
- 	FREEZER=`grep -w freezer /proc/cgroups | cut -f1`;
- 	FREEZER_VALUE=`grep -w freezer /proc/cgroups | cut -f4`;
- 	CPUACCOUNT_CONTROLLER=`grep -w cpuacct /proc/cgroups | cut -f1`
-@@ -82,7 +82,7 @@ then
- 		echo "Skipping all memory controller testcases....";
- 	fi
+diff --git a/build.sh b/build.sh
+index 29da4d29e..bf791d083 100755
+--- a/build.sh
++++ b/build.sh
+@@ -9,9 +9,9 @@
  
--	if [ "$IOTHROTTLE_CONTROLLER" = "blockio" ] && [ "$IOTHROTTLE_CONTROLLER_VALUE" = "1" ]
-+	if [ "$BLKIO_CONTROLLER" = "blkio" ] && [ "$BLKIO_CONTROLLER_VALUE" = "1" ]
- 	then
- 		$LTPROOT/testcases/bin/run_io_throttle_test.sh;
- 	else
+ set -e
+ 
+-PREFIX="$HOME/ltp-install"
++LTP_PREFIX="${LTP_PREFIX:-$HOME/ltp-install}"
+ 
+-CONFIGURE_OPTS_IN_TREE="--with-open-posix-testsuite --with-realtime-testsuite --prefix=$PREFIX"
++CONFIGURE_OPTS_IN_TREE="--with-open-posix-testsuite --with-realtime-testsuite --prefix=$LTP_PREFIX"
+ 
+ # TODO: open posix testsuite is currently broken in out-tree-build. Enable it once it's fixed.
+ CONFIGURE_OPTS_OUT_TREE="--with-realtime-testsuite"
+@@ -20,13 +20,13 @@ MAKE_OPTS="-j$(getconf _NPROCESSORS_ONLN)"
+ 
+ build_32()
+ {
+-	echo "===== 32-bit in-tree build into $PREFIX ====="
++	echo "===== 32-bit in-tree build into $LTP_PREFIX ====="
+ 	build_in_tree CFLAGS="-m32" CXXFLAGS="-m32" LDFLAGS="-m32"
+ }
+ 
+ build_native()
+ {
+-	echo "===== native in-tree build into $PREFIX ====="
++	echo "===== native in-tree build into $LTP_PREFIX ====="
+ 	build_in_tree
+ }
+ 
+@@ -37,7 +37,7 @@ build_cross()
+ 	[ -n "$host" ] || \
+ 		{ echo "Missing CROSS_COMPILE and CC variables. You need to set at least one" >&2; exit 1; }
+ 
+-	echo "===== cross-compile ${host} in-tree build into $PREFIX ====="
++	echo "===== cross-compile ${host} in-tree build into $LTP_PREFIX ====="
+ 	build_in_tree "--host=$host" CROSS_COMPILE="${host}-"
+ }
+ 
+@@ -47,7 +47,7 @@ build_out_tree()
+ 	local build="$tree/../ltp-build"
+ 	local make_opts="$MAKE_OPTS -C $build -f $tree/Makefile top_srcdir=$tree top_builddir=$build"
+ 
+-	echo "===== native out-of-tree build into $PREFIX ====="
++	echo "===== native out-of-tree build into $LTP_PREFIX ====="
+ 	mkdir -p $build
+ 
+ 	echo "=== autotools ==="
+@@ -64,7 +64,7 @@ build_out_tree()
+ 	cat include/config.h
+ 
+ 	make $make_opts
+-	make $make_opts DESTDIR="$PREFIX" SKIP_IDCHECK=1 install
++	make $make_opts DESTDIR="$LTP_PREFIX" SKIP_IDCHECK=1 install
+ }
+ 
+ build_in_tree()
+@@ -106,6 +106,9 @@ native  native in-tree build
+ out     out-of-tree build
+ 
+ Default build is native in-tree build.
++
++LTP is installed into '$LTP_PREFIX'.
++The destination can be changed by setting LTP_PREFIX environment variable.
+ EOF
+ }
+ 
 -- 
-1.8.3.1
+2.15.0
 
