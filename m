@@ -1,10 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 13 Dec 2017 16:10:57 +0100
-Subject: [LTP] [PATCH 3/3] posix: aio_error: 2-1: initialize aio_reqprio
-In-Reply-To: <1513079548-23022-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1513079548-23022-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1513079548-23022-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-Message-ID: <20171213151056.GC19930@rei>
+Date: Wed, 13 Dec 2017 17:06:25 +0100
+Subject: [LTP] [RFC PATCH 2/2] travis: Add 2x cross-compile ARM build
+In-Reply-To: <20171213142526.tozen4rtmaerbkma@dell5510>
+References: <20171212174544.12310-1-pvorel@suse.cz>
+ <20171212174544.12310-3-pvorel@suse.cz>
+ <20171213135808.GE11493@rei>
+ <20171213142526.tozen4rtmaerbkma@dell5510>
+Message-ID: <20171213160625.GA22116@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,9 +14,34 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> aio_write() may fail if aio_reqprio is not properly initialized.
+> > So the cross compilers are gcc-4.x and gcc-6.x? I ask since we just ask
+> > for arm cross compilers without a version in the script below.
+> Versions are 4.8.4 for both. It's actually visible in the log:
+> 
+> https://travis-ci.org/pevik-travis/ltp/jobs/315469429
+> $ arm-linux-gnueabihf-gcc --version
+> arm-linux-gnueabihf-gcc (Ubuntu/Linaro 4.8.4-2ubuntu1~14.04.1) 4.8.4
+> Copyright (C) 2013 Free Software Foundation, Inc.
+> 
+> https://travis-ci.org/pevik-travis/ltp/jobs/315469430
+> $ aarch64-linux-gnu-gcc --version
+> aarch64-linux-gnu-gcc (Ubuntu/Linaro 4.8.4-2ubuntu1~14.04.1) 4.8.4
+>
+> > I that is true I suppose that the cross compiler versions may change
+> > without us noticing, which is not that big deal but it may be better to
+> > select specific version instead if possible.
+> The reason why it's not fixed is that it's possible only with special repository
+> ubuntu-toolchain-r-test, which is used for other jobs. AFAIK they don't provide arm
+> toolchain, that's why I used standard trusty repository for ARM.
+> 
+> So is that ok as it is?
 
-Here as well.
+I guess so.
+
+It's a smoke test so we have to keep the number of build reasonably
+small and having arm builds is agruably more important than all possible
+gcc flavors. Moreover we still run gcc-4.9 and gcc-6 for 32bit builds
+right?
 
 -- 
 Cyril Hrubis
