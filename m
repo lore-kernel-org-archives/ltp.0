@@ -1,66 +1,169 @@
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 14 Dec 2017 15:24:31 +0800
-Subject: [LTP] [PATCH v2 1/2] ioctl: add two receive mode checking for
-	TUN/TAP driver
-Message-ID: <20171214072432.15709-1-liwang@redhat.com>
+Date: Thu, 14 Dec 2017 15:24:32 +0800
+Subject: [LTP] [PATCH v2 2/2] ioctl: convert ioctl03 to new API
+In-Reply-To: <20171214072432.15709-1-liwang@redhat.com>
+References: <20171214072432.15709-1-liwang@redhat.com>
+Message-ID: <20171214072432.15709-2-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-IFF_NAPI(1) and IFF_NAPI_FRAGS(2) are two new flags for TUN/TAP
-driver, but currently ioctl03 does not hanlde them so it always
-failed on latest kernel-4.15.0-rc2 like:
-
-ioctl03     0  TINFO  :  Available features are: 0x7133
-ioctl03     0  TINFO  :  TUN 0x1
-ioctl03     0  TINFO  :  TAP 0x2
-ioctl03     0  TINFO  :  NO_PI 0x1000
-ioctl03     0  TINFO  :  ONE_QUEUE 0x2000
-ioctl03     0  TINFO  :  VNET_HDR 0x4000
-ioctl03     0  TINFO  :  MULTI_QUEUE 0x100
-ioctl03     1  TFAIL  :  ioctl03.c:114: (UNKNOWN 0x30)
-
-See kernel commit:
-(1) commit 943170998b2 (tun: enable NAPI for TUN/TAP driver)
-(2) commit 90e33d45940 (tun: enable napi_gro_frags() for TUN/TAP driver)
-
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/kernel/syscalls/ioctl/ioctl03.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ testcases/kernel/syscalls/ioctl/ioctl03.c | 84 +++++++++++--------------------
+ 1 file changed, 29 insertions(+), 55 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/ioctl/ioctl03.c b/testcases/kernel/syscalls/ioctl/ioctl03.c
-index 83433b8..8c3d446 100644
+index 8c3d446..f23b1f8 100644
 --- a/testcases/kernel/syscalls/ioctl/ioctl03.c
 +++ b/testcases/kernel/syscalls/ioctl/ioctl03.c
-@@ -60,6 +60,14 @@
- #define IFF_MULTI_QUEUE	0x0100
+@@ -1,7 +1,6 @@
+ /*
+- *
+- * Copyright (c) Rusty Russell <rusty@rustcorp.com.au>
+  * Copyright (c) International Business Machines  Corp., 2008
++ * Copyright (c) Linux Test Project, 2017
+  *
+  * This program is free software;  you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+@@ -12,30 +11,22 @@
+  * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+  * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+ 
+ /*
+- *
+- *
+  * File:        ioctl03.c
+  *
+  * Description: This program tests whether all the valid IFF flags are
+  *              returned properly by implementation of TUNGETFEATURES ioctl
+  *              on kernel 2.6.27
+  *
+- * Total Tests: 1
+- *
+  * Test Name:   ioctl03
+  *
+  * Author:      Rusty Russell <rusty@rustcorp.com.au>
+  *
+- * History:     Created - Nov 28 2008 - Rusty Russell <rusty@rustcorp.com.au>
+- *              Ported to LTP
+- *                      - Nov 28 2008 - Subrata <subrata@linux.vnet.ibm.com>
++ * history:     created - nov 28 2008 - rusty russell <rusty@rustcorp.com.au>
++ *              ported to ltp
++ *                      - nov 28 2008 - subrata <subrata@linux.vnet.ibm.com>
+  */
+ 
+ #include <sys/types.h>
+@@ -45,8 +36,7 @@
+ #include <errno.h>
+ #include <stdio.h>
+ #include <linux/if_tun.h>
+-
+-#include "test.h"
++#include "tst_test.h"
+ 
+ #ifndef TUNGETFEATURES
+ #define TUNGETFEATURES _IOR('T', 207, unsigned int)
+@@ -61,67 +51,51 @@
  #endif
  
-+#ifndef IFF_NAPI
-+#define IFF_NAPI       0x0010
-+#endif
-+
-+#ifndef IFF_NAPI_FRAGS
-+#define IFF_NAPI_FRAGS 0x0020
-+#endif
-+
- char *TCID = "ioctl03";
- int TST_TOTAL = 1;
+ #ifndef IFF_NAPI
+-#define IFF_NAPI       0x0010
++#define IFF_NAPI	0x0010
+ #endif
  
-@@ -84,7 +92,9 @@ static struct {
- 	IFF_NO_PI, "NO_PI"}, {
- 	IFF_ONE_QUEUE, "ONE_QUEUE"}, {
- 	IFF_VNET_HDR, "VNET_HDR"}, {
--	IFF_MULTI_QUEUE, "MULTI_QUEUE"}
-+	IFF_MULTI_QUEUE, "MULTI_QUEUE"}, {
-+	IFF_NAPI, "IFF_NAPI"}, {
-+	IFF_NAPI_FRAGS, "IFF_NAPI_FRAGS"}
+ #ifndef IFF_NAPI_FRAGS
+-#define IFF_NAPI_FRAGS 0x0020
++#define IFF_NAPI_FRAGS	0x0020
+ #endif
+ 
+-char *TCID = "ioctl03";
+-int TST_TOTAL = 1;
+-
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-}
+-
+-static void setup(void)
+-{
+-	TEST_PAUSE;
+-	tst_tmpdir();
+-}
+-
+ static struct {
+ 	unsigned int flag;
+ 	const char *name;
+ } known_flags[] = {
+-	{
+-	IFF_TUN, "TUN"}, {
+-	IFF_TAP, "TAP"}, {
+-	IFF_NO_PI, "NO_PI"}, {
+-	IFF_ONE_QUEUE, "ONE_QUEUE"}, {
+-	IFF_VNET_HDR, "VNET_HDR"}, {
+-	IFF_MULTI_QUEUE, "MULTI_QUEUE"}, {
+-	IFF_NAPI, "IFF_NAPI"}, {
+-	IFF_NAPI_FRAGS, "IFF_NAPI_FRAGS"}
++	{IFF_TUN, "TUN"},
++	{IFF_TAP, "TAP"},
++	{IFF_NO_PI, "NO_PI"},
++	{IFF_ONE_QUEUE, "ONE_QUEUE"},
++	{IFF_VNET_HDR, "VNET_HDR"},
++	{IFF_MULTI_QUEUE, "MULTI_QUEUE"},
++	{IFF_NAPI, "IFF_NAPI"},
++	{IFF_NAPI_FRAGS, "IFF_NAPI_FRAGS"}
  };
  
- int main(void)
+-int main(void)
++static void verify_features(void)
+ {
+ 	unsigned int features, i;
+ 
+-	setup();
+-	tst_require_root();
++	int netfd = SAFE_OPEN("/dev/net/tun", O_RDWR);
+ 
+-	int netfd = open("/dev/net/tun", O_RDWR);
+-	if (netfd < 0)
+-		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "opening /dev/net/tun failed");
++	SAFE_IOCTL(netfd, TUNGETFEATURES, &features);
+ 
+-	if (ioctl(netfd, TUNGETFEATURES, &features) != 0)
+-		tst_brkm(TCONF, cleanup,
+-			 "Kernel does not support TUNGETFEATURES");
+-	tst_resm(TINFO, "Available features are: %#x", features);
++	tst_res(TINFO, "Available features are: %#x", features);
+ 	for (i = 0; i < sizeof(known_flags) / sizeof(known_flags[0]); i++) {
+ 		if (features & known_flags[i].flag) {
+ 			features &= ~known_flags[i].flag;
+-			tst_resm(TINFO, "%s %#x", known_flags[i].name,
++			tst_res(TPASS, "%s %#x", known_flags[i].name,
+ 				 known_flags[i].flag);
+ 		}
+ 	}
+ 	if (features)
+-		tst_resm(TFAIL, "(UNKNOWN %#x)", features);
+-	cleanup();
+-	tst_exit();
++		tst_res(TFAIL, "(UNKNOWN %#x)", features);
++
++	SAFE_CLOSE(netfd);
+ }
++
++static struct tst_test test = {
++	.test_all = verify_features,
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++};
 -- 
 2.9.3
 
