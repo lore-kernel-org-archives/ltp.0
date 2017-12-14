@@ -1,40 +1,50 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 14 Dec 2017 15:23:07 +0300
-Subject: [LTP] [PATCH V2 2/2] posix: aio_error: 2-1: zero out the control
-	block buffer
-In-Reply-To: <1513254187-6528-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1513254187-6528-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Message-ID: <1513254187-6528-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 14 Dec 2017 20:04:59 +0100
+Subject: [LTP] [RFC PATCH 2/2] travis: Add 2x cross-compile ARM build
+In-Reply-To: <20171213160625.GA22116@rei>
+References: <20171212174544.12310-1-pvorel@suse.cz>
+ <20171212174544.12310-3-pvorel@suse.cz>
+ <20171213135808.GE11493@rei>
+ <20171213142526.tozen4rtmaerbkma@dell5510>
+ <20171213160625.GA22116@rei>
+Message-ID: <20171214190459.3lam5xfr6xzmjbfp@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Per aio(7) it's recommended to zero out the control block buffer
-before use to avoid possible failures due to uninitialized fields.
+Hi!
+> > > So the cross compilers are gcc-4.x and gcc-6.x? I ask since we just ask
+> > > for arm cross compilers without a version in the script below.
+> > Versions are 4.8.4 for both. It's actually visible in the log:
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
-Changes since V1:
- - use calloc()
+> > https://travis-ci.org/pevik-travis/ltp/jobs/315469429
+> > $ arm-linux-gnueabihf-gcc --version
+> > arm-linux-gnueabihf-gcc (Ubuntu/Linaro 4.8.4-2ubuntu1~14.04.1) 4.8.4
+> > Copyright (C) 2013 Free Software Foundation, Inc.
 
- .../conformance/interfaces/aio_error/2-1.c         |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+> > https://travis-ci.org/pevik-travis/ltp/jobs/315469430
+> > $ aarch64-linux-gnu-gcc --version
+> > aarch64-linux-gnu-gcc (Ubuntu/Linaro 4.8.4-2ubuntu1~14.04.1) 4.8.4
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_error/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_error/2-1.c
-index 12319dc..9ce2916 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_error/2-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_error/2-1.c
-@@ -63,7 +63,7 @@ int main(void)
- 	/* create AIO req */
- 
- 	for (i = 0; i < BUF_NB; i++) {
--		aiocb[i] = malloc(sizeof(struct aiocb));
-+		aiocb[i] = calloc(1, sizeof(struct aiocb));
- 		if (aiocb[i] == NULL) {
- 			printf(TNAME " Error@malloc(): %s\n",
- 			       strerror(errno));
--- 
-1.7.1
+> > > I that is true I suppose that the cross compiler versions may change
+> > > without us noticing, which is not that big deal but it may be better to
+> > > select specific version instead if possible.
+> > The reason why it's not fixed is that it's possible only with special repository
+> > ubuntu-toolchain-r-test, which is used for other jobs. AFAIK they don't provide arm
+> > toolchain, that's why I used standard trusty repository for ARM.
 
+> > So is that ok as it is?
+
+> I guess so.
+
+> It's a smoke test so we have to keep the number of build reasonably
+> small and having arm builds is agruably more important than all possible
+> gcc flavors. Moreover we still run gcc-4.9 and gcc-6 for 32bit builds
+> right?
+Yes, we do.
+
+
+Kind regards,
+Petr
