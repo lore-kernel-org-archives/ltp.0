@@ -1,33 +1,71 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 14 Dec 2017 20:19:42 +0100
-Subject: [LTP] [RFC PATCH 3/3] build.sh: Allow to overwrite prefix
-In-Reply-To: <20171213161159.GB22116@rei>
-References: <20171213131334.26863-1-pvorel@suse.cz>
- <20171213135943.GF11493@rei>
- <20171213144101.54egpm2q4nbb5asc@dell5510>
- <20171213161159.GB22116@rei>
-Message-ID: <20171214191942.nd7iqrwbbofcrxdc@dell5510>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Fri, 15 Dec 2017 21:13:17 +0800
+Subject: [LTP] [PATCH] netns/netns_helper.sh: Fix failure when testing ipv6
+	in netns
+Message-ID: <1513343597-5720-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+When testing ipv6 in network namespace, we got the following
+error on some distros(e.g. RHEL7.5Alpha):
+----------------------------------------------------------------------------------
+connect: Cannot assign requested address
+netns_comm_ns_exec_ipv6_netlink 1 TFAIL: configuration and communication over veth0
+connect: Cannot assign requested address
+netns_comm_ns_exec_ipv6_netlink 2 TFAIL: configuration and communication over veth1
+-----------------------------------------------------------------------------------
 
-> > Maybe I should have used getopts short option with values, even I don't like short values:
+We could fix this issue by waiting enough time(5s) for address
+to pass duplicate address detection.
 
-> > ./build.sh [ -t 32|cross|out ] [ -p PREFIX_DIR ] [ -c CC ]
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/containers/netns/netns_helper.sh | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-> This does not seem that bad to me.
+diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
+index a95cdf2..72112c8 100755
+--- a/testcases/kernel/containers/netns/netns_helper.sh
++++ b/testcases/kernel/containers/netns/netns_helper.sh
+@@ -78,6 +78,16 @@ tst_check_iproute()
+ 	fi
+ }
+ 
++check_ipv6_tentative()
++{
++	local info0=$($NS_EXEC $NS_HANDLE0 $NS_TYPE ip -6 address show tentative 2>&1)
++	local info1=$($NS_EXEC $NS_HANDLE1 $NS_TYPE ip -6 address show tentative 2>&1)
++
++	[ -z "$info0" ] && [ -z "$info1" ] && return 0
++
++	return 1;
++}
++
+ ##
+ # Sets up global variables which can be used in test cases (documented above),
+ # creates two network namespaces and a pair of virtual ethernet devices, each
+@@ -285,6 +295,16 @@ netns_set_ip()
+ 			tst_brkm TBROK "enabling veth1 device failed"
+ 		;;
+ 	esac
++
++	if [ "$tping" = "ping6" ]; then
++		for ((i=0; i<5; i++)); do
++			check_ipv6_tentative && return
++			tst_resm TINFO \
++				"address was in tentative state, wait and retry"
++			sleep 1
++		done
++		tst_brkm TBROK "address was always in tentative state"
++	fi
+ }
+ 
+ netns_ns_exec_cleanup()
+-- 
+1.8.3.1
 
-> I would like to avoid passing half of the parameters via argv and half
-> via env variables if possible.
-Right. I rewrote the script and clean it a bit (see master). Everything now uses
-getopts (shell built-in).
-IMHO script is now suitable for local development as well.
 
-I also added that 2 ARM cross-compile builds.
 
-Kind regards,
-Petr
