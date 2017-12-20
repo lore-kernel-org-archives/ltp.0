@@ -1,87 +1,37 @@
 From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 20 Dec 2017 18:33:57 +0530
+Date: Wed, 20 Dec 2017 18:34:39 +0530
 Subject: [LTP] [PATCH] runltp: skipfile: skipped test cases should be
-	visible as TCONF in results
-Message-ID: <1513775037-30519-1-git-send-email-naresh.kamboju@linaro.org>
+ visible as TCONF in results
+In-Reply-To: <20171220102830.GB6688@rei>
+References: <1513073830-17174-1-git-send-email-naresh.kamboju@linaro.org>
+ <20171219125952.GE28293@rei>
+ <CA+G9fYv4DnCufg6xofpjuM7S8zt1mzRtE4VfrP=PaNF5fxiy1w@mail.gmail.com>
+ <20171220102830.GB6688@rei>
+Message-ID: <CA+G9fYuhvG4ymur868HJE8fH=qMGPDR2KWnhP3RJh9XKGbUx=w@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When we skip tests in LTP by using "./runltp -S SKIPFILE", they get removed
-from the test list completely, leaving no trace in the results.
+On 20 December 2017 at 15:58, Cyril Hrubis <chrubis@suse.cz> wrote:
+> Hi!
+>> > This could be written in a simpler form:
+>> >
+>> >         for test_name in $(awk '{print $1}' "$SKIPFILE"); do
+>> >                 case "${test_name}" in \#*) continue;; esac
+>> >                 sed -i "/\<${test_name}\>/c\\${test_name} exit 32;" alltests
+>> >         done
+>>
+>> I have tested this piece of script and this also works.
+>> Shall i re-send the patch with this modification ?
+>
+> Yes please.
 
-This patch will add SKIPFILE listed test cases names to results as TCONF.
-when testcase_name listed in SKIPFILE the main alltests will get that
-testcase_name followed by exit 32;
+Sending updated patch with above comments.
+- Naresh
 
-Example:
-  SKIPFILE the user defined content
-  $ cat SKIPFILE
-  testcase_name
-
-  $ ./runltp -f syscalls -S SKIPFILE
-
-  The runtime generated alltests file gets as
-  $ cat alltests
-  testcase_name exit 32;
-
-  The final results file shows as
-  $ cat results
-  testcase_name TCONF
-
-The good practise with SKIPFILE is,
-tests listed in a SKIPFILE should be a single testcase_name per line.
-However, test script takes only first column by using awk {print $1}
-
-We can add comments inside SKIPFILE starting with #
-The script will ignore line starting with #
-
-Signed-off-by: Naresh Kamboju <naresh.kamboju@linaro.org>
----
- runltp        | 8 ++++----
- runltplite.sh | 8 ++++----
- 2 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/runltp b/runltp
-index 8e40d67..302c4a7 100755
---- a/runltp
-+++ b/runltp
-@@ -692,10 +692,10 @@ main()
-     fi
- 
-     # Blacklist or skip tests if a SKIPFILE was specified with -S
--    if [ -n "$SKIPFILE" ]
--    then
--        for file in $( cat $SKIPFILE ); do
--            sed -i "/^$file[ \t]/d" ${TMP}/alltests
-+    if [ -n "${SKIPFILE}" ]; then
-+        for test_name in $(awk '{print $1}' "${SKIPFILE}"); do
-+            case "${test_name}" in \#*) continue;; esac
-+            sed -i "/\<${test_name}\>/c\\${test_name} exit 32;" alltests
-         done
-     fi
- 
-diff --git a/runltplite.sh b/runltplite.sh
-index 9313649..17be009 100755
---- a/runltplite.sh
-+++ b/runltplite.sh
-@@ -316,10 +316,10 @@ main()
-     }
- 
-     # Blacklist or skip tests if a SKIPFILE was specified with -S
--    if [ -n "$SKIPFILE" ]
--    then
--        for file in $( cat $SKIPFILE ); do
--            sed -i "/^$file[ \t]/d" ${TMP}/alltests
-+    if [ -n "${SKIPFILE}" ]; then
-+        for test_name in $(awk '{print $1}' "${SKIPFILE}"); do
-+            case "${test_name}" in \#*) continue;; esac
-+            sed -i "/\<${test_name}\>/c\\${test_name} exit 32;" alltests
-         done
-     fi
- 
--- 
-2.7.4
-
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
