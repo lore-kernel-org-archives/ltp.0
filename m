@@ -1,40 +1,25 @@
-From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Wed, 20 Dec 2017 10:55:57 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 20 Dec 2017 12:07:31 +0100
 Subject: [LTP] [PATCH v4 2/2] getdtablesize01: Handle ENFILE errno
-In-Reply-To: <20171211131837.GB10508@rei> (Cyril Hrubis's message of "Mon, 11
- Dec 2017 14:18:37 +0100")
+In-Reply-To: <87lghxy8g2.fsf@e105922-lin.cambridge.arm.com>
 References: <20171208140738.7985-1-punit.agrawal@arm.com>
  <20171208140738.7985-2-punit.agrawal@arm.com>
  <20171211131837.GB10508@rei>
-Message-ID: <87lghxy8g2.fsf@e105922-lin.cambridge.arm.com>
+ <87lghxy8g2.fsf@e105922-lin.cambridge.arm.com>
+Message-ID: <20171220110730.GC6688@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-[ Apologies for the delayed response. I am travelling with spotty
-connectivity ]
+Hi!
+> > No need to resend, I can update it before push.
+> 
+> Yes, please. :)
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+Pushed, thanks.
 
-> Hi!
->> @@ -97,6 +98,8 @@ int main(void)
->>  		close(count);
->>  	if (count == (max_val_opfiles - 1))
->>  		tst_resm(TPASS, "%d = %d", count, (max_val_opfiles - 1));
->> +	else if (fd < 0 && errno == ENFILE)
->> +		tst_brkm(TBROK, cleanup, "Reached maximum number of open files for the system");
->                            ^
-> 			   Haven't we agreed that this should be TCONF?
-
-Yup, I was sure I'd updated it as well. I might have lost the change
-moving the patches across branches.
-
->
-> No need to resend, I can update it before push.
-
-Yes, please. :)
-
-Thanks,
-Punit
+-- 
+Cyril Hrubis
+chrubis@suse.cz
