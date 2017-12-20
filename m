@@ -1,37 +1,66 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 20 Dec 2017 18:34:39 +0530
-Subject: [LTP] [PATCH] runltp: skipfile: skipped test cases should be
- visible as TCONF in results
-In-Reply-To: <20171220102830.GB6688@rei>
-References: <1513073830-17174-1-git-send-email-naresh.kamboju@linaro.org>
- <20171219125952.GE28293@rei>
- <CA+G9fYv4DnCufg6xofpjuM7S8zt1mzRtE4VfrP=PaNF5fxiy1w@mail.gmail.com>
- <20171220102830.GB6688@rei>
-Message-ID: <CA+G9fYuhvG4ymur868HJE8fH=qMGPDR2KWnhP3RJh9XKGbUx=w@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 20 Dec 2017 21:10:59 +0800
+Subject: [LTP] [PATCH v3 1/2] ioctl: add two receive mode checking for
+	TUN/TAP driver
+Message-ID: <20171220131100.29348-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 20 December 2017 at 15:58, Cyril Hrubis <chrubis@suse.cz> wrote:
-> Hi!
->> > This could be written in a simpler form:
->> >
->> >         for test_name in $(awk '{print $1}' "$SKIPFILE"); do
->> >                 case "${test_name}" in \#*) continue;; esac
->> >                 sed -i "/\<${test_name}\>/c\\${test_name} exit 32;" alltests
->> >         done
->>
->> I have tested this piece of script and this also works.
->> Shall i re-send the patch with this modification ?
->
-> Yes please.
+IFF_NAPI(1) and IFF_NAPI_FRAGS(2) are two new flags for TUN/TAP
+driver, but currently ioctl03 does not hanlde them so it always
+failed on latest kernel-4.15.0-rc2 like:
 
-Sending updated patch with above comments.
-- Naresh
+ioctl03     0  TINFO  :  Available features are: 0x7133
+ioctl03     0  TINFO  :  TUN 0x1
+ioctl03     0  TINFO  :  TAP 0x2
+ioctl03     0  TINFO  :  NO_PI 0x1000
+ioctl03     0  TINFO  :  ONE_QUEUE 0x2000
+ioctl03     0  TINFO  :  VNET_HDR 0x4000
+ioctl03     0  TINFO  :  MULTI_QUEUE 0x100
+ioctl03     1  TFAIL  :  ioctl03.c:114: (UNKNOWN 0x30)
 
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+See kernel commit:
+(1) commit 943170998b2 (tun: enable NAPI for TUN/TAP driver)
+(2) commit 90e33d45940 (tun: enable napi_gro_frags() for TUN/TAP driver)
+
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/syscalls/ioctl/ioctl03.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl03.c b/testcases/kernel/syscalls/ioctl/ioctl03.c
+index 83433b8..8c3d446 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl03.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl03.c
+@@ -60,6 +60,14 @@
+ #define IFF_MULTI_QUEUE	0x0100
+ #endif
+ 
++#ifndef IFF_NAPI
++#define IFF_NAPI       0x0010
++#endif
++
++#ifndef IFF_NAPI_FRAGS
++#define IFF_NAPI_FRAGS 0x0020
++#endif
++
+ char *TCID = "ioctl03";
+ int TST_TOTAL = 1;
+ 
+@@ -84,7 +92,9 @@ static struct {
+ 	IFF_NO_PI, "NO_PI"}, {
+ 	IFF_ONE_QUEUE, "ONE_QUEUE"}, {
+ 	IFF_VNET_HDR, "VNET_HDR"}, {
+-	IFF_MULTI_QUEUE, "MULTI_QUEUE"}
++	IFF_MULTI_QUEUE, "MULTI_QUEUE"}, {
++	IFF_NAPI, "IFF_NAPI"}, {
++	IFF_NAPI_FRAGS, "IFF_NAPI_FRAGS"}
+ };
+ 
+ int main(void)
+-- 
+2.9.3
+
