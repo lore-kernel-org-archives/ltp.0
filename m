@@ -1,31 +1,40 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 20 Dec 2017 11:28:30 +0100
-Subject: [LTP] [PATCH] runltp: skipfile: skipped test cases should be
- visible as TCONF in results
-In-Reply-To: <CA+G9fYv4DnCufg6xofpjuM7S8zt1mzRtE4VfrP=PaNF5fxiy1w@mail.gmail.com>
-References: <1513073830-17174-1-git-send-email-naresh.kamboju@linaro.org>
- <20171219125952.GE28293@rei>
- <CA+G9fYv4DnCufg6xofpjuM7S8zt1mzRtE4VfrP=PaNF5fxiy1w@mail.gmail.com>
-Message-ID: <20171220102830.GB6688@rei>
+From: Punit Agrawal <punit.agrawal@arm.com>
+Date: Wed, 20 Dec 2017 10:55:57 +0000
+Subject: [LTP] [PATCH v4 2/2] getdtablesize01: Handle ENFILE errno
+In-Reply-To: <20171211131837.GB10508@rei> (Cyril Hrubis's message of "Mon, 11
+ Dec 2017 14:18:37 +0100")
+References: <20171208140738.7985-1-punit.agrawal@arm.com>
+ <20171208140738.7985-2-punit.agrawal@arm.com>
+ <20171211131837.GB10508@rei>
+Message-ID: <87lghxy8g2.fsf@e105922-lin.cambridge.arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > This could be written in a simpler form:
-> >
-> >         for test_name in $(awk '{print $1}' "$SKIPFILE"); do
-> >                 case "${test_name}" in \#*) continue;; esac
-> >                 sed -i "/\<${test_name}\>/c\\${test_name} exit 32;" alltests
-> >         done
-> 
-> I have tested this piece of script and this also works.
-> Shall i re-send the patch with this modification ?
+[ Apologies for the delayed response. I am travelling with spotty
+connectivity ]
 
-Yes please.
+Cyril Hrubis <chrubis@suse.cz> writes:
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Hi!
+>> @@ -97,6 +98,8 @@ int main(void)
+>>  		close(count);
+>>  	if (count == (max_val_opfiles - 1))
+>>  		tst_resm(TPASS, "%d = %d", count, (max_val_opfiles - 1));
+>> +	else if (fd < 0 && errno == ENFILE)
+>> +		tst_brkm(TBROK, cleanup, "Reached maximum number of open files for the system");
+>                            ^
+> 			   Haven't we agreed that this should be TCONF?
+
+Yup, I was sure I'd updated it as well. I might have lost the change
+moving the patches across branches.
+
+>
+> No need to resend, I can update it before push.
+
+Yes, please. :)
+
+Thanks,
+Punit
