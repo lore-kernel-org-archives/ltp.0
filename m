@@ -1,64 +1,58 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 20 Dec 2017 17:39:55 +0800
-Subject: [LTP] [PATCH] netns/netns_helper.sh: Fix failure when testing
- ipv6 in netns
-In-Reply-To: <9318bde0-cca5-7428-b046-b1f506bfdbba@oracle.com>
-References: <1513343597-5720-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <f50e3f7f-2279-e692-607e-987d75bee69c@oracle.com>
- <5A372CF7.9050003@cn.fujitsu.com>
- <9318bde0-cca5-7428-b046-b1f506bfdbba@oracle.com>
-Message-ID: <5A3A2FEB.7090809@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 20 Dec 2017 18:19:07 +0800
+Subject: [LTP] [PATCH v2 2/2] ioctl: convert ioctl03 to new API
+In-Reply-To: <20171219134138.GF28293@rei>
+References: <20171214072432.15709-1-liwang@redhat.com>
+ <20171214072432.15709-2-liwang@redhat.com>
+ <20171219134138.GF28293@rei>
+Message-ID: <CAEemH2eb8R8BAYV1_kw0KX=SH89HR5mevzHWK_nds+1m_zp0Fw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2017/12/19 16:24, Alexey Kodanev wrote:
-> On 12/18/2017 05:50 AM, Xiao Yang wrote:
->> On 2017/12/15 22:06, Alexey Kodanev wrote:
->>> On 12/15/2017 04:13 PM, Xiao Yang wrote:
->>>> When testing ipv6 in network namespace, we got the following
->>>> error on some distros(e.g. RHEL7.5Alpha):
->>>> ----------------------------------------------------------------------------------
->>>> connect: Cannot assign requested address
->>>> netns_comm_ns_exec_ipv6_netlink 1 TFAIL: configuration and communication over veth0
->>>> connect: Cannot assign requested address
->>>> netns_comm_ns_exec_ipv6_netlink 2 TFAIL: configuration and communication over veth1
->>>> -----------------------------------------------------------------------------------
->>>>
->>>> We could fix this issue by waiting enough time(5s) for address
->>>> to pass duplicate address detection.
->>> netns tests disable DAD in setup so this shouldn't happen. It's quite
->>> likely that the kernel doesn't have the following upstream patch-fix:
->>>
->>> 094009531612 ("ipv6: set all.accept_dad to 0 by default")
->> Hi Alexey,
->>
->> Thanks for your explanation.  The patch mentioned in your reply can fix
->> the error.
->>
->> Should we fix the error by setting all.accept_dad to 0 manually in netns
->> or leave the
->> error to expose this issue?
-> Ideally, we could check if the kernel is 4.14 and all.accept_dad
-> not equals 0, then apply workaround and print some warning message...
-Hi Alexey,
-
-Checking kernel version seems unreliable because commit 35e015e1f577 and 
-a2d3f3e33853
-may be ported into some distros(e.g. RHEL7.5Alpha with kernel v3.10.0).
-
-Thanks,
-Xiao Yang
-> Anyway, I see that the patch in the queue for stable:
-> http://patchwork.ozlabs.org/bundle/davem/stable/?state=*
+On Tue, Dec 19, 2017 at 9:41 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
+>> +     SAFE_IOCTL(netfd, TUNGETFEATURES, &features);
+>> -
+>> -     if (ioctl(netfd, TUNGETFEATURES, &features) != 0)
+>> -             tst_brkm(TCONF, cleanup,
+>> -                      "Kernel does not support TUNGETFEATURES");
 >
-> Thanks,
-> Alexey
+> After this change the test fails with TBROK instead of TCONF when the
+> ioctl() fails.
 >
->
->
+> I suppose that the tun driver can be compiled out of the kernel and that
+> we should still handle this situation as TCONF rather than TBROK. The
+> question is what kind of errno we get in that case, I suppose that it
+> may be ENOTTY but that should be tested.
+
+Do you mean that ioctl(netfd, TUNGETFEATURES, &features) may be failed
+with erron==ENOTTY while testing on a kernel without TUN driver
+loaded?
+
+I tried that with kernel-4.15-rc4 but get "No Such Device" error when
+open "/dev/net/tun" file. And the worth to say, /dev/net/tun is still
+exist after removing TUN module.
 
 
+=========
+# uname -r
+4.15.0-rc4
 
+# rmmod tun
+
+# ll /dev/net/tun
+crw-rw-rw-. 1 root root 10, 200 Dec 20 04:59 /dev/net/tun
+
+# ./ioctl03
+tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
+safe_macros.c:225: BROK: ioctl03.c:82: open(/dev/net/tun,2,063200020)
+failed: ENODEV
+
+
+Thanks for reviewing patiently. I'm OK with the rest comments.
+
+-- 
+Li Wang
+liwang@redhat.com
