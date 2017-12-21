@@ -1,51 +1,41 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 21 Dec 2017 08:35:02 -0500 (EST)
-Subject: [LTP] [PATCH v2] brk01: Rewrite from scratch.
-In-Reply-To: <20171219083814.13110-1-chrubis@suse.cz>
-References: <20171219083814.13110-1-chrubis@suse.cz>
-Message-ID: <1037328137.2233326.1513863302714.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 21 Dec 2017 20:27:35 +0100
+Subject: [LTP] [RFC PATCH v2 0/4] Add headers in lapi
+Message-ID: <20171221192739.4868-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi,
 
+any comments on this cleanup patch-set?
+I haven't figured how to rename include/lapi/in.h.
+The rest should be ok.
 
+As Alexey updates testcases/network/netstress/netstress.c quite often,
+I'd like to get rid of rebasing patch :-).
 
------ Original Message -----
-> This commit rewrites the brk01 test from scratch since the original code
-> wasn't making much sense.
-> 
-> Now we actually run the brk() in a loop increasing and shrinking the
-> break repeatedly a few times, which the original code was supposed to do
-> but never actually did since we do not pass the -i parameter in the
-> runtest files.
-> 
-> The increment is also choosen to be much much more reasonable instead of
-> using the multiple of the absolute address of the page break we choose
-> much more modest 2 * pagesize - 1. Note that the increment is not page
-> aligned since that way we also check that kernel page-aligns it just
-> fine.
-> 
-> The sequence has been choosen to grow the heap first then shrink it to
-> the original size, which should be safe since the heap never shrinks
-> below its original size.
-> 
-> We also write to the newly allocated heap in a case that that the heap
-> has grown, which should be safe enough in a case that we do not call
-> anything that would cause memory to be allocated in the loop, since that
-> way we will not rewrite anything that was previously stored there.
-> 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
-> 
-> Changes since v1:
->  - dropped the tst_res(TINFO, ...) in the middle of the loop
->    and updated commit message
->  - used -B when git formatted the patch
+Kind regards,
+Petr
 
-Looks good to me.
+Petr Vorel (4):
+  lapi: Add lapi/tcp.h with definitions moved from netstress.c
+  lapi/socket.h: Move definitions from netstress.c
+  lapi: Add lapi/in.h with definition moved from netstress.c
+  lapi: Add lapi/dccp.h with definition moved from netstress.c
 
-Regards,
-Jan
+ include/lapi/dccp.h                     | 27 ++++++++++++++++++++++++
+ include/lapi/in.h                       | 27 ++++++++++++++++++++++++
+ include/lapi/socket.h                   | 18 ++++++++++++++++
+ include/lapi/tcp.h                      | 31 +++++++++++++++++++++++++++
+ testcases/network/netstress/netstress.c | 37 ++++++---------------------------
+ 5 files changed, 109 insertions(+), 31 deletions(-)
+ create mode 100644 include/lapi/dccp.h
+ create mode 100644 include/lapi/in.h
+ create mode 100644 include/lapi/tcp.h
+
+-- 
+2.15.1
+
