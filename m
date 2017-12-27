@@ -1,40 +1,80 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 27 Dec 2017 09:42:13 +0100
-Subject: [LTP] [RFC PATCH v2 2/4] lapi/socket.h: Move definitions from
- netstress.c
-In-Reply-To: <8186d043-06db-94a3-1da3-c2e57e42597b@oracle.com>
-References: <20171221192739.4868-1-pvorel@suse.cz>
- <20171221192739.4868-3-pvorel@suse.cz>
- <8186d043-06db-94a3-1da3-c2e57e42597b@oracle.com>
-Message-ID: <20171227084211.GA17258@x230>
+From: Liu Haitao <haitao.liu@windriver.com>
+Date: Wed, 27 Dec 2017 17:15:00 +0800
+Subject: [LTP] [PATCH] tunable/overcommit_memory: clear the cached memory
+	when overcommit_memory is set to 0
+Message-ID: <1514366100-260502-1-git-send-email-haitao.liu@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+This fixes failures on machines where the overcommit_memory is set to 0.
 
-thanks for your review.
+For some embedded machines with memory less than 1G, when run ltp testcase a lot
+of memory would be cached by kernel which could be found in "/proc/meminfo".
 
-> >  #ifndef SOCK_CLOEXEC
-> >  # define SOCK_CLOEXEC 02000000
-> >  #endif
+This testcase would allocate the double amount of free_memory when
+overcommit_memory is set to 0.
 
-> > +#ifndef SOCK_DCCP
-> > +# define SOCK_DCCP		6
-> > +#endif
+If the overcommit_memory is 0, the kernel would regard the cached memory as a
+part of allocatable memory which could be allocated.
 
-> I would move it above SOCK_CLOEXEC, so we can keep the order
-> of these flags similarly to bits/socket.h.
-You probably mean bits/socket_type.h. Sure.
+So if a mass of memory is cached by kernel, the testcase would fail.
 
-> The other patches in this set look good, thanks!
-Just one exception, if you don't mind:
-I use lapi/netinet_in.h instead of lapi/in.h. I don't like inconsistency (other headers in
-lapi don't use prefix), but using just in.h is confusing, as there is also linux/in.h, as
-Cyril pointed out.
+For example:
+------------------------------------------------
+root@nxp-ls1012:~# cat /proc/meminfo
+MemTotal:        1001228 kB
+MemFree:          863816 kB
+MemAvailable:     938212 kB
+Buffers:               0 kB
+Cached:            48448 kB
 
+This nxp-ls1012 machine has 1G memory and the  cached memory is just 40M.
 
-Kind regards,
-Petr
+When run the overcommit_memory testcase it failed with the following error:
+
+	overcommit_memory    0  TINFO  :  set overcommit_memory to 0
+	overcommit_memory    0  TINFO  :  malloc 164628 kB successfully
+	overcommit_memory    1  TPASS  :  alloc passed as expected
+	overcommit_memory    0  TINFO  :  malloc 658512 kB successfully
+	overcommit_memory    2  TFAIL  :  overcommit_memory.c:210: alloc passed,
+		     expected to fail
+
+root@nxp-ls1012:~# cat /proc/meminfo
+MemTotal:        1001228 kB
+MemFree:          329848 kB
+MemAvailable:     936008 kB
+Buffers:             748 kB
+Cached:           577936 kB
+
+After running this testcase, about 500M memory was cached and it succeeded in
+allocating 658512KB memory which is double than MemFree.
+
+-------------------------------------------
+
+So we should clear the catched memory before the test.
+
+Signed-off-by: Liu Haitao <haitao.liu@windriver.com>
+---
+ testcases/kernel/mem/tunable/overcommit_memory.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/mem/tunable/overcommit_memory.c b/testcases/kernel/mem/tunable/overcommit_memory.c
+index 984448b6f..5a496eef5 100644
+--- a/testcases/kernel/mem/tunable/overcommit_memory.c
++++ b/testcases/kernel/mem/tunable/overcommit_memory.c
+@@ -157,7 +157,8 @@ static void overcommit_memory_test(void)
+ 
+ 	/* start to test overcommit_memory=0 */
+ 	set_sys_tune("overcommit_memory", 0, 1);
+-
++	/* clear the cached memory */
++	set_sys_tune("drop_caches", 3, 1);
+ 	update_mem();
+ 	alloc_and_check(free_total / 2, EXPECT_PASS);
+ 	update_mem();
+-- 
+2.11.0
+
