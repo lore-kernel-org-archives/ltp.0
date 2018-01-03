@@ -1,44 +1,42 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 3 Jan 2018 14:15:06 +0100
-Subject: [LTP] [RFC] mce-test
-In-Reply-To: <20180103125443.GB23817@rei>
-References: <20171227150120.GA8632@x230>
- <20180103125443.GB23817@rei>
-Message-ID: <20180103131506.tzrpaaislsh3pjrh@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 3 Jan 2018 15:38:36 +0100
+Subject: [LTP] [PATCH v2] syscalls/migrate_pages03.c: Add new regression
+	test
+In-Reply-To: <1514198251-8249-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20171130152005.GH2924@rei>
+ <1514198251-8249-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20180103143836.GA7370@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> +/* Wait at least two full scans to guarantee merging */
+> +static void wait_ksmd_full_scan(void)
+> +{
+> +	unsigned long exp_scans, get_scans;
+> +	int count = 0;
+> +
+> +	SAFE_FILE_SCANF(KSM_PATH "full_scans", "%lu", &get_scans);
+> +	exp_scans = get_scans + 3;
+> +	while (get_scans < exp_scans) {
+> +		sleep(1);
+> +		count++;
+> +		SAFE_FILE_SCANF(KSM_PATH "full_scans", "%lu", &get_scans);
+> +	}
+> +
+> +	tst_res(TINFO, "ksmd takes %ds to run two full scans", count);
+> +}
 
-> > we have submodule mce-test [1], cloned into testcases/kernel/mce-test.
-> > This project has been added in 2010, later transformed into git submodule, but never
-> > fully integrated into LTP.
+I do not like that this piece of code has been copied from the lib/mem.c.
 
-> > I've played with it to update it and integrate it into our build system.
-> > But to be fully working (e.g. have runtest file) we'd need to include mcelog as well.
+Cleaner solution will move the function to testcases/kernel/lib/ksm.c
+and create accompanying testcases/kernel/include/ksm.h header so that we
+can link againts it here and in the ksm testcases as well in order to
+retain only one copy of the function in the source tree.
 
-> Well mcelog is supposedly part of most of the distributions these days
-> and even pre-installed at least on machines with x86* processors.
-You're right, so we can require this dependency.
-
-> The bigger problem with the testsuite is, that as far as I remeber, at
-> least half of the testcases were injecting hardware faults to the kernel
-> and required crashdump to be set up correctly and also the framework
-> that is supposed to run these tests outliving kernel crashes.
-
-> > While this is feasible and both projects looks healthy the question is whether it make
-> > sense to have it in our source tree. I'd delete it.
-
-> That's a good question. Maybe we should just replace the test with a
-> README that contains an URL pointing to the project.
-Do you want to advertise just this mcelog? (maybe comparison with other test suites could
-be interesting).
-And if we decide to keep it, I'd send my patches which integrate mce-test into our build
-system. Then it would be good to create some tests, to actually use it.
-
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
