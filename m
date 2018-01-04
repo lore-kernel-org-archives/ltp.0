@@ -1,56 +1,34 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 4 Jan 2018 16:45:27 +0100
-Subject: [LTP] [PATCH 2/2] execltp: add rstrip to runtest_file
-In-Reply-To: <1514181786-6677-3-git-send-email-daniel.sangorrin@toshiba.co.jp>
-References: <1514181786-6677-1-git-send-email-daniel.sangorrin@toshiba.co.jp>
- <1514181786-6677-3-git-send-email-daniel.sangorrin@toshiba.co.jp>
-Message-ID: <20180104154527.GC25335@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu,  4 Jan 2018 21:42:48 +0100
+Subject: [LTP] [RFC PATCH 0/2] Allow to compile on archs without atomic
+	support
+Message-ID: <20180104204250.7032-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Without an rstrip I was getting errors saying that the
-> runtest file syscalls didn't exist.
-> 
-> Signed-off-by: Daniel Sangorrin <daniel.sangorrin@toshiba.co.jp>
-> ---
->  execltp.in | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/execltp.in b/execltp.in
-> index 6d13ad1..2dcdf10 100755
-> --- a/execltp.in
-> +++ b/execltp.in
-> @@ -361,7 +361,7 @@ def main():
->  
->              failed_subset = {}
->  
-> -            runtest_file = os.path.join(opts.ltp_dir, 'runtest', testsuite)
-> +            runtest_file = os.path.join(opts.ltp_dir, 'runtest', testsuite).rstrip()
+Hi,
 
-I suppose that the problem here is that the fd.readlines() does include
-newlines at the end of the lines. But stripping it at the point we
-construct the paths seems to be a bit confusing to me.
+I know as this has quite low priority (benefit only people with old
+compilers and archs), but why not to give a chance them to have at least
+something from LTP?
+Quite a lot of tests it's working, affected are only tests using threads
+on new API or fuzzy synchronization and counting results for tests using
+new api.
 
-What about something as:
+Kind regards,
+Petr
 
-diff --git a/execltp.in b/execltp.in
-index 6d13ad1d7..10b1f53f3 100755
---- a/execltp.in
-+++ b/execltp.in
-@@ -309,7 +309,7 @@ def main():
-         # Default to scenarios also used by runltp.
-         fd = open(os.path.join(ltpdir, 'scenario_groups/default'), 'r')
-         try:
--            args = fd.readlines()
-+            args = [l.strip() for l in fd.readlines()]
-         finally:
-             fd.close()
+Petr Vorel (2):
+  tst_atomic.h: Allow to compile on archs without atomic support
+  lib/tst_test.c: Don't print results on archs without atomic
 
+ include/tst_atomic.h | 31 +++++++++++++++++++++++++++++--
+ lib/tst_test.c       |  4 ++++
+ 2 files changed, 33 insertions(+), 2 deletions(-)
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.15.1
+
