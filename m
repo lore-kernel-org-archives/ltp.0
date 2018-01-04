@@ -1,28 +1,40 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 4 Jan 2018 09:19:23 +0100
-Subject: [LTP] [RFC PATCH v2 2/4] lapi/socket.h: Move definitions from
- netstress.c
-In-Reply-To: <20171227084211.GA17258@x230>
-References: <20171221192739.4868-1-pvorel@suse.cz>
- <20171221192739.4868-3-pvorel@suse.cz>
- <8186d043-06db-94a3-1da3-c2e57e42597b@oracle.com>
- <20171227084211.GA17258@x230>
-Message-ID: <20180104081923.snicgzqmtsem46hj@dell5510>
+From: Travis CI <builds@travis-ci.org>
+Date: Thu, 04 Jan 2018 08:30:46 +0000
+Subject: [LTP] Errored: linux-test-project/ltp#595 (master - 485276e)
+In-Reply-To: <linux-test-project/ltp+324934722+errored@travis-ci.org>
+Message-ID: <5a4de63626fd7_43fb43cdec6c018684fc@ece77943-5029-4f83-9b17-65cab6528af3.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey, Cyril,
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-> > The other patches in this set look good, thanks!
-> Just one exception, if you don't mind:
-> I use lapi/netinet_in.h instead of lapi/in.h. I don't like inconsistency (other headers in
-> lapi don't use prefix), but using just in.h is confusing, as there is also linux/in.h, as
-> Cyril pointed out.
+Build: #595
+Status: Errored
 
-Merged whole patche-set.
+Duration: 15 minutes and 25 seconds
+Commit: 485276e (master)
+Author: Petr Vorel
+Message: lapi: Add dccp.h with definition moved from netstress.c
 
-Kind regards,
-Petr
+and use lapi/dccp.h in netstress.c.
+
++ include <linux/dccp.h> in netstress.c.
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Acked-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+
+View the changeset: https://github.com/linux-test-project/ltp/compare/54951e6ba074...485276e36f6e
+
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/324934722?utm_source=email&utm_medium=notification
+
+--
+
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180104/e271a0ca/attachment.html>
