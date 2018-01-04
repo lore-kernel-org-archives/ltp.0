@@ -1,9 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 4 Jan 2018 13:32:05 +0100
-Subject: [LTP] [PATCH] Add regression test for CVE-2017-17052
-In-Reply-To: <20180104103816.7373-1-mmoese@suse.de>
-References: <20180104103816.7373-1-mmoese@suse.de>
-Message-ID: <20180104123205.GA18995@rei>
+Date: Thu, 4 Jan 2018 16:30:45 +0100
+Subject: [LTP] [PATCH v4 2/2] syscalls/migrate_pages03.c: Add new
+ regression test
+In-Reply-To: <1515059054-20875-2-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20180103143836.GA7370@rei>
+ <1515059054-20875-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1515059054-20875-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20180104153045.GA25335@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,115 +14,24 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> ---
->  testcases/cve/Makefile         |  2 ++
->  testcases/cve/cve-2017-17052.c | 68 ++++++++++++++++++++++++++++++++++++++++++
-
-You are missing entry in cve runtest file runtest/cve and also
-.gitignore entry.
-
-
->  2 files changed, 70 insertions(+)
->  create mode 100644 testcases/cve/cve-2017-17052.c
-> 
-> diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
-> index 0905fd95c..22dca3b3f 100644
-> --- a/testcases/cve/Makefile
-> +++ b/testcases/cve/Makefile
-> @@ -30,4 +30,6 @@ cve-2014-0196:  LDLIBS += -lrt -lutil
->  cve-2017-2671:	CFLAGS += -pthread
->  cve-2017-2671:	LDLIBS += -lrt
->  
-> +cve-2017-17052:	CFLAGS += -pthread
-> +
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/cve/cve-2017-17052.c b/testcases/cve/cve-2017-17052.c
-> new file mode 100644
-> index 000000000..7103685f2
-> --- /dev/null
-> +++ b/testcases/cve/cve-2017-17052.c
-> @@ -0,0 +1,68 @@
-> +/*
-> + * Copyright (c) 2018 Michael Moese <mmoese@suse.com>
-> + *
-> + * This program is free software: you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation, either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
-> + */
-> +/*
-> + * Test for CVE-2017-17052, original reproducer can be found here:
-> + * https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2b7e8665b4ff51c034c55df3cff76518d1a9ee3a
-> + */
-> +
+> +#include <errno.h>
 > +#include <unistd.h>
-> +#include <pthread.h>
 > +#include <stdlib.h>
-> +#include <sys/mman.h>
-> +#include <sys/wait.h>
-> +#include <sys/syscall.h>
+> +#if HAVE_NUMA_H
+> +#include <numa.h>
+> +#endif
+> +#if HAVE_NUMAIF_H
+> +#include <numaif.h>
+> +#endif
 > +
-> +#include "tst_test.h"
-> +#include "lapi/syscalls.h"
-> +
-> +static void *mmap_thread(void *_arg)
-> +{
-> +	for (;;) {
-> +		mmap(NULL, 0x1000000, PROT_READ,
-> +			MAP_POPULATE|MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
-> +	}
-> +}
-> +
-> +static void *fork_thread(void *_arg)
-> +{
-> +	usleep(rand() % 10000);
-> +	fork();
-> +}
-> +
-> +static void run(void)
-> +{
-> +	fork();
-> +	fork();
-> +	fork();
-> +	for(;;) {
-> +		if (fork() == 0) {
-> +			pthread_t t;
-> +
-> +			pthread_create(&t, NULL, mmap_thread, NULL);
-> +			pthread_create(&t, NULL, fork_thread, NULL);
-> +			usleep(rand() % 10000);
-> +			syscall(__NR_exit_group, 0);
-> +		}
-> +		wait(NULL);
-> +	}
+> +#include "config.h"
 
-You are supposed to use SAFE_ macros for most of these calls, i.e.
-SAFE_FORK(), SAFE_PTHREAD_CREATE(), SAVE_WAIT() etc.
+One small nit, the HAVE_NUMA* macros are defined in config.h so they are
+defined only after the config.h header is included. I wonder if these
+haders are needed to be included here at all, because they were not
+included at all.
 
-Also this test will timeout on kernel without this bug. We should choose
-minimal number of iterations for the for() loop here that reasonably
-reliably reproduces the problem so that the test has chance to finish in
-reasonable time. And also print tst_res(TPASS, "kernel survived"); or
-something here at the end of the run() function, otherwise the test will
-fail because it haven't reported any results.
-
-Moreover what happens when the NULL dereference is triggered? I suppose
-that the offending process is killed with SIGKILL? Then we should check
-the return value from the wait() inside of the for() loop and report
-that the failure has been reproduced with something as
-tst_res(TFAIL, "bug reproduced!");
-
-And also if the number of iterations needed for the bug to be reproduced
-takes more than a second or so, you should consider using the fuzzy sync
-library see include/tst_fuzzy_sync.h.
+Also it's customary to use #ifdef instead of #if for autoconf macros.
 
 -- 
 Cyril Hrubis
