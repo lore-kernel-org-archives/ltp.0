@@ -1,174 +1,111 @@
 From: xiao yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 5 Jan 2018 10:48:50 +0800
-Subject: [LTP] [PATCH v5 1/3] lib/mem.c: factor out wait_ksmd_full_scan()
-In-Reply-To: <20180104153045.GA25335@rei>
+Date: Fri, 5 Jan 2018 10:48:51 +0800
+Subject: [LTP] [PATCH v5 2/3] syscalls/migrate_pages*: Small cleanup
+In-Reply-To: <1515120532-4372-1-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <20180104153045.GA25335@rei>
-Message-ID: <1515120532-4372-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1515120532-4372-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1515120532-4372-2-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Move common wait_ksmd_full_scan() to kernel/lib/ksm_helper.c
-and create accompanying kernel/include/ksm_helper.h.
+1) Remove unused code
+2) Use #ifdef instead of #if
 
 Signed-off-by: xiao yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/include/ksm_helper.h | 26 +++++++++++++++++++
- testcases/kernel/lib/ksm_helper.c     | 49 +++++++++++++++++++++++++++++++++++
- testcases/kernel/mem/include/mem.h    |  3 +--
- testcases/kernel/mem/lib/mem.c        | 27 -------------------
- 4 files changed, 76 insertions(+), 29 deletions(-)
- create mode 100644 testcases/kernel/include/ksm_helper.h
- create mode 100644 testcases/kernel/lib/ksm_helper.c
+ testcases/kernel/include/numa_helper.h                    |  8 ++++----
+ testcases/kernel/syscalls/migrate_pages/migrate_pages01.c | 10 ++--------
+ testcases/kernel/syscalls/migrate_pages/migrate_pages02.c |  9 +--------
+ 3 files changed, 7 insertions(+), 20 deletions(-)
 
-diff --git a/testcases/kernel/include/ksm_helper.h b/testcases/kernel/include/ksm_helper.h
-new file mode 100644
-index 0000000..0b35218
---- /dev/null
-+++ b/testcases/kernel/include/ksm_helper.h
-@@ -0,0 +1,26 @@
-+/*
-+ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
-+ * Author(s): Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ *
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program, if not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#ifndef KSM_HELPER_H
-+#define KSM_HELPER_H
-+
-+#define PATH_KSM	"/sys/kernel/mm/ksm/"
-+
-+void wait_ksmd_full_scan(void);
-+
-+#endif /* KSM_HELPER_H */
-diff --git a/testcases/kernel/lib/ksm_helper.c b/testcases/kernel/lib/ksm_helper.c
-new file mode 100644
-index 0000000..eba28d4
---- /dev/null
-+++ b/testcases/kernel/lib/ksm_helper.c
-@@ -0,0 +1,49 @@
-+/*
-+ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
-+ * Author(s): Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ *
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program, if not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#define TST_NO_DEFAULT_MAIN
-+
-+#include <unistd.h>
-+#include "tst_test.h"
-+#include "ksm_helper.h"
-+
-+void wait_ksmd_full_scan(void)
-+{
-+	unsigned long full_scans, at_least_one_full_scan;
-+	int count = 0;
-+
-+	SAFE_FILE_SCANF(PATH_KSM "full_scans", "%lu", &full_scans);
-+	/*
-+	 * The current scan is already in progress so we can't guarantee that
-+	 * the get_user_pages() is called on every existing rmap_item if we
-+	 * only waited for the remaining part of the scan.
-+	 *
-+	 * The actual merging happens after the unstable tree has been built so
-+	 * we need to wait at least two full scans to guarantee merging, hence
-+	 * wait full_scans to increment by 3 so that at least two full scans
-+	 * will run.
-+	 */
-+	at_least_one_full_scan = full_scans + 3;
-+	while (full_scans < at_least_one_full_scan) {
-+		sleep(1);
-+		count++;
-+		SAFE_FILE_SCANF(PATH_KSM "full_scans", "%lu", &full_scans);
-+	}
-+
-+	tst_res(TINFO, "ksm daemon takes %ds to run two full scans", count);
-+}
-diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index 95d0bda..f7682f9 100644
---- a/testcases/kernel/mem/include/mem.h
-+++ b/testcases/kernel/mem/include/mem.h
-@@ -2,6 +2,7 @@
- #define _MEM_H
+diff --git a/testcases/kernel/include/numa_helper.h b/testcases/kernel/include/numa_helper.h
+index 39cf7aa..ed45ec8 100644
+--- a/testcases/kernel/include/numa_helper.h
++++ b/testcases/kernel/include/numa_helper.h
+@@ -20,11 +20,11 @@
+ #define NUMA_HELPER_H
+ 
  #include "config.h"
- #include "tst_test.h"
-+#include "ksm_helper.h"
+-#if HAVE_NUMA_H
+-#include <numa.h>
++#ifdef HAVE_NUMA_H
++# include <numa.h>
+ #endif
+-#if HAVE_NUMAIF_H
+-#include <numaif.h>
++#ifdef HAVE_NUMAIF_H
++# include <numaif.h>
+ #endif
  
- #if defined(__powerpc__) || defined(__powerpc64__)
- #define MAXNODES		256
-@@ -42,8 +43,6 @@ void testoom(int mempolicy, int lite, int retcode, int allow_sigkill);
+ #define NH_MEMS (1 << 0)
+diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
+index 01409f3..7cdcb31 100644
+--- a/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
++++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c
+@@ -30,18 +30,12 @@
+ #include <sys/wait.h>
+ #include <sys/mman.h>
+ #include <errno.h>
+-#if HAVE_NUMA_H
+-#include <numa.h>
+-#endif
+-#if HAVE_NUMAIF_H
+-#include <numaif.h>
+-#endif
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
+ #include <pwd.h>
+-#include "config.h"
++
+ #include "test.h"
+ #include "safe_macros.h"
+ #include "lapi/syscalls.h"
+@@ -55,7 +49,7 @@ option_t options[] = {
+ 	{NULL, NULL, NULL}
+ };
  
- /* KSM */
+-#if defined(HAVE_NUMA_V2) && defined(__NR_migrate_pages)
++#ifdef HAVE_NUMA_V2
  
--#define PATH_KSM		"/sys/kernel/mm/ksm/"
--
- void create_same_memory(int size, int num, int unit);
- void save_max_page_sharing(void);
- void restore_max_page_sharing(void);
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 7f2099b..59138a0 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -268,33 +268,6 @@ static void check(char *path, long int value)
- 		tst_res(TPASS, "%s is %ld.", path, actual_val);
- }
+ static unsigned long *sane_old_nodes;
+ static unsigned long *sane_new_nodes;
+diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
+index faf96b6..800b575 100644
+--- a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
++++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
+@@ -35,18 +35,11 @@
+ #include <sys/wait.h>
+ #include <sys/mman.h>
+ #include <errno.h>
+-#if HAVE_NUMA_H
+-#include <numa.h>
+-#endif
+-#if HAVE_NUMAIF_H
+-#include <numaif.h>
+-#endif
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include <pwd.h>
  
--static void wait_ksmd_full_scan(void)
--{
--	unsigned long full_scans, at_least_one_full_scan;
--	int count = 0;
--
--	SAFE_FILE_SCANF(PATH_KSM "full_scans", "%lu", &full_scans);
--	/*
--	 * The current scan is already in progress so we can't guarantee that
--	 * the get_user_pages() is called on every existing rmap_item if we
--	 * only waited for the remaining part of the scan.
--	 *
--	 * The actual merging happens after the unstable tree has been built so
--	 * we need to wait at least two full scans to guarantee merging, hence
--	 * wait full_scans to increment by 3 so that@least two full scans
--	 * will run.
--	 */
--	at_least_one_full_scan = full_scans + 3;
--	while (full_scans < at_least_one_full_scan) {
--		sleep(1);
--		count++;
--		SAFE_FILE_SCANF(PATH_KSM "full_scans", "%lu", &full_scans);
--	}
--
--	tst_res(TINFO, "ksm daemon takes %ds to run two full scans",
--		count);
--}
--
- static void final_group_check(int run, int pages_shared, int pages_sharing,
- 			  int pages_volatile, int pages_unshared,
- 			  int sleep_millisecs, int pages_to_scan)
+-#include "config.h"
+ #include "test.h"
+ #include "safe_macros.h"
+ #include "lapi/syscalls.h"
+@@ -66,7 +59,7 @@
+ char *TCID = "migrate_pages02";
+ int TST_TOTAL = 1;
+ 
+-#if defined(HAVE_NUMA_V2) && defined(__NR_migrate_pages)
++#ifdef HAVE_NUMA_V2
+ 
+ static const char nobody_uid[] = "nobody";
+ static struct passwd *ltpuser;
 -- 
 1.8.3.1
 
