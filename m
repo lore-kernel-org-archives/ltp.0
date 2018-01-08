@@ -1,7 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 8 Jan 2018 15:08:56 +0100
-Subject: [LTP] More CI testing on git push
-Message-ID: <20180108140856.w5qaavlzfavoamuf@dell5510>
+Date: Mon, 8 Jan 2018 15:21:22 +0100
+Subject: [LTP] Redirect old wiki page to new one
+In-Reply-To: <20180108111255.GA31448@rei>
+References: <20180108083432.5xhfvs4foma3vwcm@dell5510>
+ <20180108111255.GA31448@rei>
+Message-ID: <20180108142122.3s2km4pjag5ezzz5@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,30 +13,27 @@ To: ltp@lists.linux.it
 
 Hi,
 
-currently we use Travis for various gcc/clang based builds, cross-compile arm and i868.
-I've been talking some time ago with Cyril about more CI testing. It would be great to
-test also LTP compiled old glibc an kernel headers + testing musl/uclibc. This can be
-achieved with using different CI with docker enabled along with Travis. This is needed as
-Travis doesn't allow to mix container based setup and docker based setup. Builds with
-different CI providers IMHO run in parallel.
+> > I found that some projects [1] point to our old wiki on sourceforge [2].
+> > It would be nice to redirect it to new one on github [3] or delete it.
 
-I was thinking to use doozer.io. It provides some quite new distros:
-Debian 8 Jessie (i386), glibc 2.19
-Ubuntu 12.04 LTS Precise (i386, amd64), glibc 2.15
-Ubuntu 14.04 LTS Trusty (i386, amd64), glibc 2.19
-Ubuntu 16.04 LTS Xenial (i386, amd64), glibc 2.23
-Fedora 24 (x86_64), glibc 2.23.1
-Centos 7 (x86_64), glibc 2.17
-Raspbian Jessie ARM 32bit
-Raspbian Stretch ARM 32bit
+> > Kind regards,
+> > Petr
 
-It provides some variety of distros and glibc + kernel headers.
-Docker based CI would give us more variants.
+> > [1] https://sourceforge.net/p/linux-ima/wiki/Home/
+> > [2] http://ltp.sourceforge.net/wiki
+> > [3] https://github.com/linux-test-project/ltp/wiki
 
-Cyril, Jan, which glibc and kernel header versions would you like to test?
-Is this an improvement?
+> I'm afraid that [1] is outside of our controll, the best we can do is to
+> try to contact the linux-ima authors.
+Sorry, I was wrong, I meant to redirect / delete [2].
+But I'll contact them. I have some questions about IMA to them anyway.
+
+> But I can to try to add big link on the top of the [2] pointing to [3]
+> since we are not in position to fix the rest of the links on the
+> internet either. I can try if I actually manage figure out how to do
+> that on sf.net, but it's a low prio job.
+Sure, it's very low priority. Sorry for bothering you with it.
+
 
 Kind regards,
 Petr
-
-[1] https://doozer.io/docs/doozerjson
