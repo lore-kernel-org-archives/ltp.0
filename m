@@ -1,34 +1,80 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 8 Jan 2018 12:12:55 +0100
-Subject: [LTP] Redirect old wiki page to new one
-In-Reply-To: <20180108083432.5xhfvs4foma3vwcm@dell5510>
-References: <20180108083432.5xhfvs4foma3vwcm@dell5510>
-Message-ID: <20180108111255.GA31448@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon,  8 Jan 2018 14:17:22 +0100
+Subject: [LTP] [COMMITTED] [PATCH 1/1] m4: Export HOST_CPU for make
+Message-ID: <20180108131722.7615-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I found that some projects [1] point to our old wiki on sourceforge [2].
-> It would be nice to redirect it to new one on github [3] or delete it.
-> 
-> Kind regards,
-> Petr
-> 
-> [1] https://sourceforge.net/p/linux-ima/wiki/Home/
-> [2] http://ltp.sourceforge.net/wiki
-> [3] https://github.com/linux-test-project/ltp/wiki
+From: Petr Vorel <petr.vorel@gmail.com>
 
-I'm afraid that [1] is outside of our controll, the best we can do is to
-try to contact the linux-ima authors.
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+Acked-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ configure.ac            |  1 +
+ include/mk/config.mk.in |  2 ++
+ m4/ltp-host-cpu.m4      | 25 +++++++++++++++++++++++++
+ 3 files changed, 28 insertions(+)
+ create mode 100644 m4/ltp-host-cpu.m4
 
-But I can to try to add big link on the top of the [2] pointing to [3]
-since we are not in position to fix the rest of the links on the
-internet either. I can try if I actually manage figure out how to do
-that on sf.net, but it's a low prio job.
-
+diff --git a/configure.ac b/configure.ac
+index 16c8e4692..5c8d4eaf8 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -203,5 +203,6 @@ LTP_CHECK_UNAME_DOMAINNAME
+ LTP_CHECK_X_TABLES
+ LTP_CHECK_ATOMIC_MEMORY_MODEL
+ LTP_CHECK_TPACKET_V3
++LTP_DETECT_HOST_CPU
+ 
+ AC_OUTPUT
+diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
+index 8c4f9da82..01f178bff 100644
+--- a/include/mk/config.mk.in
++++ b/include/mk/config.mk.in
+@@ -81,6 +81,8 @@ LINUX_VERSION_MAJOR	:= @LINUX_VERSION_MAJOR@
+ LINUX_VERSION_PATCH	:= @LINUX_VERSION_PATCH@
+ WITH_MODULES		:= @WITH_MODULES@
+ 
++HOST_CPU		:= @HOST_CPU@
++
+ ifeq ($(strip $(prefix)),)
+ $(error you are using $$(prefix) incorrectly -- set it to $(abs_top_srcdir) if you want to build in the source tree)
+ endif
+diff --git a/m4/ltp-host-cpu.m4 b/m4/ltp-host-cpu.m4
+new file mode 100644
+index 000000000..2536047fb
+--- /dev/null
++++ b/m4/ltp-host-cpu.m4
+@@ -0,0 +1,25 @@
++dnl Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
++dnl
++dnl This program is free software;  you can redistribute it and/or modify
++dnl it under the terms of the GNU General Public License as published by
++dnl the Free Software Foundation; either version 2 of the License, or
++dnl (at your option) any later version.
++dnl
++dnl This program is distributed in the hope that it will be useful,
++dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++dnl the GNU General Public License for more details.
++dnl
++dnl You should have received a copy of the GNU General Public License
++dnl along with this program. If not, see <http://www.gnu.org/licenses/>.
++
++AC_DEFUN([LTP_DETECT_HOST_CPU], [
++AC_SUBST([HOST_CPU], [$host_cpu])
++AS_CASE([$host_cpu],
++  [amd64], [HOST_CPU=x86_64],
++  [arm*], [HOST_CPU=arm],
++  [i?86|x86], [HOST_CPU=x86],
++  [s390*], [HOST_CPU=s390],
++)
++AC_SUBST([HOST_CPU])
++])
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.15.1
+
