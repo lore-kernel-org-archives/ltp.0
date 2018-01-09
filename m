@@ -1,49 +1,51 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 9 Jan 2018 13:28:01 +0100
+Date: Tue, 9 Jan 2018 13:38:58 +0100
 Subject: [LTP] More CI testing on git push
-In-Reply-To: <1887263757.4869615.1515491297851.JavaMail.zimbra@redhat.com>
+In-Reply-To: <20180109105431.GB31448@rei>
 References: <20180108140856.w5qaavlzfavoamuf@dell5510>
  <1887263757.4869615.1515491297851.JavaMail.zimbra@redhat.com>
-Message-ID: <20180109122801.ofgvqv4ldgxorkbn@dell5510>
+ <20180109105431.GB31448@rei>
+Message-ID: <20180109123858.anendti6vfipnksq@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
+Hi Cyril,
 
-> I'm not sure how much success you will have with uclibc - we stopped
-> caring about it some time ago, so I'm assuming it's broken.
-I'd like to have it at least compilable.
-Buildroot people are building LTP last release with different combinations including
-uclibc-ng and musl in their autobuild system [2]. They reported some issues, which I
-integrated in the past.
+> > > currently we use Travis for various gcc/clang based builds, cross-compile arm
+> > > and i868.
+> > > I've been talking some time ago with Cyril about more CI testing. It would be
+> > > great to
+> > > test also LTP compiled old glibc an kernel headers + testing musl/uclibc.
+
+> > I'm not sure how much success you will have with uclibc - we stopped
+> > caring about it some time ago, so I'm assuming it's broken.
+
+> The uClinux seems to be dead at this point. I tried to send an email
+> asking if we should keep the suport to the mailing list but I couldn't
+> even subscribe (moderator wasn't responding to the request).
+
+> The last post to the uclinux.org was done on May 2016, that will be two
+> years old soon.
+Sorry I meant uclibc-ng [1]. It is living project, the same is musl.
+But I know that our main concern is glibc, so there should be more tests on it.
+And as I said, my goal is just to have it compilable.
+
+> So I assumed that CPUs with MMU are so cheap these days that nobody
+> keeps hacking on non-MMU machines.
 
 
-> > Cyril, Jan, which glibc and kernel header versions would you like to test?
+> > Other than that, I'd choose something very recent, like latest Fedora.
 
-> Is there an option to use some older distro? e.g. glibc-2.12 + 2.6.32
-> That's equivalent of RHEL6.2. I wouldn't go older than that - I still
-> sometimes check with RHEL5, but that one is likely not worth the effort
-> given that EOL is in couple years.
-I'll try to find something. From the ones publicly available it could be one (or more) of these:
-* Debian 6 squeeze (kernel 2.6.32, glibc 2.11.2)
-* Ubuntu 10.04 LTS lucid (kernel 2.6.32, glibc 2.11.1)
-* Centos 6.9 (kernel 2.6.32, glibc 2.12)
-* openSUSE 11.3 (kernel 2.6.34, glibc 2.11.2)
-* Fedora 13 goddard (kernel 2.6.33.3, glibc 2.12)
-* Arch Linux (kernel 2.6.33.4, glibc 2.11.1)
-We will definitely need docker based CI as we want too old releases (i.e. doozer.io is not
-suitable for us).
-
-> Other than that, I'd choose something very recent, like latest Fedora.
-OK, Fedora and openSUSE Tumbleweed are candidates.
+> Sounds reasonable. Something really old + bleeding edge is a good
+> combination.
+Thanks for info!
 
 
 Kind regards,
 Petr
 
-> > [1] https://doozer.io/docs/doozerjson
-
-[2] http://autobuild.buildroot.net/
+[1] https://cgit.openadk.org/cgi/cgit/uclibc-ng.git/
+[2] https://wip.pkgsrc.org/cgi-bin/gitweb.cgi?p=pkgsrc-wip.git;a=tree;f=ltp-git
