@@ -1,7 +1,10 @@
 From: Eric Biggers <ebiggers3@gmail.com>
-Date: Tue,  9 Jan 2018 14:08:45 -0800
-Subject: [LTP] [PATCH v2 1/2] lapi/keyctl.h: add key permission constants
-Message-ID: <20180109220846.211823-1-ebiggers3@gmail.com>
+Date: Tue,  9 Jan 2018 14:08:46 -0800
+Subject: [LTP] [PATCH v2 2/2] syscalls/request_key04: new test for
+	request_key() permission check bug
+In-Reply-To: <20180109220846.211823-1-ebiggers3@gmail.com>
+References: <20180109220846.211823-1-ebiggers3@gmail.com>
+Message-ID: <20180109220846.211823-2-ebiggers3@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,73 +13,153 @@ To: ltp@lists.linux.it
 
 From: Eric Biggers <ebiggers@google.com>
 
-Add the key permission constants to keyctl.h so that they don't have to
-be defined in each test that uses them.
+Add a test for a bug that allowed the request_key() system call to be
+used to add a key to a keyring using only Search permission.  This bug
+was assigned CVE-2017-17807.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- include/lapi/keyctl.h                       | 35 +++++++++++++++++++++++++++++
- testcases/kernel/syscalls/keyctl/keyctl05.c |  3 ---
- 2 files changed, 35 insertions(+), 3 deletions(-)
+
+No changes since v1, just added a patch preceding this one.
+
+ include/lapi/keyctl.h                              |  4 +
+ runtest/cve                                        |  1 +
+ runtest/syscalls                                   |  1 +
+ .../kernel/syscalls/request_key/request_key04.c    | 87 ++++++++++++++++++++++
+ 4 files changed, 93 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/request_key/request_key04.c
 
 diff --git a/include/lapi/keyctl.h b/include/lapi/keyctl.h
-index 4b8098a59..5f6ddaae3 100644
+index 5f6ddaae3..8ad8db64f 100644
 --- a/include/lapi/keyctl.h
 +++ b/include/lapi/keyctl.h
-@@ -144,4 +144,39 @@ static inline key_serial_t keyctl_join_session_keyring(const char *name) {
- # define KEYCTL_SET_TIMEOUT 15
+@@ -99,6 +99,10 @@ static inline key_serial_t keyctl_join_session_keyring(const char *name) {
+ # define KEY_REQKEY_DEFL_THREAD_KEYRING 1
  #endif
  
-+/* key permissions */
-+#ifndef KEY_POS_VIEW
-+# define KEY_POS_VIEW    0x01000000
-+# define KEY_POS_READ    0x02000000
-+# define KEY_POS_WRITE   0x04000000
-+# define KEY_POS_SEARCH  0x08000000
-+# define KEY_POS_LINK    0x10000000
-+# define KEY_POS_SETATTR 0x20000000
-+# define KEY_POS_ALL     0x3f000000
++#ifndef KEY_REQKEY_DEFL_SESSION_KEYRING
++# define KEY_REQKEY_DEFL_SESSION_KEYRING 3
++#endif
 +
-+# define KEY_USR_VIEW    0x00010000
-+# define KEY_USR_READ    0x00020000
-+# define KEY_USR_WRITE   0x00040000
-+# define KEY_USR_SEARCH  0x00080000
-+# define KEY_USR_LINK    0x00100000
-+# define KEY_USR_SETATTR 0x00200000
-+# define KEY_USR_ALL     0x003f0000
-+
-+# define KEY_GRP_VIEW    0x00000100
-+# define KEY_GRP_READ    0x00000200
-+# define KEY_GRP_WRITE   0x00000400
-+# define KEY_GRP_SEARCH  0x00000800
-+# define KEY_GRP_LINK    0x00001000
-+# define KEY_GRP_SETATTR 0x00002000
-+# define KEY_GRP_ALL     0x00003f00
-+
-+# define KEY_OTH_VIEW    0x00000001
-+# define KEY_OTH_READ    0x00000002
-+# define KEY_OTH_WRITE   0x00000004
-+# define KEY_OTH_SEARCH  0x00000008
-+# define KEY_OTH_LINK    0x00000010
-+# define KEY_OTH_SETATTR 0x00000020
-+# define KEY_OTH_ALL     0x0000003f
-+#endif /* !KEY_POS_VIEW */
-+
- #endif	/* KEYCTL_H__ */
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl05.c b/testcases/kernel/syscalls/keyctl/keyctl05.c
-index 9ba61200c..c04d1f5b0 100644
---- a/testcases/kernel/syscalls/keyctl/keyctl05.c
-+++ b/testcases/kernel/syscalls/keyctl/keyctl05.c
-@@ -43,9 +43,6 @@
- #include "tst_test.h"
- #include "lapi/keyctl.h"
+ #ifndef KEY_REQKEY_DEFL_DEFAULT
+ # define KEY_REQKEY_DEFL_DEFAULT	0
+ #endif
+diff --git a/runtest/cve b/runtest/cve
+index 5d124083e..b69f40c65 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -25,5 +25,6 @@ cve-2017-15274 add_key02
+ cve-2017-15299 request_key03 -b cve-2017-15299
+ cve-2017-15537 ptrace07
+ cve-2017-15951 request_key03 -b cve-2017-15951
++cve-2017-17807 request_key04
+ cve-2017-1000364 stack_clash
+ cve-2017-5754 meltdown
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 97fc64300..94efd2305 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -935,6 +935,7 @@ request_key01 request_key01
+ request_key02 request_key02
+ request_key03 request_key03
+ cve-2017-6951 cve-2017-6951
++request_key04 request_key04
  
--#define KEY_POS_WRITE	0x04000000
--#define KEY_POS_ALL	0x3f000000
--
- /*
-  * A valid payload for the "asymmetric" key type.  This is an x509 certificate
-  * in DER format, generated using:
+ rmdir01 rmdir01
+ rmdir02 rmdir02
+diff --git a/testcases/kernel/syscalls/request_key/request_key04.c b/testcases/kernel/syscalls/request_key/request_key04.c
+new file mode 100644
+index 000000000..878b0de00
+--- /dev/null
++++ b/testcases/kernel/syscalls/request_key/request_key04.c
+@@ -0,0 +1,87 @@
++/*
++ * Copyright (c) 2018 Google, Inc.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program, if not, see <http://www.gnu.org/licenses/>.
++ */
++
++/*
++ * Regression test for commit 4dca6ea1d943 ("KEYS: add missing permission check
++ * for request_key() destination"), or CVE-2017-17807.  This bug allowed adding
++ * a key to a keyring given only Search permission to that keyring, rather than
++ * the expected Write permission.
++ *
++ * We test for the bug by trying to add a negatively instantiated key, since
++ * adding a negatively instantiated key using the bug was easy whereas adding a
++ * positively instantiated key required exploiting a race condition.
++ */
++
++#include <errno.h>
++
++#include "tst_test.h"
++#include "lapi/keyctl.h"
++
++static void do_test(void)
++{
++	key_serial_t keyid;
++	int saved_errno;
++
++	TEST(keyctl(KEYCTL_JOIN_SESSION_KEYRING, NULL));
++	if (TEST_RETURN < 0)
++		tst_brk(TBROK | TTERRNO, "failed to join new session keyring");
++
++	TEST(keyctl(KEYCTL_SETPERM, KEY_SPEC_SESSION_KEYRING,
++		    KEY_POS_SEARCH|KEY_POS_READ|KEY_POS_VIEW));
++	if (TEST_RETURN < 0) {
++		tst_brk(TBROK | TTERRNO,
++			"failed to set permissions on session keyring");
++	}
++
++	TEST(keyctl(KEYCTL_SET_REQKEY_KEYRING,
++		    KEY_REQKEY_DEFL_SESSION_KEYRING));
++	if (TEST_RETURN < 0) {
++		tst_brk(TBROK | TTERRNO,
++			"failed to set request-key default keyring");
++	}
++
++	TEST(keyctl(KEYCTL_READ, KEY_SPEC_SESSION_KEYRING,
++		    &keyid, sizeof(keyid)));
++	if (TEST_RETURN < 0)
++		tst_brk(TBROK | TTERRNO, "failed to read from session keyring");
++	if (TEST_RETURN != 0)
++		tst_brk(TBROK, "session keyring is not empty");
++
++	TEST(request_key("user", "desc", "callout_info", 0));
++	if (TEST_RETURN != -1)
++		tst_brk(TBROK, "request_key() unexpectedly succeeded");
++	saved_errno = TEST_ERRNO;
++
++	TEST(keyctl(KEYCTL_READ, KEY_SPEC_SESSION_KEYRING,
++		    &keyid, sizeof(keyid)));
++	if (TEST_RETURN < 0)
++		tst_brk(TBROK | TTERRNO, "failed to read from session keyring");
++	if (TEST_RETURN != 0)
++		tst_brk(TFAIL, "added key to keyring without permission");
++
++	TEST_ERRNO = saved_errno;
++	if (TEST_ERRNO == EACCES) {
++		tst_res(TPASS, "request_key() failed with EACCES as expected");
++	} else {
++		tst_res(TBROK | TTERRNO,
++			"request_key() failed with unexpected error code");
++	}
++}
++
++static struct tst_test test = {
++	.test_all = do_test,
++};
 -- 
 2.16.0.rc1.238.g530d649a79-goog
 
