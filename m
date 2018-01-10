@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 10 Jan 2018 15:05:21 +0100
-Subject: [LTP] [PATCH] Remove pthread_barrier_wait_6-1 because it is
- unreliable
-In-Reply-To: <20180110115941.6715-1-rpalethorpe@suse.com>
-References: <20180110115941.6715-1-rpalethorpe@suse.com>
-Message-ID: <20180110140521.GA3746@rei.lan>
+Date: Wed, 10 Jan 2018 15:22:53 +0100
+Subject: [LTP] [PATCH] endian_switch01: rewrite to newlib
+In-Reply-To: <0db42a518baa79cd6139f566482e2dab11cfb4bd.1515587913.git.jstancek@redhat.com>
+References: <0db42a518baa79cd6139f566482e2dab11cfb4bd.1515587913.git.jstancek@redhat.com>
+Message-ID: <20180110142253.GB3746@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,12 +11,12 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-[CCing Jan]
+> Also check that syscall is supported (doesn't return ENOSYS),
+> before running actual test. This is to address kernels where
+> this syscall is disabled by default:
+>   commit 727f13616c45 ("powerpc: Disable the fast-endian switch syscall by default")
 
-Jan can you please have a look to see if this can go in before the
-release? The test started to fail on newer glibc (due to changes in
-barrier implementation it ends up either with abort() of floating point
-exception) and it's IMHO broken by desing as Ritchard described.
+Looks good to me.
 
 -- 
 Cyril Hrubis
