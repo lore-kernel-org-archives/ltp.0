@@ -1,28 +1,31 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 10 Jan 2018 12:12:30 +0100
-Subject: [LTP] [PATCH v2 2/2] syscalls/request_key04: new test for
- request_key() permission check bug
-In-Reply-To: <20180109220846.211823-2-ebiggers3@gmail.com>
-References: <20180109220846.211823-1-ebiggers3@gmail.com>
- <20180109220846.211823-2-ebiggers3@gmail.com>
-Message-ID: <20180110111229.msrsio6z4d2o4pf4@dell5510>
+Date: Wed, 10 Jan 2018 12:17:57 +0100
+Subject: [LTP] [RFC PATCH 0/2] Allow to compile on archs without atomic
+ support
+In-Reply-To: <20180110110946.GC18314@rei>
+References: <20180104204250.7032-1-pvorel@suse.cz>
+ <754978231.4598218.1515424172751.JavaMail.zimbra@redhat.com>
+ <20180110110946.GC18314@rei>
+Message-ID: <20180110111756.dylkic3zrmjpqcut@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> From: Eric Biggers <ebiggers@google.com>
+Hi,
 
-> Add a test for a bug that allowed the request_key() system call to be
-> used to add a key to a keyring using only Search permission.  This bug
-> was assigned CVE-2017-17807.
+> > What if we made general implementation with some locking? It would be
+> > slower, but I think we don't use atomics that much for it to matter.
 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
+> Atomic increment was easiest way how to make the test library thread
+> safe I wasn't concerned with speed at all. But that is not true for the
+> CVE tests which use atomic operation to synchronize threads to trigger
+> races.
+That's why I implemented it in v1 as simple exit(). So are we ok that CVE tests will
+probably be failing / taking so long?
 
-LGTM both commits.
-BTW it might be worth to define SAFE_KEYCTL().
+Thank you both, for considering it, as I know it's only corner case.
 
 
 Kind regards,
