@@ -1,165 +1,80 @@
-From: Eric Biggers <ebiggers3@gmail.com>
-Date: Tue,  9 Jan 2018 14:08:46 -0800
-Subject: [LTP] [PATCH v2 2/2] syscalls/request_key04: new test for
-	request_key() permission check bug
-In-Reply-To: <20180109220846.211823-1-ebiggers3@gmail.com>
-References: <20180109220846.211823-1-ebiggers3@gmail.com>
-Message-ID: <20180109220846.211823-2-ebiggers3@gmail.com>
+From: Steve Muckle <smuckle.linux@gmail.com>
+Date: Tue,  9 Jan 2018 18:05:18 -0800
+Subject: [LTP] [PATCH] syscalls/chdir03: remove dependency on bin user
+Message-ID: <20180110020518.10909-1-smuckle.linux@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Eric Biggers <ebiggers@google.com>
+The bin user is not present on Android. Remove the dependency on it by
+creating the test directory as root, since chdir03 already must be run
+as root, and then attempt to chdir into it as nobody.
 
-Add a test for a bug that allowed the request_key() system call to be
-used to add a key to a keyring using only Search permission.  This bug
-was assigned CVE-2017-17807.
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Steve Muckle <smuckle.linux@gmail.com>
 ---
+ testcases/kernel/syscalls/chdir/chdir03.c | 22 ++++++----------------
+ 1 file changed, 6 insertions(+), 16 deletions(-)
 
-No changes since v1, just added a patch preceding this one.
-
- include/lapi/keyctl.h                              |  4 +
- runtest/cve                                        |  1 +
- runtest/syscalls                                   |  1 +
- .../kernel/syscalls/request_key/request_key04.c    | 87 ++++++++++++++++++++++
- 4 files changed, 93 insertions(+)
- create mode 100644 testcases/kernel/syscalls/request_key/request_key04.c
-
-diff --git a/include/lapi/keyctl.h b/include/lapi/keyctl.h
-index 5f6ddaae3..8ad8db64f 100644
---- a/include/lapi/keyctl.h
-+++ b/include/lapi/keyctl.h
-@@ -99,6 +99,10 @@ static inline key_serial_t keyctl_join_session_keyring(const char *name) {
- # define KEY_REQKEY_DEFL_THREAD_KEYRING 1
- #endif
+diff --git a/testcases/kernel/syscalls/chdir/chdir03.c b/testcases/kernel/syscalls/chdir/chdir03.c
+index aa0720626ca5..12924664e682 100644
+--- a/testcases/kernel/syscalls/chdir/chdir03.c
++++ b/testcases/kernel/syscalls/chdir/chdir03.c
+@@ -22,10 +22,9 @@
+  *	Testcase for testing that chdir(2) sets EACCES errno
+  *
+  * ALGORITHM
+- *	1.	create a child process, sets its uid to ltpuser1
+- *	2.	this child creates a directory with perm 700, and exits
+- *	3.	create another child process, sets its uid to ltpuser2
+- *	4.	this child attempts to chdir(2) to the directory created in 2.
++ *	1.	running as root, create a directory with perm 700
++ *	2.	create a child process, sets its uid to nobody
++ *	3.	this child attempts to chdir(2) to the directory created in 1
+  *		and expects to get an EACCES.
+  */
  
-+#ifndef KEY_REQKEY_DEFL_SESSION_KEYRING
-+# define KEY_REQKEY_DEFL_SESSION_KEYRING 3
-+#endif
-+
- #ifndef KEY_REQKEY_DEFL_DEFAULT
- # define KEY_REQKEY_DEFL_DEFAULT	0
- #endif
-diff --git a/runtest/cve b/runtest/cve
-index 5d124083e..b69f40c65 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -25,5 +25,6 @@ cve-2017-15274 add_key02
- cve-2017-15299 request_key03 -b cve-2017-15299
- cve-2017-15537 ptrace07
- cve-2017-15951 request_key03 -b cve-2017-15951
-+cve-2017-17807 request_key04
- cve-2017-1000364 stack_clash
- cve-2017-5754 meltdown
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 97fc64300..94efd2305 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -935,6 +935,7 @@ request_key01 request_key01
- request_key02 request_key02
- request_key03 request_key03
- cve-2017-6951 cve-2017-6951
-+request_key04 request_key04
+@@ -36,7 +35,7 @@
  
- rmdir01 rmdir01
- rmdir02 rmdir02
-diff --git a/testcases/kernel/syscalls/request_key/request_key04.c b/testcases/kernel/syscalls/request_key/request_key04.c
-new file mode 100644
-index 000000000..878b0de00
---- /dev/null
-+++ b/testcases/kernel/syscalls/request_key/request_key04.c
-@@ -0,0 +1,87 @@
-+/*
-+ * Copyright (c) 2018 Google, Inc.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program, if not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+/*
-+ * Regression test for commit 4dca6ea1d943 ("KEYS: add missing permission check
-+ * for request_key() destination"), or CVE-2017-17807.  This bug allowed adding
-+ * a key to a keyring given only Search permission to that keyring, rather than
-+ * the expected Write permission.
-+ *
-+ * We test for the bug by trying to add a negatively instantiated key, since
-+ * adding a negatively instantiated key using the bug was easy whereas adding a
-+ * positively instantiated key required exploiting a race condition.
-+ */
-+
-+#include <errno.h>
-+
-+#include "tst_test.h"
-+#include "lapi/keyctl.h"
-+
-+static void do_test(void)
-+{
-+	key_serial_t keyid;
-+	int saved_errno;
-+
-+	TEST(keyctl(KEYCTL_JOIN_SESSION_KEYRING, NULL));
-+	if (TEST_RETURN < 0)
-+		tst_brk(TBROK | TTERRNO, "failed to join new session keyring");
-+
-+	TEST(keyctl(KEYCTL_SETPERM, KEY_SPEC_SESSION_KEYRING,
-+		    KEY_POS_SEARCH|KEY_POS_READ|KEY_POS_VIEW));
-+	if (TEST_RETURN < 0) {
-+		tst_brk(TBROK | TTERRNO,
-+			"failed to set permissions on session keyring");
-+	}
-+
-+	TEST(keyctl(KEYCTL_SET_REQKEY_KEYRING,
-+		    KEY_REQKEY_DEFL_SESSION_KEYRING));
-+	if (TEST_RETURN < 0) {
-+		tst_brk(TBROK | TTERRNO,
-+			"failed to set request-key default keyring");
-+	}
-+
-+	TEST(keyctl(KEYCTL_READ, KEY_SPEC_SESSION_KEYRING,
-+		    &keyid, sizeof(keyid)));
-+	if (TEST_RETURN < 0)
-+		tst_brk(TBROK | TTERRNO, "failed to read from session keyring");
-+	if (TEST_RETURN != 0)
-+		tst_brk(TBROK, "session keyring is not empty");
-+
-+	TEST(request_key("user", "desc", "callout_info", 0));
-+	if (TEST_RETURN != -1)
-+		tst_brk(TBROK, "request_key() unexpectedly succeeded");
-+	saved_errno = TEST_ERRNO;
-+
-+	TEST(keyctl(KEYCTL_READ, KEY_SPEC_SESSION_KEYRING,
-+		    &keyid, sizeof(keyid)));
-+	if (TEST_RETURN < 0)
-+		tst_brk(TBROK | TTERRNO, "failed to read from session keyring");
-+	if (TEST_RETURN != 0)
-+		tst_brk(TFAIL, "added key to keyring without permission");
-+
-+	TEST_ERRNO = saved_errno;
-+	if (TEST_ERRNO == EACCES) {
-+		tst_res(TPASS, "request_key() failed with EACCES as expected");
-+	} else {
-+		tst_res(TBROK | TTERRNO,
-+			"request_key() failed with unexpected error code");
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.test_all = do_test,
-+};
+ #define DIRNAME "chdir03_dir"
+ 
+-static uid_t nobody_uid, bin_uid;
++static uid_t nobody_uid;
+ 
+ void verify_chdir(void)
+ {
+@@ -44,7 +43,7 @@ void verify_chdir(void)
+ 
+ 	pid = SAFE_FORK();
+ 	if (!pid) {
+-		SAFE_SETUID(bin_uid);
++		SAFE_SETUID(nobody_uid);
+ 
+ 		TEST(chdir(DIRNAME));
+ 
+@@ -66,20 +65,11 @@ void verify_chdir(void)
+ void setup(void)
+ {
+ 	struct passwd *pw;
+-	pid_t pid;
+ 
+ 	pw = SAFE_GETPWNAM("nobody");
+ 	nobody_uid = pw->pw_uid;
+-	pw = SAFE_GETPWNAM("bin");
+-	bin_uid = pw->pw_uid;
+ 
+-	pid = SAFE_FORK();
+-	if (!pid) {
+-		SAFE_SETEUID(nobody_uid);
+-		SAFE_MKDIR(DIRNAME, 0700);
+-		exit(0);
+-	}
+-	tst_reap_children();
++	SAFE_MKDIR(DIRNAME, 0700);
+ }
+ 
+ static struct tst_test test = {
 -- 
-2.16.0.rc1.238.g530d649a79-goog
+2.13.6
 
