@@ -1,34 +1,41 @@
-From: Li Wang <liwan@redhat.com>
-Date: Thu, 11 Jan 2018 13:47:53 +0800
-Subject: [LTP] [PATCH] endian_switch01: rewrite to newlib
-In-Reply-To: <0db42a518baa79cd6139f566482e2dab11cfb4bd.1515587913.git.jstancek@redhat.com>
-References: <0db42a518baa79cd6139f566482e2dab11cfb4bd.1515587913.git.jstancek@redhat.com>
-Message-ID: <CAEemH2eNi3unPaEyfHH8rraPaKM3QgKO+ikHZL-2k+zNf0SeJQ@mail.gmail.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Thu, 11 Jan 2018 13:26:28 +0100
+Subject: [LTP] [PATCH v2] Add regression test for CVE-2017-17052
+In-Reply-To: <20180110155505.28433-1-mmoese@suse.de>
+References: <20180110155505.28433-1-mmoese@suse.de>
+Message-ID: <87o9m0k2dn.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Jan 10, 2018 at 8:42 PM, Jan Stancek <jstancek@redhat.com> wrote:
+Hello Michael,
 
-> Also check that syscall is supported (doesn't return ENOSYS),
-> before running actual test. This is to address kernels where
-> this syscall is disabled by default:
->   commit 727f13616c45 ("powerpc: Disable the fast-endian switch syscall by
-> default")
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->
+Welcome to LTP :-)
 
-​Works fine on kernels with/without fast endian-switch syscall​ support.
+Michael Moese writes:
 
+> +
+> +#include <unistd.h>
+> +#include <pthread.h>
+> +#include <stdlib.h>
+> +#include <stdio.h>
+> +#include <sys/mman.h>
+> +#include <sys/wait.h>
+> +#include <sys/syscall.h>
+> +#include <sys/shm.h>
+> +#include <sys/types.h>
+> +
+> +#include "tst_test.h"
+> +#include "tst_safe_stdio.h"
+> +#include "tst_safe_pthread.h"
+> +#include "tst_safe_sysv_ipc.h"
+
+It is better to use a shared mapping created with mmap. The SYSV safe
+macros are only for testing SYSV shared memory itself and otherwise
+should be avoided.
 
 -- 
-Regards,
-Li Wang
-Email: liwang@redhat.com
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180111/761e72fd/attachment.html>
+Thank you,
+Richard.
