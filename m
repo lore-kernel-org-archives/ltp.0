@@ -1,41 +1,37 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 11 Jan 2018 13:26:28 +0100
+From: Michael Moese <mmoese@suse.de>
+Date: Thu, 11 Jan 2018 13:36:23 +0100
 Subject: [LTP] [PATCH v2] Add regression test for CVE-2017-17052
-In-Reply-To: <20180110155505.28433-1-mmoese@suse.de>
+In-Reply-To: <87o9m0k2dn.fsf@rpws.prws.suse.cz>
 References: <20180110155505.28433-1-mmoese@suse.de>
-Message-ID: <87o9m0k2dn.fsf@rpws.prws.suse.cz>
+ <87o9m0k2dn.fsf@rpws.prws.suse.cz>
+Message-ID: <20180111123623.6hcnodqfrae3ix7y@linux.suse>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hello Michael,
+Hi Richardm
+On Thu, Jan 11, 2018 at 01:26:28PM +0100, Richard Palethorpe wrote:
+> Welcome to LTP :-)
+Thank you. I will be working on LTP now, so expect to see me here 
+more often.
 
-Welcome to LTP :-)
+> > +#include "tst_safe_sysv_ipc.h"
+> 
+> It is better to use a shared mapping created with mmap. The SYSV safe
+> macros are only for testing SYSV shared memory itself and otherwise
+> should be avoided.
+Yes, I agree on that. I had a discussion with Cyril yesterday, 
+he explained this subject to me. I already implemented the change, but
+was not yet able to fully test this. 
 
-Michael Moese writes:
+I will resend the patch, but I guess it is a good idea to relax and see
+if anyone has additional remarks (so we don't end with a v10) :-)
 
-> +
-> +#include <unistd.h>
-> +#include <pthread.h>
-> +#include <stdlib.h>
-> +#include <stdio.h>
-> +#include <sys/mman.h>
-> +#include <sys/wait.h>
-> +#include <sys/syscall.h>
-> +#include <sys/shm.h>
-> +#include <sys/types.h>
-> +
-> +#include "tst_test.h"
-> +#include "tst_safe_stdio.h"
-> +#include "tst_safe_pthread.h"
-> +#include "tst_safe_sysv_ipc.h"
 
-It is better to use a shared mapping created with mmap. The SYSV safe
-macros are only for testing SYSV shared memory itself and otherwise
-should be avoided.
+Thanks,
+Michael
 
 -- 
-Thank you,
-Richard.
+SUSE Linux GmbH, GF: Felix Imendörffer, Jane Smithard, Graham Norton, HRB 21284 (AG Nürnberg)
