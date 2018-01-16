@@ -1,70 +1,32 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 16 Jan 2018 10:23:18 +0100
-Subject: [LTP] [PATCH] safe_mount: Do not try mount() syscall for FUSE fs
-Message-ID: <20180116092318.20521-1-chrubis@suse.cz>
+Date: Tue, 16 Jan 2018 11:32:31 +0100
+Subject: [LTP] [PATCH v2] syscalls/madvise09.c: Use custom mount point
+ instead of /sys/fs/cgroup/memory
+In-Reply-To: <5A5DC3A5.1030604@cn.fujitsu.com>
+References: <5A4D94E0.4030508@cn.fujitsu.com>
+ <1515033797-18823-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <5A5C3E27.1050702@cn.fujitsu.com>
+ <1801982516.6465238.1516003561998.JavaMail.zimbra@redhat.com>
+ <5A5C7411.9040107@cn.fujitsu.com>
+ <2055444592.6673123.1516031934917.JavaMail.zimbra@redhat.com>
+ <5A5DC1C3.2020203@cn.fujitsu.com> <5A5DC3A5.1030604@cn.fujitsu.com>
+Message-ID: <20180116103231.GA24595@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The problem here is that there exists two NTFS implementations. There is
-a readonly support in the kernel and full read/write FUSE
-implementation. If there is a NTFS kernel module present on the system
-the mount() syscall successfuly mounts the device in read-only mode
-which causes the tests to fail once they attempt to create a file.
+Hi!
+> Adding Cyril to CC.  :-)
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
+I guess that it's time to create some kind of libary API for
+initializing cgroups since we have various fallbacks etc. scattered all
+around the place. I.e. something where we request the type of cgroup and
+get back a path to use.
 
-This is one small nit I found while testing LTP I think that it's safe
-enough for the relese since it only touches code for ntfs and exfat.
+Let's look into that once we are done with the release.
 
- lib/safe_macros.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index c4aed0b30..c48e436dc 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -723,8 +723,6 @@ int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
- {
- 	int rval;
- 
--	rval = mount(source, target, filesystemtype, mountflags, data);
--
- 	/*
- 	 * The FUSE filesystem executes mount.fuse helper, which tries to
- 	 * execute corresponding binary name which is encoded at the start of
-@@ -732,21 +730,23 @@ int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
-          *
- 	 * The mount helpers are called mount.$fs_type.
- 	 */
--	if (rval == -1 && errno == ENODEV && is_fuse(filesystemtype)) {
-+	if (is_fuse(filesystemtype)) {
- 		char buf[1024];
--		int ret;
- 
- 		tst_resm(TINFO, "Trying FUSE...");
- 		snprintf(buf, sizeof(buf), "mount.%s '%s' '%s'",
- 			 filesystemtype, source, target);
- 
--		ret = tst_system(buf);
--		if (WIFEXITED(ret) && WEXITSTATUS(ret) == 0)
-+		rval = tst_system(buf);
-+		if (WIFEXITED(rval) && WEXITSTATUS(rval) == 0)
- 			return 0;
- 
--		errno = ENODEV;
-+		tst_brkm(TBROK, cleanup_fn, "mount.%s failed with %i",
-+			 filesystemtype, rval);
-+		return -1;
- 	}
- 
-+	rval = mount(source, target, filesystemtype, mountflags, data);
- 	if (rval == -1) {
- 		tst_brkm(TBROK | TERRNO, cleanup_fn,
- 			 "%s:%d: mount(%s, %s, %s, %lu, %p) failed",
 -- 
-2.13.6
-
+Cyril Hrubis
+chrubis@suse.cz
