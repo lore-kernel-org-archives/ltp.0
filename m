@@ -1,32 +1,30 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 16 Jan 2018 11:32:31 +0100
-Subject: [LTP] [PATCH v2] syscalls/madvise09.c: Use custom mount point
- instead of /sys/fs/cgroup/memory
-In-Reply-To: <5A5DC3A5.1030604@cn.fujitsu.com>
-References: <5A4D94E0.4030508@cn.fujitsu.com>
- <1515033797-18823-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <5A5C3E27.1050702@cn.fujitsu.com>
- <1801982516.6465238.1516003561998.JavaMail.zimbra@redhat.com>
- <5A5C7411.9040107@cn.fujitsu.com>
- <2055444592.6673123.1516031934917.JavaMail.zimbra@redhat.com>
- <5A5DC1C3.2020203@cn.fujitsu.com> <5A5DC3A5.1030604@cn.fujitsu.com>
-Message-ID: <20180116103231.GA24595@rei>
+From: rahul gupta <rahul.gupta412@gmail.com>
+Date: Tue, 16 Jan 2018 15:32:34 +0530
+Subject: [LTP] cross compilation failing
+Message-ID: <CAN9dZwefF=KqefnuMS-OAVN+icQt=bczdk0QGrBRWEPKdNWFhg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Adding Cyril to CC.  :-)
+Hi,
 
-I guess that it's time to create some kind of libary API for
-initializing cgroups since we have various fallbacks etc. scattered all
-around the place. I.e. something where we request the type of cgroup and
-get back a path to use.
+we are facing issue while compiling ltp for kernel version 2.6.34.15.
+could you please let me know, does ltp depend on kernel version.
 
-Let's look into that once we are done with the release.
+# uname -a
+Linux IPNIMP7-0
+2.6.34.15-WR4.3.fp_octwnd_6880_ampp2_standard-00719-g2f89460 #1 SMP PREEMPT
+Thu Sep 14 16:51:08 IST 2017 mips64 mips64 mips64 GNU/Linux
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+while compilation went fine for kernel 4.4.84.
+# uname -a
+Linux CLA-0 4.4.84-pc64-distro.git-v2.66-23-rc19 #1 SMP Tue Dec 26 08:16:42
+UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
+
+Regards,
+Rahul Gupta
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180116/c12946ee/attachment-0001.html>
