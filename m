@@ -1,35 +1,116 @@
-From: Travis CI <builds@travis-ci.org>
-Date: Thu, 18 Jan 2018 14:40:26 +0000
-Subject: [LTP] Errored: linux-test-project/ltp#618 (master - 731cd34)
-In-Reply-To: <linux-test-project/ltp+330371706+errored@travis-ci.org>
-Message-ID: <5a60b1da709c1_43f969d08c780141512@1cbff523-a99b-4f2f-bf90-7604253fb3b8.mail>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 18 Jan 2018 15:53:35 +0100
+Subject: [LTP] [ANNOUNCE] The Linux Test Project has been released for
+ JANUARY 2018
+Message-ID: <20180118145335.GA20730@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Build Update for linux-test-project/ltp
--------------------------------------
+Good news everyone,
 
-Build: #618
-Status: Errored
+the Linux Test Project test suite stable release for *January 2018* has been
+released.
 
-Duration: 20 minutes and 32 seconds
-Commit: 731cd34 (master)
-Author: Cyril Hrubis
-Message: LTP 20180118
+Since the last release 278 patches by 35 authors were merged.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Notable changes for this release include:
+-----------------------------------------
 
-View the changeset: https://github.com/linux-test-project/ltp/compare/fecdd885eb4b...731cd34e682d
+* New tests for:
+  - unshare(1) command
+  - ioctl07 test for RNDGETENTCNT ioctl()
+  - new network MACsec testcases
+  - new network IPsec SCTP and DCCP testcases
 
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/330371706?utm_source=email&utm_medium=notification
+* New regression tests for:
+  - CVE-2017-5754 aka meltdown
+  - CVE-2017-12193 (test add_key04)
+  - CVE-2017-15299 and CVE-2017-15951 (test request_key03)
+  - CVE-2017-7308 (test setsockopt02)
+  - CVE-2016-9604 (test keyctl08)
+  - CVE-2017-15537 (test ptrace07)
+  - CVE-2017-12192 (test keyctl07)
+  - add_key03 regression test for kernel commit 237bbd29f7a0
+  - keyctl06 regression test for kernel commit e645016abc80
 
---
+* Fixed tests:
+  - brk01 (test rewritten from scratch)
+  - sigwaitinfo01 (fixed and enabled)
+  - openposix aio testcases (uninitialized aiocb)
+  + many smaller fixes
 
-You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+* Removed tests:
+  - invalid openposix pthread_barrier_wait_6-1 test
+  - tcp_cmds tests for rwho, echo, finger, and rdist.
 
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180118/0a1126f7/attachment-0001.html>
+* The test library gained support to run a particular test against
+  different filesystems including FUSE filesystems such as NTFS or exFAT. The
+  mkfs and kernel/FUSE support for a particular filesystem must be in-place
+  otherwise the tests will skip it automatically.
+
+  Some of the filesystem specific syscall tests such as fallocate() are
+  executed this way now. We also have a new test that fills up filesystem
+  using several threads and expects the syscalls to fail gracefully.
+
+* The fuzzy synchronization library that is used to trigger races mostly in CVE
+  testcases was rewritten to use one thread instead of starting a thread on
+  each iteration, which is not only faster but also more stable since we
+  introduce less random jitter to the timing measurements this way.
+
+* Various fixes and enhancements for the network testcases.
+
+* Support for NUMA API older than v2 was dropped from the testcases.
+
+* The configure script now correctly detects devel libraries on -m32 build.
+
+* Another large scale cleanup using coccinelle was done on the code base.
+
+  We transformed patterns such as:
+
+  if (scall(...) < 0)
+          tst_brkm(TBROK, ...);
+
+  into:
+
+  SAFE_SCALL();
+
+  Which will produce unified and more verbose error reporting in case
+  that the call to scall() will fail.
+
+* The runltp script now lists test skipped by the skipfile parameter as skipped
+  in the testrun results, these were missing from it previously.
+
+* 24 testcases were cleaned up and converted to the new test library
+
++ The usual amount of fixes all over the code base
+
+
+Downloads and links:
+--------------------
+
+The latest version of the test-suite contains 3000+ tests for the Linux
+and can be downloaded at:
+
+https://github.com/linux-test-project/ltp/releases/tag/20180118
+
+The project pages as well as GIT repository are hosted on GitHub:
+
+https://github.com/linux-test-project/ltp
+http://linux-test-project.github.io/
+
+If you ever wondered how to write a LTP testcase, don't miss our developer
+documentation at:
+
+https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
+https://github.com/linux-test-project/ltp/wiki/BuildSystem
+
+Patches, new tests, bugs, comments or questions should go to to our mailing
+list@ltp@lists.linux.it.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
