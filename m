@@ -1,54 +1,141 @@
-From: Travis CI <builds@travis-ci.org>
-Date: Wed, 17 Jan 2018 15:27:59 +0000
-Subject: [LTP] Errored: linux-test-project/ltp#616 (master - fecdd88)
-In-Reply-To: <linux-test-project/ltp+329915294+errored@travis-ci.org>
-Message-ID: <5a5f6b7db41b2_43fe37e51114c302191@e6a90823-4ed8-4a9b-a482-470e35954d28.mail>
+From: Daniel Sangorrin <daniel.sangorrin@toshiba.co.jp>
+Date: Thu, 18 Jan 2018 18:00:23 +0900
+Subject: [LTP] fallocate04: failing on ntfs
+Message-ID: <003201d3903a$c6a129b0$53e37d10$@toshiba.co.jp>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Build Update for linux-test-project/ltp
--------------------------------------
+Hi,
 
-Build: #616
-Status: Errored
+I run fallocate04 from the git sources and found problems with the ntfs check (see below).
+The system is using Debian jessie on a x86_64 PC.
+If I move mkfs.ntfs out of the path then the test passes.
 
-Duration: 16 minutes and 53 seconds
-Commit: fecdd88 (master)
-Author: Cyril Hrubis
-Message: tst_test: Fix exit value on tst_brk(TCONF, ...)
+I have tried with two kernels (3.16 and 4.4 stable), with 
+CONFIG_NTFS_FS=m
+CONFIG_NTFS_RW=y
 
-We decided not to propagate TCONF into the test exit value in a case
-that the test had at least one TPASS in:
+Not sure if this is a bug or some misconfiguration from my side. Any help
+would be much appreciated.
 
-commit 5390d6ea36578c1fac8adc416b6f91aa4a330a08
-Author: Cyril Hrubis <chrubis@suse.cz>
-Date:   Thu Sep 7 15:47:22 2017 +0200
+Thanks,
+Daniel
 
-    lib/tst_test: Report 0 if test has both TPASS and TCONF
 
-However this commit missed a case when TCONF is passed directly to the
-do_exit() function. This may happen in two cases actually, one of the is
-tst_brk(TCONF, ...) called from a test and second one is more subtle and
-happens when the last result in the run_tcases_per_fs() produces TCONF
-which is then propagated to the do_exit() function.
+# ./runltp -f syscalls -s fallocate04
+< skipped>
+tst_device.c:230: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_supported_fs_types.c:72: INFO: Kernel supports ext2
+tst_supported_fs_types.c:56: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:72: INFO: Kernel supports ext3
+tst_supported_fs_types.c:56: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:72: INFO: Kernel supports ext4
+tst_supported_fs_types.c:56: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:72: INFO: Kernel supports xfs
+tst_supported_fs_types.c:56: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:72: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:52: INFO: mkfs.btrfs does not exist
+tst_supported_fs_types.c:72: INFO: Kernel supports vfat
+tst_supported_fs_types.c:56: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:95: INFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:72: INFO: Kernel supports ntfs
+tst_supported_fs_types.c:56: INFO: mkfs.ntfs does exist
+tst_mkfs.c:83: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.42.12 (29-Aug-2014)
+tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
+fallocate04.c:96: INFO: allocate '3072' bytes
+fallocate04.c:100: CONF: fallocate() not supported
+tst_mkfs.c:83: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.42.12 (29-Aug-2014)
+tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
+fallocate04.c:96: INFO: allocate '3072' bytes
+fallocate04.c:100: CONF: fallocate() not supported
+tst_mkfs.c:83: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.42.12 (29-Aug-2014)
+tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
+fallocate04.c:96: INFO: allocate '3072' bytes
+fallocate04.c:110: PASS: test-case succeeded
+fallocate04.c:117: INFO: read allocated file size '3072'
+fallocate04.c:118: INFO: make a hole with FALLOC_FL_PUNCH_HOLE
+fallocate04.c:134: INFO: check that file has a hole with lseek(,,SEEK_HOLE)
+fallocate04.c:151: INFO: found a hole at '1024' offset
+fallocate04.c:157: INFO: allocated file size before '3072' and after '2048'
+fallocate04.c:80: INFO: reading the file, compare with expected buffer
+fallocate04.c:168: PASS: test-case succeeded
+fallocate04.c:173: INFO: zeroing file space with FALLOC_FL_ZERO_RANGE
+fallocate04.c:182: INFO: read current allocated file size '2048'
+fallocate04.c:199: INFO: allocated file size before '2048' and after '3072'
+fallocate04.c:80: INFO: reading the file, compare with expected buffer
+fallocate04.c:210: PASS: test-case succeeded
+fallocate04.c:215: INFO: collapsing file space with FALLOC_FL_COLLAPSE_RANGE
+fallocate04.c:219: INFO: read current allocated file size '3072'
+fallocate04.c:233: INFO: allocated file size before '3072' and after '2048'
+fallocate04.c:80: INFO: reading the file, compare with expected buffer
+fallocate04.c:250: PASS: test-case succeeded
+fallocate04.c:255: INFO: inserting space with FALLOC_FL_INSERT_RANGE
+fallocate04.c:259: INFO: read current allocated file size '2048'
+fallocate04.c:277: INFO: allocated file size before '2048' and after '3072'
+fallocate04.c:80: INFO: reading the file, compare with expected buffer
+fallocate04.c:288: PASS: test-case succeeded
+tst_mkfs.c:83: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
+fallocate04.c:96: INFO: allocate '12288' bytes
+fallocate04.c:110: PASS: test-case succeeded
+fallocate04.c:117: INFO: read allocated file size '12288'
+fallocate04.c:118: INFO: make a hole with FALLOC_FL_PUNCH_HOLE
+fallocate04.c:134: INFO: check that file has a hole with lseek(,,SEEK_HOLE)
+fallocate04.c:151: INFO: found a hole at '4096' offset
+fallocate04.c:157: INFO: allocated file size before '12288' and after '8192'
+fallocate04.c:80: INFO: reading the file, compare with expected buffer
+fallocate04.c:168: PASS: test-case succeeded
+fallocate04.c:173: INFO: zeroing file space with FALLOC_FL_ZERO_RANGE
+fallocate04.c:182: INFO: read current allocated file size '8192'
+fallocate04.c:199: INFO: allocated file size before '8192' and after '12288'
+fallocate04.c:80: INFO: reading the file, compare with expected buffer
+fallocate04.c:210: PASS: test-case succeeded
+fallocate04.c:215: INFO: collapsing file space with FALLOC_FL_COLLAPSE_RANGE
+fallocate04.c:219: INFO: read current allocated file size '12288'
+fallocate04.c:233: INFO: allocated file size before '12288' and after '8192'
+fallocate04.c:80: INFO: reading the file, compare with expected buffer
+fallocate04.c:250: PASS: test-case succeeded
+fallocate04.c:255: INFO: inserting space with FALLOC_FL_INSERT_RANGE
+fallocate04.c:259: INFO: read current allocated file size '8192'
+fallocate04.c:277: INFO: allocated file size before '8192' and after '12288'
+fallocate04.c:80: INFO: reading the file, compare with expected buffer
+fallocate04.c:288: PASS: test-case succeeded
+tst_mkfs.c:83: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
+fallocate04.c:96: INFO: allocate '12288' bytes
+fallocate04.c:100: CONF: fallocate() not supported
+tst_mkfs.c:83: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
+safe_macros.c:225: BROK: fallocate04.c:302: open(fallocate/fallocate.txt,66,0700) failed: EROFS
 
-This commit simply masks the TCONF from the exit value in this cases if
-we happen to have non-zero success counter.
+Summary:
+passed   10
+failed   0
+skipped  3
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=9 termination_type=exited termination_id=2 corefile=no
+cutime=2 cstime=91
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: 20170929-273-gfdefef3
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-Acked-by: Jan Stancek <jstancek@redhat.com>
+       ###############################################################
 
-View the changeset: https://github.com/linux-test-project/ltp/compare/a2e789cac04b...fecdd885eb4b
+            Done executing testcases.
+            LTP Version:  20170929-273-gfdefef3
+       ###############################################################
 
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/329915294?utm_source=email&utm_medium=notification
 
---
-
-You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180117/c0b008af/attachment-0001.html>
