@@ -1,116 +1,201 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 18 Jan 2018 15:53:35 +0100
-Subject: [LTP] [ANNOUNCE] The Linux Test Project has been released for
- JANUARY 2018
-Message-ID: <20180118145335.GA20730@rei>
+From: Daniel Sangorrin <daniel.sangorrin@toshiba.co.jp>
+Date: Fri, 19 Jan 2018 09:41:33 +0900
+Subject: [LTP] fallocate04: failing on ntfs
+In-Reply-To: <1506733331.1228496.1516266276673.JavaMail.zimbra@redhat.com>
+References: <003201d3903a$c6a129b0$53e37d10$@toshiba.co.jp>
+ <1020192057.1228114.1516266135166.JavaMail.zimbra@redhat.com>
+ <1506733331.1228496.1516266276673.JavaMail.zimbra@redhat.com>
+Message-ID: <006901d390be$41a1dff0$c4e59fd0$@toshiba.co.jp>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Good news everyone,
+> -----Original Message-----
+> From: Jan Stancek [mailto:jstancek@redhat.com]
+> Sent: Thursday, January 18, 2018 6:05 PM
+> To: Daniel Sangorrin
+> Cc: ltp@lists.linux.it
+> Subject: Re: [LTP] fallocate04: failing on ntfs
+> 
+> 
+> 
+> ----- Original Message -----
+> >
+> >
+> > ----- Original Message -----
+> > > Hi,
+> > >
+> > > I run fallocate04 from the git sources and found problems with the ntfs
+> > > check
+> > > (see below).
+> > > The system is using Debian jessie on a x86_64 PC.
+> > > If I move mkfs.ntfs out of the path then the test passes.
+> > >
+> > > I have tried with two kernels (3.16 and 4.4 stable), with
+> > > CONFIG_NTFS_FS=m
+> > > CONFIG_NTFS_RW=y
+> > >
+> > > Not sure if this is a bug or some misconfiguration from my side. Any help
+> > > would be much appreciated.
+> >
+> > Hi, what is your LTP version? Does it have this commit?
+> >   https://github.com/linux-test-project/ltp/commit/28507e514c81c1d78b0125e20a63f23e69cdcf49
+> 
+> Sorry, just found it: 20170929-273-gfdefef3.
+> Can you please retry with current HEAD? Patch above should address that failure.
 
-the Linux Test Project test suite stable release for *January 2018* has been
-released.
+Damn, I was just 1 commit behind that one ;_;
+The test passes with the current HEAD. 
 
-Since the last release 278 patches by 35 authors were merged.
+Thanks!
+Daniel
 
-Notable changes for this release include:
------------------------------------------
+>  >
+> > Regards,
+> > Jan
+> >
+> > >
+> > > Thanks,
+> > > Daniel
+> > >
+> > >
+> > > # ./runltp -f syscalls -s fallocate04
+> > > < skipped>
+> > > tst_device.c:230: INFO: Using test device LTP_DEV='/dev/loop0'
+> > > tst_supported_fs_types.c:72: INFO: Kernel supports ext2
+> > > tst_supported_fs_types.c:56: INFO: mkfs.ext2 does exist
+> > > tst_supported_fs_types.c:72: INFO: Kernel supports ext3
+> > > tst_supported_fs_types.c:56: INFO: mkfs.ext3 does exist
+> > > tst_supported_fs_types.c:72: INFO: Kernel supports ext4
+> > > tst_supported_fs_types.c:56: INFO: mkfs.ext4 does exist
+> > > tst_supported_fs_types.c:72: INFO: Kernel supports xfs
+> > > tst_supported_fs_types.c:56: INFO: mkfs.xfs does exist
+> > > tst_supported_fs_types.c:72: INFO: Kernel supports btrfs
+> > > tst_supported_fs_types.c:52: INFO: mkfs.btrfs does not exist
+> > > tst_supported_fs_types.c:72: INFO: Kernel supports vfat
+> > > tst_supported_fs_types.c:56: INFO: mkfs.vfat does exist
+> > > tst_supported_fs_types.c:95: INFO: Filesystem exfat is not supported
+> > > tst_supported_fs_types.c:72: INFO: Kernel supports ntfs
+> > > tst_supported_fs_types.c:56: INFO: mkfs.ntfs does exist
+> > > tst_mkfs.c:83: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+> > > mke2fs 1.42.12 (29-Aug-2014)
+> > > tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
+> > > fallocate04.c:96: INFO: allocate '3072' bytes
+> > > fallocate04.c:100: CONF: fallocate() not supported
+> > > tst_mkfs.c:83: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+> > > mke2fs 1.42.12 (29-Aug-2014)
+> > > tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
+> > > fallocate04.c:96: INFO: allocate '3072' bytes
+> > > fallocate04.c:100: CONF: fallocate() not supported
+> > > tst_mkfs.c:83: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+> > > mke2fs 1.42.12 (29-Aug-2014)
+> > > tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
+> > > fallocate04.c:96: INFO: allocate '3072' bytes
+> > > fallocate04.c:110: PASS: test-case succeeded
+> > > fallocate04.c:117: INFO: read allocated file size '3072'
+> > > fallocate04.c:118: INFO: make a hole with FALLOC_FL_PUNCH_HOLE
+> > > fallocate04.c:134: INFO: check that file has a hole with lseek(,,SEEK_HOLE)
+> > > fallocate04.c:151: INFO: found a hole at '1024' offset
+> > > fallocate04.c:157: INFO: allocated file size before '3072' and after '2048'
+> > > fallocate04.c:80: INFO: reading the file, compare with expected buffer
+> > > fallocate04.c:168: PASS: test-case succeeded
+> > > fallocate04.c:173: INFO: zeroing file space with FALLOC_FL_ZERO_RANGE
+> > > fallocate04.c:182: INFO: read current allocated file size '2048'
+> > > fallocate04.c:199: INFO: allocated file size before '2048' and after '3072'
+> > > fallocate04.c:80: INFO: reading the file, compare with expected buffer
+> > > fallocate04.c:210: PASS: test-case succeeded
+> > > fallocate04.c:215: INFO: collapsing file space with
+> > > FALLOC_FL_COLLAPSE_RANGE
+> > > fallocate04.c:219: INFO: read current allocated file size '3072'
+> > > fallocate04.c:233: INFO: allocated file size before '3072' and after '2048'
+> > > fallocate04.c:80: INFO: reading the file, compare with expected buffer
+> > > fallocate04.c:250: PASS: test-case succeeded
+> > > fallocate04.c:255: INFO: inserting space with FALLOC_FL_INSERT_RANGE
+> > > fallocate04.c:259: INFO: read current allocated file size '2048'
+> > > fallocate04.c:277: INFO: allocated file size before '2048' and after '3072'
+> > > fallocate04.c:80: INFO: reading the file, compare with expected buffer
+> > > fallocate04.c:288: PASS: test-case succeeded
+> > > tst_mkfs.c:83: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+> > > tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
+> > > fallocate04.c:96: INFO: allocate '12288' bytes
+> > > fallocate04.c:110: PASS: test-case succeeded
+> > > fallocate04.c:117: INFO: read allocated file size '12288'
+> > > fallocate04.c:118: INFO: make a hole with FALLOC_FL_PUNCH_HOLE
+> > > fallocate04.c:134: INFO: check that file has a hole with lseek(,,SEEK_HOLE)
+> > > fallocate04.c:151: INFO: found a hole at '4096' offset
+> > > fallocate04.c:157: INFO: allocated file size before '12288' and after
+> > > '8192'
+> > > fallocate04.c:80: INFO: reading the file, compare with expected buffer
+> > > fallocate04.c:168: PASS: test-case succeeded
+> > > fallocate04.c:173: INFO: zeroing file space with FALLOC_FL_ZERO_RANGE
+> > > fallocate04.c:182: INFO: read current allocated file size '8192'
+> > > fallocate04.c:199: INFO: allocated file size before '8192' and after
+> > > '12288'
+> > > fallocate04.c:80: INFO: reading the file, compare with expected buffer
+> > > fallocate04.c:210: PASS: test-case succeeded
+> > > fallocate04.c:215: INFO: collapsing file space with
+> > > FALLOC_FL_COLLAPSE_RANGE
+> > > fallocate04.c:219: INFO: read current allocated file size '12288'
+> > > fallocate04.c:233: INFO: allocated file size before '12288' and after
+> > > '8192'
+> > > fallocate04.c:80: INFO: reading the file, compare with expected buffer
+> > > fallocate04.c:250: PASS: test-case succeeded
+> > > fallocate04.c:255: INFO: inserting space with FALLOC_FL_INSERT_RANGE
+> > > fallocate04.c:259: INFO: read current allocated file size '8192'
+> > > fallocate04.c:277: INFO: allocated file size before '8192' and after
+> > > '12288'
+> > > fallocate04.c:80: INFO: reading the file, compare with expected buffer
+> > > fallocate04.c:288: PASS: test-case succeeded
+> > > tst_mkfs.c:83: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+> > > tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
+> > > fallocate04.c:96: INFO: allocate '12288' bytes
+> > > fallocate04.c:100: CONF: fallocate() not supported
+> > > tst_mkfs.c:83: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+> > > The partition start sector was not specified for /dev/loop0 and it could
+> > > not
+> > > be obtained automatically.  It has been set to 0.
+> > > The number of sectors per track was not specified for /dev/loop0 and it
+> > > could
+> > > not be obtained automatically.  It has been set to 0.
+> > > The number of heads was not specified for /dev/loop0 and it could not be
+> > > obtained automatically.  It has been set to 0.
+> > > To boot from a device, Windows needs the 'partition start sector', the
+> > > 'sectors per track' and the 'number of heads' to be set.
+> > > Windows will not be able to boot from this device.
+> > > tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
+> > > safe_macros.c:225: BROK: fallocate04.c:302:
+> > > open(fallocate/fallocate.txt,66,0700) failed: EROFS
+> > >
+> > > Summary:
+> > > passed   10
+> > > failed   0
+> > > skipped  3
+> > > warnings 0
+> > > <<<execution_status>>>
+> > > initiation_status="ok"
+> > > duration=9 termination_type=exited termination_id=2 corefile=no
+> > > cutime=2 cstime=91
+> > > <<<test_end>>>
+> > > INFO: ltp-pan reported some tests FAIL
+> > > LTP Version: 20170929-273-gfdefef3
+> > >
+> > >        ###############################################################
+> > >
+> > >             Done executing testcases.
+> > >             LTP Version:  20170929-273-gfdefef3
+> > >        ###############################################################
+> > >
+> > >
+> > >
+> > > --
+> > > Mailing list info: https://lists.linux.it/listinfo/ltp
+> > >
+> >
+> > --
+> > Mailing list info: https://lists.linux.it/listinfo/ltp
+> >
 
-* New tests for:
-  - unshare(1) command
-  - ioctl07 test for RNDGETENTCNT ioctl()
-  - new network MACsec testcases
-  - new network IPsec SCTP and DCCP testcases
-
-* New regression tests for:
-  - CVE-2017-5754 aka meltdown
-  - CVE-2017-12193 (test add_key04)
-  - CVE-2017-15299 and CVE-2017-15951 (test request_key03)
-  - CVE-2017-7308 (test setsockopt02)
-  - CVE-2016-9604 (test keyctl08)
-  - CVE-2017-15537 (test ptrace07)
-  - CVE-2017-12192 (test keyctl07)
-  - add_key03 regression test for kernel commit 237bbd29f7a0
-  - keyctl06 regression test for kernel commit e645016abc80
-
-* Fixed tests:
-  - brk01 (test rewritten from scratch)
-  - sigwaitinfo01 (fixed and enabled)
-  - openposix aio testcases (uninitialized aiocb)
-  + many smaller fixes
-
-* Removed tests:
-  - invalid openposix pthread_barrier_wait_6-1 test
-  - tcp_cmds tests for rwho, echo, finger, and rdist.
-
-* The test library gained support to run a particular test against
-  different filesystems including FUSE filesystems such as NTFS or exFAT. The
-  mkfs and kernel/FUSE support for a particular filesystem must be in-place
-  otherwise the tests will skip it automatically.
-
-  Some of the filesystem specific syscall tests such as fallocate() are
-  executed this way now. We also have a new test that fills up filesystem
-  using several threads and expects the syscalls to fail gracefully.
-
-* The fuzzy synchronization library that is used to trigger races mostly in CVE
-  testcases was rewritten to use one thread instead of starting a thread on
-  each iteration, which is not only faster but also more stable since we
-  introduce less random jitter to the timing measurements this way.
-
-* Various fixes and enhancements for the network testcases.
-
-* Support for NUMA API older than v2 was dropped from the testcases.
-
-* The configure script now correctly detects devel libraries on -m32 build.
-
-* Another large scale cleanup using coccinelle was done on the code base.
-
-  We transformed patterns such as:
-
-  if (scall(...) < 0)
-          tst_brkm(TBROK, ...);
-
-  into:
-
-  SAFE_SCALL();
-
-  Which will produce unified and more verbose error reporting in case
-  that the call to scall() will fail.
-
-* The runltp script now lists test skipped by the skipfile parameter as skipped
-  in the testrun results, these were missing from it previously.
-
-* 24 testcases were cleaned up and converted to the new test library
-
-+ The usual amount of fixes all over the code base
 
 
-Downloads and links:
---------------------
-
-The latest version of the test-suite contains 3000+ tests for the Linux
-and can be downloaded at:
-
-https://github.com/linux-test-project/ltp/releases/tag/20180118
-
-The project pages as well as GIT repository are hosted on GitHub:
-
-https://github.com/linux-test-project/ltp
-http://linux-test-project.github.io/
-
-If you ever wondered how to write a LTP testcase, don't miss our developer
-documentation at:
-
-https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
-https://github.com/linux-test-project/ltp/wiki/BuildSystem
-
-Patches, new tests, bugs, comments or questions should go to to our mailing
-list@ltp@lists.linux.it.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
