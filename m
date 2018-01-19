@@ -1,39 +1,40 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 19 Jan 2018 18:54:03 +0100
-Subject: [LTP] [PATCH v3] Add regression test for CVE-2017-17052
-In-Reply-To: <20180119160347.GB7954@rei>
-References: <20180112115952.9287-1-mmoese@suse.de> <20180119160347.GB7954@rei>
-Message-ID: <20180119175402.GA13508@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 19 Jan 2018 21:08:59 +0100
+Subject: [LTP] [RFC PATCH 2/2] cve/cve-2018-1000001: Add Realpath Buffer
+ Underflow test
+In-Reply-To: <20180119165252.GD7954@rei>
+References: <20180118131134.11945-1-pvorel@suse.cz>
+ <20180118131134.11945-3-pvorel@suse.cz> <20180119165252.GD7954@rei>
+Message-ID: <20180119200859.tymzoaejuily2ioj@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > +static void setup(void)
-> > +{
-> > +	shm = SAFE_MMAP(NULL, sizeof(struct my_shm_data), PROT_READ|PROT_WRITE,
->                                ^
-> 			       The system aligns the length to be a
-> 			       multiple of pagesize, so we may as well
-> 			       pass result of getpagesize() here.
-> > +		    MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-> > +
-> > +	shm->exit = 0;
-> > +}
-> > +
-> > +static void cleanup(void)
-> > +{
-> > +	SAFE_MUNMAP(shm, sizeof(struct my_shm_data));
->                           ^
-> 			  Here we must pass length that is multiple of
-> 			  pagesize, at least manual pages says so.
+Hi Cyril,
 
-Sorry, I've misread the manual page, that applies only for huge page
-mappings, so passing sizeof(*shm) to mmap() and munmap() should work
-just fine, it would still allocate whole page though.
+thanks for your review and explanation.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> > ---
+> > NOTE: I didn't use TEST() macro due warning assignment makes integer
+> > from pointer without a cast. Am I blind not to see how to use it?
+
+> You are not, the TEST() macro supports only integer return values.
+
+> We may as well add a support for this, maybe just rename the TEST_RETURN
+> to tst_ret and add void* tst_ret_ptr. If we make the tst_ret to intptr_t
+> we may as well safely do something as:
+
+> 	tst_ret_ptr = (void*)(tst_ret = (intptr_t) SCALL);
+
+> And we should rename TEST_ERRNO tst_errno as well just to keep it
+> consistent.
+
+> Or we can as well avoid this trickery by defining second TESTPTR() macro
+> that will use tst_ret_ptr instead.
+IMHO this is better.
+
+
+Kind regards,
+Petr
