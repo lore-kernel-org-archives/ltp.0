@@ -1,201 +1,217 @@
-From: Daniel Sangorrin <daniel.sangorrin@toshiba.co.jp>
-Date: Fri, 19 Jan 2018 09:41:33 +0900
-Subject: [LTP] fallocate04: failing on ntfs
-In-Reply-To: <1506733331.1228496.1516266276673.JavaMail.zimbra@redhat.com>
-References: <003201d3903a$c6a129b0$53e37d10$@toshiba.co.jp>
- <1020192057.1228114.1516266135166.JavaMail.zimbra@redhat.com>
- <1506733331.1228496.1516266276673.JavaMail.zimbra@redhat.com>
-Message-ID: <006901d390be$41a1dff0$c4e59fd0$@toshiba.co.jp>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Fri, 19 Jan 2018 09:51:21 +0800
+Subject: [LTP] [PATCH v5 3/3] syscalls/migrate_pages03.c: Add new
+ regression test
+In-Reply-To: <1515120532-4372-3-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20180104153045.GA25335@rei>
+ <1515120532-4372-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1515120532-4372-3-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <5A614F19.5080801@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> -----Original Message-----
-> From: Jan Stancek [mailto:jstancek@redhat.com]
-> Sent: Thursday, January 18, 2018 6:05 PM
-> To: Daniel Sangorrin
-> Cc: ltp@lists.linux.it
-> Subject: Re: [LTP] fallocate04: failing on ntfs
-> 
-> 
-> 
-> ----- Original Message -----
-> >
-> >
-> > ----- Original Message -----
-> > > Hi,
-> > >
-> > > I run fallocate04 from the git sources and found problems with the ntfs
-> > > check
-> > > (see below).
-> > > The system is using Debian jessie on a x86_64 PC.
-> > > If I move mkfs.ntfs out of the path then the test passes.
-> > >
-> > > I have tried with two kernels (3.16 and 4.4 stable), with
-> > > CONFIG_NTFS_FS=m
-> > > CONFIG_NTFS_RW=y
-> > >
-> > > Not sure if this is a bug or some misconfiguration from my side. Any help
-> > > would be much appreciated.
-> >
-> > Hi, what is your LTP version? Does it have this commit?
-> >   https://github.com/linux-test-project/ltp/commit/28507e514c81c1d78b0125e20a63f23e69cdcf49
-> 
-> Sorry, just found it: 20170929-273-gfdefef3.
-> Can you please retry with current HEAD? Patch above should address that failure.
+Hi,
 
-Damn, I was just 1 commit behind that one ;_;
-The test passes with the current HEAD. 
+Ping. Thanks a lot. :-)
 
-Thanks!
-Daniel
-
->  >
-> > Regards,
-> > Jan
-> >
-> > >
-> > > Thanks,
-> > > Daniel
-> > >
-> > >
-> > > # ./runltp -f syscalls -s fallocate04
-> > > < skipped>
-> > > tst_device.c:230: INFO: Using test device LTP_DEV='/dev/loop0'
-> > > tst_supported_fs_types.c:72: INFO: Kernel supports ext2
-> > > tst_supported_fs_types.c:56: INFO: mkfs.ext2 does exist
-> > > tst_supported_fs_types.c:72: INFO: Kernel supports ext3
-> > > tst_supported_fs_types.c:56: INFO: mkfs.ext3 does exist
-> > > tst_supported_fs_types.c:72: INFO: Kernel supports ext4
-> > > tst_supported_fs_types.c:56: INFO: mkfs.ext4 does exist
-> > > tst_supported_fs_types.c:72: INFO: Kernel supports xfs
-> > > tst_supported_fs_types.c:56: INFO: mkfs.xfs does exist
-> > > tst_supported_fs_types.c:72: INFO: Kernel supports btrfs
-> > > tst_supported_fs_types.c:52: INFO: mkfs.btrfs does not exist
-> > > tst_supported_fs_types.c:72: INFO: Kernel supports vfat
-> > > tst_supported_fs_types.c:56: INFO: mkfs.vfat does exist
-> > > tst_supported_fs_types.c:95: INFO: Filesystem exfat is not supported
-> > > tst_supported_fs_types.c:72: INFO: Kernel supports ntfs
-> > > tst_supported_fs_types.c:56: INFO: mkfs.ntfs does exist
-> > > tst_mkfs.c:83: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-> > > mke2fs 1.42.12 (29-Aug-2014)
-> > > tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
-> > > fallocate04.c:96: INFO: allocate '3072' bytes
-> > > fallocate04.c:100: CONF: fallocate() not supported
-> > > tst_mkfs.c:83: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
-> > > mke2fs 1.42.12 (29-Aug-2014)
-> > > tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
-> > > fallocate04.c:96: INFO: allocate '3072' bytes
-> > > fallocate04.c:100: CONF: fallocate() not supported
-> > > tst_mkfs.c:83: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
-> > > mke2fs 1.42.12 (29-Aug-2014)
-> > > tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
-> > > fallocate04.c:96: INFO: allocate '3072' bytes
-> > > fallocate04.c:110: PASS: test-case succeeded
-> > > fallocate04.c:117: INFO: read allocated file size '3072'
-> > > fallocate04.c:118: INFO: make a hole with FALLOC_FL_PUNCH_HOLE
-> > > fallocate04.c:134: INFO: check that file has a hole with lseek(,,SEEK_HOLE)
-> > > fallocate04.c:151: INFO: found a hole at '1024' offset
-> > > fallocate04.c:157: INFO: allocated file size before '3072' and after '2048'
-> > > fallocate04.c:80: INFO: reading the file, compare with expected buffer
-> > > fallocate04.c:168: PASS: test-case succeeded
-> > > fallocate04.c:173: INFO: zeroing file space with FALLOC_FL_ZERO_RANGE
-> > > fallocate04.c:182: INFO: read current allocated file size '2048'
-> > > fallocate04.c:199: INFO: allocated file size before '2048' and after '3072'
-> > > fallocate04.c:80: INFO: reading the file, compare with expected buffer
-> > > fallocate04.c:210: PASS: test-case succeeded
-> > > fallocate04.c:215: INFO: collapsing file space with
-> > > FALLOC_FL_COLLAPSE_RANGE
-> > > fallocate04.c:219: INFO: read current allocated file size '3072'
-> > > fallocate04.c:233: INFO: allocated file size before '3072' and after '2048'
-> > > fallocate04.c:80: INFO: reading the file, compare with expected buffer
-> > > fallocate04.c:250: PASS: test-case succeeded
-> > > fallocate04.c:255: INFO: inserting space with FALLOC_FL_INSERT_RANGE
-> > > fallocate04.c:259: INFO: read current allocated file size '2048'
-> > > fallocate04.c:277: INFO: allocated file size before '2048' and after '3072'
-> > > fallocate04.c:80: INFO: reading the file, compare with expected buffer
-> > > fallocate04.c:288: PASS: test-case succeeded
-> > > tst_mkfs.c:83: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
-> > > tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
-> > > fallocate04.c:96: INFO: allocate '12288' bytes
-> > > fallocate04.c:110: PASS: test-case succeeded
-> > > fallocate04.c:117: INFO: read allocated file size '12288'
-> > > fallocate04.c:118: INFO: make a hole with FALLOC_FL_PUNCH_HOLE
-> > > fallocate04.c:134: INFO: check that file has a hole with lseek(,,SEEK_HOLE)
-> > > fallocate04.c:151: INFO: found a hole at '4096' offset
-> > > fallocate04.c:157: INFO: allocated file size before '12288' and after
-> > > '8192'
-> > > fallocate04.c:80: INFO: reading the file, compare with expected buffer
-> > > fallocate04.c:168: PASS: test-case succeeded
-> > > fallocate04.c:173: INFO: zeroing file space with FALLOC_FL_ZERO_RANGE
-> > > fallocate04.c:182: INFO: read current allocated file size '8192'
-> > > fallocate04.c:199: INFO: allocated file size before '8192' and after
-> > > '12288'
-> > > fallocate04.c:80: INFO: reading the file, compare with expected buffer
-> > > fallocate04.c:210: PASS: test-case succeeded
-> > > fallocate04.c:215: INFO: collapsing file space with
-> > > FALLOC_FL_COLLAPSE_RANGE
-> > > fallocate04.c:219: INFO: read current allocated file size '12288'
-> > > fallocate04.c:233: INFO: allocated file size before '12288' and after
-> > > '8192'
-> > > fallocate04.c:80: INFO: reading the file, compare with expected buffer
-> > > fallocate04.c:250: PASS: test-case succeeded
-> > > fallocate04.c:255: INFO: inserting space with FALLOC_FL_INSERT_RANGE
-> > > fallocate04.c:259: INFO: read current allocated file size '8192'
-> > > fallocate04.c:277: INFO: allocated file size before '8192' and after
-> > > '12288'
-> > > fallocate04.c:80: INFO: reading the file, compare with expected buffer
-> > > fallocate04.c:288: PASS: test-case succeeded
-> > > tst_mkfs.c:83: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
-> > > tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
-> > > fallocate04.c:96: INFO: allocate '12288' bytes
-> > > fallocate04.c:100: CONF: fallocate() not supported
-> > > tst_mkfs.c:83: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
-> > > The partition start sector was not specified for /dev/loop0 and it could
-> > > not
-> > > be obtained automatically.  It has been set to 0.
-> > > The number of sectors per track was not specified for /dev/loop0 and it
-> > > could
-> > > not be obtained automatically.  It has been set to 0.
-> > > The number of heads was not specified for /dev/loop0 and it could not be
-> > > obtained automatically.  It has been set to 0.
-> > > To boot from a device, Windows needs the 'partition start sector', the
-> > > 'sectors per track' and the 'number of heads' to be set.
-> > > Windows will not be able to boot from this device.
-> > > tst_test.c:977: INFO: Timeout per run is 0h 05m 00s
-> > > safe_macros.c:225: BROK: fallocate04.c:302:
-> > > open(fallocate/fallocate.txt,66,0700) failed: EROFS
-> > >
-> > > Summary:
-> > > passed   10
-> > > failed   0
-> > > skipped  3
-> > > warnings 0
-> > > <<<execution_status>>>
-> > > initiation_status="ok"
-> > > duration=9 termination_type=exited termination_id=2 corefile=no
-> > > cutime=2 cstime=91
-> > > <<<test_end>>>
-> > > INFO: ltp-pan reported some tests FAIL
-> > > LTP Version: 20170929-273-gfdefef3
-> > >
-> > >        ###############################################################
-> > >
-> > >             Done executing testcases.
-> > >             LTP Version:  20170929-273-gfdefef3
-> > >        ###############################################################
-> > >
-> > >
-> > >
-> > > --
-> > > Mailing list info: https://lists.linux.it/listinfo/ltp
-> > >
-> >
-> > --
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
-> >
+Thanks,
+Xiao Yang
+On 2018/01/05 10:48, xiao yang wrote:
+> The bug has been fixed in kernel:
+> '4b0ece6fa016("mm: migrate: fix remove_migration_pte() for ksm pages")'
+>
+> Signed-off-by: xiao yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  runtest/syscalls                                   |   1 +
+>  testcases/kernel/syscalls/.gitignore               |   1 +
+>  .../syscalls/migrate_pages/migrate_pages03.c       | 151 +++++++++++++++++++++
+>  3 files changed, 153 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
+>
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 97fc643..ee8850f 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -587,6 +587,7 @@ memcpy01 memcpy01
+>  
+>  migrate_pages01 migrate_pages01
+>  migrate_pages02 migrate_pages02
+> +migrate_pages03 migrate_pages03
+>  
+>  mlockall01 mlockall01
+>  mlockall02 mlockall02
+> diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+> index 12a136e..27e30b2 100644
+> --- a/testcases/kernel/syscalls/.gitignore
+> +++ b/testcases/kernel/syscalls/.gitignore
+> @@ -538,6 +538,7 @@
+>  /memset/memset01
+>  /migrate_pages/migrate_pages01
+>  /migrate_pages/migrate_pages02
+> +/migrate_pages/migrate_pages03
+>  /mincore/mincore01
+>  /mincore/mincore02
+>  /mkdir/mkdir01
+> diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
+> new file mode 100644
+> index 0000000..ecfc552
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
+> @@ -0,0 +1,151 @@
+> +/*
+> + * Copyright (c) 2017 FUJITSU LIMITED. All rights reserved.
+> + * Author(s): Xiao Yang <yangx.jy@cn.fujitsu.com>
+> + *            Jie Fei <feij.fnst@cn.fujitsu.com>
+> + *
+> + * This program is free software: you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation, either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program, if not, see <http://www.gnu.org/licenses/>.
+> + */
+> +
+> +/*
+> + * Description:
+> + * This is a regression test for ksm page migration which is miscalculated.
+> + *
+> + * The kernel bug has been fixed by:
+> + *
+> + * commit 4b0ece6fa0167b22c004ff69e137dc94ee2e469e
+> + * Author: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+> + * Date:   Fri Mar 31 15:11:44 2017 -0700
+> + *
+> + *     mm: migrate: fix remove_migration_pte() for ksm pages
+> + */
+> +
+> +#include <errno.h>
+> +#include <unistd.h>
+> +#include <stdlib.h>
+> +
+> +#include "tst_test.h"
+> +#include "lapi/syscalls.h"
+> +#include "lapi/mmap.h"
+> +#include "ksm_helper.h"
+> +#include "numa_helper.h"
+> +#include "migrate_pages_common.h"
+> +
+> +#ifdef HAVE_NUMA_V2
+> +#define N_PAGES 20
+> +#define N_LOOPS 600
+> +#define TEST_NODES 2
+> +
+> +static int orig_ksm_run = -1;
+> +static unsigned int page_size;
+> +static void *test_pages[N_PAGES];
+> +static int num_nodes, max_node;
+> +static int *nodes;
+> +static unsigned long *new_nodes[2];
+> +
+> +static void setup(void)
+> +{
+> +	int n;
+> +	unsigned long nodemask_size;
+> +
+> +	if (access(PATH_KSM, F_OK))
+> +		tst_brk(TCONF, "KSM configuration was not enabled");
+> +
+> +	if (get_allowed_nodes_arr(NH_MEMS, &num_nodes, &nodes) < 0)
+> +		tst_brk(TBROK | TERRNO, "get_allowed_nodes() failed");
+> +
+> +	if (num_nodes < TEST_NODES) {
+> +		tst_brk(TCONF, "requires NUMA with at least %d node",
+> +			TEST_NODES);
+> +	}
+> +
+> +	max_node = LTP_ALIGN(get_max_node(), sizeof(unsigned long) * 8);
+> +	nodemask_size = max_node / 8;
+> +	new_nodes[0] = SAFE_MALLOC(nodemask_size);
+> +	new_nodes[1] = SAFE_MALLOC(nodemask_size);
+> +	memset(new_nodes[0], 0, nodemask_size);
+> +	memset(new_nodes[1], 0, nodemask_size);
+> +	set_bit(new_nodes[0], nodes[0], 1);
+> +	set_bit(new_nodes[1], nodes[1], 1);
+> +
+> +	page_size = getpagesize();
+> +
+> +	for (n = 0; n < N_PAGES; n++) {
+> +		test_pages[n] = SAFE_MMAP(NULL, page_size, PROT_READ | PROT_WRITE | PROT_EXEC,
+> +					  MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> +		if (madvise(test_pages[n], page_size, MADV_MERGEABLE)) {
+> +			if (errno == EINVAL) {
+> +				tst_brk(TCONF | TERRNO, "madvise() didn't "
+> +					"support MADV_MERGEABLE");
+> +			}
+> +
+> +			tst_brk(TBROK | TERRNO,
+> +				"madvise(MADV_MERGEABLE) failed");
+> +		}
+> +
+> +		if (mbind(test_pages[n], page_size, MPOL_BIND, new_nodes[0],
+> +			  max_node, 0))
+> +			tst_brk(TBROK | TERRNO, "mbind(MPOL_BIND) failed");
+> +
+> +		memset(test_pages[n], 0, page_size);
+> +	}
+> +
+> +	SAFE_FILE_SCANF(PATH_KSM "run", "%d", &orig_ksm_run);
+> +	SAFE_FILE_PRINTF(PATH_KSM "run", "%d", 1);
+> +	wait_ksmd_full_scan();
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	int n;
+> +
+> +	for (n = 0; n < N_PAGES; n++) {
+> +		if (test_pages[n])
+> +			SAFE_MUNMAP(test_pages[n], page_size);
+> +	}
+> +
+> +	free(new_nodes[0]);
+> +	free(new_nodes[1]);
+> +
+> +	if (orig_ksm_run != -1)
+> +		SAFE_FILE_PRINTF(PATH_KSM "run", "%d", orig_ksm_run);
+> +}
+> +
+> +static void migrate_test(void)
+> +{
+> +	int loop, i, ret;
+> +
+> +	for (loop = 0; loop < N_LOOPS; loop++) {
+> +		i = loop % 2;
+> +		ret = tst_syscall(__NR_migrate_pages, 0, max_node,
+> +				   new_nodes[i], new_nodes[i ? 0 : 1]);
+> +		if (ret < 0) {
+> +			tst_res(TFAIL | TERRNO, "migrate_pages() failed");
+> +			return;
+> +		}
+> +	}
+> +
+> +	tst_res(TPASS, "migrate_pages() passed");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.min_kver = "2.6.32",
+> +	.needs_root = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = migrate_test,
+> +};
+> +
+> +#else
+> +	TST_TEST_TCONF("require libnuma >= 2 and it's development packages");
+> +#endif
 
 
 
