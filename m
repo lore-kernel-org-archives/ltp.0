@@ -1,10 +1,8 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 23 Jan 2018 17:41:15 +0100
-Subject: [LTP] [COMMITTED] [PATCH 2/4] syscalls/write: write04 new test
+Date: Tue, 23 Jan 2018 17:41:14 +0100
+Subject: [LTP] [COMMITTED] [PATCH 1/4] syscalls/pwrite: pwrite02 new test
 	library refactoring
-In-Reply-To: <20180123164117.3052-1-chrubis@suse.cz>
-References: <20180123164117.3052-1-chrubis@suse.cz>
-Message-ID: <20180123164117.3052-2-chrubis@suse.cz>
+Message-ID: <20180123164117.3052-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -16,272 +14,234 @@ From: Carlo Marcelo Arenas Belón <carenas@gmail.com>
 Signed-off-by: Carlo Marcelo Arenas Belón <carenas@gmail.com>
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/write/write04.c | 223 +++++-------------------------
- 1 file changed, 38 insertions(+), 185 deletions(-)
+ testcases/kernel/syscalls/pwrite/pwrite02.c | 188 +++++++++-------------------
+ 1 file changed, 56 insertions(+), 132 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/write/write04.c b/testcases/kernel/syscalls/write/write04.c
-index d6a51460c..36ef97e8a 100644
---- a/testcases/kernel/syscalls/write/write04.c
-+++ b/testcases/kernel/syscalls/write/write04.c
-@@ -18,31 +18,12 @@
-  */
+diff --git a/testcases/kernel/syscalls/pwrite/pwrite02.c b/testcases/kernel/syscalls/pwrite/pwrite02.c
+index d4592fb1d..df506afd6 100644
+--- a/testcases/kernel/syscalls/pwrite/pwrite02.c
++++ b/testcases/kernel/syscalls/pwrite/pwrite02.c
+@@ -35,58 +35,33 @@
  
- /*
-- * NAME
-- *	write04.c
-- *
-  * DESCRIPTION
-  *	Testcase to check that write() sets errno to EAGAIN
-  *
-  * ALGORITHM
-  *	Create a named pipe (fifo), open it in O_NONBLOCK mode, and
-  *	attempt to write to it when it is full, write(2) should fail
-- *	with EAGAIN.
-- *
-- * USAGE:  <for command-line>
-- *      write04 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *      where,  -c n : Run n copies concurrently.
-- *              -e   : Turn on errno logging.
-- *              -i n : Execute test n times.
-- *              -I x : Execute test for x seconds.
-- *              -P x : Pause for x seconds between iterations.
-- *              -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *      ??/???? someone made this testcase but didn't add HISTORY
-- *
-- * RESTRICTIONS
-- *	NONE
-  */
- 
- #include <sys/stat.h>
-@@ -51,189 +32,61 @@
- #include <setjmp.h>
  #include <errno.h>
- #include <string.h>
+ #include <unistd.h>
+-#include <fcntl.h>
+-
 -#include "test.h"
-+#include <stdio.h>
+-#include "safe_macros.h"
+-
+-#define TEMPFILE	"pwrite_file"
+-#define K1		1024
+-
+-TCID_DEFINE(pwrite02);
+-
+-static char write_buf[K1];
+-
+-static void setup(void);
+-static void cleanup(void);
+-
+-static void test_espipe(void);
+-static void test_einval(void);
+-static void test_ebadf1(void);
+-static void test_ebadf2(void);
+-
+-#if !defined(UCLINUX)
+-static void test_efault(void);
+-#endif
+-
+-static void (*testfunc[])(void) = {
+-	test_espipe, test_einval, test_ebadf1, test_ebadf2,
+-#if !defined(UCLINUX)
+-	test_efault
+-#endif
++#include <string.h>
++
 +#include "tst_test.h"
++
++#define TEMPFILE "pwrite_file"
++#define BS 1024
++
++static int fd;
++static int fd_ro;
++static int inv_fd = -1;
++static int pipe_fds[2];
++static char buf[BS];
++
++static struct tcase {
++	void *buf;
++	size_t size;
++	int *fd;
++	off_t off;
++	int exp_errno;
++} tcases[] = {
++	{buf, sizeof(buf), &pipe_fds[1], 0, ESPIPE},
++	{buf, sizeof(buf), &fd, -1, EINVAL},
++	{buf, sizeof(buf), &inv_fd, 0, EBADF},
++	{buf, sizeof(buf), &fd_ro, 0, EBADF},
++	{NULL, sizeof(buf), &fd, 0, EFAULT},
+ };
  
--#define PIPE_SIZE_TEST getpagesize()
-+static char fifo[100];
-+static int rfd, wfd;
-+static long page_size;
- 
--void alarm_handler();
--void setup();
--void cleanup();
-+static void verify_write(void)
-+{
-+	char wbuf[8 * page_size];
- 
--char *TCID = "write04";
--int TST_TOTAL = 1;
-+	TEST(write(wfd, wbuf, sizeof(wbuf)));
- 
--char fifo[100] = "fifo";
--static sigjmp_buf jmp;
--int rfd, wfd;
-+	if (TEST_RETURN != -1) {
-+		tst_res(TFAIL, "write() succeeded unexpectedly");
-+		return;
-+	}
- 
--int main(int argc, char **argv)
+-int TST_TOTAL = ARRAY_SIZE(testfunc);
+-
+-int main(int ac, char **av)
 -{
--	int lc;
+-	int i, lc;
 -
--	struct stat buf;
--	int fail;
--	int cnt;
--	char wbuf[17 * PIPE_SIZE_TEST];
--	struct sigaction sigptr;	/* set up signal handler */
+-	tst_parse_opts(ac, av, NULL, NULL);
 -
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	/* global setup */
 -	setup();
 -
--	/*
--	 * The following loop checks looping state if -i option given
--	 */
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
 -		tst_count = 0;
 -
--		if (mknod(fifo, S_IFIFO | 0777, 0) < 0) {
--			tst_resm(TBROK, "mknod() failed, errno: %d", errno);
--			cleanup();
--		}
--		if (stat(fifo, &buf) != 0) {
--			tst_resm(TBROK, "stat() failed, errno: %d", errno);
--			cleanup();
--		}
--		if ((buf.st_mode & S_IFIFO) == 0) {
--			tst_resm(TBROK, "Mode does not indicate fifo file");
--			cleanup();
--		}
--#if 0
--		sigset(SIGALRM, alarm_handler);
--#endif
--		sigptr.sa_handler = (void (*)(int signal))alarm_handler;
--		sigfillset(&sigptr.sa_mask);
--		sigptr.sa_flags = 0;
--		sigaddset(&sigptr.sa_mask, SIGALRM);
--		if (sigaction(SIGALRM, &sigptr, NULL) == -1) {
--			tst_resm(TBROK, "sigaction(): Failed");
--			cleanup();
--		}
--//block1:
--		tst_resm(TINFO, "Enter block 1: test for EAGAIN in write()");
--		fail = 0;
+-		for (i = 0; i < TST_TOTAL; i++)
+-			(*testfunc[i])();
+-	}
 -
--		(void)memset((void *)wbuf, 'A', 17 * PIPE_SIZE_TEST);
--
--		/*
--		 * open the read end of the pipe
--		 */
--		if (sigsetjmp(jmp, 1)) {
--			tst_resm(TBROK, "Error reading fifo, read blocked");
--			fail = 1;
--		}
--		(void)alarm(10);	/* set alarm for 10 seconds */
--		rfd = open(fifo, O_RDONLY | O_NONBLOCK);
--		(void)alarm(0);
--		if (rfd < 0) {
--			tst_resm(TBROK, "open() for reading the pipe failed");
--			fail = 1;
--		}
--
--		/*
--		 * open the write end of the pipe
--		 */
--		if (sigsetjmp(jmp, 1)) {
--			tst_resm(TBROK, "setjmp() failed");
--			cleanup();
--		}
--		(void)alarm(10);	/* set alarm for 10 seconds */
--		wfd = open(fifo, O_WRONLY | O_NONBLOCK);
--		(void)alarm(0);
--		if (wfd < 0) {
--			tst_resm(TBROK, "open() for writing the pipe failed");
--			fail = 1;
--		}
--
--		/*
--		 * attempt to fill the pipe with some data
--		 */
--		if (sigsetjmp(jmp, 1)) {
--			tst_resm(TBROK, "sigsetjmp() failed");
--			fail = 1;
--		}
--		(void)alarm(10);
--		cnt = write(wfd, wbuf, 17 * PIPE_SIZE_TEST);
--		(void)alarm(0);
--		if (cnt == 17 * PIPE_SIZE_TEST) {
--			tst_resm(TBROK, "Error reading fifo, nozero read");
--			fail = 1;
--		}
--
--		/*
--		 * Now that the fifo is full try and send some more
--		 */
--		if (sigsetjmp(jmp, 1)) {
--			tst_resm(TBROK, "sigsetjmp() failed");
--			fail = 1;
--		}
--		(void)alarm(10);
--		cnt = write(wfd, wbuf, 8 * PIPE_SIZE_TEST);
--		(void)alarm(0);
--		if (cnt != -1) {
--			tst_resm(TBROK, "write() failed to fail when pipe "
--				 "is full");
--			fail = 1;
--		} else {
--			if (errno != EAGAIN) {
--				tst_resm(TBROK, "write set bad errno, expected "
--					 "EAGAIN, got %d", errno);
--				fail = 1;
--			}
--			tst_resm(TINFO, "read() succeded in setting errno to "
--				 "EAGAIN");
--		}
--		if (fail) {
--			tst_resm(TFAIL, "Block 1 FAILED");
--		} else {
--			tst_resm(TPASS, "Block 1 PASSED");
--		}
--		tst_resm(TINFO, "Exit block 1");
--
--		/* unlink fifo in case we are looping. */
--		unlink(fifo);
-+	if (TEST_ERRNO != EAGAIN) {
-+		tst_res(TFAIL | TTERRNO,
-+			"write() failed unexpectedly, expected EAGAIN");
-+		return;
- 	}
 -	cleanup();
 -	tst_exit();
 -}
- 
--void alarm_handler(void)
--{
--	siglongjmp(jmp, 1);
-+	tst_res(TPASS | TTERRNO, "write() failed expectedly");
+-
+ /*
+  * sighandler - handle SIGXFSZ
+  *
+@@ -109,106 +84,55 @@ static void sighandler(int sig)
+ 	(void)ret;
  }
  
--/*
-- * setup()
-- *	performs all ONE TIME setup for this test
-- */
--void setup(void)
+-static void setup(void)
++static void verify_pwrite(unsigned int i)
+ {
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	/* see the comment in the sighandler() function */
+-	/* call signal() to trap the signal generated */
+-	if (signal(SIGXFSZ, sighandler) == SIG_ERR)
+-		tst_brkm(TBROK, cleanup, "signal() failed");
++	struct tcase *tc = &tcases[i];
+ 
+-	TEST_PAUSE;
++	TEST(pwrite(*tc->fd, tc->buf, BS, tc->off));
+ 
+-	tst_tmpdir();
+-
+-	memset(write_buf, 'a', K1);
+-}
+-
+-static void print_test_result(int err, int exp_errno)
+-{
+-	if (err == 0) {
+-		tst_resm(TFAIL, "call succeeded unexpectedly");
++	if (TEST_RETURN >= 0) {
++		tst_res(TFAIL, "call succeeded unexpectedly");
+ 		return;
+ 	}
+ 
+-	if (err == exp_errno) {
+-		tst_resm(TPASS, "pwrite failed as expected: %d - %s",
+-			 err, strerror(err));
+-	} else {
+-		tst_resm(TFAIL, "pwrite failed unexpectedly; expected: %d - %s"
+-			 "return: %d - %s", exp_errno, strerror(exp_errno),
+-			 err, strerror(err));
++	if (TEST_ERRNO != tc->exp_errno) {
++		tst_res(TFAIL | TTERRNO,
++			"pwrite failed unexpectedly, expected %s",
++			tst_strerrno(tc->exp_errno));
+ 	}
+-}
+ 
+-static void test_espipe(void)
+-{
+-	int pipe_fds[2];
+-
+-	SAFE_PIPE(cleanup, pipe_fds);
+-
+-	TEST(pwrite(pipe_fds[1], write_buf, K1, 0));
+-
+-	print_test_result(errno, ESPIPE);
+-
+-	SAFE_CLOSE(cleanup, pipe_fds[0]);
+-	SAFE_CLOSE(cleanup, pipe_fds[1]);
+-}
+-
+-static void test_einval(void)
+-{
+-	int fd;
+-
+-	fd = SAFE_OPEN(cleanup, TEMPFILE, O_RDWR | O_CREAT, 0666);
+-
+-	/* the specified offset was invalid */
+-	TEST(pwrite(fd, write_buf, K1, -1));
+-
+-	print_test_result(errno, EINVAL);
+-
+-	SAFE_CLOSE(cleanup, fd);
+-}
+-
+-static void test_ebadf1(void)
+-{
+-	int fd = -1;
+-
+-	TEST(pwrite(fd, write_buf, K1, 0));
+-
+-	print_test_result(errno, EBADF);
++	tst_res(TPASS | TTERRNO, "pwrite failed as expected");
+ }
+ 
+-static void test_ebadf2(void)
 +static void setup(void)
  {
-+	page_size = getpagesize();
+-	int fd;
+-
+-	fd = SAFE_OPEN(cleanup, TEMPFILE, O_RDONLY | O_CREAT, 0666);
+-
+-	TEST(pwrite(fd, write_buf, K1, 0));
++	SAFE_SIGNAL(SIGXFSZ, sighandler);
  
--	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	char wbuf[17 * page_size];
+-	print_test_result(errno, EBADF);
++	SAFE_PIPE(pipe_fds);
  
--	/* Pause if that option was specified
--	 * TEST_PAUSE contains the code to fork the test with the -i option.
--	 * You want to make sure you do this before you create your temporary
--	 * directory.
--	 */
--	TEST_PAUSE;
-+	sprintf(fifo, "%s.%d", fifo, getpid());
- 
--	/* Create a unique temporary directory and chdir() to it. */
--	tst_tmpdir();
-+	SAFE_MKNOD(fifo, S_IFIFO | 0777, 0);
- 
--	/* create a temporary filename */
--	sprintf(fifo, "%s.%d", fifo, getpid());
-+	rfd = SAFE_OPEN(fifo, O_RDONLY | O_NONBLOCK);
-+	wfd = SAFE_OPEN(fifo, O_WRONLY | O_NONBLOCK);
- 
-+	SAFE_WRITE(0, wfd, wbuf, sizeof(wbuf));
+-	SAFE_CLOSE(cleanup, fd);
++	fd = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT, 0666);
++	fd_ro = SAFE_OPEN(TEMPFILE, O_RDONLY | O_CREAT, 0666);
  }
  
--void cleanup(void)
+-#if !defined(UCLINUX)
+-static void test_efault(void)
 +static void cleanup(void)
  {
-+	if (rfd > 0)
-+		SAFE_CLOSE(rfd);
- 
--	close(rfd);
--	close(wfd);
--	unlink(fifo);
--	tst_rmdir();
+-	int fd;
+-	char *buf = sbrk(0);
 -
-+	if (wfd > 0)
-+		SAFE_CLOSE(wfd);
+-	fd = SAFE_OPEN(cleanup, TEMPFILE, O_RDWR | O_CREAT, 0666);
++	if (fd > 0)
++		SAFE_CLOSE(fd);
+ 
+-	TEST(pwrite(fd, buf, K1, 0));
++	if (fd_ro > 0)
++		SAFE_CLOSE(fd_ro);
+ 
+-	print_test_result(errno, EFAULT);
++	if (pipe_fds[0] > 0)
++		SAFE_CLOSE(pipe_fds[0]);
+ 
+-	SAFE_CLOSE(cleanup, fd);
++	if (pipe_fds[1] > 0)
++		SAFE_CLOSE(pipe_fds[1]);
  }
-+
+-#endif
+ 
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-}
 +static struct tst_test test = {
 +	.needs_tmpdir = 1,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = verify_write,
++	.test = verify_pwrite,
++	.tcnt = ARRAY_SIZE(tcases),
 +};
 -- 
 2.13.6
