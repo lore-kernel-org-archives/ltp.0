@@ -1,235 +1,288 @@
-From: Michael Moese <mmoese@suse.de>
-Date: Tue, 23 Jan 2018 15:30:13 +0100
-Subject: [LTP] [PATCH] Add library support for /proc/sys/kernel/tainted
-Message-ID: <20180123143013.2879-1-mmoese@suse.de>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 23 Jan 2018 17:41:15 +0100
+Subject: [LTP] [COMMITTED] [PATCH 2/4] syscalls/write: write04 new test
+	library refactoring
+In-Reply-To: <20180123164117.3052-1-chrubis@suse.cz>
+References: <20180123164117.3052-1-chrubis@suse.cz>
+Message-ID: <20180123164117.3052-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Someteimes, it is important to detect if the kernel has issued a
-warning, or died, or is tainted in another way. Linux provides this
-information in /proc/sys/kernel/tainted in the form of a bitfield.
-From 2.6.26 on, Linux supports detection of kernel warnings or
-even if the kernel had died.
-This patch provides library functions for testcases to detect, if
-it has triggered a bug in the kernel.
+From: Carlo Marcelo Arenas Belón <carenas@gmail.com>
 
-The following functions will be introduced:
-
-- int tst_taint_supported(void)
-  are TAINT_W and TAINT_D available on your kernel? Determined
-  simply using the running kernel version
-
-- int tst_taint_check_mask(unsigned int mask)
-  check if one or more of the bits specified in mask are set
-  in /sys/proc/kernel/tainted
-
-- unsigned int tst_taint_read(void)
-  unfiltered access to /sys/proc/kernel/tainted, for advanced use
-
-These can be used in the following way:
-
-First, check support state during setup():
-
-void setup(void)
-{
-	...
-	if (!tst_taint_supported())
-		tst_brk(TCONF, "Kernel does not support tainted flags");
-}
-
-Second, check if the test triggered a bug:
-
-void run(void)
-{
-	if (tst_taint_read() != 0)
-		tst_res(TFAIL, "kernel is already tainted, stopping");
-
-	...
-	if(tst_taint_check(TST_TAINT_W | TST_TAINT_D))
-		tst_res(TFAIL, "kernel has issues");
-	 else
-		tst_res(TPASS, "kernel seems to be fine");
-}
-
-Signed-off-by: Michael Moese <mmoese@suse.de>
+Signed-off-by: Carlo Marcelo Arenas Belón <carenas@gmail.com>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- include/tst_taint.h | 104 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- lib/tst_taint.c     |  52 ++++++++++++++++++++++++++
- 2 files changed, 156 insertions(+)
- create mode 100644 include/tst_taint.h
- create mode 100644 lib/tst_taint.c
+ testcases/kernel/syscalls/write/write04.c | 223 +++++-------------------------
+ 1 file changed, 38 insertions(+), 185 deletions(-)
 
-diff --git a/include/tst_taint.h b/include/tst_taint.h
-new file mode 100644
-index 000000000..34e69c2f5
---- /dev/null
-+++ b/include/tst_taint.h
-@@ -0,0 +1,104 @@
-+/*
-+ * Copyright (c) 2018 Michael Moese <mmoese@suse.de>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+/* Usage example
-+ *
-+ * ...
-+ * #include "tst_test.h"
-+ * #include "tst_taint.h"
-+ * ..
-+ * void setup(void)
-+ * {
-+ *	if (!tst_taint_supported())
-+ *		tst_brk(TCONF, "Kernel does not support tainted flags");
-+ * }
-+ *
-+ * void run(void)
-+ * {
-+ *	...
-+ *	. test code here
-+ *	...
-+ *	if(tst_taint_check(TST_TAINT_W | TST_TAINT_D))
-+ *		tst_res(TFAIL, "kernel has issues");
-+ *	else
-+ *		tst_res(TPASS, "kernel seems to be fine");
-+ * }
-+ *
-+ *
-+ *
-+ * The above code checks, if the kernel issued a warning (TST_TAINT_W)
-+ * or even died (TST_TAINT_D). If these are set durin execution of a
-+ * test case, we most likely triggered a kernel bug.
-+ */
-+
-+#ifndef TST_TAINTED_H__
-+#define TST_TAINTED_H__
-+
-+/*
-+ * This are all 17 flags that are present in kernel 4.15
-+ * see kernel/panic.c in kernel sources
-+ *
-+ * Not all of them are valid in all kernel versions.
-+ */
-+#define TST_TAINT_G     (1 <<  0) /* a module with non-GPL license loaded */
-+#define TST_TAINT_F     (1 <<  1) /* a module was force-loaded */
-+#define TST_TAINT_S     (1 <<  2) /* SMP with Non-SMP kernel */
-+#define TST_TAINT_R     (1 <<  3) /* module force unloaded */
-+#define TST_TAINT_M     (1 <<  4) /* machine check error occurred */
-+#define TST_TAINT_B     (1 <<  5) /* page-release function found bad page */
-+#define TST_TAINT_U     (1 <<  6) /* user requested taint flag */
-+#define TST_TAINT_D     (1 <<  7) /* kernel died recently - OOPS or BUG */
-+#define TST_TAINT_A     (1 <<  8) /* ACPI table has been overwritten */
-+#define TST_TAINT_W     (1 <<  9) /* a warning has been issued by kernel */
-+#define TST_TAINT_C     (1 << 10) /* driver from drivers/staging was loaded */
-+#define TST_TAINT_I     (1 << 11) /* working around BIOS/Firmware bug */
-+#define TST_TAINT_O     (1 << 12) /* out of tree module loaded */
-+#define TST_TAINT_E     (1 << 13) /* unsigned module was loaded */
-+#define TST_TAINT_L     (1 << 14) /* A soft lock-up has previously occurred */
-+#define TST_TAINT_K     (1 << 15) /* kernel has been live-patched */
-+#define TST_TAINT_X	(1 << 16) /* auxiliary taint, for distro's use */
-+
-+/*
-+ * check if kernel is recent enough to support the tainted-flags that
-+ * allow us to check if the kernel issued a warning or died.
-+ * This _must_ be called before calling other functions!
-+ *
-+ * returns 1 if supported, 0 otherwise
-+ */
-+int tst_taint_supported(void);
-+
-+
-+/*
-+ * read /proc/sys/kernel/tainted and check if@least one of the
-+ * bits specified in mask is set.
-+ * mask is required to be > 0. Use tst_taint_read() in order to check
-+ * for absence of any tainted flags.
-+ *
-+ * returns 1 if at least one bit of mask is set in
-+ * /proc/sys/kernel/tainted, 0 otherwise.
-+ * (unsigned int) -1 is returned if mask is zero or tst_taint_supported
-+ * was not called before
-+ */
-+int tst_taint_check_mask(unsigned int mask);
-+
-+
-+/*
-+ * read /proc/sys/kernel/tainted and return the value
-+ */
-+unsigned int tst_taint_read(void);
-+
-+#endif /* TST_TAINTED_H__ */
-diff --git a/lib/tst_taint.c b/lib/tst_taint.c
-new file mode 100644
-index 000000000..de9093976
---- /dev/null
-+++ b/lib/tst_taint.c
-@@ -0,0 +1,52 @@
-+#define TST_NO_DEFAULT_MAIN
-+
+diff --git a/testcases/kernel/syscalls/write/write04.c b/testcases/kernel/syscalls/write/write04.c
+index d6a51460c..36ef97e8a 100644
+--- a/testcases/kernel/syscalls/write/write04.c
++++ b/testcases/kernel/syscalls/write/write04.c
+@@ -18,31 +18,12 @@
+  */
+ 
+ /*
+- * NAME
+- *	write04.c
+- *
+  * DESCRIPTION
+  *	Testcase to check that write() sets errno to EAGAIN
+  *
+  * ALGORITHM
+  *	Create a named pipe (fifo), open it in O_NONBLOCK mode, and
+  *	attempt to write to it when it is full, write(2) should fail
+- *	with EAGAIN.
+- *
+- * USAGE:  <for command-line>
+- *      write04 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *      where,  -c n : Run n copies concurrently.
+- *              -e   : Turn on errno logging.
+- *              -i n : Execute test n times.
+- *              -I x : Execute test for x seconds.
+- *              -P x : Pause for x seconds between iterations.
+- *              -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *      ??/???? someone made this testcase but didn't add HISTORY
+- *
+- * RESTRICTIONS
+- *	NONE
+  */
+ 
+ #include <sys/stat.h>
+@@ -51,189 +32,61 @@
+ #include <setjmp.h>
+ #include <errno.h>
+ #include <string.h>
+-#include "test.h"
++#include <stdio.h>
 +#include "tst_test.h"
-+#include "tst_taint.h"
-+#include "tst_safe_stdio.h"
-+
-+#define TAINT_FILE "/proc/sys/kernel/tainted"
-+
-+static int taint_supported = -1;
-+
-+int tst_taint_supported(void)
+ 
+-#define PIPE_SIZE_TEST getpagesize()
++static char fifo[100];
++static int rfd, wfd;
++static long page_size;
+ 
+-void alarm_handler();
+-void setup();
+-void cleanup();
++static void verify_write(void)
 +{
-+	if (tst_kvercmp(2, 6, 26) < 0) {
-+		tst_res(TINFO, "Kernel version prior to 2.6.26 detected.\n");
-+		tst_res(TINFO, "please check kernel output manually\n");
-+		taint_supported = 0;
-+	} else
-+		taint_supported = 1;
-+
-+	return taint_supported;
-+}
-+
-+unsigned int tst_taint_read(void)
-+{
-+	unsigned int val;
-+
-+	if (taint_supported == -1) {
-+		tst_brk(TCONF, "call tst_taint_supported() before tst_taint_read()");
-+		return (unsigned int) -1;
++	char wbuf[8 * page_size];
+ 
+-char *TCID = "write04";
+-int TST_TOTAL = 1;
++	TEST(write(wfd, wbuf, sizeof(wbuf)));
+ 
+-char fifo[100] = "fifo";
+-static sigjmp_buf jmp;
+-int rfd, wfd;
++	if (TEST_RETURN != -1) {
++		tst_res(TFAIL, "write() succeeded unexpectedly");
++		return;
 +	}
-+	SAFE_FILE_SCANF(TAINT_FILE, "%u", &val);
+ 
+-int main(int argc, char **argv)
+-{
+-	int lc;
+-
+-	struct stat buf;
+-	int fail;
+-	int cnt;
+-	char wbuf[17 * PIPE_SIZE_TEST];
+-	struct sigaction sigptr;	/* set up signal handler */
+-
+-	tst_parse_opts(argc, argv, NULL, NULL);
+-
+-	/* global setup */
+-	setup();
+-
+-	/*
+-	 * The following loop checks looping state if -i option given
+-	 */
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* reset tst_count in case we are looping */
+-		tst_count = 0;
+-
+-		if (mknod(fifo, S_IFIFO | 0777, 0) < 0) {
+-			tst_resm(TBROK, "mknod() failed, errno: %d", errno);
+-			cleanup();
+-		}
+-		if (stat(fifo, &buf) != 0) {
+-			tst_resm(TBROK, "stat() failed, errno: %d", errno);
+-			cleanup();
+-		}
+-		if ((buf.st_mode & S_IFIFO) == 0) {
+-			tst_resm(TBROK, "Mode does not indicate fifo file");
+-			cleanup();
+-		}
+-#if 0
+-		sigset(SIGALRM, alarm_handler);
+-#endif
+-		sigptr.sa_handler = (void (*)(int signal))alarm_handler;
+-		sigfillset(&sigptr.sa_mask);
+-		sigptr.sa_flags = 0;
+-		sigaddset(&sigptr.sa_mask, SIGALRM);
+-		if (sigaction(SIGALRM, &sigptr, NULL) == -1) {
+-			tst_resm(TBROK, "sigaction(): Failed");
+-			cleanup();
+-		}
+-//block1:
+-		tst_resm(TINFO, "Enter block 1: test for EAGAIN in write()");
+-		fail = 0;
+-
+-		(void)memset((void *)wbuf, 'A', 17 * PIPE_SIZE_TEST);
+-
+-		/*
+-		 * open the read end of the pipe
+-		 */
+-		if (sigsetjmp(jmp, 1)) {
+-			tst_resm(TBROK, "Error reading fifo, read blocked");
+-			fail = 1;
+-		}
+-		(void)alarm(10);	/* set alarm for 10 seconds */
+-		rfd = open(fifo, O_RDONLY | O_NONBLOCK);
+-		(void)alarm(0);
+-		if (rfd < 0) {
+-			tst_resm(TBROK, "open() for reading the pipe failed");
+-			fail = 1;
+-		}
+-
+-		/*
+-		 * open the write end of the pipe
+-		 */
+-		if (sigsetjmp(jmp, 1)) {
+-			tst_resm(TBROK, "setjmp() failed");
+-			cleanup();
+-		}
+-		(void)alarm(10);	/* set alarm for 10 seconds */
+-		wfd = open(fifo, O_WRONLY | O_NONBLOCK);
+-		(void)alarm(0);
+-		if (wfd < 0) {
+-			tst_resm(TBROK, "open() for writing the pipe failed");
+-			fail = 1;
+-		}
+-
+-		/*
+-		 * attempt to fill the pipe with some data
+-		 */
+-		if (sigsetjmp(jmp, 1)) {
+-			tst_resm(TBROK, "sigsetjmp() failed");
+-			fail = 1;
+-		}
+-		(void)alarm(10);
+-		cnt = write(wfd, wbuf, 17 * PIPE_SIZE_TEST);
+-		(void)alarm(0);
+-		if (cnt == 17 * PIPE_SIZE_TEST) {
+-			tst_resm(TBROK, "Error reading fifo, nozero read");
+-			fail = 1;
+-		}
+-
+-		/*
+-		 * Now that the fifo is full try and send some more
+-		 */
+-		if (sigsetjmp(jmp, 1)) {
+-			tst_resm(TBROK, "sigsetjmp() failed");
+-			fail = 1;
+-		}
+-		(void)alarm(10);
+-		cnt = write(wfd, wbuf, 8 * PIPE_SIZE_TEST);
+-		(void)alarm(0);
+-		if (cnt != -1) {
+-			tst_resm(TBROK, "write() failed to fail when pipe "
+-				 "is full");
+-			fail = 1;
+-		} else {
+-			if (errno != EAGAIN) {
+-				tst_resm(TBROK, "write set bad errno, expected "
+-					 "EAGAIN, got %d", errno);
+-				fail = 1;
+-			}
+-			tst_resm(TINFO, "read() succeded in setting errno to "
+-				 "EAGAIN");
+-		}
+-		if (fail) {
+-			tst_resm(TFAIL, "Block 1 FAILED");
+-		} else {
+-			tst_resm(TPASS, "Block 1 PASSED");
+-		}
+-		tst_resm(TINFO, "Exit block 1");
+-
+-		/* unlink fifo in case we are looping. */
+-		unlink(fifo);
++	if (TEST_ERRNO != EAGAIN) {
++		tst_res(TFAIL | TTERRNO,
++			"write() failed unexpectedly, expected EAGAIN");
++		return;
+ 	}
+-	cleanup();
+-	tst_exit();
+-}
+ 
+-void alarm_handler(void)
+-{
+-	siglongjmp(jmp, 1);
++	tst_res(TPASS | TTERRNO, "write() failed expectedly");
+ }
+ 
+-/*
+- * setup()
+- *	performs all ONE TIME setup for this test
+- */
+-void setup(void)
++static void setup(void)
+ {
++	page_size = getpagesize();
+ 
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
++	char wbuf[17 * page_size];
+ 
+-	/* Pause if that option was specified
+-	 * TEST_PAUSE contains the code to fork the test with the -i option.
+-	 * You want to make sure you do this before you create your temporary
+-	 * directory.
+-	 */
+-	TEST_PAUSE;
++	sprintf(fifo, "%s.%d", fifo, getpid());
+ 
+-	/* Create a unique temporary directory and chdir() to it. */
+-	tst_tmpdir();
++	SAFE_MKNOD(fifo, S_IFIFO | 0777, 0);
+ 
+-	/* create a temporary filename */
+-	sprintf(fifo, "%s.%d", fifo, getpid());
++	rfd = SAFE_OPEN(fifo, O_RDONLY | O_NONBLOCK);
++	wfd = SAFE_OPEN(fifo, O_WRONLY | O_NONBLOCK);
+ 
++	SAFE_WRITE(0, wfd, wbuf, sizeof(wbuf));
+ }
+ 
+-void cleanup(void)
++static void cleanup(void)
+ {
++	if (rfd > 0)
++		SAFE_CLOSE(rfd);
+ 
+-	close(rfd);
+-	close(wfd);
+-	unlink(fifo);
+-	tst_rmdir();
+-
++	if (wfd > 0)
++		SAFE_CLOSE(wfd);
+ }
 +
-+	return val;
-+}
-+
-+int tst_taint_check_mask(unsigned int mask)
-+{
-+	unsigned int taint;
-+
-+	taint = tst_taint_read();
-+	if (taint == (unsigned int) -1)
-+		return -1;
-+
-+	if (mask == 0) {
-+		tst_brk(TCONF, "mask is not allowed to be 0");
-+		return  -1;
-+	}
-+	if ((taint & mask) != 0)
-+		return 1;
-+
-+	return 0;
-+}
++static struct tst_test test = {
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = verify_write,
++};
 -- 
 2.13.6
 
