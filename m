@@ -1,47 +1,56 @@
-From: Travis CI <builds@travis-ci.org>
-Date: Tue, 23 Jan 2018 10:14:40 +0000
-Subject: [LTP] Passed: linux-test-project/ltp#621 (master - 67af7db)
-In-Reply-To: <linux-test-project/ltp+332220397+passed@travis-ci.org>
-Message-ID: <5a670b10cec77_43fccf4eda9947696c2@54bfdc4e-b786-4b1f-9d60-807f376ed3a8.mail>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 23 Jan 2018 14:06:05 +0100
+Subject: [LTP] [RFC] [PATCH] fs/doio: Increase the MAX_FNAME_LENGTH
+Message-ID: <20180123130605.7702-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Build Update for linux-test-project/ltp
--------------------------------------
+As per request in:
 
-Build: #621
-Status: Passed
+https://github.com/linux-test-project/ltp/issues/234
 
-Duration: 17 minutes and 12 seconds
-Commit: 67af7db (master)
-Author: Li Wang
-Message: safe_macros: make is_fuse() return zero if fs_type is NULL
+This commit increases the limit on file path so that the test works with
+slightly longer paths as well.
 
-This commmit 28507e514c(safe_mount: Do not try mount() syscall for FUSE fs)
-involves FUSE fs check in safe_mount(), but we'd better guarantee the "fs_type"
-is legal to check in is_fuse() function otherwise system will kill the program.
+Note that we compose absolute path in the parse_opts() in the iogen.c
+which is blindly copied into an array of size of MAX_FNAME_LENGTH which
+obviously crashes if PWD + filename lenght were longer than 128 bytes.
 
-  cmdline="fanotify06"
-  contacts=""
-  analysis=exit
-  <<<test_output>>>
-  tst_test.c:980: INFO: Timeout per run is 0h 10m 00s
-  tst_test.c:1025: BROK: Test killed by SIGSEGV!
+BEWARE: apparenlty these structures are piped from genio to doio when
+        rwtest is invoked and because of theat all the structures that
+	use MAX_FNAME_LENGHT must fit into PIPE_BUF. The PIPE_BUF is
+	4k on Linux, hence we can bump the max path size safely to 4000
+	bytes.
 
-Signed-off-by: Li Wang <liwang@redhat.com>
-Acked-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/fs/doio/doio.h | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-View the changeset: https://github.com/linux-test-project/ltp/compare/83d247d08509...67af7dbe8bdf
+diff --git a/testcases/kernel/fs/doio/doio.h b/testcases/kernel/fs/doio/doio.h
+index 28c4feb42..27f601eef 100644
+--- a/testcases/kernel/fs/doio/doio.h
++++ b/testcases/kernel/fs/doio/doio.h
+@@ -129,7 +129,15 @@
+  *		This is an allowed assumption in C.
+  */
+ 
+-#define MAX_FNAME_LENGTH    128
++/*
++ * All the structures below _MUST_ fit into PIPE_BUF in size otherwise
++ * piping the genio to doio will result in data corruption and failure.
++ *
++ * For Linux where the PIPE_BUF is 4k we can safely bump the maximal filename
++ * lenght to 4000 which leavs 96 bytes for the rest of the structure members,
++ * which should be more than enough.
++ */
++#define MAX_FNAME_LENGTH    4000
+ 
+ struct read_req {
+     char    r_file[MAX_FNAME_LENGTH];
+-- 
+2.13.6
 
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/332220397?utm_source=email&utm_medium=notification
-
---
-
-You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180123/44f38062/attachment-0001.html>
