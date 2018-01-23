@@ -1,60 +1,43 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 23 Jan 2018 10:17:58 +0100
-Subject: [LTP] [RFC] [PATCH] lib/parse_opts: Use CLOCK_MONOTONIC for -I
-	option
-Message-ID: <20180123091758.23639-1-chrubis@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 23 Jan 2018 17:46:35 +0800
+Subject: [LTP] [PATCH v2] is_fuse: return zore if fs_type is NULL
+Message-ID: <20180123094635.17931-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This is follow up patch for the old library.
+This commmit 28507e514c(safe_mount: Do not try mount() syscall for FUSE fs)
+involves FUSE fs check in safe_mount(), but we'd better guarantee the "fs_type"
+is legal to check in is_fuse() function otherwise system will kill the program.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+  cmdline="fanotify06"
+  contacts=""
+  analysis=exit
+  <<<test_output>>>
+  tst_test.c:980: INFO: Timeout per run is 0h 10m 00s
+  tst_test.c:1025: BROK: Test killed by SIGSEGV!
+
+Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- lib/parse_opts.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ lib/safe_macros.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/lib/parse_opts.c b/lib/parse_opts.c
-index 3a879e44e..56a7c4c00 100644
---- a/lib/parse_opts.c
-+++ b/lib/parse_opts.c
-@@ -39,12 +39,13 @@
- #include <sys/signal.h>
- #include <sys/types.h>
- #include <unistd.h>
--#include <sys/time.h>
-+#include <time.h>
- #include <stdint.h>
- 
- #include "test.h"
- #include "ltp_priv.h"
- #include "usctest.h"
-+#include "tst_clocks.h"
- 
- #ifndef UNIT_TEST
- #define UNIT_TEST	0
-@@ -467,16 +468,13 @@ int usc_global_setup_hook(void)
- 
- #define USECS_PER_SEC	1000000	/* microseconds per second */
- 
--/***********************************************************************
-- * Returns current time in microseconds since 1970.
-- ***********************************************************************/
- static uint64_t get_current_time(void)
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index c48e436..abdeca0 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -708,6 +708,9 @@ static int is_fuse(const char *fs_type)
  {
--	struct timeval curtime;
-+	struct timespec ts;
+ 	unsigned int i;
  
--	gettimeofday(&curtime, NULL);
-+	tst_clock_gettime(CLOCK_MONOTONIC, &ts);
- 
--	return (((uint64_t) curtime.tv_sec) * USECS_PER_SEC) + curtime.tv_usec;
-+	return (((uint64_t) ts.tv_sec) * USECS_PER_SEC) + ts.tv_nsec / 1000;
- }
- 
- /***********************************************************************
++	if (!fs_type)
++		return 0;
++
+ 	for (i = 0; i < ARRAY_SIZE(fuse_fs_types); i++) {
+ 		if (!strcmp(fuse_fs_types[i], fs_type))
+ 			return 1;
 -- 
-2.13.6
+2.9.3
 
