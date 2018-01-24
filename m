@@ -1,9 +1,9 @@
 From: Michael Moese <mmoese@suse.de>
-Date: Wed, 24 Jan 2018 14:03:11 +0100
-Subject: [LTP] [PATCH 18/19] fix old style definition in inode02.c
+Date: Wed, 24 Jan 2018 14:03:12 +0100
+Subject: [LTP] [PATCH 19/19] fix old style definition in inode01.c
 In-Reply-To: <20180124130312.7665-1-mmoese@suse.de>
 References: <20180124130312.7665-1-mmoese@suse.de>
-Message-ID: <20180124130312.7665-19-mmoese@suse.de>
+Message-ID: <20180124130312.7665-20-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,45 +12,24 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Michael Moese <mmoese@suse.de>
 ---
- testcases/kernel/fs/inode/inode02.c | 67 +++++++++++++++++--------------------
- 1 file changed, 30 insertions(+), 37 deletions(-)
+ testcases/kernel/fs/inode/inode01.c | 58 +++++++++++++++++--------------------
+ 1 file changed, 27 insertions(+), 31 deletions(-)
 
-diff --git a/testcases/kernel/fs/inode/inode02.c b/testcases/kernel/fs/inode/inode02.c
-index 78495ec75..85598b2fc 100644
---- a/testcases/kernel/fs/inode/inode02.c
-+++ b/testcases/kernel/fs/inode/inode02.c
-@@ -110,9 +110,7 @@ char *TCID = "inode02";		/* Test program identifier.    */
- int TST_TOTAL = 1;		/* Total number of test cases. */
- /**************/
+diff --git a/testcases/kernel/fs/inode/inode01.c b/testcases/kernel/fs/inode/inode01.c
+index 86c3b955c..a7387e868 100644
+--- a/testcases/kernel/fs/inode/inode01.c
++++ b/testcases/kernel/fs/inode/inode01.c
+@@ -98,7 +98,7 @@ int list_id;
  
--int main(argc, argv)
--int argc;
--char *argv[];
-+int main(int argc, char *argv[])
+ int increment_name(), get_next_name(), mode(), escrivez();
+ 
+-int main()
++int main(void)
  {
- 	int pid, tree(), p, status;
- 	int count, child;
-@@ -216,8 +214,7 @@ char *argv[];
+ 	char root[16];		//as pids can get much longer
+ 	int gen_ret_val, ch_ret_val, level;
+@@ -275,7 +275,7 @@ int main()
  	tst_exit();
- }
- 
--int bd_arg(str)
--char *str;
-+int bd_arg(char *str)
- {
- 	fprintf(temp,
- 		"Bad argument - %s - could not parse as number.\n\tinode02 [max_depth] [max_breadth] [file_length] [#children]\n\tdefault: inode02 6 5 8 5\n",
-@@ -225,7 +222,7 @@ char *str;
- 	exit(1);
- }
- 
--int tree()
-+int tree(void)
- 
- /************************************************/
- /*						*/
-@@ -375,7 +372,7 @@ int tree()
- 	exit(exit_val);
  }
  
 -int generate(string, level)
@@ -58,7 +37,7 @@ index 78495ec75..85598b2fc 100644
  
  /****************************************/
  /*					*/
-@@ -388,19 +385,19 @@ int generate(string, level)
+@@ -288,19 +288,19 @@ int generate(string, level)
  /*   reached or an error occurs		*/
  /*					*/
  /****************************************/
@@ -76,7 +55,7 @@ index 78495ec75..85598b2fc 100644
 -		/*                         */
 -		/***************************/
 +/***************************/
-+/*  string:                */
++/*  string[]      	   */
 +/*  the directory path     */
 +/*  string below which a   */
 +/*  tree is generated      */
@@ -84,14 +63,14 @@ index 78495ec75..85598b2fc 100644
 +/***************************/
 +
 +/***************************/
-+/* level:                  */
++/* level                   */
 +/* the tree depth variable */
 +/*                         */
 +/***************************/
  {
  	int switch_flag;
  	int ret_val = 0;
-@@ -557,7 +554,7 @@ int level;			/* the tree depth variable */
+@@ -453,7 +453,7 @@ int level;			/* the tree depth variable */
  		return 0;
  }
  
@@ -100,7 +79,7 @@ index 78495ec75..85598b2fc 100644
  
  /****************************************/
  /*					*/
-@@ -675,7 +672,7 @@ int check()
+@@ -570,7 +570,7 @@ int check()
  	}			/* while */
  }
  
@@ -109,7 +88,7 @@ index 78495ec75..85598b2fc 100644
  
  /****************************************/
  /*					*/
-@@ -712,7 +709,7 @@ int get_next_name()
+@@ -607,7 +607,7 @@ int get_next_name()
  	return 0;
  }
  
@@ -118,7 +97,7 @@ index 78495ec75..85598b2fc 100644
  
  /****************************************/
  /*					*/
-@@ -721,7 +718,6 @@ int increment_name(position)
+@@ -616,7 +616,6 @@ int increment_name(position)
  /*  next name				*/
  /*					*/
  /****************************************/
@@ -126,7 +105,7 @@ index 78495ec75..85598b2fc 100644
  {
  	int next_position;
  
-@@ -746,7 +742,7 @@ int increment_name(position)
+@@ -641,7 +640,7 @@ int increment_name(position)
  				  /*********************************/
  }
  
@@ -135,7 +114,7 @@ index 78495ec75..85598b2fc 100644
  
  /****************************************/
  /*					*/
-@@ -754,7 +750,6 @@ int mode(path_string)
+@@ -649,7 +648,6 @@ int mode(path_string)
  /*   the file named by path_string 	*/
  /*					*/
  /****************************************/
@@ -143,7 +122,7 @@ index 78495ec75..85598b2fc 100644
  {
  	struct stat buf;
  	int ret_val, mod;
-@@ -768,9 +763,7 @@ int mode(path_string)
+@@ -663,9 +661,7 @@ int mode(path_string)
  	}
  }
  
@@ -154,7 +133,7 @@ index 78495ec75..85598b2fc 100644
  {
  	char write_string[PATH_STRING_LENGTH + 1];
  	int len, ret_len;
-@@ -789,7 +782,7 @@ char string[];
+@@ -684,7 +680,7 @@ char string[];
  	return 0;
  }
  
@@ -163,16 +142,7 @@ index 78495ec75..85598b2fc 100644
  {
  	int status;
  
-@@ -814,7 +807,7 @@ int term()
- 	return 0;
- }
- 
--int massmurder()
-+int massmurder(void)
- {
- 	int i;
- 	for (i = 0; i < MAXCHILD; i++) {
-@@ -831,7 +824,7 @@ int massmurder()
+@@ -713,7 +709,7 @@ int term()
   *
   * Do set up - here its a dummy function
   */
@@ -181,16 +151,34 @@ index 78495ec75..85598b2fc 100644
  {
  	tst_tmpdir();
  	temp = stderr;
-@@ -842,7 +835,7 @@ void setup()
+@@ -728,7 +724,7 @@ gical unit
+ fail or
+  *              pass.
+  */
+-void blexit()
++void blexit(void)
+ {
+ 	(local_flag == PASSED) ? tst_resm(TPASS, "Test block %d", block_number)
+ 	    : tst_resm(TFAIL, "Test block %d", block_number);
+@@ -741,7 +737,7 @@ void blexit()
+  *
+  * Description: Print message on entering a new block
+  */
+-void blenter()
++void blenter(void)
+ {
+ 	local_flag = PASSED;
+ 	return;
+@@ -752,7 +748,7 @@ void blenter()
   *
   * Exit on failure
   */
 -void fail_exit()
 +void fail_exit(void)
  {
- 	tst_brkm(TFAIL, tst_rmdir, "Test failed\n");
+ 	tst_brkm(TFAIL, tst_rmdir, "Test failed");
  }
-@@ -853,7 +846,7 @@ void fail_exit()
+@@ -763,7 +759,7 @@ void fail_exit()
   *
   * Description: Exit a test.
   */
@@ -199,7 +187,7 @@ index 78495ec75..85598b2fc 100644
  {
  	(local_flag == FAILED) ? tst_resm(TFAIL, "Test failed")
  	    : tst_resm(TPASS, "Test passed");
-@@ -866,7 +859,7 @@ void anyfail()
+@@ -776,7 +772,7 @@ void anyfail()
   *
   * Calling block passed the test
   */
@@ -208,24 +196,6 @@ index 78495ec75..85598b2fc 100644
  {
  	local_flag = PASSED;
  	return;
-@@ -877,7 +870,7 @@ void ok_exit()
-  *
-  * exit on failure
-  */
--void forkfail()
-+void forkfail(void)
- {
- 	tst_brkm(TBROK, tst_rmdir, "Reason: %s\n", strerror(errno));
- }
-@@ -901,7 +894,7 @@ void terror(char *message)
-  * Assume that we are always running under stress, so this function will
-  * return > 0 value always.
-  */
--int instress()
-+int instress(void)
- {
- 	tst_resm(TINFO, "System resource may be too low, fork() malloc()"
- 		 " etc are likely to fail.\n");
 -- 
 2.13.6
 
