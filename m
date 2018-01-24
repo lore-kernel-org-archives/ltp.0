@@ -1,36 +1,67 @@
-From: Travis CI <builds@travis-ci.org>
-Date: Wed, 24 Jan 2018 11:32:53 +0000
-Subject: [LTP] Errored: linux-test-project/ltp#623 (master - 718e318)
-In-Reply-To: <linux-test-project/ltp+332737264+errored@travis-ci.org>
-Message-ID: <5a686ee5753d_43f91f38f5ba048573a@c049cb0d-c85e-4c27-82b2-e5867b28d579.mail>
+From: Michael Moese <mmoese@suse.de>
+Date: Wed, 24 Jan 2018 14:02:53 +0100
+Subject: [LTP] [PATCH 00/19] Fix a bunch of warnings (mainly
+	old-style-definition)
+Message-ID: <20180124130312.7665-1-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Build Update for linux-test-project/ltp
--------------------------------------
+Hi,
+I was able to find the time to fix a bunch of the warnings when building
+LTP. With a fex exceptions, this was fixig function definitions, like 
+changing int foo() to int foo(void) or changing old K&R-style to what you
+would expect. None of the changes was bigger than that. I did one patch per 
+file, and each of them was individually build-tested.
 
-Build: #623
-Status: Errored
+Michael
 
-Duration: 16 minutes and 26 seconds
-Commit: 718e318 (master)
-Author: Cyril Hrubis
-Message: syscalls/io_destroy01.c: Cleanup && Convert to new API
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Michael Moese (19):
+  fix warning on old style function definition
+  fix default int in function definition
+  fix old style definition in nfs_lock.c
+  fix old style definition in mc_gethost.c
+  remove duplicate const in mremap05.c
+  fix old style definition in pidns06.c
+  fix old style function definition in memcg_process_stress.c
+  fix two old style function definitions in mem_process.c
+  fix old-style-definition in vfork.c
+  fix old style function definitions in libcpuset.c
+  fix old style definition in cpuctl_test04.c
+  fix old style definition in cpuctl_test01.c
+  fix old style definition and unuses argc/argv in main()  in
+    cpuctl_test02.c
+  fix unused parameter in tpci.c
+  fix old style definitions in memctl_test01.c
+  fix old style definitions in cpuctl_def_task04.c
+  fix old style definitions in fsx-linux.c
+  fix old style definition in inode02.c
+  fix old style definition in inode01.c
 
-View the changeset: https://github.com/linux-test-project/ltp/compare/d4742d57c09e...718e3181db8a
+ testcases/kernel/containers/pidns/pidns06.c        |  2 +-
+ .../kernel/controllers/cpuctl/cpuctl_def_task04.c  |  2 +-
+ .../kernel/controllers/cpuctl/cpuctl_test01.c      |  2 +-
+ .../kernel/controllers/cpuctl/cpuctl_test02.c      |  6 +-
+ .../kernel/controllers/cpuctl/cpuctl_test04.c      |  2 +-
+ .../controllers/cpuset/cpuset_lib/libcpuset.c      | 34 +++++------
+ testcases/kernel/controllers/freezer/vfork.c       |  4 +-
+ .../kernel/controllers/memcg/control/mem_process.c |  4 +-
+ .../memcg/stress/memcg_process_stress.c            |  2 +-
+ .../kernel/controllers/memctl/memctl_test01.c      |  8 ++-
+ .../kernel/device-drivers/pci/tpci_user/tpci.c     |  6 +-
+ testcases/kernel/fs/fsx-linux/fsx-linux.c          | 10 +---
+ testcases/kernel/fs/inode/inode01.c                | 58 +++++++++----------
+ testcases/kernel/fs/inode/inode02.c                | 67 ++++++++++------------
+ testcases/kernel/syscalls/mremap/mremap05.c        |  2 +-
+ testcases/misc/f00f/f00f.c                         |  4 +-
+ .../network/multicast/mc_gethost/mc_gethost.c      |  4 +-
+ testcases/network/nfs/nfslock01/nfs_flock.c        |  4 +-
+ testcases/network/stress/ns-tools/ns-udpserver.c   |  2 +-
+ 19 files changed, 103 insertions(+), 120 deletions(-)
 
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/332737264?utm_source=email&utm_medium=notification
+-- 
+2.13.6
 
---
-
-You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180124/564d4d8a/attachment.html>
