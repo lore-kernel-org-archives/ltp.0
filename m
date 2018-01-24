@@ -1,26 +1,31 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 24 Jan 2018 15:23:35 +0100
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 24 Jan 2018 15:51:04 +0100
 Subject: [LTP] Errored: linux-test-project/ltp#623 (master - 718e318)
-In-Reply-To: <20180124142139.GA22157@rei>
+In-Reply-To: <20180124142335.GA25188@rei>
 References: <linux-test-project/ltp+332737264+errored@travis-ci.org>
  <5a686ee5753d_43f91f38f5ba048573a@c049cb0d-c85e-4c27-82b2-e5867b28d579.mail>
  <20180124134121.bvicy7yk4u3vd5ci@dell5510>
- <20180124142139.GA22157@rei>
-Message-ID: <20180124142335.GA25188@rei>
+ <20180124142139.GA22157@rei> <20180124142335.GA25188@rei>
+Message-ID: <20180124145104.ks2ywx6477yr7sev@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > [1] https://github.com/travis-ci/travis-ci/issues/8834
-> 
-> Let's hope that they will fix it soon enough.
+Hi Cyril,
 
-I guess that we may as well reopen the issue, I've seen several
-occurences of the problem during January.
+> > > [1] https://github.com/travis-ci/travis-ci/issues/8834
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> > Let's hope that they will fix it soon enough.
+
+> I guess that we may as well reopen the issue, I've seen several
+> occurences of the problem during January.
+
+I wasn't able to reopen it, so I created new issue:
+https://github.com/travis-ci/travis-ci/issues/9131
+
+Hope we can get some feedback.
+
+Kind regards,
+Petr
