@@ -1,9 +1,9 @@
 From: Michael Moese <mmoese@suse.de>
-Date: Wed, 24 Jan 2018 14:02:59 +0100
-Subject: [LTP] [PATCH 06/19] fix old style definition in pidns06.c
+Date: Wed, 24 Jan 2018 14:03:04 +0100
+Subject: [LTP] [PATCH 11/19] fix old style definition in cpuctl_test04.c
 In-Reply-To: <20180124130312.7665-1-mmoese@suse.de>
 References: <20180124130312.7665-1-mmoese@suse.de>
-Message-ID: <20180124130312.7665-7-mmoese@suse.de>
+Message-ID: <20180124130312.7665-12-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,22 +12,22 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Michael Moese <mmoese@suse.de>
 ---
- testcases/kernel/containers/pidns/pidns06.c | 2 +-
+ testcases/kernel/controllers/cpuctl/cpuctl_test04.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/containers/pidns/pidns06.c b/testcases/kernel/containers/pidns/pidns06.c
-index cdb472640..6afcc81ee 100644
---- a/testcases/kernel/containers/pidns/pidns06.c
-+++ b/testcases/kernel/containers/pidns/pidns06.c
-@@ -112,7 +112,7 @@ static void setup(void)
- 	check_newpid();
- }
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
+index bc67f41d9..791a58dd2 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
+@@ -71,7 +71,7 @@ int TST_TOTAL = 2;
+ pid_t scriptpid;
+ char path[] = "/dev/cpuctl";
  
--int main()
-+int main(void)
+-extern void cleanup()
++extern void cleanup(void)
  {
- 	int status;
- 
+ 	kill(scriptpid, SIGUSR1);	/* Inform the shell to do cleanup */
+ 	tst_exit();		/* Report exit status */
 -- 
 2.13.6
 
