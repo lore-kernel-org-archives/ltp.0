@@ -1,9 +1,9 @@
 From: Michael Moese <mmoese@suse.de>
-Date: Wed, 24 Jan 2018 14:03:02 +0100
-Subject: [LTP] [PATCH 09/19] fix old-style-definition in vfork.c
+Date: Wed, 24 Jan 2018 14:03:07 +0100
+Subject: [LTP] [PATCH 14/19] fix unused parameter in tpci.c
 In-Reply-To: <20180124130312.7665-1-mmoese@suse.de>
 References: <20180124130312.7665-1-mmoese@suse.de>
-Message-ID: <20180124130312.7665-10-mmoese@suse.de>
+Message-ID: <20180124130312.7665-15-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,31 +12,34 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Michael Moese <mmoese@suse.de>
 ---
- testcases/kernel/controllers/freezer/vfork.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/device-drivers/pci/tpci_user/tpci.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/controllers/freezer/vfork.c b/testcases/kernel/controllers/freezer/vfork.c
-index eeec89dc0..124a78363 100644
---- a/testcases/kernel/controllers/freezer/vfork.c
-+++ b/testcases/kernel/controllers/freezer/vfork.c
-@@ -88,7 +88,7 @@ void kill_child(void)
- 
+diff --git a/testcases/kernel/device-drivers/pci/tpci_user/tpci.c b/testcases/kernel/device-drivers/pci/tpci_user/tpci.c
+index 5f9367b36..659c54261 100644
+--- a/testcases/kernel/device-drivers/pci/tpci_user/tpci.c
++++ b/testcases/kernel/device-drivers/pci/tpci_user/tpci.c
+@@ -47,7 +47,7 @@ static void cleanup(void)
+ 		tst_module_unload(NULL, module_name);
  }
  
--void child_cleanup()
-+void child_cleanup(void)
+-void setup(int argc, char *argv[])
++void setup(void)
  {
- 	close(psync[0]);
- 	tst_exit();
-@@ -129,7 +129,7 @@ void sleepy_time(void)
- 	} while (1);
+ 	tst_require_root();
+ 
+@@ -105,9 +105,9 @@ static void test_run(void)
+ 	}
  }
  
--void usage()
-+void usage(void)
+-int main(int argc, char *argv[])
++int main(void)
  {
- 	tst_resm(TBROK, "usage: %s [-f [FILE]] [-s [NUM]] [-p] [NUM]\n\n"
- 		 "\t-f FILE\t\tFile to output trace data to.\n"
+-	setup(argc, argv);
++	setup();
+ 
+ 	test_run();
+ 
 -- 
 2.13.6
 
