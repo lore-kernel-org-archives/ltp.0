@@ -1,11 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 24 Jan 2018 12:16:00 +0100
-Subject: [LTP] [PATCH 2/2] syscalls/io_destroy01.c: Cleanup && Convert
- to new API
-In-Reply-To: <1505448375-26764-2-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1505448375-26764-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1505448375-26764-2-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20180124111600.GA14773@rei.lan>
+Date: Wed, 24 Jan 2018 12:18:34 +0100
+Subject: [LTP] [PATCH 1/1] network/stress: Update README
+In-Reply-To: <20170920092918.19960-1-pvorel@suse.cz>
+References: <20170920092918.19960-1-pvorel@suse.cz>
+Message-ID: <20180124111834.GB14773@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,7 +11,21 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-I've rebased the patches to apply to the latest HEAD and pushed, thanks.
+> networkstress.sh was merged into network.sh and then deleted in
+> fddb4f3c7 ("network: remove outdated network runtests and scripts")
+> 
+> Also same of network stress tests use test_net.sh instead of using
+> deprecated LTP_RSH.
+> 
+> This fixes #203.
+
+Looks good, acked.
+
+> Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+> ---
+> I hate 'ltp-yyyymmdd/' path prefix, but I ignored it now.
+
+I do not like it either about we changed that to ltp-* or ltp-foo?
 
 -- 
 Cyril Hrubis
