@@ -1,12 +1,9 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 24 Jan 2018 15:51:04 +0100
-Subject: [LTP] Errored: linux-test-project/ltp#623 (master - 718e318)
-In-Reply-To: <20180124142335.GA25188@rei>
-References: <linux-test-project/ltp+332737264+errored@travis-ci.org>
- <5a686ee5753d_43f91f38f5ba048573a@c049cb0d-c85e-4c27-82b2-e5867b28d579.mail>
- <20180124134121.bvicy7yk4u3vd5ci@dell5510>
- <20180124142139.GA22157@rei> <20180124142335.GA25188@rei>
-Message-ID: <20180124145104.ks2ywx6477yr7sev@dell5510>
+Date: Wed, 24 Jan 2018 18:12:23 +0100
+Subject: [LTP] [RFC PATCH 0/2] IMA: Rewrite tests into new API + fixes
+In-Reply-To: <20180111202821.31639-1-pvorel@suse.cz>
+References: <20180111202821.31639-1-pvorel@suse.cz>
+Message-ID: <20180124171223.l7sm27dd7tupzf5q@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,17 +12,20 @@ To: ltp@lists.linux.it
 
 Hi Cyril,
 
-> > > [1] https://github.com/travis-ci/travis-ci/issues/8834
+> I rewrote IMA tests to use new API + add small fixes.
+> I haven't tested ima_tpm.sh as I have no TPM :-(.
 
-> > Let's hope that they will fix it soon enough.
+> Comments are welcomed.
 
-> I guess that we may as well reopen the issue, I've seen several
-> occurences of the problem during January.
+> Kind regards,
+> Petr
 
-I wasn't able to reopen it, so I created new issue:
-https://github.com/travis-ci/travis-ci/issues/9131
+> Petr Vorel (2):
+>   security/ima: Rewrite tests into new API + fixes
+>   security/ima: Run measurements after policy
 
-Hope we can get some feedback.
+As nobody from IMA devs cares, I suggest merging it.
+But general review from LTP point of view would be nice.
 
 Kind regards,
 Petr
