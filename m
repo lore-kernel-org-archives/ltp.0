@@ -1,151 +1,283 @@
-From: Juri Lelli <juri.lelli@redhat.com>
-Date: Thu, 25 Jan 2018 12:20:13 +0100
-Subject: [LTP] [lkp-robot] [sched/deadline] e0367b1267:
- WARNING:at_kernel/sched/sched.h:#assert_clock_updated
-In-Reply-To: <20180125062839.GM5185@yexl-desktop>
-References: <20180125062839.GM5185@yexl-desktop>
-Message-ID: <20180125112013.GA6110@localhost.localdomain>
+From: Michael Moese <mmoese@suse.de>
+Date: Thu, 25 Jan 2018 13:16:41 +0100
+Subject: [LTP] [PATCH v2] Add library support for /proc/sys/kernel/tainted
+Message-ID: <20180125121641.26795-1-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Someteimes, it is important to detect if the kernel has issued a
+warning, died, or is tainted in another way. Linux provides this
+information in /proc/sys/kernel/tainted in the form of a bitfield.
+This patch provides library functions for testcases to detect, if
+it has tainted the kernel.
 
-On 25/01/18 14:28, kernel test robot wrote:
-> 
-> FYI, we noticed the following commit (built with gcc-7):
-> 
-> commit: e0367b12674bf4420870cd0237e3ebafb2ec9593 ("sched/deadline: Move CPU frequency selection triggering points")
-> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
-> 
-> in testcase: ltp
-> with following parameters:
-> 
-> 	test: sched
-> 
-> test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
-> test-url: http://linux-test-project.github.io/
-> 
-> 
-> on test machine: 88 threads Intel(R) Xeon(R) CPU E5-2699 v4 @ 2.20GHz with 64G memory
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
-> 
-> +------------------------------------------------------------------+------------+------------+
-> |                                                                  | d4edd662ac | e0367b1267 |
-> +------------------------------------------------------------------+------------+------------+
-> | boot_successes                                                   | 0          | 0          |
-> | boot_failures                                                    | 9          | 7          |
-> | invoked_oom-killer:gfp_mask=0x                                   | 9          | 4          |
-> | Mem-Info                                                         | 9          | 4          |
-> | Kernel_panic-not_syncing:Out_of_memory_and_no_killable_processes | 9          | 4          |
-> | WARNING:at_kernel/sched/sched.h:#assert_clock_updated            | 0          | 3          |
-> | RIP:assert_clock_updated                                         | 0          | 3          |
-> | RIP:cpuidle_enter_state                                          | 0          | 1          |
-> | RIP:clear_page_erms                                              | 0          | 1          |
-> | RIP:page_add_file_rmap                                           | 0          | 1          |
-> +------------------------------------------------------------------+------------+------------+
-> 
-> 
-> 
-> kern  :warn  : [  123.841479] WARNING: CPU: 67 PID: 3837 at kernel/sched/sched.h:889 assert_clock_updated+0x13/0x20
-> kern  :warn  : [  123.841480] Modules linked in: loop intel_rapl sb_edac x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel kvm mgag200 irqbypass crct10dif_pclmul ttm crc32_pclmul snd_pcm drm_kms_helper crc32c_intel syscopyarea sysfillrect sysimgblt ghash_clmulni_intel fb_sys_fops snd_timer mxm_wmi pcbc ipmi_si ahci aesni_intel snd crypto_simd ipmi_devintf glue_helper soundcore drm libahci cryptd ipmi_msghandler pcspkr libata shpchp wmi acpi_pad acpi_power_meter ip_tables
-> kern  :warn  : [  123.841500] CPU: 67 PID: 3837 Comm: ltp-pan Not tainted 4.15.0-rc6-00133-ge0367b1 #1
-> kern  :warn  : [  123.841501] Hardware name: Intel Corporation S2600KPR/S2600KPR, BIOS SE5C610.86B.01.01.0019.101220160604 10/12/2016
-> kern  :warn  : [  123.841503] RIP: 0010:assert_clock_updated+0x13/0x20
-> kern  :warn  : [  123.841504] RSP: 0018:ffff88102bdc3ee0 EFLAGS: 00010086
-> kern  :warn  : [  123.841505] RAX: 0000000000000026 RBX: ffff88106f23cfe8 RCX: 0000000000000000
-> kern  :warn  : [  123.841505] RDX: 0000000000000001 RSI: 0000000000000002 RDI: 0000000000000092
-> kern  :warn  : [  123.841506] RBP: ffff88102bde2800 R08: 0000000000000026 R09: ffffffff82b1d4e0
-> user  :notice: [  123.841507] fpu_exception	: yes
-> kern  :warn  : [  123.841507] R10: ffff8810280f4498 R11: 0000000000000000 R12: ffff8810279be000
-> 
-> kern  :warn  : [  123.841508] R13: 0000000000022800 R14: ffffffff81767d50 R15: ffff88102bddd1a8
-> kern  :warn  : [  123.841510] FS:  00007fd41d6d9700(0000) GS:ffff88102bdc0000(0000) knlGS:0000000000000000
-> kern  :warn  : [  123.841510] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> kern  :warn  : [  123.841511] CR2: 0000563f9799ee30 CR3: 000000107bb78001 CR4: 00000000003606e0
-> kern  :warn  : [  123.841512] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> kern  :warn  : [  123.841512] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> kern  :warn  : [  123.841513] Call Trace:
-> kern  :warn  : [  123.841515]  <IRQ>
-> kern  :warn  : [  123.841517]  inactive_task_timer+0x383/0x460
-> kern  :warn  : [  123.841520]  ? pull_dl_task+0x600/0x600
-> kern  :warn  : [  123.841525]  __hrtimer_run_queues+0xd3/0x230
-> kern  :warn  : [  123.841528]  hrtimer_interrupt+0xa6/0x200
-> kern  :warn  : [  123.841532]  smp_apic_timer_interrupt+0x56/0x130
-> kern  :warn  : [  123.841534]  apic_timer_interrupt+0xa2/0xb0
-> kern  :warn  : [  123.841535]  </IRQ>
-> kern  :warn  : [  123.841539] RIP: 0010:alloc_pid+0xcf/0x2a0
-> kern  :warn  : [  123.841539] RSP: 0018:ffffc900084b7db0 EFLAGS: 00000286 ORIG_RAX: ffffffffffffff11
-> kern  :warn  : [  123.841540] RAX: 000000000000171e RBX: 0000000000000000 RCX: 0000000000000000
-> kern  :warn  : [  123.841541] RDX: 000000000000171e RSI: ffff8810280f4470 RDI: ffffffff82205180
-> kern  :warn  : [  123.841542] RBP: ffffffff8225a2e0 R08: 0000000000000044 R09: 0000000000000228
-> kern  :warn  : [  123.841542] R10: ffff8810280f4498 R11: 000000000000001f R12: ffff881024787278
-> kern  :warn  : [  123.841543] R13: ffffffff8225a2e0 R14: ffff881024787240 R15: ffffffff82205180
-> kern  :warn  : [  123.841548]  copy_process+0xf5a/0x1b00
-> kern  :warn  : [  123.841551]  _do_fork+0xbd/0x3d0
-> kern  :warn  : [  123.841553]  ? task_work_run+0x48/0xd0
-> kern  :warn  : [  123.841557]  do_syscall_64+0x61/0x190
-> kern  :warn  : [  123.841559]  entry_SYSCALL64_slow_path+0x25/0x25
-> kern  :warn  : [  123.841561] RIP: 0033:0x7fd41cec676b
-> kern  :warn  : [  123.841561] RSP: 002b:00007ffc261df870 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
-> kern  :warn  : [  123.841562] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd41cec676b
-> kern  :warn  : [  123.841563] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000001200011
-> kern  :warn  : [  123.841563] RBP: 00007ffc261df8b0 R08: 00007fd41d6d9700 R09: 000000000000001e
-> kern  :warn  : [  123.841564] R10: 00007fd41d6d99d0 R11: 0000000000000246 R12: 0000000000000000
-> kern  :warn  : [  123.841564] R13: 0000563f9799cae0 R14: 0000000000000000 R15: 0000563f9799cd10
-> kern  :warn  : [  123.841566] Code: 48 89 83 20 09 00 00 eb c7 0f 1f 44 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 c7 c7 c8 fe 0a 82 c6 05 c3 69 35 01 01 e8 ad 01 fc ff <0f> ff c3 66 2e 0f 1f 84 00 00 00 00 00 48 c7 c7 15 04 0b 82 c6 
-> kern  :warn  : [  123.841583] ---[ end trace 5f3bf5f199ab1f72 ]---
-> 
-> 
-> To reproduce:
-> 
->         git clone https://github.com/intel/lkp-tests.git
->         cd lkp-tests
->         bin/lkp install job.yaml  # job file is attached in this email
->         bin/lkp run     job.yaml
+The following functions will be introduced:
 
-Hummm, wondering how LTP sched tests could trigger this, since a quick
-grep into ltp didn't show DEADLINE usage.
+- int tst_taint_init(unsigned int mask)
+  check if the flags supplied as mask are supported by the running
+  kernel, and if so, if they are not yet set.
 
-However, I'm currently thinking that we should update clock before
-potentially calling sub_running_bw (which might trigger schedutil
-update) in inactive_task_timer.
+- int tst_taint_check()
+  check if one or more of the bits specified in the mask provided
+  to tst_taint_init() before are set.
+  Returns 0 if those flags are not set, or the bitmask of set flags
 
-Would what follows cure it?
+These can be used in the following way:
 
-Thanks,
+First, during testcase setup:
 
-- Juri
+void setup(void)
+{
+	...
+	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
+}
 
---->8---
- kernel/sched/deadline.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Second, check if the test triggered a bug:
 
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 9bb0e0c412ec..59761e635d12 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -1261,6 +1261,9 @@ static enum hrtimer_restart inactive_task_timer(struct hrtimer *timer)
- 
- 	rq = task_rq_lock(p, &rf);
- 
-+	sched_clock_tick();
-+	update_rq_clock(rq);
+void run(void)
+{
+	...
+	. test code here
+	...
+	if(tst_taint_check() != 0)
+		tst_res(TFAIL, "kernel has issues");
+	 else
+		tst_res(TPASS, "kernel seems to be fine");
+}
+
+Signed-off-by: Michael Moese <mmoese@suse.de>
+---
+ include/tst_taint.h | 104 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ lib/tst_taint.c     | 106 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 210 insertions(+)
+ create mode 100644 include/tst_taint.h
+ create mode 100644 lib/tst_taint.c
+
+diff --git a/include/tst_taint.h b/include/tst_taint.h
+new file mode 100644
+index 000000000..89162b44c
+--- /dev/null
++++ b/include/tst_taint.h
+@@ -0,0 +1,104 @@
++/*
++ * Copyright (c) 2018 Michael Moese <mmoese@suse.de>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
 +
- 	if (!dl_task(p) || p->state == TASK_DEAD) {
- 		struct dl_bw *dl_b = dl_bw_of(task_cpu(p));
- 
-@@ -1280,9 +1283,6 @@ static enum hrtimer_restart inactive_task_timer(struct hrtimer *timer)
- 	if (dl_se->dl_non_contending == 0)
- 		goto unlock;
- 
--	sched_clock_tick();
--	update_rq_clock(rq);
--
- 	sub_running_bw(dl_se, &rq->dl);
- 	dl_se->dl_non_contending = 0;
- unlock:
++/* Usage example
++ *
++ * ...
++ * #include "tst_test.h"
++ * #include "tst_taint.h"
++ * ..
++ * void setup(void)
++ * {
++ *	...
++ *	tst_taint_init(TST_TAINT_W | TST_TAINT_D));
++ *	...
++ * }
++ *
++ * void run(void)
++ * {
++ *	...
++ *	. test code here
++ *	...
++ *	if(tst_taint_check() != 0)
++ *		tst_res(TFAIL, "kernel has issues");
++ *	else
++ *		tst_res(TPASS, "kernel seems to be fine");
++ * }
++ *
++ *
++ *
++ * The above code checks, if the kernel issued a warning (TST_TAINT_W)
++ * or even died (TST_TAINT_D) during test execution.
++ * If these are set after running a test case, we most likely
++ * triggered a kernel bug.
++ */
++
++#ifndef TST_TAINTED_H__
++#define TST_TAINTED_H__
++
++/*
++ * This are all 17 flags that are present in kernel 4.15
++ * see kernel/panic.c in kernel sources
++ *
++ * Not all of them are valid in all kernel versions.
++ */
++#define TST_TAINT_G     (1 <<  0) /* a module with non-GPL license loaded */
++#define TST_TAINT_F     (1 <<  1) /* a module was force-loaded */
++#define TST_TAINT_S     (1 <<  2) /* SMP with Non-SMP kernel */
++#define TST_TAINT_R     (1 <<  3) /* module force unloaded */
++#define TST_TAINT_M     (1 <<  4) /* machine check error occurred */
++#define TST_TAINT_B     (1 <<  5) /* page-release function found bad page */
++#define TST_TAINT_U     (1 <<  6) /* user requested taint flag */
++#define TST_TAINT_D     (1 <<  7) /* kernel died recently - OOPS or BUG */
++#define TST_TAINT_A     (1 <<  8) /* ACPI table has been overwritten */
++#define TST_TAINT_W     (1 <<  9) /* a warning has been issued by kernel */
++#define TST_TAINT_C     (1 << 10) /* driver from drivers/staging was loaded */
++#define TST_TAINT_I     (1 << 11) /* working around BIOS/Firmware bug */
++#define TST_TAINT_O     (1 << 12) /* out of tree module loaded */
++#define TST_TAINT_E     (1 << 13) /* unsigned module was loaded */
++#define TST_TAINT_L     (1 << 14) /* A soft lock-up has previously occurred */
++#define TST_TAINT_K     (1 << 15) /* kernel has been live-patched */
++#define TST_TAINT_X	(1 << 16) /* auxiliary taint, for distro's use */
++
++/*
++ * Initialize and prepare support for checking tainted kernel.
++ *
++ * supply the mask of TAINT-flags you want to check, for example
++ * (TST_TAINT_W | TST_TAINT_D) when you want to check if the kernel issued
++ * a warning or even reported it died.
++ *
++ * This function tests if the requested flags are supported on the
++ * locally running kernel. In case the tainted-flags are already set by
++ * the kernel, there is no reason to continue and TCONF is generated.
++ *
++ * The mask must not be zero.
++ */
++void tst_taint_init(unsigned int mask);
++
++
++/*
++ * check if the tainted flags handed to tst_taint_init() are still not set
++ * during or after running the test.
++ * Calling this function is only allowed after tst_taint_init() was called,
++ * otherwise TBROK will be generated.
++ *
++ * returns 0 or a bitmask of the flags that currently tainted the kernel.
++ */
++unsigned int tst_taint_check(void);
++
++
++#endif /* TST_TAINTED_H__ */
+diff --git a/lib/tst_taint.c b/lib/tst_taint.c
+new file mode 100644
+index 000000000..723a25c0e
+--- /dev/null
++++ b/lib/tst_taint.c
+@@ -0,0 +1,106 @@
++#define TST_NO_DEFAULT_MAIN
++
++#include "tst_test.h"
++#include "tst_taint.h"
++#include "tst_safe_stdio.h"
++
++#define TAINT_FILE "/proc/sys/kernel/tainted"
++
++static unsigned int taint_mask = -1;
++
++static unsigned int tst_taint_read(void)
++{
++	unsigned int val;
++
++	if (taint_mask == (unsigned int) -1)
++		tst_brk(TBROK, "need to call tst_taint_init() first");
++
++	SAFE_FILE_SCANF(TAINT_FILE, "%u", &val);
++
++	return val;
++}
++
++static int tst_taint_check_kver(unsigned int mask)
++{
++	int r1;
++	int r2;
++	int r3 = 0;
++
++	if (mask & TST_TAINT_X) {
++		r1 = 4;
++		r2 = 15;
++	} else if (mask & TST_TAINT_K) {
++		r1 = 4;
++		r2 = 0;
++	} else if (mask & TST_TAINT_L) {
++		r1 = 3;
++		r2 = 17;
++	} else if (mask & TST_TAINT_E) {
++		r1 = 3;
++		r2 = 15;
++	} else if (mask & TST_TAINT_O) {
++		r1 = 3;
++		r2 = 2;
++	} else if (mask & TST_TAINT_I) {
++		r1 = 2;
++		r2 = 6;
++		r3 = 35;
++	} else if (mask & TST_TAINT_C) {
++		r1 = 2;
++		r2 = 6;
++		r3 = 28;
++	} else if (mask & TST_TAINT_W) {
++		r1 = 2;
++		r2 = 6;
++		r3 = 26;
++	} else if (mask & TST_TAINT_A) {
++		r1 = 2;
++		r2 = 6;
++		r3 = 25;
++	} else if (mask & TST_TAINT_D) {
++		r1 = 2;
++		r2 = 6;
++		r3 = 23;
++	} else if (mask & TST_TAINT_U) {
++		r1 = 2;
++		r2 = 6;
++		r3 = 21;
++	} else {
++		r1 = 2;
++		r2 = 6;
++		r3 = 16;
++	}
++
++	return tst_kvercmp(r1, r2, r3);
++}
++
++void tst_taint_init(unsigned int mask)
++{
++	unsigned int taint = -1;
++
++	if (mask == 0)
++		tst_brk(TBROK, "mask is not allowed to be 0");
++
++	if (tst_taint_check_kver(mask) < 0)
++		tst_res(TCONF, "Kernel is too old for requested mask");
++
++	taint = tst_taint_read();
++	if ((taint & mask) != 0)
++		tst_res(TCONF, "Kernel is already tainted: %u", taint);
++
++	taint_mask = mask;
++}
++
++
++unsigned int tst_taint_check(void)
++{
++	unsigned int taint = -1;
++
++	if (taint_mask == (unsigned int) -1)
++		tst_brk(TBROK, "need to call tst_taint_init() first");
++
++	taint = tst_taint_read();
++
++	return (taint & taint_mask);
++}
++
+-- 
+2.13.6
+
