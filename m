@@ -1,51 +1,53 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 25 Jan 2018 15:51:15 +0800
-Subject: [LTP] [RFC] [PATCH] lib/tst_test: Use CLOCK_MONOTONIC for -I
-	option.
-In-Reply-To: <5A698034.6060909@cn.fujitsu.com>
-References: <20180122141931.12464-1-chrubis@suse.cz>
- <CAEemH2fR0Q3as6YJBkQK3VZ0_sdc0Rubqk0of+n0NTf8PtocwA@mail.gmail.com>
- <5A698034.6060909@cn.fujitsu.com>
-Message-ID: <CAEemH2fHLz+N1L=v3ioyhPwmi8ArKRaZ8tacbwrM6seUnGgNug@mail.gmail.com>
+From: Michael Moese <mmoese@suse.de>
+Date: Thu, 25 Jan 2018 09:23:48 +0100
+Subject: [LTP] [PATCH] Add library support for /proc/sys/kernel/tainted
+In-Reply-To: <20180124131313.GB26495@rei.lan>
+References: <20180123143013.2879-1-mmoese@suse.de>
+ <20180124131313.GB26495@rei.lan>
+Message-ID: <20180125082348.inp2nfhubfdwrjky@linux.suse>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-On Thu, Jan 25, 2018 at 2:59 PM, Xiao Yang <yangx.jy@cn.fujitsu.com> wrote:
+Hi,
+Thanks for all the remarks. I won't comment on those where I totally agree.
 
-> On 2018/01/25 13:50, Li Wang wrote:
->
->
->
-> On Mon, Jan 22, 2018 at 10:19 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
->
->> ​...
->>
->> -       return tv.tv_sec * 1000 + tv.tv_usec / 1000;
->> +       return tst_timespec_to_ms(ts);
->>
->
->
-> ​Both patches(include the old-lib one) looks good.
->
-> I just have a small question about function tst_timespec_to_ms(), why the
-> t.tv_nsec plus 500000 when convert to msec?
->
-> Hi Li,
->
-> It seems to round up/down the decimal produced by converting nesc to msec.
-> If the decimal is greater than 0.5,  round up it. If not, round down it.
->
->
-​Ah, yes. Thanks so much!​
+On Wed, Jan 24, 2018 at 02:13:13PM +0100, Cyril Hrubis wrote:
+> > + * ...
+> > + * #include "tst_test.h"
+> > + * #include "tst_taint.h"
+> > + * ..
+> > + * void setup(void)
+> > + * {
+> > + *	if (!tst_taint_supported())
+> > + *		tst_brk(TCONF, "Kernel does not support tainted flags");
+> 
+> I think that we should check here if the kernel was tainted before the
+> test here and issue TBROK.
+> 
+> And also I would like to have the API tailored for the most common case
+> as well. So what about something as adding tst_check_taint(unsigned mask)
+> to be called from the test setup that would:
+> 
+> * check if kernel is new enough, otherwise do TCONF
+> 
+> * check if all flags in the mask are not set, otherwise do TBROK
 
+This one kept me busy thinking about it yesterday evening.
+I wonder if we could reduce it to two functions:
+  tst_taint_init(unsigned mask)
+and
+  tst_taint_check()
 
+The first one saves the desired flags, checks for support in kernel etc.
+and the latter just checks if the tainted flags remain the same.
+
+After thinking it through, I can hardly imagine a different use case.
+
+Thanks,
+Michael
 
 -- 
-Li Wang
-liwang@redhat.com
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180125/b399ad79/attachment.html>
+SUSE Linux GmbH, GF: Felix Imendörffer, Jane Smithard, Graham Norton, HRB 21284 (AG Nürnberg)
