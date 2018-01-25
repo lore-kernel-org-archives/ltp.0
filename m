@@ -1,10 +1,9 @@
 From: Michael Moese <mmoese@suse.de>
-Date: Thu, 25 Jan 2018 16:22:57 +0100
-Subject: [LTP] [PATCH 03/10] fix old-style-definition and unused parameter
-	in pthcli.c
+Date: Thu, 25 Jan 2018 16:23:00 +0100
+Subject: [LTP] [PATCH 06/10] fix old-style-definition in ht_utils.c
 In-Reply-To: <20180125152304.32747-1-mmoese@suse.de>
 References: <20180125152304.32747-1-mmoese@suse.de>
-Message-ID: <20180125152304.32747-4-mmoese@suse.de>
+Message-ID: <20180125152304.32747-7-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,31 +12,40 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Michael Moese <mmoese@suse.de>
 ---
- testcases/kernel/sched/clisrv/pthcli.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/sched/clisrv/pthcli.c b/testcases/kernel/sched/clisrv/pthcli.c
-index 3bcd688f6..7833b86d1 100644
---- a/testcases/kernel/sched/clisrv/pthcli.c
-+++ b/testcases/kernel/sched/clisrv/pthcli.c
-@@ -53,15 +53,14 @@
+diff --git a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c
+index d6f3ef523..18f0862cb 100644
+--- a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c
++++ b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c
+@@ -16,7 +16,7 @@
  
- void noprintf(char *string, ...)
+ char buffer[BUFF_SIZE];
+ 
+-int is_ht_cpu()
++int is_ht_cpu(void)
  {
-+	(void) string;
- }
+ 	/*Number of logic processor in a physical processor */
+ 	int smp_num_siblings = -1;
+@@ -39,7 +39,7 @@ int is_ht_cpu()
  
- /* Read contents of FILE *fp. Write each line to socket, then
-    read line back from socket and write to standard output.
-    Return to caller when done */
- 
--void str_cli(fp, sockfd)
--register FILE *fp;
--register int sockfd;
-+void str_cli(FILE *fp, int sockfd)
+ /* return 0 means Pass,
+  return 1 means ht is not enabled,*/
+-int check_ht_capability()
++int check_ht_capability(void)
  {
- 	int n;
- 	char sendline[MAXLINE], recvline[MAXLINE + 1];
+ 	int result;
+ 	if (is_ht_cpu())
+@@ -57,7 +57,7 @@ int check_ht_capability()
+ 
+ char buf[256];
+ 
+-int get_cpu_count()
++int get_cpu_count(void)
+ {
+ 	FILE *pfile;
+ 	int count;
 -- 
 2.13.6
 
