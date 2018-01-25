@@ -1,9 +1,10 @@
 From: Michael Moese <mmoese@suse.de>
-Date: Thu, 25 Jan 2018 16:23:01 +0100
-Subject: [LTP] [PATCH 07/10] fix old-style-definition in ht_utils.c
+Date: Thu, 25 Jan 2018 16:22:58 +0100
+Subject: [LTP] [PATCH 04/10] fix old-style-definition and unused parameter
+	in pthserv.c
 In-Reply-To: <20180125152304.32747-1-mmoese@suse.de>
 References: <20180125152304.32747-1-mmoese@suse.de>
-Message-ID: <20180125152304.32747-8-mmoese@suse.de>
+Message-ID: <20180125152304.32747-5-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,40 +13,31 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Michael Moese <mmoese@suse.de>
 ---
- testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ testcases/kernel/sched/clisrv/pthserv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.c b/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.c
-index a996b6ddb..7644e352c 100644
---- a/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.c
-+++ b/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.c
-@@ -19,7 +19,7 @@
+diff --git a/testcases/kernel/sched/clisrv/pthserv.c b/testcases/kernel/sched/clisrv/pthserv.c
+index 7aeb63f6e..e3da52130 100644
+--- a/testcases/kernel/sched/clisrv/pthserv.c
++++ b/testcases/kernel/sched/clisrv/pthserv.c
+@@ -53,8 +53,7 @@ int sockfd;
+ /* Read a stream socket one line at a time and write each line back
+    to sender. Return when connection is terminated */
  
- char buffer[BUFF_SIZE];
- 
--int is_ht_cpu()
-+int is_ht_cpu(void)
+-int str_echo(sockfd)
+-int sockfd;
++int str_echo(int sockfd)
  {
- 	/*Number of logic processor in a physical processor */
- 	int smp_num_siblings = -1;
-@@ -41,7 +41,7 @@ int is_ht_cpu()
+ 	int n, testint;
+ 	char line[MAXLINE];
+@@ -95,6 +94,7 @@ int main(int argc, char *argv[])
+ 	struct sockaddr_in cli_addr, serv_addr;
+ 	pname = argv[0];
  
- /*return 0 means Pass,
- return 1 means ht is not enabled*/
--int check_ht_capability()
-+int check_ht_capability(void)
- {
- 	int result;
- 	if (is_ht_cpu()) {
-@@ -61,7 +61,7 @@ int check_ht_capability()
- 
- char buf[256];
- 
--int get_cpu_count()
-+int get_cpu_count(void)
- {
- 	FILE *pfile;
- 	int count;
++	(void) argc;
+ 	prtln();
+ 	/* Open inet stream socket */
+ 	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 -- 
 2.13.6
 
