@@ -1,9 +1,9 @@
 From: Michael Moese <mmoese@suse.de>
-Date: Thu, 25 Jan 2018 16:23:00 +0100
-Subject: [LTP] [PATCH 06/10] fix old-style-definition in ht_utils.c
+Date: Thu, 25 Jan 2018 16:22:59 +0100
+Subject: [LTP] [PATCH 05/10] fix old-style-definition in hackbench.c
 In-Reply-To: <20180125152304.32747-1-mmoese@suse.de>
 References: <20180125152304.32747-1-mmoese@suse.de>
-Message-ID: <20180125152304.32747-7-mmoese@suse.de>
+Message-ID: <20180125152304.32747-6-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,40 +12,22 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Michael Moese <mmoese@suse.de>
 ---
- testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ testcases/kernel/sched/cfs-scheduler/hackbench.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c
-index d6f3ef523..18f0862cb 100644
---- a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c
-+++ b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.c
-@@ -16,7 +16,7 @@
+diff --git a/testcases/kernel/sched/cfs-scheduler/hackbench.c b/testcases/kernel/sched/cfs-scheduler/hackbench.c
+index c7b7e0c16..6f37060aa 100644
+--- a/testcases/kernel/sched/cfs-scheduler/hackbench.c
++++ b/testcases/kernel/sched/cfs-scheduler/hackbench.c
+@@ -92,7 +92,7 @@ static void barf(const char *msg)
+ 	exit(1);
+ }
  
- char buffer[BUFF_SIZE];
- 
--int is_ht_cpu()
-+int is_ht_cpu(void)
+-static void print_usage_exit()
++static void print_usage_exit(void)
  {
- 	/*Number of logic processor in a physical processor */
- 	int smp_num_siblings = -1;
-@@ -39,7 +39,7 @@ int is_ht_cpu()
- 
- /* return 0 means Pass,
-  return 1 means ht is not enabled,*/
--int check_ht_capability()
-+int check_ht_capability(void)
- {
- 	int result;
- 	if (is_ht_cpu())
-@@ -57,7 +57,7 @@ int check_ht_capability()
- 
- char buf[256];
- 
--int get_cpu_count()
-+int get_cpu_count(void)
- {
- 	FILE *pfile;
- 	int count;
+ 	printf
+ 	    ("Usage: hackbench [-pipe] <num groups> [process|thread] [loops]\n");
 -- 
 2.13.6
 
