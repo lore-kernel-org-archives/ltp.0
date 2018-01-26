@@ -1,35 +1,26 @@
-From: Travis CI <builds@travis-ci.org>
-Date: Fri, 26 Jan 2018 11:18:49 +0000
-Subject: [LTP] Passed: linux-test-project/ltp#617 (20180118 - 731cd34)
-In-Reply-To: <linux-test-project/ltp+330371682+passed@travis-ci.org>
-Message-ID: <5a6b0f2e7334f_43fcf32838ba091007d@6df8fc81-36b2-4379-a7f0-28de3184b29f.mail>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 26 Jan 2018 12:29:35 +0100
+Subject: [LTP] [ltp][PATCH] runltp: Append ${LTPROOT}/bin to PATH
+	variable
+In-Reply-To: <2d5bf039-1b83-5e92-150d-e435e9f7d383@toshiba-tsdv.com>
+References: <2d5bf039-1b83-5e92-150d-e435e9f7d383@toshiba-tsdv.com>
+Message-ID: <20180126112935.GB2391@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Build Update for linux-test-project/ltp
--------------------------------------
+Hi!
+> Some executable files were installed to ${LTPROOT}/bin.
+> So, We should append ${LTPROOT}/bin to PATH variable.
 
-Build: #617
-Status: Passed
+Here we should also describe that it fixes the ext4 testcases, other
+than that this looks good.
 
-Duration: 9 minutes and 0 seconds
-Commit: 731cd34 (20180118)
-Author: Cyril Hrubis
-Message: LTP 20180118
+You can either add it yourself and resend the patch or I can do that
+before I apply the patch.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-
-View the changeset: https://github.com/linux-test-project/ltp/compare/20180118
-
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/330371682?utm_source=email&utm_medium=notification
-
---
-
-You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180126/f2f61d90/attachment.html>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
