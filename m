@@ -1,63 +1,44 @@
-From: Hoang Van Tuyen <tuyen.hoangvan@toshiba-tsdv.com>
-Date: Fri, 26 Jan 2018 09:34:09 +0700
-Subject: [LTP] [ltp][PATCH] runltp: Append ${LTPROOT}/bin to PATH variable
-Message-ID: <2d5bf039-1b83-5e92-150d-e435e9f7d383@toshiba-tsdv.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 26 Jan 2018 12:07:51 +0100
+Subject: [LTP] log per test?
+In-Reply-To: <20180125172716.o5aioq4htmloksa5@xps>
+References: <20180125172716.o5aioq4htmloksa5@xps>
+Message-ID: <20180126110750.GA2391@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Some executable files were installed to ${LTPROOT}/bin.
-So, We should append ${LTPROOT}/bin to PATH variable.
+Hi!
+> I'm looking at how we run LTP at Linaro and currently we redirect all
+> output to a file. When a test fails, someone has to read through the log
+> to find the test failure. Not difficult, but in terms of automation,
+> we'd like to be able to post just the log of the test that failed
+> directly. We're starting to work on parsing it, but that too can be a
+> little tricky.
+> 
+> I noticed runltp -K to capture dmesg output per test - very useful!
+> 
+> Is there anything similar for capturing stdout and stderr per test? I
+> saw some facilities in ltp-pan but I didn't see anything in runltp
+> (though I may have missed it). I'm not sure if what I'm asking for
+> already exists, or if I'd have to write a new i.e. reporttype.
 
-Signed-off-by: Hoang Van Tuyen <tuyen.hoangvan@toshiba-tsdv.com>
----
-  runltp        | 2 +-
-  runltplite.sh | 2 +-
-  2 files changed, 2 insertions(+), 2 deletions(-)
+As far as I know there is none. And the code that runs the testcases is
+quite dated and was in maintenance mode for quite some time.
 
-diff --git a/runltp b/runltp
-index 302c4a7..51357fa 100755
---- a/runltp
-+++ b/runltp
-@@ -78,7 +78,7 @@ setup()
-      }
-      export LTPROOT=${PWD}
-      export TMPBASE="/tmp"
--    export PATH="${PATH}:${LTPROOT}/testcases/bin"
-+    export PATH="${PATH}:${LTPROOT}/testcases/bin:${LTPROOT}/bin"
+Which is the reason why I started to work on a replacement recently with
+more modular approach in mind so that it can run open posix testcases as
+well and also export results in various formats so that it can be
+plugged into automation frameworks with minimal effort. It's not
+finished yet, but it kind of works at this point, you can have a look at
+it at:
 
-      export LTP_DEV_FS_TYPE="ext2"
+https://github.com/metan-ucw/ltp/tree/master/tools/runltp-ng
 
-diff --git a/runltplite.sh b/runltplite.sh
-index 17be009..de90534 100755
---- a/runltplite.sh
-+++ b/runltplite.sh
-@@ -49,7 +49,7 @@ setup()
-      export LTPROOT=${PWD}
-      export TMPBASE="/tmp"
-      export TMP="${TMPBASE}/ltp-$$"
--    export PATH="${PATH}:${LTPROOT}/testcases/bin"
-+    export PATH="${PATH}:${LTPROOT}/testcases/bin:${LTPROOT}/bin"
-
-      export LTP_DEV=""
-      export LTP_DEV_FS_TYPE="ext2"
--- 
-2.1.4
+And as usual comments and patches are welcomed :-).
 
 -- 
-================================================================
-Hoang Van Tuyen (Mr.)
-TOSHIBA SOFTWARE DEVELOPMENT (VIETNAM) CO., LTD.
-16th Floor, VIT Building, 519 Kim Ma Str., Ba Dinh Dist., Hanoi, Vietnam
-Tel: 84-4-22208801 (Company) - Ext.251
-Fax: 84-4-22208802 (Company)
-Email: tuyen.hoangvan@toshiba-tsdv.com
-================================================================
-
-
--- 
-This mail was scanned by BitDefender
-For more information please visit http://www.bitdefender.com
-
+Cyril Hrubis
+chrubis@suse.cz
