@@ -1,9 +1,9 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 26 Jan 2018 11:31:38 +0800
-Subject: [LTP] [PATCH 2/4] syscalls/sysctl01: Enable && Cleanup
+Date: Fri, 26 Jan 2018 11:31:39 +0800
+Subject: [LTP] [PATCH 3/4] syscalls/sysctl03: Enable && Cleanup
 In-Reply-To: <1516937500-16475-1-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <1516937500-16475-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1516937500-16475-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1516937500-16475-3-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,18 +13,18 @@ To: ltp@lists.linux.it
 1) Undefined __NR_sysctl always skips the test even though CONFIG_SYSCTL_SYSCALL
    is built, so enable it by correct __NR__sysctl.
 2) Convert to new API.
-3) Fix compiler warnings.
+3) Fix compiler warnings and errors.
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/sysctl/sysctl01.c | 224 +++++++---------------------
- 1 file changed, 57 insertions(+), 167 deletions(-)
+ testcases/kernel/syscalls/sysctl/sysctl03.c | 236 ++++++++--------------------
+ 1 file changed, 67 insertions(+), 169 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sysctl/sysctl01.c b/testcases/kernel/syscalls/sysctl/sysctl01.c
-index c423f47..0a684d0 100644
---- a/testcases/kernel/syscalls/sysctl/sysctl01.c
-+++ b/testcases/kernel/syscalls/sysctl/sysctl01.c
-@@ -1,196 +1,86 @@
+diff --git a/testcases/kernel/syscalls/sysctl/sysctl03.c b/testcases/kernel/syscalls/sysctl/sysctl03.c
+index 0c8e691..f235aac 100644
+--- a/testcases/kernel/syscalls/sysctl/sysctl03.c
++++ b/testcases/kernel/syscalls/sysctl/sysctl03.c
+@@ -1,67 +1,41 @@
  /*
 + * Copyright (c) International Business Machines  Corp., 2001
 + * Copyright (c) 2018 Xiao Yang <yangx.jy@cn.fujitsu.com>
@@ -56,18 +56,47 @@ index c423f47..0a684d0 100644
  
  /*
 - * NAME
-- *	sysctl01.c
+- *	sysctl03.c
 - *
-- * DESCRIPTION
-- *	Testcase for testing the basic functionality of sysctl(2) system call.
-- *	This testcase attempts to read the kernel parameters using
-- *	sysctl({CTL_KERN, KERN_* }, ...) and compares it with the known
-- *	values.
+  * DESCRIPTION
+- *	Testcase to check that sysctl(2) sets errno to EPERM correctly.
++ * 1) Call sysctl(2) as a root user, and attempt to write data
++ *    to the kernel_table[]. Since the table does not have write
++ *    permissions even for the root, it should fail EPERM.
++ * 2) Call sysctl(2) as a non-root user, and attempt to write data
++ *    to the kernel_table[]. Since the table does not have write
++ *    permission for the regular user, it should fail with EPERM.
+  *
+- * ALGORITHM
+- *	a.	Call sysctl(2) as a root user, and attempt to write data
+- *		to the kernel_table[]. Since the table does not have write
+- *		permissions even for the root, it should fail EPERM.
+- *	b.	Call sysctl(2) as a non-root user, and attempt to write data
+- *		to the kernel_table[]. Since the table does not have write
+- *		permission for the regular user, it should fail with EPERM.
+- *
+- * NOTE: There is a documentation bug in 2.6.33-rc1 where unfortunately the
+- * behavior of sysctl(2) isn't properly documented, as discussed in detail in
+- * the following thread:
++ * NOTE: There is a documentation bug in 2.6.33-rc1 where unfortunately
++ * the behavior of sysctl(2) isn't properly documented, as discussed
++ * in detail in the following thread:
+  * http://sourceforge.net/mailarchive/message.php?msg_name=4B7BA24F.2010705%40linux.vnet.ibm.com.
+  *
+  * The documentation bug is filed as:
+- * https://bugzilla.kernel.org/show_bug.cgi?id=15446 . If you want the message
+- * removed, please ask your fellow kernel maintainer to fix their documentation.
++ * https://bugzilla.kernel.org/show_bug.cgi?id=15446 . If you want the
++ * message removed, please ask your fellow kernel maintainer to fix their
++ * documentation.
+  *
+  * Thanks!
+  * -Ngie
 - *
 - * USAGE:  <for command-line>
-- *  sysctl01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *  sysctl03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
+- *             -e   : Turn on errno logging.
 - *             -i n : Execute test n times.
 - *             -I x : Execute test for x seconds.
 - *             -P x : Pause for x seconds between iterations.
@@ -75,192 +104,185 @@ index c423f47..0a684d0 100644
 - *
 - * HISTORY
 - *	07/2001 Ported by Wayne Boyer
+- *	02/2010 Updated by shiwh@cn.fujitsu.com
 - *
 - * RESTRICTIONS
-- *	None
-+ * DESCRIPTION:
-+ * Testcase for testing the basic functionality of sysctl(2) system call.
-+ * This testcase attempts to read the kernel parameters by using
-+ * sysctl({CTL_KERN, KERN_* }, ...) and compares it with the known values.
+- *	Test must be run as root.
   */
 -#include "test.h"
--#include <stdio.h>
+-#include "safe_macros.h"
 +
- #include <errno.h>
--#include <unistd.h>
-+#include <stdio.h>
-+#include <string.h>
- #include <linux/version.h>
- #include <sys/utsname.h>
- #include <linux/unistd.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #include <stdio.h>
+@@ -71,141 +45,65 @@
  #include <linux/sysctl.h>
+ #include <pwd.h>
  
--char *TCID = "sysctl01";
+-char *TCID = "sysctl03";
 -
 -/* This is an older/deprecated syscall that newer arches are omitting */
 -#ifdef __NR_sysctl
--
--int TST_TOTAL = 3;
 +#include "tst_test.h"
 +#include "lapi/syscalls.h"
  
--static int sysctl(int *name, int nlen, void *oldval, size_t * oldlenp,
--		  void *newval, size_t newlen)
--{
+-int TST_TOTAL = 2;
++static int exp_eno;
+ 
+-int sysctl(int *name, int nlen, void *oldval, size_t * oldlenp,
+-	   void *newval, size_t newlen)
++static void verify_sysctl(void)
+ {
 -	struct __sysctl_args args =
 -	    { name, nlen, oldval, oldlenp, newval, newlen };
 -	return syscall(__NR__sysctl, &args);
 -}
 -
--struct utsname buf;
--char osname[BUFSIZ];
--size_t osnamelth;
-+static struct utsname buf;
+-#define OSNAMESZ 100
++	char *osname = "Linux";
++	int name[] = {CTL_KERN, KERN_OSTYPE};
++	struct __sysctl_args args = {
++		.name = name,
++		.nlen = ARRAY_SIZE(name),
++		.newval = osname,
++		.newlen = sizeof(osname),
++	};
++
++	TEST(tst_syscall(__NR__sysctl, &args));
++	if (TEST_RETURN != -1) {
++		tst_res(TFAIL, "sysctl(2) succeeded unexpectedly");
++		return;
++	}
  
 -void setup(void);
 -void cleanup(void);
--
--struct test_case_t {
-+static struct test_case_t {
- 	char *desc;
- 	int name[2];
--	int size;
--	char *oldval;
--	size_t *oldlen;
--	void *newval;
--	int newlen;
--	int (*cleanup) ();
--	int exp_retval;
-+	char *cmp_str;
- } TC[] = {
--	{
--		"Test for KERN_OSTYPE", {
--	CTL_KERN, KERN_OSTYPE}, 2, osname, &osnamelth, NULL, 0, NULL, 0}, {
--		"Test for KERN_OSRELEASE", {
--	CTL_KERN, KERN_OSRELEASE}, 2,
--		    osname, &osnamelth, NULL, 0, NULL, 0}, {
--		"Test for KERN_VERSION", {
--	CTL_KERN, KERN_VERSION}, 2, osname, &osnamelth, NULL, 0, NULL, 0}
-+	{"KERN_OSTYPE", {CTL_KERN, KERN_OSTYPE}, buf.sysname},
-+	{"KERN_OSRELEASE", {CTL_KERN, KERN_OSRELEASE}, buf.release},
-+	{"KERN_VERSION", {CTL_KERN, KERN_VERSION}, buf.version},
- };
++	if (TEST_ERRNO == exp_eno)
++		tst_res(TPASS | TTERRNO, "Got expected error");
++	else
++		tst_res(TFAIL | TTERRNO, "Got unexpected error");
++}
  
 -int main(int ac, char **av)
-+static void verify_sysctl(unsigned int n)
++static void setup(void)
  {
+-	int exp_eno;
 -	int lc;
--	int i;
--	char *comp_string;
 -
--	comp_string = NULL;
+-	char osname[OSNAMESZ];
+-	int osnamelth, status;
+-	int name[] = { CTL_KERN, KERN_OSTYPE };
+-	pid_t pid;
+-	struct passwd *ltpuser;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
+-
+ 	if ((tst_kvercmp(2, 6, 32)) <= 0) {
+ 		exp_eno = EPERM;
+ 	} else {
+-		/* ^^ Look above this warning. ^^ */
+-		tst_resm(TINFO,
++		/* Look above this warning. */
++		tst_res(TINFO,
+ 			 "this test's results are based on potentially undocumented behavior in the kernel. read the NOTE in the source file for more details");
+ 		exp_eno = EACCES;
+-		exp_enos[0] = EACCES;
+ 	}
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
 -		/* reset tst_count in case we are looping */
 -		tst_count = 0;
 -
--		for (i = 0; i < TST_TOTAL; ++i) {
+-		strcpy(osname, "Linux");
+-		osnamelth = sizeof(osname);
 -
--			osnamelth = sizeof(osname);
+-		TEST(sysctl(name, ARRAY_SIZE(name), 0, 0, osname, osnamelth));
 -
--			switch (i) {
--			case 0:
--				comp_string = buf.sysname;
--				break;
--			case 1:
--				comp_string = buf.release;
--				break;
--			case 2:
--				comp_string = buf.version;
--				break;
+-		if (TEST_RETURN != -1) {
+-			tst_resm(TFAIL, "sysctl(2) succeeded unexpectedly");
+-		} else {
+-			if (TEST_ERRNO == exp_eno) {
+-				tst_resm(TPASS | TTERRNO, "Got expected error");
+-			} else if (errno == ENOSYS) {
+-				tst_resm(TCONF,
+-					 "You may need to make CONFIG_SYSCTL_SYSCALL=y"
+-					 " to your kernel config.");
+-			} else {
+-				tst_resm(TFAIL | TTERRNO,
+-					 "Got unexpected error");
 -			}
+-		}
 -
--			TEST(sysctl(TC[i].name, TC[i].size, TC[i].oldval,
--				    TC[i].oldlen, TC[i].newval, TC[i].newlen));
+-		osnamelth = sizeof(osname);
+-		if ((ltpuser = getpwnam("nobody")) == NULL) {
+-			tst_brkm(TBROK, cleanup, "getpwnam() failed");
+-		}
 -
--			if (TEST_RETURN != 0) {
--				if (TEST_ERRNO == ENOSYS) {
+-		/* set process ID to "ltpuser1" */
+-		SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+-
+-		if ((pid = FORK_OR_VFORK()) == -1) {
+-			tst_brkm(TBROK, cleanup, "fork() failed");
+-		}
+-
+-		if (pid == 0) {
+-			TEST(sysctl(name, ARRAY_SIZE(name), 0, 0, osname, osnamelth));
+-
+-			if (TEST_RETURN != -1) {
+-				tst_resm(TFAIL, "call succeeded unexpectedly");
+-			} else {
+-				if (TEST_ERRNO == exp_eno) {
+-					tst_resm(TPASS | TTERRNO,
+-						 "Got expected error");
+-				} else if (TEST_ERRNO == ENOSYS) {
 -					tst_resm(TCONF,
 -						 "You may need to make CONFIG_SYSCTL_SYSCALL=y"
 -						 " to your kernel config.");
 -				} else {
--					tst_resm(TFAIL,
--						 "sysctl(2) failed unexpectedly "
--						 "errno:%d", TEST_ERRNO);
+-					tst_resm(TFAIL | TTERRNO,
+-						 "Got unexpected error");
 -				}
--				continue;
 -			}
 -
--			if (strcmp(TC[i].oldval, comp_string) != 0) {
--				tst_resm(TFAIL, "strings don't match - %s : %s",
--					 TC[i].oldval, comp_string);
--			} else {
--				tst_resm(TPASS, "%s is correct", TC[i].desc);
--			}
--			if (TC[i].cleanup) {
--				(void)TC[i].cleanup();
--			}
+-			cleanup();
+-
+-		} else {
+-			/* wait for the child to finish */
+-			wait(&status);
 -		}
-+	char osname[BUFSIZ];
-+	size_t length = BUFSIZ;
-+	struct test_case_t *tc = &TC[n];
-+
-+	memset(osname, 0, BUFSIZ);
-+
-+	struct __sysctl_args args = {
-+		.name = tc->name,
-+		.nlen = ARRAY_SIZE(tc->name),
-+		.oldval = osname,
-+		.oldlenp = &length,
-+	};
-+
-+	TEST(tst_syscall(__NR__sysctl, &args));
-+	if (TEST_RETURN != 0) {
-+		tst_res(TFAIL | TTERRNO, "sysctl() failed unexpectedly");
-+		return;
- 	}
- 
+-
+-		/* set process ID back to root */
+-		SAFE_SETEUID(cleanup, 0);
+-	}
 -	cleanup();
 -	tst_exit();
--}
--
--/*
-- * setup() - performs all ONE TIME setup for this test.
-- */
--void setup(void)
--{
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	/* get kernel name and information */
--	if (uname(&buf) == -1) {
--		tst_brkm(TBROK, cleanup, "uname() failed");
-+	if (strcmp(osname, tc->cmp_str)) {
-+		tst_res(TFAIL, "Strings don't match %s : %s",
-+			osname, tc->cmp_str);
-+	} else {
-+		tst_res(TPASS, "Test for %s is correct", tc->desc);
- 	}
  }
  
--/*
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *	       completion or premature exit.
-- */
--void cleanup(void)
-+static void setup(void)
+-void setup(void)
++static void do_test(void)
  {
+-	tst_require_root();
 -
-+	/* get kernel name and information */
-+	if (uname(&buf) == -1)
-+		tst_brk(TBROK | TERRNO, "uname() failed");
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-}
++	pid_t pid;
++	struct passwd *ltpuser;
+ 
+-void cleanup(void)
+-{
++	pid = SAFE_FORK();
++	if (!pid) {
++		ltpuser = SAFE_GETPWNAM("nobody");
++		SAFE_SETUID(ltpuser->pw_uid);
++		verify_sysctl();
++	} else {
++		SAFE_WAIT(NULL);
++		verify_sysctl();
++	}
  }
  
 -#else
@@ -274,9 +296,10 @@ index c423f47..0a684d0 100644
 -}
 -#endif
 +static struct tst_test test = {
++	.needs_root = 1,
++	.forks_child = 1,
 +	.setup = setup,
-+	.tcnt = ARRAY_SIZE(TC),
-+	.test = verify_sysctl,
++	.test_all = do_test,
 +};
 -- 
 1.8.3.1
