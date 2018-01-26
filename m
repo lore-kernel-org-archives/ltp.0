@@ -1,37 +1,42 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 26 Jan 2018 20:29:44 +0100
-Subject: [LTP] Errored: linux-test-project/ltp#199 (20171605 - aa5a3b8)
-In-Reply-To: <5a6b0f21e8c_43f92552595f01271213@62085672-41e5-42d4-92a8-6819900db6f7.mail>
-References: <linux-test-project/ltp+232853975+errored@travis-ci.org>
- <5a6b0f21e8c_43f92552595f01271213@62085672-41e5-42d4-92a8-6819900db6f7.mail>
-Message-ID: <20180126192944.uoo6rft74vcx5bjn@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 26 Jan 2018 14:11:45 +0100
+Subject: [LTP] [RFC PATCH 2/2] security/ima: Run measurements after
+	policy
+In-Reply-To: <20180111202821.31639-3-pvorel@suse.cz>
+References: <20180111202821.31639-1-pvorel@suse.cz>
+ <20180111202821.31639-3-pvorel@suse.cz>
+Message-ID: <20180126131145.GB12731@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-> Build Update for linux-test-project/ltp
-> -------------------------------------
+Hi!
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  runtest/ima | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/runtest/ima b/runtest/ima
+> index 20d2e0810..3462d12b1 100644
+> --- a/runtest/ima
+> +++ b/runtest/ima
+> @@ -1,5 +1,5 @@
+>  #DESCRIPTION:Integrity Measurement Architecture (IMA)
+> -ima01 ima_measurements.sh
+> -ima02 ima_policy.sh
+> +ima01 ima_policy.sh
+> +ima02 ima_measurements.sh
+>  ima03 ima_tpm.sh
+>  ima04 ima_violations.sh
 
-> Build: #199
-> Status: Errored
+Uh, depending on order of testcases in runtest file is broken anyways,
+what is the real problem here?
 
-> Duration: 59 seconds
-> Commit: aa5a3b8 (20171605)
-> Author: Cyril Hrubis
-> Message: LTP 20171605
+Also I suppose that we may as well rename the test ids (e.g. ima01) to
+match the shell script name, since I find it more descriptive.
 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-
-> View the changeset: https://github.com/linux-test-project/ltp/compare/20171605
-
-> View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/232853975?utm_source=email&utm_medium=notification
-
-Please ignore these. I restarted them while debugging travis, but it cannot succeed, as
-they don't have required variables for current ./build.sh script.
-
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
