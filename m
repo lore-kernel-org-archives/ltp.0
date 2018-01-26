@@ -1,63 +1,193 @@
-From: Mimi Zohar <zohar@linux.vnet.ibm.com>
-Date: Sat, 27 Jan 2018 19:57:11 -0500
-Subject: [LTP] [RFC PATCH 2/2] security/ima: Run measurements after
- policy
-In-Reply-To: <20180126180321.7k644bvf64nv4uqr@dell5510>
-References: <20180111202821.31639-1-pvorel@suse.cz>
- <20180111202821.31639-3-pvorel@suse.cz> <20180126131145.GB12731@rei>
- <20180126180321.7k644bvf64nv4uqr@dell5510>
-Message-ID: <1517101031.29187.128.camel@linux.vnet.ibm.com>
+From: Michael Moese <mmoese@suse.de>
+Date: Fri, 26 Jan 2018 15:37:00 +0100
+Subject: [LTP] [PATCH] Add regression test for CVE-2017-17053
+Message-ID: <20180126143700.29609-1-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, 2018-01-26 at 19:03 +0100, Petr Vorel wrote:
-> Hi,
-> > > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > > ---
-> > >  runtest/ima | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> > > diff --git a/runtest/ima b/runtest/ima
-> > > index 20d2e0810..3462d12b1 100644
-> > > --- a/runtest/ima
-> > > +++ b/runtest/ima
-> > > @@ -1,5 +1,5 @@
-> > >  #DESCRIPTION:Integrity Measurement Architecture (IMA)
-> > > -ima01 ima_measurements.sh
-> > > -ima02 ima_policy.sh
-> > > +ima01 ima_policy.sh
-> > > +ima02 ima_measurements.sh
-> > >  ima03 ima_tpm.sh
-> > >  ima04 ima_violations.sh
-> 
-> > Uh, depending on order of testcases in runtest file is broken anyways,
-> > what is the real problem here?
-> If system is configured with no policy, ima_measurements.sh fails. ima_policy.sh loads
-> some policy (if none loaded) / adds to policy (if policy already loaded and it's allowed
-> by kernel). So, the first case prevents failing ima_measurements.sh.
-> One problem with IMA testing I see is that IMHO it's not possible to revert policy.
-> That's why I added warnings that reboot is required. I know that this is against LTP
-> principle.
-> Mimi, Dmitry, am I right?
+This patch adds a regression test for CVE-2017-17053, based on the
+reproducer in the message of this commit:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ccd5b3235180eef3cfec337df1c8554ab151b5cc
 
-The current ordering of the tests assume that the system was booted
-with the builtin "ima_tcb" policy enabled on the boot command line.
- Assuming that the kernel doesn't require policies to be signed,
-changing the order of the tests is fine.  Or simply test whether the
-system was booted with either "ima_tcb" or "ima_policy=tcb" boot
-command line options.
+Be warned, if the running kernel is vulnerable to this CVE, it will die in
+most cases.
 
-Mimi
+Signed-off-by: Michael Moese <mmoese@suse.de>
+---
+ runtest/cve                    |   1 +
+ testcases/cve/.gitignore       |   1 +
+ testcases/cve/Makefile         |   1 +
+ testcases/cve/cve-2017-17053.c | 129 +++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 132 insertions(+)
+ create mode 100644 testcases/cve/cve-2017-17053.c
 
-> > Also I suppose that we may as well rename the test ids (e.g. ima01) to
-> > match the shell script name, since I find it more descriptive.
-> Sure!
-> 
-> 
-> Kind regards,
-> Petr
-> 
+diff --git a/runtest/cve b/runtest/cve
+index 6de2ed0ac..6efffc668 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -29,3 +29,4 @@ cve-2017-17807 request_key04
+ cve-2017-1000364 stack_clash
+ cve-2017-5754 meltdown
+ cve-2017-17052 cve-2017-17052
++cve-2017-17053 cve-2017-17053
+diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
+index 42f32e825..5ecaaeb76 100644
+--- a/testcases/cve/.gitignore
++++ b/testcases/cve/.gitignore
+@@ -11,3 +11,4 @@ cve-2017-5669
+ meltdown
+ stack_clash
+ cve-2017-17052
++cve-2017-17053
+diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
+index 38ce27c93..00fbc1050 100644
+--- a/testcases/cve/Makefile
++++ b/testcases/cve/Makefile
+@@ -37,5 +37,6 @@ meltdown: CFLAGS += -msse2
+ endif
+ 
+ cve-2017-17052:	CFLAGS += -pthread
++cve-2017-17053:	CFLAGS += -pthread
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/cve/cve-2017-17053.c b/testcases/cve/cve-2017-17053.c
+new file mode 100644
+index 000000000..45277c1b4
+--- /dev/null
++++ b/testcases/cve/cve-2017-17053.c
+@@ -0,0 +1,129 @@
++/*
++ * Copyright (c) 2018 Michael Moese <mmoese@suse.com>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++/* Regression test for CVE-2017-17053, original reproducer can be found
++ * here:
++ * https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ccd5b3235180eef3cfec337df1c8554ab151b5cc
++ *
++ * Be careful! This test may crash your kernel!
++ */
++
++#include <asm/ldt.h>
++#include <pthread.h>
++#include <signal.h>
++#include <stdlib.h>
++#include <sys/syscall.h>
++#include <sys/wait.h>
++#include <unistd.h>
++
++#include "tst_test.h"
++#include "tst_taint.h"
++#include "tst_safe_pthread.h"
++#include "lapi/syscalls.h"
++
++#define EXEC_USEC   5000000
++
++static volatile sig_atomic_t *do_exit;
++
++static void handler(int sig, siginfo_t *si, void *unused)
++{
++	(void)(sig);
++	(void)(si);
++	(void)(unused);
++
++	*do_exit = -1;
++}
++
++static void setup(void)
++{
++	struct sigaction sa;
++
++	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
++
++	sa.sa_flags = SA_SIGINFO;
++	sigemptyset(&sa.sa_mask);
++	sa.sa_sigaction = handler;
++
++	if (sigaction(SIGSEGV, &sa, NULL) == -1)
++		tst_brk(TBROK, "sigaction failed for SIGSEGV");
++
++	do_exit = SAFE_MMAP(NULL, sizeof(*do_exit), PROT_READ | PROT_WRITE,
++			    MAP_SHARED | MAP_ANONYMOUS, -1, 0);
++
++	*do_exit = 0;
++}
++
++static void cleanup(void)
++{
++	SAFE_MUNMAP((void *) do_exit, sizeof(*do_exit));
++}
++
++static void *fork_thread(void *arg)
++{
++	SAFE_FORK();
++	return arg;
++}
++
++
++void run_test(void)
++{
++	struct user_desc desc = { .entry_number = 8191 };
++
++	syscall(__NR_modify_ldt, 1, &desc, sizeof(desc));
++
++	for (;;) {
++		if (*do_exit)
++			exit(0);
++
++		if (SAFE_FORK() == 0) {
++			pthread_t t;
++
++			srand(getpid());
++			SAFE_PTHREAD_CREATE(&t, NULL, fork_thread, NULL);
++			usleep(rand() % 10000);
++			syscall(__NR_exit_group, 0);
++		}
++	}
++}
++
++void run(void)
++{
++	int status;
++	pid_t pid;
++
++	*do_exit = 0;
++	pid = SAFE_FORK();
++
++	if (pid == 0)
++		run_test();
++	else {
++		usleep(EXEC_USEC);
++		*do_exit = 1;
++	}
++
++	SAFE_WAIT(&status);
++	if ((*do_exit == -1) || (!WIFEXITED(status)) || (tst_taint_check() != 0))
++		tst_res(TFAIL, "kernel is vulnerable");
++	else
++		tst_res(TPASS, "kernel survived");
++}
++
++static struct tst_test test = {
++	.forks_child = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run,
++};
+-- 
+2.13.6
 
