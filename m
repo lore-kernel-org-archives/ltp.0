@@ -1,44 +1,35 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 26 Jan 2018 12:07:51 +0100
-Subject: [LTP] log per test?
-In-Reply-To: <20180125172716.o5aioq4htmloksa5@xps>
-References: <20180125172716.o5aioq4htmloksa5@xps>
-Message-ID: <20180126110750.GA2391@rei>
+From: Travis CI <builds@travis-ci.org>
+Date: Fri, 26 Jan 2018 11:13:17 +0000
+Subject: [LTP] Errored: linux-test-project/ltp#202 (20171605 - 6c6c6ca)
+In-Reply-To: <linux-test-project/ltp+232878249+errored@travis-ci.org>
+Message-ID: <5a6b0d4d167c5_43f92550590701257493@62085672-41e5-42d4-92a8-6819900db6f7.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I'm looking at how we run LTP at Linaro and currently we redirect all
-> output to a file. When a test fails, someone has to read through the log
-> to find the test failure. Not difficult, but in terms of automation,
-> we'd like to be able to post just the log of the test that failed
-> directly. We're starting to work on parsing it, but that too can be a
-> little tricky.
-> 
-> I noticed runltp -K to capture dmesg output per test - very useful!
-> 
-> Is there anything similar for capturing stdout and stderr per test? I
-> saw some facilities in ltp-pan but I didn't see anything in runltp
-> (though I may have missed it). I'm not sure if what I'm asking for
-> already exists, or if I'd have to write a new i.e. reporttype.
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-As far as I know there is none. And the code that runs the testcases is
-quite dated and was in maintenance mode for quite some time.
+Build: #202
+Status: Errored
 
-Which is the reason why I started to work on a replacement recently with
-more modular approach in mind so that it can run open posix testcases as
-well and also export results in various formats so that it can be
-plugged into automation frameworks with minimal effort. It's not
-finished yet, but it kind of works at this point, you can have a look at
-it at:
+Duration: 35 seconds
+Commit: 6c6c6ca (20171605)
+Author: Cyril Hrubis
+Message: LTP 20170516
 
-https://github.com/metan-ucw/ltp/tree/master/tools/runltp-ng
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
-And as usual comments and patches are welcomed :-).
+View the changeset: https://github.com/linux-test-project/ltp/compare/20171605
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/232878249?utm_source=email&utm_medium=notification
+
+--
+
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180126/1ee3a39d/attachment.html>
