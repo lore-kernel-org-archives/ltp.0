@@ -1,61 +1,63 @@
 From: Mimi Zohar <zohar@linux.vnet.ibm.com>
-Date: Sat, 27 Jan 2018 19:47:20 -0500
-Subject: [LTP] [RFC PATCH 0/2] IMA: Rewrite tests into new API + fixes
-In-Reply-To: <20180126175110.boaepz6dqe3uojq6@dell5510>
+Date: Sat, 27 Jan 2018 19:57:11 -0500
+Subject: [LTP] [RFC PATCH 2/2] security/ima: Run measurements after
+ policy
+In-Reply-To: <20180126180321.7k644bvf64nv4uqr@dell5510>
 References: <20180111202821.31639-1-pvorel@suse.cz>
- <1516815417.3686.55.camel@linux.vnet.ibm.com>
- <20180125203057.mzzpilp6i43xftka@dell5510>
- <1516919365.6513.72.camel@linux.vnet.ibm.com>
- <20180126175110.boaepz6dqe3uojq6@dell5510>
-Message-ID: <1517100440.29187.120.camel@linux.vnet.ibm.com>
+ <20180111202821.31639-3-pvorel@suse.cz> <20180126131145.GB12731@rei>
+ <20180126180321.7k644bvf64nv4uqr@dell5510>
+Message-ID: <1517101031.29187.128.camel@linux.vnet.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-On Fri, 2018-01-26 at 18:51 +0100, Petr Vorel wrote:
-
-> > It would be nice to be able to define policies that limit testing to a
-> > specific filesystem/device.  Without being able to limit IMA-appraisal 
-> > testing to specific devices, things might stop working rather quickly.
-> Not sure how to define it, I need to study the specification. Or can
-> you be more specific?
-
-These tests are for the IMA-measurement aspect only, not IMA-
-appraisal.  Adding measurements to the measurement list won't cause
-the system to stop working, unless keys are sealed to a particular TPM
-PCR value.  Nobody is or should be sealing keys to PCR-10, since the
-ordering of the measurements is non deterministic.
-
-As we add IMA-appraisal tests requiring files to be signed, things
-will fail if either the public key isn't on the IMA keyring or the
-file isn't properly signed.  For this reason, limiting file IMA-
-appraisal tests to a particular filesystem simplifies testing.
-
-> BTW I suppose that kernel code supports both TPM 2.0 and the old 1.2.
-
-Yes, Jarkko added TPM 2.0 support, including IMA support.
-
-> > > > Originally IMA allowed a builtin policy to be replaced with a custom
-> > > > policy, by simply cat'ing a file into the securityfs IMA policy file.
-> > > > Currently, if new rules can be added to the custom policy (Kconfig
-> > > > IMA_WRITE_POLICY enabled), the policy file must be signed.  Similarly,
-> > > > if the builtin "secure-boot" policy is defined on the boot command
-> > > > line, the custom policy must be signed.  Test "ima01 ima_policy.sh"
-> > > > should first detect if the policy must be signed, before running the
-> > > > tests.
+On Fri, 2018-01-26 at 19:03 +0100, Petr Vorel wrote:
+> Hi,
+> > > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> > > ---
+> > >  runtest/ima | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> > > Right, I'll check it. Is there other way how to detect it than reading
-> > > /boot/config-$(uname -r) or /proc/config.gz ? I'm asking because IMA might be using on
-> > > embedded devices (guessing from [2], [3]), which might not have either of them.
-> This is important. As Cyril agreed with me grepping /boot/config-$(uname -r) or
-> /proc/config.gz isn't good solution. I don't see any ioctl interface and
-> security/integrity/ima/ima_fs.c which handles IMA sysfs doesn't have this functionality.
-> Is it deliberate (security reason), that it's not exported to users?
+> > > diff --git a/runtest/ima b/runtest/ima
+> > > index 20d2e0810..3462d12b1 100644
+> > > --- a/runtest/ima
+> > > +++ b/runtest/ima
+> > > @@ -1,5 +1,5 @@
+> > >  #DESCRIPTION:Integrity Measurement Architecture (IMA)
+> > > -ima01 ima_measurements.sh
+> > > -ima02 ima_policy.sh
+> > > +ima01 ima_policy.sh
+> > > +ima02 ima_measurements.sh
+> > >  ima03 ima_tpm.sh
+> > >  ima04 ima_violations.sh
+> 
+> > Uh, depending on order of testcases in runtest file is broken anyways,
+> > what is the real problem here?
+> If system is configured with no policy, ima_measurements.sh fails. ima_policy.sh loads
+> some policy (if none loaded) / adds to policy (if policy already loaded and it's allowed
+> by kernel). So, the first case prevents failing ima_measurements.sh.
+> One problem with IMA testing I see is that IMHO it's not possible to revert policy.
+> That's why I added warnings that reboot is required. I know that this is against LTP
+> principle.
+> Mimi, Dmitry, am I right?
 
-This isn't really an IMA issue, but a TPM one.  The TPM device driver
-would need to export this information.
+The current ordering of the tests assume that the system was booted
+with the builtin "ima_tcb" policy enabled on the boot command line.
+ Assuming that the kernel doesn't require policies to be signed,
+changing the order of the tests is fine.  Or simply test whether the
+system was booted with either "ima_tcb" or "ima_policy=tcb" boot
+command line options.
 
 Mimi
+
+> > Also I suppose that we may as well rename the test ids (e.g. ima01) to
+> > match the shell script name, since I find it more descriptive.
+> Sure!
+> 
+> 
+> Kind regards,
+> Petr
+> 
 
