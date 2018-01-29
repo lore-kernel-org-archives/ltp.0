@@ -1,51 +1,50 @@
-From: Hoang Van Tuyen <tuyen.hoangvan@toshiba-tsdv.com>
-Date: Sun, 28 Jan 2018 12:23:35 +0700
-Subject: [LTP] [ltp][PATCH] runltp: Append ${LTPROOT}/bin to PATH
-	variable
-In-Reply-To: <20180126112935.GB2391@rei>
-References: <2d5bf039-1b83-5e92-150d-e435e9f7d383@toshiba-tsdv.com>
- <20180126112935.GB2391@rei>
-Message-ID: <f0357fee-5592-d131-aaed-b6966e916ce2@toshiba-tsdv.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 29 Jan 2018 11:09:28 +0100
+Subject: [LTP] [COMMITTED 1/1] numa: Fix numa v2 detection for cross
+	compilation
+Message-ID: <20180129100928.12980-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!,
+Changed to AC_COMPILE_IFELSE as AC_RUN_IFELSE cannot be run while
+cross compiling.
 
-> You can either add it yourself and resend the patch or I can do that
-> before I apply the patch.
-Can you add the describe for me?
+AC_RUN_IFELSE was run only if numa headers are installed, that's why our
+travis build tests didn't find that.
 
-Thanks and best regards,
+Bug found by Buildroot project:
+http://autobuild.buildroot.net/results/21a/21a6eeddbf5ccffc34c38527d0807305a5eb3917/
 
-Tuyen
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Reported-by: Baruch Siach <baruch@tkos.co.il>
+---
+I'll also detect this in travis.
+Petr
+---
+ m4/ltp-numa.m4 | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
-On 1/26/2018 6:29 PM, Cyril Hrubis wrote:
-> Hi!
->> Some executable files were installed to ${LTPROOT}/bin.
->> So, We should append ${LTPROOT}/bin to PATH variable.
-> Here we should also describe that it fixes the ext4 testcases, other
-> than that this looks good.
->
-> You can either add it yourself and resend the patch or I can do that
-> before I apply the patch.
->
-
+diff --git a/m4/ltp-numa.m4 b/m4/ltp-numa.m4
+index fc3383e97..633f54c18 100644
+--- a/m4/ltp-numa.m4
++++ b/m4/ltp-numa.m4
+@@ -28,11 +28,11 @@ AC_DEFUN([LTP_CHECK_SYSCALL_NUMA], [
+ 	AC_CHECK_HEADERS([numa.h numaif.h], [], [have_numa_headers=no])
+ 
+ 	if test "x$have_numa_headers" != "xno"; then
+-		AC_RUN_IFELSE([AC_LANG_PROGRAM([
++		AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
+ #include <numa.h>
+ 		], [
+ #if LIBNUMA_API_VERSION < 2
+-exit(1);
++# error Required numa headers >= 2
+ #endif
+ 		])], [have_numa_headers_v2=yes])
+ 	fi
 -- 
-================================================================
-Hoang Van Tuyen (Mr.)
-TOSHIBA SOFTWARE DEVELOPMENT (VIETNAM) CO., LTD.
-16th Floor, VIT Building, 519 Kim Ma Str., Ba Dinh Dist., Hanoi, Vietnam
-Tel: 84-4-22208801 (Company) - Ext.251
-Fax: 84-4-22208802 (Company)
-Email: tuyen.hoangvan@toshiba-tsdv.com
-================================================================
-
-
--- 
-This mail was scanned by BitDefender
-For more information please visit http://www.bitdefender.com
+2.16.0
 
