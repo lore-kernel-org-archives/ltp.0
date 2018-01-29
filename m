@@ -1,38 +1,50 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 29 Jan 2018 12:23:45 +0100
-Subject: [LTP] [COMMITTED 1/1] travis: install packages also on cross and 32
-	bit
-Message-ID: <20180129112345.19886-1-pvorel@suse.cz>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 29 Jan 2018 14:41:07 +0300
+Subject: [LTP] [PATCH 0/9] network: add new features
+Message-ID: <1517226076-26436-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Petr Vorel <petr.vorel@gmail.com>
+* SO_ZEROCOPY (no auto test-cases yet, can be tried manually with
+  netstress 'z' option);
 
-unless the build is not meant to be build only with minimal dependencies.
+* IP_BIND_ADDRESS_NO_PORT, new bind_noport01 test;
 
-This is a test for fix 50819a347 ("numa: Fix numa v2 detection for cross compilation")
+* one more protocol added to netstress - UDPLITE; busy_poll03, dccp01 and
+  UDP IPsec tests are updated;
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- .travis.yml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+* netstress server now sends data to client using send(), sendto() and
+  sendmsg(), if protocol allows.
 
-diff --git a/.travis.yml b/.travis.yml
-index 7b8fb504d..d89c4353b 100644
---- a/.travis.yml
-+++ b/.travis.yml
-@@ -94,7 +94,7 @@ before_install:
-     # installing / removing dependencies
-     - if [ "$INSTALL_PACKAGES" = "" ]; then
-           sudo apt remove $(cat .travis.packages_native | grep -v -e 'libc6' -e 'libc6-dev' -e 'linux-libc-dev' -e 'libacl1')
--      ; elif [ "$INSTALL_PACKAGES" != "cross" ]; then
-+      ; else
-           sudo apt install -qq $(cat .travis.packages_native)
-       ; fi
- 
--- 
-2.16.0
+Alexey Kodanev (9):
+  lib: add safe_sendmsg()
+  lib: add safe_getsockopt() and tst_getsockport()
+  netstress: make socketaddr returned by recvfrom() thread-local
+  netstress: server: write to socket with send/sendto/sendmsg
+  netstress: support UDPLITE protocol
+  netstress: support SO_ZEROCOPY
+  netstress: support IP_BIND_ADDRESS_NO_PORT
+  network: add new test-cases with UDP LITE protocol
+  network: new test-case for IP_BIND_ADDRESS_NO_PORT
+
+ include/lapi/netinet_in.h                     |    8 +
+ include/lapi/socket.h                         |   12 ++
+ include/lapi/udp.h                            |   30 +++
+ include/safe_net_fn.h                         |    8 +
+ include/tst_safe_net.h                        |    9 +
+ lib/safe_net.c                                |   60 ++++++
+ runtest/net.features                          |    3 +
+ testcases/network/busy_poll/busy_poll03.sh    |   32 ++--
+ testcases/network/dccp/dccp01.sh              |   28 ++-
+ testcases/network/netstress/netstress.c       |  239 +++++++++++++++++--------
+ testcases/network/sockets/Makefile            |    2 +-
+ testcases/network/sockets/bind_noport01.sh    |   50 +++++
+ testcases/network/stress/udp/udp_ipsec.sh     |    7 +-
+ testcases/network/stress/udp/udp_ipsec_vti.sh |    7 +-
+ 14 files changed, 394 insertions(+), 101 deletions(-)
+ create mode 100644 include/lapi/udp.h
+ create mode 100755 testcases/network/sockets/bind_noport01.sh
 
