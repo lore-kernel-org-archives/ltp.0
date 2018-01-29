@@ -1,50 +1,38 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 29 Jan 2018 11:09:28 +0100
-Subject: [LTP] [COMMITTED 1/1] numa: Fix numa v2 detection for cross
-	compilation
-Message-ID: <20180129100928.12980-1-pvorel@suse.cz>
+Date: Mon, 29 Jan 2018 12:23:45 +0100
+Subject: [LTP] [COMMITTED 1/1] travis: install packages also on cross and 32
+	bit
+Message-ID: <20180129112345.19886-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Changed to AC_COMPILE_IFELSE as AC_RUN_IFELSE cannot be run while
-cross compiling.
+From: Petr Vorel <petr.vorel@gmail.com>
 
-AC_RUN_IFELSE was run only if numa headers are installed, that's why our
-travis build tests didn't find that.
+unless the build is not meant to be build only with minimal dependencies.
 
-Bug found by Buildroot project:
-http://autobuild.buildroot.net/results/21a/21a6eeddbf5ccffc34c38527d0807305a5eb3917/
+This is a test for fix 50819a347 ("numa: Fix numa v2 detection for cross compilation")
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
-Reported-by: Baruch Siach <baruch@tkos.co.il>
 ---
-I'll also detect this in travis.
-Petr
----
- m4/ltp-numa.m4 | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .travis.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/m4/ltp-numa.m4 b/m4/ltp-numa.m4
-index fc3383e97..633f54c18 100644
---- a/m4/ltp-numa.m4
-+++ b/m4/ltp-numa.m4
-@@ -28,11 +28,11 @@ AC_DEFUN([LTP_CHECK_SYSCALL_NUMA], [
- 	AC_CHECK_HEADERS([numa.h numaif.h], [], [have_numa_headers=no])
+diff --git a/.travis.yml b/.travis.yml
+index 7b8fb504d..d89c4353b 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -94,7 +94,7 @@ before_install:
+     # installing / removing dependencies
+     - if [ "$INSTALL_PACKAGES" = "" ]; then
+           sudo apt remove $(cat .travis.packages_native | grep -v -e 'libc6' -e 'libc6-dev' -e 'linux-libc-dev' -e 'libacl1')
+-      ; elif [ "$INSTALL_PACKAGES" != "cross" ]; then
++      ; else
+           sudo apt install -qq $(cat .travis.packages_native)
+       ; fi
  
- 	if test "x$have_numa_headers" != "xno"; then
--		AC_RUN_IFELSE([AC_LANG_PROGRAM([
-+		AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
- #include <numa.h>
- 		], [
- #if LIBNUMA_API_VERSION < 2
--exit(1);
-+# error Required numa headers >= 2
- #endif
- 		])], [have_numa_headers_v2=yes])
- 	fi
 -- 
 2.16.0
 
