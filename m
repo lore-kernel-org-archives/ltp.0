@@ -1,59 +1,71 @@
-From: Mimi Zohar <zohar@linux.vnet.ibm.com>
-Date: Mon, 29 Jan 2018 14:58:23 -0500
-Subject: [LTP] [RFC PATCH 0/2] IMA: Rewrite tests into new API + fixes
-In-Reply-To: <1517100440.29187.120.camel@linux.vnet.ibm.com>
-References: <20180111202821.31639-1-pvorel@suse.cz>
- <1516815417.3686.55.camel@linux.vnet.ibm.com>
- <20180125203057.mzzpilp6i43xftka@dell5510>
- <1516919365.6513.72.camel@linux.vnet.ibm.com>
- <20180126175110.boaepz6dqe3uojq6@dell5510>
- <1517100440.29187.120.camel@linux.vnet.ibm.com>
-Message-ID: <1517255903.29187.560.camel@linux.vnet.ibm.com>
+From: Daniel Sangorrin <daniel.sangorrin@toshiba.co.jp>
+Date: Tue, 30 Jan 2018 16:15:33 +0900
+Subject: [LTP] [PATCH v2] skipfile: allow regular expressions
+In-Reply-To: <20180122151926.GA16105@rei>
+References: <1516089674-16119-1-git-send-email-daniel.sangorrin@toshiba.co.jp>
+ <20180122151926.GA16105@rei>
+Message-ID: <008001d3999a$1e8a26a0$5b9e73e0$@toshiba.co.jp>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Sat, 2018-01-27 at 19:47 -0500, Mimi Zohar wrote:
-> On Fri, 2018-01-26 at 18:51 +0100, Petr Vorel wrote:
+Hi Cyril,
 
-
-> > > > > Originally IMA allowed a builtin policy to be replaced with a custom
-> > > > > policy, by simply cat'ing a file into the securityfs IMA policy file.
-> > > > > Currently, if new rules can be added to the custom policy (Kconfig
-> > > > > IMA_WRITE_POLICY enabled), the policy file must be signed.  Similarly,
-> > > > > if the builtin "secure-boot" policy is defined on the boot command
-> > > > > line, the custom policy must be signed.  Test "ima01 ima_policy.sh"
-> > > > > should first detect if the policy must be signed, before running the
-> > > > > tests.
-> > 
-> > > > Right, I'll check it. Is there other way how to detect it than reading
-> > > > /boot/config-$(uname -r) or /proc/config.gz ? I'm asking because IMA might be using on
-> > > > embedded devices (guessing from [2], [3]), which might not have either of them.
-> > This is important. As Cyril agreed with me grepping /boot/config-$(uname -r) or
-> > /proc/config.gz isn't good solution. I don't see any ioctl interface and
-> > security/integrity/ima/ima_fs.c which handles IMA sysfs doesn't have this functionality.
-> > Is it deliberate (security reason), that it's not exported to users?
+> -----Original Message-----
+> From: Cyril Hrubis [mailto:chrubis@suse.cz]
+> Sent: Tuesday, January 23, 2018 12:19 AM
+> To: Daniel Sangorrin
+> Cc: ltp@lists.linux.it
+> Subject: Re: [LTP] [PATCH v2] skipfile: allow regular expressions
 > 
-> This isn't really an IMA issue, but a TPM one.  The TPM device driver
-> would need to export this information.
+> Hi!
+> > --- a/runltp
+> > +++ b/runltp
+> > @@ -692,10 +692,11 @@ main()
+> >      fi
+> >
+> >      # Blacklist or skip tests if a SKIPFILE was specified with -S
+> > +    # The SKIPFILE can contain regular expressions (e.g.: cron.*)
+> >      if [ -n "${SKIPFILE}" ]; then
+> >          for test_name in $(awk '{print $1}' "${SKIPFILE}"); do
+> >              case "${test_name}" in \#*) continue;; esac
+> > -            sed -i "/\<${test_name}\>/c\\${test_name} exit 32;" alltests
+> > +            sed -i "s/^\(${test_name}\)\s.*/\1 exit 32;/" alltests
+> >          done
+> >      fi
+> 
+> Looks good, but please update runltplite.sh as well.
 
-Sorry, that was an answer to the wrong question.  In ima_tpm.sh,
-there's the question:
+Sorry for the delay. I found that my patch had a flaw while testing it on runltplite.sh.
+For example, "rwtest.*" doesn't work for rwtest:  
+rwtest01 export LTPROOT; rwtest -N rwtest01 -c -q -i 60s -f sync ..
 
-# Would be nice to know where the PCRs are located. Is this safe?".
+The reason is that "rwtest.*"  matches too much. If I use "rwtest[a-zA-Z0-9]" as a regex on the skipfile
+then it works as expected
 
-Commit 313d21e "tpm: device class for tpm" moved the TPM sysfs
-location from /sys/class/misc/tpmX/device/ to
-/sys/class/tpm/tpmX/device/.  The pcrs are 
+Example:
+$ STRING="rwtest01 export LTPROOT; rwtest -N rwtest01 -c -q -i 60s -f"
+$ sed "s/^\(rwtest.*\)\s.*/\1 exit 32;/" <<< $STRING
+    rwtest01 export LTPROOT; rwtest -N rwtest01 -c -q -i 60s -f exit 32  (BAD!!)
+$ sed "s/^\(rwtest[a-zA-Z0-9]*\)\s.*/\1 exit 32;/" <<< $STRING
+rwtest01 exit 32 (GOOD!!)
+
+I think that the skipfile entries should only care about the testname, so "rwtest.*" should actually
+work. I have tried modifying the sed instruction but I wasn't able to isolate the first occurrence.
+Should I extract the test_name (first words, except blank lines) from alltests and match them
+with the skipfile entries one by one in a loop?
+
+Thanks,
+Daniel
 
 
-To answer your question, if after writing the custom policy, the
-policy file disappears, then you obviously can't extend the policy.
- If the policy file doesn't disappear, you might not be able to extend
-the policy, just view it.  Sorry, there's no method of knowing apriori
-whether the policy can be extended.
 
-Mimi
+
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+
+
 
