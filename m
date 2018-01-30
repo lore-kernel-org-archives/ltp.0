@@ -1,23 +1,60 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 30 Jan 2018 08:46:05 +0100
-Subject: [LTP] [RFC PATCH 0/2] travis: out-of-tree cross-compile + some
- builds in-tree => out-of-tree
-In-Reply-To: <20180130074350.4032-1-pvorel@suse.cz>
-References: <20180130074350.4032-1-pvorel@suse.cz>
-Message-ID: <20180130074605.7qdogxcmfn7jafwn@dell5510>
+Date: Tue, 30 Jan 2018 10:59:03 +0100
+Subject: [LTP] [PATCH 0/9] network: add new features
+In-Reply-To: <1517226076-26436-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1517226076-26436-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20180130095903.qcrb4uzrfxgc33ki@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+> * SO_ZEROCOPY (no auto test-cases yet, can be tried manually with
+>   netstress 'z' option);
 
-> this brings to travis to have also cross-compile out-of-tree builds + I
-> changed some builds to be out-of-tree (not sure if it's useful).
+> * IP_BIND_ADDRESS_NO_PORT, new bind_noport01 test;
 
-You can see it on
-https://travis-ci.org/pevik/ltp/builds/334654099
+> * one more protocol added to netstress - UDPLITE; busy_poll03, dccp01 and
+>   UDP IPsec tests are updated;
+
+> * netstress server now sends data to client using send(), sendto() and
+>   sendmsg(), if protocol allows.
+
+> Alexey Kodanev (9):
+>   lib: add safe_sendmsg()
+>   lib: add safe_getsockopt() and tst_getsockport()
+>   netstress: make socketaddr returned by recvfrom() thread-local
+>   netstress: server: write to socket with send/sendto/sendmsg
+>   netstress: support UDPLITE protocol
+>   netstress: support SO_ZEROCOPY
+>   netstress: support IP_BIND_ADDRESS_NO_PORT
+>   network: add new test-cases with UDP LITE protocol
+>   network: new test-case for IP_BIND_ADDRESS_NO_PORT
+
+>  include/lapi/netinet_in.h                     |    8 +
+>  include/lapi/socket.h                         |   12 ++
+>  include/lapi/udp.h                            |   30 +++
+>  include/safe_net_fn.h                         |    8 +
+>  include/tst_safe_net.h                        |    9 +
+>  lib/safe_net.c                                |   60 ++++++
+>  runtest/net.features                          |    3 +
+>  testcases/network/busy_poll/busy_poll03.sh    |   32 ++--
+>  testcases/network/dccp/dccp01.sh              |   28 ++-
+>  testcases/network/netstress/netstress.c       |  239 +++++++++++++++++--------
+>  testcases/network/sockets/Makefile            |    2 +-
+>  testcases/network/sockets/bind_noport01.sh    |   50 +++++
+>  testcases/network/stress/udp/udp_ipsec.sh     |    7 +-
+>  testcases/network/stress/udp/udp_ipsec_vti.sh |    7 +-
+>  14 files changed, 394 insertions(+), 101 deletions(-)
+>  create mode 100644 include/lapi/udp.h
+>  create mode 100755 testcases/network/sockets/bind_noport01.sh
+
+LGTM, great work.
+Acked-by: Petr Vorel <pvorel@suse.cz>
+
+I'll just post a minor nit about UDPLITE vs. UDP_LITE.
+
 
 Kind regards,
 Petr
