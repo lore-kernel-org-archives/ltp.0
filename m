@@ -1,214 +1,217 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 1 Feb 2018 17:52:11 -0500 (EST)
-Subject: [LTP] [PATCH V3] ltp: Add a zero latency constraint for the
- timer tests library
-In-Reply-To: <0dd9434e-01b0-e7dd-9984-f787a1a08d99@linaro.org>
-References: <20170817135029.GA31322@rei>
- <1502982026-4113-1-git-send-email-daniel.lezcano@linaro.org>
- <20170818122533.GD22319@rei.lan>
- <1864131650.54048676.1513090088938.JavaMail.zimbra@redhat.com>
- <ac23cc27-b5a8-f710-17c9-2f7ad55f2185@linaro.org>
- <1566390724.54053292.1513091073892.JavaMail.zimbra@redhat.com>
- <0dd9434e-01b0-e7dd-9984-f787a1a08d99@linaro.org>
-Message-ID: <423919096.5705085.1517525531881.JavaMail.zimbra@redhat.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Fri, 2 Feb 2018 16:11:50 +0800
+Subject: [LTP] [PATCH v5 3/3] syscalls/migrate_pages03.c: Add new
+ regression test
+In-Reply-To: <1515120532-4372-3-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20180104153045.GA25335@rei>
+ <1515120532-4372-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1515120532-4372-3-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <5A741D46.20002@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Jan, Cyril
+
+Could you help me review the v5 patch set. Thanks a lot.
+
+Thanks,
+Xiao Yang
+On 2018/01/05 10:48, xiao yang wrote:
+> The bug has been fixed in kernel:
+> '4b0ece6fa016("mm: migrate: fix remove_migration_pte() for ksm pages")'
+>
+> Signed-off-by: xiao yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  runtest/syscalls                                   |   1 +
+>  testcases/kernel/syscalls/.gitignore               |   1 +
+>  .../syscalls/migrate_pages/migrate_pages03.c       | 151 +++++++++++++++++++++
+>  3 files changed, 153 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
+>
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 97fc643..ee8850f 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -587,6 +587,7 @@ memcpy01 memcpy01
+>  
+>  migrate_pages01 migrate_pages01
+>  migrate_pages02 migrate_pages02
+> +migrate_pages03 migrate_pages03
+>  
+>  mlockall01 mlockall01
+>  mlockall02 mlockall02
+> diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+> index 12a136e..27e30b2 100644
+> --- a/testcases/kernel/syscalls/.gitignore
+> +++ b/testcases/kernel/syscalls/.gitignore
+> @@ -538,6 +538,7 @@
+>  /memset/memset01
+>  /migrate_pages/migrate_pages01
+>  /migrate_pages/migrate_pages02
+> +/migrate_pages/migrate_pages03
+>  /mincore/mincore01
+>  /mincore/mincore02
+>  /mkdir/mkdir01
+> diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
+> new file mode 100644
+> index 0000000..ecfc552
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
+> @@ -0,0 +1,151 @@
+> +/*
+> + * Copyright (c) 2017 FUJITSU LIMITED. All rights reserved.
+> + * Author(s): Xiao Yang <yangx.jy@cn.fujitsu.com>
+> + *            Jie Fei <feij.fnst@cn.fujitsu.com>
+> + *
+> + * This program is free software: you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation, either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program, if not, see <http://www.gnu.org/licenses/>.
+> + */
+> +
+> +/*
+> + * Description:
+> + * This is a regression test for ksm page migration which is miscalculated.
+> + *
+> + * The kernel bug has been fixed by:
+> + *
+> + * commit 4b0ece6fa0167b22c004ff69e137dc94ee2e469e
+> + * Author: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+> + * Date:   Fri Mar 31 15:11:44 2017 -0700
+> + *
+> + *     mm: migrate: fix remove_migration_pte() for ksm pages
+> + */
+> +
+> +#include <errno.h>
+> +#include <unistd.h>
+> +#include <stdlib.h>
+> +
+> +#include "tst_test.h"
+> +#include "lapi/syscalls.h"
+> +#include "lapi/mmap.h"
+> +#include "ksm_helper.h"
+> +#include "numa_helper.h"
+> +#include "migrate_pages_common.h"
+> +
+> +#ifdef HAVE_NUMA_V2
+> +#define N_PAGES 20
+> +#define N_LOOPS 600
+> +#define TEST_NODES 2
+> +
+> +static int orig_ksm_run = -1;
+> +static unsigned int page_size;
+> +static void *test_pages[N_PAGES];
+> +static int num_nodes, max_node;
+> +static int *nodes;
+> +static unsigned long *new_nodes[2];
+> +
+> +static void setup(void)
+> +{
+> +	int n;
+> +	unsigned long nodemask_size;
+> +
+> +	if (access(PATH_KSM, F_OK))
+> +		tst_brk(TCONF, "KSM configuration was not enabled");
+> +
+> +	if (get_allowed_nodes_arr(NH_MEMS, &num_nodes, &nodes) < 0)
+> +		tst_brk(TBROK | TERRNO, "get_allowed_nodes() failed");
+> +
+> +	if (num_nodes < TEST_NODES) {
+> +		tst_brk(TCONF, "requires NUMA with at least %d node",
+> +			TEST_NODES);
+> +	}
+> +
+> +	max_node = LTP_ALIGN(get_max_node(), sizeof(unsigned long) * 8);
+> +	nodemask_size = max_node / 8;
+> +	new_nodes[0] = SAFE_MALLOC(nodemask_size);
+> +	new_nodes[1] = SAFE_MALLOC(nodemask_size);
+> +	memset(new_nodes[0], 0, nodemask_size);
+> +	memset(new_nodes[1], 0, nodemask_size);
+> +	set_bit(new_nodes[0], nodes[0], 1);
+> +	set_bit(new_nodes[1], nodes[1], 1);
+> +
+> +	page_size = getpagesize();
+> +
+> +	for (n = 0; n < N_PAGES; n++) {
+> +		test_pages[n] = SAFE_MMAP(NULL, page_size, PROT_READ | PROT_WRITE | PROT_EXEC,
+> +					  MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> +		if (madvise(test_pages[n], page_size, MADV_MERGEABLE)) {
+> +			if (errno == EINVAL) {
+> +				tst_brk(TCONF | TERRNO, "madvise() didn't "
+> +					"support MADV_MERGEABLE");
+> +			}
+> +
+> +			tst_brk(TBROK | TERRNO,
+> +				"madvise(MADV_MERGEABLE) failed");
+> +		}
+> +
+> +		if (mbind(test_pages[n], page_size, MPOL_BIND, new_nodes[0],
+> +			  max_node, 0))
+> +			tst_brk(TBROK | TERRNO, "mbind(MPOL_BIND) failed");
+> +
+> +		memset(test_pages[n], 0, page_size);
+> +	}
+> +
+> +	SAFE_FILE_SCANF(PATH_KSM "run", "%d", &orig_ksm_run);
+> +	SAFE_FILE_PRINTF(PATH_KSM "run", "%d", 1);
+> +	wait_ksmd_full_scan();
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	int n;
+> +
+> +	for (n = 0; n < N_PAGES; n++) {
+> +		if (test_pages[n])
+> +			SAFE_MUNMAP(test_pages[n], page_size);
+> +	}
+> +
+> +	free(new_nodes[0]);
+> +	free(new_nodes[1]);
+> +
+> +	if (orig_ksm_run != -1)
+> +		SAFE_FILE_PRINTF(PATH_KSM "run", "%d", orig_ksm_run);
+> +}
+> +
+> +static void migrate_test(void)
+> +{
+> +	int loop, i, ret;
+> +
+> +	for (loop = 0; loop < N_LOOPS; loop++) {
+> +		i = loop % 2;
+> +		ret = tst_syscall(__NR_migrate_pages, 0, max_node,
+> +				   new_nodes[i], new_nodes[i ? 0 : 1]);
+> +		if (ret < 0) {
+> +			tst_res(TFAIL | TERRNO, "migrate_pages() failed");
+> +			return;
+> +		}
+> +	}
+> +
+> +	tst_res(TPASS, "migrate_pages() passed");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.min_kver = "2.6.32",
+> +	.needs_root = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = migrate_test,
+> +};
+> +
+> +#else
+> +	TST_TEST_TCONF("require libnuma >= 2 and it's development packages");
+> +#endif
 
 
------ Original Message -----
-> 
-> On Intel, the firmware usually overrides the kernel power management
-> decision by auto-promoting the idle states.
-> 
-> So it is possible it is the case for you. With a process keeping the CPU
-> "busy" that prevents the firmware to go to a deepest idle state.
-> 
-> I see it is a Xeon platform. You can try by checking the
-> performance/power balance option in the BIOS. AFAIR, there is
-> performance aggressive, power aggressive, balanced-performance+ and
-> balanced-power+ and balanced.
-> 
-> Can you check this option ?
-
-I played a lot of with BIOS settigns, but none of:
- speedstep, c-states, turboboost, S3 disable
-made any difference.
-
-As it turned out, this is a kernel bug which was fixed in 4.15 by:
-  commit b511203093489eb1829cb4de86e8214752205ac6
-  Author: Len Brown <len.brown@intel.com>
-  Date:   Fri Dec 22 00:27:55 2017 -0500
-    x86/tsc: Fix erroneous TSC rate on Skylake Xeon
-
-Numbers look great with this patch:
-
-tst_timer_test.c:356: INFO: CLOCK_MONOTONIC resolution 1ns
-tst_timer_test.c:368: INFO: prctl(PR_GET_TIMERSLACK) = 50us
-tst_timer_test.c:275: INFO: poll() sleeping for 1000us 500 iterations, threshold 450.01us
-tst_timer_test.c:318: INFO: min 1052us, max 1056us, median 1052us, trunc mean 1052.00us (discarded 25)
-tst_timer_test.c:333: PASS: Measured times are within thresholds
-tst_timer_test.c:275: INFO: poll() sleeping for 2000us 500 iterations, threshold 450.01us
-tst_timer_test.c:318: INFO: min 2019us, max 2055us, median 2052us, trunc mean 2051.95us (discarded 25)
-tst_timer_test.c:333: PASS: Measured times are within thresholds
-tst_timer_test.c:275: INFO: poll() sleeping for 5000us 300 iterations, threshold 450.04us
-tst_timer_test.c:318: INFO: min 5052us, max 5053us, median 5052us, trunc mean 5052.15us (discarded 15)
-tst_timer_test.c:333: PASS: Measured times are within thresholds
-tst_timer_test.c:275: INFO: poll() sleeping for 10000us 100 iterations, threshold 450.33us
-tst_timer_test.c:318: INFO: min 10052us, max 10053us, median 10052us, trunc mean 10052.26us (discarded 5)
-tst_timer_test.c:333: PASS: Measured times are within thresholds
-tst_timer_test.c:275: INFO: poll() sleeping for 25000us 50 iterations, threshold 451.29us
-tst_timer_test.c:318: INFO: min 25052us, max 25053us, median 25052us, trunc mean 25052.46us (discarded 2)
-tst_timer_test.c:333: PASS: Measured times are within thresholds
-tst_timer_test.c:275: INFO: poll() sleeping for 100000us 10 iterations, threshold 537.00us
-tst_timer_test.c:318: INFO: min 100103us, max 100103us, median 100103us, trunc mean 100103.00us (discarded 1)
-tst_timer_test.c:333: PASS: Measured times are within thresholds
-tst_timer_test.c:275: INFO: poll() sleeping for 1000000us 2 iterations, threshold 4400.00us
-tst_timer_test.c:318: INFO: min 1001003us, max 1001004us, median 1001003us, trunc mean 1001003.00us (discarded 1)
-tst_timer_test.c:333: PASS: Measured times are within thresholds
-
-Regards,
-Jan
-
-> 
-> On 12/12/2017 16:04, Jan Stancek wrote:
-> > 
-> > 
-> > ----- Original Message -----
-> >> On 12/12/2017 15:48, Jan Stancek wrote:
-> >>> Hi,
-> >>>
-> >>> I'm running into similar problem on "Dell Precision 5820 tower", with
-> >>> Intel(R) Xeon(R) W-2133 CPU @ 3.60GHz, but I can't find any /proc /sys
-> >>> knob that would help.
-> >>>
-> >>> # uname -r
-> >>> 4.14.5
-> >>>
-> >>> # cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-> >>> performance
-> >>> performance
-> >>> performance
-> >>> performance
-> >>> performance
-> >>> performance
-> >>> performance
-> >>> performance
-> >>> performance
-> >>> performance
-> >>> performance
-> >>> performance
-> >>>
-> >>> Any timer related tests are reliably failing on longer timeouts:
-> >>> ---
-> >>> tst_test.c:934: INFO: Timeout per run is 0h 05m 00s
-> >>> tst_timer_test.c:356: INFO: CLOCK_MONOTONIC resolution 1ns
-> >>> tst_timer_test.c:368: INFO: prctl(PR_GET_TIMERSLACK) = 50us
-> >>> tst_timer_test.c:275: INFO: poll() sleeping for 1000us 500 iterations,
-> >>> threshold 450.01us
-> >>> tst_timer_test.c:318: INFO: min 1095us, max 1098us, median 1096us, trunc
-> >>> mean 1095.99us (discarded 25)
-> >>> tst_timer_test.c:333: PASS: Measured times are within thresholds
-> >>> tst_timer_test.c:275: INFO: poll() sleeping for 2000us 500 iterations,
-> >>> threshold 450.01us
-> >>> tst_timer_test.c:318: INFO: min 2062us, max 2138us, median 2137us, trunc
-> >>> mean 2135.98us (discarded 25)
-> >>> tst_timer_test.c:333: PASS: Measured times are within thresholds
-> >>> tst_timer_test.c:275: INFO: poll() sleeping for 5000us 300 iterations,
-> >>> threshold 450.04us
-> >>> tst_timer_test.c:318: INFO: min 5262us, max 5263us, median 5262us, trunc
-> >>> mean 5262.20us (discarded 15)
-> >>> tst_timer_test.c:333: PASS: Measured times are within thresholds
-> >>> tst_timer_test.c:275: INFO: poll() sleeping for 10000us 100 iterations,
-> >>> threshold 450.33us
-> >>> tst_timer_test.c:318: INFO: min 10318us, max 10471us, median 10471us,
-> >>> trunc
-> >>> mean 10469.07us (discarded 5)
-> >>> tst_timer_test.c:321: FAIL: poll() slept for too long
-> >>
-> >> Are you running the tests with this zero latency patch included ?
-> > 
-> > Yes, I'm running ltp release 20170929, which has your patch.
-> > 
-> > ...
-> > [pid 18276] 09:59:21.379883 open("/dev/cpu_dma_latency", O_WRONLY) = 3
-> > [pid 18276] 09:59:21.379906 write(3, "\0\0\0\0", 4) = 4
-> > ...
-> > 
-> > I tried it without that patch, and it started failing more with smaller
-> > timeouts.
-> > 
-> > Regards,
-> > Jan
-> > 
-> >>
-> >>
-> >>> SCHED_OTHER or SCHED_FIFO -> FAIL
-> >>> intel_idle.max_cstate=0 processor.max_cstate=1 -> FAIL
-> >>> echo 1 > /sys/devices/system/cpu/intel_pstate/no_turbo -> FAIL
-> >>> idle=halt -> FAIL
-> >>> idle=poll -> FAIL
-> >>>
-> >>> Only thing I found to help is to keep CPU slightly busy with
-> >>>   taskset -c 1 sh -c "while [ True ]; do usleep 100; done"
-> >>>
-> >>> After that it started to PASS:
-> >>>
-> >>> # taskset -c 1 ./poll02
-> >>> tst_test.c:934: INFO: Timeout per run is 0h 05m 00s
-> >>> tst_timer_test.c:356: INFO: CLOCK_MONOTONIC resolution 1ns
-> >>> tst_timer_test.c:368: INFO: prctl(PR_GET_TIMERSLACK) = 50us
-> >>> tst_timer_test.c:275: INFO: poll() sleeping for 1000us 500 iterations,
-> >>> threshold 450.01us
-> >>> tst_timer_test.c:318: INFO: min 1004us, max 1325us, median 1072us, trunc
-> >>> mean 1149.29us (discarded 25)
-> >>> tst_timer_test.c:333: PASS: Measured times are within thresholds
-> >>> tst_timer_test.c:275: INFO: poll() sleeping for 2000us 500 iterations,
-> >>> threshold 450.01us
-> >>> tst_timer_test.c:318: INFO: min 2007us, max 2326us, median 2075us, trunc
-> >>> mean 2158.64us (discarded 25)
-> >>> tst_timer_test.c:333: PASS: Measured times are within thresholds
-> >>> tst_timer_test.c:275: INFO: poll() sleeping for 5000us 300 iterations,
-> >>> threshold 450.04us
-> >>> tst_timer_test.c:318: INFO: min 5006us, max 5345us, median 5074us, trunc
-> >>> mean 5146.84us (discarded 15)
-> >>> tst_timer_test.c:333: PASS: Measured times are within thresholds
-> >>> tst_timer_test.c:275: INFO: poll() sleeping for 10000us 100 iterations,
-> >>> threshold 450.33us
-> >>> tst_timer_test.c:318: INFO: min 10004us, max 10364us, median 10075us,
-> >>> trunc
-> >>> mean 10128.61us (discarded 5)
-> >>> tst_timer_test.c:333: PASS: Measured times are within thresholds
-> >>> tst_timer_test.c:275: INFO: poll() sleeping for 25000us 50 iterations,
-> >>> threshold 451.29us
-> >>> tst_timer_test.c:318: INFO: min 25006us, max 25359us, median 25072us,
-> >>> trunc
-> >>> mean 25137.48us (discarded 2)
-> >>> tst_timer_test.c:333: PASS: Measured times are within thresholds
-> >>> tst_timer_test.c:275: INFO: poll() sleeping for 100000us 10 iterations,
-> >>> threshold 537.00us
-> >>> tst_timer_test.c:318: INFO: min 100010us, max 100372us, median 100125us,
-> >>> trunc mean 100167.78us (discarded 1)
-> >>> tst_timer_test.c:333: PASS: Measured times are within thresholds
-> >>> tst_timer_test.c:275: INFO: poll() sleeping for 1000000us 2 iterations,
-> >>> threshold 4400.00us
-> >>> tst_timer_test.c:318: INFO: min 1000843us, max 1000920us, median
-> >>> 1000843us,
-> >>> trunc mean 1000843.00us (discarded 1)
-> >>> tst_timer_test.c:333: PASS: Measured times are within thresholds
-> >>>
-> >>> Summary:
-> >>> passed   7
-> >>> failed   0
-> >>> skipped  0
-> >>> warnings 0
-> >>>
-> >>> Any ideas?
-> >>>
-> >>> Regards,
-> >>> Jan
-> >>>
 
