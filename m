@@ -1,55 +1,185 @@
-From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Date: Mon, 05 Feb 2018 10:42:27 +0200
-Subject: [LTP] Hidden TPM questions in the LTP IMA posts
-In-Reply-To: <1517416161.3469.142.camel@linux.vnet.ibm.com>
-References: <1516978199.29187.43.camel@linux.vnet.ibm.com>
- <20180131133241.rbxy252l6p5rqlh2@linux.intel.com>
- <1517416161.3469.142.camel@linux.vnet.ibm.com>
-Message-ID: <1517820147.7570.4.camel@linux.intel.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Mon, 5 Feb 2018 18:45:06 +0800
+Subject: [LTP] [PATCH] syscalls/mmap17.c: Add new regression test
+In-Reply-To: <1069626938.5781132.1517566821086.JavaMail.zimbra@redhat.com>
+References: <1517565794-1769-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1069626938.5781132.1517566821086.JavaMail.zimbra@redhat.com>
+Message-ID: <5A7835B2.9030406@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, 2018-01-31 at 11:29 -0500, Mimi Zohar wrote:
-> On Wed, 2018-01-31 at 15:32 +0200, Jarkko Sakkinen wrote:
-> > Hi
-> > 
-> > On Fri, Jan 26, 2018 at 09:49:59AM -0500, Mimi Zohar wrote:
-> > > Hi Jarkko,
-> > > 
-> > > There are a few TPM questions for the fixing the IMA Linux Test
-> > > Program (LTP) tests:
-> > > 
-> > > - The maximum size of the TPM 1.2 event record is unspecified.  What
-> > > is the expected maximum size?
-> > > - Is there a way of knowing the location of the TPM 1.2 PCRs without
-> > > grepping for them?
-> 
-> I responded (in the original thread) to my own question:
-> 
-> Commit 313d21e "tpm: device class for tpm" moved the TPM sysfs
-> location from /sys/class/misc/tpmX/device/ to
-> /sys/class/tpm/tpmX/device/.
+On 2018/02/02 18:20, Jan Stancek wrote:
+>
+> ----- Original Message -----
+>> We add a regression test to check if mmap() can't map invalid physical
+>> addresses.  If mmap() maps /dev/mem offsets outside of the addressable
+>> limits of a system, setting reserved bits corrupts the page table and
+>> triggers a kernel crash.
+>>
+>> The kernel bug has been fixed by:
+>> 'commit ce56a86 ("x86/mm: Limit mmap() of /dev/mem to valid physical
+>> addresses")'
+>>
+>> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
+>> ---
+>>   runtest/syscalls                        |  1 +
+>>   testcases/kernel/syscalls/.gitignore    |  1 +
+>>   testcases/kernel/syscalls/mmap/mmap17.c | 81
+>>   +++++++++++++++++++++++++++++++++
+>>   3 files changed, 83 insertions(+)
+>>   create mode 100644 testcases/kernel/syscalls/mmap/mmap17.c
+>>
+>> diff --git a/runtest/syscalls b/runtest/syscalls
+>> index 2a4fad0..4342f03 100644
+>> --- a/runtest/syscalls
+>> +++ b/runtest/syscalls
+>> @@ -641,6 +641,7 @@ mmap14 mmap14
+>>   #mmap11 mmap11 -i 30000
+>>   mmap15 mmap15
+>>   mmap16 mmap16
+>> +mmap17 mmap17
+>>
+>>   modify_ldt01 modify_ldt01
+>>   modify_ldt02 modify_ldt02
+>> diff --git a/testcases/kernel/syscalls/.gitignore
+>> b/testcases/kernel/syscalls/.gitignore
+>> index 67211ca..6a8560a 100644
+>> --- a/testcases/kernel/syscalls/.gitignore
+>> +++ b/testcases/kernel/syscalls/.gitignore
+>> @@ -584,6 +584,7 @@
+>>   /mmap/mmap14
+>>   /mmap/mmap15
+>>   /mmap/mmap16
+>> +/mmap/mmap17
+>>   /modify_ldt/modify_ldt01
+>>   /modify_ldt/modify_ldt02
+>>   /modify_ldt/modify_ldt03
+>> diff --git a/testcases/kernel/syscalls/mmap/mmap17.c
+>> b/testcases/kernel/syscalls/mmap/mmap17.c
+>> new file mode 100644
+>> index 0000000..b83050f
+>> --- /dev/null
+>> +++ b/testcases/kernel/syscalls/mmap/mmap17.c
+>> @@ -0,0 +1,81 @@
+>> +/*
+>> + * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
+>> + * Author: Xiao Yang<yangx.jy@cn.fujitsu.com>
+>> + *
+>> + * This program is free software;  you can redistribute it and/or modify
+>> + * it under the terms of the GNU General Public License as published by
+>> + * the Free Software Foundation; either version 2 of the License, or
+>> + * (at your option) any later version.
+>> + *
+>> + * This program is distributed in the hope that it will be useful,
+>> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+>> + * the GNU General Public License for more details.
+>> + *
+>> + * You should have received a copy of the GNU General Public License along
+>> + * with this program; if not, see<http://www.gnu.org/licenses/>.
+>> + */
+>> +
+>> +/*
+>> + * Description:
+>> + * A regression test to check if mmap() can't map invalid physical
+>> addresses.
+>> + * If mmap() maps /dev/mem offsets outside of the addressable limits of a
+>> + * system, setting reserved bits corrupts the page table and triggers a
+>> kernel
+>> + * crash.
+>> + *
+>> + * The kernel bug has been fixed by:
+>> + * 'commit ce56a86 ("x86/mm: Limit mmap() of /dev/mem to valid physical
+>> addresses")'
+>> + */
+>> +
+>> +#include<errno.h>
+>> +#include<unistd.h>
+>> +#include<sys/mman.h>
+>> +
+>> +#include "tst_test.h"
+>> +
+>> +#define MEM_PATH	"/dev/mem"
+>> +#define CPUINFO_PATH	"/proc/cpuinfo"
+>> +
+>> +static int fd;
+>> +static int phy_addr_bits;
+>> +
+>> +static void verify_mmap(void)
+>> +{
+>> +	char *addr;
+>> +
+>> +	addr = mmap(NULL, 1, PROT_READ | PROT_WRITE, MAP_SHARED, fd,
+>> +		    1ULL<<phy_addr_bits);
+>> +	if (addr == MAP_FAILED) {
+>> +		tst_res(TPASS | TERRNO,
+>> +			"Refused to map invalid physical address");
+>> +		return;
+>> +	}
+>> +
+>> +	addr[0] = 'a';
+>> +	SAFE_MUNMAP(addr, 1);
+>> +	tst_res(TFAIL, "Mapped and set invalid physical address successfully");
+>> +}
+>> +
+>> +static void setup(void)
+>> +{
+>> +	if (access(MEM_PATH, F_OK))
+>> +		tst_brk(TCONF, "%s didn't exist", MEM_PATH);
+>> +
+>> +	fd = SAFE_OPEN(MEM_PATH, O_RDWR | O_SYNC);
+>> +
+>> +	SAFE_FILE_LINES_SCANF(CPUINFO_PATH, "address sizes\t: %d",
+>> +			&phy_addr_bits);
+> This looks like a problem for architectures other than x86:
+>
+> $ grep -l "address sizes" -r arch/
+> arch/sh/kernel/cpu/proc.c
+> arch/x86/kernel/cpu/proc.c
+> arch/x86/kernel/umip.c
+> arch/x86/lib/insn-eval.c
+Hi Jan,
 
-I was wondering what you meant by "location". That was the reason why I
-postponed my response in the first place. I did not understand that you
-were talking about the sysfs path. The only location I know for PCRs is
-that they are inside the TPM.
+I tried to find a generic way to get physical address bits from all architectures, but failed.
+Do you know how to get physical address bits in generic way?
 
-For the first question, I don't think there is a hard coded limit but I
-could be wrong. In the area of event log I think the TCG documentation
-is just utter shit.
+If we don't have a better way, can we just test the bug which is fixed for x86 on x86 architecture?
 
-There is some documentation in EFI platform and protocol specifications
-but it quite lacking.
+Thanks,
+Xiao Yang
 
-It is awkward that this stuff is in EFI specifications in the first
-place when with TPM 1.2 you access the log through ACPI and on some
-platforms the event log is available through DT. It is hard to find
-answers even to simple questions like what is put into the event log,
-which is a very basic question that I do not have to day a definitive
-answer.
+> Regards,
+> Jan
+>
+>> +}
+>> +
+>> +static void cleanup(void)
+>> +{
+>> +	if (fd>  0)
+>> +		SAFE_CLOSE(fd);
+>> +}
+>> +
+>> +static struct tst_test test = {
+>> +	.needs_root = 1,
+>> +	.setup = setup,
+>> +	.cleanup = cleanup,
+>> +	.test_all = verify_mmap,
+>> +};
+>> --
+>> 1.8.3.1
+>>
+>>
+>>
+>>
+>> --
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+>>
+>
+> .
+>
 
-/Jarkko
+
+
