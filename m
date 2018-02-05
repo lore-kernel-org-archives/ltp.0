@@ -1,164 +1,57 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 5 Feb 2018 06:42:01 -0500 (EST)
-Subject: [LTP] [PATCH] syscalls/mmap17.c: Add new regression test
-In-Reply-To: <5A7835B2.9030406@cn.fujitsu.com>
-References: <1517565794-1769-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1069626938.5781132.1517566821086.JavaMail.zimbra@redhat.com>
- <5A7835B2.9030406@cn.fujitsu.com>
-Message-ID: <940714833.169417.1517830921395.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon,  5 Feb 2018 14:24:41 +0100
+Subject: [LTP] [RFC,
+	COMMITTED 1/1] configure: add knob to control numa support
+Message-ID: <20180205132441.19130-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+From: Anders Roxell <anders.roxell@linaro.org>
 
------ Original Message -----
-> On 2018/02/02 18:20, Jan Stancek wrote:
-> >
-> > ----- Original Message -----
-> >> We add a regression test to check if mmap() can't map invalid physical
-> >> addresses.  If mmap() maps /dev/mem offsets outside of the addressable
-> >> limits of a system, setting reserved bits corrupts the page table and
-> >> triggers a kernel crash.
-> >>
-> >> The kernel bug has been fixed by:
-> >> 'commit ce56a86 ("x86/mm: Limit mmap() of /dev/mem to valid physical
-> >> addresses")'
-> >>
-> >> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
-> >> ---
-> >>   runtest/syscalls                        |  1 +
-> >>   testcases/kernel/syscalls/.gitignore    |  1 +
-> >>   testcases/kernel/syscalls/mmap/mmap17.c | 81
-> >>   +++++++++++++++++++++++++++++++++
-> >>   3 files changed, 83 insertions(+)
-> >>   create mode 100644 testcases/kernel/syscalls/mmap/mmap17.c
-> >>
-> >> diff --git a/runtest/syscalls b/runtest/syscalls
-> >> index 2a4fad0..4342f03 100644
-> >> --- a/runtest/syscalls
-> >> +++ b/runtest/syscalls
-> >> @@ -641,6 +641,7 @@ mmap14 mmap14
-> >>   #mmap11 mmap11 -i 30000
-> >>   mmap15 mmap15
-> >>   mmap16 mmap16
-> >> +mmap17 mmap17
-> >>
-> >>   modify_ldt01 modify_ldt01
-> >>   modify_ldt02 modify_ldt02
-> >> diff --git a/testcases/kernel/syscalls/.gitignore
-> >> b/testcases/kernel/syscalls/.gitignore
-> >> index 67211ca..6a8560a 100644
-> >> --- a/testcases/kernel/syscalls/.gitignore
-> >> +++ b/testcases/kernel/syscalls/.gitignore
-> >> @@ -584,6 +584,7 @@
-> >>   /mmap/mmap14
-> >>   /mmap/mmap15
-> >>   /mmap/mmap16
-> >> +/mmap/mmap17
-> >>   /modify_ldt/modify_ldt01
-> >>   /modify_ldt/modify_ldt02
-> >>   /modify_ldt/modify_ldt03
-> >> diff --git a/testcases/kernel/syscalls/mmap/mmap17.c
-> >> b/testcases/kernel/syscalls/mmap/mmap17.c
-> >> new file mode 100644
-> >> index 0000000..b83050f
-> >> --- /dev/null
-> >> +++ b/testcases/kernel/syscalls/mmap/mmap17.c
-> >> @@ -0,0 +1,81 @@
-> >> +/*
-> >> + * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
-> >> + * Author: Xiao Yang<yangx.jy@cn.fujitsu.com>
-> >> + *
-> >> + * This program is free software;  you can redistribute it and/or modify
-> >> + * it under the terms of the GNU General Public License as published by
-> >> + * the Free Software Foundation; either version 2 of the License, or
-> >> + * (at your option) any later version.
-> >> + *
-> >> + * This program is distributed in the hope that it will be useful,
-> >> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> >> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> >> + * the GNU General Public License for more details.
-> >> + *
-> >> + * You should have received a copy of the GNU General Public License
-> >> along
-> >> + * with this program; if not, see<http://www.gnu.org/licenses/>.
-> >> + */
-> >> +
-> >> +/*
-> >> + * Description:
-> >> + * A regression test to check if mmap() can't map invalid physical
-> >> addresses.
-> >> + * If mmap() maps /dev/mem offsets outside of the addressable limits of a
-> >> + * system, setting reserved bits corrupts the page table and triggers a
-> >> kernel
-> >> + * crash.
-> >> + *
-> >> + * The kernel bug has been fixed by:
-> >> + * 'commit ce56a86 ("x86/mm: Limit mmap() of /dev/mem to valid physical
-> >> addresses")'
-> >> + */
-> >> +
-> >> +#include<errno.h>
-> >> +#include<unistd.h>
-> >> +#include<sys/mman.h>
-> >> +
-> >> +#include "tst_test.h"
-> >> +
-> >> +#define MEM_PATH	"/dev/mem"
-> >> +#define CPUINFO_PATH	"/proc/cpuinfo"
-> >> +
-> >> +static int fd;
-> >> +static int phy_addr_bits;
-> >> +
-> >> +static void verify_mmap(void)
-> >> +{
-> >> +	char *addr;
-> >> +
-> >> +	addr = mmap(NULL, 1, PROT_READ | PROT_WRITE, MAP_SHARED, fd,
-> >> +		    1ULL<<phy_addr_bits);
-> >> +	if (addr == MAP_FAILED) {
-> >> +		tst_res(TPASS | TERRNO,
-> >> +			"Refused to map invalid physical address");
-> >> +		return;
-> >> +	}
-> >> +
-> >> +	addr[0] = 'a';
-> >> +	SAFE_MUNMAP(addr, 1);
-> >> +	tst_res(TFAIL, "Mapped and set invalid physical address successfully");
-> >> +}
-> >> +
-> >> +static void setup(void)
-> >> +{
-> >> +	if (access(MEM_PATH, F_OK))
-> >> +		tst_brk(TCONF, "%s didn't exist", MEM_PATH);
-> >> +
-> >> +	fd = SAFE_OPEN(MEM_PATH, O_RDWR | O_SYNC);
-> >> +
-> >> +	SAFE_FILE_LINES_SCANF(CPUINFO_PATH, "address sizes\t: %d",
-> >> +			&phy_addr_bits);
-> > This looks like a problem for architectures other than x86:
-> >
-> > $ grep -l "address sizes" -r arch/
-> > arch/sh/kernel/cpu/proc.c
-> > arch/x86/kernel/cpu/proc.c
-> > arch/x86/kernel/umip.c
-> > arch/x86/lib/insn-eval.c
-> Hi Jan,
-> 
-> I tried to find a generic way to get physical address bits from all
-> architectures, but failed.
-> Do you know how to get physical address bits in generic way?
+Allow to disable numa from the top level.
 
-Maybe some /proc or /sys that exposes max (arch) pfn?
+Based on patch:
+http://cgit.openembedded.org/openembedded-core/commit/meta/recipes-extended/ltp?id=4c7873552e13dfdba96afca7562c398d2966ca71
 
-> 
-> If we don't have a better way, can we just test the bug which is fixed for
-> x86 on x86 architecture?
+Reported-by: Roy Li <rongqing.li@windriver.com>
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ configure.ac | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-The patch you referenced is x86 specific, so we can restrict the test to x86.
-Also please set the minimum kernel version this is expected to fail on.
+diff --git a/configure.ac b/configure.ac
+index 5c8d4eaf8..b39a31ddb 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -83,6 +83,14 @@ else
+     AC_SUBST([WITH_EXPECT],["no"])
+ fi
+ 
++# Numa
++AC_ARG_WITH([numa],
++  AC_HELP_STRING([--without-numa],
++    [without numa support (default=yes)]),
++  [with_numa=no],
++  [with_numa=yes]
++)
++
+ # Perl
+ AC_ARG_WITH([perl],
+   [AC_HELP_STRING([--with-perl],
+@@ -157,7 +165,9 @@ LTP_CHECK_SELINUX
+ LTP_CHECK_SIGNAL
+ LTP_CHECK_SYSCALL_EVENTFD
+ LTP_CHECK_SYSCALL_MODIFY_LDT
++if test "x$with_numa" = xyes; then
+ LTP_CHECK_SYSCALL_NUMA
++fi
+ LTP_CHECK_SYSCALL_QUOTACTL
+ LTP_CHECK_SYSCALL_SIGNALFD
+ LTP_CHECK_SYSCALL_UNSHARE
+-- 
+2.15.1
 
-Regards,
-Jan
