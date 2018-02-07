@@ -1,35 +1,47 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 7 Feb 2018 17:54:43 +0100
-Subject: [LTP] [RFC PATCH 1/1] numa: Fix TCONF message when numa
- disabled with --without-numa
-In-Reply-To: <20180207154452.GD31084@rei>
-References: <20180207153650.15095-1-pvorel@suse.cz>
- <20180207154452.GD31084@rei>
-Message-ID: <20180207165443.bmh4sqkix66sxq5p@dell5510>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Thu, 8 Feb 2018 00:04:36 +0530
+Subject: [LTP] LTP: perf_event_open02 failed intermittently
+Message-ID: <CA+G9fYubpRaR_Q04o_9Nh=HTxHWEqHaifQF5Cg+HU_G83cTdEw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+perf_event_open02 is an intermittent failures on linux-mainline on
+Juno, x15 and x86_64 and this failure is not specific to any kernel
+version. We have seen this failures on 4.14, 4.9 and 4.4 kernel.
 
-> >  AC_OUTPUT
-> > diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
-> > index 01f178bff..b564c1cea 100644
-> > --- a/include/mk/config.mk.in
-> > +++ b/include/mk/config.mk.in
-> > @@ -82,6 +82,7 @@ LINUX_VERSION_PATCH	:= @LINUX_VERSION_PATCH@
-> >  WITH_MODULES		:= @WITH_MODULES@
+History of test,
+https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/ltp-syscalls-tests/perf_event_open02
 
-> >  HOST_CPU		:= @HOST_CPU@
-> > +NUMA_ERROR_MSG	:= @NUMA_ERROR_MSG@
+Test log on x86_64
+------------------
+perf_event_open02    0  TINFO  :  overall task clock: 30671523
+perf_event_open02    0  TINFO  :  hw sum: 2709582012, task clock sum: 276075072
+perf_event_open02    0  TINFO  :  ratio: 9.001023
+perf_event_open02    1  TFAIL  :  perf_event_open02.c:333: test failed
+(ratio was greater than )
 
-> Huh, why do we need this in config.mk ?
+LAVA job id:
+https://lkft.validation.linaro.org/scheduler/job/111546#L11603
 
-> Otherwise it looks good.
-Thanks for review. Fixed, rebased with changes from Xiao Yang and merged.
+Test log on Juno
+----------------
+perf_event_open02    0  TINFO  :  overall task clock: 189268240
+perf_event_open02    0  TINFO  :  hw sum: 573229827, task clock sum: 407820520
+perf_event_open02    0  TINFO  :  ratio: 2.154722
+perf_event_open02    1  TFAIL  :  perf_event_open02.c:333: test failed
+(ratio was greater than )
 
+LTP full log on arm64 Juno,
 
-Kind regards,
-Petr
+https://lkft.validation.linaro.org/scheduler/job/112567#L11871
+
+Please refer open bug on bugzilla,
+https://bugs.linaro.org/show_bug.cgi?id=3382
+
+Have you seen this intermittent failure before ?
+
+Best regards
+Naresh Kamboju
