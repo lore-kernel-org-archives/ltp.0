@@ -1,29 +1,35 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 7 Feb 2018 15:11:27 +0100
-Subject: [LTP] Errored: linux-test-project/ltp#644 (master - 9db796a)
-In-Reply-To: <08005f3a-c706-9961-dcf4-ce28e9d2b4ee@oracle.com>
-References: <5a7b025a7e3ab_43fea05328f50611979@d5906623-1f8e-4f3a-bb12-16f6bf1232a2.mail>
- <08005f3a-c706-9961-dcf4-ce28e9d2b4ee@oracle.com>
-Message-ID: <20180207141126.GA31084@rei>
+From: Travis CI <builds@travis-ci.org>
+Date: Wed, 07 Feb 2018 14:56:45 +0000
+Subject: [LTP] Passed: linux-test-project/ltp#645 (master - 78fb665)
+In-Reply-To: <linux-test-project/ltp+338525065+passed@travis-ci.org>
+Message-ID: <5a7b13ace24a6_43fcab9988f6484918f@2f9f8493-5923-4fd4-9822-27587e4bd149.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > *linux-test-project / ltp <https://travis-ci.org/linux-test-project/ltp?utm_source=email&utm_medium=notification>* (master <https://github.com/linux-test-project/ltp/tree/master>)
-> > 
-> > 	Build #644 has errored. <https://travis-ci.org/linux-test-project/ltp/builds/338496644?utm_source=email&utm_medium=notification> 	
-> > 16 minutes and 51 seconds
-> One of the build failed on gcc7 installation:
-> 
-> $ sudo -E apt-get -yq --no-install-suggests --no-install-recommends --force-yes install gcc-7
->   E: Unable to locate package gcc-7
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-It seem to happen randomly, AFAIC Peter opened github issue for travis
-for this.
+Build: #645
+Status: Passed
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Duration: 22 minutes and 14 seconds
+Commit: 78fb665 (master)
+Author: Petr Vorel
+Message: controllers/cpuset: Fix compiler warning
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+
+View the changeset: https://github.com/linux-test-project/ltp/compare/9db796a6c932...78fb665ec2fa
+
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/338525065?utm_source=email&utm_medium=notification
+
+--
+
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180207/92322eae/attachment.html>
