@@ -1,73 +1,60 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 8 Feb 2018 00:20:58 +0530
-Subject: [LTP] X15: LTP getrandom02 Test timeouted, sending SIGKILL
-Message-ID: <CA+G9fYuOYvXra+qKLYuJqHaNKYortPG0Quka=j8Me9RVztoobQ@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 7 Feb 2018 21:24:36 +0100
+Subject: [LTP] LTP: perf_event_open02 failed intermittently
+In-Reply-To: <CA+G9fYubpRaR_Q04o_9Nh=HTxHWEqHaifQF5Cg+HU_G83cTdEw@mail.gmail.com>
+References: <CA+G9fYubpRaR_Q04o_9Nh=HTxHWEqHaifQF5Cg+HU_G83cTdEw@mail.gmail.com>
+Message-ID: <20180207202436.GA19939@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-LTP getrandom02 Test timeouted, sending SIGKILL on x15 running 4.4 kernel.
+Hi!
+> perf_event_open02 is an intermittent failures on linux-mainline on
+> Juno, x15 and x86_64 and this failure is not specific to any kernel
+> version. We have seen this failures on 4.14, 4.9 and 4.4 kernel.
+> 
+> History of test,
+> https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/ltp-syscalls-tests/perf_event_open02
+> 
+> Test log on x86_64
+> ------------------
+> perf_event_open02    0  TINFO  :  overall task clock: 30671523
+> perf_event_open02    0  TINFO  :  hw sum: 2709582012, task clock sum: 276075072
+> perf_event_open02    0  TINFO  :  ratio: 9.001023
+> perf_event_open02    1  TFAIL  :  perf_event_open02.c:333: test failed
+> (ratio was greater than )
+> 
+> LAVA job id:
+> https://lkft.validation.linaro.org/scheduler/job/111546#L11603
+> 
+> Test log on Juno
+> ----------------
+> perf_event_open02    0  TINFO  :  overall task clock: 189268240
+> perf_event_open02    0  TINFO  :  hw sum: 573229827, task clock sum: 407820520
+> perf_event_open02    0  TINFO  :  ratio: 2.154722
+> perf_event_open02    1  TFAIL  :  perf_event_open02.c:333: test failed
+> (ratio was greater than )
+> 
+> LTP full log on arm64 Juno,
+> 
+> https://lkft.validation.linaro.org/scheduler/job/112567#L11871
+> 
+> Please refer open bug on bugzilla,
+> https://bugs.linaro.org/show_bug.cgi?id=3382
+> 
+> Have you seen this intermittent failure before ?
 
-tst_test.c:934: INFO: Timeout per run is 0h 15m 00s
-getrandom02.c:72: PASS: getrandom returned 256
-getrandom02.c:72: PASS: getrandom returned 6
-getrandom02.c:72: PASS: getrandom returned 256
-Test timeouted, sending SIGKILL!
-tst_test.c:984: INFO: If you are running on slow machine, try
-exporting LTP_TIMEOUT_MUL > 1
-tst_test.c:985: BROK: Test killed! (timeout?)
+I've seen it to fail on x86_64 as well, it's more likely to happen under
+heavy CPU load, which hints to preemption which may introduce roundring
+errors. We do have SUSE internal bug open for the testcase as well, and
+given that the bug was ignored for more than year by our kernel devs we
+may as well disable the testcase from the default run.
 
-LAVA job id:
-https://lkft.validation.linaro.org/scheduler/job/53470#L3370
+And also for me running the test realtime priority seem to fix the
+problem.
 
-Few more observations,
-1. Test case passed on 4.4.95, failed on 4.4.96 and passed on stable-rc-4.4.96.
-2. Same test case failed 7 times out of 10 times.
-3. This failure is only on x15 linux-4.4 on other boards arm64 (Hikey
-and Juno) and x86_64 test PASSED.
-
-To make the CPU fast, the cpu governor changed to "performance" from
-"ondemand" governor. But it did not helped.
-https://lkft.validation.linaro.org/scheduler/job/53713
-
-linux-stable-4.14
-https://qa-reports.linaro.org/staging-lkft/linux-stable-4.14/tests/ltp-syscalls-tests/getrandom02
-
-linux-stable-4.4
-https://qa-reports.linaro.org/staging-lkft/linux-stable-4.4/tests/ltp-syscalls-tests/getrandom02
-
-Manually disabled timessyncd and re-tested multiple times and still
-test failed intermittently on x15 running 4.15.0-rc7-00111-g5f615b9.
-And I have added more swap space and tested still it is the same case
-of intermittent failure.
-
-Run:
-----
-If you are using Linaro Open Embedded build.
-cd /opt/ltp
-./runltp -p -s getrandom02
-
-cd /opt/ltp/testcases/bin
-export PATH=`pwd`:$PATH
-./getrandom02
-
-Build and run.
----------------
-# export LTP_TIMEOUT_MUL=3
-# LTP_VERSION="20180118"
-# wget https://github.com/linux-test-project/ltp/releases/download/"${LTP_VERSION}"/ltp-full-"${LTP_VERSION}".tar.xz
-# tar --strip-components=1 -Jxf ltp-full-"${LTP_VERSION}".tar.xz
-# ./configure
-#  make -j8 all
-# make SKIP_IDCHECK=1 install
-# ./runltp -p -s getrandom02
-If you want to run 10 iterations
-# ./runltp -p -s getrandom02 -I  10
-
-Please refer open bugs in bugzillla
-https://bugs.linaro.org/show_bug.cgi?id=3401
-
-Best regards
-Naresh Kamboju
+-- 
+Cyril Hrubis
+chrubis@suse.cz
