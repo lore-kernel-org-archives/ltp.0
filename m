@@ -1,44 +1,50 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 8 Feb 2018 10:17:51 +0100
-Subject: [LTP] [PATCH] controllers/cpuset_lib: Fix compiler error
-In-Reply-To: <1518072964-31020-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1518072964-31020-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20180208091751.pal74duma7dd6cgn@dell5510>
+From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Date: Thu, 8 Feb 2018 14:36:24 +0200
+Subject: [LTP] Hidden TPM questions in the LTP IMA posts
+In-Reply-To: <3279a223-a638-a21d-aa24-1879cf20df4c@redhat.com>
+References: <1516978199.29187.43.camel@linux.vnet.ibm.com>
+ <20180131133241.rbxy252l6p5rqlh2@linux.intel.com>
+ <1517416161.3469.142.camel@linux.vnet.ibm.com>
+ <1517820147.7570.4.camel@linux.intel.com>
+ <3279a223-a638-a21d-aa24-1879cf20df4c@redhat.com>
+Message-ID: <20180208123624.3ib7w7hgj2kk7pfu@linux.intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao,
+On Mon, Feb 05, 2018 at 02:34:49PM +0100, Javier Martinez Canillas wrote:
+> Support for reading from EFI is what landed for this release, but only the
+> TPM 1.2 (SHA1) format is supported, there's still not support for TPM 2.0
+> (crypto agile). You can see that in drivers/firmware/efi/libstub/tpm.c:
+> 
+> void efi_retrieve_tpm2_eventlog_1_2(efi_system_table_t *sys_table_arg)
+> {
+> ...
+> 	status = efi_call_proto(efi_tcg2_protocol, get_event_log, tcg2_protocol,
+> 				EFI_TCG2_EVENT_LOG_FORMAT_TCG_1_2,
+> 				&log_location, &log_last_entry, &truncated);
+> ...
+> }
+> 
+> void efi_retrieve_tpm2_eventlog(efi_system_table_t *sys_table_arg)
+> {
+> 	/* Only try to retrieve the logs in 1.2 format. */
+> 	efi_retrieve_tpm2_eventlog_1_2(sys_table_arg);
+> }
+> 
+> But all the bits for TPM 2.0 (crypto agile) support seems to already be in
+> drivers/char/tpm/tpm2_eventlog.c, are only missing in the EFI stub AFAICT.
 
-> Before glibc 2.19, _DEFAULT_SOURCE wasn't added and led to compiler error.
-> We replace _BSD_SOURCE, _XOPEN_SOURCE and _DEFAULT_SOURCE with _GNU_SOURCE.
+This is correct. DT based platforms already support crypto agile.
 
-> Fixes: 78fb665 ("controllers/cpuset: Fix compiler warning")
+> Now, on latest TCG ACPI Specification (Revision 8, August 18, 2017) [1],
+> the spec does mention that the ACPI table with signature 'TPM2' can have
+> the LASA and LAML as optional fields. This is mentioned in section 7.3
+> "ACPI Table for TPM 2.0".
 
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+Oh, this is new to me. We can support it as soon as there is a plaform
+that has it. I do not have any at this point.
 
-> diff --git a/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c b/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c
-> index 134a172..172e237 100644
-> --- a/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c
-> +++ b/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c
-> @@ -22,8 +22,7 @@
->   *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
->   */
-
-> -#define _XOPEN_SOURCE 500	/* need to see pread() */
-> -#define _DEFAULT_SOURCE 1	/* need to see syscall() */
-> +#define _GNU_SOURCE	/* need to see pread() and syscall() */
->  #include <unistd.h>
-
->  #include <ctype.h>
-Thanks for fixing, pushed!
-I should have checked it and tested it on old distros myself.
-
-
-Kind regards,
-Petr
+/Jarkko
