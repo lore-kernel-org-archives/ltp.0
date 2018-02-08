@@ -1,50 +1,62 @@
-From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Date: Thu, 8 Feb 2018 14:36:24 +0200
-Subject: [LTP] Hidden TPM questions in the LTP IMA posts
-In-Reply-To: <3279a223-a638-a21d-aa24-1879cf20df4c@redhat.com>
-References: <1516978199.29187.43.camel@linux.vnet.ibm.com>
- <20180131133241.rbxy252l6p5rqlh2@linux.intel.com>
- <1517416161.3469.142.camel@linux.vnet.ibm.com>
- <1517820147.7570.4.camel@linux.intel.com>
- <3279a223-a638-a21d-aa24-1879cf20df4c@redhat.com>
-Message-ID: <20180208123624.3ib7w7hgj2kk7pfu@linux.intel.com>
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu,  8 Feb 2018 18:55:23 +0300
+Subject: [LTP] [PATCH] openposix: mmap/21-1: adjust the test to work with
+	MAP_SHARED_VALIDATE
+Message-ID: <1518105323-12867-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Feb 05, 2018 at 02:34:49PM +0100, Javier Martinez Canillas wrote:
-> Support for reading from EFI is what landed for this release, but only the
-> TPM 1.2 (SHA1) format is supported, there's still not support for TPM 2.0
-> (crypto agile). You can see that in drivers/firmware/efi/libstub/tpm.c:
-> 
-> void efi_retrieve_tpm2_eventlog_1_2(efi_system_table_t *sys_table_arg)
-> {
-> ...
-> 	status = efi_call_proto(efi_tcg2_protocol, get_event_log, tcg2_protocol,
-> 				EFI_TCG2_EVENT_LOG_FORMAT_TCG_1_2,
-> 				&log_location, &log_last_entry, &truncated);
-> ...
-> }
-> 
-> void efi_retrieve_tpm2_eventlog(efi_system_table_t *sys_table_arg)
-> {
-> 	/* Only try to retrieve the logs in 1.2 format. */
-> 	efi_retrieve_tpm2_eventlog_1_2(sys_table_arg);
-> }
-> 
-> But all the bits for TPM 2.0 (crypto agile) support seems to already be in
-> drivers/char/tpm/tpm2_eventlog.c, are only missing in the EFI stub AFAICT.
+Linux commit 50a8e840d050 ("mm: introduce MAP_SHARED_VALIDATE, a mechanism to safely define new mmap flags")
+introduced the MAP_SHARED_VALIDATE flag, which is similar to MAP_SHARED but
+provides additional semantics. So on we need to make sure that the invalid
+value of 'flags' in the test is generated taking into account this new flag.
 
-This is correct. DT based platforms already support crypto agile.
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ .../conformance/interfaces/mmap/21-1.c             |   20 +++++++++++++++++++-
+ 1 files changed, 19 insertions(+), 1 deletions(-)
 
-> Now, on latest TCG ACPI Specification (Revision 8, August 18, 2017) [1],
-> the spec does mention that the ACPI table with signature 'TPM2' can have
-> the LASA and LAML as optional fields. This is mentioned in section 7.3
-> "ACPI Table for TPM 2.0".
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/21-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/21-1.c
+index dc0cc13..81114b7 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/21-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/21-1.c
+@@ -27,6 +27,24 @@
+ #include <errno.h>
+ #include "posixtest.h"
+ 
++int is_valid(int flag)
++{
++	if (flag == MAP_SHARED || flag == MAP_PRIVATE || flag == MAP_FIXED)
++		return 1;
++
++#ifdef __linux__
++
++#ifndef MAP_SHARED_VALIDATE
++#define MAP_SHARED_VALIDATE 0x03
++#endif
++
++	if (flag == MAP_SHARED_VALIDATE)
++		return 1;
++#endif
++
++	return 0;
++}
++
+ int main(void)
+ {
+ 	char tmpfname[256];
+@@ -51,7 +69,7 @@ int main(void)
+ 	}
+ 
+ 	flag = MAP_SHARED;
+-	while (flag == MAP_SHARED || flag == MAP_PRIVATE || flag == MAP_FIXED)
++	while (is_valid(flag))
+ 		flag++;
+ 
+ 	pa = mmap(NULL, size, PROT_READ | PROT_WRITE, flag, fd, 0);
+-- 
+1.7.1
 
-Oh, this is new to me. We can support it as soon as there is a plaform
-that has it. I do not have any at this point.
-
-/Jarkko
