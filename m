@@ -1,29 +1,32 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 9 Feb 2018 17:08:42 +0100
-Subject: [LTP] [PATCH] Add regression test for CVE-2017-17053
-In-Reply-To: <20180209154410.aoy63rbcygw5tzn6@linux.suse>
-References: <20180126143700.29609-1-mmoese@suse.de>
- <20180209153001.GA28203@rei>
- <20180209154410.aoy63rbcygw5tzn6@linux.suse>
-Message-ID: <20180209160842.GB28203@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 9 Feb 2018 19:20:30 +0100
+Subject: [LTP] [COMMITTED 1/1] Replace __BEGIN_DECLS and __END_DECLS to
+ with expanded macros
+In-Reply-To: <20180209155112.GA17594@rei>
+References: <20180209140553.17453-1-pvorel@suse.cz>
+ <20180209155112.GA17594@rei>
+Message-ID: <20180209182030.GB1077@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > SAFE_SIGNAL(SIGSEGV, handler) as well?
-> I thought about it, but that would use signal(). Using signal should in
-> general be avoided in a multithreaded programm (see man signal). 
+Hi Cyril,
 
-Ah, you are right, we have to use sigaction() anyways.
+> >  testcases/kernel/syscalls/epoll2/include/epoll.h |    8 +-
+> >  utils/ffsb-6.0-rc2/config.h.in                   |   49 +-
+> >  utils/ffsb-6.0-rc2/configure                     | 5937 ++++++++++------------
+>       ^
+>       This does not look like intended change, can you please revert the
+>       patch and apply clean version?
 
-I do not think that anything bad will happen if we use signal() before
-we start the threads though.
+> (Have you used git commit -a by mistake?)
+I'm sorry for mistake. I reverted it and commit again.
 
-And we may as well add SAFE_SIGACTION() to the test library.
+I wish there was a commit of ffsb configure files with recent/common autotools version
+as I keep reverting them often. But it's a question, what is common autotools version.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+Kind regards,
+Petr
