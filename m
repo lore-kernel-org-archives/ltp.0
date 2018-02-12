@@ -1,59 +1,58 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Mon, 12 Feb 2018 15:29:25 +0300
-Subject: [LTP] [PATCH] openposix: mmap/21-1: adjust the test to work
- with MAP_SHARED_VALIDATE
-In-Reply-To: <20180208163453.GA2049@rei>
-References: <1518105323-12867-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <20180208163453.GA2049@rei>
-Message-ID: <a6a0ea9a-6552-bdf3-3b31-64e85cb09cbc@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 12 Feb 2018 15:40:51 +0100
+Subject: [LTP] [RFC] [PATCH] shell: ROD_SILENT: Print std{out,
+	err} on failure
+Message-ID: <20180212144051.21782-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi.
+Recently we had a problem when openQA (test automation framework) passed
+wrong device path as LTP_BIG_DEV. It has been much more complicated to
+debug because the error message from mkfs was not shown at all, since
+the tst_mkfs uses ROD_SILENT to execute the mkfs command.
 
-On 02/08/2018 07:34 PM, Cyril Hrubis wrote:
-> Hi!
->> +int is_valid(int flag)
->> +{
->> +	if (flag == MAP_SHARED || flag == MAP_PRIVATE || flag == MAP_FIXED)
->> +		return 1;
->> +
->> +#ifdef __linux__
->> +
->> +#ifndef MAP_SHARED_VALIDATE
->> +#define MAP_SHARED_VALIDATE 0x03
->> +#endif
->> +
->> +	if (flag == MAP_SHARED_VALIDATE)
->> +		return 1;
->> +#endif
->> +
->> +	return 0;
->> +}
-> 
-> Hmm, this probably does not scale up, what about setting the flag to
-> have all its bits set (i.e. passing ~0 to the mmap()) from the start
-> instead?
-> 
+The best solution for ROD_SILENT is to store the command output into a
+variable and print it only on failure which is done by this patch.
 
-In main() we search for the first value of 'flag' for which the
-following statement is not true:
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/lib/test.sh     | 3 ++-
+ testcases/lib/tst_test.sh | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-flag == MAP_SHARED || flag == MAP_PRIVATE || flag == MAP_FIXED || flag
-== MAP_SHARED_VALIDATE
+diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
+index 341c1f0f4..bce9893a9 100644
+--- a/testcases/lib/test.sh
++++ b/testcases/lib/test.sh
+@@ -225,8 +225,9 @@ tst_timeout()
+ 
+ ROD_SILENT()
+ {
+-	$@ > /dev/null 2>&1
++	local tst_out=$($@ 2>&1)
+ 	if [ $? -ne 0 ]; then
++		echo "$tst_out"
+ 		tst_brkm TBROK "$@ failed"
+ 	fi
+ }
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index d6b638549..48afb9cc4 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -118,8 +118,9 @@ tst_brk()
+ 
+ ROD_SILENT()
+ {
+-	tst_rod $@ > /dev/null 2>&1
++	local tst_out=$(tst_rod $@ 2>&1)
+ 	if [ $? -ne 0 ]; then
++		echo "$tst_out"
+ 		tst_brk TBROK "$@ failed"
+ 	fi
+ }
+-- 
+2.13.6
 
-where the last part is Linux-specific and likely needs an #ifdef.
-
-We are not interested if flag has MAP_SHARED or other bits set, but we
-are interested when flag _equals_ MAP_SHARED or other values.
-
-In order to make the code more readable (IMHO) I decided to move this
-check into a separate function.
-
-I don't fully understand your proposal. Could you, please, elaborate a
-bit more?
-
-Thanks.
