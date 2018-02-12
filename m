@@ -1,120 +1,146 @@
-From: sunlianwen <sunlw.fnst@cn.fujitsu.com>
-Date: Mon, 12 Feb 2018 08:16:48 +0800
-Subject: [LTP] report a error about vlan01.sh
-Message-ID: <a91d75c3-a154-dc04-bf46-ac9bd234006f@cn.fujitsu.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Mon, 12 Feb 2018 17:03:29 +0800
+Subject: [LTP] [PATCH] commands/sysctl: Add new regression test for
+ invalid sched_time_avg
+In-Reply-To: <1516695452-23224-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1516695452-23224-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <5A815861.1050109@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey
+Hi,
 
-     I find a error about ltp vlan01 test case, but I not sure whether I 
-think is right. and the author of this case is your, if possible I hope you
+Ping :-)
 
-   revise this case.
+Thanks,
+Xiao Yang
+On 2018/01/23 16:17, Xiao Yang wrote:
+> The kernel bug has been fixed in kernel:
+> '5ccba44ba118("sched/sysctl: Check user input value of sysctl_sched_time_avg")'
+>
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  runtest/commands                      |  1 +
+>  testcases/commands/sysctl/Makefile    | 25 ++++++++++++++
+>  testcases/commands/sysctl/sysctl01.sh | 65 +++++++++++++++++++++++++++++++++++
+>  3 files changed, 91 insertions(+)
+>  create mode 100644 testcases/commands/sysctl/Makefile
+>  create mode 100755 testcases/commands/sysctl/sysctl01.sh
+>
+> diff --git a/runtest/commands b/runtest/commands
+> index 92df3af..fde8063 100644
+> --- a/runtest/commands
+> +++ b/runtest/commands
+> @@ -44,3 +44,4 @@ wc01 wc01.sh
+>  keyctl01 keyctl01.sh
+>  gdb01 gdb01.sh
+>  unshare01 unshare01.sh
+> +sysctl01 sysctl01.sh
+> diff --git a/testcases/commands/sysctl/Makefile b/testcases/commands/sysctl/Makefile
+> new file mode 100644
+> index 0000000..61ff705
+> --- /dev/null
+> +++ b/testcases/commands/sysctl/Makefile
+> @@ -0,0 +1,25 @@
+> +#
+> +# Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
+> +# Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> +#
+> +# This program is free software; you can redistribute it and/or modify
+> +# it under the terms of the GNU General Public License as published by
+> +# the Free Software Foundation; either version 2 of the License, or
+> +# (at your option) any later version.
+> +#
+> +# This program is distributed in the hope that it will be useful,
+> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+> +# General Public License for more details.
+> +#
+> +# You should have received a copy of the GNU General Public License along
+> +# with this program; if not, see <http://www.gnu.org/licenses/>.
+> +#
+> +
+> +top_srcdir		?= ../../..
+> +
+> +include $(top_srcdir)/include/mk/env_pre.mk
+> +
+> +INSTALL_TARGETS		:= *.sh
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/commands/sysctl/sysctl01.sh b/testcases/commands/sysctl/sysctl01.sh
+> new file mode 100755
+> index 0000000..2bcf9a7
+> --- /dev/null
+> +++ b/testcases/commands/sysctl/sysctl01.sh
+> @@ -0,0 +1,65 @@
+> +#!/bin/sh
+> +#
+> +# Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
+> +# Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> +#
+> +# This program is free software;  you can redistribute it and#or modify
+> +# it under the terms of the GNU General Public License as published by
+> +# the Free Software Foundation; either version 2 of the License, or
+> +# (at your option) any later version.
+> +#
+> +# This program is distributed in the hope that it will be useful, but
+> +# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+> +# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+> +# for more details.
+> +#
+> +# You should have received a copy of the GNU General Public License
+> +# along with this program; if not, see <http://www.gnu.org/licenses/>.
+> +#
+> +# Description:
+> +# This is a regression test for invalid value of sched_time_avg.
+> +# System will hang if user set sched_time_avg to 0 on buggy kernel.
+> +#
+> +# The kernel bug has been fixed in kernel:
+> +# '5ccba44ba118("sched/sysctl: Check user input value of sysctl_sched_time_avg")'
+> +
+> +TST_TESTFUNC=sysctl_test
+> +TST_NEEDS_CMDS="sysctl"
+> +
+> +. tst_test.sh
+> +
+> +get_value()
+> +{
+> +	local value=$(sysctl -n $1)
+> +	[ -z "$value" ] && tst_brk TBROK \
+> +		"Failed to get the value of sched_time_avg(_ms)"
+> +
+> +	echo $value
+> +}
+> +
+> +sysctl_test()
+> +{
+> +	# With commit d00535d, sched_time_avg was renamed as sched_time_avg_ms
+> +	local name=$(sysctl -a 2>&1 | egrep -o \
+> +		'kernel.(sched_time_avg|sched_time_avg_ms)')
+> +	[ -z "$name" ] && tst_brk TCONF \
+> +		"sched_time_avg(_ms) was not supported"
+> +
+> +	local orig_value=$(get_value $name)
+> +
+> +	sysctl -w $name=0 >/dev/null 2>&1
+> +
+> +	# Increase the chance of exposing the problem on RHEL6
+> +	sleep 3
+> +
+> +	local curr_value=$(get_value $name)
+> +
+> +	if [ ${curr_value} -eq ${orig_value} ]; then
+> +		tst_res TPASS "Setting sched_time_avg(_ms) failed"
+> +	else
+> +		tst_res TFAIL "Setting sched_time_avg(_ms) succeeded"
+> +		sysctl -w $name=${orig_value} >/dev/null 2>&1
+> +	fi
+> +}
+> +
+> +tst_run
 
-   error info "RTNETLINK answers: Numerical result out of range" will 
-see when exec vlan01 testcase , and I debug this case. I find
-
-   this error info cause by vlanID, because the range of vlanID is 
-"0-4095", so when exec "ip link add link eth1 name ltp_v4095
-
-   type vlan id 4095 protocol 802.1Q loose_binding off reorder_hdr on"  
-the error will happen.
-
-   whether  can revise the virt_multiple_add_test() function, let the 
-vlanid range is fixed  "1-2000".
 
 
-the path of error file: ltp/testcases/network/virt/virt_lib.sh
-
-144 virt_multiple_add_test()
-145 {
-146         local opt="$@"
-147         local max=$(($start_id + $NS_TIMES - 1))
-148
-149         tst_resm TINFO "add $NS_TIMES $virt_type, then delete"
-150
-151         for i in $(seq $start_id $max); do
-152                 virt_add ltp_v$i id $i $opt || \
-153                         tst_brkm TFAIL "failed to create 'ltp_v0 $opt'"
-154                 ROD_SILENT "ip link set ltp_v$i up"
-155         done
-156
-157         for i in $(seq $start_id $max); do
-158                 ROD_SILENT "ip link set ltp_v$i down"
-159                 ROD_SILENT "ip link delete ltp_v$i"
-160         done
-161
-162         tst_resm TPASS "done"
-163 }
-
-file path: iproute-4.11.0-0.el7/ip/iplink_vlan.c
-
-21 static void print_explain(FILE *f)
-  22 {
-  23         fprintf(f,
-  24                 "Usage: ... vlan id VLANID\n"
-  25                 "                [ protocol VLANPROTO ]\n"
-  26                 "                [ reorder_hdr { on | off } ]\n"
-  27                 "                [ gvrp { on | off } ]\n"
-  28                 "                [ mvrp { on | off } ]\n"
-  29                 "                [ loose_binding { on | off } ]\n"
-  30                 "                [ ingress-qos-map QOS-MAP ]\n"
-  31                 "                [ egress-qos-map QOS-MAP ]\n"
-  32                 "\n"
-  33              "VLANID := 0-4095\n"
-  34                 "VLANPROTO: [ 802.1Q / 802.1ad ]\n"
-  35                 "QOS-MAP := [ QOS-MAP ] QOS-MAPPING\n"
-  36                 "QOS-MAPPING := FROM:TO\n"
-  37         );
-  38 }
-
-line 33 ,we can know, the range of VlANID is 0-4095
-
-
-the  vlan01 test result is below
-
-<<<test_output>>>
-incrementing stop
-vlan01 1 TINFO: Network config (local -- remote):
-vlan01 1 TINFO: eth1 -- eth1
-vlan01 1 TINFO: 192.168.122.44/24 -- 192.168.122.46/24
-vlan01 1 TINFO: fec0:0:0:1::1/64 -- fec0:0:0:1::2/64
-vlan01 1 TINFO: add vlan with ''
-vlan01 1 TINFO: add 2000 vlan, then delete
-vlan01 1 TPASS: done
-vlan01 2 TINFO: add vlan with 'protocol 802.1Q loose_binding off 
-reorder_hdr off'
-vlan01 2 TINFO: add 2000 vlan, then delete
-vlan01 2 TPASS: done
-vlan01 3 TINFO: add vlan with 'protocol 802.1Q loose_binding off 
-reorder_hdr on'
-vlan01 3 TINFO: add 2000 vlan, then delete
-*RTNETLINK answers: Numerical result out of range**
-**vlan01 3 TFAIL: failed to create 'ltp_v0 protocol 802.1Q loose_binding 
-off reorder_hdr on'*
-vlan01 4 TINFO: cleanup virtual interfaces...
-<<<execution_status>>>
-initiation_status="ok"
-duration=85 termination_type=exited termination_id=1 corefile=no
-cutime=1322 cstime=2449
-<<<test_end>>>
-INFO: ltp-pan reported some tests FAIL
-LTP Version: 20180118
-
-###############################################################
-
-             Done executing testcases.
-             LTP Version:  20180118
-###############################################################
-
-That is all  ,thanks very much.
-
-
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180212/27c4ae48/attachment.html>
