@@ -1,9 +1,8 @@
 From: yang xu <xuyang.jy@cn.fujitsu.com>
-Date: Wed, 14 Feb 2018 00:01:36 +0800
-Subject: [LTP] [PATCH 3/3] syscalls/rmdir03: Cleanup && Convert to new API
-In-Reply-To: <1518537696-22033-1-git-send-email-xuyang.jy@cn.fujitsu.com>
-References: <1518537696-22033-1-git-send-email-xuyang.jy@cn.fujitsu.com>
-Message-ID: <1518537696-22033-3-git-send-email-xuyang.jy@cn.fujitsu.com>
+Date: Wed, 14 Feb 2018 00:01:34 +0800
+Subject: [LTP] [PATCH 1/3] syscalls/rmdir01,
+	04: Cleanup && Convert to new API
+Message-ID: <1518537696-22033-1-git-send-email-xuyang.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,18 +10,86 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 1) Take use of some safe macros
-2) Don't need to fork child processes
+2) Remove duplicated rmdir04
 
 Signed-off-by: yang xu <xuyang.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/rmdir/rmdir03.c |  373 ++++++-----------------------
- 1 files changed, 70 insertions(+), 303 deletions(-)
+ runtest/ltplite                           |    1 -
+ runtest/quickhit                          |    2 -
+ runtest/stress.part3                      |    1 -
+ runtest/syscalls                          |    1 -
+ testcases/kernel/syscalls/.gitignore      |    1 -
+ testcases/kernel/syscalls/rmdir/rmdir01.c |  170 +++++--------------------
+ testcases/kernel/syscalls/rmdir/rmdir04.c |  198 -----------------------------
+ 7 files changed, 30 insertions(+), 344 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/rmdir/rmdir04.c
 
-diff --git a/testcases/kernel/syscalls/rmdir/rmdir03.c b/testcases/kernel/syscalls/rmdir/rmdir03.c
-index 2bdc8ba..c4e80ff 100644
---- a/testcases/kernel/syscalls/rmdir/rmdir03.c
-+++ b/testcases/kernel/syscalls/rmdir/rmdir03.c
-@@ -1,338 +1,105 @@
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 49d2b11..f664edc 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -666,7 +666,6 @@ rmdir01 rmdir01
+ rmdir02 rmdir02
+ rmdir03 rmdir03
+ rmdir03A symlink01 -T rmdir03
+-rmdir04 rmdir04
+ rmdir05 rmdir05
+ 
+ sbrk01 sbrk01
+diff --git a/runtest/quickhit b/runtest/quickhit
+index 2a42769..56dcc65 100644
+--- a/runtest/quickhit
++++ b/runtest/quickhit
+@@ -199,8 +199,6 @@ readlink02 readlink02
+ # Basic test for readlink(2)
+ rename02 rename02
+ # Basic test for rename(2)
+-rmdir04 rmdir04
+-# Basic test for rmdir(2)
+ rmdir05 rmdir05
+ # rmdir(2) test for errno(s) EINVAL, EMLINK, EFAULT
+ sbrk01 sbrk01
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index 004bbad..eaa97cd 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -565,7 +565,6 @@ rmdir01 rmdir01
+ rmdir02 rmdir02
+ rmdir03 rmdir03
+ rmdir03A symlink01 -T rmdir03
+-rmdir04 rmdir04
+ rmdir05 rmdir05
+ 
+ sbrk01 sbrk01
+diff --git a/runtest/syscalls b/runtest/syscalls
+index ca84c10..bc8cf2d 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -943,7 +943,6 @@ rmdir01 rmdir01
+ rmdir02 rmdir02
+ rmdir03 rmdir03
+ rmdir03A symlink01 -T rmdir03
+-rmdir04 rmdir04
+ rmdir05 rmdir05
+ 
+ rt_sigaction01 rt_sigaction01
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 684f5e7..04b5c5f 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -781,7 +781,6 @@
+ /rmdir/rmdir01
+ /rmdir/rmdir02
+ /rmdir/rmdir03
+-/rmdir/rmdir04
+ /rmdir/rmdir05
+ /rt_sigaction/rt_sigaction01
+ /rt_sigaction/rt_sigaction02
+diff --git a/testcases/kernel/syscalls/rmdir/rmdir01.c b/testcases/kernel/syscalls/rmdir/rmdir01.c
+index 370e607..9f911ec 100644
+--- a/testcases/kernel/syscalls/rmdir/rmdir01.c
++++ b/testcases/kernel/syscalls/rmdir/rmdir01.c
+@@ -1,162 +1,52 @@
  /*
 + * Copyright (c) International Business Machines  Corp., 2001
   *
@@ -50,44 +117,37 @@ index 2bdc8ba..c4e80ff 100644
 - *   along with this program;  if not, write to the Free Software
 - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 + * You should have received a copy of the GNU General Public License
-+ * along with this program;  if not, see <http://www.gnu.org/licenses/>.
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
   */
  
- /*
+-/*
 - * NAME
-- *	rmdir03
+- *	rmdir01
 - *
-  * DESCRIPTION
-- *      check rmdir() fails with EPERM or EACCES
+- * DESCRIPTION
+- *	This test will verify that rmdir(2) syscall basic functionality.
+- *	verify rmdir(2) returns a value of 0 and the directory being
+- *	removed
 - *
 - * ALGORITHM
 - *	Setup:
 - *		Setup signal handling.
-- *		Pause for SIGUSR1 if option specified.
 - *		Create temporary directory.
+- *		Pause for SIGUSR1 if option specified.
 - *
 - *	Test:
 - *		Loop if the proper options are given.
-- *              1. create a directory tstdir1 and set the sticky bit, then
-- *                 create directory tstdir2 under tstdir1. Fork a
-- *                 child , set to be user nobody. Pass tstdir2 to rmdir(2).
-- *                 Verify the return value is not 0 and the errno is EPERM
-- *                 or EACCES.
-- *              2. Fork a child, set to be user nobody. Create a directory
-- *                 tstdir1 and only give write permission to nobody.
-- *                 Create directory tstdir2 under tstdir1. Fork the second
-- *                 child , set to be user nobody. Pass tstdir2 to rmdir(2).
-- *                 Verify the return value is not 0 and the errno is EACCES.
+- *                 make a directory tstdir
+- *                 call rmdir(tstdir), check the return value
+- *                 verify the directory tstdir does not exists.
 - *
 - *	Cleanup:
 - *		Print errno log and/or timing stats if options given
-- *		Delete the temporary directory created.
-+ *   check rmdir() fails with EPERM or EACCES
-  *
+- *		Delete the temporary directory created.*
 - * USAGE
-- *	rmdir03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *	rmdir01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
 - *	where,  -c n : Run n copies concurrently.
-- *		-e   : Turn on errno logging.
+- *		-f   : Turn off functionality Testing.
 - *		-i n : Execute test n times.
 - *		-I x : Execute test for x seconds.
 - *		-P x : Pause for x seconds between iterations.
@@ -97,80 +157,42 @@ index 2bdc8ba..c4e80ff 100644
 - *	07/2001 Ported by Wayne Boyer
 - *
 - * RESTRICTIONS
-- *	Test must be run as root.
-+ *	1. Create a directory tstdir1 and set the sticky bit, then
-+ *         create directory tstdir2 under tstdir1. Call dormdir(),
-+ *         set to be user nobody. Pass tstdir2 to rmdir(2), verify
-+ *         the return value is not 0 and the errno is EPERO or EACCES.
-  *
-+ *	2. Create a directory tstdir1 and doesn't give execute/search
-+ *         permission to nobody, then create directory tstdir2 under
-+ *         tstdir1.  Call dormdir(), set to be user nobody.  Pass
-+ *         tstdir2 to rmdir(2), verify the return value is not 0 and
-+ *         the errno is EACCES.
+- *	None.
++/* DESCRIPTION
++ *   This test will verify that rmdir(2) syscall basic functionality.
++ *   verify rmdir(2) returns a value of 0 and the directory being removed.
   */
  #include <errno.h>
 -#include <string.h>
  #include <sys/stat.h>
  #include <sys/types.h>
--#include <sys/wait.h>
 -#include <fcntl.h>
- #include <pwd.h>
  #include <unistd.h>
--
 -#include "test.h"
 -#include "safe_macros.h"
 -
--void dochild1();
--void dochild2();
 -void setup();
 -void cleanup();
--
++#include "tst_test.h"
+ 
 -#define PERMS		0777
--
--static uid_t nobody_uid;
--
--char *TCID = "rmdir03";
++#define TESTDIR "testdir"
+ 
+-char *TCID = "rmdir01";
 -int TST_TOTAL = 1;
 -
--char tstdir1[255];
--char tstdir2[255];
--char tstdir3[255];
--char tstdir4[255];
+-char tstdir[100];
 -
 -int main(int ac, char **av)
-+#include "tst_test.h"
-+
-+#define DIR_MODE    0777
-+#define NOEXCUTE_MODE 0766
-+#define TESTDIR     "testdir"
-+#define TESTDIR2    "testdir/testdir2"
-+#define TESTDIR3    "testdir3"
-+#define TESTDIR4    "testdir3/testdir4"
-+
-+static struct testcase {
-+	mode_t dir_mode;
-+	char *subdir;
-+} tcases[] =  {
-+	{DIR_MODE | S_ISVTX, TESTDIR2},
-+	{NOEXCUTE_MODE, TESTDIR4},
-+};
-+
-+static void do_rmdir(unsigned int n)
++static void verify_rmdir(void)
  {
 -	int lc;
--	pid_t pid;
--	struct stat buf1;
--	int e_code, status, status2;
--
+ 	struct stat buf;
+ 
 -	/*
 -	 * parse standard options
 -	 */
 -	tst_parse_opts(ac, av, NULL, NULL);
--#ifdef UCLINUX
--	maybe_run_child(&dochild1, "ns", 1, tstdir2);
--	maybe_run_child(&dochild2, "ns", 2, tstdir4);
--#endif
 -
 -	/*
 -	 * perform global setup for test
@@ -184,235 +206,72 @@ index 2bdc8ba..c4e80ff 100644
 -
 -		tst_count = 0;
 -
--//test1:       $
 -		/*
--		 * attempt to rmdir a file whose parent directory has
--		 * the sticky bit set without the root right
--		 * or effective uid
+-		 * TEST rmdir() base functionality
 -		 */
 -
--		if (stat(tstdir1, &buf1) != -1) {
--			tst_brkm(TBROK, cleanup,
--				 "tmp directory %s found!", tstdir1);
--		}
+-		/* Initialize the test directory name */
+-
 -		/* create a directory */
--		SAFE_MKDIR(cleanup, tstdir1, PERMS);
--		if (stat(tstdir1, &buf1) == -1) {
--			perror("stat");
--			tst_brkm(TBROK, cleanup, "failed to stat directory %s "
--				 "in rmdir()", tstdir1);
+-		SAFE_MKDIR(cleanup, tstdir, PERMS);
+-		/* call rmdir using TEST macro */
++	SAFE_MKDIR(TESTDIR, 0777);
+ 
+-		TEST(rmdir(tstdir));
 -
--		}
--		/* set the sticky bit */
--		if (chmod(tstdir1, buf1.st_mode | S_ISVTX) != 0) {
--			perror("chmod");
--			tst_brkm(TBROK, cleanup,
--				 "failed to set the S_ISVTX bit");
--
--		}
--		/* create a sub directory under tstdir1 */
--		SAFE_MKDIR(cleanup, tstdir2, PERMS);
--
--		if ((pid = FORK_OR_VFORK()) == -1) {
--			tst_brkm(TBROK, cleanup, "fork() failed");
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL, "rmdir(%s) Failed", tstdir);
+-			continue;
 -		}
 -
--		if (pid == 0) {	/* first child */
--#ifdef UCLINUX
--			if (self_exec(av[0], "ns", 1, tstdir2) < 0) {
--				tst_brkm(TBROK, cleanup, "self_exec failed");
--			}
--#else
--			dochild1();
--#endif
+-		if (stat(tstdir, &buf) != -1) {
+-			tst_resm(TFAIL, "directory %s still exists",
+-				 tstdir);
+-			continue;
+-		} else {
+-			tst_resm(TPASS, "directory has been removed");
 -		}
--		/* Parent */
--
--//test2:       $
--		/* create the a directory with 0700 permits */
--		SAFE_MKDIR(cleanup, tstdir3, 0700);
--		/* create the a directory with 0700 permits */
--		SAFE_MKDIR(cleanup, tstdir4, 0777);
--
--		if ((pid = FORK_OR_VFORK()) == -1) {
--			tst_brkm(TBROK, cleanup, "fork() failed");
--		}
--
--		if (pid == 0) {	/* child */
--#ifdef UCLINUX
--			if (self_exec(av[0], "ns", 2, tstdir4) < 0) {
--				tst_brkm(TBROK, cleanup, "self_exec failed");
--			}
--#else
--			dochild2();
--#endif
--		} else {	/* parent */
--			/* wait for the child to finish */
--			wait(&status);
--			wait(&status2);
--			/* make sure the child returned a good exit status */
--			e_code = status >> 8;
--			if (e_code != 0) {
--				tst_resm(TFAIL, "Failures reported above");
--			} else {
--				/* No error in the 1st one, check the 2nd */
--				e_code = status2 >> 8;
--				if (e_code != 0) {
--					tst_resm(TFAIL,
--						 "Failures reported above");
--				}
--			}
--		}
--
--		/* clean up things in case we are looping */
--
--		(void)rmdir(tstdir2);
--		(void)rmdir(tstdir1);
--		(void)rmdir(tstdir4);
--		(void)rmdir(tstdir3);
--
--	}
--
--	/*
--	 * cleanup and exit
--	 */
++	TEST(rmdir(TESTDIR));
++	if (TEST_RETURN == -1) {
++		tst_res(TFAIL | TTERRNO, "rmdir(%s) failed", TESTDIR);
++		return;
+ 	}
+ 
 -	cleanup();
 -	tst_exit();
--
--}
--
--/*
-- * dochild1()
-- */
--void dochild1(void)
--{
--	int retval = 0;
--
--	/* set to nobody */
--	if (seteuid(nobody_uid) == -1) {
--		retval = 1;
--		tst_brkm(TBROK, cleanup, "setreuid failed to "
--			 "set effective uid to %d", nobody_uid);
--	}
--
--	/* rmdir tstdir2 */
--	TEST(rmdir(tstdir2));
--
--	if (TEST_ERRNO) {
--	}
-+	struct testcase *tc = &tcases[n];
- 
-+	TEST(rmdir(tc->subdir));
- 	if (TEST_RETURN != -1) {
--		retval = 1;
--		tst_resm(TFAIL, "call succeeded unexpectedly");
--	} else if ((TEST_ERRNO != EPERM) && (TEST_ERRNO != EACCES)) {
--		retval = 1;
--		tst_resm(TFAIL, "Expected EPERM or EACCES, got %d", TEST_ERRNO);
--	} else {
--		tst_resm(TPASS, "rmdir() produced EPERM or EACCES");
--	}
--
--	if (seteuid(0) == -1) {
--		retval = 1;
--		tst_brkm(TBROK, cleanup, "seteuid(0) failed");
-+		tst_res(TFAIL, "rmdir() succeeded unexpectedly");
-+		return;
- 	}
--	exit(retval);
--	/* END of child 1 (test1) */
--}
--
--/*
-- * dochild1()
-- */
--void dochild2(void)
--{
--	int retval = 0;
- 
--	/* set to nobody */
--	if (seteuid(nobody_uid) == -1) {
--		retval = 1;
--		tst_brkm(TBROK, cleanup, "setreuid failed to "
--			 "set effective uid to %d", nobody_uid);
-+	if (TEST_ERRNO != EACCES) {
-+		if (tc->dir_mode & S_ISVTX && TEST_ERRNO == EPERM)
-+			tst_res(TPASS | TTERRNO, "rmdir() got expected errno");
-+		else
-+			tst_res(TFAIL | TTERRNO, "expected EPERM, but got");
-+		return;
- 	}
- 
--	/* rmdir tstdir4 */
--	TEST(rmdir(tstdir4));
--
--	if (TEST_ERRNO) {
--	}
--
--	if (TEST_RETURN != -1) {
--		retval = 1;
--		tst_resm(TFAIL, "call succeeded unexpectedly");
--	} else if (TEST_ERRNO != EACCES) {
--		retval = 1;
--		tst_resm(TFAIL, "Expected EACCES got %d", TEST_ERRNO);
--	} else {
--		tst_resm(TPASS, "rmdir() produced EACCES");
--	}
--
--	if (seteuid(0) == -1) {
--		retval = 1;
--		tst_brkm(TBROK, cleanup, "seteuid(0) failed");
--	}
--	exit(retval);
-+	tst_res(TPASS | TTERRNO, "rmdir() got expected errno");
++	if (!stat(TESTDIR, &buf))
++		tst_res(TFAIL, "rmdir(%s) failed", TESTDIR);
++	else
++		tst_res(TPASS, "rmdir(%s) success", TESTDIR);
  }
  
 -/*
 - * setup() - performs all ONE TIME setup for this test.
 - */
 -void setup(void)
-+
-+static void setup(void)
- {
- 	struct passwd *pw;
--
--	tst_require_root();
--
--	pw = SAFE_GETPWNAM(NULL, "nobody");
--	nobody_uid = pw->pw_uid;
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
+-{
++static struct tst_test test = {
++	.test_all = verify_rmdir,
++	.needs_tmpdir = 1,
++};
+ 
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
 -
 -	/* Create a temporary directory and make it current. */
 -	tst_tmpdir();
-+	pw = SAFE_GETPWNAM("nobody");
- 
- 	umask(0);
- 
--	sprintf(tstdir1, "./tstdir1_%d", getpid());
--	sprintf(tstdir2, "%s/tstdir2_%d", tstdir1, getpid());
--	sprintf(tstdir3, "./tstdir3_%d", getpid());
--	sprintf(tstdir4, "%s/tstdir3_%d", tstdir3, getpid());
-+	SAFE_MKDIR(TESTDIR, DIR_MODE | S_ISVTX);
-+	SAFE_MKDIR(TESTDIR2, DIR_MODE);
-+	SAFE_MKDIR(TESTDIR3, NOEXCUTE_MODE);
-+	SAFE_MKDIR(TESTDIR4, DIR_MODE);
-+
-+	SAFE_SETEUID(pw->pw_uid);
- }
- 
+-
+-	sprintf(tstdir, "./tstdir_%d", getpid());
+-}
+-
 -/*
 - * cleanup() - performs all ONE TIME cleanup for this test at
 - *              completion or premature exit.
 - */
 -void cleanup(void)
-+static void cleanup(void)
- {
-+	SAFE_SETEUID(0);
-+}
- 
+-{
+-
 -	/*
 -	 * Remove the temporary directory.
 -	 */
@@ -421,15 +280,211 @@ index 2bdc8ba..c4e80ff 100644
 -	/*
 -	 * Exit with return code appropriate for results.
 -	 */
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = do_rmdir,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+};
- 
+-
+-}
+diff --git a/testcases/kernel/syscalls/rmdir/rmdir04.c b/testcases/kernel/syscalls/rmdir/rmdir04.c
+deleted file mode 100644
+index fe5e320..0000000
+--- a/testcases/kernel/syscalls/rmdir/rmdir04.c
++++ /dev/null
+@@ -1,198 +0,0 @@
+-/*
+- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
+- *
+- * http://www.sgi.com
+- *
+- * For further information regarding this notice, see:
+- *
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+- *
+- */
+-/* $Id: rmdir04.c,v 1.6 2009/11/02 13:57:18 subrata_modak Exp $ */
+-/**********************************************************
+- *
+- *    OS Test - Silicon Graphics, Inc.
+- *
+- *    TEST IDENTIFIER	: rmdir04
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Basic test for rmdir(2)
+- *
+- *    PARENT DOCUMENT	: usctpl01
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    WALL CLOCK TIME	: 1
+- *
+- *    CPU TYPES		: ALL
+- *
+- *    AUTHOR		: William Roske
+- *
+- *    CO-PILOT		: Dave Fenner
+- *
+- *    DATE STARTED	: 03/30/92
+- *
+- *    INITIAL RELEASE	: UNICOS 7.0
+- *
+- *    TEST CASES
+- *
+- *	1.) rmdir(2) returns...(See Description)
+- *
+- *    INPUT SPECIFICATIONS
+- *	The standard options for system call tests are accepted.
+- *	(See the parse_opts(3) man page).
+- *
+- *    OUTPUT SPECIFICATIONS
+- *
+- *    DURATION
+- *	Terminates - with frequency and infinite modes.
+- *
+- *    SIGNALS
+- *	Uses SIGUSR1 to pause before test if option set.
+- *	(See the parse_opts(3) man page).
+- *
+- *    RESOURCES
+- *	None
+- *
+- *    ENVIRONMENTAL NEEDS
+- *      No run-time environmental needs.
+- *
+- *    SPECIAL PROCEDURAL REQUIREMENTS
+- *	None
+- *
+- *    INTERCASE DEPENDENCIES
+- *	None
+- *
+- *    DETAILED DESCRIPTION
+- *	This is a Phase I test for the rmdir(2) system call.  It is intended
+- *	to provide a limited exposure of the system call, for now.  It
+- *	should/will be extended when full functional tests are written for
+- *	rmdir(2).
+- *
+- *	Setup:
+- *	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- *	Test:
+- *	 Loop if the proper options are given.
+- *	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
+- *
+- *	Cleanup:
+- *	  Print errno log and/or timing stats if options given
+- *
+- *
+- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
+-
+-#include <sys/stat.h>
+-#include <sys/types.h>
+-#include <fcntl.h>
+-#include <unistd.h>
+-
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-#include "test.h"
+-#include "safe_macros.h"
+-
+-void setup();
+-void cleanup();
+-
+-char *TCID = "rmdir04";
+-int TST_TOTAL = 1;
+-
+-char *cwd;
+-char fname[255];
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-
+-    /***************************************************************
+-     * parse standard options
+-     ***************************************************************/
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-    /***************************************************************
+-     * perform global setup for test
+-     ***************************************************************/
+-	setup();
+-
+-    /***************************************************************
+-     * check looping state if -c option given
+-     ***************************************************************/
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		SAFE_MKDIR(cleanup, fname, 0777);
+-		/*
+-		 * Call rmdir(2)
+-		 */
+-		TEST(rmdir(fname));
+-
+-		/* check return code */
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL, "rmdir(%s) Failed, errno=%d : %s",
+-				 fname, TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-			tst_resm(TPASS, "rmdir(%s) returned %ld", fname,
+-				 TEST_RETURN);
+-		}
+-	}
+-
+-	cleanup();
+-	tst_exit();
+-}
+-
+-/***************************************************************
+- * setup() - performs all ONE TIME setup for this test.
+- ***************************************************************/
+-void setup(void)
+-{
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	tst_tmpdir();
+-
+-	sprintf(fname, "./dir_%d", getpid());
+-
+-}
+-
+-/***************************************************************
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- ***************************************************************/
+-void cleanup(void)
+-{
+-
+-	tst_rmdir();
+-
 -}
 -- 
 1.7.1
