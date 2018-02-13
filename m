@@ -1,37 +1,65 @@
-From: Steve Muckle <smuckle.linux@gmail.com>
-Date: Mon, 12 Feb 2018 21:27:52 -0800
-Subject: [LTP] [PATCH] syscalls/swapon03: do not fail if /proc/swaps is
-	absent
-Message-ID: <20180213052752.10502-1-smuckle.linux@gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Tue, 13 Feb 2018 16:41:36 +0800
+Subject: [LTP] [PATCH v2 1/5] syscalls/mremap03: Do not pass MAP_FAILED into
+	mremap()
+In-Reply-To: <20180212162258.GA26897@rei>
+References: <20180212162258.GA26897@rei>
+Message-ID: <1518511300-12371-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-If the /proc/swaps file is absent the test should be skipped due
-to incompatible configuration.
+Running mremap03 -i n got the following errors:
+-----------------------------------------------
+mremap03    1  TPASS  :  mremap() Fails, 'old region not mapped', errno 14
+mremap03    1  TFAIL  :  mremap03.c:137: mremap() Fails, 'Unexpected errno 22
+...
+-----------------------------------------------
 
-Change-Id: I38da7486b5f78831dbd8c0083a5817eb32f0aee6
-Signed-off-by: Steve Muckle <smuckle.linux@gmail.com>
+When running mremap03 in loops, we passed MAP_FAILED instead of bad
+address into mremap().
+
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/swapon/swapon03.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ testcases/kernel/syscalls/mremap/mremap03.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
-index d3f73b044fe1..f690389c55a3 100644
---- a/testcases/kernel/syscalls/swapon/swapon03.c
-+++ b/testcases/kernel/syscalls/swapon/swapon03.c
-@@ -165,8 +165,7 @@ static int setup_swap(void)
+diff --git a/testcases/kernel/syscalls/mremap/mremap03.c b/testcases/kernel/syscalls/mremap/mremap03.c
+index 12e3829..5cd1a67 100644
+--- a/testcases/kernel/syscalls/mremap/mremap03.c
++++ b/testcases/kernel/syscalls/mremap/mremap03.c
+@@ -84,7 +84,8 @@
  
- 	/* This includes the first (header) line */
- 	if ((fd = open("/proc/swaps", O_RDONLY)) == -1) {
--		tst_brkm(TFAIL | TERRNO, cleanup,
--			 "Failed to find out existing number of swap files");
-+		tst_brkm(TCONF, cleanup, "Unable to open /proc/swaps");
- 	}
- 	do {
- 		char *p = buf;
+ char *TCID = "mremap03";
+ int TST_TOTAL = 1;
+-char *addr;			/* addr of memory mapped region */
++static char *bad_addr;
++static char *addr;		/* addr of memory mapped region */
+ int memsize;			/* memory mapped size */
+ int newsize;			/* new size of virtual memory block */
+ 
+@@ -111,7 +112,7 @@ int main(int ac, char **av)
+ 		 * virtual address was not mapped.
+ 		 */
+ 		errno = 0;
+-		addr = mremap(addr, memsize, newsize, MREMAP_MAYMOVE);
++		addr = mremap(bad_addr, memsize, newsize, MREMAP_MAYMOVE);
+ 		TEST_ERRNO = errno;
+ 
+ 		/* Check for the return value of mremap() */
+@@ -173,7 +174,7 @@ void setup(void)
+ 	 * Set the old virtual address point to some address
+ 	 * which is not mapped.
+ 	 */
+-	addr = (char *)get_high_address();
++	bad_addr = (char *)get_high_address();
+ }
+ 
+ /*
 -- 
-2.13.6
+1.8.3.1
+
+
 
