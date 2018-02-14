@@ -1,46 +1,53 @@
-From: Travis CI <builds@travis-ci.org>
-Date: Wed, 14 Feb 2018 10:12:01 +0000
-Subject: [LTP] Errored: linux-test-project/ltp#660 (master - 79b720d)
-In-Reply-To: <linux-test-project/ltp+340936853+errored@travis-ci.org>
-Message-ID: <5a82e5cebdb15_43f982ed508e49319d8@585e993b-983a-4e3f-b270-9220289d668f.mail>
+From: Anders Roxell <anders.roxell@linaro.org>
+Date: Wed, 14 Feb 2018 13:04:31 +0100
+Subject: [LTP] [PATCH] configure: Add knob to control tirpc support
+Message-ID: <20180214120431.27677-1-anders.roxell@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Build Update for linux-test-project/ltp
--------------------------------------
+Allow to disable tirpc from the top level.
 
-Build: #660
-Status: Errored
+Based on patch:
+https://github.com/openembedded/openembedded-core/blob/master/meta/recipes-extended/ltp/ltp/0003-Add-knob-to-control-tirpc-support.patch
 
-Duration: 15 minutes and 29 seconds
-Commit: 79b720d (master)
-Author: Xiao Yang
-Message: syscalls/mremap03: Do not pass MAP_FAILED into mremap()
+Signed-off-by: Fathi Boudra <fathi.boudra@linaro.org>
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ configure.ac | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Running mremap03 -i n got the following errors:
------------------------------------------------
-mremap03    1  TPASS  :  mremap() Fails, 'old region not mapped', errno 14
-mremap03    1  TFAIL  :  mremap03.c:137: mremap() Fails, 'Unexpected errno 22
-...
------------------------------------------------
+diff --git a/configure.ac b/configure.ac
+index da3374913..dc0c3d61e 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -116,6 +116,14 @@ if test "x$with_python" = xyes; then
+ else
+     AC_SUBST([WITH_PYTHON],["no"])
+ fi
++
++# TI RPC
++AC_ARG_WITH([tirpc],
++  AC_HELP_STRING([--without-tirpc],
++    [without libtirpc support (default=no)]),
++  [with_tirpc=no],
++  [with_tirpc=yes]
++)
+ # END tools knobs
+ 
+ # Testsuites knobs
+@@ -189,7 +197,9 @@ LTP_CHECK_RENAMEAT2
+ LTP_CHECK_FALLOCATE
+ LTP_CHECK_SYSCALL_FCNTL
+ LTP_CHECK_SYSCALL_PERF_EVENT_OPEN
++if test "x$with_tirpc" = xyes; then
+ LTP_CHECK_TIRPC
++fi
+ LTP_CHECK_TEE
+ LTP_CHECK_SPLICE
+ LTP_CHECK_VMSPLICE
+-- 
+2.11.0
 
-When running mremap03 in loops, we passed MAP_FAILED instead of bad
-address into mremap().
-
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Acked-by: Cyril Hrubis <chrubis@suse.cz>
-
-View the changeset: https://github.com/linux-test-project/ltp/compare/b745b0053c05...79b720d24f63
-
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/340936853?utm_source=email&utm_medium=notification
-
---
-
-You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180214/2fc21cd8/attachment.html>
