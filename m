@@ -1,47 +1,46 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 14 Feb 2018 16:29:44 +0800
-Subject: [LTP] [PATCH] commands/df01.sh: Add check for mkfs.${FS_TYPE}
-	command
-Message-ID: <1518596984-16336-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Travis CI <builds@travis-ci.org>
+Date: Wed, 14 Feb 2018 10:10:46 +0000
+Subject: [LTP] Passed: linux-test-project/ltp#661 (master - 11510e8)
+In-Reply-To: <linux-test-project/ltp+340989778+passed@travis-ci.org>
+Message-ID: <5a8304b73577d_43f982ed50c0411379ed@585e993b-983a-4e3f-b270-9220289d668f.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Since commit 521df0e, tst_rod can detect nonexistent command and report TBROK
-in tst_mkfs(), so we can check mkfs.${FS_TYPE} command before tst_mkfs().
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-If mkfs.exfat command did not exist, running df01_exfat got the following errors:
------------------------------------------------------------------
-tst_device.c:230: INFO: Using test device LTP_DEV='/dev/loop0'
- 1 TINFO: Formatting /dev/loop0 with exfat extra opts=''
- 1 TBROK: mkfs.exfat /dev/loop0 failed
- 1 TINFO: The /dev/loop0 is not mounted, skipping umount
------------------------------------------------------------------
+Build: #661
+Status: Passed
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- testcases/commands/df/df01.sh | 4 ++++
- 1 file changed, 4 insertions(+)
+Duration: 18 minutes and 13 seconds
+Commit: 11510e8 (master)
+Author: Jan Stancek
+Message: dynamic_debug01: fix cleanup on older kernels
 
-diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df01.sh
-index 0552327..fbf1e2f 100755
---- a/testcases/commands/df/df01.sh
-+++ b/testcases/commands/df/df01.sh
-@@ -49,6 +49,10 @@ parse_args()
- 
- setup()
- {
-+	if [ -n "$FS_TYPE" ]; then
-+		tst_check_cmds mkfs.${FS_TYPE}
-+	fi
-+
- 	tst_mkfs ${FS_TYPE} ${TST_DEVICE}
- 
- 	ROD_SILENT mkdir -p mntpoint
--- 
-1.8.3.1
+setup() hits TCONF, but cleanup() still runs and tries
+to umount non-existend directory, which eventually
+reports a failure:
+ 1 TCONF: Dynamic debug is available since version 2.6.30
+ awk: cmd. line:1: fatal: cannot open file `./debug_statements' for reading (No such file or directory)
+ Cannot umount ""
+ 1 TINFO: umount() failed, try 1 ...
+ 1 TINFO: Likely gvfsd-trash is probing newly mounted  fs, kill it to speed up tests.
+ Cannot umount ""
+ ...
 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
+View the changeset: https://github.com/linux-test-project/ltp/compare/79b720d24f63...11510e85ebeb
 
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/340989778?utm_source=email&utm_medium=notification
+
+--
+
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180214/183031b9/attachment-0001.html>
