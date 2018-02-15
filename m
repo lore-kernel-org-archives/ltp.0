@@ -1,68 +1,49 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 15 Feb 2018 16:56:08 +0100
-Subject: [LTP] Running LTP on kernel space level
-In-Reply-To: <AM6PR0402MB360578DF56B563C98863641DACF70@AM6PR0402MB3605.eurprd04.prod.outlook.com>
-References: <AM6PR0402MB360503053318028A05D51B39ACF70@AM6PR0402MB3605.eurprd04.prod.outlook.com>
- <20180212102100.GD9145@rei.lan>
- <AM6PR0402MB360578DF56B563C98863641DACF70@AM6PR0402MB3605.eurprd04.prod.outlook.com>
-Message-ID: <87zi4aw8kn.fsf@rpws.prws.suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 15 Feb 2018 21:47:12 +0100
+Subject: [LTP] [RFC PATCH v2 1/3] tst_test.sh: Add default trap to INT
+Message-ID: <20180215204714.14597-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+This can be overwritten in tests.
 
-Islam Helmy writes:
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Cc: Cyril Hrubis <chrubis@suse.cz>
+Cc: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+We've been talking about it:
+http://lists.linux.it/pipermail/ltp/2017-December/006660.html
+http://lists.linux.it/pipermail/ltp/2017-December/006663.html
+But I guess this should be ok for all tests.
+---
+ testcases/lib/tst_test.sh | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> Hello,
->
-> Sorry for not being that clear,
->
-> Currently what I am trying to achieve is to use ltp to isolate the testing of an embedded linux SW to test only and verify the updates @ Kernel space level, for example, we are developing some device drivers which handles the communication protocols or Buses like PCIe,spi, ..etc. Another use case is if we enabled some specific kernel configuration options to add a new feature to the kernel we want to test the impact of this change only on (startup time, kernel image size, general performance behaviour)
->
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index d6b638549..56ec9d126 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ #
+-# Copyright (c) Linux Test Project, 2014-2017
++# Copyright (c) Linux Test Project, 2014-2018
+ #
+ # This program is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+@@ -32,6 +32,9 @@ export TST_TMPDIR_RHOST=0
+ 
+ . tst_ansi_color.sh
+ 
++# default trap function
++trap "tst_brk TBROK 'test interrupted'" INT
++
+ tst_do_exit()
+ {
+ 	local ret=0
+-- 
+2.16.1
 
-So you have your own kernel branch? Then you atleast want to run
-./runltp -f syscalls and ./runltp -f cve. You should also be running the
-kernel self tests.
-
-> Aside from that, we have also a set of user-space application, rfs, and libraries on top of this kernel space layer, in which it serves for the end user functionality.
->
-> What i needed to check if it's feasible to isolate the testing of
-> kernel space layer and to execute some tests to verify the stability
-> of the updates we add to the kernel, so i was asking if ltp can do
-> such thing or not.
-> For sure there are some tests which tests some userspace functions, and file system tests but those are not the tests i am interested in.
->
-> I hope that was a bit clear
-
-The LTP runs in userspace (except for a couple of kernel modules), but
-it makes system calls to test inside kernel space.
-
-> ________________________________________
-> From: Cyril Hrubis <chrubis@suse.cz>
-> Sent: Monday, February 12, 2018 12:21 PM
-> To: Islam Helmy
-> Cc: ltp@lists.linux.it
-> Subject: Re: [LTP] Running LTP on kernel space level
->
-> Hi!
->> I need to know what is the feasibility for running ltps only on kernel
->> space level , so now i have a kernel space sw and user space sw so i
->> needed to know whether i can use ltps for testing only the kernel
->> space level and the updates introduced by my team and use ltp as a
->> regression test suite , is that possible ?
->
-> Sorry I do not understand what you are trying to achieve. Can you
-> elaborate a bit more what you are trying to do and be more specific
-> about the actual end goal?
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-
-
---
-Thank you,
-Richard.
