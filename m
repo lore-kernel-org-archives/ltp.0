@@ -1,44 +1,51 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 16 Feb 2018 14:42:45 +0100
-Subject: [LTP] [COMMITTED] [PATCH] pids.sh: Fix spurious failures in test3
-	cleanup.
-Message-ID: <20180216134245.6499-1-chrubis@suse.cz>
+From: Xiuzhe Xiao <xiuzhe.xiao@nautel.com>
+Date: Fri, 16 Feb 2018 13:19:53 +0000
+Subject: [LTP] No space left on device
+Message-ID: <BY2PR13MB0709E6ADB72B75A42150F2F990CB0@BY2PR13MB0709.namprd13.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Sometimes the possitive testcases were failing in cleanup:
+Hi
 
-kill: (17773): No such process
- 1 TBROK: kill -9 17773 failed
+I met a problem when using LTP
+Many tests failed because of "errno=ENOSPC(28): No space left on device"
+Here is one of the example:
 
-The reason is that when we fork pids_task1 the child is running in the
-particual subgroup and hence it's pid is in the task file. And since the
-child process did only exit(0) there was a race between the process exit
-and the stop_pids_task function that read the tasks file.
+<<<test_start>>>
+tag=readv01 stime=1518724492
+cmdline="readv01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+readv01     1  TBROK  :  safe_macros.c:440: readv01.c:113: write(6,0x30274,4294967295) failed: errno=ENOSPC(28): No space left on device
+readv01     2  TBROK  :  safe_macros.c:440: Remaining cases broken
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=2 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: 20170116
+./runltp: line 973: cannot create temp file for here-document: No space left on device
 
-The fix is obvious, we suspend the pids_task1 child to wait patiently
-for it's execution.
+root@adzs-sc589-ezlite:/opt/ltp# df
+Filesystem           1K-blocks      Used Available Use% Mounted on
+/dev/root              7462604    555564   6504916   8% /
+devtmpfs                110608         0    110608   0% /dev
+tmpfs                   110688        40    110648   0% /run
+tmpfs                   110688        52    110636   0% /var/volatile
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/controllers/pids/pids_task1.c | 2 ++
- 1 file changed, 2 insertions(+)
+Notice I have plenty of space on my disk, and I also check "df -i". Inodes are free as well
+Is anyone had this problem? Please give me a hint, I'll be appreciated
 
-diff --git a/testcases/kernel/controllers/pids/pids_task1.c b/testcases/kernel/controllers/pids/pids_task1.c
-index 7feae1e07..a7e5d92d3 100644
---- a/testcases/kernel/controllers/pids/pids_task1.c
-+++ b/testcases/kernel/controllers/pids/pids_task1.c
-@@ -56,5 +56,7 @@ int main(int argc, char **argv)
- 		perror("fork() failed");
- 		return 1;
- 	}
-+	if (newpid == 0)
-+		pause();
- 	return 0;
- }
--- 
-2.13.6
+Shawnx
 
+
+This communication, including any attached documentation, is intended only for the person or entity to which it is addressed, and may contain confidential, personal, and/or privileged information. Any unauthorized disclosure, copying, or taking action on the contents is strictly prohibited. If you have received this message in error, please contact us immediately so we may correct our records. Please then delete or destroy the original transmission and any subsequent reply. Thank you.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180216/846db833/attachment.html>
