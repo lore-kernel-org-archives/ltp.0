@@ -1,59 +1,46 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 16 Feb 2018 16:13:17 +0100
-Subject: [LTP] No space left on device
-In-Reply-To: <BY2PR13MB0709E6ADB72B75A42150F2F990CB0@BY2PR13MB0709.namprd13.prod.outlook.com>
-References: <BY2PR13MB0709E6ADB72B75A42150F2F990CB0@BY2PR13MB0709.namprd13.prod.outlook.com>
-Message-ID: <20180216151317.GA11776@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 19 Feb 2018 09:34:42 +0100
+Subject: [LTP] [RFC PATCH v2 3/3] test_net.sh: Add checks for external
+	commands
+In-Reply-To: <913e5d05-a499-a1dc-6551-c07663b0c6ef@oracle.com>
+References: <20180215204714.14597-1-pvorel@suse.cz>
+ <20180215204714.14597-3-pvorel@suse.cz>
+ <913e5d05-a499-a1dc-6551-c07663b0c6ef@oracle.com>
+Message-ID: <20180219083442.qlwhjm7ioset5a6j@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I met a problem when using LTP
-> Many tests failed because of "errno=ENOSPC(28): No space left on device"
-> Here is one of the example:
-> 
-> <<<test_start>>>
-> tag=readv01 stime=1518724492
-> cmdline="readv01"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> incrementing stop
-> readv01     1  TBROK  :  safe_macros.c:440: readv01.c:113: write(6,0x30274,4294967295) failed: errno=ENOSPC(28): No space left on device
-> readv01     2  TBROK  :  safe_macros.c:440: Remaining cases broken
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=2 corefile=no
-> cutime=0 cstime=1
-> <<<test_end>>>
-> INFO: ltp-pan reported some tests FAIL
-> LTP Version: 20170116
-> ./runltp: line 973: cannot create temp file for here-document: No space left on device
-> 
-> root@adzs-sc589-ezlite:/opt/ltp# df
-> Filesystem           1K-blocks      Used Available Use% Mounted on
-> /dev/root              7462604    555564   6504916   8% /
-> devtmpfs                110608         0    110608   0% /dev
-> tmpfs                   110688        40    110648   0% /run
-> tmpfs                   110688        52    110636   0% /var/volatile
-> 
-> Notice I have plenty of space on my disk, and I also check "df -i". Inodes are free as well
-> Is anyone had this problem? Please give me a hint, I'll be appreciated
+Hi Alexey,
 
-I have never seen such failure.
+> On 15.02.2018 23:47, Petr Vorel wrote:
+> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ...
+> > diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+> > index fa06e0991..ffb646d87 100644
+> > --- a/testcases/lib/test_net.sh
+> > +++ b/testcases/lib/test_net.sh
+> > @@ -472,8 +472,10 @@ tst_netload()
 
-But if you look at the the actual error message it looks like something
-very wrong is happening there. The test is supposed to write 64 bytes to
-the temporary file but it looks like in your case it attempts to write
-4294967295 bytes, which is around 4GB if I'm counting correctly so it's
-no wonder it fails with ENOSPC.
+> >  	local sock_cmd=
+> >  	if [ "$type" = "sctp" ]; then
+> > +		tst_check_cmds netstat
+> >  		sock_cmd="netstat -naS | grep $port | grep -q LISTEN"
+> >  	else
+> > +		tst_check_cmds ss
+> >  		sock_cmd="ss -ln$(echo $type | head -c1) | grep -q $port"
+> >  	fi
 
-My guess is that the test is miscompiled somehow but that is just a wild
-guess.
+> Hi Petr,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> The changes looks good, I also have a draft patch that removes the
+> need for a socket checks in tst_netload(), so it should fix the problem
+> with netstat as well. I will send it soon.
+OK, I'll wait with this, if you know you're going to remove it soon and rebase my version
+after you fix it.
+
+
+Kind regards,
+Petr
