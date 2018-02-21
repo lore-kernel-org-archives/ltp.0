@@ -1,49 +1,82 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 21 Feb 2018 10:33:28 +0100
-Subject: [LTP] [PATCH] syscalls/swapon03: do not fail if /proc/swaps is
-	absent
-In-Reply-To: <20180220235523.29663-1-smuckle.linux@gmail.com>
-References: <20180220235523.29663-1-smuckle.linux@gmail.com>
-Message-ID: <87d10y661j.fsf@rpws.prws.suse.cz>
+From: Erick Reyes <erickreyes@google.com>
+Date: Wed, 21 Feb 2018 11:48:29 -0800
+Subject: [LTP] [PATCH] Make floating point tests Android-compatible
+Message-ID: <CAFt2AZUhp9tuWOVd-t-ij-eG-21+DEqeXE5XCwK=tQ8DmOnAgg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Steve,
+Android does not implement pthread_cancel. The function is replaced
+by a no-op in a compatibility header. In most cases, the only side
+effect is that threads cannot be interrupted and have to exit normally.
+However, floating point tests are calling pthread_cancel and waiting for
+a thread doing pthread_sigwait to be finished (Which will never happen).
 
-Steve Muckle writes:
+This patch implements the same logic using pthread_kill with SIGUSR2
+instead, allowing the tests to run under Android.
 
-> If the /proc/swaps file is absent the test should be skipped due
-> to incompatible configuration.
->
-> Signed-off-by: Steve Muckle <smuckle.linux@gmail.com>
-> ---
->  testcases/kernel/syscalls/swapon/swapon03.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
-> index d3f73b044fe1..f690389c55a3 100644
-> --- a/testcases/kernel/syscalls/swapon/swapon03.c
-> +++ b/testcases/kernel/syscalls/swapon/swapon03.c
-> @@ -165,8 +165,7 @@ static int setup_swap(void)
->  
->  	/* This includes the first (header) line */
->  	if ((fd = open("/proc/swaps", O_RDONLY)) == -1) {
-> -		tst_brkm(TFAIL | TERRNO, cleanup,
-> -			 "Failed to find out existing number of swap files");
-> +		tst_brkm(TCONF, cleanup, "Unable to open /proc/swaps");
+Signed-off-by: Erick Reyes <erickreyes@google.com>
+---
+ testcases/misc/math/float/main.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-You should probably only return TCONF if ENOENT, otherwise TFAIL or TBROK.
+diff --git a/testcases/misc/math/float/main.c
+b/testcases/misc/math/float/main.c
+index d71ca18e6..64d1475e4 100644
+--- a/testcases/misc/math/float/main.c
++++ b/testcases/misc/math/float/main.c
+@@ -115,6 +115,18 @@ int main(int argc, char *argv[])
+  /*int time=1; */
+  int i;
 
->  	}
->  	do {
->  		char *p = buf;
-> -- 
-> 2.13.6
++ sigset_t signals_set;
++
++ /*
++ * Use SIGUSR2 to terminate our signal handler
++ */
++ sigemptyset(&signals_set);
++ sigaddset(&signals_set, SIGUSR2);
++
++ retval = pthread_sigmask(SIG_BLOCK, &signals_set, NULL);
++ if (retval != 0)
++ sys_error("main : pthread_sigmask FAILED", __LINE__);
++
+  /* Generate test ID from invocation name */
+  if ((TCID = strrchr(argv[0], '/')) != NULL)
+  TCID++;
+@@ -299,7 +311,7 @@ finished:
+  SAFE_FREE(pcom);
 
+  }
+- pthread_cancel(sig_hand);
++ pthread_kill(sig_hand, SIGUSR2);
+  pthread_join(sig_hand, NULL);
+  SAFE_FREE(tabcom);
+  SAFE_FREE(threads);
+@@ -338,6 +350,7 @@ static void *handle_signals(void *arg)
+  sigaddset(&signals_set, SIGQUIT);
+  sigaddset(&signals_set, SIGTERM);
+  sigaddset(&signals_set, SIGUSR1);
++ sigaddset(&signals_set, SIGUSR2);
+  sigaddset(&signals_set, SIGALRM);
+  while (1) {
+  if (debug)
+@@ -348,6 +361,11 @@ static void *handle_signals(void *arg)
+  tst_resm(TINFO, "Signal handler caught signal %d", sig);
 
+  switch (sig) {
++ case SIGUSR2:
++     if (debug)
++ tst_resm(TINFO, "Signal handler received termination request, exiting");
++     pthread_exit(NULL);
++     break;
+  case SIGALRM:
+  case SIGUSR1:
+  case SIGINT:
 -- 
-Thank you,
-Richard.
+2.16.1.291.g4437f3f132-goog
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180221/5b333606/attachment.html>
