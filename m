@@ -1,11 +1,11 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 22 Feb 2018 13:48:09 +0800
-Subject: [LTP] [PATCH v4 3/4] syscalls/unlink07: Cleanup && Convert to new
+Date: Thu, 22 Feb 2018 13:48:10 +0800
+Subject: [LTP] [PATCH v4 4/4] syscalls/unlink08: Cleanup && Convert to new
 	API
 In-Reply-To: <1519278490-18615-1-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <20180220160847.GA13149@rei>
  <1519278490-18615-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1519278490-18615-3-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1519278490-18615-4-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,18 +13,18 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 1) Take use of some safe macros
-2) Remove duplicate tests for EFAULT
+2) Remove unused code
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/unlink/unlink07.c | 320 ++++++----------------------
- 1 file changed, 62 insertions(+), 258 deletions(-)
+ testcases/kernel/syscalls/unlink/unlink08.c | 402 ++++++----------------------
+ 1 file changed, 79 insertions(+), 323 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/unlink/unlink07.c b/testcases/kernel/syscalls/unlink/unlink07.c
-index dc18ccf..fb59a99 100644
---- a/testcases/kernel/syscalls/unlink/unlink07.c
-+++ b/testcases/kernel/syscalls/unlink/unlink07.c
-@@ -1,286 +1,90 @@
+diff --git a/testcases/kernel/syscalls/unlink/unlink08.c b/testcases/kernel/syscalls/unlink/unlink08.c
+index 9829a7c..699af2a 100644
+--- a/testcases/kernel/syscalls/unlink/unlink08.c
++++ b/testcases/kernel/syscalls/unlink/unlink08.c
+@@ -1,355 +1,111 @@
  /*
   * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
   *
@@ -68,25 +68,13 @@ index dc18ccf..fb59a99 100644
 + *
 + * You should have received a copy of the GNU General Public License
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+/*
-+ * Description:
-+ * The testcase checks the various errnos of the unlink(2).
-+ * 1) unlink() returns ENOENT if file doesn't exist.
-+ * 2) unlink() returns ENOENT if path is empty.
-+ * 3) unlink() returns ENOENT if path contains a non-existent file.
-+ * 4) unlink() returns EFAULT if address beyond address space.
-+ * 5) unlink() returns ENOTDIR if path contains a regular file.
-+ * 6) unlink() returns ENAMETOOLONG if path contains a regular file.
-+ * 7) unlink() returns EFAULT if address is invalid.
   */
--/* $Id: unlink07.c,v 1.8 2009/11/02 13:57:19 subrata_modak Exp $ */
+-/* $Id: unlink08.c,v 1.5 2009/11/02 13:57:19 subrata_modak Exp $ */
 -/**********************************************************
 - *
 - *    OS Test - Silicon Graphics, Inc.
 - *
-- *    TEST IDENTIFIER	: unlink07
+- *    TEST IDENTIFIER	: unlink08
 - *
 - *    EXECUTED BY	: anyone
 - *
@@ -94,7 +82,7 @@ index dc18ccf..fb59a99 100644
 - *
 - *    PARENT DOCUMENT	: usctpl01
 - *
-- *    TEST CASE TOTAL	: 1
+- *    TEST CASE TOTAL	: 3
 - *
 - *    WALL CLOCK TIME	: 1
 - *
@@ -110,7 +98,7 @@ index dc18ccf..fb59a99 100644
 - *
 - *    TEST CASES
 - *
-- * 	1-8) See Testcases structure below.
+- * 	1-3) See Testcases structure below.
 - *
 - *    INPUT SPECIFICATIONS
 - * 	The standard options for system call tests are accepted.
@@ -159,66 +147,81 @@ index dc18ccf..fb59a99 100644
 - *
 - *
 - *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
- 
+-
 -#include <sys/types.h>
 -#include <fcntl.h>
 -#include <sys/stat.h>
--#include <sys/mman.h>
- #include <errno.h>
- #include <string.h>
+-#include <errno.h>
 -#include <signal.h>
- #include <unistd.h>
--#include <sys/param.h>		/* for PATH_MAX */
+-#include <unistd.h>
+-#include <string.h>
 -#include "test.h"
--
--void setup();
--void cleanup();
-+#include <sys/param.h>	/* for PATH_MAX */
+-#include "safe_macros.h"
+ 
+-void setup(void);
+-void cleanup(void);
++/*
++ * Description:
++ * The testcase checks the various errnos of the unlink(2).
++ * 1) unlink() returns EACCES when deleting file in unwritable directory
++ *    as an unprivileged user.
++ * 2) unlink() returns EACCES when deleting file in "unsearchable directory
++ *    as an unprivileged user.
++ * 3) unlink() returns EISDIR when deleting directory in linux.
++ * 4) unlink() returns EPERM when deleting directory in non-linux.
++ */
+ 
+-char *TCID = "unlink08";
+-int TST_TOTAL = 3;
++#include <errno.h>
++#include <stdlib.h>
++#include <sys/types.h>
++#include <pwd.h>
 +#include "tst_test.h"
  
--char *TCID = "unlink07";
--int TST_TOTAL = 6;
-+static char longpathname[PATH_MAX + 2];
+-int unwrite_dir_setup(int flag);
+-int unsearch_dir_setup(int flag);
+-int dir_setup(int flag);
+-int no_setup(int flag);
++static struct passwd *pw;
  
--int longpath_setup();
--int no_setup();
--int filepath_setup();
--char Longpathname[PATH_MAX + 2];
--char High_address[64];
--
 -struct test_case_t {
 -	char *pathname;
 +static struct test_case_t {
 +	char *name;
  	char *desc;
+-	int (*setupfunc) (int flag);
+-	int exp_ret;		/* -1 means error, 0 means != -1 */
  	int exp_errno;
--	int (*setupfunc) ();
 -} Test_cases[] = {
 -	{
--	"nonexistfile", "non-existent file", ENOENT, no_setup}, {
--	"", "path is empty string", ENOENT, no_setup}, {
--	"nefile/file", "path contains a non-existent file",
--		    ENOENT, no_setup}, {
--	"file/file", "path contains a regular file",
--		    ENOTDIR, filepath_setup}, {
--	Longpathname, "pathname too long", ENAMETOOLONG, longpath_setup}, {
--	NULL, "invalid address", EFAULT, no_setup}, {
--	NULL, NULL, 0, no_setup}
+-	"unwrite_dir/file", "unwritable directory", unwrite_dir_setup,
+-		    -1, EACCES}, {
+-	"unsearch_dir/file", "unsearchable directory",
+-		    unsearch_dir_setup, -1, EACCES},
+-#ifdef linux
+-	{
+-	"regdir", "directory", dir_setup, -1, EISDIR},
++	int exp_user;
 +} tcases[] = {
-+	{"nonexistfile", "non-existent file", ENOENT},
-+	{"", "path is empty string", ENOENT},
-+	{"nefile/file", "path contains a non-existent file", ENOENT},
-+	{NULL, "invalid address", EFAULT},
-+	{"file/file", "path contains a regular file", ENOTDIR},
-+	{longpathname, "pathname too long", ENAMETOOLONG},
++	{"unwrite_dir/file", "unwritable directory", EACCES, 1},
++	{"unsearch_dir/file", "unsearchable directory", EACCES, 1},
++#ifdef __linux__
++	{"regdir", "directory", EISDIR, 0},
+ #else
+-	{
+-	"regdir", "directory", dir_setup, -1, EPERM},
++	{"regdir", "directory", EPERM, 0},
+ #endif
+-	{
+-	NULL, NULL, no_setup, -1, 0}
  };
  
 -/***********************************************************************
 - * Main
 - ***********************************************************************/
 -int main(int ac, char **av)
-+static void verify_unlink(unsigned int n)
- {
+-{
 -	int lc;
 -	char *fname;
 -	char *desc;
@@ -253,33 +256,42 @@ index dc18ccf..fb59a99 100644
 -
 -			/* check return code */
 -			if (TEST_RETURN == -1) {
--				if (TEST_ERRNO ==
--				    Test_cases[ind].exp_errno)
--					tst_resm(TPASS,
+-				if (Test_cases[ind].exp_ret == -1) {	/* neg test */
+-					if (TEST_ERRNO ==
+-					    Test_cases[ind].exp_errno)
+-						tst_resm(TPASS,
+-							 "unlink(<%s>) Failed, errno=%d",
+-							 desc,
+-							 TEST_ERRNO);
+-					else
+-						tst_resm(TFAIL,
+-							 "unlink(<%s>) Failed, errno=%d, expected errno:%d",
+-							 desc,
+-							 TEST_ERRNO,
+-							 Test_cases
+-							 [ind].exp_errno);
+-				} else {
+-					tst_resm(TFAIL,
 -						 "unlink(<%s>) Failed, errno=%d",
 -						 desc, TEST_ERRNO);
--				else
--					tst_resm(TFAIL,
--						 "unlink(<%s>) Failed, errno=%d, expected errno:%d",
--						 desc, TEST_ERRNO,
--						 Test_cases
--						 [ind].exp_errno);
+-				}
 -			} else {
--				tst_resm(TFAIL,
--					 "unlink(<%s>) returned %ld, expected -1, errno:%d",
--					 desc, TEST_RETURN,
--					 Test_cases[ind].exp_errno);
+-				if (Test_cases[ind].exp_ret == -1) {
+-					tst_resm(TFAIL,
+-						 "unlink(<%s>) returned %ld, expected -1, errno:%d",
+-						 desc, TEST_RETURN,
+-						 Test_cases[ind].exp_errno);
+-				} else {
+-					tst_resm(TPASS,
+-						 "unlink(<%s>) returned %ld",
+-						 desc, TEST_RETURN);
+-				}
+-				Test_cases[ind].setupfunc(1);
 -			}
 -		}
-+	struct test_case_t *tc = &tcases[n];
- 
-+	TEST(unlink(tc->name));
-+	if (TEST_RETURN != -1) {
-+		tst_res(TFAIL, "unlink(<%s>) succeeded unexpectedly",
-+			tc->desc);
-+		return;
- 	}
- 
+-
+-	}
+-
 -	cleanup();
 -	tst_exit();
 -}
@@ -288,8 +300,10 @@ index dc18ccf..fb59a99 100644
 - * setup() - performs all ONE TIME setup for this test.
 - ***************************************************************/
 -void setup(void)
--{
++static void verify_unlink(struct test_case_t *tc)
+ {
 -	int ind;
+-	int postest = 0;
 -
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
@@ -297,10 +311,19 @@ index dc18ccf..fb59a99 100644
 -
 -	tst_tmpdir();
 -
+-	if (geteuid() == 0) {
+-		postest++;
++	TEST(unlink(tc->name));
++	if (TEST_RETURN != -1) {
++		tst_res(TFAIL, "unlink(<%s>) succeeded unexpectedly",
++			tc->desc);
++		return;
+ 	}
+ 
 -	for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
--		if (!Test_cases[ind].pathname)
--			Test_cases[ind].pathname = tst_get_bad_addr(cleanup);
--		Test_cases[ind].setupfunc();
+-		if (Test_cases[ind].exp_errno == EACCES && postest)
+-			Test_cases[ind].exp_ret = 0;	/* set as a pos test */
+-		Test_cases[ind].setupfunc(0);
 +	if (TEST_ERRNO == tc->exp_errno) {
 +		tst_res(TPASS | TTERRNO, "unlink(<%s>) failed as expected",
 +			tc->desc);
@@ -309,69 +332,132 @@ index dc18ccf..fb59a99 100644
 +			tc->desc, tst_strerrno(tc->exp_errno));
  	}
 -
- }
- 
+-}
+-
 -/***************************************************************
 - * cleanup() - performs all ONE TIME cleanup for this test at
 - *		completion or premature exit.
 - ***************************************************************/
 -void cleanup(void)
-+static void setup(void)
- {
+-{
 -	chmod("unwrite_dir", 0777);
 -	chmod("unsearch_dir", 0777);
-+	int n;
- 
+-
 -	tst_rmdir();
--
--}
--
--/******************************************************************
-- *
-- ******************************************************************/
--int no_setup(void)
--{
--	return 0;
--}
-+	SAFE_TOUCH("file", 0777, NULL);
- 
--/******************************************************************
-- *
-- ******************************************************************/
--int longpath_setup(void)
--{
--	int ind;
-+	memset(longpathname, 'a', PATH_MAX + 2);
- 
--	for (ind = 0; ind <= PATH_MAX + 1; ind++) {
--		Longpathname[ind] = 'a';
-+	for (n = 0; n < ARRAY_SIZE(tcases); n++) {
-+		if (!tcases[n].name)
-+			tcases[n].name = tst_get_bad_addr(NULL);
- 	}
--	return 0;
 -
  }
  
 -/******************************************************************
 - *
 - ******************************************************************/
--int filepath_setup(void)
--{
+-int unwrite_dir_setup(int flag)
++static void do_unlink(unsigned int n)
+ {
 -	int fd;
 -
--	if ((fd = creat("file", 0777)) == -1) {
--		tst_brkm(TBROK, cleanup, "creat(file) failed, errno:%d %s",
--			 errno, strerror(errno));
+-	if (!flag) {		/* initial setup */
+-		SAFE_MKDIR(cleanup, "unwrite_dir", 0777);
+-
+-		if ((fd = creat("unwrite_dir/file", 0777)) == -1) {
+-			tst_brkm(TBROK, cleanup,
+-				 "creat(unwrite_dir/file, 0777) failed, errno:%d %s",
+-				 errno, strerror(errno));
++	struct test_case_t *cases = &tcases[n];
++	pid_t pid;
++
++	if (cases->exp_user) {
++		pid = SAFE_FORK();
++		if (!pid) {
++			SAFE_SETUID(pw->pw_uid);
++			verify_unlink(cases);
++			exit(0);
+ 		}
+-		close(fd);
+-
+-		SAFE_CHMOD(cleanup, "unwrite_dir", 0555);
+-	} else {		/* resetup */
+-		SAFE_CHMOD(cleanup, "unwrite_dir", 0777);
+ 
+-		if ((fd = creat("unwrite_dir/file", 0777)) == -1) {
+-			tst_brkm(TBROK, cleanup,
+-				 "creat(unwrite_dir/file, 0777) failed, errno:%d %s",
+-				 errno, strerror(errno));
+-		}
+-		close(fd);
+-
+-		SAFE_CHMOD(cleanup, "unwrite_dir", 0555);
++		SAFE_WAITPID(pid, NULL, 0);
++	} else {
++		verify_unlink(cases);
+ 	}
+-	return 0;
+ }
+ 
+-/******************************************************************
+- *
+- ******************************************************************/
+-int unsearch_dir_setup(int flag)
++static void setup(void)
+ {
+-	int fd;
+-
+-	if (!flag) {		/* initial setup */
+-		SAFE_MKDIR(cleanup, "unsearch_dir", 0777);
+-
+-		if ((fd = creat("unsearch_dir/file", 0777)) == -1) {
+-			tst_brkm(TBROK, cleanup,
+-				 "creat(unsearch_dir/file, 0777) failed, errno:%d %s",
+-				 errno, strerror(errno));
+-		}
+-		close(fd);
++	SAFE_MKDIR("unwrite_dir", 0777);
++	SAFE_TOUCH("unwrite_dir/file", 0777, NULL);
++	SAFE_CHMOD("unwrite_dir", 0555);
+ 
+-		SAFE_CHMOD(cleanup, "unsearch_dir", 0666);
+-	} else {		/* resetup */
+-		SAFE_CHMOD(cleanup, "unsearch_dir", 0777);
++	SAFE_MKDIR("unsearch_dir", 0777);
++	SAFE_TOUCH("unsearch_dir/file", 0777, NULL);
++	SAFE_CHMOD("unsearch_dir", 0666);
+ 
+-		if ((fd = creat("unsearch_dir/file", 0777)) == -1) {
+-			tst_brkm(TBROK, cleanup,
+-				 "creat(unsearch_dir/file, 0777) failed, errno:%d %s",
+-				 errno, strerror(errno));
+-		}
+-		close(fd);
++	SAFE_MKDIR("regdir", 0777);
+ 
+-		SAFE_CHMOD(cleanup, "unsearch_dir", 0666);
 -	}
--	close(fd);
+-	return 0;
++	pw = SAFE_GETPWNAM("nobody");
+ }
+ 
+-/******************************************************************
+- *
+- ******************************************************************/
+-int dir_setup(int flag)
+-{
+-	SAFE_MKDIR(cleanup, "regdir", 0777);
+-	return 0;
+-}
+-
+-/******************************************************************
+- *
+- ******************************************************************/
+-int no_setup(int flag)
+-{
 -	return 0;
 -}
 +static struct tst_test test = {
++	.needs_root = 1,
++	.forks_child = 1,
 +	.needs_tmpdir = 1,
 +	.setup = setup,
 +	.tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_unlink,
++	.test = do_unlink,
 +};
 -- 
 1.8.3.1
