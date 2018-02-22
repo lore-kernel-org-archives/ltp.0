@@ -1,82 +1,89 @@
-From: Erick Reyes <erickreyes@google.com>
-Date: Wed, 21 Feb 2018 11:48:29 -0800
-Subject: [LTP] [PATCH] Make floating point tests Android-compatible
-Message-ID: <CAFt2AZUhp9tuWOVd-t-ij-eG-21+DEqeXE5XCwK=tQ8DmOnAgg@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 22 Feb 2018 12:05:23 +0800
+Subject: [LTP] [RFC] [PATCH] shell: ROD_SILENT: Print std{out,
+	err} on failure
+In-Reply-To: <87efle670i.fsf@rpws.prws.suse.cz>
+References: <20180212150302.23347-1-chrubis@suse.cz>
+ <87efle670i.fsf@rpws.prws.suse.cz>
+Message-ID: <CAEemH2eg80VEZOVeb1xgg_DeODxQaV5TOutW86gF0jHhtF=agw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Android does not implement pthread_cancel. The function is replaced
-by a no-op in a compatibility header. In most cases, the only side
-effect is that threads cannot be interrupted and have to exit normally.
-However, floating point tests are calling pthread_cancel and waiting for
-a thread doing pthread_sigwait to be finished (Which will never happen).
+On Wed, Feb 21, 2018 at 5:12 PM, Richard Palethorpe <rpalethorpe@suse.de>
+wrote:
 
-This patch implements the same logic using pthread_kill with SIGUSR2
-instead, allowing the tests to run under Android.
+> Hello,
+>
+> Cyril Hrubis writes:
+>
+> > Recently we had a problem when openQA (test automation framework) passed
+> > wrong device path as LTP_BIG_DEV. It has been much more complicated to
+> > debug because the error message from mkfs was not shown at all, since
+> > the tst_mkfs uses ROD_SILENT to execute the mkfs command.
+> >
+> > The best solution for ROD_SILENT is to store the command output into a
+> > variable and print it only on failure which is done by this patch.
+> >
+> > Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> > ---
+> >  testcases/lib/test.sh     | 3 ++-
+> >  testcases/lib/tst_test.sh | 3 ++-
+> >  2 files changed, 4 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
+> > index 341c1f0f4..bce9893a9 100644
+> > --- a/testcases/lib/test.sh
+> > +++ b/testcases/lib/test.sh
+> > @@ -225,8 +225,9 @@ tst_timeout()
+> >
+> >  ROD_SILENT()
+> >  {
+> > -     $@ > /dev/null 2>&1
+> > +     local tst_out=$($@ 2>&1)
+> >       if [ $? -ne 0 ]; then
+> > +             echo "$tst_out"
+> >               tst_brkm TBROK "$@ failed"
+> >       fi
+> >  }
+> > diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> > index d6b638549..48afb9cc4 100644
+> > --- a/testcases/lib/tst_test.sh
+> > +++ b/testcases/lib/tst_test.sh
+> > @@ -118,8 +118,9 @@ tst_brk()
+> >
+> >  ROD_SILENT()
+> >  {
+> > -     tst_rod $@ > /dev/null 2>&1
+> > +     local tst_out=$(tst_rod $@ 2>&1)
+> >       if [ $? -ne 0 ]; then
+> > +             echo "$tst_out"
+> >               tst_brk TBROK "$@ failed"
+> >       fi
+> >  }
+> > --
+> > 2.13.6
+>
+> LGTM except that you could maybe use ${ } instead of $( ) as a small
+> optimisation.
+>
 
-Signed-off-by: Erick Reyes <erickreyes@google.com>
----
- testcases/misc/math/float/main.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+​For ​
+what optimisation?
 
-diff --git a/testcases/misc/math/float/main.c
-b/testcases/misc/math/float/main.c
-index d71ca18e6..64d1475e4 100644
---- a/testcases/misc/math/float/main.c
-+++ b/testcases/misc/math/float/main.c
-@@ -115,6 +115,18 @@ int main(int argc, char *argv[])
-  /*int time=1; */
-  int i;
+$(command) runs the command and captures its output in separate shell.
+${parameter} the value of parameter is substituted.
 
-+ sigset_t signals_set;
-+
-+ /*
-+ * Use SIGUSR2 to terminate our signal handler
-+ */
-+ sigemptyset(&signals_set);
-+ sigaddset(&signals_set, SIGUSR2);
-+
-+ retval = pthread_sigmask(SIG_BLOCK, &signals_set, NULL);
-+ if (retval != 0)
-+ sys_error("main : pthread_sigmask FAILED", __LINE__);
-+
-  /* Generate test ID from invocation name */
-  if ((TCID = strrchr(argv[0], '/')) != NULL)
-  TCID++;
-@@ -299,7 +311,7 @@ finished:
-  SAFE_FREE(pcom);
 
-  }
-- pthread_cancel(sig_hand);
-+ pthread_kill(sig_hand, SIGUSR2);
-  pthread_join(sig_hand, NULL);
-  SAFE_FREE(tabcom);
-  SAFE_FREE(threads);
-@@ -338,6 +350,7 @@ static void *handle_signals(void *arg)
-  sigaddset(&signals_set, SIGQUIT);
-  sigaddset(&signals_set, SIGTERM);
-  sigaddset(&signals_set, SIGUSR1);
-+ sigaddset(&signals_set, SIGUSR2);
-  sigaddset(&signals_set, SIGALRM);
-  while (1) {
-  if (debug)
-@@ -348,6 +361,11 @@ static void *handle_signals(void *arg)
-  tst_resm(TINFO, "Signal handler caught signal %d", sig);
+​Here the purpose is to hide the output in sub shell I guess, shouldn't use
+$()?
 
-  switch (sig) {
-+ case SIGUSR2:
-+     if (debug)
-+ tst_resm(TINFO, "Signal handler received termination request, exiting");
-+     pthread_exit(NULL);
-+     break;
-  case SIGALRM:
-  case SIGUSR1:
-  case SIGINT:
+
 -- 
-2.16.1.291.g4437f3f132-goog
+Li Wang
+liwang@redhat.com
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180221/5b333606/attachment.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180222/36cdf716/attachment.html>
