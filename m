@@ -1,86 +1,74 @@
-From: Sandeep Patil <sspatil@google.com>
-Date: Thu, 22 Feb 2018 15:11:26 -0800
-Subject: [LTP] [PATCH v2 4/4] lib: mkfs: use 'mke2fs' for formatting
- extN filesystems
-In-Reply-To: <20171204162428.GB21055@rei>
-References: <20171114021118.103786-1-sspatil@google.com>
- <20171114021118.103786-5-sspatil@google.com>
- <20171204162428.GB21055@rei>
-Message-ID: <20180222231126.GC222181@sspatil-desktop.mtv.corp.google.com>
+From: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
+Date: Fri, 23 Feb 2018 17:48:23 +0800
+Subject: [LTP] [PATCH] syscalls/creat08.c: Do not move temporary directory
+	in loops
+Message-ID: <1519379303-2306-1-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Dec 04, 2017 at 05:24:28PM +0100, Cyril Hrubis wrote:
-> Hi!
-> > @@ -43,7 +45,18 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
-> >  		return;
-> >  	}
-> >  
-> > -	snprintf(mkfs, sizeof(mkfs), "mkfs.%s", fs_type);
-> > +	if (tst_get_mkfs(fs_type, mkfs, NAME_MAX))
-> > +		tst_brkm(TCONF, cleanup_fn,
-> > +			 "mkfs.%s not found for %s", fs_type, fs_type);
-> > +
-> > +	if (!strcmp(mkfs, "mke2fs")) {
-> > +		/* insert '-t <fs_type> in arguments here */
-> > +		argv[pos++] = "-t";
-> > +		strcat(fs_opts_str, "-t ");
-> > +		argv[pos++] = fs_type;
-> > +		strcat(fs_opts_str, fs_type);
-> > +		strcat(fs_opts_str, " ");
-> > +	}
-> 
-> Hmm, this is kind of ugly, why do we have tst_get_mkfs() function and
-> then this if that fills it's arguments.
-> 
-> Well what about we rather exported the tst_fs_is_supported() function
-> and used it here before we even try to assemble the command to format
-> the filesystem.
-> 
-> I would have done it as following:
-> 
-> Change the is_supported() to tst_fs_is_supported() what would check for
-> mke2fs as a fallback command for ext*. Then the whole logic related to
-> mkfs would go into the tst_mkfs() function, including again the fallback
-> to mke2fs command for ext*.
-> 
-> Or we can move the ttst_supported_fs_types.c code to tst_mkfs.c (in a
-> separate patch) in order to get rid of the artificial boundary between
-> the two modules. That should free us to draft better code without a need
-> to draft publicly exposed interface between these two modules.
-> 
-> >  	if (fs_opts) {
-> >  		for (i = 0; fs_opts[i]; i++) {
-> > diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
-> > index a23b1ed52..a62dda0da 100644
-> > --- a/lib/tst_supported_fs_types.c
-> > +++ b/lib/tst_supported_fs_types.c
-> > @@ -29,31 +29,43 @@ static const char *const fs_type_whitelist[] = {
-> >  	"ext2",
-> >  	"ext3",
-> >  	"ext4",
-> > +#ifndef __ANDROID__
-> >  	"xfs",
-> >  	"btrfs",
-> >  	"vfat",
-> >  	"exfat",
-> >  	"ntfs",
-> > +#endif
-> >  	NULL
-> >  };
-> 
-> What is the exact reason for this ifdef? Shouldn't the code handle the
-> missing support gracefully even without it?
+During running creat08 in loops, the deletion of temporary
+directory leads to failure. as below:
+----------------------------------------------------------
+creat08     1  TPASS  :  Test passed in block0.
+creat08     2  TPASS  :  Test passed in block1.
+creat08     3  TPASS  :  Test passed in block2.
+creat08     4  TPASS  :  Test passed in block3
+creat08     5  TFAIL  :  creat08.c:143: Creation of testdir.A.24370 failed
+...
+----------------------------------------------------------
 
-(I know this is ridiculously late, but ..)
+Signed-off-by: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/creat/creat08.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Just wanted to report that we simply solved all of this trouble by making
-mkfs.ext[234] symlinks available in Android and we pass 'ext4' as the
-filesystem of preference using LTP_DEV_FS_TYPE :-)
+diff --git a/testcases/kernel/syscalls/creat/creat08.c b/testcases/kernel/syscalls/creat/creat08.c
+index 284ae5f..50f2b39 100644
+--- a/testcases/kernel/syscalls/creat/creat08.c
++++ b/testcases/kernel/syscalls/creat/creat08.c
+@@ -70,6 +70,7 @@ int local_flag;
+ #define ROOT_SETGID	"root_setgid"
+ #define	MSGSIZE		150
+ 
++static void tst_cleanup(void);
+ static void cleanup(void);
+ static void setup(void);
+ 
+@@ -423,8 +424,9 @@ int main(int ac, char **av)
+ 		} else {
+ 			tst_resm(TFAIL, "Test failed in block3");
+ 		}
+-		cleanup();
++		tst_cleanup();
+ 	}
++	cleanup();
+ 	tst_exit();
+ }
+ 
+@@ -434,7 +436,7 @@ static void setup(void)
+ 	tst_tmpdir();
+ }
+ 
+-static void cleanup(void)
++static void tst_cleanup(void)
+ {
+ 	if (unlink(setgid_A) == -1) {
+ 		tst_resm(TBROK, "%s failed", setgid_A);
+@@ -447,6 +449,9 @@ static void cleanup(void)
+ 	SAFE_UNLINK(NULL, root_setgid_B);
+ 	SAFE_UNLINK(NULL, nosetgid_B);
+ 	SAFE_RMDIR(NULL, DIR_B);
++}
+ 
++static void cleanup(void)
++{
+ 	tst_rmdir();
+ }
+-- 
+1.8.3.1
 
-Thanks for looking into this.
 
-- ssp
+
