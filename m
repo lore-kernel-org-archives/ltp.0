@@ -1,7 +1,7 @@
 From: sunlianwen <sunlw.fnst@cn.fujitsu.com>
-Date: Sat, 24 Feb 2018 11:52:54 +0800
+Date: Sat, 24 Feb 2018 11:57:08 +0800
 Subject: [LTP] about net_stress.ipsec_dccp fail
-Message-ID: <36e394d8-3391-0a6e-d3fb-563c9d583c00@cn.fujitsu.com>
+Message-ID: <40525c5e-f951-88c7-87cf-1b045227ca5e@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -16,7 +16,7 @@ execute net_stress.ipsec_dccp on RHEL7.5Beta,
 dccp4_ipsec* / dccp6_ipsce* all faill and report the same error . the 
 error info is "socket(10, 6, 33) failed: ESOCKTNOSUPPORT",
 
-I debug this error, find this error happen  on create a ipv6 dccp  
+I debug this error, find this error happen  on create a ipv6 dccp 
 socket,but ipv6 dccp type socket is no support on RHEL7.5Beta.
 
 so I want to know whether this error cause by RHEL7.5Beta system self no 
@@ -109,6 +109,30 @@ file path:linux/include/uapi/asm-generic/errno.h
 
 line 77 we can know  Socket type not support
 
+Test output is below
+
+<<<test_output>>>
+incrementing stop
+dccp_ipsec 1 TINFO: Network config (local -- remote):
+dccp_ipsec 1 TINFO: enp7s0f1 -- enp7s0f1
+dccp_ipsec 1 TINFO: 192.168.0.1/24 -- 192.168.0.2/24
+dccp_ipsec 1 TINFO: fd00:1:1:1::1/64 -- fd00:1:1:1::2/64
+dccp_ipsec 1 TINFO: run server 'netstress -T dccp -R 500000 -g 46720'
+dccp_ipsec 1 TINFO: check that server port in 'LISTEN' state
+tst_test.c:980: INFO: Timeout per run is 0h 05m 00s
+netstress.c:777: INFO: max requests '500000'
+netstress.c:808: INFO: DCCP server
+safe_net.c:94: BROK: netstress.c:579: socket(10, 6, 33) failed: 
+ESOCKTNOSUPPORT
+
+Summary:
+passed 0
+failed 0
+skipped 0
+warnings 0
+dccp_ipsec 1 TFAIL: server not in LISTEN state
+
+
 that's all
 
 Thanks
@@ -117,9 +141,6 @@ LianWen Sun
 
 
 
-
-
-
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180224/af23951d/attachment.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180224/06209ce2/attachment-0001.html>
