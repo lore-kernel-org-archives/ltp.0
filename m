@@ -1,7 +1,7 @@
 From: sunlianwen <sunlw.fnst@cn.fujitsu.com>
-Date: Sun, 25 Feb 2018 10:13:59 +0800
+Date: Sun, 25 Feb 2018 10:26:02 +0800
 Subject: [LTP] [PATCH] interface/if4-addr-change : NS_TIMES is not set value
-Message-ID: <ae70bdfa-4129-a521-edd5-f3d1707fe018@cn.fujitsu.com>
+Message-ID: <952cbba4-4f69-b1f6-55c4-afb5bd4f9221@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -43,7 +43,6 @@ index a665b85ff..4eaabd70c 100644
 
 
 
-
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180225/e8181919/attachment.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180225/e76f9819/attachment.html>
