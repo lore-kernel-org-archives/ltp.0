@@ -1,146 +1,49 @@
 From: sunlianwen <sunlw.fnst@cn.fujitsu.com>
-Date: Sat, 24 Feb 2018 11:57:08 +0800
-Subject: [LTP] about net_stress.ipsec_dccp fail
-Message-ID: <40525c5e-f951-88c7-87cf-1b045227ca5e@cn.fujitsu.com>
+Date: Sun, 25 Feb 2018 10:13:59 +0800
+Subject: [LTP] [PATCH] interface/if4-addr-change : NS_TIMES is not set value
+Message-ID: <ae70bdfa-4129-a521-edd5-f3d1707fe018@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi Alexey
+$NS_TIMES is not set value which lead  run if4-addr-chage to failure.
+failure message as below:
+--------------------------------------------------------------------------------------------
+/opt/ltp/testcases/bin/if4-addr-change: line 24: / 20: syntax error: 
+operand expected (error token is "/ 20")
+--------------------------------------------------------------------------------------------
+Signed-off-by:  Lianwen Sun  <sunlw.fnst@cn.fujitsu.com>
+---
+  testcases/network/stress/interface/if4-addr-change | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
 
-    I have a problem consult with you about net_stress.ipsec_dccp. when 
-execute net_stress.ipsec_dccp on RHEL7.5Beta,
+diff --git a/testcases/network/stress/interface/if4-addr-change 
+b/testcases/network/stress/interface/if4-addr-change
+index a665b85ff..4eaabd70c 100644
+--- a/testcases/network/stress/interface/if4-addr-change
++++ b/testcases/network/stress/interface/if4-addr-change
+@@ -21,12 +21,12 @@ TST_TOTAL=1
+  TCID=if4-addr-change
+  TST_CLEANUP="do_cleanup"
 
-dccp4_ipsec* / dccp6_ipsce* all faill and report the same error . the 
-error info is "socket(10, 6, 33) failed: ESOCKTNOSUPPORT",
++. test_net.sh
++
+  CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
+  # Maximum host portion of the IPv4 address on the local host
+  LHOST_IPV4_HOST_MAX="254"
 
-I debug this error, find this error happen  on create a ipv6 dccp 
-socket,but ipv6 dccp type socket is no support on RHEL7.5Beta.
+-. test_net.sh
+-
+  do_cleanup()
+  {
+         tst_restore_ipaddr
+-- 
 
-so I want to know whether this error cause by RHEL7.5Beta system self no 
-support or all socket no support ipv6 dccp type socket by no?
-
-and I have a another thought maybe no right is that add a judge about 
-whether need execute "IPv6 socket is also able to access IPv4 protocol 
-stack"
-
-on the line of 578 of server_init() if I only test ipv4 .
-
-562 static void server_init(void)
-563 {
-564         char *src_addr = NULL;
-565         struct addrinfo hints;
-566
-567         memset(&hints, 0, sizeof(struct addrinfo));
-568         hints.ai_family = AF_INET6;
-569         hints.ai_socktype = sock_type;
-570         hints.ai_flags = AI_PASSIVE;
-571
-572         if (source_addr && !strchr(source_addr, ':'))
-573                 SAFE_ASPRINTF(&src_addr, "::ffff:%s", source_addr);
-574         setup_addrinfo(src_addr ? src_addr : source_addr, tcp_port,
-575                        &hints, &local_addrinfo);
-576         free(src_addr);
-577
-578         /* IPv6 socket is also able to access IPv4 protocol stack */
-579         sfd = SAFE_SOCKET(family, sock_type, protocol);
-580         SAFE_SETSOCKOPT_INT(sfd, SOL_SOCKET, SO_REUSEADDR, 1);
-
-
-below is my debug about  "socket(10, 6, 33) failed: ESOCKTNOSUPPORT"
-
-man socket we can know socket()
-
-int socket(int domain, int type, int protocol);
-
-file path: linux/include/linux/socket.h
-
-160 /* Supported address families. */
-161 #define AF_UNSPEC       0
-162 #define AF_UNIX         1       /* Unix domain sockets          */
-163 #define AF_LOCAL        1       /* POSIX name for AF_UNIX       */
-164 #define AF_INET         2       /* Internet IP Protocol         */
-165 #define AF_AX25         3       /* Amateur Radio AX.25          */
-166 #define AF_IPX          4       /* Novell IPX                   */
-167 #define AF_APPLETALK    5       /* AppleTalk DDP                */
-168 #define AF_NETROM       6       /* Amateur Radio NET/ROM        */
-169 #define AF_BRIDGE       7       /* Multiprotocol bridge         */
-170 #define AF_ATMPVC       8       /* ATM PVCs                     */
-171 #define AF_X25          9       /* Reserved for X.25 project    */
-172 #define AF_INET6        10      /* IP version 6                 */
-...
-
-line 172 ,we can know the domain =10  is  mean ipv6
-
-file path: linux/include/linux/net.h
-
-  63 enum sock_type {
-  64         SOCK_STREAM     = 1,
-  65         SOCK_DGRAM      = 2,
-  66         SOCK_RAW        = 3,
-  67         SOCK_RDM        = 4,
-  68         SOCK_SEQPACKET  = 5,
-  69         SOCK_DCCP       = 6,
-  70         SOCK_PACKET     = 10,
-  71 };
-
-line 69, we can know type=6 is mean SOCK_DCCP
-
-rhel7.5Beta system etc config file : /etc/protocols
-
-  42 irtp    28      IRTP            # Internet Reliable Transaction 
-Protocol
-  43 iso-tp4 29      ISO-TP4         # ISO Transport Protocol Class 4
-  44 netblt  30      NETBLT          # Bulk Data Transfer Protocol
-  45 mfe-nsp 31      MFE-NSP         # MFE Network Services Protocol
-  46 merit-inp       32      MERIT-INP               # MERIT Internodal 
-Protocol
-  47 dccp    33      DCCP            # Datagram Congestion Control Protocol
-
-line 47 ,we can know protocols=33 is mean DCCP
-
-
-file path:linux/include/uapi/asm-generic/errno.h
-
-  76 #define EPROTONOSUPPORT 93      /* Protocol not supported */
-  77 #define ESOCKTNOSUPPORT 94      /* Socket type not supported */
-
-line 77 we can know  Socket type not support
-
-Test output is below
-
-<<<test_output>>>
-incrementing stop
-dccp_ipsec 1 TINFO: Network config (local -- remote):
-dccp_ipsec 1 TINFO: enp7s0f1 -- enp7s0f1
-dccp_ipsec 1 TINFO: 192.168.0.1/24 -- 192.168.0.2/24
-dccp_ipsec 1 TINFO: fd00:1:1:1::1/64 -- fd00:1:1:1::2/64
-dccp_ipsec 1 TINFO: run server 'netstress -T dccp -R 500000 -g 46720'
-dccp_ipsec 1 TINFO: check that server port in 'LISTEN' state
-tst_test.c:980: INFO: Timeout per run is 0h 05m 00s
-netstress.c:777: INFO: max requests '500000'
-netstress.c:808: INFO: DCCP server
-safe_net.c:94: BROK: netstress.c:579: socket(10, 6, 33) failed: 
-ESOCKTNOSUPPORT
-
-Summary:
-passed 0
-failed 0
-skipped 0
-warnings 0
-dccp_ipsec 1 TFAIL: server not in LISTEN state
-
-
-that's all
-
-Thanks
-
-LianWen Sun
 
 
 
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180224/06209ce2/attachment-0001.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180225/e8181919/attachment.html>
