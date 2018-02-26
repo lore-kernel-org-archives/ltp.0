@@ -1,54 +1,53 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 26 Feb 2018 18:50:42 +0800
-Subject: [LTP] [PATCH] commands/df01.sh: Add check for mkfs.${FS_TYPE}
-	command
-In-Reply-To: <1518596984-16336-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1518596984-16336-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <5A93E682.2050806@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 26 Feb 2018 11:57:20 +0100
+Subject: [LTP] [PATCH] interface/if4-addr-change : NS_TIMES is not set
+ value
+In-Reply-To: <952cbba4-4f69-b1f6-55c4-afb5bd4f9221@cn.fujitsu.com>
+References: <952cbba4-4f69-b1f6-55c4-afb5bd4f9221@cn.fujitsu.com>
+Message-ID: <20180226105720.2etj57loaxhx2i5y@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Lianwen,
 
-Ping :-)
-
-Thanks,
-Xiao Yang
-于 2018/02/14 16:29, Xiao Yang 写道:
-> Since commit 521df0e, tst_rod can detect nonexistent command and report TBROK
-> in tst_mkfs(), so we can check mkfs.${FS_TYPE} command before tst_mkfs().
->
-> If mkfs.exfat command did not exist, running df01_exfat got the following errors:
-> -----------------------------------------------------------------
-> tst_device.c:230: INFO: Using test device LTP_DEV='/dev/loop0'
->  1 TINFO: Formatting /dev/loop0 with exfat extra opts=''
->  1 TBROK: mkfs.exfat /dev/loop0 failed
->  1 TINFO: The /dev/loop0 is not mounted, skipping umount
-> -----------------------------------------------------------------
->
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> $NS_TIMES is not set value which lead  run if4-addr-chage to failure.
+> failure message as below:
+> --------------------------------------------------------------------------------------------
+> /opt/ltp/testcases/bin/if4-addr-change: line 24: / 20: syntax error: operand
+> expected (error token is "/ 20")
+> --------------------------------------------------------------------------------------------
+> Signed-off-by:  Lianwen Sun  <sunlw.fnst@cn.fujitsu.com>
 > ---
->  testcases/commands/df/df01.sh | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df01.sh
-> index 0552327..fbf1e2f 100755
-> --- a/testcases/commands/df/df01.sh
-> +++ b/testcases/commands/df/df01.sh
-> @@ -49,6 +49,10 @@ parse_args()
->  
->  setup()
->  {
-> +	if [ -n "$FS_TYPE" ]; then
-> +		tst_check_cmds mkfs.${FS_TYPE}
-> +	fi
+>  testcases/network/stress/interface/if4-addr-change | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+
+> diff --git a/testcases/network/stress/interface/if4-addr-change
+> b/testcases/network/stress/interface/if4-addr-change
+> index a665b85ff..4eaabd70c 100644
+> --- a/testcases/network/stress/interface/if4-addr-change
+> +++ b/testcases/network/stress/interface/if4-addr-change
+> @@ -21,12 +21,12 @@ TST_TOTAL=1
+>  TCID=if4-addr-change
+>  TST_CLEANUP="do_cleanup"
+
+> +. test_net.sh
 > +
->  	tst_mkfs ${FS_TYPE} ${TST_DEVICE}
->  
->  	ROD_SILENT mkdir -p mntpoint
+>  CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
+>  # Maximum host portion of the IPv4 address on the local host
+>  LHOST_IPV4_HOST_MAX="254"
 
+> -. test_net.sh
+> -
+>  do_cleanup()
+>  {
+>         tst_restore_ipaddr
 
+Thanks!
+I cleanup commit message a bit and pushed as:
+bf212807f ("net/if4-addr-change: Load test_net.sh before using NS_TIMES")
 
+Kind regards,
+Petr
