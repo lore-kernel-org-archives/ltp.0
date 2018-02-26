@@ -1,35 +1,74 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 26 Feb 2018 14:07:55 +0300
-Subject: [LTP] about net_stress.ipsec_dccp fail
-In-Reply-To: <40525c5e-f951-88c7-87cf-1b045227ca5e@cn.fujitsu.com>
-References: <40525c5e-f951-88c7-87cf-1b045227ca5e@cn.fujitsu.com>
-Message-ID: <4a180d1d-f537-12ac-3bdc-67d25af7784d@oracle.com>
+From: sunlianwen <sunlw.fnst@cn.fujitsu.com>
+Date: Mon, 26 Feb 2018 19:28:26 +0800
+Subject: [LTP] [error] report a hangup error about test route4[6]-change-gw
+Message-ID: <1072a295-2c2e-75cf-d488-5150ce44622e@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-On 02/24/2018 06:57 AM, sunlianwen wrote:
-> Hi Alexey
-> 
->    I have a problem consult with you about net_stress.ipsec_dccp. when execute net_stress.ipsec_dccp on RHEL7.5Beta,
-> 
-> dccp4_ipsec* / dccp6_ipsce* all faill and report the same error . the error info is "socket(10, 6, 33) failed: ESOCKTNOSUPPORT",
-> 
-> I debug this error, find this error happen  on create a ipv6 dccp  socket,but ipv6 dccp type socket is no support on RHEL7.5Beta.
-> 
-> so I want to know whether this error cause by RHEL7.5Beta system self no support or all socket no support ipv6 dccp type socket by no?
+Hi Alexey
+
+    I find the runnig  route4-change-gw and route6-change-gw often hangup,
+
+I debug this two case and testing environment is below:
+
+     ______                          _______
+    |         |-eth0------ eth0-|          |
+    |host1|                         |host2  |
+    |         |-eth1------ eth1-|          |
+    -------                            ---------
+
+the ip address of eth0 is used for rshd so that host1  can rsh to host2 
+through eth0.
+
+and the eth1 is use for ltp testcase. and I set the eth1 for test 
+interfaces in test_net.sh
+
+file path: ltp/./testcases/lib/test_net.sh
+
+687 # Set names for test interfaces, e.g. "eth0 eth1"
+688 # This is fallback for LHOST_IFACES in case tst_net_vars finds 
+nothing or we
+689 # want to use more ifaces.
+690 export LHOST_IFACES="${LHOST_IFACES:-eth1}"
+691 export RHOST_IFACES="${RHOST_IFACES:-eth1}"
+
+but the case route4-change-gw and route6-change -gw is use eth0 for test 
+interfaces,
+
+so when running this two case, the eth0 will ifdown/up this lead to  
+host1 can not rsh host2
+
+and hangup will happen.
+
+I think this case should use $LHOST_IFACES/$RHOST_IFACES as  test 
+interface and should not fixed use eth0.
+
+if I think right , I hope you can revise this  two case.
 
 
-It's in the release notes, dccp module blacklisted in
-/etc/modprobe.d/dccp-blacklist.conf
+file path:ltp/testcases/network/stress/route/route4-change-gw
 
-Not sure how to correctly end the test with TCONF if we don't
-want to change default settings, or may be try to load it manually
-inside netstress tool...
+   67 # The number of the test link where tests run
+  68 LINK_NUM=${LINK_NUM:-0}
+   ...
 
-Anyway "modprobe dccp" before the test should make it work again.
+109     # Get the Interface name of local host
+110     lhost_ifname=`get_ifname lhost ${LINK_NUM}`
 
-Thanks,
-Alexey
+line 110 ,we can know the eth0 is the test interface
+
+That's all
+
+Thanks
+
+Lianwen Sun
+
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180226/6ab00f35/attachment.html>
