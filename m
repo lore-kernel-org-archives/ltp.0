@@ -1,10 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 27 Feb 2018 10:47:54 +0100
-Subject: [LTP] [PATCH] commands/df01.sh: Add check for mkfs.${FS_TYPE}
- command
-In-Reply-To: <1518596984-16336-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1518596984-16336-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20180227094754.q6r54m7t4l6jvbdg@dell5510>
+Date: Tue, 27 Feb 2018 11:07:46 +0100
+Subject: [LTP] [PATCH] syscalls/truncate02: initialize read_len variable
+ in loops
+In-Reply-To: <1518574452-4643-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1518574452-4643-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20180227100746.w6rqwfqxwx6veiob@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,37 +13,39 @@ To: ltp@lists.linux.it
 
 Hi Xiao,
 
-> Since commit 521df0e, tst_rod can detect nonexistent command and report TBROK
-> in tst_mkfs(), so we can check mkfs.${FS_TYPE} command before tst_mkfs().
-
-> If mkfs.exfat command did not exist, running df01_exfat got the following errors:
-> -----------------------------------------------------------------
-> tst_device.c:230: INFO: Using test device LTP_DEV='/dev/loop0'
->  1 TINFO: Formatting /dev/loop0 with exfat extra opts=''
->  1 TBROK: mkfs.exfat /dev/loop0 failed
->  1 TINFO: The /dev/loop0 is not mounted, skipping umount
-> -----------------------------------------------------------------
+> During running truncate02 in loops, the increasing value of
+> read_len leads to failure. as below:
+> ----------------------------------------------------------
+> truncate02    1  TPASS  :  Functionality of truncate(2) on testfile successful
+> truncate02    1  TFAIL  :  truncate02.c:208: Functionality of truncate(2) on testfile Failed
+> ----------------------------------------------------------
 
 > Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 > ---
->  testcases/commands/df/df01.sh | 4 ++++
->  1 file changed, 4 insertions(+)
+>  testcases/kernel/syscalls/truncate/truncate02.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-> diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df01.sh
-> index 0552327..fbf1e2f 100755
-> --- a/testcases/commands/df/df01.sh
-> +++ b/testcases/commands/df/df01.sh
-> @@ -49,6 +49,10 @@ parse_args()
+> diff --git a/testcases/kernel/syscalls/truncate/truncate02.c b/testcases/kernel/syscalls/truncate/truncate02.c
+> index 4cbf0e4..6c91149 100644
+> --- a/testcases/kernel/syscalls/truncate/truncate02.c
+> +++ b/testcases/kernel/syscalls/truncate/truncate02.c
+> @@ -100,7 +100,6 @@ int main(int ac, char **av)
+>  	off_t file_length2;	/* test file length */
+>  	off_t file_length1;	/* test file length */
+>  	int rbytes;		/* bytes read from testfile */
+> -	int read_len = 0;	/* total no. of bytes read from testfile */
+>  	int err_flag = 0;	/* error indicator flag */
 
->  setup()
->  {
-> +	if [ -n "$FS_TYPE" ]; then
-> +		tst_check_cmds mkfs.${FS_TYPE}
-> +	fi
-> +
->  	tst_mkfs ${FS_TYPE} ${TST_DEVICE}
+>  	tst_parse_opts(ac, av, NULL, NULL);
+> @@ -110,6 +109,8 @@ int main(int ac, char **av)
+>  	for (lc = 0; TEST_LOOPING(lc); lc++) {
 
->  	ROD_SILENT mkdir -p mntpoint
+>  		tst_count = 0;
+> +		/* total no. of bytes read from testfile */
+> +		int read_len = 0;
+
+>  		/*
+>  		 * Call truncate(2) to truncate a test file to a
 
 Pushed, thanks!
 
