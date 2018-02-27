@@ -1,78 +1,90 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 26 Feb 2018 18:27:33 +0100
-Subject: [LTP] [error] report a hangup error about test
- route4[6]-change-gw
-In-Reply-To: <1072a295-2c2e-75cf-d488-5150ce44622e@cn.fujitsu.com>
-References: <1072a295-2c2e-75cf-d488-5150ce44622e@cn.fujitsu.com>
-Message-ID: <20180226172733.5x7egxwtc7xua4u2@dell5510>
+From: sunlianwen <sunlw.fnst@cn.fujitsu.com>
+Date: Tue, 27 Feb 2018 14:47:49 +0800
+Subject: [LTP] [error] report a fail about udp4_ipsec_vti*
+Message-ID: <85fed43e-5f7c-f2c3-3f00-b7e4cf9d6f1f@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi Lianwen,
-> Hi Alexey
+Hi Alexey
 
->    I find the runnig  route4-change-gw and route6-change-gw often hangup,
+    I run udp4[6]_ipsec_vti always fail. when client /server message 
+size is 65463
 
-> I debug this two case and testing environment is below:
+then timeout will happen. I try to modify the client/server message size 
+then run
 
->     ______                          _______
->    |         |-eth0------ eth0-|          |
->    |host1|                         |host2  |
->    |         |-eth1------ eth1-|          |
->    -------                            ---------
+this case and find the size is less than 1428 the case running is ok.  
+But I do not know
 
-> the ip address of eth0 is used for rshd so that host1  can rsh to host2
-> through eth0.
+why the threshold size is 1428.  can you  tell me the reason of this 
+failure.
 
-> and the eth1 is use for ltp testcase. and I set the eth1 for test interfaces
-> in test_net.sh
+the test log is below:
 
-> file path: ltp/./testcases/lib/test_net.sh
+<<test_start>>>
+tag=udp4_ipsec_vti01 stime=1519695625
+cmdline="udp_ipsec_vti.sh -p ah -m tunnel -s "100 1000 65463""
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+udp_ipsec_vti 1 TINFO: Network config (local -- remote):
+udp_ipsec_vti 1 TINFO: eth1 -- eth1
+udp_ipsec_vti 1 TINFO: 192.168.100.42/24 -- 192.168.100.117/24
+udp_ipsec_vti 1 TINFO: fd00:1:1:1::1/64 -- fd00:1:1:1::2/64
+udp_ipsec_vti 1 TINFO: Test vti + IPsec[ah/tunnel]
+udp_ipsec_vti 1 TINFO: Add IPs to vti tunnel,  loc: 10.23.1.1/30, rmt: 
+10.23.1.2/30
+udp_ipsec_vti 1 TINFO: run server 'netstress -T udp -R 500000 -g 42456'
+udp_ipsec_vti 1 TINFO: check that server port in 'LISTEN' state
+udp_ipsec_vti 1 TINFO: run client 'netstress -l -T udp -H 10.23.1.2 -n 
+100 -N 100 -a 2 -r 500 -d tst_netload.res -g 42456'
+udp_ipsec_vti 1 TPASS: netstress passed, time spent '47' ms
+udp_ipsec_vti 2 TINFO: run server 'netstress -T udp -R 500000 -g 50062'
+udp_ipsec_vti 2 TINFO: check that server port in 'LISTEN' state
+udp_ipsec_vti 2 TINFO: run client 'netstress -l -T udp -H 10.23.1.2 -n 
+1000 -N 1000 -a 2 -r 500 -d tst_netload.res -g 50062'
+udp_ipsec_vti 2 TPASS: netstress passed, time spent '51' ms
+udp_ipsec_vti 3 TINFO: run server 'netstress -T udp -R 500000 -g 46465'
+udp_ipsec_vti 3 TINFO: check that server port in 'LISTEN' state
+udp_ipsec_vti 3 TINFO: run client 'netstress -l -T udp -H 10.23.1.2 -n 
+65463 -N 65463 -a 2 -r 500 -d tst_netload.res -g 46465'
+tst_test.c:980: INFO: Timeout per run is 0h 05m 00s
+netstress.c:777: INFO: max requests '500000'
+netstress.c:803: INFO: using UDP
+netstress.c:582: INFO: assigning a name to the server socket...
+tst_test.c:980: INFO: Timeout per run is 0h 05m 00s
+netstress.c:756: INFO: connection: addr '10.23.1.2', port '46465'
+netstress.c:757: INFO: client max req: 500
+netstress.c:758: INFO: clients num: 2
+netstress.c:763: INFO: client msg size: 65463
+netstress.c:764: INFO: server msg size: 65463
+netstress.c:771: INFO: max timeout errors 12
+netstress.c:696: INFO: set '/proc/sys/net/ipv4/tcp_tw_reuse' to '1'
+netstress.c:803: INFO: using UDP
+netstress.c:407: INFO: Running the test over IPv4
+netstress.c:353: WARN: client exit on '0' request
+netstress.c:426: BROK: client[1] failed: No message of desired type
+netstress.c:161: INFO: unset '/proc/sys/net/ipv4/tcp_tw_reuse' back to '0'
 
-> 687 # Set names for test interfaces, e.g. "eth0 eth1"
-> 688 # This is fallback for LHOST_IFACES in case tst_net_vars finds nothing
-> or we
-> 689 # want to use more ifaces.
-> 690 export LHOST_IFACES="${LHOST_IFACES:-eth1}"
-> 691 export RHOST_IFACES="${RHOST_IFACES:-eth1}"
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 1
+udp_ipsec_vti 3 TFAIL: expected 'pass' but ret: '1
 
-> but the case route4-change-gw and route6-change -gw is use eth0 for test
-> interfaces,
+That's all
 
-> so when running this two case, the eth0 will ifdown/up this lead to  host1
-> can not rsh host2
+Thanks
 
-> and hangup will happen.
-
-> I think this case should use $LHOST_IFACES/$RHOST_IFACES as  test interface
-> and should not fixed use eth0.
-
-> if I think right , I hope you can revise this  two case.
+Lianwen Sun
 
 
-> file path:ltp/testcases/network/stress/route/route4-change-gw
 
->   67 # The number of the test link where tests run
->  68 LINK_NUM=${LINK_NUM:-0}
->   ...
-
-> 109     # Get the Interface name of local host
-> 110     lhost_ifname=`get_ifname lhost ${LINK_NUM}`
-
-> line 110 ,we can know the eth0 is the test interface
-
-> That's all
-
-> Thanks
-
-> Lianwen Sun
-
-These tests needs to be rewritten to use test_net.sh. I was working on it, planning to finish that:
-http://lists.linux.it/pipermail/ltp/2017-August/005309.html
-
-
-Kind regards,
-Petr
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180227/1c5c5ff7/attachment-0001.html>
