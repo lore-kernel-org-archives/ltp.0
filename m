@@ -1,38 +1,36 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 27 Feb 2018 19:00:44 +0100
-Subject: [LTP] [RFC PATCH 2/2] tst_netload: Exit with TCONF when netstress
-	exit with CONF
-In-Reply-To: <20180227180044.21867-1-pvorel@suse.cz>
-References: <20180227180044.21867-1-pvorel@suse.cz>
-Message-ID: <20180227180044.21867-3-pvorel@suse.cz>
+From: xie hui <xieh.jy@cn.fujitsu.com>
+Date: Wed, 28 Feb 2018 15:44:35 +0800
+Subject: [LTP] [PATCH] runtest/controllers:Distinguish duplicate name of
+	pids_7_100
+Message-ID: <1519803875-2130-1-git-send-email-xieh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-as some issues are configuration issues.
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: xie hui <xieh.jy@cn.fujitsu.com>
 ---
- testcases/lib/test_net.sh | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ runtest/controllers | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index 95e13ee03..db9bb028d 100644
---- a/testcases/lib/test_net.sh
-+++ b/testcases/lib/test_net.sh
-@@ -453,7 +453,9 @@ tst_netload()
- 	tst_rhost_run -c "netstress $s_opts" > tst_netload.log 2>&1
- 	if [ $? -ne 0 ]; then
- 		cat tst_netload.log
--		tst_brkm TFAIL "server failed"
-+		local ttype="TFAIL"
-+		grep -e 'CONF:' tst_netload.log && ttype="TCONF"
-+		tst_brkm $ttype "server failed"
- 	fi
- 
- 	local port=$(tst_rhost_run -s -c "cat $TST_TMPDIR/netstress_port")
+diff --git a/runtest/controllers b/runtest/controllers
+index 3e5df8d..e3d0243 100644
+--- a/runtest/controllers
++++ b/runtest/controllers
+@@ -383,8 +383,8 @@ pids_6_100 pids.sh 6 100 0
+ pids_7_10 pids.sh 7 10 5
+ pids_7_50 pids.sh 7 50 10
+ pids_7_100 pids.sh 7 100 10
+-pids_7_100 pids.sh 7 500 50
+-pids_7_100 pids.sh 7 1000 100
++pids_7_500 pids.sh 7 500 50
++pids_7_1000 pids.sh 7 1000 100
+ pids_8_2 pids.sh 8 2 0
+ pids_8_10 pids.sh 8 10 0
+ pids_8_50 pids.sh 8 50 0
 -- 
-2.16.2
+1.8.3.1
+
+
 
