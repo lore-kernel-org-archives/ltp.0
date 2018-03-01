@@ -1,38 +1,34 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu,  1 Mar 2018 11:59:43 +0100
-Subject: [LTP] [RFC PATCH v2 2/2] tst_netload: Exit with TCONF when
-	netstress exit with CONF
-In-Reply-To: <20180301105943.5487-1-pvorel@suse.cz>
-References: <20180301105943.5487-1-pvorel@suse.cz>
-Message-ID: <20180301105943.5487-2-pvorel@suse.cz>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 1 Mar 2018 18:28:35 +0300
+Subject: [LTP] [PATCH] netstress: set port dynamically on the server-side
+In-Reply-To: <20180227070942.GD876@x230>
+References: <1518777047-24192-1-git-send-email-alexey.kodanev@oracle.com>
+ <20180227070942.GD876@x230>
+Message-ID: <8b0aa2b7-9d24-7fa0-0aac-6f923004070a@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-as some issues are configuration issues.
+On 02/27/2018 10:09 AM, Petr Vorel wrote:
+... 
+>> +static void move_to_background(void)
+>> +{
+>> +	if (SAFE_FORK())
+>> +		exit(0);
+>> +
+>> +	SAFE_SETSID();
+>> +
+>> +	close(0);
+>> +	SAFE_OPEN("/dev/null", O_RDONLY);
+>> +
+>> +	close(1);
+>> +	close(2);
+> Minor nit: maybe using STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO is "correct way", but everyone
+> knows these numbers.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/lib/test_net.sh | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Corrected and applied the patch.
 
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index 95e13ee03..db9bb028d 100644
---- a/testcases/lib/test_net.sh
-+++ b/testcases/lib/test_net.sh
-@@ -453,7 +453,9 @@ tst_netload()
- 	tst_rhost_run -c "netstress $s_opts" > tst_netload.log 2>&1
- 	if [ $? -ne 0 ]; then
- 		cat tst_netload.log
--		tst_brkm TFAIL "server failed"
-+		local ttype="TFAIL"
-+		grep -e 'CONF:' tst_netload.log && ttype="TCONF"
-+		tst_brkm $ttype "server failed"
- 	fi
- 
- 	local port=$(tst_rhost_run -s -c "cat $TST_TMPDIR/netstress_port")
--- 
-2.16.2
-
+Thanks,
+Alexey
