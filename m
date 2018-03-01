@@ -1,20 +1,44 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 1 Mar 2018 18:29:47 +0300
-Subject: [LTP] [PATCH] netstress: load dccp module manually
-In-Reply-To: <20180227070514.GC876@x230>
-References: <1519647255-11671-1-git-send-email-alexey.kodanev@oracle.com>
- <20180227070514.GC876@x230>
-Message-ID: <139a9b9f-d8d2-6bec-0c64-f135a92f5616@oracle.com>
+Date: Thu, 1 Mar 2018 18:43:21 +0300
+Subject: [LTP] [RFC PATCH v2 1/2] lib: TCONF on "not supported" errnos
+ in SAFE_SOCKET()
+In-Reply-To: <20180301105943.5487-1-pvorel@suse.cz>
+References: <20180301105943.5487-1-pvorel@suse.cz>
+Message-ID: <de8a2ee4-9f84-601f-17b7-39a1ae76dc08@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 02/27/2018 10:05 AM, Petr Vorel wrote:
->> RHEL7.5 distro blacklisted dccp module by default, so for DCCP tests
->> we should enable it manually.
-... 
-> Acked-by: Petr Vorel <pvorel@suse.cz>
+On 03/01/2018 01:59 PM, Petr Vorel wrote:
+> *NOSUPPORT errnos likely mean there is configuration issue rather than
+> test failure.
+> 
+> e.g. missing dccp module in netstress.c which was sofar set as TBROK:
+> safe_net.c:117: BROK: netstress.c:654: socket(10, 6, 33) failed: ESOCKTNOSUPPORT
+> 
+...
+>  
+>  	if (rval < 0) {
+> -		tst_brkm(TBROK | TERRNO, cleanup_fn,
+> -			 "%s:%d: socket(%d, %d, %d) failed", file, lineno,
+> -			 domain, type, protocol);
+> +		switch (errno) {
+> +		case EPROTONOSUPPORT:
+> +		case ESOCKTNOSUPPORT:
+> +		case EOPNOTSUPP:
+> +		case EPFNOSUPPORT:
+> +		case EAFNOSUPPORT:
+> +			ttype = TCONF;
+> +			break;
+> +		default:
+> +			ttype = TBROK;
+> +		}
+> +
+> +		tst_brkm(ttype | TERRNO, cleanup_fn, "%s:%d: socket(%d, %d, %d) failed",
 
-Applied.
+Looks like this line is over 80 chars. Otherwise looks good to me.
+
+Thanks,
+Alexey
