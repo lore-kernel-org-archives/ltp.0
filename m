@@ -1,7 +1,9 @@
 From: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
-Date: Fri, 2 Mar 2018 16:02:22 +0800
-Subject: [LTP] [PATCH 1/3] syscalls/fchmod*: Fix compiler warnings
-Message-ID: <1519977744-1595-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Date: Fri, 2 Mar 2018 16:02:23 +0800
+Subject: [LTP] [PATCH 2/3] syscalls/pipe*: Fix compiler warnings
+In-Reply-To: <1519977744-1595-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+References: <1519977744-1595-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <1519977744-1595-2-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,46 +12,98 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/fchmod/fchmod05.c | 4 ++--
- testcases/kernel/syscalls/fchmod/fchmod07.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ testcases/kernel/syscalls/pipe/pipe04.c | 2 +-
+ testcases/kernel/syscalls/pipe/pipe05.c | 4 ++--
+ testcases/kernel/syscalls/pipe/pipe07.c | 2 +-
+ testcases/kernel/syscalls/pipe/pipe08.c | 2 ++
+ testcases/kernel/syscalls/pipe/pipe11.c | 6 +++---
+ 5 files changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fchmod/fchmod05.c b/testcases/kernel/syscalls/fchmod/fchmod05.c
-index 7a27028..cdd3d07 100644
---- a/testcases/kernel/syscalls/fchmod/fchmod05.c
-+++ b/testcases/kernel/syscalls/fchmod/fchmod05.c
-@@ -220,8 +220,8 @@ void cleanup(void)
- 	/* Close the test directory opened in the setup() */
- 	SAFE_CLOSE(NULL, fd);
+diff --git a/testcases/kernel/syscalls/pipe/pipe04.c b/testcases/kernel/syscalls/pipe/pipe04.c
+index b3d255b..a3c56e3 100644
+--- a/testcases/kernel/syscalls/pipe/pipe04.c
++++ b/testcases/kernel/syscalls/pipe/pipe04.c
+@@ -235,7 +235,7 @@ void c2func(void)
+ 			tst_resm(TBROK | TERRNO, "[child 2] pipe write failed");
+ }
  
--	setegid(0);
--	seteuid(0);
-+	SAFE_SETEGID(NULL, 0);
-+	SAFE_SETEUID(NULL, 0);
+-void alarmfunc(int sig)
++void alarmfunc(int sig LTP_ATTRIBUTE_UNUSED)
+ {
+ 	/* for some reason tst_brkm doesn't seem to work in a signal handler */
+ 	tst_brkm(TFAIL, cleanup, "one or more children did't die in 60 second "
+diff --git a/testcases/kernel/syscalls/pipe/pipe05.c b/testcases/kernel/syscalls/pipe/pipe05.c
+index fe5ec37..4105988 100644
+--- a/testcases/kernel/syscalls/pipe/pipe05.c
++++ b/testcases/kernel/syscalls/pipe/pipe05.c
+@@ -59,7 +59,7 @@ void sig11_handler(int sig);
  
- 	tst_rmdir();
+ int main(int ac, char **av)
+ {
+-	int lc;
++	volatile int lc;
+ 	struct sigaction sa, osa;
  
-diff --git a/testcases/kernel/syscalls/fchmod/fchmod07.c b/testcases/kernel/syscalls/fchmod/fchmod07.c
-index 66032e4..6973555 100644
---- a/testcases/kernel/syscalls/fchmod/fchmod07.c
-+++ b/testcases/kernel/syscalls/fchmod/fchmod07.c
-@@ -83,7 +83,7 @@ int fd;				/* file descriptor for testfile */
- char *TCID = "fchmod07";
- int TST_TOTAL = 8;		/* Total number of test conditions */
+ 	tst_parse_opts(ac, av, NULL, NULL);
+@@ -120,7 +120,7 @@ void setup(void)
+ /******************************************************************
+  * sig11_handler() - our segfault recover hack
+  ******************************************************************/
+-void sig11_handler(int sig)
++void sig11_handler(int sig LTP_ATTRIBUTE_UNUSED)
+ {
+ 	longjmp(sig11_recover, 1);
+ }
+diff --git a/testcases/kernel/syscalls/pipe/pipe07.c b/testcases/kernel/syscalls/pipe/pipe07.c
+index b09df71..55bb9f4 100644
+--- a/testcases/kernel/syscalls/pipe/pipe07.c
++++ b/testcases/kernel/syscalls/pipe/pipe07.c
+@@ -129,7 +129,7 @@ static void record_open_fds(void)
+ 		if (fd == dir_fd)
+ 			continue;
  
--int Modes[] = { 0, 07, 070, 0700, 0777, 02777, 04777, 06777 };
-+mode_t Modes[] = { 0, 07, 070, 0700, 0777, 02777, 04777, 06777 };
+-		if (rec_fds_max >= ARRAY_SIZE(rec_fds)) {
++		if (rec_fds_max >= (int)ARRAY_SIZE(rec_fds)) {
+ 			tst_brkm(TBROK, cleanup,
+ 			         "Too much file descriptors open");
+ 		}
+diff --git a/testcases/kernel/syscalls/pipe/pipe08.c b/testcases/kernel/syscalls/pipe/pipe08.c
+index cdb2a4d..9f8d9cc 100644
+--- a/testcases/kernel/syscalls/pipe/pipe08.c
++++ b/testcases/kernel/syscalls/pipe/pipe08.c
+@@ -98,6 +98,8 @@ int main(int ac, char **av)
+ 		 * sent
+ 		 */
+ 		written = write(pipefd[1], wrbuf, length);
++		if (written > 0)
++			tst_brkm(TBROK, cleanup, "write succeeded expectedly");
+ 	}
+ 	cleanup();
+ 	tst_exit();
+diff --git a/testcases/kernel/syscalls/pipe/pipe11.c b/testcases/kernel/syscalls/pipe/pipe11.c
+index e11c556..e3b2741 100644
+--- a/testcases/kernel/syscalls/pipe/pipe11.c
++++ b/testcases/kernel/syscalls/pipe/pipe11.c
+@@ -198,7 +198,8 @@ void do_child_uclinux(void)
+  */
+ void setup(void)
+ {
+-	int i, j;
++	int i;
++	unsigned int j;
  
- void setup();			/* setup function for the test */
- void cleanup();			/* cleanup function for the test */
-@@ -93,7 +93,7 @@ int main(int ac, char **av)
- 	struct stat stat_buf;	/* stat(2) struct contents */
- 	int lc;
- 	int ind;		/* counter variable for chmod(2) tests */
--	int mode;		/* file mode permission */
-+	mode_t mode;		/* file mode permission */
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
  
- 	TST_TOTAL = sizeof(Modes) / sizeof(int);
+@@ -230,9 +231,8 @@ void setup(void)
+ 	j = 0;
+ 	for (i = 0; i < szcharbuf;) {
+ 		wrbuf[i++] = rawchars[j++];
+-		if (j >= sizeof(rawchars)) {
++		if (j >= sizeof(rawchars))
+ 			j = 0;
+-		}
+ 	}
+ }
  
 -- 
 1.8.3.1
