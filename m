@@ -1,9 +1,9 @@
 From: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
-Date: Fri, 2 Mar 2018 16:02:23 +0800
-Subject: [LTP] [PATCH 2/3] syscalls/pipe*: Fix compiler warnings
+Date: Fri, 2 Mar 2018 16:02:24 +0800
+Subject: [LTP] [PATCH 3/3] syscalls/mknod*: Fix compiler warnings
 In-Reply-To: <1519977744-1595-1-git-send-email-huangjh.jy@cn.fujitsu.com>
 References: <1519977744-1595-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-Message-ID: <1519977744-1595-2-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <1519977744-1595-3-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,99 +12,78 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/pipe/pipe04.c | 2 +-
- testcases/kernel/syscalls/pipe/pipe05.c | 4 ++--
- testcases/kernel/syscalls/pipe/pipe07.c | 2 +-
- testcases/kernel/syscalls/pipe/pipe08.c | 2 ++
- testcases/kernel/syscalls/pipe/pipe11.c | 6 +++---
- 5 files changed, 9 insertions(+), 7 deletions(-)
+ testcases/kernel/syscalls/mknod/mknod02.c | 2 +-
+ testcases/kernel/syscalls/mknod/mknod03.c | 2 +-
+ testcases/kernel/syscalls/mknod/mknod04.c | 2 +-
+ testcases/kernel/syscalls/mknod/mknod05.c | 2 +-
+ testcases/kernel/syscalls/mknod/mknod08.c | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/pipe/pipe04.c b/testcases/kernel/syscalls/pipe/pipe04.c
-index b3d255b..a3c56e3 100644
---- a/testcases/kernel/syscalls/pipe/pipe04.c
-+++ b/testcases/kernel/syscalls/pipe/pipe04.c
-@@ -235,7 +235,7 @@ void c2func(void)
- 			tst_resm(TBROK | TERRNO, "[child 2] pipe write failed");
- }
- 
--void alarmfunc(int sig)
-+void alarmfunc(int sig LTP_ATTRIBUTE_UNUSED)
- {
- 	/* for some reason tst_brkm doesn't seem to work in a signal handler */
- 	tst_brkm(TFAIL, cleanup, "one or more children did't die in 60 second "
-diff --git a/testcases/kernel/syscalls/pipe/pipe05.c b/testcases/kernel/syscalls/pipe/pipe05.c
-index fe5ec37..4105988 100644
---- a/testcases/kernel/syscalls/pipe/pipe05.c
-+++ b/testcases/kernel/syscalls/pipe/pipe05.c
-@@ -59,7 +59,7 @@ void sig11_handler(int sig);
- 
- int main(int ac, char **av)
- {
--	int lc;
-+	volatile int lc;
- 	struct sigaction sa, osa;
- 
- 	tst_parse_opts(ac, av, NULL, NULL);
-@@ -120,7 +120,7 @@ void setup(void)
- /******************************************************************
-  * sig11_handler() - our segfault recover hack
-  ******************************************************************/
--void sig11_handler(int sig)
-+void sig11_handler(int sig LTP_ATTRIBUTE_UNUSED)
- {
- 	longjmp(sig11_recover, 1);
- }
-diff --git a/testcases/kernel/syscalls/pipe/pipe07.c b/testcases/kernel/syscalls/pipe/pipe07.c
-index b09df71..55bb9f4 100644
---- a/testcases/kernel/syscalls/pipe/pipe07.c
-+++ b/testcases/kernel/syscalls/pipe/pipe07.c
-@@ -129,7 +129,7 @@ static void record_open_fds(void)
- 		if (fd == dir_fd)
- 			continue;
- 
--		if (rec_fds_max >= ARRAY_SIZE(rec_fds)) {
-+		if (rec_fds_max >= (int)ARRAY_SIZE(rec_fds)) {
- 			tst_brkm(TBROK, cleanup,
- 			         "Too much file descriptors open");
- 		}
-diff --git a/testcases/kernel/syscalls/pipe/pipe08.c b/testcases/kernel/syscalls/pipe/pipe08.c
-index cdb2a4d..9f8d9cc 100644
---- a/testcases/kernel/syscalls/pipe/pipe08.c
-+++ b/testcases/kernel/syscalls/pipe/pipe08.c
-@@ -98,6 +98,8 @@ int main(int ac, char **av)
- 		 * sent
- 		 */
- 		written = write(pipefd[1], wrbuf, length);
-+		if (written > 0)
-+			tst_brkm(TBROK, cleanup, "write succeeded expectedly");
+diff --git a/testcases/kernel/syscalls/mknod/mknod02.c b/testcases/kernel/syscalls/mknod/mknod02.c
+index e5741c3..594473e 100644
+--- a/testcases/kernel/syscalls/mknod/mknod02.c
++++ b/testcases/kernel/syscalls/mknod/mknod02.c
+@@ -173,7 +173,7 @@ int main(int ac, char **av)
  	}
- 	cleanup();
- 	tst_exit();
-diff --git a/testcases/kernel/syscalls/pipe/pipe11.c b/testcases/kernel/syscalls/pipe/pipe11.c
-index e11c556..e3b2741 100644
---- a/testcases/kernel/syscalls/pipe/pipe11.c
-+++ b/testcases/kernel/syscalls/pipe/pipe11.c
-@@ -198,7 +198,8 @@ void do_child_uclinux(void)
-  */
- void setup(void)
- {
--	int i, j;
-+	int i;
-+	unsigned int j;
  
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 	/* Change the directory back to temporary directory */
+-	chdir("..");
++	SAFE_CHDIR(cleanup, "..");
  
-@@ -230,9 +231,8 @@ void setup(void)
- 	j = 0;
- 	for (i = 0; i < szcharbuf;) {
- 		wrbuf[i++] = rawchars[j++];
--		if (j >= sizeof(rawchars)) {
-+		if (j >= sizeof(rawchars))
- 			j = 0;
--		}
+ 	/*
+ 	 * Invoke cleanup() to delete the test directories created
+diff --git a/testcases/kernel/syscalls/mknod/mknod03.c b/testcases/kernel/syscalls/mknod/mknod03.c
+index fc34686..2af66f7 100644
+--- a/testcases/kernel/syscalls/mknod/mknod03.c
++++ b/testcases/kernel/syscalls/mknod/mknod03.c
+@@ -172,7 +172,7 @@ int main(int ac, char **av)
  	}
- }
  
+ 	/* Change the directory back to temporary directory */
+-	chdir("..");
++	SAFE_CHDIR(cleanup, "..");
+ 
+ 	/*
+ 	 * Invoke cleanup() to delete the test directories created
+diff --git a/testcases/kernel/syscalls/mknod/mknod04.c b/testcases/kernel/syscalls/mknod/mknod04.c
+index 6a8e08e..e0123ec 100644
+--- a/testcases/kernel/syscalls/mknod/mknod04.c
++++ b/testcases/kernel/syscalls/mknod/mknod04.c
+@@ -172,7 +172,7 @@ int main(int ac, char **av)
+ 	}
+ 
+ 	/* Change the directory back to temporary directory */
+-	chdir("..");
++	SAFE_CHDIR(cleanup, "..");
+ 
+ 	/*
+ 	 * Invoke cleanup() to delete the test directories created
+diff --git a/testcases/kernel/syscalls/mknod/mknod05.c b/testcases/kernel/syscalls/mknod/mknod05.c
+index a00a0e4..fbc5575 100644
+--- a/testcases/kernel/syscalls/mknod/mknod05.c
++++ b/testcases/kernel/syscalls/mknod/mknod05.c
+@@ -171,7 +171,7 @@ int main(int ac, char **av)
+ 	}
+ 
+ 	/* change the directory back to temporary directory */
+-	chdir("..");
++	SAFE_CHDIR(cleanup, "..");
+ 
+ 	/*
+ 	 * Invoke cleanup() to delete the test directories created
+diff --git a/testcases/kernel/syscalls/mknod/mknod08.c b/testcases/kernel/syscalls/mknod/mknod08.c
+index 3cc24ab..8647fde 100644
+--- a/testcases/kernel/syscalls/mknod/mknod08.c
++++ b/testcases/kernel/syscalls/mknod/mknod08.c
+@@ -170,7 +170,7 @@ int main(int ac, char **av)
+ 	}
+ 
+ 	/* Change the directory back to temporary directory */
+-	chdir("..");
++	SAFE_CHDIR(cleanup, "..");
+ 
+ 	/*
+ 	 * Invoke cleanup() to delete the test directories created
 -- 
 1.8.3.1
 
