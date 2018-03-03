@@ -1,36 +1,53 @@
-From: Travis CI <builds@travis-ci.org>
-Date: Mon, 05 Mar 2018 08:23:18 +0000
-Subject: [LTP] Passed: linux-test-project/ltp#685 (master - ad10b67)
-In-Reply-To: <linux-test-project/ltp+349172072+passed@travis-ci.org>
-Message-ID: <5a9cfe59809da_43fa9f7fe133061645f@354da692-2749-4639-99f8-6ac4514834bf.mail>
+From: Greg Hackmann <ghackmann@google.com>
+Date: Fri,  2 Mar 2018 16:09:47 -0800
+Subject: [LTP] [PATCH] syscalls/connect01: bypass bionic connect()
+	implementation
+Message-ID: <20180303000947.76487-1-ghackmann@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Build Update for linux-test-project/ltp
--------------------------------------
+The connect01 test segfaults on Android when it gets to the second
+testcase.  bionic's connect() implementation hooks into the netd client
+library, which in turn expects addr to be a valid pointer.
 
-Build: #685
-Status: Passed
+Work around this by directly calling the kernel connect syscall.
 
-Duration: 5 minutes and 13 seconds
-Commit: ad10b67 (master)
-Author: Jinhui Huang
-Message: syscalls/fchmod*: Fix compiler warnings
+Signed-off-by: Greg Hackmann <ghackmann@google.com>
+---
+ testcases/kernel/syscalls/connect/connect01.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-Signed-off-by: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+diff --git a/testcases/kernel/syscalls/connect/connect01.c b/testcases/kernel/syscalls/connect/connect01.c
+index 2be83cfbb..e9b9c7945 100644
+--- a/testcases/kernel/syscalls/connect/connect01.c
++++ b/testcases/kernel/syscalls/connect/connect01.c
+@@ -116,6 +116,23 @@ int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
+ static char *argv0;
+ #endif
+ 
++#ifdef __BIONIC__
++/**
++ * bionic's connect() implementation calls netdClientInitConnect() before
++ * sending the request to the kernel.  We need to bypass this, or the test will
++ * segfault during the addr = (struct sockaddr *)-1 testcase.
++ */
++#include "lapi/syscalls.h"
++
++static int sys_connect(int sockfd, const struct sockaddr *addr,
++		socklen_t addrlen)
++{
++	return ltp_syscall(__NR_connect, sockfd, addr, addrlen);
++}
++
++#define connect(sockfd, addr, addrlen) sys_connect(sockfd, addr, addrlen)
++#endif
++
+ int main(int argc, char *argv[])
+ {
+ 	int lc;
+-- 
+2.16.2.395.g2e18187dfd-goog
 
-View the changeset: https://github.com/linux-test-project/ltp/compare/6f407c76286c...ad10b678f17a
-
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/349172072?utm_source=email&utm_medium=notification
-
---
-
-You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180305/bb9b847a/attachment-0001.html>
