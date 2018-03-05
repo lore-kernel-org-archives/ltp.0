@@ -1,53 +1,94 @@
-From: Greg Hackmann <ghackmann@google.com>
-Date: Fri,  2 Mar 2018 16:09:47 -0800
-Subject: [LTP] [PATCH] syscalls/connect01: bypass bionic connect()
-	implementation
-Message-ID: <20180303000947.76487-1-ghackmann@google.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 5 Mar 2018 10:21:44 +0100
+Subject: [LTP] [PATCH 3/3] syscalls/mknod*: Fix compiler warnings
+In-Reply-To: <1519977744-1595-3-git-send-email-huangjh.jy@cn.fujitsu.com>
+References: <1519977744-1595-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+ <1519977744-1595-3-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <20180305092144.rjz2armav2w2zrn6@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The connect01 test segfaults on Android when it gets to the second
-testcase.  bionic's connect() implementation hooks into the netd client
-library, which in turn expects addr to be a valid pointer.
+Hi Jinhui,
 
-Work around this by directly calling the kernel connect syscall.
+> Signed-off-by: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/mknod/mknod02.c | 2 +-
+>  testcases/kernel/syscalls/mknod/mknod03.c | 2 +-
+>  testcases/kernel/syscalls/mknod/mknod04.c | 2 +-
+>  testcases/kernel/syscalls/mknod/mknod05.c | 2 +-
+>  testcases/kernel/syscalls/mknod/mknod08.c | 2 +-
+>  5 files changed, 5 insertions(+), 5 deletions(-)
 
-Signed-off-by: Greg Hackmann <ghackmann@google.com>
----
- testcases/kernel/syscalls/connect/connect01.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+> diff --git a/testcases/kernel/syscalls/mknod/mknod02.c b/testcases/kernel/syscalls/mknod/mknod02.c
+> index e5741c3..594473e 100644
+> --- a/testcases/kernel/syscalls/mknod/mknod02.c
+> +++ b/testcases/kernel/syscalls/mknod/mknod02.c
+> @@ -173,7 +173,7 @@ int main(int ac, char **av)
+>  	}
 
-diff --git a/testcases/kernel/syscalls/connect/connect01.c b/testcases/kernel/syscalls/connect/connect01.c
-index 2be83cfbb..e9b9c7945 100644
---- a/testcases/kernel/syscalls/connect/connect01.c
-+++ b/testcases/kernel/syscalls/connect/connect01.c
-@@ -116,6 +116,23 @@ int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
- static char *argv0;
- #endif
- 
-+#ifdef __BIONIC__
-+/**
-+ * bionic's connect() implementation calls netdClientInitConnect() before
-+ * sending the request to the kernel.  We need to bypass this, or the test will
-+ * segfault during the addr = (struct sockaddr *)-1 testcase.
-+ */
-+#include "lapi/syscalls.h"
-+
-+static int sys_connect(int sockfd, const struct sockaddr *addr,
-+		socklen_t addrlen)
-+{
-+	return ltp_syscall(__NR_connect, sockfd, addr, addrlen);
-+}
-+
-+#define connect(sockfd, addr, addrlen) sys_connect(sockfd, addr, addrlen)
-+#endif
-+
- int main(int argc, char *argv[])
- {
- 	int lc;
--- 
-2.16.2.395.g2e18187dfd-goog
+>  	/* Change the directory back to temporary directory */
+> -	chdir("..");
+> +	SAFE_CHDIR(cleanup, "..");
 
+>  	/*
+>  	 * Invoke cleanup() to delete the test directories created
+> diff --git a/testcases/kernel/syscalls/mknod/mknod03.c b/testcases/kernel/syscalls/mknod/mknod03.c
+> index fc34686..2af66f7 100644
+> --- a/testcases/kernel/syscalls/mknod/mknod03.c
+> +++ b/testcases/kernel/syscalls/mknod/mknod03.c
+> @@ -172,7 +172,7 @@ int main(int ac, char **av)
+>  	}
+
+>  	/* Change the directory back to temporary directory */
+> -	chdir("..");
+> +	SAFE_CHDIR(cleanup, "..");
+
+>  	/*
+>  	 * Invoke cleanup() to delete the test directories created
+> diff --git a/testcases/kernel/syscalls/mknod/mknod04.c b/testcases/kernel/syscalls/mknod/mknod04.c
+> index 6a8e08e..e0123ec 100644
+> --- a/testcases/kernel/syscalls/mknod/mknod04.c
+> +++ b/testcases/kernel/syscalls/mknod/mknod04.c
+> @@ -172,7 +172,7 @@ int main(int ac, char **av)
+>  	}
+
+>  	/* Change the directory back to temporary directory */
+> -	chdir("..");
+> +	SAFE_CHDIR(cleanup, "..");
+
+>  	/*
+>  	 * Invoke cleanup() to delete the test directories created
+> diff --git a/testcases/kernel/syscalls/mknod/mknod05.c b/testcases/kernel/syscalls/mknod/mknod05.c
+> index a00a0e4..fbc5575 100644
+> --- a/testcases/kernel/syscalls/mknod/mknod05.c
+> +++ b/testcases/kernel/syscalls/mknod/mknod05.c
+> @@ -171,7 +171,7 @@ int main(int ac, char **av)
+>  	}
+
+>  	/* change the directory back to temporary directory */
+> -	chdir("..");
+> +	SAFE_CHDIR(cleanup, "..");
+
+>  	/*
+>  	 * Invoke cleanup() to delete the test directories created
+> diff --git a/testcases/kernel/syscalls/mknod/mknod08.c b/testcases/kernel/syscalls/mknod/mknod08.c
+> index 3cc24ab..8647fde 100644
+> --- a/testcases/kernel/syscalls/mknod/mknod08.c
+> +++ b/testcases/kernel/syscalls/mknod/mknod08.c
+> @@ -170,7 +170,7 @@ int main(int ac, char **av)
+>  	}
+
+>  	/* Change the directory back to temporary directory */
+> -	chdir("..");
+> +	SAFE_CHDIR(cleanup, "..");
+
+>  	/*
+>  	 * Invoke cleanup() to delete the test directories created
+
+Pushed, thanks!
+
+Kind regards,
+Petr
