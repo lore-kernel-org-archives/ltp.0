@@ -1,25 +1,43 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 6 Mar 2018 14:16:11 +0100
-Subject: [LTP] [RFC PATCH v2 1/1] rpc: Use libtirpc for all RPC tests +
- detect headers location
-In-Reply-To: <20180306124322.28876-1-pvorel@suse.cz>
-References: <20180306124322.28876-1-pvorel@suse.cz>
-Message-ID: <20180306131611.GD16934@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 6 Mar 2018 16:03:02 +0100
+Subject: [LTP] [PATCH 2/3] syscalls/pipe*: Fix compiler warnings
+In-Reply-To: <5A9DF1CD.40706@cn.fujitsu.com>
+References: <1519977744-1595-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+ <1519977744-1595-2-git-send-email-huangjh.jy@cn.fujitsu.com>
+ <20180305080334.amcwf4ghvb7cxv7c@dell5510>
+ <5A9DF1CD.40706@cn.fujitsu.com>
+Message-ID: <20180306150301.zghwxc35fiv65i6k@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-> RPC implementation in glibc has been deprecated since glibc 2.16
-> (headers + bindings were available via --enable-obsolete-rpc) and other
-> libc ususaly don't implement rpc anyway, it's time to move on and link
-> against libtirpc. While this fixes problem on these libc
-> implementations, without libtirpc we obviously end up with no RPC tests.
+Hi Jinhui,
 
-Looks good to me, acked.
+> > > Signed-off-by: Jinhui Huang<huangjh.jy@cn.fujitsu.com>
+> > > ---
+> > >   testcases/kernel/syscalls/pipe/pipe04.c | 2 +-
+> > >   testcases/kernel/syscalls/pipe/pipe05.c | 4 ++--
+> > >   testcases/kernel/syscalls/pipe/pipe07.c | 2 +-
+> > >   testcases/kernel/syscalls/pipe/pipe08.c | 2 ++
+> > >   testcases/kernel/syscalls/pipe/pipe11.c | 6 +++---
+> > >   5 files changed, 9 insertions(+), 7 deletions(-)
+...
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Hi Petr,
+
+> The compiler warning:
+> pipe05.c: In function ‘main’:
+> pipe05.c:62:6: warning: variable ‘lc’ might be clobbered by ‘longjmp’ or
+> ‘vfork’ [-Wclobbered]
+> int lc;
+> We may avoid this warning by declaring "lc" as volatile which tells the
+> optimizer not to optimize it.
+Thanks for info. This was issued by gcc-4.x, that's why I didn't notice that.
+I pushed the patch, thanks!
+BTW these tests deserve rewriting into new API, that would be a big improvement.
+
+
+Kind regards,
+Petr
