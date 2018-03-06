@@ -1,43 +1,57 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 6 Mar 2018 16:03:02 +0100
-Subject: [LTP] [PATCH 2/3] syscalls/pipe*: Fix compiler warnings
-In-Reply-To: <5A9DF1CD.40706@cn.fujitsu.com>
-References: <1519977744-1595-1-git-send-email-huangjh.jy@cn.fujitsu.com>
- <1519977744-1595-2-git-send-email-huangjh.jy@cn.fujitsu.com>
- <20180305080334.amcwf4ghvb7cxv7c@dell5510>
- <5A9DF1CD.40706@cn.fujitsu.com>
-Message-ID: <20180306150301.zghwxc35fiv65i6k@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 6 Mar 2018 17:05:23 +0100
+Subject: [LTP] [PATCH v3] Add read_all file systems test
+In-Reply-To: <20180213133942.11883-1-rpalethorpe@suse.com>
+References: <20180213133942.11883-1-rpalethorpe@suse.com>
+Message-ID: <20180306160523.GE16934@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jinhui,
+Hi!
+> +CFLAGS			+= -D_GNU_SOURCE
+> +LDFLAGS 		+= -lpthread
 
-> > > Signed-off-by: Jinhui Huang<huangjh.jy@cn.fujitsu.com>
-> > > ---
-> > >   testcases/kernel/syscalls/pipe/pipe04.c | 2 +-
-> > >   testcases/kernel/syscalls/pipe/pipe05.c | 4 ++--
-> > >   testcases/kernel/syscalls/pipe/pipe07.c | 2 +-
-> > >   testcases/kernel/syscalls/pipe/pipe08.c | 2 ++
-> > >   testcases/kernel/syscalls/pipe/pipe11.c | 6 +++---
-> > >   5 files changed, 9 insertions(+), 7 deletions(-)
+The only supported way how to compile and link with pthreads is by
+adding -pthread to CFLAGS (it's written in each pthread related manual
+page).
+
 ...
 
-> Hi Petr,
+> +static void stop_workers(void)
+> +{
+> +	const char stop_code[1] = { '\0' };
+> +	int i;
+> +
+> +	if (!workers)
+> +		return;
+> +
+> +	for (i = 0; i < worker_count; i++) {
+> +		if (workers[i].q)
+> +			queue_push(workers[i].q, stop_code);
+> +	}
 
-> The compiler warning:
-> pipe05.c: In function ‘main’:
-> pipe05.c:62:6: warning: variable ‘lc’ might be clobbered by ‘longjmp’ or
-> ‘vfork’ [-Wclobbered]
-> int lc;
-> We may avoid this warning by declaring "lc" as volatile which tells the
-> optimizer not to optimize it.
-Thanks for info. This was issued by gcc-4.x, that's why I didn't notice that.
-I pushed the patch, thanks!
-BTW these tests deserve rewriting into new API, that would be a big improvement.
+So here we are relying on fact that there was enough space to store
+empty string in the queue, which will be likely true, but shouldn't we
+rather do something as while (!queue_push(workers[i].q, stop_code));
+instead just to be sure?
 
+I suppose that if we fail this the test will hang in tst_reap_children()
+because the reading threads will end up stuck in the semaphores, which
+is not that big deal anyways.
 
-Kind regards,
-Petr
+> +	for (i = 0; i < worker_count; i++) {
+> +		if (workers[i].q) {
+> +			queue_destroy(workers[i].q, 0);
+> +			workers[i].q = 0;
+> +		}
+> +	}
+> +}
+
+Other than that this looks good to me.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
