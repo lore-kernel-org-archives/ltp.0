@@ -1,123 +1,165 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue,  6 Mar 2018 14:57:32 +0300
-Subject: [LTP] [PATCH] network: new regression test for over-sized chunks in
-	SCTP
-Message-ID: <1520337452-10137-1-git-send-email-alexey.kodanev@oracle.com>
+From: Michael Moese <mmoese@suse.de>
+Date: Tue, 6 Mar 2018 13:35:14 +0100
+Subject: [LTP] [PATCH v4 3/3] Add regression test for CVE-2017-17053
+In-Reply-To: <20180305163057.GB19862@rei.lan>
+References: <20180212100341.23841-1-mmoese@suse.de>
+ <20180212100341.23841-4-mmoese@suse.de>
+ <20180305163057.GB19862@rei.lan>
+Message-ID: <20180306123514.k7yxz77kxqm3tpnf@linux.suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Fixed by upstream commit 07f2c7ab6f8d ("sctp: verify size of a
-new chunk in _sctp_make_chunk()")
+Hi,
 
-CVE-2018-5803
+On Mon, Mar 05, 2018 at 05:30:57PM +0100, Cyril Hrubis wrote:
+> Hi!
+> > +#include <asm/ldt.h>
+> > +#include <pthread.h>
+> > +#include <signal.h>
+> > +#include <stdlib.h>
+> > +#include <sys/syscall.h>
+> > +#include <sys/wait.h>
+> > +#include <unistd.h>
+> > +
+> > +#include "tst_test.h"
+> > +#include "tst_taint.h"
+> > +#include "tst_safe_pthread.h"
+> > +#include "lapi/syscalls.h"
+> > +
+> > +#define EXEC_USEC   5000000
+> > +
+> > +static volatile sig_atomic_t *do_exit;
+> > +
+> > +static void handler(int sig, siginfo_t *si, void *unused)
+> > +{
+> > +	(void)(sig);
+> > +	(void)(si);
+> > +	(void)(unused);
+> > +
+> > +	*do_exit = -1;
+> > +}
+> > +
+> > +static void install_sighandler(void)
+> > +{
+> > +	struct sigaction sa;
+> > +
+> > +	sa.sa_flags = SA_SIGINFO;
+> > +	sigemptyset(&sa.sa_mask);
+> > +	sa.sa_sigaction = handler;
+> 
+> Haven't I told to use sa.sa_handler instead? Since we are not using the
+> extra two arguments anyway.
+> 
+I possibly forgot to change that - but corrected this.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- runtest/net.features             |    1 +
- testcases/network/sctp/Makefile  |    2 +-
- testcases/network/sctp/sctp02.sh |   66 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 68 insertions(+), 1 deletions(-)
- create mode 100755 testcases/network/sctp/sctp02.sh
+> > +	SAFE_SIGACTION(SIGSEGV, &sa, NULL);
+> > +}
+> > +
+> > +static void setup(void)
+> > +{
+> > +	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
+> > +
+> > +	do_exit = SAFE_MMAP(NULL, sizeof(*do_exit), PROT_READ | PROT_WRITE,
+> > +			    MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+> > +
+> > +	*do_exit = 0;
+> 
+> There is no need to zero it here as we have to reset the flag in the
+> run() function as well.
+> 
+> > +}
+> > +
+> > +static void cleanup(void)
+> > +{
+> > +	SAFE_MUNMAP(do_exit, sizeof(*do_exit));
+> > +}
+> > +
+> > +static void *fork_thread(void *arg)
+> > +{
+> > +	SAFE_FORK();
+> > +	return arg;
+> > +}
+> > +
+> > +
+> > +void run_test(void)
+> > +{
+> > +	struct user_desc desc = { .entry_number = 8191 };
+> > +	install_sighandler();
+> > +
+> > +	syscall(__NR_modify_ldt, 1, &desc, sizeof(desc));
+> > +
+> > +	for (;;) {
+> > +		if (*do_exit)
+> > +			exit(0);
+> > +
+> > +		if (SAFE_FORK() == 0) {
+> > +			pthread_t t;
+> > +
+> > +			srand(getpid());
+> > +			SAFE_PTHREAD_CREATE(&t, NULL, fork_thread, NULL);
+> > +			usleep(rand() % 10000);
+> > +			syscall(__NR_exit_group, 0);
+> > +		}
+> > +	}
+> > +}
+> > +
+> > +void run(void)
+> > +{
+> > +	int status;
+> > +	pid_t pid;
+> > +
+> > +	*do_exit = 0;
+> > +	pid = SAFE_FORK();
+> > +
+> > +	if (pid == 0) {
+> > +		run_test();
+> > +	} else {
+> > +		usleep(EXEC_USEC);
+> > +		*do_exit = 1;
+> > +	}
+> > +
+> > +	SAFE_WAIT(&status);
+> > +	if ((*do_exit == -1) || !WIFEXITED(status) || (tst_taint_check() != 0))
+> > +		tst_res(TFAIL, "kernel is vulnerable");
+> > +	else
+> > +		tst_res(TPASS, "kernel survived");
+> 
+> We do overwrite the do_exit in the parent process unconditionally, hence
+> it will always end up with 1 after we got to the SAFE_WAIT() here, or
+> did I overlooked something?
+> 
+> We mmap() a page of shared memory in the test setup anyways so I suppose
+> that adding a second int pointer called segfaulted or something similar
+> that would be set from the signal handler would be cleanest solution.
 
-diff --git a/runtest/net.features b/runtest/net.features
-index b9250dc..81e9a43 100644
---- a/runtest/net.features
-+++ b/runtest/net.features
-@@ -19,6 +19,7 @@ dccp01_ipv6 dccp01.sh -6
- 
- sctp01 sctp01.sh
- sctp01_ipv6 sctp01.sh -6
-+sctp02 sctp02.sh -6
- 
- tcp_fastopen tcp_fastopen_run.sh
- tcp_fastopen6 tcp_fastopen_run.sh -6
-diff --git a/testcases/network/sctp/Makefile b/testcases/network/sctp/Makefile
-index 914e389..5f014d8 100644
---- a/testcases/network/sctp/Makefile
-+++ b/testcases/network/sctp/Makefile
-@@ -17,6 +17,6 @@ top_srcdir		?= ../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- 
--INSTALL_TARGETS		:= sctp01.sh
-+INSTALL_TARGETS		:= *.sh
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/sctp/sctp02.sh b/testcases/network/sctp/sctp02.sh
-new file mode 100755
-index 0000000..f8386dd
---- /dev/null
-+++ b/testcases/network/sctp/sctp02.sh
-@@ -0,0 +1,66 @@
-+#!/bin/sh
-+# Copyright (c) 2018 Oracle and/or its affiliates.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program. If not, see <http://www.gnu.org/licenses/>.
-+#
-+# Regression test for the crash caused by over-sized SCTP chunk, fixed by
-+# commit 07f2c7ab6f8d ("sctp: verify size of a new chunk in _sctp_make_chunk()")
-+#
-+# CVE-2018-5803
-+
-+TCID=sctp02
-+TST_TOTAL=1
-+TST_CLEANUP="cleanup"
-+TST_NEEDS_TMPDIR=1
-+
-+. test_net.sh
-+
-+cleanup()
-+{
-+	for i in $(seq 1 16); do
-+		tst_rhost_run -s -c "ip a del $(tst_ipaddr_un -c $i rhost) \
-+				     dev $(tst_iface rhost)"
-+	done
-+	for i in $(seq 17 3260); do
-+		ROD ip a del $(tst_ipaddr_un -c $i lhost) dev $(tst_iface)
-+	done
-+}
-+
-+setup()
-+{
-+	tst_require_root
-+
-+	tst_resm TINFO "adding several addresses to remote host"
-+	for i in $(seq 1 16); do
-+		tst_rhost_run -s -c "ip a add $(tst_ipaddr_un -c $i rhost) \
-+				     dev $(tst_iface rhost) nodad"
-+	done
-+
-+	tst_resm TINFO "adding addresses to local host to make big INIT packet"
-+	for i in $(seq 17 3260); do
-+		ROD ip a add $(tst_ipaddr_un -c $i lhost) dev $(tst_iface) nodad
-+	done
-+}
-+
-+test_run()
-+{
-+	tst_resm TINFO "sending almost over-sized INIT packet to remote host"
-+	tst_netload -H $(tst_ipaddr rhost) -T sctp
-+	tst_resm TPASS "test doesn't cause the crash"
-+}
-+
-+setup
-+test_run
-+
-+tst_exit
+Agreed. I changed the shared memory to a struct and added a second member to it 
+for this. In this version, a value of -1 for do_exit was used to signal the 
+segfault. However, having a second field is much cleaner. I will do some testing
+that I did not break anything and then resend.
+
+> > +}
+> > +
+> > +static struct tst_test test = {
+> > +	.forks_child = 1,
+> > +	.setup = setup,
+> > +	.cleanup = cleanup,
+> > +	.test_all = run,
+> > +};
+> > -- 
+> > 2.13.6
+> > 
+> > 
+> > -- 
+> > Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
+
+Michael
+
 -- 
-1.7.1
-
+SUSE Linux GmbH, GF: Felix Imendörffer, Jane Smithard, Graham Norton, HRB 21284 (AG Nürnberg)
