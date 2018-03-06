@@ -1,57 +1,144 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 6 Mar 2018 17:05:23 +0100
-Subject: [LTP] [PATCH v3] Add read_all file systems test
-In-Reply-To: <20180213133942.11883-1-rpalethorpe@suse.com>
-References: <20180213133942.11883-1-rpalethorpe@suse.com>
-Message-ID: <20180306160523.GE16934@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 6 Mar 2018 19:20:28 +0100
+Subject: [LTP] [PATCH] network: new regression test for over-sized
+ chunks in SCTP
+In-Reply-To: <1520337452-10137-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1520337452-10137-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20180306182028.o66mafd52pef7kfz@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +CFLAGS			+= -D_GNU_SOURCE
-> +LDFLAGS 		+= -lpthread
+> Fixed by upstream commit 07f2c7ab6f8d ("sctp: verify size of a
+> new chunk in _sctp_make_chunk()")
 
-The only supported way how to compile and link with pthreads is by
-adding -pthread to CFLAGS (it's written in each pthread related manual
-page).
+> CVE-2018-5803
+I wonder whether to add it also into runtest/cve. But these aren't usually run with
+/opt/ltp/testscripts/network.sh. Don't we want to create something like runtest/cve-network?
 
-...
+This is one of several tests in runtest/net.features which runs "forever", generating
+impressive load and blocking link making it impossible even to log in.
+Actually I wasn't able to pass it with any of my virtual machines (various distros).
+What is the prerequisite for the test? Separate "safe" link to SUT (not to be affected by
+the test)? It'd be great if the test wasn't too resource demanding.
+None of my virtual machines contain commit 07f2c7ab6f8d.
 
-> +static void stop_workers(void)
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> ---
+>  runtest/net.features             |    1 +
+>  testcases/network/sctp/Makefile  |    2 +-
+>  testcases/network/sctp/sctp02.sh |   66 ++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 68 insertions(+), 1 deletions(-)
+>  create mode 100755 testcases/network/sctp/sctp02.sh
+
+> diff --git a/runtest/net.features b/runtest/net.features
+> index b9250dc..81e9a43 100644
+> --- a/runtest/net.features
+> +++ b/runtest/net.features
+> @@ -19,6 +19,7 @@ dccp01_ipv6 dccp01.sh -6
+
+>  sctp01 sctp01.sh
+>  sctp01_ipv6 sctp01.sh -6
+> +sctp02 sctp02.sh -6
+
+>  tcp_fastopen tcp_fastopen_run.sh
+>  tcp_fastopen6 tcp_fastopen_run.sh -6
+> diff --git a/testcases/network/sctp/Makefile b/testcases/network/sctp/Makefile
+> index 914e389..5f014d8 100644
+> --- a/testcases/network/sctp/Makefile
+> +++ b/testcases/network/sctp/Makefile
+> @@ -17,6 +17,6 @@ top_srcdir		?= ../../..
+
+>  include $(top_srcdir)/include/mk/env_pre.mk
+
+> -INSTALL_TARGETS		:= sctp01.sh
+> +INSTALL_TARGETS		:= *.sh
+
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/network/sctp/sctp02.sh b/testcases/network/sctp/sctp02.sh
+> new file mode 100755
+> index 0000000..f8386dd
+> --- /dev/null
+> +++ b/testcases/network/sctp/sctp02.sh
+> @@ -0,0 +1,66 @@
+> +#!/bin/sh
+> +# Copyright (c) 2018 Oracle and/or its affiliates.
+> +#
+> +# This program is free software; you can redistribute it and/or
+> +# modify it under the terms of the GNU General Public License as
+> +# published by the Free Software Foundation; either version 2 of
+> +# the License, or (at your option) any later version.
+> +#
+> +# This program is distributed in the hope that it would be useful,
+> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +# GNU General Public License for more details.
+> +#
+> +# You should have received a copy of the GNU General Public License
+> +# along with this program. If not, see <http://www.gnu.org/licenses/>.
+> +#
+> +# Regression test for the crash caused by over-sized SCTP chunk, fixed by
+> +# commit 07f2c7ab6f8d ("sctp: verify size of a new chunk in _sctp_make_chunk()")
+> +#
+> +# CVE-2018-5803
+Maybe say this at least in TINFO, when it's not in TCID?
+> +
+> +TCID=sctp02
+> +TST_TOTAL=1
+> +TST_CLEANUP="cleanup"
+> +TST_NEEDS_TMPDIR=1
+> +
+> +. test_net.sh
+> +
+> +cleanup()
 > +{
-> +	const char stop_code[1] = { '\0' };
-> +	int i;
-> +
-> +	if (!workers)
-> +		return;
-> +
-> +	for (i = 0; i < worker_count; i++) {
-> +		if (workers[i].q)
-> +			queue_push(workers[i].q, stop_code);
-> +	}
+> +	for i in $(seq 1 16); do
+Why 16?
 
-So here we are relying on fact that there was enough space to store
-empty string in the queue, which will be likely true, but shouldn't we
-rather do something as while (!queue_push(workers[i].q, stop_code));
-instead just to be sure?
+> +		tst_rhost_run -s -c "ip a del $(tst_ipaddr_un -c $i rhost) \
+> +				     dev $(tst_iface rhost)"
+Minor nit: I wish we used in scripts 'ip addr' instead of 'ip a' (better for grepping).
 
-I suppose that if we fail this the test will hang in tst_reap_children()
-because the reading threads will end up stuck in the semaphores, which
-is not that big deal anyways.
+> +	done
+> +	for i in $(seq 17 3260); do
+Why 3260? Would it make sense to have it in some env variable?
 
-> +	for (i = 0; i < worker_count; i++) {
-> +		if (workers[i].q) {
-> +			queue_destroy(workers[i].q, 0);
-> +			workers[i].q = 0;
-> +		}
-> +	}
+> +		ROD ip a del $(tst_ipaddr_un -c $i lhost) dev $(tst_iface)
+> +	done
 > +}
+> +
+> +setup()
+> +{
+> +	tst_require_root
+> +
+> +	tst_resm TINFO "adding several addresses to remote host"
+> +	for i in $(seq 1 16); do
+> +		tst_rhost_run -s -c "ip a add $(tst_ipaddr_un -c $i rhost) \
+> +				     dev $(tst_iface rhost) nodad"
+> +	done
+> +
+> +	tst_resm TINFO "adding addresses to local host to make big INIT packet"
+> +	for i in $(seq 17 3260); do
+> +		ROD ip a add $(tst_ipaddr_un -c $i lhost) dev $(tst_iface) nodad
+> +	done
+> +}
+> +
+> +test_run()
+> +{
+> +	tst_resm TINFO "sending almost over-sized INIT packet to remote host"
+> +	tst_netload -H $(tst_ipaddr rhost) -T sctp
+> +	tst_resm TPASS "test doesn't cause the crash"
+> +}
+> +
+> +setup
+> +test_run
+> +
+> +tst_exit
 
-Other than that this looks good to me.
+Otherwise looks good to me.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+Kind regards,
+Petr
