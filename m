@@ -1,63 +1,35 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 6 Mar 2018 00:55:55 +0100
-Subject: [LTP] [RFC PATCH v2 3/3] test_net.sh: Add checks for external
-	commands
-In-Reply-To: <20180215204714.14597-3-pvorel@suse.cz>
-References: <20180215204714.14597-1-pvorel@suse.cz>
- <20180215204714.14597-3-pvorel@suse.cz>
-Message-ID: <20180305235555.y6aux2wzjhcvw7mb@dell5510>
+From: Travis CI <builds@travis-ci.org>
+Date: Tue, 06 Mar 2018 00:03:30 +0000
+Subject: [LTP] Errored: linux-test-project/ltp#689 (master - c78dd51)
+In-Reply-To: <linux-test-project/ltp+349572046+errored@travis-ci.org>
+Message-ID: <5a9ddad2b243c_43fb8d9b53e3013144dc@3936add0-41b2-48e4-89b1-c2a08e956057.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> Cc: Alexey Kodanev <alexey.kodanev@oracle.com>
-> ---
-> Alexey, if you don't ack previous patch please accept at least this one.
-> As it fixes some real problems (netstat has been removed from
-> openSUSE/SUSE).
-> ---
->  testcases/lib/test_net.sh | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+Build: #689
+Status: Errored
 
-> diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-> index fa06e0991..ffb646d87 100644
-> --- a/testcases/lib/test_net.sh
-> +++ b/testcases/lib/test_net.sh
-> @@ -472,8 +472,10 @@ tst_netload()
+Duration: 14 minutes and 16 seconds
+Commit: c78dd51 (master)
+Author: Petr Vorel
+Message: test_net.sh: Add checks for ping
 
->  	local sock_cmd=
->  	if [ "$type" = "sctp" ]; then
-> +		tst_check_cmds netstat
->  		sock_cmd="netstat -naS | grep $port | grep -q LISTEN"
->  	else
-> +		tst_check_cmds ss
->  		sock_cmd="ss -ln$(echo $type | head -c1) | grep -q $port"
->  	fi
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
-> @@ -525,11 +527,14 @@ tst_ping()
->  	local dst_addr="${2:-$(tst_ipaddr rhost)}"; shift $(( $# >= 2 ? 2 : 0 ))
->  	local msg_sizes="$*"
->  	local msg="tst_ping IPv${TST_IPV6:-4} iface $src_iface, msg_size"
-> +	local cmd="ping$TST_IPV6"
->  	local ret=0
+View the changeset: https://github.com/linux-test-project/ltp/compare/e06c77092d17...c78dd5190c94
 
-> +	tst_check_cmds $cmd
-> +
->  	# ping cmd use 56 as default message size
->  	for size in ${msg_sizes:-"56"}; do
-> -		ping$TST_IPV6 -I $src_iface -c $PING_MAX $dst_addr \
-> +		$cmd -I $src_iface -c $PING_MAX $dst_addr \
->  			-s $size -i 0 > /dev/null 2>&1
->  		ret=$?
->  		if [ $ret -eq 0 ]; then
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/349572046?utm_source=email&utm_medium=notification
 
-Rebased and pushed (just check for ping$TST_IPV6).
+--
 
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
 
-Kind regards,
-Petr
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180306/56bb79a6/attachment.html>
