@@ -1,35 +1,134 @@
-From: Travis CI <builds@travis-ci.org>
-Date: Tue, 06 Mar 2018 00:03:30 +0000
-Subject: [LTP] Errored: linux-test-project/ltp#689 (master - c78dd51)
-In-Reply-To: <linux-test-project/ltp+349572046+errored@travis-ci.org>
-Message-ID: <5a9ddad2b243c_43fb8d9b53e3013144dc@3936add0-41b2-48e4-89b1-c2a08e956057.mail>
+From: jinhui huang <huangjh.jy@cn.fujitsu.com>
+Date: Tue, 6 Mar 2018 09:41:33 +0800
+Subject: [LTP] [PATCH 2/3] syscalls/pipe*: Fix compiler warnings
+In-Reply-To: <20180305080334.amcwf4ghvb7cxv7c@dell5510>
+References: <1519977744-1595-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+ <1519977744-1595-2-git-send-email-huangjh.jy@cn.fujitsu.com>
+ <20180305080334.amcwf4ghvb7cxv7c@dell5510>
+Message-ID: <5A9DF1CD.40706@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Build Update for linux-test-project/ltp
--------------------------------------
+于 2018/03/05 16:03, Petr Vorel 写道:
+> Hi Jinhui,
+>
+>> Signed-off-by: Jinhui Huang<huangjh.jy@cn.fujitsu.com>
+>> ---
+>>   testcases/kernel/syscalls/pipe/pipe04.c | 2 +-
+>>   testcases/kernel/syscalls/pipe/pipe05.c | 4 ++--
+>>   testcases/kernel/syscalls/pipe/pipe07.c | 2 +-
+>>   testcases/kernel/syscalls/pipe/pipe08.c | 2 ++
+>>   testcases/kernel/syscalls/pipe/pipe11.c | 6 +++---
+>>   5 files changed, 9 insertions(+), 7 deletions(-)
+>> diff --git a/testcases/kernel/syscalls/pipe/pipe04.c b/testcases/kernel/syscalls/pipe/pipe04.c
+>> index b3d255b..a3c56e3 100644
+>> --- a/testcases/kernel/syscalls/pipe/pipe04.c
+>> +++ b/testcases/kernel/syscalls/pipe/pipe04.c
+>> @@ -235,7 +235,7 @@ void c2func(void)
+>>   			tst_resm(TBROK | TERRNO, "[child 2] pipe write failed");
+>>   }
+>> -void alarmfunc(int sig)
+>> +void alarmfunc(int sig LTP_ATTRIBUTE_UNUSED)
+>>   {
+>>   	/* for some reason tst_brkm doesn't seem to work in a signal handler */
+>>   	tst_brkm(TFAIL, cleanup, "one or more children did't die in 60 second "
+>> diff --git a/testcases/kernel/syscalls/pipe/pipe05.c b/testcases/kernel/syscalls/pipe/pipe05.c
+>> index fe5ec37..4105988 100644
+>> --- a/testcases/kernel/syscalls/pipe/pipe05.c
+>> +++ b/testcases/kernel/syscalls/pipe/pipe05.c
+>> @@ -59,7 +59,7 @@ void sig11_handler(int sig);
+>>   int main(int ac, char **av)
+>>   {
+>> -	int lc;
+>> +	volatile int lc;
+> Why volatile?
+>
+Hi Petr,
 
-Build: #689
-Status: Errored
+The compiler warning:
+pipe05.c: In function ‘main’:
+pipe05.c:62:6: warning: variable ‘lc’ might be clobbered by ‘longjmp’ or 
+‘vfork’ [-Wclobbered]
+int lc;
+We may avoid this warning by declaring "lc" as volatile which tells the 
+optimizer not to optimize it.
+>>   	struct sigaction sa, osa;
+>>   	tst_parse_opts(ac, av, NULL, NULL);
+>> @@ -120,7 +120,7 @@ void setup(void)
+>>   /******************************************************************
+>>    * sig11_handler() - our segfault recover hack
+>>    ******************************************************************/
+>> -void sig11_handler(int sig)
+>> +void sig11_handler(int sig LTP_ATTRIBUTE_UNUSED)
+>>   {
+>>   	longjmp(sig11_recover, 1);
+>>   }
+>> diff --git a/testcases/kernel/syscalls/pipe/pipe07.c b/testcases/kernel/syscalls/pipe/pipe07.c
+>> index b09df71..55bb9f4 100644
+>> --- a/testcases/kernel/syscalls/pipe/pipe07.c
+>> +++ b/testcases/kernel/syscalls/pipe/pipe07.c
+>> @@ -129,7 +129,7 @@ static void record_open_fds(void)
+>>   		if (fd == dir_fd)
+>>   			continue;
+>> -		if (rec_fds_max>= ARRAY_SIZE(rec_fds)) {
+>> +		if (rec_fds_max>= (int)ARRAY_SIZE(rec_fds)) {
+>>   			tst_brkm(TBROK, cleanup,
+>>   			         "Too much file descriptors open");
+>>   		}
+>> diff --git a/testcases/kernel/syscalls/pipe/pipe08.c b/testcases/kernel/syscalls/pipe/pipe08.c
+>> index cdb2a4d..9f8d9cc 100644
+>> --- a/testcases/kernel/syscalls/pipe/pipe08.c
+>> +++ b/testcases/kernel/syscalls/pipe/pipe08.c
+>> @@ -98,6 +98,8 @@ int main(int ac, char **av)
+>>   		 * sent
+>>   		 */
+>>   		written = write(pipefd[1], wrbuf, length);
+>> +		if (written>  0)
+>> +			tst_brkm(TBROK, cleanup, "write succeeded expectedly");
+> Did you mean "unexpectedly"?
+>
+Yes.
 
-Duration: 14 minutes and 16 seconds
-Commit: c78dd51 (master)
-Author: Petr Vorel
-Message: test_net.sh: Add checks for ping
+Best regards,
+Jinhui
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+>>   	}
+>>   	cleanup();
+>>   	tst_exit();
+>> diff --git a/testcases/kernel/syscalls/pipe/pipe11.c b/testcases/kernel/syscalls/pipe/pipe11.c
+>> index e11c556..e3b2741 100644
+>> --- a/testcases/kernel/syscalls/pipe/pipe11.c
+>> +++ b/testcases/kernel/syscalls/pipe/pipe11.c
+>> @@ -198,7 +198,8 @@ void do_child_uclinux(void)
+>>    */
+>>   void setup(void)
+>>   {
+>> -	int i, j;
+>> +	int i;
+>> +	unsigned int j;
+>>   	tst_sig(FORK, DEF_HANDLER, cleanup);
+>> @@ -230,9 +231,8 @@ void setup(void)
+>>   	j = 0;
+>>   	for (i = 0; i<  szcharbuf;) {
+>>   		wrbuf[i++] = rawchars[j++];
+>> -		if (j>= sizeof(rawchars)) {
+>> +		if (j>= sizeof(rawchars))
+>>   			j = 0;
+>> -		}
+>>   	}
+>>   }
+> Otherwise LGTM, thanks!
+>
+>
+> Kind regards,
+> Petr
+>
+>
+> .
+>
 
-View the changeset: https://github.com/linux-test-project/ltp/compare/e06c77092d17...c78dd5190c94
 
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/349572046?utm_source=email&utm_medium=notification
 
---
-
-You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180306/56bb79a6/attachment.html>
