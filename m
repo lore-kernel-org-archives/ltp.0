@@ -1,126 +1,71 @@
 From: Michael Moese <mmoese@suse.de>
-Date: Wed,  7 Mar 2018 09:05:17 +0100
-Subject: [LTP] [PATCH v5 1/3] Add library support for
-	/proc/sys/kernel/tainted
+Date: Wed,  7 Mar 2018 09:05:19 +0100
+Subject: [LTP] [PATCH v5 3/3] Add regression test for CVE-2017-17053
 In-Reply-To: <20180307080519.15066-1-mmoese@suse.de>
 References: <20180307080519.15066-1-mmoese@suse.de>
-Message-ID: <20180307080519.15066-2-mmoese@suse.de>
+Message-ID: <20180307080519.15066-4-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Sometimes, it is important to detect if the kernel has issued a
-warning, died, or is tainted in another way. Linux provides this
-information in /proc/sys/kernel/tainted in the form of a bitfield.
-This patch provides library functions for testcases to detect, if
-it has tainted the kernel.
+This patch adds a regression test for CVE-2017-17053, based on the
+reproducer in the message of this commit:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ccd5b3235180eef3cfec337df1c8554ab151b5cc
 
-The following functions will be introduced:
-
-- int tst_taint_init(unsigned int mask)
-  check if the flags supplied as mask are supported by the running
-  kernel, and if so, if they are not yet set.
-
-- int tst_taint_check()
-  check if one or more of the bits specified in the mask provided
-  to tst_taint_init() before are set.
-  Returns 0 if those flags are not set, or the bitmask of set flags
-
-These can be used in the following way:
-
-First, during testcase setup:
-
-void setup(void)
-{
-	...
-	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
-}
-
-Second, check if the test triggered a bug:
-
-void run(void)
-{
-	...
-	. test code here
-	...
-	if (tst_taint_check() != 0)
-		tst_res(TFAIL, "kernel has issues");
-	 else
-		tst_res(TPASS, "kernel seems to be fine");
-}
+Be warned, if the running kernel is vulnerable to this CVE, it will die in
+most cases.
 
 Signed-off-by: Michael Moese <mmoese@suse.de>
----
- doc/test-writing-guidelines.txt |  42 ++++++++++++++++
- include/tst_taint.h             | 104 +++++++++++++++++++++++++++++++++++++++
- lib/tst_taint.c                 | 106 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 252 insertions(+)
- create mode 100644 include/tst_taint.h
- create mode 100644 lib/tst_taint.c
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index 739b295b8..f12386485 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -1312,6 +1312,48 @@ common.h:9: FAIL: check failed
- test.c:8: INFO: do_action(arg) failed
- -------------------------------------------------------------------------------
+---
+Changes to v4: Reworked after review
+---
+ runtest/cve                    |   1 +
+ testcases/cve/.gitignore       |   1 +
+ testcases/cve/Makefile         |   1 +
+ testcases/cve/cve-2017-17053.c | 171 +++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 174 insertions(+)
+ create mode 100644 testcases/cve/cve-2017-17053.c
+
+diff --git a/runtest/cve b/runtest/cve
+index 6de2ed0ac..6efffc668 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -29,3 +29,4 @@ cve-2017-17807 request_key04
+ cve-2017-1000364 stack_clash
+ cve-2017-5754 meltdown
+ cve-2017-17052 cve-2017-17052
++cve-2017-17053 cve-2017-17053
+diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
+index 42f32e825..5ecaaeb76 100644
+--- a/testcases/cve/.gitignore
++++ b/testcases/cve/.gitignore
+@@ -11,3 +11,4 @@ cve-2017-5669
+ meltdown
+ stack_clash
+ cve-2017-17052
++cve-2017-17053
+diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
+index 38ce27c93..00fbc1050 100644
+--- a/testcases/cve/Makefile
++++ b/testcases/cve/Makefile
+@@ -37,5 +37,6 @@ meltdown: CFLAGS += -msse2
+ endif
  
-+2.2.24 Tainted kernels
-+^^^^^^^^^^^^^^^^^^^^^^
-+
-+If you need to detect, if a testcase triggers a kernel warning, bug or oops,
-+the following can be used to detect TAINT_W or TAINT_D:
-+
-+[source,c]
-+-------------------------------------------------------------------------------
-+#include "tst_test.h"
-+#include "tst_taint.h"
-+
-+void setup(void)
-+{
-+	...
-+	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
-+	...
-+}
-+...
-+void run(void)
-+{
-+	...
-+	if (tst_taint_check() == 0)
-+		tst_res(TPASS, "kernel is not tainted");
-+	else
-+		tst_res(TFAIL, "kernel is tainted");
-+}
-+-------------------------------------------------------------------------------
-+
-+You have to call tst_taint_init() with non-zero flags first, preferably during
-+setup(). The function will generate a TCONF if the requested flags are not
-+fully supported on the running kernel, and TBROK if either a zero mask was
-+supplied or if the kernel is already tainted before executing the test.
-+
-+Then you can call tst_taint_check() during run(), which returns 0 or the 
-+tainted flags set in /proc/sys/kernel/tainted as specified earlier.
-+
-+Depending on your kernel version, not all tainted-flags will be supported.
-+
-+For reference to tainted kernels, see kernel documentation:
-+Documentation/admin-guide/tainted-kernels.rst or
-+https://www.kernel.org/doc/html/latest/admin-guide/tainted-kernels.html
-+
- 2.3 Writing a testcase in shell
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ cve-2017-17052:	CFLAGS += -pthread
++cve-2017-17053:	CFLAGS += -pthread
  
-diff --git a/include/tst_taint.h b/include/tst_taint.h
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/cve/cve-2017-17053.c b/testcases/cve/cve-2017-17053.c
 new file mode 100644
-index 000000000..1039e2ddc
+index 000000000..4f9718e19
 --- /dev/null
-+++ b/include/tst_taint.h
-@@ -0,0 +1,104 @@
++++ b/testcases/cve/cve-2017-17053.c
+@@ -0,0 +1,171 @@
 +/*
-+ * Copyright (c) 2018 Michael Moese <mmoese@suse.de>
++ * Copyright (c) 2018 Michael Moese <mmoese@suse.com>
 + *
 + * This program is free software: you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
@@ -135,206 +80,161 @@ index 000000000..1039e2ddc
 + * You should have received a copy of the GNU General Public License
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
-+
-+/* Usage example
++/* Regression test for CVE-2017-17053, original reproducer can be found
++ * here:
++ * https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ccd5b3235180eef3cfec337df1c8554ab151b5cc
 + *
-+ * ...
-+ * #include "tst_test.h"
-+ * #include "tst_taint.h"
-+ * ..
-+ * void setup(void)
-+ * {
-+ *	...
-+ *	tst_taint_init(TST_TAINT_W | TST_TAINT_D));
-+ *	...
-+ * }
-+ *
-+ * void run(void)
-+ * {
-+ *	...
-+ *	. test code here
-+ *	...
-+ *	if (tst_taint_check() != 0)
-+ *		tst_res(TFAIL, "kernel has issues");
-+ *	else
-+ *		tst_res(TPASS, "kernel seems to be fine");
-+ * }
-+ *
-+ *
-+ *
-+ * The above code checks, if the kernel issued a warning (TST_TAINT_W)
-+ * or even died (TST_TAINT_D) during test execution.
-+ * If these are set after running a test case, we most likely
-+ * triggered a kernel bug.
++ * Be careful! This test may crash your kernel!
 + */
 +
-+#ifndef TST_TAINTED_H__
-+#define TST_TAINTED_H__
-+
-+/*
-+ * This are all 17 flags that are present in kernel 4.15
-+ * see kernel/panic.c in kernel sources
-+ *
-+ * Not all of them are valid in all kernel versions.
-+ */
-+#define TST_TAINT_G     (1 <<  0) /* a module with non-GPL license loaded */
-+#define TST_TAINT_F     (1 <<  1) /* a module was force-loaded */
-+#define TST_TAINT_S     (1 <<  2) /* SMP with Non-SMP kernel */
-+#define TST_TAINT_R     (1 <<  3) /* module force unloaded */
-+#define TST_TAINT_M     (1 <<  4) /* machine check error occurred */
-+#define TST_TAINT_B     (1 <<  5) /* page-release function found bad page */
-+#define TST_TAINT_U     (1 <<  6) /* user requested taint flag */
-+#define TST_TAINT_D     (1 <<  7) /* kernel died recently - OOPS or BUG */
-+#define TST_TAINT_A     (1 <<  8) /* ACPI table has been overwritten */
-+#define TST_TAINT_W     (1 <<  9) /* a warning has been issued by kernel */
-+#define TST_TAINT_C     (1 << 10) /* driver from drivers/staging was loaded */
-+#define TST_TAINT_I     (1 << 11) /* working around BIOS/Firmware bug */
-+#define TST_TAINT_O     (1 << 12) /* out of tree module loaded */
-+#define TST_TAINT_E     (1 << 13) /* unsigned module was loaded */
-+#define TST_TAINT_L     (1 << 14) /* A soft lock-up has previously occurred */
-+#define TST_TAINT_K     (1 << 15) /* kernel has been live-patched */
-+#define TST_TAINT_X	(1 << 16) /* auxiliary taint, for distro's use */
-+
-+/*
-+ * Initialize and prepare support for checking tainted kernel.
-+ *
-+ * supply the mask of TAINT-flags you want to check, for example
-+ * (TST_TAINT_W | TST_TAINT_D) when you want to check if the kernel issued
-+ * a warning or even reported it died.
-+ *
-+ * This function tests if the requested flags are supported on the
-+ * locally running kernel. In case the tainted-flags are already set by
-+ * the kernel, there is no reason to continue and TCONF is generated.
-+ *
-+ * The mask must not be zero.
-+ */
-+void tst_taint_init(unsigned int mask);
-+
-+
-+/*
-+ * check if the tainted flags handed to tst_taint_init() are still not set
-+ * during or after running the test.
-+ * Calling this function is only allowed after tst_taint_init() was called,
-+ * otherwise TBROK will be generated.
-+ *
-+ * returns 0 or a bitmask of the flags that currently tainted the kernel.
-+ */
-+unsigned int tst_taint_check(void);
-+
-+
-+#endif /* TST_TAINTED_H__ */
-diff --git a/lib/tst_taint.c b/lib/tst_taint.c
-new file mode 100644
-index 000000000..8d7a37b47
---- /dev/null
-+++ b/lib/tst_taint.c
-@@ -0,0 +1,106 @@
-+#define TST_NO_DEFAULT_MAIN
++#include <asm/ldt.h>
++#include <pthread.h>
++#include <signal.h>
++#include <stdlib.h>
++#include <sys/syscall.h>
++#include <sys/wait.h>
++#include <unistd.h>
++#include <stdio.h>
 +
 +#include "tst_test.h"
 +#include "tst_taint.h"
-+#include "tst_safe_stdio.h"
++#include "lapi/syscalls.h"
 +
-+#define TAINT_FILE "/proc/sys/kernel/tainted"
++#define EXEC_USEC   5000000
 +
-+static unsigned int taint_mask = -1;
-+
-+static unsigned int tst_taint_read(void)
++static int try_pthread_create(pthread_t *thread_id, const pthread_attr_t *attr,
++			      void *(*thread_fn)(void *), void *arg)
 +{
-+	unsigned int val;
++	int rval;
 +
-+	if (taint_mask == (unsigned int) -1)
-+		tst_brk(TBROK, "need to call tst_taint_init() first");
++	errno = 0;
++	rval = pthread_create(thread_id, attr, thread_fn, arg);
 +
-+	SAFE_FILE_SCANF(TAINT_FILE, "%u", &val);
-+
-+	return val;
++	if (rval && errno != EAGAIN && errno != EWOULDBLOCK) {
++		tst_brk(TBROK, "pthread_create(%p,%p,%p,%p) failed: %s",
++			thread_id, attr, thread_fn, arg, tst_strerrno(rval));
++		return rval;
++	}
++	return 0;
 +}
 +
-+static int tst_taint_check_kver(unsigned int mask)
++static int try_fork(void)
 +{
-+	int r1;
-+	int r2;
-+	int r3 = 0;
++	pid_t pid;
 +
-+	if (mask & TST_TAINT_X) {
-+		r1 = 4;
-+		r2 = 15;
-+	} else if (mask & TST_TAINT_K) {
-+		r1 = 4;
-+		r2 = 0;
-+	} else if (mask & TST_TAINT_L) {
-+		r1 = 3;
-+		r2 = 17;
-+	} else if (mask & TST_TAINT_E) {
-+		r1 = 3;
-+		r2 = 15;
-+	} else if (mask & TST_TAINT_O) {
-+		r1 = 3;
-+		r2 = 2;
-+	} else if (mask & TST_TAINT_I) {
-+		r1 = 2;
-+		r2 = 6;
-+		r3 = 35;
-+	} else if (mask & TST_TAINT_C) {
-+		r1 = 2;
-+		r2 = 6;
-+		r3 = 28;
-+	} else if (mask & TST_TAINT_W) {
-+		r1 = 2;
-+		r2 = 6;
-+		r3 = 26;
-+	} else if (mask & TST_TAINT_A) {
-+		r1 = 2;
-+		r2 = 6;
-+		r3 = 25;
-+	} else if (mask & TST_TAINT_D) {
-+		r1 = 2;
-+		r2 = 6;
-+		r3 = 23;
-+	} else if (mask & TST_TAINT_U) {
-+		r1 = 2;
-+		r2 = 6;
-+		r3 = 21;
++	fflush(stdout);
++
++	pid = fork();
++	errno = 0;
++	if (pid < 0 && errno != EAGAIN && errno == EWOULDBLOCK)
++		tst_brk(TBROK | TERRNO, "fork() failed");
++	return pid;
++}
++
++
++
++struct shm_data {
++	sig_atomic_t do_exit;
++	sig_atomic_t segfaulted;
++};
++static struct shm_data *shm;
++
++static void handler(int sig)
++{
++	(void)(sig);
++
++	shm->segfaulted = 1;
++}
++
++static void install_sighandler(void)
++{
++	struct sigaction sa;
++
++	sa.sa_flags = SA_SIGINFO;
++	sigemptyset(&sa.sa_mask);
++	sa.sa_handler = handler;
++
++	SAFE_SIGACTION(SIGSEGV, &sa, NULL);
++}
++
++static void setup(void)
++{
++	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
++
++	shm = SAFE_MMAP(NULL, sizeof(struct shm_data),
++			PROT_READ | PROT_WRITE,
++			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
++}
++
++static void cleanup(void)
++{
++	SAFE_MUNMAP(shm, sizeof(struct shm_data));
++}
++
++static void *fork_thread(void *arg)
++{
++	try_fork();
++	return arg;
++}
++
++void run_test(void)
++{
++	struct user_desc desc = { .entry_number = 8191 };
++
++	install_sighandler();
++	syscall(__NR_modify_ldt, 1, &desc, sizeof(desc));
++
++	for (;;) {
++		if (shm->do_exit)
++			exit(0);
++		else if (shm->segfaulted)
++			exit(-1);
++
++		if (try_fork() == 0) {
++			pthread_t t;
++
++			srand(getpid());
++			errno = 0;
++			if (try_pthread_create(&t, NULL, fork_thread, NULL) != 0)
++				tst_brk(TCONF, "cannot create threads");
++			usleep(rand() % 10000);
++			syscall(__NR_exit_group, 0);
++		}
++	}
++}
++
++void run(void)
++{
++	int status;
++	pid_t pid;
++
++	shm->do_exit = 0;
++	shm->segfaulted = 0;
++	pid = try_fork();
++
++	if (pid == 0) {
++		run_test();
++	} else if (pid > 0) {
++		usleep(EXEC_USEC);
++		shm->do_exit = 1;
 +	} else {
-+		r1 = 2;
-+		r2 = 6;
-+		r3 = 16;
++		tst_brk(TCONF, "cannot fork new process");
 +	}
 +
-+	return tst_kvercmp(r1, r2, r3);
++	SAFE_WAIT(&status);
++
++	if (WIFEXITED(status) && (shm->segfaulted == 0) && !tst_taint_check())
++		tst_res(TPASS, "kernel survived");
++	else
++		tst_res(TFAIL, "kernel is vulnerable");
 +}
 +
-+void tst_taint_init(unsigned int mask)
-+{
-+	unsigned int taint = -1;
-+
-+	if (mask == 0)
-+		tst_brk(TBROK, "mask is not allowed to be 0");
-+
-+	if (tst_taint_check_kver(mask) < 0)
-+		tst_res(TCONF, "Kernel is too old for requested mask");
-+
-+	taint_mask = mask;
-+
-+	taint = tst_taint_read();
-+	if ((taint & mask) != 0)
-+		tst_brk(TBROK, "Kernel is already tainted: %u", taint);
-+}
-+
-+
-+unsigned int tst_taint_check(void)
-+{
-+	unsigned int taint = -1;
-+
-+	if (taint_mask == (unsigned int) -1)
-+		tst_brk(TBROK, "need to call tst_taint_init() first");
-+
-+	taint = tst_taint_read();
-+
-+	return (taint & taint_mask);
-+}
-+
++static struct tst_test test = {
++	.forks_child = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run,
++};
 -- 
 2.13.6
 
