@@ -1,11 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 7 Mar 2018 16:32:39 +0100
-Subject: [LTP] [PATCH v5 3/3] Add regression test for CVE-2017-17053
-In-Reply-To: <20180307150605.dvskocudtzu2im3j@linux.suse.de>
-References: <20180307080519.15066-1-mmoese@suse.de>
- <20180307080519.15066-4-mmoese@suse.de> <20180307141445.GA2607@rei>
- <20180307150605.dvskocudtzu2im3j@linux.suse.de>
-Message-ID: <20180307153239.GA13485@rei>
+Date: Wed, 7 Mar 2018 18:05:29 +0100
+Subject: [LTP] [PATCH] Add regression test for CVE-2017-16939
+In-Reply-To: <20180206140359.18387-1-mmoese@suse.de>
+References: <20180206140359.18387-1-mmoese@suse.de>
+Message-ID: <20180307170529.GC2607@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,154 +11,196 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > > +static int try_pthread_create(pthread_t *thread_id, const pthread_attr_t *attr,
-> > > +			      void *(*thread_fn)(void *), void *arg)
-> > > +{
-> > > +	int rval;
-> > > +
-> > > +	errno = 0;
-> > > +	rval = pthread_create(thread_id, attr, thread_fn, arg);
-> > > +
-> > > +	if (rval && errno != EAGAIN && errno != EWOULDBLOCK) {
-> > 
-> > Unlike the rest of the UNIX API the pthread_* functions returns errno
-> > directly, hence this should be:
-> > 
-> > if (rval && rval != EAGAIN && rval != EWOULDBLOCK)
-> > 
-> Ok, that sounds reasonable. I'll change that. 
-
-FYI using errno with phread_* functions is plain wrong as this code would
-behave randomly since the value of errno here would be set by the last
-failing call.
-
-> > > +	}
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int try_fork(void)
-> > > +{
-> > > +	pid_t pid;
-> > > +
-> > > +	fflush(stdout);
-> > 
-> > We should really do something about this as well. First of all the
-> > test library apparently flushes wrong stream apparently, but that is my
-> > mistake.
-> > 
-> > Secondly we should not hardcode which streem to flush here in the test.
-> > 
-> > I guess that best solution would be adding tst_flush(void) to the test
-> > library because the read_all test from ritchie needs that one as well. I
-> > can push that change myself or you can send a patch, your choice :-).
-> > 
-> I can send a patch. Should this only flush stdout, or also stderr?
-
-The test library writes everything into stderr, see fputs() at the end
-of the print_result(). Hence we should at least flush stderr. Flushing
-stdout as well would not harm, it should be empty unless the test
-wrote anything there.
-
-> > > +	pid = fork();
-> > > +	errno = 0;
-> > 
-> > There is no reason to zero the errno here.
-> > 
-> Well, this is obviously not only without reason but plain wrong. It
-> has to be the other way round. But I think it must be zeroed before 
-> fork().
-
-The errno is set on failure, so if we got -1 from fork() it has been set
-in glibc to something meaningful. I do not see a reason to reset it
-before fork().
-
-There are a few calls that do not have a well defined return value that
-represents a failure and because of that  errno has to be reset before
-we call them (for example the strto* functions) but these quire rare.
-
-> > > +	struct user_desc desc = { .entry_number = 8191 };
-> > > +
-> > > +	install_sighandler();
-> > > +	syscall(__NR_modify_ldt, 1, &desc, sizeof(desc));
-> > > +
-> > > +	for (;;) {
-> > > +		if (shm->do_exit)
-> > > +			exit(0);
-> > > +		else if (shm->segfaulted)
-> > > +			exit(-1);
-> > 
-> > Is there a reason to pass a different value to exit() here?
-> > 
-> > We does not seem to use it in the run() function anyways.
-> > 
-> I think we should use it. I'll add WEXITSTATUS(status) the check 
-> if the test passed. 
-
-We do check the shm->segfaulted there so there is no need to propagate
-it in the exit value as well...
-
-> > > +void run(void)
-> > > +{
-> > > +	int status;
-> > > +	pid_t pid;
-> > > +
-> > > +	shm->do_exit = 0;
-> > > +	shm->segfaulted = 0;
-> > > +	pid = try_fork();
-> > > +
-> > > +	if (pid == 0) {
-> > > +		run_test();
-> > > +	} else if (pid > 0) {
-> > > +		usleep(EXEC_USEC);
-> > > +		shm->do_exit = 1;
-> > > +	} else {
-> > > +		tst_brk(TCONF, "cannot fork new process");
-> > > +	}
-> > 
-> > Hmm, isn't it safe to call SAFE_FORK() here? The system shouldn't be
-> > memory starved at the point we start the test or am I mistaken?
-> > 
-> It does not really make a difference. Used it just to have it more homogeneous
-> throughout the file. Changing it to SAFE_FORK() should not matter.
-
-Well the test-writing-guidelines says that we should use SAFE_MACROS()
-whenever possible. In this case it adds a bit of confusion since the
-reader of the code would wonder why SAFE_FORK() is not used.
-
-Also the tst_brk() message doesn't have the TERRNO flag, so if the fork
-has failed here you would have no idea why when looking at the logs.
-
-So please let's keep the error messages consistent and use raw fork()
-only when we have to.
-
-> > > +	SAFE_WAIT(&status);
-> > > +
-> > > +	if (WIFEXITED(status) && (shm->segfaulted == 0) && !tst_taint_check())
-> > > +		tst_res(TPASS, "kernel survived");
-> > > +	else
-> > > +		tst_res(TFAIL, "kernel is vulnerable");
-> > > +}
-> > > +
-> > > +static struct tst_test test = {
-> > > +	.forks_child = 1,
-> > > +	.setup = setup,
-> > > +	.cleanup = cleanup,
-> > > +	.test_all = run,
-> > > +};
-> > > -- 
-> > > 2.13.6
-> > > 
-> > > 
-> > > -- 
-> > > Mailing list info: https://lists.linux.it/listinfo/ltp
-> > 
-> > -- 
-> > Cyril Hrubis
-> > chrubis@suse.cz
+> https://blogs.securiteam.com/index.php/archives/3535
 > 
-> Michael
+> Warning! If the kernel is vulnerable to this CVE, it will definitely
+> die with "Fatal Exception in Interrupt". So do not run this on a
+> production machine!
+> 
+> Signed-off-by: Michael Moese <mmoese@suse.de>
+> ---
+>  runtest/cve                    |   1 +
+>  testcases/cve/.gitignore       |   1 +
+>  testcases/cve/cve-2017-16939.c | 132 +++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 134 insertions(+)
+>  create mode 100644 testcases/cve/cve-2017-16939.c
+> 
+> diff --git a/runtest/cve b/runtest/cve
+> index 6de2ed0ac..b93efb57a 100644
+> --- a/runtest/cve
+> +++ b/runtest/cve
+> @@ -29,3 +29,4 @@ cve-2017-17807 request_key04
+>  cve-2017-1000364 stack_clash
+>  cve-2017-5754 meltdown
+>  cve-2017-17052 cve-2017-17052
+> +cve-2017-16939 cve-2017-16939
+> diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
+> index 42f32e825..8db78fd87 100644
+> --- a/testcases/cve/.gitignore
+> +++ b/testcases/cve/.gitignore
+> @@ -11,3 +11,4 @@ cve-2017-5669
+>  meltdown
+>  stack_clash
+>  cve-2017-17052
+> +cve-2017-16939
+> diff --git a/testcases/cve/cve-2017-16939.c b/testcases/cve/cve-2017-16939.c
+> new file mode 100644
+> index 000000000..ea56530c7
+> --- /dev/null
+> +++ b/testcases/cve/cve-2017-16939.c
+> @@ -0,0 +1,132 @@
+> +/*
+> + * Copyright (c) 2018 Michael Moese <mmoese@suse.de>
+> + *
+> + * This program is free software: you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation, either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
+> + */
+> +/* Regression test for CVE-2017-16939
+> + * based on the reproducing code from Mohammed Ghannam, published on
+> + * https://blogs.securiteam.com/index.php/archives/3535
+> + *
+> + * CAUTION! If your system is vulnerable to this CVE, the kernel
+> + * WILL die with a "Fatal Exception in Interrupt".
+> + */
+> +
+> +#include <unistd.h>
+> +#include <sched.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <sys/socket.h>
+> +#include <sys/wait.h>
+> +#include <netinet/in.h>
+> +#include <linux/netlink.h>
+> +#include <linux/xfrm.h>
+> +
+> +#include "tst_test.h"
+> +#include "tst_res_flags.h"
+> +#include "tst_safe_macros.h"
+> +#include "tst_safe_net.h"
+> +
+> +#define BUFSIZE 2048
+> +
+> +static int fd;
+> +static struct sockaddr_nl addr;
+> +
+> +struct msg_policy {
+> +	struct nlmsghdr msg;
+> +	char buf[BUFSIZE];
+> +};
+> +
+> +static void create_nl_socket(void)
+> +{
+> +	fd = socket(PF_NETLINK, SOCK_RAW, NETLINK_XFRM);
+             ^
+	     SAFE_SOCKET() ?
+
+> +	memset(&addr, 0, sizeof(struct sockaddr_nl));
+> +	addr.nl_family = AF_NETLINK;
+> +	addr.nl_pid = 0; /* packet goes into the kernel */
+> +	addr.nl_groups = XFRMNLGRP_NONE; /* no need for multicast group */
+> +}
+> +
+> +static void do_setsockopt(void)
+> +{
+> +	int var = 0x100;
+> +
+> +	SAFE_SETSOCKOPT(fd, 1, SO_RCVBUF, &var, sizeof(int));
+> +}
+> +
+> +static struct msg_policy *init_policy_dump(void)
+> +{
+> +	struct msg_policy *r;
+> +
+> +	r = SAFE_MALLOC(sizeof(struct msg_policy));
+> +	memset(r, 0, sizeof(struct msg_policy));
+> +
+> +	r->msg.nlmsg_len = 0x10;
+> +	r->msg.nlmsg_type = XFRM_MSG_GETPOLICY;
+> +	r->msg.nlmsg_flags = NLM_F_MATCH | NLM_F_MULTI |  NLM_F_REQUEST;
+> +	r->msg.nlmsg_seq = 0x1;
+> +	r->msg.nlmsg_pid = 2;
+> +
+> +	return r;
+> +}
+> +
+> +static int send_msg(int fd, struct nlmsghdr *msg)
+> +{
+> +	return SAFE_SENDTO(1, fd, (void *) msg, msg->nlmsg_len, 0,
+> +			   (struct sockaddr *) &addr,
+> +			   sizeof(struct sockaddr_nl));
+> +}
+> +
+> +static void create_ns(void)
+> +{
+> +	if (unshare(CLONE_NEWUSER) != 0)
+> +		tst_brk(TCONF, "unshare(CLONE_NEWUSER) failed");
+> +	if (unshare(CLONE_NEWNET) != 0)
+> +		tst_brk(TCONF, "unshare(CLONE_NEWNET) failed");
+> +}
+> +
+> +static void do_run(void)
+> +{
+> +	struct msg_policy *p;
+> +
+> +	create_ns();
+> +	create_nl_socket();
+> +	p = init_policy_dump();
+> +	do_setsockopt();
+> +	send_msg(fd, &p->msg);
+> +	p = init_policy_dump();
+
+Do we have to initialize the policy here for a second time?
+(does the fact that the p is a different pointe here matters?)
+
+Also we should probably allocate these once in the test setup so that we
+do not waste memory when the test is executed with the -i option.
+
+> +	send_msg(fd, &p->msg);
+> +
+> +	exit(0);
+> +}
+> +
+> +static void run(void)
+> +{
+> +	pid_t pid;
+> +	int status;
+> +
+> +	pid = SAFE_FORK();
+> +	if (pid == 0) {
+> +		do_run();
+> +	} else {
+> +		usleep(250000);
+                ^
+		Why the usleep here? Should just the waitpid() below
+		suffice in waiting for the child to exit?
+
+> +		SAFE_WAITPID(pid, &status, 0);
+> +		if (!WIFEXITED(status))
+> +			tst_res(TFAIL, "Kernel has issues");
+> +	}
+> +	tst_res(TPASS, "Kernel seems to have survived");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.forks_child = 1,
+> +	.test_all = run,
+> +};
 > -- 
-> SUSE Linux GmbH, GF: Felix Imend?rffer, Jane Smithard, Graham Norton, HRB 21284 (AG N?rnberg)
+> 2.13.6
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
