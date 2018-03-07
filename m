@@ -1,37 +1,34 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 7 Mar 2018 12:17:59 +0300
-Subject: [LTP] [PATCH] network: new regression test for over-sized
- chunks in SCTP
-In-Reply-To: <20180306182028.o66mafd52pef7kfz@dell5510>
-References: <1520337452-10137-1-git-send-email-alexey.kodanev@oracle.com>
- <20180306182028.o66mafd52pef7kfz@dell5510>
-Message-ID: <d07fb068-75ea-fe89-2331-995f6f1f1fbb@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 7 Mar 2018 11:42:28 +0100
+Subject: [LTP] [PATCH] times03: don't assume process initial [us]time is
+	0
+In-Reply-To: <8385516ec732e57976aeef8789480c6bf0199bcb.1520411634.git.jstancek@redhat.com>
+References: <8385516ec732e57976aeef8789480c6bf0199bcb.1520411634.git.jstancek@redhat.com>
+Message-ID: <20180307104228.GB9871@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 06.03.2018 21:20, Petr Vorel wrote:
->> Fixed by upstream commit 07f2c7ab6f8d ("sctp: verify size of a
->> new chunk in _sctp_make_chunk()")
+Hi!
+> times() runs immediately after fork(), but syscall alone
+> seems to be enough for some systems to already account ticks.
 > 
->> CVE-2018-5803
-> I wonder whether to add it also into runtest/cve. But these aren't usually run with
-> /opt/ltp/testscripts/network.sh. Don't we want to create something like runtest/cve-network?
+> For example on arm64 with 4.14:
+>   tst_test.c:980: INFO: Timeout per run is 0h 05m 00s
+>   times03.c:102: PASS: buf1.tms_utime = 0
+>   times03.c:105: FAIL: buf1.tms_stime = 1
+>   ...
 > 
-> This is one of several tests in runtest/net.features which runs "forever", generating
-> impressive load and blocking link making it impossible even to log in.
-> Actually I wasn't able to pass it with any of my virtual machines (various distros).
-> What is the prerequisite for the test? Separate "safe" link to SUT (not to be affected by
-> the test)? It'd be great if the test wasn't too resource demanding.
+> This patch drops the initial zero check for [us]time.
 
-There is no prerequisite for the test, adding addresses is needed
-to construct a big INIT packets that will eventually include
-all this variable size parameters, then send it to the server.
+I wonder if we should drop only the system time counter check, since
+agruably the user time should be zero. Or if we should check that these
+values are small enough, i.e. < 5 (which should be somewhere between 5ms
+and 50ms depending on CONFIG_HZ).
 
-We can construct it manually though, it should be much faster.
-I'll try to come up with another version.
 
-Thanks,
-Alexey
+-- 
+Cyril Hrubis
+chrubis@suse.cz
