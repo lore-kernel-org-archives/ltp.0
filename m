@@ -1,144 +1,86 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 6 Mar 2018 19:20:28 +0100
-Subject: [LTP] [PATCH] network: new regression test for over-sized
- chunks in SCTP
-In-Reply-To: <1520337452-10137-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1520337452-10137-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20180306182028.o66mafd52pef7kfz@dell5510>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 7 Mar 2018 11:51:11 +0800
+Subject: [LTP] [PATCH] commands/sysctl: Add new regression test for
+ invalid sched_time_avg
+In-Reply-To: <20180306124242.GC16934@rei.lan>
+References: <1516695452-23224-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20180306124242.GC16934@rei.lan>
+Message-ID: <5A9F61AF.6070008@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Fixed by upstream commit 07f2c7ab6f8d ("sctp: verify size of a
-> new chunk in _sctp_make_chunk()")
+On 2018/03/06 20:42, Cyril Hrubis wrote:
+> Hi!
+>> +TST_TESTFUNC=sysctl_test
+>> +TST_NEEDS_CMDS="sysctl"
+>> +
+>> +. tst_test.sh
+>> +
+>> +get_value()
+>> +{
+>> +	local value=$(sysctl -n $1)
+>> +	[ -z "$value" ]&&  tst_brk TBROK \
+>> +		"Failed to get the value of sched_time_avg(_ms)"
+>> +
+>> +	echo $value
+>> +}
+>> +
+>> +sysctl_test()
+>> +{
+>> +	# With commit d00535d, sched_time_avg was renamed as sched_time_avg_ms
+>> +	local name=$(sysctl -a 2>&1 | egrep -o \
+>> +		'kernel.(sched_time_avg|sched_time_avg_ms)')
+>> +	[ -z "$name" ]&&  tst_brk TCONF \
+>> +		"sched_time_avg(_ms) was not supported"
+> Can't we just do?
+>
+> if [ -e /proc/sys/kernel/sched_time_avg_ms ]; then
+> 	name=...
+> fi
+>
+> if [ -e /proc/sys/kernel/sched_time_avg ]; then
+> 	name=...
+> fi
+>
+> [ -z "$name" ] ...
+Hi Cyril,
 
-> CVE-2018-5803
-I wonder whether to add it also into runtest/cve. But these aren't usually run with
-/opt/ltp/testscripts/network.sh. Don't we want to create something like runtest/cve-network?
+Agreed.  Using /proc/sys/ instead of sysctl command seems better.
+>> +	local orig_value=$(get_value $name)
+>> +
+>> +	sysctl -w $name=0>/dev/null 2>&1
+>> +
+>> +	# Increase the chance of exposing the problem on RHEL6
+>> +	sleep 3
+> What is this sleep good for? Do we wait here for the kernel to crash?
+On my RHEL6, restoring the original value immediately after setting an 
+invalid value always didn't
+trigger a hang in time, so we just wait a moment for kernel to hang.
 
-This is one of several tests in runtest/net.features which runs "forever", generating
-impressive load and blocking link making it impossible even to log in.
-Actually I wasn't able to pass it with any of my virtual machines (various distros).
-What is the prerequisite for the test? Separate "safe" link to SUT (not to be affected by
-the test)? It'd be great if the test wasn't too resource demanding.
-None of my virtual machines contain commit 07f2c7ab6f8d.
-
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> ---
->  runtest/net.features             |    1 +
->  testcases/network/sctp/Makefile  |    2 +-
->  testcases/network/sctp/sctp02.sh |   66 ++++++++++++++++++++++++++++++++++++++
->  3 files changed, 68 insertions(+), 1 deletions(-)
->  create mode 100755 testcases/network/sctp/sctp02.sh
-
-> diff --git a/runtest/net.features b/runtest/net.features
-> index b9250dc..81e9a43 100644
-> --- a/runtest/net.features
-> +++ b/runtest/net.features
-> @@ -19,6 +19,7 @@ dccp01_ipv6 dccp01.sh -6
-
->  sctp01 sctp01.sh
->  sctp01_ipv6 sctp01.sh -6
-> +sctp02 sctp02.sh -6
-
->  tcp_fastopen tcp_fastopen_run.sh
->  tcp_fastopen6 tcp_fastopen_run.sh -6
-> diff --git a/testcases/network/sctp/Makefile b/testcases/network/sctp/Makefile
-> index 914e389..5f014d8 100644
-> --- a/testcases/network/sctp/Makefile
-> +++ b/testcases/network/sctp/Makefile
-> @@ -17,6 +17,6 @@ top_srcdir		?= ../../..
-
->  include $(top_srcdir)/include/mk/env_pre.mk
-
-> -INSTALL_TARGETS		:= sctp01.sh
-> +INSTALL_TARGETS		:= *.sh
-
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/network/sctp/sctp02.sh b/testcases/network/sctp/sctp02.sh
-> new file mode 100755
-> index 0000000..f8386dd
-> --- /dev/null
-> +++ b/testcases/network/sctp/sctp02.sh
-> @@ -0,0 +1,66 @@
-> +#!/bin/sh
-> +# Copyright (c) 2018 Oracle and/or its affiliates.
-> +#
-> +# This program is free software; you can redistribute it and/or
-> +# modify it under the terms of the GNU General Public License as
-> +# published by the Free Software Foundation; either version 2 of
-> +# the License, or (at your option) any later version.
-> +#
-> +# This program is distributed in the hope that it would be useful,
-> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +# GNU General Public License for more details.
-> +#
-> +# You should have received a copy of the GNU General Public License
-> +# along with this program. If not, see <http://www.gnu.org/licenses/>.
-> +#
-> +# Regression test for the crash caused by over-sized SCTP chunk, fixed by
-> +# commit 07f2c7ab6f8d ("sctp: verify size of a new chunk in _sctp_make_chunk()")
-> +#
-> +# CVE-2018-5803
-Maybe say this at least in TINFO, when it's not in TCID?
-> +
-> +TCID=sctp02
-> +TST_TOTAL=1
-> +TST_CLEANUP="cleanup"
-> +TST_NEEDS_TMPDIR=1
-> +
-> +. test_net.sh
-> +
-> +cleanup()
-> +{
-> +	for i in $(seq 1 16); do
-Why 16?
-
-> +		tst_rhost_run -s -c "ip a del $(tst_ipaddr_un -c $i rhost) \
-> +				     dev $(tst_iface rhost)"
-Minor nit: I wish we used in scripts 'ip addr' instead of 'ip a' (better for grepping).
-
-> +	done
-> +	for i in $(seq 17 3260); do
-Why 3260? Would it make sense to have it in some env variable?
-
-> +		ROD ip a del $(tst_ipaddr_un -c $i lhost) dev $(tst_iface)
-> +	done
-> +}
-> +
-> +setup()
-> +{
-> +	tst_require_root
-> +
-> +	tst_resm TINFO "adding several addresses to remote host"
-> +	for i in $(seq 1 16); do
-> +		tst_rhost_run -s -c "ip a add $(tst_ipaddr_un -c $i rhost) \
-> +				     dev $(tst_iface rhost) nodad"
-> +	done
-> +
-> +	tst_resm TINFO "adding addresses to local host to make big INIT packet"
-> +	for i in $(seq 17 3260); do
-> +		ROD ip a add $(tst_ipaddr_un -c $i lhost) dev $(tst_iface) nodad
-> +	done
-> +}
-> +
-> +test_run()
-> +{
-> +	tst_resm TINFO "sending almost over-sized INIT packet to remote host"
-> +	tst_netload -H $(tst_ipaddr rhost) -T sctp
-> +	tst_resm TPASS "test doesn't cause the crash"
-> +}
-> +
-> +setup
-> +test_run
-> +
-> +tst_exit
-
-Otherwise looks good to me.
+Thanks,
+Xiao Yang
+>> +	local curr_value=$(get_value $name)
+>> +
+>> +	if [ ${curr_value} -eq ${orig_value} ]; then
+>> +		tst_res TPASS "Setting sched_time_avg(_ms) failed"
+>> +	else
+>> +		tst_res TFAIL "Setting sched_time_avg(_ms) succeeded"
+>> +		sysctl -w $name=${orig_value}>/dev/null 2>&1
+>> +	fi
+>> +}
+>> +
+>> +tst_run
+>> -- 
+>> 1.8.3.1
+>>
+>>
+>>
+>>
+>> -- 
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 
-Kind regards,
-Petr
+
