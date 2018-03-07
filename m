@@ -1,51 +1,50 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 7 Mar 2018 16:09:06 +0800
-Subject: [LTP] [bug?] Access was denied by memory protection keys in
-	execute-only address
-Message-ID: <CAEemH2f0LDqyR5AmUYv17OuBc5-UycckDPWgk46XU_ghQo4diw@mail.gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed,  7 Mar 2018 09:34:37 +0100
+Subject: [LTP] [PATCH] times03: don't assume process initial [us]time is 0
+Message-ID: <8385516ec732e57976aeef8789480c6bf0199bcb.1520411634.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+times() runs immediately after fork(), but syscall alone
+seems to be enough for some systems to already account ticks.
 
-ltp/mprotect04[1] crashed by SEGV_PKUERR on ppc64(LPAR on P730, Power 8
-8247-22L) with kernel-v4.16.0-rc4.
+For example on arm64 with 4.14:
+  tst_test.c:980: INFO: Timeout per run is 0h 05m 00s
+  times03.c:102: PASS: buf1.tms_utime = 0
+  times03.c:105: FAIL: buf1.tms_stime = 1
+  ...
 
-10000000-10020000 r-xp 00000000 fd:00 167223           mprotect04
-10020000-10030000 r--p 00010000 fd:00 167223           mprotect04
-10030000-10040000 rw-p 00020000 fd:00 167223           mprotect04
-1001a380000-1001a3b0000 rw-p 00000000 00:00 0          [heap]
-7fffa6c60000-7fffa6c80000 --xp 00000000 00:00 0 ​
+This patch drops the initial zero check for [us]time.
 
-​&exec_func = 0x10030170​
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/times/times03.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-​&func = 0x7fffa6c60170​
-
-​While perform ​
-"(*func)();" we get the
-​segmentation fault.
-​
-
-​strace log:​
-
--------------------
-​mprotect(0x7fffaed00000, 131072, PROT_EXEC) = 0
-rt_sigprocmask(SIG_BLOCK, NULL, [], 8)  = 0
---- SIGSEGV {si_signo=SIGSEGV, si_code=SEGV_PKUERR, si_addr=0x7fffaed00170}
----​
-
-
-
-[1]
-https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/mprotect/mprotect04.c
-​
-
+diff --git a/testcases/kernel/syscalls/times/times03.c b/testcases/kernel/syscalls/times/times03.c
+index 78d72d259ec1..c23ea541ab34 100644
+--- a/testcases/kernel/syscalls/times/times03.c
++++ b/testcases/kernel/syscalls/times/times03.c
+@@ -96,16 +96,6 @@ static void verify_times(void)
+ 	if (times(&buf1) == -1)
+ 		tst_brk(TBROK | TERRNO, "times()");
+ 
+-	if (buf1.tms_utime != 0)
+-		tst_res(TFAIL, "buf1.tms_utime = %li", buf1.tms_utime);
+-	else
+-		tst_res(TPASS, "buf1.tms_utime = 0");
+-
+-	if (buf1.tms_stime != 0)
+-		tst_res(TFAIL, "buf1.tms_stime = %li", buf1.tms_stime);
+-	else
+-		tst_res(TPASS, "buf1.tms_stime = 0");
+-
+ 	generate_utime();
+ 	generate_stime();
+ 
 -- 
-Li Wang
-liwang@redhat.com
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180307/aca0a9b3/attachment-0001.html>
+1.8.3.1
+
