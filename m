@@ -1,207 +1,127 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 7 Mar 2018 18:05:29 +0100
-Subject: [LTP] [PATCH] Add regression test for CVE-2017-16939
-In-Reply-To: <20180206140359.18387-1-mmoese@suse.de>
-References: <20180206140359.18387-1-mmoese@suse.de>
-Message-ID: <20180307170529.GC2607@rei>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 8 Mar 2018 11:38:51 +0800
+Subject: [LTP] [bug?] Access was denied by memory protection keys in
+ execute-only address
+In-Reply-To: <20180308004324.GK1060@ram.oc3035372033.ibm.com>
+References: <CAEemH2f0LDqyR5AmUYv17OuBc5-UycckDPWgk46XU_ghQo4diw@mail.gmail.com>
+ <20180308004324.GK1060@ram.oc3035372033.ibm.com>
+Message-ID: <CAEemH2fTamDYsPWxs1ZB7LF1Uvhaz4GfyOFDLyN+oo+7z2+yOg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-> https://blogs.securiteam.com/index.php/archives/3535
-> 
-> Warning! If the kernel is vulnerable to this CVE, it will definitely
-> die with "Fatal Exception in Interrupt". So do not run this on a
-> production machine!
-> 
-> Signed-off-by: Michael Moese <mmoese@suse.de>
-> ---
->  runtest/cve                    |   1 +
->  testcases/cve/.gitignore       |   1 +
->  testcases/cve/cve-2017-16939.c | 132 +++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 134 insertions(+)
->  create mode 100644 testcases/cve/cve-2017-16939.c
-> 
-> diff --git a/runtest/cve b/runtest/cve
-> index 6de2ed0ac..b93efb57a 100644
-> --- a/runtest/cve
-> +++ b/runtest/cve
-> @@ -29,3 +29,4 @@ cve-2017-17807 request_key04
->  cve-2017-1000364 stack_clash
->  cve-2017-5754 meltdown
->  cve-2017-17052 cve-2017-17052
-> +cve-2017-16939 cve-2017-16939
-> diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
-> index 42f32e825..8db78fd87 100644
-> --- a/testcases/cve/.gitignore
-> +++ b/testcases/cve/.gitignore
-> @@ -11,3 +11,4 @@ cve-2017-5669
->  meltdown
->  stack_clash
->  cve-2017-17052
-> +cve-2017-16939
-> diff --git a/testcases/cve/cve-2017-16939.c b/testcases/cve/cve-2017-16939.c
-> new file mode 100644
-> index 000000000..ea56530c7
-> --- /dev/null
-> +++ b/testcases/cve/cve-2017-16939.c
-> @@ -0,0 +1,132 @@
-> +/*
-> + * Copyright (c) 2018 Michael Moese <mmoese@suse.de>
-> + *
-> + * This program is free software: you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation, either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
-> + */
-> +/* Regression test for CVE-2017-16939
-> + * based on the reproducing code from Mohammed Ghannam, published on
-> + * https://blogs.securiteam.com/index.php/archives/3535
-> + *
-> + * CAUTION! If your system is vulnerable to this CVE, the kernel
-> + * WILL die with a "Fatal Exception in Interrupt".
-> + */
-> +
-> +#include <unistd.h>
-> +#include <sched.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <sys/socket.h>
-> +#include <sys/wait.h>
-> +#include <netinet/in.h>
-> +#include <linux/netlink.h>
-> +#include <linux/xfrm.h>
-> +
-> +#include "tst_test.h"
-> +#include "tst_res_flags.h"
-> +#include "tst_safe_macros.h"
-> +#include "tst_safe_net.h"
-> +
-> +#define BUFSIZE 2048
-> +
-> +static int fd;
-> +static struct sockaddr_nl addr;
-> +
-> +struct msg_policy {
-> +	struct nlmsghdr msg;
-> +	char buf[BUFSIZE];
-> +};
-> +
-> +static void create_nl_socket(void)
-> +{
-> +	fd = socket(PF_NETLINK, SOCK_RAW, NETLINK_XFRM);
-             ^
-	     SAFE_SOCKET() ?
+On Thu, Mar 8, 2018 at 8:43 AM, Ram Pai <linuxram@us.ibm.com> wrote:
 
-> +	memset(&addr, 0, sizeof(struct sockaddr_nl));
-> +	addr.nl_family = AF_NETLINK;
-> +	addr.nl_pid = 0; /* packet goes into the kernel */
-> +	addr.nl_groups = XFRMNLGRP_NONE; /* no need for multicast group */
-> +}
-> +
-> +static void do_setsockopt(void)
-> +{
-> +	int var = 0x100;
-> +
-> +	SAFE_SETSOCKOPT(fd, 1, SO_RCVBUF, &var, sizeof(int));
-> +}
-> +
-> +static struct msg_policy *init_policy_dump(void)
-> +{
-> +	struct msg_policy *r;
-> +
-> +	r = SAFE_MALLOC(sizeof(struct msg_policy));
-> +	memset(r, 0, sizeof(struct msg_policy));
-> +
-> +	r->msg.nlmsg_len = 0x10;
-> +	r->msg.nlmsg_type = XFRM_MSG_GETPOLICY;
-> +	r->msg.nlmsg_flags = NLM_F_MATCH | NLM_F_MULTI |  NLM_F_REQUEST;
-> +	r->msg.nlmsg_seq = 0x1;
-> +	r->msg.nlmsg_pid = 2;
-> +
-> +	return r;
-> +}
-> +
-> +static int send_msg(int fd, struct nlmsghdr *msg)
-> +{
-> +	return SAFE_SENDTO(1, fd, (void *) msg, msg->nlmsg_len, 0,
-> +			   (struct sockaddr *) &addr,
-> +			   sizeof(struct sockaddr_nl));
-> +}
-> +
-> +static void create_ns(void)
-> +{
-> +	if (unshare(CLONE_NEWUSER) != 0)
-> +		tst_brk(TCONF, "unshare(CLONE_NEWUSER) failed");
-> +	if (unshare(CLONE_NEWNET) != 0)
-> +		tst_brk(TCONF, "unshare(CLONE_NEWNET) failed");
-> +}
-> +
-> +static void do_run(void)
-> +{
-> +	struct msg_policy *p;
-> +
-> +	create_ns();
-> +	create_nl_socket();
-> +	p = init_policy_dump();
-> +	do_setsockopt();
-> +	send_msg(fd, &p->msg);
-> +	p = init_policy_dump();
+> On Wed, Mar 07, 2018 at 04:09:06PM +0800, Li Wang wrote:
+> >    Hi,
+> >
+> >    ltp/mprotect04[1] crashed by SEGV_PKUERR on ppc64(LPAR on P730, Power
+> 8
+> >    8247-22L) with kernel-v4.16.0-rc4.
+> >    10000000-10020000 r-xp 00000000 fd:00 167223           mprotect04
+> >    10020000-10030000 r--p 00010000 fd:00 167223           mprotect04
+> >    10030000-10040000 rw-p 00020000 fd:00 167223           mprotect04
+> >    1001a380000-1001a3b0000 rw-p 00000000 00:00 0          [heap]
+> >    7fffa6c60000-7fffa6c80000 --xp 00000000 00:00 0 ​
+> >    ​&exec_func = 0x10030170​
+> >    ​&func = 0x7fffa6c60170​
+> >
+> >    ​While perform ​"(*func)();" we get the
+> >    ​segmentation fault.
+> >    ​
+> >    ​strace log:​
+> >    -------------------
+> >    ​mprotect(0x7fffaed00000, 131072, PROT_EXEC) = 0
+> >    rt_sigprocmask(SIG_BLOCK, NULL, [], 8)  = 0
+> >    --- SIGSEGV {si_signo=SIGSEGV, si_code=SEGV_PKUERR,
+> >    si_addr=0x7fffaed00170} ---​
+>
+> Ran the same test on my machine. and did not encounter the bug.
+>
+> Can I get your kernel .config ?
+>
 
-Do we have to initialize the policy here for a second time?
-(does the fact that the p is a different pointe here matters?)
+​S​
+ee the attachment.
 
-Also we should probably allocate these once in the test setup so that we
-do not waste memory when the test is executed with the -i option.
 
-> +	send_msg(fd, &p->msg);
-> +
-> +	exit(0);
-> +}
-> +
-> +static void run(void)
-> +{
-> +	pid_t pid;
-> +	int status;
-> +
-> +	pid = SAFE_FORK();
-> +	if (pid == 0) {
-> +		do_run();
-> +	} else {
-> +		usleep(250000);
-                ^
-		Why the usleep here? Should just the waitpid() below
-		suffice in waiting for the child to exit?
+> also is this a P7 LPAR or a P8 LPAR?  cat /proc/cpuinfo will help.
+>
 
-> +		SAFE_WAITPID(pid, &status, 0);
-> +		if (!WIFEXITED(status))
-> +			tst_res(TFAIL, "Kernel has issues");
-> +	}
-> +	tst_res(TPASS, "Kernel seems to have survived");
-> +}
-> +
-> +static struct tst_test test = {
-> +	.forks_child = 1,
-> +	.test_all = run,
-> +};
-> -- 
-> 2.13.6
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+One is
+​IBM LPAR on P730 {8231-E2B}​
+, another is:
+​IBM Power 8 8247-22L​
+
+
+
+​# ./mprotect04
+mprotect04    1  TPASS  :  test PROT_NONE for mprotect success
+mprotect04    2  TFAIL  :  mprotect04.c:252: test PROT_EXEC for mprotect
+failed​
+
+​# cat /proc/cpuinfo
+processor    : 0
+cpu        : POWER8 (architected), altivec supported
+clock        : 3425.000000MHz
+revision    : 2.1 (pvr 004b 0201)
+
+processor    : 1
+cpu        : POWER8 (architected), altivec supported
+clock        : 3425.000000MHz
+revision    : 2.1 (pvr 004b 0201)
+
+processor    : 2
+cpu        : POWER8 (architected), altivec supported
+clock        : 3425.000000MHz
+revision    : 2.1 (pvr 004b 0201)
+
+processor    : 3
+cpu        : POWER8 (architected), altivec supported
+clock        : 3425.000000MHz
+revision    : 2.1 (pvr 004b 0201)
+
+processor    : 4
+cpu        : POWER8 (architected), altivec supported
+clock        : 3425.000000MHz
+revision    : 2.1 (pvr 004b 0201)
+
+processor    : 5
+cpu        : POWER8 (architected), altivec supported
+clock        : 3425.000000MHz
+revision    : 2.1 (pvr 004b 0201)
+
+processor    : 6
+cpu        : POWER8 (architected), altivec supported
+clock        : 3425.000000MHz
+revision    : 2.1 (pvr 004b 0201)
+
+processor    : 7
+cpu        : POWER8 (architected), altivec supported
+clock        : 3425.000000MHz
+revision    : 2.1 (pvr 004b 0201)
+
+timebase    : 512000000
+platform    : pSeries
+model        : IBM,8247-22L
+machine        : CHRP IBM,8247-22L
+MMU        : Hash
+
+
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Li Wang
+liwang@redhat.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180308/aec88dca/attachment-0001.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: config-4.16.0-rc3
+Type: application/octet-stream
+Size: 150740 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180308/aec88dca/attachment-0001.obj>
