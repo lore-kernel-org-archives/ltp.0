@@ -1,83 +1,44 @@
-From: Michael Moese <mmoese@suse.de>
-Date: Thu,  8 Mar 2018 11:57:04 +0100
-Subject: [LTP] [PATCH] Add tst_flush() library function
-Message-ID: <20180308105704.7823-1-mmoese@suse.de>
+From: Ram Pai <linuxram@us.ibm.com>
+Date: Wed, 7 Mar 2018 16:43:24 -0800
+Subject: [LTP] [bug?] Access was denied by memory protection keys in
+ execute-only address
+In-Reply-To: <CAEemH2f0LDqyR5AmUYv17OuBc5-UycckDPWgk46XU_ghQo4diw@mail.gmail.com>
+References: <CAEemH2f0LDqyR5AmUYv17OuBc5-UycckDPWgk46XU_ghQo4diw@mail.gmail.com>
+Message-ID: <20180308004324.GK1060@ram.oc3035372033.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Add a library function to flush stderr and stdout streams:
-void tst_flush(void)
+On Wed, Mar 07, 2018 at 04:09:06PM +0800, Li Wang wrote:
+>    Hi,
+> 
+>    ltp/mprotect04[1] crashed by SEGV_PKUERR on ppc64(LPAR on P730, Power 8
+>    8247-22L) with kernel-v4.16.0-rc4.
+>    10000000-10020000 r-xp 00000000 fd:00 167223           mprotect04
+>    10020000-10030000 r--p 00010000 fd:00 167223           mprotect04
+>    10030000-10040000 rw-p 00020000 fd:00 167223           mprotect04
+>    1001a380000-1001a3b0000 rw-p 00000000 00:00 0          [heap]
+>    7fffa6c60000-7fffa6c80000 --xp 00000000 00:00 0 ​
+>    ​&exec_func = 0x10030170​
+>    ​&func = 0x7fffa6c60170​
+> 
+>    ​While perform ​"(*func)();" we get the
+>    ​segmentation fault.
+>    ​
+>    ​strace log:​
+>    -------------------
+>    ​mprotect(0x7fffaed00000, 131072, PROT_EXEC) = 0
+>    rt_sigprocmask(SIG_BLOCK, NULL, [], 8)  = 0
+>    --- SIGSEGV {si_signo=SIGSEGV, si_code=SEGV_PKUERR,
+>    si_addr=0x7fffaed00170} ---​
 
-This function flushes stderr and stdout streams. In case of an
-error, the test is aborted with TBROK and an error message is
-printed.
+Ran the same test on my machine. and did not encounter the bug.
 
-Signed-off-by: Michael Moese <mmoese@suse.de>
----
- doc/test-writing-guidelines.txt |  8 ++++++++
- include/tst_test.h              |  3 +++
- lib/tst_test.c                  | 15 +++++++++++++++
- 3 files changed, 26 insertions(+)
+Can I get your kernel .config ?
+also is this a P7 LPAR or a P8 LPAR?  cat /proc/cpuinfo will help.
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index 739b295b8..4c60cd66b 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -465,6 +465,14 @@ Allows for setting timeout per test iteration dymanically in the test setup(),
- the timeout is specified in seconds. There are a few testcases whose runtime
- can vary arbitrarily, these can disable timeouts by setting it to -1.
- 
-+[source,c]
-+------------------------------------------------------------------------------
-+void tst_flush(void);
-+-------------------------------------------------------------------------------
-+
-+Flush stderr and stdout streams, handling errors appropriately.
-+You should not use fflush() for stderr or stdout.
-+
- 2.2.3 Test temporary directory
- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
- 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index af97b8983..54ff306d9 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -70,6 +70,9 @@ void tst_brk_(const char *file, const int lineno, int ttype,
- #define tst_brk(ttype, arg_fmt, ...) \
- 	tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__)
- 
-+/* flush stderr and stdout */
-+void tst_flush(void);
-+
- pid_t safe_fork(const char *filename, unsigned int lineno);
- #define SAFE_FORK() \
- 	safe_fork(__FILE__, __LINE__)
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 2cf35ed66..9b4f43828 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -1085,3 +1085,18 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
- 
- 	do_exit(ret);
- }
-+
-+
-+void tst_flush(void)
-+{
-+	int rval;
-+
-+	rval = fflush(stderr);
-+	if (rval != 0)
-+		tst_brk(TBROK | TERRNO, "fflush(stderr) failed");
-+
-+	rval = fflush(stderr);
-+	if (rval != 0)
-+		tst_brk(TBROK | TERRNO, "fflush(stdout) failed");
-+
-+}
--- 
-2.13.6
+Thanks,
+RP
 
