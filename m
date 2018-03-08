@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 8 Mar 2018 15:07:23 +0100
-Subject: [LTP] [PATCH] mtest06: Use temp dir from $TMPDIR if present
-In-Reply-To: <20180308005250.210404-1-hridya@google.com>
-References: <20180308005250.210404-1-hridya@google.com>
-Message-ID: <20180308140722.GA26706@rei>
+Date: Thu, 8 Mar 2018 16:14:03 +0100
+Subject: [LTP] [PATCH] Add tst_flush() library function
+In-Reply-To: <20180308105704.7823-1-mmoese@suse.de>
+References: <20180308105704.7823-1-mmoese@suse.de>
+Message-ID: <20180308151359.GA1777@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,27 +11,16 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Good catch, but given that the temporary directory created by
-tst_tmpdir() is unique we can as well drop the whole mkstemp()
-and replace it with just open().
+I've tried to apply this but found out that there is tst_flush() in the
+old library and because of that the code does not even compile.
 
-#define FNAME "ashfile"
+So we have to rename the tst_flush() in the old library to something as
+tst_old_flush() and also remove it from the ltpapicmd.c since there are
+no shell tests that call that command (ltpapicmd.c should hopefully die
+some day soon). Should I do that or will you send another patch? :-)
 
-int mkfile(int size)
-{
-	int fd;
-
-	fd = open(FNAME,  O_RDWR | O_CREAT, 0600);
-	if (fd < 0)
-		tst_brk(...);
-
-	unlink(FNAME);
-
-	...
-
-	return fd;
-}
-
+Also we should make use of the tst_flush() in the safe_fork() so that we
+finally flush the right stream in the new test library...
 
 -- 
 Cyril Hrubis
