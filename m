@@ -1,56 +1,39 @@
 From: Michael Moese <mmoese@suse.de>
-Date: Fri,  9 Mar 2018 13:44:17 +0100
-Subject: [LTP] [PATCH v6 2/3] Add a library wrapper for sigaction()
-In-Reply-To: <20180309124418.30271-1-mmoese@suse.de>
-References: <20180309124418.30271-1-mmoese@suse.de>
-Message-ID: <20180309124418.30271-3-mmoese@suse.de>
+Date: Fri,  9 Mar 2018 13:44:15 +0100
+Subject: [LTP] [PATCH v6 0/3] Add regression test for CVE-2017-17053
+Message-ID: <20180309124418.30271-1-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-In a multithreaded program, using signal() results in unspecified
-behavior. In this case, sigaction() has to be used to install a
-signal handler.
-Therefore, SAFE_SIGACTION() is added.
 
-Signed-off-by: Michael Moese <mmoese@suse.de>
----
- include/tst_safe_macros.h | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+Add a regression test for CVE-2017-17053. This testcase is depending
+on some new library functions included in this series.
 
-diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index 06bff13c7..bf12e0719 100644
---- a/include/tst_safe_macros.h
-+++ b/include/tst_safe_macros.h
-@@ -397,6 +397,26 @@ static inline sighandler_t safe_signal(const char *file, const int lineno,
- #define SAFE_SIGNAL(signum, handler) \
- 	safe_signal(__FILE__, __LINE__, (signum), (handler))
- 
-+
-+
-+static inline int safe_sigaction(const char *file, const int lineno,
-+				 int signum, const struct sigaction *act,
-+				 struct sigaction *oldact)
-+{
-+	int rval;
-+
-+	rval = sigaction(signum, act, oldact);
-+
-+	if (rval == -1) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			"sigaction(%d, %p, %p) failed", signum, act, oldact);
-+	}
-+
-+	return rval;
-+}
-+#define SAFE_SIGACTION(signum, act, oldact) \
-+	safe_sigaction(__FILE__, __LINE__, (signum), (act), (oldact))
-+
- #define SAFE_EXECLP(file, arg, ...) do {                   \
- 	execlp((file), (arg), ##__VA_ARGS__);              \
- 	tst_brk_(__FILE__, __LINE__, TBROK | TERRNO,       \
+This patch series consists of reworked patches according to previous
+review comments, as well as a small new library wrapper function
+SAFE_SIGACTION() to install a signal handler.
+
+Michael Moese (3):
+  Add library support for /proc/sys/kernel/tainted
+  Add a library wrapper for sigaction()
+  Add regression test for CVE-2017-17053
+
+ doc/test-writing-guidelines.txt |  42 ++++++++++
+ include/tst_safe_macros.h       |  20 +++++
+ include/tst_taint.h             | 104 +++++++++++++++++++++++++
+ lib/tst_taint.c                 | 106 +++++++++++++++++++++++++
+ runtest/cve                     |   1 +
+ testcases/cve/.gitignore        |   1 +
+ testcases/cve/Makefile          |   2 +
+ testcases/cve/cve-2017-17053.c  | 166 ++++++++++++++++++++++++++++++++++++++++
+ 8 files changed, 442 insertions(+)
+ create mode 100644 include/tst_taint.h
+ create mode 100644 lib/tst_taint.c
+ create mode 100644 testcases/cve/cve-2017-17053.c
+
 -- 
 2.13.6
 
