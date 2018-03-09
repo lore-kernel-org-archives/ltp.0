@@ -1,96 +1,56 @@
-From: Ram Pai <linuxram@us.ibm.com>
-Date: Thu, 8 Mar 2018 21:50:13 -0800
-Subject: [LTP] [bug?] Access was denied by memory protection keys in
- execute-only address
-In-Reply-To: <CAEemH2czWDjvJLpL6ynV1+VxCFh_-A-d72tJhA5zwgrAES2nWA@mail.gmail.com>
-References: <CAEemH2f0LDqyR5AmUYv17OuBc5-UycckDPWgk46XU_ghQo4diw@mail.gmail.com>
- <871sguep4v.fsf@concordia.ellerman.id.au>
- <20180308164545.GM1060@ram.oc3035372033.ibm.com>
- <CAEemH2czWDjvJLpL6ynV1+VxCFh_-A-d72tJhA5zwgrAES2nWA@mail.gmail.com>
-Message-ID: <20180309055013.GP1060@ram.oc3035372033.ibm.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri,  9 Mar 2018 08:29:26 +0100
+Subject: [LTP] [PATCH v2] times03: don't assume process initial [us]time is 0
+Message-ID: <e39d28a819f83b5dcad9a9a2606bd657ac34f597.1520580525.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Mar 09, 2018 at 11:43:00AM +0800, Li Wang wrote:
->    On Fri, Mar 9, 2018 at 12:45 AM, Ram Pai <[1]linuxram@us.ibm.com> wrote:
-> 
->      On Thu, Mar 08, 2018 at 11:19:12PM +1100, Michael Ellerman wrote:
->      > Li Wang <[2]liwang@redhat.com> writes:
->      > > Hi,
->      > >
->      > > ltp/mprotect04[1] crashed by SEGV_PKUERR on ppc64(LPAR on P730,
->      Power 8
->      > > 8247-22L) with kernel-v4.16.0-rc4.
->      > >
->      > > 10000000-10020000 r-xp 00000000 fd:00 167223           mprotect04
->      > > 10020000-10030000 r--p 00010000 fd:00 167223           mprotect04
->      > > 10030000-10040000 rw-p 00020000 fd:00 167223           mprotect04
->      > > 1001a380000-1001a3b0000 rw-p 00000000 00:00 0          [heap]
->      > > 7fffa6c60000-7fffa6c80000 --xp 00000000 00:00 0 ​
->      > >
->      > > ​&exec_func = 0x10030170​
->      > >
->      > > ​&func = 0x7fffa6c60170​
->      > >
->      > > ​While perform ​
->      > > "(*func)();" we get the
->      > > ​segmentation fault.
->      > > ​
->      > >
->      > > ​strace log:​
->      > >
->      > > -------------------
->      > > ​mprotect(0x7fffaed00000, 131072, PROT_EXEC) = 0
->      > > rt_sigprocmask(SIG_BLOCK, NULL, [], 8)  = 0
->      > > --- SIGSEGV {si_signo=SIGSEGV, si_code=SEGV_PKUERR,
->      si_addr=0x7fffaed00170}
->      > > ---​
->      >
->      > Looks like a bug to me.
->      >
->      > Please Cc linuxppc-dev on powerpc bugs.
->      >
->      > I also can't reproduce this failure on my machine.
->      > Not sure what's going on?
-> 
->      I could reproduce it on a power7 lpar.  But not on a power8 lpar.
-> 
->>      The problem seems to be that the cpu generates a key exception if
->>      the page with Read/Write-disable-but-execute-enable key is executed
->>      on power7. If I enable read on that key, the exception disappears.
->> 
->    After adding read permission on that key, reproducer get PASS on my power8
->    machine too.​
->    ​(​mprotect(..,PROT_READ | PROT_EXEC))​
+times() runs immediately after fork(), but syscall alone
+seems to be enough for some systems to already account ticks.
 
-I enabled READ permission on the key by resetting the bit in
-the AMR register.  And that healed the problem. So the point is
-something is erroneously triggering the MMU to generate a key-exception
-if the READ permission on the key is disabled.
+For example on arm64 with 4.14:
+  tst_test.c:980: INFO: Timeout per run is 0h 05m 00s
+  times03.c:102: PASS: buf1.tms_utime = 0
+  times03.c:105: FAIL: buf1.tms_stime = 1
+  ...
 
->     
-> 
->      BTW: the testcase executes
->      ​​mprotect(..,PROT_EXEC).
->      The mprotect(, PROT_EXEC) system call internally generates a
->      execute-only key and associates it with the pages in the address-range. 
-> 
->      Now since Li Wang claims that he can reproduce it on power8 as well, i
->      am wondering if the slightly different cpu behavior is dependent on the
->      version of the firmware/microcode?
-> 
->    ​I also run this reproducer on series ppc kvm machines, but none of them
->    get the FAIL.
+This patch replaces zero check with a comparison against a small
+enough number < 5 (which should be between 5ms and 50ms depending
+on CONFIG_HZ).
 
-on ppc kvm virtual-machines the pkey subsystem is not entirely enabled
-yet. Though the kernel code exists it does not get enabled, since the
-feature is not yet exported in the device-tree by qemu. 
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/times/times03.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
->    If you need some more HW info, pls let me know.​
-
-Will do thanks.
-RP
+diff --git a/testcases/kernel/syscalls/times/times03.c b/testcases/kernel/syscalls/times/times03.c
+index 78d72d259ec1..c34faf5a2ff9 100644
+--- a/testcases/kernel/syscalls/times/times03.c
++++ b/testcases/kernel/syscalls/times/times03.c
+@@ -96,15 +96,15 @@ static void verify_times(void)
+ 	if (times(&buf1) == -1)
+ 		tst_brk(TBROK | TERRNO, "times()");
+ 
+-	if (buf1.tms_utime != 0)
++	if (buf1.tms_utime > 5)
+ 		tst_res(TFAIL, "buf1.tms_utime = %li", buf1.tms_utime);
+ 	else
+-		tst_res(TPASS, "buf1.tms_utime = 0");
++		tst_res(TPASS, "buf1.tms_utime > 5");
+ 
+-	if (buf1.tms_stime != 0)
++	if (buf1.tms_stime > 5)
+ 		tst_res(TFAIL, "buf1.tms_stime = %li", buf1.tms_stime);
+ 	else
+-		tst_res(TPASS, "buf1.tms_stime = 0");
++		tst_res(TPASS, "buf1.tms_stime > 5");
+ 
+ 	generate_utime();
+ 	generate_stime();
+-- 
+1.8.3.1
 
