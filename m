@@ -1,83 +1,89 @@
-From: Michael Moese <mmoese@suse.de>
-Date: Fri,  9 Mar 2018 10:26:59 +0100
-Subject: [LTP] [PATCH v2 1/3] Add tst_flush() library function
-Message-ID: <20180309092701.8161-1-mmoese@suse.de>
+From: Li Wang <liwan@redhat.com>
+Date: Fri, 9 Mar 2018 17:48:20 +0800
+Subject: [LTP] [PATCH v2] times03: don't assume process initial [us]time
+	is 0
+In-Reply-To: <e39d28a819f83b5dcad9a9a2606bd657ac34f597.1520580525.git.jstancek@redhat.com>
+References: <e39d28a819f83b5dcad9a9a2606bd657ac34f597.1520580525.git.jstancek@redhat.com>
+Message-ID: <CAEemH2c5DCNk1K-uXxeXkYi3tYyFt5rJFvEsE7R=0m_pSk+27Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Add a library function to flush stderr and stdout streams:
-void tst_flush(void)
+On Fri, Mar 9, 2018 at 3:29 PM, Jan Stancek <jstancek@redhat.com> wrote:
 
-This function flushes stderr and stdout streams. In case of an
-error, the test is aborted with TBROK and an error message is
-printed.
+> times() runs immediately after fork(), but syscall alone
+> seems to be enough for some systems to already account ticks.
+>
+> For example on arm64 with 4.14:
+>   tst_test.c:980: INFO: Timeout per run is 0h 05m 00s
+>   times03.c:102: PASS: buf1.tms_utime = 0
+>   times03.c:105: FAIL: buf1.tms_stime = 1
+>   ...
+>
+> This patch replaces zero check with a comparison against a small
+> enough number < 5 (which should be between 5ms and 50ms depending
+> on CONFIG_HZ).
+>
+> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  testcases/kernel/syscalls/times/times03.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/times/times03.c
+> b/testcases/kernel/syscalls/times/times03.c
+> index 78d72d259ec1..c34faf5a2ff9 100644
+> --- a/testcases/kernel/syscalls/times/times03.c
+> +++ b/testcases/kernel/syscalls/times/times03.c
+> @@ -96,15 +96,15 @@ static void verify_times(void)
+>         if (times(&buf1) == -1)
+>                 tst_brk(TBROK | TERRNO, "times()");
+>
+> -       if (buf1.tms_utime != 0)
+> +       if (buf1.tms_utime > 5)
+>                 tst_res(TFAIL, "buf1.tms_utime = %li", buf1.tms_utime);
+>         else
+> -               tst_res(TPASS, "buf1.tms_utime = 0");
+> +               tst_res(TPASS, "
+> ​​
+> buf1.tms_utime > 5");
+>
 
-Signed-off-by: Michael Moese <mmoese@suse.de>
----
- doc/test-writing-guidelines.txt |  8 ++++++++
- include/tst_test.h              |  3 +++
- lib/tst_test.c                  | 15 +++++++++++++++
- 3 files changed, 26 insertions(+)
+​shouldn't this ​buf1.tms_utime <= 5 ?​
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index 739b295b8..4c60cd66b 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -465,6 +465,14 @@ Allows for setting timeout per test iteration dymanically in the test setup(),
- the timeout is specified in seconds. There are a few testcases whose runtime
- can vary arbitrarily, these can disable timeouts by setting it to -1.
- 
-+[source,c]
-+------------------------------------------------------------------------------
-+void tst_flush(void);
-+-------------------------------------------------------------------------------
-+
-+Flush stderr and stdout streams, handling errors appropriately.
-+You should not use fflush() for stderr or stdout.
-+
- 2.2.3 Test temporary directory
- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
- 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index af97b8983..54ff306d9 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -70,6 +70,9 @@ void tst_brk_(const char *file, const int lineno, int ttype,
- #define tst_brk(ttype, arg_fmt, ...) \
- 	tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__)
- 
-+/* flush stderr and stdout */
-+void tst_flush(void);
-+
- pid_t safe_fork(const char *filename, unsigned int lineno);
- #define SAFE_FORK() \
- 	safe_fork(__FILE__, __LINE__)
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 2cf35ed66..9b4f43828 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -1085,3 +1085,18 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
- 
- 	do_exit(ret);
- }
-+
-+
-+void tst_flush(void)
-+{
-+	int rval;
-+
-+	rval = fflush(stderr);
-+	if (rval != 0)
-+		tst_brk(TBROK | TERRNO, "fflush(stderr) failed");
-+
-+	rval = fflush(stderr);
-+	if (rval != 0)
-+		tst_brk(TBROK | TERRNO, "fflush(stdout) failed");
-+
-+}
+
+
+>
+> -       if (buf1.tms_stime != 0)
+> +       if (buf1.tms_stime > 5)
+>                 tst_res(TFAIL, "buf1.tms_stime = %li", buf1.tms_stime);
+>         else
+> -               tst_res(TPASS, "buf1.tms_stime = 0");
+> +               tst_res(TPASS, "buf1.tms_stime > 5");
+>
+
+​here as well.
+​
+
+
+>
+>         generate_utime();
+>         generate_stime();
+> --
+> 1.8.3.1
+>
+>
+​Other than that this looks good to me. I also run this changes more than
+100 times and ​all passed.
+
+
+
 -- 
-2.13.6
-
+Regards,
+Li Wang
+Email: liwang@redhat.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180309/8fd371fd/attachment-0001.html>
