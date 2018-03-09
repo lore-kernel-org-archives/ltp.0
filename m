@@ -1,55 +1,29 @@
-From: Michael Moese <mmoese@suse.de>
-Date: Fri, 9 Mar 2018 11:33:10 +0100
-Subject: [LTP] [PATCH] Add regression test for CVE-2017-16939
-In-Reply-To: <20180307170529.GC2607@rei>
-References: <20180206140359.18387-1-mmoese@suse.de> <20180307170529.GC2607@rei>
-Message-ID: <20180309103310.qx3oac43twii7wvh@linux.suse.de>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 9 Mar 2018 11:41:47 +0100
+Subject: [LTP] [PATCH] mallocstress: extend test time on arm
+In-Reply-To: <981e2a8523db8616a4ed442635a493928376489d.1520589632.git.jstancek@redhat.com>
+References: <981e2a8523db8616a4ed442635a493928376489d.1520589632.git.jstancek@redhat.com>
+Message-ID: <20180309104146.GA28698@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-
-On Wed, Mar 07, 2018 at 06:05:29PM +0100, Cyril Hrubis wrote:
-> Hi!
-
-> > +static void do_run(void)
-> > +{
-> > +	struct msg_policy *p;
-> > +
-> > +	create_ns();
-> > +	create_nl_socket();
-> > +	p = init_policy_dump();
-> > +	do_setsockopt();
-> > +	send_msg(fd, &p->msg);
-> > +	p = init_policy_dump();
+Hi!
+> Arm systems with lot of memory and THP enabled are
+> hitting a timeout at ~5 minute mark as reported here:
+>   mallocstress poor performance with THP on arm64 system
+>   https://marc.info/?l=linux-mm&m=151864950330870&w=2
 > 
-> Do we have to initialize the policy here for a second time?
-> (does the fact that the p is a different pointe here matters?)
-> 
-> Also we should probably allocate these once in the test setup so that we
-> do not waste memory when the test is executed with the -i option.
-I was trying to keep as close as possible to the reproducer. I can check if
-this can be moved to setup, and maybe only initialize once. However, I think
-it is not a big waste of memory, after all the test does not loop or fork 
-or anything like this.
+> Extend the timeout to 10m (only for arm).
 
-> > +	pid = SAFE_FORK();
-> > +	if (pid == 0) {
-> > +		do_run();
-> > +	} else {
-> > +		usleep(250000);
->                 ^
-> 		Why the usleep here? Should just the waitpid() below
-> 		suffice in waiting for the child to exit?
-> 
-Well, this is something asynchronous happening in the kernel. When we don't 
-wait for a while, the crash happens way after we reported a PASS.. but maybe
-the usleep makes more sense after the waitpid(). 
+What about extending it unconditionally? It's not like it will hurt in
+generall case and there are possible other slow systems that would
+benefit from that as well.
 
-Michael
+Or do you have a strong reason to extend the timeout only on arm?
 
 -- 
-SUSE Linux GmbH, GF: Felix Imendörffer, Jane Smithard, Graham Norton, HRB 21284 (AG Nürnberg)
+Cyril Hrubis
+chrubis@suse.cz
