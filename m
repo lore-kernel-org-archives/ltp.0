@@ -1,40 +1,83 @@
 From: Michael Moese <mmoese@suse.de>
-Date: Fri,  9 Mar 2018 10:27:01 +0100
-Subject: [LTP] [PATCH v2 3/3] safe_fork() should use tst_flush() instead of
-	fflush()
-In-Reply-To: <20180309092701.8161-1-mmoese@suse.de>
-References: <20180309092701.8161-1-mmoese@suse.de>
-Message-ID: <20180309092701.8161-3-mmoese@suse.de>
+Date: Fri,  9 Mar 2018 10:26:59 +0100
+Subject: [LTP] [PATCH v2 1/3] Add tst_flush() library function
+Message-ID: <20180309092701.8161-1-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-safe_fork() should not use fflush(stdout). This commit makes use of
-the the newly added tst_flush(), which flushes, in fact, both stdout
-and stderr.
-In addition, tests output their results to stderr, so flushing stdout
-here is simply wrong.
+Add a library function to flush stderr and stdout streams:
+void tst_flush(void)
+
+This function flushes stderr and stdout streams. In case of an
+error, the test is aborted with TBROK and an error message is
+printed.
 
 Signed-off-by: Michael Moese <mmoese@suse.de>
 ---
- lib/tst_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ doc/test-writing-guidelines.txt |  8 ++++++++
+ include/tst_test.h              |  3 +++
+ lib/tst_test.c                  | 15 +++++++++++++++
+ 3 files changed, 26 insertions(+)
 
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index 739b295b8..4c60cd66b 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -465,6 +465,14 @@ Allows for setting timeout per test iteration dymanically in the test setup(),
+ the timeout is specified in seconds. There are a few testcases whose runtime
+ can vary arbitrarily, these can disable timeouts by setting it to -1.
+ 
++[source,c]
++------------------------------------------------------------------------------
++void tst_flush(void);
++-------------------------------------------------------------------------------
++
++Flush stderr and stdout streams, handling errors appropriately.
++You should not use fflush() for stderr or stdout.
++
+ 2.2.3 Test temporary directory
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 
+diff --git a/include/tst_test.h b/include/tst_test.h
+index af97b8983..54ff306d9 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -70,6 +70,9 @@ void tst_brk_(const char *file, const int lineno, int ttype,
+ #define tst_brk(ttype, arg_fmt, ...) \
+ 	tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__)
+ 
++/* flush stderr and stdout */
++void tst_flush(void);
++
+ pid_t safe_fork(const char *filename, unsigned int lineno);
+ #define SAFE_FORK() \
+ 	safe_fork(__FILE__, __LINE__)
 diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 9b4f43828..7069bbc5e 100644
+index 2cf35ed66..9b4f43828 100644
 --- a/lib/tst_test.c
 +++ b/lib/tst_test.c
-@@ -380,7 +380,7 @@ pid_t safe_fork(const char *filename, unsigned int lineno)
- 	if (!tst_test->forks_child)
- 		tst_brk(TBROK, "test.forks_child must be set!");
+@@ -1085,3 +1085,18 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
  
--	fflush(stdout);
-+	tst_flush();
- 
- 	pid = fork();
- 	if (pid < 0)
+ 	do_exit(ret);
+ }
++
++
++void tst_flush(void)
++{
++	int rval;
++
++	rval = fflush(stderr);
++	if (rval != 0)
++		tst_brk(TBROK | TERRNO, "fflush(stderr) failed");
++
++	rval = fflush(stderr);
++	if (rval != 0)
++		tst_brk(TBROK | TERRNO, "fflush(stdout) failed");
++
++}
 -- 
 2.13.6
 
