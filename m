@@ -1,43 +1,55 @@
-From: Travis CI <builds@travis-ci.org>
-Date: Tue, 13 Mar 2018 10:24:51 +0000
-Subject: [LTP] Passed: linux-test-project/ltp#700 (master - 792d41f)
-In-Reply-To: <linux-test-project/ltp+352761586+passed@travis-ci.org>
-Message-ID: <5aa7a7615b1db_43f8d194c7e5414587b0@3a9b0d55-696f-4c5b-9e1a-f93f3d301c92.mail>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Tue, 13 Mar 2018 11:29:31 +0100
+Subject: [LTP] [PATCH] cve-2015-3290: Handle 16-bit segments being disabled
+Message-ID: <20180313102931.27897-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Build Update for linux-test-project/ltp
--------------------------------------
+If modify_ldt fails with EINVAL then we can only assume the kernel has 16-bit
+data segments disabled.
 
-Build: #700
-Status: Passed
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
 
-Duration: 13 minutes and 54 seconds
-Commit: 792d41f (master)
-Author: Cyril Hrubis
-Message: fs/read_all: Make use of tst_flush()
+It seems that on SUSE Enterprise 15 we have 16-bit segments disabled by
+default so the test can not run.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+ testcases/cve/cve-2015-3290.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-View the changeset: https://github.com/linux-test-project/ltp/compare/67c95fbbfc3a...792d41fde1a8
+diff --git a/testcases/cve/cve-2015-3290.c b/testcases/cve/cve-2015-3290.c
+index 87c9c956c..dbc2101a7 100644
+--- a/testcases/cve/cve-2015-3290.c
++++ b/testcases/cve/cve-2015-3290.c
+@@ -215,8 +215,14 @@ static void set_ldt(void)
+ 		.useable	 = 0
+ 	};
+ 
+-	if (tst_syscall(__NR_modify_ldt, 1, &data_desc, sizeof(data_desc)) != 0)
+-		tst_brk(TBROK | TERRNO, "modify_ldt");
++	TEST(tst_syscall(__NR_modify_ldt, 1, &data_desc, sizeof(data_desc)));
++	TEST_ERRNO = -(int)TEST_RETURN;
++	if (TEST_RETURN == -EINVAL) {
++		tst_brk(TCONF | TTERRNO,
++			"modify_ldt: 16-bit data segments are probably disabled");
++	} else if (TEST_RETURN != 0) {
++		tst_brk(TBROK | TTERRNO, "modify_ldt");
++	}
+ }
+ 
+ static void try_corrupt_stack(unsigned short orig_ss)
+@@ -474,6 +480,8 @@ static void run(void)
+ 	SAFE_WAITPID(pid, &status, 0);
+ 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
+ 		tst_res(TFAIL, "corrupted NMI stack");
++	else if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
++		tst_res(WEXITSTATUS(status), "Propogate child status");
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.16.2
 
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/352761586?utm_source=email&utm_medium=notification
-
---
-
-You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
-
-
-
-
-
-
-
-This email was sent to ltp@lists.linux.it (mailto:ltp@lists.linux.it)
-unsubscribe from this list (http://clicks.travis-ci.com/track/unsub.php?u=14313403&id=43139d0e7e4b47aa9ace7f422943e3ef.nwh%2ButJmyvjUjRzsB8BeiP5x1%2B8%3D&r=https%3A%2F%2Fmandrillapp.com%2Funsub%3Fmd_email%3Dltp%2540lists.linux.it)
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180313/7bdb1617/attachment-0001.html>
