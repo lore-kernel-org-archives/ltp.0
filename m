@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 13 Mar 2018 13:26:30 +0100
-Subject: [LTP] [PATCH v6 1/3] Add library support for
- /proc/sys/kernel/tainted
-In-Reply-To: <20180309124418.30271-2-mmoese@suse.de>
+Date: Tue, 13 Mar 2018 13:27:29 +0100
+Subject: [LTP] [PATCH v6 2/3] Add a library wrapper for sigaction()
+In-Reply-To: <20180309124418.30271-3-mmoese@suse.de>
 References: <20180309124418.30271-1-mmoese@suse.de>
- <20180309124418.30271-2-mmoese@suse.de>
-Message-ID: <20180313122630.GA19715@rei>
+ <20180309124418.30271-3-mmoese@suse.de>
+Message-ID: <20180313122729.GB19715@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,17 +12,25 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +static unsigned int tst_taint_read(void)
+> +static inline int safe_sigaction(const char *file, const int lineno,
+> +				 int signum, const struct sigaction *act,
+> +				 struct sigaction *oldact)
 > +{
-> +	unsigned int val;
+> +	int rval;
 > +
-> +	if (taint_mask == (unsigned int) -1)
-> +		tst_brk(TBROK, "need to call tst_taint_init() first");
+> +	rval = sigaction(signum, act, oldact);
+> +
+> +	if (rval == -1) {
+> +		tst_brk_(file, lineno, TBROK | TERRNO,
+> +			"sigaction(%d, %p, %p) failed", signum, act, oldact);
+                                   ^
+				   I've added tst_strsig() here as well
+				   to get better error messages.
 
-I've removed this check, since all the entry points that could call
-this function either set the taint_mask or checks that it has been set.
+And I had to move the function the C source to avoid tst_strsig()
+redefinition warnings...
 
-And finally pushed, thanks.
+And pushed, thanks.
 
 -- 
 Cyril Hrubis
