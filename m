@@ -1,53 +1,64 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue, 13 Mar 2018 16:24:48 +0100
-Subject: [LTP] [PATCH v2 2/2] cve-2015-3290: Handle 16-bit segments being
-	disabled
+Date: Tue, 13 Mar 2018 16:24:47 +0100
+Subject: [LTP] [PATCH v2 1/2] lib: Add TRERRNO to tst_res and remove sign
+	when present
 In-Reply-To: <20180313105541.GB14611@rei>
 References: <20180313105541.GB14611@rei>
-Message-ID: <20180313152448.7480-2-rpalethorpe@suse.com>
+Message-ID: <20180313152448.7480-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-If modify_ldt fails with EINVAL then we can only assume the kernel has 16-bit
-data segments disabled.
+Some system calls and libraries pass the error code back to the user in the
+return value. Sometimes it is inverted, sometimes not. This allows TRERRNO to
+be passed to tst_res which then causes it to print the error code in
+TEST_RETURN.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- testcases/cve/cve-2015-3290.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/cve/cve-2015-3290.c b/testcases/cve/cve-2015-3290.c
-index 87c9c956c..631702e2e 100644
---- a/testcases/cve/cve-2015-3290.c
-+++ b/testcases/cve/cve-2015-3290.c
-@@ -215,8 +215,13 @@ static void set_ldt(void)
- 		.useable	 = 0
- 	};
+I think we have to branch on TEST_RETURN < 0 because of two's complement
+integer representation, but I could be missing a trick here.
+
+ lib/tst_res.c  | 4 ++--
+ lib/tst_test.c | 5 +++++
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/lib/tst_res.c b/lib/tst_res.c
+index b56f37db0..b4bc09179 100644
+--- a/lib/tst_res.c
++++ b/lib/tst_res.c
+@@ -346,10 +346,10 @@ static void tst_print(const char *tcid, int tnum, int ttype, const char *tmesg)
+ 	}
  
--	if (tst_syscall(__NR_modify_ldt, 1, &data_desc, sizeof(data_desc)) != 0)
--		tst_brk(TBROK | TERRNO, "modify_ldt");
-+	TEST(tst_syscall(__NR_modify_ldt, 1, &data_desc, sizeof(data_desc)));
-+	if (TEST_RETURN == -EINVAL) {
-+		tst_brk(TCONF | TRERRNO,
-+			"modify_ldt: 16-bit data segments are probably disabled");
-+	} else if (TEST_RETURN != 0) {
-+		tst_brk(TBROK | TRERRNO, "modify_ldt");
+ 	if (ttype & TRERRNO) {
++		err = TEST_RETURN < 0 ? -(int)TEST_RETURN : (int)TEST_RETURN;
+ 		size += snprintf(message + size, sizeof(message) - size,
+ 				 ": TEST_RETURN=%s(%i): %s",
+-				 tst_strerrno(TEST_RETURN), (int)TEST_RETURN,
+-				 strerror(TEST_RETURN));
++				 tst_strerrno(err), err, strerror(err));
+ 	}
+ 
+ 	if (size + 1 >= sizeof(message)) {
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 2cf35ed66..00b8ccb69 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -215,6 +215,11 @@ static void print_result(const char *file, const int lineno, int ttype,
+ 	if (ttype & TTERRNO)
+ 		str_errno = tst_strerrno(TEST_ERRNO);
+ 
++	if (ttype & TRERRNO) {
++		ret = TEST_RETURN < 0 ? -(int)TEST_RETURN : (int)TEST_RETURN;
++		str_errno = tst_strerrno(ret);
 +	}
- }
- 
- static void try_corrupt_stack(unsigned short orig_ss)
-@@ -474,6 +479,8 @@ static void run(void)
- 	SAFE_WAITPID(pid, &status, 0);
- 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
- 		tst_res(TFAIL, "corrupted NMI stack");
-+	else if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-+		tst_res(WEXITSTATUS(status), "Propogate child status");
- }
- 
- static struct tst_test test = {
++
+ 	ret = snprintf(str, size, "%s:%i: ", file, lineno);
+ 	str += ret;
+ 	size -= ret;
 -- 
 2.16.2
 
