@@ -1,64 +1,60 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue, 13 Mar 2018 16:24:47 +0100
-Subject: [LTP] [PATCH v2 1/2] lib: Add TRERRNO to tst_res and remove sign
-	when present
-In-Reply-To: <20180313105541.GB14611@rei>
-References: <20180313105541.GB14611@rei>
-Message-ID: <20180313152448.7480-1-rpalethorpe@suse.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 13 Mar 2018 16:35:53 +0100
+Subject: [LTP] LTP API documentation
+In-Reply-To: <20180307143808.GB2607@rei>
+References: <CA+bK7J7jetfNOpXmxstQtC-_-gbzb0ko8OV8rjRnYp7BbR7JAw@mail.gmail.com>
+ <20180307105215.GC9871@rei>
+ <CA+bK7J6t-gsK+P5ZrP6j4BqO2CtxFGaVukNhCifexKisX8ipyw@mail.gmail.com>
+ <20180307143808.GB2607@rei>
+Message-ID: <873714vvhi.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Some system calls and libraries pass the error code back to the user in the
-return value. Sometimes it is inverted, sometimes not. This allows TRERRNO to
-be passed to tst_res which then causes it to print the error code in
-TEST_RETURN.
+Hello,
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
+Cyril Hrubis writes:
 
-I think we have to branch on TEST_RETURN < 0 because of two's complement
-integer representation, but I could be missing a trick here.
+> Hi!
+>> OK.  I actually had found both of these, but didn't realize that
+>> these were intended as API documentation.  I was expecting
+>> to see something more formal describing each routine
+>> (maybe in an alphabetical list).  For the SAFE_ macros,
+>> it says to look at the source for a complete list, so for these
+>> and possibly other APIs these docs don't appear to be
+>> comprehensive.
+>
+> Well we kept it this way for several reasons the main was that we barely
+> had manpower to maintain the documentation along with all the changes in
+> the codebase since the library API haven't been stable in the past. We
+> had major rewrite of the library API in the middle of 2016 by the way,
+> but it has been stable since with occasional additions.
+>
+> We also have quite a lot of documentation in form of a header comments
+> so maybe it would be best just to transform it into a parseable format
+> and generate the formal API documentation from that. That would probably
+> mean changing all the comments into doxygen format and making sure every
+> piece of public API is documented, what do you think about that?
+>
+>> Would you be OK with me writing up some more formal
+>> documentation for the APIs, and contributing them to the
+>> project?  I probably won't get to it for a few weeks, as
+>> I'm busy getting ready for a conference.  But it might
+>> be nice to document these more formally and comprehensively.
+>
+> Better documetation is always welcomed, the hard part is keeping it in
+> sync with the code :-).
+>
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
 
- lib/tst_res.c  | 4 ++--
- lib/tst_test.c | 5 +++++
- 2 files changed, 7 insertions(+), 2 deletions(-)
+That sounds good to me include/tst_fuzzy_sync.h should already be in a
+doxygen compatible format. I don't particularly like Doxygen though, but
+there are plenty of compatible frameworks.
 
-diff --git a/lib/tst_res.c b/lib/tst_res.c
-index b56f37db0..b4bc09179 100644
---- a/lib/tst_res.c
-+++ b/lib/tst_res.c
-@@ -346,10 +346,10 @@ static void tst_print(const char *tcid, int tnum, int ttype, const char *tmesg)
- 	}
- 
- 	if (ttype & TRERRNO) {
-+		err = TEST_RETURN < 0 ? -(int)TEST_RETURN : (int)TEST_RETURN;
- 		size += snprintf(message + size, sizeof(message) - size,
- 				 ": TEST_RETURN=%s(%i): %s",
--				 tst_strerrno(TEST_RETURN), (int)TEST_RETURN,
--				 strerror(TEST_RETURN));
-+				 tst_strerrno(err), err, strerror(err));
- 	}
- 
- 	if (size + 1 >= sizeof(message)) {
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 2cf35ed66..00b8ccb69 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -215,6 +215,11 @@ static void print_result(const char *file, const int lineno, int ttype,
- 	if (ttype & TTERRNO)
- 		str_errno = tst_strerrno(TEST_ERRNO);
- 
-+	if (ttype & TRERRNO) {
-+		ret = TEST_RETURN < 0 ? -(int)TEST_RETURN : (int)TEST_RETURN;
-+		str_errno = tst_strerrno(ret);
-+	}
-+
- 	ret = snprintf(str, size, "%s:%i: ", file, lineno);
- 	str += ret;
- 	size -= ret;
 -- 
-2.16.2
-
+Thank you,
+Richard.
