@@ -1,59 +1,41 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 13 Mar 2018 16:01:10 +0100
-Subject: [LTP] [PATCH v2 2/3] lib: TCONF on "not supported" errnos in
-	SAFE_SOCKET()
+Date: Tue, 13 Mar 2018 16:01:11 +0100
+Subject: [LTP] [PATCH v2 3/3] tst_netload: Exit with TCONF when netstress
+	exit with CONF
 In-Reply-To: <20180313150111.16501-1-pvorel@suse.cz>
 References: <20180313150111.16501-1-pvorel@suse.cz>
-Message-ID: <20180313150111.16501-2-pvorel@suse.cz>
+Message-ID: <20180313150111.16501-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-*NOSUPPORT errnos likely mean there is configuration issue rather than
-test failure.
-
-e.g. missing dccp module in netstress.c which was so far set as TBROK:
-safe_net.c:117: BROK: netstress.c:654: socket(10, 6, 33) failed: ESOCKTNOSUPPORT
+as some issues are configuration issues.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
-Acked-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- lib/safe_net.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+Alexey, I kept grepping as in v1, see:
+http://lists.linux.it/pipermail/ltp/2018-March/007240.html
+---
+ testcases/lib/test_net.sh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/lib/safe_net.c b/lib/safe_net.c
-index 9ea9d2b42..9ed52dcd1 100644
---- a/lib/safe_net.c
-+++ b/lib/safe_net.c
-@@ -107,12 +107,24 @@ int tst_getsockport(const char *file, const int lineno, int sockfd)
- int safe_socket(const char *file, const int lineno, void (cleanup_fn)(void),
- 		int domain, int type, int protocol)
- {
--	int rval;
-+	int rval, ttype;
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index 0e78dfd8b..203464f0d 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -459,7 +459,9 @@ tst_netload()
+ 	tst_rhost_run -c "netstress $s_opts" > tst_netload.log 2>&1
+ 	if [ $? -ne 0 ]; then
+ 		cat tst_netload.log
+-		tst_brkm TFAIL "server failed"
++		local ttype="TFAIL"
++		grep -e 'CONF:' tst_netload.log && ttype="TCONF"
++		tst_brkm $ttype "server failed"
+ 	fi
  
- 	rval = socket(domain, type, protocol);
- 
- 	if (rval < 0) {
--		tst_brkm(TBROK | TERRNO, cleanup_fn,
-+		switch (errno) {
-+		case EPROTONOSUPPORT:
-+		case ESOCKTNOSUPPORT:
-+		case EOPNOTSUPP:
-+		case EPFNOSUPPORT:
-+		case EAFNOSUPPORT:
-+			ttype = TCONF;
-+			break;
-+		default:
-+			ttype = TBROK;
-+		}
-+
-+		tst_brkm(ttype | TERRNO, cleanup_fn,
- 			 "%s:%d: socket(%d, %d, %d) failed", file, lineno,
- 			 domain, type, protocol);
- 	}
+ 	local port=$(tst_rhost_run -s -c "cat $TST_TMPDIR/netstress_port")
 -- 
 2.16.2
 
