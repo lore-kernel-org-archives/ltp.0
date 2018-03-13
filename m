@@ -1,39 +1,59 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 13 Mar 2018 16:01:09 +0100
-Subject: [LTP] [PATCH v2 1/3] netstress: TCONF if modprobe dccp fails
-Message-ID: <20180313150111.16501-1-pvorel@suse.cz>
+Date: Tue, 13 Mar 2018 16:01:10 +0100
+Subject: [LTP] [PATCH v2 2/3] lib: TCONF on "not supported" errnos in
+	SAFE_SOCKET()
+In-Reply-To: <20180313150111.16501-1-pvorel@suse.cz>
+References: <20180313150111.16501-1-pvorel@suse.cz>
+Message-ID: <20180313150111.16501-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-commit 22d43a959 ("netstress: load dccp module manually") added
-functionality to trying to load dccp module. It's actually better to
-exit with TCONF as unsuccessful modprobe means that dccp module is
-missing.
+*NOSUPPORT errnos likely mean there is configuration issue rather than
+test failure.
+
+e.g. missing dccp module in netstress.c which was so far set as TBROK:
+safe_net.c:117: BROK: netstress.c:654: socket(10, 6, 33) failed: ESOCKTNOSUPPORT
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Acked-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
-LianWen, hope TCONF is ok for you:
-http://lists.linux.it/pipermail/ltp/2018-February/007200.html
----
- testcases/network/netstress/netstress.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/safe_net.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/network/netstress/netstress.c b/testcases/network/netstress/netstress.c
-index 4754bacf6..369a5eeb8 100644
---- a/testcases/network/netstress/netstress.c
-+++ b/testcases/network/netstress/netstress.c
-@@ -941,7 +941,7 @@ static void setup(void)
- 		static const char * const argv[] = {"modprobe", "dccp", NULL};
+diff --git a/lib/safe_net.c b/lib/safe_net.c
+index 9ea9d2b42..9ed52dcd1 100644
+--- a/lib/safe_net.c
++++ b/lib/safe_net.c
+@@ -107,12 +107,24 @@ int tst_getsockport(const char *file, const int lineno, int sockfd)
+ int safe_socket(const char *file, const int lineno, void (cleanup_fn)(void),
+ 		int domain, int type, int protocol)
+ {
+-	int rval;
++	int rval, ttype;
  
- 		if (tst_run_cmd(argv, NULL, NULL, 1))
--			tst_res(TWARN, "Failed to load DCCP module");
-+			tst_brk(TCONF, "Failed to load DCCP module");
+ 	rval = socket(domain, type, protocol);
  
- 		tst_res(TINFO, "DCCP %s", (client_mode) ? "client" : "server");
- 		fastopen_api = fastopen_sapi = NULL;
+ 	if (rval < 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup_fn,
++		switch (errno) {
++		case EPROTONOSUPPORT:
++		case ESOCKTNOSUPPORT:
++		case EOPNOTSUPP:
++		case EPFNOSUPPORT:
++		case EAFNOSUPPORT:
++			ttype = TCONF;
++			break;
++		default:
++			ttype = TBROK;
++		}
++
++		tst_brkm(ttype | TERRNO, cleanup_fn,
+ 			 "%s:%d: socket(%d, %d, %d) failed", file, lineno,
+ 			 domain, type, protocol);
+ 	}
 -- 
 2.16.2
 
