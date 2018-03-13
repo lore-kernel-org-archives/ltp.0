@@ -1,60 +1,50 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 13 Mar 2018 16:35:53 +0100
-Subject: [LTP] LTP API documentation
-In-Reply-To: <20180307143808.GB2607@rei>
-References: <CA+bK7J7jetfNOpXmxstQtC-_-gbzb0ko8OV8rjRnYp7BbR7JAw@mail.gmail.com>
- <20180307105215.GC9871@rei>
- <CA+bK7J6t-gsK+P5ZrP6j4BqO2CtxFGaVukNhCifexKisX8ipyw@mail.gmail.com>
- <20180307143808.GB2607@rei>
-Message-ID: <873714vvhi.fsf@rpws.prws.suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 13 Mar 2018 17:35:00 +0100
+Subject: [LTP] Errored: linux-test-project/ltp#699 (master - 67c95fb)
+In-Reply-To: <5aa68a846c12_43fcf924d5e1c1134186@742623e8-1050-46c6-b205-a80535524ffb.mail>
+References: <linux-test-project/ltp+352345577+errored@travis-ci.org>
+ <5aa68a846c12_43fcf924d5e1c1134186@742623e8-1050-46c6-b205-a80535524ffb.mail>
+Message-ID: <20180313163500.2ks5yeax64ldndyo@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi,
 
-Cyril Hrubis writes:
+> Build Update for linux-test-project/ltp
+> -------------------------------------
 
-> Hi!
->> OK.  I actually had found both of these, but didn't realize that
->> these were intended as API documentation.  I was expecting
->> to see something more formal describing each routine
->> (maybe in an alphabetical list).  For the SAFE_ macros,
->> it says to look at the source for a complete list, so for these
->> and possibly other APIs these docs don't appear to be
->> comprehensive.
->
-> Well we kept it this way for several reasons the main was that we barely
-> had manpower to maintain the documentation along with all the changes in
-> the codebase since the library API haven't been stable in the past. We
-> had major rewrite of the library API in the middle of 2016 by the way,
-> but it has been stable since with occasional additions.
->
-> We also have quite a lot of documentation in form of a header comments
-> so maybe it would be best just to transform it into a parseable format
-> and generate the formal API documentation from that. That would probably
-> mean changing all the comments into doxygen format and making sure every
-> piece of public API is documented, what do you think about that?
->
->> Would you be OK with me writing up some more formal
->> documentation for the APIs, and contributing them to the
->> project?  I probably won't get to it for a few weeks, as
->> I'm busy getting ready for a conference.  But it might
->> be nice to document these more formally and comprehensively.
->
-> Better documetation is always welcomed, the hard part is keeping it in
-> sync with the code :-).
->
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
+> Build: #699
+> Status: Errored
 
-That sounds good to me include/tst_fuzzy_sync.h should already be in a
-doxygen compatible format. I don't particularly like Doxygen though, but
-there are plenty of compatible frameworks.
+> Duration: 14 minutes and 43 seconds
+> Commit: 67c95fb (master)
+> Author: Richard Palethorpe
+> Message: Add read_all file systems test
 
--- 
-Thank you,
-Richard.
+> While using a shell script I wrote, which dumps the contents of /sys and
+> /proc (submitted in a separate patch), I found some minor kernel bugs. There
+> is already a test specifically for /proc however it is attempting to verify
+> the behavior of particular files. This test is more general and can be applied
+> to any file system.
+
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+
+> View the changeset: https://github.com/linux-test-project/ltp/compare/3de6dcba463e...67c95fbbfc3a
+
+> View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/352345577?utm_source=email&utm_medium=notification
+
+Travis is getting really bad. Not surprising that this is false positive (my attempt to
+fix travis in a59e44928 "travis: Trying to make travis more reliable" didn't help), but we
+didn't get mail about failure of build #702 3f2ff1490 ("Add regression test for CVE-2017-17053"):
+https://travis-ci.org/linux-test-project/ltp/builds/352813245
+which correctly shows failure only for cross-compilation (missing asm/ldt.h, which is only
+for x86 architecture).
+
+I fixed it in f3cbd3403 ("cve: Fix compilation for non x86 architectures").
+https://travis-ci.org/linux-test-project/ltp/builds/352917608
+
+Kind regards,
+Petr
