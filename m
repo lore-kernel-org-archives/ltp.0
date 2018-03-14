@@ -1,84 +1,86 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 14 Mar 2018 16:48:38 +0100
-Subject: [LTP] [PATCH 2/2] Add CVE-2017-18075,
-	pcrypt mishandles freeing instances
-In-Reply-To: <87bmfqofhj.fsf@suse.de>
-References: <20180314145427.2738-1-rpalethorpe@suse.com>
- <20180314145427.2738-2-rpalethorpe@suse.com> <87bmfqofhj.fsf@suse.de>
-Message-ID: <87zi3avesp.fsf@rpws.prws.suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 14 Mar 2018 16:57:27 +0100
+Subject: [LTP] [RFC PATCH v2 0/4] Rewrite tests into new API + fixes
+Message-ID: <20180314155731.5943-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi,
 
-Nicolai Stange writes:
+this is a second attempt to rewrite IMA tests.
+Comments and fixes are welcome.
 
-> Richard Palethorpe <rpalethorpe@suse.com> writes:
->
->> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
->> ---
->>
->> I can not find the original reproducer posted upstream. I assume it was
->> created by syzkaller.
->
-> Yes: https://groups.google.com/forum/#!topic/syzkaller-bugs/NKn_ivoPOpk
->
-> However, this rewrite to crypto's netlink interface might be different
-> enough such that ...
->
->
->> diff --git a/testcases/cve/cve-2017-18075.c b/testcases/cve/cve-2017-18075.c
->> new file mode 100644
->> index 000000000..3723b0655
->> --- /dev/null
->> +++ b/testcases/cve/cve-2017-18075.c
->> @@ -0,0 +1,201 @@
->> +/*
->> + * Copyright (c) 2018 SUSE
->> + * Author: Nicolai Stange <nstange@suse.de>
->> + * LTP conversion: Richard Palethorpe <rpalethorpe@suse.com>
->> + *
->> + * Based on the reproducer posted upstream so other copyrights may
->> + * apply.
->
-> ... this isn't really needed, but I'm not a lawyer.
->
-> Thanks,
->
-> Nicolai
->
+Changes v1->v2:
+* ima_measurements.sh: add support for "ima-ng" and "ima-sig" IMA
+  measurement templates
+* ima_measurements.sh: add support for most of hash algorithms is
+  defined in include/uapi/linux/hash_info.h
+* fix ima_boot_aggregate ("ima/ima_boot_aggregate: Increase MAX_EVENT_SIZE to 8k")
+* ima_tpm.sh: fixes of TPM test ("ima/tpm: Various fixes")
+* ima_measurements.sh: drop ima_measure and use evmctl (external dependency) instead
+* ima_measurements.sh: check XFS version for iversion support
 
-I will just replace it with a link to the Syzkaller reproducer (mainly
-just for people's information). Thanks.
+TODO
+* ima_measurements.sh: Add support for ima_template_fmt kernel parameter.
 
->
->
->> + *
->> + * This program is free software; you can redistribute it and/or
->> + * modify it under the terms of the GNU General Public License
->> + * as published by the Free Software Foundation; either version 2
->> + * of the License, or (at your option) any later version.
->> + *
->> + * This program is distributed in the hope that it will be useful,
->> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->> + * GNU General Public License for more details.
->> + *
->> + * You should have received a copy of the GNU General Public License
->> + * along with this program; if not, see <http://www.gnu.org/licenses/>.
->> + *
->> + * Test for CVE-2017-5754 - pcrypt mishandles freeing instances
->> + *
->> + * See commit d76c68109f37 crypto: pcrypt - fix freeing pcrypt instances.
->> + *
->> + * If the bug is present this will most likely crash your kernel.
->> + */
->> +
+* ima_policy.sh: Detect if the policy must be signed [1] (IMA_WRITE_POLICY or
+"secure_boot" kernel parameter).
+@Mimi: What is a best approach in case policy must be signed? measure.policy
+and measure.policy-invalid files are not signed should we skip all tests in
+ima_policy.sh with something like "Not supported when policy must be signed"?
+Or running them both and expect them to fail as they're not signed?
+As that's how I understand your related commit in kernel
+(19f8a84713ed "ima: measure and appraise the IMA policy itself").
+BTW load_policy() use old approach catting the content into sysfs policy file.
+Maybe it'd be good to echo policy filename into sysfs policy file for kernel >
+4.6 (feature added in 7429b092811f "ima: load policy using path").
+
+* ima_measurement.sh,ima_violations.sh: Avoid using tmpfs filesystem [1]. You
+suggested using RAM block device. Would it be ok to use filesystem created on
+loop device (/dev/loop0)? Or even create image file in $TMPDIR (mostly
+/tmp, which can be tmpfs) and use it as a loop device?
+
+To be honnest, I'm not sure if I addressed your comment [2]:
+These tests are for the IMA-measurement aspect only, not IMA-
+appraisal.  Adding measurements to the measurement list won't cause
+the system to stop working, unless keys are sealed to a particular TPM
+PCR value.  Nobody is or should be sealing keys to PCR-10, since the
+ordering of the measurements is non deterministic.
+As we add IMA-appraisal tests requiring files to be signed, things
+will fail if either the public key isn't on the IMA keyring or the
+file isn't properly signed.  For this reason, limiting file IMA-
+appraisal tests to a particular filesystem simplifies testing.
+
+[1] http://lists.linux.it/pipermail/ltp/2018-January/006970.html
+[2] http://lists.linux.it/pipermail/ltp/2018-January/007024.html
 
 
---
-Thank you,
-Richard.
+Kind regards,
+Petr
+
+
+Petr Vorel (4):
+  security/ima: Rewrite tests into new API + fixes
+  security/ima: Run measurements after policy
+  ima/ima_boot_aggregate: Increase MAX_EVENT_SIZE to 8k
+  ima/tpm: Various fixes
+
+ runtest/ima                                        |   8 +-
+ testcases/kernel/security/integrity/.gitignore     |   1 -
+ .../integrity/ima/src/ima_boot_aggregate.c         |   2 +-
+ .../security/integrity/ima/src/ima_measure.c       | 219 -------------------
+ .../integrity/ima/tests/ima_measurements.sh        | 239 +++++++++++----------
+ .../security/integrity/ima/tests/ima_policy.sh     | 148 ++++++-------
+ .../security/integrity/ima/tests/ima_setup.sh      | 110 ++++------
+ .../kernel/security/integrity/ima/tests/ima_tpm.sh | 160 ++++++--------
+ .../security/integrity/ima/tests/ima_violations.sh | 217 +++++++++----------
+ 9 files changed, 417 insertions(+), 687 deletions(-)
+ delete mode 100644 testcases/kernel/security/integrity/ima/src/ima_measure.c
+ mode change 100755 => 100644 testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+
+-- 
+2.16.2
+
