@@ -1,37 +1,26 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 14 Mar 2018 14:25:50 +0300
-Subject: [LTP] [PATCH] lib: fix length check in safe_sendmsg
-In-Reply-To: <20180314104059.28051-1-rpalethorpe@suse.com>
-References: <20180314104059.28051-1-rpalethorpe@suse.com>
-Message-ID: <a2e95d83-c2ea-85ae-5448-4d2ba3473fe7@oracle.com>
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Wed, 14 Mar 2018 14:57:50 +0300
+Subject: [LTP] [PATCH] mem/oom,
+ tunable: perform cleanup actions only when they are actually
+ required
+In-Reply-To: <20180313125700.GB28772@rei>
+References: <1519132260-9242-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <24eb28d2-27a2-a3f7-c91f-9379732df79a@oracle.com>
+ <20180313125700.GB28772@rei>
+Message-ID: <4ec441ca-004f-33da-dd12-f5e10eedf8e8@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 03/14/2018 01:40 PM, Richard Palethorpe wrote:
-> It appears that we only check the len parameter against the return value if
-> the len parameter is zero.
+
+
+On 03/13/2018 03:57 PM, Cyril Hrubis wrote:
+> Hi!
+>> Could anybody have a look at this patch, please?
 > 
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> ---
->  lib/safe_net.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/lib/safe_net.c b/lib/safe_net.c
-> index 9ea9d2b42..96216ee69 100644
-> --- a/lib/safe_net.c
-> +++ b/lib/safe_net.c
-> @@ -200,7 +200,7 @@ ssize_t safe_sendmsg(const char *file, const int lineno, size_t len,
->  			 file, lineno, sockfd, msg, flags);
->  	}
->  
-> -	if (!len && (size_t)rval != len) {
-> +	if (len && (size_t)rval != len) {
->  		tst_brkm(TBROK, NULL,
->  			 "%s:%d: sendmsg(%d, %p, %d) ret(%zd) != len(%zu)",
->  			 file, lineno, sockfd, msg, flags, rval, len);
+> Looks good to me.
 > 
 
-Applied. Nice catch, thank you Richard!
+Thank you very much. Pushed.
