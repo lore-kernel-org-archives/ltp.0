@@ -1,56 +1,45 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 14 Mar 2018 13:09:24 +0100
-Subject: [LTP] [PATCH v2 2/3] lib: TCONF on "not supported" errnos in
- SAFE_SOCKET()
-In-Reply-To: <50741a4d-d12e-f0b7-adf7-92fe0a8e0c1d@cn.fujitsu.com>
+Date: Wed, 14 Mar 2018 13:14:29 +0100
+Subject: [LTP] [PATCH v2 1/3] netstress: TCONF if modprobe dccp fails
+In-Reply-To: <20180313150111.16501-1-pvorel@suse.cz>
 References: <20180313150111.16501-1-pvorel@suse.cz>
- <20180313150111.16501-2-pvorel@suse.cz>
- <50741a4d-d12e-f0b7-adf7-92fe0a8e0c1d@cn.fujitsu.com>
-Message-ID: <20180314120924.evwoxl5yn4pvd6jz@dell5510>
+Message-ID: <20180314121429.oirm65vix2sqbosf@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Lianwen,
+Hi,
 
-> Hi
->    I am sorry I forget to report my debug info on RHEL7.5Beta about this
-> question.
-> I write a testcase on RHEL7.5Beta. the test case is below.
+> commit 22d43a959 ("netstress: load dccp module manually") added
+> functionality to trying to load dccp module. It's actually better to
+> exit with TCONF as unsuccessful modprobe means that dccp module is
+> missing.
 
-> #include <netinet/in.h>
-> #include <sys/socket.h>
-> #include <stdio.h>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> LianWen, hope TCONF is ok for you:
+> http://lists.linux.it/pipermail/ltp/2018-February/007200.html
+> ---
+>  testcases/network/netstress/netstress.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-> int main (int argc, const char * argv[])
-> {
->     //create a dccp socket
->     int server_socket = socket(AF_INET6, SOCK_DCCP, IPPROTO_DCCP);
->     if (server_socket == -1) {
->         perror("socket error");
->         return 1;
->     }
->    printf("test is ok \n");
-> }
+> diff --git a/testcases/network/netstress/netstress.c b/testcases/network/netstress/netstress.c
+> index 4754bacf6..369a5eeb8 100644
+> --- a/testcases/network/netstress/netstress.c
+> +++ b/testcases/network/netstress/netstress.c
+> @@ -941,7 +941,7 @@ static void setup(void)
+>  		static const char * const argv[] = {"modprobe", "dccp", NULL};
 
-> And the  RHEL7.5Beta will report "Socket type not supported"  when run my
-> testcase  on RHEL7.5Beta .
-This is ESOCKTNOSUPPORT.
+>  		if (tst_run_cmd(argv, NULL, NULL, 1))
+> -			tst_res(TWARN, "Failed to load DCCP module");
+> +			tst_brk(TCONF, "Failed to load DCCP module");
 
-> and the RHEL7.4GA will report "Permission denied " when run my testcase on
-> RHEL7.4GA
-Not sure why it does not report ESOCKTNOSUPPORT, but I've seen some of these.
+>  		tst_res(TINFO, "DCCP %s", (client_mode) ? "client" : "server");
+>  		fastopen_api = fastopen_sapi = NULL;
 
-> it's ok when run my testcase on RHEL7.3GA.
-
-> That's all.
-
-> Thanks
-> Lianwen Sun
-
-Thanks for testing!
+FYI: merged whole patche-set.
 
 
 Kind regards,
