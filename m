@@ -1,11 +1,7 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 14 Mar 2018 17:32:41 +0100
-Subject: [LTP] [RFC PATCH v2 1/4] security/ima: Rewrite tests into new
- API + fixes
-In-Reply-To: <20180314155731.5943-2-pvorel@suse.cz>
-References: <20180314155731.5943-1-pvorel@suse.cz>
- <20180314155731.5943-2-pvorel@suse.cz>
-Message-ID: <20180314163241.2d5ekhz4mfsqgxjn@dell5510>
+From: Xiuzhe Xiao <xiuzhe.xiao@nautel.com>
+Date: Wed, 14 Mar 2018 16:37:56 +0000
+Subject: [LTP] SIGSEGV in faccessat01 and fchmodat01
+Message-ID: <BY2PR13MB070967D607D2E7F4F797189A90D10@BY2PR13MB0709.namprd13.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,37 +10,23 @@ To: ltp@lists.linux.it
 
 Hi,
 
-> -# Function:     test02
-> -# Description	- Verify ima calculated aggregate PCR values matches
-> -#		  actual PCR value.
-> -test02()
-> +test2()
->  {
-> +	tst_res TINFO "verify PCR values"
+Have anyone had these problem?
+Is there any requirement for these test? or is anyone can give me a direction, I'll be appreciated
 
-> -	# Would be nice to know where the PCRs are located.  Is this safe?
-> -	PCRS_PATH=$(find /$SYSFS/devices/ | grep pcrs)
-> +	# Would be nice to know where the PCRs are located. Is this safe?
-> +	local pcrs_path="$(find $SYSFS/devices/ | grep pcrs)"
->  	if [ $? -eq 0 ]; then
-> -		validate_pcr $PCRS_PATH
-> +		validate_pcr $pcrs_path
->  		if [ $? -eq 0 ]; then
-> -			tst_resm TPASS "aggregate PCR value matches real PCR value."
-> +			tst_res TPASS "aggregate PCR value matches real PCR value"
->  		else
-> -			tst_resm TFAIL "aggregate PCR value does not match real PCR value."
-> +			tst_res TFAIL "aggregate PCR value does not match real PCR value"
->  		fi
->  	else
-> -		tst_resm TFAIL "TPM not enabled, no PCR value to validate"
-> +		tst_res TFAIL "TPM not enabled, no PCR value to validate"
-Wrong, This must be TCONF:
-		tst_res TCONF "TPM not enabled, no PCR value to validate"
+<<<test_output>>>
+faccessat01    1  TBROK  :  tst_sig.c:233: unexpected signal SIGSEGV(11) received (pid = 2134).
+faccessat01    2  TBROK  :  tst_sig.c:233: Remaining cases broken
 
->  	fi
->  }
+<<<test_output>>>
+fchmodat01    1  TBROK  :  tst_sig.c:233: unexpected signal SIGSEGV(11) received (pid = 2289).
+fchmodat01    2  TBROK  :  tst_sig.c:233: Remaining cases broken
 
 
-Kind regards,
-Petr
+Thanks
+
+Shawnx.
+
+This communication, including any attached documentation, is intended only for the person or entity to which it is addressed, and may contain confidential, personal, and/or privileged information. Any unauthorized disclosure, copying, or taking action on the contents is strictly prohibited. If you have received this message in error, please contact us immediately so we may correct our records. Please then delete or destroy the original transmission and any subsequent reply. Thank you.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180314/48e84e4a/attachment.html>
