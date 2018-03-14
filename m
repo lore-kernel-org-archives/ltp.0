@@ -1,36 +1,34 @@
-From: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
-Date: Wed, 14 Mar 2018 14:33:48 +0800
-Subject: [LTP] [PATCH] cve/cve-2017-16939.c: Fix compilation without
-	CLONE_NEWUSER and CLONE_NEWNET
-Message-ID: <1521009228-2202-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Wed, 14 Mar 2018 11:40:59 +0100
+Subject: [LTP] [PATCH] lib: fix length check in safe_sendmsg
+Message-ID: <20180314104059.28051-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Compilation failed on some older distributions due to undefined CLONE_NEWUSER
-and CLONE_NEWNET, so we include lapi/namespaces_constants.h to fix it.
+It appears that we only check the len parameter against the return value if
+the len parameter is zero.
 
-Signed-off-by: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- testcases/cve/cve-2017-16939.c | 1 +
- 1 file changed, 1 insertion(+)
+ lib/safe_net.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/cve/cve-2017-16939.c b/testcases/cve/cve-2017-16939.c
-index a49499c..223ca83 100644
---- a/testcases/cve/cve-2017-16939.c
-+++ b/testcases/cve/cve-2017-16939.c
-@@ -36,6 +36,7 @@
- #include "tst_res_flags.h"
- #include "tst_safe_macros.h"
- #include "tst_safe_net.h"
-+#include "lapi/namespaces_constants.h"
+diff --git a/lib/safe_net.c b/lib/safe_net.c
+index 9ea9d2b42..96216ee69 100644
+--- a/lib/safe_net.c
++++ b/lib/safe_net.c
+@@ -200,7 +200,7 @@ ssize_t safe_sendmsg(const char *file, const int lineno, size_t len,
+ 			 file, lineno, sockfd, msg, flags);
+ 	}
  
- #define BUFSIZE 2048
- 
+-	if (!len && (size_t)rval != len) {
++	if (len && (size_t)rval != len) {
+ 		tst_brkm(TBROK, NULL,
+ 			 "%s:%d: sendmsg(%d, %p, %d) ret(%zd) != len(%zu)",
+ 			 file, lineno, sockfd, msg, flags, rval, len);
 -- 
-1.8.3.1
-
-
+2.16.2
 
