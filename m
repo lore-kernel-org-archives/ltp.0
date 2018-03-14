@@ -1,76 +1,81 @@
-From: Nicolai Stange <nstange@suse.de>
-Date: Wed, 14 Mar 2018 16:15:36 +0100
-Subject: [LTP] [PATCH 2/2] Add CVE-2017-18075,
-	pcrypt mishandles freeing instances
-In-Reply-To: <20180314145427.2738-2-rpalethorpe@suse.com> (Richard
- Palethorpe's message of "Wed, 14 Mar 2018 15:54:27 +0100")
-References: <20180314145427.2738-1-rpalethorpe@suse.com>
- <20180314145427.2738-2-rpalethorpe@suse.com>
-Message-ID: <87bmfqofhj.fsf@suse.de>
+From: Xiuzhe Xiao <xiuzhe.xiao@nautel.com>
+Date: Wed, 14 Mar 2018 16:23:29 +0000
+Subject: [LTP] No space left on device
+In-Reply-To: <20180216151317.GA11776@rei>
+References: <BY2PR13MB0709E6ADB72B75A42150F2F990CB0@BY2PR13MB0709.namprd13.prod.outlook.com>,
+ <20180216151317.GA11776@rei>
+Message-ID: <BY2PR13MB0709A65A87219009206187E290D10@BY2PR13MB0709.namprd13.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Richard Palethorpe <rpalethorpe@suse.com> writes:
+Hi
 
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> ---
+
+I fixed this problem by adding option "-b" and -"B"
+
+the command looks like this: /opt/ltp/runltp -b /dev/loop0 -B ext4 -s readv01
+
+
+Shawnx.
+
+________________________________
+From: Cyril Hrubis <chrubis@suse.cz>
+Sent: Friday, February 16, 2018 7:13:17 AM
+To: Xiuzhe Xiao
+Cc: ltp@lists.linux.it
+Subject: Re: [LTP] No space left on device
+
+Hi!
+> I met a problem when using LTP
+> Many tests failed because of "errno=ENOSPC(28): No space left on device"
+> Here is one of the example:
 >
-> I can not find the original reproducer posted upstream. I assume it was
-> created by syzkaller.
+> <<<test_start>>>
+> tag=readv01 stime=1518724492
+> cmdline="readv01"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> incrementing stop
+> readv01     1  TBROK  :  safe_macros.c:440: readv01.c:113: write(6,0x30274,4294967295) failed: errno=ENOSPC(28): No space left on device
+> readv01     2  TBROK  :  safe_macros.c:440: Remaining cases broken
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=0 termination_type=exited termination_id=2 corefile=no
+> cutime=0 cstime=1
+> <<<test_end>>>
+> INFO: ltp-pan reported some tests FAIL
+> LTP Version: 20170116
+> ./runltp: line 973: cannot create temp file for here-document: No space left on device
+>
+> root@adzs-sc589-ezlite:/opt/ltp# df
+> Filesystem           1K-blocks      Used Available Use% Mounted on
+> /dev/root              7462604    555564   6504916   8% /
+> devtmpfs                110608         0    110608   0% /dev
+> tmpfs                   110688        40    110648   0% /run
+> tmpfs                   110688        52    110636   0% /var/volatile
+>
+> Notice I have plenty of space on my disk, and I also check "df -i". Inodes are free as well
+> Is anyone had this problem? Please give me a hint, I'll be appreciated
 
-Yes: https://groups.google.com/forum/#!topic/syzkaller-bugs/NKn_ivoPOpk
+I have never seen such failure.
 
-However, this rewrite to crypto's netlink interface might be different
-enough such that ...
+But if you look at the the actual error message it looks like something
+very wrong is happening there. The test is supposed to write 64 bytes to
+the temporary file but it looks like in your case it attempts to write
+4294967295 bytes, which is around 4GB if I'm counting correctly so it's
+no wonder it fails with ENOSPC.
 
+My guess is that the test is miscompiled somehow but that is just a wild
+guess.
 
-> diff --git a/testcases/cve/cve-2017-18075.c b/testcases/cve/cve-2017-18075.c
-> new file mode 100644
-> index 000000000..3723b0655
-> --- /dev/null
-> +++ b/testcases/cve/cve-2017-18075.c
-> @@ -0,0 +1,201 @@
-> +/*
-> + * Copyright (c) 2018 SUSE
-> + * Author: Nicolai Stange <nstange@suse.de>
-> + * LTP conversion: Richard Palethorpe <rpalethorpe@suse.com>
-> + *
-> + * Based on the reproducer posted upstream so other copyrights may
-> + * apply.
-
-... this isn't really needed, but I'm not a lawyer.
-
-Thanks,
-
-Nicolai
-
-
-
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License
-> + * as published by the Free Software Foundation; either version 2
-> + * of the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, see <http://www.gnu.org/licenses/>.
-> + *
-> + * Test for CVE-2017-5754 - pcrypt mishandles freeing instances
-> + *
-> + * See commit d76c68109f37 crypto: pcrypt - fix freeing pcrypt instances.
-> + *
-> + * If the bug is present this will most likely crash your kernel.
-> + */
-> +
-
--- 
-SUSE Linux GmbH, GF: Felix Imendörffer, Jane Smithard, Graham Norton,
-HRB 21284 (AG Nürnberg)
+--
+Cyril Hrubis
+chrubis@suse.cz
+This communication, including any attached documentation, is intended only for the person or entity to which it is addressed, and may contain confidential, personal, and/or privileged information. Any unauthorized disclosure, copying, or taking action on the contents is strictly prohibited. If you have received this message in error, please contact us immediately so we may correct our records. Please then delete or destroy the original transmission and any subsequent reply. Thank you.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180314/0e8c3049/attachment-0001.html>
