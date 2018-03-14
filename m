@@ -1,50 +1,95 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 13 Mar 2018 17:35:00 +0100
-Subject: [LTP] Errored: linux-test-project/ltp#699 (master - 67c95fb)
-In-Reply-To: <5aa68a846c12_43fcf924d5e1c1134186@742623e8-1050-46c6-b205-a80535524ffb.mail>
-References: <linux-test-project/ltp+352345577+errored@travis-ci.org>
- <5aa68a846c12_43fcf924d5e1c1134186@742623e8-1050-46c6-b205-a80535524ffb.mail>
-Message-ID: <20180313163500.2ks5yeax64ldndyo@dell5510>
+From: sunlianwen <sunlw.fnst@cn.fujitsu.com>
+Date: Wed, 14 Mar 2018 08:42:22 +0800
+Subject: [LTP] [PATCH v2 2/3] lib: TCONF on "not supported" errnos in
+ SAFE_SOCKET()
+In-Reply-To: <20180313150111.16501-2-pvorel@suse.cz>
+References: <20180313150111.16501-1-pvorel@suse.cz>
+ <20180313150111.16501-2-pvorel@suse.cz>
+Message-ID: <50741a4d-d12e-f0b7-adf7-92fe0a8e0c1d@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi
+    I am sorry I forget to report my debug info on RHEL7.5Beta about 
+this question.
+I write a testcase on RHEL7.5Beta. the test case is below.
 
-> Build Update for linux-test-project/ltp
-> -------------------------------------
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <stdio.h>
 
-> Build: #699
-> Status: Errored
+int main (int argc, const char * argv[])
+{
+     //create a dccp socket
+     int server_socket = socket(AF_INET6, SOCK_DCCP, IPPROTO_DCCP);
+     if (server_socket == -1) {
+         perror("socket error");
+         return 1;
+     }
+    printf("test is ok \n");
+}
 
-> Duration: 14 minutes and 43 seconds
-> Commit: 67c95fb (master)
-> Author: Richard Palethorpe
-> Message: Add read_all file systems test
+And the  RHEL7.5Beta will report "Socket type not supported"  when run 
+my testcase  on RHEL7.5Beta .
+and the RHEL7.4GA will report "Permission denied " when run my testcase 
+on RHEL7.4GA
+it's ok when run my testcase on RHEL7.3GA.
 
-> While using a shell script I wrote, which dumps the contents of /sys and
-> /proc (submitted in a separate patch), I found some minor kernel bugs. There
-> is already a test specifically for /proc however it is attempting to verify
-> the behavior of particular files. This test is more general and can be applied
-> to any file system.
+That's all.
 
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Thanks
+Lianwen Sun
 
-> View the changeset: https://github.com/linux-test-project/ltp/compare/3de6dcba463e...67c95fbbfc3a
+On 03/13/2018 11:01 PM, Petr Vorel wrote:
+> *NOSUPPORT errnos likely mean there is configuration issue rather than
+> test failure.
+>
+> e.g. missing dccp module in netstress.c which was so far set as TBROK:
+> safe_net.c:117: BROK: netstress.c:654: socket(10, 6, 33) failed: ESOCKTNOSUPPORT
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> Acked-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> ---
+>   lib/safe_net.c | 16 ++++++++++++++--
+>   1 file changed, 14 insertions(+), 2 deletions(-)
+>
+> diff --git a/lib/safe_net.c b/lib/safe_net.c
+> index 9ea9d2b42..9ed52dcd1 100644
+> --- a/lib/safe_net.c
+> +++ b/lib/safe_net.c
+> @@ -107,12 +107,24 @@ int tst_getsockport(const char *file, const int lineno, int sockfd)
+>   int safe_socket(const char *file, const int lineno, void (cleanup_fn)(void),
+>   		int domain, int type, int protocol)
+>   {
+> -	int rval;
+> +	int rval, ttype;
+>   
+>   	rval = socket(domain, type, protocol);
+>   
+>   	if (rval < 0) {
+> -		tst_brkm(TBROK | TERRNO, cleanup_fn,
+> +		switch (errno) {
+> +		case EPROTONOSUPPORT:
+> +		case ESOCKTNOSUPPORT:
+> +		case EOPNOTSUPP:
+> +		case EPFNOSUPPORT:
+> +		case EAFNOSUPPORT:
+> +			ttype = TCONF;
+> +			break;
+> +		default:
+> +			ttype = TBROK;
+> +		}
+> +
+> +		tst_brkm(ttype | TERRNO, cleanup_fn,
+>   			 "%s:%d: socket(%d, %d, %d) failed", file, lineno,
+>   			 domain, type, protocol);
+>   	}
 
-> View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/352345577?utm_source=email&utm_medium=notification
 
-Travis is getting really bad. Not surprising that this is false positive (my attempt to
-fix travis in a59e44928 "travis: Trying to make travis more reliable" didn't help), but we
-didn't get mail about failure of build #702 3f2ff1490 ("Add regression test for CVE-2017-17053"):
-https://travis-ci.org/linux-test-project/ltp/builds/352813245
-which correctly shows failure only for cross-compilation (missing asm/ldt.h, which is only
-for x86 architecture).
 
-I fixed it in f3cbd3403 ("cve: Fix compilation for non x86 architectures").
-https://travis-ci.org/linux-test-project/ltp/builds/352917608
-
-Kind regards,
-Petr
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180314/e9a14bbf/attachment.html>
