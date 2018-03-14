@@ -1,46 +1,24 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 14 Mar 2018 13:14:29 +0100
-Subject: [LTP] [PATCH v2 1/3] netstress: TCONF if modprobe dccp fails
-In-Reply-To: <20180313150111.16501-1-pvorel@suse.cz>
-References: <20180313150111.16501-1-pvorel@suse.cz>
-Message-ID: <20180314121429.oirm65vix2sqbosf@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 14 Mar 2018 14:58:23 +0100
+Subject: [LTP] [RFC] [PATCH] shell: ROD_SILENT: Print std{out,
+ err} on failure
+In-Reply-To: <874llkvwe4.fsf@rpws.prws.suse.cz>
+References: <20180212150302.23347-1-chrubis@suse.cz>
+ <87efle670i.fsf@rpws.prws.suse.cz> <20180313124647.GA28772@rei>
+ <876060w2m5.fsf@rpws.prws.suse.cz> <20180313133049.GA21673@rei.lan>
+ <874llkvwe4.fsf@rpws.prws.suse.cz>
+Message-ID: <20180314135823.GA27794@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> Yes.
 
-> commit 22d43a959 ("netstress: load dccp module manually") added
-> functionality to trying to load dccp module. It's actually better to
-> exit with TCONF as unsuccessful modprobe means that dccp module is
-> missing.
+Pushed, thanks.
 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> LianWen, hope TCONF is ok for you:
-> http://lists.linux.it/pipermail/ltp/2018-February/007200.html
-> ---
->  testcases/network/netstress/netstress.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-> diff --git a/testcases/network/netstress/netstress.c b/testcases/network/netstress/netstress.c
-> index 4754bacf6..369a5eeb8 100644
-> --- a/testcases/network/netstress/netstress.c
-> +++ b/testcases/network/netstress/netstress.c
-> @@ -941,7 +941,7 @@ static void setup(void)
->  		static const char * const argv[] = {"modprobe", "dccp", NULL};
-
->  		if (tst_run_cmd(argv, NULL, NULL, 1))
-> -			tst_res(TWARN, "Failed to load DCCP module");
-> +			tst_brk(TCONF, "Failed to load DCCP module");
-
->  		tst_res(TINFO, "DCCP %s", (client_mode) ? "client" : "server");
->  		fastopen_api = fastopen_sapi = NULL;
-
-FYI: merged whole patche-set.
-
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
