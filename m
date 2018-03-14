@@ -1,95 +1,140 @@
-From: sunlianwen <sunlw.fnst@cn.fujitsu.com>
-Date: Wed, 14 Mar 2018 08:42:22 +0800
-Subject: [LTP] [PATCH v2 2/3] lib: TCONF on "not supported" errnos in
- SAFE_SOCKET()
-In-Reply-To: <20180313150111.16501-2-pvorel@suse.cz>
-References: <20180313150111.16501-1-pvorel@suse.cz>
- <20180313150111.16501-2-pvorel@suse.cz>
-Message-ID: <50741a4d-d12e-f0b7-adf7-92fe0a8e0c1d@cn.fujitsu.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 14 Mar 2018 09:26:29 +0800
+Subject: [LTP] [PATCH v2] commands/sysctl: Add new regression test for
+ invalid sched_time_avg
+In-Reply-To: <1520397350-28216-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20180306124242.GC16934@rei.lan>
+ <1520397350-28216-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <5AA87A45.6070201@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi
-    I am sorry I forget to report my debug info on RHEL7.5Beta about 
-this question.
-I write a testcase on RHEL7.5Beta. the test case is below.
+Hi Cyril,
 
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <stdio.h>
+Could you help me review the v2 patch? :-)
 
-int main (int argc, const char * argv[])
-{
-     //create a dccp socket
-     int server_socket = socket(AF_INET6, SOCK_DCCP, IPPROTO_DCCP);
-     if (server_socket == -1) {
-         perror("socket error");
-         return 1;
-     }
-    printf("test is ok \n");
-}
-
-And the  RHEL7.5Beta will report "Socket type not supported"  when run 
-my testcase  on RHEL7.5Beta .
-and the RHEL7.4GA will report "Permission denied " when run my testcase 
-on RHEL7.4GA
-it's ok when run my testcase on RHEL7.3GA.
-
-That's all.
-
-Thanks
-Lianwen Sun
-
-On 03/13/2018 11:01 PM, Petr Vorel wrote:
-> *NOSUPPORT errnos likely mean there is configuration issue rather than
-> test failure.
+Thanks,
+Xiao Yang
+On 2018/03/07 12:35, Xiao Yang wrote:
+> The kernel bug has been fixed in kernel:
+> '5ccba44ba118("sched/sysctl: Check user input value of sysctl_sched_time_avg")'
 >
-> e.g. missing dccp module in netstress.c which was so far set as TBROK:
-> safe_net.c:117: BROK: netstress.c:654: socket(10, 6, 33) failed: ESOCKTNOSUPPORT
->
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> Acked-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 > ---
->   lib/safe_net.c | 16 ++++++++++++++--
->   1 file changed, 14 insertions(+), 2 deletions(-)
+>  runtest/commands                      |  1 +
+>  testcases/commands/sysctl/Makefile    | 25 +++++++++++++++
+>  testcases/commands/sysctl/sysctl01.sh | 58 +++++++++++++++++++++++++++++++++++
+>  3 files changed, 84 insertions(+)
+>  create mode 100644 testcases/commands/sysctl/Makefile
+>  create mode 100755 testcases/commands/sysctl/sysctl01.sh
 >
-> diff --git a/lib/safe_net.c b/lib/safe_net.c
-> index 9ea9d2b42..9ed52dcd1 100644
-> --- a/lib/safe_net.c
-> +++ b/lib/safe_net.c
-> @@ -107,12 +107,24 @@ int tst_getsockport(const char *file, const int lineno, int sockfd)
->   int safe_socket(const char *file, const int lineno, void (cleanup_fn)(void),
->   		int domain, int type, int protocol)
->   {
-> -	int rval;
-> +	int rval, ttype;
->   
->   	rval = socket(domain, type, protocol);
->   
->   	if (rval < 0) {
-> -		tst_brkm(TBROK | TERRNO, cleanup_fn,
-> +		switch (errno) {
-> +		case EPROTONOSUPPORT:
-> +		case ESOCKTNOSUPPORT:
-> +		case EOPNOTSUPP:
-> +		case EPFNOSUPPORT:
-> +		case EAFNOSUPPORT:
-> +			ttype = TCONF;
-> +			break;
-> +		default:
-> +			ttype = TBROK;
-> +		}
+> diff --git a/runtest/commands b/runtest/commands
+> index 92df3af..fde8063 100644
+> --- a/runtest/commands
+> +++ b/runtest/commands
+> @@ -44,3 +44,4 @@ wc01 wc01.sh
+>  keyctl01 keyctl01.sh
+>  gdb01 gdb01.sh
+>  unshare01 unshare01.sh
+> +sysctl01 sysctl01.sh
+> diff --git a/testcases/commands/sysctl/Makefile b/testcases/commands/sysctl/Makefile
+> new file mode 100644
+> index 0000000..61ff705
+> --- /dev/null
+> +++ b/testcases/commands/sysctl/Makefile
+> @@ -0,0 +1,25 @@
+> +#
+> +# Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
+> +# Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> +#
+> +# This program is free software; you can redistribute it and/or modify
+> +# it under the terms of the GNU General Public License as published by
+> +# the Free Software Foundation; either version 2 of the License, or
+> +# (at your option) any later version.
+> +#
+> +# This program is distributed in the hope that it will be useful,
+> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+> +# General Public License for more details.
+> +#
+> +# You should have received a copy of the GNU General Public License along
+> +# with this program; if not, see <http://www.gnu.org/licenses/>.
+> +#
 > +
-> +		tst_brkm(ttype | TERRNO, cleanup_fn,
->   			 "%s:%d: socket(%d, %d, %d) failed", file, lineno,
->   			 domain, type, protocol);
->   	}
+> +top_srcdir		?= ../../..
+> +
+> +include $(top_srcdir)/include/mk/env_pre.mk
+> +
+> +INSTALL_TARGETS		:= *.sh
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/commands/sysctl/sysctl01.sh b/testcases/commands/sysctl/sysctl01.sh
+> new file mode 100755
+> index 0000000..6fa5a02
+> --- /dev/null
+> +++ b/testcases/commands/sysctl/sysctl01.sh
+> @@ -0,0 +1,58 @@
+> +#!/bin/sh
+> +
+> +# Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
+> +# Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> +#
+> +# This program is free software;  you can redistribute it and#or modify
+> +# it under the terms of the GNU General Public License as published by
+> +# the Free Software Foundation; either version 2 of the License, or
+> +# (at your option) any later version.
+> +#
+> +# This program is distributed in the hope that it will be useful, but
+> +# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+> +# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+> +# for more details.
+> +#
+> +# You should have received a copy of the GNU General Public License
+> +# along with this program; if not, see <http://www.gnu.org/licenses/>.
+> +#
+> +# Description:
+> +# This is a regression test for invalid value of sysctl_sched_time_avg.
+> +# System will hang if user set sysctl_sched_time_avg to 0 on buggy kernel.
+> +#
+> +# The kernel bug has been fixed in kernel:
+> +# '5ccba44ba118("sched/sysctl: Check user input value of sysctl_sched_time_avg")'
+> +
+> +TST_TESTFUNC=sysctl_test
+> +TST_NEEDS_ROOT=1
+> +TST_NEEDS_CMDS="sysctl"
+> +
+> +. tst_test.sh
+> +
+> +sysctl_test()
+> +{
+> +	# With commit d00535d, sched_time_avg was renamed as sched_time_avg_ms
+> +	local dir="/proc/sys/kernel/"
+> +	[ -e "$dir""sched_time_avg_ms" ] && local name="sched_time_avg_ms"
+> +	[ -e "$dir""sched_time_avg" ] && local name="sched_time_avg"
+> +	[ -z "$name" ] && tst_brk TCONF \
+> +		"sched_time_avg(_ms) was not supported"
+> +
+> +	local orig_value=$(cat "$dir""$name")
+> +
+> +	sysctl -w "kernel.""$name"=0 >/dev/null 2>&1
+> +
+> +	# Increase the chance of exposing the problem on RHEL6
+> +	sleep 3
+> +
+> +	local test_value=$(cat "$dir""$name")
+> +
+> +	if [ ${test_value} -eq ${orig_value} ]; then
+> +		tst_res TPASS "Setting $name failed"
+> +	else
+> +		tst_res TFAIL "Setting $name succeeded"
+> +		sysctl -w "kernel.""$name"=${orig_value} >/dev/null 2>&1
+> +	fi
+> +}
+> +
+> +tst_run
 
 
 
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180314/e9a14bbf/attachment.html>
