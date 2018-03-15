@@ -1,67 +1,46 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 15 Mar 2018 13:25:50 +0100
-Subject: [LTP] [PATCH] fs/read_all: Filter /dev/watchdog*
-In-Reply-To: <1521025644-18312-1-git-send-email-xuyang.jy@cn.fujitsu.com>
-References: <1521025644-18312-1-git-send-email-xuyang.jy@cn.fujitsu.com>
-Message-ID: <87woydv835.fsf@rpws.prws.suse.cz>
+From: Travis CI <builds@travis-ci.org>
+Date: Thu, 15 Mar 2018 12:29:12 +0000
+Subject: [LTP] Errored: linux-test-project/ltp#709 (master - 1364466)
+In-Reply-To: <linux-test-project/ltp+353786336+errored@travis-ci.org>
+Message-ID: <5aaa67bdb138e_43f9c2bae6bac388042@24ade08d-21fc-4bc7-acc7-04d9f589a4d1.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-yang xu writes:
+Build: #709
+Status: Errored
 
-> On some distros with Magic Close feature or built-in CONFIG_WATCHDOG_NOWAYOUT,
-> just closing /dev/watchdog* enabled by open leads to system reboot as expected.
->
-> If Magic Close feature is supported, just writing a specific magic character 'V'
-> into /dev/watchdog* before closing it can disable the watchdog.
->
-> If CONFIG_WATCHDOG_NOWAYOUT is built-in, there is no way to disable the watchdog.
->
-> Magic Close feature is introduced by:
-> commit 017cf080("watchDog Timer Driver Core - Add Magic Close feature")
->
-> Please see the following url for detailed watchdog info:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/watchdog/watchdog-api.txt
->
-> Signed-off-by: yang xu <xuyang.jy@cn.fujitsu.com>
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/fs/read_all/read_all.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/read_all/read_all.c
-> index 81806e7..a841b88 100644
-> --- a/testcases/kernel/fs/read_all/read_all.c
-> +++ b/testcases/kernel/fs/read_all/read_all.c
-> @@ -393,6 +393,9 @@ static void visit_dir(const char *path)
->  		snprintf(dent_path, MAX_PATH,
->  			 "%s/%s", path, dent->d_name);
->
-> +		if (!strncmp(dent_path, "/dev/watchdog", 13))
-> +			continue;
-> +
+Duration: 9 minutes and 48 seconds
+Commit: 1364466 (master)
+Author: Richard Palethorpe
+Message: lib: Add safe_recvmsg
 
-I don't think this should be hardcoded because it is OK to read this
-file on some systems. Unfortunately there does not seem to be a reliable
-way to find out if it is OK (/sys/class/watchdog/watchdogn/nowayout is
-not even present on my system)
+Identical to safe_sendmsg except *msg is not const.
 
-However perhaps we could set the default for the exclude parameter (-e)
-to /dev/watchdog? Then the user can easily override it, but we won't
-reboot some people's systems by default. What do you think?
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
->  		if (act == DA_UNKNOWN) {
->  			if (lstat(dent_path, &dent_st))
->  				tst_res(TINFO | TERRNO, "lstat(%s)", path);
-> --
-> 1.8.3.1
+View the changeset: https://github.com/linux-test-project/ltp/compare/eab8faa46008...136446615beb
 
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/353786336?utm_source=email&utm_medium=notification
 
 --
-Thank you,
-Richard.
+
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+
+
+
+
+
+
+
+This email was sent to ltp@lists.linux.it (mailto:ltp@lists.linux.it)
+unsubscribe from this list (http://clicks.travis-ci.com/track/unsub.php?u=14313403&id=eccc35af76ba49cab3389da64ad4a38e.nwh%2ButJmyvjUjRzsB8BeiP5x1%2B8%3D&r=https%3A%2F%2Fmandrillapp.com%2Funsub%3Fmd_email%3Dltp%2540lists.linux.it)
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180315/4eb66e84/attachment.html>
