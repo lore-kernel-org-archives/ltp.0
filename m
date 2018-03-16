@@ -1,7 +1,9 @@
 From: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
-Date: Fri, 16 Mar 2018 15:12:55 +0800
-Subject: [LTP] [PATCH 1/2] SAFE_MACROS: Add SAFE_GETGRNAM()
-Message-ID: <1521184376-3649-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Date: Fri, 16 Mar 2018 15:12:56 +0800
+Subject: [LTP] [PATCH 2/2] Make use of SAFE_GETGRNAM()
+In-Reply-To: <1521184376-3649-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+References: <1521184376-3649-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <1521184376-3649-2-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,100 +12,195 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
 ---
- include/old/safe_macros.h |  3 +++
- include/safe_macros_fn.h  |  3 +++
- include/tst_safe_macros.h |  9 +++------
- lib/safe_macros.c         | 15 +++++++++++++++
- 4 files changed, 24 insertions(+), 6 deletions(-)
+ testcases/kernel/syscalls/chmod/chmod05.c       |  4 +---
+ testcases/kernel/syscalls/chmod/chmod07.c       |  3 +--
+ testcases/kernel/syscalls/creat/creat08.c       | 16 +++++-----------
+ testcases/kernel/syscalls/fchmod/fchmod02.c     |  4 +---
+ testcases/kernel/syscalls/fchmod/fchmod05.c     |  5 +----
+ testcases/kernel/syscalls/open/open10.c         | 14 ++++----------
+ testcases/kernel/syscalls/setregid/setregid02.c |  5 +----
+ testcases/kernel/syscalls/setregid/setregid03.c |  5 +----
+ testcases/kernel/syscalls/setregid/setregid04.c |  6 ++----
+ 9 files changed, 17 insertions(+), 45 deletions(-)
 
-diff --git a/include/old/safe_macros.h b/include/old/safe_macros.h
-index e778d30..0718060 100644
---- a/include/old/safe_macros.h
-+++ b/include/old/safe_macros.h
-@@ -44,6 +44,9 @@
- #define SAFE_GETPWNAM(cleanup_fn, name)	\
- 	safe_getpwnam(__FILE__, __LINE__, cleanup_fn, (name))
+diff --git a/testcases/kernel/syscalls/chmod/chmod05.c b/testcases/kernel/syscalls/chmod/chmod05.c
+index 3cf4db5..c3bea4e 100644
+--- a/testcases/kernel/syscalls/chmod/chmod05.c
++++ b/testcases/kernel/syscalls/chmod/chmod05.c
+@@ -187,9 +187,7 @@ void setup(void)
+ 		tst_brkm(TBROK | TERRNO, cleanup,
+ 			 "getpwnam(\"nobody\") failed");
  
-+#define SAFE_GETGRNAM(cleanup_fn, name) \
-+	safe_getgrnam(__FILE__, __LINE__, cleanup_fn, (name))
+-	bin_group = getgrnam("bin");
+-	if (bin_group == NULL)
+-		tst_brkm(TBROK | TERRNO, cleanup, "getgrnam(\"bin\") failed");
++	bin_group = SAFE_GETGRNAM(cleanup, "bin");
+ 
+ 	/*
+ 	 * Create a test directory under temporary directory with specified
+diff --git a/testcases/kernel/syscalls/chmod/chmod07.c b/testcases/kernel/syscalls/chmod/chmod07.c
+index 6a39388..ae52b21 100644
+--- a/testcases/kernel/syscalls/chmod/chmod07.c
++++ b/testcases/kernel/syscalls/chmod/chmod07.c
+@@ -174,8 +174,7 @@ void setup(void)
+ 	user1_uid = ltpuser->pw_uid;
+ 
+ 	/* Get the group id of guest user - ltpuser1 */
+-	if ((ltpgroup = getgrnam(LTPGRP)) == NULL)
+-		tst_brkm(TBROK, cleanup, "getgrnam failed");
++	ltpgroup = SAFE_GETGRNAM(cleanup, LTPGRP);
+ 	group1_gid = ltpgroup->gr_gid;
+ 
+ 	fd = SAFE_OPEN(cleanup, TESTFILE, O_RDWR | O_CREAT, FILE_MODE);
+diff --git a/testcases/kernel/syscalls/creat/creat08.c b/testcases/kernel/syscalls/creat/creat08.c
+index 50f2b39..377dff1 100644
+--- a/testcases/kernel/syscalls/creat/creat08.c
++++ b/testcases/kernel/syscalls/creat/creat08.c
+@@ -119,18 +119,12 @@ int main(int ac, char **av)
+ 		/*
+ 		 * Get the group IDs of group1 and group2.
+ 		 */
+-		if ((group = getgrnam("nobody")) == NULL) {
+-			if ((group = getgrnam("nogroup")) == NULL) {
+-				tst_brkm(TBROK | TERRNO, cleanup,
+-					 "getgrnam(\"nobody\") and "
+-					 "getgrnam(\"nogroup\") failed");
+-			}
+-		}
++		group = getgrnam("nobody");
++		if (group == NULL)
++			group = SAFE_GETGRNAM(cleanup, "nogroup");
 +
- #define SAFE_GETRUSAGE(cleanup_fn, who, usage) \
- 	safe_getrusage(__FILE__, __LINE__, (cleanup_fn), (who), (usage))
+ 		group1_gid = group->gr_gid;
+-		if ((group = getgrnam("bin")) == NULL) {
+-			tst_brkm(TBROK | TERRNO, cleanup,
+-				 "getgrnam(\"bin\") failed");
+-		}
++		group = SAFE_GETGRNAM(cleanup, "bin");
+ 		group2_gid = group->gr_gid;
  
-diff --git a/include/safe_macros_fn.h b/include/safe_macros_fn.h
-index 3df9528..2d3ddae 100644
---- a/include/safe_macros_fn.h
-+++ b/include/safe_macros_fn.h
-@@ -45,6 +45,9 @@ char* safe_getcwd(const char *file, const int lineno,
- struct passwd* safe_getpwnam(const char *file, const int lineno,
-                              void (*cleanup_fn)(void), const char *name);
+ /*--------------------------------------------------------------*/
+diff --git a/testcases/kernel/syscalls/fchmod/fchmod02.c b/testcases/kernel/syscalls/fchmod/fchmod02.c
+index ea2bdb4..f9f8ab3 100644
+--- a/testcases/kernel/syscalls/fchmod/fchmod02.c
++++ b/testcases/kernel/syscalls/fchmod/fchmod02.c
+@@ -177,9 +177,7 @@ void setup(void)
+ 	user1_uid = ltpuser->pw_uid;
  
-+struct group *safe_getgrnam(const char *file, const int lineno,
-+			    void (*cleanup_fn)(void), const char *name);
-+
- int safe_getrusage(const char *file, const int lineno,
-                    void (*cleanup_fn)(void), int who, struct rusage *usage);
+ 	/* Get the group id of guest user - ltpuser1 */
+-	if ((ltpgroup = getgrnam(LTPGRP)) == NULL) {
+-		tst_brkm(TBROK, cleanup, "%s not in /etc/group", LTPGRP);
+-	}
++	ltpgroup = SAFE_GETGRNAM(cleanup, LTPGRP);
+ 	group1_gid = ltpgroup->gr_gid;
  
-diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index f115a7b..56ff4c3 100644
---- a/include/tst_safe_macros.h
-+++ b/include/tst_safe_macros.h
-@@ -72,6 +72,9 @@ static inline int safe_dup(const char *file, const int lineno,
- #define SAFE_GETPWNAM(name) \
- 	safe_getpwnam(__FILE__, __LINE__, NULL, (name))
+ 	/*
+diff --git a/testcases/kernel/syscalls/fchmod/fchmod05.c b/testcases/kernel/syscalls/fchmod/fchmod05.c
+index cdd3d07..93b4fc5 100644
+--- a/testcases/kernel/syscalls/fchmod/fchmod05.c
++++ b/testcases/kernel/syscalls/fchmod/fchmod05.c
+@@ -178,10 +178,7 @@ void setup(void)
+ 		tst_brkm(TBROK, cleanup,
+ 			 "Couldn't find uid of nobody: %s", strerror(errno));
  
-+#define SAFE_GETGRNAM(name) \
-+	safe_getgrnam(__FILE__, __LINE__, NULL, (name))
-+
- #define SAFE_GETRUSAGE(who, usage) \
- 	safe_getrusage(__FILE__, __LINE__, NULL, (who), (usage))
+-	bin_group = getgrnam("bin");
+-	if (!bin_group)
+-		tst_brkm(TBROK, cleanup,
+-			 "Couldn't find gid of bin: %s", strerror(errno));
++	bin_group = SAFE_GETGRNAM(cleanup, "bin");
  
-@@ -397,12 +400,6 @@ static inline sighandler_t safe_signal(const char *file, const int lineno,
- #define SAFE_SIGNAL(signum, handler) \
- 	safe_signal(__FILE__, __LINE__, (signum), (handler))
- 
--int safe_sigaction(const char *file, const int lineno,
--                   int signum, const struct sigaction *act,
--                   struct sigaction *oldact);
--#define SAFE_SIGACTION(signum, act, oldact) \
--	safe_sigaction(__FILE__, __LINE__, (signum), (act), (oldact))
--
- #define SAFE_EXECLP(file, arg, ...) do {                   \
- 	execlp((file), (arg), ##__VA_ARGS__);              \
- 	tst_brk_(__FILE__, __LINE__, TBROK | TERRNO,       \
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index abdeca0..061819e 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -15,6 +15,7 @@
- #include <stdlib.h>
- #include <unistd.h>
- #include <malloc.h>
-+#include <grp.h>
+ 	/*
+ 	 * Create a test directory under temporary directory with specified
+diff --git a/testcases/kernel/syscalls/open/open10.c b/testcases/kernel/syscalls/open/open10.c
+index 613f228..2c1a588 100644
+--- a/testcases/kernel/syscalls/open/open10.c
++++ b/testcases/kernel/syscalls/open/open10.c
+@@ -42,6 +42,7 @@
+ #include <grp.h>
+ #include <pwd.h>
  #include "test.h"
- #include "safe_macros.h"
++#include "safe_macros.h"
  
-@@ -126,6 +127,20 @@ struct passwd *safe_getpwnam(const char *file, const int lineno,
- 	return rval;
+ char *TCID = "open10";
+ int TST_TOTAL = 1;
+@@ -106,18 +107,11 @@ int main(int ac, char *av[])
+ 		 * Get the group IDs of group1 and group2.
+ 		 */
+ 		group = getgrnam("nobody");
+-		if (group == NULL) {
+-			group = getgrnam("nogroup");
+-			if (group == NULL) {
+-				tst_brkm(TBROK, cleanup,
+-					 "nobody/nogroup not in /etc/group");
+-			}
+-		}
+-		group1_gid = group->gr_gid;
+-		group = getgrnam("bin");
+ 		if (group == NULL)
+-			tst_brkm(TBROK, cleanup, "bin not in /etc/group");
++			group = SAFE_GETGRNAM(cleanup, "nogroup");
+ 
++		group1_gid = group->gr_gid;
++		group = SAFE_GETGRNAM(cleanup, "bin");
+ 		group2_gid = group->gr_gid;
+ 
+ 		/*
+diff --git a/testcases/kernel/syscalls/setregid/setregid02.c b/testcases/kernel/syscalls/setregid/setregid02.c
+index 21d1c82..d7e141d 100644
+--- a/testcases/kernel/syscalls/setregid/setregid02.c
++++ b/testcases/kernel/syscalls/setregid/setregid02.c
+@@ -148,10 +148,7 @@ static void setup(void)
+ 
+ static struct group get_group_by_name(const char *name)
+ {
+-	struct group *ret = getgrnam(name);
+-
+-	if (ret == NULL)
+-		tst_brkm(TBROK|TERRNO, NULL, "getgrnam(\"%s\") failed", name);
++	struct group *ret = SAFE_GETGRNAM(NULL, name);
+ 
+ 	GID16_CHECK(ret->gr_gid, setregid, NULL);
+ 
+diff --git a/testcases/kernel/syscalls/setregid/setregid03.c b/testcases/kernel/syscalls/setregid/setregid03.c
+index a51719e..6cadee5 100644
+--- a/testcases/kernel/syscalls/setregid/setregid03.c
++++ b/testcases/kernel/syscalls/setregid/setregid03.c
+@@ -186,10 +186,7 @@ static void setup(void)
+ 	nobody = *(getpwnam("nobody"));
+ 
+ #define GET_GID(group) do { \
+-	junk = getgrnam(#group); \
+-	if (junk == NULL) { \
+-		tst_brkm(TBROK, NULL, "%s must be a valid group", #group); \
+-	} \
++	junk = SAFE_GETGRNAM(NULL, #group); \
+ 	GID16_CHECK(junk->gr_gid, setregid, NULL); \
+ 	group = *(junk); \
+ } while (0)
+diff --git a/testcases/kernel/syscalls/setregid/setregid04.c b/testcases/kernel/syscalls/setregid/setregid04.c
+index 0e0aae7..71f3c8b 100644
+--- a/testcases/kernel/syscalls/setregid/setregid04.c
++++ b/testcases/kernel/syscalls/setregid/setregid04.c
+@@ -30,6 +30,7 @@
+ 
+ #include "test.h"
+ #include "compat_16.h"
++#include "safe_macros.h"
+ 
+ TCID_DEFINE(setregid04);
+ 
+@@ -111,10 +112,7 @@ int main(int ac, char **av)
  }
  
-+struct group *safe_getgrnam(const char *file, const int lineno,
-+			    void (*cleanup_fn) (void), const char *name)
-+{
-+	struct group *rval;
-+
-+	rval = getgrnam(name);
-+	if (rval == NULL) {
-+		tst_brkm(TBROK | TERRNO, cleanup_fn,
-+			"%s:%d: getgrnam(%s) failed", file, lineno, name);
-+	}
-+
-+	return rval;
-+}
-+
- int
- safe_getrusage(const char *file, const int lineno, void (*cleanup_fn) (void),
- 	       int who, struct rusage *usage)
+ #define SAFE_GETGROUP(GROUPNAME)	\
+-	if (getgrnam(#GROUPNAME) == NULL) { \
+-		tst_brkm(TBROK, NULL, "Couldn't find the `" #GROUPNAME "' group"); \
+-	} \
+-	GROUPNAME ## _gr = *(getgrnam(#GROUPNAME));
++	GROUPNAME ## _gr = *(SAFE_GETGRNAM(NULL, #GROUPNAME));
+ 
+ static void setup(void)
+ {
 -- 
 1.8.3.1
 
