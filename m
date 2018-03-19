@@ -1,57 +1,27 @@
-From: yang xu <xuyang.jy@cn.fujitsu.com>
-Date: Mon, 19 Mar 2018 18:38:35 +0800
-Subject: [LTP] [PATCH v2] runtest/fs: filter /dev/watchdog* for read_all_dev
-	by default
-In-Reply-To: <87vadsv34j.fsf@rpws.prws.suse.cz>
-References: <87vadsv34j.fsf@rpws.prws.suse.cz>
-Message-ID: <1521455915-3081-1-git-send-email-xuyang.jy@cn.fujitsu.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 19 Mar 2018 15:25:13 +0300
+Subject: [LTP] [PATCH] busy_poll* : revise poll_cmp
+In-Reply-To: <c999a175-d02b-beda-7418-95a5b0f2d432@cn.fujitsu.com>
+References: <c999a175-d02b-beda-7418-95a5b0f2d432@cn.fujitsu.com>
+Message-ID: <fae2ea47-a416-f2b4-ee2b-f022f14a14a0@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-On some distros with Magic Close feature or built-in CONFIG_WATCHDOG_NOWAYO=
-UT,
-just closing /dev/watchdog* enabled by open leads to system reboot as expec=
-ted.
+On 19.03.2018 11:18, sunlianwen wrote:
+> set low latency busy poll to 50 per socket will
+> spent more time than set low latency busy poll
+> to 0 per socket. that mean the value of res_50
+> is bigger than res_0, so the value of poll_comp
+> always less than zero and=C2=A0 test fail.
 
-If Magic Close feature is supported, just writing a specific magic characte=
-r 'V'
-into /dev/watchdog* before closing it can disable the watchdog.
+No, if busy poll is enabled, i.e. value set above 0, we should expect
+performance gain in this test.
 
-If CONFIG_WATCHDOG_NOWAYOUT is built-in, there is no way to disable the wat=
-chdog.
+With what driver and kernel version you have such results?
+Is it really supported by that driver?
 
-Magic Close feature is introduced by:
-commit 017cf080("watchDog Timer Driver Core - Add Magic Close feature")
-
-Please see the following url for detailed watchdog info:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Doc=
-umentation/watchdog/watchdog-api.txt
-
-Signed-off-by: yang xu <xuyang.jy@cn.fujitsu.com>
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- runtest/fs | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/runtest/fs b/runtest/fs
-index a595edb..42a9bfc 100644
---- a/runtest/fs
-+++ b/runtest/fs
-@@ -69,7 +69,7 @@ fs_di fs_di -d $TMPDIR
- # Was not sure why it should reside in runtest/crashme and won=C2=B4t get =
-tested ever
- proc01 proc01 -m 128
-=20
--read_all_dev read_all -d /dev -q -r 10
-+read_all_dev read_all -d /dev -e '/dev/watchdog?(0)' -q -r 10
- read_all_proc read_all -d /proc -q -r 10
- read_all_sys read_all -d /sys -q -r 10
-=20
---=20
-1.8.3.1
-
-
-
+Thanks,
+Alexey
