@@ -1,76 +1,217 @@
-From: sunlianwen <sunlw.fnst@cn.fujitsu.com>
-Date: Tue, 20 Mar 2018 14:07:15 +0800
-Subject: [LTP] Error: in6_02 report "LHOST_IFACES not defined,
-	default to eth0"
-Message-ID: <18f4e8af-4228-fd05-415f-ae88994ff011@cn.fujitsu.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Tue, 20 Mar 2018 17:18:48 +0800
+Subject: [LTP] [PATCH v5 3/3] syscalls/migrate_pages03.c: Add new
+ regression test
+In-Reply-To: <1515120532-4372-3-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20180104153045.GA25335@rei>
+ <1515120532-4372-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1515120532-4372-3-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <5AB0D1F8.6030708@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey
+Hi,
 
-    I set eth1 as  test interface in test_net.sh. but in6_02 test report
+Ping :-)
 
-"in6_02.c:264: LHOST_IFACES not defined, default to eth0" ,this cause
+Thanks,
+Xiao Yang
+On 2018/01/05 10:48, xiao yang wrote:
+> The bug has been fixed in kernel:
+> '4b0ece6fa016("mm: migrate: fix remove_migration_pte() for ksm pages")'
+>
+> Signed-off-by: xiao yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  runtest/syscalls                                   |   1 +
+>  testcases/kernel/syscalls/.gitignore               |   1 +
+>  .../syscalls/migrate_pages/migrate_pages03.c       | 151 +++++++++++++++++++++
+>  3 files changed, 153 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
+>
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 97fc643..ee8850f 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -587,6 +587,7 @@ memcpy01 memcpy01
+>  
+>  migrate_pages01 migrate_pages01
+>  migrate_pages02 migrate_pages02
+> +migrate_pages03 migrate_pages03
+>  
+>  mlockall01 mlockall01
+>  mlockall02 mlockall02
+> diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+> index 12a136e..27e30b2 100644
+> --- a/testcases/kernel/syscalls/.gitignore
+> +++ b/testcases/kernel/syscalls/.gitignore
+> @@ -538,6 +538,7 @@
+>  /memset/memset01
+>  /migrate_pages/migrate_pages01
+>  /migrate_pages/migrate_pages02
+> +/migrate_pages/migrate_pages03
+>  /mincore/mincore01
+>  /mincore/mincore02
+>  /mkdir/mkdir01
+> diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
+> new file mode 100644
+> index 0000000..ecfc552
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
+> @@ -0,0 +1,151 @@
+> +/*
+> + * Copyright (c) 2017 FUJITSU LIMITED. All rights reserved.
+> + * Author(s): Xiao Yang <yangx.jy@cn.fujitsu.com>
+> + *            Jie Fei <feij.fnst@cn.fujitsu.com>
+> + *
+> + * This program is free software: you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation, either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program, if not, see <http://www.gnu.org/licenses/>.
+> + */
+> +
+> +/*
+> + * Description:
+> + * This is a regression test for ksm page migration which is miscalculated.
+> + *
+> + * The kernel bug has been fixed by:
+> + *
+> + * commit 4b0ece6fa0167b22c004ff69e137dc94ee2e469e
+> + * Author: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+> + * Date:   Fri Mar 31 15:11:44 2017 -0700
+> + *
+> + *     mm: migrate: fix remove_migration_pte() for ksm pages
+> + */
+> +
+> +#include <errno.h>
+> +#include <unistd.h>
+> +#include <stdlib.h>
+> +
+> +#include "tst_test.h"
+> +#include "lapi/syscalls.h"
+> +#include "lapi/mmap.h"
+> +#include "ksm_helper.h"
+> +#include "numa_helper.h"
+> +#include "migrate_pages_common.h"
+> +
+> +#ifdef HAVE_NUMA_V2
+> +#define N_PAGES 20
+> +#define N_LOOPS 600
+> +#define TEST_NODES 2
+> +
+> +static int orig_ksm_run = -1;
+> +static unsigned int page_size;
+> +static void *test_pages[N_PAGES];
+> +static int num_nodes, max_node;
+> +static int *nodes;
+> +static unsigned long *new_nodes[2];
+> +
+> +static void setup(void)
+> +{
+> +	int n;
+> +	unsigned long nodemask_size;
+> +
+> +	if (access(PATH_KSM, F_OK))
+> +		tst_brk(TCONF, "KSM configuration was not enabled");
+> +
+> +	if (get_allowed_nodes_arr(NH_MEMS, &num_nodes, &nodes) < 0)
+> +		tst_brk(TBROK | TERRNO, "get_allowed_nodes() failed");
+> +
+> +	if (num_nodes < TEST_NODES) {
+> +		tst_brk(TCONF, "requires NUMA with at least %d node",
+> +			TEST_NODES);
+> +	}
+> +
+> +	max_node = LTP_ALIGN(get_max_node(), sizeof(unsigned long) * 8);
+> +	nodemask_size = max_node / 8;
+> +	new_nodes[0] = SAFE_MALLOC(nodemask_size);
+> +	new_nodes[1] = SAFE_MALLOC(nodemask_size);
+> +	memset(new_nodes[0], 0, nodemask_size);
+> +	memset(new_nodes[1], 0, nodemask_size);
+> +	set_bit(new_nodes[0], nodes[0], 1);
+> +	set_bit(new_nodes[1], nodes[1], 1);
+> +
+> +	page_size = getpagesize();
+> +
+> +	for (n = 0; n < N_PAGES; n++) {
+> +		test_pages[n] = SAFE_MMAP(NULL, page_size, PROT_READ | PROT_WRITE | PROT_EXEC,
+> +					  MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> +		if (madvise(test_pages[n], page_size, MADV_MERGEABLE)) {
+> +			if (errno == EINVAL) {
+> +				tst_brk(TCONF | TERRNO, "madvise() didn't "
+> +					"support MADV_MERGEABLE");
+> +			}
+> +
+> +			tst_brk(TBROK | TERRNO,
+> +				"madvise(MADV_MERGEABLE) failed");
+> +		}
+> +
+> +		if (mbind(test_pages[n], page_size, MPOL_BIND, new_nodes[0],
+> +			  max_node, 0))
+> +			tst_brk(TBROK | TERRNO, "mbind(MPOL_BIND) failed");
+> +
+> +		memset(test_pages[n], 0, page_size);
+> +	}
+> +
+> +	SAFE_FILE_SCANF(PATH_KSM "run", "%d", &orig_ksm_run);
+> +	SAFE_FILE_PRINTF(PATH_KSM "run", "%d", 1);
+> +	wait_ksmd_full_scan();
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	int n;
+> +
+> +	for (n = 0; n < N_PAGES; n++) {
+> +		if (test_pages[n])
+> +			SAFE_MUNMAP(test_pages[n], page_size);
+> +	}
+> +
+> +	free(new_nodes[0]);
+> +	free(new_nodes[1]);
+> +
+> +	if (orig_ksm_run != -1)
+> +		SAFE_FILE_PRINTF(PATH_KSM "run", "%d", orig_ksm_run);
+> +}
+> +
+> +static void migrate_test(void)
+> +{
+> +	int loop, i, ret;
+> +
+> +	for (loop = 0; loop < N_LOOPS; loop++) {
+> +		i = loop % 2;
+> +		ret = tst_syscall(__NR_migrate_pages, 0, max_node,
+> +				   new_nodes[i], new_nodes[i ? 0 : 1]);
+> +		if (ret < 0) {
+> +			tst_res(TFAIL | TERRNO, "migrate_pages() failed");
+> +			return;
+> +		}
+> +	}
+> +
+> +	tst_res(TPASS, "migrate_pages() passed");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.min_kver = "2.6.32",
+> +	.needs_root = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = migrate_test,
+> +};
+> +
+> +#else
+> +	TST_TEST_TCONF("require libnuma >= 2 and it's development packages");
+> +#endif
 
-in6_02 test fail. although I can set  LHOST_IFACES global variable,let this
-
-case test pass. But if this ,the test_net.sh is meaningless.
-
-the test result is below:
-
-<<<test_output>>>
-in6_02      0  TINFO  :  get interface name from LHOST_IFACES var
-in6_02      0  TWARN  :  in6_02.c:264: LHOST_IFACES not defined, default 
-to eth0
-in6_02      0  TINFO  :  if_nametoindex("lo") 1
-in6_02      0  TINFO  :  if_nametoindex("eth0") 2
-incrementing stop
-in6_02      0  TINFO  :  if_nametoindex("hoser75") 0
-in6_02      0  TINFO  :  if_nametoindex("6") 0
-in6_02      1  TPASS  :  if_nametoindex() tests succeed
-in6_02      0  TINFO  :  if_indextoname(0) returns NULL
-in6_02      0  TINFO  :  if_indextoname(1) returns "lo"
-in6_02      0  TINFO  :  if_indextoname(2) returns "eth0"
-in6_02      0  TINFO  :  if_indextoname(3) returns "eth1"
-in6_02      0  TINFO  :  if_indextoname(4) returns NULL
-in6_02      0  TINFO  :  if_indextoname(5) returns NULL
-in6_02      0  TINFO  :  if_indextoname(6) returns NULL
-in6_02      0  TINFO  :  if_indextoname(7) returns NULL
-in6_02      0  TINFO  :  if_indextoname(8) returns NULL
-in6_02      0  TINFO  :  if_indextoname(9) returns NULL
-in6_02      0  TINFO  :  if_indextoname(1804289383) returns NULL
-in6_02      0  TINFO  :  if_indextoname(846930886) returns NULL
-in6_02      0  TINFO  :  if_indextoname(1681692777) returns NULL
-in6_02      0  TINFO  :  if_indextoname(1714636915) returns NULL
-in6_02      0  TINFO  :  if_indextoname(1957747793) returns NULL
-in6_02      0  TINFO  :  if_indextoname(424238335) returns NULL
-in6_02      0  TINFO  :  if_indextoname(719885386) returns NULL
-in6_02      0  TINFO  :  if_indextoname(1649760492) returns NULL
-in6_02      0  TINFO  :  if_indextoname(596516649) returns NULL
-in6_02      0  TINFO  :  if_indextoname(1189641421) returns NULL
-in6_02      2  TPASS  :  if_indextoname() tests succeed
-in6_02      0  TINFO  :  if_nameindex idx 1 name "lo"
-in6_02      0  TINFO  :  if_nameindex idx 2 name "eth0"
-in6_02      0  TINFO  :  if_nameindex idx 3 name "eth1"
-in6_02      0  TINFO  :  if_freenameindex passed 4096 iterations
-in6_02      3  TPASS  :  if_nameindex() tests succeed
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=4 corefile=no
-cutime=0 cstime=5
-<<<test_end>>>
-INFO: ltp-pan reported some tests FAIL
-LTP Version: 20180118
-
-Thanks ,
-
-Lianwen Sun
 
 
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180320/4274a485/attachment.html>
