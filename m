@@ -1,45 +1,105 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 20 Mar 2018 17:07:19 +0100
-Subject: [LTP] Redirect old wiki page to new one
-In-Reply-To: <20180108111255.GA31448@rei>
-References: <20180108083432.5xhfvs4foma3vwcm@dell5510>
- <20180108111255.GA31448@rei>
-Message-ID: <20180320160718.GE9226@ai>
+From: Ram Pai <linuxram@us.ibm.com>
+Date: Tue, 20 Mar 2018 14:58:28 -0700
+Subject: [LTP] [bug?] Access was denied by memory protection keys in
+ execute-only address
+In-Reply-To: <CAEemH2czWDjvJLpL6ynV1+VxCFh_-A-d72tJhA5zwgrAES2nWA@mail.gmail.com>
+References: <CAEemH2f0LDqyR5AmUYv17OuBc5-UycckDPWgk46XU_ghQo4diw@mail.gmail.com>
+ <871sguep4v.fsf@concordia.ellerman.id.au>
+ <20180308164545.GM1060@ram.oc3035372033.ibm.com>
+ <CAEemH2czWDjvJLpL6ynV1+VxCFh_-A-d72tJhA5zwgrAES2nWA@mail.gmail.com>
+Message-ID: <20180320215828.GA5825@ram.oc3035372033.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-> > I found that some projects [1] point to our old wiki on sourceforge [2].
-> > It would be nice to redirect it to new one on github [3] or delete it.
-> > 
-> > Kind regards,
-> > Petr
-> > 
-> > [1] https://sourceforge.net/p/linux-ima/wiki/Home/
-> > [2] http://ltp.sourceforge.net/wiki
-> > [3] https://github.com/linux-test-project/ltp/wiki
+On Fri, Mar 09, 2018 at 11:43:00AM +0800, Li Wang wrote:
+>    On Fri, Mar 9, 2018 at 12:45 AM, Ram Pai <[1]linuxram@us.ibm.com> wrote:
 > 
-> I'm afraid that [1] is outside of our controll, the best we can do is to
-> try to contact the linux-ima authors.
+>      On Thu, Mar 08, 2018 at 11:19:12PM +1100, Michael Ellerman wrote:
+>      > Li Wang <[2]liwang@redhat.com> writes:
+>      > > Hi,
+>      > >
+>      > > ltp/mprotect04[1] crashed by SEGV_PKUERR on ppc64(LPAR on P730,
+>      Power 8
+>      > > 8247-22L) with kernel-v4.16.0-rc4.
+>      > >
+>      > > 10000000-10020000 r-xp 00000000 fd:00 167223           mprotect04
+>      > > 10020000-10030000 r--p 00010000 fd:00 167223           mprotect04
+>      > > 10030000-10040000 rw-p 00020000 fd:00 167223           mprotect04
+>      > > 1001a380000-1001a3b0000 rw-p 00000000 00:00 0          [heap]
+>      > > 7fffa6c60000-7fffa6c80000 --xp 00000000 00:00 0 ​
+>      > >
+>      > > ​&exec_func = 0x10030170​
+>      > >
+>      > > ​&func = 0x7fffa6c60170​
+>      > >
+>      > > ​While perform ​
+>      > > "(*func)();" we get the
+>      > > ​segmentation fault.
+>      > > ​
+>      > >
+>      > > ​strace log:​
+>      > >
+>      > > -------------------
+>      > > ​mprotect(0x7fffaed00000, 131072, PROT_EXEC) = 0
+>      > > rt_sigprocmask(SIG_BLOCK, NULL, [], 8)  = 0
+>      > > --- SIGSEGV {si_signo=SIGSEGV, si_code=SEGV_PKUERR,
+>      si_addr=0x7fffaed00170}
+>      > > ---​
+>      >
+>      > Looks like a bug to me.
+>      >
+>      > Please Cc linuxppc-dev on powerpc bugs.
+>      >
+>      > I also can't reproduce this failure on my machine.
+>      > Not sure what's going on?
 > 
-> But I can to try to add big link on the top of the [2] pointing to [3]
-> since we are not in position to fix the rest of the links on the
-> internet either. I can try if I actually manage figure out how to do
-> that on sf.net, but it's a low prio job.
+>      I could reproduce it on a power7 lpar.  But not on a power8 lpar.
+> 
+>      The problem seems to be that the cpu generates a key exception if
+>      the page with Read/Write-disable-but-execute-enable key is executed
+>      on power7. If I enable read on that key, the exception disappears.
+> 
+>    After adding read permission on that key, reproducer get PASS on my power8
+>    machine too.​
+>    ​(​mprotect(..,PROT_READ | PROT_EXEC))​
+>     
+> 
+>      BTW: the testcase executes
+>      ​​mprotect(..,PROT_EXEC).
+>      The mprotect(, PROT_EXEC) system call internally generates a
+>      execute-only key and associates it with the pages in the address-range. 
+> 
+>      Now since Li Wang claims that he can reproduce it on power8 as well, i
+>      am wondering if the slightly different cpu behavior is dependent on the
+>      version of the firmware/microcode?
+> 
+>    ​I also run this reproducer on series ppc kvm machines, but none of them
+>    get the FAIL.
+>    If you need some more HW info, pls let me know.​
 
-And I've managed to log in into sf.net and replace the wiki page with a
-links to GitHub.
+Hi Li,
 
-I've also replaced the download link (the big green download button)
-that was still pointing to 2015 release with a readme that points to
-github release page. Apparently people were still downloading the
-tarballs from sf.net, *sigh*.
+   Can you try the following patch and see if it solves your problem.
 
-Anyways it should be all fixed now, if you find a link that points to
-the old pages on sf.net just tell me, I will replace it as well.
 
--- 
-chrubis@suse.cz
+diff --git a/arch/powerpc/mm/pkeys.c b/arch/powerpc/mm/pkeys.c
+index c269817..184a10a 100644
+--- a/arch/powerpc/mm/pkeys.c
++++ b/arch/powerpc/mm/pkeys.c
+@@ -421,7 +421,7 @@ int __arch_override_mprotect_pkey(struct vm_area_struct *vma, int prot,
+ 	 * The requested protection is execute-only. Hence let's use an
+ 	 * execute-only pkey.
+ 	 */
+-	if (prot == PROT_EXEC) {
++	if (prot == PROT_EXEC && pkey_execute_disable_supported) {
+ 		pkey = execute_only_pkey(vma->vm_mm);
+ 		if (pkey > 0)
+ 			return pkey;
+
+
+Thanks
+RP
+
