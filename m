@@ -1,84 +1,124 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 21 Mar 2018 13:59:37 +0300
-Subject: [LTP] Error: in6_02 report "LHOST_IFACES not defined,
-	default to eth0"
-In-Reply-To: <18f4e8af-4228-fd05-415f-ae88994ff011@cn.fujitsu.com>
-References: <18f4e8af-4228-fd05-415f-ae88994ff011@cn.fujitsu.com>
-Message-ID: <c1cec9cc-3181-af6b-43e9-3927efd0307b@oracle.com>
+Date: Wed, 21 Mar 2018 14:28:11 +0300
+Subject: [LTP] [PATCH] cve: new regression test-case for CVE-2018-5803
+In-Reply-To: <20180320140051.mxh5mqndc4gp72og@dell5510>
+References: <1520872613-30423-1-git-send-email-alexey.kodanev@oracle.com>
+ <20180320140051.mxh5mqndc4gp72og@dell5510>
+Message-ID: <a26d2a06-429a-b0dd-995a-c01dbb7a4718@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 03/20/2018 09:07 AM, sunlianwen wrote:
-> Hi Alexey
+On 03/20/2018 05:00 PM, Petr Vorel wrote:
+> Hi Alexey,
 > 
->    I set eth1 as  test interface in test_net.sh. but in6_02 test report
+>> There are two test-cases in runtest/cve:
+>> * cve-2018-5803 - for over-sized INIT_ACK packet
+>> * cve-2018-5803_2 - for over-sized INIT packet
 > 
-> "in6_02.c:264: LHOST_IFACES not defined, default to eth0" ,this cause
+>> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+>> ---
+>>  include/lapi/socket.h         |    4 +
+>>  runtest/cve                   |    2 +
+>>  testcases/cve/.gitignore      |    1 +
+>>  testcases/cve/cve-2018-5803.c |  124 +++++++++++++++++++++++++++++++++++++++++
+>>  4 files changed, 131 insertions(+), 0 deletions(-)
+>>  create mode 100644 testcases/cve/cve-2018-5803.c
 > 
-> in6_02 test fail. although I can set  LHOST_IFACES global variable,let this
+>> diff --git a/include/lapi/socket.h b/include/lapi/socket.h
+>> index 426906f..d58c460 100644
+>> --- a/include/lapi/socket.h
+>> +++ b/include/lapi/socket.h
+>> @@ -45,6 +45,10 @@
+>>  # define SOCK_CLOEXEC 02000000
+>>  #endif
 > 
-> case test pass. But if this ,the test_net.sh is meaningless.
+>> +#ifndef SOL_SCTP
+>> +# define SOL_SCTP	132
+>> +#endif
+> I suppose you deliberately don't include linux/socket.h where
+> SOL_SCTP is defined.
+
+Hi Petr,
+
+
+Do you think we should include linux headers for consistency?
+
+
+>> +
+>>  #ifndef SOL_UDPLITE
+>>  # define SOL_UDPLITE		136 /* UDP-Lite (RFC 3828) */
+>>  #endif
+>> diff --git a/runtest/cve b/runtest/cve
+>> index 0c385c6..826bb0b 100644
+...
+>> +
+>> +	if (!pid) {
+>> +		struct sockaddr_in6 addr6;
+>> +		socklen_t addr_size = sizeof(addr6);
+>> +
+>> +		if (accept(sfd, (struct sockaddr *)&addr6, &addr_size) < 0)
+>> +			tst_brk(TBROK | TERRNO, "accept() failed");
+>> +		exit(0);
+>> +	}
+>> +
+>> +	fcntl(cfd, F_SETFL, O_NONBLOCK);
+>> +	connect(cfd, (struct sockaddr *)&rmt, sizeof(rmt));
+> Minor nit: you can use SAFE_CONNECT().
 > 
 
-No, if you run it via network.sh help script, it will source test_net.sh eventually,
-and export this variable as well, otherwise you need to define them manually.
 
-The test actually passed, but ltp-pan reports overall result as TFAIL because the
-status not equals zero, but there is no TFAIL flag in the status, just TWARN flag.
+No, it should fail in the kernels with the fix, on the second test-case when
+we get over-sized INIT chunk, I think ENOMEM returns in that case.
+
+
+>> +
+>> +	SAFE_KILL(pid, SIGKILL);
+>> +	SAFE_WAITPID(pid, NULL, 0);
+>> +
+>> +	tst_res(TPASS, "test doesn't cause crash");
+>> +}
+>> +
+>> +static struct tst_option options[] = {
+>> +	{"a:", &addr_param, "-a       number of additional IP address params"},
+>> +	{NULL, NULL, NULL}
+>> +};
+>> +
+>> +static struct tst_test test = {
+>> +	.setup = setup,
+>> +	.forks_child = 1,
+>> +	.test_all = run,
+>> +	.options = options
+>> +};
+> 
+> LGTM.
+> Tested-by: Petr Vorel <pvorel@suse.cz>
+> Found one BROK on EINVAL on setsockopt(), most of older kernels in VM don't crash, bug generate
+> heavy load.
+
+Does it happen with a single address parameter? We could also lower parameter
+size in the second test, e.g. from 10000 to 4000.
+
+Also change SOCK_STREAM to SOCK_SEQPACKET
+
+diff --git a/testcases/cve/cve-2018-5803.c b/testcases/cve/cve-2018-5803.c
+index 3f03d8a..6bee914 100644
+--- a/testcases/cve/cve-2018-5803.c
++++ b/testcases/cve/cve-2018-5803.c
+@@ -63,7 +63,7 @@ static void setup_client(void)
+        struct sockaddr_in6 addr_buf[addr_num];
+        int i;
+
+-       cfd = SAFE_SOCKET(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
++       cfd = SAFE_SOCKET(AF_INET6, SOCK_SEQPACKET, IPPROTO_SCTP);
+        rmt.sin6_family = AF_INET6;
+        rmt.sin6_addr = in6addr_loopback;
+        rmt.sin6_port = htons(port);
+
+
+I could also add IPv4 version...
 
 Thanks,
 Alexey
-
-> the test result is below:
-> 
-> <<<test_output>>>                                                                                                                             
-> in6_02      0  TINFO  :  get interface name from LHOST_IFACES var                                                                             
-> in6_02      0  TWARN  :  in6_02.c:264: LHOST_IFACES not defined, default to eth0                                                              
-> in6_02      0  TINFO  :  if_nametoindex("lo") 1                                                                                               
-> in6_02      0  TINFO  :  if_nametoindex("eth0") 2                                                                                             
-> incrementing stop                                                                                                                             
-> in6_02      0  TINFO  :  if_nametoindex("hoser75") 0                                                                                          
-> in6_02      0  TINFO  :  if_nametoindex("6") 0                                                                                                
-> in6_02      1  TPASS  :  if_nametoindex() tests succeed                                                                                       
-> in6_02      0  TINFO  :  if_indextoname(0) returns NULL                                                                                       
-> in6_02      0  TINFO  :  if_indextoname(1) returns "lo"                                                                                       
-> in6_02      0  TINFO  :  if_indextoname(2) returns "eth0"                                                                                     
-> in6_02      0  TINFO  :  if_indextoname(3) returns "eth1"                                                                                     
-> in6_02      0  TINFO  :  if_indextoname(4) returns NULL                                                                                       
-> in6_02      0  TINFO  :  if_indextoname(5) returns NULL                                                                                       
-> in6_02      0  TINFO  :  if_indextoname(6) returns NULL
-> in6_02      0  TINFO  :  if_indextoname(7) returns NULL
-> in6_02      0  TINFO  :  if_indextoname(8) returns NULL
-> in6_02      0  TINFO  :  if_indextoname(9) returns NULL
-> in6_02      0  TINFO  :  if_indextoname(1804289383) returns NULL
-> in6_02      0  TINFO  :  if_indextoname(846930886) returns NULL
-> in6_02      0  TINFO  :  if_indextoname(1681692777) returns NULL
-> in6_02      0  TINFO  :  if_indextoname(1714636915) returns NULL
-> in6_02      0  TINFO  :  if_indextoname(1957747793) returns NULL
-> in6_02      0  TINFO  :  if_indextoname(424238335) returns NULL
-> in6_02      0  TINFO  :  if_indextoname(719885386) returns NULL
-> in6_02      0  TINFO  :  if_indextoname(1649760492) returns NULL
-> in6_02      0  TINFO  :  if_indextoname(596516649) returns NULL
-> in6_02      0  TINFO  :  if_indextoname(1189641421) returns NULL
-> in6_02      2  TPASS  :  if_indextoname() tests succeed
-> in6_02      0  TINFO  :  if_nameindex idx 1 name "lo"
-> in6_02      0  TINFO  :  if_nameindex idx 2 name "eth0"
-> in6_02      0  TINFO  :  if_nameindex idx 3 name "eth1"
-> in6_02      0  TINFO  :  if_freenameindex passed 4096 iterations
-> in6_02      3  TPASS  :  if_nameindex() tests succeed
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=4 corefile=no
-> cutime=0 cstime=5
-> <<<test_end>>>
-> INFO: ltp-pan reported some tests FAIL
-> LTP Version: 20180118
-> 
-> Thanks ,
-> 
-> Lianwen Sun
-> 
-
