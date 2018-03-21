@@ -1,105 +1,140 @@
-From: Ram Pai <linuxram@us.ibm.com>
-Date: Tue, 20 Mar 2018 14:58:28 -0700
-Subject: [LTP] [bug?] Access was denied by memory protection keys in
- execute-only address
-In-Reply-To: <CAEemH2czWDjvJLpL6ynV1+VxCFh_-A-d72tJhA5zwgrAES2nWA@mail.gmail.com>
-References: <CAEemH2f0LDqyR5AmUYv17OuBc5-UycckDPWgk46XU_ghQo4diw@mail.gmail.com>
- <871sguep4v.fsf@concordia.ellerman.id.au>
- <20180308164545.GM1060@ram.oc3035372033.ibm.com>
- <CAEemH2czWDjvJLpL6ynV1+VxCFh_-A-d72tJhA5zwgrAES2nWA@mail.gmail.com>
-Message-ID: <20180320215828.GA5825@ram.oc3035372033.ibm.com>
+From: Dan Rue <dan.rue@linaro.org>
+Date: Wed, 21 Mar 2018 10:35:15 +0800
+Subject: [LTP] [PATCH] testcases: fix file path to control access to cron
+Message-ID: <20180321023515.11356-1-dan.rue@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Mar 09, 2018 at 11:43:00AM +0800, Li Wang wrote:
->    On Fri, Mar 9, 2018 at 12:45 AM, Ram Pai <[1]linuxram@us.ibm.com> wrote:
-> 
->      On Thu, Mar 08, 2018 at 11:19:12PM +1100, Michael Ellerman wrote:
->      > Li Wang <[2]liwang@redhat.com> writes:
->      > > Hi,
->      > >
->      > > ltp/mprotect04[1] crashed by SEGV_PKUERR on ppc64(LPAR on P730,
->      Power 8
->      > > 8247-22L) with kernel-v4.16.0-rc4.
->      > >
->      > > 10000000-10020000 r-xp 00000000 fd:00 167223           mprotect04
->      > > 10020000-10030000 r--p 00010000 fd:00 167223           mprotect04
->      > > 10030000-10040000 rw-p 00020000 fd:00 167223           mprotect04
->      > > 1001a380000-1001a3b0000 rw-p 00000000 00:00 0          [heap]
->      > > 7fffa6c60000-7fffa6c80000 --xp 00000000 00:00 0 ​
->      > >
->      > > ​&exec_func = 0x10030170​
->      > >
->      > > ​&func = 0x7fffa6c60170​
->      > >
->      > > ​While perform ​
->      > > "(*func)();" we get the
->      > > ​segmentation fault.
->      > > ​
->      > >
->      > > ​strace log:​
->      > >
->      > > -------------------
->      > > ​mprotect(0x7fffaed00000, 131072, PROT_EXEC) = 0
->      > > rt_sigprocmask(SIG_BLOCK, NULL, [], 8)  = 0
->      > > --- SIGSEGV {si_signo=SIGSEGV, si_code=SEGV_PKUERR,
->      si_addr=0x7fffaed00170}
->      > > ---​
->      >
->      > Looks like a bug to me.
->      >
->      > Please Cc linuxppc-dev on powerpc bugs.
->      >
->      > I also can't reproduce this failure on my machine.
->      > Not sure what's going on?
-> 
->      I could reproduce it on a power7 lpar.  But not on a power8 lpar.
-> 
->      The problem seems to be that the cpu generates a key exception if
->      the page with Read/Write-disable-but-execute-enable key is executed
->      on power7. If I enable read on that key, the exception disappears.
-> 
->    After adding read permission on that key, reproducer get PASS on my power8
->    machine too.​
->    ​(​mprotect(..,PROT_READ | PROT_EXEC))​
->     
-> 
->      BTW: the testcase executes
->      ​​mprotect(..,PROT_EXEC).
->      The mprotect(, PROT_EXEC) system call internally generates a
->      execute-only key and associates it with the pages in the address-range. 
-> 
->      Now since Li Wang claims that he can reproduce it on power8 as well, i
->      am wondering if the slightly different cpu behavior is dependent on the
->      version of the firmware/microcode?
-> 
->    ​I also run this reproducer on series ppc kvm machines, but none of them
->    get the FAIL.
->    If you need some more HW info, pls let me know.​
+From: Lucas Magasweran <lucas.magasweran@ieee.org>
 
-Hi Li,
+crontab uses /etc/cron.{allow,deny} to control access on most distributions, as
+well as RHEL. To maintain backwards compatibility with older still supported
+distributions, the test setup will search the man page for the correct paths
+(e.g. /var/spool/cron/allow). If the man page is not available (e.g. on an
+embedded device), it will default to the /etc paths. This method supports
+vixie-cron, cronie, etc...
 
-   Can you try the following patch and see if it solves your problem.
+The repeating code has been moved into a common shell script library to
+simplify maintenance.
 
+Reported-by: Myungho Jung <mhjungk@gmail.com>
+Signed-off-by: Lucas Magasweran <lucas.magasweran@ieee.org>
+Tested-by: Dan Rue <drue@therub.org>
+---
+ testcases/commands/cron/cron_allow01      | 12 +-----------
+ testcases/commands/cron/cron_common.sh    | 15 +++++++++++++++
+ testcases/commands/cron/cron_deny01       | 14 +-------------
+ testcases/commands/cron/cron_neg_tests.sh |  2 +-
+ testcases/commands/cron/cron_pos_tests.sh | 13 +------------
+ 5 files changed, 19 insertions(+), 37 deletions(-)
+ create mode 100755 testcases/commands/cron/cron_common.sh
 
-diff --git a/arch/powerpc/mm/pkeys.c b/arch/powerpc/mm/pkeys.c
-index c269817..184a10a 100644
---- a/arch/powerpc/mm/pkeys.c
-+++ b/arch/powerpc/mm/pkeys.c
-@@ -421,7 +421,7 @@ int __arch_override_mprotect_pkey(struct vm_area_struct *vma, int prot,
- 	 * The requested protection is execute-only. Hence let's use an
- 	 * execute-only pkey.
- 	 */
--	if (prot == PROT_EXEC) {
-+	if (prot == PROT_EXEC && pkey_execute_disable_supported) {
- 		pkey = execute_only_pkey(vma->vm_mm);
- 		if (pkey > 0)
- 			return pkey;
-
-
-Thanks
-RP
-
+diff --git a/testcases/commands/cron/cron_allow01 b/testcases/commands/cron/cron_allow01
+index 9a5e4d2406..7e05f7b7dd 100755
+--- a/testcases/commands/cron/cron_allow01
++++ b/testcases/commands/cron/cron_allow01
+@@ -26,17 +26,7 @@
+ 
+ echo "This script contains bashism that needs to be fixed!"
+ 
+-iam=`whoami`
+-
+-tvar=${MACHTYPE%-*}
+-tvar=${tvar#*-}
+-
+-if [ "$tvar" = "redhat" -o "$tvar" = "redhat-linux" ]
+-then
+-CRON_ALLOW="/etc/cron.allow"
+-else
+-CRON_ALLOW="/var/spool/cron/allow"
+-fi
++. cron_common.sh
+ 
+ TEST_USER1="ca_user1"
+ TEST_USER1_HOME="/home/$TEST_USER1"
+diff --git a/testcases/commands/cron/cron_common.sh b/testcases/commands/cron/cron_common.sh
+new file mode 100755
+index 0000000000..5ed90c4039
+--- /dev/null
++++ b/testcases/commands/cron/cron_common.sh
+@@ -0,0 +1,15 @@
++#!/bin/sh
++
++iam=`whoami`
++
++tvar=${MACHTYPE%-*}
++tvar=${tvar#*-}
++
++setup_path() {
++	# Support paths used by older distributions of RHEL or SLES.
++	export CRON_DENY="$(man crontab 2>/dev/null | grep -m 1 -o '/[\/a-z.]*deny$' || echo "/etc/cron.deny")"
++	export CRON_ALLOW="$(man crontab 2>/dev/null | grep -m 1 -o '/[\/a-z.]*allow$' || echo "/etc/cron.allow")"
++}
++
++setup_path
++
+diff --git a/testcases/commands/cron/cron_deny01 b/testcases/commands/cron/cron_deny01
+index 9d32039251..263a7829b5 100755
+--- a/testcases/commands/cron/cron_deny01
++++ b/testcases/commands/cron/cron_deny01
+@@ -26,19 +26,7 @@
+ 
+ echo "This script contains bashism that needs to be fixed!"
+ 
+-iam=`whoami`
+-
+-tvar=${MACHTYPE%-*}
+-tvar=${tvar#*-}
+-
+-if [ "$tvar" = "redhat" -o "$tvar" = "redhat-linux" ]
+-then
+-CRON_DENY="/etc/cron.deny"
+-CRON_ALLOW="/etc/cron.allow"
+-else
+-CRON_DENY="/var/spool/cron/deny"
+-CRON_ALLOW="/var/spool/cron/allow"
+-fi
++. cron_common.sh
+ 
+ TEST_USER1="cd_user1"
+ TEST_USER1_HOME="/home/$TEST_USER1"
+diff --git a/testcases/commands/cron/cron_neg_tests.sh b/testcases/commands/cron/cron_neg_tests.sh
+index 9c3d6f6c7c..49c5c4e5d0 100755
+--- a/testcases/commands/cron/cron_neg_tests.sh
++++ b/testcases/commands/cron/cron_neg_tests.sh
+@@ -9,7 +9,7 @@
+ #    12/03/04  Marty Ridgeway Pull RHEl4 tests out from script
+ ########################################################
+ 
+-iam=`whoami`
++. cron_common.sh
+ 
+ if [ $iam = "root" ]; then
+ 	if [ $# -lt 1 ] ; then
+diff --git a/testcases/commands/cron/cron_pos_tests.sh b/testcases/commands/cron/cron_pos_tests.sh
+index ece114c84c..a0ddaea57b 100755
+--- a/testcases/commands/cron/cron_pos_tests.sh
++++ b/testcases/commands/cron/cron_pos_tests.sh
+@@ -2,18 +2,7 @@
+ 
+ # Positive tests for cron, that means these tests have to pass
+ 
+-iam=`whoami`
+-
+-tvar=${MACHTYPE%-*}
+-tvar=${tvar#*-}
+-
+-if [ "$tvar" = "redhat" -o "$tvar" = "redhat-linux" ]
+-then
+-	CRON_ALLOW="/etc/cron.allow"
+-else
+-	CRON_ALLOW="/var/spool/cron/allow"
+-fi
+-
++. cron_common.sh
+ 
+ if [ $iam = "root" ]; then
+ 	if [ $# -lt 1 ] ; then
