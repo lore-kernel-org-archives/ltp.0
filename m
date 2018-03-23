@@ -1,209 +1,95 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 23 Mar 2018 18:37:29 +0300
-Subject: [LTP] [PATCH v2 2/2] sctp: new regression test sctp_big_chunk for
-	CVE-2018-5803
-In-Reply-To: <1521819449-27489-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1521819449-27489-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1521819449-27489-3-git-send-email-alexey.kodanev@oracle.com>
+From: Erick Reyes <erickreyes@google.com>
+Date: Fri, 23 Mar 2018 13:57:15 -0700
+Subject: [LTP] [PATCH] Make floating point tests Android-compatible
+In-Reply-To: <CAFt2AZUhp9tuWOVd-t-ij-eG-21+DEqeXE5XCwK=tQ8DmOnAgg@mail.gmail.com>
+References: <CAFt2AZUhp9tuWOVd-t-ij-eG-21+DEqeXE5XCwK=tQ8DmOnAgg@mail.gmail.com>
+Message-ID: <CAFt2AZVFWwZt1JD0kZ-5s0SGkAbwo_igiDKJzkus-0sjQk_ARw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Added two test-cases in runtest/cve:
-* cve-2018-5803 - over-sized INIT_ACK packet
-* cve-2018-5803_2 - over-sized INIT packet
+Hi,
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
-v2: rename the test file and move it to testcases/network/sctp/
+Any chance this can be reviewed? This would add support for 4 tests on
+Android.
 
- include/lapi/socket.h                   |    4 +
- runtest/cve                             |    2 +
- testcases/network/.gitignore            |    1 +
- testcases/network/sctp/Makefile         |    2 +-
- testcases/network/sctp/sctp_big_chunk.c |  121 +++++++++++++++++++++++++++++++
- 5 files changed, 129 insertions(+), 1 deletions(-)
- create mode 100644 testcases/network/sctp/sctp_big_chunk.c
+Thanks
 
-diff --git a/include/lapi/socket.h b/include/lapi/socket.h
-index 426906f..d58c460 100644
---- a/include/lapi/socket.h
-+++ b/include/lapi/socket.h
-@@ -45,6 +45,10 @@
- # define SOCK_CLOEXEC 02000000
- #endif
- 
-+#ifndef SOL_SCTP
-+# define SOL_SCTP	132
-+#endif
-+
- #ifndef SOL_UDPLITE
- # define SOL_UDPLITE		136 /* UDP-Lite (RFC 3828) */
- #endif
-diff --git a/runtest/cve b/runtest/cve
-index 8b7cbe5..1d9569a 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -32,3 +32,5 @@ cve-2017-5754 meltdown
- cve-2017-17052 cve-2017-17052
- cve-2017-16939 cve-2017-16939
- cve-2017-17053 cve-2017-17053
-+cve-2018-5803 sctp_big_chunk
-+cve-2018-5803_2 sctp_big_chunk -a 10000
-diff --git a/testcases/network/.gitignore b/testcases/network/.gitignore
-index d4ed925..e952f6f 100644
---- a/testcases/network/.gitignore
-+++ b/testcases/network/.gitignore
-@@ -22,6 +22,7 @@
- /nfsv4/locks/locktests
- /rpc/basic_tests/rpc01/rpc1
- /rpc/basic_tests/rpc01/rpc_server
-+/sctp/sctp_big_chunk
- /sockets/ltpClient
- /sockets/ltpServer
- /stress/ns-tools/ns-icmp_redirector
-diff --git a/testcases/network/sctp/Makefile b/testcases/network/sctp/Makefile
-index 914e389..0fa9125 100644
---- a/testcases/network/sctp/Makefile
-+++ b/testcases/network/sctp/Makefile
-@@ -15,7 +15,7 @@
- 
- top_srcdir		?= ../../..
- 
--include $(top_srcdir)/include/mk/env_pre.mk
-+include $(top_srcdir)/include/mk/testcases.mk
- 
- INSTALL_TARGETS		:= sctp01.sh
- 
-diff --git a/testcases/network/sctp/sctp_big_chunk.c b/testcases/network/sctp/sctp_big_chunk.c
-new file mode 100644
-index 0000000..55a2969
---- /dev/null
-+++ b/testcases/network/sctp/sctp_big_chunk.c
-@@ -0,0 +1,121 @@
-+/*
-+ * Copyright (c) 2018 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ *
-+ * Regression test-case for the crash caused by over-sized SCTP chunk,
-+ * fixed by upstream commit 07f2c7ab6f8d ("sctp: verify size of a new
-+ * chunk in _sctp_make_chunk()")
-+ */
-+
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <netinet/in.h>
-+#include <netdb.h>
-+#include <sys/syscall.h>
-+#include <fcntl.h>
-+
-+#include "tst_test.h"
-+#include "tst_safe_stdio.h"
-+#include "lapi/netinet_in.h"
-+#include "lapi/socket.h"
-+#include "lapi/sctp.h"
-+
-+static int port;
-+static int sfd, cfd;
-+static struct sockaddr_in6 rmt, loc;
-+
-+static char *addr_param;
-+static int addr_num = 3273;
-+
-+static void setup_server(void)
-+{
-+	loc.sin6_family = AF_INET6;
-+	loc.sin6_addr = in6addr_loopback;
-+
-+	sfd = SAFE_SOCKET(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
-+	SAFE_BIND(sfd, (struct sockaddr *)&loc, sizeof(loc));
-+
-+	port = TST_GETSOCKPORT(sfd);
-+	tst_res(TINFO, "sctp server listen on %d", port);
-+
-+	SAFE_LISTEN(sfd, 1);
-+}
-+
-+static void setup_client(void)
-+{
-+	struct sockaddr_in6 addr_buf[addr_num];
-+	int i;
-+
-+	cfd = SAFE_SOCKET(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
-+	rmt.sin6_family = AF_INET6;
-+	rmt.sin6_addr = in6addr_loopback;
-+	rmt.sin6_port = htons(port);
-+
-+	tst_res(TINFO, "bind %d additional IP addresses", addr_num);
-+
-+	memset(addr_buf, 0, sizeof(addr_buf));
-+	for (i = 0; i < addr_num; ++i) {
-+		addr_buf[i].sin6_family = AF_INET6;
-+		addr_buf[i].sin6_addr = in6addr_loopback;
-+	}
-+
-+	SAFE_SETSOCKOPT(cfd, SOL_SCTP, SCTP_SOCKOPT_BINDX_ADD, addr_buf,
-+			sizeof(addr_buf));
-+}
-+
-+static void setup(void)
-+{
-+	if (tst_parse_int(addr_param, &addr_num, 1, INT_MAX))
-+		tst_brk(TBROK, "wrong address number '%s'", addr_param);
-+
-+	setup_server();
-+	setup_client();
-+}
-+
-+static void run(void)
-+{
-+	int pid = SAFE_FORK();
-+
-+	if (!pid) {
-+		struct sockaddr_in6 addr6;
-+		socklen_t addr_size = sizeof(addr6);
-+
-+		if (accept(sfd, (struct sockaddr *)&addr6, &addr_size) < 0)
-+			tst_brk(TBROK | TERRNO, "accept() failed");
-+		exit(0);
-+	}
-+
-+	fcntl(cfd, F_SETFL, O_NONBLOCK);
-+	connect(cfd, (struct sockaddr *)&rmt, sizeof(rmt));
-+
-+	SAFE_KILL(pid, SIGKILL);
-+	SAFE_WAITPID(pid, NULL, 0);
-+
-+	tst_res(TPASS, "test doesn't cause crash");
-+}
-+
-+static struct tst_option options[] = {
-+	{"a:", &addr_param, "-a       number of additional IP address params"},
-+	{NULL, NULL, NULL}
-+};
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.forks_child = 1,
-+	.test_all = run,
-+	.options = options
-+};
--- 
-1.7.1
+On Wed, Feb 21, 2018 at 11:48 AM, Erick Reyes <erickreyes@google.com> wrote:
 
+> Android does not implement pthread_cancel. The function is replaced
+> by a no-op in a compatibility header. In most cases, the only side
+> effect is that threads cannot be interrupted and have to exit normally.
+> However, floating point tests are calling pthread_cancel and waiting for
+> a thread doing pthread_sigwait to be finished (Which will never happen).
+>
+> This patch implements the same logic using pthread_kill with SIGUSR2
+> instead, allowing the tests to run under Android.
+>
+> Signed-off-by: Erick Reyes <erickreyes@google.com>
+> ---
+>  testcases/misc/math/float/main.c | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
+>
+> diff --git a/testcases/misc/math/float/main.c b/testcases/misc/math/float/
+> main.c
+> index d71ca18e6..64d1475e4 100644
+> --- a/testcases/misc/math/float/main.c
+> +++ b/testcases/misc/math/float/main.c
+> @@ -115,6 +115,18 @@ int main(int argc, char *argv[])
+>   /*int time=1; */
+>   int i;
+>
+> + sigset_t signals_set;
+> +
+> + /*
+> + * Use SIGUSR2 to terminate our signal handler
+> + */
+> + sigemptyset(&signals_set);
+> + sigaddset(&signals_set, SIGUSR2);
+> +
+> + retval = pthread_sigmask(SIG_BLOCK, &signals_set, NULL);
+> + if (retval != 0)
+> + sys_error("main : pthread_sigmask FAILED", __LINE__);
+> +
+>   /* Generate test ID from invocation name */
+>   if ((TCID = strrchr(argv[0], '/')) != NULL)
+>   TCID++;
+> @@ -299,7 +311,7 @@ finished:
+>   SAFE_FREE(pcom);
+>
+>   }
+> - pthread_cancel(sig_hand);
+> + pthread_kill(sig_hand, SIGUSR2);
+>   pthread_join(sig_hand, NULL);
+>   SAFE_FREE(tabcom);
+>   SAFE_FREE(threads);
+> @@ -338,6 +350,7 @@ static void *handle_signals(void *arg)
+>   sigaddset(&signals_set, SIGQUIT);
+>   sigaddset(&signals_set, SIGTERM);
+>   sigaddset(&signals_set, SIGUSR1);
+> + sigaddset(&signals_set, SIGUSR2);
+>   sigaddset(&signals_set, SIGALRM);
+>   while (1) {
+>   if (debug)
+> @@ -348,6 +361,11 @@ static void *handle_signals(void *arg)
+>   tst_resm(TINFO, "Signal handler caught signal %d", sig);
+>
+>   switch (sig) {
+> + case SIGUSR2:
+> +     if (debug)
+> + tst_resm(TINFO, "Signal handler received termination request, exiting");
+> +     pthread_exit(NULL);
+> +     break;
+>   case SIGALRM:
+>   case SIGUSR1:
+>   case SIGINT:
+> --
+> 2.16.1.291.g4437f3f132-goog
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180323/baac9241/attachment.html>
