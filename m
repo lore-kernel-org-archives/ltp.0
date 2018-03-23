@@ -1,46 +1,30 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 23 Mar 2018 18:31:16 +0300
-Subject: [LTP] [PATCH] include/lapi/dccp.h: check linux/dccp.h in configure
-Message-ID: <1521819076-27327-1-git-send-email-alexey.kodanev@oracle.com>
+Date: Fri, 23 Mar 2018 18:37:27 +0300
+Subject: [LTP] [PATCH v2 0/2] sctp: add new regression test for CVE-2018-5803
+Message-ID: <1521819449-27489-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- configure.ac        |    1 +
- include/lapi/dccp.h |    4 +++-
- 2 files changed, 4 insertions(+), 1 deletions(-)
+* create lapi/sctp.h header and define SCTP_SOCKOPT_BINDX_ADD if
+  there is no linux/sctp.h.
 
-diff --git a/configure.ac b/configure.ac
-index 9ff37af..1721ff2 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -36,6 +36,7 @@ AC_CHECK_HEADERS([ \
-     ifaddrs.h \
-     keyutils.h \
-     linux/can.h \
-+    linux/dccp.h \
-     linux/genetlink.h \
-     linux/keyctl.h \
-     linux/if_packet.h \
-diff --git a/include/lapi/dccp.h b/include/lapi/dccp.h
-index 1d7fa05..0d852ad 100644
---- a/include/lapi/dccp.h
-+++ b/include/lapi/dccp.h
-@@ -18,7 +18,9 @@
- #ifndef LAPI_DCCP_H__
- #define LAPI_DCCP_H__
- 
--#include <linux/dccp.h>
-+#ifdef HAVE_LINUX_DCCP_H
-+# include <linux/dccp.h>
-+#endif
- 
- #ifndef DCCP_SOCKOPT_SERVICE
- # define DCCP_SOCKOPT_SERVICE	2
--- 
-1.7.1
+* add new test to network/sctp for over-sized SCTP chunk.
+
+Alexey Kodanev (2):
+  include/lapi: add sctp.h
+  sctp: new regression test sctp_big_chunk for CVE-2018-5803
+
+ configure.ac                            |    1 +
+ include/lapi/sctp.h                     |   29 ++++++++
+ include/lapi/socket.h                   |    4 +
+ runtest/cve                             |    2 +
+ testcases/network/.gitignore            |    1 +
+ testcases/network/sctp/Makefile         |    2 +-
+ testcases/network/sctp/sctp_big_chunk.c |  121 +++++++++++++++++++++++++++++++
+ 7 files changed, 159 insertions(+), 1 deletions(-)
+ create mode 100644 include/lapi/sctp.h
+ create mode 100644 testcases/network/sctp/sctp_big_chunk.c
 
