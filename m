@@ -1,10 +1,9 @@
 From: yang xu <xuyang.jy@cn.fujitsu.com>
-Date: Fri, 23 Mar 2018 19:34:49 +0800
-Subject: [LTP] [PATCH 2/5] syscalls/mkdir01,
-	03: Cleanup && Convert to new API
+Date: Fri, 23 Mar 2018 19:34:51 +0800
+Subject: [LTP] [PATCH 4/5] syscalls/mkdir04: Cleanup && Convert to new API
 In-Reply-To: <1521804892-5783-1-git-send-email-xuyang.jy@cn.fujitsu.com>
 References: <1521804892-5783-1-git-send-email-xuyang.jy@cn.fujitsu.com>
-Message-ID: <1521804892-5783-2-git-send-email-xuyang.jy@cn.fujitsu.com>
+Message-ID: <1521804892-5783-4-git-send-email-xuyang.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,212 +11,317 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 1) Take use of some safe macros
-2) Remove duplicate tests mkdir01
-3) Use tst_get_bad_addr to get a bad addr
+2  Remove temporary directory in loop
 
 Signed-off-by: yang xu <xuyang.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/mkdir/mkdir01.c | 203 ------------------------------
- testcases/kernel/syscalls/mkdir/mkdir03.c |  32 ++---
- 2 files changed, 12 insertions(+), 223 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/mkdir/mkdir01.c
+ testcases/kernel/syscalls/mkdir/mkdir04.c | 275 +++++++++---------------------
+ 1 file changed, 78 insertions(+), 197 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mkdir/mkdir01.c b/testcases/kernel/syscalls/mkdir/mkdir01.c
-deleted file mode 100644
-index 84012c0..0000000
---- a/testcases/kernel/syscalls/mkdir/mkdir01.c
-+++ /dev/null
-@@ -1,203 +0,0 @@
+diff --git a/testcases/kernel/syscalls/mkdir/mkdir04.c b/testcases/kernel/syscalls/mkdir/mkdir04.c
+index 3e0d199..562f784 100644
+--- a/testcases/kernel/syscalls/mkdir/mkdir04.c
++++ b/testcases/kernel/syscalls/mkdir/mkdir04.c
+@@ -1,241 +1,122 @@
 -/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
++/* Copyright (c) International Business Machines  Corp., 2001
+  *
+- *   Copyright (c) International Business Machines  Corp., 2001
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
 - *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+-/*
+- * NAME
+- *	mkdir04
 - *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- * DESCRIPTION
 - *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
+- * ALGORITHM
+- *	Setup:
+- *		Setup signal handling.
+- *		Pause for SIGUSR1 if option specified.
+- *		Create temporary directory.
 - *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *	Test:
+- *		Loop if the proper options are given.
+- *              fork the first child
+- *                      set to be ltpuser1
+- *                      create a dirctory tstdir1 with 0700 permission
+- *              fork the second child
+- *                      set to ltpuser2
+- *                      try to create a subdirectory tstdir2 under tstdir1
+- *                      check the returnvalue, if succeeded (return=0)
+- *			       Log the errno and Issue a FAIL message.
+- *		        Otherwise,
+- *			       Verify the errno
+- *			       if equals to EACCES,
+- *				       Issue Pass message.
+- *			       Otherwise,
+- *				       Issue Fail message.
+- *	Cleanup:
+- *		Print errno log and/or timing stats if options given
+- *		Delete the temporary directory created.
+- * USAGE
+- *	mkdir04 [-c n] [-e] [-f] [-i n] [-I x] [-P x] [-t]
+- *	where,  -c n : Run n copies concurrently.
+- *		-e   : Turn on errno logging.
+- *		-f   : Turn off functionality Testing.
+- *		-i n : Execute test n times.
+- *		-I x : Execute test for x seconds.
+- *		-P x : Pause for x seconds between iterations.
+- *		-t   : Turn on syscall timing.
 - *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
 - *
-- * http://www.sgi.com
+- * RESTRICTIONS
+- *	None.
 - *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--/* $Id: mkdir01.c,v 1.7 2009/03/23 13:35:54 subrata_modak Exp $ */
--/**********************************************************
-- *
-- *    OS Test - Silicon Graphics, Inc.
-- *
-- *    TEST IDENTIFIER	: mkdir01
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Basic errno test for mkdir(2)
-- *
-- *    PARENT DOCUMENT	: mkstds02
-- *
-- *    TEST CASE TOTAL	: 2
-- *
-- *    WALL CLOCK TIME	: 1
-- *
-- *    CPU TYPES		: ALL
-- *
-- *    AUTHOR		: Bill Branum
-- *
-- *    CO-PILOT		: Kathy Olmsted
-- *
-- *    DATE STARTED	: 4/15/92
-- *
-- *    INITIAL RELEASE	: UNICOS 7.0
-- *
-- *    TEST CASES
-- *
-- * 	mkdir(2) test for errno(s) EFAULT.
-- *
-- *    INPUT SPECIFICATIONS
-- * 	The standard options for system call tests are accepted.
-- *	(See the parse_opts(3) man page).
-- *
-- *    DURATION
-- * 	Terminates - with frequency and infinite modes.
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    ENVIRONMENTAL NEEDS
-- *      No run-time environmental needs.
-- *
-- *    DETAILED DESCRIPTION
-- *	This test will verify that mkdir(2) returns a value of
-- *	-1 and sets errno to EFAULT when the path argument points
-- *	outside (above/below) the allocated address space of the
-- *	process.
-- *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *	  Create and make current a temporary directory.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- * 	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno.
-- *        If doing functional test
-- *            check the errno returned and print result message
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
-- *	  Remove the temporary directory.
-- *	  Exit.
-- *
-- *
-- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
--
--#include <errno.h>
++/*  DESCRIPTION
++ *   fork the first child
++ *	set to be ltpuser1
++ *	create a dirctory TESTDIR with 0700 permission
++ *   fork the second child
++ *	set to ltpuser2
++ *	try to create a subdirectory TESTDIR1 under tstdir1
++ *	check the returnvalue, if succeeded (return=0)
++ *		Log the errno and Issue a FAIL message.
++ *			Otherwise,
++ *		Verify the errno
++ *			if equals to EACCES,
++ *		Issue Pass message.
++ *			Otherwise,
++ *		Issue Fail message.
+  */
+ 
+ #include <errno.h>
 -#include <string.h>
 -#include <signal.h>
--#include <sys/stat.h>
--#include <sys/types.h>
--#include <sys/mman.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
 -#include <fcntl.h>
--#include <unistd.h>
+ #include <pwd.h>
+ #include <sys/wait.h>
+ #include <unistd.h>
+-
 -#include "test.h"
+-#include "safe_macros.h"
 -
 -void setup();
 -void cleanup();
--
--char *TCID = "mkdir01";
+-int fail;
++#include <stdlib.h>
++#include "tst_test.h"
+ 
+ #define PERMS		0700
++#define TESTDIR		"testdir"
++#define TESTDIR1    "testdir/testfile"
+ 
+ static uid_t nobody_uid, bin_uid;
+ 
+-char *TCID = "mkdir04";
 -int TST_TOTAL = 1;
+-int fail;
 -
--char *bad_addr = 0;
+-char tstdir1[100];
+-char tstdir2[100];
 -
 -int main(int ac, char **av)
--{
++static void verify_mkdir(void)
+ {
 -	int lc;
--
+-	int rval;
+-	pid_t pid, pid1;
+ 	int status;
++	pid_t pid, pid1;
+ 
+-	/*
+-	 * parse standard options
+-	 */
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
+-	/*
+-	 * perform global setup for test
+-	 */
 -	setup();
 -
+-	/*
+-	 * check looping state if -i option given
+-	 */
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
 -		tst_count = 0;
--
--		/*
--		 * TEST CASE: 1
--		 * mkdir() call with pointer below allocated address space.
--		 */
--
--		/* Call mkdir(2) */
--		TEST(mkdir(bad_addr, 0777));
--
--		/* check return code */
--		if (TEST_RETURN == -1) {
--		}
--
--		if (TEST_RETURN == -1) {
--			if (TEST_ERRNO == EFAULT) {
--				tst_resm(TPASS,
--					 "mkdir - path argument pointing below allocated address space failed as expected with errno %d : %s",
--					 TEST_ERRNO,
--					 strerror(TEST_ERRNO));
--			} else {
--				tst_resm(TFAIL,
--					 "mkdir - path argument pointing below allocated address space failed with errno %d : %s but expected %d (EFAULT)",
--					 TEST_ERRNO,
--					 strerror(TEST_ERRNO), EFAULT);
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		SAFE_SETREUID(nobody_uid, nobody_uid);
+ 
+-		/* Initialize the test directories name */
+-		sprintf(tstdir1, "tstdir1.%d", getpid());
+-		if ((pid = FORK_OR_VFORK()) < 0) {
+-			tst_brkm(TBROK, cleanup, "fork #1 failed");
++		if (mkdir(TESTDIR, PERMS) == -1) {
++			tst_res(TFAIL | TERRNO, "mkdir(%s, %#o) Failed",
++				 TESTDIR, PERMS);
++			exit(1);
+ 		}
+ 
+-		if (pid == 0) {	/* first child */
+-			rval = setreuid(nobody_uid, nobody_uid);
+-			if (rval < 0) {
+-				tst_resm(TFAIL | TERRNO, "setreuid failed to "
+-					 "to set the real uid to %d and "
+-					 "effective uid to %d",
+-					 nobody_uid, nobody_uid);
+-				exit(1);
 -			}
--		} else {
--			tst_resm(TFAIL,
--				 "mkdir - path argument pointing below allocated address space succeeded unexpectedly.");
--
+-			/* create the parent directory with 0700 permits */
+-			if (mkdir(tstdir1, PERMS) == -1) {
+-				tst_resm(TFAIL | TERRNO,
+-					 "mkdir(%s, %#o) Failed",
+-					 tstdir1, PERMS);
+-				exit(1);
+-			}
+-			/* create tstdir1 succeeded */
+-			exit(0);
 -		}
--
--	}
--
+-		wait(&status);
+-		if (WEXITSTATUS(status) != 0) {
+-			tst_brkm(TFAIL, cleanup,
+-				 "Test to check mkdir EACCES failed"
+-				 "in create parent directory");
+-		}
++		exit(0);
++	}
+ 
+-		sprintf(tstdir2, "%s/tst", tstdir1);
++	SAFE_WAITPID(pid, &status, 0);
++	if (WEXITSTATUS(status) != 0) {
++		tst_brk(TFAIL, "Test to check mkdir EACCES failed"
++			"in create parent directory");
++	}
+ 
+-		if ((pid1 = FORK_OR_VFORK()) < 0) {
+-			tst_brkm(TBROK, cleanup, "fork #2 failed");
+-		}
++	pid1 = SAFE_FORK();
++	if (pid1 == 0) {
++		SAFE_SETREUID(bin_uid, bin_uid);
+ 
+-		if (pid1 == 0) {	/* second child */
+-			rval = setreuid(bin_uid, bin_uid);
+-			if (rval < 0) {
+-				tst_resm(TFAIL | TERRNO, "setreuid failed to "
+-					 "to set the real uid to %d and "
+-					 "effective uid to %d",
+-					 bin_uid, bin_uid);
+-				exit(1);
+-			}
+-			if (mkdir(tstdir2, PERMS) != -1) {
+-				tst_resm(TFAIL, "mkdir(%s, %#o) unexpected "
+-					 "succeeded", tstdir2, PERMS);
+-				exit(1);
+-			}
+-			if (errno != EACCES) {
+-				tst_resm(TFAIL, "Expected EACCES got %d",
+-					 errno);
+-				exit(1);
+-			}
+-			/* PASS */
+-			exit(0);
++		if (mkdir(TESTDIR1, PERMS) != -1) {
++			tst_res(TFAIL, "mkdir(%s, %#o) unexpected "
++				"succeeded", TESTDIR1, PERMS);
++			exit(1);
+ 		}
+-		waitpid(pid1, &status, 0);
+-		if (WEXITSTATUS(status) == 0) {
+-			tst_resm(TPASS, "Test to attempt to creat a directory "
+-				 "in a directory having no permissions "
+-				 "SUCCEEDED in setting errno to EACCES");
+-		} else {
+-			tst_resm(TFAIL, "Test to attempt to creat a directory "
+-				 "in a directory having no permissions FAILED");
+-			cleanup();
++		if (errno != EACCES) {
++			tst_res(TFAIL, "Expected EACCES got %d", errno);
++			exit(1);
+ 		}
++
++		exit(0);
+ 	}
+ 
+-	/*
+-	 * cleanup and exit
+-	 */
 -	cleanup();
 -	tst_exit();
--}
--
--/***************************************************************
++	SAFE_WAITPID(pid1, &status, 0);
++	if (WEXITSTATUS(status) == 0) {
++		tst_res(TPASS, "Test to attempt to creat a directory "
++			"in a directory having no permissions "
++			"SUCCEEDED in setting errno to EACCES");
++	} else {
++		tst_brk(TFAIL, "Test to attempt to creat a directory "
++			"in a directory having no permissions FAILED");
++	}
+ 
++	  /* rmdir() TESTDIR for loop test*/
++	SAFE_RMDIR(TESTDIR);
+ }
+ 
+-/*
 - * setup() - performs all ONE TIME setup for this test.
-- ***************************************************************/
--void setup(void)
--{
+- */
+ void setup(void)
+ {
+ 	struct passwd *pw;
+ 
+-	tst_require_root();
 -
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-	pw = SAFE_GETPWNAM(NULL, "nobody");
++	pw = SAFE_GETPWNAM("nobody");
+ 	nobody_uid = pw->pw_uid;
+-	pw = SAFE_GETPWNAM(NULL, "bin");
++	pw = SAFE_GETPWNAM("bin");
+ 	bin_uid = pw->pw_uid;
+ 
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
 -
 -	/* Create a temporary directory and make it current. */
 -	tst_tmpdir();
 -
--	bad_addr = tst_get_bad_addr(cleanup);
--}
--
--/***************************************************************
+ 	umask(0);
+ }
+ 
+-/*
 - * cleanup() - performs all ONE TIME cleanup for this test at
-- *		completion or premature exit.
-- ***************************************************************/
+- *             completion or premature exit.
+- */
 -void cleanup(void)
 -{
 -
@@ -231,72 +335,13 @@ index 84012c0..0000000
 -	 */
 -
 -}
-diff --git a/testcases/kernel/syscalls/mkdir/mkdir03.c b/testcases/kernel/syscalls/mkdir/mkdir03.c
-index 5d7f1e1..9441afe 100644
---- a/testcases/kernel/syscalls/mkdir/mkdir03.c
-+++ b/testcases/kernel/syscalls/mkdir/mkdir03.c
-@@ -46,20 +46,18 @@ static char long_dir[PATH_MAX + 2] = {[0 ... PATH_MAX + 1] = 'a'};
- static char loop_dir[PATH_MAX] = ".";
- 
- struct tcase;
--static void prot_none_pathname(struct tcase *tc);
- 
- static struct tcase {
- 	char *pathname;
- 	int exp_errno;
--	void (*setupfunc)(struct tcase *tc);
- } TC[] = {
--	{NULL, EFAULT, prot_none_pathname},
--	{long_dir, ENAMETOOLONG, NULL},
--	{TST_EEXIST, EEXIST, NULL},
--	{TST_ENOENT, ENOENT, NULL},
--	{TST_ENOTDIR_DIR, ENOTDIR, NULL},
--	{loop_dir, ELOOP, NULL},
--	{TST_EROFS, EROFS, NULL},
-+	{NULL, EFAULT},
-+	{long_dir, ENAMETOOLONG},
-+	{TST_EEXIST, EEXIST},
-+	{TST_ENOENT, ENOENT},
-+	{TST_ENOTDIR_DIR, ENOTDIR},
-+	{loop_dir, ELOOP},
-+	{TST_EROFS, EROFS},
- };
- 
- static void verify_mkdir(unsigned int n)
-@@ -82,12 +80,6 @@ static void verify_mkdir(unsigned int n)
- 	}
- }
- 
--static void prot_none_pathname(struct tcase *tc)
--{
--	tc->pathname = SAFE_MMAP(0, 1, PROT_NONE,
--		MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
--}
--
- static void setup(void)
- {
- 	unsigned int i;
-@@ -95,15 +87,15 @@ static void setup(void)
- 	SAFE_TOUCH(TST_EEXIST, MODE, NULL);
- 	SAFE_TOUCH(TST_ENOTDIR_FILE, MODE, NULL);
- 
-+	for (i = 0; i < ARRAY_SIZE(TC); i++) {
-+		if (TC[i].exp_errno == EFAULT)
-+			TC[i].pathname = tst_get_bad_addr(NULL);
-+	}
-+
- 	SAFE_MKDIR("test_eloop", DIR_MODE);
- 	SAFE_SYMLINK("../test_eloop", "test_eloop/test_eloop");
- 	for (i = 0; i < 43; i++)
- 		strcat(loop_dir, "/test_eloop");
--
--	for (i = 0; i < ARRAY_SIZE(TC); i++) {
--		if (TC[i].setupfunc)
--			TC[i].setupfunc(&TC[i]);
--	}
- }
- 
- static struct tst_test test = {
++static struct tst_test test = {
++	.test_all = verify_mkdir,
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++	.setup = setup,
++	.forks_child = 1,
++};
 -- 
 1.8.3.1
 
