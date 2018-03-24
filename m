@@ -1,95 +1,51 @@
-From: Erick Reyes <erickreyes@google.com>
-Date: Fri, 23 Mar 2018 13:57:15 -0700
-Subject: [LTP] [PATCH] Make floating point tests Android-compatible
-In-Reply-To: <CAFt2AZUhp9tuWOVd-t-ij-eG-21+DEqeXE5XCwK=tQ8DmOnAgg@mail.gmail.com>
-References: <CAFt2AZUhp9tuWOVd-t-ij-eG-21+DEqeXE5XCwK=tQ8DmOnAgg@mail.gmail.com>
-Message-ID: <CAFt2AZVFWwZt1JD0kZ-5s0SGkAbwo_igiDKJzkus-0sjQk_ARw@mail.gmail.com>
+From: Ram Pai <linuxram@us.ibm.com>
+Date: Fri, 23 Mar 2018 17:44:40 -0700
+Subject: [LTP] [bug?] Access was denied by memory protection keys in
+ execute-only address
+In-Reply-To: <CAEemH2c4p7FqYs9L9X0SyjUvg5Z3pfwsokurJmzq+=y1h2OwbA@mail.gmail.com>
+References: <CAEemH2f0LDqyR5AmUYv17OuBc5-UycckDPWgk46XU_ghQo4diw@mail.gmail.com>
+ <871sguep4v.fsf@concordia.ellerman.id.au>
+ <20180308164545.GM1060@ram.oc3035372033.ibm.com>
+ <CAEemH2czWDjvJLpL6ynV1+VxCFh_-A-d72tJhA5zwgrAES2nWA@mail.gmail.com>
+ <20180320215828.GA5825@ram.oc3035372033.ibm.com>
+ <CAEemH2eewab4nsn6daMRAtn9tDrHoZb_PnbH8xA17ypFCTg6iA@mail.gmail.com>
+ <20180322070900.GA5605@ram.oc3035372033.ibm.com>
+ <CAEemH2c4p7FqYs9L9X0SyjUvg5Z3pfwsokurJmzq+=y1h2OwbA@mail.gmail.com>
+Message-ID: <20180324004440.GA5887@ram.oc3035372033.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi,
+On Fri, Mar 23, 2018 at 05:27:06PM +0800, Li Wang wrote:
+>    On Thu, Mar 22, 2018 at 3:09 PM, Ram Pai <[1]linuxram@us.ibm.com> wrote:
+> 
+>      On Wed, Mar 21, 2018 at 02:53:00PM +0800, Li Wang wrote:
+>      >    On Wed, Mar 21, 2018 at 5:58 AM, Ram Pai
+>      <[1][2]linuxram@us.ibm.com> wrote:
+>      >    that why not disable the pkey_execute_disable_supported on p8
+.snip..
 
-Any chance this can be reviewed? This would add support for 4 tests on
-Android.
+>      machine?
+> 
+>      It turns out to be a testcase bug.  On Big endian powerpc ABI, function
+>      ptrs are basically pointers to function descriptors.  The testcase
+>      copies functions which results in function descriptors getting copied.
+>      You have to apply the following patch to your test case for it to
+>      operate as intended.  Thanks to Michael Ellermen for helping me out.
+>      Otherwise I would be scratching my head for ever.
+> 
+>    ​Thanks for the explanation, I learned something new about this. :)
+> 
+>    And the worth to say, seems the patch only works on powerpc arch,
+>    others(x86_64, etc)
+>    that does not works well, so a simple workaround is to isolate the code
+>    changes
+>    to powerpc system?
 
-Thanks
+yes. this code has to be made applicable to powerpc Big-endian code
+only.  The powerpc little-endian code remains unchanged.
 
-On Wed, Feb 21, 2018 at 11:48 AM, Erick Reyes <erickreyes@google.com> wrote:
+RP
 
-> Android does not implement pthread_cancel. The function is replaced
-> by a no-op in a compatibility header. In most cases, the only side
-> effect is that threads cannot be interrupted and have to exit normally.
-> However, floating point tests are calling pthread_cancel and waiting for
-> a thread doing pthread_sigwait to be finished (Which will never happen).
->
-> This patch implements the same logic using pthread_kill with SIGUSR2
-> instead, allowing the tests to run under Android.
->
-> Signed-off-by: Erick Reyes <erickreyes@google.com>
-> ---
->  testcases/misc/math/float/main.c | 20 +++++++++++++++++++-
->  1 file changed, 19 insertions(+), 1 deletion(-)
->
-> diff --git a/testcases/misc/math/float/main.c b/testcases/misc/math/float/
-> main.c
-> index d71ca18e6..64d1475e4 100644
-> --- a/testcases/misc/math/float/main.c
-> +++ b/testcases/misc/math/float/main.c
-> @@ -115,6 +115,18 @@ int main(int argc, char *argv[])
->   /*int time=1; */
->   int i;
->
-> + sigset_t signals_set;
-> +
-> + /*
-> + * Use SIGUSR2 to terminate our signal handler
-> + */
-> + sigemptyset(&signals_set);
-> + sigaddset(&signals_set, SIGUSR2);
-> +
-> + retval = pthread_sigmask(SIG_BLOCK, &signals_set, NULL);
-> + if (retval != 0)
-> + sys_error("main : pthread_sigmask FAILED", __LINE__);
-> +
->   /* Generate test ID from invocation name */
->   if ((TCID = strrchr(argv[0], '/')) != NULL)
->   TCID++;
-> @@ -299,7 +311,7 @@ finished:
->   SAFE_FREE(pcom);
->
->   }
-> - pthread_cancel(sig_hand);
-> + pthread_kill(sig_hand, SIGUSR2);
->   pthread_join(sig_hand, NULL);
->   SAFE_FREE(tabcom);
->   SAFE_FREE(threads);
-> @@ -338,6 +350,7 @@ static void *handle_signals(void *arg)
->   sigaddset(&signals_set, SIGQUIT);
->   sigaddset(&signals_set, SIGTERM);
->   sigaddset(&signals_set, SIGUSR1);
-> + sigaddset(&signals_set, SIGUSR2);
->   sigaddset(&signals_set, SIGALRM);
->   while (1) {
->   if (debug)
-> @@ -348,6 +361,11 @@ static void *handle_signals(void *arg)
->   tst_resm(TINFO, "Signal handler caught signal %d", sig);
->
->   switch (sig) {
-> + case SIGUSR2:
-> +     if (debug)
-> + tst_resm(TINFO, "Signal handler received termination request, exiting");
-> +     pthread_exit(NULL);
-> +     break;
->   case SIGALRM:
->   case SIGUSR1:
->   case SIGINT:
-> --
-> 2.16.1.291.g4437f3f132-goog
->
->
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180323/baac9241/attachment.html>
