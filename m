@@ -1,61 +1,82 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 26 Mar 2018 11:10:49 +0200
-Subject: [LTP] [PATCH] modify_ldt: remove two outdated files
-In-Reply-To: <20180326064931.5595-1-liwang@redhat.com>
-References: <20180326064931.5595-1-liwang@redhat.com>
-Message-ID: <20180326091049.GA1870@x230>
+Date: Mon, 26 Mar 2018 12:55:55 +0200
+Subject: [LTP] [PATCH v2 1/2] include/lapi: add sctp.h
+In-Reply-To: <1521819449-27489-2-git-send-email-alexey.kodanev@oracle.com>
+References: <1521819449-27489-1-git-send-email-alexey.kodanev@oracle.com>
+ <1521819449-27489-2-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20180326105555.GA7242@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
-
-> Signed-off-by: Li Wang <liwang@redhat.com>
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 > ---
->  testcases/kernel/syscalls/modify_ldt/run-modify_ldt01.sh | 11 -----------
->  testcases/kernel/syscalls/modify_ldt/run-modify_ldt02.sh | 11 -----------
->  2 files changed, 22 deletions(-)
->  delete mode 100755 testcases/kernel/syscalls/modify_ldt/run-modify_ldt01.sh
->  delete mode 100755 testcases/kernel/syscalls/modify_ldt/run-modify_ldt02.sh
+> v2: include linux/sctp.h header and check it in the configure
 
-> diff --git a/testcases/kernel/syscalls/modify_ldt/run-modify_ldt01.sh b/testcases/kernel/syscalls/modify_ldt/run-modify_ldt01.sh
-> deleted file mode 100755
-> index 78bf7a1..0000000
-> --- a/testcases/kernel/syscalls/modify_ldt/run-modify_ldt01.sh
-> +++ /dev/null
-> @@ -1,11 +0,0 @@
-> -#!/bin/sh
-> -
-> -syscall=modify_ldt
-> -
-> -if [ -f $LTPROOT/testcases/bin/${syscall}01 ]; then
-> -         $LTPROOT/testcases/bin/${syscall}01
-> -else
-> -         echo "${syscall}01 0 CONF : System doesn't support execution of the test"
-> -
-> -fi
-> -
-> diff --git a/testcases/kernel/syscalls/modify_ldt/run-modify_ldt02.sh b/testcases/kernel/syscalls/modify_ldt/run-modify_ldt02.sh
-> deleted file mode 100755
-> index 0dd2e1f..0000000
-> --- a/testcases/kernel/syscalls/modify_ldt/run-modify_ldt02.sh
-> +++ /dev/null
-> @@ -1,11 +0,0 @@
-> -#!/bin/sh
-> -
-> -syscall=modify_ldt
-> -
-> -if [ -f $LTPROOT/testcases/bin/${syscall}02 ]; then
-> -         $LTPROOT/testcases/bin/${syscall}02
-> -else
-> -         echo "${syscall}02 0 CONF : System doesn't support execution of the test"
-> -
-> -fi
-> -
+>  configure.ac        |    1 +
+>  include/lapi/sctp.h |   29 +++++++++++++++++++++++++++++
+>  2 files changed, 30 insertions(+), 0 deletions(-)
+>  create mode 100644 include/lapi/sctp.h
 
-Merged, thanks!
+> diff --git a/configure.ac b/configure.ac
+> index 85426ad..97d643b 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -44,6 +44,7 @@ AC_CHECK_HEADERS([ \
+>      linux/mempolicy.h \
+>      linux/module.h \
+>      linux/netlink.h \
+> +    linux/sctp.h \
+>      mm.h \
+>      pthread.h \
+>      sys/epoll.h \
+> diff --git a/include/lapi/sctp.h b/include/lapi/sctp.h
+> new file mode 100644
+> index 0000000..69adc7a
+> --- /dev/null
+> +++ b/include/lapi/sctp.h
+> @@ -0,0 +1,29 @@
+> +/*
+> + * Copyright (c) 2018 Oracle and/or its affiliates.
+> + *
+> + * This program is free software: you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation, either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
+> + */
+> +
+> +#ifndef LAPI_SCTP_H__
+> +#define LAPI_SCTP_H__
+> +
+> +#ifdef HAVE_LINUX_SCTP_H
+> +# include <linux/sctp.h>
+> +#endif
+> +
+> +#ifndef SCTP_SOCKOPT_BINDX_ADD
+> +# define SCTP_SOCKOPT_BINDX_ADD	100
+> +#endif
+> +
+> +#endif	/* LAPI_SCTP_H__ */
+
+Acked-by: Petr Vorel <petr.vorel@gmail.com>
+
+BTW SCTP_SOCKOPT_BINDX_ADD is defined in both <linux/sctp.h> and <netinet/sctp.h>, so if we
+ever in future want to have some definitions from netinet/sctp.h, I'd be to create special
+file include/lapi/netinet_sctp.h (the same like include/lapi/netinet_in.h - taking that
+default is for "kernel/").
+
+And we have included netinet/sctp.h in sources (utils/sctp/include/netinet/sctp.h), IMHO
+not good idea to have common headers in our sources.
 
 
 Kind regards,
