@@ -1,163 +1,127 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 26 Mar 2018 09:06:49 -0400 (EDT)
-Subject: [LTP] [PATCH v2] mprotect04: get right function entry if system
- using function descriptors
-In-Reply-To: <CAEemH2cSep2YeVUuafCGuksTRkjftdZnf0xAkZKk8ssq=A436w@mail.gmail.com>
-References: <20180326064808.5503-1-liwang@redhat.com>
- <CAEemH2cSep2YeVUuafCGuksTRkjftdZnf0xAkZKk8ssq=A436w@mail.gmail.com>
-Message-ID: <1897141233.9830121.1522069609869.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 26 Mar 2018 15:22:42 +0200
+Subject: [LTP] [PATCH 1/2] SAFE_MACROS: Add SAFE_GETGRNAM()
+In-Reply-To: <1521184376-3649-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+References: <1521184376-3649-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <20180326132242.GA20143@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Jinhui,
 
-
------ Original Message -----
-> Add CC'ing Michael Ellerman < mpe@ellerman.id.au >
-> 
-> 
-> On Mon, Mar 26, 2018 at 2:48 PM, Li Wang < liwang@redhat.com > wrote:
-> 
-> 
-> On some big endian powerpc64 ABI, function ptrs are basically pointers
-> to function descriptors. The testcase copies functions which results
-> in function descriptors getting copied. So easily the access was
-> denied by memory protection key in that address when performing it.
-> 
-> 10000000-10020000 r-xp 00000000 fd:00 167223 mprotect04
-> 10020000-10030000 r--p 00010000 fd:00 167223 mprotect04
-> 10030000-10040000 rw-p 00020000 fd:00 167223 mprotect04
-> 1001a380000-1001a3b0000 rw-p 00000000 00:00 0 [heap]
-> 7fffa6c60000-7fffa6c80000 --xp 00000000 00:00 0
-> 
-> &exec_func = 0x10030170
-> &func = 0x7fffa6c60170
-> 
-> While perform the (*func)(); we get segmentation fault.
-> 
-> strace log:
-> -----------
-> mprotect(0x7fffaed00000, 131072, PROT_EXEC) = 0
-> rt_sigprocmask(SIG_BLOCK, NULL, [], 8) = 0
-> --- SIGSEGV {si_signo=SIGSEGV, si_code=SEGV_PKUERR, si_addr=0x7fffaed00170}
+> Signed-off-by: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
 > ---
-> 
-> Reported-and-tested-by: Li Wang < liwang@redhat.com >
-> Signed-off-by: Ram Pai < linuxram@us.ibm.com >
-> Suggested-by: Michael Ellerman < mpe@ellerman.id.au >
-> Signed-off-by: Li Wang < liwang@redhat.com >
+>  include/old/safe_macros.h |  3 +++
+>  include/safe_macros_fn.h  |  3 +++
+>  include/tst_safe_macros.h |  9 +++------
+>  lib/safe_macros.c         | 15 +++++++++++++++
+>  4 files changed, 24 insertions(+), 6 deletions(-)
 
-Added indentation to strace output so it doesn't confuse git
-and pushed.
+> diff --git a/include/old/safe_macros.h b/include/old/safe_macros.h
+> index e778d30..0718060 100644
+> --- a/include/old/safe_macros.h
+> +++ b/include/old/safe_macros.h
+> @@ -44,6 +44,9 @@
+>  #define SAFE_GETPWNAM(cleanup_fn, name)	\
+>  	safe_getpwnam(__FILE__, __LINE__, cleanup_fn, (name))
 
-Thanks,
-Jan
+> +#define SAFE_GETGRNAM(cleanup_fn, name) \
+> +	safe_getgrnam(__FILE__, __LINE__, cleanup_fn, (name))
+Can you please sort it alphabetically (i.e. put SAFE_GETGRNAM() before SAFE_GETPWNAM())?
 
-> ---
-> testcases/kernel/syscalls/mprotect/mprotect04.c | 41
-> ++++++++++++++++++++++---
-> 1 file changed, 37 insertions(+), 4 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/mprotect/mprotect04.c
-> b/testcases/kernel/syscalls/mprotect/mprotect04.c
-> index 1173afd..60941a4 100644
-> --- a/testcases/kernel/syscalls/mprotect/mprotect04.c
-> +++ b/testcases/kernel/syscalls/mprotect/mprotect04.c
-> @@ -56,6 +56,7 @@ int TST_TOTAL = ARRAY_SIZE(testfunc);
-> static volatile int sig_caught;
-> static sigjmp_buf env;
-> static unsigned int copy_sz;
-> +typedef void (*func_ptr_t)(void);
-> 
-> int main(int ac, char **av)
-> {
-> @@ -190,6 +191,22 @@ static void clear_cache(void *start, int len)
-> }
-> 
-> /*
-> + * To check for the ABI version, because ppc64le can technically use
-> + * function descriptors.
-> + */
-> +#if defined(__powerpc64__) && (!defined(_CALL_ELF) || _CALL_ELF < 2)
-> +#define USE_FUNCTION_DESCRIPTORS
-> +#endif
+@Cyril: Do we want to change also safe_macros.h ?
+
 > +
-> +#ifdef USE_FUNCTION_DESCRIPTORS
-> +typedef struct {
-> + uintptr_t entry;
-> + uintptr_t toc;
-> + uintptr_t env;
-> +} func_descr_t;
-> +#endif
+>  #define SAFE_GETRUSAGE(cleanup_fn, who, usage) \
+>  	safe_getrusage(__FILE__, __LINE__, (cleanup_fn), (who), (usage))
+
+> diff --git a/include/safe_macros_fn.h b/include/safe_macros_fn.h
+> index 3df9528..2d3ddae 100644
+> --- a/include/safe_macros_fn.h
+> +++ b/include/safe_macros_fn.h
+> @@ -45,6 +45,9 @@ char* safe_getcwd(const char *file, const int lineno,
+>  struct passwd* safe_getpwnam(const char *file, const int lineno,
+>                               void (*cleanup_fn)(void), const char *name);
+
+> +struct group *safe_getgrnam(const char *file, const int lineno,
+> +			    void (*cleanup_fn)(void), const char *name);
+Again, sort it alphabetically please.
+
 > +
-> +/*
-> * Copy page where &exec_func resides. Also try to copy subsequent page
-> * in case exec_func is close to page boundary.
-> */
-> @@ -197,11 +214,21 @@ static void *get_func(void *mem)
-> {
-> uintptr_t page_sz = getpagesize();
-> uintptr_t page_mask = ~(page_sz - 1);
-> - uintptr_t func_page_offset = (uintptr_t)&exec_func & (page_sz - 1);
-> - void *func_copy_start = mem + func_page_offset;
-> - void *page_to_copy = (void *)((uintptr_t)&exec_func & page_mask);
-> + uintptr_t func_page_offset;
-> + void *func_copy_start, *page_to_copy;
-> void *mem_start = mem;
-> 
-> +#ifdef USE_FUNCTION_DESCRIPTORS
-> + func_descr_t *opd = (func_descr_t *)&exec_func;
-> + func_page_offset = (uintptr_t)opd->entry & (page_sz - 1);
-> + func_copy_start = mem + func_page_offset;
-> + page_to_copy = (void *)((uintptr_t)opd->entry & page_mask);
-> +#else
-> + func_page_offset = (uintptr_t)&exec_func & (page_sz - 1);
-> + func_copy_start = mem + func_page_offset;
-> + page_to_copy = (void *)((uintptr_t)&exec_func & page_mask);
-> +#endif
+>  int safe_getrusage(const char *file, const int lineno,
+>                     void (*cleanup_fn)(void), int who, struct rusage *usage);
+
+> diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+> index f115a7b..56ff4c3 100644
+> --- a/include/tst_safe_macros.h
+> +++ b/include/tst_safe_macros.h
+> @@ -72,6 +72,9 @@ static inline int safe_dup(const char *file, const int lineno,
+>  #define SAFE_GETPWNAM(name) \
+>  	safe_getpwnam(__FILE__, __LINE__, NULL, (name))
+
+> +#define SAFE_GETGRNAM(name) \
+> +	safe_getgrnam(__FILE__, __LINE__, NULL, (name))
+And here.
+
 > +
-> /* copy 1st page, if it's not present something is wrong */
-> if (!page_present(page_to_copy)) {
-> tst_resm(TINFO, "exec_func: %p, page_to_copy: %p\n",
-> @@ -228,7 +255,7 @@ static void *get_func(void *mem)
-> 
-> static void testfunc_protexec(void)
-> {
-> - void (*func)(void);
-> + func_ptr_t func;
-> void *p;
-> 
-> sig_caught = 0;
-> @@ -236,7 +263,13 @@ static void testfunc_protexec(void)
-> p = SAFE_MMAP(cleanup, 0, copy_sz, PROT_READ | PROT_WRITE,
-> MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-> 
-> +#ifdef USE_FUNCTION_DESCRIPTORS
-> + func_descr_t opd;
-> + opd.entry = (uintptr_t)get_func(p);
-> + func = (func_ptr_t)&opd;
-> +#else
-> func = get_func(p);
-> +#endif
-> 
-> /* Change the protection to PROT_EXEC. */
-> TEST(mprotect(p, copy_sz, PROT_EXEC));
-> --
-> 2.9.3
-> 
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
-> 
-> 
-> --
-> Li Wang
-> liwang@redhat.com
-> 
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
+>  #define SAFE_GETRUSAGE(who, usage) \
+>  	safe_getrusage(__FILE__, __LINE__, NULL, (who), (usage))
+
+> @@ -397,12 +400,6 @@ static inline sighandler_t safe_signal(const char *file, const int lineno,
+>  #define SAFE_SIGNAL(signum, handler) \
+>  	safe_signal(__FILE__, __LINE__, (signum), (handler))
+
+> -int safe_sigaction(const char *file, const int lineno,
+> -                   int signum, const struct sigaction *act,
+> -                   struct sigaction *oldact);
+> -#define SAFE_SIGACTION(signum, act, oldact) \
+> -	safe_sigaction(__FILE__, __LINE__, (signum), (act), (oldact))
+> -
+Removing SAFE_SIGACTION() & safe_sigaction() breaks build. I guess you removed it by
+accident.
+
+>  #define SAFE_EXECLP(file, arg, ...) do {                   \
+>  	execlp((file), (arg), ##__VA_ARGS__);              \
+>  	tst_brk_(__FILE__, __LINE__, TBROK | TERRNO,       \
+> diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+> index abdeca0..061819e 100644
+> --- a/lib/safe_macros.c
+> +++ b/lib/safe_macros.c
+> @@ -15,6 +15,7 @@
+>  #include <stdlib.h>
+>  #include <unistd.h>
+>  #include <malloc.h>
+> +#include <grp.h>
+>  #include "test.h"
+>  #include "safe_macros.h"
+
+> @@ -126,6 +127,20 @@ struct passwd *safe_getpwnam(const char *file, const int lineno,
+>  	return rval;
+>  }
+
+> +struct group *safe_getgrnam(const char *file, const int lineno,
+> +			    void (*cleanup_fn) (void), const char *name)
+Again, sort it alphabetically please.
+
+> +{
+> +	struct group *rval;
+> +
+> +	rval = getgrnam(name);
+> +	if (rval == NULL) {
+> +		tst_brkm(TBROK | TERRNO, cleanup_fn,
+> +			"%s:%d: getgrnam(%s) failed", file, lineno, name);
+> +	}
+> +
+> +	return rval;
+> +}
+> +
+>  int
+>  safe_getrusage(const char *file, const int lineno, void (*cleanup_fn) (void),
+>  	       int who, struct rusage *usage)
+
+
+Kind regards,
+Petr
