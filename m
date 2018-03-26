@@ -1,23 +1,16 @@
-From: Daniel P. =?unknown-8bit?q?Berrang=C3=A9?= <berrange@redhat.com>
-Date: Mon, 26 Mar 2018 14:52:35 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 26 Mar 2018 16:33:33 +0200
 Subject: [LTP] [PATCH] fcntl37: test posix lock across execve
 In-Reply-To: <1522070895-2289-1-git-send-email-xzhou@redhat.com>
 References: <1522070895-2289-1-git-send-email-xzhou@redhat.com>
-Message-ID: <20180326135235.GL19266@redhat.com>
+Message-ID: <20180326143313.GE27423@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Mar 26, 2018 at 09:28:15PM +0800, Xiong Zhou wrote:
-> Signed-off-by: Xiong Zhou <xzhou@redhat.com>
-> ---
->  testcases/kernel/syscalls/fcntl/Makefile  |   3 +
->  testcases/kernel/syscalls/fcntl/fcntl37.c | 146 ++++++++++++++++++++++++++++++
->  2 files changed, 149 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/fcntl/fcntl37.c
-> 
+Hi!
 > diff --git a/testcases/kernel/syscalls/fcntl/Makefile b/testcases/kernel/syscalls/fcntl/Makefile
 > index ae37214..7a06aa7 100644
 > --- a/testcases/kernel/syscalls/fcntl/Makefile
@@ -28,81 +21,42 @@ On Mon, Mar 26, 2018 at 09:28:15PM +0800, Xiong Zhou wrote:
 >  
 > +fcntl37: LDLIBS += -lpthread
 > +fcntl37_64: LDLIBS += -lpthread
-> +
+
+This is wrong, we should use CFLAGS += -pthread instead, also the rest
+of the Makefile should be fixed as well.
+
 >  include $(top_srcdir)/include/mk/testcases.mk
 >  include $(abs_srcdir)/../utils/newer_64.mk
->  
-> diff --git a/testcases/kernel/syscalls/fcntl/fcntl37.c b/testcases/kernel/syscalls/fcntl/fcntl37.c
-> new file mode 100644
-> index 0000000..bac2168
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/fcntl/fcntl37.c
-> @@ -0,0 +1,146 @@
-> +/*
-> + * Copyright (c) 2018 RedHat Inc. All Rights Reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License as
-> + * published by the Free Software Foundation; either version 2 of
-> + * the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
-> + *
-> + * Author: Xiong Zhou <xzhou@redhat.com>
-> + *
-> + * This is testing for
-> + *
-> + *	"Record locks are not inherited by a child created via fork(2),
-> + *	 but are preserved across an execve(2)."
-> + *
-> + * from fcntl(2) man page.
-> + *
-> + */
-> +
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <sys/wait.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <errno.h>
-> +#include <unistd.h>
-> +#include <fcntl.h>
-> +#include <pthread.h>
-> +#include <sched.h>
-> +#include <limits.h>
-> +
+
+...
+
 > +#include "lapi/fcntl.h"
 > +#include "tst_safe_pthread.h"
 > +#include "tst_test.h"
 > +
 > +static const char fname[] = "tst_lock_execve";
 > +static const char flag_fname[] = "/tmp/execved";
->
+                                       ^
+				     You must not create files in random
+				     places. Once you set the
+				     .needs_tmpdir in the test structure
+				     the test is executed with unique temporary
+				     directory as working directory so
+				     all you need to do for temporary
+				     files is to work with relative filenames.
+
 > +static void cleanup(void);
 > +
 > +static void *thread_fn(void *arg)
 > +{
 > +	int fd = *(int *)arg;
+                   ^
+		   This is broken, you have to use intptr_t
+
 > +	tst_res(TINFO, "Thread running. fd %d", fd);
 > +	/* Just need to be alive when execve. */
 > +	sleep(5);
-
-Since we don't expect this thread to complete running before execve() takes
-place, feels more robust to put put it into an infinite loop eg
-
-  while (1) sleep (1);
-
 > +	SAFE_CLOSE(fd);
-
-and ditch this since it is not supposed to be reachable if the test is
-operating correctly.
-
 > +	return NULL;
 > +}
 > +
@@ -123,10 +77,22 @@ operating correctly.
 > +			tst_res(TPASS, "Record lock survives execve");
 > +		SAFE_CLOSE(fd);
 > +		_exit(0);
+
+Why _exit() ?
+
 > +	}
 > +	waitpid(pid, NULL, 0);
+
+SAFE_WAITPID()
+
 > +}
-> +
+
+Also having the check in a separate function and calling it several
+times makes it kind of hard for debugging. if one of the assertions
+fails the error messages would be the same. Maybe we should pass a
+string with describes assertion type to the function and use it
+int the tst_res() messages.
+
 > +static void test01(void)
 > +{
 > +	int fd, ret;
@@ -138,24 +104,31 @@ operating correctly.
 > +	ret = stat(flag_fname, &stat_buf);
 > +	if (ret == 0) {
 > +		checklock(fd);
-
-Nothing seems to have initialized the 'fd' variable when it is
-used here.
-
 > +		cleanup();
+
+You must not call the cleanup from the test. Cleanup function is called
+from the test library.
+
 > +		_exit(0);
+
+Again why _exit() ?
+
 > +	}
-> +
+
+Don't do this.
+
+You must not reexecute the testcase and put file flags into random
+places. If you need execve() a test helper, you have to write simple
+binary helper. See testcases/kernel/syscalls/creat/creat07_child.c
+
 > +	/*
 > +	 * If tmp/tst_lock_execve does not exist, initialize it.
 > +	 */
+
+Please no useless comments like this one.
+
 > +	SAFE_OPEN(flag_fname, O_RDWR|O_CREAT, 0755);
 > +	fd = SAFE_OPEN(fname, O_RDWR|O_CREAT, 0755);
-
-What's the benefit in using 2 temporary files - feels like using
-one would be sufficient, particularly since this code is never
-calling unlink(fname) so leaking the 2nd file on disk
-
 > +	struct flock64 flck = {
 > +		.l_type = F_WRLCK,
 > +		.l_whence = SEEK_SET,
@@ -168,13 +141,30 @@ calling unlink(fname) so leaking the 2nd file on disk
 > +	 * Creat thread and keep it running after placing posix
 > +	 * write lock.
 > +	 */
+
+Please no useless comments.
+
 > +	pthread_t th;
 > +	SAFE_PTHREAD_CREATE(&th, NULL, thread_fn, (void *)&fd);
+                                                    ^
+						    Here as well, we
+						    have to cast the fd
+						    to intptr_t first.
 > +	sleep(1);
-> +
+
+Please no random sleeps() for thread synchronization, either use real
+thread synchronization primitives or LTP checkpoint synchronization
+library which is based on futexes.
+
+See:
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#229-fork-and-parent-child-synchronization
+
 > +	/*
 > +	 * Clear CLOEXEC
 > +	 */
+
+Please no useless comments.
+
 > +	int flags=SAFE_FCNTL(fd, F_GETFD);
 > +	flags &= ~FD_CLOEXEC;
 > +	SAFE_FCNTL(fd, F_SETFD, flags);
@@ -182,15 +172,31 @@ calling unlink(fname) so leaking the 2nd file on disk
 > +	/*
 > +	 * Get full path name of running programm then execve.
 > +	 */
+
+Please no useless comments.
+
+
 > +	char prog_name[PATH_MAX];
 > +	ret = readlink("/proc/self/exe", prog_name, PATH_MAX);
 > +	char * const newargv[] = { prog_name, NULL, NULL };
+
+This is far to complicated for no reason. The path to LTP test binaries
+is in $PATH so you can execute any LTP binary just by it's name.
+Absolute path is absolutely unneeded.
+
 > +	tst_res(TINFO, "execve %s with %s locked", prog_name, fname);
 > +	execve(prog_name, newargv, NULL);
 > +	/*
 > +	 * Failure info for debug
 > +	 */
+
+Please no useless comments.
+
 > +	perror("execve ");
+
+No perror() please. Any error messages should be printed via tst_res()
+or tst_brk().
+
 > +}
 > +
 > +static void cleanup(void)
@@ -207,10 +213,10 @@ calling unlink(fname) so leaking the 2nd file on disk
 > -- 
 > 1.8.3.1
 > 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
-Regards,
-Daniel
 -- 
-|: https://berrange.com      -o-    https://www.flickr.com/photos/dberrange :|
-|: https://libvirt.org         -o-            https://fstop138.berrange.com :|
-|: https://entangle-photo.org    -o-    https://www.instagram.com/dberrange :|
+Cyril Hrubis
+chrubis@suse.cz
