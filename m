@@ -1,246 +1,146 @@
-From: Xiong Zhou <xzhou@redhat.com>
-Date: Tue, 27 Mar 2018 16:50:43 +0800
-Subject: [LTP] [PATCH] fcntl37: test posix lock across execve
-In-Reply-To: <20180326143313.GE27423@rei>
-References: <1522070895-2289-1-git-send-email-xzhou@redhat.com>
- <20180326143313.GE27423@rei>
-Message-ID: <20180327085043.e7hrrcho5xzkdh34@XZHOUW.usersys.redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 27 Mar 2018 11:22:47 +0200
+Subject: [LTP] [RFC PATCH v2 0/4] Rewrite tests into new API + fixes
+In-Reply-To: <1522103487.3541.162.camel@linux.vnet.ibm.com>
+References: <20180314155731.5943-1-pvorel@suse.cz>
+ <1522103487.3541.162.camel@linux.vnet.ibm.com>
+Message-ID: <20180327092247.xja3b7vzwsan2kiy@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Mimi,
 
-Thanks for reviewing!
+> Hi Petr,
 
-On Mon, Mar 26, 2018 at 04:33:33PM +0200, Cyril Hrubis wrote:
-> Hi!
-> > diff --git a/testcases/kernel/syscalls/fcntl/Makefile b/testcases/kernel/syscalls/fcntl/Makefile
-> > index ae37214..7a06aa7 100644
-> > --- a/testcases/kernel/syscalls/fcntl/Makefile
-> > +++ b/testcases/kernel/syscalls/fcntl/Makefile
-> > @@ -27,6 +27,9 @@ fcntl34_64: LDLIBS += -lpthread
-> >  fcntl36: LDLIBS += -lpthread
-> >  fcntl36_64: LDLIBS += -lpthread
-> >  
-> > +fcntl37: LDLIBS += -lpthread
-> > +fcntl37_64: LDLIBS += -lpthread
-> 
-> This is wrong, we should use CFLAGS += -pthread instead, also the rest
-				^ This is not working.
+> On Wed, 2018-03-14 at 16:57 +0100, Petr Vorel wrote:
+> > Hi,
 
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -DTST_USE_NEWER64_SYSCALL=1 -pthread -D_FORTIFY_SOURCE=2 -I/home/xzhou/ltp/testcases/kernel/syscalls/fcntl -I/home/xzhou/ltp/testcases/kernel/syscalls/fcntl/../utils -D_GNU_SOURCE -I../../../../include -I../../../../include -I../../../../include/old/ -D_FILE_OFFSET_BITS=64  -c -o fcntl37_64.o fcntl37.c
-gcc   -L../../../../lib  fcntl37_64.o   -lltp -o fcntl37_64
-../../../../lib/libltp.a(safe_pthread.o): In function `safe_pthread_create':
-/home/xzhou/ltp/lib/safe_pthread.c:30: undefined reference to `pthread_create'
-../../../../lib/libltp.a(safe_pthread.o): In function `safe_pthread_join':
-/home/xzhou/ltp/lib/safe_pthread.c:46: undefined reference to `pthread_join'
-collect2: error: ld returned 1 exit status
+> > this is a second attempt to rewrite IMA tests.
+> > Comments and fixes are welcome.
+
+> > Changes v1->v2:
+> > * ima_measurements.sh: add support for "ima-ng" and "ima-sig" IMA
+> >   measurement templates
+> > * ima_measurements.sh: add support for most of hash algorithms is
+> >   defined in include/uapi/linux/hash_info.h
+> > * fix ima_boot_aggregate ("ima/ima_boot_aggregate: Increase MAX_EVENT_SIZE to 8k")
+> > * ima_tpm.sh: fixes of TPM test ("ima/tpm: Various fixes")
+> > * ima_measurements.sh: drop ima_measure and use evmctl (external dependency) instead
+> > * ima_measurements.sh: check XFS version for iversion support
+
+> > TODO
+> > * ima_measurements.sh: Add support for ima_template_fmt kernel parameter.
+
+> > * ima_policy.sh: Detect if the policy must be signed [1] (IMA_WRITE_POLICY or
+> > "secure_boot" kernel parameter).
+
+> > @Mimi: What is a best approach in case policy must be signed? measure.policy
+> > and measure.policy-invalid files are not signed should we skip all tests in
+> > ima_policy.sh with something like "Not supported when policy must be signed"?
+> > Or running them both and expect them to fail as they're not signed?
+
+> > As that's how I understand your related commit in kernel
+> > (19f8a84713ed "ima: measure and appraise the IMA policy itself").
+
+> If you can determine that writing the policy should fail and then
+> detect that it actually did fail, the latter option is more complete. 
+I'll try.
+
+> > BTW load_policy() use old approach catting the content into sysfs policy file.
+> > Maybe it'd be good to echo policy filename into sysfs policy file for kernel >
+> > 4.6 (feature added in 7429b092811f "ima: load policy using path").
+
+> Cat'ing the file doesn't work if the policy has to be signed. I
+> haven't tried writing the policy pathname, when the file doesn't
+> require it to be signed.  There's no reason that it wouldn't work.
+Ideal testsuite would tests all combinations, but thats impossible as that's too complex
+(setting kernel variables in grub and rebooting is clearly out of LTP scope).
+I might try to cover more scenarios (e.g. try to cat policy when required to be signed and
+detect failure before uploading policy pathname; trying to append policy for second time
+when it's not allowed).
+
+> > * ima_measurement.sh,ima_violations.sh: Avoid using tmpfs filesystem [1]. You
+> > suggested using RAM block device. Would it be ok to use filesystem created on
+> > loop device (/dev/loop0)? Or even create image file in $TMPDIR (mostly
+> > /tmp, which can be tmpfs) and use it as a loop device?
+
+> Yes, creating a filesystem on a loop device should work.
+
+> eg.
+> $ dd if=/dev/zero of=/tmp/test.img count=40960
+> $ mkfs -t ext3 -q /tmp/test.img
+> $ sudo mount -o loop=/dev/loop0 /tmp/test.img /mnt
+> $ sudo cp --preserve=xattr /usr/bin/ls /mnt/
+> $ getfattr -n security.ima -e hex --dump /mnt/ls
+
+> # file: mnt/ls
+> security.ima=0x0302046e6c104601001f0e4ed440b63a16bb13e68a3ae556a311047
+> 57daa51bce56f505367c00ec05bbfe38a1f7b0aa56b86ff41eba7cddaca0b7522bb46e
+> 00e72b63aeb81645c2e0fdf896dfc51303917bfb4c7b360ad22a85ff4a0570b2e29059
+> aba6c8ddd1db84d6cbfe6bb341549b7aa5a004acb96c4a14273ead954fb3ce3bcece04
+> 680cba0c763b0d122d8f358a534cb2b786ef892d3729ff56abe10694c3bbcd35909cc1
+> 046cb89553bb4636bc0493362758f24bb8cbaf5c88b16c0ecbb879ef7c4a3281cb970a
+> b34634923a5c73a624528f70a03ce5fbef2845e770c536a8da1cce374381a1b176a230
+> d438e9fd2f16f95c6ee16f49ba107cd57120a31f18339cfe3215a69
+
+Thanks for a complete howto :).
 
 
-> of the Makefile should be fixed as well.
-> 
-> >  include $(top_srcdir)/include/mk/testcases.mk
-> >  include $(abs_srcdir)/../utils/newer_64.mk
-> 
-> ...
-> 
-> > +#include "lapi/fcntl.h"
-> > +#include "tst_safe_pthread.h"
-> > +#include "tst_test.h"
-> > +
-> > +static const char fname[] = "tst_lock_execve";
-> > +static const char flag_fname[] = "/tmp/execved";
->                                        ^
-> 				     You must not create files in random
-> 				     places. Once you set the
-> 				     .needs_tmpdir in the test structure
-> 				     the test is executed with unique temporary
-> 				     directory as working directory so
-> 				     all you need to do for temporary
-> 				     files is to work with relative filenames.
-> 
-> > +static void cleanup(void);
-> > +
-> > +static void *thread_fn(void *arg)
-> > +{
-> > +	int fd = *(int *)arg;
->                    ^
-> 		   This is broken, you have to use intptr_t
-> 
-> > +	tst_res(TINFO, "Thread running. fd %d", fd);
-> > +	/* Just need to be alive when execve. */
-> > +	sleep(5);
-> > +	SAFE_CLOSE(fd);
-> > +	return NULL;
-> > +}
-> > +
-> > +static void checklock(int fd)
-> > +{
-> > +	pid_t pid = SAFE_FORK();
-> > +	if (pid == 0) {
-> > +		struct flock flck = {
-> > +			.l_type = F_WRLCK,
-> > +			.l_whence = SEEK_SET,
-> > +			.l_start = 0,
-> > +			.l_len = 1,
-> > +		};
-> > +		SAFE_FCNTL(fd, F_GETLK, &flck);
-> > +		if (flck.l_type == F_UNLCK)
-> > +			tst_res(TFAIL, "Record lock gets lost after execve");
-> > +		else
-> > +			tst_res(TPASS, "Record lock survives execve");
-> > +		SAFE_CLOSE(fd);
-> > +		_exit(0);
-> 
-> Why _exit() ?
-> 
-> > +	}
-> > +	waitpid(pid, NULL, 0);
-> 
-> SAFE_WAITPID()
-> 
-> > +}
-> 
-> Also having the check in a separate function and calling it several
-> times makes it kind of hard for debugging. if one of the assertions
-> fails the error messages would be the same. Maybe we should pass a
-> string with describes assertion type to the function and use it
-> int the tst_res() messages.
-> 
-> > +static void test01(void)
-> > +{
-> > +	int fd, ret;
-> > +	struct stat stat_buf;
-> > +
-> > +	/*
-> > +	 * If tmp/tst_lock_execve exists, execve to run checklock.
-> > +	 */
-> > +	ret = stat(flag_fname, &stat_buf);
-> > +	if (ret == 0) {
-> > +		checklock(fd);
-> > +		cleanup();
-> 
-> You must not call the cleanup from the test. Cleanup function is called
-> from the test library.
-> 
-> > +		_exit(0);
-> 
-> Again why _exit() ?
-> 
-> > +	}
-> 
-> Don't do this.
-> 
-> You must not reexecute the testcase and put file flags into random
-> places. If you need execve() a test helper, you have to write simple
-> binary helper. See testcases/kernel/syscalls/creat/creat07_child.c
+> > To be honnest, I'm not sure if I addressed your comment [2]:
+> > These tests are for the IMA-measurement aspect only, not IMA-
+> > appraisal.  Adding measurements to the measurement list won't cause
+> > the system to stop working, unless keys are sealed to a particular TPM
+> > PCR value.  Nobody is or should be sealing keys to PCR-10, since the
+> > ordering of the measurements is non deterministic.
+> > As we add IMA-appraisal tests requiring files to be signed, things
+> > will fail if either the public key isn't on the IMA keyring or the
+> > file isn't properly signed.  For this reason, limiting file IMA-
+> > appraisal tests to a particular filesystem simplifies testing.
 
-Thanks for the pointer. If I can define TST_NO_DEFAULT_MAIN and have
-main() function in this testcase, file flag is not needed.
-Passing args would do the trick, as Daniel's original reproducer.
+> Even without adding IMA-appraisal tests, updating/cleaning up the IMA-
+> measurement tests is good.
+I'll merge current version (note issues in TODO in commit message) and work these issues
+when time allows.
+Can I add you Acked-by?
 
-Thanks,
-Xiong
-> 
-> > +	/*
-> > +	 * If tmp/tst_lock_execve does not exist, initialize it.
-> > +	 */
-> 
-> Please no useless comments like this one.
-> 
-> > +	SAFE_OPEN(flag_fname, O_RDWR|O_CREAT, 0755);
-> > +	fd = SAFE_OPEN(fname, O_RDWR|O_CREAT, 0755);
-> > +	struct flock64 flck = {
-> > +		.l_type = F_WRLCK,
-> > +		.l_whence = SEEK_SET,
-> > +		.l_start  = 0,
-> > +		.l_len    = 1,
-> > +	};
-> > +	SAFE_FCNTL(fd, F_SETLK, &flck);
-> > +
-> > +	/*
-> > +	 * Creat thread and keep it running after placing posix
-> > +	 * write lock.
-> > +	 */
-> 
-> Please no useless comments.
-> 
-> > +	pthread_t th;
-> > +	SAFE_PTHREAD_CREATE(&th, NULL, thread_fn, (void *)&fd);
->                                                     ^
-> 						    Here as well, we
-> 						    have to cast the fd
-> 						    to intptr_t first.
-> > +	sleep(1);
-> 
-> Please no random sleeps() for thread synchronization, either use real
-> thread synchronization primitives or LTP checkpoint synchronization
-> library which is based on futexes.
-> 
-> See:
-> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#229-fork-and-parent-child-synchronization
-> 
-> > +	/*
-> > +	 * Clear CLOEXEC
-> > +	 */
-> 
-> Please no useless comments.
-> 
-> > +	int flags=SAFE_FCNTL(fd, F_GETFD);
-> > +	flags &= ~FD_CLOEXEC;
-> > +	SAFE_FCNTL(fd, F_SETFD, flags);
-> > +
-> > +	/*
-> > +	 * Get full path name of running programm then execve.
-> > +	 */
-> 
-> Please no useless comments.
-> 
-> 
-> > +	char prog_name[PATH_MAX];
-> > +	ret = readlink("/proc/self/exe", prog_name, PATH_MAX);
-> > +	char * const newargv[] = { prog_name, NULL, NULL };
-> 
-> This is far to complicated for no reason. The path to LTP test binaries
-> is in $PATH so you can execute any LTP binary just by it's name.
-> Absolute path is absolutely unneeded.
-> 
-> > +	tst_res(TINFO, "execve %s with %s locked", prog_name, fname);
-> > +	execve(prog_name, newargv, NULL);
-> > +	/*
-> > +	 * Failure info for debug
-> > +	 */
-> 
-> Please no useless comments.
-> 
-> > +	perror("execve ");
-> 
-> No perror() please. Any error messages should be printed via tst_res()
-> or tst_brk().
-> 
-> > +}
-> > +
-> > +static void cleanup(void)
-> > +{
-> > +	SAFE_UNLINK(flag_fname);
-> > +}
-> > +
-> > +static struct tst_test test = {
-> > +	.needs_tmpdir = 1,
-> > +	.forks_child = 1,
-> > +	.test_all = test01,
-> > +	.cleanup = cleanup,
-> > +};
-> > -- 
-> > 1.8.3.1
-> > 
-> > 
-> > -- 
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
+> thank you!
+Thanks a lot for your comments and time.
+
+> Mimi
+
+
+Kind regards,
+Petr
+
+> > [1] http://lists.linux.it/pipermail/ltp/2018-January/006970.html
+> > [2] http://lists.linux.it/pipermail/ltp/2018-January/007024.html
+
+
+
+> > Kind regards,
+> > Petr
+
+
+> > Petr Vorel (4):
+> >   security/ima: Rewrite tests into new API + fixes
+> >   security/ima: Run measurements after policy
+> >   ima/ima_boot_aggregate: Increase MAX_EVENT_SIZE to 8k
+> >   ima/tpm: Various fixes
+
+> >  runtest/ima                                        |   8 +-
+> >  testcases/kernel/security/integrity/.gitignore     |   1 -
+> >  .../integrity/ima/src/ima_boot_aggregate.c         |   2 +-
+> >  .../security/integrity/ima/src/ima_measure.c       | 219 -------------------
+> >  .../integrity/ima/tests/ima_measurements.sh        | 239 +++++++++++----------
+> >  .../security/integrity/ima/tests/ima_policy.sh     | 148 ++++++-------
+> >  .../security/integrity/ima/tests/ima_setup.sh      | 110 ++++------
+> >  .../kernel/security/integrity/ima/tests/ima_tpm.sh | 160 ++++++--------
+> >  .../security/integrity/ima/tests/ima_violations.sh | 217 +++++++++----------
+> >  9 files changed, 417 insertions(+), 687 deletions(-)
+> >  delete mode 100644 testcases/kernel/security/integrity/ima/src/ima_measure.c
+> >  mode change 100755 => 100644 testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+
+
