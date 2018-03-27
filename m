@@ -1,61 +1,169 @@
-From: Xiong Zhou <xzhou@redhat.com>
-Date: Tue, 27 Mar 2018 20:12:09 +0800
-Subject: [LTP] [PATCH] fcntl37: test posix lock across execve
-In-Reply-To: <20180327101929.GA11658@rei>
-References: <1522070895-2289-1-git-send-email-xzhou@redhat.com>
- <20180326143313.GE27423@rei>
- <20180327085043.e7hrrcho5xzkdh34@XZHOUW.usersys.redhat.com>
- <20180327101929.GA11658@rei>
-Message-ID: <20180327121209.qnl5xxjezdyiu72f@XZHOUW.usersys.redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 27 Mar 2018 14:31:28 +0200
+Subject: [LTP] [PATCH] setregid: use common user and group names.
+In-Reply-To: <20180319200113.106692-1-sspatil@google.com>
+References: <20180319200113.106692-1-sspatil@google.com>
+Message-ID: <20180327123128.25emajfdic7pjunu@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Mar 27, 2018 at 12:19:29PM +0200, Cyril Hrubis wrote:
-> Hi!
-> > > > +fcntl37: LDLIBS += -lpthread
-> > > > +fcntl37_64: LDLIBS += -lpthread
-> > > 
-> > > This is wrong, we should use CFLAGS += -pthread instead, also the rest
-> > 				^ This is not working.
-> > 
-> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -DTST_USE_NEWER64_SYSCALL=1 -pthread -D_FORTIFY_SOURCE=2 -I/home/xzhou/ltp/testcases/kernel/syscalls/fcntl -I/home/xzhou/ltp/testcases/kernel/syscalls/fcntl/../utils -D_GNU_SOURCE -I../../../../include -I../../../../include -I../../../../include/old/ -D_FILE_OFFSET_BITS=64  -c -o fcntl37_64.o fcntl37.c
-> > gcc   -L../../../../lib  fcntl37_64.o   -lltp -o fcntl37_64
-> > ../../../../lib/libltp.a(safe_pthread.o): In function `safe_pthread_create':
-> > /home/xzhou/ltp/lib/safe_pthread.c:30: undefined reference to `pthread_create'
-> > ../../../../lib/libltp.a(safe_pthread.o): In function `safe_pthread_join':
-> > /home/xzhou/ltp/lib/safe_pthread.c:46: undefined reference to `pthread_join'
-> > collect2: error: ld returned 1 exit status
-> 
-> Hmm, looks like something is wrong with the newer_64.mk. It picks up a
-> linker rule that does not include CFLAGS. Following patch fixes that,
-> but I'm not 100% sure that it's correct, I will look further into that.
-> 
-> diff --git a/testcases/kernel/syscalls/utils/newer_64.mk b/testcases/kernel/syscalls/utils/newer_64.mk
-> index 8cd7e03c8..c70c2af53 100644
-> --- a/testcases/kernel/syscalls/utils/newer_64.mk
-> +++ b/testcases/kernel/syscalls/utils/newer_64.mk
-> @@ -49,7 +49,9 @@ HAS_NEWER_64          := 0
->  endif
->  
->  %_64: CFLAGS += -D$(DEF_64)=1
-> -# XXX (garrcoop): End section of code in question..
->  
->  %_64.o: %.c
->         $(COMPILE.c) $(OUTPUT_OPTION) $<
-> +
-> +%_64: %_64.o
-> +       $(LINK.c) $(OUTPUT_OPTION) $< $(LDLIBS)
+Hi Sandeep,
 
-This patch works fine.
+> Android systems do not have groups names 'users' 'sys' etc. Replace them
+> with 'nobody' and 'daemon' for the purposes of setregid0[34] tests and
+> make the nomenclature across both of these tests more consistent.
 
-Thanks,
-Xiong
+> After the change, both setregid03 and setregid04 can run
+> on Android systems.
 
-> 
-> 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
+> Signed-off-by: Sandeep Patil <sspatil@google.com>
+> ---
+>  .../kernel/syscalls/setregid/setregid03.c     | 51 ++++++++++---------
+>  .../kernel/syscalls/setregid/setregid04.c     | 18 +++----
+>  2 files changed, 35 insertions(+), 34 deletions(-)
+
+> diff --git a/testcases/kernel/syscalls/setregid/setregid03.c b/testcases/kernel/syscalls/setregid/setregid03.c
+> index a51719e80..97102e0ee 100644
+> --- a/testcases/kernel/syscalls/setregid/setregid03.c
+> +++ b/testcases/kernel/syscalls/setregid/setregid03.c
+> @@ -41,7 +41,7 @@ static gid_t neg_one = -1;
+>  /* flag to tell parent if child passed or failed. */
+>  static int flag;
+
+> -struct group users, sys, root, bin;
+> +struct group nobody_gr, daemon_gr, root_gr, bin_gr;
+>  struct passwd nobody;
+>  /*
+>   * The following structure contains all test data.  Each structure in the array
+> @@ -57,27 +57,28 @@ struct test_data_t {
+>  	char *test_msg;
+>  } test_data[] = {
+>  	{
+> -	&sys.gr_gid, &bin.gr_gid, &pass, &sys, &bin,
+> -		    "After setregid(sys, bin),"}, {
+> -	&neg_one, &sys.gr_gid, &pass, &sys, &sys, "After setregid(-1, sys)"},
+> -	{
+> -	&neg_one, &bin.gr_gid, &pass, &sys, &bin, "After setregid(-1, bin),"},
+> -	{
+> -	&bin.gr_gid, &neg_one, &pass, &bin, &bin, "After setregid(bin, -1),"},
+> -	{
+> -	&neg_one, &neg_one, &pass, &bin, &bin, "After setregid(-1, -1),"}, {
+> -	&neg_one, &bin.gr_gid, &pass, &bin, &bin, "After setregid(-1, bin),"},
+> -	{
+> -	&bin.gr_gid, &neg_one, &pass, &bin, &bin, "After setregid(bin, -1),"},
+> -	{
+> -	&bin.gr_gid, &bin.gr_gid, &pass, &bin, &bin,
+> +	&daemon_gr.gr_gid, &bin_gr.gr_gid, &pass, &daemon_gr, &bin_gr,
+> +		    "After setregid(daemon, bin),"}, {
+> +	&neg_one, &daemon_gr.gr_gid, &pass, &daemon_gr, &daemon_gr,
+> +		    "After setregid(-1, daemon)"}, {
+> +	&neg_one, &bin_gr.gr_gid, &pass, &daemon_gr, &bin_gr,
+> +		    "After setregid(-1, bin),"}, {
+> +	&bin_gr.gr_gid, &neg_one, &pass, &bin_gr, &bin_gr,
+> +		    "After setregid(bin, -1),"}, {
+> +	&neg_one, &neg_one, &pass, &bin_gr, &bin_gr,
+> +		    "After setregid(-1, -1),"}, {
+> +	&neg_one, &bin_gr.gr_gid, &pass, &bin_gr, &bin_gr,
+> +		    "After setregid(-1, bin),"}, {
+> +	&bin_gr.gr_gid, &neg_one, &pass, &bin_gr, &bin_gr,
+> +		    "After setregid(bin, -1),"}, {
+> +	&bin_gr.gr_gid, &bin_gr.gr_gid, &pass, &bin_gr, &bin_gr,
+>  		    "After setregid(bin, bin),"}, {
+> -	&sys.gr_gid, &neg_one, &fail, &bin, &bin, "After setregid(sys, -1)"},
+> -	{
+> -	&neg_one, &sys.gr_gid, &fail, &bin, &bin, "After setregid(-1, sys)"},
+> -	{
+> -	&sys.gr_gid, &sys.gr_gid, &fail, &bin, &bin,
+> -		    "After setregid(sys, sys)"},};
+> +	&daemon_gr.gr_gid, &neg_one, &fail, &bin_gr, &bin_gr,
+> +		    "After setregid(daemon, -1)"}, {
+> +	&neg_one, &daemon_gr.gr_gid, &fail, &bin_gr, &bin_gr,
+> +		    "After setregid(-1, daemon)"}, {
+> +	&daemon_gr.gr_gid, &daemon_gr.gr_gid, &fail, &bin_gr, &bin_gr,
+> +		    "After setregid(daemon, daemon)"},};
+
+>  int TST_TOTAL = sizeof(test_data) / sizeof(test_data[0]);
+
+> @@ -102,7 +103,7 @@ int main(int ac, char **av)
+>  		tst_count = 0;
+
+>  		/* set the appropriate ownership values */
+> -		if (SETREGID(NULL, sys.gr_gid, bin.gr_gid) == -1)
+> +		if (SETREGID(NULL, daemon_gr.gr_gid, bin_gr.gr_gid) == -1)
+>  			tst_brkm(TBROK, NULL, "Initial setregid failed");
+
+>  		SAFE_SETEUID(NULL, nobody.pw_uid);
+> @@ -191,11 +192,11 @@ static void setup(void)
+>  		tst_brkm(TBROK, NULL, "%s must be a valid group", #group); \
+>  	} \
+>  	GID16_CHECK(junk->gr_gid, setregid, NULL); \
+> -	group = *(junk); \
+> +	group ## _gr = *(junk); \
+>  } while (0)
+
+> -	GET_GID(users);
+> -	GET_GID(sys);
+> +	GET_GID(nobody);
+> +	GET_GID(daemon);
+>  	GET_GID(bin);
+
+>  	TEST_PAUSE;
+> diff --git a/testcases/kernel/syscalls/setregid/setregid04.c b/testcases/kernel/syscalls/setregid/setregid04.c
+> index 0e0aae782..73f8bcb03 100644
+> --- a/testcases/kernel/syscalls/setregid/setregid04.c
+> +++ b/testcases/kernel/syscalls/setregid/setregid04.c
+> @@ -35,7 +35,7 @@ TCID_DEFINE(setregid04);
+
+>  static gid_t neg_one = -1;
+
+> -static struct group users_gr, daemon_gr, root_gr, bin_gr;
+> +static struct group nobody_gr, daemon_gr, root_gr, bin_gr;
+
+>  /*
+>   * The following structure contains all test data.  Each structure in the array
+> @@ -52,8 +52,8 @@ struct test_data_t {
+>  	{
+>  	&root_gr.gr_gid, &root_gr.gr_gid, &root_gr, &root_gr,
+>  		    "After setregid(root, root),"}, {
+> -	&users_gr.gr_gid, &neg_one, &users_gr, &root_gr,
+> -		    "After setregid(users, -1)"}, {
+> +	&nobody_gr.gr_gid, &neg_one, &nobody_gr, &root_gr,
+> +		    "After setregid(nobody, -1)"}, {
+>  	&root_gr.gr_gid, &neg_one, &root_gr, &root_gr,
+>  		    "After setregid(root,-1),"}, {
+>  	&neg_one, &neg_one, &root_gr, &root_gr,
+> @@ -62,12 +62,12 @@ struct test_data_t {
+>  		    "After setregid(-1, root)"}, {
+>  	&root_gr.gr_gid, &neg_one, &root_gr, &root_gr,
+>  		    "After setregid(root, -1),"}, {
+> -	&daemon_gr.gr_gid, &users_gr.gr_gid, &daemon_gr, &users_gr,
+> -		    "After setregid(daemon, users)"}, {
+> -	&neg_one, &neg_one, &daemon_gr, &users_gr,
+> +	&daemon_gr.gr_gid, &nobody_gr.gr_gid, &daemon_gr, &nobody_gr,
+> +		    "After setregid(daemon, nobody)"}, {
+> +	&neg_one, &neg_one, &daemon_gr, &nobody_gr,
+>  		    "After setregid(-1, -1)"}, {
+> -	&neg_one, &users_gr.gr_gid, &daemon_gr, &users_gr,
+> -		    "After setregid(-1, users)"}
+> +	&neg_one, &nobody_gr.gr_gid, &daemon_gr, &nobody_gr,
+> +		    "After setregid(-1, nobody)"}
+>  };
+
+>  int TST_TOTAL = sizeof(test_data) / sizeof(test_data[0]);
+> @@ -123,7 +123,7 @@ static void setup(void)
+>  	tst_sig(FORK, DEF_HANDLER, cleanup);
+
+>  	SAFE_GETGROUP(root);
+> -	SAFE_GETGROUP(users);
+> +	SAFE_GETGROUP(nobody);
+>  	SAFE_GETGROUP(daemon);
+>  	SAFE_GETGROUP(bin);
+
+Thanks, pushed, with added note in commit message.
+
+
+Kind regards,
+Petr
