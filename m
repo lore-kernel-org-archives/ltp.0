@@ -1,22 +1,30 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 27 Mar 2018 15:01:31 +0200
-Subject: [LTP] [PATCH v6 0/3] Add regression test for CVE-2017-17053
-In-Reply-To: <5ABA136A.8080609@cn.fujitsu.com>
-References: <20180309124418.30271-1-mmoese@suse.de>
- <5AB35983.6060900@cn.fujitsu.com> <5ABA136A.8080609@cn.fujitsu.com>
-Message-ID: <20180327130131.GA28115@rei>
+From: Yixin Zhang <yixin.zhang@intel.com>
+Date: Tue, 27 Mar 2018 21:22:24 +0800
+Subject: [LTP] [PATCH ltp] tools/apicmds/.gitignore: add tst_flush
+Message-ID: <20180327132224.15897-1-yixin.zhang@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-As Michael said there is not much we can do in LTP here, the test cannot
-be executed because kernel is already tainted. The best solution is to
-fix the kernel not to spew warnings but I know that it's not as easy as
-it sounds.
+Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+---
+ tools/apicmds/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/tools/apicmds/.gitignore b/tools/apicmds/.gitignore
+index a9ca9ec6d..e57a38ccd 100644
+--- a/tools/apicmds/.gitignore
++++ b/tools/apicmds/.gitignore
+@@ -1,6 +1,7 @@
+ tst_brk
+ tst_brkm
+ tst_exit
++tst_flush
+ tst_get_unused_port
+ tst_ncpus
+ tst_ncpus_conf
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.14.1
+
