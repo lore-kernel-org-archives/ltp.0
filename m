@@ -1,52 +1,33 @@
-From: Travis CI <builds@travis-ci.org>
-Date: Tue, 27 Mar 2018 14:01:26 +0000
-Subject: [LTP] Errored: linux-test-project/ltp#725 (master - fc42ec9)
-In-Reply-To: <linux-test-project/ltp+358895226+errored@travis-ci.org>
-Message-ID: <5aba4eb3be5a8_43fcd67a32e649774f1@23d99168-b82a-45d2-8a55-b84fa9a8a92a.mail>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 27 Mar 2018 16:08:35 +0200
+Subject: [LTP] [PATCH] Make floating point tests Android-compatible
+In-Reply-To: <CAFt2AZUhp9tuWOVd-t-ij-eG-21+DEqeXE5XCwK=tQ8DmOnAgg@mail.gmail.com>
+References: <CAFt2AZUhp9tuWOVd-t-ij-eG-21+DEqeXE5XCwK=tQ8DmOnAgg@mail.gmail.com>
+Message-ID: <20180327140835.GB28115@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Build Update for linux-test-project/ltp
--------------------------------------
+Hi!
+> Android does not implement pthread_cancel. The function is replaced
+> by a no-op in a compatibility header. In most cases, the only side
+> effect is that threads cannot be interrupted and have to exit normally.
+> However, floating point tests are calling pthread_cancel and waiting for
+> a thread doing pthread_sigwait to be finished (Which will never happen).
+> 
+> This patch implements the same logic using pthread_kill with SIGUSR2
+> instead, allowing the tests to run under Android.
 
-Build: #725
-Status: Errored
+First of all the patch is mangled, probaly by your email client, check
+its settings for attachements.
 
-Duration: 12 minutes and 40 seconds
-Commit: fc42ec9 (master)
-Author: Cyril Hrubis
-Message: tools/apicmds: Remove tst_flush from Makefile
+Secondly, looking at the patch, do we really have to join the signal
+handler thread at the end? Cannot we just delete the the
+pthreat_cancel() and pthread_join() for the sig_hand and be done with
+it?
 
-It has been removed from the source in:
-
-commit eb50f0a9e0c26f3cab8472f47a2ea8171ce5ee52
-Author: Michael Moese <mmoese@suse.de>
-Date:   Fri Mar 9 15:16:07 2018 +0100
-
-    remove old tst_flush()
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-Reported-by: Yixin Zhang <yixin.zhang@intel.com>
-
-View the changeset: https://github.com/linux-test-project/ltp/compare/1b7cf9474a6f...fc42ec9f78b6
-
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/358895226?utm_source=email&utm_medium=notification
-
---
-
-You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
-
-
-
-
-
-
-
-This email was sent to ltp@lists.linux.it (mailto:ltp@lists.linux.it)
-unsubscribe from this list (http://clicks.travis-ci.com/track/unsub.php?u=14313403&id=851a8e9b36cb4d5e9bf4115954210d84.nwh%2ButJmyvjUjRzsB8BeiP5x1%2B8%3D&r=https%3A%2F%2Fmandrillapp.com%2Funsub%3Fmd_email%3Dltp%2540lists.linux.it)
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180327/f56dea32/attachment.html>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
