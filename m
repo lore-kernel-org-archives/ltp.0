@@ -1,103 +1,865 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 29 Mar 2018 17:45:36 +0200
-Subject: [LTP] [RFC PATCH 2/3] network/interface: Cleanup if4-addr-change
+Date: Thu, 29 Mar 2018 17:45:37 +0200
+Subject: [LTP] [RFC PATCH 3/3] net: Migrate test_net_stress.sh and it's
+	dependencies to new shell API
 In-Reply-To: <20180329154537.32711-1-pvorel@suse.cz>
 References: <20180329154537.32711-1-pvorel@suse.cz>
-Message-ID: <20180329154537.32711-3-pvorel@suse.cz>
+Message-ID: <20180329154537.32711-4-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Wrap test code into function.
-This is preparation for next commit.
-
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/network/stress/interface/if4-addr-change | 60 ++++++++++++----------
- 1 file changed, 33 insertions(+), 27 deletions(-)
+ testcases/network/stress/interface/if-addr-adddel  | 31 ++++++++----------
+ .../network/stress/interface/if-addr-addlarge      | 37 ++++++++++------------
+ testcases/network/stress/interface/if-mtu-change   | 24 ++++++--------
+ testcases/network/stress/interface/if-route-adddel | 26 ++++++---------
+ .../network/stress/interface/if-route-addlarge     | 28 +++++++---------
+ testcases/network/stress/interface/if-updown       | 27 +++++++---------
+ testcases/network/stress/interface/if4-addr-change | 25 +++++++++------
+ .../grp-operation/mcast-group-multiple-socket      | 16 ++++++----
+ .../multicast/grp-operation/mcast-group-same-group | 17 +++++++---
+ .../grp-operation/mcast-group-single-socket        | 17 +++++++---
+ .../grp-operation/mcast-group-source-filter        | 17 +++++++---
+ .../stress/multicast/grp-operation/mcast-lib.sh    | 15 +++++----
+ .../network/stress/ns-tools/test_net_stress.sh     | 19 ++++++++++-
+ 13 files changed, 156 insertions(+), 143 deletions(-)
 
+diff --git a/testcases/network/stress/interface/if-addr-adddel b/testcases/network/stress/interface/if-addr-adddel
+index 4a0501e09..a8fe0e06a 100644
+--- a/testcases/network/stress/interface/if-addr-adddel
++++ b/testcases/network/stress/interface/if-addr-adddel
+@@ -1,5 +1,6 @@
+ #!/bin/sh
+ # Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
++# Copyright (c) 2017-2018 Petr Vorel <pvorel@suse.cz>
+ # Copyright (c) International Business Machines  Corp., 2005
+ #
+ # This program is free software; you can redistribute it and/or
+@@ -17,10 +18,10 @@
+ #
+ # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+ 
+-TST_TOTAL=2
+-
++TST_CNT=2
++TST_SETUP="netstress_setup"
+ TST_CLEANUP="netstress_cleanup"
+-
++TST_TESTFUNC="test_if_ip"
+ . test_net_stress.sh
+ 
+ # The interval of the check interface activity
+@@ -33,7 +34,7 @@ test_body()
+ 	case $cmd_type in
+ 	if_cmd) local cmd_name='ifconfig' ;;
+ 	ip_cmd) local cmd_name='ip' ;;
+-	*) tst_brkm TBROK "Unknown test parameter '$cmd_type'"
++	*) tst_brk TBROK "Unknown test parameter '$cmd_type'"
+ 	esac
+ 
+ 	local num=$(($(od -A n -t u1 -N 1 /dev/random) * 253 / 255 + 2 ))
+@@ -46,10 +47,10 @@ test_body()
+ 		local netmask=24
+ 	fi
+ 
+-	tst_resm TINFO "'$cmd_name' add/del IPv$ipver '$new_ip' $NS_TIMES times"
++	tst_res TINFO "'$cmd_name' add/del IPv$ipver '$new_ip' $NS_TIMES times"
+ 
+ 	if ! restore_ipaddr; then
+-		tst_resm TBROK "Failed to set default IP addresses"
++		tst_res TBROK "Failed to set default IP addresses"
+ 		return
+ 	fi
+ 
+@@ -69,14 +70,14 @@ test_body()
+ 		esac
+ 
+ 		if [ $? -ne 0 ]; then
+-			tst_resm TFAIL "command failed to add $new_ip to $iface"
++			tst_res TFAIL "command failed to add $new_ip to $iface"
+ 			return
+ 		fi
+ 
+ 		ip addr show $iface | grep -q $new_ip
+ 		if [ $? -ne 0 ]; then
+ 			ip addr show $iface
+-			tst_resm TFAIL "$new_ip not configured"
++			tst_res TFAIL "$new_ip not configured"
+ 			return
+ 		fi
+ 
+@@ -96,26 +97,20 @@ test_body()
+ 		esac
+ 
+ 		if [ $? -ne 0 ]; then
+-			tst_resm TFAIL " delete command failed".
++			tst_res TFAIL " delete command failed".
+ 			return
+ 		fi
+ 
+ 		ip addr show $iface | grep -q $new_ip
+ 		if [ $? -eq 0 ]; then
+ 			ip addr show $iface
+-			tst_resm TFAIL "Failed to remove '$new_ip' address"
++			tst_res TFAIL "Failed to remove '$new_ip' address"
+ 			return
+ 		fi
+ 	done
+ 
+-	tst_resm TPASS "Test is finished correctly"
++	tst_res TPASS "Test is finished correctly"
+ }
+ 
+-netstress_setup
+-
+ tst_check_cmds ifconfig
+-
+-test_body 'if_cmd'
+-test_body 'ip_cmd'
+-
+-tst_exit
++tst_run
+diff --git a/testcases/network/stress/interface/if-addr-addlarge b/testcases/network/stress/interface/if-addr-addlarge
+index a81cf6129..c4b2c4ab4 100644
+--- a/testcases/network/stress/interface/if-addr-addlarge
++++ b/testcases/network/stress/interface/if-addr-addlarge
+@@ -1,5 +1,6 @@
+ #!/bin/sh
+ # Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
++# Copyright (c) 2017-2018 Petr Vorel <pvorel@suse.cz>
+ # Copyright (c) International Business Machines  Corp., 2005
+ #
+ # This program is free software; you can redistribute it and/or
+@@ -17,10 +18,10 @@
+ #
+ # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+ 
+-TST_TOTAL=2
+-
++TST_CNT=2
++TST_SETUP="netstress_setup"
+ TST_CLEANUP="netstress_cleanup"
+-
++TST_TESTFUNC="test_if_ip"
+ . test_net_stress.sh
+ 
+ # The interval of the check interface activity
+@@ -33,17 +34,17 @@ test_body()
+ 	case $cmd_type in
+ 	if_cmd) local cmd_name='ifconfig' ;;
+ 	ip_cmd) local cmd_name='ip' ;;
+-	*) tst_brkm TBROK "Unknown test parameter '$cmd_type'"
++	*) tst_brk TBROK "Unknown test parameter '$cmd_type'"
+ 	esac
+ 
+ 	local iface=$(tst_iface)
+ 	[ "$TST_IPV6" ] && local netmask=64 || local netmask=16
+ 
+-	tst_resm TINFO "'$cmd_name' add $IP_TOTAL IPv$ipver addresses"
+-	tst_resm TINFO "check interval that $iface is working: $CHECK_INTERVAL"
++	tst_res TINFO "'$cmd_name' add $IP_TOTAL IPv$ipver addresses"
++	tst_res TINFO "check interval that $iface is working: $CHECK_INTERVAL"
+ 
+ 	if ! restore_ipaddr; then
+-		tst_resm TBROK "Failed to set default IP addresses"
++		tst_res TBROK "Failed to set default IP addresses"
+ 		return
+ 	fi
+ 
+@@ -54,7 +55,7 @@ test_body()
+ 	[ "$TST_IPV6" ] && local xymax=65535 || xymax=254
+ 
+ 	if [ $IP_TOTAL -gt $((xymax * xymax)) ]; then
+-		tst_resm TWARN "set IP_TOTAL to $xymax * $xymax"
++		tst_res TWARN "set IP_TOTAL to $xymax * $xymax"
+ 		IP_TOTAL=$((xymax * xymax))
+ 	fi
+ 
+@@ -81,14 +82,14 @@ test_body()
+ 		esac
+ 
+ 		if [ $? -ne 0 ]; then
+-			tst_resm TFAIL "command failed to add $new_ip to $iface"
++			tst_res TFAIL "command failed to add $new_ip to $iface"
+ 			return
+ 		fi
+ 
+ 		ip addr show $iface | grep -q $new_ip
+ 		if [ $? -ne 0 ]; then
+ 			ip addr show $iface
+-			tst_resm TFAIL "$new_ip not configured"
++			tst_res TFAIL "$new_ip not configured"
+ 			return
+ 		fi
+ 
+@@ -106,14 +107,14 @@ test_body()
+ 		esac
+ 
+ 		if [ $? -ne 0 ]; then
+-			tst_resm TFAIL " delete command failed".
++			tst_res TFAIL " delete command failed".
+ 			return
+ 		fi
+ 
+ 		ip addr show $iface | grep -q $new_ip
+ 		if [ $? -eq 0 ]; then
+ 			ip addr show $iface
+-			tst_resm TFAIL "Failed to remove '$new_ip' address"
++			tst_res TFAIL "Failed to remove '$new_ip' address"
+ 			return
+ 		fi
+ 
+@@ -123,19 +124,13 @@ test_body()
+ 			y=1
+ 			x=$(($x + 1))
+ 			if [ $x -gt $xymax ]; then
+-				tst_brkm TBROK "Too large $IP_TOTAL"
++				tst_brk TBROK "Too large $IP_TOTAL"
+ 			fi
+ 		fi
+ 	done
+ 
+-	tst_resm TPASS "Test is finished correctly"
++	tst_res TPASS "Test is finished correctly"
+ }
+ 
+-netstress_setup
+-
+ tst_check_cmds ifconfig
+-
+-test_body 'if_cmd'
+-test_body 'ip_cmd'
+-
+-tst_exit
++tst_run
+diff --git a/testcases/network/stress/interface/if-mtu-change b/testcases/network/stress/interface/if-mtu-change
+index 15293c4a9..e2608318c 100644
+--- a/testcases/network/stress/interface/if-mtu-change
++++ b/testcases/network/stress/interface/if-mtu-change
+@@ -1,5 +1,6 @@
+ #!/bin/sh
+ # Copyright (c) 2015-2017 Oracle and/or its affiliates. All Rights Reserved.
++# Copyright (c) 2017-2018 Petr Vorel <pvorel@suse.cz>
+ # Copyright (c) International Business Machines  Corp., 2005
+ #
+ # This program is free software; you can redistribute it and/or
+@@ -17,10 +18,10 @@
+ #
+ # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+ 
+-TST_TOTAL=2
+-
++TST_CNT=2
++TST_SETUP="netstress_setup"
+ TST_CLEANUP="do_cleanup"
+-
++TST_TESTFUNC="test_if_ip"
+ . test_net_stress.sh
+ 
+ # The interval of the mtu change [second]
+@@ -52,14 +53,14 @@ test_body()
+ 	case $cmd_type in
+ 	if_cmd) local cmd_name='ifconfig' ;;
+ 	ip_cmd) local cmd_name='ip' ;;
+-	*) tst_brkm TBROK "Unknown test parameter '$cmd_type'"
++	*) tst_brk TBROK "Unknown test parameter '$cmd_type'"
+ 	esac
+ 
+ 	local iface=$(tst_iface)
+ 	local iface_rmt=$(tst_iface rhost)
+ 	[ "$TST_IPV6" ] && local netmask=64 || local netmask=16
+ 
+-	tst_resm TINFO "'$cmd_name changes MTU $MTU_CHANGE_TIMES times" \
++	tst_res TINFO "'$cmd_name changes MTU $MTU_CHANGE_TIMES times" \
+ 	               "every $CHANGE_INTERVAL seconds"
+ 
+ 	mtu_array_len=$(echo $CHANGE_VALUES | wc -w)
+@@ -73,7 +74,7 @@ test_body()
+ 
+ 		make_background_tcp_traffic
+ 
+-		tst_resm TINFO "set MTU to $mtu $cnt/$MTU_CHANGE_TIMES"
++		tst_res TINFO "set MTU to $mtu $cnt/$MTU_CHANGE_TIMES"
+ 		local ret=0
+ 		case $cmd_type in
+ 		if_cmd) ifconfig $iface mtu $mtu || ret=1
+@@ -85,7 +86,7 @@ test_body()
+ 		esac
+ 
+ 		if [ $? -ne 0 -o $ret -ne 0 ]; then
+-			tst_resm TFAIL "Failed to change the mtu at $cnt time"
++			tst_res TFAIL "Failed to change the mtu at $cnt time"
+ 			return
+ 		fi
+ 
+@@ -95,13 +96,6 @@ test_body()
+ 	done
+ }
+ 
+-netstress_setup
+-
+ tst_check_cmds ifconfig
+-
+ saved_mtu="$(cat /sys/class/net/$(tst_iface)/mtu)"
+-
+-test_body 'if_cmd'
+-test_body 'ip_cmd'
+-
+-tst_exit
++tst_run
+diff --git a/testcases/network/stress/interface/if-route-adddel b/testcases/network/stress/interface/if-route-adddel
+index 8c1dfeee2..e629f30e7 100644
+--- a/testcases/network/stress/interface/if-route-adddel
++++ b/testcases/network/stress/interface/if-route-adddel
+@@ -17,10 +17,10 @@
+ #
+ # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+ 
+-TST_TOTAL=2
+-
++TST_CNT=2
++TST_SETUP="netstress_setup"
+ TST_CLEANUP="netstress_cleanup"
+-
++TST_TESTFUNC="test_rt_ip"
+ . test_net_stress.sh
+ 
+ CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
+@@ -32,7 +32,7 @@ test_body()
+ 	case $cmd_type in
+ 	rt_cmd) local cmd_name='route' ;;
+ 	ip_cmd) local cmd_name='ip' ;;
+-	*) tst_brkm TBROK "Unknown test parameter '$cmd_type'"
++	*) tst_brk TBROK "Unknown test parameter '$cmd_type'"
+ 	esac
+ 
+ 	local iface=$(tst_iface)
+@@ -50,10 +50,10 @@ test_body()
+ 		esac
+ 	fi
+ 
+-	tst_resm TINFO "'$cmd_name' add/del ${new_rt}${opt_rt} $NS_TIMES times"
++	tst_res TINFO "'$cmd_name' add/del ${new_rt}${opt_rt} $NS_TIMES times"
+ 
+ 	if ! restore_ipaddr; then
+-		tst_resm TBROK "Failed to set default IP addresses"
++		tst_res TBROK "Failed to set default IP addresses"
+ 		return
+ 	fi
+ 
+@@ -66,7 +66,7 @@ test_body()
+ 		ip_cmd) ip route add ${new_rt}${opt_rt} dev $iface ;;
+ 		esac
+ 		if [ $? -ne 0 ]; then
+-			tst_resm TFAIL "Can't add route $new_rt to $iface"
++			tst_res TFAIL "Can't add route $new_rt to $iface"
+ 			return
+ 		fi
+ 
+@@ -75,7 +75,7 @@ test_body()
+ 		ip_cmd) ip route del ${new_rt}${opt_rt} dev $iface ;;
+ 		esac
+ 		if [ $? -ne 0 ]; then
+-			tst_resm TFAIL "Can't del route $new_rt from $iface"
++			tst_res TFAIL "Can't del route $new_rt from $iface"
+ 			return
+ 		fi
+ 
+@@ -84,14 +84,8 @@ test_body()
+ 		cnt=$(($cnt + 1))
+ 	done
+ 
+-	tst_resm TPASS "Test is finished correctly"
++	tst_res TPASS "Test is finished correctly"
+ }
+ 
+-netstress_setup
+-
+ tst_check_cmds route
+-
+-test_body 'rt_cmd'
+-test_body 'ip_cmd'
+-
+-tst_exit
++tst_run
+diff --git a/testcases/network/stress/interface/if-route-addlarge b/testcases/network/stress/interface/if-route-addlarge
+index eee0959c8..ce8bb752a 100644
+--- a/testcases/network/stress/interface/if-route-addlarge
++++ b/testcases/network/stress/interface/if-route-addlarge
+@@ -17,10 +17,10 @@
+ #
+ # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+ 
+-TST_TOTAL=2
+-
++TST_CNT=2
++TST_SETUP="netstress_setup"
+ TST_CLEANUP="netstress_cleanup"
+-
++TST_TESTFUNC="test_rt_ip"
+ . test_net_stress.sh
+ 
+ CHECK_INTERVAL=${CHECK_INTERVAL:-$(($ROUTE_TOTAL / 20))}
+@@ -32,7 +32,7 @@ test_body()
+ 	case $cmd_type in
+ 	rt_cmd) local cmd_name='route' ;;
+ 	ip_cmd) local cmd_name='ip' ;;
+-	*) tst_brkm TBROK "Unknown test parameter '$cmd_type'"
++	*) tst_brk TBROK "Unknown test parameter '$cmd_type'"
+ 	esac
+ 
+ 	local iface=$(tst_iface)
+@@ -47,10 +47,10 @@ test_body()
+ 		esac
+ 	fi
+ 
+-	tst_resm TINFO "'$cmd_name' add IPv$ipver $ROUTE_TOTAL routes"
++	tst_res TINFO "'$cmd_name' add IPv$ipver $ROUTE_TOTAL routes"
+ 
+ 	if ! restore_ipaddr; then
+-		tst_resm TBROK "Failed to set default IP addresses"
++		tst_res TBROK "Failed to set default IP addresses"
+ 		return
+ 	fi
+ 
+@@ -61,7 +61,7 @@ test_body()
+ 	[ "$TST_IPV6" ] && local xymax=65535 || xymax=254
+ 
+ 	if [ $ROUTE_TOTAL -gt $((xymax * xymax)) ]; then
+-		tst_resm TWARN "set ROUTE_TOTAL to $xymax * $xymax"
++		tst_res TWARN "set ROUTE_TOTAL to $xymax * $xymax"
+ 		ROUTE_TOTAL=$((xymax * xymax))
+ 	fi
+ 
+@@ -81,7 +81,7 @@ test_body()
+ 		ip_cmd) ip route add ${new_rt}${opt_rt} dev $iface ;;
+ 		esac
+ 		if [ $? -ne 0 ]; then
+-			tst_resm TFAIL "Can't add route $new_rt to $iface"
++			tst_res TFAIL "Can't add route $new_rt to $iface"
+ 			return
+ 		fi
+ 
+@@ -93,19 +93,13 @@ test_body()
+ 			y=1
+ 			x=$(($x + 1))
+ 			if [ $x -gt $xymax ]; then
+-				tst_brkm TBROK "Too large $ROUTE_TOTAL"
++				tst_brk TBROK "Too large $ROUTE_TOTAL"
+ 			fi
+ 		fi
+ 	done
+ 
+-	tst_resm TPASS "Test is finished correctly"
++	tst_res TPASS "Test is finished correctly"
+ }
+ 
+-netstress_setup
+-
+ tst_check_cmds route
+-
+-test_body 'rt_cmd'
+-test_body 'ip_cmd'
+-
+-tst_exit
++tst_run
+diff --git a/testcases/network/stress/interface/if-updown b/testcases/network/stress/interface/if-updown
+index 264331adb..2e6b0d4db 100644
+--- a/testcases/network/stress/interface/if-updown
++++ b/testcases/network/stress/interface/if-updown
+@@ -1,5 +1,6 @@
+ #!/bin/sh
+ # Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
++# Copyright (c) 2017-2018 Petr Vorel <pvorel@suse.cz>
+ # Copyright (c) International Business Machines  Corp., 2005
+ #
+ # This program is free software; you can redistribute it and/or
+@@ -17,10 +18,10 @@
+ #
+ # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+ 
+-TST_TOTAL=2
+-
++TST_CNT=2
++TST_SETUP="netstress_setup"
+ TST_CLEANUP="netstress_cleanup"
+-
++TST_TESTFUNC="test_if_ip"
+ . test_net_stress.sh
+ 
+ CHECK_INTERVAL=${CHECK_INTERVAL:-$(($IF_UPDOWN_TIMES / 20))}
+@@ -32,13 +33,13 @@ test_body()
+ 	case $cmd_type in
+ 	if_cmd) local cmd_name='ifconfig' ;;
+ 	ip_cmd) local cmd_name='ip' ;;
+-	*) tst_brkm TBROK "Unknown test parameter '$cmd_type'"
++	*) tst_brk TBROK "Unknown test parameter '$cmd_type'"
+ 	esac
+ 
+ 	local iface=$(tst_iface)
+ 
+-	tst_resm TINFO "'$cmd_name ups/downs $iface $IF_UPDOWN_TIMES times"
+-	tst_resm TINFO "check connectivity interval is $CHECK_INTERVAL"
++	tst_res TINFO "'$cmd_name ups/downs $iface $IF_UPDOWN_TIMES times"
++	tst_res TINFO "check connectivity interval is $CHECK_INTERVAL"
+ 
+ 	local cnt=1
+ 	while [ $cnt -le $IF_UPDOWN_TIMES ]; do
+@@ -47,7 +48,7 @@ test_body()
+ 		ip_cmd) ip link set $iface down ;;
+ 		esac
+ 		if [ $? -ne 0 ]; then
+-			tst_resm TFAIL "Failed to down $iface"
++			tst_res TFAIL "Failed to down $iface"
+ 			return
+ 		fi
+ 
+@@ -56,7 +57,7 @@ test_body()
+ 		ip_cmd) ip link set $iface up ;;
+ 		esac
+ 		if [ $? -ne 0 ]; then
+-			tst_resm TFAIL "Failed to up $iface"
++			tst_res TFAIL "Failed to up $iface"
+ 			return
+ 		fi
+ 
+@@ -65,14 +66,8 @@ test_body()
+ 		cnt=$(($cnt + 1))
+ 	done
+ 
+-	tst_resm TPASS "Test is finished correctly"
++	tst_res TPASS "Test is finished correctly"
+ }
+ 
+-netstress_setup
+-
+ tst_check_cmds ifconfig
+-
+-test_body 'if_cmd'
+-test_body 'ip_cmd'
+-
+-tst_exit
++tst_run
 diff --git a/testcases/network/stress/interface/if4-addr-change b/testcases/network/stress/interface/if4-addr-change
-index 4eaabd70c..f145035a9 100644
+index f145035a9..25efc3734 100644
 --- a/testcases/network/stress/interface/if4-addr-change
 +++ b/testcases/network/stress/interface/if4-addr-change
-@@ -35,42 +35,48 @@ do_cleanup()
+@@ -1,5 +1,6 @@
+ #!/bin/sh
+ # Copyright (c) 2015-2016 Oracle and/or its affiliates. All Rights Reserved.
++# Copyright (c) 2017-2018 Petr Vorel <pvorel@suse.cz>
+ # Copyright (c) International Business Machines  Corp., 2005
+ #
+ # This program is free software; you can redistribute it and/or
+@@ -17,23 +18,30 @@
+ #
+ # Author: Mitsuru Chinen <mitch@jp.ibm.com>
  
- trap "tst_brkm TBROK 'test interrupted'" INT
+-TST_TOTAL=1
++TST_CNT=1
+ TCID=if4-addr-change
++TST_SETUP="do_setup"
+ TST_CLEANUP="do_cleanup"
+-
++TST_USE_NEW_API=1
++TST_TESTFUNC="test_body"
+ . test_net.sh
+ 
+ CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
+ # Maximum host portion of the IPv4 address on the local host
+ LHOST_IPV4_HOST_MAX="254"
+ 
++do_setup()
++{
++	tst_check_cmds ifconfig
++}
++
+ do_cleanup()
+ {
+ 	tst_restore_ipaddr
+ 	tst_wait_ipv6_dad
+ }
+ 
+-trap "tst_brkm TBROK 'test interrupted'" INT
++trap "tst_brk TBROK 'test interrupted'" INT
+ 
+ test_body()
+ {
+@@ -41,7 +49,7 @@ test_body()
+ 	local num=1
+ 	local add_to_net=
+ 
+-	tst_resm TINFO "ifconfig changes IPv4 address $NS_TIMES times"
++	tst_res TINFO "ifconfig changes IPv4 address $NS_TIMES times"
+ 
+ 	while [ $cnt -lt $NS_TIMES ]; do
+ 		# Define the network portion
+@@ -53,7 +61,7 @@ test_body()
+ 		# check prefix and fix values for prefix != 24
+ 		add_to_net=
+ 		if [ $IPV4_LPREFIX -lt 8 -o $IPV4_LPREFIX -ge 32 ] ; then
+-			tst_brkm TCONF "test must be with prefix >= 8 and prefix < 32 ($IPV4_LPREFIX)"
++			tst_brk TCONF "test must be with prefix >= 8 and prefix < 32 ($IPV4_LPREFIX)"
+ 		elif [ $IPV4_LPREFIX -lt 16 ]; then # N.x.x.num
+ 			add_to_net=".0.1"
+ 		elif [ $IPV4_LPREFIX -lt 24 ]; then # N.N.x.num
+@@ -69,14 +77,11 @@ test_body()
+ 		[ $CHECK_INTERVAL -eq 0 ] && continue
+ 		[ $(($cnt % $CHECK_INTERVAL)) -ne 0 ] && continue
+ 
+-		tst_resm TINFO "ping $(tst_ipaddr):$(tst_ipaddr rhost) ${cnt}/$NS_TIMES"
++		tst_res TINFO "ping $(tst_ipaddr):$(tst_ipaddr rhost) ${cnt}/$NS_TIMES"
+ 		tst_ping
+ 	done
+ 
+ 	tst_ping
+ }
  
 -tst_check_cmds ifconfig
-+test_body()
+-test_body
+-
+-tst_exit
++tst_run
+diff --git a/testcases/network/stress/multicast/grp-operation/mcast-group-multiple-socket b/testcases/network/stress/multicast/grp-operation/mcast-group-multiple-socket
+index 84700a5d8..c928bf4a0 100644
+--- a/testcases/network/stress/multicast/grp-operation/mcast-group-multiple-socket
++++ b/testcases/network/stress/multicast/grp-operation/mcast-group-multiple-socket
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ # Copyright (c) International Business Machines  Corp., 2006
+-# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2017-2018 Petr Vorel <pvorel@suse.cz>
+ #
+ # This program is free software; you can redistribute it and/or
+ # modify it under the terms of the GNU General Public License as
+@@ -21,19 +21,21 @@
+ 
+ . mcast-lib.sh
+ 
+-tst_resm TINFO "joining $MCASTNUM_HEAVY IPv$ipver multicast groups on multiple sockets"
+-
+ do_setup()
+ {
+ 	# Increase the maximum number of open file descriptors
+ 	if [ $(ulimit -n) -lt $MCASTNUM_HEAVY ]; then
+-		ulimit -n $MCASTNUM_HEAVY || tst_brkm TCONF \
++		ulimit -n $MCASTNUM_HEAVY || tst_brk TCONF \
+ 			"Failed to set the maximum number of open file descriptors to $MCASTNUM_HEAVY"
+ 	fi
+ 
+ 	mcast_setup $MCASTNUM_HEAVY
+ }
+ 
+-do_setup
+-do_multicast_test_multiple_join $MCASTNUM_HEAVY true
+-tst_exit
++do_test()
 +{
-+	local cnt=0
-+	local num=1
-+	local add_to_net=
++	tst_res TINFO "joining $MCASTNUM_HEAVY IPv$ipver multicast groups on multiple sockets"
++	do_multicast_test_multiple_join $MCASTNUM_HEAVY true
++}
 +
-+	tst_resm TINFO "ifconfig changes IPv4 address $NS_TIMES times"
++tst_run
+diff --git a/testcases/network/stress/multicast/grp-operation/mcast-group-same-group b/testcases/network/stress/multicast/grp-operation/mcast-group-same-group
+index 876c395bb..0a0e968a7 100644
+--- a/testcases/network/stress/multicast/grp-operation/mcast-group-same-group
++++ b/testcases/network/stress/multicast/grp-operation/mcast-group-same-group
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ # Copyright (c) International Business Machines  Corp., 2006
+-# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2017-2018 Petr Vorel <pvorel@suse.cz>
+ #
+ # This program is free software; you can redistribute it and/or
+ # modify it under the terms of the GNU General Public License as
+@@ -21,8 +21,15 @@
  
--tst_resm TINFO "ifconfig changes IPv4 address $NS_TIMES times"
-+	while [ $cnt -lt $NS_TIMES ]; do
-+		# Define the network portion
-+		num=$(($num + 1))
-+		[ $num -gt $LHOST_IPV4_HOST_MAX ] && num=1
+ . mcast-lib.sh
  
--cnt=0
--num=1
--while [ $cnt -lt $NS_TIMES ]; do
--	# Define the network portion
--	num=$(($num + 1))
--	[ $num -gt $LHOST_IPV4_HOST_MAX ] && num=1
-+		[ $num -eq $RHOST_IPV4_HOST ] && continue
- 
--	[ $num -eq $RHOST_IPV4_HOST ] && continue
-+		# check prefix and fix values for prefix != 24
-+		add_to_net=
-+		if [ $IPV4_LPREFIX -lt 8 -o $IPV4_LPREFIX -ge 32 ] ; then
-+			tst_brkm TCONF "test must be with prefix >= 8 and prefix < 32 ($IPV4_LPREFIX)"
-+		elif [ $IPV4_LPREFIX -lt 16 ]; then # N.x.x.num
-+			add_to_net=".0.1"
-+		elif [ $IPV4_LPREFIX -lt 24 ]; then # N.N.x.num
-+			add_to_net=".1"
-+		fi
- 
--	# check prefix and fix values for prefix != 24
--	add_to_net=
--	if [ $IPV4_LPREFIX -lt 8 -o $IPV4_LPREFIX -ge 32 ] ; then
--		tst_brkm TCONF "test must be with prefix >= 8 and prefix < 32 ($IPV4_LPREFIX)"
--	elif [ $IPV4_LPREFIX -lt 16 ]; then # N.x.x.num
--		add_to_net=".0.1"
--	elif [ $IPV4_LPREFIX -lt 24 ]; then # N.N.x.num
--		add_to_net=".1"
--	fi
-+		# Change IPv4 address
-+		ROD ifconfig $(tst_iface) ${IPV4_LNETWORK}${add_to_net}.${num} netmask \
-+			$IPV4_LNETMASK broadcast $IPV4_LBROADCAST
- 
--	# Change IPv4 address
--	ROD ifconfig $(tst_iface) ${IPV4_LNETWORK}${add_to_net}.${num} netmask \
--		$IPV4_LNETMASK broadcast $IPV4_LBROADCAST
-+		cnt=$(($cnt + 1))
- 
--	cnt=$(($cnt + 1))
-+		[ $CHECK_INTERVAL -eq 0 ] && continue
-+		[ $(($cnt % $CHECK_INTERVAL)) -ne 0 ] && continue
- 
--	[ $CHECK_INTERVAL -eq 0 ] && continue
--	[ $(($cnt % $CHECK_INTERVAL)) -ne 0 ] && continue
-+		tst_resm TINFO "ping $(tst_ipaddr):$(tst_ipaddr rhost) ${cnt}/$NS_TIMES"
-+		tst_ping
-+	done
- 
--	tst_resm TINFO "ping $(tst_ipaddr):$(tst_ipaddr rhost) ${cnt}/$NS_TIMES"
- 	tst_ping
--done
+-tst_resm TINFO "joining and leaving the same IPv$ipver multicast group on $MCASTNUM_NORMAL sockets in $NS_TIMES times"
++do_setup()
++{
++	mcast_setup $MCASTNUM_NORMAL
 +}
  
--tst_ping
-+tst_check_cmds ifconfig
-+test_body
+-mcast_setup $MCASTNUM_NORMAL
+-do_multicast_test_join_leave $MCASTNUM_NORMAL
+-tst_exit
++do_test()
++{
++	tst_res TINFO "joining and leaving the same IPv$ipver multicast group on $MCASTNUM_NORMAL sockets in $NS_TIMES times"
++	do_multicast_test_join_leave $MCASTNUM_NORMAL
++}
++
++tst_run
+diff --git a/testcases/network/stress/multicast/grp-operation/mcast-group-single-socket b/testcases/network/stress/multicast/grp-operation/mcast-group-single-socket
+index d6b3363db..e7cad75a7 100644
+--- a/testcases/network/stress/multicast/grp-operation/mcast-group-single-socket
++++ b/testcases/network/stress/multicast/grp-operation/mcast-group-single-socket
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ # Copyright (c) International Business Machines  Corp., 2006
+-# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2017-2018 Petr Vorel <pvorel@suse.cz>
+ #
+ # This program is free software; you can redistribute it and/or
+ # modify it under the terms of the GNU General Public License as
+@@ -21,8 +21,15 @@
  
- tst_exit
+ . mcast-lib.sh
+ 
+-tst_resm TINFO "joining $MCASTNUM_HEAVY IPv$ipver multicast groups on a single socket"
++do_setup()
++{
++	mcast_setup $MCASTNUM_HEAVY
++}
+ 
+-mcast_setup $MCASTNUM_HEAVY
+-do_multicast_test_multiple_join $MCASTNUM_HEAVY
+-tst_exit
++do_test()
++{
++	tst_res TINFO "joining $MCASTNUM_HEAVY IPv$ipver multicast groups on a single socket"
++	do_multicast_test_multiple_join $MCASTNUM_HEAVY
++}
++
++tst_run
+diff --git a/testcases/network/stress/multicast/grp-operation/mcast-group-source-filter b/testcases/network/stress/multicast/grp-operation/mcast-group-source-filter
+index 34ed143af..d73b5494f 100644
+--- a/testcases/network/stress/multicast/grp-operation/mcast-group-source-filter
++++ b/testcases/network/stress/multicast/grp-operation/mcast-group-source-filter
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ # Copyright (c) International Business Machines  Corp., 2006
+-# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2017-2018 Petr Vorel <pvorel@suse.cz>
+ #
+ # This program is free software; you can redistribute it and/or
+ # modify it under the terms of the GNU General Public License as
+@@ -21,8 +21,15 @@
+ 
+ . mcast-lib.sh
+ 
+-tst_resm TINFO "joining and leaving the same IPv$ipver multicast group with a different source filters on $MCASTNUM_NORMAL sockets in $NS_TIMES times"
++do_setup()
++{
++	mcast_setup $MCASTNUM_NORMAL
++}
+ 
+-mcast_setup $MCASTNUM_NORMAL
+-do_multicast_test_join_leave $MCASTNUM_NORMAL true
+-tst_exit
++do_test()
++{
++	tst_res TINFO "joining and leaving the same IPv$ipver multicast group with a different source filters on $MCASTNUM_NORMAL sockets in $NS_TIMES times"
++	do_multicast_test_join_leave $MCASTNUM_NORMAL true
++}
++
++tst_run
+diff --git a/testcases/network/stress/multicast/grp-operation/mcast-lib.sh b/testcases/network/stress/multicast/grp-operation/mcast-lib.sh
+index 6cc2922f2..9d137108a 100644
+--- a/testcases/network/stress/multicast/grp-operation/mcast-lib.sh
++++ b/testcases/network/stress/multicast/grp-operation/mcast-lib.sh
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ # Copyright (c) International Business Machines  Corp., 2006
+-# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2017-2018 Petr Vorel <pvorel@suse.cz>
+ #
+ # This program is free software; you can redistribute it and/or
+ # modify it under the terms of the GNU General Public License as
+@@ -19,9 +19,11 @@
+ #
+ # Setup script for multicast stress tests.
+ 
+-TST_TOTAL=1
++TST_CNT=1
++TST_SETUP="do_setup"
+ TST_CLEANUP="mcast_cleanup"
+-
++TST_TESTFUNC="do_test"
++TST_NEEDS_TMPDIR=1
+ . test_net_stress.sh
+ 
+ MCAST_LCMD="ns-mcast_join -f $ipver -I $(tst_iface)"
+@@ -39,7 +41,7 @@ mcast_setup4()
+ 	SYSFS_FORCE_IGMP_VERSION=$(sysctl -b net.ipv4.conf.$(tst_iface).force_igmp_version)
+ 	SYSFS_ALL_FORCE_IGMP_VERSION=$(sysctl -b net.ipv4.conf.all.force_igmp_version)
+ 
+-	[ "$igmp_max_memberships" -gt 5459 ] && tst_resm TWARN \
++	[ "$igmp_max_memberships" -gt 5459 ] && tst_res TWARN \
+ 		"\$1 shouldn't be set higher than 5459 as it's used to set /proc/sys/net/ipv4/igmp_max_memberships"
+ 
+ 	ROD sysctl -qw net.ipv4.igmp_max_memberships=$igmp_max_memberships
+@@ -67,7 +69,6 @@ mcast_setup()
+ 	local max="$1"
+ 
+ 	netstress_setup
+-	tst_tmpdir
+ 
+ 	[ "$TST_IPV6" ] && mcast_setup6 || mcast_setup4 $max
+ }
+@@ -110,7 +111,7 @@ do_multicast_test_multiple_join()
+ 	# Run a multicast join tool
+ 	tmpfile=$$
+ 	EXPECT_PASS $MCAST_LCMD $param_multi_socket -n $num -p $mprefix \> $tmpfile
+-	tst_resm TINFO "joined $(grep groups $tmpfile)"
++	tst_res TINFO "joined $(grep groups $tmpfile)"
+ 
+ 	# Send MLD / IGMP General Query from the remote host
+ 	if [ "$TST_IPV6" ]; then
+@@ -150,5 +151,5 @@ do_multicast_test_join_leave()
+ 
+ 	wait
+ 
+-	tst_resm TPASS "test is finished successfully"
++	tst_res TPASS "test is finished successfully"
+ }
+diff --git a/testcases/network/stress/ns-tools/test_net_stress.sh b/testcases/network/stress/ns-tools/test_net_stress.sh
+index 3cf9e5f05..f57296b5c 100644
+--- a/testcases/network/stress/ns-tools/test_net_stress.sh
++++ b/testcases/network/stress/ns-tools/test_net_stress.sh
+@@ -1,7 +1,7 @@
+ #!/bin/sh
+ # Copyright (c) International Business Machines  Corp., 2006
+ # Copyright (c) 2015-2017 Oracle and/or its affiliates. All Rights Reserved.
+-# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2017-2018 Petr Vorel <pvorel@suse.cz>
+ #
+ # This program is free software; you can redistribute it and/or
+ # modify it under the terms of the GNU General Public License as
+@@ -25,6 +25,7 @@
+ 
+ export TCID="${TCID:-$(basename $0)}"
+ 
++TST_USE_NEW_API=1
+ . test_net.sh
+ 
+ ipver=${TST_IPV6:-4}
+@@ -124,3 +125,19 @@ make_background_tcp_traffic()
+ 	netstress -R 3 -g $port > /dev/null 2>&1 &
+ 	tst_rhost_run -b -c "netstress -l -H $ip -g $port"
+ }
++
++test_if_ip()
++{
++	case $1 in
++	1) test_body 'if_cmd';;
++	2) test_body 'ip_cmd';;
++	esac
++}
++
++test_rt_ip()
++{
++	case $1 in
++	1) test_body 'rt_cmd';;
++	2) test_body 'ip_cmd';;
++	esac
++}
 -- 
 2.16.2
 
