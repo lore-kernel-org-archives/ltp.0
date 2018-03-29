@@ -1,49 +1,35 @@
-From: Sandeep Patil <sspatil@google.com>
-Date: Wed, 28 Mar 2018 13:32:14 -0700
-Subject: [LTP] [PATCH] setregid: use common user and group names.
-In-Reply-To: <20180328060700.GA25695@x230>
-References: <20180319200113.106692-1-sspatil@google.com>
- <20180326124200.GA311@x230>
- <20180326192956.GL72541@sspatil-desktop.mtv.corp.google.com>
- <20180327094313.b6vetum2xitabi5u@dell5510>
- <20180327172440.GM72541@sspatil-desktop.mtv.corp.google.com>
- <20180328060700.GA25695@x230>
-Message-ID: <20180328203214.GN72541@sspatil-desktop.mtv.corp.google.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 29 Mar 2018 08:12:24 +0200
+Subject: [LTP] [PATCH v2 1/2] include/lapi: add sctp.h
+In-Reply-To: <210efb77-c661-5fdd-abd3-16e419103461@oracle.com>
+References: <1521819449-27489-1-git-send-email-alexey.kodanev@oracle.com>
+ <1521819449-27489-2-git-send-email-alexey.kodanev@oracle.com>
+ <20180326105555.GA7242@x230>
+ <210efb77-c661-5fdd-abd3-16e419103461@oracle.com>
+Message-ID: <20180329061224.GA31604@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Mar 28, 2018 at 08:07:00AM +0200, Petr Vorel wrote:
-> Hi Sandeep,
-> 
-> ...
-> > > > Also, I wouldn't worry about the test breaking on slightly older Android. The
-> > > > vast majority of LTS tests are run through VTS, where these tests were disabled[1]
-> > > > due to the failure anyway. This change will allow us to start running them on
-> > > > all android devices now onwards ..
-> 
-> > > I thought that there could be preprocesor condition for Android defining different users
-> > > for it, but if you don't need it I'll merge it.
-> 
-> > Yes, we can probable ifdef it in one place using "#ifdef __ANDROID__" or
-> > other equivalent, but I don't think its needed here. We want to avoid doing
-> > that as much as possible. It is fair to say these test will be run with VTS
-> > "now onwards" anyway ..
-> Thanks for explanation. I agree, makes sense to avoid it where possible.
-> 
-> > > and just note your related commit in commit
-> > > message:
-> > > 8e8648463 ("libcutils: Add "daemon" and "bin" users for testing only")
-> 
-> > I'll resend the patch with this added, thanks for the review.
-> I'm sorry I've added it myself yesterday and pushed:
-> 1b7cf9474 setregid: use common user and group names.
-> 
-> I'll be more patient next time.
+Hi Alexey,
 
-Happy to see it merged, doesn't matter. Thanks for the feedback.
+> > BTW SCTP_SOCKOPT_BINDX_ADD is defined in both <linux/sctp.h> and <netinet/sctp.h>, so if we
+> > ever in future want to have some definitions from netinet/sctp.h, I'd be to create special
+> > file include/lapi/netinet_sctp.h (the same like include/lapi/netinet_in.h - taking that
+> > default is for "kernel/").
 
-- ssp
 
+> I think if we have netinet/sctp.h it should take precedences
+> over linux/sctp.h. In OL7 it is provided by optional
+> lksctp-tools-devel package.
+But linux/sctp.h has much more definitions than netinet/sctp.h and we use some kernel
+specific definitions (e.g. SOL_UDPLITE is just in linux/sctp.h, SOL_SCTP is in both).
+
+> Thanks,
+> Alexey
+
+
+Kind regards,
+Petr
