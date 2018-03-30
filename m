@@ -1,158 +1,182 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 30 Mar 2018 14:04:43 +0300
-Subject: [LTP] [RFC PATCH v2 0/3] Rewritting network tests into new
-	shell API
-In-Reply-To: <20180329233134.24151-1-pvorel@suse.cz>
-References: <20180329233134.24151-1-pvorel@suse.cz>
-Message-ID: <5df04eac-2ce5-7628-4bbf-8a34e51fc10e@oracle.com>
+From: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
+Date: Fri, 30 Mar 2018 18:56:42 +0800
+Subject: [LTP] [PATCH 1/3] syscalls/fchmod.h: Move common macros to fchmod.h
+Message-ID: <1522407404-6877-1-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 03/30/2018 02:31 AM, Petr Vorel wrote:
-> Hi,
-> 
-> changes v1->v2:
-> * Make new API default for test_net.sh
-> * Rename variable TST_USE_NEW_API => TST_USE_LEGACY_API
-> * Set TST_USE_LEGACY_API=1 in majority of network scripts.
-> 
+Signed-off-by: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/fchmod/fchmod.h   | 26 ++++++++++++++++++++++++++
+ testcases/kernel/syscalls/fchmod/fchmod02.c |  7 +------
+ testcases/kernel/syscalls/fchmod/fchmod03.c |  5 +----
+ testcases/kernel/syscalls/fchmod/fchmod04.c |  8 +-------
+ testcases/kernel/syscalls/fchmod/fchmod05.c | 15 +++++++--------
+ testcases/kernel/syscalls/fchmod/fchmod07.c |  4 +---
+ 6 files changed, 37 insertions(+), 28 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/fchmod/fchmod.h
 
-Hi Petr,
+diff --git a/testcases/kernel/syscalls/fchmod/fchmod.h b/testcases/kernel/syscalls/fchmod/fchmod.h
+new file mode 100644
+index 0000000..e52850d
+--- /dev/null
++++ b/testcases/kernel/syscalls/fchmod/fchmod.h
+@@ -0,0 +1,26 @@
++/*
++ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
++ * Author: Jinhui huang <huangjh.jy@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License
++ * alone with this program.
++ */
++
++#ifndef FCHMOD_H
++#define FCHMOD_H
++
++#define FILE_MODE	(S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
++#define DIR_MODE	(S_IRWXU | S_IRWXG | S_IRWXO)
++#define PERMS	01777
++#define TESTFILE	"testfile"
++#define TESTDIR	"testdir"
++
++#endif /* FCHMOD_H */
+diff --git a/testcases/kernel/syscalls/fchmod/fchmod02.c b/testcases/kernel/syscalls/fchmod/fchmod02.c
+index ea2bdb4..aa3bab3 100644
+--- a/testcases/kernel/syscalls/fchmod/fchmod02.c
++++ b/testcases/kernel/syscalls/fchmod/fchmod02.c
+@@ -82,15 +82,10 @@
+ 
+ #include "test.h"
+ #include "safe_macros.h"
++#include "fchmod.h"
+ 
+ #define LTPUSER		"nobody"
+ #define LTPGRP		"users"
+-#define FILE_MODE 	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+-#define PERMS		01777	/*
+-				 * Mode permissions of test file with sticky
+-				 * bit set.
+-				 */
+-#define TESTFILE	"testfile"
+ 
+ int fd;				/* file descriptor variable */
+ char *TCID = "fchmod02";
+diff --git a/testcases/kernel/syscalls/fchmod/fchmod03.c b/testcases/kernel/syscalls/fchmod/fchmod03.c
+index 8d35bc1..a5824f3 100644
+--- a/testcases/kernel/syscalls/fchmod/fchmod03.c
++++ b/testcases/kernel/syscalls/fchmod/fchmod03.c
+@@ -81,10 +81,7 @@
+ 
+ #include "test.h"
+ #include "safe_macros.h"
+-
+-#define FILE_MODE       (S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
+-#define PERMS		01777
+-#define TESTFILE	"testfile"
++#include "fchmod.h"
+ 
+ int fd;				/* file descriptor for test file */
+ char *TCID = "fchmod03";
+diff --git a/testcases/kernel/syscalls/fchmod/fchmod04.c b/testcases/kernel/syscalls/fchmod/fchmod04.c
+index 27e3bdc..befaadb 100644
+--- a/testcases/kernel/syscalls/fchmod/fchmod04.c
++++ b/testcases/kernel/syscalls/fchmod/fchmod04.c
+@@ -81,13 +81,7 @@
+ 
+ #include "test.h"
+ #include "safe_macros.h"
+-
+-#define DIR_MODE 	S_IRWXU | S_IRWXG | S_IRWXO
+-#define PERMS		01777	/*
+-				 * Mode permissions of test directory with
+-				 * sticky bit set.
+-				 */
+-#define TESTDIR		"testdir_4"
++#include "fchmod.h"
+ 
+ int fd;				/* file descriptor for test directory */
+ char *TCID = "fchmod04";
+diff --git a/testcases/kernel/syscalls/fchmod/fchmod05.c b/testcases/kernel/syscalls/fchmod/fchmod05.c
+index cdd3d07..0ab2023 100644
+--- a/testcases/kernel/syscalls/fchmod/fchmod05.c
++++ b/testcases/kernel/syscalls/fchmod/fchmod05.c
+@@ -88,10 +88,9 @@
+ 
+ #include "test.h"
+ #include "safe_macros.h"
++#include "fchmod.h"
+ 
+-#define MODE_RWX	(S_IRWXU | S_IRWXG | S_IRWXO)
+-#define PERMS		043777
+-#define TESTDIR		"testdir"
++#define PERMS_GID		043777
+ 
+ int fd;				/* file descriptor for test directory */
+ char *TCID = "fchmod05";
+@@ -119,7 +118,7 @@ int main(int ac, char **av)
+ 		 * to set setgid bit on TESTDIR.
+ 		 */
+ 
+-		TEST(fchmod(fd, PERMS));
++		TEST(fchmod(fd, PERMS_GID));
+ 
+ 		if (TEST_RETURN == -1) {
+ 			tst_resm(TFAIL, "fchmod(%d, %#o) Failed, errno=%d : %s",
+@@ -136,14 +135,14 @@ int main(int ac, char **av)
+ 				 TESTDIR, TEST_ERRNO);
+ 		}
+ 		dir_mode = stat_buf.st_mode;
+-		if ((PERMS & ~S_ISGID) != dir_mode) {
++		if ((PERMS_GID & ~S_ISGID) != dir_mode) {
+ 			tst_resm(TFAIL, "%s: Incorrect modes 0%03o, "
+ 				 "Expected 0%03o",
+-				 TESTDIR, dir_mode, PERMS & ~S_ISGID);
++				 TESTDIR, dir_mode, PERMS_GID & ~S_ISGID);
+ 		} else {
+ 			tst_resm(TPASS, "Functionality of fchmod(%d, "
+ 				 "%#o) successful", fd,
+-				 PERMS & ~S_ISGID);
++				 PERMS_GID & ~S_ISGID);
+ 		}
+ 	}
+ 
+@@ -188,7 +187,7 @@ void setup(void)
+ 	 * mode permissions and change the gid of test directory to that of
+ 	 * guest user.
+ 	 */
+-	SAFE_MKDIR(cleanup, TESTDIR, MODE_RWX);
++	SAFE_MKDIR(cleanup, TESTDIR, DIR_MODE);
+ 
+ 	if (setgroups(1, &nobody_u->pw_gid) == -1)
+ 		tst_brkm(TBROK, cleanup,
+diff --git a/testcases/kernel/syscalls/fchmod/fchmod07.c b/testcases/kernel/syscalls/fchmod/fchmod07.c
+index 6973555..d7fe41f 100644
+--- a/testcases/kernel/syscalls/fchmod/fchmod07.c
++++ b/testcases/kernel/syscalls/fchmod/fchmod07.c
+@@ -75,9 +75,7 @@
+ 
+ #include "test.h"
+ #include "safe_macros.h"
+-
+-#define FILE_MODE	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+-#define TESTFILE	"testfile"
++#include "fchmod.h"
+ 
+ int fd;				/* file descriptor for testfile */
+ char *TCID = "fchmod07";
+-- 
+1.8.3.1
 
-A few questions about the changes to the new API:
 
-I think, you wrote about renaming test_net.sh to tst_net.sh, and the
-corresponded test_net_stress.sh, so why we can't keep the copy to the
-old API during migration and make the new one with the new name?
-
-What is actually changing in the new API that require the changes
-in test_net.sh except tst_resm/tst_brkm renamed to tst_res/tst_brk?
-
-The new variables TST_NEEDS_ROOT and TST_SETUP, TST_TESTFUNC?
-Can we run a test without them temporary, without tst_run(),
-e.g. define some stubs and old API with the new one in
-tst_net.sh?
-
-tst_exit()
-{
-   tst_do_exit()
-}
-etc.
-
-I remember that ROD function not using the script but tst_rod binary
-so may affect some scripts, like "ROD cd" for example... but may be it
-is already fixed, I need to check.
-
-And we need to remove tst_rmdir() because it will be handled in the
-library as we already have TST_TMPDIR_RHOST there.
-
-Best regards,
-Alexey
-
-
-> NOTE: still kept the old script names.
-> 
-> I'm not happy with the state of testscripts/network.sh. I kept it using
-> the legacy API. I tried to migrate it into new API, but that would
-> require too much changes (and I don't like to have tst_run call in
-> testscripts/network.sh).
-> 
-> Kind regards,
-> Petr
-> 
-> Petr Vorel (3):
->   test_net.sh: Support both old and new shell APIs
->   network/interface: Cleanup if4-addr-change
->   net: Migrate test_net_stress.sh and it's dependencies to new shell API
-> 
->  testcases/lib/test_net.sh                          | 133 +++++++++++++--------
->  testcases/lib/tst_test.sh                          |   1 +
->  testcases/network/busy_poll/busy_poll01.sh         |   1 +
->  testcases/network/busy_poll/busy_poll02.sh         |   1 +
->  testcases/network/busy_poll/busy_poll03.sh         |   1 +
->  testcases/network/dccp/dccp01.sh                   |   1 +
->  testcases/network/dctcp/dctcp01.sh                 |   1 +
->  testcases/network/dhcp/dhcpd_tests.sh              |   1 +
->  testcases/network/dhcp/dnsmasq_tests.sh            |   1 +
->  testcases/network/iproute/ip_tests.sh              |   1 +
->  testcases/network/multicast/mc_cmds/mc_cmds        |   1 +
->  testcases/network/multicast/mc_commo/mc_commo      |   1 +
->  testcases/network/multicast/mc_member/mc_member    |   1 +
->  testcases/network/multicast/mc_opts/mc_opts        |   1 +
->  testcases/network/nfs/fsx-linux/fsx.sh             |   1 +
->  testcases/network/nfs/nfs_stress/nfs01             |   1 +
->  testcases/network/nfs/nfs_stress/nfs02             |   1 +
->  testcases/network/nfs/nfs_stress/nfs03             |   1 +
->  testcases/network/nfs/nfs_stress/nfs04             |   1 +
->  testcases/network/nfs/nfs_stress/nfs05             |   1 +
->  testcases/network/nfs/nfs_stress/nfs06             |   1 +
->  testcases/network/nfs/nfslock01/nfslock01          |   1 +
->  testcases/network/nfs/nfsstat01/nfsstat01          |   1 +
->  testcases/network/rpc/basic_tests/rpc01/rpc01      |   1 +
->  .../network/rpc/basic_tests/rpcinfo/rpcinfo01      |   1 +
->  testcases/network/rpc/basic_tests/rup/rup01        |   1 +
->  testcases/network/rpc/basic_tests/rusers/rusers01  |   1 +
->  testcases/network/rpc/rpc-tirpc/rpc_test.sh        |   1 +
->  testcases/network/sctp/sctp01.sh                   |   1 +
->  testcases/network/sockets/bind_noport01.sh         |   1 +
->  .../network/stress/broken_ip/broken_ip4-checksum   |   1 +
->  .../network/stress/broken_ip/broken_ip4-dstaddr    |   1 +
->  .../network/stress/broken_ip/broken_ip4-fragment   |   1 +
->  testcases/network/stress/broken_ip/broken_ip4-ihl  |   1 +
->  .../network/stress/broken_ip/broken_ip4-protcol    |   1 +
->  .../network/stress/broken_ip/broken_ip4-totlen     |   1 +
->  .../network/stress/broken_ip/broken_ip4-version    |   1 +
->  .../network/stress/broken_ip/broken_ip6-dstaddr    |   1 +
->  .../network/stress/broken_ip/broken_ip6-nexthdr    |   1 +
->  testcases/network/stress/broken_ip/broken_ip6-plen |   1 +
->  .../network/stress/broken_ip/broken_ip6-version    |   1 +
->  testcases/network/stress/dns/dns-stress            |   1 +
->  testcases/network/stress/ftp/ftp-download-stress   |   1 +
->  testcases/network/stress/ftp/ftp-upload-stress     |   1 +
->  testcases/network/stress/http/http-stress          |   1 +
->  testcases/network/stress/interface/if-addr-adddel  |  31 ++---
->  .../network/stress/interface/if-addr-addlarge      |  37 +++---
->  testcases/network/stress/interface/if-mtu-change   |  24 ++--
->  testcases/network/stress/interface/if-route-adddel |  26 ++--
->  .../network/stress/interface/if-route-addlarge     |  28 ++---
->  testcases/network/stress/interface/if-updown       |  27 ++---
->  testcases/network/stress/interface/if4-addr-change |  74 +++++++-----
->  testcases/network/stress/ipsec/ipsec_lib.sh        |   1 +
->  .../grp-operation/mcast-group-multiple-socket      |  16 +--
->  .../multicast/grp-operation/mcast-group-same-group |  17 ++-
->  .../grp-operation/mcast-group-single-socket        |  17 ++-
->  .../grp-operation/mcast-group-source-filter        |  17 ++-
->  .../stress/multicast/grp-operation/mcast-lib.sh    |  15 +--
->  .../network/stress/ns-tools/test_net_stress.sh     |  24 +++-
->  testcases/network/stress/ssh/ssh-stress            |   1 +
->  testcases/network/tcp_cmds/arping/arping01.sh      |   1 +
->  .../network/tcp_cmds/clockdiff/clockdiff01.sh      |   1 +
->  testcases/network/tcp_cmds/ipneigh/ipneigh01.sh    |   1 +
->  testcases/network/tcp_cmds/ping/ping01.sh          |   1 +
->  testcases/network/tcp_cmds/ping/ping02.sh          |   1 +
->  testcases/network/tcp_cmds/rlogin/rlogin01         |   1 +
->  testcases/network/tcp_cmds/sendfile/sendfile01     |   1 +
->  testcases/network/tcp_cmds/tcpdump/tcpdump01       |   1 +
->  testcases/network/tcp_cmds/telnet/telnet01         |   1 +
->  .../network/tcp_cmds/tracepath/tracepath01.sh      |   1 +
->  testcases/network/tcp_fastopen/tcp_fastopen_run.sh |   1 +
->  testcases/network/traceroute/traceroute01.sh       |   1 +
->  testcases/network/virt/geneve01.sh                 |   1 +
->  testcases/network/virt/gre01.sh                    |   1 +
->  testcases/network/virt/ipvlan01.sh                 |   1 +
->  testcases/network/virt/macvlan01.sh                |   1 +
->  testcases/network/virt/macvtap01.sh                |   1 +
->  testcases/network/virt/vlan01.sh                   |   1 +
->  testcases/network/virt/vlan02.sh                   |   1 +
->  testcases/network/virt/vlan03.sh                   |   1 +
->  testcases/network/virt/vxlan01.sh                  |   1 +
->  testcases/network/virt/vxlan02.sh                  |   1 +
->  testcases/network/virt/vxlan03.sh                  |   1 +
->  testcases/network/xinetd/xinetd_tests.sh           |   1 +
->  testscripts/network.sh                             |   4 +-
->  85 files changed, 340 insertions(+), 220 deletions(-)
-> 
 
