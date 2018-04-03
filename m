@@ -1,73 +1,38 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 2 Apr 2018 12:57:03 +0300
-Subject: [LTP] [RFC PATCH v2 0/3] Rewritting network tests into new
-	shell API
-In-Reply-To: <20180330235943.GA17279@x230>
-References: <20180329233134.24151-1-pvorel@suse.cz>
- <5df04eac-2ce5-7628-4bbf-8a34e51fc10e@oracle.com>
- <20180330235943.GA17279@x230>
-Message-ID: <be13578b-33b1-09cd-b824-eb7aec79a800@oracle.com>
+From: Erick Reyes <erickreyes@google.com>
+Date: Mon,  2 Apr 2018 18:40:06 -0700
+Subject: [LTP] [PATCH] Fix floating point tests Android compatibility
+Message-ID: <20180403014006.169320-1-erickreyes@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 31.03.2018 02:59, Petr Vorel wrote:
-> Hi Alexey,
-> 
-> thanks for your comments!
-> 
->> Hi Petr,
-> 
->> A few questions about the changes to the new API:
-> 
->> I think, you wrote about renaming test_net.sh to tst_net.sh, and the
->> corresponded test_net_stress.sh, so why we can't keep the copy to the
->> old API during migration and make the new one with the new name?
-> That's another option, but I thought, it'd be easier to have just one version of
-> test_net.sh which supports both APIs, than maintain two files (test_net.sh and
-> tst_net.sh). But I might be wrong.
-> 
->> What is actually changing in the new API that require the changes
->> in test_net.sh except tst_resm/tst_brkm renamed to tst_res/tst_brk?
-> 
->> The new variables TST_NEEDS_ROOT and TST_SETUP, TST_TESTFUNC?
-> Yes (you list all or most of them in your reply below) + the need to call tst_run().
-> 
-> I did most of the changes with simple script using sed (manual fixes are still needed).
-> 
-> tst_run() is the biggest change in the behavior, which complicates migrating of
-> testscripts/network.sh. I haven't figured out, what would be an elegant way to move it and
-> I'd prefer to migrate it into new version. Not sure whether we'd like to add part of
-> "network_settings" execution to tst_run() for tst_net.sh and thus to be run twice (once
-> by testscripts/network.sh and then by test which is called by testscripts/network.sh).
-> 
-> Now I see the best would be move this "network_settings" stuff into new called function
-> tst_net_run() which would set it and at the end call tst_run() + remove sourcing
-> test_net.sh in testscripts/network.sh (only testing script would load it and call
-> tst_net_run() at the end instead of tst_run()).
+Floating point tests spawn a signal handler thread, which is then
+terminated with pthread_cancel / pthread_join calls. Since Android does
+not implement these functions, the tests were hanging.
 
-Hi Petr,
+The function calls to end the signal handler thread are actually not
+needed, it will just die when the main thread calls exit().
 
-I think we need to add a new flag, similar to LTP C library that can
-define TST_NO_DEFAULT_MAIN, i.e. we could add TST_NO_DEFAULT_RUN in
-the tst_test.sh.
+Signed-off-by: Erick Reyes <erickreyes@google.com>
+---
+ testcases/misc/math/float/main.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-> 
->> Can we run a test without them temporary, without tst_run(),
->> e.g. define some stubs and old API with the new one in
->> tst_net.sh?
-> Do you mean to move all network scripts to new API, using these "shim" in tst_net.sh?
-> I'd prefer tests were really using new API (to benefit from it), I just don't want to
-> migrate all tests at once. This can be dangerous trying to implement new API functions in
-> legacy one.> That's why I implemented in tst_net.sh functions starting with underscore which choose the
+diff --git a/testcases/misc/math/float/main.c b/testcases/misc/math/float/main.c
+index d71ca18e6..7285141a4 100644
+--- a/testcases/misc/math/float/main.c
++++ b/testcases/misc/math/float/main.c
+@@ -299,8 +299,6 @@ finished:
+ 		SAFE_FREE(pcom);
+ 
+ 	}
+-	pthread_cancel(sig_hand);
+-	pthread_join(sig_hand, NULL);
+ 	SAFE_FREE(tabcom);
+ 	SAFE_FREE(threads);
+ 	tst_rmdir();
+-- 
+2.17.0.rc1.321.gba9d0f2565-goog
 
-It's better to place underscore in the end of a function.
-
-> implementation via $TST_USE_LEGACY_API. I wanted to ony tst_net.sh itself using it.
-> 
-
-
-Thanks,
-Alexey
