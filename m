@@ -1,39 +1,63 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 4 Apr 2018 15:15:32 +0200
-Subject: [LTP] [RFC PATCH v3 2/5] tst_test.sh: Introduce
-	TST_NO_DEFAULT_RUN
-In-Reply-To: <20180404130806.GG32109@rei>
-References: <20180403154717.22491-1-pvorel@suse.cz>
- <20180403154717.22491-3-pvorel@suse.cz>
- <20180404130806.GG32109@rei>
-Message-ID: <20180404131532.GA11423@x230>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 4 Apr 2018 15:15:01 +0200
+Subject: [LTP] [RFC] tst_check_cmds to exit only current test
+In-Reply-To: <20180329114536.vsmsjzatryu4h5dm@dell5510>
+References: <20180329114536.vsmsjzatryu4h5dm@dell5510>
+Message-ID: <20180404131501.GH32109@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> # TODO: find a better name
+> # another option (maybe better would be to add getopt option to tst_check_cmds()
+> tst_check_cmds_test()
 
-> > -if [ -z "$LTPROOT" ]; then
-> > -	export LTPROOT="$PWD"
-> > -	export TST_DATAROOT="$LTPROOT/datafiles"
-> > -else
-> > -	export TST_DATAROOT="$LTPROOT/testcases/data/$TST_ID"
-> > -fi
-> > +	if [ -z "$LTPROOT" ]; then
-> > +		export LTPROOT="$PWD"
-> > +		export TST_DATAROOT="$LTPROOT/datafiles"
-> > +	else
-> > +		export TST_DATAROOT="$LTPROOT/testcases/data/$TST_ID"
-> > +	fi
+Just call it tst_test_cmds() then.
 
-> I guess that we may want to initialize the TST_ID, LTPROOT and
-> TST_DATAROOT regardless, otherwise this looks pretty much
-> straighforward and okay.
-Thanks for feedback, Cyril!
-I'll change it in v4.
+> {
+> 	local cmd
+> 	for cmd in $*; do
+> 		if ! command -v $cmd > /dev/null 2>&1; then
+> 			tst_res TCONF "'$cmd' not found"
+> 			return 32; # we don't have tst_flag2mask() in new API
+> 		fi
+> 	done
+> }
+> 
+> testcases/network/stress/interface/if-addr-adddel
+> test_body()
+> {
+> 	local cmd_type=$1                                                                                                                   
+>                                                                                                                                         
+>     case $cmd_type in                                                                                                                   
+>     if_cmd) local cmd_name='ifconfig' ;;
+>     ip_cmd) local cmd_name='ip' ;;                                                                                                      
+>     *) tst_brkm TBROK "Unknown test parameter '$cmd_type'"                                                                              
+>     esac
+> 	tst_check_cmds_test ifconfig || return
+> ...
 
+Huh, why do we even have the case here?
 
-Kind regards,
-Petr
+Why isn't the cmd_type either ip or ifconfig?
+
+Then we can just do:
+
+	tst_test_cmds $1 || return
+
+> Is it valid approach approach or should we use getopts to run the test twice?
+
+That is a valid approach as well, we can just do:
+
+if-addr-adddel_ifconfig if-addr-adddel ifconfig
+if-addr-adddel_ip if-addr-adddel ip
+
+in the runtest file, which would make the test results more detailed,
+as it will be clear what was actually skipped, which is always nice.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
