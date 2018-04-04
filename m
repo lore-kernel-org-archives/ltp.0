@@ -1,63 +1,30 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 4 Apr 2018 15:15:01 +0200
-Subject: [LTP] [RFC] tst_check_cmds to exit only current test
-In-Reply-To: <20180329114536.vsmsjzatryu4h5dm@dell5510>
-References: <20180329114536.vsmsjzatryu4h5dm@dell5510>
-Message-ID: <20180404131501.GH32109@rei>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 4 Apr 2018 16:04:21 +0300
+Subject: [LTP] [PATCH v2] sctp/sctp_big_chunk.c: Fix compiler error
+In-Reply-To: <1522840374-10311-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <fe226cc4-3c0a-0b4b-e618-e31e28647d07@oracle.com>
+ <1522840374-10311-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <cecc4bb1-d78b-a5d5-20f2-ae66407056eb@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-> # TODO: find a better name
-> # another option (maybe better would be to add getopt option to tst_check_cmds()
-> tst_check_cmds_test()
-
-Just call it tst_test_cmds() then.
-
-> {
-> 	local cmd
-> 	for cmd in $*; do
-> 		if ! command -v $cmd > /dev/null 2>&1; then
-> 			tst_res TCONF "'$cmd' not found"
-> 			return 32; # we don't have tst_flag2mask() in new API
-> 		fi
-> 	done
-> }
-> 
-> testcases/network/stress/interface/if-addr-adddel
-> test_body()
-> {
-> 	local cmd_type=$1                                                                                                                   
->                                                                                                                                         
->     case $cmd_type in                                                                                                                   
->     if_cmd) local cmd_name='ifconfig' ;;
->     ip_cmd) local cmd_name='ip' ;;                                                                                                      
->     *) tst_brkm TBROK "Unknown test parameter '$cmd_type'"                                                                              
->     esac
-> 	tst_check_cmds_test ifconfig || return
+On 04.04.2018 14:12, Xiao Yang wrote:
+> On old distros(e.g. RHEL5), Compilation failed because of redefinitions
+> from linux/sctp.h(including linux/in.h) and netinet/in.h, as below:
+> ----------------------------------------------------------------------
+> In file included from /usr/include/linux/sctp.h:54,
+>                  from ../../../include/lapi/sctp.h:22,
+>                  from sctp_big_chunk.c:35:
+> /usr/include/linux/in.h:26: error: redeclaration of enumerator ‘IPPROTO_IP’
+> /usr/include/netinet/in.h:33: error: previous definition of ‘IPPROTO_IP’ was here
 > ...
+> ----------------------------------------------------------------------
+> 
+> 1) Remove the include of linux/sctp.h to fix it.
+> 2) Include netinet/sctp.h, if it was available.
+> 
 
-Huh, why do we even have the case here?
-
-Why isn't the cmd_type either ip or ifconfig?
-
-Then we can just do:
-
-	tst_test_cmds $1 || return
-
-> Is it valid approach approach or should we use getopts to run the test twice?
-
-That is a valid approach as well, we can just do:
-
-if-addr-adddel_ifconfig if-addr-adddel ifconfig
-if-addr-adddel_ip if-addr-adddel ip
-
-in the runtest file, which would make the test results more detailed,
-as it will be clear what was actually skipped, which is always nice.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Applied, thanks!
