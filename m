@@ -1,58 +1,60 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 4 Apr 2018 16:37:17 +0300
-Subject: [LTP] [RFC PATCH v3 1/5] tst_net.sh: Support both old and new
- shell APIs + rename it
-In-Reply-To: <20180403154717.22491-2-pvorel@suse.cz>
-References: <20180403154717.22491-1-pvorel@suse.cz>
- <20180403154717.22491-2-pvorel@suse.cz>
-Message-ID: <9096090e-2c84-5648-22c1-14aa67b5938f@oracle.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 4 Apr 2018 15:44:03 +0200
+Subject: [LTP] [RFC] tst_check_cmds to exit only current test
+In-Reply-To: <20180404131501.GH32109@rei>
+References: <20180329114536.vsmsjzatryu4h5dm@dell5510>
+ <20180404131501.GH32109@rei>
+Message-ID: <20180404134401.acd5w52wcn2z42kv@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 03.04.2018 18:47, Petr Vorel wrote:
-> The new name states that library supports new API.
-> 
-> This is temporary solution, after migrating all tests to new SHELL API
-> the compatibility layer and old SHELL API support should be removed.
-...
-> -[ -z "$TST_LIB_LOADED" ] && . test.sh
-> +TST_OPTS=":6"
-> +TST_PARSE_ARGS=parse_args
-> +TST_USAGE=usage
-> +
-> +# Blank for an IPV4 test; 6 for an IPV6 test.
-> +TST_IPV6=
-> +
-> +parse_args()
-> +{
-> +	case $1 in
-> +	6) TST_IPV6=6;;
-> +	esac
-> +}
-> +
-> +tst_read_opts()
-> +{
-> +	local OPTIND
-> +	while getopts "$TST_OPTS" opt; do
-> +		$TST_PARSE_ARGS "$opt"
-> +	done
-> +}
-> +
-> +usage()
-> +{
-> +	cat << EOF
-> +usage: $0 [-6]
-> +
-> +OPTIONS
-> +-6     Use IPv6
-> +EOF
-> +}
+Hi Cyril,
 
-Could we rename it to tst_net_usage() or similar (for parse_arg()
-as well) since it is a library, and use the indent with echo, that
-way it would be more readable.
+> > # TODO: find a better name
+> > # another option (maybe better would be to add getopt option to tst_check_cmds()
+> > tst_check_cmds_test()
 
-Otherwise the patch looks good!
+> Just call it tst_test_cmds() then.
+
+> > {
+> > 	local cmd
+> > 	for cmd in $*; do
+> > 		if ! command -v $cmd > /dev/null 2>&1; then
+> > 			tst_res TCONF "'$cmd' not found"
+> > 			return 32; # we don't have tst_flag2mask() in new API
+> > 		fi
+> > 	done
+> > }
+I'll implement it regardless it's actually used in interface tests as it's handy (I'd like
+to use it in ima tests).
+I just don't like that new API doesn't have constants for TCONF, TPASS, etc (legacy API
+has it).
+
+> > testcases/network/stress/interface/if-addr-adddel
+> > test_body()
+> > {
+> > 	local cmd_type=$1
+
+> >     case $cmd_type in
+> >     if_cmd) local cmd_name='ifconfig' ;;
+> >     ip_cmd) local cmd_name='ip' ;;
+> >     *) tst_brkm TBROK "Unknown test parameter '$cmd_type'"
+> >     esac
+> > 	tst_check_cmds_test ifconfig || return
+> > ...
+
+> Huh, why do we even have the case here?
+
+> Why isn't the cmd_type either ip or ifconfig?
+
+> Then we can just do:
+
+> 	tst_test_cmds $1 || return
+Copy pasted, make sense to use much simpler form.
+
+
+Kind regards,
+Petr
