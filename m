@@ -1,53 +1,52 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  5 Apr 2018 16:50:12 +0200
-Subject: [LTP] [RFC PATCH 3/6] syscalls/alarm05: Rewrite to the new library.
+Date: Thu,  5 Apr 2018 16:50:15 +0200
+Subject: [LTP] [RFC PATCH 6/6] syscalls/wait401: Rewrite to the new library
 In-Reply-To: <20180405145015.7633-1-chrubis@suse.cz>
 References: <20180405145015.7633-1-chrubis@suse.cz>
-Message-ID: <20180405145015.7633-4-chrubis@suse.cz>
+Message-ID: <20180405145015.7633-7-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-+ Speed up the test a bit, we save 6 seconds yay!
++ Get rid of the sleep(1) in the process
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/alarm/alarm05.c | 216 +++++++-----------------------
- 1 file changed, 45 insertions(+), 171 deletions(-)
+ testcases/kernel/syscalls/wait4/wait401.c | 122 +++++++++++-------------------
+ 1 file changed, 45 insertions(+), 77 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/alarm/alarm05.c b/testcases/kernel/syscalls/alarm/alarm05.c
-index 1e93d2554..acb43c9a8 100644
---- a/testcases/kernel/syscalls/alarm/alarm05.c
-+++ b/testcases/kernel/syscalls/alarm/alarm05.c
-@@ -1,203 +1,77 @@
+diff --git a/testcases/kernel/syscalls/wait4/wait401.c b/testcases/kernel/syscalls/wait4/wait401.c
+index 26a5c7002..eb5f41f42 100644
+--- a/testcases/kernel/syscalls/wait4/wait401.c
++++ b/testcases/kernel/syscalls/wait4/wait401.c
+@@ -1,106 +1,74 @@
  /*
-+ * Copyright (c) International Business Machines  Corp., 2001,2005
-+ *	07/2001 Ported by Wayne Boyer
-+ *	06/2005 Test for alarm cleanup by Amos Waterland
++ * Copyright (c) International Business Machines  Corp., 2001
++ * Copyright (c) 2012-2018 Cyril Hrubis <chrubis@suse.cz>
   *
-- *   Copyright (c) International Business Machines  Corp., 2001,2005
-+ * Copyright (c) 2018 Cyril Hrubis <chrubis@suse.cz>
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *   Copyright (c) 2012 Cyril Hrubis <chrubis@suse.cz>
 + * This program is free software;  you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
 + * the Free Software Foundation; either version 2 of the License, or
 + * (at your option) any later version.
   *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
 + * This program is distributed in the hope that it will be useful,
 + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
 + * the GNU General Public License for more details.
   *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
 - *   You should have received a copy of the GNU General Public License
 - *   along with this program;  if not, write to the Free Software
 - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
@@ -57,218 +56,122 @@ index 1e93d2554..acb43c9a8 100644
   */
  
  /*
-- * Test Name: alarm05
-- *
-  * Test Description:
-- *  Check the functionality of the Alarm system call when the time input
-- *  parameter is non zero.
-- *
-- * Expected Result:
-  *  The return value of the alarm system call should be equal to the
-  *  amount previously remaining in the alarm clock.
-  *  A SIGALRM signal should be received after the specified amount of
-  *  time has elapsed.
-- *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *   	Log the errno and Issue a FAIL message.
-- *   Otherwise,
-- *   	Verify the Functionality of system call
-- *      if successful,
-- *      	Issue Functionality-Pass message.
-- *      Otherwise,
-- *		Issue Functionality-Fail message.
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *
-- * Usage:  <for command-line>
-- *  alarm05 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	06/2005 Test for alarm cleanup by Amos Waterland
-- *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS:
-- *  None.
+- *	wait401 - check that a call to wait4() correctly waits for a child
+- *		  process to exit
++ * wait401 - check that a call to wait4() correctly waits for a child
++ *           process to exit
   */
  
--#include <stdio.h>
--#include <unistd.h>
--#include <sys/types.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--
 -#include "test.h"
+-
++#include <stdlib.h>
+ #include <errno.h>
+ #define _USE_BSD
+ #include <sys/types.h>
+ #include <sys/resource.h>
+ #include <sys/wait.h>
 +#include "tst_test.h"
  
--char *TCID = "alarm05";
+-char *TCID = "wait401";
 -int TST_TOTAL = 1;
--int alarms_received = 0;	/* flag to indicate SIGALRM received or not */
-+static volatile int alarms_fired = 0;
- 
--void setup();			/* Main setup function of test */
--void cleanup();			/* cleanup function for the test */
--void sigproc(int sig);		/* signal catching function */
+-
+-static void cleanup(void);
+-static void setup(void);
 -
 -int main(int ac, char **av)
 +static void run(void)
  {
 -	int lc;
--	int time_sec1 = 10;	/* time for which 1st alarm is set */
--	int time_sec2 = 5;	/* time for which 2st alarm is set */
--	int ret_val1, ret_val2;	/* return values for alarm() calls */
--	int ret_val3;
--	int sleep_time1 = 3;	/* waiting time for the signal */
--	int sleep_time2 = 6;	/* waiting time for the signal */
--
+ 	pid_t pid;
+ 	int status = 1;
+ 	struct rusage rusage;
+ 
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+	unsigned int ret;
- 
 -		tst_count = 0;
-+	alarms_fired = 0;
- 
--		/*
--		 * Reset alarms_received for every iteration, since it has
--		 * old values from previous iterations (if any) and not
--		 * a value of zero
--		 */
--		alarms_received = 0;
-+	ret = alarm(10);
-+	if (ret)
-+		tst_res(TFAIL, "alarm() returned non-zero");
-+	else
-+		tst_res(TPASS, "alarm() returned zero");
- 
--		/*
--		 * Call First alarm() with non-zero time parameter
--		 * 'time_sec1' to send SIGALRM to the calling process.
--		 */
--		TEST(alarm(time_sec1));
--		ret_val1 = TEST_RETURN;
-+	sleep(1);
- 
--		/* Wait for signal SIGALARM */
--		sleep(sleep_time1);
-+	ret = alarm(1);
-+	if (ret == 9)
-+		tst_res(TPASS, "alarm() returned remainder correctly");
-+	else
-+		tst_res(TFAIL, "alarm() returned wrong remained %u", ret);
- 
--		/*
--		 * Call Second alarm() with non-zero time parameter
--		 * 'time_sec2' to send SIGALRM to the calling process.
--		 */
--		TEST(alarm(time_sec2));
--		ret_val2 = TEST_RETURN;
-+	sleep(2);
- 
--		/* Wait for signal SIGALRM */
--		sleep(sleep_time2);
 -
--		/*
--		 * Check whether the second alarm() call returned
--		 * the amount of time previously remaining in the
--		 * alarm clock of the calling process, and
--		 * sigproc() executed when SIGALRM received by the
--		 * process, the variable alarms_received is set.
--		 */
--		if ((alarms_received == 1) &&
--		    (ret_val2 == (time_sec1 - sleep_time1))) {
+-		pid = FORK_OR_VFORK();
 -
--			/*
--			 *  Make sure the system cleaned up the alarm
--			 *  after it delivered it.
--			 */
--			TEST(alarm(0));
--			ret_val3 = TEST_RETURN;
--
--			if (ret_val3 != 0)
--				tst_resm(TFAIL, "System did not "
--					 "clean up delivered " "alarm");
--			else {
--				tst_resm(TPASS, "Functionality of "
--					 "alarm(%u) successful",
--					 time_sec2);
--			}
--		} else {
--			tst_resm(TFAIL, "alarm(%u) fails, returned %d, "
--				 "alarms_received:%d",
--				 time_sec2, ret_val2, alarms_received);
+-		switch (pid) {
+-		case -1:
+-			tst_brkm(TBROK, cleanup, "fork() failed");
+-			break;
+-		case 0:
+-			sleep(1);
+-			exit(0);
+-			break;
+-		default:
+-			TEST(wait4(pid, &status, 0, &rusage));
+-			break;
 -		}
--	}
++	pid = SAFE_FORK();
++	if (!pid)
++		exit(0);
+ 
+-		if (TEST_RETURN == -1) {
+-			tst_brkm(TFAIL, cleanup, "%s call failed - errno = %d "
+-				 ": %s", TCID, TEST_ERRNO,
+-				 strerror(TEST_ERRNO));
+-		}
 -
+-		if (WIFEXITED(status) == 0) {
+-			tst_brkm(TFAIL, cleanup,
+-				 "%s call succeeded but "
+-				 "WIFEXITED() did not return expected value "
+-				 "- %d", TCID, WIFEXITED(status));
+-		} else if (TEST_RETURN != pid) {
+-			tst_resm(TFAIL, "%s did not return the "
+-				 "expected value (%d), actual: %ld",
+-				 TCID, pid, TEST_RETURN);
+-		} else {
++	TEST(wait4(pid, &status, 0, &rusage));
++	if (TEST_RETURN == -1) {
++		tst_res(TFAIL | TERRNO, "wait4() failed");
++		return;
++	}
+ 
+-			tst_resm(TPASS,
+-				 "Received child pid as expected.");
+-		}
++	if (TEST_RETURN != pid) {
++		tst_res(TFAIL, "waitpid() returned wrong pid %li, expected %i",
++		        TEST_RETURN, pid);
++	} else {
++		tst_res(TPASS, "waitpid() returned correct pid %i", pid);
++	}
+ 
+-		tst_resm(TPASS, "%s call succeeded", TCID);
++	if (!WIFEXITED(status)) {
++		tst_res(TFAIL, "WIFEXITED() not set in status (%s)",
++		        tst_strstatus(status));
++		return;
+ 	}
+ 
 -	cleanup();
 -	tst_exit();
-+	if (alarms_fired == 1)
-+		tst_res(TPASS, "alarm handler fired once");
+-}
++	tst_res(TPASS, "WIFEXITED() is set in status");
+ 
+-static void setup(void)
+-{
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
++	if (WEXITSTATUS(status))
++		tst_res(TFAIL, "WEXITSTATUS() != 0 but %i", WEXITSTATUS(status));
 +	else
-+		tst_res(TFAIL, "alarm handler filred %u times", alarms_fired);
- }
++		tst_res(TPASS, "WEXITSTATUS() == 0");
  
--/*
-- * setup() - performs all ONE TIME setup for this test.
-- *  Setup the signal handler to catch SIGALRM.
-- */
--void setup(void)
-+static void sighandler(int sig)
- {
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
 -	TEST_PAUSE;
--
--	/* Set the signal catching function */
--	if (signal(SIGALRM, sigproc) == SIG_ERR) {
--		tst_brkm(TFAIL, cleanup,
--			 "signal() fails to catch SIGALARM, errno=%d", errno);
--	}
-+	if (sig == SIGALRM)
-+		alarms_fired++;
  }
  
--/*
-- * sigproc(int) - This function defines the action that has to be taken
-- *	          when the SIGALRM signal is caught.
-- *   It also sets the variable which is used to check whether the
-- *   alarm system call was successful.
-- */
--void sigproc(int sig)
-+static void setup(void)
- {
--	alarms_received++;
-+	SAFE_SIGNAL(SIGALRM, sighandler);
- }
- 
--/*
-- * void
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *             completion or premature exit.
-- */
--void cleanup(void)
+-static void cleanup(void)
 -{
 -}
 +static struct tst_test test = {
++	.forks_child = 1,
 +	.test_all = run,
-+	.setup = setup,
 +};
 -- 
 2.13.6
