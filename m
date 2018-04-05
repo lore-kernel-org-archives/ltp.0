@@ -1,37 +1,42 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu,  5 Apr 2018 14:05:55 +0300
-Subject: [LTP] [PATCH 2/2] nfs06: decrease number of processes per fsstress
-	run
-In-Reply-To: <1522926355-18029-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1522926355-18029-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1522926355-18029-2-git-send-email-alexey.kodanev@oracle.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 5 Apr 2018 18:56:34 +0800
+Subject: [LTP] [PATCH 1/2] syscalls/preadv01: Run test for all
+	filesystems
+In-Reply-To: <20180405095214.GB31751@rei.lan>
+References: <1522400003-11319-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20180405095214.GB31751@rei.lan>
+Message-ID: <5AC600E2.5020305@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From 50 to 10. It multiplies by number of mounts and
-can slow test execution significantly.
+On 2018/04/05 17:52, Cyril Hrubis wrote:
+> Hi!
+> Looking at the test running it for all filesystems would not make much
+> sense as it is since as far as I can tell:
+>
+> 1) setup() creates a file and writes data to it
+>     - dirty pagecache record is created
+>
+> 2) test() reads data from the file
+>     - kernel will copy the data from pagecache
+>
+> 3) test library cleanup will umount() the device
+>     - dirty pagecache is written at this point
+>
+> So we will not reach any filesystem specific code at all.
+>
+> I guess that we may fix that by opening second file descriptor with
+> O_DIRECT which would bypass pagecache so each read/write request would
+> trigger I/O request from the block device.
+Hi Cyril,
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/network/nfs/nfs_stress/nfs06 |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Sorry, i ignored the fact that they use pagecache.
+Can we just keep them and add two new tests as you suggested?
 
-diff --git a/testcases/network/nfs/nfs_stress/nfs06 b/testcases/network/nfs/nfs_stress/nfs06
-index eb35157..33c2d5a 100755
---- a/testcases/network/nfs/nfs_stress/nfs06
-+++ b/testcases/network/nfs/nfs_stress/nfs06
-@@ -34,7 +34,7 @@ do_test()
- 	local n=0
- 	local pids
- 	for i in $VERSION; do
--		fsstress -l 1 -d $TST_TMPDIR/$i/$n -n 1000 -p 50 -r -c > /dev/null &
-+		fsstress -l 1 -d $TST_TMPDIR/$i/$n -n 1000 -p 10 -r -c > /dev/null &
- 		pids="$pids $!"
- 		n=$(( n + 1 ))
- 	done
--- 
-1.7.1
+Thanks,
+Xiao Yang
+
 
