@@ -1,144 +1,110 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu,  5 Apr 2018 15:30:18 +0200
-Subject: [LTP] [RFC PATCH v5 0/6] Rewriting network tests into new shell API
-Message-ID: <20180405133024.2279-1-pvorel@suse.cz>
+Date: Thu,  5 Apr 2018 15:30:22 +0200
+Subject: [LTP] [RFC PATCH v5 4/6] network/interface: Cleanup if4-addr-change
+In-Reply-To: <20180405133024.2279-1-pvorel@suse.cz>
+References: <20180405133024.2279-1-pvorel@suse.cz>
+Message-ID: <20180405133024.2279-5-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Wrap test code into function.
+This is preparation for next commit.
 
-found some more issues with parameters.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/network/stress/interface/if4-addr-change | 61 ++++++++++++----------
+ 1 file changed, 34 insertions(+), 27 deletions(-)
 
-Kind regards,
-Petr
-
-Changelog v4->v5:
-* Fix handling getopts parameters in scripts which are using legacy API
-  with getopts (ipsec_lib.sh, tcp_fastopen_run.sh, rpc_test.sh) by
-  shifting args after getopts and moving sourcing tst_net.sh after that.
-  Also -6 param for IPv6 must be passed to tst_net.sh (ipsec_lib.sh,
-  tcp_fastopen_run.sh).
-* Fixed iver for legacy scripts (caused some bugs at least in interfaces
-  tests).
-
-Changes v3->v4:
-* Fixed bugs with setting TST_IPV6 and ipver variables. Now added into
-  setup function (for new API they must not be used in test scripts
-  outside setup/run/cleanup functions as they're not set).
-* New commit: 6/6 "network/interface: Split tests to test only one command per test"
-  A bit complicated than I thought (adding tst_test_cmds and using it
-  would be simpler), but I guess separation is better (as Cyril noted).
-  I needed to pass -c as getopts parameter.
-* Renamed functions in tst_net.sh (Alexey).
-* Fixed script name in Makefile, changed output of usage (Alexey).
-* Export TST_ID, LTPROOT and TST_DATAROOT also for TST_NO_DEFAULT_RUN
-  (Cyril).
-
-Petr Vorel (6):
-  tst_net.sh: Support both new and legacy APIs + rename
-  tst_test.sh: Introduce TST_NO_DEFAULT_RUN
-  network.sh: Migrate to new shell API
-  network/interface: Cleanup if4-addr-change
-  tst_net_stress.sh: Migrate with dependencies to new API + rename
-  network/interface: Split tests to test only one command per test
-
- runtest/net_stress.interface                       |  38 ++++--
- testcases/lib/{test_net.sh => tst_net.sh}          | 150 ++++++++++++++-------
- testcases/lib/tst_test.sh                          |  91 +++++++------
- testcases/network/README.md                        |   4 +-
- testcases/network/busy_poll/busy_poll01.sh         |   3 +-
- testcases/network/busy_poll/busy_poll02.sh         |   3 +-
- testcases/network/busy_poll/busy_poll03.sh         |   3 +-
- testcases/network/dccp/dccp01.sh                   |   3 +-
- testcases/network/dctcp/dctcp01.sh                 |   3 +-
- testcases/network/dhcp/dhcpd_tests.sh              |   3 +-
- testcases/network/dhcp/dnsmasq_tests.sh            |   3 +-
- testcases/network/iproute/ip_tests.sh              |   3 +-
- testcases/network/multicast/mc_cmds/mc_cmds        |   3 +-
- testcases/network/multicast/mc_commo/mc_commo      |   3 +-
- testcases/network/multicast/mc_member/mc_member    |   3 +-
- testcases/network/multicast/mc_opts/mc_opts        |   3 +-
- testcases/network/nfs/fsx-linux/fsx.sh             |   3 +-
- testcases/network/nfs/nfs_stress/nfs01             |   3 +-
- testcases/network/nfs/nfs_stress/nfs02             |   3 +-
- testcases/network/nfs/nfs_stress/nfs03             |   3 +-
- testcases/network/nfs/nfs_stress/nfs04             |   3 +-
- testcases/network/nfs/nfs_stress/nfs05             |   3 +-
- testcases/network/nfs/nfs_stress/nfs06             |   3 +-
- testcases/network/nfs/nfslock01/nfslock01          |   3 +-
- testcases/network/nfs/nfsstat01/nfsstat01          |   3 +-
- testcases/network/rpc/basic_tests/rpc01/rpc01      |   3 +-
- .../network/rpc/basic_tests/rpcinfo/rpcinfo01      |   3 +-
- testcases/network/rpc/basic_tests/rup/rup01        |   3 +-
- testcases/network/rpc/basic_tests/rusers/rusers01  |   3 +-
- testcases/network/rpc/rpc-tirpc/rpc_test.sh        |   4 +-
- testcases/network/sctp/sctp01.sh                   |   3 +-
- testcases/network/sockets/bind_noport01.sh         |   3 +-
- .../network/stress/broken_ip/broken_ip4-checksum   |   3 +-
- .../network/stress/broken_ip/broken_ip4-dstaddr    |   3 +-
- .../network/stress/broken_ip/broken_ip4-fragment   |   3 +-
- testcases/network/stress/broken_ip/broken_ip4-ihl  |   3 +-
- .../network/stress/broken_ip/broken_ip4-protcol    |   3 +-
- .../network/stress/broken_ip/broken_ip4-totlen     |   3 +-
- .../network/stress/broken_ip/broken_ip4-version    |   3 +-
- .../network/stress/broken_ip/broken_ip6-dstaddr    |   3 +-
- .../network/stress/broken_ip/broken_ip6-nexthdr    |   3 +-
- testcases/network/stress/broken_ip/broken_ip6-plen |   3 +-
- .../network/stress/broken_ip/broken_ip6-version    |   3 +-
- testcases/network/stress/dns/dns-stress            |   3 +-
- testcases/network/stress/ftp/ftp-download-stress   |   3 +-
- testcases/network/stress/ftp/ftp-upload-stress     |   3 +-
- testcases/network/stress/http/http-stress          |   3 +-
- testcases/network/stress/interface/if-addr-adddel  |  53 +++-----
- .../network/stress/interface/if-addr-addlarge      |  58 +++-----
- testcases/network/stress/interface/if-lib.sh       |  50 +++++++
- testcases/network/stress/interface/if-mtu-change   |  49 +++----
- testcases/network/stress/interface/if-route-adddel |  56 +++-----
- .../network/stress/interface/if-route-addlarge     |  52 +++----
- testcases/network/stress/interface/if-updown       |  49 +++----
- testcases/network/stress/interface/if4-addr-change |  71 +++++-----
- testcases/network/stress/ipsec/ipsec_lib.sh        |  10 +-
- .../grp-operation/mcast-group-multiple-socket      |  16 ++-
- .../multicast/grp-operation/mcast-group-same-group |  17 ++-
- .../grp-operation/mcast-group-single-socket        |  17 ++-
- .../grp-operation/mcast-group-source-filter        |  17 ++-
- .../stress/multicast/grp-operation/mcast-lib.sh    |  17 +--
- testcases/network/stress/ns-tools/Makefile         |   2 +-
- .../{test_net_stress.sh => tst_net_stress.sh}      |  32 +++--
- testcases/network/stress/ssh/ssh-stress            |   3 +-
- testcases/network/tcp_cmds/arping/arping01.sh      |   3 +-
- .../network/tcp_cmds/clockdiff/clockdiff01.sh      |   3 +-
- testcases/network/tcp_cmds/ipneigh/ipneigh01.sh    |   3 +-
- testcases/network/tcp_cmds/ping/ping01.sh          |   3 +-
- testcases/network/tcp_cmds/ping/ping02.sh          |   3 +-
- testcases/network/tcp_cmds/rlogin/rlogin01         |   3 +-
- testcases/network/tcp_cmds/sendfile/sendfile01     |   3 +-
- testcases/network/tcp_cmds/tcpdump/tcpdump01       |   3 +-
- testcases/network/tcp_cmds/telnet/telnet01         |   3 +-
- .../network/tcp_cmds/tracepath/tracepath01.sh      |   3 +-
- testcases/network/tcp_fastopen/tcp_fastopen_run.sh |  17 ++-
- testcases/network/traceroute/traceroute01.sh       |   3 +-
- testcases/network/virt/geneve01.sh                 |   3 +-
- testcases/network/virt/gre01.sh                    |   3 +-
- testcases/network/virt/ipvlan01.sh                 |   3 +-
- testcases/network/virt/macvlan01.sh                |   3 +-
- testcases/network/virt/macvtap01.sh                |   3 +-
- testcases/network/virt/vlan01.sh                   |   3 +-
- testcases/network/virt/vlan02.sh                   |   3 +-
- testcases/network/virt/vlan03.sh                   |   3 +-
- testcases/network/virt/vxlan01.sh                  |   3 +-
- testcases/network/virt/vxlan02.sh                  |   3 +-
- testcases/network/virt/vxlan03.sh                  |   3 +-
- testcases/network/xinetd/xinetd_tests.sh           |   3 +-
- testscripts/network.sh                             |   7 +-
- 89 files changed, 609 insertions(+), 466 deletions(-)
- rename testcases/lib/{test_net.sh => tst_net.sh} (86%)
- create mode 100644 testcases/network/stress/interface/if-lib.sh
- rename testcases/network/stress/ns-tools/{test_net_stress.sh => tst_net_stress.sh} (88%)
-
+diff --git a/testcases/network/stress/interface/if4-addr-change b/testcases/network/stress/interface/if4-addr-change
+index a452f3da5..a2cf12dab 100644
+--- a/testcases/network/stress/interface/if4-addr-change
++++ b/testcases/network/stress/interface/if4-addr-change
+@@ -1,5 +1,6 @@
+ #!/bin/sh
+ # Copyright (c) 2015-2016 Oracle and/or its affiliates. All Rights Reserved.
++# Copyright (c) 2017-2018 Petr Vorel <pvorel@suse.cz>
+ # Copyright (c) International Business Machines  Corp., 2005
+ #
+ # This program is free software; you can redistribute it and/or
+@@ -36,42 +37,48 @@ do_cleanup()
+ 
+ trap "tst_brkm TBROK 'test interrupted'" INT
+ 
+-tst_check_cmds ifconfig
++test_body()
++{
++	local cnt=0
++	local num=1
++	local add_to_net=
++
++	tst_resm TINFO "ifconfig changes IPv4 address $NS_TIMES times"
+ 
+-tst_resm TINFO "ifconfig changes IPv4 address $NS_TIMES times"
++	while [ $cnt -lt $NS_TIMES ]; do
++		# Define the network portion
++		num=$(($num + 1))
++		[ $num -gt $LHOST_IPV4_HOST_MAX ] && num=1
+ 
+-cnt=0
+-num=1
+-while [ $cnt -lt $NS_TIMES ]; do
+-	# Define the network portion
+-	num=$(($num + 1))
+-	[ $num -gt $LHOST_IPV4_HOST_MAX ] && num=1
++		[ $num -eq $RHOST_IPV4_HOST ] && continue
+ 
+-	[ $num -eq $RHOST_IPV4_HOST ] && continue
++		# check prefix and fix values for prefix != 24
++		add_to_net=
++		if [ $IPV4_LPREFIX -lt 8 -o $IPV4_LPREFIX -ge 32 ] ; then
++			tst_brkm TCONF "test must be with prefix >= 8 and prefix < 32 ($IPV4_LPREFIX)"
++		elif [ $IPV4_LPREFIX -lt 16 ]; then # N.x.x.num
++			add_to_net=".0.1"
++		elif [ $IPV4_LPREFIX -lt 24 ]; then # N.N.x.num
++			add_to_net=".1"
++		fi
+ 
+-	# check prefix and fix values for prefix != 24
+-	add_to_net=
+-	if [ $IPV4_LPREFIX -lt 8 -o $IPV4_LPREFIX -ge 32 ] ; then
+-		tst_brkm TCONF "test must be with prefix >= 8 and prefix < 32 ($IPV4_LPREFIX)"
+-	elif [ $IPV4_LPREFIX -lt 16 ]; then # N.x.x.num
+-		add_to_net=".0.1"
+-	elif [ $IPV4_LPREFIX -lt 24 ]; then # N.N.x.num
+-		add_to_net=".1"
+-	fi
++		# Change IPv4 address
++		ROD ifconfig $(tst_iface) ${IPV4_LNETWORK}${add_to_net}.${num} netmask \
++			$IPV4_LNETMASK broadcast $IPV4_LBROADCAST
+ 
+-	# Change IPv4 address
+-	ROD ifconfig $(tst_iface) ${IPV4_LNETWORK}${add_to_net}.${num} netmask \
+-		$IPV4_LNETMASK broadcast $IPV4_LBROADCAST
++		cnt=$(($cnt + 1))
+ 
+-	cnt=$(($cnt + 1))
++		[ $CHECK_INTERVAL -eq 0 ] && continue
++		[ $(($cnt % $CHECK_INTERVAL)) -ne 0 ] && continue
+ 
+-	[ $CHECK_INTERVAL -eq 0 ] && continue
+-	[ $(($cnt % $CHECK_INTERVAL)) -ne 0 ] && continue
++		tst_resm TINFO "ping $(tst_ipaddr):$(tst_ipaddr rhost) ${cnt}/$NS_TIMES"
++		tst_ping
++	done
+ 
+-	tst_resm TINFO "ping $(tst_ipaddr):$(tst_ipaddr rhost) ${cnt}/$NS_TIMES"
+ 	tst_ping
+-done
++}
+ 
+-tst_ping
++tst_check_cmds ifconfig
++test_body
+ 
+ tst_exit
 -- 
 2.16.2
 
