@@ -1,30 +1,31 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  5 Apr 2018 16:50:10 +0200
-Subject: [LTP] [RFC PATCH 1/6] exit02: Rewrite to new library
+Date: Thu,  5 Apr 2018 16:50:14 +0200
+Subject: [LTP] [RFC PATCH 5/6] syscalls/waitpid01: Rewrite to the new
+	library.
 In-Reply-To: <20180405145015.7633-1-chrubis@suse.cz>
 References: <20180405145015.7633-1-chrubis@suse.cz>
-Message-ID: <20180405145015.7633-2-chrubis@suse.cz>
+Message-ID: <20180405145015.7633-6-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We get rid of the ridiculous sleep(2) in the test as a side effect.
++ use raise(SIGALRM) instead of wasting time with alarm(2)
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/exit/exit02.c | 249 ++++++++------------------------
- 1 file changed, 60 insertions(+), 189 deletions(-)
+ testcases/kernel/syscalls/waitpid/waitpid01.c | 172 ++++++++------------------
+ 1 file changed, 52 insertions(+), 120 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/exit/exit02.c b/testcases/kernel/syscalls/exit/exit02.c
-index 7858c894d..8143870e8 100644
---- a/testcases/kernel/syscalls/exit/exit02.c
-+++ b/testcases/kernel/syscalls/exit/exit02.c
-@@ -1,212 +1,83 @@
+diff --git a/testcases/kernel/syscalls/waitpid/waitpid01.c b/testcases/kernel/syscalls/waitpid/waitpid01.c
+index e05e783ef..efbc26e5a 100644
+--- a/testcases/kernel/syscalls/waitpid/waitpid01.c
++++ b/testcases/kernel/syscalls/waitpid/waitpid01.c
+@@ -1,142 +1,74 @@
  /*
 + * Copyright (c) International Business Machines  Corp., 2001
-+ *    07/2001 Ported by Wayne Boyer
++ *    07/2001 John George
 + * Copyright (c) 2018 Cyril Hrubis <chrubis@suse.cz>
   *
 - *   Copyright (c) International Business Machines  Corp., 2001
@@ -54,243 +55,165 @@ index 7858c894d..8143870e8 100644
 + * along with this program;  if not, write to the Free Software
 + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
   */
--
+ 
  /*
 - * NAME
-- * 	exit02.c
+- *	waitpid01.c
 - *
 - * DESCRIPTION
-- *	Check that exit flushes output file buffers and closes files upon
-- *	exitting
+- *	Check that when a child kills itself by generating an alarm
+- *	exception, the waiting parent is correctly notified.
 - *
 - * ALGORITHM
-- * 	Fork a process that creates a file and writes a few bytes, and
-- * 	calls exit WITHOUT calling close(). The parent then reads the
-- * 	file.  If everything that was written is present in the file, then
-- *	the test passes.
+- *	Fork a child that sets an alarm. When the alarm goes off, causing
+- *	the death of the child, the parent checks that SIG_ALRM was returned
 - *
-- * USAGE
-- * 	exit02
+- * USAGE:  <for command-line>
+- *      waitpid01 [-c n] [-i n] [-I x] [-P x] [-t]
+- *      where,  -c n : Run n copies concurrently.
+- *              -i n : Execute test n times.
+- *              -I x : Execute test for x seconds.
+- *              -P x : Pause for x seconds between iterations.
+- *              -t   : Turn on syscall timing.
 - *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS
-- * 	None
-+ * Fork a process that creates a file and writes a few bytes, and
-+ * calls exit WITHOUT calling close(). The parent then reads the
-+ * file.  If everything that was written is present in the file, then
-+ * the test passes.
+- * History
+- *	07/2001 John George
+- *		-Ported
++ * Check that when a child kills itself by SIGALRM the waiting parent is
++ * correctly notified.
+  *
+- * Restrictions
+- *	None
++ * Fork a child that raises(SIGALRM), the parent checks that SIGALRM was
++ * returned.
   */
+-
+-#include <sys/signal.h>
 -#include <sys/types.h>
--#include <sys/wait.h>
--#include <sys/stat.h>
--#include <stdio.h>
--#include <string.h>
++#include <stdlib.h>
+ #include <sys/wait.h>
 -#include <errno.h>
--#include <signal.h>
--#include <fcntl.h>
--#include <string.h>
 -#include "test.h"
 -
--void cleanup(void);
--void setup(void);
+-static void setup(void);
+-static void cleanup(void);
 -
--char *TCID = "exit02";
+-char *TCID = "waitpid01";
 -int TST_TOTAL = 1;
--
--#define READ  0
--#define WRITE 1
--#define MODE 0666
--
--char filen[40];
--
--int main(int ac, char **av)
-+
-+#include <stdlib.h>
 +#include "tst_test.h"
-+
-+#define FNAME "test_file"
-+
-+static void child_write(void)
- {
--	int pid, npid, sig, nsig, exno, nexno, status;
--	int filed;
--	char wbuf[BUFSIZ], rbuf[BUFSIZ];
--	int len, rlen;
--	int rval = 0;
--	int lc;
--
--	/*
--	 * parse standard options
--	 */
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();		/* global setup for test */
--
--	/*
--	 * The following loop checks looping state if -i option given
--	 */
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/*
--		 * reset tst_count in case we are looping.
--		 */
--		tst_count = 0;
--
--		strcpy(wbuf, "abcd");
--		len = strlen(wbuf);
--
--		exno = sig = 0;
--
--		if ((pid = FORK_OR_VFORK()) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
--
--		if (pid == 0) {	/* child */
--			sleep(1);
--			if ((filed = creat(filen, MODE)) == -1) {
--				tst_resm(TINFO, "creat error: unable to"
--					 "open output file");
--				exit(2);
--			}
--			if (write(filed, wbuf, len) != len) {
--				tst_resm(TINFO, "write error");
--				exit(2);
--			}
--			exit(exno);
--		} else {	/* parent */
--			npid = wait(&status);
--
--			if (npid != pid) {
--				tst_resm(TFAIL, "wait error: "
--					 "unexpected pid returned");
--				rval = 1;
--			}
--
--			nsig = status % 256;
--
--			/*
--			 * to check if the core dump bit has been
--			 * set, bit # 7
--			 */
--			if (nsig >= 128)
--				nsig = nsig - 128;
--
--			/*
--			 * nsig is the signal number returned by
--			 * wait
--			 */
--			if (nsig != sig) {
--				tst_resm(TFAIL, "wait error: unexpected "
--					 "signal returned %d", nsig);
--				rval = 1;
--			}
--
--			/*
--			 * nexno is the exit number returned by wait
--			 */
--			nexno = status / 256;
--			if (nexno != exno) {
--				tst_resm(TFAIL, "wait error: unexpected exit "
--					 "number %d", nexno);
--				rval = 1;
--			}
--
--			sleep(2);	/* let child's exit close opened file */
--
--			filed = open(filen, O_RDONLY, READ);
--			if (filed == -1) {
--				tst_resm(TFAIL, "open error: "
--					 "unable to open input file");
--				rval = 1;
--			} else {
--				rlen = read(filed, rbuf, len);
--				if (len != rlen) {
--					tst_resm(TFAIL, "exit error: file "
--						 "buffer was not flushed");
--					rval = 1;
--				} else if (strncmp(rbuf, wbuf, len) != 0) {
--					tst_resm(TFAIL, "exit error: file "
--						 "buffer was not flushed");
--					rval = 1;
--				}
--			}
--			close(filed);
--			unlink(filen);
--		}
--		if (!rval) {
--			tst_resm(TPASS, "exit() test PASSED");
--		}
--	}
--	cleanup();
--	tst_exit();
-+	int fd;
-+
-+	fd = SAFE_CREAT(FNAME, 0666);
-+	SAFE_WRITE(1, fd, FNAME, sizeof(FNAME));
-+	exit(0);
- }
  
--/*
-- * setup() - perform all ONE TIME setup for this test
-- */
--void setup(void)
-+static void check_file(void)
- {
-+	int fd, len;
-+	char buf[256];
- 
--	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	fd = SAFE_OPEN(FNAME, O_RDONLY);
-+	len = SAFE_READ(0, fd, buf, sizeof(buf));
- 
--	umask(0);
-+	if (len != sizeof(FNAME)) {
-+		tst_res(TFAIL, "Wrong length %i expected %zu", len, sizeof(buf));
-+		return;
-+	}
- 
--	TEST_PAUSE;
-+	if (memcmp(buf, FNAME, sizeof(FNAME))) {
-+		tst_res(TFAIL, "Wrong data read back");
-+		return;
-+	}
- 
--	tst_tmpdir();
-+	SAFE_CLOSE(fd);
- 
--	sprintf(filen, "tfile_%d", getpid());
-+	tst_res(TPASS, "File written by child read back correctly");
- }
- 
--/*
-- * cleanup() - performs all ONE TIME cleanup for this test at completion or
-- *	       premature exit.
-- */
--void cleanup(void)
+-int main(int argc, char **argv)
 +static void run(void)
  {
-+	int pid;
+-	int lc;
+-
+-	int pid, npid, sig, nsig;
+-	int exno, nexno, status;
+-
+-	tst_parse_opts(argc, argv, NULL, NULL);
++	pid_t pid, rpid;
++	int status;
  
--	/*
--	 * Remove tmp dir and all files in it
--	 */
--	tst_rmdir();
+-	setup();
+-
+-	/* check for looping state if -i option is given */
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* reset tst_count in case we are looping */
+-		tst_count = 0;
+-
+-		exno = 1;
+-		sig = 14;
 +	pid = SAFE_FORK();
-+	if (!pid)
-+		child_write();
++	if (!pid) {
++		raise(SIGALRM);
++		exit(0);
++	}
  
--	/*
--	 * exit with return code appropriate for results
--	 */
-+	tst_reap_children();
+-		pid = FORK_OR_VFORK();
+-		if (pid < 0) {
+-			tst_brkm(TFAIL, cleanup, "Fork Failed");
+-		} else if (pid == 0) {
+-			alarm(2);
+-			pause();
+-			exit(exno);
+-		} else {
+-			errno = 0;
+-			while (((npid = waitpid(pid, &status, 0)) != -1) ||
+-			       (errno == EINTR)) {
+-				if (errno == EINTR)
+-					continue;
++	rpid = waitpid(pid, &status, 0);
++	if (rpid < 0)
++		tst_brk(TBROK | TERRNO, "waitpid() failed");
  
-+	check_file();
-+
-+	SAFE_UNLINK(FNAME);
+-				if (npid != pid) {
+-					tst_resm(TFAIL, "waitpid error: "
+-						 "unexpected pid returned");
+-				} else {
+-					tst_resm(TPASS,
+-						 "recieved expected pid");
+-				}
++	if (rpid != pid) {
++		tst_res(TFAIL, "waitpid() returned wrong pid %i, expected %i",
++		        rpid, pid);
++	} else {
++		tst_res(TPASS, "waitpid() returned correct pid %i", pid);
++	}
+ 
+-				nsig = WTERMSIG(status);
++	if (!WIFSIGNALED(status)) {
++		tst_res(TFAIL, "WIFSIGNALED() not set in status (%s)",
++		        tst_strstatus(status));
++		return;
++	}
+ 
+-				/*
+-				 * nsig is the signal number returned by
+-				 * waitpid
+-				 */
+-				if (nsig != sig) {
+-					tst_resm(TFAIL, "waitpid error: "
+-						 "unexpected signal "
+-						 "returned");
+-				} else {
+-					tst_resm(TPASS, "recieved expected "
+-						 "signal");
+-				}
++	tst_res(TPASS, "WIFSIGNALED() set in status");
+ 
+-				/*
+-				 * nexno is the exit number returned by
+-				 * waitpid
+-				 */
+-				nexno = WEXITSTATUS(status);
+-				if (nexno != 0) {
+-					tst_resm(TFAIL, "signal error: "
+-						 "unexpected exit number "
+-						 "returned");
+-				}
+-			}
+-		}
++	if (WTERMSIG(status) != SIGALRM) {
++		tst_res(TFAIL, "WTERMSIG() != SIGALRM but %s",
++		        tst_strsig(WTERMSIG(status)));
++		return;
+ 	}
+ 
+-	cleanup();
+-	tst_exit();
++	tst_res(TPASS, "WTERMSIG() == SIGALRM");
  }
-+
+ 
+-static void setup(void)
+-{
+-	TEST_PAUSE;
+-}
+-
+-static void cleanup(void)
+-{
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-}
 +static struct tst_test test = {
-+	.needs_tmpdir = 1,
 +	.forks_child = 1,
 +	.test_all = run,
 +};
