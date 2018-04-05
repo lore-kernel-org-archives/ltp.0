@@ -1,98 +1,171 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  5 Apr 2018 16:01:48 +0200
-Subject: [LTP] [RFC PATCH 2/8] lib/tst_test: Populate the read-only fs
+Date: Thu,  5 Apr 2018 16:01:50 +0200
+Subject: [LTP] [RFC PATCH 4/8] syscalls/rmdir02: Make use of .needs_rofs
 In-Reply-To: <20180405140154.6218-1-chrubis@suse.cz>
 References: <20180405140154.6218-1-chrubis@suse.cz>
-Message-ID: <20180405140154.6218-3-chrubis@suse.cz>
+Message-ID: <20180405140154.6218-5-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Populate the read only filesystem with a file and a directory.
-
-This is needed for a testing syscalls such as unlink() or rmdir() for
-EROFS error.
-
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- lib/tst_test.c | 45 ++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 36 insertions(+), 9 deletions(-)
+ testcases/kernel/syscalls/rmdir/rmdir02.c | 83 +++++++++++--------------------
+ 1 file changed, 29 insertions(+), 54 deletions(-)
 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 5e10460b0..3b9014487 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -695,6 +695,32 @@ static void assert_test_fn(void)
- 		tst_brk(TBROK, "You can define tcnt only for test()");
+diff --git a/testcases/kernel/syscalls/rmdir/rmdir02.c b/testcases/kernel/syscalls/rmdir/rmdir02.c
+index 55123c727..d7cec8d4e 100644
+--- a/testcases/kernel/syscalls/rmdir/rmdir02.c
++++ b/testcases/kernel/syscalls/rmdir/rmdir02.c
+@@ -14,41 +14,21 @@
+  * You should have received a copy of the GNU General Public License
+  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+  */
+-
+ /*
+  * Description:
+- *  1) create a directory tstdir1, create a file under it.
+- *     call rmdir(tstdir1), verify the return value is -1
+- *     and the errno is ENOTEMPTY.
+- *  2) create a directory with long path, call rmdir(tstdir1),
+- *     verify the return value is -1 and the errno is ENAMETOOLONG.
+- *  3) pass a pathname containing non-exist directory component
+- *     to rmdir(), verify the return value is -1 and the errno
+- *     is ENOENT.
+- *  4) pass a pathname containing a file component to rmdir(),
+- *     verify the return value is -1 and the errno is ENOTDIR.
+- *  5) attempt to pass an invalid pathname with an address
+- *     pointing outside the address space of the process, as the
+- *     argument to rmdir(), verify the return value is -1 and
+- *     the errno is EFAULT.
+- *  6) pass a pathname with too many symbolic links to rmdir(),
+- *     verify the return value is -1 and the errno is ELOOP.
+- *  7) pass a pathname which refers to a directory on a read-only
+- *     file system to rmdir(), verify the return value is -1 and
+- *     the errno is EROFS.
+- *  8) pass a pathname which is currently used as a mount point
+- *     to rmdir(), verify the return value is -1 and the errno is
+- *     EBUSY.
+- *  9) pass a pathname which points to the current directory(.)
+- *     to  rmdir(), verify the return value is -1 and the errno is
+- *     EINVAL.
++ *   1) attempt to rmdir() non-empty directory -> ENOTEMPTY
++ *   2) attempt to rmdir() directory with long path name -> ENAMETOOLONG
++ *   3) attempt to rmdir() non-existing directory -> ENOENT
++ *   4) attempt to rmdir() a file -> ENOTDIR
++ *   5) attempt to rmdir() invalid pointer -> EFAULT
++ *   6) attempt to rmdir() symlink loop -> ELOOP
++ *   7) attempt to rmdir() dir on RO mounted FS -> EROFS
++ *   8) attempt to rmdir() mount point -> EBUSY
++ *   9) attempt to rmdir() current directory "." -> EINVAL
+  */
+ 
+ #include <errno.h>
+-#include <sys/mman.h>
+-#include <string.h>
+-#include <unistd.h>
+-#include <sys/mount.h>
++
+ #include "tst_test.h"
+ 
+ #define DIR_MODE	(S_IRWXU | S_IRWXG | S_IRWXO)
+@@ -58,11 +38,10 @@
+ #define TESTDIR2	"nosuchdir/testdir2"
+ #define TESTDIR3	"testfile2/testdir3"
+ #define TESTDIR4	"/loopdir"
+-#define MNTPOINT	"mntpoint"
+-#define TESTDIR5	"mntpoint/testdir5"
++#define MNT_POINT	"mntpoint"
++#define TESTDIR5	"mntpoint/dir"
+ #define TESTFILE    "testdir/testfile"
+ #define TESTFILE2   "testfile2"
+-#define CURRENTDIR  "."
+ 
+ static char longpathname[PATH_MAX + 2];
+ static char looppathname[sizeof(TESTDIR4) * 43] = ".";
+@@ -78,17 +57,14 @@ static struct testcase {
+ 	{NULL, EFAULT},
+ 	{looppathname, ELOOP},
+ 	{TESTDIR5, EROFS},
+-	{MNTPOINT, EBUSY},
+-	{CURRENTDIR, EINVAL},
++	{MNT_POINT, EBUSY},
++	{".", EINVAL}
+ };
+ 
+ static void setup(void)
+ {
+ 	unsigned int i;
+ 
+-	SAFE_MKDIR(TESTDIR5, DIR_MODE);
+-	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type,
+-				 MS_REMOUNT | MS_RDONLY, NULL);
+ 	SAFE_MKDIR(TESTDIR, DIR_MODE);
+ 	SAFE_TOUCH(TESTFILE, FILE_MODE, NULL);
+ 
+@@ -97,16 +73,15 @@ static void setup(void)
+ 	SAFE_TOUCH(TESTFILE2, FILE_MODE, NULL);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(tcases); i++) {
+-		if (tcases[i].exp_errno == EFAULT) {
++		if (!tcases[i].dir)
+ 			tcases[i].dir = tst_get_bad_addr(NULL);
+-		}
+ 	}
+ 
+ 	/*
+-	* NOTE: the ELOOP test is written based on that the
+-	* consecutive symlinks limit in kernel is hardwire
+-	* to 40.
+-	*/
++	 * NOTE: the ELOOP test is written based on that the
++	 * consecutive symlinks limit in kernel is hardwired
++	 * to 40.
++	 */
+ 	SAFE_MKDIR("loopdir", DIR_MODE);
+ 	SAFE_SYMLINK("../loopdir", "loopdir/loopdir");
+ 	for (i = 0; i < 43; i++)
+@@ -118,18 +93,21 @@ static void verify_rmdir(unsigned int n)
+ 	struct testcase *tc = &tcases[n];
+ 
+ 	TEST(rmdir(tc->dir));
++
+ 	if (TEST_RETURN != -1) {
+-		tst_res(TFAIL, "rmdir() succeeded unexpectedly");
++		tst_res(TFAIL, "rmdir() succeeded unexpectedly (%li)",
++			TEST_RETURN);
+ 		return;
+ 	}
+ 
+ 	if (TEST_ERRNO == tc->exp_errno) {
+ 		tst_res(TPASS | TTERRNO, "rmdir() failed as expected");
+-	} else {
+-		tst_res(TFAIL | TTERRNO,
+-			"rmdir() failed unexpectedly; expected: %d, got ",
+-			tc->exp_errno);
++		return;
+ 	}
++
++	tst_res(TFAIL | TTERRNO,
++		"rmdir() failed unexpectedly; expected: %d - %s",
++		tc->exp_errno, tst_strerrno(tc->exp_errno));
  }
  
-+static int prepare_and_mount_ro_fs(const char *dev,
-+                                   const char *mntpoint,
-+                                   const char *fs_type)
-+{
-+	char buf[PATH_MAX];
-+
-+	if (mount(dev, mntpoint, fs_type, 0, NULL)) {
-+		tst_res(TINFO | TERRNO, "Can't mount %s at %s (%s)",
-+			dev, mntpoint, fs_type);
-+		return 1;
-+	}
-+
-+	mntpoint_mounted = 1;
-+
-+	snprintf(buf, sizeof(buf), "%s/dir/", mntpoint);
-+	SAFE_MKDIR(buf, 0777);
-+
-+	snprintf(buf, sizeof(buf), "%s/file", mntpoint);
-+	SAFE_FILE_PRINTF(buf, "file content");
-+	SAFE_CHMOD(buf, 0777);
-+
-+	SAFE_MOUNT(dev, mntpoint, fs_type, MS_REMOUNT | MS_RDONLY, NULL);
-+
-+	return 0;
-+}
-+
- static void prepare_device(void)
- {
- 	if (tst_test->format_device) {
-@@ -702,6 +728,12 @@ static void prepare_device(void)
- 			  tst_test->dev_extra_opt);
- 	}
- 
-+	if (tst_test->needs_rofs) {
-+		prepare_and_mount_ro_fs(tdev.dev, tst_test->mntpoint,
-+		                        tdev.fs_type);
-+		return;
-+	}
-+
- 	if (tst_test->mount_device) {
- 		SAFE_MOUNT(tdev.dev, tst_test->mntpoint, tdev.fs_type,
- 			   tst_test->mnt_flags, tst_test->mnt_data);
-@@ -761,18 +793,13 @@ static void do_setup(int argc, char *argv[])
- 
- 	if (tst_test->needs_rofs) {
- 		/* If we failed to mount read-only tmpfs. Fallback to
--		 * using a device with empty read-only filesystem.
-+		 * using a device with read-only filesystem.
- 		 */
--		if (mount(NULL, tst_test->mntpoint, "tmpfs", MS_RDONLY, NULL)) {
--			tst_res(TINFO | TERRNO, "Can't mount tmpfs read-only"
--				" at %s, setting up a device instead\n",
--				tst_test->mntpoint);
--			tst_test->mount_device = 1;
-+		if (prepare_and_mount_ro_fs(NULL, tst_test->mntpoint, "tmpfs")) {
-+			tst_res(TINFO, "Can't mount tmpfs read-only, "
-+			        "falling back to block device...");
- 			tst_test->needs_device = 1;
- 			tst_test->format_device = 1;
--			tst_test->mnt_flags = MS_RDONLY;
--		} else {
--			mntpoint_mounted = 1;
- 		}
- 	}
- 
+ static struct tst_test test = {
+@@ -137,9 +115,6 @@ static struct tst_test test = {
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.test = verify_rmdir,
+ 	.needs_root = 1,
+-	.needs_tmpdir = 1,
+-	.mntpoint = MNTPOINT,
+-	.mount_device = 1,
+-
++	.needs_rofs = 1,
++	.mntpoint = MNT_POINT,
+ };
+-
 -- 
 2.13.6
 
