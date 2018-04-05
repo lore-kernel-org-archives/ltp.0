@@ -1,77 +1,56 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu,  5 Apr 2018 13:56:50 +0300
-Subject: [LTP] [PATCH COMMITTED 1/3] netstress: handle pmtu update on
-	EMSGSIZE error
-Message-ID: <1522925812-17200-1-git-send-email-alexey.kodanev@oracle.com>
+Date: Thu,  5 Apr 2018 14:05:54 +0300
+Subject: [LTP] [PATCH 1/2] lib/test_net.sh: lower default test parameters
+Message-ID: <1522926355-18029-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-After the error we should get a new route cache with updated
-pmtu, resend datagram again using the new one.
+Default scenario should not take hours to complete.
 
-The exact number of errors during the test may depend on the
-route cache expire time, by defualt it is 600 sec:
-  net.ipv4.route.mtu_expires
-  net.ipv6.route.mtu_expires
-
-and the total test time. Therefore it is difficult to anticipate
-what value we would need, especially for the server that don't
-have the requests number parameter. Set it to 10, it should be
-enough for most of the test scenarios.
+Also export TST_NETLOAD_CLN_REQUESTS which is used by all
+tst_netload tests and can control the test execution time.
 
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/network/netstress/netstress.c |   12 +++++++++++-
- 1 files changed, 11 insertions(+), 1 deletions(-)
+ testcases/lib/test_net.sh |   15 ++++++++-------
+ 1 files changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/testcases/network/netstress/netstress.c b/testcases/network/netstress/netstress.c
-index 369a5ee..72f4a40 100644
---- a/testcases/network/netstress/netstress.c
-+++ b/testcases/network/netstress/netstress.c
-@@ -89,6 +89,7 @@ static char *source_addr;
- static char *server_bg;
- static int busy_poll		= -1;
- static int max_etime_cnt = 12; /* ~30 sec max timeout if no connection */
-+static int max_pmtu_err = 10;
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index 203464f..2f7668f 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -651,20 +651,21 @@ if [ -z "$TST_PARSE_VARIABLES" ]; then
+ 	export TST_PARSE_VARIABLES="yes"
+ fi
  
- enum {
- 	TYPE_TCP = 0,
-@@ -139,6 +140,7 @@ struct sock_info {
- 	struct sockaddr_storage raddr;
- 	socklen_t raddr_len;
- 	int etime_cnt;
-+	int pmtu_err_cnt;
- 	int timeout;
- };
++export TST_NETLOAD_CLN_REQUESTS="${TST_NETLOAD_CLN_REQUESTS:-10000}"
+ export HTTP_DOWNLOAD_DIR="${HTTP_DOWNLOAD_DIR:-/var/www/html}"
+ export FTP_DOWNLOAD_DIR="${FTP_DOWNLOAD_DIR:-/var/ftp}"
+ export FTP_UPLOAD_DIR="${FTP_UPLOAD_DIR:-/var/ftp/pub}"
+ export FTP_UPLOAD_URLDIR="${FTP_UPLOAD_URLDIR:-pub}"
  
-@@ -255,8 +257,15 @@ static int client_recv(char *buf, int srv_msg_len, struct sock_info *i)
- 		/* socket closed or msg is not valid */
- 		if (len < 1 || (offset + len) > srv_msg_len ||
- 		   (buf[0] != start_byte && buf[0] != start_fin_byte)) {
--			if (!errno)
-+			/* packet too big message, resend with new pmtu */
-+			if (errno == EMSGSIZE) {
-+				if (++(i->pmtu_err_cnt) < max_pmtu_err)
-+					return 0;
-+				tst_brk(TFAIL, "too many pmtu errors %d",
-+					i->pmtu_err_cnt);
-+			} else if (!errno) {
- 				errno = ENOMSG;
-+			}
- 			break;
- 		}
- 		offset += len;
-@@ -357,6 +366,7 @@ void *client_fn(LTP_ATTRIBUTE_UNUSED void *arg)
- 	inf.raddr_len = sizeof(inf.raddr);
- 	inf.etime_cnt = 0;
- 	inf.timeout = wait_timeout;
-+	inf.pmtu_err_cnt = 0;
- 
- 	make_client_request(client_msg, &cln_len, &srv_len);
- 
+ # network/stress tests require additional parameters
+-export NS_DURATION="${NS_DURATION:-720}"
+-export NS_TIMES="${NS_TIMES:-2000}"
+-export CONNECTION_TOTAL="${CONNECTION_TOTAL:-4000}"
+-export IP_TOTAL="${IP_TOTAL:-2000}"
++export NS_DURATION="${NS_DURATION:-10}"
++export NS_TIMES="${NS_TIMES:-10}"
++export CONNECTION_TOTAL="${CONNECTION_TOTAL:-10}"
++export IP_TOTAL="${IP_TOTAL:-100}"
+ export IP_TOTAL_FOR_TCPIP="${IP_TOTAL_FOR_TCPIP:-100}"
+-export ROUTE_TOTAL="${ROUTE_TOTAL:-2000}"
+-export MTU_CHANGE_TIMES="${MTU_CHANGE_TIMES:-1000}"
+-export IF_UPDOWN_TIMES="${IF_UPDOWN_TIMES:-2000}"
++export ROUTE_TOTAL="${ROUTE_TOTAL:-100}"
++export MTU_CHANGE_TIMES="${MTU_CHANGE_TIMES:-100}"
++export IF_UPDOWN_TIMES="${IF_UPDOWN_TIMES:-100}"
+ export DOWNLOAD_BIGFILESIZE="${DOWNLOAD_BIGFILESIZE:-2147483647}"
+ export DOWNLOAD_REGFILESIZE="${DOWNLOAD_REGFILESIZE:-1048576}"
+ export UPLOAD_BIGFILESIZE="${UPLOAD_BIGFILESIZE:-2147483647}"
 -- 
 1.7.1
 
