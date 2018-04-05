@@ -1,9 +1,11 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 5 Apr 2018 15:40:31 +0200
-Subject: [LTP] [PATCH 1/2] lib/test_net.sh: lower default test parameters
-In-Reply-To: <1522926355-18029-1-git-send-email-alexey.kodanev@oracle.com>
+Date: Thu, 5 Apr 2018 15:43:17 +0200
+Subject: [LTP] [PATCH 2/2] nfs06: decrease number of processes per
+ fsstress run
+In-Reply-To: <1522926355-18029-2-git-send-email-alexey.kodanev@oracle.com>
 References: <1522926355-18029-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20180405134031.mabcwgdiihs4bd5z@dell5510>
+ <1522926355-18029-2-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20180405134317.4ulzxuz2lfk36zfr@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,34 +14,29 @@ To: ltp@lists.linux.it
 
 Hi Alexey,
 
-> Default scenario should not take hours to complete.
-Great, agree.
-
-> Also export TST_NETLOAD_CLN_REQUESTS which is used by all
-> tst_netload tests and can control the test execution time.
+> From 50 to 10. It multiplies by number of mounts and
+> can slow test execution significantly.
 
 > Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 > ---
->  testcases/lib/test_net.sh |   15 ++++++++-------
->  1 files changed, 8 insertions(+), 7 deletions(-)
+>  testcases/network/nfs/nfs_stress/nfs06 |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 
-> diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-> index 203464f..2f7668f 100644
-> --- a/testcases/lib/test_net.sh
-> +++ b/testcases/lib/test_net.sh
-> @@ -651,20 +651,21 @@ if [ -z "$TST_PARSE_VARIABLES" ]; then
->  	export TST_PARSE_VARIABLES="yes"
->  fi
+> diff --git a/testcases/network/nfs/nfs_stress/nfs06 b/testcases/network/nfs/nfs_stress/nfs06
+> index eb35157..33c2d5a 100755
+> --- a/testcases/network/nfs/nfs_stress/nfs06
+> +++ b/testcases/network/nfs/nfs_stress/nfs06
+> @@ -34,7 +34,7 @@ do_test()
+>  	local n=0
+>  	local pids
+>  	for i in $VERSION; do
+> -		fsstress -l 1 -d $TST_TMPDIR/$i/$n -n 1000 -p 50 -r -c > /dev/null &
+> +		fsstress -l 1 -d $TST_TMPDIR/$i/$n -n 1000 -p 10 -r -c > /dev/null &
+>  		pids="$pids $!"
+>  		n=$(( n + 1 ))
+>  	done
 
-> +export TST_NETLOAD_CLN_REQUESTS="${TST_NETLOAD_CLN_REQUESTS:-10000}"
-This variable is also in testcases/network/sockets/bind_noport01.sh, shouldn't you remove
-it from there (it uses test_net.sh).
-
-Also, why not to handle the same way TST_NETLOAD_CLN_NUMBER ?
-(also used in tst_netload).
-
-And I'd put it into separate commit.
-
+Acked-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
