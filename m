@@ -1,602 +1,1566 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu,  5 Apr 2018 15:30:24 +0200
-Subject: [LTP] [RFC PATCH v5 6/6] network/interface: Split tests to test
-	only one command per test
+Date: Thu,  5 Apr 2018 15:30:19 +0200
+Subject: [LTP] [RFC PATCH v5 1/6] tst_net.sh: Support both new and legacy
+	APIs + rename
 In-Reply-To: <20180405133024.2279-1-pvorel@suse.cz>
 References: <20180405133024.2279-1-pvorel@suse.cz>
-Message-ID: <20180405133024.2279-7-pvorel@suse.cz>
+Message-ID: <20180405133024.2279-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This change allows running tests based on ip command in case
-ifconfig/route commands are not available (openSUSE/SLE removed long
-time deprecated net-tools package).
+The new name states that library supports new API.
 
-Command is passed via -c parameter.
+This is temporary solution, after migrating all tests to new SHELL API
+the compatibility layer and old SHELL API support should be removed and
+file renamed to tst_net.sh.
 
-Introduce (again) if-lib.sh to reduce duplicity.
+Added TST_USE_LEGACY_API=1 to all scripts using tst_net.sh (including
+testscripts/network.sh).
 
-Minor syntax cleanup.
+New API requires merging tst_net.sh getopts handling with the test's one
+(if there is any).
+
+Fixed scripts which are using legacy API with getopts (ipsec_lib.sh,
+tcp_fastopen_run.sh, rpc_test.sh) by shifting args after getopts and
+moving sourcing tst_net.sh after that.
+Also -6 param for IPv6 must be passed to tst_net.sh (ipsec_lib.sh,
+tcp_fastopen_run.sh).
+
+Defined ipver variable in tst_net.sh setup function. ipver (or similar
+name like ipv) is commonly used in tests, but for new API it needs to be
+set after setting TST_IPV6 variable (after parsing getopts), i.e. in
+function defined by TST_SETUP.
+Thus in scripts using new API TST_IPV6 and ipver must not be used in
+test scripts outside setup/run/cleanup functions as they're not set
+(and ipver should be removed from these scripts).
+For legacy API it must be duplicited in tst_net.sh as there is no setup
+function.
+
+Filtered out TST_IPV6 variable in tst_test.sh.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- runtest/net_stress.interface                       | 38 ++++++++++------
- testcases/network/stress/interface/if-addr-adddel  | 34 ++++++---------
- .../network/stress/interface/if-addr-addlarge      | 33 ++++++--------
- testcases/network/stress/interface/if-lib.sh       | 50 ++++++++++++++++++++++
- testcases/network/stress/interface/if-mtu-change   | 24 ++++-------
- testcases/network/stress/interface/if-route-adddel | 39 ++++++-----------
- .../network/stress/interface/if-route-addlarge     | 33 +++++---------
- testcases/network/stress/interface/if-updown       | 32 +++++---------
- 8 files changed, 142 insertions(+), 141 deletions(-)
- create mode 100644 testcases/network/stress/interface/if-lib.sh
+ testcases/lib/{test_net.sh => tst_net.sh}          | 150 ++++++++++++++-------
+ testcases/lib/tst_test.sh                          |   1 +
+ testcases/network/README.md                        |   4 +-
+ testcases/network/busy_poll/busy_poll01.sh         |   3 +-
+ testcases/network/busy_poll/busy_poll02.sh         |   3 +-
+ testcases/network/busy_poll/busy_poll03.sh         |   3 +-
+ testcases/network/dccp/dccp01.sh                   |   3 +-
+ testcases/network/dctcp/dctcp01.sh                 |   3 +-
+ testcases/network/dhcp/dhcpd_tests.sh              |   3 +-
+ testcases/network/dhcp/dnsmasq_tests.sh            |   3 +-
+ testcases/network/iproute/ip_tests.sh              |   3 +-
+ testcases/network/multicast/mc_cmds/mc_cmds        |   3 +-
+ testcases/network/multicast/mc_commo/mc_commo      |   3 +-
+ testcases/network/multicast/mc_member/mc_member    |   3 +-
+ testcases/network/multicast/mc_opts/mc_opts        |   3 +-
+ testcases/network/nfs/fsx-linux/fsx.sh             |   3 +-
+ testcases/network/nfs/nfs_stress/nfs01             |   3 +-
+ testcases/network/nfs/nfs_stress/nfs02             |   3 +-
+ testcases/network/nfs/nfs_stress/nfs03             |   3 +-
+ testcases/network/nfs/nfs_stress/nfs04             |   3 +-
+ testcases/network/nfs/nfs_stress/nfs05             |   3 +-
+ testcases/network/nfs/nfs_stress/nfs06             |   3 +-
+ testcases/network/nfs/nfslock01/nfslock01          |   3 +-
+ testcases/network/nfs/nfsstat01/nfsstat01          |   3 +-
+ testcases/network/rpc/basic_tests/rpc01/rpc01      |   3 +-
+ .../network/rpc/basic_tests/rpcinfo/rpcinfo01      |   3 +-
+ testcases/network/rpc/basic_tests/rup/rup01        |   3 +-
+ testcases/network/rpc/basic_tests/rusers/rusers01  |   3 +-
+ testcases/network/rpc/rpc-tirpc/rpc_test.sh        |   4 +-
+ testcases/network/sctp/sctp01.sh                   |   3 +-
+ testcases/network/sockets/bind_noport01.sh         |   3 +-
+ .../network/stress/broken_ip/broken_ip4-checksum   |   3 +-
+ .../network/stress/broken_ip/broken_ip4-dstaddr    |   3 +-
+ .../network/stress/broken_ip/broken_ip4-fragment   |   3 +-
+ testcases/network/stress/broken_ip/broken_ip4-ihl  |   3 +-
+ .../network/stress/broken_ip/broken_ip4-protcol    |   3 +-
+ .../network/stress/broken_ip/broken_ip4-totlen     |   3 +-
+ .../network/stress/broken_ip/broken_ip4-version    |   3 +-
+ .../network/stress/broken_ip/broken_ip6-dstaddr    |   3 +-
+ .../network/stress/broken_ip/broken_ip6-nexthdr    |   3 +-
+ testcases/network/stress/broken_ip/broken_ip6-plen |   3 +-
+ .../network/stress/broken_ip/broken_ip6-version    |   3 +-
+ testcases/network/stress/dns/dns-stress            |   3 +-
+ testcases/network/stress/ftp/ftp-download-stress   |   3 +-
+ testcases/network/stress/ftp/ftp-upload-stress     |   3 +-
+ testcases/network/stress/http/http-stress          |   3 +-
+ testcases/network/stress/interface/if4-addr-change |   3 +-
+ testcases/network/stress/ipsec/ipsec_lib.sh        |  10 +-
+ .../network/stress/ns-tools/test_net_stress.sh     |   5 +-
+ testcases/network/stress/ssh/ssh-stress            |   3 +-
+ testcases/network/tcp_cmds/arping/arping01.sh      |   3 +-
+ .../network/tcp_cmds/clockdiff/clockdiff01.sh      |   3 +-
+ testcases/network/tcp_cmds/ipneigh/ipneigh01.sh    |   3 +-
+ testcases/network/tcp_cmds/ping/ping01.sh          |   3 +-
+ testcases/network/tcp_cmds/ping/ping02.sh          |   3 +-
+ testcases/network/tcp_cmds/rlogin/rlogin01         |   3 +-
+ testcases/network/tcp_cmds/sendfile/sendfile01     |   3 +-
+ testcases/network/tcp_cmds/tcpdump/tcpdump01       |   3 +-
+ testcases/network/tcp_cmds/telnet/telnet01         |   3 +-
+ .../network/tcp_cmds/tracepath/tracepath01.sh      |   3 +-
+ testcases/network/tcp_fastopen/tcp_fastopen_run.sh |  17 ++-
+ testcases/network/traceroute/traceroute01.sh       |   3 +-
+ testcases/network/virt/geneve01.sh                 |   3 +-
+ testcases/network/virt/gre01.sh                    |   3 +-
+ testcases/network/virt/ipvlan01.sh                 |   3 +-
+ testcases/network/virt/macvlan01.sh                |   3 +-
+ testcases/network/virt/macvtap01.sh                |   3 +-
+ testcases/network/virt/vlan01.sh                   |   3 +-
+ testcases/network/virt/vlan02.sh                   |   3 +-
+ testcases/network/virt/vlan03.sh                   |   3 +-
+ testcases/network/virt/vxlan01.sh                  |   3 +-
+ testcases/network/virt/vxlan02.sh                  |   3 +-
+ testcases/network/virt/vxlan03.sh                  |   3 +-
+ testcases/network/xinetd/xinetd_tests.sh           |   3 +-
+ testscripts/network.sh                             |   7 +-
+ 75 files changed, 262 insertions(+), 137 deletions(-)
+ rename testcases/lib/{test_net.sh => tst_net.sh} (86%)
 
-diff --git a/runtest/net_stress.interface b/runtest/net_stress.interface
-index 97e9ce3bc..315f125d4 100644
---- a/runtest/net_stress.interface
-+++ b/runtest/net_stress.interface
-@@ -2,18 +2,30 @@
- # Stress test for interface
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/tst_net.sh
+similarity index 86%
+rename from testcases/lib/test_net.sh
+rename to testcases/lib/tst_net.sh
+index 203464f0d..aa5158ada 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ # Copyright (c) 2014-2017 Oracle and/or its affiliates. All Rights Reserved.
+-# Copyright (c) 2016-2017 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2016-2018 Petr Vorel <pvorel@suse.cz>
+ #
+ # This program is free software; you can redistribute it and/or
+ # modify it under the terms of the GNU General Public License as
+@@ -19,12 +19,77 @@
+ # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
  #
  
--if4-addr-change if4-addr-change
-+if4-addr-change_ifconfig if4-addr-change
- 
--if4-updown if-updown
--if4-addr-adddel if-addr-adddel
--if4-addr-addlarge if-addr-addlarge
--if4-route-adddel if-route-adddel
--if4-route-addlarge if-route-addlarge
--if4-mtu-change if-mtu-change
-+if4-updown_ip if-updown -c ip
-+if4-updown_ifconfig if-updown -c ifconfig
-+if4-addr-adddel_ip if-addr-adddel -c ip
-+if4-addr-adddel_ifconfig if-addr-adddel -c ifconfig
-+if4-addr-addlarge_ip if-addr-addlarge -c ip
-+if4-addr-addlarge_ifconfig if-addr-addlarge -c ifconfig
-+if4-route-adddel_ip if-route-adddel -c ip
-+if4-route-adddel_route if-route-adddel -c route
-+if4-route-addlarge_ip if-route-addlarge -c ip
-+if4-route-addlarge_route if-route-addlarge -c route
-+if4-mtu-change_ip if-mtu-change -c ip
-+if4-mtu-change_ifconfig if-mtu-change -c ifconfig
- 
--if6-updown if-updown -6
--if6-addr-adddel if-addr-adddel -6
--if6-addr-addlarge if-addr-addlarge -6
--if6-route-adddel if-route-adddel -6
--if6-route-addlarge if-route-addlarge -6
--if6-mtu-change if-mtu-change -6
-+if6-updown_ip if-updown -6 -c ip
-+if6-updown_ifconfig if-updown -6 -c ifconfig
-+if6-addr-adddel_ip if-addr-adddel -6 -c ip
-+if6-addr-adddel_ifconfig if-addr-adddel -6 -c ifconfig
-+if6-addr-addlarge_ip if-addr-addlarge -6 -c ip
-+if6-addr-addlarge_ifconfig if-addr-addlarge -6 -c ifconfig
-+if6-route-adddel_ip if-route-adddel -6 -c ip
-+if6-route-adddel_route if-route-adddel -6 -c route
-+if6-route-addlarge_ip if-route-addlarge -6 -c ip
-+if6-route-addlarge_route if-route-addlarge -6 -c route
-+if6-mtu-change_ip if-mtu-change -6 -c ip
-+if6-mtu-change_ifconfig if-mtu-change -6 -c ifconfig
-diff --git a/testcases/network/stress/interface/if-addr-adddel b/testcases/network/stress/interface/if-addr-adddel
-index 634e9d8a4..7b32c137e 100644
---- a/testcases/network/stress/interface/if-addr-adddel
-+++ b/testcases/network/stress/interface/if-addr-adddel
-@@ -18,25 +18,16 @@
- #
- # Author: Mitsuru Chinen <mitch@jp.ibm.com>
- 
--TST_CNT=2
--TST_SETUP="netstress_setup"
--TST_CLEANUP="netstress_cleanup"
--TST_TESTFUNC="test_if_ip"
--. tst_net_stress.sh
-+IF_CMD='ifconfig'
-+TST_SETUP="if_setup"
-+. if-lib.sh
- 
- # The interval of the check interface activity
- CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
- 
- test_body()
- {
--	local cmd_type=$1
--
--	case $cmd_type in
--	if_cmd) local cmd_name='ifconfig' ;;
--	ip_cmd) local cmd_name='ip' ;;
--	*) tst_brk TBROK "Unknown test parameter '$cmd_type'"
--	esac
--
-+	local cmd="$CMD"
- 	local num=$(($(od -A n -t u1 -N 1 /dev/random) * 253 / 255 + 2 ))
- 	local iface=$(tst_iface)
- 	if [ "$TST_IPV6" ]; then
-@@ -47,7 +38,7 @@ test_body()
- 		local netmask=24
- 	fi
- 
--	tst_res TINFO "'$cmd_name' add/del IPv$ipver '$new_ip' $NS_TIMES times"
-+	tst_res TINFO "'$cmd' add/del IPv$ipver '$new_ip' $NS_TIMES times"
- 
- 	if ! restore_ipaddr; then
- 		tst_res TBROK "Failed to set default IP addresses"
-@@ -58,15 +49,15 @@ test_body()
- 	while [ $cnt -le $NS_TIMES ]; do
- 		make_background_tcp_traffic
- 
--		case $cmd_type in
--		if_cmd)
-+		case $cmd in
-+		ifconfig)
- 			if [ "$TST_IPV6" ]; then
- 				ifconfig $iface add $new_ip/$netmask
- 			else
- 				ifconfig $iface:1 $new_ip netmask 255.255.255.0
- 			fi
- 		;;
--		ip_cmd) ip addr add $new_ip/$netmask dev $iface ;;
-+		ip) ip addr add $new_ip/$netmask dev $iface ;;
- 		esac
- 
- 		if [ $? -ne 0 ]; then
-@@ -85,19 +76,19 @@ test_body()
- 
- 		cnt=$(($cnt + 1))
- 
--		case $cmd_type in
--		if_cmd)
-+		case $cmd in
-+		ifconfig)
- 			if [ "$TST_IPV6" ]; then
- 				ifconfig $iface del $new_ip/$netmask
- 			else
- 				ifconfig $iface:1 down
- 			fi
- 		;;
--		ip_cmd) ip addr del $new_ip/$netmask dev $iface ;;
-+		ip) ip addr del $new_ip/$netmask dev $iface ;;
- 		esac
- 
- 		if [ $? -ne 0 ]; then
--			tst_res TFAIL "delete command failed"
-+			tst_res TFAIL " delete command failed".
- 			return
- 		fi
- 
-@@ -112,5 +103,4 @@ test_body()
- 	tst_res TPASS "Test is finished correctly"
- }
- 
--tst_check_cmds ifconfig
- tst_run
-diff --git a/testcases/network/stress/interface/if-addr-addlarge b/testcases/network/stress/interface/if-addr-addlarge
-index 5d1f63c12..489325203 100644
---- a/testcases/network/stress/interface/if-addr-addlarge
-+++ b/testcases/network/stress/interface/if-addr-addlarge
-@@ -18,29 +18,21 @@
- #
- # Author: Mitsuru Chinen <mitch@jp.ibm.com>
- 
--TST_CNT=2
--TST_SETUP="netstress_setup"
--TST_CLEANUP="netstress_cleanup"
--TST_TESTFUNC="test_if_ip"
--. tst_net_stress.sh
-+IF_CMD='ifconfig'
-+TST_SETUP="if_setup"
-+. if-lib.sh
- 
- # The interval of the check interface activity
- CHECK_INTERVAL=${CHECK_INTERVAL:-$(($IP_TOTAL / 20))}
- 
- test_body()
- {
--	local cmd_type=$1
--
--	case $cmd_type in
--	if_cmd) local cmd_name='ifconfig' ;;
--	ip_cmd) local cmd_name='ip' ;;
--	*) tst_brk TBROK "Unknown test parameter '$cmd_type'"
--	esac
-+	local cmd="$CMD"
- 
- 	local iface=$(tst_iface)
- 	[ "$TST_IPV6" ] && local netmask=64 || local netmask=16
- 
--	tst_res TINFO "'$cmd_name' add $IP_TOTAL IPv$ipver addresses"
-+	tst_res TINFO "'$cmd' add $IP_TOTAL IPv$ipver addresses"
- 	tst_res TINFO "check interval that $iface is working: $CHECK_INTERVAL"
- 
- 	if ! restore_ipaddr; then
-@@ -70,15 +62,15 @@ test_body()
- 			local new_ip=${IPV4_NET16_UNUSED}.$x.$y
- 		fi
- 
--		case $cmd_type in
--		if_cmd)
-+		case $cmd in
-+		ifconfig)
- 			if [ "$TST_IPV6" ]; then
- 				ifconfig $iface add $new_ip/$netmask
- 			else
- 				ifconfig $iface:$x:$y $new_ip netmask 255.255.0.0
- 			fi
- 		;;
--		ip_cmd) ip addr add $new_ip/$netmask dev $iface ;;
-+		ip) ip addr add $new_ip/$netmask dev $iface ;;
- 		esac
- 
- 		if [ $? -ne 0 ]; then
-@@ -95,19 +87,19 @@ test_body()
- 
- 		check_connectivity_interval $cnt || return
- 
--		case $cmd_type in
--		if_cmd)
-+		case $cmd in
-+		ifconfig)
- 			if [ "$TST_IPV6" ]; then
- 				ifconfig $iface del $new_ip/$netmask
- 			else
- 				ifconfig $iface:$x:$y down
- 			fi
- 		;;
--		ip_cmd) ip addr del $new_ip/$netmask dev $iface ;;
-+		ip) ip addr del $new_ip/$netmask dev $iface ;;
- 		esac
- 
- 		if [ $? -ne 0 ]; then
--			tst_res TFAIL "delete command failed"
-+			tst_res TFAIL " delete command failed".
- 			return
- 		fi
- 
-@@ -132,5 +124,4 @@ test_body()
- 	tst_res TPASS "Test is finished correctly"
- }
- 
--tst_check_cmds ifconfig
- tst_run
-diff --git a/testcases/network/stress/interface/if-lib.sh b/testcases/network/stress/interface/if-lib.sh
-new file mode 100644
-index 000000000..695737fff
---- /dev/null
-+++ b/testcases/network/stress/interface/if-lib.sh
-@@ -0,0 +1,50 @@
-+#!/bin/sh
-+# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program; if not, write the Free Software Foundation,
-+# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+# Author: Petr Vorel <pvorel@suse.cz>
+-[ -z "$TST_LIB_LOADED" ] && . test.sh
++TST_OPTS="6$TST_OPTS"
++TST_PARSE_ARGS_CALLER="$TST_PARSE_ARGS"
++TST_PARSE_ARGS="tst_net_parse_args"
++TST_USAGE_CALLER="$TST_USAGE"
++TST_USAGE="tst_net_usage"
++TST_SETUP_CALLER="$TST_SETUP"
++TST_SETUP="tst_net_setup"
 +
-+if_usage()
-+{
-+	echo "-c      Test command (ip, $IF_CMD)"
-+}
++# Blank for an IPV4 test; 6 for an IPV6 test.
++TST_IPV6=
 +
-+if_parse_args()
++tst_net_parse_args()
 +{
 +	case $1 in
-+	c) CMD="$2";;
++	6) TST_IPV6=6;;
++	*) $TST_PARSE_ARGS_CALLER "$1" "$2";;
 +	esac
 +}
 +
-+if_setup()
++tst_read_opts()
 +{
-+	[ -n "$CMD" ] || tst_brk TBROK "IF_CMD variable not defined"
-+	if [ "$CMD" != 'ip' -a "$CMD" != "$IF_CMD" ]; then
-+		tst_brk TBROK "Missing or wrong -c parameter: '$CMD', use 'ip' or '$IF_CMD'"
-+	fi
-+
-+	tst_check_cmds "$CMD"
-+	netstress_setup
++	local OPTIND
++	while getopts "$TST_OPTS" opt; do
++		$TST_PARSE_ARGS "$opt"
++	done
 +}
 +
-+TST_CNT=2
-+TST_CLEANUP="netstress_cleanup"
-+TST_TESTFUNC="test_body"
-+TST_PARSE_ARGS="if_parse_args"
-+TST_USAGE="if_usage"
-+TST_OPTS="c:"
++tst_net_usage()
++{
++	if [ -n "$TST_USAGE_CALLER" ]; then
++		$TST_USAGE_CALLER
++	else
++		echo "Usage: $0 [-6]"
++		echo "OPTIONS"
++	fi
++	echo "-6      IPv6 tests"
++}
 +
-+. tst_net_stress.sh
-diff --git a/testcases/network/stress/interface/if-mtu-change b/testcases/network/stress/interface/if-mtu-change
-index 232372105..fa55e8bc2 100644
---- a/testcases/network/stress/interface/if-mtu-change
-+++ b/testcases/network/stress/interface/if-mtu-change
-@@ -18,11 +18,9 @@
- #
- # Author: Mitsuru Chinen <mitch@jp.ibm.com>
++tst_net_setup()
++{
++	ipver=${TST_IPV6:-4}
++	[ -n "$TST_SETUP_CALLER" ] && $TST_SETUP_CALLER
++}
++
++if [ -z "$TST_LIB_LOADED" ]; then
++	[ -n "$TST_USE_LEGACY_API" ] && . test.sh || . tst_test.sh
++fi
++
++if [ -n "$TST_USE_LEGACY_API" ]; then
++	tst_read_opts $*
++	ipver=${TST_IPV6:-4}
++fi
++
++# old vs. new API compatibility layer
++tst_res_()
++{
++	[ -z "$TST_USE_LEGACY_API" ] && tst_res $@ || tst_resm $@
++}
++tst_brk_()
++{
++	[ -z "$TST_USE_LEGACY_API" ] && tst_brk $@ || tst_brkm $@
++}
++tst_require_root_()
++{
++	[ -z "$TST_USE_LEGACY_API" ] && TST_NEEDS_ROOT=1 || tst_require_root
++}
  
--TST_CNT=2
-+IF_CMD='ifconfig'
- TST_SETUP="do_setup"
--TST_CLEANUP="do_cleanup"
--TST_TESTFUNC="test_if_ip"
--. tst_net_stress.sh
-+. if-lib.sh
+ init_ltp_netspace()
+ {
+ 	tst_check_cmds ip
+-	tst_require_root
++	tst_require_root_
  
- # The interval of the mtu change [second]
- CHANGE_INTERVAL=${CHANGE_INTERVAL:-5}
-@@ -36,7 +34,7 @@ saved_mtu=
+ 	local pid=
+ 
+@@ -81,7 +146,7 @@ tst_rhost_run()
+ 		s) safe=1 ;;
+ 		c) cmd="$OPTARG" ;;
+ 		u) user="$OPTARG" ;;
+-		*) tst_brkm TBROK "tst_rhost_run: unknown option: $OPTARG" ;;
++		*) tst_brk_ TBROK "tst_rhost_run: unknown option: $OPTARG" ;;
+ 		esac
+ 	done
+ 
+@@ -89,8 +154,8 @@ tst_rhost_run()
+ 
+ 	if [ -z "$cmd" ]; then
+ 		[ "$safe" -eq 1 ] && \
+-			tst_brkm TBROK "tst_rhost_run: command not defined"
+-		tst_resm TWARN "tst_rhost_run: command not defined"
++			tst_brk_ TBROK "tst_rhost_run: command not defined"
++		tst_res_ TWARN "tst_rhost_run: command not defined"
+ 		return 1
+ 	fi
+ 
+@@ -110,7 +175,7 @@ tst_rhost_run()
+ 	if [ $ret -eq 1 ]; then
+ 		output=$(echo "$output" | sed 's/RTERR//')
+ 		[ "$safe" -eq 1 ] && \
+-			tst_brkm TBROK "'$cmd' failed on '$RHOST': '$output'"
++			tst_brk_ TBROK "'$cmd' failed on '$RHOST': '$output'"
+ 	fi
+ 
+ 	[ -z "$out" -a -n "$output" ] && echo "$output"
+@@ -122,9 +187,9 @@ EXPECT_RHOST_PASS()
+ {
+ 	tst_rhost_run -c "$*" > /dev/null
+ 	if [ $? -eq 0 ]; then
+-		tst_resm TPASS "$* passed as expected"
++		tst_res_ TPASS "$* passed as expected"
+ 	else
+-		tst_resm TFAIL "$* failed unexpectedly"
++		tst_res_ TFAIL "$* failed unexpectedly"
+ 	fi
+ }
+ 
+@@ -132,9 +197,9 @@ EXPECT_RHOST_FAIL()
+ {
+ 	tst_rhost_run -c "$* 2> /dev/null"
+ 	if [ $? -ne 0 ]; then
+-		tst_resm TPASS "$* failed as expected"
++		tst_res_ TPASS "$* failed as expected"
+ 	else
+-		tst_resm TFAIL "$* passed unexpectedly"
++		tst_res_ TFAIL "$* passed unexpectedly"
+ 	fi
+ }
+ 
+@@ -200,23 +265,6 @@ tst_iface()
+ 	echo "$(tst_get_ifaces $type)" | awk '{ print $'"$link_num"' }'
+ }
+ 
+-# Blank for an IPV4 test; 6 for an IPV6 test.
+-TST_IPV6=
+-
+-tst_read_opts()
+-{
+-	OPTIND=0
+-	while getopts ":6" opt; do
+-		case "$opt" in
+-		6)
+-			TST_IPV6=6;;
+-		esac
+-	done
+-	OPTIND=0
+-}
+-
+-tst_read_opts $*
+-
+ # Get IP address
+ # tst_ipaddr [TYPE]
+ # TYPE: { lhost | rhost }; Default value is 'lhost'.
+@@ -302,7 +350,7 @@ tst_init_iface()
+ 	local type="${1:-lhost}"
+ 	local link_num="${2:-0}"
+ 	local iface="$(tst_iface $type $link_num)"
+-	tst_resm TINFO "initialize '$type' '$iface' interface"
++	tst_res_ TINFO "initialize '$type' '$iface' interface"
+ 
+ 	if [ "$type" = "lhost" ]; then
+ 		ip xfrm policy flush || return $?
+@@ -340,12 +388,12 @@ tst_add_ipaddr()
+ 	local iface=$(tst_iface $type $link_num)
+ 
+ 	if [ $type = "lhost" ]; then
+-		tst_resm TINFO "set local addr $(tst_ipaddr)/$mask"
++		tst_res_ TINFO "set local addr $(tst_ipaddr)/$mask"
+ 		ip addr add $(tst_ipaddr)/$mask dev $iface
+ 		return $?
+ 	fi
+ 
+-	tst_resm TINFO "set remote addr $(tst_ipaddr rhost)/$mask"
++	tst_res_ TINFO "set remote addr $(tst_ipaddr rhost)/$mask"
+ 	tst_rhost_run -c "ip addr add $(tst_ipaddr rhost)/$mask dev $iface"
+ }
+ 
+@@ -356,7 +404,7 @@ tst_add_ipaddr()
+ tst_restore_ipaddr()
+ {
+ 	tst_check_cmds ip
+-	tst_require_root
++	tst_require_root_
+ 
+ 	local type="${1:-lhost}"
+ 	local link_num="${2:-0}"
+@@ -390,7 +438,7 @@ tst_wait_ipv6_dad()
+ 		[ $ret -ne 0 -a $? -ne 0 ] && return
+ 
+ 		[ $(($i % 10)) -eq 0 ] && \
+-			tst_resm TINFO "wait for IPv6 DAD completion $((i / 10))/5 sec"
++			tst_res_ TINFO "wait for IPv6 DAD completion $((i / 10))/5 sec"
+ 
+ 		tst_sleep 100ms
+ 	done
+@@ -443,7 +491,7 @@ tst_netload()
+ 		f) cs_opts="${cs_opts}-f " ;;
+ 		F) cs_opts="${cs_opts}-F " ;;
+ 		e) expect_res="$OPTARG" ;;
+-		*) tst_brkm TBROK "tst_netload: unknown option: $OPTARG" ;;
++		*) tst_brk_ TBROK "tst_netload: unknown option: $OPTARG" ;;
+ 		esac
+ 	done
+ 	OPTIND=0
+@@ -455,37 +503,37 @@ tst_netload()
+ 
+ 	tst_rhost_run -c "pkill -9 netstress\$"
+ 	s_opts="${cs_opts}${s_opts}-R $s_replies -B $TST_TMPDIR"
+-	tst_resm TINFO "run server 'netstress $s_opts'"
++	tst_res_ TINFO "run server 'netstress $s_opts'"
+ 	tst_rhost_run -c "netstress $s_opts" > tst_netload.log 2>&1
+ 	if [ $? -ne 0 ]; then
+ 		cat tst_netload.log
+ 		local ttype="TFAIL"
+ 		grep -e 'CONF:' tst_netload.log && ttype="TCONF"
+-		tst_brkm $ttype "server failed"
++		tst_brk_ $ttype "server failed"
+ 	fi
+ 
+ 	local port=$(tst_rhost_run -s -c "cat $TST_TMPDIR/netstress_port")
+ 	c_opts="${cs_opts}${c_opts}-a $c_num -r $c_requests -d $rfile -g $port"
+ 
+-	tst_resm TINFO "run client 'netstress -l $c_opts'"
++	tst_res_ TINFO "run client 'netstress -l $c_opts'"
+ 	netstress -l $c_opts > tst_netload.log 2>&1 || ret=1
+ 	tst_rhost_run -c "pkill -9 netstress\$"
+ 
+ 	if [ "$expect_ret" -ne "$ret" ]; then
+ 		tst_dump_rhost_cmd
+ 		cat tst_netload.log
+-		tst_brkm TFAIL "expected '$expect_res' but ret: '$ret'"
++		tst_brk_ TFAIL "expected '$expect_res' but ret: '$ret'"
+ 	fi
+ 
+ 	if [ "$ret" -eq 0 ]; then
+ 		if [ ! -f $rfile ]; then
+ 			tst_dump_rhost_cmd
+ 			cat tst_netload.log
+-			tst_brkm TFAIL "can't read $rfile"
++			tst_brk_ TFAIL "can't read $rfile"
+ 		fi
+-		tst_resm TPASS "netstress passed, time spent '$(cat $rfile)' ms"
++		tst_res_ TPASS "netstress passed, time spent '$(cat $rfile)' ms"
+ 	else
+-		tst_resm TPASS "netstress failed as expected"
++		tst_res_ TPASS "netstress failed as expected"
+ 	fi
+ 
+ 	return $ret
+@@ -516,9 +564,9 @@ tst_ping()
+ 			-s $size -i 0 > /dev/null 2>&1
+ 		ret=$?
+ 		if [ $ret -eq 0 ]; then
+-			tst_resm TPASS "$msg $size: pass"
++			tst_res_ TPASS "$msg $size: pass"
+ 		else
+-			tst_resm TFAIL "$msg $size: fail"
++			tst_res_ TFAIL "$msg $size: fail"
+ 			break
+ 		fi
+ 	done
+@@ -558,9 +606,9 @@ tst_icmp()
+ 		ns-icmpv${ver}_sender -s $size $opts
+ 		ret=$?
+ 		if [ $ret -eq 0 ]; then
+-			tst_resm TPASS "'ns-icmpv${ver}_sender -s $size $opts' pass"
++			tst_res_ TPASS "'ns-icmpv${ver}_sender -s $size $opts' pass"
+ 		else
+-			tst_resm TFAIL "'ns-icmpv${ver}_sender -s $size $opts' fail"
++			tst_res_ TFAIL "'ns-icmpv${ver}_sender -s $size $opts' fail"
+ 			break
+ 		fi
+ 	done
+@@ -597,7 +645,7 @@ tst_cleanup_rhost()
+ [ -z "$RHOST" ] && TST_USE_NETNS="yes"
+ export RHOST="$RHOST"
+ export PASSWD="${PASSWD:-}"
+-# Don't use it in new tests, use tst_rhost_run() from test_net.sh instead.
++# Don't use it in new tests, use tst_rhost_run() from tst_net.sh instead.
+ export LTP_RSH="${LTP_RSH:-rsh -n}"
+ 
+ # Test Links
+@@ -644,10 +692,10 @@ if [ -z "$TST_PARSE_VARIABLES" ]; then
+ 	eval $(tst_net_vars $IPV6_LHOST/$IPV6_LPREFIX \
+ 		$IPV6_RHOST/$IPV6_RPREFIX || echo "exit $?")
+ 
+-	tst_resm TINFO "Network config (local -- remote):"
+-	tst_resm TINFO "$LHOST_IFACES -- $RHOST_IFACES"
+-	tst_resm TINFO "$IPV4_LHOST/$IPV4_LPREFIX -- $IPV4_RHOST/$IPV4_RPREFIX"
+-	tst_resm TINFO "$IPV6_LHOST/$IPV6_LPREFIX -- $IPV6_RHOST/$IPV6_RPREFIX"
++	tst_res_ TINFO "Network config (local -- remote):"
++	tst_res_ TINFO "$LHOST_IFACES -- $RHOST_IFACES"
++	tst_res_ TINFO "$IPV4_LHOST/$IPV4_LPREFIX -- $IPV4_RHOST/$IPV4_RPREFIX"
++	tst_res_ TINFO "$IPV6_LHOST/$IPV6_LPREFIX -- $IPV6_RHOST/$IPV6_RPREFIX"
+ 	export TST_PARSE_VARIABLES="yes"
+ fi
+ 
+@@ -687,7 +735,7 @@ export RHOST_HWADDRS="${RHOST_HWADDRS:-$(tst_get_hwaddrs rhost)}"
+ # in the following document: testcases/network/stress/README
+ 
+ if [ "$TST_NEEDS_TMPDIR" = 1 ]; then
+-	tst_tmpdir
++	[ -n "$TST_USE_LEGACY_API" ] && tst_tmpdir
+ 	tst_rhost_run -c "mkdir -p $TST_TMPDIR"
+ 	tst_rhost_run -c "chmod 777 $TST_TMPDIR"
+ 	export TST_TMPDIR_RHOST=1
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 48afb9cc4..78bd328a2 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -255,6 +255,7 @@ tst_run()
+ 			OPTS|USAGE|PARSE_ARGS|POS_ARGS);;
+ 			NEEDS_ROOT|NEEDS_TMPDIR|NEEDS_DEVICE|DEVICE);;
+ 			NEEDS_CMDS|NEEDS_MODULE|MODPATH|DATAROOT);;
++			IPV6);;
+ 			*) tst_res TWARN "Reserved variable TST_$tst_i used!";;
+ 			esac
+ 		done
+diff --git a/testcases/network/README.md b/testcases/network/README.md
+index ebaab9956..3a9c98125 100644
+--- a/testcases/network/README.md
++++ b/testcases/network/README.md
+@@ -68,7 +68,7 @@ Testcases and network tools must be in PATH, e.g.:
+ ```sh
+ export PATH=/opt/ltp/testcases/bin:/usr/bin:$PATH
+ ```
+-Default values for all LTP network variables are set in testcases/lib/test_net.sh.
++Default values for all LTP network variables are set in testcases/lib/tst_net.sh.
+ If you need to override some parameters please export them before test run or
+ specify them when running ltp-pan or testscripts/network.sh.
+ 
+@@ -79,7 +79,7 @@ To run the test type the following:
+ TEST_VARS ./network.sh OPTIONS
+ ```
+ Where
+-* TEST_VARS - non-default network parameters (see testcases/lib/test_net.sh), they
++* TEST_VARS - non-default network parameters (see testcases/lib/tst_net.sh), they
+   could be exported before test run;
+ * OPTIONS - test group(s), use '-h' to see available ones.
+ 
+diff --git a/testcases/network/busy_poll/busy_poll01.sh b/testcases/network/busy_poll/busy_poll01.sh
+index 3c3035600..12d3cb5c7 100755
+--- a/testcases/network/busy_poll/busy_poll01.sh
++++ b/testcases/network/busy_poll/busy_poll01.sh
+@@ -21,7 +21,8 @@ TST_TOTAL=1
+ TCID="busy_poll01"
+ TST_NEEDS_TMPDIR=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ . busy_poll_lib.sh
+ 
+ cleanup()
+diff --git a/testcases/network/busy_poll/busy_poll02.sh b/testcases/network/busy_poll/busy_poll02.sh
+index 427857996..4873dc342 100755
+--- a/testcases/network/busy_poll/busy_poll02.sh
++++ b/testcases/network/busy_poll/busy_poll02.sh
+@@ -21,7 +21,8 @@ TST_TOTAL=1
+ TCID="busy_poll02"
+ TST_NEEDS_TMPDIR=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ . busy_poll_lib.sh
+ 
+ cleanup()
+diff --git a/testcases/network/busy_poll/busy_poll03.sh b/testcases/network/busy_poll/busy_poll03.sh
+index 6ccbbd921..01444653c 100755
+--- a/testcases/network/busy_poll/busy_poll03.sh
++++ b/testcases/network/busy_poll/busy_poll03.sh
+@@ -21,7 +21,8 @@ TST_TOTAL=2
+ TCID="busy_poll03"
+ TST_NEEDS_TMPDIR=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ . busy_poll_lib.sh
+ 
+ cleanup()
+diff --git a/testcases/network/dccp/dccp01.sh b/testcases/network/dccp/dccp01.sh
+index 4c32fb817..0b7894d64 100755
+--- a/testcases/network/dccp/dccp01.sh
++++ b/testcases/network/dccp/dccp01.sh
+@@ -21,7 +21,8 @@ TST_TOTAL=3
+ TST_CLEANUP="cleanup"
+ TST_NEEDS_TMPDIR=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ cleanup()
+ {
+diff --git a/testcases/network/dctcp/dctcp01.sh b/testcases/network/dctcp/dctcp01.sh
+index a92e41b2e..92ac97d09 100755
+--- a/testcases/network/dctcp/dctcp01.sh
++++ b/testcases/network/dctcp/dctcp01.sh
+@@ -23,7 +23,8 @@ TST_NEEDS_TMPDIR=1
+ def_alg="cubic"
+ prev_alg=
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ set_cong_alg()
+ {
+diff --git a/testcases/network/dhcp/dhcpd_tests.sh b/testcases/network/dhcp/dhcpd_tests.sh
+index 0dc283090..332f9cec6 100755
+--- a/testcases/network/dhcp/dhcpd_tests.sh
++++ b/testcases/network/dhcp/dhcpd_tests.sh
+@@ -24,7 +24,8 @@ TST_TOTAL=1
+ TCID="dhcpd"
+ dhcp_name="dhcpd"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ . dhcp_lib.sh
+ 
+ setup_dhcpd_conf()
+diff --git a/testcases/network/dhcp/dnsmasq_tests.sh b/testcases/network/dhcp/dnsmasq_tests.sh
+index c11cb158b..2dc9fdb04 100755
+--- a/testcases/network/dhcp/dnsmasq_tests.sh
++++ b/testcases/network/dhcp/dnsmasq_tests.sh
+@@ -22,7 +22,8 @@ TST_TOTAL=1
+ TCID="dnsmasq"
+ dhcp_name="dnsmasq"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ . dhcp_lib.sh
+ 
+ start_dhcp()
+diff --git a/testcases/network/iproute/ip_tests.sh b/testcases/network/iproute/ip_tests.sh
+index e6da18b58..065cbf439 100755
+--- a/testcases/network/iproute/ip_tests.sh
++++ b/testcases/network/iproute/ip_tests.sh
+@@ -24,7 +24,8 @@ TST_CLEANUP=cleanup
+ TST_TOTAL=6
+ TCID="ip_tests"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ rm_dummy=
+ 
+diff --git a/testcases/network/multicast/mc_cmds/mc_cmds b/testcases/network/multicast/mc_cmds/mc_cmds
+index 00e0166a5..00bbbeedf 100755
+--- a/testcases/network/multicast/mc_cmds/mc_cmds
++++ b/testcases/network/multicast/mc_cmds/mc_cmds
+@@ -29,7 +29,8 @@
+ TCID=mc_cmds
+ TST_TOTAL=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ knob="net.ipv4.icmp_echo_ignore_broadcasts"
+ knob_changed=
+diff --git a/testcases/network/multicast/mc_commo/mc_commo b/testcases/network/multicast/mc_commo/mc_commo
+index fdb2dcb63..203c22576 100755
+--- a/testcases/network/multicast/mc_commo/mc_commo
++++ b/testcases/network/multicast/mc_commo/mc_commo
+@@ -31,7 +31,8 @@ OUTFILE=mc_commo_out
+ TCID=mc_commo
+ TST_TOTAL=2
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
  do_setup()
  {
- 	[ "$TST_IPV6" ] && CHANGE_VALUES=$CHANGE6_VALUES
--	netstress_setup
-+	if_setup
- 	tst_check_cmds ifconfig
- 	saved_mtu="$(cat /sys/class/net/$(tst_iface)/mtu)"
- }
-@@ -55,19 +53,13 @@ do_cleanup()
+diff --git a/testcases/network/multicast/mc_member/mc_member b/testcases/network/multicast/mc_member/mc_member
+index 2982976ea..721a60cab 100755
+--- a/testcases/network/multicast/mc_member/mc_member
++++ b/testcases/network/multicast/mc_member/mc_member
+@@ -33,7 +33,8 @@ TCID=mc_member
+ TST_TOTAL=1
+ TST_COUNT=1
  
- test_body()
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ setup()
  {
--	local cmd_type=$1
--
--	case $cmd_type in
--	if_cmd) local cmd_name='ifconfig' ;;
--	ip_cmd) local cmd_name='ip' ;;
--	*) tst_brk TBROK "Unknown test parameter '$cmd_type'"
--	esac
-+	local cmd="$CMD"
+diff --git a/testcases/network/multicast/mc_opts/mc_opts b/testcases/network/multicast/mc_opts/mc_opts
+index 6a38cde4f..28042ae0e 100755
+--- a/testcases/network/multicast/mc_opts/mc_opts
++++ b/testcases/network/multicast/mc_opts/mc_opts
+@@ -32,7 +32,8 @@ EXECUTABLES=${EXECUTABLES:-"mc_verify_opts mc_verify_opts_error"}
+ TCID=mc_opts
+ TST_TOTAL=1
  
- 	local iface=$(tst_iface)
- 	local iface_rmt=$(tst_iface rhost)
- 	[ "$TST_IPV6" ] && local netmask=64 || local netmask=16
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
  
--	tst_res TINFO "'$cmd_name changes MTU $MTU_CHANGE_TIMES times" \
-+	tst_res TINFO "'$cmd' changes MTU $MTU_CHANGE_TIMES times" \
- 	               "every $CHANGE_INTERVAL seconds"
+ COUNT=1
+ while [ $COUNT -le 10 ]; do
+diff --git a/testcases/network/nfs/fsx-linux/fsx.sh b/testcases/network/nfs/fsx-linux/fsx.sh
+index 9f2e43720..473ecb2da 100755
+--- a/testcases/network/nfs/fsx-linux/fsx.sh
++++ b/testcases/network/nfs/fsx-linux/fsx.sh
+@@ -26,7 +26,8 @@ TST_TOTAL=1
+ TST_CLEANUP="nfs_cleanup"
  
- 	mtu_array_len=$(echo $CHANGE_VALUES | wc -w)
-@@ -83,11 +75,11 @@ test_body()
+ . nfs_lib.sh
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
  
- 		tst_res TINFO "set MTU to $mtu $cnt/$MTU_CHANGE_TIMES"
- 		local ret=0
--		case $cmd_type in
--		if_cmd) ifconfig $iface mtu $mtu || ret=1
-+		case $cmd in
-+		ifconfig) ifconfig $iface mtu $mtu || ret=1
- 			tst_rhost_run -c "ifconfig $iface_rmt mtu $mtu"
- 		;;
--		ip_cmd) ip link set $iface mtu $mtu || ret=1
-+		ip) ip link set $iface mtu $mtu || ret=1
- 			tst_rhost_run -c "ip link set $iface_rmt mtu $mtu"
- 		;;
- 		esac
-diff --git a/testcases/network/stress/interface/if-route-adddel b/testcases/network/stress/interface/if-route-adddel
-index 9c25bf06b..38e84148a 100644
---- a/testcases/network/stress/interface/if-route-adddel
-+++ b/testcases/network/stress/interface/if-route-adddel
-@@ -18,24 +18,15 @@
- #
- # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+ do_test()
+ {
+diff --git a/testcases/network/nfs/nfs_stress/nfs01 b/testcases/network/nfs/nfs_stress/nfs01
+index a2dfe68b8..93bf088b6 100755
+--- a/testcases/network/nfs/nfs_stress/nfs01
++++ b/testcases/network/nfs/nfs_stress/nfs01
+@@ -25,7 +25,8 @@ TST_TOTAL=1
+ TST_CLEANUP="nfs_cleanup"
  
--TST_CNT=2
--TST_SETUP="netstress_setup"
--TST_CLEANUP="netstress_cleanup"
--TST_TESTFUNC="test_rt_ip"
--. tst_net_stress.sh
-+IF_CMD='route'
-+TST_SETUP="if_setup"
-+. if-lib.sh
+ . nfs_lib.sh
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ do_test()
+ {
+diff --git a/testcases/network/nfs/nfs_stress/nfs02 b/testcases/network/nfs/nfs_stress/nfs02
+index a73e9587e..74aa3d8ec 100755
+--- a/testcases/network/nfs/nfs_stress/nfs02
++++ b/testcases/network/nfs/nfs_stress/nfs02
+@@ -25,7 +25,8 @@ TST_TOTAL=3
+ TST_CLEANUP="nfs_cleanup"
+ 
+ . nfs_lib.sh
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ do_test1()
+ {
+diff --git a/testcases/network/nfs/nfs_stress/nfs03 b/testcases/network/nfs/nfs_stress/nfs03
+index e0d0d6e1a..3279a224c 100755
+--- a/testcases/network/nfs/nfs_stress/nfs03
++++ b/testcases/network/nfs/nfs_stress/nfs03
+@@ -25,7 +25,8 @@ TST_TOTAL=1
+ TST_CLEANUP="nfs03_cleanup"
+ 
+ . nfs_lib.sh
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ DIR_NUM=${DIR_NUM:-"100"}
+ FILE_NUM=${FILE_NUM:-"100"}
+diff --git a/testcases/network/nfs/nfs_stress/nfs04 b/testcases/network/nfs/nfs_stress/nfs04
+index e2002279c..254c987f3 100755
+--- a/testcases/network/nfs/nfs_stress/nfs04
++++ b/testcases/network/nfs/nfs_stress/nfs04
+@@ -28,7 +28,8 @@ TST_TOTAL=1
+ TST_CLEANUP="nfs_cleanup"
+ 
+ . nfs_lib.sh
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ nfs_setup
+ 
+diff --git a/testcases/network/nfs/nfs_stress/nfs05 b/testcases/network/nfs/nfs_stress/nfs05
+index af23e33f9..8c39cde04 100755
+--- a/testcases/network/nfs/nfs_stress/nfs05
++++ b/testcases/network/nfs/nfs_stress/nfs05
+@@ -29,7 +29,8 @@ FILE_NUM=${FILE_NUM:-"50"}
+ THREAD_NUM=${THREAD_NUM:-"8"}
+ 
+ . nfs_lib.sh
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ tst_check_cmds make gcc
+ 
+diff --git a/testcases/network/nfs/nfs_stress/nfs06 b/testcases/network/nfs/nfs_stress/nfs06
+index eb351579d..be7c5424a 100755
+--- a/testcases/network/nfs/nfs_stress/nfs06
++++ b/testcases/network/nfs/nfs_stress/nfs06
+@@ -25,7 +25,8 @@ TST_TOTAL=1
+ TST_CLEANUP="nfs_cleanup"
+ 
+ . nfs_lib.sh
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ do_test()
+ {
+diff --git a/testcases/network/nfs/nfslock01/nfslock01 b/testcases/network/nfs/nfslock01/nfslock01
+index ab0424619..a545fa01c 100755
+--- a/testcases/network/nfs/nfslock01/nfslock01
++++ b/testcases/network/nfs/nfslock01/nfslock01
+@@ -26,7 +26,8 @@ TST_TOTAL=1
+ TST_CLEANUP="nfs_cleanup"
+ 
+ . nfs_lib.sh
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ LUSER=${LUSER:=root}
+ 
+diff --git a/testcases/network/nfs/nfsstat01/nfsstat01 b/testcases/network/nfs/nfsstat01/nfsstat01
+index 256fe60de..afd239fa6 100755
+--- a/testcases/network/nfs/nfsstat01/nfsstat01
++++ b/testcases/network/nfs/nfsstat01/nfsstat01
+@@ -22,7 +22,8 @@ TST_TOTAL=4
+ TST_CLEANUP="nfs_cleanup"
+ 
+ . nfs_lib.sh
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ setup()
+ {
+diff --git a/testcases/network/rpc/basic_tests/rpc01/rpc01 b/testcases/network/rpc/basic_tests/rpc01/rpc01
+index fd8915ac6..7cc69f0fa 100755
+--- a/testcases/network/rpc/basic_tests/rpc01/rpc01
++++ b/testcases/network/rpc/basic_tests/rpc01/rpc01
+@@ -19,7 +19,8 @@ TCID="rpc01"
+ TST_TOTAL=6
+ TST_CLEANUP=do_cleanup
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ NUMLOOPS=${NUMLOOPS:=3}
+ DATAFILES=${DATAFILES:="file.1 file.2"}
+diff --git a/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01 b/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01
+index 6fe3639ab..afdfdb351 100755
+--- a/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01
++++ b/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01
+@@ -19,7 +19,8 @@ TCID="rpcinfo01"
+ TST_TOTAL=16
+ TST_CLEANUP=tst_rmdir
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ do_setup()
+ {
+diff --git a/testcases/network/rpc/basic_tests/rup/rup01 b/testcases/network/rpc/basic_tests/rup/rup01
+index 2340dead6..44f0e73d2 100755
+--- a/testcases/network/rpc/basic_tests/rup/rup01
++++ b/testcases/network/rpc/basic_tests/rup/rup01
+@@ -18,7 +18,8 @@
+ TCID="rup01"
+ TST_TOTAL=7
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ do_setup()
+ {
+diff --git a/testcases/network/rpc/basic_tests/rusers/rusers01 b/testcases/network/rpc/basic_tests/rusers/rusers01
+index 9f20a8523..554bfa01c 100755
+--- a/testcases/network/rpc/basic_tests/rusers/rusers01
++++ b/testcases/network/rpc/basic_tests/rusers/rusers01
+@@ -18,7 +18,8 @@
+ TCID="rusers01"
+ TST_TOTAL=5
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ do_setup()
+ {
+diff --git a/testcases/network/rpc/rpc-tirpc/rpc_test.sh b/testcases/network/rpc/rpc-tirpc/rpc_test.sh
+index 54ea4fdd5..9962a1710 100755
+--- a/testcases/network/rpc/rpc-tirpc/rpc_test.sh
++++ b/testcases/network/rpc/rpc-tirpc/rpc_test.sh
+@@ -62,6 +62,7 @@ while getopts s:c:e:h arg; do
+ 		h) usage ;;
+ 	esac
+ done
++shift $(($OPTIND - 1))
+ 
+ if [ ! -z "$SERVER" ]; then
+ 	if `echo "$SERVER" | grep -e '^tirpc'`; then
+@@ -82,7 +83,8 @@ TST_TOTAL=1
+ TST_COUNT=1
+ TST_CLEANUP=cleanup
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ if [ ! -z "$SERVER" ]; then
+ 	$SERVER $PROGNUMNOSVC &
+diff --git a/testcases/network/sctp/sctp01.sh b/testcases/network/sctp/sctp01.sh
+index d5c5f6d69..bf13521c2 100755
+--- a/testcases/network/sctp/sctp01.sh
++++ b/testcases/network/sctp/sctp01.sh
+@@ -21,7 +21,8 @@ TST_TOTAL=4
+ TST_CLEANUP="cleanup"
+ TST_NEEDS_TMPDIR=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ cleanup()
+ {
+diff --git a/testcases/network/sockets/bind_noport01.sh b/testcases/network/sockets/bind_noport01.sh
+index 951712d53..dc4e621b9 100755
+--- a/testcases/network/sockets/bind_noport01.sh
++++ b/testcases/network/sockets/bind_noport01.sh
+@@ -18,7 +18,8 @@ TST_TOTAL=1
+ TCID="bind_noport"
+ TST_NEEDS_TMPDIR=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ cleanup()
+ {
+diff --git a/testcases/network/stress/broken_ip/broken_ip4-checksum b/testcases/network/stress/broken_ip/broken_ip4-checksum
+index ff30fbf78..53c6868ba 100644
+--- a/testcases/network/stress/broken_ip/broken_ip4-checksum
++++ b/testcases/network/stress/broken_ip/broken_ip4-checksum
+@@ -21,7 +21,8 @@
+ TCID=broken_ip4-checksum01
+ TST_TOTAL=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ tst_resm TINFO "Sending ICMPv4 with wrong chksum field for $NS_DURATION sec"
+ 
+diff --git a/testcases/network/stress/broken_ip/broken_ip4-dstaddr b/testcases/network/stress/broken_ip/broken_ip4-dstaddr
+index eb236f28b..b940d7661 100644
+--- a/testcases/network/stress/broken_ip/broken_ip4-dstaddr
++++ b/testcases/network/stress/broken_ip/broken_ip4-dstaddr
+@@ -21,7 +21,8 @@
+ TCID=broken_ip4-dstaddr01
+ TST_TOTAL=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ tst_resm TINFO "Sending ICMPv4 with wrong dst address for $NS_DURATION sec"
+ 
+diff --git a/testcases/network/stress/broken_ip/broken_ip4-fragment b/testcases/network/stress/broken_ip/broken_ip4-fragment
+index 8f2aca925..e5d90b464 100644
+--- a/testcases/network/stress/broken_ip/broken_ip4-fragment
++++ b/testcases/network/stress/broken_ip/broken_ip4-fragment
+@@ -21,7 +21,8 @@
+ TCID=broken_ip4-fragment01
+ TST_TOTAL=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ tst_resm TINFO "Sending ICMPv4 with wrong frag. info for $NS_DURATION sec"
+ 
+diff --git a/testcases/network/stress/broken_ip/broken_ip4-ihl b/testcases/network/stress/broken_ip/broken_ip4-ihl
+index 2e136a579..de8324537 100644
+--- a/testcases/network/stress/broken_ip/broken_ip4-ihl
++++ b/testcases/network/stress/broken_ip/broken_ip4-ihl
+@@ -21,7 +21,8 @@
+ TCID=broken_ip4-ihl01
+ TST_TOTAL=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ tst_resm TINFO "Sending ICMPv4 with wrong header len field for $NS_DURATION sec"
+ 
+diff --git a/testcases/network/stress/broken_ip/broken_ip4-protcol b/testcases/network/stress/broken_ip/broken_ip4-protcol
+index a57ce6120..0fee79364 100644
+--- a/testcases/network/stress/broken_ip/broken_ip4-protcol
++++ b/testcases/network/stress/broken_ip/broken_ip4-protcol
+@@ -21,7 +21,8 @@
+ TCID=broken_ip4-protocol01
+ TST_TOTAL=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ tst_resm TINFO "Sending ICMPv4 with wrong proto field for $NS_DURATION sec"
+ 
+diff --git a/testcases/network/stress/broken_ip/broken_ip4-totlen b/testcases/network/stress/broken_ip/broken_ip4-totlen
+index 446648741..cd5f31177 100644
+--- a/testcases/network/stress/broken_ip/broken_ip4-totlen
++++ b/testcases/network/stress/broken_ip/broken_ip4-totlen
+@@ -21,7 +21,8 @@
+ TCID=broken_ip4-totlen01
+ TST_TOTAL=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ tst_resm TINFO "Sending ICMPv4 with wrong total len field for $NS_DURATION sec"
+ 
+diff --git a/testcases/network/stress/broken_ip/broken_ip4-version b/testcases/network/stress/broken_ip/broken_ip4-version
+index 83cf56881..a5e30b4b6 100644
+--- a/testcases/network/stress/broken_ip/broken_ip4-version
++++ b/testcases/network/stress/broken_ip/broken_ip4-version
+@@ -21,7 +21,8 @@
+ TCID=broken_ip4-version01
+ TST_TOTAL=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ tst_resm TINFO "Sending ICMPv4 with wrong version field for $NS_DURATION sec"
+ 
+diff --git a/testcases/network/stress/broken_ip/broken_ip6-dstaddr b/testcases/network/stress/broken_ip/broken_ip6-dstaddr
+index ea7d66dea..69e993c2f 100644
+--- a/testcases/network/stress/broken_ip/broken_ip6-dstaddr
++++ b/testcases/network/stress/broken_ip/broken_ip6-dstaddr
+@@ -21,7 +21,8 @@
+ TCID=broken_ip6-dstaddr01
+ TST_TOTAL=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ tst_resm TINFO "Sending ICMPv6 with wrong dst address for $NS_DURATION sec"
+ 
+diff --git a/testcases/network/stress/broken_ip/broken_ip6-nexthdr b/testcases/network/stress/broken_ip/broken_ip6-nexthdr
+index ebbef5e91..2510fd235 100644
+--- a/testcases/network/stress/broken_ip/broken_ip6-nexthdr
++++ b/testcases/network/stress/broken_ip/broken_ip6-nexthdr
+@@ -21,7 +21,8 @@
+ TCID=broken_ip6-nexthdr01
+ TST_TOTAL=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ tst_resm TINFO "Sending ICMPv4 with wrong next header for $NS_DURATION sec"
+ 
+diff --git a/testcases/network/stress/broken_ip/broken_ip6-plen b/testcases/network/stress/broken_ip/broken_ip6-plen
+index e93cdcc51..960902b3d 100644
+--- a/testcases/network/stress/broken_ip/broken_ip6-plen
++++ b/testcases/network/stress/broken_ip/broken_ip6-plen
+@@ -21,7 +21,8 @@
+ TCID=broken_ip6-plen01
+ TST_TOTAL=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ tst_resm TINFO "Sending ICMPv4 with wrong payload len for $NS_DURATION sec"
+ 
+diff --git a/testcases/network/stress/broken_ip/broken_ip6-version b/testcases/network/stress/broken_ip/broken_ip6-version
+index 3eff2d703..b189ba1dd 100644
+--- a/testcases/network/stress/broken_ip/broken_ip6-version
++++ b/testcases/network/stress/broken_ip/broken_ip6-version
+@@ -21,7 +21,8 @@
+ TCID=broken_ip6-version01
+ TST_TOTAL=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ tst_resm TINFO "Sending ICMPv6 with wrong version field for $NS_DURATION sec"
+ 
+diff --git a/testcases/network/stress/dns/dns-stress b/testcases/network/stress/dns/dns-stress
+index 06b470915..c0c397d4e 100755
+--- a/testcases/network/stress/dns/dns-stress
++++ b/testcases/network/stress/dns/dns-stress
+@@ -22,7 +22,8 @@ TCID=dns-stress
+ TST_TOTAL=2
+ TST_CLEANUP="cleanup"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ # Minimum host ID in the zone file.
+ # The ID is used as the host portion of the address
+diff --git a/testcases/network/stress/ftp/ftp-download-stress b/testcases/network/stress/ftp/ftp-download-stress
+index e1f3a8c48..13ecbd067 100644
+--- a/testcases/network/stress/ftp/ftp-download-stress
++++ b/testcases/network/stress/ftp/ftp-download-stress
+@@ -23,7 +23,8 @@ TCID=ftp-download-stress
+ TST_TOTAL=2
+ TST_CLEANUP="cleanup"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ # Big file size to upload/download in ftp tests (byte)
+ DOWNLOAD_BIGFILESIZE=${DOWNLOAD_BIGFILESIZE:-2147483647}
+diff --git a/testcases/network/stress/ftp/ftp-upload-stress b/testcases/network/stress/ftp/ftp-upload-stress
+index c8c64be6a..402f50f65 100644
+--- a/testcases/network/stress/ftp/ftp-upload-stress
++++ b/testcases/network/stress/ftp/ftp-upload-stress
+@@ -23,7 +23,8 @@ TCID=ftp-upload-stress
+ TST_TOTAL=2
+ TST_CLEANUP="cleanup"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ # Big file size to upload (byte)
+ UPLOAD_BIGFILESIZE=${UPLOAD_BIGFILESIZE:-2147483647}  # 2GB - 1
+diff --git a/testcases/network/stress/http/http-stress b/testcases/network/stress/http/http-stress
+index db1823789..211cd90aa 100644
+--- a/testcases/network/stress/http/http-stress
++++ b/testcases/network/stress/http/http-stress
+@@ -23,7 +23,8 @@ TCID=http-stress
+ TST_TOTAL=2
+ TST_CLEANUP="cleanup"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ cleanup()
+ {
+diff --git a/testcases/network/stress/interface/if4-addr-change b/testcases/network/stress/interface/if4-addr-change
+index 4eaabd70c..a452f3da5 100644
+--- a/testcases/network/stress/interface/if4-addr-change
++++ b/testcases/network/stress/interface/if4-addr-change
+@@ -21,7 +21,8 @@ TST_TOTAL=1
+ TCID=if4-addr-change
+ TST_CLEANUP="do_cleanup"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
  
  CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
- 
- test_body()
- {
--	local cmd_type=$1
--
--	case $cmd_type in
--	rt_cmd) local cmd_name='route' ;;
--	ip_cmd) local cmd_name='ip' ;;
--	*) tst_brk TBROK "Unknown test parameter '$cmd_type'"
--	esac
--
-+	local cmd="$CMD"
- 	local iface=$(tst_iface)
- 	local inet="inet$TST_IPV6"
- 	local new_rt=
-@@ -45,13 +36,12 @@ test_body()
- 		opt_rt="/64"
- 	else
- 		new_rt="$(tst_ipaddr_un 23)"
--		case $cmd_type in
--		rt_cmd) ;;
--		ip_cmd) opt_rt='/24' ;;
--		esac
-+		if [ "$cmd" = "ip" ]; then
-+			opt_rt='/24'
-+		fi
- 	fi
- 
--	tst_res TINFO "'$cmd_name' add/del ${new_rt}${opt_rt} $NS_TIMES times"
-+	tst_res TINFO "'$cmd' add/del ${new_rt}${opt_rt} $NS_TIMES times"
- 
- 	if ! restore_ipaddr; then
- 		tst_res TBROK "Failed to set default IP addresses"
-@@ -62,18 +52,18 @@ test_body()
- 	while [ $cnt -le $NS_TIMES ]; do
- 		make_background_tcp_traffic
- 
--		case $cmd_type in
--		rt_cmd) route -A $inet add ${new_rt}${opt_rt} dev $iface ;;
--		ip_cmd) ip route add ${new_rt}${opt_rt} dev $iface ;;
-+		case $cmd in
-+		route) route -A $inet add ${new_rt}${opt_rt} dev $iface ;;
-+		ip) ip route add ${new_rt}${opt_rt} dev $iface ;;
- 		esac
- 		if [ $? -ne 0 ]; then
- 			tst_res TFAIL "Can't add route $new_rt to $iface"
- 			return
- 		fi
- 
--		case $cmd_type in
--		rt_cmd) route -A $inet del ${new_rt}${opt_rt} dev $iface ;;
--		ip_cmd) ip route del ${new_rt}${opt_rt} dev $iface ;;
-+		case $cmd in
-+		route) route -A $inet del ${new_rt}${opt_rt} dev $iface ;;
-+		ip) ip route del ${new_rt}${opt_rt} dev $iface ;;
- 		esac
- 		if [ $? -ne 0 ]; then
- 			tst_res TFAIL "Can't del route $new_rt from $iface"
-@@ -88,5 +78,4 @@ test_body()
- 	tst_res TPASS "Test is finished correctly"
- }
- 
--tst_check_cmds route
- tst_run
-diff --git a/testcases/network/stress/interface/if-route-addlarge b/testcases/network/stress/interface/if-route-addlarge
-index 675155088..61211e174 100644
---- a/testcases/network/stress/interface/if-route-addlarge
-+++ b/testcases/network/stress/interface/if-route-addlarge
-@@ -18,37 +18,25 @@
+ # Maximum host portion of the IPv4 address on the local host
+diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
+index cee755fe0..92351e202 100644
+--- a/testcases/network/stress/ipsec/ipsec_lib.sh
++++ b/testcases/network/stress/ipsec/ipsec_lib.sh
+@@ -19,8 +19,6 @@
  #
- # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+ #######################################################################
  
--TST_CNT=2
--TST_SETUP="netstress_setup"
--TST_CLEANUP="netstress_cleanup"
--TST_TESTFUNC="test_rt_ip"
--. tst_net_stress.sh
-+IF_CMD='route'
-+TST_SETUP="if_setup"
-+. if-lib.sh
+-. test_net.sh
+-
+ # Authenticated encryption with associated data
+ AEALGO="rfc4106_128"
+ # Encryption algorithm
+@@ -33,6 +31,7 @@ CALGO="deflate"
+ IPSEC_REQUESTS="500"
+ IPSEC_SIZE_ARRAY="${IPSEC_SIZE_ARRAY:-10 100 1000 2000 10000 65000}"
  
- CHECK_INTERVAL=${CHECK_INTERVAL:-$(($ROUTE_TOTAL / 20))}
++lib_params=
+ while getopts "hl:m:p:s:S:k:A:e:a:c:r:6" opt; do
+ 	case "$opt" in
+ 	h)
+@@ -63,11 +62,14 @@ while getopts "hl:m:p:s:S:k:A:e:a:c:r:6" opt; do
+ 	a) AALGO=$OPTARG ;;
+ 	c) CALGO=$OPTARG ;;
+ 	r) IPSEC_REQUESTS="$OPTARG" ;;
+-	6) # skip, test_net library already processed it
+-	;;
++	6) lib_params="-6" ;;
+ 	*) tst_brkm TBROK "unknown option: $opt" ;;
+ 	esac
+ done
++shift $(($OPTIND - 1))
++
++TST_USE_LEGACY_API=1
++. tst_net.sh $lib_params
  
- test_body()
+ get_key()
  {
--	local cmd_type=$1
--
--	case $cmd_type in
--	rt_cmd) local cmd_name='route' ;;
--	ip_cmd) local cmd_name='ip' ;;
--	*) tst_brk TBROK "Unknown test parameter '$cmd_type'"
--	esac
--
-+	local cmd="$CMD"
- 	local iface=$(tst_iface)
- 	local inet="inet$TST_IPV6"
- 	local opt_rt=
- 	if [ "$TST_IPV6" ]; then
- 		opt_rt="/64"
--	else
--		case $cmd_type in
--		rt_cmd) ;;
--		ip_cmd) opt_rt='/32' ;;
--		esac
-+	elif [ "$cmd" = "ip" ]; then
-+		opt_rt='/32'
- 	fi
- 
--	tst_res TINFO "'$cmd_name' add IPv$ipver $ROUTE_TOTAL routes"
-+	tst_res TINFO "'$cmd' add IPv$ipver $ROUTE_TOTAL routes"
- 
- 	if ! restore_ipaddr; then
- 		tst_res TBROK "Failed to set default IP addresses"
-@@ -77,9 +65,9 @@ test_body()
- 			local new_rt=${IPV4_NET16_UNUSED}.$x.$y
- 		fi
- 
--		case $cmd_type in
--		rt_cmd) route -A $inet add ${new_rt}${opt_rt} dev $iface ;;
--		ip_cmd) ip route add ${new_rt}${opt_rt} dev $iface ;;
-+		case $cmd in
-+		route) route -A $inet add ${new_rt}${opt_rt} dev $iface ;;
-+		ip) ip route add ${new_rt}${opt_rt} dev $iface ;;
- 		esac
- 		if [ $? -ne 0 ]; then
- 			tst_res TFAIL "Can't add route $new_rt to $iface"
-@@ -102,5 +90,4 @@ test_body()
- 	tst_res TPASS "Test is finished correctly"
- }
- 
--tst_check_cmds route
- tst_run
-diff --git a/testcases/network/stress/interface/if-updown b/testcases/network/stress/interface/if-updown
-index d1dd2cbd0..9392f6c40 100644
---- a/testcases/network/stress/interface/if-updown
-+++ b/testcases/network/stress/interface/if-updown
-@@ -18,43 +18,34 @@
+diff --git a/testcases/network/stress/ns-tools/test_net_stress.sh b/testcases/network/stress/ns-tools/test_net_stress.sh
+index 3cf9e5f05..d71762972 100644
+--- a/testcases/network/stress/ns-tools/test_net_stress.sh
++++ b/testcases/network/stress/ns-tools/test_net_stress.sh
+@@ -21,11 +21,12 @@
  #
- # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+ # Library for all network/stress/ tests.
+ # NOTE: More information about network variables can be found
+-# in test_net.sh and testcases/network/stress/README.
++# in tst_net.sh and testcases/network/stress/README.
  
--TST_CNT=2
--TST_SETUP="netstress_setup"
--TST_CLEANUP="netstress_cleanup"
--TST_TESTFUNC="test_if_ip"
--. tst_net_stress.sh
-+IF_CMD='ifconfig'
-+TST_SETUP="if_setup"
-+. if-lib.sh
+ export TCID="${TCID:-$(basename $0)}"
  
- CHECK_INTERVAL=${CHECK_INTERVAL:-$(($IF_UPDOWN_TIMES / 20))}
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
  
- test_body()
+ ipver=${TST_IPV6:-4}
+ 
+diff --git a/testcases/network/stress/ssh/ssh-stress b/testcases/network/stress/ssh/ssh-stress
+index 3fdb5c2b8..00b47c27f 100644
+--- a/testcases/network/stress/ssh/ssh-stress
++++ b/testcases/network/stress/ssh/ssh-stress
+@@ -24,7 +24,8 @@ TCID=ssh-stress
+ TST_TOTAL=3
+ TST_CLEANUP="cleanup"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ # Temporary directory to store sshd setting or ssh key
+ # Note: ssh doesn't work when those directory is under /tmp.
+diff --git a/testcases/network/tcp_cmds/arping/arping01.sh b/testcases/network/tcp_cmds/arping/arping01.sh
+index 66f161bc6..cc72f3ac1 100755
+--- a/testcases/network/tcp_cmds/arping/arping01.sh
++++ b/testcases/network/tcp_cmds/arping/arping01.sh
+@@ -18,7 +18,8 @@
+ 
+ TCID=arping01
+ TST_TOTAL=1
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ tst_require_root
+ tst_check_cmds arping
+diff --git a/testcases/network/tcp_cmds/clockdiff/clockdiff01.sh b/testcases/network/tcp_cmds/clockdiff/clockdiff01.sh
+index 627274c9a..219ff1d33 100755
+--- a/testcases/network/tcp_cmds/clockdiff/clockdiff01.sh
++++ b/testcases/network/tcp_cmds/clockdiff/clockdiff01.sh
+@@ -18,7 +18,8 @@
+ 
+ TCID=clockdiff01
+ TST_TOTAL=1
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ tst_require_root
+ tst_check_cmds cut clockdiff
+diff --git a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
+index c35443d04..9af3aa31e 100755
+--- a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
++++ b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
+@@ -19,7 +19,8 @@
+ TCID=ipneigh01
+ NUMLOOPS=${NUMLOOPS:-50}
+ TST_TOTAL=2
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ do_setup()
  {
--	local cmd_type=$1
--
--	case $cmd_type in
--	if_cmd) local cmd_name='ifconfig' ;;
--	ip_cmd) local cmd_name='ip' ;;
--	*) tst_brk TBROK "Unknown test parameter '$cmd_type'"
--	esac
--
-+	local cmd="$CMD"
- 	local iface=$(tst_iface)
+diff --git a/testcases/network/tcp_cmds/ping/ping01.sh b/testcases/network/tcp_cmds/ping/ping01.sh
+index 73f1180f5..01743ffcc 100755
+--- a/testcases/network/tcp_cmds/ping/ping01.sh
++++ b/testcases/network/tcp_cmds/ping/ping01.sh
+@@ -28,7 +28,8 @@
+ TST_TOTAL=10
+ TCID="ping01"
  
--	tst_res TINFO "'$cmd_name ups/downs $iface $IF_UPDOWN_TIMES times"
-+	tst_res TINFO "'$cmd' ups/downs $iface $IF_UPDOWN_TIMES times"
- 	tst_res TINFO "check connectivity interval is $CHECK_INTERVAL"
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
  
- 	local cnt=1
- 	while [ $cnt -le $IF_UPDOWN_TIMES ]; do
--		case $cmd_type in
--		if_cmd) ifconfig $iface down ;;
--		ip_cmd) ip link set $iface down ;;
-+		case $cmd in
-+		ifconfig) ifconfig $iface down ;;
-+		ip) ip link set $iface down ;;
- 		esac
- 		if [ $? -ne 0 ]; then
- 			tst_res TFAIL "Failed to down $iface"
- 			return
- 		fi
+ do_setup()
+ {
+diff --git a/testcases/network/tcp_cmds/ping/ping02.sh b/testcases/network/tcp_cmds/ping/ping02.sh
+index 6a9878e42..9696bf1ee 100755
+--- a/testcases/network/tcp_cmds/ping/ping02.sh
++++ b/testcases/network/tcp_cmds/ping/ping02.sh
+@@ -17,7 +17,8 @@
+ TST_TOTAL=10
+ TCID="ping02"
  
--		case $cmd_type in
--		if_cmd) ifconfig $iface up ;;
--		ip_cmd) ip link set $iface up ;;
-+		case $cmd in
-+		ifconfig) ifconfig $iface up ;;
-+		ip) ip link set $iface up ;;
- 		esac
- 		if [ $? -ne 0 ]; then
- 			tst_res TFAIL "Failed to up $iface"
-@@ -69,5 +60,4 @@ test_body()
- 	tst_res TPASS "Test is finished correctly"
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ do_setup()
+ {
+diff --git a/testcases/network/tcp_cmds/rlogin/rlogin01 b/testcases/network/tcp_cmds/rlogin/rlogin01
+index 162b8f0d8..2ebc15d63 100755
+--- a/testcases/network/tcp_cmds/rlogin/rlogin01
++++ b/testcases/network/tcp_cmds/rlogin/rlogin01
+@@ -20,7 +20,8 @@
+ TCID="rlogin01"
+ TST_TOTAL=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ setup()
+ {
+diff --git a/testcases/network/tcp_cmds/sendfile/sendfile01 b/testcases/network/tcp_cmds/sendfile/sendfile01
+index 98e4f445b..b9af042ee 100755
+--- a/testcases/network/tcp_cmds/sendfile/sendfile01
++++ b/testcases/network/tcp_cmds/sendfile/sendfile01
+@@ -102,7 +102,8 @@ do_cleanup()
+ 	tst_rmdir
  }
  
--tst_check_cmds ifconfig
- tst_run
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ do_setup
+ do_test
+diff --git a/testcases/network/tcp_cmds/tcpdump/tcpdump01 b/testcases/network/tcp_cmds/tcpdump/tcpdump01
+index 6ed8e25e3..1738e5197 100755
+--- a/testcases/network/tcp_cmds/tcpdump/tcpdump01
++++ b/testcases/network/tcp_cmds/tcpdump/tcpdump01
+@@ -64,7 +64,8 @@ do_cleanup()
+ 	tst_rmdir
+ }
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ do_setup
+ do_test
+diff --git a/testcases/network/tcp_cmds/telnet/telnet01 b/testcases/network/tcp_cmds/telnet/telnet01
+index f2f2444a8..bdbcdc117 100755
+--- a/testcases/network/tcp_cmds/telnet/telnet01
++++ b/testcases/network/tcp_cmds/telnet/telnet01
+@@ -20,7 +20,8 @@
+ TCID="telnet01"
+ TST_TOTAL=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ setup()
+ {
+diff --git a/testcases/network/tcp_cmds/tracepath/tracepath01.sh b/testcases/network/tcp_cmds/tracepath/tracepath01.sh
+index f1662f578..d0d202333 100755
+--- a/testcases/network/tcp_cmds/tracepath/tracepath01.sh
++++ b/testcases/network/tcp_cmds/tracepath/tracepath01.sh
+@@ -18,7 +18,8 @@
+ 
+ TCID=tracepath01
+ TST_TOTAL=1
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ test_tracepath()
+ {
+diff --git a/testcases/network/tcp_fastopen/tcp_fastopen_run.sh b/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
+index e9094fc45..01d30e859 100755
+--- a/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
++++ b/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
+@@ -19,12 +19,8 @@
+ #
+ 
+ TST_NETLOAD_MAX_SRV_REPLIES=3
+-TST_TOTAL=1
+-TCID="tcp_fastopen"
+-TST_NEEDS_TMPDIR=1
+-
+-. test_net.sh
+ 
++lib_params=
+ while getopts :hr:n:R:6 opt; do
+ 	case "$opt" in
+ 	h)
+@@ -35,11 +31,18 @@ while getopts :hr:n:R:6 opt; do
+ 		exit 0
+ 	;;
+ 	R) TST_NETLOAD_MAX_SRV_REPLIES=$OPTARG ;;
+-	6) # skip, test_net library already processed it
+-	;;
++	6) lib_params="-6" ;;
+ 	*) tst_brkm TBROK "unknown option: $opt" ;;
+ 	esac
+ done
++shift $(($OPTIND - 1))
++
++TST_TOTAL=1
++TCID="tcp_fastopen"
++TST_NEEDS_TMPDIR=1
++
++TST_USE_LEGACY_API=1
++. tst_net.sh $lib_params
+ 
+ cleanup()
+ {
+diff --git a/testcases/network/traceroute/traceroute01.sh b/testcases/network/traceroute/traceroute01.sh
+index 04759697a..057572086 100755
+--- a/testcases/network/traceroute/traceroute01.sh
++++ b/testcases/network/traceroute/traceroute01.sh
+@@ -19,7 +19,8 @@ TST_TOTAL=6
+ TCID="traceroute01"
+ TST_CLEANUP="cleanup"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ cleanup()
+ {
+diff --git a/testcases/network/virt/geneve01.sh b/testcases/network/virt/geneve01.sh
+index 1e723d84d..709201358 100755
+--- a/testcases/network/virt/geneve01.sh
++++ b/testcases/network/virt/geneve01.sh
+@@ -27,7 +27,8 @@ start_id=16700000
+ # that is why using here 'vxlan_*' library functions.
+ vxlan_dst_addr="uni"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ . virt_lib.sh
+ 
+ VIRT_PERF_THRESHOLD=${VIRT_PERF_THRESHOLD:-160}
+diff --git a/testcases/network/virt/gre01.sh b/testcases/network/virt/gre01.sh
+index bb2817d84..74ecb4898 100755
+--- a/testcases/network/virt/gre01.sh
++++ b/testcases/network/virt/gre01.sh
+@@ -24,7 +24,8 @@ TCID=gre01
+ TST_TOTAL=1
+ TST_NEEDS_TMPDIR=1
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ virt_type="gre"
+ [ "$TST_IPV6" ] && virt_type="ip6gre"
+diff --git a/testcases/network/virt/ipvlan01.sh b/testcases/network/virt/ipvlan01.sh
+index c20769316..b69444644 100755
+--- a/testcases/network/virt/ipvlan01.sh
++++ b/testcases/network/virt/ipvlan01.sh
+@@ -24,7 +24,8 @@ TST_TOTAL=2
+ 
+ virt_type="ipvlan"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ . virt_lib.sh
+ 
+ options="mode l2,mode l3"
+diff --git a/testcases/network/virt/macvlan01.sh b/testcases/network/virt/macvlan01.sh
+index ffb7536c5..cf0462ec4 100755
+--- a/testcases/network/virt/macvlan01.sh
++++ b/testcases/network/virt/macvlan01.sh
+@@ -24,7 +24,8 @@ TST_TOTAL=4
+ 
+ virt_type="macvlan"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ . virt_lib.sh
+ 
+ options="mode private,mode vepa,mode bridge,mode passthru"
+diff --git a/testcases/network/virt/macvtap01.sh b/testcases/network/virt/macvtap01.sh
+index 5c54e99cd..e647f9009 100755
+--- a/testcases/network/virt/macvtap01.sh
++++ b/testcases/network/virt/macvtap01.sh
+@@ -24,7 +24,8 @@ TST_TOTAL=4
+ 
+ virt_type="macvtap"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ . virt_lib.sh
+ 
+ options="mode private,mode vepa,mode bridge,mode passthru"
+diff --git a/testcases/network/virt/vlan01.sh b/testcases/network/virt/vlan01.sh
+index 50cdfcbcc..890848fee 100755
+--- a/testcases/network/virt/vlan01.sh
++++ b/testcases/network/virt/vlan01.sh
+@@ -24,7 +24,8 @@ TST_TOTAL=9
+ 
+ virt_type="vlan"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ . virt_lib.sh
+ 
+ p0="protocol 802.1Q"
+diff --git a/testcases/network/virt/vlan02.sh b/testcases/network/virt/vlan02.sh
+index b10596d43..4cb4856ba 100755
+--- a/testcases/network/virt/vlan02.sh
++++ b/testcases/network/virt/vlan02.sh
+@@ -25,7 +25,8 @@ TST_TOTAL=1
+ 
+ virt_type="vlan"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ . virt_lib.sh
+ 
+ virt_add_delete_test "id 4094"
+diff --git a/testcases/network/virt/vlan03.sh b/testcases/network/virt/vlan03.sh
+index 814cc4c6c..63a9d517d 100755
+--- a/testcases/network/virt/vlan03.sh
++++ b/testcases/network/virt/vlan03.sh
+@@ -29,7 +29,8 @@ TST_NEEDS_TMPDIR=1
+ 
+ virt_type="vlan"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ . virt_lib.sh
+ 
+ TST_CLEANUP="virt_cleanup"
+diff --git a/testcases/network/virt/vxlan01.sh b/testcases/network/virt/vxlan01.sh
+index 3042e6e38..8d96db257 100755
+--- a/testcases/network/virt/vxlan01.sh
++++ b/testcases/network/virt/vxlan01.sh
+@@ -25,7 +25,8 @@ TST_TOTAL=5
+ virt_type="vxlan"
+ start_id=16700000
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ . virt_lib.sh
+ 
+ options="l2miss l3miss,norsc nolearning noproxy,\
+diff --git a/testcases/network/virt/vxlan02.sh b/testcases/network/virt/vxlan02.sh
+index 23c303f20..07cf656d7 100755
+--- a/testcases/network/virt/vxlan02.sh
++++ b/testcases/network/virt/vxlan02.sh
+@@ -26,7 +26,8 @@ TST_TOTAL=1
+ virt_type="vxlan"
+ start_id=16700000
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ . virt_lib.sh
+ 
+ [ "$TST_IPV6" ] && mult_addr="ff02::abc" || mult_addr="239.1.1.1"
+diff --git a/testcases/network/virt/vxlan03.sh b/testcases/network/virt/vxlan03.sh
+index 5d1d00032..6d3792ab7 100755
+--- a/testcases/network/virt/vxlan03.sh
++++ b/testcases/network/virt/vxlan03.sh
+@@ -33,7 +33,8 @@ start_id=16700000
+ # Destination address, can be unicast or multicast address
+ vxlan_dst_addr="uni"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ . virt_lib.sh
+ 
+ # In average cases (with small packets less then 150 bytes) VxLAN slower
+diff --git a/testcases/network/xinetd/xinetd_tests.sh b/testcases/network/xinetd/xinetd_tests.sh
+index 8aa998875..e400ae7ba 100755
+--- a/testcases/network/xinetd/xinetd_tests.sh
++++ b/testcases/network/xinetd/xinetd_tests.sh
+@@ -20,7 +20,8 @@ TST_TOTAL=2
+ TST_CLEANUP="cleanup"
+ 
+ . daemonlib.sh
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ setup()
+ {
+diff --git a/testscripts/network.sh b/testscripts/network.sh
+index eb991b656..cc2b2de72 100755
+--- a/testscripts/network.sh
++++ b/testscripts/network.sh
+@@ -84,16 +84,17 @@ if [ "$OPTIND" -eq 1 ]; then
+ 	usage
+ 	exit 1
+ fi
++shift $(($OPTIND - 1))
+ 
+ TST_TOTAL=1
+ TCID="network_settings"
+ 
+-. test_net.sh
++TST_USE_LEGACY_API=1
++. tst_net.sh
+ 
+ # Reset variables.
+ # Don't break the tests which are using 'testcases/lib/cmdlib.sh'
+-export TCID=
+-export TST_LIB_LOADED=
++unset TCID TST_LIB_LOADED TST_USE_LEGACY_API
+ 
+ rm -f $CMDFILE
+ 
 -- 
 2.16.2
 
