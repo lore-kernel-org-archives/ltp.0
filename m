@@ -1,10 +1,10 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 6 Apr 2018 04:47:50 -0400 (EDT)
-Subject: [LTP] [RFC PATCH 1/6] exit02: Rewrite to new library
-In-Reply-To: <20180405145015.7633-2-chrubis@suse.cz>
+Date: Fri, 6 Apr 2018 04:48:08 -0400 (EDT)
+Subject: [LTP] [RFC PATCH 2/6] syscalls/pipe11: Rewrite to new library.
+In-Reply-To: <20180405145015.7633-3-chrubis@suse.cz>
 References: <20180405145015.7633-1-chrubis@suse.cz>
- <20180405145015.7633-2-chrubis@suse.cz>
-Message-ID: <1256448349.11698313.1523004470265.JavaMail.zimbra@redhat.com>
+ <20180405145015.7633-3-chrubis@suse.cz>
+Message-ID: <1005724876.11698321.1523004488768.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,28 +14,22 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> We get rid of the ridiculous sleep(2) in the test as a side effect.
+> + Check that the buffer read in the child is correct as well
+> 
+> + We got rid of sleep(5) as a side effect
 > 
 > Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-
-ACK to 3/6 4/6 5/6 patches.
-
-Just a small observation here, subject doesn't have "syscalls/" as
-the rest of series.
-
-One more note below.
-
 > ---
->  testcases/kernel/syscalls/exit/exit02.c | 249
->  ++++++++------------------------
->  1 file changed, 60 insertions(+), 189 deletions(-)
+>  testcases/kernel/syscalls/pipe/pipe11.c | 289
+>  +++++++++-----------------------
+>  1 file changed, 77 insertions(+), 212 deletions(-)
 > 
-> diff --git a/testcases/kernel/syscalls/exit/exit02.c
-> b/testcases/kernel/syscalls/exit/exit02.c
-> index 7858c894d..8143870e8 100644
-> --- a/testcases/kernel/syscalls/exit/exit02.c
-> +++ b/testcases/kernel/syscalls/exit/exit02.c
-> @@ -1,212 +1,83 @@
+> diff --git a/testcases/kernel/syscalls/pipe/pipe11.c
+> b/testcases/kernel/syscalls/pipe/pipe11.c
+> index e3b274128..6964f164d 100644
+> --- a/testcases/kernel/syscalls/pipe/pipe11.c
+> +++ b/testcases/kernel/syscalls/pipe/pipe11.c
+> @@ -1,246 +1,111 @@
 >  /*
 > + * Copyright (c) International Business Machines  Corp., 2001
 > + *    07/2001 Ported by Wayne Boyer
@@ -70,254 +64,304 @@ One more note below.
 > + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 > USA
 >   */
-> -
+>  
 >  /*
 > - * NAME
-> - * 	exit02.c
+> - *	pipe11.c
 > - *
 > - * DESCRIPTION
-> - *	Check that exit flushes output file buffers and closes files upon
-> - *	exitting
+> - *	Check if many children can read what is written to a pipe by the
+> - *	parent.
+> + * Check if many children can read what is written to a pipe by the parent.
+>   *
+>   * ALGORITHM
+> - *	1. Open a pipe and write to it
+> - *	2. Fork a large number of children
+> - *	3. Have the children read the pipe and check how many characters
+> - *	   each got
 > - *
-> - * ALGORITHM
-> - * 	Fork a process that creates a file and writes a few bytes, and
-> - * 	calls exit WITHOUT calling close(). The parent then reads the
-> - * 	file.  If everything that was written is present in the file, then
-> - *	the test passes.
-> - *
-> - * USAGE
-> - * 	exit02
+> - * USAGE:  <for command-line>
+> - *  pipe11 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+> - *     where,  -c n : Run n copies concurrently.
+> - *             -f   : Turn off functionality Testing.
+> - *             -i n : Execute test n times.
+> - *             -I x : Execute test for x seconds.
+> - *             -P x : Pause for x seconds between iterations.
+> - *             -t   : Turn on syscall timing.
 > - *
 > - * HISTORY
 > - *	07/2001 Ported by Wayne Boyer
 > - *
 > - * RESTRICTIONS
-> - * 	None
-> + * Fork a process that creates a file and writes a few bytes, and
-> + * calls exit WITHOUT calling close(). The parent then reads the
-> + * file.  If everything that was written is present in the file, then
-> + * the test passes.
+> - *	None
+> + *   For a different nchilds number:
+> + *	1. Open a pipe and write nchilds * (PIPE_BUF/nchilds) bytes into it
+> + *	2. Fork nchilds children
+> + *	3. Each child reads PIPE_BUF/nchilds characters and checks that the
+> + *	   bytes read are correct
 >   */
 > -#include <sys/types.h>
 > -#include <sys/wait.h>
-> -#include <sys/stat.h>
-> -#include <stdio.h>
-> -#include <string.h>
 > -#include <errno.h>
-> -#include <signal.h>
-> -#include <fcntl.h>
-> -#include <string.h>
+> -#include <stdio.h>
+> -#include <limits.h>
 > -#include "test.h"
 > -
-> -void cleanup(void);
-> -void setup(void);
-> -
-> -char *TCID = "exit02";
+> -char *TCID = "pipe11";
 > -int TST_TOTAL = 1;
 > -
-> -#define READ  0
-> -#define WRITE 1
-> -#define MODE 0666
+> -void do_child(void);
+> -void do_child_uclinux(void);
+> -void setup(void);
+> -void cleanup(void);
 > -
-> -char filen[40];
+> -#define	NUMCHILD	50
+> -#define	NCPERCHILD	50
+> -char rawchars[] =
 > -
-> -int main(int ac, char **av)
-> +
+> "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+> -int kidid;
+> -int numchild;			/* no of children to fork */
+> -int ncperchild;			/* no of chars child should read */
+> -int szcharbuf;			/* size of char buf */
+> -int pipewrcnt;			/* chars written to pipe */
+> -char *wrbuf, *rdbuf;
+> -int fd[2];			/* fds for pipe read/write */
+> -
+> -ssize_t do_read(int fd, void *buf, size_t count)
+> -{
+> -	ssize_t n;
+> -
+> -	do {
+> -		n = read(fd, buf, count);
+> -	} while (n < 0 && errno == EINTR);
 > +#include <stdlib.h>
 > +#include "tst_test.h"
-> +
-> +#define FNAME "test_file"
-> +
-> +static void child_write(void)
+>  
+> -	return n;
+> -}
+> +static int fd[2];
+> +static unsigned char buf[PIPE_BUF];
+> +static size_t read_per_child;
+>  
+> -int main(int ac, char **av)
+> +void do_child(void)
 >  {
-> -	int pid, npid, sig, nsig, exno, nexno, status;
-> -	int filed;
-> -	char wbuf[BUFSIZ], rbuf[BUFSIZ];
-> -	int len, rlen;
-> -	int rval = 0;
 > -	int lc;
 > -
-> -	/*
-> -	 * parse standard options
-> -	 */
+> -	int i;
+> -	int fork_ret, status;
+> -	int written;		/* no of chars read and written */
+> -
 > -	tst_parse_opts(ac, av, NULL, NULL);
+> -#ifdef UCLINUX
+> -	maybe_run_child(&do_child_uclinux, "ddddd", &fd[0], &fd[1], &kidid,
+> -			&ncperchild, &szcharbuf);
+> -#endif
 > -
-> -	setup();		/* global setup for test */
+> -	setup();
 > -
-> -	/*
-> -	 * The following loop checks looping state if -i option given
-> -	 */
 > -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		/*
-> -		 * reset tst_count in case we are looping.
-> -		 */
+> -
+> -		/* reset tst_count in case we are looping */
 > -		tst_count = 0;
-> -
-> -		strcpy(wbuf, "abcd");
-> -		len = strlen(wbuf);
-> -
-> -		exno = sig = 0;
-> -
-> -		if ((pid = FORK_OR_VFORK()) == -1)
-> -			tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
-> -
-> -		if (pid == 0) {	/* child */
-> -			sleep(1);
-> -			if ((filed = creat(filen, MODE)) == -1) {
-> -				tst_resm(TINFO, "creat error: unable to"
-> -					 "open output file");
-> -				exit(2);
-> -			}
-> -			if (write(filed, wbuf, len) != len) {
-> -				tst_resm(TINFO, "write error");
-> -				exit(2);
-> -			}
-> -			exit(exno);
-> -		} else {	/* parent */
-> -			npid = wait(&status);
-> -
-> -			if (npid != pid) {
-> -				tst_resm(TFAIL, "wait error: "
-> -					 "unexpected pid returned");
-> -				rval = 1;
-> -			}
-> -
-> -			nsig = status % 256;
-> -
-> -			/*
-> -			 * to check if the core dump bit has been
-> -			 * set, bit # 7
-> -			 */
-> -			if (nsig >= 128)
-> -				nsig = nsig - 128;
-> -
-> -			/*
-> -			 * nsig is the signal number returned by
-> -			 * wait
-> -			 */
-> -			if (nsig != sig) {
-> -				tst_resm(TFAIL, "wait error: unexpected "
-> -					 "signal returned %d", nsig);
-> -				rval = 1;
-> -			}
-> -
-> -			/*
-> -			 * nexno is the exit number returned by wait
-> -			 */
-> -			nexno = status / 256;
-> -			if (nexno != exno) {
-> -				tst_resm(TFAIL, "wait error: unexpected exit "
-> -					 "number %d", nexno);
-> -				rval = 1;
-> -			}
-> -
-> -			sleep(2);	/* let child's exit close opened file */
-> -
-> -			filed = open(filen, O_RDONLY, READ);
-> -			if (filed == -1) {
-> -				tst_resm(TFAIL, "open error: "
-> -					 "unable to open input file");
-> -				rval = 1;
-> -			} else {
-> -				rlen = read(filed, rbuf, len);
-> -				if (len != rlen) {
-> -					tst_resm(TFAIL, "exit error: file "
-> -						 "buffer was not flushed");
-> -					rval = 1;
-> -				} else if (strncmp(rbuf, wbuf, len) != 0) {
-> -					tst_resm(TFAIL, "exit error: file "
-> -						 "buffer was not flushed");
-> -					rval = 1;
-> -				}
-> -			}
-> -			close(filed);
-> -			unlink(filen);
+> +	size_t nread;
+> +	unsigned char rbuf[read_per_child];
+> +	unsigned int i;
+>  
+> -		TEST(pipe(fd));
+> +	SAFE_CLOSE(fd[1]);
+>  
+> -		if (TEST_RETURN != 0) {
+> -			tst_resm(TFAIL, "pipe creation failed");
+> -			continue;
 > -		}
-> -		if (!rval) {
-> -			tst_resm(TPASS, "exit() test PASSED");
+> -
+> -		written = write(fd[1], wrbuf, szcharbuf);
+> -		if (written != szcharbuf) {
+> -			tst_brkm(TBROK, cleanup, "write to pipe failed");
 > -		}
-> -	}
-> -	cleanup();
-> -	tst_exit();
-> +	int fd;
-> +
-> +	fd = SAFE_CREAT(FNAME, 0666);
-> +	SAFE_WRITE(1, fd, FNAME, sizeof(FNAME));
-> +	exit(0);
->  }
+> -
+> -refork:
+> -		++kidid;
+> -		fork_ret = FORK_OR_VFORK();
+> -
+> -		if (fork_ret < 0) {
+> -			tst_brkm(TBROK, cleanup, "fork() failed");
+> -		}
+> -
+> -		if ((fork_ret != 0) && (fork_ret != -1) && (kidid < numchild)) {
+> -			goto refork;
+> -		}
+> +	nread = SAFE_READ(0, fd[0], rbuf, sizeof(rbuf));
 >  
-> -/*
-> - * setup() - perform all ONE TIME setup for this test
-> - */
-> -void setup(void)
-> +static void check_file(void)
->  {
-> +	int fd, len;
-> +	char buf[256];
->  
-> -	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +	fd = SAFE_OPEN(FNAME, O_RDONLY);
-> +	len = SAFE_READ(0, fd, buf, sizeof(buf));
->  
-> -	umask(0);
-> +	if (len != sizeof(FNAME)) {
-> +		tst_res(TFAIL, "Wrong length %i expected %zu", len, sizeof(buf));
+> -		if (fork_ret == 0) {	/* child */
+> -#ifdef UCLINUX
+> -			if (self_exec(av[0], "ddddd", fd[0], fd[1], kidid,
+> -				      ncperchild, szcharbuf) < 0) {
+> -				tst_brkm(TBROK, cleanup, "self_exec failed");
+> -			}
+> -#else
+> -			do_child();
+> -#endif
+> -		}
+> +	if (nread != read_per_child) {
+> +		tst_res(TFAIL, "Invalid read size child %i size %zu",
+> +		        getpid(), nread);
 > +		return;
 > +	}
 >  
+> -		/* parent */
+> -		sleep(5);
+> -		tst_resm(TINFO, "There are %d children to wait for", kidid);
+> -		for (i = 1; i <= kidid; ++i) {
+> -			wait(&status);
+> -			if (status == 0) {
+> -				tst_resm(TPASS, "child %d exited successfully",
+> -					 i);
+> -			} else {
+> -				tst_resm(TFAIL, "child %d exited with bad "
+> -					 "status", i);
+> -			}
+> +	for (i = 0; i < read_per_child; i++) {
+> +		if (rbuf[i] != (i % 256)) {
+> +			tst_res(TFAIL,
+> +			        "Invalid byte read child %i byte %i have %i expected %i",
+> +				getpid(), i, rbuf[i], i % 256);
+> +			return;
+>  		}
+>  	}
+> -	cleanup();
+> -
+> -	tst_exit();
+> -}
+> -
+> -/*
+> - * do_child()
+> - */
+> -void do_child(void)
+> -{
+> -	int nread;
+>  
+> -	if (close(fd[1])) {
+> -		tst_resm(TINFO, "child %d " "could not close pipe", kidid);
+> -		exit(0);
+> -	}
+> -	nread = do_read(fd[0], rdbuf, ncperchild);
+> -	if (nread == ncperchild) {
+> -		tst_resm(TINFO, "child %d " "got %d chars", kidid, nread);
+> -		exit(0);
+> -	} else {
+> -		tst_resm(TFAIL, "child %d did not receive expected no of "
+> -			 "characters, got %d characters", kidid, nread);
+> -		exit(1);
+> -	}
+> +	tst_res(TPASS, "Child %i read pipe buffer correctly", getpid());
+>  }
+>  
+> -/*
+> - * do_child_uclinux() - as above, but mallocs rdbuf first
+> - */
+> -void do_child_uclinux(void)
+> -{
+> -	if ((rdbuf = malloc(szcharbuf)) == NULL) {
+> -		tst_brkm(TBROK, cleanup, "malloc of rdbuf failed");
+> -	}
+> -
+> -	do_child();
+> -}
+> +static unsigned int childs[] = {
+> +	1,
+> +	2,
+> +	3,
+> +	4,
+> +	10,
+> +	50
+> +};
+>  
+> -/*
+> - * setup() - performs all ONE TIME setup for this test.
+> - */
+> -void setup(void)
+> +static void run(unsigned int tcase)
+>  {
+> -	int i;
+> -	unsigned int j;
+> +	pid_t pid;
+> +	unsigned int nchilds = childs[tcase];
+> +	read_per_child = PIPE_BUF/nchilds;
+> +	unsigned int i, j;
+>  
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +	tst_res(TINFO, "Reading %zu per each of %u children",
+> +	        read_per_child, nchilds);
+>  
 > -	TEST_PAUSE;
-> +	if (memcmp(buf, FNAME, sizeof(FNAME))) {
-> +		tst_res(TFAIL, "Wrong data read back");
+> -
+> -	numchild = NUMCHILD;
+> -	ncperchild = NCPERCHILD;
+> +	for (i = 0; i < nchilds; i++) {
+> +		for (j = 0; j < read_per_child; j++) {
+> +			buf[i * read_per_child + j] = j % 256;
+> +		}
+> +	}
+>  
+> -	kidid = 0;
+> +	SAFE_PIPE(fd);
+>  
+> -	/* allocate read and write buffers */
+> -	szcharbuf = numchild * ncperchild;
+> +	SAFE_WRITE(1, fd[1], buf, read_per_child * nchilds);
+>  
+> -	/* make sure pipe write doesn't block */
+> -	if (szcharbuf == PIPE_BUF) {
+> -		/* adjust number of characters per child */
+> -		ncperchild = szcharbuf / numchild;
+> -	}
+> +	for (i = 0; i < nchilds; i++) {
+> +		pid = SAFE_FORK();
+>  
+> -	if ((wrbuf = malloc(szcharbuf)) == NULL) {
+> -		tst_brkm(TBROK, cleanup, "malloc failed");
+> -	}
+> -
+> -	if ((rdbuf = malloc(szcharbuf)) == NULL) {
+> -		tst_brkm(TBROK, cleanup, "malloc of rdbuf failed");
+> +		if (!pid) {
+> +			do_child();
+> +			exit(0);
+> +		}
+>  	}
+>  
+> -	/* initialize wrbuf */
+> -	j = 0;
+> -	for (i = 0; i < szcharbuf;) {
+> -		wrbuf[i++] = rawchars[j++];
+> -		if (j >= sizeof(rawchars))
+> -			j = 0;
+> -	}
+> +	tst_reap_children();
 
-We don't close fd here, but things are already going south,
-so it's not that big deal.
-
-ACK
+pipe fds are not closed, and this could in theory repeat many times.
+Other than that ACK.
 
 Regards,
 Jan
 
-> +		return;
-> +	}
->  
-> -	tst_tmpdir();
-> +	SAFE_CLOSE(fd);
->  
-> -	sprintf(filen, "tfile_%d", getpid());
-> +	tst_res(TPASS, "File written by child read back correctly");
 >  }
 >  
 > -/*
-> - * cleanup() - performs all ONE TIME cleanup for this test at completion or
-> - *	       premature exit.
+> - * cleanup() - performs all ONE TIME cleanup for this test at
+> - *	       completion or premature exit.
 > - */
 > -void cleanup(void)
-> +static void run(void)
->  {
-> +	int pid;
->  
-> -	/*
-> -	 * Remove tmp dir and all files in it
-> -	 */
-> -	tst_rmdir();
-> +	pid = SAFE_FORK();
-> +	if (!pid)
-> +		child_write();
->  
-> -	/*
-> -	 * exit with return code appropriate for results
-> -	 */
-> +	tst_reap_children();
->  
-> +	check_file();
-> +
-> +	SAFE_UNLINK(FNAME);
->  }
-> +
+> -{
+> -
+> -}
 > +static struct tst_test test = {
-> +	.needs_tmpdir = 1,
 > +	.forks_child = 1,
-> +	.test_all = run,
+> +	.test = run,
+> +	.tcnt = ARRAY_SIZE(childs),
 > +};
 > --
 > 2.13.6
