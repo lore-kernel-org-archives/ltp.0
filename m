@@ -1,33 +1,56 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri,  6 Apr 2018 14:31:14 +0200
-Subject: [LTP] [RFC PATCH v6 3/7] network.sh: Migrate to new shell API
+Date: Fri,  6 Apr 2018 14:31:16 +0200
+Subject: [LTP] [RFC PATCH v6 5/7] network/if-updown: Restore IP in cleanup
+	function
 In-Reply-To: <20180406123118.21309-1-pvorel@suse.cz>
 References: <20180406123118.21309-1-pvorel@suse.cz>
-Message-ID: <20180406123118.21309-4-pvorel@suse.cz>
+Message-ID: <20180406123118.21309-6-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+While this is not visible due current test content in runtest file
+(net_stress.interface), where other tests reset the settings, it is
+needed as it break if-mtu-change on IPv6:
+
+if-mtu-change 1 TINFO: set MTU to 1280 1/2
+if-mtu-change 1 TFAIL: tst_ping IPv6 iface fd00:1:1:1::2, msg_size 1: fail
+
+Test with runtest file:
+if4-updown if-updown
+if6-mtu-change if-mtu-change -6
+
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testscripts/network.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ testcases/network/stress/interface/if-updown | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/testscripts/network.sh b/testscripts/network.sh
-index cc2b2de72..b18f202d5 100755
---- a/testscripts/network.sh
-+++ b/testscripts/network.sh
-@@ -89,7 +89,7 @@ shift $(($OPTIND - 1))
- TST_TOTAL=1
- TCID="network_settings"
+diff --git a/testcases/network/stress/interface/if-updown b/testcases/network/stress/interface/if-updown
+index 264331adb..45cf0feaf 100644
+--- a/testcases/network/stress/interface/if-updown
++++ b/testcases/network/stress/interface/if-updown
+@@ -19,12 +19,18 @@
  
--TST_USE_LEGACY_API=1
-+TST_NO_DEFAULT_RUN=1
- . tst_net.sh
+ TST_TOTAL=2
  
- # Reset variables.
+-TST_CLEANUP="netstress_cleanup"
++TST_CLEANUP="do_cleanup"
+ 
+ . test_net_stress.sh
+ 
+ CHECK_INTERVAL=${CHECK_INTERVAL:-$(($IF_UPDOWN_TIMES / 20))}
+ 
++do_cleanup()
++{
++	netstress_cleanup
++	restore_ipaddr
++}
++
+ test_body()
+ {
+ 	local cmd_type=$1
 -- 
 2.16.2
 
