@@ -1,387 +1,175 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 6 Apr 2018 14:20:18 +0200
-Subject: [LTP] [PATCH v2 2/3] lib: Add tst_crypto and tst_netlink libs
-In-Reply-To: <20180321143927.12156-3-rpalethorpe@suse.com>
-References: <20180321143927.12156-1-rpalethorpe@suse.com>
- <20180321143927.12156-3-rpalethorpe@suse.com>
-Message-ID: <20180406122016.GA6328@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri,  6 Apr 2018 14:31:11 +0200
+Subject: [LTP] [RFC PATCH v6 0/7] Rewriting network tests into new shell API
+Message-ID: <20180406123118.21309-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> ---
->  include/tst_crypto.h     | 135 +++++++++++++++++++++++++++++++++++++++++++++++
->  include/tst_netlink.h    |  63 ++++++++++++++++++++++
->  include/tst_netlink_fn.h |  35 ++++++++++++
->  lib/tst_crypto.c         | 122 ++++++++++++++++++++++++++++++++++++++++++
->  lib/tst_netlink.c        |  63 ++++++++++++++++++++++
+Hi,
 
-Is there a reason to split the netlink header into two?
+Hopefully last version.
 
-We do that for safe_macros that are used both by the old library and the
-new library where the split is easier than ifdefing all the macro
-definitions to choose between newlib and oldlib...
+I migrated only 10 scripts out of many (at least 89) using tst_net.sh or libraries using
+it (at least ipsec_lib.sh, tst_net_stress.sh), but the rest should be quite easy.
 
-And given that the netlink functions are simple wrappers that only
-pack/unpack parameters I would be inclined to put them into the header
-as static inline functions as well so that we would end up with one
-netlink header that combines all the content from tst_netlink.h
-tst_netlink_fn.h and tst_netlink.c.
+I spent some time with fixing dependencies for interface stress tests.
+I also fighted with getopts being passed to tst_net.sh and for other scripts
+I needed keep -6 for tst_net.sh, the rest is for scripts using
+tst_net.sh - tests themselves, "libraries" being called by scripts -
+tcp_fastopen_run.sh, vxlan03.sh and testscripts/network.sh).
+Sometimes tst_net.sh is loaded 3 times.
 
-> diff --git a/include/tst_crypto.h b/include/tst_crypto.h
-> new file mode 100644
-> index 000000000..3ed4a81f1
-> --- /dev/null
-> +++ b/include/tst_crypto.h
-> @@ -0,0 +1,135 @@
-> +/*
-> + * Copyright (c) 2018 Richard Palethorpe <rpalethorpe@suse.com>
-> + *
-> + * This program is free software: you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation, either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
-> + */
-> +
-> +#ifndef TST_CRYPTO_H
-> +#define TST_CRYPTO_H
-> +
-> +/* Taken from linux/crypto.h */
-> +#define CRYPTO_MAX_ALG_NAME		64
-> +#define CRYPTO_MAX_NAME CRYPTO_MAX_ALG_NAME
-> +
-> +#define CRYPTO_ALG_TYPE_MASK		0x0000000f
-> +#define CRYPTO_ALG_TYPE_CIPHER		0x00000001
-> +#define CRYPTO_ALG_TYPE_COMPRESS	0x00000002
-> +#define CRYPTO_ALG_TYPE_AEAD		0x00000003
-> +#define CRYPTO_ALG_TYPE_BLKCIPHER	0x00000004
-> +#define CRYPTO_ALG_TYPE_ABLKCIPHER	0x00000005
-> +#define CRYPTO_ALG_TYPE_SKCIPHER	0x00000005
-> +#define CRYPTO_ALG_TYPE_GIVCIPHER	0x00000006
-> +#define CRYPTO_ALG_TYPE_KPP		0x00000008
-> +#define CRYPTO_ALG_TYPE_ACOMPRESS	0x0000000a
-> +#define CRYPTO_ALG_TYPE_SCOMPRESS	0x0000000b
-> +#define CRYPTO_ALG_TYPE_RNG		0x0000000c
-> +#define CRYPTO_ALG_TYPE_AKCIPHER	0x0000000d
-> +#define CRYPTO_ALG_TYPE_DIGEST		0x0000000e
-> +#define CRYPTO_ALG_TYPE_HASH		0x0000000e
-> +#define CRYPTO_ALG_TYPE_SHASH		0x0000000e
-> +#define CRYPTO_ALG_TYPE_AHASH		0x0000000f
-> +
-> +#define CRYPTO_ALG_TYPE_HASH_MASK	0x0000000e
-> +#define CRYPTO_ALG_TYPE_AHASH_MASK	0x0000000e
-> +#define CRYPTO_ALG_TYPE_BLKCIPHER_MASK	0x0000000c
-> +#define CRYPTO_ALG_TYPE_ACOMPRESS_MASK	0x0000000e
-> +
-> +/* Taken from linux/uapi/crypto_user.h */
-> +enum {
-> +	CRYPTO_MSG_BASE = 0x10,
-> +	CRYPTO_MSG_NEWALG = 0x10,
-> +	CRYPTO_MSG_DELALG,
-> +	CRYPTO_MSG_UPDATEALG,
-> +	CRYPTO_MSG_GETALG,
-> +	CRYPTO_MSG_DELRNG,
-> +	__CRYPTO_MSG_MAX
-> +};
-> +
-> +struct crypto_user_alg {
-> +	char cru_name[CRYPTO_MAX_ALG_NAME];
-> +	char cru_driver_name[CRYPTO_MAX_ALG_NAME];
-> +	char cru_module_name[CRYPTO_MAX_ALG_NAME];
-> +	uint32_t cru_type;
-> +	uint32_t cru_mask;
-> +	uint32_t cru_refcnt;
-> +	uint32_t cru_flags;
-> +};
-> +
-> +/**
-> + * struct tst_crypto_session
-> + * @fd: File descriptor for the netlink socket.
-> + * @seq_num: A sequence number used to identify responses from the kernel.
-> + *
-> + * Holds state relevant to a netlink crypto connection. The @seq_num is used
-> + * to tag each message sent to the netlink layer and is automatically
-> + * incremented by the tst_crypto_ functions. When the netlink layer sends a
-> + * response (ack) it will use the sequences number from the request.
-> + */
-> +struct tst_crypto_session {
-> +	int fd;
-> +	uint32_t seq_num;
-> +};
+For further development I'd like to move network setup from
+testscripts/network.sh to tst_net.sh to function tst_net_run(). This
+would allow to run tests with runltp (and keep our
+testscripts/network.sh helper). That would reduce one user of
+tst_net.sh.
+Another benefit I see to have unique way to run script (one day there
+might be runltp replaced by better implementation and I don't want
+network scripts to be missing it).
 
-These definitions would be probably better to be put into lapi/crypto.h
-and we have a rule to use the system defined ones whenever possible, it
-looks like we can make use of the CRYPTO_MSG_* and crylto_user_alg from
-the /usr/include/linux/cryptouser.h.
+You can test it with testscripts/network.sh, testing with netns doesn't require
+any additional setup. Examples:
+/opt/ltp/testscripts/network.sh -e
+/opt/ltp/testscripts/network.sh -6
 
+Help:
+/opt/ltp/testscripts/network.sh -h
 
-> +/**
-> + * tst_crypto_open()
-> + * @ses: Session structure to use, it can be uninitialized.
-> + *
-> + * Creates a crypto session. If some necessary feature is missing then it will
-> + * call tst_brk() with %TCONF, for any other error it will use %TBROK.
-> + */
-> +void tst_crypto_open(struct tst_crypto_session *ses);
-> +
-> +/**
-> + * tst_crypto_close()
-> + * @ses: The session to close.
-> + */
-> +void tst_crypto_close(struct tst_crypto_session *ses);
-> +
-> +/**
-> + * tst_crypto_add_alg()
-> + * @ses: An open session.
-> + * @alg: The crypto algorithm or module to add.
-> + *
-> + * This requests a new crypto algorithm/engine/module to be initialized by the
-> + * kernel. It sends the request contained in @alg and then waits for a
-> + * response. If sending the message or receiving the ack fails at the netlink
-> + * level then tst_brk() with %TBROK will be called.
-> + *
-> + * Return: On success it will return 0 otherwise it will return an inverted
-> + *         error code from the crypto layer. If the type of encryption you want
-> + *         is not configured then the crypto layer will probably return %ENOENT.
-> + */
-> +int tst_crypto_add_alg(struct tst_crypto_session *ses,
-> +		       const struct crypto_user_alg *alg);
-> +
-> +/**
-> + * tst_crypto_del_alg()
-> + * @ses: An open session.
-> + * @alg: The crypto algorithm to delete.
-> + * @retries: How many times the request should be repeated if %EBUSY is returned.
-> + *           It can be set to zero for no retries.
-> + *
-> + * Request that the kernel remove an existing crypto algorithm. This behaves
-> + * in a similar way to tst_crypto_add_alg() except that it is the inverse
-> + * operation and that it is not unusual for this to return %EBUSY. To avoid
-> + * needing to deal with %EBUSY you can set the retries to an appropriate value
-> + * like 1000.
-> + *
-> + * Return: Either 0 or an inverted error code from the crypto layer.
-> + */
-> +int tst_crypto_del_alg(struct tst_crypto_session *ses,
-> +		       const struct crypto_user_alg *alg,
-> +		       unsigned int retries);
+Changelog v5->v6:
+* Fix bashism in v5 when passing parameters to tst_net.sh.
+  https://lists.linux.it/pipermail/ltp/2018-April/007619.html
+* Fixed missing $ipver in multicast tests.
+* Fixed broken creating tmpdir on rhost in new API.
 
+Changelog v4->v5:
+* Fix handling getopts parameters in scripts which are using legacy API
+  with getopts (ipsec_lib.sh, tcp_fastopen_run.sh, rpc_test.sh) by
+  shifting args after getopts and moving sourcing tst_net.sh after that.
+  Also -6 param for IPv6 must be passed to tst_net.sh (ipsec_lib.sh,
+  tcp_fastopen_run.sh).
+* Fixed iver for legacy scripts (caused some bugs at least in interfaces
+  tests).
 
-Do we really need to expose the retries here to the user of the library?
-I do not like when we have random constants hardcoded all over the
-codebase...
+Changes v3->v4:
+* Fixed bugs with setting TST_IPV6 and ipver variables. Now added into
+  setup function (for new API they must not be used in test scripts
+  outside setup/run/cleanup functions as they're not set).
+* New commit: 6/6 "network/interface: Split tests to test only one command per test"
+  A bit complicated than I thought (adding tst_test_cmds and using it
+  would be simpler), but I guess separation is better (as Cyril noted).
+  I needed to pass -c as getopts parameter.
+* Renamed functions in tst_net.sh (Alexey).
+* Fixed script name in Makefile, changed output of usage (Alexey).
+* Export TST_ID, LTPROOT and TST_DATAROOT also for TST_NO_DEFAULT_RUN
+  (Cyril).
 
-> +#endif	/* TST_CRYPTO_H */
-> diff --git a/include/tst_netlink.h b/include/tst_netlink.h
-> new file mode 100644
-> index 000000000..8349644cc
-> --- /dev/null
-> +++ b/include/tst_netlink.h
-> @@ -0,0 +1,63 @@
-> +/*
-> + * Copyright (c) 2018 Richard Palethorpe <rpalethorpe@suse.com>
-> + *
-> + * This program is free software: you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation, either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
-> + */
-> +
-> +#ifndef TST_NETLINK_H
-> +#define TST_NETLINK_H
-> +
-> +#include "tst_netlink_fn.h"
-> +
-> +/**
-> + * SAFE_NETLINK_SEND() / tst_safe_netlink_send()
-> + * @fd: netlink socket file descriptor.
-> + * @nl_header: netlink header structure describing the message.
-> + * @payload: an opaque object containing the message data.
-> + * @payload_len: the @payload length only.
-> + *
-> + * Sends a netlink message using safe_sendmsg(). You should set the message
-> + * type and flags to appropriate values within the @nl_header object. However
-> + * you do not need to set the message length within @nl_header
-> + * (nlmsg_len), if you do it will be overwritten.
-> + *
-> + * Netlink messages must be aligned correctly which may require padding. This
-> + * function will add padding if necessary so that you do not need to pad the
-> + * payload or header structure.
-> + *
-> + * See lib/tst_crypto.c for an example.
-> + *
-> + * Return: The number of bytes sent.
-> + */
-> +#define SAFE_NETLINK_SEND(fd, nl_header, payload, payload_len)		\
-> +	tst_safe_netlink_send(__FILE__, __LINE__,			\
-> +			      fd, nl_header, payload, payload_len)
+Petr Vorel (7):
+  tst_net.sh: Support both new and legacy APIs + rename
+  tst_test.sh: Introduce TST_NO_DEFAULT_RUN
+  network.sh: Migrate to new shell API
+  network/interface: Cleanup if4-addr-change
+  network/if-updown: Restore IP in cleanup function
+  tst_net_stress.sh: Migrate with dependencies to new API + rename
+  network/interface: Split tests to test only one command per test
 
-Given that the safe_ prefix is used all over the library we can drop the
-tst_ prefix from the function names here, and maybe update documentation
-that safe_ prefix is reserved for the test library as well...
-
-...
-
-> diff --git a/lib/tst_crypto.c b/lib/tst_crypto.c
-> new file mode 100644
-> index 000000000..dbe7f32b7
-> --- /dev/null
-> +++ b/lib/tst_crypto.c
-> @@ -0,0 +1,122 @@
-> +/*
-> + * Copyright (c) 2018 Richard Palethorpe <rpalethorpe@suse.com>
-> + *                    Nicolai Stange <nstange@suse.de>
-> + *
-> + * This program is free software: you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation, either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
-> + */
-> +
-> +#include <errno.h>
-> +
-> +#define TST_NO_DEFAULT_MAIN
-> +#include "tst_test.h"
-> +#include "tst_crypto.h"
-> +#include "tst_netlink.h"
-> +
-> +#define RETRY_DELAY_NSEC 1000000 /* For operations which can fail with EBUSY. */
-> +
-> +void tst_crypto_open(struct tst_crypto_session *ses)
-> +{
-> +	TEST(socket(AF_NETLINK, SOCK_DGRAM, NETLINK_CRYPTO));
-> +	if (TEST_RETURN < 0 && TEST_ERRNO == EPROTONOSUPPORT) {
-> +		tst_res(TCONF | TTERRNO, "NETLINK_CRYPTO is probably disabled");
-                    ^
-		The comment in the header says that it will tst_brk()
-		here, or am I mistaken?
-
-> +	} else if (TEST_RETURN < 0) {
-> +		tst_brk(TBROK | TTERRNO,
-> +			"socket(AF_NETLINK, SOCK_DGRAM, NETLINK_CRYPTO)");
-> +	}
-> +
-> +	ses->fd = TEST_RETURN;
-> +	ses->seq_num = 0;
-> +}
-> +
-> +void tst_crypto_close(struct tst_crypto_session *ses)
-> +{
-> +	SAFE_CLOSE(ses->fd);
-> +}
-> +
-> +static int tst_crypto_recv_ack(struct tst_crypto_session *ses)
-> +{
-> +	int len;
-> +	char buf[8196];
-> +	struct nlmsghdr *nh;
-> +
-> +	len = SAFE_NETLINK_RECV(ses->fd, buf, sizeof(buf));
-> +
-> +	for (nh = (struct nlmsghdr *) buf;
-> +	     NLMSG_OK(nh, len);
-> +	     nh = NLMSG_NEXT(nh, len)) {
-> +		if (nh->nlmsg_seq != ses->seq_num) {
-> +			tst_brk(TBROK,
-> +				"Message out of sequence; type=0%hx, seq_num=%u (not %u)",
-> +				nh->nlmsg_type, nh->nlmsg_seq, ses->seq_num);
-> +		}
-> +
-> +		/* Acks use the error message type with error number set to
-> +		 * zero. Ofcourse we could also receive an actual error.
-> +		 */
-> +		if (nh->nlmsg_type == NLMSG_ERROR)
-> +			return ((struct nlmsgerr *)NLMSG_DATA(nh))->error;
-> +
-> +		tst_brk(TBROK, "Unexpected message type; type=0x%hx, seq_num=%u",
-> +			nh->nlmsg_type, nh->nlmsg_seq);
-> +	}
-> +
-> +	tst_brk(TBROK, "Empty message from netlink socket?");
-> +
-> +	return 0;
-          ^
-
-	  Not that it matters, since unless we call this function from
-	  test cleanup the tst_brk() will exit the test, but this should
-	  be probably non-zero.
-
-> +}
-> +
-> +int tst_crypto_add_alg(struct tst_crypto_session *ses,
-> +		       const struct crypto_user_alg *alg)
-> +{
-> +	struct nlmsghdr nh = {
-> +		.nlmsg_type = CRYPTO_MSG_NEWALG,
-> +		.nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK,
-> +		.nlmsg_seq = ++(ses->seq_num),
-> +		.nlmsg_pid = 0,
-> +	};
-> +
-> +	SAFE_NETLINK_SEND(ses->fd, &nh, alg, sizeof(*alg));
-> +
-> +	return tst_crypto_recv_ack(ses);
-> +}
-> +
-> +int tst_crypto_del_alg(struct tst_crypto_session *ses,
-> +		       const struct crypto_user_alg *alg,
-> +		       unsigned int retries)
-> +{
-> +	unsigned int i = 0;
-> +	struct timespec delay = { .tv_nsec = RETRY_DELAY_NSEC };
-> +	struct nlmsghdr nh = {
-> +		.nlmsg_type = CRYPTO_MSG_DELALG,
-> +		.nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK,
-> +		.nlmsg_pid = 0,
-> +	};
-> +
-> +	while (1) {
-> +		nh.nlmsg_seq = ++(ses->seq_num);
-> +
-> +		SAFE_NETLINK_SEND(ses->fd, &nh, alg, sizeof(*alg));
-> +
-> +		TEST(tst_crypto_recv_ack(ses));
-> +		if (TEST_RETURN != -EBUSY || i >= retries)
-> +			break;
-> +
-> +		if (nanosleep(&delay, NULL) && errno != EINTR)
-> +			tst_brk(TBROK | TERRNO, "nanosleep");
-
-We may as well do usleep(1) here instead of the nanosleep()
-
-> +		++i;
-> +	}
-> +
-> +	return TEST_RETURN;
-> +}
+ runtest/net_stress.interface                       |  38 +++--
+ testcases/lib/{test_net.sh => tst_net.sh}          | 165 ++++++++++++++-------
+ testcases/lib/tst_test.sh                          |  91 ++++++------
+ testcases/network/README.md                        |   4 +-
+ testcases/network/busy_poll/busy_poll01.sh         |   3 +-
+ testcases/network/busy_poll/busy_poll02.sh         |   3 +-
+ testcases/network/busy_poll/busy_poll03.sh         |   3 +-
+ testcases/network/dccp/dccp01.sh                   |   3 +-
+ testcases/network/dctcp/dctcp01.sh                 |   3 +-
+ testcases/network/dhcp/dhcpd_tests.sh              |   3 +-
+ testcases/network/dhcp/dnsmasq_tests.sh            |   3 +-
+ testcases/network/iproute/ip_tests.sh              |   3 +-
+ testcases/network/multicast/mc_cmds/mc_cmds        |   3 +-
+ testcases/network/multicast/mc_commo/mc_commo      |   3 +-
+ testcases/network/multicast/mc_member/mc_member    |   3 +-
+ testcases/network/multicast/mc_opts/mc_opts        |   3 +-
+ testcases/network/nfs/fsx-linux/fsx.sh             |   3 +-
+ testcases/network/nfs/nfs_stress/nfs01             |   3 +-
+ testcases/network/nfs/nfs_stress/nfs02             |   3 +-
+ testcases/network/nfs/nfs_stress/nfs03             |   3 +-
+ testcases/network/nfs/nfs_stress/nfs04             |   3 +-
+ testcases/network/nfs/nfs_stress/nfs05             |   3 +-
+ testcases/network/nfs/nfs_stress/nfs06             |   3 +-
+ testcases/network/nfs/nfslock01/nfslock01          |   3 +-
+ testcases/network/nfs/nfsstat01/nfsstat01          |   3 +-
+ testcases/network/rpc/basic_tests/rpc01/rpc01      |   3 +-
+ .../network/rpc/basic_tests/rpcinfo/rpcinfo01      |   3 +-
+ testcases/network/rpc/basic_tests/rup/rup01        |   3 +-
+ testcases/network/rpc/basic_tests/rusers/rusers01  |   3 +-
+ testcases/network/rpc/rpc-tirpc/rpc_test.sh        |   4 +-
+ testcases/network/sctp/sctp01.sh                   |   3 +-
+ testcases/network/sockets/bind_noport01.sh         |   3 +-
+ .../network/stress/broken_ip/broken_ip4-checksum   |   3 +-
+ .../network/stress/broken_ip/broken_ip4-dstaddr    |   3 +-
+ .../network/stress/broken_ip/broken_ip4-fragment   |   3 +-
+ testcases/network/stress/broken_ip/broken_ip4-ihl  |   3 +-
+ .../network/stress/broken_ip/broken_ip4-protcol    |   3 +-
+ .../network/stress/broken_ip/broken_ip4-totlen     |   3 +-
+ .../network/stress/broken_ip/broken_ip4-version    |   3 +-
+ .../network/stress/broken_ip/broken_ip6-dstaddr    |   3 +-
+ .../network/stress/broken_ip/broken_ip6-nexthdr    |   3 +-
+ testcases/network/stress/broken_ip/broken_ip6-plen |   3 +-
+ .../network/stress/broken_ip/broken_ip6-version    |   3 +-
+ testcases/network/stress/dns/dns-stress            |   3 +-
+ testcases/network/stress/ftp/ftp-download-stress   |   3 +-
+ testcases/network/stress/ftp/ftp-upload-stress     |   3 +-
+ testcases/network/stress/http/http-stress          |   3 +-
+ testcases/network/stress/interface/if-addr-adddel  |  52 +++----
+ .../network/stress/interface/if-addr-addlarge      |  57 +++----
+ testcases/network/stress/interface/if-lib.sh       |  58 ++++++++
+ testcases/network/stress/interface/if-mtu-change   |  52 +++----
+ testcases/network/stress/interface/if-route-adddel |  55 +++----
+ .../network/stress/interface/if-route-addlarge     |  51 ++-----
+ testcases/network/stress/interface/if-updown       |  49 +++---
+ testcases/network/stress/interface/if4-addr-change |  71 ++++-----
+ testcases/network/stress/ipsec/ipsec_lib.sh        |   9 +-
+ .../grp-operation/mcast-group-multiple-socket      |  16 +-
+ .../multicast/grp-operation/mcast-group-same-group |  17 ++-
+ .../grp-operation/mcast-group-single-socket        |  17 ++-
+ .../grp-operation/mcast-group-source-filter        |  17 ++-
+ .../stress/multicast/grp-operation/mcast-lib.sh    |  29 ++--
+ testcases/network/stress/ns-tools/Makefile         |   2 +-
+ .../{test_net_stress.sh => tst_net_stress.sh}      |  32 ++--
+ testcases/network/stress/ssh/ssh-stress            |   3 +-
+ testcases/network/tcp_cmds/arping/arping01.sh      |   3 +-
+ .../network/tcp_cmds/clockdiff/clockdiff01.sh      |   3 +-
+ testcases/network/tcp_cmds/ipneigh/ipneigh01.sh    |   3 +-
+ testcases/network/tcp_cmds/ping/ping01.sh          |   3 +-
+ testcases/network/tcp_cmds/ping/ping02.sh          |   3 +-
+ testcases/network/tcp_cmds/rlogin/rlogin01         |   3 +-
+ testcases/network/tcp_cmds/sendfile/sendfile01     |   3 +-
+ testcases/network/tcp_cmds/tcpdump/tcpdump01       |   3 +-
+ testcases/network/tcp_cmds/telnet/telnet01         |   3 +-
+ .../network/tcp_cmds/tracepath/tracepath01.sh      |   3 +-
+ testcases/network/tcp_fastopen/tcp_fastopen_run.sh |  16 +-
+ testcases/network/traceroute/traceroute01.sh       |   3 +-
+ testcases/network/virt/geneve01.sh                 |   3 +-
+ testcases/network/virt/gre01.sh                    |   3 +-
+ testcases/network/virt/ipvlan01.sh                 |   3 +-
+ testcases/network/virt/macvlan01.sh                |   3 +-
+ testcases/network/virt/macvtap01.sh                |   3 +-
+ testcases/network/virt/vlan01.sh                   |   3 +-
+ testcases/network/virt/vlan02.sh                   |   3 +-
+ testcases/network/virt/vlan03.sh                   |   3 +-
+ testcases/network/virt/vxlan01.sh                  |   3 +-
+ testcases/network/virt/vxlan02.sh                  |   3 +-
+ testcases/network/virt/vxlan03.sh                  |   3 +-
+ testcases/network/xinetd/xinetd_tests.sh           |   3 +-
+ testscripts/network.sh                             |   7 +-
+ 89 files changed, 627 insertions(+), 480 deletions(-)
+ rename testcases/lib/{test_net.sh => tst_net.sh} (85%)
+ create mode 100644 testcases/network/stress/interface/if-lib.sh
+ rename testcases/network/stress/ns-tools/{test_net_stress.sh => tst_net_stress.sh} (88%)
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.16.2
+
