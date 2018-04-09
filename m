@@ -1,83 +1,51 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 9 Apr 2018 17:17:38 +0200
-Subject: [LTP] Ticket tracking system for LTP
-Message-ID: <20180409151738.GA2522@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 9 Apr 2018 20:44:59 +0200
+Subject: [LTP] [PATCH 1/1] tst_test.sh: Add test cmd helper
+ tst_test_cmds()
+In-Reply-To: <20180409131852.GD26048@rei.lan>
+References: <20180406064204.9252-1-pvorel@suse.cz>
+ <20180406070844.dbbedq7c4qso25ct@dell5510>
+ <20180409131852.GD26048@rei.lan>
+Message-ID: <20180409184459.GA26623@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Recently, as there has been more people working on LTP in SUSE than
-myself, we started to accumulate LTP TODO items in our internal tool.
-These include general ideas about LTP improvements, missing coverage,
-broken tests, etc.
+Hi Cyril,
 
-Keeping this backlog behind closed door is unhealty for upstream project
-so I'm looking into some kind of system to track these where everyone
-can create new tickets/bugs/issues whatever it is called and act on
-them.
+> > > +		which $1 > /dev/null 2>&1 || return 1
+> > Pedantic version would check $? for 127 (indicating which itself it's not found).
+> > Probably worth of adding it.
 
-The main problem here is to choose right tool for the job, which is the
-main reason for this email. I would like to avoid clumsy solutions such
-as wiki table or a spreadsheet (I've been there and it was painful even
-for a team of two people).
+> Are you sure?
 
-Here are some requirements I came up for it:
+> $ which foo
+> ...
+> $ echo $?
+> 1
 
-* Supports creating/commenting/closing issues/tickets/bugs or
-  whatever is single smallest entity is called as by anybody (possibly
-  after a simple registration)
+> Also:
 
-* Should be reasonably simple and be able to handle >100 of open
-  issues, which I suppose rules out things that are tailored to be
-  used to support agile workflow such as trello that would end up
-  visually incomprehensible
+> $ busybox which foo
+> $ echo $?
+> 1
 
-* Should have basic text search capabilities
+Yes, exit code 1 is when 'which' command doesn't find command.
+Exit code 127 at least some shells use when command not found (in this case when 'which'
+command itself is not found.
 
-* Ideally we will not maintain the instance ourselves
-  - that rules out things like redmine unless there is
-    an instance we can easily tap into
+$ busybox foo; echo $?
+foo: applet not found
+127
 
-* Data export is a plus
-  - I want to avoid situation where we loose our data
-    after a database corruption
+Missing which IMHO only the case of busybox build with CONFIG_WHICH=n (but default is 'y')
+=> corner case. I understand if we want to ignore it.
 
-* Should be reasonably estabilished
-  - I want to avoid a situation where we start to use some tool only to
-    find it has been discontinued half a year later
-
-* Ideally it should be opensource
-  - however beggars can't be choosers we use GitHub quite extensively
-    after all
-
-There is a list of poissibilities I have so far:
-
-* GitHub issues
-  - probably the easiest solution
-  - we can create a specific labels to sort these out
-  - needs GitHub account which everybody has already
-  - some operations could be done only by LTP project members
-    I'm not sure if random users can add labels for example
-
-* Some instance of Bugzilla
-  (maybe bugzilla.kernel.org if we happen to get LTP category there)
-   - while this would be OK for missing coverage and broken test
-     I find bugzilla clumsy general ideas tracking
-
-* I've been told that JIRA is free for opensource projects but I have no
-  idea how the tool works or if it's at least reasonable fit. I looks to
-  me like it has far to many features we do not need at all.
-
-* ??? (anything else any of you can think of?)
+(+ Android - at least old versions had 'toolbox' instead of busybox => we'd ignore this
+Android it's special and currently not fully supported anyway.
 
 
-Rant: Actually I'm a bit disappointed that there is no command line tool
-      similar to taskwarrior.org maybe with a git backend for this kind
-      of backlog/team management...
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
