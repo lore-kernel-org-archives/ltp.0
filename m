@@ -1,14 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 9 Apr 2018 15:00:12 +0200
-Subject: [LTP] [RFC PATCH] read_all: give more time to wait children
- finish read action
-In-Reply-To: <87o9iswp1m.fsf@rpws.prws.suse.cz>
-References: <1523092180-5365-1-git-send-email-liwang@redhat.com>
- <87r2nox1s9.fsf@rpws.prws.suse.cz>
- <CAEemH2cSXtQfiM4snXAL-Eof7Xe3aY50z8ce=K4yo6=yBqtEbA@mail.gmail.com>
- <87po38wsx5.fsf@rpws.prws.suse.cz> <20180409111120.GB31983@rei>
- <87o9iswp1m.fsf@rpws.prws.suse.cz>
-Message-ID: <20180409130012.GB26048@rei.lan>
+Date: Mon, 9 Apr 2018 15:14:47 +0200
+Subject: [LTP] [PATCH 1/1] tst_test.sh: Add test cmd helper
+ tst_test_cmds()
+In-Reply-To: <20180406064204.9252-1-pvorel@suse.cz>
+References: <20180406064204.9252-1-pvorel@suse.cz>
+Message-ID: <20180409131447.GC26048@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,20 +12,92 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > Maybe we need TST_RETRY_ON_NONZERO() macro that would build the retry
-> > loop around a function passed as a paramter or something like that.
+>  doc/test-writing-guidelines.txt | 17 +++++++++++++++++
+>  testcases/lib/tst_test.sh       | 22 ++++++++++++++++++++--
+>  2 files changed, 37 insertions(+), 2 deletions(-)
 > 
-> Or TST_RETRY_LOOP, TST_RETRY_WHILE or
-> TST_RETRY_WITH_EXPONENTIAL_BACKOFF. :-)
-> 
-> Maybe it should not be a magic macro though, but just an inline function
-> which you call in the body of a loop which performs the sleep based on a
-> couple of parameters. I suppose it depends on how nice one can make the
-> macro.
+> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+> index cbbfe6c0f..bf59a178c 100644
+> --- a/doc/test-writing-guidelines.txt
+> +++ b/doc/test-writing-guidelines.txt
+> @@ -1519,6 +1519,23 @@ existence each of them and exits the test with 'TCONF' on first misssing.
+>  Alternatively the 'tst_check_cmds()' function can be used to do the same on
+>  runtime, since sometimes we need to the check at runtime too.
+>  
+> +'tst_test_cmds()' can be used for requirements just for a particular test
+> +as it doesn't exit. Supposed usage is:
+                         ^
+			 Expected
 
-Well, yes. But I would go for simple sleep for the sake of fixing this
-test for now, then replace it with something better once we settle on on
-the actual implementation.
+Also we really should say that the call will issue TCONF here, because
+it's not clear that it would.
+
+> +...
+> +
+> +TST_TESTFUNC=do_test
+> +. tst_test.sh
+> +
+> +do_test()
+> +{
+> +	tst_test_cmds cmd || return
+> +	cmd --foo
+> +	...
+> +}
+> +
+> +tst_run
+> +...
+> +
+>  Locating kernel modules
+>  +++++++++++++++++++++++
+>  
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index 48afb9cc4..5ebe32edf 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -201,12 +201,30 @@ tst_mkfs()
+>  	ROD_SILENT mkfs.$fs_type $fs_opts $device
+>  }
+>  
+> +tst_cmd_available()
+> +{
+> +	if type command > /dev/null 2>&1; then
+> +		command -v $1 > /dev/null 2>&1 || return 1
+> +	else
+> +		which $1 > /dev/null 2>&1 || return 1
+> +	fi
+> +}
+
+We are falling back to which if command is not available here?
+
+Are you aware of any shell that is lacking command?
+
+Also we should probably add return 0 at the end of the function, as it
+is the code is correct, since the return value would be return value of
+the last executed line, which is guaranteed to be 0 because of the
+|| return 1 but it's kind of confusing to omit it.
+
+>  tst_check_cmds()
+>  {
+>  	local cmd
+>  	for cmd in $*; do
+> -		if ! command -v $cmd > /dev/null 2>&1; then
+> -			tst_brk TCONF "'$cmd' not found"
+> +		tst_cmd_available $cmd || tst_brk TCONF "'$cmd' not found"
+> +	done
+> +}
+> +
+> +tst_test_cmds()
+> +{
+> +	local cmd
+> +	for cmd in $*; do
+> +		if ! tst_cmd_available $cmd; then
+> +			tst_res TCONF "'$cmd' not found"
+> +			return 1
+>  		fi
+>  	done
+>  }
+
+Here as well, explicit return 0 will help code readability a bit.
 
 -- 
 Cyril Hrubis
