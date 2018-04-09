@@ -1,32 +1,53 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 9 Apr 2018 13:11:20 +0200
-Subject: [LTP] [RFC PATCH] read_all: give more time to wait children
- finish read action
-In-Reply-To: <87po38wsx5.fsf@rpws.prws.suse.cz>
-References: <1523092180-5365-1-git-send-email-liwang@redhat.com>
- <87r2nox1s9.fsf@rpws.prws.suse.cz>
- <CAEemH2cSXtQfiM4snXAL-Eof7Xe3aY50z8ce=K4yo6=yBqtEbA@mail.gmail.com>
- <87po38wsx5.fsf@rpws.prws.suse.cz>
-Message-ID: <20180409111120.GB31983@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 9 Apr 2018 13:44:13 +0200
+Subject: [LTP] [PATCH 1/2] utils/compat_16: Add compat_tst_16.h for new
+ API
+In-Reply-To: <1519912139-18839-1-git-send-email-xuyang.jy@cn.fujitsu.com>
+References: <1519912139-18839-1-git-send-email-xuyang.jy@cn.fujitsu.com>
+Message-ID: <20180409114413.mzev4hpphsavhle3@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> OK, I think this change is good except that using a constant time for
-> the usleep is probably bad. Instead we could use an exponential
-> function; so we can start with a sleep of 1 then double it up to a
-> maximum of 20 times (approximately a second for the final wait).
+Hi Yang,
+> From: yang xu <xuyang.jy@cn.fujitsu.com>
 
-Actually I was thinking of adding such functionality to the test library
-exactly because I do not want to reimplement the exponentialy
-incremented sleep for retry over and overe in each testcase...
+> 1) Make sure compat_16.mk can be used by both new API and old API
+> 2) Remove unused TST_COMPAT_16_SYSCALL judgment in compat_16.mk
 
-Maybe we need TST_RETRY_ON_NONZERO() macro that would build the retry
-loop around a function passed as a paramter or something like that.
+> Signed-off-by: yang xu <xuyang.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/utils/compat_16.mk    |  11 +-
+>  testcases/kernel/syscalls/utils/compat_tst_16.h | 157 ++++++++++++++++++++++++
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Pushed with minor change (see below). We prefer not to add '__LTP' as a prefix to include
+guards. I know it is in utils/compat_16.h, but that's legacy API and it's going to be
+deleted sooner or later.
+
+
+Kind regards,
+Petr
+
+diff --git testcases/kernel/syscalls/utils/compat_tst_16.h testcases/kernel/syscalls/utils/compat_tst_16.h
+index bb30c6f08..3b86ef3e3 100644
+--- testcases/kernel/syscalls/utils/compat_tst_16.h
++++ testcases/kernel/syscalls/utils/compat_tst_16.h
+@@ -16,8 +16,8 @@
+  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+-#ifndef __LTP_COMPAT_TST_16_H__
+-#define __LTP_COMPAT_TST_16_H__
++#ifndef COMPAT_TST_16_H__
++#define COMPAT_TST_16_H__
+ 
+ #include <errno.h>
+ #include <grp.h>
+@@ -154,4 +154,4 @@ int CHOWN(const char *path, UID_T owner, GID_T group)
+ {
+ 	TST_CREATE_SYSCALL(chown, path, owner, group);
+ }
+-#endif /* __LTP_COMPAT_TST_16_H__ */
++#endif /* COMPAT_TST_16_H__ */
