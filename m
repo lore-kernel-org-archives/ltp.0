@@ -1,233 +1,73 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 9 Apr 2018 11:24:38 +0800
-Subject: [LTP] [PATCH v3 2/2] pwritev/pwritev03.c: Add new testcase
-In-Reply-To: <1523244278-17751-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <20180406130248.GB6328@rei>
- <1523244278-17751-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1523244278-17751-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Mon, 9 Apr 2018 14:56:08 +0800
+Subject: [LTP] [RFC PATCH] read_all: give more time to wait children
+ finish read action
+In-Reply-To: <1523092180-5365-1-git-send-email-liwang@redhat.com>
+References: <1523092180-5365-1-git-send-email-liwang@redhat.com>
+Message-ID: <5ACB0E88.60607@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Check the basic functionality of the pwritev(2) for the file
-opened with O_DIRECT in all filesystem.
+On 2018/04/07 17:09, Li Wang wrote:
+> 1. Some children are still working on the read I/O but parent trys to
+> stopping them after visit_dir() immediately. Although the stop_attemps
+> is 65535, it still sometimes fails, so we get the following worker
+> stalled messges in test.
+Hi Li,
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- runtest/ltplite                               |   1 +
- runtest/stress.part3                          |   1 +
- runtest/syscalls                              |   2 +
- testcases/kernel/syscalls/.gitignore          |   2 +
- testcases/kernel/syscalls/pwritev/pwritev03.c | 146 ++++++++++++++++++++++++++
- 5 files changed, 152 insertions(+)
- create mode 100644 testcases/kernel/syscalls/pwritev/pwritev03.c
+I got the same message on RHEL6.9Alpha as well, and this patch looks good to me.
 
-diff --git a/runtest/ltplite b/runtest/ltplite
-index e8c6900..1f4d91c 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -612,6 +612,7 @@ pwrite04_64 pwrite04_64
- 
- pwritev01 pwritev01
- pwritev02 pwritev02
-+pwritev03 pwritev03
- 
- read01 read01
- read02 read02
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index be912c8..96f7953 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -517,6 +517,7 @@ pwrite04_64 pwrite04_64
- 
- pwritev01 pwritev01
- pwritev02 pwritev02
-+pwritev03 pwritev03
- 
- read01 read01
- read02 read02
-diff --git a/runtest/syscalls b/runtest/syscalls
-index fb71c38..8461b94 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -865,6 +865,8 @@ pwritev01 pwritev01
- pwritev01_64 pwritev01_64
- pwritev02 pwritev02
- pwritev02_64 pwritev02_64
-+pwritev03 pwritev03
-+pwritev03_64 pwritev03_64
- 
- quotactl01 quotactl01
- quotactl02 quotactl02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index ec2af68..c3bc662 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -726,6 +726,8 @@
- /pwritev/pwritev01_64
- /pwritev/pwritev02
- /pwritev/pwritev02_64
-+/pwritev/pwritev03
-+/pwritev/pwritev03_64
- /quotactl/quotactl01
- /quotactl/quotactl02
- /quotactl/quotactl03
-diff --git a/testcases/kernel/syscalls/pwritev/pwritev03.c b/testcases/kernel/syscalls/pwritev/pwritev03.c
-new file mode 100644
-index 0000000..8ec9aca
---- /dev/null
-+++ b/testcases/kernel/syscalls/pwritev/pwritev03.c
-@@ -0,0 +1,146 @@
-+/*
-+ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
-+ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * alone with this program.
-+ */
-+
-+/*
-+ * Test Name: pwritev03
-+ *
-+ * Test Description:
-+ * Check the basic functionality of the pwritev(2) for the file
-+ * opened with O_DIRECT in all filesystem.
-+ * pwritev(2) should succeed to write the expected content of data
-+ * and after writing the file, the file offset is not changed.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/uio.h>
-+#include <sys/ioctl.h>
-+#include <sys/mount.h>
-+#include "tst_test.h"
-+#include "pwritev.h"
-+#include "tst_safe_prw.h"
-+
-+#define MNTPOINT	"mntpoint"
-+#define FNAME	MNTPOINT"/file"
-+
-+static char *initbuf;
-+static char *preadbuf;
-+static struct iovec *wr_iovec;
-+static int fd, blksz;
-+static off_t org_off, tst_off;
-+static ssize_t exp_sz;
-+
-+static struct tcase {
-+	int count;
-+	off_t *offset;
-+	ssize_t *size;
-+} tcases[] = {
-+	{1, &org_off, &exp_sz},
-+	{2, &org_off, &exp_sz},
-+	{1, &tst_off, &exp_sz},
-+};
-+
-+static void verify_direct_pwritev(unsigned int n)
-+{
-+	int i;
-+	struct tcase *tc = &tcases[n];
-+
-+	SAFE_PWRITE(1, fd, initbuf, blksz * 2, 0);
-+
-+	TEST(pwritev(fd, wr_iovec, tc->count, *tc->offset));
-+	if (TEST_RETURN < 0) {
-+		tst_res(TFAIL | TTERRNO, "Pwritev(O_DIRECT) fails");
-+		return;
-+	}
-+
-+	if (TEST_RETURN != *tc->size) {
-+		tst_res(TFAIL, "Pwritev(O_DIRECT) wrote %li bytes, expected %zi",
-+			 TEST_RETURN, *tc->size);
-+		return;
-+	}
-+
-+	if (SAFE_LSEEK(fd, 0, SEEK_CUR) != 0) {
-+		tst_res(TFAIL, "Pwritev(O_DIRECT) had changed file offset");
-+		return;
-+	}
-+
-+	memset(preadbuf, 0x00, blksz);
-+	SAFE_PREAD(1, fd, preadbuf, *tc->size, *tc->offset);
-+
-+	for (i = 0; i < *tc->size; i++) {
-+		if (preadbuf[i] != 0x61)
-+			break;
-+	}
-+
-+	if (i != *tc->size) {
-+		tst_res(TFAIL, "Buffer wrong at %i have %02x expected 0x61",
-+			 i, preadbuf[i]);
-+		return;
-+	}
-+
-+	tst_res(TPASS, "Pwritev(O_DIRECT) wrote %zi bytes successfully "
-+		 "with content 'a' expectedly ", *tc->size);
-+}
-+
-+static void setup(void)
-+{
-+	int dev_fd;
-+
-+	dev_fd = SAFE_OPEN(tst_device->dev, O_RDWR);
-+	if (ioctl(dev_fd, BLKSSZGET, &blksz)) {
-+		SAFE_CLOSE(dev_fd);
-+		tst_brk(TBROK | TERRNO, "ioctl(%s, BLKSSZGET) failed",
-+			tst_device->dev);
-+	}
-+	SAFE_CLOSE(dev_fd);
-+	tst_off = blksz;
-+	exp_sz = blksz;
-+
-+	fd = SAFE_OPEN(FNAME, O_RDWR | O_CREAT | O_DIRECT, 0644);
-+
-+	initbuf = SAFE_MEMALIGN(blksz, blksz * 2);
-+	memset(initbuf, 0x00, blksz * 2);
-+
-+	preadbuf = SAFE_MEMALIGN(blksz, blksz);
-+
-+	wr_iovec = SAFE_MEMALIGN(blksz, blksz + sizeof(size_t));
-+	wr_iovec->iov_base = SAFE_MEMALIGN(blksz, blksz);
-+	wr_iovec->iov_len = blksz;
-+	memset(wr_iovec->iov_base, 0x61, blksz);
-+}
-+
-+static void cleanup(void)
-+{
-+	free(initbuf);
-+	free(preadbuf);
-+	free(wr_iovec->iov_base);
-+	free(wr_iovec);
-+
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = verify_direct_pwritev,
-+	.min_kver = "2.6.30",
-+	.mntpoint = MNTPOINT,
-+	.mount_device = 1,
-+	.all_filesystems = 1,
-+};
--- 
-1.8.3.1
+Thanks,
+Xiao Yang.
+
+>   # uname -rm
+>     4.16.0-rc7 ppc64
+>   # ./read_all -d /sys -q -r 10
+>     tst_test.c:987: INFO: Timeout per run is 0h 05m 00s
+>     read_all.c:280: BROK: Worker 26075 is stalled
+>     read_all.c:280: WARN: Worker 26075 is stalled
+>     read_all.c:280: WARN: Worker 26079 is stalled
+>     read_all.c:280: WARN: Worker 26087 is stalled
+>
+> 2. The sched_work() push action in a infinite loop, here I propose to let
+> it in limited times.
+>
+> Signed-off-by: Li Wang<liwang@redhat.com>
+> ---
+>   testcases/kernel/fs/read_all/read_all.c | 10 +++++++---
+>   1 file changed, 7 insertions(+), 3 deletions(-)
+>
+> diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/read_all/read_all.c
+> index b7ed540..ab206e7 100644
+> --- a/testcases/kernel/fs/read_all/read_all.c
+> +++ b/testcases/kernel/fs/read_all/read_all.c
+> @@ -280,6 +280,7 @@ static void stop_workers(void)
+>   						workers[i].pid);
+>   					break;
+>   				}
+> +				usleep(100);
+>   			}
+>   		}
+>   	}
+> @@ -306,9 +307,12 @@ static void sched_work(const char *path)
+>   		if (pushed)
+>   			break;
+>
+> -		if (++push_attempts>  worker_count) {
+> -			usleep(100);
+> -			push_attempts = 0;
+> +		usleep(100);
+> +		if (++push_attempts>  0xffff) {
+> +			tst_brk(TBROK,
+> +				"Attempts %d times but still failed to push %s",
+> +				push_attempts, path);
+> +			break;
+>   		}
+>   	}
+>   }
 
 
 
