@@ -1,50 +1,49 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 9 Apr 2018 20:44:59 +0200
+Date: Mon, 9 Apr 2018 20:52:59 +0200
 Subject: [LTP] [PATCH 1/1] tst_test.sh: Add test cmd helper
  tst_test_cmds()
-In-Reply-To: <20180409131852.GD26048@rei.lan>
+In-Reply-To: <20180409131447.GC26048@rei.lan>
 References: <20180406064204.9252-1-pvorel@suse.cz>
- <20180406070844.dbbedq7c4qso25ct@dell5510>
- <20180409131852.GD26048@rei.lan>
-Message-ID: <20180409184459.GA26623@x230>
+ <20180409131447.GC26048@rei.lan>
+Message-ID: <20180409185259.GA30997@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi,
 
-> > > +		which $1 > /dev/null 2>&1 || return 1
-> > Pedantic version would check $? for 127 (indicating which itself it's not found).
-> > Probably worth of adding it.
+...
+> > +'tst_test_cmds()' can be used for requirements just for a particular test
+> > +as it doesn't exit. Supposed usage is:
+>                          ^
+> 			 Expected
 
-> Are you sure?
+> Also we really should say that the call will issue TCONF here, because
+> it's not clear that it would.
 
-> $ which foo
-> ...
-> $ echo $?
-> 1
+...
+> > +tst_cmd_available()
+> > +{
+> > +	if type command > /dev/null 2>&1; then
+> > +		command -v $1 > /dev/null 2>&1 || return 1
+> > +	else
+> > +		which $1 > /dev/null 2>&1 || return 1
+> > +	fi
+> > +}
 
-> Also:
+> We are falling back to which if command is not available here?
 
-> $ busybox which foo
-> $ echo $?
-> 1
+> Are you aware of any shell that is lacking command?
+Busybox configured with CONFIG_WHICH=n (but default is 'y') => corner case.
 
-Yes, exit code 1 is when 'which' command doesn't find command.
-Exit code 127 at least some shells use when command not found (in this case when 'which'
-command itself is not found.
-
-$ busybox foo; echo $?
-foo: applet not found
-127
-
-Missing which IMHO only the case of busybox build with CONFIG_WHICH=n (but default is 'y')
-=> corner case. I understand if we want to ignore it.
-
-(+ Android - at least old versions had 'toolbox' instead of busybox => we'd ignore this
-Android it's special and currently not fully supported anyway.
+> Also we should probably add return 0 at the end of the function, as it
+> is the code is correct, since the return value would be return value of
+> the last executed line, which is guaranteed to be 0 because of the
+> || return 1 but it's kind of confusing to omit it.
+Sure, I'll do. (I've learned to avoid 'return 0' from test_net.sh, but it can be
+dangerous).
 
 
 Kind regards,
