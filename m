@@ -1,50 +1,720 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 10 Apr 2018 16:58:24 +0800
-Subject: [LTP] [RFC PATCH 1/8] lib/tst_test.c: mntpoint implies tmpdir
-In-Reply-To: <20180405140154.6218-2-chrubis@suse.cz>
-References: <20180405140154.6218-1-chrubis@suse.cz>
- <20180405140154.6218-2-chrubis@suse.cz>
-Message-ID: <5ACC7CB0.2030100@cn.fujitsu.com>
+From: Sebastian Chlad <schlad@suse.de>
+Date: Tue, 10 Apr 2018 11:06:53 +0200
+Subject: [LTP] [PATCH v2] commands: Remove outdated sssd command
+Message-ID: <20180410090653.16336-1-schlad@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2018/04/05 22:01, Cyril Hrubis wrote:
-> If mntpoint is set in the test structure we create a directory hence it
-> should set needs_tmpdir flag so that we are sure we create directory in
-> the right place.
->
-> Signed-off-by: Cyril Hrubis<chrubis@suse.cz>
-> ---
->   lib/tst_test.c | 3 +++
->   1 file changed, 3 insertions(+)
->
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 8be13327c..5e10460b0 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -743,6 +743,9 @@ static void do_setup(int argc, char *argv[])
->   	if (tst_test->all_filesystems)
->   		tst_test->needs_device = 1;
->
-> +	if (tst_test->mntpoint)
-> +		tst_test->needs_tmpdir = 1;
-> +
-Hi Cyril,
+---
+ runtest/commands                    |   3 -
+ testcases/commands/sssd/Makefile    |  25 -----
+ testcases/commands/sssd/sssd-lib.sh | 189 -------------------------------
+ testcases/commands/sssd/sssd01      | 143 ------------------------
+ testcases/commands/sssd/sssd02      |  75 -------------
+ testcases/commands/sssd/sssd03      | 217 ------------------------------------
+ 6 files changed, 652 deletions(-)
+ delete mode 100644 testcases/commands/sssd/Makefile
+ delete mode 100755 testcases/commands/sssd/sssd-lib.sh
+ delete mode 100755 testcases/commands/sssd/sssd01
+ delete mode 100755 testcases/commands/sssd/sssd02
+ delete mode 100755 testcases/commands/sssd/sssd03
 
-Setting mntpoint made needs_device flag true, and subsequent 
-needs_tmpdir() returned true
-and still created a directory which is used to be mounted.  So it seems 
-unnecessary to set
-needs_tmpdir flag.
-
-Thanks,
-Xiao Yang
->   	setup_ipc();
->
->   	if (needs_tmpdir()&&  !tst_tmpdir_created())
-
-
+diff --git a/runtest/commands b/runtest/commands
+index fde80633f..651d724d8 100644
+--- a/runtest/commands
++++ b/runtest/commands
+@@ -15,9 +15,6 @@ cp01 cp_tests.sh
+ ln01 ln_tests.sh
+ mkdir01 mkdir_tests.sh
+ mv01 mv_tests.sh
+-sssd01 sssd01
+-sssd02 sssd02
+-sssd03 sssd03
+ du01 du01.sh
+ df01_ext2 df01.sh -f ext2
+ df01_ext3 df01.sh -f ext3
+diff --git a/testcases/commands/sssd/Makefile b/testcases/commands/sssd/Makefile
+deleted file mode 100644
+index 9fadfae3c..000000000
+--- a/testcases/commands/sssd/Makefile
++++ /dev/null
+@@ -1,25 +0,0 @@
+-#
+-#  Copyright (c) 2012 FUJITSU LIMITED
+-#
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
+-#
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
+-#
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+-#
+-
+-top_srcdir		?= ../../..
+-
+-include $(top_srcdir)/include/mk/testcases.mk
+-
+-INSTALL_TARGETS		:= sssd0* sssd-lib.sh
+-
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/commands/sssd/sssd-lib.sh b/testcases/commands/sssd/sssd-lib.sh
+deleted file mode 100755
+index be72e1f31..000000000
+--- a/testcases/commands/sssd/sssd-lib.sh
++++ /dev/null
+@@ -1,189 +0,0 @@
+-#!/bin/sh
+-#
+-#  Copyright (c) 2012 FUJITSU LIMITED
+-#
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
+-#
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
+-#
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-#
+-##################################################################
+-
+-export TST_TOTAL=${TST_TOTAL:=1}
+-export TST_COUNT=1
+-export TCID=${TCID:="$(basename "$0")"}
+-
+-if [ -z "$LTPTMP" -a -z "$TMPBASE" ]; then
+-	LTPTMP=/tmp
+-else
+-	LTPTMP=$TMPBASE
+-fi
+-
+-if ! which sss_useradd >/dev/null 2>&1; then
+-	tst_brkm TCONF NULL \
+-		 "sss_useradd does not exist. Skipping all testcases."
+-	exit 0
+-fi
+-
+-# Signals to trap.
+-readonly TRAP_SIGS="2 3 6 11 15"
+-
+-CONFIG_FILE="/etc/sssd/sssd.conf"
+-NSS_CONFIG_FILE="/etc/nsswitch.conf"
+-
+-# number of seconds to wait for another sssd test to complete
+-WAIT_COUNT=30
+-
+-cleanup()
+-{
+-	disable_traps
+-	exit_code=$1
+-
+-	# Restore the previous sssd daemon state.
+-	if [ -f "$CONFIG_FILE.ltpback" ]; then
+-		if mv "$CONFIG_FILE.ltpback" "$CONFIG_FILE"; then
+-			mv $NSS_CONFIG_FILE.ltpback $NSS_CONFIG_FILE
+-			# Make sure that restart_sssd_daemon doesn't loop
+-			# back to cleanup again.
+-			if [ $SSSD_STARTED -eq 1 ]; then
+-				stop_daemon sssd
+-			else
+-				restart_sssd_daemon "return 1"
+-			fi
+-			# Maintain any nonzero exit codes
+-			if [ $exit_code -ne $? ]; then
+-				exit_code=1
+-			fi
+-		else
+-			exit_code=1
+-		fi
+-	fi
+-
+-	exit $exit_code
+-}
+-
+-setup()
+-{
+-	tst_require_root
+-
+-	trap '	disable_traps
+-		tst_resm TBROK "Testing is terminating due to a signal"
+-		cleanup 1' $TRAP_SIGS || exit 1
+-
+-	# Check to see if sssd exists
+-	if [ ! -e /usr/sbin/sssd ]; then
+-		tst_resm TCONF "couldn't find sssd"
+-		cleanup	0
+-	fi
+-
+-	# Check to see if nscd exists
+-	if [ ! -e /usr/sbin/nscd ]; then
+-		tst_resm TCONF "couldn't find nscd"
+-		cleanup	0
+-	fi
+-
+-	# Back up configuration file
+-	if [ -f "$CONFIG_FILE" ]; then
+-		# Pause if another LTP sssd test is running
+-		while [ -f "$CONFIG_FILE.ltpback" -a $WAIT_COUNT -gt 0 ]; do
+-			: $(( WAIT_COUNT -= 1 ))
+-			sleep 1
+-		done
+-		# Oops -- $CONFIG_FILE.ltpback is still there!
+-		if [ $WAIT_COUNT -eq 0 ]; then
+-			tst_resm TBROK "another sssd test is stuck"
+-			cleanup 1
+-		elif ! cp "$CONFIG_FILE" "$CONFIG_FILE.ltpback"; then
+-			tst_resm TBROK "failed to backup $CONFIG_FILE"
+-			cleanup 1
+-		fi
+-
+-		cp $NSS_CONFIG_FILE $NSS_CONFIG_FILE.ltpback
+-		grep "passwd:     files sss" $NSS_CONFIG_FILE > /dev/null
+-		if [ $? -ne 0 ]; then
+-			sed -i "s/passwd:     files/passwd:     files sss/" \
+-				$NSS_CONFIG_FILE
+-		fi
+-	else
+-		tst_resm TWARN "$CONFIG_FILE not found!"
+-		touch $CONFIG_FILE
+-	fi
+-	chmod 0600 $CONFIG_FILE
+-	if [ $? -ne 0 ]; then
+-		tst_brkm TBROK NULL "fail to modify the permission of $CONFIG_FILE"
+-	fi
+-}
+-
+-disable_traps()
+-{
+-	trap - $TRAP_SIGS
+-}
+-
+-restart_sssd_daemon()
+-{
+-	# Default to running `cleanup 1' when dealing with error cases.
+-	if [ $# -eq 0 ]; then
+-		cleanup_command="cleanup 1"
+-	else
+-		cleanup_command=$1
+-	fi
+-
+-	tst_resm TINFO "restarting sssd daemon"
+-	restart_daemon sssd
+-	if [ $? -eq 0 ]; then
+-		# wait sssd restart success.
+-		sleep 1
+-	else
+-		$cleanup_command
+-	fi
+-}
+-
+-# sssd.conf should contain:
+-# [sssd]
+-# config_file_version = 2
+-# services = nss, pam
+-# domains = LOCAL
+-#
+-#[nss]
+-#
+-#[pam]
+-#
+-#[domain/LOCAL]
+-#id_provider = local
+-make_config_file()
+-{
+-	printf "[sssd]\nconfig_file_version = 2\n" > $CONFIG_FILE
+-	printf "services = nss, pam\ndomains = LOCAL\n" >> $CONFIG_FILE
+-	printf "\n[nss]\n\n[pam]\n\n" >> $CONFIG_FILE
+-	printf "[domain/LOCAL]\nid_provider = local\n" >> $CONFIG_FILE
+-}
+-
+-. cmdlib.sh
+-
+-SSSD_STARTED=0
+-status_daemon sssd
+-if [ $? -ne 0 ]; then
+-	SSSD_STARTED=1
+-fi
+-
+-# determine sssd.conf can support override_gid?
+-setup
+-make_config_file
+-sed -i -e "/\[domain\/LOCAL\]/ a\override_gid = error" $CONFIG_FILE
+-# make sure config file is OK
+-sleep 1
+-restart_daemon sssd
+-
+-if [ $? -ne 1 ]; then
+-	tst_resm TCONF "override_gid does not exist. Skipping all testcases"
+-	cleanup 0
+-fi
+diff --git a/testcases/commands/sssd/sssd01 b/testcases/commands/sssd/sssd01
+deleted file mode 100755
+index 1df4e4260..000000000
+--- a/testcases/commands/sssd/sssd01
++++ /dev/null
+@@ -1,143 +0,0 @@
+-#! /bin/sh
+-
+-#  Copyright (c) 2012 FUJITSU LIMITED
+-#
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
+-#
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
+-#
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-#
+-# Description:  Test override_homedir in the configuration file.
+-# Author:       Peng Haitao <penght@cn.fujitsu.com>
+-# History:      2012/02/17 - Created.
+-#
+-
+-. ./sssd-lib.sh || exit 1
+-
+-sssd_case1()
+-{
+-	export TST_COUNT=1
+-
+-	tst_resm TINFO "test override_homedir with absolute path in [nss]"
+-
+-	# Create the configuration file specific to this test case.
+-	make_config_file
+-	sed -i -e "/\[nss\]/ a\override_homedir = $LTPTMP" $CONFIG_FILE
+-	sleep 1
+-
+-	getent passwd $username@LOCAL | grep "$LTPTMP" >/dev/null 2>&1
+-	if [ $? -eq 0 ]; then
+-		tst_resm TFAIL "sssd: user home dir should be not $LTPTMP."
+-		: $(( TFAILCNT += 1 ))
+-		return $TFAILCNT
+-	fi
+-
+-	restart_sssd_daemon
+-
+-	getent passwd $username@LOCAL | grep "$LTPTMP" >/dev/null 2>&1
+-	if [ $? -eq 0 ]; then
+-		tst_resm TPASS "sssd: user home dir is $LTPTMP."
+-	else
+-		tst_resm TFAIL "sssd: user home dir should be $LTPTMP."
+-		: $(( TFAILCNT += 1 ))
+-		return $TFAILCNT
+-	fi
+-
+-	return 0
+-}
+-
+-sssd_case2()
+-{
+-	export TST_COUNT=2
+-
+-	tst_resm TINFO "test override_homedir with template in [domain/LOCAL]"
+-
+-	# Create the configuration file specific to this test case.
+-	make_config_file
+-	sed -i -e "/\[domain\/LOCAL\]/ a\override_homedir = $LTPTMP/%u_%U@%d" \
+-		   $CONFIG_FILE
+-	sleep 1
+-
+-	uid=`id -u $username`
+-	home_dir="$LTPTMP/${username}_$uid@LOCAL"
+-	getent passwd $username@LOCAL | grep "$home_dir" >/dev/null 2>&1
+-	if [ $? -eq 0 ]; then
+-		tst_resm TFAIL "sssd: user home dir should be not $home_dir."
+-		: $(( TFAILCNT += 1 ))
+-		return $TFAILCNT
+-	fi
+-
+-	restart_sssd_daemon
+-
+-	getent passwd $username@LOCAL | grep "$home_dir" >/dev/null 2>&1
+-	if [ $? -eq 0 ]; then
+-		tst_resm TPASS "sssd: user home dir is $home_dir."
+-	else
+-		tst_resm TFAIL "sssd: user home dir should be $home_dir."
+-		: $(( TFAILCNT += 1 ))
+-		return $TFAILCNT
+-	fi
+-
+-	return 0
+-}
+-
+-sssd_case3()
+-{
+-	export TST_COUNT=3
+-
+-	tst_resm TINFO "test override_homedir with absolute path in [nss]"
+-
+-	# Create the configuration file specific to this test case.
+-	make_config_file
+-	sed -i -e "/\[nss\]/ a\override_homedir = $LTPTMP/%f" $CONFIG_FILE
+-	sleep 1
+-
+-	home_dir="$LTPTMP/$username@LOCAL"
+-	getent passwd $username@LOCAL | grep "$home_dir" >/dev/null 2>&1
+-	if [ $? -eq 0 ]; then
+-		tst_resm TFAIL "sssd: user home dir should be not $home_dir."
+-		: $(( TFAILCNT += 1 ))
+-		return $TFAILCNT
+-	fi
+-
+-	restart_sssd_daemon
+-
+-	getent passwd $username@LOCAL | grep "$home_dir" >/dev/null 2>&1
+-	if [ $? -eq 0 ]; then
+-		tst_resm TPASS "sssd: user home dir is $home_dir."
+-	else
+-		tst_resm TFAIL "sssd: user home dir should be $home_dir."
+-		: $(( TFAILCNT += 1 ))
+-		return $TFAILCNT
+-	fi
+-
+-	return 0
+-}
+-
+-export TST_TOTAL=3
+-export TCID=sssd01
+-
+-TFAILCNT=0
+-username="sssd_test_user"
+-
+-make_config_file
+-# make sure config file is OK
+-sleep 1
+-restart_sssd_daemon
+-sss_useradd $username
+-
+-for i in $(seq 1 $TST_TOTAL); do
+-	sssd_case$i
+-done
+-
+-sss_userdel $username
+-cleanup ${TFAILCNT:=0}
+diff --git a/testcases/commands/sssd/sssd02 b/testcases/commands/sssd/sssd02
+deleted file mode 100755
+index de953c14a..000000000
+--- a/testcases/commands/sssd/sssd02
++++ /dev/null
+@@ -1,75 +0,0 @@
+-#! /bin/sh
+-
+-#  Copyright (c) 2012 FUJITSU LIMITED
+-#
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
+-#
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
+-#
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-#
+-# Description:  Test override_gid in the configuration file.
+-# Author:       Peng Haitao <penght@cn.fujitsu.com>
+-# History:      2012/02/08 - Created.
+-#
+-
+-. ./sssd-lib.sh || exit 1
+-
+-sssd_case1()
+-{
+-	tst_resm TINFO "test override_gid with gid+1 in [domain/LOCAL]"
+-
+-	# Create the configuration file specific to this test case.
+-	make_config_file
+-	gid=`id -g $username`
+-	gid_add_one=$(( gid+1 ))
+-	sed -i -e "/\[domain\/LOCAL\]/ a\override_gid = $gid_add_one" \
+-		$CONFIG_FILE
+-	sleep 1
+-
+-	getent passwd $username@LOCAL | grep "$gid_add_one" >/dev/null 2>&1
+-	if [ $? -eq 0 ]; then
+-		tst_resm TFAIL "sssd: user GID should be not $gid_add_one."
+-		: $(( TFAILCNT += 1 ))
+-		return $TFAILCNT
+-	fi
+-
+-	restart_sssd_daemon
+-
+-	getent passwd $username@LOCAL | grep "$gid_add_one" >/dev/null 2>&1
+-	if [ $? -eq 0 ]; then
+-		tst_resm TPASS "sssd: user GID is $gid_add_one."
+-	else
+-		tst_resm TFAIL "sssd: user GID should be $gid_add_one."
+-		: $(( TFAILCNT += 1 ))
+-		return $TFAILCNT
+-	fi
+-
+-	return 0
+-}
+-
+-export TST_TOTAL=1
+-export TST_COUNT=1
+-export TCID=sssd02
+-
+-TFAILCNT=0
+-username="sssd_test_user"
+-
+-make_config_file
+-# make sure config file is OK
+-sleep 1
+-restart_sssd_daemon
+-sss_useradd $username
+-
+-sssd_case1
+-
+-sss_userdel $username
+-cleanup ${TFAILCNT:=0}
+diff --git a/testcases/commands/sssd/sssd03 b/testcases/commands/sssd/sssd03
+deleted file mode 100755
+index d1bd75bed..000000000
+--- a/testcases/commands/sssd/sssd03
++++ /dev/null
+@@ -1,217 +0,0 @@
+-#! /bin/sh
+-
+-#  Copyright (c) 2012 FUJITSU LIMITED
+-#
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
+-#
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
+-#
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-#
+-# Description:  Test allowed_shells, vetoed_shells and shell_fallback
+-#               in the configuration file.
+-# Author:       Peng Haitao <penght@cn.fujitsu.com>
+-# History:      2012/02/09 - Created.
+-#
+-
+-. ./sssd-lib.sh || exit 1
+-
+-sssd_case1()
+-{
+-	export TST_COUNT=1
+-
+-	tst_resm TINFO "test allowed_shells with the shell in \"/etc/shells\"."
+-
+-	sss_usermod -s $line_shell $username
+-	getent passwd $username@LOCAL | grep "$line_shell" >/dev/null 2>&1
+-	if [ $? -eq 0 ]; then
+-		tst_resm TPASS "sssd: user login shell is $line_shell."
+-	else
+-		tst_resm TFAIL "sssd: user login shell should be $line_shell."
+-		: $(( TFAILCNT += 1 ))
+-		return $TFAILCNT
+-	fi
+-
+-	return 0
+-}
+-
+-sssd_case2()
+-{
+-	export TST_COUNT=2
+-
+-	tst_resm TINFO "test not set allowed_shells"
+-
+-	make_config_file
+-	sleep 1
+-
+-	restart_sssd_daemon
+-
+-	# When not set allowed_shells, the user shell is used even if is wrong
+-	sss_usermod -s $LTPTMP/noshell $username
+-	getent passwd $username@LOCAL | grep "$LTPTMP/noshell" >/dev/null 2>&1
+-	if [ $? -eq 0 ]; then
+-		tst_resm TPASS "sssd: user home dir is $LTPTMP/noshell."
+-	else
+-		tst_resm TFAIL "sssd: user home dir should be $LTPTMP/noshell."
+-		: $(( TFAILCNT += 1 ))
+-		return $TFAILCNT
+-	fi
+-
+-	return 0
+-}
+-
+-sssd_case3()
+-{
+-	export TST_COUNT=3
+-
+-	tst_resm TINFO "test use shell_fallback when set allowed_shells"
+-
+-	# Create the configuration file specific to this test case.
+-	make_config_file
+-	sed -i -e "/\[nss\]/ a\allowed_shells = $LTPTMP/noshell" $CONFIG_FILE
+-	sleep 1
+-
+-	sss_usermod -s $LTPTMP/noshell $username
+-
+-	restart_sssd_daemon
+-
+-	# When the shell is in the allowed_shells list but not in "/etc/shells"
+-	# use the value of the shell_fallback parameter.
+-	# shell_fallback's default value is /bin/sh.
+-	getent passwd $username@LOCAL | grep "/bin/sh" >/dev/null 2>&1
+-	if [ $? -eq 0 ]; then
+-		tst_resm TPASS "sssd: user home dir is /bin/sh."
+-	else
+-		tst_resm TFAIL "sssd: user home dir should be /bin/sh."
+-		: $(( TFAILCNT += 1 ))
+-		return $TFAILCNT
+-	fi
+-
+-	return 0
+-}
+-
+-sssd_case4()
+-{
+-	export TST_COUNT=4
+-
+-	tst_resm TINFO "test use shell_fallback when set allowed_shells"
+-
+-	# Create the configuration file specific to this test case.
+-	make_config_file
+-	sed -i -e "/\[nss\]/ a\allowed_shells = $LTPTMP/noshell" $CONFIG_FILE
+-	sed -i -e "/\[nss\]/ a\shell_fallback = $line_shell" $CONFIG_FILE
+-	sleep 1
+-
+-	sss_usermod -s $LTPTMP/noshell $username
+-
+-	restart_sssd_daemon
+-
+-	# When the shell is in the allowed_shells list but not in "/etc/shells"
+-	# use the value of the shell_fallback parameter.
+-	# shell_fallback's value is set $line_shell.
+-	getent passwd $username@LOCAL | grep "$line_shell" >/dev/null 2>&1
+-	if [ $? -eq 0 ]; then
+-		tst_resm TPASS "sssd: user home dir is $line_shell."
+-	else
+-		tst_resm TFAIL "sssd: user home dir should be $line_shell."
+-		: $(( TFAILCNT += 1 ))
+-		return $TFAILCNT
+-	fi
+-
+-	return 0
+-}
+-
+-sssd_case5()
+-{
+-	export TST_COUNT=5
+-
+-	tst_resm TINFO "test use shell_fallback when set vetoed_shells"
+-
+-	# Create the configuration file specific to this test case.
+-	make_config_file
+-	sed -i -e "/\[nss\]/ a\vetoed_shells = $line_shell" $CONFIG_FILE
+-	sleep 1
+-
+-	sss_usermod -s $line_shell $username
+-
+-	restart_sssd_daemon
+-
+-	# When the shell is in the vetoed_shells list,
+-	# use the value of the shell_fallback parameter.
+-	# shell_fallback's default value is /bin/sh.
+-	getent passwd $username@LOCAL | grep "/bin/sh" >/dev/null 2>&1
+-	if [ $? -eq 0 ]; then
+-		tst_resm TPASS "sssd: user home dir is /bin/sh."
+-	else
+-		tst_resm TFAIL "sssd: user home dir should be /bin/sh."
+-		: $(( TFAILCNT += 1 ))
+-		return $TFAILCNT
+-	fi
+-
+-	return 0
+-}
+-
+-sssd_case6()
+-{
+-	export TST_COUNT=6
+-
+-	tst_resm TINFO "test use nologin when not in allowed_shells"
+-
+-	# Create the configuration file specific to this test case.
+-	make_config_file
+-	sed -i -e "/\[nss\]/ a\allowed_shells = $line_shell" $CONFIG_FILE
+-	sleep 1
+-
+-	sss_usermod -s $LTPTMP/noshell $username
+-
+-	restart_sssd_daemon
+-
+-	# When the shell is not in the allowed_shells list, and not in
+-	# "/etc/shells", a nologin shell is used.
+-	getent passwd $username@LOCAL | grep "/sbin/nologin" >/dev/null 2>&1
+-	if [ $? -eq 0 ]; then
+-		tst_resm TPASS "sssd: user home dir is /sbin/nologin."
+-	else
+-		tst_resm TFAIL "sssd: user home dir should be /sbin/nologin."
+-		: $(( TFAILCNT += 1 ))
+-		return $TFAILCNT
+-	fi
+-
+-	return 0
+-}
+-
+-export TST_TOTAL=6
+-export TCID=sssd03
+-
+-grep -v -w -E "nologin|sh|bash" /etc/shells > $LTPTMP/all_shells
+-line_shell=`sed -n '1p' $LTPTMP/all_shells`
+-if [ -z "$line_shell" ]; then
+-	rm -f $LTPTMP/all_shells
+-	tst_brkm TCONF NULL "Please install another shell."
+-	return 0
+-fi
+-rm -f $LTPTMP/all_shells
+-
+-TFAILCNT=0
+-username="sssd_test_user"
+-
+-make_config_file
+-# make sure config file is OK
+-sleep 1
+-restart_sssd_daemon
+-sss_useradd $username
+-
+-for i in $(seq 1 $TST_TOTAL); do
+-	sssd_case$i
+-done
+-
+-sss_userdel $username
+-cleanup ${TFAILCNT:=0}
+-- 
+2.13.6
 
