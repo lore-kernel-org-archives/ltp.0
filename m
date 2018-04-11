@@ -1,38 +1,103 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 11 Apr 2018 11:45:28 +0200
-Subject: [LTP] [RFC PATCH v6 6/7] tst_net_stress.sh: Migrate with
- dependencies to new API + rename
-In-Reply-To: <12b040ea-626d-d9f5-6e2c-26d76cbe78bc@oracle.com>
-References: <20180406123118.21309-1-pvorel@suse.cz>
- <20180406123118.21309-7-pvorel@suse.cz>
- <2fe8858d-81a3-bb1c-12f6-447dd30464e4@oracle.com>
- <20180410173715.pssexrwrxmfvvw53@dell5510>
- <12b040ea-626d-d9f5-6e2c-26d76cbe78bc@oracle.com>
-Message-ID: <20180411094528.t7xvkmmoxjqou2xt@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 11 Apr 2018 17:47:34 +0800
+Subject: [LTP] [PATCH v2] read_all: give more time to wait children finish
+	read action
+Message-ID: <20180411094734.10962-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+1. We get the following worker stalled messges in test:
+ # ./read_all -d /sys -q -r 10
+   tst_test.c:987: INFO: Timeout per run is 0h 05m 00s
+   read_all.c:280: BROK: Worker 26075 is stalled
+   read_all.c:280: WARN: Worker 26075 is stalled
+   read_all.c:280: WARN: Worker 26079 is stalled
+   read_all.c:280: WARN: Worker 26087 is stalled
 
-> >>> -TST_TOTAL=2
-> >>> -
-> >>> +TST_CNT=2
+The reason is that some children are still working on the read I/O but
+parent trys to stopping them after visit_dir() immediately. Although
+the stop_attemps is 65535, it still sometimes fails.
 
-> >> may be TST_CNT=1? otherwise it will run TST_TESTFUNC twice...
-> > It should be run twice: first for ifconfig, second for ip. With TST_CNT=1 it would skip
-> > testing with 'ip':
+Instead, we use an exponential backoff way to loop the stop operation
+in limited seconds.
 
-> I thought you divide the tests into ip and ifconfig here,
-> there is still TST_CNT=2 in if-lib.sh, in the last patch.
-I'm sorry, correct, TST_CNT=2 cannot be in 7/7. I removed it for v7.
-I removed it from the last patch. I also removed TST_CNT=1, as it's redundant.
+2. The sched_work() push action in a infinite loop, here also let it
+trys in limited time.
 
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/fs/read_all/read_all.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-Kind regards,
-Petr
+diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/read_all/read_all.c
+index b7ed540..a9f9707 100644
+--- a/testcases/kernel/fs/read_all/read_all.c
++++ b/testcases/kernel/fs/read_all/read_all.c
+@@ -57,6 +57,8 @@
+ #define BUFFER_SIZE 1024
+ #define MAX_PATH 4096
+ #define MAX_DISPLAY 40
++#define MICROSECOND 1
++#define SECOND MICROSECOND * 1000000
+ 
+ struct queue {
+ 	sem_t sem;
+@@ -265,20 +267,21 @@ static void spawn_workers(void)
+ static void stop_workers(void)
+ {
+ 	const char stop_code[1] = { '\0' };
+-	int i, stop_attempts;
++	int i, delay = 1;
+ 
+ 	if (!workers)
+ 		return;
+ 
+ 	for (i = 0; i < worker_count; i++) {
+-		stop_attempts = 0xffff;
+ 		if (workers[i].q) {
+ 			while (!queue_push(workers[i].q, stop_code)) {
+-				if (--stop_attempts < 0) {
++				if (delay < SECOND) {
++					usleep(delay);
++					delay *= 2;
++				} else {
+ 					tst_brk(TBROK,
+ 						"Worker %d is stalled",
+ 						workers[i].pid);
+-					break;
+ 				}
+ 			}
+ 		}
+@@ -295,7 +298,7 @@ static void stop_workers(void)
+ static void sched_work(const char *path)
+ {
+ 	static int cur;
+-	int push_attempts = 0, pushed;
++	int push_attempts = 0, pushed, delay = 1;
+ 
+ 	while (1) {
+ 		pushed = queue_push(workers[cur].q, path);
+@@ -306,9 +309,14 @@ static void sched_work(const char *path)
+ 		if (pushed)
+ 			break;
+ 
+-		if (++push_attempts > worker_count) {
+-			usleep(100);
+-			push_attempts = 0;
++		if (delay < SECOND) {
++			push_attempts++;
++			usleep(delay);
++			delay *= 2;
++		} else {
++			tst_brk(TBROK,
++				"Attempts %d times but still failed to push %s",
++				push_attempts, path);
+ 		}
+ 	}
+ }
+-- 
+2.9.3
 
-> Thanks,
-> Alexey
