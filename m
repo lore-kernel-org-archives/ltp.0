@@ -1,84 +1,60 @@
 From: Li Wang <liwang@redhat.com>
-Date: Wed, 11 Apr 2018 17:15:22 +0800
+Date: Wed, 11 Apr 2018 17:26:27 +0800
 Subject: [LTP] [RFC PATCH] read_all: give more time to wait children
-	finish read action
-In-Reply-To: <87po38wsx5.fsf@rpws.prws.suse.cz>
+ finish read action
+In-Reply-To: <87o9iswp1m.fsf@rpws.prws.suse.cz>
 References: <1523092180-5365-1-git-send-email-liwang@redhat.com>
  <87r2nox1s9.fsf@rpws.prws.suse.cz>
  <CAEemH2cSXtQfiM4snXAL-Eof7Xe3aY50z8ce=K4yo6=yBqtEbA@mail.gmail.com>
- <87po38wsx5.fsf@rpws.prws.suse.cz>
-Message-ID: <CAEemH2d=O8Rm_Wf8+05oRe3CNjCr4MHRFMAoaLe=SUhfbd73Xg@mail.gmail.com>
+ <87po38wsx5.fsf@rpws.prws.suse.cz> <20180409111120.GB31983@rei>
+ <87o9iswp1m.fsf@rpws.prws.suse.cz>
+Message-ID: <CAEemH2fbu34MhHxnHrjTLMf9D7sNwCCcQVm23aO0hH00yq5=dQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Richard Palethorpe <rpalethorpe@suse.de> wrote:
+On Mon, Apr 9, 2018 at 8:19 PM, Richard Palethorpe <rpalethorpe@suse.de>
+wrote:
 
-
-> > You are right, I'm now still looking for a better way to avoid this blo=
-ck
-> > I/O issue.
+> Hello,
 >
-> Maybe you could add a field to the worker struct containing the current
-> file being read and a timestamp of when it started reading that
-> file. Then we can use that information later to find out if a particular
-> file is taking a long time to read.
+> Cyril Hrubis writes:
+>
+> > Hi!
+> >> OK, I think this change is good except that using a constant time for
+> >> the usleep is probably bad. Instead we could use an exponential
+> >> function; so we can start with a sleep of 1 then double it up to a
+> >> maximum of 20 times (approximately a second for the final wait).
+> >
+> > Actually I was thinking of adding such functionality to the test library
+> > exactly because I do not want to reimplement the exponentialy
+> > incremented sleep for retry over and overe in each testcase...
+>
+> Sounds like a good idea.
+>
+> >
+> > Maybe we need TST_RETRY_ON_NONZERO() macro that would build the retry
+> > loop around a function passed as a paramter or something like that.
+>
+> Or TST_RETRY_LOOP, TST_RETRY_WHILE or
+> TST_RETRY_WITH_EXPONENTIAL_BACKOFF. :-)
+>
+> Maybe it should not be a magic macro though, but just an inline function
+> which you call in the body of a loop which performs the sleep based on a
+> couple of parameters. I suppose it depends on how nice one can make the
+> macro.
 >
 >
-=E2=80=8BI tried to count the reading time of files in children, it shows 0=
-~200 ms
-has been elapsed for each one.
-But for parent, the most slower cost time of stop_worker() is 8ms, and even
-visit_dir(root_dir)
-push all of the files, it takes only 1000ms. That probably can prove that
-why some
-children stalled there.
-
-=3D=3D=3D=3D=3D=3D=3D=3D
-read_all.c:231: INFO:
-read(/sys/kernel/debug/tracing/per_cpu/cpu11/snapshot_raw), elapsed_ms =3D
-90: EAGAIN/EWOULDBLOCK
-read_all.c:231: INFO:
-read(/sys/kernel/debug/tracing/per_cpu/cpu10/trace_pipe), elapsed_ms =3D 0:
-EAGAIN/EWOULDBLOCK
-read_all.c:231: INFO:
-read(/sys/kernel/debug/tracing/per_cpu/cpu12/trace_pipe), elapsed_ms =3D 11=
-0:
-EAGAIN/EWOULDBLOCK
-...
-read_all.c:231: INFO:
-read(/sys/kernel/debug/tracing/per_cpu/cpu9/trace_pipe_raw), elapsed_ms =3D
-160: EAGAIN/EWOULDBLOCK
-...
-read_all.c:231: INFO:
-read(/sys/kernel/debug/tracing/per_cpu/cpu9/trace_pipe_raw), elapsed_ms =3D
-180: EAGAIN/EWOULDBLOCK
-read_all.c:231: INFO:
-read(/sys/kernel/debug/tracing/per_cpu/cpu11/trace_pipe), elapsed_ms =3D 0:
-EAGAIN/EWOULDBLOCK
-...
-read_all.c:231: INFO:
-read(/sys/kernel/debug/tracing/per_cpu/cpu10/snapshot_raw), elapsed_ms =3D
-130: EAGAIN/EWOULDBLOCK
-read_all.c:231: INFO:
-read(/sys/kernel/debug/tracing/per_cpu/cpu6/trace_pipe), elapsed_ms =3D 200:
-EAGAIN/EWOULDBLOCK
-read_all.c:231: INFO:
-read(/sys/kernel/debug/tracing/per_cpu/cpu9/trace_pipe), elapsed_ms =3D 0:
-EAGAIN/EWOULDBLOCK
-read_all.c:231: INFO:
-read(/sys/kernel/debug/tracing/per_cpu/cpu5/snapshot_raw), elapsed_ms =3D 0:
-EAGAIN/EWOULDBLOCK
+​I have written two new MACROS from this suggestion, and​ will send out the
+PATCH to
+request you comments after finishing my roughly test. Thanks!
 
 
-
-
---=20
+-- 
 Li Wang
 liwang@redhat.com
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180411/ab351731/att=
-achment.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180411/3b465e3e/attachment.html>
