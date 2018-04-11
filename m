@@ -1,72 +1,84 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 11 Apr 2018 12:08:22 +0300
-Subject: [LTP] [RFC PATCH v6 6/7] tst_net_stress.sh: Migrate with
- dependencies to new API + rename
-In-Reply-To: <20180410173715.pssexrwrxmfvvw53@dell5510>
-References: <20180406123118.21309-1-pvorel@suse.cz>
- <20180406123118.21309-7-pvorel@suse.cz>
- <2fe8858d-81a3-bb1c-12f6-447dd30464e4@oracle.com>
- <20180410173715.pssexrwrxmfvvw53@dell5510>
-Message-ID: <12b040ea-626d-d9f5-6e2c-26d76cbe78bc@oracle.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 11 Apr 2018 17:15:22 +0800
+Subject: [LTP] [RFC PATCH] read_all: give more time to wait children
+	finish read action
+In-Reply-To: <87po38wsx5.fsf@rpws.prws.suse.cz>
+References: <1523092180-5365-1-git-send-email-liwang@redhat.com>
+ <87r2nox1s9.fsf@rpws.prws.suse.cz>
+ <CAEemH2cSXtQfiM4snXAL-Eof7Xe3aY50z8ce=K4yo6=yBqtEbA@mail.gmail.com>
+ <87po38wsx5.fsf@rpws.prws.suse.cz>
+Message-ID: <CAEemH2d=O8Rm_Wf8+05oRe3CNjCr4MHRFMAoaLe=SUhfbd73Xg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-On 10.04.2018 20:37, Petr Vorel wrote:
->> On 04/06/2018 03:31 PM, Petr Vorel wrote:
->>> Rename library to tst_net_stress.sh, new name states that library
->>> supports new shell API.
-> 
->>> Removed ipver variable (as it's set in tst_net.sh and here, outside of
->>> setup/run/test functions isn't valid anyway).
-> 
->>> Minor fix: remove space and dot in TCONF messages.
-> 
->>> Signed-off-by: Petr Vorel <pvorel@suse.cz>
->>> ---
->>>  testcases/network/stress/interface/if-addr-adddel  | 33 ++++++++----------
->>>  .../network/stress/interface/if-addr-addlarge      | 39 ++++++++++------------
->>>  testcases/network/stress/interface/if-mtu-change   | 37 ++++++++++----------
->>>  testcases/network/stress/interface/if-route-adddel | 29 +++++++---------
->>>  .../network/stress/interface/if-route-addlarge     | 31 ++++++++---------
->>>  testcases/network/stress/interface/if-updown       | 29 +++++++---------
->>>  testcases/network/stress/interface/if4-addr-change | 21 +++++-------
->>>  .../grp-operation/mcast-group-multiple-socket      | 16 +++++----
->>>  .../multicast/grp-operation/mcast-group-same-group | 17 +++++++---
->>>  .../grp-operation/mcast-group-single-socket        | 17 +++++++---
->>>  .../grp-operation/mcast-group-source-filter        | 17 +++++++---
->>>  .../stress/multicast/grp-operation/mcast-lib.sh    | 29 ++++++++--------
->>>  testcases/network/stress/ns-tools/Makefile         |  2 +-
->>>  .../{test_net_stress.sh => tst_net_stress.sh}      | 29 +++++++++++-----
->>>  14 files changed, 177 insertions(+), 169 deletions(-)
->>>  rename testcases/network/stress/ns-tools/{test_net_stress.sh => tst_net_stress.sh} (90%)
-> 
->>> diff --git a/testcases/network/stress/interface/if-addr-adddel b/testcases/network/stress/interface/if-addr-adddel
->>> index 4a0501e09..634e9d8a4 100644
->>> --- a/testcases/network/stress/interface/if-addr-adddel
->>> +++ b/testcases/network/stress/interface/if-addr-adddel
->>> @@ -1,4 +1,5 @@
->>>  #!/bin/sh
->>> +# Copyright (c) 2017-2018 Petr Vorel <pvorel@suse.cz>
->>>  # Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
->>>  # Copyright (c) International Business Machines  Corp., 2005
-> 
->>> @@ -17,11 +18,11 @@
-> 
->>>  # Author: Mitsuru Chinen <mitch@jp.ibm.com>
-> 
->>> -TST_TOTAL=2
->>> -
->>> +TST_CNT=2
-> 
->> may be TST_CNT=1? otherwise it will run TST_TESTFUNC twice...
-> It should be run twice: first for ifconfig, second for ip. With TST_CNT=1 it would skip
-> testing with 'ip':
+Richard Palethorpe <rpalethorpe@suse.de> wrote:
 
-I thought you divide the tests into ip and ifconfig here,
-there is still TST_CNT=2 in if-lib.sh, in the last patch.
 
-Thanks,
-Alexey
+> > You are right, I'm now still looking for a better way to avoid this blo=
+ck
+> > I/O issue.
+>
+> Maybe you could add a field to the worker struct containing the current
+> file being read and a timestamp of when it started reading that
+> file. Then we can use that information later to find out if a particular
+> file is taking a long time to read.
+>
+>
+=E2=80=8BI tried to count the reading time of files in children, it shows 0=
+~200 ms
+has been elapsed for each one.
+But for parent, the most slower cost time of stop_worker() is 8ms, and even
+visit_dir(root_dir)
+push all of the files, it takes only 1000ms. That probably can prove that
+why some
+children stalled there.
+
+=3D=3D=3D=3D=3D=3D=3D=3D
+read_all.c:231: INFO:
+read(/sys/kernel/debug/tracing/per_cpu/cpu11/snapshot_raw), elapsed_ms =3D
+90: EAGAIN/EWOULDBLOCK
+read_all.c:231: INFO:
+read(/sys/kernel/debug/tracing/per_cpu/cpu10/trace_pipe), elapsed_ms =3D 0:
+EAGAIN/EWOULDBLOCK
+read_all.c:231: INFO:
+read(/sys/kernel/debug/tracing/per_cpu/cpu12/trace_pipe), elapsed_ms =3D 11=
+0:
+EAGAIN/EWOULDBLOCK
+...
+read_all.c:231: INFO:
+read(/sys/kernel/debug/tracing/per_cpu/cpu9/trace_pipe_raw), elapsed_ms =3D
+160: EAGAIN/EWOULDBLOCK
+...
+read_all.c:231: INFO:
+read(/sys/kernel/debug/tracing/per_cpu/cpu9/trace_pipe_raw), elapsed_ms =3D
+180: EAGAIN/EWOULDBLOCK
+read_all.c:231: INFO:
+read(/sys/kernel/debug/tracing/per_cpu/cpu11/trace_pipe), elapsed_ms =3D 0:
+EAGAIN/EWOULDBLOCK
+...
+read_all.c:231: INFO:
+read(/sys/kernel/debug/tracing/per_cpu/cpu10/snapshot_raw), elapsed_ms =3D
+130: EAGAIN/EWOULDBLOCK
+read_all.c:231: INFO:
+read(/sys/kernel/debug/tracing/per_cpu/cpu6/trace_pipe), elapsed_ms =3D 200:
+EAGAIN/EWOULDBLOCK
+read_all.c:231: INFO:
+read(/sys/kernel/debug/tracing/per_cpu/cpu9/trace_pipe), elapsed_ms =3D 0:
+EAGAIN/EWOULDBLOCK
+read_all.c:231: INFO:
+read(/sys/kernel/debug/tracing/per_cpu/cpu5/snapshot_raw), elapsed_ms =3D 0:
+EAGAIN/EWOULDBLOCK
+
+
+
+
+--=20
+Li Wang
+liwang@redhat.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180411/ab351731/att=
+achment.html>
