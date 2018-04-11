@@ -1,40 +1,57 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 11 Apr 2018 17:30:10 +0300
-Subject: [LTP] [PATCH] sctp/sctp_big_chunk.c: Add a hint on failure with
-	EINVAL
-In-Reply-To: <1522924077-15028-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1522924077-15028-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <b53044f2-18fc-393e-48fd-dd5700ddfc8b@oracle.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 11 Apr 2018 21:03:35 +0200
+Subject: [LTP] [RFC PATCH v2 1/4] security/ima: Rewrite tests into new
+ API + fixes
+In-Reply-To: <1523375764.5268.12.camel@linux.vnet.ibm.com>
+References: <20180314155731.5943-1-pvorel@suse.cz>
+ <20180314155731.5943-2-pvorel@suse.cz>
+ <1522177951.3541.180.camel@linux.vnet.ibm.com>
+ <20180329085947.hns5mhwu3co2tkox@dell5510>
+ <1523375764.5268.12.camel@linux.vnet.ibm.com>
+Message-ID: <20180411190335.GB25859@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-On 05.04.2018 13:27, Xiao Yang wrote:
-> If two ipv6 addresses have same family, a buggy kernel(e.g. RHEL6) lacked
-> the port check for them, and made this test get a failure with EINVAL:
-> -------------------------------------------------------------------------
-> safe_net.c:160: BROK: sctp_big_chunk.c:77: setsockopt(4, 132, 100, 0x7ffdbaac83a0, 91644) failed: EINVAL
-> -------------------------------------------------------------------------
-> 
-> If you want to know detailed info for the bug, please see the following commit:
-> '40b4f0f (sctp: lack the check for ports in sctp_v6_cmp_addr)'
-> 
-> We just want to hint users about the likely cause of the failure.
+Hi Mimi,
 
-I guess, the test will fail with EINVAL with this patch,
+> > > >  load_policy()
+> > ...
+> > > >  	cat $1 |
+> > > > -	while read line ; do
+> > > > -	{
+> > > > -		if [ "${line#\#}" = "${line}" ] ; then
+> > > > -			echo $line >&4 2> /dev/null
+> > > > +	while read line; do
+> > > > +		if [ "${line#\#}" = "${line}" ]; then
+> > > > +			echo "$line" >&4 2> /dev/null
+> > > >  			if [ $? -ne 0 ]; then
+> > > >  				exec 4>&-
+> > > >  				return 1
+> > > >  			fi
+> > > >  		fi
+> > > > -	}
 
-https://patchwork.ozlabs.org/patch/897172/
+> > > Originally writing the policy was done one rule at a time, but hasn't
+> > > been required for a long time.  dracut and systemd 'cat' the policy
+> > > directly to the pseudo file.
+> > OK, let's simplify it to catting the content.
 
-it tries to avoid the check with ports so it won't be possible
-to pass the same addresses like the test does, it is currently
-in ML.
+> Replacing the builtin policy with a new policy in the initramfs was
+> considered safe.  With commit 38d859f991f3 ("IMA: policy can now be
+> updated multiple times") the policy can be extended multiple times,
+> not only from the initramfs.  For it to be safe to extend the IMA
+> policy (eg. CONFIG_IMA_WRITE_POLICY), the policy must be signed.
 
-The first version of the test would work but it can be slower
-for some VMs, because it creates unique addresses.
+> These tests assume the policy does not need to be signed.
 
-http://lists.linux.it/pipermail/ltp/2018-March/007269.html
+Is it a good idea to expect that policy must be signed also for older kernels
+(kernels before 4.5)?
 
-Thanks,
-Alexey
+> Mimi
+
+
+Kind regards,
+Petr
