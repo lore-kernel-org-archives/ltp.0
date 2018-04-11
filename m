@@ -1,23 +1,127 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 11 Apr 2018 13:02:20 +0200
-Subject: [LTP] [RFC PATCH v6 3/7] network.sh: Migrate to new shell API
-In-Reply-To: <55a187f9-9ff1-8bcb-bf54-0164d488fafb@oracle.com>
-References: <20180406123118.21309-1-pvorel@suse.cz>
- <20180406123118.21309-4-pvorel@suse.cz>
- <fcdbaf75-7003-ff02-4fb6-6acfc0b504a2@oracle.com>
- <20180410170029.dpl6q3ytkvqataql@dell5510>
- <55a187f9-9ff1-8bcb-bf54-0164d488fafb@oracle.com>
-Message-ID: <20180411110219.izsfbid2bveymilc@dell5510>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Wed, 11 Apr 2018 13:19:42 +0200
+Subject: [LTP] [PATCH v2] read_all: give more time to wait children
+	finish read action
+In-Reply-To: <20180411094734.10962-1-liwang@redhat.com>
+References: <20180411094734.10962-1-liwang@redhat.com>
+Message-ID: <87k1tevvld.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hello Li,
 
-> There is one more occurrence of TCID in tst_net_stress.sh, is it needed?
-Thanks a lot, removed.
+Li Wang writes:
 
-Kind regards,
-Petr
+> 1. We get the following worker stalled messges in test:
+>  # ./read_all -d /sys -q -r 10
+>    tst_test.c:987: INFO: Timeout per run is 0h 05m 00s
+>    read_all.c:280: BROK: Worker 26075 is stalled
+>    read_all.c:280: WARN: Worker 26075 is stalled
+>    read_all.c:280: WARN: Worker 26079 is stalled
+>    read_all.c:280: WARN: Worker 26087 is stalled
+>
+> The reason is that some children are still working on the read I/O but
+> parent trys to stopping them after visit_dir() immediately. Although
+> the stop_attemps is 65535, it still sometimes fails.
+>
+> Instead, we use an exponential backoff way to loop the stop operation
+> in limited seconds.
+>
+> 2. The sched_work() push action in a infinite loop, here also let it
+> trys in limited time.
+>
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  testcases/kernel/fs/read_all/read_all.c | 24 ++++++++++++++++--------
+>  1 file changed, 16 insertions(+), 8 deletions(-)
+>
+> diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/read_all/read_all.c
+> index b7ed540..a9f9707 100644
+> --- a/testcases/kernel/fs/read_all/read_all.c
+> +++ b/testcases/kernel/fs/read_all/read_all.c
+> @@ -57,6 +57,8 @@
+>  #define BUFFER_SIZE 1024
+>  #define MAX_PATH 4096
+>  #define MAX_DISPLAY 40
+> +#define MICROSECOND 1
+
+Not necessary.
+
+> +#define SECOND MICROSECOND * 1000000
+>  
+>  struct queue {
+>  	sem_t sem;
+> @@ -265,20 +267,21 @@ static void spawn_workers(void)
+>  static void stop_workers(void)
+>  {
+>  	const char stop_code[1] = { '\0' };
+> -	int i, stop_attempts;
+> +	int i, delay = 1;
+>  
+>  	if (!workers)
+>  		return;
+>  
+>  	for (i = 0; i < worker_count; i++) {
+> -		stop_attempts = 0xffff;
+>  		if (workers[i].q) {
+
+Maybe change this to:
+if (!workers[i].q)
+   continue;
+
+To avoid a level of indentation.
+
+>  			while (!queue_push(workers[i].q, stop_code)) {
+> -				if (--stop_attempts < 0) {
+> +				if (delay < SECOND) {
+> +					usleep(delay);
+> +					delay *= 2;
+> +				} else {
+>  					tst_brk(TBROK,
+>  						"Worker %d is stalled",
+>  						workers[i].pid);
+> -					break;
+>  				}
+>  			}
+>  		}
+> @@ -295,7 +298,7 @@ static void stop_workers(void)
+>  static void sched_work(const char *path)
+>  {
+>  	static int cur;
+> -	int push_attempts = 0, pushed;
+> +	int push_attempts = 0, pushed, delay = 1;
+>  
+>  	while (1) {
+>  		pushed = queue_push(workers[cur].q, path);
+> @@ -306,9 +309,14 @@ static void sched_work(const char *path)
+>  		if (pushed)
+>  			break;
+>  
+> -		if (++push_attempts > worker_count) {
+> -			usleep(100);
+> -			push_attempts = 0;
+> +		if (delay < SECOND) {
+> +			push_attempts++;
+> +			usleep(delay);
+> +			delay *= 2;
+> +		} else {
+> +			tst_brk(TBROK,
+> +				"Attempts %d times but still failed to push %s",
+                                 ^ Attempted
+
+> +				push_attempts, path);
+>  		}
+>  	}
+>  }
+
+Maybe you could put the "if (delaly < SECOND) ..." into a function?
+
+Otherwise this looks good to me. There are some other things I want to
+change on this test, but we can leave those for another patch.
+
+-- 
+Thank you,
+Richard.
