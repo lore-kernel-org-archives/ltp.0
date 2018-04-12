@@ -1,25 +1,36 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 12 Apr 2018 13:35:32 +0200
-Subject: [LTP] LTP Release preparations
-Message-ID: <20180412113532.GA5963@rei>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 12 Apr 2018 15:22:43 +0300
+Subject: [LTP] [PATCH 1/2] lib/test_net.sh: lower default test parameters
+In-Reply-To: <20180405134031.mabcwgdiihs4bd5z@dell5510>
+References: <1522926355-18029-1-git-send-email-alexey.kodanev@oracle.com>
+ <20180405134031.mabcwgdiihs4bd5z@dell5510>
+Message-ID: <6d9a514e-d20c-9ed6-bc05-9c9352407e61@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-It's about the time we should slowly prepare for the next release, as
-usuall let's start with a list of patches that should go in before we
-enter the stabilization phase.
+On 05.04.2018 16:40, Petr Vorel wrote:
+> Hi Alexey,
+> 
+>> Default scenario should not take hours to complete.
+> Great, agree.
+> 
+>> Also export TST_NETLOAD_CLN_REQUESTS which is used by all
+>> tst_netload tests and can control the test execution time.
+> 
+...
+>> +export TST_NETLOAD_CLN_REQUESTS="${TST_NETLOAD_CLN_REQUESTS:-10000}"
+> This variable is also in testcases/network/sockets/bind_noport01.sh, shouldn't you remove
+> it from there (it uses test_net.sh).
+> 
+> Also, why not to handle the same way TST_NETLOAD_CLN_NUMBER ?
+> (also used in tst_netload).
+> 
+> And I'd put it into separate commit.
 
-As for me I would like to get the two speedup patchsets in, one of them
-only waits for ack from Jan, the second one would probably benefit from
-some more review. I will try to merge everything that is good to go and
-just waiting for a review ASAP.
+Applied, the changes with TST_NETLOAD_CLN* are in the separate commit.
 
-Anything else that should really go in?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks,
+Alexey
