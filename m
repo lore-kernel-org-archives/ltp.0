@@ -1,10 +1,7 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 12 Apr 2018 13:15:24 +0200
-Subject: [LTP] [PATCH v4 1/2] preadv/preadv03.c: Add new testcase
-In-Reply-To: <1523327559-22075-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <20180409125757.GA26048@rei.lan>
- <1523327559-22075-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20180412111524.GB27415@rei>
+Date: Thu, 12 Apr 2018 13:35:32 +0200
+Subject: [LTP] LTP Release preparations
+Message-ID: <20180412113532.GA5963@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,12 +9,16 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Both pushed with a minor changes, thanks.
+It's about the time we should slowly prepare for the next release, as
+usuall let's start with a list of patches that should go in before we
+enter the stabilization phase.
 
-I've changed the test to close the dev_fd in the test setup() as there
-is no need to keep it open during the test. And also removed the
-capitalization of the first letter of the syscall from the messages,
-which may have caused confusing when grepping the logs.
+As for me I would like to get the two speedup patchsets in, one of them
+only waits for ack from Jan, the second one would probably benefit from
+some more review. I will try to merge everything that is good to go and
+just waiting for a review ASAP.
+
+Anything else that should really go in?
 
 -- 
 Cyril Hrubis
