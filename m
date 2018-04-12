@@ -1,112 +1,56 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 12 Apr 2018 11:27:55 +0800
-Subject: [LTP] [PATCH v3] read_all: give more time to wait children finish
-	read action
-Message-ID: <20180412032755.4131-1-liwang@redhat.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 12 Apr 2018 14:39:10 +0800
+Subject: [LTP] [PATCH] sctp/sctp_big_chunk.c: Add a hint on failure with
+	EINVAL
+In-Reply-To: <b53044f2-18fc-393e-48fd-dd5700ddfc8b@oracle.com>
+References: <1522924077-15028-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <b53044f2-18fc-393e-48fd-dd5700ddfc8b@oracle.com>
+Message-ID: <5ACEFF0E.2030505@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1. We get the following worker stalled messges in test:
- # ./read_all -d /sys -q -r 10
-   tst_test.c:987: INFO: Timeout per run is 0h 05m 00s
-   read_all.c:280: BROK: Worker 26075 is stalled
-   read_all.c:280: WARN: Worker 26075 is stalled
-   read_all.c:280: WARN: Worker 26079 is stalled
-   read_all.c:280: WARN: Worker 26087 is stalled
+On 2018/04/11 22:30, Alexey Kodanev wrote:
+> On 05.04.2018 13:27, Xiao Yang wrote:
+>> If two ipv6 addresses have same family, a buggy kernel(e.g. RHEL6) lacked
+>> the port check for them, and made this test get a failure with EINVAL:
+>> -------------------------------------------------------------------------
+>> safe_net.c:160: BROK: sctp_big_chunk.c:77: setsockopt(4, 132, 100, 0x7ffdbaac83a0, 91644) failed: EINVAL
+>> -------------------------------------------------------------------------
+>>
+>> If you want to know detailed info for the bug, please see the following commit:
+>> '40b4f0f (sctp: lack the check for ports in sctp_v6_cmp_addr)'
+>>
+>> We just want to hint users about the likely cause of the failure.
+> I guess, the test will fail with EINVAL with this patch,
+>
+> https://patchwork.ozlabs.org/patch/897172/
+>
+> it tries to avoid the check with ports so it won't be possible
+> to pass the same addresses like the test does, it is currently
+> in ML.
+Hi Alexey,
 
-The reason is that some children are still working on the read I/O but
-parent trys to stopping them after visit_dir() immediately. Although
-the stop_attemps is 65535, it still sometimes fails.
+Thanks for your explanation.
 
-Instead, we use an exponential backoff way to loop the stop operation
-in limited seconds.
+Before commit 40b4f0f, it also failed with EINVAL because of the same ipv6 addresses.
+Do you want to apply the first version of the test?
 
-2. The sched_work() push action in a infinite loop, here also let it
-trys in limited time.
+Thanks,
+Xiao Yang
 
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.de>
-Cc: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Cc: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/fs/read_all/read_all.c | 35 ++++++++++++++++++++-------------
- 1 file changed, 21 insertions(+), 14 deletions(-)
+> The first version of the test would work but it can be slower
+> for some VMs, because it creates unique addresses.
+>
+> http://lists.linux.it/pipermail/ltp/2018-March/007269.html
+>
+> Thanks,
+> Alexey
+>
+>
+>
 
-diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/read_all/read_all.c
-index b7ed540..32ab4e8 100644
---- a/testcases/kernel/fs/read_all/read_all.c
-+++ b/testcases/kernel/fs/read_all/read_all.c
-@@ -57,6 +57,7 @@
- #define BUFFER_SIZE 1024
- #define MAX_PATH 4096
- #define MAX_DISPLAY 40
-+#define SECOND 1000000
- 
- struct queue {
- 	sem_t sem;
-@@ -265,21 +266,22 @@ static void spawn_workers(void)
- static void stop_workers(void)
- {
- 	const char stop_code[1] = { '\0' };
--	int i, stop_attempts;
-+	int i, delay = 1;
- 
- 	if (!workers)
- 		return;
- 
- 	for (i = 0; i < worker_count; i++) {
--		stop_attempts = 0xffff;
--		if (workers[i].q) {
--			while (!queue_push(workers[i].q, stop_code)) {
--				if (--stop_attempts < 0) {
--					tst_brk(TBROK,
--						"Worker %d is stalled",
--						workers[i].pid);
--					break;
--				}
-+		if (!workers[i].q)
-+			continue;
-+		while (!queue_push(workers[i].q, stop_code)) {
-+			if (delay < SECOND) {
-+				usleep(delay);
-+				delay *= 2;
-+			} else {
-+				tst_brk(TBROK,
-+					"Worker %d is stalled",
-+					workers[i].pid);
- 			}
- 		}
- 	}
-@@ -295,7 +297,7 @@ static void stop_workers(void)
- static void sched_work(const char *path)
- {
- 	static int cur;
--	int push_attempts = 0, pushed;
-+	int push_attempts = 0, pushed, delay = 1;
- 
- 	while (1) {
- 		pushed = queue_push(workers[cur].q, path);
-@@ -306,9 +308,14 @@ static void sched_work(const char *path)
- 		if (pushed)
- 			break;
- 
--		if (++push_attempts > worker_count) {
--			usleep(100);
--			push_attempts = 0;
-+		if (delay < SECOND) {
-+			push_attempts++;
-+			usleep(delay);
-+			delay *= 2;
-+		} else {
-+			tst_brk(TBROK,
-+				"Attempted %d times but still failed to push %s",
-+				push_attempts, path);
- 		}
- 	}
- }
--- 
-2.9.3
+
 
