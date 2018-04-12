@@ -1,36 +1,44 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 12 Apr 2018 15:22:43 +0300
-Subject: [LTP] [PATCH 1/2] lib/test_net.sh: lower default test parameters
-In-Reply-To: <20180405134031.mabcwgdiihs4bd5z@dell5510>
-References: <1522926355-18029-1-git-send-email-alexey.kodanev@oracle.com>
- <20180405134031.mabcwgdiihs4bd5z@dell5510>
-Message-ID: <6d9a514e-d20c-9ed6-bc05-9c9352407e61@oracle.com>
+Date: Thu, 12 Apr 2018 19:09:11 +0300
+Subject: [LTP] [PATCH 1/2] lib/tst_net.sh: don't init ltp_ns if custom is
+	used
+Message-ID: <1523549352-1794-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 05.04.2018 16:40, Petr Vorel wrote:
-> Hi Alexey,
-> 
->> Default scenario should not take hours to complete.
-> Great, agree.
-> 
->> Also export TST_NETLOAD_CLN_REQUESTS which is used by all
->> tst_netload tests and can control the test execution time.
-> 
-...
->> +export TST_NETLOAD_CLN_REQUESTS="${TST_NETLOAD_CLN_REQUESTS:-10000}"
-> This variable is also in testcases/network/sockets/bind_noport01.sh, shouldn't you remove
-> it from there (it uses test_net.sh).
-> 
-> Also, why not to handle the same way TST_NETLOAD_CLN_NUMBER ?
-> (also used in tst_netload).
-> 
-> And I'd put it into separate commit.
+We can define our own LTP_NETNS with custom setup, don't setup
+the default one in that particular case.
 
-Applied, the changes with TST_NETLOAD_CLN* are in the separate commit.
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/lib/tst_net.sh |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-Thanks,
-Alexey
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index bbef12a..53f6277 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -103,7 +103,7 @@ init_ltp_netspace()
+ 
+ 	local pid=
+ 
+-	if [ ! -f /var/run/netns/ltp_ns ]; then
++	if [ ! -f /var/run/netns/ltp_ns -a -z "$LTP_NETNS" ]; then
+ 		ROD ip li add name ltp_ns_veth1 type veth peer name ltp_ns_veth2
+ 		pid="$(ROD ns_create net,mnt)"
+ 		mkdir -p /var/run/netns
+@@ -112,6 +112,8 @@ init_ltp_netspace()
+ 		ROD ns_exec $pid net,mnt mount -t sysfs none /sys
+ 		ROD ns_ifmove ltp_ns_veth1 $pid
+ 		ROD ns_exec $pid net,mnt ip li set lo up
++	else
++		tst_res_ TINFO "using not default LTP netns: '$LTP_NETNS'"
+ 	fi
+ 
+ 	LHOST_IFACES="${LHOST_IFACES:-ltp_ns_veth2}"
+-- 
+1.7.1
+
