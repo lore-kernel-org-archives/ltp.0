@@ -1,50 +1,34 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 13 Apr 2018 09:40:44 -0400 (EDT)
-Subject: [LTP] [RFC PATCH 6/6] syscalls/wait401: Rewrite to the new
- library
-In-Reply-To: <20180409094440.GA31983@rei>
-References: <20180405145015.7633-1-chrubis@suse.cz>
- <20180405145015.7633-7-chrubis@suse.cz>
- <1134024977.11699650.1523004862083.JavaMail.zimbra@redhat.com>
- <20180409094440.GA31983@rei>
-Message-ID: <342181934.13231842.1523626844187.JavaMail.zimbra@redhat.com>
+Date: Fri, 13 Apr 2018 16:22:50 +0200
+Subject: [LTP] [PATCH] syscalls/inotify06: bump timeout
+Message-ID: <96166bd70a154ff7a440a8fabb8cb3395d6f5ce3.1523629313.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+After migrating this test to newlib, there's now
+a default timeout and it's not enough for some
+systems.
 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/inotify/inotify06.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/testcases/kernel/syscalls/inotify/inotify06.c b/testcases/kernel/syscalls/inotify/inotify06.c
+index a3a60180a32e..4475f5ea43b1 100644
+--- a/testcases/kernel/syscalls/inotify/inotify06.c
++++ b/testcases/kernel/syscalls/inotify/inotify06.c
+@@ -106,6 +106,7 @@ static void verify_inotify(void)
+ }
+ 
+ static struct tst_test test = {
++	.timeout = 600,
+ 	.needs_tmpdir = 1,
+ 	.forks_child = 1,
+ 	.setup = setup,
+-- 
+1.8.3.1
 
-
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Monday, 9 April, 2018 11:44:40 AM
-> Subject: Re: [LTP] [RFC PATCH 6/6] syscalls/wait401: Rewrite to the new library
-> 
-> Hi!
-> > This doesn't seem to test that wait4() waits. The child can
-> > end before call to wait4().
-> > 
-> > What if added call to tst_process_state_wait() to child,
-> > so it waits on parent to sleep? If parent sleeps, then
-> > it's likely waiting on child.
-> 
-> That's a good idea, I've changed the test to do exactly that.
-> 
-> OK to commit with the changes you requested or should I resend the fixed
-> patchset?
-
-Sorry for delay, I overlooked this email. No need to resend, ACK.
-
-Regards,
-Jan
-
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
