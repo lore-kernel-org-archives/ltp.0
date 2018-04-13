@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 13 Apr 2018 17:38:54 +0200
-Subject: [LTP] [PATCH 1/4] syscalls/readlink.h: Move common macros to
- readlink.h
-In-Reply-To: <1518430898-13225-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-References: <1518430898-13225-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-Message-ID: <20180413153854.GA25041@rei>
+Date: Fri, 13 Apr 2018 17:41:43 +0200
+Subject: [LTP] [PATCH] syscalls/inotify06: bump timeout
+In-Reply-To: <96166bd70a154ff7a440a8fabb8cb3395d6f5ce3.1523629313.git.jstancek@redhat.com>
+References: <96166bd70a154ff7a440a8fabb8cb3395d6f5ce3.1523629313.git.jstancek@redhat.com>
+Message-ID: <20180413154143.GB25041@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +11,12 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-I've fixed a few typos and and also merged the readlink04 to readlink01,
-since these thestcase were nearly the same and pushed, thanks.
+> After migrating this test to newlib, there's now
+> a default timeout and it's not enough for some
+> systems.
+
+I would consider that obvious enough to go directly to the git,
+acked nevertheless.
 
 -- 
 Cyril Hrubis
