@@ -1,45 +1,82 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 16 Apr 2018 14:17:10 +0300
-Subject: [LTP] [PATCH] lib/tst_test.sh: add TST_MIN_KVER variable check
-Message-ID: <1523877430-15821-1-git-send-email-alexey.kodanev@oracle.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Mon, 16 Apr 2018 14:47:35 +0200
+Subject: [LTP] [PATCH v2] include: add an exponential backoff macro for
+	function repeat
+In-Reply-To: <20180413111956.15837-1-liwang@redhat.com>
+References: <20180413111956.15837-1-liwang@redhat.com>
+Message-ID: <87efjfxqqg.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add the same behavior as in LTP C library with 'min_kver'.
+Hello,
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/lib/tst_test.sh |    7 ++++++-
- 1 files changed, 6 insertions(+), 1 deletions(-)
+Li Wang writes:
 
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index b7aa4a7..4ac09ef 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -251,7 +251,7 @@ tst_run()
- 	if [ -n "$TST_TEST_PATH" ]; then
- 		for tst_i in $(grep TST_ "$TST_TEST_PATH" | sed 's/.*TST_//; s/[="} \t\/:`].*//'); do
- 			case "$tst_i" in
--			SETUP|CLEANUP|TESTFUNC|ID|CNT);;
-+			SETUP|CLEANUP|TESTFUNC|ID|CNT|MIN_KVER);;
- 			OPTS|USAGE|PARSE_ARGS|POS_ARGS);;
- 			NEEDS_ROOT|NEEDS_TMPDIR|NEEDS_DEVICE|DEVICE);;
- 			NEEDS_CMDS|NEEDS_MODULE|MODPATH|DATAROOT);;
-@@ -290,6 +290,11 @@ tst_run()
- 
- 	tst_check_cmds $TST_NEEDS_CMDS
- 
-+	if [ -n "$TST_MIN_KVER" ]; then
-+		tst_kvcmp -lt "$TST_MIN_KVER" && \
-+			tst_brk TCONF "test requires kernel $TST_MIN_KVER+"
-+	fi
-+
- 	if [ "$TST_NEEDS_TMPDIR" = 1 ]; then
- 		if [ -z "$TMPDIR" ]; then
- 			export TMPDIR="/tmp"
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> Cc: Richard Palethorpe <rpalethorpe@suse.de>
+> Cc: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  include/tst_common.h | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+>
+> diff --git a/include/tst_common.h b/include/tst_common.h
+> index e4466d5..3c01e26 100644
+> --- a/include/tst_common.h
+> +++ b/include/tst_common.h
+> @@ -35,4 +35,30 @@
+>  #define LTP_ALIGN(x, a)    __LTP_ALIGN_MASK(x, (typeof(x))(a) - 1)
+>  #define __LTP_ALIGN_MASK(x, mask)  (((x) + (mask)) & ~(mask))
+>  
+> +/*
+> + * Exponential backoff usleep for function repeat
+
+How about:
+
+/**
+ * TST_RETRY_FUNC() - Repeatedly retry a function with an increasing delay.
+ * @FUNC - The function which will be retried
+ * @ERET - The value returned from @FUNC on success
+ *
+ * This macro will call @FUNC in a loop with a delay between retries. If @FUNC
+ * returns @ERET then the loop exits. The delay between retries starts at one
+ * micro second and is then doubled each iteration until it exceeds one second
+ * (the total time sleeping will be aproximately one second as well). When the
+ * delay exceeds one second tst_brk() is called.
+ */
+
+> + * @FUNC: the function which will be retried
+> + * @ERET: an expected return value from the FUNC
+> + */
+> +#define TST_RETRY_FUNC(FUNC, ERET) \
+> +	TST_RETRY_FN_EXP_BACKOFF(FUNC, ERET, 1)
+> +
+> +#define TST_RETRY_FN_EXP_BACKOFF(FUNC, ERET, MAX_DELAY)	\
+> +do {	int tst_delay = 1;					\
+> +	for (;;) {						\
+> +		typeof(FUNC) ret = FUNC;			\
+> +		if (ret == ERET)				\
+> +			break;					\
+
+Maybe it should return ret somehow?
+
+> +		if (tst_delay < MAX_DELAY * 1000000) {		\
+> +			tst_res(TINFO,				\
+> +				#FUNC" returned %i, retrying"	\
+> +				" in %ius", ret, tst_delay);	\
+> +			usleep(tst_delay);			\
+> +			tst_delay *= 2;				\
+> +		} else {					\
+> +			tst_brk(TBROK, #FUNC" failed");		\
+> +		}						\
+> +	}							\
+> +} while(0)
+> +
+>  #endif /* TST_COMMON_H__ */
+
+
 -- 
-1.7.1
-
+Thank you,
+Richard.
