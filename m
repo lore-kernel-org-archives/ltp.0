@@ -1,23 +1,18 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 17 Apr 2018 16:39:50 +0200
-Subject: [LTP] [PATCH 2/5] syscalls/mkdir01,
- 03: Cleanup && Convert to new API
-In-Reply-To: <1521804892-5783-2-git-send-email-xuyang.jy@cn.fujitsu.com>
-References: <1521804892-5783-1-git-send-email-xuyang.jy@cn.fujitsu.com>
- <1521804892-5783-2-git-send-email-xuyang.jy@cn.fujitsu.com>
-Message-ID: <20180417143950.GC30600@rei>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 17 Apr 2018 18:38:04 +0300
+Subject: [LTP] [PATCH] lib/tst_test.sh: add TST_MIN_KVER variable check
+In-Reply-To: <20180417112618.GB30600@rei>
+References: <1523877430-15821-1-git-send-email-alexey.kodanev@oracle.com>
+ <20180417112618.GB30600@rei>
+Message-ID: <e3db5193-365d-da67-faa2-3b22fe351671@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-The mkdir03 was rewritten meanwhile by Sandeep Patil, sorry for not
-reviewing your patch sooner. I've pushed the part of this patch that
-removes mkdir01 since the case is covered by the mkdir03 already,
-thanks.
+On 04/17/2018 02:26 PM, Cyril Hrubis wrote:
+> Hi!
+> Looks good, acked.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Applied.
