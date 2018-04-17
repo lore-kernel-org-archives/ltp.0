@@ -1,34 +1,82 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 17 Apr 2018 20:54:52 +0200
-Subject: [LTP] [PATCH 1/1] network/vxlan02.sh: Fix duplicate parameters
-In-Reply-To: <1ea39ca6-a8c1-92b1-809f-8df162d36ee0@oracle.com>
-References: <20180416221141.2781-1-pvorel@suse.cz>
- <1ea39ca6-a8c1-92b1-809f-8df162d36ee0@oracle.com>
-Message-ID: <20180417185452.uf2wqirg7xdiokgs@dell5510>
+From: Michal Hocko <mhocko@suse.com>
+Date: Tue, 17 Apr 2018 21:00:44 +0200
+Subject: [LTP] [RFC PATCH] mm: correct status code which move_pages()
+ returns for zero page
+In-Reply-To: <CAEemH2dQ+yQ-P-=5J3Y-n+0V0XV-vJkQ81uD=Q3Bh+rHZ4sb-Q@mail.gmail.com>
+References: <20180417110615.16043-1-liwang@redhat.com>
+ <20180417130300.GF17484@dhcp22.suse.cz>
+ <20180417141442.GG17484@dhcp22.suse.cz>
+ <CAEemH2dQ+yQ-P-=5J3Y-n+0V0XV-vJkQ81uD=Q3Bh+rHZ4sb-Q@mail.gmail.com>
+Message-ID: <20180417190044.GK17484@dhcp22.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-Hi Alexey,
+On Tue 17-04-18 22:28:33, Li Wang wrote:
+> On Tue, Apr 17, 2018 at 10:14 PM, Michal Hocko <mhocko@suse.com> wrote:
+>=20
+> > On Tue 17-04-18 15:03:00, Michal Hocko wrote:
+> > > On Tue 17-04-18 19:06:15, Li Wang wrote:
+> > > [...]
+> > > > diff --git a/mm/migrate.c b/mm/migrate.c
+> > > > index f65dd69..2b315fc 100644
+> > > > --- a/mm/migrate.c
+> > > > +++ b/mm/migrate.c
+> > > > @@ -1608,7 +1608,7 @@ static int do_pages_move(struct mm_struct *mm,
+> > nodemask_t task_nodes,
+> > > >                     continue;
+> > > >
+> > > >             err =3D store_status(status, i, err, 1);
+> > > > -           if (err)
+> > > > +           if (!err)
+> > > >                     goto out_flush;
+> > >
+> > > This change just doesn't make any sense to me. Why should we bail out=
+ if
+> > > the store_status is successul? I am trying to wrap my head around the
+> > > test case. 6b9d757ecafc ("mm, numa: rework do_pages_move") tried to
+> > > explain that move_pages has some semantic issues and the new
+> > > implementation might be not 100% replacement. Anyway I am studying the
+> > > test case to come up with a proper fix.
+> >
+> > OK, I get what the test cases does. I've failed to see the subtle
+> > difference between alloc_pages_on_node and numa_alloc_onnode. The later
+> > doesn't faul in anything.
+> >
+> > Why are we getting EPERM is quite not yet clear to me.
+> > add_page_for_migration uses FOLL_DUMP which should return EFAULT on
+> > zero pages (no_page_table()).
+> >
+> >         err =3D PTR_ERR(page);
+> >         if (IS_ERR(page))
+> >                 goto out;
+> >
+> > therefore bails out from add_page_for_migration and store_status should
+> > store that value. There shouldn't be any EPERM on the way.
+> >
+>=20
+> Yes, I print the the return value and confirmed the
+> add_page_for_migration()=E2=80=8B
+> do right things for zero page. and after store_status(...) the status sav=
+es
+> -EFAULT.
+> So I did the change above.
 
-> On 04/17/2018 01:11 AM, Petr Vorel wrote:
-> > vxlan02 and vxlan02_ipv6 tests had duplicate parameters 'dev ltp_ns_veth2':
-> > ip li add ltp_v0 type vxlan dstport 0 id 16700000 group 239.1.1.1 dev ltp_ns_veth2 dev ltp_ns_veth2
-> > Error: either "dev" is duplicate, or "ltp_ns_veth2" is a garbage.
+OK, I guess I knnow what is going on. I must be overwriting the status
+on the way out by
 
-> > Device was specified in in both the test file itself and in virt_add() function in virt_lib.sh.
-> > Removed in test to be consistent with vlan02.sh.
+out_flush:
+	/* Make sure we do not overwrite the existing error */
+	err1 =3D do_move_pages_to_node(mm, &pagelist, current_node);
+	if (!err1)
+		err1 =3D store_status(status, start, current_node, i - start);
 
-> > Fixes: 8e5862c20 ("net: vxlan02: specify interface when adding multicast dst")
-
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-
-> Acked-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-
-Thanks a lot for review, merged!
-
-
-Kind regards,
-Petr
+This error handling is rather fragile and I was quite unhappy about it
+at the time I was developing it. I have to remember all the details why
+I've done it that way but I would bet my hat this is it. More on this
+tomorrow.
+--=20
+Michal Hocko
+SUSE Labs
