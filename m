@@ -1,78 +1,43 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 17 Apr 2018 14:42:07 +0200
-Subject: [LTP] [PATCH 2/2] network/in6_02: Don't use default value for
-	LHOST_IFACES
-In-Reply-To: <20180417124207.4561-1-pvorel@suse.cz>
-References: <20180417124207.4561-1-pvorel@suse.cz>
-Message-ID: <20180417124207.4561-2-pvorel@suse.cz>
+From: Michal Hocko <mhocko@suse.com>
+Date: Tue, 17 Apr 2018 15:03:00 +0200
+Subject: [LTP] [RFC PATCH] mm: correct status code which move_pages()
+ returns for zero page
+In-Reply-To: <20180417110615.16043-1-liwang@redhat.com>
+References: <20180417110615.16043-1-liwang@redhat.com>
+Message-ID: <20180417130300.GF17484@dhcp22.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-in6_02 can be test without help of network.sh. In that case LHOST_IFACES
-is not defined and "eth0" is used as default value. This can cause
-failures.
+On Tue 17-04-18 19:06:15, Li Wang wrote:
+[...]
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index f65dd69..2b315fc 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -1608,7 +1608,7 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
+>  			continue;
+>  
+>  		err = store_status(status, i, err, 1);
+> -		if (err)
+> +		if (!err)
+>  			goto out_flush;
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-I'm not sure if we can make all C network tests make independent on
-loading variables via tst_net.sh, but here it does not make much sense
-to me to fail when it's not done.
----
- testcases/network/lib6/in6_02.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+This change just doesn't make any sense to me. Why should we bail out if
+the store_status is successul? I am trying to wrap my head around the
+test case. 6b9d757ecafc ("mm, numa: rework do_pages_move") tried to
+explain that move_pages has some semantic issues and the new
+implementation might be not 100% replacement. Anyway I am studying the
+test case to come up with a proper fix.
 
-diff --git a/testcases/network/lib6/in6_02.c b/testcases/network/lib6/in6_02.c
-index e3deb7b7b..c00e5dc0c 100644
---- a/testcases/network/lib6/in6_02.c
-+++ b/testcases/network/lib6/in6_02.c
-@@ -33,14 +33,13 @@
- 
- #define I2N_RNDCOUNT	10	/* random ints */
- #define I2N_LOWCOUNT	10	/* sequential from 0 */
--#define DEFAULT_IFACE	"eth0"
- 
- static struct {
- 	char *name;
- 	int nonzero;
- } test_case[] = {
- 	{ "lo", 1 },
--	{ DEFAULT_IFACE, 1 },
-+	{ NULL, 1 },
- 	{ "hoser75", 0 },
- 	{ "6", 0 },
- };
-@@ -61,6 +60,8 @@ void if_nametoindex_test(void)
- 	tst_res(TINFO, "IPv6 if_nametoindex() test");
- 
- 	for (i = 0; i < ARRAY_SIZE(test_case); ++i) {
-+		if (test_case[i].name == NULL)
-+			continue;
- 		TEST(if_nametoindex(test_case[i].name));
- 		if (!TEST_RETURN != !test_case[i].nonzero) {
- 			tst_res(TFAIL, "if_nametoindex(\"%s\") %ld [should be %szero]",
-@@ -242,16 +243,16 @@ void setup(void)
- 	char *ifnames = getenv("LHOST_IFACES");
- 
- 	if (!ifnames) {
--		tst_res(TWARN, "LHOST_IFACES not defined, default to %s", DEFAULT_IFACE);
-+		tst_res(TINFO, "LHOST_IFACES not defined, it will not be tested");
- 		return;
- 	}
- 
- 	static char name[256];
- 	sscanf(ifnames, "%255s", name);
--	if (!strcmp(name, test_case[1].name))
-+	if (!strcmp(name, test_case[0].name))
- 		return;
- 
--	tst_res(TINFO, "change default '%s' name to '%s'", DEFAULT_IFACE, name);
-+	tst_res(TINFO, "LHOST_IFACES \"%s\"", name);
- 	test_case[1].name = name;
- }
- 
+>  
+>  		err = do_move_pages_to_node(mm, &pagelist, current_node);
+> -- 
+> 2.9.5
+> 
+
 -- 
-2.16.3
-
+Michal Hocko
+SUSE Labs
