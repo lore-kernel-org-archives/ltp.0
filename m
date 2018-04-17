@@ -1,87 +1,25 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 17 Apr 2018 11:05:04 +0800
-Subject: [LTP] [PATCH v2] include: add an exponential backoff macro for
-	function repeat
-In-Reply-To: <87efjfxqqg.fsf@rpws.prws.suse.cz>
-References: <20180413111956.15837-1-liwang@redhat.com>
- <87efjfxqqg.fsf@rpws.prws.suse.cz>
-Message-ID: <CAEemH2dLhAbxr-SNpa162YUkcYN9MLK8t_zUq9450ZZkBKAN-Q@mail.gmail.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 17 Apr 2018 12:48:30 +0300
+Subject: [LTP] [PATCH 1/1] network/vxlan02.sh: Fix duplicate parameters
+In-Reply-To: <20180416221141.2781-1-pvorel@suse.cz>
+References: <20180416221141.2781-1-pvorel@suse.cz>
+Message-ID: <1ea39ca6-a8c1-92b1-809f-8df162d36ee0@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Richard Palethorpe <rpalethorpe@suse.de> wrote:
+On 04/17/2018 01:11 AM, Petr Vorel wrote:
+> vxlan02 and vxlan02_ipv6 tests had duplicate parameters 'dev ltp_ns_veth2':
+> ip li add ltp_v0 type vxlan dstport 0 id 16700000 group 239.1.1.1 dev ltp_ns_veth2 dev ltp_ns_veth2
+> Error: either "dev" is duplicate, or "ltp_ns_veth2" is a garbage.
+> 
+> Device was specified in in both the test file itself and in virt_add() function in virt_lib.sh.
+> Removed in test to be consistent with vlan02.sh.
+> 
+> Fixes: 8e5862c20 ("net: vxlan02: specify interface when adding multicast dst")
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
-How about:
->
-> /**
->  * TST_RETRY_FUNC() - Repeatedly retry a function with an increasing delay.
->  * @FUNC - The function which will be retried
->  * @ERET - The value returned from @FUNC on success
->  *
->  * This macro will call @FUNC in a loop with a delay between retries. If
-> @FUNC
->  * returns @ERET then the loop exits. The delay between retries starts at
-> one
->  * micro second and is then doubled each iteration until it exceeds one
-> second
->  * (the total time sleeping will be aproximately one second as well). When
-> the
->  * delay exceeds one second tst_brk() is called.
->  */
->
-​
-I like this description.
-​
-
->
-> > + * @FUNC: the function which will be retried
-> > + * @ERET: an expected return value from the FUNC
-> > + */
-> > +#define TST_RETRY_FUNC(FUNC, ERET) \
-> > +     TST_RETRY_FN_EXP_BACKOFF(FUNC, ERET, 1)
-> > +
-> > +#define TST_RETRY_FN_EXP_BACKOFF(FUNC, ERET, MAX_DELAY)      \
-> > +do { int tst_delay = 1;                                      \
-> > +     for (;;) {                                              \
-> > +             typeof(FUNC) ret = FUNC;                        \
-> > +             if (ret == ERET)                                \
-> > +                     break;                                  \
->
-> Maybe it should return ret somehow?
->
-
-​Maybe yes!
-
-And, if we do that, the macro should probably be rewritten ​as:
-
-​#define TST_RETRY_FN_EXP_BACKOFF(FUNC, ERET, MAX_DELAY)    \
-({    int tst_delay = 1;                    \
-    for (;;) {                        \
-        typeof(FUNC) ret = FUNC;            \
-        if (ret == ERET)                \
-            break;                    \
-        if (tst_delay < MAX_DELAY * 1000000) {        \
-            tst_res(TINFO,                \
-                #FUNC" returned %i, retrying"    \
-                " in %ius", ret, tst_delay);    \
-            usleep(tst_delay);            \
-            tst_delay *= 2;                \
-        } else {                    \
-            tst_brk(TBROK, #FUNC" failed");        \
-        }                        \
-    }                            \
-    ERET;                            \
-})
-​
-
-
-
--- 
-Li Wang
-liwang@redhat.com
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180417/29a46f38/attachment-0001.html>
+Acked-by: Alexey Kodanev <alexey.kodanev@oracle.com>
