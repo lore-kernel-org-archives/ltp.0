@@ -1,43 +1,56 @@
 From: Michal Hocko <mhocko@suse.com>
-Date: Tue, 17 Apr 2018 15:03:00 +0200
+Date: Tue, 17 Apr 2018 16:14:42 +0200
 Subject: [LTP] [RFC PATCH] mm: correct status code which move_pages()
  returns for zero page
-In-Reply-To: <20180417110615.16043-1-liwang@redhat.com>
+In-Reply-To: <20180417130300.GF17484@dhcp22.suse.cz>
 References: <20180417110615.16043-1-liwang@redhat.com>
-Message-ID: <20180417130300.GF17484@dhcp22.suse.cz>
+ <20180417130300.GF17484@dhcp22.suse.cz>
+Message-ID: <20180417141442.GG17484@dhcp22.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue 17-04-18 19:06:15, Li Wang wrote:
-[...]
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index f65dd69..2b315fc 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -1608,7 +1608,7 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
->  			continue;
->  
->  		err = store_status(status, i, err, 1);
-> -		if (err)
-> +		if (!err)
->  			goto out_flush;
-
-This change just doesn't make any sense to me. Why should we bail out if
-the store_status is successul? I am trying to wrap my head around the
-test case. 6b9d757ecafc ("mm, numa: rework do_pages_move") tried to
-explain that move_pages has some semantic issues and the new
-implementation might be not 100% replacement. Anyway I am studying the
-test case to come up with a proper fix.
-
->  
->  		err = do_move_pages_to_node(mm, &pagelist, current_node);
-> -- 
-> 2.9.5
+On Tue 17-04-18 15:03:00, Michal Hocko wrote:
+> On Tue 17-04-18 19:06:15, Li Wang wrote:
+> [...]
+> > diff --git a/mm/migrate.c b/mm/migrate.c
+> > index f65dd69..2b315fc 100644
+> > --- a/mm/migrate.c
+> > +++ b/mm/migrate.c
+> > @@ -1608,7 +1608,7 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
+> >  			continue;
+> >  
+> >  		err = store_status(status, i, err, 1);
+> > -		if (err)
+> > +		if (!err)
+> >  			goto out_flush;
 > 
+> This change just doesn't make any sense to me. Why should we bail out if
+> the store_status is successul? I am trying to wrap my head around the
+> test case. 6b9d757ecafc ("mm, numa: rework do_pages_move") tried to
+> explain that move_pages has some semantic issues and the new
+> implementation might be not 100% replacement. Anyway I am studying the
+> test case to come up with a proper fix.
 
+OK, I get what the test cases does. I've failed to see the subtle
+difference between alloc_pages_on_node and numa_alloc_onnode. The later
+doesn't faul in anything.
+
+Why are we getting EPERM is quite not yet clear to me.
+add_page_for_migration uses FOLL_DUMP which should return EFAULT on
+zero pages (no_page_table()).
+
+	err = PTR_ERR(page);
+	if (IS_ERR(page))
+		goto out;
+
+therefore bails out from add_page_for_migration and store_status should
+store that value. There shouldn't be any EPERM on the way.
+
+Let me try to reproduce and see what is going on. Btw. which kernel do
+you try this on?
 -- 
 Michal Hocko
 SUSE Labs
