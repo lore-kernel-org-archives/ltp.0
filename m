@@ -1,82 +1,56 @@
-From: Michal Hocko <mhocko@suse.com>
-Date: Tue, 17 Apr 2018 21:00:44 +0200
-Subject: [LTP] [RFC PATCH] mm: correct status code which move_pages()
- returns for zero page
-In-Reply-To: <CAEemH2dQ+yQ-P-=5J3Y-n+0V0XV-vJkQ81uD=Q3Bh+rHZ4sb-Q@mail.gmail.com>
-References: <20180417110615.16043-1-liwang@redhat.com>
- <20180417130300.GF17484@dhcp22.suse.cz>
- <20180417141442.GG17484@dhcp22.suse.cz>
- <CAEemH2dQ+yQ-P-=5J3Y-n+0V0XV-vJkQ81uD=Q3Bh+rHZ4sb-Q@mail.gmail.com>
-Message-ID: <20180417190044.GK17484@dhcp22.suse.cz>
+From: Travis CI <builds@travis-ci.org>
+Date: Tue, 17 Apr 2018 19:01:20 +0000
+Subject: [LTP] Errored: linux-test-project/ltp#758 (master - 06ee2b0)
+In-Reply-To: <linux-test-project/ltp+367800244+errored@travis-ci.org>
+Message-ID: <5ad64480951dd_43f9e19419460435637@6c41ee02-ea54-406b-b1d2-cd774a36365b.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue 17-04-18 22:28:33, Li Wang wrote:
-> On Tue, Apr 17, 2018 at 10:14 PM, Michal Hocko <mhocko@suse.com> wrote:
->=20
-> > On Tue 17-04-18 15:03:00, Michal Hocko wrote:
-> > > On Tue 17-04-18 19:06:15, Li Wang wrote:
-> > > [...]
-> > > > diff --git a/mm/migrate.c b/mm/migrate.c
-> > > > index f65dd69..2b315fc 100644
-> > > > --- a/mm/migrate.c
-> > > > +++ b/mm/migrate.c
-> > > > @@ -1608,7 +1608,7 @@ static int do_pages_move(struct mm_struct *mm,
-> > nodemask_t task_nodes,
-> > > >                     continue;
-> > > >
-> > > >             err =3D store_status(status, i, err, 1);
-> > > > -           if (err)
-> > > > +           if (!err)
-> > > >                     goto out_flush;
-> > >
-> > > This change just doesn't make any sense to me. Why should we bail out=
- if
-> > > the store_status is successul? I am trying to wrap my head around the
-> > > test case. 6b9d757ecafc ("mm, numa: rework do_pages_move") tried to
-> > > explain that move_pages has some semantic issues and the new
-> > > implementation might be not 100% replacement. Anyway I am studying the
-> > > test case to come up with a proper fix.
-> >
-> > OK, I get what the test cases does. I've failed to see the subtle
-> > difference between alloc_pages_on_node and numa_alloc_onnode. The later
-> > doesn't faul in anything.
-> >
-> > Why are we getting EPERM is quite not yet clear to me.
-> > add_page_for_migration uses FOLL_DUMP which should return EFAULT on
-> > zero pages (no_page_table()).
-> >
-> >         err =3D PTR_ERR(page);
-> >         if (IS_ERR(page))
-> >                 goto out;
-> >
-> > therefore bails out from add_page_for_migration and store_status should
-> > store that value. There shouldn't be any EPERM on the way.
-> >
->=20
-> Yes, I print the the return value and confirmed the
-> add_page_for_migration()=E2=80=8B
-> do right things for zero page. and after store_status(...) the status sav=
-es
-> -EFAULT.
-> So I did the change above.
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-OK, I guess I knnow what is going on. I must be overwriting the status
-on the way out by
+Build: #758
+Status: Errored
 
-out_flush:
-	/* Make sure we do not overwrite the existing error */
-	err1 =3D do_move_pages_to_node(mm, &pagelist, current_node);
-	if (!err1)
-		err1 =3D store_status(status, start, current_node, i - start);
+Duration: 14 mins and 34 secs
+Commit: 06ee2b0 (master)
+Author: Petr Vorel
+Message: network/vxlan03: Fix getopts parameters passed to virt_lib.sh
 
-This error handling is rather fragile and I was quite unhappy about it
-at the time I was developing it. I have to remember all the details why
-I've done it that way but I would bet my hat this is it. More on this
-tomorrow.
---=20
-Michal Hocko
-SUSE Labs
+vxlan03.sh pass getopts parameter to virt_lib.sh (other than -6 which is
+handled by tst_net.sh), so they must be processed before loading
+tst_net.sh. Therefore vxlan03.sh must load virt_lib.sh before loading
+tst_net.sh and virt_lib.sh must shift parameters.
+
+Also load tst_net.sh in vxlan03.sh, as it uses functions from network
+API (old error).
+
+Other users of vxlan03.sh not fixed as they pass just -6 parameter.
+
+Fixes: ba53eb04e tst_net.sh: Support both new and legacy APIs + rename
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Reported-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+
+View the changeset: https://github.com/linux-test-project/ltp/compare/48b24bc626fa...06ee2b0273bd
+
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/367800244?utm_source=email&utm_medium=notification
+
+--
+
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+
+
+
+
+
+
+
+This email was sent to ltp@lists.linux.it (mailto:ltp@lists.linux.it)
+unsubscribe from this list (http://clicks.travis-ci.com/track/unsub.php?u=14313403&id=86162d16eec249219a3b32a0477c8fc1.nwh%2ButJmyvjUjRzsB8BeiP5x1%2B8%3D&r=https%3A%2F%2Fmandrillapp.com%2Funsub%3Fmd_email%3Dltp%2540lists.linux.it)
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180417/f307cc34/attachment-0001.html>
