@@ -1,79 +1,25 @@
-From: Michal Hocko <mhocko@suse.com>
-Date: Wed, 18 Apr 2018 11:19:43 +0200
-Subject: [LTP] [RFC PATCH] mm: correct status code which move_pages()
- returns for zero page
-In-Reply-To: <20180418090722.GV17484@dhcp22.suse.cz>
-References: <20180417110615.16043-1-liwang@redhat.com>
- <20180417130300.GF17484@dhcp22.suse.cz>
- <20180417141442.GG17484@dhcp22.suse.cz>
- <CAEemH2dQ+yQ-P-=5J3Y-n+0V0XV-vJkQ81uD=Q3Bh+rHZ4sb-Q@mail.gmail.com>
- <20180417190044.GK17484@dhcp22.suse.cz>
- <7674C632-FE3E-42D2-B19D-32F531617043@cs.rutgers.edu>
- <20180418090722.GV17484@dhcp22.suse.cz>
-Message-ID: <20180418091943.GW17484@dhcp22.suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 18 Apr 2018 11:21:52 +0200
+Subject: [LTP] Errored: linux-test-project/ltp#758 (master - 06ee2b0)
+In-Reply-To: <20180418061152.i44g47utzldyw7lc@dell5510>
+References: <linux-test-project/ltp+367800244+errored@travis-ci.org>
+ <5ad64480951dd_43f9e19419460435637@6c41ee02-ea54-406b-b1d2-cd774a36365b.mail>
+ <20180418061152.i44g47utzldyw7lc@dell5510>
+Message-ID: <20180418092152.GA4266@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed 18-04-18 11:07:22, Michal Hocko wrote:
-> On Tue 17-04-18 16:09:33, Zi Yan wrote:
-[...]
-> > diff --git a/mm/migrate.c b/mm/migrate.c
-> > index f65dd69e1fd1..32afa4723e7f 100644
-> > --- a/mm/migrate.c
-> > +++ b/mm/migrate.c
-> > @@ -1619,6 +1619,8 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
-> >                         if (err)
-> >                                 goto out;
-> >                 }
-> > +               /* Move to next page (i+1), after we have saved page status (until i) */
-> > +               start = i + 1;
-> >                 current_node = NUMA_NO_NODE;
-> >         }
-> >  out_flush:
-> > 
-> > Feel free to check it by yourselves.
-> 
-> Yes, you are right. I never update start if the last page in the range
-> fails and so we overwrite the whole [start, i] range. I wish the code
-> wasn't that ugly and subtle but considering how we can fail in different
-> ways and that we want to batch as much as possible I do not see an easy
-> way.
-> 
-> Care to send the patch? I would just drop the comment.
+Hi!
+> False positive, again. This time it's due failing to install Java
+> (oracle-java8-installer and oracle-java9-installer).
+> I delete these repositories.
 
-Hmm, thinking about it some more. An alternative would be to check for
-list_empty on the page list. It is a bit larger diff but maybe that
-would be tiny bit cleaner because there is simply no point to call
-do_move_pages_to_node on an empty list in the first place.
----
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 507cf9ba21bf..46f93b9ba724 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1634,12 +1634,14 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
- 		current_node = NUMA_NO_NODE;
- 	}
- out_flush:
--	/* Make sure we do not overwrite the existing error */
--	err1 = do_move_pages_to_node(mm, &pagelist, current_node);
--	if (!err1)
--		err1 = store_status(status, start, current_node, i - start);
--	if (!err)
--		err = err1;
-+	if (!list_empty(&pagelist)) {
-+		/* Make sure we do not overwrite the existing error */
-+		err1 = do_move_pages_to_node(mm, &pagelist, current_node);
-+		if (!err1)
-+			err1 = store_status(status, start, current_node, i - start);
-+		if (!err)
-+			err = err1;
-+	}
- out:
- 	return err;
- }
+I wonder if we can do something as disable everything but the base
+repositories + the few we actually need...
+
 -- 
-Michal Hocko
-SUSE Labs
+Cyril Hrubis
+chrubis@suse.cz
