@@ -1,8 +1,8 @@
 From: Travis CI <builds@travis-ci.org>
-Date: Tue, 17 Apr 2018 19:12:29 +0000
+Date: Wed, 18 Apr 2018 06:11:10 +0000
 Subject: [LTP] Errored: linux-test-project/ltp#759 (master - a0bc40d)
 In-Reply-To: <linux-test-project/ltp+367803952+errored@travis-ci.org>
-Message-ID: <5ad6471d48c9_43f9e1963837c45849f@6c41ee02-ea54-406b-b1d2-cd774a36365b.mail>
+Message-ID: <5ad6e17dcba3c_43f9e196385701307823@6c41ee02-ea54-406b-b1d2-cd774a36365b.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,7 +15,7 @@ Build Update for linux-test-project/ltp
 Build: #759
 Status: Errored
 
-Duration: 16 mins and 49 secs
+Duration: 2 mins and 20 secs
 Commit: a0bc40d (master)
 Author: Petr Vorel
 Message: network/vxlan02.sh: Fix duplicate parameters
@@ -47,7 +47,7 @@ You can configure recipients for build notifications in your .travis.yml file. S
 
 
 This email was sent to ltp@lists.linux.it (mailto:ltp@lists.linux.it)
-unsubscribe from this list (http://clicks.travis-ci.com/track/unsub.php?u=14313403&id=61f15e453a204d38ad7b1ffe7e09a28a.nwh%2ButJmyvjUjRzsB8BeiP5x1%2B8%3D&r=https%3A%2F%2Fmandrillapp.com%2Funsub%3Fmd_email%3Dltp%2540lists.linux.it)
+unsubscribe from this list (http://clicks.travis-ci.com/track/unsub.php?u=14313403&id=130843886189423486eca4f519056c0f.nwh%2ButJmyvjUjRzsB8BeiP5x1%2B8%3D&r=https%3A%2F%2Fmandrillapp.com%2Funsub%3Fmd_email%3Dltp%2540lists.linux.it)
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180417/973cb033/attachment.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180418/0c67cb87/attachment-0001.html>
