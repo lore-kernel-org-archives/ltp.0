@@ -1,30 +1,48 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 18 Apr 2018 11:25:28 +0200
-Subject: [LTP] Errored: linux-test-project/ltp#758 (master - 06ee2b0)
-In-Reply-To: <20180418092152.GA4266@rei>
-References: <linux-test-project/ltp+367800244+errored@travis-ci.org>
- <5ad64480951dd_43f9e19419460435637@6c41ee02-ea54-406b-b1d2-cd774a36365b.mail>
- <20180418061152.i44g47utzldyw7lc@dell5510>
- <20180418092152.GA4266@rei>
-Message-ID: <20180418092528.2l4kqfxk3sopdxlo@dell5510>
+From: Sebastian Chlad <schlad@suse.de>
+Date: Wed, 18 Apr 2018 11:51:42 +0200
+Subject: [LTP] [PATCH] gitignore: Add some binaries to gitignore
+Message-ID: <20180418095142.20394-1-schlad@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Signed-off-by: Sebastian Chlad <schlad@suse.de>
+---
+ testcases/kernel/syscalls/.gitignore | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> > False positive, again. This time it's due failing to install Java
-> > (oracle-java8-installer and oracle-java9-installer).
-> > I delete these repositories.
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 3cc60f9bd..cc4076a88 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -12,6 +12,7 @@
+ /add_key/add_key04
+ /adjtimex/adjtimex01
+ /adjtimex/adjtimex02
++/alarm/alarm01
+ /alarm/alarm02
+ /alarm/alarm03
+ /alarm/alarm05
+@@ -539,6 +540,7 @@
+ /migrate_pages/migrate_pages02
+ /mincore/mincore01
+ /mincore/mincore02
++/mkdir/mkdir01
+ /mkdir/mkdir02
+ /mkdir/mkdir03
+ /mkdir/mkdir04
+@@ -740,7 +742,9 @@
+ /readdir/readdir21
+ /readlink/creat_slink
+ /readlink/readlink01
++/readlink/readlink02
+ /readlink/readlink03
++/readlink/readlink04
+ /readlinkat/readlinkat01
+ /readlinkat/readlinkat02
+ /readv/readv01
+-- 
+2.13.6
 
-> I wonder if we can do something as disable everything but the base
-> repositories + the few we actually need...
-Done:
-12cecc580 travis: Remove unnecessary third party apt repositories
-
-Hope this definitely solves travis false positives.
-
-Kind regards,
-Petr
