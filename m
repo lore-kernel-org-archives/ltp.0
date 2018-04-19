@@ -1,24 +1,255 @@
-From: Xu, Yang <xuyang.jy@cn.fujitsu.com>
-Date: Thu, 19 Apr 2018 02:15:29 +0000
-Subject: [LTP] [PATCH 2/5] syscalls/mkdir01,
- 03: Cleanup && Convert to new API
-Message-ID: <CB712E87BDAB7C41913DE4CFF4203A7B6A095170@G08CNEXMBPEKD01.g08.fujitsu.local>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 19 Apr 2018 10:50:57 +0800
+Subject: [LTP] [PATCH 2/2] syscalls/prctl02: Rewrite to the new library
+In-Reply-To: <1524106257-4711-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1524106257-4711-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1524106257-4711-2-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
->Hi!
->The mkdir03 was rewritten meanwhile by Sandeep Patil, sorry for not reviewing your patch sooner. I've pushed the part of 
-> this patch that removes mkdir01 since the case is covered by the mkdir03 already, thanks.
-Hi   
- I know mkdir03 has been written by Sandeep Patil, but this patch applies tst_get_bad_addr function to mkdir03 and simplifies the test. 
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/prctl/prctl02.c | 203 ++++++------------------------
+ 1 file changed, 39 insertions(+), 164 deletions(-)
 
-Thanks
-Yang Xu
->--
->Cyril Hrubis
->chrubis@suse.cz
+diff --git a/testcases/kernel/syscalls/prctl/prctl02.c b/testcases/kernel/syscalls/prctl/prctl02.c
+index 67e3b6f..f412e21 100644
+--- a/testcases/kernel/syscalls/prctl/prctl02.c
++++ b/testcases/kernel/syscalls/prctl/prctl02.c
+@@ -1,189 +1,64 @@
+ /*
+  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+  *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++
++/*
++ * DESCRIPTION
++ * 1) prctl() fails with EINVAL when an invalid value is given for option
++ * 2) prctl() fails with EINVAL when option is PR_SET_PDEATHSIG & arg2 is
++ * not zero or a valid signal number
+  */
+-/**********************************************************
+- *
+- *    TEST IDENTIFIER	: prctl02
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Tests for error conditions
+- *
+- *    TEST CASE TOTAL	: 2
+- *
+- *    AUTHOR		: Saji Kumar.V.R <saji.kumar@wipro.com>
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    DESCRIPTION
+- *	Verify that
+- *	1) prctl() fails with errno, EINVAL when an invalid value is given for
+- *	   option
+- *	2) prctl() fails with errno, EINVAL when option is PR_SET_PDEATHSIG
+- *	   & arg2 is not zero or a valid signal number
+- *
+- * 	Setup:
+- * 	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- *	 fork a child
+- *
+- *	 CHILD:
+- *		call prctl() with proper arguments
+- *		If call fails with expected errno,
+- *			exit with 0
+- *		else
+- *			exit with 1
+- *	 PARENT:
+- *		wait() for child.
+- *		If child exits with exit value 0,
+- *			Test passed
+- *		else
+- *			Test Failed
+- *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
+- *
+- * USAGE:  <for command-line>
+- *  prctl02 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
+- *			where,  -c n : Run n copies concurrently.
+- *				-e   : Turn on errno logging.
+- *				-h   : Show help screen
+- *				-f   : Turn off functional testing
+- *				-i n : Execute test n times.
+- *				-I x : Execute test for x seconds.
+- *				-p   : Pause for SIGUSR1 before starting
+- *				-P x : Pause for x seconds between iterations.
+- *				-t   : Turn on syscall timing.
+- *
+- ****************************************************************/
+ 
+ #include <errno.h>
+ #include <signal.h>
+ #include <sys/prctl.h>
+-#include <sys/wait.h>
+ 
+-#include "test.h"
++#include "tst_test.h"
+ 
+ #define OPTION_INVALID 999
+ #define INVALID_ARG 999
+ 
+-static void setup(void);
+-static void cleanup(void);
+-
+-char *TCID = "prctl02";
+-
+-struct test_cases_t {
++static struct test_cases_t {
+ 	int option;
+ 	unsigned long arg2;
+ 	int exp_errno;
+ } test_cases[] = {
+-	{
+-	OPTION_INVALID, 0, EINVAL}, {
+-	PR_SET_PDEATHSIG, INVALID_ARG, EINVAL}
++	{OPTION_INVALID, 0, EINVAL},
++	{PR_SET_PDEATHSIG, INVALID_ARG, EINVAL},
+ };
+ 
+-int TST_TOTAL = sizeof(test_cases) / sizeof(test_cases[0]);
+-
+-int main(int ac, char **av)
++static void verify_prctl(unsigned int n)
+ {
++	struct test_cases_t *tc = &test_cases[n];
+ 
+-	int lc, i;
+-	pid_t child_pid;
+-	int status;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		for (i = 0; i < TST_TOTAL; ++i) {
+-
+-			switch (child_pid = FORK_OR_VFORK()) {
+-
+-			case -1:
+-				/* fork() failed */
+-				tst_resm(TFAIL, "fork() failed");
+-				continue;
+-
+-			case 0:
+-				/* Child */
+-
+-				TEST(prctl(test_cases[i].option,
+-					   test_cases[i].arg2));
+-				if ((TEST_RETURN == -1) && (TEST_ERRNO ==
+-							    test_cases
+-							    [i].exp_errno)) {
+-					exit(TEST_ERRNO);
+-				} else {
+-					tst_resm(TWARN | TTERRNO,
+-						 "prctl() returned %ld",
+-						 TEST_RETURN);
+-					exit(TEST_ERRNO);
+-				}
+-
+-			default:
+-				/* Parent */
+-				if ((waitpid(child_pid, &status, 0)) < 0) {
+-					tst_resm(TFAIL, "waitpid() failed");
+-					continue;
+-				}
+-
+-				if ((WIFEXITED(status)) && (WEXITSTATUS(status)
+-							    ==
+-							    test_cases
+-							    [i].exp_errno)) {
+-					tst_resm(TPASS, "Test Passed");
+-				} else {
+-					tst_resm(TFAIL, "Test Failed");
+-				}
+-
+-			}
+-		}
++	TEST(prctl(tc->option, tc->arg2));
++	if (TEST_RETURN == 0) {
++		tst_res(TFAIL, "prctl() succeeded unexpectedly");
++		return;
+ 	}
+ 
+-	/* cleanup and exit */
+-	cleanup();
+-
+-	tst_exit();
+-
+-}
+-
+-/* setup() - performs all ONE TIME setup for this test */
+-void setup(void)
+-{
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
++	if (TEST_ERRNO == tc->exp_errno) {
++		tst_res(TPASS | TTERRNO, "prctl() failed as expected");
++	} else {
++		tst_res(TPASS | TTERRNO, "prctl() failed unexpectedly, "
++			"expected %s", tst_strerrno(tc->exp_errno));
++	}
+ }
+ 
+-/*
+- *cleanup() -  performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- */
+-void cleanup(void)
+-{
+-
+-}
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(test_cases),
++	.test = verify_prctl,
++};
+-- 
+1.8.3.1
+
 
 
