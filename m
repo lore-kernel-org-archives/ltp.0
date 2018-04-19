@@ -1,32 +1,87 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 19 Apr 2018 16:08:50 +0300
-Subject: [LTP] [PATCH 1/1] network/vxlan02.sh: Fix duplicate parameters
-In-Reply-To: <20180417184820.6kq7xxuedd5rh2vt@dell5510>
-References: <20180416221141.2781-1-pvorel@suse.cz>
- <1ea39ca6-a8c1-92b1-809f-8df162d36ee0@oracle.com>
- <68b8a150-1dc5-258b-ca43-98599954c400@oracle.com>
- <20180417184820.6kq7xxuedd5rh2vt@dell5510>
-Message-ID: <715f5044-c37e-46b1-9a40-2b3d1f972844@oracle.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 19 Apr 2018 15:11:34 +0200
+Subject: [LTP] [PATCH v2 1/2] network/in6_02: Don't use default value for
+	LHOST_IFACES
+Message-ID: <20180419131135.23693-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 04/17/2018 09:48 PM, Petr Vorel wrote:
-...
+In case of LHOST_IFACES not being defined was 'eth0' used as default.
+Although eth0 is common iface, we cannot guarantee it, therefore skip
+testing it.
 
->> Not related to the patch, also noted that now vxlan03.sh tests
->> have some errors when parsing the args. Not sure if it has any
->> effect on the test itself...
-> 
->> vxlan03.sh -d uni
->> /opt/ltp/testcases/bin/vxlan03.sh: illegal option -- d
->> /opt/ltp/testcases/bin/tst_net.sh: line 37: ?: command not found
-> 
-> Thanks for report, fixed in
-> 06ee2b027 network/vxlan03: Fix getopts parameters passed to virt_lib.sh
+Also check sscanf return value to catch whitespace only.
 
-With this patch vxlan03 ignores the '-6' option.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Changes v1->v2:
+* Add check before rewriting into new API.
+* Check sscanf return value to catch whitespace only.
 
-And tst_net.sh sourced two times there, in virt_lib.sh and in vxlan03.sh.
+NOTE: with LHOST_IFACES="lo" (or other from n2i) it's tested twice, but
+I ignore it.
+---
+Not sure if I need to put all longer strings in tst_res on new line.
+---
+ testcases/network/lib6/in6_02.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/testcases/network/lib6/in6_02.c b/testcases/network/lib6/in6_02.c
+index 7cb362666..e1a71d987 100644
+--- a/testcases/network/lib6/in6_02.c
++++ b/testcases/network/lib6/in6_02.c
+@@ -34,7 +34,7 @@ static struct {
+ 	int nonzero;
+ } n2i[] = {
+ 	{ "lo", 1 },
+-	{ "eth0", 1 },
++	{ NULL, 1 },
+ 	{ "hoser75", 0 },
+ 	{ "6", 0 },
+ };
+@@ -80,6 +80,11 @@ void n2itest(void)
+ 	char ifname[IF_NAMESIZE], *pifn;
+ 
+ 	for (i = 0; i < N2I_COUNT; ++i) {
++		if (n2i[i].name == NULL) {
++			tst_resm(TCONF, "LHOST_IFACES not defined or invalid, skip testing it");
++			return;
++		}
++
+ 		TEST(if_nametoindex(n2i[i].name));
+ 		if (!TEST_RETURN != !n2i[i].nonzero) {
+ 			tst_resm(TFAIL, "if_nametoindex(\"%s\") %ld "
+@@ -256,22 +261,17 @@ void setup(void)
+ {
+ 	TEST_PAUSE;
+ 
+-	tst_resm(TINFO, "get interface name from LHOST_IFACES var");
+-
+ 	char *ifnames = getenv("LHOST_IFACES");
+-
+-	if (!ifnames) {
+-		tst_resm(TWARN, "LHOST_IFACES not defined, default to eth0");
++	if (!ifnames)
+ 		return;
+-	}
+ 
+ 	static char name[256];
++	int ret;
+ 
+-	sscanf(ifnames, "%255s", name);
+-
+-	if (!strcmp(name, n2i[1].name))
++	ret = sscanf(ifnames, "%255s", name);
++	if (ret == -1)
+ 		return;
+ 
+-	tst_resm(TINFO, "change default 'eth0' name to '%s'", name);
++	tst_resm(TINFO, "get interface name from LHOST_IFACES: '%s'", name);
+ 	n2i[1].name = name;
+ }
+-- 
+2.16.3
+
