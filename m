@@ -1,36 +1,39 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 19 Apr 2018 16:32:26 +0300
-Subject: [LTP] [PATCH 1/2] lib/tst_net.sh: don't init ltp_ns if custom
- is used
-In-Reply-To: <063172db-a8e0-c68a-0aa9-b430000ebc62@oracle.com>
-References: <1523549352-1794-1-git-send-email-alexey.kodanev@oracle.com>
- <063172db-a8e0-c68a-0aa9-b430000ebc62@oracle.com>
-Message-ID: <7e97217f-59ec-7c16-ca08-ccd451b5bbce@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 19 Apr 2018 16:17:49 +0200
+Subject: [LTP] LTP Release preparations
+In-Reply-To: <20180412113532.GA5963@rei>
+References: <20180412113532.GA5963@rei>
+Message-ID: <20180419141749.GA13045@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 04/12/2018 07:45 PM, Alexey Kodanev wrote:
-...
->> -	if [ ! -f /var/run/netns/ltp_ns ]; then
->> +	if [ ! -f /var/run/netns/ltp_ns -a -z "$LTP_NETNS" ]; then
->>  		ROD ip li add name ltp_ns_veth1 type veth peer name ltp_ns_veth2
->>  		pid="$(ROD ns_create net,mnt)"
->>  		mkdir -p /var/run/netns
->> @@ -112,6 +112,8 @@ init_ltp_netspace()
->>  		ROD ns_exec $pid net,mnt mount -t sysfs none /sys
->>  		ROD ns_ifmove ltp_ns_veth1 $pid
->>  		ROD ns_exec $pid net,mnt ip li set lo up
->> +	else
+Hi!
+> It's about the time we should slowly prepare for the next release, as
+> usuall let's start with a list of patches that should go in before we
+> enter the stabilization phase.
 > 
-> It should have been 'elif [ -n "$LTP_NETNS" ] ...' here instead.
-> Otherwise the info will be printed if "/var/run/netns/ltp_ns"
-> already exists.
+> As for me I would like to get the two speedup patchsets in, one of them
+> only waits for ack from Jan, the second one would probably benefit from
+> some more review. I will try to merge everything that is good to go and
+> just waiting for a review ASAP.
 > 
->> +		tst_res_ TINFO "using not default LTP netns: '$LTP_NETNS'"
->>  	fi
->>  
+> Anything else that should really go in?
 
-Applied the patch series with the above changes.
+Ping.
+
+I suppose that we should get in the fix for the read_all testcase along
+with the exponential back off.
+
+Also I would like to get in the needs_rofs patchset.
+
+There is also patch for converting our python code to be python3
+compatible that is worth looking into.
+
+Anything else?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
