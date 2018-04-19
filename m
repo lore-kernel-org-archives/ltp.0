@@ -1,9 +1,7 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 19 Apr 2018 10:50:57 +0800
-Subject: [LTP] [PATCH 2/2] syscalls/prctl02: Rewrite to the new library
-In-Reply-To: <1524106257-4711-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1524106257-4711-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1524106257-4711-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Thu, 19 Apr 2018 10:50:56 +0800
+Subject: [LTP] [PATCH 1/2] syscalls/prctl01: Rewrite to the new library
+Message-ID: <1524106257-4711-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,14 +10,14 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/prctl/prctl02.c | 203 ++++++------------------------
- 1 file changed, 39 insertions(+), 164 deletions(-)
+ testcases/kernel/syscalls/prctl/prctl01.c | 197 ++++++------------------------
+ 1 file changed, 40 insertions(+), 157 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/prctl/prctl02.c b/testcases/kernel/syscalls/prctl/prctl02.c
-index 67e3b6f..f412e21 100644
---- a/testcases/kernel/syscalls/prctl/prctl02.c
-+++ b/testcases/kernel/syscalls/prctl/prctl02.c
-@@ -1,189 +1,64 @@
+diff --git a/testcases/kernel/syscalls/prctl/prctl01.c b/testcases/kernel/syscalls/prctl/prctl01.c
+index 1857dfb..58e0ae7 100644
+--- a/testcases/kernel/syscalls/prctl/prctl01.c
++++ b/testcases/kernel/syscalls/prctl/prctl01.c
+@@ -1,174 +1,57 @@
  /*
   * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
   *
@@ -51,17 +49,16 @@ index 67e3b6f..f412e21 100644
 +
 +/*
 + * DESCRIPTION
-+ * 1) prctl() fails with EINVAL when an invalid value is given for option
-+ * 2) prctl() fails with EINVAL when option is PR_SET_PDEATHSIG & arg2 is
-+ * not zero or a valid signal number
++ * This is a Phase I test for the prctl(2) system call.
++ * It is intended to provide a limited exposure of the system call.
   */
 -/**********************************************************
 - *
-- *    TEST IDENTIFIER	: prctl02
+- *    TEST IDENTIFIER	: prctl01
 - *
 - *    EXECUTED BY	: anyone
 - *
-- *    TEST TITLE	: Tests for error conditions
+- *    TEST TITLE	: Basic test for prctl(2)
 - *
 - *    TEST CASE TOTAL	: 2
 - *
@@ -72,11 +69,8 @@ index 67e3b6f..f412e21 100644
 - * 	(See the parse_opts(3) man page).
 - *
 - *    DESCRIPTION
-- *	Verify that
-- *	1) prctl() fails with errno, EINVAL when an invalid value is given for
-- *	   option
-- *	2) prctl() fails with errno, EINVAL when option is PR_SET_PDEATHSIG
-- *	   & arg2 is not zero or a valid signal number
+- *	This is a Phase I test for the prctl(2) system call.
+- *	It is intended to provide a limited exposure of the system call.
 - *
 - * 	Setup:
 - * 	  Setup signal handling.
@@ -88,7 +82,7 @@ index 67e3b6f..f412e21 100644
 - *
 - *	 CHILD:
 - *		call prctl() with proper arguments
-- *		If call fails with expected errno,
+- *		If call succeeds,
 - *			exit with 0
 - *		else
 - *			exit with 1
@@ -103,7 +97,7 @@ index 67e3b6f..f412e21 100644
 - * 	  Print errno log and/or timing stats if options given
 - *
 - * USAGE:  <for command-line>
-- *  prctl02 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
+- *  prctl01 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
 - *			where,  -c n : Run n copies concurrently.
 - *				-e   : Turn on errno logging.
 - *				-h   : Show help screen
@@ -120,41 +114,27 @@ index 67e3b6f..f412e21 100644
  #include <signal.h>
  #include <sys/prctl.h>
 -#include <sys/wait.h>
- 
+-
 -#include "test.h"
-+#include "tst_test.h"
- 
- #define OPTION_INVALID 999
- #define INVALID_ARG 999
- 
+-
 -static void setup(void);
 -static void cleanup(void);
--
--char *TCID = "prctl02";
--
--struct test_cases_t {
-+static struct test_cases_t {
- 	int option;
- 	unsigned long arg2;
- 	int exp_errno;
- } test_cases[] = {
--	{
--	OPTION_INVALID, 0, EINVAL}, {
--	PR_SET_PDEATHSIG, INVALID_ARG, EINVAL}
-+	{OPTION_INVALID, 0, EINVAL},
-+	{PR_SET_PDEATHSIG, INVALID_ARG, EINVAL},
- };
  
--int TST_TOTAL = sizeof(test_cases) / sizeof(test_cases[0]);
+-char *TCID = "prctl01";
++#include "tst_test.h"
+ 
+-int option[2] = { PR_GET_PDEATHSIG, PR_SET_PDEATHSIG };
+-
+-int TST_TOTAL = 2;
 -
 -int main(int ac, char **av)
-+static void verify_prctl(unsigned int n)
++static void verify_prctl(void)
  {
-+	struct test_cases_t *tc = &test_cases[n];
++	int get_sig = 0;
  
 -	int lc, i;
 -	pid_t child_pid;
--	int status;
+-	int status, sig;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
@@ -175,18 +155,20 @@ index 67e3b6f..f412e21 100644
 -
 -			case 0:
 -				/* Child */
+-				if (i == 1) {
+-					sig = SIGUSR2;
+-					TEST(prctl(option[i], sig));
+-				} else {
+-					TEST(prctl(option[i], &sig));
+-				}
 -
--				TEST(prctl(test_cases[i].option,
--					   test_cases[i].arg2));
--				if ((TEST_RETURN == -1) && (TEST_ERRNO ==
--							    test_cases
--							    [i].exp_errno)) {
--					exit(TEST_ERRNO);
+-				if (TEST_RETURN == 0) {
+-					exit(0);
 -				} else {
 -					tst_resm(TWARN | TTERRNO,
 -						 "prctl() returned %ld",
 -						 TEST_RETURN);
--					exit(TEST_ERRNO);
+-					exit(1);
 -				}
 -
 -			default:
@@ -196,10 +178,8 @@ index 67e3b6f..f412e21 100644
 -					continue;
 -				}
 -
--				if ((WIFEXITED(status)) && (WEXITSTATUS(status)
--							    ==
--							    test_cases
--							    [i].exp_errno)) {
+-				if ((WIFEXITED(status)) &&
+-				    (WEXITSTATUS(status) == 0)) {
 -					tst_resm(TPASS, "Test Passed");
 -				} else {
 -					tst_resm(TFAIL, "Test Failed");
@@ -207,15 +187,14 @@ index 67e3b6f..f412e21 100644
 -
 -			}
 -		}
-+	TEST(prctl(tc->option, tc->arg2));
-+	if (TEST_RETURN == 0) {
-+		tst_res(TFAIL, "prctl() succeeded unexpectedly");
++	TEST(prctl(PR_SET_PDEATHSIG, SIGUSR2));
++	if (TEST_RETURN == -1) {
++		tst_res(TFAIL | TTERRNO, "prctl(PR_SET_PDEATHSIG) failed");
 +		return;
  	}
  
 -	/* cleanup and exit */
 -	cleanup();
--
 -	tst_exit();
 -
 -}
@@ -227,12 +206,18 @@ index 67e3b6f..f412e21 100644
 -	tst_sig(FORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
--
-+	if (TEST_ERRNO == tc->exp_errno) {
-+		tst_res(TPASS | TTERRNO, "prctl() failed as expected");
++	TEST(prctl(PR_GET_PDEATHSIG, &get_sig));
++	if (TEST_RETURN == -1) {
++		tst_res(TFAIL | TTERRNO, "prctl(PR_GET_PDEATHSIG) failed");
++		return;
++	}
+ 
++	if (get_sig == SIGUSR2) {
++		tst_res(TPASS,
++			"prctl(PR_GET_PDEATHSIG) got expected death signal");
 +	} else {
-+		tst_res(TPASS | TTERRNO, "prctl() failed unexpectedly, "
-+			"expected %s", tst_strerrno(tc->exp_errno));
++		tst_res(TFAIL, "prctl(PR_GET_PDEATHSIG) got death signal %d,"
++			" expected %d", get_sig, SIGUSR2);
 +	}
  }
  
@@ -245,8 +230,7 @@ index 67e3b6f..f412e21 100644
 -
 -}
 +static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(test_cases),
-+	.test = verify_prctl,
++	.test_all = verify_prctl,
 +};
 -- 
 1.8.3.1
