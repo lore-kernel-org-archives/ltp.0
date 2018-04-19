@@ -1,35 +1,24 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 18 Apr 2018 17:06:27 +0200
-Subject: [LTP] Errored: linux-test-project/ltp#758 (master - 06ee2b0)
-In-Reply-To: <20180418092528.2l4kqfxk3sopdxlo@dell5510>
-References: <linux-test-project/ltp+367800244+errored@travis-ci.org>
- <5ad64480951dd_43f9e19419460435637@6c41ee02-ea54-406b-b1d2-cd774a36365b.mail>
- <20180418061152.i44g47utzldyw7lc@dell5510>
- <20180418092152.GA4266@rei>
- <20180418092528.2l4kqfxk3sopdxlo@dell5510>
-Message-ID: <20180418150627.GA13866@rei>
+From: Xu, Yang <xuyang.jy@cn.fujitsu.com>
+Date: Thu, 19 Apr 2018 02:15:29 +0000
+Subject: [LTP] [PATCH 2/5] syscalls/mkdir01,
+ 03: Cleanup && Convert to new API
+Message-ID: <CB712E87BDAB7C41913DE4CFF4203A7B6A095170@G08CNEXMBPEKD01.g08.fujitsu.local>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > > False positive, again. This time it's due failing to install Java
-> > > (oracle-java8-installer and oracle-java9-installer).
-> > > I delete these repositories.
-> 
-> > I wonder if we can do something as disable everything but the base
-> > repositories + the few we actually need...
-> Done:
-> 12cecc580 travis: Remove unnecessary third party apt repositories
+>Hi!
+>The mkdir03 was rewritten meanwhile by Sandeep Patil, sorry for not reviewing your patch sooner. I've pushed the part of 
+> this patch that removes mkdir01 since the case is covered by the mkdir03 already, thanks.
+Hi   
+ I know mkdir03 has been written by Sandeep Patil, but this patch applies tst_get_bad_addr function to mkdir03 and simplifies the test. 
 
-Thanks a lot!
+Thanks
+Yang Xu
+>--
+>Cyril Hrubis
+>chrubis@suse.cz
 
-> Hope this definitely solves travis false positives.
 
-So do I.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
