@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 20 Apr 2018 13:36:46 +0200
-Subject: [LTP] [RFC PATCH v3 07/10] ima/ima_mmap: Reduce sleep + log it
-In-Reply-To: <20180419195503.7194-8-pvorel@suse.cz>
+Date: Fri, 20 Apr 2018 13:42:32 +0200
+Subject: [LTP] [RFC PATCH v3 10/10] ima/ima_mmap: Rewrite to new library
+In-Reply-To: <20180419195503.7194-11-pvorel@suse.cz>
 References: <20180419195503.7194-1-pvorel@suse.cz>
- <20180419195503.7194-8-pvorel@suse.cz>
-Message-ID: <20180420113646.GC19090@rei>
+ <20180419195503.7194-11-pvorel@suse.cz>
+Message-ID: <20180420114232.GD19090@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,13 +12,15 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Proper synchronization between the processes wouldn't harm here.
+> -	ima_mmap $FILE &
+> +	ima_mmap -f $FILE &
+>  	# wait for violations appear in logs
+>  	tst_sleep 1s
 
-FIY: we do have checkpoints for the shell library that can be used both
-     from C sources as well as shell.
+Whenever we wait for logs we should poll for them.
 
-But given how big this patchset is at this point, it can wait for v2 I
-guess.
+But same as the sleep in previous case, let's get these tests fixed
+first, then we can improve on the performance and robustness.
 
 -- 
 Cyril Hrubis
