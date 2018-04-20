@@ -1,119 +1,78 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 20 Apr 2018 11:56:54 +0800
-Subject: [LTP] LTP Release preparations
-In-Reply-To: <20180419141749.GA13045@rei>
-References: <20180412113532.GA5963@rei> <20180419141749.GA13045@rei>
-Message-ID: <CAEemH2dxxvwC8fHwJuxACEjDZxfxLBjx8VFhC=dJDMcV4=vbmA@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 20 Apr 2018 09:21:21 +0200
+Subject: [LTP] [PATCH v3 1/2] network/in6_02: Don't use default value for
+	LHOST_IFACES
+Message-ID: <20180420072122.16897-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Apr 19, 2018 at 10:17 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
+In case of LHOST_IFACES not being defined was 'eth0' used as default.
+Although eth0 is common iface, we cannot guarantee it, therefore skip
+testing it.
 
-> Hi!
-> > It's about the time we should slowly prepare for the next release, as
-> > usuall let's start with a list of patches that should go in before we
-> > enter the stabilization phase.
-> >
-> > As for me I would like to get the two speedup patchsets in, one of them
-> > only waits for ack from Jan, the second one would probably benefit from
-> > some more review. I will try to merge everything that is good to go and
-> > just waiting for a review ASAP.
-> >
-> > Anything else that should really go in?
->
-> Ping.
->
-> I suppose that we should get in the fix for the read_all testcase along
-> with the exponential back off.
->
+Also check sscanf return value to catch whitespace only.
 
-​I'm hesitating if we should abandon the old patch[1] and re-rewrite a new
-one
-(which base on the new TST_RETRY_FUNC macro) to fix the problem.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/network/lib6/in6_02.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-​[1]​ http://lists.linux.it/pipermail/ltp/2018-April/007704.html
-
------------------
-something new like:
-
---- a/testcases/kernel/fs/read_all/read_all.c
-+++ b/testcases/kernel/fs/read_all/read_all.c
-@@ -265,23 +265,14 @@ static void spawn_workers(void)
- static void stop_workers(void)
+diff --git a/testcases/network/lib6/in6_02.c b/testcases/network/lib6/in6_02.c
+index 7cb362666..e1a71d987 100644
+--- a/testcases/network/lib6/in6_02.c
++++ b/testcases/network/lib6/in6_02.c
+@@ -34,7 +34,7 @@ static struct {
+ 	int nonzero;
+ } n2i[] = {
+ 	{ "lo", 1 },
+-	{ "eth0", 1 },
++	{ NULL, 1 },
+ 	{ "hoser75", 0 },
+ 	{ "6", 0 },
+ };
+@@ -80,6 +80,11 @@ void n2itest(void)
+ 	char ifname[IF_NAMESIZE], *pifn;
+ 
+ 	for (i = 0; i < N2I_COUNT; ++i) {
++		if (n2i[i].name == NULL) {
++			tst_resm(TCONF, "LHOST_IFACES not defined or invalid, skip testing it");
++			return;
++		}
++
+ 		TEST(if_nametoindex(n2i[i].name));
+ 		if (!TEST_RETURN != !n2i[i].nonzero) {
+ 			tst_resm(TFAIL, "if_nametoindex(\"%s\") %ld "
+@@ -256,22 +261,17 @@ void setup(void)
  {
-        const char stop_code[1] = { '\0' };
--       int i, stop_attempts;
-+       int i;
-
-        if (!workers)
-                return;
-
-        for (i = 0; i < worker_count; i++) {
--               stop_attempts = 0xffff;
--               if (workers[i].q) {
--               if (workers[i].q) {
--                       while (!queue_push(workers[i].q, stop_code)) {
--                               if (--stop_attempts < 0) {
--                                       tst_brk(TBROK,
--                                               "Worker %d is stalled",
--                                               workers[i].pid);
--                                       break;
--                               }
--                       }
--               }
-+               if (workers[i].q)
-+                       TST_RETRY_FUNC(queue_push(workers[i].q, stop_code),
-1);
-        }
-
-        for (i = 0; i < worker_count; i++) {
-@@ -292,33 +283,15 @@ static void stop_workers(void)
-        }
+ 	TEST_PAUSE;
+ 
+-	tst_resm(TINFO, "get interface name from LHOST_IFACES var");
+-
+ 	char *ifnames = getenv("LHOST_IFACES");
+-
+-	if (!ifnames) {
+-		tst_resm(TWARN, "LHOST_IFACES not defined, default to eth0");
++	if (!ifnames)
+ 		return;
+-	}
+ 
+ 	static char name[256];
++	int ret;
+ 
+-	sscanf(ifnames, "%255s", name);
+-
+-	if (!strcmp(name, n2i[1].name))
++	ret = sscanf(ifnames, "%255s", name);
++	if (ret == -1)
+ 		return;
+ 
+-	tst_resm(TINFO, "change default 'eth0' name to '%s'", name);
++	tst_resm(TINFO, "get interface name from LHOST_IFACES: '%s'", name);
+ 	n2i[1].name = name;
  }
-
--static void sched_work(const char *path)
--{
--       static int cur;
--       int push_attempts = 0, pushed;
--
--       while (1) {
--               pushed = queue_push(workers[cur].q, path);
--
--               if (++cur >= worker_count)
--                       cur = 0;
--
--               if (pushed)
--                       break;
--
--               if (++push_attempts > worker_count) {
--                       usleep(100);
--                       push_attempts = 0;
--               }
--       }
--}
--
- static void rep_sched_work(const char *path, int rep)
- {
--       int i;
-+       int i, j;
-
--       for (i = 0; i < rep; i++)
--               sched_work(path);
-+       for (i = j = 0; i < rep; i++, j++) {
-+               if (j >= 15)
-+                       j = 0;
-+               TST_RETRY_FUNC(queue_push(workers[j].q, path), 1);
-+       }
- }
-
-
-
 -- 
-Li Wang
-liwang@redhat.com
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180420/1ae8918e/attachment-0001.html>
+2.16.3
+
