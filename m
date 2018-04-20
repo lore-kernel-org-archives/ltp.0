@@ -1,38 +1,44 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 20 Apr 2018 10:15:02 +0200
-Subject: [LTP] [PATCH 2/2] network/in6_02: Don't use default value for
- LHOST_IFACES
-In-Reply-To: <34e6a4c1-4a2f-dda1-3b83-03d4930a08ec@oracle.com>
-References: <20180417124207.4561-1-pvorel@suse.cz>
- <20180417124207.4561-2-pvorel@suse.cz>
- <f28265d1-10a0-f7d0-248d-e0b8b709eea8@oracle.com>
- <20180418141356.fuqueijmwjf2mvew@dell5510>
- <34e6a4c1-4a2f-dda1-3b83-03d4930a08ec@oracle.com>
-Message-ID: <20180420081502.vdhd7rf2dlzc4cjv@dell5510>
+Date: Fri, 20 Apr 2018 10:26:36 +0200
+Subject: [LTP] [PATCH ltp 1/6] fs/acls/acl_test01: Fix shellcheck issue
+ SC2069
+In-Reply-To: <20180420031855.22657-1-yixin.zhang@intel.com>
+References: <20180420031855.22657-1-yixin.zhang@intel.com>
+Message-ID: <20180420082636.vswthbnkqrrap2be@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi Yixin,
 
-> >> What about using TCONF if it skips the test-case because
-> >> LHOST_IFACE is not defined?
-> > I wanted to keep at least testing of if_nametoindex("lo").
-> > Would be overkill in case of TCONF to create in6_02.sh which would just load tst_net.sh?
-> > I don't like the fact, that network C tests depend on being run via network.sh (unlike
-> > shell network tests).
+thanks for fixes, obviously correct whole patchset.
 
-> Why it depends on network.sh? LHOST_IFACE is just an environment variable.
-> It can be defined on the test machine already before the test is started,
-> or with tst_net.sh.
-Yes, but that's what I doesn't like: you need to source tst_net.sh (either with network.sh
-or manually). Not a big issue, it's just you shouldn't run C tests like in6_02 without
-variables. This is different from other non-networking tests, which you can run as they
-are (without any preparation, setup).
-This is the reason I was thinking about wrapping any C test which need variables with
-shell script which source tst_net.sh for it.
+Acked-by: Petr Vorel <pvorel@suse.cz>
+
 
 Kind regards,
 Petr
+
+> error: The order of the 2>&1 and the redirect matters. The 2>&1 has to
+> be last. [SC2069]
+
+> Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+> ---
+>  testcases/kernel/fs/acls/acl_test01 | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+> diff --git a/testcases/kernel/fs/acls/acl_test01 b/testcases/kernel/fs/acls/acl_test01
+> index 63683e707..c91eb5686 100755
+> --- a/testcases/kernel/fs/acls/acl_test01
+> +++ b/testcases/kernel/fs/acls/acl_test01
+> @@ -78,7 +78,7 @@ do_setup()
+>  		tst_brkm TCONF "[ losetup.1 ] Failed to find an available loopback device -- is the required support compiled in your kernel?"
+>  	fi
+
+> -	if ! losetup $LOOP_DEV $TMP/tacl/blkext3 2>&1 > /dev/null; then
+> +	if ! losetup $LOOP_DEV $TMP/tacl/blkext3 > /dev/null 2>&1; then
+>  		echo ""
+>  		tst_brkm TCONF "[ losetup.2 ] Failed to setup the device."
+>  	fi
