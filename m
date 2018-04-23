@@ -1,110 +1,53 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 23 Apr 2018 11:17:06 +0200
-Subject: [LTP] [PATCH v2 1/1] tst_test.sh: Add test cmd helper
-	tst_test_cmds()
-Message-ID: <20180423091706.24154-1-pvorel@suse.cz>
+From: =?unknown-8bit?q?Myl=C3=A8ne?= Josserand <mylene.josserand@bootlin.com>
+Date: Mon, 23 Apr 2018 11:46:30 +0200
+Subject: [LTP] [RFC PATCH 0/9] testcases: small improvements with TCONF
+Message-ID: <20180423094639.14612-1-mylene.josserand@bootlin.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-+ tst_cmd_available()
+Hello everyone,
 
-tst_test_cmds() is meant to be a check just for a particular test.
-Works like tst_check_cmds(), but instead of tst_brk() calls tst_res().
+I am currently trying LTP on an embededed device and while running
+some tests, I noticed that some of them are returning "FAIL" but most
+of the time, it is because some binaries (or options) are not available
+on my root filesystem. Instead of returning "FAIL", I think they should 
+return "TCONF". This is what this series does.
 
-tst_cmd_available() helper can handle cases when command shell builtin
-is not available (e.g. Busybox).
+I haven't finished to run all the tests yet so I will send another bunch
+of patches with other improvements. As it is the first time I used this
+project and that I contributes to it, reviews or feedbacks on this first
+set of patches would be very appreciated.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
+Thank you in advance!
 
-if you don't like using which or testing with 127 exit code in
-tst_cmd_available() (or if you don't like tst_cmd_available()), I
-can remove it.
+Best regards,
+Mylène
 
+Mylène Josserand (9):
+  testcases: su: Fix userdel use
+  testcases: ar: Add TST_NEEDS_CMDS on "ar"
+  testcases: file: Add TST_NEEDS_CMDS on readelf
+  testcases: tar: Add TST_NEEDS_CMDS on gzip and bzip
+  testcases: logrotate: Check if "file" command exists
+  testcases: wc: Add "unrecognized option" as TCONF
+  testcases: df: Add "--printf" option as needed commands
+  testcases: test.sh: Check if "getconf" is available
+  testcases: cpuset: Check if "getconf" is available
 
-Kind regards,
-Petr
----
- doc/test-writing-guidelines.txt | 17 +++++++++++++++++
- testcases/lib/tst_test.sh       | 29 +++++++++++++++++++++++++++--
- 2 files changed, 44 insertions(+), 2 deletions(-)
+ testcases/commands/ar/ar01                                    | 3 +++
+ testcases/commands/df/df01.sh                                 | 2 ++
+ testcases/commands/file/file01.sh                             | 2 ++
+ testcases/commands/logrotate/logrotate_tests.sh               | 3 ++-
+ testcases/commands/su/su01                                    | 6 ++++--
+ testcases/commands/tar/tar_tests.sh                           | 2 ++
+ testcases/commands/wc/wc01.sh                                 | 2 +-
+ testcases/kernel/controllers/cpuset/cpuset_regression_test.sh | 2 ++
+ testcases/lib/test.sh                                         | 2 ++
+ 9 files changed, 20 insertions(+), 4 deletions(-)
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index cbbfe6c0f..320b42bf8 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -1519,6 +1519,23 @@ existence each of them and exits the test with 'TCONF' on first misssing.
- Alternatively the 'tst_check_cmds()' function can be used to do the same on
- runtime, since sometimes we need to the check at runtime too.
- 
-+'tst_test_cmds()' can be used for requirements just for a particular test
-+as it doesn't exit (it issues 'tst_res TCONF'). Expected usage is:
-+...
-+
-+TST_TESTFUNC=do_test
-+. tst_test.sh
-+
-+do_test()
-+{
-+	tst_test_cmds cmd || return
-+	cmd --foo
-+	...
-+}
-+
-+tst_run
-+...
-+
- Locating kernel modules
- +++++++++++++++++++++++
- 
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 8d49d34b6..b3e803e05 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -201,12 +201,37 @@ tst_mkfs()
- 	ROD_SILENT mkfs.$fs_type $fs_opts $device
- }
- 
-+tst_cmd_available()
-+{
-+	if type command > /dev/null 2>&1; then
-+		command -v $1 > /dev/null 2>&1 || return 1
-+	else
-+		which $1 > /dev/null 2>&1
-+		if [ $? -eq 0 ]; then
-+			return 0
-+		elif [ $? -eq 127 ]; then
-+			tst_brk TCONF "missing which command"
-+		else
-+			return 1
-+		fi
-+	fi
-+}
-+
- tst_check_cmds()
- {
- 	local cmd
- 	for cmd in $*; do
--		if ! command -v $cmd > /dev/null 2>&1; then
--			tst_brk TCONF "'$cmd' not found"
-+		tst_cmd_available $cmd || tst_brk TCONF "'$cmd' not found"
-+	done
-+}
-+
-+tst_test_cmds()
-+{
-+	local cmd
-+	for cmd in $*; do
-+		if ! tst_cmd_available $cmd; then
-+			tst_res TCONF "'$cmd' not found"
-+			return 1
- 		fi
- 	done
- }
 -- 
-2.16.3
+2.11.0
 
