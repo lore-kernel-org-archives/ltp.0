@@ -1,41 +1,42 @@
 From: =?unknown-8bit?q?Myl=C3=A8ne?= Josserand <mylene.josserand@bootlin.com>
-Date: Mon, 23 Apr 2018 11:46:39 +0200
-Subject: [LTP] [RFC PATCH 9/9] testcases: cpuset: Check if "getconf" is
-	available
+Date: Mon, 23 Apr 2018 11:46:35 +0200
+Subject: [LTP] [RFC PATCH 5/9] testcases: logrotate: Check if "file" command
+	exists
 In-Reply-To: <20180423094639.14612-1-mylene.josserand@bootlin.com>
 References: <20180423094639.14612-1-mylene.josserand@bootlin.com>
-Message-ID: <20180423094639.14612-10-mylene.josserand@bootlin.com>
+Message-ID: <20180423094639.14612-6-mylene.josserand@bootlin.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-The "getconf" binary is used by cpuset_regression_test.sh
-and may not be installed in the system. The test will fail
-but it is a misconfiguration so let's use "tst_check_cmds"
-to check if this binary is available and return a TCONF error
-if not.
+Add "file" binary in the list of commands to check if
+they exist or not.
 
 Signed-off-by: Myl=C3=A8ne Josserand <mylene.josserand@bootlin.com>
 ---
- testcases/kernel/controllers/cpuset/cpuset_regression_test.sh | 2 ++
- 1 file changed, 2 insertions(+)
+ testcases/commands/logrotate/logrotate_tests.sh | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh =
-b/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
-index 4a104a3ad..96a57955c 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
-@@ -34,6 +34,8 @@ setup()
- 		tst_brkm TCONF "Test must be run with kernel 3.18.0 or newer"
+diff --git a/testcases/commands/logrotate/logrotate_tests.sh b/testcases/co=
+mmands/logrotate/logrotate_tests.sh
+index f5a22ddde..021972294 100755
+--- a/testcases/commands/logrotate/logrotate_tests.sh
++++ b/testcases/commands/logrotate/logrotate_tests.sh
+@@ -97,10 +97,11 @@ init()
+ 		 return $RC
  	fi
 =20
-+	tst_check_cmds "getconf"
-+
- 	local cpu_num=3D$(getconf _NPROCESSORS_ONLN)
- 	if [ $cpu_num -lt 2 ]; then
- 		tst_brkm TCONF "We need 2 cpus at least to have test"
+-	# check if commands tst_*, logrotate, awk exists.
++	# check if commands tst_*, logrotate, awk and file exists.
+ 	chk_ifexists INIT tst_resm  || return $RC
+ 	chk_ifexists INIT logrotate || return $RC
+ 	chk_ifexists INIT awk       || return $RC
++	chk_ifexists INIT file      || return $RC
+=20
+ 	return $RC
+ }
 --=20
 2.11.0
 
