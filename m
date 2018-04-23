@@ -1,42 +1,46 @@
-From: =?unknown-8bit?q?Myl=C3=A8ne?= Josserand <mylene.josserand@bootlin.com>
-Date: Mon, 23 Apr 2018 11:46:35 +0200
-Subject: [LTP] [RFC PATCH 5/9] testcases: logrotate: Check if "file" command
-	exists
-In-Reply-To: <20180423094639.14612-1-mylene.josserand@bootlin.com>
-References: <20180423094639.14612-1-mylene.josserand@bootlin.com>
-Message-ID: <20180423094639.14612-6-mylene.josserand@bootlin.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 23 Apr 2018 11:58:55 +0200
+Subject: [LTP] [PATCH v3 1/2] include: add an exponential backoff macro
+ for function repeat
+In-Reply-To: <20180421021600.17549-1-liwang@redhat.com>
+References: <20180421021600.17549-1-liwang@redhat.com>
+Message-ID: <20180423095855.GA24481@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add "file" binary in the list of commands to check if
-they exist or not.
+Hi!
+> +#define TST_RETRY_FN_EXP_BACKOFF(FUNC, ERET, MAX_DELAY)	\
+> +({	int tst_delay = 1;					\
+> +	for (;;) {						\
+> +		typeof(FUNC) ret = FUNC;			\
+                              ^
+		I prefixed this variable with tst_ and even added _
+		suffix to make sure that it will not alias either.
 
-Signed-off-by: Myl=C3=A8ne Josserand <mylene.josserand@bootlin.com>
----
- testcases/commands/logrotate/logrotate_tests.sh | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> +		if (ret == ERET)				\
+> +			break;					\
+> +		if (tst_delay < MAX_DELAY * 1000000) {		\
+> +			tst_res(TINFO,				\
+> +				#FUNC" returned %i, retrying"	\
+> +				" in %ius", ret, tst_delay);	\
+> +			usleep(tst_delay);			\
+> +			tst_delay *= 2;				\
+> +		} else {					\
+> +			tst_brk(TBROK, #FUNC" failed");		\
+> +		}						\
+> +	}							\
+> +	ERET;							\
+> +})
 
-diff --git a/testcases/commands/logrotate/logrotate_tests.sh b/testcases/co=
-mmands/logrotate/logrotate_tests.sh
-index f5a22ddde..021972294 100755
---- a/testcases/commands/logrotate/logrotate_tests.sh
-+++ b/testcases/commands/logrotate/logrotate_tests.sh
-@@ -97,10 +97,11 @@ init()
- 		 return $RC
- 	fi
-=20
--	# check if commands tst_*, logrotate, awk exists.
-+	# check if commands tst_*, logrotate, awk and file exists.
- 	chk_ifexists INIT tst_resm  || return $RC
- 	chk_ifexists INIT logrotate || return $RC
- 	chk_ifexists INIT awk       || return $RC
-+	chk_ifexists INIT file      || return $RC
-=20
- 	return $RC
- }
---=20
-2.11.0
+And pushed, thanks.
 
+I know that the documentation is there in the comment but we should
+probably add a note about the macro into the test-writing-guidelines.txt
+as well...
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
