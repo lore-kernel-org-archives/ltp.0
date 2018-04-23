@@ -1,130 +1,63 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 23 Apr 2018 09:44:52 +0200
-Subject: [LTP] [PATCH v3 2/2] read_all: wait children I/O reading in
-	limited time
-In-Reply-To: <20180421021600.17549-2-liwang@redhat.com>
-References: <20180421021600.17549-2-liwang@redhat.com>
-Message-ID: <87604itlhn.fsf@rpws.prws.suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 23 Apr 2018 09:52:12 +0200
+Subject: [LTP] [PATCH] add ip6tables test case
+In-Reply-To: <42e1043e-a0b0-a55c-d55f-be5561bbcdb1@cn.fujitsu.com>
+References: <42e1043e-a0b0-a55c-d55f-be5561bbcdb1@cn.fujitsu.com>
+Message-ID: <20180423075212.o5yifzur2rtvolrt@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi Lianwen Sun,
 
-Li Wang writes:
+> Add ip6tables test case base on case of iptables
 
-> read_all reports some stalled messges in test:
->  # ./read_all -d /sys -q -r 10
->    tst_test.c:987: INFO: Timeout per run is 0h 05m 00s
->    read_all.c:280: BROK: Worker 26075 is stalled
->    read_all.c:280: WARN: Worker 26075 is stalled
->    read_all.c:280: WARN: Worker 26079 is stalled
->    read_all.c:280: WARN: Worker 26087 is stalled
->
-> The reason is that some children are still working on the read
-> I/O but parent trys to stopping them after visit_dir immediately.
-> Although the stop_attemps is 65535, it still sometimes fails.
->
-> Instead, we take use of TST_RETRY_FUNC maroc to loop the stop
-> operation in limited seconds to wait children I/O.
->
-> And, the sched_work push action in an infinite loop, here merge it
-> into rep_sched_work with using TST_RETRY_FUNC macro.
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Cc: Richard Palethorpe <rpalethorpe@suse.de>
-> Cc: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> Cc: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: sunlw <sunlw.fnst@cn.fujitsu.com>
 > ---
->
-> Notes:
->     Hi Cyril and Richard,
->     
->     The purpose of this patch is to replace the old one[1] to solve
->     the children I/O issue. Please could you consider to merge or
->     comment on the change of using new marco.
->     
->     [1] http://lists.linux.it/pipermail/ltp/2018-April/007704.html
->
->  testcases/kernel/fs/read_all/read_all.c | 45 +++++++--------------------------
->  1 file changed, 9 insertions(+), 36 deletions(-)
->
-> diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/read_all/read_all.c
-> index b7ed540..b420e37 100644
-> --- a/testcases/kernel/fs/read_all/read_all.c
-> +++ b/testcases/kernel/fs/read_all/read_all.c
-> @@ -265,23 +265,14 @@ static void spawn_workers(void)
->  static void stop_workers(void)
->  {
->  	const char stop_code[1] = { '\0' };
-> -	int i, stop_attempts;
-> +	int i;
->  
->  	if (!workers)
->  		return;
->  
->  	for (i = 0; i < worker_count; i++) {
-> -		stop_attempts = 0xffff;
-> -		if (workers[i].q) {
-> -			while (!queue_push(workers[i].q, stop_code)) {
-> -				if (--stop_attempts < 0) {
-> -					tst_brk(TBROK,
-> -						"Worker %d is stalled",
-> -						workers[i].pid);
-> -					break;
-> -				}
-> -			}
-> -		}
-> +		if (workers[i].q)
-> +			TST_RETRY_FUNC(queue_push(workers[i].q, stop_code), 1);
->  	}
->  
->  	for (i = 0; i < worker_count; i++) {
-> @@ -292,33 +283,15 @@ static void stop_workers(void)
->  	}
->  }
->  
-> -static void sched_work(const char *path)
-> -{
-> -	static int cur;
-> -	int push_attempts = 0, pushed;
-> -
-> -	while (1) {
-> -		pushed = queue_push(workers[cur].q, path);
-> -
-> -		if (++cur >= worker_count)
-> -			cur = 0;
-> -
-> -		if (pushed)
-> -			break;
-> -
-> -		if (++push_attempts > worker_count) {
-> -			usleep(100);
-> -			push_attempts = 0;
-> -		}
-> -	}
-> -}
-> -
->  static void rep_sched_work(const char *path, int rep)
->  {
-> -	int i;
-> +	int i, j;
->  
-> -	for (i = 0; i < rep; i++)
-> -		sched_work(path);
-> +	for (i = j = 0; i < rep; i++, j++) {
-> +		if (j >= worker_count)
-> +			j = 0;
-> +		TST_RETRY_FUNC(queue_push(workers[j].q, path), 1);
-> +	}
->  }
->  
->  static void setup(void)
+>  runtest/net.tcp_cmds                          |   1 +
+>  testcases/network/iptables/Makefile           |   2 +-
+>  testcases/network/iptables/ip6tables_tests.sh | 386 ++++++++++++++++++
+>  3 files changed, 388 insertions(+), 1 deletion(-)
+>  create mode 100755 testcases/network/iptables/ip6tables_tests.sh
 
-Patchset looks good to me!
+Thanks for your patch. IMHO instead of adding ip6tables_tests.sh, file iptables_tests.sh
+could be easily extended to support both IPv4/IPv6, using TST_IPV6 to distinguish. Most of
+other network tests is using that. This reduces duplicity of code and helps further
+changes (e.g. migration to new shell API).
 
--- 
-Thank you,
-Richard.
+> --- /dev/null
+> +++ b/testcases/network/iptables/ip6tables_tests.sh
+> @@ -0,0 +1,386 @@
+> +#!/bin/sh
+> +################################################################################
+> +##                                                                            ##
+> +## Copyright (c) International Business Machines  Corp., 2001                 ##
+> +## Copyright (c) 2018 Lianwen Sun <Sunlw.fnst@cn.fujitsu.com>
+> +##                                                                            ##
+> +## This program is free software;  you can redistribute it and#or modify      ##
+> +## it under the terms of the GNU General Public License as published by       ##
+> +## the Free Software Foundation; either version 2 of the License, or          ##
+> +## (at your option) any later version.                                        ##
+> +##                                                                            ##
+> +## This program is distributed in the hope that it will be useful, but        ##
+> +## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+> +## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+> +## for more details.                                                          ##
+> +##                                                                            ##
+> +## You should have received a copy of the GNU General Public License          ##
+> +## along with this program;  if not, write to the Free Software Foundation,   ##
+> +## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
+> +##                                                                            ##
+> +################################################################################
+> +#  Author:	Jan 20 2004 Hubert Lin <linux02NOSPAAAM@tw.ibm.com>
+> +#				       <hubertNOSPAAAM@symbio.com.tw>
+> +#               Apr 21 2018 Lianwen Sun <Sunlw.fnst@cn.fujitsu.com>
+Also a bit of cleanup of test would help, at least the licence header (remove "border"
+from hashes, use link to license instead of post address (see lib/tst_safe_posix_ipc.c),
+remove whitespace.
+
+
+Kind regards,
+Petr
