@@ -1,47 +1,40 @@
-From: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Date: Mon, 23 Apr 2018 14:51:50 +0200
-Subject: [LTP] [RFC PATCH 1/9] testcases: su: Fix userdel use
-In-Reply-To: <20180423101309.GC24481@rei>
-References: <20180423094639.14612-1-mylene.josserand@bootlin.com>
- <20180423094639.14612-2-mylene.josserand@bootlin.com>
- <20180423101309.GC24481@rei>
-Message-ID: <20180423145150.3e1c9fdc@windsurf>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 24 Apr 2018 10:48:38 +0200
+Subject: [LTP] Ticket tracking system for LTP
+In-Reply-To: <20180423133840.cj5vah2xlm3urly6@xps>
+References: <20180409151738.GA2522@rei> <20180423133840.cj5vah2xlm3urly6@xps>
+Message-ID: <20180424084838.GA18678@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
-
-On Mon, 23 Apr 2018 12:13:09 +0200, Cyril Hrubis wrote:
-
-> > diff --git a/testcases/commands/su/su01 b/testcases/commands/su/su01
-> > index 34386d937..1eedcb636 100755
-> > --- a/testcases/commands/su/su01
-> > +++ b/testcases/commands/su/su01
-> > @@ -86,7 +86,8 @@ rm -f $TEST_ENV_FILE > /dev/null 2>&1
-> >  #Create 1st test user
-> >      #erase user if he may exist , so we can have a clean en
-> >          rm -rf /home/$TEST_USER1
-> > -        getent passwd $TEST_USER1 > /dev/null 2>&1 && userdel $TEST_USER1
-> > +        getent passwd $TEST_USER1 > /dev/null 2>&1
-> > +	userdel $TEST_USER1  
+Hi!
+> > * GitHub issues
+> >   - probably the easiest solution
+> >   - we can create a specific labels to sort these out
+> >   - needs GitHub account which everybody has already
+> >   - some operations could be done only by LTP project members
+> >     I'm not sure if random users can add labels for example
 > 
-> I'm pretty sure this was intended to be:
-> 
-> "delete user only if it exists already"
-> 
-> So the whole getent line is useless after this change.
+> +1. It meets the requirements (except open source), and is already
+> established. To be successful, LTP's github probably needs more
+> curation. I see a lot of pull requests and issues opened for a long time
+> without any action. This is true of any solution, of course.
 
-Perhaps the getent line can be replaced with something like:
+Well I should be a bit more proactive there, most of the issues that
+stay open for long time are these where the original author lost
+interest in getting the changes upstream, quite a few of them could be
+closed with "no response" at this point.
 
-grep -q "^$TEST_USER1:" /etc/passwd && userdel $TEST_USER1
+> Also, importantly, github is where the developers are (like it or not).
 
-Best regards,
+True.
 
-Thomas Petazzoni
+There were two responses so far with two +1 for GitHub so I suppose that
+this is the way forward.
+
 -- 
-Thomas Petazzoni, CTO, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Cyril Hrubis
+chrubis@suse.cz
