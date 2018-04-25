@@ -1,222 +1,188 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 25 Apr 2018 18:00:06 +0800
-Subject: [LTP] [PATCH v2 2/2] sctp_big_chunk: make INIT packet in the
-	test
-In-Reply-To: <1524575041-16127-2-git-send-email-alexey.kodanev@oracle.com>
-References: <1524575041-16127-1-git-send-email-alexey.kodanev@oracle.com>
- <1524575041-16127-2-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <5AE051A6.6090905@cn.fujitsu.com>
+Date: Wed, 25 Apr 2018 18:22:53 +0800
+Subject: [LTP] [PATCH v3] *.py : convert python2 to python3
+In-Reply-To: <20180424090521.ypic57umpsdfpilg@dell5510>
+References: <20180419101038.22451-1-yosun@suse.com>
+ <20180423081206.25470-1-yosun@suse.com>
+ <20180424090521.ypic57umpsdfpilg@dell5510>
+Message-ID: <5AE056FD.4000208@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+On 2018/04/24 17:05, Petr Vorel wrote:
+> Hi Yosun,
+>
+>> From: yosun<yosun@suse.com>
+>> 1. Convert python code to use python3
+>> 2. Make shebang same as standard python shebang
+>> 3. Correct format to solve compiling error in python3
+>> Signed-off-by: Yong Sun<yosun@suse.com>
+>> ---
+> Accepted with removing double brackets (see diff bellow; I guess you run 2to3 twice, in
+> that case it would be printed as list).
+>
+> Thanks for your contribution!
+Hi Petr,
 
-This patch set works well on my environment, and it looks good to me.
+It seems that many distros still use python2 interpreter instead of python3 by default.
+Do you want to install python3 package forcely before testing python code in ltp?
+Is it necessary to make sure all python3 code are compatible with python2 interpreter?
 
 Thanks,
 Xiao Yang
-On 2018/04/24 21:04, Alexey Kodanev wrote:
-> Since creating many different IP addresses and binding them
-> to the same SCTP socket is a time consuming process, prepare
-> SCTP INIT chunk in the test.
+
 >
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> ---
-> v2: * the test doesn't support IPv6 fragmentation, TCONF in that case
->     * add needs_root since we use a raw socket
+> Kind regards,
+> Petr
 >
->  runtest/cve                             |    1 -
->  testcases/network/sctp/sctp_big_chunk.c |  105 +++++++++++++++++++++++++++----
->  2 files changed, 93 insertions(+), 13 deletions(-)
+> diff --git a/testcases/kernel/power_management/pm_cpu_consolidation.py b/testcases/kernel/power_management/pm_cpu_consolidation.py
+> index fbe262aad..ecd2e4fac 100755
+> --- a/testcases/kernel/power_management/pm_cpu_consolidation.py
+> +++ b/testcases/kernel/power_management/pm_cpu_consolidation.py
+> @@ -136,7 +136,7 @@ sched_smt was enabled. This is pre-requisite to proceed")
+>                   reset_schedsmt()
+>               return(status)
+>       except Exception as details:
+> -        print(("INFO: CPU consolidation failed", details))
+> +        print("INFO: CPU consolidation failed", details)
+>           return(1)
 >
-> diff --git a/runtest/cve b/runtest/cve
-> index 1d9569a..2f4171c 100644
-> --- a/runtest/cve
-> +++ b/runtest/cve
-> @@ -33,4 +33,3 @@ cve-2017-17052 cve-2017-17052
->  cve-2017-16939 cve-2017-16939
->  cve-2017-17053 cve-2017-17053
->  cve-2018-5803 sctp_big_chunk
-> -cve-2018-5803_2 sctp_big_chunk -a 10000
-> diff --git a/testcases/network/sctp/sctp_big_chunk.c b/testcases/network/sctp/sctp_big_chunk.c
-> index 55a2969..89c5e0d 100644
-> --- a/testcases/network/sctp/sctp_big_chunk.c
-> +++ b/testcases/network/sctp/sctp_big_chunk.c
-> @@ -24,12 +24,14 @@
->  #include <sys/types.h>
->  #include <sys/socket.h>
->  #include <netinet/in.h>
-> +#include <netinet/ip.h>
-> +#include <netinet/ip6.h>
->  #include <netdb.h>
->  #include <sys/syscall.h>
-> -#include <fcntl.h>
->  
->  #include "tst_test.h"
->  #include "tst_safe_stdio.h"
-> +#include "tst_checksum.h"
->  #include "lapi/netinet_in.h"
->  #include "lapi/socket.h"
->  #include "lapi/sctp.h"
-> @@ -38,6 +40,8 @@ static int port;
->  static int sfd, cfd;
->  static struct sockaddr_in6 rmt, loc;
->  
-> +static uint8_t packet[IP_MAXPACKET];
-> +static int pkt_len;
->  static char *addr_param;
->  static int addr_num = 3273;
->  
-> @@ -53,35 +57,108 @@ static void setup_server(void)
->  	tst_res(TINFO, "sctp server listen on %d", port);
->  
->  	SAFE_LISTEN(sfd, 1);
-> +
-> +	srand(port);
-> +}
-> +
-> +static void update_packet_field(size_t *off, void *buf, size_t buf_len)
-> +{
-> +	memcpy(packet + *off, buf, buf_len);
-> +	*off += buf_len;
->  }
->  
->  static void setup_client(void)
->  {
-> -	struct sockaddr_in6 addr_buf[addr_num];
-> +	struct ip6_hdr ip6;
-> +	const size_t ip6_hdr_len = sizeof(ip6);
-> +	size_t cmn_hdr_off;
-> +	size_t off;
->  	int i;
->  
-> -	cfd = SAFE_SOCKET(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
-> +	memset(&ip6, 0, sizeof(ip6));
-> +	ip6.ip6_flow = htonl(6 << 28 | 2 << 20);
-> +	ip6.ip6_hops = 64;
-> +	ip6.ip6_nxt = IPPROTO_SCTP;
-> +	ip6.ip6_src.s6_addr[15] = 1;
-> +	ip6.ip6_dst.s6_addr[15] = 1;
->  	rmt.sin6_family = AF_INET6;
->  	rmt.sin6_addr = in6addr_loopback;
-> -	rmt.sin6_port = htons(port);
->  
-> -	tst_res(TINFO, "bind %d additional IP addresses", addr_num);
-> +	/* SCTP common header */
-> +	off = ip6_hdr_len;
-> +
-> +	uint16_t src_port = htons(port - 1);
-> +	uint16_t dst_port = htons(port);
-> +	uint32_t vtag = 0;
-> +	uint32_t checksum = 0;
-> +
-> +	update_packet_field(&off, &src_port, 2);
-> +	update_packet_field(&off, &dst_port, 2);
-> +	update_packet_field(&off, &vtag, 4);
-> +	update_packet_field(&off, &checksum, 4);
-> +	cmn_hdr_off = off;
-> +
-> +	/* SCTP INIT chunk */
-> +	uint16_t chunk_len;
-> +
-> +	packet[off++] = 1;
-> +	packet[off++] = 0;
-> +	off += 2; /* chunk length, will be set in the end */
-> +
-> +	uint32_t init_tag = rand();
-> +	uint32_t rwnd = htonl(106496);
-> +	uint16_t outs = htons(10);
-> +	uint16_t ins = htons(65535);
-> +	uint32_t init_tsn = rand();
-> +
-> +	update_packet_field(&off, &init_tag, 4);
-> +	update_packet_field(&off, &rwnd, 4);
-> +	update_packet_field(&off, &outs, 2);
-> +	update_packet_field(&off, &ins, 2);
-> +	update_packet_field(&off, &init_tsn, 4);
->  
-> -	memset(addr_buf, 0, sizeof(addr_buf));
-> +	/* SCTP optional parameter for IPv6 addresses */
-> +	uint16_t param_type = htons(6);
-> +	uint16_t param_len = htons(20);
-> +
-> +	/* IPv6(40) + SCTP_COMMON(12) + SCTP_CHUNK(20) + SCTP_OPT(65460)) */
->  	for (i = 0; i < addr_num; ++i) {
-> -		addr_buf[i].sin6_family = AF_INET6;
-> -		addr_buf[i].sin6_addr = in6addr_loopback;
-> +		update_packet_field(&off, &param_type, 2);
-> +		update_packet_field(&off, &param_len, 2);
-> +		packet[off + 15] = 1;
-> +		off += 16;
->  	}
-> +	pkt_len = off;
-> +
-> +	tst_res(TINFO, "set chunk length %zu", pkt_len - cmn_hdr_off);
-> +	chunk_len = htons(pkt_len - cmn_hdr_off);
-> +	memcpy(packet + cmn_hdr_off + 2, &chunk_len, 2);
-> +
-> +	/* set checksum for SCTP: common header + INIT chunk */
-> +	uint32_t csum = tst_crc32c(packet + ip6_hdr_len, pkt_len - ip6_hdr_len);
-> +
-> +	memcpy(packet + ip6_hdr_len + 8, &csum, 4);
-> +
-> +	ip6.ip6_plen = htons(pkt_len - ip6_hdr_len);
-> +	memcpy(packet, &ip6, ip6_hdr_len);
->  
-> -	SAFE_SETSOCKOPT(cfd, SOL_SCTP, SCTP_SOCKOPT_BINDX_ADD, addr_buf,
-> -			sizeof(addr_buf));
-> +	cfd = SAFE_SOCKET(AF_INET6, SOCK_RAW, IPPROTO_RAW);
->  }
->  
-> +static const char mtu_path[] = "/sys/class/net/lo/mtu";
-> +static const unsigned int max_mtu = 65535;
-> +static unsigned int mtu;
-> +
->  static void setup(void)
->  {
->  	if (tst_parse_int(addr_param, &addr_num, 1, INT_MAX))
->  		tst_brk(TBROK, "wrong address number '%s'", addr_param);
->  
-> +	/* We don't fragment IPv6 packet here yet, check that MTU is 65535 */
-> +	SAFE_FILE_SCANF(mtu_path, "%d", &mtu);
-> +	if (mtu < max_mtu)
-> +		tst_brk(TCONF, "Test needs that 'lo' MTU has %d", max_mtu);
-> +
->  	setup_server();
->  	setup_client();
->  }
-> @@ -89,6 +166,7 @@ static void setup(void)
->  static void run(void)
->  {
->  	int pid = SAFE_FORK();
-> +	int i;
->  
->  	if (!pid) {
->  		struct sockaddr_in6 addr6;
-> @@ -99,8 +177,10 @@ static void run(void)
->  		exit(0);
->  	}
->  
-> -	fcntl(cfd, F_SETFL, O_NONBLOCK);
-> -	connect(cfd, (struct sockaddr *)&rmt, sizeof(rmt));
-> +	for (i = 0; i < 3; ++i) {
-> +		SAFE_SENDTO(1, cfd, packet, pkt_len, 0,
-> +			(struct sockaddr *)&rmt, sizeof(rmt));
-> +	}
->  
->  	SAFE_KILL(pid, SIGKILL);
->  	SAFE_WAITPID(pid, NULL, 0);
-> @@ -114,6 +194,7 @@ static struct tst_option options[] = {
->  };
->  
->  static struct tst_test test = {
-> +	.needs_root = 1,
->  	.setup = setup,
->  	.forks_child = 1,
->  	.test_all = run,
+>   if __name__ == "__main__":
+> diff --git a/testcases/kernel/power_management/pm_ilb_test.py b/testcases/kernel/power_management/pm_ilb_test.py
+> index 412ceb9f7..920c4e354 100755
+> --- a/testcases/kernel/power_management/pm_ilb_test.py
+> +++ b/testcases/kernel/power_management/pm_ilb_test.py
+> @@ -50,7 +50,7 @@ def main(argv=None):
+>           return(status)
+>
+>       except Exception as details:
+> -        print(("INFO: Idle Load Balancer test failed", details))
+> +        print("INFO: Idle Load Balancer test failed", details)
+>           return(1)
+>
+>   if __name__ == "__main__":
+> diff --git a/testcases/kernel/power_management/pm_sched_domain.py b/testcases/kernel/power_management/pm_sched_domain.py
+> index 0ada3eea4..d5cd327f3 100755
+> --- a/testcases/kernel/power_management/pm_sched_domain.py
+> +++ b/testcases/kernel/power_management/pm_sched_domain.py
+> @@ -46,7 +46,7 @@ def main(argv=None):
+>               print("INFO: Invalid arguments given")
+>               return 1
+>       except Exception as details:
+> -        print(("INFO: sched domain test failed: ", details))
+> +        print("INFO: sched domain test failed: ", details)
+>           return(1)
+>
+>   # Run test based on the command line arguments
+> diff --git a/testcases/network/nfsv4/acl/random_gen.py b/testcases/network/nfsv4/acl/random_gen.py
+> index 735dc1de9..37cb17945 100755
+> --- a/testcases/network/nfsv4/acl/random_gen.py
+> +++ b/testcases/network/nfsv4/acl/random_gen.py
+> @@ -33,7 +33,7 @@ class RandomGen(object):
+>   		opts = "-g" + group + " -p" + "1pilot" + " -m " + username
+>   		u = subprocess.getoutput('/usr/sbin/useradd '+ opts)
+>   		if u != "":
+> -			print(("create user " + username + "failed" + u))
+> +			print("create user " + username + "failed" + u)
+>
+>   	def createFile(self,path,n):
+>   		for i in range(n):
+> @@ -143,10 +143,10 @@ class RandomGen(object):
+>   		f.close()
+>
+>   	def printUserList(self):
+> -		print((self.uList))
+> +		print(self.uList)
+>
+>   	def printGroupList(self):
+> -		print((self.gList))
+> +		print(self.gList)
+>
+>   	""" Create a random name of random length """
+>   	def createOneNameRandomLength(self,maxlength):
+> diff --git a/testcases/network/nfsv4/acl/test_long_acl.py b/testcases/network/nfsv4/acl/test_long_acl.py
+> index fae640dd5..79e3a96bc 100755
+> --- a/testcases/network/nfsv4/acl/test_long_acl.py
+> +++ b/testcases/network/nfsv4/acl/test_long_acl.py
+> @@ -26,13 +26,13 @@ def test_longacl(l,path):
+>   		test.getUserList()
+>   		testfile = 'testfile' + str(i)
+>   		u = subprocess.getoutput('touch ' + path + "/" + testfile)
+> -		print(("setfacl with " + str(i) + " entries\n " + u))
+> +		print("setfacl with " + str(i) + " entries\n " + u)
+>   		for j in range(i):
+>   			user = test.uList.pop()
+>   			mode = test.createRandomMode()
+>   			u = subprocess.getoutput('setfacl -m u:' + user + ':' + mode + " " + path + "/" + testfile)
+>   			if u != "":
+> -				print(("setfacl -m u:" + user + ':' + mode + " " + path + "/" + testfile))
+> +				print("setfacl -m u:" + user + ':' + mode + " " + path + "/" + testfile)
+>   				print(u)
+>   def main():
+>   	parser = OptionParser()
+> diff --git a/testcases/network/nfsv4/locks/locktests.py b/testcases/network/nfsv4/locks/locktests.py
+> index 42cb18487..80d8c2051 100755
+> --- a/testcases/network/nfsv4/locks/locktests.py
+> +++ b/testcases/network/nfsv4/locks/locktests.py
+> @@ -38,7 +38,7 @@ class Machine:
+>           self.do()
+>
+>       def printc(self):
+> -        print(("->"+self.command))
+> +        print("->"+self.command)
+>           print("\n")
+>
+>   class Client(Machine):
+> @@ -124,7 +124,7 @@ def setup():
+>       fichier=SRC_PATH+"/"+SRC
+>       commande=""
+>       for i in clients:
+> -        print(("Setting up machine "+i))
+> +        print("Setting up machine "+i)
+>           c=Client(i)
+>           c.mkdir(path)
+>           c.cp(fichier, path)
+> diff --git a/testcases/realtime/tools/ftqviz.py b/testcases/realtime/tools/ftqviz.py
+> index 1cd07b408..f331d3375 100644
+> --- a/testcases/realtime/tools/ftqviz.py
+> +++ b/testcases/realtime/tools/ftqviz.py
+> @@ -62,8 +62,8 @@ def smooth_fft(timefile, countfile, sample_hz, wlen):
+>       # same factor
+>       ns_per_sample = NS_PER_S / sample_hz
+>
+> -    print(("Interpolated Sample Rate: ", sample_hz, " HZ"))
+> -    print(("Hamming Window Length: ", wlen))
+> +    print("Interpolated Sample Rate: ", sample_hz, " HZ")
+> +    print("Hamming Window Length: ", wlen)
+>
+>       t = fromfile(timefile, dtype=int64, sep='\n')
+>       x = fromfile(countfile, dtype=int64, sep='\n')
+> @@ -121,7 +121,7 @@ def smooth_fft(timefile, countfile, sample_hz, wlen):
+>
+>
+>   def usage():
+> -        print(("usage: "+argv[0]+" -t times-file -c counts-file [-s SAMPLING_HZ] [-w WINDOW_LEN] [-h]"))
+> +        print("usage: "+argv[0]+" -t times-file -c counts-file [-s SAMPLING_HZ] [-w WINDOW_LEN] [-h]")
+>
+>
+>   if __name__=='__main__':
+> diff --git a/testscripts/build/ltp-missing-install-files.py b/testscripts/build/ltp-missing-install-files.py
+> index 11465a725..232028bd1 100755
+> --- a/testscripts/build/ltp-missing-install-files.py
+> +++ b/testscripts/build/ltp-missing-install-files.py
+> @@ -111,6 +111,6 @@ for logfile in logfiles:
+>           fd.close()
+>
+>       if len(missing_ents):
+> -        print(("\n".join(["%s: %s" % (os.path.basename(logfile), i) for i in ["Tag | App"] + missing_ents])))
+> +        print("\n".join(["%s: %s" % (os.path.basename(logfile), i) for i in ["Tag | App"] + missing_ents]))
+>       elif opts.verbose:
+> -        print(("%s: CONGRATULATIONS -- no missing files found!" % os.path.basename(logfile)))
+> +        print("%s: CONGRATULATIONS -- no missing files found!" % os.path.basename(logfile))
+>
 
 
 
