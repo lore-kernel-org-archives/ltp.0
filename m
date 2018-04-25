@@ -1,40 +1,58 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 25 Apr 2018 15:58:29 +0200
-Subject: [LTP] [PATCH v3] *.py : convert python2 to python3
-In-Reply-To: <5AE056FD.4000208@cn.fujitsu.com>
-References: <20180419101038.22451-1-yosun@suse.com>
- <20180423081206.25470-1-yosun@suse.com>
- <20180424090521.ypic57umpsdfpilg@dell5510>
- <5AE056FD.4000208@cn.fujitsu.com>
-Message-ID: <20180425135829.u6spezltihkfghtt@dell5510>
+Date: Wed, 25 Apr 2018 16:02:09 +0200
+Subject: [LTP] [RFC PATCH v3 10/10] ima: Print /proc/cmdline and IMA
+ kernel config
+In-Reply-To: <20180425134003.GB24333@rei>
+References: <20180424183556.2368-1-pvorel@suse.cz>
+ <20180425074116.hic5a3nfunyxamcd@g206.suse.de>
+ <20180425131620.GA27526@x230> <20180425134003.GB24333@rei>
+Message-ID: <20180425140209.5k4q3ijmktk7xgc4@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao,
+Hi Cyril,
 
-> Hi Petr,
+> Hi!
+> > > Just a small remark here: not all distributions have /boot/config-* files
+> > > in place. I don't remember which ones this were.
+> > > Wouldn't it make sense to check this file, if it does not exist check
+> > > if /proc/config.gz is available? 
+> > I haven't found any normal distro not having config in place (openSUSE/SLE, Debian/Ubuntu,
+> > CentOS/Red Hat), but there might be some. I guess most of embedded devices don't have
+> > that (it's a question if they have IKCONFIG_PROC=y) but why not to try it.
 
-> It seems that many distros still use python2 interpreter instead of python3 by default.
-> Do you want to install python3 package forcely before testing python code in ltp?
-Yes, LTP now depends optionally on Python3. Given short time for python2 [1], it didn't
-make much sense to support both Python 2 & 3.
+> Embedded usually dont have neither of them.
+I think so as well.
 
-> Is it necessary to make sure all python3 code are compatible with python2 interpreter?
-Current code is Python 3 compatible. Or have you find any issue?
+> Also depending on the existence of /boot/config-* is really bad idea,
+> just imagine you compiled and kexeced testing kernel and testcases are
+> starting to fail for no good reason.
+Do you NACK this commit? This code is just for debugging (nothing happen if /boot/config-*
+doesn't exist)...
 
-Actually we've been thinking to remove all python from LTP because is not usually on
-embedded Linux (well, Python can be cross-compiled for embedded [2], but 1) some devices
-are still to slow to have it 2) it wouldn't be easy to install it on embedded device
-yourself).
+> > I wonder if we'd benefit from having these functions in shell API:
+> > is_enabled(CONFIG_FOO)
+> > is_module(CONFIG_FOO)
+> > is_builtin(CONFIG_FOO)
 
-> Thanks,
-> Xiao Yang
+> > which would do simple grep of either /boot/config-$(uname -r) or /proc/config.gz.
+
+> Generally you cannot detect features of the running kernel by the
+> /boot/config-* files. We tried that and it failed miserably.
+
+> We cannot rely on /proc/config.gz because many kernels have that
+> disabled to spare some space.
+
+> It's sad but the only reasonable way how to detect if kernel does
+> support something is to try to call the syscall/open and read sysfs
+> file/etc. and detect ENOSYS/ENOTTY/etc.
+
+OK, dropping idea about is_enabled etc. in shell API.
+
+Thanks for your comments.
 
 Kind regards,
 Petr
-
-[1] https://pythonclock.org/
-[2] https://wiki.python.org/moin/EmbeddedPython
