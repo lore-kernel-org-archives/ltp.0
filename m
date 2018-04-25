@@ -1,50 +1,82 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 25 Apr 2018 15:40:03 +0200
-Subject: [LTP] [RFC PATCH v3 10/10] ima: Print /proc/cmdline and IMA
- kernel config
-In-Reply-To: <20180425131620.GA27526@x230>
-References: <20180424183556.2368-1-pvorel@suse.cz>
- <20180425074116.hic5a3nfunyxamcd@g206.suse.de>
- <20180425131620.GA27526@x230>
-Message-ID: <20180425134003.GB24333@rei>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 25 Apr 2018 09:42:35 -0400 (EDT)
+Subject: [LTP] LTP Release preparations
+In-Reply-To: <20180425132319.GA24333@rei>
+References: <20180412113532.GA5963@rei> <20180419141749.GA13045@rei>
+ <20180424133931.GA18016@rei>
+ <547086855.15481908.1524604124480.JavaMail.zimbra@redhat.com>
+ <20180425132319.GA24333@rei>
+Message-ID: <327336229.15630466.1524663755614.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Just a small remark here: not all distributions have /boot/config-* files
-> > in place. I don't remember which ones this were.
-> > Wouldn't it make sense to check this file, if it does not exist check
-> > if /proc/config.gz is available? 
-> I haven't found any normal distro not having config in place (openSUSE/SLE, Debian/Ubuntu,
-> CentOS/Red Hat), but there might be some. I guess most of embedded devices don't have
-> that (it's a question if they have IKCONFIG_PROC=y) but why not to try it.
 
-Embedded usually dont have neither of them.
 
-Also depending on the existence of /boot/config-* is really bad idea,
-just imagine you compiled and kexeced testing kernel and testcases are
-starting to fail for no good reason.
-
-> I wonder if we'd benefit from having these functions in shell API:
-> is_enabled(CONFIG_FOO)
-> is_module(CONFIG_FOO)
-> is_builtin(CONFIG_FOO)
+----- Original Message -----
+> Hi!
+> > I started testing and so far ran into problem with building
+> > cve-2017-16939.c
+> > on RHEL7.2:
+> > 
+> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W
+> > -Wold-style-definition -D_GNU_SOURCE -D_FORTIFY_SOURCE=2 -I../../include
+> > -I../../include -I../../include/old/   -L../../lib  cve-2017-16939.c
+> > -lltp -o cve-2017-16939
+> > In file included from /usr/include/linux/xfrm.h:4:0,
+> >                  from cve-2017-16939.c:33:
+> > /usr/include/linux/in6.h:30:8: error: redefinition of ???struct in6_addr???
+> >  struct in6_addr {
+> >         ^
+> > In file included from cve-2017-16939.c:31:0:
+> > /usr/include/netinet/in.h:197:8: note: originally defined here
+> >  struct in6_addr
+> >         ^
+> > In file included from /usr/include/linux/xfrm.h:4:0,
+> >                  from cve-2017-16939.c:33:
+> > /usr/include/linux/in6.h:41:8: error: redefinition of ???struct
+> > sockaddr_in6???
+> >  struct sockaddr_in6 {
+> >         ^
+> > In file included from cve-2017-16939.c:29:0:
+> > /usr/include/sys/socket.h:91:17: note: originally defined here
+> >  typedef union { __SOCKADDR_ALLTYPES
+> >                  ^
+> > In file included from /usr/include/linux/xfrm.h:4:0,
+> >                  from cve-2017-16939.c:33:
+> > /usr/include/linux/in6.h:49:8: error: redefinition of ???struct
+> > ipv6_mreq???
+> >  struct ipv6_mreq {
+> >         ^
+> > In file included from cve-2017-16939.c:31:0:
+> > /usr/include/netinet/in.h:274:8: note: originally defined here
+> >  struct ipv6_mreq
+> >         ^
+> > make: *** [cve-2017-16939] Error 1
 > 
-> which would do simple grep of either /boot/config-$(uname -r) or /proc/config.gz.
+> This seems to be very strange problem with mixing linux and libc
+> headers. I've tried to remove the netinet/in.h header from the test and
+> build it on different distros, buy that seemed to actually cause more
+> problems than when it's included.
+> 
+> And actually I haven't been able to reproduce the build problem failure
+> the original code, but I build-test only small mumber of RHEL and Fedora
+> builds here.
+> 
+> I guess that the easiest solution here may be to declare the three XFRM
+> macros somewhere in lapi header and include it here instead fo the
+> linux/xfrm.h.
 
-Generally you cannot detect features of the running kernel by the
-/boot/config-* files. We tried that and it failed miserably.
+That worked for me, though I missed only 2 defines:
+XFRMNLGRP_NONE
+XFRM_MSG_GETPOLICY
 
-We cannot rely on /proc/config.gz because many kernels have that
-disabled to spare some space.
+Are you missing three after you drop linux/xfrm.h?
 
-It's sad but the only reasonable way how to detect if kernel does
-support something is to try to call the syscall/open and read sysfs
-file/etc. and detect ENOSYS/ENOTTY/etc.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
