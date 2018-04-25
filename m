@@ -1,80 +1,36 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 24 Apr 2018 17:08:44 -0400 (EDT)
-Subject: [LTP] LTP Release preparations
-In-Reply-To: <20180424133931.GA18016@rei>
-References: <20180412113532.GA5963@rei> <20180419141749.GA13045@rei>
- <20180424133931.GA18016@rei>
-Message-ID: <547086855.15481908.1524604124480.JavaMail.zimbra@redhat.com>
+From: Steve Muckle <smuckle.linux@gmail.com>
+Date: Tue, 24 Apr 2018 18:28:57 -0700
+Subject: [LTP] [PATCH] syscalls/swapon03: do not fail if /proc/swaps is
+	absent
+Message-ID: <20180425012857.15100-1-smuckle.linux@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+If the /proc/swaps file is absent the test should be skipped due
+to incompatible configuration.
 
+Signed-off-by: Steve Muckle <smuckle.linux@gmail.com>
+---
+ testcases/kernel/syscalls/swapon/swapon03.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
------ Original Message -----
-> Hi!
-> > I suppose that we should get in the fix for the read_all testcase along
-> > with the exponential back off.
-> > 
-> > Also I would like to get in the needs_rofs patchset.
-> > 
-> > There is also patch for converting our python code to be python3
-> > compatible that is worth looking into.
-> 
-> That has been done.
-> 
-> I've also send a patch for long-standing problem with perf_event_open02
-> testcase that would be a good candidate for the release.
-> 
-> Peter how is it with the IMA testsuite, should we merge the patchset and
-> call it incremental improvement over the previous code?
-> 
-> Anything else to be merged?
-> 
-> I would like to go for freezing the git at the end of the week and
-> start with a pre-release testing next week. Is that OK with everyone?
+diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
+index d3f73b044fe1..955ac247b6a2 100644
+--- a/testcases/kernel/syscalls/swapon/swapon03.c
++++ b/testcases/kernel/syscalls/swapon/swapon03.c
+@@ -328,6 +328,9 @@ static void setup(void)
+ 
+ 	tst_require_root();
+ 
++	if (access("/proc/swaps", F_OK))
++		tst_brkm(TCONF, NULL, "swap not supported by kernel");
++
+ 	tst_tmpdir();
+ 
+ 	switch ((fs_type = tst_fs_type(cleanup, "."))) {
+-- 
+2.16.1
 
-I started testing and so far ran into problem with building cve-2017-16939.c
-on RHEL7.2:
-
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -D_GNU_SOURCE -D_FORTIFY_SOURCE=2 -I../../include -I../../include -I../../include/old/   -L../../lib  cve-2017-16939.c   -lltp -o cve-2017-16939
-In file included from /usr/include/linux/xfrm.h:4:0,
-                 from cve-2017-16939.c:33:
-/usr/include/linux/in6.h:30:8: error: redefinition of ‘struct in6_addr’
- struct in6_addr {
-        ^
-In file included from cve-2017-16939.c:31:0:
-/usr/include/netinet/in.h:197:8: note: originally defined here
- struct in6_addr
-        ^
-In file included from /usr/include/linux/xfrm.h:4:0,
-                 from cve-2017-16939.c:33:
-/usr/include/linux/in6.h:41:8: error: redefinition of ‘struct sockaddr_in6’
- struct sockaddr_in6 {
-        ^
-In file included from cve-2017-16939.c:29:0:
-/usr/include/sys/socket.h:91:17: note: originally defined here
- typedef union { __SOCKADDR_ALLTYPES
-                 ^
-In file included from /usr/include/linux/xfrm.h:4:0,
-                 from cve-2017-16939.c:33:
-/usr/include/linux/in6.h:49:8: error: redefinition of ‘struct ipv6_mreq’
- struct ipv6_mreq {
-        ^
-In file included from cve-2017-16939.c:31:0:
-/usr/include/netinet/in.h:274:8: note: originally defined here
- struct ipv6_mreq
-        ^
-make: *** [cve-2017-16939] Error 1
-
-
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
