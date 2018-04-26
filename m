@@ -1,53 +1,46 @@
-From: Mimi Zohar <zohar@linux.vnet.ibm.com>
-Date: Thu, 26 Apr 2018 10:32:52 -0400
-Subject: [LTP] [RFC PATCH v3 02/10] security/ima: Change order of tests
-In-Reply-To: <20180424180953.vbn2cancyxk7ghnk@dell5510>
-References: <20180419195503.7194-1-pvorel@suse.cz>
- <20180419195503.7194-3-pvorel@suse.cz>
- <20180424180953.vbn2cancyxk7ghnk@dell5510>
-Message-ID: <1524753172.5349.7.camel@linux.vnet.ibm.com>
+From: Sebastian Chlad <schlad@suse.de>
+Date: Thu, 26 Apr 2018 16:48:24 +0200
+Subject: [LTP] [PATCH] commands: Remove all test cases
+In-Reply-To: <20180426134726.GA14157@x230>
+References: <20180426132418.19495-1-schlad@suse.de>
+ <20180426132418.19495-2-schlad@suse.de>
+ <20180426134726.GA14157@x230>
+Message-ID: <20180426164824.2eed2345@linux-p5n0>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, 2018-04-24 at 20:09 +0200, Petr Vorel wrote:
+On Thu, 26 Apr 2018 15:47:26 +0200
+Petr Vorel <pvorel@suse.cz> wrote:
+
 > Hi,
 > 
-> > Unfortunately in some circumstances there are interdependencies between
-> > tests.
-> > measurements test require loaded IMA policy. If it's not loaded, policy
-> > test do it for us => run measurements test after policy test.
+> > Test cases testing commands are often outdated or not maintained.
+> > Those test cases also do not fit in with current LTP project
+> > status.  
 > 
-> > Policy test somehow breaks violations test => run it before policy test.
-> > TODO: this does not help if CONFIG_IMA_WRITE_POLICY=y and without auditd
-> > daemon. Maybe we should require auditd for violation tests.
-> ...
-> > +++ b/runtest/ima
-> > @@ -1,5 +1,5 @@
-> >  #DESCRIPTION:Integrity Measurement Architecture (IMA)
-> > -ima_measurements ima_measurements.sh
-> > +ima_violations ima_violations.sh
-> >  ima_policy ima_policy.sh
-> > +ima_measurements ima_measurements.sh
-> >  ima_tpm ima_tpm.sh
-> > -ima_violations ima_violations.sh
-> 
-> I don't want to apply this patch any more. The behavior depends on ima_policy
-> settings.
-> 
-> What is meaningful setup for testing anyway? I suppose at least some tests need
-> to have some policy set (ima_policy=tbc ?).
-> 
-> Without this patch and with no ima_policy ima_measurements.sh test is failing, it needs to
-> be skipped.
+> > Signed-off-by: Sebastian Chlad <schlad@suse.de>
+> > ---  
+> this is controversial, as some people might be using some of them.
 
-The original tests assumed a builtin IMA-measurement policy.  Either
-the boot command line "ima_tcb" or "ima_policy=tcb" options should
-work.  When checking the "ima_policy" for "tcb", it could be specified
-anywhere in the list of builtin policies (eg.
-ima_policy=appraise_tcb|secure_boot|ima).
+Sure. I'm really looking forward to hearing some feedback on this.
 
-Mimi
+> But I'd be for removing most of these - these are mostly smoke tests
+> which should be in upstream repositories (I guess live projects has
+> better tests than these), where they have better change to stay up to
+> date. Upstream tests are then can be run by packagers (and IMHO
+> they're run, if they're available).
+
+Actually valid point. Perhaps make sense to look closely at those
+commands and see if some of those should be removed.
+
+> 
+> IMHO LTP should aim to test kernel, not userspace tools for Linux
+> distros.
+> 
+> 
+> Kind regards,
+> Petr
 
