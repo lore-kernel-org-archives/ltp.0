@@ -1,12 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 26 Apr 2018 12:54:15 +0200
-Subject: [LTP] [PATCH 1/2] *.py: Replace '#!/usr/bin/python3' with
- '#!/usr/bin/env python3'
-In-Reply-To: <5AE19028.6050804@cn.fujitsu.com>
+Date: Thu, 26 Apr 2018 14:15:31 +0200
+Subject: [LTP] [PATCH 2/2] commands/file01: Fix "python3" match failure
+In-Reply-To: <1524725137-32739-2-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <1524725137-32739-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <5AE179C6.3050300@cn.fujitsu.com> <20180426080658.GA4482@x230>
- <20180426081639.GB4482@x230> <5AE19028.6050804@cn.fujitsu.com>
-Message-ID: <20180426105414.cugq7rstaifqnxvn@dell5510>
+ <1524725137-32739-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20180426121531.nntwhijmtmpwtiry@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,29 +13,38 @@ To: ltp@lists.linux.it
 
 Hi Xiao,
 
-> > > > On 2018/04/26 14:45, Xiao Yang wrote:
-> > > > > If we install python3 in specific path(/usr/local/bin) rather than the
-> > > > > default(/usr/bin), the standard shebang(#!/usr/bin/python3) cannot
-> > > > > interpreter python code due to wrong path.  We should use env to
-> > > > > search the correct path of python3 dynamically.
-> > > > ----------------------------------------------------------------------------
-> > > > # which python3
-> > > > /usr/local/bin/python3
-> > > > # ./in.py
-> > > > -bash: ./in.py: /usr/bin/python3: bad interpreter: No such file or directory
-> > > > ----------------------------------------------------------------------------
-> > And is it really general RHEL6.9GA problem? Isn't it installable into standard path with
-> > EPEL? [1]
-> Hi Petr,
+> On some distros(e.g. RHEL6.9GA), we got the mismatched
+> output by running 'file in.py':
+> ----------------------------------------------
+> in.py: a /usr/bin/env python3 script text executable
+> ----------------------------------------------
 
-> Neither, i just install python3 into /usr/local/bin by Python-3.6.5.tgz on purpose.  :-P
-And what prevent you to use either python34 from EPEL (which installs into standard
-/usr/bin) or symlinking your compiled python3 into /usr/bin ?
+> We just match both python and python3 to fix this issue.
 
-Both are working solutions.
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  testcases/commands/file/file01.sh | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Thanks,
-> Xiao Yang
+> diff --git a/testcases/commands/file/file01.sh b/testcases/commands/file/file01.sh
+> index e04b32e..5a81b3b 100755
+> --- a/testcases/commands/file/file01.sh
+> +++ b/testcases/commands/file/file01.sh
+> @@ -84,8 +84,8 @@ do_test()
+>  	 7) file_test in.pl "[pP]erl script, ASCII text executable" \
+>  			    "[pP]erl script text executable" \
+>  			    "a /usr/bin/perl script text";;
+> -	 8) file_test in.py "[pP]ython script, ASCII text executable" \
+> -			    "[pP]ython script text executable";;
+> +	 8) file_test in.py "[pP]ython3\{0,1\} script, ASCII text executable" \
+This one isn't needed, as problem is with file-5.04, which use the latter one, but let's
+keep it.
+> +			    "[pP]ython3\{0,1\} script text executable";;
+>  	 9) file_test in.m4 "M4 macro processor script, ASCII text" \
+>  			    "ASCII M4 macro language pre-processor text";;
+>  	10) file_test in "ELF .*-bit $TEST_ARCH executable, .*" \
+
+Merged, thanks!
 
 
 Kind regards,
