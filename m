@@ -1,50 +1,45 @@
-From: Sandeep Patil <sspatil@google.com>
-Date: Wed, 25 Apr 2018 18:44:21 -0700
-Subject: [LTP] Ticket tracking system for LTP
-In-Reply-To: <20180424084838.GA18678@rei>
-References: <20180409151738.GA2522@rei> <20180423133840.cj5vah2xlm3urly6@xps>
- <20180424084838.GA18678@rei>
-Message-ID: <20180426014421.GU72541@sspatil-desktop.mtv.corp.google.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 26 Apr 2018 14:45:37 +0800
+Subject: [LTP] [PATCH 2/2] commands/file01: Fix "python3" match failure
+In-Reply-To: <1524725137-32739-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1524725137-32739-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1524725137-32739-2-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Apr 24, 2018 at 10:48:38AM +0200, Cyril Hrubis wrote:
-> Hi!
-> > > * GitHub issues
-> > >   - probably the easiest solution
-> > >   - we can create a specific labels to sort these out
-> > >   - needs GitHub account which everybody has already
-> > >   - some operations could be done only by LTP project members
-> > >     I'm not sure if random users can add labels for example
-> > 
-> > +1. It meets the requirements (except open source), and is already
-> > established. To be successful, LTP's github probably needs more
-> > curation. I see a lot of pull requests and issues opened for a long time
-> > without any action. This is true of any solution, of course.
-> 
-> Well I should be a bit more proactive there, most of the issues that
-> stay open for long time are these where the original author lost
-> interest in getting the changes upstream, quite a few of them could be
-> closed with "no response" at this point.
-> 
-> > Also, importantly, github is where the developers are (like it or not).
-> 
-> True.
-> 
-> There were two responses so far with two +1 for GitHub so I suppose that
-> this is the way forward.
+On some distros(e.g. RHEL6.9GA), we got the mismatched
+output by running 'file in.py':
+----------------------------------------------
+in.py: a /usr/bin/env python3 script text executable
+----------------------------------------------
 
-FWIW, +1 :).
+We just match both python and python3 to fix this issue.
 
-- ssp
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/commands/file/file01.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+diff --git a/testcases/commands/file/file01.sh b/testcases/commands/file/file01.sh
+index e04b32e..5a81b3b 100755
+--- a/testcases/commands/file/file01.sh
++++ b/testcases/commands/file/file01.sh
+@@ -84,8 +84,8 @@ do_test()
+ 	 7) file_test in.pl "[pP]erl script, ASCII text executable" \
+ 			    "[pP]erl script text executable" \
+ 			    "a /usr/bin/perl script text";;
+-	 8) file_test in.py "[pP]ython script, ASCII text executable" \
+-			    "[pP]ython script text executable";;
++	 8) file_test in.py "[pP]ython3\{0,1\} script, ASCII text executable" \
++			    "[pP]ython3\{0,1\} script text executable";;
+ 	 9) file_test in.m4 "M4 macro processor script, ASCII text" \
+ 			    "ASCII M4 macro language pre-processor text";;
+ 	10) file_test in "ELF .*-bit $TEST_ARCH executable, .*" \
+-- 
+1.8.3.1
+
+
+
