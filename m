@@ -1,26 +1,21 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 26 Apr 2018 14:46:49 +0200
-Subject: [LTP] [PATCH] cve-2017-16939: drop linux/xfrm.h include
-In-Reply-To: <d54cb909eacb6c2fe6b11f7e187862ef3070499c.1524739878.git.jstancek@redhat.com>
-References: <d54cb909eacb6c2fe6b11f7e187862ef3070499c.1524739878.git.jstancek@redhat.com>
-Message-ID: <20180426124649.fk3a2ylcb76rgros@dell5510>
+From: Sebastian Chlad <schlad@suse.de>
+Date: Thu, 26 Apr 2018 15:24:17 +0200
+Subject: [LTP] Commands test cases
+Message-ID: <20180426132418.19495-1-schlad@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+I would like to check with the LTP community if removing all "commands"
+test cases could be an option.
 
-> Mixing libc and linux headers can cause conflicts on some
-> distros. Drop linux/xfrm.h include and add needed defines
-> to a new lapi header.
+Test cases testing commands are often outdated or not maintained as there
+seems to be little intrest in them. Those test cases don't fit in with
+the LTP project as it is now, where more emphasiz is put on kernel, security
+and network testing.
 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
-Tested-by: Petr Vorel <pvorel@suse.cz>
+If we have not objections among LTP upstream community I would suggest
+removing whole commands section.
 
-Tested on various distros (but not affected RHEL 7.2).
-
-Kind regards,
-Petr
