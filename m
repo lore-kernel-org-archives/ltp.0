@@ -1,83 +1,263 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 26 Apr 2018 15:02:00 +0800
-Subject: [LTP] LTP cve-2017-5754 test fails on kernel-v4.17-rc2
-Message-ID: <CAEemH2enj4MUFRc03CLzuHzqJGJFESeQvj5oitZ2Am+Ww=jVYA@mail.gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 26 Apr 2018 15:03:34 +0800
+Subject: [LTP] [PATCH 1/2] *.py: Replace '#!/usr/bin/python3' with
+ '#!/usr/bin/env python3'
+In-Reply-To: <1524725137-32739-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1524725137-32739-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <5AE179C6.3050300@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi LKML & LTP,
+On 2018/04/26 14:45, Xiao Yang wrote:
+> If we install python3 in specific path(/usr/local/bin) rather than the
+> default(/usr/bin), the standard shebang(#!/usr/bin/python3) cannot
+> interpreter python code due to wrong path.  We should use env to
+> search the correct path of python3 dynamically.
+>
+> Test it by running datafiles/in.py:
+> -----------------------------------
+> /usr/local/bin/python3
+> -bash: ./in.py: /usr/bin/python3: bad interpreter: No such file or directory
+> -----------------------------------
+Hi,
 
-LTP/meltdown.c fails on upstream kernel-v4.17-rc2 with both kvm and
-bare-metal system. Please attention!!!
+Sorry, the above output is not complete, please see the following output:
+----------------------------------------------------------------------------
+# which python3
+/usr/local/bin/python3
+# ./in.py
+-bash: ./in.py: /usr/bin/python3: bad interpreter: No such file or directory
+----------------------------------------------------------------------------
 
-kernel-v4.17-rc2 FAIL
-kernel-v4.17-rc1 PASS
+Thanks,
+Xiao Yang
+
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  execltp.in                                                | 2 +-
+>  testcases/commands/file/datafiles/in.py                   | 2 +-
+>  testcases/kernel/power_management/lib/pm_sched_mc.py      | 2 +-
+>  testcases/kernel/power_management/pm_cpu_consolidation.py | 2 +-
+>  testcases/kernel/power_management/pm_ilb_test.py          | 2 +-
+>  testcases/kernel/power_management/pm_sched_domain.py      | 2 +-
+>  testcases/network/nfsv4/acl/cleangroups.py                | 2 +-
+>  testcases/network/nfsv4/acl/cleanusers.py                 | 2 +-
+>  testcases/network/nfsv4/acl/create_users.py               | 2 +-
+>  testcases/network/nfsv4/acl/random_gen.py                 | 2 +-
+>  testcases/network/nfsv4/acl/setacl_stress.py              | 2 +-
+>  testcases/network/nfsv4/acl/test_acl.py                   | 2 +-
+>  testcases/network/nfsv4/acl/test_long_acl.py              | 2 +-
+>  testcases/network/nfsv4/locks/locktests.py                | 2 +-
+>  testcases/realtime/func/pi-tests/parse-testpi1.py         | 2 +-
+>  testcases/realtime/func/pi-tests/parse-testpi2.py         | 2 +-
+>  testcases/realtime/scripts/parser.py                      | 2 +-
+>  testcases/realtime/tools/ftqviz.py                        | 2 +-
+>  testscripts/build/ltp-missing-install-files.py            | 2 +-
+>  tools/pounder21/src/time_tests/drift-test.py              | 2 +-
+>  20 files changed, 20 insertions(+), 20 deletions(-)
+>
+> diff --git a/execltp.in b/execltp.in
+> index 57e9c45..4b647cd 100755
+> --- a/execltp.in
+> +++ b/execltp.in
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  """
+>      An LTP [execution and] parsing wrapper.
+>  
+> diff --git a/testcases/commands/file/datafiles/in.py b/testcases/commands/file/datafiles/in.py
+> index 802e7bf..5fd48ce 100755
+> --- a/testcases/commands/file/datafiles/in.py
+> +++ b/testcases/commands/file/datafiles/in.py
+> @@ -1,3 +1,3 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  
+>  print("This is a test.")
+> diff --git a/testcases/kernel/power_management/lib/pm_sched_mc.py b/testcases/kernel/power_management/lib/pm_sched_mc.py
+> index 3574330..743b6de 100755
+> --- a/testcases/kernel/power_management/lib/pm_sched_mc.py
+> +++ b/testcases/kernel/power_management/lib/pm_sched_mc.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  ''' Reusable functions related to sched mc FVT are put together
+>  '''
+>  
+> diff --git a/testcases/kernel/power_management/pm_cpu_consolidation.py b/testcases/kernel/power_management/pm_cpu_consolidation.py
+> index ecd2e4f..a01db00 100755
+> --- a/testcases/kernel/power_management/pm_cpu_consolidation.py
+> +++ b/testcases/kernel/power_management/pm_cpu_consolidation.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  ''' This Python script interprets various sched stats values.
+>      Validates cpu consolidation for given sched_mc_power_saving value
+>  '''
+> diff --git a/testcases/kernel/power_management/pm_ilb_test.py b/testcases/kernel/power_management/pm_ilb_test.py
+> index 920c4e3..f207170 100755
+> --- a/testcases/kernel/power_management/pm_ilb_test.py
+> +++ b/testcases/kernel/power_management/pm_ilb_test.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  ''' This Python script interprets interrupt values.
+>      Validates Ideal load balancer runs in same package where workload is running
+>  '''
+> diff --git a/testcases/kernel/power_management/pm_sched_domain.py b/testcases/kernel/power_management/pm_sched_domain.py
+> index d5cd327..dddc481 100755
+> --- a/testcases/kernel/power_management/pm_sched_domain.py
+> +++ b/testcases/kernel/power_management/pm_sched_domain.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  ''' This Python script validates sched domain information in dmesg
+>      with information in sysfs topology
+>  '''
+> diff --git a/testcases/network/nfsv4/acl/cleangroups.py b/testcases/network/nfsv4/acl/cleangroups.py
+> index 11f8045..3c06478 100755
+> --- a/testcases/network/nfsv4/acl/cleangroups.py
+> +++ b/testcases/network/nfsv4/acl/cleangroups.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  from random_gen import *
+>  from optparse import OptionParser
+>  import subprocess
+> diff --git a/testcases/network/nfsv4/acl/cleanusers.py b/testcases/network/nfsv4/acl/cleanusers.py
+> index f2597d2..3e652c5 100755
+> --- a/testcases/network/nfsv4/acl/cleanusers.py
+> +++ b/testcases/network/nfsv4/acl/cleanusers.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  from random_gen import *
+>  from optparse import OptionParser
+>  import subprocess
+> diff --git a/testcases/network/nfsv4/acl/create_users.py b/testcases/network/nfsv4/acl/create_users.py
+> index 0dcaecb..3203aff 100755
+> --- a/testcases/network/nfsv4/acl/create_users.py
+> +++ b/testcases/network/nfsv4/acl/create_users.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  '''
+>  	Access Control Lists testing based on newpynfs framework
+>  	Aurelien Charbon - Bull SA
+> diff --git a/testcases/network/nfsv4/acl/random_gen.py b/testcases/network/nfsv4/acl/random_gen.py
+> index 37cb179..4b6ba96 100755
+> --- a/testcases/network/nfsv4/acl/random_gen.py
+> +++ b/testcases/network/nfsv4/acl/random_gen.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  import subprocess
+>  import random
+>  import re
+> diff --git a/testcases/network/nfsv4/acl/setacl_stress.py b/testcases/network/nfsv4/acl/setacl_stress.py
+> index 68a4932..c93ac8b 100755
+> --- a/testcases/network/nfsv4/acl/setacl_stress.py
+> +++ b/testcases/network/nfsv4/acl/setacl_stress.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  '''
+>  	Access Control Lists stressing script
+>  	To lauch on the first client
+> diff --git a/testcases/network/nfsv4/acl/test_acl.py b/testcases/network/nfsv4/acl/test_acl.py
+> index 612b9e4..8699b02 100755
+> --- a/testcases/network/nfsv4/acl/test_acl.py
+> +++ b/testcases/network/nfsv4/acl/test_acl.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  '''
+>  	Access Control Lists testing based on newpynfs framework
+>  	Aurelien Charbon - Bull SA
+> diff --git a/testcases/network/nfsv4/acl/test_long_acl.py b/testcases/network/nfsv4/acl/test_long_acl.py
+> index 79e3a96..893855b 100755
+> --- a/testcases/network/nfsv4/acl/test_long_acl.py
+> +++ b/testcases/network/nfsv4/acl/test_long_acl.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  '''
+>  	Access Control Lists testing based on newpynfs framework
+>  	Aurelien Charbon - Bull SA
+> diff --git a/testcases/network/nfsv4/locks/locktests.py b/testcases/network/nfsv4/locks/locktests.py
+> index 80d8c20..9876a86 100755
+> --- a/testcases/network/nfsv4/locks/locktests.py
+> +++ b/testcases/network/nfsv4/locks/locktests.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  # This script aims to help to run locktests with several clients.
+>  #
+>  # Report bugs to Vincent ROQUETA : vincent.roqueta@ext.bull.net
+> diff --git a/testcases/realtime/func/pi-tests/parse-testpi1.py b/testcases/realtime/func/pi-tests/parse-testpi1.py
+> index 0631cce..740e7d1 100644
+> --- a/testcases/realtime/func/pi-tests/parse-testpi1.py
+> +++ b/testcases/realtime/func/pi-tests/parse-testpi1.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  # -*- coding: utf-8 -*-
+>  
+>  ################################################################################
+> diff --git a/testcases/realtime/func/pi-tests/parse-testpi2.py b/testcases/realtime/func/pi-tests/parse-testpi2.py
+> index f11ff8a..69b2748 100644
+> --- a/testcases/realtime/func/pi-tests/parse-testpi2.py
+> +++ b/testcases/realtime/func/pi-tests/parse-testpi2.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  # -*- coding: utf-8 -*-
+>  
+>  ################################################################################
+> diff --git a/testcases/realtime/scripts/parser.py b/testcases/realtime/scripts/parser.py
+> index bc4512f..85226de 100644
+> --- a/testcases/realtime/scripts/parser.py
+> +++ b/testcases/realtime/scripts/parser.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  # -*- coding: utf-8 -*-
+>  
+>  ################################################################################
+> diff --git a/testcases/realtime/tools/ftqviz.py b/testcases/realtime/tools/ftqviz.py
+> index f331d33..5ac094c 100644
+> --- a/testcases/realtime/tools/ftqviz.py
+> +++ b/testcases/realtime/tools/ftqviz.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  
+>  #      Filename: ftqviz.py
+>  #        Author: Darren Hart <dvhltc@us.ibm.com>
+> diff --git a/testscripts/build/ltp-missing-install-files.py b/testscripts/build/ltp-missing-install-files.py
+> index 232028b..0f9d81c 100755
+> --- a/testscripts/build/ltp-missing-install-files.py
+> +++ b/testscripts/build/ltp-missing-install-files.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  #
+>  #    Script for determining items missing from LTP install based on the output
+>  #    log provided by runltp[lite.sh].
+> diff --git a/tools/pounder21/src/time_tests/drift-test.py b/tools/pounder21/src/time_tests/drift-test.py
+> index 0c25756..3fe8ba5 100755
+> --- a/tools/pounder21/src/time_tests/drift-test.py
+> +++ b/tools/pounder21/src/time_tests/drift-test.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python3
+> +#!/usr/bin/env python3
+>  
+>  # Time Drift Script
+>  #		Periodically checks and displays time drift
 
 
-=======================
 
-Kernel Version: 4.17.0-rc2
-Machine Architecture: x86_64
-
-tst_test.c:1015: INFO: Timeout per run is 0h 50m 00s
-meltdown.c:259: INFO: access time: cached = 51, uncached = 343, threshold = 132
-meltdown.c:309: INFO: linux_proc_banner is at ffffffff8ba00060
-meltdown.c:332: INFO: read ffffffff8ba00060 = 0x25 %
-meltdown.c:332: INFO: read ffffffff8ba00061 = 0x73 s
-meltdown.c:332: INFO: read ffffffff8ba00062 = 0x20
-meltdown.c:332: INFO: read ffffffff8ba00063 = 0x76 v
-meltdown.c:332: INFO: read ffffffff8ba00064 = 0x65 e
-meltdown.c:332: INFO: read ffffffff8ba00065 = 0x72 r
-meltdown.c:332: INFO: read ffffffff8ba00066 = 0x73 s
-meltdown.c:332: INFO: read ffffffff8ba00067 = 0x69 i
-meltdown.c:332: INFO: read ffffffff8ba00068 = 0x6f o
-meltdown.c:332: INFO: read ffffffff8ba00069 = 0x6e n
-meltdown.c:332: INFO: read ffffffff8ba0006a = 0x20
-meltdown.c:332: INFO: read ffffffff8ba0006b = 0x25 %
-meltdown.c:332: INFO: read ffffffff8ba0006c = 0x73 s
-meltdown.c:342: FAIL: I was able to read your kernel memory!!!
-
-Summary:
-passed   0
-failed   1
-skipped  0
-warnings 0
-
-
-# lscpu
-Architecture:          x86_64
-CPU op-mode(s):        32-bit, 64-bit
-Byte Order:            Little Endian
-CPU(s):                2
-On-line CPU(s) list:   0,1
-Thread(s) per core:    1
-Core(s) per socket:    1
-Socket(s):             2
-NUMA node(s):          1
-Vendor ID:             GenuineIntel
-CPU family:            6
-Model:                 13
-Model name:            QEMU Virtual CPU version (cpu64-rhel6)
-Stepping:              3
-CPU MHz:               2892.748
-BogoMIPS:              5785.49
-Hypervisor vendor:     KVM
-Virtualization type:   full
-L1d cache:             32K
-L1i cache:             32K
-L2 cache:              4096K
-NUMA node0 CPU(s):     0,1
-Flags:                 fpu de pse tsc msr pae mce cx8 apic mtrr pge mca
-cmov pse36 clflush mmx fxsr sse sse2 syscall nx lm nopl cpuid pni cx16
-hypervisor lahf_lm pti
-
-
--- 
-Li Wang
-liwang@redhat.com
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180426/96b97a20/attachment.html>
