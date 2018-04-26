@@ -1,109 +1,84 @@
-From: Sebastian Chlad <schlad@suse.de>
-Date: Thu, 26 Apr 2018 16:49:28 +0200
-Subject: [LTP] [PATCH] commands: Remove all test cases
-In-Reply-To: <b72b277b-e8e0-d69c-b918-bd48341c2a1d@oracle.com>
-References: <20180426132418.19495-1-schlad@suse.de>
- <20180426132418.19495-2-schlad@suse.de>
- <b72b277b-e8e0-d69c-b918-bd48341c2a1d@oracle.com>
-Message-ID: <20180426164928.6c86604e@linux-p5n0>
+From: Mimi Zohar <zohar@linux.vnet.ibm.com>
+Date: Thu, 26 Apr 2018 12:18:24 -0400
+Subject: [LTP] [RFC PATCH v3 00/10] Rewrite tests into new API + fixes
+In-Reply-To: <20180419195503.7194-1-pvorel@suse.cz>
+References: <20180419195503.7194-1-pvorel@suse.cz>
+Message-ID: <1524759504.3647.12.camel@linux.vnet.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-On Thu, 26 Apr 2018 17:28:30 +0300
-Alexey Kodanev <alexey.kodanev@oracle.com> wrote:
+On Thu, 2018-04-19 at 21:54 +0200, Petr Vorel wrote:
+> Hi,
+>=20
+> changes v2->v3:
+> * Fixed some of errors caused by test order.
+>=20
+> * ima_boot_aggregate
+>   - max event size is now 1MB according to spec
+>=20
+> * ima_mmap
+>   - reduce sleep + log it
+>   - rewritten into new API
+>=20
+> * ima_measurements.sh
+>   - don't require iversion for kernel >=3D 4.16
+>   - avoid using tmpfs
 
-> On 04/26/2018 04:24 PM, Sebastian Chlad wrote:
-> > Test cases testing commands are often outdated or not maintained.
-> > Those test cases also do not fit in with current LTP project status.
-> > 
-> > Signed-off-by: Sebastian Chlad <schlad@suse.de>
-> > ---  
-> 
-> Hi Sebastian,
-> 
-> ...
-> 
-> > diff --git a/testcases/commands/keyctl/keyctl01.sh
-> > b/testcases/commands/keyctl/keyctl01.sh deleted file mode 100644
-> > index 3fda3893b..000000000
-> > --- a/testcases/commands/keyctl/keyctl01.sh
-> > +++ /dev/null
-> > @@ -1,126 +0,0 @@
-> > -#!/bin/sh
-> > -#
-> > -# Copyright (c) 2017 Fujitsu Ltd.
-> > -# Ported: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-> > -#
-> > -# This program is free software; you can redistribute it and/or
-> > modify -# it under the terms of the GNU General Public License as
-> > published by -# the Free Software Foundation; either version 2 of
-> > the License, or -# (at your option) any later version.
-> > -#
-> > -# This program is distributed in the hope that it would be useful,
-> > -# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> > -# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> > -# GNU General Public License for more details.
-> > -#
-> > -# You should have received a copy of the GNU General Public License
-> > -# along with this program, if not, see
-> > <http://www.gnu.org/licenses/>. -#
-> > -# This is a regression test about potential uninitialized variable,
-> > -# the test can crash the buggy kernel, and the bug has been fixed
-> > in: -#
-> > -#   commit 38327424b40bcebe2de92d07312c89360ac9229a
-> > -#   Author: Dan Carpenter <dan.carpenter@oracle.com>
-> > -#   Date:   Thu Jun 16 15:48:57 2016 +0100
-> > -#
-> > -#   KEYS: potential uninitialized variable
-> > -#  
-> 
-> ...
-> 
-> > diff --git a/testcases/commands/sysctl/sysctl01.sh
-> > b/testcases/commands/sysctl/sysctl01.sh deleted file mode 100755
-> > index 7522da53d..000000000
-> > --- a/testcases/commands/sysctl/sysctl01.sh
-> > +++ /dev/null
-> > @@ -1,55 +0,0 @@
-> > -#!/bin/sh
-> > -
-> > -# Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
-> > -# Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> > -#
-> > -# This program is free software;  you can redistribute it and#or
-> > modify -# it under the terms of the GNU General Public License as
-> > published by -# the Free Software Foundation; either version 2 of
-> > the License, or -# (at your option) any later version.
-> > -#
-> > -# This program is distributed in the hope that it will be useful,
-> > but -# WITHOUT ANY WARRANTY; without even the implied warranty of
-> > MERCHANTABILITY -# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-> > General Public License -# for more details.
-> > -#
-> > -# You should have received a copy of the GNU General Public License
-> > -# along with this program; if not, see
-> > <http://www.gnu.org/licenses/>. -#
-> > -# Description:
-> > -# This is a regression test for invalid value of
-> > sysctl_sched_time_avg. -# System will hang if user set
-> > sysctl_sched_time_avg to 0 on buggy kernel. -#
-> > -# The kernel bug has been fixed in kernel:
-> > -# '5ccba44ba118("sched/sysctl: Check user input value of
-> > sysctl_sched_time_avg")'
-> > -  
-> 
-> And those tests also don't fit?
+This is working nicely!
 
-​Sure, good point.​
+>=20
+> * ima_policy.sh
+>   - improved detection of policy writability
+>   - merge test2 and test3
+>=20
+> * ima_violations.sh
+>   - avoid using tmpfs
+>   - improved grepping logs (no sleep is needed)
+>=20
+> * ima_tpm.sh
+>   - Improve error messages
+>=20
+> TODO:
+> * fix problems with violations tests (see patch 02/10).
+> * detect whether policy must be signed (currently tests assume the
+> policy does not need to be signed):
+> https://lists.linux.it/pipermail/ltp/2018-April/007702.html
+> http://lists.linux.it/pipermail/ltp/2018-January/006970.html
 
-Honestly I just wanted to pick your brain and ask community what's the
-best approach for commands testing. 
 
-One might also say - better leave them there and do not run them if you
-are not happy with it. Sure.
+test: cmdline=3D"ima_policy.sh"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+ima_policy 1 TINFO: verify that invalid policy isn't loaded
+ima_policy 1 TPASS: didn't load invalid policy
+ima_policy 2 TINFO: verify that policy file is not opened concurrently
+and able to loaded multiple times
+ima_policy 2 TFAIL: problem with loading policy (policy should be able
+to load multiple times)
 
-So really over to community and maintainers to advise what would be the
-best approach here. 
+For now, could we change "problem with loading policy (policy should
+be able to load multiple times)" to say, "problem loading or extending
+policy (may require policy to be signed)"?
+
+I'm also seeing,=C2=A0
+
+test: ima_tpm
+<<<test_output>>>
+ima_tpm 1 TINFO: verify boot aggregate
+ima_tpm 1 TPASS: bios aggregate matches IMA boot aggregate
+ima_tpm 2 TINFO: verify PCR values
+ima_tpm 2 TINFO: evmctl version: evmctl 1.0
+ima_tpm 2 TINFO: new PCRS path, evmctl >=3D 1.1 required
+ima_tpm 2 TINFO: verify PCR (Process Control Register)
+ima_tpm 2 TFAIL: failed to get PCR-10
+ima_tpm 2 TPASS: aggregate PCR value matches real PCR value
+
+It's unclear how the script could fail to get PCR-10, but pass the
+following test.
+
+Mimi
+
