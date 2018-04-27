@@ -1,80 +1,62 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 27 Apr 2018 08:35:46 +0800
-Subject: [LTP] [PATCH] commands: Remove all test cases
-In-Reply-To: <20180426172713.GB14157@x230>
-References: <20180426132418.19495-1-schlad@suse.de>
- <20180426132418.19495-2-schlad@suse.de>
- <b72b277b-e8e0-d69c-b918-bd48341c2a1d@oracle.com>
- <20180426172713.GB14157@x230>
-Message-ID: <5AE27062.1060804@cn.fujitsu.com>
+Date: Fri, 27 Apr 2018 09:31:56 +0800
+Subject: [LTP] [PATCH 1/2] *.py: Replace '#!/usr/bin/python3' with
+ '#!/usr/bin/env python3'
+In-Reply-To: <20180426105414.cugq7rstaifqnxvn@dell5510>
+References: <1524725137-32739-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <5AE179C6.3050300@cn.fujitsu.com> <20180426080658.GA4482@x230>
+ <20180426081639.GB4482@x230> <5AE19028.6050804@cn.fujitsu.com>
+ <20180426105414.cugq7rstaifqnxvn@dell5510>
+Message-ID: <5AE27D8C.3020804@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2018/04/27 1:27, Petr Vorel wrote:
-> Hi,
+On 2018/04/26 18:54, Petr Vorel wrote:
+> Hi Xiao,
 >
->> On 04/26/2018 04:24 PM, Sebastian Chlad wrote:
->>> Test cases testing commands are often outdated or not maintained.
->>> Those test cases also do not fit in with current LTP project status.
->>> Signed-off-by: Sebastian Chlad<schlad@suse.de>
-> ...
+>>>>> On 2018/04/26 14:45, Xiao Yang wrote:
+>>>>>> If we install python3 in specific path(/usr/local/bin) rather than the
+>>>>>> default(/usr/bin), the standard shebang(#!/usr/bin/python3) cannot
+>>>>>> interpreter python code due to wrong path.  We should use env to
+>>>>>> search the correct path of python3 dynamically.
+>>>>> ----------------------------------------------------------------------------
+>>>>> # which python3
+>>>>> /usr/local/bin/python3
+>>>>> # ./in.py
+>>>>> -bash: ./in.py: /usr/bin/python3: bad interpreter: No such file or directory
+>>>>> ----------------------------------------------------------------------------
+>>> And is it really general RHEL6.9GA problem? Isn't it installable into standard path with
+>>> EPEL? [1]
+>> Hi Petr,
+>> Neither, i just install python3 into /usr/local/bin by Python-3.6.5.tgz on purpose.  :-P
+> And what prevent you to use either python34 from EPEL (which installs into standard
+> /usr/bin) or symlinking your compiled python3 into /usr/bin ?
 >
->>> diff --git a/testcases/commands/keyctl/keyctl01.sh b/testcases/commands/keyctl/keyctl01.sh
->>> deleted file mode 100644
->>> index 3fda3893b..000000000
->>> --- a/testcases/commands/keyctl/keyctl01.sh
-> ...
->>> -# This is a regression test about potential uninitialized variable,
->>> -# the test can crash the buggy kernel, and the bug has been fixed in:
->>> -#
->>> -#   commit 38327424b40bcebe2de92d07312c89360ac9229a
->>> -#   Author: Dan Carpenter<dan.carpenter@oracle.com>
->>> -#   Date:   Thu Jun 16 15:48:57 2016 +0100
->>> -#
->>> -#   KEYS: potential uninitialized variable
->>> -#
-> ...
->
->>> --- a/testcases/commands/sysctl/sysctl01.sh
-> ...
->>> -# Description:
->>> -# This is a regression test for invalid value of sysctl_sched_time_avg.
->>> -# System will hang if user set sysctl_sched_time_avg to 0 on buggy kernel.
->>> -#
->>> -# The kernel bug has been fixed in kernel:
->>> -# '5ccba44ba118("sched/sysctl: Check user input value of sysctl_sched_time_avg")'
->>> -
->> And those tests also don't fit?
->
-> sysctl and keyctl are actually testing kernel bugs.
-> Other kernel related (at least lsmod, mkfs, mkswap, unshare, ldd, gdb) + TPM tools
-> (tpm-tools, ...) are probably valid.
-Hi,
+> Both are working solutions.
+Hi Petr,
 
-I want to leave unshare01 because it could test not only namespaces but also a RHEL specific bug:
-https://bugzilla.redhat.com/show_bug.cgi?id=1463072
+Nothing prevent me to use either python34 or symlink.
 
-I attach the fix patch for your reference.
+In all kinds of cases, it is possible that python3 is not installed in 
+the standard path.  I think
+we should adapt python code to enviroment instead of changing  
+enviroment to adapt to code.
+Do you think so?
 
 Thanks,
 Xiao Yang
-
-> I guess most of user space tools not related to kernel (cp, cron, df, ln, tar, unzip, wc,
-> which) are questionable.
-> du01 and ar01 are mentioned in git log to catch some bug, so we'd have to carefully check
-> one by one if we want to remove them (and remove them in separate commits, but that's
-> obvious).
+>> Thanks,
+>> Xiao Yang
 >
 > Kind regards,
 > Petr
 >
+>
+> .
+>
 
 
 
--------------- next part --------------
-An embedded and charset-unspecified text was scrubbed...
-Name: 61136-fs-mntns-Remove-incorrect-put_mnt_ns.patch
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180427/dda212d6/attachment.ksh>
