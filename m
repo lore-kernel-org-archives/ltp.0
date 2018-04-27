@@ -1,10 +1,13 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 27 Apr 2018 11:32:50 +0200
-Subject: [LTP] [RFC PATCH v3 00/10] Rewrite tests into new API + fixes
-In-Reply-To: <1524759504.3647.12.camel@linux.vnet.ibm.com>
-References: <20180419195503.7194-1-pvorel@suse.cz>
- <1524759504.3647.12.camel@linux.vnet.ibm.com>
-Message-ID: <20180427093250.h5myocnvwgrfij34@dell5510>
+From: =?unknown-8bit?q?Myl=C3=A8ne?= Josserand <mylene.josserand@bootlin.com>
+Date: Fri, 27 Apr 2018 11:38:30 +0200
+Subject: [LTP] [RFC PATCH 7/9] testcases: df: Add "--printf" option as
+ needed commands
+In-Reply-To: <20180423132727.3ne2d2xvmj4lwinn@dell5510>
+References: <20180423094639.14612-1-mylene.josserand@bootlin.com>
+ <20180423094639.14612-8-mylene.josserand@bootlin.com>
+ <20180423102237.GF24481@rei>
+ <20180423132727.3ne2d2xvmj4lwinn@dell5510>
+Message-ID: <20180427113830.4c021080@dell-desktop.home>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
@@ -13,51 +16,47 @@ To: ltp@lists.linux.it
 
 Hi,
 
-> > * ima_measurements.sh
-> >   - don't require iversion for kernel >=3D 4.16
-> >   - avoid using tmpfs
+On Mon, 23 Apr 2018 15:27:27 +0200
+Petr Vorel <pvorel@suse.cz> wrote:
 
-> This is working nicely!
-:).
+> Hi,
+>=20
+> > > diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df=
+01.sh
+> > > index fbf1e2f2a..147620020 100755
+> > > --- a/testcases/commands/df/df01.sh
+> > > +++ b/testcases/commands/df/df01.sh
+> > > @@ -26,6 +26,8 @@ TST_PARSE_ARGS=3Dparse_args
+> > >  TST_NEEDS_ROOT=3D1
+> > >  TST_NEEDS_TMPDIR=3D1
+> > >  TST_NEEDS_DEVICE=3D1
+> > > +TST_NEEDS_CMDS=3D"stat --printf=3D%f" =20
+>=20
+> > Does this work? Because when I do something as: =20
+>=20
+> > $ command -v stat --nonexistent-option
+> > /usr/bin/stat
+> > $ echo $?
+> > 0 =20
+>=20
+> Checking whole output (not just binary file / script) presence in $PATH i=
+s what
+> tst_verify_cmd in my patch [1] does.
+>=20
+> [1] https://patchwork.ozlabs.org/patch/892779/
+>=20
+>=20
+> Kind regards,
+> Petr
 
+Indeed, I saw your patch just after I sent my series :)
 
-...
-> test: cmdline=3D"ima_policy.sh"
-> contacts=3D""
-> analysis=3Dexit
-> <<<test_output>>>
-> ima_policy 1 TINFO: verify that invalid policy isn't loaded
-> ima_policy 1 TPASS: didn't load invalid policy
-> ima_policy 2 TINFO: verify that policy file is not opened concurrently
-> and able to loaded multiple times
-> ima_policy 2 TFAIL: problem with loading policy (policy should be able
-> to load multiple times)
+I will test your "tst_verify_cmd" but it seems to fit my needs. I will
+keep you updated.
 
-> For now, could we change "problem with loading policy (policy should
-> be able to load multiple times)" to say, "problem loading or extending
-> policy (may require policy to be signed)"?
-Sure, thanks!
+Best regards,
 
-
-> I'm also seeing,=C2=A0
-
-> test: ima_tpm
-> <<<test_output>>>
-> ima_tpm 1 TINFO: verify boot aggregate
-> ima_tpm 1 TPASS: bios aggregate matches IMA boot aggregate
-> ima_tpm 2 TINFO: verify PCR values
-> ima_tpm 2 TINFO: evmctl version: evmctl 1.0
-> ima_tpm 2 TINFO: new PCRS path, evmctl >=3D 1.1 required
-> ima_tpm 2 TINFO: verify PCR (Process Control Register)
-> ima_tpm 2 TFAIL: failed to get PCR-10
-> ima_tpm 2 TPASS: aggregate PCR value matches real PCR value
-
-> It's unclear how the script could fail to get PCR-10, but pass the
-> following test.
-Thanks, fixed (wrong return).
-
-> Mimi
-
-
-Kind regards,
-Petr
+--=20
+Myl=C3=A8ne Josserand, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+http://bootlin.com
