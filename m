@@ -1,12 +1,12 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 27 Apr 2018 08:35:12 +0800
+Date: Fri, 27 Apr 2018 08:35:46 +0800
 Subject: [LTP] [PATCH] commands: Remove all test cases
 In-Reply-To: <20180426172713.GB14157@x230>
 References: <20180426132418.19495-1-schlad@suse.de>
  <20180426132418.19495-2-schlad@suse.de>
  <b72b277b-e8e0-d69c-b918-bd48341c2a1d@oracle.com>
  <20180426172713.GB14157@x230>
-Message-ID: <5AE27040.508@cn.fujitsu.com>
+Message-ID: <5AE27062.1060804@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -77,4 +77,4 @@ Xiao Yang
 -------------- next part --------------
 An embedded and charset-unspecified text was scrubbed...
 Name: 61136-fs-mntns-Remove-incorrect-put_mnt_ns.patch
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180427/4599a3cf/attachment.ksh>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180427/dda212d6/attachment.ksh>
