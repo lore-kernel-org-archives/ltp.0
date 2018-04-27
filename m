@@ -1,31 +1,42 @@
-From: =?unknown-8bit?q?Myl=C3=A8ne?= Josserand <mylene.josserand@bootlin.com>
-Date: Fri, 27 Apr 2018 15:37:41 +0200
-Subject: [LTP] [RFC PATCH 2/9] testcases: ar: Add TST_NEEDS_CMDS on "ar"
-In-Reply-To: <20180423102525.GG24481@rei>
-References: <20180423094639.14612-1-mylene.josserand@bootlin.com>
- <20180423094639.14612-3-mylene.josserand@bootlin.com>
- <20180423102525.GG24481@rei>
-Message-ID: <20180427153741.1a7855cf@dell-desktop.home>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 27 Apr 2018 15:43:33 +0200
+Subject: [LTP] [COMMITTED] [PATCH 1/1] ima/ima_measurements.sh: Add info
+	about tests expecting tcb policy
+Message-ID: <20180427134333.29017-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+IMA tests assume tcb policy [1]. But only measurement tests are failing,
+let's puts the info only for them.
 
-On Mon, 23 Apr 2018 12:25:25 +0200
-Cyril Hrubis <chrubis@suse.cz> wrote:
+This should be better detected [1] as after tests running for first time
+tcb policy is loaded by ima_policy.sh test.
 
-> Hi!
-> And the rest of the patches I haven't commented on looks good to me.
->=20
+Suggested-by: Mimi Zohar <zohar@linux.vnet.ibm.com>
 
-Okay, thank you for your reviews!
+[1] https://lists.linux.it/pipermail/ltp/2018-April/007924.html
 
-Best regards
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/kernel/security/integrity/ima/tests/ima_measurements.sh | 2 ++
+ 1 file changed, 2 insertions(+)
 
---=20
-Myl=C3=A8ne Josserand, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-http://bootlin.com
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+index 294e29d30..88eabd2a3 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+@@ -37,6 +37,8 @@ setup()
+ 	DIGEST_INDEX=
+ 	grep -q "ima-ng" $ASCII_MEASUREMENTS && DIGEST_INDEX=1
+ 	grep -q "ima-sig" $ASCII_MEASUREMENTS && DIGEST_INDEX=2
++
++	tst_res TINFO "IMA measurement tests assume tcb policy to be loaded (ima_policy=tbc)"
+ }
+ 
+ # TODO: find support for rmd128 rmd256 rmd320 wp256 wp384 tgr128 tgr160
+-- 
+2.16.3
+
