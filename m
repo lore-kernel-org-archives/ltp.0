@@ -1,90 +1,157 @@
-From: Yixin Zhang <yixin.zhang@intel.com>
-Date: Sun, 29 Apr 2018 08:02:13 +0800
-Subject: [LTP] [PATCH ltp] fs/ext4: enhance logic of
-	ext4_nsec_timestamps_test
-Message-ID: <20180429000213.685-1-yixin.zhang@intel.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Sat, 28 Apr 2018 14:29:55 +0300
+Subject: [LTP] [PATCH v3 1/3] lib/tst_checksum: add crc32c checksum
+Message-ID: <1524914997-27080-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1. Check the big block devices at setup stage, umount it if it's mounted
-2. Add "sleep 1" between mount and umount, to avoid umount failed due to
-   device busy (accessed by system service like systemd-udev)
-3. Add TFAIL if umount failed
-4. Fix typo error
+It will be used to make a SCTP packet in the test.
 
-Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- .../ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh      | 14 +++++++++-----
- testcases/kernel/fs/ext4-new-features/ext4_funcs.sh        |  6 ++++++
- 2 files changed, 15 insertions(+), 5 deletions(-)
+v3: use SPDX License-Identifier
 
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-index c6ff7c2ba..5d561adf3 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-@@ -76,8 +76,8 @@ ext4_test_nsec_timestamps()
+v2: As suggested by Cyril:
+    * updated the docs, added section 2.2.25
+    * added 'tst_' prefix
+    * changed type 'int' to 'size_t' for the buffer length
+
+ doc/test-writing-guidelines.txt |    6 +++
+ include/tst_checksum.h          |   16 ++++++++
+ lib/tst_checksum.c              |   81 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 103 insertions(+), 0 deletions(-)
+ create mode 100644 include/tst_checksum.h
+ create mode 100644 lib/tst_checksum.c
+
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index cbbfe6c..8e405a0 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -1366,6 +1366,12 @@ For reference to tainted kernels, see kernel documentation:
+ Documentation/admin-guide/tainted-kernels.rst or
+ https://www.kernel.org/doc/html/latest/admin-guide/tainted-kernels.html
  
- 	mkfs.ext3 -I 256 $EXT4_DEV >/dev/null 2>&1
- 	if [ $? -ne 0 ]; then
--		tst_resm TFAIL "failed to create ext4 filesystem"
--		return
-+		tst_resm TFAIL "failed to create ext3 filesystem"
-+	  return
- 	fi
++2.2.25 Checksums
++^^^^^^^^^^^^^^^^
++
++CRC32c checksum generation is supported by LTP. In order to use it, the
++test should include "tst_checksum.h" header, then can call tst_crc32c().
++
+ 2.3 Writing a testcase in shell
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
- 	mount -t ext4 $EXT4_DEV mnt_point
-@@ -105,8 +105,7 @@ ext4_test_nsec_timestamps()
- 	nsec_ctime=`ext4_file_time mnt_point/tmp_file ctime nsec`
- 
- 	# Test nanosecond
--	if [ $nsec_atime -eq 0 -a $nsec_mtime -eq 0 -a $nsec_ctime -eq 0 ]
--	then
-+	if [ $nsec_atime -eq 0 -a $nsec_mtime -eq 0 -a $nsec_ctime -eq 0 ]; then
- 		tst_resm TFAIL "The timestamp is not nanosecond(nsec_atime: $nsec_atime, nsec_mtime: $nsec_mtime, nsec_ctime: $nsec_ctime)"
- 		umount mnt_point
- 		return
-@@ -138,7 +137,12 @@ ext4_test_nsec_timestamps()
- 		tst_resm TFAIL "failed to mount to ext3"
- 		return
- 	fi
-+	sleep 1
- 	umount mnt_point
-+	if [ $? -ne 0 ]; then
-+		tst_resm TFAIL "failed to umount ext3 filesystem"
-+		return
-+	fi
- 
- 	mount -t ext4 $EXT4_DEV mnt_point
- 	if [ $? -ne 0 ]; then
-@@ -148,7 +152,7 @@ ext4_test_nsec_timestamps()
- 
- 	nsec_atime2=`ext4_file_time mnt_point/tmp_file atime nsec`
- 	nsec_mtime2=`ext4_file_time mnt_point/tmp_file mtime nsec`
--	nsec_ctime2=`ext4_file_time mnt_point/tmp_file mtime nsec`
-+	nsec_ctime2=`ext4_file_time mnt_point/tmp_file ctime nsec`
- 
- 	if [ $nsec_atime -ne $nsec_atime2 -o $nsec_ctime -ne $nsec_ctime2 -o \
- 	     $nsec_mtime -ne $nsec_mtime2 ]; then
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
-index a9eb54e8d..4de7899e4 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
-@@ -45,6 +45,12 @@ ext4_setup()
- 		tst_brkm TCONF "tests need a big block device(5G-10G)"
- 	else
- 		export EXT4_DEV=$LTP_BIG_DEV
-+		if mount | cut -d' ' -f1 | grep -q ^$EXT4_DEV$ ; then
-+			umount $EXT4_DEV >/dev/null 2>&1
-+			if [ $? -ne 0 ]; then
-+				tst_brkm TCONF "umount $EXT4_DEV failed"
-+			fi
-+		fi
- 	fi
- 
- 	tst_tmpdir
+diff --git a/include/tst_checksum.h b/include/tst_checksum.h
+new file mode 100644
+index 0000000..4f43115
+--- /dev/null
++++ b/include/tst_checksum.h
+@@ -0,0 +1,16 @@
++/* SPDX-License-Identifier: GPL-2.0
++ * Copyright (c) 2018 Oracle and/or its affiliates. All Rights Reserved.
++ */
++
++#ifndef TST_CHECKSUM_H__
++#define TST_CHECKSUM_H__
++
++#include <stdint.h>
++#include <stddef.h>
++
++/*
++ * Generates CRC32c checksum.
++ */
++uint32_t tst_crc32c(uint8_t *buf, size_t buf_len);
++
++#endif
+diff --git a/lib/tst_checksum.c b/lib/tst_checksum.c
+new file mode 100644
+index 0000000..9aaf9d4
+--- /dev/null
++++ b/lib/tst_checksum.c
+@@ -0,0 +1,81 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2018 Oracle and/or its affiliates. All Rights Reserved. */
++
++#include "tst_checksum.h"
++
++static const uint32_t crc32c_table[] = {
++	0x00000000, 0xf26b8303, 0xe13b70f7, 0x1350f3f4,
++	0xc79a971f, 0x35f1141c, 0x26a1e7e8, 0xd4ca64eb,
++	0x8ad958cf, 0x78b2dbcc, 0x6be22838, 0x9989ab3b,
++	0x4d43cfd0, 0xbf284cd3, 0xac78bf27, 0x5e133c24,
++	0x105ec76f, 0xe235446c, 0xf165b798, 0x030e349b,
++	0xd7c45070, 0x25afd373, 0x36ff2087, 0xc494a384,
++	0x9a879fa0, 0x68ec1ca3, 0x7bbcef57, 0x89d76c54,
++	0x5d1d08bf, 0xaf768bbc, 0xbc267848, 0x4e4dfb4b,
++	0x20bd8ede, 0xd2d60ddd, 0xc186fe29, 0x33ed7d2a,
++	0xe72719c1, 0x154c9ac2, 0x061c6936, 0xf477ea35,
++	0xaa64d611, 0x580f5512, 0x4b5fa6e6, 0xb93425e5,
++	0x6dfe410e, 0x9f95c20d, 0x8cc531f9, 0x7eaeb2fa,
++	0x30e349b1, 0xc288cab2, 0xd1d83946, 0x23b3ba45,
++	0xf779deae, 0x05125dad, 0x1642ae59, 0xe4292d5a,
++	0xba3a117e, 0x4851927d, 0x5b016189, 0xa96ae28a,
++	0x7da08661, 0x8fcb0562, 0x9c9bf696, 0x6ef07595,
++	0x417b1dbc, 0xb3109ebf, 0xa0406d4b, 0x522bee48,
++	0x86e18aa3, 0x748a09a0, 0x67dafa54, 0x95b17957,
++	0xcba24573, 0x39c9c670, 0x2a993584, 0xd8f2b687,
++	0x0c38d26c, 0xfe53516f, 0xed03a29b, 0x1f682198,
++	0x5125dad3, 0xa34e59d0, 0xb01eaa24, 0x42752927,
++	0x96bf4dcc, 0x64d4cecf, 0x77843d3b, 0x85efbe38,
++	0xdbfc821c, 0x2997011f, 0x3ac7f2eb, 0xc8ac71e8,
++	0x1c661503, 0xee0d9600, 0xfd5d65f4, 0x0f36e6f7,
++	0x61c69362, 0x93ad1061, 0x80fde395, 0x72966096,
++	0xa65c047d, 0x5437877e, 0x4767748a, 0xb50cf789,
++	0xeb1fcbad, 0x197448ae, 0x0a24bb5a, 0xf84f3859,
++	0x2c855cb2, 0xdeeedfb1, 0xcdbe2c45, 0x3fd5af46,
++	0x7198540d, 0x83f3d70e, 0x90a324fa, 0x62c8a7f9,
++	0xb602c312, 0x44694011, 0x5739b3e5, 0xa55230e6,
++	0xfb410cc2, 0x092a8fc1, 0x1a7a7c35, 0xe811ff36,
++	0x3cdb9bdd, 0xceb018de, 0xdde0eb2a, 0x2f8b6829,
++	0x82f63b78, 0x709db87b, 0x63cd4b8f, 0x91a6c88c,
++	0x456cac67, 0xb7072f64, 0xa457dc90, 0x563c5f93,
++	0x082f63b7, 0xfa44e0b4, 0xe9141340, 0x1b7f9043,
++	0xcfb5f4a8, 0x3dde77ab, 0x2e8e845f, 0xdce5075c,
++	0x92a8fc17, 0x60c37f14, 0x73938ce0, 0x81f80fe3,
++	0x55326b08, 0xa759e80b, 0xb4091bff, 0x466298fc,
++	0x1871a4d8, 0xea1a27db, 0xf94ad42f, 0x0b21572c,
++	0xdfeb33c7, 0x2d80b0c4, 0x3ed04330, 0xccbbc033,
++	0xa24bb5a6, 0x502036a5, 0x4370c551, 0xb11b4652,
++	0x65d122b9, 0x97baa1ba, 0x84ea524e, 0x7681d14d,
++	0x2892ed69, 0xdaf96e6a, 0xc9a99d9e, 0x3bc21e9d,
++	0xef087a76, 0x1d63f975, 0x0e330a81, 0xfc588982,
++	0xb21572c9, 0x407ef1ca, 0x532e023e, 0xa145813d,
++	0x758fe5d6, 0x87e466d5, 0x94b49521, 0x66df1622,
++	0x38cc2a06, 0xcaa7a905, 0xd9f75af1, 0x2b9cd9f2,
++	0xff56bd19, 0x0d3d3e1a, 0x1e6dcdee, 0xec064eed,
++	0xc38d26c4, 0x31e6a5c7, 0x22b65633, 0xd0ddd530,
++	0x0417b1db, 0xf67c32d8, 0xe52cc12c, 0x1747422f,
++	0x49547e0b, 0xbb3ffd08, 0xa86f0efc, 0x5a048dff,
++	0x8ecee914, 0x7ca56a17, 0x6ff599e3, 0x9d9e1ae0,
++	0xd3d3e1ab, 0x21b862a8, 0x32e8915c, 0xc083125f,
++	0x144976b4, 0xe622f5b7, 0xf5720643, 0x07198540,
++	0x590ab964, 0xab613a67, 0xb831c993, 0x4a5a4a90,
++	0x9e902e7b, 0x6cfbad78, 0x7fab5e8c, 0x8dc0dd8f,
++	0xe330a81a, 0x115b2b19, 0x020bd8ed, 0xf0605bee,
++	0x24aa3f05, 0xd6c1bc06, 0xc5914ff2, 0x37faccf1,
++	0x69e9f0d5, 0x9b8273d6, 0x88d28022, 0x7ab90321,
++	0xae7367ca, 0x5c18e4c9, 0x4f48173d, 0xbd23943e,
++	0xf36e6f75, 0x0105ec76, 0x12551f82, 0xe03e9c81,
++	0x34f4f86a, 0xc69f7b69, 0xd5cf889d, 0x27a40b9e,
++	0x79b737ba, 0x8bdcb4b9, 0x988c474d, 0x6ae7c44e,
++	0xbe2da0a5, 0x4c4623a6, 0x5f16d052, 0xad7d5351,
++};
++
++uint32_t tst_crc32c(uint8_t *buf, size_t buf_len)
++{
++	uint32_t crc = 0xffffffff;
++
++	while (buf_len--)
++		crc = crc32c_table[(crc ^ (*buf++)) & 0xff] ^ (crc >> 8);
++
++	return ~crc;
++}
 -- 
-2.14.1
+1.7.1
 
