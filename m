@@ -1,81 +1,90 @@
-From: Mimi Zohar <zohar@linux.vnet.ibm.com>
-Date: Fri, 27 Apr 2018 10:13:15 -0400
-Subject: [LTP] [RFC PATCH v3 01/10] security/ima: Rewrite tests into new
- API + fixes
-In-Reply-To: <20180419195503.7194-2-pvorel@suse.cz>
-References: <20180419195503.7194-1-pvorel@suse.cz>
- <20180419195503.7194-2-pvorel@suse.cz>
-Message-ID: <1524838395.3416.65.camel@linux.vnet.ibm.com>
+From: Yixin Zhang <yixin.zhang@intel.com>
+Date: Sun, 29 Apr 2018 08:02:13 +0800
+Subject: [LTP] [PATCH ltp] fs/ext4: enhance logic of
+	ext4_nsec_timestamps_test
+Message-ID: <20180429000213.685-1-yixin.zhang@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, 2018-04-19 at 21:54 +0200, Petr Vorel wrote:
+1. Check the big block devices at setup stage, umount it if it's mounted
+2. Add "sleep 1" between mount and umount, to avoid umount failed due to
+   device busy (accessed by system service like systemd-udev)
+3. Add TFAIL if umount failed
+4. Fix typo error
 
-> -# Function:     test02
-> -# Description	- Verify modifying, then reading, a file causes a new
-> -# 		  measurement to be added to the IMA measurement list.
-> -test02()
-> +ima_check()
->  {
-> -	# Modify test.txt
-> -	echo $(date) - file modified >> test.txt
-> +	local digest=3D"$DEFAULT_DIGEST_OLD_FORMAT"
-> +	local hash expected_hash line
-> +
-> +	# need to read file to get updated $ASCII_MEASUREMENTS
-> +	cat $TEST_FILE > /dev/null
-> +
-> +	line=3D"$(grep $TEST_FILE $ASCII_MEASUREMENTS | tail -1)"
-> +	[ -n "$line" ] || tst_res TFAIL "cannot find measurement for '$TEST_FIL=
-E'"
->=20
-> -	# Calculating the sha1sum of test.txt should add
-> -	# the new measurement to the measurement list
-> -	hash=3D$(sha1sum test.txt | sed 's/  -//')
-> +	[ "$DIGEST_INDEX" ] && digest=3D"$(echo "$line" | awk '{print $(NF-'$DI=
-GEST_INDEX')}' | cut -d ':' -f 1)"
-> +	hash=3D"$(echo "$line" | awk '{print $(NF-1)}' | cut -d ':' -f 2)"
+Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+---
+ .../ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh      | 14 +++++++++-----
+ testcases/kernel/fs/ext4-new-features/ext4_funcs.sh        |  6 ++++++
+ 2 files changed, 15 insertions(+), 5 deletions(-)
 
-With the "ima-sig" template, with a measurement that does not contain
-the signature, this works fine. =C2=A0There's a problem with lines
-containing the signature.
-
-Sample ima-sig template measurements with/without the signature:
-line=3D"10 ee788468d1b416a394feb9f4e5650302d9cd5574 ima-sig sha256:866c2542=
-efd5c7528591eb3bb2861a1994a655da47732ccf28f7f4b1ce42d564 /usr/lib64/libpam.=
-so.0.84.1"
-
-line=3D"10 d3afb4df5fe42485b99677f4b68a04692977b4bc ima-sig sha256:7b85508c=
-9181670fe169935310b8c95d7c2573f0318a70cecd12868569aab891 /etc/profile.d/les=
-s.sh 0302046e6c104601008bd533707b34a9e896d3d530a88e9af517fb7e8cf79e9e55064a=
-577fcbcdb81236ede6fec0638d357e4c2ed9b261320f8789378d1e58af8e1c6f40ebdf08075=
-9be2c633b27bc8aed85af0620fa27700c68fdf31d33b2f9e36432a1e7d7eb8dbf20b9474d33=
-2deb9697767ee13e13c116544a843b54fce842d24ea485bb41f6f7b1e9fa3faed0c591f5243=
-cee008b9499e48064141662d3c4d002b07448ae54dc8d8674437143d73c4e34f5b416300ba8=
-90dc391eae9e5b1e89190790d0ea77d1dc57e07dae9ca003294a36fda09c31f8afa347701bf=
-cf5aed0fda9cf7a37f734ba80fc10f2d60409f0beba532f3e5cc15ae995128e466b20fdadef=
-789e285519"
-
->=20
-> -	# Check if the new measurement exists
-> -	cat /sys/kernel/security/ima/ascii_runtime_measurements > measurements
-> -	$(grep $hash measurements > /dev/null)
-> +	tst_res TINFO "computing hash for $digest digest"
-> +	expected_hash=3D"$(compute_hash $digest $TEST_FILE)" || \
-> +		{ tst_res TCONF "cannot compute hash for '$digest' digest"; return; }
->=20
-> -	if [ $? -ne 0 ]; then
-> -		tst_resm TFAIL "Modified file not measured"
-> -		tst_resm TINFO "iversion not supported; or not mounted with iversion"
-> +	if [ "$hash" =3D "$expected_hash" ]; then
-> +		tst_res TPASS "correct hash found"
->  	else
-> -		tst_resm TPASS "Modified file measured"
-> +		tst_res TFAIL "hash not found"
->  	fi
->  }
->=20
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+index c6ff7c2ba..5d561adf3 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+@@ -76,8 +76,8 @@ ext4_test_nsec_timestamps()
+ 
+ 	mkfs.ext3 -I 256 $EXT4_DEV >/dev/null 2>&1
+ 	if [ $? -ne 0 ]; then
+-		tst_resm TFAIL "failed to create ext4 filesystem"
+-		return
++		tst_resm TFAIL "failed to create ext3 filesystem"
++	  return
+ 	fi
+ 
+ 	mount -t ext4 $EXT4_DEV mnt_point
+@@ -105,8 +105,7 @@ ext4_test_nsec_timestamps()
+ 	nsec_ctime=`ext4_file_time mnt_point/tmp_file ctime nsec`
+ 
+ 	# Test nanosecond
+-	if [ $nsec_atime -eq 0 -a $nsec_mtime -eq 0 -a $nsec_ctime -eq 0 ]
+-	then
++	if [ $nsec_atime -eq 0 -a $nsec_mtime -eq 0 -a $nsec_ctime -eq 0 ]; then
+ 		tst_resm TFAIL "The timestamp is not nanosecond(nsec_atime: $nsec_atime, nsec_mtime: $nsec_mtime, nsec_ctime: $nsec_ctime)"
+ 		umount mnt_point
+ 		return
+@@ -138,7 +137,12 @@ ext4_test_nsec_timestamps()
+ 		tst_resm TFAIL "failed to mount to ext3"
+ 		return
+ 	fi
++	sleep 1
+ 	umount mnt_point
++	if [ $? -ne 0 ]; then
++		tst_resm TFAIL "failed to umount ext3 filesystem"
++		return
++	fi
+ 
+ 	mount -t ext4 $EXT4_DEV mnt_point
+ 	if [ $? -ne 0 ]; then
+@@ -148,7 +152,7 @@ ext4_test_nsec_timestamps()
+ 
+ 	nsec_atime2=`ext4_file_time mnt_point/tmp_file atime nsec`
+ 	nsec_mtime2=`ext4_file_time mnt_point/tmp_file mtime nsec`
+-	nsec_ctime2=`ext4_file_time mnt_point/tmp_file mtime nsec`
++	nsec_ctime2=`ext4_file_time mnt_point/tmp_file ctime nsec`
+ 
+ 	if [ $nsec_atime -ne $nsec_atime2 -o $nsec_ctime -ne $nsec_ctime2 -o \
+ 	     $nsec_mtime -ne $nsec_mtime2 ]; then
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
+index a9eb54e8d..4de7899e4 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
+@@ -45,6 +45,12 @@ ext4_setup()
+ 		tst_brkm TCONF "tests need a big block device(5G-10G)"
+ 	else
+ 		export EXT4_DEV=$LTP_BIG_DEV
++		if mount | cut -d' ' -f1 | grep -q ^$EXT4_DEV$ ; then
++			umount $EXT4_DEV >/dev/null 2>&1
++			if [ $? -ne 0 ]; then
++				tst_brkm TCONF "umount $EXT4_DEV failed"
++			fi
++		fi
+ 	fi
+ 
+ 	tst_tmpdir
+-- 
+2.14.1
 
