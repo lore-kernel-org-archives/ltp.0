@@ -1,44 +1,28 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 30 Apr 2018 13:20:18 +0200
-Subject: [LTP] [PATCH RESEND] syscalls/swapon03: do not fail if
- /proc/swaps is absent
-In-Reply-To: <20180429220615.1206-1-smuckle.linux@gmail.com>
-References: <20180429220615.1206-1-smuckle.linux@gmail.com>
-Message-ID: <20180430112018.vb77fsqjzwi4aes4@dell5510>
+From: avinasht@codeaurora.org <avinasht@codeaurora.org>
+Date: Mon, 30 Apr 2018 19:01:41 +0530
+Subject: [LTP] Source code for binaries like rsh,
+ rlogin for embedded platforms like android
+Message-ID: <0c961079e810a1175b3a07486ee0f27d@codeaurora.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi All,
 
-> If the /proc/swaps file is absent the test should be skipped due
-> to incompatible configuration.
+ From where I can find source code for tools like rsh, rlogin which are 
+used in testcases for various purposes.
+Other tools like host, tracepath etc were part of iputils package. But I 
+am unable to find source for full netkit-rsh package source.
 
-> Signed-off-by: Steve Muckle <smuckle.linux@gmail.com>
-> ---
->  testcases/kernel/syscalls/swapon/swapon03.c | 3 +++
->  1 file changed, 3 insertions(+)
+If anybody in the community has any idea from where I can find then it 
+would be of great help. Thanks in advance.
 
-> diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
-> index d3f73b044fe1..955ac247b6a2 100644
-> --- a/testcases/kernel/syscalls/swapon/swapon03.c
-> +++ b/testcases/kernel/syscalls/swapon/swapon03.c
-> @@ -328,6 +328,9 @@ static void setup(void)
+Also, I saw some efforts to port LTP to Android(ANDROID flag for 
+compilation in commit-id 34a7c82a7abd0a72746c2369ebdbc34e267b2c44).
+Are there any existing activities going on, any pointers to the progress 
+made so far would be of great help ?
 
->  	tst_require_root();
-
-> +	if (access("/proc/swaps", F_OK))
-> +		tst_brkm(TCONF, NULL, "swap not supported by kernel");
-> +
->  	tst_tmpdir();
-
->  	switch ((fs_type = tst_fs_type(cleanup, "."))) {
-
-Merged, thanks!
-
-BTW I wonder which distros don't have CONFIG_SWAP=y. Some embedded or Android?
-
-Kind regards,
-Petr
+Thanks,
+Avinash
