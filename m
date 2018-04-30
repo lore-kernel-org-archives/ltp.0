@@ -1,41 +1,33 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 30 Apr 2018 08:25:42 +0200
-Subject: [LTP] [PATCH 2/2] network/vxlan: Fix getopts parameters passed
- from vxlan03 to virt_lib.sh
-In-Reply-To: <09e656ed-db47-a1dc-33ec-77d795f81555@oracle.com>
-References: <20180428135921.9622-1-pvorel@suse.cz>
- <20180428135921.9622-3-pvorel@suse.cz>
- <09e656ed-db47-a1dc-33ec-77d795f81555@oracle.com>
-Message-ID: <20180430062542.hpqirk27ensxhkd2@dell5510>
+Date: Mon, 30 Apr 2018 08:38:06 +0200
+Subject: [LTP] [PATCH 1/2] *.py: Replace '#!/usr/bin/python3' with
+ '#!/usr/bin/env python3'
+In-Reply-To: <20180427140813.GA22462@rei>
+References: <1524725137-32739-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <5AE179C6.3050300@cn.fujitsu.com> <20180426080658.GA4482@x230>
+ <20180427140813.GA22462@rei>
+Message-ID: <20180430063806.425k25ch7dr5btka@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
-> Hi Petr,
+Hi Cyril,
 
+> Hi!
+> > Couldn't it be solved by simple creating manually symlink python3 to /usr/bin ?
+> > I'm not against changing schebang to using env, if causing troubles.
+> > Cyril, what do you think?
 
-> What about using TST_OPTS and TST_PARSE_ARGS here, instead of 'while getopts...'
-> and 'shift'?
+> Well if it's causing problems for our users we should go ahead and
+> change the shebangs to /usr/bin/env python3.
+Simple linking solves that:
+# ln -s /usr/local/bin/python3 /usr/bin
+And this problem occurs only if you compile python3 from sources (and there are packages for
+all major distros, including RHEL 6.9, which Xiao used - in his case it's EPEL repository).
 
-> virt_parse_args()
-> {
->         case "$1" in
->         h)
->            ...
->         ;;
->         i) start_id=$OPTARG ;;
->         d) vxlan_dst_addr=$OPTARG ;;
->         esac
-> }
-
-> TST_OPTS="hi:d:"
-> TST_PARSE_ARGS=virt_parse_args
-
-Sure :). Thanks for reminding me my own code :).
-I've sent v2 with it, can you have a quick look?
+Still want to me to change shebang to '/usr/bin/env python3' ?
 
 
 Kind regards,
