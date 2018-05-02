@@ -1,91 +1,47 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed,  2 May 2018 21:29:02 +0800
-Subject: [LTP] [PATCH] tst_test.sh: achieve TST_RETRY_FUNC function in shell
-Message-ID: <20180502132902.16065-1-liwang@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed,  2 May 2018 15:45:53 +0200
+Subject: [LTP] [RFC PATCH 1/1] tst_test.sh: TCONF on basename error when
+	setting TST_ID
+Message-ID: <20180502134553.5429-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- doc/test-writing-guidelines.txt | 20 ++++++++++++++++++++
- testcases/lib/tst_test.sh       | 30 ++++++++++++++++++++++++++++++
- 2 files changed, 50 insertions(+)
+'basename $0' fails when loaded in command line with bash (at least)
+as $0 is invalid ('-bash'):
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index cbbfe6c..318eca6 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -1640,6 +1640,26 @@ that can sleep for defined amount of seconds, milliseconds or microseconds.
- tst_sleep 100ms
- -------------------------------------------------------------------------------
- 
-+Retry a function in limited time
-+++++++++++++++++++++++++++++++++
-+
-+Sometimes LTP test needs retrying a function for many times to get success.
-+This achievement makes that possible via keeping it retrying if the return
-+value of the function is NOT as we expected. After exceeding one second, the
-+test will break from the retries immediately.
-+
-+[source,c]
-+-------------------------------------------------------------------------------
-+# retry function in 1 second
-+TST_RETRY_FUNC(FUNC, ERET)
-+-------------------------------------------------------------------------------
-+
-+[source,sh]
-+-------------------------------------------------------------------------------
-+# retry function in 1 second
-+TST_RETRY_FUNC "FUNC arg1 arg2" "ERET"
-+-------------------------------------------------------------------------------
-+
- Checking for integers
- +++++++++++++++++++++
- 
+    $ unset TST_ID; export TST_NO_DEFAULT_RUN=1; . tst_test.sh
+    -bash: tst_ansi_color.sh: No such file or directory
+    basename: invalid option -- 'b'
+    Try 'basename --help' for more information.
+
+It's better to TCONF than be without TST_ID.
+
+NOTE: Sourcing tst_test.sh can be needed for network scripts: users
+might want to set network variables with tst_net.sh, which itself
+sources tst_test.sh.
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/tst_test.sh | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
 diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 8d49d34..d03ed04 100644
+index 8d49d34b6..39744d29e 100644
 --- a/testcases/lib/tst_test.sh
 +++ b/testcases/lib/tst_test.sh
-@@ -154,6 +154,36 @@ EXPECT_FAIL()
- 	fi
+@@ -377,7 +377,8 @@ tst_run()
  }
  
-+TST_RETRY_FN_EXP_BACKOFF()
-+{
-+	local tst_fun=$1
-+	local tst_exp=$2
-+	local tst_sec=$(expr $3 \* 1000000)
-+	local tst_delay=1
-+
-+	while true; do
-+		$tst_fun
-+		if [ "$?" == "$tst_exp" ]; then
-+			break
-+		fi
-+
-+		if [ $tst_delay -lt $tst_sec ]; then
-+			tst_sleep ${tst_delay}us
-+			tst_delay=$((tst_delay*2))
-+		else
-+			tst_brk TBROK "$tst_fun failed"
-+		fi
-+	done
-+
-+	return $tst_exp
-+}
-+
-+TST_RETRY_FUNC()
-+{
-+	TST_RETRY_FN_EXP_BACKOFF "$1" "$2" 1
-+	return $2
-+}
-+
- tst_umount()
- {
- 	local device="$1"
+ if [ -z "$TST_ID" ]; then
+-	filename=$(basename $0)
++	filename=$(basename $0) || \
++		tst_brk TBROK "Failed to set TST_ID from \$0 ('$0'), fix it with setting TST_ID before sourcing tst_test.sh"
+ 	TST_ID=${filename%%.*}
+ fi
+ export TST_ID="$TST_ID"
 -- 
-2.9.5
+2.16.3
 
