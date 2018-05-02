@@ -1,108 +1,77 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 2 May 2018 18:36:52 +0200
-Subject: [LTP] [PATCH] tst_test.sh: achieve TST_RETRY_FUNC function in
- shell
-In-Reply-To: <20180502132902.16065-1-liwang@redhat.com>
-References: <20180502132902.16065-1-liwang@redhat.com>
-Message-ID: <20180502163652.a7py5fv6yf4iceut@dell5510>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 2 May 2018 23:50:04 +0530
+Subject: [LTP] LTP master testing on arm64 hikey
+In-Reply-To: <878t92l2i9.fsf@rpws.prws.suse.cz>
+References: <CA+G9fYtDbxYEjA6T=0cf5wL-9VentRkmKZPHP7dxGCwk-NBOXQ@mail.gmail.com>
+ <878t92l2i9.fsf@rpws.prws.suse.cz>
+Message-ID: <CA+G9fYs7gNR1PF-0iBZSDwMvhcao9Q-3FXyY4o_rXOJp7Eg-wQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+On 2 May 2018 at 16:59, Richard Palethorpe <rpalethorpe@suse.de> wrote:
+> Hello,
+>
+> Naresh Kamboju writes:
+>
+>> LTP master branch tested on arm64 Hikey device and we have noticed
+>> following observations,
+>>
+>>
+>> LTP Syscalls,
+>> -------------------
+>> utimensat01 1 TBROK: can't read /etc/sudoers
+>> https://lkft.validation.linaro.org/scheduler/job/203110#L12218
+>>
+>> LTP fs,
+>>
+>> The newly added test cases failed.
+>>
+>> read_all_dev: fail
+>> read_all_proc: fail
+>> read_all_sys: fail
+>
+> Well the retrying messages are definitely not helpful, I think we should
+> remove them.
+>
+> My guess is that one or more of the read_all tests read one or more
+> buggy sys files causing the stack traces (probably one which is exposed
+> by a driver). On the other hand it could just be that the board can not
+> handle having so many files read in parallel.
+>
+> I would start by running "./read_all -d /dev -e '/dev/watchdog?(0)'"
+> manually. See ./read_all --help and the fs runtest file.
 
-nice feature, thanks for adding it.
-1 bashism to be fixed + minor issues bellow.
-
-
-> Signed-off-by: Li Wang <liwang@redhat.com>
-Tested-by: Petr Vorel <pvorel@suse.cz>
-
-> ---
->  doc/test-writing-guidelines.txt | 20 ++++++++++++++++++++
->  testcases/lib/tst_test.sh       | 30 ++++++++++++++++++++++++++++++
->  2 files changed, 50 insertions(+)
-
-> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-> index cbbfe6c..318eca6 100644
-> --- a/doc/test-writing-guidelines.txt
-> +++ b/doc/test-writing-guidelines.txt
-> @@ -1640,6 +1640,26 @@ that can sleep for defined amount of seconds, milliseconds or microseconds.
->  tst_sleep 100ms
->  -------------------------------------------------------------------------------
-
-> +Retry a function in limited time
-> +++++++++++++++++++++++++++++++++
-> +
-> +Sometimes LTP test needs retrying a function for many times to get success.
-> +This achievement makes that possible via keeping it retrying if the return
-> +value of the function is NOT as we expected. After exceeding one second, the
-> +test will break from the retries immediately.
-> +
-> +[source,c]
-> +-------------------------------------------------------------------------------
-> +# retry function in 1 second
-> +TST_RETRY_FUNC(FUNC, ERET)
-C docs should have been added in c2ce4df67d. Maybe you could just mention this in commit
-message.
-
-> +-------------------------------------------------------------------------------
-> +
-> +[source,sh]
-> +-------------------------------------------------------------------------------
-> +# retry function in 1 second
-> +TST_RETRY_FUNC "FUNC arg1 arg2" "ERET"
-Maybe EXPECTED_RET to be clearer?
-
-> +-------------------------------------------------------------------------------
-> +
->  Checking for integers
->  +++++++++++++++++++++
-
-> +TST_RETRY_FN_EXP_BACKOFF()
-> +{
-> +	local tst_fun=$1
-> +	local tst_exp=$2
-I'd check number of params ($#) and tst_brk to warn user about improper usage.
-And mention TST_RETRY_FN_EXP_BACKOFF() in docs?
-
-> +	local tst_sec=$(expr $3 \* 1000000)
-> +	local tst_delay=1
-> +
-> +	while true; do
-> +		$tst_fun
-> +		if [ "$?" == "$tst_exp" ]; then
-                  ^
-This is bashism, it's broken in dash. Please use single equal sign:
-		if [ "$?" = "$tst_exp" ]; then
+I have run these steps manually on the board here is the output.
+read_all is reading all /dev/ entries.
 
 
-> +			break
-> +		fi
-> +
-> +		if [ $tst_delay -lt $tst_sec ]; then
-> +			tst_sleep ${tst_delay}us
-> +			tst_delay=$((tst_delay*2))
-> +		else
-> +			tst_brk TBROK "$tst_fun failed"
-> +		fi
-> +	done
-> +
-> +	return $tst_exp
-> +}
-> +
-> +TST_RETRY_FUNC()
-> +{
-> +	TST_RETRY_FN_EXP_BACKOFF "$1" "$2" 1
-> +	return $2
-> +}
-> +
->  tst_umount()
->  {
->  	local device="$1"
++ ./read_all -d /dev -e '/dev/watchdog?(0)'
+tst_test.c:1015: [1;34mINFO: [0mTimeout per run is 0h 05m 00s
+read_all.c:221: [1;34mINFO: [0mread(/dev/dri/card0): EAGAIN/EWOULDBLOCK
+read_all.c:221: [1;34mINFO: [0mread(/dev/rfkill): EAGAIN/EWOULDBLOCK
+[   26.533620] tun: Universal TUN/TAP device driver, 1.6
+read_all.c:221: [1;34mINFO: [0mread(/dev/net/tun): EBADFD
+[   26.621183] raid6: int64x1  gen()   350 MB/s
+[   26.693131] raid6: int64x1  xor()   437 MB/s
+<>
+read_all.c:221: [1;34mINFO: [0mread(/dev/tty0): EAGAIN/EWOULDBLOCK
+read_all.c:221: [1;34mINFO: [0mread(/dev/console): EAGAIN/EWOULDBLOCK
+read_all.c:221: [1;34mINFO: [0mread(/dev/tty): EIO
+tst_test.c:339: [1;31mBROK: [0mChild (3156) killed by signal SIGSEGV
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
 
 
-Kind regards,
-Petr
+https://pastebin.com/G698sFP6
+
+
+LTP fs read_all test log,
+https://lkft.validation.linaro.org/scheduler/job/203359#L1340
+
+- Naresh
