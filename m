@@ -1,91 +1,108 @@
-From: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Date: Wed, 2 May 2018 17:46:21 +0200
-Subject: [LTP] runltp - error when using another tmp folder
-In-Reply-To: <20180502162214.5d962173@dell-desktop.home>
-References: <20180502162214.5d962173@dell-desktop.home>
-Message-ID: <20180502174621.6087aaea@windsurf>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 2 May 2018 18:36:52 +0200
+Subject: [LTP] [PATCH] tst_test.sh: achieve TST_RETRY_FUNC function in
+ shell
+In-Reply-To: <20180502132902.16065-1-liwang@redhat.com>
+References: <20180502132902.16065-1-liwang@redhat.com>
+Message-ID: <20180502163652.a7py5fv6yf4iceut@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi Li,
 
-On Wed, 2 May 2018 16:22:14 +0200, Myl=C3=A8ne Josserand wrote:
+nice feature, thanks for adding it.
+1 bashism to be fixed + minor issues bellow.
 
-> After looking at the code, Thomas (in CC) and myself found that the
-> "temp" folder that we used (with "-d" option on "runltp") does not have
-> a permission of 777.
-> According to the code of runltp, it seems that it creates a folder with
-> this permission but because it is retrieving the option using
-> "readlink", if the folder is not available, it leads to an error
-> because TMPBASE variable is empty:
 
-Hum, I think the situation is a bit more complicated than that. The
-runltp code goes like this:
+> Signed-off-by: Li Wang <liwang@redhat.com>
+Tested-by: Petr Vorel <pvorel@suse.cz>
 
-            export TMPBASE=3D$(readlink -f ${OPTARG}) ;;
-[...]
+> ---
+>  doc/test-writing-guidelines.txt | 20 ++++++++++++++++++++
+>  testcases/lib/tst_test.sh       | 30 ++++++++++++++++++++++++++++++
+>  2 files changed, 50 insertions(+)
 
-    # Added -m 777 for tests that call tst_tmpdir() and try to
-    #  write to it as user nobody
-    mkdir -m 777 -p $TMPBASE || \
-    {
-        echo "FATAL: Unable to make temporary directory $TMPBASE"
-        exit 1
-    }
-    # use mktemp to create "safe" temporary directories
-    export TMPTEMPLATE=3D"${TMPBASE}/ltp-XXXXXXXXXX"
-    TMP=3D`mktemp -d $TMPTEMPLATE` || \
-    {
-        echo "FATAL: Unable to make temporary directory: $TMP"
-        exit 1
-    }
-    export TMP
-    # To be invoked by tst_tmpdir()
-    # write to it as user nobody
-    export TMPDIR=3D$TMP
+> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+> index cbbfe6c..318eca6 100644
+> --- a/doc/test-writing-guidelines.txt
+> +++ b/doc/test-writing-guidelines.txt
+> @@ -1640,6 +1640,26 @@ that can sleep for defined amount of seconds, milliseconds or microseconds.
+>  tst_sleep 100ms
+>  -------------------------------------------------------------------------------
 
-    chmod 777 $TMP || \
-    {
-      echo "unable to chmod 777 $TMP ... aborting"
-      exit 1
-    }
+> +Retry a function in limited time
+> +++++++++++++++++++++++++++++++++
+> +
+> +Sometimes LTP test needs retrying a function for many times to get success.
+> +This achievement makes that possible via keeping it retrying if the return
+> +value of the function is NOT as we expected. After exceeding one second, the
+> +test will break from the retries immediately.
+> +
+> +[source,c]
+> +-------------------------------------------------------------------------------
+> +# retry function in 1 second
+> +TST_RETRY_FUNC(FUNC, ERET)
+C docs should have been added in c2ce4df67d. Maybe you could just mention this in commit
+message.
 
-So you've got two possible situations:
+> +-------------------------------------------------------------------------------
+> +
+> +[source,sh]
+> +-------------------------------------------------------------------------------
+> +# retry function in 1 second
+> +TST_RETRY_FUNC "FUNC arg1 arg2" "ERET"
+Maybe EXPECTED_RET to be clearer?
 
- (1) TMPBASE is an already existing directory. In this case, the "-m
-     777" argument in mkdir -m 777 -p $TMPBASE is useless because it is
-     only used by mkdir when the directory to be created doesn't exist
-     yet.
+> +-------------------------------------------------------------------------------
+> +
+>  Checking for integers
+>  +++++++++++++++++++++
 
- (2) TMPBASE is not an existing directory. In this case, readlink will
-     return an empty string, and mkdir will fail because TMPBASE is
-     empty.
+> +TST_RETRY_FN_EXP_BACKOFF()
+> +{
+> +	local tst_fun=$1
+> +	local tst_exp=$2
+I'd check number of params ($#) and tst_brk to warn user about improper usage.
+And mention TST_RETRY_FN_EXP_BACKOFF() in docs?
 
-> Currently, we fixed the issue by using a /tmp folder that already has
-> 777 permission (default's one) but maybe, other users may want to use
-> another folder and may have the same error we got.
+> +	local tst_sec=$(expr $3 \* 1000000)
+> +	local tst_delay=1
+> +
+> +	while true; do
+> +		$tst_fun
+> +		if [ "$?" == "$tst_exp" ]; then
+                  ^
+This is bashism, it's broken in dash. Please use single equal sign:
+		if [ "$?" = "$tst_exp" ]; then
 
-Now that I look at the code again, in the end, I don't understand why
-the user nobody was not able to create its temporary files. Indeed,
-TMPDIR which gets exported to tests, and is used by tst_tmpdir() is
-defined as:
 
- TMPDIR =3D $TMPBASE/ltp-XXXXXXXXXX/
+> +			break
+> +		fi
+> +
+> +		if [ $tst_delay -lt $tst_sec ]; then
+> +			tst_sleep ${tst_delay}us
+> +			tst_delay=$((tst_delay*2))
+> +		else
+> +			tst_brk TBROK "$tst_fun failed"
+> +		fi
+> +	done
+> +
+> +	return $tst_exp
+> +}
+> +
+> +TST_RETRY_FUNC()
+> +{
+> +	TST_RETRY_FN_EXP_BACKOFF "$1" "$2" 1
+> +	return $2
+> +}
+> +
+>  tst_umount()
+>  {
+>  	local device="$1"
 
-and this directory is chmod 777. So even if TMPBASE is only
-root-writable, TMPDIR should be world-writable. So there's something we
-misunderstood here.
 
-That being said, that doesn't remove the bug on how TMPBASE is handled,
-which is described above.
-
-Best regards,
-
-Thomas
---=20
-Thomas Petazzoni, CTO, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Kind regards,
+Petr
