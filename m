@@ -1,25 +1,36 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 2 May 2018 16:45:43 +0200
-Subject: [LTP] [RFC PATCH 1/1] tst_test.sh: TCONF on basename error when
- setting TST_ID
-In-Reply-To: <20180502134553.5429-1-pvorel@suse.cz>
-References: <20180502134553.5429-1-pvorel@suse.cz>
-Message-ID: <20180502144542.4wmenub3p3c7kega@dell5510>
+Date: Wed, 2 May 2018 17:37:06 +0200
+Subject: [LTP] [PATCH 1/2] *.py: Replace '#!/usr/bin/python3' with
+ '#!/usr/bin/env python3'
+In-Reply-To: <20180430063806.425k25ch7dr5btka@dell5510>
+References: <1524725137-32739-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <5AE179C6.3050300@cn.fujitsu.com> <20180426080658.GA4482@x230>
+ <20180427140813.GA22462@rei>
+ <20180430063806.425k25ch7dr5btka@dell5510>
+Message-ID: <20180502153706.xslywr2fe67d4mdj@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Xiao,
 
-...
->  if [ -z "$TST_ID" ]; then
-> -	filename=$(basename $0)
-> +	filename=$(basename $0) || \
-> +		tst_brk TBROK "Failed to set TST_ID from \$0 ('$0'), fix it with setting TST_ID before sourcing tst_test.sh"
-                ^
-Here is going to be TCONF.
+> > > Couldn't it be solved by simple creating manually symlink python3 to /usr/bin ?
+> > > I'm not against changing schebang to using env, if causing troubles.
+> > > Cyril, what do you think?
+
+> > Well if it's causing problems for our users we should go ahead and
+> > change the shebangs to /usr/bin/env python3.
+> Simple linking solves that:
+> # ln -s /usr/local/bin/python3 /usr/bin
+> And this problem occurs only if you compile python3 from sources (and there are packages for
+> all major distros, including RHEL 6.9, which Xiao used - in his case it's EPEL repository).
+
+> Still want to me to change shebang to '/usr/bin/env python3' ?
+
+Acked by Cyril => merged.
+Thanks for your time!
 
 Kind regards,
 Petr
