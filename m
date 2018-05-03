@@ -1,31 +1,68 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 3 May 2018 10:49:31 +0200
-Subject: [LTP] [PATCH] [RFC] syscalls/perf_event_open02: Fix failures
-In-Reply-To: <20180424124957.15634-1-chrubis@suse.cz>
-References: <20180424124957.15634-1-chrubis@suse.cz>
-Message-ID: <20180503084931.GE29568@rei>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 3 May 2018 16:52:45 +0800
+Subject: [LTP] [PATCH] nfs/nfs_lib.sh: Fix wrong getopts parameter handling
+Message-ID: <1525337565-10101-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> The testcase was failing randomly, it could be reproduced easily when
-> the machine is under load. To reproduce the issue just run a few
-> dd if=/dev/zero of=/dev/null to saturate your CPUs.
-> 
-> It has been sugessted that the reason for the failure are rounding
-> errors caused by a frequent preemption. I haven't got a definitive
-> answer from kernel devs for this but it's true that changing the process
-> pritority to realtime SCHED_FIFO for the measurement does fix the issue.
-> 
-> So we either delete the test or apply this patch.
+If nfs_lib.sh didn't use TST_OPTS and passed getopts parameter to
+tst_net.sh which could only handle -6, it caused getopts error:
+----------------------------------------------------------------
+/opt/ltp/testcases/bin/nfs01: illegal option -- v
+/opt/ltp/testcases/bin/tst_net.sh: line 37: ?: command not found
+----------------------------------------------------------------
 
-Any comments for this patch?
+We use TST_OPTS and TST_PARSE_ARGS to fix this issue.
 
-I would like to have this sorted out before the release...
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/network/nfs/nfs_stress/nfs_lib.sh | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
+diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+index 0abf39d..28c43ba 100644
+--- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
++++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+@@ -20,8 +20,12 @@ NFILES=${NFILES:=1000}
+ SOCKET_TYPE="${SOCKET_TYPE:-udp}"
+ NFS_TYPE=${NFS_TYPE:=nfs}
+ 
+-while getopts :ht:v:6 opt; do
+-	case "$opt" in
++TST_OPTS=":hv:t:"
++TST_PARSE_ARGS=nfs_parse_args
++
++nfs_parse_args()
++{
++	case "$1" in
+ 	h)
+ 		echo "Usage:"
+ 		echo "h        help"
+@@ -30,15 +34,11 @@ while getopts :ht:v:6 opt; do
+ 		echo "6        run over IPv6"
+ 		exit 0
+ 	;;
+-	v) VERSION=$OPTARG ;;
+-	t) SOCKET_TYPE=$OPTARG ;;
+-	6) # skip, test_net library already processed it
+-	;;
+-	*)
+-		tst_brkm TBROK "unknown option: $opt"
+-	;;
++	v) VERSION=$OPTARG;;
++	t) SOCKET_TYPE=$OPTARG;;
++	*) tst_brkm TBROK "unknown option: $1"
+ 	esac
+-done
++}
+ 
+ get_socket_type()
+ {
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
+
+
