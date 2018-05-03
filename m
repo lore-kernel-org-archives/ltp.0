@@ -1,51 +1,43 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu,  3 May 2018 14:22:22 +0200
-Subject: [LTP] [RFC PATCH 3/3] net/virt_lib.sh: Use positional parameters in
-	TST_PARSE_ARGS function
-In-Reply-To: <20180503122222.2996-1-pvorel@suse.cz>
-References: <20180503122222.2996-1-pvorel@suse.cz>
-Message-ID: <20180503122222.2996-4-pvorel@suse.cz>
+Date: Thu, 3 May 2018 14:29:28 +0200
+Subject: [LTP] [PATCH ltp] fs/ext4: enhance logic of
+ ext4_nsec_timestamps_test
+In-Reply-To: <20180503102412.GB13151@rei>
+References: <20180429000213.685-1-yixin.zhang@intel.com>
+ <20180503082348.GB29568@rei> <20180503102412.GB13151@rei>
+Message-ID: <20180503122928.rjzl22g7i5qoht6y@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-as it's now supported also for legacy API.
+Hi,
 
-Major problem was with using global $opt instead of $1 (dependency on
-how the library function implemented), but avoiding using $OPTARG
-directly is also preferable.
+> > > 2. Add "sleep 1" between mount and umount, to avoid umount failed due to
+> > >    device busy (accessed by system service like systemd-udev)
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/network/virt/virt_lib.sh | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> > NACK to this.
 
-diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
-index 0f75bb030..1fd02ac9b 100644
---- a/testcases/network/virt/virt_lib.sh
-+++ b/testcases/network/virt/virt_lib.sh
-@@ -31,7 +31,7 @@
- 
- virt_lib_parse_args()
- {
--	case "$opt" in
-+	case "$1" in
- 	h)
- 		echo "Usage:"
- 		echo "h        help"
-@@ -40,8 +40,8 @@ virt_lib_parse_args()
- 		echo "6        run over IPv6"
- 		exit 0
- 	;;
--	i) start_id=$OPTARG ;;
--	d) vxlan_dst_addr=$OPTARG ;;
-+	i) start_id=$2 ;;
-+	d) vxlan_dst_addr=$2 ;;
- 	*)
- 		tst_brkm TBROK "unknown option: $opt"
- 	;;
--- 
-2.16.3
+> > In a case that we need to wait for something like this we are supposed
+> > to retry in a loop with exponential backoff, which is usually faster
+> > than hardcoded sleep but also more robust.
 
+> > There is a in-flight patch for adding TST_RETRY_FUNC function to the
+> > shell library "[PATCH] tst_test.sh: achieve TST_RETRY_FUNC function in shell"
+> > which should make this really easy but we would have to add it to the
+> > old shell test library as well so that we can reuse it here.
+
+> And I remebered that we already solved this by adding tst_umount
+> function to the shell library. The systemd-udev is not first daemon to
+> probe newly mounted filesystem, we used to have this kind of problems
+> with gvfsd-trash as well.
+
+> So fixing this should be as easy as replacing the umount with tst_umount
+> function.
+I'm using tst_umount in IMA tests and it works nice :).
+BTW It's just that gvfsd-trash TINFO message is a bit too specific (in my case it was that
+some processes were still using the mounted filesystem - the same issue as Yixin has).
+
+Kind regards,
+Petr
