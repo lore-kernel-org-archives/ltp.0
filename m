@@ -1,56 +1,137 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 3 May 2018 16:17:32 +0200
-Subject: [LTP] [PATCH] setregid: use common user and group names.
-In-Reply-To: <20180503140815.uytpnrd7wjcm7tex@dell5510>
-References: <20180319200113.106692-1-sspatil@google.com>
- <20180503133144.GB27716@rei>
- <20180503140815.uytpnrd7wjcm7tex@dell5510>
-Message-ID: <20180503141731.GC27716@rei>
+From: Jan Kara <jack@suse.cz>
+Date: Thu,  3 May 2018 17:22:36 +0200
+Subject: [LTP] [PATCH] inotify07: Add test for kernel crash during event
+	notification
+Message-ID: <20180503152236.17488-1-jack@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > FIY this seems cause failures on Debian 9 where I do get failures:
-> 
-> > setregid03    1  TBROK  :  setregid03.c:198: nobody must be a valid group
-> > setregid03    2  TBROK  :  setregid03.c:198: Remaining cases broken
-> 
-> > setregid04    1  TBROK  :  setregid04.c:126: Couldn't find the `nobody' group
-> > setregid04    2  TBROK  :  setregid04.c:126: Remaining cases broken
-> Debian has nogroup as group for nobody. Sorry that I overlooked it in "1b7cf9474".
-> 
-> > I guess that we need a fallback if nobody group does not exist.
-> Check for "nogroup"?
+When a removal of the last mark on inode / vfsmount races with a
+notification about new event on that object, the kernel can crash. Test
+for this failure. The problem was fixed by kernel commit d90a10e2444b
+"fsnotify: Fix fsnotify_mark_connector race".
 
-Let's just change the code to fallback to nogroup if group nobody does
-not exist for the release and then we can think of an more elaborate
-solution.
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ testcases/kernel/syscalls/inotify/inotify07.c | 104 ++++++++++++++++++++++++++
+ 1 file changed, 104 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/inotify/inotify07.c
 
-> Or allow to overwrite the group name with env. variable?
->
-> BTW I wonder why we need more users than just nobody/nobody or nobody/nogroup.
-> I'd be for having env. variable TST_USER and TST_GROUP, with helper, which would check for
-> them if they're not defined (similar we use in tst_net.sh), so user wouldn't have to care
-> for it.
+Resend to the new LTP list address...
 
-I would rather go for adding some API to the test library that would
-supply the test with useable user and group ids. Something as
-.needs_user_id and .needs_group_id to the tst_test structure and then
-put all the logic to the test library.
-
-> BTW: code in IDcheck.sh expect difference in Debian, but that's useless (just to report
-> it):
-> if ! fe "nobody" "$passwd" || ! (fe "nogroup" "$group" || fe "nobody" "$group")
-> then
->     MISSING_ENTRY=1
-> fi
-
-We should probably get rid of IDcheck.sh I doubt that it's up-to-date
-enough to be useful.
-
+diff --git a/testcases/kernel/syscalls/inotify/inotify07.c b/testcases/kernel/syscalls/inotify/inotify07.c
+new file mode 100644
+index 000000000000..d20a824f0e8d
+--- /dev/null
++++ b/testcases/kernel/syscalls/inotify/inotify07.c
+@@ -0,0 +1,104 @@
++/*
++ * Copyright (c) 2015 SUSE Linux.  All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it is
++ * free of the rightful claim of any third person regarding infringement
++ * or the like.  Any license provided herein, whether implied or
++ * otherwise, applies only to this software file.  Patent licenses, if
++ * any, provided herein do not apply to combinations of this program with
++ * other software, or any other product whatsoever.
++ *
++ * Started by Jan Kara <jack@suse.cz>
++ *
++ * DESCRIPTION
++ * Test for inotify mark connector destruction race.
++ *
++ * Kernels prior to 4.17 have a race when the last fsnotify mark on the inode
++ * is being deleted while another process reports event happening on that
++ * inode. When the race is hit, the kernel crashes or loops.
++ *
++ * The problem has been fixed by commit:
++ * d90a10e2444b "fsnotify: Fix fsnotify_mark_connector race"
++ */
++
++#include "config.h"
++
++#include <stdio.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <fcntl.h>
++#include <time.h>
++#include <signal.h>
++#include <sys/time.h>
++#include <sys/wait.h>
++#include <sys/syscall.h>
++
++#include "tst_test.h"
++#include "inotify.h"
++
++#if defined(HAVE_SYS_INOTIFY_H)
++#include <sys/inotify.h>
++
++/* Number of test loops to run the test for */
++#define TEARDOWNS 1000000
++
++static void verify_inotify(void)
++{
++	int inotify_fd, fd;
++	int wd;
++	pid_t pid;
++	int tests;
++	char *name = "stress_fname";
++
++	fd = SAFE_OPEN(name, O_CREAT | O_RDWR, 0600);
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		char buf[64];
++
++		memset(buf, 'a', sizeof(buf));
++		while (1) {
++			SAFE_WRITE(0, fd, buf, sizeof(buf));
++			SAFE_LSEEK(fd, 0, SEEK_SET);
++		}
++		/* Never reached */
++	}
++	SAFE_CLOSE(fd);
++
++	inotify_fd = myinotify_init1(0);
++	if (inotify_fd < 0)
++		tst_brk(TBROK | TERRNO, "inotify_init failed");
++	for (tests = 0; tests < TEARDOWNS; tests++) {
++		wd = myinotify_add_watch(inotify_fd, name, IN_MODIFY);
++		if (wd < 0)
++			tst_brk(TBROK | TERRNO, "inotify_add_watch() failed.");
++		wd = myinotify_rm_watch(inotify_fd, wd);
++		if (wd < 0)
++			tst_brk(TBROK | TERRNO, "inotify_rm_watch() failed.");
++	}
++	SAFE_CLOSE(inotify_fd);
++	/* We survived for given time - test succeeded */
++	tst_res(TPASS, "kernel survived inotify beating");
++
++	/* Kill the child writing to file and wait for it */
++	SAFE_KILL(pid, SIGKILL);
++	SAFE_WAIT(NULL);
++}
++
++static struct tst_test test = {
++	.timeout = 600,
++	.needs_tmpdir = 1,
++	.forks_child = 1,
++	.test_all = verify_inotify,
++};
++
++#else
++	TST_TEST_TCONF("system doesn't have required inotify support");
++#endif
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.13.6
+
