@@ -1,10 +1,8 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 3 May 2018 14:06:04 +0200
-Subject: [LTP] LTP Release preparations
-In-Reply-To: <20180503092802.GA7077@rei>
-References: <20180412113532.GA5963@rei> <20180419141749.GA13045@rei>
- <20180424133931.GA18016@rei> <20180503092802.GA7077@rei>
-Message-ID: <20180503120604.rtpbsy3eydp3lltj@dell5510>
+Date: Thu,  3 May 2018 14:22:19 +0200
+Subject: [LTP] [RFC PATCH 0/3] net: Cleanup variables in TST_PARSE_ARGS
+	functions for legacy API
+Message-ID: <20180503122222.2996-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,19 +11,31 @@ To: ltp@lists.linux.it
 
 Hi,
 
-> Hi!
-> > I would like to go for freezing the git at the end of the week and
-> > start with a pre-release testing next week. Is that OK with everyone?
+this is a small fix which removes using $opt and $OPTARG in legacy API
+for network tests.
+$1 could have been used in previous patches, support for $2 is added in
+1st patch.
+I'd like to add this before release (just to show good example of
+TST_PARSE_ARGS usage).
 
-> I'm in the middle of pre-release tesing, so far it looks good.
-
-> The pending issues for the release are the compilation fix from Jan and
-> the perf_event_open02 fix I've send.
-
-> Anything else to consider?
-I'll have a look at Alexey's patch v3 "sctp_big_chunk: make INIT packet in the test"
-+ I'm going to send small fix in net in a minute.
+I didn't add any support for help in (as it's in the new API) as instead
+of tuning old API support we should just convert all new tests into new
+API.
 
 
 Kind regards,
 Petr
+
+Petr Vorel (3):
+  lib/tst_net.sh: Pass $OPTARG as $2 to TST_PARSE_ARGS function
+  net/ipsec_lib.sh: Use positional parameters in TST_PARSE_ARGS function
+  net/virt_lib.sh: Use positional parameters in TST_PARSE_ARGS function
+
+ testcases/lib/tst_net.sh                    |  2 +-
+ testcases/network/stress/ipsec/ipsec_lib.sh | 24 ++++++++++++------------
+ testcases/network/virt/virt_lib.sh          |  6 +++---
+ 3 files changed, 16 insertions(+), 16 deletions(-)
+
+-- 
+2.16.3
+
