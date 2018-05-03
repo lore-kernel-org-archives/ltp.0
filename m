@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from [172.30.20.202] (helo=mx.sourceforge.net)
- by sfs-ml-1.v29.lw.sourceforge.com with esmtps
+ by sfs-ml-4.v29.lw.sourceforge.com with esmtps
  (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.90_1)
- (envelope-from <metan@suse.de>) id 1fEbNv-0000bA-7g
- for ltp-list@lists.sourceforge.net; Fri, 04 May 2018 14:08:31 +0000
+ (envelope-from <metan@suse.de>) id 1fEFql-0001wK-15
+ for ltp-list@lists.sourceforge.net; Thu, 03 May 2018 15:08:51 +0000
 Received: from mx2.suse.de ([195.135.220.15])
  by sfi-mx-4.v28.lw.sourceforge.com with esmtps
- (TLSv1:ECDHE-RSA-AES256-SHA:256) (Exim 4.90_1) id 1fEbNt-008ZBV-7m
- for ltp-list@lists.sourceforge.net; Fri, 04 May 2018 14:08:31 +0000
-Date: Fri, 4 May 2018 16:06:22 +0200
+ (TLSv1:ECDHE-RSA-AES256-SHA:256) (Exim 4.90_1) id 1fEFqi-00733v-NK
+ for ltp-list@lists.sourceforge.net; Thu, 03 May 2018 15:08:50 +0000
+Date: Thu, 3 May 2018 17:06:42 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20180504140622.GC7653@rei>
+Message-ID: <20180503150642.GE27716@rei>
 References: <20180503114252.12548-1-jack@suse.cz>
- <CAOQ4uxgQK9HtojVteoQNJfaP5qVX67HxmHoQ-XKLtjaTq4==Lg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAOQ4uxgQK9HtojVteoQNJfaP5qVX67HxmHoQ-XKLtjaTq4==Lg@mail.gmail.com>
+In-Reply-To: <20180503114252.12548-1-jack@suse.cz>
 Subject: Re: [LTP] [PATCH] inotify07: Add test for kernel crash during event
  notification
 List-Id: Linux Test Project General Discussions
@@ -30,19 +29,12 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Jan Kara <jack@suse.cz>
+To: Jan Kara <jack@suse.cz>
+Cc: ltp-list@lists.sourceforge.net, Amir Goldstein <amir73il@gmail.com>
 
 Hi!
-> inotify07 and inotify08 have already been merged to master
-> and FYI already "posted" inotify09:
-> https://github.com/linux-test-project/ltp/pull/260
-> 
-> BTW, Cyril, do you have a preference between github pull request
-> and posting the patch to the list?
-> I suppose I should have posted to fsdevel and CC Jan anyway...
-
-I do prefer mailing list over pull requests but I work with both.
+This is the old mailing list that has been abandoned a few years ago
+when sourceforge had frequent outages, the new one is at ltp@lists.linux.it.
 
 -- 
 Cyril Hrubis
