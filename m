@@ -1,38 +1,26 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 3 May 2018 15:54:18 +0800
-Subject: [LTP] [RFC PATCH 1/1] tst_test.sh: TCONF on basename error when
- setting TST_ID
-In-Reply-To: <20180502144542.4wmenub3p3c7kega@dell5510>
-References: <20180502134553.5429-1-pvorel@suse.cz>
- <20180502144542.4wmenub3p3c7kega@dell5510>
-Message-ID: <CAEemH2cGQt4SG4ec+-=ppSF6sywzZhhsK2aZ4fzMT8oObgC93Q@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 3 May 2018 10:15:20 +0200
+Subject: [LTP] Want to contribute
+In-Reply-To: <CAMZxAxcE7deAzonfmhX9YMWSy7sRgHCn3=oC_zaEi6KVBYMd=w@mail.gmail.com>
+References: <CAMZxAxcE7deAzonfmhX9YMWSy7sRgHCn3=oC_zaEi6KVBYMd=w@mail.gmail.com>
+Message-ID: <20180503081520.GA29568@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, May 2, 2018 at 10:45 PM, Petr Vorel <pvorel@suse.cz> wrote:
+Hi!
+> One of the NetBSD members has suggested me to contribute to this
+> project. I have gone through the wiki page:
+> http://ltp.sourceforge.net/documentation/how-to/ltp.php#_3.1
 
-> Hi,
->
-> ...
-> >  if [ -z "$TST_ID" ]; then
-> > -     filename=3D$(basename $0)
-> > +     filename=3D$(basename $0) || \
-> > +             tst_brk TBROK "Failed to set TST_ID from \$0 ('$0'), fix
-> it with setting TST_ID before sourcing tst_test.sh"
->                 ^
-> Here is going to be TCONF.
->
+And I thought that I changed all the pages there to point to the new
+GitHub pages already...
 
-=E2=80=8BLooks good to me.
+Also what kind of contribution do you have in mind? Do you plan to work
+on some specific area, or are you looking for a LTP TODO list?
 
-
---=20
-Li Wang
-liwang@redhat.com
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180503/b5d560ac/att=
-achment.html>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
