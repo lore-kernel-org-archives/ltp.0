@@ -1,27 +1,36 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 3 May 2018 11:28:03 +0200
-Subject: [LTP] LTP Release preparations
-In-Reply-To: <20180424133931.GA18016@rei>
-References: <20180412113532.GA5963@rei> <20180419141749.GA13045@rei>
- <20180424133931.GA18016@rei>
-Message-ID: <20180503092802.GA7077@rei>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 3 May 2018 05:45:04 -0400 (EDT)
+Subject: [LTP] [PATCH] cve-2017-16939: drop linux/xfrm.h include
+In-Reply-To: <20180503084558.GD29568@rei>
+References: <d54cb909eacb6c2fe6b11f7e187862ef3070499c.1524739878.git.jstancek@redhat.com>
+ <20180503084558.GD29568@rei>
+Message-ID: <207855739.17189074.1525340704156.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I would like to go for freezing the git at the end of the week and
-> start with a pre-release testing next week. Is that OK with everyone?
 
-I'm in the middle of pre-release tesing, so far it looks good.
 
-The pending issues for the release are the compilation fix from Jan and
-the perf_event_open02 fix I've send.
+----- Original Message -----
+> Hi!
+> > +#ifndef __XFRM_H__
+> > +#define __XFRM_H__
+> 
+> I tend to avoid double underscores in identifier names, since these are
+> reserved for libc, so I would have named this LAPI_XFRM_H__ or something
+> similar, but that is very minor.
+> 
+> Other than that acked.
 
-Anything else to consider?
+Pushed with suggested change.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Jan
+
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
