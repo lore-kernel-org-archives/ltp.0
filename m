@@ -1,45 +1,36 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 3 May 2018 14:14:30 +0300
-Subject: [LTP] [PATCH v2 2/3] network/virt_lib.sh: Process getopts
- parameters with TST_OPTS and TST_PARSE_ARGS
-In-Reply-To: <20180430062343.5582-2-pvorel@suse.cz>
-References: <20180430062343.5582-1-pvorel@suse.cz>
- <20180430062343.5582-2-pvorel@suse.cz>
-Message-ID: <b6bfc407-9ba0-1d78-da66-570096cd1e1c@oracle.com>
+Date: Thu, 3 May 2018 14:41:55 +0300
+Subject: [LTP] LTP Release preparations
+In-Reply-To: <20180503092802.GA7077@rei>
+References: <20180412113532.GA5963@rei> <20180419141749.GA13045@rei>
+ <20180424133931.GA18016@rei> <20180503092802.GA7077@rei>
+Message-ID: <769f209c-c6d6-9681-9e01-1cd5efd7ce30@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 04/30/2018 09:23 AM, Petr Vorel wrote:
-...
->  
-> -ip_local=$(tst_ipaddr)
-> -ip_virt_local="$(TST_IPV6= tst_ipaddr_un)"
-> -ip6_virt_local="$(TST_IPV6=6 tst_ipaddr_un)"
-> -
-> -ip_remote=$(tst_ipaddr rhost)
-> -ip_virt_remote="$(TST_IPV6= tst_ipaddr_un rhost)"
-> -ip6_virt_remote="$(TST_IPV6=6 tst_ipaddr_un rhost)"
-> -
-> -# Max performance loss (%) for virtual devices during network load
-> -VIRT_PERF_THRESHOLD=${VIRT_PERF_THRESHOLD:-80}
-> -vxlan_dstport=0
-> -
-> -while getopts :hi:d:6 opt; do
-> +virt_lib_parse_args()
-> +{
->  	case "$opt" in
+On 05/03/2018 12:28 PM, Cyril Hrubis wrote:
+> Hi!
 
-Hi Petr,
+Hi Cyril,
 
-Here we should use the first argument instead of the global $opt, otherwise
-it depends on how the library function implemented.
+>> I would like to go for freezing the git at the end of the week and
+>> start with a pre-release testing next week. Is that OK with everyone?
+> 
+> I'm in the middle of pre-release tesing, so far it looks good.
+> 
+> The pending issues for the release are the compilation fix from Jan and
+> the perf_event_open02 fix I've send.
+> 
+> Anything else to consider?
+> 
 
-And the same in ipsec_lib.sh library.
+Any objections against patch v3 "sctp_big_chunk: make INIT packet in the test" [1]?
+It should fix the test on the kernels 4.17-rc2+.
 
-Other than that, the patch-set looks good.
+[1] http://lists.linux.it/pipermail/ltp/2018-April/007933.html
 
 Thanks,
 Alexey
