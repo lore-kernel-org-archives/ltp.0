@@ -1,107 +1,58 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu,  3 May 2018 11:34:14 +0800
-Subject: [LTP] [PATCH v2] tst_test.sh: achieve TST_RETRY_FUNC function in
-	shell
-Message-ID: <20180503033414.5601-1-liwang@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 3 May 2018 08:15:31 +0200
+Subject: [LTP] Want to contribute
+In-Reply-To: <CAMZxAxcE7deAzonfmhX9YMWSy7sRgHCn3=oC_zaEi6KVBYMd=w@mail.gmail.com>
+References: <CAMZxAxcE7deAzonfmhX9YMWSy7sRgHCn3=oC_zaEi6KVBYMd=w@mail.gmail.com>
+Message-ID: <20180503061530.GA3382@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The commit c2ce4df67d(include: add an exponential backoff macro for
-function retry) involves a new MACRO for function retry in C code,
-here achieve it in shell lib and gives a introduction in LTP documents.
+Hi Aditya,
 
-Signed-off-by: Li Wang <liwang@redhat.com>
-Tested-by: Petr Vorel <pvorel@suse.cz>
----
- doc/test-writing-guidelines.txt | 26 ++++++++++++++++++++++++++
- testcases/lib/tst_test.sh       | 34 ++++++++++++++++++++++++++++++++++
- 2 files changed, 60 insertions(+)
+> Hi Developers,
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index cbbfe6c..b2dd091 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -1640,6 +1640,32 @@ that can sleep for defined amount of seconds, milliseconds or microseconds.
- tst_sleep 100ms
- -------------------------------------------------------------------------------
- 
-+Retry a function in limited time
-+++++++++++++++++++++++++++++++++
-+
-+Sometimes LTP test needs retrying a function for many times to get success.
-+This achievement makes that possible via keeping it retrying if the return
-+value of the function is NOT as we expected. After exceeding a limited time,
-+test will break from the retries immediately.
-+
-+[source,c]
-+-------------------------------------------------------------------------------
-+# retry function in 1 second
-+TST_RETRY_FUNC(FUNC, EXPECTED_RET)
-+
-+# retry function in N second
-+TST_RETRY_FN_EXP_BACKOFF(FUNC, EXPECTED_RET, N)
-+-------------------------------------------------------------------------------
-+
-+[source,sh]
-+-------------------------------------------------------------------------------
-+# retry function in 1 second
-+TST_RETRY_FUNC "FUNC arg1 arg2 ..." "EXPECTED_RET"
-+
-+# retry function in N second
-+TST_RETRY_FN_EXP_BACKOFF "FUNC arg1 arg2 ..." "EXPECTED_RET" "N"
-+-------------------------------------------------------------------------------
-+
- Checking for integers
- +++++++++++++++++++++
- 
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 8d49d34..8b38dcd 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -154,6 +154,40 @@ EXPECT_FAIL()
- 	fi
- }
- 
-+TST_RETRY_FN_EXP_BACKOFF()
-+{
-+	local tst_fun=$1
-+	local tst_exp=$2
-+	local tst_sec=$(expr $3 \* 1000000)
-+	local tst_delay=1
-+
-+	if [ $# -ne 3 ]; then
-+		tst_brk TBROK "TST_RETRY_FN_EXP_BACKOFF expects three parameters"
-+	fi
-+
-+	while true; do
-+		$tst_fun
-+		if [ "$?" = "$tst_exp" ]; then
-+			break
-+		fi
-+
-+		if [ $tst_delay -lt $tst_sec ]; then
-+			tst_sleep ${tst_delay}us
-+			tst_delay=$((tst_delay*2))
-+		else
-+			tst_brk TBROK "\"$tst_fun\" failed"
-+		fi
-+	done
-+
-+	return $tst_exp
-+}
-+
-+TST_RETRY_FUNC()
-+{
-+	TST_RETRY_FN_EXP_BACKOFF "$1" "$2" 1
-+	return $2
-+}
-+
- tst_umount()
- {
- 	local device="$1"
--- 
-2.9.5
+> This is Aditya Upadhyay, Mentor at RTEMS Organization in Google Summer
+> of Code-2018. Previously, I was a student intern at the same
+> organization.
 
+> One of the NetBSD members has suggested me to contribute to this
+> project. I have gone through the wiki page:
+> http://ltp.sourceforge.net/documentation/how-to/ltp.php#_3.1
+LTP has moved quite long time ago to git, hosted on github (including wiki):
+https://github.com/linux-test-project/ltp
+New wiki:
+https://github.com/linux-test-project/ltp/wiki
+
+LTP is (as the name suggests) quite the Linux kernel specific, although there are parts,
+which are POSIX related (open POSIX test suite). Do you want to work on NetBSD support for
+LTP or work generally on LTP?
+
+> I have no idea about finding the issue while running the test-cases.
+> At this point of time, I have no idea about fixing the issue. Would
+> you like to share any pointers regarding "How to find the issue"?
+> These are the outputs of this command: ./runltp -f syscalls -s madvise :
+
+> aditya@aditya-Lenovo-ideapad-110-15ACL:/opt/ltp$ sudo ./runltp -f
+...
+> <<<test_output>>>
+> tst_test.c:987: INFO: Timeout per run is 0h 05m 00s
+> madvise01.c:118: PASS: madvise test for MADV_NORMAL PASSED
+PASS: test has been passed.
+
+...
+> madvise01.c:110: CONF: MADV_FREE is not supported
+CONF: test has been skipped
+
+TFAIL: would mean test failed.
+See more info at:
+https://github.com/linux-test-project/ltp/wiki/GettingStarted#3-structure
+
+For contributing to LTP I recommend to read
+https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
+
+Kind regards,
+Petr
