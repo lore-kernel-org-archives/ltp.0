@@ -1,35 +1,34 @@
-From: Yixin Zhang <yixin.zhang@intel.com>
-Date: Fri,  4 May 2018 02:21:19 +0800
-Subject: [LTP] [PATCH ltp] fs/acls/acl_test01: delete test user in
-	do_setup() before create it
-Message-ID: <20180503182119.24738-1-yixin.zhang@intel.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 3 May 2018 10:56:36 +0800
+Subject: [LTP] [PATCH] tst_test.sh: achieve TST_RETRY_FUNC function in
+	shell
+In-Reply-To: <20180502163652.a7py5fv6yf4iceut@dell5510>
+References: <20180502132902.16065-1-liwang@redhat.com>
+ <20180502163652.a7py5fv6yf4iceut@dell5510>
+Message-ID: <CAEemH2e5QdRdzgxE7jUfo38C3SwrLRSu5h9cLMN9vjAjAJFADA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-If $TEST_USER1 exist on the system (e.g. test existed abnomarlly),
-do_setup() will always failed and it will never go to do_cleanup().
-So delete user in do_setup if it exists before create it.
+Petr Vorel <pvorel@suse.cz> wrote:
 
-Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
----
- testcases/kernel/fs/acls/acl_test01 | 1 +
- 1 file changed, 1 insertion(+)
+Hi Li,
+>
+> nice feature, thanks for adding it.
+> 1 bashism to be fixed + minor issues bellow.
+>
 
-diff --git a/testcases/kernel/fs/acls/acl_test01 b/testcases/kernel/fs/acls/acl_test01
-index c91eb5686..9d8247630 100755
---- a/testcases/kernel/fs/acls/acl_test01
-+++ b/testcases/kernel/fs/acls/acl_test01
-@@ -111,6 +111,7 @@ do_setup()
- 		setenforce 0
- 	fi
- 
-+	userdel $TEST_USER1 > /dev/null 2>&1
- 	useradd -d $TEST_USER1_HOMEDIR -m -g $TEST_USER1_GROUP $TEST_USER1 -s /bin/sh
- 	if [ $? -ne 0 ]; then
- 		tst_brkm TBROK "Could not add test user $TEST_USER1."
+​Hi Petr,​
+
+​Thanks for your testing, I'm glad to accept your comments all below.​
+​Patch V2 is coming soon...​
+
+
 -- 
-2.14.1
-
+Li Wang
+liwang@redhat.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180503/86b9dfd3/attachment.html>
