@@ -1,44 +1,44 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Fri,  4 May 2018 14:53:49 +0200
-Subject: [LTP] [PATCH] lib: Remove retry message from TST_RETRY_FUNC
-Message-ID: <20180504125349.22734-1-rpalethorpe@suse.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 4 May 2018 15:23:20 +0200
+Subject: [LTP] [RFC PATCH 1/3] lib/tst_net.sh: Pass $OPTARG as $2 to
+ TST_PARSE_ARGS function
+In-Reply-To: <20180503122222.2996-2-pvorel@suse.cz>
+References: <20180503122222.2996-1-pvorel@suse.cz>
+ <20180503122222.2996-2-pvorel@suse.cz>
+Message-ID: <20180504132320.alx65mrkc77vlfkc@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This message creates a lot of noise and uses extra resources on slower
-machines. It also does not seem very useful.
+Hi,
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
+> So that tests using tst_net.sh with legacy API doesn't have to use
+> OPTARG variable directly.
+> This helps a transition to new API a bit.
 
-This may help debug test failures on ARM machines by reducing the amount of
-noise.
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/lib/tst_net.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
- include/tst_common.h | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+> index 112bd5cd4..3a0fe0192 100644
+> --- a/testcases/lib/tst_net.sh
+> +++ b/testcases/lib/tst_net.sh
+> @@ -42,7 +42,7 @@ tst_net_read_opts()
+>  {
+>  	local OPTIND
+>  	while getopts "$TST_OPTS" opt; do
+> -		$TST_PARSE_ARGS "$opt"
+> +		$TST_PARSE_ARGS "$opt" "$OPTARG"
+>  	done
+>  }
 
-diff --git a/include/tst_common.h b/include/tst_common.h
-index d3d50eb19..27924766e 100644
---- a/include/tst_common.h
-+++ b/include/tst_common.h
-@@ -56,13 +56,10 @@
- 		if (tst_ret_ == ERET)					\
- 			break;						\
- 		if (tst_delay_ < MAX_DELAY * 1000000) {			\
--			tst_res(TINFO,					\
--				#FUNC" returned %i, retrying"		\
--				" in %ius", tst_ret_, tst_delay_);	\
- 			usleep(tst_delay_);				\
- 			tst_delay_ *= 2;				\
- 		} else {						\
--			tst_brk(TBROK, #FUNC" failed");			\
-+			tst_brk(TBROK, #FUNC" timed out");		\
- 		}							\
- 	}								\
- 	ERET;								\
--- 
-2.16.3
+Thanks Alexey for review!
+Applied whole patch-set with fixes s/$opt/$1/ you pointed out.
 
+
+Kind regards,
+Petr
