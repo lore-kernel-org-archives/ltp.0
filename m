@@ -1,40 +1,31 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 4 May 2018 16:46:21 +0300
-Subject: [LTP] [PATCH v3 1/3] lib/tst_checksum: add crc32c checksum
-In-Reply-To: <b2cc2d7f-7ff7-3c4d-a01d-bebc726e56e2@oracle.com>
-References: <1524914997-27080-1-git-send-email-alexey.kodanev@oracle.com>
- <20180503130608.fv43iyrtep2diwzz@dell5510>
- <b2cc2d7f-7ff7-3c4d-a01d-bebc726e56e2@oracle.com>
-Message-ID: <c14d9d02-2fb8-0276-d0aa-9cdecbe5a8b7@oracle.com>
+Date: Fri, 4 May 2018 17:18:50 +0300
+Subject: [LTP] [PATCH 1/1] ipneigh01: Replace TCONF error message with
+ TINFO
+In-Reply-To: <20180503113637.21573-1-asmorodskyi@suse.com>
+References: <20180503113637.21573-1-asmorodskyi@suse.com>
+Message-ID: <2943ea0b-0487-0136-bd1c-6d90bf80385f@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 04.05.2018 13:50, Alexey Kodanev wrote:
-> On 05/03/2018 04:06 PM, Petr Vorel wrote:
->> Hi Alexey,
->>
->>> It will be used to make a SCTP packet in the test.
->>
->>> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
->>> ---
->>> v3: use SPDX License-Identifier
->>
->>> v2: As suggested by Cyril:
->>>     * updated the docs, added section 2.2.25
->>>     * added 'tst_' prefix
->>>     * changed type 'int' to 'size_t' for the buffer length
->>
->>>  doc/test-writing-guidelines.txt |    6 +++
->>>  include/tst_checksum.h          |   16 ++++++++
->>>  lib/tst_checksum.c              |   81 +++++++++++++++++++++++++++++++++++++++
->>>  3 files changed, 103 insertions(+), 0 deletions(-)
->>>  create mode 100644 include/tst_checksum.h
->>>  create mode 100644 lib/tst_checksum.c
->>
->> Whole patchset LGTM.
+On 03.05.2018 14:36, Anton Smorodskyi wrote:
+> When test case catch that arp command not support ipv6
+> it is more appropriate to send this as TINFO message
+Hi Anton,
 
-Removed sending the packet three times, fixed SPDX License-Identifier and
-applied. Thanks!
+And why it is more appropriate? TCONF is not an error message.
+
+> @@ -76,7 +76,7 @@ rhost=$(tst_ipaddr rhost)
+>  if [ -z "$TST_IPV6" ]; then
+>  	do_test "arp -a" "arp -d $rhost"
+>  else
+> -	tst_resm TCONF "'arp cmd doesn't support IPv6, skipping test-case"
+> +	tst_resm TINFO "'arp cmd doesn't support IPv6, skipping test-case"
+>  fi
+
+
+TCONF here, only to make sure that the test results are consistent with
+'TST_TOTAL=2', regardless whether we use '-6' option or not.
