@@ -1,39 +1,55 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 4 May 2018 17:02:21 +0200
-Subject: [LTP] [PATCH 1/1] setregid: Fallback to `nogroup' group
-In-Reply-To: <20180504145330.GD7653@rei>
-References: <20180504082829.10973-1-pvorel@suse.cz> <20180504145330.GD7653@rei>
-Message-ID: <20180504150221.unrxhgvponsucksc@dell5510>
+Date: Fri, 4 May 2018 17:13:37 +0200
+Subject: [LTP] [PATCH v3 1/3] lib/tst_checksum: add crc32c checksum
+In-Reply-To: <b2cc2d7f-7ff7-3c4d-a01d-bebc726e56e2@oracle.com>
+References: <1524914997-27080-1-git-send-email-alexey.kodanev@oracle.com>
+ <20180503130608.fv43iyrtep2diwzz@dell5510>
+ <b2cc2d7f-7ff7-3c4d-a01d-bebc726e56e2@oracle.com>
+Message-ID: <20180504151337.a2oshluy4phahtec@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Alexey,
 
-> > -	GET_GID(nobody);
-> > +#define GET_GID_FALLBACK(group, group2) do { \
-> > +	junk = getgrnam(#group); \
-> > +	if (junk == NULL) { \
-> > +		tst_resm(TINFO, "%s not found, trying fallback %s", #group, #group2); \
-> > +		junk = getgrnam(#group2); \
-> > +		if (junk == NULL) { \
-> > +			tst_brkm(TBROK, NULL, "%s or %s must be a valid group", #group, #group2); \
-> > +		} \
-> > +	} \
-> > +	GID16_CHECK(junk->gr_gid, setregid, NULL); \
-> > +	group ## _gr = *(junk); \
-> > +} while (0)
-> > +
-> > +	GET_GID_FALLBACK(nobody, nogroup);
+> > BTW sctp_big_chunk still uses crazy big load on kernels before 4.17 rc2 :(.
 
-> Uh this macros are ugly, but then the original is is ugly as well.
+> I wonder, what is the time the test needs to complete on your system,
+> could you post the numbers at least from 'time' command? Does it take
+> minutes? I've not seen it takes more than a second.
+I'm testing it on several OS (SLES 15, Centos 7, Debian 9, ...) which all have kernels
+older than 4.17-rc2. It behaves like DOS - the only thing I can do is to restart machines :(.
+With vanilla kernel 4.17-rc2 it works well.
 
-> So let's get this in for the release to keep the amount of changes
-> minimal if you promise to clean it up after the release is finalized :-).
+> Will remove sending this packet 3 times, it should be enough to send
+> it just once. I assume, the load is on the server, in the kernel?
+> i.e. when it receives and processes that INIT packet.
 
-Pushed.
+> What is the time in 4.17-rc2 with this change:
+I'll let you know.
+
+> diff --git a/testcases/network/sctp/sctp_big_chunk.c b/testcases/network/sctp/sctp_big_chunk.c
+> index 333e502..c663f71 100644
+> --- a/testcases/network/sctp/sctp_big_chunk.c
+> +++ b/testcases/network/sctp/sctp_big_chunk.c
+> @@ -109,11 +109,11 @@ static void setup_client(void)
+>         uint16_t param_len = htons(20);
+
+>         /* IPv6(40) + SCTP_COMMON(12) + SCTP_CHUNK(20) + SCTP_OPT(65460)) */
+> -       for (i = 0; i < addr_num; ++i) {
+> +       for (i = 1; i <= addr_num; ++i) {
+>                 update_packet_field(&off, &param_type, 2);
+>                 update_packet_field(&off, &param_len, 2);
+> -               packet[off + 15] = 1;
+> -               off += 16;
+> +               off += 12;
+> +               update_packet_field(&off, &i, 4);
+>         }
+>         pkt_len = off;
+
+> when we are using unique addresses...
 
 
 Kind regards,
