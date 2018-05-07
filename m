@@ -1,186 +1,46 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 7 May 2018 11:24:11 +0800
-Subject: [LTP] [PATCH 3/3] net/nfs_lib.sh: Cleanup for legacy API
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 7 May 2018 08:43:43 +0200
+Subject: [LTP] [PATCH 1/3] lib/tst_net.sh: Append 6 to the end of
+	$TST_OPTS
 In-Reply-To: <1525663451-32016-1-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <1525663451-32016-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1525663451-32016-3-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20180507064343.ahqhsbadjpho2xry@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) Move common tst_net.sh to nfs_lib.sh itself
-2) Pass $OPTARG as $2 to TST_PARSE_ARGS functions
+Hi,
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- testcases/network/nfs/fsx-linux/fsx.sh      |  2 --
- testcases/network/nfs/nfs_stress/nfs01      |  2 --
- testcases/network/nfs/nfs_stress/nfs02      |  2 --
- testcases/network/nfs/nfs_stress/nfs03      |  2 --
- testcases/network/nfs/nfs_stress/nfs04      |  2 --
- testcases/network/nfs/nfs_stress/nfs05      |  2 --
- testcases/network/nfs/nfs_stress/nfs06      |  2 --
- testcases/network/nfs/nfs_stress/nfs_lib.sh | 13 ++++++++-----
- testcases/network/nfs/nfslock01/nfslock01   |  2 --
- testcases/network/nfs/nfsstat01/nfsstat01   |  2 --
- 10 files changed, 8 insertions(+), 23 deletions(-)
+> If the first character of optstring is set to a colon(tcp_fastopen_run.sh,
+> nfs_lib.sh), getopts should be in silent mode rather than process it as
+> an argument of 6.
 
-diff --git a/testcases/network/nfs/fsx-linux/fsx.sh b/testcases/network/nfs/fsx-linux/fsx.sh
-index 84ad0e2..3f82d18 100755
---- a/testcases/network/nfs/fsx-linux/fsx.sh
-+++ b/testcases/network/nfs/fsx-linux/fsx.sh
-@@ -26,8 +26,6 @@ TST_TOTAL=1
- TST_CLEANUP="nfs_cleanup"
- 
- . nfs_lib.sh
--TST_USE_LEGACY_API=1
--. tst_net.sh
- 
- do_test()
- {
-diff --git a/testcases/network/nfs/nfs_stress/nfs01 b/testcases/network/nfs/nfs_stress/nfs01
-index 93bf088..efaa215 100755
---- a/testcases/network/nfs/nfs_stress/nfs01
-+++ b/testcases/network/nfs/nfs_stress/nfs01
-@@ -25,8 +25,6 @@ TST_TOTAL=1
- TST_CLEANUP="nfs_cleanup"
- 
- . nfs_lib.sh
--TST_USE_LEGACY_API=1
--. tst_net.sh
- 
- do_test()
- {
-diff --git a/testcases/network/nfs/nfs_stress/nfs02 b/testcases/network/nfs/nfs_stress/nfs02
-index 74aa3d8..5cbe771 100755
---- a/testcases/network/nfs/nfs_stress/nfs02
-+++ b/testcases/network/nfs/nfs_stress/nfs02
-@@ -25,8 +25,6 @@ TST_TOTAL=3
- TST_CLEANUP="nfs_cleanup"
- 
- . nfs_lib.sh
--TST_USE_LEGACY_API=1
--. tst_net.sh
- 
- do_test1()
- {
-diff --git a/testcases/network/nfs/nfs_stress/nfs03 b/testcases/network/nfs/nfs_stress/nfs03
-index 3279a22..2de7622 100755
---- a/testcases/network/nfs/nfs_stress/nfs03
-+++ b/testcases/network/nfs/nfs_stress/nfs03
-@@ -25,8 +25,6 @@ TST_TOTAL=1
- TST_CLEANUP="nfs03_cleanup"
- 
- . nfs_lib.sh
--TST_USE_LEGACY_API=1
--. tst_net.sh
- 
- DIR_NUM=${DIR_NUM:-"100"}
- FILE_NUM=${FILE_NUM:-"100"}
-diff --git a/testcases/network/nfs/nfs_stress/nfs04 b/testcases/network/nfs/nfs_stress/nfs04
-index 254c987..ccadbb1 100755
---- a/testcases/network/nfs/nfs_stress/nfs04
-+++ b/testcases/network/nfs/nfs_stress/nfs04
-@@ -28,8 +28,6 @@ TST_TOTAL=1
- TST_CLEANUP="nfs_cleanup"
- 
- . nfs_lib.sh
--TST_USE_LEGACY_API=1
--. tst_net.sh
- 
- nfs_setup
- 
-diff --git a/testcases/network/nfs/nfs_stress/nfs05 b/testcases/network/nfs/nfs_stress/nfs05
-index 8c39cde..8435181 100755
---- a/testcases/network/nfs/nfs_stress/nfs05
-+++ b/testcases/network/nfs/nfs_stress/nfs05
-@@ -29,8 +29,6 @@ FILE_NUM=${FILE_NUM:-"50"}
- THREAD_NUM=${THREAD_NUM:-"8"}
- 
- . nfs_lib.sh
--TST_USE_LEGACY_API=1
--. tst_net.sh
- 
- tst_check_cmds make gcc
- 
-diff --git a/testcases/network/nfs/nfs_stress/nfs06 b/testcases/network/nfs/nfs_stress/nfs06
-index 628271a..0048190 100755
---- a/testcases/network/nfs/nfs_stress/nfs06
-+++ b/testcases/network/nfs/nfs_stress/nfs06
-@@ -25,8 +25,6 @@ TST_TOTAL=1
- TST_CLEANUP="nfs_cleanup"
- 
- . nfs_lib.sh
--TST_USE_LEGACY_API=1
--. tst_net.sh
- 
- do_test()
- {
-diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-index 28c43ba..7aed718 100644
---- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
-+++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-@@ -20,9 +20,6 @@ NFILES=${NFILES:=1000}
- SOCKET_TYPE="${SOCKET_TYPE:-udp}"
- NFS_TYPE=${NFS_TYPE:=nfs}
- 
--TST_OPTS=":hv:t:"
--TST_PARSE_ARGS=nfs_parse_args
--
- nfs_parse_args()
- {
- 	case "$1" in
-@@ -34,12 +31,18 @@ nfs_parse_args()
- 		echo "6        run over IPv6"
- 		exit 0
- 	;;
--	v) VERSION=$OPTARG;;
--	t) SOCKET_TYPE=$OPTARG;;
-+	v) VERSION=$2;;
-+	t) SOCKET_TYPE=$2;;
- 	*) tst_brkm TBROK "unknown option: $1"
- 	esac
- }
- 
-+TST_OPTS=":hv:t:"
-+TST_PARSE_ARGS=nfs_parse_args
-+
-+TST_USE_LEGACY_API=1
-+. tst_net.sh
-+
- get_socket_type()
- {
- 	local t
-diff --git a/testcases/network/nfs/nfslock01/nfslock01 b/testcases/network/nfs/nfslock01/nfslock01
-index a545fa0..bf406e6 100755
---- a/testcases/network/nfs/nfslock01/nfslock01
-+++ b/testcases/network/nfs/nfslock01/nfslock01
-@@ -26,8 +26,6 @@ TST_TOTAL=1
- TST_CLEANUP="nfs_cleanup"
- 
- . nfs_lib.sh
--TST_USE_LEGACY_API=1
--. tst_net.sh
- 
- LUSER=${LUSER:=root}
- 
-diff --git a/testcases/network/nfs/nfsstat01/nfsstat01 b/testcases/network/nfs/nfsstat01/nfsstat01
-index afd239f..9212518 100755
---- a/testcases/network/nfs/nfsstat01/nfsstat01
-+++ b/testcases/network/nfs/nfsstat01/nfsstat01
-@@ -22,8 +22,6 @@ TST_TOTAL=4
- TST_CLEANUP="nfs_cleanup"
- 
- . nfs_lib.sh
--TST_USE_LEGACY_API=1
--. tst_net.sh
- 
- setup()
- {
--- 
-1.8.3.1
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  testcases/lib/tst_net.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+> index 3a0fe01..32b4f09 100644
+> --- a/testcases/lib/tst_net.sh
+> +++ b/testcases/lib/tst_net.sh
+> @@ -19,7 +19,7 @@
+>  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
 
 
+> -TST_OPTS="6$TST_OPTS"
+> +TST_OPTS="${TST_OPTS}6"
+>  TST_PARSE_ARGS_CALLER="$TST_PARSE_ARGS"
+>  TST_PARSE_ARGS="tst_net_parse_args"
+>  TST_USAGE_CALLER="$TST_USAGE"
 
+Acked-by: Petr Vorel <pvorel@suse.cz>
+
+Good catch. Although I propose to get rid of ':' at the beginning for users of new shell
+API (as it's IMHO better to see errors).
+
+
+Kind regards,
+Petr
