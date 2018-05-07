@@ -1,35 +1,64 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 7 May 2018 11:24:09 +0800
-Subject: [LTP] [PATCH 1/3] lib/tst_net.sh: Append 6 to the end of $TST_OPTS
-Message-ID: <1525663451-32016-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Mon, 7 May 2018 11:24:10 +0800
+Subject: [LTP] [PATCH 2/3] net/tcp_fastopen_run.sh: Cleanup in
+	TST_PARSE_ARGS functions for legacy API
+In-Reply-To: <1525663451-32016-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1525663451-32016-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1525663451-32016-2-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-If the first character of optstring is set to a colon(tcp_fastopen_run.sh,
-nfs_lib.sh), getopts should be in silent mode rather than process it as
-an argument of 6.
+1) Process getopts parameters by TST_OPTS and TST_PARSE_ARGS
+2) Pass $OPTARG as $2 to TST_PARSE_ARGS functions
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/lib/tst_net.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ testcases/network/tcp_fastopen/tcp_fastopen_run.sh | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-index 3a0fe01..32b4f09 100644
---- a/testcases/lib/tst_net.sh
-+++ b/testcases/lib/tst_net.sh
-@@ -19,7 +19,7 @@
- # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
- #
+diff --git a/testcases/network/tcp_fastopen/tcp_fastopen_run.sh b/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
+index 5cc9804..865b3d4 100755
+--- a/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
++++ b/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
+@@ -20,8 +20,9 @@
  
--TST_OPTS="6$TST_OPTS"
-+TST_OPTS="${TST_OPTS}6"
- TST_PARSE_ARGS_CALLER="$TST_PARSE_ARGS"
- TST_PARSE_ARGS="tst_net_parse_args"
- TST_USAGE_CALLER="$TST_USAGE"
+ TST_NETLOAD_MAX_SRV_REPLIES=3
+ 
+-while getopts :hr:n:R:6 opt; do
+-	case "$opt" in
++tcp_fastopen_parse_args()
++{
++	case "$1" in
+ 	h)
+ 		echo "Usage:"
+ 		echo "h        help"
+@@ -29,17 +30,18 @@ while getopts :hr:n:R:6 opt; do
+ 		echo "6        run over IPv6"
+ 		exit 0
+ 	;;
+-	R) TST_NETLOAD_MAX_SRV_REPLIES=$OPTARG ;;
+-	6) TST_IPV6=6 ;;
+-	*) tst_brkm TBROK "unknown option: $opt" ;;
++	R) TST_NETLOAD_MAX_SRV_REPLIES=$2 ;;
++	*) tst_brkm TBROK "unknown option: $1" ;;
+ 	esac
+-done
+-shift $(($OPTIND - 1))
++}
+ 
+ TST_TOTAL=1
+ TCID="tcp_fastopen"
+ TST_NEEDS_TMPDIR=1
+ 
++TST_OPTS=":hr:n:R:"
++TST_PARSE_ARGS=tcp_fastopen_parse_args
++
+ TST_USE_LEGACY_API=1
+ . tst_net.sh
+ 
 -- 
 1.8.3.1
 
