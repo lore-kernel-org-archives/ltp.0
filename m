@@ -1,10 +1,7 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 11 May 2018 14:17:02 +0200
-Subject: [LTP] LTP Release preparations
-In-Reply-To: <20180503092802.GA7077@rei>
-References: <20180412113532.GA5963@rei> <20180419141749.GA13045@rei>
- <20180424133931.GA18016@rei> <20180503092802.GA7077@rei>
-Message-ID: <20180511121701.GC17721@rei>
+Date: Fri, 11 May 2018 14:42:47 +0200
+Subject: [LTP] LTP TODO list
+Message-ID: <20180511124247.GD17721@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,18 +9,32 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> The pending issues for the release are the compilation fix from Jan and
-> the perf_event_open02 fix I've send.
+As you may remeber I've asked previously here where to start tracking
+LTP TODO list, we decided on GitHub and hence I started to put the
+information there.
 
-As nobody objected, or commented so far I'm going to commit this one
-next week.
+So far I've started with a rough estimate of missing syscall coverage, I
+do expect this list easily to grow at least twice once I have a time to
+dig deeper into it, but it's a start at least.
 
-> Anything else to consider?
+I've added a tag "missing coverage" where you can see what we are not
+testing at the moment:
 
-Li pinged the migrate_pages02 patch from Jan, anything else?
+https://github.com/linux-test-project/ltp/labels/missing%20coverage
 
-I would like to proceed with the release next week so if you have
-anything that should be dealt with speak up please.
+These issues vary a lot in complexity, some of them could be done under
+an hour, some are three months jobs, this is inevitable as sometimes one
+syscall is a gateway for a very complex functionality.
+
+I'll also dump a list of CVE reproducers and regression tests that are
+candidates to be turned into LTP tests that I currently have. Which will
+go under reproducer tag:
+
+https://github.com/linux-test-project/ltp/labels/reproducer
+
+I would also like to encourage everyone of you to add issues there and
+also feel free to pick any of these, just comment it with someting as
+"working on it".
 
 -- 
 Cyril Hrubis
