@@ -1,41 +1,39 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 11 May 2018 14:42:47 +0200
-Subject: [LTP] LTP TODO list
-Message-ID: <20180511124247.GD17721@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 11 May 2018 17:40:27 +0200
+Subject: [LTP] [PATCH ltp] connectors/connector_test.sh: Return 32 for
+ TCONF
+In-Reply-To: <20180511201638.20872-1-yixin.zhang@intel.com>
+References: <20180511201638.20872-1-yixin.zhang@intel.com>
+Message-ID: <20180511154027.nsxbqa5xdchzdo6g@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-As you may remeber I've asked previously here where to start tracking
-LTP TODO list, we decided on GitHub and hence I started to put the
-information there.
+Hi,
 
-So far I've started with a rough estimate of missing syscall coverage, I
-do expect this list easily to grow at least twice once I have a time to
-dig deeper into it, but it's a start at least.
+> Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+> ---
+>  testcases/kernel/connectors/connector_test.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-I've added a tag "missing coverage" where you can see what we are not
-testing at the moment:
+> diff --git a/testcases/kernel/connectors/connector_test.sh b/testcases/kernel/connectors/connector_test.sh
+> index 0742a1b78..f92e10b85 100644
+> --- a/testcases/kernel/connectors/connector_test.sh
+> +++ b/testcases/kernel/connectors/connector_test.sh
+> @@ -2,7 +2,7 @@
 
-https://github.com/linux-test-project/ltp/labels/missing%20coverage
+>  if [ ! -f /proc/net/connector ];then
+>  	echo "Connectors 0 CONF : system doesn't support execution of the test"
+> -	exit 0
+> +	exit 32
+>  fi
 
-These issues vary a lot in complexity, some of them could be done under
-an hour, some are three months jobs, this is inevitable as sometimes one
-syscall is a gateway for a very complex functionality.
+>  $LTPROOT/testcases/bin/run_pec_test
 
-I'll also dump a list of CVE reproducers and regression tests that are
-candidates to be turned into LTP tests that I currently have. Which will
-go under reproducer tag:
+Merged, thanks a lot!
+As it's obviously correct I dared to merge it in git freeze, hope nobody mind.
 
-https://github.com/linux-test-project/ltp/labels/reproducer
-
-I would also like to encourage everyone of you to add issues there and
-also feel free to pick any of these, just comment it with someting as
-"working on it".
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
