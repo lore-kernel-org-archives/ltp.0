@@ -1,8 +1,8 @@
 From: Eric Biggers <ebiggers3@gmail.com>
-Date: Sat, 12 May 2018 17:01:01 -0700
-Subject: [LTP] [PATCH] pty/pty02: new test for hang involving EXTPROC|ICANON
-	terminal mode
-Message-ID: <20180513000101.13027-1-ebiggers3@gmail.com>
+Date: Sat, 12 May 2018 18:23:25 -0700
+Subject: [LTP] [PATCH] syscalls/shmctl05: new test for IPC file
+	use-after-free bug
+Message-ID: <20180513012325.877-1-ebiggers3@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,44 +11,57 @@ To: ltp@lists.linux.it
 
 From: Eric Biggers <ebiggers@google.com>
 
-Test for a bug in the kernel's tty layer where an infinite loop could
-occur if the EXTPROC and ICANON terminal modes were combined.  This bug
-was found by the syzkaller fuzzer and was fixed in v4.15.
+Test for a bug in the System V IPC subsystem that resulted in a shared
+memory file being used after it was freed (or being freed).
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- runtest/pty                     |  1 +
- testcases/kernel/pty/.gitignore |  1 +
- testcases/kernel/pty/pty02.c    | 58 +++++++++++++++++++++++++++++++++
- 3 files changed, 60 insertions(+)
- create mode 100644 testcases/kernel/pty/pty02.c
+ runtest/syscalls                              |   1 +
+ runtest/syscalls-ipc                          |   1 +
+ .../kernel/syscalls/ipc/shmctl/.gitignore     |   1 +
+ .../kernel/syscalls/ipc/shmctl/shmctl05.c     | 113 ++++++++++++++++++
+ 4 files changed, 116 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
 
-diff --git a/runtest/pty b/runtest/pty
-index 92c89ab31..52e2c07f1 100644
---- a/runtest/pty
-+++ b/runtest/pty
-@@ -1,5 +1,6 @@
- #DESCRIPTION:Terminal type stress
- pty01 pty01
-+pty02 pty02
- ptem01 ptem01
- hangup01 hangup01
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 97bda7e45..9d47a9336 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1188,6 +1188,7 @@ shmctl01 shmctl01
+ shmctl02 shmctl02
+ shmctl03 shmctl03
+ shmctl04 shmctl04
++shmctl05 shmctl05
  
-diff --git a/testcases/kernel/pty/.gitignore b/testcases/kernel/pty/.gitignore
-index db16401dc..131b8a077 100644
---- a/testcases/kernel/pty/.gitignore
-+++ b/testcases/kernel/pty/.gitignore
-@@ -1,3 +1,4 @@
- /hangup01
- /ptem01
- /pty01
-+/pty02
-diff --git a/testcases/kernel/pty/pty02.c b/testcases/kernel/pty/pty02.c
+ shmdt01 shmdt01
+ shmdt02 shmdt02
+diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
+index de32c6ba9..7c2c40beb 100644
+--- a/runtest/syscalls-ipc
++++ b/runtest/syscalls-ipc
+@@ -57,6 +57,7 @@ shmctl01 shmctl01
+ shmctl02 shmctl02
+ shmctl03 shmctl03
+ shmctl04 shmctl04
++shmctl05 shmctl05
+ 
+ shmdt01 shmdt01
+ shmdt02 shmdt02
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/.gitignore b/testcases/kernel/syscalls/ipc/shmctl/.gitignore
+index 9f5ac37ff..d6777e3b8 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/.gitignore
++++ b/testcases/kernel/syscalls/ipc/shmctl/.gitignore
+@@ -2,3 +2,4 @@
+ /shmctl02
+ /shmctl03
+ /shmctl04
++/shmctl05
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
 new file mode 100644
-index 000000000..d96eec211
+index 000000000..6771b1445
 --- /dev/null
-+++ b/testcases/kernel/pty/pty02.c
-@@ -0,0 +1,58 @@
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
+@@ -0,0 +1,113 @@
 +/*
 + * Copyright (c) 2018 Google, Inc.
 + *
@@ -67,45 +80,100 @@ index 000000000..d96eec211
 + */
 +
 +/*
-+ * Regression test for commit 966031f340185 ("n_tty: fix EXTPROC vs ICANON
-+ * interaction with TIOCINQ (aka FIONREAD)").  The test reproduces a hang
-+ * (infinite loop in the kernel) after a pseudoterminal is put in both canonical
-+ * (ICANON) and external processing (EXTPROC) mode, some data is written to the
-+ * master and read from the slave, and the FIONREAD ioctl is called on the
-+ * slave.  This is simplified from a syzkaller-generated reproducer.
++ * Regression test for commit 3f05317d9889 ("ipc/shm: fix use-after-free of shm
++ * file via remap_file_pages()").  This bug allowed the remap_file_pages()
++ * syscall to use the file of a System V shared memory segment after its ID had
++ * been reallocated and the file freed.  This test reproduces the bug as a NULL
++ * pointer dereference in touch_atime(), although it's a race condition so it's
++ * not guaranteed to work.  This test is based on the reproducer provided in the
++ * fix's commit message.
 + */
 +
++#include <stdbool.h>
 +#include <stdlib.h>
-+#include <termio.h>
 +
 +#include "tst_test.h"
++#include "tst_timer.h"
++#include "tst_safe_sysv_ipc.h"
++#include "lapi/syscalls.h"
++
++static bool timed_out(void)
++{
++	tst_timer_stop();
++	return tst_timer_elapsed_ms() >= 5000;
++}
 +
 +static void do_test(void)
 +{
-+	struct termios io = { .c_lflag = EXTPROC | ICANON };
-+	int ptmx, pts;
-+	char c = 'A';
-+	int nbytes;
++	pid_t pid;
++	int status;
 +
-+	ptmx = SAFE_OPEN("/dev/ptmx", O_WRONLY);
++	/* Skip test if either remap_file_pages() or SysV IPC is unavailable */
++	tst_syscall(__NR_remap_file_pages, NULL, 0, 0, 0, 0);
++	tst_syscall(__NR_shmctl, 0xF00F, IPC_RMID, NULL);
 +
-+	if (tcsetattr(ptmx, TCSANOW, &io) != 0)
-+		tst_brk(TBROK | TERRNO, "tcsetattr() failed");
++	tst_timer_start(CLOCK_MONOTONIC);
 +
-+	if (unlockpt(ptmx) != 0)
-+		tst_brk(TBROK | TERRNO, "unlockpt() failed");
++	pid = SAFE_FORK();
++	srand(getpid());
 +
-+	pts = SAFE_OPEN(ptsname(ptmx), O_RDONLY);
-+	SAFE_WRITE(1, ptmx, &c, 1);
-+	SAFE_READ(1, pts, &c, 1);
++	if (pid == 0) {
++		/*
++		 * Child process: repeatedly attach a shm segment, then remap it
++		 * until the ID seems to have been removed by the other process.
++		 */
++		do {
++			int id = SAFE_SHMGET(0xF00F, 4096, IPC_CREAT|0700);
++			void *addr = shmat(id, NULL, 0);
 +
-+	tst_res(TINFO, "Calling FIONREAD, this will hang in n_tty_ioctl() if the bug is present...");
-+	SAFE_IOCTL(pts, FIONREAD, &nbytes);
-+	tst_res(TPASS, "Got to the end without hanging");
++			if (addr == (void *)-1L) {
++				if (errno == EIDRM || errno == EINVAL)
++					continue;
++				tst_brk(TBROK | TERRNO,
++					"Unexpected shmat() error");
++			}
++
++			usleep(rand() % 50);
++			do {
++				/* This is the system call that crashed */
++				TEST(syscall(__NR_remap_file_pages, addr, 4096,
++					     0, 0, 0));
++				if (TEST_RETURN == 0)
++					continue;
++				if (TEST_ERRNO == EIDRM || TEST_ERRNO == EINVAL)
++					break;
++				tst_brk(TBROK | TTERRNO,
++					"Unexpected remap_file_pages() error");
++			} while (!timed_out());
++		} while (!timed_out());
++		exit(0);
++	} else {
++		/*
++		 * Parent process: repeatedly remove the shm ID and reallocate
++		 * it again for a new shm segment.
++		 */
++		do {
++			int id = SAFE_SHMGET(0xF00F, 4096, IPC_CREAT|0700);
++
++			usleep(rand() % 50);
++			SAFE_SHMCTL(id, IPC_RMID, NULL);
++		} while (!timed_out());
++	}
++
++	SAFE_WAIT(&status);
++	if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
++		tst_res(TPASS, "no crash observed");
++	else if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL)
++		tst_res(TFAIL, "kernel oops observed");
++	else
++		tst_brk(TBROK, "Child %s", tst_strstatus(status));
++
++	shmctl(0xF00F, IPC_RMID, NULL);
 +}
 +
 +static struct tst_test test = {
 +	.test_all = do_test,
++	.forks_child = 1,
 +};
 -- 
 2.17.0
