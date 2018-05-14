@@ -1,54 +1,66 @@
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 14 May 2018 17:26:34 +0800
-Subject: [LTP] [PATCH 1/2] madvise: add MADV_WIPEONFORK/MADV_KEEPONFORK in
-	madvise() test
-Message-ID: <20180514092635.26100-1-liwang@redhat.com>
+Date: Mon, 14 May 2018 17:26:35 +0800
+Subject: [LTP] [PATCH 2/2] madvise: add ERRORS check for
+	MADV_REMOVE/MADV_FREE/MADV_WIPEONFORK
+Message-ID: <20180514092635.26100-2-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The kernel commit (d2cd9ed mm,fork: introduce MADV_WIPEONFORK)
-introduces two new advices for madvise() in kernel-v4.14. Here
-making LTP cover that test accordingly.
-
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- include/lapi/mmap.h                           | 5 +++++
- testcases/kernel/syscalls/madvise/madvise01.c | 3 +++
- 2 files changed, 8 insertions(+)
+ testcases/kernel/syscalls/madvise/madvise02.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/include/lapi/mmap.h b/include/lapi/mmap.h
-index 7a55800..18547c0 100644
---- a/include/lapi/mmap.h
-+++ b/include/lapi/mmap.h
-@@ -71,6 +71,11 @@
- # define MADV_FREE	8
- #endif
- 
-+#ifndef MADV_WIPEONFORK
-+# define MADV_WIPEONFORK 18
-+# define MADV_KEEPONFORK 19
-+#endif
-+
- #ifdef HAVE_SYS_SHM_H
- # include <sys/shm.h>
- # define MMAP_GRANULARITY SHMLBA
-diff --git a/testcases/kernel/syscalls/madvise/madvise01.c b/testcases/kernel/syscalls/madvise/madvise01.c
-index 4b18a21..8d1d787 100644
---- a/testcases/kernel/syscalls/madvise/madvise01.c
-+++ b/testcases/kernel/syscalls/madvise/madvise01.c
-@@ -62,6 +62,9 @@ static struct tcase {
- 	{MADV_DONTDUMP,    "MADV_DONTDUMP",    &sfile}, /* since Linux 3.4 */
- 	{MADV_DODUMP,      "MADV_DODUMP",      &sfile}, /* since Linux 3.4 */
- 	{MADV_FREE,        "MADV_FREE",        &amem},  /* since Linux 4.5 */
-+	{MADV_WIPEONFORK,  "MADV_WIPEONFORK",  &amem},  /* since Linux 4.14 */
-+	{MADV_KEEPONFORK,  "MADV_KEEPONFORK",  &amem},  /* since Linux 4.14 */
-+
+diff --git a/testcases/kernel/syscalls/madvise/madvise02.c b/testcases/kernel/syscalls/madvise/madvise02.c
+index b773efd..af52741 100644
+--- a/testcases/kernel/syscalls/madvise/madvise02.c
++++ b/testcases/kernel/syscalls/madvise/madvise02.c
+@@ -72,12 +72,15 @@ static struct tcase {
+ } tcases[] = {
+ 	{MADV_NORMAL,      "MADV_NORMAL",      &nonalign, EINVAL, 0},
+ 	{1212,             "MADV_NORMAL",      &file1,    EINVAL, 0},
++	{MADV_REMOVE,      "MADV_REMOVE",      &file1,    EINVAL, 0},
+ 	{MADV_DONTNEED,    "MADV_DONTNEED",    &file1,    EINVAL, 1},
+ 	{MADV_MERGEABLE,   "MADV_MERGEABLE",   &file1,    EINVAL, 0},
+ 	{MADV_UNMERGEABLE, "MADV_UNMERGEABLE", &file1,    EINVAL, 0},
+ 	{MADV_NORMAL,      "MADV_NORMAL",      &file2,    ENOMEM, 0},
+ 	{MADV_WILLNEED,    "MADV_WILLNEED",    &file2,    ENOMEM, 0},
+ 	{MADV_WILLNEED,    "MADV_WILLNEED",    &tmp_addr,  EBADF, 0},
++	{MADV_FREE,        "MADV_FREE",        &file1,    EINVAL, 0},
++	{MADV_WIPEONFORK,  "MADV_WIPEONFORK",  &file1,    EINVAL, 0},
  };
  
- static void setup(void)
+ static void tcases_filter(void)
+@@ -95,7 +98,10 @@ static void tcases_filter(void)
+ 			tc->skip = 0;
+ #endif /* if !defined(UCLINUX) */
+ 		break;
+-
++		case MADV_REMOVE:
++			if ((tst_kvercmp(2, 6, 16)) < 0)
++				tc->skip = 1;
++		break;
+ 		case MADV_MERGEABLE:
+ 		case MADV_UNMERGEABLE:
+ 			if ((tst_kvercmp(2, 6, 32)) < 0)
+@@ -114,6 +120,14 @@ static void tcases_filter(void)
+ 					tc->exp_errno == EBADF)
+ 				tc->skip = 1;
+ 		break;
++		case MADV_FREE:
++			if ((tst_kvercmp(4, 5, 0)) < 0)
++				tc->skip = 1;
++		break;
++		case MADV_WIPEONFORK:
++			if ((tst_kvercmp(4, 14, 0)) < 0)
++				tc->skip = 1;
++		break;
+ 		default:
+ 		break;
+ 		}
 -- 
 2.9.5
 
