@@ -1,144 +1,40 @@
-From: Anton Smorodskyi <asmorodskyi@suse.de>
-Date: Mon, 14 May 2018 14:05:06 +0200
-Subject: [LTP] [PATCH 1/1] ipneigh : Use new API
-In-Reply-To: <20180514103709.4632-1-asmorodskyi@suse.com>
-References: <20180514103709.4632-1-asmorodskyi@suse.com>
-Message-ID: <fbc8669e-7aaa-0c71-9acf-fb2fb327eede@suse.de>
+From: Punit Agrawal <punit.agrawal@arm.com>
+Date: Mon, 14 May 2018 17:03:54 +0100
+Subject: [LTP] [PATCH] lib/tst_device: Fill a file in megabyte sized chunks
+Message-ID: <20180514160354.13281-1-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-I am really sorry but it happened again :(
+A zero-filled file is used as backing store when creating a loopback
+device. The zero-fill operations is done in 1KB sized chunks for
+file-size specified in megabytes. This leads to a large number of
+write calls which take long time during test setup phase in certain
+environments.
 
-please ignore this patch , hope it is last time
+Move to using 1MB sized chunks to reduce the number of write syscalls
+by a few order of magnitude.
 
+Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
+---
+ lib/tst_device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 05/14/2018 12:37 PM, Anton Smorodskyi wrote:
-> Besides all obvious changes for moving to new API,
-> also was done :
-> 1. more generic variable names
-> 2. add check for del command failure
-> ---
->   testcases/network/tcp_cmds/ipneigh/ipneigh01.sh | 64 ++++++++++++-------------
->   1 file changed, 31 insertions(+), 33 deletions(-)
->
-> diff --git a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
-> index 9af3aa31e..da4c07402 100755
-> --- a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
-> +++ b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
-> @@ -1,4 +1,5 @@
->   #!/bin/sh
-> +# Copyright (c) 2018 SUSE Linux GmbH
->   # Copyright (c) 2016 Oracle and/or its affiliates. All Rights Reserved.
->   # Copyright (c) International Business Machines  Corp., 2000
->   # This program is free software; you can redistribute it and/or
-> @@ -18,8 +19,8 @@
->   
->   TCID=ipneigh01
->   NUMLOOPS=${NUMLOOPS:-50}
-> -TST_TOTAL=2
-> -TST_USE_LEGACY_API=1
-> +TST_TESTFUNC=do_test
-> +TST_CNT=2
->   . tst_net.sh
->   
->   do_setup()
-> @@ -30,55 +31,52 @@ do_setup()
->   
->   do_test()
->   {
-> -	local arp_show_cmd="$1"
-> -	local arp_del_cmd="$2"
-> +	local rhost=$(tst_ipaddr rhost)
-> +	case $1 in
-> +	1)
-> +		local show_cmd="ip neigh show"
-> +		local del_cmd="ip neigh del $rhost dev $(tst_iface)"
-> +	;;
-> +	2)
-> +		if [ -n "$TST_IPV6" ] then
-> +			tst_res TCONF "'arp cmd doesn't support IPv6, skipping test-case"
-> +		fi
-> +		local show_cmd="arp -a"
-> +		local del_cmd="arp -d $rhost"
-> +	;;
-> +	esac
->   
->   	local entry_name
->   	[ "$TST_IPV6" ] && entry_name="NDISC" || entry_name="ARP"
->   
-> -	tst_resm TINFO "Stress auto-creation of $entry_name cache entry"
-> -	tst_resm TINFO "by pinging '$rhost' and deleting entry again"
-> -	tst_resm TINFO "with '$arp_del_cmd'"
-> +	tst_res TINFO "Stress auto-creation of $entry_name cache entry"
-> +	tst_res TINFO "by pinging '$rhost' and deleting entry again"
-> +	tst_res TINFO "with '$del_cmd'"
->   
->   	for i in $(seq 1 $NUMLOOPS); do
->   
->   		ping$TST_IPV6 -q -c1 $rhost > /dev/null
->   
->   		local k
-> -		local ret=1
-> -		# wait for arp entry at least 3 seconds
->   		for k in $(seq 1 30); do
-> -			$arp_show_cmd | grep -q $rhost
-> -			if [ $? -eq 0 ]; then
-> -				ret=0
-> -				break;
-> +			$show_cmd | grep -q $rhost
-> +			if [ $? -ne 0 ]; then
-> +				tst_brk TFAIL "$entry_name entry '$rhost' not listed"
->   			fi
->   			tst_sleep 100ms
->   		done
->   
-> -		[ "$ret" -ne 0 ] && \
-> -			tst_brkm TFAIL "$entry_name entry '$rhost' not listed"
-> +		$del_cmd
-> +		if [ $? -ne 0 ]; then
-> +			tst_brk TFAIL "fail to delete entry"
-> +		fi
->   
-> -		$arp_del_cmd
-> -
-> -		$arp_show_cmd | grep -q "${rhost}.*$(tst_hwaddr rhost)" && \
-> -			tst_brkm TFAIL "'$arp_del_cmd' failed, entry has " \
-> +		$show_cmd | grep -q "${rhost}.*$(tst_hwaddr rhost)" && \
-> +			tst_brk TFAIL "'$del_cmd' failed, entry has " \
->   				       "$(tst_hwaddr rhost)' $i/$NUMLOOPS"
->   	done
->   
-> -	tst_resm TPASS "verified adding/removing of $entry_name cache entry"
-> +	tst_res TPASS "verified adding/removing of $entry_name cache entry"
->   }
->   
-> -do_setup
-> -
-> -rhost=$(tst_ipaddr rhost)
-> -
-> -if [ -z "$TST_IPV6" ]; then
-> -	do_test "arp -a" "arp -d $rhost"
-> -else
-> -	tst_resm TCONF "'arp cmd doesn't support IPv6, skipping test-case"
-> -fi
-> -
-> -do_test "ip neigh show" "ip neigh del $rhost dev $(tst_iface)"
-> -
-> -tst_exit
-> +tst_run
-> \ No newline at end of file
-
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index edfacbdc7..463743443 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -268,7 +268,7 @@ const char *tst_acquire_device__(unsigned int size)
+ 				ltp_dev_size, acq_dev_size);
+ 	}
+ 
+-	if (tst_fill_file(DEV_FILE, 0, 1024, 1024 * acq_dev_size)) {
++	if (tst_fill_file(DEV_FILE, 0, 1024 * 1024, acq_dev_size)) {
+ 		tst_resm(TWARN | TERRNO, "Failed to create " DEV_FILE);
+ 		return NULL;
+ 	}
 -- 
-Anton Smorodskyi <asmorodskyi@suse.com>
-QA Engineer
-SUSE Linux GmbH, Maxfeldstr. 5, D-90409 Nürnberg
-Tel: +49-911-74053-0; Fax: +49-911-7417755;  https://www.suse.com/
-SUSE Linux GmbH, GF: Felix Imendörffer, Jane Smithard,
-Graham Norton, HRB 21284 (AG Nürnberg)
+2.17.0
 
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180514/89a94ea9/attachment.html>
