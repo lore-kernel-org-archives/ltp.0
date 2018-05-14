@@ -1,28 +1,54 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 14 May 2018 11:22:47 +0200
-Subject: [LTP] [PATCH] migrate_pages02: update for 4.15
-In-Reply-To: <338391851.19009222.1526083806514.JavaMail.zimbra@redhat.com>
-References: <beeaa6fe1b73872ebe59b55c1fac419d37bc0b03.1515676244.git.jstancek@redhat.com>
- <CAEemH2cJxf2rWjgXru3sTdNUyjJ1A2bVbq0bMjZyZO5SvObc=g@mail.gmail.com>
- <20180511113248.GA31422@rei>
- <338391851.19009222.1526083806514.JavaMail.zimbra@redhat.com>
-Message-ID: <20180514092247.GB20130@rei.lan>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 14 May 2018 17:26:34 +0800
+Subject: [LTP] [PATCH 1/2] madvise: add MADV_WIPEONFORK/MADV_KEEPONFORK in
+	madvise() test
+Message-ID: <20180514092635.26100-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Right we are past 4.16 now.
-> > 
-> > Jan I suppose that we should consider this for the release, right?
-> 
-> Yes, I'd pull it in, if you have no objections.
-> I confirmed it still fixes problem as of 4.16.8.
+The kernel commit (d2cd9ed mm,fork: introduce MADV_WIPEONFORK)
+introduces two new advices for madvise() in kernel-v4.14. Here
+making LTP cover that test accordingly.
 
-Patch looks good to me, let's get this in.
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ include/lapi/mmap.h                           | 5 +++++
+ testcases/kernel/syscalls/madvise/madvise01.c | 3 +++
+ 2 files changed, 8 insertions(+)
 
+diff --git a/include/lapi/mmap.h b/include/lapi/mmap.h
+index 7a55800..18547c0 100644
+--- a/include/lapi/mmap.h
++++ b/include/lapi/mmap.h
+@@ -71,6 +71,11 @@
+ # define MADV_FREE	8
+ #endif
+ 
++#ifndef MADV_WIPEONFORK
++# define MADV_WIPEONFORK 18
++# define MADV_KEEPONFORK 19
++#endif
++
+ #ifdef HAVE_SYS_SHM_H
+ # include <sys/shm.h>
+ # define MMAP_GRANULARITY SHMLBA
+diff --git a/testcases/kernel/syscalls/madvise/madvise01.c b/testcases/kernel/syscalls/madvise/madvise01.c
+index 4b18a21..8d1d787 100644
+--- a/testcases/kernel/syscalls/madvise/madvise01.c
++++ b/testcases/kernel/syscalls/madvise/madvise01.c
+@@ -62,6 +62,9 @@ static struct tcase {
+ 	{MADV_DONTDUMP,    "MADV_DONTDUMP",    &sfile}, /* since Linux 3.4 */
+ 	{MADV_DODUMP,      "MADV_DODUMP",      &sfile}, /* since Linux 3.4 */
+ 	{MADV_FREE,        "MADV_FREE",        &amem},  /* since Linux 4.5 */
++	{MADV_WIPEONFORK,  "MADV_WIPEONFORK",  &amem},  /* since Linux 4.14 */
++	{MADV_KEEPONFORK,  "MADV_KEEPONFORK",  &amem},  /* since Linux 4.14 */
++
+ };
+ 
+ static void setup(void)
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.9.5
+
