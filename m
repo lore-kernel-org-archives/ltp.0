@@ -1,180 +1,82 @@
-From: Eric Biggers <ebiggers3@gmail.com>
-Date: Sat, 12 May 2018 18:23:25 -0700
-Subject: [LTP] [PATCH] syscalls/shmctl05: new test for IPC file
-	use-after-free bug
-Message-ID: <20180513012325.877-1-ebiggers3@gmail.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Mon, 14 May 2018 09:28:29 +0200
+Subject: [LTP] [PATCH] runtest/fs: Don't read files in /dev
+	indiscriminately
+In-Reply-To: <20180511173156.30197-1-punit.agrawal@arm.com>
+References: <20180511173156.30197-1-punit.agrawal@arm.com>
+Message-ID: <87lgcmy9uq.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-From: Eric Biggers <ebiggers@google.com>
+Hello,
 
-Test for a bug in the System V IPC subsystem that resulted in a shared
-memory file being used after it was freed (or being freed).
+Punit Agrawal writes:
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- runtest/syscalls                              |   1 +
- runtest/syscalls-ipc                          |   1 +
- .../kernel/syscalls/ipc/shmctl/.gitignore     |   1 +
- .../kernel/syscalls/ipc/shmctl/shmctl05.c     | 113 ++++++++++++++++++
- 4 files changed, 116 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
+> read_all_dev attempts to read 1024 bytes from all devices in /dev. As
+> nodes in /dev represent devices, any access can have side-effects -
+> sometimes fatally so, e.g., accessing /dev/port on Juno R2 and AMD
+> Seattle lead to synchronous external abort or SError (system error)
+> interrupt depending on the access pattern.
+>
+> There isn't much the kernel can do about the aborts other than panic
+> the system.
+>
+> The side-effects problem is also highlighted by the recent exclusion
+> added for watchdog devices. See commit 4a41aa6b48c134e ("runtest/fs:
+> filter /dev/watchdog* for read_all_dev by default").
+>
+> It would be better to replace indiscriminate reading of /dev files
+> with tests targeting specific files in /dev which have defined known
+> behaviour, e.g., /dev/null, /dev/urandom, etc.
+>
+> In the meanwhile, drop the indiscriminate reading of files in /dev.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 97bda7e45..9d47a9336 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1188,6 +1188,7 @@ shmctl01 shmctl01
- shmctl02 shmctl02
- shmctl03 shmctl03
- shmctl04 shmctl04
-+shmctl05 shmctl05
- 
- shmdt01 shmdt01
- shmdt02 shmdt02
-diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
-index de32c6ba9..7c2c40beb 100644
---- a/runtest/syscalls-ipc
-+++ b/runtest/syscalls-ipc
-@@ -57,6 +57,7 @@ shmctl01 shmctl01
- shmctl02 shmctl02
- shmctl03 shmctl03
- shmctl04 shmctl04
-+shmctl05 shmctl05
- 
- shmdt01 shmdt01
- shmdt02 shmdt02
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/.gitignore b/testcases/kernel/syscalls/ipc/shmctl/.gitignore
-index 9f5ac37ff..d6777e3b8 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/.gitignore
-+++ b/testcases/kernel/syscalls/ipc/shmctl/.gitignore
-@@ -2,3 +2,4 @@
- /shmctl02
- /shmctl03
- /shmctl04
-+/shmctl05
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
-new file mode 100644
-index 000000000..6771b1445
---- /dev/null
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
-@@ -0,0 +1,113 @@
-+/*
-+ * Copyright (c) 2018 Google, Inc.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program, if not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+/*
-+ * Regression test for commit 3f05317d9889 ("ipc/shm: fix use-after-free of shm
-+ * file via remap_file_pages()").  This bug allowed the remap_file_pages()
-+ * syscall to use the file of a System V shared memory segment after its ID had
-+ * been reallocated and the file freed.  This test reproduces the bug as a NULL
-+ * pointer dereference in touch_atime(), although it's a race condition so it's
-+ * not guaranteed to work.  This test is based on the reproducer provided in the
-+ * fix's commit message.
-+ */
-+
-+#include <stdbool.h>
-+#include <stdlib.h>
-+
-+#include "tst_test.h"
-+#include "tst_timer.h"
-+#include "tst_safe_sysv_ipc.h"
-+#include "lapi/syscalls.h"
-+
-+static bool timed_out(void)
-+{
-+	tst_timer_stop();
-+	return tst_timer_elapsed_ms() >= 5000;
-+}
-+
-+static void do_test(void)
-+{
-+	pid_t pid;
-+	int status;
-+
-+	/* Skip test if either remap_file_pages() or SysV IPC is unavailable */
-+	tst_syscall(__NR_remap_file_pages, NULL, 0, 0, 0, 0);
-+	tst_syscall(__NR_shmctl, 0xF00F, IPC_RMID, NULL);
-+
-+	tst_timer_start(CLOCK_MONOTONIC);
-+
-+	pid = SAFE_FORK();
-+	srand(getpid());
-+
-+	if (pid == 0) {
-+		/*
-+		 * Child process: repeatedly attach a shm segment, then remap it
-+		 * until the ID seems to have been removed by the other process.
-+		 */
-+		do {
-+			int id = SAFE_SHMGET(0xF00F, 4096, IPC_CREAT|0700);
-+			void *addr = shmat(id, NULL, 0);
-+
-+			if (addr == (void *)-1L) {
-+				if (errno == EIDRM || errno == EINVAL)
-+					continue;
-+				tst_brk(TBROK | TERRNO,
-+					"Unexpected shmat() error");
-+			}
-+
-+			usleep(rand() % 50);
-+			do {
-+				/* This is the system call that crashed */
-+				TEST(syscall(__NR_remap_file_pages, addr, 4096,
-+					     0, 0, 0));
-+				if (TEST_RETURN == 0)
-+					continue;
-+				if (TEST_ERRNO == EIDRM || TEST_ERRNO == EINVAL)
-+					break;
-+				tst_brk(TBROK | TTERRNO,
-+					"Unexpected remap_file_pages() error");
-+			} while (!timed_out());
-+		} while (!timed_out());
-+		exit(0);
-+	} else {
-+		/*
-+		 * Parent process: repeatedly remove the shm ID and reallocate
-+		 * it again for a new shm segment.
-+		 */
-+		do {
-+			int id = SAFE_SHMGET(0xF00F, 4096, IPC_CREAT|0700);
-+
-+			usleep(rand() % 50);
-+			SAFE_SHMCTL(id, IPC_RMID, NULL);
-+		} while (!timed_out());
-+	}
-+
-+	SAFE_WAIT(&status);
-+	if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
-+		tst_res(TPASS, "no crash observed");
-+	else if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL)
-+		tst_res(TFAIL, "kernel oops observed");
-+	else
-+		tst_brk(TBROK, "Child %s", tst_strstatus(status));
-+
-+	shmctl(0xF00F, IPC_RMID, NULL);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = do_test,
-+	.forks_child = 1,
-+};
--- 
-2.17.0
+Another solution might be to add an option which drops privileges before
+running the test on /dev. An unprivileged user should not have access to fi=
+les
+like /dev/port, but will for /dev/null and /dev/urandom.
 
+>
+> Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
+> Cc: xuyang.jy@cn.fujitsu.com
+> Cc: naresh.kamboju@linaro.org
+> Cc: rpalethorpe@suse.com
+> Cc: chrubis@suse.cz
+> Cc: james.morse@arm.com
+> ---
+> Hi,
+>
+> The test leads to panic during nightly ltp runs on internal
+> systems. Looking at the crash report from Naresh[0], it looks likely
+> that he's facing the same problem.
+>
+> Please consider including in upcoming release.
+>
+> Thanks,
+> Punit
+>
+> [0] http://lists.linux.it/pipermail/ltp/2018-May/007954.html
+> ---
+>  runtest/fs | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/runtest/fs b/runtest/fs
+> index 42a9bfcbf..c7ed64fbf 100644
+> --- a/runtest/fs
+> +++ b/runtest/fs
+> @@ -69,7 +69,6 @@ fs_di fs_di -d $TMPDIR
+>  # Was not sure why it should reside in runtest/crashme and won=C2=B4t ge=
+t tested ever
+>  proc01 proc01 -m 128
+>
+> -read_all_dev read_all -d /dev -e '/dev/watchdog?(0)' -q -r 10
+>  read_all_proc read_all -d /proc -q -r 10
+>  read_all_sys read_all -d /sys -q -r 10
+
+
+--
+Thank you,
+Richard.
