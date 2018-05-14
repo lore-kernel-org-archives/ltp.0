@@ -1,40 +1,34 @@
-From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Mon, 14 May 2018 17:03:54 +0100
-Subject: [LTP] [PATCH] lib/tst_device: Fill a file in megabyte sized chunks
-Message-ID: <20180514160354.13281-1-punit.agrawal@arm.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 14 May 2018 21:39:01 +0200
+Subject: [LTP] network stress route-change-if test
+In-Reply-To: <659899b6-63c8-8be0-5289-298dc9beba9d@oracle.com>
+References: <20180510162714.c2hdgj3eamhcderg@dell5510>
+ <de6cbd3b-8c6e-4d48-5a92-7ec062a4bc17@oracle.com>
+ <20180511105613.6pzrq3cmt6x7thvl@dell5510>
+ <659899b6-63c8-8be0-5289-298dc9beba9d@oracle.com>
+Message-ID: <20180514193901.hqvu25tbu726cdmv@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-A zero-filled file is used as backing store when creating a loopback
-device. The zero-fill operations is done in 1KB sized chunks for
-file-size specified in megabytes. This leads to a large number of
-write calls which take long time during test setup phase in certain
-environments.
+Hi Alexey,
 
-Move to using 1MB sized chunks to reduce the number of write syscalls
-by a few order of magnitude.
+> >> Assuming those test are using different interfaces just to load the
+> >> machine more, the tests should be rewritten to use a single interface.
+> > route-change-if is about switching route between (at least) 2 interfaces.
+> > Therefore it must have 2 interfaces available.
 
-Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
----
- lib/tst_device.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> What about creating additional virtual devices for this test like
+> macvlan and switch between them?
+Good idea.
+I'm just thinking whether using ns-udpsender is enough (it's hard to make it fail).
 
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index edfacbdc7..463743443 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -268,7 +268,7 @@ const char *tst_acquire_device__(unsigned int size)
- 				ltp_dev_size, acq_dev_size);
- 	}
- 
--	if (tst_fill_file(DEV_FILE, 0, 1024, 1024 * acq_dev_size)) {
-+	if (tst_fill_file(DEV_FILE, 0, 1024 * 1024, acq_dev_size)) {
- 		tst_resm(TWARN | TERRNO, "Failed to create " DEV_FILE);
- 		return NULL;
- 	}
--- 
-2.17.0
+> > The test has similar scenario as if-route-adddel, but it's not the same.
+> > So, delete the test as we don't support it?
+> > I think it's valid scenario, but we don't have support which test requires.
 
+
+Kind regards,
+Petr
