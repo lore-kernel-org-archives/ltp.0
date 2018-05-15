@@ -1,52 +1,46 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 15 May 2018 12:49:52 +0200
-Subject: [LTP] A new API to get distro name?
-In-Reply-To: <F8498D2F03F2CF40823E11B9D93AD69F3A4DB22C@SHSMSX101.ccr.corp.intel.com>
-References: <F8498D2F03F2CF40823E11B9D93AD69F3A4DB22C@SHSMSX101.ccr.corp.intel.com>
-Message-ID: <20180515104952.GD7220@rei>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 15 May 2018 12:55:00 +0200
+Subject: [LTP] [PATCH] read_all: Drop privileges
+In-Reply-To: <20180515103042.GB7220@rei>
+References: <20180515095118.26282-1-rpalethorpe@suse.com>
+ <20180515103042.GB7220@rei>
+Message-ID: <87bmdhyyrf.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I see that some shell tests are sensitive to distro, but not well managed currently.
-> Here are some examples I find:
-> In test "su01" in scenario "admin_tools", here is the way how it determine the distro (which is incorrect)
->   41 tvar=${MACHTYPE%-*}
->   42 tvar=${tvar#*-}
->   43
->   44 # need to export tvar for su01_s1
->   45 export tvar
->   46 printf "Machine type is: $tvar\n\n"
->   47
->   48 if [ "$tvar" = "redhat" -o "$tvar" = "redhat-linux" ]
->   49 # Need to also set group for TEST_USER2
-> Similar for cron/at tests in "admin_tools" (the location of deny/allow file is not at the default location for Ubuntu)
+Hello,
 
-There has been a recent discussion about what command testcases should
-be kept in LTP. Since LTP primary focus is on kernel testing, it does
-not make much sense to keep broken test for userspace commands.
+Cyril Hrubis writes:
 
-So we may as well get rid of these three testcases instead of rewriting
-them unless somebody really wants to keep them. The whole admin_tools
-runtest file consists of broken tests that are at least partially
-outside of the focus of LTP.
+> Hi!
+>> +static void maybe_drop_privs(void)
+>> +{
+>> +	struct passwd *nobody;
+>> +
+>> +	if (!drop_privs)
+>> +		return;
+>> +
+>> +	nobody = SAFE_GETPWNAM("nobody");
+>> +
+>> +	TEST(setgid(nobody->pw_gid));
+>> +	if (TEST_RETURN < 0 && TEST_ERRNO != EPERM)
+>> +		tst_res(TBROK | TTERRNO, "Failed to use nobody gid");
+>                 ^
+> 		Shouldn't this be tst_brk()?
+>
+>> +	TEST(setuid(nobody->pw_uid));
+>> +	if (TEST_RETURN < 0 && TEST_ERRNO != EPERM)
+>> +		tst_res(TBROK | TTERRNO, "Failed to use nobody uid");
+>                 ^
+> 		And here as well?
+>
+> Otherwise it looks fine.
 
-> Also in test cpuhotplug07, the folder "/usr/src/linux" doesn't exits on Ubuntu, so some modification based on distro is needed.
-
-This should be fixed, the test expects the Linux kernel sources to be
-present at /usr/src/linux/ in order to generate system load.
-
-> I'd like to fix them, and need some suggestion: should we add a common
-> API in test.sh or should I just fix them in the test cases derectly?
-> If we plan to add a common API in the test.sh I may need some help as
-> here I don't have all the distro in hand.
-
-Just FYI the test.sh is the old and deprecated test library, the new one
-is called tst_test.sh.
+Well spotted, yes it should.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you,
+Richard.
