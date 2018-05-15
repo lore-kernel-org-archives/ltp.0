@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 15 May 2018 12:41:48 +0200
-Subject: [LTP] How to build LTP for a kernel different than the one on
- the building machine?
-In-Reply-To: <F8498D2F03F2CF40823E11B9D93AD69F3A4DB1DF@SHSMSX101.ccr.corp.intel.com>
-References: <F8498D2F03F2CF40823E11B9D93AD69F3A4DB1DF@SHSMSX101.ccr.corp.intel.com>
-Message-ID: <20180515104148.GC7220@rei>
+Date: Tue, 15 May 2018 12:49:52 +0200
+Subject: [LTP] A new API to get distro name?
+In-Reply-To: <F8498D2F03F2CF40823E11B9D93AD69F3A4DB22C@SHSMSX101.ccr.corp.intel.com>
+References: <F8498D2F03F2CF40823E11B9D93AD69F3A4DB22C@SHSMSX101.ccr.corp.intel.com>
+Message-ID: <20180515104952.GD7220@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,54 +11,41 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> I'm trying to run LTP in my test environment, after some investigation
-> I've one question on the building processes of LTP. When building some
-> of the test cases binary, it need to access the kernel header, some of
-> which may changes between different kernel version. So is there a way
-> to build LTP on the building machine with kernel, say v4.14, for a
-> test machine with test target v4.16? 
+> I see that some shell tests are sensitive to distro, but not well managed currently.
+> Here are some examples I find:
+> In test "su01" in scenario "admin_tools", here is the way how it determine the distro (which is incorrect)
+>   41 tvar=${MACHTYPE%-*}
+>   42 tvar=${tvar#*-}
+>   43
+>   44 # need to export tvar for su01_s1
+>   45 export tvar
+>   46 printf "Machine type is: $tvar\n\n"
+>   47
+>   48 if [ "$tvar" = "redhat" -o "$tvar" = "redhat-linux" ]
+>   49 # Need to also set group for TEST_USER2
+> Similar for cron/at tests in "admin_tools" (the location of deny/allow file is not at the default location for Ubuntu)
 
-Pointing the LINUX_DIR to a directory with v4.14 compiled kernel should
-work, the LTP build system would make use of the kernel build system to
-build the modules for us.
+There has been a recent discussion about what command testcases should
+be kept in LTP. Since LTP primary focus is on kernel testing, it does
+not make much sense to keep broken test for userspace commands.
 
-However most of the modules we have in LTP tend to fail to compile on
-newer kernels, which is ignored by the build system. The problem is that
-kernel API changes quite often and we fail to keep up with that.
+So we may as well get rid of these three testcases instead of rewriting
+them unless somebody really wants to keep them. The whole admin_tools
+runtest file consists of broken tests that are at least partially
+outside of the focus of LTP.
 
-> In the configure file I see below line about "--with-linux-dir" and "LINUX_DIR":
-> 6280 # Check whether --with-linux-dir was given.
-> 6281 if test "${with_linux_dir+set}" = set; then :
-> 6282   withval=$with_linux_dir; LINUX_DIR="${withval}"
-> 6283 else
-> 6284   if test -n "$LINUX_VERSION"; then :
-> 6285   LINUX_DIR="/lib/modules/$LINUX_VERSION/build"
-> 6286 fi
-> 6287 fi
-> 
-> And "LINUX_DIR" is used in and only in "include/mk/module.mk":
-> 56 %.ko: %.c .dep_modules ;
-> 57
-> 58 .dep_modules: $(MODULE_SOURCES)
-> 59     @echo "Building modules: $(MODULE_SOURCES)"
-> 60     -$(MAKE) -C $(LINUX_DIR) M=$(abs_srcdir)
-> 61     rm -rf *.mod.c *.o *.ko.unsigned modules.order .tmp* .*.ko .*.cmd Module.symvers
-> 62     @touch .dep_modules
-> 
-> So the question is, beside kernel module, is there any other cases
-> also need kernel headers?
+> Also in test cpuhotplug07, the folder "/usr/src/linux" doesn't exits on Ubuntu, so some modification based on distro is needed.
 
-I doubt so.
+This should be fixed, the test expects the Linux kernel sources to be
+present at /usr/src/linux/ in order to generate system load.
 
-> If there is, or I want to add some cases which is sensitive to kernel
-> header version, how should I create a Makefile for that? And how
-> should I build such a test binary when the building machine has a
-> kernel version different than the test machine?
+> I'd like to fix them, and need some suggestion: should we add a common
+> API in test.sh or should I just fix them in the test cases derectly?
+> If we plan to add a common API in the test.sh I may need some help as
+> here I don't have all the distro in hand.
 
-That depends on what you are trying to do, generally we do prefer
-runtime detection whenever possible.
-
-Can you explain what kind of test are trying to develop?
+Just FYI the test.sh is the old and deprecated test library, the new one
+is called tst_test.sh.
 
 -- 
 Cyril Hrubis
