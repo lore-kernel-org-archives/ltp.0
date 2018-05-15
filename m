@@ -1,56 +1,39 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 15 May 2018 11:16:26 +0200
-Subject: [LTP] [PATCH 1/1] net/virt_lib.sh: Fix quoting default variable on
-	dash
-Message-ID: <20180515091626.16121-1-pvorel@suse.cz>
+Date: Tue, 15 May 2018 11:40:53 +0200
+Subject: [LTP] [PATCH 1/1] net/sctp: Fix parsing input variables in dash
+Message-ID: <20180515094053.18355-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Dash (and maybe some other posix shells) needs quoting whole argument,
-otherwise it's not able to assert:
+Dash (and maybe some other posix shells) cannot handle unquoted $@.
+It needs to be quoted when calling otherwise leads to error:
+/opt/ltp/testcases/bin/sctp01.sh: 40: local: 65000: bad variable name
 
-/opt/ltp/testcases/bin/ipvlan01.sh: 384: local: l2,mode: bad variable name
-/opt/ltp/testcases/bin/vlan01.sh: 360: local: ,protocol: bad variable name
+This is a quick fix, better than working with input parameters would be
+add another test case in runtest/net.features.
 
-The problem was in $opt, change also $start_id to use the same convention.
-
-Fixes: dcacbcffe ("network/virt: add test-case 01 to virt_lib.sh")
-       94aac42a0 ("network/virt: add test-case 02 to virt_lib.sh")
+Fixes: 7ade6a32e ("sctp: add test-case with random payload")
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/network/virt/virt_lib.sh | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ testcases/network/sctp/sctp01.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
-index 72946c5be..095dbf3a3 100644
---- a/testcases/network/virt/virt_lib.sh
-+++ b/testcases/network/virt/virt_lib.sh
-@@ -356,8 +356,8 @@ virt_netperf_msg_sizes()
- # OPTIONS - different options separated by comma.
- virt_test_01()
- {
--	start_id=${start_id:-"1"}
--	local opts=${1:-""}
-+	start_id="${start_id:-1}"
-+	local opts="${1:-}"
- 	local n=0
+diff --git a/testcases/network/sctp/sctp01.sh b/testcases/network/sctp/sctp01.sh
+index bf13521c2..c4149af19 100755
+--- a/testcases/network/sctp/sctp01.sh
++++ b/testcases/network/sctp/sctp01.sh
+@@ -58,6 +58,6 @@ test_run()
  
- 	while true; do
-@@ -380,8 +380,8 @@ virt_test_01()
- # OPTIONS - different options separated by comma.
- virt_test_02()
- {
--	start_id=${start_id:-"1"}
--	local opts=${1:-""}
-+	start_id="${start_id:-1}"
-+	local opts="${1:-}"
- 	local n=0
+ setup
+ test_run
+-test_run -A 65000
++test_run '-A 65000'
  
- 	while true; do
+ tst_exit
 -- 
 2.16.3
 
