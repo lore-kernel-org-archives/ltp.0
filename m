@@ -1,52 +1,37 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 16 May 2018 11:27:31 +0200
-Subject: [LTP] [RFC PATCH 2/9] testcases: ar: Add TST_NEEDS_CMDS on "ar"
-In-Reply-To: <20180423094639.14612-3-mylene.josserand@bootlin.com>
-References: <20180423094639.14612-1-mylene.josserand@bootlin.com>
- <20180423094639.14612-3-mylene.josserand@bootlin.com>
-Message-ID: <20180516092731.x6obyr4lej6ruhc5@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 16 May 2018 11:26:31 +0200
+Subject: [LTP] Want to contribute
+In-Reply-To: <CAMZxAxfkgSZqVeCrXbCHbuqKYvqwaMbiDuFmNNJAaHWzf9JY=g@mail.gmail.com>
+References: <CAMZxAxcE7deAzonfmhX9YMWSy7sRgHCn3=oC_zaEi6KVBYMd=w@mail.gmail.com>
+ <20180503081520.GA29568@rei>
+ <CAMZxAxfkgSZqVeCrXbCHbuqKYvqwaMbiDuFmNNJAaHWzf9JY=g@mail.gmail.com>
+Message-ID: <20180516092631.GA17817@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Mylène,
+Hi!
+> > Also what kind of contribution do you have in mind? Do you plan to work
+> > on some specific area, or are you looking for a LTP TODO list?
+> >
+> I am interested in POSIX Test Suite for NetBSD.
 
-> In case "ar" binary is not available, the test will fail.
-> It should return a TCONF as we just do not have the binary.
+The Open Posix Testsuite should, in theory, work on any POSIX system,
+however I doubt that anyone is actively using it on anything else than
+Linux, at least I do not remeber any activity on mailing list that would
+suggets so.
 
-> This commit adds TST_NEEDS_CMDS macro on "ar". Thanks to that,
-> it will return "TCONF" and not "FAIL" when "ar" is not available.
+So it would be nice if you tried to run it on NetBSD, looked into
+failures and send patches so that it works fine on BSD too.
 
-> Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
-> ---
->  testcases/commands/ar/ar01 | 3 +++
->  1 file changed, 3 insertions(+)
+> Also, I am open to any suggestion and will be working on LTP TODO
+> list.
 
-> diff --git a/testcases/commands/ar/ar01 b/testcases/commands/ar/ar01
-> index ddab2e0f0..edaa24657 100644
-> --- a/testcases/commands/ar/ar01
-> +++ b/testcases/commands/ar/ar01
-> @@ -22,9 +22,12 @@
+As you may noticed I've started to fill in the GitHub Issue tracker with
+our todo items, feel free to pick from there :-).
 
->  # This is a basic ar command test.
-
-> +AR=${AR:=ar}
->  TST_CNT=17
->  TST_TESTFUNC=test
->  TST_NEEDS_TMPDIR=1
-> +TST_NEEDS_CMDS="$AR"
-> +
->  . tst_test.sh
-
->  test1()
-
-Merged with minor change:
--AR=${AR:=ar}
-+AR="${AR:=ar}"
-
-Thanks for your contributions.
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
