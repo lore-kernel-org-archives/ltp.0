@@ -1,66 +1,52 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 16 May 2018 11:10:07 +0200
-Subject: [LTP] runltp - error when using another tmp folder
-In-Reply-To: <20180502174621.6087aaea@windsurf>
-References: <20180502162214.5d962173@dell-desktop.home>
- <20180502174621.6087aaea@windsurf>
-Message-ID: <20180516091007.GB7222@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 16 May 2018 11:27:31 +0200
+Subject: [LTP] [RFC PATCH 2/9] testcases: ar: Add TST_NEEDS_CMDS on "ar"
+In-Reply-To: <20180423094639.14612-3-mylene.josserand@bootlin.com>
+References: <20180423094639.14612-1-mylene.josserand@bootlin.com>
+ <20180423094639.14612-3-mylene.josserand@bootlin.com>
+Message-ID: <20180516092731.x6obyr4lej6ruhc5@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-> Hum, I think the situation is a bit more complicated than that. The
-> runltp code goes like this:
-> 
->             export TMPBASE=$(readlink -f ${OPTARG}) ;;
-> [...]
-> 
->     # Added -m 777 for tests that call tst_tmpdir() and try to
->     #  write to it as user nobody
->     mkdir -m 777 -p $TMPBASE || \
->     {
->         echo "FATAL: Unable to make temporary directory $TMPBASE"
->         exit 1
->     }
->     # use mktemp to create "safe" temporary directories
->     export TMPTEMPLATE="${TMPBASE}/ltp-XXXXXXXXXX"
->     TMP=`mktemp -d $TMPTEMPLATE` || \
->     {
->         echo "FATAL: Unable to make temporary directory: $TMP"
->         exit 1
->     }
->     export TMP
->     # To be invoked by tst_tmpdir()
->     # write to it as user nobody
->     export TMPDIR=$TMP
-> 
->     chmod 777 $TMP || \
->     {
->       echo "unable to chmod 777 $TMP ... aborting"
->       exit 1
->     }
-> 
-> So you've got two possible situations:
-> 
->  (1) TMPBASE is an already existing directory. In this case, the "-m
->      777" argument in mkdir -m 777 -p $TMPBASE is useless because it is
->      only used by mkdir when the directory to be created doesn't exist
->      yet.
-> 
->  (2) TMPBASE is not an existing directory. In this case, readlink will
->      return an empty string, and mkdir will fail because TMPBASE is
->      empty.
+Hi Mylène,
 
-Actually you may pass a path with last nonexisting component and the
-readlink -f will still work fine. Hence if you pass -d /tmp/nonexistent/
-it will create the nonexistent directory with the mkdir there.
+> In case "ar" binary is not available, the test will fail.
+> It should return a TCONF as we just do not have the binary.
 
-But that does not change the fact that runltp is user unfriendly with
-it's options...
+> This commit adds TST_NEEDS_CMDS macro on "ar". Thanks to that,
+> it will return "TCONF" and not "FAIL" when "ar" is not available.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
+> ---
+>  testcases/commands/ar/ar01 | 3 +++
+>  1 file changed, 3 insertions(+)
+
+> diff --git a/testcases/commands/ar/ar01 b/testcases/commands/ar/ar01
+> index ddab2e0f0..edaa24657 100644
+> --- a/testcases/commands/ar/ar01
+> +++ b/testcases/commands/ar/ar01
+> @@ -22,9 +22,12 @@
+
+>  # This is a basic ar command test.
+
+> +AR=${AR:=ar}
+>  TST_CNT=17
+>  TST_TESTFUNC=test
+>  TST_NEEDS_TMPDIR=1
+> +TST_NEEDS_CMDS="$AR"
+> +
+>  . tst_test.sh
+
+>  test1()
+
+Merged with minor change:
+-AR=${AR:=ar}
++AR="${AR:=ar}"
+
+Thanks for your contributions.
+
+Kind regards,
+Petr
