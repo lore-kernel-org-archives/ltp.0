@@ -1,71 +1,114 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 16 May 2018 15:14:30 +0200
-Subject: [LTP] [PATCH 1/1] net/tst_netload: TBROK when TST_NEEDS_TMPDIR not
-	set
-Message-ID: <20180516131430.19090-1-pvorel@suse.cz>
+Date: Wed, 16 May 2018 15:42:33 +0200
+Subject: [LTP] [RFC PATCH 1/2] lib/tst_test.sh: TST_TESTFUNC_DATA and
+ TST_TESTFUNC_DATA_IFS
+In-Reply-To: <20180516125008.GA544@rei>
+References: <20180516123924.11047-1-pvorel@suse.cz>
+ <20180516123924.11047-2-pvorel@suse.cz> <20180516125008.GA544@rei>
+Message-ID: <20180516134233.x6cp2jjhc6v75zdh@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-tst_netload function uses $TST_TMPDIR therefore requires
-TST_NEEDS_TMPDIR=1. It's better to tell user the reason, as current
-error message was a bit misleading:
+Hi Cyril,
 
-dccp_ipsec 1 TINFO: run server 'netstress -T dccp -R 500000 -B '
-netstress: option requires an argument -- 'B'
--h       Prints this help
--i n     Execute test n times
--I x     Execute test for n seconds
--C ARG   Run child process with ARG arguments (used internally)
--f       Use TFO API, default is old API
--F       TCP_FASTOPEN_CONNECT socket option and standard API
--t x     Set tcp_fastopen value
--S x     Source address to bind
--g x     x - server port
--b x     x - low latency busy poll timeout
--T x     tcp (default), udp, dccp, sctp
--z       enable SO_ZEROCOPY
+Thanks for your comments, they make sense, I'll send v2.
 
-Client:
--H x     Server name or IP address
--l       Become client, default is server
--a x     Number of clients running in parallel
--r x     Number of client requests
--n x     Client message size
--N x     Server message size
--m x     Reply timeout in microsec.
--d x     x is a path to file where result is saved
--A x     x max payload length (generated randomly)
++ more comments bellow:
 
-Server:
--R x     x requests after which conn.closed
--q x     x - TFO queue
--B x     run in background, x - process directory
-tst_test.c:492: BROK: Invalid option
-dccp_ipsec 1 TFAIL: server failed
+> I do not like redefing IFS, it's really ugly.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/lib/tst_net.sh | 4 ++++
- 1 file changed, 4 insertions(+)
+> What about something as:
 
-diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-index b0a78e14b..644f4242c 100644
---- a/testcases/lib/tst_net.sh
-+++ b/testcases/lib/tst_net.sh
-@@ -480,6 +480,10 @@ tst_netload()
- 	local s_replies="${TST_NETLOAD_MAX_SRV_REPLIES:-500000}"
- 	local s_opts=
- 
-+	if [ ! "$TST_NEEDS_TMPDIR" = 1 ]; then
-+		tst_brk_ TBROK "Using tst_netload requires setting TST_NEEDS_TMPDIR=1"
-+	fi
-+
- 	OPTIND=0
- 	while getopts :a:H:d:n:N:r:R:S:b:t:T:fFe:m:A: opt; do
- 		case "$opt" in
--- 
-2.16.3
+> DATA="foo:bar:d dd"
+> DELIM=":"
+> i=1
+> while true; do
+>         param="$(echo "$DATA" | cut -d$DELIM -f$i)"
+>         [ -z "$param" ] && break;
+>         echo "$param"
+>         i=$((i+1))
+> done
+Playing with IFS is ugly, but it doesn't require any external dependency.
+But cut is common, let's make it.
 
+> >  		else
+> >  			local res=$(tst_resstr)
+> >  			$TST_TESTFUNC
+> > @@ -400,6 +412,10 @@ if [ -z "$TST_NO_DEFAULT_RUN" ]; then
+> >  		tst_brk TBROK "TST_TESTFUNC is not defined"
+> >  	fi
+
+> > +	if [ -n "$TST_CNT" -a -n "$TST_TESTFUNC_DATA" ]; then
+> > +		tst_brk TBROK "TST_CNT cannot be mixed with TST_TESTFUNC_DATA"
+> > +	fi
+
+> I'm not sure about this, why cannot each of the functions take
+> TST_TESTFUNC_DATA parameters?
+
+> I.e. we may have two test functions that take exaclty the same array of
+> parameters, setting TST_CNT=2 and TST_TESTFUNC_DATA may make sense...
+
+Well, I'll try to add meaningful support for TST_TESTFUNC_DATA :). Let's pass them as
+whole for cases where $TST_CNT is set:
++++ testcases/lib/tst_test.sh
+@@ -352,14 +352,14 @@ tst_run()
+ 			if type test1 > /dev/null 2>&1; then
+ 				for tst_i in $(seq $TST_CNT); do
+ 					local res=$(tst_resstr)
+-					$TST_TESTFUNC$tst_i
++					$TST_TESTFUNC$tst_i $TST_TEST_DATA
+ 					tst_rescmp "$res"
+ 					TST_COUNT=$((TST_COUNT+1))
+ 				done
+ 			else
+ 				for tst_i in $(seq $TST_CNT); do
+ 					local res=$(tst_resstr)
+-					$TST_TESTFUNC $tst_i
++					$TST_TESTFUNC $tst_i $TST_TEST_DATA
+ 					tst_rescmp "$res"
+ 					TST_COUNT=$((TST_COUNT+1))
+ 				done
+
+> >  	if [ -n "$TST_CNT" ]; then
+> >  		if ! tst_is_int "$TST_CNT"; then
+> >  			tst_brk TBROK "TST_CNT must be integer"
+
+And know tst_i (sequence number of a test) for test is needed for some tests which use
+only one function - i.e. TST_TESTFUNC_DATA is passed (no TST_CNT). Let's keep $1 as
+sequence number and $2 for data itself.
+I wonder if $1 shouldn't always have tst_i, even for tests without $TST_CNT. Something
+like:
++++ testcases/lib/tst_test.sh
+@@ -352,14 +352,14 @@ tst_run()
+ 			if type test1 > /dev/null 2>&1; then
+ 				for tst_i in $(seq $TST_CNT); do
+ 					local res=$(tst_resstr)
+-					$TST_TESTFUNC$tst_i
++					$TST_TESTFUNC$tst_i $tst_i $TST_TEST_DATA
+ 					tst_rescmp "$res"
+ 					TST_COUNT=$((TST_COUNT+1))
+ 				done
+ 			else
+ 				for tst_i in $(seq $TST_CNT); do
+ 					local res=$(tst_resstr)
+-					$TST_TESTFUNC $tst_i
++					$TST_TESTFUNC $tst_i $TST_TEST_DATA
+ 					tst_rescmp "$res"
+ 					TST_COUNT=$((TST_COUNT+1))
+ 				done
+@@ -378,7 +378,7 @@ tst_run()
+ 			done
+ 		else
+ 			local res=$(tst_resstr)
+-			$TST_TESTFUNC
++			$TST_TESTFUNC 1
+ 			tst_rescmp "$res"
+ 			TST_COUNT=$((TST_COUNT+1))
+ 		fi
+
+
+Kind regards,
+Petr
