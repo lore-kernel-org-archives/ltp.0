@@ -1,43 +1,60 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 16 May 2018 11:38:19 +0200
-Subject: [LTP] [RFC PATCH 4/9] testcases: tar: Add TST_NEEDS_CMDS on
- gzip and bzip
-In-Reply-To: <20180423094639.14612-5-mylene.josserand@bootlin.com>
-References: <20180423094639.14612-1-mylene.josserand@bootlin.com>
- <20180423094639.14612-5-mylene.josserand@bootlin.com>
-Message-ID: <20180516093819.5ecnfhljdlmolsky@dell5510>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 16 May 2018 17:39:01 +0800
+Subject: [LTP] [PATCH] read_all: Drop privileges
+In-Reply-To: <87bmdhyyrf.fsf@rpws.prws.suse.cz>
+References: <20180515095118.26282-1-rpalethorpe@suse.com>
+ <20180515103042.GB7220@rei> <87bmdhyyrf.fsf@rpws.prws.suse.cz>
+Message-ID: <5AFBFC35.3060400@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Mylène,
+Hi Richard,
 
-> Add TST_NEEDS_CMDS to return a TCONF in case "gzip"
-> and "bzip2" binaries are not available on the system.
+If the permission of /dev/watchdog was 0600(default permission on RHEL7), we could not read /dev/watchdog
+as nobody user and returned EACCES as expected.
 
-> Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
-> ---
->  testcases/commands/tar/tar_tests.sh | 2 ++
->  1 file changed, 2 insertions(+)
+If the permission of /dev/watchdog was 0660(default permission on RHEL6), Reading /dev/watchdog as nobody
+user failed, but still led to system reboot.
 
-> diff --git a/testcases/commands/tar/tar_tests.sh b/testcases/commands/tar/tar_tests.sh
-> index 7ac18a4e5..946e9c7b1 100755
-> --- a/testcases/commands/tar/tar_tests.sh
-> +++ b/testcases/commands/tar/tar_tests.sh
-> @@ -27,6 +27,8 @@
->  TST_CNT=6
->  TST_TESTFUNC=do_test
->  TST_NEEDS_TMPDIR=1
-> +TST_NEEDS_CMDS="gzip bzip2"
-> +
->  . tst_test.sh
+I think reading /dev/watchdog as nobody user should get EACCES even if the permission is 0660, but i am not
+sure whether this is a watchdog bug in kernel or not.
 
->  TAR_FILES="file1 file2 file3"
+Thanks,
+Xiao Yang
 
-Pushed, thanks!
+On 2018/05/15 18:55, Richard Palethorpe wrote:
+> Hello,
+>
+> Cyril Hrubis writes:
+>
+>> Hi!
+>>> +static void maybe_drop_privs(void)
+>>> +{
+>>> +	struct passwd *nobody;
+>>> +
+>>> +	if (!drop_privs)
+>>> +		return;
+>>> +
+>>> +	nobody = SAFE_GETPWNAM("nobody");
+>>> +
+>>> +	TEST(setgid(nobody->pw_gid));
+>>> +	if (TEST_RETURN<  0&&  TEST_ERRNO != EPERM)
+>>> +		tst_res(TBROK | TTERRNO, "Failed to use nobody gid");
+>>                  ^
+>> 		Shouldn't this be tst_brk()?
+>>
+>>> +	TEST(setuid(nobody->pw_uid));
+>>> +	if (TEST_RETURN<  0&&  TEST_ERRNO != EPERM)
+>>> +		tst_res(TBROK | TTERRNO, "Failed to use nobody uid");
+>>                  ^
+>> 		And here as well?
+>>
+>> Otherwise it looks fine.
+> Well spotted, yes it should.
+>
 
 
-Kind regards,
-Petr
+
