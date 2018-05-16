@@ -1,47 +1,64 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 16 May 2018 11:45:12 +0200
-Subject: [LTP] [RFC PATCH 5/9] testcases: logrotate: Check if "file"
- command exists
-In-Reply-To: <20180423094639.14612-6-mylene.josserand@bootlin.com>
-References: <20180423094639.14612-1-mylene.josserand@bootlin.com>
- <20180423094639.14612-6-mylene.josserand@bootlin.com>
-Message-ID: <20180516094512.icm2oadkrgdq6ikg@dell5510>
+From: Zhang, Yixin <yixin.zhang@intel.com>
+Date: Wed, 16 May 2018 18:05:29 +0800
+Subject: [LTP] A new API to get distro name?
+In-Reply-To: <20180515104952.GD7220@rei>
+References: <F8498D2F03F2CF40823E11B9D93AD69F3A4DB22C@SHSMSX101.ccr.corp.intel.com>
+ <20180515104952.GD7220@rei>
+Message-ID: <20180516100529.h2plcuzbsyjkrj2e@silo>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Mylène,
+On 2018-05-15 at 12:49:52 +0200, Cyril Hrubis wrote:
+> Hi!
+> > I see that some shell tests are sensitive to distro, but not well managed currently.
+> > Here are some examples I find:
+> > In test "su01" in scenario "admin_tools", here is the way how it determine the distro (which is incorrect)
+> >   41 tvar=${MACHTYPE%-*}
+> >   42 tvar=${tvar#*-}
+> >   43
+> >   44 # need to export tvar for su01_s1
+> >   45 export tvar
+> >   46 printf "Machine type is: $tvar\n\n"
+> >   47
+> >   48 if [ "$tvar" = "redhat" -o "$tvar" = "redhat-linux" ]
+> >   49 # Need to also set group for TEST_USER2
+> > Similar for cron/at tests in "admin_tools" (the location of deny/allow file is not at the default location for Ubuntu)
+> 
+> There has been a recent discussion about what command testcases should
+> be kept in LTP. Since LTP primary focus is on kernel testing, it does
+> not make much sense to keep broken test for userspace commands.
+> 
+> So we may as well get rid of these three testcases instead of rewriting
+> them unless somebody really wants to keep them. The whole admin_tools
+> runtest file consists of broken tests that are at least partially
+> outside of the focus of LTP.
 
-> Add "file" binary in the list of commands to check if
-> they exist or not.
+Understood.
 
-> Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
-> ---
->  testcases/commands/logrotate/logrotate_tests.sh | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> > Also in test cpuhotplug07, the folder "/usr/src/linux" doesn't exits on Ubuntu, so some modification based on distro is needed.
+> 
+> This should be fixed, the test expects the Linux kernel sources to be
+> present at /usr/src/linux/ in order to generate system load.
 
-> diff --git a/testcases/commands/logrotate/logrotate_tests.sh b/testcases/commands/logrotate/logrotate_tests.sh
-> index f5a22ddde..021972294 100755
-> --- a/testcases/commands/logrotate/logrotate_tests.sh
-> +++ b/testcases/commands/logrotate/logrotate_tests.sh
-> @@ -97,10 +97,11 @@ init()
->  		 return $RC
->  	fi
+I'll submit a patch for it, using "/usr/src/linux-`uname -r`" in case there is
+no "/usr/src/linux/"
 
-> -	# check if commands tst_*, logrotate, awk exists.
-> +	# check if commands tst_*, logrotate, awk and file exists.
->  	chk_ifexists INIT tst_resm  || return $RC
->  	chk_ifexists INIT logrotate || return $RC
->  	chk_ifexists INIT awk       || return $RC
-> +	chk_ifexists INIT file      || return $RC
+> 
+> > I'd like to fix them, and need some suggestion: should we add a common
+> > API in test.sh or should I just fix them in the test cases derectly?
+> > If we plan to add a common API in the test.sh I may need some help as
+> > here I don't have all the distro in hand.
+> 
+> Just FYI the test.sh is the old and deprecated test library, the new one
+> is called tst_test.sh.
 
->  	return $RC
->  }
+Got it.
 
-Pushed, thanks.
-
-
-Kind regards,
-Petr
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
