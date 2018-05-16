@@ -1,60 +1,89 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 16 May 2018 17:39:01 +0800
-Subject: [LTP] [PATCH] read_all: Drop privileges
-In-Reply-To: <87bmdhyyrf.fsf@rpws.prws.suse.cz>
-References: <20180515095118.26282-1-rpalethorpe@suse.com>
- <20180515103042.GB7220@rei> <87bmdhyyrf.fsf@rpws.prws.suse.cz>
-Message-ID: <5AFBFC35.3060400@cn.fujitsu.com>
+From: Zhang, Yixin <yixin.zhang@intel.com>
+Date: Wed, 16 May 2018 17:53:28 +0800
+Subject: [LTP] How to build LTP for a kernel different than the one on
+ the building machine?
+In-Reply-To: <20180515104148.GC7220@rei>
+References: <F8498D2F03F2CF40823E11B9D93AD69F3A4DB1DF@SHSMSX101.ccr.corp.intel.com>
+ <20180515104148.GC7220@rei>
+Message-ID: <20180516095327.bjti73lymrhnref5@silo>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richard,
+Hi Cyril,
 
-If the permission of /dev/watchdog was 0600(default permission on RHEL7), we could not read /dev/watchdog
-as nobody user and returned EACCES as expected.
+Actually here we have a small team trying to develop test cases based on the LTP
+framework to test some pre-release features in internal kernel tree (also we are
+seeking the possibility to upstream related test cases when related kernel feature
+is upstreamed to mainline kernel, which is a seperate topic). For some tests we
+need to build a kernel module to test from kernel space, and for some other
+tests we need to build test binary with kernel header files which is changing
+frequently as the kernel feature itself is still under development.
 
-If the permission of /dev/watchdog was 0660(default permission on RHEL6), Reading /dev/watchdog as nobody
-user failed, but still led to system reboot.
+From the test exection side, we are building all LTP packages on a server with
+Jenkins (and with a relative old kernel like 4.10) for all test targets
+(differnt HWs and different latest kernel versions). Some test targets are
+simulators so it'll be almost impossible to build LTP on the same test target.
+So I need to figure out how to build LTP when the build machine have a kernel
+different than the test target machine.
 
-I think reading /dev/watchdog as nobody user should get EACCES even if the permission is 0660, but i am not
-sure whether this is a watchdog bug in kernel or not.
+I'll try the "--with-linux-dir" and see if it work for my situation. Thanks.
 
-Thanks,
-Xiao Yang
+Yixin
 
-On 2018/05/15 18:55, Richard Palethorpe wrote:
-> Hello,
->
-> Cyril Hrubis writes:
->
->> Hi!
->>> +static void maybe_drop_privs(void)
->>> +{
->>> +	struct passwd *nobody;
->>> +
->>> +	if (!drop_privs)
->>> +		return;
->>> +
->>> +	nobody = SAFE_GETPWNAM("nobody");
->>> +
->>> +	TEST(setgid(nobody->pw_gid));
->>> +	if (TEST_RETURN<  0&&  TEST_ERRNO != EPERM)
->>> +		tst_res(TBROK | TTERRNO, "Failed to use nobody gid");
->>                  ^
->> 		Shouldn't this be tst_brk()?
->>
->>> +	TEST(setuid(nobody->pw_uid));
->>> +	if (TEST_RETURN<  0&&  TEST_ERRNO != EPERM)
->>> +		tst_res(TBROK | TTERRNO, "Failed to use nobody uid");
->>                  ^
->> 		And here as well?
->>
->> Otherwise it looks fine.
-> Well spotted, yes it should.
->
-
-
-
+On 2018-05-15 at 12:41:48 +0200, Cyril Hrubis wrote:
+> Hi!
+> > I'm trying to run LTP in my test environment, after some investigation
+> > I've one question on the building processes of LTP. When building some
+> > of the test cases binary, it need to access the kernel header, some of
+> > which may changes between different kernel version. So is there a way
+> > to build LTP on the building machine with kernel, say v4.14, for a
+> > test machine with test target v4.16? 
+> 
+> Pointing the LINUX_DIR to a directory with v4.14 compiled kernel should
+> work, the LTP build system would make use of the kernel build system to
+> build the modules for us.
+> 
+> However most of the modules we have in LTP tend to fail to compile on
+> newer kernels, which is ignored by the build system. The problem is that
+> kernel API changes quite often and we fail to keep up with that.
+> 
+> > In the configure file I see below line about "--with-linux-dir" and "LINUX_DIR":
+> > 6280 # Check whether --with-linux-dir was given.
+> > 6281 if test "${with_linux_dir+set}" = set; then :
+> > 6282   withval=$with_linux_dir; LINUX_DIR="${withval}"
+> > 6283 else
+> > 6284   if test -n "$LINUX_VERSION"; then :
+> > 6285   LINUX_DIR="/lib/modules/$LINUX_VERSION/build"
+> > 6286 fi
+> > 6287 fi
+> > 
+> > And "LINUX_DIR" is used in and only in "include/mk/module.mk":
+> > 56 %.ko: %.c .dep_modules ;
+> > 57
+> > 58 .dep_modules: $(MODULE_SOURCES)
+> > 59     @echo "Building modules: $(MODULE_SOURCES)"
+> > 60     -$(MAKE) -C $(LINUX_DIR) M=$(abs_srcdir)
+> > 61     rm -rf *.mod.c *.o *.ko.unsigned modules.order .tmp* .*.ko .*.cmd Module.symvers
+> > 62     @touch .dep_modules
+> > 
+> > So the question is, beside kernel module, is there any other cases
+> > also need kernel headers?
+> 
+> I doubt so.
+> 
+> > If there is, or I want to add some cases which is sensitive to kernel
+> > header version, how should I create a Makefile for that? And how
+> > should I build such a test binary when the building machine has a
+> > kernel version different than the test machine?
+> 
+> That depends on what you are trying to do, generally we do prefer
+> runtime detection whenever possible.
+> 
+> Can you explain what kind of test are trying to develop?
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
