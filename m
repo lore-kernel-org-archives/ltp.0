@@ -1,114 +1,43 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 16 May 2018 15:42:33 +0200
-Subject: [LTP] [RFC PATCH 1/2] lib/tst_test.sh: TST_TESTFUNC_DATA and
- TST_TESTFUNC_DATA_IFS
-In-Reply-To: <20180516125008.GA544@rei>
-References: <20180516123924.11047-1-pvorel@suse.cz>
- <20180516123924.11047-2-pvorel@suse.cz> <20180516125008.GA544@rei>
-Message-ID: <20180516134233.x6cp2jjhc6v75zdh@dell5510>
+Date: Wed, 16 May 2018 16:00:02 +0200
+Subject: [LTP] [PATCH v2 1/1] ipneigh : Use new API
+In-Reply-To: <dec4e6fc-4d4c-fa1d-34f6-e5dad515440c@suse.de>
+References: <20180514114930.9350-1-asmorodskyi@suse.com>
+ <20180516090947.nkoa6lhtu2rj4x52@dell5510>
+ <dec4e6fc-4d4c-fa1d-34f6-e5dad515440c@suse.de>
+Message-ID: <20180516140002.ubghlmuys7y42uif@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Anton,
 
-Thanks for your comments, they make sense, I'll send v2.
+...
+> > Some change I'd like to have is to pass this script command (-c [ arp | ip ]) and run test
+> > only once, i.e. TST_CNT=1 (then it does not need to be included).
+> > Then in runtest files it'd be:
 
-+ more comments bellow:
+> > diff --git runtest/net.ipv6 runtest/net.ipv6
+> > -ipneigh601 ipneigh01.sh -6
+> > +ipneigh6_ip ipneigh01.sh -6 -c ip
+> > diff --git runtest/net.tcp_cmds runtest/net.tcp_cmds
+> > -ipneigh01 ipneigh01.sh
+> > +ipneigh01_arp ipneigh01.sh -c arp
+> > +ipneigh01_ip ipneigh01.sh -c ip
 
-> I do not like redefing IFS, it's really ugly.
+> > By this test is 1) cleaner 2) we get rid of TCONF for IPv6.
 
-> What about something as:
+> ok , make sense .
 
-> DATA="foo:bar:d dd"
-> DELIM=":"
-> i=1
-> while true; do
->         param="$(echo "$DATA" | cut -d$DELIM -f$i)"
->         [ -z "$param" ] && break;
->         echo "$param"
->         i=$((i+1))
-> done
-Playing with IFS is ugly, but it doesn't require any external dependency.
-But cut is common, let's make it.
-
-> >  		else
-> >  			local res=$(tst_resstr)
-> >  			$TST_TESTFUNC
-> > @@ -400,6 +412,10 @@ if [ -z "$TST_NO_DEFAULT_RUN" ]; then
-> >  		tst_brk TBROK "TST_TESTFUNC is not defined"
-> >  	fi
-
-> > +	if [ -n "$TST_CNT" -a -n "$TST_TESTFUNC_DATA" ]; then
-> > +		tst_brk TBROK "TST_CNT cannot be mixed with TST_TESTFUNC_DATA"
-> > +	fi
-
-> I'm not sure about this, why cannot each of the functions take
-> TST_TESTFUNC_DATA parameters?
-
-> I.e. we may have two test functions that take exaclty the same array of
-> parameters, setting TST_CNT=2 and TST_TESTFUNC_DATA may make sense...
-
-Well, I'll try to add meaningful support for TST_TESTFUNC_DATA :). Let's pass them as
-whole for cases where $TST_CNT is set:
-+++ testcases/lib/tst_test.sh
-@@ -352,14 +352,14 @@ tst_run()
- 			if type test1 > /dev/null 2>&1; then
- 				for tst_i in $(seq $TST_CNT); do
- 					local res=$(tst_resstr)
--					$TST_TESTFUNC$tst_i
-+					$TST_TESTFUNC$tst_i $TST_TEST_DATA
- 					tst_rescmp "$res"
- 					TST_COUNT=$((TST_COUNT+1))
- 				done
- 			else
- 				for tst_i in $(seq $TST_CNT); do
- 					local res=$(tst_resstr)
--					$TST_TESTFUNC $tst_i
-+					$TST_TESTFUNC $tst_i $TST_TEST_DATA
- 					tst_rescmp "$res"
- 					TST_COUNT=$((TST_COUNT+1))
- 				done
-
-> >  	if [ -n "$TST_CNT" ]; then
-> >  		if ! tst_is_int "$TST_CNT"; then
-> >  			tst_brk TBROK "TST_CNT must be integer"
-
-And know tst_i (sequence number of a test) for test is needed for some tests which use
-only one function - i.e. TST_TESTFUNC_DATA is passed (no TST_CNT). Let's keep $1 as
-sequence number and $2 for data itself.
-I wonder if $1 shouldn't always have tst_i, even for tests without $TST_CNT. Something
-like:
-+++ testcases/lib/tst_test.sh
-@@ -352,14 +352,14 @@ tst_run()
- 			if type test1 > /dev/null 2>&1; then
- 				for tst_i in $(seq $TST_CNT); do
- 					local res=$(tst_resstr)
--					$TST_TESTFUNC$tst_i
-+					$TST_TESTFUNC$tst_i $tst_i $TST_TEST_DATA
- 					tst_rescmp "$res"
- 					TST_COUNT=$((TST_COUNT+1))
- 				done
- 			else
- 				for tst_i in $(seq $TST_CNT); do
- 					local res=$(tst_resstr)
--					$TST_TESTFUNC $tst_i
-+					$TST_TESTFUNC $tst_i $TST_TEST_DATA
- 					tst_rescmp "$res"
- 					TST_COUNT=$((TST_COUNT+1))
- 				done
-@@ -378,7 +378,7 @@ tst_run()
- 			done
- 		else
- 			local res=$(tst_resstr)
--			$TST_TESTFUNC
-+			$TST_TESTFUNC 1
- 			tst_rescmp "$res"
- 			TST_COUNT=$((TST_COUNT+1))
- 		fi
-
+> > > +			tst_res TCONF "'arp cmd doesn't support IPv6, skipping test-case"
+                               ^ left quote, which was in previous version, please remove it.
+> > You still do TCONF.
+> Yes and it make perfect sense now because I am doing exit just after this
+> message , so it is ok
+OK, it make sense to check for it. But if you pass 1 command in the test, you can have it as:
+tst_res TCONF "arp doesn't support IPv6"
 
 Kind regards,
 Petr
