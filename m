@@ -1,58 +1,71 @@
-From: Anton Smorodskyi <asmorodskyi@suse.de>
-Date: Wed, 16 May 2018 15:05:16 +0200
-Subject: [LTP] [PATCH v2 1/1] ipneigh : Use new API
-In-Reply-To: <20180516090947.nkoa6lhtu2rj4x52@dell5510>
-References: <20180514114930.9350-1-asmorodskyi@suse.com>
- <20180516090947.nkoa6lhtu2rj4x52@dell5510>
-Message-ID: <dec4e6fc-4d4c-fa1d-34f6-e5dad515440c@suse.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 16 May 2018 15:14:30 +0200
+Subject: [LTP] [PATCH 1/1] net/tst_netload: TBROK when TST_NEEDS_TMPDIR not
+	set
+Message-ID: <20180516131430.19090-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+tst_netload function uses $TST_TMPDIR therefore requires
+TST_NEEDS_TMPDIR=1. It's better to tell user the reason, as current
+error message was a bit misleading:
 
-Thanks for review !
+dccp_ipsec 1 TINFO: run server 'netstress -T dccp -R 500000 -B '
+netstress: option requires an argument -- 'B'
+-h       Prints this help
+-i n     Execute test n times
+-I x     Execute test for n seconds
+-C ARG   Run child process with ARG arguments (used internally)
+-f       Use TFO API, default is old API
+-F       TCP_FASTOPEN_CONNECT socket option and standard API
+-t x     Set tcp_fastopen value
+-S x     Source address to bind
+-g x     x - server port
+-b x     x - low latency busy poll timeout
+-T x     tcp (default), udp, dccp, sctp
+-z       enable SO_ZEROCOPY
 
+Client:
+-H x     Server name or IP address
+-l       Become client, default is server
+-a x     Number of clients running in parallel
+-r x     Number of client requests
+-n x     Client message size
+-N x     Server message size
+-m x     Reply timeout in microsec.
+-d x     x is a path to file where result is saved
+-A x     x max payload length (generated randomly)
 
-> I'm sorry to NACK your patch, there needs to be some changes to done.
->
-> Some change I'd like to have is to pass this script command (-c [ arp | ip ]) and run test
-> only once, i.e. TST_CNT=1 (then it does not need to be included).
-> Then in runtest files it'd be:
->
-> diff --git runtest/net.ipv6 runtest/net.ipv6
-> -ipneigh601 ipneigh01.sh -6
-> +ipneigh6_ip ipneigh01.sh -6 -c ip
-> diff --git runtest/net.tcp_cmds runtest/net.tcp_cmds
-> -ipneigh01 ipneigh01.sh
-> +ipneigh01_arp ipneigh01.sh -c arp
-> +ipneigh01_ip ipneigh01.sh -c ip
->
-> By this test is 1) cleaner 2) we get rid of TCONF for IPv6.
+Server:
+-R x     x requests after which conn.closed
+-q x     x - TFO queue
+-B x     run in background, x - process directory
+tst_test.c:492: BROK: Invalid option
+dccp_ipsec 1 TFAIL: server failed
 
-ok , make sense .
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/tst_net.sh | 4 ++++
+ 1 file changed, 4 insertions(+)
 
->> +			tst_res TCONF "'arp cmd doesn't support IPv6, skipping test-case"
-> You still do TCONF.
-Yes and it make perfect sense now because I am doing exit just after 
-this message , so it is ok
->
->>   		ping$TST_IPV6 -q -c1 $rhost > /dev/null
-> It looks to me better using tst_ping() from tst_net.sh (API function, other tests use it).
-> Then we could get rid of checking in do_setup:
-> tst_check_cmds arp grep ping$TST_IPV6
-ok , was not aware about that , will change this
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index b0a78e14b..644f4242c 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -480,6 +480,10 @@ tst_netload()
+ 	local s_replies="${TST_NETLOAD_MAX_SRV_REPLIES:-500000}"
+ 	local s_opts=
+ 
++	if [ ! "$TST_NEEDS_TMPDIR" = 1 ]; then
++		tst_brk_ TBROK "Using tst_netload requires setting TST_NEEDS_TMPDIR=1"
++	fi
++
+ 	OPTIND=0
+ 	while getopts :a:H:d:n:N:r:R:S:b:t:T:fFe:m:A: opt; do
+ 		case "$opt" in
 -- 
+2.16.3
 
-Anton Smorodskyi <asmorodskyi@suse.com>
-QA Engineer
-SUSE Linux GmbH, Maxfeldstr. 5, D-90409 Nürnberg
-Tel: +49-911-74053-0; Fax: +49-911-7417755;  https://www.suse.com/
-SUSE Linux GmbH, GF: Felix Imendörffer, Jane Smithard,
-Graham Norton, HRB 21284 (AG Nürnberg)
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180516/db2a3670/attachment.html>
