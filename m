@@ -1,11 +1,11 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 16 May 2018 12:00:55 +0200
-Subject: [LTP] [RFC PATCH 6/9] testcases: wc: Add "unrecognized option"
- as TCONF
-In-Reply-To: <20180423094639.14612-7-mylene.josserand@bootlin.com>
+Date: Wed, 16 May 2018 11:45:12 +0200
+Subject: [LTP] [RFC PATCH 5/9] testcases: logrotate: Check if "file"
+ command exists
+In-Reply-To: <20180423094639.14612-6-mylene.josserand@bootlin.com>
 References: <20180423094639.14612-1-mylene.josserand@bootlin.com>
- <20180423094639.14612-7-mylene.josserand@bootlin.com>
-Message-ID: <20180516100055.5mrh74e3o74gy3lo@dell5510>
+ <20180423094639.14612-6-mylene.josserand@bootlin.com>
+Message-ID: <20180516094512.icm2oadkrgdq6ikg@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -13,32 +13,34 @@ Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
 Hi Mylène,
-> In case we are using Busybox, for example, some options
-> may not available and leads to a test failure.
-> This commit adds "unrecognized option" parsing to return the
-> test as a TCONF and not FAIL anymore.
+
+> Add "file" binary in the list of commands to check if
+> they exist or not.
 
 > Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
 > ---
->  testcases/commands/wc/wc01.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  testcases/commands/logrotate/logrotate_tests.sh | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-> diff --git a/testcases/commands/wc/wc01.sh b/testcases/commands/wc/wc01.sh
-> index e72819c51..74d69e254 100755
-> --- a/testcases/commands/wc/wc01.sh
-> +++ b/testcases/commands/wc/wc01.sh
-> @@ -40,7 +40,7 @@ wc_test()
+> diff --git a/testcases/commands/logrotate/logrotate_tests.sh b/testcases/commands/logrotate/logrotate_tests.sh
+> index f5a22ddde..021972294 100755
+> --- a/testcases/commands/logrotate/logrotate_tests.sh
+> +++ b/testcases/commands/logrotate/logrotate_tests.sh
+> @@ -97,10 +97,11 @@ init()
+>  		 return $RC
+>  	fi
 
->  	eval $wc_cmd > temp 2>&1
->  	if [ $? -ne 0 ]; then
-> -		grep -q -E "unknown option|invalid option" temp
-> +		grep -q -E "unknown option|invalid option|unrecognized option" temp
-What exactly needs "unrecognized option".
-I haven't found it in busybox sources neither in busybox git log.
+> -	# check if commands tst_*, logrotate, awk exists.
+> +	# check if commands tst_*, logrotate, awk and file exists.
+>  	chk_ifexists INIT tst_resm  || return $RC
+>  	chk_ifexists INIT logrotate || return $RC
+>  	chk_ifexists INIT awk       || return $RC
+> +	chk_ifexists INIT file      || return $RC
 
->  		if [ $? -eq 0 ]; then
->  			tst_res TCONF "$wc_cmd not supported."
->  		else
+>  	return $RC
+>  }
+
+Pushed, thanks.
 
 
 Kind regards,
