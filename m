@@ -1,146 +1,58 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 16 May 2018 14:50:09 +0200
-Subject: [LTP] [RFC PATCH 1/2] lib/tst_test.sh: TST_TESTFUNC_DATA and
- TST_TESTFUNC_DATA_IFS
-In-Reply-To: <20180516123924.11047-2-pvorel@suse.cz>
-References: <20180516123924.11047-1-pvorel@suse.cz>
- <20180516123924.11047-2-pvorel@suse.cz>
-Message-ID: <20180516125008.GA544@rei>
+From: Anton Smorodskyi <asmorodskyi@suse.de>
+Date: Wed, 16 May 2018 15:05:16 +0200
+Subject: [LTP] [PATCH v2 1/1] ipneigh : Use new API
+In-Reply-To: <20180516090947.nkoa6lhtu2rj4x52@dell5510>
+References: <20180514114930.9350-1-asmorodskyi@suse.com>
+ <20180516090947.nkoa6lhtu2rj4x52@dell5510>
+Message-ID: <dec4e6fc-4d4c-fa1d-34f6-e5dad515440c@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-> This is specific only for shell.
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> If we accept it, it's a question if pass iteration number as well
-> (and if yes, maybe it should be in $1 and data in $2).
-> 
-> Kind regards,
-> Petr
-> ---
->  doc/test-writing-guidelines.txt | 23 +++++++++++++++++++++++
->  testcases/lib/tst_test.sh       | 20 ++++++++++++++++++--
->  2 files changed, 41 insertions(+), 2 deletions(-)
-> 
-> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-> index 8e405a034..2184f6365 100644
-> --- a/doc/test-writing-guidelines.txt
-> +++ b/doc/test-writing-guidelines.txt
-> @@ -1485,6 +1485,29 @@ Otherwise, if '$TST_CNT' is set but there is no '$\{TST_TESTFUNC\}1', etc.,
->  the '$TST_TESTFUNC' is executed '$TST_CNT' times and the test number is passed
->  to it in the '$1'.
->  
-> +[source,sh]
-> +-------------------------------------------------------------------------------
-> +#!/bin/sh
-> +#
-> +# Example test with tests using TST_TESTFUNC_DATA
-> +#
-> +
-> +TST_TESTFUNC=do_test
-> +TST_TESTFUNC_DATA="foo bar"
+Hi Petr,
 
-Why not just TST_TEST_DATA and TST_TEST_DATA_IFS?
+Thanks for review !
 
-> +. tst_test.sh
-> +
-> +do_test()
-> +{
-> +	1) tst_res TPASS "Test passed with data '$1'";;
-> +}
-> +
-> +tst_run
-> +-------------------------------------------------------------------------------
-> +
-> +It's possible to pass data for function with '$TST_TESTFUNC_DATA'. Optional
-> +'$TST_TESTFUNC_DATA_IFS' variable is supported to set '$IFS' for splitting.
-> +'$TST_TESTFUNC_DATA' cannot be mixed with '$TST_CNT'.
-> +
->  2.3.2 Library variables
->  ^^^^^^^^^^^^^^^^^^^^^^^
->  
-> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> index 8d49d34b6..31bf51e10 100644
-> --- a/testcases/lib/tst_test.sh
-> +++ b/testcases/lib/tst_test.sh
-> @@ -246,7 +246,7 @@ tst_rescmp()
->  
->  tst_run()
->  {
-> -	local tst_i
-> +	local tst_i ifs
 
-The variables here has to be still prefixed with tst_, even though they
-are local these are still defined in the $TST_TESTFUNC.
+> I'm sorry to NACK your patch, there needs to be some changes to done.
+>
+> Some change I'd like to have is to pass this script command (-c [ arp | ip ]) and run test
+> only once, i.e. TST_CNT=1 (then it does not need to be included).
+> Then in runtest files it'd be:
+>
+> diff --git runtest/net.ipv6 runtest/net.ipv6
+> -ipneigh601 ipneigh01.sh -6
+> +ipneigh6_ip ipneigh01.sh -6 -c ip
+> diff --git runtest/net.tcp_cmds runtest/net.tcp_cmds
+> -ipneigh01 ipneigh01.sh
+> +ipneigh01_arp ipneigh01.sh -c arp
+> +ipneigh01_ip ipneigh01.sh -c ip
+>
+> By this test is 1) cleaner 2) we get rid of TCONF for IPv6.
 
->  	if [ -n "$TST_TEST_PATH" ]; then
->  		for tst_i in $(grep TST_ "$TST_TEST_PATH" | sed 's/.*TST_//; s/[="} \t\/:`].*//'); do
-> @@ -255,7 +255,7 @@ tst_run()
->  			OPTS|USAGE|PARSE_ARGS|POS_ARGS);;
->  			NEEDS_ROOT|NEEDS_TMPDIR|NEEDS_DEVICE|DEVICE);;
->  			NEEDS_CMDS|NEEDS_MODULE|MODPATH|DATAROOT);;
-> -			IPV6);;
-> +			IPV6|TESTFUNC_DATA|TESTFUNC_DATA_IFS);;
->  			*) tst_res TWARN "Reserved variable TST_$tst_i used!";;
->  			esac
->  		done
-> @@ -364,6 +364,18 @@ tst_run()
->  					TST_COUNT=$((TST_COUNT+1))
->  				done
->  			fi
-> +		elif [ -n "$TST_TESTFUNC_DATA" ]; then
-> +			if [ -n "$TST_TESTFUNC_DATA_IFS" ]; then
-> +				ifs="$IFS"
-> +				IFS="$TST_TESTFUNC_DATA_IFS"
-> +			fi
-> +			for tst_i in $TST_TESTFUNC_DATA; do
-> +				[ -n "$ifs" ] && IFS="$ifs"
-> +				local res=$(tst_resstr)
-> +				$TST_TESTFUNC $tst_i
-> +				tst_rescmp "$res"
-> +				TST_COUNT=$((TST_COUNT+1))
-> +			done
+ok , make sense .
 
-I do not like redefing IFS, it's really ugly.
-
-What about something as:
-
-DATA="foo:bar:d dd"
-DELIM=":"
-i=1
-while true; do
-        param="$(echo "$DATA" | cut -d$DELIM -f$i)"
-        [ -z "$param" ] && break;
-        echo "$param"
-        i=$((i+1))
-done
-
->  		else
->  			local res=$(tst_resstr)
->  			$TST_TESTFUNC
-> @@ -400,6 +412,10 @@ if [ -z "$TST_NO_DEFAULT_RUN" ]; then
->  		tst_brk TBROK "TST_TESTFUNC is not defined"
->  	fi
->  
-> +	if [ -n "$TST_CNT" -a -n "$TST_TESTFUNC_DATA" ]; then
-> +		tst_brk TBROK "TST_CNT cannot be mixed with TST_TESTFUNC_DATA"
-> +	fi
-
-I'm not sure about this, why cannot each of the functions take
-TST_TESTFUNC_DATA parameters?
-
-I.e. we may have two test functions that take exaclty the same array of
-parameters, setting TST_CNT=2 and TST_TESTFUNC_DATA may make sense...
-
->  	if [ -n "$TST_CNT" ]; then
->  		if ! tst_is_int "$TST_CNT"; then
->  			tst_brk TBROK "TST_CNT must be integer"
-
+>> +			tst_res TCONF "'arp cmd doesn't support IPv6, skipping test-case"
+> You still do TCONF.
+Yes and it make perfect sense now because I am doing exit just after 
+this message , so it is ok
+>
+>>   		ping$TST_IPV6 -q -c1 $rhost > /dev/null
+> It looks to me better using tst_ping() from tst_net.sh (API function, other tests use it).
+> Then we could get rid of checking in do_setup:
+> tst_check_cmds arp grep ping$TST_IPV6
+ok , was not aware about that , will change this
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+
+Anton Smorodskyi <asmorodskyi@suse.com>
+QA Engineer
+SUSE Linux GmbH, Maxfeldstr. 5, D-90409 Nürnberg
+Tel: +49-911-74053-0; Fax: +49-911-7417755;  https://www.suse.com/
+SUSE Linux GmbH, GF: Felix Imendörffer, Jane Smithard,
+Graham Norton, HRB 21284 (AG Nürnberg)
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180516/db2a3670/attachment.html>
