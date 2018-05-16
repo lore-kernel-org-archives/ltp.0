@@ -1,212 +1,255 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 15 May 2018 16:12:18 +0200
-Subject: [LTP] [ANNOUNCE] The Linux Test Project has been released for MAY
- 2018
-Message-ID: <20180515141217.GA23351@rei>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 16 May 2018 04:48:58 -0400 (EDT)
+Subject: [LTP] [PATCH v5 3/3] syscalls/migrate_pages03.c: Add new
+ regression test
+In-Reply-To: <5AFA9A99.8090509@cn.fujitsu.com>
+References: <20180104153045.GA25335@rei>
+ <1515120532-4372-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1515120532-4372-3-git-send-email-yangx.jy@cn.fujitsu.com>
+ <5A741D46.20002@cn.fujitsu.com>
+ <929250250.523494.1517952047314.JavaMail.zimbra@redhat.com>
+ <5AFA9A99.8090509@cn.fujitsu.com>
+Message-ID: <1248273908.19613427.1526460538191.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Good news everyone,
-
-the Linux Test Project test suite stable release for *May 2018* has been
-released.
-
-Since the last release 297 patches by 38 authors were merged.
-
-NOTABLE CHANGES
-===============
-
- * New testcases:
-
-   - two inotify regression tests for:
-     764baba80168 ("ovl: hash non-dir by lower inode for fsnotify")
-     31747eda41ef ("ovl: hash directory inodes for fsnotify")
-
-   - sysclt01 a regression test for:
-     5ccba44ba118 ("sched/sysctl: Check user input value of sysctl_sched_time_avg")
-
-   - CVE regression tests for:
-     * CVE-2017-17053 - ccd5b3235180 ("x86/mm: Fix use-after-free of ldt_struct")
-     * CVE-2017-16939 - 1137b5e2529a ("ipsec: Fix aborted xfrm policy dump crash")
-     * CVE-2015-3290  - 9b6e6a8334d5 ("x86/nmi/64: Switch stacks on userspace NMI entry")
-     * CVE-2017-17052 - 2b7e8665b4ff ("fork: fix incorrect fput of ->exe_file causing use-after-free")
-     * CVE-2017-17807 - 4dca6ea1d943 ("KEYS: add missing permission check for request_key() destination")
-
-   - read_all
-
-     Test that aims to stress test /proc, /sys, and safe subset of /dev
-     filesystems by reading by reading each readable file using several
-     threads.
-
-   - The pwritev03 and preadv03 tests with O_DIRECT executed on all supported filesystems.
-     (https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#2214-testing-with-a-block-device)
-
-   - Pids controller tests fixed a race that made them fail sporadically and
-     the the coverage was increased.
-
-   - pwrite03, write02
-
-     Write syscall tests for special case with NULL buffer and len 0
-     where the call is expected to return 0 i.e. success.
-
- * Removed outdated and broken tests
-   - sssd daemon test
-   - mail command test
-   - ht_interrupt -- hyperthreading interrupt balancing test
-
- * 54 testcases were cleaned up and converted to the new test library
-
- * The syscalls testrun has been speeded up by about a minute which is 5% of the runtime.
-
- * Several Android fixes have been applied.
-
- * New macro for automatic retry with exponential backoff has been added to the
-   test library, which should replace all the ad-hoc retry loops we do have all
-   around the codebase.
-
- * IMA (Integrity Measurement Architecture) tests
-   - Were rewritten to use new API, updated, and various bugs has been fixed.
-   - The most important changes:
-     * Avoid running on tmpfs ima_measurements.sh and ima_violations.sh
-     * ima_measurements.sh: support new IMA measurement templates, support testing
-       most of IMA supported hash algorithms, fix & update iversion check
-     * tpm.sh: replace ima_measure with evmctl (external)
-     * ima_policy.sh: improve check of policy writability
-     * ima_boot_aggregate: fixing event size for modern BIOS
-
-     Many thanks to Mimi Zohar for her review and testing of IMA test cases.
-
-  + The usual number of fixes and cleanups all over the place
-
-NETWORK TESTS
-=============
-
- Changelog for network tests brought to you by Peter Vorel.
-
- * New testcases:
-   - for IP_BIND_ADDRESS_NO_PORT, DCCP and UDP ipsec and for UDPLITE protocol
-   - regression test sctp_big_chunk aka CVE-2018-5803
-   - netstress gained support for IP_BIND_ADDRESS_NO_PORT, SO_ZEROCOPY flags
-     and UDPLITE protocol
-   - Use libtirpc for all RPC tests
-
-  * Test cases rewritten into new shell API:
-    - interface and multicast tests cases
-    - in6_02
-
-  * Removed tests cases
-    - route{4,6}-ifdown
-
-  + Various fixes and doc cleanups
 
 
-TODO LIST AND ISSUE TRACKER
-===========================
+----- Original Message -----
+> Hi, Jan and Cyril,
+> 
+> Could you help me push the v5 patch ? Thanks a lot. :-)
 
-Just recently we started to maintain a LTP TODO list in the form GitHub issues,
-so far there is very coarse list of missing, mostly syscall, coverage:
+Rebased and pushed.
 
-https://github.com/linux-test-project/ltp/labels/missing%20coverage
+Regards,
+Jan
 
-Which I suppose will expand quite a bit soon.
-
-And also nearly empty list of reproducers:
-
-https://github.com/linux-test-project/ltp/labels/reproducer
-
-Which I'm about to feed with a list of CVE reproducers I have, that
-can be converted into regression testcases.
-
-Lastly but not least I would like to ask everyone to contribute to that list.
-
-DOWNLOAD AND LINKS
-==================
-
-The latest version of the test-suite contains 3000+ tests for the Linux
-and can be downloaded at:
-
-https://github.com/linux-test-project/ltp/releases/tag/20180515
-
-The project pages as well as GIT repository are hosted on GitHub:
-
-https://github.com/linux-test-project/ltp
-http://linux-test-project.github.io/
-
-If you ever wondered how to write a LTP testcase, don't miss our developer
-documentation at:
-
-https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
-https://github.com/linux-test-project/ltp/wiki/BuildSystem
-
-Patches, new tests, bugs, comments or questions should go to to our mailing
-list at ltp@lists.linux.it.
-
-CREDITS
-=======
-
-Many thanks to the people contributing to this release:
-
-git shortlog -s -e -n 20180118..
-    76  Petr Vorel <pvorel@suse.cz>
-    38  Cyril Hrubis <chrubis@suse.cz>
-    37  Michael Moese <mmoese@suse.de>
-    30  Alexey Kodanev <alexey.kodanev@oracle.com>
-    21  Xiao Yang <yangx.jy@cn.fujitsu.com>
-    12  yang xu <xuyang.jy@cn.fujitsu.com>
-     9  Yixin Zhang <yixin.zhang@intel.com>
-     7  Jinhui Huang <huangjh.jy@cn.fujitsu.com>
-     7  Richard Palethorpe <rpalethorpe@suse.com>
-     6  Jan Stancek <jstancek@redhat.com>
-     6  Li Wang <liwang@redhat.com>
-     5  Amir Goldstein <amir73il@gmail.com>
-     4  Carlo Marcelo Arenas Belon <carenas@gmail.com>
-     4  Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-     3  Petr Vorel <petr.vorel@gmail.com>
-     3  Steve Muckle <smuckle.linux@gmail.com>
-     2  Anders Roxell <anders.roxell@linaro.org>
-     2  Eric Biggers <ebiggers@google.com>
-     2  Khem Raj <raj.khem@gmail.com>
-     2  Sandeep Patil <sspatil@google.com>
-     2  Sebastian Chlad <schlad@suse.de>
-     2  xiao yang <yangx.jy@cn.fujitsu.com>
-     1  Christian Lanig <clanig@suse.com>
-     1  Dmitry Safonov <dima@arista.com>
-     1  Erick Reyes <erickreyes@google.com>
-     1  Greg Hackmann <ghackmann@google.com>
-     1  Harish <harish@linux.vnet.ibm.com>
-     1  Hoang Van Tuyen <tuyen.hoangvan@toshiba-tsdv.com>
-     1  Hridya Valsaraju <hridya@google.com>
-     1  Joe Konno <joe.konno@intel.com>
-     1  Lars Persson <larper@axis.com>
-     1  Lianwen Sun <sunlw.fnst@cn.fujitsu.com>
-     1  Pavel Boldin <pboldin@cloudlinux.com>
-     1  Qiao Zhao <qiaozqjhsy@gmail.com>
-     1  Xiong Zhou <xzhou@redhat.com>
-     1  Yang Pengfei <yangpengfei4@huawei.com>
-     1  akodanev <akodanev@gmail.com>
-     1  xie hui <xieh.jy@cn.fujitsu.com>
-     1  yosun <yosun@suse.com>
-
-And also thanks to patch reviewers:
-
-git log 20180118.. | grep -Ei '(reviewed|acked)-by:' | \
-    sed 's/.*by: //' | sort | uniq -c | sort -n -r
-     34 Cyril Hrubis <chrubis@suse.cz>
-     15 Petr Vorel <pvorel@suse.cz>
-     15 Alexey Kodanev <alexey.kodanev@oracle.com>
-     11 Jan Stancek <jstancek@redhat.com>
-      7 Richard Palethorpe <rpalethorpe@suse.de>
-      4 Li Wang <liwang@redhat.com>
-      3 Mimi Zohar <zohar@linux.vnet.ibm.com>
-      2 Petr Vorel <petr.vorel@gmail.com>
-      2 James Morris <james.l.morris@oracle.com>
-      1 yang xu <xuyang.jy@cn.fujitsu.com>
-      1 Xiao Yang <yangx.jy@cn.fujitsu.com>
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> 
+> Best Regards,
+> Xiao Yang
+> On 2018/02/07 5:20, Jan Stancek wrote:
+> >
+> > ----- Original Message -----
+> >> Hi Jan, Cyril
+> >>
+> >> Could you help me review the v5 patch set. Thanks a lot.
+> > Looks good to me - I didn't have a chance to test it though.
+> >
+> > Regards,
+> > Jan
+> >
+> >> Thanks,
+> >> Xiao Yang
+> >> On 2018/01/05 10:48, xiao yang wrote:
+> >>> The bug has been fixed in kernel:
+> >>> '4b0ece6fa016("mm: migrate: fix remove_migration_pte() for ksm pages")'
+> >>>
+> >>> Signed-off-by: xiao yang<yangx.jy@cn.fujitsu.com>
+> >>> ---
+> >>>   runtest/syscalls                                   |   1 +
+> >>>   testcases/kernel/syscalls/.gitignore               |   1 +
+> >>>   .../syscalls/migrate_pages/migrate_pages03.c       | 151
+> >>>   +++++++++++++++++++++
+> >>>   3 files changed, 153 insertions(+)
+> >>>   create mode 100644
+> >>>   testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
+> >>>
+> >>> diff --git a/runtest/syscalls b/runtest/syscalls
+> >>> index 97fc643..ee8850f 100644
+> >>> --- a/runtest/syscalls
+> >>> +++ b/runtest/syscalls
+> >>> @@ -587,6 +587,7 @@ memcpy01 memcpy01
+> >>>
+> >>>   migrate_pages01 migrate_pages01
+> >>>   migrate_pages02 migrate_pages02
+> >>> +migrate_pages03 migrate_pages03
+> >>>
+> >>>   mlockall01 mlockall01
+> >>>   mlockall02 mlockall02
+> >>> diff --git a/testcases/kernel/syscalls/.gitignore
+> >>> b/testcases/kernel/syscalls/.gitignore
+> >>> index 12a136e..27e30b2 100644
+> >>> --- a/testcases/kernel/syscalls/.gitignore
+> >>> +++ b/testcases/kernel/syscalls/.gitignore
+> >>> @@ -538,6 +538,7 @@
+> >>>   /memset/memset01
+> >>>   /migrate_pages/migrate_pages01
+> >>>   /migrate_pages/migrate_pages02
+> >>> +/migrate_pages/migrate_pages03
+> >>>   /mincore/mincore01
+> >>>   /mincore/mincore02
+> >>>   /mkdir/mkdir01
+> >>> diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
+> >>> b/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
+> >>> new file mode 100644
+> >>> index 0000000..ecfc552
+> >>> --- /dev/null
+> >>> +++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
+> >>> @@ -0,0 +1,151 @@
+> >>> +/*
+> >>> + * Copyright (c) 2017 FUJITSU LIMITED. All rights reserved.
+> >>> + * Author(s): Xiao Yang<yangx.jy@cn.fujitsu.com>
+> >>> + *            Jie Fei<feij.fnst@cn.fujitsu.com>
+> >>> + *
+> >>> + * This program is free software: you can redistribute it and/or modify
+> >>> + * it under the terms of the GNU General Public License as published by
+> >>> + * the Free Software Foundation, either version 2 of the License, or
+> >>> + * (at your option) any later version.
+> >>> + *
+> >>> + * This program is distributed in the hope that it will be useful,
+> >>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> >>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> >>> + * GNU General Public License for more details.
+> >>> + *
+> >>> + * You should have received a copy of the GNU General Public License
+> >>> + * along with this program, if not, see<http://www.gnu.org/licenses/>.
+> >>> + */
+> >>> +
+> >>> +/*
+> >>> + * Description:
+> >>> + * This is a regression test for ksm page migration which is
+> >>> miscalculated.
+> >>> + *
+> >>> + * The kernel bug has been fixed by:
+> >>> + *
+> >>> + * commit 4b0ece6fa0167b22c004ff69e137dc94ee2e469e
+> >>> + * Author: Naoya Horiguchi<n-horiguchi@ah.jp.nec.com>
+> >>> + * Date:   Fri Mar 31 15:11:44 2017 -0700
+> >>> + *
+> >>> + *     mm: migrate: fix remove_migration_pte() for ksm pages
+> >>> + */
+> >>> +
+> >>> +#include<errno.h>
+> >>> +#include<unistd.h>
+> >>> +#include<stdlib.h>
+> >>> +
+> >>> +#include "tst_test.h"
+> >>> +#include "lapi/syscalls.h"
+> >>> +#include "lapi/mmap.h"
+> >>> +#include "ksm_helper.h"
+> >>> +#include "numa_helper.h"
+> >>> +#include "migrate_pages_common.h"
+> >>> +
+> >>> +#ifdef HAVE_NUMA_V2
+> >>> +#define N_PAGES 20
+> >>> +#define N_LOOPS 600
+> >>> +#define TEST_NODES 2
+> >>> +
+> >>> +static int orig_ksm_run = -1;
+> >>> +static unsigned int page_size;
+> >>> +static void *test_pages[N_PAGES];
+> >>> +static int num_nodes, max_node;
+> >>> +static int *nodes;
+> >>> +static unsigned long *new_nodes[2];
+> >>> +
+> >>> +static void setup(void)
+> >>> +{
+> >>> +	int n;
+> >>> +	unsigned long nodemask_size;
+> >>> +
+> >>> +	if (access(PATH_KSM, F_OK))
+> >>> +		tst_brk(TCONF, "KSM configuration was not enabled");
+> >>> +
+> >>> +	if (get_allowed_nodes_arr(NH_MEMS,&num_nodes,&nodes)<  0)
+> >>> +		tst_brk(TBROK | TERRNO, "get_allowed_nodes() failed");
+> >>> +
+> >>> +	if (num_nodes<  TEST_NODES) {
+> >>> +		tst_brk(TCONF, "requires NUMA with at least %d node",
+> >>> +			TEST_NODES);
+> >>> +	}
+> >>> +
+> >>> +	max_node = LTP_ALIGN(get_max_node(), sizeof(unsigned long) * 8);
+> >>> +	nodemask_size = max_node / 8;
+> >>> +	new_nodes[0] = SAFE_MALLOC(nodemask_size);
+> >>> +	new_nodes[1] = SAFE_MALLOC(nodemask_size);
+> >>> +	memset(new_nodes[0], 0, nodemask_size);
+> >>> +	memset(new_nodes[1], 0, nodemask_size);
+> >>> +	set_bit(new_nodes[0], nodes[0], 1);
+> >>> +	set_bit(new_nodes[1], nodes[1], 1);
+> >>> +
+> >>> +	page_size = getpagesize();
+> >>> +
+> >>> +	for (n = 0; n<  N_PAGES; n++) {
+> >>> +		test_pages[n] = SAFE_MMAP(NULL, page_size, PROT_READ | PROT_WRITE |
+> >>> PROT_EXEC,
+> >>> +					  MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> >>> +		if (madvise(test_pages[n], page_size, MADV_MERGEABLE)) {
+> >>> +			if (errno == EINVAL) {
+> >>> +				tst_brk(TCONF | TERRNO, "madvise() didn't "
+> >>> +					"support MADV_MERGEABLE");
+> >>> +			}
+> >>> +
+> >>> +			tst_brk(TBROK | TERRNO,
+> >>> +				"madvise(MADV_MERGEABLE) failed");
+> >>> +		}
+> >>> +
+> >>> +		if (mbind(test_pages[n], page_size, MPOL_BIND, new_nodes[0],
+> >>> +			  max_node, 0))
+> >>> +			tst_brk(TBROK | TERRNO, "mbind(MPOL_BIND) failed");
+> >>> +
+> >>> +		memset(test_pages[n], 0, page_size);
+> >>> +	}
+> >>> +
+> >>> +	SAFE_FILE_SCANF(PATH_KSM "run", "%d",&orig_ksm_run);
+> >>> +	SAFE_FILE_PRINTF(PATH_KSM "run", "%d", 1);
+> >>> +	wait_ksmd_full_scan();
+> >>> +}
+> >>> +
+> >>> +static void cleanup(void)
+> >>> +{
+> >>> +	int n;
+> >>> +
+> >>> +	for (n = 0; n<  N_PAGES; n++) {
+> >>> +		if (test_pages[n])
+> >>> +			SAFE_MUNMAP(test_pages[n], page_size);
+> >>> +	}
+> >>> +
+> >>> +	free(new_nodes[0]);
+> >>> +	free(new_nodes[1]);
+> >>> +
+> >>> +	if (orig_ksm_run != -1)
+> >>> +		SAFE_FILE_PRINTF(PATH_KSM "run", "%d", orig_ksm_run);
+> >>> +}
+> >>> +
+> >>> +static void migrate_test(void)
+> >>> +{
+> >>> +	int loop, i, ret;
+> >>> +
+> >>> +	for (loop = 0; loop<  N_LOOPS; loop++) {
+> >>> +		i = loop % 2;
+> >>> +		ret = tst_syscall(__NR_migrate_pages, 0, max_node,
+> >>> +				   new_nodes[i], new_nodes[i ? 0 : 1]);
+> >>> +		if (ret<  0) {
+> >>> +			tst_res(TFAIL | TERRNO, "migrate_pages() failed");
+> >>> +			return;
+> >>> +		}
+> >>> +	}
+> >>> +
+> >>> +	tst_res(TPASS, "migrate_pages() passed");
+> >>> +}
+> >>> +
+> >>> +static struct tst_test test = {
+> >>> +	.min_kver = "2.6.32",
+> >>> +	.needs_root = 1,
+> >>> +	.setup = setup,
+> >>> +	.cleanup = cleanup,
+> >>> +	.test_all = migrate_test,
+> >>> +};
+> >>> +
+> >>> +#else
+> >>> +	TST_TEST_TCONF("require libnuma>= 2 and it's development packages");
+> >>> +#endif
+> >>
+> >>
+> >>
+> >
+> > .
+> >
+> 
+> 
+> 
+> 
