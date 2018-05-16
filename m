@@ -1,37 +1,47 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 16 May 2018 11:26:31 +0200
-Subject: [LTP] Want to contribute
-In-Reply-To: <CAMZxAxfkgSZqVeCrXbCHbuqKYvqwaMbiDuFmNNJAaHWzf9JY=g@mail.gmail.com>
-References: <CAMZxAxcE7deAzonfmhX9YMWSy7sRgHCn3=oC_zaEi6KVBYMd=w@mail.gmail.com>
- <20180503081520.GA29568@rei>
- <CAMZxAxfkgSZqVeCrXbCHbuqKYvqwaMbiDuFmNNJAaHWzf9JY=g@mail.gmail.com>
-Message-ID: <20180516092631.GA17817@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 16 May 2018 11:34:27 +0200
+Subject: [LTP] [RFC PATCH 3/9] testcases: file: Add TST_NEEDS_CMDS on
+ readelf
+In-Reply-To: <20180423094639.14612-4-mylene.josserand@bootlin.com>
+References: <20180423094639.14612-1-mylene.josserand@bootlin.com>
+ <20180423094639.14612-4-mylene.josserand@bootlin.com>
+Message-ID: <20180516093427.wy577hbcuennimxg@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Also what kind of contribution do you have in mind? Do you plan to work
-> > on some specific area, or are you looking for a LTP TODO list?
-> >
-> I am interested in POSIX Test Suite for NetBSD.
+Hi Mylène,
 
-The Open Posix Testsuite should, in theory, work on any POSIX system,
-however I doubt that anyone is actively using it on anything else than
-Linux, at least I do not remeber any activity on mailing list that would
-suggets so.
+> This test is using "readelf" binary that can be
+> unavailable on the system.
+> Instead of failing, it should return a TCONF.
 
-So it would be nice if you tried to run it on NetBSD, looked into
-failures and send patches so that it works fine on BSD too.
+> This is what this commit is doing by adding "readelf"
+> in TST_NEEDS_CMDS macro.
 
-> Also, I am open to any suggestion and will be working on LTP TODO
-> list.
+> Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
+> ---
+>  testcases/commands/file/file01.sh | 2 ++
+>  1 file changed, 2 insertions(+)
 
-As you may noticed I've started to fill in the GitHub Issue tracker with
-our todo items, feel free to pick from there :-).
+> diff --git a/testcases/commands/file/file01.sh b/testcases/commands/file/file01.sh
+> index e04b32e86..b72760e9f 100755
+> --- a/testcases/commands/file/file01.sh
+> +++ b/testcases/commands/file/file01.sh
+> @@ -28,6 +28,8 @@ TST_CNT=20
+>  TST_SETUP=setup
+>  TST_TESTFUNC=do_test
+>  TST_NEEDS_TMPDIR=1
+> +TST_NEEDS_CMDS="readelf"
+> +
+>  . tst_test.sh
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+>  setup()
+
+Pushed, thanks!
+
+
+Kind regards,
+Petr
