@@ -1,46 +1,61 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 16 May 2018 12:20:06 +0200
-Subject: [LTP] [RFC PATCH 5/9] testcases: logrotate: Check if "file"
- command exists
-In-Reply-To: <20180423094639.14612-6-mylene.josserand@bootlin.com>
-References: <20180423094639.14612-1-mylene.josserand@bootlin.com>
- <20180423094639.14612-6-mylene.josserand@bootlin.com>
-Message-ID: <20180516102006.wropfrolrygn7ynz@dell5510>
+Date: Wed, 16 May 2018 12:44:37 +0200
+Subject: [LTP] [PATCH v2] tst_test.sh: achieve TST_RETRY_FUNC function
+ in shell
+In-Reply-To: <20180503033414.5601-1-liwang@redhat.com>
+References: <20180503033414.5601-1-liwang@redhat.com>
+Message-ID: <20180516104437.kgun7upb4sbrwsfj@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Mylène,
+Hi Li,
 
-> Add "file" binary in the list of commands to check if
-> they exist or not.
+> The commit c2ce4df67d(include: add an exponential backoff macro for
+> function retry) involves a new MACRO for function retry in C code,
+> here achieve it in shell lib and gives a introduction in LTP documents.
 
-> Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> Tested-by: Petr Vorel <pvorel@suse.cz>
 > ---
->  testcases/commands/logrotate/logrotate_tests.sh | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-
-> diff --git a/testcases/commands/logrotate/logrotate_tests.sh b/testcases/commands/logrotate/logrotate_tests.sh
-> index f5a22ddde..021972294 100755
-> --- a/testcases/commands/logrotate/logrotate_tests.sh
-> +++ b/testcases/commands/logrotate/logrotate_tests.sh
-> @@ -97,10 +97,11 @@ init()
->  		 return $RC
+...
+> +++ b/testcases/lib/tst_test.sh
+> @@ -154,6 +154,40 @@ EXPECT_FAIL()
 >  	fi
-
-> -	# check if commands tst_*, logrotate, awk exists.
-> +	# check if commands tst_*, logrotate, awk and file exists.
->  	chk_ifexists INIT tst_resm  || return $RC
->  	chk_ifexists INIT logrotate || return $RC
->  	chk_ifexists INIT awk       || return $RC
-> +	chk_ifexists INIT file      || return $RC
-
->  	return $RC
 >  }
 
-Pushed, thanks.
+> +TST_RETRY_FN_EXP_BACKOFF()
+> +{
+> +	local tst_fun=$1
+> +	local tst_exp=$2
+
+Maybe add check for int, something like this?
+	if ! tst_is_int "$tst_sec"; then
+		tst_brk TBROK "TST_RETRY_FN_EXP_BACKOFF: tst_sec must be integer ('$tst_sec')"
+	fi
+> +	local tst_sec=$(expr $3 \* 1000000)
+> +	local tst_delay=1
+> +
+> +	if [ $# -ne 3 ]; then
+> +		tst_brk TBROK "TST_RETRY_FN_EXP_BACKOFF expects three parameters"
+I'd personally use number than word, but feel free to ignore that.
+		tst_brk TBROK "TST_RETRY_FN_EXP_BACKOFF expects 3 parameters"
+I'm not sure if checking
+...
+
+> +TST_RETRY_FUNC()
+> +{
+TST_RETRY_FUNC needs check for number of params as well:
+
+	if [ $# -ne 2 ]; then
+		tst_brk TBROK "TST_RETRY_FUNC expects 2 parameters"
+	fi
+> +	TST_RETRY_FN_EXP_BACKOFF "$1" "$2" 1
+
+Otherwise you run TST_RETRY_FUNC without params and didn't get check.
+some-test 1 TBROK: "" failed
 
 
 Kind regards,
