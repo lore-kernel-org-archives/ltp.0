@@ -1,57 +1,179 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 17 May 2018 17:23:29 +0200
-Subject: [LTP] [PATCH 2/2] syscalls/prctl02: Rewrite to the new library
-In-Reply-To: <1524106257-4711-2-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1524106257-4711-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1524106257-4711-2-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20180517152329.3h7zuuoatcbtklbl@dell5510>
+Date: Thu, 17 May 2018 19:09:18 +0200
+Subject: [LTP] [PATCH v3 1/1] ipneigh : Use new API
+In-Reply-To: <20180517090711.10577-1-asmorodskyi@suse.com>
+References: <20180517090711.10577-1-asmorodskyi@suse.com>
+Message-ID: <20180517170918.qj2svkrqlbftmfjd@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao,
+Hi Anton,
 
-LGTM, with 2 very minor issues.
-If you're ok with them I can change it before merging.
-
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> Besides all obvious changes for moving to new API,
+> also was done :
+> 1. more generic variable names
+> 2. add check for del command failure
+> 3. add input parameter "-c" which allows to control
+> which command will be used
 > ---
->  testcases/kernel/syscalls/prctl/prctl02.c | 203 ++++++------------------------
+>  runtest/net.ipv6                                |  2 +-
+>  runtest/net.tcp_cmds                            |  3 +-
+>  testcases/network/tcp_cmds/ipneigh/ipneigh01.sh | 82 +++++++++++++++----------
+>  3 files changed, 53 insertions(+), 34 deletions(-)
 
+> diff --git a/runtest/net.ipv6 b/runtest/net.ipv6
+> index d8f85cc31..261a7254c 100644
+> --- a/runtest/net.ipv6
+> +++ b/runtest/net.ipv6
+> @@ -7,4 +7,4 @@ tracepath601 tracepath01.sh -6
+>  traceroute601 traceroute01.sh -6
+>  dhcpd6 dhcpd_tests.sh -6
+>  dnsmasq6 dnsmasq_tests.sh -6
+> -ipneigh601 ipneigh01.sh -6
+> +ipneigh6_ip ipneigh01.sh -6 -c ip
+> diff --git a/runtest/net.tcp_cmds b/runtest/net.tcp_cmds
 ...
-> + * This program is free software: you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation, either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
-> + */
-Again, if you want, you can use SPDX license identifier (it's much shorter):
-// SPDX-License-Identifier: GPL-2.0-or-later
+> -TCID=ipneigh01
+>  NUMLOOPS=${NUMLOOPS:-50}
+> -TST_TOTAL=2
+> -TST_USE_LEGACY_API=1
 
-> -struct test_cases_t {
-> +static struct test_cases_t {
-Using tcase would be shorter.
+do_setup() function is not run, there is TST_SETUP variable to tell API it's the setup
+function (it's called before testing):
+TST_SETUP="do_setup"
 
-...
-> +	if (TEST_ERRNO == tc->exp_errno) {
-Can you please swap these to?
-if (tc->exp_errno == TEST_ERRNO) {
-> +		tst_res(TPASS | TTERRNO, "prctl() failed as expected");
-> +	} else {
-> +		tst_res(TPASS | TTERRNO, "prctl() failed unexpectedly, "
-> +			"expected %s", tst_strerrno(tc->exp_errno));
-> +	}
+> +TST_TESTFUNC=do_test
+> +TST_OPTS=":c"
+This is wrong, it supposed to be:
+TST_OPTS="c:"
+TST_OPTS definition working as normal option-string for getopts.
+':' as very first character of the option-string silent error message and -c then does not
+expect parameter, so tests TBROK:
+ipneigh01 1 TBROK: Unexpected positional arguments 'ip'
+
+> +TST_PARSE_ARGS="parse_args"
+> +TST_USAGE="usage"
+>  . tst_net.sh
+
+> +usage()
+> +{
+> +	echo "-c  Test command (ip, $IF_CMD)"
+if-lib.sh has slightly different behavior ($IF_CMD is specific to if-lib.sh), use
+something like:
+	echo "-c [ arp | ip ] Test command"
+> +}
+> +
+> +parse_args()
+> +{
+> +	case $1 in
+> +	c) IP_CMD="$2";;
+It'd be better to use more generic variable, like $CMD.
+> +	esac
+> +}
+> +
+> +
+>  do_setup()
+>  {
+>  	tst_require_root
+This is wrong, I overlook it in v2.
+New API uses TST_NEEDS_ROOT=1 variable (put before loading tst_net.sh)
+
+> -	tst_check_cmds arp grep ping$TST_IPV6
+> +	tst_check_cmds arp grep
+grep is quite common, we don't check it 
+And, Please, change arp to $CMD.
+	tst_check_cmds arp
+
 >  }
+
+>  do_test()
+>  {
+> -	local arp_show_cmd="$1"
+> -	local arp_del_cmd="$2"
+> +	local rhost=$(tst_ipaddr rhost)
+
+> +	case $IP_CMD in
+> +	ip)
+> +		local show_cmd="ip neigh show"
+> +		local del_cmd="ip neigh del $rhost dev $(tst_iface)"
+> +	;;
+> +	arp)
+> +		if [ -n "$TST_IPV6" ] then
+                            ^ Again missing semicolon, breaks test.
+							You can find these failures yourself if you run tests before posting patch.
+
+You can provide your own file with tests cases you want, put that file in /opt/ltp/runtest/
+$ cat /opt/ltp/runtest/test
+ipneigh6_ip ipneigh01.sh -6 -c ip
+ipneigh01_arp ipneigh01.sh -c arp
+ipneigh01_ip ipneigh01.sh -c ip
+
+$ PASSWD=your-root-password /opt/ltp/testscripts/network.sh -f test
+
+> +			tst_res TCONF "'arp cmd doesn't support IPv6, skipping test-case"
+> +			return 1
+> +		fi
+> +		local show_cmd="arp -a"
+> +		local del_cmd="arp -d $rhost"
+> +	;;
+> +	esac
+
+>  	local entry_name
+>  	[ "$TST_IPV6" ] && entry_name="NDISC" || entry_name="ARP"
+I prefer to use:
+	local entry_name="ARP"
+	[ "$TST_IPV6" ] && entry_name="NDISC"
+
+> -	tst_resm TINFO "Stress auto-creation of $entry_name cache entry"
+> -	tst_resm TINFO "by pinging '$rhost' and deleting entry again"
+> -	tst_resm TINFO "with '$arp_del_cmd'"
+> +	tst_res TINFO "Stress auto-creation of $entry_name cache entry"
+> +	tst_res TINFO "by pinging '$rhost'"
+> +	tst_res TINFO "and deleting entry again with '$del_cmd'"
+> +	tst_res TINFO "in a loop with $NUMLOOPS iterations"
+Probably this would be enough:
+	tst_res TINFO "Stress auto-creation of $entry_name cache entry $NUMLOOPS times"
+
+>  	for i in $(seq 1 $NUMLOOPS); do
+
+> -		ping$TST_IPV6 -q -c1 $rhost > /dev/null
+> +		tst_ping
+tst_ping is noisy as it reports TPASS, which is not purpose of this test.
+I'm sorry, can you put back the previous version, with TFAIL?
+		ping$TST_IPV6 -q -c1 $rhost > /dev/null || \
+			tst_brk TFAIL "cannot ping $rhost"
+
+>  		local k
+>  		local ret=1
+> -		# wait for arp entry at least 3 seconds
+>  		for k in $(seq 1 30); do
+> -			$arp_show_cmd | grep -q $rhost
+> +			$show_cmd | grep -q $rhost
+>  			if [ $? -eq 0 ]; then
+>  				ret=0
+>  				break;
+> @@ -57,28 +85,18 @@ do_test()
+>  		done
+
+>  		[ "$ret" -ne 0 ] && \
+> -			tst_brkm TFAIL "$entry_name entry '$rhost' not listed"
+> -
+> -		$arp_del_cmd
+> -
+> -		$arp_show_cmd | grep -q "${rhost}.*$(tst_hwaddr rhost)" && \
+> -			tst_brkm TFAIL "'$arp_del_cmd' failed, entry has " \
+> +			tst_brk TFAIL "$entry_name entry '$rhost' not listed"
+> +		$del_cmd
+> +		if [ $? -ne 0 ]; then
+> +			tst_brk TFAIL "fail to delete entry"
+> +		fi
+This can be shortened:
+		$del_cmd ||	tst_brk TFAIL "fail to delete entry"
+
+...
 
 Kind regards,
 Petr
