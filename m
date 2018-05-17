@@ -1,10 +1,8 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 17 May 2018 12:35:27 +0200
-Subject: [LTP] [PATCH 2/2] network/route: Rewrite route-change-gw into new
+Date: Thu, 17 May 2018 12:35:26 +0200
+Subject: [LTP] [PATCH 1/2] network/route: Rewrite route-change-dst into new
 	API
-In-Reply-To: <20180517103527.23542-1-pvorel@suse.cz>
-References: <20180517103527.23542-1-pvorel@suse.cz>
-Message-ID: <20180517103527.23542-2-pvorel@suse.cz>
+Message-ID: <20180517103527.23542-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,78 +14,74 @@ Drop route command (use just ip command), simplify
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
  runtest/net_stress.route                           |   4 +-
- testcases/network/stress/route/00_Descriptions.txt |  18 +-
- testcases/network/stress/route/route-change-gw     |  53 ++++
- testcases/network/stress/route/route4-change-gw    | 292 --------------------
- testcases/network/stress/route/route6-change-gw    | 293 ---------------------
- 5 files changed, 58 insertions(+), 602 deletions(-)
- create mode 100755 testcases/network/stress/route/route-change-gw
- delete mode 100644 testcases/network/stress/route/route4-change-gw
- delete mode 100644 testcases/network/stress/route/route6-change-gw
+ testcases/network/stress/route/00_Descriptions.txt |  17 +-
+ testcases/network/stress/route/route-change-dst    |  50 ++++
+ testcases/network/stress/route/route4-change-dst   | 276 ---------------------
+ testcases/network/stress/route/route6-change-dst   | 272 --------------------
+ 5 files changed, 55 insertions(+), 564 deletions(-)
+ create mode 100755 testcases/network/stress/route/route-change-dst
+ delete mode 100644 testcases/network/stress/route/route4-change-dst
+ delete mode 100644 testcases/network/stress/route/route6-change-dst
 
 diff --git a/runtest/net_stress.route b/runtest/net_stress.route
-index b6ea11c2e..0cc033e1a 100644
+index 266ef0383..b6ea11c2e 100644
 --- a/runtest/net_stress.route
 +++ b/runtest/net_stress.route
-@@ -3,13 +3,13 @@
+@@ -2,13 +2,13 @@
+ # Stress test for routing table
  #
  
- route4-change-dst route-change-dst
--route4-change-gw route4-change-gw
-+route4-change-gw route-change-gw
+-route4-change-dst route4-change-dst
++route4-change-dst route-change-dst
+ route4-change-gw route4-change-gw
  route4-change-if route4-change-if
  route4-redirect route4-redirect
  route4-rmmod route4-rmmod
  
- route6-change-dst route-change-dst -6
--route6-change-gw route6-change-gw
-+route6-change-gw route-change-gw -6
+-route6-change-dst route6-change-dst
++route6-change-dst route-change-dst -6
+ route6-change-gw route6-change-gw
  route6-change-if route6-change-if
  route6-redirect route6-redirect
- route6-rmmod route6-rmmod
 diff --git a/testcases/network/stress/route/00_Descriptions.txt b/testcases/network/stress/route/00_Descriptions.txt
-index e9e4d7961..41b5055d8 100644
+index 2a871fdae..e9e4d7961 100644
 --- a/testcases/network/stress/route/00_Descriptions.txt
 +++ b/testcases/network/stress/route/00_Descriptions.txt
-@@ -2,14 +2,10 @@ route-change-dst
- 	Verify the IPv4/IPv6 is not broken when ip command changes route
- 	destination many times
- 
+@@ -1,10 +1,7 @@
+-route4-change-dst01
+-	Verify the kernel is not crashed when the destination of an IPv4 route
+-	is changed frequently by route command
 +route-change-dst
 +	Verify the IPv4/IPv6 is not broken when ip command changes route
-+	gateway many times
++	destination many times
  
--route4-change-gw01
--	Verify the kernel is not crashed when the gateway of an IPv4 route is
--	changed frequently by route command
--
--route4-change-gw02
--	Verify the kernel is not crashed when the gateway of an IPv4 route is
--	changed frequently by ip command
+-route4-change-dst02
+-	Verify the kernel is not crashed when the destination of an IPv4 route
+-	is changed frequently by ip command
  
- route4-change-if01
- 	Verify the kernel is not crashed when the interface of an IPv4 route is
-@@ -32,14 +28,6 @@ route4-rmmod02
+ route4-change-gw01
+ 	Verify the kernel is not crashed when the gateway of an IPv4 route is
+@@ -35,14 +32,6 @@ route4-rmmod02
  	then it is deleted by the removing network driver
  
  
--route6-change-gw01
--	Verify the kernel is not crashed when the gateway of an IPv6 route is
--	changed frequently by route command
+-route6-change-dst01
+-	Verify the kernel is not crashed when the destination of an IPv6 route
+-	is changed frequently by route command
 -
--route6-change-gw02
--	Verify the kernel is not crashed when the gateway of an IPv6 route is
--	changed frequently by ip command
+-route6-change-dst02
+-	Verify the kernel is not crashed when the destination of an IPv6 route
+-	is changed frequently by ip command
 -
- route6-change-if01
- 	Verify the kernel is not crashed when the interface of an IPv6 route is
+ route6-change-gw01
+ 	Verify the kernel is not crashed when the gateway of an IPv6 route is
  	changed frequently by route command
-diff --git a/testcases/network/stress/route/route-change-gw b/testcases/network/stress/route/route-change-gw
+diff --git a/testcases/network/stress/route/route-change-dst b/testcases/network/stress/route/route-change-dst
 new file mode 100755
-index 000000000..e43bec693
+index 000000000..3363bfe5d
 --- /dev/null
-+++ b/testcases/network/stress/route/route-change-gw
-@@ -0,0 +1,53 @@
++++ b/testcases/network/stress/route/route-change-dst
+@@ -0,0 +1,50 @@
 +#!/bin/sh
 +# SPDX-License-Identifier: GPL-2.0-or-later
 +#
@@ -107,7 +101,7 @@ index 000000000..e43bec693
 +{
 +	local iface=$(tst_iface)
 +	local cnt=1
-+	local addr new_gw
++	local addr new_rt
 +
 +	local udp_size=1472
 +	local mask=24
@@ -116,23 +110,20 @@ index 000000000..e43bec693
 +		mask=64
 +	fi
 +
-+	local rt="$(tst_ipaddr_un 0)/$mask"
-+
-+	tst_res TINFO "change IPv$ipver route gateway $NS_TIMES times"
++	tst_res TINFO "change IPv$ipver route destination $NS_TIMES times"
 +
 +	while [ $cnt -le $NS_TIMES ]; do
++		new_rt="$(tst_ipaddr_un $cnt)/$mask"
 +		addr="$(tst_ipaddr_un $cnt 1)"
-+		new_gw="$(tst_ipaddr_un $cnt 2)"
 +
-+		ROD ip addr add $addr/$mask dev $iface
-+		ROD ip route add $rt dev $iface via $new_gw
++		ROD ip route add $new_rt dev $iface
 +		ROD ip neigh replace $addr lladdr $(tst_hwaddr rhost) nud permanent dev $iface
 +
 +		# Load the route with one UDP datagram
 +		ROD ns-udpsender -f $ipver -D $addr -p $cnt -o -s $udp_size
 +
 +		ROD ip neigh del $addr lladdr $(tst_hwaddr rhost) dev $iface
-+		ROD ip route del $rt dev $iface via $new_gw
++		ROD ip route del $new_rt dev $iface
 +
 +		cnt=$(($cnt + 1))
 +	done
@@ -141,12 +132,12 @@ index 000000000..e43bec693
 +}
 +
 +tst_run
-diff --git a/testcases/network/stress/route/route4-change-gw b/testcases/network/stress/route/route4-change-gw
+diff --git a/testcases/network/stress/route/route4-change-dst b/testcases/network/stress/route/route4-change-dst
 deleted file mode 100644
-index 791f98cc7..000000000
---- a/testcases/network/stress/route/route4-change-gw
+index 86327fad4..000000000
+--- a/testcases/network/stress/route/route4-change-dst
 +++ /dev/null
-@@ -1,292 +0,0 @@
+@@ -1,276 +0,0 @@
 -#!/bin/sh
 -
 -################################################################################
@@ -171,10 +162,10 @@ index 791f98cc7..000000000
 -################################################################################
 -#
 -# File:
--#   route4-change-gw
+-#   route4-change-dst
 -#
 -# Description:
--#   Verify the kernel is not crashed when the gateway of an IPv4 route is
+-#   Verify the kernel is not crashed when the destination of an IPv4 route is
 -#   changed frequently
 -#    test01 - by route command
 -#    test02 - by ip command
@@ -202,7 +193,7 @@ index 791f98cc7..000000000
 -export TST_TOTAL
 -
 -# Default of the test case ID and the test case count
--TCID=route4-change-gw
+-TCID=route4-change-dst
 -TST_COUNT=0
 -export TCID
 -export TST_COUNT
@@ -220,18 +211,18 @@ index 791f98cc7..000000000
 -IPV4_NETWORK=${IPV4_NETWORK:-"10.0.0"}
 -
 -# Netmask of for the tested network
+-IPV4_NETMASK="255.255.255.0"
 -IPV4_NETMASK_NUM=24
 -
 -# Broadcast address of the tested network
 -IPV4_BROADCAST=${IPV4_NETWORK}.255
 -
 -# Host portion of the IPv4 address
--LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"1"}	# src
--RHOST_IPV4_HOST_TOP="10"	# gateway
--RHOST_IPV4_HOST_LAST=19
+-LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"2"}	# src
+-RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"1"}	# gateway
 -
 -# The destination network
--DST_NETWORK="10.10.0"	# destination network would be 10.10.0.0/24
+-DST_NETWORK_PREFIX="10.10"	# destination network would be 10.10.n.0/24
 -DST_HOST="5"
 -DST_PORT="7"
 -
@@ -252,8 +243,21 @@ index 791f98cc7..000000000
 -#-----------------------------------------------------------------------
 -do_setup()
 -{
--    TCID=route4-change-gw
+-    TCID=route4-change-dst
 -    TST_COUNT=0
+-
+-    # Initialize the interfaces of the remote host
+-    initialize_if rhost ${LINK_NUM}
+-
+-    # Set IPv4 address to the interfaces
+-    set_ipv4addr rhost ${LINK_NUM} ${IPV4_NETWORK} ${RHOST_IPV4_HOST}
+-    if [ $? -ne 0 ]; then
+-	tst_resm TBROK "Failed to add an IPv4 address the remote host"
+-	exit $TST_TOTAL
+-    fi
+-
+-    # IPv4 address of the remote host (gateway)
+-    rhost_ipv4addr="${IPV4_NETWORK}.${RHOST_IPV4_HOST}"
 -
 -    # Get the Interface name of local host
 -    lhost_ifname=`get_ifname lhost ${LINK_NUM}`
@@ -268,21 +272,8 @@ index 791f98cc7..000000000
 -	tst_resm TBROK "Failed to get the interface name at the remote host"
 -	exit $TST_TOTAL
 -    fi
--
--    # Initialize the interfaces of the remote host
--    initialize_if rhost ${LINK_NUM}
--
--    # Set IPv4 address to the interface of the remote host
--    rhost_part=$RHOST_IPV4_HOST_TOP
--    while [ $rhost_part -le $RHOST_IPV4_HOST_LAST ]; do
--	ret=`$LTP_RSH $RHOST '( PATH=/sbin:/usr/sbin:$PATH ; ip addr add '${IPV4_NETWORK}.${rhost_part}/${IPV4_NETMASK_NUM}' broadcast '${IPV4_NETWORK}'.255 dev '$rhost_ifname' ) > /dev/null ; echo $?'`
--	if [ $ret -ne 0 ]; then
--	    tst_resm TBROK "Failed to assign IP address to the interface at the remote host"
--	    exit $TST_TOTAL
--	fi
--	rhost_part=`expr $rhost_part + 1`
--    done
 -}
+-
 -
 -
 -#-----------------------------------------------------------------------
@@ -296,8 +287,6 @@ index 791f98cc7..000000000
 -#-----------------------------------------------------------------------
 -do_cleanup()
 -{
--    killall -SIGHUP ns-udpsender >/dev/null 2>&1
--
 -    # Initialize the interfaces
 -    initialize_if lhost ${LINK_NUM}
 -    initialize_if rhost ${LINK_NUM}
@@ -322,7 +311,7 @@ index 791f98cc7..000000000
 -{
 -    test_type=$1
 -
--    TCID=route4-change-gw0${test_type}
+-    TCID=route4-change-dst0${test_type}
 -    TST_COUNT=$test_type
 -
 -    case $test_type in
@@ -338,7 +327,7 @@ index 791f98cc7..000000000
 -	;;
 -    esac
 -
--    tst_resm TINFO "Verify the kernel is not crashed when the gateway of an IPv4 route is changed frequently by $test_command command in $NS_TIMES times"
+-    tst_resm TINFO "Verify the kernel is not crashed when the destination of an IPv4 route is changed frequently by $test_command command in $NS_TIMES times"
 -
 -    # Initialize the interface of the local host
 -    initialize_if lhost ${LINK_NUM}
@@ -349,74 +338,60 @@ index 791f98cc7..000000000
 -	tst_resm TBROK "Failed to assign an IPv4 address at the local host"
 -	return 1
 -    fi
+-    lhost_ipv4addr="${IPV4_NETWORK}.${LHOST_IPV4_HOST}"
 -
 -    # Check the connectivity to the gateway
--    rhost_part=$RHOST_IPV4_HOST_TOP
--    check_icmpv4_connectivity $lhost_ifname ${IPV4_NETWORK}.${rhost_part}
+-    check_icmpv4_connectivity $lhost_ifname $rhost_ipv4addr
 -    if [ $? -ne 0 ]; then
 -	tst_resm TBROK "Test Link $LINK_NUM is somthing wrong."
 -	return 1
 -    fi
 -
--    # Set the variables regarding the destination host
--    dst_addr=${DST_NETWORK}.${DST_HOST}
--    dst_network=${DST_NETWORK}.0
--
--    # Set the first route
--    case $test_type in
--	1)
--	route add -net $dst_network netmask 255.255.255.0 gw ${IPV4_NETWORK}.${rhost_part} dev $lhost_ifname
--	;;
--	2)
--	ip route add ${dst_network}/24 via ${IPV4_NETWORK}.${rhost_part} dev $lhost_ifname
--	;;
--    esac
--
--    # Load the route with UDP traffic
--    ns-udpsender -f 4 -D $dst_addr -p $DST_PORT -b -s 1472
--    if [ $? -ne 0 ]; then
--	tst_resm TFAIL "Failed to run a UDP datagram sender"
--	return 1
--    fi
--
--    # Loop for changing the route
+-    # Start the loop
 -    cnt=0
 -    while [ $cnt -lt $NS_TIMES ]; do
--	pre_rhost_part=$rhost_part
--	rhost_part=`expr $rhost_part + 1`
--	if [ $rhost_part -gt $RHOST_IPV4_HOST_LAST ]; then
--	    rhost_part=$RHOST_IPV4_HOST_TOP
--	fi
+-	# Define the destination IP address
+-	dst_network_postfix=`expr $cnt % 255`
+-	dst_addr=${DST_NETWORK_PREFIX}.${dst_network_postfix}.${DST_HOST}
+-	dst_network=${DST_NETWORK_PREFIX}.${dst_network_postfix}.0
 -
+-	# Add the route
 -	case $test_type in
 -	    1)
--	    route add -net $dst_network netmask 255.255.255.0 gw ${IPV4_NETWORK}.${rhost_part} dev $lhost_ifname
--	    route del -net $dst_network netmask 255.255.255.0 gw ${IPV4_NETWORK}.${pre_rhost_part} dev $lhost_ifname
+-	    route add -net $dst_network netmask 255.255.255.0 gw $rhost_ipv4addr dev $lhost_ifname
 -	    ;;
 -	    2)
--	    ip route change ${dst_network}/24 via ${IPV4_NETWORK}.${rhost_part} dev $lhost_ifname
+-	    ip route add ${dst_network}/24 via $rhost_ipv4addr dev $lhost_ifname
 -	    ;;
 -	esac
 -	if [ $? -ne 0 ]; then
--	    tst_resm TFAIL "Failed to change the gateway to ${IPV4_NETWORK}.${rhost_part}"
+-	    tst_resm TFAIL "Failed to add the route to ${dst_network}/24"
 -	    return 1
 -	fi
 -
--	# Rerun if udp datagram sender is dead
--	ps auxw | fgrep -v grep | grep ns-udpsender > /dev/null
+-	# Load the route with UDP datagram
+-	ns-udpsender -f 4 -D $dst_addr -p $DST_PORT -o -s 1472
 -	if [ $? -ne 0 ]; then
--	    ns-udpsender -f 4 -D $dst_addr -p $DST_PORT -b -s 1472
--	    if [ $? -ne 0 ]; then
--		tst_resm TFAIL "Failed to run a UDP datagram sender"
--		return 1
--	    fi
+-	    tst_resm TFAIL "Failed to run a UDP datagram sender"
+-	    return 1
+-	fi
+-
+-	# Delete the route
+-	case $test_type in
+-	    1)
+-	    route del -net $dst_network netmask 255.255.255.0 gw $rhost_ipv4addr dev $lhost_ifname
+-	    ;;
+-	    2)
+-	    ip route del ${dst_network}/24 via $rhost_ipv4addr dev $lhost_ifname
+-	    ;;
+-	esac
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TFAIL "Cannot delte the route to ${ADDDEL_ROUTE}"
+-	    return 1
 -	fi
 -
 -	cnt=`expr $cnt + 1`
 -    done
--
--    # Kill the udp datagram sender
--    killall -SIGHUP ns-udpsender >/dev/null 2>&1
 -
 -    tst_resm TPASS "Test is finished correctly."
 -    return 0
@@ -439,13 +414,14 @@ index 791f98cc7..000000000
 -do_cleanup
 -
 -exit $RC
-diff --git a/testcases/network/stress/route/route6-change-gw b/testcases/network/stress/route/route6-change-gw
+diff --git a/testcases/network/stress/route/route6-change-dst b/testcases/network/stress/route/route6-change-dst
 deleted file mode 100644
-index 96fd7ee66..000000000
---- a/testcases/network/stress/route/route6-change-gw
+index dfaa2137b..000000000
+--- a/testcases/network/stress/route/route6-change-dst
 +++ /dev/null
-@@ -1,293 +0,0 @@
+@@ -1,272 +0,0 @@
 -#!/bin/sh
+-
 -################################################################################
 -##                                                                            ##
 -## Copyright (c) International Business Machines  Corp., 2006                 ##
@@ -468,10 +444,10 @@ index 96fd7ee66..000000000
 -################################################################################
 -#
 -# File:
--#   route6-change-gw
+-#   route6-change-dst
 -#
 -# Description:
--#   Verify the kernel is not crashed when the gateway of an IPv6 route is
+-#   Verify the kernel is not crashed when the destination of an IPv6 route is
 -#   changed frequently
 -#    test01 - by route command
 -#    test02 - by ip command
@@ -499,7 +475,7 @@ index 96fd7ee66..000000000
 -export TST_TOTAL
 -
 -# Default of the test case ID and the test case count
--TCID=route6-change-gw
+-TCID=route6-change-dst
 -TST_COUNT=0
 -export TCID
 -export TST_COUNT
@@ -520,12 +496,11 @@ index 96fd7ee66..000000000
 -IPV6_NETMASK_NUM=64
 -
 -# Host portion of the IPv6 address
--LHOST_IPV6_HOST=":2"		# src
--RHOST_IPV6_HOST_TOP="10"	# gateway
--RHOST_IPV6_HOST_LAST="19"
+-LHOST_IPV6_HOST=":2"	# src
+-RHOST_IPV6_HOST=":3"	# gateway
 -
 -# The destination network
--DST_NETWORK="fd00:100:1:1"	# dest network would be fd00:100:1:1:::/64
+-DST_NETWORK_PREFIX="fd00:100:1"	# dest network would be fd00:100:1:n:::/64
 -DST_HOST="5"
 -DST_PORT="7"
 -
@@ -546,8 +521,21 @@ index 96fd7ee66..000000000
 -#-----------------------------------------------------------------------
 -do_setup()
 -{
--    TCID=route6-change-gw
+-    TCID=route6-change-dst
 -    TST_COUNT=0
+-
+-    # Initialize the interfaces of the remote host
+-    initialize_if rhost ${LINK_NUM}
+-
+-    # Set IPv6 address to the interfaces
+-    add_ipv6addr rhost ${LINK_NUM} ${IPV6_NETWORK} ${RHOST_IPV6_HOST}
+-    if [ $? -ne 0 ]; then
+-	tst_resm TBROK "Failed to add an IPv6 address the remote host"
+-	exit $TST_TOTAL
+-    fi
+-
+-    # IPv6 address of the remote host (gateway)
+-    rhost_ipv6addr="${IPV6_NETWORK}:${RHOST_IPV6_HOST}"
 -
 -    # Get the Interface name of local host
 -    lhost_ifname=`get_ifname lhost ${LINK_NUM}`
@@ -562,22 +550,6 @@ index 96fd7ee66..000000000
 -	tst_resm TBROK "Failed to get the interface name at the remote host"
 -	exit $TST_TOTAL
 -    fi
--
--    # Initialize the interfaces of the remote host
--    initialize_if rhost ${LINK_NUM}
--
--    # Set IPv6 address to the interface of the remote host
--    rhost_part=$RHOST_IPV6_HOST_TOP
--    rhost_part_hex=`printf "%x" $rhost_part`
--    while [ $rhost_part -le $RHOST_IPV6_HOST_LAST ]; do
--	rhost_part_hex=":`printf "%x" $rhost_part`"
--	add_ipv6addr rhost ${LINK_NUM} ${IPV6_NETWORK} ${rhost_part_hex}
--	if [ $? -ne 0 ]; then
--	    tst_resm TBROK "Failed to assign IP address to the interface at the remote host"
--	    exit $TST_TOTAL
--	fi
--	rhost_part=`expr $rhost_part + 1`
--    done
 -}
 -
 -
@@ -592,8 +564,6 @@ index 96fd7ee66..000000000
 -#-----------------------------------------------------------------------
 -do_cleanup()
 -{
--    killall -SIGHUP ns-udpsender >/dev/null 2>&1
--
 -    # Initialize the interfaces
 -    initialize_if lhost ${LINK_NUM}
 -    initialize_if rhost ${LINK_NUM}
@@ -618,7 +588,7 @@ index 96fd7ee66..000000000
 -{
 -    test_type=$1
 -
--    TCID=route6-change-gw0${test_type}
+-    TCID=route6-change-dst0${test_type}
 -    TST_COUNT=$test_type
 -
 -    case $test_type in
@@ -634,7 +604,7 @@ index 96fd7ee66..000000000
 -	;;
 -    esac
 -
--    tst_resm TINFO "Verify the kernel is not crashed when the gateway of an IPv6 route is changed frequently by $test_command command in $NS_TIMES times"
+-    tst_resm TINFO "Verify the kernel is not crashed when the destination of an IPv6 route is changed frequently by $test_command command in $NS_TIMES times"
 -
 -    # Initialize the interface of the local host
 -    initialize_if lhost ${LINK_NUM}
@@ -645,77 +615,61 @@ index 96fd7ee66..000000000
 -	tst_resm TBROK "Failed to assign an IPv6 address at the local host"
 -	return 1
 -    fi
+-    lhost_ipv6addr="${IPV6_NETWORK}:${LHOST_IPV6_HOST}"
 -
 -    # Check the connectivity to the gateway
--    rhost_part=$RHOST_IPV6_HOST_TOP
--    rhost_part_hex=":`printf "%x" $rhost_part`"
--    check_icmpv6_connectivity $lhost_ifname ${IPV6_NETWORK}:${rhost_part_hex}
+-    check_icmpv6_connectivity $lhost_ifname $rhost_ipv6addr
 -    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Test Link $LINK_NUM is somthing wrong."
+-	tst_resm TBROK "Test Link $LINK_NUM is something wrong."
 -	return 1
 -    fi
 -
--    # Set the variables regarding the destination host
--    dst_addr=${DST_NETWORK}::${DST_HOST}
--    dst_network=${DST_NETWORK}::
--
--    # Set the first route
--    case $test_type in
--	1)
--	route -A inet6 add ${dst_network}/64 gw ${IPV6_NETWORK}:${rhost_part_hex} dev $lhost_ifname
--	;;
--	2)
--	ip -f inet6 route add ${dst_network}/64 via ${IPV6_NETWORK}:${rhost_part_hex} dev $lhost_ifname
--	;;
--    esac
--
--    # Load the route with UDP traffic
--    ns-udpsender -f 6 -D $dst_addr -p $DST_PORT -b -s 1452
--    if [ $? -ne 0 ]; then
--	tst_resm TFAIL "Failed to run a UDP datagram sender"
--	return 1
--    fi
--
--    # Loop for changing the route
+-    # Start the loop
 -    cnt=0
 -    while [ $cnt -lt $NS_TIMES ]; do
--	pre_rhost_part_hex=$rhost_part_hex
--	rhost_part=`expr $rhost_part + 1`
--	if [ $rhost_part -gt $RHOST_IPV6_HOST_LAST ]; then
--	    rhost_part=$RHOST_IPV6_HOST_TOP
--	fi
--	rhost_part_hex=":`printf "%x" $rhost_part`"
+-	# Define the destination IP address
+-	tmp_postfix=`expr $cnt % 65535`
+-	dst_network_postfix=`printf "%x" $tmp_postfix`
+-	dst_addr=${DST_NETWORK_PREFIX}:${dst_network_postfix}::${DST_HOST}
+-	dst_network=${DST_NETWORK_PREFIX}:${dst_network_postfix}::
 -
+-	# Add the route
 -	case $test_type in
 -	    1)
--	    route -A inet6 add ${dst_network}/64 gw ${IPV6_NETWORK}:${rhost_part_hex} dev $lhost_ifname
--	    route -A inet6 del ${dst_network}/64 gw ${IPV6_NETWORK}:${pre_rhost_part_hex} dev $lhost_ifname
+-	    route -A inet6 add ${dst_network}/64 gw $rhost_ipv6addr dev $lhost_ifname
 -	    ;;
 -	    2)
--	    ip -f inet6 route add ${dst_network}/64 via ${IPV6_NETWORK}:${rhost_part_hex} dev $lhost_ifname
--	    ip -f inet6 route del ${dst_network}/64 via ${IPV6_NETWORK}:${pre_rhost_part_hex} dev $lhost_ifname
+-	    ip -f inet6 route add ${dst_network}/64 via $rhost_ipv6addr dev $lhost_ifname
 -	    ;;
 -	esac
 -	if [ $? -ne 0 ]; then
--	    tst_resm TFAIL "Failed to change the gateway to ${IPV6_NETWORK}.${rhost_part}"
+-	    tst_resm TFAIL "Failed to add the route to ${dst_network}/64"
 -	    return 1
 -	fi
 -
--	# Rerun if udp datagram sender is dead
--	ps auxw | fgrep -v grep | grep ns-udpsender > /dev/null
+-	# Load the route with UDP datagram
+-	ns-udpsender -f 6 -D $dst_addr -p $DST_PORT -o -s 1452
 -	if [ $? -ne 0 ]; then
--	    ns-udpsender -f 4 -D $dst_addr -p $DST_PORT -o -s 1472
--	    if [ $? -ne 0 ]; then
--		tst_resm TFAIL "Failed to run a UDP datagram sender"
--		return 1
--	    fi
+-	    tst_resm TFAIL "Failed to run a UDP datagram sender"
+-	    return 1
+-	fi
+-
+-	# Delete the route
+-	case $test_type in
+-	    1)
+-	    route -A inet6 del ${dst_network}/64 gw $rhost_ipv6addr dev $lhost_ifname
+-	    ;;
+-	    2)
+-	    ip -f inet6 route del ${dst_network}/64 via $rhost_ipv6addr dev $lhost_ifname
+-	    ;;
+-	esac
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TFAIL "Cannot delte the route to ${ADDDEL_ROUTE}"
+-	    return 1
 -	fi
 -
 -	cnt=`expr $cnt + 1`
 -    done
--
--    # Kill the udp datagram sender
--    killall -SIGHUP ns-udpsender >/dev/null 2>&1
 -
 -    tst_resm TPASS "Test is finished correctly."
 -    return 0
