@@ -1,65 +1,123 @@
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 17 May 2018 14:21:08 +0800
-Subject: [LTP] [PATCH v2] tst_test.sh: achieve TST_RETRY_FUNC function
-	in shell
-In-Reply-To: <CAEemH2fHfAkjuSgAFcHyrs0Ga5JP91Eg11kbJ6D2jESKTbAOfw@mail.gmail.com>
-References: <20180503033414.5601-1-liwang@redhat.com>
- <20180516104437.kgun7upb4sbrwsfj@dell5510>
- <CAEemH2ccJR4aiowoogZ5nmOdQFvcCzUbE0k4A+5h=mW=XVgVnQ@mail.gmail.com>
- <CAEemH2fHfAkjuSgAFcHyrs0Ga5JP91Eg11kbJ6D2jESKTbAOfw@mail.gmail.com>
-Message-ID: <CAEemH2faFjQaYqUqaMg+FEeFBPDVoKBkKDc4+0nCbR5UWw469A@mail.gmail.com>
+Date: Thu, 17 May 2018 14:29:19 +0800
+Subject: [LTP] [PATCH v3] tst_test.sh: achieve TST_RETRY_FUNC function in
+	shell
+Message-ID: <20180517062919.13018-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+The commit c2ce4df67d(include: add an exponential backoff macro for
+function retry) involves a new MACRO for function retry in C code,
+here achieve it in shell lib and gives a introduction in LTP documents.
 
-​And also, we'd better skip the TST_ prefix name check in test library,
-otherwise we will get LTP warnings like:
+Signed-off-by: Li Wang <liwang@redhat.com>
+Tested-by: Petr Vorel <pvorel@suse.cz>
+---
+ doc/test-writing-guidelines.txt | 26 +++++++++++++++++++++++++
+ testcases/lib/tst_test.sh       | 43 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 69 insertions(+)
 
-<<<test_output>>>
-numa01 1 TWARN: Reserved variable TST_RETRY_FUNC used!
-numa01 1 TWARN: Reserved variable TST_RETRY_FUNC used!
-numa01 1 TWARN: Reserved variable TST_RETRY_FUNC used!
-numa01 1 TWARN: Reserved variable TST_RETRY_FUNC used!
-numa01 1 TWARN: Reserved variable TST_RETRY_FUNC used!
-numa01 1 TWARN: Reserved variable TST_RETRY_FUNC used!
-numa01 1 TWARN: Reserved variable TST_RETRY_FUNC used!
-numa01 1 TWARN: Reserved variable TST_RETRY_FUNC used!
-numa01 1 TWARN: Reserved variable TST_RETRY_FUNC used!
-numa01 1 TWARN: Reserved variable TST_RETRY_FUNC used!
-numa01 1 TINFO: The system contains 2 nodes:  0 1
-numa01 1 TPASS: NUMA local node and memory affinity
-numa01 2 TPASS: NUMA preferred node policy
-numa01 3 TPASS: NUMA share memory allocated in preferred node
-numa01 4 TPASS: NUMA interleave policy
-numa01 5 TPASS: NUMA interleave policy on shared memory
-numa01 6 TPASS: NUMA phycpubind policy
-numa01 7 TPASS: NUMA local node allocation
-numa01 8 TPASS: NUMA MEMHOG policy
-
-----------------
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index cbbfe6c..b2dd091 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -1640,6 +1640,32 @@ that can sleep for defined amount of seconds, milliseconds or microseconds.
+ tst_sleep 100ms
+ -------------------------------------------------------------------------------
+ 
++Retry a function in limited time
++++++++++++++++++++++++++++++++++
++
++Sometimes LTP test needs retrying a function for many times to get success.
++This achievement makes that possible via keeping it retrying if the return
++value of the function is NOT as we expected. After exceeding a limited time,
++test will break from the retries immediately.
++
++[source,c]
++-------------------------------------------------------------------------------
++# retry function in 1 second
++TST_RETRY_FUNC(FUNC, EXPECTED_RET)
++
++# retry function in N second
++TST_RETRY_FN_EXP_BACKOFF(FUNC, EXPECTED_RET, N)
++-------------------------------------------------------------------------------
++
++[source,sh]
++-------------------------------------------------------------------------------
++# retry function in 1 second
++TST_RETRY_FUNC "FUNC arg1 arg2 ..." "EXPECTED_RET"
++
++# retry function in N second
++TST_RETRY_FN_EXP_BACKOFF "FUNC arg1 arg2 ..." "EXPECTED_RET" "N"
++-------------------------------------------------------------------------------
++
+ Checking for integers
+ +++++++++++++++++++++
+ 
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 8d49d34..262b9c2 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -154,6 +154,48 @@ EXPECT_FAIL()
+ 	fi
+ }
+ 
++TST_RETRY_FN_EXP_BACKOFF()
++{
++	local tst_fun=$1
++	local tst_exp=$2
++	local tst_sec=$(expr $3 \* 1000000)
++	local tst_delay=1
++
++	if [ $# -ne 3 ]; then
++		tst_brk TBROK "TST_RETRY_FN_EXP_BACKOFF expects 3 parameters"
++	fi
++
++	if ! tst_is_int "$tst_sec"; then
++		tst_brk TBROK "TST_RETRY_FN_EXP_BACKOFF: tst_sec must be integer ('$tst_sec')"
++	fi
++
++	while true; do
++		$tst_fun
++		if [ "$?" = "$tst_exp" ]; then
++			break
++		fi
++
++		if [ $tst_delay -lt $tst_sec ]; then
++			tst_sleep ${tst_delay}us
++			tst_delay=$((tst_delay*2))
++		else
++			tst_brk TBROK "\"$tst_fun\" timed out"
++		fi
++	done
++
++	return $tst_exp
++}
++
++TST_RETRY_FUNC()
++{
++	if [ $# -ne 2 ]; then
++		tst_brk TBROK "TST_RETRY_FN_EXP_BACKOFF expects 2 parameters"
++	fi
++
++	TST_RETRY_FN_EXP_BACKOFF "$1" "$2" 1
++	return $2
++}
++
  tst_umount()
  {
-        local device="$1"
+ 	local device="$1"
 @@ -255,6 +297,7 @@ tst_run()
-                        OPTS|USAGE|PARSE_ARGS|POS_ARGS);;
-                        NEEDS_ROOT|NEEDS_TMPDIR|NEEDS_DEVICE|DEVICE);;
-                        NEEDS_CMDS|NEEDS_MODULE|MODPATH|DATAROOT);;
-+                       RETRY_FUNC|RETRY_FN_EXP_BACKOFF);;
-                        IPV6);;
-                        *) tst_res TWARN "Reserved variable TST_$tst_i
-used!";;
-                        esac
-​
+ 			OPTS|USAGE|PARSE_ARGS|POS_ARGS);;
+ 			NEEDS_ROOT|NEEDS_TMPDIR|NEEDS_DEVICE|DEVICE);;
+ 			NEEDS_CMDS|NEEDS_MODULE|MODPATH|DATAROOT);;
++			RETRY_FUNC|RETRY_FN_EXP_BACKOFF);;
+ 			IPV6);;
+ 			*) tst_res TWARN "Reserved variable TST_$tst_i used!";;
+ 			esac
+-- 
+2.9.5
 
-​I prefer to merge this change along with your suggestions in PATCH v3 as
-well.
-
-Thanks,
-Li Wang​
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180517/04f5a587/attachment.html>
