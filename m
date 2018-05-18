@@ -1,49 +1,37 @@
-From: Yixin Zhang <yixin.zhang@intel.com>
-Date: Sat, 19 May 2018 04:22:08 +0800
-Subject: [LTP] [PATCH ltp] Add .cache.mk and *.dwo into clean target and
-	.gitignore
-Message-ID: <20180518202208.5752-1-yixin.zhang@intel.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri, 18 May 2018 12:36:08 +0300
+Subject: [LTP] [PATCH 1/2] network/route: Rewrite route-change-dst into
+	new API
+In-Reply-To: <20180517103527.23542-1-pvorel@suse.cz>
+References: <20180517103527.23542-1-pvorel@suse.cz>
+Message-ID: <f566c2ba-5a7e-2fe7-e92f-1da4459e18c5@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-These files are generated during build, so and them into clean target
-and .gitignore
+On 17.05.2018 13:35, Petr Vorel wrote:
+> Drop route command (use just ip command), simplify
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
-Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
----
- .gitignore             | 2 ++
- include/mk/env_post.mk | 2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+...
 
-diff --git a/.gitignore b/.gitignore
-index a7e65633f..b838efd59 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -8,6 +8,8 @@ core
- .gdb_history
- .gdbinit
- lib*.a
-+.cache.mk
-+*.dwo
- 
- /aclocal.m4
- autom4te.cache
-diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
-index 4c57fffe4..59ebebb03 100644
---- a/include/mk/env_post.mk
-+++ b/include/mk/env_post.mk
-@@ -54,7 +54,7 @@ MAKE_TARGETS			?= $(notdir $(patsubst %.c,%,$(wildcard $(abs_srcdir)/*.c)))
- 
- MAKE_TARGETS			:= $(filter-out $(FILTER_OUT_MAKE_TARGETS),$(MAKE_TARGETS))
- 
--CLEAN_TARGETS			+= $(MAKE_TARGETS) *.o *.pyc
-+CLEAN_TARGETS			+= $(MAKE_TARGETS) *.o *.pyc .cache.mk .*.dwo
- 
- # Majority of the files end up in testcases/bin...
- INSTALL_DIR			?= testcases/bin
--- 
-2.14.1
+> +
+> +	tst_res TINFO "change IPv$ipver route destination $NS_TIMES times"
+> +
+> +	while [ $cnt -le $NS_TIMES ]; do
+> +		new_rt="$(tst_ipaddr_un $cnt)/$mask"
+> +		addr="$(tst_ipaddr_un $cnt 1)"
+> +
+> +		ROD ip route add $new_rt dev $iface
+> +		ROD ip neigh replace $addr lladdr $(tst_hwaddr rhost) nud permanent dev $iface
+> +
+> +		# Load the route with one UDP datagram
+> +		ROD ns-udpsender -f $ipver -D $addr -p $cnt -o -s $udp_size
 
+'-p' parameter should be in range from 1 to 65535, $cnt can exceed that.
+
+It would be good to print some intermediate result message inside
+the loop to show the current progress.
