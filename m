@@ -1,59 +1,58 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 18 May 2018 17:23:25 +0200
-Subject: [LTP] [PATCH v2 2/2] syscalls/prctl02: Rewrite to the new
-	library
-In-Reply-To: <1526607037-22667-2-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <20180517152329.3h7zuuoatcbtklbl@dell5510>
- <1526607037-22667-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1526607037-22667-2-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20180518152324.g5z7452vyn2bdx3o@dell5510>
+Date: Fri, 18 May 2018 17:34:10 +0200
+Subject: [LTP] [PATCH ltp] Add .cache.mk and *.dwo into clean target and
+ .gitignore
+In-Reply-To: <20180518202208.5752-1-yixin.zhang@intel.com>
+References: <20180518202208.5752-1-yixin.zhang@intel.com>
+Message-ID: <20180518153409.jf7thwzi74rfqnpb@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao,
+Hi Yixin,
 
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+
+> These files are generated during build, so and them into clean target
+> and .gitignore
+
+> Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+Tested-by: Petr Vorel <pvorel@suse.cz>
+
 > ---
->  testcases/kernel/syscalls/prctl/prctl02.c | 195 +++++-------------------------
-Pushed with minor changes (see patch bellow):
+>  .gitignore             | 2 ++
+>  include/mk/env_post.mk | 2 +-
+>  2 files changed, 3 insertions(+), 1 deletion(-)
 
-* Add SPDX-License-Identifier into first line (expected by checkpatch.pl script from kernel).
-* Put TFAIL string into one line (refer not split quoted string if not too long).
-* Removed obvious DESCRIPTION text.
+> diff --git a/.gitignore b/.gitignore
+> index a7e65633f..b838efd59 100644
+> --- a/.gitignore
+> +++ b/.gitignore
+> @@ -8,6 +8,8 @@ core
+>  .gdb_history
+>  .gdbinit
+>  lib*.a
+> +.cache.mk
+> +*.dwo
 
-Thanks for your patches!
+We're not using DWARF object files (yet), but it doesn't harm to be prepared.
+
+>  /aclocal.m4
+>  autom4te.cache
+> diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
+> index 4c57fffe4..59ebebb03 100644
+> --- a/include/mk/env_post.mk
+> +++ b/include/mk/env_post.mk
+> @@ -54,7 +54,7 @@ MAKE_TARGETS			?= $(notdir $(patsubst %.c,%,$(wildcard $(abs_srcdir)/*.c)))
+
+>  MAKE_TARGETS			:= $(filter-out $(FILTER_OUT_MAKE_TARGETS),$(MAKE_TARGETS))
+
+> -CLEAN_TARGETS			+= $(MAKE_TARGETS) *.o *.pyc
+> +CLEAN_TARGETS			+= $(MAKE_TARGETS) *.o *.pyc .cache.mk .*.dwo
+
+>  # Majority of the files end up in testcases/bin...
+>  INSTALL_DIR			?= testcases/bin
 
 Kind regards,
 Petr
-
-diff --git testcases/kernel/syscalls/prctl/prctl02.c testcases/kernel/syscalls/prctl/prctl02.c
-index 1e7640b6d..ee4a6afe4 100644
---- testcases/kernel/syscalls/prctl/prctl02.c
-+++ testcases/kernel/syscalls/prctl/prctl02.c
-@@ -1,10 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * SPDX-License-Identifier: GPL-2.0-or-later
-  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
-- */
--
--/*
-- * DESCRIPTION
-+ *
-  * 1) prctl() fails with EINVAL when an invalid value is given for option
-  * 2) prctl() fails with EINVAL when option is PR_SET_PDEATHSIG & arg2 is
-  * not zero or a valid signal number
-@@ -41,8 +38,8 @@ static void verify_prctl(unsigned int n)
- 	if (tc->exp_errno == TEST_ERRNO) {
- 		tst_res(TPASS | TTERRNO, "prctl() failed as expected");
- 	} else {
--		tst_res(TPASS | TTERRNO, "prctl() failed unexpectedly, "
--			"expected %s", tst_strerrno(tc->exp_errno));
-+		tst_res(TPASS | TTERRNO, "prctl() failed unexpectedly, expected %s",
-+				tst_strerrno(tc->exp_errno));
- 	}
- }
- 
