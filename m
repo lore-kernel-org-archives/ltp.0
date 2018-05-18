@@ -1,50 +1,66 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 18 May 2018 15:25:36 +0200
-Subject: [LTP] [PATCH] syscalls/shmctl05: new test for IPC file
- use-after-free bug
-In-Reply-To: <20180513012325.877-1-ebiggers3@gmail.com>
-References: <20180513012325.877-1-ebiggers3@gmail.com>
-Message-ID: <20180518132536.GB32299@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 18 May 2018 17:21:55 +0200
+Subject: [LTP] [PATCH v2 1/2] syscalls/prctl01: Rewrite to the new
+	library
+In-Reply-To: <1526607037-22667-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20180517152329.3h7zuuoatcbtklbl@dell5510>
+ <1526607037-22667-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20180518152154.ni6i3r5rzzhxoh2t@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
-> @@ -0,0 +1,113 @@
-> +/*
-> + * Copyright (c) 2018 Google, Inc.
-> + *
-> + * This program is free software: you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation, either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program, if not, see <http://www.gnu.org/licenses/>.
-> + */
-> +
-> +/*
-> + * Regression test for commit 3f05317d9889 ("ipc/shm: fix use-after-free of shm
-> + * file via remap_file_pages()").  This bug allowed the remap_file_pages()
-> + * syscall to use the file of a System V shared memory segment after its ID had
-> + * been reallocated and the file freed.  This test reproduces the bug as a NULL
-> + * pointer dereference in touch_atime(), although it's a race condition so it's
-> + * not guaranteed to work.  This test is based on the reproducer provided in the
-> + * fix's commit message.
-> + */
+Hi Xiao,
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/prctl/prctl01.c | 187 +++++-------------------------
+>  1 file changed, 30 insertions(+), 157 deletions(-)
 
-Have you considered using the fuzzy sync library here?
+Pushed with minor changes (see patch bellow):
 
-https://github.com/linux-test-project/ltp/blob/master/include/tst_fuzzy_sync.h
+* Add SPDX-License-Identifier into first line (expected by checkpatch.pl script from kernel).
+* Changed message for PR_SET_PDEATHSIG from TINFO to TPASS.
+* Put TFAIL string into one line (refer not split quoted string if not too long).
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+Kind regards,
+Petr
+
+diff --git testcases/kernel/syscalls/prctl/prctl01.c testcases/kernel/syscalls/prctl/prctl01.c
+index 4270e8472..b235981e6 100644
+--- testcases/kernel/syscalls/prctl/prctl01.c
++++ testcases/kernel/syscalls/prctl/prctl01.c
+@@ -1,10 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * SPDX-License-Identifier: GPL-2.0-or-later
+  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+- */
+-
+-/*
+- * DESCRIPTION
++ *
+  * This is a Phase I test for the prctl(2) system call.
+  * It is intended to provide a limited exposure of the system call.
+  */
+@@ -25,7 +22,7 @@ static void verify_prctl(void)
+ 		return;
+ 	}
+ 
+-	tst_res(TINFO, "prctl(PR_SET_PDEATHSIG) succeeded");
++	tst_res(TPASS, "prctl(PR_SET_PDEATHSIG) succeeded");
+ 
+ 	TEST(prctl(PR_GET_PDEATHSIG, &get_sig));
+ 	if (TEST_RETURN == -1) {
+@@ -37,8 +34,8 @@ static void verify_prctl(void)
+ 		tst_res(TPASS,
+ 			"prctl(PR_GET_PDEATHSIG) got expected death signal");
+ 	} else {
+-		tst_res(TFAIL, "prctl(PR_GET_PDEATHSIG) got death signal %d,"
+-			" expected %d", get_sig, SIGUSR2);
++		tst_res(TFAIL, "prctl(PR_GET_PDEATHSIG) got death signal %d, expected %d",
++			get_sig, SIGUSR2);
+ 	}
+ }
