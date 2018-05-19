@@ -1,45 +1,53 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Sat, 19 May 2018 17:04:08 +0800
-Subject: [LTP] [PATCH] read_all: Drop privileges
+Date: Sat, 19 May 2018 17:22:20 +0800
+Subject: [LTP] [PATCH] fs/read_all: Clear suplementary groups before droping
+	privileges
 In-Reply-To: <20180518170933.GA5094@rei>
-References: <20180515095118.26282-1-rpalethorpe@suse.com>
- <20180515103042.GB7220@rei> <87bmdhyyrf.fsf@rpws.prws.suse.cz>
- <5AFBFC35.3060400@cn.fujitsu.com> <20180516114438.GA26490@rei>
- <5AFD5780.7040107@cn.fujitsu.com> <20180518170933.GA5094@rei>
-Message-ID: <5AFFE888.1020602@cn.fujitsu.com>
+References: <20180518170933.GA5094@rei>
+Message-ID: <1526721740-8382-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2018/05/19 1:09, Cyril Hrubis wrote:
-> Hi!
->> Sorry, it seems a bug in open(2) instead of watchdog.
-> Looks like the list of supplementary groups is at fault here.
->
-> On my system I do have in /etc/group:
->
-> root:x:0:root
->
-> Which means that among other groups root has root suplementary group set
-> when logged in.
->
-> Which means that even when a program sets it's user and group ids to
-> nobody the root still stays in the list of supplementary groups, which
-> then is matched for files with root group ownership and hence we can
-> stil open the file.
->
-> Adding setgroups(0, NULL); to switch_privs() in your program "fixes" the
-> behavior and we get EPERM as expected. And I guess that we should patch
-> the read_all to do the same, which should fix your problem. I will apply
-> the fix.
-Hi Cyril,
+Current user(e.g. root) has its own suplementary group set when logged in.  Which
+means that even when a program sets it's user and group ids to nobody the current
+group still stays in the list of supplementary groups, which then is matched for
+files with the current group ownership and hence we can still access the file.
 
-Thanks for your detailed explanation.
-I will send the fix patch as you suggested.
+For example, if /dev/watchdog has root group ownership and rw group permissions,
+running read_all_dev can still open /dev/watchdog and reboot system even after
+switching user and group ids from root to nobody.
 
-Thanks,
-Xiao Yang
+We need to clear suplementary groups before droping privileges and keep the same
+rule as commit 1f011e5 if current user doesn't have the capabilities to clear
+suplementary groups.
+
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/fs/read_all/read_all.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/read_all/read_all.c
+index a8e1611..acd8e73 100644
+--- a/testcases/kernel/fs/read_all/read_all.c
++++ b/testcases/kernel/fs/read_all/read_all.c
+@@ -258,6 +258,12 @@ static void maybe_drop_privs(void)
+ 	if (!drop_privs)
+ 		return;
+ 
++	TEST(setgroups(0, NULL));
++	if (TEST_RETURN < 0 && TEST_ERRNO != EPERM) {
++		tst_brk(TBROK | TTERRNO,
++			"Failed to clear suplementary group set");
++	}
++
+ 	nobody = SAFE_GETPWNAM("nobody");
+ 
+ 	TEST(setgid(nobody->pw_gid));
+-- 
+1.8.3.1
+
 
 
