@@ -1,280 +1,82 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 21 May 2018 14:48:25 +0300
-Subject: [LTP] [PATCH 1/6] network: rename dcctp dir to tcp_cc
+Date: Mon, 21 May 2018 14:48:28 +0300
+Subject: [LTP] [PATCH 4/6] network/tcp_cc/lib: add a function to set qdisc
+	and txqueuelen
 In-Reply-To: <1526903310-2833-1-git-send-email-alexey.kodanev@oracle.com>
 References: <1526903310-2833-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1526903310-2833-2-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1526903310-2833-5-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This directory will include other TCP congestion control
-related tests, not only dctcp algorithm.
-
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/network/dctcp/Makefile    |   22 --------
- testcases/network/dctcp/dctcp01.sh  |   91 -----------------------------------
- testcases/network/tcp_cc/Makefile   |   22 ++++++++
- testcases/network/tcp_cc/dctcp01.sh |   91 +++++++++++++++++++++++++++++++++++
- 4 files changed, 113 insertions(+), 113 deletions(-)
- delete mode 100644 testcases/network/dctcp/Makefile
- delete mode 100755 testcases/network/dctcp/dctcp01.sh
- create mode 100644 testcases/network/tcp_cc/Makefile
- create mode 100755 testcases/network/tcp_cc/dctcp01.sh
+ testcases/network/tcp_cc/tcp_cc_lib.sh |   34 ++++++++++++++++++++++++++++++++
+ 1 files changed, 34 insertions(+), 0 deletions(-)
 
-diff --git a/testcases/network/dctcp/Makefile b/testcases/network/dctcp/Makefile
-deleted file mode 100644
-index 82a6262..0000000
---- a/testcases/network/dctcp/Makefile
-+++ /dev/null
-@@ -1,22 +0,0 @@
--# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
--#
--# This program is free software; you can redistribute it and/or
--# modify it under the terms of the GNU General Public License as
--# published by the Free Software Foundation; either version 2 of
--# the License, or (at your option) any later version.
--#
--# This program is distributed in the hope that it would be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--# GNU General Public License for more details.
--#
--# You should have received a copy of the GNU General Public License
--# along with this program. If not, see <http://www.gnu.org/licenses/>.
--
--top_srcdir		?= ../../..
--
--include $(top_srcdir)/include/mk/env_pre.mk
--
--INSTALL_TARGETS		:= dctcp01.sh
--
--include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/dctcp/dctcp01.sh b/testcases/network/dctcp/dctcp01.sh
-deleted file mode 100755
-index 92ac97d..0000000
---- a/testcases/network/dctcp/dctcp01.sh
-+++ /dev/null
-@@ -1,91 +0,0 @@
--#!/bin/sh
--# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
--#
--# This program is free software; you can redistribute it and/or
--# modify it under the terms of the GNU General Public License as
--# published by the Free Software Foundation; either version 2 of
--# the License, or (at your option) any later version.
--#
--# This program is distributed in the hope that it would be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--# GNU General Public License for more details.
--#
--# You should have received a copy of the GNU General Public License
--# along with this program. If not, see <http://www.gnu.org/licenses/>.
--#
--# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
--
--TCID=dctcp01
--TST_TOTAL=1
--TST_CLEANUP="cleanup"
--TST_NEEDS_TMPDIR=1
--def_alg="cubic"
--prev_alg=
--
--TST_USE_LEGACY_API=1
--. tst_net.sh
--
--set_cong_alg()
--{
--	local alg=$1
--	tst_resm TINFO "setting $alg"
--
--	tst_set_sysctl net.ipv4.tcp_congestion_control $alg safe
--}
--
--cleanup()
--{
--	if [ "$prev_cong_ctl" ]; then
--		tst_set_sysctl net.ipv4.tcp_congestion_control $prev_alg
--	fi
--	tst_rmdir
--	tc qdisc del dev $(tst_iface) root netem loss 0.03% ecn
--}
--
--setup()
--{
--	if tst_kvcmp -lt "3.18"; then
--		tst_brkm TCONF "test requires kernel 3.18 or newer"
--	fi
--
--	tst_require_root
--	tst_check_cmds sysctl tc
--
--	tst_resm TINFO "emulate congestion with packet loss 0.03% and ECN"
--	tc qdisc add dev $(tst_iface) root netem loss 0.03% ecn > /dev/null 2>&1
--	if [ $? -ne 0 ]; then
--		tst_brkm TCONF "netem doesn't support ECN"
--	fi
--
--	prev_alg="$(sysctl -n net.ipv4.tcp_congestion_control)"
--}
--
--test_run()
--{
--	tst_resm TINFO "compare '$def_alg' and 'dctcp' congestion alg. results"
--
--	set_cong_alg "$def_alg"
--
--	tst_netload -H $(tst_ipaddr rhost)
--	local res0="$(cat tst_netload.res)"
--
--	set_cong_alg "dctcp"
--
--	tst_netload -H $(tst_ipaddr rhost)
--	local res1="$(cat tst_netload.res)"
--
--	local per=$(( $res0 * 100 / $res1 - 100 ))
--
--	if [ "$per" -lt "10" ]; then
--		tst_resm TFAIL "dctcp performance $per %"
--	else
--		tst_resm TPASS "dctcp performance $per %"
--	fi
--}
--
--setup
--
--test_run
--
--tst_exit
-diff --git a/testcases/network/tcp_cc/Makefile b/testcases/network/tcp_cc/Makefile
-new file mode 100644
-index 0000000..82a6262
---- /dev/null
-+++ b/testcases/network/tcp_cc/Makefile
-@@ -0,0 +1,22 @@
-+# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+diff --git a/testcases/network/tcp_cc/tcp_cc_lib.sh b/testcases/network/tcp_cc/tcp_cc_lib.sh
+index b96c8af..7e93e1d 100755
+--- a/testcases/network/tcp_cc/tcp_cc_lib.sh
++++ b/testcases/network/tcp_cc/tcp_cc_lib.sh
+@@ -9,6 +9,8 @@ TST_NEEDS_CMDS="sysctl tc"
+ . tst_net.sh
+ 
+ def_alg="cubic"
++prev_qlen=
++prev_queue=
+ prev_alg=
+ 
+ set_cong_alg()
+@@ -21,8 +23,16 @@ set_cong_alg()
+ 
+ tcp_cc_cleanup()
+ {
++	local rmt_dev="dev $(tst_iface rhost)"
 +
-+top_srcdir		?= ../../..
+ 	[ "$prev_cong_ctl" ] && \
+ 		tst_set_sysctl net.ipv4.tcp_congestion_control $prev_alg
 +
-+include $(top_srcdir)/include/mk/env_pre.mk
++	[ "$prev_qlen" ] && \
++		tst_rhost_run -c "ip li set txqueuelen $prev_qlen $rmt_dev"
 +
-+INSTALL_TARGETS		:= dctcp01.sh
++	[ "$prev_queue" ] && \
++		tst_rhost_run -c "tc qdisc replace $rmt_dev root $prev_queue"
+ }
+ 
+ tcp_cc_setup()
+@@ -30,6 +40,30 @@ tcp_cc_setup()
+ 	prev_alg="$(sysctl -n net.ipv4.tcp_congestion_control)"
+ }
+ 
++qdisc_list="pfifo_fast codel pfifo fq hfsc hhf htb pie prio sfb sfq"
 +
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/tcp_cc/dctcp01.sh b/testcases/network/tcp_cc/dctcp01.sh
-new file mode 100755
-index 0000000..92ac97d
---- /dev/null
-+++ b/testcases/network/tcp_cc/dctcp01.sh
-@@ -0,0 +1,91 @@
-+#!/bin/sh
-+# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program. If not, see <http://www.gnu.org/licenses/>.
-+#
-+# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+
-+TCID=dctcp01
-+TST_TOTAL=1
-+TST_CLEANUP="cleanup"
-+TST_NEEDS_TMPDIR=1
-+def_alg="cubic"
-+prev_alg=
-+
-+TST_USE_LEGACY_API=1
-+. tst_net.sh
-+
-+set_cong_alg()
++tcp_cc_set_qdisc()
 +{
-+	local alg=$1
-+	tst_resm TINFO "setting $alg"
++	local qdisc="$1"
++	local qlen="${2:-1000}"
++	local cmd="tc qdisc replace"
++	local rmt_dev="$(tst_iface rhost)"
 +
-+	tst_set_sysctl net.ipv4.tcp_congestion_control $alg safe
++	tst_res TINFO "set qdisc on $(tst_iface rhost) to $qdisc len $qlen"
++
++	[ -z "$prev_qlen" ] && \
++		prev_qlen=$(tst_rhost_run -s -c \
++			    "cat /sys/class/net/$rmt_dev/tx_queue_len")
++
++	[ -z "$prev_queue" ] && \
++		prev_queue=$(tst_rhost_run -s -c \
++			     "tc qdisc show dev $rmt_dev | head -1" | \
++			     cut -f2 -d' ')
++
++	tst_rhost_run -s -c "ip li set txqueuelen $qlen dev $rmt_dev"
++	tst_rhost_run -s -c "$cmd dev $rmt_dev root $qdisc"
 +}
 +
-+cleanup()
-+{
-+	if [ "$prev_cong_ctl" ]; then
-+		tst_set_sysctl net.ipv4.tcp_congestion_control $prev_alg
-+	fi
-+	tst_rmdir
-+	tc qdisc del dev $(tst_iface) root netem loss 0.03% ecn
-+}
-+
-+setup()
-+{
-+	if tst_kvcmp -lt "3.18"; then
-+		tst_brkm TCONF "test requires kernel 3.18 or newer"
-+	fi
-+
-+	tst_require_root
-+	tst_check_cmds sysctl tc
-+
-+	tst_resm TINFO "emulate congestion with packet loss 0.03% and ECN"
-+	tc qdisc add dev $(tst_iface) root netem loss 0.03% ecn > /dev/null 2>&1
-+	if [ $? -ne 0 ]; then
-+		tst_brkm TCONF "netem doesn't support ECN"
-+	fi
-+
-+	prev_alg="$(sysctl -n net.ipv4.tcp_congestion_control)"
-+}
-+
-+test_run()
-+{
-+	tst_resm TINFO "compare '$def_alg' and 'dctcp' congestion alg. results"
-+
-+	set_cong_alg "$def_alg"
-+
-+	tst_netload -H $(tst_ipaddr rhost)
-+	local res0="$(cat tst_netload.res)"
-+
-+	set_cong_alg "dctcp"
-+
-+	tst_netload -H $(tst_ipaddr rhost)
-+	local res1="$(cat tst_netload.res)"
-+
-+	local per=$(( $res0 * 100 / $res1 - 100 ))
-+
-+	if [ "$per" -lt "10" ]; then
-+		tst_resm TFAIL "dctcp performance $per %"
-+	else
-+		tst_resm TPASS "dctcp performance $per %"
-+	fi
-+}
-+
-+setup
-+
-+test_run
-+
-+tst_exit
+ tcp_cc_test01()
+ {
+ 	local alg=$1
 -- 
 1.7.1
 
