@@ -1,53 +1,67 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Sat, 19 May 2018 17:22:20 +0800
-Subject: [LTP] [PATCH] fs/read_all: Clear suplementary groups before droping
-	privileges
-In-Reply-To: <20180518170933.GA5094@rei>
-References: <20180518170933.GA5094@rei>
-Message-ID: <1526721740-8382-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Zhang, Yixin <yixin.zhang@intel.com>
+Date: Mon, 21 May 2018 13:38:57 +0800
+Subject: [LTP] [PATCH ltp] Add .cache.mk and *.dwo into clean target and
+ .gitignore
+In-Reply-To: <20180518153409.jf7thwzi74rfqnpb@dell5510>
+References: <20180518202208.5752-1-yixin.zhang@intel.com>
+ <20180518153409.jf7thwzi74rfqnpb@dell5510>
+Message-ID: <20180521053857.uxaim3tr27gy4aim@yixin-desktop>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Current user(e.g. root) has its own suplementary group set when logged in.  Which
-means that even when a program sets it's user and group ids to nobody the current
-group still stays in the list of supplementary groups, which then is matched for
-files with the current group ownership and hence we can still access the file.
+Hi Petr,
 
-For example, if /dev/watchdog has root group ownership and rw group permissions,
-running read_all_dev can still open /dev/watchdog and reboot system even after
-switching user and group ids from root to nobody.
+I find that when I build  LTP on certain self-build kernel, there will be .dwo
+file and .cache.mk file created. That's why I create this patch.
 
-We need to clear suplementary groups before droping privileges and keep the same
-rule as commit 1f011e5 if current user doesn't have the capabilities to clear
-suplementary groups.
+Yixin
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- testcases/kernel/fs/read_all/read_all.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/read_all/read_all.c
-index a8e1611..acd8e73 100644
---- a/testcases/kernel/fs/read_all/read_all.c
-+++ b/testcases/kernel/fs/read_all/read_all.c
-@@ -258,6 +258,12 @@ static void maybe_drop_privs(void)
- 	if (!drop_privs)
- 		return;
- 
-+	TEST(setgroups(0, NULL));
-+	if (TEST_RETURN < 0 && TEST_ERRNO != EPERM) {
-+		tst_brk(TBROK | TTERRNO,
-+			"Failed to clear suplementary group set");
-+	}
-+
- 	nobody = SAFE_GETPWNAM("nobody");
- 
- 	TEST(setgid(nobody->pw_gid));
--- 
-1.8.3.1
-
-
-
+On 2018-05-18 at 17:34:10 +0200, Petr Vorel wrote:
+> Hi Yixin,
+> 
+> 
+> > These files are generated during build, so and them into clean target
+> > and .gitignore
+> 
+> > Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+> Tested-by: Petr Vorel <pvorel@suse.cz>
+> 
+> > ---
+> >  .gitignore             | 2 ++
+> >  include/mk/env_post.mk | 2 +-
+> >  2 files changed, 3 insertions(+), 1 deletion(-)
+> 
+> > diff --git a/.gitignore b/.gitignore
+> > index a7e65633f..b838efd59 100644
+> > --- a/.gitignore
+> > +++ b/.gitignore
+> > @@ -8,6 +8,8 @@ core
+> >  .gdb_history
+> >  .gdbinit
+> >  lib*.a
+> > +.cache.mk
+> > +*.dwo
+> 
+> We're not using DWARF object files (yet), but it doesn't harm to be prepared.
+> 
+> >  /aclocal.m4
+> >  autom4te.cache
+> > diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
+> > index 4c57fffe4..59ebebb03 100644
+> > --- a/include/mk/env_post.mk
+> > +++ b/include/mk/env_post.mk
+> > @@ -54,7 +54,7 @@ MAKE_TARGETS			?= $(notdir $(patsubst %.c,%,$(wildcard $(abs_srcdir)/*.c)))
+> 
+> >  MAKE_TARGETS			:= $(filter-out $(FILTER_OUT_MAKE_TARGETS),$(MAKE_TARGETS))
+> 
+> > -CLEAN_TARGETS			+= $(MAKE_TARGETS) *.o *.pyc
+> > +CLEAN_TARGETS			+= $(MAKE_TARGETS) *.o *.pyc .cache.mk .*.dwo
+> 
+> >  # Majority of the files end up in testcases/bin...
+> >  INSTALL_DIR			?= testcases/bin
+> 
+> Kind regards,
+> Petr
