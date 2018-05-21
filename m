@@ -1,145 +1,48 @@
-From: Zhang, Yixin <yixin.zhang@intel.com>
-Date: Mon, 21 May 2018 14:55:34 +0800
-Subject: [LTP] [PATCH v2 ltp] fs/ext4: enhance logic of
- ext4_nsec_timestamps_test
-In-Reply-To: <20180504183842.32501-1-yixin.zhang@intel.com>
-References: <20180504183842.32501-1-yixin.zhang@intel.com>
-Message-ID: <20180521065533.gd3m7hditmxoo4ed@yixin-desktop>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 21 May 2018 14:48:24 +0300
+Subject: [LTP] [PATCH 0/6] network/tcp_cc: add new tests bbr01 and bbr02
+Message-ID: <1526903310-2833-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+The patches are adding two new tests for BBR congestion control
+algorithm.
 
-Could you help to check if further modification is needed for the v2 patch?
-This patch fix fake failure of 1 test case on certain HW.
-Thanks.
+* bbr01 test is a simple one and similar to dctcp01 but not using
+  ECN when emulating packet loss.
 
-Yixin
+* bbr02 test, in addition to packet loss emulation with ECN, is using
+  delay, reorder and corrupt features of 'tc'. And also iterates the
+  different queueing disciplines.
 
-On 2018-05-05 at 02:38:42 +0800, Yixin Zhang wrote:
-> 1. Check the big block device at do_setup(), TBROK if it's mounted
-> 2. Replace umount to tst_umount to handle umount failed due to device busy
-> 3. Fix typo error
-> 
-> Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
-> ---
->  .../ext4_nsec_timestamps_test.sh                   | 34 ++++++++--------------
->  .../kernel/fs/ext4-new-features/ext4_funcs.sh      |  3 ++
->  2 files changed, 15 insertions(+), 22 deletions(-)
-> 
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-> index c6ff7c2ba..69ae74c42 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-> @@ -56,15 +56,10 @@ ext4_test_sec_timestamps()
->  	if [ $atime -ne 0 -o $mtime -ne 0 -o $ctime -ne 0 ]; then
->  		tst_resm TFAIL "Timestamp is not second(atime: $atime, mtime: \
->  				$mtime, ctime: $ctime)"
-> -		umount mnt_point
-> -		return
-> -	fi
-> -
-> -	umount mnt_point
-> -	if [ $? -ne 0 ]; then
-> -		tst_resm TFAIL "failed to umount ext4 filesystem"
-> +		tst_umount mnt_point
->  		return
->  	fi
-> +	tst_umount mnt_point
->  
->  	tst_resm TPASS "Ext4 nanosecond timestamps test with 128 inode size pass"
->  }
-> @@ -76,8 +71,8 @@ ext4_test_nsec_timestamps()
->  
->  	mkfs.ext3 -I 256 $EXT4_DEV >/dev/null 2>&1
->  	if [ $? -ne 0 ]; then
-> -		tst_resm TFAIL "failed to create ext4 filesystem"
-> -		return
-> +		tst_resm TFAIL "failed to create ext3 filesystem"
-> +	  return
->  	fi
->  
->  	mount -t ext4 $EXT4_DEV mnt_point
-> @@ -105,10 +100,9 @@ ext4_test_nsec_timestamps()
->  	nsec_ctime=`ext4_file_time mnt_point/tmp_file ctime nsec`
->  
->  	# Test nanosecond
-> -	if [ $nsec_atime -eq 0 -a $nsec_mtime -eq 0 -a $nsec_ctime -eq 0 ]
-> -	then
-> +	if [ $nsec_atime -eq 0 -a $nsec_mtime -eq 0 -a $nsec_ctime -eq 0 ]; then
->  		tst_resm TFAIL "The timestamp is not nanosecond(nsec_atime: $nsec_atime, nsec_mtime: $nsec_mtime, nsec_ctime: $nsec_ctime)"
-> -		umount mnt_point
-> +		tst_mount mnt_point
->  		return
->  	fi
->  
-> @@ -122,15 +116,11 @@ ext4_test_nsec_timestamps()
->  			than the current time we got.(sec_atime: $sec_atime, \
->  			sec_mtime: $sec_mtime, sec_ctime: $sec_ctime, \
->  			cur_time[s]: $sec)"
-> -		umount mnt_point
-> +		tst_umount mnt_point
->  		return
->  	fi
->  
-> -	umount mnt_point
-> -	if [ $? -ne 0 ]; then
-> -		tst_resm TFAIL "failed to umount ext4 filesystem"
-> -		return
-> -	fi
-> +	tst_umount mnt_point
->  
->  	# Test mount to ext3 and then mount back to ext4
->  	mount -t ext3 $EXT4_DEV mnt_point
-> @@ -138,7 +128,7 @@ ext4_test_nsec_timestamps()
->  		tst_resm TFAIL "failed to mount to ext3"
->  		return
->  	fi
-> -	umount mnt_point
-> +	tst_umount mnt_point
->  
->  	mount -t ext4 $EXT4_DEV mnt_point
->  	if [ $? -ne 0 ]; then
-> @@ -148,7 +138,7 @@ ext4_test_nsec_timestamps()
->  
->  	nsec_atime2=`ext4_file_time mnt_point/tmp_file atime nsec`
->  	nsec_mtime2=`ext4_file_time mnt_point/tmp_file mtime nsec`
-> -	nsec_ctime2=`ext4_file_time mnt_point/tmp_file mtime nsec`
-> +	nsec_ctime2=`ext4_file_time mnt_point/tmp_file ctime nsec`
->  
->  	if [ $nsec_atime -ne $nsec_atime2 -o $nsec_ctime -ne $nsec_ctime2 -o \
->  	     $nsec_mtime -ne $nsec_mtime2 ]; then
-> @@ -156,11 +146,11 @@ ext4_test_nsec_timestamps()
->  			unexpected. Before[atime mtime ctime]: $nsec_atime \
->  			$nsec_mtime $nsec_ctime, After[atime mtime ctime]: \
->  			$nsec_atime2 $nsec_mtime2 $nsec_ctime2)"
-> -		umount mnt_point
-> +		tst_umount mnt_point
->  		return
->  	fi
->  
-> -	umount mnt_point
-> +	tst_umount mnt_point
->  	tst_resm TPASS "Ext4 nanosecond timestamps test with 256 inode size pass"
->  }
->  
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
-> index a9eb54e8d..1514da5a2 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
-> @@ -45,6 +45,9 @@ ext4_setup()
->  		tst_brkm TCONF "tests need a big block device(5G-10G)"
->  	else
->  		export EXT4_DEV=$LTP_BIG_DEV
-> +		if mount | cut -d' ' -f1 | grep -q ^$EXT4_DEV$ ; then
-> +			tst_brkm TBROK "$EXT4_DEV should be umounted before test"
-> +		fi
->  	fi
->  
->  	tst_tmpdir
-> -- 
-> 2.14.1
-> 
+The last test, I guess, should use TST_TEST_DATA for passing queueing
+disciplines.
+
+Alexey Kodanev (6):
+  network: rename dcctp dir to tcp_cc
+  dctcp01: convert to new API and move common code to a library
+  network/tcp_cc/dctcp01: increase packet loss for dctcp
+  network/tcp_cc/lib: add a function to set qdisc and txqueuelen
+  network/tcp_cc: add new test bbr01
+  network/tcp_cc: add new test bbr02
+
+ runtest/net.features                   |    5 ++
+ testcases/network/dctcp/Makefile       |   22 --------
+ testcases/network/dctcp/dctcp01.sh     |   91 --------------------------------
+ testcases/network/tcp_cc/Makefile      |   22 ++++++++
+ testcases/network/tcp_cc/bbr01.sh      |   32 +++++++++++
+ testcases/network/tcp_cc/bbr02.sh      |   45 ++++++++++++++++
+ testcases/network/tcp_cc/dctcp01.sh    |   38 +++++++++++++
+ testcases/network/tcp_cc/tcp_cc_lib.sh |   91 ++++++++++++++++++++++++++++++++
+ 8 files changed, 233 insertions(+), 113 deletions(-)
+ delete mode 100644 testcases/network/dctcp/Makefile
+ delete mode 100755 testcases/network/dctcp/dctcp01.sh
+ create mode 100644 testcases/network/tcp_cc/Makefile
+ create mode 100755 testcases/network/tcp_cc/bbr01.sh
+ create mode 100755 testcases/network/tcp_cc/bbr02.sh
+ create mode 100755 testcases/network/tcp_cc/dctcp01.sh
+ create mode 100755 testcases/network/tcp_cc/tcp_cc_lib.sh
+
