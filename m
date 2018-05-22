@@ -1,81 +1,63 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 22 May 2018 21:37:58 +0200
-Subject: [LTP] [RFC PATCH v2 1/2] tst_test.sh: Add TST_TEST_DATA and
- TST_TEST_DATA_IFS
-In-Reply-To: <20180522104220.GA27975@rei>
-References: <20180516161820.3077-1-pvorel@suse.cz>
- <20180516161820.3077-2-pvorel@suse.cz> <20180522104220.GA27975@rei>
-Message-ID: <20180522193758.v7kepy5u2lpzeoj5@dell5510>
+Date: Tue, 22 May 2018 21:49:57 +0200
+Subject: [LTP] [PATCH v3 1/1] ipneigh : Use new API
+In-Reply-To: <7e8ad415-d92b-0911-1018-dbd1f3137912@suse.de>
+References: <20180517090711.10577-1-asmorodskyi@suse.com>
+ <20180517170918.qj2svkrqlbftmfjd@dell5510>
+ <7e8ad415-d92b-0911-1018-dbd1f3137912@suse.de>
+Message-ID: <20180522194957.criagw3qgwgdgrli@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Anton,
 
-> > @@ -352,18 +352,30 @@ tst_run()
-> >  			if type test1 > /dev/null 2>&1; then
-> >  				for tst_i in $(seq $TST_CNT); do
-> >  					local res=$(tst_resstr)
-> > -					$TST_TESTFUNC$tst_i
-> > +					$TST_TESTFUNC$tst_i $tst_i $TST_TEST_DATA
-> >  					tst_rescmp "$res"
-> >  					TST_COUNT=$((TST_COUNT+1))
-> >  				done
-> >  			else
-> >  				for tst_i in $(seq $TST_CNT); do
-> >  					local res=$(tst_resstr)
-> > -					$TST_TESTFUNC $tst_i
-> > +					$TST_TESTFUNC $tst_i $TST_TEST_DATA
-> >  					tst_rescmp "$res"
-> >  					TST_COUNT=$((TST_COUNT+1))
-> >  				done
-> >  			fi
+> > You can provide your own file with tests cases you want, put that file in /opt/ltp/runtest/
+> > $ cat /opt/ltp/runtest/test
+> > ipneigh6_ip ipneigh01.sh -6 -c ip
+> > ipneigh01_arp ipneigh01.sh -c arp
+> > ipneigh01_ip ipneigh01.sh -c ip
 
-> So in this implementation we cannot use IFS to separate the arguments,
-> without that it's kind of useless as we can pass anything in global
-> variable anyway...
+> > $ PASSWD=your-root-password /opt/ltp/testscripts/network.sh -f test
+> thanks for advice , I also thought about something like this because I think
+> that ipneigh term is not the best one and not showing what actually covered
+> ( not only ip neighbour but also arp command ) and both cases it is just
+> tools to
+> delete line from arp table which is just one step in test flow and not sure
+> if it is main one ? But I don't feel confident enough to came up with new
+> name. And I would do what you suggesting here only if I will have better
+> name for ipneigh01.sh script. Do you have some certain ideas how better to
+> name it ?
 
-> > +		elif [ -n "$TST_TEST_DATA" ]; then
-> > +			tst_i=1
-> > +			tst_check_cmds cut
-> > +			while true; do
-> > +				tst_data="$(echo "$TST_TEST_DATA" | cut -d"$TST_TEST_DATA_IFS" -f$tst_i)"
-> > +				[ -z "$tst_data" ] && break
-> > +				local res=$(tst_resstr)
-> > +				$TST_TESTFUNC $tst_i "$tst_data"
-> > +				tst_rescmp "$res"
-> > +				TST_COUNT=$((TST_COUNT+1))
-> > +				tst_i=$((tst_i+1))
-> > +			done
-> >  		else
-> >  			local res=$(tst_resstr)
-> >  			$TST_TESTFUNC
-> > @@ -400,6 +412,8 @@ if [ -z "$TST_NO_DEFAULT_RUN" ]; then
-> >  		tst_brk TBROK "TST_TESTFUNC is not defined"
-> >  	fi
+Command was renamed in a217233ab:
+network/tcp_cmds/arp01: rename to ipneigh01
 
-> Uff, the maze of if conditions is getting out of hand a bit.
+    'ipneigh' is more appropriate name for the test as it covers
+    IPv4 and IPv6 cache entries with 'ip neigh' command and arp
+    command is obsolete.
+---
+I think that's valid point, I'd keep the name. One day arp part gets deleted.
 
-> Why dont we move innter part of the while [ $TST_ITERATION -gt 0 ] loop
-> to a separate tst_run_tests() function and add the ability to pass data
-> in $1 there. Then we can do something as:
-
-> 	while [ $TST_INTERATION -gt 0 ]; then
-> 	      if [ -n $TST_TEST_DATA ]; then
-> 	          for tst_data in ...; do
-> 		      tst_run_tests "$tst_data"
-> 		  done
-> 	      else
-> 	           tst_run_tests
-> 	      fi
-> 	done
-Changed in v3 in the way you suggested.
-I thought there is a reason not to introduce any function as it'd be exported.
-In v3 I added not only tst_run_tests(), but also tst_run_test() helper.
-
-Thanks for your review.
+> > > -	tst_resm TINFO "Stress auto-creation of $entry_name cache entry"
+> > > -	tst_resm TINFO "by pinging '$rhost' and deleting entry again"
+> > > -	tst_resm TINFO "with '$arp_del_cmd'"
+> > > +	tst_res TINFO "Stress auto-creation of $entry_name cache entry"
+> > > +	tst_res TINFO "by pinging '$rhost'"
+> > > +	tst_res TINFO "and deleting entry again with '$del_cmd'"
+> > > +	tst_res TINFO "in a loop with $NUMLOOPS iterations"
+> > Probably this would be enough:
+> > 	tst_res TINFO "Stress auto-creation of $entry_name cache entry $NUMLOOPS times"
+> Why you think that 4 lines is too much ? I personally don't see a problem to
+> give user a little more info and don't think that you can call it spaming
+I really thing that this is sufficient enough (I forgot to add the command before):
+  	tst_res TINFO "Stress auto-creation of $entry_name cache entry with '$del_cmd' $NUMLOOPS times"
+Why shorter lines:
+1) This 4 lines is trying to express what the test does. Curious user
+should look into the test itself. LTP approach is to print command when they fail,
+otherwise be informative, but not verbose.
+2) It's difficult to grep log message which is split, it's better to avoid it if possible)
 
 
 Kind regards,
