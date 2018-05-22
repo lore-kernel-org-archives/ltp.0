@@ -1,50 +1,59 @@
-From: Yixin Zhang <yixin.zhang@intel.com>
-Date: Tue, 22 May 2018 11:03:31 +0800
-Subject: [LTP] [PATCH v2 ltp] Add .cache.mk and *.dwo into clean target and
-	.gitignore
-Message-ID: <20180522030331.28252-1-yixin.zhang@intel.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 22 May 2018 12:26:13 +0200
+Subject: [LTP] [PATCH] fs/read_all: Clear suplementary groups before
+	droping privileges
+In-Reply-To: <1526721740-8382-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20180518170933.GA5094@rei>
+ <1526721740-8382-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <87603g9ebe.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-These files are generated during build, so and them into clean target
-and .gitignore
+Hello,
 
-Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
----
- .gitignore             | 2 ++
- include/mk/env_post.mk | 3 ++-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+Xiao Yang writes:
 
-diff --git a/.gitignore b/.gitignore
-index a7e65633f..b838efd59 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -8,6 +8,8 @@ core
- .gdb_history
- .gdbinit
- lib*.a
-+.cache.mk
-+*.dwo
- 
- /aclocal.m4
- autom4te.cache
-diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
-index 4c57fffe4..913bdf5d1 100644
---- a/include/mk/env_post.mk
-+++ b/include/mk/env_post.mk
-@@ -54,7 +54,8 @@ MAKE_TARGETS			?= $(notdir $(patsubst %.c,%,$(wildcard $(abs_srcdir)/*.c)))
- 
- MAKE_TARGETS			:= $(filter-out $(FILTER_OUT_MAKE_TARGETS),$(MAKE_TARGETS))
- 
--CLEAN_TARGETS			+= $(MAKE_TARGETS) *.o *.pyc
-+# with only *.dwo, .[0-9]+.dwo can not be cleaned
-+CLEAN_TARGETS			+= $(MAKE_TARGETS) *.o *.pyc .cache.mk *.dwo .*.dwo
- 
- # Majority of the files end up in testcases/bin...
- INSTALL_DIR			?= testcases/bin
+> Current user(e.g. root) has its own suplementary group set when logged in.  Which
+> means that even when a program sets it's user and group ids to nobody the current
+> group still stays in the list of supplementary groups, which then is matched for
+> files with the current group ownership and hence we can still access the file.
+>
+> For example, if /dev/watchdog has root group ownership and rw group permissions,
+> running read_all_dev can still open /dev/watchdog and reboot system even after
+> switching user and group ids from root to nobody.
+>
+> We need to clear suplementary groups before droping privileges and keep the same
+> rule as commit 1f011e5 if current user doesn't have the capabilities to clear
+> suplementary groups.
+>
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/fs/read_all/read_all.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/read_all/read_all.c
+> index a8e1611..acd8e73 100644
+> --- a/testcases/kernel/fs/read_all/read_all.c
+> +++ b/testcases/kernel/fs/read_all/read_all.c
+> @@ -258,6 +258,12 @@ static void maybe_drop_privs(void)
+>  	if (!drop_privs)
+>  		return;
+>  
+> +	TEST(setgroups(0, NULL));
+> +	if (TEST_RETURN < 0 && TEST_ERRNO != EPERM) {
+> +		tst_brk(TBROK | TTERRNO,
+> +			"Failed to clear suplementary group set");
+> +	}
+> +
+>  	nobody = SAFE_GETPWNAM("nobody");
+>  
+>  	TEST(setgid(nobody->pw_gid));
+
+LGTM!
+
 -- 
-2.14.1
-
+Thank you,
+Richard.
