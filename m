@@ -1,25 +1,41 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 23 May 2018 10:12:43 +0200
-Subject: [LTP] [PATCH 3/3] net/nfs_lib.sh: Cleanup for legacy API
-In-Reply-To: <1525663451-32016-3-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1525663451-32016-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1525663451-32016-3-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20180523081243.myzhjvwsbq5m77lu@dell5510>
+Date: Wed, 23 May 2018 10:18:25 +0200
+Subject: [LTP] [COMMITTED] [PATCH 1/1] lib/tst_net.sh: Silence getopts for
+	legacy API
+Message-ID: <20180523081825.18294-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao,
+Commits bellow removed ':' silencing getopts for legacy API. As there is
+currently no warning for network scripts using TST_PARSE_ARGS in legacy
+API, adding it into library.
 
-> 1) Move common tst_net.sh to nfs_lib.sh itself
-> 2) Pass $OPTARG as $2 to TST_PARSE_ARGS functions
+5dea314ee ("net/nfs_lib.sh: Cleanup for legacy API")
+52c754c7b ("net/tcp_fastopen_run.sh: Cleanup in TST_PARSE_ARGS functions
+for legacy API")
 
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
-Pushed, with minor change removing ':'
-I'll add it into tst_net.sh for old API + send a patch for tst_net.sh as Alexey suggested.
+Reported-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/tst_net.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Kind regards,
-Petr
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index 5a0fe77ab..a8f80b518 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -41,7 +41,7 @@ tst_net_parse_args()
+ tst_net_read_opts()
+ {
+ 	local OPTIND
+-	while getopts "$TST_OPTS" opt; do
++	while getopts ":$TST_OPTS" opt; do
+ 		$TST_PARSE_ARGS "$opt" "$OPTARG"
+ 	done
+ }
+-- 
+2.16.3
+
