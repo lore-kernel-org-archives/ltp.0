@@ -1,38 +1,35 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 23 May 2018 10:35:09 +0200
-Subject: [LTP] [PATCH 1/1] net/tst_netload: TBROK when TST_NEEDS_TMPDIR
-	not set
-In-Reply-To: <20180516131430.19090-1-pvorel@suse.cz>
-References: <20180516131430.19090-1-pvorel@suse.cz>
-Message-ID: <20180523083509.4ypk3prcbokvhnu6@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 23 May 2018 13:08:34 +0200
+Subject: [LTP] [PATCH] inotify07: Add test for kernel crash during event
+ notification
+In-Reply-To: <20180503152236.17488-1-jack@suse.cz>
+References: <20180503152236.17488-1-jack@suse.cz>
+Message-ID: <20180523110834.GA8833@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> When a removal of the last mark on inode / vfsmount races with a
+> notification about new event on that object, the kernel can crash. Test
+> for this failure. The problem was fixed by kernel commit d90a10e2444b
+> "fsnotify: Fix fsnotify_mark_connector race".
 
-> tst_netload function uses $TST_TMPDIR therefore requires
-> TST_NEEDS_TMPDIR=1. It's better to tell user the reason, as current
-> error message was a bit misleading:
+Pushed as inotify09 with following changes:
 
-> dccp_ipsec 1 TINFO: run server 'netstress -T dccp -R 500000 -B '
-> netstress: option requires an argument -- 'B'
+* I've changed the test to use two threads and fzsync synchronization
+  library we implemented especially for triggering races between
+  syscalls
 
-...
-> +++ b/testcases/lib/tst_net.sh
-> @@ -480,6 +480,10 @@ tst_netload()
->  	local s_replies="${TST_NETLOAD_MAX_SRV_REPLIES:-500000}"
->  	local s_opts=
+* Changed the licence to GPLv2+ which is default for LTP, I hope that
+  you do not mind
 
-> +	if [ ! "$TST_NEEDS_TMPDIR" = 1 ]; then
-> +		tst_brk_ TBROK "Using tst_netload requires setting TST_NEEDS_TMPDIR=1"
-> +	fi
-> +
+* Added .gitignore and runtest entries
 
-Pushed.
+Thanks.
 
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
