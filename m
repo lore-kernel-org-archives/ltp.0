@@ -1,38 +1,57 @@
-From: Yang Shi <yang.shi@linux.alibaba.com>
-Date: Thu, 24 May 2018 01:14:06 +0800
-Subject: [LTP] [PATCH] zram03: drop obsolete sysfs interfaces
-Message-ID: <1527095646-77998-1-git-send-email-yang.shi@linux.alibaba.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 24 May 2018 09:59:40 +0200
+Subject: [LTP] [PATCH v2 ltp] Add .cache.mk and *.dwo into clean target
+ and .gitignore
+In-Reply-To: <20180522030331.28252-1-yixin.zhang@intel.com>
+References: <20180522030331.28252-1-yixin.zhang@intel.com>
+Message-ID: <20180524075940.prbtar2gylm6mnl4@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Due to upstream linux commit c87d1655c29500b459fb135258a93f8309ada9c7
-("zram: remove obsolete sysfs attrs"), some sysfs interfaces are not
-available anymore. Remove dumping them to avoid test case failure.
+Hi Yixin,
 
-Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
----
- testcases/kernel/device-drivers/zram/zram03.c | 6 ------
- 1 file changed, 6 deletions(-)
+> These files are generated during build, so and them into clean target
+> and .gitignore
 
-diff --git a/testcases/kernel/device-drivers/zram/zram03.c b/testcases/kernel/device-drivers/zram/zram03.c
-index 3f7ab4e..f2c166c 100644
---- a/testcases/kernel/device-drivers/zram/zram03.c
-+++ b/testcases/kernel/device-drivers/zram/zram03.c
-@@ -185,11 +185,5 @@ static void print(char *string)
- static void dump_info(void)
- {
- 	print("initstate");
--	print("compr_data_size");
--	print("orig_data_size");
- 	print("disksize");
--	print("mem_used_total");
--	print("num_reads");
--	print("num_writes");
--	print("zero_pages");
- }
--- 
-1.8.3.1
+> Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+> ---
+>  .gitignore             | 2 ++
+>  include/mk/env_post.mk | 3 ++-
+>  2 files changed, 4 insertions(+), 1 deletion(-)
 
+> diff --git a/.gitignore b/.gitignore
+> index a7e65633f..b838efd59 100644
+> --- a/.gitignore
+> +++ b/.gitignore
+> @@ -8,6 +8,8 @@ core
+>  .gdb_history
+>  .gdbinit
+>  lib*.a
+> +.cache.mk
+> +*.dwo
+
+>  /aclocal.m4
+>  autom4te.cache
+> diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
+> index 4c57fffe4..913bdf5d1 100644
+> --- a/include/mk/env_post.mk
+> +++ b/include/mk/env_post.mk
+> @@ -54,7 +54,8 @@ MAKE_TARGETS			?= $(notdir $(patsubst %.c,%,$(wildcard $(abs_srcdir)/*.c)))
+
+>  MAKE_TARGETS			:= $(filter-out $(FILTER_OUT_MAKE_TARGETS),$(MAKE_TARGETS))
+
+> -CLEAN_TARGETS			+= $(MAKE_TARGETS) *.o *.pyc
+> +# with only *.dwo, .[0-9]+.dwo can not be cleaned
+> +CLEAN_TARGETS			+= $(MAKE_TARGETS) *.o *.pyc .cache.mk *.dwo .*.dwo
+
+>  # Majority of the files end up in testcases/bin...
+>  INSTALL_DIR			?= testcases/bin
+
+Thanks, pushed!
+
+
+Kind regards,
+Petr
