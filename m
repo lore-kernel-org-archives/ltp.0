@@ -1,10 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 24 May 2018 15:46:28 +0200
-Subject: [LTP] [RFC PATCH v3 2/2] lib: Add tests
-In-Reply-To: <20180522193430.20117-2-pvorel@suse.cz>
+Date: Thu, 24 May 2018 16:00:58 +0200
+Subject: [LTP] [RFC PATCH v3 1/2] tst_test.sh: Add TST_TEST_DATA and
+ TST_TEST_DATA_IFS
+In-Reply-To: <20180524135327.q5bs2uydjrygaeoq@dell5510>
 References: <20180522193430.20117-1-pvorel@suse.cz>
- <20180522193430.20117-2-pvorel@suse.cz>
-Message-ID: <20180524134628.GB20945@rei>
+ <20180524134143.GA20945@rei>
+ <20180524135327.q5bs2uydjrygaeoq@dell5510>
+Message-ID: <20180524140058.GD20945@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,23 +14,62 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> This is not intended to be merged. It's just a helper which you can use
-> for testing the previous patch.
->
-> (Side note: if we ever want to test tst_test.sh, it'd be possible to
-> dump it into file and compare with saved output. It'd require to remove
-> lines with 'stime=')
+> > Actually this is a good idea, we can follow the python underscore
+> > notation that uses it for private variables and functions. Hence the
+> > counters will become _tst_i, etc.
+> 
+> > But please do that in a separate patch.
+> I meant to add underscore before new functions i.e. _tst_run_tests() and _tst_run_test().
+> Variables: do you mean to change local variables in tst_run()?
+> That would be really for separate patch.
 
-That sounds like a good idea actually, I'm all for unit testing the
-shell library.
+As I written, change everything private that leaks to the test context
+with _tst_ so that it's clear what the test is supposed to set/call.
 
-I'm not that sure that we would want to put it into the runtest file
-though, maybe we just need a runtest.sh script in the lib/ directory
-that would loop over all *.sh file in a certain directory and compared
-the output against corresponding file names without the .sh suffix.
+> > > ---
+> > >  doc/test-writing-guidelines.txt | 74 +++++++++++++++++++++++++++++++++++++----
+> > >  testcases/lib/tst_test.sh       | 61 +++++++++++++++++++++------------
+> > >  2 files changed, 106 insertions(+), 29 deletions(-)
+> 
+> ...
+> > > +TST_TESTFUNC=do_test
+> > > +TST_CNT=2
+> > > +TST_TEST_DATA="foo:bar:d dd"
+> > > +. tst_test.sh
+> > > +
+> > > +do_test()
+> > > +{
+> > > +	case $1 in
+> > > +	1) tst_res TPASS "Test $1 passed with data '$2'";;
+> > > +	2) tst_res TPASS "Test $1 passed with data '$2'";;
+> > > +	esac
+> > > +}
+> > > +
+> > > +tst_run
+> > > +# output:
+> > > +# test 1 TPASS: Test 1 passed with data 'foo:bar:d'
+> > > +# test 2 TPASS: Test 2 passed with data 'foo:bar:d'
+> > > +
+> > > +-------------------------------------------------------------------------------
+> > > +When '$TST_TEST_DATA' is used with '$TST_CNT', it's passed as whole string in
+> > > +'$2' ($1 is for the test number), '$TST_TEST_DATA_IFS' is ignored. Similar
+> > > +would be when using these variables with separate functions.
+> 
+> > Now that we support both TST_CNT and TST_TEST_DATA_IFS can we change
+> > this example to include the TST_TEST_DATA_IFS=":" as well?
+> I wanted to demonstrate that TST_TEST_DATA_IFS has a default value ' ').
+> But ok, I'll change it to define TST_TEST_DATA_IFS as well.
 
-We can then do something as lib/tests/ with runtest.sh that would loop
-over subdirectories in lib/tests/ executing actual testcases.
+No problem with that, but then we should get rid of the : from the
+example data and keep it only at "foo bar".
+
+> > Can we please prefix the res here with tst_ as well since we are
+> > touching the code?
+> Sure. To be honest I wasn't sure whether there is some reason for $res being named without
+> prefix or not.
+
+I guess that it haven't been caught in the review process when I first
+wrote the library...
 
 -- 
 Cyril Hrubis
