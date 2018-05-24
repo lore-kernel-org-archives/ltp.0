@@ -1,29 +1,33 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 24 May 2018 14:59:00 +0200
-Subject: [LTP] [PATCH v4 1/1] ipneigh : Use new API
-In-Reply-To: <3bea4f9e-9df7-cc87-6e49-11acea8a6279@suse.de>
-References: <20180523132432.20681-1-asmorodskyi@suse.com>
- <20180524113951.n6h7a365pggi3zdq@dell5510>
- <3bea4f9e-9df7-cc87-6e49-11acea8a6279@suse.de>
-Message-ID: <20180524125900.rrf6pxscriydt7wb@dell5510>
+Date: Thu, 24 May 2018 17:21:26 +0200
+Subject: [LTP] [RFC PATCH v4 1/4] lib/tst_test.sh: Fix test name function
+	detection for TST_CNT
+Message-ID: <20180524152129.1067-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Anton,
+Reported-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/tst_test.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Hi Petr
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 464c4c41e..779383392 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -349,7 +349,7 @@ tst_run()
+ 	#TODO check that test reports some results for each test function call
+ 	while [ $TST_ITERATIONS -gt 0 ]; do
+ 		if [ -n "$TST_CNT" ]; then
+-			if type test1 > /dev/null 2>&1; then
++			if type ${TST_TESTFUNC}1 > /dev/null 2>&1; then
+ 				for tst_i in $(seq $TST_CNT); do
+ 					local res=$(tst_resstr)
+ 					$TST_TESTFUNC$tst_i
+-- 
+2.16.3
 
-> On 05/24/2018 01:39 PM, Petr Vorel wrote:
-> > Bellow is diff, or you can see file online
-> > https://raw.githubusercontent.com/pevik/ltp/anton/ipneigh.v4.fixes/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
-
-> > Do you agree with the changes (can I push it like this)?
-> Yes
-Pushed, thanks!
-
-
-Kind regards,
-Petr
