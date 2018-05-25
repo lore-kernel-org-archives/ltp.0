@@ -1,51 +1,36 @@
-From: Sebastian Chlad <schlad@suse.de>
-Date: Fri, 25 May 2018 16:36:35 +0200
-Subject: [LTP] [PATCH] commands: Remove all test cases
-In-Reply-To: <20180516101251.trwf4pxvqbqkqmp5@dell5510>
-References: <20180426132418.19495-1-schlad@suse.de>
- <20180426132418.19495-2-schlad@suse.de>
- <b72b277b-e8e0-d69c-b918-bd48341c2a1d@oracle.com>
- <20180426172713.GB14157@x230> <20180427113553.GA14075@rei>
- <20180516101251.trwf4pxvqbqkqmp5@dell5510>
-Message-ID: <20180525163635.219c9949@linux-p5n0>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 25 May 2018 17:53:31 +0200
+Subject: [LTP] [RFC PATCH v4 4/4] tst_test.sh: Add TST_TEST_DATA and
+ TST_TEST_DATA_IFS
+In-Reply-To: <20180525122310.GB1314@rei>
+References: <20180524152129.1067-1-pvorel@suse.cz>
+ <20180524152129.1067-4-pvorel@suse.cz> <20180525094204.GA1314@rei>
+ <20180525121034.fs2v7c34punzvcbx@dell5510>
+ <20180525122310.GB1314@rei>
+Message-ID: <20180525155331.teeuqhdvssva5otj@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, 16 May 2018 12:12:51 +0200
-Petr Vorel <pvorel@suse.cz> wrote:
+Hi Cyril,
 
-> Hi,
-> 
-> > > I guess most of user space tools not related to kernel (cp, cron,
-> > > df, ln, tar, unzip, wc, which) are questionable.  
-> 
-> > It's really hard to draw a line here, but I would probably vote for
-> > keeping tests that are working with files such as cp/df/ln as these
-> > are basically just printing result from UNIX/POSIX syscalls.  
-> 
-> > We probably want to get rid of the unzip and wc test, since that is
-> > not really kernel related.  
-> 
-> I recently pushed some patches sent by Mylène Josserand, just in case
-> we don't get rid of these tests.
-> 
-> BTW Mylène, Thomas, do you know people running these test on
-> embedded? That might justify some of the tests (not sure if it's
-> possible to run busybox tests without compilation - for machines
-> which have their sources cross compiled).
+> > > > +_tst_run_tests()
+> > > > +{
+> > > > +	local data="$1"
+> > > > +	local i
 
-thx Petr for reminding me of this email thread.
+> > > Shouldn't we prefix these two variables with _tst_ prefix as well?
+> > IMHO no, as _tst_run_test and _tst_run_tests is private and these variables are local.
+> > I thought we need to change tst_run as it's run by the tests and all variables which are.
 
-I really like the idea from Jan, so in coming weeks I will really
-follow that advice and 'll go one by one command. "For those that are
-broken, propose them to be removed and CC people who touched it in last
-~2-3 years"
+> As far as I can tell these still leak into the fnc function, or am I
+> mistaken?
 
-> 
-> 
-> Kind regards,
-> Petr
+Uh, you're right. I didn't know that sourcing will absorb local function data outside of
+function :(. I'll fix it in v5.
 
+
+Kind regards,
+Petr
