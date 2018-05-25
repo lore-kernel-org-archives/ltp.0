@@ -1,35 +1,39 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 25 May 2018 17:53:31 +0200
-Subject: [LTP] [RFC PATCH v4 4/4] tst_test.sh: Add TST_TEST_DATA and
- TST_TEST_DATA_IFS
-In-Reply-To: <20180525122310.GB1314@rei>
+Date: Fri, 25 May 2018 18:01:55 +0200
+Subject: [LTP] [RFC PATCH v4 1/4] lib/tst_test.sh: Fix test name
+ function detection for TST_CNT
+In-Reply-To: <20180524152129.1067-1-pvorel@suse.cz>
 References: <20180524152129.1067-1-pvorel@suse.cz>
- <20180524152129.1067-4-pvorel@suse.cz> <20180525094204.GA1314@rei>
- <20180525121034.fs2v7c34punzvcbx@dell5510>
- <20180525122310.GB1314@rei>
-Message-ID: <20180525155331.teeuqhdvssva5otj@dell5510>
+Message-ID: <20180525160155.neyzzrt6iqsjvsdz@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi,
 
-> > > > +_tst_run_tests()
-> > > > +{
-> > > > +	local data="$1"
-> > > > +	local i
+> Reported-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/lib/tst_test.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > > Shouldn't we prefix these two variables with _tst_ prefix as well?
-> > IMHO no, as _tst_run_test and _tst_run_tests is private and these variables are local.
-> > I thought we need to change tst_run as it's run by the tests and all variables which are.
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index 464c4c41e..779383392 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -349,7 +349,7 @@ tst_run()
+>  	#TODO check that test reports some results for each test function call
+>  	while [ $TST_ITERATIONS -gt 0 ]; do
+>  		if [ -n "$TST_CNT" ]; then
+> -			if type test1 > /dev/null 2>&1; then
+> +			if type ${TST_TESTFUNC}1 > /dev/null 2>&1; then
+>  				for tst_i in $(seq $TST_CNT); do
+>  					local res=$(tst_resstr)
+>  					$TST_TESTFUNC$tst_i
 
-> As far as I can tell these still leak into the fnc function, or am I
-> mistaken?
-
-Uh, you're right. I didn't know that sourcing will absorb local function data outside of
-function :(. I'll fix it in v5.
+Pushed.
 
 
 Kind regards,
