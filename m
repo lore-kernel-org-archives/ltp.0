@@ -1,42 +1,32 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 25 May 2018 23:57:20 +0200
-Subject: [LTP] [RFC PATCH v5 0/5] tst_test.sh: Add TST_TEST_DATA and
-	TST_TEST_DATA_IFS + cleanup
-Message-ID: <20180525215725.7218-1-pvorel@suse.cz>
+Date: Sat, 26 May 2018 01:45:00 +0200
+Subject: [LTP] Tests using more libraries and new shell API
+Message-ID: <20180525234459.sd4rklfxrzgqq7mp@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Alexey,
 
-hope I replaced all variables, which are needed and updated all places
-in docs.
+Network libraries using tst_net.sh started to use TST_OPTS and
+TST_PARSE_ARGS:
+89a83d8a0 net/ipsec_lib.sh: Process getopts parameters with TST_OPTS and TST_PARSE_ARGS
+ce920a5a4 network/virt_lib.sh: Process getopts parameters with TST_OPTS and TST_PARSE_ARGS
 
-changes v4->v5:
-* Loop in TST_TEST_DATA with for loop instead of while. It's needed to
-allow having empty parameter (needed for IPsec network tests). This
-brought dependencies to: cut tr wc.
-* Updated docs correctly.
-* Added commit "tst_test.sh: Filter out commented out lines from warnings"
-* Added commit "tst_test.sh: s/resm/res/"
+macsec0{1,2}.sh tests load more libraries: virt_lib.sh and ipsec_lib.sh. Currently
+tst_net.sh doesn't expect more libraries using it, so the later one wins.
+These two tests doesn't use any getopts, so it does not break, but help is affected by
+this. We could revert it, but this is going to be issue for new API.
+
+I tried to allow handling more libraries being sourced in tst_net.sh, but failed.
+I'll probably try once more, but I fear the solution will be too complicated.
+It'd help if one library used the other, but that's not going to happen, there are
+independent and about the same size.
+
+Am I missing something obvious? Any idea how to solve it?
 
 
 Kind regards,
 Petr
-
-Petr Vorel (5):
-  tst_test.sh: Hide "private" variables with "_tst_" prefix
-  tst_test.sh: Warn about using "private" variable or function
-  tst_test.sh: Filter out commented out lines from warnings
-  tst_test.sh: s/resm/res/
-  tst_test.sh: Add TST_TEST_DATA and TST_TEST_DATA_IFS
-
- doc/test-writing-guidelines.txt |  80 ++++++++++++++++++++++++++---
- testcases/lib/tst_test.sh       | 111 +++++++++++++++++++++++++---------------
- 2 files changed, 143 insertions(+), 48 deletions(-)
-
--- 
-2.16.3
-
