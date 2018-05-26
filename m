@@ -1,32 +1,52 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Sat, 26 May 2018 01:45:00 +0200
-Subject: [LTP] Tests using more libraries and new shell API
-Message-ID: <20180525234459.sd4rklfxrzgqq7mp@dell5510>
+Date: Sat, 26 May 2018 13:15:42 +0200
+Subject: [LTP] [PATCH 1/4] tst_net.sh: Simplify ipver settings code
+Message-ID: <20180526111545.20521-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/tst_net.sh | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Network libraries using tst_net.sh started to use TST_OPTS and
-TST_PARSE_ARGS:
-89a83d8a0 net/ipsec_lib.sh: Process getopts parameters with TST_OPTS and TST_PARSE_ARGS
-ce920a5a4 network/virt_lib.sh: Process getopts parameters with TST_OPTS and TST_PARSE_ARGS
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index dc612a794..fd2eacf2f 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -29,11 +29,12 @@ TST_SETUP="tst_net_setup"
+ 
+ # Blank for an IPV4 test; 6 for an IPV6 test.
+ TST_IPV6=${TST_IPV6:-}
++ipver=${TST_IPV6:-4}
+ 
+ tst_net_parse_args()
+ {
+ 	case $1 in
+-	6) TST_IPV6=6;;
++	6) TST_IPV6=6 ipver=6;;
+ 	*) $TST_PARSE_ARGS_CALLER "$1" "$2";;
+ 	esac
+ }
+@@ -68,7 +69,6 @@ tst_net_remote_tmpdir()
+ 
+ tst_net_setup()
+ {
+-	ipver=${TST_IPV6:-4}
+ 	tst_net_remote_tmpdir
+ 	[ -n "$TST_SETUP_CALLER" ] && $TST_SETUP_CALLER
+ }
+@@ -79,7 +79,6 @@ fi
+ 
+ if [ -n "$TST_USE_LEGACY_API" ]; then
+ 	tst_net_read_opts "$@"
+-	ipver=${TST_IPV6:-4}
+ fi
+ 
+ # old vs. new API compatibility layer
+-- 
+2.16.3
 
-macsec0{1,2}.sh tests load more libraries: virt_lib.sh and ipsec_lib.sh. Currently
-tst_net.sh doesn't expect more libraries using it, so the later one wins.
-These two tests doesn't use any getopts, so it does not break, but help is affected by
-this. We could revert it, but this is going to be issue for new API.
-
-I tried to allow handling more libraries being sourced in tst_net.sh, but failed.
-I'll probably try once more, but I fear the solution will be too complicated.
-It'd help if one library used the other, but that's not going to happen, there are
-independent and about the same size.
-
-Am I missing something obvious? Any idea how to solve it?
-
-
-Kind regards,
-Petr
