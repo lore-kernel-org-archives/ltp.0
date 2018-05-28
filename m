@@ -1,10 +1,12 @@
 From: Petr Vorel <petr.vorel@gmail.com>
-Date: Mon, 28 May 2018 07:45:57 +0200
-Subject: [LTP] [PATCH 6/6] network/tcp_cc: add new test bbr02
-In-Reply-To: <1526903310-2833-7-git-send-email-alexey.kodanev@oracle.com>
+Date: Mon, 28 May 2018 07:47:25 +0200
+Subject: [LTP] [PATCH 4/6] network/tcp_cc/lib: add a function to set
+ qdisc and txqueuelen
+In-Reply-To: <20180528054425.GD21980@x230>
 References: <1526903310-2833-1-git-send-email-alexey.kodanev@oracle.com>
- <1526903310-2833-7-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20180528054556.GF21980@x230>
+ <1526903310-2833-5-git-send-email-alexey.kodanev@oracle.com>
+ <20180528054425.GD21980@x230>
+Message-ID: <20180528054723.GG21980@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,29 +15,15 @@ To: ltp@lists.linux.it
 
 Hi Alexey,
 
-> Difference, comparing to bbr01:
-
-> * Uses different (not default) qdisc: pfifo_fast, codel, pfifo, fq, hfsc,
->   hhf, htb, pie, prio, sfb and sfq.
-> * Emulates congestion not only with packet loss but with delay, corrupt
->   and reorder.
-
-> The test expects that 'bbr' congestion-control algorithm not
-> significantly worse than 'cubic'.
-
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> > Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Forget to add
 Acked-by: Petr Vorel <pvorel@suse.cz>
-
+> > ---
 ...
-> +do_test()
-> +{
-> +	for q in $qdisc_list; do
-> +		if tc qdisc add $q >/dev/null 2>&1; then
-> +			tst_res TCONF "$q qdisc not supported"
-> +			continue
-> +		fi
-Yes, this one would of using TST_TEST_DATA.
+> > +qdisc_list="pfifo_fast codel pfifo fq hfsc hhf htb pie prio sfb sfq"
 
+> Maybe just one thing: wouldn't be better to have this upper case as it's
+> library variable shared in tests? But it's only a minor nit.
 
 Kind regards,
 Petr
