@@ -1,34 +1,43 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 28 May 2018 17:03:02 +0300
-Subject: [LTP] [PATCH 4/4] net/macsec0{1,
-	2}.sh: Use TST_NET_SKIP_PARSE_ARGS=1
-In-Reply-To: <20180526111545.20521-4-pvorel@suse.cz>
-References: <20180526111545.20521-1-pvorel@suse.cz>
- <20180526111545.20521-4-pvorel@suse.cz>
-Message-ID: <e8c0ca78-e854-c160-f3c6-87241a259cfd@oracle.com>
+Date: Mon, 28 May 2018 17:38:26 +0300
+Subject: [LTP] [PATCH ltp] network/stress/ssh/ssh-stress01-rmt: fix
+ shellcheck error
+In-Reply-To: <20180525075139.12349-1-yixin.zhang@intel.com>
+References: <20180525075139.12349-1-yixin.zhang@intel.com>
+Message-ID: <bc59a0c0-c8e0-c10b-3bee-67672dee145d@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 05/26/2018 02:15 PM, Petr Vorel wrote:
-> These tests load ipsec_lib.sh and virt_lib.sh.
-> Currently tst_net.sh doesn't support being used by more libraries, so
-> when handling getopts the later one wins.
-> Disabling variables as they aren't used in the runtest file.
+On 05/25/2018 10:51 AM, Yixin Zhang wrote:
+> testcases/network/stress/ssh/ssh-stress01-rmt:57:16: error: Since you
+> double quoted this, it will not word split, and the loop will only run
+> once. [SC2066]
 > 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+
+Right. Hopefully 'kill' accepts a list of pids.
+
+> Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
 > ---
-> Alexey, do you use library variables for debugging?
-> Or would you prefer to be without this and to have at least one
-> libraries getopts?
+>  testcases/network/stress/ssh/ssh-stress01-rmt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/testcases/network/stress/ssh/ssh-stress01-rmt b/testcases/network/stress/ssh/ssh-stress01-rmt
+> index 2a84957ca..3f670a3b8 100644
+> --- a/testcases/network/stress/ssh/ssh-stress01-rmt
+> +++ b/testcases/network/stress/ssh/ssh-stress01-rmt
+> @@ -54,7 +54,7 @@ done
+>  all_conn=$(ps auxw | grep -Fv grep | \
+>  	grep "ssh[[:blank:]].*${ssh_config}" | awk '{print $2}')
+>  
+> -for ssh_pid in "$all_conn"; do
+> +for ssh_pid in $all_conn; do
+>  	kill $ssh_pid
 
+Could we just add 'kill $all_conn', or use the above pattern with pkill, i.e.
 
-I'm for keeping the IPsec options in macsec test, some of them are not
-explicitly defined in the test, therefore can be changed.
+pkill -f "ssh .*$ssh_config"
 
-For virt_lib.sh library the better fix would be to define the options
-only for vxlan/geneve tests, because only those tests are currently
-using them.
+instead of adding $all_conn and the 'for' loop?
