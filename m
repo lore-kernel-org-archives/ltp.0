@@ -1,39 +1,35 @@
-From: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
-Date: Mon, 28 May 2018 16:16:49 +0800
-Subject: [LTP] [PATCH] sctputil.c: insert a space between a and datamsg
-Message-ID: <20180528081649.7950-1-sunlw.fnst@cn.fujitsu.com>
+From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Date: Mon, 28 May 2018 15:38:59 +0900
+Subject: [LTP] [PATCH] zram03: drop obsolete sysfs interfaces
+In-Reply-To: <1527095646-77998-1-git-send-email-yang.shi@linux.alibaba.com>
+References: <1527095646-77998-1-git-send-email-yang.shi@linux.alibaba.com>
+Message-ID: <20180528063859.GA495@jagdpanzerIV>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The sctputil.c:240
-tst_brkm(TBROK, tst_exit, "Got a notification, expecting a"
-                            "datamsg");
-after the word "a" need a space, otherwise the info of TBROK is below:
-sctputil.c:241: Got a notification, expecting adatamsg
+>  testcases/kernel/device-drivers/zram/zram03.c | 6 ------
+>  1 file changed, 6 deletions(-)
+> 
+> diff --git a/testcases/kernel/device-drivers/zram/zram03.c b/testcases/kernel/device-drivers/zram/zram03.c
+> index 3f7ab4e..f2c166c 100644
+> --- a/testcases/kernel/device-drivers/zram/zram03.c
+> +++ b/testcases/kernel/device-drivers/zram/zram03.c
+> @@ -185,11 +185,5 @@ static void print(char *string)
+>  static void dump_info(void)
+>  {
+>  	print("initstate");
+> -	print("compr_data_size");
+> -	print("orig_data_size");
+>  	print("disksize");
+> -	print("mem_used_total");
+> -	print("num_reads");
+> -	print("num_writes");
+> -	print("zero_pages");
+>  }
 
-Signed-off-by: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
----
- utils/sctp/testlib/sctputil.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Is this against the Linux kernel code or some 3-rd party code?
 
-diff --git a/utils/sctp/testlib/sctputil.c b/utils/sctp/testlib/sctputil.c
-index 564925ce9..f9d9b22e9 100644
---- a/utils/sctp/testlib/sctputil.c
-+++ b/utils/sctp/testlib/sctputil.c
-@@ -237,7 +237,7 @@ test_check_buf_data(void *buf, int datalen, int msg_flags,
- 		    uint32_t expected_ppid)
- {
- 	if (msg_flags & MSG_NOTIFICATION)
--		tst_brkm(TBROK, tst_exit, "Got a notification, expecting a"
-+		tst_brkm(TBROK, tst_exit, "Got a notification, expecting a "
- 			 "datamsg");
- 
- 	if (expected_datalen <= 0)
--- 
-2.17.0
-
-
-
+	-ss
