@@ -1,57 +1,36 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 28 May 2018 18:39:36 +0800
-Subject: [LTP] [PATCH] pty: using tcgetattr() to get attributes before
-	re-setting it
-Message-ID: <20180528103936.22538-1-liwang@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 28 May 2018 16:31:04 +0300
+Subject: [LTP] [PATCH 1/4] tst_net.sh: Simplify ipver settings code
+In-Reply-To: <20180526111545.20521-1-pvorel@suse.cz>
+References: <20180526111545.20521-1-pvorel@suse.cz>
+Message-ID: <2dad0d9c-ddfa-e6d2-2630-321d51545434@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To fix this error:
-  tst_test.c:1015: INFO: Timeout per run is 0h 50m 00s
-  pty02.c:42: BROK: tcsetattr() failed: EINVAL
+On 05/26/2018 02:15 PM, Petr Vorel wrote:
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/lib/tst_net.sh | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+> index dc612a794..fd2eacf2f 100644
+> --- a/testcases/lib/tst_net.sh
+> +++ b/testcases/lib/tst_net.sh
+> @@ -29,11 +29,12 @@ TST_SETUP="tst_net_setup"
+>  
+>  # Blank for an IPV4 test; 6 for an IPV6 test.
+>  TST_IPV6=${TST_IPV6:-}
+> +ipver=${TST_IPV6:-4}
 
-POSIX.1 General description:
-  Changes the attributes associated with a terminal. New attributes are
-  specified with a termios control structure. Programs should always
-  issue a tcgetattr() first, modify the desired fields, and then issue
-  a tcsetattr(). tcsetattr() should never be issued using a termios
-  structure that was not obtained using tcgetattr(). tcsetattr() should
-  use only a termios structure that was obtained by tcgetattr().
+Hi Petr,
 
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Eric Biggers <ebiggers@google.com>
-Cc: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/pty/pty02.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Perhaps, we need a prefix TST_.
 
-diff --git a/testcases/kernel/pty/pty02.c b/testcases/kernel/pty/pty02.c
-index fd3d26b..0cedca8 100644
---- a/testcases/kernel/pty/pty02.c
-+++ b/testcases/kernel/pty/pty02.c
-@@ -31,13 +31,18 @@
- 
- static void do_test(void)
- {
--	struct termios io = { .c_lflag = EXTPROC | ICANON };
-+	struct termios io;
- 	int ptmx, pts;
- 	char c = 'A';
- 	int nbytes;
- 
- 	ptmx = SAFE_OPEN("/dev/ptmx", O_WRONLY);
- 
-+	if (tcgetattr(ptmx, &io) != 0)
-+		tst_brk(TBROK | TERRNO, "tcgetattr() failed");
-+
-+	io.c_lflag = EXTPROC | ICANON;
-+
- 	if (tcsetattr(ptmx, TCSANOW, &io) != 0)
- 		tst_brk(TBROK | TERRNO, "tcsetattr() failed");
- 
--- 
-2.9.5
+Shouldn't the same patch remove the setting of 'ipver' in the tests?
 
+Thanks,
+Alexey
