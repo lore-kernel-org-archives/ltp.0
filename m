@@ -1,35 +1,57 @@
-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Date: Mon, 28 May 2018 15:38:59 +0900
-Subject: [LTP] [PATCH] zram03: drop obsolete sysfs interfaces
-In-Reply-To: <1527095646-77998-1-git-send-email-yang.shi@linux.alibaba.com>
-References: <1527095646-77998-1-git-send-email-yang.shi@linux.alibaba.com>
-Message-ID: <20180528063859.GA495@jagdpanzerIV>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 28 May 2018 18:39:36 +0800
+Subject: [LTP] [PATCH] pty: using tcgetattr() to get attributes before
+	re-setting it
+Message-ID: <20180528103936.22538-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
->  testcases/kernel/device-drivers/zram/zram03.c | 6 ------
->  1 file changed, 6 deletions(-)
-> 
-> diff --git a/testcases/kernel/device-drivers/zram/zram03.c b/testcases/kernel/device-drivers/zram/zram03.c
-> index 3f7ab4e..f2c166c 100644
-> --- a/testcases/kernel/device-drivers/zram/zram03.c
-> +++ b/testcases/kernel/device-drivers/zram/zram03.c
-> @@ -185,11 +185,5 @@ static void print(char *string)
->  static void dump_info(void)
->  {
->  	print("initstate");
-> -	print("compr_data_size");
-> -	print("orig_data_size");
->  	print("disksize");
-> -	print("mem_used_total");
-> -	print("num_reads");
-> -	print("num_writes");
-> -	print("zero_pages");
->  }
+To fix this error:
+  tst_test.c:1015: INFO: Timeout per run is 0h 50m 00s
+  pty02.c:42: BROK: tcsetattr() failed: EINVAL
 
-Is this against the Linux kernel code or some 3-rd party code?
+POSIX.1 General description:
+  Changes the attributes associated with a terminal. New attributes are
+  specified with a termios control structure. Programs should always
+  issue a tcgetattr() first, modify the desired fields, and then issue
+  a tcsetattr(). tcsetattr() should never be issued using a termios
+  structure that was not obtained using tcgetattr(). tcsetattr() should
+  use only a termios structure that was obtained by tcgetattr().
 
-	-ss
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Eric Biggers <ebiggers@google.com>
+Cc: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/pty/pty02.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/pty/pty02.c b/testcases/kernel/pty/pty02.c
+index fd3d26b..0cedca8 100644
+--- a/testcases/kernel/pty/pty02.c
++++ b/testcases/kernel/pty/pty02.c
+@@ -31,13 +31,18 @@
+ 
+ static void do_test(void)
+ {
+-	struct termios io = { .c_lflag = EXTPROC | ICANON };
++	struct termios io;
+ 	int ptmx, pts;
+ 	char c = 'A';
+ 	int nbytes;
+ 
+ 	ptmx = SAFE_OPEN("/dev/ptmx", O_WRONLY);
+ 
++	if (tcgetattr(ptmx, &io) != 0)
++		tst_brk(TBROK | TERRNO, "tcgetattr() failed");
++
++	io.c_lflag = EXTPROC | ICANON;
++
+ 	if (tcsetattr(ptmx, TCSANOW, &io) != 0)
+ 		tst_brk(TBROK | TERRNO, "tcsetattr() failed");
+ 
+-- 
+2.9.5
+
