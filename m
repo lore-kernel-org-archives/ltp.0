@@ -1,9 +1,11 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 28 May 2018 16:31:04 +0300
-Subject: [LTP] [PATCH 1/4] tst_net.sh: Simplify ipver settings code
-In-Reply-To: <20180526111545.20521-1-pvorel@suse.cz>
+Date: Mon, 28 May 2018 16:48:06 +0300
+Subject: [LTP] [PATCH 2/4] net: Allow to overwrite libraries getopts
+	handlers
+In-Reply-To: <20180526111545.20521-2-pvorel@suse.cz>
 References: <20180526111545.20521-1-pvorel@suse.cz>
-Message-ID: <2dad0d9c-ddfa-e6d2-2630-321d51545434@oracle.com>
+ <20180526111545.20521-2-pvorel@suse.cz>
+Message-ID: <a751aab4-fbf4-91d1-90d6-047873441694@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,26 +13,40 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 On 05/26/2018 02:15 PM, Petr Vorel wrote:
+> Network libraries recently started to use TST_OPTS and TST_PARSE_ARGS:
+> 89a83d8a0 ("net/ipsec_lib.sh: Process getopts parameters with TST_OPTS
+> and TST_PARSE_ARGS")
+> ce920a5a4 "network/virt_lib.sh: Process getopts parameters with TST_OPTS
+> and TST_PARSE_ARGS"
+> 5f088c3f4 ("nfs/nfs_lib.sh: Fix wrong getopts parameter handling")
+> 
+> This allows to test using these libs customize getopts.
+> 
 > Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
->  testcases/lib/tst_net.sh | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-> index dc612a794..fd2eacf2f 100644
-> --- a/testcases/lib/tst_net.sh
-> +++ b/testcases/lib/tst_net.sh
-> @@ -29,11 +29,12 @@ TST_SETUP="tst_net_setup"
+> Needed for rewriting into new API.
+> ---
+
+...
+
+> diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
+> index 480fe064a..28a2de5e8 100644
+> --- a/testcases/network/stress/ipsec/ipsec_lib.sh
+> +++ b/testcases/network/stress/ipsec/ipsec_lib.sh
+> @@ -67,8 +67,9 @@ ipsec_lib_parse_args()
+>  	esac
+>  }
 >  
->  # Blank for an IPV4 test; 6 for an IPV6 test.
->  TST_IPV6=${TST_IPV6:-}
-> +ipver=${TST_IPV6:-4}
+> -TST_OPTS="hl:m:p:s:S:k:A:e:a:c:r:"
+> -TST_PARSE_ARGS=ipsec_lib_parse_args
+> +TST_OPTS="${TST_OPTS:-hl:m:p:s:S:k:A:e:a:c:r:}"
 
-Hi Petr,
+So, to customize these options we would need to implement the original
+library options as well or you are going to pass the rest of the options
+to the library ipsec_lib_parse_args handler?
 
-Perhaps, we need a prefix TST_.
+I think TST_OPTS should include the library ones and the new options
+from the test.
 
-Shouldn't the same patch remove the setting of 'ipver' in the tests?
-
-Thanks,
-Alexey
+It would be better to show the usage somewhere, i.e. when it is
+really needed.
