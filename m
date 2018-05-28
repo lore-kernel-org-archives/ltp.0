@@ -1,11 +1,11 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 28 May 2018 16:48:06 +0300
-Subject: [LTP] [PATCH 2/4] net: Allow to overwrite libraries getopts
-	handlers
-In-Reply-To: <20180526111545.20521-2-pvorel@suse.cz>
+Date: Mon, 28 May 2018 17:03:02 +0300
+Subject: [LTP] [PATCH 4/4] net/macsec0{1,
+	2}.sh: Use TST_NET_SKIP_PARSE_ARGS=1
+In-Reply-To: <20180526111545.20521-4-pvorel@suse.cz>
 References: <20180526111545.20521-1-pvorel@suse.cz>
- <20180526111545.20521-2-pvorel@suse.cz>
-Message-ID: <a751aab4-fbf4-91d1-90d6-047873441694@oracle.com>
+ <20180526111545.20521-4-pvorel@suse.cz>
+Message-ID: <e8c0ca78-e854-c160-f3c6-87241a259cfd@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,40 +13,22 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 On 05/26/2018 02:15 PM, Petr Vorel wrote:
-> Network libraries recently started to use TST_OPTS and TST_PARSE_ARGS:
-> 89a83d8a0 ("net/ipsec_lib.sh: Process getopts parameters with TST_OPTS
-> and TST_PARSE_ARGS")
-> ce920a5a4 "network/virt_lib.sh: Process getopts parameters with TST_OPTS
-> and TST_PARSE_ARGS"
-> 5f088c3f4 ("nfs/nfs_lib.sh: Fix wrong getopts parameter handling")
-> 
-> This allows to test using these libs customize getopts.
+> These tests load ipsec_lib.sh and virt_lib.sh.
+> Currently tst_net.sh doesn't support being used by more libraries, so
+> when handling getopts the later one wins.
+> Disabling variables as they aren't used in the runtest file.
 > 
 > Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
-> Needed for rewriting into new API.
-> ---
+> Alexey, do you use library variables for debugging?
+> Or would you prefer to be without this and to have at least one
+> libraries getopts?
+> 
 
-...
 
-> diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
-> index 480fe064a..28a2de5e8 100644
-> --- a/testcases/network/stress/ipsec/ipsec_lib.sh
-> +++ b/testcases/network/stress/ipsec/ipsec_lib.sh
-> @@ -67,8 +67,9 @@ ipsec_lib_parse_args()
->  	esac
->  }
->  
-> -TST_OPTS="hl:m:p:s:S:k:A:e:a:c:r:"
-> -TST_PARSE_ARGS=ipsec_lib_parse_args
-> +TST_OPTS="${TST_OPTS:-hl:m:p:s:S:k:A:e:a:c:r:}"
+I'm for keeping the IPsec options in macsec test, some of them are not
+explicitly defined in the test, therefore can be changed.
 
-So, to customize these options we would need to implement the original
-library options as well or you are going to pass the rest of the options
-to the library ipsec_lib_parse_args handler?
-
-I think TST_OPTS should include the library ones and the new options
-from the test.
-
-It would be better to show the usage somewhere, i.e. when it is
-really needed.
+For virt_lib.sh library the better fix would be to define the options
+only for vxlan/geneve tests, because only those tests are currently
+using them.
