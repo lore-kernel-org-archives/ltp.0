@@ -1,29 +1,39 @@
-From: Petr Vorel <petr.vorel@gmail.com>
-Date: Mon, 28 May 2018 07:47:25 +0200
-Subject: [LTP] [PATCH 4/6] network/tcp_cc/lib: add a function to set
- qdisc and txqueuelen
-In-Reply-To: <20180528054425.GD21980@x230>
-References: <1526903310-2833-1-git-send-email-alexey.kodanev@oracle.com>
- <1526903310-2833-5-git-send-email-alexey.kodanev@oracle.com>
- <20180528054425.GD21980@x230>
-Message-ID: <20180528054723.GG21980@x230>
+From: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
+Date: Mon, 28 May 2018 16:16:49 +0800
+Subject: [LTP] [PATCH] sctputil.c: insert a space between a and datamsg
+Message-ID: <20180528081649.7950-1-sunlw.fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+The sctputil.c:240
+tst_brkm(TBROK, tst_exit, "Got a notification, expecting a"
+                            "datamsg");
+after the word "a" need a space, otherwise the info of TBROK is below:
+sctputil.c:241: Got a notification, expecting adatamsg
 
-> > Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-Forget to add
-Acked-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-...
-> > +qdisc_list="pfifo_fast codel pfifo fq hfsc hhf htb pie prio sfb sfq"
+Signed-off-by: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
+---
+ utils/sctp/testlib/sctputil.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Maybe just one thing: wouldn't be better to have this upper case as it's
-> library variable shared in tests? But it's only a minor nit.
+diff --git a/utils/sctp/testlib/sctputil.c b/utils/sctp/testlib/sctputil.c
+index 564925ce9..f9d9b22e9 100644
+--- a/utils/sctp/testlib/sctputil.c
++++ b/utils/sctp/testlib/sctputil.c
+@@ -237,7 +237,7 @@ test_check_buf_data(void *buf, int datalen, int msg_flags,
+ 		    uint32_t expected_ppid)
+ {
+ 	if (msg_flags & MSG_NOTIFICATION)
+-		tst_brkm(TBROK, tst_exit, "Got a notification, expecting a"
++		tst_brkm(TBROK, tst_exit, "Got a notification, expecting a "
+ 			 "datamsg");
+ 
+ 	if (expected_datalen <= 0)
+-- 
+2.17.0
 
-Kind regards,
-Petr
+
+
