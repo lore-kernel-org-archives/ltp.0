@@ -1,65 +1,91 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 29 May 2018 14:01:40 +0300
-Subject: [LTP] rport a fail about test_1_to_1_events
-In-Reply-To: <b95918a7-5fa3-45bf-32d9-e14bb8f6f3c2@cn.fujitsu.com>
-References: <b95918a7-5fa3-45bf-32d9-e14bb8f6f3c2@cn.fujitsu.com>
-Message-ID: <155b4394-e32e-ae7d-e09a-954e3f67d127@oracle.com>
+Date: Tue, 29 May 2018 16:43:04 +0300
+Subject: [LTP] [PATCH] network/virt: correctly set virt test options for
+	vxlan and geneve
+Message-ID: <1527601384-15981-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 05/29/2018 10:04 AM, Sun Lianwen wrote:
-> Hi Alexey,
-> 
->   I run the testcase "test_1_to_1_events failed" on rhel7.5 which kernel version is 
-> 
-> 4.17-rc7. and run this testcase pass when the kernel version is 3.10.0-862.but I don't 
-> 
-> know where have problem in the 4.17-rc7 kernel or the testcase have some problem.
-> 
-> the test result is below:
-> <<<test_output>>>
-> incrementing stop
-> test_1_to_1_events.c    1  TPASS  :  COMM_UP notification on client socket - SUCCESS                                                          
-> test_1_to_1_events.c    2  TPASS  :  COMM_UP notification on server socket - SUCCESS                                                          
-> test_1_to_1_events.c    3  TBROK  :  sctputil.c:241: Got a notification, expecting adatamsg                                                   
-> test_1_to_1_events.c    4  TBROK  :  sctputil.c:241: Remaining cases broken
+Define the options only for the tests that are really use them.
 
-Looks like the same issue:
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/network/virt/geneve01.sh |    2 ++
+ testcases/network/virt/virt_lib.sh |    3 ---
+ testcases/network/virt/vxlan01.sh  |    2 ++
+ testcases/network/virt/vxlan02.sh  |    2 ++
+ testcases/network/virt/vxlan03.sh  |    2 ++
+ 5 files changed, 8 insertions(+), 3 deletions(-)
 
-https://github.com/sctp/lksctp-tools/issues/24
-
-
-> ----------------------------------------------------------------------------------------------------
-> I tcpdump get the packet is below:
-> 18:12:47.723499 IP (tos 0x2,ECT(0), ttl 64, id 0, offset 0, flags [DF], proto SCTP (132), length 92)                                          
->     localhost.52224 > localhost.1024: sctp
->         1) [INIT] [init tag: 594978118] [rwnd: 106496] [OS: 10] [MIS: 65535] [init TSN: 1560186424]                                           
-> 18:12:47.723527 IP (tos 0x2,ECT(0), ttl 64, id 0, offset 0, flags [DF], proto SCTP (132), length 324)                                         
->     localhost.1024 > localhost.52224: sctp
->         1) [INIT ACK] [init tag: 3986079895] [rwnd: 106496] [OS: 10] [MIS: 10] [init TSN: 1657179001]                                         
-> 18:12:47.723536 IP (tos 0x2,ECT(0), ttl 64, id 0, offset 0, flags [DF], proto SCTP (132), length 296)                                         
->     localhost.52224 > localhost.1024: sctp
->         1) [COOKIE ECHO]
-> 18:12:47.723552 IP (tos 0x2,ECT(0), ttl 64, id 0, offset 0, flags [DF], proto SCTP (132), length 36)                                          
->     localhost.1024 > localhost.52224: sctp
->         1) [COOKIE ACK]
-> 18:12:47.723883 IP (tos 0x2,ECT(0), ttl 64, id 1, offset 0, flags [DF], proto SCTP (132), length 64)                                          
->     localhost.52224 > localhost.1024: sctp
->         1) [DATA] (B)(E) [TSN: 1560186424] [SID: 1] [SSEQ 0] [PPID 0x67458b6b] [Payload:                                                      
->         0x0000:  6865 6c6c 6f2c 2077 6f72 6c64 210a 00    hello,.world!..]                                                                    
-> 18:12:47.723891 IP (tos 0x2,ECT(0), ttl 64, id 8626, offset 0, flags [DF], proto SCTP (132), length 48)                                       
->     localhost.1024 > localhost.52224: sctp
->         1) [SACK] [cum ack 1560186424] [a_rwnd 106481] [#gap acks 0] [#dup tsns 0]                                                            
-> 18:12:47.724041 IP (tos 0x2,ECT(0), ttl 64, id 8627, offset 0, flags [DF], proto SCTP (132), length 40)                                       
->     localhost.1024 > localhost.52224: sctp
->         1) [ABORT]
-> -----------------------------------------------------------------------------------------------------
-> Thanks
-> Sun Lianwen
-> 
-> 
-> 
+diff --git a/testcases/network/virt/geneve01.sh b/testcases/network/virt/geneve01.sh
+index 0cc117f..1385604 100755
+--- a/testcases/network/virt/geneve01.sh
++++ b/testcases/network/virt/geneve01.sh
+@@ -19,6 +19,8 @@
+ TCID=geneve01
+ TST_TOTAL=1
+ TST_NEEDS_TMPDIR=1
++TST_OPTS="hi:d:"
++TST_PARSE_ARGS=virt_lib_parse_args
+ 
+ virt_type="geneve"
+ start_id=16700000
+diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
+index 00978a0..06c9950 100644
+--- a/testcases/network/virt/virt_lib.sh
++++ b/testcases/network/virt/virt_lib.sh
+@@ -48,9 +48,6 @@ virt_lib_parse_args()
+ 	esac
+ }
+ 
+-TST_OPTS="hi:d:"
+-TST_PARSE_ARGS=virt_lib_parse_args
+-
+ TST_USE_LEGACY_API=1
+ . tst_net.sh
+ 
+diff --git a/testcases/network/virt/vxlan01.sh b/testcases/network/virt/vxlan01.sh
+index 1a301e5..6195b00 100755
+--- a/testcases/network/virt/vxlan01.sh
++++ b/testcases/network/virt/vxlan01.sh
+@@ -21,6 +21,8 @@
+ 
+ TCID=vxlan01
+ TST_TOTAL=5
++TST_OPTS="hi:d:"
++TST_PARSE_ARGS=virt_lib_parse_args
+ 
+ virt_type="vxlan"
+ start_id=16700000
+diff --git a/testcases/network/virt/vxlan02.sh b/testcases/network/virt/vxlan02.sh
+index 66d48ba..a93e780 100755
+--- a/testcases/network/virt/vxlan02.sh
++++ b/testcases/network/virt/vxlan02.sh
+@@ -22,6 +22,8 @@
+ 
+ TCID=vxlan02
+ TST_TOTAL=1
++TST_OPTS="hi:d:"
++TST_PARSE_ARGS=virt_lib_parse_args
+ 
+ virt_type="vxlan"
+ start_id=16700000
+diff --git a/testcases/network/virt/vxlan03.sh b/testcases/network/virt/vxlan03.sh
+index 94eee71..37a172e 100755
+--- a/testcases/network/virt/vxlan03.sh
++++ b/testcases/network/virt/vxlan03.sh
+@@ -26,6 +26,8 @@
+ TCID=vxlan03
+ TST_TOTAL=4
+ TST_NEEDS_TMPDIR=1
++TST_OPTS="hi:d:"
++TST_PARSE_ARGS=virt_lib_parse_args
+ 
+ virt_type="vxlan"
+ start_id=16700000
+-- 
+1.7.1
 
