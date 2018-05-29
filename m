@@ -1,12 +1,12 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 29 May 2018 10:07:39 +0200
-Subject: [LTP] [PATCH 2/4] net: Allow to overwrite libraries getopts
-	handlers
-In-Reply-To: <a751aab4-fbf4-91d1-90d6-047873441694@oracle.com>
+Date: Tue, 29 May 2018 10:08:55 +0200
+Subject: [LTP] [PATCH 4/4] net/macsec0{1,
+	2}.sh: Use TST_NET_SKIP_PARSE_ARGS=1
+In-Reply-To: <e8c0ca78-e854-c160-f3c6-87241a259cfd@oracle.com>
 References: <20180526111545.20521-1-pvorel@suse.cz>
- <20180526111545.20521-2-pvorel@suse.cz>
- <a751aab4-fbf4-91d1-90d6-047873441694@oracle.com>
-Message-ID: <20180529080739.GB10361@x230>
+ <20180526111545.20521-4-pvorel@suse.cz>
+ <e8c0ca78-e854-c160-f3c6-87241a259cfd@oracle.com>
+Message-ID: <20180529080855.GC10361@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,26 +15,28 @@ To: ltp@lists.linux.it
 
 Hi Alexey,
 
-...
-> > -TST_OPTS="hl:m:p:s:S:k:A:e:a:c:r:"
-> > -TST_PARSE_ARGS=ipsec_lib_parse_args
-> > +TST_OPTS="${TST_OPTS:-hl:m:p:s:S:k:A:e:a:c:r:}"
+> On 05/26/2018 02:15 PM, Petr Vorel wrote:
+> > These tests load ipsec_lib.sh and virt_lib.sh.
+> > Currently tst_net.sh doesn't support being used by more libraries, so
+> > when handling getopts the later one wins.
+> > Disabling variables as they aren't used in the runtest file.
 
-> So, to customize these options we would need to implement the original
-> library options as well or you are going to pass the rest of the options
-> to the library ipsec_lib_parse_args handler?
+> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> > ---
+> > Alexey, do you use library variables for debugging?
+> > Or would you prefer to be without this and to have at least one
+> > libraries getopts?
 
-> I think TST_OPTS should include the library ones and the new options
-> from the test.
 
-> It would be better to show the usage somewhere, i.e. when it is
-> really needed.
-OK, I'll include this one in patchset, which migrate virt_lib.sh + ipsec_lib.sh into the
-new API. I tried to introduce some changes before as the whole patch is going to be quite
-big (due other bugs and the need to migrate virt_lib.sh and ipsec_lib.sh altogether.
 
-My idea is if the test which uses any of virt_lib.sh or ipsec_lib.sh needs to change
-getopts, it's it's responsibility to add these getopts.
+> I'm for keeping the IPsec options in macsec test, some of them are not
+> explicitly defined in the test, therefore can be changed.
+OK, thanks for info.
+
+> For virt_lib.sh library the better fix would be to define the options
+> only for vxlan/geneve tests, because only those tests are currently
+> using them.
+Could you please make this change?
 
 
 Kind regards,
