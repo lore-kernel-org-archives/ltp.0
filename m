@@ -1,45 +1,55 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 30 May 2018 11:31:11 +0200
-Subject: [LTP] [PATCH] commands: Remove all test cases
-In-Reply-To: <20180529171319.365ca9c0@dell-desktop.home>
-References: <20180426132418.19495-1-schlad@suse.de>
- <20180426132418.19495-2-schlad@suse.de>
- <b72b277b-e8e0-d69c-b918-bd48341c2a1d@oracle.com>
- <20180426172713.GB14157@x230> <20180427113553.GA14075@rei>
- <20180516101251.trwf4pxvqbqkqmp5@dell5510>
- <20180529171319.365ca9c0@dell-desktop.home>
-Message-ID: <20180530093111.GA4031@rei>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 30 May 2018 17:52:25 +0800
+Subject: [LTP] [PATCH] pty: using tcgetattr() to get attributes before
+ re-setting it
+In-Reply-To: <5B0CFB5C.5040702@cn.fujitsu.com>
+References: <20180528103936.22538-1-liwang@redhat.com>
+ <5B0CFB5C.5040702@cn.fujitsu.com>
+Message-ID: <CAEemH2fr-5HAJdFL_Br7u2bsry5E3j_dwaVnnJFdm4wFTWsA0w@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-> > BTW Myl??ne, Thomas, do you know people running these test on embedded? That might justify
-> > some of the tests (not sure if it's possible to run busybox tests without compilation -
-> > for machines which have their sources cross compiled).
-> 
-> We currently have one customer that run these tests on an embedded
-> platform but in fact, we run the default scenario_group (that is why,
-> we run "commands" runtest). I guess that if the community think these
-> tests are not useful anymore, there is no problem on our side.
-> Our customer is using it to "show" that LTP is successfully runnable on
-> their platform, that it is.
-> 
-> I am pretty new to LTP but I had the feeling that these "commands"
-> tests rely maybe too much on applications and not on Linux kernel
-> features. Many of them are returning TCONF in our case because we do
-> not have the correct configuration (busybox options, etc).
+Hi Xiao,
 
-As discussed in the orignal thread that proposed removing these
-testcases, some of the tests are related to kernel, some not so much.
+On Tue, May 29, 2018 at 3:03 PM, Xiao Yang <yangx.jy@cn.fujitsu.com> wrote:
 
-For example the file or cron tests does not correspond to any kernel
-functionality at all, while the df or du testcases, for instance, are
-testing kernel filesystem implementation. So the plain is to examine
-these tests case by case.
+> Hi Li,
+>
+> We found other issues by running pty02:
+> 1) The undefined EXTPROC flag led to complier error on RHEL5/6.
+> 2) Based on the fix, reading pts blocked on RHEL6 because we didn't write
+> newline('\n') to ptmx,
+>    but it worked well on RHEL7.  I am not sure which kernel patch changed
+> this behavior.
+>    According canonical mode description:
+>        In canonical mode:
+>        * Input is made available line by line.  An input line is available
+> when one of the line
+>          delimiters is typed (NL, EOL, EOL2; or EOF at the start of
+> line).  Except in the case of EOF,
+>          the line delimiter is included in the buffer returned by read(2).
+> 3) Based on the fix,
+> ​​
+> tcsetattr(3) cannot detect invalid EXTPROC flag on RHEL5/6.
+>
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+AFAIK, values of the c_lflag field describe the control of various
+functions in struct termios,
+but it not defined in POSIX and not supported under all Linux. So
+​
+tcsetattr() cannot detect valid EXTPROC on RHEL5/6 is acceptable I think.
+Also, the ICANON has different behavior on some kind of UNIX OS too.
+
+To solve these problem, maybe we have to define the EXTPROC in lapi, and
+skip this test on kernel without that support.
+
+That's what I can think of, if anything wrong, plz correct me.
+
+Thanks,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180530/dd3bf31c/attachment.html>
