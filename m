@@ -1,55 +1,79 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 30 May 2018 17:52:25 +0800
-Subject: [LTP] [PATCH] pty: using tcgetattr() to get attributes before
- re-setting it
-In-Reply-To: <5B0CFB5C.5040702@cn.fujitsu.com>
-References: <20180528103936.22538-1-liwang@redhat.com>
- <5B0CFB5C.5040702@cn.fujitsu.com>
-Message-ID: <CAEemH2fr-5HAJdFL_Br7u2bsry5E3j_dwaVnnJFdm4wFTWsA0w@mail.gmail.com>
+From: Rafael David Tinoco <rafael.tinoco@linaro.org>
+Date: Wed, 30 May 2018 12:40:45 -0300
+Subject: [LTP] [PATCH] shmat() for 0 (or <PAGESIZE with RND flag) has to
+	fail with REMAPs
+Message-ID: <20180530154045.17803-1-rafael.tinoco@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao,
+From: Rafael David Tinoco <rafael.tinoco@canonical.com>
 
-On Tue, May 29, 2018 at 3:03 PM, Xiao Yang <yangx.jy@cn.fujitsu.com> wrote:
+Fixes: https://github.com/linux-test-project/ltp/issues/319
 
-> Hi Li,
->
-> We found other issues by running pty02:
-> 1) The undefined EXTPROC flag led to complier error on RHEL5/6.
-> 2) Based on the fix, reading pts blocked on RHEL6 because we didn't write
-> newline('\n') to ptmx,
->    but it worked well on RHEL7.  I am not sure which kernel patch changed
-> this behavior.
->    According canonical mode description:
->        In canonical mode:
->        * Input is made available line by line.  An input line is available
-> when one of the line
->          delimiters is typed (NL, EOL, EOL2; or EOF at the start of
-> line).  Except in the case of EOF,
->          the line delimiter is included in the buffer returned by read(2).
-> 3) Based on the fix,
-> ​​
-> tcsetattr(3) cannot detect invalid EXTPROC flag on RHEL5/6.
->
+According to upstream thread (https://lkml.org/lkml/2018/5/28/2056),
+cve-2017-5669 needs to address the "new" way of handling nil addresses
+for shmat() when used with MAP_FIXED or SHM_REMAP flags.
 
-AFAIK, values of the c_lflag field describe the control of various
-functions in struct termios,
-but it not defined in POSIX and not supported under all Linux. So
-​
-tcsetattr() cannot detect valid EXTPROC on RHEL5/6 is acceptable I think.
-Also, the ICANON has different behavior on some kind of UNIX OS too.
+- mapping nil-page is OK on lower addresses with MAP_FIXED (or else X11 is broken)
+- mapping nil-page is NOT OK with SHM_REMAP on lower addresses
 
-To solve these problem, maybe we have to define the EXTPROC in lapi, and
-skip this test on kernel without that support.
+Addresses Davidlohr Bueso's comments/changes:
 
-That's what I can think of, if anything wrong, plz correct me.
+commit 8f89c007b6de
+Author: Davidlohr Bueso <dave@stgolabs.net>
+Date:   Fri May 25 14:47:30 2018 -0700
 
-Thanks,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180530/dd3bf31c/attachment.html>
+    ipc/shm: fix shmat() nil address after round-down when remapping
+
+commit a73ab244f0da
+Author: Davidlohr Bueso <dave@stgolabs.net>
+Date:   Fri May 25 14:47:27 2018 -0700
+
+    Revert "ipc/shm: Fix shmat mmap nil-page protection"
+
+For previously test made based on:
+
+commit 95e91b831f87
+Author: Davidlohr Bueso <dave@stgolabs.net>
+Date:   Mon Feb 27 14:28:24 2017 -0800
+
+    ipc/shm: Fix shmat mmap nil-page protection
+
+Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
+---
+ testcases/cve/cve-2017-5669.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/cve/cve-2017-5669.c b/testcases/cve/cve-2017-5669.c
+index 1ca598326..16e4d80be 100644
+--- a/testcases/cve/cve-2017-5669.c
++++ b/testcases/cve/cve-2017-5669.c
+@@ -28,6 +28,9 @@
+  * is just to see if we get an access error or some other unexpected behaviour.
+  *
+  * See commit 95e91b831f (ipc/shm: Fix shmat mmap nil-page protection)
++ * See commit a73ab244f0da (Revert "ipc/shm: Fix shmat mmap nil-page protect...)
++ * See commit 8f89c007b6de (ipc/shm: fix shmat() nil address after round-dow...)
++ * See https://github.com/linux-test-project/ltp/issues/319
+  */
+ #include <sys/types.h>
+ #include <sys/ipc.h>
+@@ -60,7 +63,11 @@ static void cleanup(void)
+ static void run(void)
+ {
+ 	tst_res(TINFO, "Attempting to attach shared memory to null page");
+-	shm_addr = shmat(shm_id, ((void *)1), SHM_RND);
++	/*
++	 * shmat() for 0 (or < PAGESIZE with RND flag) has to fail with REMAPs
++	 * https://github.com/linux-test-project/ltp/issues/319
++	 */
++	shm_addr = shmat(shm_id, ((void *)1), SHM_RND | SHM_REMAP);
+ 	if (shm_addr == (void *)-1) {
+ 		shm_addr = NULL;
+ 		if (errno == EINVAL) {
+-- 
+2.17.1
+
