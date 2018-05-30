@@ -1,79 +1,45 @@
-From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Wed, 30 May 2018 12:40:45 -0300
-Subject: [LTP] [PATCH] shmat() for 0 (or <PAGESIZE with RND flag) has to
-	fail with REMAPs
-Message-ID: <20180530154045.17803-1-rafael.tinoco@linaro.org>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 30 May 2018 18:47:36 +0300
+Subject: [LTP] [RFC PATCH v5 2/5] tst_test.sh: Warn about using
+ "private" variable or function
+In-Reply-To: <20180525215725.7218-3-pvorel@suse.cz>
+References: <20180525215725.7218-1-pvorel@suse.cz>
+ <20180525215725.7218-3-pvorel@suse.cz>
+Message-ID: <9c849736-05c7-5725-f436-3c252988784a@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Rafael David Tinoco <rafael.tinoco@canonical.com>
+On 26.05.2018 00:57, Petr Vorel wrote:
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/lib/tst_test.sh | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index 337d33ca4..de5d65039 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -260,6 +260,10 @@ tst_run()
+>  			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
+>  			esac
+>  		done
+> +
+> +		for _tst_i in $(grep _tst_ "$TST_TEST_PATH" | sed 's/.*_tst_//; s/[="} \t\/:`].*//'); do
+> +			tst_res TWARN "Private variable or function _tst_$_tst_i used!"
 
-Fixes: https://github.com/linux-test-project/ltp/issues/319
+Hi Petr,
 
-According to upstream thread (https://lkml.org/lkml/2018/5/28/2056),
-cve-2017-5669 needs to address the "new" way of handling nil addresses
-for shmat() when used with MAP_FIXED or SHM_REMAP flags.
 
-- mapping nil-page is OK on lower addresses with MAP_FIXED (or else X11 is broken)
-- mapping nil-page is NOT OK with SHM_REMAP on lower addresses
+For example "do_virt_dev_tst_01()" function name in the test, it is
+also a private function name?
 
-Addresses Davidlohr Bueso's comments/changes:
 
-commit 8f89c007b6de
-Author: Davidlohr Bueso <dave@stgolabs.net>
-Date:   Fri May 25 14:47:30 2018 -0700
-
-    ipc/shm: fix shmat() nil address after round-down when remapping
-
-commit a73ab244f0da
-Author: Davidlohr Bueso <dave@stgolabs.net>
-Date:   Fri May 25 14:47:27 2018 -0700
-
-    Revert "ipc/shm: Fix shmat mmap nil-page protection"
-
-For previously test made based on:
-
-commit 95e91b831f87
-Author: Davidlohr Bueso <dave@stgolabs.net>
-Date:   Mon Feb 27 14:28:24 2017 -0800
-
-    ipc/shm: Fix shmat mmap nil-page protection
-
-Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
----
- testcases/cve/cve-2017-5669.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/cve/cve-2017-5669.c b/testcases/cve/cve-2017-5669.c
-index 1ca598326..16e4d80be 100644
---- a/testcases/cve/cve-2017-5669.c
-+++ b/testcases/cve/cve-2017-5669.c
-@@ -28,6 +28,9 @@
-  * is just to see if we get an access error or some other unexpected behaviour.
-  *
-  * See commit 95e91b831f (ipc/shm: Fix shmat mmap nil-page protection)
-+ * See commit a73ab244f0da (Revert "ipc/shm: Fix shmat mmap nil-page protect...)
-+ * See commit 8f89c007b6de (ipc/shm: fix shmat() nil address after round-dow...)
-+ * See https://github.com/linux-test-project/ltp/issues/319
-  */
- #include <sys/types.h>
- #include <sys/ipc.h>
-@@ -60,7 +63,11 @@ static void cleanup(void)
- static void run(void)
- {
- 	tst_res(TINFO, "Attempting to attach shared memory to null page");
--	shm_addr = shmat(shm_id, ((void *)1), SHM_RND);
-+	/*
-+	 * shmat() for 0 (or < PAGESIZE with RND flag) has to fail with REMAPs
-+	 * https://github.com/linux-test-project/ltp/issues/319
-+	 */
-+	shm_addr = shmat(shm_id, ((void *)1), SHM_RND | SHM_REMAP);
- 	if (shm_addr == (void *)-1) {
- 		shm_addr = NULL;
- 		if (errno == EINVAL) {
--- 
-2.17.1
+> +		done
+>  	fi
+>  
+>  	OPTIND=1
+> 
 
