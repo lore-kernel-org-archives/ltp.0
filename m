@@ -1,44 +1,125 @@
-From: Yang Shi <yang.shi@linux.alibaba.com>
-Date: Tue, 29 May 2018 17:22:16 -0700
-Subject: [LTP] [PATCH] zram03: drop obsolete sysfs interfaces
-In-Reply-To: <20180528063859.GA495@jagdpanzerIV>
-References: <1527095646-77998-1-git-send-email-yang.shi@linux.alibaba.com>
- <20180528063859.GA495@jagdpanzerIV>
-Message-ID: <18ce6baa-a1da-8453-55ec-31b7607ae616@linux.alibaba.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 30 May 2018 09:09:15 +0800
+Subject: [LTP] [PATCH] move_pages: Remove redundant move_pages.sh
+Message-ID: <1527642555-20424-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Use move_pages[1-12] binaries directly instead of move_pages.sh
+
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ runtest/numa                                       | 22 +++++++++++-----------
+ runtest/syscalls                                   | 22 +++++++++++-----------
+ testcases/kernel/syscalls/move_pages/Makefile      |  2 --
+ testcases/kernel/syscalls/move_pages/move_pages.sh | 18 ------------------
+ 4 files changed, 22 insertions(+), 42 deletions(-)
+ delete mode 100755 testcases/kernel/syscalls/move_pages/move_pages.sh
+
+diff --git a/runtest/numa b/runtest/numa
+index dcf4948..12aedbb 100644
+--- a/runtest/numa
++++ b/runtest/numa
+@@ -1,13 +1,13 @@
+ Numa-testcases numa01.sh
+-move_pages01 move_pages.sh 01
+-move_pages02 move_pages.sh 02
+-move_pages03 cd $LTPROOT/testcases/bin && chown root move_pages03 && chmod 04755 move_pages03 && move_pages.sh 03
+-move_pages04 move_pages.sh 04
+-move_pages05 move_pages.sh 05
+-move_pages06 move_pages.sh 06
+-move_pages07 move_pages.sh 07
+-move_pages08 move_pages.sh 08
+-move_pages09 move_pages.sh 09
+-move_pages10 move_pages.sh 10
+-move_pages11 cd $LTPROOT/testcases/bin && chown root move_pages11 && chmod 04755 move_pages11 && move_pages.sh 11
++move_pages01 move_pages01
++move_pages02 move_pages02
++move_pages03 move_pages03
++move_pages04 move_pages04
++move_pages05 move_pages05
++move_pages06 move_pages06
++move_pages07 move_pages07
++move_pages08 move_pages08
++move_pages09 move_pages09
++move_pages10 move_pages10
++move_pages11 move_pages11
+ move_pages12 move_pages12
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 738d224..f3ed2fb 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -655,17 +655,17 @@ mount04 mount04
+ mount05 mount05
+ mount06 mount06
+ 
+-move_pages01 move_pages.sh 01
+-move_pages02 move_pages.sh 02
+-move_pages03 cd $LTPROOT/testcases/bin && chown root move_pages03 && chmod 04755 move_pages03 && move_pages.sh 03
+-move_pages04 move_pages.sh 04
+-move_pages05 move_pages.sh 05
+-move_pages06 move_pages.sh 06
+-move_pages07 move_pages.sh 07
+-move_pages08 move_pages.sh 08
+-move_pages09 move_pages.sh 09
+-move_pages10 move_pages.sh 10
+-move_pages11 cd $LTPROOT/testcases/bin && chown root move_pages11 && chmod 04755 move_pages11 && move_pages.sh 11
++move_pages01 move_pages01
++move_pages02 move_pages02
++move_pages03 move_pages03
++move_pages04 move_pages04
++move_pages05 move_pages05
++move_pages06 move_pages06
++move_pages07 move_pages07
++move_pages08 move_pages08
++move_pages09 move_pages09
++move_pages10 move_pages10
++move_pages11 move_pages11
+ move_pages12 move_pages12
+ 
+ mprotect01 mprotect01
+diff --git a/testcases/kernel/syscalls/move_pages/Makefile b/testcases/kernel/syscalls/move_pages/Makefile
+index 9892770..27cf0f7 100644
+--- a/testcases/kernel/syscalls/move_pages/Makefile
++++ b/testcases/kernel/syscalls/move_pages/Makefile
+@@ -22,8 +22,6 @@ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ CPPFLAGS		+= -I$(abs_srcdir)/../utils
+ 
+-INSTALL_TARGETS		:= move_pages.sh
+-
+ MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%,$(wildcard $(abs_srcdir)/*[0-9].c))
+ 
+ $(MAKE_TARGETS): %: %.o move_pages_support.o
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages.sh b/testcases/kernel/syscalls/move_pages/move_pages.sh
+deleted file mode 100755
+index 516d088..0000000
+--- a/testcases/kernel/syscalls/move_pages/move_pages.sh
++++ /dev/null
+@@ -1,18 +0,0 @@
+-#!/bin/sh
+-
+-if [ -z "$1" ]; then
+-    echo "Usage: move_pages.sh <test-number>"
+-    exit 1
+-fi
+-
+-testprog=move_pages${1}
+-
+-if [ -f $LTPROOT/testcases/bin/${testprog} ]; then
+-    exec $testprog
+-else
+-    export TCID=$testprog
+-    export TST_TOTAL=1
+-    export TST_COUNT=0
+-    tst_resm TCONF "libnuma and NUMA support is required for this testcase"
+-    tst_exit
+-fi
+-- 
+1.8.3.1
 
 
-On 5/27/18 11:38 PM, Sergey Senozhatsky wrote:
->>   testcases/kernel/device-drivers/zram/zram03.c | 6 ------
->>   1 file changed, 6 deletions(-)
->>
->> diff --git a/testcases/kernel/device-drivers/zram/zram03.c b/testcases/kernel/device-drivers/zram/zram03.c
->> index 3f7ab4e..f2c166c 100644
->> --- a/testcases/kernel/device-drivers/zram/zram03.c
->> +++ b/testcases/kernel/device-drivers/zram/zram03.c
->> @@ -185,11 +185,5 @@ static void print(char *string)
->>   static void dump_info(void)
->>   {
->>   	print("initstate");
->> -	print("compr_data_size");
->> -	print("orig_data_size");
->>   	print("disksize");
->> -	print("mem_used_total");
->> -	print("num_reads");
->> -	print("num_writes");
->> -	print("zero_pages");
->>   }
-> Is this against the Linux kernel code or some 3-rd party code?
-
-zram03 is a LTP test case.
-
-Yang
-
->
-> 	-ss
 
