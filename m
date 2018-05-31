@@ -1,51 +1,49 @@
-From: Zhang, Yixin <yixin.zhang@intel.com>
-Date: Thu, 31 May 2018 10:43:24 +0800
-Subject: [LTP] [PATCH ltp] network/stress/ssh/ssh-stress01-rmt: fix
- shellcheck error
-In-Reply-To: <bc59a0c0-c8e0-c10b-3bee-67672dee145d@oracle.com>
-References: <20180525075139.12349-1-yixin.zhang@intel.com>
- <bc59a0c0-c8e0-c10b-3bee-67672dee145d@oracle.com>
-Message-ID: <20180531024324.ikx2446ds4f5vodg@yixin-desktop>
+From: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+Date: Thu, 31 May 2018 10:45:24 +0800
+Subject: [LTP] [PATCH] pty/pty02.c: Fix compiler error
+Message-ID: <1527734724-348-1-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Compilation failed because of undefined EXTPROC on old distros(e.g. RHEL5/6).
 
-Thanks for the comment, a V2 patch is sent.
+Based on the fix patch[1] and added EXTPROC, tcgetattr() still could not detect
+invalid EXTPROC on old distros.  So we wanted to skip the case if EXTPROC was not
+defined on current distros.
 
-Yixin
+[1] http://lists.linux.it/pipermail/ltp/2018-May/008253.html
 
-On 2018-05-28 at 17:38:26 +0300, Alexey Kodanev wrote:
-> On 05/25/2018 10:51 AM, Yixin Zhang wrote:
-> > testcases/network/stress/ssh/ssh-stress01-rmt:57:16: error: Since you
-> > double quoted this, it will not word split, and the loop will only run
-> > once. [SC2066]
-> > 
-> 
-> Right. Hopefully 'kill' accepts a list of pids.
-> 
-> > Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
-> > ---
-> >  testcases/network/stress/ssh/ssh-stress01-rmt | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/testcases/network/stress/ssh/ssh-stress01-rmt b/testcases/network/stress/ssh/ssh-stress01-rmt
-> > index 2a84957ca..3f670a3b8 100644
-> > --- a/testcases/network/stress/ssh/ssh-stress01-rmt
-> > +++ b/testcases/network/stress/ssh/ssh-stress01-rmt
-> > @@ -54,7 +54,7 @@ done
-> >  all_conn=$(ps auxw | grep -Fv grep | \
-> >  	grep "ssh[[:blank:]].*${ssh_config}" | awk '{print $2}')
-> >  
-> > -for ssh_pid in "$all_conn"; do
-> > +for ssh_pid in $all_conn; do
-> >  	kill $ssh_pid
-> 
-> Could we just add 'kill $all_conn', or use the above pattern with pkill, i.e.
-> 
-> pkill -f "ssh .*$ssh_config"
-> 
-> instead of adding $all_conn and the 'for' loop?
+Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+---
+ testcases/kernel/pty/pty02.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/testcases/kernel/pty/pty02.c b/testcases/kernel/pty/pty02.c
+index fd3d26b..548f8d1 100644
+--- a/testcases/kernel/pty/pty02.c
++++ b/testcases/kernel/pty/pty02.c
+@@ -29,6 +29,8 @@
+ 
+ #include "tst_test.h"
+ 
++#ifdef EXTPROC
++
+ static void do_test(void)
+ {
+ 	struct termios io = { .c_lflag = EXTPROC | ICANON };
+@@ -60,3 +62,7 @@ static void do_test(void)
+ static struct tst_test test = {
+ 	.test_all = do_test,
+ };
++
++#else
++	TST_TEST_TCONF("EXTPROC is not defined");
++#endif
+-- 
+1.8.3.1
+
+
+
