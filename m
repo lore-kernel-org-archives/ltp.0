@@ -1,84 +1,39 @@
-From: Rafael Tinoco <rafael.tinoco@linaro.org>
-Date: Wed, 30 May 2018 15:12:10 -0300
-Subject: [LTP] [PATCH] shmat() for 0 (or <PAGESIZE with RND flag) has to
- fail with REMAPs
-In-Reply-To: <20180530154045.17803-1-rafael.tinoco@linaro.org>
-References: <20180530154045.17803-1-rafael.tinoco@linaro.org>
-Message-ID: <CE60E3B9-5375-4C32-83DE-ADA751643E43@linaro.org>
+From: Yixin Zhang <yixin.zhang@intel.com>
+Date: Thu, 31 May 2018 10:37:40 +0800
+Subject: [LTP] [PATCH v2 ltp] network/stress/ssh/ssh-stress01-rmt: fix
+	shellcheck error
+Message-ID: <20180531023740.22811-1-yixin.zhang@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Please consider From: Rafael David Tinoco <rafael.tinoco@linaro.org>
+testcases/network/stress/ssh/ssh-stress01-rmt:57:16: error: Since you
+double quoted this, it will not word split, and the loop will only run
+once. [SC2066]
 
-> On 30 May 2018, at 12:40, Rafael David Tinoco <rafael.tinoco@linaro.org> wrote:
-> 
-> From: Rafael David Tinoco <rafael.tinoco@canonical.com>
-> 
-> Fixes: https://github.com/linux-test-project/ltp/issues/319
-> 
-> According to upstream thread (https://lkml.org/lkml/2018/5/28/2056),
-> cve-2017-5669 needs to address the "new" way of handling nil addresses
-> for shmat() when used with MAP_FIXED or SHM_REMAP flags.
-> 
-> - mapping nil-page is OK on lower addresses with MAP_FIXED (or else X11 is broken)
-> - mapping nil-page is NOT OK with SHM_REMAP on lower addresses
-> 
-> Addresses Davidlohr Bueso's comments/changes:
-> 
-> commit 8f89c007b6de
-> Author: Davidlohr Bueso <dave@stgolabs.net>
-> Date:   Fri May 25 14:47:30 2018 -0700
-> 
->    ipc/shm: fix shmat() nil address after round-down when remapping
-> 
-> commit a73ab244f0da
-> Author: Davidlohr Bueso <dave@stgolabs.net>
-> Date:   Fri May 25 14:47:27 2018 -0700
-> 
->    Revert "ipc/shm: Fix shmat mmap nil-page protection"
-> 
-> For previously test made based on:
-> 
-> commit 95e91b831f87
-> Author: Davidlohr Bueso <dave@stgolabs.net>
-> Date:   Mon Feb 27 14:28:24 2017 -0800
-> 
->    ipc/shm: Fix shmat mmap nil-page protection
-> 
-> Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
-> ---
-> testcases/cve/cve-2017-5669.c | 9 ++++++++-
-> 1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/testcases/cve/cve-2017-5669.c b/testcases/cve/cve-2017-5669.c
-> index 1ca598326..16e4d80be 100644
-> --- a/testcases/cve/cve-2017-5669.c
-> +++ b/testcases/cve/cve-2017-5669.c
-> @@ -28,6 +28,9 @@
->  * is just to see if we get an access error or some other unexpected behaviour.
->  *
->  * See commit 95e91b831f (ipc/shm: Fix shmat mmap nil-page protection)
-> + * See commit a73ab244f0da (Revert "ipc/shm: Fix shmat mmap nil-page protect...)
-> + * See commit 8f89c007b6de (ipc/shm: fix shmat() nil address after round-dow...)
-> + * See https://github.com/linux-test-project/ltp/issues/319
->  */
-> #include <sys/types.h>
-> #include <sys/ipc.h>
-> @@ -60,7 +63,11 @@ static void cleanup(void)
-> static void run(void)
-> {
-> 	tst_res(TINFO, "Attempting to attach shared memory to null page");
-> -	shm_addr = shmat(shm_id, ((void *)1), SHM_RND);
-> +	/*
-> +	 * shmat() for 0 (or < PAGESIZE with RND flag) has to fail with REMAPs
-> +	 * https://github.com/linux-test-project/ltp/issues/319
-> +	 */
-> +	shm_addr = shmat(shm_id, ((void *)1), SHM_RND | SHM_REMAP);
-> 	if (shm_addr == (void *)-1) {
-> 		shm_addr = NULL;
-> 		if (errno == EINVAL) {
-> -- 
-> 2.17.1
+Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+---
+ testcases/network/stress/ssh/ssh-stress01-rmt | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/testcases/network/stress/ssh/ssh-stress01-rmt b/testcases/network/stress/ssh/ssh-stress01-rmt
+index 2a84957ca..b2f65793e 100644
+--- a/testcases/network/stress/ssh/ssh-stress01-rmt
++++ b/testcases/network/stress/ssh/ssh-stress01-rmt
+@@ -53,10 +53,7 @@ done
+ # Disconnect all ssh connection
+ all_conn=$(ps auxw | grep -Fv grep | \
+ 	grep "ssh[[:blank:]].*${ssh_config}" | awk '{print $2}')
+-
+-for ssh_pid in "$all_conn"; do
+-	kill $ssh_pid
+-done
++kill $all_conn
+ 
+ # Check the connectivity again
+ ssh -$ip_ver -F $ssh_config $server_ipaddr \
+-- 
+2.14.1
+
