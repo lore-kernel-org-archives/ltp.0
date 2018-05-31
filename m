@@ -1,49 +1,33 @@
-From: Jinhui huang <huangjh.jy@cn.fujitsu.com>
-Date: Thu, 31 May 2018 10:45:24 +0800
-Subject: [LTP] [PATCH] pty/pty02.c: Fix compiler error
-Message-ID: <1527734724-348-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 31 May 2018 07:55:51 +0200
+Subject: [LTP] [RFC PATCH v5 2/5] tst_test.sh: Warn about using
+ "private" variable or function
+In-Reply-To: <9c849736-05c7-5725-f436-3c252988784a@oracle.com>
+References: <20180525215725.7218-1-pvorel@suse.cz>
+ <20180525215725.7218-3-pvorel@suse.cz>
+ <9c849736-05c7-5725-f436-3c252988784a@oracle.com>
+Message-ID: <20180531055551.GA3369@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Compilation failed because of undefined EXTPROC on old distros(e.g. RHEL5/6).
+Hi Alexey,
 
-Based on the fix patch[1] and added EXTPROC, tcgetattr() still could not detect
-invalid EXTPROC on old distros.  So we wanted to skip the case if EXTPROC was not
-defined on current distros.
+...
+> > +		for _tst_i in $(grep _tst_ "$TST_TEST_PATH" | sed 's/.*_tst_//; s/[="} \t\/:`].*//'); do
+> > +			tst_res TWARN "Private variable or function _tst_$_tst_i used!"
 
-[1] http://lists.linux.it/pipermail/ltp/2018-May/008253.html
-
-Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
----
- testcases/kernel/pty/pty02.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/testcases/kernel/pty/pty02.c b/testcases/kernel/pty/pty02.c
-index fd3d26b..548f8d1 100644
---- a/testcases/kernel/pty/pty02.c
-+++ b/testcases/kernel/pty/pty02.c
-@@ -29,6 +29,8 @@
- 
- #include "tst_test.h"
- 
-+#ifdef EXTPROC
-+
- static void do_test(void)
- {
- 	struct termios io = { .c_lflag = EXTPROC | ICANON };
-@@ -60,3 +62,7 @@ static void do_test(void)
- static struct tst_test test = {
- 	.test_all = do_test,
- };
-+
-+#else
-+	TST_TEST_TCONF("EXTPROC is not defined");
-+#endif
--- 
-1.8.3.1
+> Hi Petr,
 
 
+> For example "do_virt_dev_tst_01()" function name in the test, it is
+> also a private function name?
+No, the goal was to separate library names (e.g. anything in tst_test.sh) from test
+itself. I.e. we can use any name in test, just avoid using namespace _tst_ (or TST_ except
+doing the setup itself.
 
+
+Kind regards,
+Petr
