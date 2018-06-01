@@ -1,52 +1,54 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri,  1 Jun 2018 13:49:49 +0200
-Subject: [LTP] [PATCH 0/7] TST_IPVER
-Message-ID: <20180601114956.17265-1-pvorel@suse.cz>
+Date: Fri,  1 Jun 2018 13:49:50 +0200
+Subject: [LTP] [PATCH 1/7] tst_net.sh: Simplify ipver settings code
+In-Reply-To: <20180601114956.17265-1-pvorel@suse.cz>
+References: <20180601114956.17265-1-pvorel@suse.cz>
+Message-ID: <20180601114956.17265-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/tst_net.sh | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-this is a better implementation of part of
-"tst_net.sh: Simplify ipver settings code" part of patch-set posted in [1]
-
-
-Kind regards,
-Petr
-
-[1] http://lists.linux.it/pipermail/ltp/2018-May/008240.html
-
-Petr Vorel (7):
-  tst_net.sh: Simplify ipver settings code
-  tst_net.sh: Rename ipver to TST_IPVER
-  net/dns: Replace $ipver by $TST_IPVER from tst_net.sh
-  net/ftp: Replace $ipver by $TST_IPVER from tst_net.sh
-  net/http: Replace $ipver by $TST_IPVER from tst_net.sh
-  net/ssh: Replace $ipver by $TST_IPVER from tst_net.sh
-  net/virt: Replace $ipver by $TST_IPVER from tst_net.sh
-
- testcases/lib/tst_net.sh                                   |  5 ++---
- testcases/lib/tst_test.sh                                  |  2 +-
- testcases/network/stress/dns/dns-stress                    | 12 +++++-------
- testcases/network/stress/ftp/ftp-download-stress           |  3 +--
- testcases/network/stress/ftp/ftp-upload-stress             |  3 +--
- testcases/network/stress/http/http-stress                  |  3 +--
- testcases/network/stress/interface/if-addr-adddel          |  2 +-
- testcases/network/stress/interface/if-addr-addlarge        |  2 +-
- testcases/network/stress/interface/if-route-addlarge       |  2 +-
- .../multicast/grp-operation/mcast-group-multiple-socket    |  2 +-
- .../stress/multicast/grp-operation/mcast-group-same-group  |  2 +-
- .../multicast/grp-operation/mcast-group-single-socket      |  2 +-
- .../multicast/grp-operation/mcast-group-source-filter      |  2 +-
- .../network/stress/multicast/grp-operation/mcast-lib.sh    |  2 +-
- testcases/network/stress/ns-tools/tst_net_stress.sh        |  2 +-
- testcases/network/stress/ssh/ssh-stress                    | 14 ++++++--------
- testcases/network/virt/virt_lib.sh                         |  6 ++----
- 17 files changed, 28 insertions(+), 38 deletions(-)
-
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index dc612a794..fd2eacf2f 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -29,11 +29,12 @@ TST_SETUP="tst_net_setup"
+ 
+ # Blank for an IPV4 test; 6 for an IPV6 test.
+ TST_IPV6=${TST_IPV6:-}
++ipver=${TST_IPV6:-4}
+ 
+ tst_net_parse_args()
+ {
+ 	case $1 in
+-	6) TST_IPV6=6;;
++	6) TST_IPV6=6 ipver=6;;
+ 	*) $TST_PARSE_ARGS_CALLER "$1" "$2";;
+ 	esac
+ }
+@@ -68,7 +69,6 @@ tst_net_remote_tmpdir()
+ 
+ tst_net_setup()
+ {
+-	ipver=${TST_IPV6:-4}
+ 	tst_net_remote_tmpdir
+ 	[ -n "$TST_SETUP_CALLER" ] && $TST_SETUP_CALLER
+ }
+@@ -79,7 +79,6 @@ fi
+ 
+ if [ -n "$TST_USE_LEGACY_API" ]; then
+ 	tst_net_read_opts "$@"
+-	ipver=${TST_IPV6:-4}
+ fi
+ 
+ # old vs. new API compatibility layer
 -- 
 2.16.3
 
