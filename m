@@ -1,67 +1,43 @@
-From: Lutero Blissetto <lutero.blissetto@ihc.camp>
-Date: Fri, 01 Jun 2018 09:06:13 +0200
-Subject: [LTP] IHC2018 - Italian Hacker Camp 2-5 Agosto @ Padova
-Message-ID: <5fb5f13593a3f5ef2ae43d16d6592997@ihc.camp>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri,  1 Jun 2018 09:28:33 +0200
+Subject: [LTP] [RFC PATCH v6 0/5] Add TST_TEST_DATA and	TST_TEST_DATA_IFS +
+	cleanup
+Message-ID: <20180601072838.13196-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-IHC2018 è l’hacker camp italiano che si terrà a Padova dal 2 al 5 di 
-Agosto dove chiunque, persone e communities, possono partecipare e 
-proporre talk & workshop.
-Lo spirito di IHC è la condivisione della conoscenza e dell’hacking 
-attraverso un’occasione di aggregazione in un ambiente rilassato, 
-inclusivo, rispettoso e open minded.
-Registrati all’evento! https://pretix.eu/italianhackersembassy/ihc2018/
+Hi,
 
-== INGRESSO E COSTI ==
-Chiunque può partecipare, previa registrazione.
-Per sostenere le spese logistiche, normalmente altri hacker camp 
-istituiscono un biglietto d’entrata che va dai 50 ai 250€, ma per dare a 
-tutti la possibilità di partecipare, nello spirito di un evento 
-comunitario abbiamo scelto di tenere il nostro camp autofinanziato, e 
-quindi di mantenere l'ingresso, il posto tenda ed il parcheggio 
-gratuiti.
+Changes v5->v6:
+Fixes bugs reported by Alexey:
+* Removed wrong _tst_i increment in for loop
+* Fix doc:
+-When '$TST_TEST_DATA' is used with '$TST_CNT', here used with space as default
+-'$TST_TEST_DATA_IFS' value Similar it would be using these variables with
+-separate functions.
++'$TST_TEST_DATA' can be used with '$TST_CNT'. If '$TST_TEST_DATA_IFS' not specified,
++space as default value is used. Of course, it's possible to use separate functions.
 
-Iscriviti https://pretix.eu/italianhackersembassy/ihc2018/
+Hopefully ready to merge.
 
-== CALL FOR CONTENTS: ==
-IHC è costruito con i tuoi contenuti e con il tuo aiuto!
-Invia entro il 6 Giugno la tua proposta per un talk, un’attività, un 
-laboratorio o un’installazione artistica compilando il form su:
-https://www.ihc.camp/programma/call-for-contents/#submitnow
-Sono in topic:
-* Computer Security
-* Free Software / Open Knowledge
-* Cryptography /  Privacy
-* Digital Human Rights / Surveillance
-* Programming Languages
-* Computer / Network forensics
-* Artificial Intelligence / Robotics * Reverse engineering / Malware 
-Analysis
-* Hacktivism / Ethics
-* Ham Radio / Software Defined Radio
-* Making & Hardware hacking
-* Digital Arts / Creativity
-* Retrocomputing
-
-== COMMUNITIES ==
-Puoi partecipare al camp anche con la tua community!
-Molte community parteciperanno a IHC, tra le quali: Italian Hackers' 
-Embassy, HackInBo, Sikurezza.org, Mozilla Italia, Mes3hacklab, Muhack, 
-Progetto Winston Smith, ISACA Venice Chapters, ARI mestre, CyberSaiyan, 
-International Web Association Italia, FSUG Padova, Geekos OpenSuse 
-Italia, ZanShin Tech, Hermes Center for Transparency and Digital Human 
-Rights, Inclusive Hacker Framework (ex-ItalianGrappa), Owasp Italian 
-Chapter, Transparency International Italia, Facebook-tracking-exposed, 
-BitcoinPrivate, ...
-
-== STAFF ==
-Vuoi aiutare l’evento ad essere un’esperienza unica per tutti i 
-partecipanti, oltre che per te? Diventa un volontario! 
-https://www.ihc.camp/team/join/
+Kind regards,
+Petr
 
 
---IHC2018 team
+Petr Vorel (5):
+  tst_test.sh: Hide "private" variables with "_tst_" prefix
+  tst_test.sh: Warn about using "private" variable or function
+  tst_test.sh: Filter out commented out lines from warnings
+  tst_test.sh: s/resm/res/
+  tst_test.sh: Add TST_TEST_DATA and TST_TEST_DATA_IFS
+
+ doc/test-writing-guidelines.txt |  79 ++++++++++++++++++++++++++---
+ testcases/lib/tst_test.sh       | 110 +++++++++++++++++++++++++---------------
+ 2 files changed, 141 insertions(+), 48 deletions(-)
+
+-- 
+2.16.3
+
