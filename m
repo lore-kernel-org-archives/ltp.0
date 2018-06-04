@@ -1,173 +1,87 @@
-From: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
-Date: Mon, 4 Jun 2018 17:27:12 +0800
-Subject: [LTP] [PATCH] sctp: change the layout of tst_brkm()
-Message-ID: <20180604092712.7436-1-sunlw.fnst@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 4 Jun 2018 17:42:12 +0800
+Subject: [LTP] [PATCH] pthread_cancel_3-1: rewrite
+In-Reply-To: <188d33f1b0835a510cf7a3d10d959c8376ba6978.1527771234.git.jstancek@redhat.com>
+References: <188d33f1b0835a510cf7a3d10d959c8376ba6978.1527771234.git.jstancek@redhat.com>
+Message-ID: <CAEemH2eGYR72oVJJf3DqmLsGHYLAsUzH6BQc_03Ly_9c-Jw8gg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-The statement tst_brkm(TBROK, tst_exit, "a b"
-						 "c");
-which will error output "a bc", and this layout is not good for git grep.
+Jan Stancek <jstancek@redhat.com> wrote:
 
-Reported-by: Wei Xingshen <weixshen@gmail.com>
-Signed-off-by: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
----
- utils/sctp/testlib/sctputil.c | 71 +++++++++++++++++++----------------
- 1 file changed, 39 insertions(+), 32 deletions(-)
+> This test sets priorities, measures time, tries to synchronize
+> threads with integers and sleeps for seconds. And there appears
+> to be race somewhere that makes it rarely fail.
+>
+> The premise tested is that action triggered by pthread_cancel
+> runs asynchronously. This rewrite takes simpler approach:
+>
+> Thread sleeps until it can observe variable set by parent
+> _after_ pthread_cancel() or after it hits specified timeout.
+> If timeout is hit, then presumably cleanup_func() didn't
+> run in parallel with main thread and test fails.
+>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ​[...]
+>
+> +int main(void)
+> +{
+> +       pthread_t th;
+> +
+> +       SAFE_PFUNC(pthread_mutex_lock(&mutex));
+> +       SAFE_PFUNC(pthread_create(&th, NULL, thread_func, NULL));
+> +
+> +       /* wait for thread to start */
+> +       SAFE_PFUNC(pthread_mutex_lock(&mutex));
+> +       SAFE_PFUNC(pthread_cancel(th));
+> +
+> +       /*
+> +        * if cancel action would run synchronously then
+> +        * thread will sleep for too long, because it
+> +        * would never see after_cancel == 1
+> +        */
+> +       after_cancel = 1;
+> +
+> +       SAFE_PFUNC(pthread_join(th, NULL));
+> +
+> +       if (thread_sleep_time >= TIMEOUT_MS) {
+>
 
-diff --git a/utils/sctp/testlib/sctputil.c b/utils/sctp/testlib/sctputil.c
-index 564925ce9..d1a1ae988 100644
---- a/utils/sctp/testlib/sctputil.c
-+++ b/utils/sctp/testlib/sctputil.c
-@@ -185,29 +185,29 @@ test_check_buf_notification(void *buf, int datalen, int msg_flags,
- 	union sctp_notification *sn;
- 	
- 	if (!(msg_flags & MSG_NOTIFICATION))
--		tst_brkm(TBROK, tst_exit, "Got a datamsg, expecting "
--			 "notification");
-+		tst_brkm(TBROK, tst_exit,
-+			 "Got a datamsg, expecting notification");
- 	
- 	if (expected_datalen <= 0)
- 		return;
- 
- 	if (datalen != expected_datalen)
--		tst_brkm(TBROK, tst_exit, "Got a notification of unexpected "
--			 "length:%d, expected length:%d", datalen,
--			 expected_datalen);
-+		tst_brkm(TBROK, tst_exit,
-+			 "Got a notification of unexpected length:%d, expected length:%d",
-+			  datalen, expected_datalen);
- 		
- 	sn = (union sctp_notification *)buf;
- 	if (sn->sn_header.sn_type != expected_sn_type)
--		tst_brkm(TBROK, tst_exit, "Unexpected notification:%d"
--			 "expected:%d", sn->sn_header.sn_type,
--			  expected_sn_type);
-+		tst_brkm(TBROK, tst_exit,
-+			 "Unexpected notification:%d expected:%d",
-+			  sn->sn_header.sn_type, expected_sn_type);
- 	
- 	switch(sn->sn_header.sn_type){
- 	case SCTP_ASSOC_CHANGE:
- 		if (sn->sn_assoc_change.sac_state != expected_additional)
--			tst_brkm(TBROK, tst_exit, "Unexpected sac_state:%d "
--				 "expected:%d", sn->sn_assoc_change.sac_state,
--				  expected_additional);
-+			tst_brkm(TBROK, tst_exit,
-+				 "Unexpected sac_state:%d expected:%d",
-+				  sn->sn_assoc_change.sac_state, expected_additional);
- 		break;
- 	default:
- 		break;
-@@ -237,35 +237,38 @@ test_check_buf_data(void *buf, int datalen, int msg_flags,
- 			 uint32_t expected_ppid)
- {
- 	if (msg_flags & MSG_NOTIFICATION)
--		tst_brkm(TBROK, tst_exit, "Got a notification, expecting a"
--			 "datamsg");
-+		tst_brkm(TBROK, tst_exit,
-+			 "Got a notification, expecting a datamsg");
- 
- 	if (expected_datalen <= 0)
- 		return;
- 
- 	if (datalen != expected_datalen)
--		tst_brkm(TBROK, tst_exit, "Got a datamsg of unexpected "
--			 "length:%d, expected length:%d", datalen,
--			 expected_datalen);
-+		tst_brkm(TBROK, tst_exit,
-+			 "Got a datamsg of unexpected length:%d, expected length:%d",
-+			  datalen, expected_datalen);
- 
- 	if ((msg_flags & ~0x80000000) != expected_msg_flags)
--		tst_brkm(TBROK, tst_exit, "Unexpected msg_flags:0x%x "
--			 "expecting:0x%x", msg_flags, expected_msg_flags);
-+		tst_brkm(TBROK, tst_exit,
-+			 "Unexpected msg_flags:0x%x expecting:0x%x",
-+			  msg_flags, expected_msg_flags);
- 
- 	if ((0 == expected_stream) && (0 == expected_ppid))
- 		return; 
- 
- 	if (!sinfo)
--		tst_brkm(TBROK, tst_exit, "Null sinfo, but expected "
--			 "stream:%d expected ppid:%d", expected_stream,
--			 expected_ppid);
-+		tst_brkm(TBROK, tst_exit,
-+			 "Null sinfo, but expected stream:%d expected ppid:%d",
-+			  expected_stream, expected_ppid);
- 
- 	if (sinfo->sinfo_stream != expected_stream)
--		tst_brkm(TBROK, tst_exit, "stream mismatch: expected:%x "
--			 "got:%x", expected_stream, sinfo->sinfo_stream);
-+		tst_brkm(TBROK, tst_exit,
-+			 "stream mismatch: expected:%x got:%x",
-+			  expected_stream, sinfo->sinfo_stream);
- 	if (sinfo->sinfo_ppid != expected_ppid)
--		tst_brkm(TBROK, tst_exit, "ppid mismatch: expected:%x "
--			 "got:%x\n", expected_ppid, sinfo->sinfo_ppid);
-+		tst_brkm(TBROK, tst_exit,
-+			 "ppid mismatch: expected:%x got:%x\n",
-+			  expected_ppid, sinfo->sinfo_ppid);
- }
- 
- /* Check if a message corresponds to data, its length, msg_flags, stream and
-@@ -356,8 +359,8 @@ static int cmp_addr(sockaddr_storage_t *addr1, sockaddr_storage_t *addr2)
- 		return memcmp(&addr1->v4.sin_addr, &addr2->v4.sin_addr,
- 					sizeof(addr1->v4.sin_addr));
- 	default:
--		tst_brkm(TBROK, tst_exit, "invalid address type %d",
--			 addr1->sa.sa_family);
-+		tst_brkm(TBROK, tst_exit,
-+			 "invalid address type %d", addr1->sa.sa_family);
- 		return -1;
- 	}
- }
-@@ -375,13 +378,15 @@ int test_peer_addr(int sk, sctp_assoc_t asoc, sockaddr_storage_t *peers, int cou
- 
- 	error = sctp_getpaddrs(sk, asoc, &addrs);
- 	if (-1 == error) {
--		tst_brkm(TBROK, tst_exit, "sctp_getpaddrs: %s", strerror(errno));
-+		tst_brkm(TBROK, tst_exit,
-+			  "sctp_getpaddrs: %s", strerror(errno));
- 		return error;
- 	}
- 	if (error != count) {
- 		sctp_freepaddrs(addrs);
--		tst_brkm(TBROK, tst_exit, "peer count %d mismatch, expected %d",
--			 error, count);
-+		tst_brkm(TBROK, tst_exit,
-+			 "peer count %d mismatch, expected %d",
-+			  error, count);
- 	}
- 	addrbuf = addrs;
- 	for (i = 0; i < count; i++) {
-@@ -398,7 +403,8 @@ int test_peer_addr(int sk, sctp_assoc_t asoc, sockaddr_storage_t *peers, int cou
- 		default:
- 			errno = EINVAL;
- 			sctp_freepaddrs(addrs);
--			tst_brkm(TBROK, tst_exit, "sctp_getpaddrs: %s", strerror(errno));
-+			tst_brkm(TBROK, tst_exit,
-+				 "sctp_getpaddrs: %s", strerror(errno));
- 			return -1;
- 		}
- 		for (j = 0; j < count; j++) {
-@@ -410,7 +416,8 @@ int test_peer_addr(int sk, sctp_assoc_t asoc, sockaddr_storage_t *peers, int cou
- 	}
- 	for (j = 0; j < count; j++) {
- 		if (found[j] == 0) {
--			tst_brkm(TBROK, tst_exit, "peer address %d not found", j);
-+			tst_brkm(TBROK, tst_exit,
-+				 "peer address %d not found", j);
- 		}
- 	}
- 	sctp_freepaddrs(addrs);
+​Since the 'cleanup_flag' ​was removed, how can we know
+​
+cleanup_func()
+will definitely be called? here if the thread_sleep_time == 0, we also get
+pass from this test.
+
+
+
+> +               printf("Error: thread hit timeout\n");
+> +               exit(PTS_FAIL);
+> +       }
+> +
+>
+
+​Maybe add:
+    SAFE_PFUNC(pthread_mutex_unlock(&mutex));
+here too?​
+
+
+
+> +       printf("Thread cancelled after %d ms.\n", thread_sleep_time);
+> +       printf("Test PASSED\n");
+> +       exit(PTS_PASS);
+> +}
+>
+>
+​Otherwise looks good to me.​
+
+
 -- 
-2.17.0
-
-
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180604/a53e4a00/attachment.html>
