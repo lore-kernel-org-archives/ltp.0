@@ -1,7 +1,7 @@
 From: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
-Date: Mon, 4 Jun 2018 15:27:31 +0800
+Date: Mon, 4 Jun 2018 17:27:12 +0800
 Subject: [LTP] [PATCH] sctp: change the layout of tst_brkm()
-Message-ID: <20180604072731.5409-1-sunlw.fnst@cn.fujitsu.com>
+Message-ID: <20180604092712.7436-1-sunlw.fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 The statement tst_brkm(TBROK, tst_exit, "a b"
-                   "c");
-which will error output "a bc", and this layout do not good for git grep.
+						 "c");
+which will error output "a bc", and this layout is not good for git grep.
 
 Reported-by: Wei Xingshen <weixshen@gmail.com>
 Signed-off-by: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
@@ -39,8 +39,8 @@ index 564925ce9..d1a1ae988 100644
 -			 "length:%d, expected length:%d", datalen,
 -			 expected_datalen);
 +		tst_brkm(TBROK, tst_exit,
-+		     "Got a notification of unexpected length:%d, expected length:%d",
-+		      datalen, expected_datalen);
++			 "Got a notification of unexpected length:%d, expected length:%d",
++			  datalen, expected_datalen);
  		
  	sn = (union sctp_notification *)buf;
  	if (sn->sn_header.sn_type != expected_sn_type)
@@ -48,8 +48,8 @@ index 564925ce9..d1a1ae988 100644
 -			 "expected:%d", sn->sn_header.sn_type,
 -			  expected_sn_type);
 +		tst_brkm(TBROK, tst_exit,
-+             "Unexpected notification:%d expected:%d",
-+              sn->sn_header.sn_type, expected_sn_type);
++			 "Unexpected notification:%d expected:%d",
++			  sn->sn_header.sn_type, expected_sn_type);
  	
  	switch(sn->sn_header.sn_type){
  	case SCTP_ASSOC_CHANGE:
@@ -58,13 +58,13 @@ index 564925ce9..d1a1ae988 100644
 -				 "expected:%d", sn->sn_assoc_change.sac_state,
 -				  expected_additional);
 +			tst_brkm(TBROK, tst_exit,
-+                 "Unexpected sac_state:%d expected:%d",
-+                  sn->sn_assoc_change.sac_state, expected_additional);
++				 "Unexpected sac_state:%d expected:%d",
++				  sn->sn_assoc_change.sac_state, expected_additional);
  		break;
  	default:
  		break;
 @@ -237,35 +237,38 @@ test_check_buf_data(void *buf, int datalen, int msg_flags,
- 		    uint32_t expected_ppid)
+ 			 uint32_t expected_ppid)
  {
  	if (msg_flags & MSG_NOTIFICATION)
 -		tst_brkm(TBROK, tst_exit, "Got a notification, expecting a"
@@ -80,15 +80,15 @@ index 564925ce9..d1a1ae988 100644
 -			 "length:%d, expected length:%d", datalen,
 -			 expected_datalen);
 +		tst_brkm(TBROK, tst_exit,
-+             "Got a datamsg of unexpected length:%d, expected length:%d",
-+              datalen, expected_datalen);
++			 "Got a datamsg of unexpected length:%d, expected length:%d",
++			  datalen, expected_datalen);
  
  	if ((msg_flags & ~0x80000000) != expected_msg_flags)
 -		tst_brkm(TBROK, tst_exit, "Unexpected msg_flags:0x%x "
 -			 "expecting:0x%x", msg_flags, expected_msg_flags);
 +		tst_brkm(TBROK, tst_exit,
-+             "Unexpected msg_flags:0x%x expecting:0x%x",
-+              msg_flags, expected_msg_flags);
++			 "Unexpected msg_flags:0x%x expecting:0x%x",
++			  msg_flags, expected_msg_flags);
  
  	if ((0 == expected_stream) && (0 == expected_ppid))
  		return; 
@@ -98,32 +98,32 @@ index 564925ce9..d1a1ae988 100644
 -			 "stream:%d expected ppid:%d", expected_stream,
 -			 expected_ppid);
 +		tst_brkm(TBROK, tst_exit,
-+             "Null sinfo, but expected stream:%d expected ppid:%d",
-+              expected_stream, expected_ppid);
++			 "Null sinfo, but expected stream:%d expected ppid:%d",
++			  expected_stream, expected_ppid);
  
  	if (sinfo->sinfo_stream != expected_stream)
 -		tst_brkm(TBROK, tst_exit, "stream mismatch: expected:%x "
 -			 "got:%x", expected_stream, sinfo->sinfo_stream);
 +		tst_brkm(TBROK, tst_exit,
-+             "stream mismatch: expected:%x got:%x",
-+              expected_stream, sinfo->sinfo_stream);
++			 "stream mismatch: expected:%x got:%x",
++			  expected_stream, sinfo->sinfo_stream);
  	if (sinfo->sinfo_ppid != expected_ppid)
 -		tst_brkm(TBROK, tst_exit, "ppid mismatch: expected:%x "
 -			 "got:%x\n", expected_ppid, sinfo->sinfo_ppid);
 +		tst_brkm(TBROK, tst_exit,
-+             "ppid mismatch: expected:%x got:%x\n",
-+              expected_ppid, sinfo->sinfo_ppid);
++			 "ppid mismatch: expected:%x got:%x\n",
++			  expected_ppid, sinfo->sinfo_ppid);
  }
  
  /* Check if a message corresponds to data, its length, msg_flags, stream and
 @@ -356,8 +359,8 @@ static int cmp_addr(sockaddr_storage_t *addr1, sockaddr_storage_t *addr2)
  		return memcmp(&addr1->v4.sin_addr, &addr2->v4.sin_addr,
- 			      sizeof(addr1->v4.sin_addr));
+ 					sizeof(addr1->v4.sin_addr));
  	default:
 -		tst_brkm(TBROK, tst_exit, "invalid address type %d",
 -			 addr1->sa.sa_family);
 +		tst_brkm(TBROK, tst_exit,
-+             "invalid address type %d", addr1->sa.sa_family);
++			 "invalid address type %d", addr1->sa.sa_family);
  		return -1;
  	}
  }
@@ -133,7 +133,7 @@ index 564925ce9..d1a1ae988 100644
  	if (-1 == error) {
 -		tst_brkm(TBROK, tst_exit, "sctp_getpaddrs: %s", strerror(errno));
 +		tst_brkm(TBROK, tst_exit,
-+             "sctp_getpaddrs: %s", strerror(errno));
++			  "sctp_getpaddrs: %s", strerror(errno));
  		return error;
  	}
  	if (error != count) {
@@ -141,8 +141,8 @@ index 564925ce9..d1a1ae988 100644
 -		tst_brkm(TBROK, tst_exit, "peer count %d mismatch, expected %d",
 -			 error, count);
 +		tst_brkm(TBROK, tst_exit,
-+             "peer count %d mismatch, expected %d",
-+			   error, count);
++			 "peer count %d mismatch, expected %d",
++			  error, count);
  	}
  	addrbuf = addrs;
  	for (i = 0; i < count; i++) {
@@ -152,7 +152,7 @@ index 564925ce9..d1a1ae988 100644
  			sctp_freepaddrs(addrs);
 -			tst_brkm(TBROK, tst_exit, "sctp_getpaddrs: %s", strerror(errno));
 +			tst_brkm(TBROK, tst_exit,
-+                 "sctp_getpaddrs: %s", strerror(errno));
++				 "sctp_getpaddrs: %s", strerror(errno));
  			return -1;
  		}
  		for (j = 0; j < count; j++) {
@@ -162,7 +162,7 @@ index 564925ce9..d1a1ae988 100644
  		if (found[j] == 0) {
 -			tst_brkm(TBROK, tst_exit, "peer address %d not found", j);
 +			tst_brkm(TBROK, tst_exit,
-+                 "peer address %d not found", j);
++				 "peer address %d not found", j);
  		}
  	}
  	sctp_freepaddrs(addrs);
