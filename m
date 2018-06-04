@@ -1,46 +1,38 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 4 Jun 2018 07:50:57 -0400 (EDT)
-Subject: [LTP] [PATCH] pthread_cancel_3-1: rewrite
-In-Reply-To: <CAEemH2cLq2kZH2Kb1zXTwnM+jc3MVoTcihV==xbte2Ff-gs6-g@mail.gmail.com>
-References: <188d33f1b0835a510cf7a3d10d959c8376ba6978.1527771234.git.jstancek@redhat.com>
- <CAEemH2eGYR72oVJJf3DqmLsGHYLAsUzH6BQc_03Ly_9c-Jw8gg@mail.gmail.com>
- <664663719.23903556.1528106246107.JavaMail.zimbra@redhat.com>
- <CAEemH2cLq2kZH2Kb1zXTwnM+jc3MVoTcihV==xbte2Ff-gs6-g@mail.gmail.com>
-Message-ID: <606888679.23984992.1528113057232.JavaMail.zimbra@redhat.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Mon, 4 Jun 2018 17:28:42 +0530
+Subject: [LTP] LTP CVE "cve-2011-2183" failed on x86_64, arm32 beaglebone x15
+Message-ID: <CA+G9fYuUAPvwBjXjw_EATrMoLPtS5imGo7foqchmAFD=TUdVXQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+LTP CVE "cve-2011-2183" failed on x86_64, (arm32) beaglebone x15.
 
+Please check the history here,
+https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/ltp-cve-tests/cve-2011-2183
 
------ Original Message -----
-> Jan Stancek <jstancek@redhat.com> wrote:
-> 
-> >
-> > > ​Maybe add:
-> > >     SAFE_PFUNC(pthread_mutex_unlock(&mutex));
-> > > here too?​
-> >
-> > There are no users at this point. Is there an issue having it locked at
-> > exit?
-> >
-> >
-> ​Not clear too. But after thinking over, maybe it's not a good idea to use
-> pthread_mutex_lock() in this situation.
+Test log:
+----------
+tst_test.c:980: INFO: Timeout per run is 0h 15m 00s
+ksm05.c:98: CONF: KSM configuration is not enabled
+safe_file_ops.c:238: WARN: Failed to open FILE
+'/sys/kernel/mm/ksm/run' at ksm05.c:110
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 1
 
-You're right, it's actually not defined according to POSIX:
-  http://pubs.opengroup.org/onlinepubs/009695399/functions/pthread_mutex_lock.html
+Analysis:
+The required config is not set on x86_64 and arm32 x15 device.
+# CONFIG_KSM is not set
+This config should be enabled.
 
-> 
-> The reasons are:
-> 1. to avoid dead lock, it's not suggest to lock a mutex twice in one thread
-> 2. it's not suggest to lock mutex in thread_A but do unlock in thread_B
-> 
-> ​So what about using semaphore:
+Bug report:
+LKFT: LTP: CVE cve-2011-2183 test failed on x86_64 and arm32 x15 devices
+https://bugs.linaro.org/show_bug.cgi?id=3857
 
-Probably simpler than condition. Anyway, I'll drop my mutex fail in v2.
-
-Thanks,
-Jan
+Best regards
+Naresh Kamboju
