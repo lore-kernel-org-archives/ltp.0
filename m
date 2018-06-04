@@ -1,106 +1,30 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 4 Jun 2018 05:57:26 -0400 (EDT)
-Subject: [LTP] [PATCH] pthread_cancel_3-1: rewrite
-In-Reply-To: <CAEemH2eGYR72oVJJf3DqmLsGHYLAsUzH6BQc_03Ly_9c-Jw8gg@mail.gmail.com>
-References: <188d33f1b0835a510cf7a3d10d959c8376ba6978.1527771234.git.jstancek@redhat.com>
- <CAEemH2eGYR72oVJJf3DqmLsGHYLAsUzH6BQc_03Ly_9c-Jw8gg@mail.gmail.com>
-Message-ID: <664663719.23903556.1528106246107.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 4 Jun 2018 13:24:02 +0200
+Subject: [LTP] [PATCH ltp] m4/ltp-kernel_devel.m4: get LINUX_VERSION
+ from LINUX_DIR during configure
+In-Reply-To: <20180604063306.24325-1-yixin.zhang@intel.com>
+References: <20180604063306.24325-1-yixin.zhang@intel.com>
+Message-ID: <20180604112402.GA3362@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> If LINUX_DIR is given, get LINUX_VERSION for kernel source code instead
+> of `uname -r`. So when we need to build .ko with a kernel differernt
+> than the one on current host PC, we only need to provide
+> "--with-linux-dir", and LINUX_VERSION will be generated automatically.
 
+Looking at the m4 file for kernel-devel it seems we only use the
+LINUX_VERSION in order to construct the LINUX_DIR path and the rest of
+the code, i.e. include/mk/module.mk uses the LINUX_VERSION_MAJOR and
+LINUX_VERSION_MINOR generated based on the LINUX_DIR.
 
------ Original Message -----
-> From: "Li Wang" <liwang@redhat.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Monday, 4 June, 2018 11:42:12 AM
-> Subject: Re: [LTP] [PATCH] pthread_cancel_3-1: rewrite
-> 
-> Jan Stancek <jstancek@redhat.com> wrote:
-> 
-> > This test sets priorities, measures time, tries to synchronize
-> > threads with integers and sleeps for seconds. And there appears
-> > to be race somewhere that makes it rarely fail.
-> >
-> > The premise tested is that action triggered by pthread_cancel
-> > runs asynchronously. This rewrite takes simpler approach:
-> >
-> > Thread sleeps until it can observe variable set by parent
-> > _after_ pthread_cancel() or after it hits specified timeout.
-> > If timeout is hit, then presumably cleanup_func() didn't
-> > run in parallel with main thread and test fails.
-> >
-> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> > ​[...]
-> >
-> > +int main(void)
-> > +{
-> > +       pthread_t th;
-> > +
-> > +       SAFE_PFUNC(pthread_mutex_lock(&mutex));
-> > +       SAFE_PFUNC(pthread_create(&th, NULL, thread_func, NULL));
-> > +
-> > +       /* wait for thread to start */
-> > +       SAFE_PFUNC(pthread_mutex_lock(&mutex));
-> > +       SAFE_PFUNC(pthread_cancel(th));
-> > +
-> > +       /*
-> > +        * if cancel action would run synchronously then
-> > +        * thread will sleep for too long, because it
-> > +        * would never see after_cancel == 1
-> > +        */
-> > +       after_cancel = 1;
-> > +
-> > +       SAFE_PFUNC(pthread_join(th, NULL));
-> > +
-> > +       if (thread_sleep_time >= TIMEOUT_MS) {
-> >
-> 
-> ​Since the 'cleanup_flag' ​was removed, how can we know
-> ​
-> cleanup_func()
-> will definitely be called? here if the thread_sleep_time == 0, we also get
-> pass from this test.
+What is the LINUX_VERSION variable needed for? It does not seem to be
+used anywhere outside the m4 kernel devel file.
 
-Right, that's not checked atm. I can add check
-if "thread_sleep_time == 0" then we know it hasn't been called.
-
-> 
-> 
-> 
-> > +               printf("Error: thread hit timeout\n");
-> > +               exit(PTS_FAIL);
-> > +       }
-> > +
-> >
-> 
-> ​Maybe add:
->     SAFE_PFUNC(pthread_mutex_unlock(&mutex));
-> here too?​
-
-There are no users at this point. Is there an issue having it locked at exit?
-
-> 
-> 
-> 
-> > +       printf("Thread cancelled after %d ms.\n", thread_sleep_time);
-> > +       printf("Test PASSED\n");
-> > +       exit(PTS_PASS);
-> > +}
-> >
-> >
-> ​Otherwise looks good to me.​
-
-Thanks for review,
-Jan
-
-> 
-> 
-> --
-> Regards,
-> Li Wang
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
