@@ -1,45 +1,48 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri,  1 Jun 2018 13:49:56 +0200
-Subject: [LTP] [PATCH 7/7] net/virt: Replace $ipver by $TST_IPVER from
-	tst_net.sh
-In-Reply-To: <20180601114956.17265-1-pvorel@suse.cz>
-References: <20180601114956.17265-1-pvorel@suse.cz>
-Message-ID: <20180601114956.17265-8-pvorel@suse.cz>
+From: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
+Date: Mon, 4 Jun 2018 11:26:28 +0800
+Subject: [LTP] [PATCH] sctp: insert a space to isolate two word
+Message-ID: <20180604032628.2737-1-sunlw.fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/network/virt/virt_lib.sh | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+In statement tst_brkm(TBROK, tst_exit, "a b"
+              "c");
+There is need a space between word "b" and "c" to isolate these
+two words, otherwise will print "a bc"
 
-diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
-index 00978a062..77f129894 100644
---- a/testcases/network/virt/virt_lib.sh
-+++ b/testcases/network/virt/virt_lib.sh
-@@ -289,8 +289,8 @@ virt_compare_netperf()
+Reported-by: Wei Xingshen <weixshen@gmail.com>
+Signed-off-by: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
+---
+ utils/sctp/testlib/sctputil.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/utils/sctp/testlib/sctputil.c b/utils/sctp/testlib/sctputil.c
+index 564925ce9..6f873d8d2 100644
+--- a/utils/sctp/testlib/sctputil.c
++++ b/utils/sctp/testlib/sctputil.c
+@@ -198,7 +198,7 @@ test_check_buf_notification(void *buf, int datalen, int msg_flags,
+ 		
+ 	sn = (union sctp_notification *)buf;
+ 	if (sn->sn_header.sn_type != expected_sn_type)
+-		tst_brkm(TBROK, tst_exit, "Unexpected notification:%d"
++		tst_brkm(TBROK, tst_exit, "Unexpected notification:%d "
+ 			 "expected:%d", sn->sn_header.sn_type,
+ 			  expected_sn_type);
+ 	
+@@ -237,7 +237,7 @@ test_check_buf_data(void *buf, int datalen, int msg_flags,
+ 		    uint32_t expected_ppid)
+ {
+ 	if (msg_flags & MSG_NOTIFICATION)
+-		tst_brkm(TBROK, tst_exit, "Got a notification, expecting a"
++		tst_brkm(TBROK, tst_exit, "Got a notification, expecting a "
+ 			 "datamsg");
  
- 	case "$virt_type" in
- 	vxlan|geneve)
--		tst_resm TINFO "IP4 $virt_type over IP$ipver slower by $per %"
--		tst_resm TINFO "IP6 $virt_type over IP$ipver slower by $per6 %"
-+		tst_resm TINFO "IP4 $virt_type over IP$TST_IPVER slower by $per %"
-+		tst_resm TINFO "IP6 $virt_type over IP$TST_IPVER slower by $per6 %"
- 	;;
- 	*)
- 		tst_resm TINFO "IP4 $virt_type slower by $per %"
-@@ -420,8 +420,6 @@ vxlan|geneve)
- ;;
- esac
- 
--ipver=${TST_IPV6:-'4'}
--
- tst_check_cmds "ip"
- 
- virt_add ltp_v0 || \
+ 	if (expected_datalen <= 0)
 -- 
-2.16.3
+2.17.0
+
+
 
