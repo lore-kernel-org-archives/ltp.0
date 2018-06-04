@@ -1,30 +1,68 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 4 Jun 2018 13:24:02 +0200
-Subject: [LTP] [PATCH ltp] m4/ltp-kernel_devel.m4: get LINUX_VERSION
- from LINUX_DIR during configure
-In-Reply-To: <20180604063306.24325-1-yixin.zhang@intel.com>
-References: <20180604063306.24325-1-yixin.zhang@intel.com>
-Message-ID: <20180604112402.GA3362@rei>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 4 Jun 2018 19:39:56 +0800
+Subject: [LTP] [PATCH] pthread_cancel_3-1: rewrite
+In-Reply-To: <664663719.23903556.1528106246107.JavaMail.zimbra@redhat.com>
+References: <188d33f1b0835a510cf7a3d10d959c8376ba6978.1527771234.git.jstancek@redhat.com>
+ <CAEemH2eGYR72oVJJf3DqmLsGHYLAsUzH6BQc_03Ly_9c-Jw8gg@mail.gmail.com>
+ <664663719.23903556.1528106246107.JavaMail.zimbra@redhat.com>
+Message-ID: <CAEemH2cLq2kZH2Kb1zXTwnM+jc3MVoTcihV==xbte2Ff-gs6-g@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-> If LINUX_DIR is given, get LINUX_VERSION for kernel source code instead
-> of `uname -r`. So when we need to build .ko with a kernel differernt
-> than the one on current host PC, we only need to provide
-> "--with-linux-dir", and LINUX_VERSION will be generated automatically.
+Jan Stancek <jstancek@redhat.com> wrote:
 
-Looking at the m4 file for kernel-devel it seems we only use the
-LINUX_VERSION in order to construct the LINUX_DIR path and the rest of
-the code, i.e. include/mk/module.mk uses the LINUX_VERSION_MAJOR and
-LINUX_VERSION_MINOR generated based on the LINUX_DIR.
+>
+> > ​Maybe add:
+> >     SAFE_PFUNC(pthread_mutex_unlock(&mutex));
+> > here too?​
+>
+> There are no users at this point. Is there an issue having it locked at
+> exit?
+>
+>
+​Not clear too. But after thinking over, maybe it's not a good idea to use
+pthread_mutex_lock() in this situation.
 
-What is the LINUX_VERSION variable needed for? It does not seem to be
-used anywhere outside the m4 kernel devel file.
+The reasons are:
+1. to avoid dead lock, it's not suggest to lock a mutex twice in one thread
+2. it's not suggest to lock mutex in thread_A but do unlock in thread_B
+
+​So what about using semaphore:
+-----------------------------
+
+static sem_t sem_syn;
+
+static void *thread_func(void *unused)
+{
+...
+       sem_post(&sem_syn);
+
+       while (waited_for_cancel_ms < TIMEOUT_MS) {
+               usleep(SLEEP_MS*1000);
+               waited_for_cancel_ms += SLEEP_MS;
+       }
+...
+}
+
+int main(void)
+{
+       sem_init(&sem_syn, 0, 0);
+
+       SAFE_PFUNC(pthread_create(&th, NULL, thread_func, NULL));
+
+       /* wait for thread to start */
+       sem_wait(&sem_syn);
+       SAFE_PFUNC(pthread_cancel(th));
+...
+}
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180604/918a3542/attachment.html>
