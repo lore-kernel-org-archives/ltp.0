@@ -1,12 +1,11 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 4 Jun 2018 23:34:20 +0200
-Subject: [LTP] [RFC PATCH v6 3/5] tst_test.sh: Filter out commented out
- lines from warnings
-In-Reply-To: <20180604210628.GA19509@rei.lan>
-References: <20180601072838.13196-1-pvorel@suse.cz>
- <20180601072838.13196-4-pvorel@suse.cz>
- <20180604210628.GA19509@rei.lan>
-Message-ID: <20180604213420.GA2783@x230>
+From: Zhang, Yixin <yixin.zhang@intel.com>
+Date: Tue, 5 Jun 2018 09:24:58 +0800
+Subject: [LTP] [PATCH ltp] m4/ltp-kernel_devel.m4: get LINUX_VERSION
+ from LINUX_DIR during configure
+In-Reply-To: <20180604112402.GA3362@rei>
+References: <20180604063306.24325-1-yixin.zhang@intel.com>
+ <20180604112402.GA3362@rei>
+Message-ID: <20180605012458.lszcgbpxi2yxdt44@yixin-desktop>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,45 +14,28 @@ To: ltp@lists.linux.it
 
 Hi Cyril,
 
+I've double check the code and re-test multiple times today and you are right,
+the "LINUX_VERSION" variable has nothing to do with building kernel module.
+There was something wrong with my environment yesterday I think.
+Please ignore this patch, thanks.
 
+Yixin
+
+On 2018-06-04 at 13:24:02 +0200, Cyril Hrubis wrote:
 > Hi!
-> What is the usecase for this?
-
-> I know that comments does not count as a code but why would the test
-> need to comment with a reserved name in it?
-OK, let's drop it.
-
-> > ---
-> >  testcases/lib/tst_test.sh | 12 ++++++++++--
-> >  1 file changed, 10 insertions(+), 2 deletions(-)
-
-> > diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> > index de5d65039..098ff7bd2 100644
-> > --- a/testcases/lib/tst_test.sh
-> > +++ b/testcases/lib/tst_test.sh
-> > @@ -244,13 +244,21 @@ _tst_rescmp()
-> >  	fi
-> >  }
-
-> > +_tst_get_used_var()
-> > +{
-> > +	local _tst_pattern="$1"
-> > +
-> > +	grep $_tst_pattern "$TST_TEST_PATH" | grep -v '^[[:space:]]*#' | \
-> > +		sed "s/.*${_tst_pattern}//;"' s/[="} \t\/:`].*//'
-
-> As far as I can tell this does not work for:
-
-> foo # run function foo
-Not sure what you expected. The behavior is:
-
-* no warning for:
-  # _tst_foo run function _tst_foo
-
-* warning for:
-  _tst_foo # run function _tst_foo
-
-I take it as your NACK anyway :).
-
-Kind regards,
-Petr
+> > If LINUX_DIR is given, get LINUX_VERSION for kernel source code instead
+> > of `uname -r`. So when we need to build .ko with a kernel differernt
+> > than the one on current host PC, we only need to provide
+> > "--with-linux-dir", and LINUX_VERSION will be generated automatically.
+> 
+> Looking at the m4 file for kernel-devel it seems we only use the
+> LINUX_VERSION in order to construct the LINUX_DIR path and the rest of
+> the code, i.e. include/mk/module.mk uses the LINUX_VERSION_MAJOR and
+> LINUX_VERSION_MINOR generated based on the LINUX_DIR.
+> 
+> What is the LINUX_VERSION variable needed for? It does not seem to be
+> used anywhere outside the m4 kernel devel file.
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
