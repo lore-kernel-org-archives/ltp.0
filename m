@@ -1,61 +1,22 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 5 Jun 2018 15:33:08 +0800
-Subject: [LTP] [PATCH] memcg: functional: 4.16 kernel updates stat
- counter in a batch of 33 pages
-In-Reply-To: <1527207217-70686-1-git-send-email-yang.shi@linux.alibaba.com>
-References: <1527207217-70686-1-git-send-email-yang.shi@linux.alibaba.com>
-Message-ID: <CAEemH2c5H+gL1mPFyGcBA0__bJXCf6J4vQ4-xZwFSG5Mp4cjqw@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 5 Jun 2018 13:02:46 +0200
+Subject: [LTP] [PATCH] testcase: kernel: ioctl: Handle ENOENT error
+In-Reply-To: <20180529155335.5224-1-mylene.josserand@bootlin.com>
+References: <20180529155335.5224-1-mylene.josserand@bootlin.com>
+Message-ID: <20180605110246.GA29837@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yang,
+Hi!
+> In case the folder /dev/net is not available, the error
+> returned is ENOENT and not ENODEV.
+> Handle this case to return a TCONF instead of a TFAIL.
 
-Yang Shi <yang.shi@linux.alibaba.com> wrote:
-
-> Due to upstream kernel commit a983b5ebee57209c99f68c8327072f25e0e6e3da
-> ("mm: memcontrol: fix excessive complexity in memory.stat reporting"),
-> memory.stat is updated in a batch of 33 pages. This results in some test
-> cases fail at checking stat counter since they just touch one page.
->
-> Introduce TST_PAGESIZE, which is 33 * PAGESIZE, used by affected test
-> cases, keep others still use PAGESIZE. And, this change doesn't break
-> pre-4.16 kernel.
->
-> Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
-> ---
->  testcases/kernel/controllers/memcg/functional/memcg_lib.sh | 13
-> ++++++++-----
->  .../functional/memcg_move_charge_at_immigrate_test.sh      | 14
-> +++++++-------
->  .../kernel/controllers/memcg/functional/memcg_stat_rss.sh  | 12
-> ++++++------
->  .../kernel/controllers/memcg/functional/memcg_stat_test.sh |  6 +++---
->  4 files changed, 24 insertions(+), 21 deletions(-)
->
-> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> index 6a6af85..ad6db24 100755
-> --- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> +++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> @@ -34,6 +34,9 @@ if [ $? -ne 0 ]; then
->         tst_brkm TBROK "getconf PAGESIZE failed"
->  fi
->
-> +# Post 4.16 kernel updates stat in batch (> 32 pages) every time
-> +TST_PAGESIZE=$(( $PAGESIZE * 33 ))
-
-
-​AFAIK, LTP always reserve the ‘TST_’ prefix for general-purpose library
-using, so we'd better avoid this in testcase variable naming.
-
-What about replacing it by PAGESIZES or PAGESIZE_NUM?​
+Pushed, thanks.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180605/d57d0e48/attachment.html>
+Cyril Hrubis
+chrubis@suse.cz
