@@ -1,28 +1,183 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 5 Jun 2018 08:42:43 +0200
-Subject: [LTP] [PATCH] sctp: change the layout of tst_brkm()
-In-Reply-To: <20180604092712.7436-1-sunlw.fnst@cn.fujitsu.com>
-References: <20180604092712.7436-1-sunlw.fnst@cn.fujitsu.com>
-Message-ID: <20180605064243.gunhxvr7whq26isp@dell5510>
+Date: Tue, 5 Jun 2018 09:19:22 +0200
+Subject: [LTP] [PATCH 1/3] syscalls/fchmod.h: Move common macros to
+ fchmod.h
+In-Reply-To: <1522407404-6877-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+References: <1522407404-6877-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <20180605071922.ci4q4lmyi7vy6wpa@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Sun,
+> Signed-off-by: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
+Acked-by: Petr Vorel <pvorel@suse.cz>
 
-pushed, thanks!
-> The statement tst_brkm(TBROK, tst_exit, "a b"
-> 						 "c");
-> which will error output "a bc", and this layout is not good for git grep.
-I'm sorry, I forget to add this explanation (I need to apply the patch with 'patch' as git
-am/apply refused to work due whitespace errors, even with --whitespace=warn).
-I also removed trailing whitespace.
+...
+> +++ b/testcases/kernel/syscalls/fchmod/fchmod.h
+> @@ -0,0 +1,26 @@
+> +/*
+> + * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
+> + * Author: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * alone with this program.
+> + */
+I'd change this to something like. But that's very minor and can be changed by commiter
+(without reposting).
 
-> Reported-by: Wei Xingshen <weixshen@gmail.com>
-> Signed-off-by: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
+ * Author: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+ */
 
+the rest bellow looks good to me.
 
 Kind regards,
 Petr
+
+> +
+> +#ifndef FCHMOD_H
+> +#define FCHMOD_H
+> +
+> +#define FILE_MODE	(S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
+> +#define DIR_MODE	(S_IRWXU | S_IRWXG | S_IRWXO)
+> +#define PERMS	01777
+> +#define TESTFILE	"testfile"
+> +#define TESTDIR	"testdir"
+> +
+> +#endif /* FCHMOD_H */
+> diff --git a/testcases/kernel/syscalls/fchmod/fchmod02.c b/testcases/kernel/syscalls/fchmod/fchmod02.c
+> index ea2bdb4..aa3bab3 100644
+> --- a/testcases/kernel/syscalls/fchmod/fchmod02.c
+> +++ b/testcases/kernel/syscalls/fchmod/fchmod02.c
+> @@ -82,15 +82,10 @@
+
+>  #include "test.h"
+>  #include "safe_macros.h"
+> +#include "fchmod.h"
+
+>  #define LTPUSER		"nobody"
+>  #define LTPGRP		"users"
+> -#define FILE_MODE 	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+> -#define PERMS		01777	/*
+> -				 * Mode permissions of test file with sticky
+> -				 * bit set.
+> -				 */
+> -#define TESTFILE	"testfile"
+
+>  int fd;				/* file descriptor variable */
+>  char *TCID = "fchmod02";
+> diff --git a/testcases/kernel/syscalls/fchmod/fchmod03.c b/testcases/kernel/syscalls/fchmod/fchmod03.c
+> index 8d35bc1..a5824f3 100644
+> --- a/testcases/kernel/syscalls/fchmod/fchmod03.c
+> +++ b/testcases/kernel/syscalls/fchmod/fchmod03.c
+> @@ -81,10 +81,7 @@
+
+>  #include "test.h"
+>  #include "safe_macros.h"
+> -
+> -#define FILE_MODE       (S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
+> -#define PERMS		01777
+> -#define TESTFILE	"testfile"
+> +#include "fchmod.h"
+
+>  int fd;				/* file descriptor for test file */
+>  char *TCID = "fchmod03";
+> diff --git a/testcases/kernel/syscalls/fchmod/fchmod04.c b/testcases/kernel/syscalls/fchmod/fchmod04.c
+> index 27e3bdc..befaadb 100644
+> --- a/testcases/kernel/syscalls/fchmod/fchmod04.c
+> +++ b/testcases/kernel/syscalls/fchmod/fchmod04.c
+> @@ -81,13 +81,7 @@
+
+>  #include "test.h"
+>  #include "safe_macros.h"
+> -
+> -#define DIR_MODE 	S_IRWXU | S_IRWXG | S_IRWXO
+> -#define PERMS		01777	/*
+> -				 * Mode permissions of test directory with
+> -				 * sticky bit set.
+> -				 */
+> -#define TESTDIR		"testdir_4"
+> +#include "fchmod.h"
+
+>  int fd;				/* file descriptor for test directory */
+>  char *TCID = "fchmod04";
+> diff --git a/testcases/kernel/syscalls/fchmod/fchmod05.c b/testcases/kernel/syscalls/fchmod/fchmod05.c
+> index cdd3d07..0ab2023 100644
+> --- a/testcases/kernel/syscalls/fchmod/fchmod05.c
+> +++ b/testcases/kernel/syscalls/fchmod/fchmod05.c
+> @@ -88,10 +88,9 @@
+
+>  #include "test.h"
+>  #include "safe_macros.h"
+> +#include "fchmod.h"
+
+> -#define MODE_RWX	(S_IRWXU | S_IRWXG | S_IRWXO)
+> -#define PERMS		043777
+> -#define TESTDIR		"testdir"
+> +#define PERMS_GID		043777
+
+>  int fd;				/* file descriptor for test directory */
+>  char *TCID = "fchmod05";
+> @@ -119,7 +118,7 @@ int main(int ac, char **av)
+>  		 * to set setgid bit on TESTDIR.
+>  		 */
+
+> -		TEST(fchmod(fd, PERMS));
+> +		TEST(fchmod(fd, PERMS_GID));
+
+>  		if (TEST_RETURN == -1) {
+>  			tst_resm(TFAIL, "fchmod(%d, %#o) Failed, errno=%d : %s",
+> @@ -136,14 +135,14 @@ int main(int ac, char **av)
+>  				 TESTDIR, TEST_ERRNO);
+>  		}
+>  		dir_mode = stat_buf.st_mode;
+> -		if ((PERMS & ~S_ISGID) != dir_mode) {
+> +		if ((PERMS_GID & ~S_ISGID) != dir_mode) {
+>  			tst_resm(TFAIL, "%s: Incorrect modes 0%03o, "
+>  				 "Expected 0%03o",
+> -				 TESTDIR, dir_mode, PERMS & ~S_ISGID);
+> +				 TESTDIR, dir_mode, PERMS_GID & ~S_ISGID);
+>  		} else {
+>  			tst_resm(TPASS, "Functionality of fchmod(%d, "
+>  				 "%#o) successful", fd,
+> -				 PERMS & ~S_ISGID);
+> +				 PERMS_GID & ~S_ISGID);
+>  		}
+>  	}
+
+> @@ -188,7 +187,7 @@ void setup(void)
+>  	 * mode permissions and change the gid of test directory to that of
+>  	 * guest user.
+>  	 */
+> -	SAFE_MKDIR(cleanup, TESTDIR, MODE_RWX);
+> +	SAFE_MKDIR(cleanup, TESTDIR, DIR_MODE);
+
+>  	if (setgroups(1, &nobody_u->pw_gid) == -1)
+>  		tst_brkm(TBROK, cleanup,
+> diff --git a/testcases/kernel/syscalls/fchmod/fchmod07.c b/testcases/kernel/syscalls/fchmod/fchmod07.c
+> index 6973555..d7fe41f 100644
+> --- a/testcases/kernel/syscalls/fchmod/fchmod07.c
+> +++ b/testcases/kernel/syscalls/fchmod/fchmod07.c
+> @@ -75,9 +75,7 @@
+
+>  #include "test.h"
+>  #include "safe_macros.h"
+> -
+> -#define FILE_MODE	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+> -#define TESTFILE	"testfile"
+> +#include "fchmod.h"
+
+>  int fd;				/* file descriptor for testfile */
+>  char *TCID = "fchmod07";
