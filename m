@@ -1,183 +1,61 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 5 Jun 2018 09:19:22 +0200
-Subject: [LTP] [PATCH 1/3] syscalls/fchmod.h: Move common macros to
- fchmod.h
-In-Reply-To: <1522407404-6877-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-References: <1522407404-6877-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-Message-ID: <20180605071922.ci4q4lmyi7vy6wpa@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 5 Jun 2018 15:33:08 +0800
+Subject: [LTP] [PATCH] memcg: functional: 4.16 kernel updates stat
+ counter in a batch of 33 pages
+In-Reply-To: <1527207217-70686-1-git-send-email-yang.shi@linux.alibaba.com>
+References: <1527207217-70686-1-git-send-email-yang.shi@linux.alibaba.com>
+Message-ID: <CAEemH2c5H+gL1mPFyGcBA0__bJXCf6J4vQ4-xZwFSG5Mp4cjqw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-> Signed-off-by: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
-Acked-by: Petr Vorel <pvorel@suse.cz>
+Hi Yang,
 
-...
-> +++ b/testcases/kernel/syscalls/fchmod/fchmod.h
-> @@ -0,0 +1,26 @@
-> +/*
-> + * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
-> + * Author: Jinhui huang <huangjh.jy@cn.fujitsu.com>
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of version 2 of the GNU General Public License as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * alone with this program.
-> + */
-I'd change this to something like. But that's very minor and can be changed by commiter
-(without reposting).
+Yang Shi <yang.shi@linux.alibaba.com> wrote:
 
-// SPDX-License-Identifier: GPL-2.0-or-later
-/*
- * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
- * Author: Jinhui huang <huangjh.jy@cn.fujitsu.com>
- */
+> Due to upstream kernel commit a983b5ebee57209c99f68c8327072f25e0e6e3da
+> ("mm: memcontrol: fix excessive complexity in memory.stat reporting"),
+> memory.stat is updated in a batch of 33 pages. This results in some test
+> cases fail at checking stat counter since they just touch one page.
+>
+> Introduce TST_PAGESIZE, which is 33 * PAGESIZE, used by affected test
+> cases, keep others still use PAGESIZE. And, this change doesn't break
+> pre-4.16 kernel.
+>
+> Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
+> ---
+>  testcases/kernel/controllers/memcg/functional/memcg_lib.sh | 13
+> ++++++++-----
+>  .../functional/memcg_move_charge_at_immigrate_test.sh      | 14
+> +++++++-------
+>  .../kernel/controllers/memcg/functional/memcg_stat_rss.sh  | 12
+> ++++++------
+>  .../kernel/controllers/memcg/functional/memcg_stat_test.sh |  6 +++---
+>  4 files changed, 24 insertions(+), 21 deletions(-)
+>
+> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> index 6a6af85..ad6db24 100755
+> --- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> +++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> @@ -34,6 +34,9 @@ if [ $? -ne 0 ]; then
+>         tst_brkm TBROK "getconf PAGESIZE failed"
+>  fi
+>
+> +# Post 4.16 kernel updates stat in batch (> 32 pages) every time
+> +TST_PAGESIZE=$(( $PAGESIZE * 33 ))
 
-the rest bellow looks good to me.
 
-Kind regards,
-Petr
+​AFAIK, LTP always reserve the ‘TST_’ prefix for general-purpose library
+using, so we'd better avoid this in testcase variable naming.
 
-> +
-> +#ifndef FCHMOD_H
-> +#define FCHMOD_H
-> +
-> +#define FILE_MODE	(S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
-> +#define DIR_MODE	(S_IRWXU | S_IRWXG | S_IRWXO)
-> +#define PERMS	01777
-> +#define TESTFILE	"testfile"
-> +#define TESTDIR	"testdir"
-> +
-> +#endif /* FCHMOD_H */
-> diff --git a/testcases/kernel/syscalls/fchmod/fchmod02.c b/testcases/kernel/syscalls/fchmod/fchmod02.c
-> index ea2bdb4..aa3bab3 100644
-> --- a/testcases/kernel/syscalls/fchmod/fchmod02.c
-> +++ b/testcases/kernel/syscalls/fchmod/fchmod02.c
-> @@ -82,15 +82,10 @@
+What about replacing it by PAGESIZES or PAGESIZE_NUM?​
 
->  #include "test.h"
->  #include "safe_macros.h"
-> +#include "fchmod.h"
-
->  #define LTPUSER		"nobody"
->  #define LTPGRP		"users"
-> -#define FILE_MODE 	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
-> -#define PERMS		01777	/*
-> -				 * Mode permissions of test file with sticky
-> -				 * bit set.
-> -				 */
-> -#define TESTFILE	"testfile"
-
->  int fd;				/* file descriptor variable */
->  char *TCID = "fchmod02";
-> diff --git a/testcases/kernel/syscalls/fchmod/fchmod03.c b/testcases/kernel/syscalls/fchmod/fchmod03.c
-> index 8d35bc1..a5824f3 100644
-> --- a/testcases/kernel/syscalls/fchmod/fchmod03.c
-> +++ b/testcases/kernel/syscalls/fchmod/fchmod03.c
-> @@ -81,10 +81,7 @@
-
->  #include "test.h"
->  #include "safe_macros.h"
-> -
-> -#define FILE_MODE       (S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
-> -#define PERMS		01777
-> -#define TESTFILE	"testfile"
-> +#include "fchmod.h"
-
->  int fd;				/* file descriptor for test file */
->  char *TCID = "fchmod03";
-> diff --git a/testcases/kernel/syscalls/fchmod/fchmod04.c b/testcases/kernel/syscalls/fchmod/fchmod04.c
-> index 27e3bdc..befaadb 100644
-> --- a/testcases/kernel/syscalls/fchmod/fchmod04.c
-> +++ b/testcases/kernel/syscalls/fchmod/fchmod04.c
-> @@ -81,13 +81,7 @@
-
->  #include "test.h"
->  #include "safe_macros.h"
-> -
-> -#define DIR_MODE 	S_IRWXU | S_IRWXG | S_IRWXO
-> -#define PERMS		01777	/*
-> -				 * Mode permissions of test directory with
-> -				 * sticky bit set.
-> -				 */
-> -#define TESTDIR		"testdir_4"
-> +#include "fchmod.h"
-
->  int fd;				/* file descriptor for test directory */
->  char *TCID = "fchmod04";
-> diff --git a/testcases/kernel/syscalls/fchmod/fchmod05.c b/testcases/kernel/syscalls/fchmod/fchmod05.c
-> index cdd3d07..0ab2023 100644
-> --- a/testcases/kernel/syscalls/fchmod/fchmod05.c
-> +++ b/testcases/kernel/syscalls/fchmod/fchmod05.c
-> @@ -88,10 +88,9 @@
-
->  #include "test.h"
->  #include "safe_macros.h"
-> +#include "fchmod.h"
-
-> -#define MODE_RWX	(S_IRWXU | S_IRWXG | S_IRWXO)
-> -#define PERMS		043777
-> -#define TESTDIR		"testdir"
-> +#define PERMS_GID		043777
-
->  int fd;				/* file descriptor for test directory */
->  char *TCID = "fchmod05";
-> @@ -119,7 +118,7 @@ int main(int ac, char **av)
->  		 * to set setgid bit on TESTDIR.
->  		 */
-
-> -		TEST(fchmod(fd, PERMS));
-> +		TEST(fchmod(fd, PERMS_GID));
-
->  		if (TEST_RETURN == -1) {
->  			tst_resm(TFAIL, "fchmod(%d, %#o) Failed, errno=%d : %s",
-> @@ -136,14 +135,14 @@ int main(int ac, char **av)
->  				 TESTDIR, TEST_ERRNO);
->  		}
->  		dir_mode = stat_buf.st_mode;
-> -		if ((PERMS & ~S_ISGID) != dir_mode) {
-> +		if ((PERMS_GID & ~S_ISGID) != dir_mode) {
->  			tst_resm(TFAIL, "%s: Incorrect modes 0%03o, "
->  				 "Expected 0%03o",
-> -				 TESTDIR, dir_mode, PERMS & ~S_ISGID);
-> +				 TESTDIR, dir_mode, PERMS_GID & ~S_ISGID);
->  		} else {
->  			tst_resm(TPASS, "Functionality of fchmod(%d, "
->  				 "%#o) successful", fd,
-> -				 PERMS & ~S_ISGID);
-> +				 PERMS_GID & ~S_ISGID);
->  		}
->  	}
-
-> @@ -188,7 +187,7 @@ void setup(void)
->  	 * mode permissions and change the gid of test directory to that of
->  	 * guest user.
->  	 */
-> -	SAFE_MKDIR(cleanup, TESTDIR, MODE_RWX);
-> +	SAFE_MKDIR(cleanup, TESTDIR, DIR_MODE);
-
->  	if (setgroups(1, &nobody_u->pw_gid) == -1)
->  		tst_brkm(TBROK, cleanup,
-> diff --git a/testcases/kernel/syscalls/fchmod/fchmod07.c b/testcases/kernel/syscalls/fchmod/fchmod07.c
-> index 6973555..d7fe41f 100644
-> --- a/testcases/kernel/syscalls/fchmod/fchmod07.c
-> +++ b/testcases/kernel/syscalls/fchmod/fchmod07.c
-> @@ -75,9 +75,7 @@
-
->  #include "test.h"
->  #include "safe_macros.h"
-> -
-> -#define FILE_MODE	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
-> -#define TESTFILE	"testfile"
-> +#include "fchmod.h"
-
->  int fd;				/* file descriptor for testfile */
->  char *TCID = "fchmod07";
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180605/d57d0e48/attachment.html>
