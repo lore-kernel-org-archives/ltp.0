@@ -1,41 +1,59 @@
-From: Zhang, Yixin <yixin.zhang@intel.com>
-Date: Tue, 5 Jun 2018 09:24:58 +0800
-Subject: [LTP] [PATCH ltp] m4/ltp-kernel_devel.m4: get LINUX_VERSION
- from LINUX_DIR during configure
-In-Reply-To: <20180604112402.GA3362@rei>
-References: <20180604063306.24325-1-yixin.zhang@intel.com>
- <20180604112402.GA3362@rei>
-Message-ID: <20180605012458.lszcgbpxi2yxdt44@yixin-desktop>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 5 Jun 2018 10:02:22 +0800
+Subject: [LTP] [PATCH v2] pthread_cancel_3-1: rewrite
+In-Reply-To: <e5881107e46cd94926441aee7e89d2b8b02b2665.1528114155.git.jstancek@redhat.com>
+References: <e5881107e46cd94926441aee7e89d2b8b02b2665.1528114155.git.jstancek@redhat.com>
+Message-ID: <CAEemH2dvo6TC4dfbSTuPXJY3CPiOMy4K62fKe_YDjk=y7xiDHg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Jan Stancek <jstancek@redhat.com> wrote:
 
-I've double check the code and re-test multiple times today and you are right,
-the "LINUX_VERSION" variable has nothing to do with building kernel module.
-There was something wrong with my environment yesterday I think.
-Please ignore this patch, thanks.
+> This test sets priorities, measures time, tries to synchronize
+> threads with integers and sleeps for seconds. And there appears
+> to be race somewhere that makes it rarely fail.
+>
+> The premise tested is that action triggered by pthread_cancel
+> runs asynchronously. This rewrite takes simpler approach:
+>
+> Thread sleeps until it can observe variable set by parent
+> _after_ pthread_cancel() or after it hits specified timeout.
+> If timeout is hit, then presumably cleanup_func() didn't
+> run in parallel with main thread and test fails.
+>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ​[...]​
+>
+> +static void cleanup_func(void *unused)
+>
+​
+To get rid of compile warning:​
+​    static void cleanup_func(void *unused __attribute__((unused)))
+​
 
-Yixin
 
-On 2018-06-04 at 13:24:02 +0200, Cyril Hrubis wrote:
-> Hi!
-> > If LINUX_DIR is given, get LINUX_VERSION for kernel source code instead
-> > of `uname -r`. So when we need to build .ko with a kernel differernt
-> > than the one on current host PC, we only need to provide
-> > "--with-linux-dir", and LINUX_VERSION will be generated automatically.
-> 
-> Looking at the m4 file for kernel-devel it seems we only use the
-> LINUX_VERSION in order to construct the LINUX_DIR path and the rest of
-> the code, i.e. include/mk/module.mk uses the LINUX_VERSION_MAJOR and
-> LINUX_VERSION_MINOR generated based on the LINUX_DIR.
-> 
-> What is the LINUX_VERSION variable needed for? It does not seem to be
-> used anywhere outside the m4 kernel devel file.
-> 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
+> +{
+> +       do {
+> +               usleep(SLEEP_MS*1000);
+> +               thread_sleep_time += SLEEP_MS;
+> +       } while (after_cancel == 0 && thread_sleep_time < TIMEOUT_MS);
+> +}
+> +
+> +static void *thread_func(void *unused)
+>
+
+​Here as well.​
+
+
+​Others looks good to me.​
+
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180605/5ea97e1a/attachment.html>
