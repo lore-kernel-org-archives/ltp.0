@@ -1,55 +1,74 @@
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 5 Jun 2018 10:44:13 +0800
-Subject: [LTP] [PATCH] pty/pty02: new test for hang involving
- EXTPROC|ICANON terminal mode
-In-Reply-To: <20180604114039.GB3362@rei>
-References: <20180513000101.13027-1-ebiggers3@gmail.com>
- <793542157.23379871.1527773742485.JavaMail.zimbra@redhat.com>
- <20180604114039.GB3362@rei>
-Message-ID: <CAEemH2fejxF0bxd9SuDxbit-aj9qvYsW5j954+2p_z6=NwfnyA@mail.gmail.com>
+Date: Tue, 5 Jun 2018 11:36:34 +0800
+Subject: [LTP] [PATCH] pty/pty02.c: Fix compiler error
+In-Reply-To: <1527734724-348-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+References: <1527734724-348-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <CAEemH2fBpq0qC-4r_LP42dsXijSFjR9jPUxwmgRLUCDbdhtKKQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-On Mon, Jun 4, 2018 at 7:40 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
+On Thu, May 31, 2018 at 10:45 AM, Jinhui huang <huangjh.jy@cn.fujitsu.com>
+wrote:
 
-> Hi!
-> > I'm running into compilation errors on older distros (RHEL5/6)
-> > with this test:
-> >
-> > pty02.c: In function ???do_test???:
-> > pty02.c:34: error: ???EXTPROC??? undeclared (first use in this function)
-> > pty02.c:34: error: (Each undeclared identifier is reported only once
-> > pty02.c:34: error: for each function it appears in.)
-> > make: *** [pty02] Error 1
-> >
-> > We should probably ifdef the test, because adding define to LAPI
-> > still makes it fail:
-> >
-> > tst_test.c:1015: INFO: Timeout per run is 0h 05m 00s
-> > pty02.c:44: BROK: tcsetattr() failed: EINVAL
+> Compilation failed because of undefined EXTPROC on old distros(e.g.
+> RHEL5/6).
 >
-> Or we can return TCONF on EINVAL since EINVAL means unsupported value
-> anyway...
+> Based on the fix patch[1] and added EXTPROC, tcgetattr() still could not
+> detect
+> invalid EXTPROC on old distros.  So we wanted to skip the case if EXTPROC
+> was not
+> defined on current distros.
+>
+> [1] http://lists.linux.it/pipermail/ltp/2018-May/008253.html
+>
+> Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/pty/pty02.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/testcases/kernel/pty/pty02.c b/testcases/kernel/pty/pty02.c
+> index fd3d26b..548f8d1 100644
+> --- a/testcases/kernel/pty/pty02.c
+> +++ b/testcases/kernel/pty/pty02.c
+> @@ -29,6 +29,8 @@
+>
+>  #include "tst_test.h"
+>
+> +#ifdef EXTPROC
 >
 
-=E2=80=8BMaybe at least we should do more try before skipping it when getti=
-ng
-EINVAL. Because sometimes it also fails with EINVAL when using a termios
-structure that was not obtained using tcgeaatr(). tcsetattr() should use
-only a termios structure that was obtained by tcgetattr().
+​This fix is fine. But image that a distribution defined both EXTPROC and
+ICANON, if the ICANON(enables canonical input processing, also called line
+mode) ​needs newline('\n') to ptmx there, this test will hung there forever.
 
- pty02.c works fine on mainline kernel-v4.17 after applying this:
-  http://lists.linux.it/pipermail/ltp/2018-May/008253.html
 
-What do you think?
 
---=20
+> +
+>  static void do_test(void)
+>  {
+>         struct termios io = { .c_lflag = EXTPROC | ICANON };
+> @@ -60,3 +62,7 @@ static void do_test(void)
+>  static struct tst_test test = {
+>         .test_all = do_test,
+>  };
+> +
+> +#else
+> +       TST_TEST_TCONF("EXTPROC is not defined");
+> +#endif
+> --
+> 1.8.3.1
+>
+>
+>
+>
+
+
+-- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180605/936fccfa/att=
-achment.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180605/3ee5cc39/attachment-0001.html>
