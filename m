@@ -1,30 +1,110 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 5 Jun 2018 23:36:41 +0200
-Subject: [LTP] [PATCH 1/1] ima/ima_measurements.sh: Improve digest and
- algorithm detection
-In-Reply-To: <1528206196.3237.142.camel@linux.vnet.ibm.com>
-References: <20180430173317.14310-1-pvorel@suse.cz>
- <1528206196.3237.142.camel@linux.vnet.ibm.com>
-Message-ID: <20180605213641.fxhv745fhufphmds@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 6 Jun 2018 12:11:25 +0800
+Subject: [LTP] [PATCH 1/2] testcase: lib: Create tst_getconf to replace
+	"getconf"
+In-Reply-To: <20180605140624.7114-2-mylene.josserand@bootlin.com>
+References: <20180605140624.7114-1-mylene.josserand@bootlin.com>
+ <20180605140624.7114-2-mylene.josserand@bootlin.com>
+Message-ID: <CAEemH2emKafpuN0XyftQ33N1X_=gpSq2JpQG3_QrsdTCqkF9mQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi Mimi,
+Mylène Josserand <mylene.josserand@bootlin.com> wrote:
 
-> Hi Petr,
+> In some system, "getconf" application may not be installed.
+> Some tests are using it to retrieve some variables such as the
+> page size (PAGESIZE).
+>
+> Create a tst_getconf binary that use sysconf() function to retrieve
+> these variables instead of relying on "getconf" application that
+> may not be available.
+> Add also this new helper in the documentation.
+>
+> Example:
+> pagesize=`tst_getconf PAGESIZE`
+>
+> Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
+> ​[...]
+> +
+> +#include <stdio.h>
+> +#include <unistd.h>
+> +#include <string.h>
+> +
+> +static void print_help(void)
+> +{
+> +       printf("Usage: tst_getconf variable\n\n");
+> +       printf("       variable: can be PAGESIZE or _NPROCESSORS_ONLN (for
+> the moment)\n");
+> +       printf("example: tst_getconf PAGESIZE\n");
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +       int opt;
+> +
+> +       while ((opt = getopt(argc, argv, ":h")) != -1) {
+> +               switch (opt) {
+> +               case 'h':
+> +                       print_help();
+> +                       return 0;
+> +               default:
+> +                       print_help();
+> +                       return 1;
+> +               }
+> +       }
+>
 
-> Sorry for the long delay. =C2=A0The patch looks good!
+​What about set argc limitation here?​
 
-> thanks,
+​    if (argc != 2) {
+        print_help();
+        return 1;
+    }
 
-> Mimi
+​
 
-Thanks a lot for your review!
-Pushed with your ack.
+> +
+> +       if (optind >= argc) {
+> +               fprintf(stderr, "ERROR: Expected variable argument\n\n");
+> +               print_help();
+> +               return 1;
+> +       }
+> +
+> +       if (!strcmp(argv[optind], "_NPROCESSORS_ONLN"))
+> +               printf("%ld", sysconf(_SC_NPROCESSORS_ONLN));
+> +       else if (!strcmp(argv[optind],"PAGESIZE"))
+> +               printf("%ld", sysconf(_SC_PAGE_SIZE));
+>
+
+​We'd better add a default check for invalid parameter here, assume that if
+someone gives
+a typo in use this tst_getconf, it's not easy to find the error.
+
+# ./tst_getconf _NPROCESSORS_ONL  <--- typo here
+# echo $?
+0
 
 
-Kind regards,
-Petr
+
+> +
+> +       return 0;
+> +}
+> --
+> 2.11.0
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+
+
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180606/c8ecab59/attachment.html>
