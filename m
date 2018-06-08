@@ -1,65 +1,65 @@
-From: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
-Date: Fri, 8 Jun 2018 16:35:47 +0800
-Subject: [LTP] [PATCH] ebizzy-0.3: change type of variable to fix compile
-	warning
-Message-ID: <20180608083547.8548-1-sunlw.fnst@cn.fujitsu.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Fri, 8 Jun 2018 14:11:09 +0530
+Subject: [LTP] LTP syscall fcntl36 test is fails intermittently on arm32
+ qemu and beagleboard x15
+Message-ID: <CA+G9fYu9CyOrQajZ-iupDwshydg=pLiQVyzTs96e-A4HFNrMPA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Change the type of variable from int to unsigned int
-to fix complie warning: "comparison between signed and unsigned integer
-expressions [-Wsign-compare]"
+LTP syscall fcntl36 test is failing intermittently on arm32 qemu and
+beagleboard x15 device. We have to find a solution to fix this test
+case on arm32.
 
-Signed-off-by: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
----
- utils/benchmark/ebizzy-0.3/ebizzy.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Test output:
+tst_test.c:1015: INFO: Timeout per run is 0h 15m 00s
+fcntl36.c:303: INFO: OFD read lock vs OFD write lock
+fcntl36.c:381: PASS: Access between threads synchronized
+fcntl36.c:303: INFO: OFD write lock vs POSIX write lock
+fcntl36.c:381: PASS: Access between threads synchronized
+fcntl36.c:303: INFO: OFD read lock vs POSIX write lock
+fcntl36.c:381: PASS: Access between threads synchronized
+fcntl36.c:303: INFO: OFD write lock vs POSIX read lock
+fcntl36.c:265: FAIL: Unexpected data offset 4128 value 211
+fcntl36.c:303: INFO: OFD write lock vs OFD write lock
+fcntl36.c:381: PASS: Access between threads synchronized
+fcntl36.c:303: INFO: OFD r/w lock vs POSIX write lock
+fcntl36.c:381: PASS: Access between threads synchronized
+fcntl36.c:303: INFO: OFD r/w lock vs POSIX read lock
+fcntl36.c:381: PASS: Access between threads synchronized
+Summary:
+passed   6
+failed   1
+skipped  0
+warnings 0
 
-diff --git a/utils/benchmark/ebizzy-0.3/ebizzy.c b/utils/benchmark/ebizzy-0.3/ebizzy.c
-index 5bb8eff56..8a433e8e1 100644
---- a/utils/benchmark/ebizzy-0.3/ebizzy.c
-+++ b/utils/benchmark/ebizzy-0.3/ebizzy.c
-@@ -228,7 +228,7 @@ static void read_options(int argc, char *argv[])
- 
- static void touch_mem(char *dest, size_t size)
- {
--	int i;
-+	unsigned int i;
- 	if (touch_pages) {
- 		for (i = 0; i < size; i += page_size)
- 			*(dest + i) = 0xff;
-@@ -279,7 +279,7 @@ static void my_memcpy(void *dest, void *src, size_t len)
- {
- 	char *d = (char *)dest;
- 	char *s = (char *)src;
--	int i;
-+	unsigned int i;
- 
- 	for (i = 0; i < len; i++)
- 		d[i] = s[i];
-@@ -288,7 +288,7 @@ static void my_memcpy(void *dest, void *src, size_t len)
- 
- static void allocate(void)
- {
--	int i;
-+	unsigned int i;
- 
- 	mem = alloc_mem(chunks * sizeof(record_t *));
- 
-@@ -313,7 +313,7 @@ static void allocate(void)
- 
- static void write_pattern(void)
- {
--	int i, j;
-+	unsigned int i, j;
- 
- 	for (i = 0; i < chunks; i++) {
- 		for (j = 0; j < chunk_size / record_size; j++)
--- 
-2.17.0
+Complete test log:
+https://lkft.validation.linaro.org/scheduler/job/262388#L2809
 
+Test case:
+if (buf[i] != buf[j]) {
 
+tst_res(TFAIL, "Unexpected data "
+"offset %ld value %d",
+pa->offset + i, buf[i]);
+fail_flag = 1;
+break;
+}
 
+https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/fcntl/fcntl36.c#L265
+
+Current status of intermittent failures,
+Test case run was explicitly skipped on x15 device and we are still
+running test case on qemu_arm.
+
+https://qa-reports.linaro.org/lkft/linux-next-oe/tests/ltp-syscalls-tests/fcntl36
+https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/ltp-syscalls-tests/fcntl36
+https://qa-reports.linaro.org/lkft/linux-stable-rc-4.16-oe/tests/ltp-syscalls-tests/fcntl36
+https://qa-reports.linaro.org/lkft/linux-stable-rc-4.14-oe/tests/ltp-syscalls-tests/fcntl36
+https://qa-reports.linaro.org/lkft/linux-stable-rc-4.9-oe/tests/ltp-syscalls-tests/fcntl36
+https://qa-reports.linaro.org/lkft/linux-stable-rc-4.4-oe/tests/ltp-syscalls-tests/fcntl36
+
+Previous discussion reference link,
+https://lists.linaro.org/pipermail/kernel-build-reports/2017-November/025512.html
