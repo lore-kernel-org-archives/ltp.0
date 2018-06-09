@@ -1,89 +1,68 @@
 From: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
-Date: Sat, 9 Jun 2018 11:01:06 +0800
-Subject: [LTP] [PATCH v2] change type of variable to fix compile warning
-Message-ID: <20180609030106.3927-1-sunlw.fnst@cn.fujitsu.com>
+Date: Sat, 9 Jun 2018 18:41:38 +0800
+Subject: [LTP] [PATCH] macsec: fix double delete the tmp file
+Message-ID: <20180609104138.8375-1-sunlw.fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Change the type of variable from int to unsigned intto fix complie 
-warning: "comparison between signed and unsigned integer expressions [-Wsign-compare]"
+The virt_cleanup and tst_ipsec_cleanup in both in the cleanup() which will 
+double delete the tmp file. and result to report below info:
+"rm: cannot remove ‘/tmp/ltp-ddLUcf8ACl/macsec01.6YQ9qGRNuC’: No such file 
+or directory"
 
 Signed-off-by: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/move_pages/move_pages_support.c | 2 +-
- testcases/kernel/syscalls/symlink/symlink01.c             | 2 +-
- utils/benchmark/ebizzy-0.3/ebizzy.c                       | 8 ++++----
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ testcases/network/virt/macsec01.sh | 10 +++++++++-
+ testcases/network/virt/macsec02.sh | 12 ++++++++++--
+ 2 files changed, 19 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages_support.c b/testcases/kernel/syscalls/move_pages/move_pages_support.c
-index 610f570d0..77dfd07f2 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages_support.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages_support.c
-@@ -62,7 +62,7 @@ void free_pages(void **pages, unsigned int num)
-  */
- int alloc_pages_on_nodes(void **pages, unsigned int num, int *nodes)
+diff --git a/testcases/network/virt/macsec01.sh b/testcases/network/virt/macsec01.sh
+index 52d6f071a..1a3499648 100755
+--- a/testcases/network/virt/macsec01.sh
++++ b/testcases/network/virt/macsec01.sh
+@@ -31,7 +31,15 @@ VIRT_PERF_THRESHOLD=${VIRT_PERF_THRESHOLD:-100}
+ cleanup()
  {
--	int i;
-+	unsigned int i;
- #ifdef HAVE_NUMA_V2
- 	size_t onepage = get_page_size();
- #endif
-diff --git a/testcases/kernel/syscalls/symlink/symlink01.c b/testcases/kernel/syscalls/symlink/symlink01.c
-index 03a51a5cb..50805f7bb 100644
---- a/testcases/kernel/syscalls/symlink/symlink01.c
-+++ b/testcases/kernel/syscalls/symlink/symlink01.c
-@@ -584,7 +584,7 @@ int main(int argc, char *argv[])
-  ***********************************************************************/
- struct tcses *get_tcs_info(char *ptr)
+ 	virt_cleanup
+-	tst_ipsec_cleanup
++
++	ip xfrm state flush
++	ip xfrm policy flush
++	tst_rhost_run -c "ip xfrm state flush && ip xfrm policy flush"
++
++	if [ -n "$cleanup_vti" ]; then
++		ip li del $cleanup_vti 2>/dev/null
++		tst_rhost_run -c "ip li del $cleanup_vti 2>/dev/null"
++	fi
+ }
+ TST_CLEANUP="cleanup"
+ 
+diff --git a/testcases/network/virt/macsec02.sh b/testcases/network/virt/macsec02.sh
+index 617860d41..6276a6b09 100755
+--- a/testcases/network/virt/macsec02.sh
++++ b/testcases/network/virt/macsec02.sh
+@@ -30,8 +30,16 @@ VIRT_PERF_THRESHOLD=${VIRT_PERF_THRESHOLD:-100}
+ 
+ cleanup()
  {
--	int ctr;
-+	unsigned int ctr;
- 	struct tcses *tcs_ptr;
+-	virt_cleanup
+-	tst_ipsec_cleanup
++    virt_cleanup
++
++    ip xfrm state flush
++    ip xfrm policy flush
++    tst_rhost_run -c "ip xfrm state flush && ip xfrm policy flush"
++
++    if [ -n "$cleanup_vti" ]; then
++        ip li del $cleanup_vti 2>/dev/null
++        tst_rhost_run -c "ip li del $cleanup_vti 2>/dev/null"
++    fi
+ }
+ TST_CLEANUP="cleanup"
  
- #if ALL
-diff --git a/utils/benchmark/ebizzy-0.3/ebizzy.c b/utils/benchmark/ebizzy-0.3/ebizzy.c
-index 5bb8eff56..8a433e8e1 100644
---- a/utils/benchmark/ebizzy-0.3/ebizzy.c
-+++ b/utils/benchmark/ebizzy-0.3/ebizzy.c
-@@ -228,7 +228,7 @@ static void read_options(int argc, char *argv[])
- 
- static void touch_mem(char *dest, size_t size)
- {
--	int i;
-+	unsigned int i;
- 	if (touch_pages) {
- 		for (i = 0; i < size; i += page_size)
- 			*(dest + i) = 0xff;
-@@ -279,7 +279,7 @@ static void my_memcpy(void *dest, void *src, size_t len)
- {
- 	char *d = (char *)dest;
- 	char *s = (char *)src;
--	int i;
-+	unsigned int i;
- 
- 	for (i = 0; i < len; i++)
- 		d[i] = s[i];
-@@ -288,7 +288,7 @@ static void my_memcpy(void *dest, void *src, size_t len)
- 
- static void allocate(void)
- {
--	int i;
-+	unsigned int i;
- 
- 	mem = alloc_mem(chunks * sizeof(record_t *));
- 
-@@ -313,7 +313,7 @@ static void allocate(void)
- 
- static void write_pattern(void)
- {
--	int i, j;
-+	unsigned int i, j;
- 
- 	for (i = 0; i < chunks; i++) {
- 		for (j = 0; j < chunk_size / record_size; j++)
 -- 
 2.17.0
 
