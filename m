@@ -1,28 +1,91 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 8 Jun 2018 16:00:46 +0200
-Subject: [LTP] [PATCH 6/6] network/tcp_cc: add new test bbr02
-In-Reply-To: <566ba75c-0cbe-b7a1-2f87-16abca2a236b@oracle.com>
-References: <1526903310-2833-1-git-send-email-alexey.kodanev@oracle.com>
- <1526903310-2833-7-git-send-email-alexey.kodanev@oracle.com>
- <20180528042139.GF1717@x230>
- <566ba75c-0cbe-b7a1-2f87-16abca2a236b@oracle.com>
-Message-ID: <20180608140046.4uqcdzumyjgeex2c@dell5510>
+From: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
+Date: Sat, 9 Jun 2018 11:01:06 +0800
+Subject: [LTP] [PATCH v2] change type of variable to fix compile warning
+Message-ID: <20180609030106.3927-1-sunlw.fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Change the type of variable from int to unsigned intto fix complie 
+warning: "comparison between signed and unsigned integer expressions [-Wsign-compare]"
 
-> Thanks for the review Petr!
+Signed-off-by: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/move_pages/move_pages_support.c | 2 +-
+ testcases/kernel/syscalls/symlink/symlink01.c             | 2 +-
+ utils/benchmark/ebizzy-0.3/ebizzy.c                       | 8 ++++----
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-> The patch-set applied and now using new TST_TEST_DATA.
-Great. I cleanup it in patchwork.
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages_support.c b/testcases/kernel/syscalls/move_pages/move_pages_support.c
+index 610f570d0..77dfd07f2 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages_support.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages_support.c
+@@ -62,7 +62,7 @@ void free_pages(void **pages, unsigned int num)
+  */
+ int alloc_pages_on_nodes(void **pages, unsigned int num, int *nodes)
+ {
+-	int i;
++	unsigned int i;
+ #ifdef HAVE_NUMA_V2
+ 	size_t onepage = get_page_size();
+ #endif
+diff --git a/testcases/kernel/syscalls/symlink/symlink01.c b/testcases/kernel/syscalls/symlink/symlink01.c
+index 03a51a5cb..50805f7bb 100644
+--- a/testcases/kernel/syscalls/symlink/symlink01.c
++++ b/testcases/kernel/syscalls/symlink/symlink01.c
+@@ -584,7 +584,7 @@ int main(int argc, char *argv[])
+  ***********************************************************************/
+ struct tcses *get_tcs_info(char *ptr)
+ {
+-	int ctr;
++	unsigned int ctr;
+ 	struct tcses *tcs_ptr;
+ 
+ #if ALL
+diff --git a/utils/benchmark/ebizzy-0.3/ebizzy.c b/utils/benchmark/ebizzy-0.3/ebizzy.c
+index 5bb8eff56..8a433e8e1 100644
+--- a/utils/benchmark/ebizzy-0.3/ebizzy.c
++++ b/utils/benchmark/ebizzy-0.3/ebizzy.c
+@@ -228,7 +228,7 @@ static void read_options(int argc, char *argv[])
+ 
+ static void touch_mem(char *dest, size_t size)
+ {
+-	int i;
++	unsigned int i;
+ 	if (touch_pages) {
+ 		for (i = 0; i < size; i += page_size)
+ 			*(dest + i) = 0xff;
+@@ -279,7 +279,7 @@ static void my_memcpy(void *dest, void *src, size_t len)
+ {
+ 	char *d = (char *)dest;
+ 	char *s = (char *)src;
+-	int i;
++	unsigned int i;
+ 
+ 	for (i = 0; i < len; i++)
+ 		d[i] = s[i];
+@@ -288,7 +288,7 @@ static void my_memcpy(void *dest, void *src, size_t len)
+ 
+ static void allocate(void)
+ {
+-	int i;
++	unsigned int i;
+ 
+ 	mem = alloc_mem(chunks * sizeof(record_t *));
+ 
+@@ -313,7 +313,7 @@ static void allocate(void)
+ 
+ static void write_pattern(void)
+ {
+-	int i, j;
++	unsigned int i, j;
+ 
+ 	for (i = 0; i < chunks; i++) {
+ 		for (j = 0; j < chunk_size / record_size; j++)
+-- 
+2.17.0
 
-> Also I've added one more patch that checks support in kernel.
-Great. TCONF instead of TFAIL is always wanted :).
 
 
-Kind regards,
-Petr
