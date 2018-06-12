@@ -1,70 +1,38 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 12 Jun 2018 21:05:22 +0800
-Subject: [LTP] [PATCH] swapon: commit swapfile caches to disk
-In-Reply-To: <20180612124822.GA18870@rei>
-References: <1528806239-14297-1-git-send-email-liwang@redhat.com>
- <20180612124822.GA18870@rei>
-Message-ID: <CAEemH2dofgvXn7fFyzA_mWA+aZTeNJH=nXNQ86nTiO0UzBd2CQ@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 12 Jun 2018 15:05:58 +0200
+Subject: [LTP] [PATCH v3] tst_test.sh: achieve TST_RETRY_FUNC function
+	in shell
+In-Reply-To: <20180517062919.13018-1-liwang@redhat.com>
+References: <20180517062919.13018-1-liwang@redhat.com>
+Message-ID: <20180612130558.docr3b7fffimqqoq@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Jun 12, 2018 at 8:48 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
+Hi Li,
 
-> Hi!
-> > Testcase include swapon(8) fails on mainline kernel-v4.17+ as:
-> >   swapon01    1  TFAIL  :  swapon01.c:47: Failed to turn on swapfile:
-> TEST_ERRNO=EINVAL(22): Invalid argument
-> >   swapon02    4  TFAIL  :  swapon02.c:91: swapon(2) failed to produce
-> expected error: 16, errno: EBUSY and got 22.
-> >   swapon03    1  TFAIL  :  swapon03.c:243: Failed to setup swaps
-> >   swapoff01   1  TBROK  :  swapoff01.c:64: Failed to turn on the swap
-> file, skipping test iteration
->
-> 4.17+ means that this is yet to be release kernel, right? In that
-> situation we wait if the change will survive upon the official release
-> before changing the LTP test.
->
+> The commit c2ce4df67d(include: add an exponential backoff macro for
+> function retry) involves a new MACRO for function retry in C code,
+> here achieve it in shell lib and gives a introduction in LTP documents.
 
-​You are right, I'm OK to wait.
-​
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> Tested-by: Petr Vorel <pvorel@suse.cz>
+> ---
+Thanks for your patch. Pushed with minor fix bellow + updated wiki.
 
 
->
-> > diff --git a/testcases/kernel/syscalls/swapoff/swapoff01.c
-> b/testcases/kernel/syscalls/swapoff/swapoff01.c
-> > index a63e661..b587b0d 100644
-> > --- a/testcases/kernel/syscalls/swapoff/swapoff01.c
-> > +++ b/testcases/kernel/syscalls/swapoff/swapoff01.c
-> > @@ -105,6 +105,8 @@ static void setup(void)
-> >
-> >       if (system("mkswap swapfile01 > tmpfile 2>&1") != 0)
-> >               tst_brkm(TBROK, cleanup, "Failed to make swapfile");
-> > +
-> > +     sync();
->
-> Can we rather use fsync() and/or fdatasync()? I would like the avoid the
-> system wide sync() here since that may slow down the test unnecessarily.
->
->
-​Actually I tried to add fsync() and syncfs() in tst_fill_file.c first, but
-it does NOT works for me.  After tracking more, I found that we have to
-sync up caches in front of the command `mkswap swapfile`.​
+Kind regards,
+Petr
 
-
-
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
->
-
-
-
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180612/4c553103/attachment.html>
++++ testcases/lib/tst_test.sh
+@@ -189,7 +189,7 @@ TST_RETRY_FN_EXP_BACKOFF()
+ TST_RETRY_FUNC()
+ {
+ 	if [ $# -ne 2 ]; then
+-		tst_brk TBROK "TST_RETRY_FN_EXP_BACKOFF expects 2 parameters"
++		tst_brk TBROK "TST_RETRY_FUNC expects 2 parameters"
+ 	fi
+ 
+ 	TST_RETRY_FN_EXP_BACKOFF "$1" "$2" 1
