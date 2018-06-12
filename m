@@ -1,39 +1,124 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 12 Jun 2018 17:46:31 +0200
-Subject: [LTP] [RFC PATCH 9/9] syscalls/ipc: Fix Makefile
-In-Reply-To: <20180612154631.435-1-chrubis@suse.cz>
-References: <20180612154631.435-1-chrubis@suse.cz>
-Message-ID: <20180612154631.435-10-chrubis@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 12 Jun 2018 17:56:52 +0200
+Subject: [LTP] [PATCH] ltp: replace the retry loops by new exponential
+ backoff macro
+In-Reply-To: <20180517062943.13178-1-liwang@redhat.com>
+References: <20180517062943.13178-1-liwang@redhat.com>
+Message-ID: <20180612155652.mhu2sycbwd5gbu5e@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Switch to new ipc library now that all testcases are rewritten.
+Hi Li,
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/syscalls/ipc/msgctl/Makefile | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> Cc: Petr Vorel <pvorel@suse.cz>
+> Cc: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  testcases/commands/mkswap/mkswap01.sh | 17 ++++------
+>  testcases/kernel/numa/numa01.sh       | 58 +++++++++++++++--------------------
 
-diff --git a/testcases/kernel/syscalls/ipc/msgctl/Makefile b/testcases/kernel/syscalls/ipc/msgctl/Makefile
-index 4472eeb1c..f9ee8d2c2 100644
---- a/testcases/kernel/syscalls/ipc/msgctl/Makefile
-+++ b/testcases/kernel/syscalls/ipc/msgctl/Makefile
-@@ -19,11 +19,5 @@
- top_srcdir              ?= ../../../../..
+Thanks for your patch, applied with diff bellow.
+
+I changed:
+* fix mixing quotes when calling check_for_file. This was also broken on dash
+  (testing with /bin/sh as symlink to /bin/dash and using checkbashisms.pl
+  script helps).
+* simplify check_for_file + remove TINFO message as it was unnecessarily verbose
+  (see bellow)
+
+Kind regards,
+Petr
+
+tst_device.c:83: INFO: Found free device '/dev/loop0'
+mkswap01 1 TPASS: 'mkswap   /dev/loop0 ' passed.
+mkswap01 2 TPASS: 'mkswap   /dev/loop0 262140' passed.
+mkswap01 3 TINFO: Can not do swapon on /dev/loop0.
+mkswap01 3 TINFO: Device size specified by 'mkswap' greater than real size.
+mkswap01 3 TINFO: Swapon failed expectedly.
+mkswap01 3 TPASS: 'mkswap -f  /dev/loop0 262148' passed.
+mkswap01 4 TPASS: 'mkswap -c  /dev/loop0 ' passed.
+mkswap01 5 TINFO: Can not do swapon on /dev/loop0.
+mkswap01 5 TINFO: Page size specified by 'mkswap -p' is not equal to system's page size.
+mkswap01 5 TINFO: Swapon failed expectedly.
+mkswap01 5 TPASS: 'mkswap -p 2048 /dev/loop0 ' passed.
+mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
+mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
+mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
+mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
+mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
+mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
+mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
+mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
+mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
+mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
+mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
+mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
+mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
+mkswap01 6 TPASS: 'mkswap -L ltp_testswap /dev/loop0 ' passed.
+mkswap01 7 TPASS: 'mkswap -v1  /dev/loop0 ' passed.
+mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
+mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
+mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
+mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
+mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
+mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
+mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
+mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
+mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
+mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
+mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
+mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
+mkswap01 8 TPASS: 'mkswap -U b20a69ef-cf9d-49fb-a313-284df6ddd794 /dev/loop0 ' passed.
+mkswap01 9 TPASS: 'mkswap -V  /dev/loop0 ' passed.
+mkswap01 10 TPASS: 'mkswap -h  /dev/loop0 ' passed.
+
+diff --git testcases/commands/mkswap/mkswap01.sh testcases/commands/mkswap/mkswap01.sh
+index fc07933ae..5ead4cdc5 100755
+--- testcases/commands/mkswap/mkswap01.sh
++++ testcases/commands/mkswap/mkswap01.sh
+@@ -41,15 +41,9 @@ check_for_file()
+ {
+ 	local path="$1"
  
- include $(top_srcdir)/include/mk/testcases.mk
+-	if [ -z "$path" ]; then
++	if [ -z "$path" -o -e "$path" ]; then
+ 		return
+ 	fi
 -
--LIBMSGCTL               := $(LIBDIR)/libmsgctl.a
--LDLIBS                  += -lmsgctl
+-	if [ -e "$path" ]; then
+-		return 0
+-	fi
 -
--MAKE_DEPS               := $(LIBMSGCTL)
+-	tst_res TINFO "The file $path haven't appeared"
+ 	return 1
+ }
+ 
+@@ -70,7 +64,7 @@ mkswap_verify()
+ 		local pagesize=$PAGE_SIZE
+ 	fi
+ 
+-	TST_RETRY_FUNC "check_for_file "$dev_file"" 0
++	TST_RETRY_FUNC "check_for_file $dev_file" 0
+ 
+ 	swapon $swapfile 2>/dev/null
+ 
+diff --git testcases/kernel/numa/numa01.sh testcases/kernel/numa/numa01.sh
+index f8d8f303c..da2f80ddd 100755
+--- testcases/kernel/numa/numa01.sh
++++ testcases/kernel/numa/numa01.sh
+@@ -302,11 +302,7 @@ test7()
+ 
+ check_ltp_numa_test8_log()
+ {
+-	if grep -m1 -q '.' ltp_numa_test8.log; then
+-		return 0
+-	fi
 -
--include $(abs_srcdir)/../Makefile.inc
-+include $(abs_srcdir)/../Makefile2.inc
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
--- 
-2.13.6
-
+-	return 1
++	grep -m1 -q '.' ltp_numa_test8.log
+ }
+ 
+ # Verification of memhog with interleave policy
