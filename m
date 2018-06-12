@@ -1,88 +1,38 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 12 Jun 2018 21:17:50 +0800
-Subject: [LTP] [PATCH] swapon: commit swapfile caches to disk
-In-Reply-To: <CAEemH2dofgvXn7fFyzA_mWA+aZTeNJH=nXNQ86nTiO0UzBd2CQ@mail.gmail.com>
-References: <1528806239-14297-1-git-send-email-liwang@redhat.com>
- <20180612124822.GA18870@rei>
- <CAEemH2dofgvXn7fFyzA_mWA+aZTeNJH=nXNQ86nTiO0UzBd2CQ@mail.gmail.com>
-Message-ID: <CAEemH2faafS_BT8jZ7faudffEyF_112y9mpG+0fU84feV1ocqw@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 12 Jun 2018 16:11:37 +0200
+Subject: [LTP] [COMMITTED][PATCH 1/1] tst_test.sh: Quote function parameter
+Message-ID: <20180612141137.11690-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Jun 12, 2018 at 9:05 PM, Li Wang <liwang@redhat.com> wrote:
+As following patches shows the need to use function with parameter [1],
+quotes are needed.
 
->
->
-> On Tue, Jun 12, 2018 at 8:48 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
->
->> Hi!
->> > Testcase include swapon(8) fails on mainline kernel-v4.17+ as:
->> >   swapon01    1  TFAIL  :  swapon01.c:47: Failed to turn on swapfile:
->> TEST_ERRNO=EINVAL(22): Invalid argument
->> >   swapon02    4  TFAIL  :  swapon02.c:91: swapon(2) failed to produce
->> expected error: 16, errno: EBUSY and got 22.
->> >   swapon03    1  TFAIL  :  swapon03.c:243: Failed to setup swaps
->> >   swapoff01   1  TBROK  :  swapoff01.c:64: Failed to turn on the swap
->> file, skipping test iteration
->>
->> 4.17+ means that this is yet to be release kernel, right? In that
->> situation we wait if the change will survive upon the official release
->> before changing the LTP test.
->>
->
-> ​You are right, I'm OK to wait.
-> ​
->
->
->>
->> > diff --git a/testcases/kernel/syscalls/swapoff/swapoff01.c
->> b/testcases/kernel/syscalls/swapoff/swapoff01.c
->> > index a63e661..b587b0d 100644
->> > --- a/testcases/kernel/syscalls/swapoff/swapoff01.c
->> > +++ b/testcases/kernel/syscalls/swapoff/swapoff01.c
->> > @@ -105,6 +105,8 @@ static void setup(void)
->> >
->> >       if (system("mkswap swapfile01 > tmpfile 2>&1") != 0)
->> >               tst_brkm(TBROK, cleanup, "Failed to make swapfile");
->> > +
->> > +     sync();
->>
->> Can we rather use fsync() and/or fdatasync()? I would like the avoid the
->> system wide sync() here since that may slow down the test unnecessarily.
->>
->>
-> ​Actually I tried to add fsync() and syncfs() in tst_fill_file.c first,
-> but it does NOT works for me.  After tracking more, I found that we have to
-> sync up caches in front of the command `mkswap swapfile`.​
->
+[1] http://lists.linux.it/pipermail/ltp/2018-May/008147.html
 
-​Oops, this is wrong description, not in front of that.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Sorry, I overlooked it in your patch.
+---
+ testcases/lib/tst_test.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Should be done sync again after perform command `mkswap swapfile`.
-
-
->
->
->> --
->> Cyril Hrubis
->> chrubis@suse.cz
->>
->
->
->
-> --
-> Regards,
-> Li Wang
->
-
-
-
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 0c98d5a75..d27b4afd6 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -156,7 +156,7 @@ EXPECT_FAIL()
+ 
+ TST_RETRY_FN_EXP_BACKOFF()
+ {
+-	local tst_fun=$1
++	local tst_fun="$1"
+ 	local tst_exp=$2
+ 	local tst_sec=$(expr $3 \* 1000000)
+ 	local tst_delay=1
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180612/7a3ba129/attachment-0001.html>
+2.16.3
+
