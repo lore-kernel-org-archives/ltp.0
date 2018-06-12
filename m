@@ -1,70 +1,95 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 12 Jun 2018 14:02:39 +0200
-Subject: [LTP] [PATCH v2] zram03: drop obsolete sysfs interfaces
-In-Reply-To: <1528412099-50431-1-git-send-email-yang.shi@linux.alibaba.com>
-References: <1528412099-50431-1-git-send-email-yang.shi@linux.alibaba.com>
-Message-ID: <20180612120239.vhzwj524oi4qs27m@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 12 Jun 2018 20:23:59 +0800
+Subject: [LTP] [PATCH] swapon: commit swapfile caches to disk
+Message-ID: <1528806239-14297-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yang,
+Testcase include swapon(8) fails on mainline kernel-v4.17+ as:
+  swapon01    1  TFAIL  :  swapon01.c:47: Failed to turn on swapfile: TEST_ERRNO=EINVAL(22): Invalid argument
+  swapon02    4  TFAIL  :  swapon02.c:91: swapon(2) failed to produce expected error: 16, errno: EBUSY and got 22.
+  swapon03    1  TFAIL  :  swapon03.c:243: Failed to setup swaps
+  swapoff01   1  TBROK  :  swapoff01.c:64: Failed to turn on the swap file, skipping test iteration
 
-> Due to upstream linux commit c87d1655c29500b459fb135258a93f8309ada9c7
-> ("zram: remove obsolete sysfs attrs"), some sysfs interfaces are not
-> available anymore.
-From the commit is seen, that most of them (missing num_reads and
-num_writes) has been accessible for some time from /sys/block/zram<id>/mm_stat.
-And indeed the docs [1] confirm that. Maybe it'd make sense to parse this file
-and use the data.
+And dmesg shows that:
+  [  128.698981] swapon: file is not committed
 
-/sys/block/zram<id>/mm_stat was added in 4f2109f608815 (v4.1-rc1)
-Interesting, it's also in Centos7 3.10.0-693 kernel, it must have been
-backported there (obviously not in 3.16 from Debian).
+The error located in IOMAP_F_DIRTY(linux/fs/iomap.c) checking, which means
+this swapfile have uncommitted metadata in caches. After adding sync() to
+the end of all mkswap opertaion, these errors were gone.
 
-[1] https://www.kernel.org/doc/Documentation/blockdev/zram.txt
+linux/fs/iomap.c:
+	static loff_t iomap_swapfile_activate_actor(
+		struct inode *inode,
+		loff_t pos,
+		loff_t count,
+		void *data,
+		struct iomap *iomap)
+	{
+		struct iomap_swapfile_info *isi = data;
+		int error;
+		...
 
+		/* No uncommitted metadata or shared blocks. */
+		if (iomap->flags & IOMAP_F_DIRTY) {
+			pr_err("swapon: file is not committed\n");
+			return -EINVAL;
+		}
+		...
+	}
+									}
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
 
-Kind regards,
-Petr
+Notes:
+    The new changes about swapfile activation function were merged in kernel-4.17
+    recently, so we didn't hit this failures before.
 
-> Check kernel version, and remove dumping them on >= 4.10 kernel to avoid
-> test case failure.
+ testcases/kernel/syscalls/swapoff/swapoff01.c | 2 ++
+ testcases/kernel/syscalls/swapoff/swapoff02.c | 2 ++
+ testcases/kernel/syscalls/swapon/libswapon.c  | 2 ++
+ 3 files changed, 6 insertions(+)
 
-> Suggested-by: Li Wang <liwang@redhat.com>
-> Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
-> ---
-> v1 --> v2:
-> Check kernel version to dump proper stats per Li Wang's suggestion
+diff --git a/testcases/kernel/syscalls/swapoff/swapoff01.c b/testcases/kernel/syscalls/swapoff/swapoff01.c
+index a63e661..b587b0d 100644
+--- a/testcases/kernel/syscalls/swapoff/swapoff01.c
++++ b/testcases/kernel/syscalls/swapoff/swapoff01.c
+@@ -105,6 +105,8 @@ static void setup(void)
+ 
+ 	if (system("mkswap swapfile01 > tmpfile 2>&1") != 0)
+ 		tst_brkm(TBROK, cleanup, "Failed to make swapfile");
++
++	sync();
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/swapoff/swapoff02.c b/testcases/kernel/syscalls/swapoff/swapoff02.c
+index b5c6312..d8c5889 100644
+--- a/testcases/kernel/syscalls/swapoff/swapoff02.c
++++ b/testcases/kernel/syscalls/swapoff/swapoff02.c
+@@ -154,6 +154,8 @@ static void setup(void)
+ 
+ 	if (tst_fill_file("./swapfile01", 0x00, 1024, 1))
+ 		tst_brkm(TBROK, cleanup, "Failed to create swapfile");
++
++	sync();
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/swapon/libswapon.c b/testcases/kernel/syscalls/swapon/libswapon.c
+index cf6a988..49fa5ed 100644
+--- a/testcases/kernel/syscalls/swapon/libswapon.c
++++ b/testcases/kernel/syscalls/swapon/libswapon.c
+@@ -46,4 +46,6 @@ void make_swapfile(void (cleanup)(void), const char *swapfile)
+ 	argv[2] = NULL;
+ 
+ 	tst_run_cmd(cleanup, argv, "/dev/null", "/dev/null", 0);
++
++	sync();
+ }
+-- 
+1.9.3
 
->  testcases/kernel/device-drivers/zram/zram03.c | 16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
-
-> diff --git a/testcases/kernel/device-drivers/zram/zram03.c b/testcases/kernel/device-drivers/zram/zram03.c
-> index 3f7ab4e..58d88bc 100644
-> --- a/testcases/kernel/device-drivers/zram/zram03.c
-> +++ b/testcases/kernel/device-drivers/zram/zram03.c
-> @@ -185,11 +185,15 @@ static void print(char *string)
->  static void dump_info(void)
->  {
->  	print("initstate");
-> -	print("compr_data_size");
-> -	print("orig_data_size");
->  	print("disksize");
-> -	print("mem_used_total");
-> -	print("num_reads");
-> -	print("num_writes");
-> -	print("zero_pages");
-> +
-> +	if ((tst_kvercmp(4, 10, 0)) < 0) {
-> +		/* The below stats are not available on 4.10 or newer kernel */
-> +		print("compr_data_size");
-> +		print("orig_data_size");
-> +		print("mem_used_total");
-> +		print("num_reads");
-> +		print("num_writes");
-> +		print("zero_pages");
-> +	}
->  }
