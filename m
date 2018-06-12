@@ -1,89 +1,49 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 12 Jun 2018 17:46:23 +0200
-Subject: [LTP] [RFC PATCH 1/9] tst_safe_sysv_ipc: Make safe_shmctl() and
-	safe_msgctl() safer
-In-Reply-To: <20180612154631.435-1-chrubis@suse.cz>
-References: <20180612154631.435-1-chrubis@suse.cz>
-Message-ID: <20180612154631.435-2-chrubis@suse.cz>
+Date: Tue, 12 Jun 2018 17:46:22 +0200
+Subject: [LTP] [RFC PATCH 0/9] Rewrite msgctl testcases
+Message-ID: <20180612154631.435-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We recently had a regression in Sys V IPC when IPC_STAT returned
-non-zero integer on success wrongly, which wasn't caught by LTP test but
-breaks software in the wild.
 
-This commit changes safe_shmctl() and safe_msgctl() to check the return
-value with != 0 for IPC_STAT, IPC_SET and IPC_RMID and with == -1
-otherwise.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- lib/tst_safe_sysv_ipc.c | 33 +++++++++++++++++++++++++++------
- 1 file changed, 27 insertions(+), 6 deletions(-)
+Cyril Hrubis (9):
+  tst_safe_sysv_ipc: Make safe_shmctl() and safe_msgctl() safer
+  tst_safe_sysv_ipc: SAFE_{SHMCTL,MSGCTL} return retval
+  syscalls/ipc: Rewrite msgctl01 + merge msgctl06
+  syscalls/ipc: Rewrite msgctl02 to new library.
+  syscalls/ipc: Convert to newlib and merge msgctl{13,03}
+  syscalls/ipc: Rewrite + merge msgctl{04, 05}
+  syscalls/ipc: Rewrite msgctl12 to new library
+  syscalls/ipc: Remove msgctl07
+  syscalls/ipc: Fix Makefile
 
-diff --git a/lib/tst_safe_sysv_ipc.c b/lib/tst_safe_sysv_ipc.c
-index ff53a2420..86f2d934b 100644
---- a/lib/tst_safe_sysv_ipc.c
-+++ b/lib/tst_safe_sysv_ipc.c
-@@ -23,6 +23,24 @@
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
- 
-+/*
-+ * The IPC_STAT, IPC_SET and IPC_RMID can return either 0 or -1.
-+ *
-+ * Linux specific cmds either returns -1 on failure or positive integer
-+ * either index into an kernel array or shared primitive indentifier.
-+ */
-+static int ret_check(int cmd, int ret)
-+{
-+	switch (cmd) {
-+	case IPC_STAT:
-+	case IPC_SET:
-+	case IPC_RMID:
-+		return ret != 0;
-+	default:
-+		return ret == -1;
-+	}
-+}
-+
- int safe_msgget(const char *file, const int lineno, key_t key, int msgflg)
- {
- 	int rval;
-@@ -72,11 +90,13 @@ int safe_msgctl(const char *file, const int lineno, int msqid, int cmd,
- 	int rval;
- 
- 	rval = msgctl(msqid, cmd, buf);
--	if (rval == -1) {
--		tst_brk(TBROK | TERRNO, "%s:%d: msgctl(%i, %i, %p) failed",
--			file, lineno, msqid, cmd, buf);
-+	if (ret_check(cmd, rval)) {
-+		tst_brk(TBROK | TERRNO,
-+			"%s:%d: msgctl(%i, %i, %p) = %i failed",
-+			file, lineno, msqid, cmd, buf, rval);
- 	}
- 
-+
- 	return rval;
- }
- 
-@@ -127,9 +147,10 @@ int safe_shmctl(const char *file, const int lineno, int shmid, int cmd,
- 	int rval;
- 
- 	rval = shmctl(shmid, cmd, buf);
--	if (rval == -1) {
--		tst_brk(TBROK | TERRNO, "%s:%d: shmctl(%i, %i, %p) failed",
--			file, lineno, shmid, cmd, buf);
-+	if (ret_check(cmd, rval)) {
-+		tst_brk(TBROK | TERRNO,
-+			"%s:%d: shmctl(%i, %i, %p) = %i failed",
-+			file, lineno, shmid, cmd, buf, rval);
- 	}
- 
- 	return rval;
+ include/tst_safe_sysv_ipc.h                     |  12 +-
+ lib/tst_safe_sysv_ipc.c                         |  33 ++-
+ runtest/ltplite                                 |   3 -
+ runtest/stress.part3                            |   3 -
+ runtest/syscalls                                |   4 -
+ runtest/syscalls-ipc                            |   4 -
+ testcases/kernel/syscalls/ipc/msgctl/.gitignore |   4 -
+ testcases/kernel/syscalls/ipc/msgctl/Makefile   |   8 +-
+ testcases/kernel/syscalls/ipc/msgctl/msgctl01.c | 242 ++++++++++----------
+ testcases/kernel/syscalls/ipc/msgctl/msgctl02.c | 207 +++++------------
+ testcases/kernel/syscalls/ipc/msgctl/msgctl03.c | 159 +++----------
+ testcases/kernel/syscalls/ipc/msgctl/msgctl04.c | 249 +++++++-------------
+ testcases/kernel/syscalls/ipc/msgctl/msgctl05.c | 186 ---------------
+ testcases/kernel/syscalls/ipc/msgctl/msgctl06.c | 142 ------------
+ testcases/kernel/syscalls/ipc/msgctl/msgctl07.c | 292 ------------------------
+ testcases/kernel/syscalls/ipc/msgctl/msgctl12.c |  84 +++----
+ testcases/kernel/syscalls/ipc/msgctl/msgctl13.c |  86 -------
+ 17 files changed, 360 insertions(+), 1358 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/ipc/msgctl/msgctl05.c
+ delete mode 100644 testcases/kernel/syscalls/ipc/msgctl/msgctl06.c
+ delete mode 100644 testcases/kernel/syscalls/ipc/msgctl/msgctl07.c
+ delete mode 100644 testcases/kernel/syscalls/ipc/msgctl/msgctl13.c
+
 -- 
 2.13.6
 
