@@ -1,200 +1,132 @@
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 14 Jun 2018 16:47:15 +0800
-Subject: [LTP] [PATCH v2 1/2] testcase: lib: Create tst_getconf to
-	replace "getconf"
-In-Reply-To: <20180614072206.23393-2-mylene.josserand@bootlin.com>
+Date: Thu, 14 Jun 2018 16:48:02 +0800
+Subject: [LTP] [PATCH v2 2/2] testcases: Replace "getconf" by
+	"tst_getconf"
+In-Reply-To: <20180614072206.23393-3-mylene.josserand@bootlin.com>
 References: <20180614072206.23393-1-mylene.josserand@bootlin.com>
- <20180614072206.23393-2-mylene.josserand@bootlin.com>
-Message-ID: <CAEemH2dGJzeZza57hUHF0BgPaNm_wHDo2_5e4njXvy2_f8abYw@mail.gmail.com>
+ <20180614072206.23393-3-mylene.josserand@bootlin.com>
+Message-ID: <CAEemH2fDRE-Jvv0JCdJ5tCWcGDnmSwiTphh6F90yXE-zwy1xLw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi Mylene,
-
 On Thu, Jun 14, 2018 at 3:22 PM, Mylène Josserand
 <mylene.josserand@bootlin.com> wrote:
-> In some system, "getconf" application may not be installed.
-> Some tests are using it to retrieve some variables such as the
-> page size (PAGESIZE).
->
-> Create a tst_getconf binary that use sysconf() function to retrieve
-> these variables instead of relying on "getconf" application that
-> may not be available.
-> Add also this new helper in the documentation.
->
-> Example:
-> pagesize=`tst_getconf PAGESIZE`
+> Now that tst_getconf is available to use "sysconf()" function
+> instead of relying on the application "getconf", let's convert
+> all the tests to it.
 >
 > Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
 Reviewed-by: Li Wang <liwang@redhat.com>
 > ---
->  doc/test-writing-guidelines.txt | 14 +++++++++
->  testcases/lib/.gitignore        |  1 +
->  testcases/lib/Makefile          |  3 +-
->  testcases/lib/tst_getconf.c     | 66 +++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 83 insertions(+), 1 deletion(-)
->  create mode 100644 testcases/lib/tst_getconf.c
+>  testcases/commands/du/du01.sh                                    | 2 +-
+>  testcases/commands/mkswap/mkswap01.sh                            | 2 +-
+>  testcases/kernel/controllers/cpuset/cpuset_regression_test.sh    | 2 +-
+>  testcases/kernel/controllers/memcg/control/memcg_control_test.sh | 2 +-
+>  testcases/kernel/controllers/memcg/functional/memcg_lib.sh       | 4 ++--
+>  testcases/kernel/numa/numa01.sh                                  | 2 +-
+>  testcases/lib/test.sh                                            | 4 ++--
+>  7 files changed, 9 insertions(+), 9 deletions(-)
 >
-> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-> index fb7dcb591..e42451fae 100644
-> --- a/doc/test-writing-guidelines.txt
-> +++ b/doc/test-writing-guidelines.txt
-> @@ -1630,6 +1630,20 @@ passed directly to the script in '$1', '$2', ..., '$n'.
->  2.3.4 Usefull library functions
->  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> diff --git a/testcases/commands/du/du01.sh b/testcases/commands/du/du01.sh
+> index ed1df568f..c75068255 100755
+> --- a/testcases/commands/du/du01.sh
+> +++ b/testcases/commands/du/du01.sh
+> @@ -73,7 +73,7 @@ du_test()
+>  }
 >
-> +Retrieving configuration variables
-> +++++++++++++++++++++++++++++++++++
-> +
-> +You may need to retrieve some variable configuration such as PAGESIZE.
-> +There is "getconf" application that allows that but as some system may not
-> +have it, a "tst_getconf" library allows to retrieve these variables by using
-> +"sysconf()" function.
-> +
-> +[source,sh]
-> +-------------------------------------------------------------------------------
-> +# retrieve PAGESIZE
-> +pagesize=`tst_getconf PAGESIZE`
-> +-------------------------------------------------------------------------------
-> +
->  Sleeping for subsecond intervals
->  ++++++++++++++++++++++++++++++++
+>  block_size=512
+> -page_size=$(getconf PAGESIZE)
+> +page_size=$(tst_getconf PAGESIZE)
+>  if [ "$page_size" -lt 1024 ]; then
+>         tst_brk TBROK "Page size < 1024"
+>  fi
+> diff --git a/testcases/commands/mkswap/mkswap01.sh b/testcases/commands/mkswap/mkswap01.sh
+> index 1c01c86b2..035eb7cf9 100755
+> --- a/testcases/commands/mkswap/mkswap01.sh
+> +++ b/testcases/commands/mkswap/mkswap01.sh
+> @@ -29,7 +29,7 @@ setup()
+>  {
+>         UUID=`uuidgen`
 >
-> diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
-> index f36ed99fa..997940006 100644
-> --- a/testcases/lib/.gitignore
-> +++ b/testcases/lib/.gitignore
-> @@ -7,3 +7,4 @@
->  /tst_net_iface_prefix
->  /tst_net_ip_prefix
->  /tst_net_vars
-> +/tst_getconf
-> \ No newline at end of file
-> diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
-> index 398150ae0..77b7b2ef1 100644
-> --- a/testcases/lib/Makefile
-> +++ b/testcases/lib/Makefile
-> @@ -27,6 +27,7 @@ include $(top_srcdir)/include/mk/testcases.mk
->  INSTALL_TARGETS                := *.sh
+> -       PAGE_SIZE=`getconf PAGE_SIZE`
+> +       PAGE_SIZE=`tst_getconf PAGESIZE`
 >
->  MAKE_TARGETS           := tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
-> -                          tst_device tst_net_iface_prefix tst_net_ip_prefix tst_net_vars
-> +                          tst_device tst_net_iface_prefix tst_net_ip_prefix tst_net_vars\
-> +                          tst_getconf
+>         # Here get the size of the device and align it down to be the
+>         # multiple of $PAGE_SIZE and use that as the size for testing.
+> diff --git a/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh b/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
+> index 4a104a3ad..72a2a944c 100755
+> --- a/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
+> +++ b/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
+> @@ -34,7 +34,7 @@ setup()
+>                 tst_brkm TCONF "Test must be run with kernel 3.18.0 or newer"
+>         fi
 >
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/lib/tst_getconf.c b/testcases/lib/tst_getconf.c
-> new file mode 100644
-> index 000000000..7cdef9f54
-> --- /dev/null
-> +++ b/testcases/lib/tst_getconf.c
-> @@ -0,0 +1,66 @@
-> +/*
-> + * Copyright (c) 2018 Mylène Josserand <mylene.josserand@bootlin.com>
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License as
-> + * published by the Free Software Foundation; either version 2 of
-> + * the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software Foundation,
-> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> + */
-> +
-> +#include <stdio.h>
-> +#include <unistd.h>
-> +#include <string.h>
-> +
-> +static void print_help(void)
-> +{
-> +       printf("Usage: tst_getconf variable\n\n");
-> +       printf("       variable: can be PAGESIZE or _NPROCESSORS_ONLN (for the moment)\n");
-> +       printf("example: tst_getconf PAGESIZE\n");
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +       int opt;
-> +
-> +       while ((opt = getopt(argc, argv, ":h")) != -1) {
-> +               switch (opt) {
-> +               case 'h':
-> +                       print_help();
-> +                       return 0;
-> +               default:
-> +                       print_help();
-> +                       return 1;
-> +               }
-> +       }
-> +
-> +       if (argc != 2) {
-> +               print_help();
-> +               return 1;
-> +       }
-> +
-> +       if (optind >= argc) {
-> +               fprintf(stderr, "ERROR: Expected variable argument\n\n");
-> +               print_help();
-> +               return 1;
-> +       }
-> +
-> +       if (!strcmp(argv[optind], "_NPROCESSORS_ONLN"))
-> +               printf("%ld", sysconf(_SC_NPROCESSORS_ONLN));
-> +       else if (!strcmp(argv[optind],"PAGESIZE"))
-> +               printf("%ld", sysconf(_SC_PAGE_SIZE));
-> +       else {
-> +               printf("Invalid argument");
-> +               return -1;
-> +       }
-
-To be honest, I prefer to make it more like getconf behavior
-especially for the neline or error warning. Which diff with you patch
-as following, but without this alignment it would be also accessible I
-think.
-
---- a/testcases/lib/tst_getconf.c
-+++ b/testcases/lib/tst_getconf.c
-@@ -23,7 +23,7 @@
- static void print_help(void)
- {
-        printf("Usage: tst_getconf variable\n\n");
--       printf("       variable: can be PAGESIZE or _NPROCESSORS_ONLN
-(for the moment)\n");
-+       printf("       variable: can be PAGESIZE/PAGE_SIZE or
-_NPROCESSORS_ONLN (for the moment)\n");
-        printf("example: tst_getconf PAGESIZE\n");
- }
-
-@@ -54,11 +54,11 @@ int main(int argc, char *argv[])
-        }
-
-        if (!strcmp(argv[optind], "_NPROCESSORS_ONLN"))
--               printf("%ld", sysconf(_SC_NPROCESSORS_ONLN));
--       else if (!strcmp(argv[optind],"PAGESIZE"))
--               printf("%ld", sysconf(_SC_PAGE_SIZE));
-+               printf("%ld\n", sysconf(_SC_NPROCESSORS_ONLN));
-+       else if (!strcmp(argv[optind], "PAGESIZE") ||
-!strcmp(argv[optind], "PAGE_SIZE"))
-+               printf("%ld\n", sysconf(_SC_PAGE_SIZE));
-        else {
--               printf("Invalid argument");
-+               printf("tst_getconf: Unrecognized variable \'%s\'\n",
-argv[optind]);
-                return -1;
-        }
-
-> +
-> +       return 0;
-> +}
+> -       local cpu_num=$(getconf _NPROCESSORS_ONLN)
+> +       local cpu_num=$(tst_getconf _NPROCESSORS_ONLN)
+>         if [ $cpu_num -lt 2 ]; then
+>                 tst_brkm TCONF "We need 2 cpus at least to have test"
+>         fi
+> diff --git a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
+> index 1d158729c..4d9f1bb5d 100644
+> --- a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
+> +++ b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
+> @@ -41,7 +41,7 @@ export TST_COUNT=0
+>  export TMP=${TMP:-/tmp}
+>  cd $TMP
+>
+> -PAGE_SIZE=$(getconf PAGESIZE)
+> +PAGE_SIZE=$(tst_getconf PAGESIZE)
+>
+>  TOT_MEM_LIMIT=$PAGE_SIZE
+>  ACTIVE_MEM_LIMIT=$PAGE_SIZE
+> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> index 6a6af853b..cd16dc685 100755
+> --- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> +++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> @@ -29,9 +29,9 @@ if [ "x$(grep -w memory /proc/cgroups | cut -f4)" != "x1" ]; then
+>         tst_brkm TCONF "Kernel does not support the memory resource controller"
+>  fi
+>
+> -PAGESIZE=$(getconf PAGESIZE)
+> +PAGESIZE=$(tst_getconf PAGESIZE)
+>  if [ $? -ne 0 ]; then
+> -       tst_brkm TBROK "getconf PAGESIZE failed"
+> +       tst_brkm TBROK "tst_getconf PAGESIZE failed"
+>  fi
+>
+>  HUGEPAGESIZE=$(awk '/Hugepagesize/ {print $2}' /proc/meminfo)
+> diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
+> index 27a2f2f7c..b58cf9d56 100755
+> --- a/testcases/kernel/numa/numa01.sh
+> +++ b/testcases/kernel/numa/numa01.sh
+> @@ -83,7 +83,7 @@ wait_for_support_numa()
+>  setup()
+>  {
+>         export MB=$((1024*1024))
+> -       export PAGE_SIZE=$(getconf PAGE_SIZE)
+> +       export PAGE_SIZE=$(tst_getconf PAGESIZE)
+>         export HPAGE_SIZE=$(awk '/Hugepagesize:/ {print $2}' /proc/meminfo)
+>
+>         total_nodes=0
+> diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
+> index bce9893a9..650712181 100644
+> --- a/testcases/lib/test.sh
+> +++ b/testcases/lib/test.sh
+> @@ -421,9 +421,9 @@ fi
+>  if [ "$TST_NEEDS_CHECKPOINTS" = "1" ]; then
+>         LTP_IPC_PATH="/dev/shm/ltp_${TCID}_$$"
+>
+> -       LTP_IPC_SIZE=$(getconf PAGESIZE)
+> +       LTP_IPC_SIZE=$(tst_getconf PAGESIZE)
+>         if [ $? -ne 0 ]; then
+> -               tst_brkm TBROK "getconf PAGESIZE failed"
+> +               tst_brkm TBROK "tst_getconf PAGESIZE failed"
+>         fi
+>
+>         ROD_SILENT dd if=/dev/zero of="$LTP_IPC_PATH" bs="$LTP_IPC_SIZE" count=1
 > --
 > 2.11.0
 >
