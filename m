@@ -1,220 +1,58 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 14 Jun 2018 14:48:41 +0200
-Subject: [LTP] [PATCH v2] open08: rewrite to newlib
-Message-ID: <787996724f38cfa88d0a8c9a0a713d056ba01307.1528980323.git.jstancek@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 14 Jun 2018 15:15:57 +0200
+Subject: [LTP] [PATCH 2/3] net/icmp-uni-basic.sh: Remove LINK_NUM + related
+	setup
+In-Reply-To: <20180614131558.18707-1-pvorel@suse.cz>
+References: <20180614131558.18707-1-pvorel@suse.cz>
+Message-ID: <20180614131558.18707-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixes: https://github.com/linux-test-project/ltp/issues/330
+LINK_NUM should not be setup in the test + some variables weren't used.
 
-EACCES testcase changed:
-Test now creates file (0600) in tmpdir, that is owned by privileged user,
-and unprivileged user tries to open it for writing.
-
-EFAULT testcase changed:
-Comments say the intent is to use address outside of process mapped space.
-So, test is changed to map/unmap rather than map as PROT_NONE.
-
-uclinux ifdefs dropped.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/syscalls/open/open08.c | 140 +++++++++++++-------------------
- 1 file changed, 58 insertions(+), 82 deletions(-)
+Changes v1->v2:
+Properly remove $LINK_NUM
+---
+ testcases/network/stress/icmp/icmp-uni-basic.sh | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/open/open08.c b/testcases/kernel/syscalls/open/open08.c
-index d55d8e6bdd53..d749d1e7100e 100644
---- a/testcases/kernel/syscalls/open/open08.c
-+++ b/testcases/kernel/syscalls/open/open08.c
-@@ -1,5 +1,6 @@
- /*
-  *   Copyright (c) 2013 Wanlong Gao <gaowanlong@cn.fujitsu.com>
-+ *   Copyright (c) 2018 Linux Test Project
-  *
-  *   This program is free software;  you can redistribute it and/or modify
-  *   it under the terms of the GNU General Public License as published by
-@@ -39,7 +40,7 @@
-  *	4. Attempt to open() a filename which is more than VFS_MAXNAMLEN, and
-  *	   check for errno to be ENAMETOOLONG.
-  *
-- *	5. Attempt to open a test executable in WRONLY mode,
-+ *	5. Attempt to open a (0600) file owned by different user in WRONLY mode,
-  *	   open(2) should fail with EACCES.
-  *
-  *	6. Attempt to pass an invalid pathname with an address pointing outside
-@@ -56,113 +57,88 @@
- #include <fcntl.h>
- #include <signal.h>
- #include <pwd.h>
--#include "test.h"
--#include "safe_macros.h"
--
--static void setup(void);
--static void cleanup(void);
--
--char *TCID = "open08";
--
--static char nobody_uid[] = "nobody";
--static struct passwd *ltpuser;
--
--static char *bad_addr;
-+#include "tst_test.h"
+diff --git a/testcases/network/stress/icmp/icmp-uni-basic.sh b/testcases/network/stress/icmp/icmp-uni-basic.sh
+index 5fe6b9b13..fc84899dd 100755
+--- a/testcases/network/stress/icmp/icmp-uni-basic.sh
++++ b/testcases/network/stress/icmp/icmp-uni-basic.sh
+@@ -25,8 +25,6 @@ TST_CLEANUP="tst_ipsec_cleanup"
  
- static char filename[40] = "";
--static char fname[] = "/bin/cat";
-+static char user2_file[] = "user2_0600";
- static char bad_file[] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyz";
+ . ipsec_lib.sh
  
-+struct test_case_t;
-+static void setup_badfname_buf(struct test_case_t *t);
-+
- static struct test_case_t {
-+	void (*setup)(struct test_case_t *t);
- 	char *fname;
- 	int flags;
- 	int error;
--} TC[] = {
--	{filename, O_CREAT | O_EXCL, EEXIST},
--	{"/tmp", O_RDWR, EISDIR},
--	{filename, O_DIRECTORY, ENOTDIR},
--	{bad_file, O_RDWR, ENAMETOOLONG},
--	{fname, O_WRONLY, EACCES},
--#if !defined(UCLINUX)
--	{(char *)-1, O_CREAT, EFAULT}
--#endif
-+} tcases[] = {
-+	{NULL, filename, O_CREAT | O_EXCL, EEXIST},
-+	{NULL, "/tmp", O_RDWR, EISDIR},
-+	{NULL, filename, O_DIRECTORY, ENOTDIR},
-+	{NULL, bad_file, O_RDWR, ENAMETOOLONG},
-+	{NULL, user2_file, O_WRONLY, EACCES},
-+	{setup_badfname_buf, NULL, O_CREAT, EFAULT}
- };
+-LINK_NUM=${LINK_NUM:-0}
+-
+ # Test description
+ tst_resm TINFO "Sending ICMP messages with the following conditions"
+ tst_resm TINFO "- Version of IP is IPv${TST_IPV6:-4}"
+@@ -40,17 +38,10 @@ if [ -n "$IPSEC_MODE" -a -n "$IPSEC_PROTO" ]; then
+ 	esac
+ fi
  
--int TST_TOTAL = sizeof(TC) / sizeof(TC[0]);
+-# name of interface of the local/remote host
+-lhost_ifname=$(tst_iface lhost $LINK_NUM)
+-rhost_ifname=$(tst_iface rhost $LINK_NUM)
 -
--int main(int ac, char **av)
-+void verify_open(unsigned int i)
- {
--	int lc;
--	int i;
+-lhost_addr=$(tst_ipaddr)
+-rhost_addr=$(tst_ipaddr rhost)
 -
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++) {
--			TEST(open(TC[i].fname, TC[i].flags,
--				  S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH));
--
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "call succeeded unexpectedly");
--				continue;
--			}
--
--			if (TEST_ERRNO == TC[i].error) {
--				tst_resm(TPASS, "expected failure - "
--					 "errno = %d : %s", TEST_ERRNO,
--					 strerror(TEST_ERRNO));
--			} else {
--				tst_resm(TFAIL, "unexpected error - %d : %s - "
--					 "expected %d", TEST_ERRNO,
--					 strerror(TEST_ERRNO), TC[i].error);
--			}
--		}
-+	if (tcases[i].setup)
-+		tcases[i].setup(&tcases[i]);
-+
-+	TEST(open(tcases[i].fname, tcases[i].flags,
-+		S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH));
-+
-+	if (TEST_RETURN != -1) {
-+		tst_res(TFAIL, "call succeeded unexpectedly");
-+		return;
- 	}
+ tst_ipsec_setup
  
--	cleanup();
--	tst_exit();
-+	if (TEST_ERRNO == tcases[i].error) {
-+		tst_res(TPASS, "expected failure - "
-+				"errno = %d : %s", TEST_ERRNO,
-+				strerror(TEST_ERRNO));
-+	} else {
-+		tst_res(TFAIL, "unexpected error - %d : %s - "
-+				"expected %d", TEST_ERRNO,
-+				strerror(TEST_ERRNO), tcases[i].error);
-+	}
- }
+ PING_MAX="$IPSEC_REQUESTS"
  
--static void setup(void)
-+static void setup_badfname_buf(struct test_case_t *t)
- {
--	int fildes;
-+	char *bad_addr;
-+	int len = getpagesize();
+-tst_ping $lhost_ifname $rhost_addr $IPSEC_SIZE_ARRAY
++tst_ping $(tst_iface) $(tst_ipaddr rhost) $IPSEC_SIZE_ARRAY
  
--	tst_require_root();
-+	bad_addr = SAFE_MMAP(0, len, PROT_READ|PROT_WRITE,
-+		MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-+	t->fname = bad_addr;
-+	SAFE_MUNMAP(bad_addr, len);
-+}
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+static void setup(void)
-+{
-+	int fildes;
-+	char nobody_uid[] = "nobody";
-+	struct passwd *ltpuser;
- 
- 	umask(0);
- 
--	TEST_PAUSE;
-+	SAFE_CREAT(user2_file, 0600);
- 
- 	/* Switch to nobody user for correct error code collection */
- 	ltpuser = getpwnam(nobody_uid);
--	SAFE_SETGID(NULL, ltpuser->pw_gid);
--	SAFE_SETUID(NULL, ltpuser->pw_uid);
--
--	tst_tmpdir();
-+	SAFE_SETGID(ltpuser->pw_gid);
-+	SAFE_SETUID(ltpuser->pw_uid);
- 
- 	sprintf(filename, "open3.%d", getpid());
--
--	fildes = SAFE_CREAT(cleanup, filename, 0600);
--
-+	fildes = SAFE_CREAT(filename, 0600);
- 	close(fildes);
--
--#if !defined(UCLINUX)
--	bad_addr = mmap(0, 1, PROT_NONE,
--			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
--	if (bad_addr == MAP_FAILED)
--		tst_brkm(TBROK, cleanup, "mmap failed");
--
--	TC[5].fname = bad_addr;
--#endif
- }
- 
--static void cleanup(void)
--{
--	tst_rmdir();
--}
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
-+	.setup = setup,
-+	.test = verify_open,
-+};
+ tst_exit
 -- 
-1.8.3.1
+2.17.1
 
