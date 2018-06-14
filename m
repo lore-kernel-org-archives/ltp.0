@@ -1,84 +1,170 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date: Thu, 14 Jun 2018 08:34:48 +0200
-Subject: [LTP] [PATCH 4.4 00/24] 4.4.137-stable review
-In-Reply-To: <CADtBP2DZ0ceTtwaG7AdXV3xa16mQ6nu=gaqUYj7JSOLBdVD8cg@mail.gmail.com>
-References: <20180612164816.587001852@linuxfoundation.org>
- <CADtBP2D4a2OdLsAgZ8sRFBhkh2jArviaYNzYrS7wqdmogyc=Mg@mail.gmail.com>
- <20180613210044.GA15146@kroah.com>
- <CABdQkv9uNjf7ARKBJ-sE_RVruMA5U9bTNo-EL_+7Rv8ZVJGY3w@mail.gmail.com>
- <CADtBP2DZ0ceTtwaG7AdXV3xa16mQ6nu=gaqUYj7JSOLBdVD8cg@mail.gmail.com>
-Message-ID: <20180614063448.GB6021@kroah.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 14 Jun 2018 14:37:02 +0800
+Subject: [LTP] [PATCH] swapon: commit swapfile caches to disk
+In-Reply-To: <CAEemH2cyoZB__UCyPGEb3Afo_UtqkdP2Au-NWSX8SCTjPcvMfQ@mail.gmail.com>
+References: <1528806239-14297-1-git-send-email-liwang@redhat.com>
+ <1468267167.25962192.1528808172867.JavaMail.zimbra@redhat.com>
+ <CAEemH2cyoZB__UCyPGEb3Afo_UtqkdP2Au-NWSX8SCTjPcvMfQ@mail.gmail.com>
+Message-ID: <CAEemH2ebuneSDNF=Zc-ZEFW2+NCHNZ6E2_N29ufjB6pjcER7pg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Jun 13, 2018 at 10:48:50PM -0300, Rafael Tinoco wrote:
-> On 13 June 2018 at 18:08, Rafael David Tinoco
-> <rafaeldtinoco@kernelpath.com> wrote:
-> > On Wed, Jun 13, 2018 at 6:00 PM, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> >> On Wed, Jun 13, 2018 at 05:47:49PM -0300, Rafael Tinoco wrote:
-> >>> Results from Linaro=E2=80=99s test farm.
-> >>> Regressions detected.
-> >>>
-> >>> NOTE:
-> >>>
-> >>> 1) LTP vma03 test (cve-2011-2496) broken on v4.4-137-rc1 because of:
-> >>>
-> >>>      6ea1dc96a03a mmap: relax file size limit for regular files
-> >>>      bd2f9ce5bacb mmap: introduce sane default mmap limits
-> >>>
-> >>>    discussion:
-> >>>
-> >>>      https://github.com/linux-test-project/ltp/issues/341
-> >>>
-> >>>    mainline commit (v4.13-rc7):
-> >>>
-> >>>      0cc3b0ec23ce Clarify (and fix) MAX_LFS_FILESIZE macros
-> >>>
-> >>>    should be backported to 4.4.138-rc2 and fixes the issue.
-> >>
-> >> Really?  That commit says it fixes c2a9737f45e2 ("vfs,mm: fix a dead
-> >> loop in truncate_inode_pages_range()") which is not in 4.4.y at all.
-> >>
-> >> Did you test this out?
-> >
-> > Yes, the LTP contains the tests (last comment is the final test for
-> > arm32, right before Jan tests i686).
-> >
-> > Fixing MAX_LFS_FILESIZE fixes the new limit for mmap() brought by
-> > those 2 commits (file_mmap_size_max()).
-> > offset tested by the LTP test is 0xfffffffe000.
-> > file_mmap_size_max gives: 0xFFFFFFFF000 as max value, but only after
-> > the mentioned patch.
-> >
-> > Original intent for this fix was other though.
->=20
-> To clarify this a bit further.
->=20
-> The LTP CVE test is breaking in the first call to mmap(), even before
-> trying to remap and test the security issue. That start happening in
-> this round because of those mmap() changes and the offset used in the
-> LTP test. Linus changed limit checks and made them to be related to
-> MAX_LFS_FILESIZE. Unfortunately, in 4.4 stable, we were missing the
-> fix for MAX_LFS_FILESIZE (which before commit 0cc3b0ec23ce was less
-> than the REAL 32 bit limit).
->=20
-> Commit 0cc3b0ec23ce was made because an user noticed the FS limit not
-> being what it should be. In our case, the 4.4 stable kernel, we are
-> facing this 32 bit lower limit (than the real 32 bit real limit),
-> because of the LTP CVE test, so we need this fix to have the real 32
-> bit limit set for that macro (mmap limits did not use that macro
-> before).
->=20
-> I have tested in arm32 and Jan Stancek, who first responded to LTP
-> issue, has tested this in i686 and both worked after that patch was
-> included to v4.4-137-rc1 (my last test was even with 4.4.138-rc1).
->=20
-> Hope that helps a bit.
+On Tue, Jun 12, 2018 at 9:12 PM, Li Wang <liwang@redhat.com> wrote:
+>
+>
+>
+> On Tue, Jun 12, 2018 at 8:56 PM, Jan Stancek <jstancek@redhat.com> wrote:
+>>
+>>
+>> ----- Original Message -----
+>> > Testcase include swapon(8) fails on mainline kernel-v4.17+ as:
+>> >   swapon01    1  TFAIL  :  swapon01.c:47: Failed to turn on swapfile:
+>> >   TEST_ERRNO=EINVAL(22): Invalid argument
+>> >   swapon02    4  TFAIL  :  swapon02.c:91: swapon(2) failed to produce
+>> >   expected error: 16, errno: EBUSY and got 22.
+>> >   swapon03    1  TFAIL  :  swapon03.c:243: Failed to setup swaps
+>> >   swapoff01   1  TBROK  :  swapoff01.c:64: Failed to turn on the swap file,
+>> >   skipping test iteration
+>> >
+>> > And dmesg shows that:
+>> >   [  128.698981] swapon: file is not committed
+>> >
+>> > The error located in IOMAP_F_DIRTY(linux/fs/iomap.c) checking, which means
+>> > this swapfile have uncommitted metadata in caches. After adding sync() to
+>> > the end of all mkswap opertaion, these errors were gone.
+>> >
+>> > linux/fs/iomap.c:
+>> >       static loff_t iomap_swapfile_activate_actor(
+>> >               struct inode *inode,
+>> >               loff_t pos,
+>> >               loff_t count,
+>> >               void *data,
+>> >               struct iomap *iomap)
+>> >       {
+>> >               struct iomap_swapfile_info *isi = data;
+>> >               int error;
+>> >               ...
+>> >
+>> >               /* No uncommitted metadata or shared blocks. */
+>> >               if (iomap->flags & IOMAP_F_DIRTY) {
+>> >                       pr_err("swapon: file is not committed\n");
+>> >                       return -EINVAL;
+>> >               }
+>> >               ...
+>> >       }
+>> >                                                                       }
+>> > Signed-off-by: Li Wang <liwang@redhat.com>
+>> > ---
+>> >
+>> > Notes:
+>> >     The new changes about swapfile activation function were merged in
+>> >     kernel-4.17
+>> >     recently, so we didn't hit this failures before.
+>>
+>> Comment/code in mkswap, that has been present for years:
+>>         /*
+>>          * A subsequent swapon() will fail if the signature
+>>          * is not actually on disk. (This is a kernel bug.)
+>>          * The fsync() in close_fd() will take care of writing.
+>>          */
+>>
+>> I'm assuming your mkswap is recent enough. Any idea why fsync()
+>> in mkswap is no longer enough?
+>
+>
+>
+> Good catch, Jan. It sounds like a mkswap/fsync issue.
 
-Ok, thanks, it didn't apply cleanly but I've fixed it up now.
+I looked into this issue today. It seems like a new kernel bug which
+has been fixed by commit 117a148ffe0 (iomap: fsync swap files before
+iterating mappings) in linus tree.
 
-greg k-h
+------------------
+Simple steps to reproduce that:
+
+# dd if=/dev/zero of=swapfile01 bs=2048 count=1024
+1024+0 records in
+1024+0 records out
+2097152 bytes (2.1 MB) copied, 0.00408662 s, 513 MB/s
+
+# mkswap swapfile01
+Setting up swapspace version 1, size = 2044 KiB
+no label, UUID=17830401-9cf2-4143-88a8-5a89c0b2d01d
+
+# chmod 600 swapfile01
+
+# swapon swapfile01
+swapon: swapfile01: swapon failed: Invalid argument
+
+Checking dmesg and get the root cause is swapfile01 have uncommitted
+metadata in caches:
+    [  128.698981] swapon: file is not committed
+
+Then, I tracking the __x64_sys_swapon function calltrace on my bad kernel:
+
+xfs_iomap_swapfile_activate [xfs]() {
+  iomap_swapfile_activate() {
+    filemap_write_and_wait() {   <===== [1]
+      mapping_needs_writeback();
+      __filemap_fdatawrite_range() {
+        _raw_spin_lock();
+        wbc_attach_and_unlock_inode();
+        do_writepages() {
+          xfs_vm_writepages [xfs]() {
+            _raw_spin_lock();
+            write_cache_pages() {
+              tag_pages_for_writeback() {
+                _raw_spin_lock_irq();
+              }
+              pagevec_lookup_range_tag() {
+                find_get_pages_range_tag();
+              }
+            }
+          }
+        }
+        wbc_detach_inode();
+      }
+
+Noticed [1] was being replaced by "ret = vfs_fsync(swap_file, 1);" in
+the kernel commit 117a148ff. And this change works fine to me.
+
+But I still have a query as Jan mentioned that, the command mkswap has
+already done the write-back action via fsync() in close_fd(). Why we
+have to do this fsync() again in kernel side and then have effect to
+swapfile?
+
+$ tail util-linux/disk-utils/mkswap.c
+#endif
+/*
+* A subsequent swapon() will fail if the signature
+* is not actually on disk. (This is a kernel bug.)
+* The fsync() in close_fd() will take care of writing.
+*/
+if (close_fd(ctl.fd) != 0)
+err(EXIT_FAILURE, _("write failed"));
+return EXIT_SUCCESS;
+}
+
+$ tail -12 util-linux/disk-utils/include/closestream.h
+static inline int
+close_fd(int fd)
+{
+const int fsync_fail = (fsync(fd) != 0);
+const int close_fail = (close(fd) != 0);
+
+if (fsync_fail || close_fail)
+return EOF;
+return 0;
+}
+
+#endif /* UTIL_LINUX_CLOSESTREAM_H */
+
+--------------
+
+Anyway, this is not a LTP issue, so plz ignore my previous patch.
+
+Thanks,
+Li Wang
