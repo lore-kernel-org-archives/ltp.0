@@ -1,43 +1,47 @@
-From: =?unknown-8bit?q?Myl=C3=A8ne?= Josserand <mylene.josserand@bootlin.com>
-Date: Fri, 15 Jun 2018 08:18:07 +0200
-Subject: [LTP] [PATCH] testcase: gethostid: Check if hostid is available
-Message-ID: <20180615061807.15099-1-mylene.josserand@bootlin.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 15 Jun 2018 08:18:12 +0200
+Subject: [LTP] [PATCH v2] change type of variable to fix compile warning
+In-Reply-To: <20180609030106.3927-1-sunlw.fnst@cn.fujitsu.com>
+References: <20180609030106.3927-1-sunlw.fnst@cn.fujitsu.com>
+Message-ID: <20180615061812.gto4adrda4hdm2dp@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-On some embedded systems, hostid may not be installed.
-Because of that, the test will fail with:
+Hi Sun,
 
-gethostid01    1  TFAIL  :  gethostid01.c:171: fgets failed
+> Change the type of variable from int to unsigned intto fix complie 
+> warning: "comparison between signed and unsigned integer expressions [-Wsign-compare]"
 
-The test should return a TCONF instead.
-This commit uses tst_get_path function to check if "hostid"
-is available in $PATH. Otherwise, it will return a TCONF.
+> Signed-off-by: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
 
-Signed-off-by: Myl=C3=A8ne Josserand <mylene.josserand@bootlin.com>
----
- testcases/kernel/syscalls/gethostid/gethostid01.c | 4 ++++
- 1 file changed, 4 insertions(+)
+You left some of the comparison warnings, can you please fix them?
+move_pages_support.c: In function ‘alloc_pages_on_nodes’:
+move_pages_support.c:70:16: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for (i = 0; i < num; i++) {
+                ^
+move_pages_support.c:74:16: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for (i = 0; i < num; i++) {
+                ^
+move_pages_support.c:91:8: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  if (i == num)
+        ^~
+symlink01.c: In function ‘get_tcs_info’:
+symlink01.c:601:20: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for (ctr = 0; ctr < (sizeof(all_tcses) / sizeof(struct tcses)); ctr++) {
+                    ^
 
-diff --git a/testcases/kernel/syscalls/gethostid/gethostid01.c b/testcases/=
-kernel/syscalls/gethostid/gethostid01.c
-index e6b006759..241335af7 100644
---- a/testcases/kernel/syscalls/gethostid/gethostid01.c
-+++ b/testcases/kernel/syscalls/gethostid/gethostid01.c
-@@ -239,6 +239,10 @@ int main(int ac, char **av)
-=20
- void setup(void)
- {
-+	char path[2048];
-+
-+	if (tst_get_path("hostid", path, sizeof(path)))
-+		tst_brkm(TCONF, NULL, "Couldn't find hostid in $PATH");
-=20
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
-=20
---=20
-2.11.0
+ebizzy.c: In function ‘thread_run’:
+ebizzy.c:424:31: warning: unused parameter ‘arg’ [-Wunused-parameter]
+ static void *thread_run(void *arg)
+This one can be fixed with LTP_ATTRIBUTE_UNUSED
++#include "tst_common.h"
+                               ^~~
+-static void *thread_run(void *arg)
++static void *thread_run(void *arg LTP_ATTRIBUTE_UNUSED)
 
+
+Kind regards,
+Petr
