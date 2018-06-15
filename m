@@ -1,42 +1,185 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date: Fri, 15 Jun 2018 07:11:35 +0200
-Subject: [LTP] [PATCH 4.17 00/45] 4.17.2-stable review
-In-Reply-To: <CA+G9fYtLq0STwKXEnn5cHQGMOKxiaPfdnAuPhvpwhfMdsWJANw@mail.gmail.com>
-References: <20180614132126.797006529@linuxfoundation.org>
- <CA+G9fYtLq0STwKXEnn5cHQGMOKxiaPfdnAuPhvpwhfMdsWJANw@mail.gmail.com>
-Message-ID: <20180615051135.GA16319@kroah.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 15 Jun 2018 02:11:55 -0400 (EDT)
+Subject: [LTP] [PATCH v2] open08: rewrite to newlib
+In-Reply-To: <CAEemH2eLzFsjx=3yhP-qN6=P=3DwJ9txR_0TfE2iYUhB7qiXoQ@mail.gmail.com>
+References: <787996724f38cfa88d0a8c9a0a713d056ba01307.1528980323.git.jstancek@redhat.com>
+ <CAEemH2dFRruWBBU+p5qU5vtGxc-ibjbFpW5TjNd=P0G=7TALfA@mail.gmail.com>
+ <CAEemH2eLzFsjx=3yhP-qN6=P=3DwJ9txR_0TfE2iYUhB7qiXoQ@mail.gmail.com>
+Message-ID: <334996146.26786343.1529043115414.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Jun 15, 2018 at 06:15:48AM +0530, Naresh Kamboju wrote:
-> On 14 June 2018 at 19:33, Greg Kroah-Hartman <gregkh@linuxfoundation.org>=
- wrote:
-> > This is the start of the stable review cycle for the 4.17.2 release.
-> > There are 45 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Sat Jun 16 13:21:05 UTC 2018.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patc=
-h-4.17.2-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git linux-4.17.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
->=20
-> Results from Linaro=E2=80=99s test farm.
-> No regressions on arm64, arm and x86_64.
 
-Thanks for testing all of these and letting me know.
 
-greg k-h
+----- Original Message -----
+> On Thu, Jun 14, 2018 at 9:47 PM, Li Wang <liwang@redhat.com> wrote:
+> > On Thu, Jun 14, 2018 at 8:48 PM, Jan Stancek <jstancek@redhat.com> wrote:
+> >> Fixes: https://github.com/linux-test-project/ltp/issues/330
+> >>
+> >> EACCES testcase changed:
+> >> Test now creates file (0600) in tmpdir, that is owned by privileged user,
+> >> and unprivileged user tries to open it for writing.
+> >>
+> >> EFAULT testcase changed:
+> >> Comments say the intent is to use address outside of process mapped space.
+> >> So, test is changed to map/unmap rather than map as PROT_NONE.
+> >>
+> >> uclinux ifdefs dropped.
+> >>
+> >> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> >> ---
+> >>  testcases/kernel/syscalls/open/open08.c | 140
+> >>  +++++++++++++-------------------
+> >>  1 file changed, 58 insertions(+), 82 deletions(-)
+> >>
+> >> diff --git a/testcases/kernel/syscalls/open/open08.c
+> >> b/testcases/kernel/syscalls/open/open08.c
+> >> index d55d8e6bdd53..d749d1e7100e 100644
+> >> --- a/testcases/kernel/syscalls/open/open08.c
+> >> +++ b/testcases/kernel/syscalls/open/open08.c
+> >> @@ -1,5 +1,6 @@
+> >>  /*
+> >>   *   Copyright (c) 2013 Wanlong Gao <gaowanlong@cn.fujitsu.com>
+> >> + *   Copyright (c) 2018 Linux Test Project
+> >>   *
+> >>   *   This program is free software;  you can redistribute it and/or
+> >>   modify
+> >>   *   it under the terms of the GNU General Public License as published by
+> >> @@ -39,7 +40,7 @@
+> >>   *     4. Attempt to open() a filename which is more than VFS_MAXNAMLEN,
+> >>   and
+> >>   *        check for errno to be ENAMETOOLONG.
+> >>   *
+> >> - *     5. Attempt to open a test executable in WRONLY mode,
+> >> + *     5. Attempt to open a (0600) file owned by different user in WRONLY
+> >> mode,
+> >>   *        open(2) should fail with EACCES.
+> >>   *
+> >>   *     6. Attempt to pass an invalid pathname with an address pointing
+> >>   outside
+> >> @@ -56,113 +57,88 @@
+> >>  #include <fcntl.h>
+> >>  #include <signal.h>
+> >>  #include <pwd.h>
+> >> -#include "test.h"
+> >> -#include "safe_macros.h"
+> >> -
+> >> -static void setup(void);
+> >> -static void cleanup(void);
+> >> -
+> >> -char *TCID = "open08";
+> >> -
+> >> -static char nobody_uid[] = "nobody";
+> >> -static struct passwd *ltpuser;
+> >> -
+> >> -static char *bad_addr;
+> >> +#include "tst_test.h"
+> >>
+> >>  static char filename[40] = "";
+> >> -static char fname[] = "/bin/cat";
+> >> +static char user2_file[] = "user2_0600";
+> >>  static char bad_file[] =
+> >>  "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyz";
+> >>
+> >> +struct test_case_t;
+> >> +static void setup_badfname_buf(struct test_case_t *t);
+> >> +
+> >>  static struct test_case_t {
+> >> +       void (*setup)(struct test_case_t *t);
+> >
+> > This function pointer named setup make me a little bit confused at first
+> > sight.
+> > It makes me thinking about what's the relationship to ltp steup()
+> > function for a while, actually it does not have.
+> >
+> > To avoid the situation to other person, how about just using
+> >    void (*func) (struct test_case_t *t);
+> > here?
+> 
+> Or, maybe we could drop the func pointer in the test structure, and
+> reset the badfname only in verify_open(). It's hard to say which
+> method is better, but seems this can make things more easier I guess.
+> 
+> Which something differ with your patch too:
+> 
+> --- a/testcases/kernel/syscalls/open/open08.c
+> +++ b/testcases/kernel/syscalls/open/open08.c
+> @@ -63,27 +63,30 @@ static char filename[40] = "";
+>  static char user2_file[] = "user2_0600";
+>  static char bad_file[] =
+> "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyz";
+> 
+> -struct test_case_t;
+> -static void setup_badfname_buf(struct test_case_t *t);
+> -
+>  static struct test_case_t {
+> -    void (*setup)(struct test_case_t *t);
+>      char *fname;
+>      int flags;
+>      int error;
+>  } tcases[] = {
+> -    {NULL, filename, O_CREAT | O_EXCL, EEXIST},
+> -    {NULL, "/tmp", O_RDWR, EISDIR},
+> -    {NULL, filename, O_DIRECTORY, ENOTDIR},
+> -    {NULL, bad_file, O_RDWR, ENAMETOOLONG},
+> -    {NULL, user2_file, O_WRONLY, EACCES},
+> -    {setup_badfname_buf, NULL, O_CREAT, EFAULT}
+> +    {filename, O_CREAT | O_EXCL, EEXIST},
+> +    {"/tmp", O_RDWR, EISDIR},
+> +    {filename, O_DIRECTORY, ENOTDIR},
+> +    {bad_file, O_RDWR, ENAMETOOLONG},
+> +    {user2_file, O_WRONLY, EACCES},
+> +    {NULL, O_CREAT, EFAULT}
+>  };
+> 
+>  void verify_open(unsigned int i)
+>  {
+> -    if (tcases[i].setup)
+> -        tcases[i].setup(&tcases[i]);
+> +    if (i == ARRAY_SIZE(tcases) - 1) {
+
+It's same as hardcoding index to array - if someone adds
+new testcase it breaks.
+
+But we could set it to some special value (NULL) and check all cases against that.
+If it's NULL, then make a bad_addr.
+
+> +        char *bad_addr;
+> +        int len = getpagesize();
+> +
+> +        bad_addr = SAFE_MMAP(0, len, PROT_READ|PROT_WRITE,
+> +                MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+> +        tcases[i].fname = bad_addr;
+> +        SAFE_MUNMAP(bad_addr, len);
+> +    }
+> 
+>      TEST(open(tcases[i].fname, tcases[i].flags,
+>          S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH));
+> @@ -104,17 +107,6 @@ void verify_open(unsigned int i)
+>      }
+>  }
+> 
+> -static void setup_badfname_buf(struct test_case_t *t)
+> -{
+> -    char *bad_addr;
+> -    int len = getpagesize();
+> -
+> -    bad_addr = SAFE_MMAP(0, len, PROT_READ|PROT_WRITE,
+> -        MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+> -    t->fname = bad_addr;
+> -    SAFE_MUNMAP(bad_addr, len);
+> -}
+> -
+>  static void setup(void)
+>  {
+>      int fildes;
+> 
+> 
+> 
+> --
+> Regards,
+> Li Wang
+> 
