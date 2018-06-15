@@ -1,150 +1,165 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Fri, 15 Jun 2018 06:15:48 +0530
-Subject: [LTP] [PATCH 4.17 00/45] 4.17.2-stable review
-In-Reply-To: <20180614132126.797006529@linuxfoundation.org>
-References: <20180614132126.797006529@linuxfoundation.org>
-Message-ID: <CA+G9fYtLq0STwKXEnn5cHQGMOKxiaPfdnAuPhvpwhfMdsWJANw@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 15 Jun 2018 11:04:11 +0800
+Subject: [LTP] [PATCH v2] open08: rewrite to newlib
+In-Reply-To: <CAEemH2dFRruWBBU+p5qU5vtGxc-ibjbFpW5TjNd=P0G=7TALfA@mail.gmail.com>
+References: <787996724f38cfa88d0a8c9a0a713d056ba01307.1528980323.git.jstancek@redhat.com>
+ <CAEemH2dFRruWBBU+p5qU5vtGxc-ibjbFpW5TjNd=P0G=7TALfA@mail.gmail.com>
+Message-ID: <CAEemH2eLzFsjx=3yhP-qN6=P=3DwJ9txR_0TfE2iYUhB7qiXoQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1254"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-T24gMTQgSnVuZSAyMDE4IGF0IDE5OjMzLCBHcmVnIEtyb2FoLUhhcnRtYW4gPGdyZWdraEBsaW51
-eGZvdW5kYXRpb24ub3JnPiB3cm90ZToKPiBUaGlzIGlzIHRoZSBzdGFydCBvZiB0aGUgc3RhYmxl
-IHJldmlldyBjeWNsZSBmb3IgdGhlIDQuMTcuMiByZWxlYXNlLgo+IFRoZXJlIGFyZSA0NSBwYXRj
-aGVzIGluIHRoaXMgc2VyaWVzLCBhbGwgd2lsbCBiZSBwb3N0ZWQgYXMgYSByZXNwb25zZQo+IHRv
-IHRoaXMgb25lLiAgSWYgYW55b25lIGhhcyBhbnkgaXNzdWVzIHdpdGggdGhlc2UgYmVpbmcgYXBw
-bGllZCwgcGxlYXNlCj4gbGV0IG1lIGtub3cuCj4KPiBSZXNwb25zZXMgc2hvdWxkIGJlIG1hZGUg
-YnkgU2F0IEp1biAxNiAxMzoyMTowNSBVVEMgMjAxOC4KPiBBbnl0aGluZyByZWNlaXZlZCBhZnRl
-ciB0aGF0IHRpbWUgbWlnaHQgYmUgdG9vIGxhdGUuCj4KPiBUaGUgd2hvbGUgcGF0Y2ggc2VyaWVz
-IGNhbiBiZSBmb3VuZCBpbiBvbmUgcGF0Y2ggYXQ6Cj4gICAgICAgICBodHRwczovL3d3dy5rZXJu
-ZWwub3JnL3B1Yi9saW51eC9rZXJuZWwvdjQueC9zdGFibGUtcmV2aWV3L3BhdGNoLTQuMTcuMi1y
-YzEuZ3oKPiBvciBpbiB0aGUgZ2l0IHRyZWUgYW5kIGJyYW5jaCBhdDoKPiAgICAgICAgIGdpdDov
-L2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9zdGFibGUvbGludXgtc3Rh
-YmxlLXJjLmdpdCBsaW51eC00LjE3LnkKPiBhbmQgdGhlIGRpZmZzdGF0IGNhbiBiZSBmb3VuZCBi
-ZWxvdy4KPgo+IHRoYW5rcywKPgo+IGdyZWcgay1oCgpSZXN1bHRzIGZyb20gTGluYXJv4oCZcyB0
-ZXN0IGZhcm0uCk5vIHJlZ3Jlc3Npb25zIG9uIGFybTY0LCBhcm0gYW5kIHg4Nl82NC4KCk5PVEU6
-CmZjbnRsMzYgaXMgYW4gaW50ZXJtaXR0ZW50IGZhaWx1cmUgb24gcWVtdSBhcm0zMiBmb3IgYWxs
-IGJyYW5jaGVzLgpmY250bDM2LmM6MjA1OiBGQUlMOiBVbmV4cGVjdGVkIGRhdGEgb2Zmc2V0IDEy
-MzA0IHZhbHVlIDkKT2xkIG9wZW4gYnVnIHRvIGludmVzdGlnYXRlLCBodHRwczovL2J1Z3MubGlu
-YXJvLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9MzMzOQoKU3VtbWFyeQotLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCmtl
-cm5lbDogNC4xNy4yLXJjMQpnaXQgcmVwbzoKaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2Nt
-L2xpbnV4L2tlcm5lbC9naXQvc3RhYmxlL2xpbnV4LXN0YWJsZS1yYy5naXQKZ2l0IGJyYW5jaDog
-bGludXgtNC4xNy55CmdpdCBjb21taXQ6IGYxMWZjMzk2MzA3NzAwMzFjNGRkMDQyYWNjNWFkOThh
-ZGM1ZGUzMDEKZ2l0IGRlc2NyaWJlOiB2NC4xNy4xLTQ2LWdmMTFmYzM5NjMwNzcKVGVzdCBkZXRh
-aWxzOiBodHRwczovL3FhLXJlcG9ydHMubGluYXJvLm9yZy9sa2Z0L2xpbnV4LXN0YWJsZS1yYy00
-LjE3LW9lL2J1aWxkXAovdjQuMTcuMS00Ni1nZjExZmMzOTYzMDc3Cl4gUGxlYXNlIGpvaW4gVVJM
-CgpObyByZWdyZXNzaW9ucyAoY29tcGFyZWQgdG8gYnVpbGQgdjQuMTcuMSkKLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tCgpCb2FyZHMsIGFyY2hpdGVjdHVyZXMgYW5kIHRlc3Qgc3VpdGVzOgotLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpkcmFnb25ib2FyZC00MTBjIC0gYXJtNjQKKiBib290
-IC0gcGFzczogMjEsCioga3NlbGZ0ZXN0IC0gc2tpcDogMjgsIHBhc3M6IDQ2LCBmYWlsOiA2Ciog
-bGliaHVnZXRsYmZzIC0gc2tpcDogMSwgcGFzczogODksIGZhaWw6IDEKKiBsdHAtY2FwX2JvdW5k
-cy10ZXN0cyAtIHBhc3M6IDIsCiogbHRwLWNvbnRhaW5lcnMtdGVzdHMgLSBza2lwOiAxNywgcGFz
-czogNjQsCiogbHRwLWN2ZS10ZXN0cyAtIHNraXA6IDgsIHBhc3M6IDI3LAoqIGx0cC1mY250bC1s
-b2NrdGVzdHMtdGVzdHMgLSBwYXNzOiAyLAoqIGx0cC1maWxlY2Fwcy10ZXN0cyAtIHBhc3M6IDIs
-CiogbHRwLWZzLXRlc3RzIC0gc2tpcDogNiwgcGFzczogNjAsCiogbHRwLWZzX2JpbmQtdGVzdHMg
-LSBwYXNzOiAyLAoqIGx0cC1mc19wZXJtc19zaW1wbGUtdGVzdHMgLSBwYXNzOiAxOSwKKiBsdHAt
-ZnN4LXRlc3RzIC0gcGFzczogMiwKKiBsdHAtaHVnZXRsYi10ZXN0cyAtIHNraXA6IDEsIHBhc3M6
-IDIxLAoqIGx0cC1pby10ZXN0cyAtIHBhc3M6IDMsCiogbHRwLWlwYy10ZXN0cyAtIHBhc3M6IDks
-CiogbHRwLW1hdGgtdGVzdHMgLSBwYXNzOiAxMSwKKiBsdHAtbnB0bC10ZXN0cyAtIHBhc3M6IDIs
-CiogbHRwLXB0eS10ZXN0cyAtIHBhc3M6IDQsCiogbHRwLXNjaGVkLXRlc3RzIC0gcGFzczogMTQs
-CiogbHRwLXNlY3VyZWJpdHMtdGVzdHMgLSBwYXNzOiA0LAoqIGx0cC1zeXNjYWxscy10ZXN0cyAt
-IHNraXA6IDEzMSwgcGFzczogMTAxOCwKKiBsdHAtdGltZXJzLXRlc3RzIC0gcGFzczogMTMsCgpo
-aTYyMjAtaGlrZXkgLSBhcm02NAoqIGJvb3QgLSBwYXNzOiAyMSwKKiBrc2VsZnRlc3QgLSBza2lw
-OiAyMiwgcGFzczogNTMsIGZhaWw6IDQKKiBsaWJodWdldGxiZnMgLSBza2lwOiAxLCBwYXNzOiA5
-MCwKKiBsdHAtY2FwX2JvdW5kcy10ZXN0cyAtIHBhc3M6IDIsCiogbHRwLWNvbnRhaW5lcnMtdGVz
-dHMgLSBza2lwOiAxNywgcGFzczogNjQsCiogbHRwLWN2ZS10ZXN0cyAtIHNraXA6IDgsIHBhc3M6
-IDI3LAoqIGx0cC1mY250bC1sb2NrdGVzdHMtdGVzdHMgLSBwYXNzOiAyLAoqIGx0cC1maWxlY2Fw
-cy10ZXN0cyAtIHBhc3M6IDIsCiogbHRwLWZzX2JpbmQtdGVzdHMgLSBwYXNzOiAyLAoqIGx0cC1m
-c19wZXJtc19zaW1wbGUtdGVzdHMgLSBwYXNzOiAxOSwKKiBsdHAtZnN4LXRlc3RzIC0gcGFzczog
-MiwKKiBsdHAtaHVnZXRsYi10ZXN0cyAtIHNraXA6IDEsIHBhc3M6IDIxLAoqIGx0cC1pby10ZXN0
-cyAtIHBhc3M6IDMsCiogbHRwLWlwYy10ZXN0cyAtIHBhc3M6IDksCiogbHRwLW1hdGgtdGVzdHMg
-LSBwYXNzOiAxMSwKKiBsdHAtbnB0bC10ZXN0cyAtIHBhc3M6IDIsCiogbHRwLXB0eS10ZXN0cyAt
-IHBhc3M6IDQsCiogbHRwLXNjaGVkLXRlc3RzIC0gc2tpcDogNCwgcGFzczogMTAsCiogbHRwLXNl
-Y3VyZWJpdHMtdGVzdHMgLSBwYXNzOiA0LAoqIGx0cC1zeXNjYWxscy10ZXN0cyAtIHNraXA6IDEz
-MiwgcGFzczogMTAxNywKKiBsdHAtdGltZXJzLXRlc3RzIC0gcGFzczogMTMsCgpqdW5vLXIyIC0g
-YXJtNjQKKiBib290IC0gcGFzczogMjEsCioga3NlbGZ0ZXN0IC0gc2tpcDogMjQsIHBhc3M6IDUx
-LCBmYWlsOiA1CiogbGliaHVnZXRsYmZzIC0gc2tpcDogMSwgcGFzczogOTAsCiogbHRwLWNhcF9i
-b3VuZHMtdGVzdHMgLSBwYXNzOiAyLAoqIGx0cC1jb250YWluZXJzLXRlc3RzIC0gc2tpcDogMTcs
-IHBhc3M6IDY0LAoqIGx0cC1jdmUtdGVzdHMgLSBza2lwOiA5LCBwYXNzOiAyNiwKKiBsdHAtZmNu
-dGwtbG9ja3Rlc3RzLXRlc3RzIC0gcGFzczogMiwKKiBsdHAtZmlsZWNhcHMtdGVzdHMgLSBwYXNz
-OiAyLAoqIGx0cC1mcy10ZXN0cyAtIHNraXA6IDYsIHBhc3M6IDYwLAoqIGx0cC1mc19iaW5kLXRl
-c3RzIC0gcGFzczogMiwKKiBsdHAtZnNfcGVybXNfc2ltcGxlLXRlc3RzIC0gcGFzczogMTksCiog
-bHRwLWZzeC10ZXN0cyAtIHBhc3M6IDIsCiogbHRwLWh1Z2V0bGItdGVzdHMgLSBwYXNzOiAyMiwK
-KiBsdHAtaW8tdGVzdHMgLSBwYXNzOiAzLAoqIGx0cC1pcGMtdGVzdHMgLSBwYXNzOiA5LAoqIGx0
-cC1tYXRoLXRlc3RzIC0gcGFzczogMTEsCiogbHRwLW5wdGwtdGVzdHMgLSBwYXNzOiAyLAoqIGx0
-cC1wdHktdGVzdHMgLSBwYXNzOiA0LAoqIGx0cC1zY2hlZC10ZXN0cyAtIHNraXA6IDQsIHBhc3M6
-IDEwLAoqIGx0cC1zZWN1cmViaXRzLXRlc3RzIC0gcGFzczogNCwKKiBsdHAtc3lzY2FsbHMtdGVz
-dHMgLSBza2lwOiAxMzEsIHBhc3M6IDEwMTgsCiogbHRwLXRpbWVycy10ZXN0cyAtIHBhc3M6IDEz
-LAoKcWVtdV9hcm0KKiBib290IC0gcGFzczogMjEsCioga3NlbGZ0ZXN0IC0gc2tpcDogMzIsIHBh
-c3M6IDQ1LCBmYWlsOiA4CiogbGliaHVnZXRsYmZzIC0gc2tpcDogMSwgcGFzczogODcsCiogbHRw
-LWNhcF9ib3VuZHMtdGVzdHMgLSBwYXNzOiAyLAoqIGx0cC1jb250YWluZXJzLXRlc3RzIC0gc2tp
-cDogMTgsIHBhc3M6IDYzLAoqIGx0cC1jdmUtdGVzdHMgLSBza2lwOiAxMiwgcGFzczogMjMsCiog
-bHRwLWZjbnRsLWxvY2t0ZXN0cy10ZXN0cyAtIHBhc3M6IDIsCiogbHRwLWZpbGVjYXBzLXRlc3Rz
-IC0gcGFzczogMiwKKiBsdHAtZnMtdGVzdHMgLSBza2lwOiA1LCBwYXNzOiA2MSwKKiBsdHAtZnNf
-YmluZC10ZXN0cyAtIHBhc3M6IDIsCiogbHRwLWZzX3Blcm1zX3NpbXBsZS10ZXN0cyAtIHBhc3M6
-IDE5LAoqIGx0cC1mc3gtdGVzdHMgLSBwYXNzOiAyLAoqIGx0cC1odWdldGxiLXRlc3RzIC0gc2tp
-cDogMSwgcGFzczogMjEsCiogbHRwLWlvLXRlc3RzIC0gcGFzczogMywKKiBsdHAtaXBjLXRlc3Rz
-IC0gcGFzczogOSwKKiBsdHAtbWF0aC10ZXN0cyAtIHBhc3M6IDExLAoqIGx0cC1ucHRsLXRlc3Rz
-IC0gcGFzczogMiwKKiBsdHAtcHR5LXRlc3RzIC0gcGFzczogNCwKKiBsdHAtc2NoZWQtdGVzdHMg
-LSBza2lwOiA3LCBwYXNzOiA3LAoqIGx0cC1zZWN1cmViaXRzLXRlc3RzIC0gcGFzczogNCwKKiBs
-dHAtc3lzY2FsbHMtdGVzdHMgLSBza2lwOiA5NCwgcGFzczogMTA1MiwgZmFpbDogMwoqIGx0cC10
-aW1lcnMtdGVzdHMgLSBwYXNzOiAxMywKCnFlbXVfYXJtNjQKKiBib290IC0gcGFzczogMjAsIGZh
-aWw6IDEKKiBrc2VsZnRlc3QgLSBza2lwOiAzMCwgcGFzczogNTIsIGZhaWw6IDUKKiBsaWJodWdl
-dGxiZnMgLSBza2lwOiAxLCBwYXNzOiA5MCwKKiBsdHAtY2FwX2JvdW5kcy10ZXN0cyAtIHBhc3M6
-IDIsCiogbHRwLWNvbnRhaW5lcnMtdGVzdHMgLSBza2lwOiAxNywgcGFzczogNjQsCiogbHRwLWN2
-ZS10ZXN0cyAtIHNraXA6IDEwLCBwYXNzOiAyNSwKKiBsdHAtZmlsZWNhcHMtdGVzdHMgLSBwYXNz
-OiAyLAoqIGx0cC1mcy10ZXN0cyAtIHNraXA6IDYsIHBhc3M6IDYwLAoqIGx0cC1mc19iaW5kLXRl
-c3RzIC0gcGFzczogMiwKKiBsdHAtZnNfcGVybXNfc2ltcGxlLXRlc3RzIC0gcGFzczogMTksCiog
-bHRwLWZzeC10ZXN0cyAtIHBhc3M6IDIsCiogbHRwLWh1Z2V0bGItdGVzdHMgLSBwYXNzOiAyMiwK
-KiBsdHAtaW8tdGVzdHMgLSBwYXNzOiAzLAoqIGx0cC1pcGMtdGVzdHMgLSBwYXNzOiA5LAoqIGx0
-cC1tYXRoLXRlc3RzIC0gcGFzczogMTEsCiogbHRwLW5wdGwtdGVzdHMgLSBwYXNzOiAyLAoqIGx0
-cC1wdHktdGVzdHMgLSBwYXNzOiA0LAoqIGx0cC1zY2hlZC10ZXN0cyAtIHNraXA6IDYsIHBhc3M6
-IDgsCiogbHRwLXNlY3VyZWJpdHMtdGVzdHMgLSBwYXNzOiA0LAoqIGx0cC1zeXNjYWxscy10ZXN0
-cyAtIHNraXA6IDE1NCwgcGFzczogOTk1LAoqIGx0cC10aW1lcnMtdGVzdHMgLSBwYXNzOiAxMywK
-CnFlbXVfeDg2XzY0CiogYm9vdCAtIHBhc3M6IDIxLAoqIGtzZWxmdGVzdCAtIHNraXA6IDMwLCBw
-YXNzOiA2NywgZmFpbDogMwoqIGxpYmh1Z2V0bGJmcyAtIHNraXA6IDEsIHBhc3M6IDkwLAoqIGx0
-cC1jYXBfYm91bmRzLXRlc3RzIC0gcGFzczogMiwKKiBsdHAtY29udGFpbmVycy10ZXN0cyAtIHNr
-aXA6IDE3LCBwYXNzOiA2NCwKKiBsdHAtY3ZlLXRlc3RzIC0gc2tpcDogNCwgcGFzczogMzEsCiog
-bHRwLWZjbnRsLWxvY2t0ZXN0cy10ZXN0cyAtIHBhc3M6IDIsCiogbHRwLWZpbGVjYXBzLXRlc3Rz
-IC0gcGFzczogMiwKKiBsdHAtZnMtdGVzdHMgLSBza2lwOiA2LCBwYXNzOiA2MCwKKiBsdHAtZnNf
-YmluZC10ZXN0cyAtIHBhc3M6IDIsCiogbHRwLWZzX3Blcm1zX3NpbXBsZS10ZXN0cyAtIHBhc3M6
-IDE5LAoqIGx0cC1mc3gtdGVzdHMgLSBwYXNzOiAyLAoqIGx0cC1odWdldGxiLXRlc3RzIC0gcGFz
-czogMjIsCiogbHRwLWlvLXRlc3RzIC0gcGFzczogMywKKiBsdHAtaXBjLXRlc3RzIC0gcGFzczog
-OSwKKiBsdHAtbWF0aC10ZXN0cyAtIHBhc3M6IDExLAoqIGx0cC1ucHRsLXRlc3RzIC0gcGFzczog
-MiwKKiBsdHAtcHR5LXRlc3RzIC0gcGFzczogNCwKKiBsdHAtc2NoZWQtdGVzdHMgLSBza2lwOiAx
-LCBwYXNzOiAxMywKKiBsdHAtc2VjdXJlYml0cy10ZXN0cyAtIHBhc3M6IDQsCiogbHRwLXN5c2Nh
-bGxzLXRlc3RzIC0gc2tpcDogMTUyLCBwYXNzOiA5OTcsCiogbHRwLXRpbWVycy10ZXN0cyAtIHBh
-c3M6IDEzLAoKeDE1IC0gYXJtCiogYm9vdCAtIHBhc3M6IDIxLAoqIGtzZWxmdGVzdCAtIHNraXA6
-IDI5LCBwYXNzOiA0NywgZmFpbDogOAoqIGxpYmh1Z2V0bGJmcyAtIHNraXA6IDEsIHBhc3M6IDg3
-LAoqIGx0cC1jYXBfYm91bmRzLXRlc3RzIC0gcGFzczogMiwKKiBsdHAtY29udGFpbmVycy10ZXN0
-cyAtIHNraXA6IDE4LCBwYXNzOiA2MywKKiBsdHAtY3ZlLXRlc3RzIC0gc2tpcDogMTAsIHBhc3M6
-IDI1LAoqIGx0cC1mY250bC1sb2NrdGVzdHMtdGVzdHMgLSBwYXNzOiAyLAoqIGx0cC1maWxlY2Fw
-cy10ZXN0cyAtIHBhc3M6IDIsCiogbHRwLWZzLXRlc3RzIC0gc2tpcDogNSwgcGFzczogNjEsCiog
-bHRwLWZzX2JpbmQtdGVzdHMgLSBwYXNzOiAyLAoqIGx0cC1mc19wZXJtc19zaW1wbGUtdGVzdHMg
-LSBwYXNzOiAxOSwKKiBsdHAtZnN4LXRlc3RzIC0gcGFzczogMiwKKiBsdHAtaHVnZXRsYi10ZXN0
-cyAtIHNraXA6IDIsIHBhc3M6IDIwLAoqIGx0cC1pby10ZXN0cyAtIHBhc3M6IDMsCiogbHRwLWlw
-Yy10ZXN0cyAtIHBhc3M6IDksCiogbHRwLW1hdGgtdGVzdHMgLSBwYXNzOiAxMSwKKiBsdHAtbnB0
-bC10ZXN0cyAtIHBhc3M6IDIsCiogbHRwLXB0eS10ZXN0cyAtIHBhc3M6IDQsCiogbHRwLXNjaGVk
-LXRlc3RzIC0gc2tpcDogMSwgcGFzczogMTMsCiogbHRwLXNlY3VyZWJpdHMtdGVzdHMgLSBwYXNz
-OiA0LAoqIGx0cC1zeXNjYWxscy10ZXN0cyAtIHNraXA6IDc2LCBwYXNzOiAxMDczLAoqIGx0cC10
-aW1lcnMtdGVzdHMgLSBwYXNzOiAxMywKCng4Nl82NAoqIGJvb3QgLSBwYXNzOiAyMywKKiBrc2Vs
-ZnRlc3QgLSBza2lwOiAyNSwgcGFzczogNjYsIGZhaWw6IDIKKiBrc2VsZnRlc3QtdnN5c2NhbGwt
-bW9kZS1uYXRpdmUgLSBza2lwOiAyNSwgcGFzczogNjcsIGZhaWw6IDMKKiBrc2VsZnRlc3QtdnN5
-c2NhbGwtbW9kZS1ub25lIC0gc2tpcDogMjUsIHBhc3M6IDY1LCBmYWlsOiAzCiogbGliaHVnZXRs
-YmZzIC0gc2tpcDogMSwgcGFzczogOTAsCiogbHRwLWNhcF9ib3VuZHMtdGVzdHMgLSBwYXNzOiAy
-LAoqIGx0cC1jb250YWluZXJzLXRlc3RzIC0gc2tpcDogMTcsIHBhc3M6IDY0LAoqIGx0cC1jdmUt
-dGVzdHMgLSBza2lwOiA1LCBwYXNzOiAyOCwgZmFpbDogMgoqIGx0cC1mY250bC1sb2NrdGVzdHMt
-dGVzdHMgLSBwYXNzOiAyLAoqIGx0cC1maWxlY2Fwcy10ZXN0cyAtIHBhc3M6IDIsCiogbHRwLWZz
-LXRlc3RzIC0gc2tpcDogNSwgcGFzczogNjEsCiogbHRwLWZzX2JpbmQtdGVzdHMgLSBwYXNzOiAy
-LAoqIGx0cC1mc19wZXJtc19zaW1wbGUtdGVzdHMgLSBwYXNzOiAxOSwKKiBsdHAtZnN4LXRlc3Rz
-IC0gcGFzczogMiwKKiBsdHAtaHVnZXRsYi10ZXN0cyAtIHBhc3M6IDIyLAoqIGx0cC1pby10ZXN0
-cyAtIHBhc3M6IDMsCiogbHRwLWlwYy10ZXN0cyAtIHBhc3M6IDksCiogbHRwLW1hdGgtdGVzdHMg
-LSBwYXNzOiAxMSwKKiBsdHAtbnB0bC10ZXN0cyAtIHBhc3M6IDIsCiogbHRwLXB0eS10ZXN0cyAt
-IHBhc3M6IDQsCiogbHRwLXNjaGVkLXRlc3RzIC0gc2tpcDogNSwgcGFzczogOSwKKiBsdHAtc2Vj
-dXJlYml0cy10ZXN0cyAtIHBhc3M6IDQsCiogbHRwLXN5c2NhbGxzLXRlc3RzIC0gc2tpcDogMTE2
-LCBwYXNzOiAxMDMzLAoqIGx0cC10aW1lcnMtdGVzdHMgLSBwYXNzOiAxMywKCi0tIApMaW5hcm8g
-UUEgKEJFVEEpCmh0dHBzOi8vcWEtcmVwb3J0cy5saW5hcm8ub3JnCg==
+On Thu, Jun 14, 2018 at 9:47 PM, Li Wang <liwang@redhat.com> wrote:
+> On Thu, Jun 14, 2018 at 8:48 PM, Jan Stancek <jstancek@redhat.com> wrote:
+>> Fixes: https://github.com/linux-test-project/ltp/issues/330
+>>
+>> EACCES testcase changed:
+>> Test now creates file (0600) in tmpdir, that is owned by privileged user,
+>> and unprivileged user tries to open it for writing.
+>>
+>> EFAULT testcase changed:
+>> Comments say the intent is to use address outside of process mapped space.
+>> So, test is changed to map/unmap rather than map as PROT_NONE.
+>>
+>> uclinux ifdefs dropped.
+>>
+>> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+>> ---
+>>  testcases/kernel/syscalls/open/open08.c | 140 +++++++++++++-------------------
+>>  1 file changed, 58 insertions(+), 82 deletions(-)
+>>
+>> diff --git a/testcases/kernel/syscalls/open/open08.c b/testcases/kernel/syscalls/open/open08.c
+>> index d55d8e6bdd53..d749d1e7100e 100644
+>> --- a/testcases/kernel/syscalls/open/open08.c
+>> +++ b/testcases/kernel/syscalls/open/open08.c
+>> @@ -1,5 +1,6 @@
+>>  /*
+>>   *   Copyright (c) 2013 Wanlong Gao <gaowanlong@cn.fujitsu.com>
+>> + *   Copyright (c) 2018 Linux Test Project
+>>   *
+>>   *   This program is free software;  you can redistribute it and/or modify
+>>   *   it under the terms of the GNU General Public License as published by
+>> @@ -39,7 +40,7 @@
+>>   *     4. Attempt to open() a filename which is more than VFS_MAXNAMLEN, and
+>>   *        check for errno to be ENAMETOOLONG.
+>>   *
+>> - *     5. Attempt to open a test executable in WRONLY mode,
+>> + *     5. Attempt to open a (0600) file owned by different user in WRONLY mode,
+>>   *        open(2) should fail with EACCES.
+>>   *
+>>   *     6. Attempt to pass an invalid pathname with an address pointing outside
+>> @@ -56,113 +57,88 @@
+>>  #include <fcntl.h>
+>>  #include <signal.h>
+>>  #include <pwd.h>
+>> -#include "test.h"
+>> -#include "safe_macros.h"
+>> -
+>> -static void setup(void);
+>> -static void cleanup(void);
+>> -
+>> -char *TCID = "open08";
+>> -
+>> -static char nobody_uid[] = "nobody";
+>> -static struct passwd *ltpuser;
+>> -
+>> -static char *bad_addr;
+>> +#include "tst_test.h"
+>>
+>>  static char filename[40] = "";
+>> -static char fname[] = "/bin/cat";
+>> +static char user2_file[] = "user2_0600";
+>>  static char bad_file[] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyz";
+>>
+>> +struct test_case_t;
+>> +static void setup_badfname_buf(struct test_case_t *t);
+>> +
+>>  static struct test_case_t {
+>> +       void (*setup)(struct test_case_t *t);
+>
+> This function pointer named setup make me a little bit confused at first sight.
+> It makes me thinking about what's the relationship to ltp steup()
+> function for a while, actually it does not have.
+>
+> To avoid the situation to other person, how about just using
+>    void (*func) (struct test_case_t *t);
+> here?
+
+Or, maybe we could drop the func pointer in the test structure, and
+reset the badfname only in verify_open(). It's hard to say which
+method is better, but seems this can make things more easier I guess.
+
+Which something differ with your patch too:
+
+--- a/testcases/kernel/syscalls/open/open08.c
++++ b/testcases/kernel/syscalls/open/open08.c
+@@ -63,27 +63,30 @@ static char filename[40] = "";
+ static char user2_file[] = "user2_0600";
+ static char bad_file[] =
+"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyz";
+
+-struct test_case_t;
+-static void setup_badfname_buf(struct test_case_t *t);
+-
+ static struct test_case_t {
+-    void (*setup)(struct test_case_t *t);
+     char *fname;
+     int flags;
+     int error;
+ } tcases[] = {
+-    {NULL, filename, O_CREAT | O_EXCL, EEXIST},
+-    {NULL, "/tmp", O_RDWR, EISDIR},
+-    {NULL, filename, O_DIRECTORY, ENOTDIR},
+-    {NULL, bad_file, O_RDWR, ENAMETOOLONG},
+-    {NULL, user2_file, O_WRONLY, EACCES},
+-    {setup_badfname_buf, NULL, O_CREAT, EFAULT}
++    {filename, O_CREAT | O_EXCL, EEXIST},
++    {"/tmp", O_RDWR, EISDIR},
++    {filename, O_DIRECTORY, ENOTDIR},
++    {bad_file, O_RDWR, ENAMETOOLONG},
++    {user2_file, O_WRONLY, EACCES},
++    {NULL, O_CREAT, EFAULT}
+ };
+
+ void verify_open(unsigned int i)
+ {
+-    if (tcases[i].setup)
+-        tcases[i].setup(&tcases[i]);
++    if (i == ARRAY_SIZE(tcases) - 1) {
++        char *bad_addr;
++        int len = getpagesize();
++
++        bad_addr = SAFE_MMAP(0, len, PROT_READ|PROT_WRITE,
++                MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
++        tcases[i].fname = bad_addr;
++        SAFE_MUNMAP(bad_addr, len);
++    }
+
+     TEST(open(tcases[i].fname, tcases[i].flags,
+         S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH));
+@@ -104,17 +107,6 @@ void verify_open(unsigned int i)
+     }
+ }
+
+-static void setup_badfname_buf(struct test_case_t *t)
+-{
+-    char *bad_addr;
+-    int len = getpagesize();
+-
+-    bad_addr = SAFE_MMAP(0, len, PROT_READ|PROT_WRITE,
+-        MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+-    t->fname = bad_addr;
+-    SAFE_MUNMAP(bad_addr, len);
+-}
+-
+ static void setup(void)
+ {
+     int fildes;
+
+
+
+-- 
+Regards,
+Li Wang
