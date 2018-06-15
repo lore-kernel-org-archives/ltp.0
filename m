@@ -1,231 +1,89 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 15 Jun 2018 13:11:58 +0200
-Subject: [LTP] [bug?] mutual exclusion between posix and OFD locks
-Message-ID: <20180615111158.GA536@dustball.usersys.redhat.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Fri, 15 Jun 2018 14:55:12 +0200
+Subject: [LTP] [PATCH] testcases: cve-2014-0196: Set attempts according
+	to nb of cpus
+In-Reply-To: <20180615080810.9814-1-mylene.josserand@bootlin.com>
+References: <20180615080810.9814-1-mylene.josserand@bootlin.com>
+Message-ID: <877en0i4zz.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi,
+Hello,
 
-Attached is simplified reproducer (LTP fcntl36), where
-2 threads try to lock same region in a file. One is
-using posix write lock, the other OFD read lock.
+Mylène Josserand writes:
 
-Observed problem: 2 threads obtain lock simultaneously.
+> This test tries to cause a buffer overflow by doing 0x7000
+> attempts. In a slow system platform, it leads to a failure
+> because of the timeout even when it is configured with
+> LTP_TIMEOUT_MUL=10.
+>
+> This commit adds a way to configure the number of attempts
+> according to the number of CPUs.
+> In case of 1 CPU and a slow platform, using 0x2000 attempts
+> with a LTP_TIMEOUT_MUL=2 make the test pass.
+>
+> Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
+> ---
+>
+> Hello,
+>
+> This is a way to fix the issue I got but let me know
+> what you think of it. There is maybe a better way to
+> handle that.
 
---- strace excerpt ---
-[pid 16853] 06:57:11 openat(AT_FDCWD, "tst_ofd_posix_locks", O_RDWR) = 3
-[pid 16854] 06:57:11 openat(AT_FDCWD, "tst_ofd_posix_locks", O_RDWR) = 4
-...
-[pid 16853] 06:57:12 fcntl(3, F_SETLKW, {l_type=F_WRLCK, l_whence=SEEK_SET, l_start=0, l_len=4096} <unfinished ...>
-[pid 16854] 06:57:12 fcntl(4, F_OFD_SETLKW, {l_type=F_RDLCK, l_whence=SEEK_SET, l_start=0, l_len=4096} <unfinished ...>
-[pid 16853] 06:57:12 <... fcntl resumed> ) = 0
-[pid 16853] 06:57:12 nanosleep({tv_sec=0, tv_nsec=100000},  <unfinished ...>
-[pid 16854] 06:57:12 <... fcntl resumed> ) = 0
---- /strace excerpt ---
+Another way would be to measure the time a few iterations take and limit
+the number of attempts based on that. We should perhaps add that as a
+feature to the fuzzy sync library.
 
-fcntl(2) says:
-  Conflicting lock combinations (i.e., a read lock and a write
-  lock or two write locks) where one lock is an open file
-  description lock and the other is a traditional record lock
-  conflict even when they are acquired by the same process on
-  the same file descriptor.
+>
+> Thank you,
+> Mylène
+>
+>  testcases/cve/cve-2014-0196.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/testcases/cve/cve-2014-0196.c b/testcases/cve/cve-2014-0196.c
+> index d18108897..898da1073 100644
+> --- a/testcases/cve/cve-2014-0196.c
+> +++ b/testcases/cve/cve-2014-0196.c
+> @@ -48,7 +48,7 @@
+>
+>  #define ONEOFF_ALLOCS 200
+>  #define RUN_ALLOCS    30
+> -#define ATTEMPTS      0x7000
+> +#define ATTEMPTS      0x2000
+>  #define BUFLEN        512
+>
+>  static volatile int master_fd, slave_fd;
+> @@ -98,11 +98,14 @@ static void *overwrite_thread_fn(void *p LTP_ATTRIBUTE_UNUSED)
+>  static void run(void)
+>  {
+>  	struct termios t;
+> -	int i, j;
+> +	int i, j, total_cpus;
+>
+> -	tst_res(TINFO, "Attempting to overflow into a tty_struct...");
+> +	total_cpus = tst_ncpus();
 
-Reproducible on x86_64 VM, with v4.17-11782-gbe779f03d563.
+This needs to be limited to about 4, otherwise systems with lots of slow
+CPU's will timeout (I have seen a few machines with 100+ slow cores).
 
-Thanks for having a look,
-Jan
+>
+> -	for (i = 0; i < ATTEMPTS; i++) {
+> +	tst_res(TINFO, "Attempting to overflow into a tty_struct during %x attempts...",
+> +		ATTEMPTS * total_cpus);
+> +
+> +	for (i = 0; i < ATTEMPTS * total_cpus; i++) {
+>  		create_pty((int *)&master_fd, (int *)&slave_fd);
+>
+>  		for (j = 0; j < RUN_ALLOCS; j++)
+> --
+> 2.11.0
 
--------------- next part --------------
-/*
- * Based on LTP's fcntl36.
- *
- * gcc -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -pthread -g3 ofd_vs_posix.c
- *
- * Pairs of threads are trying to lock 4k regions in a file.
- * Each pair locks same region. One thread with traditional
- * record lock for writing, and other thread OFD for reading.
- *
- * According to man page:
- *   Conflicting lock combinations (i.e., a read lock and a
- *   write lock or two write locks) where one lock is an open
- *   file description lock and the other is a traditional record
- *   lock conflict even when they are acquired by the same process
- *   on the same file descriptor.
- *
- * Each thread pair shares a mutex. After fcntl() returns
- * one thread locks the mutex and the other one tries to
- * lock the mutex as well.
- *
- * Assumption is that if fcntl() provides mutual exclusion
- * to same file region, then mutex should never be observed
- * as locked by other thread.
- *
- * FILE
- * +--------+--------+-------+----...
- * |  4k    |   4k   |   4k  |    ...
- * +--------+--------+-------+----...
- *   t1[0]             t1[1]      ...
- *   t2[0]             t2[1]      ...
- *   mutex[0]          mutex[1]   ...
- *
- * t1 - posix write lock - fn_posix_w()
- * t2 - ofd read lock - fn_ofd_r()
- *
- */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
-#include <sched.h>
-#include <errno.h>
-#include <string.h>
-#include <syscall.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-
-#define SAFE_FUNC(op) \
-({ \
-        int ret = (op); \
-        if (ret == -1) { \
-                printf("Test %s unresolved: got %i (%s) on line %i\n  %s\n", \
-                        __FILE__, ret, strerror(errno), __LINE__, #op); \
-                fflush(stdout); \
-                exit(1); \
-        } \
-        ret; \
-})
-
-#define SAFE_PFUNC(op) \
-do {\
-        int ret = (op); \
-        if (ret != 0) { \
-                printf("Test %s unresolved: got %i (%s) on line %i\n  %s\n", \
-                        __FILE__, ret, strerror(ret), __LINE__, #op); \
-                fflush(stdout); \
-                exit(1); \
-        } \
-} while (0)
-
-#define THREAD_PAIRS 3
-#define write_size 4096
-
-static volatile int loop_flag = 1;
-static const char fname[] = "tst_ofd_posix_locks";
-pthread_mutex_t mutex[THREAD_PAIRS];
-
-struct param {
-	long offset;
-	long length;
-	long id;
-};
-
-#define USE_SLEEP 1
-
-/* POSIX write lock writing data*/
-static void *fn_posix_w(void *arg)
-{
-	struct param *pa = arg;
-	int fd = SAFE_FUNC(open(fname, O_RDWR));
-
-	struct flock64 lck = {
-		.l_whence = SEEK_SET,
-		.l_start  = pa->offset,
-		.l_len    = pa->length,
-	};
-
-	while (loop_flag) {
-		lck.l_type = F_WRLCK;
-		SAFE_FUNC(fcntl(fd, F_SETLKW, &lck));
-
-		SAFE_PFUNC(pthread_mutex_lock(&mutex[pa->id]));
-		usleep(100);
-		SAFE_PFUNC(pthread_mutex_unlock(&mutex[pa->id]));
-
-		lck.l_type = F_UNLCK;
-		SAFE_FUNC(fcntl(fd, F_SETLK, &lck));
-	}
-
-	close(fd);
-	return NULL;
-}
-
-/* OFD read lock reading data*/
-static void *fn_ofd_r(void *arg)
-{
-	struct param *pa = arg;
-	int ret;
-	int fd = SAFE_FUNC(open(fname, O_RDWR));
-
-	struct flock64 lck = {
-		.l_whence = SEEK_SET,
-		.l_start  = pa->offset,
-		.l_len    = pa->length,
-		.l_pid    = 0,
-	};
-
-	while (loop_flag) {
-		lck.l_type = F_RDLCK;
-		SAFE_FUNC(fcntl(fd, F_OFD_SETLKW, &lck));
-
-		ret = pthread_mutex_trylock(&mutex[pa->id]);
-		if (ret == 0) 
-			SAFE_PFUNC(pthread_mutex_unlock(&mutex[pa->id]));
-		if (ret == EBUSY) {
-			printf("(%d) Why is mutex %d locked?\n", syscall(__NR_gettid), pa->id);
-			fflush(stdout);
-			_exit(1);
-		}
-
-		lck.l_type = F_UNLCK;
-		SAFE_FUNC(fcntl(fd, F_OFD_SETLK, &lck));
-	}
-
-	close(fd);
-	return NULL;
-}
-
-void do_threads(void)
-{
-	pthread_t t1[THREAD_PAIRS], t2[THREAD_PAIRS];
-	struct param p[THREAD_PAIRS];
-	int i;
-
-	for (i = 0; i < THREAD_PAIRS; i++) {
-		p[i].id = i;
-		p[i].offset = i * write_size * 2;
-		p[i].length = write_size;
-
-		SAFE_PFUNC(pthread_mutex_init(&mutex[i], NULL));
-
-		SAFE_PFUNC(pthread_create(&t1[i], NULL, fn_posix_w, (void *)&p[i]));
-		SAFE_PFUNC(pthread_create(&t2[i], NULL, fn_ofd_r, (void *)&p[i]));
-	}
-	
-	sleep(1);
-	loop_flag = 0;
-	
-	for (i = 0; i < THREAD_PAIRS; i++) {
-		SAFE_PFUNC(pthread_join(t1[i], NULL));
-		SAFE_PFUNC(pthread_join(t2[i], NULL));
-	}
-}
-
-int main(void)
-{
-	char buf[write_size * THREAD_PAIRS * 2] = { 0x22 };
-	int fd = SAFE_FUNC(open(fname, O_CREAT|O_WRONLY, S_IRWXU));
-
-	SAFE_FUNC(write(fd, buf, sizeof(buf)));
-	close(fd);
-
-	do_threads();
-
-	return 0;
-}
-
+--
+Thank you,
+Richard.
