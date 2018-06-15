@@ -1,76 +1,60 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 15 Jun 2018 19:22:18 +0200
+From: Rafael Tinoco <rafael.tinoco@linaro.org>
+Date: Fri, 15 Jun 2018 15:27:37 -0300
 Subject: [LTP] [PATCH] fcntl36: fix 32-bit sporadic failures
-Message-ID: <8b5ddc69aae83b332b205dbeddb3284ab00f827e.1529082112.git.jstancek@redhat.com>
+In-Reply-To: <8b5ddc69aae83b332b205dbeddb3284ab00f827e.1529082112.git.jstancek@redhat.com>
+References: <8b5ddc69aae83b332b205dbeddb3284ab00f827e.1529082112.git.jstancek@redhat.com>
+Message-ID: <CADtBP2CCPTXgy7QhESn-qMUv2wSM+xpEksMT1hWwfcFvk50HqA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-fcntl36 testcase has been observed to sporadically fail, when
-running 32-bit user-space on 64-bit kernel.
+Jan,
 
-Strace shows that region length is 0 for some commands:
-  fcntl64(6, F_SETLK, {l_type=F_UNLCK, l_whence=SEEK_SET, l_start=5120, l_len=0}
+Running in a container, armhf userland, with arm64 kernel (real HW: hikey):
 
-This is because testcase is passing struct flock64, but
-command is F_SETLK, not F_SETLK64.
+$ uname -a
+Linux ltpfcntl36 4.16.0-2-arm64 #1 SMP Debian 4.16.12-1 (2018-05-27)
+armv8l GNU/Linux
 
-So, kernel treats argument for POSIX command as 32-bit "struct flock":
+$ file ./fcntl36
+./fcntl36: ELF 32-bit LSB pie executable ARM, EABI5 version 1 (SYSV),
+dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for
+GNU/Linux 3.2.0,
+BuildID[sha1]=074ba3622d50f62108260d2912ae5dc0e8d52d46, with
+debug_info, not stripped
 
-  static long do_compat_fcntl64(unsigned int fd, unsigned int cmd,
-  ...
-        case F_SETLK:
-        case F_SETLKW:
-                err = get_compat_flock(&flock, compat_ptr(arg));
-		...
+My un-patched binary shows me:
 
-in contrast to F_OFD_* commands, where argument  is treated
-as "struct flock64":
-        case F_SETLK64:
-        case F_SETLKW64:
-        case F_OFD_SETLK:
-        case F_OFD_SETLKW:
-                err = get_compat_flock64(&flock, compat_ptr(arg));
-		...
+[pid  3501] fcntl64(11, F_OFD_SETLK, {l_type=F_UNLCK,
+l_whence=SEEK_SET, l_start=16384, l_len=4096} <unfinished ...>
 
-Switch argument of POSIX commands to 'struct flock' and leave it to
-glibc to pick correct syscall and command.
+no F_SETLK for this binary.
 
-I tested fcntl36 and fcntl36_64 on x86_64 kernel (as 64bit + 32bit binary)
-and i386 kernel by running 100 iterations.
+Running in a container, arm64 userland, with arm64 kernel (real HW: hikey):
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
-No kernel bug, problem was found in my reproducer.
-Can anyone confirm this fixes 32-bit arm too?
+$ file ./fcntl36
+./fcntl36: ELF 64-bit LSB pie executable ARM aarch64, version 1
+(SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1,
+for GNU/Linux 3.7.0,
+BuildID[sha1]=8fb1d0e0e0d027fce5c8d11742ce5bdb7678749b, with
+debug_info, not stripped
 
- testcases/kernel/syscalls/fcntl/fcntl36.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Same un-patched binary shows me:
 
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl36.c b/testcases/kernel/syscalls/fcntl/fcntl36.c
-index 3246d13892cd..81bd5a647e4c 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl36.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl36.c
-@@ -127,7 +127,7 @@ static void *fn_posix_w(void *arg)
- 	int fd = SAFE_OPEN(fname, O_RDWR);
- 	long wt = pa->cnt;
- 
--	struct flock64 lck = {
-+	struct flock lck = {
- 		.l_whence = SEEK_SET,
- 		.l_start  = pa->offset,
- 		.l_len    = pa->length,
-@@ -227,7 +227,7 @@ static void *fn_posix_r(void *arg)
- 	int i;
- 	int fd = SAFE_OPEN(fname, O_RDWR);
- 
--	struct flock64 lck = {
-+	struct flock lck = {
- 		.l_whence = SEEK_SET,
- 		.l_start  = pa->offset,
- 		.l_len    = pa->length,
--- 
-1.8.3.1
+[pid   483] fcntl(10, F_OFD_SETLKW, {l_type=F_UNLCK,
+l_whence=SEEK_SET, l_start=13312, l_len=4096} <unfinished ...>
 
+Do you want me to test patched LTP in arm32/64 to make sure they work
+and you check if it fixes the issue for i686 on your side ? Or should
+I compile it some other way ?
+
+Let me know what you need.
+
+Rafael
+
+On 15 June 2018 at 14:22, Jan Stancek <jstancek@redhat.com> wrote:
+
+> No kernel bug, problem was found in my reproducer.
+> Can anyone confirm this fixes 32-bit arm too?
