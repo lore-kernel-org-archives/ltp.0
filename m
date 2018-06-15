@@ -1,60 +1,70 @@
-From: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
-Date: Fri, 15 Jun 2018 14:25:19 +0800
-Subject: [LTP] [PATCH v2] change type of variable to fix compile warning
-In-Reply-To: <20180615061812.gto4adrda4hdm2dp@dell5510>
-References: <20180609030106.3927-1-sunlw.fnst@cn.fujitsu.com>
- <20180615061812.gto4adrda4hdm2dp@dell5510>
-Message-ID: <1da33036-6912-ccc2-b319-3a7e3c6684e4@cn.fujitsu.com>
+From: =?unknown-8bit?q?Myl=C3=A8ne?= Josserand <mylene.josserand@bootlin.com>
+Date: Fri, 15 Jun 2018 10:08:10 +0200
+Subject: [LTP] [PATCH] testcases: cve-2014-0196: Set attempts according to
+	nb of cpus
+Message-ID: <20180615080810.9814-1-mylene.josserand@bootlin.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+This test tries to cause a buffer overflow by doing 0x7000
+attempts. In a slow system platform, it leads to a failure
+because of the timeout even when it is configured with
+LTP_TIMEOUT_MUL=10.
 
-On 06/15/2018 02:18 PM, Petr Vorel wrote:
-> Hi Sun,
-> 
->> Change the type of variable from int to unsigned intto fix complie 
->> warning: "comparison between signed and unsigned integer expressions [-Wsign-compare]"
-> 
->> Signed-off-by: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
-> 
-> You left some of the comparison warnings, can you please fix them?
-Thanks your advise, I will fix the left comparison warnings.
-> move_pages_support.c: In function ‘alloc_pages_on_nodes’:
-> move_pages_support.c:70:16: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
->   for (i = 0; i < num; i++) {
->                 ^
-> move_pages_support.c:74:16: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
->   for (i = 0; i < num; i++) {
->                 ^
-> move_pages_support.c:91:8: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
->   if (i == num)
->         ^~
-> symlink01.c: In function ‘get_tcs_info’:
-> symlink01.c:601:20: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
->   for (ctr = 0; ctr < (sizeof(all_tcses) / sizeof(struct tcses)); ctr++) {
->                     ^
-> 
-> ebizzy.c: In function ‘thread_run’:
-> ebizzy.c:424:31: warning: unused parameter ‘arg’ [-Wunused-parameter]
->  static void *thread_run(void *arg)
-> This one can be fixed with LTP_ATTRIBUTE_UNUSED
-> +#include "tst_common.h"
->                                ^~~
-> -static void *thread_run(void *arg)
-> +static void *thread_run(void *arg LTP_ATTRIBUTE_UNUSED)
-> 
-> 
-> Kind regards,
-> Petr
-> 
-> 
-> .
-> 
-Thanks
-Sun Lianwen
+This commit adds a way to configure the number of attempts
+according to the number of CPUs.
+In case of 1 CPU and a slow platform, using 0x2000 attempts
+with a LTP_TIMEOUT_MUL=2 make the test pass.
 
+Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
+---
+
+Hello,
+
+This is a way to fix the issue I got but let me know
+what you think of it. There is maybe a better way to
+handle that.
+
+Thank you,
+Mylène
+
+ testcases/cve/cve-2014-0196.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/cve/cve-2014-0196.c b/testcases/cve/cve-2014-0196.c
+index d18108897..898da1073 100644
+--- a/testcases/cve/cve-2014-0196.c
++++ b/testcases/cve/cve-2014-0196.c
+@@ -48,7 +48,7 @@
+ 
+ #define ONEOFF_ALLOCS 200
+ #define RUN_ALLOCS    30
+-#define ATTEMPTS      0x7000
++#define ATTEMPTS      0x2000
+ #define BUFLEN        512
+ 
+ static volatile int master_fd, slave_fd;
+@@ -98,11 +98,14 @@ static void *overwrite_thread_fn(void *p LTP_ATTRIBUTE_UNUSED)
+ static void run(void)
+ {
+ 	struct termios t;
+-	int i, j;
++	int i, j, total_cpus;
+ 
+-	tst_res(TINFO, "Attempting to overflow into a tty_struct...");
++	total_cpus = tst_ncpus();
+ 
+-	for (i = 0; i < ATTEMPTS; i++) {
++	tst_res(TINFO, "Attempting to overflow into a tty_struct during %x attempts...",
++		ATTEMPTS * total_cpus);
++
++	for (i = 0; i < ATTEMPTS * total_cpus; i++) {
+ 		create_pty((int *)&master_fd, (int *)&slave_fd);
+ 
+ 		for (j = 0; j < RUN_ALLOCS; j++)
+-- 
+2.11.0
 
