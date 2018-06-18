@@ -1,66 +1,80 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 18 Jun 2018 17:29:17 +0300
-Subject: [LTP] [PATCH 3/3] net/icmp: Unify log info messages
-In-Reply-To: <20180614131558.18707-3-pvorel@suse.cz>
-References: <20180614131558.18707-1-pvorel@suse.cz>
- <20180614131558.18707-3-pvorel@suse.cz>
-Message-ID: <ba39e350-a6df-68fe-31a6-31141d689df6@oracle.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 18 Jun 2018 19:37:02 +0200
+Subject: [LTP] [PATCH 1/6] net/ipsec: Improve log info messages
+In-Reply-To: <20180618173707.30351-1-pvorel@suse.cz>
+References: <20180618173707.30351-1-pvorel@suse.cz>
+Message-ID: <20180618173707.30351-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 06/14/2018 04:15 PM, Petr Vorel wrote:
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> New in v2.
-> ---
+* Log all IPsec tst_ipsec_setup calls.
+* Remove redundant log output from icmp-uni-basic.sh to make it similar
+to icmp-uni-vti.sh.
 
-Hi Petr,
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/network/stress/icmp/icmp-uni-basic.sh | 14 +-------------
+ testcases/network/stress/icmp/icmp-uni-vti.sh   |  2 +-
+ testcases/network/stress/ipsec/ipsec_lib.sh     |  1 +
+ 3 files changed, 3 insertions(+), 14 deletions(-)
 
->  testcases/network/stress/icmp/icmp-uni-basic.sh | 5 +----
->  testcases/network/stress/icmp/icmp-uni-vti.sh   | 2 +-
->  2 files changed, 2 insertions(+), 5 deletions(-)
-> 
-> diff --git a/testcases/network/stress/icmp/icmp-uni-basic.sh b/testcases/network/stress/icmp/icmp-uni-basic.sh
-> index fc84899dd..79581b46c 100755
-> --- a/testcases/network/stress/icmp/icmp-uni-basic.sh
-> +++ b/testcases/network/stress/icmp/icmp-uni-basic.sh
-> @@ -25,10 +25,7 @@ TST_CLEANUP="tst_ipsec_cleanup"
->  
->  . ipsec_lib.sh
->  
-> -# Test description
-> -tst_resm TINFO "Sending ICMP messages with the following conditions"
-> -tst_resm TINFO "- Version of IP is IPv${TST_IPV6:-4}"
-> -tst_resm TINFO "- Size of packets are ( $IPSEC_SIZE_ARRAY )"
-> +tst_resm TINFO "Sending ICMP messages">  
->  if [ -n "$IPSEC_MODE" -a -n "$IPSEC_PROTO" ]; then
->  	case $IPSEC_PROTO in
+diff --git a/testcases/network/stress/icmp/icmp-uni-basic.sh b/testcases/network/stress/icmp/icmp-uni-basic.sh
+index fc84899dd..3099b6caa 100755
+--- a/testcases/network/stress/icmp/icmp-uni-basic.sh
++++ b/testcases/network/stress/icmp/icmp-uni-basic.sh
+@@ -25,23 +25,11 @@ TST_CLEANUP="tst_ipsec_cleanup"
+ 
+ . ipsec_lib.sh
+ 
+-# Test description
+-tst_resm TINFO "Sending ICMP messages with the following conditions"
+-tst_resm TINFO "- Version of IP is IPv${TST_IPV6:-4}"
+-tst_resm TINFO "- Size of packets are ( $IPSEC_SIZE_ARRAY )"
+-
+-if [ -n "$IPSEC_MODE" -a -n "$IPSEC_PROTO" ]; then
+-	case $IPSEC_PROTO in
+-	ah)	tst_resm TINFO "- IPsec [ AH / $IPSEC_MODE ]" ;;
+-	esp)	tst_resm TINFO "- IPsec [ ESP / $IPSEC_MODE ]" ;;
+-	comp)	tst_resm TINFO "- IPcomp [ $IPSEC_MODE ]" ;;
+-	esac
+-fi
+-
+ tst_ipsec_setup
+ 
+ PING_MAX="$IPSEC_REQUESTS"
+ 
++tst_resm TINFO "Sending ICMP messages"
+ tst_ping $(tst_iface) $(tst_ipaddr rhost) $IPSEC_SIZE_ARRAY
+ 
+ tst_exit
+diff --git a/testcases/network/stress/icmp/icmp-uni-vti.sh b/testcases/network/stress/icmp/icmp-uni-vti.sh
+index 7fa211d7f..ea8b5c828 100755
+--- a/testcases/network/stress/icmp/icmp-uni-vti.sh
++++ b/testcases/network/stress/icmp/icmp-uni-vti.sh
+@@ -26,7 +26,7 @@ do_test()
+ {
+ 	PING_MAX="$IPSEC_REQUESTS"
+ 
+-	tst_resm TINFO "Sending ICMP messages..."
++	tst_resm TINFO "Sending ICMP messages"
+ 	tst_ping $tst_vti $ip_rmt_tun $IPSEC_SIZE_ARRAY
+ }
+ 
+diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
+index 2e001c718..9c293ca3e 100644
+--- a/testcases/network/stress/ipsec/ipsec_lib.sh
++++ b/testcases/network/stress/ipsec/ipsec_lib.sh
+@@ -115,6 +115,7 @@ tst_ipsec_setup()
+ {
+ 	# Configure SAD/SPD
+ 	if [ -n "$IPSEC_MODE" -a -n "$IPSEC_PROTO" ]; then
++		tst_resm TINFO "IPsec[$IPSEC_PROTO/$IPSEC_MODE]"
+ 		tst_ipsec lhost $(tst_ipaddr) $(tst_ipaddr rhost)
+ 		tst_ipsec rhost $(tst_ipaddr rhost) $(tst_ipaddr)
+ 	fi
+-- 
+2.17.1
 
-Probably better to fix the similar issue here with printing IPsec
-protocol/mode type too, i.e. remove the above if block and print the
-message in ipsec_lib.sh/tst_ipsec() instead, so it would be the same
-as in tst_ipsec_setup_vti() now:
-
-    tst_resm TINFO "Test vti$TST_IPV6 + IPsec[$IPSEC_PROTO/$IPSEC_MODE]"
-
-> diff --git a/testcases/network/stress/icmp/icmp-uni-vti.sh b/testcases/network/stress/icmp/icmp-uni-vti.sh
-> index 7fa211d7f..ea8b5c828 100755
-> --- a/testcases/network/stress/icmp/icmp-uni-vti.sh
-> +++ b/testcases/network/stress/icmp/icmp-uni-vti.sh
-> @@ -26,7 +26,7 @@ do_test()
->  {
->  	PING_MAX="$IPSEC_REQUESTS"
->  
-> -	tst_resm TINFO "Sending ICMP messages..."
-> +	tst_resm TINFO "Sending ICMP messages"
->  	tst_ping $tst_vti $ip_rmt_tun $IPSEC_SIZE_ARRAY
->  }
->  
-
-The rest looks fine to me.
-
-Thanks,
-Alexey
