@@ -1,87 +1,97 @@
-From: Li Wang <liwang@redhat.com>
-Date: Sat, 16 Jun 2018 12:15:14 +0800
-Subject: [LTP] [PATCH] fcntl36: fix 32-bit sporadic failures
-In-Reply-To: <8b5ddc69aae83b332b205dbeddb3284ab00f827e.1529082112.git.jstancek@redhat.com>
-References: <8b5ddc69aae83b332b205dbeddb3284ab00f827e.1529082112.git.jstancek@redhat.com>
-Message-ID: <CAEemH2e5Cwz=_AHG2KAi-zacdaL0BQBpN7Qtb89Gs7_SnO9fkw@mail.gmail.com>
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 18 Jun 2018 13:09:59 +0300
+Subject: [LTP] [PATCH] device-drivers/acpi: skip the test if ACPI is disabled
+Message-ID: <1529316599-8124-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Sat, Jun 16, 2018 at 1:22 AM, Jan Stancek <jstancek@redhat.com> wrote:
-> fcntl36 testcase has been observed to sporadically fail, when
-> running 32-bit user-space on 64-bit kernel.
->
-> Strace shows that region length is 0 for some commands:
->   fcntl64(6, F_SETLK, {l_type=F_UNLCK, l_whence=SEEK_SET, l_start=5120, l_len=0}
->
-> This is because testcase is passing struct flock64, but
-> command is F_SETLK, not F_SETLK64.
->
-> So, kernel treats argument for POSIX command as 32-bit "struct flock":
->
->   static long do_compat_fcntl64(unsigned int fd, unsigned int cmd,
->   ...
->         case F_SETLK:
->         case F_SETLKW:
->                 err = get_compat_flock(&flock, compat_ptr(arg));
->                 ...
->
-> in contrast to F_OFD_* commands, where argument  is treated
-> as "struct flock64":
->         case F_SETLK64:
->         case F_SETLKW64:
->         case F_OFD_SETLK:
->         case F_OFD_SETLKW:
->                 err = get_compat_flock64(&flock, compat_ptr(arg));
->                 ...
->
-> Switch argument of POSIX commands to 'struct flock' and leave it to
-> glibc to pick correct syscall and command.
->
-> I tested fcntl36 and fcntl36_64 on x86_64 kernel (as 64bit + 32bit binary)
-> and i386 kernel by running 100 iterations.
+Calling functions such as acpi_get_devices() on a system with ACPI
+disabled (for example, a virtual machine) leads to a kernel panic.
 
-Sounds reasonable.
+Earlier there was a related discussion on linux-acpi:
 
-I can stably reproduce this issue on my raspbery Pi3, and with your
-patch applied, the problem was gone.
+https://www.spinics.net/lists/linux-acpi/msg79419.html
 
-[root@centos-rpi3 fcntl]# uname  -a
-Linux centos-rpi3 4.9.13-v7.1.el7 #1 SMP Mon Feb 27 10:45:31 UTC 2017
-armv7l armv7l armv7l GNU/Linux
+and they came to the conclusion that the caller of the API should
+check if ACPI is enabled, i.e. the test needs an update.
 
-[root@centos-rpi3 fcntl]# file fcntl36
-fcntl36: ELF 32-bit LSB executable, ARM, version 1 (SYSV), dynamically
-linked (uses shared libs), for GNU/Linux 2.6.32,
-BuildID[sha1]=73d3a834d43361ecd4331d9b77781ea932a970cc, not stripped
+Suggested-by: Rob Gardner <rob.gardner@oracle.com>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ testcases/kernel/device-drivers/acpi/ltp_acpi.c    |    7 +++++++
+ .../kernel/device-drivers/acpi/ltp_acpi_cmds.c     |   15 +++++++++++++++
+ 2 files changed, 22 insertions(+), 0 deletions(-)
 
-[root@centos-rpi3 fcntl]# ./fcntl36
-tst_test.c:1015: INFO: Timeout per run is 0h 05m 00s
-fcntl36.c:303: INFO: OFD read lock vs OFD write lock
-fcntl36.c:381: PASS: Access between threads synchronized
-fcntl36.c:303: INFO: OFD write lock vs POSIX write lock
-fcntl36.c:381: PASS: Access between threads synchronized
-fcntl36.c:303: INFO: OFD read lock vs POSIX write lock
-fcntl36.c:381: PASS: Access between threads synchronized
-fcntl36.c:303: INFO: OFD write lock vs POSIX read lock
-fcntl36.c:381: PASS: Access between threads synchronized
-fcntl36.c:303: INFO: OFD write lock vs OFD write lock
-fcntl36.c:381: PASS: Access between threads synchronized
-fcntl36.c:303: INFO: OFD r/w lock vs POSIX write lock
-fcntl36.c:381: PASS: Access between threads synchronized
-fcntl36.c:303: INFO: OFD r/w lock vs POSIX read lock
-fcntl36.c:381: PASS: Access between threads synchronized
-
-Summary:
-passed   7
-failed   0
-skipped  0
-warnings 0
-
-
+diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi.c b/testcases/kernel/device-drivers/acpi/ltp_acpi.c
+index d20d38f..f2dc6a4 100644
+--- a/testcases/kernel/device-drivers/acpi/ltp_acpi.c
++++ b/testcases/kernel/device-drivers/acpi/ltp_acpi.c
+@@ -34,6 +34,7 @@ static const char dev_result[]	= "/sys/devices/" ACPI_TEST_NAME "/result";
+ static const char dev_path[]	= "/sys/devices/" ACPI_TEST_NAME "/path";
+ static const char dev_str[]	= "/sys/devices/" ACPI_TEST_NAME "/str";
+ static const char dev_tcase[]	= "/sys/devices/" ACPI_TEST_NAME "/tcase";
++static const char dev_acpi_disabled[] = "/sys/devices/" ACPI_TEST_NAME "/acpi_disabled";
+ static const char module_name[]	= "ltp_acpi_cmds.ko";
+ static int module_loaded;
+ 
+@@ -141,6 +142,8 @@ static void test_run(void)
+ 
+ int main(int argc, char *argv[])
+ {
++	int acpi_disabled;
++
+ 	tst_parse_opts(argc, argv, NULL, NULL);
+ 
+ 	tst_require_root();
+@@ -155,6 +158,10 @@ int main(int argc, char *argv[])
+ 	tst_module_load(NULL, module_name, NULL);
+ 	module_loaded = 1;
+ 
++	SAFE_FILE_SCANF(cleanup, dev_acpi_disabled, "%d", &acpi_disabled);
++	if (acpi_disabled)
++		tst_brkm(TCONF, cleanup, "ACPI is disabled on the system");
++
+ 	test_run();
+ 
+ 	cleanup();
+diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c b/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
+index 419eb6a..6e8f051 100644
+--- a/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
++++ b/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
+@@ -537,6 +537,13 @@ static ssize_t sys_path(struct device *dev,
+ }
+ static DEVICE_ATTR(path, S_IRUSR, sys_path, NULL);
+ 
++static ssize_t sys_acpi_disabled(struct device *dev,
++				    struct device_attribute *attr, char *buf)
++{
++	return scnprintf(buf, PAGE_SIZE, "%d", acpi_disabled);
++}
++static DEVICE_ATTR(acpi_disabled, S_IRUSR, sys_acpi_disabled, NULL);
++
+ static ssize_t sys_tcase(struct device *dev,
+ 	struct device_attribute *attr,  const char *buf, size_t count)
+ {
+@@ -616,8 +623,16 @@ int init_module(void)
+ 		goto err4;
+ 	}
+ 
++	err = device_create_file(&tdev, &dev_attr_acpi_disabled);
++	if (err) {
++		prk_err("Can't create sysfs file 'acpi_disabled'");
++		goto err5;
++	}
++
+ 	return 0;
+ 
++err5:
++	device_remove_file(&tdev, &dev_attr_path);
+ err4:
+ 	device_remove_file(&tdev, &dev_attr_tcase);
+ err3:
 -- 
-Regards,
-Li Wang
+1.7.1
+
