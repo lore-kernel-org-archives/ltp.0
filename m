@@ -1,97 +1,66 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Mon, 18 Jun 2018 13:09:59 +0300
-Subject: [LTP] [PATCH] device-drivers/acpi: skip the test if ACPI is disabled
-Message-ID: <1529316599-8124-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 18 Jun 2018 17:29:17 +0300
+Subject: [LTP] [PATCH 3/3] net/icmp: Unify log info messages
+In-Reply-To: <20180614131558.18707-3-pvorel@suse.cz>
+References: <20180614131558.18707-1-pvorel@suse.cz>
+ <20180614131558.18707-3-pvorel@suse.cz>
+Message-ID: <ba39e350-a6df-68fe-31a6-31141d689df6@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Calling functions such as acpi_get_devices() on a system with ACPI
-disabled (for example, a virtual machine) leads to a kernel panic.
+On 06/14/2018 04:15 PM, Petr Vorel wrote:
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> New in v2.
+> ---
 
-Earlier there was a related discussion on linux-acpi:
+Hi Petr,
 
-https://www.spinics.net/lists/linux-acpi/msg79419.html
+>  testcases/network/stress/icmp/icmp-uni-basic.sh | 5 +----
+>  testcases/network/stress/icmp/icmp-uni-vti.sh   | 2 +-
+>  2 files changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/testcases/network/stress/icmp/icmp-uni-basic.sh b/testcases/network/stress/icmp/icmp-uni-basic.sh
+> index fc84899dd..79581b46c 100755
+> --- a/testcases/network/stress/icmp/icmp-uni-basic.sh
+> +++ b/testcases/network/stress/icmp/icmp-uni-basic.sh
+> @@ -25,10 +25,7 @@ TST_CLEANUP="tst_ipsec_cleanup"
+>  
+>  . ipsec_lib.sh
+>  
+> -# Test description
+> -tst_resm TINFO "Sending ICMP messages with the following conditions"
+> -tst_resm TINFO "- Version of IP is IPv${TST_IPV6:-4}"
+> -tst_resm TINFO "- Size of packets are ( $IPSEC_SIZE_ARRAY )"
+> +tst_resm TINFO "Sending ICMP messages">  
+>  if [ -n "$IPSEC_MODE" -a -n "$IPSEC_PROTO" ]; then
+>  	case $IPSEC_PROTO in
 
-and they came to the conclusion that the caller of the API should
-check if ACPI is enabled, i.e. the test needs an update.
+Probably better to fix the similar issue here with printing IPsec
+protocol/mode type too, i.e. remove the above if block and print the
+message in ipsec_lib.sh/tst_ipsec() instead, so it would be the same
+as in tst_ipsec_setup_vti() now:
 
-Suggested-by: Rob Gardner <rob.gardner@oracle.com>
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- testcases/kernel/device-drivers/acpi/ltp_acpi.c    |    7 +++++++
- .../kernel/device-drivers/acpi/ltp_acpi_cmds.c     |   15 +++++++++++++++
- 2 files changed, 22 insertions(+), 0 deletions(-)
+    tst_resm TINFO "Test vti$TST_IPV6 + IPsec[$IPSEC_PROTO/$IPSEC_MODE]"
 
-diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi.c b/testcases/kernel/device-drivers/acpi/ltp_acpi.c
-index d20d38f..f2dc6a4 100644
---- a/testcases/kernel/device-drivers/acpi/ltp_acpi.c
-+++ b/testcases/kernel/device-drivers/acpi/ltp_acpi.c
-@@ -34,6 +34,7 @@ static const char dev_result[]	= "/sys/devices/" ACPI_TEST_NAME "/result";
- static const char dev_path[]	= "/sys/devices/" ACPI_TEST_NAME "/path";
- static const char dev_str[]	= "/sys/devices/" ACPI_TEST_NAME "/str";
- static const char dev_tcase[]	= "/sys/devices/" ACPI_TEST_NAME "/tcase";
-+static const char dev_acpi_disabled[] = "/sys/devices/" ACPI_TEST_NAME "/acpi_disabled";
- static const char module_name[]	= "ltp_acpi_cmds.ko";
- static int module_loaded;
- 
-@@ -141,6 +142,8 @@ static void test_run(void)
- 
- int main(int argc, char *argv[])
- {
-+	int acpi_disabled;
-+
- 	tst_parse_opts(argc, argv, NULL, NULL);
- 
- 	tst_require_root();
-@@ -155,6 +158,10 @@ int main(int argc, char *argv[])
- 	tst_module_load(NULL, module_name, NULL);
- 	module_loaded = 1;
- 
-+	SAFE_FILE_SCANF(cleanup, dev_acpi_disabled, "%d", &acpi_disabled);
-+	if (acpi_disabled)
-+		tst_brkm(TCONF, cleanup, "ACPI is disabled on the system");
-+
- 	test_run();
- 
- 	cleanup();
-diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c b/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
-index 419eb6a..6e8f051 100644
---- a/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
-+++ b/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
-@@ -537,6 +537,13 @@ static ssize_t sys_path(struct device *dev,
- }
- static DEVICE_ATTR(path, S_IRUSR, sys_path, NULL);
- 
-+static ssize_t sys_acpi_disabled(struct device *dev,
-+				    struct device_attribute *attr, char *buf)
-+{
-+	return scnprintf(buf, PAGE_SIZE, "%d", acpi_disabled);
-+}
-+static DEVICE_ATTR(acpi_disabled, S_IRUSR, sys_acpi_disabled, NULL);
-+
- static ssize_t sys_tcase(struct device *dev,
- 	struct device_attribute *attr,  const char *buf, size_t count)
- {
-@@ -616,8 +623,16 @@ int init_module(void)
- 		goto err4;
- 	}
- 
-+	err = device_create_file(&tdev, &dev_attr_acpi_disabled);
-+	if (err) {
-+		prk_err("Can't create sysfs file 'acpi_disabled'");
-+		goto err5;
-+	}
-+
- 	return 0;
- 
-+err5:
-+	device_remove_file(&tdev, &dev_attr_path);
- err4:
- 	device_remove_file(&tdev, &dev_attr_tcase);
- err3:
--- 
-1.7.1
+> diff --git a/testcases/network/stress/icmp/icmp-uni-vti.sh b/testcases/network/stress/icmp/icmp-uni-vti.sh
+> index 7fa211d7f..ea8b5c828 100755
+> --- a/testcases/network/stress/icmp/icmp-uni-vti.sh
+> +++ b/testcases/network/stress/icmp/icmp-uni-vti.sh
+> @@ -26,7 +26,7 @@ do_test()
+>  {
+>  	PING_MAX="$IPSEC_REQUESTS"
+>  
+> -	tst_resm TINFO "Sending ICMP messages..."
+> +	tst_resm TINFO "Sending ICMP messages"
+>  	tst_ping $tst_vti $ip_rmt_tun $IPSEC_SIZE_ARRAY
+>  }
+>  
 
+The rest looks fine to me.
+
+Thanks,
+Alexey
