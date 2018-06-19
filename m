@@ -1,72 +1,94 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 18 Jun 2018 19:42:32 +0200
-Subject: [LTP] [PATCH 3/3] net/icmp: Unify log info messages
-In-Reply-To: <ba39e350-a6df-68fe-31a6-31141d689df6@oracle.com>
-References: <20180614131558.18707-1-pvorel@suse.cz>
- <20180614131558.18707-3-pvorel@suse.cz>
- <ba39e350-a6df-68fe-31a6-31141d689df6@oracle.com>
-Message-ID: <20180618174232.ty6g6gm74rgnoq6b@dell5510>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 19 Jun 2018 13:21:48 +0530
+Subject: [LTP] [PATCH] fcntl36: fix 32-bit sporadic failures
+In-Reply-To: <8b5ddc69aae83b332b205dbeddb3284ab00f827e.1529082112.git.jstancek@redhat.com>
+References: <8b5ddc69aae83b332b205dbeddb3284ab00f827e.1529082112.git.jstancek@redhat.com>
+Message-ID: <CA+G9fYt1VpwXKj+Zahf39uHopUXxqYdW3BogB0HOATyuf4Bdww@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+On 15 June 2018 at 22:52, Jan Stancek <jstancek@redhat.com> wrote:
+> fcntl36 testcase has been observed to sporadically fail, when
+> running 32-bit user-space on 64-bit kernel.
+>
+> Strace shows that region length is 0 for some commands:
+>   fcntl64(6, F_SETLK, {l_type=F_UNLCK, l_whence=SEEK_SET, l_start=5120, l_len=0}
+>
+> This is because testcase is passing struct flock64, but
+> command is F_SETLK, not F_SETLK64.
+>
+> So, kernel treats argument for POSIX command as 32-bit "struct flock":
+>
+>   static long do_compat_fcntl64(unsigned int fd, unsigned int cmd,
+>   ...
+>         case F_SETLK:
+>         case F_SETLKW:
+>                 err = get_compat_flock(&flock, compat_ptr(arg));
+>                 ...
+>
+> in contrast to F_OFD_* commands, where argument  is treated
+> as "struct flock64":
+>         case F_SETLK64:
+>         case F_SETLKW64:
+>         case F_OFD_SETLK:
+>         case F_OFD_SETLKW:
+>                 err = get_compat_flock64(&flock, compat_ptr(arg));
+>                 ...
+>
+> Switch argument of POSIX commands to 'struct flock' and leave it to
+> glibc to pick correct syscall and command.
+>
+> I tested fcntl36 and fcntl36_64 on x86_64 kernel (as 64bit + 32bit binary)
+> and i386 kernel by running 100 iterations.
+>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-> Hi Petr,
+Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-> > -# Test description
-> > -tst_resm TINFO "Sending ICMP messages with the following conditions"
-> > -tst_resm TINFO "- Version of IP is IPv${TST_IPV6:-4}"
-> > -tst_resm TINFO "- Size of packets are ( $IPSEC_SIZE_ARRAY )"
-> > +tst_resm TINFO "Sending ICMP messages">  
-> >  if [ -n "$IPSEC_MODE" -a -n "$IPSEC_PROTO" ]; then
-> >  	case $IPSEC_PROTO in
+> ---
+> No kernel bug, problem was found in my reproducer.
+> Can anyone confirm this fixes 32-bit arm too?
 
-> Probably better to fix the similar issue here with printing IPsec
-> protocol/mode type too, i.e. remove the above if block and print the
-> message in ipsec_lib.sh/tst_ipsec() instead, so it would be the same
-> as in tst_ipsec_setup_vti() now:
+This patch tested on arm32 Beagleboard x15 for 25 iterations and PASS.
+Here you find test log before and after the patch.
 
->     tst_resm TINFO "Test vti$TST_IPV6 + IPsec[$IPSEC_PROTO/$IPSEC_MODE]"
+Full test log,
+https://lkft.validation.linaro.org/scheduler/job/290879#L3056
 
-I replaced test with
-https://patchwork.ozlabs.org/patch/931107/
-(part of big patchset Migrate tests using virt_lib.sh and ipsec_lib.sh to new API
-https://patchwork.ozlabs.org/project/ltp/list/?series=50725)
+>
+>  testcases/kernel/syscalls/fcntl/fcntl36.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl36.c b/testcases/kernel/syscalls/fcntl/fcntl36.c
+> index 3246d13892cd..81bd5a647e4c 100644
+> --- a/testcases/kernel/syscalls/fcntl/fcntl36.c
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl36.c
+> @@ -127,7 +127,7 @@ static void *fn_posix_w(void *arg)
+>         int fd = SAFE_OPEN(fname, O_RDWR);
+>         long wt = pa->cnt;
+>
+> -       struct flock64 lck = {
+> +       struct flock lck = {
+>                 .l_whence = SEEK_SET,
+>                 .l_start  = pa->offset,
+>                 .l_len    = pa->length,
+> @@ -227,7 +227,7 @@ static void *fn_posix_r(void *arg)
+>         int i;
+>         int fd = SAFE_OPEN(fname, O_RDWR);
+>
+> -       struct flock64 lck = {
+> +       struct flock lck = {
+>                 .l_whence = SEEK_SET,
+>                 .l_start  = pa->offset,
+>                 .l_len    = pa->length,
+> --
+> 1.8.3.1
+>
 
-i.e in tst_ipsec_setup()
- {
- 	# Configure SAD/SPD
- 	if [ -n "$IPSEC_MODE" -a -n "$IPSEC_PROTO" ]; then
-+		tst_resm TINFO "IPsec[$IPSEC_PROTO/$IPSEC_MODE]"
- 		tst_ipsec lhost $(tst_ipaddr) $(tst_ipaddr rhost)
- 		tst_ipsec rhost $(tst_ipaddr rhost) $(tst_ipaddr)
+Thanks for the patch !
 
-1) IMHO it does not make sense print info about it when no IPsec is done
-2) Removed "vti$TST_IPV6" as tst_ipsec_setup is not used for VTI.
-
-> > diff --git a/testcases/network/stress/icmp/icmp-uni-vti.sh b/testcases/network/stress/icmp/icmp-uni-vti.sh
-> > index 7fa211d7f..ea8b5c828 100755
-> > --- a/testcases/network/stress/icmp/icmp-uni-vti.sh
-> > +++ b/testcases/network/stress/icmp/icmp-uni-vti.sh
-> > @@ -26,7 +26,7 @@ do_test()
-> >  {
-> >  	PING_MAX="$IPSEC_REQUESTS"
-
-> > -	tst_resm TINFO "Sending ICMP messages..."
-> > +	tst_resm TINFO "Sending ICMP messages"
-> >  	tst_ping $tst_vti $ip_rmt_tun $IPSEC_SIZE_ARRAY
-> >  }
-
-
-> The rest looks fine to me.
-Thanks, I pushed the second two.
-
-> Thanks,
-> Alexey
-
-
-Kind regards,
-Petr
+Best regards
+Naresh Kamboju
