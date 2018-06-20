@@ -1,10 +1,12 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 20 Jun 2018 14:26:23 +0200
-Subject: [LTP] [PATCH 1/3] lib: Add SAFE_CHROOT(path) macro
-In-Reply-To: <20180620100447.GB21435@rei>
-References: <20180620075917.21056-1-pvorel@suse.cz>
- <20180620100447.GB21435@rei>
-Message-ID: <20180620122623.n2jabbawrgdyivri@dell5510>
+Date: Wed, 20 Jun 2018 17:26:16 +0200
+Subject: [LTP] [RFC PATCH 9/9] syscalls/ipc: Fix Makefile
+In-Reply-To: <20180620104814.GA23700@rei>
+References: <20180612154631.435-1-chrubis@suse.cz>
+ <20180612154631.435-10-chrubis@suse.cz>
+ <20180613123519.2t6upag4kmcfvfwq@dell5510>
+ <20180620104814.GA23700@rei>
+Message-ID: <20180620152616.7jpivh2hsk3c5nwt@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,24 +15,20 @@ To: ltp@lists.linux.it
 
 Hi Cyril,
 
-> > +++ b/include/safe_macros_fn.h
-> > @@ -30,6 +30,9 @@ char* safe_basename(const char *file, const int lineno,
-> >  int safe_chdir(const char *file, const int lineno,
-> >                 void (*cleanup_fn)(void), const char *path);
+> Hi!
+> > I've noticed, that some commits from this patchset aren't bisectable, due
+> > dependency on new library (libnewipc.h).
+> > IMHO it's worth of fixing it.
 
-> > +int safe_chroot(const char *file, const int lineno,
-> > +               void (*cleanup_fn)(void), const char *path);
+> I guess that the best I can do is to disable the directory from build
+> before the patchset and enable it with a new Makefile at the end as it's
+> nearly impossible to mix the new and old IPC library in one Makefile.
+Seems reasonable for me.
+Thanks for handling it.
 
-> Can we pretty please avoid adding the function prototypes with the
-> unused cleanup pointer?
-
-> The safe_macros_fn.h file exists only for a historical reasons, new safe
-> macros should be added to the tst_safe_macros.h file only, both macro
-> and function prototype should go there.
-
-Sure. I'm sorry, for not carefully checking my patches.
-I created this part long time ago and I this is exactly what I fixed in Jinhui
-Huang's SAFE_GETGRNAM patchset.
+> And yes I wanted to send this early, so I kind of ignored the build
+> problems.
+No big deal :).
 
 
 Kind regards,
