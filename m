@@ -1,143 +1,103 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 20 Jun 2018 09:59:17 +0200
-Subject: [LTP] [PATCH 3/3] cve/cve-2018-1000001: Add Realpath Buffer
-	Underflow test
-In-Reply-To: <20180620075917.21056-1-pvorel@suse.cz>
-References: <20180620075917.21056-1-pvorel@suse.cz>
-Message-ID: <20180620075917.21056-3-pvorel@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 20 Jun 2018 11:52:32 +0200
+Subject: [LTP] [PATCH 3/6] tst_net.sh: Harden against multiple loading
+In-Reply-To: <20180618173707.30351-4-pvorel@suse.cz>
+References: <20180618173707.30351-1-pvorel@suse.cz>
+ <20180618173707.30351-4-pvorel@suse.cz>
+Message-ID: <20180620095232.GA21435@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Idea based on glibc source io/tst-getcwd-abspath.c, contributed by
-Dmitry V. Levin [1]
+Hi!
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/lib/tst_net.sh | 42 +++++++++++++++++++++++++---------------
+>  1 file changed, 26 insertions(+), 16 deletions(-)
+> 
+> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+> index aad701952..ac61dfab8 100644
+> --- a/testcases/lib/tst_net.sh
+> +++ b/testcases/lib/tst_net.sh
+> @@ -19,14 +19,6 @@
+>  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+>  #
 
-[1] https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=commitdiff;h=52a713fdd0a30e1bd79818e2e3c4ab44ddca1a94;hp=249a5895f120b13290a372a49bb4b499e749806f
+Can't we just add some kind of guards to the library script?
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
+If we add something like this:
 
-I put it into it's own subdirectory under testcases/cve/ (according to [1]),
-but maybe Eric meant directory testcases/libc.
-Not sure if binary or test case name should be descriptive (so far we
-use description for binaries).
+[ "$TST_LIB_LOADED" ] && return 0
+TST_LIB_LOADED=1
+
+The library will be sourced exactly once.
 
 
-Kind regards,
-Petr
+> -TST_OPTS="6$TST_OPTS"
+> -TST_PARSE_ARGS_CALLER="$TST_PARSE_ARGS"
+> -TST_PARSE_ARGS="tst_net_parse_args"
+> -TST_USAGE_CALLER="$TST_USAGE"
+> -TST_USAGE="tst_net_usage"
+> -TST_SETUP_CALLER="$TST_SETUP"
+> -TST_SETUP="tst_net_setup"
+> -
+>  # Blank for an IPV4 test; 6 for an IPV6 test.
+>  TST_IPV6=${TST_IPV6:-}
+>  TST_IPVER=${TST_IPV6:-4}
+> @@ -73,14 +65,6 @@ tst_net_setup()
+>  	[ -n "$TST_SETUP_CALLER" ] && $TST_SETUP_CALLER
+>  }
+>  
+> -if [ -z "$TST_LIB_LOADED" ]; then
+> -	[ -n "$TST_USE_LEGACY_API" ] && . test.sh || . tst_test.sh
+> -fi
+> -
+> -if [ -n "$TST_USE_LEGACY_API" ]; then
+> -	tst_net_read_opts "$@"
+> -fi
+> -
+>  # old vs. new API compatibility layer
+>  tst_res_()
+>  {
+> @@ -659,6 +643,32 @@ tst_cleanup_rhost()
+>  	tst_rhost_run -c "rm -rf $TST_TMPDIR"
+>  }
+>  
+> +if [ -z "$TST_LIB_LOADED" ]; then
+> +	TST_OPTS="6$TST_OPTS"
+> +	TST_PARSE_ARGS_CALLER="$TST_PARSE_ARGS"
+> +	TST_PARSE_ARGS="tst_net_parse_args"
+> +	TST_USAGE_CALLER="$TST_USAGE"
+> +	TST_USAGE="tst_net_usage"
+> +	TST_SETUP_CALLER="$TST_SETUP"
+> +	TST_SETUP="tst_net_setup"
+> +
+> +	if [ "$TST_PARSE_ARGS_CALLER" = "$TST_PARSE_ARGS" ]; then
+> +		unset TST_PARSE_ARGS_CALLER
+> +	fi
+> +	if [ "$TST_USAGE_CALLER" = "$TST_USAGE" ]; then
+> +		unset TST_USAGE_CALLER
+> +	fi
+> +	if [ "$TST_PARSE_ARGS_CALLER" = "$TST_PARSE_ARGS" ]; then
+> +		unset TST_PARSE_ARGS_CALLER
+> +	fi
+> +
+> +	[ -n "$TST_USE_LEGACY_API" ] && . test.sh || . tst_test.sh
+> +fi
+> +
+> +if [ -n "$TST_USE_LEGACY_API" ]; then
+> +	tst_net_read_opts "$@"
+> +fi
+> +
+>  # Management Link
+>  [ -z "$RHOST" ] && TST_USE_NETNS="yes"
+>  export RHOST="$RHOST"
+> -- 
+> 2.17.1
+> 
 
-[1] http://lists.linux.it/pipermail/ltp/2018-March/007388.html
----
- runtest/cve                           |  1 +
- testcases/cve/Makefile                |  2 +-
- testcases/cve/libc/Makefile           |  8 ++++
- testcases/cve/libc/cve-2018-1000001.c | 60 +++++++++++++++++++++++++++
- 4 files changed, 70 insertions(+), 1 deletion(-)
- create mode 100644 testcases/cve/libc/Makefile
- create mode 100644 testcases/cve/libc/cve-2018-1000001.c
-
-diff --git a/runtest/cve b/runtest/cve
-index 2f4171c84..c7031281a 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -33,3 +33,4 @@ cve-2017-17052 cve-2017-17052
- cve-2017-16939 cve-2017-16939
- cve-2017-17053 cve-2017-17053
- cve-2018-5803 sctp_big_chunk
-+cve-2018-1000001_libc_realpath_buffer_underflow cve-2018-1000001
-diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
-index 3a05dd4fe..e5fc8d44f 100644
---- a/testcases/cve/Makefile
-+++ b/testcases/cve/Makefile
-@@ -41,4 +41,4 @@ cve-2017-17053:	CFLAGS += -pthread
- 
- cve-2015-3290:	CFLAGS += -pthread
- 
--include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/cve/libc/Makefile b/testcases/cve/libc/Makefile
-new file mode 100644
-index 000000000..e23dc473c
---- /dev/null
-+++ b/testcases/cve/libc/Makefile
-@@ -0,0 +1,8 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2018 Linux Test Project
-+
-+top_srcdir		?= ../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/cve/libc/cve-2018-1000001.c b/testcases/cve/libc/cve-2018-1000001.c
-new file mode 100644
-index 000000000..5cb618bc7
---- /dev/null
-+++ b/testcases/cve/libc/cve-2018-1000001.c
-@@ -0,0 +1,60 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2018 Petr Vorel <pvorel@suse.cz>
-+ * Based on the reproducer posted upstream so other copyrights may apply.
-+ *
-+ * Author: Dmitry V. Levin <ldv@altlinux.org>
-+ * LTP conversion from glibc source: Petr Vorel <pvorel@suse.cz>
-+ */
-+
-+#include "tst_test.h"
-+
-+#include <errno.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+
-+#define CHROOT_DIR "cve-2018-1000001"
-+
-+static void setup(void)
-+{
-+	SAFE_MKDIR(CHROOT_DIR, 0755);
-+	SAFE_CHROOT(CHROOT_DIR);
-+}
-+
-+static void run(unsigned int i)
-+{
-+	int fail = 0;
-+
-+	errno = 0;
-+
-+	if (!i) {
-+		tst_res(TINFO, "testing getcwd()");
-+		TESTPTR(getcwd(NULL, 0));
-+	} else {
-+		tst_res(TINFO, "testing realpath()");
-+		TESTPTR(realpath(".", NULL));
-+	}
-+
-+	if (errno != ENOENT) {
-+		tst_res(TFAIL | TERRNO, "returned unexpected errno");
-+		fail = 1;
-+	}
-+
-+	if (TEST_RETURN_PTR != NULL) {
-+		tst_res(TFAIL, "syscall didn't return NULL: '%s'",
-+				(char *)TEST_RETURN_PTR);
-+		fail = 1;
-+	}
-+
-+	if (!fail)
-+		tst_res(TPASS, "bug not reproduced");
-+}
-+
-+static struct tst_test test = {
-+	.test = run,
-+	.tcnt = 2,
-+	.setup = setup,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+};
 -- 
-2.17.1
-
+Cyril Hrubis
+chrubis@suse.cz
