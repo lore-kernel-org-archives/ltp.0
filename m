@@ -1,63 +1,45 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 20 Jun 2018 12:57:28 +0200
-Subject: [LTP] [RFC PATCH 3/9] syscalls/ipc: Rewrite msgctl01 + merge
- msgctl06
-In-Reply-To: <CAEemH2fmszUp0TMC24+kJuGYrBbwyrwe67B28AoWB16-MCj89A@mail.gmail.com>
-References: <20180612154631.435-1-chrubis@suse.cz>
- <20180612154631.435-4-chrubis@suse.cz>
- <CAEemH2fmszUp0TMC24+kJuGYrBbwyrwe67B28AoWB16-MCj89A@mail.gmail.com>
-Message-ID: <20180620105728.GB23700@rei>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 20 Jun 2018 16:41:24 +0530
+Subject: [LTP] LTP CVE cve-2017-17053 test failed on x86_64 device
+In-Reply-To: <20180620072138.yrz76kmms3oviv7i@linux-d8ym>
+References: <CA+G9fYsRgGsmi-tE8dU=pfSDDLg3bUuii_0KUPZ71jFLNre-5g@mail.gmail.com>
+ <20180620072138.yrz76kmms3oviv7i@linux-d8ym>
+Message-ID: <CA+G9fYtoML7G7f_sXB6hQJJAQOG94TsBXujmQgHxy-rKABaTtA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-> ???
-> ???I'm thinking that whether 1 second is enough for system shaking. ???If this
-> program is running on an overload system, this maybe delay more than 1
-> second and test fails, is that a test defect????
+On 20 June 2018 at 12:51, Michael Moese <mmoese@suse.de> wrote:
+> Hi,
+>
+> On Wed, Jun 20, 2018 at 12:14:22PM +0530, Naresh Kamboju wrote:
+>> Test FAIL case output,
+>> tst_test.c:1015: INFO: Timeout per run is 0h 15m 00s
+>> tst_taint.c:88: BROK: Kernel is already tainted: 512
+> The kernel is already tainted. In this case, the test refuses to run,
+> because it could not tell if the test is pass or fail.
+>
+> Could you please check if you could run the test directly after a
+> reboot?
 
-Since we are calling just two subsequent syscalls here it's very
-unlikely that the difference in times will be greater than 1s even on
-loaded system, but for sure we can increase that to two or three that
-wouldn't do any harm.
+This single test ran immediately after the boot and bug reproduced.
 
-> Maybe gives more flexible as:
->     if (buf.msg_ctime <= creat_time && buf.msg_ctime >= creat_time - 3)
-> 
-> 
-> > +               tst_res(TPASS, "msg_ctime = %lu, expected %lu",
-> > +                       (unsigned long)buf.msg_ctime, (unsigned
-> > long)creat_time);
-> > +       } else {
-> > +               tst_res(TPASS, "msg_ctime = %lu, expected %lu",
-> >
-> 
-> ???seems typo here?  TFAIL
+tst_taint.c:88: BROK: Kernel is already tainted: 512
+https://lkft.validation.linaro.org/scheduler/job/293222#L1204
 
-Right, thanks for pointing it out!
+Test command for 10 iterations and it failed for all 10 iterations.
++ ./runltp -s cve-2017-17053 -I 10
 
-> > +                       (unsigned long)buf.msg_ctime, (unsigned
-> > long)creat_time);
-> > +       }
-> 
-> 
-> >
-> ???Beside that, I got this follow errors occasionally:
-> 
-> ???# ./msgctl01
-> tst_test.c:1015: INFO: Timeout per run is 0h 05m 00s
-> tst_safe_sysv_ipc.c:51: BROK: msgctl01.c:137: msgget(1627794347, 7b0)
-> failed: EEXIST???
+NOTE:
+We still see kernel warning while booting the x86_64 machine.
+DEBUG_LOCKS_WARN_ON(sem->owner != ((struct task_struct *)(1UL << 0)))
 
-That means that there is some leftover message queue on the system,
-there may be a problem in how the IDs are allocated in the IPC test
-library.
+- Naresh
 
-Do you have any steps to reproduce the issue?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+>
+> Regards,
+> Michael
+> --
+> SUSE Linux GmbH, GF: Felix Imendörffer, Jane Smithard, Graham Norton, HRB 21284 (AG Nürnberg)
