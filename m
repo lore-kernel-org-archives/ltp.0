@@ -1,62 +1,56 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 20 Jun 2018 02:41:06 -0400 (EDT)
-Subject: [LTP] LTP cve-2017-5754 meltdown intermittent failure on
- mainline kernel
-In-Reply-To: <CA+G9fYv8iPW3vtntqtatTLesf+StRkcP7AixVMPmEOSjTTtAwA@mail.gmail.com>
-References: <CA+G9fYv8iPW3vtntqtatTLesf+StRkcP7AixVMPmEOSjTTtAwA@mail.gmail.com>
-Message-ID: <2065442299.27693421.1529476866329.JavaMail.zimbra@redhat.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 20 Jun 2018 12:14:22 +0530
+Subject: [LTP] LTP CVE cve-2017-17053 test failed on x86_64 device
+Message-ID: <CA+G9fYsRgGsmi-tE8dU=pfSDDLg3bUuii_0KUPZ71jFLNre-5g@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+LTP CVE cve-2017-17053 test failed on x86_64 device.
+FAIL on linux-next, mainline, and stable-rc-4.17.
+PASS on stable-rc 4.16, 4.14, 4.9 and 4.4 kernel.
 
+Test FAIL case output,
+tst_test.c:1015: INFO: Timeout per run is 0h 15m 00s
+tst_taint.c:88: BROK: Kernel is already tainted: 512
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
 
------ Original Message -----
-> LTP cve-2017-5754 meltdown test failed intermittently on qemu_x86_64
-> running mainline kernel. Not easy to reproduce.
+Test comments,
+/* Regression test for CVE-2017-17053, original reproducer can be found
+ * here:
+ * https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ccd5b3235180eef3cfec337df1c8554ab151b5cc
+ *
+ * Be careful! This test may crash your kernel!
+ */
 
-This has been reported by Li couple weeks back:
-  http://lists.linux.it/pipermail/ltp/2018-April/007893.html
+Full test log:
+https://lkft.validation.linaro.org/scheduler/job/290429#L9581
+https://lkft.validation.linaro.org/scheduler/job/259217#L10308
 
-Conclusion at the time was we need to improve the testcase
-to cope with 8c06c774 (x86/pti: Leave kernel text global for !PCID)=E2=80=
-=8B.
+History of the test case shows failed on
+Linux next kernel,
+https://qa-reports.linaro.org/lkft/linux-next-oe/tests/ltp-cve-tests/cve-2017-17053
 
->=20
-> Linux kernel version: 4.18.0-rc1
-> qemu-system-x86 version: 2.12
->=20
-> Test output:
-> tst_test.c:1015: INFO: Timeout per run is 0h 15m 00s
-> meltdown.c:259: INFO:
->  access time: cached =3D 48, uncached =3D 378, threshold =3D 134
-> meltdown.c:309: INFO: linux_proc_banner is at ffffffffaac00020
-> meltdown.c:332: INFO: read ffffffffaac00020 =3D 0x21 !
-> meltdown.c:332: INFO: read ffffffffaac00021 =3D 0x73 s
-> meltdown.c:332: INFO: read ffffffffaac00022 =3D 0x20
-> meltdown.c:332: INFO: read ffffffffaac00023 =3D 0x76 v
-> meltdown.c:332: INFO: read ffffffffaac00024 =3D 0x5
-> meltdown.c:332: INFO: read ffffffffaac00025 =3D 0x72 r
-> meltdown.c:332: INFO: read ffffffffaac00026 =3D 0x53 S
-> meltdown.c:332: INFO: read ffffffffaac00027 =3D 0x69 i
-> meltdown.c:332: INFO: read ffffffffaac00028 =3D 0x61 a
-> meltdown.c:332: INFO: read ffffffffaac00029 =3D 0x6e n
-> meltdown.c:332: INFO: read ffffffffaac0002a =3D 0x20
-> meltdown.c:332: INFO: read ffffffffaac0002b =3D 0x25 %
-> meltdown.c:332: INFO: read ffffffffaac0002c =3D 0x73 s
-> meltdown.c:342: FAIL: I was able to read your kernel memory!!!
-> Summary:
-> passed   0
-> failed   1
-> skipped  0
-> warnings 0
->=20
-> Failed full log can be found here in these links,
-> https://lkft.validation.linaro.org/scheduler/job/261698#L8280
-> https://lkft.validation.linaro.org/scheduler/job/290417#L10464
->=20
-> Best regards
-> Naresh Kamboju
->=20
+Linux mainline kernel,
+https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/ltp-cve-tests \
+/cve-2017-17053
+^ Please join link
+
+Linux stable rc 4.17,
+https://qa-reports.linaro.org/lkft/linux-stable-rc-4.17-oe/tests/ltp-cve-tests \
+/cve-2017-17053
+^ Please join link
+
+Test PASS on 4.16 kernel.
+https://qa-reports.linaro.org/lkft/linux-stable-rc-4.16-oe/tests/ltp-cve-tests \
+/cve-2017-17053
+^ Please join link
+
+Best regards
+Naresh Kamboju
