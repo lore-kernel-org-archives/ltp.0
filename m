@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 20 Jun 2018 12:04:47 +0200
-Subject: [LTP] [PATCH 1/3] lib: Add SAFE_CHROOT(path) macro
-In-Reply-To: <20180620075917.21056-1-pvorel@suse.cz>
+Date: Wed, 20 Jun 2018 12:08:11 +0200
+Subject: [LTP] [PATCH 2/3] lib: Introduce TESTPTR()
+In-Reply-To: <20180620075917.21056-2-pvorel@suse.cz>
 References: <20180620075917.21056-1-pvorel@suse.cz>
-Message-ID: <20180620100447.GB21435@rei>
+ <20180620075917.21056-2-pvorel@suse.cz>
+Message-ID: <20180620100811.GC21435@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,28 +12,42 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
->  include/safe_macros_fn.h  |  3 +++
->  include/tst_safe_macros.h |  5 ++++-
->  lib/safe_macros.c         | 15 +++++++++++++++
->  3 files changed, 22 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/safe_macros_fn.h b/include/safe_macros_fn.h
-> index 3df952811..9b11801a4 100644
-> --- a/include/safe_macros_fn.h
-> +++ b/include/safe_macros_fn.h
-> @@ -30,6 +30,9 @@ char* safe_basename(const char *file, const int lineno,
->  int safe_chdir(const char *file, const int lineno,
->                 void (*cleanup_fn)(void), const char *path);
+> +extern void *TEST_RETURN_PTR;
+> +
+> +#define TESTPTR(SCALL) \
+> +	do { \
+> +		errno = 0; \
+> +		TEST_RETURN_PTR = (void*)(TEST_RETURN = (intptr_t)SCALL); \
+
+I guess that this expression is safe enough, since TEST_RETURN is long,
+so the assigment will not overflow, but that also begs a question why do
+we assign it in the first place?
+
+> +		TEST_ERRNO = errno; \
+> +	} while (0)
+> +
+>  /*
+>   * Functions to convert ERRNO to its name and SIGNAL to its name.
+>   */
+> diff --git a/lib/tst_res.c b/lib/tst_res.c
+> index 8ff7ee425..84becbef4 100644
+> --- a/lib/tst_res.c
+> +++ b/lib/tst_res.c
+> @@ -55,6 +55,7 @@
 >  
-> +int safe_chroot(const char *file, const int lineno,
-> +               void (*cleanup_fn)(void), const char *path);
+>  long TEST_RETURN;
+>  int TEST_ERRNO;
+> +void *TEST_RETURN_PTR;
 
-Can we pretty please avoid adding the function prototypes with the
-unused cleanup pointer?
+Can we please name it a bit better so that we avoid renaming it later
+on? What about TST_RET_PTR so that it's consistent with the planned
+rename of TEST_RETURN to just TST_RET?
 
-The safe_macros_fn.h file exists only for a historical reasons, new safe
-macros should be added to the tst_safe_macros.h file only, both macro
-and function prototype should go there.
+>  #define VERBOSE      1
+>  #define NOPASS       3
+> -- 
+> 2.17.1
+> 
 
 -- 
 Cyril Hrubis
