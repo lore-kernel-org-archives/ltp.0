@@ -1,28 +1,81 @@
-From: Michael Moese <mmoese@suse.de>
-Date: Wed, 20 Jun 2018 09:21:38 +0200
-Subject: [LTP] LTP CVE cve-2017-17053 test failed on x86_64 device
-In-Reply-To: <CA+G9fYsRgGsmi-tE8dU=pfSDDLg3bUuii_0KUPZ71jFLNre-5g@mail.gmail.com>
-References: <CA+G9fYsRgGsmi-tE8dU=pfSDDLg3bUuii_0KUPZ71jFLNre-5g@mail.gmail.com>
-Message-ID: <20180620072138.yrz76kmms3oviv7i@linux-d8ym>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 20 Jun 2018 09:59:15 +0200
+Subject: [LTP] [PATCH 1/3] lib: Add SAFE_CHROOT(path) macro
+Message-ID: <20180620075917.21056-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ include/safe_macros_fn.h  |  3 +++
+ include/tst_safe_macros.h |  5 ++++-
+ lib/safe_macros.c         | 15 +++++++++++++++
+ 3 files changed, 22 insertions(+), 1 deletion(-)
 
-On Wed, Jun 20, 2018 at 12:14:22PM +0530, Naresh Kamboju wrote:
-> Test FAIL case output,
-> tst_test.c:1015: INFO: Timeout per run is 0h 15m 00s
-> tst_taint.c:88: BROK: Kernel is already tainted: 512
-The kernel is already tainted. In this case, the test refuses to run,
-because it could not tell if the test is pass or fail.
-
-Could you please check if you could run the test directly after a
-reboot?
-
-Regards,
-Michael
+diff --git a/include/safe_macros_fn.h b/include/safe_macros_fn.h
+index 3df952811..9b11801a4 100644
+--- a/include/safe_macros_fn.h
++++ b/include/safe_macros_fn.h
+@@ -30,6 +30,9 @@ char* safe_basename(const char *file, const int lineno,
+ int safe_chdir(const char *file, const int lineno,
+                void (*cleanup_fn)(void), const char *path);
+ 
++int safe_chroot(const char *file, const int lineno,
++               void (*cleanup_fn)(void), const char *path);
++
+ int safe_close(const char *file, const int lineno,
+                void (*cleanup_fn)(void), int fildes);
+ 
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 75c2a0803..0cf560b98 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 2010-2015 Linux Test Project
++ * Copyright (c) 2010-2018 Linux Test Project
+  * Copyright (c) 2011-2015 Cyril Hrubis <chrubis@suse.cz>
+  *
+  * This program is free software: you can redistribute it and/or modify
+@@ -37,6 +37,9 @@
+ #define SAFE_BASENAME(path) \
+ 	safe_basename(__FILE__, __LINE__, NULL, (path))
+ 
++#define SAFE_CHROOT(path) \
++	safe_chroot(__FILE__, __LINE__, NULL, (path))
++
+ #define SAFE_CHDIR(path) \
+ 	safe_chdir(__FILE__, __LINE__, NULL, (path))
+ 
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index abdeca013..2fc14f709 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -33,6 +33,21 @@ char *safe_basename(const char *file, const int lineno,
+ 	return rval;
+ }
+ 
++int safe_chroot(const char *file, const int lineno, void (*cleanup_fn) (void),
++               const char *path)
++{
++	int rval;
++
++	rval = chroot(path);
++	if (rval == -1) {
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			 "%s:%d: chroot(%s) failed",
++			 file, lineno, path);
++	}
++
++	return rval;
++}
++
+ int
+ safe_chdir(const char *file, const int lineno, void (*cleanup_fn) (void),
+ 	   const char *path)
 -- 
-SUSE Linux GmbH, GF: Felix Imendörffer, Jane Smithard, Graham Norton, HRB 21284 (AG Nürnberg)
+2.17.1
+
