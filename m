@@ -1,68 +1,78 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 21 Jun 2018 11:27:05 +0800
-Subject: [LTP] [PATCH] commands/mkswap01.sh: Revert the original retry loops
-Message-ID: <1529551625-366-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 21 Jun 2018 16:56:53 +0800
+Subject: [LTP] [RFC PATCH 3/9] syscalls/ipc: Rewrite msgctl01 + merge
+	msgctl06
+In-Reply-To: <20180620105728.GB23700@rei>
+References: <20180612154631.435-1-chrubis@suse.cz>
+ <20180612154631.435-4-chrubis@suse.cz>
+ <CAEemH2fmszUp0TMC24+kJuGYrBbwyrwe67B28AoWB16-MCj89A@mail.gmail.com>
+ <20180620105728.GB23700@rei>
+Message-ID: <CAEemH2d3GsE_zMDqA4=ek0iEZ_yO6OO_0PdGkSC_djCODuc-KA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Before kernel commit c3473c6(e.g. RHEL6), mkswap -L or mkswap -U for loop
-devices can not generate corresponding "/dev/disk/by-*" files and gets TBROK.
-It is just a way to check the success of mkswap rather than a bug, so the test
-should not get TBROK when "/dev/disk/by-*" files are not generated but swapon
-enable loop devices for swapping sucessfully.
+Hi Cyril,
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- testcases/commands/mkswap/mkswap01.sh | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+On Wed, Jun 20, 2018 at 6:57 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
+> Hi!
+>> ???
+>> ???I'm thinking that whether 1 second is enough for system shaking. ???If this
+>> program is running on an overload system, this maybe delay more than 1
+>> second and test fails, is that a test defect????
+>
+> Since we are calling just two subsequent syscalls here it's very
+> unlikely that the difference in times will be greater than 1s even on
+> loaded system, but for sure we can increase that to two or three that
+> wouldn't do any harm.
 
-diff --git a/testcases/commands/mkswap/mkswap01.sh b/testcases/commands/mkswap/mkswap01.sh
-index 5ead4cd..1c01c86 100755
---- a/testcases/commands/mkswap/mkswap01.sh
-+++ b/testcases/commands/mkswap/mkswap01.sh
-@@ -37,14 +37,25 @@ setup()
- 	DEVICE_SIZE=$((($real_size/$PAGE_SIZE * $PAGE_SIZE)/1024))
- }
- 
--check_for_file()
-+wait_for_file()
- {
- 	local path="$1"
-+	local retries=10
- 
--	if [ -z "$path" -o -e "$path" ]; then
-+	if [ -z "$path" ]; then
- 		return
- 	fi
--	return 1
-+
-+	while [ $retries -gt 0 ]; do
-+		if [ -e "$path" ]; then
-+			return
-+		fi
-+		tst_res TINFO "Waiting for $path to appear"
-+		retries=$((retries - 1))
-+		tst_sleep 10ms
-+	done
-+
-+	tst_res TINFO "The file $path haven't appeared"
- }
- 
- mkswap_verify()
-@@ -64,7 +75,7 @@ mkswap_verify()
- 		local pagesize=$PAGE_SIZE
- 	fi
- 
--	TST_RETRY_FUNC "check_for_file $dev_file" 0
-+	wait_for_file "$dev_file"
- 
- 	swapon $swapfile 2>/dev/null
- 
+Ok, fine.
+
+>
+>> Maybe gives more flexible as:
+>>     if (buf.msg_ctime <= creat_time && buf.msg_ctime >= creat_time - 3)
+>>
+>>
+>> > +               tst_res(TPASS, "msg_ctime = %lu, expected %lu",
+>> > +                       (unsigned long)buf.msg_ctime, (unsigned
+>> > long)creat_time);
+>> > +       } else {
+>> > +               tst_res(TPASS, "msg_ctime = %lu, expected %lu",
+>> >
+>>
+>> ???seems typo here?  TFAIL
+>
+> Right, thanks for pointing it out!
+>
+>> > +                       (unsigned long)buf.msg_ctime, (unsigned
+>> > long)creat_time);
+>> > +       }
+>>
+>>
+>> >
+>> ???Beside that, I got this follow errors occasionally:
+>>
+>> ???# ./msgctl01
+>> tst_test.c:1015: INFO: Timeout per run is 0h 05m 00s
+>> tst_safe_sysv_ipc.c:51: BROK: msgctl01.c:137: msgget(1627794347, 7b0)
+>> failed: EEXIST???
+>
+> That means that there is some leftover message queue on the system,
+> there may be a problem in how the IDs are allocated in the IPC test
+> library.
+>
+> Do you have any steps to reproduce the issue?
+
+No, but I will look it closely then.
+
+BTW, this failure is not caused by your patch. I'm sure that I can
+reproduce it without your patch apply at that moment.
+
+And, for the patch set, LGTM.
+
+
 -- 
-1.8.3.1
-
-
-
+Regards,
+Li Wang
