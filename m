@@ -1,78 +1,155 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 21 Jun 2018 16:56:53 +0800
-Subject: [LTP] [RFC PATCH 3/9] syscalls/ipc: Rewrite msgctl01 + merge
-	msgctl06
-In-Reply-To: <20180620105728.GB23700@rei>
-References: <20180612154631.435-1-chrubis@suse.cz>
- <20180612154631.435-4-chrubis@suse.cz>
- <CAEemH2fmszUp0TMC24+kJuGYrBbwyrwe67B28AoWB16-MCj89A@mail.gmail.com>
- <20180620105728.GB23700@rei>
-Message-ID: <CAEemH2d3GsE_zMDqA4=ek0iEZ_yO6OO_0PdGkSC_djCODuc-KA@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 21 Jun 2018 11:34:19 +0200
+Subject: [LTP] [PATCH v2 3/3] cve/cve-2018-1000001: Add Realpath Buffer
+ Underflow test
+In-Reply-To: <20180620154843.27565-3-pvorel@suse.cz>
+References: <20180620154843.27565-1-pvorel@suse.cz>
+ <20180620154843.27565-3-pvorel@suse.cz>
+Message-ID: <20180621093419.GA22873@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi!
+> Idea based on glibc source io/tst-getcwd-abspath.c, contributed by
+> Dmitry V. Levin [1]
+> 
+> [1] https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=commitdiff;h=52a713fdd0a30e1bd79818e2e3c4ab44ddca1a94;hp=249a5895f120b13290a372a49bb4b499e749806f
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> v1->v2:
+> * replace errno with TEST_ERRNO
+> * remove unused headers
+> ---
+>  runtest/cve                           |  1 +
+>  testcases/cve/Makefile                |  2 +-
+>  testcases/cve/libc/Makefile           |  8 ++++
+>  testcases/cve/libc/cve-2018-1000001.c | 56 +++++++++++++++++++++++++++
 
-On Wed, Jun 20, 2018 at 6:57 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
-> Hi!
->> ???
->> ???I'm thinking that whether 1 second is enough for system shaking. ???If this
->> program is running on an overload system, this maybe delay more than 1
->> second and test fails, is that a test defect????
->
-> Since we are calling just two subsequent syscalls here it's very
-> unlikely that the difference in times will be greater than 1s even on
-> loaded system, but for sure we can increase that to two or three that
-> wouldn't do any harm.
+I'm not sure if it's a good idea to separate the CVE testcases like
+that, CVE is a CVE and as it looks this has been caused by a change in
+the Linux kernel anyways.
 
-Ok, fine.
+So maybe we should put this into a syscalls/getcwd/ directory after all
+as the cve identifiers are not really human readable and getcwd05.c
+sounds better to me.
 
->
->> Maybe gives more flexible as:
->>     if (buf.msg_ctime <= creat_time && buf.msg_ctime >= creat_time - 3)
->>
->>
->> > +               tst_res(TPASS, "msg_ctime = %lu, expected %lu",
->> > +                       (unsigned long)buf.msg_ctime, (unsigned
->> > long)creat_time);
->> > +       } else {
->> > +               tst_res(TPASS, "msg_ctime = %lu, expected %lu",
->> >
->>
->> ???seems typo here?  TFAIL
->
-> Right, thanks for pointing it out!
->
->> > +                       (unsigned long)buf.msg_ctime, (unsigned
->> > long)creat_time);
->> > +       }
->>
->>
->> >
->> ???Beside that, I got this follow errors occasionally:
->>
->> ???# ./msgctl01
->> tst_test.c:1015: INFO: Timeout per run is 0h 05m 00s
->> tst_safe_sysv_ipc.c:51: BROK: msgctl01.c:137: msgget(1627794347, 7b0)
->> failed: EEXIST???
->
-> That means that there is some leftover message queue on the system,
-> there may be a problem in how the IDs are allocated in the IPC test
-> library.
->
-> Do you have any steps to reproduce the issue?
+>  4 files changed, 66 insertions(+), 1 deletion(-)
+>  create mode 100644 testcases/cve/libc/Makefile
+>  create mode 100644 testcases/cve/libc/cve-2018-1000001.c
+> 
+> diff --git a/runtest/cve b/runtest/cve
+> index 2f4171c84..c7031281a 100644
+> --- a/runtest/cve
+> +++ b/runtest/cve
+> @@ -33,3 +33,4 @@ cve-2017-17052 cve-2017-17052
+>  cve-2017-16939 cve-2017-16939
+>  cve-2017-17053 cve-2017-17053
+>  cve-2018-5803 sctp_big_chunk
+> +cve-2018-1000001_libc_realpath_buffer_underflow cve-2018-1000001
 
-No, but I will look it closely then.
+This long name loos kind of ugly, I would vote for having only the cve
+identifier in the test id here.
 
-BTW, this failure is not caused by your patch. I'm sure that I can
-reproduce it without your patch apply at that moment.
+> diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
+> index 3a05dd4fe..e5fc8d44f 100644
+> --- a/testcases/cve/Makefile
+> +++ b/testcases/cve/Makefile
+> @@ -41,4 +41,4 @@ cve-2017-17053:	CFLAGS += -pthread
+>  
+>  cve-2015-3290:	CFLAGS += -pthread
+>  
+> -include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> +include $(top_srcdir)/include/mk/generic_trunk_target.mk
+> diff --git a/testcases/cve/libc/Makefile b/testcases/cve/libc/Makefile
+> new file mode 100644
+> index 000000000..e23dc473c
+> --- /dev/null
+> +++ b/testcases/cve/libc/Makefile
+> @@ -0,0 +1,8 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2018 Linux Test Project
+> +
+> +top_srcdir		?= ../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/cve/libc/cve-2018-1000001.c b/testcases/cve/libc/cve-2018-1000001.c
+> new file mode 100644
+> index 000000000..fd2c52d37
+> --- /dev/null
+> +++ b/testcases/cve/libc/cve-2018-1000001.c
+> @@ -0,0 +1,56 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2018 Petr Vorel <pvorel@suse.cz>
+> + * Based on the reproducer posted upstream so other copyrights may apply.
+> + *
+> + * Author: Dmitry V. Levin <ldv@altlinux.org>
+> + * LTP conversion from glibc source: Petr Vorel <pvorel@suse.cz>
+> + */
+> +
+> +#include "tst_test.h"
+> +
+> +#include <errno.h>
+> +#include <stdlib.h>
+> +
+> +#define CHROOT_DIR "cve-2018-1000001"
+> +
+> +static void setup(void)
+> +{
+> +	SAFE_MKDIR(CHROOT_DIR, 0755);
+> +	SAFE_CHROOT(CHROOT_DIR);
+> +}
+> +
+> +static void run(unsigned int i)
+> +{
+> +	int fail = 0;
+> +
+> +	if (!i) {
+> +		tst_res(TINFO, "testing getcwd()");
+> +		TESTPTR(getcwd(NULL, 0));
+> +	} else {
+> +		tst_res(TINFO, "testing realpath()");
+> +		TESTPTR(realpath(".", NULL));
+> +	}
 
-And, for the patch set, LGTM.
+We may as well get rid of the negation in the condition and swap the
+branches, which is a bit simpler...
 
+> +	if (TEST_ERRNO != ENOENT) {
+> +		tst_res(TFAIL | TTERRNO, "returned unexpected errno");
+> +		fail = 1;
+> +	}
+> +
+> +	if (TST_RET_PTR != NULL) {
+> +		tst_res(TFAIL, "syscall didn't return NULL: '%s'",
+> +				(char *)TST_RET_PTR);
+
+I doubt that we need the cast to char* here.
+
+> +		fail = 1;
+> +	}
+> +
+> +	if (!fail)
+> +		tst_res(TPASS, "bug not reproduced");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test = run,
+> +	.tcnt = 2,
+> +	.setup = setup,
+> +	.needs_root = 1,
+> +	.needs_tmpdir = 1,
+> +};
+> -- 
+> 2.17.1
+> 
 
 -- 
-Regards,
-Li Wang
+Cyril Hrubis
+chrubis@suse.cz
