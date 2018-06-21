@@ -1,65 +1,68 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 20 Jun 2018 17:48:41 +0200
-Subject: [LTP] [PATCH v2 1/3] lib: Add SAFE_CHROOT(path) macro
-Message-ID: <20180620154843.27565-1-pvorel@suse.cz>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 21 Jun 2018 11:27:05 +0800
+Subject: [LTP] [PATCH] commands/mkswap01.sh: Revert the original retry loops
+Message-ID: <1529551625-366-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-v1->v2:
-* new API only
----
- include/tst_safe_macros.h |  6 +++++-
- lib/tst_safe_macros.c     | 13 +++++++++++++
- 2 files changed, 18 insertions(+), 1 deletion(-)
+Before kernel commit c3473c6(e.g. RHEL6), mkswap -L or mkswap -U for loop
+devices can not generate corresponding "/dev/disk/by-*" files and gets TBROK.
+It is just a way to check the success of mkswap rather than a bug, so the test
+should not get TBROK when "/dev/disk/by-*" files are not generated but swapon
+enable loop devices for swapping sucessfully.
 
-diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index 75c2a0803..1ad9c71b2 100644
---- a/include/tst_safe_macros.h
-+++ b/include/tst_safe_macros.h
-@@ -1,5 +1,5 @@
- /*
-- * Copyright (c) 2010-2015 Linux Test Project
-+ * Copyright (c) 2010-2018 Linux Test Project
-  * Copyright (c) 2011-2015 Cyril Hrubis <chrubis@suse.cz>
-  *
-  * This program is free software: you can redistribute it and/or modify
-@@ -48,6 +48,10 @@
- #define SAFE_CREAT(pathname, mode) \
- 	safe_creat(__FILE__, __LINE__, NULL, (pathname), (mode))
- 
-+#define SAFE_CHROOT(path) \
-+	safe_chroot(__FILE__, __LINE__, (path))
-+int safe_chroot(const char *file, const int lineno, const char *path);
-+
- #define SAFE_DIRNAME(path) \
- 	safe_dirname(__FILE__, __LINE__, NULL, (path))
- 
-diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
-index e152bff7f..17384f32c 100644
---- a/lib/tst_safe_macros.c
-+++ b/lib/tst_safe_macros.c
-@@ -152,3 +152,16 @@ struct group *safe_getgrnam(const char *file, const int lineno,
- 
- 	return rval;
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/commands/mkswap/mkswap01.sh | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/commands/mkswap/mkswap01.sh b/testcases/commands/mkswap/mkswap01.sh
+index 5ead4cd..1c01c86 100755
+--- a/testcases/commands/mkswap/mkswap01.sh
++++ b/testcases/commands/mkswap/mkswap01.sh
+@@ -37,14 +37,25 @@ setup()
+ 	DEVICE_SIZE=$((($real_size/$PAGE_SIZE * $PAGE_SIZE)/1024))
  }
+ 
+-check_for_file()
++wait_for_file()
+ {
+ 	local path="$1"
++	local retries=10
+ 
+-	if [ -z "$path" -o -e "$path" ]; then
++	if [ -z "$path" ]; then
+ 		return
+ 	fi
+-	return 1
 +
-+int safe_chroot(const char *file, const int lineno, const char *path)
-+{
-+	int rval;
++	while [ $retries -gt 0 ]; do
++		if [ -e "$path" ]; then
++			return
++		fi
++		tst_res TINFO "Waiting for $path to appear"
++		retries=$((retries - 1))
++		tst_sleep 10ms
++	done
 +
-+	rval = chroot(path);
-+	if (rval == -1) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			 "chroot(%s) failed", path);
-+	}
-+
-+	return rval;
-+}
++	tst_res TINFO "The file $path haven't appeared"
+ }
+ 
+ mkswap_verify()
+@@ -64,7 +75,7 @@ mkswap_verify()
+ 		local pagesize=$PAGE_SIZE
+ 	fi
+ 
+-	TST_RETRY_FUNC "check_for_file $dev_file" 0
++	wait_for_file "$dev_file"
+ 
+ 	swapon $swapfile 2>/dev/null
+ 
 -- 
-2.17.1
+1.8.3.1
+
+
 
