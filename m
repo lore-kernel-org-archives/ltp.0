@@ -1,72 +1,31 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 25 Jun 2018 10:41:20 +0200
-Subject: [LTP] [PATCH ltp] kernel/fs/doio/rwtest: fix shellcheck error
-In-Reply-To: <20180525074447.26298-1-yixin.zhang@intel.com>
-References: <20180525074447.26298-1-yixin.zhang@intel.com>
-Message-ID: <20180625084120.r42fr73grqeyzaot@dell5510>
+From: umeshyv <umeshyv@gmail.com>
+Date: Fri, 22 Jun 2018 00:19:19 +0530
+Subject: [LTP] Usage of tst_parse and Emailing results
+Message-ID: <CA+Kjy2wgaiMYOJX5FoOsP8f=WyDadRBJR9sfkghcUEhne4-PFQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-Hi Yixin,
+Hi All,
 
-thanks for your patch, we appreciate your effort.
-There are some comments bellow. Even if you fix them, patches like this one
-doesn't help much. The script is really ugly, requires a rewrite which would:
+I have a requirement to run a test case along with device  address from
+command line, for eg., running an i2c test  as follows
 
-1) Be posix compliant. I.e.: remove all bashisms (arrays, typeset, regex
-in [[ ... ]], etc.). It's good to use checkbashism.pl script and run it in dash
-to test it:
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#132-shell-coding-style
-https://salsa.debian.org/debian/devscripts/raw/master/scripts/checkbashisms.pl
+ i2c_test <device addr>
 
-2) Use LTP new shell API
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#23-writing-a-testcase-in-shell
+How could I make use of tst_parse() to get device addr, please suggest with
+examples.
 
-Rewriting the script would be a great improvement. If you decide to do so,
-please do not hesitate to ask for help (if needed).
+Also I wanted to send test results to email id on completion of test
+execution, please update me if I need to add any code snippet in test code
+or from command line configuration. Please suggest.
 
-Kind regards,
-Petr
 
-> testcases/kernel/fs/doio/rwtest:199:12: error: > is for string comparisons. Use -gt instead. [SC2071]
-> testcases/kernel/fs/doio/rwtest:320:10: error: Globs are ignored in [[ ]] except right of =/!=. Use a loop. [SC2203]
-> testcases/kernel/fs/doio/rwtest:347:7: error: Couldn't parse this test expression. [SC1073]
-> testcases/kernel/fs/doio/rwtest:347:25: error: Expected test to end here (don't wrap commands in []/[[]]).
->                                                Fix any mentioned problems and try again. [SC1072]
-
-...
-> +++ b/testcases/kernel/fs/doio/rwtest
-> @@ -196,7 +196,7 @@ do	case $1 in
->  	-n | -Dn )
->  		dOpts="$dOpts $1 $2"
->  		# force file locking with > 1 process
-> -		if [[ $2 > 1 ]]
-> +		if [[ $2 -gt 1 ]]
-Why not use posix compliant syntax? I.e. single square brackets:
-if [ $2 -gt 1 ]; then
-
->  		then
->  			dOpts="$dOpts -k"
->  		fi
-> @@ -317,7 +317,7 @@ do
->  		typeset -i n=0
->  		while (( n < ${#szcache[*]} ))
->  		do
-> -			if [[ szcache[$n] = $dir ]]; then
-> +			if [[ ${szcache[n]} = $dir ]]; then
-Well, correct, but we'd like to drop arrays, as they're bashisms.
->  				break;
->  			fi
->  			n=n+1
-> @@ -344,7 +344,7 @@ do
-
->  			# check if blks is a number, else set a default value for blks
->  			default_sz=1000000
-> -			if [ $blks -eq $blks 2> /dev/null ]
-> +			if [ $blks -eq $blks ] 2>/dev/null
-The shellcheck warning was meant to be without square brackets:
-if $blks -eq $blks 2>/dev/null; then
-
+Thanks
+=E2=80=8BUmesh
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180622/7d177490/att=
+achment.html>
