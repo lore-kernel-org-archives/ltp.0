@@ -1,155 +1,67 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 21 Jun 2018 11:34:19 +0200
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 21 Jun 2018 16:10:12 +0200
 Subject: [LTP] [PATCH v2 3/3] cve/cve-2018-1000001: Add Realpath Buffer
  Underflow test
-In-Reply-To: <20180620154843.27565-3-pvorel@suse.cz>
+In-Reply-To: <20180621093419.GA22873@rei>
 References: <20180620154843.27565-1-pvorel@suse.cz>
  <20180620154843.27565-3-pvorel@suse.cz>
-Message-ID: <20180621093419.GA22873@rei>
+ <20180621093419.GA22873@rei>
+Message-ID: <20180621141012.362aoktmiyfe5wjk@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-> Idea based on glibc source io/tst-getcwd-abspath.c, contributed by
-> Dmitry V. Levin [1]
-> 
-> [1] https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=commitdiff;h=52a713fdd0a30e1bd79818e2e3c4ab44ddca1a94;hp=249a5895f120b13290a372a49bb4b499e749806f
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> v1->v2:
-> * replace errno with TEST_ERRNO
-> * remove unused headers
-> ---
->  runtest/cve                           |  1 +
->  testcases/cve/Makefile                |  2 +-
->  testcases/cve/libc/Makefile           |  8 ++++
->  testcases/cve/libc/cve-2018-1000001.c | 56 +++++++++++++++++++++++++++
+Hi Cyril,
 
-I'm not sure if it's a good idea to separate the CVE testcases like
-that, CVE is a CVE and as it looks this has been caused by a change in
-the Linux kernel anyways.
+thanks for review. I'll send changes in v3 + see comments bellow.
 
-So maybe we should put this into a syscalls/getcwd/ directory after all
-as the cve identifiers are not really human readable and getcwd05.c
-sounds better to me.
+> I'm not sure if it's a good idea to separate the CVE testcases like
+> that, CVE is a CVE and as it looks this has been caused by a change in
+> the Linux kernel anyways.
 
->  4 files changed, 66 insertions(+), 1 deletion(-)
->  create mode 100644 testcases/cve/libc/Makefile
->  create mode 100644 testcases/cve/libc/cve-2018-1000001.c
-> 
-> diff --git a/runtest/cve b/runtest/cve
-> index 2f4171c84..c7031281a 100644
-> --- a/runtest/cve
-> +++ b/runtest/cve
-> @@ -33,3 +33,4 @@ cve-2017-17052 cve-2017-17052
->  cve-2017-16939 cve-2017-16939
->  cve-2017-17053 cve-2017-17053
->  cve-2018-5803 sctp_big_chunk
-> +cve-2018-1000001_libc_realpath_buffer_underflow cve-2018-1000001
+> So maybe we should put this into a syscalls/getcwd/ directory after all
+> as the cve identifiers are not really human readable and getcwd05.c
+> sounds better to me.
+Agree, added there for v3.
 
-This long name loos kind of ugly, I would vote for having only the cve
-identifier in the test id here.
 
-> diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
-> index 3a05dd4fe..e5fc8d44f 100644
-> --- a/testcases/cve/Makefile
-> +++ b/testcases/cve/Makefile
-> @@ -41,4 +41,4 @@ cve-2017-17053:	CFLAGS += -pthread
->  
->  cve-2015-3290:	CFLAGS += -pthread
->  
-> -include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> +include $(top_srcdir)/include/mk/generic_trunk_target.mk
-> diff --git a/testcases/cve/libc/Makefile b/testcases/cve/libc/Makefile
-> new file mode 100644
-> index 000000000..e23dc473c
-> --- /dev/null
-> +++ b/testcases/cve/libc/Makefile
-> @@ -0,0 +1,8 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Linux Test Project
-> +
-> +top_srcdir		?= ../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/cve/libc/cve-2018-1000001.c b/testcases/cve/libc/cve-2018-1000001.c
-> new file mode 100644
-> index 000000000..fd2c52d37
-> --- /dev/null
-> +++ b/testcases/cve/libc/cve-2018-1000001.c
-> @@ -0,0 +1,56 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2018 Petr Vorel <pvorel@suse.cz>
-> + * Based on the reproducer posted upstream so other copyrights may apply.
-> + *
-> + * Author: Dmitry V. Levin <ldv@altlinux.org>
-> + * LTP conversion from glibc source: Petr Vorel <pvorel@suse.cz>
-> + */
-> +
-> +#include "tst_test.h"
-> +
-> +#include <errno.h>
-> +#include <stdlib.h>
-> +
-> +#define CHROOT_DIR "cve-2018-1000001"
-> +
-> +static void setup(void)
-> +{
-> +	SAFE_MKDIR(CHROOT_DIR, 0755);
-> +	SAFE_CHROOT(CHROOT_DIR);
-> +}
-> +
-> +static void run(unsigned int i)
-> +{
-> +	int fail = 0;
-> +
-> +	if (!i) {
-> +		tst_res(TINFO, "testing getcwd()");
-> +		TESTPTR(getcwd(NULL, 0));
-> +	} else {
-> +		tst_res(TINFO, "testing realpath()");
-> +		TESTPTR(realpath(".", NULL));
-> +	}
+> > +++ b/runtest/cve
+> > @@ -33,3 +33,4 @@ cve-2017-17052 cve-2017-17052
+> >  cve-2017-16939 cve-2017-16939
+> >  cve-2017-17053 cve-2017-17053
+> >  cve-2018-5803 sctp_big_chunk
+> > +cve-2018-1000001_libc_realpath_buffer_underflow cve-2018-1000001
 
-We may as well get rid of the negation in the condition and swap the
-branches, which is a bit simpler...
+> This long name loos kind of ugly, I would vote for having only the cve
+> identifier in the test id here.
+OK. + I added it into these runfiles (these where getcwd0[1-4] are + into CVE
+itself):
+runtest/cve
+ cve-2018-5803 sctp_big_chunk
++cve-2018-1000001 getcwd05
 
-> +	if (TEST_ERRNO != ENOENT) {
-> +		tst_res(TFAIL | TTERRNO, "returned unexpected errno");
-> +		fail = 1;
-> +	}
-> +
-> +	if (TST_RET_PTR != NULL) {
-> +		tst_res(TFAIL, "syscall didn't return NULL: '%s'",
-> +				(char *)TST_RET_PTR);
+runtest/ltplite
+runtest/stress.part3
+runtest/syscalls
+ getcwd04 getcwd04
++getcwd05 getcwd05
 
-I doubt that we need the cast to char* here.
+...
+> > +	if (TST_RET_PTR != NULL) {
+> > +		tst_res(TFAIL, "syscall didn't return NULL: '%s'",
+> > +				(char *)TST_RET_PTR);
 
-> +		fail = 1;
-> +	}
-> +
-> +	if (!fail)
-> +		tst_res(TPASS, "bug not reproduced");
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test = run,
-> +	.tcnt = 2,
-> +	.setup = setup,
-> +	.needs_root = 1,
-> +	.needs_tmpdir = 1,
-> +};
-> -- 
-> 2.17.1
-> 
+> I doubt that we need the cast to char* here.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+We do:
+getcwd05.c: In function ‘run’:
+../../../../include/tst_test.h:53:40: warning: format ‘%s’ expects argument of type ‘char *’, but argument 5 has type ‘void *’ [-Wformat=]
+  tst_res_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__)
+
+So is something wrong in my TESTPTR() implementation?
+
+
+Kind regards,
+Petr
