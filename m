@@ -1,48 +1,43 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Sun, 24 Jun 2018 13:59:43 +0800
-Subject: [LTP] [PATCH v2] commands/mkswap01.sh: Fix unexisted
-	"/dev/disk/by-*" files on old kernels
-In-Reply-To: <CAEemH2c4tC1Lk5bu2Tym9N5ej2yuqR15U+ApO-+vZb8XsKm-Jg@mail.gmail.com>
-References: <CAEemH2c4tC1Lk5bu2Tym9N5ej2yuqR15U+ApO-+vZb8XsKm-Jg@mail.gmail.com>
-Message-ID: <1529819983-461-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Alistair Strachan <astrachan@google.com>
+Date: Fri, 22 Jun 2018 14:57:07 -0700
+Subject: [LTP] [PATCH] pathconf01: Use TMPDIR instead of "/tmp" if set
+Message-ID: <20180622215710.126661-1-astrachan@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Before kernel commit c3473c6(e.g. RHEL6), mkswap -L or mkswap -U for loop
-devices can not generate corresponding "/dev/disk/by-*" files.  It is just
-a way to check the success of mkswap rather than a bug, so the test should
-not get TBROK when "/dev/disk/by-*" files are not generated but swapon
-enables loop devices for swapping sucessfully.
+Enable this test to work in environments without a /tmp directory.
 
-Suggested-by: Li Wang <liwang@redhat.com>
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Alistair Strachan <astrachan@google.com>
 ---
- testcases/commands/mkswap/mkswap01.sh | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ testcases/kernel/syscalls/pathconf/pathconf01.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/commands/mkswap/mkswap01.sh b/testcases/commands/mkswap/mkswap01.sh
-index 5ead4cd..4185702 100755
---- a/testcases/commands/mkswap/mkswap01.sh
-+++ b/testcases/commands/mkswap/mkswap01.sh
-@@ -64,7 +64,12 @@ mkswap_verify()
- 		local pagesize=$PAGE_SIZE
- 	fi
+diff --git a/testcases/kernel/syscalls/pathconf/pathconf01.c b/testcases/kernel/syscalls/pathconf/pathconf01.c
+index ddbe87f7a..362bae94f 100644
+--- a/testcases/kernel/syscalls/pathconf/pathconf01.c
++++ b/testcases/kernel/syscalls/pathconf/pathconf01.c
+@@ -154,7 +154,8 @@ int main(int ac, char **av)
+ 	tst_parse_opts(ac, av, options, &help);
  
--	TST_RETRY_FUNC "check_for_file $dev_file" 0
-+	if tst_kvcmp -lt "2.6.35" && [ -n "$dev_file" ]; then
-+		tst_res TINFO "Waiting for $dev_file to appear"
-+		tst_sleep 100ms
-+	else
-+		TST_RETRY_FUNC "check_for_file $dev_file" 0
-+	fi
+ 	if (!lflag) {
+-		path = strdup("/tmp");
++		tst_tmpdir();
++		path = tst_get_tmpdir();
+ 	}
+     /***************************************************************
+      * perform global setup for test
+@@ -221,7 +222,10 @@ void setup(void)
+  ***************************************************************/
+ void cleanup(void)
+ {
+-
++	if (!lflag) {
++		tst_rmdir();
++		free(path);
++	}
+ }
  
- 	swapon $swapfile 2>/dev/null
- 
--- 
-1.8.3.1
-
-
-
+ /***************************************************************
