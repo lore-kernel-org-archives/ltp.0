@@ -1,7 +1,7 @@
 From: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
-Date: Sat, 23 Jun 2018 10:07:09 +0800
-Subject: [LTP] [PATCH] route: fix double add the same route
-Message-ID: <20180623020709.3575-1-sunlw.fnst@cn.fujitsu.com>
+Date: Sat, 23 Jun 2018 10:11:03 +0800
+Subject: [LTP] [PATCH v2] route: fix double add the same route
+Message-ID: <20180623021103.3846-1-sunlw.fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -29,7 +29,7 @@ index 96fd7ee66..be819f1c2 100644
  	    2)
 -	    ip -f inet6 route add ${dst_network}/64 via ${IPV6_NETWORK}:${rhost_part_hex} dev $lhost_ifname
 -	    ip -f inet6 route del ${dst_network}/64 via ${IPV6_NETWORK}:${pre_rhost_part_hex} dev $lhost_ifname
-+		ip -f inet6 route change ${dst_network}/64 via ${IPV6_NETWORK}:${rhost_part_hex} dev $lhost_ifname
++	    ip -f inet6 route change ${dst_network}/64 via ${IPV6_NETWORK}:${rhost_part_hex} dev $lhost_ifname
  	    ;;
  	esac
  	if [ $? -ne 0 ]; then
