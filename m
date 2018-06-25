@@ -1,22 +1,58 @@
-From: umeshyv <umeshyv@gmail.com>
-Date: Fri, 22 Jun 2018 00:23:23 +0530
-Subject: [LTP] runltp fails with Buildroot
-Message-ID: <CA+Kjy2zzPOUcUP7yYu-OcA4NrKhp+fNW9PNObfxiAuPWsUw0eg@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 25 Jun 2018 17:02:31 +0800
+Subject: [LTP] [PATCH v2] commands/mkswap01.sh: Fix unexisted
+ "/dev/disk/by-*" files on old kernels
+In-Reply-To: <1529819983-461-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <CAEemH2c4tC1Lk5bu2Tym9N5ej2yuqR15U+ApO-+vZb8XsKm-Jg@mail.gmail.com>
+ <1529819983-461-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <CAEemH2dt-kERhF2io-4mVWCR14=Fh_bKtbBHCbZm=WNPdMm8sw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi
+On Sun, Jun 24, 2018 at 1:59 PM, Xiao Yang <yangx.jy@cn.fujitsu.com> wrote:
+> Before kernel commit c3473c6(e.g. RHEL6), mkswap -L or mkswap -U for loop
+> devices can not generate corresponding "/dev/disk/by-*" files.  It is just
+> a way to check the success of mkswap rather than a bug, so the test should
+> not get TBROK when "/dev/disk/by-*" files are not generated but swapon
+> enables loop devices for swapping sucessfully.
+>
+> Suggested-by: Li Wang <liwang@redhat.com>
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Reviewed-by: Li Wang <liwang@redhat.com>
 
-I compiled  LTP package with Buildroot for Raspberry target, when I execute
-./runltp it fails. Could anyone suggest on this.
+> ---
+>  testcases/commands/mkswap/mkswap01.sh | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/testcases/commands/mkswap/mkswap01.sh b/testcases/commands/mkswap/mkswap01.sh
+> index 5ead4cd..4185702 100755
+> --- a/testcases/commands/mkswap/mkswap01.sh
+> +++ b/testcases/commands/mkswap/mkswap01.sh
+> @@ -64,7 +64,12 @@ mkswap_verify()
+>                 local pagesize=$PAGE_SIZE
+>         fi
+>
+> -       TST_RETRY_FUNC "check_for_file $dev_file" 0
+> +       if tst_kvcmp -lt "2.6.35" && [ -n "$dev_file" ]; then
+> +               tst_res TINFO "Waiting for $dev_file to appear"
+> +               tst_sleep 100ms
+> +       else
+> +               TST_RETRY_FUNC "check_for_file $dev_file" 0
+> +       fi
+>
+>         swapon $swapfile 2>/dev/null
+>
+> --
+> 1.8.3.1
+>
+>
+>
 
 
-Thanks
-=E2=80=8BUmesh
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180622/39e53cd9/att=
-achment.html>
+
+-- 
+Regards,
+Li Wang
