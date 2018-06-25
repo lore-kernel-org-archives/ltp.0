@@ -1,19 +1,26 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 25 Jun 2018 14:02:48 +0200
-Subject: [LTP] [RFC PATCH 0/9] Rewrite msgctl testcases
-In-Reply-To: <20180612154631.435-1-chrubis@suse.cz>
-References: <20180612154631.435-1-chrubis@suse.cz>
-Message-ID: <20180625120248.GA24288@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 25 Jun 2018 15:37:29 +0200
+Subject: [LTP] [PATCH] abs01: Switch from <values.h> to <limits.h>
+In-Reply-To: <20180622215710.126661-4-astrachan@google.com>
+References: <20180622215710.126661-1-astrachan@google.com>
+ <20180622215710.126661-4-astrachan@google.com>
+Message-ID: <20180625133729.i4migeuiekz5ufgw@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with the changes requested by Peter and Li, thanks a lot for the
-review.
+Hi Alistair,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> The <values.h> is an obsolete glibc interface that wraps <limits.h> and
+> <float.h>. The abs01 test only uses it for MININT, which can be
+> switched over to <limits.h> and INT_MIN, for increased portability.
+
+> Signed-off-by: Alistair Strachan <astrachan@google.com>
+
+Pushed, thanks!
+
+
+Kind regards,
+Petr
