@@ -1,26 +1,23 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 25 Jun 2018 15:37:29 +0200
-Subject: [LTP] [PATCH] abs01: Switch from <values.h> to <limits.h>
-In-Reply-To: <20180622215710.126661-4-astrachan@google.com>
-References: <20180622215710.126661-1-astrachan@google.com>
- <20180622215710.126661-4-astrachan@google.com>
-Message-ID: <20180625133729.i4migeuiekz5ufgw@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 25 Jun 2018 15:42:00 +0200
+Subject: [LTP] runltp fails with Buildroot
+In-Reply-To: <CA+Kjy2zzPOUcUP7yYu-OcA4NrKhp+fNW9PNObfxiAuPWsUw0eg@mail.gmail.com>
+References: <CA+Kjy2zzPOUcUP7yYu-OcA4NrKhp+fNW9PNObfxiAuPWsUw0eg@mail.gmail.com>
+Message-ID: <20180625134200.GB24288@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alistair,
+Hi!
+> I compiled  LTP package with Buildroot for Raspberry target, when I execute
+> ./runltp it fails. Could anyone suggest on this.
 
-> The <values.h> is an obsolete glibc interface that wraps <limits.h> and
-> <float.h>. The abs01 test only uses it for MININT, which can be
-> switched over to <limits.h> and INT_MIN, for increased portability.
+Can you please share the steps you did and the error trace you get?
 
-> Signed-off-by: Alistair Strachan <astrachan@google.com>
+Without that we cannot help you at all.
 
-Pushed, thanks!
-
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
