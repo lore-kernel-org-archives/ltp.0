@@ -1,54 +1,41 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 25 Jun 2018 16:01:58 +0200
-Subject: [LTP] [PATCH 2/2] network/route: Rewrite route-change-gw into
- new API
-In-Reply-To: <20180518110110.zeabusjbiq2lq263@dell5510>
-References: <20180517103527.23542-1-pvorel@suse.cz>
- <20180517103527.23542-2-pvorel@suse.cz>
- <cfa4f035-9052-147b-4d6d-2b6ecfe4cf31@oracle.com>
- <20180518110110.zeabusjbiq2lq263@dell5510>
-Message-ID: <20180625140158.rvjasl7jq2m4blbc@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 25 Jun 2018 16:06:01 +0200
+Subject: [LTP] Usage of tst_parse and Emailing results
+In-Reply-To: <CA+Kjy2wgaiMYOJX5FoOsP8f=WyDadRBJR9sfkghcUEhne4-PFQ@mail.gmail.com>
+References: <CA+Kjy2wgaiMYOJX5FoOsP8f=WyDadRBJR9sfkghcUEhne4-PFQ@mail.gmail.com>
+Message-ID: <20180625140601.GC24288@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi!
+> I have a requirement to run a test case along with device  address from
+> command line, for eg., running an i2c test  as follows
+> 
+>  i2c_test <device addr>
+> 
+> How could I make use of tst_parse() to get device addr, please suggest with
+> examples.
 
-> > don't remember why the rewritten test is
-> > not using background traffic and not changing gateway anymore?
-> The current implementation was based on your suggestion for route-change-dst [1] (I'll
-> mention that in commit message), which uses ns-udpsender.  The other patch [2] is
-> changing gateway.
+There is no tst_parse() function in LTP.
 
-> Tests used ns-udpsender in previous implementation and we decided to keep it as  use
-> background traffic isn't sufficient enough [3].
+Documentation and example on how to pass parameters to a test is at:
 
-> But ns-udpsender isn't good enough, as it doesn't check whether destination receive it [4].
-> And indeed you can pass it to any destination and it will not fail, e.g.:
-> ns-udpsender -f 4 -D 1.2.3.4 -p 1 -o -s 1472
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#225-test-specific-command-line-options
 
-> I guess we need to write another helper, which will listen for packets on remote side.
-> Any recommendations/ideas on it?
+> Also I wanted to send test results to email id on completion of test
+> execution, please update me if I need to add any code snippet in test code
+> or from command line configuration. Please suggest.
 
-Ping, please.
-I suppose we want these gateway tests do the real client server communication even it's
-done on localhost, via tst_ipaddr_un().
+What exactly are you trying to do here?
 
-I guess we want to keep UDP, as it's faster than TCP.
-So I'll create some server, which listens the packets, counts them and reports
-it.
+It's not clear what "completion of test execution" means.
 
+The runltp script has an option to send a email with results but you
+have to install and configure mutt beforehand.
 
-Kind regards,
-Petr
-
-
-> Kind regards,
-> Petr
-
-> [1] http://lists.linux.it/pipermail/ltp/2017-August/005367.html
-> [2] https://lists.linux.it/pipermail/ltp/2018-May/008152.html
-> [3] http://lists.linux.it/pipermail/ltp/2017-July/005125.html
-> [4] http://lists.linux.it/pipermail/ltp/2017-August/005336.html
+-- 
+Cyril Hrubis
+chrubis@suse.cz
