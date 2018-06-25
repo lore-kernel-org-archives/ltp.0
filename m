@@ -1,38 +1,47 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 25 Jun 2018 16:10:40 +0200
-Subject: [LTP] [PATCH] ksm05: Fix build warning/error with
- -Wnull-dereference
-In-Reply-To: <20180622215710.126661-2-astrachan@google.com>
-References: <20180622215710.126661-1-astrachan@google.com>
- <20180622215710.126661-2-astrachan@google.com>
-Message-ID: <20180625141040.6gwbkgdx3eqxqeef@dell5510>
+From: Daniel =?unknown-8bit?q?D=C3=ADaz?= <daniel.diaz@linaro.org>
+Date: Mon, 25 Jun 2018 10:18:20 -0500
+Subject: [LTP] [PATCH] read_all: Define FNM_EXTMATCH if not already (like
+	under musl).
+Message-ID: <1529939900-28259-1-git-send-email-daniel.diaz@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-Hi Alistair,
+With musl, FNM_EXTMATCH is not defined:
+| read_all.c: In function 'read_test':
+| read_all.c:201:41: error: 'FNM_EXTMATCH' undeclared (first use in this fu=
+nction); did you mean 'FNM_NOMATCH'?
+|   if (exclude && !fnmatch(exclude, path, FNM_EXTMATCH)) {
+|                                          ^~~~~~~~~~~~
+|                                          FNM_NOMATCH
+| read_all.c:201:41: note: each undeclared identifier is reported only once=
+ for each function it appears in
+| <builtin>: recipe for target 'read_all' failed
+| make[4]: *** [read_all] Error 1
 
-> Using the Android clang build, which uses -Werror -Wnull-dereference,
-> the following error is seen:
+Signed-off-by: Daniel D=C3=ADaz <daniel.diaz@linaro.org>
+---
+ testcases/kernel/fs/read_all/read_all.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> testcases/kernel/mem/ksm/ksm05.c:81:3: error: indirection of
-> non-volatile null pointer will be deleted, not trap
-> [-Werror,-Wnull-dereference]
->   *(char *)NULL = 0;      /* SIGSEGV occurs as expected. */
->   ^~~~~~~~~~~~~
-> testcases/kernel/mem/ksm/ksm05.c:81:3: note: consider using
-> __builtin_trap() or qualifying pointer with 'volatile'
-> 1 error generated.
+diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/=
+read_all/read_all.c
+index 42babae..f68217b 100644
+--- a/testcases/kernel/fs/read_all/read_all.c
++++ b/testcases/kernel/fs/read_all/read_all.c
+@@ -60,6 +60,10 @@
+ #define MAX_PATH 4096
+ #define MAX_DISPLAY 40
+=20
++#if !defined(FNM_EXTMATCH)
++#define FNM_EXTMATCH 0
++#endif
++
+ struct queue {
+ 	sem_t sem;
+ 	int front;
+--=20
+2.7.4
 
-> Change it to "volatile char *" which avoids this build issue, without
-> negatively affecting the test.
-
-> Signed-off-by: Alistair Strachan <astrachan@google.com>
-
-Pushed, thanks for your patch.
-
-
-Kind regards,
-Petr
