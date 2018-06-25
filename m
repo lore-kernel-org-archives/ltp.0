@@ -1,41 +1,38 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 25 Jun 2018 16:06:01 +0200
-Subject: [LTP] Usage of tst_parse and Emailing results
-In-Reply-To: <CA+Kjy2wgaiMYOJX5FoOsP8f=WyDadRBJR9sfkghcUEhne4-PFQ@mail.gmail.com>
-References: <CA+Kjy2wgaiMYOJX5FoOsP8f=WyDadRBJR9sfkghcUEhne4-PFQ@mail.gmail.com>
-Message-ID: <20180625140601.GC24288@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 25 Jun 2018 16:10:40 +0200
+Subject: [LTP] [PATCH] ksm05: Fix build warning/error with
+ -Wnull-dereference
+In-Reply-To: <20180622215710.126661-2-astrachan@google.com>
+References: <20180622215710.126661-1-astrachan@google.com>
+ <20180622215710.126661-2-astrachan@google.com>
+Message-ID: <20180625141040.6gwbkgdx3eqxqeef@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I have a requirement to run a test case along with device  address from
-> command line, for eg., running an i2c test  as follows
-> 
->  i2c_test <device addr>
-> 
-> How could I make use of tst_parse() to get device addr, please suggest with
-> examples.
+Hi Alistair,
 
-There is no tst_parse() function in LTP.
+> Using the Android clang build, which uses -Werror -Wnull-dereference,
+> the following error is seen:
 
-Documentation and example on how to pass parameters to a test is at:
+> testcases/kernel/mem/ksm/ksm05.c:81:3: error: indirection of
+> non-volatile null pointer will be deleted, not trap
+> [-Werror,-Wnull-dereference]
+>   *(char *)NULL = 0;      /* SIGSEGV occurs as expected. */
+>   ^~~~~~~~~~~~~
+> testcases/kernel/mem/ksm/ksm05.c:81:3: note: consider using
+> __builtin_trap() or qualifying pointer with 'volatile'
+> 1 error generated.
 
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#225-test-specific-command-line-options
+> Change it to "volatile char *" which avoids this build issue, without
+> negatively affecting the test.
 
-> Also I wanted to send test results to email id on completion of test
-> execution, please update me if I need to add any code snippet in test code
-> or from command line configuration. Please suggest.
+> Signed-off-by: Alistair Strachan <astrachan@google.com>
 
-What exactly are you trying to do here?
+Pushed, thanks for your patch.
 
-It's not clear what "completion of test execution" means.
 
-The runltp script has an option to send a email with results but you
-have to install and configure mutt beforehand.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
