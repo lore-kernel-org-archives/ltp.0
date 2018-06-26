@@ -1,47 +1,37 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 26 Jun 2018 07:27:09 -0400 (EDT)
-Subject: [LTP] [PATCH] readahead02: create loop device if TMPDIR is tmpfs
-In-Reply-To: <20180622090512.ifzdwwgawbtcjxuw@dell5510>
-References: <94d4c00514e5f57d488199e0aa146e342f5b4403.1528887039.git.jstancek@redhat.com>
- <20180622090512.ifzdwwgawbtcjxuw@dell5510>
-Message-ID: <1826068168.29009700.1530012429946.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 26 Jun 2018 13:35:47 +0200
+Subject: [LTP] [PATCH] syscalls/shmctl05: new test for IPC file
+ use-after-free bug
+In-Reply-To: <20180518132536.GB32299@rei>
+References: <20180513012325.877-1-ebiggers3@gmail.com>
+ <20180518132536.GB32299@rei>
+Message-ID: <20180626113547.GG24288@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
------ Original Message -----
-> Hi Jan,
+Hi!
+> Have you considered using the fuzzy sync library here?
 > 
-> > readahead doesn't work on tmpfs. Detect it and create loop
-> > device if necessary.
-> 
-> > After patch (4.16.0, /tmp if tmpfs):
-> >   readahead02    0  TINFO  :  TMPFS detected, creating loop device
-> >   readahead02    0  TINFO  :  Found free device '/dev/loop1'
-> >   readahead02    0  TINFO  :  Formatting /dev/loop1 with ext2 opts='' extra
-> >   opts='' mke2fs 1.43.6 (29-Aug-2017)
-> >   readahead02    0  TINFO  :  creating test file of size: 67108864
-> >   readahead02    0  TINFO  :  read_testfile(0)
-> >   readahead02    0  TINFO  :  read_testfile(1)
-> >   readahead02    0  TINFO  :  max ra estimate: 1118208
-> >   readahead02    0  TINFO  :  readahead calls made: 61
-> >   readahead02    1  TPASS  :  offset is still at 0 as expected
-> >   readahead02    0  TINFO  :  read_testfile(0) took: 25650 usec
-> >   readahead02    0  TINFO  :  read_testfile(1) took: 17931 usec
-> >   readahead02    0  TINFO  :  read_testfile(0) read: 67108864 bytes
-> >   readahead02    0  TINFO  :  read_testfile(1) read: 0 bytes
-> >   readahead02    2  TPASS  :  readahead saved some I/O
-> >   readahead02    0  TINFO  :  cache can hold at least: 66516 kB
-> >   readahead02    0  TINFO  :  read_testfile(0) used cache: 65156 kB
-> >   readahead02    0  TINFO  :  read_testfile(1) used cache: 65156 kB
-> >   readahead02    3  TPASS  :  using cache as expected
-> 
-> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> https://github.com/linux-test-project/ltp/blob/master/include/tst_fuzzy_sync.h
 
-Thanks, pushed.
-Jan
+I've tried to rewrite the test so that it uses the fuzzy sync library to
+synchronize the remap_file_page syscall againts the IPC_RMID but for
+some reason that does not seem to trigger the issues for me, while the
+original reproducer triggers it just fine. There must be some subtle
+difference, maybe we need to train branch predictor with the loop that
+calls the remap_file_pages, maybe it's something else.
+
+So I guess that the best solution would be merging the testcase as it
+is, however for me the test timeouts on broken kernel as the test
+process just hangs there which produces misleading test error message.
+Maybe we just need to add .timeout_is_failure flag to the test structure
+for these kind of testcases so that the test library will hint the
+tester that this timeout likely means that the kernel bug has been
+reproduced.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
