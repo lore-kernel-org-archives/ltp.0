@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 26 Jun 2018 16:55:45 +0200
-Subject: [LTP] [PATCH v2 1/2] testcase: lib: Create tst_getconf to
- replace "getconf"
-In-Reply-To: <20180614072206.23393-2-mylene.josserand@bootlin.com>
-References: <20180614072206.23393-1-mylene.josserand@bootlin.com>
- <20180614072206.23393-2-mylene.josserand@bootlin.com>
-Message-ID: <20180626145545.GA20724@rei>
+Date: Tue, 26 Jun 2018 17:27:42 +0200
+Subject: [LTP] [PATCH 1/2] syscalls/fchmod03.c: Convert to new API &&
+ merge fchmod04 into fchmod03
+In-Reply-To: <1528975762-10624-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+References: <1528975762-10624-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <20180626152742.GB20724@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,141 +12,60 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +You may need to retrieve some variable configuration such as PAGESIZE.
-> +There is "getconf" application that allows that but as some system may not
-> +have it, a "tst_getconf" library allows to retrieve these variables by using
-> +"sysconf()" function.
-
-Shouldn't we stress here that we should use the tst_getconf instead of
-getconf here?
-
-Something as:
-
-You may need to retrieve configuration values such as PAGESIZE, there is
-'getconf' but as some system may not have it, you are advised to use
-'tst_getconf' instead. Note that it implements subset of 'getconf'
-system variables used by the testcases only.
-
-
-> +[source,sh]
-> +-------------------------------------------------------------------------------
-> +# retrieve PAGESIZE
-> +pagesize=`tst_getconf PAGESIZE`
-> +-------------------------------------------------------------------------------
+> +	struct stat stat_buf;
+> +	mode_t modes;
 > +
->  Sleeping for subsecond intervals
->  ++++++++++++++++++++++++++++++++
->  
-> diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
-> index f36ed99fa..997940006 100644
-> --- a/testcases/lib/.gitignore
-> +++ b/testcases/lib/.gitignore
-> @@ -7,3 +7,4 @@
->  /tst_net_iface_prefix
->  /tst_net_ip_prefix
->  /tst_net_vars
-> +/tst_getconf
-> \ No newline at end of file
-> diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
-> index 398150ae0..77b7b2ef1 100644
-> --- a/testcases/lib/Makefile
-> +++ b/testcases/lib/Makefile
-> @@ -27,6 +27,7 @@ include $(top_srcdir)/include/mk/testcases.mk
->  INSTALL_TARGETS		:= *.sh
->  
->  MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
-> -			   tst_device tst_net_iface_prefix tst_net_ip_prefix tst_net_vars
-> +			   tst_device tst_net_iface_prefix tst_net_ip_prefix tst_net_vars\
-> +			   tst_getconf
->  
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/lib/tst_getconf.c b/testcases/lib/tst_getconf.c
-> new file mode 100644
-> index 000000000..7cdef9f54
-> --- /dev/null
-> +++ b/testcases/lib/tst_getconf.c
-> @@ -0,0 +1,66 @@
-> +/*
-> + * Copyright (c) 2018 Myl??ne Josserand <mylene.josserand@bootlin.com>
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License as
-> + * published by the Free Software Foundation; either version 2 of
-> + * the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software Foundation,
-> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> + */
+> +	for (i = 0; i < 2; i++) {
+
+Huh, wouldn't it be easier if we set .tcnt = 2 in the test structure?
+
+Then the test function would be executed twice and you will get the i as
+a parameter...
+
+> +		TEST(fchmod(fd[i], PERMS));
+> +		if (TEST_RETURN == -1)
+> +			tst_res(TFAIL | TTERRNO, "fchmod() failed unexpectly");
 > +
-> +#include <stdio.h>
-> +#include <unistd.h>
-> +#include <string.h>
+> +		SAFE_FSTAT(fd[i], &stat_buf);
+> +		modes = stat_buf.st_mode;
 > +
-> +static void print_help(void)
-> +{
-> +	printf("Usage: tst_getconf variable\n\n");
-> +	printf("       variable: can be PAGESIZE or _NPROCESSORS_ONLN (for the moment)\n");
-> +	printf("example: tst_getconf PAGESIZE\n");
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int opt;
-> +
-> +	while ((opt = getopt(argc, argv, ":h")) != -1) {
-> +		switch (opt) {
-> +		case 'h':
-> +			print_help();
-> +			return 0;
-> +		default:
-> +			print_help();
-> +			return 1;
-> +		}
-> +	}
-> +
-> +	if (argc != 2) {
-> +		print_help();
-> +		return 1;
-> +	}
-> +
-> +	if (optind >= argc) {
-> +		fprintf(stderr, "ERROR: Expected variable argument\n\n");
-> +		print_help();
-> +		return 1;
-> +	}
+> +		if ((modes & PERMS) != PERMS) {
+> +			tst_res(TFAIL,
+> +				"%s: Incorrect modes 0%3o, Expected 0%03o",
+> +				TESTFILE, modes, PERMS);
+> +		} else {
+> +			tst_res(TPASS,
+> +				"Functionality of fchmod(%d, %#o) successful",
+> +				fd[i], PERMS);
+>  		}
+> -		/*
+> -		 * Get the file information using
+> -		 * fstat(2).
+> -		 */
+> -		if (fstat(fd, &stat_buf) == -1)
+> -			tst_brkm(TFAIL | TERRNO, cleanup,
+> -				 "fstat failed");
+> -		file_mode = stat_buf.st_mode;
+> -
+> -		/* Verify STICKY BIT set on testfile */
+> -		if ((file_mode & PERMS) != PERMS)
+> -			tst_resm(TFAIL, "%s: Incorrect modes 0%3o, "
+> -				 "Expected 0777", TESTFILE, file_mode);
+> -		else
+> -			tst_resm(TPASS, "Functionality of fchmod(%d, "
+> -				 "%#o) successful", fd, PERMS);
+>  	}
+> -
+> -	cleanup();
+> -	tst_exit();
+>  }
 
-I doubt that this will ever be true, we do return from main once there
-are any options passed, so optind here should be set to 1 and argc == 2
-because we checked earlier.
-
-> +	if (!strcmp(argv[optind], "_NPROCESSORS_ONLN"))
-> +		printf("%ld", sysconf(_SC_NPROCESSORS_ONLN));
-> +	else if (!strcmp(argv[optind],"PAGESIZE"))
-> +		printf("%ld", sysconf(_SC_PAGE_SIZE));
-> +	else {
-> +		printf("Invalid argument");
-                                        ^
-					Missing newline
-> +		return -1;
-> +	}
-
-LKML coding style prefers to have curly braces around both (all) blocks
-if they are around one of them, hence this should rather be:
-
-if (...) {
-
-} else if (...) {
-
-} else {
-
-}
-
+Also the test only checks for "the process is owner of the file" we
+should test for the second case the description lists, i.e. "the
+effective group ID or one of the supplementary group ID's of the process
+is equal to the group ID of the file." as well, shouldn't we? Well since
+that does not seem to be part of the original tests it would be better
+if we added that in a subseqent patch though.
 
 
 -- 
