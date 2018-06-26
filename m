@@ -1,224 +1,155 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 26 Jun 2018 16:22:37 +0200
-Subject: [LTP] [PATCH v3] open08: rewrite to newlib
-Message-ID: <6da44d664c386d6d2d931768d460fbe7c0d94467.1530022835.git.jstancek@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 26 Jun 2018 16:55:45 +0200
+Subject: [LTP] [PATCH v2 1/2] testcase: lib: Create tst_getconf to
+ replace "getconf"
+In-Reply-To: <20180614072206.23393-2-mylene.josserand@bootlin.com>
+References: <20180614072206.23393-1-mylene.josserand@bootlin.com>
+ <20180614072206.23393-2-mylene.josserand@bootlin.com>
+Message-ID: <20180626145545.GA20724@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixes: https://github.com/linux-test-project/ltp/issues/330
+Hi!
+> +You may need to retrieve some variable configuration such as PAGESIZE.
+> +There is "getconf" application that allows that but as some system may not
+> +have it, a "tst_getconf" library allows to retrieve these variables by using
+> +"sysconf()" function.
 
-EACCES testcase changed:
-Test now creates file (0600) in tmpdir, that is owned by privileged user,
-and unprivileged user tries to open it for writing.
+Shouldn't we stress here that we should use the tst_getconf instead of
+getconf here?
 
-EFAULT testcase changed:
-Comments say the intent is to use address outside of process mapped space.
-So, test is changed to map/unmap rather than map as PROT_NONE.
+Something as:
 
-uclinux ifdefs dropped.
+You may need to retrieve configuration values such as PAGESIZE, there is
+'getconf' but as some system may not have it, you are advised to use
+'tst_getconf' instead. Note that it implements subset of 'getconf'
+system variables used by the testcases only.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/open/open08.c | 142 +++++++++++++-------------------
- 1 file changed, 58 insertions(+), 84 deletions(-)
 
-Changes in v3:
-  use **char in testcase array
-  some variables renamed
+> +[source,sh]
+> +-------------------------------------------------------------------------------
+> +# retrieve PAGESIZE
+> +pagesize=`tst_getconf PAGESIZE`
+> +-------------------------------------------------------------------------------
+> +
+>  Sleeping for subsecond intervals
+>  ++++++++++++++++++++++++++++++++
+>  
+> diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
+> index f36ed99fa..997940006 100644
+> --- a/testcases/lib/.gitignore
+> +++ b/testcases/lib/.gitignore
+> @@ -7,3 +7,4 @@
+>  /tst_net_iface_prefix
+>  /tst_net_ip_prefix
+>  /tst_net_vars
+> +/tst_getconf
+> \ No newline at end of file
+> diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
+> index 398150ae0..77b7b2ef1 100644
+> --- a/testcases/lib/Makefile
+> +++ b/testcases/lib/Makefile
+> @@ -27,6 +27,7 @@ include $(top_srcdir)/include/mk/testcases.mk
+>  INSTALL_TARGETS		:= *.sh
+>  
+>  MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
+> -			   tst_device tst_net_iface_prefix tst_net_ip_prefix tst_net_vars
+> +			   tst_device tst_net_iface_prefix tst_net_ip_prefix tst_net_vars\
+> +			   tst_getconf
+>  
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/lib/tst_getconf.c b/testcases/lib/tst_getconf.c
+> new file mode 100644
+> index 000000000..7cdef9f54
+> --- /dev/null
+> +++ b/testcases/lib/tst_getconf.c
+> @@ -0,0 +1,66 @@
+> +/*
+> + * Copyright (c) 2018 Myl??ne Josserand <mylene.josserand@bootlin.com>
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License as
+> + * published by the Free Software Foundation; either version 2 of
+> + * the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software Foundation,
+> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> + */
+> +
+> +#include <stdio.h>
+> +#include <unistd.h>
+> +#include <string.h>
+> +
+> +static void print_help(void)
+> +{
+> +	printf("Usage: tst_getconf variable\n\n");
+> +	printf("       variable: can be PAGESIZE or _NPROCESSORS_ONLN (for the moment)\n");
+> +	printf("example: tst_getconf PAGESIZE\n");
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int opt;
+> +
+> +	while ((opt = getopt(argc, argv, ":h")) != -1) {
+> +		switch (opt) {
+> +		case 'h':
+> +			print_help();
+> +			return 0;
+> +		default:
+> +			print_help();
+> +			return 1;
+> +		}
+> +	}
+> +
+> +	if (argc != 2) {
+> +		print_help();
+> +		return 1;
+> +	}
+> +
+> +	if (optind >= argc) {
+> +		fprintf(stderr, "ERROR: Expected variable argument\n\n");
+> +		print_help();
+> +		return 1;
+> +	}
 
-diff --git a/testcases/kernel/syscalls/open/open08.c b/testcases/kernel/syscalls/open/open08.c
-index d55d8e6bdd53..5b247525c3ca 100644
---- a/testcases/kernel/syscalls/open/open08.c
-+++ b/testcases/kernel/syscalls/open/open08.c
-@@ -1,5 +1,6 @@
- /*
-  *   Copyright (c) 2013 Wanlong Gao <gaowanlong@cn.fujitsu.com>
-+ *   Copyright (c) 2018 Linux Test Project
-  *
-  *   This program is free software;  you can redistribute it and/or modify
-  *   it under the terms of the GNU General Public License as published by
-@@ -39,7 +40,7 @@
-  *	4. Attempt to open() a filename which is more than VFS_MAXNAMLEN, and
-  *	   check for errno to be ENAMETOOLONG.
-  *
-- *	5. Attempt to open a test executable in WRONLY mode,
-+ *	5. Attempt to open a (0600) file owned by different user in WRONLY mode,
-  *	   open(2) should fail with EACCES.
-  *
-  *	6. Attempt to pass an invalid pathname with an address pointing outside
-@@ -56,113 +57,86 @@
- #include <fcntl.h>
- #include <signal.h>
- #include <pwd.h>
--#include "test.h"
--#include "safe_macros.h"
-+#include "tst_test.h"
- 
--static void setup(void);
--static void cleanup(void);
-+static char *existing_fname = "open08_testfile";
-+static char *toolong_fname = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyz";
-+static char *dir_fname = "/tmp";
-+static char *user2_fname = "user2_0600";
-+static char *unmapped_fname;
- 
--char *TCID = "open08";
--
--static char nobody_uid[] = "nobody";
--static struct passwd *ltpuser;
--
--static char *bad_addr;
--
--static char filename[40] = "";
--static char fname[] = "/bin/cat";
--static char bad_file[] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyz";
-+struct test_case_t;
- 
- static struct test_case_t {
--	char *fname;
-+	char **fname;
- 	int flags;
- 	int error;
--} TC[] = {
--	{filename, O_CREAT | O_EXCL, EEXIST},
--	{"/tmp", O_RDWR, EISDIR},
--	{filename, O_DIRECTORY, ENOTDIR},
--	{bad_file, O_RDWR, ENAMETOOLONG},
--	{fname, O_WRONLY, EACCES},
--#if !defined(UCLINUX)
--	{(char *)-1, O_CREAT, EFAULT}
--#endif
-+} tcases[] = {
-+	{&existing_fname, O_CREAT | O_EXCL, EEXIST},
-+	{&dir_fname, O_RDWR, EISDIR},
-+	{&existing_fname, O_DIRECTORY, ENOTDIR},
-+	{&toolong_fname, O_RDWR, ENAMETOOLONG},
-+	{&user2_fname, O_WRONLY, EACCES},
-+	{&unmapped_fname, O_CREAT, EFAULT}
- };
- 
--int TST_TOTAL = sizeof(TC) / sizeof(TC[0]);
--
--int main(int ac, char **av)
-+void verify_open(unsigned int i)
- {
--	int lc;
--	int i;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++) {
--			TEST(open(TC[i].fname, TC[i].flags,
--				  S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH));
--
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "call succeeded unexpectedly");
--				continue;
--			}
--
--			if (TEST_ERRNO == TC[i].error) {
--				tst_resm(TPASS, "expected failure - "
--					 "errno = %d : %s", TEST_ERRNO,
--					 strerror(TEST_ERRNO));
--			} else {
--				tst_resm(TFAIL, "unexpected error - %d : %s - "
--					 "expected %d", TEST_ERRNO,
--					 strerror(TEST_ERRNO), TC[i].error);
--			}
--		}
-+	TEST(open(*tcases[i].fname, tcases[i].flags,
-+		S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH));
-+
-+	if (TEST_RETURN != -1) {
-+		tst_res(TFAIL, "call succeeded unexpectedly");
-+		return;
- 	}
- 
--	cleanup();
--	tst_exit();
-+	if (TEST_ERRNO == tcases[i].error) {
-+		tst_res(TPASS, "expected failure - "
-+				"errno = %d : %s", TEST_ERRNO,
-+				strerror(TEST_ERRNO));
-+	} else {
-+		tst_res(TFAIL, "unexpected error - %d : %s - "
-+				"expected %d", TEST_ERRNO,
-+				strerror(TEST_ERRNO), tcases[i].error);
-+	}
- }
- 
--static void setup(void)
-+static void *get_invalid_addr(void)
- {
--	int fildes;
-+	char *bad_addr;
-+	int len = 2 * 1024 * 1024;
- 
--	tst_require_root();
-+	bad_addr = SAFE_MMAP(0, len, PROT_READ|PROT_WRITE,
-+		MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-+	SAFE_MUNMAP(bad_addr, len);
-+	return bad_addr + len/2;
-+}
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+static void setup(void)
-+{
-+	int fildes;
-+	char nobody_uid[] = "nobody";
-+	struct passwd *ltpuser;
- 
- 	umask(0);
- 
--	TEST_PAUSE;
-+	SAFE_CREAT(user2_fname, 0600);
- 
- 	/* Switch to nobody user for correct error code collection */
- 	ltpuser = getpwnam(nobody_uid);
--	SAFE_SETGID(NULL, ltpuser->pw_gid);
--	SAFE_SETUID(NULL, ltpuser->pw_uid);
--
--	tst_tmpdir();
--
--	sprintf(filename, "open3.%d", getpid());
--
--	fildes = SAFE_CREAT(cleanup, filename, 0600);
-+	SAFE_SETGID(ltpuser->pw_gid);
-+	SAFE_SETUID(ltpuser->pw_uid);
- 
-+	fildes = SAFE_CREAT(existing_fname, 0600);
- 	close(fildes);
- 
--#if !defined(UCLINUX)
--	bad_addr = mmap(0, 1, PROT_NONE,
--			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
--	if (bad_addr == MAP_FAILED)
--		tst_brkm(TBROK, cleanup, "mmap failed");
--
--	TC[5].fname = bad_addr;
--#endif
-+	unmapped_fname = get_invalid_addr();
- }
- 
--static void cleanup(void)
--{
--	tst_rmdir();
--}
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
-+	.setup = setup,
-+	.test = verify_open,
-+};
+I doubt that this will ever be true, we do return from main once there
+are any options passed, so optind here should be set to 1 and argc == 2
+because we checked earlier.
+
+> +	if (!strcmp(argv[optind], "_NPROCESSORS_ONLN"))
+> +		printf("%ld", sysconf(_SC_NPROCESSORS_ONLN));
+> +	else if (!strcmp(argv[optind],"PAGESIZE"))
+> +		printf("%ld", sysconf(_SC_PAGE_SIZE));
+> +	else {
+> +		printf("Invalid argument");
+                                        ^
+					Missing newline
+> +		return -1;
+> +	}
+
+LKML coding style prefers to have curly braces around both (all) blocks
+if they are around one of them, hence this should rather be:
+
+if (...) {
+
+} else if (...) {
+
+} else {
+
+}
+
+
+
 -- 
-1.8.3.1
-
+Cyril Hrubis
+chrubis@suse.cz
