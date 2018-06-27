@@ -1,68 +1,78 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 27 Jun 2018 17:22:16 +0200
-Subject: [LTP] [PATCH 1/2 v2] tst_test: Fail the test subprocess cannot be
-	killed
-Message-ID: <20180627152217.7067-1-chrubis@suse.cz>
+From: Rafael David Tinoco <rafael.tinoco@linaro.org>
+Date: Wed, 27 Jun 2018 15:38:09 +0000
+Subject: [LTP] [PATCH] syscalls/fallocate05: minor fix for
+	Werror=format-security
+Message-ID: <20180627153809.1196-1-rafael.tinoco@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-If there are any leftover children the main test process will likely be
-killed while sleeping in wait(). That is because all child processes are
-either waited explicitely by the test code or implicitly by the test
-library.
+In order to avoid compilation issues in tst_XXX functions:
 
-We also send SIGKILL to the whole process group, so if one of the
-children continues to live for long enough that very likely means that
-it ended up stuck in the kernel.
+gcc -g -O0 -fdebug-prefix-map=. -fstack-protector-strong -Wformat
+-Werror=format-security-g -O2 -fno-strict-aliasing -pipe -Wall -W
+-Wold-style-definition -Wdate-time -I../../../../include
+-I../../../../include -I../../../../include/old/ -Wl,-z,relro
+-L../../../../lib  fallocate05.c -lltp -o fallocate05
+fallocate05.c: In function ‘run’:
 
-So if there are any processes left with in the process group we created
-once the process group leader i.e. main test process has been waited
-for we loop for a short while to give the init daemon chance to reap the
-process after it has been reparented and if that does not happen for a
-few seconds we declare the process to be stuck in the kernel.
+fallocate05.c:76:4: error: format not a string literal and
+	no format arguments [-Werror=format-security]
+    tst_brk(TCONF, tested_flags);
+    ^~~~~~~
+fallocate05.c:78:3: error: format not a string literal and
+	no format arguments [-Werror=format-security]
+   tst_brk(TBROK | TERRNO, tested_flags);
+   ^~~~~~~
+fallocate05.c:80:2: error: format not a string literal and
+	no format arguments [-Werror=format-security]
+  tst_res(TPASS, tested_flags);
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-CC: Eric Biggers <ebiggers3@gmail.com>
+when using format-security, change "const char *" to a
+pre-defined string.
+
+Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
 ---
- lib/tst_test.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ testcases/kernel/syscalls/fallocate/fallocate05.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 80808854e..329168a24 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -1,5 +1,5 @@
- /*
-- * Copyright (c) 2015-2016 Cyril Hrubis <chrubis@suse.cz>
-+ * Copyright (c) 2015-2018 Cyril Hrubis <chrubis@suse.cz>
-  *
-  * This program is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-@@ -1047,6 +1047,21 @@ static int fork_testrun(void)
- 	alarm(0);
- 	SAFE_SIGNAL(SIGINT, SIG_DFL);
+diff --git a/testcases/kernel/syscalls/fallocate/fallocate05.c b/testcases/kernel/syscalls/fallocate/fallocate05.c
+index d2d84433b..49dc44b04 100644
+--- a/testcases/kernel/syscalls/fallocate/fallocate05.c
++++ b/testcases/kernel/syscalls/fallocate/fallocate05.c
+@@ -30,6 +30,7 @@
  
-+	unsigned int sleep = 100;
-+	unsigned int retries = 0;
-+
-+	while (kill(-test_pid, 0) == 0) {
-+
-+		usleep(sleep);
-+		sleep*=2;
-+
-+		if (retries++ <= 14)
-+			continue;
-+
-+		tst_res(TFAIL, "Test process child stuck in the kernel!");
-+		tst_brk(TFAIL, "Congratulation, likely test hit a kernel bug.");
-+	}
-+
- 	if (WIFEXITED(status) && WEXITSTATUS(status))
- 		return WEXITSTATUS(status);
+ #define MNTPOINT "mntpoint"
+ #define FALLOCATE_SIZE 8192
++#define TESTED_FLAGS "fallocate(FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE)"
  
+ static int fd;
+ 
+@@ -37,7 +38,6 @@ static void run(void)
+ {
+ 	char buf[FALLOCATE_SIZE];
+ 	ssize_t ret;
+-	const char *tested_flags="fallocate(FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE)";
+ 
+ 	fd = SAFE_OPEN(MNTPOINT "/test_file", O_WRONLY | O_CREAT);
+ 
+@@ -73,11 +73,11 @@ static void run(void)
+ 	ret = fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE, 0, FALLOCATE_SIZE);
+ 	if (ret == -1) {
+ 		if (errno == EOPNOTSUPP)
+-			tst_brk(TCONF, tested_flags);
++			tst_brk(TCONF, TESTED_FLAGS);
+ 
+-		tst_brk(TBROK | TERRNO, tested_flags);
++		tst_brk(TBROK | TERRNO, TESTED_FLAGS);
+ 	}
+-	tst_res(TPASS, tested_flags);
++	tst_res(TPASS, TESTED_FLAGS);
+ 
+ 	ret = write(fd, buf, 10);
+ 	if (ret == -1)
 -- 
-2.13.6
+2.18.0
 
