@@ -1,11 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 27 Jun 2018 15:44:30 +0200
-Subject: [LTP] [RFC] [PATCH] tst_test: Fail the test subprocess cannot
-	be	killed
-In-Reply-To: <937810331.29259972.1530105689475.JavaMail.zimbra@redhat.com>
-References: <20180627123606.27726-1-chrubis@suse.cz>
- <937810331.29259972.1530105689475.JavaMail.zimbra@redhat.com>
-Message-ID: <20180627134430.GA32300@rei>
+Date: Wed, 27 Jun 2018 15:59:03 +0200
+Subject: [LTP] [PATCH] syscalls/shmctl05: new test for IPC file
+ use-after-free bug
+In-Reply-To: <20180627061815.GA9171@sol.localdomain>
+References: <20180513012325.877-1-ebiggers3@gmail.com>
+ <20180518132536.GB32299@rei> <20180626113547.GG24288@rei>
+ <20180627061815.GA9171@sol.localdomain>
+Message-ID: <20180627135903.GB32300@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,15 +14,17 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Looks good to me.
-> 
-> I'm thinking if we shouldn't also try to gather some data
-> that would help person looking at the logs. For example:
-> collect /proc/<pid>/stack output or trigger sysrq-t or sysrq-w.
-
-I guess that we can search for a process whoose process group matches
-our test pid then dump the stack into a log, I will look into that.
+Looks like if we drop the callibration from the test and use the fuzzy
+sync library only as a spinlocks to synchronize the IPC_RMID against the
+remap_file_pages the bug gets triggered very reliably for me.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: shmctl05.c
+Type: text/x-c
+Size: 3232 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180627/76f1d22c/attachment.bin>
