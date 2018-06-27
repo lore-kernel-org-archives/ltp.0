@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 27 Jun 2018 17:44:07 +0200
-Subject: [LTP] [PATCH] syscalls/fallocate05: minor fix for
- Werror=format-security
-In-Reply-To: <20180627153809.1196-1-rafael.tinoco@linaro.org>
-References: <20180627153809.1196-1-rafael.tinoco@linaro.org>
-Message-ID: <20180627154407.GA6363@rei>
+Date: Wed, 27 Jun 2018 18:01:54 +0200
+Subject: [LTP] [PATCH] cpuset: Work around a clang compiler warning
+In-Reply-To: <20180626164552.90133-1-astrachan@google.com>
+References: <20180626164552.90133-1-astrachan@google.com>
+Message-ID: <20180627160153.GB6363@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
