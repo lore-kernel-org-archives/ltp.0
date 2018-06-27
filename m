@@ -1,217 +1,62 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 27 Jun 2018 14:54:27 +0300
-Subject: [LTP] [PATCH v2 8/8] net/virt: Introduce macsec_lib.sh to
- reduce duplicity
-In-Reply-To: <20180622151047.13002-9-pvorel@suse.cz>
-References: <20180622151047.13002-1-pvorel@suse.cz>
- <20180622151047.13002-9-pvorel@suse.cz>
-Message-ID: <88c451e5-40ab-6fee-2f2b-6c5af0b111ad@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 27 Jun 2018 14:36:06 +0200
+Subject: [LTP] [RFC] [PATCH] tst_test: Fail the test subprocess cannot be
+	killed
+Message-ID: <20180627123606.27726-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 22.06.2018 18:10, Petr Vorel wrote:
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  testcases/network/virt/macsec01.sh   | 27 +------------
->  testcases/network/virt/macsec02.sh   | 28 +------------
->  testcases/network/virt/macsec_lib.sh | 60 ++++++++++++++++++++++++++++
->  testcases/network/virt/virt_lib.sh   | 27 -------------
->  4 files changed, 63 insertions(+), 79 deletions(-)
->  create mode 100755 testcases/network/virt/macsec_lib.sh
-> 
-> diff --git a/testcases/network/virt/macsec01.sh b/testcases/network/virt/macsec01.sh
-> index 725d469e7..d9d6e73a6 100755
-> --- a/testcases/network/virt/macsec01.sh
-> +++ b/testcases/network/virt/macsec01.sh
-> @@ -8,33 +8,8 @@
->  # with default MACsec configuration, compare performance with similar
->  # IPsec configuration on master interface.
->  
-> -virt_type="macsec"
-> -VIRT_PERF_THRESHOLD=${VIRT_PERF_THRESHOLD:-100}
-> -IPSEC_MODE="transport"
->  IPSEC_PROTO="ah"
->  
-> -TST_NEEDS_TMPDIR=1
-> -TST_TESTFUNC=virt_netperf_msg_sizes
-> -TST_SETUP=do_setup
-> -TST_CLEANUP=do_cleanup
-> -. ipsec_lib.sh
-> -. virt_lib.sh
-> -
-> -do_setup()
-> -{
-> -	ipsec_lib_setup
-> -
-> -	tst_res TINFO "setup IPsec $IPSEC_MODE/$IPSEC_PROTO $EALGO"
-> -	tst_ipsec lhost $(tst_ipaddr) $(tst_ipaddr rhost)
-> -	tst_ipsec rhost $(tst_ipaddr rhost) $(tst_ipaddr)
-> -
-> -	virt_macsec_setup
-> -}
-> -
-> -do_cleanup()
-> -{
-> -	virt_cleanup
-> -	tst_ipsec_cleanup
-> -}
-> +. macsec_lib.sh
->  
->  tst_run
-> diff --git a/testcases/network/virt/macsec02.sh b/testcases/network/virt/macsec02.sh
-> index 575b5c4e0..0c40b25a1 100755
-> --- a/testcases/network/virt/macsec02.sh
-> +++ b/testcases/network/virt/macsec02.sh
-> @@ -8,34 +8,10 @@
->  # with enabled frame encryption and replay protection, compare
->  # performance with similar IPsec configuration on master interface.
->  
-> -virt_type="macsec"
-> -VIRT_PERF_THRESHOLD=${VIRT_PERF_THRESHOLD:-100}
-> -IPSEC_MODE="transport"
->  IPSEC_PROTO="esp_aead"
->  EALGO="aes"
-> +MACSEC_LIB_SETUP="replay on window 300 encrypt on protect on"
->  
-> -TST_NEEDS_TMPDIR=1
-> -TST_TESTFUNC=virt_netperf_msg_sizes
-> -TST_SETUP=do_setup
-> -TST_CLEANUP=do_cleanup
-> -. ipsec_lib.sh
-> -. virt_lib.sh
-> -
-> -do_setup()
-> -{
-> -	ipsec_lib_setup
-> -
-> -	tst_res TINFO "setup IPsec $IPSEC_MODE/$IPSEC_PROTO $EALGO"
-> -	tst_ipsec lhost $(tst_ipaddr) $(tst_ipaddr rhost)
-> -	tst_ipsec rhost $(tst_ipaddr rhost) $(tst_ipaddr)
-> -
-> -	virt_macsec_setup "replay on window 300 encrypt on protect on"
-> -}
-> -
-> -do_cleanup()
-> -{
-> -	virt_cleanup
-> -	tst_ipsec_cleanup
-> -}
-> +. macsec_lib.sh
->  
->  tst_run
-> diff --git a/testcases/network/virt/macsec_lib.sh b/testcases/network/virt/macsec_lib.sh
-> new file mode 100755
-> index 000000000..c7bdca342
-> --- /dev/null
-> +++ b/testcases/network/virt/macsec_lib.sh
-> @@ -0,0 +1,60 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
-> +# Copyright (c) 2014-2017 Oracle and/or its affiliates. All Rights Reserved.
-> +# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-> +
-> +virt_type="macsec"
-> +VIRT_PERF_THRESHOLD=${VIRT_PERF_THRESHOLD:-100}
-> +IPSEC_MODE="transport"
-> +
-> +TST_NEEDS_TMPDIR=1
-> +TST_TESTFUNC=virt_netperf_msg_sizes
-> +TST_SETUP=macsec_lib_setup
-> +TST_CLEANUP=macsec_lib_cleanup
-> +. ipsec_lib.sh
-> +. virt_lib.sh
-> +
-> +macsec_lib_setup()
-> +{
-> +	ipsec_lib_setup
-> +
-> +	tst_res TINFO "setup IPsec $IPSEC_MODE/$IPSEC_PROTO $EALGO"
-> +	tst_ipsec lhost $(tst_ipaddr) $(tst_ipaddr rhost)
-> +	tst_ipsec rhost $(tst_ipaddr rhost) $(tst_ipaddr)
-> +
-> +	virt_macsec_setup
-> +}
-> +
-> +macsec_lib_cleanup()
-> +{
-> +	virt_cleanup
-> +	tst_ipsec_cleanup
-> +}
-> +
-> +# virt_macsec_setup [OPTIONS]
-> +# OPTIONS - [ cipher { default | gcm-aes-128 } ] [ encrypt { on | off } ]
-> +#           [ protect { on | off } ] [ replay { on | off } ] [ window WINDOW ]
-> +#           [ validate { strict | check | disabled } ]
-> +virt_macsec_setup()
-macsec_lib_setup()?
+If there are any leftover children the main test process will likely be
+killed while sleeping in wait(). That is because all child processes are
+either waited explicitely by the test code or implicitly by the test
+library.
 
+We also send SIGKILL to the whole process group, so if one of the
+children continues to live for long enough it very likely means that
+it has ended up stuck in the kernel.
 
-The rest looks good to me.
+So if there are any processes left with in the process group for the
+test processes once the process group leader i.e. main test process has
+been waited for we loop for a short while to give the init daemon chance
+to reap the process after it has been reparented and if that does not
+happen for a few seconds we declare the process to be stuck in the
+kernel.
 
-Thanks,
-Alexey
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+CC: Eric Biggers <ebiggers3@gmail.com>
+---
+ lib/tst_test.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-> +{
-> +	local keyid0=01
-> +	local keyid1=02
-> +	local sa=0
-> +	local h0=$(tst_hwaddr)
-> +	local h1=$(tst_hwaddr rhost)
-> +	local cmd="ip macsec add ltp_v0"
-> +	local key0="01234567890123456789012345678901"
-> +	local key1="98765432109876543210987612343434"
-> +
-> +	virt_setup "icvlen 16 encodingsa $sa $MACSEC_LIB_SETUP"
-> +
-> +	ROD $cmd tx sa $sa pn 100 on key $keyid0 $key0
-> +	ROD $cmd rx address $h1 port 1
-> +	ROD $cmd rx address $h1 port 1 sa $sa pn 100 on key $keyid1 $key1
-> +
-> +	tst_rhost_run -s -c "$cmd tx sa $sa pn 100 on key $keyid1 $key1"
-> +	tst_rhost_run -s -c "$cmd rx address $h0 port 1"
-> +	tst_rhost_run -s -c \
-> +		"$cmd rx address $h0 port 1 sa $sa pn 100 on key $keyid0 $key0"
-> +}
-> diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
-> index 9960b9553..c939417c1 100644
-> --- a/testcases/network/virt/virt_lib.sh
-> +++ b/testcases/network/virt/virt_lib.sh
-> @@ -320,33 +320,6 @@ virt_check_cmd()
->  	return 0
->  }
->  
-> -# virt_macsec_setup [OPTIONS]
-> -# OPTIONS - [ cipher { default | gcm-aes-128 } ] [ encrypt { on | off } ]
-> -#           [ protect { on | off } ] [ replay { on | off } ] [ window WINDOW ]
-> -#           [ validate { strict | check | disabled } ]
-> -virt_macsec_setup()
-> -{
-> -	local keyid0=01
-> -	local keyid1=02
-> -	local sa=0
-> -	local h0=$(tst_hwaddr)
-> -	local h1=$(tst_hwaddr rhost)
-> -	local cmd="ip macsec add ltp_v0"
-> -	local key0="01234567890123456789012345678901"
-> -	local key1="98765432109876543210987612343434"
-> -
-> -	virt_setup "icvlen 16 encodingsa $sa $@"
-> -
-> -	ROD $cmd tx sa $sa pn 100 on key $keyid0 $key0
-> -	ROD $cmd rx address $h1 port 1
-> -	ROD $cmd rx address $h1 port 1 sa $sa pn 100 on key $keyid1 $key1
-> -
-> -	tst_rhost_run -s -c "$cmd tx sa $sa pn 100 on key $keyid1 $key1"
-> -	tst_rhost_run -s -c "$cmd rx address $h0 port 1"
-> -	tst_rhost_run -s -c \
-> -		"$cmd rx address $h0 port 1 sa $sa pn 100 on key $keyid0 $key0"
-> -}
-> -
->  virt_netperf_msg_sizes()
->  {
->  	local sizes="100 1000 2000 10000"
-> 
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 80808854e..6316ac865 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -1047,6 +1047,21 @@ static int fork_testrun(void)
+ 	alarm(0);
+ 	SAFE_SIGNAL(SIGINT, SIG_DFL);
+ 
++	unsigned int sleep = 100;
++	unsigned int retries = 0;
++
++	while (kill(-test_pid, 0) == 0) {
++
++		usleep(sleep);
++		sleep*=2;
++
++		if (retries++ <= 14)
++			continue;
++
++		tst_res(TINFO, "Test process child stuck in the kernel!");
++		tst_brk(TFAIL, "Congratulation, likely test hit a kernel bug.");
++	}
++
+ 	if (WIFEXITED(status) && WEXITSTATUS(status))
+ 		return WEXITSTATUS(status);
+ 
+-- 
+2.13.6
+
