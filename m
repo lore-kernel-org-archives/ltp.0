@@ -1,68 +1,64 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 27 Jun 2018 14:35:54 +0300
-Subject: [LTP] [PATCH v2 6/8] net/virt_lib.sh: Remove possibility to
- pass custom sizes
-In-Reply-To: <20180622151047.13002-7-pvorel@suse.cz>
-References: <20180622151047.13002-1-pvorel@suse.cz>
- <20180622151047.13002-7-pvorel@suse.cz>
-Message-ID: <d2fd13df-1484-0dba-035a-fe76ded006e1@oracle.com>
+Date: Wed, 27 Jun 2018 14:47:11 +0300
+Subject: [LTP] [PATCH 2/2] network/route: Rewrite route-change-gw into
+ new API
+In-Reply-To: <20180625140158.rvjasl7jq2m4blbc@dell5510>
+References: <20180517103527.23542-1-pvorel@suse.cz>
+ <20180517103527.23542-2-pvorel@suse.cz>
+ <cfa4f035-9052-147b-4d6d-2b6ecfe4cf31@oracle.com>
+ <20180518110110.zeabusjbiq2lq263@dell5510>
+ <20180625140158.rvjasl7jq2m4blbc@dell5510>
+Message-ID: <a5ed562e-4135-581c-aff0-65d7db4f210f@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 22.06.2018 18:10, Petr Vorel wrote:
-> to virt_netperf_msg_sizes(). Custom sizes haven't been used yet.
+On 25.06.2018 17:01, Petr Vorel wrote:
+> Hi Alexey,
 > 
-> This is a preparation for next commit, which (while rewriting tests into
-> new shell API) start using virt_netperf_msg_sizes() as test functions
-> directly (as in new API it gets $1 for test number since 4bcc0addf.
+>>> don't remember why the rewritten test is
+>>> not using background traffic and not changing gateway anymore?
+>> The current implementation was based on your suggestion for route-change-dst [1] (I'll
+>> mention that in commit message), which uses ns-udpsender.  The other patch [2] is
+>> changing gateway.
 > 
->     TST_TESTFUNC="virt_netperf_msg_sizes"
+>> Tests used ns-udpsender in previous implementation and we decided to keep it as  use
+>> background traffic isn't sufficient enough [3].
 > 
-> instead of wrapping it into function:
+>> But ns-udpsender isn't good enough, as it doesn't check whether destination receive it [4].
+>> And indeed you can pass it to any destination and it will not fail, e.g.:
+>> ns-udpsender -f 4 -D 1.2.3.4 -p 1 -o -s 1472
 > 
->     TST_TESTFUNC="do_test"
->     do_test()
->     {
-> 	virt_netperf_msg_sizes
->     }
-> 
-> Actually the best would be to replace sizes array in function with
-> TST_TEST_DATA, but that would require split tests cases, which use
-> virt_netperf_msg_sizes() with other functions, which are without arrays
-> (e.g. virt_compare_netperf() and virt_minimize_timeout() in vlan03.sh,
-> geneve01.sh abd vxlan03.sh)
+>> I guess we need to write another helper, which will listen for packets on remote side.
+>> Any recommendations/ideas on it?
 > 
 
-Do you mean using TST_CNT for different options (e.g. in vxlan03.sh " ,gbp"),
-and TST_TEST_DATA for sizes?
+It would be good to have this helper in order to extend the tests.
+Not sure if it can be used other than here...
 
+The other option is to configure a host on the other end as well,
+so that we get responses, and use the standard tools.
 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> If you don't like it, I'll just use version with TST_TESTFUNC="do_test"
-> in next commit. Using TST_TEST_DATA is TODO (if you're interested, I'd
-> do it after having done this patch).
-> ---
->  testcases/network/virt/virt_lib.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Ping, please.
+> I suppose we want these gateway tests do the real client server communication even it's
+> done on localhost, via tst_ipaddr_un().
 > 
-> diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
-> index eaec33d8f..f92c38fd2 100644
-> --- a/testcases/network/virt/virt_lib.sh
-> +++ b/testcases/network/virt/virt_lib.sh
-> @@ -328,7 +328,7 @@ virt_macsec_setup()
->  
->  virt_netperf_msg_sizes()
->  {
-> -	local sizes="${@:-100 1000 2000 10000}"
-> +	local sizes="100 1000 2000 10000"
->  	client_requests=20000
->
-Just noted, we don't need "client_requests" variable anymore...
-
-  
->  	for s in $sizes; do
+> I guess we want to keep UDP, as it's faster than TCP.
+> So I'll create some server, which listens the packets, counts them and reports
+> it.
 > 
+> 
+> Kind regards,
+> Petr
+> 
+> 
+>> Kind regards,
+>> Petr
+> 
+>> [1] http://lists.linux.it/pipermail/ltp/2017-August/005367.html
+>> [2] https://lists.linux.it/pipermail/ltp/2018-May/008152.html
+>> [3] http://lists.linux.it/pipermail/ltp/2017-July/005125.html
+>> [4] http://lists.linux.it/pipermail/ltp/2017-August/005336.html
+
