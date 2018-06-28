@@ -1,47 +1,56 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 28 Jun 2018 14:29:44 +0200
-Subject: [LTP] [PATCH 1/1] tst_test.sh: Fix check for $TST_DEVICE
-Message-ID: <20180628122944.3373-1-pvorel@suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 28 Jun 2018 15:47:50 -0400 (EDT)
+Subject: [LTP] [RFC] [PATCH] tst_timer: Add tst_timer_expired_ms()
+In-Reply-To: <20180628092846.21204-1-chrubis@suse.cz>
+References: <20180628092846.21204-1-chrubis@suse.cz>
+Message-ID: <986909105.29606861.1530215270429.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When tst_device acquire call fails, it outputs into stdout,
-therefore the content is actually help message.
-=> Check for file presence rather than variable not being empty.
 
-Fixes: c5ac5d712 tst_test.sh: Make use of tst_device helper
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
+----- Original Message -----
+> Recently we were in the need of easy way to run a testcase for a given
+> time interval. We nearly had everything in the timer library already but
+> the problem was that the sampling function i.e. tst_timer_stop() and
+> conversion functions e.g. tst_timer_elapsed_ms() were separated.
+> 
+> This commit adds a tst_timer_expired_ms() function that combines the
+> sampling and comparsion, the intended usage is:
+> 
+> static void setup(void)
+> {
+> 	...
+> 	tst_timer_check(CLOCK_MONOTONIC);
+> 	...
+> }
+> 
+> static void run(void)
+> {
+> 	...
+> 
+> 	tst_timer_start(CLOCK_MONOTONIC);
+> 
+> 	...
+> 
+> 	while (!tst_timer_expired_ms(5000)) {
+> 		...
+> 	}
+> 
+> 	...
+> }
+> 
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> CC: Eric Biggers <ebiggers3@gmail.com>
 
-other option would be to check $?.
+ACK
 
-BTW found while testing on TMPDIR being tmpfs with small size (300M).
-Test lib/newlib_tests/tst_device.c obviously fails.
+I'm thinking if it's worth skipping also tst_timer_check(),
+and adding some like "LTP_TIMER_ANY" that would pick first
+available clockid for you.
 
-Kind regards,
-Petr
----
- testcases/lib/tst_test.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index d27b4afd6..799045b03 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -364,7 +364,7 @@ tst_run()
- 
- 		TST_DEVICE=$(tst_device acquire)
- 
--		if [ -z "$TST_DEVICE" ]; then
-+		if [ ! -b "$TST_DEVICE" ]; then
- 			tst_brk TBROK "Failed to acquire device"
- 		fi
- 
--- 
-2.17.1
-
+Regards,
+Jan
