@@ -1,9 +1,9 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 28 Jun 2018 15:47:50 -0400 (EDT)
-Subject: [LTP] [RFC] [PATCH] tst_timer: Add tst_timer_expired_ms()
-In-Reply-To: <20180628092846.21204-1-chrubis@suse.cz>
-References: <20180628092846.21204-1-chrubis@suse.cz>
-Message-ID: <986909105.29606861.1530215270429.JavaMail.zimbra@redhat.com>
+Date: Thu, 28 Jun 2018 15:59:05 -0400 (EDT)
+Subject: [LTP] [PATCH 1/1] tst_test.sh: Fix check for $TST_DEVICE
+In-Reply-To: <20180628122944.3373-1-pvorel@suse.cz>
+References: <20180628122944.3373-1-pvorel@suse.cz>
+Message-ID: <939320688.29608276.1530215945657.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,44 +13,20 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> Recently we were in the need of easy way to run a testcase for a given
-> time interval. We nearly had everything in the timer library already but
-> the problem was that the sampling function i.e. tst_timer_stop() and
-> conversion functions e.g. tst_timer_elapsed_ms() were separated.
+> When tst_device acquire call fails, it outputs into stdout,
+> therefore the content is actually help message.
+> => Check for file presence rather than variable not being empty.
 > 
-> This commit adds a tst_timer_expired_ms() function that combines the
-> sampling and comparsion, the intended usage is:
+> Fixes: c5ac5d712 tst_test.sh: Make use of tst_device helper
 > 
-> static void setup(void)
-> {
-> 	...
-> 	tst_timer_check(CLOCK_MONOTONIC);
-> 	...
-> }
-> 
-> static void run(void)
-> {
-> 	...
-> 
-> 	tst_timer_start(CLOCK_MONOTONIC);
-> 
-> 	...
-> 
-> 	while (!tst_timer_expired_ms(5000)) {
-> 		...
-> 	}
-> 
-> 	...
-> }
-> 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> CC: Eric Biggers <ebiggers3@gmail.com>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
-ACK
+Good find, ACK
 
-I'm thinking if it's worth skipping also tst_timer_check(),
-and adding some like "LTP_TIMER_ANY" that would pick first
-available clockid for you.
+> ---
+> Hi,
+> 
+> other option would be to check $?.
 
-Regards,
-Jan
+Or both. Attach is very last call to ioctl(), so I think
+we can't end up with valid block device and non-zero retcode.
