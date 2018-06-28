@@ -1,52 +1,56 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 28 Jun 2018 13:26:12 +0200
-Subject: [LTP] [PATCH v2] commands/mkswap01.sh: Fix unexisted
- "/dev/disk/by-*" files on old kernels
-In-Reply-To: <1529819983-461-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <CAEemH2c4tC1Lk5bu2Tym9N5ej2yuqR15U+ApO-+vZb8XsKm-Jg@mail.gmail.com>
- <1529819983-461-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20180628112611.mbhbs2gnjvc5g3lj@dell5510>
+Date: Thu, 28 Jun 2018 12:56:00 +0200
+Subject: [LTP] [PATCH v2] route: fix double add the same route
+In-Reply-To: <20180623021103.3846-1-sunlw.fnst@cn.fujitsu.com>
+References: <20180623021103.3846-1-sunlw.fnst@cn.fujitsu.com>
+Message-ID: <20180628105600.afnufrya4xn2rkx4@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li, Xiao,
+Hi Sun,
 
+> "route -A inet6 add ${dst_network}/64 gw ${IPV6_NETWORK}:${rhost_part_hex} dev $lhost_ifname
+> route -A inet6 del ${dst_network}/64 gw ${IPV6_NETWORK}:${pre_rhost_part_hex} dev $lhost_ifname"
+> can't complete delete the have already added test route, This can result to add the same route
+> when exec "ip -f inet6 route add ${dst_network}/64 via ${IPV6_NETWORK}:${rhost_part_hex} dev
+> $lhost_ifname" and report error "RTNETLINK answers: File exists"
 
-> Before kernel commit c3473c6(e.g. RHEL6), mkswap -L or mkswap -U for loop
-> devices can not generate corresponding "/dev/disk/by-*" files.  It is just
-> a way to check the success of mkswap rather than a bug, so the test should
-> not get TBROK when "/dev/disk/by-*" files are not generated but swapon
-> enables loop devices for swapping sucessfully.
-
-> Suggested-by: Li Wang <liwang@redhat.com>
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> Signed-off-by: Sun Lianwen <sunlw.fnst@cn.fujitsu.com>
 > ---
->  testcases/commands/mkswap/mkswap01.sh | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+>  testcases/network/stress/route/route6-change-gw | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
-> diff --git a/testcases/commands/mkswap/mkswap01.sh b/testcases/commands/mkswap/mkswap01.sh
-> index 5ead4cd..4185702 100755
-> --- a/testcases/commands/mkswap/mkswap01.sh
-> +++ b/testcases/commands/mkswap/mkswap01.sh
-> @@ -64,7 +64,12 @@ mkswap_verify()
->  		local pagesize=$PAGE_SIZE
->  	fi
+> diff --git a/testcases/network/stress/route/route6-change-gw b/testcases/network/stress/route/route6-change-gw
+> index 96fd7ee66..be819f1c2 100644
+> --- a/testcases/network/stress/route/route6-change-gw
+> +++ b/testcases/network/stress/route/route6-change-gw
+> @@ -245,8 +245,7 @@ test_body()
+>  	    route -A inet6 del ${dst_network}/64 gw ${IPV6_NETWORK}:${pre_rhost_part_hex} dev $lhost_ifname
+>  	    ;;
+>  	    2)
+> -	    ip -f inet6 route add ${dst_network}/64 via ${IPV6_NETWORK}:${rhost_part_hex} dev $lhost_ifname
+> -	    ip -f inet6 route del ${dst_network}/64 via ${IPV6_NETWORK}:${pre_rhost_part_hex} dev $lhost_ifname
+> +	    ip -f inet6 route change ${dst_network}/64 via ${IPV6_NETWORK}:${rhost_part_hex} dev $lhost_ifname
+>  	    ;;
+>  	esac
+>  	if [ $? -ne 0 ]; then
 
-> -	TST_RETRY_FUNC "check_for_file $dev_file" 0
-> +	if tst_kvcmp -lt "2.6.35" && [ -n "$dev_file" ]; then
-> +		tst_res TINFO "Waiting for $dev_file to appear"
-> +		tst_sleep 100ms
-> +	else
-> +		TST_RETRY_FUNC "check_for_file $dev_file" 0
-> +	fi
+Thank you for your patch, however I doubt that this solves all the problems. I would
+rather completely rewrite all route stress tests. The problem is that they
+depends on rsh. Anything which uses LTP_RSH (here via check_envval) just need to
+be rewritten to use tst_net.sh first.
 
->  	swapon $swapfile 2>/dev/null
-
-pushed, thanks!
+There is actually there is work-in-progress patch [1], [2].
+I need to fix it some issues (the most important is to count the packets on the
+receiver side), but even without this it works much reliable than previous
+version.
 
 
 Kind regards,
 Petr
+
+[1] http://lists.linux.it/pipermail/ltp/2018-May/008153.html
+[2] http://lists.linux.it/pipermail/ltp/2018-May/008152.html
