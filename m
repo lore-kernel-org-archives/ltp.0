@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 29 Jun 2018 15:49:46 +0200
-Subject: [LTP] [PATCH 1/1] tst_test.sh: Fix check for $TST_DEVICE
-In-Reply-To: <20180628122944.3373-1-pvorel@suse.cz>
-References: <20180628122944.3373-1-pvorel@suse.cz>
-Message-ID: <20180629134945.GA13958@rei>
+Date: Fri, 29 Jun 2018 16:06:14 +0200
+Subject: [LTP] [RFC] [PATCH] tst_timer: Add tst_timer_expired_ms()
+In-Reply-To: <986909105.29606861.1530215270429.JavaMail.zimbra@redhat.com>
+References: <20180628092846.21204-1-chrubis@suse.cz>
+ <986909105.29606861.1530215270429.JavaMail.zimbra@redhat.com>
+Message-ID: <20180629140614.GB13958@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,14 +12,29 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> When tst_device acquire call fails, it outputs into stdout,
-> therefore the content is actually help message.
-> => Check for file presence rather than variable not being empty.
 > 
-> Fixes: c5ac5d712 tst_test.sh: Make use of tst_device helper
+> ACK
 
-Good catch, I guess that it also wouldn't harm if we changed the helper
-to print the help message to stderr as well.
+Pushed, thanks.
+
+> I'm thinking if it's worth skipping also tst_timer_check(),
+> and adding some like "LTP_TIMER_ANY" that would pick first
+> available clockid for you.
+
+For the expiration timer we probably want to try the monotonic timer and
+if that fail fall back to the realtime. But I wonder if it's a good idea
+to invent our specific timer ids. Maybe it would be better to indroduce
+tst_timer_start_any() function instead so that we can do:
+
+
+static void run(void)
+{
+	tst_timer_start_any();
+
+	while (!tst_timer_expired_ms(5000)) {
+		...
+	}
+}
 
 -- 
 Cyril Hrubis
