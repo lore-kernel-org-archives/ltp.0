@@ -1,98 +1,80 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 2 Jul 2018 14:51:33 +0200
-Subject: [LTP] [PATCH v2 ltp] net/virt_lib.sh: Remove possibility to
- pass custom sizes
-Message-ID: <20180702125133.2hofhdopu5xcbtss@dell5510>
+Date: Tue,  3 Jul 2018 09:42:01 +0200
+Subject: [LTP] [PATCH v3 1/9] net/ipsec: Improve log info messages
+In-Reply-To: <20180703074209.911-1-pvorel@suse.cz>
+References: <20180703074209.911-1-pvorel@suse.cz>
+Message-ID: <20180703074209.911-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+* Log all IPsec tst_ipsec_setup calls.
+* Remove redundant log output from icmp-uni-basic.sh to make it similar
+to icmp-uni-vti.sh.
 
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/network/stress/icmp/icmp-uni-basic.sh | 14 +-------------
+ testcases/network/stress/icmp/icmp-uni-vti.sh   |  2 +-
+ testcases/network/stress/ipsec/ipsec_lib.sh     |  1 +
+ 3 files changed, 3 insertions(+), 14 deletions(-)
 
-Sorry for late reply, I didn't get your email, just noticed your answers in
-patchwork.
-Comment are bellow, I'm going to send v3.
+diff --git a/testcases/network/stress/icmp/icmp-uni-basic.sh b/testcases/network/stress/icmp/icmp-uni-basic.sh
+index fc84899dd..3099b6caa 100755
+--- a/testcases/network/stress/icmp/icmp-uni-basic.sh
++++ b/testcases/network/stress/icmp/icmp-uni-basic.sh
+@@ -25,23 +25,11 @@ TST_CLEANUP="tst_ipsec_cleanup"
+ 
+ . ipsec_lib.sh
+ 
+-# Test description
+-tst_resm TINFO "Sending ICMP messages with the following conditions"
+-tst_resm TINFO "- Version of IP is IPv${TST_IPV6:-4}"
+-tst_resm TINFO "- Size of packets are ( $IPSEC_SIZE_ARRAY )"
+-
+-if [ -n "$IPSEC_MODE" -a -n "$IPSEC_PROTO" ]; then
+-	case $IPSEC_PROTO in
+-	ah)	tst_resm TINFO "- IPsec [ AH / $IPSEC_MODE ]" ;;
+-	esp)	tst_resm TINFO "- IPsec [ ESP / $IPSEC_MODE ]" ;;
+-	comp)	tst_resm TINFO "- IPcomp [ $IPSEC_MODE ]" ;;
+-	esac
+-fi
+-
+ tst_ipsec_setup
+ 
+ PING_MAX="$IPSEC_REQUESTS"
+ 
++tst_resm TINFO "Sending ICMP messages"
+ tst_ping $(tst_iface) $(tst_ipaddr rhost) $IPSEC_SIZE_ARRAY
+ 
+ tst_exit
+diff --git a/testcases/network/stress/icmp/icmp-uni-vti.sh b/testcases/network/stress/icmp/icmp-uni-vti.sh
+index 7fa211d7f..ea8b5c828 100755
+--- a/testcases/network/stress/icmp/icmp-uni-vti.sh
++++ b/testcases/network/stress/icmp/icmp-uni-vti.sh
+@@ -26,7 +26,7 @@ do_test()
+ {
+ 	PING_MAX="$IPSEC_REQUESTS"
+ 
+-	tst_resm TINFO "Sending ICMP messages..."
++	tst_resm TINFO "Sending ICMP messages"
+ 	tst_ping $tst_vti $ip_rmt_tun $IPSEC_SIZE_ARRAY
+ }
+ 
+diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
+index 2e001c718..9c293ca3e 100644
+--- a/testcases/network/stress/ipsec/ipsec_lib.sh
++++ b/testcases/network/stress/ipsec/ipsec_lib.sh
+@@ -115,6 +115,7 @@ tst_ipsec_setup()
+ {
+ 	# Configure SAD/SPD
+ 	if [ -n "$IPSEC_MODE" -a -n "$IPSEC_PROTO" ]; then
++		tst_resm TINFO "IPsec[$IPSEC_PROTO/$IPSEC_MODE]"
+ 		tst_ipsec lhost $(tst_ipaddr) $(tst_ipaddr rhost)
+ 		tst_ipsec rhost $(tst_ipaddr rhost) $(tst_ipaddr)
+ 	fi
+-- 
+2.18.0
 
-> On 22.06.2018 18:10, Petr Vorel wrote:
-> > to virt_netperf_msg_sizes(). Custom sizes haven't been used yet.
-
-> > This is a preparation for next commit, which (while rewriting tests into
-> > new shell API) start using virt_netperf_msg_sizes() as test functions
-> > directly (as in new API it gets $1 for test number since 4bcc0addf.
-
-> >     TST_TESTFUNC="virt_netperf_msg_sizes"
-
-> > instead of wrapping it into function:
-
-> >     TST_TESTFUNC="do_test"
-> >     do_test()
-> >     {
-> > 	virt_netperf_msg_sizes
-> >     }
-
-> > Actually the best would be to replace sizes array in function with
-> > TST_TEST_DATA, but that would require split tests cases, which use
-> > virt_netperf_msg_sizes() with other functions, which are without arrays
-> > (e.g. virt_compare_netperf() and virt_minimize_timeout() in vlan03.sh,
-> > geneve01.sh abd vxlan03.sh)
-
-
-> Do you mean using TST_CNT for different options (e.g. in vxlan03.sh " ,gbp"),
-> and TST_TEST_DATA for sizes?
-
-No, as in the test bellow virt_netperf_msg_sizes() run 4 times (using array sizes)
-and virt_setup runs just once.
-
-# vlan03.sh
-do_test()
-{
-    virt_check_cmd virt_add ltp_v0 id 0 $2 || return
-
-    tst_res TINFO "networks with the same VLAN ID must work"
-    virt_setup "id 4094 $2" "id 4094 $2"
-    virt_netperf_msg_sizes
-    virt_cleanup_rmt
-
-    tst_res TINFO "different VLAN ID shall not work together"
-    virt_setup "id 4093 $2" "id 4094 $2"
-    virt_minimize_timeout
-    virt_compare_netperf "fail"
-    virt_cleanup_rmt
-}
-
-So the solution would have to be split it into files
-
-# vlan03_ok.sh
-do_test()
-{
-    virt_check_cmd virt_add ltp_v0 id 0 $2 || return
-
-    tst_res TINFO "networks with the same VLAN ID must work"
-    virt_setup "id 4094 $2" "id 4094 $2"
-    virt_netperf_msg_sizes
-    virt_cleanup_rmt
-}
-
-
-# vlan03_ok.sh
-do_test()
-    virt_check_cmd virt_add ltp_v0 id 0 $2 || return
-
-    tst_res TINFO "different VLAN ID shall not work together"
-    virt_setup "id 4093 $2" "id 4094 $2"
-    virt_minimize_timeout
-    virt_compare_netperf "fail"
-    virt_cleanup_rmt
-}
-
-But even with that, we just have 2 levels of data for virt_netperf_msg_sizes:
-sizes array and options. So I guess we need to have it how it is.
-I suppose we don't want to patch tst_test.sh to have one more data level.
-The motivation for this is to have TST_CNT updated (and not having just "1").
-
-
-Kind regards,
-Petr
