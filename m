@@ -1,14 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 4 Jul 2018 17:35:40 +0200
-Subject: [LTP] [PATCH 2/2] network/route: Rewrite route-change-gw into
- new API
-In-Reply-To: <20180625140158.rvjasl7jq2m4blbc@dell5510>
-References: <20180517103527.23542-1-pvorel@suse.cz>
- <20180517103527.23542-2-pvorel@suse.cz>
- <cfa4f035-9052-147b-4d6d-2b6ecfe4cf31@oracle.com>
- <20180518110110.zeabusjbiq2lq263@dell5510>
- <20180625140158.rvjasl7jq2m4blbc@dell5510>
-Message-ID: <20180704153540.l2edpiia2k6yce7p@dell5510>
+Date: Wed, 4 Jul 2018 17:56:14 +0200
+Subject: [LTP] [PATCH v3 0/9] Migrate tests using virt_lib.sh
+ and	ipsec_lib.sh to new API
+In-Reply-To: <20180703074209.911-1-pvorel@suse.cz>
+References: <20180703074209.911-1-pvorel@suse.cz>
+Message-ID: <20180704155613.ww7dtrilp3tvo7vi@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -17,31 +13,22 @@ To: ltp@lists.linux.it
 
 Hi Alexey,
 
-> > > > don't remember why the rewritten test is
-> > > > not using background traffic and not changing gateway anymore?
-> > > The current implementation was based on your suggestion for route-change-dst [1] (I'll
-> > > mention that in commit message), which uses ns-udpsender.  The other patch [2] is
-> > > changing gateway.
-> 
-> > > Tests used ns-udpsender in previous implementation and we decided to keep it as  use
-> > > background traffic isn't sufficient enough [3].
-> 
-> > > But ns-udpsender isn't good enough, as it doesn't check whether destination receive it [4].
-> > > And indeed you can pass it to any destination and it will not fail, e.g.:
-> > > ns-udpsender -f 4 -D 1.2.3.4 -p 1 -o -s 1472
-> 
-> > > I guess we need to write another helper, which will listen for packets on remote side.
-> > > Any recommendations/ideas on it?
-> 
-> It would be good to have this helper in order to extend the tests.
-> Not sure if it can be used other than here...
-Yes, I expect it to be suitable just for these 3 route tests.
+> I addressed issues noted by Alexey
+> changes v2->v3:
+> * tst_net.sh: Added TST_LIB_NET_LOADED and simplify that commit.
+> * tst_net.sh: changes in tst_net.sh split into 2 commits (TST_LIB_NET_LOADED related
+> one and "Harden library against deadlocks")
+> * macsec_lib.sh: Move code from virt_macsec_setup to macsec_lib_setup
+> * virt_lib.sh: Remove unused client_requests=20000
 
-> The other option is to configure a host on the other end as well,
-> so that we get responses, and use the standard tools.
-Sorry, don't understand this idea. Which tools do you mean? Some helper from
-tst_net.sh?
-Thanks for info.
+> @cyril: tst_test.sh: We use TST_LIB_NET_LOADED (3/8), but I kept TST_LIB_LOADED
+> (2/8) as I think it's an improvement, even not used yet.
+
+> Petr Vorel (9):
+
+Pushed whole patchset, I added your Reviewed-by as you did in previous
+versions and suggested all the changes.
+Thanks a lot!
 
 Kind regards,
 Petr
