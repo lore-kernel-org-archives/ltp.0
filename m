@@ -1,227 +1,171 @@
-From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Thu, 5 Jul 2018 07:54:38 -0300
-Subject: [LTP] ltp/read_all_sys (read_all -d /sys -q -r 10) cause system
- panic with kernel-4.18.0-rc1
-In-Reply-To: <CAEemH2fFJrToG1=SFwMFeyThSgPmTy9xzTnLVHO3c1GdpF_EGQ@mail.gmail.com>
-References: <CAEemH2egA1hoECjTSaao8n_YBZ3ypycMSUwZh+Ece28phL4F2Q@mail.gmail.com>
- <CAEemH2fFJrToG1=SFwMFeyThSgPmTy9xzTnLVHO3c1GdpF_EGQ@mail.gmail.com>
-Message-ID: <CABdQkv_Sqszi9Q9mNuZ284TDbZUee5qhb1O129Xbwmf9uN9meA@mail.gmail.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Thu,  5 Jul 2018 16:56:34 +0200
+Subject: [LTP] [PATCH v3 2/3] Add pcrypt_aead01 CVE-2017-18075
+In-Reply-To: <20180705145635.27244-1-rpalethorpe@suse.com>
+References: <20180705145635.27244-1-rpalethorpe@suse.com>
+Message-ID: <20180705145635.27244-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We've faced similar issue in Bug:
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ runtest/crypto                          |  1 +
+ runtest/cve                             |  1 +
+ testcases/kernel/crypto/.gitignore      |  1 +
+ testcases/kernel/crypto/Makefile        | 22 +++++++++
+ testcases/kernel/crypto/pcrypt_aead01.c | 84 +++++++++++++++++++++++++++++++++
+ 5 files changed, 109 insertions(+)
+ create mode 100644 runtest/crypto
+ create mode 100644 testcases/kernel/crypto/.gitignore
+ create mode 100644 testcases/kernel/crypto/Makefile
+ create mode 100644 testcases/kernel/crypto/pcrypt_aead01.c
 
-https://bugs.linaro.org/show_bug.cgi?id=3903
+diff --git a/runtest/crypto b/runtest/crypto
+new file mode 100644
+index 000000000..e5ba61e5e
+--- /dev/null
++++ b/runtest/crypto
+@@ -0,0 +1 @@
++pcrypt_aead01 pcrypt_aead01
+diff --git a/runtest/cve b/runtest/cve
+index c7f438be2..58d8f12b2 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -32,5 +32,6 @@ cve-2017-5754 meltdown
+ cve-2017-17052 cve-2017-17052
+ cve-2017-16939 cve-2017-16939
+ cve-2017-17053 cve-2017-17053
++cve-2017-18075 pcrypt_aead01
+ cve-2018-5803 sctp_big_chunk
+ cve-2018-1000001 getcwd05
+diff --git a/testcases/kernel/crypto/.gitignore b/testcases/kernel/crypto/.gitignore
+new file mode 100644
+index 000000000..fafe5c972
+--- /dev/null
++++ b/testcases/kernel/crypto/.gitignore
+@@ -0,0 +1 @@
++pcrypt_aead01
+diff --git a/testcases/kernel/crypto/Makefile b/testcases/kernel/crypto/Makefile
+new file mode 100644
+index 000000000..76f9308c2
+--- /dev/null
++++ b/testcases/kernel/crypto/Makefile
+@@ -0,0 +1,22 @@
++# Copyright (c) 2017 Linux Test Project
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program. If not, see <http://www.gnu.org/licenses/>.
++
++top_srcdir		?= ../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++CFLAGS			+= -D_GNU_SOURCE
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/crypto/pcrypt_aead01.c b/testcases/kernel/crypto/pcrypt_aead01.c
+new file mode 100644
+index 000000000..1c2aa8e18
+--- /dev/null
++++ b/testcases/kernel/crypto/pcrypt_aead01.c
+@@ -0,0 +1,84 @@
++/*
++ * Copyright (c) 2018 SUSE
++ * Author: Nicolai Stange <nstange@suse.de>
++ * LTP conversion: Richard Palethorpe <rpalethorpe@suse.com>
++ *
++ * Originally found by syzkaller:
++ * https://groups.google.com/forum/#!topic/syzkaller-bugs/NKn_ivoPOpk
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * as published by the Free Software Foundation; either version 2
++ * of the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see <http://www.gnu.org/licenses/>.
++ *
++ * Test for CVE-2017-5754 - pcrypt mishandles freeing instances.
++ *
++ * The test works by adding and then removing pcrypt-AEAD instances.
++ * See commit d76c68109f37 crypto: pcrypt - fix freeing pcrypt instances.
++ *
++ * If the bug is present then this will probably crash the kernel, but also
++ * sometimes the test simply times out.
++ */
++
++#include <errno.h>
++#include <time.h>
++
++#include "tst_test.h"
++#include "tst_safe_net.h"
++#include "tst_taint.h"
++#include "tst_crypto.h"
++
++#define ATTEMPTS 10000
++
++static struct tst_crypto_session ses = TST_CRYPTO_SESSION_INIT;
++
++void setup(void)
++{
++	tst_crypto_open(&ses);
++}
++
++void run(void)
++{
++	int i;
++	struct crypto_user_alg a = {
++		.cru_driver_name = "pcrypt(authenc(hmac(sha256-generic),cbc(aes-generic)))",
++		.cru_type = CRYPTO_ALG_TYPE_AEAD,
++		.cru_mask = CRYPTO_ALG_TYPE_MASK,
++	};
++
++	for (i = 0; i < ATTEMPTS; ++i) {
++		TEST(tst_crypto_add_alg(&ses, &a));
++		if (TEST_RETURN && TEST_RETURN == -ENOENT) {
++			tst_brk(TCONF | TRERRNO,
++				"pcrypt, hmac, sha256, cbc or aes not supported");
++		}
++		if (TEST_RETURN && TEST_RETURN != -EEXIST)
++			tst_brk(TBROK | TRERRNO, "add_alg");
++
++		TEST(tst_crypto_del_alg(&ses, &a));
++		if (TEST_RETURN)
++			tst_brk(TBROK | TRERRNO, "del_alg");
++	}
++
++	tst_res(TPASS, "Nothing bad appears to have happened");
++}
++
++void cleanup(void)
++{
++	tst_crypto_close(&ses);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.test_all = run,
++	.cleanup = cleanup,
++	.needs_root = 1,
++};
+-- 
+2.16.3
 
-And it turned out to be a regmap area declared wrongly (likely) for a
-PMIC device, caught when trying to read "registers" file from debugfs
-in that particular device. Best way to identify the issue is to check
-which file in /sys is causing the NULL dereference:
-
-for file in $(find /sys -type f -print); do echo $file; sudo cat $file
-> /dev/null; done
-
-when being read (and check how it is implementing the VFS proxy fops
-read function).
-On Thu, Jul 5, 2018 at 2:50 AM Li Wang <liwang@redhat.com> wrote:
->
-> Hi there,
->
-> The problem is still in kernel-v4.18-rc3.
->
-> Panic was caused by command:
->   # ./read_all  -d /sys -q -r 10
->
->
-> Or, you can try the full steps to reproduce:
->
-> # git clone https://github.com/linux-test-project/ltp/
-> # cd ltp
-> # ./build.sh
-> # cd ../ltp-install
-> # ./runltp -s read_all_sys
->
->
-> dmesg log:
-> -----------------------
-> # dmesg |grep qla2
-> [    4.764969] qla2xxx [0000:00:00.0]-0005: : QLogic Fibre Channel HBA
-> Driver: 10.00.00.07-k.
-> [    4.775414] qla2xxx [0000:04:00.0]-001a: : MSI-X vector count: 32.
-> [    4.783705] qla2xxx [0000:04:00.0]-001d: : Found an ISP2532 irq 27
-> iobase 0x(____ptrval____).
-> [    4.793972] qla2xxx [0000:04:00.0]-00c6:4: MSI-X: Failed to enable
-> support with 32 vectors, using 10 vectors.
-> [    5.214159] scsi host4: qla2xxx
-> [    5.214514] qla2xxx [0000:04:00.0]-00fb:4: QLogic QLE2562 -
-> PCI-Express Dual Channel 8Gb Fibre Channel HBA.
-> [    5.214520] qla2xxx [0000:04:00.0]-00fc:4: ISP2532: PCIe (5.0GT/s
-> x8) @ 0000:04:00.0 hdma+ host#=4 fw=8.07.00 (90d5).
-> [    5.214622] qla2xxx [0000:04:00.1]-001a: : MSI-X vector count: 32.
-> [    5.214624] qla2xxx [0000:04:00.1]-001d: : Found an ISP2532 irq 57
-> iobase 0x(____ptrval____).
-> [    5.215149] qla2xxx [0000:04:00.1]-00c6:5: MSI-X: Failed to enable
-> support with 32 vectors, using 10 vectors.
-> [    5.631289] scsi host5: qla2xxx
-> [    5.635270] qla2xxx [0000:04:00.1]-00fb:5: QLogic QLE2562 -
-> PCI-Express Dual Channel 8Gb Fibre Channel HBA.
-> [    5.646156] qla2xxx [0000:04:00.1]-00fc:5: ISP2532: PCIe (5.0GT/s
-> x8) @ 0000:04:00.1 hdma+ host#=5 fw=8.07.00 (90d5).
-> [   26.393233] qla2xxx [0000:04:00.0]-8038:4: Cable is unplugged...
-> [   26.841214] qla2xxx [0000:04:00.1]-8038:5: Cable is unplugged...
->
->
-> ---------------------
-> [ 8162.297286] BUG: unable to handle kernel NULL pointer dereference
-> at 00000000000000b8
-> [ 8162.306027] PGD 800000042a986067 P4D 800000042a986067 PUD 42a990067 PMD 0
-> [ 8162.313695] Oops: 0000 [#1] SMP PTI
-> [ 8162.317588] CPU: 7 PID: 1677 Comm: read_all Tainted: G          I
->     4.18.0-rc3+ #1
-> [ 8162.326422] Hardware name: FUJITSU
-> PRIMERGY RX200 S6             /D3031, BIOS 6.00 Rev. 1.10.3031
->      01/20/2012
-> [ 8162.341096] RIP: 0010:qla_dfs_tgt_counters_show+0x92/0x2a0 [qla2xxx]
-> [ 8162.348176] Code: b6 86 22 01 00 00 66 85 c0 74 63 83 e8 01 4c 8b
-> 9e b8 00 00 00 31 f6 0f b7 c0 48 8d 3c c5 08 00 00 00 49 8b 04 33 48
-> 83 c6 08 <48> 03 90 b8 00 00 00 48 03 88 c0 00 00 00 4c 03 80 c8 00 00
-> 00 4c
-> [ 8162.369260] RSP: 0018:ffffadee829d7d60 EFLAGS: 00010202
-> [ 8162.375088] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> [ 8162.383049] RDX: 0000000000000000 RSI: 0000000000000008 RDI: 0000000000000040
-> [ 8162.391010] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> [ 8162.398973] R10: ffff893be3dce798 R11: ffff893be3a004c0 R12: 0000000000000000
-> [ 8162.406935] R13: 0000000000000000 R14: ffff893be5006f00 R15: 0000000000000000
-> [ 8162.414898] FS:  00007f7611b68740(0000) GS:ffff893bffdc0000(0000)
-> knlGS:0000000000000000
-> [ 8162.423926] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 8162.430337] CR2: 00000000000000b8 CR3: 000000042a98e006 CR4: 00000000000206e0
-> [ 8162.438298] Call Trace:
-> [ 8162.441031]  ? _cond_resched+0x15/0x30
-> [ 8162.445215]  ? __kmalloc_node+0x1cd/0x280
-> [ 8162.449690]  ? seq_read+0x33e/0x3f0
-> [ 8162.453581]  seq_read+0x120/0x3f0
-> [ 8162.457280]  full_proxy_read+0x50/0x70
-> [ 8162.461462]  __vfs_read+0x36/0x190
-> [ 8162.465257]  vfs_read+0x87/0x130
-> [ 8162.468855]  ksys_read+0x52/0xc0
-> [ 8162.472456]  do_syscall_64+0x5b/0x180
-> [ 8162.476541]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [ 8162.482177] RIP: 0033:0x7f76117476d0
-> [ 8162.486163] Code: 73 01 c3 48 8b 0d d8 88 20 00 f7 d8 64 89 01 48
-> 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 19 cd 20 00 00 75 10 b8 00 00 00
-> 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 ee fc ff ff 48 89
-> 04 24
-> [ 8162.507237] RSP: 002b:00007fff35e015f8 EFLAGS: 00000246 ORIG_RAX:
-> 0000000000000000
-> [ 8162.515685] RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f76117476d0
-> [ 8162.523647] RDX: 00000000000003ff RSI: 00007fff35e01ab0 RDI: 0000000000000003
-> [ 8162.531607] RBP: 0000000000001c0c R08: 0000000000000000 R09: 00007fff35e01550
-> [ 8162.539569] R10: 0000000000000000 R11: 0000000000000246 R12: 00007f7611b59000
-> [ 8162.547530] R13: 00007fff35e01ab0 R14: 0000000000000028 R15: 0000000000000030
-> [ 8162.555493] Modules linked in: sunrpc intel_powerclamp coretemp
-> kvm_intel kvm irqbypass crct10dif_pclmul crc32_pclmul
-> ghash_clmulni_intel ipmi_ssif pcbc aesni_intel crypto_simd cryptd
-> ipmi_si iTCO_wdt glue_helper iTCO_vendor_support gpio_ich ipmi_devintf
-> sg pcspkr i2c_i801 ipmi_msghandler acpi_power_meter lpc_ich
-> i7core_edac acpi_cpufreq ip_tables xfs libcrc32c sd_mod sr_mod cdrom
-> mgag200 drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops
-> ttm ata_generic qla2xxx pata_acpi drm igb ata_piix mptsas libata
-> nvme_fc scsi_transport_sas nvme_fabrics mptscsih nvme_core
-> crc32c_intel mptbase scsi_transport_fc dca i2c_algo_bit dm_mirror
-> dm_region_hash dm_log dm_mod
-> [ 8162.621090] CR2: 00000000000000b8
->
->
-> On Tue, Jun 19, 2018 at 6:41 PM, Li Wang <liwang@redhat.com> wrote:
-> > Hi,
-> >
-> > I'm hitting this panic when running ltp/read_all_sys on kernel-v4.18-rc1.
-> >
-> > Test env:
-> > FUJITSU PRIMERGY RX200 S6 GS01
-> > Intel(R) Xeon(R) CPU E5620 @ 2.40GHz
-> > 16384 MB memory, 598 GB disk space
-> >
-> >
-> > [ 5915.705844] BUG: unable to handle kernel NULL pointer dereference
-> > at 00000000000000b8
-> > [ 5915.714587] PGD 800000042bcf7067 P4D 800000042bcf7067 PUD 423f4e067 PMD 0
-> > [ 5915.722254] Oops: 0000 [#1] SMP PTI
-> > [ 5915.726147] CPU: 6 PID: 18535 Comm: read_all Tainted: P
-> > IOE     4.18.0-rc1 #1
-> > [ 5915.734980] Hardware name: FUJITSU
-> > PRIMERGY RX200 S6             /D3031, BIOS 6.00 Rev. 1.10.3031
-> >      01/20/2012
-> > [ 5915.749654] RIP: 0010:qla_dfs_tgt_counters_show+0x92/0x2a0 [qla2xxx]
-> > [ 5915.756733] Code: b6 86 22 01 00 00 66 85 c0 74 63 83 e8 01 4c 8b
-> > 9e b8 00 00 00 31 f6 0f b7 c0 48 8d 3c c5 08 00 00 00 49 8b 04 33 48
-> > 83 c6 08 <48> 03 90 b8 00 00 00 48 03 88 c0 00 00 00 4c 03 80 c8 00 00
-> > 00 4c
-> > [ 5915.777816] RSP: 0018:ffffaf04109e3d60 EFLAGS: 00010202
-> > [ 5915.783645] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> > [ 5915.791606] RDX: 0000000000000000 RSI: 0000000000000008 RDI: 0000000000000040
-> > [ 5915.799568] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> > [ 5915.807529] R10: ffff956823a74798 R11: ffff956824a29000 R12: 0000000000000000
-> > [ 5915.815489] R13: 0000000000000000 R14: ffff9567badfc280 R15: 0000000000000000
-> > [ 5915.823451] FS:  00007f27336a1740(0000) GS:ffff95683fd80000(0000)
-> > knlGS:0000000000000000
-> > [ 5915.832479] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [ 5915.838890] CR2: 00000000000000b8 CR3: 000000042960a003 CR4: 00000000000206e0
-> > [ 5915.846850] Call Trace:
-> > [ 5915.849583]  ? __kmalloc_node+0x195/0x280
-> > [ 5915.854056]  ? seq_read+0x33e/0x3f0
-> > [ 5915.857946]  seq_read+0x120/0x3f0
-> > [ 5915.861643]  full_proxy_read+0x50/0x70
-> > [ 5915.865827]  __vfs_read+0x36/0x190
-> > [ 5915.869622]  vfs_read+0x87/0x130
-> > [ 5915.873223]  ksys_read+0x52/0xc0
-> > [ 5915.876823]  do_syscall_64+0x5b/0x180
-> > [ 5915.880910]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > [ 5915.886547] RIP: 0033:0x7f2733280790
-> > [ 5915.890532] Code: 73 01 c3 48 8b 0d 18 88 20 00 f7 d8 64 89 01 48
-> > 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 59 cc 20 00 00 75 10 b8 00 00 00
-> > 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 1e fc ff ff 48 89
-> > 04 24
-> > [ 5915.911617] RSP: 002b:00007ffef181c738 EFLAGS: 00000246 ORIG_RAX:
-> > 0000000000000000
-> > [ 5915.920064] RAX: ffffffffffffffda RBX: 0000000000000006 RCX: 00007f2733280790
-> > [ 5915.928025] RDX: 00000000000003ff RSI: 00007ffef181cbf0 RDI: 0000000000000006
-> > [ 5915.935986] RBP: 0000000000000b7b R08: 0000000000000000 R09: 00007ffef181c690
-> > [ 5915.943949] R10: 0000000000000000 R11: 0000000000000246 R12: 00007f2733688000
-> > [ 5915.951909] R13: 00007ffef181cbf0 R14: 0000000000000028 R15: 0000000000000030
-> > [ 5915.959871] Modules linked in: dummy veth binfmt_misc sctp overlay
-> > tun fuse vfat fat btrfs xor zstd_decompress zstd_compress xxhash
-> > raid6_pq ext4 mbcache jbd2 loop sunrpc intel_powerclamp coretemp
-> > kvm_intel kvm irqbypass crct10dif_pclmul crc32_pclmul
-> > ghash_clmulni_intel pcbc ipmi_ssif aesni_intel crypto_simd iTCO_wdt
-> > ipmi_si cryptd iTCO_vendor_support glue_helper gpio_ich ipmi_devintf
-> > sg acpi_power_meter ipmi_msghandler i2c_i801 pcspkr lpc_ich
-> > i7core_edac acpi_cpufreq ip_tables xfs libcrc32c sd_mod sr_mod cdrom
-> > mgag200 drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops
-> > ttm ata_generic pata_acpi qla2xxx drm igb ata_piix nvme_fc mptsas
-> > libata nvme_fabrics scsi_transport_sas dca crc32c_intel mptscsih
-> > i2c_algo_bit nvme_core i2c_core mptbase scsi_transport_fc dm_mirror
-> > dm_region_hash dm_log
-> > [ 5916.038566]  dm_mod [last unloaded: ltp_insmod01]
-> > [ 5916.043814] CR2: 00000000000000b8
-> > [ 5916.047513] BUG: unable to handle kernel NULL pointer dereference
-> > at 00000000000000b8
-> > [ 5916.047537] ---[ end trace 1dddacfb06305174 ]---
-> >
-> >
-> > --
-> > Regards,
-> > Li Wang
->
->
->
-> --
-> Regards,
-> Li Wang
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
