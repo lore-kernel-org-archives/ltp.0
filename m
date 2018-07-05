@@ -1,45 +1,51 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 3 Jul 2018 11:10:57 +0200
-Subject: [LTP] [PATCH] verify_caps_exec: Replace index() with strchr()
-In-Reply-To: <20180624203456.30476-1-astrachan@google.com>
-References: <20180624203456.30476-1-astrachan@google.com>
-Message-ID: <20180703091057.pfvdfxelb2u6cewi@dell5510>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 5 Jul 2018 17:37:18 +0800
+Subject: [LTP] [PATCH] memcg/memcg_subgroup_charge: Fix out of memory
+Message-ID: <1530783438-9860-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alistair,
+Since commit f0b9d18, memcg_process maps 33 pages for a process, but
+memory.limit_in_bytes is still restricted to 1 page, so that moving
+the process into group or subgroup results in oom.
 
-> The index() function was removed in POSIX.2008. It is not implemented by
-> Android's bionic C library for 64-bit platforms.
+Fixes: f0b9d18 ("memcg/functional: 4.16 kernel updates stat counter in a batch of 33 pages")
 
-> Use the more portable strchr() function from C89.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ .../kernel/controllers/memcg/functional/memcg_subgroup_charge.sh    | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> Signed-off-by: Alistair Strachan <astrachan@google.com>
-> ---
->  testcases/kernel/security/filecaps/verify_caps_exec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+index 6b97407..9b11f7b 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+@@ -33,17 +33,17 @@ TST_TOTAL=3
+ # Test that group and subgroup have no relationship
+ testcase_1()
+ {
+-	test_subgroup $PAGESIZE $((2*PAGESIZE))
++	test_subgroup $PAGESIZES $((2*PAGESIZES))
+ }
+ 
+ testcase_2()
+ {
+-	test_subgroup $PAGESIZE $PAGESIZE
++	test_subgroup $PAGESIZES $PAGESIZES
+ }
+ 
+ testcase_3()
+ {
+-	test_subgroup $PAGESIZE 0
++	test_subgroup $PAGESIZES 0
+ }
+ 
+ run_tests
+-- 
+1.8.3.1
 
-> diff --git a/testcases/kernel/security/filecaps/verify_caps_exec.c b/testcases/kernel/security/filecaps/verify_caps_exec.c
-> index 2c5cc0b2a..7183d8b4a 100644
-> --- a/testcases/kernel/security/filecaps/verify_caps_exec.c
-> +++ b/testcases/kernel/security/filecaps/verify_caps_exec.c
-> @@ -186,7 +186,7 @@ static int fork_drop_and_exec(int keepperms, cap_t expected_caps)
->  				 "got a bad seqno (c=%d, s=%d, seqno=%d)", c, s,
->  				 seqno);
->  		}
-> -		p = index(buf, '.');
-> +		p = strchr(buf, '.');
->  		if (!p)
->  			tst_brkm(TFAIL, NULL,
->  				 "got a bad message from print_caps\n");
-
-Thanks for your patch, merged.
-
-BTW there are more uses of index() / rindex() in the project.
 
 
-Kind regards,
-Petr
