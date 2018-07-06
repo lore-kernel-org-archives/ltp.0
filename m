@@ -1,47 +1,81 @@
-From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Thu, 5 Jul 2018 13:41:22 -0300
-Subject: [LTP] FAILED: patch "[PATCH] ovl: hash non-dir by lower inode
- for fsnotify" failed to apply to 4.14-stable tree
-In-Reply-To: <20180705163212.GA7993@kroah.com>
-References: <152086697777252@kroah.com>
- <CABdQkv8E4Ofv5MSX=U0wk1MZ5=szUSr54vshhn6X_wsB+tEz2g@mail.gmail.com>
- <20180705151810.GA11929@kroah.com>
- <CABdQkv_yJL5-DEr4D5D=VTvC7WTq292OCmZteccROHmTwTjY6g@mail.gmail.com>
- <20180705153051.GA13764@kroah.com>
- <CABdQkv9mUMF_ewvE2_7AUXpxoS2ZUcbnxo+iL3yF3FU-aVLkBQ@mail.gmail.com>
- <20180705155710.GA20455@kroah.com>
- <CABdQkv_8Zu2oQfNYaYpF=hCEfh8dtq4beHvtuys0j_HLhbB2eg@mail.gmail.com>
- <20180705163212.GA7993@kroah.com>
-Message-ID: <CABdQkv_ULAwHiqLxdW7yvKPgdO967xYU61HjjmvyMaFQecpCSw@mail.gmail.com>
+From: Zhang, Yixin <yixin.zhang@intel.com>
+Date: Fri, 6 Jul 2018 15:14:31 +0800
+Subject: [LTP] [PATCH ltp] kernel/fs/doio/rwtest: fix shellcheck error
+In-Reply-To: <20180625084120.r42fr73grqeyzaot@dell5510>
+References: <20180525074447.26298-1-yixin.zhang@intel.com>
+ <20180625084120.r42fr73grqeyzaot@dell5510>
+Message-ID: <20180706071431.t3uxstuop2y4p6cj@yixin-desktop>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> > So I assumed it was a no-go.
->
-> It all depends, let's get the git commit ids for these please.  And have
-> you successfully applied and tested that those patches fix the issue?
-> If so, great, let's apply them!
->
-> > There is also another bug:
-> >
-> > https://bugs.linaro.org/show_bug.cgi?id=3303.
-> >
-> > Fanotify faces a srcu dead-lock when userland stops responding to
-> > events for this other case. Fix for that bug is a 35 patches patchset
-> > (including the fix,  commit 9dd813c15b2c101, for the particular
-> > issue).
-> >
-> > Question is, should I document things of this nature on this list also
-> > ? Even if it is likely a no-go for the backports ? Just as information
-> > ? Should I just bring the attention to the backport need (all patches)
-> > and you decide ?
->
-> Same as above, if you test them and they work, and they resolve a
-> reported and testable bug, why wouldn't we apply them?
+Hi Petr,
 
-Great to know! Will work on both then.
+Sorry for late reply, I was busy on something else in the past weeks.
+Thanks for all the comments, I'll provide a re-write version soon.
 
-Tks a lot.
+Yixin
+
+On 2018-06-25 at 10:41:20 +0200, Petr Vorel wrote:
+> Hi Yixin,
+> 
+> thanks for your patch, we appreciate your effort.
+> There are some comments bellow. Even if you fix them, patches like this one
+> doesn't help much. The script is really ugly, requires a rewrite which would:
+> 
+> 1) Be posix compliant. I.e.: remove all bashisms (arrays, typeset, regex
+> in [[ ... ]], etc.). It's good to use checkbashism.pl script and run it in dash
+> to test it:
+> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#132-shell-coding-style
+> https://salsa.debian.org/debian/devscripts/raw/master/scripts/checkbashisms.pl
+> 
+> 2) Use LTP new shell API
+> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#23-writing-a-testcase-in-shell
+> 
+> Rewriting the script would be a great improvement. If you decide to do so,
+> please do not hesitate to ask for help (if needed).
+> 
+> Kind regards,
+> Petr
+> 
+> > testcases/kernel/fs/doio/rwtest:199:12: error: > is for string comparisons. Use -gt instead. [SC2071]
+> > testcases/kernel/fs/doio/rwtest:320:10: error: Globs are ignored in [[ ]] except right of =/!=. Use a loop. [SC2203]
+> > testcases/kernel/fs/doio/rwtest:347:7: error: Couldn't parse this test expression. [SC1073]
+> > testcases/kernel/fs/doio/rwtest:347:25: error: Expected test to end here (don't wrap commands in []/[[]]).
+> >                                                Fix any mentioned problems and try again. [SC1072]
+> 
+> ...
+> > +++ b/testcases/kernel/fs/doio/rwtest
+> > @@ -196,7 +196,7 @@ do	case $1 in
+> >  	-n | -Dn )
+> >  		dOpts="$dOpts $1 $2"
+> >  		# force file locking with > 1 process
+> > -		if [[ $2 > 1 ]]
+> > +		if [[ $2 -gt 1 ]]
+> Why not use posix compliant syntax? I.e. single square brackets:
+> if [ $2 -gt 1 ]; then
+> 
+> >  		then
+> >  			dOpts="$dOpts -k"
+> >  		fi
+> > @@ -317,7 +317,7 @@ do
+> >  		typeset -i n=0
+> >  		while (( n < ${#szcache[*]} ))
+> >  		do
+> > -			if [[ szcache[$n] = $dir ]]; then
+> > +			if [[ ${szcache[n]} = $dir ]]; then
+> Well, correct, but we'd like to drop arrays, as they're bashisms.
+> >  				break;
+> >  			fi
+> >  			n=n+1
+> > @@ -344,7 +344,7 @@ do
+> 
+> >  			# check if blks is a number, else set a default value for blks
+> >  			default_sz=1000000
+> > -			if [ $blks -eq $blks 2> /dev/null ]
+> > +			if [ $blks -eq $blks ] 2>/dev/null
+> The shellcheck warning was meant to be without square brackets:
+> if $blks -eq $blks 2>/dev/null; then
+> 
