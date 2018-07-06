@@ -1,36 +1,68 @@
-From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Fri,  6 Jul 2018 16:29:27 +0100
-Subject: [LTP] [PATCH] acl_test01: Add setfacl as an explicit dependency
-Message-ID: <20180706152927.26646-1-punit.agrawal@arm.com>
+From: Rafael David Tinoco <rafael.tinoco@linaro.org>
+Date: Fri,  6 Jul 2018 14:28:33 -0300
+Subject: [LTP] [PATCH] mfd: hi655x: Fix regmap area declared size for hi655x
+Message-ID: <20180706172833.533-1-rafael.tinoco@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-acl_test01 calls setfacl during execution but does not explicitly
-check for its presence during setup.
+Fixes: https://bugs.linaro.org/show_bug.cgi?id=3903
 
-Add this dependency to correctly report the failure mode when setfacl
-is not found.
+LTP Functional tests have caused a bad paging request when triggering
+the regmap_read_debugfs() logic of the device PMIC Hi6553 (reading
+regmap/f8000000.pmic/registers file during read_all test):
 
-Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
+Unable to handle kernel paging request at virtual address ffff0
+[ffff00000984e000] pgd=0000000077ffe803, pud=0000000077ffd803,0
+Internal error: Oops: 96000007 [#1] SMP
+...
+Hardware name: HiKey Development Board (DT)
+...
+Call trace:
+ regmap_mmio_read8+0x24/0x40
+ regmap_mmio_read+0x48/0x70
+ _regmap_bus_reg_read+0x38/0x48
+ _regmap_read+0x68/0x170
+ regmap_read+0x50/0x78
+ regmap_read_debugfs+0x1a0/0x308
+ regmap_map_read_file+0x48/0x58
+ full_proxy_read+0x68/0x98
+ __vfs_read+0x48/0x80
+ vfs_read+0x94/0x150
+ SyS_read+0x6c/0xd8
+ el0_svc_naked+0x30/0x34
+Code: aa1e03e0 d503201f f9400280 8b334000 (39400000)
+
+Investigations have showed that, when triggered by debugfs read()
+handler, the mmio regmap logic was reading a bigger (16k) register area
+than the one mapped by devm_ioremap_resource() during hi655x-pmic probe
+time (4k).
+
+This commit changes hi655x's max register, according to HW specs, to be
+the same as the one declared in the pmic device in hi6220's dts, fixing
+the issue.
+
+Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
+Cc: <stable@vger.kernel.org> #v4.9 #v4.14 #v4.16 #v4.17
 ---
- testcases/kernel/fs/acls/acl_test01 | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mfd/hi655x-pmic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/fs/acls/acl_test01 b/testcases/kernel/fs/acls/acl_test01
-index c91eb5686..14b62e895 100755
---- a/testcases/kernel/fs/acls/acl_test01
-+++ b/testcases/kernel/fs/acls/acl_test01
-@@ -64,6 +64,7 @@ fi
- do_setup()
- {
- 	tst_require_root
-+	tst_check_cmds setfacl
+diff --git a/drivers/mfd/hi655x-pmic.c b/drivers/mfd/hi655x-pmic.c
+index c37ccbfd52f2..96c07fa1802a 100644
+--- a/drivers/mfd/hi655x-pmic.c
++++ b/drivers/mfd/hi655x-pmic.c
+@@ -49,7 +49,7 @@ static struct regmap_config hi655x_regmap_config = {
+ 	.reg_bits = 32,
+ 	.reg_stride = HI655X_STRIDE,
+ 	.val_bits = 8,
+-	.max_register = HI655X_BUS_ADDR(0xFFF),
++	.max_register = HI655X_BUS_ADDR(0x400) - HI655X_STRIDE,
+ };
  
- 	if ! ( test -d $TMP/tacl || mkdir -m 777 $TMP/tacl) ; then
- 		tst_brkm TBROK "Failed to create $TMP/tacl directory."
+ static struct resource pwrkey_resources[] = {
 -- 
-2.17.1
+2.18.0
 
