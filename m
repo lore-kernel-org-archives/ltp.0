@@ -1,81 +1,36 @@
-From: Zhang, Yixin <yixin.zhang@intel.com>
-Date: Fri, 6 Jul 2018 15:14:31 +0800
-Subject: [LTP] [PATCH ltp] kernel/fs/doio/rwtest: fix shellcheck error
-In-Reply-To: <20180625084120.r42fr73grqeyzaot@dell5510>
-References: <20180525074447.26298-1-yixin.zhang@intel.com>
- <20180625084120.r42fr73grqeyzaot@dell5510>
-Message-ID: <20180706071431.t3uxstuop2y4p6cj@yixin-desktop>
+From: Yixin Zhang <yixin.zhang@intel.com>
+Date: Fri,  6 Jul 2018 15:36:51 +0800
+Subject: [LTP] [PATCH ltp] stress.part1: sync change of fs_inod01 from 'fs'
+Message-ID: <20180706073651.12942-1-yixin.zhang@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+There is another fs_inod01 in the test case scenario 'fs', and the
+iteration is increased from 1 to 10 in commit
+b0458a3c838c86faf2d8855c097628c0c435532a, so implement the same change
+here.
 
-Sorry for late reply, I was busy on something else in the past weeks.
-Thanks for all the comments, I'll provide a re-write version soon.
+Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+---
+ runtest/stress.part1 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yixin
+diff --git a/runtest/stress.part1 b/runtest/stress.part1
+index 423d25e38..af6fce511 100644
+--- a/runtest/stress.part1
++++ b/runtest/stress.part1
+@@ -157,7 +157,7 @@ rwtest05 export LTPROOT; rwtest -N rwtest05 -c -q -i 50 -T 64b 500b:/tmp/rwtest0
+ #iogen01 iogen -i 120s -s read,write 500b:doio.f1.$$ 1000b:doio.f2.$$ | doio -akv -n 2
+ iogen01 export LTPROOT; rwtest -N iogen01 -i 120s -s read,write -Da -Dv -n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
+ 
+-fs_inod01 fs_inod $TMPDIR 10 10 1
++fs_inod01 fs_inod $TMPDIR 10 10 10
+ linker01 linktest.sh 1000 1000
+ openfile01 openfile -f10 -t10
+ inode01 inode01
+-- 
+2.14.1
 
-On 2018-06-25 at 10:41:20 +0200, Petr Vorel wrote:
-> Hi Yixin,
-> 
-> thanks for your patch, we appreciate your effort.
-> There are some comments bellow. Even if you fix them, patches like this one
-> doesn't help much. The script is really ugly, requires a rewrite which would:
-> 
-> 1) Be posix compliant. I.e.: remove all bashisms (arrays, typeset, regex
-> in [[ ... ]], etc.). It's good to use checkbashism.pl script and run it in dash
-> to test it:
-> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#132-shell-coding-style
-> https://salsa.debian.org/debian/devscripts/raw/master/scripts/checkbashisms.pl
-> 
-> 2) Use LTP new shell API
-> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#23-writing-a-testcase-in-shell
-> 
-> Rewriting the script would be a great improvement. If you decide to do so,
-> please do not hesitate to ask for help (if needed).
-> 
-> Kind regards,
-> Petr
-> 
-> > testcases/kernel/fs/doio/rwtest:199:12: error: > is for string comparisons. Use -gt instead. [SC2071]
-> > testcases/kernel/fs/doio/rwtest:320:10: error: Globs are ignored in [[ ]] except right of =/!=. Use a loop. [SC2203]
-> > testcases/kernel/fs/doio/rwtest:347:7: error: Couldn't parse this test expression. [SC1073]
-> > testcases/kernel/fs/doio/rwtest:347:25: error: Expected test to end here (don't wrap commands in []/[[]]).
-> >                                                Fix any mentioned problems and try again. [SC1072]
-> 
-> ...
-> > +++ b/testcases/kernel/fs/doio/rwtest
-> > @@ -196,7 +196,7 @@ do	case $1 in
-> >  	-n | -Dn )
-> >  		dOpts="$dOpts $1 $2"
-> >  		# force file locking with > 1 process
-> > -		if [[ $2 > 1 ]]
-> > +		if [[ $2 -gt 1 ]]
-> Why not use posix compliant syntax? I.e. single square brackets:
-> if [ $2 -gt 1 ]; then
-> 
-> >  		then
-> >  			dOpts="$dOpts -k"
-> >  		fi
-> > @@ -317,7 +317,7 @@ do
-> >  		typeset -i n=0
-> >  		while (( n < ${#szcache[*]} ))
-> >  		do
-> > -			if [[ szcache[$n] = $dir ]]; then
-> > +			if [[ ${szcache[n]} = $dir ]]; then
-> Well, correct, but we'd like to drop arrays, as they're bashisms.
-> >  				break;
-> >  			fi
-> >  			n=n+1
-> > @@ -344,7 +344,7 @@ do
-> 
-> >  			# check if blks is a number, else set a default value for blks
-> >  			default_sz=1000000
-> > -			if [ $blks -eq $blks 2> /dev/null ]
-> > +			if [ $blks -eq $blks ] 2>/dev/null
-> The shellcheck warning was meant to be without square brackets:
-> if $blks -eq $blks 2>/dev/null; then
-> 
