@@ -1,7 +1,8 @@
-From: tarun <tarun@zilogic.com>
-Date: Wed, 11 Jul 2018 13:24:09 -0000
-Subject: [LTP] [PATCH v1] Testing statx syscall
-Message-ID: <20180711132409.3992-1-tarun@zilogic.com>
+From: Vishnu K <vishnu@zilogic.com>
+Date: Wed, 11 Jul 2018 13:50:32 -0000
+Subject: [LTP] [PATCH v1] Test for memfd_create() syscall with MFD_HUGETLB
+	flag.
+Message-ID: <20180711135032.8669-1-vishnu@zilogic.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,1073 +10,698 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
- * statx01.c: This file will check metadata of files like uid, gid,
-   size, blocks, mode for normal file(1) and rdev_major, rdev_minor
-   number for device file(2)
+memfd_create03.c: Tests the syscall for the flag MFD_HUGETLB.
 
- * statx02.c: This file will check flag like AT_EMPTY_PATH,
-         AT_SYMLINK_NOFOLLOW
-   * AT_EMPTY_PATH: If pathname is an empty string,
-      operate on the file referred to by dirfd.
-   * AT_SYMLINK_NOFOLLOW:If pathname is a symbolic link, do not
-      dereference it: instead return information about the link itself.
+memfd_create04.c: Tests the syscall for the flags MFD_HUGE_2MB, MFD_HUGE_1GB,... used in conjunction with MFD_HUGETLB flag.
 
- * stat03.c: This file will check error code(errno) by providing
-   required input in statx argument syscall. The following errno are
-   checked: EBADF, EBADF, ENAMETOOLONG, ENOENT, ENOTDIR, EFAULT.
+memfd_create_hugetlb.c: Contains helper functions for memfd_create03.c and memfd_create04.c.
 
- * statx04.sh: This script will check attribute flag by defining flag
-   to that directory and checks another directory no flags. It
-   contains helper c file to get attribute status
-
-Signed-off-by: Tarun.T.U <tarun@zilogic.com>
-Signed-off-by: Vaishnavi.D <vaishnavi.d@zilogic.com>
+Signed-off-by: Sikkandar Sulaiman A <sikkandarsulaiman@zilogic.com>
+Signed-off-by: Vishnu K <vishnu@zilogic.com>
 ---
- include/lapi/statx.h                          | 161 ++++++++++++++++
- include/lapi/syscalls/arm.in                  |   1 +
- include/lapi/syscalls/i386.in                 |   1 +
- include/lapi/syscalls/powerpc.in              |   1 +
- include/lapi/syscalls/powerpc64.in            |   1 +
- include/lapi/syscalls/s390.in                 |   1 +
- include/lapi/syscalls/sparc.in                |   1 +
- include/lapi/syscalls/sparc64.in              |   1 +
- include/lapi/syscalls/x86_64.in               |   1 +
- runtest/syscalls                              |   8 +
- testcases/kernel/syscalls/statx/Makefile      |  29 +++
- .../kernel/syscalls/statx/helper_statx04.c    |  84 ++++++++
- testcases/kernel/syscalls/statx/statx01.c     | 164 ++++++++++++++++
- testcases/kernel/syscalls/statx/statx02.c     | 133 +++++++++++++
- testcases/kernel/syscalls/statx/statx03.c     | 136 +++++++++++++
- testcases/kernel/syscalls/statx/statx04.sh    | 179 ++++++++++++++++++
- 16 files changed, 902 insertions(+)
- create mode 100644 include/lapi/statx.h
- create mode 100644 testcases/kernel/syscalls/statx/Makefile
- create mode 100644 testcases/kernel/syscalls/statx/helper_statx04.c
- create mode 100644 testcases/kernel/syscalls/statx/statx01.c
- create mode 100644 testcases/kernel/syscalls/statx/statx02.c
- create mode 100644 testcases/kernel/syscalls/statx/statx03.c
- create mode 100755 testcases/kernel/syscalls/statx/statx04.sh
+ runtest/syscalls                              |   2 +
+ .../kernel/syscalls/memfd_create/Makefile     |   4 +-
+ .../syscalls/memfd_create/memfd_create03.c    | 151 +++++++++++
+ .../syscalls/memfd_create/memfd_create04.c    | 139 ++++++++++
+ .../memfd_create/memfd_create_hugetlb.c       | 244 ++++++++++++++++++
+ .../memfd_create/memfd_create_hugetlb.h       |  86 ++++++
+ 6 files changed, 624 insertions(+), 2 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/memfd_create/memfd_create03.c
+ create mode 100644 testcases/kernel/syscalls/memfd_create/memfd_create04.c
+ create mode 100644 testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.c
+ create mode 100644 testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.h
 
-diff --git a/include/lapi/statx.h b/include/lapi/statx.h
-new file mode 100644
-index 000000000..e59d3bef6
---- /dev/null
-+++ b/include/lapi/statx.h
-@@ -0,0 +1,161 @@
-+// SPDX-License-Identifier: GPL-2.0 or later
-+/*
-+ * Copyright (c) Zilogic Systems Pvt. Ltd., 2007
-+ * Email: code@zilogic.com
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#ifndef STATX_H
-+#define STATX_H
-+
-+#include <asm-generic/types.h>
-+/*
-+ * Timestamp structure for the timestamps in struct statx.
-+ *
-+ * tv_sec holds the number of seconds before (negative) or after (positive)
-+ * 00:00:00 1st January 1970 UTC.
-+ *
-+ * tv_nsec holds a number of nanoseconds (0..999,999,999) after the tv_sec time.
-+ *
-+ * __reserved is held in case we need a yet finer resolution.
-+ */
-+struct statx_timestamp {
-+	__s64	tv_sec;
-+	__u32	tv_nsec;
-+	__s32	__reserved;
-+};
-+
-+/*
-+ * Structures for the extended file attribute retrieval system call
-+ * (statx()).
-+ *
-+ * The caller passes a mask of what they're specifically interested in as a
-+ * parameter to statx().  What statx() actually got will be indicated in
-+ * st_mask upon return.
-+ *
-+ * For each bit in the mask argument:
-+ *
-+ * - if the datum is not supported:
-+ *
-+ *   - the bit will be cleared, and
-+ *
-+ *   - the datum will be set to an appropriate fabricated value if one is
-+ *     available (eg. CIFS can take a default uid and gid), otherwise
-+ *
-+ *   - the field will be cleared;
-+ *
-+ * - otherwise, if explicitly requested:
-+ *
-+ *   - the datum will be synchronised to the server if AT_STATX_FORCE_SYNC is
-+ *     set or if the datum is considered out of date, and
-+ *
-+ *   - the field will be filled in and the bit will be set;
-+ *
-+ * - otherwise, if not requested, but available in approximate form without any
-+ *   effort, it will be filled in anyway, and the bit will be set upon return
-+ *   (it might not be up to date, however, and no attempt will be made to
-+ *   synchronise the internal state first);
-+ *
-+ * - otherwise the field and the bit will be cleared before returning.
-+ *
-+ * Items in STATX_BASIC_STATS may be marked unavailable on return, but they
-+ * will have values installed for compatibility purposes so that stat() and
-+ * co. can be emulated in userspace.
-+ */
-+struct statx {
-+	/* 0x00 */
-+	__u32	stx_mask;
-+	__u32	stx_blksize;
-+	__u64	stx_attributes;
-+	/* 0x10 */
-+	__u32	stx_nlink;
-+	__u32	stx_uid;
-+	__u32	stx_gid;
-+	__u16	stx_mode;
-+	__u16	__spare0[1];
-+	/* 0x20 */
-+	__u64	stx_ino;
-+	__u64	stx_size;
-+	__u64	stx_blocks;
-+	__u64	stx_attributes_mask;
-+	/* 0x40 */
-+	const struct statx_timestamp	stx_atime;
-+	const struct statx_timestamp	stx_btime;
-+	const struct statx_timestamp	stx_ctime;
-+	const struct statx_timestamp	stx_mtime;
-+	/* 0x80 */
-+	__u32	stx_rdev_major;
-+	__u32	stx_rdev_minor;
-+	__u32	stx_dev_major;
-+	__u32	stx_dev_minor;
-+	/* 0x90 */
-+	__u64	__spare2[14];
-+	/* 0x100 */
-+};
-+
-+/*
-+ * Flags to be stx_mask
-+ *
-+ * Query request/result mask for statx() and struct statx::stx_mask.
-+ *
-+ * These bits should be set in the mask argument of statx() to request
-+ * particular items when calling statx().
-+ */
-+#define STATX_TYPE		0x00000001U
-+#define STATX_MODE		0x00000002U
-+#define STATX_NLINK		0x00000004U
-+#define STATX_UID		0x00000008U
-+#define STATX_GID		0x00000010U
-+#define STATX_ATIME		0x00000020U
-+#define STATX_MTIME		0x00000040U
-+#define STATX_CTIME		0x00000080U
-+#define STATX_INO		0x00000100U
-+#define STATX_SIZE		0x00000200U
-+#define STATX_BLOCKS		0x00000400U
-+#define STATX_BASIC_STATS	0x000007ffU
-+#define STATX_BTIME		0x00000800U
-+#define STATX_ALL		0x00000fffU
-+#define STATX__RESERVED		0x80000000U
-+
-+/*
-+ * Attributes to be found in stx_attributes and masked in stx_attributes_mask.
-+ *
-+ * These give information about the features or the state of a file that might
-+ * be of use to ordinary userspace programs such as GUIs or ls rather than
-+ * specialised tools.
-+ *
-+ * Note that the flags marked [I] correspond to generic FS_IOC_FLAGS
-+ * semantically.  Where possible, the numerical value is picked to correspond
-+ * also.
-+ */
-+#define STATX_ATTR_COMPRESSED	0x00000004
-+#define STATX_ATTR_IMMUTABLE	0x00000010
-+#define STATX_ATTR_APPEND	0x00000020
-+#define STATX_ATTR_NODUMP	0x00000040
-+#define STATX_ATTR_ENCRYPTED	0x00000800
-+
-+#define STATX_ATTR_AUTOMOUNT	0x00001000
-+#define AT_SYMLINK_NOFOLLOW	0x100
-+#define AT_REMOVEDIR		0x200
-+#define AT_SYMLINK_FOLLOW	0x400
-+#define AT_NO_AUTOMOUNT		0x800
-+#define AT_EMPTY_PATH		0x1000
-+
-+#define AT_STATX_SYNC_TYPE	0x6000
-+#define AT_STATX_SYNC_AS_STAT	0x0000
-+#define AT_STATX_FORCE_SYNC	0x2000
-+#define AT_STATX_DONT_SYNC	0x4000
-+
-+#endif
-diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
-index 71a4b713d..784b64004 100644
---- a/include/lapi/syscalls/arm.in
-+++ b/include/lapi/syscalls/arm.in
-@@ -341,3 +341,4 @@ renameat2 (__NR_SYSCALL_BASE+382)
- getrandom (__NR_SYSCALL_BASE+384)
- memfd_create (__NR_SYSCALL_BASE+385)
- copy_file_range (__NR_SYSCALL_BASE+391)
-+statx (__NR_SYSCALL+397)
-diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
-index 0f9601472..453ac3e4e 100644
---- a/include/lapi/syscalls/i386.in
-+++ b/include/lapi/syscalls/i386.in
-@@ -341,3 +341,4 @@ renameat2 354
- getrandom 355
- memfd_create 356
- copy_file_range 377
-+statx 383
-diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
-index 11ddca34e..10fb238bf 100644
---- a/include/lapi/syscalls/powerpc.in
-+++ b/include/lapi/syscalls/powerpc.in
-@@ -348,3 +348,4 @@ renameat2 357
- getrandom 359
- memfd_create 360
- copy_file_range 379
-+statx 383
-diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
-index 11ddca34e..10fb238bf 100644
---- a/include/lapi/syscalls/powerpc64.in
-+++ b/include/lapi/syscalls/powerpc64.in
-@@ -348,3 +348,4 @@ renameat2 357
- getrandom 359
- memfd_create 360
- copy_file_range 379
-+statx 383
-diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
-index 98c861f36..486205030 100644
---- a/include/lapi/syscalls/s390.in
-+++ b/include/lapi/syscalls/s390.in
-@@ -332,3 +332,4 @@ renameat2 347
- getrandom 349
- memfd_create 350
- copy_file_range 375
-+statx 379
-\ No newline at end of file
-diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
-index 296d694a8..bbab51b72 100644
---- a/include/lapi/syscalls/sparc.in
-+++ b/include/lapi/syscalls/sparc.in
-@@ -337,3 +337,4 @@ renameat2 345
- getrandom 347
- memfd_create 348
- copy_file_range 357
-+statx 360
-diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
-index 169347a6a..ebff38265 100644
---- a/include/lapi/syscalls/sparc64.in
-+++ b/include/lapi/syscalls/sparc64.in
-@@ -313,3 +313,4 @@ renameat2 345
- getrandom 347
- memfd_create 348
- copy_file_range 357
-+statx 360
-diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
-index 89db79404..11a7b74ca 100644
---- a/include/lapi/syscalls/x86_64.in
-+++ b/include/lapi/syscalls/x86_64.in
-@@ -308,3 +308,4 @@ renameat2 316
- getrandom 318
- memfd_create 319
- copy_file_range 326
-+statx 332
 diff --git a/runtest/syscalls b/runtest/syscalls
-index a9afecf57..f77e535c3 100644
+index a9afecf57..c310b0106 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -1275,6 +1275,14 @@ statfs03_64 statfs03_64
- statvfs01 statvfs01
- statvfs02 statvfs02
+@@ -1479,5 +1479,7 @@ futex_wait_bitset02 futex_wait_bitset02
  
-+statx01 statx01
-+statx01_64 statx01_64
-+statx02 statx02
-+statx02_64 statx02_64
-+statx03 statx03
-+statx03_64 statx03_64
-+statx04 statx04.sh
-+
- stime01 stime01
- stime02 stime02
+ memfd_create01 memfd_create01
+ memfd_create02 memfd_create02
++memfd_create03 memfd_create03
++memfd_create04 memfd_create04
  
-diff --git a/testcases/kernel/syscalls/statx/Makefile b/testcases/kernel/syscalls/statx/Makefile
+ copy_file_range01 copy_file_range01
+diff --git a/testcases/kernel/syscalls/memfd_create/Makefile b/testcases/kernel/syscalls/memfd_create/Makefile
+index f23b8732c..ec83a5c40 100644
+--- a/testcases/kernel/syscalls/memfd_create/Makefile
++++ b/testcases/kernel/syscalls/memfd_create/Makefile
+@@ -16,8 +16,8 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-FILTER_OUT_MAKE_TARGETS         := memfd_create_common
++FILTER_OUT_MAKE_TARGETS         := memfd_create_common memfd_create_hugetlb
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+ 
+-$(MAKE_TARGETS): %: %.o memfd_create_common.o
++$(MAKE_TARGETS): %: %.o memfd_create_common.o memfd_create_hugetlb.o
+diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create03.c b/testcases/kernel/syscalls/memfd_create/memfd_create03.c
 new file mode 100644
-index 000000000..11585938d
+index 000000000..8120ca6c8
 --- /dev/null
-+++ b/testcases/kernel/syscalls/statx/Makefile
-@@ -0,0 +1,29 @@
-+#
-+#  Copyright (c) International Business Machines  Corp., 2001
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
++++ b/testcases/kernel/syscalls/memfd_create/memfd_create03.c
+@@ -0,0 +1,151 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
 +
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(abs_srcdir)/../utils/newer_64.mk
-+
-+%_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64
-+
-+
-+INSTALL_TARGETS	:= statx04.sh
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/statx/helper_statx04.c b/testcases/kernel/syscalls/statx/helper_statx04.c
-new file mode 100644
-index 000000000..8f5d05728
---- /dev/null
-+++ b/testcases/kernel/syscalls/statx/helper_statx04.c
-@@ -0,0 +1,84 @@
-+// SPDX-License-Identifier: GPL-2.0 or later
 +/*
-+ * Copyright (c) Zilogic Systems Pvt. Ltd., 2007
-+ * Email: code@zilogic.com
++ *  Copyright (c) Zilogic Systems Pvt. Ltd., 2007
++ *  Email: code@zilogic.com
 + *
-+ * This program is free software: you can redistribute it and/or modify
++ * This program is free software;  you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
++ * the Free Software Foundation; either version 2 of the License, or
 + * (at your option) any later version.
 + *
 + * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
 + */
++
 +/*
++ * Test: Validating memfd_create() with MFD_HUGETLB flag.
 + *
-+ * This code will check the state of the attribute flag for the file
-+ * which is passed by command line argument. If the flag is set, it will
-+ * return "yes" along with flag name. If the flag is not set, it will
-+ * return no along with flag name.
++ * Test case 1: Write protect test
++ *		Hugepages are write protected. Any writes to
++ *		the file should return EINVAL error.
 + *
-+ * Minimum Kernel version required is 4.11.
++ * Test case 2: Hugepage size test
++ *		Default hugepage sized pages are created with
++ *		MFD_HUGETLB flag. Any attempt to unmap memory-mapped
++ *		hugepages with an unmapping length less than
++ *		hugepage size should return EINVAL error.
++ *
++ * Test case 3: Number of hugepages test
++ *		Number of hugepages currently available to use should be
++ *		atmost total number of allowed hugepages. Memory-mapping
++ *		more than allowed hugepages should return ENOMEM error.
 + */
++
++#define _GNU_SOURCE
++
++#include "tst_test.h"
++#include "memfd_create_common.h"
++#include "memfd_create_hugetlb.h"
++
 +#include <stdio.h>
-+#include <inttypes.h>
-+#include <string.h>
-+#include <stdlib.h>
-+#include <stdint.h>
-+#include <pwd.h>
++
++#define MEMINFO_PATH "/proc/meminfo"
++#define HUGEPAGES_COUNT_STR "4"
++
++#ifndef MFD_HUGETLB
++#define MFD_HUGETLB 0x0004U
++#endif
++
++static void test_write_protect(int fd)
++{
++	if (CHECK_HUGE_NON_WRITEABLE(fd) == 0)
++		tst_res(TPASS, "write call failed as expected");
++	else
++		tst_res(TFAIL, "write call passed unexpectedly");
++}
++
++static void test_def_pagesize(int fd)
++{
++	int ret;
++	unsigned int hps;
++	void *mem;
++
++	hps = GET_HUGE_DEF_PAGESIZE();
++	mem = CHECK_HUGE_MMAPABLE(fd, hps);
++	ret = CHECK_HUGE_PAGESIZE(mem, hps);
++	if (ret == 0)
++		tst_res(TPASS, "File created in def pagesize %dkB", hps/1024);
++	else
++		tst_res(TFAIL, "File is not in default pagesize");
++}
++
++static void test_max_hugepages(int fd)
++{
++	int res;
++	int new_fd;
++	unsigned int hps;
++	unsigned int free_pages;
++	void *mem;
++
++	free_pages = GET_HUGE_FREE_PAGES();
++	hps = GET_HUGE_DEF_PAGESIZE();
++	mem = CHECK_HUGE_MMAPABLE(fd, free_pages * hps);
++
++	new_fd = SAFE_HUGE_NEW("new_file", MFD_HUGETLB);
++	res = CHECK_HUGE_NON_MMAPABLE(new_fd, hps);
++	SAFE_HUGE_CLOSE(new_fd);
++
++	SAFE_MUNMAP(mem, free_pages * hps);
++
++	if (res == 0)
++		tst_res(TPASS, "Hugepages creation is limited as expected");
++	else
++		tst_res(TFAIL, "Hugepages creation limit failed");
++}
++
++static const struct tcase {
++	int flags;
++	void (*func)(int fd);
++	const char *desc;
++} tcases[] = {
++	{MFD_HUGETLB, &test_write_protect, "Testing write call in hugepages"},
++	{MFD_HUGETLB, &test_def_pagesize, "Testing page size of created file"},
++	{MFD_HUGETLB, &test_max_hugepages, "Testing the number of hugepages"},
++};
++
++static void memfd_huge_controller(unsigned int n)
++{
++	int fd;
++	const struct tcase *tc;
++
++	tc = &tcases[n];
++
++	tst_res(TINFO, "%s", tc->desc);
++
++	fd = SAFE_HUGE_NEW("test_file", tc->flags);
++
++	tc->func(fd);
++
++	SAFE_HUGE_CLOSE(fd);
++	printf("\n");
++}
++
++static void setup(void)
++{
++	int fd;
++	int size;
++
++	if (GET_HUGE_TOTAL_PAGES() == 0) {
++		fd = open("/proc/sys/vm/nr_hugepages", O_WRONLY);
++		if (fd == -1)
++			tst_brk(TBROK | TERRNO, "Enable Hugepages manually");
++
++		size = strlen(HUGEPAGES_COUNT_STR);
++		if (write(fd, HUGEPAGES_COUNT_STR, size) == -1)
++			tst_brk(TBROK | TERRNO, "Enable Hugepages manually");
++	}
++
++	if (GET_HUGE_TOTAL_PAGES() == 0)
++		tst_brk(TBROK, "Enable Hugepages manually");
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.test = memfd_huge_controller,
++	.tcnt = ARRAY_SIZE(tcases),
++	.needs_root = 1,
++	.min_kver = "4.14",
++};
+diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create04.c b/testcases/kernel/syscalls/memfd_create/memfd_create04.c
+new file mode 100644
+index 000000000..8d893ff0f
+--- /dev/null
++++ b/testcases/kernel/syscalls/memfd_create/memfd_create04.c
+@@ -0,0 +1,139 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++/*
++ *  Copyright (c) Zilogic Systems Pvt. Ltd., 2007
++ *  Email: code@zilogic.com
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ */
++
++/*
++ * Test: Validating memfd_create() with MFD_HUGETLB and MFD_HUGE_x flags.
++ *
++ * Test cases: Attempt to create hugepages of different sizes.
++ *
++ * Test logic:	memfd_create() should return non-negative value (fd)
++ *		if the system supports that particular hugepage size.
++ *		On success, size of hugepages are then validated with the fd
++ *		returned. On failure, syscall should return appropriate error.
++ */
++
++#define _GNU_SOURCE
++
++#include "tst_test.h"
++#include "memfd_create_common.h"
++#include "memfd_create_hugetlb.h"
++
 +#include <errno.h>
-+#include <error.h>
-+#include <unistd.h>
-+#include <sys/syscall.h>
-+#include <fcntl.h>
-+#include "lapi/statx.h"
++#include <sys/mman.h>
++#include <stdio.h>
++
++#define MEMINFO_PATH "/proc/meminfo"
++#define HUGEPAGES_COUNT_STR "4"
++
++#ifndef MFD_HUGETLB
++#define MFD_HUGETLB 0x0004U
++#endif
++
++#define MFD_HUGE_64KB (16 << 26)
++#define MFD_HUGE_512KB (19 << 26)
++#define MFD_HUGE_2MB (21 << 26)
++#define MFD_HUGE_8MB (23 << 26)
++#define MFD_HUGE_16MB (24 << 26)
++#define MFD_HUGE_256MB (28 << 26)
++#define MFD_HUGE_1GB (30 << 26)
++#define MFD_HUGE_2GB (31 << 26)
++#define MFD_HUGE_16GB (34 << 26)
++
++static  struct test_flag {
++	int flags;
++	unsigned long size;
++	char *h_size;
++	int exp_err;
++} test_flags[] =  {
++	{.flags = MFD_HUGE_64KB, .size = 64*1024, .h_size = "64kB"},
++	{.flags = MFD_HUGE_512KB, .size = 512*1024, .h_size = "512kB"},
++	{.flags = MFD_HUGE_2MB, .size = 2*1024*1024, .h_size = "2MB"},
++	{.flags = MFD_HUGE_8MB, .size = 8*1024*1024, .h_size = "8MB"},
++	{.flags = MFD_HUGE_16MB, .size = 16*1024*1024, .h_size = "16MB"},
++	{.flags = MFD_HUGE_256MB, .size = 256*1024*1024, .h_size = "256MB"},
++	{.flags = MFD_HUGE_1GB,	 .size = 1*1024*1024*1024L, .h_size = "1GB"},
++	{.flags = MFD_HUGE_2GB, .size = 2*1024*1024*1024L, .h_size = "2GB"},
++	{.flags = MFD_HUGE_16GB, .size = 16*1024*1024*1024L, .h_size = "16GB"},
++};
++
++static void check_hugepage_support(struct test_flag *test_flags)
++{
++	char pattern[50];
++
++	sprintf(pattern, "DirectMap%s", test_flags->h_size);
++	pattern[strlen(pattern) - 1] = 0;
++	strcat(pattern, ":\t%lu kB");
++
++	if (get_from_file(MEMINFO_PATH, pattern) == -1)
++		test_flags->exp_err = ENODEV;
++}
++
++static void memfd_huge_x_controller(unsigned int n)
++{
++	int fd;
++	int ret;
++	struct test_flag tflag;
++
++	tflag = test_flags[n];
++	check_hugepage_support(&tflag);
++	tst_res(TINFO, "Attempt to create %s huge pages", tflag.h_size);
++
++	fd = CHECK_HUGE_X_NEW("tfile", MFD_HUGETLB | tflag.flags);
++	if (fd < 0) {
++		tst_res(TINFO | TERRNO, "memfd_create() failed");
++		if (fd == -tflag.exp_err)
++			tst_res(TPASS, "Test failed as expected\n");
++		else
++			tst_brk(TFAIL, "memfd_create() failed unexpectedly");
++		return;
++	}
++
++	ret = CHECK_HUGE_NON_MMAPABLE(fd, tflag.size);
++	if (ret == 0)
++		tst_res(TWARN, "Page not created in expected %s\n",
++			tflag.h_size);
++
++	SAFE_HUGE_CLOSE(fd);
++	tst_res(TPASS, "Successfully created %s pages\n", tflag.h_size);
++}
++
++static void setup(void)
++{
++	int fd;
++	int size;
++
++	if (GET_HUGE_TOTAL_PAGES() == 0) {
++		fd = open("/proc/sys/vm/nr_hugepages", O_WRONLY);
++		if (fd == -1)
++			tst_brk(TBROK | TERRNO, "Enable Hugepages manually");
++
++		size = strlen(HUGEPAGES_COUNT_STR);
++		if (write(fd, HUGEPAGES_COUNT_STR, size) == -1)
++			tst_brk(TBROK | TERRNO, "Enable Hugepages manually");
++	}
++
++	if (GET_HUGE_TOTAL_PAGES() == 0)
++		tst_brk(TBROK, "Enable Hugepages manually");
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.test = memfd_huge_x_controller,
++	.tcnt = ARRAY_SIZE(test_flags),
++	.needs_root = 1,
++	.min_kver = "4.14",
++};
+diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.c b/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.c
+new file mode 100644
+index 000000000..197f86f83
+--- /dev/null
++++ b/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.c
+@@ -0,0 +1,244 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++/*
++ *  Copyright (c) Zilogic Systems Pvt. Ltd., 2007
++ *  Email: code@zilogic.com
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ */
++
++#define _GNU_SOURCE
++
++#include "memfd_create_common.h"
++#include "memfd_create_hugetlb.h"
++
 +#include "lapi/syscalls.h"
 +
-+static int sys_statx(int dirfd, const char *pathname, int flags,
-+		     unsigned int mask, struct statx *statxbuf)
++#include <sys/mman.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <string.h>
++#include <stdio.h>
++#include <errno.h>
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++
++#define MEMINFO_PATH "/proc/meminfo"
++
++#define MFD_HUGETLB 0x0004U
++#define BLOCK_SIZE (4 * 1024)
++
++
++int safe_huge_new(const char *filename, const int lineno,
++		   const char *name, int flags)
 +{
-+	return syscall(__NR_statx, dirfd, pathname, flags, mask, statxbuf);
++	int fd;
++
++	fd = tst_syscall(__NR_memfd_create, name, flags);
++	if (fd == -1)
++		tst_brk_(filename, lineno, TBROK | TERRNO,
++			 "memfd_create(%s, %d) failed",
++			 name, flags);
++
++	tst_res_(filename, lineno, TINFO,
++		 "memfd_create(%s, %d) succeeded: fd %d",
++		 name, flags, fd);
++
++	return fd;
 +}
 +
-+static void check_flag_state(uint32_t attr, uint32_t flag, char *flag_name)
++int check_huge_x_new(const char *filename, const int lineno,
++		   const char *name, int flags)
 +{
-+	if (attr & flag)
-+		printf("%s: Yes\n", flag_name);
-+	else
-+		printf("%s: No\n", flag_name);
++	int fd;
++
++	fd = tst_syscall(__NR_memfd_create, name, flags);
++	if (fd == -1)
++		return -errno;
++
++	tst_res_(filename, lineno, TINFO,
++		 "memfd_create(%s, %d) succeeded: fd %d",
++		 name, flags, fd);
++
++	return fd;
 +}
 +
-+int main(int argc, char *argv[])
++void safe_huge_close(const char *filename, const int lineno,
++		      int fd)
 +{
-+	struct statx buff;
-+	int ret;
++	int dummy_fd;
 +
-+	if (argc != 2)
-+		error(1, 0, "Usage error: ./helper_statx04 <file-name>");
++	dummy_fd = fd;
++	SAFE_CLOSE(fd);
++	tst_res_(filename, lineno, TINFO, "close(%d) succeeded", dummy_fd);
++}
 +
-+	ret = sys_statx(AT_FDCWD, argv[1], 0, 0, &buff);
-+	if (ret != 0)
-+		error(1, errno, "Error statx");
++int check_huge_non_writeable(const char *filename, const int lineno,
++			     int fd)
++{
++	ssize_t ret;
++	char test_str[] = "data";
 +
-+	check_flag_state(buff.stx_attributes, STATX_ATTR_COMPRESSED,
-+			 "STATX_ATTR_COMPRESSED");
++	ret = write(fd, test_str, sizeof(test_str));
 +
-+	check_flag_state(buff.stx_attributes, STATX_ATTR_APPEND,
-+			 "STATX_ATTR_APPEND");
++	if (ret < 0) {
++		if (errno != EINVAL) {
++			tst_res_(filename, lineno, TINFO,
++				 "write(%d, \"%s\", %ld) didn't fail as expected",
++				 fd, test_str, strlen(test_str));
++			return -1;
++		}
++	} else {
++		tst_res_(filename, lineno, TINFO,
++			 "write(%d, \"%s\", %ld) succeeded unexpectedly",
++			 fd, test_str, strlen(test_str));
++		return -1;
++	}
 +
-+	check_flag_state(buff.stx_attributes, STATX_ATTR_IMMUTABLE,
-+			 "STATX_ATTR_IMMUTABLE");
-+
-+	check_flag_state(buff.stx_attributes, STATX_ATTR_ENCRYPTED,
-+			 "STATX_ATTR_ENCRYPTED");
-+
-+	check_flag_state(buff.stx_attributes, STATX_ATTR_NODUMP,
-+			 "STATX_ATTR_NODUMP");
++	tst_res_(filename, lineno, TINFO,
++		 "write(%d, \"%s\", %ld) failed as expected",
++		 fd, test_str, strlen(test_str));
 +
 +	return 0;
 +}
-diff --git a/testcases/kernel/syscalls/statx/statx01.c b/testcases/kernel/syscalls/statx/statx01.c
-new file mode 100644
-index 000000000..e00c088ed
---- /dev/null
-+++ b/testcases/kernel/syscalls/statx/statx01.c
-@@ -0,0 +1,164 @@
-+// SPDX-License-Identifier: GPL-2.0 or later
++
++int check_huge_pagesize(const char *filename, const int lineno,
++			void *page_mem, unsigned long page_size)
++{
++	unsigned int i;
++	int ret;
++	int unmap_size = page_size / 4;
++
++	for (i = unmap_size; i <= page_size; i += unmap_size) {
++		ret = munmap(page_mem, i);
++		if (ret == -1) {
++			tst_res_(filename, lineno, TINFO,
++				 "munmap(%p, %dkb) failed",
++				 page_mem, i/1024);
++			if (i % page_size == 0)
++				return -1;
++		} else {
++			tst_res_(filename, lineno, TINFO,
++				 "munmap(%p, %d) suceeded",
++				 page_mem, i);
++			if (i % page_size != 0)
++				return -1;
++		}
++
++	}
++	return 0;
++}
++
++void *check_huge_mmapable(const char *filename, const int lineno,
++			  int fd, unsigned long size)
++{
++	void *mem;
++
++	mem = SAFE_MMAP(NULL, size, PROT_WRITE,
++			MAP_PRIVATE, fd, 0);
++
++	memset((char *)mem, 0, 1);
++	tst_res_(filename, lineno, TINFO,
++		 "mmap(%p, %lu, %d, %d, %d, %d) succeeded: %p",
++		 NULL, size, PROT_WRITE, MAP_PRIVATE, fd, 0, mem);
++
++	return mem;
++}
++
++int check_huge_non_mmapable(const char *filename, const int lineno,
++			    int fd, unsigned long size)
++{
++	void *mem;
++
++	mem = mmap(NULL, size, 0,
++		   MAP_PRIVATE, fd, 0);
++
++	if (mem == MAP_FAILED) {
++		if (errno == ENOMEM)
++			tst_res_(filename, lineno, TINFO,
++				 "mmap(%p, %lu, %d, %d, %d, %d) failed as expected",
++				 NULL, size, PROT_WRITE, MAP_PRIVATE, fd, 0);
++		else
++			tst_brk_(filename, lineno, TBROK | TTERRNO,
++				 "unable to mmap");
++		return 0;
++	}
++
++	tst_res_(filename, lineno, TINFO,
++		 "mmap(%p, %lu, %d, %d, %d, %d) succeeded unexpectedly",
++		 NULL, size, 0, MAP_PRIVATE, fd, 0);
++
++	SAFE_MUNMAP(mem, size);
++
++	return -1;
++}
++
 +/*
-+ * Copyright (c) Zilogic Systems Pvt. Ltd., 2007
-+ * Email: code@zilogic.com
++ * The function is based on the code available in linux
++ * kernel source repository file
++ * linux/tools/testing/selftests/memfd/common.c
++ */
++long get_from_file(const char *filepath, char *pattern)
++{
++	long val = -1;
++	char *line = NULL;
++	size_t linelen = 0;
++	FILE *f = fopen(filepath, "r");
++
++	if (!f)
++		return -1;
++
++	while (getline(&line, &linelen, f) > 0) {
++		if (sscanf(line, pattern, &val) == 1)
++			break;
++	}
++
++	free(line);
++	fclose(f);
++	return val;
++}
++
++unsigned long get_huge_def_pagesize(const char *filename, const int lineno)
++{
++	char *pattern = "Hugepagesize:\t%lu kB";
++	int hps;
++
++	hps = get_from_file(MEMINFO_PATH, pattern);
++	if (hps == -1)
++		tst_brk_(filename, lineno, TBROK,
++			 "unable to get hugepage size");
++	return hps << 10;
++}
++
++unsigned int get_huge_free_pages(const char *filename, const int lineno)
++{
++	char *pattern = "HugePages_Free:\t%d";
++	int free_pages;
++
++	free_pages = get_from_file(MEMINFO_PATH, pattern);
++	if (free_pages == -1)
++		tst_brk_(filename, lineno, TBROK,
++			 "unable to get free hugepages");
++	return free_pages;
++}
++
++unsigned int get_huge_total_pages(const char *filename, const int lineno)
++{
++	char *pattern = "HugePages_Total:\t%d";
++	int total_pages;
++
++	total_pages = get_from_file(MEMINFO_PATH, pattern);
++	if (total_pages == -1)
++		tst_brk_(filename, lineno, TBROK,
++			 "unable to get total hugepages");
++	return total_pages;
++}
+diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.h b/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.h
+new file mode 100644
+index 000000000..2fab1bda7
+--- /dev/null
++++ b/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.h
+@@ -0,0 +1,86 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++/*
++ *  Copyright (c) Zilogic Systems Pvt. Ltd., 2007
++ *  Email: code@zilogic.com
 + *
-+ * This program is free software: you can redistribute it and/or modify
++ * This program is free software;  you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
++ * the Free Software Foundation; either version 2 of the License, or
 + * (at your option) any later version.
 + *
 + * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
 + */
 +
-+/*
-+ * Test statx
-+ *
-+ * This code tests the functionality of statx system call.
-+ *
-+ * TESTCASE 1:
-+ * The metadata for normal file are tested against predefined values:
-+ * 1) gid
-+ * 2) uid
-+ * 3) mode
-+ * 4) blocks
-+ * 5) size
-+ *
-+ * A file is created and metadata values are set with
-+ * predefined values.
-+ * Then the values obtained using statx is checked against
-+ * the predefined values.
-+ *
-+ * TESTCASE 2:
-+ * The metadata for device file are tested against predefined values:
-+ * 1) MAJOR number
-+ * 2) MINOR number
-+ *
-+ * A device file is created seperately using mknod(must be a root user).
-+ * The major number and minor number are set while creation.
-+ * Major and minor numbers obtained using statx is checked against
-+ * predefined values.
-+ * Minimum kernel version required is 4.11.
-+ */
-+#include <stdio.h>
-+#include <string.h>
-+#include <pwd.h>
-+#include "tst_test.h"
-+#include "tst_safe_macros.h"
-+#include "lapi/syscalls.h"
-+#include "lapi/statx.h"
++#ifndef _MEMFD_CREATE_HUGETLB_H_
++#define _MEMFD_CREATE_HUGETLB_H_
 +
-+#define TESTFILE "tst_file"
-+#define DEVICEFILE "blk_dev"
-+#define MODE 0644
 +
-+static int tst_file_fd;
-+static uint32_t uid;
-+static uint32_t gid;
-+#define SIZE 256
-+#define MAJOR 8
-+#define MINOR 1
++#define SAFE_HUGE_NEW(name, flags)				\
++	safe_huge_new(__FILE__, __LINE__, name, (flags))
 +
-+static int sys_statx(int dirfd, const char *pathname, unsigned int flags,
-+		     unsigned int mask, struct statx *statxbuf)
-+{
-+	return tst_syscall(__NR_statx, dirfd, pathname, flags, mask, statxbuf);
-+}
++#define CHECK_HUGE_X_NEW(name, flags)				\
++	check_huge_x_new(__FILE__, __LINE__, name, (flags))
 +
-+static void assert_are_equal(uint32_t expected_data, uint32_t obtained_data,
-+			     char *meta_data_name)
-+{
-+	if (expected_data == obtained_data)
-+		tst_res(TPASS, "Statx metadata %s obtained as expected"
-+			, meta_data_name);
-+	else
-+		tst_res(TFAIL, "Statx metadata %s failed to get expected data"
-+			, meta_data_name);
-+}
++#define SAFE_HUGE_CLOSE(fd)				\
++	safe_huge_close(__FILE__, __LINE__, (fd))
 +
-+static void test_normal_file(void)
-+{
-+	struct statx buff;
-+	uint32_t blocks;
++#define CHECK_HUGE_NON_WRITEABLE(fd)				\
++	check_huge_non_writeable(__FILE__, __LINE__, (fd))
 +
-+	TEST(sys_statx(AT_FDCWD, TESTFILE, 0, 0, &buff));
-+	if (TEST_RETURN == 0)
-+		tst_res(TPASS, "Syscall passed for normal file");
-+	else
-+		tst_res(TFAIL, "Syscall failed for normal file");
++#define CHECK_HUGE_PAGESIZE(mem, page_size)				\
++	check_huge_pagesize(__FILE__, __LINE__, (mem), (page_size))
 +
-+	if ((SIZE % buff.stx_blksize) == 0)
-+		blocks = (SIZE / 512);
-+	else
-+		blocks = (((SIZE / buff.stx_blksize) + 1) *
-+			  (buff.stx_blksize / 512));
++#define CHECK_HUGE_MULTI_PAGES(fd, page_size)				\
++	check_huge_multi_pages(__FILE__, __LINE__, (fd), (page_size))
 +
-+	assert_are_equal(uid, buff.stx_uid, "uid");
-+	assert_are_equal(gid, buff.stx_gid, "gid");
-+	assert_are_equal(SIZE, buff.stx_size, "size");
-+	assert_are_equal(MODE, (buff.stx_mode & ~(S_IFMT)), "mode");
-+	assert_are_equal(blocks, buff.stx_blocks, "blocks");
-+}
++#define CHECK_HUGE_MMAPABLE(fd, size)				\
++	check_huge_mmapable(__FILE__, __LINE__, (fd), (size))
 +
-+static void test_device_file(void)
-+{
-+	struct statx buff;
++#define CHECK_HUGE_NON_MMAPABLE(fd, size)			\
++	check_huge_non_mmapable(__FILE__, __LINE__, (fd), (size))
 +
-+	TEST(sys_statx(AT_FDCWD, DEVICEFILE, 0, 0, &buff));
-+	if (TEST_RETURN == 0)
-+		tst_res(TPASS, "Syscall for dev file passed");
-+	else
-+		tst_res(TFAIL, "Syscall for dev file failed");
++#define GET_HUGE_DEF_PAGESIZE()				\
++	get_huge_def_pagesize(__FILE__, __LINE__)
 +
-+	assert_are_equal(MAJOR, buff.stx_rdev_major, "Rdev MAJOR number");
-+	assert_are_equal(MINOR, buff.stx_rdev_minor, "Rdev Minor number");
-+}
++#define GET_HUGE_TOTAL_PAGES()				\
++	get_huge_total_pages(__FILE__, __LINE__)
 +
-+static void run(void)
-+{
-+	test_normal_file();
-+	test_device_file();
-+}
++#define GET_HUGE_FREE_PAGES()			\
++	get_huge_free_pages(__FILE__, __LINE__)
 +
-+static void setup(void)
-+{
-+	char data_buff[SIZE];
-+	struct passwd *ltpuser;
 +
-+	memset(data_buff, '@', sizeof(data_buff));
++int safe_huge_new(const char *filename, const int lineno, const char *name,
++		   int flags);
 +
-+	tst_file_fd =  SAFE_OPEN(TESTFILE, O_RDWR|O_CREAT, MODE);
-+	SAFE_WRITE(0, tst_file_fd, data_buff, sizeof(data_buff));
++int check_huge_x_new(const char *filename, const int lineno, const char *name,
++		   int flags);
 +
-+	ltpuser = SAFE_GETPWNAM("nobody");
-+	uid = ltpuser->pw_uid;
-+	gid = ltpuser->pw_gid;
++void safe_huge_close(const char *filename, const int lineno, int fd);
 +
-+	SAFE_CHOWN(TESTFILE, uid, gid);
++int check_huge_non_writeable(const char *filename, const int lineno, int fd);
 +
-+	SAFE_MKNOD(DEVICEFILE, S_IFBLK | 0777, makedev(MAJOR, MINOR));
-+}
++int check_huge_pagesize(const char *filename, const int lineno, void *page_mem,
++			unsigned long page_size);
 +
-+static void cleanup(void)
-+{
-+	if (tst_file_fd > 0)
-+		SAFE_CLOSE(tst_file_fd);
++int check_huge_multi_pages(const char *filename, const int lineno, int fd,
++			unsigned long page_size);
 +
-+	SAFE_UNLINK(TESTFILE);
-+	SAFE_UNLINK(DEVICEFILE);
-+}
++void *check_huge_mmapable(const char *filename, const int lineno, int fd,
++			  unsigned long size);
 +
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.min_kver = "4.11",
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+};
-diff --git a/testcases/kernel/syscalls/statx/statx02.c b/testcases/kernel/syscalls/statx/statx02.c
-new file mode 100644
-index 000000000..85497c3de
---- /dev/null
-+++ b/testcases/kernel/syscalls/statx/statx02.c
-@@ -0,0 +1,133 @@
-+// SPDX-License-Identifier: GPL-2.0 or later
-+/*
-+ * Copyright (c) Zilogic Systems Pvt. Ltd., 2007
-+ * Email: code@zilogic.com
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
++int check_huge_non_mmapable(const char *filename, const int lineno, int fd,
++			    unsigned long size);
 +
-+/*
-+ * Test statx
-+ *
-+ * This code tests the following flags:
-+ * 1) AT_EMPTY_PATH
-+ * 2) AT_SYMLINK_NOFOLLOW
-+ *
-+ * A test file and a link for it is created.
-+ *
-+ * To check empty path flag, test file fd alone is passed.
-+ * Predefined size of testfile is checked against obtained value.
-+ *
-+ * To check symlink no follow flag, the linkname is statxed.
-+ * To ensure that link is not dereferenced, obtained inode is compared
-+ * with test file inode.
-+ * Minimum kernel version required is 4.11.
-+ */
++unsigned long get_huge_def_pagesize(const char *filename, int lineno);
 +
-+#include <stdio.h>
-+#include <string.h>
-+#include <pwd.h>
-+#include "tst_test.h"
-+#include "tst_safe_macros.h"
-+#include "lapi/syscalls.h"
-+#include "lapi/statx.h"
++unsigned int get_huge_total_pages(const char *filename, int lineno);
 +
-+#define TESTFILE "tst_temp"
-+#define LINK_FILE "tst_temp_ln"
-+#define MODE 0644
-+#define SIZE 14
++unsigned int get_huge_free_pages(const char *filename, int lineno);
 +
-+static int tst_file_fd;
++long get_from_file(const char *filepath, char *pattern);
 +
-+static int sys_statx(int dirfd, const char *pathname, int flags,
-+		     unsigned int mask, struct statx *statxbuf)
-+{
-+	return tst_syscall(__NR_statx, dirfd, pathname, flags, mask, statxbuf);
-+}
-+
-+static void test_empty_path(void)
-+{
-+	struct statx buf;
-+
-+	TEST(sys_statx(tst_file_fd, "", AT_EMPTY_PATH, 0, &buf));
-+	if (TEST_RETURN == 0)
-+		tst_res(TPASS, "Syscall passed for flag empty pathname");
-+	else
-+		tst_res(TFAIL, "Syscall failed for flag empty pathname");
-+
-+	if (buf.stx_size == SIZE)
-+		tst_res(TPASS, "Statx got metadata by using empty_pathname");
-+	else
-+		tst_res(TFAIL,
-+			"Statx failed to get metadata by using empty_pathname");
-+
-+}
-+
-+static void test_sym_link(void)
-+{
-+	struct statx test_file_buf;
-+	struct statx link_file_buf;
-+
-+	TEST(sys_statx(AT_FDCWD, TESTFILE, 0, 0, &test_file_buf));
-+	if (TEST_RETURN == 0)
-+		tst_res(TPASS, "Syscall passed for testfile");
-+	else
-+		tst_res(TFAIL, "Syscall failed for testfile");
-+
-+	TEST(sys_statx(AT_FDCWD, LINK_FILE, AT_SYMLINK_NOFOLLOW, 0,
-+		       &link_file_buf));
-+	if (TEST_RETURN == 0)
-+		tst_res(TPASS, "Syscall passed for flag symlink");
-+	else
-+		tst_res(TFAIL, "Syscall failed for flag symlink");
-+
-+	if (test_file_buf.stx_ino != link_file_buf.stx_ino)
-+		tst_res(TPASS, "Statx got metadata of symlink file");
-+	else
-+		tst_res(TFAIL, "Statx failed to get symlink data");
-+}
-+
-+static void run_test(void)
-+{
-+	test_empty_path();
-+	test_sym_link();
-+}
-+
-+static void setup(void)
-+{
-+	char data_buf[SIZE] = "LinusTorvalds";
-+
-+	tst_file_fd = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, MODE);
-+	SAFE_WRITE(0, tst_file_fd, data_buf, sizeof(data_buf));
-+
-+	SAFE_SYMLINK(TESTFILE, LINK_FILE);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (tst_file_fd > 0)
-+		SAFE_CLOSE(tst_file_fd);
-+
-+	SAFE_UNLINK(TESTFILE);
-+	SAFE_UNLINK(LINK_FILE);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run_test,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.min_kver = "4.11",
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+};
-diff --git a/testcases/kernel/syscalls/statx/statx03.c b/testcases/kernel/syscalls/statx/statx03.c
-new file mode 100644
-index 000000000..afe4af9da
---- /dev/null
-+++ b/testcases/kernel/syscalls/statx/statx03.c
-@@ -0,0 +1,136 @@
-+// SPDX-License-Identifier: GPL-2.0 or later
-+/*
-+ * Copyright (c) Zilogic Systems Pvt. Ltd., 2007
-+ * Email: code@zilogic.com
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+/*
-+ * Test statx
-+ *
-+ * This code tests if expected error values are returned for specific cases by
-+ * statx.
-+ * The error cases are simulated and the return value is checked against
-+ * expected error number value.
-+ * The following error values are tested:
-+ * 1) EBADF - Bad file descriptor
-+ * 2) EFAULT - Bad address
-+ * 3) EINVAL - Invalid argument
-+ * 4) ENOENT - No such file or directory
-+ * 5) ENOTDIR - Not a directory
-+ * 6) ENAMETOOLONG - Filename too long
-+ *
-+ * Error scenario is simulated for each listed flag by passing
-+ * respective arguments.
-+ * The obtained error flag is checked against the expected
-+ * flag value for that scenario.
-+ *
-+ * Minimum Kernel version required is 4.11.
-+ */
-+#include <stdio.h>
-+#include <string.h>
-+#include <pwd.h>
-+#include "tst_test.h"
-+#include "tst_safe_macros.h"
-+#include "lapi/syscalls.h"
-+#include "lapi/statx.h"
-+
-+#define TESTFILE "tst_temp"
-+#define MODE 0644
-+
-+static int tst_file_fd;
-+static char long_pathname[257];
-+
-+static const struct test_case_t {
-+	uint32_t dfd;
-+	char *filename;
-+	uint32_t flag;
-+	uint32_t mask;
-+	int32_t errnum;
-+	char *error_name;
-+} test_cases[] = {
-+	{.dfd = -1, .filename = TESTFILE, .flag = 0,
-+	 .mask = 0, .errnum = EBADF, .error_name = "EBADF"},
-+
-+	{.dfd = AT_FDCWD, .filename = NULL, .flag = 0,
-+	 .mask = 0, .errnum = EFAULT, .error_name = "EFAULT"},
-+
-+	{.dfd = AT_FDCWD, .filename = TESTFILE, .flag = -1,
-+	 .mask = 0, .errnum = EINVAL, .error_name = "EINVAL"},
-+
-+	{.dfd = AT_FDCWD, .filename = TESTFILE, .flag = 0,
-+	 .mask = -1, .errnum = EINVAL, .error_name = "EINVAL"},
-+
-+	{.dfd = AT_FDCWD, .filename = "", .flag = 0,
-+	 .mask = 0, .errnum = ENOENT, .error_name = "ENOENT"},
-+
-+	{.dfd = 1, .filename = TESTFILE, .flag = 0,
-+	 .mask = 0, .errnum = ENOTDIR, .error_name = "ENOTDIR"},
-+
-+	{.dfd = AT_FDCWD, .filename = long_pathname, .flag = 0,
-+	 .mask = 0, .errnum = ENAMETOOLONG, .error_name = "ENAMETOOLONG"},
-+};
-+
-+static int sys_statx(int dirfd, const char *pathname, int flags,
-+		     unsigned int mask, struct statx *statxbuf)
-+{
-+	return tst_syscall(__NR_statx, dirfd, pathname, flags, mask, statxbuf);
-+}
-+
-+
-+static void run_test(unsigned int i)
-+{
-+	struct statx buf;
-+
-+	TEST(sys_statx(test_cases[i].dfd,
-+		       test_cases[i].filename,
-+		       test_cases[i].flag, test_cases[i].mask, &buf));
-+
-+	if (TEST_RETURN == 0)
-+		tst_res(TFAIL, "statx didn't set errno to %s as expected",
-+			test_cases[i].error_name);
-+	else if (test_cases[i].errnum == TEST_ERRNO)
-+		tst_res(TPASS, "statx set errno to %s as expected",
-+			test_cases[i].error_name);
-+	else
-+		tst_res(TFAIL | TERRNO,
-+			"statx set errno to some unexpected value");
-+}
-+
-+static void setup(void)
-+{
-+	tst_file_fd = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, MODE);
-+
-+	memset(long_pathname, '@', sizeof(long_pathname));
-+	long_pathname[sizeof(long_pathname) - 1] = 0;
-+}
-+
-+static void cleanup(void)
-+{
-+	if (tst_file_fd > 0)
-+		SAFE_CLOSE(tst_file_fd);
-+
-+	SAFE_UNLINK(TESTFILE);
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(test_cases),
-+	.test = run_test,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.min_kver = "4.11",
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+};
-diff --git a/testcases/kernel/syscalls/statx/statx04.sh b/testcases/kernel/syscalls/statx/statx04.sh
-new file mode 100755
-index 000000000..0e358197d
---- /dev/null
-+++ b/testcases/kernel/syscalls/statx/statx04.sh
-@@ -0,0 +1,179 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0 or later
-+#
-+# Copyright (c) Zilogic Systems Pvt. Ltd., 2007
-+# Email: code@zilogic.com
-+#
-+# This program is free software: you can redistribute it and/or modify
-+# it under the terms of the GNU General Public License as published by
-+# the Free Software Foundation, either version 2 of the License, or
-+# (at your option) any later version.
-+#
-+# This program is distributed in the hope that it will be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program. If not, see <http://www.gnu.org/licenses/>.
-+#
-+#
-+# Test statx
-+#
-+# This code tests if the attributes field of statx received expected value.
-+# File set with following flags by using chattr and encrypt:
-+# 1) STATX_ATTR_COMPRESSED - The file is compressed by the filesystem.
-+# 2) STATX_ATTR_IMMUTABLE - The file cannot be modified.
-+# 3) STATX_ATTR_APPEND - The file can only be opened in append mode for writing.
-+# 4) STATX_ATTR_NODUMP - File is not a candidate for backup when a backup program
-+#                        such as dump(8) is run.
-+# 5) STATX_ATTR_ENCRYPTED - A key is required for the file to be encrypted by
-+#                          the filesystem.
-+#
-+# A test directory is created with a file in it.
-+# chattr command is used to modify the atttributes of the file such as
-+# compressed, append, nodump and immutable.
-+# tune2fs tool is used to set the encrypt flag.
-+# Two files are tested.
-+# First file has all flags set.
-+# Second file has no flags set.
-+# A helper function in C is used to execute statx syscall.
-+#
-+# Minimum Kernel version required is 4.11.
-+#
-+
-+TST_MIN_KVER=4.11
-+TST_CNT=2
-+TST_NEEDS_TMPDIR=1
-+TST_NEEDS_CMD="truncate chattr tune2fs mount chattr"
-+TST_TESTFUNC=test
-+TST_SETUP=setup
-+TST_CLEANUP=cleanup
-+. tst_test.sh
-+
-+setup()
-+{
-+    # FIXME: Encrypt requirement 512 MB needs to be checked   
-+    truncate -s 512M storage
-+
-+    tst_mkfs ext4 storage
-+    tune2fs -O encrypt storage
-+
-+    mkdir mnt_point
-+    mount storage mnt_point
-+    
-+    cd mnt_point
-+    mkdir dir_attr_defined
-+    mkdir dir_attr_undefined
-+    echo "qwerty" | e4crypt add_key dir_attr_defined
-+    cd ..
-+    chattr -RV +aidc mnt_point/dir_attr_defined
-+}
-+
-+test1()
-+{
-+    output_attr_defined=$($LTPROOT/testcases/bin/helper_statx04 ./mnt_point/dir_attr_defined)
-+
-+    ret_val=$?
-+
-+    if [ $ret_val -eq 0 ]
-+    then
-+        tst_res TINFO "Succesfully ran executable"
-+    else
-+	tst_brk "Fail to run executable"
-+    fi
-+
-+    if [ $(echo "$output_attr_defined" | grep "STATX_ATTR_COMPRESSED" | grep -o Yes) = "Yes" ]
-+    then
-+        tst_res TPASS "statx compressed flag is set"
-+    else
-+        tst_res TFAIL "statx compressed flag is not set"
-+    fi
-+
-+    if [ $(echo "$output_attr_defined" | grep "STATX_ATTR_IMMUTABLE" | grep -o Yes) = "Yes" ]
-+    then
-+        tst_res TPASS "statx immutable flag is set"
-+    else
-+        tst_res TFAIL "statx immutable flag is not set"
-+    fi
-+
-+    if [ $(echo "$output_attr_defined" | grep "STATX_ATTR_ENCRYPTED" | grep -o Yes)  = "Yes" ]
-+    then
-+        tst_res TPASS "statx encrypted flag is set"
-+    else
-+        tst_res TFAIL "statx encrypted flag is not set"
-+    fi
-+
-+    if [ $(echo "$output_attr_defined" | grep "STATX_ATTR_NODUMP" | grep -o Yes)  = "Yes" ]
-+    then
-+        tst_res TPASS "statx nodump flag is set"
-+    else
-+        tst_res TFAIL "statx nodump flag is not set"
-+    fi
-+
-+    if [ $(echo "$output_attr_defined" | grep "STATX_ATTR_APPEND" | grep -o Yes)  = "Yes" ]
-+    then
-+        tst_res TPASS "statx append flag is set"
-+    else
-+        tst_res TFAIL "statx append flag is not set"
-+    fi
-+}
-+
-+test2()
-+{
-+    output_attr_undefined=$($LTPROOT/testcases/bin/helper_statx04 ./mnt_point/dir_attr_undefined)
-+
-+    ret_val=$?
-+
-+    if [ $ret_val -eq 0 ]
-+    then
-+        tst_res TINFO "Succesfully ran executable"
-+    else
-+	tst_brk "Fail to run executable"
-+    fi
-+
-+    if [ $(echo "$output_attr_undefined" | grep "STATX_ATTR_COMPRESSED" | grep -o No) = "No" ]
-+    then
-+        tst_res TPASS "statx compressed flag is Not set"
-+    else
-+        tst_res TFAIL "statx compressed flag is set"
-+    fi
-+
-+    if [ $(echo "$output_attr_undefined" | grep "STATX_ATTR_IMMUTABLE" | grep -o No) = "No" ]
-+    then
-+        tst_res TPASS "statx immutable flag is Not set"
-+    else
-+        tst_res TFAIL "statx immutable flag is set"
-+    fi
-+
-+    if [ $(echo "$output_attr_undefined" | grep "STATX_ATTR_ENCRYPTED" | grep -o No) = "No" ]
-+    then
-+        tst_res TPASS "statx encrypted flag is Not set"
-+    else
-+        tst_res TFAIL "statx encrypted flag is set"
-+    fi
-+
-+    if [ $(echo "$output_attr_undefined" | grep "STATX_ATTR_NODUMP" | grep -o No) = "No" ]
-+    then
-+        tst_res TPASS "statx Nodump flag is Not set"
-+    else
-+        tst_res TFAIL "statx Nodump flag is set"
-+    fi
-+
-+    if [ $(echo "$output_attr_undefined" | grep "STATX_ATTR_APPEND" | grep -o No) = "No" ]
-+    then
-+        tst_res TPASS "statx append flag is Not set"
-+    else
-+        tst_res TFAIL "statx append flag is set"
-+    fi
-+}
-+
-+cleanup()
-+{
-+    chattr -RV -aidc mnt_point/dir_attr_defined
-+    umount mnt_point/
-+    rm -rf mnt_point
-+    rm -rf storage
-+}
-+
-+tst_run
++#endif
 -- 
 2.17.1
 
