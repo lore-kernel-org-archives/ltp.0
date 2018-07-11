@@ -1,68 +1,38 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 11 Jul 2018 16:55:25 +0800
-Subject: [LTP] [PATCH] zram/zram_lib.sh: Check fielsystem support more
-	throughly
-Message-ID: <1531299325-27779-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 11 Jul 2018 04:54:38 -0400 (EDT)
+Subject: [LTP] [PATCH] verify_caps_exec: Respect TMP environment variable
+In-Reply-To: <20180622232353.151563-1-astrachan@google.com>
+References: <20180622232353.151563-1-astrachan@google.com>
+Message-ID: <93480014.31836255.1531299278505.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When mkfs command supports a specified filesystem and kernel doesn't support it,
-mkfs can format zram device to the filesystem successfully, but mount will fail
-with "unknown filesystem type".
 
-For example, running zram01 got the following error when only mkfs supported btrfs
-filesystem:
----------------------------------------------------------------------------------
-mount: /tmp/ltp-aJSv2PMZGl/zram01.46mBiYaa3M/zram3: unknown filesystem type 'btrfs'.
----------------------------------------------------------------------------------
+----- Original Message -----
+> The filecapstest.sh wrapper script already allows the /tmp directory to
+> be overridden with the TMP environment variable, however doing so has
+> no effect on verify_caps_exec because it creates its own version of this
+> fifo at a hardcoded location under /tmp.
+> 
+> To ensure the fifo is correctly removed by the wrapper script, alter
+> verify_caps_exec to respect the TMP environment variable and create a
+> fifo at the same location.
 
-We should add a fielsystem support check for both kernel and mkfs command, and use
-ext2 fielsystem by default if either of them doesn't support a specified filesystem.
+Hi,
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- testcases/kernel/device-drivers/zram/zram_lib.sh | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+this doesn't seem to be enough, print_caps.c is also hardcoding /tmp.
+Other than rewriting the test, I'm thinking simplest way to fix this is:
 
-diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
-index 224b407..d6ce74a 100755
---- a/testcases/kernel/device-drivers/zram/zram_lib.sh
-+++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
-@@ -193,13 +193,27 @@ zram_swapoff()
- 	tst_resm TPASS "swapoff completed"
- }
- 
-+zram_check_fs_support()
-+{
-+	tst_check_cmds which modprobe
-+	local filesystem=$1
-+
-+	# Check if mkfs command supports fs
-+	which mkfs.$filesystem > /dev/null 2>&1 || return 1
-+
-+	# Check if kernel supports fs
-+	if ! grep -qw $filesystem /proc/filesystems; then
-+		modprobe $filesystem > /dev/null 2>&1 || return 1
-+	fi
-+}
-+
- zram_makefs()
- {
--	tst_check_cmds mkfs which
-+	tst_check_cmds mkfs
- 	local i=0
- 	for fs in $zram_filesystems; do
- 		# if requested fs not supported default it to ext2
--		which mkfs.$fs > /dev/null 2>&1 || fs=ext2
-+		zram_check_fs_support $fs || fs=ext2
- 
- 		tst_resm TINFO "make $fs filesystem on /dev/zram$i"
- 		mkfs.$fs /dev/zram$i > err.log 2>&1
--- 
-1.8.3.1
+1. export FIFOFILE in wrapper script and then use that env. variable
+in all *.c tests.
 
+2. change wrapper script to use $TMPDIR if available
+(that is the value exported by runltp)
 
+What do you think?
 
+Regards,
+Jan
