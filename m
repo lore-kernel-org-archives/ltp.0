@@ -1,47 +1,34 @@
 From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Wed, 11 Jul 2018 13:29:23 +0100
-Subject: [LTP] [PATCH 2/4] quota_remount_test01: Add explicit check for
-	dependencies
+Date: Wed, 11 Jul 2018 13:29:24 +0100
+Subject: [LTP] [PATCH 3/4] memcg_lib.sh: Check for killall
 In-Reply-To: <20180711122925.24278-1-punit.agrawal@arm.com>
 References: <20180711122925.24278-1-punit.agrawal@arm.com>
-Message-ID: <20180711122925.24278-3-punit.agrawal@arm.com>
+Message-ID: <20180711122925.24278-4-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-quota_remount_test01 doesn't check for dependencies before
-execution. Add explicit checks for quotacheck and quotaon and bail out
-if they are not present.
-
 Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
 ---
- testcases/kernel/fs/quota_remount/quota_remount_test01.sh | 4 ++++
- 1 file changed, 4 insertions(+)
+ testcases/kernel/controllers/memcg/functional/memcg_lib.sh | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/testcases/kernel/fs/quota_remount/quota_remount_test01.sh b/testcases/kernel/fs/quota_remount/quota_remount_test01.sh
-index 24f41aec1..8fa9ffc9f 100755
---- a/testcases/kernel/fs/quota_remount/quota_remount_test01.sh
-+++ b/testcases/kernel/fs/quota_remount/quota_remount_test01.sh
-@@ -41,6 +41,8 @@ export TCID=quota_remount_test01
- export TST_TOTAL=1
- export TST_COUNT=0
- 
-+. test.sh
-+
- if [ -z $TMPDIR ]
- then
- 	TMPDIR=/tmp
-@@ -58,6 +60,8 @@ if [ ! -d /proc/sys/fs/quota ]; then
-         exit 0
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+index 7892f78c3..838706e1a 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+@@ -34,6 +34,9 @@ if [ $? -ne 0 ]; then
+ 	tst_brkm TBROK "getconf PAGESIZE failed"
  fi
  
-+tst_check_cmds quotacheck quotaon
++# Check for dependencies
++tst_check_cmds killall
 +
- die()
- {
- 	echo >&2 $2
+ # Post 4.16 kernel updates stat in batch (> 32 pages) every time
+ PAGESIZES=$(( $PAGESIZE * 33 ))
+ 
 -- 
 2.17.1
 
