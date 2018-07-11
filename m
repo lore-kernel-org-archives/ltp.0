@@ -1,29 +1,38 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 11 Jul 2018 05:42:31 -0400 (EDT)
-Subject: [LTP] [PATCH v2] open08: calling tst_get_bad_addr from LTP API
-In-Reply-To: <20180711092835.12062-1-liwang@redhat.com>
-References: <20180711092835.12062-1-liwang@redhat.com>
-Message-ID: <993114831.31844662.1531302151909.JavaMail.zimbra@redhat.com>
+From: Punit Agrawal <punit.agrawal@arm.com>
+Date: Wed, 11 Jul 2018 13:29:21 +0100
+Subject: [LTP] [PATCH 0/4] Add dependency checking
+Message-ID: <20180711122925.24278-1-punit.agrawal@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi,
 
------ Original Message -----
-> From open(2) manual, pathname(unmapped_fname) points outside the
-> accessible address space, then test will result in failure with EFAULT.
-> 
-> LTP tst_get_bad_addr() maps a contiguous virtual memory region by using
-> PROT_NONE to provide page not be accessed too. Here we can take use of
-> it to achieve the same purpose.
-> 
-> Also fix code comments to match open(2) maunal precisely.
-> 
-> Signed-off-by: Li Wang <liwang@redhat.com>
+While investigating failures from nightly runs, I came across some
+tests that don't explicitly check for dependencies.
 
-Pushed.
+Add appropriate check for dependencies so the tests are reported as an
+issue with the configuration rather than a test failure. These set of
+patches transitions ~50-60 tests from reporting failures to a
+configuration issue.
 
 Thanks,
-Jan
+Punit
+
+Punit Agrawal (4):
+  controllers/cgroup_fj_common.sh: Check for dependencies during setup
+  quota_remount_test01: Add explicit check for dependencies
+  memcg_lib.sh: Check for killall
+  controllers/pids.sh: Check for killall
+
+ testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh | 1 +
+ testcases/kernel/controllers/memcg/functional/memcg_lib.sh | 3 +++
+ testcases/kernel/controllers/pids/pids.sh                  | 1 +
+ testcases/kernel/fs/quota_remount/quota_remount_test01.sh  | 4 ++++
+ 4 files changed, 9 insertions(+)
+
+-- 
+2.17.1
+
