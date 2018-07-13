@@ -1,81 +1,64 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 16 Jul 2018 11:32:08 +0200
-Subject: [LTP] [PATCH] testcases: cve-2017-2671: Set attempts according
-	to cpus
-In-Reply-To: <20180713134618.29552-1-mylene.josserand@bootlin.com>
-References: <20180713134618.29552-1-mylene.josserand@bootlin.com>
-Message-ID: <87zhyrbk6f.fsf@rpws.prws.suse.cz>
+From: Lee Jones <lee.jones@linaro.org>
+Date: Fri, 13 Jul 2018 08:27:08 +0100
+Subject: [LTP] [PATCH] mfd: hi655x: Fix regmap area declared size for
+	hi655x
+In-Reply-To: <20180706172833.533-1-rafael.tinoco@linaro.org>
+References: <20180706172833.533-1-rafael.tinoco@linaro.org>
+Message-ID: <20180713072708.GL4641@dell>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hello,
+On Fri, 06 Jul 2018, Rafael David Tinoco wrote:
 
-Mylène Josserand writes:
-
-> This test tries to run commands with 0x8000 attempts.
-> In a slow system platform, it leads to a failure
-> because of a timeout even when it is configured with
-> LTP_TIMEOUT_MUL=10.
->
-> This commit adds a way to configure the number of attempts
-> according to the number of CPUs.
-> In case of 1 CPU and a slow platform, using 0x2000 attempts
-> with a LTP_TIMEOUT_MUL=3 make the test pass.
-
-I think the Fuzzy Sync library needs to be improved to remove the
-iteration constants altogether. That is, we specify how long the test(s)
-should run for, not how many iterations each one should do.
-
-We can do this by taking a moving average of the iteration time and
-using it to predict when the next iteration will exceed the time
-limit. Then exit the loop at that point.
-
-Also Cyril thinks that we can improve the time Fuzzy Sync takes to reach
-the synchronisation point by using a PID controller algorithm which
-makes a lot of sense.
-
->
-> Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
+> Fixes: https://bugs.linaro.org/show_bug.cgi?id=3903
+> 
+> LTP Functional tests have caused a bad paging request when triggering
+> the regmap_read_debugfs() logic of the device PMIC Hi6553 (reading
+> regmap/f8000000.pmic/registers file during read_all test):
+> 
+> Unable to handle kernel paging request at virtual address ffff0
+> [ffff00000984e000] pgd=0000000077ffe803, pud=0000000077ffd803,0
+> Internal error: Oops: 96000007 [#1] SMP
+> ...
+> Hardware name: HiKey Development Board (DT)
+> ...
+> Call trace:
+>  regmap_mmio_read8+0x24/0x40
+>  regmap_mmio_read+0x48/0x70
+>  _regmap_bus_reg_read+0x38/0x48
+>  _regmap_read+0x68/0x170
+>  regmap_read+0x50/0x78
+>  regmap_read_debugfs+0x1a0/0x308
+>  regmap_map_read_file+0x48/0x58
+>  full_proxy_read+0x68/0x98
+>  __vfs_read+0x48/0x80
+>  vfs_read+0x94/0x150
+>  SyS_read+0x6c/0xd8
+>  el0_svc_naked+0x30/0x34
+> Code: aa1e03e0 d503201f f9400280 8b334000 (39400000)
+> 
+> Investigations have showed that, when triggered by debugfs read()
+> handler, the mmio regmap logic was reading a bigger (16k) register area
+> than the one mapped by devm_ioremap_resource() during hi655x-pmic probe
+> time (4k).
+> 
+> This commit changes hi655x's max register, according to HW specs, to be
+> the same as the one declared in the pmic device in hi6220's dts, fixing
+> the issue.
+> 
+> Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
+> Cc: <stable@vger.kernel.org> #v4.9 #v4.14 #v4.16 #v4.17
 > ---
->  testcases/cve/cve-2017-2671.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
->
-> diff --git a/testcases/cve/cve-2017-2671.c b/testcases/cve/cve-2017-2671.c
-> index b0471bfff..a56bb45a8 100644
-> --- a/testcases/cve/cve-2017-2671.c
-> +++ b/testcases/cve/cve-2017-2671.c
-> @@ -49,7 +49,7 @@
->
->  #include "tst_fuzzy_sync.h"
->
-> -#define ATTEMPTS 0x80000
-> +#define ATTEMPTS 0x2000
->  #define PING_SYSCTL_PATH "/proc/sys/net/ipv4/ping_group_range"
->
->  static int sockfd;
-> @@ -109,9 +109,13 @@ static void *connect_b(void * param LTP_ATTRIBUTE_UNUSED)
->
->  static void run(void)
->  {
-> -	int i;
-> +	int i, total_cpus;
->
-> -	for (i = 0; i < ATTEMPTS; i++) {
-> +	total_cpus = tst_ncpus();
-> +	if (total_cpus > 4)
-> +		total_cpus = 4;
-> +
-> +	for (i = 0; i < ATTEMPTS * total_cpus; i++) {
->  		SAFE_CONNECT(sockfd,
->  			     (struct sockaddr *)&iaddr, sizeof(iaddr));
->
-> --
-> 2.11.0
+>  drivers/mfd/hi655x-pmic.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
+Applied, thanks.
 
---
-Thank you,
-Richard.
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
