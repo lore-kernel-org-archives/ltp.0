@@ -1,844 +1,354 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 12 Jul 2018 09:33:51 -0400 (EDT)
-Subject: [LTP] [PATCH v1] Test for memfd_create() syscall with
- MFD_HUGETLB flag.
-In-Reply-To: <20180711135032.8669-1-vishnu@zilogic.com>
-Message-ID: <226005706.32325461.1531402431452.JavaMail.zimbra@redhat.com>
+From: kewal <kewal@zilogic.com>
+Date: Fri, 13 Jul 2018 06:27:25 -0000
+Subject: [LTP] [PATCH v1] Test madvise with advise value'MADV_WIPEONFORK'
+References: <1531324792-16559-1-git-send-email-kewal@zilogic.com>
+ <2eef9639-8704-a736-5193-e7ef3074516e@redhat.com>
+Message-ID: <04128a41ce9c82069cbadfd812c2a0a0.squirrel@pike.zilogic.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 07/11/2018 03:50 PM, Vishnu K wrote:
-> 
-> memfd_create03.c: Tests the syscall for the flag MFD_HUGETLB.
-> 
-> memfd_create04.c: Tests the syscall for the flags MFD_HUGE_2MB, MFD_HUGE_1GB,... used in conjunction with MFD_HUGETLB flag.
-> 
-> memfd_create_hugetlb.c: Contains helper functions for memfd_create03.c and memfd_create04.c.
-> 
-> Signed-off-by: Sikkandar Sulaiman A <sikkandarsulaiman@zilogic.com>
-> Signed-off-by: Vishnu K <vishnu@zilogic.com>
 
-Hi,
+Hi Jan,
 
-I'm thinking whether some of these tests should be in this location,
-since some are focused more on behavior of hugepages than
-memfd_create interface.
+As per your below comment,
+> -drop madvise11, errno tests can be added to existing madvise02
 
-It would be great if we can reuse/tweak existing memfd_create_common.c
-functions to work for new tests as well. Some of the functions
-in memfd_create_hugetlb.c are doing almost exactly same thing.
+we found that in madvise02, the below structure uses mapped address which
+is mapped with the flag value as "MAP_SHARED" but as per my test cases we
+have to vary the flag value with "MAP_SHARED | MAP_ANONYMOUS" &
+"MAP_PRIVATE".
 
-> ---
->  runtest/syscalls                              |   2 +
+I didn't found a way to add our testcases in madvise02.
 
-needs also update to corresponding .gitignore.
-
->  .../kernel/syscalls/memfd_create/Makefile     |   4 +-
->  .../syscalls/memfd_create/memfd_create03.c    | 151 +++++++++++
->  .../syscalls/memfd_create/memfd_create04.c    | 139 ++++++++++
->  .../memfd_create/memfd_create_hugetlb.c       | 244 ++++++++++++++++++
->  .../memfd_create/memfd_create_hugetlb.h       |  86 ++++++
->  6 files changed, 624 insertions(+), 2 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/memfd_create/memfd_create03.c
->  create mode 100644 testcases/kernel/syscalls/memfd_create/memfd_create04.c
->  create mode 100644 testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.c
->  create mode 100644 testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.h
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index a9afecf57..c310b0106 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1479,5 +1479,7 @@ futex_wait_bitset02 futex_wait_bitset02
->  
->  memfd_create01 memfd_create01
->  memfd_create02 memfd_create02
-> +memfd_create03 memfd_create03
-> +memfd_create04 memfd_create04
->  
->  copy_file_range01 copy_file_range01
-> diff --git a/testcases/kernel/syscalls/memfd_create/Makefile b/testcases/kernel/syscalls/memfd_create/Makefile
-> index f23b8732c..ec83a5c40 100644
-> --- a/testcases/kernel/syscalls/memfd_create/Makefile
-> +++ b/testcases/kernel/syscalls/memfd_create/Makefile
-> @@ -16,8 +16,8 @@ top_srcdir		?= ../../../..
->  
->  include $(top_srcdir)/include/mk/testcases.mk
->  
-> -FILTER_OUT_MAKE_TARGETS         := memfd_create_common
-> +FILTER_OUT_MAKE_TARGETS         := memfd_create_common memfd_create_hugetlb
->  
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
->  
-> -$(MAKE_TARGETS): %: %.o memfd_create_common.o
-> +$(MAKE_TARGETS): %: %.o memfd_create_common.o memfd_create_hugetlb.o
-> diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create03.c b/testcases/kernel/syscalls/memfd_create/memfd_create03.c
-> new file mode 100644
-> index 000000000..8120ca6c8
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/memfd_create/memfd_create03.c
-> @@ -0,0 +1,151 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +/*
-> + *  Copyright (c) Zilogic Systems Pvt. Ltd., 2007
-
-2018
-
-> + *  Email: code@zilogic.com
-> + *
-> + * This program is free software;  you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + * the GNU General Public License for more details.
-> + */
-> +
-> +/*
-> + * Test: Validating memfd_create() with MFD_HUGETLB flag.
-> + *
-> + * Test case 1: Write protect test
-> + *		Hugepages are write protected. Any writes to
-> + *		the file should return EINVAL error.
-> + *
-> + * Test case 2: Hugepage size test
-> + *		Default hugepage sized pages are created with
-> + *		MFD_HUGETLB flag. Any attempt to unmap memory-mapped
-> + *		hugepages with an unmapping length less than
-> + *		hugepage size should return EINVAL error.
-> + *
-> + * Test case 3: Number of hugepages test
-> + *		Number of hugepages currently available to use should be
-> + *		atmost total number of allowed hugepages. Memory-mapping
-> + *		more than allowed hugepages should return ENOMEM error.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include "tst_test.h"
-> +#include "memfd_create_common.h"
-> +#include "memfd_create_hugetlb.h"
-> +
-> +#include <stdio.h>
-> +
-> +#define MEMINFO_PATH "/proc/meminfo"
-> +#define HUGEPAGES_COUNT_STR "4"
-> +
-> +#ifndef MFD_HUGETLB
-> +#define MFD_HUGETLB 0x0004U
-> +#endif
-
-This should go into include/lapi
-
-> +
-> +static void test_write_protect(int fd)
-> +{
-> +	if (CHECK_HUGE_NON_WRITEABLE(fd) == 0)
-> +		tst_res(TPASS, "write call failed as expected");
-> +	else
-> +		tst_res(TFAIL, "write call passed unexpectedly");
-> +}
-> +
-> +static void test_def_pagesize(int fd)
-> +{
-> +	int ret;
-> +	unsigned int hps;
-> +	void *mem;
-> +
-> +	hps = GET_HUGE_DEF_PAGESIZE();
-> +	mem = CHECK_HUGE_MMAPABLE(fd, hps);
-> +	ret = CHECK_HUGE_PAGESIZE(mem, hps);
-> +	if (ret == 0)
-> +		tst_res(TPASS, "File created in def pagesize %dkB", hps/1024);
-> +	else
-> +		tst_res(TFAIL, "File is not in default pagesize");
-> +}
-> +
-> +static void test_max_hugepages(int fd)
-> +{
-> +	int res;
-> +	int new_fd;
-> +	unsigned int hps;
-> +	unsigned int free_pages;
-> +	void *mem;
-> +
-> +	free_pages = GET_HUGE_FREE_PAGES();
-> +	hps = GET_HUGE_DEF_PAGESIZE();
-> +	mem = CHECK_HUGE_MMAPABLE(fd, free_pages * hps);
-> +
-> +	new_fd = SAFE_HUGE_NEW("new_file", MFD_HUGETLB);
-> +	res = CHECK_HUGE_NON_MMAPABLE(new_fd, hps);
-> +	SAFE_HUGE_CLOSE(new_fd);
-> +
-> +	SAFE_MUNMAP(mem, free_pages * hps);
-> +
-> +	if (res == 0)
-> +		tst_res(TPASS, "Hugepages creation is limited as expected");
-> +	else
-> +		tst_res(TFAIL, "Hugepages creation limit failed");
-> +}
-> +
-> +static const struct tcase {
-> +	int flags;
-> +	void (*func)(int fd);
-> +	const char *desc;
-> +} tcases[] = {
-> +	{MFD_HUGETLB, &test_write_protect, "Testing write call in hugepages"},
-> +	{MFD_HUGETLB, &test_def_pagesize, "Testing page size of created file"},
-> +	{MFD_HUGETLB, &test_max_hugepages, "Testing the number of hugepages"},
-> +};
-> +
-> +static void memfd_huge_controller(unsigned int n)
-> +{
-> +	int fd;
-> +	const struct tcase *tc;
-> +
-> +	tc = &tcases[n];
-> +
-> +	tst_res(TINFO, "%s", tc->desc);
-> +
-> +	fd = SAFE_HUGE_NEW("test_file", tc->flags);
-> +
-> +	tc->func(fd);
-> +
-> +	SAFE_HUGE_CLOSE(fd);
-> +	printf("\n");
-
-Please no printfs.
-
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	int fd;
-> +	int size;
-> +
-> +	if (GET_HUGE_TOTAL_PAGES() == 0) {
-> +		fd = open("/proc/sys/vm/nr_hugepages", O_WRONLY);
-> +		if (fd == -1)
-> +			tst_brk(TBROK | TERRNO, "Enable Hugepages manually");
-
-Test should detect hugepage support and end with TCONF if not available.
-
-> +
-> +		size = strlen(HUGEPAGES_COUNT_STR);
-> +		if (write(fd, HUGEPAGES_COUNT_STR, size) == -1)
-> +			tst_brk(TBROK | TERRNO, "Enable Hugepages manually");
-
-If you don't have enough hugepages for test -> TCONF.
-Also you should restore the original value in cleanup().
-
-> +	}
-> +
-> +	if (GET_HUGE_TOTAL_PAGES() == 0)
-> +		tst_brk(TBROK, "Enable Hugepages manually");
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.test = memfd_huge_controller,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.needs_root = 1,
-> +	.min_kver = "4.14",
-> +};
-> diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create04.c b/testcases/kernel/syscalls/memfd_create/memfd_create04.c
-> new file mode 100644
-> index 000000000..8d893ff0f
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/memfd_create/memfd_create04.c
-> @@ -0,0 +1,139 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +/*
-> + *  Copyright (c) Zilogic Systems Pvt. Ltd., 2007
-> + *  Email: code@zilogic.com
-> + *
-> + * This program is free software;  you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + * the GNU General Public License for more details.
-> + */
-> +
-> +/*
-> + * Test: Validating memfd_create() with MFD_HUGETLB and MFD_HUGE_x flags.
-> + *
-> + * Test cases: Attempt to create hugepages of different sizes.
-> + *
-> + * Test logic:	memfd_create() should return non-negative value (fd)
-> + *		if the system supports that particular hugepage size.
-> + *		On success, size of hugepages are then validated with the fd
-> + *		returned. On failure, syscall should return appropriate error.
-
-I'm getting "succeeded unexpectedly" on 4.16.14-300.fc28.x86_64:
-
-memfd_create04.c:93: INFO: Attempt to create 2MB huge pages
-memfd_create04.c:95: INFO: memfd_create(tfile, 1409286148) succeeded: fd 3
-memfd_create04.c:105: INFO: mmap((nil), 2097152, 0, 2, 3, 0) succeeded unexpectedly
-memfd_create04.c:110: INFO: close(3) succeeded
-memfd_create04.c:111: PASS: Successfully created 2MB pages
-
-and warnings:
-
-memfd_create04.c:93: INFO: Attempt to create 1GB huge pages
-memfd_create04.c:95: INFO: memfd_create(tfile, 2013265924) succeeded: fd 3
-memfd_create04.c:105: INFO: mmap((nil), 1073741824, 2, 2, 3, 0) failed as expected
-memfd_create04.c:108: WARN: Page not created in expected 1GB
+>static struct tcase {
+>	int advice;
+>	char *name;
+>	char **addr;
+>	int exp_errno;
+>	int skip;
+>} tcases[] = {
+>	{MADV_NORMAL,      "MADV_NORMAL",      &nonalign, EINVAL, 0},
+>	{1212,             "MADV_NORMAL",      &file1,    EINVAL, 0},
+>	{MADV_REMOVE,      "MADV_REMOVE",      &file1,    EINVAL, 0},
+>	{MADV_DONTNEED,    "MADV_DONTNEED",    &file1,    EINVAL, 1},
+>	{MADV_MERGEABLE,   "MADV_MERGEABLE",   &file1,    EINVAL, 0},
+>	{MADV_UNMERGEABLE, "MADV_UNMERGEABLE", &file1,    EINVAL, 0},
+>	{MADV_NORMAL,      "MADV_NORMAL",      &file2,    ENOMEM, 0},
+>	{MADV_WILLNEED,    "MADV_WILLNEED",    &file2,    ENOMEM, 0},
+>	{MADV_WILLNEED,    "MADV_WILLNEED",    &tmp_addr,  EBADF, 0},
+>	{MADV_FREE,        "MADV_FREE",        &file1,    EINVAL, 0},
+>	{MADV_WIPEONFORK,  "MADV_WIPEONFORK",  &file1,    EINVAL, 0},
+>};
 
 
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include "tst_test.h"
-> +#include "memfd_create_common.h"
-> +#include "memfd_create_hugetlb.h"
-> +
-> +#include <errno.h>
-> +#include <sys/mman.h>
-> +#include <stdio.h>
-> +
-> +#define MEMINFO_PATH "/proc/meminfo"
-> +#define HUGEPAGES_COUNT_STR "4"
-> +
-> +#ifndef MFD_HUGETLB
-> +#define MFD_HUGETLB 0x0004U
-> +#endif
-> +
-> +#define MFD_HUGE_64KB (16 << 26)
-> +#define MFD_HUGE_512KB (19 << 26)
-> +#define MFD_HUGE_2MB (21 << 26)
-> +#define MFD_HUGE_8MB (23 << 26)
-> +#define MFD_HUGE_16MB (24 << 26)
-> +#define MFD_HUGE_256MB (28 << 26)
-> +#define MFD_HUGE_1GB (30 << 26)
-> +#define MFD_HUGE_2GB (31 << 26)
-> +#define MFD_HUGE_16GB (34 << 26)
+> file1 = SAFE_MMAP(0, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
+> file2 = SAFE_MMAP(0, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
 
-These define should go into include/lapi
-
-> +
-> +static  struct test_flag {
-> +	int flags;
-> +	unsigned long size;
-> +	char *h_size;
-> +	int exp_err;
-> +} test_flags[] =  {
-> +	{.flags = MFD_HUGE_64KB, .size = 64*1024, .h_size = "64kB"},
-> +	{.flags = MFD_HUGE_512KB, .size = 512*1024, .h_size = "512kB"},
-> +	{.flags = MFD_HUGE_2MB, .size = 2*1024*1024, .h_size = "2MB"},
-> +	{.flags = MFD_HUGE_8MB, .size = 8*1024*1024, .h_size = "8MB"},
-> +	{.flags = MFD_HUGE_16MB, .size = 16*1024*1024, .h_size = "16MB"},
-> +	{.flags = MFD_HUGE_256MB, .size = 256*1024*1024, .h_size = "256MB"},
-> +	{.flags = MFD_HUGE_1GB,	 .size = 1*1024*1024*1024L, .h_size = "1GB"},
-> +	{.flags = MFD_HUGE_2GB, .size = 2*1024*1024*1024L, .h_size = "2GB"},
-> +	{.flags = MFD_HUGE_16GB, .size = 16*1024*1024*1024L, .h_size = "16GB"},
-
-This overflows on 32-bit.
-
-> +};
-> +
-> +static void check_hugepage_support(struct test_flag *test_flags)
-> +{
-> +	char pattern[50];
-> +
-> +	sprintf(pattern, "DirectMap%s", test_flags->h_size);
-> +	pattern[strlen(pattern) - 1] = 0;
-> +	strcat(pattern, ":\t%lu kB");
-> +
-> +	if (get_from_file(MEMINFO_PATH, pattern) == -1)
-> +		test_flags->exp_err = ENODEV;
-
-LTP has helper function FILE_LINES_SCANF / SAFE_FILE_LINES_SCANF
-
-> +}
-> +
-> +static void memfd_huge_x_controller(unsigned int n)
-> +{
-> +	int fd;
-> +	int ret;
-> +	struct test_flag tflag;
-> +
-> +	tflag = test_flags[n];
-> +	check_hugepage_support(&tflag);
-> +	tst_res(TINFO, "Attempt to create %s huge pages", tflag.h_size);
-> +
-> +	fd = CHECK_HUGE_X_NEW("tfile", MFD_HUGETLB | tflag.flags);
-> +	if (fd < 0) {
-> +		tst_res(TINFO | TERRNO, "memfd_create() failed");
-> +		if (fd == -tflag.exp_err)
-> +			tst_res(TPASS, "Test failed as expected\n");
-> +		else
-> +			tst_brk(TFAIL, "memfd_create() failed unexpectedly");
-> +		return;
-> +	}
-> +
-> +	ret = CHECK_HUGE_NON_MMAPABLE(fd, tflag.size);
-> +	if (ret == 0)
-> +		tst_res(TWARN, "Page not created in expected %s\n",
-> +			tflag.h_size);
-
-What does this warning mean?
-
-> +
-> +	SAFE_HUGE_CLOSE(fd);
-> +	tst_res(TPASS, "Successfully created %s pages\n", tflag.h_size);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	int fd;
-> +	int size;
-> +
-> +	if (GET_HUGE_TOTAL_PAGES() == 0) {
-> +		fd = open("/proc/sys/vm/nr_hugepages", O_WRONLY);
-> +		if (fd == -1)
-> +			tst_brk(TBROK | TERRNO, "Enable Hugepages manually");
-
-If system doesn't support hugepages -> TCONF
-
-> +
-> +		size = strlen(HUGEPAGES_COUNT_STR);
-> +		if (write(fd, HUGEPAGES_COUNT_STR, size) == -1)
-> +			tst_brk(TBROK | TERRNO, "Enable Hugepages manually");
-
-If system doesn't have enough hugepages -> TCONF
-
-> +	}
-> +
-> +	if (GET_HUGE_TOTAL_PAGES() == 0)
-> +		tst_brk(TBROK, "Enable Hugepages manually");
-
-TBROK should be for unexpected/unrecoverable issues,
-huge page support is something we can detect.
-
-Also test should restore original value of hugepages in cleanup.
-
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.test = memfd_huge_x_controller,
-> +	.tcnt = ARRAY_SIZE(test_flags),
-> +	.needs_root = 1,
-> +	.min_kver = "4.14",
-> +};
-> diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.c b/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.c
-> new file mode 100644
-> index 000000000..197f86f83
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.c
-
-I'm getting some warnings:
-
-memfd_create_hugetlb.c: In function ‘check_huge_non_writeable’:
-memfd_create_hugetlb.c:96:27: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 7 has type ‘size_t’ {aka ‘unsigned int’} [-Wformat=]
-      "write(%d, \"%s\", %ld) didn't fail as expected",
-                         ~~^
-                         %d
-      fd, test_str, strlen(test_str));
-                    ~~~~~~~~~~~~~~~~
-memfd_create_hugetlb.c:102:26: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 7 has type ‘size_t’ {aka ‘unsigned int’} [-Wformat=]
-     "write(%d, \"%s\", %ld) succeeded unexpectedly",
-                        ~~^
-                        %d
-     fd, test_str, strlen(test_str));
-                   ~~~~~~~~~~~~~~~~
-memfd_create_hugetlb.c:108:25: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 7 has type ‘size_t’ {aka ‘unsigned int’} [-Wformat=]
-    "write(%d, \"%s\", %ld) failed as expected",
-                       ~~^
-                       %d
-    fd, test_str, strlen(test_str));
-                  ~~~~~~~~~~~~~~~~
-
-> @@ -0,0 +1,244 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +/*
-> + *  Copyright (c) Zilogic Systems Pvt. Ltd., 2007
-> + *  Email: code@zilogic.com
-> + *
-> + * This program is free software;  you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + * the GNU General Public License for more details.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include "memfd_create_common.h"
-> +#include "memfd_create_hugetlb.h"
-> +
-> +#include "lapi/syscalls.h"
-> +
-> +#include <sys/mman.h>
-> +#include <unistd.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <stdio.h>
-> +#include <errno.h>
-> +
-> +#define TST_NO_DEFAULT_MAIN
-> +#include "tst_test.h"
-> +
-> +#define MEMINFO_PATH "/proc/meminfo"
-> +
-> +#define MFD_HUGETLB 0x0004U
-
-include/lapi
-
-> +#define BLOCK_SIZE (4 * 1024)
-> +
-> +
-> +int safe_huge_new(const char *filename, const int lineno,
-> +		   const char *name, int flags)
-
-Name is misleading, as it doesn't have to do anything with huge pages.
-It's just a wrapper for memfd_create, very similar to check_mfd_new.
-Any chance we could re-use/modify that one?
-
-> +{
-> +	int fd;
-> +
-> +	fd = tst_syscall(__NR_memfd_create, name, flags);
-> +	if (fd == -1)
-> +		tst_brk_(filename, lineno, TBROK | TERRNO,
-> +			 "memfd_create(%s, %d) failed",
-> +			 name, flags);
-> +
-> +	tst_res_(filename, lineno, TINFO,
-> +		 "memfd_create(%s, %d) succeeded: fd %d",
-> +		 name, flags, fd);
-> +
-> +	return fd;
-> +}
-> +
-> +int check_huge_x_new(const char *filename, const int lineno,
-> +		   const char *name, int flags)
-
-Same here.
-
-> +{
-> +	int fd;
-> +
-> +	fd = tst_syscall(__NR_memfd_create, name, flags);
-> +	if (fd == -1)
-> +		return -errno;
-> +
-> +	tst_res_(filename, lineno, TINFO,
-> +		 "memfd_create(%s, %d) succeeded: fd %d",
-> +		 name, flags, fd);
-> +
-> +	return fd;
-> +}
-> +
-> +void safe_huge_close(const char *filename, const int lineno,
-> +		      int fd)
-
-Wrapper for close, not really relevant to huge pages.
-
-> +{
-> +	int dummy_fd;
-> +
-> +	dummy_fd = fd;
-> +	SAFE_CLOSE(fd);
-> +	tst_res_(filename, lineno, TINFO, "close(%d) succeeded", dummy_fd);
-> +}
-> +
-> +int check_huge_non_writeable(const char *filename, const int lineno,
-> +			     int fd)
-> +{
-> +	ssize_t ret;
-> +	char test_str[] = "data";
-> +
-> +	ret = write(fd, test_str, sizeof(test_str));
-> +
-> +	if (ret < 0) {
-> +		if (errno != EINVAL) {
-> +			tst_res_(filename, lineno, TINFO,
-> +				 "write(%d, \"%s\", %ld) didn't fail as expected",
-> +				 fd, test_str, strlen(test_str));
-> +			return -1;
-> +		}
-> +	} else {
-> +		tst_res_(filename, lineno, TINFO,
-> +			 "write(%d, \"%s\", %ld) succeeded unexpectedly",
-> +			 fd, test_str, strlen(test_str));
-> +		return -1;
-> +	}
-> +
-> +	tst_res_(filename, lineno, TINFO,
-> +		 "write(%d, \"%s\", %ld) failed as expected",
-> +		 fd, test_str, strlen(test_str));
-> +
-> +	return 0;
-> +}
-> +
-> +int check_huge_pagesize(const char *filename, const int lineno,
-> +			void *page_mem, unsigned long page_size)
-
-Nothing in name suggests this is going to unmap memory.
-
-How about we call it "check_munmap_lt_page", let it try
-munmap values _less than_ page_size and drop munmap for page_size?
-
-> +{
-> +	unsigned int i;
-> +	int ret;
-> +	int unmap_size = page_size / 4;
-> +
-> +	for (i = unmap_size; i <= page_size; i += unmap_size) {
-> +		ret = munmap(page_mem, i);
-> +		if (ret == -1) {
-> +			tst_res_(filename, lineno, TINFO,
-> +				 "munmap(%p, %dkb) failed",
-> +				 page_mem, i/1024);
-> +			if (i % page_size == 0)
-> +				return -1;
-> +		} else {
-> +			tst_res_(filename, lineno, TINFO,
-> +				 "munmap(%p, %d) suceeded",
-> +				 page_mem, i);
-> +			if (i % page_size != 0)
-> +				return -1;
-> +		}
-> +
-> +	}
-> +	return 0;
-> +}
-> +
-> +void *check_huge_mmapable(const char *filename, const int lineno,
-> +			  int fd, unsigned long size)
-
-Quite similar to check_mmap(). Any chance we can re-use/tweak
-existing function?
-
-> +{
-> +	void *mem;
-> +
-> +	mem = SAFE_MMAP(NULL, size, PROT_WRITE,
-> +			MAP_PRIVATE, fd, 0);
-> +
-> +	memset((char *)mem, 0, 1);
-> +	tst_res_(filename, lineno, TINFO,
-> +		 "mmap(%p, %lu, %d, %d, %d, %d) succeeded: %p",
-> +		 NULL, size, PROT_WRITE, MAP_PRIVATE, fd, 0, mem);
-> +
-> +	return mem;
-> +}
-> +
-> +int check_huge_non_mmapable(const char *filename, const int lineno,
-> +			    int fd, unsigned long size)
-
-Can we tweak check_mmap_fail() to work for both cases?
-
-> +{
-> +	void *mem;
-> +
-> +	mem = mmap(NULL, size, 0,
-> +		   MAP_PRIVATE, fd, 0);
-> +
-> +	if (mem == MAP_FAILED) {
-> +		if (errno == ENOMEM)
-> +			tst_res_(filename, lineno, TINFO,
-> +				 "mmap(%p, %lu, %d, %d, %d, %d) failed as expected",
-> +				 NULL, size, PROT_WRITE, MAP_PRIVATE, fd, 0);
-> +		else
-> +			tst_brk_(filename, lineno, TBROK | TTERRNO,
-> +				 "unable to mmap");
-> +		return 0;
-> +	}
-> +
-> +	tst_res_(filename, lineno, TINFO,
-> +		 "mmap(%p, %lu, %d, %d, %d, %d) succeeded unexpectedly",
-> +		 NULL, size, 0, MAP_PRIVATE, fd, 0);
-> +
-> +	SAFE_MUNMAP(mem, size);
-> +
-> +	return -1;
-> +}
-> +
-> +/*
-> + * The function is based on the code available in linux
-> + * kernel source repository file
-> + * linux/tools/testing/selftests/memfd/common.c
-> + */
-> +long get_from_file(const char *filepath, char *pattern)
-> +{
-> +	long val = -1;
-> +	char *line = NULL;
-> +	size_t linelen = 0;
-> +	FILE *f = fopen(filepath, "r");
-> +
-> +	if (!f)
-> +		return -1;
-> +
-> +	while (getline(&line, &linelen, f) > 0) {
-> +		if (sscanf(line, pattern, &val) == 1)
-> +			break;
-> +	}
-> +
-> +	free(line);
-> +	fclose(f);
-> +	return val;
-> +}
-
-FILE_LINES_SCANF / SAFE_FILE_LINES_SCANF should work in same way.
-
-> +
-> +unsigned long get_huge_def_pagesize(const char *filename, const int lineno)
-> +{
-> +	char *pattern = "Hugepagesize:\t%lu kB";
-> +	int hps;
-> +
-> +	hps = get_from_file(MEMINFO_PATH, pattern);
-> +	if (hps == -1)
-> +		tst_brk_(filename, lineno, TBROK,
-> +			 "unable to get hugepage size");
-> +	return hps << 10;
-> +}
-> +
-> +unsigned int get_huge_free_pages(const char *filename, const int lineno)
-> +{
-> +	char *pattern = "HugePages_Free:\t%d";
-> +	int free_pages;
-> +
-> +	free_pages = get_from_file(MEMINFO_PATH, pattern);
-> +	if (free_pages == -1)
-> +		tst_brk_(filename, lineno, TBROK,
-> +			 "unable to get free hugepages");
-> +	return free_pages;
-> +}
-> +
-> +unsigned int get_huge_total_pages(const char *filename, const int lineno)
-> +{
-> +	char *pattern = "HugePages_Total:\t%d";
-> +	int total_pages;
-> +
-> +	total_pages = get_from_file(MEMINFO_PATH, pattern);
-> +	if (total_pages == -1)
-> +		tst_brk_(filename, lineno, TBROK,
-> +			 "unable to get total hugepages");
-> +	return total_pages;
-> +}
-
-same as above
-
-> diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.h b/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.h
-> new file mode 100644
-> index 000000000..2fab1bda7
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.h
-> @@ -0,0 +1,86 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +/*
-> + *  Copyright (c) Zilogic Systems Pvt. Ltd., 2007
-> + *  Email: code@zilogic.com
-> + *
-> + * This program is free software;  you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + * the GNU General Public License for more details.
-> + */
-> +
-> +#ifndef _MEMFD_CREATE_HUGETLB_H_
-> +#define _MEMFD_CREATE_HUGETLB_H_
-> +
-> +
-> +#define SAFE_HUGE_NEW(name, flags)				\
-> +	safe_huge_new(__FILE__, __LINE__, name, (flags))
-> +
-> +#define CHECK_HUGE_X_NEW(name, flags)				\
-> +	check_huge_x_new(__FILE__, __LINE__, name, (flags))
-> +
-> +#define SAFE_HUGE_CLOSE(fd)				\
-> +	safe_huge_close(__FILE__, __LINE__, (fd))
-> +
-> +#define CHECK_HUGE_NON_WRITEABLE(fd)				\
-> +	check_huge_non_writeable(__FILE__, __LINE__, (fd))
-> +
-> +#define CHECK_HUGE_PAGESIZE(mem, page_size)				\
-> +	check_huge_pagesize(__FILE__, __LINE__, (mem), (page_size))
-> +
-> +#define CHECK_HUGE_MULTI_PAGES(fd, page_size)				\
-> +	check_huge_multi_pages(__FILE__, __LINE__, (fd), (page_size))
-> +
-> +#define CHECK_HUGE_MMAPABLE(fd, size)				\
-> +	check_huge_mmapable(__FILE__, __LINE__, (fd), (size))
-> +
-> +#define CHECK_HUGE_NON_MMAPABLE(fd, size)			\
-> +	check_huge_non_mmapable(__FILE__, __LINE__, (fd), (size))
-> +
-> +#define GET_HUGE_DEF_PAGESIZE()				\
-> +	get_huge_def_pagesize(__FILE__, __LINE__)
-> +
-> +#define GET_HUGE_TOTAL_PAGES()				\
-> +	get_huge_total_pages(__FILE__, __LINE__)
-> +
-> +#define GET_HUGE_FREE_PAGES()			\
-> +	get_huge_free_pages(__FILE__, __LINE__)
-
-I'm not huge fan of these macros. Do we need these?
-
-We should at least try to reuse/tweak memfd_create_common.c
-to avoid duplicating common code.
+We will go through the rest of the comments and update with v2.
 
 Regards,
-Jan
+Kewal Ukunde
 
-> +
-> +
-> +int safe_huge_new(const char *filename, const int lineno, const char *name,
-> +		   int flags);
-> +
-> +int check_huge_x_new(const char *filename, const int lineno, const char *name,
-> +		   int flags);
-> +
-> +void safe_huge_close(const char *filename, const int lineno, int fd);
-> +
-> +int check_huge_non_writeable(const char *filename, const int lineno, int fd);
-> +
-> +int check_huge_pagesize(const char *filename, const int lineno, void *page_mem,
-> +			unsigned long page_size);
-> +
-> +int check_huge_multi_pages(const char *filename, const int lineno, int fd,
-> +			unsigned long page_size);
-> +
-> +void *check_huge_mmapable(const char *filename, const int lineno, int fd,
-> +			  unsigned long size);
-> +
-> +int check_huge_non_mmapable(const char *filename, const int lineno, int fd,
-> +			    unsigned long size);
-> +
-> +unsigned long get_huge_def_pagesize(const char *filename, int lineno);
-> +
-> +unsigned int get_huge_total_pages(const char *filename, int lineno);
-> +
-> +unsigned int get_huge_free_pages(const char *filename, int lineno);
-> +
-> +long get_from_file(const char *filepath, char *pattern);
-> +
-> +#endif
-> 
+> On 07/11/2018 05:59 PM, kewal wrote:
+>>
+>> * madvise10.c :- Present the child process with zero-filled memory in
+>>   this range after a fork(2).
+>>
+>>   Test-Case 1 : madvise with 'MADV_WIPEONFORK'
+>>   Test-Case 2 : madvise with 'MADV_WIPEONFORK' as size 'ZERO'
+>>
+>> * madvise11.c:- The MADV_WIPEONFORK operation can be applied only to
+>>   private anonymous pages.
+>>
+>>   Test-Case 1 : mmap with 'MAP_SHARED | MAP_ANONYMOUS'
+>>   Test-Case 2 : mmap with 'MAP_PRIVATE'
+>>
+>> * madvise12.c:- Within the child created by fork(2), the MADV_WIPEONFORK
+>>   setting remains in place on the specified address range.
+>>
+>>   Test-Case 1: 'MADV_WIPEONFORK' on Grand child
+>>
+>> * madvise13.c:- MADV_KEEPONFORK Undo the effect of an earlier
+>> MADV_WIPEONFORK
+>>
+>>   Test-Case 1 : Undo 'MADV_WIPEONFORK' by 'MADV_KEEPONFORK'
+>
+> Hi,
+>
+> These tests seem to have lot of common code. We should simplify
+> that by a header/include or combining some of them together.
+>
+> I'm thinking:
+> - drop madvise11, errno tests can be added to existing madvise02
+> - combine the rest together, see my attached example
+>
+> Other comments are below/inline:
+>
+>>
+>> Signed-off-by: Subash Ganesan <subash@zilogic.com>
+>> Signed-off-by: Kewal Ukunde <kewal@zilogic.com>
+>> ---
+>>  runtest/syscalls                              |   4 +
+>
+> New tests should be added also to respective .gitignore
+>
+>>  testcases/kernel/syscalls/madvise/madvise10.c | 179
+>> ++++++++++++++++++++++++++
+>>  testcases/kernel/syscalls/madvise/madvise11.c | 132 +++++++++++++++++++
+>>  testcases/kernel/syscalls/madvise/madvise12.c | 171
+>> ++++++++++++++++++++++++
+>>  testcases/kernel/syscalls/madvise/madvise13.c | 162
+>> +++++++++++++++++++++++
+>>  5 files changed, 648 insertions(+)
+>>  create mode 100644 testcases/kernel/syscalls/madvise/madvise10.c
+>>  create mode 100644 testcases/kernel/syscalls/madvise/madvise11.c
+>>  create mode 100644 testcases/kernel/syscalls/madvise/madvise12.c
+>>  create mode 100644 testcases/kernel/syscalls/madvise/madvise13.c
+>>
+>> diff --git a/runtest/syscalls b/runtest/syscalls
+>> index a9afecf57..a95c47c3a 100644
+>> --- a/runtest/syscalls
+>> +++ b/runtest/syscalls
+>> @@ -773,6 +773,10 @@ madvise06 madvise06
+>>  madvise07 madvise07
+>>  madvise08 madvise08
+>>  madvise09 madvise09
+>> +madvise10 madvise10
+>> +madvise11 madvise11
+>> +madvise12 madvise12
+>> +madvise13 madvise13
+>>
+>>  newuname01 newuname01
+>>
+>> diff --git a/testcases/kernel/syscalls/madvise/madvise10.c
+>> b/testcases/kernel/syscalls/madvise/madvise10.c
+>> new file mode 100644
+>> index 000000000..1cf3097b0
+>> --- /dev/null
+>> +++ b/testcases/kernel/syscalls/madvise/madvise10.c
+>> @@ -0,0 +1,179 @@
+>> +// SPDX-License-Identifier: GPL-2.0 or later
+>> +/*
+>> + *  Copyright (c) Zilogic Systems Pvt. Ltd., 2007
+>
+> 2018
+>
+>> + *  Email : code@zilogic.com
+>> + *
+>> + * This program is free software;  you can redistribute it and/or
+>> modify
+>> + * it under the terms of the GNU General Public License as published by
+>> + * the Free Software Foundation; either version 2 of the License, or
+>> + * (at your option) any later version.
+>> + *
+>> + * This program is distributed in the hope that it will be useful,
+>> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+>> + * the GNU General Public License for more details.
+>> + */
+>> +
+>> +/*
+>> + * test cases for madvise(2) system call, advise value as
+>> "MADV_WIPEONFORK".
+>> + *
+>> + * DESCRIPTION :
+>> + * Present the child process with zero-filled memory in this
+>> + * range after a fork(2).
+>> + * The MADV_WIPEONFORK operation can be applied only to
+>> + * private anonymous pages.
+>> + *
+>> + * Test-Case 1 : madvise with "MADV_WIPEONFORK"
+>> + * flow :	Map memory area as private anonymous page.
+>> + *		Mark memory area as wipe-on-fork.
+>> + *		On fork, child process memory should be zeroed.
+>> + *
+>> + * Test-Case 2 : madvise with "MADV_WIPEONFORK" as size "ZERO"
+>> + * flow :	Map memory area as private anonymous page.
+>> + *		Mark memory area as wipe-on-fork, with length zero.
+>> + *		On fork, child process memory should be accessible.
+>> + **/
+>> +
+>> +#include <stdio.h>
+>> +#include <signal.h>
+>> +#include <sys/types.h>
+>> +#include <sys/stat.h>
+>> +#include <stdlib.h>
+>> +#include <fcntl.h>
+>> +#include <sys/mman.h>
+>> +#include <error.h>
+>> +#include <string.h>
+>> +#include <errno.h>
+>> +#include <unistd.h>
+>> +#include <sys/types.h>
+>> +#include <sys/wait.h>
+>> +#include <stdlib.h>
+>> +
+>> +#include "lapi/mmap.h"
+>> +#include "tst_test.h"
+>> +#include "tst_safe_macros.h"
+>> +
+>> +#define TEST_FILE "test_file.txt"
+>
+> Why do you need a file when you're mapping as ANONYMOUS?
+>
+>> +#define MAP_SIZE (4 * 1024)
+>> +
+>> +static int test_file_fd;
+>> +
+>> +static const struct test_case {
+>> +	int size;
+>> +	int advise;
+>> +	char *advise_name;
+>> +	int expect;
+>> +} tcases[] = {
+>> +	{.size = MAP_SIZE,
+>> +	 .advise = MADV_WIPEONFORK,
+>> +	 .advise_name = "MADV_WIPEONFORK",
+>> +	 .expect = 0},
+>> +
+>> +	{.size = 0,
+>> +	.advise = MADV_WIPEONFORK,
+>> +	.advise_name = "MADV_WIPEONFORK",
+>> +	.expect = 1}
+>> +};
+>> +
+>> +static void assert_equal(int status, const struct test_case *tc)
+>> +{
+>> +	if (status == tc->expect)
+>> +		tst_res(TPASS, "In child data %d : madvise(%s)",
+>> +				tc->expect, tc->advise_name);
+>> +	else
+>> +		tst_res(TFAIL, "In child data %d : madvise(%s)",
+>> +				tc->expect, tc->advise_name);
+>> +}
+>
+> Let's compare the whole area, not just first byte.
+>
+>> +
+>> +static void safe_wait_status(int *status)
+>> +{
+>> +	SAFE_WAIT(status);
+>> +
+>> +	if (!WIFEXITED(*status)) {
+>> +		if (WTERMSIG(*status) == SIGSEGV)
+>> +			tst_res(TFAIL, "Invalid access : SIGSEGV");
+>> +		else
+>> +			tst_res(TFAIL, "Abnormal termination");
+>> +	} else {
+>> +		*status = WEXITSTATUS(*status);
+>> +	}
+>> +}
+>
+> You can use tst_res(TPASS/TFAIL,...) in child processes. Then you
+> can avoid passing values over exit status and use tst_reap_children(),
+> which does the same check.
+>
+>> +
+>> +static void spawn_child(char *map_addr)
+>> +{
+>> +	pid_t pid;
+>> +
+>> +	pid = SAFE_FORK();
+>> +
+>> +	if (!pid)
+>> +		exit(*map_addr);
+>
+> As mentioned earlier, let's check entire area.
+>
+>> +}
+>> +
+>> +static int set_advice(char *map_addr, const struct test_case *tc)
+>> +{
+>> +	TEST(madvise(map_addr, tc->size, tc->advise));
+>> +
+>> +	if (TEST_RETURN == -1) {
+>> +		tst_res(TINFO, "failed  :madvise(%p, %d, %s)",
+>> +				map_addr, tc->size, tc->advise_name);
+>
+> Why not TFAIL|TTERRNO?
+>
+>> +		return 1;
+>> +	}
+>> +
+>> +	tst_res(TINFO, "success :madvise(%p, %d, %s)",
+>> +			map_addr, tc->size, tc->advise_name);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void mem_map(char **map_addr)
+>> +{
+>> +	*map_addr = SAFE_MMAP(NULL, MAP_SIZE,
+>> +			     PROT_READ | PROT_WRITE,
+>> +			     MAP_PRIVATE | MAP_ANON,
+>
+> MAP_ANON is deprecated, please use MAP_ANONYMOUS.
+>
+>> +			     test_file_fd, 0);
+>
+> What is the purpose of having this file?
+>
+>> +
+>> +	tst_res(TINFO, "mmap(NULL, %d, PROT_READ | PROT_WRITE, %s, %d, 0)",
+>> +		MAP_SIZE, "MAP_PRIVATE | MAP_ANON", test_file_fd);
+>> +}
+>> +
+>> +static void test_madvise(unsigned int test_nr)
+>> +{
+>> +	const struct test_case *tc = &tcases[test_nr];
+>> +	char *map_addr;
+>> +	int status;
+>> +
+>> +	mem_map(&map_addr);
+>> +	memset(map_addr, 1, MAP_SIZE);
+>> +
+>> +	if (set_advice(map_addr, tc)) {
+>> +		tst_res(TFAIL, "madvise failed");
+>
+> Please, print also errno code.
+>
+>> +	} else {
+>> +		spawn_child(map_addr);
+>> +		safe_wait_status(&status);
+>> +		assert_equal(status, tc);
+>> +	}
+>> +
+>> +	SAFE_MUNMAP(map_addr, MAP_SIZE);
+>> +}
+>> +
+>> +static void cleanup(void)
+>> +{
+>> +	SAFE_CLOSE(test_file_fd);
+>> +	SAFE_UNLINK(TEST_FILE);
+>> +}
+>> +
+>> +static void setup(void)
+>> +{
+>> +	test_file_fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT, 0777);
+>> +}
+>> +
+>> +static struct tst_test test = {
+>> +	.tcnt = ARRAY_SIZE(tcases),
+>> +	.needs_root = 1,
+>
+> Is root really needed?
+>
+>> +	.forks_child = 1,
+>> +	.needs_tmpdir = 1,
+>> +	.test = test_madvise,
+>> +	.setup = setup,
+>> +	.cleanup = cleanup,
+>> +	.min_kver = "4.14",
+>> +};
+>
+> Similar comments apply to other tests, which share code above.
+>
+> Regards,
+> Jan
+>
+>
+
 
