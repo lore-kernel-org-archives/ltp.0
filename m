@@ -1,38 +1,49 @@
 From: =?unknown-8bit?q?Myl=C3=A8ne?= Josserand <mylene.josserand@bootlin.com>
-Date: Fri, 13 Jul 2018 15:03:56 +0200
-Subject: [LTP] How to convert TFAIL into TCONF for netns_*
-Message-ID: <20180713150356.025d1b75@dell-desktop.home>
+Date: Fri, 13 Jul 2018 15:21:37 +0200
+Subject: [LTP] [PATCH] testcases: cve-2016-7117: decrease the number of
+	attempts
+Message-ID: <20180713132137.22059-1-mylene.josserand@bootlin.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hello everyone,
+If the system is slow, it would take too much time to run the test.
+Decrease the number of attempts to be able to run this test
+in a reasonable time.
 
-While running containers' tests we got failures on all netns_xxx
-tests with different errors but the main one is:
+Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
+---
+Hello,
 
-unable to create veth pair devices
+For this test, I tried it with a LTP_TIMEOUT_MUL variable equals to 10.
+The test runs over 50min and still fails because of a timeout.
+It is certainly because my system is slow so I thought we could reduce
+the number of attempts.
 
-It is because we currently do not have CONFIG_VETH enabled.
-There are also some tests failing because we again do not have the
-correct configuration such as CONFIG_TUN for netns_link tests:
-https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/cont=
-ainers/netns/netns_netlink.c#L142
-
-We would like to convert all these TFAIL tests into TCONF but we
-are not sure how to implement that in a proper way. The readme of this
-test indicates the kernel's configurations needed but we would like
-to test the kernel that we currently have without any modification.
-
-What do you think about that?
-What should we do to convert these TBROK into TCONF?
+Let me know if you have a better idea on how to implement that.
 
 Thank you in advance,
 Best regards,
+Mylène
 
---=20
-Myl=C3=A8ne Josserand, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+ testcases/cve/cve-2016-7117.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
+index 3cb7efcdf..9dabef90f 100644
+--- a/testcases/cve/cve-2016-7117.c
++++ b/testcases/cve/cve-2016-7117.c
+@@ -62,7 +62,7 @@
+ 
+ #define MSG "abcdefghijklmnop"
+ #define RECV_TIMEOUT 1
+-#define ATTEMPTS 0x1FFFFF
++#define ATTEMPTS 0x1FFFF
+ 
+ #ifndef HAVE_STRUCT_MMSGHDR
+ struct mmsghdr {
+-- 
+2.11.0
+
