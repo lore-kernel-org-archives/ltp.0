@@ -1,9 +1,9 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 16 Jul 2018 11:07:29 -0400 (EDT)
-Subject: [LTP] [PATCH] Rename TEST_ERRNO and TEST_RETURN for new test lib
-In-Reply-To: <20180716135617.7782-1-clanig@suse.com>
-References: <20180716135617.7782-1-clanig@suse.com>
-Message-ID: <1814001310.33298567.1531753649985.JavaMail.zimbra@redhat.com>
+Date: Mon, 16 Jul 2018 11:52:44 -0400 (EDT)
+Subject: [LTP] [PATCH 0/4] Add dependency checking
+In-Reply-To: <20180711122925.24278-1-punit.agrawal@arm.com>
+References: <20180711122925.24278-1-punit.agrawal@arm.com>
+Message-ID: <769723769.33318962.1531756364899.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,95 +12,36 @@ To: ltp@lists.linux.it
 
 
 
-
 ----- Original Message -----
-> This is just a proposal! to renaming the mentioned variables as requested in
-> https://github.com/linux-test-project/ltp/issues/336.
+> Hi,
 > 
-> Renaming has been done with these commands:
-> egrep -RlZ 'include "tst_test.h"' --include=*.c --include=*.h | xargs -0 -l
-> sed
-> 	-i -e '/[\W\s]*TEST_ERRNO[\W\s]*/s/TEST_ERRNO/TST_ERR/g'
+> While investigating failures from nightly runs, I came across some
+> tests that don't explicitly check for dependencies.
 > 
-> egrep -RlZ 'include "tst_test.h"' --include=*.c --include=*.h | xargs -0 -l
-> sed
-> 	-i -e '/[\W\s]*TEST_RETURN[\W\s]*/s/TEST_RETURN/TST_RET/g'
+> Add appropriate check for dependencies so the tests are reported as an
+> issue with the configuration rather than a test failure. These set of
+> patches transitions ~50-60 tests from reporting failures to a
+> configuration issue.
 > 
-> They basically express to exchange all occurrences of TEST_RETURN with
-> TST_RET
+> Thanks,
+> Punit
+> 
 
 Hi,
 
-I added question to github issue, whether TEST() macro should be renamed.
+Pushed with the exception of patch 2.
 
-> (as an example), in all files with .c or .h as suffix that include
-> tst_test.h,
-> when the processed line contains TEST_RETURN without pre- or suffixes that
-> match
-> word characters (Aa-Zz) including _, but non-word characters(+, [, ...)
-> including whitespace.
-> 
-> I have added a temporary preprocessor directive to include/tst_test.h that
-> renames both variables again to their old names because otherwise they are
-> con-
-> flicting with the old variables and have cleaned some non-tab signs that gave
-> style errors in few lines.
+Switching quota_remount_test01.sh away from apicmds will
+likely need more changes, e.g. it should use at least 
+tst_exit().
 
-I lost you here - I don't see conflict between new and old variables.
+If we take the effort to port this test to shell library,
+it should be "tst_test.h" one.
 
-> 
-> Signed-off-by: Christian Lanig <clanig@suse.com>
-> ---
-> 
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index 7caf2e174..56f0e3f54 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -195,6 +195,13 @@ void tst_reinit(void);
->  extern long TEST_RETURN;
->  extern int TEST_ERRNO;
-
-So what if we changed this to new variables (TST_RET and TST_ERR),
-add definitions to lib/tst_test.c
-
->  
-> +/*
-> + * This is a temporary workaround. Remove this and rename the variables in
-> the
-> + * definition above after everything has been migrated to the new test
-> library.
-> + */
-> +#define TST_RET TEST_RETURN
-> +#define TST_ERR TEST_ERRNO
-> +
-
-then this can go away and because TEST_RETURN and TEST_ERRNO
-will be undefined in newlib tests, you'll get compilation
-errors for all instances you missed:
-
-futex_wait05
-pselect01
-open08
-mq_timedsend01
-clock_nanosleep02
-poll02
-madvise10
-epoll_wait02
-memfd_create02
-mq_timedreceive01
-testcases/kernel/mem/lib/mem.c
-testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
-testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
-testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
-testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
-testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c
-
->  extern void *TST_RET_PTR;
->  
->  #define TESTPTR(SCALL) \
-
-TESTPTR needs changing as well, to use TST_ERR.
+If you're up to rewriting test for tst_test.h, that would
+be preffered. Otherwise, I rather use some shell check
+and avoid including "test.h" for the sole purpose of having
+tst_check_cmds.
 
 Regards,
 Jan
