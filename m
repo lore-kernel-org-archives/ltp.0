@@ -1,77 +1,62 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 17 Jul 2018 10:35:09 +0200
-Subject: [LTP] [PATCH] open|creat: skip S_ISGID check on files created by
-	non-group members
-Message-ID: <3d0dd8e851d8db6bae222ca5946419b75df35ba5.1531816427.git.jstancek@redhat.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date: Tue, 17 Jul 2018 11:41:07 +0200
+Subject: [LTP] [PATCH 4.17 00/67] 4.17.7-stable review
+In-Reply-To: <2078122506.33400530.1531776704409.JavaMail.zimbra@redhat.com>
+References: <20180716073443.294323458@linuxfoundation.org>
+ <CA+G9fYtVSorLiG5cZdqtipy4XO1zr1HUZ4gH7tf_07m-B4HS1w@mail.gmail.com>
+ <2078122506.33400530.1531776704409.JavaMail.zimbra@redhat.com>
+Message-ID: <20180717094107.GB25341@kroah.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-0fa3ecd87848 ("Fix up non-directory creation in SGID directories")
-fixes problem described in CVE-2018-13405. This commit is getting
-backported to older streams as well.
+On Mon, Jul 16, 2018 at 05:31:44PM -0400, Jan Stancek wrote:
+>=20
+>=20
+> ----- Original Message -----
+> > On 16 July 2018 at 13:04, Greg Kroah-Hartman <gregkh@linuxfoundation.or=
+g>
+> > wrote:
+> > > This is the start of the stable review cycle for the 4.17.7 release.
+> > > There are 67 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, plea=
+se
+> > > let me know.
+> > >
+> > > Responses should be made by Wed Jul 18 07:34:11 UTC 2018.
+> > > Anything received after that time might be too late.
+> > >
+> > > The whole patch series can be found in one patch at:
+> > >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/pa=
+tch-4.17.7-rc1.gz
+> > > or in the git tree and branch at:
+> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-st=
+able-rc.git
+> > >         linux-4.17.y
+> > > and the diffstat can be found below.
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
+> >=20
+> >=20
+> > Results from Linaro=E2=80=99s test farm.
+> > Regressions detected.
+> >=20
+> > LTP syscalls failed test cases on all devices arm64, arm32 and x86_64,
+> >  - creat08
+> >  - open10
+>=20
+> This is consequence of:
+>   0fa3ecd87848 ("Fix up non-directory creation in SGID directories")
+>=20
+> So likely cause of action here will be modifying both tests to not
+> expect S_ISGID in scenario described in commit above.
 
-This patch removes S_ISGID check for files created by non-group members
-in LTP tests creat08 and open10.
+Yes, ltp should be fixed up here.
 
-Once 0fa3ecd87848 will be in non-rc kernel, we could add a new test
-for this CVE that would be limited to 4.18+ kernels.
+thanks,
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/creat/creat08.c | 13 ++++++-------
- testcases/kernel/syscalls/open/open10.c   | 12 +++++-------
- 2 files changed, 11 insertions(+), 14 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/creat/creat08.c b/testcases/kernel/syscalls/creat/creat08.c
-index 50f2b39931b8..d22558ac3c53 100644
---- a/testcases/kernel/syscalls/creat/creat08.c
-+++ b/testcases/kernel/syscalls/creat/creat08.c
-@@ -361,13 +361,12 @@ int main(int ac, char **av)
- 			local_flag = FAILED;
- 		}
- 
--		/* Verify modes */
--		if (!(buf.st_mode & S_ISGID)) {
--			tst_resm(TFAIL,
--				 "%s: Incorrect modes, setgid bit should be set",
--				 setgid_B);
--			local_flag = FAILED;
--		}
-+		/*
-+		 * Skip S_ISGID check
-+		 * 0fa3ecd87848 ("Fix up non-directory creation in SGID directories")
-+		 * clears S_ISGID for files created by non-group members
-+		 */
-+
- 		close(fd);
- 
- 		if (local_flag == PASSED) {
-diff --git a/testcases/kernel/syscalls/open/open10.c b/testcases/kernel/syscalls/open/open10.c
-index 613f2288fbde..14feec9e127e 100644
---- a/testcases/kernel/syscalls/open/open10.c
-+++ b/testcases/kernel/syscalls/open/open10.c
-@@ -345,13 +345,11 @@ int main(int ac, char *av[])
- 			local_flag = FAILED;
- 		}
- 
--		/* Verify modes */
--		if (!(buf.st_mode & S_ISGID)) {
--			tst_resm(TFAIL,
--				 "%s: Incorrect modes, setgid bit not set",
--				 setgid_B);
--			local_flag = FAILED;
--		}
-+		/*
-+		 * Skip S_ISGID check
-+		 * 0fa3ecd87848 ("Fix up non-directory creation in SGID directories")
-+		 * clears S_ISGID for files created by non-group members
-+		 */
- 
- 		if (local_flag == PASSED) {
- 			tst_resm(TPASS, "Test passed in block2.");
--- 
-1.8.3.1
-
+greg k-h
