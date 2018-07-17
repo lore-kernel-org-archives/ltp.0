@@ -1,39 +1,77 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 17 Jul 2018 04:13:03 -0400 (EDT)
-Subject: [LTP] [PATCH] filecaps: Respect TMPDIR environment variable
-In-Reply-To: <20180711210336.186949-1-astrachan@google.com>
-References: <93480014.31836255.1531299278505.JavaMail.zimbra@redhat.com>
- <20180711210336.186949-1-astrachan@google.com>
-Message-ID: <1930824158.33466679.1531815183709.JavaMail.zimbra@redhat.com>
+Date: Tue, 17 Jul 2018 10:35:09 +0200
+Subject: [LTP] [PATCH] open|creat: skip S_ISGID check on files created by
+	non-group members
+Message-ID: <3d0dd8e851d8db6bae222ca5946419b75df35ba5.1531816427.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+0fa3ecd87848 ("Fix up non-directory creation in SGID directories")
+fixes problem described in CVE-2018-13405. This commit is getting
+backported to older streams as well.
 
+This patch removes S_ISGID check for files created by non-group members
+in LTP tests creat08 and open10.
 
------ Original Message -----
-> The filecapstest.sh wrapper script already allowed the /tmp directory to
-> be overridden with the TMP environment variable, however doing so had
-> no effect on verify_caps_exec because it created its own version of this
-> fifo at a hardcoded location under /tmp.
-> 
-> Change the wrapper script to check for TMPDIR instead of TMP, to match
-> the value exported by runltp. Export FIFOFILE, to be used by the test
-> binaries invoked by the script.
-> 
-> Change the print_caps and verify_caps_exec to read FIFOFILE from the
-> environment (if it exists). Otherwise, TMPDIR will be read from the
-> environment and used to construct the path to the caps_fifo file.
-> 
-> Signed-off-by: Alistair Strachan <astrachan@google.com>
+Once 0fa3ecd87848 will be in non-rc kernel, we could add a new test
+for this CVE that would be limited to 4.18+ kernels.
 
-I moved get_caps_fifo() to common header, changed it to use
-getenv() ptr directly when possible and pushed.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/creat/creat08.c | 13 ++++++-------
+ testcases/kernel/syscalls/open/open10.c   | 12 +++++-------
+ 2 files changed, 11 insertions(+), 14 deletions(-)
 
-Thanks,
-Jan
-
-
+diff --git a/testcases/kernel/syscalls/creat/creat08.c b/testcases/kernel/syscalls/creat/creat08.c
+index 50f2b39931b8..d22558ac3c53 100644
+--- a/testcases/kernel/syscalls/creat/creat08.c
++++ b/testcases/kernel/syscalls/creat/creat08.c
+@@ -361,13 +361,12 @@ int main(int ac, char **av)
+ 			local_flag = FAILED;
+ 		}
+ 
+-		/* Verify modes */
+-		if (!(buf.st_mode & S_ISGID)) {
+-			tst_resm(TFAIL,
+-				 "%s: Incorrect modes, setgid bit should be set",
+-				 setgid_B);
+-			local_flag = FAILED;
+-		}
++		/*
++		 * Skip S_ISGID check
++		 * 0fa3ecd87848 ("Fix up non-directory creation in SGID directories")
++		 * clears S_ISGID for files created by non-group members
++		 */
++
+ 		close(fd);
+ 
+ 		if (local_flag == PASSED) {
+diff --git a/testcases/kernel/syscalls/open/open10.c b/testcases/kernel/syscalls/open/open10.c
+index 613f2288fbde..14feec9e127e 100644
+--- a/testcases/kernel/syscalls/open/open10.c
++++ b/testcases/kernel/syscalls/open/open10.c
+@@ -345,13 +345,11 @@ int main(int ac, char *av[])
+ 			local_flag = FAILED;
+ 		}
+ 
+-		/* Verify modes */
+-		if (!(buf.st_mode & S_ISGID)) {
+-			tst_resm(TFAIL,
+-				 "%s: Incorrect modes, setgid bit not set",
+-				 setgid_B);
+-			local_flag = FAILED;
+-		}
++		/*
++		 * Skip S_ISGID check
++		 * 0fa3ecd87848 ("Fix up non-directory creation in SGID directories")
++		 * clears S_ISGID for files created by non-group members
++		 */
+ 
+ 		if (local_flag == PASSED) {
+ 			tst_resm(TPASS, "Test passed in block2.");
+-- 
+1.8.3.1
 
