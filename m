@@ -1,62 +1,42 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date: Tue, 17 Jul 2018 11:41:07 +0200
-Subject: [LTP] [PATCH 4.17 00/67] 4.17.7-stable review
-In-Reply-To: <2078122506.33400530.1531776704409.JavaMail.zimbra@redhat.com>
-References: <20180716073443.294323458@linuxfoundation.org>
- <CA+G9fYtVSorLiG5cZdqtipy4XO1zr1HUZ4gH7tf_07m-B4HS1w@mail.gmail.com>
- <2078122506.33400530.1531776704409.JavaMail.zimbra@redhat.com>
-Message-ID: <20180717094107.GB25341@kroah.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Tue, 17 Jul 2018 17:41:21 +0800
+Subject: [LTP] Question about Cpus_allowed_list
+Message-ID: <5B4DB9C1.1040209@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Jul 16, 2018 at 05:31:44PM -0400, Jan Stancek wrote:
->=20
->=20
-> ----- Original Message -----
-> > On 16 July 2018 at 13:04, Greg Kroah-Hartman <gregkh@linuxfoundation.or=
-g>
-> > wrote:
-> > > This is the start of the stable review cycle for the 4.17.7 release.
-> > > There are 67 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, plea=
-se
-> > > let me know.
-> > >
-> > > Responses should be made by Wed Jul 18 07:34:11 UTC 2018.
-> > > Anything received after that time might be too late.
-> > >
-> > > The whole patch series can be found in one patch at:
-> > >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/pa=
-tch-4.17.7-rc1.gz
-> > > or in the git tree and branch at:
-> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-st=
-able-rc.git
-> > >         linux-4.17.y
-> > > and the diffstat can be found below.
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> >=20
-> >=20
-> > Results from Linaro=E2=80=99s test farm.
-> > Regressions detected.
-> >=20
-> > LTP syscalls failed test cases on all devices arm64, arm32 and x86_64,
-> >  - creat08
-> >  - open10
->=20
-> This is consequence of:
->   0fa3ecd87848 ("Fix up non-directory creation in SGID directories")
->=20
-> So likely cause of action here will be modifying both tests to not
-> expect S_ISGID in scenario described in commit above.
+Hi,
 
-Yes, ltp should be fixed up here.
+With Intel(R) Core(TM)2 Duo CPU E7500, running cpuset_hotplug_test.sh
+always got the following error:
+-------------------------------------------------------------------------------------
+cpuset_hotplug 1 TFAIL: task's allowed list isn't expected.(Result: 0-3,
+Expect: 0-1)
+-------------------------------------------------------------------------------------
 
-thanks,
+No matter what is the number of cpu processors from /proc/cpuinfo
+(specify 2 or 1 by offlining cpu),
+the Cpus_allowed_list from /proc/<pid>/status is always 0-3.
 
-greg k-h
+Simple steps to reproduce this issue:
+# /bin/cat /dev/zero > /dev/null 2>&1 &
+[1] 15079
+# nproc (or cat /proc/cpuinfo | grep processor | wc -l)
+2
+# cat /proc/15079/status | grep Cpus_allowed_list
+Cpus_allowed_list: 0-3
+
+We also tested cpuset_hotplug_test.sh with Core(TM) i3 CPU and Core(TM)
+i5 CPU, it showed the
+same Cpus_allowed_list as the number of cpu processors as expected.
+
+Is this a known issue on Core(TM)2 Duo CPU, should we use taskset
+command to change Cpus_allowed_list?
+
+Thanks,
+Xiao Yang
+
+
