@@ -1,69 +1,64 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 18 Jul 2018 14:46:38 +0200
-Subject: [LTP] [PATCH] zram/zram_lib.sh: Check fielsystem support more
- throughly
-In-Reply-To: <1531299325-27779-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1531299325-27779-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20180718124638.GD7117@rei>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 18 Jul 2018 09:05:32 -0400 (EDT)
+Subject: [LTP] How to convert TFAIL into TCONF for netns_*
+In-Reply-To: <20180713150356.025d1b75@dell-desktop.home>
+References: <20180713150356.025d1b75@dell-desktop.home>
+Message-ID: <1467848633.34028528.1531919132241.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-Hi!
-> +zram_check_fs_support()
-> +{
-> +	tst_check_cmds which modprobe
-> +	local filesystem=$1
-> +
-> +	# Check if mkfs command supports fs
-> +	which mkfs.$filesystem > /dev/null 2>&1 || return 1
-> +
-> +	# Check if kernel supports fs
-> +	if ! grep -qw $filesystem /proc/filesystems; then
 
-Actually grepping /proc/filesystems is not enough to figure out if
-filesystem is supported or not, since for example ext2 and ext3 are
-handled with ext4 these days.
 
-But happily we do already have all the code in tst_supported_fs_types.c
-in the test library, we all that is needed to to do is to create a C
-helper on the top of tst_get_supported_fs_types() function that returns
-array of supported filesystems. So we can write a small helper binary on
-the top of that.
+----- Original Message -----
+> Hello everyone,
+>=20
+> While running containers' tests we got failures on all netns_xxx
+> tests with different errors but the main one is:
+>=20
+> unable to create veth pair devices
 
-I would be for adding a tst_supported_fs binary into the testcases/lib/
-that would, without any parameter print the list of supported
-filesystems into the stdout. and if passed a fs type as a parameter
-would use return value to indicate if the filesystem is supported or
-not.
+Checking the output of 'ip' could be one way:
 
-> +		modprobe $filesystem > /dev/null 2>&1 || return 1
-> +	fi
-> +}
-> +
->  zram_makefs()
->  {
-> -	tst_check_cmds mkfs which
-> +	tst_check_cmds mkfs
->  	local i=0
->  	for fs in $zram_filesystems; do
->  		# if requested fs not supported default it to ext2
-> -		which mkfs.$fs > /dev/null 2>&1 || fs=ext2
-> +		zram_check_fs_support $fs || fs=ext2
->  
->  		tst_resm TINFO "make $fs filesystem on /dev/zram$i"
->  		mkfs.$fs /dev/zram$i > err.log 2>&1
-> -- 
-> 1.8.3.1
-> 
-> 
-> 
-> 
-> -- 
+# ip link add ve_A type veth peer name ve_B
+RTNETLINK answers: Operation not supported
+
+If there's "Operation not supported" -> TCONF, else TBROK.
+
+>=20
+> It is because we currently do not have CONFIG_VETH enabled.
+> There are also some tests failing because we again do not have the
+> correct configuration such as CONFIG_TUN for netns_link tests:
+> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/co=
+ntainers/netns/netns_netlink.c#L142
+
+Similar here, but check for ENODEV.
+
+Other than that I can only think of grepping /proc/kallsyms,
+which could break if symbols change name.
+
+Regards,
+Jan
+
+>=20
+> We would like to convert all these TFAIL tests into TCONF but we
+> are not sure how to implement that in a proper way. The readme of this
+> test indicates the kernel's configurations needed but we would like
+> to test the kernel that we currently have without any modification.
+>=20
+> What do you think about that?
+> What should we do to convert these TBROK into TCONF?
+>=20
+> Thank you in advance,
+> Best regards,
+>=20
+> --
+> Myl=C3=A8ne Josserand, Bootlin (formerly Free Electrons)
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
+>=20
+> --
 > Mailing list info: https://lists.linux.it/listinfo/ltp
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+>=20
