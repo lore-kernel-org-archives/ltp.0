@@ -1,930 +1,170 @@
-From: vishnu <vishnu@zilogic.com>
-Date: Thu, 19 Jul 2018 06:35:27 -0000
-Subject: [LTP] [PATCH v1] Test for memfd_create() syscall
-	withMFD_HUGETLBflag.
-References: <20180711135032.8669-1-vishnu@zilogic.com>
- <226005706.32325461.1531402431452.JavaMail.zimbra@redhat.com>
-Message-ID: <5856b631609539bfaf6d4e804197bdc7.squirrel@pike.zilogic.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 19 Jul 2018 15:31:09 +0800
+Subject: [LTP] [PATCH v2 1/2] lib: Factor out is_supported() && Add
+	tst_supported_fs for shell
+In-Reply-To: <20180718124638.GD7117@rei>
+References: <20180718124638.GD7117@rei>
+Message-ID: <1531985470-25203-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+1) Factor out is_supported() and rename it as tst_fs_is_supported(),
+   so that some tests can check a specified filesystem by it.
 
-Hi,
+2) Shell tests can check a specified filesystem or all supported
+   fielsystems by tst_supported_fs binary.
 
-We will make the changes and update it in the next patch.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ include/tst_fs.h                 |  8 ++++++
+ lib/tst_supported_fs_types.c     |  6 ++--
+ testcases/lib/Makefile           |  2 +-
+ testcases/lib/tst_supported_fs.c | 61 ++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 73 insertions(+), 4 deletions(-)
+ create mode 100644 testcases/lib/tst_supported_fs.c
 
+diff --git a/include/tst_fs.h b/include/tst_fs.h
+index 73916a6..599f28f 100644
+--- a/include/tst_fs.h
++++ b/include/tst_fs.h
+@@ -49,6 +49,8 @@ enum {
+ 	TST_GB = 1073741824,
+ };
+ 
++extern const char *const fs_type_whitelist[];
++
+ /*
+  * @path: path is the pathname of any file within the mounted file system
+  * @mult: mult should be TST_KB, TST_MB or TST_GB
+@@ -147,6 +149,12 @@ int tst_get_path(const char *prog_name, char *buf, size_t buf_len);
+ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
+ 
+ /*
++ * Return 1 if a specified fiilsystem is supported
++ * Return 0 if a specified fiilsystem isn't supported
++ */
++int tst_fs_is_supported(const char *fs_type);
++
++/*
+  * Returns NULL-terminated array of kernel-supported filesystems.
+  */
+ const char **tst_get_supported_fs_types(void);
+diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+index a23b1ed..c7123b2 100644
+--- a/lib/tst_supported_fs_types.c
++++ b/lib/tst_supported_fs_types.c
+@@ -25,7 +25,7 @@
+ #include "tst_test.h"
+ #include "tst_fs.h"
+ 
+-static const char *const fs_type_whitelist[] = {
++const char *const fs_type_whitelist[] = {
+ 	"ext2",
+ 	"ext3",
+ 	"ext4",
+@@ -100,7 +100,7 @@ static int has_kernel_support(const char *fs_type)
+ 	return 1;
+ }
+ 
+-static int is_supported(const char *fs_type)
++int tst_fs_is_supported(const char *fs_type)
+ {
+ 	return has_kernel_support(fs_type) && has_mkfs(fs_type);
+ }
+@@ -110,7 +110,7 @@ const char **tst_get_supported_fs_types(void)
+ 	unsigned int i, j = 0;
+ 
+ 	for (i = 0; fs_type_whitelist[i]; i++) {
+-		if (is_supported(fs_type_whitelist[i]))
++		if (tst_fs_is_supported(fs_type_whitelist[i]))
+ 			fs_types[j++] = fs_type_whitelist[i];
+ 	}
+ 
+diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
+index 398150a..14352d5 100644
+--- a/testcases/lib/Makefile
++++ b/testcases/lib/Makefile
+@@ -26,7 +26,7 @@ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ INSTALL_TARGETS		:= *.sh
+ 
+-MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
++MAKE_TARGETS		:= tst_supported_fs tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
+ 			   tst_device tst_net_iface_prefix tst_net_ip_prefix tst_net_vars
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/lib/tst_supported_fs.c b/testcases/lib/tst_supported_fs.c
+new file mode 100644
+index 0000000..df9ea48
+--- /dev/null
++++ b/testcases/lib/tst_supported_fs.c
+@@ -0,0 +1,61 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
++ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++ */
++
++#include <errno.h>
++#include <stdio.h>
++#include <string.h>
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++#include "tst_fs.h"
++
++static void usage(void)
++{
++	printf("Usage: tst_supported_fs [fs_type]\n");
++	printf("   If a specified fs_type is supported, return 1\n");
++	printf("   If a specified fs_type isn't supported, return 0\n");
++	printf("   If a fs_type isn't specified, print the list of supported filesystems\n");
++	printf("   fs_type - a specified filesystem type\n");
++}
++
++int main(int argc, char *argv[])
++{
++	const char *const *filesystems;
++	int i, valid_flag = 0;
++
++	if (argc > 2) {
++		printf("Can't specify multiple fs_type\n");
++		usage();
++		return 2;
++	}
++
++	if (argv[1] && !strcmp(argv[1], "-h")) {
++		usage();
++		return 2;
++	}
++
++	if (argv[1]) {
++		for (i = 0; fs_type_whitelist[i]; i++) {
++			if (!strcmp(argv[1], fs_type_whitelist[i])) {
++				valid_flag = 1;
++				break;
++			}
++		}
++
++		if (valid_flag)
++			return tst_fs_is_supported(argv[1]);
++
++		printf("An invalid specified fs_type is %s\n", argv[1]);
++		return 2;
++	}
++
++	printf("List of supported fs_type:\n");
++	filesystems = tst_get_supported_fs_types();
++	for (i = 0; filesystems[i]; i++)
++		printf("%s\n", filesystems[i]);
++
++	return 2;
++}
+-- 
+1.8.3.1
 
->> +void *check_huge_mmapable(const char *filename, const int lineno,
->> +			  int fd, unsigned long size)
->
-> Quite similar to check_mmap(). Any chance we can re-use/tweak
-> existing function?
-
->> +int check_huge_non_mmapable(const char *filename, const int lineno,
->> +			    int fd, unsigned long size)
->
-> Can we tweak check_mmap_fail() to work for both cases?
-
-We found like check_mmap() and check_mmap_fail() are two independent tests
-rather than being helper functions (ie; On success -> TPASS, we need TINFO
-instead).
-
-We tried modifying check_mmap() and check_mmap_fail(), but it induces
-additional argument overhead to distinguish calls between
-{memfd_create01, memfd_create02} and {memfd_create03, memfd_create04}.
-
-So we think it will be better to keep check_huge_mmapable() and
-check_huge_non_mmapable().
-
-Thanks and Regards,
-Vishnu K
-
-
-
-
-
-
-
-
-
->
-> On 07/11/2018 03:50 PM, Vishnu K wrote:
->>
->> memfd_create03.c: Tests the syscall for the flag MFD_HUGETLB.
->>
->> memfd_create04.c: Tests the syscall for the flags MFD_HUGE_2MB,
->> MFD_HUGE_1GB,... used in conjunction with MFD_HUGETLB flag.
->>
->> memfd_create_hugetlb.c: Contains helper functions for memfd_create03.c
->> and memfd_create04.c.
->>
->> Signed-off-by: Sikkandar Sulaiman A <sikkandarsulaiman@zilogic.com>
->> Signed-off-by: Vishnu K <vishnu@zilogic.com>
->
-> Hi,
->
-> I'm thinking whether some of these tests should be in this location,
-> since some are focused more on behavior of hugepages than
-> memfd_create interface.
->
-> It would be great if we can reuse/tweak existing memfd_create_common.c
-> functions to work for new tests as well. Some of the functions
-> in memfd_create_hugetlb.c are doing almost exactly same thing.
->
->> ---
->>  runtest/syscalls                              |   2 +
->
-> needs also update to corresponding .gitignore.
->
->>  .../kernel/syscalls/memfd_create/Makefile     |   4 +-
->>  .../syscalls/memfd_create/memfd_create03.c    | 151 +++++++++++
->>  .../syscalls/memfd_create/memfd_create04.c    | 139 ++++++++++
->>  .../memfd_create/memfd_create_hugetlb.c       | 244 ++++++++++++++++++
->>  .../memfd_create/memfd_create_hugetlb.h       |  86 ++++++
->>  6 files changed, 624 insertions(+), 2 deletions(-)
->>  create mode 100644
->> testcases/kernel/syscalls/memfd_create/memfd_create03.c
->>  create mode 100644
->> testcases/kernel/syscalls/memfd_create/memfd_create04.c
->>  create mode 100644
->> testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.c
->>  create mode 100644
->> testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.h
->>
->> diff --git a/runtest/syscalls b/runtest/syscalls
->> index a9afecf57..c310b0106 100644
->> --- a/runtest/syscalls
->> +++ b/runtest/syscalls
->> @@ -1479,5 +1479,7 @@ futex_wait_bitset02 futex_wait_bitset02
->>
->>  memfd_create01 memfd_create01
->>  memfd_create02 memfd_create02
->> +memfd_create03 memfd_create03
->> +memfd_create04 memfd_create04
->>
->>  copy_file_range01 copy_file_range01
->> diff --git a/testcases/kernel/syscalls/memfd_create/Makefile
->> b/testcases/kernel/syscalls/memfd_create/Makefile
->> index f23b8732c..ec83a5c40 100644
->> --- a/testcases/kernel/syscalls/memfd_create/Makefile
->> +++ b/testcases/kernel/syscalls/memfd_create/Makefile
->> @@ -16,8 +16,8 @@ top_srcdir		?= ../../../..
->>
->>  include $(top_srcdir)/include/mk/testcases.mk
->>
->> -FILTER_OUT_MAKE_TARGETS         := memfd_create_common
->> +FILTER_OUT_MAKE_TARGETS         := memfd_create_common
->> memfd_create_hugetlb
->>
->>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
->>
->> -$(MAKE_TARGETS): %: %.o memfd_create_common.o
->> +$(MAKE_TARGETS): %: %.o memfd_create_common.o memfd_create_hugetlb.o
->> diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create03.c
->> b/testcases/kernel/syscalls/memfd_create/memfd_create03.c
->> new file mode 100644
->> index 000000000..8120ca6c8
->> --- /dev/null
->> +++ b/testcases/kernel/syscalls/memfd_create/memfd_create03.c
->> @@ -0,0 +1,151 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +
->> +/*
->> + *  Copyright (c) Zilogic Systems Pvt. Ltd., 2007
->
-> 2018
->
->> + *  Email: code@zilogic.com
->> + *
->> + * This program is free software;  you can redistribute it and/or
->> modify
->> + * it under the terms of the GNU General Public License as published by
->> + * the Free Software Foundation; either version 2 of the License, or
->> + * (at your option) any later version.
->> + *
->> + * This program is distributed in the hope that it will be useful,
->> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
->> + * the GNU General Public License for more details.
->> + */
->> +
->> +/*
->> + * Test: Validating memfd_create() with MFD_HUGETLB flag.
->> + *
->> + * Test case 1: Write protect test
->> + *		Hugepages are write protected. Any writes to
->> + *		the file should return EINVAL error.
->> + *
->> + * Test case 2: Hugepage size test
->> + *		Default hugepage sized pages are created with
->> + *		MFD_HUGETLB flag. Any attempt to unmap memory-mapped
->> + *		hugepages with an unmapping length less than
->> + *		hugepage size should return EINVAL error.
->> + *
->> + * Test case 3: Number of hugepages test
->> + *		Number of hugepages currently available to use should be
->> + *		atmost total number of allowed hugepages. Memory-mapping
->> + *		more than allowed hugepages should return ENOMEM error.
->> + */
->> +
->> +#define _GNU_SOURCE
->> +
->> +#include "tst_test.h"
->> +#include "memfd_create_common.h"
->> +#include "memfd_create_hugetlb.h"
->> +
->> +#include <stdio.h>
->> +
->> +#define MEMINFO_PATH "/proc/meminfo"
->> +#define HUGEPAGES_COUNT_STR "4"
->> +
->> +#ifndef MFD_HUGETLB
->> +#define MFD_HUGETLB 0x0004U
->> +#endif
->
-> This should go into include/lapi
->
->> +
->> +static void test_write_protect(int fd)
->> +{
->> +	if (CHECK_HUGE_NON_WRITEABLE(fd) == 0)
->> +		tst_res(TPASS, "write call failed as expected");
->> +	else
->> +		tst_res(TFAIL, "write call passed unexpectedly");
->> +}
->> +
->> +static void test_def_pagesize(int fd)
->> +{
->> +	int ret;
->> +	unsigned int hps;
->> +	void *mem;
->> +
->> +	hps = GET_HUGE_DEF_PAGESIZE();
->> +	mem = CHECK_HUGE_MMAPABLE(fd, hps);
->> +	ret = CHECK_HUGE_PAGESIZE(mem, hps);
->> +	if (ret == 0)
->> +		tst_res(TPASS, "File created in def pagesize %dkB", hps/1024);
->> +	else
->> +		tst_res(TFAIL, "File is not in default pagesize");
->> +}
->> +
->> +static void test_max_hugepages(int fd)
->> +{
->> +	int res;
->> +	int new_fd;
->> +	unsigned int hps;
->> +	unsigned int free_pages;
->> +	void *mem;
->> +
->> +	free_pages = GET_HUGE_FREE_PAGES();
->> +	hps = GET_HUGE_DEF_PAGESIZE();
->> +	mem = CHECK_HUGE_MMAPABLE(fd, free_pages * hps);
->> +
->> +	new_fd = SAFE_HUGE_NEW("new_file", MFD_HUGETLB);
->> +	res = CHECK_HUGE_NON_MMAPABLE(new_fd, hps);
->> +	SAFE_HUGE_CLOSE(new_fd);
->> +
->> +	SAFE_MUNMAP(mem, free_pages * hps);
->> +
->> +	if (res == 0)
->> +		tst_res(TPASS, "Hugepages creation is limited as expected");
->> +	else
->> +		tst_res(TFAIL, "Hugepages creation limit failed");
->> +}
->> +
->> +static const struct tcase {
->> +	int flags;
->> +	void (*func)(int fd);
->> +	const char *desc;
->> +} tcases[] = {
->> +	{MFD_HUGETLB, &test_write_protect, "Testing write call in hugepages"},
->> +	{MFD_HUGETLB, &test_def_pagesize, "Testing page size of created
->> file"},
->> +	{MFD_HUGETLB, &test_max_hugepages, "Testing the number of hugepages"},
->> +};
->> +
->> +static void memfd_huge_controller(unsigned int n)
->> +{
->> +	int fd;
->> +	const struct tcase *tc;
->> +
->> +	tc = &tcases[n];
->> +
->> +	tst_res(TINFO, "%s", tc->desc);
->> +
->> +	fd = SAFE_HUGE_NEW("test_file", tc->flags);
->> +
->> +	tc->func(fd);
->> +
->> +	SAFE_HUGE_CLOSE(fd);
->> +	printf("\n");
->
-> Please no printfs.
->
->> +}
->> +
->> +static void setup(void)
->> +{
->> +	int fd;
->> +	int size;
->> +
->> +	if (GET_HUGE_TOTAL_PAGES() == 0) {
->> +		fd = open("/proc/sys/vm/nr_hugepages", O_WRONLY);
->> +		if (fd == -1)
->> +			tst_brk(TBROK | TERRNO, "Enable Hugepages manually");
->
-> Test should detect hugepage support and end with TCONF if not available.
->
->> +
->> +		size = strlen(HUGEPAGES_COUNT_STR);
->> +		if (write(fd, HUGEPAGES_COUNT_STR, size) == -1)
->> +			tst_brk(TBROK | TERRNO, "Enable Hugepages manually");
->
-> If you don't have enough hugepages for test -> TCONF.
-> Also you should restore the original value in cleanup().
->
->> +	}
->> +
->> +	if (GET_HUGE_TOTAL_PAGES() == 0)
->> +		tst_brk(TBROK, "Enable Hugepages manually");
->> +}
->> +
->> +static struct tst_test test = {
->> +	.setup = setup,
->> +	.test = memfd_huge_controller,
->> +	.tcnt = ARRAY_SIZE(tcases),
->> +	.needs_root = 1,
->> +	.min_kver = "4.14",
->> +};
->> diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create04.c
->> b/testcases/kernel/syscalls/memfd_create/memfd_create04.c
->> new file mode 100644
->> index 000000000..8d893ff0f
->> --- /dev/null
->> +++ b/testcases/kernel/syscalls/memfd_create/memfd_create04.c
->> @@ -0,0 +1,139 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +
->> +/*
->> + *  Copyright (c) Zilogic Systems Pvt. Ltd., 2007
->> + *  Email: code@zilogic.com
->> + *
->> + * This program is free software;  you can redistribute it and/or
->> modify
->> + * it under the terms of the GNU General Public License as published by
->> + * the Free Software Foundation; either version 2 of the License, or
->> + * (at your option) any later version.
->> + *
->> + * This program is distributed in the hope that it will be useful,
->> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
->> + * the GNU General Public License for more details.
->> + */
->> +
->> +/*
->> + * Test: Validating memfd_create() with MFD_HUGETLB and MFD_HUGE_x
->> flags.
->> + *
->> + * Test cases: Attempt to create hugepages of different sizes.
->> + *
->> + * Test logic:	memfd_create() should return non-negative value (fd)
->> + *		if the system supports that particular hugepage size.
->> + *		On success, size of hugepages are then validated with the fd
->> + *		returned. On failure, syscall should return appropriate error.
->
-> I'm getting "succeeded unexpectedly" on 4.16.14-300.fc28.x86_64:
->
-> memfd_create04.c:93: INFO: Attempt to create 2MB huge pages
-> memfd_create04.c:95: INFO: memfd_create(tfile, 1409286148) succeeded: fd 3
-> memfd_create04.c:105: INFO: mmap((nil), 2097152, 0, 2, 3, 0) succeeded
-> unexpectedly
-> memfd_create04.c:110: INFO: close(3) succeeded
-> memfd_create04.c:111: PASS: Successfully created 2MB pages
->
-> and warnings:
->
-> memfd_create04.c:93: INFO: Attempt to create 1GB huge pages
-> memfd_create04.c:95: INFO: memfd_create(tfile, 2013265924) succeeded: fd 3
-> memfd_create04.c:105: INFO: mmap((nil), 1073741824, 2, 2, 3, 0) failed as
-> expected
-> memfd_create04.c:108: WARN: Page not created in expected 1GB
->
->
->> + */
->> +
->> +#define _GNU_SOURCE
->> +
->> +#include "tst_test.h"
->> +#include "memfd_create_common.h"
->> +#include "memfd_create_hugetlb.h"
->> +
->> +#include <errno.h>
->> +#include <sys/mman.h>
->> +#include <stdio.h>
->> +
->> +#define MEMINFO_PATH "/proc/meminfo"
->> +#define HUGEPAGES_COUNT_STR "4"
->> +
->> +#ifndef MFD_HUGETLB
->> +#define MFD_HUGETLB 0x0004U
->> +#endif
->> +
->> +#define MFD_HUGE_64KB (16 << 26)
->> +#define MFD_HUGE_512KB (19 << 26)
->> +#define MFD_HUGE_2MB (21 << 26)
->> +#define MFD_HUGE_8MB (23 << 26)
->> +#define MFD_HUGE_16MB (24 << 26)
->> +#define MFD_HUGE_256MB (28 << 26)
->> +#define MFD_HUGE_1GB (30 << 26)
->> +#define MFD_HUGE_2GB (31 << 26)
->> +#define MFD_HUGE_16GB (34 << 26)
->
-> These define should go into include/lapi
->
->> +
->> +static  struct test_flag {
->> +	int flags;
->> +	unsigned long size;
->> +	char *h_size;
->> +	int exp_err;
->> +} test_flags[] =  {
->> +	{.flags = MFD_HUGE_64KB, .size = 64*1024, .h_size = "64kB"},
->> +	{.flags = MFD_HUGE_512KB, .size = 512*1024, .h_size = "512kB"},
->> +	{.flags = MFD_HUGE_2MB, .size = 2*1024*1024, .h_size = "2MB"},
->> +	{.flags = MFD_HUGE_8MB, .size = 8*1024*1024, .h_size = "8MB"},
->> +	{.flags = MFD_HUGE_16MB, .size = 16*1024*1024, .h_size = "16MB"},
->> +	{.flags = MFD_HUGE_256MB, .size = 256*1024*1024, .h_size = "256MB"},
->> +	{.flags = MFD_HUGE_1GB,	 .size = 1*1024*1024*1024L, .h_size = "1GB"},
->> +	{.flags = MFD_HUGE_2GB, .size = 2*1024*1024*1024L, .h_size = "2GB"},
->> +	{.flags = MFD_HUGE_16GB, .size = 16*1024*1024*1024L, .h_size =
->> "16GB"},
->
-> This overflows on 32-bit.
->
->> +};
->> +
->> +static void check_hugepage_support(struct test_flag *test_flags)
->> +{
->> +	char pattern[50];
->> +
->> +	sprintf(pattern, "DirectMap%s", test_flags->h_size);
->> +	pattern[strlen(pattern) - 1] = 0;
->> +	strcat(pattern, ":\t%lu kB");
->> +
->> +	if (get_from_file(MEMINFO_PATH, pattern) == -1)
->> +		test_flags->exp_err = ENODEV;
->
-> LTP has helper function FILE_LINES_SCANF / SAFE_FILE_LINES_SCANF
->
->> +}
->> +
->> +static void memfd_huge_x_controller(unsigned int n)
->> +{
->> +	int fd;
->> +	int ret;
->> +	struct test_flag tflag;
->> +
->> +	tflag = test_flags[n];
->> +	check_hugepage_support(&tflag);
->> +	tst_res(TINFO, "Attempt to create %s huge pages", tflag.h_size);
->> +
->> +	fd = CHECK_HUGE_X_NEW("tfile", MFD_HUGETLB | tflag.flags);
->> +	if (fd < 0) {
->> +		tst_res(TINFO | TERRNO, "memfd_create() failed");
->> +		if (fd == -tflag.exp_err)
->> +			tst_res(TPASS, "Test failed as expected\n");
->> +		else
->> +			tst_brk(TFAIL, "memfd_create() failed unexpectedly");
->> +		return;
->> +	}
->> +
->> +	ret = CHECK_HUGE_NON_MMAPABLE(fd, tflag.size);
->> +	if (ret == 0)
->> +		tst_res(TWARN, "Page not created in expected %s\n",
->> +			tflag.h_size);
->
-> What does this warning mean?
-> Contigous memory is unavailable for mapping.
-
-
->> +
->> +	SAFE_HUGE_CLOSE(fd);
->> +	tst_res(TPASS, "Successfully created %s pages\n", tflag.h_size);
->> +}
->> +
->> +static void setup(void)
->> +{
->> +	int fd;
->> +	int size;
->> +
->> +	if (GET_HUGE_TOTAL_PAGES() == 0) {
->> +		fd = open("/proc/sys/vm/nr_hugepages", O_WRONLY);
->> +		if (fd == -1)
->> +			tst_brk(TBROK | TERRNO, "Enable Hugepages manually");
->
-> If system doesn't support hugepages -> TCONF
->
->> +
->> +		size = strlen(HUGEPAGES_COUNT_STR);
->> +		if (write(fd, HUGEPAGES_COUNT_STR, size) == -1)
->> +			tst_brk(TBROK | TERRNO, "Enable Hugepages manually");
->
-> If system doesn't have enough hugepages -> TCONF
->
->> +	}
->> +
->> +	if (GET_HUGE_TOTAL_PAGES() == 0)
->> +		tst_brk(TBROK, "Enable Hugepages manually");
->
-> TBROK should be for unexpected/unrecoverable issues,
-> huge page support is something we can detect.
->
-> Also test should restore original value of hugepages in cleanup.
->
->> +}
->> +
->> +static struct tst_test test = {
->> +	.setup = setup,
->> +	.test = memfd_huge_x_controller,
->> +	.tcnt = ARRAY_SIZE(test_flags),
->> +	.needs_root = 1,
->> +	.min_kver = "4.14",
->> +};
->> diff --git
->> a/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.c
->> b/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.c
->> new file mode 100644
->> index 000000000..197f86f83
->> --- /dev/null
->> +++ b/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.c
->
-> I'm getting some warnings:
->
-> memfd_create_hugetlb.c: In function âcheck_huge_non_writeableâ:
-> memfd_create_hugetlb.c:96:27: warning: format â%ldâ expects argument
-> of type âlong intâ, but argument 7 has type âsize_tâ {aka
-> âunsigned intâ} [-Wformat=]
->       "write(%d, \"%s\", %ld) didn't fail as expected",
->                          ~~^
->                          %d
->       fd, test_str, strlen(test_str));
->                     ~~~~~~~~~~~~~~~~
-> memfd_create_hugetlb.c:102:26: warning: format â%ldâ expects argument
-> of type âlong intâ, but argument 7 has type âsize_tâ {aka
-> âunsigned intâ} [-Wformat=]
->      "write(%d, \"%s\", %ld) succeeded unexpectedly",
->                         ~~^
->                         %d
->      fd, test_str, strlen(test_str));
->                    ~~~~~~~~~~~~~~~~
-> memfd_create_hugetlb.c:108:25: warning: format â%ldâ expects argument
-> of type âlong intâ, but argument 7 has type âsize_tâ {aka
-> âunsigned intâ} [-Wformat=]
->     "write(%d, \"%s\", %ld) failed as expected",
->                        ~~^
->                        %d
->     fd, test_str, strlen(test_str));
->                   ~~~~~~~~~~~~~~~~
->
->> @@ -0,0 +1,244 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +
->> +/*
->> + *  Copyright (c) Zilogic Systems Pvt. Ltd., 2007
->> + *  Email: code@zilogic.com
->> + *
->> + * This program is free software;  you can redistribute it and/or
->> modify
->> + * it under the terms of the GNU General Public License as published by
->> + * the Free Software Foundation; either version 2 of the License, or
->> + * (at your option) any later version.
->> + *
->> + * This program is distributed in the hope that it will be useful,
->> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
->> + * the GNU General Public License for more details.
->> + */
->> +
->> +#define _GNU_SOURCE
->> +
->> +#include "memfd_create_common.h"
->> +#include "memfd_create_hugetlb.h"
->> +
->> +#include "lapi/syscalls.h"
->> +
->> +#include <sys/mman.h>
->> +#include <unistd.h>
->> +#include <stdlib.h>
->> +#include <string.h>
->> +#include <stdio.h>
->> +#include <errno.h>
->> +
->> +#define TST_NO_DEFAULT_MAIN
->> +#include "tst_test.h"
->> +
->> +#define MEMINFO_PATH "/proc/meminfo"
->> +
->> +#define MFD_HUGETLB 0x0004U
->
-> include/lapi
->
->> +#define BLOCK_SIZE (4 * 1024)
->> +
->> +
->> +int safe_huge_new(const char *filename, const int lineno,
->> +		   const char *name, int flags)
->
-> Name is misleading, as it doesn't have to do anything with huge pages.
-> It's just a wrapper for memfd_create, very similar to check_mfd_new.
-> Any chance we could re-use/modify that one?
->
->> +{
->> +	int fd;
->> +
->> +	fd = tst_syscall(__NR_memfd_create, name, flags);
->> +	if (fd == -1)
->> +		tst_brk_(filename, lineno, TBROK | TERRNO,
->> +			 "memfd_create(%s, %d) failed",
->> +			 name, flags);
->> +
->> +	tst_res_(filename, lineno, TINFO,
->> +		 "memfd_create(%s, %d) succeeded: fd %d",
->> +		 name, flags, fd);
->> +
->> +	return fd;
->> +}
->> +
->> +int check_huge_x_new(const char *filename, const int lineno,
->> +		   const char *name, int flags)
->
-> Same here.
->
->> +{
->> +	int fd;
->> +
->> +	fd = tst_syscall(__NR_memfd_create, name, flags);
->> +	if (fd == -1)
->> +		return -errno;
->> +
->> +	tst_res_(filename, lineno, TINFO,
->> +		 "memfd_create(%s, %d) succeeded: fd %d",
->> +		 name, flags, fd);
->> +
->> +	return fd;
->> +}
->> +
->> +void safe_huge_close(const char *filename, const int lineno,
->> +		      int fd)
->
-> Wrapper for close, not really relevant to huge pages.
->
->> +{
->> +	int dummy_fd;
->> +
->> +	dummy_fd = fd;
->> +	SAFE_CLOSE(fd);
->> +	tst_res_(filename, lineno, TINFO, "close(%d) succeeded", dummy_fd);
->> +}
->> +
->> +int check_huge_non_writeable(const char *filename, const int lineno,
->> +			     int fd)
->> +{
->> +	ssize_t ret;
->> +	char test_str[] = "data";
->> +
->> +	ret = write(fd, test_str, sizeof(test_str));
->> +
->> +	if (ret < 0) {
->> +		if (errno != EINVAL) {
->> +			tst_res_(filename, lineno, TINFO,
->> +				 "write(%d, \"%s\", %ld) didn't fail as expected",
->> +				 fd, test_str, strlen(test_str));
->> +			return -1;
->> +		}
->> +	} else {
->> +		tst_res_(filename, lineno, TINFO,
->> +			 "write(%d, \"%s\", %ld) succeeded unexpectedly",
->> +			 fd, test_str, strlen(test_str));
->> +		return -1;
->> +	}
->> +
->> +	tst_res_(filename, lineno, TINFO,
->> +		 "write(%d, \"%s\", %ld) failed as expected",
->> +		 fd, test_str, strlen(test_str));
->> +
->> +	return 0;
->> +}
->> +
->> +int check_huge_pagesize(const char *filename, const int lineno,
->> +			void *page_mem, unsigned long page_size)
->
-> Nothing in name suggests this is going to unmap memory.
->
-> How about we call it "check_munmap_lt_page", let it try
-> munmap values _less than_ page_size and drop munmap for page_size?
-> Sure, we will go for that.
-
->> +{
->> +	unsigned int i;
->> +	int ret;
->> +	int unmap_size = page_size / 4;
->> +
->> +	for (i = unmap_size; i <= page_size; i += unmap_size) {
->> +		ret = munmap(page_mem, i);
->> +		if (ret == -1) {
->> +			tst_res_(filename, lineno, TINFO,
->> +				 "munmap(%p, %dkb) failed",
->> +				 page_mem, i/1024);
->> +			if (i % page_size == 0)
->> +				return -1;
->> +		} else {
->> +			tst_res_(filename, lineno, TINFO,
->> +				 "munmap(%p, %d) suceeded",
->> +				 page_mem, i);
->> +			if (i % page_size != 0)
->> +				return -1;
->> +		}
->> +
->> +	}
->> +	return 0;
->> +}
->> +
->> +void *check_huge_mmapable(const char *filename, const int lineno,
->> +			  int fd, unsigned long size)
->
-> Quite similar to check_mmap(). Any chance we can re-use/tweak
-> existing function?
->
->> +{
->> +	void *mem;
->> +
->> +	mem = SAFE_MMAP(NULL, size, PROT_WRITE,
->> +			MAP_PRIVATE, fd, 0);
->> +
->> +	memset((char *)mem, 0, 1);
->> +	tst_res_(filename, lineno, TINFO,
->> +		 "mmap(%p, %lu, %d, %d, %d, %d) succeeded: %p",
->> +		 NULL, size, PROT_WRITE, MAP_PRIVATE, fd, 0, mem);
->> +
->> +	return mem;
->> +}
->> +
->> +int check_huge_non_mmapable(const char *filename, const int lineno,
->> +			    int fd, unsigned long size)
->
-> Can we tweak check_mmap_fail() to work for both cases?
->
->> +{
->> +	void *mem;
->> +
->> +	mem = mmap(NULL, size, 0,
->> +		   MAP_PRIVATE, fd, 0);
->> +
->> +	if (mem == MAP_FAILED) {
->> +		if (errno == ENOMEM)
->> +			tst_res_(filename, lineno, TINFO,
->> +				 "mmap(%p, %lu, %d, %d, %d, %d) failed as expected",
->> +				 NULL, size, PROT_WRITE, MAP_PRIVATE, fd, 0);
->> +		else
->> +			tst_brk_(filename, lineno, TBROK | TTERRNO,
->> +				 "unable to mmap");
->> +		return 0;
->> +	}
->> +
->> +	tst_res_(filename, lineno, TINFO,
->> +		 "mmap(%p, %lu, %d, %d, %d, %d) succeeded unexpectedly",
->> +		 NULL, size, 0, MAP_PRIVATE, fd, 0);
->> +
->> +	SAFE_MUNMAP(mem, size);
->> +
->> +	return -1;
->> +}
->> +
->> +/*
->> + * The function is based on the code available in linux
->> + * kernel source repository file
->> + * linux/tools/testing/selftests/memfd/common.c
->> + */
->> +long get_from_file(const char *filepath, char *pattern)
->> +{
->> +	long val = -1;
->> +	char *line = NULL;
->> +	size_t linelen = 0;
->> +	FILE *f = fopen(filepath, "r");
->> +
->> +	if (!f)
->> +		return -1;
->> +
->> +	while (getline(&line, &linelen, f) > 0) {
->> +		if (sscanf(line, pattern, &val) == 1)
->> +			break;
->> +	}
->> +
->> +	free(line);
->> +	fclose(f);
->> +	return val;
->> +}
->
-> FILE_LINES_SCANF / SAFE_FILE_LINES_SCANF should work in same way.
->
->> +
->> +unsigned long get_huge_def_pagesize(const char *filename, const int
->> lineno)
->> +{
->> +	char *pattern = "Hugepagesize:\t%lu kB";
->> +	int hps;
->> +
->> +	hps = get_from_file(MEMINFO_PATH, pattern);
->> +	if (hps == -1)
->> +		tst_brk_(filename, lineno, TBROK,
->> +			 "unable to get hugepage size");
->> +	return hps << 10;
->> +}
->> +
->> +unsigned int get_huge_free_pages(const char *filename, const int
->> lineno)
->> +{
->> +	char *pattern = "HugePages_Free:\t%d";
->> +	int free_pages;
->> +
->> +	free_pages = get_from_file(MEMINFO_PATH, pattern);
->> +	if (free_pages == -1)
->> +		tst_brk_(filename, lineno, TBROK,
->> +			 "unable to get free hugepages");
->> +	return free_pages;
->> +}
->> +
->> +unsigned int get_huge_total_pages(const char *filename, const int
->> lineno)
->> +{
->> +	char *pattern = "HugePages_Total:\t%d";
->> +	int total_pages;
->> +
->> +	total_pages = get_from_file(MEMINFO_PATH, pattern);
->> +	if (total_pages == -1)
->> +		tst_brk_(filename, lineno, TBROK,
->> +			 "unable to get total hugepages");
->> +	return total_pages;
->> +}
->
-> same as above
->
->> diff --git
->> a/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.h
->> b/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.h
->> new file mode 100644
->> index 000000000..2fab1bda7
->> --- /dev/null
->> +++ b/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.h
->> @@ -0,0 +1,86 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +
->> +/*
->> + *  Copyright (c) Zilogic Systems Pvt. Ltd., 2007
->> + *  Email: code@zilogic.com
->> + *
->> + * This program is free software;  you can redistribute it and/or
->> modify
->> + * it under the terms of the GNU General Public License as published by
->> + * the Free Software Foundation; either version 2 of the License, or
->> + * (at your option) any later version.
->> + *
->> + * This program is distributed in the hope that it will be useful,
->> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
->> + * the GNU General Public License for more details.
->> + */
->> +
->> +#ifndef _MEMFD_CREATE_HUGETLB_H_
->> +#define _MEMFD_CREATE_HUGETLB_H_
->> +
->> +
->> +#define SAFE_HUGE_NEW(name, flags)				\
->> +	safe_huge_new(__FILE__, __LINE__, name, (flags))
->> +
->> +#define CHECK_HUGE_X_NEW(name, flags)				\
->> +	check_huge_x_new(__FILE__, __LINE__, name, (flags))
->> +
->> +#define SAFE_HUGE_CLOSE(fd)				\
->> +	safe_huge_close(__FILE__, __LINE__, (fd))
->> +
->> +#define CHECK_HUGE_NON_WRITEABLE(fd)				\
->> +	check_huge_non_writeable(__FILE__, __LINE__, (fd))
->> +
->> +#define CHECK_HUGE_PAGESIZE(mem, page_size)				\
->> +	check_huge_pagesize(__FILE__, __LINE__, (mem), (page_size))
->> +
->> +#define CHECK_HUGE_MULTI_PAGES(fd, page_size)				\
->> +	check_huge_multi_pages(__FILE__, __LINE__, (fd), (page_size))
->> +
->> +#define CHECK_HUGE_MMAPABLE(fd, size)				\
->> +	check_huge_mmapable(__FILE__, __LINE__, (fd), (size))
->> +
->> +#define CHECK_HUGE_NON_MMAPABLE(fd, size)			\
->> +	check_huge_non_mmapable(__FILE__, __LINE__, (fd), (size))
->> +
->> +#define GET_HUGE_DEF_PAGESIZE()				\
->> +	get_huge_def_pagesize(__FILE__, __LINE__)
->> +
->> +#define GET_HUGE_TOTAL_PAGES()				\
->> +	get_huge_total_pages(__FILE__, __LINE__)
->> +
->> +#define GET_HUGE_FREE_PAGES()			\
->> +	get_huge_free_pages(__FILE__, __LINE__)
->
-> I'm not huge fan of these macros. Do we need these?
->
-> We should at least try to reuse/tweak memfd_create_common.c
-> to avoid duplicating common code.
->
-> Regards,
-> Jan
->
->> +
->> +
->> +int safe_huge_new(const char *filename, const int lineno, const char
->> *name,
->> +		   int flags);
->> +
->> +int check_huge_x_new(const char *filename, const int lineno, const char
->> *name,
->> +		   int flags);
->> +
->> +void safe_huge_close(const char *filename, const int lineno, int fd);
->> +
->> +int check_huge_non_writeable(const char *filename, const int lineno,
->> int fd);
->> +
->> +int check_huge_pagesize(const char *filename, const int lineno, void
->> *page_mem,
->> +			unsigned long page_size);
->> +
->> +int check_huge_multi_pages(const char *filename, const int lineno, int
->> fd,
->> +			unsigned long page_size);
->> +
->> +void *check_huge_mmapable(const char *filename, const int lineno, int
->> fd,
->> +			  unsigned long size);
->> +
->> +int check_huge_non_mmapable(const char *filename, const int lineno, int
->> fd,
->> +			    unsigned long size);
->> +
->> +unsigned long get_huge_def_pagesize(const char *filename, int lineno);
->> +
->> +unsigned int get_huge_total_pages(const char *filename, int lineno);
->> +
->> +unsigned int get_huge_free_pages(const char *filename, int lineno);
->> +
->> +long get_from_file(const char *filepath, char *pattern);
->> +
->> +#endif
->>
->
->
 
 
