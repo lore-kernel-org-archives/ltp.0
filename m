@@ -1,96 +1,27 @@
-From: Yixin Zhang <yixin.zhang@intel.com>
-Date: Mon, 23 Jul 2018 17:44:28 +0800
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 23 Jul 2018 12:43:13 +0200
 Subject: [LTP] [PATCH v2 ltp] syscalls/ipc/msgstress/msgstress{01, 02, 03,
-	04}: update TCID
-Message-ID: <20180723094428.25066-1-yixin.zhang@intel.com>
+ 04}: update TCID
+In-Reply-To: <20180723094428.25066-1-yixin.zhang@intel.com>
+References: <20180723094428.25066-1-yixin.zhang@intel.com>
+Message-ID: <20180723104313.GA16042@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The tests are renamed from kernel/syscalls/ipc/msgctl/msgctl08-11 in
-commmit 3e882e3e4c2d7601e66d67977a8ce4c4f88f8099.
-Update TCID in source files accordingly.
+Hi Yixin,
 
-Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
----
- testcases/kernel/syscalls/ipc/msgstress/msgstress01.c | 2 +-
- testcases/kernel/syscalls/ipc/msgstress/msgstress02.c | 2 +-
- testcases/kernel/syscalls/ipc/msgstress/msgstress03.c | 4 ++--
- testcases/kernel/syscalls/ipc/msgstress/msgstress04.c | 4 ++--
- 4 files changed, 6 insertions(+), 6 deletions(-)
+> The tests are renamed from kernel/syscalls/ipc/msgctl/msgctl08-11 in
+> commmit 3e882e3e4c2d7601e66d67977a8ce4c4f88f8099.
+> Update TCID in source files accordingly.
 
-diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
-index 7bcec501b..6e7f0c1f2 100644
---- a/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
-+++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
-@@ -41,7 +41,7 @@
- #include "ipcmsg.h"
- #include "../lib/libmsgctl.h"
- 
--char *TCID = "msgctl08";
-+char *TCID = "msgstress01";
- int TST_TOTAL = 1;
- 
- #ifndef CONFIG_COLDFIRE
-diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress02.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress02.c
-index 3d6a6e1d7..1e63c56a3 100644
---- a/testcases/kernel/syscalls/ipc/msgstress/msgstress02.c
-+++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress02.c
-@@ -39,7 +39,7 @@
- #include "ipcmsg.h"
- #include "../lib/libmsgctl.h"
- 
--char *TCID = "msgctl09";
-+char *TCID = "msgstress02";
- int TST_TOTAL = 1;
- 
- #define MAXNREPS	1000
-diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c
-index f0f873f46..da4db1cb9 100644
---- a/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c
-+++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c
-@@ -21,7 +21,7 @@
- 
- /*
-  * Get and manipulate a message queue.
-- * Same as msgctl08 but gets the actual msgmni value under procfs.
-+ * Same as msgstress01 but gets the actual msgmni value under procfs.
-  */
- 
- #define _XOPEN_SOURCE 500
-@@ -42,7 +42,7 @@
- #include "ipcmsg.h"
- #include "../lib/libmsgctl.h"
- 
--char *TCID = "msgctl10";
-+char *TCID = "msgstress03";
- int TST_TOTAL = 1;
- 
- #define MAXNPROCS	10000	/*These should be sufficient */
-diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-index 89099a7c7..61a81081d 100644
---- a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-+++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-@@ -21,7 +21,7 @@
- 
- /*
-  * Get and manipulate a message queue.
-- * Same as msgctl09 but gets the actual msgmni value under procfs.
-+ * Same as msgstress02 but gets the actual msgmni value under procfs.
-  */
- 
- #define _XOPEN_SOURCE 500
-@@ -40,7 +40,7 @@
- #include "ipcmsg.h"
- #include "../lib/libmsgctl.h"
- 
--char *TCID = "msgctl11";
-+char *TCID = "msgstress04";
- int TST_TOTAL = 1;
- 
- #define MAXNREPS	1000
--- 
-2.14.1
+> Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+> ---
+Thanks for your patch.
+Pushed (with Cyril's Reviewed-by).
 
+
+Kind regards,
+Petr
