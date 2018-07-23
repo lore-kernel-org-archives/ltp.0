@@ -1,22 +1,34 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 23 Jul 2018 16:42:02 +0200
-Subject: [LTP] [PATCH] Add crypto to Makefile
-In-Reply-To: <20180723143828.4420-1-rpalethorpe@suse.com>
-References: <20180723143828.4420-1-rpalethorpe@suse.com>
-Message-ID: <20180723144202.GA5219@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 23 Jul 2018 10:49:55 -0400 (EDT)
+Subject: [LTP] [PATCH v2] Rename TEST_ERRNO and TEST_RETURN for new test
+ lib
+In-Reply-To: <20180723132450.28747-1-clanig@suse.com>
+References: <20180723132450.28747-1-clanig@suse.com>
+Message-ID: <31550957.35234520.1532357395212.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> This is missing from my original patch set for the pcrypt_aead01 test. It
-> appears that the executable is not installed without it.
 
-Ah, the directories in kernel/Makefile are listed explicitelly, I missed
-that as well. Pushed, thanks.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+----- Original Message -----
+> Signed-off-by: Christian Lanig <clanig@suse.com>
+> ---
+> Hi,
+> 
+> I have changed the variables as requested. In my previous version
+> I forgot that headers can include headers and made wrong assumptions
+> for files that don't include "tst_test.h" directly. Sorry for the confusion.
+> 
+> Regards,
+> Christian
+
+v2 looks good to me.
+
+Commit message could include link/reference to github issue
+(no need to re-post atm.)
+
+Thanks,
+Jan
