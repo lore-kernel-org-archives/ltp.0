@@ -1,29 +1,111 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 23 Jul 2018 02:49:12 -0400 (EDT)
-Subject: [LTP] [PATCH] madvise: remove the min_kver check
-In-Reply-To: <20180723054000.13760-1-liwang@redhat.com>
-References: <20180723054000.13760-1-liwang@redhat.com>
-Message-ID: <707244754.35082963.1532328552303.JavaMail.zimbra@redhat.com>
+From: =?unknown-8bit?q?Myl=C3=A8ne?= Josserand <mylene.josserand@bootlin.com>
+Date: Mon, 23 Jul 2018 09:04:15 +0200
+Subject: [LTP] [PATCH] testcases: cve-2017-2671: Set attempts according
+ to cpus
+In-Reply-To: <87zhyrbk6f.fsf@rpws.prws.suse.cz>
+References: <20180713134618.29552-1-mylene.josserand@bootlin.com>
+ <87zhyrbk6f.fsf@rpws.prws.suse.cz>
+Message-ID: <20180723090415.25e487f2@dell-desktop.home>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
+Hello,
 
+Thank you for your review.
 
------ Original Message -----
-> For the reason that most of LTS enterprise linux distribution backport
-> this MADV_WIPEONFORK feature, here let's cancel the kernel limitation
-> to make madvise(..., MADV_WIPEONFORK) test more widely.
+On Mon, 16 Jul 2018 11:32:08 +0200
+Richard Palethorpe <rpalethorpe@suse.de> wrote:
+
+> Hello,
 > 
-> Signed-off-by: Li Wang <liwang@redhat.com>
+> Mylène Josserand writes:
+> 
+> > This test tries to run commands with 0x8000 attempts.
+> > In a slow system platform, it leads to a failure
+> > because of a timeout even when it is configured with
+> > LTP_TIMEOUT_MUL=10.
+> >
+> > This commit adds a way to configure the number of attempts
+> > according to the number of CPUs.
+> > In case of 1 CPU and a slow platform, using 0x2000 attempts
+> > with a LTP_TIMEOUT_MUL=3 make the test pass.  
+> 
+> I think the Fuzzy Sync library needs to be improved to remove the
+> iteration constants altogether. That is, we specify how long the test(s)
+> should run for, not how many iterations each one should do.
 
-We can do that, EINVAL should be quite clear here. I opened
-https://github.com/linux-test-project/ltp/issues/371 to add
-the other scenarios that could lead to EINVAL.
+Okay, I will have a look at the Fuzzy Sync library because, honestly, I
+have no idea what is it :)
 
-Patch pushed.
+> 
+> We can do this by taking a moving average of the iteration time and
+> using it to predict when the next iteration will exceed the time
+> limit. Then exit the loop at that point.
 
-Regards,
-Jan
+okay, I see what you mean, thanks.
+
+> 
+> Also Cyril thinks that we can improve the time Fuzzy Sync takes to reach
+> the synchronisation point by using a PID controller algorithm which
+> makes a lot of sense.
+
+Could you explain me more in details what you have in mind here?
+
+Thank you in advance,
+Best regards,
+
+Mylène
+
+> 
+> >
+> > Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
+> > ---
+> >  testcases/cve/cve-2017-2671.c | 10 +++++++---
+> >  1 file changed, 7 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/testcases/cve/cve-2017-2671.c b/testcases/cve/cve-2017-2671.c
+> > index b0471bfff..a56bb45a8 100644
+> > --- a/testcases/cve/cve-2017-2671.c
+> > +++ b/testcases/cve/cve-2017-2671.c
+> > @@ -49,7 +49,7 @@
+> >
+> >  #include "tst_fuzzy_sync.h"
+> >
+> > -#define ATTEMPTS 0x80000
+> > +#define ATTEMPTS 0x2000
+> >  #define PING_SYSCTL_PATH "/proc/sys/net/ipv4/ping_group_range"
+> >
+> >  static int sockfd;
+> > @@ -109,9 +109,13 @@ static void *connect_b(void * param LTP_ATTRIBUTE_UNUSED)
+> >
+> >  static void run(void)
+> >  {
+> > -	int i;
+> > +	int i, total_cpus;
+> >
+> > -	for (i = 0; i < ATTEMPTS; i++) {
+> > +	total_cpus = tst_ncpus();
+> > +	if (total_cpus > 4)
+> > +		total_cpus = 4;
+> > +
+> > +	for (i = 0; i < ATTEMPTS * total_cpus; i++) {
+> >  		SAFE_CONNECT(sockfd,
+> >  			     (struct sockaddr *)&iaddr, sizeof(iaddr));
+> >
+> > --
+> > 2.11.0  
+> 
+> 
+> --
+> Thank you,
+> Richard.
+
+Best regards,
+
+-- 
+Mylène Josserand, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
