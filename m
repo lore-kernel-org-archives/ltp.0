@@ -1,179 +1,233 @@
 From: Jinhui huang <huangjh.jy@cn.fujitsu.com>
-Date: Tue, 24 Jul 2018 19:30:55 +0800
-Subject: [LTP] [PATCH 3/3] syscalls/alarm07: Rewrite to new library
+Date: Tue, 24 Jul 2018 19:30:54 +0800
+Subject: [LTP] [PATCH 2/3] syscalls/alarm03: Rewrite to new library
 In-Reply-To: <1532431855-18452-1-git-send-email-huangjh.jy@cn.fujitsu.com>
 References: <1532431855-18452-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-Message-ID: <1532431855-18452-3-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <1532431855-18452-2-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) Initialize alarms_received variable in loops
-2) Add the output of TPASS
-
 Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/alarm/alarm07.c | 175 ++++++------------------------
- 1 file changed, 31 insertions(+), 144 deletions(-)
+ testcases/kernel/syscalls/alarm/alarm03.c | 222 +++++++-----------------------
+ 1 file changed, 49 insertions(+), 173 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/alarm/alarm07.c b/testcases/kernel/syscalls/alarm/alarm07.c
-index 5f4d6e4..b874324 100644
---- a/testcases/kernel/syscalls/alarm/alarm07.c
-+++ b/testcases/kernel/syscalls/alarm/alarm07.c
-@@ -1,171 +1,58 @@
+diff --git a/testcases/kernel/syscalls/alarm/alarm03.c b/testcases/kernel/syscalls/alarm/alarm03.c
+index 60141f1..0ef51c6 100644
+--- a/testcases/kernel/syscalls/alarm/alarm03.c
++++ b/testcases/kernel/syscalls/alarm/alarm03.c
+@@ -1,193 +1,69 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
 - *
-- *   Copyright (c) International Business Machines  Corp., 2001
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
 - *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 - *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
 - *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * Test Name: alarm07
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ * Author: Wayne Boyer
-  *
-  * Test Description:
-- *  Check the functionality of the alarm() when the time input
-- *  parameter is non-zero and the process does a fork.
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 - *
-- * Expected Result:
-- *  The alarm request should be cleared in the child process.
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
 - *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Pause for SIGUSR1 if option specified.
+- * http://www.sgi.com
 - *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *   	Log the errno and Issue a FAIL message.
-- *   Otherwise,
-- *   	Verify the Functionality of system call
-- *      if successful,
-- *      	Issue Functionality-Pass message.
-- *      Otherwise,
-- *		Issue Functionality-Fail message.
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
+- * For further information regarding this notice, see:
 - *
-- * Usage:  <for command-line>
-- *  alarm07 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS:
-- *  None.
-+ *  By the SIGALRM signal, check whether the previously specified alarm request
-+ *  was cleared in the child process or not.
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
++ * Author: Richard Logan
++ *
++ * Test Description:
++ *  The process does a fork:
++ *	1) By the value returned by child's alarm(0), check whether child
++ *	   process cleared the previously specified alarm request or not.
++ *	2) By the value returned by parent's alarm(0), check whether parent
++ *	   process cleared the previously specified alarm request or not.
   */
+-/* $Id: alarm03.c,v 1.10 2009/08/28 10:57:29 vapier Exp $ */
+-/**********************************************************
+- *
+- *    OS Test - Silicon Graphics, Inc.
+- *
+- *    TEST IDENTIFIER	: alarm03
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: alarm(2) cleared by a fork
+- *
+- *    PARENT DOCUMENT	: usctpl01
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    WALL CLOCK TIME	: 1
+- *
+- *    CPU TYPES		: ALL
+- *
+- *    AUTHOR		: Richard Logan
+- *
+- *    CO-PILOT		: Dennis Arason
+- *
+- *    DATE STARTED	: 08/96
+- *
+- *
+- *    TEST CASES
+- *
+- * 	1.) alarm(100), fork, child's alarm(0) shall return 0;
+- *	2.) alarm(100), fork, parent's alarm(0) shall return non-zero.
+- *
+- *    INPUT SPECIFICATIONS
+- * 	The standard options for system call tests are accepted.
+- *	(See the parse_opts(3) man page).
+- *
+- *
+- *    SPECIAL PROCEDURAL REQUIREMENTS
+- * 	None
+- *
+- *
+- *    DETAILED DESCRIPTION
+- *	This is a Phase I test for the alarm(2) system call.  It is intended
+- *	to provide a limited exposure of the system call, for now.  It
+- *	should/will be extended when full functional tests are written for
+- *	alarm(2).
+- *
+- * 	Setup:
+- * 	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- * 	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
+- *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
+- *
+- *
+- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
  
--#include <stdio.h>
- #include <unistd.h>
--#include <sys/types.h>
-+#include <stdlib.h>
  #include <errno.h>
 -#include <string.h>
  #include <signal.h>
+ #include <stdlib.h>
 -#include <sys/wait.h>
- 
 -#include "test.h"
 -#include "safe_macros.h"
-+#include "tst_test.h"
- 
--char *TCID = "alarm07";
--int TST_TOTAL = 1;
--int alarms_received = 0;
-+static volatile int alarms_received = 0;
- 
+-
 -void setup();
 -void cleanup();
--void sigproc(int sig);
--
+-void trapper();
++#include <unistd.h>
+ 
+-char *TCID = "alarm03";
+-int TST_TOTAL = 1;
++#include "tst_test.h"
+ 
 -int main(int ac, char **av)
 +static void verify_alarm(void)
  {
 -	int lc;
--	int sleep_time = 5;
--	int status;
--	int time_sec = 3;
--	pid_t cpid;
+-	int status, retval = 0;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+	pid_t pid;
-+	alarms_received = 0;
- 
--		tst_count = 0;
-+	TEST(alarm(3));
- 
--		/*
--		 * Call First alarm() with non-zero time parameter
--		 * 'time_sec' to send SIGALRM to the process.
--		 */
--		TEST(alarm(time_sec));
-+	pid = SAFE_FORK();
- 
--		/* Now, fork a child process */
--		cpid = FORK_OR_VFORK();
--		if (cpid < 0) {
--			tst_resm(TFAIL | TERRNO, "fork() failed");
--		}
 -
--		sleep(sleep_time);
-+	sleep(5);
- 
--		if (cpid == 0) {
--			if (alarms_received == 0)
--				exit(0);
--			else {
--				printf("alarm request not cleared in "
--				       "child; alarms received:%d\n",
--				       alarms_received);
--				exit(1);
+-		tst_count = 0;
+-
+-		/*
+-		 * Call alarm(2)
+-		 */
+-		TEST(alarm(100));
+-
+-		switch (FORK_OR_VFORK()) {
+-		case -1:
+-			tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
+-			break;
+-
+-		case 0:
+-			TEST(alarm(0));
+-
+-			if (TEST_RETURN != 0) {
+-				retval = 1;
+-				printf("%d: alarm(100), fork, alarm(0) child's "
+-				       "alarm returned %ld\n",
+-				       getpid(), TEST_RETURN);
+-			} else {
+-				printf("%d: alarm(100), fork, alarm(0) child's "
+-				       "alarm returned %ld\n",
+-				       getpid(), TEST_RETURN);
 -			}
-+	if (pid == 0) {
-+		if (alarms_received == 0) {
-+			tst_res(TPASS, "alarm() request cleared in child");
- 		} else {
--			/* Wait for child to complete execution */
+-
+-			exit(retval);
+-			break;
+-
+-		default:
+-			tst_count++;
+-			TEST(alarm(0));
+-/* The timer may be rounded up to the next nearest second, this is OK */
+-			if (TEST_RETURN <= 0 || TEST_RETURN > 101) {
+-				retval = 1;
+-				tst_resm(TFAIL,
+-					 "alarm(100), fork, alarm(0) parent's alarm returned %ld",
+-					 TEST_RETURN);
+-			} else {
+-				tst_resm(TPASS,
+-					 "alarm(100), fork, alarm(0) parent's alarm returned %ld",
+-					 TEST_RETURN);
+-			}
 -			SAFE_WAIT(cleanup, &status);
--			if (!WIFEXITED(status) ||
--			    WEXITSTATUS(status) != 0)
--				tst_brkm(TBROK | TERRNO, cleanup,
--					 "child exited abnormally");
-+			tst_res(TFAIL, "alarm() request not cleared in "
-+				"child; alarms received:%d", alarms_received);
+-			if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+-				tst_resm(TFAIL, "see failures reported above");
+-
++	pid_t pid;
++
++	TEST(alarm(100));
++
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		TEST(alarm(0));
++		if (TEST_RETURN != 0) {
++			tst_res(TFAIL,
++				"alarm(100), fork, alarm(0) child's "
++				"alarm returned %ld", TEST_RETURN);
++		} else {
++			tst_res(TPASS,
++				"alarm(100), fork, alarm(0) child's "
++				"alarm returned %ld", TEST_RETURN);
  		}
-+		 exit(0);
+-
++		exit(0);
 +	} else {
++		TEST(alarm(0));
++		if (TEST_RETURN <= 0 || TEST_RETURN > 101) {
++			tst_res(TFAIL,
++				"alarm(100), fork, alarm(0) parent's "
++				"alarm returned %ld", TEST_RETURN);
++		} else {
++			tst_res(TPASS,
++				"alarm(100), fork, alarm(0) parent's "
++				"alarm returned %ld", TEST_RETURN);
++		}
 +		tst_reap_children();
  	}
 -
@@ -181,45 +235,28 @@ index 5f4d6e4..b874324 100644
 -	tst_exit();
  }
  
--/*
-- * setup() - performs all ONE TIME setup for this test.
-- *  Setup signal handler to catch SIGALRM signal.
-- */
 -void setup(void)
--{
++static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
+ {
 -
 -	tst_sig(FORK, DEF_HANDLER, cleanup);
 -
+-	signal(SIGALRM, trapper);
+-
 -	TEST_PAUSE;
--
--	/* Set the signal catching function */
--	if (signal(SIGALRM, sigproc) == SIG_ERR) {
--		tst_brkm(TFAIL | TERRNO, cleanup, "signal(SIGALRM, ..) failed");
--	}
--}
--
--/*
-- * sigproc(int) - This function defines the action that has to be taken
-- *	          when the SIGALRM signal is caught.
-- *   It also sets the variable which is used to check whether the
-- *   alarm system call was successful.
-- */
--void sigproc(int sig)
-+static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
- {
- 	alarms_received++;
++	SAFE_SIGNAL(SIGALRM, sighandler);
  }
  
--/*
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *             completion or premature exit.
-- */
 -void cleanup(void)
 +static void setup(void)
  {
 +	SAFE_SIGNAL(SIGALRM, sighandler);
  }
-+
+ 
+-void trapper(int sig)
+-{
+-	signal(SIGALRM, trapper);
+-}
 +static struct tst_test test = {
 +	.test_all = verify_alarm,
 +	.setup = setup,
