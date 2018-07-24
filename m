@@ -1,269 +1,153 @@
-From: Jinhui huang <huangjh.jy@cn.fujitsu.com>
-Date: Tue, 24 Jul 2018 19:30:54 +0800
-Subject: [LTP] [PATCH 2/3] syscalls/alarm03: Rewrite to new library
-In-Reply-To: <1532431855-18452-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-References: <1532431855-18452-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-Message-ID: <1532431855-18452-2-git-send-email-huangjh.jy@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 24 Jul 2018 14:28:51 +0200
+Subject: [LTP] [PATCH v2 ltp] fs/ext4: enhance logic of
+ ext4_nsec_timestamps_test
+In-Reply-To: <20180504183842.32501-1-yixin.zhang@intel.com>
+References: <20180504183842.32501-1-yixin.zhang@intel.com>
+Message-ID: <20180724122851.GB21542@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/alarm/alarm03.c | 222 +++++++-----------------------
- 1 file changed, 49 insertions(+), 173 deletions(-)
+Hi!
+> 1. Check the big block device at do_setup(), TBROK if it's mounted
+> 2. Replace umount to tst_umount to handle umount failed due to device busy
+> 3. Fix typo error
 
-diff --git a/testcases/kernel/syscalls/alarm/alarm03.c b/testcases/kernel/syscalls/alarm/alarm03.c
-index 60141f1..0ef51c6 100644
---- a/testcases/kernel/syscalls/alarm/alarm03.c
-+++ b/testcases/kernel/syscalls/alarm/alarm03.c
-@@ -1,193 +1,69 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-+ * Author: Richard Logan
-+ *
-+ * Test Description:
-+ *  The process does a fork:
-+ *	1) By the value returned by child's alarm(0), check whether child
-+ *	   process cleared the previously specified alarm request or not.
-+ *	2) By the value returned by parent's alarm(0), check whether parent
-+ *	   process cleared the previously specified alarm request or not.
-  */
--/* $Id: alarm03.c,v 1.10 2009/08/28 10:57:29 vapier Exp $ */
--/**********************************************************
-- *
-- *    OS Test - Silicon Graphics, Inc.
-- *
-- *    TEST IDENTIFIER	: alarm03
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: alarm(2) cleared by a fork
-- *
-- *    PARENT DOCUMENT	: usctpl01
-- *
-- *    TEST CASE TOTAL	: 1
-- *
-- *    WALL CLOCK TIME	: 1
-- *
-- *    CPU TYPES		: ALL
-- *
-- *    AUTHOR		: Richard Logan
-- *
-- *    CO-PILOT		: Dennis Arason
-- *
-- *    DATE STARTED	: 08/96
-- *
-- *
-- *    TEST CASES
-- *
-- * 	1.) alarm(100), fork, child's alarm(0) shall return 0;
-- *	2.) alarm(100), fork, parent's alarm(0) shall return non-zero.
-- *
-- *    INPUT SPECIFICATIONS
-- * 	The standard options for system call tests are accepted.
-- *	(See the parse_opts(3) man page).
-- *
-- *
-- *    SPECIAL PROCEDURAL REQUIREMENTS
-- * 	None
-- *
-- *
-- *    DETAILED DESCRIPTION
-- *	This is a Phase I test for the alarm(2) system call.  It is intended
-- *	to provide a limited exposure of the system call, for now.  It
-- *	should/will be extended when full functional tests are written for
-- *	alarm(2).
-- *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- * 	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
-- *
-- *
-- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
- 
- #include <errno.h>
--#include <string.h>
- #include <signal.h>
- #include <stdlib.h>
--#include <sys/wait.h>
--#include "test.h"
--#include "safe_macros.h"
--
--void setup();
--void cleanup();
--void trapper();
-+#include <unistd.h>
- 
--char *TCID = "alarm03";
--int TST_TOTAL = 1;
-+#include "tst_test.h"
- 
--int main(int ac, char **av)
-+static void verify_alarm(void)
- {
--	int lc;
--	int status, retval = 0;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		/*
--		 * Call alarm(2)
--		 */
--		TEST(alarm(100));
--
--		switch (FORK_OR_VFORK()) {
--		case -1:
--			tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
--			break;
--
--		case 0:
--			TEST(alarm(0));
--
--			if (TEST_RETURN != 0) {
--				retval = 1;
--				printf("%d: alarm(100), fork, alarm(0) child's "
--				       "alarm returned %ld\n",
--				       getpid(), TEST_RETURN);
--			} else {
--				printf("%d: alarm(100), fork, alarm(0) child's "
--				       "alarm returned %ld\n",
--				       getpid(), TEST_RETURN);
--			}
--
--			exit(retval);
--			break;
--
--		default:
--			tst_count++;
--			TEST(alarm(0));
--/* The timer may be rounded up to the next nearest second, this is OK */
--			if (TEST_RETURN <= 0 || TEST_RETURN > 101) {
--				retval = 1;
--				tst_resm(TFAIL,
--					 "alarm(100), fork, alarm(0) parent's alarm returned %ld",
--					 TEST_RETURN);
--			} else {
--				tst_resm(TPASS,
--					 "alarm(100), fork, alarm(0) parent's alarm returned %ld",
--					 TEST_RETURN);
--			}
--			SAFE_WAIT(cleanup, &status);
--			if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
--				tst_resm(TFAIL, "see failures reported above");
--
-+	pid_t pid;
-+
-+	TEST(alarm(100));
-+
-+	pid = SAFE_FORK();
-+	if (pid == 0) {
-+		TEST(alarm(0));
-+		if (TEST_RETURN != 0) {
-+			tst_res(TFAIL,
-+				"alarm(100), fork, alarm(0) child's "
-+				"alarm returned %ld", TEST_RETURN);
-+		} else {
-+			tst_res(TPASS,
-+				"alarm(100), fork, alarm(0) child's "
-+				"alarm returned %ld", TEST_RETURN);
- 		}
--
-+		exit(0);
-+	} else {
-+		TEST(alarm(0));
-+		if (TEST_RETURN <= 0 || TEST_RETURN > 101) {
-+			tst_res(TFAIL,
-+				"alarm(100), fork, alarm(0) parent's "
-+				"alarm returned %ld", TEST_RETURN);
-+		} else {
-+			tst_res(TPASS,
-+				"alarm(100), fork, alarm(0) parent's "
-+				"alarm returned %ld", TEST_RETURN);
-+		}
-+		tst_reap_children();
- 	}
--
--	cleanup();
--	tst_exit();
- }
- 
--void setup(void)
-+static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
- {
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	signal(SIGALRM, trapper);
--
--	TEST_PAUSE;
-+	SAFE_SIGNAL(SIGALRM, sighandler);
- }
- 
--void cleanup(void)
-+static void setup(void)
- {
-+	SAFE_SIGNAL(SIGALRM, sighandler);
- }
- 
--void trapper(int sig)
--{
--	signal(SIGALRM, trapper);
--}
-+static struct tst_test test = {
-+	.test_all = verify_alarm,
-+	.setup = setup,
-+	.forks_child = 1,
-+};
+Sorry for the delay.
+
+> Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+> ---
+>  .../ext4_nsec_timestamps_test.sh                   | 34 ++++++++--------------
+>  .../kernel/fs/ext4-new-features/ext4_funcs.sh      |  3 ++
+>  2 files changed, 15 insertions(+), 22 deletions(-)
+> 
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+> index c6ff7c2ba..69ae74c42 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+> @@ -56,15 +56,10 @@ ext4_test_sec_timestamps()
+>  	if [ $atime -ne 0 -o $mtime -ne 0 -o $ctime -ne 0 ]; then
+>  		tst_resm TFAIL "Timestamp is not second(atime: $atime, mtime: \
+>  				$mtime, ctime: $ctime)"
+> -		umount mnt_point
+> -		return
+> -	fi
+> -
+> -	umount mnt_point
+> -	if [ $? -ne 0 ]; then
+> -		tst_resm TFAIL "failed to umount ext4 filesystem"
+> +		tst_umount mnt_point
+>  		return
+>  	fi
+> +	tst_umount mnt_point
+>  
+>  	tst_resm TPASS "Ext4 nanosecond timestamps test with 128 inode size pass"
+>  }
+> @@ -76,8 +71,8 @@ ext4_test_nsec_timestamps()
+>  
+>  	mkfs.ext3 -I 256 $EXT4_DEV >/dev/null 2>&1
+>  	if [ $? -ne 0 ]; then
+> -		tst_resm TFAIL "failed to create ext4 filesystem"
+> -		return
+> +		tst_resm TFAIL "failed to create ext3 filesystem"
+> +	  return
+        ^
+	The whitespace here should be keept consistent with the rest.
+
+>  	fi
+>  
+>  	mount -t ext4 $EXT4_DEV mnt_point
+> @@ -105,10 +100,9 @@ ext4_test_nsec_timestamps()
+>  	nsec_ctime=`ext4_file_time mnt_point/tmp_file ctime nsec`
+>  
+>  	# Test nanosecond
+> -	if [ $nsec_atime -eq 0 -a $nsec_mtime -eq 0 -a $nsec_ctime -eq 0 ]
+> -	then
+> +	if [ $nsec_atime -eq 0 -a $nsec_mtime -eq 0 -a $nsec_ctime -eq 0 ]; then
+>  		tst_resm TFAIL "The timestamp is not nanosecond(nsec_atime: $nsec_atime, nsec_mtime: $nsec_mtime, nsec_ctime: $nsec_ctime)"
+> -		umount mnt_point
+> +		tst_mount mnt_point
+>  		return
+>  	fi
+>  
+> @@ -122,15 +116,11 @@ ext4_test_nsec_timestamps()
+>  			than the current time we got.(sec_atime: $sec_atime, \
+>  			sec_mtime: $sec_mtime, sec_ctime: $sec_ctime, \
+>  			cur_time[s]: $sec)"
+> -		umount mnt_point
+> +		tst_umount mnt_point
+>  		return
+>  	fi
+>  
+> -	umount mnt_point
+> -	if [ $? -ne 0 ]; then
+> -		tst_resm TFAIL "failed to umount ext4 filesystem"
+> -		return
+> -	fi
+> +	tst_umount mnt_point
+>  
+>  	# Test mount to ext3 and then mount back to ext4
+>  	mount -t ext3 $EXT4_DEV mnt_point
+> @@ -138,7 +128,7 @@ ext4_test_nsec_timestamps()
+>  		tst_resm TFAIL "failed to mount to ext3"
+>  		return
+>  	fi
+> -	umount mnt_point
+> +	tst_umount mnt_point
+>  
+>  	mount -t ext4 $EXT4_DEV mnt_point
+>  	if [ $? -ne 0 ]; then
+> @@ -148,7 +138,7 @@ ext4_test_nsec_timestamps()
+>  
+>  	nsec_atime2=`ext4_file_time mnt_point/tmp_file atime nsec`
+>  	nsec_mtime2=`ext4_file_time mnt_point/tmp_file mtime nsec`
+> -	nsec_ctime2=`ext4_file_time mnt_point/tmp_file mtime nsec`
+> +	nsec_ctime2=`ext4_file_time mnt_point/tmp_file ctime nsec`
+
+It would be cleaner if this change went as a separate patch.
+
+
+>  	if [ $nsec_atime -ne $nsec_atime2 -o $nsec_ctime -ne $nsec_ctime2 -o \
+>  	     $nsec_mtime -ne $nsec_mtime2 ]; then
+> @@ -156,11 +146,11 @@ ext4_test_nsec_timestamps()
+>  			unexpected. Before[atime mtime ctime]: $nsec_atime \
+>  			$nsec_mtime $nsec_ctime, After[atime mtime ctime]: \
+>  			$nsec_atime2 $nsec_mtime2 $nsec_ctime2)"
+> -		umount mnt_point
+> +		tst_umount mnt_point
+>  		return
+>  	fi
+>  
+> -	umount mnt_point
+> +	tst_umount mnt_point
+>  	tst_resm TPASS "Ext4 nanosecond timestamps test with 256 inode size pass"
+>  }
+
+And we should also put the typos and formatting changes into a separate
+patch as well.
+
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
+> index a9eb54e8d..1514da5a2 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
+> @@ -45,6 +45,9 @@ ext4_setup()
+>  		tst_brkm TCONF "tests need a big block device(5G-10G)"
+>  	else
+>  		export EXT4_DEV=$LTP_BIG_DEV
+> +		if mount | cut -d' ' -f1 | grep -q ^$EXT4_DEV$ ; then
+> +			tst_brkm TBROK "$EXT4_DEV should be umounted before test"
+> +		fi
+>  	fi
+
+And this should probably go as a separate patch as well.
+
+
+The changes looks good but can you please split the changes into logical
+groups and resend as a patchset?
+
 -- 
-1.8.3.1
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
