@@ -1,253 +1,229 @@
 From: Jinhui huang <huangjh.jy@cn.fujitsu.com>
-Date: Tue, 24 Jul 2018 19:30:53 +0800
-Subject: [LTP] [PATCH 1/3] syscalls/alarm02: Rewrite to new library
-Message-ID: <1532431855-18452-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Date: Tue, 24 Jul 2018 19:30:55 +0800
+Subject: [LTP] [PATCH 3/3] syscalls/alarm07: Rewrite to new library
+In-Reply-To: <1532431855-18452-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+References: <1532431855-18452-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <1532431855-18452-3-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+1) Initialize alarms_received variable in loops
+2) Add the output of TPASS
+
 Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/alarm/alarm02.c | 213 +++++++-----------------------
- 1 file changed, 51 insertions(+), 162 deletions(-)
+ testcases/kernel/syscalls/alarm/alarm07.c | 175 ++++++------------------------
+ 1 file changed, 31 insertions(+), 144 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/alarm/alarm02.c b/testcases/kernel/syscalls/alarm/alarm02.c
-index d745e98..a663bb5 100644
---- a/testcases/kernel/syscalls/alarm/alarm02.c
-+++ b/testcases/kernel/syscalls/alarm/alarm02.c
-@@ -1,180 +1,69 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- */
--/* $Id: alarm02.c,v 1.4 2009/08/28 10:57:29 vapier Exp $ */
--/**********************************************************
-- *
-- *    OS Test - Silicon Graphics, Inc.
-- *
-- *    TEST IDENTIFIER   : alarm02
-- *
-- *    TEST TITLE        : Boundary Value Test for alarm(2)
-- *
-- *    PARENT DOCUMENT   : almtds02
-- *
-- *    TEST CASE TOTAL   : 3
-- *
-- *    WALL CLOCK TIME   : 1
-- *
-- *    CPU TYPES         : ALL
-- *
-- *    AUTHOR            : Billy Jean Horne
-- *
-- *    CO-PILOT          : Kathy Olmsted
-- *
-- *    DATE STARTED      : 06/01/92
-- *
-- *    INITIAL RELEASE   : UNICOS 7.0
-- *
-- *    TEST CASES
-- *      Test Case One - A call to alarm() shall not return an error if
-- *       seconds is a -1.
-- *       Test FAILS if a non-zero value is returned.
-- *      Test Case Two - A call to alarm() shall not return an error if
-- *       seconds is the maximum unsigned integer (2**63).
-- *       Test FAILS if a non-zero value is returned.
-- *      Test Case Three - A call to alarm() shall not return an error if
-- *       seconds is the maximum unsigned integer plus 1 ((2**63)+1).
-- *       Test FAILS if a non-zero value is returned.
-- *
-- *    ENVIRONMENTAL NEEDS
-- *      The libcuts.a and libsys.a libraries must be included in
-- *      the compilation of this test.
-- *
-- *    DETAILED DESCRIPTION
-- *
-- *      Setup:
-- *        Define a cleanup function.
-- *
-- *      Test:
-- *       Loop for each test case.
-- *        Execute alarm (0) system call to clear previous alarm.
-- *        Check return code, if system call failed (return=-1)
-- *           Issue a FAIL message and exit the test.
-- *        Call alarm() with boundary values for seconds.
-- *        Verify that returned value is as expected.
-- *        Report results.
-- *
-- *      Cleanup:
-- *
+diff --git a/testcases/kernel/syscalls/alarm/alarm07.c b/testcases/kernel/syscalls/alarm/alarm07.c
+index 5f4d6e4..b874324 100644
+--- a/testcases/kernel/syscalls/alarm/alarm07.c
++++ b/testcases/kernel/syscalls/alarm/alarm07.c
+@@ -1,171 +1,58 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
-+/* Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-+ * Author: Billy Jean Horne
-+ *
-+ * Test Description:
-+ *  1) alarm() not return an error if seconds is -1.
-+ *  2) alarm() not return an error if seconds is ULONG_MAX.
-+ *  3) alarm() not return an error if seconds is ULONG_MAX+1.
+ /*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- */
+-
+-/*
+- * Test Name: alarm07
++ * Copyright (c) International Business Machines  Corp., 2001
++ * Author: Wayne Boyer
+  *
+  * Test Description:
+- *  Check the functionality of the alarm() when the time input
+- *  parameter is non-zero and the process does a fork.
+- *
+- * Expected Result:
+- *  The alarm request should be cleared in the child process.
+- *
+- * Algorithm:
+- *  Setup:
+- *   Setup signal handling.
+- *   Pause for SIGUSR1 if option specified.
+- *
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if system call failed (return=-1)
+- *   	Log the errno and Issue a FAIL message.
+- *   Otherwise,
+- *   	Verify the Functionality of system call
+- *      if successful,
+- *      	Issue Functionality-Pass message.
+- *      Otherwise,
+- *		Issue Functionality-Fail message.
+- *  Cleanup:
+- *   Print errno log and/or timing stats if options given
+- *
+- * Usage:  <for command-line>
+- *  alarm07 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -f   : Turn off functionality Testing.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
+- *
+- * RESTRICTIONS:
+- *  None.
++ *  By the SIGALRM signal, check whether the previously specified alarm request
++ *  was cleared in the child process or not.
   */
--#include <sys/types.h>
-+
-+#include <unistd.h>
- #include <errno.h>
--#include <sys/signal.h>
-+#include <signal.h>
- #include <limits.h>
--#include "test.h"
  
--void setup(void);
--void cleanup(void);
--void alarm_received(int sig);
+-#include <stdio.h>
+ #include <unistd.h>
+-#include <sys/types.h>
++#include <stdlib.h>
+ #include <errno.h>
+-#include <string.h>
+ #include <signal.h>
+-#include <sys/wait.h>
+ 
+-#include "test.h"
+-#include "safe_macros.h"
 +#include "tst_test.h"
  
--char *TCID = "alarm02";
--int TST_TOTAL = 3;
+-char *TCID = "alarm07";
+-int TST_TOTAL = 1;
+-int alarms_received = 0;
 +static volatile int alarms_received = 0;
  
--int received_alarm = 0;		/* Indicates a SIGALRM was received */
-+static struct tcase {
-+	char *buf;
-+	unsigned long int sec;
-+} tcases[] = {
-+	{"-1", -1},
-+	{"ULONG_MAX", ULONG_MAX},
-+	{"ULONG_MAX+1", ULONG_MAX + 1},
-+};
- 
+-void setup();
+-void cleanup();
+-void sigproc(int sig);
+-
 -int main(int ac, char **av)
-+static void verify_alarm(unsigned int n)
++static void verify_alarm(void)
  {
--
--	/* Parameters for usc code  */
 -	int lc;
--
--	/* Parameters for alarm test */
--	char *buf[] = { "-1", "ULONG_MAX", "ULONG_MAX+1" };
--	unsigned long int sec[] = { -1, ULONG_MAX, ULONG_MAX + 1 };
--	int exp[] = { 0, 0, 0 };
--	int i;
+-	int sleep_time = 5;
+-	int status;
+-	int time_sec = 3;
+-	pid_t cpid;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++) {
--
--			received_alarm = 0;
--			signal(SIGALRM, alarm_received);
--
--			TEST(alarm(sec[i]));
--			alarm(0);
--			if (TEST_RETURN != 0) {
--				tst_resm(TFAIL,
--					 "alarm(%lu) returned %ld, when %u was "
--					 "expected for value %s",
--					 sec[i], TEST_RETURN, exp[i], buf[i]);
--			} else {
--				if (received_alarm == 1) {
--					tst_resm(TFAIL,
--						 "alarm(%lu) returned %ldu but an "
--						 "alarm signal was received for "
--						 "value %s",
--						 sec[i], TEST_RETURN, buf[i]);
--				} else {
--					tst_resm(TPASS,
--						 "alarm(%lu) returned %ld as "
--						 "expected for value %s",
--						 sec[i], TEST_RETURN, buf[i]);
--				}
--
--			}
++	pid_t pid;
 +	alarms_received = 0;
-+	struct tcase *tc = &tcases[n];
-+
-+	TEST(alarm(tc->sec));
-+	alarm(0);
-+	if (TEST_RETURN != 0) {
-+		tst_res(TFAIL,
-+			"alarm(%lu) returned %ld, when 0 was ",
-+			tc->sec, TEST_RETURN);
-+	} else {
-+		if (alarms_received == 1) {
-+			tst_res(TFAIL,
-+				"alarm(%lu) returned %ld but an alarm "
-+				"signal was received for value %s",
-+				tc->sec, TEST_RETURN, tc->buf);
-+		} else {
-+			tst_res(TPASS,
-+				"alarm(%lu) returned %ld as "
-+				"expected for value %s",
-+				tc->sec, TEST_RETURN, tc->buf);
- 		}
+ 
+-		tst_count = 0;
++	TEST(alarm(3));
+ 
 -		/*
--		 *  Reset alarm before cleanup.
+-		 * Call First alarm() with non-zero time parameter
+-		 * 'time_sec' to send SIGALRM to the process.
 -		 */
+-		TEST(alarm(time_sec));
++	pid = SAFE_FORK();
+ 
+-		/* Now, fork a child process */
+-		cpid = FORK_OR_VFORK();
+-		if (cpid < 0) {
+-			tst_resm(TFAIL | TERRNO, "fork() failed");
+-		}
 -
--		alarm(0);
--
+-		sleep(sleep_time);
++	sleep(5);
+ 
+-		if (cpid == 0) {
+-			if (alarms_received == 0)
+-				exit(0);
+-			else {
+-				printf("alarm request not cleared in "
+-				       "child; alarms received:%d\n",
+-				       alarms_received);
+-				exit(1);
+-			}
++	if (pid == 0) {
++		if (alarms_received == 0) {
++			tst_res(TPASS, "alarm() request cleared in child");
+ 		} else {
+-			/* Wait for child to complete execution */
+-			SAFE_WAIT(cleanup, &status);
+-			if (!WIFEXITED(status) ||
+-			    WEXITSTATUS(status) != 0)
+-				tst_brkm(TBROK | TERRNO, cleanup,
+-					 "child exited abnormally");
++			tst_res(TFAIL, "alarm() request not cleared in "
++				"child; alarms received:%d", alarms_received);
+ 		}
++		 exit(0);
++	} else {
++		tst_reap_children();
  	}
 -
 -	cleanup();
 -	tst_exit();
  }
  
+-/*
+- * setup() - performs all ONE TIME setup for this test.
+- *  Setup signal handler to catch SIGALRM signal.
+- */
 -void setup(void)
-+static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
- {
+-{
 -
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
 -
-+	alarms_received++;
+-	/* Set the signal catching function */
+-	if (signal(SIGALRM, sigproc) == SIG_ERR) {
+-		tst_brkm(TFAIL | TERRNO, cleanup, "signal(SIGALRM, ..) failed");
+-	}
+-}
+-
+-/*
+- * sigproc(int) - This function defines the action that has to be taken
+- *	          when the SIGALRM signal is caught.
+- *   It also sets the variable which is used to check whether the
+- *   alarm system call was successful.
+- */
+-void sigproc(int sig)
++static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
+ {
+ 	alarms_received++;
  }
  
+-/*
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *             completion or premature exit.
+- */
 -void cleanup(void)
 +static void setup(void)
  {
 +	SAFE_SIGNAL(SIGALRM, sighandler);
  }
- 
--void alarm_received(int sig)
--{
--	received_alarm = 1;
--}
++
 +static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_alarm,
++	.test_all = verify_alarm,
 +	.setup = setup,
++	.forks_child = 1,
 +};
 -- 
 1.8.3.1
