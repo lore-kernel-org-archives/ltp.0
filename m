@@ -1,35 +1,36 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 24 Jul 2018 17:19:56 +0200
-Subject: [LTP] [PATCH v2 1/1] tst_test.sh: Add test cmd helper
-	tst_test_cmds()
-In-Reply-To: <20180724131551.GA30730@rei>
-References: <20180423091706.24154-1-pvorel@suse.cz>
- <20180724093537.GA19255@rei> <20180724125708.GA5894@x230>
- <20180724131551.GA30730@rei>
-Message-ID: <20180724151956.GA1548@dell5510>
+Date: Tue, 24 Jul 2018 17:21:38 +0200
+Subject: [LTP] [RFC PATCH 1/1] pounder21: Remove
+In-Reply-To: <20180724085234.GA8655@rei>
+References: <20180723122911.10714-1-pvorel@suse.cz>
+ <1784802899.35188200.1532349973680.JavaMail.zimbra@redhat.com>
+ <CAEemH2ez26eEbpcuKx2nd7WhKeR2tEP6BSGkWpsEYmK733PB1g@mail.gmail.com>
+ <20180724054937.GA25333@dell5510> <20180724085234.GA8655@rei>
+Message-ID: <20180724152138.GB1548@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi,
 
-> Hi!
-> > > Hmm looking at this after a while I would expect the tst_test_cmds() to
-> > > exit the test while tst_check_cmds() to return a value, the question is
-> > > if this is worth of the work of renaming the current uses...
-> > Indeed, names would be better to be reversed. It's up to you.
-> > If you want, I'll first rename tst_check_cmds() to tst_test_cmds()
-> > and then add this new one as tst_check_cmds().
+> > > I occasionally use the pounder suit as a stress test to run more than 24
+> > > hours.
 
-> If it's easy enough, let's do that, otherwise I would keep it as it is.
-merged rename, updated version of now called tst_check_cmds() and it's initial
-usage in IMA.
-+ Updated wiki (+ updating changes to wiki from commit e11b7c036 tst_timer: Add
-tst_timer_expired_ms()
+> > > But I'm OK to remove it from the latest ltp because it has long time no
+> > > substantive updating and the version I used is always ltp-full-20150903.
 
-Thanks for your time to review!
+> > Well, if anyone uses it, I would keep it. The reason why is not compiled by
+> > default is probably because being incompatible with our make system.  But it
+> > looks quite neglected as it downloads and builds 2.6.39 (the last 2.6.x
+> > release).
+
+> Well that may still be a reason to remove it, if nobody maintains the
+> code it will break sooner or later...
+
+That's true. So anybody stands for maintaining it or can we remove it?
+And it can be re-added later (when updated).
 
 
 Kind regards,
