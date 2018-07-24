@@ -1,43 +1,33 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 24 Jul 2018 16:32:12 +0800
-Subject: [LTP] [PATCH] add testcases/lib/tst_supported_fs to .gititnore
-In-Reply-To: <20180724082530.18646-1-mmoese@suse.de>
-References: <20180724082530.18646-1-mmoese@suse.de>
-Message-ID: <5B56E40C.5090605@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 24 Jul 2018 10:52:34 +0200
+Subject: [LTP] [RFC PATCH 1/1] pounder21: Remove
+In-Reply-To: <20180724054937.GA25333@dell5510>
+References: <20180723122911.10714-1-pvorel@suse.cz>
+ <1784802899.35188200.1532349973680.JavaMail.zimbra@redhat.com>
+ <CAEemH2ez26eEbpcuKx2nd7WhKeR2tEP6BSGkWpsEYmK733PB1g@mail.gmail.com>
+ <20180724054937.GA25333@dell5510>
+Message-ID: <20180724085234.GA8655@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Michael,
+Hi!
+> > I occasionally use the pounder suit as a stress test to run more than 24
+> > hours.
+> 
+> > But I'm OK to remove it from the latest ltp because it has long time no
+> > substantive updating and the version I used is always ltp-full-20150903.
+> 
+> Well, if anyone uses it, I would keep it. The reason why is not compiled by
+> default is probably because being incompatible with our make system.  But it
+> looks quite neglected as it downloads and builds 2.6.39 (the last 2.6.x
+> release).
 
-Good catch.  It looks good to me.
-Reviewed-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Well that may still be a reason to remove it, if nobody maintains the
+code it will break sooner or later...
 
-Thanks,
-Xiao Yang
-On 2018/07/24 16:25, Michael Moese wrote:
-> The binary tst_supported_fs was missing in the .gitinore file
-> in testcases/lib, so it should be added.
->
-> Signed-off-by: Michael Moese<mmoese@suse.de>
-> ---
->   testcases/lib/.gitignore | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
-> index 997940006..a9034e401 100644
-> --- a/testcases/lib/.gitignore
-> +++ b/testcases/lib/.gitignore
-> @@ -7,4 +7,5 @@
->   /tst_net_iface_prefix
->   /tst_net_ip_prefix
->   /tst_net_vars
-> -/tst_getconf
-> \ No newline at end of file
-> +/tst_getconf
-> +/tst_supported_fs
-
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
