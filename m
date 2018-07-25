@@ -1,37 +1,27 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 24 Jul 2018 17:21:38 +0200
-Subject: [LTP] [RFC PATCH 1/1] pounder21: Remove
-In-Reply-To: <20180724085234.GA8655@rei>
-References: <20180723122911.10714-1-pvorel@suse.cz>
- <1784802899.35188200.1532349973680.JavaMail.zimbra@redhat.com>
- <CAEemH2ez26eEbpcuKx2nd7WhKeR2tEP6BSGkWpsEYmK733PB1g@mail.gmail.com>
- <20180724054937.GA25333@dell5510> <20180724085234.GA8655@rei>
-Message-ID: <20180724152138.GB1548@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 25 Jul 2018 14:05:36 +0200
+Subject: [LTP] [PATCH v2] Rename TEST_ERRNO and TEST_RETURN for new test
+ lib
+In-Reply-To: <31550957.35234520.1532357395212.JavaMail.zimbra@redhat.com>
+References: <20180723132450.28747-1-clanig@suse.com>
+ <31550957.35234520.1532357395212.JavaMail.zimbra@redhat.com>
+Message-ID: <20180725120536.GA20295@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> v2 looks good to me.
 
-> > > I occasionally use the pounder suit as a stress test to run more than 24
-> > > hours.
+To me as well.
 
-> > > But I'm OK to remove it from the latest ltp because it has long time no
-> > > substantive updating and the version I used is always ltp-full-20150903.
+> Commit message could include link/reference to github issue
+> (no need to re-post atm.)
 
-> > Well, if anyone uses it, I would keep it. The reason why is not compiled by
-> > default is probably because being incompatible with our make system.  But it
-> > looks quite neglected as it downloads and builds 2.6.39 (the last 2.6.x
-> > release).
+I've fixed that and added you ack.
 
-> Well that may still be a reason to remove it, if nobody maintains the
-> code it will break sooner or later...
-
-That's true. So anybody stands for maintaining it or can we remove it?
-And it can be re-added later (when updated).
-
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
