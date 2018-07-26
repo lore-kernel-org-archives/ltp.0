@@ -1,52 +1,115 @@
-From: Yixin Zhang <yixin.zhang@intel.com>
-Date: Thu, 26 Jul 2018 17:22:19 +0800
-Subject: [LTP] [PATCH v3 ltp 4/4] fs/ext4: update format and fix typo
-In-Reply-To: <20180726092219.15667-1-yixin.zhang@intel.com>
-References: <20180726092219.15667-1-yixin.zhang@intel.com>
-Message-ID: <20180726092219.15667-4-yixin.zhang@intel.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 26 Jul 2018 14:37:12 +0200
+Subject: [LTP] [PATCH] add new testcase for bind
+In-Reply-To: <20180726084620.14645-1-mmoese@suse.de>
+References: <20180726084620.14645-1-mmoese@suse.de>
+Message-ID: <20180726123712.GA6687@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
----
- .../ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh              | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Hi Michael,
 
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-index e44b9f62e..06b4a31ed 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-@@ -71,7 +71,7 @@ ext4_test_nsec_timestamps()
- 
- 	mkfs.ext3 -I 256 $EXT4_DEV >/dev/null 2>&1
- 	if [ $? -ne 0 ]; then
--		tst_resm TFAIL "failed to create ext4 filesystem"
-+		tst_resm TFAIL "failed to create ext3 filesystem"
- 		return
- 	fi
- 
-@@ -100,8 +100,7 @@ ext4_test_nsec_timestamps()
- 	nsec_ctime=`ext4_file_time mnt_point/tmp_file ctime nsec`
- 
- 	# Test nanosecond
--	if [ $nsec_atime -eq 0 -a $nsec_mtime -eq 0 -a $nsec_ctime -eq 0 ]
--	then
-+	if [ $nsec_atime -eq 0 -a $nsec_mtime -eq 0 -a $nsec_ctime -eq 0 ]; then
- 		tst_resm TFAIL "The timestamp is not nanosecond(nsec_atime: $nsec_atime, nsec_mtime: $nsec_mtime, nsec_ctime: $nsec_ctime)"
- 		tst_mount mnt_point
- 		return
-@@ -142,7 +141,7 @@ ext4_test_nsec_timestamps()
- 	nsec_ctime2=`ext4_file_time mnt_point/tmp_file ctime nsec`
- 
- 	if [ $nsec_atime -ne $nsec_atime2 -o $nsec_ctime -ne $nsec_ctime2 -o \
--	     $nsec_mtime -ne $nsec_mtime2 ]; then
-+			$nsec_mtime -ne $nsec_mtime2 ]; then
- 		tst_resm TFAIL "File nanosecond timestamp has changed \
- 			unexpected. Before[atime mtime ctime]: $nsec_atime \
- 			$nsec_mtime $nsec_ctime, After[atime mtime ctime]: \
--- 
-2.14.1
+> With
+>   0fb44559ffd6  af_unix: move unix_mknod() out of bindlock
+> the behavior of bind() for STREAM UNIX sockets changed in
+> case a socket that is already bound is passed to bind() again.
 
+> This testcase fails for the new behavior and passes for the
+> old one.
+
+> Signed-off-by: Michael Moese <mmoese@suse.de>
+Acked-by: Petr Vorel <pvorel@suse.cz>
+Nice patch, minor nits mentioned bellow.
+
+
+Kind regards,
+Petr
+
+> ---
+>  runtest/syscalls                          |   1 +
+>  testcases/kernel/syscalls/bind/.gitignore |   1 +
+>  testcases/kernel/syscalls/bind/bind03.c   | 120 ++++++++++++++++++++++
+>  3 files changed, 122 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/bind/bind03.c
+...
+
+> +++ b/testcases/kernel/syscalls/bind/bind03.c
+> @@ -0,0 +1,120 @@
+> +/*
+> + * Copyright (c) 2018 Michael Moese <mmoese@suse.com>
+> + *
+> + * This program is free software: you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation, either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
+> + */
+You can use SPDX license identifier if you like:
+SPDX-License-Identifier: GPL-2.0-or-later
+
+> +/* The commit 0fb44559ffd6  af_unix: move unix_mknod() out of bindlock
+> + * changed the behavior of bind() for STREAM UNIX domain sockets if
+> + */
+> +
+> +#include <sys/types.h>
+> +#include <sys/socket.h>
+> +#include <sys/un.h>
+These headers are included by tst_safe_net.h, maybe we don't need to include them.
+The same applies for limits.h and unistd.h (loaded by tst_test.h).
+
+> +
+> +#include <err.h>
+This header is not needed (we don't need warn() etc.).
+
+> +#include <errno.h>
+> +#include <limits.h>
+> +#include <stdio.h>
+> +#include <string.h>
+> +#include <unistd.h>
+> +#include <stdlib.h>
+> +
+> +#include "tst_test.h"
+> +#include "tst_safe_net.h"
+> +
+> +#define SOCK_NAME "socket.1"
+...
+
+> +	/*
+> +	 * Once a STREAM UNIX domain socket has been bound, it can't be
+> +	 * rebound. Expected error is EINVAL.
+> +	 * cannot use SAFE_BIND() here.
+I wouldn't note SAFE_BIND().
+
+> +	 */
+> +	if (bind(sock1, (struct sockaddr *)&sun, sizeof(sun)) == 0) {
+> +		tst_res(TFAIL, "re-binding of socket succeeded");
+> +		return;
+> +	}
+> +
+> +	if (errno != EINVAL) {
+> +		tst_res(TFAIL | TERRNO, "expected EINVAL");
+> +		return;
+> +	}
+> +
+> +	sock2 = SAFE_SOCKET(PF_UNIX, SOCK_STREAM, 0);
+> +
+> +	/*
+> +	 * Since a socket is already bound to the pathname, it can't be bound
+> +	 * to a second socket. Expected error is EADDRINUSE.
+> +	 * again, cannot use SAFE_BIND().
+> +	 */
+The same here.
+
+
+Kind regards,
+Petr
