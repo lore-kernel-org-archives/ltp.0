@@ -1,114 +1,32 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 26 Jul 2018 14:37:12 +0200
-Subject: [LTP] [PATCH] add new testcase for bind
-In-Reply-To: <20180726084620.14645-1-mmoese@suse.de>
-References: <20180726084620.14645-1-mmoese@suse.de>
-Message-ID: <20180726123712.GA6687@dell5510>
+Date: Thu, 26 Jul 2018 15:04:39 +0200
+Subject: [LTP] [PATCH ltp] runtest/{ltplite,
+ stress.part1}: update commands for gf01-30/rwtest01-05
+In-Reply-To: <20180706084928.6017-1-yixin.zhang@intel.com>
+References: <20180706084928.6017-1-yixin.zhang@intel.com>
+Message-ID: <20180726130439.GA12339@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Michael,
+Hi Yixin,
 
-> With
->   0fb44559ffd6  af_unix: move unix_mknod() out of bindlock
-> the behavior of bind() for STREAM UNIX sockets changed in
-> case a socket that is already bound is passed to bind() again.
+> gf01-30/rwtest01-05 are orignal defined in runtest file 'fs', and they
+> are updated multiple times in file 'fs' but missed in 'ltplite'/'stress.part1'.
+> So this patch copy all updates to the tests in 'ltplite'/'stress.part1'.
 
-> This testcase fails for the new behavior and passes for the
-> old one.
+> Ref:
+> c9dd96e6b2f811dbad119c3558d90cb7dfc3919b
+> 95e8b61433efcefb83699aaf859e92ad2b576373
+> 606e544932248858f65c7ab3061f77c542c07cfe
 
-> Signed-off-by: Michael Moese <mmoese@suse.de>
-Acked-by: Petr Vorel <pvorel@suse.cz>
-Nice patch, minor nits mentioned bellow.
+> Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
 
-
-Kind regards,
-Petr
-
-> ---
->  runtest/syscalls                          |   1 +
->  testcases/kernel/syscalls/bind/.gitignore |   1 +
->  testcases/kernel/syscalls/bind/bind03.c   | 120 ++++++++++++++++++++++
->  3 files changed, 122 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/bind/bind03.c
-...
-
-> +++ b/testcases/kernel/syscalls/bind/bind03.c
-> @@ -0,0 +1,120 @@
-> +/*
-> + * Copyright (c) 2018 Michael Moese <mmoese@suse.com>
-> + *
-> + * This program is free software: you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation, either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
-> + */
-You can use SPDX license identifier if you like:
-SPDX-License-Identifier: GPL-2.0-or-later
-
-> +/* The commit 0fb44559ffd6  af_unix: move unix_mknod() out of bindlock
-> + * changed the behavior of bind() for STREAM UNIX domain sockets if
-> + */
-> +
-> +#include <sys/types.h>
-> +#include <sys/socket.h>
-> +#include <sys/un.h>
-These headers are included by tst_safe_net.h, maybe we don't need to include them.
-The same applies for limits.h and unistd.h (loaded by tst_test.h).
-
-> +
-> +#include <err.h>
-This header is not needed (we don't need warn() etc.).
-
-> +#include <errno.h>
-> +#include <limits.h>
-> +#include <stdio.h>
-> +#include <string.h>
-> +#include <unistd.h>
-> +#include <stdlib.h>
-> +
-> +#include "tst_test.h"
-> +#include "tst_safe_net.h"
-> +
-> +#define SOCK_NAME "socket.1"
-...
-
-> +	/*
-> +	 * Once a STREAM UNIX domain socket has been bound, it can't be
-> +	 * rebound. Expected error is EINVAL.
-> +	 * cannot use SAFE_BIND() here.
-I wouldn't note SAFE_BIND().
-
-> +	 */
-> +	if (bind(sock1, (struct sockaddr *)&sun, sizeof(sun)) == 0) {
-> +		tst_res(TFAIL, "re-binding of socket succeeded");
-> +		return;
-> +	}
-> +
-> +	if (errno != EINVAL) {
-> +		tst_res(TFAIL | TERRNO, "expected EINVAL");
-> +		return;
-> +	}
-> +
-> +	sock2 = SAFE_SOCKET(PF_UNIX, SOCK_STREAM, 0);
-> +
-> +	/*
-> +	 * Since a socket is already bound to the pathname, it can't be bound
-> +	 * to a second socket. Expected error is EADDRINUSE.
-> +	 * again, cannot use SAFE_BIND().
-> +	 */
-The same here.
+I wonder if we want to keep these runtest/stress.part[1-3] and runtest/ltplite
+files. ATM we don't have feature to include runtest files (among other problems
+with test runner), but keeping this duplicity doesn't look to me.
 
 
 Kind regards,
