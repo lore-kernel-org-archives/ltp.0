@@ -1,230 +1,262 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 27 Jul 2018 11:34:23 +0800
-Subject: [LTP] [PATCH v2] syscalls/prctl03.c: New test for prctl() with
-	PR_{SET, GET}_CHILD_SUBREAPER
-In-Reply-To: <20180725125655.GA23890@rei>
-References: <20180725125655.GA23890@rei>
-Message-ID: <1532662463-9404-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+Date: Thu, 26 Jul 2018 13:32:46 +0800
+Subject: [LTP] [PATCH v2 1/2] syscalls/alarm02: Rewrite to new library
+In-Reply-To: <20180725134828.GB23890@rei>
+References: <20180725134828.GB23890@rei>
+Message-ID: <1532583167-8455-1-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
 ---
- include/lapi/prctl.h                       |  17 ++++
- runtest/ltplite                            |   1 +
- runtest/stress.part3                       |   1 +
- runtest/syscalls                           |   1 +
- testcases/kernel/syscalls/prctl/.gitignore |   1 +
- testcases/kernel/syscalls/prctl/prctl03.c  | 130 +++++++++++++++++++++++++++++
- 6 files changed, 151 insertions(+)
- create mode 100644 include/lapi/prctl.h
- create mode 100644 testcases/kernel/syscalls/prctl/prctl03.c
+ testcases/kernel/syscalls/alarm/alarm02.c | 216 ++++++++----------------------
+ 1 file changed, 58 insertions(+), 158 deletions(-)
 
-diff --git a/include/lapi/prctl.h b/include/lapi/prctl.h
-new file mode 100644
-index 0000000..6db8a64
---- /dev/null
-+++ b/include/lapi/prctl.h
-@@ -0,0 +1,17 @@
+diff --git a/testcases/kernel/syscalls/alarm/alarm02.c b/testcases/kernel/syscalls/alarm/alarm02.c
+index d745e98..d1b15a9 100644
+--- a/testcases/kernel/syscalls/alarm/alarm02.c
++++ b/testcases/kernel/syscalls/alarm/alarm02.c
+@@ -1,180 +1,80 @@
+-/*
+- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
+- *
+- * http://www.sgi.com
+- *
+- * For further information regarding this notice, see:
+- *
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+- */
+-/* $Id: alarm02.c,v 1.4 2009/08/28 10:57:29 vapier Exp $ */
+-/**********************************************************
+- *
+- *    OS Test - Silicon Graphics, Inc.
+- *
+- *    TEST IDENTIFIER   : alarm02
+- *
+- *    TEST TITLE        : Boundary Value Test for alarm(2)
+- *
+- *    PARENT DOCUMENT   : almtds02
+- *
+- *    TEST CASE TOTAL   : 3
+- *
+- *    WALL CLOCK TIME   : 1
+- *
+- *    CPU TYPES         : ALL
+- *
+- *    AUTHOR            : Billy Jean Horne
+- *
+- *    CO-PILOT          : Kathy Olmsted
+- *
+- *    DATE STARTED      : 06/01/92
+- *
+- *    INITIAL RELEASE   : UNICOS 7.0
+- *
+- *    TEST CASES
+- *      Test Case One - A call to alarm() shall not return an error if
+- *       seconds is a -1.
+- *       Test FAILS if a non-zero value is returned.
+- *      Test Case Two - A call to alarm() shall not return an error if
+- *       seconds is the maximum unsigned integer (2**63).
+- *       Test FAILS if a non-zero value is returned.
+- *      Test Case Three - A call to alarm() shall not return an error if
+- *       seconds is the maximum unsigned integer plus 1 ((2**63)+1).
+- *       Test FAILS if a non-zero value is returned.
+- *
+- *    ENVIRONMENTAL NEEDS
+- *      The libcuts.a and libsys.a libraries must be included in
+- *      the compilation of this test.
+- *
+- *    DETAILED DESCRIPTION
+- *
+- *      Setup:
+- *        Define a cleanup function.
+- *
+- *      Test:
+- *       Loop for each test case.
+- *        Execute alarm (0) system call to clear previous alarm.
+- *        Check return code, if system call failed (return=-1)
+- *           Issue a FAIL message and exit the test.
+- *        Call alarm() with boundary values for seconds.
+- *        Verify that returned value is as expected.
+- *        Report results.
+- *
+- *      Cleanup:
+- *
 +// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
-+ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ */
-+
-+#ifndef LAPI_PRCTL_H__
-+# define LAPI_PRCTL_H__
-+
-+#include <sys/prctl.h>
-+
-+#ifndef PR_SET_CHILD_SUBREAPER
-+# define PR_SET_CHILD_SUBREAPER	36
-+# define PR_GET_CHILD_SUBREAPER	37
-+#endif
-+
-+#endif /* LAPI_PRCTL_H__ */
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 5a7819c..0840564 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -574,6 +574,7 @@ poll01 poll01
- 
- prctl01 prctl01
- prctl02 prctl02
-+prctl03 prctl03
- 
- pread01 pread01
- pread02 pread02
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index 3121cd9..fea4ccb 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -483,6 +483,7 @@ poll01 poll01
- 
- prctl01 prctl01
- prctl02 prctl02
-+prctl03 prctl03
- 
- pread01 pread01
- pread02 pread02
-diff --git a/runtest/syscalls b/runtest/syscalls
-index dc72484..420ff45 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -808,6 +808,7 @@ ppoll01 ppoll01
- 
- prctl01 prctl01
- prctl02 prctl02
-+prctl03 prctl03
- 
- pread01 pread01
- pread01_64 pread01_64
-diff --git a/testcases/kernel/syscalls/prctl/.gitignore b/testcases/kernel/syscalls/prctl/.gitignore
-index 6af5df6..2f46a9a 100644
---- a/testcases/kernel/syscalls/prctl/.gitignore
-+++ b/testcases/kernel/syscalls/prctl/.gitignore
-@@ -1,2 +1,3 @@
- /prctl01
- /prctl02
-+/prctl03
-diff --git a/testcases/kernel/syscalls/prctl/prctl03.c b/testcases/kernel/syscalls/prctl/prctl03.c
-new file mode 100644
-index 0000000..294f38d
---- /dev/null
-+++ b/testcases/kernel/syscalls/prctl/prctl03.c
-@@ -0,0 +1,130 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
-+ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++/* Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
++ * Author: Billy Jean Horne
 + *
-+ * Test PR_SET_CHILD_SUBREAPER and PR_GET_CHILD_SUBREAPER of prctl(2).
-+ * 1) If PR_SET_CHILD_SUBREAPER marks a process as a child subreaper, it
-+ *    fulfills the role of init(1) for its descendant orphaned process.
-+ *    The PPID of its orphaned process will be reparented to the subreaper
-+ *    process, and the subreaper process can receive a SIGCHLD signal and
-+ *    wait(2) on the orphaned process to discover corresponding termination
-+ *    status.
-+ * 2) The setting of PR_SET_CHILD_SUBREAPER is not inherited by children
-+ *    created by fork(2).
-+ * 3) PR_GET_CHILD_SUBREAPER can get the setting of PR_SET_CHILD_SUBREAPER.
-+ *
-+ * These flags was added by kenrel commit ebec18a6d3aa:
-+ * "prctl: add PR_{SET,GET}_CHILD_SUBREAPER to allow simple process supervision"
-+ */
++ * Test Description:
++ *  1) alarm() return UINT_MAX if seconds is -1.
++ *  2) alarm() return UINT_MAX  if seconds is UINT_MAX.
++ *  3) alarm() return 0 if seconds is UINT_MAX + 1.
+  */
 +
-+#include <errno.h>
-+#include <stdlib.h>
+ #include <sys/types.h>
 +#include <unistd.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <signal.h>
-+#include <sys/prctl.h>
-+
+ #include <errno.h>
+ #include <sys/signal.h>
+ #include <limits.h>
+-#include "test.h"
+ 
+-void setup(void);
+-void cleanup(void);
+-void alarm_received(int sig);
 +#include "tst_test.h"
-+#include "lapi/prctl.h"
++#include "tst_safe_macros.h"
+ 
+-char *TCID = "alarm02";
+-int TST_TOTAL = 3;
++static volatile int alarms_received;
+ 
+-int received_alarm = 0;		/* Indicates a SIGALRM was received */
++static struct tcase {
++	char *buf;
++	unsigned int sec;
++} tcases[] = {
++	{"-1", -1},
++	{"UINT_MAX", UINT_MAX},
++	{"UINT_MAX + 1", UINT_MAX + 1},
++};
+ 
+-int main(int ac, char **av)
++static void verify_alarm(unsigned int n)
+ {
++	alarms_received = 0;
++	struct tcase *tc = &tcases[n];
++	unsigned int ret;
 +
-+static volatile int sigchild_recv;
-+
-+static void check_get_subreaper(int exp_val)
-+{
-+	int get_val;
-+
-+	TEST(prctl(PR_GET_CHILD_SUBREAPER, &get_val));
-+	if (TEST_RETURN == -1) {
-+		tst_res(TFAIL | TTERRNO, "prctl(PR_GET_CHILD_SUBREAPER) failed");
-+		return;
++	ret = alarm(tc->sec);
++	if (ret != 0) {
++		tst_res(TFAIL,
++			"alarm(%u) returned %ld, when 0 was ",
++			tc->sec, TEST_RETURN);
 +	}
-+
-+	if (get_val == exp_val) {
-+		tst_res(TPASS, "prctl(PR_GET_CHILD_SUBREAPER) got expected %d",
-+			get_val);
-+	} else {
-+		tst_res(TFAIL, "prctl(PR_GET_CHILD_SUBREAPER) got %d, expected %d",
-+			get_val, exp_val);
+ 
+-	/* Parameters for usc code  */
+-	int lc;
+-
+-	/* Parameters for alarm test */
+-	char *buf[] = { "-1", "ULONG_MAX", "ULONG_MAX+1" };
+-	unsigned long int sec[] = { -1, ULONG_MAX, ULONG_MAX + 1 };
+-	int exp[] = { 0, 0, 0 };
+-	int i;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		for (i = 0; i < TST_TOTAL; i++) {
+-
+-			received_alarm = 0;
+-			signal(SIGALRM, alarm_received);
+-
+-			TEST(alarm(sec[i]));
+-			alarm(0);
+-			if (TEST_RETURN != 0) {
+-				tst_resm(TFAIL,
+-					 "alarm(%lu) returned %ld, when %u was "
+-					 "expected for value %s",
+-					 sec[i], TEST_RETURN, exp[i], buf[i]);
+-			} else {
+-				if (received_alarm == 1) {
+-					tst_resm(TFAIL,
+-						 "alarm(%lu) returned %ldu but an "
+-						 "alarm signal was received for "
+-						 "value %s",
+-						 sec[i], TEST_RETURN, buf[i]);
+-				} else {
+-					tst_resm(TPASS,
+-						 "alarm(%lu) returned %ld as "
+-						 "expected for value %s",
+-						 sec[i], TEST_RETURN, buf[i]);
+-				}
+-
+-			}
+-		}
+-		/*
+-		 *  Reset alarm before cleanup.
+-		 */
+-
+-		alarm(0);
++	TEST(alarm(0));
++	if (alarms_received == 1) {
++		tst_res(TFAIL,
++			"alarm(%u) signal was received for value %s",
++			tc->sec, tc->buf);
++			return;
 +	}
-+}
-+
-+static void verify_prctl(void)
-+{
-+	int status, ret;
-+	pid_t pid;
-+	pid_t ppid = getpid();
-+
-+	sigchild_recv = 0;
-+
-+	TEST(prctl(PR_SET_CHILD_SUBREAPER, 1));
-+	if (TEST_RETURN == -1) {
-+		if (TEST_ERRNO == EINVAL) {
-+			tst_res(TCONF,
-+				"prctl() doesn't support PR_SET_CHILD_SUBREAPER");
-+		} else {
-+			tst_res(TFAIL | TTERRNO,
-+				"prctl(PR_SET_CHILD_SUBREAPER) failed");
-+		}
-+		return;
-+	}
-+
-+	tst_res(TPASS, "prctl(PR_SET_CHILD_SUBREAPER) succeeded");
-+
-+	pid = SAFE_FORK();
-+	if (!pid) {
-+		pid_t cpid;
-+
-+		cpid = SAFE_FORK();
-+		if (!cpid) {
-+			TST_CHECKPOINT_WAIT(0);
-+			if (getppid() != ppid) {
-+				tst_res(TFAIL,
-+					"PPID of orphaned process was not reparented");
-+				exit(1);
-+			}
-+
-+			tst_res(TPASS, "PPID of orphaned process was reparented");
-+			exit(0);
-+		}
-+
-+		check_get_subreaper(0);
-+		exit(0);
-+	}
-+
-+	SAFE_WAITPID(pid, NULL, 0);
-+	TST_CHECKPOINT_WAKE(0);
-+	ret = wait(&status);
-+	if (ret > 0) {
-+		tst_res(TPASS, "wait() got orphaned process, pid %d, status %d",
-+			ret, status);
-+	} else {
-+		tst_res(TFAIL | TERRNO,
-+			"wait() failed to get orphaned process");
-+	}
-+
-+	if (sigchild_recv == 2)
-+		tst_res(TPASS, "received SIGCHLD from orphaned process");
-+	else
-+		tst_res(TFAIL, "didn't receive SIGCHLD from orphaned process");
-+
-+	check_get_subreaper(1);
-+}
-+
-+static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
-+{
-+	sigchild_recv++;
-+}
-+
+ 
++	if (TEST_RETURN != tc->sec) {
++		tst_res(TFAIL,
++			"alarm(%u) returned %ld as unexpected",
++			tc->sec, TEST_RETURN);
++			return;
+ 	}
+ 
+-	cleanup();
+-	tst_exit();
++	tst_res(TPASS,
++		"alarm(%u) returned %ld as expected "
++		"for value %s",
++		tc->sec, TEST_RETURN, tc->buf);
+ }
+ 
+-void setup(void)
++static void sighandler(int sig)
+ {
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
++	if (sig == SIGALRM)
++		alarms_received++;
+ }
+ 
+-void cleanup(void)
 +static void setup(void)
-+{
-+	SAFE_SIGNAL(SIGCHLD, sighandler);
-+}
-+
+ {
++	SAFE_SIGNAL(SIGALRM, sighandler);
+ }
+ 
+-void alarm_received(int sig)
+-{
+-	received_alarm = 1;
+-}
 +static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = verify_alarm,
 +	.setup = setup,
-+	.forks_child = 1,
-+	.needs_checkpoints = 1,
-+	.test_all = verify_prctl,
 +};
 -- 
 1.8.3.1
