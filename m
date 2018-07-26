@@ -1,54 +1,57 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 26 Jul 2018 15:51:33 +0800
-Subject: [LTP] [PATCH] syscalls/madvise02.c: Fix ENOMEM errno tests
-In-Reply-To: <65184495.35943072.1532591172754.JavaMail.zimbra@redhat.com>
-References: <1532671538-22356-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <65184495.35943072.1532591172754.JavaMail.zimbra@redhat.com>
-Message-ID: <5B597D85.4080809@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 26 Jul 2018 10:07:23 +0200
+Subject: [LTP] [PATCH 1/1] README: Add link to patchwork instance
+Message-ID: <20180726080723.21588-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2018/07/26 15:46, Jan Stancek wrote:
-> ----- Original Message -----
->> With commit 212a4b9 on some distros(e.g. RHEL6.9/7.5), running
->> madvise02 got the following error:
->> ------------------------------------------------------
->> ...
->> madvise02.c:181: CONF: MADV_UNMERGEABLE is not supported
->> madvise02.c:196: FAIL: madvise succeeded unexpectedly
->> madvise02.c:196: FAIL: madvise succeeded unexpectedly
->> madvise02.c:181: CONF: MADV_WILLNEED is not supported
->> ...
->> -------------------------------------------------------
->>
->> If MAP_SIZE was equal to a pagesize, shared_anon may get the same
->> address which was a part of file2 and already unmapped, so that the
->> whole address of file2 became valid again.  Subsequently, ENOMEM
->> errno tests succeeded, so changing the order of mmaps to make
->> shared_anon get different address.
->>
->> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
-> Hi,
->
-> I changed patch to move MUNMAP() instead and added comment
-> explaining why.
->
-> You can review it here:
->    https://github.com/linux-test-project/ltp/commit/030e321ce1dfdc3a8daf7ef5a5b7bb7734cf2d9f
-Hi Jan,
++ note patches in ML as preferred way
++ fix doc formatting
 
-Thanks for your quick review, and it seems better to me. :-)
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Hi,
 
-Thanks,
-Xiao Yang
-> Thanks,
-> Jan
->
->
->
+hope that preferring patches in ML over GitHub pull requests is not
+controversial for anyone. That's the only reason why I send this tiny
+doc patch to ML.
 
 
+Kind regards,
+Petr
+---
+ README.md | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/README.md b/README.md
+index bfb05d921..240335657 100644
+--- a/README.md
++++ b/README.md
+@@ -22,6 +22,9 @@ http://lists.linux.it/listinfo/ltp
+ The git repository is located at GitHub at:
+ https://github.com/linux-test-project/ltp
+ 
++The patchwork instance is at:
++https://patchwork.ozlabs.org/project/ltp/list/
++
+ Warning!
+ ========
+ 
+@@ -178,6 +181,8 @@ There is also a step-by-step tutorial:
+ If something is not covered there don't hesitate to ask on the LTP mailing
+ list. Also note that these documents are available online at:
+ 
+-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
+-https://github.com/linux-test-project/ltp/wiki/BuildSystem
+-https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
++* https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
++* https://github.com/linux-test-project/ltp/wiki/BuildSystem
++* https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
++
++Although we accept GitHub pull requests, the preferred way is sending patches to our mailing list.
+-- 
+2.18.0
 
