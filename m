@@ -1,10 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 26 Jul 2018 15:04:39 +0200
-Subject: [LTP] [PATCH ltp] runtest/{ltplite,
- stress.part1}: update commands for gf01-30/rwtest01-05
-In-Reply-To: <20180706084928.6017-1-yixin.zhang@intel.com>
-References: <20180706084928.6017-1-yixin.zhang@intel.com>
-Message-ID: <20180726130439.GA12339@dell5510>
+Date: Thu, 26 Jul 2018 15:05:52 +0200
+Subject: [LTP] [PATCH ltp] stress.part1: sync change of fs_inod01 from
+ 'fs'
+In-Reply-To: <20180706073651.12942-1-yixin.zhang@intel.com>
+References: <20180706073651.12942-1-yixin.zhang@intel.com>
+Message-ID: <20180726130552.GB12339@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,20 +13,33 @@ To: ltp@lists.linux.it
 
 Hi Yixin,
 
-> gf01-30/rwtest01-05 are orignal defined in runtest file 'fs', and they
-> are updated multiple times in file 'fs' but missed in 'ltplite'/'stress.part1'.
-> So this patch copy all updates to the tests in 'ltplite'/'stress.part1'.
-
-> Ref:
-> c9dd96e6b2f811dbad119c3558d90cb7dfc3919b
-> 95e8b61433efcefb83699aaf859e92ad2b576373
-> 606e544932248858f65c7ab3061f77c542c07cfe
+> There is another fs_inod01 in the test case scenario 'fs', and the
+> iteration is increased from 1 to 10 in commit
+> b0458a3c838c86faf2d8855c097628c0c435532a, so implement the same change
+> here.
 
 > Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+> ---
+>  runtest/stress.part1 | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-I wonder if we want to keep these runtest/stress.part[1-3] and runtest/ltplite
-files. ATM we don't have feature to include runtest files (among other problems
-with test runner), but keeping this duplicity doesn't look to me.
+> diff --git a/runtest/stress.part1 b/runtest/stress.part1
+> index 423d25e38..af6fce511 100644
+> --- a/runtest/stress.part1
+> +++ b/runtest/stress.part1
+> @@ -157,7 +157,7 @@ rwtest05 export LTPROOT; rwtest -N rwtest05 -c -q -i 50 -T 64b 500b:/tmp/rwtest0
+>  #iogen01 iogen -i 120s -s read,write 500b:doio.f1.$$ 1000b:doio.f2.$$ | doio -akv -n 2
+>  iogen01 export LTPROOT; rwtest -N iogen01 -i 120s -s read,write -Da -Dv -n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
+
+> -fs_inod01 fs_inod $TMPDIR 10 10 1
+> +fs_inod01 fs_inod $TMPDIR 10 10 10
+>  linker01 linktest.sh 1000 1000
+>  openfile01 openfile -f10 -t10
+>  inode01 inode01
+
+This commit could be merged into previous one
+
+There is also iogen01 command not being synced.
 
 
 Kind regards,
