@@ -1,57 +1,181 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 26 Jul 2018 10:07:23 +0200
-Subject: [LTP] [PATCH 1/1] README: Add link to patchwork instance
-Message-ID: <20180726080723.21588-1-pvorel@suse.cz>
+From: Yixin Zhang <yixin.zhang@intel.com>
+Date: Thu, 26 Jul 2018 16:34:26 +0800
+Subject: [LTP] [PATCH v2 ltp] runltp: fix shellcheck error for sending email
+Message-ID: <20180726083426.19026-1-yixin.zhang@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-+ note patches in ML as preferred way
-+ fix doc formatting
+runltp:894:11: error: Couldn't parse this test expression. [SC1073]
+runltp:894:13: error: If grouping expressions inside [..], use \( ..\). [SC1026]
+runltp:894:15: error: Expected test to end here (don't wrap commands in []/[[]]).
+                      Fix any mentioned problems and try again. [SC1072]
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Change '-o' to '&&' according to the comment and context.
+Then as "$LOGFILE_NAME" is always not empty, remove below "if" statement
+and update indentation accordingly:
+
+if [ -z "$HTMLFILE_NAME" ] && [ -z "$OUTPUTFILE_NAME" ] && [ -z "$LOGFILE_NAME" ]; then
+  ##User does not have output/logs/html-output, nothing to be mailed in this situation
+  echo "Nothing to be mailed here...."
+
+Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
 ---
-Hi,
+ runltp | 139 +++++++++++++++++++++++++++++++----------------------------------
+ 1 file changed, 67 insertions(+), 72 deletions(-)
 
-hope that preferring patches in ML over GitHub pull requests is not
-controversial for anyone. That's the only reason why I send this tiny
-doc patch to ML.
-
-
-Kind regards,
-Petr
----
- README.md | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/README.md b/README.md
-index bfb05d921..240335657 100644
---- a/README.md
-+++ b/README.md
-@@ -22,6 +22,9 @@ http://lists.linux.it/listinfo/ltp
- The git repository is located at GitHub at:
- https://github.com/linux-test-project/ltp
+diff --git a/runltp b/runltp
+index 24ea94fe5..3f3aa4f53 100755
+--- a/runltp
++++ b/runltp
+@@ -890,78 +890,73 @@ main()
  
-+The patchwork instance is at:
-+https://patchwork.ozlabs.org/project/ltp/list/
-+
- Warning!
- ========
+     fi
  
-@@ -178,6 +181,8 @@ There is also a step-by-step tutorial:
- If something is not covered there don't hesitate to ask on the LTP mailing
- list. Also note that these documents are available online at:
+-    if [ "$ALT_EMAIL_OUT" -eq 1 ] ; then                      ## User wants reports to be e-mailed
+-       if [ [ ! "$HTMLFILE_NAME" ] -o [ ! "$OUTPUTFILE_NAME" ] -o [ ! "$LOGFILE_NAME" ] ] ; then
+-          ##User does not have output/logs/html-output, nothing to be mailed in this situation
+-          echo "Nothing to be mailed here...."
+-       else
+-           TAR_FILE_NAME=LTP_RUN_$version_date$DEFAULT_FILE_NAME_GENERATION_TIME.tar
+-           if [ "$HTMLFILE_NAME" ] ; then                          ## HTML file Exists
+-              if [ "$ALT_HTML_OUT" -ne 1 ] ; then                  ## The HTML file path is absolute and not $LTPROOT/output
+-                 mkdir -p $LTPROOT/output                          ## We need to create this Directory
+-                 cp $HTMLFILE_NAME $LTPROOT/output/
+-              fi
+-           fi
+-           if [ "$OUTPUTFILE_NAME" ] ; then                        ## Output file exists
+-              if [ "$ALT_DIR_OUT" -ne 1 ] ; then                   ## The Output file path is absolute and not $LTPROOT/output
+-                 mkdir -p $LTPROOT/output                          ## We need to create this Directory
+-                 cp $OUTPUTFILE_NAME $LTPROOT/output/
+-              fi
+-           fi
+-           if [ "$LOGFILE_NAME" ] ; then                           ## Log file exists
+-              if [ "$ALT_DIR_RES" -ne 1 ] ; then                   ## The Log file path is absolute and not $LTPROOT/results
+-                 mkdir -p $LTPROOT/results                         ## We need to create this Directory
+-                 cp $LOGFILE_NAME $LTPROOT/results/
+-              fi
+-           fi
+-           if [ -d $LTPROOT/output ] ; then
+-              tar -cf  ./$TAR_FILE_NAME $LTPROOT/output
+-              if [ $? -eq 0 ]; then
+-                 echo "Created TAR File: ./$TAR_FILE_NAME successfully, added $LTPROOT/output"
+-              else
+-                 echo "Cannot Create TAR File: ./$TAR_FILE_NAME for adding $LTPROOT/output"
+-              fi
+-           fi
+-           if [ -d $LTPROOT/results ] ; then
+-              tar -uf ./$TAR_FILE_NAME $LTPROOT/results
+-              if [ $? -eq 0 ]; then
+-                 echo "Updated TAR File: ./$TAR_FILE_NAME successfully, added $LTPROOT/results"
+-              else
+-                 echo "Cannot Update TAR File: ./$TAR_FILE_NAME for adding $LTPROOT/results"
+-              fi
+-           fi
+-           if [ -e $LTPROOT/nohup.out ] ; then                     ## If User would have Chosen nohup to do ltprun
+-              tar -uf ./$TAR_FILE_NAME $LTPROOT/nohup.out
+-              if [ $? -eq 0 ]; then
+-                 echo "Updated TAR File: ./$TAR_FILE_NAME successfully, added $LTPROOT/nohup.out"
+-              else
+-                 echo "Cannot Update TAR File: ./$TAR_FILE_NAME for adding $LTPROOT/nohup.out"
+-              fi
+-           fi
+-           gzip ./$TAR_FILE_NAME                                     ## gzip this guy
+-           if [ $? -eq 0 ]; then
+-              echo "Gunzipped TAR File: ./$TAR_FILE_NAME"
+-           else
+-              echo "Cannot Gunzip TAR File: ./$TAR_FILE_NAME"
+-           fi
+-           if which mutt >/dev/null 2>&1; then
+-              echo "Starting mailing reports to: $EMAIL_TO, file: ./$TAR_FILE_NAME.gz"
+-              mutt -a ./$TAR_FILE_NAME.gz -s "LTP Reports on $test_start_time" -- $EMAIL_TO < /dev/null
+-              if [ $? -eq 0 ]; then
+-                 echo "Reports Successfully mailed to: $EMAIL_TO"
+-              else
+-                 echo "Reports cannot be mailed to: $EMAIL_TO"
+-              fi
+-           else ## Use our Ageold mail program
+-              echo "Starting mailing reports to: $EMAIL_TO, file: ./$TAR_FILE_NAME.gz"
+-              uuencode ./$TAR_FILE_NAME.gz $TAR_FILE_NAME.gz | mail  $EMAIL_TO -s "LTP Reports on $test_start_time"
+-              if [ $? -eq 0 ]; then
+-                 echo "Reports Successfully mailed to: $EMAIL_TO"
+-              else
+-                 echo "Reports cannot be mailed to: $EMAIL_TO"
+-              fi
+-           fi
+-       fi
++    if [ "$ALT_EMAIL_OUT" -eq 1 ] ; then                    ## User wants reports to be e-mailed
++        TAR_FILE_NAME=LTP_RUN_$version_date$DEFAULT_FILE_NAME_GENERATION_TIME.tar
++        if [ "$HTMLFILE_NAME" ] ; then                      ## HTML file Exists
++            if [ "$ALT_HTML_OUT" -ne 1 ] ; then             ## The HTML file path is absolute and not $LTPROOT/output
++                mkdir -p $LTPROOT/output                    ## We need to create this Directory
++                cp $HTMLFILE_NAME $LTPROOT/output/
++            fi
++        fi
++        if [ "$OUTPUTFILE_NAME" ] ; then                    ## Output file exists
++            if [ "$ALT_DIR_OUT" -ne 1 ] ; then              ## The Output file path is absolute and not $LTPROOT/output
++                mkdir -p $LTPROOT/output                    ## We need to create this Directory
++                cp $OUTPUTFILE_NAME $LTPROOT/output/
++            fi
++        fi
++        if [ "$LOGFILE_NAME" ] ; then                       ## Log file exists
++            if [ "$ALT_DIR_RES" -ne 1 ] ; then              ## The Log file path is absolute and not $LTPROOT/results
++                mkdir -p $LTPROOT/results                   ## We need to create this Directory
++                cp $LOGFILE_NAME $LTPROOT/results/
++            fi
++        fi
++        if [ -d $LTPROOT/output ] ; then
++            tar -cf  ./$TAR_FILE_NAME $LTPROOT/output
++            if [ $? -eq 0 ]; then
++                echo "Created TAR File: ./$TAR_FILE_NAME successfully, added $LTPROOT/output"
++            else
++                echo "Cannot Create TAR File: ./$TAR_FILE_NAME for adding $LTPROOT/output"
++            fi
++        fi
++        if [ -d $LTPROOT/results ] ; then
++            tar -uf ./$TAR_FILE_NAME $LTPROOT/results
++            if [ $? -eq 0 ]; then
++                echo "Updated TAR File: ./$TAR_FILE_NAME successfully, added $LTPROOT/results"
++            else
++                echo "Cannot Update TAR File: ./$TAR_FILE_NAME for adding $LTPROOT/results"
++            fi
++        fi
++        if [ -e $LTPROOT/nohup.out ] ; then                 ## If User would have Chosen nohup to do ltprun
++            tar -uf ./$TAR_FILE_NAME $LTPROOT/nohup.out
++            if [ $? -eq 0 ]; then
++                echo "Updated TAR File: ./$TAR_FILE_NAME successfully, added $LTPROOT/nohup.out"
++            else
++                echo "Cannot Update TAR File: ./$TAR_FILE_NAME for adding $LTPROOT/nohup.out"
++            fi
++        fi
++        gzip ./$TAR_FILE_NAME                               ## gzip this guy
++        if [ $? -eq 0 ]; then
++            echo "Gunzipped TAR File: ./$TAR_FILE_NAME"
++        else
++            echo "Cannot Gunzip TAR File: ./$TAR_FILE_NAME"
++        fi
++        if which mutt >/dev/null 2>&1; then
++            echo "Starting mailing reports to: $EMAIL_TO, file: ./$TAR_FILE_NAME.gz"
++            mutt -a ./$TAR_FILE_NAME.gz -s "LTP Reports on $test_start_time" -- $EMAIL_TO < /dev/null
++            if [ $? -eq 0 ]; then
++                echo "Reports Successfully mailed to: $EMAIL_TO"
++            else
++                echo "Reports cannot be mailed to: $EMAIL_TO"
++            fi
++        else ## Use our Ageold mail program
++            echo "Starting mailing reports to: $EMAIL_TO, file: ./$TAR_FILE_NAME.gz"
++            uuencode ./$TAR_FILE_NAME.gz $TAR_FILE_NAME.gz | mail  $EMAIL_TO -s "LTP Reports on $test_start_time"
++            if [ $? -eq 0 ]; then
++                echo "Reports Successfully mailed to: $EMAIL_TO"
++            else
++                echo "Reports cannot be mailed to: $EMAIL_TO"
++            fi
++        fi
+     fi
  
--https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
--https://github.com/linux-test-project/ltp/wiki/BuildSystem
--https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
-+* https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
-+* https://github.com/linux-test-project/ltp/wiki/BuildSystem
-+* https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
-+
-+Although we accept GitHub pull requests, the preferred way is sending patches to our mailing list.
+     [ ! -z "$QUIET_MODE" ] && { echo "INFO: Test end time: $(date)" ; }
 -- 
-2.18.0
+2.14.1
 
