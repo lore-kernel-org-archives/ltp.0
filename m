@@ -1,181 +1,175 @@
-From: Yixin Zhang <yixin.zhang@intel.com>
-Date: Thu, 26 Jul 2018 16:34:26 +0800
-Subject: [LTP] [PATCH v2 ltp] runltp: fix shellcheck error for sending email
-Message-ID: <20180726083426.19026-1-yixin.zhang@intel.com>
+From: Michael Moese <mmoese@suse.de>
+Date: Thu, 26 Jul 2018 10:46:20 +0200
+Subject: [LTP] [PATCH] add new testcase for bind
+Message-ID: <20180726084620.14645-1-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-runltp:894:11: error: Couldn't parse this test expression. [SC1073]
-runltp:894:13: error: If grouping expressions inside [..], use \( ..\). [SC1026]
-runltp:894:15: error: Expected test to end here (don't wrap commands in []/[[]]).
-                      Fix any mentioned problems and try again. [SC1072]
+With
+  0fb44559ffd6  af_unix: move unix_mknod() out of bindlock
+the behavior of bind() for STREAM UNIX sockets changed in
+case a socket that is already bound is passed to bind() again.
 
-Change '-o' to '&&' according to the comment and context.
-Then as "$LOGFILE_NAME" is always not empty, remove below "if" statement
-and update indentation accordingly:
+This testcase fails for the new behavior and passes for the
+old one.
 
-if [ -z "$HTMLFILE_NAME" ] && [ -z "$OUTPUTFILE_NAME" ] && [ -z "$LOGFILE_NAME" ]; then
-  ##User does not have output/logs/html-output, nothing to be mailed in this situation
-  echo "Nothing to be mailed here...."
-
-Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+Signed-off-by: Michael Moese <mmoese@suse.de>
 ---
- runltp | 139 +++++++++++++++++++++++++++++++----------------------------------
- 1 file changed, 67 insertions(+), 72 deletions(-)
+ runtest/syscalls                          |   1 +
+ testcases/kernel/syscalls/bind/.gitignore |   1 +
+ testcases/kernel/syscalls/bind/bind03.c   | 120 ++++++++++++++++++++++
+ 3 files changed, 122 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/bind/bind03.c
 
-diff --git a/runltp b/runltp
-index 24ea94fe5..3f3aa4f53 100755
---- a/runltp
-+++ b/runltp
-@@ -890,78 +890,73 @@ main()
+diff --git a/runtest/syscalls b/runtest/syscalls
+index dc72484cb..e8b93a65b 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -29,6 +29,7 @@ asyncio02 asyncio02
  
-     fi
+ bind01 bind01
+ bind02 bind02
++bind03 bind03
  
--    if [ "$ALT_EMAIL_OUT" -eq 1 ] ; then                      ## User wants reports to be e-mailed
--       if [ [ ! "$HTMLFILE_NAME" ] -o [ ! "$OUTPUTFILE_NAME" ] -o [ ! "$LOGFILE_NAME" ] ] ; then
--          ##User does not have output/logs/html-output, nothing to be mailed in this situation
--          echo "Nothing to be mailed here...."
--       else
--           TAR_FILE_NAME=LTP_RUN_$version_date$DEFAULT_FILE_NAME_GENERATION_TIME.tar
--           if [ "$HTMLFILE_NAME" ] ; then                          ## HTML file Exists
--              if [ "$ALT_HTML_OUT" -ne 1 ] ; then                  ## The HTML file path is absolute and not $LTPROOT/output
--                 mkdir -p $LTPROOT/output                          ## We need to create this Directory
--                 cp $HTMLFILE_NAME $LTPROOT/output/
--              fi
--           fi
--           if [ "$OUTPUTFILE_NAME" ] ; then                        ## Output file exists
--              if [ "$ALT_DIR_OUT" -ne 1 ] ; then                   ## The Output file path is absolute and not $LTPROOT/output
--                 mkdir -p $LTPROOT/output                          ## We need to create this Directory
--                 cp $OUTPUTFILE_NAME $LTPROOT/output/
--              fi
--           fi
--           if [ "$LOGFILE_NAME" ] ; then                           ## Log file exists
--              if [ "$ALT_DIR_RES" -ne 1 ] ; then                   ## The Log file path is absolute and not $LTPROOT/results
--                 mkdir -p $LTPROOT/results                         ## We need to create this Directory
--                 cp $LOGFILE_NAME $LTPROOT/results/
--              fi
--           fi
--           if [ -d $LTPROOT/output ] ; then
--              tar -cf  ./$TAR_FILE_NAME $LTPROOT/output
--              if [ $? -eq 0 ]; then
--                 echo "Created TAR File: ./$TAR_FILE_NAME successfully, added $LTPROOT/output"
--              else
--                 echo "Cannot Create TAR File: ./$TAR_FILE_NAME for adding $LTPROOT/output"
--              fi
--           fi
--           if [ -d $LTPROOT/results ] ; then
--              tar -uf ./$TAR_FILE_NAME $LTPROOT/results
--              if [ $? -eq 0 ]; then
--                 echo "Updated TAR File: ./$TAR_FILE_NAME successfully, added $LTPROOT/results"
--              else
--                 echo "Cannot Update TAR File: ./$TAR_FILE_NAME for adding $LTPROOT/results"
--              fi
--           fi
--           if [ -e $LTPROOT/nohup.out ] ; then                     ## If User would have Chosen nohup to do ltprun
--              tar -uf ./$TAR_FILE_NAME $LTPROOT/nohup.out
--              if [ $? -eq 0 ]; then
--                 echo "Updated TAR File: ./$TAR_FILE_NAME successfully, added $LTPROOT/nohup.out"
--              else
--                 echo "Cannot Update TAR File: ./$TAR_FILE_NAME for adding $LTPROOT/nohup.out"
--              fi
--           fi
--           gzip ./$TAR_FILE_NAME                                     ## gzip this guy
--           if [ $? -eq 0 ]; then
--              echo "Gunzipped TAR File: ./$TAR_FILE_NAME"
--           else
--              echo "Cannot Gunzip TAR File: ./$TAR_FILE_NAME"
--           fi
--           if which mutt >/dev/null 2>&1; then
--              echo "Starting mailing reports to: $EMAIL_TO, file: ./$TAR_FILE_NAME.gz"
--              mutt -a ./$TAR_FILE_NAME.gz -s "LTP Reports on $test_start_time" -- $EMAIL_TO < /dev/null
--              if [ $? -eq 0 ]; then
--                 echo "Reports Successfully mailed to: $EMAIL_TO"
--              else
--                 echo "Reports cannot be mailed to: $EMAIL_TO"
--              fi
--           else ## Use our Ageold mail program
--              echo "Starting mailing reports to: $EMAIL_TO, file: ./$TAR_FILE_NAME.gz"
--              uuencode ./$TAR_FILE_NAME.gz $TAR_FILE_NAME.gz | mail  $EMAIL_TO -s "LTP Reports on $test_start_time"
--              if [ $? -eq 0 ]; then
--                 echo "Reports Successfully mailed to: $EMAIL_TO"
--              else
--                 echo "Reports cannot be mailed to: $EMAIL_TO"
--              fi
--           fi
--       fi
-+    if [ "$ALT_EMAIL_OUT" -eq 1 ] ; then                    ## User wants reports to be e-mailed
-+        TAR_FILE_NAME=LTP_RUN_$version_date$DEFAULT_FILE_NAME_GENERATION_TIME.tar
-+        if [ "$HTMLFILE_NAME" ] ; then                      ## HTML file Exists
-+            if [ "$ALT_HTML_OUT" -ne 1 ] ; then             ## The HTML file path is absolute and not $LTPROOT/output
-+                mkdir -p $LTPROOT/output                    ## We need to create this Directory
-+                cp $HTMLFILE_NAME $LTPROOT/output/
-+            fi
-+        fi
-+        if [ "$OUTPUTFILE_NAME" ] ; then                    ## Output file exists
-+            if [ "$ALT_DIR_OUT" -ne 1 ] ; then              ## The Output file path is absolute and not $LTPROOT/output
-+                mkdir -p $LTPROOT/output                    ## We need to create this Directory
-+                cp $OUTPUTFILE_NAME $LTPROOT/output/
-+            fi
-+        fi
-+        if [ "$LOGFILE_NAME" ] ; then                       ## Log file exists
-+            if [ "$ALT_DIR_RES" -ne 1 ] ; then              ## The Log file path is absolute and not $LTPROOT/results
-+                mkdir -p $LTPROOT/results                   ## We need to create this Directory
-+                cp $LOGFILE_NAME $LTPROOT/results/
-+            fi
-+        fi
-+        if [ -d $LTPROOT/output ] ; then
-+            tar -cf  ./$TAR_FILE_NAME $LTPROOT/output
-+            if [ $? -eq 0 ]; then
-+                echo "Created TAR File: ./$TAR_FILE_NAME successfully, added $LTPROOT/output"
-+            else
-+                echo "Cannot Create TAR File: ./$TAR_FILE_NAME for adding $LTPROOT/output"
-+            fi
-+        fi
-+        if [ -d $LTPROOT/results ] ; then
-+            tar -uf ./$TAR_FILE_NAME $LTPROOT/results
-+            if [ $? -eq 0 ]; then
-+                echo "Updated TAR File: ./$TAR_FILE_NAME successfully, added $LTPROOT/results"
-+            else
-+                echo "Cannot Update TAR File: ./$TAR_FILE_NAME for adding $LTPROOT/results"
-+            fi
-+        fi
-+        if [ -e $LTPROOT/nohup.out ] ; then                 ## If User would have Chosen nohup to do ltprun
-+            tar -uf ./$TAR_FILE_NAME $LTPROOT/nohup.out
-+            if [ $? -eq 0 ]; then
-+                echo "Updated TAR File: ./$TAR_FILE_NAME successfully, added $LTPROOT/nohup.out"
-+            else
-+                echo "Cannot Update TAR File: ./$TAR_FILE_NAME for adding $LTPROOT/nohup.out"
-+            fi
-+        fi
-+        gzip ./$TAR_FILE_NAME                               ## gzip this guy
-+        if [ $? -eq 0 ]; then
-+            echo "Gunzipped TAR File: ./$TAR_FILE_NAME"
-+        else
-+            echo "Cannot Gunzip TAR File: ./$TAR_FILE_NAME"
-+        fi
-+        if which mutt >/dev/null 2>&1; then
-+            echo "Starting mailing reports to: $EMAIL_TO, file: ./$TAR_FILE_NAME.gz"
-+            mutt -a ./$TAR_FILE_NAME.gz -s "LTP Reports on $test_start_time" -- $EMAIL_TO < /dev/null
-+            if [ $? -eq 0 ]; then
-+                echo "Reports Successfully mailed to: $EMAIL_TO"
-+            else
-+                echo "Reports cannot be mailed to: $EMAIL_TO"
-+            fi
-+        else ## Use our Ageold mail program
-+            echo "Starting mailing reports to: $EMAIL_TO, file: ./$TAR_FILE_NAME.gz"
-+            uuencode ./$TAR_FILE_NAME.gz $TAR_FILE_NAME.gz | mail  $EMAIL_TO -s "LTP Reports on $test_start_time"
-+            if [ $? -eq 0 ]; then
-+                echo "Reports Successfully mailed to: $EMAIL_TO"
-+            else
-+                echo "Reports cannot be mailed to: $EMAIL_TO"
-+            fi
-+        fi
-     fi
+ bdflush01 bdflush01
  
-     [ ! -z "$QUIET_MODE" ] && { echo "INFO: Test end time: $(date)" ; }
+diff --git a/testcases/kernel/syscalls/bind/.gitignore b/testcases/kernel/syscalls/bind/.gitignore
+index ba46f4fa2..4ebea9ee7 100644
+--- a/testcases/kernel/syscalls/bind/.gitignore
++++ b/testcases/kernel/syscalls/bind/.gitignore
+@@ -1,2 +1,3 @@
+ /bind01
+ /bind02
++/bind03
+diff --git a/testcases/kernel/syscalls/bind/bind03.c b/testcases/kernel/syscalls/bind/bind03.c
+new file mode 100644
+index 000000000..72045e6b4
+--- /dev/null
++++ b/testcases/kernel/syscalls/bind/bind03.c
+@@ -0,0 +1,120 @@
++/*
++ * Copyright (c) 2018 Michael Moese <mmoese@suse.com>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++/* The commit 0fb44559ffd6  af_unix: move unix_mknod() out of bindlock
++ * changed the behavior of bind() for STREAM UNIX domain sockets if
++ */
++
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <sys/un.h>
++
++#include <err.h>
++#include <errno.h>
++#include <limits.h>
++#include <stdio.h>
++#include <string.h>
++#include <unistd.h>
++#include <stdlib.h>
++
++#include "tst_test.h"
++#include "tst_safe_net.h"
++
++#define SOCK_NAME "socket.1"
++
++
++static int sock1, sock2;
++
++static char dir_path[PATH_MAX];
++static char sockpath[PATH_MAX];
++
++void run(void)
++{
++	struct sockaddr_un sun;
++
++	sock1 = SAFE_SOCKET(PF_UNIX, SOCK_STREAM, 0);
++
++	memset(&sun, 0, sizeof(sun));
++	sun.sun_family = AF_UNIX;
++	if (snprintf(sockpath, sizeof(sockpath), "%s/%s", dir_path, SOCK_NAME)
++	    >= PATH_MAX) {
++		tst_res(TBROK, "bind_test: snprintf(sockpath)");
++		return;
++	}
++	if (snprintf(sun.sun_path, sizeof(sun.sun_path), "%s", sockpath)
++	    >= (int) sizeof(sun.sun_path)) {
++		tst_res(TBROK, "bind_test: snprintf(sun.sun_path)");
++		return;
++	}
++
++	SAFE_BIND(sock1, (struct sockaddr *)&sun, sizeof(sun));
++
++	/*
++	 * Once a STREAM UNIX domain socket has been bound, it can't be
++	 * rebound. Expected error is EINVAL.
++	 * cannot use SAFE_BIND() here.
++	 */
++	if (bind(sock1, (struct sockaddr *)&sun, sizeof(sun)) == 0) {
++		tst_res(TFAIL, "re-binding of socket succeeded");
++		return;
++	}
++
++	if (errno != EINVAL) {
++		tst_res(TFAIL | TERRNO, "expected EINVAL");
++		return;
++	}
++
++	sock2 = SAFE_SOCKET(PF_UNIX, SOCK_STREAM, 0);
++
++	/*
++	 * Since a socket is already bound to the pathname, it can't be bound
++	 * to a second socket. Expected error is EADDRINUSE.
++	 * again, cannot use SAFE_BIND().
++	 */
++	if (bind(sock2, (struct sockaddr *)&sun, sizeof(sun)) == 0) {
++		tst_res(TFAIL, "bind() succeeded with already bound pathname!");
++		return;
++	}
++
++	if (errno != EADDRINUSE) {
++		tst_res(TFAIL | TERRNO, "expected to fail with EADDRINUSE");
++		return;
++	}
++
++	tst_res(TPASS, "bind() failed with EADDRINUSE as expected");
++}
++
++
++static void setup(void)
++{
++	strncpy(dir_path, "/tmp/unix_bind.XXXXXXX", PATH_MAX);
++	if (mkdtemp(dir_path) == NULL)
++		tst_res(TBROK, "cannot create temporary directory");
++}
++
++static void cleanup(void)
++{
++	close(sock1);
++	close(sock2);
++	unlink(sockpath);
++	rmdir(dir_path);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run,
++};
 -- 
-2.14.1
+2.18.0
 
