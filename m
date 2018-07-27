@@ -1,82 +1,160 @@
-From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Thu, 26 Jul 2018 16:51:39 +0100
-Subject: [LTP] [PATCH] ltp-pan: Increase allowed width of test name in logs
-Message-ID: <20180726155139.11246-1-punit.agrawal@arm.com>
+From: Michael Moese <mmoese@suse.de>
+Date: Fri, 27 Jul 2018 09:30:59 +0200
+Subject: [LTP] [PATCH v2] add new testcase for bind
+Message-ID: <20180727073057.22798-1-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-ltp-pan truncates the test name when logging the outcome of
-tests. This is causing issues with tooling which is expecting to parse
-unique test names from the log.
+With
+  0fb44559ffd6  af_unix: move unix_mknod() out of bindlock
+the behavior of bind() for STREAM UNIX sockets changed in
+case a socket that is already bound is passed to bind() again.
 
-cgroup_fj_stress_cpuacct_2_2_o PASS       0
-cgroup_fj_stress_cpuacct_3_3_o PASS       0
-cgroup_fj_stress_cpuacct_4_4_o PASS       0
-cgroup_fj_stress_cpuacct_2_9_o PASS       0
-cgroup_fj_stress_cpuacct_10_3_ PASS       0
+This testcase fails for the new behavior and passes for the
+old one.
 
-Fix this by increasing the expected size of test name and removing the
-hard restriction on the size of the name. Refactor the format string
-into a global variable as it seems to be repeated multiple times.
-
-Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
+Signed-off-by: Michael Moese <mmoese@suse.de>
+Acked-by: Petr Vorel <pvorel@suse.cz>
 ---
-Hi,
+Changes to v1:
+I just cleaned the includes and comments as suggested.
 
-This was noticed after we enabled the cgroup_fj_stress* tests. The
-problem leads to the result parsing scripts to fail.
+ runtest/syscalls                          |   1 +
+ testcases/kernel/syscalls/bind/.gitignore |   1 +
+ testcases/kernel/syscalls/bind/bind03.c   | 101 ++++++++++++++++++++++
+ 3 files changed, 103 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/bind/bind03.c
 
-Thanks,
-Punit
-
- pan/ltp-pan.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
-index a2bb9b7ef..65bc4cae7 100644
---- a/pan/ltp-pan.c
-+++ b/pan/ltp-pan.c
-@@ -129,6 +129,7 @@ static char *panname = NULL;
- static char *test_out_dir = NULL;	/* dir to buffer output to */
- zoo_t zoofile;
- static char *reporttype = NULL;
-+static char *result_fmt = "%-50s %-10.10s %-10.10s\n";
+diff --git a/runtest/syscalls b/runtest/syscalls
+index dc72484cb..e8b93a65b 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -29,6 +29,7 @@ asyncio02 asyncio02
  
- /* zoolib */
- int rec_signal;			/* received signal */
-@@ -350,9 +351,9 @@ int main(int argc, char **argv)
- 			fprintf(logfile, "Test Start Time: %s\n", s);
- 			fprintf(logfile,
- 				"-----------------------------------------\n");
--			fprintf(logfile, "%-30.20s %-10.10s %-10.10s\n",
-+			fprintf(logfile, result_fmt,
- 				"Testcase", "Result", "Exit Value");
--			fprintf(logfile, "%-30.20s %-10.10s %-10.10s\n",
-+			fprintf(logfile, result_fmt,
- 				"--------", "------", "------------");
- 		}
- 		fflush(logfile);
-@@ -825,7 +826,7 @@ check_pids(struct tag_pgrp *running, int *num_active, int keep_active,
- 						}
+ bind01 bind01
+ bind02 bind02
++bind03 bind03
  
- 						fprintf(logfile,
--							"%-30.30s %-10.10s %-5d\n",
-+							result_fmt,
- 							running[i].cmd->name,
- 							result_str,
- 							w);
-@@ -1104,7 +1105,7 @@ run_child(struct coll_entry *colle, struct tag_pgrp *active, int quiet_mode,
- 				if (termid != 0)
- 					++ * failcnt;
+ bdflush01 bdflush01
  
--				fprintf(logfile, "%-30.30s %-10.10s %-5d\n",
-+				fprintf(logfile, result_fmt,
- 					colle->name,
- 					((termid != 0) ? "FAIL" : "PASS"),
- 					termid);
+diff --git a/testcases/kernel/syscalls/bind/.gitignore b/testcases/kernel/syscalls/bind/.gitignore
+index ba46f4fa2..4ebea9ee7 100644
+--- a/testcases/kernel/syscalls/bind/.gitignore
++++ b/testcases/kernel/syscalls/bind/.gitignore
+@@ -1,2 +1,3 @@
+ /bind01
+ /bind02
++/bind03
+diff --git a/testcases/kernel/syscalls/bind/bind03.c b/testcases/kernel/syscalls/bind/bind03.c
+new file mode 100644
+index 000000000..9afb1cd99
+--- /dev/null
++++ b/testcases/kernel/syscalls/bind/bind03.c
+@@ -0,0 +1,101 @@
++/*
++ * Copyright (c) 2018 Michael Moese <mmoese@suse.com>
++ *
++ * SPDX-License-Identifier: GPL-2.0-or-later
++ */
++/* The commit 0fb44559ffd6  af_unix: move unix_mknod() out of bindlock
++ * changed the behavior of bind() for STREAM UNIX domain sockets if
++ */
++
++#include <errno.h>
++#include <limits.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++#include "tst_test.h"
++#include "tst_safe_net.h"
++
++#define SOCK_NAME "socket.1"
++
++
++static int sock1, sock2;
++
++static char dir_path[PATH_MAX];
++static char sockpath[PATH_MAX];
++
++void run(void)
++{
++	struct sockaddr_un sun;
++
++	sock1 = SAFE_SOCKET(PF_UNIX, SOCK_STREAM, 0);
++
++	memset(&sun, 0, sizeof(sun));
++	sun.sun_family = AF_UNIX;
++	if (snprintf(sockpath, sizeof(sockpath), "%s/%s", dir_path, SOCK_NAME)
++	    >= PATH_MAX) {
++		tst_res(TBROK, "bind_test: snprintf(sockpath)");
++		return;
++	}
++	if (snprintf(sun.sun_path, sizeof(sun.sun_path), "%s", sockpath)
++	    >= (int) sizeof(sun.sun_path)) {
++		tst_res(TBROK, "bind_test: snprintf(sun.sun_path)");
++		return;
++	}
++
++	SAFE_BIND(sock1, (struct sockaddr *)&sun, sizeof(sun));
++
++	/*
++	 * Once a STREAM UNIX domain socket has been bound, it can't be
++	 * rebound. Expected error is EINVAL.
++	 */
++	if (bind(sock1, (struct sockaddr *)&sun, sizeof(sun)) == 0) {
++		tst_res(TFAIL, "re-binding of socket succeeded");
++		return;
++	}
++
++	if (errno != EINVAL) {
++		tst_res(TFAIL | TERRNO, "expected EINVAL");
++		return;
++	}
++
++	sock2 = SAFE_SOCKET(PF_UNIX, SOCK_STREAM, 0);
++
++	/*
++	 * Since a socket is already bound to the pathname, it can't be bound
++	 * to a second socket. Expected error is EADDRINUSE.
++	 */
++	if (bind(sock2, (struct sockaddr *)&sun, sizeof(sun)) == 0) {
++		tst_res(TFAIL, "bind() succeeded with already bound pathname!");
++		return;
++	}
++
++	if (errno != EADDRINUSE) {
++		tst_res(TFAIL | TERRNO, "expected to fail with EADDRINUSE");
++		return;
++	}
++
++	tst_res(TPASS, "bind() failed with EADDRINUSE as expected");
++}
++
++
++static void setup(void)
++{
++	strncpy(dir_path, "/tmp/unix_bind.XXXXXXX", PATH_MAX);
++	if (mkdtemp(dir_path) == NULL)
++		tst_res(TBROK, "cannot create temporary directory");
++}
++
++static void cleanup(void)
++{
++	close(sock1);
++	close(sock2);
++	unlink(sockpath);
++	rmdir(dir_path);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run,
++};
 -- 
 2.18.0
 
