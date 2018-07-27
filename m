@@ -1,57 +1,144 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 27 Jul 2018 13:24:15 +0300
-Subject: [LTP] [RFC PATCH 2/2] netstress: Update help for -m behavior
-In-Reply-To: <20180724141432.GA31915@dell5510>
-References: <20180719125358.948-1-pvorel@suse.cz>
- <20180719125358.948-2-pvorel@suse.cz> <20180724141432.GA31915@dell5510>
-Message-ID: <e31b2915-84e3-5601-7502-5336fd0c3b3a@oracle.com>
+From: Michael Moese <mmoese@suse.de>
+Date: Fri, 27 Jul 2018 14:30:14 +0200
+Subject: [LTP] [PATCH v3] add new testcase for bind
+Message-ID: <20180727123014.24435-1-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 07/24/2018 05:14 PM, Petr Vorel wrote:
-> Hi Alexey,
-> 
->> Hi Petr,
-> 
->> Since the server waits for requests from the client, the timeout
->> value for UDP/DCCP is the same as for the other protocols. Also the
->> server starts earlier than the client, so it should wait some time
->> to get the client requests.
-> 
->> I've changed the client side only because either request from the
->> client or reply from the server might be lost.
-> 
-> Thanks for your explanation.
-> I mean: UDP itself is the only protocol which don't support listen() so
-> netstress server using UDP timeouts after some time. The default is 100ms.
+With
+  0fb44559ffd6  af_unix: move unix_mknod() out of bindlock
+the behavior of bind() for STREAM UNIX sockets changed in
+case a socket that is already bound is passed to bind() again.
 
-Hmm, for the server the default should be 60 sec. Does it timeout earlier?
+This testcase fails for the new behavior and passes for the
+old one.
 
-It is more than enough for the tests to start the client on the other end
-and start sending requests. If it hasn't happened during this time period
-there is no reason to have it running there.
+Signed-off-by: Michael Moese <mmoese@suse.de>
+---
 
-> But due obvious return before listen() for UDP in server_init() -m parameter
-> affects behavior of the server in UDP (how quickly it timeouts):
-> 
+Changes to v2:
+change to relative socket path and letting the harness handle the
+temporaty directory
 
-And with listen() it won't wait forever either, it will be killed by LTP
-timeout per test run...
+Changes to v1:
+I just cleaned the includes and comments as suggested.
+---
+ runtest/syscalls                          |  1 +
+ testcases/kernel/syscalls/bind/.gitignore |  1 +
+ testcases/kernel/syscalls/bind/bind03.c   | 81 +++++++++++++++++++++++
+ 3 files changed, 83 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/bind/bind03.c
 
-> $ date +"%T.%3N"; testcases/network/netstress/netstress -m 1 -T udp; date +"%T.%3N"
-> 15:52:34.501
- > tst_test.c:1015: INFO: Timeout per run is 0h 05m 00s
-> netstress.c:917: INFO: max requests '3'
-> netstress.c:944: INFO: using UDP
-> netstress.c:676: INFO: assigning a name to the server socket...
-> netstress.c:683: INFO: bind to port 47728
-> netstress.c:575: FAIL: recv failed, sock '3'
-> netstress.c:642: BROK: Server closed
-> ...
-> 15:52:34.516
+diff --git a/runtest/syscalls b/runtest/syscalls
+index dc72484cb..e8b93a65b 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -29,6 +29,7 @@ asyncio02 asyncio02
+ 
+ bind01 bind01
+ bind02 bind02
++bind03 bind03
+ 
+ bdflush01 bdflush01
+ 
+diff --git a/testcases/kernel/syscalls/bind/.gitignore b/testcases/kernel/syscalls/bind/.gitignore
+index ba46f4fa2..4ebea9ee7 100644
+--- a/testcases/kernel/syscalls/bind/.gitignore
++++ b/testcases/kernel/syscalls/bind/.gitignore
+@@ -1,2 +1,3 @@
+ /bind01
+ /bind02
++/bind03
+diff --git a/testcases/kernel/syscalls/bind/bind03.c b/testcases/kernel/syscalls/bind/bind03.c
+new file mode 100644
+index 000000000..06314a8c0
+--- /dev/null
++++ b/testcases/kernel/syscalls/bind/bind03.c
+@@ -0,0 +1,81 @@
++/*
++ * Copyright (c) 2018 Michael Moese <mmoese@suse.com>
++ *
++ * SPDX-License-Identifier: GPL-2.0-or-later
++ */
++/* The commit 0fb44559ffd6  af_unix: move unix_mknod() out of bindlock
++ * changed the behavior of bind() for STREAM UNIX domain sockets if
++ */
++
++#include <errno.h>
++#include <limits.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++#include "tst_test.h"
++#include "tst_safe_net.h"
++
++#define SNAME "socket.1"
++
++static int sock1, sock2;
++
++void run(void)
++{
++	struct sockaddr_un sun;
++
++	sock1 = SAFE_SOCKET(PF_UNIX, SOCK_STREAM, 0);
++
++	memset(&sun, 0, sizeof(sun));
++	sun.sun_family = AF_UNIX;
++	if (sprintf(sun.sun_path, "%s", SNAME) < (int) strlen(SNAME)) {
++		tst_res(TFAIL, "sprintf failed");
++		return;
++	}
++
++	SAFE_BIND(sock1, (struct sockaddr *)&sun, sizeof(sun));
++
++	/*
++	 * Once a STREAM UNIX domain socket has been bound, it can't be
++	 * rebound. Expected error is EINVAL.
++	 */
++	if (bind(sock1, (struct sockaddr *)&sun, sizeof(sun)) == 0) {
++		tst_res(TFAIL, "re-binding of socket succeeded");
++		return;
++	}
++
++	if (errno != EINVAL) {
++		tst_res(TFAIL | TERRNO, "expected EINVAL");
++		return;
++	}
++
++	sock2 = SAFE_SOCKET(PF_UNIX, SOCK_STREAM, 0);
++
++	/*
++	 * Since a socket is already bound to the pathname, it can't be bound
++	 * to a second socket. Expected error is EADDRINUSE.
++	 */
++	if (bind(sock2, (struct sockaddr *)&sun, sizeof(sun)) == 0) {
++		tst_res(TFAIL, "bind() succeeded with already bound pathname!");
++		return;
++	}
++
++	if (errno != EADDRINUSE) {
++		tst_res(TFAIL | TERRNO, "expected to fail with EADDRINUSE");
++		return;
++	}
++
++	tst_res(TPASS, "bind() failed with EADDRINUSE as expected");
++}
++
++static void cleanup(void)
++{
++	close(sock1);
++	close(sock2);
++}
++
++static struct tst_test test = {
++	.cleanup = cleanup,
++	.test_all = run,
++	.needs_tmpdir = 1,
++};
+-- 
+2.18.0
 
-Thanks,
-Alexey
