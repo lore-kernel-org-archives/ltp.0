@@ -1,144 +1,170 @@
-From: Michael Moese <mmoese@suse.de>
-Date: Fri, 27 Jul 2018 14:30:14 +0200
-Subject: [LTP] [PATCH v3] add new testcase for bind
-Message-ID: <20180727123014.24435-1-mmoese@suse.de>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri, 27 Jul 2018 16:01:40 +0300
+Subject: [LTP] [PATCH v2 1/1] network/route: Rewrite route-change-dst
+ into new API
+In-Reply-To: <20180723072332.22179-1-pvorel@suse.cz>
+References: <20180723072332.22179-1-pvorel@suse.cz>
+Message-ID: <25966119-9937-727a-9df0-c5a636d22582@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-With
-  0fb44559ffd6  af_unix: move unix_mknod() out of bindlock
-the behavior of bind() for STREAM UNIX sockets changed in
-case a socket that is already bound is passed to bind() again.
+On 07/23/2018 10:23 AM, Petr Vorel wrote:
+> Drop route command (use just ip command), simplify.
+> 
+> Use "unused" IP for routes (not affect real traffic).
+> 
+> Validate connection with UDP, sent over tst_netload.
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> I wonder if this really stress the interface enough.  I still have in
+> mind to rewrite route-change-{dst,gw,if} into C (use RTNETLINK), that
+> would be more stressful.
+> Another option is to have both implementations
+> - shell based with tst_netload validation and
+> - C based which just changes destination/gateway/interface without
+>   validating route
+> 
+> Comments are welcome.
+> 
+> Kind regards,
+> Petr
+> ---
+>  runtest/net_stress.route                      |   4 +-
+>  .../network/stress/ns-tools/tst_net_stress.sh |   2 +-
+>  .../network/stress/route/00_Descriptions.txt  |  17 +-
+>  .../network/stress/route/route-change-dst     |  47 +++
+>  .../network/stress/route/route4-change-dst    | 276 ------------------
+>  .../network/stress/route/route6-change-dst    | 272 -----------------
+>  6 files changed, 53 insertions(+), 565 deletions(-)
+>  mode change 100644 => 100755 testcases/network/stress/ns-tools/tst_net_stress.sh
+>  create mode 100755 testcases/network/stress/route/route-change-dst
+>  delete mode 100644 testcases/network/stress/route/route4-change-dst
+>  delete mode 100644 testcases/network/stress/route/route6-change-dst
+> 
+> diff --git a/runtest/net_stress.route b/runtest/net_stress.route
+> index 266ef0383..b6ea11c2e 100644
+> --- a/runtest/net_stress.route
+> +++ b/runtest/net_stress.route
+> @@ -2,13 +2,13 @@
+>  # Stress test for routing table
+>  #
+>  
+> -route4-change-dst route4-change-dst
+> +route4-change-dst route-change-dst
+>  route4-change-gw route4-change-gw
+>  route4-change-if route4-change-if
+>  route4-redirect route4-redirect
+>  route4-rmmod route4-rmmod
+>  
+> -route6-change-dst route6-change-dst
+> +route6-change-dst route-change-dst -6
+>  route6-change-gw route6-change-gw
+>  route6-change-if route6-change-if
+>  route6-redirect route6-redirect
+> diff --git a/testcases/network/stress/ns-tools/tst_net_stress.sh b/testcases/network/stress/ns-tools/tst_net_stress.sh
+> old mode 100644
+> new mode 100755
+> index e5c2672a3..0e97e68a8
+> --- a/testcases/network/stress/ns-tools/tst_net_stress.sh
+> +++ b/testcases/network/stress/ns-tools/tst_net_stress.sh
+> @@ -107,7 +107,7 @@ check_connectivity_interval()
+>  	check_connectivity $src_iface $dst_addr $cnt
+>  }
+>  
+> -# Run netstress process on both lhost and rhost.
+> +# Run netstress TCP process on both lhost and rhost.
+>  # make_background_tcp_traffic [IP]
+>  # IP: server IP; Default value is $(tst_ipaddr).
+>  make_background_tcp_traffic()
+> diff --git a/testcases/network/stress/route/00_Descriptions.txt b/testcases/network/stress/route/00_Descriptions.txt
+> index 2a871fdae..e9e4d7961 100644
+> --- a/testcases/network/stress/route/00_Descriptions.txt
+> +++ b/testcases/network/stress/route/00_Descriptions.txt
+> @@ -1,10 +1,7 @@
+> -route4-change-dst01
+> -	Verify the kernel is not crashed when the destination of an IPv4 route
+> -	is changed frequently by route command
+> +route-change-dst
+> +	Verify the IPv4/IPv6 is not broken when ip command changes route
+> +	destination many times
+>  
+> -route4-change-dst02
+> -	Verify the kernel is not crashed when the destination of an IPv4 route
+> -	is changed frequently by ip command
+>  
+>  route4-change-gw01
+>  	Verify the kernel is not crashed when the gateway of an IPv4 route is
+> @@ -35,14 +32,6 @@ route4-rmmod02
+>  	then it is deleted by the removing network driver
+>  
+>  
+> -route6-change-dst01
+> -	Verify the kernel is not crashed when the destination of an IPv6 route
+> -	is changed frequently by route command
+> -
+> -route6-change-dst02
+> -	Verify the kernel is not crashed when the destination of an IPv6 route
+> -	is changed frequently by ip command
+> -
+>  route6-change-gw01
+>  	Verify the kernel is not crashed when the gateway of an IPv6 route is
+>  	changed frequently by route command
+> diff --git a/testcases/network/stress/route/route-change-dst b/testcases/network/stress/route/route-change-dst
+> new file mode 100755
+> index 000000000..e793f1658
+> --- /dev/null
+> +++ b/testcases/network/stress/route/route-change-dst
+> @@ -0,0 +1,47 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
+> +# Copyright (c) International Business Machines Corp., 2005
+> +# Author: Mitsuru Chinen <mitch@jp.ibm.com>
+> +
+> +TST_TESTFUNC="do_test"
+> +TST_SETUP="do_setup"
+> +TST_CLEANUP="restore_ipaddr"
+> +TST_NEEDS_CMDS="ip"
+> +TST_CNT=$NS_TIMES
+> +TST_NEEDS_TMPDIR=1
+> +
+> +. tst_net_stress.sh
+> +
+> +do_setup()
+> +{
+> +	mask=$IPV4_LPREFIX
+> +	[ "$TST_IPV6" ] && mask=$IPV6_LPREFIX
+> +	netstress_setup
+> +	tst_res TINFO "change IPv$TST_IPVER route destination $NS_TIMES times"
+> +}
+> +
+> +do_test()
+> +{
+> +	local iface=$(tst_iface)
+> +	local addr new_rt
+> +
+> +	new_rt="$(tst_ipaddr_un $1)/$mask"
+> +	addr="$(tst_ipaddr_un $1 1)"
+> +
+> +	tst_res TINFO "testing route '$new_rt'"
+> +	tst_rhost_run -c "ip addr add $addr/$mask dev $(tst_iface rhost)"
+> +
+> +	ROD ip route add $new_rt dev $iface
+> +	ROD ip neigh replace $addr lladdr $(tst_hwaddr rhost) nud permanent dev $iface
+> +
+> +	tst_netload -T udp -r 1 -a 1 -H $addr
 
-This testcase fails for the new behavior and passes for the
-old one.
 
-Signed-off-by: Michael Moese <mmoese@suse.de>
----
+Unfortunately, it won't work this way. tst_netload is using requests/response
+model for UDP. You have to make sure the server can send responses.
 
-Changes to v2:
-change to relative socket path and letting the harness handle the
-temporaty directory
-
-Changes to v1:
-I just cleaned the includes and comments as suggested.
----
- runtest/syscalls                          |  1 +
- testcases/kernel/syscalls/bind/.gitignore |  1 +
- testcases/kernel/syscalls/bind/bind03.c   | 81 +++++++++++++++++++++++
- 3 files changed, 83 insertions(+)
- create mode 100644 testcases/kernel/syscalls/bind/bind03.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index dc72484cb..e8b93a65b 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -29,6 +29,7 @@ asyncio02 asyncio02
- 
- bind01 bind01
- bind02 bind02
-+bind03 bind03
- 
- bdflush01 bdflush01
- 
-diff --git a/testcases/kernel/syscalls/bind/.gitignore b/testcases/kernel/syscalls/bind/.gitignore
-index ba46f4fa2..4ebea9ee7 100644
---- a/testcases/kernel/syscalls/bind/.gitignore
-+++ b/testcases/kernel/syscalls/bind/.gitignore
-@@ -1,2 +1,3 @@
- /bind01
- /bind02
-+/bind03
-diff --git a/testcases/kernel/syscalls/bind/bind03.c b/testcases/kernel/syscalls/bind/bind03.c
-new file mode 100644
-index 000000000..06314a8c0
---- /dev/null
-+++ b/testcases/kernel/syscalls/bind/bind03.c
-@@ -0,0 +1,81 @@
-+/*
-+ * Copyright (c) 2018 Michael Moese <mmoese@suse.com>
-+ *
-+ * SPDX-License-Identifier: GPL-2.0-or-later
-+ */
-+/* The commit 0fb44559ffd6  af_unix: move unix_mknod() out of bindlock
-+ * changed the behavior of bind() for STREAM UNIX domain sockets if
-+ */
-+
-+#include <errno.h>
-+#include <limits.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+
-+#include "tst_test.h"
-+#include "tst_safe_net.h"
-+
-+#define SNAME "socket.1"
-+
-+static int sock1, sock2;
-+
-+void run(void)
-+{
-+	struct sockaddr_un sun;
-+
-+	sock1 = SAFE_SOCKET(PF_UNIX, SOCK_STREAM, 0);
-+
-+	memset(&sun, 0, sizeof(sun));
-+	sun.sun_family = AF_UNIX;
-+	if (sprintf(sun.sun_path, "%s", SNAME) < (int) strlen(SNAME)) {
-+		tst_res(TFAIL, "sprintf failed");
-+		return;
-+	}
-+
-+	SAFE_BIND(sock1, (struct sockaddr *)&sun, sizeof(sun));
-+
-+	/*
-+	 * Once a STREAM UNIX domain socket has been bound, it can't be
-+	 * rebound. Expected error is EINVAL.
-+	 */
-+	if (bind(sock1, (struct sockaddr *)&sun, sizeof(sun)) == 0) {
-+		tst_res(TFAIL, "re-binding of socket succeeded");
-+		return;
-+	}
-+
-+	if (errno != EINVAL) {
-+		tst_res(TFAIL | TERRNO, "expected EINVAL");
-+		return;
-+	}
-+
-+	sock2 = SAFE_SOCKET(PF_UNIX, SOCK_STREAM, 0);
-+
-+	/*
-+	 * Since a socket is already bound to the pathname, it can't be bound
-+	 * to a second socket. Expected error is EADDRINUSE.
-+	 */
-+	if (bind(sock2, (struct sockaddr *)&sun, sizeof(sun)) == 0) {
-+		tst_res(TFAIL, "bind() succeeded with already bound pathname!");
-+		return;
-+	}
-+
-+	if (errno != EADDRINUSE) {
-+		tst_res(TFAIL | TERRNO, "expected to fail with EADDRINUSE");
-+		return;
-+	}
-+
-+	tst_res(TPASS, "bind() failed with EADDRINUSE as expected");
-+}
-+
-+static void cleanup(void)
-+{
-+	close(sock1);
-+	close(sock2);
-+}
-+
-+static struct tst_test test = {
-+	.cleanup = cleanup,
-+	.test_all = run,
-+	.needs_tmpdir = 1,
-+};
--- 
-2.18.0
-
+Also, netstress UDP/DCCP client allows to pass 'max_etime_cnt' (12) failed
+requests after which it will double receive timeout, starting from 100ms up to
+3.2s. This is about 30 sec if there is no connection. With a single request or
+below max_etime_cnt + 1 value it will always pass. I guess we need to set the
+proper request parameter limit for UDP/DCCP protocol or check whether the
+number of timeout errors is equal or greater than the number of requests.
