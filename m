@@ -1,81 +1,87 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 30 Jul 2018 13:42:45 +0800
-Subject: [LTP] [PATCH v2] zram03: drop obsolete sysfs interfaces
-In-Reply-To: <20180612120239.vhzwj524oi4qs27m@dell5510>
-References: <1528412099-50431-1-git-send-email-yang.shi@linux.alibaba.com>
- <20180612120239.vhzwj524oi4qs27m@dell5510>
-Message-ID: <5B5EA555.7020205@cn.fujitsu.com>
+From: Eddie Horng <eddiehorng.tw@gmail.com>
+Date: Mon, 30 Jul 2018 17:41:43 +0800
+Subject: [LTP] [PATCH] syscalls/execveat01: new test to verify execveat
+ unlinked fd
+In-Reply-To: <20180727094703.GB914@rei>
+References: <1532678306.28611.1.camel@mtkswgap22> <20180727094703.GB914@rei>
+Message-ID: <CALLuPvpvAoM=roZjv85-fLCh=Bz7zomcwB9qXH7-BSNtUihtVA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2018/06/12 20:02, Petr Vorel wrote:
-> Hi Yang,
->
->> Due to upstream linux commit c87d1655c29500b459fb135258a93f8309ada9c7
->> ("zram: remove obsolete sysfs attrs"), some sysfs interfaces are not
->> available anymore.
->  From the commit is seen, that most of them (missing num_reads and
-> num_writes) has been accessible for some time from /sys/block/zram<id>/mm_stat.
-> And indeed the docs [1] confirm that. Maybe it'd make sense to parse this file
-> and use the data.
->
-> /sys/block/zram<id>/mm_stat was added in 4f2109f608815 (v4.1-rc1)
-> Interesting, it's also in Centos7 3.10.0-693 kernel, it must have been
-> backported there (obviously not in 3.16 from Debian).
->
-> [1] https://www.kernel.org/doc/Documentation/blockdev/zram.txt
-Hi Petr,
+2018-07-27 17:47 GMT+08:00 Cyril Hrubis <chrubis@suse.cz>:
+> Hi!
 
-I am sorry for missing this patch.
+Hi Cyril,
+Thanks your detail review and suggestions, I have couples of
+questions as below:
 
-I got the same issue and have sent another patch to fix it as you suggested.
-Could you help me review the following patch:
-http://lists.linux.it/pipermail/ltp/2018-July/008702.html
-
-Thanks,
-Xiao Yang
->
-> Kind regards,
-> Petr
->
->> Check kernel version, and remove dumping them on>= 4.10 kernel to avoid
->> test case failure.
->> Suggested-by: Li Wang<liwang@redhat.com>
->> Signed-off-by: Yang Shi<yang.shi@linux.alibaba.com>
->> ---
->> v1 -->  v2:
->> Check kernel version to dump proper stats per Li Wang's suggestion
->>   testcases/kernel/device-drivers/zram/zram03.c | 16 ++++++++++------
->>   1 file changed, 10 insertions(+), 6 deletions(-)
->> diff --git a/testcases/kernel/device-drivers/zram/zram03.c b/testcases/kernel/device-drivers/zram/zram03.c
->> index 3f7ab4e..58d88bc 100644
->> --- a/testcases/kernel/device-drivers/zram/zram03.c
->> +++ b/testcases/kernel/device-drivers/zram/zram03.c
->> @@ -185,11 +185,15 @@ static void print(char *string)
->>   static void dump_info(void)
->>   {
->>   	print("initstate");
->> -	print("compr_data_size");
->> -	print("orig_data_size");
->>   	print("disksize");
->> -	print("mem_used_total");
->> -	print("num_reads");
->> -	print("num_writes");
->> -	print("zero_pages");
+>> +static void do_child(void)
+>> +{
 >> +
->> +	if ((tst_kvercmp(4, 10, 0))<  0) {
->> +		/* The below stats are not available on 4.10 or newer kernel */
->> +		print("compr_data_size");
->> +		print("orig_data_size");
->> +		print("mem_used_total");
->> +		print("num_reads");
->> +		print("num_writes");
->> +		print("zero_pages");
->> +	}
->>   }
+>> +     char path[PATH_MAX];
+>> +     char *argv[2] = {TEST_APP, NULL};
+>> +     int fd;
+>> +
+>> +     if (tst_get_path(TEST_APP, path, sizeof(path))) {
+>> +             tst_brk(TBROK | TERRNO,
+>> +                      "Couldn't found "TEST_APP" binary in $PATH");
+>> +     }
+>> +     SAFE_CP(path, TEST_FILE_PATH);
+>
+> We do have a better API for this, have a look at creat07.c
 
+Could you have more detail guide on this? ie. copy TEST_APP to
+ovl mount path.
 
+>> +     fd = SAFE_OPEN(TEST_FILE_PATH, O_PATH);
+>> +     SAFE_UNLINK(TEST_FILE_PATH);
+>> +
+>> +     argv[0] = TEST_FILE_PATH;
+>> +     TEST(execveat(fd, "", argv, NULL, AT_EMPTY_PATH));
+>> +     if (TEST_ERRNO == ENOSYS) {
+>> +             tst_brk(TCONF,
+>> +                     "execveat is not supported in this kernel.");
+>> +     }
+>
+> I suppose that we should handle EINVAL here, I think that we will get
+> EINVAL rather than ENOSYS when kernel will not recognize __NR_execveat
 
+EINVAL is happened to be the same return code of this testcase is expecting --
+the regression introduced from 8db6c34f1dbc ("Introduce v3 namespaced
+file capabilities"), therefore I might need another way to test whether kernel
+recognize __NR_execveat, so that I can differentiate not recognize and the
+regression. Do you have suggestion on this?
+
+>> +int main(void)
+>> +{
+>> +     printf("Hello World\n");
+>> +     exit(0);
+>
+> You can print the TPASS message from here and the result will be
+> propagated to the parent program. You just need to call tst_reinit()
+> that will initialize the test library. See creat07_child.c.
+
+I change execveat_child.c as below and get errors as:
+tst_test.c:144: BROK: LTP_IPC_PATH is not defined
+tst_test.c:869: BROK: Test haven't reported results!
+
+I think the cause is execveat() doesn't pass environment variables
+to its child, but SAFE_EXECL in creat07.c does.
+Do you suggest pass LTP_IPC_PATH in execveat() to make
+tst_reinit() in execveat_child run properly, or something else?
+
+#define TST_NO_DEFAULT_MAIN
+#include "tst_test.h"
+
+int main()
+{
+  tst_reinit();
+  tst_res(TPASS, "execveat_child is lunched as expcted");
+  return 0;
+}
+
+thanks,
+Eddie
