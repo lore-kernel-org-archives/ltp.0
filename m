@@ -1,11 +1,10 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 30 Jul 2018 09:08:16 -0400 (EDT)
-Subject: [LTP] [PATCH ltp] runtest/{ltplite,
- stress.part1}: update commands for gf01-30/rwtest01-05
-In-Reply-To: <20180726130439.GA12339@dell5510>
-References: <20180706084928.6017-1-yixin.zhang@intel.com>
- <20180726130439.GA12339@dell5510>
-Message-ID: <1362410165.36734032.1532956096134.JavaMail.zimbra@redhat.com>
+Date: Mon, 30 Jul 2018 10:10:40 -0400 (EDT)
+Subject: [LTP] [PATCH v3] Test for memfd_create() syscall with
+ MFD_HUGETLB	flag.
+In-Reply-To: <20180727135320.6590-1-vishnu@zilogic.com>
+References: <20180727135320.6590-1-vishnu@zilogic.com>
+Message-ID: <1256447007.36783029.1532959840507.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,37 +14,419 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> Hi Yixin,
 > 
-> > gf01-30/rwtest01-05 are orignal defined in runtest file 'fs', and they
-> > are updated multiple times in file 'fs' but missed in
-> > 'ltplite'/'stress.part1'.
-> > So this patch copy all updates to the tests in 'ltplite'/'stress.part1'.
+> * memfd_create03: Tests the syscall for the flag MFD_HUGETLB.
 > 
-> > Ref:
-> > c9dd96e6b2f811dbad119c3558d90cb7dfc3919b
-> > 95e8b61433efcefb83699aaf859e92ad2b576373
-> > 606e544932248858f65c7ab3061f77c542c07cfe
+> * memfd_create04: Tests the syscall for the flags MFD_HUGE_2MB,
+>     MFD_HUGE_1GB,... used in conjunction with
+>   MFD_HUGETLB flag.
 > 
-> > Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
-> 
-> I wonder if we want to keep these runtest/stress.part[1-3] and
-> runtest/ltplite
-> files. ATM we don't have feature to include runtest files (among other
-> problems
-> with test runner), but keeping this duplicity doesn't look to me.
+> * memfd_create_hugetlb: Contains helper functions for memfd_create03.c
+>   and memfd_create04.c.
 
-In short-term though the patch looks OK to me. I ran a quick test too,
-all PASSed on 4.18.0-rc5.
+Hi,
+
+<snip>
+
+You seem to left out Makefile hunk in v3, it does not build:
+
+memfd_create03.o: In function `test_max_hugepages':
+/usr/src/ltp/testcases/kernel/syscalls/memfd_create/memfd_create03.c:122: undefined reference to `check_huge_mmapable'
+/usr/src/ltp/testcases/kernel/syscalls/memfd_create/memfd_create03.c:129: undefined reference to `check_huge_non_mmapable'
+memfd_create03.o: In function `test_def_pagesize':
+/usr/src/ltp/testcases/kernel/syscalls/memfd_create/memfd_create03.c:90: undefined reference to `check_huge_mmapable'
+collect2: error: ld returned 1 exit status
+make: *** [memfd_create03] Error 1
+
+> +static int hugepages_enabled;
+> +static long og_total_pages;
+> +
+> +static void test_write_protect(int fd)
+> +{
+> +	ssize_t ret;
+> +	char test_str[] = "LTP";
+> +
+> +	ret = write(fd, test_str, sizeof(test_str));
+> +	if (ret < 0) {
+> +		if (errno != EINVAL) {
+> +			tst_res(TFAIL,
+> +				"write(%d, \"%s\", %zu) didn't fail as expected\n",
+> +				fd, test_str, strlen(test_str));
+
+TERRNO would be helpful, so we know how it failed.
+
+> +			return;
+> +		}
+> +	} else {
+> +		tst_res(TFAIL,
+> +			"write(%d, \"%s\", %zu) succeeded unexpectedly\n",
+> +			fd, test_str, strlen(test_str));
+> +		return;
+> +	}
+> +
+> +	tst_res(TPASS,
+> +		"write(%d, \"%s\", %zu) failed as expected\n",
+> +		fd, test_str, strlen(test_str));
+
+Not that it matters much, but let's be consistent with
+these messages. Messages say length was strlen() == 3,
+but syscall writes sizeof() == 4 bytes.
+
+> +}
+> +
+> +static void test_def_pagesize(int fd)
+> +{
+> +	unsigned int i;
+> +	int unmap_size;
+> +	int ret;
+> +	long hps;
+> +	void *mem;
+> +
+> +	SAFE_FILE_LINES_SCANF(MEMINFO_PATH, DEFAULT_HPS, &hps);
+> +	hps = hps << 10;
+> +	unmap_size = hps / 4;
+> +	mem = CHECK_HUGE_MMAPABLE(fd, hps);
+> +
+> +	for (i = unmap_size; i < hps; i += unmap_size) {
+> +		ret = munmap(mem, i);
+> +		if (ret == -1) {
+> +			tst_res(TINFO,
+> +				"munmap(%p, %dkb) failed as expected",
+> +				mem, i/1024);
+> +		} else {
+> +			tst_res(TFAIL,
+> +				"munmap(%p, %d) suceeded unexpectedly\n",
+> +				mem, i);
+> +			return;
+> +		}
+> +	}
+> +
+> +	SAFE_MUNMAP(mem, hps);
+> +
+> +	tst_res(TPASS, "File created in default pagesize %ldkB\n", hps/1024);
+> +}
+> +
+> +static void test_max_hugepages(int fd)
+> +{
+> +	int res;
+> +	int new_fd;
+> +	long hps;
+> +	long free_pages;
+> +	void *mem;
+> +
+> +	SAFE_FILE_LINES_SCANF(MEMINFO_PATH, FREE_HP, &free_pages);
+> +	SAFE_FILE_LINES_SCANF(MEMINFO_PATH, DEFAULT_HPS, &hps);
+> +	hps = hps << 10;
+> +	mem = CHECK_HUGE_MMAPABLE(fd, free_pages * hps);
+> +
+> +	new_fd = sys_memfd_create("new_file", MFD_HUGETLB);
+> +	if (new_fd < 0)
+> +		tst_brk(TBROK | TERRNO, "memfd_create() failed");
+
+TFAIL seems more fitting here, since this is what test is about.
+
+> +	tst_res(TINFO, "memfd_create() succeeded");
+> +
+> +	res = CHECK_HUGE_NON_MMAPABLE(new_fd, hps);
+> +	if (res == 0)
+> +		tst_res(TPASS, "Hugepages creation is limited as expected\n");
+> +	else
+> +		tst_res(TFAIL, "Hugepages exceeded the allocation limit\n");
+> +
+> +	SAFE_CLOSE(new_fd);
+> +
+> +	SAFE_MUNMAP(mem, free_pages * hps);
+> +}
+> +
+> +static const struct tcase {
+> +	void (*func)(int fd);
+> +	const char *desc;
+> +} tcases[] = {
+> +	{&test_write_protect,   "--TESTING WRITE CALL IN HUGEPAGES--"},
+> +	{&test_def_pagesize,  "--TESTING PAGE SIZE OF CREATED FILE--"},
+> +	{&test_max_hugepages, "--TESTING HUGEPAGE ALLOCATION LIMIT--"},
+> +};
+> +
+> +static void memfd_huge_controller(unsigned int n)
+> +{
+> +	int fd;
+> +	const struct tcase *tc;
+> +
+> +	tc = &tcases[n];
+> +
+> +	tst_res(TINFO, "%s", tc->desc);
+> +
+> +	fd = sys_memfd_create("test_file", MFD_HUGETLB);
+> +	if (fd < 0)
+> +		tst_brk(TBROK | TERRNO, "memfd_create() failed");
+
+I'd go with TFAIL here as well.
+
+> +
+> +	tst_res(TINFO, "memfd_create() succeeded");
+> +
+> +	tc->func(fd);
+> +
+> +	SAFE_CLOSE(fd);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	char buf[8];
+> +	int fd;
+> +	long free_pages;
+> +	long total_pages;
+> +
+> +	if (access("/sys/kernel/mm/hugepages", F_OK))
+> +		tst_brk(TCONF, "Huge page is not supported");
+> +
+> +	SAFE_FILE_LINES_SCANF(MEMINFO_PATH, FREE_HP, &free_pages);
+> +	if (free_pages > 0)
+> +		return;
+> +
+> +	SAFE_FILE_LINES_SCANF(TOTAL_HP_PATH, "%ld", &og_total_pages);
+> +	sprintf(buf, "%ld", og_total_pages + 4);
+> +
+> +	fd = open(TOTAL_HP_PATH, O_RDWR | O_TRUNC);
+> +
+> +	if (write(fd, buf, strlen(buf)) == -1)
+> +		tst_brk(TCONF, "write() fail: Enable Hugepages manually");
+
+knowing errno would be useful for debugging
+
+> +
+> +	hugepages_enabled = 1;
+> +
+> +	SAFE_CLOSE(fd);
+> +
+> +	SAFE_FILE_LINES_SCANF(TOTAL_HP_PATH, "%ld", &total_pages);
+> +	if (total_pages != (og_total_pages + 4))
+> +		tst_brk(TCONF, "Enable Hugepages manually");
+
+This message is misleading, hugepages are enabled, we just can't allocate
+as much as we need. Also I think you said we need only one or two huge
+pages? In that case let's make it the minimum needed. There are
+configurations (aarch64), where default huge page size can be 1GB.
+
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	char buf[8];
+> +	int fd;
+> +	long total_pages;
+> +
+> +	if (hugepages_enabled == 0)
+> +		return;
+> +
+> +	sprintf(buf, "%ld", og_total_pages);
+> +
+> +	fd = open(TOTAL_HP_PATH, O_RDWR | O_TRUNC);
+> +
+> +	if (write(fd, buf, strlen(buf)) == -1)
+> +		tst_brk(TCONF, "Clean-up failed: write() failed");
+> +
+> +	SAFE_CLOSE(fd);
+> +
+> +	SAFE_FILE_LINES_SCANF(TOTAL_HP_PATH, "%ld", &total_pages);
+> +	if (og_total_pages != total_pages)
+> +		tst_brk(TCONF, "Clean-up failed");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.test = memfd_huge_controller,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.needs_root = 1,
+> +	.min_kver = "4.14",
+> +	.cleanup = cleanup,
+> +};
+> diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create04.c
+> b/testcases/kernel/syscalls/memfd_create/memfd_create04.c
+> new file mode 100644
+> index 000000000..f10f3d2bc
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/memfd_create/memfd_create04.c
+> @@ -0,0 +1,100 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +/*
+> + *  Copyright (c) Zilogic Systems Pvt. Ltd., 2018
+> + *  Email: code@zilogic.com
+> + *
+> + * This program is free software;  you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> + * the GNU General Public License for more details.
+> + */
+> +
+> +/*
+> + * Test: Validating memfd_create() with MFD_HUGETLB and MFD_HUGE_x flags.
+> + *
+> + * Test cases: Attempt to create hugepages of different sizes.
+> + *
+> + * Test logic:	memfd_create() should return non-negative value (fd)
+> + *		if the system supports that particular hugepage size.
+> + *		On success, fd is returned.
+> + *              On failure, -1 is returned with ENODEV error.
+> + */
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include "tst_test.h"
+> +#include "memfd_create_common.h"
+> +
+> +#include <errno.h>
+> +#include <stdio.h>
+> +
+> +static  struct test_flag {
+> +	int flag;
+> +	char *h_size;
+> +	int exp_err;
+> +} test_flags[] =  {
+> +	{.flag = MFD_HUGE_64KB,   .h_size = "64kB"},
+> +	{.flag = MFD_HUGE_512KB, .h_size = "512kB"},
+> +	{.flag = MFD_HUGE_2MB,     .h_size = "2MB"},
+> +	{.flag = MFD_HUGE_8MB,     .h_size = "8MB"},
+> +	{.flag = MFD_HUGE_16MB,   .h_size = "16MB"},
+> +	{.flag = MFD_HUGE_256MB, .h_size = "256MB"},
+> +	{.flag = MFD_HUGE_1GB,     .h_size = "1GB"},
+> +	{.flag = MFD_HUGE_2GB,     .h_size = "2GB"},
+> +	{.flag = MFD_HUGE_16GB,   .h_size = "16GB"},
+> +};
+> +
+> +static void check_hugepage_support(struct test_flag *test_flags)
+> +{
+> +	char pattern[50];
+> +
+> +	sprintf(pattern, "DirectMap%s", test_flags->h_size);
+> +	strcat(pattern, ":\t%ld kB");
+> +
+> +	if (FILE_LINES_SCANF("/proc/meminfo", pattern, NULL) == 1)
+> +		test_flags->exp_err = ENODEV;
+
+We should probably check "/sys/kernel/mm/hugepages/hugepages-*" instead.
+meminfo "DirectMap*" is x86 specific, so it won't be available on
+other arches.
+
+> +}
+> +
+> +static void memfd_huge_x_controller(unsigned int n)
+> +{
+> +	int fd;
+> +	struct test_flag tflag;
+> +
+> +	tflag = test_flags[n];
+> +	check_hugepage_support(&tflag);
+> +	tst_res(TINFO, "Attempt to create %s huge pages", tflag.h_size);
+> +
+> +	fd = sys_memfd_create("tfile", MFD_HUGETLB | tflag.flag);
+> +	if (fd < 0) {
+> +		tst_res(TINFO | TERRNO, "memfd_create() failed");
+
+This seems bit redundant, there's already TPASS/TFAIL below.
+
+> +
+> +		if (errno == tflag.exp_err)
+> +			tst_res(TPASS, "Test failed as expected\n");
+> +		else
+> +			tst_brk(TFAIL, "memfd_create() failed unexpectedly");
+
+If you drop TINFO above, please don't forget adding errno here.
+
+> +
+> +		return;
+> +	}
+> +
+> +	tst_res(TPASS, "memfd_create succeeded for %s page size\n",
+> +		tflag.h_size);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	if (access("/sys/kernel/mm/hugepages", F_OK))
+> +		tst_brk(TCONF, "Huge page is not supported");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.test = memfd_huge_x_controller,
+> +	.tcnt = ARRAY_SIZE(test_flags),
+> +	.min_kver = "4.14",
+> +};
+> diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.c
+> b/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.c
+> new file mode 100644
+> index 000000000..3ce7ad9e4
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/memfd_create/memfd_create_hugetlb.c
+> @@ -0,0 +1,69 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +/*
+> + *  Copyright (c) Zilogic Systems Pvt. Ltd., 2018
+> + *  Email: code@zilogic.com
+> + *
+> + * This program is free software;  you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> + * the GNU General Public License for more details.
+> + */
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include "memfd_create_hugetlb.h"
+> +#include "lapi/syscalls.h"
+> +
+> +#include <sys/mman.h>
+> +#include <string.h>
+> +
+> +#define TST_NO_DEFAULT_MAIN
+> +#include "tst_test.h"
+> +
+> +void *check_huge_mmapable(const char *filename, const int lineno,
+> +			  int fd, unsigned long size)
+> +{
+> +	void *mem;
+> +
+> +	mem = SAFE_MMAP(NULL, size, PROT_WRITE, MAP_PRIVATE, fd, 0);
+> +
+> +	memset((char *)mem, 0, 1);
+> +	tst_res_(filename, lineno, TINFO,
+> +		 "mmap(%p, %lu, %d, %d, %d, %d) succeeded",
+> +		 NULL, size, PROT_WRITE, MAP_PRIVATE, fd, 0);
+> +
+> +	return mem;
+> +}
+> +
+> +int check_huge_non_mmapable(const char *filename, const int lineno,
+> +			    int fd, unsigned long size)
+> +{
+> +	void *mem;
+> +
+> +	mem = mmap(NULL, size, 0, MAP_PRIVATE, fd, 0);
+> +
+> +	if (mem == MAP_FAILED) {
+> +		if (errno == ENOMEM)
+> +			tst_res_(filename, lineno, TINFO,
+> +				 "mmap(%p, %lu, %d, %d, %d, %d) failed",
+> +				 NULL, size, PROT_WRITE, MAP_PRIVATE, fd, 0);
+> +		else
+> +			tst_brk_(filename, lineno, TBROK | TTERRNO,
+> +				 "unable to mmap");
+
+This is what test is about, so TFAIL here is more fitting.
+Also it should be TERRNO, TTERNNO prints TEST_ERRNO.
 
 Regards,
 Jan
-
-> 
-> 
-> Kind regards,
-> Petr
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
