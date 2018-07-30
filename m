@@ -1,11 +1,11 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 30 Jul 2018 08:27:00 -0400 (EDT)
-Subject: [LTP] [PATCH] open|creat: skip S_ISGID check on files created
- by non-group members
-In-Reply-To: <20180730115715.GA14198@rei>
-References: <3d0dd8e851d8db6bae222ca5946419b75df35ba5.1531816427.git.jstancek@redhat.com>
- <20180730115715.GA14198@rei>
-Message-ID: <1821507619.36719820.1532953620056.JavaMail.zimbra@redhat.com>
+Date: Mon, 30 Jul 2018 09:08:16 -0400 (EDT)
+Subject: [LTP] [PATCH ltp] runtest/{ltplite,
+ stress.part1}: update commands for gf01-30/rwtest01-05
+In-Reply-To: <20180726130439.GA12339@dell5510>
+References: <20180706084928.6017-1-yixin.zhang@intel.com>
+ <20180726130439.GA12339@dell5510>
+Message-ID: <1362410165.36734032.1532956096134.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,93 +14,38 @@ To: ltp@lists.linux.it
 
 
 
-
 ----- Original Message -----
-> Hi!
-> > 0fa3ecd87848 ("Fix up non-directory creation in SGID directories")
-> > fixes problem described in CVE-2018-13405. This commit is getting
-> > backported to older streams as well.
-> > 
-> > This patch removes S_ISGID check for files created by non-group members
-> > in LTP tests creat08 and open10.
+> Hi Yixin,
 > 
-> Looks good, acked.
+> > gf01-30/rwtest01-05 are orignal defined in runtest file 'fs', and they
+> > are updated multiple times in file 'fs' but missed in
+> > 'ltplite'/'stress.part1'.
+> > So this patch copy all updates to the tests in 'ltplite'/'stress.part1'.
+> 
+> > Ref:
+> > c9dd96e6b2f811dbad119c3558d90cb7dfc3919b
+> > 95e8b61433efcefb83699aaf859e92ad2b576373
+> > 606e544932248858f65c7ab3061f77c542c07cfe
+> 
+> > Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+> 
+> I wonder if we want to keep these runtest/stress.part[1-3] and
+> runtest/ltplite
+> files. ATM we don't have feature to include runtest files (among other
+> problems
+> with test runner), but keeping this duplicity doesn't look to me.
 
-Thanks, I almost forgot about this. Pushed.
+In short-term though the patch looks OK to me. I ran a quick test too,
+all PASSed on 4.18.0-rc5.
 
 Regards,
 Jan
 
 > 
-> > Once 0fa3ecd87848 will be in non-rc kernel, we could add a new test
-> > for this CVE that would be limited to 4.18+ kernels.
 > 
-> Given that this is CVE we may as well go a little bit further and write
-> a test that will fail even on older kernels.
-> 
-> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> > ---
-> >  testcases/kernel/syscalls/creat/creat08.c | 13 ++++++-------
-> >  testcases/kernel/syscalls/open/open10.c   | 12 +++++-------
-> >  2 files changed, 11 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/testcases/kernel/syscalls/creat/creat08.c
-> > b/testcases/kernel/syscalls/creat/creat08.c
-> > index 50f2b39931b8..d22558ac3c53 100644
-> > --- a/testcases/kernel/syscalls/creat/creat08.c
-> > +++ b/testcases/kernel/syscalls/creat/creat08.c
-> > @@ -361,13 +361,12 @@ int main(int ac, char **av)
-> >  			local_flag = FAILED;
-> >  		}
-> >  
-> > -		/* Verify modes */
-> > -		if (!(buf.st_mode & S_ISGID)) {
-> > -			tst_resm(TFAIL,
-> > -				 "%s: Incorrect modes, setgid bit should be set",
-> > -				 setgid_B);
-> > -			local_flag = FAILED;
-> > -		}
-> > +		/*
-> > +		 * Skip S_ISGID check
-> > +		 * 0fa3ecd87848 ("Fix up non-directory creation in SGID directories")
-> > +		 * clears S_ISGID for files created by non-group members
-> > +		 */
-> > +
-> >  		close(fd);
-> >  
-> >  		if (local_flag == PASSED) {
-> > diff --git a/testcases/kernel/syscalls/open/open10.c
-> > b/testcases/kernel/syscalls/open/open10.c
-> > index 613f2288fbde..14feec9e127e 100644
-> > --- a/testcases/kernel/syscalls/open/open10.c
-> > +++ b/testcases/kernel/syscalls/open/open10.c
-> > @@ -345,13 +345,11 @@ int main(int ac, char *av[])
-> >  			local_flag = FAILED;
-> >  		}
-> >  
-> > -		/* Verify modes */
-> > -		if (!(buf.st_mode & S_ISGID)) {
-> > -			tst_resm(TFAIL,
-> > -				 "%s: Incorrect modes, setgid bit not set",
-> > -				 setgid_B);
-> > -			local_flag = FAILED;
-> > -		}
-> > +		/*
-> > +		 * Skip S_ISGID check
-> > +		 * 0fa3ecd87848 ("Fix up non-directory creation in SGID directories")
-> > +		 * clears S_ISGID for files created by non-group members
-> > +		 */
-> >  
-> >  		if (local_flag == PASSED) {
-> >  			tst_resm(TPASS, "Test passed in block2.");
-> > --
-> > 1.8.3.1
-> > 
-> > 
-> > --
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
+> Kind regards,
+> Petr
 > 
 > --
-> Cyril Hrubis
-> chrubis@suse.cz
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 > 
