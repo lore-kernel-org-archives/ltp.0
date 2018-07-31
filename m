@@ -1,46 +1,161 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 31 Jul 2018 14:43:32 +0200
-Subject: [LTP] [PATCH] syscalls/execveat01: new test to verify execveat
- unlinked fd
-In-Reply-To: <CALLuPvrDgQX8XB-oVL_gm58cwRSinVNXTk5PzyUxcG8fG+Wcmw@mail.gmail.com>
-References: <1532678306.28611.1.camel@mtkswgap22> <20180727094703.GB914@rei>
- <CALLuPvrDgQX8XB-oVL_gm58cwRSinVNXTk5PzyUxcG8fG+Wcmw@mail.gmail.com>
-Message-ID: <20180731124331.GB32738@rei>
+Date: Tue, 31 Jul 2018 15:08:52 +0200
+Subject: [LTP] [RFC] [PATCH] lib: Fix result propagation after exec() +
+	tst_reinit()
+Message-ID: <20180731130852.22739-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I removed "if (status == 0) tst_res(TPASS, ..." from execveat01.c and
-> add "tst_res(TPASS, ..." in execveat_child.c, but I got a no reported
-> result error:
-> 
-> execveat_child.c:44: PASS: execveat_child run as expected
-> tst_test.c:869: BROK: Test haven't reported results!
-> 
-> It seems child's test result doesn't propagated to parent.
-> Do I use wrong API in child or miss something in parent?
+The result pointer wasn't initialized in tst_reinit(), which haven't
+allowed for test result propagation to the main test process and there
+is actually no reason not to do that. So this commit initializes the
+results pointer in tst_reinit() and also adds a needs_ipc_path flag to
+tst_test structure, which causes the library not to unlink the IPC file
+after it has been mapped and also inserts LTP_IPC_PATH to the
+environment.
 
-You are right, this is supposed to work but nobody checked that and
-while the IPC is mapped the results pointer is not initialized in the
-test library.
+This commit also adds a test that also shows the usage of the API.
 
-It should work with following patch:
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+CC: Eddie Horng <eddiehorng.tw@gmail.com>
+---
+ include/tst_test.h                 |  1 +
+ lib/newlib_tests/.gitignore        |  2 ++
+ lib/newlib_tests/test_exec.c       | 43 ++++++++++++++++++++++++++++++++++++++
+ lib/newlib_tests/test_exec_child.c | 27 ++++++++++++++++++++++++
+ lib/tst_test.c                     |  3 ++-
+ 5 files changed, 75 insertions(+), 1 deletion(-)
+ create mode 100644 lib/newlib_tests/test_exec.c
+ create mode 100644 lib/newlib_tests/test_exec_child.c
 
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 90938bc29..420597afa 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -127,6 +127,7 @@ struct tst_test {
+ 	int format_device:1;
+ 	int mount_device:1;
+ 	int needs_rofs:1;
++	int needs_ipc_path:1;
+ 	/*
+ 	 * If set the test function will be executed for all available
+ 	 * filesystems and the current filesytem type would be set in the
+diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
+index 8c0981ec8..99edc6404 100644
+--- a/lib/newlib_tests/.gitignore
++++ b/lib/newlib_tests/.gitignore
+@@ -20,3 +20,5 @@ tst_res_hexd
+ tst_strstatus
+ test17
+ tst_expiration_timer
++test_exec
++test_exec_child
+diff --git a/lib/newlib_tests/test_exec.c b/lib/newlib_tests/test_exec.c
+new file mode 100644
+index 000000000..e5b90ffb8
+--- /dev/null
++++ b/lib/newlib_tests/test_exec.c
+@@ -0,0 +1,43 @@
++/*
++ * Copyright (c) 2018 Cyril Hrubis <chrubis@suse.cz>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++/*
++ * Assert that tst_res() from child started by exec() is propagated to the main
++ * test process.
++ *
++ * This test should be executed as:
++ * $ PATH=$PATH:$PWD ./test_exec
++ */
++
++#define _GNU_SOURCE
++#include <stdlib.h>
++#include "tst_test.h"
++
++static void do_test(void)
++{
++	char *const argv[] = {"test_exec_child", NULL};
++
++	execvpe(argv[0], argv, environ);
++
++	tst_res(TBROK | TERRNO, "EXEC!");
++}
++
++static struct tst_test test = {
++	.test_all = do_test,
++	.needs_ipc_path = 1,
++};
+diff --git a/lib/newlib_tests/test_exec_child.c b/lib/newlib_tests/test_exec_child.c
+new file mode 100644
+index 000000000..696ff5be2
+--- /dev/null
++++ b/lib/newlib_tests/test_exec_child.c
+@@ -0,0 +1,27 @@
++/*
++ * Copyright (c) 2018 Cyril Hrubis <chrubis@suse.cz>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++
++int main(void)
++{
++	tst_reinit();
++	tst_res(TPASS, "Child passed!");
++	return 0;
++}
 diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 008bcefe0..bb3908d6c 100644
+index 008bcefe0..8b577fde8 100644
 --- a/lib/tst_test.c
 +++ b/lib/tst_test.c
-@@ -152,6 +152,7 @@ void tst_reinit(void)
-        fd = SAFE_OPEN(path, O_RDWR);
+@@ -105,7 +105,7 @@ static void setup_ipc(void)
+ 	results = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, ipc_fd, 0);
  
-        ptr = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-+       results = ptr;
-        tst_futexes = (char*)ptr + sizeof(struct results);
-        tst_max_futexes = (size - sizeof(struct results))/sizeof(futex_t);
-
+ 	/* Checkpoints needs to be accessible from processes started by exec() */
+-	if (tst_test->needs_checkpoints) {
++	if (tst_test->needs_checkpoints || tst_test->needs_ipc_path) {
+ 		sprintf(ipc_path, IPC_ENV_VAR "=%s", shm_path);
+ 		putenv(ipc_path);
+ 	} else {
+@@ -152,6 +152,7 @@ void tst_reinit(void)
+ 	fd = SAFE_OPEN(path, O_RDWR);
+ 
+ 	ptr = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
++	results = ptr;
+ 	tst_futexes = (char*)ptr + sizeof(struct results);
+ 	tst_max_futexes = (size - sizeof(struct results))/sizeof(futex_t);
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.13.6
+
