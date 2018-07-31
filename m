@@ -1,86 +1,37 @@
-From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Mon, 30 Jul 2018 17:01:16 +0100
-Subject: [LTP] [PATCH v2] ltp-pan: Increase allowed width of test name
-	in logs
-In-Reply-To: <20180730154857.GB19202@rei> (Cyril Hrubis's message of "Mon, 30
- Jul 2018 17:48:57 +0200")
-References: <20180730121941.GB14198@rei>
- <20180730153607.15074-1-punit.agrawal@arm.com>
- <20180730154857.GB19202@rei>
-Message-ID: <871sbk7lwz.fsf@e105922-lin.cambridge.arm.com>
+From: Eddie Horng <eddiehorng.tw@gmail.com>
+Date: Tue, 31 Jul 2018 14:46:04 +0800
+Subject: [LTP] [PATCH] syscalls/execveat01: new test to verify execveat
+ unlinked fd
+In-Reply-To: <20180727094703.GB914@rei>
+References: <1532678306.28611.1.camel@mtkswgap22> <20180727094703.GB914@rei>
+Message-ID: <CALLuPvrDgQX8XB-oVL_gm58cwRSinVNXTk5PzyUxcG8fG+Wcmw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Cyril Hrubis <chrubis@suse.cz> writes:
-
-> Hi!
->> diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
->> index a2bb9b7ef..6a4508c90 100644
->> --- a/pan/ltp-pan.c
->> +++ b/pan/ltp-pan.c
->> @@ -130,6 +130,9 @@ static char *test_out_dir = NULL;	/* dir to buffer output to */
->>  zoo_t zoofile;
->>  static char *reporttype = NULL;
->>  
->> +/* Output format of ltp-pan results */
->> +#define ResultFmt	"%-50s %-10.10s %-10.10s\n";
+2018-07-27 17:47 GMT+08:00 Cyril Hrubis <chrubis@suse.cz>:
+>> +int main(void)
+>> +{
+>> +     printf("Hello World\n");
+>> +     exit(0);
 >
-> The ltp-pan does not even compile with this because of the semicolon.
+> You can print the TPASS message from here and the result will be
+> propagated to the parent program. You just need to call tst_reinit()
+> that will initialize the test library. See creat07_child.c.
 >
-> Can you please at least compile-test your changes before sumbitting.
 
-Ack! That is very sloppy of me. I'll be more careful going forward.
+Hi Cyril,
+I removed "if (status == 0) tst_res(TPASS, ..." from execveat01.c and
+add "tst_res(TPASS, ..." in execveat_child.c, but I got a no reported
+result error:
 
->>  /* zoolib */
->>  int rec_signal;			/* received signal */
->>  int send_signal;		/* signal to send */
->> @@ -350,9 +353,9 @@ int main(int argc, char **argv)
->>  			fprintf(logfile, "Test Start Time: %s\n", s);
->>  			fprintf(logfile,
->>  				"-----------------------------------------\n");
->> -			fprintf(logfile, "%-30.20s %-10.10s %-10.10s\n",
->> +			fprintf(logfile, ResultFmt,
->>  				"Testcase", "Result", "Exit Value");
->> -			fprintf(logfile, "%-30.20s %-10.10s %-10.10s\n",
->> +			fprintf(logfile, ResultFmt,
->>  				"--------", "------", "------------");
->>  		}
->>  		fflush(logfile);
->> @@ -825,7 +828,7 @@ check_pids(struct tag_pgrp *running, int *num_active, int keep_active,
->>  						}
->>  
->>  						fprintf(logfile,
->> -							"%-30.30s %-10.10s %-5d\n",
->> +							ResultFmt,
->>  							running[i].cmd->name,
->>  							result_str,
->>  							w);
->> @@ -1104,7 +1107,7 @@ run_child(struct coll_entry *colle, struct tag_pgrp *active, int quiet_mode,
->>  				if (termid != 0)
->>  					++ * failcnt;
->>  
->> -				fprintf(logfile, "%-30.30s %-10.10s %-5d\n",
->> +				fprintf(logfile, ResultFmt,
->>  					colle->name,
->>  					((termid != 0) ? "FAIL" : "PASS"),
->>  					termid);
->
-> Looking closer these two are actually different in the last column. So I
-> suppose that we can extract only the first two columns as with:
->
-> #define ResultFmt "%-50s %-10.10s"
->
-> 	...
-> 	fprintf(..., ResultFmt" %-10.10%s\n", ...);
-> 	...
-> 	fprintf(,,,, ResultFmt" %-5d\n", ...);
-> 	...
+execveat_child.c:44: PASS: execveat_child run as expected
+tst_test.c:869: BROK: Test haven't reported results!
 
-I've taken this approach now and will send an updated patch with the
-changes.
+It seems child's test result doesn't propagated to parent.
+Do I use wrong API in child or miss something in parent?
 
-Thanks,
-Punit
+thanks,
+Eddie
