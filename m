@@ -1,41 +1,19 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 2 Aug 2018 08:29:24 -0400 (EDT)
-Subject: [LTP] [PATCH 5/5] syscalls/flock06: Rewrite to new library
-In-Reply-To: <1533182024-18841-5-git-send-email-huangjh.jy@cn.fujitsu.com>
-References: <1533182024-18841-1-git-send-email-huangjh.jy@cn.fujitsu.com>
- <1533182024-18841-5-git-send-email-huangjh.jy@cn.fujitsu.com>
-Message-ID: <1649896669.37585897.1533212964490.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 2 Aug 2018 14:30:04 +0200
+Subject: [LTP] [PATCH v3] ltp-pan: Increase allowed width of test name
+	in logs
+In-Reply-To: <20180731164745.7289-1-punit.agrawal@arm.com>
+References: <20180731164745.7289-1-punit.agrawal@arm.com>
+Message-ID: <20180802123004.GA21827@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+Pushed, thanks.
 
------ Original Message -----
-> Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/flock/flock06.c | 213
->  ++++++++----------------------
->  1 file changed, 52 insertions(+), 161 deletions(-)
-
-Hi,
-
-> +	int fd1, fd2;
-> +
-> +	fd1 = SAFE_OPEN("testfile", O_RDWR);
-> +	TEST(flock(fd1, LOCK_EX | LOCK_NB));
-> +	if (TST_RET != 0)
-> +		tst_res(TFAIL | TTERRNO, "First attempt to flock() failed");
-> +	else
-> +		tst_res(TPASS, "First attempt to flock() passed");
-> +
-> +	fd2 = SAFE_OPEN("testfile", O_RDWR);
-> +	TEST(flock(fd2, LOCK_EX | LOCK_NB));
-> +	if (TST_RET != 1)
-
-This should be == -1
-The rest looks good to me.
-
-Regards,
-Jan
+-- 
+Cyril Hrubis
+chrubis@suse.cz
