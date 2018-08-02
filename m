@@ -1,9 +1,9 @@
 From: Jinhui huang <huangjh.jy@cn.fujitsu.com>
-Date: Thu, 2 Aug 2018 11:53:44 +0800
-Subject: [LTP] [PATCH 5/5] syscalls/flock06: Rewrite to new library
+Date: Thu, 2 Aug 2018 11:53:42 +0800
+Subject: [LTP] [PATCH 3/5] syscalls/flock03: Rewrite to new library
 In-Reply-To: <1533182024-18841-1-git-send-email-huangjh.jy@cn.fujitsu.com>
 References: <1533182024-18841-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-Message-ID: <1533182024-18841-5-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <1533182024-18841-3-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,241 +12,260 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/flock/flock06.c | 213 ++++++++----------------------
- 1 file changed, 52 insertions(+), 161 deletions(-)
+ testcases/kernel/syscalls/flock/flock03.c | 203 ++++++++----------------------
+ 1 file changed, 53 insertions(+), 150 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/flock/flock06.c b/testcases/kernel/syscalls/flock/flock06.c
-index 617eddf..61e9c4e 100644
---- a/testcases/kernel/syscalls/flock/flock06.c
-+++ b/testcases/kernel/syscalls/flock/flock06.c
-@@ -1,177 +1,68 @@
--/*
+diff --git a/testcases/kernel/syscalls/flock/flock03.c b/testcases/kernel/syscalls/flock/flock03.c
+index 420f509..57dcc5f 100644
+--- a/testcases/kernel/syscalls/flock/flock03.c
++++ b/testcases/kernel/syscalls/flock/flock03.c
+@@ -1,28 +1,13 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
-+/* Copyright (c) Matthew Wilcox for Hewlett Packard 2003
-+ * Author: Matthew Wilcox
+ /*
+  * Copyright (c) International Business Machines  Corp., 2002
+- * Copyright (c) 2012 Cyril Hrubis <chrubis@suse.cz>
++ * Author: Cyril Hrubis
   *
-- *   Copyright (c) Matthew Wilcox for Hewlett Packard 2003
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- */
+-
+-/*
+- * This test verifies that flock cannot unlock a file locked
+- * by another task
 + * Test Description:
-+ *  This test verifies that flock locks held on one fd conflict with flock
-+ *  locks held on a different fd.
++ *  This test verifies that flock() cannot unlock a file locked by another
++ *  task.
   *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
+  * Test Steps:
 - *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Test Steps:
-+ *  The process opens two file descriptors on the same file.  It acquires
-+ *  an exclusive flock on the first descriptor, checks that attempting to
-+ *  acquire an flock on the second descriptor fails.  Then it removes the
-+ *  first descriptor's lock and attempts to acquire an exclusive lock on
-+ *  the second descriptor.
+  *  Fork a child processes The parent flocks a file with LOCK_EX Child waits
+  *  for that to happen, then checks to make sure it is locked.  Child then
+  *  tries to unlock the file. If the unlock succeeds, the child attempts to
+@@ -30,166 +15,84 @@
+  *  the file.
   */
  
--/**********************************************************
-- *
-- *    TEST IDENTIFIER   : flock06
-- *
-- *    EXECUTED BY       : anyone
-- *
-- *    TEST TITLE        : Error condition test for flock(2)
-- *
-- *    TEST CASE TOTAL   : 1
-- *
-- *    AUTHOR            : Matthew Wilcox <willy@debian.org>
-- *
-- *    SIGNALS
-- *      Uses SIGUSR1 to pause before test if option set.
-- *      (See the parse_opts(3) man page).
-- *
-- *    DESCRIPTION
-- * 		 This test verifies that flock locks held on one fd conflict with
-- * 		 flock locks held on a different fd.
-- *
-- *		 Test:
-- * 		 		 The process opens two file descriptors on the same file.
-- * 		 		 It acquires an exclusive flock on the first descriptor,
-- * 		 		 checks that attempting to acquire an flock on the second
-- * 		 		 descriptor fails.  Then it removes the first descriptor's
-- * 		 		 lock and attempts to acquire an exclusive lock on the
-- * 		 		 second descriptor.
-- *
-- * USAGE:  <for command-line>
-- *      flock06 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
-- *                      where,  -c n : Run n copies concurrently
-- *                              -f   : Turn off functional testing
-- *    		 		 		 		 -e   : Turn on errno logging
-- *                              -h   : Show help screen
-- *		 		 		 		 -i n : Execute test n times
-- *                              -I x : Execute test for x seconds
-- *                              -p   : Pause for SIGUSR1 before starting
-- *                              -P x : Pause for x seconds between iterations
-- *                              -t   : Turn on syscall timing
-- *
-- ****************************************************************/
--
 -#include <stdio.h>
  #include <errno.h>
 -#include <fcntl.h>
 -#include <sys/types.h>
 -#include <sys/stat.h>
++#include <stdlib.h>
  #include <sys/file.h>
 -#include <sys/wait.h>
 -#include "test.h"
--#include "safe_macros.h"
- 
--void setup(void);
--void cleanup(void);
-+#include "tst_test.h"
- 
--char *TCID = "flock06";
+-
+-#define FILE_NAME "flock03"
+-
+-static void setup(void);
+-static void cleanup(void);
+-static void childfunc(int);
+-
+-#ifdef UCLINUX
+-static int fd_uc;
+-static void childfunc_uc(void)
+-{
+-	childfunc(fd_uc);
+-}
+-#endif
+-
+-char *TCID = "flock03";
 -int TST_TOTAL = 3;
--char filename[100];
 -
 -int main(int argc, char **argv)
-+static void verify_flock(void)
- {
+-{
 -	int lc;
+-	pid_t pid;
+-	int status;
+-	int fd;
 -
 -	tst_parse_opts(argc, argv, NULL, NULL);
 -
+-#ifdef UCLINUX
+-	maybe_run_child(&childfunc_uc, "ds", &fd_uc, FILE_NAME);
+-#endif
+-
 -	setup();
 -
--	/* The following loop checks looping state if -i option given */
--
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		int fd1, fd2;
--
--		/* reset tst_count in case we are looping */
 -		tst_count = 0;
 -
--		fd1 = open(filename, O_RDWR);
--		if (fd1 == -1)
--			tst_brkm(TFAIL | TERRNO, cleanup,
--				 "failed to open the file");
+-		fd = open(FILE_NAME, O_RDWR);
 -
--		TEST(flock(fd1, LOCK_EX | LOCK_NB));
+-		if (fd == -1)
+-			tst_brkm(TFAIL | TERRNO, cleanup,
+-				 "parent failed to open the file");
+-
+-		pid = FORK_OR_VFORK();
+-
+-		if (pid == -1)
+-			tst_brkm(TFAIL | TERRNO, cleanup, "fork() failed");
+-		if (pid == 0) {
+-#ifdef UCLINUX
+-			if (self_exec(argv[0], "ds", fd, FILE_NAME) < 0)
+-				tst_brkm(TFAIL | TERRNO, cleanup,
+-					 "self_exec failed");
+-#else
+-			childfunc(fd);
+-#endif
+-		}
+-
+-		TEST(flock(fd, LOCK_EX | LOCK_NB));
+-
 -		if (TEST_RETURN != 0)
 -			tst_resm(TFAIL | TTERRNO,
--				 "First attempt to flock() failed");
+-				 "Parent: Initial attempt to flock() failed");
 -		else
--			tst_resm(TPASS, "First attempt to flock() passed");
+-			tst_resm(TPASS,
+-				 "Parent: Initial attempt to flock() passed");
+ 
+-		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
 -
--		fd2 = open(filename, O_RDWR);
--		if (fd2 == -1)
--			tst_brkm(TFAIL | TERRNO, cleanup,
--				 "failed to open the file");
--
--		TEST(flock(fd2, LOCK_EX | LOCK_NB));
--		if (TEST_RETURN == -1)
--			tst_resm(TPASS, "Second attempt to flock() denied");
+-		if ((waitpid(pid, &status, 0)) < 0) {
+-			tst_resm(TFAIL, "wait() failed");
+-			continue;
+-		}
+-		if ((WIFEXITED(status)) && (WEXITSTATUS(status) == 0))
+-			tst_resm(TPASS, "flock03 Passed");
 -		else
--			tst_resm(TFAIL, "Second attempt to flock() succeeded!");
+-			tst_resm(TFAIL, "flock03 Failed");
 -
--		TEST(flock(fd1, LOCK_UN));
--		if (TEST_RETURN == -1)
--			tst_resm(TFAIL | TTERRNO, "Failed to unlock fd1");
--		else
--			tst_resm(TPASS, "Unlocked fd1");
--
--		TEST(flock(fd2, LOCK_EX | LOCK_NB));
--		if (TEST_RETURN == -1)
--			tst_resm(TFAIL, "Third attempt to flock() denied!");
--		else
--			tst_resm(TPASS, "Third attempt to flock() succeeded");
--		close(fd1);
--		close(fd2);
+-		close(fd);
 -
 -	}
 -
 -	cleanup();
 -	tst_exit();
+-}
++#include "tst_test.h"
+ 
+ static void childfunc(int fd)
+ {
+ 	int fd2;
++	TST_CHECKPOINT_WAIT(0);
+ 
+-	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
 -
-+	int fd1, fd2;
-+
-+	fd1 = SAFE_OPEN("testfile", O_RDWR);
-+	TEST(flock(fd1, LOCK_EX | LOCK_NB));
-+	if (TST_RET != 0)
-+		tst_res(TFAIL | TTERRNO, "First attempt to flock() failed");
-+	else
-+		tst_res(TPASS, "First attempt to flock() passed");
-+
+-	fd2 = open(FILE_NAME, O_RDWR);
+-
+-	if (fd2 == -1) {
+-		fprintf(stderr, "CHILD: failed to open the file: %s\n",
+-		        strerror(errno));
+-		exit(1);
+-	}
+-
+-	if (flock(fd2, LOCK_EX | LOCK_NB) != -1) {
+-		fprintf(stderr, "CHILD: The file was not already locked\n");
+-		exit(1);
+-	}
 +	fd2 = SAFE_OPEN("testfile", O_RDWR);
-+	TEST(flock(fd2, LOCK_EX | LOCK_NB));
-+	if (TST_RET != 1)
-+		tst_res(TPASS | TTERRNO, "Second attempt to flock() denied");
-+	else
-+		tst_res(TFAIL, "Second attempt to flock() succeeded!");
-+
-+	TEST(flock(fd1, LOCK_UN));
-+	if (TST_RET == -1)
-+		tst_res(TFAIL | TTERRNO, "Failed to unlock fd1");
-+	else
-+		tst_res(TPASS, "Unlocked fd1");
-+
-+	TEST(flock(fd2, LOCK_EX | LOCK_NB));
-+	if (TST_RET == -1)
-+		tst_res(TFAIL | TTERRNO, "Third attempt to flock() denied!");
-+	else
-+		tst_res(TPASS, "Third attempt to flock() succeeded");
-+
-+	SAFE_CLOSE(fd1);
++	if (flock(fd2, LOCK_EX | LOCK_NB) != -1)
++		tst_brk(TBROK, "CHILD: The file was not already locked");
+ 
+ 	TEST(flock(fd, LOCK_UN));
+-	/* XXX: LOCK_UN does not return an error if there was nothing to
+-	 * unlock.
+-	 */
+-	if (TEST_RETURN == -1) {
+-		fprintf(stderr, "CHILD: Unable to unlock file locked by "
+-		        "parent: %s\n", strerror(TEST_ERRNO));
++	if (TST_RET == -1) {
++		tst_res(TFAIL, "CHILD: Unable to unlock file locked by "
++			"parent: %s", tst_strerrno(TST_ERR));
+ 		exit(1);
+ 	} else {
+-		fprintf(stderr, "CHILD: File locked by parent unlocked\n");
++		tst_res(TPASS, "CHILD: File locked by parent unlocked");
+ 	}
+ 
+ 	TEST(flock(fd2, LOCK_EX | LOCK_NB));
+-
+-	if (TEST_RETURN == -1) {
+-		fprintf(stderr, "CHILD: Unable to lock file after "
+-		        "unlocking: %s\n", strerror(TEST_ERRNO));
++	if (TST_RET == -1) {
++		tst_res(TFAIL, "CHILD: Unable to unlock file after "
++			"unlocking: %s", tst_strerrno(TST_ERR));
+ 		exit(1);
+ 	} else {
+-		fprintf(stderr, "CHILD: Locking after unlock passed\n");
++		tst_res(TPASS, "Locking after unlock passed");
+ 	}
+ 
+-	close(fd);
+-	close(fd2);
++	SAFE_CLOSE(fd);
 +	SAFE_CLOSE(fd2);
+ 
+ 	exit(0);
  }
  
--/*
-- * setup()
-- *		 performs all ONE TIME setup for this test
-- */
--void setup(void)
-+static void setup(void)
+-static void setup(void)
++static void verify_flock(void)
  {
- 	int fd;
+-	int fd;
++	int fd1;
++	pid_t pid;
++
++	fd1 = SAFE_OPEN("testfile", O_RDWR);
  
 -	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	/* Pause if that option was specified
--	 * TEST_PAUSE contains the code to fork the test with the -i option.
--	 * You want to make sure you do this before you create your temporary
--	 * directory.
--	 */
++	pid = SAFE_FORK();
++	if (pid == 0)
++		childfunc(fd1);
+ 
 -	TEST_PAUSE;
--
--	/* Create a unique temporary directory and chdir() to it. */
++	TEST(flock(fd1, LOCK_EX | LOCK_NB));
++	if (TST_RET != 0) {
++		tst_res(TFAIL | TTERRNO,
++			"Parent: Initial attempt to flock() failed");
++	} else {
++		tst_res(TPASS,
++			"Parent: Initial attempt to flock() passed");
++	}
+ 
 -	tst_tmpdir();
--
--	sprintf(filename, "flock06.%d", getpid());
--
--	/* creating temporary file */
--	fd = SAFE_OPEN(tst_rmdir, filename, O_CREAT | O_TRUNC | O_RDWR, 0666);
++	TST_CHECKPOINT_WAKE(0);
+ 
+-	TST_CHECKPOINT_INIT(tst_rmdir);
++	tst_reap_children();
+ 
+-	fd = open(FILE_NAME, O_CREAT | O_TRUNC | O_RDWR, 0666);
+-	if (fd < 0) {
+-		tst_resm(TBROK, "creating a new file failed");
+-		cleanup();
+-	}
 -	close(fd);
++	SAFE_CLOSE(fd1);
+ }
+ 
+-static void cleanup(void)
++static void setup(void)
+ {
+-	tst_rmdir();
++	int fd;
++
 +	fd = SAFE_OPEN("testfile", O_CREAT | O_TRUNC | O_RDWR, 0666);
 +	SAFE_CLOSE(fd);
  }
- 
--/*
-- * cleanup()
-- *		 performs all ONE TIME cleanup for this test at
-- * 		 completion or premature exit
-- */
--void cleanup(void)
--{
--
--	unlink(filename);
--	tst_rmdir();
--
--}
++
 +static struct tst_test test = {
 +	.test_all = verify_flock,
++	.needs_checkpoints = 1,
 +	.needs_tmpdir = 1,
++	.forks_child = 1,
 +	.setup = setup,
 +};
 -- 
