@@ -1,9 +1,9 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 2 Aug 2018 06:53:44 -0400 (EDT)
-Subject: [LTP] [PATCH] Move getcwd05 to realpath01 and fix for old distro
-In-Reply-To: <20180801134717.29909-1-mmoese@suse.de>
-References: <20180801134717.29909-1-mmoese@suse.de>
-Message-ID: <1535534013.37569108.1533207223994.JavaMail.zimbra@redhat.com>
+Date: Thu, 2 Aug 2018 07:03:32 -0400 (EDT)
+Subject: [LTP] [PATCH 1/5] syscalls/flock01: Rewrite to new library
+In-Reply-To: <1533182024-18841-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+References: <1533182024-18841-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <1493862685.37571893.1533207812034.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,23 +12,20 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> The testcase getcwd05 is a regression test for cve-2018-1000001 [1].
-> However, there were changes in the behavior of libc functions, that some
-> older
-> distributions refused to backport.
-> The testcase was two testcases, one for getcwd() and one for realpath().
-> While the behavior of getcwd() changed, it is totally independent from
-> the thestcase for the vulnerability in realpath. So, this test should be
-> moved to realpath/realpath01.c. In addition, the test of getcwd() is
-> totally unneeded here to test realpath() for the fix.
-> 
-> [1]
-> https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=commitdiff;h=52a713fdd0a30e1bd79818e2e3c4ab44ddca1a94
-> 
-> Signed-off-by: Michael Moese <mmoese@suse.de>
+> Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/flock/flock01.c | 186
+>  ++++++------------------------
+>  1 file changed, 35 insertions(+), 151 deletions(-)
 
-Looks good to me, ack.
-Adding Petr, as he wrote the original test.
+ACK
+
+Just a nit:
+        if (fd > 0)
+                SAFE_CLOSE(fd);
+
+fd == 0 can also be valid fd, but skipping this close would
+be fine anyway. (no need to repost)
 
 Regards,
 Jan
