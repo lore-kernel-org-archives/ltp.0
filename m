@@ -1,163 +1,232 @@
-From: Michael Moese <mmoese@suse.de>
-Date: Wed,  1 Aug 2018 15:47:17 +0200
-Subject: [LTP] [PATCH] Move getcwd05 to realpath01 and fix for old distro
-Message-ID: <20180801134717.29909-1-mmoese@suse.de>
+From: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+Date: Thu, 2 Aug 2018 11:53:40 +0800
+Subject: [LTP] [PATCH 1/5] syscalls/flock01: Rewrite to new library
+Message-ID: <1533182024-18841-1-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The testcase getcwd05 is a regression test for cve-2018-1000001 [1].
-However, there were changes in the behavior of libc functions, that some older
-distributions refused to backport.
-The testcase was two testcases, one for getcwd() and one for realpath().
-While the behavior of getcwd() changed, it is totally independent from
-the thestcase for the vulnerability in realpath. So, this test should be
-moved to realpath/realpath01.c. In addition, the test of getcwd() is
-totally unneeded here to test realpath() for the fix.
-
-[1] https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=commitdiff;h=52a713fdd0a30e1bd79818e2e3c4ab44ddca1a94
-
-Signed-off-by: Michael Moese <mmoese@suse.de>
+Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
 ---
- runtest/cve                                   |  2 +-
- runtest/syscalls                              |  3 ++-
- testcases/kernel/syscalls/getcwd/.gitignore   |  1 -
- testcases/kernel/syscalls/realpath/.gitignore |  1 +
- testcases/kernel/syscalls/realpath/Makefile   | 23 ++++++++++++++++
- .../getcwd05.c => realpath/realpath01.c}      | 26 +++++--------------
- 6 files changed, 33 insertions(+), 23 deletions(-)
- create mode 100644 testcases/kernel/syscalls/realpath/.gitignore
- create mode 100644 testcases/kernel/syscalls/realpath/Makefile
- rename testcases/kernel/syscalls/{getcwd/getcwd05.c => realpath/realpath01.c} (72%)
+ testcases/kernel/syscalls/flock/flock01.c | 186 ++++++------------------------
+ 1 file changed, 35 insertions(+), 151 deletions(-)
 
-diff --git a/runtest/cve b/runtest/cve
-index 58d8f12b2..b38fb3503 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -34,4 +34,4 @@ cve-2017-16939 cve-2017-16939
- cve-2017-17053 cve-2017-17053
- cve-2017-18075 pcrypt_aead01
- cve-2018-5803 sctp_big_chunk
--cve-2018-1000001 getcwd05
-+cve-2018-1000001 realpath01
-diff --git a/runtest/syscalls b/runtest/syscalls
-index dc72484cb..4e813e9a7 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -348,7 +348,6 @@ getcwd01 getcwd01
- getcwd02 getcwd02
- getcwd03 getcwd03
- getcwd04 getcwd04
--getcwd05 getcwd05
+diff --git a/testcases/kernel/syscalls/flock/flock01.c b/testcases/kernel/syscalls/flock/flock01.c
+index a4133f1..95c3040 100644
+--- a/testcases/kernel/syscalls/flock/flock01.c
++++ b/testcases/kernel/syscalls/flock/flock01.c
+@@ -1,172 +1,56 @@
+-/*
+- * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++// SPDX-License-Identifier: GPL-2.0-or-later
++/* Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
++ * Author: Vatsal Avasthi
+  *
++ * Test Description:
++ *  This test verifies that flock() succeeds with all kind of locks.
+  */
+-/**********************************************************
+- *
+- *    TEST IDENTIFIER   : flock01
+- *
+- *    EXECUTED BY       : anyone
+- *
+- *    TEST TITLE        : Basic test for flock(2)
+- *
+- *    TEST CASE TOTAL   : 3
+- *
+- *    AUTHOR            : Vatsal Avasthi <vatsal.avasthi@wipro.com>
+- *
+- *    SIGNALS
+- *      Uses SIGUSR1 to pause before test if option set.
+- *      (See the parse_opts(3) man page).
+- *
+- *    DESCRIPTION
+- * 	Test to verify flock(2) succeeds with all kind of locks.
+- *	Intends to provide a limited exposure of system call.
+- *    $
+- *	Setup:
+- *        Setup signal handling.
+- *        Pause for SIGUSR1 if option specified.
+- *        Create a temporary directory and chdir to it.
+- * 	  Create a temporary file
+- *
+- *	Test:
+- *	Loop if proper options are given.
+- *		Execute system call
+- *		Check return code, if system call failed (return == -1)
+- *				Log the error number and issue a FAIL message
+- *		otherwise issue a PASS message
+- *
+- *      Cleanup:
+- *        Print errno log and/or timing stats if options given
+- *	  Deletes temporary directory.
+- *
+- * USAGE:  <for command-line>
+- *      flock01 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
+- *                      where,  -c n : Run n copies concurrently.
+- *                              -f   : Turn off functional testing
+- *    				-e   : Turn on errno logging.
+- *                              -h   : Show help screen                        $
+- *				-i n : Execute test n times.
+- *                              -I x : Execute test for x seconds.
+- *                              -p   : Pause for SIGUSR1 before starting
+- *                              -P x : Pause for x seconds between iterations.
+- *                              -t   : Turn on syscall timing.
+- *
+- ****************************************************************/
  
- getdents01 getdents01
- getdents02 getdents02
-@@ -895,6 +894,8 @@ readv01 readv01
- readv02 readv02
- readv03 readv03
+ #include <errno.h>
+-#include <stdio.h>
+-#include <sys/wait.h>
+ #include <sys/file.h>
+-#include <fcntl.h>
+-#include "test.h"
+-#include "safe_macros.h"
  
-+realpath01 realpath01
-+
- reboot01 reboot01
- reboot02 reboot02
+-void setup(void);
+-void cleanup(void);
++#include "tst_test.h"
  
-diff --git a/testcases/kernel/syscalls/getcwd/.gitignore b/testcases/kernel/syscalls/getcwd/.gitignore
-index 99b2ba19f..338852b62 100644
---- a/testcases/kernel/syscalls/getcwd/.gitignore
-+++ b/testcases/kernel/syscalls/getcwd/.gitignore
-@@ -2,4 +2,3 @@
- /getcwd02
- /getcwd03
- /getcwd04
--/getcwd05
-diff --git a/testcases/kernel/syscalls/realpath/.gitignore b/testcases/kernel/syscalls/realpath/.gitignore
-new file mode 100644
-index 000000000..54860c088
---- /dev/null
-+++ b/testcases/kernel/syscalls/realpath/.gitignore
-@@ -0,0 +1 @@
-+/realpath01
-diff --git a/testcases/kernel/syscalls/realpath/Makefile b/testcases/kernel/syscalls/realpath/Makefile
-new file mode 100644
-index 000000000..bd617d806
---- /dev/null
-+++ b/testcases/kernel/syscalls/realpath/Makefile
-@@ -0,0 +1,23 @@
-+#
-+#  Copyright (c) International Business Machines  Corp., 2001
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/getcwd/getcwd05.c b/testcases/kernel/syscalls/realpath/realpath01.c
-similarity index 72%
-rename from testcases/kernel/syscalls/getcwd/getcwd05.c
-rename to testcases/kernel/syscalls/realpath/realpath01.c
-index f39df4b1d..dcd6785fc 100644
---- a/testcases/kernel/syscalls/getcwd/getcwd05.c
-+++ b/testcases/kernel/syscalls/realpath/realpath01.c
-@@ -20,36 +20,22 @@ static void setup(void)
- 	SAFE_CHROOT(CHROOT_DIR);
- }
+-char *TCID = "flock01";
+-int TST_TOTAL = 3;
+-char filename[100];
+-int fd;
++static int fd;
  
--static void run(unsigned int i)
-+static void run(void)
+-struct test_case_t {
++static struct tcase {
+ 	int operation;
+ 	char *opt;
+-} test_cases[] = {
+-	{ LOCK_SH, "Shared Lock" },
+-	{ LOCK_UN, "Unlock"},
+-	{ LOCK_EX, "Exclusive Lock"}
++} tcases[] = {
++	{LOCK_SH, "Shared Lock" },
++	{LOCK_UN, "Unlock"},
++	{LOCK_EX, "Exclusive Lock"},
+ };
+ 
+-int main(int argc, char **argv)
++static void verify_flock(unsigned n)
  {
--	int fail = 0;
+-	int lc, i;
 -
--	if (i) {
--		tst_res(TINFO, "testing realpath()");
--		TESTPTR(realpath(".", NULL));
--	} else {
--		tst_res(TINFO, "testing getcwd()");
--		TESTPTR(getcwd(NULL, 0));
--	}
-+	TESTPTR(realpath(".", NULL));
- 
- 	if (TST_ERR != ENOENT) {
- 		tst_res(TFAIL | TTERRNO, "returned unexpected errno");
--		fail = 1;
--	}
+-	tst_parse_opts(argc, argv, NULL, NULL);
 -
--	if (TST_RET_PTR != NULL) {
-+	} else	if (TST_RET_PTR != NULL) {
- 		tst_res(TFAIL, "syscall didn't return NULL: '%s'",
- 				(char *)TST_RET_PTR);
--		fail = 1;
--	}
+-	/* global setup */
+-	setup();
 -
--	if (!fail)
+-	/* The following loop checks looping state if -i option given */
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		/* reset tst_count in case we are looping */
+-		tst_count = 0;
+-
+-		for (i = 0; i < TST_TOTAL; ++i) {
+-
+-			/* Testing system call */
+-			TEST(flock(fd, test_cases[i].operation));
+-			if (TEST_RETURN == -1) {
+-				tst_resm(TFAIL | TTERRNO,
+-					 "flock() failed to get %s",
+-					 test_cases[i].opt);
+-				continue;	/*next loop for MTKERNEL  */
+-			} else {
+-				tst_resm(TPASS,
+-					 "flock() succeeded with %s",
+-					 test_cases[i].opt);
+-			}
+-
+-		}
+-
++	struct tcase *tc = &tcases[n];
++
++	TEST(flock(fd, tc->operation));
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO,
++			"flock() failed to get %s", tc->opt);
 +	} else {
- 		tst_res(TPASS, "bug not reproduced");
-+	}
++		tst_res(TPASS,
++			"flock() succeeded with %s", tc->opt);
+ 	}
+-
+-	close(fd);
+-
+-	cleanup();
+-
+-	tst_exit();
+-
  }
  
- static struct tst_test test = {
--	.test = run,
--	.tcnt = 2,
-+	.test_all = run,
- 	.setup = setup,
- 	.needs_root = 1,
- 	.needs_tmpdir = 1,
+-/*
+- * setup()
+- *	performs all ONE TIME setup for this test
+- */
+-void setup(void)
++static void setup(void)
+ {
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	/* Pause if that option was specified
+-	 * TEST_PAUSE contains the code to fork the test with the -i option.
+-	 * You want to make sure you do this before you create your temporary
+-	 * directory.
+-	 */
+-	TEST_PAUSE;
+-
+-	/* Create a unique temporary directory and chdir() to it. */
+-	tst_tmpdir();
+-
+-	sprintf(filename, "flock01.%d", getpid());
+-
+-	/* creating temporary file */
+-	fd = SAFE_OPEN(tst_rmdir, filename, O_CREAT | O_TRUNC | O_RDWR, 0644);
++	fd = SAFE_OPEN("testfile", O_CREAT | O_TRUNC | O_RDWR, 0644);
+ }
+ 
+-/*
+- * cleanup()
+- *	performs all ONE TIME cleanup for this test at
+- * 	completion or premature exit
+- */
+-void cleanup(void)
++static void cleanup(void)
+ {
+-
+-	unlink(filename);
+-	tst_rmdir();
+-
++	if (fd > 0)
++		SAFE_CLOSE(fd);
+ }
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = verify_flock,
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++};
 -- 
-2.18.0
+1.8.3.1
+
+
 
