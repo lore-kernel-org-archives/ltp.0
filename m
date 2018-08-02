@@ -1,96 +1,52 @@
 From: =?unknown-8bit?q?Myl=C3=A8ne?= Josserand <mylene.josserand@bootlin.com>
-Date: Thu, 2 Aug 2018 16:08:07 +0200
-Subject: [LTP] How to convert TFAIL into TCONF for netns_*
-In-Reply-To: <1467848633.34028528.1531919132241.JavaMail.zimbra@redhat.com>
-References: <20180713150356.025d1b75@dell-desktop.home>
- <1467848633.34028528.1531919132241.JavaMail.zimbra@redhat.com>
-Message-ID: <20180802160807.55ca5ab1@dell-desktop.home>
+Date: Thu,  2 Aug 2018 16:12:50 +0200
+Subject: [LTP] [PATCH 1/2] testcases: netns: Check TUN support enabled
+Message-ID: <20180802141251.1571-1-mylene.josserand@bootlin.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-Hello,
+In case TUN support is not enabled, the test will fail while
+performing the "ip" command with following error:
+   open: No such file or directory
+   netns_netlink    1  TBROK  :  netns_netlink.c:143: system() failed
 
-Sorry for the late answer and thanks for the help!
+As the system() call is not setting errno, we are not able to know
+if the error is produced by a mis-configuration or not.
 
-On Wed, 18 Jul 2018 09:05:32 -0400 (EDT)
-Jan Stancek <jstancek@redhat.com> wrote:
+Because of that, this commit adds a check during the setup function to see
+if the device "/dev/net/tun" is available or not. It is the file
+that "ip tuntap add mode tap" command is looking for (and fails with
+the "open" error).
 
-> ----- Original Message -----
-> > Hello everyone,
-> > 
-> > While running containers' tests we got failures on all netns_xxx
-> > tests with different errors but the main one is:
-> > 
-> > unable to create veth pair devices  
-> 
-> Checking the output of 'ip' could be one way:
-> 
-> # ip link add ve_A type veth peer name ve_B
-> RTNETLINK answers: Operation not supported
-> 
-> If there's "Operation not supported" -> TCONF, else TBROK.
+Signed-off-by: Myl=C3=A8ne Josserand <mylene.josserand@bootlin.com>
+---
+ testcases/kernel/containers/netns/netns_netlink.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-okay, I created a patch that handles that and it is working, thanks.
+diff --git a/testcases/kernel/containers/netns/netns_netlink.c b/testcases/=
+kernel/containers/netns/netns_netlink.c
+index 47e8235d6..077ec5dab 100644
+--- a/testcases/kernel/containers/netns/netns_netlink.c
++++ b/testcases/kernel/containers/netns/netns_netlink.c
+@@ -57,6 +57,15 @@ static void cleanup(void)
+=20
+ static void setup(void)
+ {
++	/* Check that the TUN support is available */
++	int netfd =3D open("/dev/net/tun", O_RDWR);
++	if (netfd =3D=3D -1) {
++		if (errno =3D=3D ENODEV || errno =3D=3D ENOENT)
++			tst_brkm(TCONF, NULL, "TUN support is missing?");
++
++		tst_brkm(TBROK | TERRNO, NULL, "opening /dev/net/tun failed");
++	}
++
+ 	tst_require_root();
+ 	check_iproute(IP_TUNTAP_MIN_VER);
+ 	check_netns();
+--=20
+2.11.0
 
-> 
-> > 
-> > It is because we currently do not have CONFIG_VETH enabled.
-> > There are also some tests failing because we again do not have the
-> > correct configuration such as CONFIG_TUN for netns_link tests:
-> > https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/containers/netns/netns_netlink.c#L142  
-> 
-> Similar here, but check for ENODEV.
-> 
-
-It was a good idea but unfortunately, the system() call of the ip
-command is not setting errno:
-https://github.com/linux-test-project/ltp/commit/085b5e6d9b
-
-For this issue, I reproduced what the test "ioctl03" is already
-performing: report a TCONF if the file "/dev/net/tun" is not available:
-https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/ioctl/ioctl03.c#L81..L87
-
-I will send two patches in few minutes to fix these two above issues,
-let me know if you have another idea on how to handle that.
-
-Best regards,
-
-Mylène
-
-> Other than that I can only think of grepping /proc/kallsyms,
-> which could break if symbols change name.
-> 
-> Regards,
-> Jan
-> 
-> > 
-> > We would like to convert all these TFAIL tests into TCONF but we
-> > are not sure how to implement that in a proper way. The readme of this
-> > test indicates the kernel's configurations needed but we would like
-> > to test the kernel that we currently have without any modification.
-> > 
-> > What do you think about that?
-> > What should we do to convert these TBROK into TCONF?
-> > 
-> > Thank you in advance,
-> > Best regards,
-> > 
-> > --
-> > Mylène Josserand, Bootlin (formerly Free Electrons)
-> > Embedded Linux and Kernel engineering
-> > https://bootlin.com
-> > 
-> > --
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
-> >   
-
-
-
-
--- 
-Mylène Josserand, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
