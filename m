@@ -1,45 +1,55 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 3 Aug 2018 11:13:12 +0200
-Subject: [LTP] [RFC] [PATCH] lib: Fix result propagation after exec() +
- tst_reinit()
-In-Reply-To: <1077521162.37312079.1533126920056.JavaMail.zimbra@redhat.com>
-References: <20180731130852.22739-1-chrubis@suse.cz>
- <1077521162.37312079.1533126920056.JavaMail.zimbra@redhat.com>
-Message-ID: <20180803091312.GA32272@rei>
+From: Eddie Horng <eddiehorng.tw@gmail.com>
+Date: Fri, 3 Aug 2018 17:32:52 +0800
+Subject: [LTP] [PATCH v2] syscalls/execveat01: new test to verify
+ execveat unlinked fd
+In-Reply-To: <CAEemH2dsg0Z18taXrBeQvCkJF1WHh9fHbP=GvMzRV62h4kNCzg@mail.gmail.com>
+References: <1533111474.1176.4.camel@mtkswgap22>
+ <CAEemH2dsg0Z18taXrBeQvCkJF1WHh9fHbP=GvMzRV62h4kNCzg@mail.gmail.com>
+Message-ID: <CALLuPvp4Ay5F_giNiUuDR9By+eLNPUNT-perUOE=gbCSmbsc2A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > and also adds a needs_ipc_path flag to
-> > tst_test structure, which causes the library not to unlink the IPC file
-> > after it has been mapped and also inserts LTP_IPC_PATH to the
-> > environment.
-> 
-> What is the negative of skipping unlink() for all tests?
-> Test itself runs in separate process, so cleanup_ipc() should run
-> anyway and clean it.
+2018-08-01 19:17 GMT+08:00 Li Wang <liwang@redhat.com>:
+> why not adding other arches?
+>
+> $ git grep __NR_execveat
+> alpha/include/uapi/asm/unistd.h:#define __NR_execveat                   513
+> arm64/include/asm/unistd32.h:#define __NR_execveat 387
+> arm64/include/asm/unistd32.h:__SYSCALL(__NR_execveat, compat_sys_execveat)
 
-Well we use test ID as well as pid for the filename so it should be
-unique enough, we also do O_EXCL on the file so I guess that it should
-be safe enough not to unlink() it after it has been mapped.
+Hi Li,
+Thanks your tips on finding syscall id, but I still can't find all
+arches listed in
+[ltp]/include/lapi/syscalls from [kernel]/arch, should I just add the id as much
+as I can find from [kernel]/arch?
 
-There is one downside though, in a case that there is no tmpfs mounted
-we fall back to mapping a file, in which case we will trigger writeback
-to the storage by updating the piece of memory.
 
-And given that there are actually very few testcases that needs to
-access the test library from the children started by exec I would like
-to keep unlinking the file unless needed.
+>> +       fd = SAFE_OPEN(TEST_FILE_PATH, O_PATH);
+>> +       SAFE_UNLINK(TEST_FILE_PATH);
+>> +
+>> +       TEST(execveat(fd, "", argv, environ, AT_EMPTY_PATH));
+>
+>
+> Shouldn't we handle EINVAL here? As the comment says from kernel-4.14,
+> this case is expected to fail with EINVAL.
+>
+> something maybe like:
+> -----------------------------
+> if (TST_RET == -1) {
+> if (TST_ERR == EINVAL)
+> tst_res(TCONF, "execveat() return EINVAL as we expected");
+> else
+> tst_res(TFAIL | TERRNO, "execveat() returned unexpected errno");
+> } else {
+> tst_res(TFAIL, "On success, execveat() shouldn't return");
+> }
+>
 
-> .needs_ipc_path - I'm worried users won't know what this is for.
-> Maybe if it was called ".child_needs_reinit"? reinit appears
-> to be the only reason we need to keep shm_path around.
+So Cryil's suggestion works for the case? Same EINVAL error for
+both verifying TCONF and expected TFAIL.
 
-That sounds definitely better.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+thanks,
+Eddie
