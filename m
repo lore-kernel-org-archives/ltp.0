@@ -1,58 +1,36 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 3 Aug 2018 10:16:24 -0400 (EDT)
-Subject: [LTP] [RFC] [PATCH] lib: Fix result propagation after exec() +
- tst_reinit()
-In-Reply-To: <20180803091312.GA32272@rei>
-References: <20180731130852.22739-1-chrubis@suse.cz>
- <1077521162.37312079.1533126920056.JavaMail.zimbra@redhat.com>
- <20180803091312.GA32272@rei>
-Message-ID: <1736674571.38165996.1533305784823.JavaMail.zimbra@redhat.com>
+From: Sandeep Patil <sspatil@google.com>
+Date: Fri,  3 Aug 2018 08:20:18 -0700
+Subject: [LTP] [PATCH] fs: exclude 'wakeup_count' from read_all_sys test.
+Message-ID: <20180803152018.13701-1-sspatil@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+/sys/power/wakeup_count semantics state that the read() for the file
+will block as long as there is a wakeup_event in progress. On most
+systems, this will be non deterministic and will result in extremely
+flaky test. Exclude the file from read_all_sys test for the same.
 
+Signed-off-by: Sandeep Patil <sspatil@google.com>
+---
+ runtest/fs | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
------ Original Message -----
-> Hi!
-> > > and also adds a needs_ipc_path flag to
-> > > tst_test structure, which causes the library not to unlink the IPC file
-> > > after it has been mapped and also inserts LTP_IPC_PATH to the
-> > > environment.
-> > 
-> > What is the negative of skipping unlink() for all tests?
-> > Test itself runs in separate process, so cleanup_ipc() should run
-> > anyway and clean it.
-> 
-> Well we use test ID as well as pid for the filename so it should be
-> unique enough, we also do O_EXCL on the file so I guess that it should
-> be safe enough not to unlink() it after it has been mapped.
-> 
-> There is one downside though, in a case that there is no tmpfs mounted
-> we fall back to mapping a file, in which case we will trigger writeback
-> to the storage by updating the piece of memory.
-> 
-> And given that there are actually very few testcases that needs to
-> access the test library from the children started by exec I would like
-> to keep unlinking the file unless needed.
+diff --git a/runtest/fs b/runtest/fs
+index a66948a43..aca7e355f 100644
+--- a/runtest/fs
++++ b/runtest/fs
+@@ -71,7 +71,7 @@ proc01 proc01 -m 128
+ 
+ read_all_dev read_all -d /dev -p -q -r 10
+ read_all_proc read_all -d /proc -q -r 10
+-read_all_sys read_all -d /sys -q -r 10
++read_all_sys read_all -d /sys -q -r 10 -e /sys/power/wakeup_count
+ 
+ #Run the File System Race Condition Check tests as well
+ fs_racer fs_racer.sh -t 5
+-- 
+2.18.0.597.ga71716f1ad-goog
 
-OK, then let's go with new flag for tst_test struct.
-As you said, it's not very commonly used.
-Can you add a sentence or two also to docs part that talks about reinit?
-
-Regards,
-Jan
-
-> 
-> > .needs_ipc_path - I'm worried users won't know what this is for.
-> > Maybe if it was called ".child_needs_reinit"? reinit appears
-> > to be the only reason we need to keep shm_path around.
-> 
-> That sounds definitely better.
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
