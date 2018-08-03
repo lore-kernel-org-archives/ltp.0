@@ -1,36 +1,51 @@
 From: Sandeep Patil <sspatil@google.com>
-Date: Fri,  3 Aug 2018 08:20:18 -0700
-Subject: [LTP] [PATCH] fs: exclude 'wakeup_count' from read_all_sys test.
-Message-ID: <20180803152018.13701-1-sspatil@google.com>
+Date: Fri,  3 Aug 2018 08:22:25 -0700
+Subject: [LTP] [PATCH] mknod03: Skip S_ISGID check on files created by
+	non-group members.
+Message-ID: <20180803152225.21107-1-sspatil@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-/sys/power/wakeup_count semantics state that the read() for the file
-will block as long as there is a wakeup_event in progress. On most
-systems, this will be non deterministic and will result in extremely
-flaky test. Exclude the file from read_all_sys test for the same.
+0fa3ecd87848 ("Fix up non-directory creation in SGID directories") fixes
+problem described in CVE-2018-13405. This commit is backported to older
+streams as well.
+
+This patch removes S_ISGID check for files created by non-group members
+in LTP tests mknod03. Basically, does the same thing as commit
+'3c87ef2961' for mknod03 test.
 
 Signed-off-by: Sandeep Patil <sspatil@google.com>
 ---
- runtest/fs | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ testcases/kernel/syscalls/mknod/mknod03.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/runtest/fs b/runtest/fs
-index a66948a43..aca7e355f 100644
---- a/runtest/fs
-+++ b/runtest/fs
-@@ -71,7 +71,7 @@ proc01 proc01 -m 128
+diff --git a/testcases/kernel/syscalls/mknod/mknod03.c b/testcases/kernel/syscalls/mknod/mknod03.c
+index 2af66f78c..7ecadb5b3 100644
+--- a/testcases/kernel/syscalls/mknod/mknod03.c
++++ b/testcases/kernel/syscalls/mknod/mknod03.c
+@@ -142,14 +142,11 @@ int main(int ac, char **av)
+ 			fflag = 0;
+ 		}
  
- read_all_dev read_all -d /dev -p -q -r 10
- read_all_proc read_all -d /proc -q -r 10
--read_all_sys read_all -d /sys -q -r 10
-+read_all_sys read_all -d /sys -q -r 10 -e /sys/power/wakeup_count
+-		/* Verify mode permissions of node */
+-		if (!(buf.st_mode & S_ISGID)) {
+-			tst_resm(TFAIL,
+-				 "%s: Incorrect modes, setgid bit not "
+-				 "set", node_name);
+-			/* unset flag as functionality fails */
+-			fflag = 0;
+-		}
++		/*
++		 * Skip S_ISGID check
++		 * 0fa3ecd87848 ("Fix up non-directory creation in SGID directories")
++		 * clears S_ISGID for files created by non-group members
++		 */
  
- #Run the File System Race Condition Check tests as well
- fs_racer fs_racer.sh -t 5
+ 		/* Verify group ID */
+ 		if (buf.st_gid != group2_gid) {
 -- 
 2.18.0.597.ga71716f1ad-goog
 
