@@ -1,25 +1,58 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 3 Aug 2018 16:00:01 +0200
-Subject: [LTP] [PATCH v2] syscalls/prctl03.c: New test for prctl() with
- PR_{SET, GET}_CHILD_SUBREAPER
-In-Reply-To: <1532662463-9404-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <20180725125655.GA23890@rei>
- <1532662463-9404-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20180803140001.GA32243@rei>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 3 Aug 2018 10:16:24 -0400 (EDT)
+Subject: [LTP] [RFC] [PATCH] lib: Fix result propagation after exec() +
+ tst_reinit()
+In-Reply-To: <20180803091312.GA32272@rei>
+References: <20180731130852.22739-1-chrubis@suse.cz>
+ <1077521162.37312079.1533126920056.JavaMail.zimbra@redhat.com>
+ <20180803091312.GA32272@rei>
+Message-ID: <1736674571.38165996.1533305784823.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with minor changes, thanks.
 
-TST_RETURN -> TST_RET
-TST_ERRNO -> TST_ERR
 
-And the grandchild does only exit(0) since we do not use the exit value.
+----- Original Message -----
+> Hi!
+> > > and also adds a needs_ipc_path flag to
+> > > tst_test structure, which causes the library not to unlink the IPC file
+> > > after it has been mapped and also inserts LTP_IPC_PATH to the
+> > > environment.
+> > 
+> > What is the negative of skipping unlink() for all tests?
+> > Test itself runs in separate process, so cleanup_ipc() should run
+> > anyway and clean it.
+> 
+> Well we use test ID as well as pid for the filename so it should be
+> unique enough, we also do O_EXCL on the file so I guess that it should
+> be safe enough not to unlink() it after it has been mapped.
+> 
+> There is one downside though, in a case that there is no tmpfs mounted
+> we fall back to mapping a file, in which case we will trigger writeback
+> to the storage by updating the piece of memory.
+> 
+> And given that there are actually very few testcases that needs to
+> access the test library from the children started by exec I would like
+> to keep unlinking the file unless needed.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+OK, then let's go with new flag for tst_test struct.
+As you said, it's not very commonly used.
+Can you add a sentence or two also to docs part that talks about reinit?
+
+Regards,
+Jan
+
+> 
+> > .needs_ipc_path - I'm worried users won't know what this is for.
+> > Maybe if it was called ".child_needs_reinit"? reinit appears
+> > to be the only reason we need to keep shm_path around.
+> 
+> That sounds definitely better.
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
