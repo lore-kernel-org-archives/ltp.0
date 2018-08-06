@@ -1,9 +1,9 @@
 From: Jinhui huang <huangjh.jy@cn.fujitsu.com>
-Date: Mon, 6 Aug 2018 13:08:55 +0800
-Subject: [LTP] [PATCH v2 5/5] syscalls/flock06: Rewrite to new library
-In-Reply-To: <1649896669.37585897.1533212964490.JavaMail.zimbra@redhat.com>
-References: <1649896669.37585897.1533212964490.JavaMail.zimbra@redhat.com>
-Message-ID: <1533532135-7496-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Date: Mon, 6 Aug 2018 13:11:38 +0800
+Subject: [LTP] [PATCH v3] syscalls/alarm02: Rewrite to new library
+In-Reply-To: <20180802155433.GB21827@rei>
+References: <20180802155433.GB21827@rei>
+Message-ID: <1533532298-7551-1-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,241 +12,250 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/flock/flock06.c | 213 ++++++++----------------------
- 1 file changed, 52 insertions(+), 161 deletions(-)
+ testcases/kernel/syscalls/alarm/alarm02.c | 217 ++++++++----------------------
+ 1 file changed, 58 insertions(+), 159 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/flock/flock06.c b/testcases/kernel/syscalls/flock/flock06.c
-index 617eddf..9ef1280 100644
---- a/testcases/kernel/syscalls/flock/flock06.c
-+++ b/testcases/kernel/syscalls/flock/flock06.c
-@@ -1,177 +1,68 @@
+diff --git a/testcases/kernel/syscalls/alarm/alarm02.c b/testcases/kernel/syscalls/alarm/alarm02.c
+index d745e98..3cb4d15 100644
+--- a/testcases/kernel/syscalls/alarm/alarm02.c
++++ b/testcases/kernel/syscalls/alarm/alarm02.c
+@@ -1,180 +1,79 @@
 -/*
+- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
+- *
+- * http://www.sgi.com
+- *
+- * For further information regarding this notice, see:
+- *
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
 +// SPDX-License-Identifier: GPL-2.0-or-later
-+/* Copyright (c) Matthew Wilcox for Hewlett Packard 2003
-+ * Author: Matthew Wilcox
-  *
-- *   Copyright (c) Matthew Wilcox for Hewlett Packard 2003
++/* Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
++ * Author: Billy Jean Horne
++ *
 + * Test Description:
-+ *  This test verifies that flock locks held on one fd conflict with flock
-+ *  locks held on a different fd.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Test Steps:
-+ *  The process opens two file descriptors on the same file.  It acquires
-+ *  an exclusive flock on the first descriptor, checks that attempting to
-+ *  acquire an flock on the second descriptor fails.  Then it removes the
-+ *  first descriptor's lock and attempts to acquire an exclusive lock on
-+ *  the second descriptor.
++ *  1) alarm() return UINT_MAX if seconds is UINT_MAX.
++ *  2) alarm() return UINT_MAX/2 if seconds is UINT_MAX/2.
++ *  3) alarm() return UINT_MAX/4 if seconds is UINT_MAX/4.
   */
- 
+-/* $Id: alarm02.c,v 1.4 2009/08/28 10:57:29 vapier Exp $ */
 -/**********************************************************
 - *
-- *    TEST IDENTIFIER   : flock06
+- *    OS Test - Silicon Graphics, Inc.
 - *
-- *    EXECUTED BY       : anyone
+- *    TEST IDENTIFIER   : alarm02
 - *
-- *    TEST TITLE        : Error condition test for flock(2)
+- *    TEST TITLE        : Boundary Value Test for alarm(2)
 - *
-- *    TEST CASE TOTAL   : 1
+- *    PARENT DOCUMENT   : almtds02
 - *
-- *    AUTHOR            : Matthew Wilcox <willy@debian.org>
+- *    TEST CASE TOTAL   : 3
 - *
-- *    SIGNALS
-- *      Uses SIGUSR1 to pause before test if option set.
-- *      (See the parse_opts(3) man page).
+- *    WALL CLOCK TIME   : 1
 - *
-- *    DESCRIPTION
-- * 		 This test verifies that flock locks held on one fd conflict with
-- * 		 flock locks held on a different fd.
+- *    CPU TYPES         : ALL
 - *
-- *		 Test:
-- * 		 		 The process opens two file descriptors on the same file.
-- * 		 		 It acquires an exclusive flock on the first descriptor,
-- * 		 		 checks that attempting to acquire an flock on the second
-- * 		 		 descriptor fails.  Then it removes the first descriptor's
-- * 		 		 lock and attempts to acquire an exclusive lock on the
-- * 		 		 second descriptor.
+- *    AUTHOR            : Billy Jean Horne
 - *
-- * USAGE:  <for command-line>
-- *      flock06 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
-- *                      where,  -c n : Run n copies concurrently
-- *                              -f   : Turn off functional testing
-- *    		 		 		 		 -e   : Turn on errno logging
-- *                              -h   : Show help screen
-- *		 		 		 		 -i n : Execute test n times
-- *                              -I x : Execute test for x seconds
-- *                              -p   : Pause for SIGUSR1 before starting
-- *                              -P x : Pause for x seconds between iterations
-- *                              -t   : Turn on syscall timing
+- *    CO-PILOT          : Kathy Olmsted
 - *
-- ****************************************************************/
--
--#include <stdio.h>
- #include <errno.h>
--#include <fcntl.h>
+- *    DATE STARTED      : 06/01/92
+- *
+- *    INITIAL RELEASE   : UNICOS 7.0
+- *
+- *    TEST CASES
+- *      Test Case One - A call to alarm() shall not return an error if
+- *       seconds is a -1.
+- *       Test FAILS if a non-zero value is returned.
+- *      Test Case Two - A call to alarm() shall not return an error if
+- *       seconds is the maximum unsigned integer (2**63).
+- *       Test FAILS if a non-zero value is returned.
+- *      Test Case Three - A call to alarm() shall not return an error if
+- *       seconds is the maximum unsigned integer plus 1 ((2**63)+1).
+- *       Test FAILS if a non-zero value is returned.
+- *
+- *    ENVIRONMENTAL NEEDS
+- *      The libcuts.a and libsys.a libraries must be included in
+- *      the compilation of this test.
+- *
+- *    DETAILED DESCRIPTION
+- *
+- *      Setup:
+- *        Define a cleanup function.
+- *
+- *      Test:
+- *       Loop for each test case.
+- *        Execute alarm (0) system call to clear previous alarm.
+- *        Check return code, if system call failed (return=-1)
+- *           Issue a FAIL message and exit the test.
+- *        Call alarm() with boundary values for seconds.
+- *        Verify that returned value is as expected.
+- *        Report results.
+- *
+- *      Cleanup:
+- *
+- */
 -#include <sys/types.h>
--#include <sys/stat.h>
- #include <sys/file.h>
--#include <sys/wait.h>
++
++#include <unistd.h>
+ #include <errno.h>
+ #include <sys/signal.h>
+ #include <limits.h>
 -#include "test.h"
--#include "safe_macros.h"
  
 -void setup(void);
 -void cleanup(void);
+-void alarm_received(int sig);
 +#include "tst_test.h"
  
--char *TCID = "flock06";
+-char *TCID = "alarm02";
 -int TST_TOTAL = 3;
--char filename[100];
--
--int main(int argc, char **argv)
-+static void verify_flock(void)
++static volatile int alarms_received;
+ 
+-int received_alarm = 0;		/* Indicates a SIGALRM was received */
++static struct tcase {
++	char *buf;
++	unsigned int sec;
++} tcases[] = {
++	{"UINT_MAX", UINT_MAX},
++	{"UINT_MAX/2", UINT_MAX/2},
++	{"UINT_MAX/4", UINT_MAX/4},
++};
+ 
+-int main(int ac, char **av)
++static void verify_alarm(unsigned int n)
  {
++	alarms_received = 0;
++	struct tcase *tc = &tcases[n];
++	unsigned int ret;
++
++	ret = alarm(tc->sec);
++	if (ret != 0) {
++		tst_res(TFAIL,
++			"alarm(%u) returned %ld, when 0 was ",
++			tc->sec, TST_RET);
++		return;
++	}
+ 
+-	/* Parameters for usc code  */
 -	int lc;
 -
--	tst_parse_opts(argc, argv, NULL, NULL);
+-	/* Parameters for alarm test */
+-	char *buf[] = { "-1", "ULONG_MAX", "ULONG_MAX+1" };
+-	unsigned long int sec[] = { -1, ULONG_MAX, ULONG_MAX + 1 };
+-	int exp[] = { 0, 0, 0 };
+-	int i;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
--	/* The following loop checks looping state if -i option given */
--
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		int fd1, fd2;
 -
--		/* reset tst_count in case we are looping */
 -		tst_count = 0;
 -
--		fd1 = open(filename, O_RDWR);
--		if (fd1 == -1)
--			tst_brkm(TFAIL | TERRNO, cleanup,
--				 "failed to open the file");
+-		for (i = 0; i < TST_TOTAL; i++) {
 -
--		TEST(flock(fd1, LOCK_EX | LOCK_NB));
--		if (TEST_RETURN != 0)
--			tst_resm(TFAIL | TTERRNO,
--				 "First attempt to flock() failed");
--		else
--			tst_resm(TPASS, "First attempt to flock() passed");
+-			received_alarm = 0;
+-			signal(SIGALRM, alarm_received);
 -
--		fd2 = open(filename, O_RDWR);
--		if (fd2 == -1)
--			tst_brkm(TFAIL | TERRNO, cleanup,
--				 "failed to open the file");
+-			TEST(alarm(sec[i]));
+-			alarm(0);
+-			if (TEST_RETURN != 0) {
+-				tst_resm(TFAIL,
+-					 "alarm(%lu) returned %ld, when %u was "
+-					 "expected for value %s",
+-					 sec[i], TEST_RETURN, exp[i], buf[i]);
+-			} else {
+-				if (received_alarm == 1) {
+-					tst_resm(TFAIL,
+-						 "alarm(%lu) returned %ldu but an "
+-						 "alarm signal was received for "
+-						 "value %s",
+-						 sec[i], TEST_RETURN, buf[i]);
+-				} else {
+-					tst_resm(TPASS,
+-						 "alarm(%lu) returned %ld as "
+-						 "expected for value %s",
+-						 sec[i], TEST_RETURN, buf[i]);
+-				}
 -
--		TEST(flock(fd2, LOCK_EX | LOCK_NB));
--		if (TEST_RETURN == -1)
--			tst_resm(TPASS, "Second attempt to flock() denied");
--		else
--			tst_resm(TFAIL, "Second attempt to flock() succeeded!");
+-			}
+-		}
+-		/*
+-		 *  Reset alarm before cleanup.
+-		 */
 -
--		TEST(flock(fd1, LOCK_UN));
--		if (TEST_RETURN == -1)
--			tst_resm(TFAIL | TTERRNO, "Failed to unlock fd1");
--		else
--			tst_resm(TPASS, "Unlocked fd1");
--
--		TEST(flock(fd2, LOCK_EX | LOCK_NB));
--		if (TEST_RETURN == -1)
--			tst_resm(TFAIL, "Third attempt to flock() denied!");
--		else
--			tst_resm(TPASS, "Third attempt to flock() succeeded");
--		close(fd1);
--		close(fd2);
--
--	}
--
+-		alarm(0);
++	TEST(alarm(0));
++	if (alarms_received == 1) {
++		tst_res(TFAIL,
++			"alarm(%u) signal was received for value %s",
++			tc->sec, tc->buf);
++			return;
++	}
+ 
++	if (tc->sec != TST_RET) {
++		tst_res(TFAIL,
++			"alarm(%u) returned %ld as unexpected",
++			tc->sec, TST_RET);
++			return;
+ 	}
+ 
 -	cleanup();
 -	tst_exit();
--
-+	int fd1, fd2;
-+
-+	fd1 = SAFE_OPEN("testfile", O_RDWR);
-+	TEST(flock(fd1, LOCK_EX | LOCK_NB));
-+	if (TST_RET != 0)
-+		tst_res(TFAIL | TTERRNO, "First attempt to flock() failed");
-+	else
-+		tst_res(TPASS, "First attempt to flock() passed");
-+
-+	fd2 = SAFE_OPEN("testfile", O_RDWR);
-+	TEST(flock(fd2, LOCK_EX | LOCK_NB));
-+	if (TST_RET == -1)
-+		tst_res(TPASS | TTERRNO, "Second attempt to flock() denied");
-+	else
-+		tst_res(TFAIL, "Second attempt to flock() succeeded!");
-+
-+	TEST(flock(fd1, LOCK_UN));
-+	if (TST_RET == -1)
-+		tst_res(TFAIL | TTERRNO, "Failed to unlock fd1");
-+	else
-+		tst_res(TPASS, "Unlocked fd1");
-+
-+	TEST(flock(fd2, LOCK_EX | LOCK_NB));
-+	if (TST_RET == -1)
-+		tst_res(TFAIL | TTERRNO, "Third attempt to flock() denied!");
-+	else
-+		tst_res(TPASS, "Third attempt to flock() succeeded");
-+
-+	SAFE_CLOSE(fd1);
-+	SAFE_CLOSE(fd2);
++	tst_res(TPASS,
++		"alarm(%u) returned %ld as expected "
++		"for value %s",
++		tc->sec, TST_RET, tc->buf);
  }
  
--/*
-- * setup()
-- *		 performs all ONE TIME setup for this test
-- */
 -void setup(void)
-+static void setup(void)
++static void sighandler(int sig)
  {
- 	int fd;
- 
--	tst_sig(FORK, DEF_HANDLER, cleanup);
 -
--	/* Pause if that option was specified
--	 * TEST_PAUSE contains the code to fork the test with the -i option.
--	 * You want to make sure you do this before you create your temporary
--	 * directory.
--	 */
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
 -	TEST_PAUSE;
 -
--	/* Create a unique temporary directory and chdir() to it. */
--	tst_tmpdir();
--
--	sprintf(filename, "flock06.%d", getpid());
--
--	/* creating temporary file */
--	fd = SAFE_OPEN(tst_rmdir, filename, O_CREAT | O_TRUNC | O_RDWR, 0666);
--	close(fd);
-+	fd = SAFE_OPEN("testfile", O_CREAT | O_TRUNC | O_RDWR, 0666);
-+	SAFE_CLOSE(fd);
++	if (sig == SIGALRM)
++		alarms_received++;
  }
  
--/*
-- * cleanup()
-- *		 performs all ONE TIME cleanup for this test at
-- * 		 completion or premature exit
-- */
 -void cleanup(void)
++static void setup(void)
+ {
++	SAFE_SIGNAL(SIGALRM, sighandler);
+ }
+ 
+-void alarm_received(int sig)
 -{
--
--	unlink(filename);
--	tst_rmdir();
--
+-	received_alarm = 1;
 -}
 +static struct tst_test test = {
-+	.test_all = verify_flock,
-+	.needs_tmpdir = 1,
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = verify_alarm,
 +	.setup = setup,
 +};
 -- 
