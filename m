@@ -1,138 +1,225 @@
-From: Shuang Qiu <shuang.qiu@oracle.com>
-Date: Wed, 8 Aug 2018 05:35:16 +0800
-Subject: [LTP] [PATCH] ltp: replace the retry loops by new exponential
- backoff macro
-In-Reply-To: <20180612155652.mhu2sycbwd5gbu5e@dell5510>
-References: <20180517062943.13178-1-liwang@redhat.com>
- <20180612155652.mhu2sycbwd5gbu5e@dell5510>
-Message-ID: <dbeb13e1-adae-2231-6936-567098ec8867@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue,  7 Aug 2018 16:25:49 +0200
+Subject: [LTP] [PATCH] lib: Fix result propagation after exec() +
+	tst_reinit()
+Message-ID: <20180807142549.13877-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+The result pointer wasn't initialized in tst_reinit(), which haven't
+allowed for test result propagation to the main test process and there
+is actually no reason not to do that. So this commit initializes the
+results pointer in tst_reinit() and also adds a child_needs_reinit flag
+to tst_test structure, which causes the library not to unlink the IPC
+file after it has been mapped and also inserts LTP_IPC_PATH to the
+environment.
 
-Referring to commit 8435d0c7283,some version of swapon will not create 
-the symlink of the device.
-So it changed TWARN to TINFO so that the test will not break by it.
-We need to handler such situation in the new patch,or revert the change 
-for swap01.sh.
+This commit also adds a test that also shows the usage of the API and
+documentation.
 
-Thanks
-Shuang
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+CC: Eddie Horng <eddiehorng.tw@gmail.com>
+---
+ doc/test-writing-guidelines.txt    | 40 +++++++++++++++++++++++++++++++++++
+ include/tst_test.h                 |  1 +
+ lib/newlib_tests/.gitignore        |  2 ++
+ lib/newlib_tests/test_exec.c       | 43 ++++++++++++++++++++++++++++++++++++++
+ lib/newlib_tests/test_exec_child.c | 27 ++++++++++++++++++++++++
+ lib/tst_test.c                     |  7 +++----
+ 6 files changed, 116 insertions(+), 4 deletions(-)
+ create mode 100644 lib/newlib_tests/test_exec.c
+ create mode 100644 lib/newlib_tests/test_exec_child.c
 
-On 06/12/2018 11:56 PM, Petr Vorel wrote:
-> Hi Li,
->
->> Signed-off-by: Li Wang <liwang@redhat.com>
->> Cc: Petr Vorel <pvorel@suse.cz>
->> Cc: Cyril Hrubis <chrubis@suse.cz>
->> ---
->>   testcases/commands/mkswap/mkswap01.sh | 17 ++++------
->>   testcases/kernel/numa/numa01.sh       | 58 +++++++++++++++--------------------
-> Thanks for your patch, applied with diff bellow.
->
-> I changed:
-> * fix mixing quotes when calling check_for_file. This was also broken on dash
->    (testing with /bin/sh as symlink to /bin/dash and using checkbashisms.pl
->    script helps).
-> * simplify check_for_file + remove TINFO message as it was unnecessarily verbose
->    (see bellow)
->
-> Kind regards,
-> Petr
->
-> tst_device.c:83: INFO: Found free device '/dev/loop0'
-> mkswap01 1 TPASS: 'mkswap   /dev/loop0 ' passed.
-> mkswap01 2 TPASS: 'mkswap   /dev/loop0 262140' passed.
-> mkswap01 3 TINFO: Can not do swapon on /dev/loop0.
-> mkswap01 3 TINFO: Device size specified by 'mkswap' greater than real size.
-> mkswap01 3 TINFO: Swapon failed expectedly.
-> mkswap01 3 TPASS: 'mkswap -f  /dev/loop0 262148' passed.
-> mkswap01 4 TPASS: 'mkswap -c  /dev/loop0 ' passed.
-> mkswap01 5 TINFO: Can not do swapon on /dev/loop0.
-> mkswap01 5 TINFO: Page size specified by 'mkswap -p' is not equal to system's page size.
-> mkswap01 5 TINFO: Swapon failed expectedly.
-> mkswap01 5 TPASS: 'mkswap -p 2048 /dev/loop0 ' passed.
-> mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
-> mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
-> mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
-> mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
-> mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
-> mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
-> mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
-> mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
-> mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
-> mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
-> mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
-> mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
-> mkswap01 6 TINFO: The file /dev/disk/by-label/ltp_testswap haven't appeared
-> mkswap01 6 TPASS: 'mkswap -L ltp_testswap /dev/loop0 ' passed.
-> mkswap01 7 TPASS: 'mkswap -v1  /dev/loop0 ' passed.
-> mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
-> mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
-> mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
-> mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
-> mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
-> mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
-> mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
-> mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
-> mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
-> mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
-> mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
-> mkswap01 8 TINFO: The file /dev/disk/by-uuid/b20a69ef-cf9d-49fb-a313-284df6ddd794 haven't appeared
-> mkswap01 8 TPASS: 'mkswap -U b20a69ef-cf9d-49fb-a313-284df6ddd794 /dev/loop0 ' passed.
-> mkswap01 9 TPASS: 'mkswap -V  /dev/loop0 ' passed.
-> mkswap01 10 TPASS: 'mkswap -h  /dev/loop0 ' passed.
->
-> diff --git testcases/commands/mkswap/mkswap01.sh testcases/commands/mkswap/mkswap01.sh
-> index fc07933ae..5ead4cdc5 100755
-> --- testcases/commands/mkswap/mkswap01.sh
-> +++ testcases/commands/mkswap/mkswap01.sh
-> @@ -41,15 +41,9 @@ check_for_file()
->   {
->   	local path="$1"
->   
-> -	if [ -z "$path" ]; then
-> +	if [ -z "$path" -o -e "$path" ]; then
->   		return
->   	fi
-> -
-> -	if [ -e "$path" ]; then
-> -		return 0
-> -	fi
-> -
-> -	tst_res TINFO "The file $path haven't appeared"
->   	return 1
->   }
->   
-> @@ -70,7 +64,7 @@ mkswap_verify()
->   		local pagesize=$PAGE_SIZE
->   	fi
->   
-> -	TST_RETRY_FUNC "check_for_file "$dev_file"" 0
-> +	TST_RETRY_FUNC "check_for_file $dev_file" 0
->   
->   	swapon $swapfile 2>/dev/null
->   
-> diff --git testcases/kernel/numa/numa01.sh testcases/kernel/numa/numa01.sh
-> index f8d8f303c..da2f80ddd 100755
-> --- testcases/kernel/numa/numa01.sh
-> +++ testcases/kernel/numa/numa01.sh
-> @@ -302,11 +302,7 @@ test7()
->   
->   check_ltp_numa_test8_log()
->   {
-> -	if grep -m1 -q '.' ltp_numa_test8.log; then
-> -		return 0
-> -	fi
-> -
-> -	return 1
-> +	grep -m1 -q '.' ltp_numa_test8.log
->   }
->   
->   # Verification of memhog with interleave policy
->
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index b6b394590..a16972430 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -692,6 +692,46 @@ The 'tst_reap_children()' function makes the process wait for all of its
+ children and exits with 'tst_brk(TBROK, ...)' if any of them returned
+ a non zero exit code.
+ 
++.Using tst_res() from binaries started by exec()
++[source,c]
++-------------------------------------------------------------------------------
++/* test.c */
++#define _GNU_SOURCE
++#include <stdlib.h>
++#include "tst_test.h"
++
++static void do_test(void)
++{
++	char *const argv[] = {"test_exec_child", NULL};
++
++	execvpe(argv[0], argv, environ);
++
++	tst_res(TBROK | TERRNO, "EXEC!");
++}
++
++static struct tst_test test = {
++	.test_all = do_test,
++	.child_needs_reinit = 1,
++};
++
++/* test_exec_child.c */
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++
++int main(void)
++{
++	tst_reinit();
++	tst_res(TPASS, "Child passed!");
++	return 0;
++}
++-------------------------------------------------------------------------------
++
++The 'tst_res()' function can be also used from binaries started by 'exec()',
++the parent test process has to set the '.child_needs_reinit' flag so that the
++library prepares for it and has to make sure the 'LTP_IPC_PATH' environment
++vairiable is passed down, then the very fist thing the program has to call in
++'main()' is 'tst_reinit()' that sets up the IPC.
++
+ 2.2.9 Fork() and Parent-child synchronization
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 90938bc29..98dacf387 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -127,6 +127,7 @@ struct tst_test {
+ 	int format_device:1;
+ 	int mount_device:1;
+ 	int needs_rofs:1;
++	int child_needs_reinit:1;
+ 	/*
+ 	 * If set the test function will be executed for all available
+ 	 * filesystems and the current filesytem type would be set in the
+diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
+index 8c0981ec8..99edc6404 100644
+--- a/lib/newlib_tests/.gitignore
++++ b/lib/newlib_tests/.gitignore
+@@ -20,3 +20,5 @@ tst_res_hexd
+ tst_strstatus
+ test17
+ tst_expiration_timer
++test_exec
++test_exec_child
+diff --git a/lib/newlib_tests/test_exec.c b/lib/newlib_tests/test_exec.c
+new file mode 100644
+index 000000000..8aef62176
+--- /dev/null
++++ b/lib/newlib_tests/test_exec.c
+@@ -0,0 +1,43 @@
++/*
++ * Copyright (c) 2018 Cyril Hrubis <chrubis@suse.cz>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++/*
++ * Assert that tst_res() from child started by exec() is propagated to the main
++ * test process.
++ *
++ * This test should be executed as:
++ * $ PATH=$PATH:$PWD ./test_exec
++ */
++
++#define _GNU_SOURCE
++#include <stdlib.h>
++#include "tst_test.h"
++
++static void do_test(void)
++{
++	char *const argv[] = {"test_exec_child", NULL};
++
++	execvpe(argv[0], argv, environ);
++
++	tst_res(TBROK | TERRNO, "EXEC!");
++}
++
++static struct tst_test test = {
++	.test_all = do_test,
++	.child_needs_reinit = 1,
++};
+diff --git a/lib/newlib_tests/test_exec_child.c b/lib/newlib_tests/test_exec_child.c
+new file mode 100644
+index 000000000..696ff5be2
+--- /dev/null
++++ b/lib/newlib_tests/test_exec_child.c
+@@ -0,0 +1,27 @@
++/*
++ * Copyright (c) 2018 Cyril Hrubis <chrubis@suse.cz>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++
++int main(void)
++{
++	tst_reinit();
++	tst_res(TPASS, "Child passed!");
++	return 0;
++}
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 008bcefe0..2f3d357d2 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -105,7 +105,7 @@ static void setup_ipc(void)
+ 	results = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, ipc_fd, 0);
+ 
+ 	/* Checkpoints needs to be accessible from processes started by exec() */
+-	if (tst_test->needs_checkpoints) {
++	if (tst_test->needs_checkpoints || tst_test->child_needs_reinit) {
+ 		sprintf(ipc_path, IPC_ENV_VAR "=%s", shm_path);
+ 		putenv(ipc_path);
+ 	} else {
+@@ -141,7 +141,6 @@ void tst_reinit(void)
+ 	const char *path = getenv(IPC_ENV_VAR);
+ 	size_t size = getpagesize();
+ 	int fd;
+-	void *ptr;
+ 
+ 	if (!path)
+ 		tst_brk(TBROK, IPC_ENV_VAR" is not defined");
+@@ -151,8 +150,8 @@ void tst_reinit(void)
+ 
+ 	fd = SAFE_OPEN(path, O_RDWR);
+ 
+-	ptr = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+-	tst_futexes = (char*)ptr + sizeof(struct results);
++	results = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
++	tst_futexes = (char*)results + sizeof(struct results);
+ 	tst_max_futexes = (size - sizeof(struct results))/sizeof(futex_t);
+ 
+ 	SAFE_CLOSE(fd);
+-- 
+2.13.6
 
