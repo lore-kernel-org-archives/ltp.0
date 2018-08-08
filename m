@@ -1,9 +1,9 @@
 From: Li Wang <liwang@redhat.com>
-Date: Wed,  8 Aug 2018 13:54:32 +0800
-Subject: [LTP] [PATCH 4/6] execv: rewrite to newlib
+Date: Wed,  8 Aug 2018 13:54:33 +0800
+Subject: [LTP] [PATCH 5/6] execvp: rewrite to newlib
 In-Reply-To: <20180808055434.26293-1-liwang@redhat.com>
 References: <20180808055434.26293-1-liwang@redhat.com>
-Message-ID: <20180808055434.26293-5-liwang@redhat.com>
+Message-ID: <20180808055434.26293-6-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,15 +12,15 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/kernel/syscalls/execv/Makefile        | 14 ++--
- testcases/kernel/syscalls/execv/execv01.c       | 86 ++++++++-----------------
- testcases/kernel/syscalls/execv/execv01_child.c | 53 ++++++++-------
- 3 files changed, 61 insertions(+), 92 deletions(-)
+ testcases/kernel/syscalls/execvp/Makefile         | 14 ++--
+ testcases/kernel/syscalls/execvp/execvp01.c       | 83 ++++++++---------------
+ testcases/kernel/syscalls/execvp/execvp01_child.c | 47 ++++++-------
+ 3 files changed, 55 insertions(+), 89 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/execv/Makefile b/testcases/kernel/syscalls/execv/Makefile
+diff --git a/testcases/kernel/syscalls/execvp/Makefile b/testcases/kernel/syscalls/execvp/Makefile
 index bd617d8..a0e5f0f 100644
---- a/testcases/kernel/syscalls/execv/Makefile
-+++ b/testcases/kernel/syscalls/execv/Makefile
+--- a/testcases/kernel/syscalls/execvp/Makefile
++++ b/testcases/kernel/syscalls/execvp/Makefile
 @@ -1,19 +1,19 @@
  #
 +#  Copyright (c) Linux Test Project, 2018
@@ -48,10 +48,10 @@ index bd617d8..a0e5f0f 100644
  #
  
  top_srcdir		?= ../../../..
-diff --git a/testcases/kernel/syscalls/execv/execv01.c b/testcases/kernel/syscalls/execv/execv01.c
-index 3e99f53..34826e6 100644
---- a/testcases/kernel/syscalls/execv/execv01.c
-+++ b/testcases/kernel/syscalls/execv/execv01.c
+diff --git a/testcases/kernel/syscalls/execvp/execvp01.c b/testcases/kernel/syscalls/execvp/execvp01.c
+index bdeb2cf..765495f 100644
+--- a/testcases/kernel/syscalls/execvp/execvp01.c
++++ b/testcases/kernel/syscalls/execvp/execvp01.c
 @@ -1,38 +1,25 @@
  /*
 + * Copyright (c) 2018 Linux Test Project
@@ -104,50 +104,45 @@ index 3e99f53..34826e6 100644
  #include <sys/types.h>
  #include <sys/wait.h>
  #include <errno.h>
-@@ -40,46 +27,29 @@
+@@ -40,42 +27,26 @@
+ #include <signal.h>
  #include <stdlib.h>
- #include <string.h>
  
 -#include "test.h"
 +#include "tst_test.h"
  
 -static void setup(void);
 -
--char *TCID = "execv01";
+-char *TCID = "execvp01";
 -int TST_TOTAL = 1;
 -
 -int main(int ac, char **av)
-+static void verify_execv(void)
++static void verify_execvp(void)
  {
 -	int lc;
  	pid_t pid;
- 	char *const args[] = { "execv01_child", "canary", NULL};
--	char path[2048];
--
+ 	char *const args[] = {"execvp01_child", "canary", NULL};
+ 
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
-+	char path[512];
- 
- 	if (tst_get_path("execv01_child", path, sizeof(path)))
--		tst_brkm(TCONF, NULL, "Couldn't find execv01_child in $PATH");
-+		tst_brk(TCONF, "Couldn't find execv01_child in $PATH");
- 
+-
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		switch (pid = FORK_OR_VFORK()) {
 -		case 0:
--			execv(path, args);
+-			execvp("execvp01_child", args);
 -			tst_brkm(TFAIL | TERRNO, NULL,
--			         "Failed to execute execv01_child");
+-			         "Failed to execute execvp01_child");
 -		case -1:
--			tst_brkm(TBROK, NULL, "fork failed");
+-			tst_brkm(TBROK | TERRNO, NULL, "fork failed");
 -		default:
 -			tst_record_childstatus(NULL, pid);
 -		}
 +	pid = SAFE_FORK();
 +	if (pid == 0) {
-+		TEST(execv(path, args));
-+		tst_brk(TFAIL | TERRNO, "Failed to execute execv01_child");
++		execvp("execvp01_child", args);
++		tst_brk(TFAIL | TERRNO,
++			"Failed to execute execvp01_child");
  	}
  
 -	tst_exit();
@@ -164,21 +159,16 @@ index 3e99f53..34826e6 100644
 +	.needs_root = 1,
 +	.forks_child = 1,
 +	.child_needs_reinit = 1,
-+	.test_all = verify_execv,
++	.test_all = verify_execvp,
 +};
-diff --git a/testcases/kernel/syscalls/execv/execv01_child.c b/testcases/kernel/syscalls/execv/execv01_child.c
-index 7f4a0aa..307810c 100644
---- a/testcases/kernel/syscalls/execv/execv01_child.c
-+++ b/testcases/kernel/syscalls/execv/execv01_child.c
-@@ -1,40 +1,39 @@
+diff --git a/testcases/kernel/syscalls/execvp/execvp01_child.c b/testcases/kernel/syscalls/execvp/execvp01_child.c
+index 59587af..8a6e512 100644
+--- a/testcases/kernel/syscalls/execvp/execvp01_child.c
++++ b/testcases/kernel/syscalls/execvp/execvp01_child.c
+@@ -1,40 +1,35 @@
  /*
-- * Copyright (C) 2015 Cyril Hrubis chrubis@suse.cz
 + * Copyright (c) 2018 Linux Test Project
-+ * Copyright (C) 2015 Cyril Hrubis <chrubis@suse.cz>
-+ * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-+ *    AUTHOR		: William Roske
-+ *    CO-PILOT		: Dave Fenner
-+ *    DATE STARTED	: 06/01/02
+  * Copyright (C) 2015 Cyril Hrubis chrubis@suse.cz
   *
 - * This program is free software; you can redistribute it and/or modify it
 - * under the terms of version 2 of the GNU General Public License as
@@ -212,7 +202,7 @@ index 7f4a0aa..307810c 100644
  
 -#include "test.h"
 -
--char *TCID = "execv01_child";
+-char *TCID = "execvp01_child";
 +#define TST_NO_DEFAULT_MAIN
 +#include "tst_test.h"
  
