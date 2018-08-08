@@ -1,34 +1,68 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 9 Aug 2018 11:04:07 +0200
-Subject: [LTP] [PATCH v2] syscalls/execveat01: new test to verify
- execveat unlinked fd
-In-Reply-To: <1533111474.1176.4.camel@mtkswgap22>
-References: <1533111474.1176.4.camel@mtkswgap22>
-Message-ID: <20180809090406.GA29365@rei>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 9 Aug 2018 00:01:09 +0800
+Subject: [LTP] [PATCH] syscalls/fsetxattr02.c: Fix the failure of opening
+	device files
+Message-ID: <1533744069-24715-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with minor changes, thanks.
+If temporary directory(TMPDIR/TEMPDIR) is on the mountpoint which
+is mounted with nodev option or temporary directory is mounted with
+with nodev option directly(e.g. tmpfs is mounted on /tmp), open(2)
+has no permission to open device files in the temporary directory
+and returned EACCES.  as below:
+--------------------------------------------------------------------
+safe_macros.c:225: BROK: fsetxattr02.c:215: open(fsetxattr02chr,0,00) failed: EACCES
+--------------------------------------------------------------------
 
-* Added check for execveat() support to the test setup and dropped the
-  minimal kernel version from test structure
+We try to fix this issue by creating device files in /dev/ instead.
 
-* Renamed the test to execveat03 so that we can add execveat01 and
-  execveat02 that would test the cases without overlay being involved
+This is the same issue reported by open11, please see the mail:
+http://lists.linux.it/pipermail/ltp/2018-July/008641.html
 
-* Removed SAFE_WAITPID() from the verify_execveat() since the child
-  has to be waited for in the test library so that errors are propagated
-  correctly
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/fsetxattr/fsetxattr02.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-* Moved the execveat.h to the include/lapi/ directory
-
-* Added syscalls/runtest entry so that the test is executed during the
-  tesrun
-
+diff --git a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
+index a1be652..356e527 100644
+--- a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
++++ b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
+@@ -52,11 +52,13 @@
+ #define FILENAME "fsetxattr02testfile"
+ #define DIRNAME  "fsetxattr02testdir"
+ #define SYMLINK  "fsetxattr02symlink"
+-#define FIFO     "fsetxattr02fifo"
+-#define CHR      "fsetxattr02chr"
+-#define BLK      "fsetxattr02blk"
++#define FIFO     "/dev/fsetxattr02fifo"
++#define CHR      "/dev/fsetxattr02chr"
++#define BLK      "/dev/fsetxattr02blk"
+ #define SOCK     "fsetxattr02sock"
+ 
++static char *dev_files[3] = {FIFO, CHR, BLK};
++
+ struct test_case {
+ 	char *fname;
+ 	int fd;
+@@ -240,6 +242,11 @@ static void cleanup(void)
+ 		if (tc[i].fd > 0)
+ 			SAFE_CLOSE(tc[i].fd);
+ 	}
++
++	for (i = 0; i < ARRAY_SIZE(dev_files); i++) {
++		if (!access(dev_files[i], F_OK))
++			SAFE_UNLINK(dev_files[i]);
++	}
+ }
+ 
+ static struct tst_test test = {
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
+
+
