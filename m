@@ -1,14 +1,13 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 8 Aug 2018 16:08:34 +0200
-Subject: [LTP] [PATCH 2/2] testcases: netns: Handle "Operation not
- supported" error
-In-Reply-To: <36530f0d-15ed-e9a4-4740-60805f33faf9@oracle.com>
-References: <20180802141251.1571-1-mylene.josserand@bootlin.com>
- <20180802141251.1571-2-mylene.josserand@bootlin.com>
- <1ef13fe5-debb-57ff-422b-b2b5d3460523@oracle.com>
- <20180808130512.GD19147@rei>
- <36530f0d-15ed-e9a4-4740-60805f33faf9@oracle.com>
-Message-ID: <20180808140834.GF19147@rei>
+Date: Wed, 8 Aug 2018 16:41:55 +0200
+Subject: [LTP] [PATCH v2] syscalls/execveat01: new test to verify
+ execveat unlinked fd
+In-Reply-To: <CAEemH2f8di2qLvKPmutiO64w+YOxVbHxZgggvqtM-TPS5TU8eg@mail.gmail.com>
+References: <1533111474.1176.4.camel@mtkswgap22>
+ <CAEemH2dsg0Z18taXrBeQvCkJF1WHh9fHbP=GvMzRV62h4kNCzg@mail.gmail.com>
+ <CALLuPvp4Ay5F_giNiUuDR9By+eLNPUNT-perUOE=gbCSmbsc2A@mail.gmail.com>
+ <CAEemH2f8di2qLvKPmutiO64w+YOxVbHxZgggvqtM-TPS5TU8eg@mail.gmail.com>
+Message-ID: <20180808144155.GG19147@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,18 +15,29 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > That will possibly break on embedded systems that have everything
-> > compiled-in kernel, not sure if there are any out there.
+> static void do_child(void)
+> {
+>     ...
 > 
-> modprobe looks for modules.builtin as well and will just return 0 if
-> it finds the driver there. But it might not be available for kernels
-> before 2.6.33: bc081dd6e9f6 ("kbuild: generate modules.builtin").
+>     /* Check if system support execveat() correctly */
+>     TEST(execveat(fd, "", argv, environ, AT_EMPTY_PATH));
+>     /* Do TCONF if we get EINVAL here */
+> 
+>     SAFE_UNLINK(TEST_FILE_PATH);
+> 
+>     /* Do your testing */
+>     TEST(execveat(fd, "", argv, environ, AT_EMPTY_PATH));
+>     /* Here if we get EINVAL again that means hit a bug! */
+> }
+> 
+> Did I miss anything?
 
-I was also thinking of embedded hardware that does not even install
-modprobe, but maybe I'm overthinking it and such special cases will have
-to manualy specify what is supported and what is not, which would be at
-least doable if we added a library function for checking what is
-suppored.
+It's a bit more complicated than that, we have to fork() first and run
+the check in the child otherwise we will never get to the test code, as
+we will either do tst_brk(TBROK) or execute the child code instead...
+
+I will write the code to check it and amend the test before applying to
+the tree.
 
 -- 
 Cyril Hrubis
