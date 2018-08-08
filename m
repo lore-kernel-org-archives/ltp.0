@@ -1,9 +1,9 @@
 From: Li Wang <liwang@redhat.com>
-Date: Wed,  8 Aug 2018 13:54:31 +0800
-Subject: [LTP] [PATCH 3/6] execlp: rewrite to newlib
+Date: Wed,  8 Aug 2018 13:54:32 +0800
+Subject: [LTP] [PATCH 4/6] execv: rewrite to newlib
 In-Reply-To: <20180808055434.26293-1-liwang@redhat.com>
 References: <20180808055434.26293-1-liwang@redhat.com>
-Message-ID: <20180808055434.26293-4-liwang@redhat.com>
+Message-ID: <20180808055434.26293-5-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,15 +12,15 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/kernel/syscalls/execlp/Makefile         | 14 ++--
- testcases/kernel/syscalls/execlp/execlp01.c       | 83 ++++++++---------------
- testcases/kernel/syscalls/execlp/execlp01_child.c | 47 ++++++-------
- 3 files changed, 55 insertions(+), 89 deletions(-)
+ testcases/kernel/syscalls/execv/Makefile        | 14 ++--
+ testcases/kernel/syscalls/execv/execv01.c       | 86 ++++++++-----------------
+ testcases/kernel/syscalls/execv/execv01_child.c | 53 ++++++++-------
+ 3 files changed, 61 insertions(+), 92 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/execlp/Makefile b/testcases/kernel/syscalls/execlp/Makefile
+diff --git a/testcases/kernel/syscalls/execv/Makefile b/testcases/kernel/syscalls/execv/Makefile
 index bd617d8..a0e5f0f 100644
---- a/testcases/kernel/syscalls/execlp/Makefile
-+++ b/testcases/kernel/syscalls/execlp/Makefile
+--- a/testcases/kernel/syscalls/execv/Makefile
++++ b/testcases/kernel/syscalls/execv/Makefile
 @@ -1,19 +1,19 @@
  #
 +#  Copyright (c) Linux Test Project, 2018
@@ -48,11 +48,11 @@ index bd617d8..a0e5f0f 100644
  #
  
  top_srcdir		?= ../../../..
-diff --git a/testcases/kernel/syscalls/execlp/execlp01.c b/testcases/kernel/syscalls/execlp/execlp01.c
-index d4e0d11..57c7b80 100644
---- a/testcases/kernel/syscalls/execlp/execlp01.c
-+++ b/testcases/kernel/syscalls/execlp/execlp01.c
-@@ -1,39 +1,26 @@
+diff --git a/testcases/kernel/syscalls/execv/execv01.c b/testcases/kernel/syscalls/execv/execv01.c
+index 3e99f53..34826e6 100644
+--- a/testcases/kernel/syscalls/execv/execv01.c
++++ b/testcases/kernel/syscalls/execv/execv01.c
+@@ -1,38 +1,25 @@
  /*
 + * Copyright (c) 2018 Linux Test Project
 + * Copyright (C) 2015 Cyril Hrubis <chrubis@suse.cz>
@@ -99,50 +99,55 @@ index d4e0d11..57c7b80 100644
 - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
 + * You should have received a copy of the GNU General Public License
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
-  *
   */
 +
- #include <errno.h>
- #include <string.h>
- #include <signal.h>
-@@ -42,41 +29,25 @@
  #include <sys/types.h>
  #include <sys/wait.h>
+ #include <errno.h>
+@@ -40,46 +27,29 @@
+ #include <stdlib.h>
+ #include <string.h>
  
 -#include "test.h"
 +#include "tst_test.h"
  
 -static void setup(void);
 -
--char *TCID = "execlp01";
+-char *TCID = "execv01";
 -int TST_TOTAL = 1;
 -
 -int main(int ac, char **av)
-+static void verify_execlp(void)
++static void verify_execv(void)
  {
 -	int lc;
  	pid_t pid;
- 
+ 	char *const args[] = { "execv01_child", "canary", NULL};
+-	char path[2048];
+-
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
--
++	char path[512];
+ 
+ 	if (tst_get_path("execv01_child", path, sizeof(path)))
+-		tst_brkm(TCONF, NULL, "Couldn't find execv01_child in $PATH");
++		tst_brk(TCONF, "Couldn't find execv01_child in $PATH");
+ 
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		switch (pid = FORK_OR_VFORK()) {
 -		case 0:
--			execlp("execlp01_child", "execlp01_child", "canary", NULL);
+-			execv(path, args);
 -			tst_brkm(TFAIL | TERRNO, NULL,
--			         "Failed to execute execlp01_child");
+-			         "Failed to execute execv01_child");
 -		case -1:
--			tst_brkm(TBROK | TERRNO, NULL, "fork failed");
+-			tst_brkm(TBROK, NULL, "fork failed");
 -		default:
 -			tst_record_childstatus(NULL, pid);
 -		}
 +	pid = SAFE_FORK();
-+	if (pid == 0 ) {
-+		TEST(execlp("execlp01_child", "execlp01_child", "canary", NULL));
-+		tst_brk(TFAIL | TERRNO,
-+			"Failed to execute execlp01_child");
++	if (pid == 0) {
++		TEST(execv(path, args));
++		tst_brk(TFAIL | TERRNO, "Failed to execute execv01_child");
  	}
  
 -	tst_exit();
@@ -159,16 +164,21 @@ index d4e0d11..57c7b80 100644
 +	.needs_root = 1,
 +	.forks_child = 1,
 +	.child_needs_reinit = 1,
-+	.test_all = verify_execlp,
++	.test_all = verify_execv,
 +};
-diff --git a/testcases/kernel/syscalls/execlp/execlp01_child.c b/testcases/kernel/syscalls/execlp/execlp01_child.c
-index eebea81..8a6e512 100644
---- a/testcases/kernel/syscalls/execlp/execlp01_child.c
-+++ b/testcases/kernel/syscalls/execlp/execlp01_child.c
-@@ -1,40 +1,35 @@
+diff --git a/testcases/kernel/syscalls/execv/execv01_child.c b/testcases/kernel/syscalls/execv/execv01_child.c
+index 7f4a0aa..307810c 100644
+--- a/testcases/kernel/syscalls/execv/execv01_child.c
++++ b/testcases/kernel/syscalls/execv/execv01_child.c
+@@ -1,40 +1,39 @@
  /*
+- * Copyright (C) 2015 Cyril Hrubis chrubis@suse.cz
 + * Copyright (c) 2018 Linux Test Project
-  * Copyright (C) 2015 Cyril Hrubis chrubis@suse.cz
++ * Copyright (C) 2015 Cyril Hrubis <chrubis@suse.cz>
++ * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
++ *    AUTHOR		: William Roske
++ *    CO-PILOT		: Dave Fenner
++ *    DATE STARTED	: 06/01/02
   *
 - * This program is free software; you can redistribute it and/or modify it
 - * under the terms of version 2 of the GNU General Public License as
@@ -202,7 +212,7 @@ index eebea81..8a6e512 100644
  
 -#include "test.h"
 -
--char *TCID = "execlp01_child";
+-char *TCID = "execv01_child";
 +#define TST_NO_DEFAULT_MAIN
 +#include "tst_test.h"
  
