@@ -1,46 +1,34 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu,  9 Aug 2018 10:35:44 +0200
-Subject: [LTP] [PATCH COMMITTED] settimeofday01: make sure tv_usec <
-	USEC_PER_SEC
-Message-ID: <1bba98c12e5c2b87082310a1afc0fc6d74a08ef2.1533803589.git.jstancek@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 9 Aug 2018 11:04:07 +0200
+Subject: [LTP] [PATCH v2] syscalls/execveat01: new test to verify
+ execveat unlinked fd
+In-Reply-To: <1533111474.1176.4.camel@mtkswgap22>
+References: <1533111474.1176.4.camel@mtkswgap22>
+Message-ID: <20180809090406.GA29365@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Kernel checks for this and reports EINVAL, which causes
-test to rarely fail:
-    if (!timeval_valid(&user_tv))
-        return -EINVAL;
+Hi!
+Pushed with minor changes, thanks.
 
-Fixes: 9ba1051fbe29 ("settimeofday01: fix for linux kernel >= 4.2")
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/settimeofday/settimeofday01.c | 3 +++
- 1 file changed, 3 insertions(+)
+* Added check for execveat() support to the test setup and dropped the
+  minimal kernel version from test structure
 
-diff --git a/testcases/kernel/syscalls/settimeofday/settimeofday01.c b/testcases/kernel/syscalls/settimeofday/settimeofday01.c
-index c68fb37eb0f7..7388c3231aaa 100644
---- a/testcases/kernel/syscalls/settimeofday/settimeofday01.c
-+++ b/testcases/kernel/syscalls/settimeofday/settimeofday01.c
-@@ -64,6 +64,7 @@
- #define	VAL_SEC		100
- #define	VAL_MSEC	100
- #define ACCEPTABLE_DELTA	500	/* in milli-seconds */
-+#define USEC_PER_SEC    1000000L
- 
- char *TCID = "settimeofday01";
- int TST_TOTAL = 1;
-@@ -92,6 +93,8 @@ int main(int argc, char **argv)
- 		gettimeofday(&tp, NULL);
- 		tp.tv_sec += VAL_SEC;
- 		tp.tv_usec += VAL_MSEC;
-+		if (tp.tv_usec >= USEC_PER_SEC)
-+			tp.tv_usec = VAL_MSEC;
- 
- 		TEST(settimeofday(&tp, NULL));
- 		if (TEST_RETURN == -1) {
+* Renamed the test to execveat03 so that we can add execveat01 and
+  execveat02 that would test the cases without overlay being involved
+
+* Removed SAFE_WAITPID() from the verify_execveat() since the child
+  has to be waited for in the test library so that errors are propagated
+  correctly
+
+* Moved the execveat.h to the include/lapi/ directory
+
+* Added syscalls/runtest entry so that the test is executed during the
+  tesrun
+
 -- 
-1.8.3.1
-
+Cyril Hrubis
+chrubis@suse.cz
