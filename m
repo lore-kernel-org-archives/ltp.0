@@ -1,59 +1,71 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu,  9 Aug 2018 18:23:44 +0300
-Subject: [LTP] [PATCH RFC 2/4] lib/tst_test.sh: add TST_NEEDS_DRIVERS
-	parameter
+Date: Thu,  9 Aug 2018 18:23:46 +0300
+Subject: [LTP] [PATCH RFC 4/4] network/ipsec: replace ipsec_try() with
+	TST_RTNL_CHK()
 In-Reply-To: <1533828226-24753-1-git-send-email-alexey.kodanev@oracle.com>
 References: <1533828226-24753-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1533828226-24753-2-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1533828226-24753-4-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The drivers are checked with tst_check_drivers.
-
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/lib/tst_test.sh |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+ testcases/network/stress/ipsec/ipsec_lib.sh |   21 +++------------------
+ 1 files changed, 3 insertions(+), 18 deletions(-)
 
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index e553b49..30f75b5 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -285,6 +285,15 @@ tst_check_cmds()
- 	return 0
+diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
+index aedba9b..f850166 100644
+--- a/testcases/network/stress/ipsec/ipsec_lib.sh
++++ b/testcases/network/stress/ipsec/ipsec_lib.sh
+@@ -157,21 +157,6 @@ ipsec_set_algoline()
+ 	esac
  }
  
-+tst_test_drivers()
-+{
-+	local drv="$(tst_check_drivers $@ 2>&1)"
-+
-+	if [ -n "$drv" ]; then
-+		tst_brk TCONF "'$drv' driver not found"
-+	fi
-+}
-+
- tst_is_int()
- {
- 	[ "$1" -eq "$1" ] 2>/dev/null
-@@ -332,6 +341,7 @@ tst_run()
- 			OPTS|USAGE|PARSE_ARGS|POS_ARGS);;
- 			NEEDS_ROOT|NEEDS_TMPDIR|NEEDS_DEVICE|DEVICE);;
- 			NEEDS_CMDS|NEEDS_MODULE|MODPATH|DATAROOT);;
-+			NEEDS_DRIVERS);;
- 			IPV6|IPVER|TEST_DATA|TEST_DATA_IFS);;
- 			RETRY_FUNC|RETRY_FN_EXP_BACKOFF);;
- 			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
-@@ -369,6 +379,7 @@ tst_run()
- 	fi
+-ipsec_try()
+-{
+-	local output="$($@ 2>&1 || echo 'TERR')"
+-
+-	if echo "$output" | grep -q "TERR"; then
+-		echo "$output" | grep -q \
+-			'RTNETLINK answers: Function not implemented' && \
+-			tst_brk TCONF "'$@': not implemented"
+-		echo "$output" | grep -q \
+-			'RTNETLINK answers: Operation not supported' && \
+-			tst_brk TCONF "'$@': not supported (maybe missing 'ip${TST_IPV6}_vti' kernel module)"
+-		tst_brk TBROK "$@ failed: $output"
+-	fi
+-}
+-
+ # tst_ipsec target src_addr dst_addr: config ipsec
+ #
+ # target: target of the configuration host ( lhost / rhost )
+@@ -195,7 +180,7 @@ tst_ipsec()
+ 	if [ $target = lhost ]; then
+ 		local spi_1="0x$SPI"
+ 		local spi_2="0x$(( $SPI + 1 ))"
+-		ipsec_try ip xfrm state add src $src dst $dst spi $spi_1 \
++		TST_RTNL_CHK xfrm state add src $src dst $dst spi $spi_1 \
+ 			$p $ALG mode $mode sel src $src dst $dst
+ 		ROD ip xfrm state add src $dst dst $src spi $spi_2 \
+ 			$p $ALG mode $mode sel src $dst dst $src
+@@ -257,12 +242,12 @@ tst_ipsec_vti()
+ 	cleanup_vti=$vti
  
- 	tst_test_cmds $TST_NEEDS_CMDS
-+	tst_test_drivers $TST_NEEDS_DRIVERS
+ 	if [ $target = lhost ]; then
+-		ipsec_try ip li add $vti $type local $src remote $dst $key $d
++		TST_RTNL_CHK ip li add $vti $type local $src remote $dst $key $d
+ 		ROD ip li set $vti up
  
- 	if [ -n "$TST_MIN_KVER" ]; then
- 		tst_kvcmp -lt "$TST_MIN_KVER" && \
+ 		local spi_1="spi 0x$SPI"
+ 		local spi_2="spi 0x$(( $SPI + 1 ))"
+-		ipsec_try $ipx st add $o_dir $p $spi_1 $ALG $m
++		TST_RTNL_CHK $ipx st add $o_dir $p $spi_1 $ALG $m
+ 		ROD $ipx st add $i_dir $p $spi_2 $ALG $m
+ 		ROD $ipx po add dir out tmpl $o_dir $p $m $mrk
+ 		ROD $ipx po add dir in tmpl $i_dir $p $m $mrk
 -- 
 1.7.1
 
