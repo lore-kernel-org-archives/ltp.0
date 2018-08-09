@@ -1,51 +1,31 @@
-From: vaishnavi.d <vaishnavi.d@zilogic.com>
-Date: Thu, 09 Aug 2018 13:30:37 -0000
-Subject: [LTP] [RFC] statx Timestamp Test case
-Message-ID: <d1c5e0ca49ef02e6ca2f87a8ac524428.squirrel@pike.zilogic.com>
+From: Rafael David Tinoco <rafael.tinoco@linaro.org>
+Date: Thu, 9 Aug 2018 11:57:23 -0300
+Subject: [LTP] [PATCH] syscalls/fsetxattr02.c: Fix the failure of
+ opening device files
+In-Reply-To: <1533744069-24715-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1533744069-24715-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20180809145723.5e6s3okx6rci2qdj@mobile.celeiro.br>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+> --- a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
+> +++ b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
+> @@ -52,11 +52,13 @@
+>  #define FILENAME "fsetxattr02testfile"
+>  #define DIRNAME  "fsetxattr02testdir"
+>  #define SYMLINK  "fsetxattr02symlink"
+> -#define FIFO     "fsetxattr02fifo"
+> -#define CHR      "fsetxattr02chr"
+> -#define BLK      "fsetxattr02blk"
+> +#define FIFO     "/dev/fsetxattr02fifo"
+> +#define CHR      "/dev/fsetxattr02chr"
+> +#define BLK      "/dev/fsetxattr02blk"
 
-Hi,
-  We are trying to write a testcase for statx timestamp fields(btime,
-atime, mtime and ctime).
+Thanks for catching this!! Minor issue: This will break OFFSET logic for
+tst_res() messages. They are skipping 11 chars because all files started
+with "fsetxattr02".
 
-In our approach, we are getting the system time before and after calling
-the corresponding system call that affects the timestamp using
-clock_gettime.
-
-The problem we are facing is there is no sufficient time difference
-between successive times.
-
-To introduce a delay, we are writing a function that will read time until
-there is a time change as below:
-
->void my_clock_gettime(struct timespec *time)
-> {
->    int ret;
->    struct timespec prev_time;
-
-
->    ret = clock_gettime(CLOCK_REALTIME_COARSE, &prev_time);
->    if (ret == -1)
->	tst_brk(TINFO | TERRNO, "clock_gettime failed");
-
->    do {
->	ret = clock_gettime(CLOCK_REALTIME_COARSE, time);
->	if (ret == -1)
->	    tst_brk(TINFO | TERRNO, "clock_gettime failed");
->    } while (time == prev_time);
->}
-
-Is this approach fine or is there any other better way of doing it?
-
-Thanks & Regards,
-Vaishnavi.D
-Subash.G
-
-
-
-
+-Rafael
