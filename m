@@ -1,174 +1,57 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Fri, 10 Aug 2018 10:36:54 +0200
-Subject: [LTP] [PATCH 2/2] fzsync: Limit execution time to prevent test
-	timeouts
-In-Reply-To: <20180810083654.28938-1-rpalethorpe@suse.com>
-References: <20180810083654.28938-1-rpalethorpe@suse.com>
-Message-ID: <20180810083654.28938-3-rpalethorpe@suse.com>
+Date: Fri, 10 Aug 2018 10:36:52 +0200
+Subject: [LTP] [PATCH 0/2] Prevent spurious test timeouts and future changes
+Message-ID: <20180810083654.28938-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Use the tst_timer library to check how long the main test loop has been
-running for and break the loop if it exceeds 60 seconds. This prevents an
-overall test timeout which is reported as a failure.
+This is a minimal change to prevent test timeouts while using the fuzzy sync
+library. The patch just modifies the update function to check whether too much
+time has elapsed since the test first called it. If so then we exit.
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
+This effects all the tests using the fuzzy sync library except shmctl05 which
+does not use the update function. However this should be handled in a future
+update.
+
+My current plan is to replace the update function with something like
+start_race_a/b (or start_critical) and replace the time_a/b function with
+end_race and remove the delay function. Meanwhile the wait functions will
+remain the same.
+
+The reasoning being that in all cases where there is a single race condition
+between two threads: in each thread there is a section we want to overlap
+where the race can happen (the critical section). Ideally all the test writer
+should need to do is mark the beginning and end of this section in each
+thread.
+
+The fuzzy sync library can then perform as little or as much magic as it needs
+to within the start and end functions (or macros).
+
+To begin with I will probably turn the start function into a plain wait plus
+the timer code. That is, I will remove the delay code. Meanwhile the end
+function will just be a plain wait.
+
+In the future these functions can be expanded to improve exploiting the race
+condition. Most likely by introducing some random jitter once the loop
+settles.
+
+Richard Palethorpe (2):
+  tst_timer: Add tst_timer_state_ms function
+  fzsync: Limit execution time to prevent test timeouts
+
  include/tst_fuzzy_sync.h                      | 43 +++++++++++++------
+ include/tst_timer.h                           |  7 +++
  lib/newlib_tests/test16.c                     |  3 +-
+ lib/tst_timer.c                               | 11 +++++
  testcases/cve/cve-2014-0196.c                 |  3 +-
  testcases/cve/cve-2016-7117.c                 |  3 +-
  testcases/cve/cve-2017-2671.c                 |  3 +-
  testcases/kernel/syscalls/inotify/inotify09.c |  3 +-
- 6 files changed, 40 insertions(+), 18 deletions(-)
+ 8 files changed, 58 insertions(+), 18 deletions(-)
 
-diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-index bcc625e24..0d561edf6 100644
---- a/include/tst_fuzzy_sync.h
-+++ b/include/tst_fuzzy_sync.h
-@@ -42,6 +42,7 @@
- #include <time.h>
- #include <math.h>
- #include "tst_atomic.h"
-+#include "tst_timer.h"
- 
- #ifndef CLOCK_MONOTONIC_RAW
- # define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
-@@ -280,6 +281,17 @@ static inline int tst_fzsync_wait_b(struct tst_fzsync_pair *pair)
- 	return tst_fzsync_pair_wait(pair, &pair->b_cntr, &pair->a_cntr);
- }
- 
-+/**
-+ * tst_fzsync_pair_exit - Signal that the other thread should exit
-+ *
-+ * Causes tst_fzsync_pair_wait() and tst_fzsync_pair_wait_update() to return
-+ * 0.
-+ */
-+static inline void tst_fzsync_pair_exit(struct tst_fzsync_pair *pair)
-+{
-+	tst_atomic_store(1, &pair->exit);
-+}
-+
- /**
-  * tst_fzsync_pair_wait_update_{a,b} - Wait and then recalculate
-  *
-@@ -301,10 +313,26 @@ static inline int tst_fzsync_wait_b(struct tst_fzsync_pair *pair)
- static inline int tst_fzsync_wait_update_a(struct tst_fzsync_pair *pair)
- {
- 	static int loop_index;
-+	int timer_state = tst_timer_state_ms(60000);
-+	int exit = 0;
-+
-+	if (!(timer_state & TST_TIMER_STARTED)) {
-+		tst_timer_start(CLOCK_MONOTONIC_RAW);
-+	} else if (timer_state & TST_TIMER_EXPIRED) {
-+		tst_res(TINFO,
-+			"Exceeded fuzzy sync time limit, requesting exit");
-+		exit = 1;
-+	}
- 
- 	tst_fzsync_pair_wait(pair, &pair->a_cntr, &pair->b_cntr);
--	loop_index++;
--	tst_fzsync_pair_update(loop_index, pair);
-+
-+	if (exit) {
-+		tst_fzsync_pair_exit(pair);
-+	} else {
-+		loop_index++;
-+		tst_fzsync_pair_update(loop_index, pair);
-+	}
-+
- 	return tst_fzsync_pair_wait(pair, &pair->a_cntr, &pair->b_cntr);
- }
- 
-@@ -313,14 +341,3 @@ static inline int tst_fzsync_wait_update_b(struct tst_fzsync_pair *pair)
- 	tst_fzsync_pair_wait(pair, &pair->b_cntr, &pair->a_cntr);
- 	return tst_fzsync_pair_wait(pair, &pair->b_cntr, &pair->a_cntr);
- }
--
--/**
-- * tst_fzsync_pair_exit - Signal that the other thread should exit
-- *
-- * Causes tst_fzsync_pair_wait() and tst_fzsync_pair_wait_update() to return
-- * 0.
-- */
--static inline void tst_fzsync_pair_exit(struct tst_fzsync_pair *pair)
--{
--	tst_atomic_store(1, &pair->exit);
--}
-diff --git a/lib/newlib_tests/test16.c b/lib/newlib_tests/test16.c
-index d80bd5369..bb3d86e2d 100644
---- a/lib/newlib_tests/test16.c
-+++ b/lib/newlib_tests/test16.c
-@@ -65,7 +65,8 @@ static void run(void)
- 	unsigned int i, j, fail = 0;
- 
- 	for (i = 0; i < LOOPS; i++) {
--		tst_fzsync_wait_update_a(&pair);
-+		if (!tst_fzsync_wait_update_a(&pair))
-+			break;
- 		tst_fzsync_delay_a(&pair);
- 		seq[seq_n] = 'A';
- 		seq_n = i * 2 + 1;
-diff --git a/testcases/cve/cve-2014-0196.c b/testcases/cve/cve-2014-0196.c
-index d18108897..8d15909b7 100644
---- a/testcases/cve/cve-2014-0196.c
-+++ b/testcases/cve/cve-2014-0196.c
-@@ -118,7 +118,8 @@ static void run(void)
- 		t.c_lflag |= ECHO;
- 		tcsetattr(master_fd, TCSANOW, &t);
- 
--		tst_fzsync_wait_update_a(&fzsync_pair);
-+		if (!tst_fzsync_wait_update_a(&fzsync_pair))
-+			break;
- 
- 		tst_fzsync_delay_a(&fzsync_pair);
- 		tst_fzsync_time_a(&fzsync_pair);
-diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
-index 3cb7efcdf..d68f62ecc 100644
---- a/testcases/cve/cve-2016-7117.c
-+++ b/testcases/cve/cve-2016-7117.c
-@@ -140,7 +140,8 @@ static void run(void)
- 		if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, (int *)socket_fds))
- 			tst_brk(TBROK | TERRNO, "Socket creation failed");
- 
--		tst_fzsync_wait_update_a(&fzsync_pair);
-+		if (!tst_fzsync_wait_update_a(&fzsync_pair))
-+			break;
- 		tst_fzsync_delay_a(&fzsync_pair);
- 
- 		stat = tst_syscall(__NR_recvmmsg,
-diff --git a/testcases/cve/cve-2017-2671.c b/testcases/cve/cve-2017-2671.c
-index b0471bfff..21dd2a754 100644
---- a/testcases/cve/cve-2017-2671.c
-+++ b/testcases/cve/cve-2017-2671.c
-@@ -115,7 +115,8 @@ static void run(void)
- 		SAFE_CONNECT(sockfd,
- 			     (struct sockaddr *)&iaddr, sizeof(iaddr));
- 
--		tst_fzsync_wait_update_a(&fzsync_pair);
-+		if (!tst_fzsync_wait_update_a(&fzsync_pair))
-+			break;
- 		tst_fzsync_delay_a(&fzsync_pair);
- 		connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
- 		tst_fzsync_time_a(&fzsync_pair);
-diff --git a/testcases/kernel/syscalls/inotify/inotify09.c b/testcases/kernel/syscalls/inotify/inotify09.c
-index 475411311..52df38f24 100644
---- a/testcases/kernel/syscalls/inotify/inotify09.c
-+++ b/testcases/kernel/syscalls/inotify/inotify09.c
-@@ -102,7 +102,8 @@ static void verify_inotify(void)
- 		if (wd < 0)
- 			tst_brk(TBROK | TERRNO, "inotify_add_watch() failed.");
- 
--		tst_fzsync_wait_update_a(&fzsync_pair);
-+		if (!tst_fzsync_wait_update_a(&fzsync_pair))
-+			break;
- 		tst_fzsync_delay_a(&fzsync_pair);
- 
- 		wd = myinotify_rm_watch(inotify_fd, wd);
 -- 
 2.18.0
 
