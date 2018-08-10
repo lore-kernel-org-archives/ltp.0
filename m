@@ -1,41 +1,45 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 10 Aug 2018 14:57:41 +0200
-Subject: [LTP] [PATCH] tracing: ftrace_lib: check if tracing_max_latency
- exists.
-In-Reply-To: <20180808234019.241238-1-sspatil@google.com>
-References: <20180808234019.241238-1-sspatil@google.com>
-Message-ID: <20180810125741.GC32275@rei.lan>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Fri, 10 Aug 2018 16:10:04 +0200
+Subject: [LTP] [PATCH] fs: exclude 'wakeup_count' from read_all_sys test.
+In-Reply-To: <20180803152018.13701-1-sspatil@google.com>
+References: <20180803152018.13701-1-sspatil@google.com>
+Message-ID: <87sh3m48jn.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> This avoids unnecessary error in ftrace stress test when the
-> kernel being tested does not have CONFIG_TRACER_MAX_TRACE defined.
-> 
+Hello,
+
+Sandeep Patil <sspatil@google.com> writes:
+
+> /sys/power/wakeup_count semantics state that the read() for the file
+> will block as long as there is a wakeup_event in progress. On most
+> systems, this will be non deterministic and will result in extremely
+> flaky test. Exclude the file from read_all_sys test for the same.
+>
 > Signed-off-by: Sandeep Patil <sspatil@google.com>
 > ---
->  testcases/kernel/tracing/ftrace_test/ftrace_lib.sh | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_lib.sh b/testcases/kernel/tracing/ftrace_test/ftrace_lib.sh
-> index 20cf5e760..ec4f7a557 100755
-> --- a/testcases/kernel/tracing/ftrace_test/ftrace_lib.sh
-> +++ b/testcases/kernel/tracing/ftrace_test/ftrace_lib.sh
-> @@ -100,7 +100,9 @@ restore_old_setting()
+>  runtest/fs | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/runtest/fs b/runtest/fs
+> index a66948a43..aca7e355f 100644
+> --- a/runtest/fs
+> +++ b/runtest/fs
+> @@ -71,7 +71,7 @@ proc01 proc01 -m 128
 >  
->  	echo nop > current_tracer
->  	echo 0 > events/enable
-> -	echo 0 > tracing_max_latency 2> /dev/null
-> +	if [ -e tracing_max_latency ]; then
-> +		echo 0 > tracing_max_latency 2> /dev/null
-> +	fi
+>  read_all_dev read_all -d /dev -p -q -r 10
+>  read_all_proc read_all -d /proc -q -r 10
+> -read_all_sys read_all -d /sys -q -r 10
+> +read_all_sys read_all -d /sys -q -r 10 -e /sys/power/wakeup_count
+>  
 
-I guess that we can remove the 2> /dev/null that I suppose was supposed
-to silence the error. Does it work okay for you without the redirection?
+This probably won't be the only file with semantics like these. So I am
+wondering if we can limit the time it spends blocking with timer_create
+and SIGEV_THREAD_ID or something similar?
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you,
+Richard.
