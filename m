@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 10 Aug 2018 14:50:16 +0200
-Subject: [LTP] [PATCH v2] syscalls/fsetxattr02.c: Fix the failure of
- opening device files
-In-Reply-To: <1533795985-26787-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <20180809145723.5e6s3okx6rci2qdj@mobile.celeiro.br>
- <1533795985-26787-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20180810125016.GB32275@rei.lan>
+Date: Fri, 10 Aug 2018 14:57:41 +0200
+Subject: [LTP] [PATCH] tracing: ftrace_lib: check if tracing_max_latency
+ exists.
+In-Reply-To: <20180808234019.241238-1-sspatil@google.com>
+References: <20180808234019.241238-1-sspatil@google.com>
+Message-ID: <20180810125741.GC32275@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,14 +12,29 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> We try to fix this issue by creating device files in /dev/ instead.
+> This avoids unnecessary error in ftrace stress test when the
+> kernel being tested does not have CONFIG_TRACER_MAX_TRACE defined.
+> 
+> Signed-off-by: Sandeep Patil <sspatil@google.com>
+> ---
+>  testcases/kernel/tracing/ftrace_test/ftrace_lib.sh | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_lib.sh b/testcases/kernel/tracing/ftrace_test/ftrace_lib.sh
+> index 20cf5e760..ec4f7a557 100755
+> --- a/testcases/kernel/tracing/ftrace_test/ftrace_lib.sh
+> +++ b/testcases/kernel/tracing/ftrace_test/ftrace_lib.sh
+> @@ -100,7 +100,9 @@ restore_old_setting()
+>  
+>  	echo nop > current_tracer
+>  	echo 0 > events/enable
+> -	echo 0 > tracing_max_latency 2> /dev/null
+> +	if [ -e tracing_max_latency ]; then
+> +		echo 0 > tracing_max_latency 2> /dev/null
+> +	fi
 
-I do not like much that we are messing up with the system directories.
-
-Maybe we could mount a tmpfs over a directory in the test temporary
-directory if we detect that the test temporary directory is mounted
-with nodev. The downsinde is that it will be a bit more complicated
-than this solution.
+I guess that we can remove the 2> /dev/null that I suppose was supposed
+to silence the error. Does it work okay for you without the redirection?
 
 -- 
 Cyril Hrubis
