@@ -1,83 +1,67 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 9 Aug 2018 14:26:25 +0800
-Subject: [LTP] [PATCH v2] syscalls/fsetxattr02.c: Fix the failure of opening
-	device files
-In-Reply-To: <20180809145723.5e6s3okx6rci2qdj@mobile.celeiro.br>
-References: <20180809145723.5e6s3okx6rci2qdj@mobile.celeiro.br>
-Message-ID: <1533795985-26787-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Shuang Qiu <shuang.qiu@oracle.com>
+Date: Fri, 10 Aug 2018 15:04:51 +0800
+Subject: [LTP] [PATCH] ltp: replace the retry loops by new exponential
+ backoff macro
+In-Reply-To: <CAEemH2cHh94s_DSwN73GoTv0zOeS3xK0AsOFpq6iNKggvzG1Lw@mail.gmail.com>
+References: <20180517062943.13178-1-liwang@redhat.com>
+ <20180612155652.mhu2sycbwd5gbu5e@dell5510>
+ <dbeb13e1-adae-2231-6936-567098ec8867@oracle.com>
+ <CAEemH2ebjH3BJwXEhmKgkL+0+im-0eQhrCQFczU3WLKHi9m1dg@mail.gmail.com>
+ <5e595b10-1dd4-3866-c284-1ec91b079d1f@oracle.com>
+ <CAEemH2cHh94s_DSwN73GoTv0zOeS3xK0AsOFpq6iNKggvzG1Lw@mail.gmail.com>
+Message-ID: <59a439e7-74a4-76e7-8372-0579d746f604@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-If temporary directory(TMPDIR/TEMPDIR) is on the mountpoint which
-is mounted with nodev option or temporary directory is mounted with
-with nodev option directly(e.g. tmpfs is mounted on /tmp), open(2)
-has no permission to open device files in the temporary directory
-and returns EACCES.  as below:
---------------------------------------------------------------------
-safe_macros.c:225: BROK: fsetxattr02.c:215: open(fsetxattr02chr,0,00) failed: EACCES
---------------------------------------------------------------------
+On 08/08/2018 03:35 PM, Li Wang wrote:
+>
+> Shuang Qiu <shuang.qiu@oracle.com <mailto:shuang.qiu@oracle.com>> wrote:
+>
+>     Oh,yes,Xiao's patch is related to it.
+>     ===cut===
+>     if tst_kvcmp -lt "2.6.35" && [ -n "$dev_file" ]; then
+>     ===
+>     But looks like the missing symlink issue is not only related with
+>     kernel version or loop devices,but sometimes related with mkswap
+>     version or udev rules.
+>     The testcase sometimes will also fail with new version of kernels.
+>
+>
+> Hmm, if that is true. We may need to rewrite the judgement according 
+> the real situation.
+>
+> check_symlink_support()
+> {
+> if support symlink
+>         return 0
+> else
+>         return 1
+> }
+>
+> if ! check_symlink_support ; then
+>         tst_res TINFO "Waiting for $dev_file to appear"
+>         tst_sleep 100ms
+> else
+>         TST_RETRY_FUNC "check_for_file $dev_file" 0
+> fi
+>
+> Or, any better idea?
+Yes,this is a great solution.
+But it is really hard to define the support symlink situation for 
+different releases and userspace versions.
+The simplest way is revert the patch for mkswap01
 
-We try to fix this issue by creating device files in /dev/ instead.
-
-This is the same issue reported by open11, please see the mail:
-http://lists.linux.it/pipermail/ltp/2018-July/008641.html
-
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-
-Changes in v2:
-Acquire basename to avoid breaking OFFSET logic.
----
- testcases/kernel/syscalls/fsetxattr/fsetxattr02.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
-index a1be652..13e1735 100644
---- a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
-+++ b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
-@@ -52,11 +52,13 @@
- #define FILENAME "fsetxattr02testfile"
- #define DIRNAME  "fsetxattr02testdir"
- #define SYMLINK  "fsetxattr02symlink"
--#define FIFO     "fsetxattr02fifo"
--#define CHR      "fsetxattr02chr"
--#define BLK      "fsetxattr02blk"
-+#define FIFO     "/dev/fsetxattr02fifo"
-+#define CHR      "/dev/fsetxattr02chr"
-+#define BLK      "/dev/fsetxattr02blk"
- #define SOCK     "fsetxattr02sock"
- 
-+static char *dev_files[3] = {FIFO, CHR, BLK};
-+
- struct test_case {
- 	char *fname;
- 	int fd;
-@@ -139,6 +141,9 @@ static struct test_case tc[] = {
- 
- static void verify_fsetxattr(unsigned int i)
- {
-+	/* acquire basename to avoid breaking OFFSET logic*/
-+	tc[i].fname = strstr(tc[i].fname, "fsetxattr02");
-+
- 	/* some tests might require existing keys for each iteration */
- 	if (tc[i].needskeyset) {
- 		SAFE_FSETXATTR(tc[i].fd, tc[i].key, tc[i].value, tc[i].size,
-@@ -240,6 +245,11 @@ static void cleanup(void)
- 		if (tc[i].fd > 0)
- 			SAFE_CLOSE(tc[i].fd);
- 	}
-+
-+	for (i = 0; i < ARRAY_SIZE(dev_files); i++) {
-+		if (!access(dev_files[i], F_OK))
-+			SAFE_UNLINK(dev_files[i]);
-+	}
- }
- 
- static struct tst_test test = {
--- 
-1.8.3.1
+Thanks
+Shuang
+>
+> -- 
+> Regards,
+> Li Wang
 
 
-
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180810/78bf866a/attachment.html>
