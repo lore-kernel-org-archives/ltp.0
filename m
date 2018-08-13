@@ -1,80 +1,51 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 13 Aug 2018 15:59:06 +0200
-Subject: [LTP] [PATCH v2 2/4] tst_timer: Convert to new library
-In-Reply-To: <20180813135908.30752-1-rpalethorpe@suse.com>
-References: <20180813135908.30752-1-rpalethorpe@suse.com>
-Message-ID: <20180813135908.30752-2-rpalethorpe@suse.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 13 Aug 2018 16:26:32 +0200
+Subject: [LTP] [PATCH] Move getcwd05 to realpath01 and fix for old distro
+In-Reply-To: <20180813134152.GA7239@dell5510>
+References: <20180801134717.29909-1-mmoese@suse.de>
+ <20180813134152.GA7239@dell5510>
+Message-ID: <20180813142631.GA4374@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-So we can use functions from new lib.
+Hi!
+> >  rename testcases/kernel/syscalls/{getcwd/getcwd05.c => realpath/realpath01.c} (72%)
+> I wonder whether file should be named realpath_buffer_underflow.c to be more
+> descriptive.
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- lib/tst_timer.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+We usually keep just the names short and simple, so I would keep it as
+it is.
 
-diff --git a/lib/tst_timer.c b/lib/tst_timer.c
-index 53ff36777..d5e4c49d2 100644
---- a/lib/tst_timer.c
-+++ b/lib/tst_timer.c
-@@ -23,7 +23,9 @@
- 
- #include <errno.h>
- 
--#include "test.h"
-+#define TST_NO_DEFAULT_MAIN
-+
-+#include "tst_test.h"
- #include "tst_timer.h"
- #include "tst_clocks.h"
- #include "lapi/posix_clocks.h"
-@@ -59,13 +61,13 @@ void tst_timer_check(clockid_t clk_id)
- {
- 	if (tst_clock_gettime(clk_id, &start_time)) {
- 		if (errno == EINVAL) {
--			tst_brkm(TCONF, NULL,
-+			tst_brk(TCONF,
- 			         "Clock id %s(%u) not supported by kernel",
- 				 clock_name(clk_id), clk_id);
- 			return;
- 		}
- 
--		tst_brkm(TBROK | TERRNO, NULL, "tst_clock_gettime() failed");
-+		tst_brk(TBROK | TERRNO, "tst_clock_gettime() failed");
- 	}
- }
- 
-@@ -74,7 +76,7 @@ void tst_timer_start(clockid_t clk_id)
- 	clock_id = clk_id;
- 
- 	if (tst_clock_gettime(clock_id, &start_time))
--		tst_resm(TWARN | TERRNO, "tst_clock_gettime() failed");
-+		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
- }
- 
- int tst_timer_expired_ms(long long ms)
-@@ -82,7 +84,7 @@ int tst_timer_expired_ms(long long ms)
- 	struct timespec cur_time;
- 
- 	if (tst_clock_gettime(clock_id, &cur_time))
--		tst_resm(TWARN | TERRNO, "tst_clock_gettime() failed");
-+		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
- 
- 	return tst_timespec_diff_ms(cur_time, start_time) >= ms;
- }
-@@ -90,7 +92,7 @@ int tst_timer_expired_ms(long long ms)
- void tst_timer_stop(void)
- {
- 	if (tst_clock_gettime(clock_id, &stop_time))
--		tst_resm(TWARN | TERRNO, "tst_clock_gettime() failed");
-+		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
- }
- 
- struct timespec tst_timer_elapsed(void)
+> > diff --git a/testcases/kernel/syscalls/realpath/Makefile b/testcases/kernel/syscalls/realpath/Makefile
+> > new file mode 100644
+> > index 000000000..bd617d806
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/realpath/Makefile
+> > @@ -0,0 +1,23 @@
+> > +#
+> > +#  Copyright (c) International Business Machines  Corp., 2001
+> Copy paste error. + I'd prefer to use 'SPDX-License-Identifier: GPL-2.0-or-later' as it's shorter.
+
+Just fix this before you push the patch.
+
+> > +#
+> > +#  This program is free software;  you can redistribute it and/or modify
+> > +#  it under the terms of the GNU General Public License as published by
+> > +#  the Free Software Foundation; either version 2 of the License, or
+> > +#  (at your option) any later version.
+> > +#
+> > +#  This program is distributed in the hope that it will be useful,
+> > +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> > +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> > +#  the GNU General Public License for more details.
+> > +#
+> > +#  You should have received a copy of the GNU General Public License
+> > +#  along with this program;  if not, write to the Free Software
+> > +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
 -- 
-2.18.0
-
+Cyril Hrubis
+chrubis@suse.cz
