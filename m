@@ -1,45 +1,25 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 10 Aug 2018 16:10:04 +0200
-Subject: [LTP] [PATCH] fs: exclude 'wakeup_count' from read_all_sys test.
-In-Reply-To: <20180803152018.13701-1-sspatil@google.com>
-References: <20180803152018.13701-1-sspatil@google.com>
-Message-ID: <87sh3m48jn.fsf@rpws.prws.suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 13 Aug 2018 09:01:21 +0200
+Subject: [LTP] [PATCH 1/1] README: Add link to patchwork instance
+In-Reply-To: <20180730102503.GB5149@rei>
+References: <20180726080723.21588-1-pvorel@suse.cz> <20180730102503.GB5149@rei>
+Message-ID: <20180813070121.GA15613@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi Cyril, Jan,
 
-Sandeep Patil <sspatil@google.com> writes:
+> ----- Original Message -----
+> > Hi!
+> > This is fine with me. I guess that we should get this acked by Jan as
+> > well.
 
-> /sys/power/wakeup_count semantics state that the read() for the file
-> will block as long as there is a wakeup_event in progress. On most
-> systems, this will be non deterministic and will result in extremely
-> flaky test. Exclude the file from read_all_sys test for the same.
->
-> Signed-off-by: Sandeep Patil <sspatil@google.com>
-> ---
->  runtest/fs | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/runtest/fs b/runtest/fs
-> index a66948a43..aca7e355f 100644
-> --- a/runtest/fs
-> +++ b/runtest/fs
-> @@ -71,7 +71,7 @@ proc01 proc01 -m 128
->  
->  read_all_dev read_all -d /dev -p -q -r 10
->  read_all_proc read_all -d /proc -q -r 10
-> -read_all_sys read_all -d /sys -q -r 10
-> +read_all_sys read_all -d /sys -q -r 10 -e /sys/power/wakeup_count
->  
+> ACK, looks good to me as well.
+Thanks both for your ack, pushed.
 
-This probably won't be the only file with semantics like these. So I am
-wondering if we can limit the time it spends blocking with timer_create
-and SIGEV_THREAD_ID or something similar?
 
--- 
-Thank you,
-Richard.
+Kind regards,
+Petr
