@@ -1,185 +1,78 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 13 Aug 2018 15:59:08 +0200
-Subject: [LTP] [PATCH v2 4/4] fzsync: Limit execution time to prevent test
-	timeouts
+Date: Mon, 13 Aug 2018 15:59:07 +0200
+Subject: [LTP] [PATCH v2 3/4] tst_timer: Add tst_timer_state_ms function
 In-Reply-To: <20180813135908.30752-1-rpalethorpe@suse.com>
 References: <20180813135908.30752-1-rpalethorpe@suse.com>
-Message-ID: <20180813135908.30752-4-rpalethorpe@suse.com>
+Message-ID: <20180813135908.30752-3-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Use the tst_timer library to check how long the main test loop has been
-running for and break the loop if it exceeds 60 seconds. This prevents an
-overall test timeout which is reported as a failure.
+Allow the user to discover the current timer state with a single
+function. Useful for using a timer in a loop where we do not know if the timer
+has already been started.
+
+Also scale the expiration time by LTP_TIMEOUT_MUL so that the end user can
+control the time tests take which use this API.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- include/tst_fuzzy_sync.h                      | 47 ++++++++++++-------
- lib/newlib_tests/test16.c                     |  3 +-
- testcases/cve/cve-2014-0196.c                 |  3 +-
- testcases/cve/cve-2016-7117.c                 |  3 +-
- testcases/cve/cve-2017-2671.c                 |  3 +-
- testcases/kernel/syscalls/inotify/inotify09.c |  3 +-
- 6 files changed, 41 insertions(+), 21 deletions(-)
+ include/tst_timer.h |  7 +++++++
+ lib/tst_timer.c     | 14 +++++++++++++-
+ 2 files changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-index bcc625e24..75866d73c 100644
---- a/include/tst_fuzzy_sync.h
-+++ b/include/tst_fuzzy_sync.h
-@@ -42,6 +42,7 @@
+diff --git a/include/tst_timer.h b/include/tst_timer.h
+index 0fd7ed6cf..a6df53e82 100644
+--- a/include/tst_timer.h
++++ b/include/tst_timer.h
+@@ -34,6 +34,11 @@
+ #include <sys/time.h>
  #include <time.h>
- #include <math.h>
- #include "tst_atomic.h"
-+#include "tst_timer.h"
  
- #ifndef CLOCK_MONOTONIC_RAW
- # define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
-@@ -265,9 +266,7 @@ static inline int tst_fzsync_pair_wait(struct tst_fzsync_pair *pair,
- 			;
- 	}
++#define TST_TIMER_NONE 0
++#define TST_TIMER_STARTED 1
++#define TST_TIMER_STOPPED (1 << 1)
++#define TST_TIMER_EXPIRED (1 << 2)
++
+ /*
+  * Converts timespec to microseconds.
+  */
+@@ -259,6 +264,8 @@ void tst_timer_start(clockid_t clk_id);
+  */
+ int tst_timer_expired_ms(long long ms);
  
--	/* Only exit if we have done the same amount of work as the other thread */
--	return !tst_atomic_load(&pair->exit) ||
--	  tst_atomic_load(other_cntr) <= tst_atomic_load(our_cntr);
-+	return !tst_atomic_load(&pair->exit);
- }
++int tst_timer_state_ms(long long ms);
++
+ /*
+  * Marks timer end time.
+  */
+diff --git a/lib/tst_timer.c b/lib/tst_timer.c
+index d5e4c49d2..182b21441 100644
+--- a/lib/tst_timer.c
++++ b/lib/tst_timer.c
+@@ -86,7 +86,19 @@ int tst_timer_expired_ms(long long ms)
+ 	if (tst_clock_gettime(clock_id, &cur_time))
+ 		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
  
- static inline int tst_fzsync_wait_a(struct tst_fzsync_pair *pair)
-@@ -280,6 +279,17 @@ static inline int tst_fzsync_wait_b(struct tst_fzsync_pair *pair)
- 	return tst_fzsync_pair_wait(pair, &pair->b_cntr, &pair->a_cntr);
- }
- 
-+/**
-+ * tst_fzsync_pair_exit - Signal that the other thread should exit
-+ *
-+ * Causes tst_fzsync_pair_wait() and tst_fzsync_pair_wait_update() to return
-+ * 0.
-+ */
-+static inline void tst_fzsync_pair_exit(struct tst_fzsync_pair *pair)
-+{
-+	tst_atomic_store(1, &pair->exit);
+-	return tst_timespec_diff_ms(cur_time, start_time) >= ms;
++	return tst_timespec_diff_ms(cur_time, start_time)
++		>= ms * tst_timeout_mul();
 +}
 +
- /**
-  * tst_fzsync_pair_wait_update_{a,b} - Wait and then recalculate
-  *
-@@ -301,10 +311,26 @@ static inline int tst_fzsync_wait_b(struct tst_fzsync_pair *pair)
- static inline int tst_fzsync_wait_update_a(struct tst_fzsync_pair *pair)
- {
- 	static int loop_index;
-+	int timer_state = tst_timer_state_ms(60000);
-+	int exit = 0;
++int tst_timer_state_ms(long long ms)
++{
++	int status = TST_TIMER_NONE;
 +
-+	if (!(timer_state & TST_TIMER_STARTED)) {
-+		tst_timer_start(CLOCK_MONOTONIC_RAW);
-+	} else if (timer_state & TST_TIMER_EXPIRED) {
-+		tst_res(TINFO,
-+			"Exceeded fuzzy sync time limit, requesting exit");
-+		exit = 1;
-+	}
- 
- 	tst_fzsync_pair_wait(pair, &pair->a_cntr, &pair->b_cntr);
--	loop_index++;
--	tst_fzsync_pair_update(loop_index, pair);
++	status |= (start_time.tv_sec | start_time.tv_nsec) > 0;
++	status |= ((stop_time.tv_sec | stop_time.tv_nsec) > 0) << 1;
++	status |= tst_timer_expired_ms(ms) << 2;
 +
-+	if (exit) {
-+		tst_fzsync_pair_exit(pair);
-+	} else {
-+		loop_index++;
-+		tst_fzsync_pair_update(loop_index, pair);
-+	}
-+
- 	return tst_fzsync_pair_wait(pair, &pair->a_cntr, &pair->b_cntr);
++	return status;
  }
  
-@@ -313,14 +339,3 @@ static inline int tst_fzsync_wait_update_b(struct tst_fzsync_pair *pair)
- 	tst_fzsync_pair_wait(pair, &pair->b_cntr, &pair->a_cntr);
- 	return tst_fzsync_pair_wait(pair, &pair->b_cntr, &pair->a_cntr);
- }
--
--/**
-- * tst_fzsync_pair_exit - Signal that the other thread should exit
-- *
-- * Causes tst_fzsync_pair_wait() and tst_fzsync_pair_wait_update() to return
-- * 0.
-- */
--static inline void tst_fzsync_pair_exit(struct tst_fzsync_pair *pair)
--{
--	tst_atomic_store(1, &pair->exit);
--}
-diff --git a/lib/newlib_tests/test16.c b/lib/newlib_tests/test16.c
-index d80bd5369..bb3d86e2d 100644
---- a/lib/newlib_tests/test16.c
-+++ b/lib/newlib_tests/test16.c
-@@ -65,7 +65,8 @@ static void run(void)
- 	unsigned int i, j, fail = 0;
- 
- 	for (i = 0; i < LOOPS; i++) {
--		tst_fzsync_wait_update_a(&pair);
-+		if (!tst_fzsync_wait_update_a(&pair))
-+			break;
- 		tst_fzsync_delay_a(&pair);
- 		seq[seq_n] = 'A';
- 		seq_n = i * 2 + 1;
-diff --git a/testcases/cve/cve-2014-0196.c b/testcases/cve/cve-2014-0196.c
-index d18108897..8d15909b7 100644
---- a/testcases/cve/cve-2014-0196.c
-+++ b/testcases/cve/cve-2014-0196.c
-@@ -118,7 +118,8 @@ static void run(void)
- 		t.c_lflag |= ECHO;
- 		tcsetattr(master_fd, TCSANOW, &t);
- 
--		tst_fzsync_wait_update_a(&fzsync_pair);
-+		if (!tst_fzsync_wait_update_a(&fzsync_pair))
-+			break;
- 
- 		tst_fzsync_delay_a(&fzsync_pair);
- 		tst_fzsync_time_a(&fzsync_pair);
-diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
-index 3cb7efcdf..d68f62ecc 100644
---- a/testcases/cve/cve-2016-7117.c
-+++ b/testcases/cve/cve-2016-7117.c
-@@ -140,7 +140,8 @@ static void run(void)
- 		if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, (int *)socket_fds))
- 			tst_brk(TBROK | TERRNO, "Socket creation failed");
- 
--		tst_fzsync_wait_update_a(&fzsync_pair);
-+		if (!tst_fzsync_wait_update_a(&fzsync_pair))
-+			break;
- 		tst_fzsync_delay_a(&fzsync_pair);
- 
- 		stat = tst_syscall(__NR_recvmmsg,
-diff --git a/testcases/cve/cve-2017-2671.c b/testcases/cve/cve-2017-2671.c
-index b0471bfff..21dd2a754 100644
---- a/testcases/cve/cve-2017-2671.c
-+++ b/testcases/cve/cve-2017-2671.c
-@@ -115,7 +115,8 @@ static void run(void)
- 		SAFE_CONNECT(sockfd,
- 			     (struct sockaddr *)&iaddr, sizeof(iaddr));
- 
--		tst_fzsync_wait_update_a(&fzsync_pair);
-+		if (!tst_fzsync_wait_update_a(&fzsync_pair))
-+			break;
- 		tst_fzsync_delay_a(&fzsync_pair);
- 		connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
- 		tst_fzsync_time_a(&fzsync_pair);
-diff --git a/testcases/kernel/syscalls/inotify/inotify09.c b/testcases/kernel/syscalls/inotify/inotify09.c
-index 475411311..52df38f24 100644
---- a/testcases/kernel/syscalls/inotify/inotify09.c
-+++ b/testcases/kernel/syscalls/inotify/inotify09.c
-@@ -102,7 +102,8 @@ static void verify_inotify(void)
- 		if (wd < 0)
- 			tst_brk(TBROK | TERRNO, "inotify_add_watch() failed.");
- 
--		tst_fzsync_wait_update_a(&fzsync_pair);
-+		if (!tst_fzsync_wait_update_a(&fzsync_pair))
-+			break;
- 		tst_fzsync_delay_a(&fzsync_pair);
- 
- 		wd = myinotify_rm_watch(inotify_fd, wd);
+ void tst_timer_stop(void)
 -- 
 2.18.0
 
