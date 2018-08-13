@@ -1,78 +1,80 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 13 Aug 2018 15:59:07 +0200
-Subject: [LTP] [PATCH v2 3/4] tst_timer: Add tst_timer_state_ms function
+Date: Mon, 13 Aug 2018 15:59:06 +0200
+Subject: [LTP] [PATCH v2 2/4] tst_timer: Convert to new library
 In-Reply-To: <20180813135908.30752-1-rpalethorpe@suse.com>
 References: <20180813135908.30752-1-rpalethorpe@suse.com>
-Message-ID: <20180813135908.30752-3-rpalethorpe@suse.com>
+Message-ID: <20180813135908.30752-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Allow the user to discover the current timer state with a single
-function. Useful for using a timer in a loop where we do not know if the timer
-has already been started.
-
-Also scale the expiration time by LTP_TIMEOUT_MUL so that the end user can
-control the time tests take which use this API.
+So we can use functions from new lib.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- include/tst_timer.h |  7 +++++++
- lib/tst_timer.c     | 14 +++++++++++++-
- 2 files changed, 20 insertions(+), 1 deletion(-)
+ lib/tst_timer.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/include/tst_timer.h b/include/tst_timer.h
-index 0fd7ed6cf..a6df53e82 100644
---- a/include/tst_timer.h
-+++ b/include/tst_timer.h
-@@ -34,6 +34,11 @@
- #include <sys/time.h>
- #include <time.h>
- 
-+#define TST_TIMER_NONE 0
-+#define TST_TIMER_STARTED 1
-+#define TST_TIMER_STOPPED (1 << 1)
-+#define TST_TIMER_EXPIRED (1 << 2)
-+
- /*
-  * Converts timespec to microseconds.
-  */
-@@ -259,6 +264,8 @@ void tst_timer_start(clockid_t clk_id);
-  */
- int tst_timer_expired_ms(long long ms);
- 
-+int tst_timer_state_ms(long long ms);
-+
- /*
-  * Marks timer end time.
-  */
 diff --git a/lib/tst_timer.c b/lib/tst_timer.c
-index d5e4c49d2..182b21441 100644
+index 53ff36777..d5e4c49d2 100644
 --- a/lib/tst_timer.c
 +++ b/lib/tst_timer.c
-@@ -86,7 +86,19 @@ int tst_timer_expired_ms(long long ms)
- 	if (tst_clock_gettime(clock_id, &cur_time))
- 		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
+@@ -23,7 +23,9 @@
  
--	return tst_timespec_diff_ms(cur_time, start_time) >= ms;
-+	return tst_timespec_diff_ms(cur_time, start_time)
-+		>= ms * tst_timeout_mul();
-+}
+ #include <errno.h>
+ 
+-#include "test.h"
++#define TST_NO_DEFAULT_MAIN
 +
-+int tst_timer_state_ms(long long ms)
-+{
-+	int status = TST_TIMER_NONE;
-+
-+	status |= (start_time.tv_sec | start_time.tv_nsec) > 0;
-+	status |= ((stop_time.tv_sec | stop_time.tv_nsec) > 0) << 1;
-+	status |= tst_timer_expired_ms(ms) << 2;
-+
-+	return status;
++#include "tst_test.h"
+ #include "tst_timer.h"
+ #include "tst_clocks.h"
+ #include "lapi/posix_clocks.h"
+@@ -59,13 +61,13 @@ void tst_timer_check(clockid_t clk_id)
+ {
+ 	if (tst_clock_gettime(clk_id, &start_time)) {
+ 		if (errno == EINVAL) {
+-			tst_brkm(TCONF, NULL,
++			tst_brk(TCONF,
+ 			         "Clock id %s(%u) not supported by kernel",
+ 				 clock_name(clk_id), clk_id);
+ 			return;
+ 		}
+ 
+-		tst_brkm(TBROK | TERRNO, NULL, "tst_clock_gettime() failed");
++		tst_brk(TBROK | TERRNO, "tst_clock_gettime() failed");
+ 	}
  }
  
+@@ -74,7 +76,7 @@ void tst_timer_start(clockid_t clk_id)
+ 	clock_id = clk_id;
+ 
+ 	if (tst_clock_gettime(clock_id, &start_time))
+-		tst_resm(TWARN | TERRNO, "tst_clock_gettime() failed");
++		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
+ }
+ 
+ int tst_timer_expired_ms(long long ms)
+@@ -82,7 +84,7 @@ int tst_timer_expired_ms(long long ms)
+ 	struct timespec cur_time;
+ 
+ 	if (tst_clock_gettime(clock_id, &cur_time))
+-		tst_resm(TWARN | TERRNO, "tst_clock_gettime() failed");
++		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
+ 
+ 	return tst_timespec_diff_ms(cur_time, start_time) >= ms;
+ }
+@@ -90,7 +92,7 @@ int tst_timer_expired_ms(long long ms)
  void tst_timer_stop(void)
+ {
+ 	if (tst_clock_gettime(clock_id, &stop_time))
+-		tst_resm(TWARN | TERRNO, "tst_clock_gettime() failed");
++		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
+ }
+ 
+ struct timespec tst_timer_elapsed(void)
 -- 
 2.18.0
 
