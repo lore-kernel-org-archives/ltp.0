@@ -1,29 +1,43 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 14 Aug 2018 09:51:32 +0200
-Subject: [LTP] [PATCH v3] add new testcase for bind
-In-Reply-To: <20180727123014.24435-1-mmoese@suse.de>
-References: <20180727123014.24435-1-mmoese@suse.de>
-Message-ID: <20180814075132.GA14622@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 14 Aug 2018 17:24:02 +0800
+Subject: [LTP] [PATCH v2 4/4] fzsync: Limit execution time to prevent
+	test timeouts
+In-Reply-To: <20180813135908.30752-4-rpalethorpe@suse.com>
+References: <20180813135908.30752-1-rpalethorpe@suse.com>
+ <20180813135908.30752-4-rpalethorpe@suse.com>
+Message-ID: <CAEemH2d3E3U2tHW1zCBb+=OwSAGHFXPPC0Rkcc1oDHvq2NJYDA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Michael,
+Hi Richard,
 
-> With
->   0fb44559ffd6  af_unix: move unix_mknod() out of bindlock
-> the behavior of bind() for STREAM UNIX sockets changed in
-> case a socket that is already bound is passed to bind() again.
+Richard Palethorpe <rpalethorpe@suse.com> wrote:
 
-> This testcase fails for the new behavior and passes for the
-> old one.
+Use the tst_timer library to check how long the main test loop has been
+> running for and break the loop if it exceeds 60 seconds. This prevents an
+>
 
-> Signed-off-by: Michael Moese <mmoese@suse.de>
-> ---
-Pushed (with slightly changed commit message), thanks!
+This summary needs a minor adjustment for v2 too. Otherwise patch set looks
+good to me.
 
+Btw, I think the whole fuzzy synchronisation maybe a bit complicated to LTP
+users, I read all of the fuzzy_sync functions and spent much time to learn
+the code logic :). Of course, if we want to do some improvement work,
+better in new divided patch then.
 
-Kind regards,
-Petr
+overall test timeout which is reported as a failure.
+>
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+>
+
+Reviewed-by: Li Wang <liwang@redhat.com>
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180814/7e5e5669/attachment-0001.html>
