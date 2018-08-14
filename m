@@ -1,12 +1,10 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 14 Aug 2018 11:58:57 +0200
-Subject: [LTP] [PATCH v2 4/4] fzsync: Limit execution time to prevent
-	test timeouts
-In-Reply-To: <CAEemH2d3E3U2tHW1zCBb+=OwSAGHFXPPC0Rkcc1oDHvq2NJYDA@mail.gmail.com>
-References: <20180813135908.30752-1-rpalethorpe@suse.com>
- <20180813135908.30752-4-rpalethorpe@suse.com>
- <CAEemH2d3E3U2tHW1zCBb+=OwSAGHFXPPC0Rkcc1oDHvq2NJYDA@mail.gmail.com>
-Message-ID: <87k1ot46ce.fsf@rpws.prws.suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 14 Aug 2018 08:15:25 -0400 (EDT)
+Subject: [LTP] [PATCH] [RFC] [WORK-IN-PROGRESS] syscalls: Add
+ set_mempolicy numa tests.
+In-Reply-To: <20180809152308.18982-1-chrubis@suse.cz>
+References: <20180809152308.18982-1-chrubis@suse.cz>
+Message-ID: <531762042.40419801.1534248925760.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,43 +12,49 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
-Li Wang <liwang@redhat.com> writes:
+----- Original Message -----
+> This is initial attempt to replace numa.sh tests that despite having
+> been fixed several times have still many shortcommings that wouldn't
+> easy to fix. It's not finished nor 100% replacement but I'm sending this
+> anyway because I would like to get feedback at this point.
 
-> Hi Richard,
->
-> Richard Palethorpe <rpalethorpe@suse.com> wrote:
->
-> Use the tst_timer library to check how long the main test loop has been
->> running for and break the loop if it exceeds 60 seconds. This prevents an
->>
->
-> This summary needs a minor adjustment for v2 too. Otherwise patch set looks
-> good to me.
->
-> Btw, I think the whole fuzzy synchronisation maybe a bit complicated to LTP
-> users, I read all of the fuzzy_sync functions and spent much time to learn
-> the code logic :). Of course, if we want to do some improvement work,
-> better in new divided patch then.
+Hi,
 
-Yes, I agree and have some ideas about that (see comments in V1 patches
-covering letter). Thanks for the feedback.
+Why not use get_mempolicy(.., MPOL_F_NODE | MPOL_F_ADDR) to get node id,
+for the page we just allocated?
 
-Maybe the implementation can detect some common usage mistakes, which I
-think is the main issue here. For example if the user has a different
-number of waits in one thread than the other, we should be able to
-detect that. Then people can learn how to use it more through
-experimentation which is much easier than reading the implementation or
-even documentation.
+This kinda overlaps with numa_helper in some aspects. Which reminds me
+of some issues we had to address there:
+- memory-less nodes
+- nodes with little to no free memory
 
->
-> overall test timeout which is reported as a failure.
->>
->> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
->>
->
-> Reviewed-by: Li Wang <liwang@redhat.com>
+Regards,
+Jan
 
-
---
-Thank you,
-Richard.
+> 
+> The main selling points of these testcases are:
+> 
+> The memory allocated for the testing is tracked exactly. We make sure
+> that the mapping has separate record in /proc/$PID/numa_maps by mapping
+> a region, then unmapping hole at the start and at the end of the
+> mapping, then we fault the pages in the middle of the original mapping.
+> We carefuly avoid doing anything that would cause the mapping to expand
+> in the child process while the parent takes the measurements, even
+> opening a file with fopen() may cause buffers to be allocated which may
+> expand the mapping which is the reason we fork and take the measurements
+> in the parent after the child process has faulted the pages.
+> 
+> The tests for file based shared interleaved mappings are no longer
+> mapping a single small file but rather than that we accumulate statistic
+> for larger amount of files over longer period of time and we also allow
+> for small offset (currently 10%). We should probably also increase the
+> number of samples we take as currently it's about 5MB in total on x86
+> although I haven't managed to make this test fail so far. This also
+> fixes the test on Btrfs where the synthetic test that expects the pages
+> to be distributed exactly equally fails.
+> 
+> What is not finished is compilation without libnuma, that will fail
+> currently, but that is only a matter of adding a few ifdefs. And the
+> coverage is still lacking, ideas for interesting testcases are welcomed
+> as well.
+> 
