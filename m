@@ -1,60 +1,40 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 14 Aug 2018 08:15:25 -0400 (EDT)
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 14 Aug 2018 15:10:07 +0200
 Subject: [LTP] [PATCH] [RFC] [WORK-IN-PROGRESS] syscalls: Add
  set_mempolicy numa tests.
-In-Reply-To: <20180809152308.18982-1-chrubis@suse.cz>
+In-Reply-To: <531762042.40419801.1534248925760.JavaMail.zimbra@redhat.com>
 References: <20180809152308.18982-1-chrubis@suse.cz>
-Message-ID: <531762042.40419801.1534248925760.JavaMail.zimbra@redhat.com>
+ <531762042.40419801.1534248925760.JavaMail.zimbra@redhat.com>
+Message-ID: <20180814131007.GB22915@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> Why not use get_mempolicy(.., MPOL_F_NODE | MPOL_F_ADDR) to get node id,
+> for the page we just allocated?
 
------ Original Message -----
-> This is initial attempt to replace numa.sh tests that despite having
-> been fixed several times have still many shortcommings that wouldn't
-> easy to fix. It's not finished nor 100% replacement but I'm sending this
-> anyway because I would like to get feedback at this point.
+Good point, I will try to look into that.
 
-Hi,
+> This kinda overlaps with numa_helper in some aspects. Which reminds me
+> of some issues we had to address there:
+> - memory-less nodes
+> - nodes with little to no free memory
 
-Why not use get_mempolicy(.., MPOL_F_NODE | MPOL_F_ADDR) to get node id,
-for the page we just allocated?
+I'm aware of the overlap and we should definitely merge these two into a
+single library later on.
 
-This kinda overlaps with numa_helper in some aspects. Which reminds me
-of some issues we had to address there:
-- memory-less nodes
-- nodes with little to no free memory
+As far as I can tell the library I wrote covers the case of memory-less
+nodes, these should the the ones that does not have the membind flag set
+in the default mask that is returned by numa_get_membind().
 
-Regards,
-Jan
+We should probably add API for specifying minimal amount of free memory
+per node as well, which would fix the second problem. We may add
+min_free parameter to the tst_get_nodemap() function that would be used
+if passed the TST_NUMA_MEM flag.
 
-> 
-> The main selling points of these testcases are:
-> 
-> The memory allocated for the testing is tracked exactly. We make sure
-> that the mapping has separate record in /proc/$PID/numa_maps by mapping
-> a region, then unmapping hole at the start and at the end of the
-> mapping, then we fault the pages in the middle of the original mapping.
-> We carefuly avoid doing anything that would cause the mapping to expand
-> in the child process while the parent takes the measurements, even
-> opening a file with fopen() may cause buffers to be allocated which may
-> expand the mapping which is the reason we fork and take the measurements
-> in the parent after the child process has faulted the pages.
-> 
-> The tests for file based shared interleaved mappings are no longer
-> mapping a single small file but rather than that we accumulate statistic
-> for larger amount of files over longer period of time and we also allow
-> for small offset (currently 10%). We should probably also increase the
-> number of samples we take as currently it's about 5MB in total on x86
-> although I haven't managed to make this test fail so far. This also
-> fixes the test on Btrfs where the synthetic test that expects the pages
-> to be distributed exactly equally fails.
-> 
-> What is not finished is compilation without libnuma, that will fail
-> currently, but that is only a matter of adding a few ifdefs. And the
-> coverage is still lacking, ideas for interesting testcases are welcomed
-> as well.
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
