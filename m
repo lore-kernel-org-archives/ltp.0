@@ -1,26 +1,30 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 13 Aug 2018 17:48:47 +0200
-Subject: [LTP] [PATCH] tracing: ftrace_lib: check if tracing_max_latency
- exists.
-In-Reply-To: <20180813154618.GC140438@sspatil-desktop.mtv.corp.google.com>
-References: <20180808234019.241238-1-sspatil@google.com>
- <20180810125741.GC32275@rei.lan>
- <20180813154618.GC140438@sspatil-desktop.mtv.corp.google.com>
-Message-ID: <20180813154847.GA8576@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 14 Aug 2018 09:13:56 +0200
+Subject: [LTP] [PATCH] Move getcwd05 to realpath01 and fix for old distro
+In-Reply-To: <20180813142631.GA4374@rei>
+References: <20180801134717.29909-1-mmoese@suse.de>
+ <20180813134152.GA7239@dell5510> <20180813142631.GA4374@rei>
+Message-ID: <20180814071356.GA8012@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > I guess that we can remove the 2> /dev/null that I suppose was supposed
-> > to silence the error. Does it work okay for you without the redirection?
-> 
-> Yes, just tested it. Works for me. Want me to send the patch removing it?
+Hi Cyril,
 
-No need, I will edit the patch you send before applying.
+> Hi!
+> > >  rename testcases/kernel/syscalls/{getcwd/getcwd05.c => realpath/realpath01.c} (72%)
+> > I wonder whether file should be named realpath_buffer_underflow.c to be more
+> > descriptive.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> We usually keep just the names short and simple, so I would keep it as
+> it is.
+I think CVE related are the only exception (see Eric Biggers's post [1]), but
+I'm ok with keeping it only realpath01.c.
+
+
+Kind regards,
+Petr
+
+[1] http://lists.linux.it/pipermail/ltp/2018-March/007388.html
