@@ -1,61 +1,53 @@
-From: Zhang, Yixin <yixin.zhang@intel.com>
-Date: Wed, 15 Aug 2018 14:54:58 +0800
-Subject: [LTP] [PATCH ltp] runtest/{ltplite,
- stress.part1}: update commands for gf01-30/rwtest01-05
-In-Reply-To: <20180726130439.GA12339@dell5510>
-References: <20180706084928.6017-1-yixin.zhang@intel.com>
- <20180726130439.GA12339@dell5510>
-Message-ID: <20180815065458.GA19549@yixin-desktop>
+From: Yixin Zhang <yixin.zhang@intel.com>
+Date: Wed, 15 Aug 2018 15:35:40 +0800
+Subject: [LTP] [PATCH ltp] ver_linux: check /usr/lib/os-release in case
+	/etc/os-release not exists
+Message-ID: <20180815073540.20883-1-yixin.zhang@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+https://www.linux.org/docs/man5/os-release.html:
+  "The file /etc/os-release takes precedence over /usr/lib/os-release.
+  Applications should check for the former, and exclusively use its data
+  if it exists, and only fall back to /usr/lib/os-release if it is missing.
+  Applications should not read data from both files at the same time.
+  /usr/lib/os-release is the recommended place to store OS release
+  information as part of vendor trees.  /etc/os-release should be a
+  relative symlink to /usr/lib/os-release, to provide compatibility with
+  applications only looking at /etc. A relative symlink instead of an
+  absolute symlink is necessary to avoid breaking the link in a chroot or
+  initrd environment such as dracut."
 
-Sorry for late response. I've merge fs_inod01/iogen01 into the v2 of this patch
-as you suggested.
-The initial reason I created these patches is that I saw there are duplicated
-test cases name in same or different runtest files, some of them even with
-same name but different commands! To me this bring some difficulty when I try
-to manager all test results in a database (same test name but different cmd).
+To be compatible with some distro which don't have the soft link
+"/etc/os-release", check "/usr/lib/os-release" first before checking
+"/etc/issue".
 
-Example in runtest/stress.part1:
-nfs01 export VERSION=2 SOCKET_TYPE=udp; nfs01
-nfs01 export VERSION=2 SOCKET_TYPE=tcp; nfs01
-nfs01 export VERSION=3 SOCKET_TYPE=udp; nfs01
-nfs01 export VERSION=3 SOCKET_TYPE=tcp; nfs01
+Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+---
+ ver_linux | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-nfs02 export VERSION=2 SOCKET_TYPE=udp; nfs02
-nfs02 export VERSION=2 SOCKET_TYPE=tcp; nfs02
-nfs02 export VERSION=3 SOCKET_TYPE=udp; nfs02
-nfs02 export VERSION=3 SOCKET_TYPE=tcp; nfs02
+diff --git a/ver_linux b/ver_linux
+index dda337926..f4c4e07f4 100755
+--- a/ver_linux
++++ b/ver_linux
+@@ -9,8 +9,12 @@ echo 'If some fields are empty or look unusual you may have an old version.'
+ echo 'Compare to the current minimal requirements in Documentation/Changes.'
+ 
+ echo
+-echo "`ls /etc/*release`"
++echo "`ls /etc/*release 2> /dev/null`"
+ cat /etc/*release 2> /dev/null
++if [ $? = 1 ]; then
++   echo "`ls /usr/lib/*release 2> /dev/null`"
++   cat /usr/lib/*release 2> /dev/null
++fi
+ if [ $? = 1 ]; then
+    echo '/etc/issue:'
+    cat /etc/issue 2> /dev/null
+-- 
+2.17.1
 
-So I'm trying to clean all these, starting from fs part. I think that will help
-if you decide to remove runtest/stress.part[1-3] and runtest/ltplite. If you
-like I can alos provide a full list of such kind of tests.
-
-Yixin
-
-On 2018-07-26 at 15:04:39 +0200, Petr Vorel wrote:
-> Hi Yixin,
-> 
-> > gf01-30/rwtest01-05 are orignal defined in runtest file 'fs', and they
-> > are updated multiple times in file 'fs' but missed in 'ltplite'/'stress.part1'.
-> > So this patch copy all updates to the tests in 'ltplite'/'stress.part1'.
-> 
-> > Ref:
-> > c9dd96e6b2f811dbad119c3558d90cb7dfc3919b
-> > 95e8b61433efcefb83699aaf859e92ad2b576373
-> > 606e544932248858f65c7ab3061f77c542c07cfe
-> 
-> > Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
-> 
-> I wonder if we want to keep these runtest/stress.part[1-3] and runtest/ltplite
-> files. ATM we don't have feature to include runtest files (among other problems
-> with test runner), but keeping this duplicity doesn't look to me.
-> 
-> 
-> Kind regards,
-> Petr
