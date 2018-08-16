@@ -1,124 +1,101 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 16 Aug 2018 16:07:24 +0800
-Subject: [LTP] [PATCH] pty: fix some issues in pty02
-Message-ID: <20180816080724.25143-1-liwang@redhat.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 16 Aug 2018 16:45:44 +0800
+Subject: [LTP] [PATCH v2 1/4] lib/tst_path_has_mnt_flags.c: Factor out
+	tst_path_has_mnt_flags() for new API
+In-Reply-To: <20180815114220.GA26923@rei>
+References: <20180815114220.GA26923@rei>
+Message-ID: <1534409147-29519-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1. Add EXTPROC into lapi
+We can use existed tst_path_has_mnt_flags() to check whether a path is
+on a filesystem that is mounted with specified flags, so ensure that the
+function can also be used by new API.
 
-2. Exit the test with TCONF if we get EINVAL from tcsetattr()
-
-3. Giving newline('\n') to ptmx to avoid reading pts block on rhel6
-
-4. Using tcgetattr() to get attributes before re-setting it
-Fix this error:
-   tst_test.c:1015: INFO: Timeout per run is 0h 50m 00s
-   pty02.c:42: BROK: tcsetattr() failed: EINVAL
-
-POSIX.1 General description:
-  Changes the attributes associated with a terminal. New attributes are
-  specified with a termios control structure. Programs should always
-  issue a tcgetattr() first, modify the desired fields, and then issue
-  a tcsetattr(). tcsetattr() should never be issued using a termios
-  structure that was not obtained using tcgetattr(). tcsetattr() should
-  use only a termios structure that was obtained by tcgetattr().
-
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Eric Biggers <ebiggers@google.com>
-Cc: Cyril Hrubis <chrubis@suse.cz>
-Cc: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Cc: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- include/lapi/termbits.h      | 25 +++++++++++++++++++++++++
- testcases/kernel/pty/pty02.c | 21 ++++++++++++++++++---
- 2 files changed, 43 insertions(+), 3 deletions(-)
- create mode 100644 include/lapi/termbits.h
+ include/old/test.h               | 13 +------------
+ include/tst_path_has_mnt_flags.h | 22 ++++++++++++++++++++++
+ include/tst_test.h               |  1 +
+ 3 files changed, 24 insertions(+), 12 deletions(-)
+ create mode 100644 include/tst_path_has_mnt_flags.h
 
-diff --git a/include/lapi/termbits.h b/include/lapi/termbits.h
+diff --git a/include/old/test.h b/include/old/test.h
+index 5eef304..25d7152 100644
+--- a/include/old/test.h
++++ b/include/old/test.h
+@@ -64,6 +64,7 @@
+ #include "old_tmpdir.h"
+ #include "tst_minmax.h"
+ #include "tst_get_bad_addr.h"
++#include "tst_path_has_mnt_flags.h"
+ 
+ /*
+  * Ensure that NUMSIGS is defined.
+@@ -236,18 +237,6 @@ unsigned short tst_get_unused_port(void (cleanup_fn)(void),
+ const char *tst_strsig(int sig);
+ const char *tst_strerrno(int err);
+ 
+-/* lib/tst_path_has_mnt_flags.c
+- *
+- * Check whether a path is on a filesystem that is mounted with
+- * specified flags
+- * @path: path to file, if path is NULL tst_tmpdir is used.
+- * @flags: NULL or NULL terminated array of mount flags
+- *
+- * Return: 0..n - number of flags matched
+- */
+-int tst_path_has_mnt_flags(void (cleanup_fn)(void),
+-		const char *path, const char *flags[]);
+-
+ #ifdef TST_USE_COMPAT16_SYSCALL
+ #define TCID_BIT_SUFFIX "_16"
+ #elif  TST_USE_NEWER64_SYSCALL
+diff --git a/include/tst_path_has_mnt_flags.h b/include/tst_path_has_mnt_flags.h
 new file mode 100644
-index 0000000..23ad5a7
+index 0000000..1b16f1b
 --- /dev/null
-+++ b/include/lapi/termbits.h
-@@ -0,0 +1,25 @@
++++ b/include/tst_path_has_mnt_flags.h
+@@ -0,0 +1,22 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (c) 2018 Linux Test Project
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation
++ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
++ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
 + */
 +
-+#ifndef LAPI_TERMBITS_H__
-+#define LAPI_TERMBITS_H__
++#ifndef TST_PATH_HAS_MNT_FLAGS_H__
++#define TST_PATH_HAS_MNT_FLAGS_H__
 +
-+#ifndef EXTPROC
-+# define EXTPROC     0200000
-+#endif
++/* lib/tst_path_has_mnt_flags.c
++ *
++ * Check whether a path is on a filesystem that is mounted with
++ * specified flags
++ * @path: path to file, if path is NULL tst_tmpdir is used.
++ * @flags: NULL or NULL terminated array of mount flags
++ *
++ * Return: 0..n - number of flags matched
++ */
++int tst_path_has_mnt_flags(void (*cleanup_fn)(void),
++		const char *path, const char *flags[]);
 +
-+#endif
-diff --git a/testcases/kernel/pty/pty02.c b/testcases/kernel/pty/pty02.c
-index fd3d26b..8720407 100644
---- a/testcases/kernel/pty/pty02.c
-+++ b/testcases/kernel/pty/pty02.c
-@@ -25,27 +25,42 @@
-  */
++#endif	/* TST_PATH_HAS_MNT_FLAGS_H__ */
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 98dacf3..f7d109a 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -41,6 +41,7 @@
+ #include "tst_kernel.h"
+ #include "tst_minmax.h"
+ #include "tst_get_bad_addr.h"
++#include "tst_path_has_mnt_flags.h"
  
- #include <stdlib.h>
-+#include <errno.h>
- #include <termio.h>
- 
- #include "tst_test.h"
-+#include "lapi/termbits.h"
- 
- static void do_test(void)
- {
--	struct termios io = { .c_lflag = EXTPROC | ICANON };
-+	struct termios io;
- 	int ptmx, pts;
- 	char c = 'A';
-+	char n = '\n';
- 	int nbytes;
- 
- 	ptmx = SAFE_OPEN("/dev/ptmx", O_WRONLY);
- 
--	if (tcsetattr(ptmx, TCSANOW, &io) != 0)
--		tst_brk(TBROK | TERRNO, "tcsetattr() failed");
-+	if (tcgetattr(ptmx, &io) != 0)
-+		tst_brk(TBROK | TERRNO, "tcgetattr() failed");
-+
-+	io.c_lflag = EXTPROC | ICANON;
-+
-+	TEST(tcsetattr(ptmx, TCSANOW, &io));
-+	if (TEST_RETURN == -1) {
-+		if (TEST_ERRNO == EINVAL)
-+			tst_res(TCONF, "tcsetattr(, , EXTPROC | ICANON) is not supported");
-+		else
-+			tst_brk(TBROK | TERRNO, "tcsetattr() failed");
-+	}
- 
- 	if (unlockpt(ptmx) != 0)
- 		tst_brk(TBROK | TERRNO, "unlockpt() failed");
- 
- 	pts = SAFE_OPEN(ptsname(ptmx), O_RDONLY);
- 	SAFE_WRITE(1, ptmx, &c, 1);
-+	/* giving newline('\n') to ptmx to avoid reading pts block */
-+	SAFE_WRITE(1, ptmx, &n, 1);
- 	SAFE_READ(1, pts, &c, 1);
- 
- 	tst_res(TINFO, "Calling FIONREAD, this will hang in n_tty_ioctl() if the bug is present...");
+ /*
+  * Reports testcase result.
 -- 
-2.9.5
+1.8.3.1
+
+
 
