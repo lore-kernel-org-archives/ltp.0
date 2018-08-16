@@ -1,99 +1,65 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 16 Aug 2018 16:45:44 +0800
-Subject: [LTP] [PATCH v2 1/4] lib/tst_path_has_mnt_flags.c: Factor out
-	tst_path_has_mnt_flags() for new API
-In-Reply-To: <20180815114220.GA26923@rei>
+Date: Thu, 16 Aug 2018 16:45:46 +0800
+Subject: [LTP] [PATCH v2 3/4] syscalls/open11.c: Fix the failure of opening
+	device special files
+In-Reply-To: <1534409147-29519-1-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <20180815114220.GA26923@rei>
-Message-ID: <1534409147-29519-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1534409147-29519-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1534409147-29519-3-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We can use existed tst_path_has_mnt_flags() to check whether a path is
-on a filesystem that is mounted with specified flags, so ensure that the
-function can also be used by new API.
+If temporary directory is on the mountpoint which is mounted with nodev
+option(or it is mounted with with nodev option directly), open(2) has no
+permission to open device special file in the temporary directory and
+failed as expected.  as below:
+--------------------------------------------------------------------------
+open11.c:351: Open device special file O_RDONLY - expected errno 0 - Got: TEST_ERRNO=EACCES(13): Permission denied
+open11.c:351: Open device special file O_WRONLY - expected errno 0 - Got: TEST_ERRNO=EACCES(13): Permission denied
+open11.c:351: Open device special file O_RDWR - expected errno 0 - Got: TEST_ERRNO=EACCES(13): Permission denied
+--------------------------------------------------------------------------
+
+We prepare a suitable filesystem to test device special files by setting
+.needs_devfs flag.
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- include/old/test.h               | 13 +------------
- include/tst_path_has_mnt_flags.h | 22 ++++++++++++++++++++++
- include/tst_test.h               |  1 +
- 3 files changed, 24 insertions(+), 12 deletions(-)
- create mode 100644 include/tst_path_has_mnt_flags.h
+ testcases/kernel/syscalls/open/open11.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/include/old/test.h b/include/old/test.h
-index 5eef304..25d7152 100644
---- a/include/old/test.h
-+++ b/include/old/test.h
-@@ -64,6 +64,7 @@
- #include "old_tmpdir.h"
- #include "tst_minmax.h"
- #include "tst_get_bad_addr.h"
-+#include "tst_path_has_mnt_flags.h"
+diff --git a/testcases/kernel/syscalls/open/open11.c b/testcases/kernel/syscalls/open/open11.c
+index 0469a0a..cfd04fd 100644
+--- a/testcases/kernel/syscalls/open/open11.c
++++ b/testcases/kernel/syscalls/open/open11.c
+@@ -48,6 +48,7 @@
  
- /*
-  * Ensure that NUMSIGS is defined.
-@@ -236,18 +237,6 @@ unsigned short tst_get_unused_port(void (cleanup_fn)(void),
- const char *tst_strsig(int sig);
- const char *tst_strerrno(int err);
+ #include "tst_test.h"
  
--/* lib/tst_path_has_mnt_flags.c
-- *
-- * Check whether a path is on a filesystem that is mounted with
-- * specified flags
-- * @path: path to file, if path is NULL tst_tmpdir is used.
-- * @flags: NULL or NULL terminated array of mount flags
-- *
-- * Return: 0..n - number of flags matched
-- */
--int tst_path_has_mnt_flags(void (cleanup_fn)(void),
--		const char *path, const char *flags[]);
--
- #ifdef TST_USE_COMPAT16_SYSCALL
- #define TCID_BIT_SUFFIX "_16"
- #elif  TST_USE_NEWER64_SYSCALL
-diff --git a/include/tst_path_has_mnt_flags.h b/include/tst_path_has_mnt_flags.h
-new file mode 100644
-index 0000000..1b16f1b
---- /dev/null
-+++ b/include/tst_path_has_mnt_flags.h
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
-+ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ */
-+
-+#ifndef TST_PATH_HAS_MNT_FLAGS_H__
-+#define TST_PATH_HAS_MNT_FLAGS_H__
-+
-+/* lib/tst_path_has_mnt_flags.c
-+ *
-+ * Check whether a path is on a filesystem that is mounted with
-+ * specified flags
-+ * @path: path to file, if path is NULL tst_tmpdir is used.
-+ * @flags: NULL or NULL terminated array of mount flags
-+ *
-+ * Return: 0..n - number of flags matched
-+ */
-+int tst_path_has_mnt_flags(void (*cleanup_fn)(void),
-+		const char *path, const char *flags[]);
-+
-+#endif	/* TST_PATH_HAS_MNT_FLAGS_H__ */
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 98dacf3..f7d109a 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -41,6 +41,7 @@
- #include "tst_kernel.h"
- #include "tst_minmax.h"
- #include "tst_get_bad_addr.h"
-+#include "tst_path_has_mnt_flags.h"
++#define MNTPOINT "mntpoint"
+ #define T_REG "t_reg"			/* regular file with content */
+ #define T_REG_EMPTY "t_reg_empty"	/* empty regular file */
+ #define T_LINK_REG "t_link_reg"		/* hard link to T_REG */
+@@ -55,7 +56,7 @@
+ #define T_SYMLINK_REG "t_symlink_reg"	/* symlink to T_REG */
+ #define T_DIR "t_dir"			/* test dir */
+ #define T_SYMLINK_DIR "t_symlink_dir"	/* symlink to T_DIR */
+-#define T_DEV "t_dev"			/* test device special file */
++#define T_DEV MNTPOINT"/t_dev"		/* test device special file */
  
- /*
-  * Reports testcase result.
+ #define T_MSG "this is a test string"
+ 
+@@ -318,6 +319,7 @@ static struct tst_test test = {
+ 	.tcnt = ARRAY_SIZE(tc),
+ 	.setup = setup,
+ 	.test = verify_open,
+-	.needs_tmpdir = 1,
++	.needs_devfs = 1,
++	.mntpoint = MNTPOINT,
+ 	.needs_root = 1,
+ };
 -- 
 1.8.3.1
 
