@@ -1,45 +1,46 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 16 Aug 2018 14:59:53 +0200
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Thu, 16 Aug 2018 15:06:28 +0200
 Subject: [LTP] [PATCH v3 3/4] tst_timer: Create interface for using
- multiple timers
-In-Reply-To: <87bma24gek.fsf@rpws.prws.suse.cz>
+	multiple timers
+In-Reply-To: <20180816122728.GE6547@rei>
 References: <20180816120020.11042-1-rpalethorpe@suse.com>
- <20180816120020.11042-3-rpalethorpe@suse.com>
- <20180816122247.GD6547@rei> <87bma24gek.fsf@rpws.prws.suse.cz>
-Message-ID: <20180816125953.GA30369@rei>
+ <20180816120020.11042-3-rpalethorpe@suse.com> <20180816122247.GD6547@rei>
+ <20180816122728.GE6547@rei>
+Message-ID: <87a7pm4g17.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Well if the clock is not supported and the call fails, then the user
-> will have to deal with that at the call site of tst_timer_start which is
-> not very convenient for tst_fuzzy_sync. I would rather have a seperate
-> initialisation function for the tst_timer struct which can be called in
-> the setup function. e.g. tst_timer_init[_st](clock_id, timeout, ...).
-> 
-> >
-> > And lastly but not least, we were also discussion special timer id,
-> > something as TST_TIMER_DEFAULT that would select appropriate timer,
-> > althoug I guess that CLOCK_MONOTONIC is supporoted on anything that we
-> > care for these days.
-> 
-> Yeah, fuzzy_sync just defines CLOCK_MONOTIC to CLOCK_MONOTONIC_RAW if
-> possible and uses that. Not had any reports of CLOCK_MONOTONIC being
-> unavailabe.
+Hello,
 
-Maybe we can just do:
+Cyril Hrubis <chrubis@suse.cz> writes:
 
-#ifdef CLOCK_MONOTONIC_RAW
-# define TST_CLOCK_DEFAULT CLOCK_MONOTONIC_RAW
-#else
-# define TST_CLOCK_DEFAULT CLOCK_MONOTONIC
-#endif
+> Hi!
+>> > +/**
+>> > + * Encapsulates a stopwatch timer.
+>> > + *
+>> > + * Useful when you need to use multiple timers in a single test.
+>> > + */
+>> > +struct tst_timer {
+>> > +	/** The POSIX clock type  */
+>> > +	clockid_t clock_id;
+>> > +	/** How much time can pass before tst_timer_expired_st() returns true */
+>> > +	struct timespec limit;
+>> > +	/** Where to start measuring time from */
+>> > +	struct timespec start_time;
+>> > +};
+>
+> On a related note, do you really think that we will need nsec resoltion
+> for the timeout timers? I would say that keeping the limit as unsigned
+> integer holding number of seconds would be more than enough.
 
-And be done with it.
+I agree that seconds are appropriate for test timeouts, but it is
+practically 'free' to use the struct here because of the existing API to
+compare timespec structs. Also I might use this interface to time
+syscalls and maybe remove some code duplication.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+--
+Thank you,
+Richard.
