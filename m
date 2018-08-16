@@ -1,41 +1,48 @@
-From: Masayoshi Mizuma <msys.mizuma@gmail.com>
-Date: Wed, 15 Aug 2018 14:55:16 -0400
-Subject: [LTP] [PATCH] ver_linux: use lscpu command result instead of
-	/proc/cpuinfo
-Message-ID: <20180815185516.32726-1-msys.mizuma@gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 16 Aug 2018 12:49:35 +0800
+Subject: [LTP] [PATCH] pty: using tcgetattr() to get attributes before
+ re-setting it
+In-Reply-To: <20180815105009.GA1379@rei>
+References: <20180528103936.22538-1-liwang@redhat.com>
+ <5B0CFB5C.5040702@cn.fujitsu.com>
+ <CAEemH2fr-5HAJdFL_Br7u2bsry5E3j_dwaVnnJFdm4wFTWsA0w@mail.gmail.com>
+ <20180815105009.GA1379@rei>
+Message-ID: <CAEemH2f7BZRNXJTjD8abR6QMJRRQc+C0F=Z_4Q2j+BdLeo07eg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
+On Wed, Aug 15, 2018 at 6:50 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
 
-lscpu command shows the cpu information clearly. So let's use
-the result if the command is installed to the system.
+> Hi!
+> I'm looking into these patches now, so if I get it right we should:
+>
 
-Signed-off-by: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
----
- ver_linux | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Thanks for taking care of this.
 
-diff --git a/ver_linux b/ver_linux
-index dda337926..5f9260f5f 100755
---- a/ver_linux
-+++ b/ver_linux
-@@ -96,5 +96,10 @@ echo 'free reports:'
- free
- 
- echo
--echo '/proc/cpuinfo'
--cat /proc/cpuinfo
-+echo 'cpuinfo:'
-+which lscpu > /dev/null 2>&1
-+if [ $? -eq 0 ]; then
-+	lscpu
-+else
-+	cat /proc/cpuinfo
-+fi
+
+>
+> * Add EXTPROC into lapi
+> * Get the termios value, or it with the requested flags, then apply
+>   tcsetattr()
+> * Exit the test with TCONF if we get EINVAL from tcsetattr()
+>
+> Would that work for both of you?
+>
+
+I think that's right.
+
+But maybe we have to handle the ICANON nonuniform behavior too.
+
+As YangXiao mentioned that, reading pts will be blocked on rhel6 forever if
+we don't give
+newline('\n') to ptmx, but this issue not exist on rhel7.
+
 -- 
-2.18.0
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180816/151d0126/attachment-0001.html>
