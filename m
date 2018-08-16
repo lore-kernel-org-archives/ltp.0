@@ -1,46 +1,41 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 16 Aug 2018 15:06:28 +0200
-Subject: [LTP] [PATCH v3 3/4] tst_timer: Create interface for using
-	multiple timers
-In-Reply-To: <20180816122728.GE6547@rei>
-References: <20180816120020.11042-1-rpalethorpe@suse.com>
- <20180816120020.11042-3-rpalethorpe@suse.com> <20180816122247.GD6547@rei>
- <20180816122728.GE6547@rei>
-Message-ID: <87a7pm4g17.fsf@rpws.prws.suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 16 Aug 2018 15:28:15 +0200
+Subject: [LTP] [PATCH v2 2/4] lib/tst_test.c: add .needs_devfs flag
+In-Reply-To: <1534409147-29519-2-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20180815114220.GA26923@rei>
+ <1534409147-29519-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1534409147-29519-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20180816132815.GB30369@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi!
+> We add .needs_devfs flag to prepare a suitable filesystem to test
+> device special files and use ext2 instead of tmpfs(because tmpfs
+> doesn't support extended attributes) as default filesystem if
+> .dev_fs_type is not specified.
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+Can we do that only if the test temporary directory is not suitable for
+creating devices?
 
-> Hi!
->> > +/**
->> > + * Encapsulates a stopwatch timer.
->> > + *
->> > + * Useful when you need to use multiple timers in a single test.
->> > + */
->> > +struct tst_timer {
->> > +	/** The POSIX clock type  */
->> > +	clockid_t clock_id;
->> > +	/** How much time can pass before tst_timer_expired_st() returns true */
->> > +	struct timespec limit;
->> > +	/** Where to start measuring time from */
->> > +	struct timespec start_time;
->> > +};
->
-> On a related note, do you really think that we will need nsec resoltion
-> for the timeout timers? I would say that keeping the limit as unsigned
-> integer holding number of seconds would be more than enough.
+There are distributions out there that have /tmp residing on pretty much
+normal filesystems, also user can override TMPDIR to point to a path
+backed up by a regular fs. In these cases this will slow down these
+tests for no good reason.
 
-I agree that seconds are appropriate for test timeouts, but it is
-practically 'free' to use the struct here because of the existing API to
-compare timespec structs. Also I might use this interface to time
-syscalls and maybe remove some code duplication.
+So I would rather go for:
 
---
-Thank you,
-Richard.
+if tst_test->needs_devfs is set:
+
+* mkdir tst_test->mntpoint if it does not exits
+* check if tst_test->mntpoint is suitable for creating devices
+* if not, mount some filesystem over it
+  - mounting tmpfs without nodev flag should be more than enough
+    and if that fails for you, we can fall back to a regular filesystem
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
