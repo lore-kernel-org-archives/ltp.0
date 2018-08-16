@@ -1,60 +1,124 @@
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 16 Aug 2018 15:58:35 +0800
-Subject: [LTP] [PATCH] pty: using tcgetattr() to get attributes before
- re-setting it
-In-Reply-To: <CAEemH2f7BZRNXJTjD8abR6QMJRRQc+C0F=Z_4Q2j+BdLeo07eg@mail.gmail.com>
-References: <20180528103936.22538-1-liwang@redhat.com>
- <5B0CFB5C.5040702@cn.fujitsu.com>
- <CAEemH2fr-5HAJdFL_Br7u2bsry5E3j_dwaVnnJFdm4wFTWsA0w@mail.gmail.com>
- <20180815105009.GA1379@rei>
- <CAEemH2f7BZRNXJTjD8abR6QMJRRQc+C0F=Z_4Q2j+BdLeo07eg@mail.gmail.com>
-Message-ID: <CAEemH2domA0jqQVUOXjLYrh_VdP54Y86vOO66E714nnYDCJDVg@mail.gmail.com>
+Date: Thu, 16 Aug 2018 16:07:24 +0800
+Subject: [LTP] [PATCH] pty: fix some issues in pty02
+Message-ID: <20180816080724.25143-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Aug 16, 2018 at 12:49 PM, Li Wang <liwang@redhat.com> wrote:
+1. Add EXTPROC into lapi
 
->
->
-> On Wed, Aug 15, 2018 at 6:50 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
->
->> Hi!
->> I'm looking into these patches now, so if I get it right we should:
->>
->
-> Thanks for taking care of this.
->
->
->>
->> * Add EXTPROC into lapi
->> * Get the termios value, or it with the requested flags, then apply
->>   tcsetattr()
->> * Exit the test with TCONF if we get EINVAL from tcsetattr()
->>
->> Would that work for both of you?
->>
->
-> I think that's right.
->
-> But maybe we have to handle the ICANON nonuniform behavior too.
->
-> As YangXiao mentioned that, reading pts will be blocked on rhel6 forever
-> if we don't give
-> newline('\n') to ptmx, but this issue not exist on rhel7.
->
->
-To avoid the block issue we can just add newline('\n') in the test
-forwardly, I have confirmed that
-won't have any impact on the bug's reproducible in bad(< kernel-4.15)
-kernel.
-I will resend a new patch to fix all these issues above.
+2. Exit the test with TCONF if we get EINVAL from tcsetattr()
 
+3. Giving newline('\n') to ptmx to avoid reading pts block on rhel6
+
+4. Using tcgetattr() to get attributes before re-setting it
+Fix this error:
+   tst_test.c:1015: INFO: Timeout per run is 0h 50m 00s
+   pty02.c:42: BROK: tcsetattr() failed: EINVAL
+
+POSIX.1 General description:
+  Changes the attributes associated with a terminal. New attributes are
+  specified with a termios control structure. Programs should always
+  issue a tcgetattr() first, modify the desired fields, and then issue
+  a tcsetattr(). tcsetattr() should never be issued using a termios
+  structure that was not obtained using tcgetattr(). tcsetattr() should
+  use only a termios structure that was obtained by tcgetattr().
+
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Eric Biggers <ebiggers@google.com>
+Cc: Cyril Hrubis <chrubis@suse.cz>
+Cc: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Cc: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+---
+ include/lapi/termbits.h      | 25 +++++++++++++++++++++++++
+ testcases/kernel/pty/pty02.c | 21 ++++++++++++++++++---
+ 2 files changed, 43 insertions(+), 3 deletions(-)
+ create mode 100644 include/lapi/termbits.h
+
+diff --git a/include/lapi/termbits.h b/include/lapi/termbits.h
+new file mode 100644
+index 0000000..23ad5a7
+--- /dev/null
++++ b/include/lapi/termbits.h
+@@ -0,0 +1,25 @@
++/*
++ * Copyright (c) 2018 Linux Test Project
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation
++ */
++
++#ifndef LAPI_TERMBITS_H__
++#define LAPI_TERMBITS_H__
++
++#ifndef EXTPROC
++# define EXTPROC     0200000
++#endif
++
++#endif
+diff --git a/testcases/kernel/pty/pty02.c b/testcases/kernel/pty/pty02.c
+index fd3d26b..8720407 100644
+--- a/testcases/kernel/pty/pty02.c
++++ b/testcases/kernel/pty/pty02.c
+@@ -25,27 +25,42 @@
+  */
+ 
+ #include <stdlib.h>
++#include <errno.h>
+ #include <termio.h>
+ 
+ #include "tst_test.h"
++#include "lapi/termbits.h"
+ 
+ static void do_test(void)
+ {
+-	struct termios io = { .c_lflag = EXTPROC | ICANON };
++	struct termios io;
+ 	int ptmx, pts;
+ 	char c = 'A';
++	char n = '\n';
+ 	int nbytes;
+ 
+ 	ptmx = SAFE_OPEN("/dev/ptmx", O_WRONLY);
+ 
+-	if (tcsetattr(ptmx, TCSANOW, &io) != 0)
+-		tst_brk(TBROK | TERRNO, "tcsetattr() failed");
++	if (tcgetattr(ptmx, &io) != 0)
++		tst_brk(TBROK | TERRNO, "tcgetattr() failed");
++
++	io.c_lflag = EXTPROC | ICANON;
++
++	TEST(tcsetattr(ptmx, TCSANOW, &io));
++	if (TEST_RETURN == -1) {
++		if (TEST_ERRNO == EINVAL)
++			tst_res(TCONF, "tcsetattr(, , EXTPROC | ICANON) is not supported");
++		else
++			tst_brk(TBROK | TERRNO, "tcsetattr() failed");
++	}
+ 
+ 	if (unlockpt(ptmx) != 0)
+ 		tst_brk(TBROK | TERRNO, "unlockpt() failed");
+ 
+ 	pts = SAFE_OPEN(ptsname(ptmx), O_RDONLY);
+ 	SAFE_WRITE(1, ptmx, &c, 1);
++	/* giving newline('\n') to ptmx to avoid reading pts block */
++	SAFE_WRITE(1, ptmx, &n, 1);
+ 	SAFE_READ(1, pts, &c, 1);
+ 
+ 	tst_res(TINFO, "Calling FIONREAD, this will hang in n_tty_ioctl() if the bug is present...");
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180816/69b733b6/attachment.html>
+2.9.5
+
