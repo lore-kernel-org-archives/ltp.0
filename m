@@ -1,102 +1,74 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 16 Aug 2018 16:45:45 +0800
-Subject: [LTP] [PATCH v2 2/4] lib/tst_test.c: add .needs_devfs flag
+Date: Thu, 16 Aug 2018 16:45:47 +0800
+Subject: [LTP] [PATCH v2 4/4] syscalls/fsetxattr02.c: Fix the failure of
+	opening device files
 In-Reply-To: <1534409147-29519-1-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <20180815114220.GA26923@rei>
  <1534409147-29519-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1534409147-29519-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1534409147-29519-4-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We add .needs_devfs flag to prepare a suitable filesystem to test
-device special files and use ext2 instead of tmpfs(because tmpfs
-doesn't support extended attributes) as default filesystem if
-.dev_fs_type is not specified.
+If temporary directory is on the mountpoint which is mounted with nodev
+option(or it is mounted with with nodev option directly), open(2) has no
+permission to open device files in the temporary directory and returns
+EACCES.  as below:
+--------------------------------------------------------------------
+safe_macros.c:225: BROK: fsetxattr02.c:215: open(fsetxattr02chr,0,00) failed: EACCES
+--------------------------------------------------------------------
+
+We prepare a suitable filesystem to test device special files by setting
+.needs_devfs flag.
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- include/tst_test.h |  1 +
- lib/tst_test.c     | 32 ++++++++++++++++++++++++++++++--
- 2 files changed, 31 insertions(+), 2 deletions(-)
+ testcases/kernel/syscalls/fsetxattr/fsetxattr02.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index f7d109a..4cc6202 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -129,6 +129,7 @@ struct tst_test {
- 	int mount_device:1;
- 	int needs_rofs:1;
- 	int child_needs_reinit:1;
-+	int needs_devfs:1;
- 	/*
- 	 * If set the test function will be executed for all available
- 	 * filesystems and the current filesytem type would be set in the
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 2f3d357..039c78f 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -724,6 +724,22 @@ static int prepare_and_mount_ro_fs(const char *dev,
- 	return 0;
- }
+diff --git a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
+index a1be652..0f769ce 100644
+--- a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
++++ b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
+@@ -48,13 +48,14 @@
+ #define XATTR_TEST_VALUE "this is a test value"
+ #define XATTR_TEST_VALUE_SIZE 20
  
-+static void prepare_and_mount_dev_fs(const char *dev,
-+				     const char *mntpoint,
-+				     const char *fs_type)
-+{
-+	const char *flags[] = {"nodev", NULL};
-+	char abs_path[PATH_MAX];
-+
-+	sprintf(abs_path, "%s/%s", tst_get_tmpdir(), mntpoint);
-+
-+	SAFE_MOUNT(dev, mntpoint, fs_type, MS_MGC_VAL, NULL);
-+	mntpoint_mounted = 1;
-+
-+	if (tst_path_has_mnt_flags(NULL, abs_path, flags))
-+		tst_brk(TBROK, "%s is mounted with nodev", fs_type);
-+}
-+
- static void prepare_device(void)
++#define MNTPOINT "mntpoint"
+ #define OFFSET    11
+ #define FILENAME "fsetxattr02testfile"
+ #define DIRNAME  "fsetxattr02testdir"
+ #define SYMLINK  "fsetxattr02symlink"
+-#define FIFO     "fsetxattr02fifo"
+-#define CHR      "fsetxattr02chr"
+-#define BLK      "fsetxattr02blk"
++#define FIFO     MNTPOINT"/fsetxattr02fifo"
++#define CHR      MNTPOINT"/fsetxattr02chr"
++#define BLK      MNTPOINT"/fsetxattr02blk"
+ #define SOCK     "fsetxattr02sock"
+ 
+ struct test_case {
+@@ -139,6 +140,9 @@ static struct test_case tc[] = {
+ 
+ static void verify_fsetxattr(unsigned int i)
  {
- 	if (tst_test->format_device) {
-@@ -737,6 +753,12 @@ static void prepare_device(void)
- 		return;
- 	}
- 
-+	if (tst_test->needs_devfs) {
-+		prepare_and_mount_dev_fs(tdev.dev, tst_test->mntpoint,
-+					 tdev.fs_type);
-+		return;
-+	}
++	/* acquire basename to avoid breaking OFFSET logic */
++	tc[i].fname = strstr(tc[i].fname, "fsetxattr02");
 +
- 	if (tst_test->mount_device) {
- 		SAFE_MOUNT(tdev.dev, tst_test->mntpoint, tdev.fs_type,
- 			   tst_test->mnt_flags, tst_test->mnt_data);
-@@ -778,6 +800,11 @@ static void do_setup(int argc, char *argv[])
- 	if (tst_test->all_filesystems)
- 		tst_test->needs_device = 1;
- 
-+	if (tst_test->needs_devfs) {
-+		tst_test->needs_device = 1;
-+		tst_test->format_device = 1;
-+	}
-+
- 	setup_ipc();
- 
- 	if (needs_tmpdir() && !tst_tmpdir_created())
-@@ -786,8 +813,9 @@ static void do_setup(int argc, char *argv[])
- 	if (tst_test->mntpoint)
- 		SAFE_MKDIR(tst_test->mntpoint, 0777);
- 
--	if ((tst_test->needs_rofs || tst_test->mount_device ||
--	     tst_test->all_filesystems) && !tst_test->mntpoint) {
-+	if ((tst_test->needs_devfs || tst_test->needs_rofs ||
-+	     tst_test->mount_device || tst_test->all_filesystems) &&
-+	     !tst_test->mntpoint) {
- 		tst_brk(TBROK, "tst_test->mntpoint must be set!");
- 	}
+ 	/* some tests might require existing keys for each iteration */
+ 	if (tc[i].needskeyset) {
+ 		SAFE_FSETXATTR(tc[i].fd, tc[i].key, tc[i].value, tc[i].size,
+@@ -247,7 +251,8 @@ static struct tst_test test = {
+ 	.test = verify_fsetxattr,
+ 	.cleanup = cleanup,
+ 	.tcnt = ARRAY_SIZE(tc),
+-	.needs_tmpdir = 1,
++	.needs_devfs = 1,
++	.mntpoint = MNTPOINT,
+ 	.needs_root = 1,
+ };
  
 -- 
 1.8.3.1
