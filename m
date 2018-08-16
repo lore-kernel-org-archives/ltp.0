@@ -1,76 +1,50 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 16 Aug 2018 12:59:35 +0200
-Subject: [LTP] [PATCH RFC 1/4] lib/tst_test.c: add 'needs_drivers'
- option with tst_check_drivers cmd
-In-Reply-To: <1533828226-24753-1-git-send-email-alexey.kodanev@oracle.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 16 Aug 2018 13:16:56 +0200
+Subject: [LTP] [RFC PATCH 2/2] netstress: Update help for -m behavior
+In-Reply-To: <1533828226-24753-4-git-send-email-alexey.kodanev@oracle.com>
 References: <1533828226-24753-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20180816105934.GA4829@rei>
+ <1533828226-24753-4-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20180816111655.GA13716@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index 98dacf3..221796d 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -170,6 +170,9 @@ struct tst_test {
->  
->  	/* NULL terminated array of resource file names */
->  	const char *const *resource_files;
-> +
-> +	/* NULL terminated array of needed kernel drivers */
-> +	const char * const *needs_drivers;
->  };
->  
->  /*
-> @@ -219,6 +222,8 @@ const char *tst_strstatus(int status);
->  
->  void tst_set_timeout(int timeout);
->  
-> +int tst_check_drivers(void);
-> +
->  #ifndef TST_NO_DEFAULT_MAIN
->  
->  static struct tst_test test;
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 2f3d357..6cb74cf 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -645,6 +645,29 @@ static int needs_tmpdir(void)
->  	       tst_test->needs_checkpoints;
->  }
->  
-> +int tst_check_drivers(void)
-> +{
-> +	const char *name;
-> +	int i, res;
-> +
-> +	for (i = 0; (name = tst_test->needs_drivers[i]); ++i) {
-> +		const char * const argv[] = { "modprobe", name, NULL };
-> +
-> +		res = tst_run_cmd_(NULL, argv, "/dev/null", "/dev/null", 1);
-> +		if (res == 255)
-> +			return res; /* it looks like modprobe not available */
-> +		if (res) {
-> +			if (tst_test->test || tst_test->test_all) {
-> +				tst_brk(TCONF, "%s driver not available", name);
-> +			} else {
-> +				fprintf(stderr, "%s", name);
-> +				return res;
-> +			}
-> +		}
-> +	}
-> +	return 0;
-> +}
+Hi Alexey,
 
-I do not like much that we change the behavir based on tst_test content.
-Maybe it would be cleaner to define a tst_check_driver(const char *name),
-then we can do the loop over tst_test->needs_drivers in the tst_test.c
-library and loop over argv in the shell helper.
+> >> Hi Petr,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> >> Since the server waits for requests from the client, the timeout
+> >> value for UDP/DCCP is the same as for the other protocols. Also the
+> >> server starts earlier than the client, so it should wait some time
+> >> to get the client requests.
+
+> >> I've changed the client side only because either request from the
+> >> client or reply from the server might be lost.
+
+> > Thanks for your explanation.
+> > I mean: UDP itself is the only protocol which don't support listen() so
+> > netstress server using UDP timeouts after some time. The default is 100ms.
+
+> Hmm, for the server the default should be 60 sec. Does it timeout earlier?
+Yes. The timeout is affected by value of -m. Thats' what I meant by my previous:
+$ date +"%T.%3N"; testcases/network/netstress/netstress -m 1 -T udp; date +"%T.%3N"
+15:52:34.501
+tst_test.c:1015: INFO: Timeout per run is 0h 05m 00s
+The timeout is actually 1ms. Try it with -m 1000 and it'll be indeed 1s
+netstress.c:917: INFO: max requests '3'
+netstress.c:944: INFO: using UDP
+netstress.c:676: INFO: assigning a name to the server socket...
+netstress.c:683: INFO: bind to port 47728
+netstress.c:575: FAIL: recv failed, sock '3'
+netstress.c:642: BROK: Server closed
+...
+15:52:34.516
+
+
+This is caused by udp/udp_lite not using listen(), but maybe is should be at
+least mentioned in help (if wanted behavior).
+
+Kind regards,
+Petr
