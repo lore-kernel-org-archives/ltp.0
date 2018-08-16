@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 16 Aug 2018 15:28:15 +0200
-Subject: [LTP] [PATCH v2 2/4] lib/tst_test.c: add .needs_devfs flag
-In-Reply-To: <1534409147-29519-2-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <20180815114220.GA26923@rei>
- <1534409147-29519-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1534409147-29519-2-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20180816132815.GB30369@rei>
+Date: Thu, 16 Aug 2018 16:25:24 +0200
+Subject: [LTP] [PATCH ltp] syscalls/bind02.c: Fix create socker failed
+ for nobody user and nogroup for "Permission denied"
+In-Reply-To: <20180810025656.8825-1-zhanghuix.yuan@intel.com>
+References: <20180810025656.8825-1-zhanghuix.yuan@intel.com>
+Message-ID: <20180816142524.GC30369@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,28 +12,30 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> We add .needs_devfs flag to prepare a suitable filesystem to test
-> device special files and use ext2 instead of tmpfs(because tmpfs
-> doesn't support extended attributes) as default filesystem if
-> .dev_fs_type is not specified.
+>  testcases/kernel/syscalls/bind/bind02.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/syscalls/bind/bind02.c b/testcases/kernel/syscalls/bind/bind02.c
+> index 90b0e9d8e..84ce588ce 100644
+> --- a/testcases/kernel/syscalls/bind/bind02.c
+> +++ b/testcases/kernel/syscalls/bind/bind02.c
+> @@ -86,7 +86,12 @@ void try_bind(void)
+>  	}
+>  
+>  	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+> -		tst_brkm(TBROK | TERRNO, 0, "socket() failed");
+> +		if (errno == EACCES) {
+> +			tst_resm(TPASS, "correct error");
+> +			return;
+> +		}else {
+> +			tst_brkm(TBROK | TERRNO, 0, "socket() failed");
+> +		}
+>  	}
 
-Can we do that only if the test temporary directory is not suitable for
-creating devices?
-
-There are distributions out there that have /tmp residing on pretty much
-normal filesystems, also user can override TMPDIR to point to a path
-backed up by a regular fs. In these cases this will slow down these
-tests for no good reason.
-
-So I would rather go for:
-
-if tst_test->needs_devfs is set:
-
-* mkdir tst_test->mntpoint if it does not exits
-* check if tst_test->mntpoint is suitable for creating devices
-* if not, mount some filesystem over it
-  - mounting tmpfs without nodev flag should be more than enough
-    and if that fails for you, we can fall back to a regular filesystem
+There is no good reason why shouldn't the nobody user be able to create
+AF_INET socket. Fist of all you should figure out why this is happening,
+then, if it turns out to be the test fault, we can do something about
+it.
 
 -- 
 Cyril Hrubis
