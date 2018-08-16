@@ -1,37 +1,38 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 16 Aug 2018 13:53:47 +0200
-Subject: [LTP] [PATCH RFC 1/4] lib/tst_test.c: add 'needs_drivers'
- option with tst_check_drivers cmd
-In-Reply-To: <1e9e35dc-3f2f-0eb7-59aa-8f600bdf949f@oracle.com>
-References: <1533828226-24753-1-git-send-email-alexey.kodanev@oracle.com>
- <20180816105934.GA4829@rei>
- <1e9e35dc-3f2f-0eb7-59aa-8f600bdf949f@oracle.com>
-Message-ID: <20180816115347.GC13716@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 16 Aug 2018 13:54:34 +0200
+Subject: [LTP] [PATCH] syscalls/signalfd01.c: Fix compiler warnings
+In-Reply-To: <1532087697-28093-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+References: <1532087697-28093-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <20180816115434.GB6547@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+>  		tst_resm(TFAIL,
+>  			 "getting incomplete signalfd_siginfo data: "
+> -			 "actual-size=%" PRId32 ", expected-size=%" PRId32,
+> +			 "actual-size=%zd" PRId32 ", expected-size=%ld" PRId32,
+>  			 s, sizeof(struct signalfd_siginfo));
 
-> On 08/16/2018 01:59 PM, Cyril Hrubis wrote:
-> > Hi... 
-> > I do not like much that we change the behavir based on tst_test content.
-> > Maybe it would be cleaner to define a tst_check_driver(const char *name),
-> > then we can do the loop over tst_test->needs_drivers in the tst_test.c
-> > library and loop over argv in the shell helper.
-+1 it makes sense.
+This is obviously wrong, you have to, at least, remove the PRId32
+formatting strings here. Also sizeof() returns size_t hence it should
+be formatted with %zu.
 
-> Hi Cyril,
+>  		sfd_for_next = -1;
+>  		close(sfd);
+> @@ -170,7 +170,7 @@ int do_test1(int ntst, int sig)
+>  		goto out;
+>  	}
+>  
+> -	if (fdsi.SIGNALFD_PREFIX(signo) == sig) {
+> +	if ((int)fdsi.SIGNALFD_PREFIX(signo) == sig) {
 
-> OK, will send the 2nd version.
+Maybe it would be clearner to defined the sig to be uint32_t rathe than
+sprinkle the code with int casts
 
-BTW it'd be nice to have support to load module with parameters.
-
-> Thanks,
-> Alexey
-
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
