@@ -1,141 +1,85 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 17 Aug 2018 10:38:00 +0800
-Subject: [LTP] [PATCH v2] pty: fix some issues in pty02
-In-Reply-To: <20180817022623.2657-1-liwang@redhat.com>
-References: <20180817022623.2657-1-liwang@redhat.com>
-Message-ID: <5B763508.2070504@cn.fujitsu.com>
+From: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+Date: Fri, 17 Aug 2018 10:39:01 +0800
+Subject: [LTP] [PATCH v2] syscall/signalfd01: Fix compiler warnings
+In-Reply-To: <20180816115434.GB6547@rei>
+References: <20180816115434.GB6547@rei>
+Message-ID: <1534473541-8372-1-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2018/08/17 10:26, Li Wang wrote:
-> 1. Add EXTPROC into lapi
->
-> 2. Exit the test with TCONF if we get EINVAL from tcsetattr()
->
-> 3. Write newline to ptmx to avoid read() on pts to block
->
-> 4. Using tcgetattr() to get attributes before re-setting it
->
-> Fix this error:
->    tst_test.c:1015: INFO: Timeout per run is 0h 50m 00s
->    pty02.c:42: BROK: tcsetattr() failed: EINVAL
->
-> POSIX.1 General description:
->   Changes the attributes associated with a terminal. New attributes are
->   specified with a termios control structure. Programs should always
->   issue a tcgetattr() first, modify the desired fields, and then issue
->   a tcsetattr(). tcsetattr() should never be issued using a termios
->   structure that was not obtained using tcgetattr(). tcsetattr() should
->   use only a termios structure that was obtained by tcgetattr().
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Cc: Eric Biggers <ebiggers@google.com>
-> Cc: Cyril Hrubis <chrubis@suse.cz>
-> Cc: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> Cc: Jinhui huang <huangjh.jy@cn.fujitsu.com>
-> ---
->
-> Notes:
->     v1 -> v2:
->     
->     * use TST_RET and TST_ERR
->     * do SAFE_WRITE(1, ptmx, "A\n", 2) instead
->     * reword the code comments
->
->  include/lapi/termbits.h      | 25 +++++++++++++++++++++++++
->  testcases/kernel/pty/pty02.c | 21 +++++++++++++++++----
->  2 files changed, 42 insertions(+), 4 deletions(-)
->  create mode 100644 include/lapi/termbits.h
->
-> diff --git a/include/lapi/termbits.h b/include/lapi/termbits.h
-> new file mode 100644
-> index 0000000..23ad5a7
-> --- /dev/null
-> +++ b/include/lapi/termbits.h
-> @@ -0,0 +1,25 @@
-> +/*
-> + * Copyright (c) 2018 Linux Test Project
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License as
-> + * published by the Free Software Foundation; either version 2 of
-> + * the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software Foundation
-> + */
-> +
-> +#ifndef LAPI_TERMBITS_H__
-> +#define LAPI_TERMBITS_H__
-> +
-> +#ifndef EXTPROC
-> +# define EXTPROC     0200000
-> +#endif
-> +
-> +#endif
-> diff --git a/testcases/kernel/pty/pty02.c b/testcases/kernel/pty/pty02.c
-> index fd3d26b..841e233 100644
-> --- a/testcases/kernel/pty/pty02.c
-> +++ b/testcases/kernel/pty/pty02.c
-> @@ -25,27 +25,40 @@
->   */
->  
->  #include <stdlib.h>
-> +#include <errno.h>
->  #include <termio.h>
->  
->  #include "tst_test.h"
-> +#include "lapi/termbits.h"
->  
->  static void do_test(void)
->  {
-> -	struct termios io = { .c_lflag = EXTPROC | ICANON };
-> +	struct termios io;
->  	int ptmx, pts;
->  	char c = 'A';
->  	int nbytes;
->  
->  	ptmx = SAFE_OPEN("/dev/ptmx", O_WRONLY);
->  
-> -	if (tcsetattr(ptmx, TCSANOW, &io) != 0)
-> -		tst_brk(TBROK | TERRNO, "tcsetattr() failed");
-> +	if (tcgetattr(ptmx, &io) != 0)
-> +		tst_brk(TBROK | TERRNO, "tcgetattr() failed");
-> +
-> +	io.c_lflag = EXTPROC | ICANON;
-> +
-> +	TEST(tcsetattr(ptmx, TCSANOW, &io));
-> +	if (TEST_RET == -1) {
-> +		if (TEST_ERR == EINVAL)
-> +			tst_res(TCONF, "tcsetattr(, , EXTPROC | ICANON) is not supported");
-Hi Li,
+Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/signalfd/signalfd01.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-Should we use tst_brk(TCONF, ...) instead?
-
-Thanks,
-Xiao Yang
-> +		else
-> +			tst_brk(TBROK | TERRNO, "tcsetattr() failed");
-> +	}
->  
->  	if (unlockpt(ptmx) != 0)
->  		tst_brk(TBROK | TERRNO, "unlockpt() failed");
->  
->  	pts = SAFE_OPEN(ptsname(ptmx), O_RDONLY);
-> -	SAFE_WRITE(1, ptmx, &c, 1);
-> +	/* write newline to ptmx to avoid read() on pts to block */
-> +	SAFE_WRITE(1, ptmx, "A\n", 2);
->  	SAFE_READ(1, pts, &c, 1);
->  
->  	tst_res(TINFO, "Calling FIONREAD, this will hang in n_tty_ioctl() if the bug is present...");
+diff --git a/testcases/kernel/syscalls/signalfd/signalfd01.c b/testcases/kernel/syscalls/signalfd/signalfd01.c
+index 9859524..72901ff 100644
+--- a/testcases/kernel/syscalls/signalfd/signalfd01.c
++++ b/testcases/kernel/syscalls/signalfd/signalfd01.c
+@@ -76,7 +76,7 @@ int TST_TOTAL = 1;
+ #endif
+ 
+ #ifdef USE_STUB
+-int main(int argc, char **argv)
++int main(void)
+ {
+ 	tst_brkm(TCONF, NULL, "System doesn't support execution of the test");
+ }
+@@ -94,7 +94,7 @@ int signalfd(int fd, const sigset_t * mask, int flags)
+ void cleanup(void);
+ void setup(void);
+ 
+-int do_test1(int ntst, int sig)
++int do_test1(uint32_t sig)
+ {
+ 	int sfd_for_next;
+ 	int sfd;
+@@ -145,7 +145,7 @@ int do_test1(int ntst, int sig)
+ 	if ((s > 0) && (s != sizeof(struct signalfd_siginfo))) {
+ 		tst_resm(TFAIL,
+ 			 "getting incomplete signalfd_siginfo data: "
+-			 "actual-size=%" PRId32 ", expected-size=%" PRId32,
++			 "actual-size=%zd, expected-size=%zu",
+ 			 s, sizeof(struct signalfd_siginfo));
+ 		sfd_for_next = -1;
+ 		close(sfd);
+@@ -187,7 +187,7 @@ out:
+ 	return sfd_for_next;
+ }
+ 
+-void do_test2(int ntst, int fd, int sig)
++void do_test2(int fd, uint32_t sig)
+ {
+ 	int sfd;
+ 	sigset_t mask;
+@@ -235,7 +235,7 @@ void do_test2(int ntst, int fd, int sig)
+ 	if ((s > 0) && (s != sizeof(struct signalfd_siginfo))) {
+ 		tst_resm(TFAIL,
+ 			 "getting incomplete signalfd_siginfo data: "
+-			 "actual-size=%" PRId32 ", expected-size= %" PRId32,
++			 "actual-size=%zd, expected-size= %zu",
+ 			 s, sizeof(struct signalfd_siginfo));
+ 		goto out;
+ 	} else if (s < 0) {
+@@ -285,11 +285,11 @@ int main(int argc, char **argv)
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		tst_count = 0;
+ 
+-		sfd = do_test1(lc, SIGUSR1);
++		sfd = do_test1(SIGUSR1);
+ 		if (sfd < 0)
+ 			continue;
+ 
+-		do_test2(lc, sfd, SIGUSR2);
++		do_test2(sfd, SIGUSR2);
+ 		close(sfd);
+ 	}
+ 
+-- 
+1.8.3.1
 
 
 
