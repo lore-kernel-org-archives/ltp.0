@@ -1,9 +1,7 @@
-From: vaishnavi.d <vaishnavi.d@zilogic.com>
-Date: Fri, 17 Aug 2018 10:00:58 -0000
-Subject: [LTP] [PATCH v5] Testing statx syscall
-References: <20180817055702.2731-1-vaishnavi.d@zilogic.com>
- <20180817072802.GA7459@dell5510>
-Message-ID: <d234fc1f7840d462f1aaf2215172d64f.squirrel@pike.zilogic.com>
+From: kewal <kewal@zilogic.com>
+Date: Fri, 17 Aug 2018 10:26:05 -0000
+Subject: [LTP] [PATCH v1] Test statx syscall for SYNC_FLAGS
+Message-ID: <20180817102605.16289-1-kewal@zilogic.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,82 +9,248 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
-Hi,
+This patch is extension of previous statx syscall patch.
 
->
-> Hi,
->
-> tiny issues with copyright (no need to repost just because them, we can
-> change
-> them before merge).
+* statx05.c :-
 
-So, are you suggesting that you will make the changes or is there anything
-that has to be done from my side?
+ Testcase 1: AT_STATX_DONT_SYNC
+  With AT_STATX_DONT_SYNC server changes should not get sync with client.
 
->> +++ b/include/lapi/fs.h
->> @@ -0,0 +1,47 @@
->> +// SPDX-License-Identifier: GPL-2.0 or later
->> +/*
->> + * Referred from linux kernel -github/torvalds/linux
->> + * Copyright (c) Zilogic Systems Pvt. Ltd., 2018
->> + * Email: code@zilogic.com
->> + *
->> + * This program is free software: you can redistribute it and/or modify
->> + * it under the terms of the GNU General Public License as published by
->> + * the Free Software Foundation, either version 2 of the License, or
->> + * (at your option) any later version.
->> + *
->> + * This program is distributed in the hope that it will be useful,
->> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->> + * GNU General Public License for more details.
->> + *
->> + * You should have received a copy of the GNU General Public License
->> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
->> + */
-> Whole copyright is supposed to be (you can left the text as that's why
-> SPDX-License-Identifier is here):
-> // SPDX-License-Identifier: GPL-2.0-or-later
-> /*
->  * Copyright (c) Zilogic Systems Pvt. Ltd., 2018
->  * Email: code@zilogic.com
->  */
-> IMHO If it's directly taken from somewhere from kernel, you may want to
-> say
-> exactly from which file).
+ Testcase 2: AT_STATX_FORCE_SYNC
+  With AT_STATX_FORCE_SYNC server changes should get sync with client.
 
-The flags were taken from include/uapi/linux/fs.h
+Signed-off-by: Kewal Ukunde <kewal@zilogic.com>
+Signed-off-by: Vaishnavi.d <vaishnavi.d@zilogic.com>
+Signed-off-by: Tarun.T.U <tarun@zilogic.com>
+---
+ runtest/syscalls                           |   2 +
+ testcases/kernel/syscalls/statx/.gitignore |   1 +
+ testcases/kernel/syscalls/statx/statx05.c  | 195 +++++++++++++++++++++++++++++
+ 3 files changed, 198 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/statx/.gitignore
+ create mode 100644 testcases/kernel/syscalls/statx/statx05.c
 
-
-> There some more checkpatch.pl warnings:
-> include/lapi/stat.h:37: WARNING: please, no space before tabs
->
->> +++ b/testcases/kernel/syscalls/statx/Makefile
->> @@ -0,0 +1,25 @@
->> +#
->> +#  Copyright (c) International Business Machines  Corp., 2001
-> Here is copy paste error (year). Again, just SPDX-License-Identifier make
-> the things shorter.
->> +#
->> +#  This program is free software;  you can redistribute it and/or
->> modify
->> +#  it under the terms of the GNU General Public License as published by
->> +#  the Free Software Foundation; either version 2 of the License, or
->> +#  (at your option) any later version.
->> +#
->> +#  This program is distributed in the hope that it will be useful,
->> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
->> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
->> +#  the GNU General Public License for more details.
->> +#
->> +#  You should have received a copy of the GNU General Public License
->> +#  along with this program;  if not, write to the Free Software
->> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
->> 02110-1301  USA
->
->
-> Kind regards,
-> Petr
->
-
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 3161d918d..297079f47 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1277,6 +1277,8 @@ stat05_64 stat05_64
+ stat06 stat06
+ stat06_64 stat06_64
+ 
++statx05 statx05
++
+ statfs01 statfs01
+ statfs01_64 statfs01_64
+ statfs02 statfs02
+diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
+new file mode 100644
+index 000000000..e1c6e4141
+--- /dev/null
++++ b/testcases/kernel/syscalls/statx/.gitignore
+@@ -0,0 +1 @@
++/statx05
+diff --git a/testcases/kernel/syscalls/statx/statx05.c b/testcases/kernel/syscalls/statx/statx05.c
+new file mode 100644
+index 000000000..cec520f0e
+--- /dev/null
++++ b/testcases/kernel/syscalls/statx/statx05.c
+@@ -0,0 +1,195 @@
++// SPDX-License-Identifier: GPL-2.0 or later
++/*
++*  Copyright (c) Zilogic Systems Pvt. Ltd., 2018
++*  Email : code@zilogic.com
++*
++* This program is free software;  you can redistribute it and/or modify
++* it under the terms of the GNU General Public License as published by
++* the Free Software Foundation; either version 2 of the License, or
++* (at your option) any later version.
++*
++* This program is distributed in the hope that it will be useful,
++* but WITHOUT ANY WARRANTY;  without even the implied warranty of
++* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++* the GNU General Public License for more details.
++*/
++
++/*
++ * Test statx
++ *
++ * This code tests the following flags:
++ * 1) AT_STATX_FORCE_SYNC
++ * 2) AT_STATX_DONT_SYNC
++ *
++ * By exportfs cmd creating NFS setup.
++ *
++ * A test files are created in server folder and statx has been
++ * done in client folder.
++ *
++ * TESTCASE 1:
++ * BY AT_STATX_SYNC_AS_STAT getting predefined mode value.
++ * Then, by using AT_STATX_FORCE_SYNC getting new updated vaue
++ * from server file changes.
++ *
++ * TESTCASE 2:
++ * BY AT_STATX_SYNC_AS_STAT getting predefined mode value.
++ * AT_STATX_FORCE_SYNC is called to create cache data of the file. 
++ * Then, by using DONT_SYNC_FILE getting old cached data in client folder,
++ * but mode has been chaged in server file.
++ *
++ * Minimum kernel version required is 4.11.
++ */
++
++#include <netdb.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include "tst_test.h"
++#include "lapi/stat.h"
++
++#define MODE(X) (X & (~S_IFMT))
++#define BUFF_SIZE 512
++#define DEFAULT_MODE 0644
++#define CURRENT_MODE 0777
++
++#define CLIENT_PATH "client"
++#define SERVER_PATH "server"
++#define FORCE_SYNC_FILE  "force_sync_file"
++#define DONT_SYNC_FILE "dont_sync_file"
++
++static char cwd[BUFF_SIZE];
++static char cmd[BUFF_SIZE];
++
++static int get_mode(char *file_name, int flag_type, char *flag_name)
++{
++	char client_path[BUFF_SIZE];
++	struct statx buff;
++
++	sprintf(client_path, "%s/%s/%s", cwd, CLIENT_PATH, file_name);
++
++	TEST(statx(AT_FDCWD, client_path, flag_type, STATX_ALL, &buff));
++
++	if (TST_RET == -1)
++		tst_brk(TFAIL | TST_ERR,
++				"statx(AT_FDCWD, %s, %s, STATX_ALL, &buff)",
++				file_name, flag_name);
++	else
++		tst_res(TINFO, "statx(AT_FDCWD, %s, %s, STATX_ALL, &buff)",
++				file_name, flag_name);
++
++	return buff.stx_mode;
++}
++
++static void test_for_dont_sync(void)
++{
++	unsigned int cur_mode;
++	char server_path[BUFF_SIZE];
++
++	sprintf(server_path, "%s/%s/%s", cwd, SERVER_PATH, DONT_SYNC_FILE);
++
++	get_mode(DONT_SYNC_FILE, AT_STATX_FORCE_SYNC,
++			"AT_STATX_FORCE_SYNC");
++
++	SAFE_CHMOD(server_path, CURRENT_MODE);
++	cur_mode = get_mode(DONT_SYNC_FILE, AT_STATX_DONT_SYNC,
++			"AT_STATX_DONT_SYNC");
++
++	if (DEFAULT_MODE == MODE(cur_mode))
++		tst_res(TPASS,
++				"statx() with AT_STATX_DONT_SYNC for mode %o %o",
++				DEFAULT_MODE, (cur_mode & ~S_IFMT));
++	else
++		tst_res(TFAIL,
++				"statx() with AT_STATX_DONT_SYNC for mode %o %o",
++				DEFAULT_MODE, (cur_mode & ~S_IFMT));
++}
++
++static void test_for_force_sync(void)
++{
++	unsigned int cur_mode;
++	char server_path[BUFF_SIZE];
++
++	sprintf(server_path, "%s/%s/%s", cwd, SERVER_PATH, FORCE_SYNC_FILE);
++
++	SAFE_CHMOD(server_path, CURRENT_MODE);
++	cur_mode = get_mode(FORCE_SYNC_FILE, AT_STATX_FORCE_SYNC,
++			"AT_STATX_FORCE_SYNC");
++
++	if (CURRENT_MODE == MODE(cur_mode))
++		tst_res(TPASS,
++				"statx() with AT_STATX_FORCE_SYNC for mode %o %o",
++				CURRENT_MODE, (cur_mode & ~S_IFMT));
++	else
++		tst_res(TFAIL,
++				"statx() with AT_STATX_FORCE_SYNC for mode %o %o",
++				CURRENT_MODE, (cur_mode & ~S_IFMT));
++}
++
++struct test_cases {
++	void (*func)(void);
++} tcases[] = {
++	{test_for_dont_sync},
++	{test_for_force_sync}
++};
++
++static void test_statx(unsigned int nr)
++{
++	struct test_cases *tc = &tcases[nr];
++
++	tc->func();
++}
++
++static void setup(void)
++{
++	char force_sync_file[BUFF_SIZE];
++	char dont_sync_file[BUFF_SIZE];
++	char server_path[BUFF_SIZE];
++	char client_path[BUFF_SIZE];
++	char mount_data[BUFF_SIZE];
++	char *ip = "127.0.0.1";
++
++	TESTPTR(getcwd(cwd, BUFF_SIZE));
++	if (TST_RET_PTR == NULL)
++		tst_brk(TBROK | TST_ERR, "Failed to get PWD");
++
++	sprintf(force_sync_file, "%s/%s", SERVER_PATH, FORCE_SYNC_FILE);
++	sprintf(dont_sync_file, "%s/%s", SERVER_PATH, DONT_SYNC_FILE);
++
++	SAFE_MKDIR(SERVER_PATH, DEFAULT_MODE);
++	SAFE_MKDIR(CLIENT_PATH, DEFAULT_MODE);
++	SAFE_CREAT(force_sync_file, DEFAULT_MODE);
++	SAFE_CREAT(dont_sync_file, DEFAULT_MODE);
++
++	sprintf(server_path, ":%s/%s", cwd, SERVER_PATH);
++	sprintf(client_path, "%s/%s", cwd, CLIENT_PATH);
++	sprintf(mount_data, "addr=%s", ip);
++
++	sprintf(cmd,
++			"exportfs -i -o no_root_squash,rw,sync,no_subtree_check *%s",
++			server_path);
++
++	TEST(tst_system(cmd));
++	if (WEXITSTATUS(TST_RET) == 127)
++		tst_brk(TBROK | TST_ERR, "%s not found", cmd);
++
++	SAFE_MOUNT(server_path, client_path, "nfs", 0, mount_data);
++}
++
++static void cleanup(void)
++{
++	TEST(tst_system("exportfs -ua"));
++	if (WEXITSTATUS(TST_RET) == 127)
++		tst_brk(TBROK | TST_ERR, "%s", cmd);
++
++	SAFE_UMOUNT(CLIENT_PATH);
++}
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = test_statx,
++	.setup = setup,
++	.cleanup = cleanup,
++	.min_kver = "4.11",
++	.needs_tmpdir = 1,
++	.dev_fs_type = "nfs",
++	.needs_root = 1,
++};
+-- 
+2.11.0
 
