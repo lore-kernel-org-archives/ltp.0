@@ -1,76 +1,184 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 20 Aug 2018 12:49:57 +0800
-Subject: [LTP] [PATCH] syscalls/execveat03: Fix compiler errors
-Message-ID: <1534740597-4896-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Mon, 20 Aug 2018 08:42:56 +0200
+Subject: [LTP] [PATCH 4/5] Convert futex_wait_bitset tests to newlib
+In-Reply-To: <20180820064257.17974-1-rpalethorpe@suse.com>
+References: <20180820064257.17974-1-rpalethorpe@suse.com>
+Message-ID: <20180820064257.17974-5-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-According to open(2) and linkat(2) manpages, O_PATH and AT_EMPTY_PATH
-flags were added since kernel v2.6.39, so these undefined flags led
-to the following errors on older kernels(e.g. v2.6.32):
----------------------------------------------------------
-execveat03.c:66: error: ‘O_PATH’ undeclared (first use in this function)
-execveat03.c:69: error: ‘AT_EMPTY_PATH’ undeclared (first use in this function)
----------------------------------------------------------
-
-1) Add AT_EMPTY_PATH into lapi/fcntl.h
-2) Include lapi/fcntl.h in execveat03.c
-3) Check if open(2) supports O_PATH
-
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- include/lapi/fcntl.h                            |  4 ++++
- testcases/kernel/syscalls/execveat/execveat03.c | 10 +++++++++-
- 2 files changed, 13 insertions(+), 1 deletion(-)
+ .../kernel/syscalls/futex/futex_wait_bitset.h | 54 ++++++++++++-------
+ .../syscalls/futex/futex_wait_bitset01.c      | 22 ++------
+ .../syscalls/futex/futex_wait_bitset02.c      | 23 ++------
+ 3 files changed, 43 insertions(+), 56 deletions(-)
 
-diff --git a/include/lapi/fcntl.h b/include/lapi/fcntl.h
-index 849439d..358230f 100644
---- a/include/lapi/fcntl.h
-+++ b/include/lapi/fcntl.h
-@@ -103,6 +103,10 @@
- # define AT_SYMLINK_NOFOLLOW 0x100
- #endif
+diff --git a/testcases/kernel/syscalls/futex/futex_wait_bitset.h b/testcases/kernel/syscalls/futex/futex_wait_bitset.h
+index 81a5d93ab..090dc51d2 100644
+--- a/testcases/kernel/syscalls/futex/futex_wait_bitset.h
++++ b/testcases/kernel/syscalls/futex/futex_wait_bitset.h
+@@ -18,6 +18,7 @@
+  */
  
-+#ifndef AT_EMPTY_PATH
-+# define AT_EMPTY_PATH 0x1000
-+#endif
+ #define TRESHOLD_US 100000
++#define DEFAULT_TIMEOUT_US 100010
+ 
+ static void verify_futex_wait_bitset(long long wait_us, clock_t clk_id)
+ {
+@@ -26,8 +27,8 @@ static void verify_futex_wait_bitset(long long wait_us, clock_t clk_id)
+ 	u_int32_t bitset = 0xffffffff;
+ 	int flags = clk_id == CLOCK_REALTIME ? FUTEX_CLOCK_REALTIME : 0;
+ 
+-	tst_resm(TINFO, "testing futex_wait_bitset() timeout with %s",
+-	         clk_id == CLOCK_REALTIME ? "CLOCK_REALTIME" : "CLOCK_MONOTONIC");
++	tst_res(TINFO, "testing futex_wait_bitset() timeout with %s",
++		clk_id == CLOCK_REALTIME ? "CLOCK_REALTIME" : "CLOCK_MONOTONIC");
+ 
+ 	clock_gettime(clk_id, &start);
+ 	to = tst_timespec_add_us(start, wait_us);
+@@ -36,38 +37,53 @@ static void verify_futex_wait_bitset(long long wait_us, clock_t clk_id)
+ 
+ 	clock_gettime(clk_id, &end);
+ 
+-	if (TEST_RETURN != -1) {
+-		tst_resm(TFAIL, "futex_wait_bitset() returned %li, expected -1",
+-		         TEST_RETURN);
++	if (TST_RET != -1) {
++		tst_res(TFAIL, "futex_wait_bitset() returned %li, expected -1",
++			TST_RET);
+ 		return;
+ 	}
+ 
+-	if (TEST_ERRNO == ENOSYS) {
+-		tst_resm(TCONF, "In this kernel, futex() does not support "
+-			 "FUTEX_WAIT_BITSET operation");
++	if (TST_ERR == ENOSYS) {
++		tst_res(TCONF,
++			"In this kernel, futex() does not support FUTEX_WAIT_BITSET operation");
+ 		return;
+ 	}
+ 
+-	if (TEST_ERRNO != ETIMEDOUT) {
+-		tst_resm(TFAIL | TTERRNO, "expected %s",
+-		         tst_strerrno(ETIMEDOUT));
++	if (TST_ERR != ETIMEDOUT) {
++		tst_res(TFAIL | TTERRNO, "expected %s",
++			tst_strerrno(ETIMEDOUT));
+ 		return;
+ 	}
+ 
+ 	if (tst_timespec_lt(end, to)) {
+-		tst_resm(TFAIL,
+-		         "futex_wait_bitset() woken up prematurely %llius, expected %llius",
+-			 tst_timespec_diff_us(end, start), wait_us);
++		tst_res(TFAIL,
++			"futex_wait_bitset() woken up prematurely %llius, expected %llius",
++			tst_timespec_diff_us(end, start), wait_us);
+ 		return;
+ 	}
+ 
+ 	if (tst_timespec_diff_us(end, to) > TRESHOLD_US) {
+-		tst_resm(TFAIL,
+-		         "futex_wait_bitset() waited too long %llius, expected %llius",
+-			 tst_timespec_diff_us(end, start), wait_us);
++		tst_res(TFAIL,
++			"futex_wait_bitset() waited too long %llius, expected %llius",
++			tst_timespec_diff_us(end, start), wait_us);
+ 		return;
+ 	}
+ 
+-	tst_resm(TPASS, "futex_wait_bitset() waited %llius, expected %llius",
+-	         tst_timespec_diff_us(end, start), wait_us);
++	tst_res(TPASS, "futex_wait_bitset() waited %llius, expected %llius",
++		tst_timespec_diff_us(end, start), wait_us);
+ }
 +
- #ifndef AT_REMOVEDIR
- # define AT_REMOVEDIR 0x200
- #endif
-diff --git a/testcases/kernel/syscalls/execveat/execveat03.c b/testcases/kernel/syscalls/execveat/execveat03.c
-index df27273..701784e 100644
---- a/testcases/kernel/syscalls/execveat/execveat03.c
-+++ b/testcases/kernel/syscalls/execveat/execveat03.c
-@@ -49,6 +49,7 @@
- #include <fcntl.h>
- #include "tst_test.h"
- #include "lapi/execveat.h"
-+#include "lapi/fcntl.h"
- 
- #define OVL_MNT "ovl"
- #define TEST_APP "execveat_child"
-@@ -63,7 +64,14 @@ static void do_child(void)
- 
- 	SAFE_CP(TEST_APP, TEST_FILE_PATH);
- 
--	fd = SAFE_OPEN(TEST_FILE_PATH, O_PATH);
-+	fd = open(TEST_FILE_PATH, O_PATH);
-+	if (fd == -1) {
-+		if (errno == EINVAL)
-+			tst_brk(TCONF, "open() did not support O_PATH");
-+		else
-+			tst_brk(TBROK, "open() failed");
-+	}
++static void setup(void)
++{
++	tst_timer_check(USE_CLOCK);
++}
 +
- 	SAFE_UNLINK(TEST_FILE_PATH);
++static void run(void)
++{
++	verify_futex_wait_bitset(DEFAULT_TIMEOUT_US, USE_CLOCK);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.test_all = run,
++};
+diff --git a/testcases/kernel/syscalls/futex/futex_wait_bitset01.c b/testcases/kernel/syscalls/futex/futex_wait_bitset01.c
+index e5fd621e5..371febb3b 100644
+--- a/testcases/kernel/syscalls/futex/futex_wait_bitset01.c
++++ b/testcases/kernel/syscalls/futex/futex_wait_bitset01.c
+@@ -24,25 +24,11 @@
  
- 	TEST(execveat(fd, "", argv, environ, AT_EMPTY_PATH));
+ #include <errno.h>
+ 
+-#include "test.h"
++#include "tst_test.h"
++#include "tst_timer.h"
+ #include "futextest.h"
+-#include "futex_wait_bitset.h"
+-
+-const char *TCID="futex_wait_bitset01";
+-const int TST_TOTAL=1;
+-
+-#define DEFAULT_TIMEOUT_US 100010
+ 
+-int main(int argc, char *argv[])
+-{
+-	int lc;
++#define USE_CLOCK CLOCK_MONOTONIC
+ 
+-	tst_timer_check(CLOCK_MONOTONIC);
+-
+-	tst_parse_opts(argc, argv, NULL, NULL);
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++)
+-		verify_futex_wait_bitset(DEFAULT_TIMEOUT_US, CLOCK_MONOTONIC);
++#include "futex_wait_bitset.h"
+ 
+-	tst_exit();
+-}
+diff --git a/testcases/kernel/syscalls/futex/futex_wait_bitset02.c b/testcases/kernel/syscalls/futex/futex_wait_bitset02.c
+index 820c65c26..e727a1b38 100644
+--- a/testcases/kernel/syscalls/futex/futex_wait_bitset02.c
++++ b/testcases/kernel/syscalls/futex/futex_wait_bitset02.c
+@@ -24,25 +24,10 @@
+ 
+ #include <errno.h>
+ 
+-#include "test.h"
++#include "tst_test.h"
++#include "tst_timer.h"
+ #include "futextest.h"
+-#include "futex_wait_bitset.h"
+-
+-const char *TCID="futex_wait_bitset02";
+-const int TST_TOTAL=1;
+-
+-#define DEFAULT_TIMEOUT_US 100010
+-
+-int main(int argc, char *argv[])
+-{
+-	int lc;
+ 
+-	tst_timer_check(CLOCK_REALTIME);
++#define USE_CLOCK CLOCK_REALTIME
+ 
+-	tst_parse_opts(argc, argv, NULL, NULL);
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++)
+-		verify_futex_wait_bitset(DEFAULT_TIMEOUT_US, CLOCK_REALTIME);
+-
+-	tst_exit();
+-}
++#include "futex_wait_bitset.h"
 -- 
-1.8.3.1
-
-
+2.18.0
 
