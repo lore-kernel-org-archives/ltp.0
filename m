@@ -1,48 +1,342 @@
 From: Masayoshi Mizuma <msys.mizuma@gmail.com>
-Date: Mon, 20 Aug 2018 15:49:10 -0400
-Subject: [LTP] [PATCH 0/5] acpi_hotplug: Add new test for ACPI based cpu and
-	memory hotplug
-Message-ID: <20180820194915.11805-1-msys.mizuma@gmail.com>
+Date: Mon, 20 Aug 2018 15:49:11 -0400
+Subject: [LTP] [PATCH 1/5] acpi_hotplug: Add library file for ACPI based cpu
+	and memory hotplug
+In-Reply-To: <20180820194915.11805-1-msys.mizuma@gmail.com>
+References: <20180820194915.11805-1-msys.mizuma@gmail.com>
+Message-ID: <20180820194915.11805-2-msys.mizuma@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+From: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
 
-This patch series to add new test for ACPI based cpu and memory hotplug.
+This file includes some APIs to use ACPI based cpu and memory hotplug.
 
-Currently, this test assumes the following environment:
-- The system has two or more ACPI0004 container devices
-  and the container devices are online.
-- The CPU and memory belongs to the container device.
-- The memory has Hot Pluggable affinity in Memory Affinity
-  Structure, SRAT.
-- The memory is marked as 'Movable' which is available when
-  movable_node kernel option is set.
-- There are one or more memory node in the container device and the memory node
-  has 'Movable zone' only, not mixed the other zones.
-
-Masayoshi Mizuma (5):
-  acpi_hotplug: Add library file for ACPI based cpu and memory hotplug
-  acpi_hotplug: Add ACPI based cpu and memory hotplug testing
-  acpi_hotplug: Add ACPIHOTPLUG_01.sh under runtest
-  acpi_hotplug: Add Makefile
-  acpi_hotplug: Add README
-
- runtest/acpi_hotplug                          |   1 +
- .../hotplug/acpi_hotplug/ACPIHOTPLUG_01.sh    |  92 ++++++
+Signed-off-by: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
+---
  .../hotplug/acpi_hotplug/ACPIHOTPLUG_lib.sh   | 310 ++++++++++++++++++
- .../kernel/hotplug/acpi_hotplug/Makefile      |  26 ++
- testcases/kernel/hotplug/acpi_hotplug/README  |  80 +++++
- 5 files changed, 509 insertions(+)
- create mode 100644 runtest/acpi_hotplug
- create mode 100755 testcases/kernel/hotplug/acpi_hotplug/ACPIHOTPLUG_01.sh
+ 1 file changed, 310 insertions(+)
  create mode 100755 testcases/kernel/hotplug/acpi_hotplug/ACPIHOTPLUG_lib.sh
- create mode 100644 testcases/kernel/hotplug/acpi_hotplug/Makefile
- create mode 100644 testcases/kernel/hotplug/acpi_hotplug/README
 
+diff --git a/testcases/kernel/hotplug/acpi_hotplug/ACPIHOTPLUG_lib.sh b/testcases/kernel/hotplug/acpi_hotplug/ACPIHOTPLUG_lib.sh
+new file mode 100755
+index 000000000..8c5dc1d89
+--- /dev/null
++++ b/testcases/kernel/hotplug/acpi_hotplug/ACPIHOTPLUG_lib.sh
+@@ -0,0 +1,310 @@
++#!/bin/sh
++
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2018, FUJITSU LIMITED. All rights reserved.
++
++export HOTPLUGABLE_CONTAINER=
++export HOTPLUGABLE_NODES=()
++RETRY=5
++RETRY_TIME=60
++
++# $1: node number
++is_memoryless_node()
++{
++	local node=$1
++
++	numactl -H | awk '
++		/node '$node' size:/ {
++			if ($4 == 0)
++				prine 1
++			else
++				print 0
++		}'
++}
++
++# $1: node number
++is_movable_node()
++{
++	local node=$1
++
++	awk '
++	BEGIN {
++		zone = ""
++		NotMovableFound = 0
++		nextnode = '$node' + 1
++	}
++	/^Node '$node'/{
++		zone = $4
++	}
++	/present/ {
++		if (zone != "") {
++			if ((zone != "Movable") && ($2 != 0)) {
++				NotMovableFound = 1
++				exit
++			}
++		}
++	}
++	match($0, "^Node " nextnode) {
++		exit
++	}
++
++	END {
++		if (NotMovableFound == 0)
++			print 1
++		else
++			print 0
++	}
++	' /proc/zoneinfo
++}
++
++stop_udev()
++{
++	systemctl stop systemd-udevd-kernel.socket
++	systemctl stop systemd-udevd-control.socket
++	systemctl stop systemd-udevd.service
++}
++
++resume_udev()
++{
++	systemctl start systemd-udevd.service
++	systemctl start systemd-udevd-kernel.socket
++	systemctl start systemd-udevd-control.socket
++}
++
++_setup()
++{
++	local ACPI_CONTAINERS=()
++	local ONLINE_CONTAINERS=()
++	local CPUS=()
++	local tmp_NODES=()
++	local NODES=()
++	local movable_node=
++	local NOHP_NODES=0
++
++	ACPI_CONTAINERS=( $(find /sys/devices/LNXSYSTM\:00/ -name 'ACPI0004:*') )
++
++	ONLINE_CONTAINERS=()
++	for c in ${ACPI_CONTAINERS[@]}; do
++		status=$(cat $c/status)
++		if [[ $status -ne 0 ]]; then
++			ONLINE_CONTAINERS=( ${ONLINE_CONTAINERS[@]} $c )
++		fi
++	done
++
++	if [[ ${#ONLINE_CONTAINERS[@]} -lt 2 ]]; then
++		tst_brk TCONF "The number of online ACPI containers is not enough. 2 or more online ACPI containers are needed, but this system has ${#ONLINE_CONTAINERS[@]} contianers."
++	fi
++
++	for c in ${ONLINE_CONTAINERS[@]}; do
++		CPUS=( $(find $c -name 'ACPI0007:*' ) )
++		tmp_NODES=()
++		NODES=()
++		NOHP_NODES=0
++		for cpu in ${CPUS[@]}; do
++			tmp_NODES=( ${tmp_NODES[@]} $(ls $cpu/physical_node/ 2> /dev/null | grep ^node | sed -e 's/node//') )
++		done
++		NODES=( $(echo ${tmp_NODES[@]} | tr ' ' '\n' | sort | uniq ) )
++
++		# Memory device ID is PNP0C80, however, the memory ID is not used here
++		# but the node ID is used.
++		# The hotplugable memory section has ACPI_SRAT_MEM_HOT_PLUGGABLE flag
++		# and the zone is handled as Movable zone. Following assumes that
++		# the node has only Movable zone or it is memory less node.
++		# So using the node ID gets this test cleared rather than using memory ID.
++		for n in ${NODES[@]}; do
++			if [[ $(is_movable_node $n) -eq 0 ]] && [[ $(is_memoryless_node $n) -eq 0 ]]; then
++				NOHP_NODES=1
++				break
++			fi
++		done
++		if [[ $NOHP_NODES -eq 0 ]]; then
++			HOTPLUGABLE_CONTAINER=$(basename $c)
++			HOTPLUGABLE_NODES=( ${NODES[@]} )
++			break
++		fi
++	done
++
++	# Some hotplug udev rules may disturb for this test.
++	# Let's stop them.
++	stop_udev
++
++	tst_res TINFO "TARGET ACPI CONTANIER: $HOTPLUGABLE_CONTAINER"
++	tst_res TINFO "TARGET NODES: ${HOTPLUGABLE_NODES[@]}"
++}
++
++_cleanup()
++{
++	resume_udev
++}
++
++cpu_hp()
++{
++	local hpop=
++	local CPUS=( $(echo /sys/bus/acpi/devices/$HOTPLUGABLE_CONTAINER/ACPI0007:*/physical_node/online) )
++
++	local hp_cpus=${#CPUS[@]}
++	local current_cpus=$(nproc)
++	local expected_cpus=
++	local ACPI_CPU=
++	local force=0
++	local hotplugedcpus=0
++
++	if [[ $1 == "hotremove" ]]; then
++		hpop=0
++	else
++		hpop=1
++	fi
++	if [[ $2 == "force" ]]; then
++		force=1
++	fi
++
++	if [[ $hpop -eq 0 ]]; then
++		expected_cpus=$(( current_cpus - hp_cpus ))
++	else
++		expected_cpus=$(( current_cpus + hp_cpus ))
++	fi
++
++	for cpu in ${CPUS[@]}; do
++		echo -n $hpop > $cpu 2> /dev/null
++		ACPI_CPU=$( echo $cpu | sed -e 's#/sys/bus/acpi/devices/ACPI0004:[0-9a-f]\+/\(ACPI0007:.*\)/physical_node/online#\1#')
++		if [[ $? -ne 0 ]]; then
++			tst_res TINFO "CPU: $ACPI_CPU $1 failed."
++			if [[ $force -eq 0 ]]; then
++				return 1
++			fi
++		else
++			if [[ $force -ne 0 ]]; then
++				tst_res TINFO "CPU: $ACPI_CPU $1 successed."
++			fi
++			hotplugedcpus=$(( hotplugedcpus  + 1 ))
++		fi
++	done
++
++	tst_res TINFO "CPU: current: $(nproc) hotpluged: $hotplugedcpus"
++	if [[ $(nproc) -eq $expected_cpus ]]; then
++		return 0
++	else
++		return 1
++	fi
++}
++
++# $1: node number
++# $2: expected memory size (MB)
++memhp_result()
++{
++	local node=$1
++	local expected=$2
++	local current=
++
++	current=$(numactl -H | awk '
++	/^node '$node' size/ {
++		print $4
++	}
++	')
++
++	if [[ $current -eq $expected ]]; then
++		echo 1
++	else
++		echo 0
++	fi
++}
++
++memory_hp()
++{
++	local hpop=
++	local memory=()
++	local memhpdone=
++	local expected=
++	local block_size_bytes=$(cat /sys/devices/system/memory/block_size_bytes )
++	block_size_bytes=$(echo "obase=10;ibase=16;$block_size_bytes" | bc)
++	local result=0
++	local force=0
++	local hotplugedsections=
++	local removable=
++
++	declare -A mem_hotpluged
++
++	if [[ $1 == "hotremove" ]]; then
++		hpop="offline"
++	else
++		hpop="online_movable"
++	fi
++	if [[ $2 == "force" ]]; then
++		force=1
++	fi
++
++	for node in ${HOTPLUGABLE_NODES[@]}; do
++		memory=$(ls /sys/devices/system/node/node$node/ | grep memory | sort -n -r)
++		for mem in ${memory[@]}; do
++			if [[ $force -eq 1 ]]; then
++				echo -n $hpop > /sys/devices/system/node/node$node/$mem/state 2> /dev/null
++				mem_hotpluged[$node]=$(( mem_hotpluged[$node] + 1 ))
++				hotplugedsections=$(( hotplugedsections + 1 ))
++			else
++				memhpdone=0
++				for ((i = 1; i <= RETRY; i++)); do
++					echo -n $hpop > /sys/devices/system/node/node$node/$mem/state
++					if [[ $? -eq 0 ]]; then
++						memhpdone=1
++						break
++					else
++						removable=$(cat /sys/devices/system/node/node$node/$mem/removable)
++						if [[ $removable -ne 1 ]]; then
++							tst_res TINFO "memory: Node: $node section: $mem something wrong..."
++							return 1
++						fi
++						tst_res TINFO "memory: Node: $node section: $mem $1 failed ($i times). Retry..."
++					fi
++					sleep $RETRY_TIME
++				done
++				if [[ $memhpdone -eq 0 ]]; then
++					tst_res TINFO "memory: Node: $node section: $mem $1 failed."
++					return 1
++				else
++					tst_res TINFO "memory: Node: $node section: $mem $1 successed."
++					mem_hotpluged[$node]=$(( mem_hotpluged[$node] + 1 ))
++					hotplugedsections=$(( hotplugedsections + 1 ))
++				fi
++			fi
++		done
++	done
++
++	for node in ${HOTPLUGABLE_NODES[@]}; do
++		if [[ $hpop == "offline" ]]; then
++			expected=0
++		else
++			expected=$(echo "${mem_hotpluged[$node]} * $block_size_bytes/1024/1024" | bc)
++		fi
++		if [[ $(memhp_result $node $expected) -ne 1 ]]; then
++			result=$((result + 1))
++		fi
++		tst_res TINFO "Memory: Node: $node $hotplugedsections sections hotpluged."
++	done
++
++	return $result
++}
++
++container_hp()
++{
++	local hpop=
++	local online_ret=0
++
++	if [[ $1 == "hotremove" ]]; then
++		hpop=0
++	else
++		hpop=1
++	fi
++
++	echo $hpop > /sys/bus/acpi/devices/$HOTPLUGABLE_CONTAINER/physical_node/online
++	online_ret=$?
++
++	if [[ $online_ret -ne 0 ]]; then
++		tst_res TINFO "ACPI container: $HOTPLUGABLE_CONTAINER $1 failed."
++		numactl -H
++		return 1
++	else
++		tst_res TINFO "ACPI container: $HOTPLUGABLE_CONTAINER $1 successed."
++	fi
++
++	return 0
++}
 -- 
 2.18.0
 
