@@ -1,93 +1,36 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 20 Aug 2018 08:42:57 +0200
-Subject: [LTP] [PATCH 5/5] tst_timer: Convert to new library
-In-Reply-To: <20180820064257.17974-1-rpalethorpe@suse.com>
-References: <20180820064257.17974-1-rpalethorpe@suse.com>
-Message-ID: <20180820064257.17974-6-rpalethorpe@suse.com>
+Date: Mon, 20 Aug 2018 08:42:52 +0200
+Subject: [LTP] [PATCH 0/5] Convert tst_timer.h to newlib
+Message-ID: <20180820064257.17974-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-So we can use functions from new lib.
+Hello,
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- include/old/test.h |  1 -
- lib/tst_timer.c    | 14 ++++++++------
- 2 files changed, 8 insertions(+), 7 deletions(-)
+In order to allow tst_timer.h to be used with new library functions, it needs
+to be converted to the new library. This will help extend tst_timer for
+tst_fuzzy_sync.
 
-diff --git a/include/old/test.h b/include/old/test.h
-index 5eef304ab..8597cb1c6 100644
---- a/include/old/test.h
-+++ b/include/old/test.h
-@@ -53,7 +53,6 @@
- #include "tst_process_state.h"
- #include "old_resource.h"
- #include "tst_res_flags.h"
--#include "tst_timer.h"
- #include "tst_kvercmp.h"
- #include "tst_fs.h"
- #include "tst_pid.h"
-diff --git a/lib/tst_timer.c b/lib/tst_timer.c
-index 53ff36777..d5e4c49d2 100644
---- a/lib/tst_timer.c
-+++ b/lib/tst_timer.c
-@@ -23,7 +23,9 @@
- 
- #include <errno.h>
- 
--#include "test.h"
-+#define TST_NO_DEFAULT_MAIN
-+
-+#include "tst_test.h"
- #include "tst_timer.h"
- #include "tst_clocks.h"
- #include "lapi/posix_clocks.h"
-@@ -59,13 +61,13 @@ void tst_timer_check(clockid_t clk_id)
- {
- 	if (tst_clock_gettime(clk_id, &start_time)) {
- 		if (errno == EINVAL) {
--			tst_brkm(TCONF, NULL,
-+			tst_brk(TCONF,
- 			         "Clock id %s(%u) not supported by kernel",
- 				 clock_name(clk_id), clk_id);
- 			return;
- 		}
- 
--		tst_brkm(TBROK | TERRNO, NULL, "tst_clock_gettime() failed");
-+		tst_brk(TBROK | TERRNO, "tst_clock_gettime() failed");
- 	}
- }
- 
-@@ -74,7 +76,7 @@ void tst_timer_start(clockid_t clk_id)
- 	clock_id = clk_id;
- 
- 	if (tst_clock_gettime(clock_id, &start_time))
--		tst_resm(TWARN | TERRNO, "tst_clock_gettime() failed");
-+		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
- }
- 
- int tst_timer_expired_ms(long long ms)
-@@ -82,7 +84,7 @@ int tst_timer_expired_ms(long long ms)
- 	struct timespec cur_time;
- 
- 	if (tst_clock_gettime(clock_id, &cur_time))
--		tst_resm(TWARN | TERRNO, "tst_clock_gettime() failed");
-+		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
- 
- 	return tst_timespec_diff_ms(cur_time, start_time) >= ms;
- }
-@@ -90,7 +92,7 @@ int tst_timer_expired_ms(long long ms)
- void tst_timer_stop(void)
- {
- 	if (tst_clock_gettime(clock_id, &stop_time))
--		tst_resm(TWARN | TERRNO, "tst_clock_gettime() failed");
-+		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
- }
- 
- struct timespec tst_timer_elapsed(void)
+Richard Palethorpe (5):
+  Convert nanosleep02 to newlib
+  lib: Add LTP_ATTRIBUTE_FALLTHROUGH for case statements
+  Convert fcntl33 to newlib
+  Convert futex_wait_bitset tests to newlib
+  tst_timer: Convert to new library
+
+ include/old/test.h                            |   1 -
+ include/tst_common.h                          |   1 +
+ lib/tst_timer.c                               |  14 +-
+ testcases/kernel/syscalls/fcntl/fcntl33.c     | 168 ++++++++----------
+ .../kernel/syscalls/futex/futex_wait_bitset.h |  54 ++++--
+ .../syscalls/futex/futex_wait_bitset01.c      |  22 +--
+ .../syscalls/futex/futex_wait_bitset02.c      |  23 +--
+ .../kernel/syscalls/nanosleep/nanosleep02.c   | 123 +++++--------
+ 8 files changed, 163 insertions(+), 243 deletions(-)
+
 -- 
 2.18.0
 
