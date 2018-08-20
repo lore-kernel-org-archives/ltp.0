@@ -1,90 +1,76 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Fri, 17 Aug 2018 18:43:13 +0300
-Subject: [LTP] [PATCH] device-drivers/acpi: skip certain tests for
-	HW-reduced ACPI
-Message-ID: <1534520593-14253-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Mon, 20 Aug 2018 12:49:57 +0800
+Subject: [LTP] [PATCH] syscalls/execveat03: Fix compiler errors
+Message-ID: <1534740597-4896-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-The "4.1 Hardware-Reduced ACPI" of the ACPI specification
-details that for Hardware-reduced platforms the ACPI Fixed Hardware
-interface is not implemented, so related test cases fail.
-To avoid that, we skip these test cases if HW-reduced mode is detected.
+According to open(2) and linkat(2) manpages, O_PATH and AT_EMPTY_PATH
+flags were added since kernel v2.6.39, so these undefined flags led
+to the following errors on older kernels(e.g. v2.6.32):
+---------------------------------------------------------
+execveat03.c:66: error: ‘O_PATH’ undeclared (first use in this function)
+execveat03.c:69: error: ‘AT_EMPTY_PATH’ undeclared (first use in this function)
+---------------------------------------------------------
 
-One example of such systems is the aarch64 server platform.
+1) Add AT_EMPTY_PATH into lapi/fcntl.h
+2) Include lapi/fcntl.h in execveat03.c
+3) Check if open(2) supports O_PATH
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- .../kernel/device-drivers/acpi/ltp_acpi_cmds.c     |   25 +++++++++++++++++++-
- 1 files changed, 24 insertions(+), 1 deletions(-)
+ include/lapi/fcntl.h                            |  4 ++++
+ testcases/kernel/syscalls/execveat/execveat03.c | 10 +++++++++-
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c b/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
-index 6e8f051..2733753 100644
---- a/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
-+++ b/testcases/kernel/device-drivers/acpi/ltp_acpi_cmds.c
-@@ -231,14 +231,25 @@ static int acpi_traverse_from_root(void)
+diff --git a/include/lapi/fcntl.h b/include/lapi/fcntl.h
+index 849439d..358230f 100644
+--- a/include/lapi/fcntl.h
++++ b/include/lapi/fcntl.h
+@@ -103,6 +103,10 @@
+ # define AT_SYMLINK_NOFOLLOW 0x100
+ #endif
  
- /* first found device with _STR */
- static acpi_handle dev_handle;
-+static int acpi_hw_reduced;
- 
- static int acpi_init(void)
- {
- 	acpi_status status;
- 	acpi_handle parent_handle;
--
-+	struct acpi_table_fadt *fadt;
-+	struct acpi_table_header *table;
- 	struct acpi_device_info *dev_info;
- 
-+	status = acpi_get_table(ACPI_SIG_FADT, 0, &table);
-+	if (ACPI_SUCCESS(status)) {
-+		fadt = (struct acpi_table_fadt *)table;
-+		if (fadt->flags & ACPI_FADT_HW_REDUCED)
-+			acpi_hw_reduced = 1;
-+	}
-+	if (acpi_hw_reduced)
-+		prk_alert("Detected the Hardware-reduced ACPI mode");
++#ifndef AT_EMPTY_PATH
++# define AT_EMPTY_PATH 0x1000
++#endif
 +
- 	prk_alert("TEST -- acpi_get_handle ");
- 	status = acpi_get_handle(NULL, "\\_SB", &parent_handle);
- 	if (acpi_failure(status, "acpi_get_handle"))
-@@ -312,6 +323,10 @@ static int acpi_test_event_handler(void)
- 	acpi_status status;
+ #ifndef AT_REMOVEDIR
+ # define AT_REMOVEDIR 0x200
+ #endif
+diff --git a/testcases/kernel/syscalls/execveat/execveat03.c b/testcases/kernel/syscalls/execveat/execveat03.c
+index df27273..701784e 100644
+--- a/testcases/kernel/syscalls/execveat/execveat03.c
++++ b/testcases/kernel/syscalls/execveat/execveat03.c
+@@ -49,6 +49,7 @@
+ #include <fcntl.h>
+ #include "tst_test.h"
+ #include "lapi/execveat.h"
++#include "lapi/fcntl.h"
  
- 	prk_alert("TEST -- acpi_install_fixed_event_handler");
-+	if (acpi_hw_reduced) {
-+		prk_alert("Skipped due to the HW-reduced mode");
-+		return 0;
+ #define OVL_MNT "ovl"
+ #define TEST_APP "execveat_child"
+@@ -63,7 +64,14 @@ static void do_child(void)
+ 
+ 	SAFE_CP(TEST_APP, TEST_FILE_PATH);
+ 
+-	fd = SAFE_OPEN(TEST_FILE_PATH, O_PATH);
++	fd = open(TEST_FILE_PATH, O_PATH);
++	if (fd == -1) {
++		if (errno == EINVAL)
++			tst_brk(TCONF, "open() did not support O_PATH");
++		else
++			tst_brk(TBROK, "open() failed");
 +	}
- 	status = acpi_install_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
- 		ltp_test_power_button_ev_handler, NULL);
++
+ 	SAFE_UNLINK(TEST_FILE_PATH);
  
-@@ -352,6 +367,10 @@ static int acpi_global_lock(void)
- 	u32 global_lock = 0;
- 
- 	prk_alert("TEST -- acpi_acquire_global_lock ");
-+	if (acpi_hw_reduced) {
-+		prk_alert("Skipped due to the HW-reduced mode");
-+		return 0;
-+	}
- 	status = acpi_acquire_global_lock(ACPI_EC_UDELAY_GLK, &global_lock);
- 	if (acpi_failure(status, "acpi_acquire_global_lock"))
- 		return 1;
-@@ -448,6 +467,10 @@ static int acpi_test_register(void)
- 	acpi_status status;
- 
- 	prk_alert("TEST -- acpi_read_bit_register");
-+	if (acpi_hw_reduced) {
-+		prk_alert("Skipped due to the HW-reduced mode");
-+		return 0;
-+	}
- 	/*
- 	 * ACPICA: Remove obsolete Flags parameter.
- 	 * http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;
+ 	TEST(execveat(fd, "", argv, environ, AT_EMPTY_PATH));
 -- 
-1.7.1
+1.8.3.1
+
+
 
