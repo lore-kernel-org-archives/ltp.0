@@ -1,73 +1,118 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 20 Aug 2018 14:23:49 +0300
-Subject: [LTP] [PATCH v2 4/4] network/ipsec: replace ipsec_try() with
-	TST_RTNL_CHK()
-In-Reply-To: <1534764229-26993-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1534764229-26993-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1534764229-26993-4-git-send-email-alexey.kodanev@oracle.com>
+From: Sandeep Patil <sspatil@google.com>
+Date: Mon, 20 Aug 2018 09:06:55 -0700
+Subject: [LTP] [PATCH] fs: exclude 'wakeup_count' from read_all_sys test.
+In-Reply-To: <87mutp4cek.fsf@rpws.prws.suse.cz>
+References: <20180803152018.13701-1-sspatil@google.com>
+ <87sh3m48jn.fsf@rpws.prws.suse.cz>
+ <20180813150202.GB140438@sspatil-desktop.mtv.corp.google.com>
+ <87mutp4cek.fsf@rpws.prws.suse.cz>
+Message-ID: <20180820160655.GD140438@sspatil-desktop.mtv.corp.google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
-v2: fixed missing ip before TST_RTNL_CHK
+On Tue, Aug 14, 2018 at 09:48:03AM +0200, Richard Palethorpe wrote:
+> Hello Sandeep,
+> 
+> Sandeep Patil <sspatil@google.com> writes:
+> 
+> > On Fri, Aug 10, 2018 at 04:10:04PM +0200, Richard Palethorpe wrote:
+> >> Hello,
+> >>
+> >> Sandeep Patil <sspatil@google.com> writes:
+> >>
+> >> > /sys/power/wakeup_count semantics state that the read() for the file
+> >> > will block as long as there is a wakeup_event in progress. On most
+> >> > systems, this will be non deterministic and will result in extremely
+> >> > flaky test. Exclude the file from read_all_sys test for the same.
+> >> >
+> >> > Signed-off-by: Sandeep Patil <sspatil@google.com>
+> >> > ---
+> >> >  runtest/fs | 2 +-
+> >> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >> >
+> >> > diff --git a/runtest/fs b/runtest/fs
+> >> > index a66948a43..aca7e355f 100644
+> >> > --- a/runtest/fs
+> >> > +++ b/runtest/fs
+> >> > @@ -71,7 +71,7 @@ proc01 proc01 -m 128
+> >> >
+> >> >  read_all_dev read_all -d /dev -p -q -r 10
+> >> >  read_all_proc read_all -d /proc -q -r 10
+> >> > -read_all_sys read_all -d /sys -q -r 10
+> >> > +read_all_sys read_all -d /sys -q -r 10 -e /sys/power/wakeup_count
+> >> >
+> >>
+> >> This probably won't be the only file with semantics like these. So I am
+> >> wondering if we can limit the time it spends blocking with timer_create
+> >> and SIGEV_THREAD_ID or something similar?
+> >
+> > Well, I actually like the fact that this test goes and reads everything and
+> > makes sure the kernel operations for those files are "sane". We ended up
+> > finding 2 different bugs due to this in the drivers, in 1 case it crashed the
+> > kernel and in the other the test halted forever until timeout.
+> 
+> This is good to know.
+> 
+> >
+> > So, unless the upstream ABI says the semantics are different for some files,
+> > I don't think we should do this. 'wakeup_count' is the one I found and after
+> > I exclude this, the test passes just fine on Pixel phones for example.
+> > (Including the debugfs mount point under /sys/kernel/debug).
+> >
+> > I say we wait for another case of exclusion show up before considering your
+> > approach as I think we will miss real problem if we start timing out. Plus,
+> > there is the question of whether we report the test as PASS / FAIL in those
+> > cases. The exclusion list is the right approach IMO. We may just have to
+> > figure out how to add more than one in the command line as they show up.
+> >
+> > Agree?
+> >
+> 
+> Yes, but possibly we should add a feature which allows us to annotate some
+> file's. Then we can mark this file as 'can_block', so if we do timeout
+> while reading it then we still know to PASS. Whereas for other files, we
+> can FAIL if it blocks. We discussed doing something like this
+> previously, but decided to wait for feedback before trying anything like
+> this. We already had to drop privileges due to /dev/watchdog, but
+> annotations could allow us to avoid this as well. This could perhaps go
+> into read_all02 and read_all01 just continues to use an exclude list and
+> drop privs.
 
- testcases/network/stress/ipsec/ipsec_lib.sh |   21 +++------------------
- 1 files changed, 3 insertions(+), 18 deletions(-)
+Oh, I like this idea too. Sounds reasonable to me.
 
-diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
-index aedba9b..b099fde 100644
---- a/testcases/network/stress/ipsec/ipsec_lib.sh
-+++ b/testcases/network/stress/ipsec/ipsec_lib.sh
-@@ -157,21 +157,6 @@ ipsec_set_algoline()
- 	esac
- }
- 
--ipsec_try()
--{
--	local output="$($@ 2>&1 || echo 'TERR')"
--
--	if echo "$output" | grep -q "TERR"; then
--		echo "$output" | grep -q \
--			'RTNETLINK answers: Function not implemented' && \
--			tst_brk TCONF "'$@': not implemented"
--		echo "$output" | grep -q \
--			'RTNETLINK answers: Operation not supported' && \
--			tst_brk TCONF "'$@': not supported (maybe missing 'ip${TST_IPV6}_vti' kernel module)"
--		tst_brk TBROK "$@ failed: $output"
--	fi
--}
--
- # tst_ipsec target src_addr dst_addr: config ipsec
- #
- # target: target of the configuration host ( lhost / rhost )
-@@ -195,7 +180,7 @@ tst_ipsec()
- 	if [ $target = lhost ]; then
- 		local spi_1="0x$SPI"
- 		local spi_2="0x$(( $SPI + 1 ))"
--		ipsec_try ip xfrm state add src $src dst $dst spi $spi_1 \
-+		TST_RTNL_CHK ip xfrm state add src $src dst $dst spi $spi_1 \
- 			$p $ALG mode $mode sel src $src dst $dst
- 		ROD ip xfrm state add src $dst dst $src spi $spi_2 \
- 			$p $ALG mode $mode sel src $dst dst $src
-@@ -257,12 +242,12 @@ tst_ipsec_vti()
- 	cleanup_vti=$vti
- 
- 	if [ $target = lhost ]; then
--		ipsec_try ip li add $vti $type local $src remote $dst $key $d
-+		TST_RTNL_CHK ip li add $vti $type local $src remote $dst $key $d
- 		ROD ip li set $vti up
- 
- 		local spi_1="spi 0x$SPI"
- 		local spi_2="spi 0x$(( $SPI + 1 ))"
--		ipsec_try $ipx st add $o_dir $p $spi_1 $ALG $m
-+		TST_RTNL_CHK $ipx st add $o_dir $p $spi_1 $ALG $m
- 		ROD $ipx st add $i_dir $p $spi_2 $ALG $m
- 		ROD $ipx po add dir out tmpl $o_dir $p $m $mrk
- 		ROD $ipx po add dir in tmpl $i_dir $p $m $mrk
--- 
-1.7.1
 
+> 
+> I would be happy to implement said feature, but it may take a while.
+
+Same here, I'll keep this in my queue though, please CC me if possible if you
+get around to doing it before I do. I'd be happy to test and give feedback.
+
+Thanks again
+- ssp
+
+> In
+> the meantime I'm not against merging this patch and waiting for another
+> file with similar problems to appear.
+> 
+> What do you think Metan? We could probably replace proc01 with
+> read_all02 as well.
+> 
+> > - ssp
+> >
+> >>
+> >> --
+> >> Thank you,
+> >> Richard.
+> >>
+> >> --
+> >> You received this message because you are subscribed to the Google Groups "kernel-team" group.
+> >> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+> >>
+> 
+> 
+> --
+> Thank you,
+> Richard.
