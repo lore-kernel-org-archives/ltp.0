@@ -1,75 +1,177 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 20 Aug 2018 14:23:47 +0300
-Subject: [LTP] [PATCH v2 2/4] lib/tst_test.sh: add TST_NEEDS_DRIVERS
-	parameter
-In-Reply-To: <1534764229-26993-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1534764229-26993-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1534764229-26993-2-git-send-email-alexey.kodanev@oracle.com>
+Date: Mon, 20 Aug 2018 14:23:46 +0300
+Subject: [LTP] [PATCH v2 1/4] lib/tst_test.c: add 'needs_drivers' option
+	with tst_check_drivers cmd
+Message-ID: <1534764229-26993-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The drivers are checked with 'tst_check_drivers' command.
+The drivers are checked with modprobe. If modprobe is not available
+on the system, the checks are silently skipped.
 
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
-v2: add a check for empty TST_NEEDS_DRIVERS
+v2: * moved tst_check_driver() from tst_test.h to tst_kernel.h
+    * added the new option description to the doc and comment to tst_kernel.h
+    * iterating over the driver list moved out from tst_check_drivers(), the
+      function renamed accordingly.
 
- doc/test-writing-guidelines.txt |    1 +
- testcases/lib/tst_test.sh       |   12 ++++++++++++
- 2 files changed, 13 insertions(+), 0 deletions(-)
+ doc/test-writing-guidelines.txt   |   10 ++++++++++
+ include/tst_kernel.h              |    8 ++++++++
+ include/tst_test.h                |    3 +++
+ lib/tst_kernel.c                  |    9 +++++++++
+ lib/tst_test.c                    |    9 +++++++++
+ testcases/lib/.gitignore          |    1 +
+ testcases/lib/Makefile            |    2 +-
+ testcases/lib/tst_check_drivers.c |   24 ++++++++++++++++++++++++
+ 8 files changed, 65 insertions(+), 1 deletions(-)
+ create mode 100644 testcases/lib/tst_check_drivers.c
 
 diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index 7a458d5..8ebff5f 100644
+index a169724..7a458d5 100644
 --- a/doc/test-writing-guidelines.txt
 +++ b/doc/test-writing-guidelines.txt
-@@ -1653,6 +1653,7 @@ simply by setting right '$TST_NEEDS_FOO'.
- | 'TST_NEEDS_CMDS'   | String with command names that has to be present for
-                        the test (see below).
- | 'TST_NEEDS_MODULE' | Test module name needed for the test (see below).
-+| 'TST_NEEDS_DRIVERS'| Checks kernel drivers support for the test.
- |=============================================================================
+@@ -1449,6 +1449,16 @@ https://www.kernel.org/doc/html/latest/admin-guide/tainted-kernels.html
+ CRC32c checksum generation is supported by LTP. In order to use it, the
+ test should include "tst_checksum.h" header, then can call tst_crc32c().
  
- Checking for presence of commands
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index e553b49..23d66eb 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -285,6 +285,16 @@ tst_check_cmds()
- 	return 0
++2.2.26 Checking kernel for the driver support
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++
++Someties test needs certain drivers to be available in the kernel and must
++end with TCONF if any are missing. For this task there is the '.needs_drivers'
++option which accepts NULL-terminated array of the drivers names.
++
++Since it relies on modprobe command, the check will be skipped if the command
++itself is not available on the system.
++
+ 2.3 Writing a testcase in shell
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+diff --git a/include/tst_kernel.h b/include/tst_kernel.h
+index 5d5c04c..88941e1 100644
+--- a/include/tst_kernel.h
++++ b/include/tst_kernel.h
+@@ -23,4 +23,12 @@
+  */
+ int tst_kernel_bits(void);
+ 
++/**
++ * Checks support for the kernel driver.
++ *
++ * @param name The name of the driver.
++ * @return Returns 0 if the kernel has the driver or modprobe is missing.
++ */
++int tst_check_driver(const char *name);
++
+ #endif	/* TST_KERNEL_H__ */
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 98dacf3..55c1418 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -170,6 +170,9 @@ struct tst_test {
+ 
+ 	/* NULL terminated array of resource file names */
+ 	const char *const *resource_files;
++
++	/* NULL terminated array of needed kernel drivers */
++	const char * const *needs_drivers;
+ };
+ 
+ /*
+diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
+index 42d64cb..ad00d2d 100644
+--- a/lib/tst_kernel.c
++++ b/lib/tst_kernel.c
+@@ -45,3 +45,12 @@ int tst_kernel_bits(void)
+ 
+ 	return kernel_bits;
  }
- 
-+tst_test_drivers()
++
++int tst_check_driver(const char *name)
 +{
-+	[ $# -eq 0 ] && return 0
++	const char * const argv[] = { "modprobe", name, NULL };
++	int res = tst_run_cmd_(NULL, argv, "/dev/null", "/dev/null", 1);
 +
-+	local drv="$(tst_check_drivers $@ 2>&1)"
-+
-+	[ -n "$drv" ] && tst_brk TCONF "$drv driver not available"
-+	return 0
++	/* 255 - it looks like modprobe not available */
++	return (res == 255) ? 0 : res;
 +}
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 2f3d357..dcc4088 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -767,6 +767,15 @@ static void do_setup(int argc, char *argv[])
+ 	if (tst_test->min_kver)
+ 		check_kver();
+ 
++	if (tst_test->needs_drivers) {
++		const char *name;
++		int i;
 +
- tst_is_int()
- {
- 	[ "$1" -eq "$1" ] 2>/dev/null
-@@ -332,6 +342,7 @@ tst_run()
- 			OPTS|USAGE|PARSE_ARGS|POS_ARGS);;
- 			NEEDS_ROOT|NEEDS_TMPDIR|NEEDS_DEVICE|DEVICE);;
- 			NEEDS_CMDS|NEEDS_MODULE|MODPATH|DATAROOT);;
-+			NEEDS_DRIVERS);;
- 			IPV6|IPVER|TEST_DATA|TEST_DATA_IFS);;
- 			RETRY_FUNC|RETRY_FN_EXP_BACKOFF);;
- 			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
-@@ -369,6 +380,7 @@ tst_run()
- 	fi
++		for (i = 0; (name = tst_test->needs_drivers[i]); ++i)
++			if (tst_check_driver(name))
++				tst_brk(TCONF, "%s driver not available", name);
++	}
++
+ 	if (tst_test->format_device)
+ 		tst_test->needs_device = 1;
  
- 	tst_test_cmds $TST_NEEDS_CMDS
-+	tst_test_drivers $TST_NEEDS_DRIVERS
+diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
+index a9034e4..d83a48e 100644
+--- a/testcases/lib/.gitignore
++++ b/testcases/lib/.gitignore
+@@ -1,5 +1,6 @@
+ /tst_sleep
+ /tst_random
++/tst_check_drivers
+ /tst_checkpoint
+ /tst_rod
+ /tst_kvcmp
+diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
+index 3547e16..e1dea3b 100644
+--- a/testcases/lib/Makefile
++++ b/testcases/lib/Makefile
+@@ -28,6 +28,6 @@ INSTALL_TARGETS		:= *.sh
  
- 	if [ -n "$TST_MIN_KVER" ]; then
- 		tst_kvcmp -lt "$TST_MIN_KVER" && \
+ MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
+ 			   tst_device tst_net_iface_prefix tst_net_ip_prefix tst_net_vars\
+-			   tst_getconf tst_supported_fs
++			   tst_getconf tst_supported_fs tst_check_drivers
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/lib/tst_check_drivers.c b/testcases/lib/tst_check_drivers.c
+new file mode 100644
+index 0000000..c1d879d
+--- /dev/null
++++ b/testcases/lib/tst_check_drivers.c
+@@ -0,0 +1,24 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/* Copyright (c) 2018 Oracle and/or its affiliates. All Rights Reserved. */
++
++#include <stdio.h>
++#include "tst_kernel.h"
++
++int main(int argc, const char *argv[])
++{
++	const char *name;
++	int i;
++
++	if (argc < 2) {
++		fprintf(stderr, "Please provide kernel driver list\n");
++		return 1;
++	}
++
++	for (i = 1; (name = argv[i]); ++i)
++		if (tst_check_driver(name)) {
++			fprintf(stderr, "%s", name);
++			return 1;
++		}
++
++	return 0;
++}
 -- 
 1.7.1
 
