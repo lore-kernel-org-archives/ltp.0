@@ -1,10 +1,10 @@
 From: Masayoshi Mizuma <msys.mizuma@gmail.com>
-Date: Mon, 20 Aug 2018 15:49:11 -0400
-Subject: [LTP] [PATCH 1/5] acpi_hotplug: Add library file for ACPI based cpu
-	and memory hotplug
+Date: Mon, 20 Aug 2018 15:49:12 -0400
+Subject: [LTP] [PATCH 2/5] acpi_hotplug: Add ACPI based cpu and memory
+	hotplug testing
 In-Reply-To: <20180820194915.11805-1-msys.mizuma@gmail.com>
 References: <20180820194915.11805-1-msys.mizuma@gmail.com>
-Message-ID: <20180820194915.11805-2-msys.mizuma@gmail.com>
+Message-ID: <20180820194915.11805-3-msys.mizuma@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,330 +13,119 @@ To: ltp@lists.linux.it
 
 From: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
 
-This file includes some APIs to use ACPI based cpu and memory hotplug.
+This tests the following ACPI based cpu and memory hotplugs.
+
+  1. Memory hot remove
+  2. CPU hot remove
+  3. ACPI container device hot remove
+  4. ACPI container device hot add
+  5. CPU hot add
+  6. Memory hot add
 
 Signed-off-by: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
 ---
- .../hotplug/acpi_hotplug/ACPIHOTPLUG_lib.sh   | 310 ++++++++++++++++++
- 1 file changed, 310 insertions(+)
- create mode 100755 testcases/kernel/hotplug/acpi_hotplug/ACPIHOTPLUG_lib.sh
+ .../hotplug/acpi_hotplug/ACPIHOTPLUG_01.sh    | 92 +++++++++++++++++++
+ 1 file changed, 92 insertions(+)
+ create mode 100755 testcases/kernel/hotplug/acpi_hotplug/ACPIHOTPLUG_01.sh
 
-diff --git a/testcases/kernel/hotplug/acpi_hotplug/ACPIHOTPLUG_lib.sh b/testcases/kernel/hotplug/acpi_hotplug/ACPIHOTPLUG_lib.sh
+diff --git a/testcases/kernel/hotplug/acpi_hotplug/ACPIHOTPLUG_01.sh b/testcases/kernel/hotplug/acpi_hotplug/ACPIHOTPLUG_01.sh
 new file mode 100755
-index 000000000..8c5dc1d89
+index 000000000..e01b9ad79
 --- /dev/null
-+++ b/testcases/kernel/hotplug/acpi_hotplug/ACPIHOTPLUG_lib.sh
-@@ -0,0 +1,310 @@
++++ b/testcases/kernel/hotplug/acpi_hotplug/ACPIHOTPLUG_01.sh
+@@ -0,0 +1,92 @@
 +#!/bin/sh
 +
 +# SPDX-License-Identifier: GPL-2.0-or-later
 +# Copyright (c) 2018, FUJITSU LIMITED. All rights reserved.
 +
-+export HOTPLUGABLE_CONTAINER=
-+export HOTPLUGABLE_NODES=()
-+RETRY=5
-+RETRY_TIME=60
++TST_SETUP=_setup
++TST_CLEANUP=_cleanup
++TST_TESTFUNC=test
++TST_CNT=6
 +
-+# $1: node number
-+is_memoryless_node()
++. tst_test.sh
++. ACPIHOTPLUG_lib.sh
++
++test1()
 +{
-+	local node=$1
-+
-+	numactl -H | awk '
-+		/node '$node' size:/ {
-+			if ($4 == 0)
-+				prine 1
-+			else
-+				print 0
-+		}'
-+}
-+
-+# $1: node number
-+is_movable_node()
-+{
-+	local node=$1
-+
-+	awk '
-+	BEGIN {
-+		zone = ""
-+		NotMovableFound = 0
-+		nextnode = '$node' + 1
-+	}
-+	/^Node '$node'/{
-+		zone = $4
-+	}
-+	/present/ {
-+		if (zone != "") {
-+			if ((zone != "Movable") && ($2 != 0)) {
-+				NotMovableFound = 1
-+				exit
-+			}
-+		}
-+	}
-+	match($0, "^Node " nextnode) {
-+		exit
-+	}
-+
-+	END {
-+		if (NotMovableFound == 0)
-+			print 1
-+		else
-+			print 0
-+	}
-+	' /proc/zoneinfo
-+}
-+
-+stop_udev()
-+{
-+	systemctl stop systemd-udevd-kernel.socket
-+	systemctl stop systemd-udevd-control.socket
-+	systemctl stop systemd-udevd.service
-+}
-+
-+resume_udev()
-+{
-+	systemctl start systemd-udevd.service
-+	systemctl start systemd-udevd-kernel.socket
-+	systemctl start systemd-udevd-control.socket
-+}
-+
-+_setup()
-+{
-+	local ACPI_CONTAINERS=()
-+	local ONLINE_CONTAINERS=()
-+	local CPUS=()
-+	local tmp_NODES=()
-+	local NODES=()
-+	local movable_node=
-+	local NOHP_NODES=0
-+
-+	ACPI_CONTAINERS=( $(find /sys/devices/LNXSYSTM\:00/ -name 'ACPI0004:*') )
-+
-+	ONLINE_CONTAINERS=()
-+	for c in ${ACPI_CONTAINERS[@]}; do
-+		status=$(cat $c/status)
-+		if [[ $status -ne 0 ]]; then
-+			ONLINE_CONTAINERS=( ${ONLINE_CONTAINERS[@]} $c )
-+		fi
-+	done
-+
-+	if [[ ${#ONLINE_CONTAINERS[@]} -lt 2 ]]; then
-+		tst_brk TCONF "The number of online ACPI containers is not enough. 2 or more online ACPI containers are needed, but this system has ${#ONLINE_CONTAINERS[@]} contianers."
++	if [[ ${#HOTPLUGABLE_NODES[@]} -eq 0 ]]; then
++		tst_brk TCONF "Memory hotplug may be not supported in this system"
 +	fi
-+
-+	for c in ${ONLINE_CONTAINERS[@]}; do
-+		CPUS=( $(find $c -name 'ACPI0007:*' ) )
-+		tmp_NODES=()
-+		NODES=()
-+		NOHP_NODES=0
-+		for cpu in ${CPUS[@]}; do
-+			tmp_NODES=( ${tmp_NODES[@]} $(ls $cpu/physical_node/ 2> /dev/null | grep ^node | sed -e 's/node//') )
-+		done
-+		NODES=( $(echo ${tmp_NODES[@]} | tr ' ' '\n' | sort | uniq ) )
-+
-+		# Memory device ID is PNP0C80, however, the memory ID is not used here
-+		# but the node ID is used.
-+		# The hotplugable memory section has ACPI_SRAT_MEM_HOT_PLUGGABLE flag
-+		# and the zone is handled as Movable zone. Following assumes that
-+		# the node has only Movable zone or it is memory less node.
-+		# So using the node ID gets this test cleared rather than using memory ID.
-+		for n in ${NODES[@]}; do
-+			if [[ $(is_movable_node $n) -eq 0 ]] && [[ $(is_memoryless_node $n) -eq 0 ]]; then
-+				NOHP_NODES=1
-+				break
-+			fi
-+		done
-+		if [[ $NOHP_NODES -eq 0 ]]; then
-+			HOTPLUGABLE_CONTAINER=$(basename $c)
-+			HOTPLUGABLE_NODES=( ${NODES[@]} )
-+			break
-+		fi
-+	done
-+
-+	# Some hotplug udev rules may disturb for this test.
-+	# Let's stop them.
-+	stop_udev
-+
-+	tst_res TINFO "TARGET ACPI CONTANIER: $HOTPLUGABLE_CONTAINER"
-+	tst_res TINFO "TARGET NODES: ${HOTPLUGABLE_NODES[@]}"
-+}
-+
-+_cleanup()
-+{
-+	resume_udev
-+}
-+
-+cpu_hp()
-+{
-+	local hpop=
-+	local CPUS=( $(echo /sys/bus/acpi/devices/$HOTPLUGABLE_CONTAINER/ACPI0007:*/physical_node/online) )
-+
-+	local hp_cpus=${#CPUS[@]}
-+	local current_cpus=$(nproc)
-+	local expected_cpus=
-+	local ACPI_CPU=
-+	local force=0
-+	local hotplugedcpus=0
-+
-+	if [[ $1 == "hotremove" ]]; then
-+		hpop=0
++	memory_hp "hotremove"
++	if [[ $? -eq 0 ]]; then
++		tst_res TPASS "memory hotremove success"
 +	else
-+		hpop=1
-+	fi
-+	if [[ $2 == "force" ]]; then
-+		force=1
-+	fi
-+
-+	if [[ $hpop -eq 0 ]]; then
-+		expected_cpus=$(( current_cpus - hp_cpus ))
-+	else
-+		expected_cpus=$(( current_cpus + hp_cpus ))
-+	fi
-+
-+	for cpu in ${CPUS[@]}; do
-+		echo -n $hpop > $cpu 2> /dev/null
-+		ACPI_CPU=$( echo $cpu | sed -e 's#/sys/bus/acpi/devices/ACPI0004:[0-9a-f]\+/\(ACPI0007:.*\)/physical_node/online#\1#')
-+		if [[ $? -ne 0 ]]; then
-+			tst_res TINFO "CPU: $ACPI_CPU $1 failed."
-+			if [[ $force -eq 0 ]]; then
-+				return 1
-+			fi
-+		else
-+			if [[ $force -ne 0 ]]; then
-+				tst_res TINFO "CPU: $ACPI_CPU $1 successed."
-+			fi
-+			hotplugedcpus=$(( hotplugedcpus  + 1 ))
-+		fi
-+	done
-+
-+	tst_res TINFO "CPU: current: $(nproc) hotpluged: $hotplugedcpus"
-+	if [[ $(nproc) -eq $expected_cpus ]]; then
-+		return 0
-+	else
-+		return 1
++		tst_res TFAIL "memory hotremove failed"
 +	fi
 +}
 +
-+# $1: node number
-+# $2: expected memory size (MB)
-+memhp_result()
++test2()
 +{
-+	local node=$1
-+	local expected=$2
-+	local current=
-+
-+	current=$(numactl -H | awk '
-+	/^node '$node' size/ {
-+		print $4
-+	}
-+	')
-+
-+	if [[ $current -eq $expected ]]; then
-+		echo 1
++	if [[ -z $HOTPLUGABLE_CONTAINER ]]; then
++		tst_brk TCONF "CPU hotplug may be not supported in this system"
++	fi
++	cpu_hp "hotremove"
++	if [[ $? -eq 0 ]]; then
++		tst_res TPASS "cpu hotremove success"
 +	else
-+		echo 0
++		tst_res TFAIL "cpu hotremove failed"
 +	fi
 +}
 +
-+memory_hp()
++test3()
 +{
-+	local hpop=
-+	local memory=()
-+	local memhpdone=
-+	local expected=
-+	local block_size_bytes=$(cat /sys/devices/system/memory/block_size_bytes )
-+	block_size_bytes=$(echo "obase=10;ibase=16;$block_size_bytes" | bc)
-+	local result=0
-+	local force=0
-+	local hotplugedsections=
-+	local removable=
-+
-+	declare -A mem_hotpluged
-+
-+	if [[ $1 == "hotremove" ]]; then
-+		hpop="offline"
++	if [[ -z $HOTPLUGABLE_CONTAINER ]]; then
++		tst_brk TCONF "ACPI container hotplug may be not supported in this system"
++	fi
++	container_hp "hotremove"
++	if [[ $? -eq 0 ]]; then
++		tst_res TPASS "ACPI container hotremove success"
 +	else
-+		hpop="online_movable"
++		tst_res TFAIL "ACPI container hotremove failed"
 +	fi
-+	if [[ $2 == "force" ]]; then
-+		force=1
-+	fi
-+
-+	for node in ${HOTPLUGABLE_NODES[@]}; do
-+		memory=$(ls /sys/devices/system/node/node$node/ | grep memory | sort -n -r)
-+		for mem in ${memory[@]}; do
-+			if [[ $force -eq 1 ]]; then
-+				echo -n $hpop > /sys/devices/system/node/node$node/$mem/state 2> /dev/null
-+				mem_hotpluged[$node]=$(( mem_hotpluged[$node] + 1 ))
-+				hotplugedsections=$(( hotplugedsections + 1 ))
-+			else
-+				memhpdone=0
-+				for ((i = 1; i <= RETRY; i++)); do
-+					echo -n $hpop > /sys/devices/system/node/node$node/$mem/state
-+					if [[ $? -eq 0 ]]; then
-+						memhpdone=1
-+						break
-+					else
-+						removable=$(cat /sys/devices/system/node/node$node/$mem/removable)
-+						if [[ $removable -ne 1 ]]; then
-+							tst_res TINFO "memory: Node: $node section: $mem something wrong..."
-+							return 1
-+						fi
-+						tst_res TINFO "memory: Node: $node section: $mem $1 failed ($i times). Retry..."
-+					fi
-+					sleep $RETRY_TIME
-+				done
-+				if [[ $memhpdone -eq 0 ]]; then
-+					tst_res TINFO "memory: Node: $node section: $mem $1 failed."
-+					return 1
-+				else
-+					tst_res TINFO "memory: Node: $node section: $mem $1 successed."
-+					mem_hotpluged[$node]=$(( mem_hotpluged[$node] + 1 ))
-+					hotplugedsections=$(( hotplugedsections + 1 ))
-+				fi
-+			fi
-+		done
-+	done
-+
-+	for node in ${HOTPLUGABLE_NODES[@]}; do
-+		if [[ $hpop == "offline" ]]; then
-+			expected=0
-+		else
-+			expected=$(echo "${mem_hotpluged[$node]} * $block_size_bytes/1024/1024" | bc)
-+		fi
-+		if [[ $(memhp_result $node $expected) -ne 1 ]]; then
-+			result=$((result + 1))
-+		fi
-+		tst_res TINFO "Memory: Node: $node $hotplugedsections sections hotpluged."
-+	done
-+
-+	return $result
 +}
 +
-+container_hp()
++test4()
 +{
-+	local hpop=
-+	local online_ret=0
-+
-+	if [[ $1 == "hotremove" ]]; then
-+		hpop=0
-+	else
-+		hpop=1
++	if [[ -z $HOTPLUGABLE_CONTAINER ]]; then
++		tst_brk TCONF "ACPI container hotplug may be not supported in this system"
 +	fi
-+
-+	echo $hpop > /sys/bus/acpi/devices/$HOTPLUGABLE_CONTAINER/physical_node/online
-+	online_ret=$?
-+
-+	if [[ $online_ret -ne 0 ]]; then
-+		tst_res TINFO "ACPI container: $HOTPLUGABLE_CONTAINER $1 failed."
-+		numactl -H
-+		return 1
++	container_hp "hotadd"
++	if [[ $? -eq 0 ]]; then
++		tst_res TPASS "ACPI container hotadd success"
 +	else
-+		tst_res TINFO "ACPI container: $HOTPLUGABLE_CONTAINER $1 successed."
++		tst_res TFAIL "ACPI container  hotadd failed"
 +	fi
-+
-+	return 0
 +}
++
++test5()
++{
++	if [[ -z $HOTPLUGABLE_CONTAINER ]]; then
++		tst_brk TCONF "CPU hotplug may be not supported in this system"
++	fi
++	cpu_hp "hotadd"
++	if [[ $? -eq 0 ]]; then
++		tst_res TPASS "cpu hotadd success"
++	else
++		tst_res TFAIL "cpu hotadd failed"
++	fi
++}
++
++
++test6()
++{
++	if [[ ${#HOTPLUGABLE_NODES[@]} -eq 0 ]]; then
++		tst_brk TCONF "Memory hotplug may be not supported in this system"
++	fi
++	memory_hp "hotadd"
++	if [[ $? -eq 0 ]]; then
++		tst_res TPASS "memory hotadd success"
++	else
++		tst_res TFAIL "memory hotadd failed"
++	fi
++}
++tst_run
 -- 
 2.18.0
 
