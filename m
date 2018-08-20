@@ -1,61 +1,75 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 20 Aug 2018 11:12:55 +0200
-Subject: [LTP] [PATCH v5] Testing statx syscall
-In-Reply-To: <20180820083629.GB14682@dell5510>
-References: <20180817055702.2731-1-vaishnavi.d@zilogic.com>
- <20180820083629.GB14682@dell5510>
-Message-ID: <20180820091255.GA20974@dell5510>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 20 Aug 2018 14:23:47 +0300
+Subject: [LTP] [PATCH v2 2/4] lib/tst_test.sh: add TST_NEEDS_DRIVERS
+	parameter
+In-Reply-To: <1534764229-26993-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1534764229-26993-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1534764229-26993-2-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+The drivers are checked with 'tst_check_drivers' command.
 
-> > +AC_CHECK_FUNCS(statx,,)
-> > +])
-> > +AC_CHECK_MEMBERS([struct statx.stx_mask, struct statx.stx_blksize, struct statx.stx_attributes, struct statx.stx_nlink, struct statx.stx_uid, struct statx.stx_gid, struct statx.stx_mode, struct statx.stx_ino, struct statx.stx_size, struct statx.stx_blocks, struct statx.stx_attributes_mask, struct statx.stx_rdev_minor, struct statx.stx_mtime, struct statx.stx_atime, struct statx.stx_btime, struct statx.stx_ctime, struct statx.stx_rdev_major, struct statx.stx_dev_major, struct statx.stx_dev_minor])
-> > +
-> > +AC_CHECK_MEMBERS([struct statx_timestamp tv_sec, struct statx_timestamp tv_nsec])
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+v2: add a check for empty TST_NEEDS_DRIVERS
 
-> There is error in definition (end of function before AC_CHECK_MEMBERS calls +
-> missing dot in second AC_CHECK_MEMBERS). Diff with fixes:
+ doc/test-writing-guidelines.txt |    1 +
+ testcases/lib/tst_test.sh       |   12 ++++++++++++
+ 2 files changed, 13 insertions(+), 0 deletions(-)
 
-> diff --git a/configure.ac b/configure.ac
-> index df64ce2e2..e1ecb32a7 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -200,6 +200,7 @@ LTP_CHECK_OPENAT
->  LTP_CHECK_EXECVEAT
->  LTP_CHECK_RENAMEAT
->  LTP_CHECK_RENAMEAT2
-> +LTP_CHECK_STATX
->  LTP_CHECK_FALLOCATE
->  LTP_CHECK_SYSCALL_FCNTL
->  LTP_CHECK_SYSCALL_PERF_EVENT_OPEN
-> diff --git a/m4/ltp-statx.m4 b/m4/ltp-statx.m4
-> index 547172ebc..dec161567 100644
-> --- a/m4/ltp-statx.m4
-> +++ b/m4/ltp-statx.m4
-> @@ -22,7 +22,7 @@ dnl ----------------------------
->  dnl
->  AC_DEFUN([LTP_CHECK_STATX],[
->  AC_CHECK_FUNCS(statx,,)
-> -])
->  AC_CHECK_MEMBERS([struct statx.stx_mask, struct statx.stx_blksize, struct statx.stx_attributes, struct statx.stx_nlink, struct statx.stx_uid, struct statx.stx_gid, struct statx.stx_mode, struct statx.stx_ino, struct statx.stx_size, struct statx.stx_blocks, struct statx.stx_attributes_mask, struct statx.stx_rdev_minor, struct statx.stx_mtime, struct statx.stx_atime, struct statx.stx_btime, struct statx.stx_ctime, struct statx.stx_rdev_major, struct statx.stx_dev_major, struct statx.stx_dev_minor])
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index 7a458d5..8ebff5f 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -1653,6 +1653,7 @@ simply by setting right '$TST_NEEDS_FOO'.
+ | 'TST_NEEDS_CMDS'   | String with command names that has to be present for
+                        the test (see below).
+ | 'TST_NEEDS_MODULE' | Test module name needed for the test (see below).
++| 'TST_NEEDS_DRIVERS'| Checks kernel drivers support for the test.
+ |=============================================================================
+ 
+ Checking for presence of commands
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index e553b49..23d66eb 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -285,6 +285,16 @@ tst_check_cmds()
+ 	return 0
+ }
+ 
++tst_test_drivers()
++{
++	[ $# -eq 0 ] && return 0
++
++	local drv="$(tst_check_drivers $@ 2>&1)"
++
++	[ -n "$drv" ] && tst_brk TCONF "$drv driver not available"
++	return 0
++}
++
+ tst_is_int()
+ {
+ 	[ "$1" -eq "$1" ] 2>/dev/null
+@@ -332,6 +342,7 @@ tst_run()
+ 			OPTS|USAGE|PARSE_ARGS|POS_ARGS);;
+ 			NEEDS_ROOT|NEEDS_TMPDIR|NEEDS_DEVICE|DEVICE);;
+ 			NEEDS_CMDS|NEEDS_MODULE|MODPATH|DATAROOT);;
++			NEEDS_DRIVERS);;
+ 			IPV6|IPVER|TEST_DATA|TEST_DATA_IFS);;
+ 			RETRY_FUNC|RETRY_FN_EXP_BACKOFF);;
+ 			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
+@@ -369,6 +380,7 @@ tst_run()
+ 	fi
+ 
+ 	tst_test_cmds $TST_NEEDS_CMDS
++	tst_test_drivers $TST_NEEDS_DRIVERS
+ 
+ 	if [ -n "$TST_MIN_KVER" ]; then
+ 		tst_kvcmp -lt "$TST_MIN_KVER" && \
+-- 
+1.7.1
 
-> -AC_CHECK_MEMBERS([struct statx_timestamp tv_sec, struct statx_timestamp tv_nsec])
-> +AC_CHECK_MEMBERS([struct statx_timestamp.tv_sec, struct statx_timestamp.tv_nsec])
-> +])
-
-Actually, #include <linux/stat.h> is required for AC_CHECK_MEMBERS:
-AC_CHECK_MEMBERS([struct statx.stx_mask, struct statx.stx_blksize, struct statx.stx_attributes, struct statx.stx_nlink, struct statx.stx_uid, struct statx.stx_gid, struct statx.stx_mode, struct statx.stx_ino, struct statx.stx_size, struct statx.stx_blocks, struct statx.stx_attributes_mask, struct statx.stx_rdev_minor, struct statx.stx_mtime, struct statx.stx_atime, struct statx.stx_btime, struct statx.stx_ctime, struct statx.stx_rdev_major, struct statx.stx_dev_major, struct statx.stx_dev_minor],,, [[#include <linux/stat.h>]])
-AC_CHECK_MEMBERS([struct statx_timestamp.tv_sec, struct statx_timestamp.tv_nsec],,, [[#include <linux/stat.h>]])
-+])
-
-BTW: not sure if all struct members need to be checked for.
-
-
-Kind regards,
-Petr
