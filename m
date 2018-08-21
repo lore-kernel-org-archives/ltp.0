@@ -1,161 +1,186 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 21 Aug 2018 17:38:56 +0800
-Subject: [LTP] [PATCH 1/4] lapi/syscalls: Add syscall numbers for mlock2
-Message-ID: <1534844339-8655-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Tue, 21 Aug 2018 17:38:59 +0800
+Subject: [LTP] [PATCH 4/4] syscalls/mlock202: Add new testcase
+In-Reply-To: <1534844339-8655-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1534844339-8655-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1534844339-8655-4-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Check various errnos for mlock2(2) since kernel v2.6.9.
+
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- include/lapi/syscalls/aarch64.in   | 1 +
- include/lapi/syscalls/arm.in       | 1 +
- include/lapi/syscalls/hppa.in      | 1 +
- include/lapi/syscalls/i386.in      | 1 +
- include/lapi/syscalls/ia64.in      | 1 +
- include/lapi/syscalls/powerpc.in   | 1 +
- include/lapi/syscalls/powerpc64.in | 1 +
- include/lapi/syscalls/s390.in      | 1 +
- include/lapi/syscalls/s390x.in     | 1 +
- include/lapi/syscalls/sh.in        | 1 +
- include/lapi/syscalls/sparc.in     | 1 +
- include/lapi/syscalls/sparc64.in   | 1 +
- include/lapi/syscalls/x86_64.in    | 1 +
- 13 files changed, 13 insertions(+)
+ runtest/ltplite                             |   1 +
+ runtest/stress.part3                        |   1 +
+ runtest/syscalls                            |   1 +
+ testcases/kernel/syscalls/mlock2/.gitignore |   1 +
+ testcases/kernel/syscalls/mlock2/mlock202.c | 110 ++++++++++++++++++++++++++++
+ 5 files changed, 114 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/mlock2/mlock202.c
 
-diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
-index 2c8c589..9ac7f99 100644
---- a/include/lapi/syscalls/aarch64.in
-+++ b/include/lapi/syscalls/aarch64.in
-@@ -256,5 +256,6 @@ sendmmsg 269
- kcmp 272
- getrandom 278
- memfd_create 279
-+mlock2 284
- copy_file_range 285
- _sysctl 1078
-diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
-index c44adcd..774e1c7 100644
---- a/include/lapi/syscalls/arm.in
-+++ b/include/lapi/syscalls/arm.in
-@@ -341,4 +341,5 @@ renameat2 (__NR_SYSCALL_BASE+382)
- getrandom (__NR_SYSCALL_BASE+384)
- memfd_create (__NR_SYSCALL_BASE+385)
- execveat (__NR_SYSCALL_BASE+387)
-+mlock2 (__NR_SYSCALL_BASE+390)
- copy_file_range (__NR_SYSCALL_BASE+391)
-diff --git a/include/lapi/syscalls/hppa.in b/include/lapi/syscalls/hppa.in
-index 92aee9f..3db9780 100644
---- a/include/lapi/syscalls/hppa.in
-+++ b/include/lapi/syscalls/hppa.in
-@@ -17,4 +17,5 @@ splice 291
- tee 293
- vmsplice 294
- memfd_create 340
-+mlock2 345
- copy_file_range 346
-diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
-index 19f0148..6a72b43 100644
---- a/include/lapi/syscalls/i386.in
-+++ b/include/lapi/syscalls/i386.in
-@@ -341,4 +341,5 @@ renameat2 354
- getrandom 355
- memfd_create 356
- execveat 358
-+mlock2 376
- copy_file_range 377
-diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
-index a3abc99..2788193 100644
---- a/include/lapi/syscalls/ia64.in
-+++ b/include/lapi/syscalls/ia64.in
-@@ -296,4 +296,5 @@ prlimit64 1325
- renameat2 1338
- getrandom 1339
- memfd_create 1340
-+mlock2 1346
- copy_file_range 1347
-diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
-index 11ddca3..54c1941 100644
---- a/include/lapi/syscalls/powerpc.in
-+++ b/include/lapi/syscalls/powerpc.in
-@@ -347,4 +347,5 @@ sched_getattr 356
- renameat2 357
- getrandom 359
- memfd_create 360
-+mlock2 378
- copy_file_range 379
-diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
-index 11ddca3..54c1941 100644
---- a/include/lapi/syscalls/powerpc64.in
-+++ b/include/lapi/syscalls/powerpc64.in
-@@ -347,4 +347,5 @@ sched_getattr 356
- renameat2 357
- getrandom 359
- memfd_create 360
-+mlock2 378
- copy_file_range 379
-diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
-index d95b282..47a04de 100644
---- a/include/lapi/syscalls/s390.in
-+++ b/include/lapi/syscalls/s390.in
-@@ -332,4 +332,5 @@ renameat2 347
- getrandom 349
- memfd_create 350
- execveat 354
-+mlock2 374
- copy_file_range 375
-diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
-index 98c861f..83732ff 100644
---- a/include/lapi/syscalls/s390x.in
-+++ b/include/lapi/syscalls/s390x.in
-@@ -331,4 +331,5 @@ sched_getattr 346
- renameat2 347
- getrandom 349
- memfd_create 350
-+mlock2 374
- copy_file_range 375
-diff --git a/include/lapi/syscalls/sh.in b/include/lapi/syscalls/sh.in
-index c605b14..407be7a 100644
---- a/include/lapi/syscalls/sh.in
-+++ b/include/lapi/syscalls/sh.in
-@@ -364,4 +364,5 @@ fanotify_mark 368
- prlimit64 369
- kcmp 378
- memfd_create 385
-+mlock2 390
- copy_file_range 391
-diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
-index 296d694..2b06a79 100644
---- a/include/lapi/syscalls/sparc.in
-+++ b/include/lapi/syscalls/sparc.in
-@@ -336,4 +336,5 @@ kcmp 341
- renameat2 345
- getrandom 347
- memfd_create 348
-+mlock2 356
- copy_file_range 357
-diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
-index 169347a..8c8a866 100644
---- a/include/lapi/syscalls/sparc64.in
-+++ b/include/lapi/syscalls/sparc64.in
-@@ -312,4 +312,5 @@ kcmp 341
- renameat2 345
- getrandom 347
- memfd_create 348
-+mlock2 356
- copy_file_range 357
-diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
-index 7907c31..dec9d3b 100644
---- a/include/lapi/syscalls/x86_64.in
-+++ b/include/lapi/syscalls/x86_64.in
-@@ -308,4 +308,5 @@ renameat2 316
- getrandom 318
- memfd_create 319
- execveat 322
-+mlock2 325
- copy_file_range 326
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 270c649..7ebe632 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -444,6 +444,7 @@ mlock01 mlock01
+ mlock02 mlock02
+ 
+ mlock201 mlock201
++mlock202 mlock202
+ 
+ qmm01 mmap001 -m 1
+ mmap01 mmap01
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index 6850572..0804172 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -370,6 +370,7 @@ mlock01 mlock01
+ mlock02 mlock02
+ 
+ mlock201 mlock201
++mlock202 mlock202
+ 
+ qmm01 mmap001 -m 1
+ mmap01 mmap01
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 5d84d48..2615254 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -634,6 +634,7 @@ mlock03 mlock03 -i 20
+ mlock04 mlock04
+ 
+ mlock201 mlock201
++mlock202 mlock202
+ 
+ qmm01 mmap001 -m 1
+ mmap01 mmap01
+diff --git a/testcases/kernel/syscalls/mlock2/.gitignore b/testcases/kernel/syscalls/mlock2/.gitignore
+index 431eff8..8daf0f9 100644
+--- a/testcases/kernel/syscalls/mlock2/.gitignore
++++ b/testcases/kernel/syscalls/mlock2/.gitignore
+@@ -1 +1,2 @@
+ /mlock201
++/mlock202
+diff --git a/testcases/kernel/syscalls/mlock2/mlock202.c b/testcases/kernel/syscalls/mlock2/mlock202.c
+new file mode 100644
+index 0000000..61dd29d
+--- /dev/null
++++ b/testcases/kernel/syscalls/mlock2/mlock202.c
+@@ -0,0 +1,110 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
++ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++ */
++/*
++ * Description:
++ * Check various errnos for mlock2(2) since kernel v2.6.9:
++ * 1) mlock(2) fails and returns EINVAL if unknown flag is specified.
++ * 2) mlock(2) fails and returns ENOMEM if the caller is not
++ *    privileged(CAP_IPC_LOCK) and tries to lock more memory than the
++ *    RLIMIT_MEMLOCK limit.
++ * 3) mlock(2) fails and returns EPERM if the caller is not
++ *    privileged(CAP_IPC_LOCK) and its RLIMIT_MEMLOCK limit is 0.
++ * 4) mlock(2) fails and returns ENOMEM if some of the specified address
++ *    range does not correspond to mapped pages in the address space
++ *    of the caller.
++ */
++#include <errno.h>
++#include <unistd.h>
++#include <sys/mman.h>
++#include <sys/time.h>
++#include <sys/resource.h>
++#include <pwd.h>
++
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++
++static unsigned long pgsz;
++static unsigned long max_sz1, max_sz2;
++static char *addr, *unmapped_addr;
++static struct passwd *nobody;
++
++static struct tcase {
++	char **taddr;
++	int flag;
++	unsigned long *max_size;
++	/* 1: nobody expected  0: root expected */
++	int exp_user;
++	int exp_err;
++} tcases[] = {
++	{&addr, -1, NULL, 0, EINVAL},
++	{&addr, 0, &max_sz1, 1, ENOMEM},
++	{&addr, 0, &max_sz2, 1, EPERM},
++	{&unmapped_addr, 0, NULL, 0, ENOMEM},
++};
++
++static void verify_mlock2(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++	struct rlimit orig_limit, new_limit;
++
++	if (tc->exp_user) {
++		SAFE_GETRLIMIT(RLIMIT_MEMLOCK, &orig_limit);
++		new_limit.rlim_cur = *tc->max_size;
++		new_limit.rlim_max = *tc->max_size;
++		SAFE_SETRLIMIT(RLIMIT_MEMLOCK, &new_limit);
++		SAFE_SETEUID(nobody->pw_uid);
++	}
++
++	TEST(tst_syscall(__NR_mlock2, *tc->taddr, pgsz, tc->flag));
++	if (TST_RET != -1) {
++		tst_res(TFAIL, "mlock2() succeeded");
++		SAFE_MUNLOCK(*tc->taddr, pgsz);
++		goto end;
++	}
++
++	if (TST_ERR != tc->exp_err) {
++		tst_res(TFAIL | TTERRNO,
++			"mlock2() failed unexpectedly, expected %s",
++			tst_strerrno(tc->exp_err));
++	} else {
++		tst_res(TPASS | TTERRNO, "mlock2() failed as expected");
++	}
++
++end:
++	if (tc->exp_user) {
++		SAFE_SETEUID(0);
++		SAFE_SETRLIMIT(RLIMIT_MEMLOCK, &orig_limit);
++	}
++}
++
++static void setup(void)
++{
++	pgsz = getpagesize();
++	nobody = SAFE_GETPWNAM("nobody");
++
++	addr = SAFE_MMAP(NULL, pgsz, PROT_WRITE,
++			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
++	unmapped_addr = SAFE_MMAP(NULL, pgsz, PROT_READ,
++				  MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
++	SAFE_MUNMAP(unmapped_addr, pgsz);
++
++	max_sz1 = pgsz - 1;
++}
++
++static void cleanup(void)
++{
++	if (addr)
++		SAFE_MUNMAP(addr, pgsz);
++}
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = verify_mlock2,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.min_kver = "2.6.9",
++};
 -- 
 1.8.3.1
 
