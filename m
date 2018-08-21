@@ -1,109 +1,225 @@
-From: Masayoshi Mizuma <msys.mizuma@gmail.com>
-Date: Mon, 20 Aug 2018 15:49:15 -0400
-Subject: [LTP]  [PATCH 5/5] acpi_hotplug: Add README
-In-Reply-To: <20180820194915.11805-1-msys.mizuma@gmail.com>
-References: <20180820194915.11805-1-msys.mizuma@gmail.com>
-Message-ID: <20180820194915.11805-6-msys.mizuma@gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Tue, 21 Aug 2018 17:38:58 +0800
+Subject: [LTP] [PATCH 3/4] syscalls/mlock201: Add new testcase
+In-Reply-To: <1534844339-8655-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1534844339-8655-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1534844339-8655-3-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
+Check the basic functionality of mlock2(2) since kernel v2.6.9.
 
-Signed-off-by: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/hotplug/acpi_hotplug/README | 80 ++++++++++++++++++++
- 1 file changed, 80 insertions(+)
- create mode 100644 testcases/kernel/hotplug/acpi_hotplug/README
+ include/lapi/mlock2.h                       |  16 +++++
+ runtest/ltplite                             |   2 +
+ runtest/stress.part3                        |   2 +
+ runtest/syscalls                            |   2 +
+ testcases/kernel/syscalls/mlock2/.gitignore |   1 +
+ testcases/kernel/syscalls/mlock2/Makefile   |   8 +++
+ testcases/kernel/syscalls/mlock2/mlock201.c | 103 ++++++++++++++++++++++++++++
+ 7 files changed, 134 insertions(+)
+ create mode 100644 include/lapi/mlock2.h
+ create mode 100644 testcases/kernel/syscalls/mlock2/.gitignore
+ create mode 100644 testcases/kernel/syscalls/mlock2/Makefile
+ create mode 100644 testcases/kernel/syscalls/mlock2/mlock201.c
 
-diff --git a/testcases/kernel/hotplug/acpi_hotplug/README b/testcases/kernel/hotplug/acpi_hotplug/README
+diff --git a/include/lapi/mlock2.h b/include/lapi/mlock2.h
 new file mode 100644
-index 000000000..cec78e19f
+index 0000000..fa2b2de
 --- /dev/null
-+++ b/testcases/kernel/hotplug/acpi_hotplug/README
-@@ -0,0 +1,80 @@
-+ACPI based CPU and Memory hotplug testing
-+=========================================
++++ b/include/lapi/mlock2.h
+@@ -0,0 +1,16 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
++ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++ */
 +
-+Assumption
-+----------
-+* The system has two or more ACPI container devices. The HID is 'ACPI0004'.
-+* The CPU (HID: ACPI0007) and memory (HID: PNP0C80) belong to the ACPI
-+container device. For example of the structure in sysfs is as follows.
++#ifndef LAPI_MLOCK2_H__
++# define LAPI_MLOCK2_H__
 +
-+[source]
-+--------------
-+/sys/devices/LNXSYSTM:00/device:00/ACPI0004:03/
-+├── ACPI0007:168
-+├── ACPI0007:169
-+...
-+├── PNP0C80:06
-+├── PNP0C80:07
-+...
-+--------------
++#include <linux/mman.h>
 +
-+* The memory has Hot Pluggable affinity in Memory Affinity Structure, SRAT.
-+If the memory has Hot Pluggable affinity, you can see the following 'hotplug'
-+keyword in dmesg.
++#ifndef MLOCK_ONFAULT
++# define MLOCK_ONFAULT	0x01
++#endif
 +
-+[source]
-+--------------
-+SRAT: Node 2 PXM 6 [mem 0x180000000000-0x1bffffffffff] hotplug
-+SRAT: Node 3 PXM 7 [mem 0x1c0000000000-0x1fffffffffff] hotplug
-+--------------
-+* The memory is marked as 'Movable' which is available when movable_node
-+kernel option is set.
++#endif /* LAPI_MLOCK2_H__ */
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 9ca6c42..270c649 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -443,6 +443,8 @@ mknod09 mknod09
+ mlock01 mlock01
+ mlock02 mlock02
+ 
++mlock201 mlock201
 +
-+* There are one or more memory node in the container device and the memory
-+node has 'Movable zone' only, not mixed the other zones. You can check
-+such memory node from /proc/pagetypeinfo or /proc/zoneinfo. The example
-+of /proc/pagetypeinfo is as follows.
+ qmm01 mmap001 -m 1
+ mmap01 mmap01
+ mmap02 mmap02
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index ec18dcf..6850572 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -369,6 +369,8 @@ mknod09 mknod09
+ mlock01 mlock01
+ mlock02 mlock02
+ 
++mlock201 mlock201
 +
-+[source]
-+--------------
-+Free pages count per migrate type at order       0      1      2      3      4      5      6      7      8      9     10
-+Node    3, zone  Movable, type    Unmovable      0      0      0      0      0      0      0      0      0      0      0
-+Node    3, zone  Movable, type      Movable      0      0      1      0      1      1      0      1      1      0  16382
-+Node    3, zone  Movable, type  Reclaimable      0      0      0      0      0      0      0      0      0      0      0
-+Node    3, zone  Movable, type   HighAtomic      0      0      0      0      0      0      0      0      0      0      0
-+Node    3, zone  Movable, type          CMA      0      0      0      0      0      0      0      0      0      0      0
-+Node    3, zone  Movable, type      Isolate      0      0      0      0      0      0      0      0      0      0      0
+ qmm01 mmap001 -m 1
+ mmap01 mmap01
+ mmap02 mmap02
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 3161d91..5d84d48 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -633,6 +633,8 @@ mlock02 mlock02
+ mlock03 mlock03 -i 20
+ mlock04 mlock04
+ 
++mlock201 mlock201
 +
-+Number of blocks type     Unmovable      Movable  Reclaimable   HighAtomic          CMA      Isolate
-+Node 3, zone  Movable            0        32768            0            0            0            0
-+--------------
+ qmm01 mmap001 -m 1
+ mmap01 mmap01
+ mmap02 mmap02
+diff --git a/testcases/kernel/syscalls/mlock2/.gitignore b/testcases/kernel/syscalls/mlock2/.gitignore
+new file mode 100644
+index 0000000..431eff8
+--- /dev/null
++++ b/testcases/kernel/syscalls/mlock2/.gitignore
+@@ -0,0 +1 @@
++/mlock201
+diff --git a/testcases/kernel/syscalls/mlock2/Makefile b/testcases/kernel/syscalls/mlock2/Makefile
+new file mode 100644
+index 0000000..427df06
+--- /dev/null
++++ b/testcases/kernel/syscalls/mlock2/Makefile
+@@ -0,0 +1,8 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
++# Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
 +
-+Test case description
-+---------------------
++top_srcdir		?= ../../../..
 +
-+ACPIHOTPLUG_01.sh
-+~~~~~~~~~~~~~~~~
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/mlock2/mlock201.c b/testcases/kernel/syscalls/mlock2/mlock201.c
+new file mode 100644
+index 0000000..e0517e1
+--- /dev/null
++++ b/testcases/kernel/syscalls/mlock2/mlock201.c
+@@ -0,0 +1,103 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
++ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++ */
++/*
++ * Description:
++ * Check the basic functionality of the mlock2(2) since kernel v2.6.9:
++ * 1) Use mlock2(2) without MLOCK_ONFAULT to lock memory in the specified
++ *    range that is multiples of page size or not, and the VmLck from
++ *    /proc/PID/status shows correct size of memory that is locked by PID.
++ * 2) Use mlock2(2) with MLOCK_ONFAULT to lock memory in the specified
++ *    range that is multiples of page size or not, and the VmLck from
++ *    /proc/PID/status show correct size of memory that is locked by PID.
++ */
++#include <errno.h>
++#include <unistd.h>
++#include <sys/mman.h>
++#include <linux/mman.h>
 +
-+Test1
-+^^^^^
-+Verifies hot-removing the memory.
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++#include "lapi/mlock2.h"
 +
-+Test2
-+^^^^^
-+Verifies hot-removing the CPU.
++#define PAGES	8
 +
-+Test3
-+^^^^^
-+Verifies hot-removing the ACPI container device.
++static unsigned long pgsz;
++static char *addr;
 +
-+Test4
-+^^^^^
-+Verifies hot-adding the ACPI container device.
++static struct tcase {
++	unsigned long mlock_pgs;
++	long len_off;
++	unsigned long exp_pgs;
++	int flag;
++} tcases[] = {
++	{1, 0, 1, 0},
++	{PAGES, 0, PAGES, 0},
++	/* mlock2() locks 3 pages if the specified
++	 * range is little more than 2 pages.
++	 */
++	{2, 1, 3, 0},
++	/* mlock2() locks 2 pages if the specified
++	 * range is little less than 2 pages.
++	 */
++	{2, -1, 2, 0},
++	{1, 0, 1, MLOCK_ONFAULT},
++	{PAGES, 0, PAGES, MLOCK_ONFAULT},
++	{2, 1, 3, MLOCK_ONFAULT},
++	{2, -1, 2, MLOCK_ONFAULT},
++};
 +
-+Test5
-+^^^^^
-+Verifies hot-adding the CPU.
++static void verify_mlock2(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++	unsigned long bsize, asize, act_pgs;
 +
-+Test6
-+^^^^^
-+Verifies hot-adding the memory.
++	SAFE_FILE_LINES_SCANF("/proc/self/status", "VmLck: %lu", &bsize);
++
++	TEST(tst_syscall(__NR_mlock2, addr, tc->mlock_pgs * pgsz + tc->len_off,
++			 tc->flag));
++	if (TST_RET != 0) {
++		if (tc->flag && TST_ERR == EINVAL)
++			tst_res(TCONF, "mlock2() didn't support MLOCK_ONFAULT");
++		else
++			tst_res(TFAIL | TTERRNO, "mlock2() failed");
++		return;
++	}
++
++	SAFE_FILE_LINES_SCANF("/proc/self/status", "VmLck: %lu", &asize);
++
++	act_pgs = (asize - bsize) * 1024 / pgsz;
++	if (tc->exp_pgs != act_pgs) {
++		tst_res(TFAIL, "mlock2() locked %lu pages, expected %lu",
++			tc->exp_pgs, act_pgs);
++	} else {
++		tst_res(TPASS, "mlock2() succeeded in locking %lu pages",
++			tc->exp_pgs);
++	}
++
++	SAFE_MUNLOCK(addr, tc->mlock_pgs * pgsz + tc->len_off);
++}
++
++static void setup(void)
++{
++	pgsz = getpagesize();
++	addr = SAFE_MMAP(NULL, PAGES * pgsz, PROT_WRITE,
++			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
++}
++
++static void cleanup(void)
++{
++	if (addr)
++		SAFE_MUNMAP(addr, PAGES * pgsz);
++}
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = verify_mlock2,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.min_kver = "2.6.9",
++};
 -- 
-2.18.0
+1.8.3.1
+
+
 
