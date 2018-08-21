@@ -1,96 +1,39 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 21 Aug 2018 08:02:43 -0400 (EDT)
-Subject: [LTP] [PATCH] syscalls/execveat03: Fix compiler errors
-In-Reply-To: <1534740597-4896-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1534740597-4896-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1642007852.41615039.1534852963645.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 21 Aug 2018 14:08:09 +0200
+Subject: [LTP] [PATCH 2/5] lib: Add LTP_ATTRIBUTE_FALLTHROUGH for case
+ statements
+In-Reply-To: <20180820064257.17974-3-rpalethorpe@suse.com>
+References: <20180820064257.17974-1-rpalethorpe@suse.com>
+ <20180820064257.17974-3-rpalethorpe@suse.com>
+Message-ID: <20180821120809.GC20217@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
+Hi Richard,
+
+> Can be used in place of break if you deliberately want to fallthrough to the
+> next case statement.
+...
+
+> +++ b/include/tst_common.h
+> @@ -24,6 +24,7 @@
+>  #define LTP_ATTRIBUTE_NORETURN		__attribute__((noreturn))
+>  #define LTP_ATTRIBUTE_UNUSED		__attribute__((unused))
+>  #define LTP_ATTRIBUTE_UNUSED_RESULT	__attribute__((warn_unused_result))
+> +#define LTP_ATTRIBUTE_FALLTHROUGH	__attribute__((fallthrough))
+This does not work on old GCC versions, it was added in GCC 7
+
+* GCC < 7
+fcntl33.c: In function ‘do_test’:
+fcntl33.c:160:3: warning: empty declaration
+   LTP_ATTRIBUTE_FALLTHROUGH;
+
+IMHO the most portable way is to use comment /* Fall through */, but maybe we
+don't care much about.
 
 
------ Original Message -----
-> According to open(2) and linkat(2) manpages, O_PATH and AT_EMPTY_PATH
-> flags were added since kernel v2.6.39, so these undefined flags led
-> to the following errors on older kernels(e.g. v2.6.32):
-> ---------------------------------------------------------
-> execveat03.c:66: error: ‘O_PATH’ undeclared (first use in this function)
-> execveat03.c:69: error: ‘AT_EMPTY_PATH’ undeclared (first use in this
-> function)
-> ---------------------------------------------------------
-> 
-> 1) Add AT_EMPTY_PATH into lapi/fcntl.h
-> 2) Include lapi/fcntl.h in execveat03.c
-
-Agreed with 1 and 2.
-
-> 3) Check if open(2) supports O_PATH
-
-Do we need to worry about this one? execveat() has been introduced [1]
-around v3.19. Those kernels should already support O_PATH.
-
-[1] 51f39a1f0cea ("syscalls: implement execveat() system call")
-
-> 
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  include/lapi/fcntl.h                            |  4 ++++
->  testcases/kernel/syscalls/execveat/execveat03.c | 10 +++++++++-
->  2 files changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/lapi/fcntl.h b/include/lapi/fcntl.h
-> index 849439d..358230f 100644
-> --- a/include/lapi/fcntl.h
-> +++ b/include/lapi/fcntl.h
-> @@ -103,6 +103,10 @@
->  # define AT_SYMLINK_NOFOLLOW 0x100
->  #endif
->  
-> +#ifndef AT_EMPTY_PATH
-> +# define AT_EMPTY_PATH 0x1000
-> +#endif
-> +
->  #ifndef AT_REMOVEDIR
->  # define AT_REMOVEDIR 0x200
->  #endif
-> diff --git a/testcases/kernel/syscalls/execveat/execveat03.c
-> b/testcases/kernel/syscalls/execveat/execveat03.c
-> index df27273..701784e 100644
-> --- a/testcases/kernel/syscalls/execveat/execveat03.c
-> +++ b/testcases/kernel/syscalls/execveat/execveat03.c
-> @@ -49,6 +49,7 @@
->  #include <fcntl.h>
->  #include "tst_test.h"
->  #include "lapi/execveat.h"
-> +#include "lapi/fcntl.h"
->  
->  #define OVL_MNT "ovl"
->  #define TEST_APP "execveat_child"
-> @@ -63,7 +64,14 @@ static void do_child(void)
->  
->  	SAFE_CP(TEST_APP, TEST_FILE_PATH);
->  
-> -	fd = SAFE_OPEN(TEST_FILE_PATH, O_PATH);
-> +	fd = open(TEST_FILE_PATH, O_PATH);
-> +	if (fd == -1) {
-> +		if (errno == EINVAL)
-> +			tst_brk(TCONF, "open() did not support O_PATH");
-> +		else
-> +			tst_brk(TBROK, "open() failed");
-> +	}
-> +
->  	SAFE_UNLINK(TEST_FILE_PATH);
->  
->  	TEST(execveat(fd, "", argv, environ, AT_EMPTY_PATH));
-> --
-> 1.8.3.1
-> 
-> 
-> 
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
+Kind regards,
+Petr
