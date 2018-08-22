@@ -1,87 +1,106 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 21 Aug 2018 16:05:47 +0200
-Subject: [LTP] [RFC PATCH 2/2] make: Add test target
-In-Reply-To: <20180821140547.2509-1-pvorel@suse.cz>
-References: <20180821140547.2509-1-pvorel@suse.cz>
-Message-ID: <20180821140547.2509-3-pvorel@suse.cz>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 22 Aug 2018 09:17:40 +0800
+Subject: [LTP] [PATCH] syscalls/execveat03: Fix compiler errors
+In-Reply-To: <1642007852.41615039.1534852963645.JavaMail.zimbra@redhat.com>
+References: <1534740597-4896-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1642007852.41615039.1534852963645.JavaMail.zimbra@redhat.com>
+Message-ID: <5B7CB9B4.9000405@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- Makefile           |  3 +++
- lib/tests/Makefile |  3 +++
- lib/tests/test.sh  | 32 ++++++++++++++++++++++++++++++++
- 3 files changed, 38 insertions(+)
- create mode 100755 lib/tests/test.sh
+On 2018/08/21 20:02, Jan Stancek wrote:
+>
+> ----- Original Message -----
+>> According to open(2) and linkat(2) manpages, O_PATH and AT_EMPTY_PATH
+>> flags were added since kernel v2.6.39, so these undefined flags led
+>> to the following errors on older kernels(e.g. v2.6.32):
+>> ---------------------------------------------------------
+>> execveat03.c:66: error: ‘O_PATH’ undeclared (first use in this function)
+>> execveat03.c:69: error: ‘AT_EMPTY_PATH’ undeclared (first use in this
+>> function)
+>> ---------------------------------------------------------
+>>
+>> 1) Add AT_EMPTY_PATH into lapi/fcntl.h
+>> 2) Include lapi/fcntl.h in execveat03.c
+> Agreed with 1 and 2.
+>
+>> 3) Check if open(2) supports O_PATH
+> Do we need to worry about this one? execveat() has been introduced [1]
+> around v3.19. Those kernels should already support O_PATH.
+>
+> [1] 51f39a1f0cea ("syscalls: implement execveat() system call")
+Hi Jan,
 
-diff --git a/Makefile b/Makefile
-index b0368a472..f886ac350 100644
---- a/Makefile
-+++ b/Makefile
-@@ -89,6 +89,9 @@ MAKE_TARGETS		:= $(addsuffix -all,$(filter-out lib,$(COMMON_TARGETS)))
- # overtaxed one, or one where -j => 1 was specified.
- all: $(addsuffix -all,$(COMMON_TARGETS)) Version
- 
-+test:
-+	cd lib/tests && make $@
-+
- $(MAKE_TARGETS): lib-all
- 
- .PHONY: include-all include-install
-diff --git a/lib/tests/Makefile b/lib/tests/Makefile
-index 73a0f1655..732fee2c4 100644
---- a/lib/tests/Makefile
-+++ b/lib/tests/Makefile
-@@ -7,4 +7,7 @@ LDLIBS			+= -lltp
- 
- tst_cleanup_once: CFLAGS += -pthread
- 
-+test:
-+	./test.sh $(MAKE_TARGETS)
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/lib/tests/test.sh b/lib/tests/test.sh
-new file mode 100755
-index 000000000..81d57a81b
---- /dev/null
-+++ b/lib/tests/test.sh
-@@ -0,0 +1,32 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2016-2018 Petr Vorel <pvorel@suse.cz>
-+
-+set -e
-+
-+for i in $@; do
-+    echo "=== Testing '$i' ==="
-+    case $i in
-+        tst_checkpoint_wake_timeout|tst_record_childstatus)
-+        if [ "$i" = "tst_record_childstatus" ]; then
-+            echo "NOTE: expecting fail the test"
-+            ./$i || [ $? -eq 1 ]
-+        fi
-+        ;;
-+        tst_device)
-+            if [ $(id -u) -ne 0 ]; then
-+                echo "WARN: not root, skip the test"
-+            else
-+                ./$i
-+            fi
-+        ;;
-+        *)
-+        ./$i
-+        ;;
-+    esac
-+    echo
-+done
-+
-+echo "END OF TESTING"
-+
-+# vim: set ft=sh ts=4 sts=4 sw=4 expandtab :
--- 
-2.18.0
+Thanks for your review.
+It is reasonable to drop this check as you explained.
+
+Thanks,
+Xiao Yang
+>> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
+>> ---
+>>   include/lapi/fcntl.h                            |  4 ++++
+>>   testcases/kernel/syscalls/execveat/execveat03.c | 10 +++++++++-
+>>   2 files changed, 13 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/lapi/fcntl.h b/include/lapi/fcntl.h
+>> index 849439d..358230f 100644
+>> --- a/include/lapi/fcntl.h
+>> +++ b/include/lapi/fcntl.h
+>> @@ -103,6 +103,10 @@
+>>   # define AT_SYMLINK_NOFOLLOW 0x100
+>>   #endif
+>>
+>> +#ifndef AT_EMPTY_PATH
+>> +# define AT_EMPTY_PATH 0x1000
+>> +#endif
+>> +
+>>   #ifndef AT_REMOVEDIR
+>>   # define AT_REMOVEDIR 0x200
+>>   #endif
+>> diff --git a/testcases/kernel/syscalls/execveat/execveat03.c
+>> b/testcases/kernel/syscalls/execveat/execveat03.c
+>> index df27273..701784e 100644
+>> --- a/testcases/kernel/syscalls/execveat/execveat03.c
+>> +++ b/testcases/kernel/syscalls/execveat/execveat03.c
+>> @@ -49,6 +49,7 @@
+>>   #include<fcntl.h>
+>>   #include "tst_test.h"
+>>   #include "lapi/execveat.h"
+>> +#include "lapi/fcntl.h"
+>>
+>>   #define OVL_MNT "ovl"
+>>   #define TEST_APP "execveat_child"
+>> @@ -63,7 +64,14 @@ static void do_child(void)
+>>
+>>   	SAFE_CP(TEST_APP, TEST_FILE_PATH);
+>>
+>> -	fd = SAFE_OPEN(TEST_FILE_PATH, O_PATH);
+>> +	fd = open(TEST_FILE_PATH, O_PATH);
+>> +	if (fd == -1) {
+>> +		if (errno == EINVAL)
+>> +			tst_brk(TCONF, "open() did not support O_PATH");
+>> +		else
+>> +			tst_brk(TBROK, "open() failed");
+>> +	}
+>> +
+>>   	SAFE_UNLINK(TEST_FILE_PATH);
+>>
+>>   	TEST(execveat(fd, "", argv, environ, AT_EMPTY_PATH));
+>> --
+>> 1.8.3.1
+>>
+>>
+>>
+>>
+>> --
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+>>
+>
+> .
+>
+
+
 
