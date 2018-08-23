@@ -1,87 +1,50 @@
-From: Punit Agrawal <punit.agrawal@arm.com>
-Date: Tue, 31 Jul 2018 17:47:45 +0100
-Subject: [LTP] [PATCH v3] ltp-pan: Increase allowed width of test name in
-	logs
-Message-ID: <20180731164745.7289-1-punit.agrawal@arm.com>
-List-Id: <ltp.lists.linux.it>
+Return-Path: <ltp-list-bounces@lists.sourceforge.net>
+Received: from [172.30.20.202] (helo=mx.sourceforge.net)
+ by sfs-ml-4.v29.lw.sourceforge.com with esmtps
+ (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.90_1)
+ (envelope-from <metan@suse.de>) id 1fsqW0-0000fB-7C
+ for ltp-list@lists.sourceforge.net; Thu, 23 Aug 2018 14:23:12 +0000
+Received: from mx2.suse.de ([195.135.220.15] helo=mx1.suse.de)
+ by sfi-mx-4.v28.lw.sourceforge.com with esmtps
+ (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.90_1)
+ id 1fsqVw-007iRk-Hq
+ for ltp-list@lists.sourceforge.net; Thu, 23 Aug 2018 14:23:12 +0000
+Date: Thu, 23 Aug 2018 16:21:30 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20180823142130.GA16435@rei>
+References: <1534955646-104428-1-git-send-email-zhe.he@windriver.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1534955646-104428-1-git-send-email-zhe.he@windriver.com>
+Subject: Re: [LTP] [PATCH] fs/ftest/ftest06.c: Fix too small name string and
+ related failure
+List-Id: Linux Test Project General Discussions
+ <ltp-list.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/options/ltp-list>,
+ <mailto:ltp-list-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=ltp-list>
+List-Post: <mailto:ltp-list@lists.sourceforge.net>
+List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
+ <mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: ltp@lists.linux.it
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: zhe.he@windriver.com
+Cc: ltp-list@lists.sourceforge.net
 
-ltp-pan truncates the test name when logging the outcome of
-tests. This is causing issues with tooling which is expecting to parse
-unique test names from the log.
+Hi!
+This mailing list has been replaced by ltp@lists.linux.it long time ago,
+please send patches to the new list instead.
 
-cgroup_fj_stress_cpuacct_2_2_o PASS       0
-cgroup_fj_stress_cpuacct_3_3_o PASS       0
-cgroup_fj_stress_cpuacct_4_4_o PASS       0
-cgroup_fj_stress_cpuacct_2_9_o PASS       0
-cgroup_fj_stress_cpuacct_10_3_ PASS       0
-
-Fix this by increasing the expected size of test name and removing the
-hard restriction on the size of the name. Refactor the common part of
-the format string into a macro as it seems to be repeated a few.
-
-Signed-off-by: Punit Agrawal <punit.agrawal@arm.com>
----
-Hi,
-
-I've updated the patch to fix the issues from the previous version, viz,
-
-* corrected the bogus macro definition
-* re-factored only part of the format string
-
-Thanks,
-Punit
-
- pan/ltp-pan.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
-index a2bb9b7ef..8ac484ec6 100644
---- a/pan/ltp-pan.c
-+++ b/pan/ltp-pan.c
-@@ -130,6 +130,9 @@ static char *test_out_dir = NULL;	/* dir to buffer output to */
- zoo_t zoofile;
- static char *reporttype = NULL;
- 
-+/* Common format string for ltp-pan results */
-+#define ResultFmt	"%-50s %-10.10s"
-+
- /* zoolib */
- int rec_signal;			/* received signal */
- int send_signal;		/* signal to send */
-@@ -350,9 +353,9 @@ int main(int argc, char **argv)
- 			fprintf(logfile, "Test Start Time: %s\n", s);
- 			fprintf(logfile,
- 				"-----------------------------------------\n");
--			fprintf(logfile, "%-30.20s %-10.10s %-10.10s\n",
-+			fprintf(logfile, ResultFmt" %-10.10s\n",
- 				"Testcase", "Result", "Exit Value");
--			fprintf(logfile, "%-30.20s %-10.10s %-10.10s\n",
-+			fprintf(logfile, ResultFmt" %-10.10s\n",
- 				"--------", "------", "------------");
- 		}
- 		fflush(logfile);
-@@ -825,7 +828,7 @@ check_pids(struct tag_pgrp *running, int *num_active, int keep_active,
- 						}
- 
- 						fprintf(logfile,
--							"%-30.30s %-10.10s %-5d\n",
-+							ResultFmt" %-5d\n",
- 							running[i].cmd->name,
- 							result_str,
- 							w);
-@@ -1104,7 +1107,7 @@ run_child(struct coll_entry *colle, struct tag_pgrp *active, int quiet_mode,
- 				if (termid != 0)
- 					++ * failcnt;
- 
--				fprintf(logfile, "%-30.30s %-10.10s %-5d\n",
-+				fprintf(logfile, ResultFmt" %-5d\n",
- 					colle->name,
- 					((termid != 0) ? "FAIL" : "PASS"),
- 					termid);
 -- 
-2.18.0
+Cyril Hrubis
+chrubis@suse.cz
 
+------------------------------------------------------------------------------
+Check out the vibrant tech community on one of the world's most
+engaging tech sites, Slashdot.org! http://sdm.link/slashdot
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
