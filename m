@@ -1,94 +1,37 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 23 Aug 2018 17:18:41 +0800
-Subject: [LTP] [PATCH] newlib_tests/test_exec.c: Fix compiler error
- before glibc v2.11
-In-Reply-To: <1535015214-4033-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1535015214-4033-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <5B7E7BF1.5070601@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 23 Aug 2018 09:22:32 -0400 (EDT)
+Subject: [LTP] [RFC PATCH 2/2] make: Add test target
+In-Reply-To: <20180821140547.2509-3-pvorel@suse.cz>
+References: <20180821140547.2509-1-pvorel@suse.cz>
+ <20180821140547.2509-3-pvorel@suse.cz>
+Message-ID: <87678476.42057848.1535030552166.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2018/08/23 17:06, Xiao Yang wrote:
-> From: xiao yang <yangx.jy@cn.fujitsu.com>
->
-> Before glibc v2.11, execvpe() was not introduced and resulted in
-> compiler error, so we replace execvpe() with execve() and update
-> test-writing-guidelines.txt.
->
-> Signed-off-by: xiao yang <yangx.jy@cn.fujitsu.com>
-Hi,
 
-Sorry for the wrong signature.
-
-The correct one:
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-
-Thanks,
-Xiao Yang
+----- Original Message -----
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
->  doc/test-writing-guidelines.txt | 11 ++++++++---
->  lib/newlib_tests/test_exec.c    | 11 ++++++++---
->  2 files changed, 16 insertions(+), 6 deletions(-)
->
-> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-> index a169724..f62e16e 100644
-> --- a/doc/test-writing-guidelines.txt
-> +++ b/doc/test-writing-guidelines.txt
-> @@ -696,15 +696,20 @@ a non zero exit code.
->  [source,c]
->  -------------------------------------------------------------------------------
->  /* test.c */
-> -#define _GNU_SOURCE
-> -#include <stdlib.h>
-> +#include <unistd.h>
->  #include "tst_test.h"
->  
-> +extern char **environ;
+>  Makefile           |  3 +++
+>  lib/tests/Makefile |  3 +++
+>  lib/tests/test.sh  | 32 ++++++++++++++++++++++++++++++++
+>  3 files changed, 38 insertions(+)
+>  create mode 100755 lib/tests/test.sh
 > +
->  static void do_test(void)
->  {
->  	char *const argv[] = {"test_exec_child", NULL};
-> +	char path[4096];
-> +
-> +	if (tst_get_path("test_exec_child", path, sizeof(path)))
-> +		tst_brk(TCONF, "Couldn't find test_exec_child in $PATH");
->  
-> -	execvpe(argv[0], argv, environ);
-> +	execve(path, argv, environ);
->  
->  	tst_res(TBROK | TERRNO, "EXEC!");
->  }
-> diff --git a/lib/newlib_tests/test_exec.c b/lib/newlib_tests/test_exec.c
-> index 8aef621..e70080e 100644
-> --- a/lib/newlib_tests/test_exec.c
-> +++ b/lib/newlib_tests/test_exec.c
-> @@ -24,15 +24,20 @@
->   * $ PATH=$PATH:$PWD ./test_exec
->   */
->  
-> -#define _GNU_SOURCE
-> -#include <stdlib.h>
-> +#include <unistd.h>
->  #include "tst_test.h"
->  
-> +extern char **environ;
-> +
->  static void do_test(void)
->  {
->  	char *const argv[] = {"test_exec_child", NULL};
-> +	char path[4096];
-> +
-> +	if (tst_get_path("test_exec_child", path, sizeof(path)))
-> +		tst_brk(TCONF, "Couldn't find test_exec_child in $PATH");
->  
-> -	execvpe(argv[0], argv, environ);
-> +	execve(path, argv, environ);
->  
->  	tst_res(TBROK | TERRNO, "EXEC!");
->  }
+> +for i in $@; do
+> +    echo "=== Testing '$i' ==="
+> +    case $i in
+> +        tst_checkpoint_wake_timeout|tst_record_childstatus)
+> +        if [ "$i" = "tst_record_childstatus" ]; then
+> +            echo "NOTE: expecting fail the test"
+> +            ./$i || [ $? -eq 1 ]
+> +        fi
 
+I'd prefer we fix the tests and make them return 0 if everything goes as expected.
 
+Regards,
+Jan
 
