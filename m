@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 24 Aug 2018 16:56:56 +0200
-Subject: [LTP] [PATCH] newlib_tests/test_exec.c: Fix compiler error
- before glibc v2.11
-In-Reply-To: <1535015214-4033-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1535015214-4033-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20180824145656.GA5131@rei>
+Date: Fri, 24 Aug 2018 17:01:19 +0200
+Subject: [LTP] [RFC PATCH 2/2] make: Add test target
+In-Reply-To: <20180821140547.2509-3-pvorel@suse.cz>
+References: <20180821140547.2509-1-pvorel@suse.cz>
+ <20180821140547.2509-3-pvorel@suse.cz>
+Message-ID: <20180824150119.GA1622@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,88 +12,85 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Before glibc v2.11, execvpe() was not introduced and resulted in
-> compiler error, so we replace execvpe() with execve() and update
-> test-writing-guidelines.txt.
-> 
-> Signed-off-by: xiao yang <yangx.jy@cn.fujitsu.com>
-> ---
->  doc/test-writing-guidelines.txt | 11 ++++++++---
->  lib/newlib_tests/test_exec.c    | 11 ++++++++---
->  2 files changed, 16 insertions(+), 6 deletions(-)
-> 
-> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-> index a169724..f62e16e 100644
-> --- a/doc/test-writing-guidelines.txt
-> +++ b/doc/test-writing-guidelines.txt
-> @@ -696,15 +696,20 @@ a non zero exit code.
->  [source,c]
->  -------------------------------------------------------------------------------
->  /* test.c */
-> -#define _GNU_SOURCE
-> -#include <stdlib.h>
-> +#include <unistd.h>
->  #include "tst_test.h"
+> diff --git a/Makefile b/Makefile
+> index b0368a472..f886ac350 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -89,6 +89,9 @@ MAKE_TARGETS		:= $(addsuffix -all,$(filter-out lib,$(COMMON_TARGETS)))
+>  # overtaxed one, or one where -j => 1 was specified.
+>  all: $(addsuffix -all,$(COMMON_TARGETS)) Version
 >  
-> +extern char **environ;
-
-Looking at this the only change here should be:
-
-> -#include <stdlib.h>
-> +#include <unistd.h>
-
-As man 7 environ says:
-
-(This variable must be declared in the user program, but is declared in
-the header file <unistd.h> if the _GNU_SOURCE feature test macro is
-defined.)
-
-Or is environ not defined with _GNU_SOURCE for older libc?
-
->  static void do_test(void)
->  {
->  	char *const argv[] = {"test_exec_child", NULL};
-> +	char path[4096];
+> +test:
+> +	cd lib/tests && make $@
 > +
-> +	if (tst_get_path("test_exec_child", path, sizeof(path)))
-> +		tst_brk(TCONF, "Couldn't find test_exec_child in $PATH");
+>  $(MAKE_TARGETS): lib-all
 >  
-> -	execvpe(argv[0], argv, environ);
-> +	execve(path, argv, environ);
->  	tst_res(TBROK | TERRNO, "EXEC!");
->  }
-> diff --git a/lib/newlib_tests/test_exec.c b/lib/newlib_tests/test_exec.c
-> index 8aef621..e70080e 100644
-> --- a/lib/newlib_tests/test_exec.c
-> +++ b/lib/newlib_tests/test_exec.c
-> @@ -24,15 +24,20 @@
->   * $ PATH=$PATH:$PWD ./test_exec
->   */
+>  .PHONY: include-all include-install
+> diff --git a/lib/tests/Makefile b/lib/tests/Makefile
+> index 73a0f1655..732fee2c4 100644
+> --- a/lib/tests/Makefile
+> +++ b/lib/tests/Makefile
+> @@ -7,4 +7,7 @@ LDLIBS			+= -lltp
 >  
-> -#define _GNU_SOURCE
-> -#include <stdlib.h>
-> +#include <unistd.h>
->  #include "tst_test.h"
+>  tst_cleanup_once: CFLAGS += -pthread
 >  
-> +extern char **environ;
-
-Here as well.
-
->  static void do_test(void)
->  {
->  	char *const argv[] = {"test_exec_child", NULL};
-> +	char path[4096];
+> +test:
+> +	./test.sh $(MAKE_TARGETS)
 > +
-> +	if (tst_get_path("test_exec_child", path, sizeof(path)))
-> +		tst_brk(TCONF, "Couldn't find test_exec_child in $PATH");
->  
-> -	execvpe(argv[0], argv, environ);
-> +	execve(path, argv, environ);
->  
->  	tst_res(TBROK | TERRNO, "EXEC!");
->  }
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/lib/tests/test.sh b/lib/tests/test.sh
+> new file mode 100755
+> index 000000000..81d57a81b
+> --- /dev/null
+> +++ b/lib/tests/test.sh
+> @@ -0,0 +1,32 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2016-2018 Petr Vorel <pvorel@suse.cz>
+> +
+> +set -e
+> +
+> +for i in $@; do
+> +    echo "=== Testing '$i' ==="
+> +    case $i in
+> +        tst_checkpoint_wake_timeout|tst_record_childstatus)
+> +        if [ "$i" = "tst_record_childstatus" ]; then
+> +            echo "NOTE: expecting fail the test"
+> +            ./$i || [ $? -eq 1 ]
+> +        fi
+> +        ;;
+> +        tst_device)
+> +            if [ $(id -u) -ne 0 ]; then
+> +                echo "WARN: not root, skip the test"
+> +            else
+> +                ./$i
+> +            fi
+> +        ;;
 
-Otherwise it looks good.
+Listing the testcases does not scale that much. I wonder how we can do
+better.
+
+Also new library tests are stored in newlib_tests directory.
+
+> +        *)
+> +        ./$i
+> +        ;;
+> +    esac
+> +    echo
+> +done
+> +
+> +echo "END OF TESTING"
+> +
+> +# vim: set ft=sh ts=4 sts=4 sw=4 expandtab :
+
+I wonder if we can try to check output of these tests against expected
+output. Most of the testcases have nice and stable output that is always
+the same. Some of the include pid in the test output that will change
+with each iteration and some, for instance the thread safety related
+tests for the new library, produce the output lines in random order.
+
+So maybe the solution would be grepping for pre-defined patterns in the
+test output in the case that the test output is not stable.
 
 -- 
 Cyril Hrubis
