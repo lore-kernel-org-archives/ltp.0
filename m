@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 24 Aug 2018 14:10:20 +0200
-Subject: [LTP] [PATCH v2] syscalls: Add set_mempolicy numa tests.
-In-Reply-To: <1686534238.42299708.1535101746576.JavaMail.zimbra@redhat.com>
-References: <20180823135457.15806-1-chrubis@suse.cz>
- <1686534238.42299708.1535101746576.JavaMail.zimbra@redhat.com>
-Message-ID: <20180824121020.GB17072@rei>
+Date: Fri, 24 Aug 2018 16:56:56 +0200
+Subject: [LTP] [PATCH] newlib_tests/test_exec.c: Fix compiler error
+ before glibc v2.11
+In-Reply-To: <1535015214-4033-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1535015214-4033-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20180824145656.GA5131@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,86 +12,88 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> I don't have objections to this approach. Just want to re-iterate, that
-> we should also check each node has enough free memory. Couple comments below:
+> Before glibc v2.11, execvpe() was not introduced and resulted in
+> compiler error, so we replace execvpe() with execve() and update
+> test-writing-guidelines.txt.
+> 
+> Signed-off-by: xiao yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  doc/test-writing-guidelines.txt | 11 ++++++++---
+>  lib/newlib_tests/test_exec.c    | 11 ++++++++---
+>  2 files changed, 16 insertions(+), 6 deletions(-)
+> 
+> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+> index a169724..f62e16e 100644
+> --- a/doc/test-writing-guidelines.txt
+> +++ b/doc/test-writing-guidelines.txt
+> @@ -696,15 +696,20 @@ a non zero exit code.
+>  [source,c]
+>  -------------------------------------------------------------------------------
+>  /* test.c */
+> -#define _GNU_SOURCE
+> -#include <stdlib.h>
+> +#include <unistd.h>
+>  #include "tst_test.h"
+>  
+> +extern char **environ;
 
-Yes, that is still missing here.
+Looking at this the only change here should be:
 
-> +static void inc_counter(unsigned int node, struct tst_nodemap *nodes)
-> +{
-> +        unsigned int i;
+> -#include <stdlib.h>
+> +#include <unistd.h>
+
+As man 7 environ says:
+
+(This variable must be declared in the user program, but is declared in
+the header file <unistd.h> if the _GNU_SOURCE feature test macro is
+defined.)
+
+Or is environ not defined with _GNU_SOURCE for older libc?
+
+>  static void do_test(void)
+>  {
+>  	char *const argv[] = {"test_exec_child", NULL};
+> +	char path[4096];
 > +
-> +        for (i = 0; i < nodes->cnt; i++) {
-> +                if (nodes->map[i] == node) {
-> +                        nodes->counters[i]++;
-> +                        break;
-> +                }
-> 
-> I'd add some check here to warn or TBROK, in case we somehow end up with node id
-> that's not in the map.
+> +	if (tst_get_path("test_exec_child", path, sizeof(path)))
+> +		tst_brk(TCONF, "Couldn't find test_exec_child in $PATH");
+>  
+> -	execvpe(argv[0], argv, environ);
+> +	execve(path, argv, environ);
+>  	tst_res(TBROK | TERRNO, "EXEC!");
+>  }
+> diff --git a/lib/newlib_tests/test_exec.c b/lib/newlib_tests/test_exec.c
+> index 8aef621..e70080e 100644
+> --- a/lib/newlib_tests/test_exec.c
+> +++ b/lib/newlib_tests/test_exec.c
+> @@ -24,15 +24,20 @@
+>   * $ PATH=$PATH:$PWD ./test_exec
+>   */
+>  
+> -#define _GNU_SOURCE
+> -#include <stdlib.h>
+> +#include <unistd.h>
+>  #include "tst_test.h"
+>  
+> +extern char **environ;
 
-Well I do that in the tst_numa_alloc_parse() but I agree that this is a
-more logical place to do the check.
+Here as well.
 
-> > +void tst_numa_alloc_parse(struct tst_nodemap *nodes, const char *path,
-> > +                          unsigned int pages)
-> > +{
-> > +	size_t page_size = getpagesize();
-> > +	char *ptr;
-> > +	int fd = -1;
-> > +	int flags = MAP_PRIVATE|MAP_ANONYMOUS;
-> > +	int node;
-> > +	unsigned int i;
-> > +
-> > +	if (path) {
-> > +		fd = SAFE_OPEN(path, O_CREAT | O_EXCL | O_RDWR, 0666);
-> > +		SAFE_FTRUNCATE(fd, pages * page_size);
-> > +		flags = MAP_SHARED;
-> > +	}
-> > +
-> > +	ptr = SAFE_MMAP(NULL, pages  * page_size,
-> > +	                PROT_READ|PROT_WRITE, flags, fd, 0);
-> > +
-> > +	if (path) {
-> > +		SAFE_CLOSE(fd);
-> > +		SAFE_UNLINK(path);
-> > +	}
-> > +
-> > +	memset(ptr, 'a', pages * page_size);
-> > +
-> > +	for (i = 0; i < pages; i++) {
-> > +		get_mempolicy(&node, NULL, 0, ptr + i * page_size, MPOL_F_NODE |
-> > MPOL_F_ADDR);
-> > +
-> > +		if (node < 0 || (unsigned int)node >= nodes->cnt) {
-> > +			tst_res(TWARN, "get_mempolicy(...) returned invalid node %i\n", node);
-> > +			continue;
-> > +		}
-> > +
-> > +		inc_counter(node, nodes);
-> > +	}
-> 
-> This seems useful as a separate function, for example: tst_nodemap_count_area(ptr, size).
-> Maybe the user wants to count already allocated area.
+>  static void do_test(void)
+>  {
+>  	char *const argv[] = {"test_exec_child", NULL};
+> +	char path[4096];
+> +
+> +	if (tst_get_path("test_exec_child", path, sizeof(path)))
+> +		tst_brk(TCONF, "Couldn't find test_exec_child in $PATH");
+>  
+> -	execvpe(argv[0], argv, environ);
+> +	execve(path, argv, environ);
+>  
+>  	tst_res(TBROK | TERRNO, "EXEC!");
+>  }
 
-Sure.
-
-> > +++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c
-> > + * We are testing set_mempolicy() with MPOL_BIND and MPOL_PREFERRED.
-> 
-> > +++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
-> > + * We are testing set_mempolicy() with MPOL_BIND and MPOL_PREFERRED backed
-> > by a file.
-> 
-> First and third test look very similar, any chance we can combine them?
-
-I doubt so, the main difference is that the third test allocates the
-memory by faulting memory mapped file and hence it's executed with
-all_filesystems flag, while the the first one works only with anonymous
-memory.
-
-I guess that we may put some pieces of the code to a shared library
-though.
+Otherwise it looks good.
 
 -- 
 Cyril Hrubis
