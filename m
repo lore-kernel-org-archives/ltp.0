@@ -1,37 +1,39 @@
-From: He Zhe <zhe.he@windriver.com>
-Date: Thu, 23 Aug 2018 18:59:53 -0700
-Subject: [LTP] [PATCH] fs/ftest/ftest06.c: Fix too small name string and
-	related failure
-Message-ID: <20180824015953.28684-1-zhe.he@windriver.com>
+From: Davidlohr Bueso <dave@stgolabs.net>
+Date: Thu, 23 Aug 2018 20:09:20 -0700
+Subject: [LTP] [PATCH] ipc/shm: properly return EIDRM in shm_lock()
+In-Reply-To: <20180823041434.GC3677@linux-r8p5>
+References: <20180823024051.GC13343@shao2-debian>
+ <20180823041434.GC3677@linux-r8p5>
+Message-ID: <20180824030920.GD3677@linux-r8p5>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The name string is too small to contain normal full path names and causes
-the following failure.
+When getting rid of the general ipc_lock(), this was missed
+furthermore, making the comment around the ipc object validity
+check bogus. Under EIDRM conditions, callers will in turn not
+see the error and continue with the operation.
 
-"ftest06     2  TFAIL  :  ftest06.c:223: Can't chdir(): errno=ENOENT(2): No such file or directory"
-
-Signed-off-by: He Zhe <zhe.he@windriver.com>
+Fixes: 82061c57ce9 (ipc: drop ipc_lock())
+Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
 ---
- testcases/kernel/fs/ftest/ftest06.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ ipc/shm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/fs/ftest/ftest06.c b/testcases/kernel/fs/ftest/ftest06.c
-index 2ca7c8880..b43406785 100644
---- a/testcases/kernel/fs/ftest/ftest06.c
-+++ b/testcases/kernel/fs/ftest/ftest06.c
-@@ -100,7 +100,7 @@ static char *fstyp;
- int main(int ac, char *av[])
- {
- 	int pid, child, status, count, k, j;
--	char name[3];
-+	char name[MAXPATHLEN];
+diff --git a/ipc/shm.c b/ipc/shm.c
+index b0eb3757ab89..4cd402e4cfeb 100644
+--- a/ipc/shm.c
++++ b/ipc/shm.c
+@@ -199,6 +199,7 @@ static inline struct shmid_kernel *shm_lock(struct ipc_namespace *ns, int id)
+ 	}
  
- 	int lc;
- 
+ 	ipc_unlock_object(ipcp);
++	ipcp = ERR_PTR(-EIDRM);
+ err:
+ 	rcu_read_unlock();
+ 	/*
 -- 
-2.11.0
+2.16.4
 
