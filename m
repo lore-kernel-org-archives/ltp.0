@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 24 Aug 2018 17:01:19 +0200
-Subject: [LTP] [RFC PATCH 2/2] make: Add test target
-In-Reply-To: <20180821140547.2509-3-pvorel@suse.cz>
-References: <20180821140547.2509-1-pvorel@suse.cz>
- <20180821140547.2509-3-pvorel@suse.cz>
-Message-ID: <20180824150119.GA1622@rei>
+Date: Fri, 24 Aug 2018 18:12:08 +0200
+Subject: [LTP] [PATCH 1/5] acpi_hotplug: Add library file for ACPI based
+ cpu and memory hotplug
+In-Reply-To: <20180820194915.11805-2-msys.mizuma@gmail.com>
+References: <20180820194915.11805-1-msys.mizuma@gmail.com>
+ <20180820194915.11805-2-msys.mizuma@gmail.com>
+Message-ID: <20180824161208.GB5131@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,85 +13,368 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> diff --git a/Makefile b/Makefile
-> index b0368a472..f886ac350 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -89,6 +89,9 @@ MAKE_TARGETS		:= $(addsuffix -all,$(filter-out lib,$(COMMON_TARGETS)))
->  # overtaxed one, or one where -j => 1 was specified.
->  all: $(addsuffix -all,$(COMMON_TARGETS)) Version
->  
-> +test:
-> +	cd lib/tests && make $@
-> +
->  $(MAKE_TARGETS): lib-all
->  
->  .PHONY: include-all include-install
-> diff --git a/lib/tests/Makefile b/lib/tests/Makefile
-> index 73a0f1655..732fee2c4 100644
-> --- a/lib/tests/Makefile
-> +++ b/lib/tests/Makefile
-> @@ -7,4 +7,7 @@ LDLIBS			+= -lltp
->  
->  tst_cleanup_once: CFLAGS += -pthread
->  
-> +test:
-> +	./test.sh $(MAKE_TARGETS)
-> +
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/lib/tests/test.sh b/lib/tests/test.sh
-> new file mode 100755
-> index 000000000..81d57a81b
-> --- /dev/null
-> +++ b/lib/tests/test.sh
-> @@ -0,0 +1,32 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2016-2018 Petr Vorel <pvorel@suse.cz>
-> +
-> +set -e
-> +
-> +for i in $@; do
-> +    echo "=== Testing '$i' ==="
-> +    case $i in
-> +        tst_checkpoint_wake_timeout|tst_record_childstatus)
-> +        if [ "$i" = "tst_record_childstatus" ]; then
-> +            echo "NOTE: expecting fail the test"
-> +            ./$i || [ $? -eq 1 ]
-> +        fi
-> +        ;;
-> +        tst_device)
-> +            if [ $(id -u) -ne 0 ]; then
-> +                echo "WARN: not root, skip the test"
-> +            else
-> +                ./$i
-> +            fi
-> +        ;;
+> +export HOTPLUGABLE_CONTAINER=
+> +export HOTPLUGABLE_NODES=()
 
-Listing the testcases does not scale that much. I wonder how we can do
-better.
+Arrays are bashism, the best we can do in portable shell is to emulate
+arrays by appending the nodes into a variable and separate them by
+spaces.
 
-Also new library tests are stored in newlib_tests directory.
-
-> +        *)
-> +        ./$i
-> +        ;;
-> +    esac
-> +    echo
-> +done
+> +RETRY=5
+> +RETRY_TIME=60
 > +
-> +echo "END OF TESTING"
+> +# $1: node number
+> +is_memoryless_node()
+> +{
+> +	local node=$1
 > +
-> +# vim: set ft=sh ts=4 sts=4 sw=4 expandtab :
+> +	numactl -H | awk '
+> +		/node '$node' size:/ {
+> +			if ($4 == 0)
+> +				prine 1
+                                  ^
+				  Typo?
+> +			else
+> +				print 0
+> +		}'
+> +}
+> +
+> +# $1: node number
+> +is_movable_node()
+> +{
+> +	local node=$1
+> +
+> +	awk '
+> +	BEGIN {
+> +		zone = ""
+> +		NotMovableFound = 0
+> +		nextnode = '$node' + 1
+> +	}
+> +	/^Node '$node'/{
+> +		zone = $4
+> +	}
+> +	/present/ {
+> +		if (zone != "") {
+> +			if ((zone != "Movable") && ($2 != 0)) {
+> +				NotMovableFound = 1
+> +				exit
+> +			}
+> +		}
+> +	}
+> +	match($0, "^Node " nextnode) {
+> +		exit
+> +	}
+> +
+> +	END {
+> +		if (NotMovableFound == 0)
+> +			print 1
+> +		else
+> +			print 0
+> +	}
+> +	' /proc/zoneinfo
 
-I wonder if we can try to check output of these tests against expected
-output. Most of the testcases have nice and stable output that is always
-the same. Some of the include pid in the test output that will change
-with each iteration and some, for instance the thread safety related
-tests for the new library, produce the output lines in random order.
 
-So maybe the solution would be grepping for pre-defined patterns in the
-test output in the case that the test output is not stable.
+This looks far to complex, what exactly are we trying to figure out here?
+
+> +}
+> +
+> +stop_udev()
+> +{
+> +	systemctl stop systemd-udevd-kernel.socket
+> +	systemctl stop systemd-udevd-control.socket
+> +	systemctl stop systemd-udevd.service
+> +}
+> +
+> +resume_udev()
+> +{
+> +	systemctl start systemd-udevd.service
+> +	systemctl start systemd-udevd-kernel.socket
+> +	systemctl start systemd-udevd-control.socket
+> +}
+
+You should at least check if we are running on systemd based
+distribution before you attempt to blindly stop udev with systemctl.
+
+> +_setup()
+
+Why can't we call this lib_setup() or something like that?
+
+> +{
+> +	local ACPI_CONTAINERS=()
+> +	local ONLINE_CONTAINERS=()
+> +	local CPUS=()
+> +	local tmp_NODES=()
+> +	local NODES=()
+> +	local movable_node=
+> +	local NOHP_NODES=0
+
+Again heavy use of arrays.
+
+> +	ACPI_CONTAINERS=( $(find /sys/devices/LNXSYSTM\:00/ -name 'ACPI0004:*') )
+
+I'm a bit confuse here about the ACPI0004:*, what exactly is that? Is
+that a numa node or collection of numa nodes or something complete else?
+
+I've tried to boot qemu x86_64 machine with numa emulation turned on but
+these files are not present there so I suppose that I cannot really run
+this test without specific hardware or ACPI emulation being added to
+qemu.
+
+> +	ONLINE_CONTAINERS=()
+> +	for c in ${ACPI_CONTAINERS[@]}; do
+> +		status=$(cat $c/status)
+> +		if [[ $status -ne 0 ]]; then
+
+The [[ ]] is bashism, you should really use [ ] instead in the whole
+script.
+
+> +			ONLINE_CONTAINERS=( ${ONLINE_CONTAINERS[@]} $c )
+> +		fi
+> +	done
+> +
+> +	if [[ ${#ONLINE_CONTAINERS[@]} -lt 2 ]]; then
+> +		tst_brk TCONF "The number of online ACPI containers is not enough. 2 or more online ACPI containers are needed, but this system has ${#ONLINE_CONTAINERS[@]} contianers."
+
+This line is far too long. The result message has to be short and to the
+point.
+
+> +	fi
+> +
+> +	for c in ${ONLINE_CONTAINERS[@]}; do
+> +		CPUS=( $(find $c -name 'ACPI0007:*' ) )
+> +		tmp_NODES=()
+> +		NODES=()
+> +		NOHP_NODES=0
+> +		for cpu in ${CPUS[@]}; do
+> +			tmp_NODES=( ${tmp_NODES[@]} $(ls $cpu/physical_node/ 2> /dev/null | grep ^node | sed -e 's/node//') )
+> +		done
+> +		NODES=( $(echo ${tmp_NODES[@]} | tr ' ' '\n' | sort | uniq ) )
+> +
+> +		# Memory device ID is PNP0C80, however, the memory ID is not used here
+> +		# but the node ID is used.
+> +		# The hotplugable memory section has ACPI_SRAT_MEM_HOT_PLUGGABLE flag
+> +		# and the zone is handled as Movable zone. Following assumes that
+> +		# the node has only Movable zone or it is memory less node.
+> +		# So using the node ID gets this test cleared rather than using memory ID.
+> +		for n in ${NODES[@]}; do
+> +			if [[ $(is_movable_node $n) -eq 0 ]] && [[ $(is_memoryless_node $n) -eq 0 ]]; then
+> +				NOHP_NODES=1
+> +				break
+> +			fi
+> +		done
+> +		if [[ $NOHP_NODES -eq 0 ]]; then
+> +			HOTPLUGABLE_CONTAINER=$(basename $c)
+> +			HOTPLUGABLE_NODES=( ${NODES[@]} )
+> +			break
+> +		fi
+> +	done
+> +
+> +	# Some hotplug udev rules may disturb for this test.
+> +	# Let's stop them.
+> +	stop_udev
+> +
+> +	tst_res TINFO "TARGET ACPI CONTANIER: $HOTPLUGABLE_CONTAINER"
+> +	tst_res TINFO "TARGET NODES: ${HOTPLUGABLE_NODES[@]}"
+> +}
+> +
+> +_cleanup()
+> +{
+> +	resume_udev
+> +}
+> +
+> +cpu_hp()
+> +{
+> +	local hpop=
+> +	local CPUS=( $(echo /sys/bus/acpi/devices/$HOTPLUGABLE_CONTAINER/ACPI0007:*/physical_node/online) )
+> +
+> +	local hp_cpus=${#CPUS[@]}
+> +	local current_cpus=$(nproc)
+> +	local expected_cpus=
+> +	local ACPI_CPU=
+> +	local force=0
+> +	local hotplugedcpus=0
+> +
+> +	if [[ $1 == "hotremove" ]]; then
+> +		hpop=0
+> +	else
+> +		hpop=1
+> +	fi
+> +	if [[ $2 == "force" ]]; then
+> +		force=1
+> +	fi
+
+It does not seem to make any sense to conver the parametes to numbers
+just to save a few characters in the ifs below.
+
+> +	if [[ $hpop -eq 0 ]]; then
+> +		expected_cpus=$(( current_cpus - hp_cpus ))
+> +	else
+> +		expected_cpus=$(( current_cpus + hp_cpus ))
+> +	fi
+> +
+> +	for cpu in ${CPUS[@]}; do
+> +		echo -n $hpop > $cpu 2> /dev/null
+> +		ACPI_CPU=$( echo $cpu | sed -e 's#/sys/bus/acpi/devices/ACPI0004:[0-9a-f]\+/\(ACPI0007:.*\)/physical_node/online#\1#')
+> +		if [[ $? -ne 0 ]]; then
+> +			tst_res TINFO "CPU: $ACPI_CPU $1 failed."
+> +			if [[ $force -eq 0 ]]; then
+> +				return 1
+> +			fi
+> +		else
+> +			if [[ $force -ne 0 ]]; then
+> +				tst_res TINFO "CPU: $ACPI_CPU $1 successed."
+> +			fi
+> +			hotplugedcpus=$(( hotplugedcpus  + 1 ))
+> +		fi
+> +	done
+
+And actually the force parameter should have rather been
+"ignore_failure" or something similar.
+
+> +	tst_res TINFO "CPU: current: $(nproc) hotpluged: $hotplugedcpus"
+> +	if [[ $(nproc) -eq $expected_cpus ]]; then
+> +		return 0
+> +	else
+> +		return 1
+> +	fi
+
+Also why do we return result here instead of doing tst_res TPASS and
+tst_res TFAIL directly?
+
+> +}
+> +
+> +# $1: node number
+> +# $2: expected memory size (MB)
+> +memhp_result()
+> +{
+> +	local node=$1
+> +	local expected=$2
+> +	local current=
+> +
+> +	current=$(numactl -H | awk '
+> +	/^node '$node' size/ {
+> +		print $4
+> +	}
+> +	')
+> +
+> +	if [[ $current -eq $expected ]]; then
+> +		echo 1
+> +	else
+> +		echo 0
+> +	fi
+> +}
+> +
+> +memory_hp()
+> +{
+> +	local hpop=
+> +	local memory=()
+> +	local memhpdone=
+> +	local expected=
+> +	local block_size_bytes=$(cat /sys/devices/system/memory/block_size_bytes )
+> +	block_size_bytes=$(echo "obase=10;ibase=16;$block_size_bytes" | bc)
+> +	local result=0
+> +	local force=0
+> +	local hotplugedsections=
+> +	local removable=
+> +
+> +	declare -A mem_hotpluged
+
+Again heavy use of arrays, also declare is bashism as well.
+
+> +	if [[ $1 == "hotremove" ]]; then
+> +		hpop="offline"
+> +	else
+> +		hpop="online_movable"
+> +	fi
+> +	if [[ $2 == "force" ]]; then
+> +		force=1
+> +	fi
+
+Again why do we convert the parameters? We should have passed the
+hotremove and offlineremove in the tests instead of converting it here.
+
+> +	for node in ${HOTPLUGABLE_NODES[@]}; do
+> +		memory=$(ls /sys/devices/system/node/node$node/ | grep memory | sort -n -r)
+> +		for mem in ${memory[@]}; do
+> +			if [[ $force -eq 1 ]]; then
+> +				echo -n $hpop > /sys/devices/system/node/node$node/$mem/state 2> /dev/null
+> +				mem_hotpluged[$node]=$(( mem_hotpluged[$node] + 1 ))
+> +				hotplugedsections=$(( hotplugedsections + 1 ))
+> +			else
+> +				memhpdone=0
+> +				for ((i = 1; i <= RETRY; i++)); do
+> +					echo -n $hpop > /sys/devices/system/node/node$node/$mem/state
+> +					if [[ $? -eq 0 ]]; then
+> +						memhpdone=1
+> +						break
+> +					else
+> +						removable=$(cat /sys/devices/system/node/node$node/$mem/removable)
+> +						if [[ $removable -ne 1 ]]; then
+> +							tst_res TINFO "memory: Node: $node section: $mem something wrong..."
+> +							return 1
+> +						fi
+> +						tst_res TINFO "memory: Node: $node section: $mem $1 failed ($i times). Retry..."
+> +					fi
+> +					sleep $RETRY_TIME
+> +				done
+> +				if [[ $memhpdone -eq 0 ]]; then
+> +					tst_res TINFO "memory: Node: $node section: $mem $1 failed."
+> +					return 1
+> +				else
+> +					tst_res TINFO "memory: Node: $node section: $mem $1 successed."
+> +					mem_hotpluged[$node]=$(( mem_hotpluged[$node] + 1 ))
+> +					hotplugedsections=$(( hotplugedsections + 1 ))
+> +				fi
+> +			fi
+> +		done
+> +	done
+> +
+> +	for node in ${HOTPLUGABLE_NODES[@]}; do
+> +		if [[ $hpop == "offline" ]]; then
+> +			expected=0
+> +		else
+> +			expected=$(echo "${mem_hotpluged[$node]} * $block_size_bytes/1024/1024" | bc)
+> +		fi
+> +		if [[ $(memhp_result $node $expected) -ne 1 ]]; then
+> +			result=$((result + 1))
+> +		fi
+> +		tst_res TINFO "Memory: Node: $node $hotplugedsections sections hotpluged."
+> +	done
+> +
+> +	return $result
+> +}
+
+Does this function have anything to do with an ACPI? It looks to me like
+we use just generic sysfs interface for hotplugging the memory.
+
+> +container_hp()
+> +{
+> +	local hpop=
+> +	local online_ret=0
+> +
+> +	if [[ $1 == "hotremove" ]]; then
+> +		hpop=0
+> +	else
+> +		hpop=1
+> +	fi
+> +
+> +	echo $hpop > /sys/bus/acpi/devices/$HOTPLUGABLE_CONTAINER/physical_node/online
+> +	online_ret=$?
+> +
+> +	if [[ $online_ret -ne 0 ]]; then
+> +		tst_res TINFO "ACPI container: $HOTPLUGABLE_CONTAINER $1 failed."
+> +		numactl -H
+> +		return 1
+> +	else
+> +		tst_res TINFO "ACPI container: $HOTPLUGABLE_CONTAINER $1 successed."
+> +	fi
+> +
+> +	return 0
+> +}
+
+All in all this code looks quite brittle to me, as we do parse procfs
+files and output from numactl which may differ sligtly over different
+distributions/kernel versions.
 
 -- 
 Cyril Hrubis
