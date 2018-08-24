@@ -1,65 +1,37 @@
-From: Eric Biggers <ebiggers@kernel.org>
-Date: Thu, 23 Aug 2018 21:27:02 -0700
-Subject: [LTP] [PATCH] syscalls/shmctl05.c: Fix ENOSPC error
-In-Reply-To: <1533108893-13078-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1533108893-13078-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20180824042701.GA12266@sol.localdomain>
+From: He Zhe <zhe.he@windriver.com>
+Date: Thu, 23 Aug 2018 18:46:24 -0700
+Subject: [LTP] [PATCH] fs/ftest/ftest06.c: Fix too small name string and
+	related failure
+Message-ID: <20180824014624.26667-1-zhe.he@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao,
+The name string is too small to contain normal full path names and causes
+the following failure.
 
-On Wed, Aug 01, 2018 at 03:34:53PM +0800, Xiao Yang wrote:
-> Running shmctl05 got the following error on some distros(e.g. RHEL7.5):
-> ------------------------------------------------------
-> tst_safe_sysv_ipc.c:111: BROK: shmctl05.c:51: shmget(61455, 4096, 3c0) failed: ENOSPC
-> shmctl05.c:104: WARN: pthread_join(..., (nil)) failed: EDEADLK
-> tst_safe_sysv_ipc.c:111: BROK: shmctl05.c:81: shmget(61455, 4096, 3c0) failed: ENOSPC
-> -------------------------------------------------------
-> 
-> From shmctl(2) manpage, shmctl(IPC_RMID) just marks a shm segment to
-> be destroyed, and the segment will only actually be destroyed after
-> the last process detaches it (i.e., when the shm_nattch member of the
-> associated structure shmid_ds is zero).  So it is possible for the
-> number of created shm segments to exceed the system-wide maximum number
-> (e.g. shmmni is 4096) if only shmctl(IPC_RMID) has been called.
-> 
-> From shmdt(2) manpage, a successful shmdt(2) call will decrement
-> the shm_nattch by one.  So we should call shmdt(2) to decrement
-> the shm_nattch to zero before calling shmctl(IPC_RMID).
-> 
-> Add shmdt(2) to ensure that all shm segments are actually destroyed.
-> 
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/ipc/shmctl/shmctl05.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
-> index a960cc9..0eb0776 100644
-> --- a/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
-> +++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
-> @@ -92,6 +92,8 @@ static void do_test(void)
->  				"Unexpected remap_file_pages() error");
->  		}
->  		tst_fzsync_wait_a(&fzsync_pair);
-> +		/* ensure that a shm segment will actually be destroyed */
-> +		SAFE_SHMDT(addr);
->  	}
->  
->  	tst_res(TPASS, "didn't crash");
-> -- 
+"ftest06     2  TFAIL  :  ftest06.c:223: Can't chdir(): errno=ENOENT(2): No such file or directory"
 
-I think you missed part of the explanation for why this test (apparently) fails
-on old kernels.  On recent kernels, remap_file_pages() *is* unmapping the shm
-segment, so the test passes.  Perhaps the behavior of remap_file_pages() changed
-in v4.0 when its implementation was replaced with an emulation.
+Signed-off-by: He Zhe <zhe.he@windriver.com>
+---
+ testcases/kernel/fs/ftest/ftest06.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Calling shmdt() is probably the right fix for the test, but you shouldn't call
-the SAFE_* version since shmdt() will fail with an error on recent kernels,
-which with the SAFE_* version would fail the test.
+diff --git a/testcases/kernel/fs/ftest/ftest06.c b/testcases/kernel/fs/ftest/ftest06.c
+index 2ca7c8880..b43406785 100644
+--- a/testcases/kernel/fs/ftest/ftest06.c
++++ b/testcases/kernel/fs/ftest/ftest06.c
+@@ -100,7 +100,7 @@ static char *fstyp;
+ int main(int ac, char *av[])
+ {
+ 	int pid, child, status, count, k, j;
+-	char name[3];
++	char name[MAXPATHLEN];
+ 
+ 	int lc;
+ 
+-- 
+2.11.0
 
-- Eric
