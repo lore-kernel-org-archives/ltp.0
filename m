@@ -1,78 +1,93 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 27 Aug 2018 08:05:55 +0800
-Subject: [LTP] [PATCH v2] newlib_tests/test_exec.c: Fix compiler error
-	before glibc v2.11
-In-Reply-To: <20180824145656.GA5131@rei>
-References: <20180824145656.GA5131@rei>
-Message-ID: <1535328355-16759-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Mon, 27 Aug 2018 11:30:53 +0200
+Subject: [LTP] [PATCH v2 4/4] tst_timer: Convert to new library
+In-Reply-To: <20180827093053.24658-1-rpalethorpe@suse.com>
+References: <20180827093053.24658-1-rpalethorpe@suse.com>
+Message-ID: <20180827093053.24658-4-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Before glibc v2.11, execvpe() was not introduced and resulted in
-compiler error, so we replace execvpe() with execve() and update
-test-writing-guidelines.txt.
+So we can use functions from new lib.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- doc/test-writing-guidelines.txt | 8 ++++++--
- lib/newlib_tests/test_exec.c    | 8 ++++++--
- 2 files changed, 12 insertions(+), 4 deletions(-)
+ include/old/test.h |  1 -
+ lib/tst_timer.c    | 14 ++++++++------
+ 2 files changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index a169724..0b89cf9 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -697,14 +697,18 @@ a non zero exit code.
- -------------------------------------------------------------------------------
- /* test.c */
- #define _GNU_SOURCE
--#include <stdlib.h>
-+#include <unistd.h>
- #include "tst_test.h"
+diff --git a/include/old/test.h b/include/old/test.h
+index 5eef304ab..8597cb1c6 100644
+--- a/include/old/test.h
++++ b/include/old/test.h
+@@ -53,7 +53,6 @@
+ #include "tst_process_state.h"
+ #include "old_resource.h"
+ #include "tst_res_flags.h"
+-#include "tst_timer.h"
+ #include "tst_kvercmp.h"
+ #include "tst_fs.h"
+ #include "tst_pid.h"
+diff --git a/lib/tst_timer.c b/lib/tst_timer.c
+index 53ff36777..d5e4c49d2 100644
+--- a/lib/tst_timer.c
++++ b/lib/tst_timer.c
+@@ -23,7 +23,9 @@
  
- static void do_test(void)
- {
- 	char *const argv[] = {"test_exec_child", NULL};
-+	char path[4096];
+ #include <errno.h>
  
--	execvpe(argv[0], argv, environ);
-+	if (tst_get_path("test_exec_child", path, sizeof(path)))
-+		tst_brk(TCONF, "Couldn't find test_exec_child in $PATH");
+-#include "test.h"
++#define TST_NO_DEFAULT_MAIN
 +
-+	execve(path, argv, environ);
- 
- 	tst_res(TBROK | TERRNO, "EXEC!");
- }
-diff --git a/lib/newlib_tests/test_exec.c b/lib/newlib_tests/test_exec.c
-index 8aef621..2c86568 100644
---- a/lib/newlib_tests/test_exec.c
-+++ b/lib/newlib_tests/test_exec.c
-@@ -25,14 +25,18 @@
-  */
- 
- #define _GNU_SOURCE
--#include <stdlib.h>
-+#include <unistd.h>
- #include "tst_test.h"
- 
- static void do_test(void)
++#include "tst_test.h"
+ #include "tst_timer.h"
+ #include "tst_clocks.h"
+ #include "lapi/posix_clocks.h"
+@@ -59,13 +61,13 @@ void tst_timer_check(clockid_t clk_id)
  {
- 	char *const argv[] = {"test_exec_child", NULL};
-+	char path[4096];
+ 	if (tst_clock_gettime(clk_id, &start_time)) {
+ 		if (errno == EINVAL) {
+-			tst_brkm(TCONF, NULL,
++			tst_brk(TCONF,
+ 			         "Clock id %s(%u) not supported by kernel",
+ 				 clock_name(clk_id), clk_id);
+ 			return;
+ 		}
  
--	execvpe(argv[0], argv, environ);
-+	if (tst_get_path("test_exec_child", path, sizeof(path)))
-+		tst_brk(TCONF, "Couldn't find test_exec_child in $PATH");
-+
-+	execve(path, argv, environ);
- 
- 	tst_res(TBROK | TERRNO, "EXEC!");
+-		tst_brkm(TBROK | TERRNO, NULL, "tst_clock_gettime() failed");
++		tst_brk(TBROK | TERRNO, "tst_clock_gettime() failed");
+ 	}
  }
+ 
+@@ -74,7 +76,7 @@ void tst_timer_start(clockid_t clk_id)
+ 	clock_id = clk_id;
+ 
+ 	if (tst_clock_gettime(clock_id, &start_time))
+-		tst_resm(TWARN | TERRNO, "tst_clock_gettime() failed");
++		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
+ }
+ 
+ int tst_timer_expired_ms(long long ms)
+@@ -82,7 +84,7 @@ int tst_timer_expired_ms(long long ms)
+ 	struct timespec cur_time;
+ 
+ 	if (tst_clock_gettime(clock_id, &cur_time))
+-		tst_resm(TWARN | TERRNO, "tst_clock_gettime() failed");
++		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
+ 
+ 	return tst_timespec_diff_ms(cur_time, start_time) >= ms;
+ }
+@@ -90,7 +92,7 @@ int tst_timer_expired_ms(long long ms)
+ void tst_timer_stop(void)
+ {
+ 	if (tst_clock_gettime(clock_id, &stop_time))
+-		tst_resm(TWARN | TERRNO, "tst_clock_gettime() failed");
++		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
+ }
+ 
+ struct timespec tst_timer_elapsed(void)
 -- 
-1.8.3.1
-
-
+2.18.0
 
