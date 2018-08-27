@@ -1,184 +1,297 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 27 Aug 2018 11:30:52 +0200
-Subject: [LTP] [PATCH v2 3/4] Convert futex_wait_bitset tests to newlib
+Date: Mon, 27 Aug 2018 11:30:51 +0200
+Subject: [LTP] [PATCH v2 2/4] Convert fcntl33 to newlib
 In-Reply-To: <20180827093053.24658-1-rpalethorpe@suse.com>
 References: <20180827093053.24658-1-rpalethorpe@suse.com>
-Message-ID: <20180827093053.24658-3-rpalethorpe@suse.com>
+Message-ID: <20180827093053.24658-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Also add extra checks that fcntl does not return success after trying to
+downgrade a lease on a file where it can only be removed and that it can
+downgrade a lease on a file opened as read only.
+
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- .../kernel/syscalls/futex/futex_wait_bitset.h | 54 ++++++++++++-------
- .../syscalls/futex/futex_wait_bitset01.c      | 22 ++------
- .../syscalls/futex/futex_wait_bitset02.c      | 23 ++------
- 3 files changed, 43 insertions(+), 56 deletions(-)
+ testcases/kernel/syscalls/fcntl/fcntl33.c | 168 +++++++++-------------
+ 1 file changed, 71 insertions(+), 97 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/futex/futex_wait_bitset.h b/testcases/kernel/syscalls/futex/futex_wait_bitset.h
-index 81a5d93ab..090dc51d2 100644
---- a/testcases/kernel/syscalls/futex/futex_wait_bitset.h
-+++ b/testcases/kernel/syscalls/futex/futex_wait_bitset.h
-@@ -18,6 +18,7 @@
-  */
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl33.c b/testcases/kernel/syscalls/fcntl/fcntl33.c
+index 13616c65f..b45cd90b5 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl33.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl33.c
+@@ -28,8 +28,9 @@
  
- #define TRESHOLD_US 100000
-+#define DEFAULT_TIMEOUT_US 100010
+ #include <errno.h>
  
- static void verify_futex_wait_bitset(long long wait_us, clock_t clk_id)
+-#include "test.h"
+-#include "safe_macros.h"
++#include "tst_test.h"
++#include "tst_timer.h"
++#include "tst_safe_macros.h"
+ 
+ /*
+  * MIN_TIME_LIMIT is defined to 5 senconds as a minimal acceptable
+@@ -50,10 +51,8 @@
+ #define FILE_MODE	(S_IRWXU | S_IRWXG | S_IRWXO | S_ISUID | S_ISGID)
+ #define PATH_LS_BRK_T	"/proc/sys/fs/lease-break-time"
+ 
+-static void setup(void);
+-static void do_test(int);
+-static int do_child(int);
+-static void cleanup(void);
++static void do_test(unsigned int);
++static void do_child(unsigned int);
+ 
+ static int fd;
+ static int ls_brk_t;
+@@ -84,113 +83,86 @@ static struct test_case_t {
+ 		"truncate() conflicts with fcntl(F_SETLEASE, F_RDLCK)"},
+ };
+ 
+-char *TCID = "fcntl33";
+-int TST_TOTAL = ARRAY_SIZE(test_cases);
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-	int tc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		for (tc = 0; tc < TST_TOTAL; tc++)
+-			do_test(tc);
+-	}
+-
+-	cleanup();
+-	tst_exit();
+-}
+-
+ static void setup(void)
  {
-@@ -26,8 +27,8 @@ static void verify_futex_wait_bitset(long long wait_us, clock_t clk_id)
- 	u_int32_t bitset = 0xffffffff;
- 	int flags = clk_id == CLOCK_REALTIME ? FUTEX_CLOCK_REALTIME : 0;
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	tst_require_root();
+-
+ 	tst_timer_check(CLOCK_MONOTONIC);
  
--	tst_resm(TINFO, "testing futex_wait_bitset() timeout with %s",
--	         clk_id == CLOCK_REALTIME ? "CLOCK_REALTIME" : "CLOCK_MONOTONIC");
-+	tst_res(TINFO, "testing futex_wait_bitset() timeout with %s",
-+		clk_id == CLOCK_REALTIME ? "CLOCK_REALTIME" : "CLOCK_MONOTONIC");
+ 	/* Backup and set the lease-break-time. */
+-	SAFE_FILE_SCANF(NULL, PATH_LS_BRK_T, "%d", &ls_brk_t);
+-	SAFE_FILE_PRINTF(NULL, PATH_LS_BRK_T, "%d", 45);
++	SAFE_FILE_SCANF(PATH_LS_BRK_T, "%d", &ls_brk_t);
++	SAFE_FILE_PRINTF(PATH_LS_BRK_T, "%d", 45);
  
- 	clock_gettime(clk_id, &start);
- 	to = tst_timespec_add_us(start, wait_us);
-@@ -36,38 +37,53 @@ static void verify_futex_wait_bitset(long long wait_us, clock_t clk_id)
- 
- 	clock_gettime(clk_id, &end);
- 
--	if (TEST_RETURN != -1) {
--		tst_resm(TFAIL, "futex_wait_bitset() returned %li, expected -1",
--		         TEST_RETURN);
-+	if (TST_RET != -1) {
-+		tst_res(TFAIL, "futex_wait_bitset() returned %li, expected -1",
-+			TST_RET);
- 		return;
+-	tst_tmpdir();
+-
+-	switch ((type = tst_fs_type(cleanup, "."))) {
++	switch ((type = tst_fs_type("."))) {
+ 	case TST_NFS_MAGIC:
+ 	case TST_RAMFS_MAGIC:
+ 	case TST_TMPFS_MAGIC:
+-		tst_brkm(TCONF, cleanup,
+-			 "Cannot do fcntl(F_SETLEASE, F_WRLCK) "
+-			 "on %s filesystem",
+-			 tst_fs_type_name(type));
++		tst_brk(TCONF,
++			"Cannot do fcntl(F_SETLEASE, F_WRLCK) on %s filesystem",
++			tst_fs_type_name(type));
+ 	default:
+ 		break;
  	}
  
--	if (TEST_ERRNO == ENOSYS) {
--		tst_resm(TCONF, "In this kernel, futex() does not support "
--			 "FUTEX_WAIT_BITSET operation");
-+	if (TST_ERR == ENOSYS) {
-+		tst_res(TCONF,
-+			"In this kernel, futex() does not support FUTEX_WAIT_BITSET operation");
- 		return;
+-	SAFE_TOUCH(cleanup, "file", FILE_MODE, NULL);
++	SAFE_TOUCH("file", FILE_MODE, NULL);
+ 
+ 	sigemptyset(&newset);
+ 	sigaddset(&newset, SIGIO);
+ 
+ 	if (sigprocmask(SIG_SETMASK, &newset, &oldset) < 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "sigprocmask() failed");
+-
+-	TEST_PAUSE;
++		tst_brk(TBROK | TERRNO, "sigprocmask() failed");
+ }
+ 
+-static void do_test(int i)
++static void do_test(unsigned int i)
+ {
+-	fd = SAFE_OPEN(cleanup, "file", O_RDONLY);
+-
+-	pid_t cpid = tst_fork();
+-
+-	if (cpid < 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
++	pid_t cpid;
+ 
++	cpid = SAFE_FORK();
+ 	if (cpid == 0) {
+-		SAFE_CLOSE(NULL, fd);
+ 		do_child(i);
++		return;
  	}
  
--	if (TEST_ERRNO != ETIMEDOUT) {
--		tst_resm(TFAIL | TTERRNO, "expected %s",
--		         tst_strerrno(ETIMEDOUT));
-+	if (TST_ERR != ETIMEDOUT) {
-+		tst_res(TFAIL | TTERRNO, "expected %s",
-+			tst_strerrno(ETIMEDOUT));
- 		return;
++	fd = SAFE_OPEN("file", O_RDONLY);
++
+ 	TEST(fcntl(fd, F_SETLEASE, test_cases[i].lease_type));
+-	if (TEST_RETURN == -1) {
+-		tst_resm(TFAIL | TTERRNO, "fcntl() failed to set lease");
+-		SAFE_WAITPID(cleanup, cpid, NULL, 0);
+-		SAFE_CLOSE(cleanup, fd);
+-		fd = 0;
+-		return;
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "fcntl() failed to set lease");
++		goto exit;
  	}
  
- 	if (tst_timespec_lt(end, to)) {
--		tst_resm(TFAIL,
--		         "futex_wait_bitset() woken up prematurely %llius, expected %llius",
--			 tst_timespec_diff_us(end, start), wait_us);
+ 	/* Wait for SIGIO caused by lease breaker. */
+ 	TEST(sigtimedwait(&newset, NULL, &timeout));
+-	if (TEST_RETURN == -1) {
+-		if (TEST_ERRNO == EAGAIN) {
+-			tst_resm(TFAIL | TTERRNO, "failed to receive SIGIO "
+-				 "within %lis", timeout.tv_sec);
+-			SAFE_WAITPID(cleanup, cpid, NULL, 0);
+-			SAFE_CLOSE(cleanup, fd);
+-			fd = 0;
+-			return;
++	if (TST_RET == -1) {
++		if (TST_ERR == EAGAIN) {
++			tst_res(TFAIL | TTERRNO,
++				"failed to receive SIGIO within %lis",
++				timeout.tv_sec);
++			goto exit;
+ 		}
+-		tst_brkm(TBROK | TTERRNO, cleanup, "sigtimedwait() failed");
++		tst_brk(TBROK | TTERRNO, "sigtimedwait() failed");
+ 	}
+ 
+ 	/* Try to downgrade or remove the lease. */
+ 	switch (test_cases[i].lease_type) {
+ 	case F_WRLCK:
+ 		TEST(fcntl(fd, F_SETLEASE, F_RDLCK));
+-		if (TEST_RETURN == 0)
+-			break;
++		if (TST_RET == 0) {
++			if (test_cases[i].op_type == OP_OPEN_RDONLY)
++				break;
++
++			tst_res(TFAIL,
++				"fcntl() downgraded lease when not read-only");
++		}
++
++		if (test_cases[i].op_type == OP_OPEN_RDONLY) {
++			tst_res(TFAIL | TTERRNO,
++				"fcntl() failed to downgrade lease");
++		}
++
++		/* Falls through */
+ 	case F_RDLCK:
+ 		TEST(fcntl(fd, F_SETLEASE, F_UNLCK));
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL | TTERRNO,
++		if (TST_RET == -1) {
++			tst_res(TFAIL | TTERRNO,
+ 				 "fcntl() failed to remove the lease");
+ 		}
+ 		break;
+@@ -198,35 +170,31 @@ static void do_test(int i)
+ 		break;
+ 	}
+ 
+-	tst_record_childstatus(cleanup, cpid);
+-
+-	SAFE_CLOSE(cleanup, fd);
+-	fd = 0;
++exit:
++	tst_reap_children();
++	SAFE_CLOSE(fd);
+ }
+ 
+-static int do_child(int i)
++static void do_child(unsigned int i)
+ {
+ 	long long elapsed_ms;
+ 
+-	if (tst_process_state_wait2(getppid(), 'S') != 0) {
+-		tst_brkm(TBROK | TERRNO, NULL,
+-			 "failed to wait for parent process's state");
+-	}
++	TST_PROCESS_STATE_WAIT(getppid(), 'S');
+ 
+ 	tst_timer_start(CLOCK_MONOTONIC);
+ 
+ 	switch (test_cases[i].op_type) {
+ 	case OP_OPEN_RDONLY:
+-		SAFE_OPEN(NULL, "file", O_RDONLY);
++		SAFE_OPEN("file", O_RDONLY);
+ 		break;
+ 	case OP_OPEN_WRONLY:
+-		SAFE_OPEN(NULL, "file", O_WRONLY);
++		SAFE_OPEN("file", O_WRONLY);
+ 		break;
+ 	case OP_OPEN_RDWR:
+-		SAFE_OPEN(NULL, "file", O_RDWR);
++		SAFE_OPEN("file", O_RDWR);
+ 		break;
+ 	case OP_TRUNCATE:
+-		SAFE_TRUNCATE(NULL, "file", 0);
++		SAFE_TRUNCATE("file", 0);
+ 		break;
+ 	default:
+ 		break;
+@@ -237,27 +205,33 @@ static int do_child(int i)
+ 	elapsed_ms = tst_timer_elapsed_ms();
+ 
+ 	if (elapsed_ms < MIN_TIME_LIMIT * 1000) {
+-		tst_resm(TPASS, "%s, unblocked within %ds",
++		tst_res(TPASS, "%s, unblocked within %ds",
+ 			 test_cases[i].desc, MIN_TIME_LIMIT);
+ 	} else {
+-		tst_resm(TFAIL, "%s, blocked too long %llims, "
+-			 "expected within %ds",
+-			 test_cases[i].desc, elapsed_ms, MIN_TIME_LIMIT);
 +		tst_res(TFAIL,
-+			"futex_wait_bitset() woken up prematurely %llius, expected %llius",
-+			tst_timespec_diff_us(end, start), wait_us);
- 		return;
++			"%s, blocked too long %llims, expected within %ds",
++			test_cases[i].desc, elapsed_ms, MIN_TIME_LIMIT);
  	}
+-
+-	tst_exit();
+ }
  
- 	if (tst_timespec_diff_us(end, to) > TRESHOLD_US) {
--		tst_resm(TFAIL,
--		         "futex_wait_bitset() waited too long %llius, expected %llius",
--			 tst_timespec_diff_us(end, start), wait_us);
-+		tst_res(TFAIL,
-+			"futex_wait_bitset() waited too long %llius, expected %llius",
-+			tst_timespec_diff_us(end, start), wait_us);
- 		return;
- 	}
+ static void cleanup(void)
+ {
+ 	if (sigprocmask(SIG_SETMASK, &oldset, NULL) < 0)
+-		tst_resm(TWARN | TERRNO, "sigprocmask restore oldset failed");
++		tst_res(TWARN | TERRNO, "sigprocmask restore oldset failed");
  
--	tst_resm(TPASS, "futex_wait_bitset() waited %llius, expected %llius",
--	         tst_timespec_diff_us(end, start), wait_us);
-+	tst_res(TPASS, "futex_wait_bitset() waited %llius, expected %llius",
-+		tst_timespec_diff_us(end, start), wait_us);
+-	if (fd > 0 && close(fd))
+-		tst_resm(TWARN | TERRNO, "failed to close file");
+-
+-	tst_rmdir();
++	if (fd > 0)
++		SAFE_CLOSE(fd);
+ 
+ 	/* Restore the lease-break-time. */
+ 	FILE_PRINTF(PATH_LS_BRK_T, "%d", ls_brk_t);
  }
 +
-+static void setup(void)
-+{
-+	tst_timer_check(USE_CLOCK);
-+}
-+
-+static void run(void)
-+{
-+	verify_futex_wait_bitset(DEFAULT_TIMEOUT_US, USE_CLOCK);
-+}
-+
 +static struct tst_test test = {
++	.forks_child = 1,
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++	.tcnt = ARRAY_SIZE(test_cases),
 +	.setup = setup,
-+	.test_all = run,
++	.test = do_test,
++	.cleanup = cleanup
 +};
-diff --git a/testcases/kernel/syscalls/futex/futex_wait_bitset01.c b/testcases/kernel/syscalls/futex/futex_wait_bitset01.c
-index e5fd621e5..371febb3b 100644
---- a/testcases/kernel/syscalls/futex/futex_wait_bitset01.c
-+++ b/testcases/kernel/syscalls/futex/futex_wait_bitset01.c
-@@ -24,25 +24,11 @@
- 
- #include <errno.h>
- 
--#include "test.h"
-+#include "tst_test.h"
-+#include "tst_timer.h"
- #include "futextest.h"
--#include "futex_wait_bitset.h"
--
--const char *TCID="futex_wait_bitset01";
--const int TST_TOTAL=1;
--
--#define DEFAULT_TIMEOUT_US 100010
- 
--int main(int argc, char *argv[])
--{
--	int lc;
-+#define USE_CLOCK CLOCK_MONOTONIC
- 
--	tst_timer_check(CLOCK_MONOTONIC);
--
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	for (lc = 0; TEST_LOOPING(lc); lc++)
--		verify_futex_wait_bitset(DEFAULT_TIMEOUT_US, CLOCK_MONOTONIC);
-+#include "futex_wait_bitset.h"
- 
--	tst_exit();
--}
-diff --git a/testcases/kernel/syscalls/futex/futex_wait_bitset02.c b/testcases/kernel/syscalls/futex/futex_wait_bitset02.c
-index 820c65c26..e727a1b38 100644
---- a/testcases/kernel/syscalls/futex/futex_wait_bitset02.c
-+++ b/testcases/kernel/syscalls/futex/futex_wait_bitset02.c
-@@ -24,25 +24,10 @@
- 
- #include <errno.h>
- 
--#include "test.h"
-+#include "tst_test.h"
-+#include "tst_timer.h"
- #include "futextest.h"
--#include "futex_wait_bitset.h"
--
--const char *TCID="futex_wait_bitset02";
--const int TST_TOTAL=1;
--
--#define DEFAULT_TIMEOUT_US 100010
--
--int main(int argc, char *argv[])
--{
--	int lc;
- 
--	tst_timer_check(CLOCK_REALTIME);
-+#define USE_CLOCK CLOCK_REALTIME
- 
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	for (lc = 0; TEST_LOOPING(lc); lc++)
--		verify_futex_wait_bitset(DEFAULT_TIMEOUT_US, CLOCK_REALTIME);
--
--	tst_exit();
--}
-+#include "futex_wait_bitset.h"
 -- 
 2.18.0
 
