@@ -1,93 +1,187 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 27 Aug 2018 11:30:53 +0200
-Subject: [LTP] [PATCH v2 4/4] tst_timer: Convert to new library
-In-Reply-To: <20180827093053.24658-1-rpalethorpe@suse.com>
-References: <20180827093053.24658-1-rpalethorpe@suse.com>
-Message-ID: <20180827093053.24658-4-rpalethorpe@suse.com>
+Date: Mon, 27 Aug 2018 11:30:50 +0200
+Subject: [LTP] [PATCH v2 1/4] Convert nanosleep02 to newlib
+Message-ID: <20180827093053.24658-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-So we can use functions from new lib.
+Also add extra check that nanosleep exited with the expected return value and
+errno for the user's information.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- include/old/test.h |  1 -
- lib/tst_timer.c    | 14 ++++++++------
- 2 files changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/include/old/test.h b/include/old/test.h
-index 5eef304ab..8597cb1c6 100644
---- a/include/old/test.h
-+++ b/include/old/test.h
-@@ -53,7 +53,6 @@
- #include "tst_process_state.h"
- #include "old_resource.h"
- #include "tst_res_flags.h"
--#include "tst_timer.h"
- #include "tst_kvercmp.h"
- #include "tst_fs.h"
- #include "tst_pid.h"
-diff --git a/lib/tst_timer.c b/lib/tst_timer.c
-index 53ff36777..d5e4c49d2 100644
---- a/lib/tst_timer.c
-+++ b/lib/tst_timer.c
-@@ -23,7 +23,9 @@
+V2: Removed the falls through attribute for case statements and replace it with a comment
+
+ .../kernel/syscalls/nanosleep/nanosleep02.c   | 123 ++++++------------
+ 1 file changed, 40 insertions(+), 83 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/nanosleep/nanosleep02.c b/testcases/kernel/syscalls/nanosleep/nanosleep02.c
+index 42c825190..2abe38a95 100644
+--- a/testcases/kernel/syscalls/nanosleep/nanosleep02.c
++++ b/testcases/kernel/syscalls/nanosleep/nanosleep02.c
+@@ -26,24 +26,10 @@
+  */
  
  #include <errno.h>
+-#include <unistd.h>
+-#include <fcntl.h>
+-#include <signal.h>
+-#include <time.h>
+-#include <sys/wait.h>
+-#include <sys/time.h>
+-#include <stdint.h>
+-#include <inttypes.h>
  
 -#include "test.h"
-+#define TST_NO_DEFAULT_MAIN
-+
+-#include "safe_macros.h"
+-
+-char *TCID = "nanosleep02";
+-int TST_TOTAL = 1;
+-
+-static void do_child(void);
+-static void setup(void);
+-static void sig_handler();
 +#include "tst_test.h"
- #include "tst_timer.h"
- #include "tst_clocks.h"
- #include "lapi/posix_clocks.h"
-@@ -59,13 +61,13 @@ void tst_timer_check(clockid_t clk_id)
- {
- 	if (tst_clock_gettime(clk_id, &start_time)) {
- 		if (errno == EINVAL) {
--			tst_brkm(TCONF, NULL,
-+			tst_brk(TCONF,
- 			         "Clock id %s(%u) not supported by kernel",
- 				 clock_name(clk_id), clk_id);
- 			return;
- 		}
++#include "tst_timer.h"
++#include "tst_safe_macros.h"
  
--		tst_brkm(TBROK | TERRNO, NULL, "tst_clock_gettime() failed");
-+		tst_brk(TBROK | TERRNO, "tst_clock_gettime() failed");
+ /*
+  * Define here the "rem" precision in microseconds,
+@@ -57,50 +43,6 @@ static void sig_handler();
+  */
+ #define USEC_PRECISION 250000	/* Error margin allowed in usec */
+ 
+-int main(int ac, char **av)
+-{
+-	int lc;
+-	pid_t cpid;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-#ifdef UCLINUX
+-	maybe_run_child(&do_child, "");
+-#endif
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		if ((cpid = FORK_OR_VFORK()) == -1) {
+-			tst_brkm(TBROK, NULL,
+-				 "fork() failed to create child process");
+-		}
+-
+-		if (cpid == 0) {
+-#ifdef UCLINUX
+-			if (self_exec(av[0], "")) {
+-				tst_brkm(TBROK, NULL, "self_exec failed");
+-			}
+-#else
+-			do_child();
+-#endif
+-		}
+-
+-		/* wait for child to time slot for execution */
+-		sleep(1);
+-
+-		/* Now send signal to child */
+-		SAFE_KILL(NULL, cpid, SIGINT);
+-
+-		tst_record_childstatus(NULL, cpid);
+-	}
+-
+-	tst_exit();
+-}
+-
+ static void do_child(void)
+ {
+ 	struct timespec timereq = {.tv_sec = 5, .tv_nsec = 9999};
+@@ -110,42 +52,57 @@ static void do_child(void)
+ 	TEST(nanosleep(&timereq, &timerem));
+ 	tst_timer_stop();
+ 
+-	if (tst_timespec_lt(timereq, tst_timer_elapsed())) {
+-		tst_resm(TFAIL, "nanosleep() slept more than timereq");
+-		return;
+-	}
++	if (!TST_RET)
++		tst_brk(TBROK, "nanosleep was not interrupted");
++	if (TST_ERR != EINTR)
++		tst_brk(TBROK | TTERRNO, "nanosleep() failed");
++
++	if (tst_timespec_lt(timereq, tst_timer_elapsed()))
++		tst_brk(TFAIL, "nanosleep() slept more than timereq");
+ 
+ 	exp_rem = tst_timespec_diff(timereq, tst_timer_elapsed());
+ 
+ 	if (tst_timespec_abs_diff_us(timerem, exp_rem) > USEC_PRECISION) {
+-		tst_resm(TFAIL,
+-		         "nanosleep() remaining time %llius, expected %llius, diff %llius",
+-			 tst_timespec_to_us(timerem), tst_timespec_to_us(exp_rem),
+-			 tst_timespec_abs_diff_us(timerem, exp_rem));
++		tst_res(TFAIL,
++			"nanosleep() remaining time %llius, expected %llius, diff %llius",
++			tst_timespec_to_us(timerem), tst_timespec_to_us(exp_rem),
++			tst_timespec_abs_diff_us(timerem, exp_rem));
+ 	} else {
+-		tst_resm(TPASS,
+-		         "nanosleep() slept for %llius, remaining time difference %llius",
+-			 tst_timer_elapsed_us(),
+-		         tst_timespec_abs_diff_us(timerem, exp_rem));
++		tst_res(TPASS,
++			"nanosleep() slept for %llius, remaining time difference %llius",
++			tst_timer_elapsed_us(),
++			tst_timespec_abs_diff_us(timerem, exp_rem));
+ 	}
+-
+-	tst_exit();
+ }
+ 
+-static void setup(void)
++void run(void)
+ {
+-	tst_sig(FORK, DEF_HANDLER, NULL);
++	pid_t cpid;
+ 
+-	tst_timer_check(CLOCK_MONOTONIC);
++	cpid = SAFE_FORK();
++	if (cpid == 0) {
++		do_child();
++	} else {
++		sleep(1);
+ 
+-	TEST_PAUSE;
++		SAFE_KILL(cpid, SIGINT);
+ 
+-	if (signal(SIGINT, sig_handler) == SIG_ERR) {
+-		tst_brkm(TBROK, NULL,
+-			 "signal() fails to setup signal handler");
++		tst_reap_children();
  	}
  }
  
-@@ -74,7 +76,7 @@ void tst_timer_start(clockid_t clk_id)
- 	clock_id = clk_id;
- 
- 	if (tst_clock_gettime(clock_id, &start_time))
--		tst_resm(TWARN | TERRNO, "tst_clock_gettime() failed");
-+		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
- }
- 
- int tst_timer_expired_ms(long long ms)
-@@ -82,7 +84,7 @@ int tst_timer_expired_ms(long long ms)
- 	struct timespec cur_time;
- 
- 	if (tst_clock_gettime(clock_id, &cur_time))
--		tst_resm(TWARN | TERRNO, "tst_clock_gettime() failed");
-+		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
- 
- 	return tst_timespec_diff_ms(cur_time, start_time) >= ms;
- }
-@@ -90,7 +92,7 @@ int tst_timer_expired_ms(long long ms)
- void tst_timer_stop(void)
+-static void sig_handler(void)
++static void sig_handler(int si LTP_ATTRIBUTE_UNUSED)
++{
++}
++
++static void setup(void)
  {
- 	if (tst_clock_gettime(clock_id, &stop_time))
--		tst_resm(TWARN | TERRNO, "tst_clock_gettime() failed");
-+		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
++	tst_timer_check(CLOCK_MONOTONIC);
++	SAFE_SIGNAL(SIGINT, sig_handler);
  }
- 
- struct timespec tst_timer_elapsed(void)
++
++static struct tst_test test = {
++	.forks_child = 1,
++	.setup = setup,
++	.test_all = run,
++};
 -- 
 2.18.0
 
