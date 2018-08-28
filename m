@@ -1,82 +1,56 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 28 Aug 2018 13:07:51 +0200
-Subject: [LTP] [PATCH v2 2/2] move_pages12: end early if runtime gets close
-	to test time
-In-Reply-To: <6680bda80c85d424a5219d9f55dc9c5355dc0da1.1535454204.git.jstancek@redhat.com>
-References: <6680bda80c85d424a5219d9f55dc9c5355dc0da1.1535454204.git.jstancek@redhat.com>
-Message-ID: <58d20bf71d2f56126b7386b32d19a3a1382cc029.1535454204.git.jstancek@redhat.com>
+From: Christian Lanig <clanig@suse.com>
+Date: Tue, 28 Aug 2018 13:18:44 +0200
+Subject: [LTP] [PATCH 2/2] Add wanted output to shell lib test case
+In-Reply-To: <20180828111844.20152-1-clanig@suse.com>
+References: <20180522193430.20117-2-pvorel@suse.cz>
+ <20180828111844.20152-1-clanig@suse.com>
+Message-ID: <20180828111844.20152-2-clanig@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Most systems can complete this reproducer in standard test time.
-Small groups of systems (e.g. aarch64 with 512M hugepages) can hit
-a timeout.
-
-Add a check for elapsed time and end test early if we are getting close (80%).
-
-Fixes: #387
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- testcases/kernel/syscalls/move_pages/move_pages12.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+Please do not merge!
+I would like to get some feedback for this one and the previous patch. It is
+based on Petr Vorel's [RFC,v3,2/2] lib: Add tests from May 22nd 2018 with the
+message ID 20180522193430.20117-2-pvorel@suse.cz.
+These two patches transfer Petr's test cases in a separate folder and a shell
+script loops over all files as suggested in the replies to the initial message.
+The output is verified against a comment section in the test case file itself.
+This section is started with the line "# output:" and it is expected that it
+goes to the end of the document without interception.
+I have run the script with various Shell implementations to make sure it's
+portable.
 
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages12.c b/testcases/kernel/syscalls/move_pages/move_pages12.c
-index 43acb42aabb1..284be957148f 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages12.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages12.c
-@@ -40,6 +40,7 @@
- #include <sys/wait.h>
- 
- #include "tst_test.h"
-+#include "tst_timer.h"
- #include "move_pages_support.h"
- #include "lapi/mmap.h"
- 
-@@ -101,6 +102,9 @@ static void do_test(void)
- 	int i;
- 	pid_t cpid = -1;
- 	int status;
-+	unsigned int test_time = (tst_get_timeout() / 5) * 4;
-+
-+	tst_timer_start(CLOCK_MONOTONIC);
- 
- 	addr = SAFE_MMAP(NULL, TEST_PAGES * hpsz, PROT_READ | PROT_WRITE,
- 		MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB, -1, 0);
-@@ -123,14 +127,15 @@ static void do_test(void)
- 		memset(addr, 0, TEST_PAGES * hpsz);
- 
- 		SAFE_MUNMAP(addr, TEST_PAGES * hpsz);
--	}
- 
--	if (i == LOOPS) {
--		SAFE_KILL(cpid, SIGKILL);
--		SAFE_WAITPID(cpid, &status, 0);
--		if (!WIFEXITED(status))
--			tst_res(TPASS, "Bug not reproduced");
-+		if (tst_timer_expired_ms(test_time))
-+			break;
- 	}
-+
-+	SAFE_KILL(cpid, SIGKILL);
-+	SAFE_WAITPID(cpid, &status, 0);
-+	if (!WIFEXITED(status))
-+		tst_res(TPASS, "Bug not reproduced");
+Limitations:
+The script is currently unable to test e.g. whether TFAIL is displayed with red
+color.
+So far I have only added the correct output line in a single test case file so
+just one test is currently passing.
+Before proceeding I would like to know whether this is a good way to go.
+
+ lib/newlib_tests/shell/test.TST_TEST.sh | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/lib/newlib_tests/shell/test.TST_TEST.sh b/lib/newlib_tests/shell/test.TST_TEST.sh
+index 42f14151b..aa4e20377 100755
+--- a/lib/newlib_tests/shell/test.TST_TEST.sh
++++ b/lib/newlib_tests/shell/test.TST_TEST.sh
+@@ -21,5 +21,12 @@ do_test()
  }
  
- static void alloc_free_huge_on_node(unsigned int node, size_t size)
-@@ -183,6 +188,8 @@ static void setup(void)
- 	int ret;
- 	long memfree;
- 
-+	tst_timer_check(CLOCK_MONOTONIC);
-+
- 	check_config(TEST_NODES);
- 
- 	if (access(PATH_HUGEPAGES, F_OK))
+ tst_run
++# output:
+ # test 1 TINFO: Test 1 passed with no data ('')
+ # test 1 TPASS: true returned 0
++#
++# Summary:
++# passed   1
++# failed   0
++# skipped  0
++# warnings 0
 -- 
-1.8.3.1
+2.16.4
 
