@@ -1,50 +1,65 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 28 Aug 2018 10:38:47 -0400 (EDT)
-Subject: [LTP] [PATCH v2 1/2] lib: add tst_get_timeout()
-In-Reply-To: <87wosashbp.fsf@rpws.prws.suse.cz>
-References: <6680bda80c85d424a5219d9f55dc9c5355dc0da1.1535454204.git.jstancek@redhat.com>
- <20180828125808.GB24095@rei> <87wosashbp.fsf@rpws.prws.suse.cz>
-Message-ID: <1445215680.43198555.1535467127164.JavaMail.zimbra@redhat.com>
+Date: Tue, 28 Aug 2018 16:40:05 +0200
+Subject: [LTP] [PATCH RFC v3 1/3] lib: add tst_timer_find_clock()
+Message-ID: <920f7a911d8b32c3c2e673a9c608ded2526a616d.1535466715.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Adds function that returns first available clock usable for measuring
+elapsed test time.
 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ include/tst_timer.h |  5 +++++
+ lib/tst_timer.c     | 16 ++++++++++++++++
+ 2 files changed, 21 insertions(+)
 
------ Original Message -----
-> Hello,
-> 
-> Cyril Hrubis <chrubis@suse.cz> writes:
-> 
-> > Hi!
-> > It's just an idea, but we can make this even more elegant API.
-> >
-> > We measure the time in the test library anyway, so what about we added
-> > something as tst_timeout_reached() that would return number of seconds
-> > remaining to 80% of the real timeout or 0 if in a case that the timeout
-> > was reached. Then we can use this as a soft-timeout in all the testcases
-> > without any additional steps.
-> >
-> > --
-> > Cyril Hrubis
-> > chrubis@suse.cz
-> 
-> 80% is probably way more than many of the CVE test cases need unless the
-> overall timeout is reduced from 5 minutes. Probably 20% would be
-> OK. Assuming this is the kind of usage scenario you had in mind.
+diff --git a/include/tst_timer.h b/include/tst_timer.h
+index 0fd7ed6cfc03..b92d975d8edc 100644
+--- a/include/tst_timer.h
++++ b/include/tst_timer.h
+@@ -245,6 +245,11 @@ static inline long long tst_timespec_abs_diff_ms(struct timespec t1,
+ void tst_timer_check(clockid_t clk_id);
+ 
+ /*
++ * Returns usable clock id for measuring elapsed test time.
++ */
++clockid_t tst_timer_find_clock(void);
++
++/*
+  * Marks a start time for given clock type.
+  *
+  * @clk_id: Posix clock to use.
+diff --git a/lib/tst_timer.c b/lib/tst_timer.c
+index dffaba0cbd5c..bbd460364b70 100644
+--- a/lib/tst_timer.c
++++ b/lib/tst_timer.c
+@@ -39,6 +39,22 @@ static const char *clock_name(clockid_t clk_id)
+ 	}
+ }
+ 
++clockid_t tst_timer_find_clock(void)
++{
++	unsigned int i;
++	static struct timespec tmp;
++	clockid_t clocks[] = { CLOCK_MONOTONIC, CLOCK_MONOTONIC_RAW, CLOCK_MONOTONIC_COARSE,
++		CLOCK_BOOTTIME, CLOCK_REALTIME, CLOCK_REALTIME_COARSE };
++
++	for (i = 0; i < ARRAY_SIZE(clocks); i++) {
++		if (tst_clock_gettime(clocks[i], &tmp) == 0)
++			return clocks[i];
++	}
++
++	tst_brk(TCONF, "Failed to find usable clock");
++	return -1;
++}
++
+ void tst_timer_check(clockid_t clk_id)
+ {
+ 	if (tst_clock_gettime(clk_id, &start_time)) {
+-- 
+1.8.3.1
 
-I'd leave it to user. Give him data how much time is left,
-and let him decide what is sensible limit for soft-timeout.
-
-I'll send example in v3 series shortly.
-
-> 
-> We could also call it tst_timeout_approaching, tst_timeout_near or
-> tst_time_to_fail... not sure if they are any better.
-> 
-> --
-> Thank you,
-> Richard.
-> 
