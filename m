@@ -1,61 +1,155 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue, 28 Aug 2018 11:29:57 +0200
-Subject: [LTP] [PATCH 0/5] New fuzzy sync library API
-Message-ID: <20180828093002.20368-1-rpalethorpe@suse.com>
+Date: Tue, 28 Aug 2018 11:29:59 +0200
+Subject: [LTP] [PATCH 2/5] tst_timer: Create interface for using multiple
+	timers
+In-Reply-To: <20180828093002.20368-1-rpalethorpe@suse.com>
+References: <20180828093002.20368-1-rpalethorpe@suse.com>
+Message-ID: <20180828093002.20368-3-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This is a major change to how the tst_fuzzy_sync.h library works and how it is
-used. Previously I was working on a slightly modified version which just
-introduces a timeout, but while I was waiting for that to be reviewed I
-started this and had a 'breakthrough'. So I have decided to skip the slightly
-modified version and jump straight to this (as Li Wang suggested).
+Encapsulate information about a stopwatch timer in a struct and provide
+methods for operating on that timer. This allows test authors to create
+multiple timers in parallel.
 
-Below are some notes on the timing calculation (addressing Cyril's concerns)
-which may make sense after reading the code and docs:
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ include/tst_timer.h | 51 +++++++++++++++++++++++++++++++++++++++++++++
+ lib/tst_timer.c     | 21 +++++++++++++++++++
+ 2 files changed, 72 insertions(+)
 
-I have tested this on X86 and some ARM systems, including Rasp Pi. It appears
-they all have high resolution clocks capable of taking the time measurments
-required. To simulate a system with a low resolution clock I used
-CLOCK_REALTIME_COARSE. The result was that the time measurement averages which
-the algorithm relies on were all close to zero with a large deviation. In this
-case the randomised delay is simply never activated, which seems like an
-acceptable outcome as the library still functions without it. If the clock has
-a low resolution, but the timings are consistently above zero, then a delay
-will be calculated which is maybe too large or too small. This may degrade the
-performance of the algorithm, but I doubt it will break it.
-
-If the time between end_race_a and end_race_b is less than the clock
-resolution or too variable then the algorithm won't be able to calculate the
-number of spins required to create a suitable time delay. There are possible
-solutions for this, but I haven't thought of any which reduce complexity
-instead of increasing it. I have no idea if this will be a problem in
-practice. In the common case it won't be, but it needs testing on a very
-diverse set of systems.
-
-Richard Palethorpe (5):
-  lib: Allow user to easily get LTP_TIMEOUT_MUL value
-  tst_timer: Create interface for using multiple timers
-  tst_timer: Add nano second conversions
-  fzsync: Simplify API with start/end race calls and limit exec time
-  Convert tests to use fzsync_{start,end}_race API
-
- include/tst_fuzzy_sync.h                      | 634 +++++++++++++-----
- include/tst_test.h                            |   1 +
- include/tst_timer.h                           |  62 ++
- lib/newlib_tests/test16.c                     |  24 +-
- lib/tst_test.c                                |  23 +-
- lib/tst_timer.c                               |  21 +
- testcases/cve/cve-2014-0196.c                 |  25 +-
- testcases/cve/cve-2016-7117.c                 |  35 +-
- testcases/cve/cve-2017-2671.c                 |  23 +-
- testcases/kernel/syscalls/inotify/inotify09.c |  23 +-
- .../kernel/syscalls/ipc/shmctl/shmctl05.c     |  28 +-
- 11 files changed, 615 insertions(+), 284 deletions(-)
-
+diff --git a/include/tst_timer.h b/include/tst_timer.h
+index 0fd7ed6cf..3e4f611b0 100644
+--- a/include/tst_timer.h
++++ b/include/tst_timer.h
+@@ -34,6 +34,26 @@
+ #include <sys/time.h>
+ #include <time.h>
+ 
++#ifdef CLOCK_MONOTONIC_RAW
++# define TST_CLOCK_DEFAULT CLOCK_MONOTONIC_RAW
++#else
++# define TST_CLOCK_DEFAULT CLOCK_MONOTONIC
++#endif
++
++/**
++ * Encapsulates a stopwatch timer.
++ *
++ * Useful when you need to use multiple timers in a single test.
++ */
++struct tst_timer {
++	/** The POSIX clock type  */
++	clockid_t clock_id;
++	/** How much time can pass before tst_timer_expired_st() returns true */
++	struct timespec limit;
++	/** Where to start measuring time from */
++	struct timespec start_time;
++};
++
+ /*
+  * Converts timespec to microseconds.
+  */
+@@ -92,6 +112,19 @@ static inline struct timeval tst_us_to_timeval(long long us)
+ 	return ret;
+ }
+ 
++/*
++ * Converts seconds to struct timespec
++ */
++static inline struct timespec tst_sec_to_timespec(time_t seconds)
++{
++	struct timespec ret;
++
++	ret.tv_sec = seconds;
++	ret.tv_nsec = 0;
++
++	return ret;
++}
++
+ /*
+  * Converts ms to struct timespec
+  */
+@@ -244,6 +277,8 @@ static inline long long tst_timespec_abs_diff_ms(struct timespec t1,
+  */
+ void tst_timer_check(clockid_t clk_id);
+ 
++void tst_timer_init_st(struct tst_timer *tim);
++
+ /*
+  * Marks a start time for given clock type.
+  *
+@@ -251,6 +286,14 @@ void tst_timer_check(clockid_t clk_id);
+  */
+ void tst_timer_start(clockid_t clk_id);
+ 
++/**
++ * Sets the start time for timer tim.
++ *
++ * @relates tst_timer
++ * @param tim The timer to start
++ */
++void tst_timer_start_st(struct tst_timer *tim);
++
+ /*
+  * Returns true if timer started by tst_timer_start() has been running for
+  * longer than ms seconds.
+@@ -259,6 +302,14 @@ void tst_timer_start(clockid_t clk_id);
+  */
+ int tst_timer_expired_ms(long long ms);
+ 
++/**
++ * Returns true if timer tim has been running for longer than tst_timer::limit
++ *
++ * @relates tst_timer
++ * @param tim The timer to check
++ */
++int tst_timer_expired_st(struct tst_timer *tim);
++
+ /*
+  * Marks timer end time.
+  */
+diff --git a/lib/tst_timer.c b/lib/tst_timer.c
+index dffaba0cb..bb73018c6 100644
+--- a/lib/tst_timer.c
++++ b/lib/tst_timer.c
+@@ -61,6 +61,16 @@ void tst_timer_start(clockid_t clk_id)
+ 		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
+ }
+ 
++void tst_timer_start_st(struct tst_timer *tim)
++{
++	if (!tim->clock_id)
++		tim->clock_id = TST_CLOCK_DEFAULT;
++	tst_timer_check(tim->clock_id);
++
++	if (tst_clock_gettime(tim->clock_id, &tim->start_time))
++		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
++}
++
+ int tst_timer_expired_ms(long long ms)
+ {
+ 	struct timespec cur_time;
+@@ -71,6 +81,17 @@ int tst_timer_expired_ms(long long ms)
+ 	return tst_timespec_diff_ms(cur_time, start_time) >= ms;
+ }
+ 
++int tst_timer_expired_st(struct tst_timer *tim)
++{
++	struct timespec cur_time;
++
++	if (tst_clock_gettime(tim->clock_id, &cur_time))
++		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
++
++	return tst_timespec_lt(tim->limit,
++			       tst_timespec_diff(cur_time, tim->start_time));
++}
++
+ void tst_timer_stop(void)
+ {
+ 	if (tst_clock_gettime(clock_id, &stop_time))
 -- 
 2.18.0
 
