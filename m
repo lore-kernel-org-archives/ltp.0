@@ -1,33 +1,47 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 28 Aug 2018 06:40:24 -0400 (EDT)
-Subject: [LTP] [PATCH] syscalls/move_pages: move_pages() can return
- positive value
-In-Reply-To: <1957638804.43116794.1535451580327.JavaMail.zimbra@redhat.com>
-References: <15602db6c7187069f12f06cac46d06e1b715bbb9.1535376449.git.jstancek@redhat.com>
- <20180828100008.GA14275@rei.lan>
- <1957638804.43116794.1535451580327.JavaMail.zimbra@redhat.com>
-Message-ID: <889878276.43118765.1535452824435.JavaMail.zimbra@redhat.com>
+Date: Tue, 28 Aug 2018 13:07:50 +0200
+Subject: [LTP] [PATCH v2 1/2] lib: add tst_get_timeout()
+Message-ID: <6680bda80c85d424a5219d9f55dc9c5355dc0da1.1535454204.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ include/tst_test.h | 1 +
+ lib/tst_test.c     | 5 +++++
+ 2 files changed, 6 insertions(+)
 
------ Original Message -----
-> 
-> ----- Original Message -----
-> > Hi!
-> > >  		ret = numa_move_pages(0, TEST_PAGES, pages, NULL, status, 0);
-> > > -		if (ret != 0) {
-> > > +		if (ret == -1) {
-> > 
-> > Maybe we should go for (ret < 0) but other than that this looks good.
-> 
-> Agreed, we don't check for other negative values, so we better report
-> those as failures too.
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 98dacf3873ab..f801d276d2e5 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -217,6 +217,7 @@ const char *tst_strsig(int sig);
+  */
+ const char *tst_strstatus(int status);
+ 
++unsigned int tst_get_timeout(void);
+ void tst_set_timeout(int timeout);
+ 
+ #ifndef TST_NO_DEFAULT_MAIN
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 2f3d357d2fcc..7bd18205ae7f 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -992,6 +992,11 @@ static void sigint_handler(int sig LTP_ATTRIBUTE_UNUSED)
+ 	}
+ }
+ 
++unsigned int tst_get_timeout(void)
++{
++	return results->timeout;
++}
++
+ void tst_set_timeout(int timeout)
+ {
+ 	char *mul = getenv("LTP_TIMEOUT_MUL");
+-- 
+1.8.3.1
 
-Pushed with suggested change and your ACK.
-
-Regards,
-Jan
