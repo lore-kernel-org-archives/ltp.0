@@ -1,31 +1,33 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 29 Aug 2018 06:19:57 -0400 (EDT)
-Subject: [LTP] [PATCH v2 ltp] syscalls/munlockall02: remove deprecated
- test
-In-Reply-To: <20180829082320.6903-1-junchi.chen@intel.com>
-References: <20180829082320.6903-1-junchi.chen@intel.com>
-Message-ID: <471948097.43438055.1535537997606.JavaMail.zimbra@redhat.com>
+Date: Wed, 29 Aug 2018 08:11:15 -0400 (EDT)
+Subject: [LTP] [PATCH 1/4] lapi/syscalls: Add syscall numbers for mlock2
+In-Reply-To: <1534844339-8655-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1534844339-8655-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1970056805.43465468.1535544675820.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
+
 ----- Original Message -----
-> ISSUE:
->   This TCONF message: "Some distros... support
->    non-superuser munlockall calls."
->    has unnecessarily shown for years.
->=20
-> REASON=EF=BC=9A
->   The test is expecting EPERM error when calling munlockall with user
->    nobody. However, the unprivileged calling of munlockall has been
->    allowed at least since v2.6.
->=20
-> Signed-off-by: Junchi Chen <junchi.chen@intel.com>
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  include/lapi/syscalls/aarch64.in   | 1 +
+>  include/lapi/syscalls/arm.in       | 1 +
+>  include/lapi/syscalls/hppa.in      | 1 +
+>  include/lapi/syscalls/i386.in      | 1 +
+>  include/lapi/syscalls/ia64.in      | 1 +
+>  include/lapi/syscalls/powerpc.in   | 1 +
+>  include/lapi/syscalls/powerpc64.in | 1 +
+>  include/lapi/syscalls/s390.in      | 1 +
+>  include/lapi/syscalls/s390x.in     | 1 +
+>  include/lapi/syscalls/sh.in        | 1 +
+>  include/lapi/syscalls/sparc.in     | 1 +
+>  include/lapi/syscalls/sparc64.in   | 1 +
+>  include/lapi/syscalls/x86_64.in    | 1 +
+>  13 files changed, 13 insertions(+)
 
-Pushed.
-
-Thanks,
-Jan
+ACK
