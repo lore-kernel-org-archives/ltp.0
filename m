@@ -1,66 +1,170 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 30 Aug 2018 10:55:19 +0200
-Subject: [LTP] [PATCH v4 2/2] move_pages12: end early if runtime gets close
-	to test time
-In-Reply-To: <5ad739995335bda348f07fc4d3faeec501e00b19.1535618962.git.jstancek@redhat.com>
-References: <5ad739995335bda348f07fc4d3faeec501e00b19.1535618962.git.jstancek@redhat.com>
-Message-ID: <229505f08227865b5f14db37495760aedb2dfb88.1535618962.git.jstancek@redhat.com>
+Date: Thu, 30 Aug 2018 10:55:18 +0200
+Subject: [LTP] [PATCH v4 1/2] lib: introduce tst_timeout_remaining()
+Message-ID: <5ad739995335bda348f07fc4d3faeec501e00b19.1535618962.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Most systems can complete this reproducer in standard test time.
-Small groups of systems (e.g. aarch64 with 512M hugepages) are hitting
-a timeout.
+Which returns number of seconds remaining until timeout.
+Along with tst_start_time it is only valid for test pid.
 
-Add a check for elapsed time and end test early if we are getting close (80%).
-
-Fixes: #387
+Its value has to be (re)initialized when:
+- test starts
+- test calls tst_set_timeout()
+- test runs multiple iterations or uses .all_filesystems
 
 Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
 Changes in v4:
-- don't start variable with underscore
+- drop tst_timer_find_clock(), use CLOCK_MONOTONIC
+- reinitialize in heartbeat(), so we cover -i parameter and tst_set_timeout()
+- modify test18 so it sleeps
+- add test18 .gitignore
+- add note to docs
 
- testcases/kernel/syscalls/move_pages/move_pages12.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ doc/test-writing-guidelines.txt |  3 +++
+ include/tst_test.h              |  1 +
+ lib/newlib_tests/.gitignore     |  1 +
+ lib/newlib_tests/test18.c       | 34 ++++++++++++++++++++++++++++++++++
+ lib/tst_test.c                  | 22 ++++++++++++++++++++++
+ 5 files changed, 61 insertions(+)
+ create mode 100644 lib/newlib_tests/test18.c
 
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages12.c b/testcases/kernel/syscalls/move_pages/move_pages12.c
-index 43acb42aabb1..04fda8beffc1 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages12.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages12.c
-@@ -101,6 +101,7 @@ static void do_test(void)
- 	int i;
- 	pid_t cpid = -1;
- 	int status;
-+	unsigned int twenty_percent = (tst_timeout_remaining() / 5);
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index a16972430b14..0194f2098d26 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -324,6 +324,9 @@ overriden by setting '.timeout' in the test structure or by calling
+ time may vary arbitrarily, for these timeout can be disabled by setting it to
+ -1.
  
- 	addr = SAFE_MMAP(NULL, TEST_PAGES * hpsz, PROT_READ | PROT_WRITE,
- 		MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB, -1, 0);
-@@ -123,14 +124,15 @@ static void do_test(void)
- 		memset(addr, 0, TEST_PAGES * hpsz);
- 
- 		SAFE_MUNMAP(addr, TEST_PAGES * hpsz);
--	}
- 
--	if (i == LOOPS) {
--		SAFE_KILL(cpid, SIGKILL);
--		SAFE_WAITPID(cpid, &status, 0);
--		if (!WIFEXITED(status))
--			tst_res(TPASS, "Bug not reproduced");
-+		if (tst_timeout_remaining() < twenty_percent)
-+			break;
- 	}
++Test can find out how much time (in seconds) is remaining to timeout,
++by calling 'tst_timeout_remaining()'.
 +
-+	SAFE_KILL(cpid, SIGKILL);
-+	SAFE_WAITPID(cpid, &status, 0);
-+	if (!WIFEXITED(status))
-+		tst_res(TPASS, "Bug not reproduced");
+ A word about the cleanup() callback
+ +++++++++++++++++++++++++++++++++++
+ 
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 98dacf3873ab..c0c9a7c7b995 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -217,6 +217,7 @@ const char *tst_strsig(int sig);
+  */
+ const char *tst_strstatus(int status);
+ 
++unsigned int tst_timeout_remaining(void);
+ void tst_set_timeout(int timeout);
+ 
+ #ifndef TST_NO_DEFAULT_MAIN
+diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
+index 99edc640438e..76e89e438f55 100644
+--- a/lib/newlib_tests/.gitignore
++++ b/lib/newlib_tests/.gitignore
+@@ -19,6 +19,7 @@ tst_safe_fileops
+ tst_res_hexd
+ tst_strstatus
+ test17
++test18
+ tst_expiration_timer
+ test_exec
+ test_exec_child
+diff --git a/lib/newlib_tests/test18.c b/lib/newlib_tests/test18.c
+new file mode 100644
+index 000000000000..6615471a5708
+--- /dev/null
++++ b/lib/newlib_tests/test18.c
+@@ -0,0 +1,34 @@
++/*
++ * Copyright (c) 2018, Linux Test Project
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#include <stdlib.h>
++#include <unistd.h>
++#include "tst_test.h"
++
++static void run(void)
++{
++	do {
++		sleep(1);
++	} while (tst_timeout_remaining() >= 4);
++
++	tst_res(TPASS, "Timeout remaining: %d", tst_timeout_remaining());
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.timeout = 5
++};
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 2f3d357d2fcc..ae3ca6182581 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -47,6 +47,7 @@ static int iterations = 1;
+ static float duration = -1;
+ static pid_t main_pid, lib_pid;
+ static int mntpoint_mounted;
++static struct timespec tst_start_time; /* valid only for test pid */
+ 
+ struct results {
+ 	int passed;
+@@ -916,6 +917,9 @@ static void add_paths(void)
+ 
+ static void heartbeat(void)
+ {
++	if (tst_clock_gettime(CLOCK_MONOTONIC, &tst_start_time))
++		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
++
+ 	kill(getppid(), SIGUSR1);
  }
  
- static void alloc_free_huge_on_node(unsigned int node, size_t size)
+@@ -925,6 +929,9 @@ static void testrun(void)
+ 	unsigned long long stop_time = 0;
+ 	int cont = 1;
+ 
++	if (tst_clock_gettime(CLOCK_MONOTONIC, &tst_start_time))
++		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
++
+ 	add_paths();
+ 	do_test_setup();
+ 
+@@ -992,6 +999,21 @@ static void sigint_handler(int sig LTP_ATTRIBUTE_UNUSED)
+ 	}
+ }
+ 
++unsigned int tst_timeout_remaining(void)
++{
++	static struct timespec now;
++	unsigned int elapsed;
++
++	if (tst_clock_gettime(CLOCK_MONOTONIC, &now))
++		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
++
++	elapsed = tst_timespec_diff_ms(now, tst_start_time) / 1000;
++	if (results->timeout > elapsed)
++		return results->timeout - elapsed;
++
++	return 0;
++}
++
+ void tst_set_timeout(int timeout)
+ {
+ 	char *mul = getenv("LTP_TIMEOUT_MUL");
 -- 
 1.8.3.1
 
