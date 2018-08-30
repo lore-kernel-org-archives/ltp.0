@@ -1,43 +1,66 @@
-From: Li Wang <liwan@redhat.com>
-Date: Thu, 30 Aug 2018 15:21:13 +0800
-Subject: [LTP] [PATCH RFC v3 2/3] lib: introduce tst_timeout_remaining()
-In-Reply-To: <5730db8dee0c566014c99bc0d264326fe1c923cc.1535466715.git.jstancek@redhat.com>
-References: <920f7a911d8b32c3c2e673a9c608ded2526a616d.1535466715.git.jstancek@redhat.com>
- <5730db8dee0c566014c99bc0d264326fe1c923cc.1535466715.git.jstancek@redhat.com>
-Message-ID: <CAEemH2cb3bdvy+cGLDZ=bpVnx2eZCRMxKRSBt+yGPzM2y5Civg@mail.gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 30 Aug 2018 15:41:09 +0800
+Subject: [LTP] [PATCH 4/4] syscalls/mlock202: Add new testcase
+In-Reply-To: <1782237279.43470847.1535546646343.JavaMail.zimbra@redhat.com>
+References: <1534844339-8655-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1534844339-8655-4-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1782237279.43470847.1535546646343.JavaMail.zimbra@redhat.com>
+Message-ID: <5B879F95.10200@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On 2018/08/29 20:44, Jan Stancek wrote:
+> ----- Original Message -----
+>> Check various errnos for mlock2(2) since kernel v2.6.9.
+> mlock2() is available since Linux 4.4.
+>
+>> +static struct tcase {
+>> +	char **taddr;
+>> +	int flag;
+>> +	unsigned long *max_size;
+>> +	/* 1: nobody expected  0: root expected */
+>> +	int exp_user;
+> I'd drop the "expected" prefix here, this isn't something syscall provides as "output".
 Hi Jan,
 
-I'm OK to go this way, as you said that with the remaining seconds return,
-we can do something more for testcase. And I also suggest Richard to have
-try on using it in fzsync API.
+OK, I will drop it.
+>> +	int exp_err;
+>> +} tcases[] = {
+>> +	{&addr, -1, NULL, 0, EINVAL},
+>> +	{&addr, 0,&max_sz1, 1, ENOMEM},
+>> +	{&addr, 0,&max_sz2, 1, EPERM},
+>> +	{&unmapped_addr, 0, NULL, 0, ENOMEM},
+>> +};
+>> +
+> ..
+>> +static void setup(void)
+>> +{
+>> +	pgsz = getpagesize();
+>> +	nobody = SAFE_GETPWNAM("nobody");
+>> +
+>> +	addr = SAFE_MMAP(NULL, pgsz, PROT_WRITE,
+>> +			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+>> +	unmapped_addr = SAFE_MMAP(NULL, pgsz, PROT_READ,
+>> +				  MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+>> +	SAFE_MUNMAP(unmapped_addr, pgsz);
+> I suggest larger map here (couple M) and pick address in middle.
+> Single page can easily be mapped by glibc for some buffer.
+OK, i will map a larger one and pick address in middle.
 
-
-On Tue, Aug 28, 2018 at 10:40 PM, Jan Stancek <jstancek@redhat.com> wrote:
-
-> Which returns number of seconds remaining till timeout.
+Thanks,
+Xiao Yang
+>> +
+>> +	max_sz1 = pgsz - 1;
+>> +}
+>> +
+> Regards,
+> Jan
 >
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  include/tst_test.h        |   1 +
->  lib/newlib_tests/test18   | Bin 0 -> 384032 bytes
->  lib/newlib_tests/test18.c |  32 ++++++++++++++++++++++++++++++++
->  lib/tst_test.c            |  21 +++++++++++++++++++++
->  4 files changed, 54 insertions(+)
->  create mode 100755 lib/newlib_tests/test18
+>
 >
 
-This test18 is a binary file which should not be submitted.
 
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180830/87864da3/attachment.html>
