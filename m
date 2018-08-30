@@ -1,103 +1,66 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 30 Aug 2018 10:53:19 +0200
-Subject: [LTP] [PATCH 4/5] fzsync: Simplify API with start/end race
-	calls and limit exec time
-In-Reply-To: <CAEemH2d9ABZFAGJJ=ORoH0faTXQOQhmw8+7Q3uujUhcOBpT0dQ@mail.gmail.com>
-References: <20180828093002.20368-1-rpalethorpe@suse.com>
- <20180828093002.20368-5-rpalethorpe@suse.com>
- <CAEemH2d9ABZFAGJJ=ORoH0faTXQOQhmw8+7Q3uujUhcOBpT0dQ@mail.gmail.com>
-Message-ID: <87tvncs0ao.fsf@rpws.prws.suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 30 Aug 2018 10:55:19 +0200
+Subject: [LTP] [PATCH v4 2/2] move_pages12: end early if runtime gets close
+	to test time
+In-Reply-To: <5ad739995335bda348f07fc4d3faeec501e00b19.1535618962.git.jstancek@redhat.com>
+References: <5ad739995335bda348f07fc4d3faeec501e00b19.1535618962.git.jstancek@redhat.com>
+Message-ID: <229505f08227865b5f14db37495760aedb2dfb88.1535618962.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Most systems can complete this reproducer in standard test time.
+Small groups of systems (e.g. aarch64 with 512M hugepages) are hitting
+a timeout.
 
-Li Wang <liwang@redhat.com> writes:
+Add a check for elapsed time and end test early if we are getting close (80%).
 
-> Hi Richard,
->
-> I have gone though this new fzsync API, the whole picture looks good but
-> with a tiny issue maybe be needs adjustment.
->
-> 1. Moving the expired time detection to tst_fzsync_end_race_a() function,
-> because it maybe better if exit the loop after finishing a complete race
-> testing, and it also makes the _start_race_a() more aligned to
-> _start_race_b() I guess.
->
-> 2. Do fzsync_pair_cleanup when the expired time occuring. This is for JOIN
-> the threads which might have collision(I know it has very small probability
-> but in case of that)with new threads if with -i parameter. And re-org the
-> tst_fzsync_clenaup() to make sure to be widely used.
->
-> So, for suggestion 1&2, the related function will be changed as:
->
-> static void tst_fzsync_pair_cleanup(struct tst_fzsync_pair *pair)
-> {
-> tst_fzsync_pair_exit(pair);
->
-> if (pair->thread_b) {
-> SAFE_PTHREAD_JOIN(pair->thread_b, 0);
-> pair->thread_b = 0;
-> }
-> }
->
-> static inline int tst_fzsync_end_race_a(struct tst_fzsync_pair *pair)
-> {
-> if (tst_timer_expired_st(&pair->timer)) {
-> tst_res(TINFO,
-> "Exceeded fuzzy sync time limit, requesting exit");
-> tst_fzsync_pair_cleanup(pair);
-> }
->
-> tst_fzsync_time(&pair->a_end);
-> return tst_fzsync_pair_wait(pair, &pair->a_cntr, &pair->b_cntr,
->     &pair->spins);
-> }
+Fixes: #387
 
-This should also be solved with Cyril's tst_fzsync_run() idea if I move
-tst_fzsync_pair_cleanup there.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+Changes in v4:
+- don't start variable with underscore
 
->
-> 3. I tend to agree with Cyril's opinion, to take use of
-> the tst_timeout_remaining() function which will be introduced by Jan's
-> patch for move_pages12, then fzsync can drop the expired time detection by
-> with new timer function involved.
->
-> 4. The usage of fzsync is not very neat. For example in some places you
-> put tst_fzsync_start_race_b(&pair) into curves but others not, I know that
-> because of different situation needs variant race condition area,
-> but if we can have a uniform format to satisfy that, it would be more happy
-> to users.
+ testcases/kernel/syscalls/move_pages/move_pages12.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-I think tst_fzsync_run() should help with this a bit as well. Also in
-most cases we just need to synchronise two system calls (one in each
-thread), so I could also create two macros like:
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages12.c b/testcases/kernel/syscalls/move_pages/move_pages12.c
+index 43acb42aabb1..04fda8beffc1 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages12.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages12.c
+@@ -101,6 +101,7 @@ static void do_test(void)
+ 	int i;
+ 	pid_t cpid = -1;
+ 	int status;
++	unsigned int twenty_percent = (tst_timeout_remaining() / 5);
+ 
+ 	addr = SAFE_MMAP(NULL, TEST_PAGES * hpsz, PROT_READ | PROT_WRITE,
+ 		MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB, -1, 0);
+@@ -123,14 +124,15 @@ static void do_test(void)
+ 		memset(addr, 0, TEST_PAGES * hpsz);
+ 
+ 		SAFE_MUNMAP(addr, TEST_PAGES * hpsz);
+-	}
+ 
+-	if (i == LOOPS) {
+-		SAFE_KILL(cpid, SIGKILL);
+-		SAFE_WAITPID(cpid, &status, 0);
+-		if (!WIFEXITED(status))
+-			tst_res(TPASS, "Bug not reproduced");
++		if (tst_timeout_remaining() < twenty_percent)
++			break;
+ 	}
++
++	SAFE_KILL(cpid, SIGKILL);
++	SAFE_WAITPID(cpid, &status, 0);
++	if (!WIFEXITED(status))
++		tst_res(TPASS, "Bug not reproduced");
+ }
+ 
+ static void alloc_free_huge_on_node(unsigned int node, size_t size)
+-- 
+1.8.3.1
 
-#define TST_FZSYNC_RACE_A(f) \
-tst_fzsync_start_race_a(..); \
-TEST(f);                     \
-tst_fzsync_end_race_a(..)
-
-I am not sure it is really worth hiding two lines from the user
-though. We could add this in a later update after implementing more
-tests cases using the API.
-
->
-> 5. I do not fully understand about the 'tst_fzsync_stat' part, if you can
-> give more explanation in code comments, that will be much appreciated.
->
-> Btw, I have tried this new API with my rhel7.5 x86_64 system, it woks fine
-> with or without -i parameter, and it also does correctly when the
-> execution_time expired. These comments are just FYI. Thanks!
->
-> --
-> Regards,
-> Li Wang
-
-
---
-Thank you,
-Richard.
