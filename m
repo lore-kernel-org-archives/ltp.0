@@ -1,27 +1,45 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 30 Aug 2018 08:43:55 -0400 (EDT)
-Subject: [LTP] [PATCH v2 4/4] syscalls/mlock202: Add new testcase
-In-Reply-To: <1535699602-28185-2-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <864746561.43466655.1535545169373.JavaMail.zimbra@redhat.com>
- <1535699602-28185-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1535699602-28185-2-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1945225887.43673570.1535633035153.JavaMail.zimbra@redhat.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Thu, 30 Aug 2018 15:03:05 +0200
+Subject: [LTP] [PATCH 4/5] fzsync: Simplify API with start/end race
+	calls and limit exec time
+In-Reply-To: <20180829091712.GA30074@rei>
+References: <20180828093002.20368-1-rpalethorpe@suse.com>
+ <20180828093002.20368-5-rpalethorpe@suse.com>
+ <20180828162409.GC26231@rei.lan> <87va7tsgr1.fsf@rpws.prws.suse.cz>
+ <20180829091712.GA30074@rei>
+Message-ID: <87r2igroqe.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hello,
 
+Cyril Hrubis <chrubis@suse.cz> writes:
 
------ Original Message -----
-> Check various errnos for mlock2(2) since kernel v2.6.9.
-> 
-> Note:
-> 1) We use tst_syscall() to check if mlock2() is supported.
-> 2) since kernel v2.6.9, the limits and permissions of mlock2()
->    changed, so we just check mlock2() since the version.
-> 
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> Hi!
+>> > If yuo init the pair with TST_FZSYNC_PAIR_INIT these fields are already
+>> > zeroed...
+>>
+>> Not if the user uses the -i argument.
+>
+> Hmm, then we should probably drop the static initialization. We would
+> have to have way to set some parameters to non-default values, but I
+> guess that we can do that after we called the init function. Something
+> as:
+>
+> 	tst_fzsync_init(&pair);
+> 	tst_fzsync_set_foo(&par, val);
+>
+> Where tst_fzsync_set_foo() is an static inline function.
+>
 
-Ack
+Yeah, thinking about it we should not do the static initialisation
+statically anyway incase the test writer needs to dynamically allocate
+the memory where the struct is stored. Although they could use memcpy,
+but it seems a little bit messy.
+
+--
+Thank you,
+Richard.
