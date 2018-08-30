@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 30 Aug 2018 15:21:34 +0200
-Subject: [LTP] [Query] With THP  numa01 - test5() fails
-In-Reply-To: <7B4A451B-BE27-4659-A205-E9B5010678A8@caviumnetworks.com>
-References: <7B4A451B-BE27-4659-A205-E9B5010678A8@caviumnetworks.com>
-Message-ID: <20180830132134.GA18401@rei>
+Date: Thu, 30 Aug 2018 16:49:43 +0200
+Subject: [LTP] [PATCH v3 2/2] lib/tst_test.c: Add .needs_devfs flag
+In-Reply-To: <1534480415-18932-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20180816132815.GB30369@rei>
+ <1534480415-18932-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20180830144943.GA20702@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,36 +12,72 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> While running LTP test suite with 4.18 kernel ( arm64 ).
-> I see the below failure with THP (Transparent Hugepages) enabled.
-> test5 -  Verification of shared memory interleaved on all nodes
-> 
-> numa01 1 TINFO: The system contains 2 nodes: 0 1 
-> numa01 1 TPASS: NUMA local node and memory affinity
-> numa01 2 TPASS: NUMA preferred node policy
-> numa01 3 TPASS: NUMA share memory allocated in preferred node
-> numa01 4 TPASS: NUMA interleave policy
-> numa01 5 TFAIL: NUMA interleave share memory allocated in node1 is less than expected
+> +static void prepare_and_mount_dev_fs(const char *mntpoint)
+> +{
+> +	const char *flags[] = {"nodev", NULL};
+> +	char abs_path[PATH_MAX];
+> +
+> +	sprintf(abs_path, "%s/%s", tst_get_tmpdir(), mntpoint);
 
-There are some problems with the test5. It also fails frequenty if /tmp
-is on btrfs, the problem here is that file based mappings that are
-(faulted) allocated by the filesystem driver do not tend to be
-distributed fully evenly for various reasons (e.g. metadata blocks are
-allocated in batches on btrfs).
+The tst_get_tmpdir() allocates memory and also we are sure that mntpoint
+is on the same filesystem as the path returned by tst_get_tmpdir().
 
-So my guess here would be that THP causes some part(s) of the file, be
-it metadata or the actuall data, backed up by a transparent huge page,
-which causes the pages to be distributed unevely.
+So I would suggest something like this:
 
-The solution is to take more than one sample and see if data are
-distributed more or less evenly over sum of the samples, which is what
-I'm working on in replacement for this test that would fix this problem
-along with a few more, see:
+	char *tmpdir;
+	int mounted_nodev;
 
-http://lists.linux.it/pipermail/ltp/2018-August/009109.html
+	tmpdir = tst_get_tmpdir();
+	mounted_nodev = tst_path_has_mnt_flags(NULL, tmpdir, flags);
+	free(tmpdir);
 
-Can try the tests from that patchset to see if these are working fine
-for you?
+	if (mounted_nodev) {
+		...
+	}
+
+> +	if (tst_path_has_mnt_flags(NULL, abs_path, flags)) {
+> +		tst_res(TINFO, "%s isn't suitable for creating devices, "
+> +			"so mount tmpfs without nodev over it", abs_path);
+> +		SAFE_MOUNT(NULL, mntpoint, "tmpfs", 0, NULL);
+> +		mntpoint_mounted = 1;
+> +	}
+> +}
+> +
+>  static void prepare_device(void)
+>  {
+>  	if (tst_test->format_device) {
+> @@ -786,11 +801,15 @@ static void do_setup(int argc, char *argv[])
+>  	if (tst_test->mntpoint)
+>  		SAFE_MKDIR(tst_test->mntpoint, 0777);
+>  
+> -	if ((tst_test->needs_rofs || tst_test->mount_device ||
+> -	     tst_test->all_filesystems) && !tst_test->mntpoint) {
+> +	if ((tst_test->needs_devfs || tst_test->needs_rofs ||
+> +	     tst_test->mount_device || tst_test->all_filesystems) &&
+> +	     !tst_test->mntpoint) {
+>  		tst_brk(TBROK, "tst_test->mntpoint must be set!");
+>  	}
+
+I guess that we should also make sure only one of needs_rofs,
+needs_devfs or needs_device is set, because otherwise we would attempt
+to mount multiple filesystems over the mntpoint.
+
+something as:
+
+	if (!!tst_test->needs_rofs +
+	    !!tst_test->needs_devfs +
+	    !!tst_test->needs_device > 1) {
+		tst_brk(TBROK, "Two or more of needs_{rofs, devfs, device} are set");
+	}
+
+> +	if (tst_test->needs_devfs)
+> +		prepare_and_mount_dev_fs(tst_test->mntpoint);
+> +
+>  	if (tst_test->needs_rofs) {
+>  		/* If we failed to mount read-only tmpfs. Fallback to
+>  		 * using a device with read-only filesystem.
+
+Other than the minor nits this version looks fine.
 
 -- 
 Cyril Hrubis
