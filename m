@@ -1,67 +1,78 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 30 Aug 2018 09:17:22 +0800
-Subject: [LTP] [PATCH 3/4] syscalls/mlock201: Add new testcase
-In-Reply-To: <1936332281.43470556.1535546553712.JavaMail.zimbra@redhat.com>
-References: <1534844339-8655-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1534844339-8655-3-git-send-email-yangx.jy@cn.fujitsu.com>
- <864746561.43466655.1535545169373.JavaMail.zimbra@redhat.com>
- <1936332281.43470556.1535546553712.JavaMail.zimbra@redhat.com>
-Message-ID: <5B8745A2.7010005@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 30 Aug 2018 13:58:28 +0800
+Subject: [LTP] [PATCH 4/5] fzsync: Simplify API with start/end race
+ calls and limit exec time
+In-Reply-To: <20180828093002.20368-5-rpalethorpe@suse.com>
+References: <20180828093002.20368-1-rpalethorpe@suse.com>
+ <20180828093002.20368-5-rpalethorpe@suse.com>
+Message-ID: <CAEemH2d9ABZFAGJJ=ORoH0faTXQOQhmw8+7Q3uujUhcOBpT0dQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2018/08/29 20:42, Jan Stancek wrote:
-> ----- Original Message -----
->> ----- Original Message -----
->>> Check the basic functionality of mlock2(2) since kernel v2.6.9.
-> Missed this one:
->    mlock2() is available since Linux 4.4.
-Hi Jan,
+Hi Richard,
 
-Thanks for your review.
+I have gone though this new fzsync API, the whole picture looks good but
+with a tiny issue maybe be needs adjustment.
 
-It seems that mlock2() has been backported by some distros(e.g. 
-RHEL7.6), so i use tst_syscall()
-instead of .min_kver to check if mlock2() is supported.
+1. Moving the expired time detection to tst_fzsync_end_race_a() function,
+because it maybe better if exit the loop after finishing a complete race
+testing, and it also makes the _start_race_a() more aligned to
+_start_race_b() I guess.
 
- From mlock2() manpage:
-Before Linux 2.6.8, a process must be privileged (CAP_IPC_LOCK) in order 
-to lock memory and the
-RLIMIT_MEMLOCK soft resource limit defines a limit on how much memory 
-the process may lock.
-Since Linux 2.6.9, no limits are placed on the amount of memory that a 
-privileged process can lock
-and the RLIMIT_MEMLOCK soft resource limit instead defines a limit on 
-how  much memory an unprivileged\
-process may lock.
+2. Do fzsync_pair_cleanup when the expired time occuring. This is for JOIN
+the threads which might have collision(I know it has very small probability
+but in case of that)with new threads if with -i parameter. And re-org the
+tst_fzsync_clenaup() to make sure to be widely used.
 
-I just check the behavior of mlock2() since Linux 2.6.9.
->>> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
->>> + * Description:
->>> + * Check the basic functionality of the mlock2(2) since kernel v2.6.9:
->>> + * 1) Use mlock2(2) without MLOCK_ONFAULT to lock memory in the specified
->>> + *    range that is multiples of page size or not, and the VmLck from
->>> + *    /proc/PID/status shows correct size of memory that is locked by PID.
->>> + * 2) Use mlock2(2) with MLOCK_ONFAULT to lock memory in the specified
->>> + *    range that is multiples of page size or not, and the VmLck from
->>> + *    /proc/PID/status show correct size of memory that is locked by PID.
->> Can we also check if MLOCK_ONFAULT doesn't make non-present pages present,
->> but it still locks present pages? (mincore(2) or /proc/pid/pagemap)
-I will try to check this point as you suggested.
+So, for suggestion 1&2, the related function will be changed as:
 
-Thanks,
-Xiao Yang
->> Regards,
->> Jan
->>
->> --
->> Mailing list info: https://lists.linux.it/listinfo/ltp
->>
->
->
+static void tst_fzsync_pair_cleanup(struct tst_fzsync_pair *pair)
+{
+tst_fzsync_pair_exit(pair);
 
+if (pair->thread_b) {
+SAFE_PTHREAD_JOIN(pair->thread_b, 0);
+pair->thread_b = 0;
+}
+}
 
+static inline int tst_fzsync_end_race_a(struct tst_fzsync_pair *pair)
+{
+if (tst_timer_expired_st(&pair->timer)) {
+tst_res(TINFO,
+"Exceeded fuzzy sync time limit, requesting exit");
+tst_fzsync_pair_cleanup(pair);
+}
 
+tst_fzsync_time(&pair->a_end);
+return tst_fzsync_pair_wait(pair, &pair->a_cntr, &pair->b_cntr,
+    &pair->spins);
+}
+
+3. I tend to agree with Cyril's opinion, to take use of
+the tst_timeout_remaining() function which will be introduced by Jan's
+patch for move_pages12, then fzsync can drop the expired time detection by
+with new timer function involved.
+
+4. The usage of fzsync is not very neat. For example in some places you
+put tst_fzsync_start_race_b(&pair) into curves but others not, I know that
+because of different situation needs variant race condition area,
+but if we can have a uniform format to satisfy that, it would be more happy
+to users.
+
+5. I do not fully understand about the 'tst_fzsync_stat' part, if you can
+give more explanation in code comments, that will be much appreciated.
+
+Btw, I have tried this new API with my rhel7.5 x86_64 system, it woks fine
+with or without -i parameter, and it also does correctly when the
+execution_time expired. These comments are just FYI. Thanks!
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180830/b55a3371/attachment.html>
