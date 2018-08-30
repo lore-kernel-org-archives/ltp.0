@@ -1,170 +1,90 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 30 Aug 2018 10:55:18 +0200
-Subject: [LTP] [PATCH v4 1/2] lib: introduce tst_timeout_remaining()
-Message-ID: <5ad739995335bda348f07fc4d3faeec501e00b19.1535618962.git.jstancek@redhat.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Thu, 30 Aug 2018 11:46:11 +0200
+Subject: [LTP] [PATCH RFC v3 2/3] lib: introduce tst_timeout_remaining()
+In-Reply-To: <20180829143507.GD30074@rei>
+References: <920f7a911d8b32c3c2e673a9c608ded2526a616d.1535466715.git.jstancek@redhat.com>
+ <5730db8dee0c566014c99bc0d264326fe1c923cc.1535466715.git.jstancek@redhat.com>
+ <20180829130845.GB30074@rei>
+ <1455249520.43485695.1535549637276.JavaMail.zimbra@redhat.com>
+ <20180829143507.GD30074@rei>
+Message-ID: <87sh2wrxuk.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Which returns number of seconds remaining until timeout.
-Along with tst_start_time it is only valid for test pid.
+Hello,
 
-Its value has to be (re)initialized when:
-- test starts
-- test calls tst_set_timeout()
-- test runs multiple iterations or uses .all_filesystems
+Cyril Hrubis <chrubis@suse.cz> writes:
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
-Changes in v4:
-- drop tst_timer_find_clock(), use CLOCK_MONOTONIC
-- reinitialize in heartbeat(), so we cover -i parameter and tst_set_timeout()
-- modify test18 so it sleeps
-- add test18 .gitignore
-- add note to docs
+> Hi!
+>> > Maybe we should do something as:
+>> >
+>> > 	while (tst_timeout_remaining() > 2)
+>> > 		sleep(1);
+>> >
+>> > 	tst_res(TPASS, ...);
+>>
+>> Yeah, I felt guilty adding more sleeps() :-).
+>
+> Well in this case it's reasonable use... ;-)
+>
+>> > And set timeout in tst_test to something as 10s, to really test the API.
+>> >
+>> > > +	if (remaining >= 200)
+>> > > +		tst_res(TPASS, "Timeout remaining: %d", remaining);
+>> > > +	else
+>> > > +		tst_res(TFAIL, "Timeout remaining: %d", remaining);
+>> > > +}
+>> > > +
+>> > > +static struct tst_test test = {
+>> > > +	.test_all = run,
+>> > > +};
+>> > > diff --git a/lib/tst_test.c b/lib/tst_test.c
+>> > > index 2f3d357d2fcc..75619fabffa4 100644
+>> > > --- a/lib/tst_test.c
+>> > > +++ b/lib/tst_test.c
+>> > > @@ -47,6 +47,8 @@ static int iterations = 1;
+>> > >  static float duration = -1;
+>> > >  static pid_t main_pid, lib_pid;
+>> > >  static int mntpoint_mounted;
+>> > > +static clockid_t tst_clock;
+>> > > +static struct timespec tst_start_time;
+>> > >
+>> > >  struct results {
+>> > >  	int passed;
+>> > > @@ -758,6 +760,7 @@ static void do_setup(int argc, char *argv[])
+>> > >
+>> > >  	if (tst_test->sample)
+>> > >  		tst_test = tst_timer_test_setup(tst_test);
+>> > > +	tst_clock = tst_timer_find_clock();
+>> >
+>> > I wonder if we really need this, we were running with CLOCK_MONOTONIC
+>> > timer in the testrun() for quite some time now and nobody complained so
+>> > far.
+>>
+>> I don't have strong opinion on this. It's fairly cheap to go through that list,
+>> and we can be more courageous to change order later.
+>
+> We do use CLOCK_MONOTONIC in the tst_test.c unconditionally anyways, so
+> I wouldn't bother with this unless somebody complains.
+>
+>> > Well I guess that it would be nice to use CLOCK_MONOTONIC_COARSE for the
+>> > tst_timeout_remaining if available, which should save us some CPU since
+>> > it's supposed to be called in a loop.
 
- doc/test-writing-guidelines.txt |  3 +++
- include/tst_test.h              |  1 +
- lib/newlib_tests/.gitignore     |  1 +
- lib/newlib_tests/test18.c       | 34 ++++++++++++++++++++++++++++++++++
- lib/tst_test.c                  | 22 ++++++++++++++++++++++
- 5 files changed, 61 insertions(+)
- create mode 100644 lib/newlib_tests/test18.c
+I doubt we will notice the difference in speed, if there is any on a
+modern CPU. On all the implementations I found in glibc
+CLOCK_MONOTONIC(_RAW) appears to just read a register value and scale it
+to the CPU frequency. It doesn't look like an expensive operation in LTP
+terms. However in some scenarious we definitely need a high resolution
+clock.
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index a16972430b14..0194f2098d26 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -324,6 +324,9 @@ overriden by setting '.timeout' in the test structure or by calling
- time may vary arbitrarily, for these timeout can be disabled by setting it to
- -1.
- 
-+Test can find out how much time (in seconds) is remaining to timeout,
-+by calling 'tst_timeout_remaining()'.
-+
- A word about the cleanup() callback
- +++++++++++++++++++++++++++++++++++
- 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 98dacf3873ab..c0c9a7c7b995 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -217,6 +217,7 @@ const char *tst_strsig(int sig);
-  */
- const char *tst_strstatus(int status);
- 
-+unsigned int tst_timeout_remaining(void);
- void tst_set_timeout(int timeout);
- 
- #ifndef TST_NO_DEFAULT_MAIN
-diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
-index 99edc640438e..76e89e438f55 100644
---- a/lib/newlib_tests/.gitignore
-+++ b/lib/newlib_tests/.gitignore
-@@ -19,6 +19,7 @@ tst_safe_fileops
- tst_res_hexd
- tst_strstatus
- test17
-+test18
- tst_expiration_timer
- test_exec
- test_exec_child
-diff --git a/lib/newlib_tests/test18.c b/lib/newlib_tests/test18.c
-new file mode 100644
-index 000000000000..6615471a5708
---- /dev/null
-+++ b/lib/newlib_tests/test18.c
-@@ -0,0 +1,34 @@
-+/*
-+ * Copyright (c) 2018, Linux Test Project
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include "tst_test.h"
-+
-+static void run(void)
-+{
-+	do {
-+		sleep(1);
-+	} while (tst_timeout_remaining() >= 4);
-+
-+	tst_res(TPASS, "Timeout remaining: %d", tst_timeout_remaining());
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.timeout = 5
-+};
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 2f3d357d2fcc..ae3ca6182581 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -47,6 +47,7 @@ static int iterations = 1;
- static float duration = -1;
- static pid_t main_pid, lib_pid;
- static int mntpoint_mounted;
-+static struct timespec tst_start_time; /* valid only for test pid */
- 
- struct results {
- 	int passed;
-@@ -916,6 +917,9 @@ static void add_paths(void)
- 
- static void heartbeat(void)
- {
-+	if (tst_clock_gettime(CLOCK_MONOTONIC, &tst_start_time))
-+		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
-+
- 	kill(getppid(), SIGUSR1);
- }
- 
-@@ -925,6 +929,9 @@ static void testrun(void)
- 	unsigned long long stop_time = 0;
- 	int cont = 1;
- 
-+	if (tst_clock_gettime(CLOCK_MONOTONIC, &tst_start_time))
-+		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
-+
- 	add_paths();
- 	do_test_setup();
- 
-@@ -992,6 +999,21 @@ static void sigint_handler(int sig LTP_ATTRIBUTE_UNUSED)
- 	}
- }
- 
-+unsigned int tst_timeout_remaining(void)
-+{
-+	static struct timespec now;
-+	unsigned int elapsed;
-+
-+	if (tst_clock_gettime(CLOCK_MONOTONIC, &now))
-+		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
-+
-+	elapsed = tst_timespec_diff_ms(now, tst_start_time) / 1000;
-+	if (results->timeout > elapsed)
-+		return results->timeout - elapsed;
-+
-+	return 0;
-+}
-+
- void tst_set_timeout(int timeout)
- {
- 	char *mul = getenv("LTP_TIMEOUT_MUL");
--- 
-1.8.3.1
+I think defining TST_DEFAULT_CLOCK as CLOCK_MONOTONIC(_RAW) and using it
+everywhere should be fine, although I don't have anything against
+returning it from an inline function either.
 
+--
+Thank you,
+Richard.
