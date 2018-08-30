@@ -1,45 +1,47 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 30 Aug 2018 15:03:05 +0200
-Subject: [LTP] [PATCH 4/5] fzsync: Simplify API with start/end race
-	calls and limit exec time
-In-Reply-To: <20180829091712.GA30074@rei>
-References: <20180828093002.20368-1-rpalethorpe@suse.com>
- <20180828093002.20368-5-rpalethorpe@suse.com>
- <20180828162409.GC26231@rei.lan> <87va7tsgr1.fsf@rpws.prws.suse.cz>
- <20180829091712.GA30074@rei>
-Message-ID: <87r2igroqe.fsf@rpws.prws.suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 30 Aug 2018 15:21:34 +0200
+Subject: [LTP] [Query] With THP  numa01 - test5() fails
+In-Reply-To: <7B4A451B-BE27-4659-A205-E9B5010678A8@caviumnetworks.com>
+References: <7B4A451B-BE27-4659-A205-E9B5010678A8@caviumnetworks.com>
+Message-ID: <20180830132134.GA18401@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi!
+> While running LTP test suite with 4.18 kernel ( arm64 ).
+> I see the below failure with THP (Transparent Hugepages) enabled.
+> test5 -  Verification of shared memory interleaved on all nodes
+> 
+> numa01 1 TINFO: The system contains 2 nodes: 0 1 
+> numa01 1 TPASS: NUMA local node and memory affinity
+> numa01 2 TPASS: NUMA preferred node policy
+> numa01 3 TPASS: NUMA share memory allocated in preferred node
+> numa01 4 TPASS: NUMA interleave policy
+> numa01 5 TFAIL: NUMA interleave share memory allocated in node1 is less than expected
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+There are some problems with the test5. It also fails frequenty if /tmp
+is on btrfs, the problem here is that file based mappings that are
+(faulted) allocated by the filesystem driver do not tend to be
+distributed fully evenly for various reasons (e.g. metadata blocks are
+allocated in batches on btrfs).
 
-> Hi!
->> > If yuo init the pair with TST_FZSYNC_PAIR_INIT these fields are already
->> > zeroed...
->>
->> Not if the user uses the -i argument.
->
-> Hmm, then we should probably drop the static initialization. We would
-> have to have way to set some parameters to non-default values, but I
-> guess that we can do that after we called the init function. Something
-> as:
->
-> 	tst_fzsync_init(&pair);
-> 	tst_fzsync_set_foo(&par, val);
->
-> Where tst_fzsync_set_foo() is an static inline function.
->
+So my guess here would be that THP causes some part(s) of the file, be
+it metadata or the actuall data, backed up by a transparent huge page,
+which causes the pages to be distributed unevely.
 
-Yeah, thinking about it we should not do the static initialisation
-statically anyway incase the test writer needs to dynamically allocate
-the memory where the struct is stored. Although they could use memcpy,
-but it seems a little bit messy.
+The solution is to take more than one sample and see if data are
+distributed more or less evenly over sum of the samples, which is what
+I'm working on in replacement for this test that would fix this problem
+along with a few more, see:
 
---
-Thank you,
-Richard.
+http://lists.linux.it/pipermail/ltp/2018-August/009109.html
+
+Can try the tests from that patchset to see if these are working fine
+for you?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
