@@ -1,27 +1,40 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 31 Aug 2018 14:10:25 +0200
-Subject: [LTP] [PATCH v2] newlib_tests/test_exec.c: Fix compiler error
- before glibc v2.11
-In-Reply-To: <1535328355-16759-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <20180824145656.GA5131@rei>
- <1535328355-16759-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20180831121025.GA1242@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 31 Aug 2018 14:31:02 +0200
+Subject: [LTP] [PATCH v4 2/2] lib/tst_test.c: Add .needs_devfs flag
+In-Reply-To: <1535774861-27429-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20180830144943.GA20702@rei.lan>
+ <1535774861-27429-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20180831123102.GC30263@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao,
+Hi!
+> +static void prepare_and_mount_dev_fs(const char *mntpoint)
+> +{
+> +	const char *flags[] = {"nodev", NULL};
+> +	int mounted_nodev;
+> +
+> +	mounted_nodev = tst_path_has_mnt_flags(NULL, NULL, flags);
+> +	if (mounted_nodev) {
+> +		tst_res(TINFO, "tmpdir isn't suitable for creating devices, "
+> +			"so mount tmpfs without nodev on %s", mntpoint);
+> +		SAFE_MOUNT(NULL, mntpoint, "tmpfs", 0, NULL);
+> +		mntpoint_mounted = 1;
+> +	}
+> +}
 
-> Before glibc v2.11, execvpe() was not introduced and resulted in
-> compiler error, so we replace execvpe() with execve() and update
-> test-writing-guidelines.txt.
-Oh, that's a history :). But as it's forward compatible, why not.
+That is even better than my version, nice :-).
 
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+There is a last nit to solve, the problem is that
+tst_path_has_mnt_flags() is defined in old/test.h, we have to move the
+definition to a separate header file (in a separate patch) so that it
+could be included in test.h, tst_path_has_mnt_flags.c, and tst_test.c.
 
+I can do that or you can sent v5, your choice.
 
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
