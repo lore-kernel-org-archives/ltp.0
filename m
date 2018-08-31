@@ -1,17 +1,17 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 31 Aug 2018 15:13:22 +0800
-Subject: [LTP] [PATCH v2 4/4] syscalls/mlock202: Add new testcase
-In-Reply-To: <1535699602-28185-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Fri, 31 Aug 2018 15:13:21 +0800
+Subject: [LTP] [PATCH v2 3/4] syscalls/mlock201: Add new testcase
+In-Reply-To: <864746561.43466655.1535545169373.JavaMail.zimbra@redhat.com>
 References: <864746561.43466655.1535545169373.JavaMail.zimbra@redhat.com>
- <1535699602-28185-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1535699602-28185-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1535699602-28185-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Check various errnos for mlock2(2) since kernel v2.6.9.
+1) Add SAFE_MINCORE() macro
+2) Check the basic functionality of mlock2(2).
 
 Note:
 1) We use tst_syscall() to check if mlock2() is supported.
@@ -20,63 +20,147 @@ Note:
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- runtest/ltplite                             |   1 +
- runtest/stress.part3                        |   1 +
- runtest/syscalls                            |   1 +
+ include/lapi/mlock2.h                       |  16 ++++
+ include/tst_safe_macros.h                   |   5 +
+ lib/safe_macros.c                           |  14 +++
+ runtest/ltplite                             |   2 +
+ runtest/stress.part3                        |   2 +
+ runtest/syscalls                            |   2 +
  testcases/kernel/syscalls/mlock2/.gitignore |   1 +
- testcases/kernel/syscalls/mlock2/mlock202.c | 113 ++++++++++++++++++++++++++++
- 5 files changed, 117 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mlock2/mlock202.c
+ testcases/kernel/syscalls/mlock2/Makefile   |   8 ++
+ testcases/kernel/syscalls/mlock2/mlock201.c | 144 ++++++++++++++++++++++++++++
+ 9 files changed, 194 insertions(+)
+ create mode 100644 include/lapi/mlock2.h
+ create mode 100644 testcases/kernel/syscalls/mlock2/.gitignore
+ create mode 100644 testcases/kernel/syscalls/mlock2/Makefile
+ create mode 100644 testcases/kernel/syscalls/mlock2/mlock201.c
 
+diff --git a/include/lapi/mlock2.h b/include/lapi/mlock2.h
+new file mode 100644
+index 0000000..fa2b2de
+--- /dev/null
++++ b/include/lapi/mlock2.h
+@@ -0,0 +1,16 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
++ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++ */
++
++#ifndef LAPI_MLOCK2_H__
++# define LAPI_MLOCK2_H__
++
++#include <linux/mman.h>
++
++#ifndef MLOCK_ONFAULT
++# define MLOCK_ONFAULT	0x01
++#endif
++
++#endif /* LAPI_MLOCK2_H__ */
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index dc6c1f7..03657a4 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -490,6 +490,11 @@ int safe_munlock(const char *file, const int lineno, const char *addr,
+ 	size_t len);
+ #define SAFE_MUNLOCK(addr, len) safe_munlock(__FILE__, __LINE__, (addr), (len))
+ 
++int safe_mincore(const char *file, const int lineno, void *start,
++	size_t length, unsigned char *vec);
++#define SAFE_MINCORE(start, length, vec) \
++	safe_mincore(__FILE__, __LINE__, (start), (length), (vec))
++
+ int safe_fanotify_init(const char *file, const int lineno,
+ 	unsigned int flags, unsigned int event_f_flags);
+ #define SAFE_FANOTIFY_INIT(fan, mode)  \
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index fa92a6f..5cc80d0 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -1034,3 +1034,17 @@ int safe_munlock(const char *file, const int lineno, const void *addr,
+ 
+ 	return rval;
+ }
++
++int safe_mincore(const char *file, const int lineno, void *start,
++	size_t length, unsigned char *vec)
++{
++	int rval;
++
++	rval = mincore(start, length, vec);
++	if (rval == -1) {
++		tst_brkm(TBROK | TERRNO, NULL,
++			 "%s:%d: mincore() failed", file, lineno);
++	}
++
++	return rval;
++}
 diff --git a/runtest/ltplite b/runtest/ltplite
-index 270c649..7ebe632 100644
+index 9ca6c42..270c649 100644
 --- a/runtest/ltplite
 +++ b/runtest/ltplite
-@@ -444,6 +444,7 @@ mlock01 mlock01
+@@ -443,6 +443,8 @@ mknod09 mknod09
+ mlock01 mlock01
  mlock02 mlock02
  
- mlock201 mlock201
-+mlock202 mlock202
- 
++mlock201 mlock201
++
  qmm01 mmap001 -m 1
  mmap01 mmap01
+ mmap02 mmap02
 diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index 6850572..0804172 100644
+index ec18dcf..6850572 100644
 --- a/runtest/stress.part3
 +++ b/runtest/stress.part3
-@@ -370,6 +370,7 @@ mlock01 mlock01
+@@ -369,6 +369,8 @@ mknod09 mknod09
+ mlock01 mlock01
  mlock02 mlock02
  
- mlock201 mlock201
-+mlock202 mlock202
- 
++mlock201 mlock201
++
  qmm01 mmap001 -m 1
  mmap01 mmap01
+ mmap02 mmap02
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 5d84d48..2615254 100644
+index 3161d91..5d84d48 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -634,6 +634,7 @@ mlock03 mlock03 -i 20
+@@ -633,6 +633,8 @@ mlock02 mlock02
+ mlock03 mlock03 -i 20
  mlock04 mlock04
  
- mlock201 mlock201
-+mlock202 mlock202
- 
++mlock201 mlock201
++
  qmm01 mmap001 -m 1
  mmap01 mmap01
+ mmap02 mmap02
 diff --git a/testcases/kernel/syscalls/mlock2/.gitignore b/testcases/kernel/syscalls/mlock2/.gitignore
-index 431eff8..8daf0f9 100644
---- a/testcases/kernel/syscalls/mlock2/.gitignore
-+++ b/testcases/kernel/syscalls/mlock2/.gitignore
-@@ -1 +1,2 @@
- /mlock201
-+/mlock202
-diff --git a/testcases/kernel/syscalls/mlock2/mlock202.c b/testcases/kernel/syscalls/mlock2/mlock202.c
 new file mode 100644
-index 0000000..630da65
+index 0000000..431eff8
 --- /dev/null
-+++ b/testcases/kernel/syscalls/mlock2/mlock202.c
-@@ -0,0 +1,113 @@
++++ b/testcases/kernel/syscalls/mlock2/.gitignore
+@@ -0,0 +1 @@
++/mlock201
+diff --git a/testcases/kernel/syscalls/mlock2/Makefile b/testcases/kernel/syscalls/mlock2/Makefile
+new file mode 100644
+index 0000000..427df06
+--- /dev/null
++++ b/testcases/kernel/syscalls/mlock2/Makefile
+@@ -0,0 +1,8 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
++# Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/mlock2/mlock201.c b/testcases/kernel/syscalls/mlock2/mlock201.c
+new file mode 100644
+index 0000000..d2090bc
+--- /dev/null
++++ b/testcases/kernel/syscalls/mlock2/mlock201.c
+@@ -0,0 +1,144 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
@@ -84,102 +168,133 @@ index 0000000..630da65
 + */
 +/*
 + * Description:
-+ * Check various errnos for mlock2(2) since kernel v2.6.9:
-+ * 1) mlock2() fails and returns EINVAL if unknown flag is specified.
-+ * 2) mlock2() fails and returns ENOMEM if the caller is not
-+ *    privileged(CAP_IPC_LOCK) and tries to lock more memory than the
-+ *    RLIMIT_MEMLOCK limit.
-+ * 3) mlock2() fails and returns EPERM if the caller is not
-+ *    privileged(CAP_IPC_LOCK) and its RLIMIT_MEMLOCK limit is 0.
-+ * 4) mlock2() fails and returns ENOMEM if some of the specified address
-+ *    range does not correspond to mapped pages in the address space
-+ *    of the caller.
++ * Check the basic functionality of the mlock2(2) since kernel v2.6.9:
++ * 1) When we use mlock2() without MLOCK_ONFAULT to lock memory in the
++ *    specified range that is multiples of page size or not, we can
++ *    show correct size of locked memory by VmLck from /proc/PID/status
++ *    and lock all pages including non-present.
++ * 2) When we use mlock2() with MLOCK_ONFAULT to lock memory in the
++ *    specified range that is multiples of page size or not, we can
++ *    show correct size of locked memory by VmLck from /proc/PID/status
++ *    and just lock present pages.
 + */
 +#include <errno.h>
 +#include <unistd.h>
++#include <string.h>
++#include <stdlib.h>
 +#include <sys/mman.h>
-+#include <sys/time.h>
-+#include <sys/resource.h>
-+#include <pwd.h>
++#include <linux/mman.h>
 +
 +#include "tst_test.h"
 +#include "lapi/syscalls.h"
++#include "lapi/mlock2.h"
 +
-+#define PAGES 8
++#define PAGES	8
++#define HPAGES	(PAGES / 2)
 +
 +static size_t pgsz;
-+static size_t max_sz1, max_sz2;
-+static char *addr, *unmapped_addr;
-+static struct passwd *nobody;
++static unsigned char *vec;
 +
 +static struct tcase {
-+	char **taddr;
++	size_t pop_pgs;
++	size_t lock_pgs;
++	size_t offset;
++	size_t exp_vmlcks;
++	size_t exp_pgs;
 +	int flag;
-+	size_t *max_size;
-+	/* 1: nobody 0: root */
-+	int user;
-+	int exp_err;
 +} tcases[] = {
-+	{&addr, -1, NULL, 0, EINVAL},
-+	{&addr, 0, &max_sz1, 1, ENOMEM},
-+	{&addr, 0, &max_sz2, 1, EPERM},
-+	{&unmapped_addr, 0, NULL, 0, ENOMEM},
++	{0, 1, 0, 1, 1, 0},
++	{0, PAGES, 0, PAGES, PAGES, 0},
++	/* mlock2() locks 3 pages if the specified
++	 * range is little more than 2 pages.
++	 */
++	{0, 2, 1, 3, 3, 0},
++	/* mlock2() locks 2 pages if the specified
++	 * range is little less than 2 pages.
++	 */
++	{0, 2, -1, 2, 2, 0},
++	/* mlock2() with MLOCK_ONFAULT just lock present
++	 * pages populated by data.
++	 */
++	{0, 1, 0, 1, 0, MLOCK_ONFAULT},
++	{HPAGES, PAGES, 0, PAGES, HPAGES, MLOCK_ONFAULT},
++	{1, HPAGES, 1, HPAGES + 1, 1, MLOCK_ONFAULT},
++	{HPAGES, HPAGES, -1, HPAGES, HPAGES, MLOCK_ONFAULT},
 +};
++
++static size_t check_locked_pages(char *addr, size_t len, size_t num_pgs)
++{
++	size_t n;
++	size_t act_pages = 0;
++
++	SAFE_MINCORE(addr, len, vec);
++
++	for (n = 0; n < num_pgs; n++) {
++		if (vec[n] & 1)
++			act_pages++;
++	}
++
++	return act_pages;
++}
 +
 +static void verify_mlock2(unsigned int n)
 +{
 +	struct tcase *tc = &tcases[n];
-+	struct rlimit orig_limit, new_limit;
++	size_t bsize, asize, act_vmlcks, act_pgs;
++	char *addr;
 +
-+	if (tc->user) {
-+		SAFE_GETRLIMIT(RLIMIT_MEMLOCK, &orig_limit);
-+		new_limit.rlim_cur = *tc->max_size;
-+		new_limit.rlim_max = *tc->max_size;
-+		SAFE_SETRLIMIT(RLIMIT_MEMLOCK, &new_limit);
-+		SAFE_SETEUID(nobody->pw_uid);
++	addr = SAFE_MMAP(NULL, PAGES * pgsz, PROT_WRITE,
++			 MAP_SHARED | MAP_ANONYMOUS, 0, 0);
++
++	if (tc->pop_pgs)
++		memset(addr, 0, tc->pop_pgs * pgsz);
++
++	SAFE_FILE_LINES_SCANF("/proc/self/status", "VmLck: %ld", &bsize);
++
++	TEST(tst_syscall(__NR_mlock2, addr, tc->lock_pgs * pgsz + tc->offset,
++			 tc->flag));
++	if (TST_RET != 0) {
++		if (tc->flag && TST_ERR == EINVAL)
++			tst_res(TCONF, "mlock2() didn't support MLOCK_ONFAULT");
++		else
++			tst_res(TFAIL | TTERRNO, "mlock2() failed");
++		goto end2;
 +	}
 +
-+	TEST(tst_syscall(__NR_mlock2, *tc->taddr, pgsz, tc->flag));
-+	if (TST_RET != -1) {
-+		tst_res(TFAIL, "mlock2() succeeded");
-+		SAFE_MUNLOCK(*tc->taddr, pgsz);
-+		goto end;
++	SAFE_FILE_LINES_SCANF("/proc/self/status", "VmLck: %ld", &asize);
++
++	act_vmlcks = (asize - bsize) * 1024 / pgsz;
++	if (tc->exp_vmlcks != act_vmlcks) {
++		tst_res(TFAIL, "VmLck showed wrong %ld pages, expected %ld",
++			act_vmlcks, tc->exp_vmlcks);
++		goto end1;
 +	}
 +
-+	if (TST_ERR != tc->exp_err) {
-+		tst_res(TFAIL | TTERRNO,
-+			"mlock2() failed unexpectedly, expected %s",
-+			tst_strerrno(tc->exp_err));
++	act_pgs = check_locked_pages(addr, PAGES * pgsz, PAGES);
++	if (act_pgs != tc->exp_pgs) {
++		tst_res(TFAIL, "mlock2(%d) locked %ld pages, expected %ld",
++			tc->flag, act_pgs, tc->exp_pgs);
 +	} else {
-+		tst_res(TPASS | TTERRNO, "mlock2() failed as expected");
++		tst_res(TPASS, "mlock2(%d) succeeded in locking %ld pages",
++			tc->flag, tc->exp_pgs);
 +	}
 +
-+end:
-+	if (tc->user) {
-+		SAFE_SETEUID(0);
-+		SAFE_SETRLIMIT(RLIMIT_MEMLOCK, &orig_limit);
-+	}
++end1:
++	SAFE_MUNLOCK(addr, tc->lock_pgs * pgsz + tc->offset);
++end2:
++	SAFE_MUNMAP(addr, PAGES * pgsz);
 +}
 +
 +static void setup(void)
 +{
 +	pgsz = getpagesize();
-+	nobody = SAFE_GETPWNAM("nobody");
-+
-+	addr = SAFE_MMAP(NULL, pgsz, PROT_WRITE,
-+			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-+	unmapped_addr = SAFE_MMAP(NULL, pgsz * PAGES, PROT_READ,
-+				  MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-+	SAFE_MUNMAP(unmapped_addr, pgsz * PAGES);
-+	unmapped_addr = unmapped_addr + pgsz * PAGES / 2;
-+
-+	max_sz1 = pgsz - 1;
++	vec = SAFE_MALLOC((PAGES * pgsz + pgsz - 1) / pgsz);
 +}
 +
 +static void cleanup(void)
 +{
-+	if (addr)
-+		SAFE_MUNMAP(addr, pgsz);
++	if (vec)
++		free(vec);
 +}
 +
 +static struct tst_test test = {
