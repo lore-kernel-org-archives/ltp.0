@@ -1,33 +1,34 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 3 Sep 2018 14:19:37 +0200
-Subject: [LTP] [RFC PATCH 1/1] pounder21: Remove
-In-Reply-To: <20180830153718.GA22454@rei.lan>
-References: <20180723122911.10714-1-pvorel@suse.cz>
- <1784802899.35188200.1532349973680.JavaMail.zimbra@redhat.com>
- <CAEemH2ez26eEbpcuKx2nd7WhKeR2tEP6BSGkWpsEYmK733PB1g@mail.gmail.com>
- <20180724054937.GA25333@dell5510> <20180724085234.GA8655@rei>
- <20180724152138.GB1548@dell5510> <20180830153718.GA22454@rei.lan>
-Message-ID: <20180903121937.GA7864@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 3 Sep 2018 15:01:31 +0200
+Subject: [LTP] [PATCH v4 2/2] lib/tst_test.c: Add .needs_devfs flag
+In-Reply-To: <5B8C98F4.1060304@cn.fujitsu.com>
+References: <20180830144943.GA20702@rei.lan>
+ <1535774861-27429-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20180831123102.GC30263@rei.lan> <5B8C98F4.1060304@cn.fujitsu.com>
+Message-ID: <20180903130131.GC21765@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> This is a patch set, and i have factored out tst_path_has_mnt_flags() by 
+> the first patch:
+> http://lists.linux.it/pipermail/ltp/2018-August/009013.html
 
-> Hi!
-> > > Well that may still be a reason to remove it, if nobody maintains the
-> > > code it will break sooner or later...
+Ah, right, my bad, the rest of the patchset still applies.
 
-> > That's true. So anybody stands for maintaining it or can we remove it?
-> > And it can be re-added later (when updated).
+I've modified that part so that we do not pass the NULL cleanup argument
+in newlib tests (so that it's easier to remove the cleanup callback
+completely it once the two oldlib tests that use the API are converted).
 
-> I guess that we can safely remove it at this point, or is anybody
-> against that?
+I've also cleaned up the last patch in the series so that we do not have
+to pass the OFFSET to each tst_res() call, now we calculate the right
+pointer at the start of the test.
 
-Removed in master.
+And pushed the whole patchset, thanks!
 
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
