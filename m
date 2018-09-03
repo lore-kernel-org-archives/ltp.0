@@ -1,48 +1,117 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 3 Sep 2018 10:14:12 +0800
-Subject: [LTP] [PATCH v4 2/2] lib/tst_test.c: Add .needs_devfs flag
-In-Reply-To: <20180831123102.GC30263@rei.lan>
-References: <20180830144943.GA20702@rei.lan>
- <1535774861-27429-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20180831123102.GC30263@rei.lan>
-Message-ID: <5B8C98F4.1060304@cn.fujitsu.com>
+Date: Mon, 3 Sep 2018 10:17:06 +0800
+Subject: [LTP] [PATCH] zram/zram03.c: Fix obsolete zram status files
+In-Reply-To: <1531385810-22036-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1531385810-22036-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <5B8C99A2.5040604@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2018/08/31 20:31, Cyril Hrubis wrote:
-> Hi!
->> +static void prepare_and_mount_dev_fs(const char *mntpoint)
->> +{
->> +	const char *flags[] = {"nodev", NULL};
->> +	int mounted_nodev;
->> +
->> +	mounted_nodev = tst_path_has_mnt_flags(NULL, NULL, flags);
->> +	if (mounted_nodev) {
->> +		tst_res(TINFO, "tmpdir isn't suitable for creating devices, "
->> +			"so mount tmpfs without nodev on %s", mntpoint);
->> +		SAFE_MOUNT(NULL, mntpoint, "tmpfs", 0, NULL);
->> +		mntpoint_mounted = 1;
->> +	}
->> +}
-> That is even better than my version, nice :-).
->
-> There is a last nit to solve, the problem is that
-> tst_path_has_mnt_flags() is defined in old/test.h, we have to move the
-> definition to a separate header file (in a separate patch) so that it
-> could be included in test.h, tst_path_has_mnt_flags.c, and tst_test.c.
-Hi Cyril,
+Hi Petr,
 
-This is a patch set, and i have factored out tst_path_has_mnt_flags() by 
-the first patch:
-http://lists.linux.it/pipermail/ltp/2018-August/009013.html
+Could you help me review this patch? :-)
 
 Thanks,
 Xiao Yang
-> I can do that or you can sent v5, your choice.
+On 2018/07/12 16:56, Xiao Yang wrote:
+> Since kernel commit c87d1655c295, separate zram status files("compr_data_size",
+> "num_reads" etc.) which can be accessed via one of zram<id>/stat or
+> zram<id>/io_stat or zram<id>/mm_stat were removed.
 >
+> This commit broke zram03, as below:
+> ----------------------------------------------------------------------
+> safe_file_ops.c:144: Failed to open FILE '/sys/block/zram0/compr_data_size'
+> for reading at zram03.c:181: errno=ENOENT(2): No such file or directory
+> ----------------------------------------------------------------------
+>
+> Also, zero pages in zram<id>/mm_stat was extended to same element pages
+> since kernel commit 8e19d540d107.
+>
+> We try to get requested zram status by zram<id>/stat and zram<id>/mm_stat
+> if separate zram status files don't exist.
+>
+> URL for detailed zram status:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/blockdev/zram.txt
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/block/stat.txt
+>
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/device-drivers/zram/zram03.c | 50 +++++++++++++++++++++++----
+>  1 file changed, 44 insertions(+), 6 deletions(-)
+>
+> diff --git a/testcases/kernel/device-drivers/zram/zram03.c b/testcases/kernel/device-drivers/zram/zram03.c
+> index 3f7ab4e..06995fd 100644
+> --- a/testcases/kernel/device-drivers/zram/zram03.c
+> +++ b/testcases/kernel/device-drivers/zram/zram03.c
+> @@ -40,6 +40,9 @@ char *TCID = "zram03";
+>  int TST_TOTAL = 1;
+>  
+>  #define PATH_ZRAM	"/sys/block/zram0"
+> +#define OBSOLETE_ZRAM_FILE	"/sys/block/zram0/num_reads"
+> +#define PATH_ZRAM_STAT	"/sys/block/zram0/stat"
+> +#define PATH_ZRAM_MM_STAT	"/sys/block/zram0/mm_stat"
+>  #define SIZE		(512 * 1024 * 1024L)
+>  #define DEVICE		"/dev/zram0"
+>  
+> @@ -182,14 +185,49 @@ static void print(char *string)
+>  	tst_resm(TINFO, "%s is %s", filename, value);
+>  }
+>  
+> +static void print_stat(char *nread, char *nwrite)
+> +{
+> +	char nread_val[BUFSIZ], nwrite_val[BUFSIZ];
+> +
+> +	SAFE_FILE_SCANF(cleanup, PATH_ZRAM_STAT, "%s %*s %*s %*s %s",
+> +			nread_val, nwrite_val);
+> +	tst_resm(TINFO, "%s from %s is %s", nread, PATH_ZRAM_STAT,
+> +		 nread_val);
+> +	tst_resm(TINFO, "%s from %s is %s", nwrite, PATH_ZRAM_STAT,
+> +		 nwrite_val);
+> +}
+> +
+> +static void print_mm_stat(char *orig, char *compr, char *mem, char *zero)
+> +{
+> +	char orig_val[BUFSIZ], compr_val[BUFSIZ];
+> +	char mem_val[BUFSIZ], zero_val[BUFSIZ];
+> +
+> +	SAFE_FILE_SCANF(cleanup, PATH_ZRAM_MM_STAT, "%s %s %s %*s %*s %s",
+> +			orig_val, compr_val, mem_val, zero_val);
+> +	tst_resm(TINFO, "%s from %s is %s", orig, PATH_ZRAM_MM_STAT,
+> +		 orig_val);
+> +	tst_resm(TINFO, "%s from %s is %s", compr, PATH_ZRAM_MM_STAT,
+> +		compr_val);
+> +	tst_resm(TINFO, "%s from %s is %s", mem, PATH_ZRAM_MM_STAT,
+> +		 mem_val);
+> +	tst_resm(TINFO, "%s from %s is %s", zero, PATH_ZRAM_MM_STAT,
+> +		 zero_val);
+> +}
+> +
+>  static void dump_info(void)
+>  {
+>  	print("initstate");
+> -	print("compr_data_size");
+> -	print("orig_data_size");
+>  	print("disksize");
+> -	print("mem_used_total");
+> -	print("num_reads");
+> -	print("num_writes");
+> -	print("zero_pages");
+> +	if (!access(OBSOLETE_ZRAM_FILE, F_OK)) {
+> +		print("orig_data_size");
+> +		print("compr_data_size");
+> +		print("mem_used_total");
+> +		print("zero_pages");
+> +		print("num_reads");
+> +		print("num_writes");
+> +	} else {
+> +		print_mm_stat("orig_data_size", "compr_data_size",
+> +			      "mem_used_total", "zero/same_pages");
+> +		print_stat("num_reads", "num_writes");
+> +	}
+>  }
 
 
 
