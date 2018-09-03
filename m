@@ -1,7 +1,7 @@
 From: Vaishnavi D <vaishnavi.d@zilogic.com>
-Date: Mon, 03 Sep 2018 12:16:31 -0000
-Subject: [LTP] [PATCH v7 1/4] Testing statx syscall
-Message-ID: <20180903121631.3652-1-vaishnavi.d@zilogic.com>
+Date: Mon, 03 Sep 2018 12:17:53 -0000
+Subject: [LTP] [PATCH v7 3/4] Testing statx syscall
+Message-ID: <20180903121753.3756-1-vaishnavi.d@zilogic.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,545 +11,48 @@ To: ltp@lists.linux.it
 
 From: vaishnavid <vaishnavi.d@zilogic.com>
 
-* statx01.c: This file will check metadata of files like uid, gid,
-size, blocks, mode for normal file(1) and rdev_major, rdev_minor
-number for device file(2)
+* stat03.c: This file will check error code(errno) by providing
+required input in statx argument syscall. The following errno are
+checked: EBADF, EBADF, ENAMETOOLONG, ENOENT, ENOTDIR, EFAULT.
 Signed-off-by: Tarun.T.U <tarun@zilogic.com>
 Signed-off-by: Vaishnavi.D <vaishnavi.d@zilogic.com>
 ---
- configure.ac                               |   1 +
- include/lapi/fs.h                          |  51 ++++++
- include/lapi/stat.h                        | 270 +++++++++++++++++++++++++++++
- include/lapi/syscalls/arm.in               |   1 +
- include/lapi/syscalls/i386.in              |   1 +
- include/lapi/syscalls/powerpc.in           |   1 +
- include/lapi/syscalls/powerpc64.in         |   1 +
- include/lapi/syscalls/s390.in              |   1 +
- include/lapi/syscalls/sparc.in             |   1 +
- include/lapi/syscalls/sparc64.in           |   1 +
- include/lapi/syscalls/x86_64.in            |   1 +
- m4/ltp-statx.m4                            |  30 ++++
- runtest/syscalls                           |   2 +
- testcases/kernel/syscalls/statx/.gitignore |   1 +
- testcases/kernel/syscalls/statx/Makefile   |  26 +++
- testcases/kernel/syscalls/statx/statx01.c  | 199 +++++++++++++++++++++
- 16 files changed, 588 insertions(+)
- create mode 100644 include/lapi/fs.h
- create mode 100644 include/lapi/stat.h
- create mode 100644 m4/ltp-statx.m4
- create mode 100644 testcases/kernel/syscalls/statx/.gitignore
- create mode 100644 testcases/kernel/syscalls/statx/Makefile
- create mode 100644 testcases/kernel/syscalls/statx/statx01.c
+ runtest/syscalls                           |   3 +-
+ testcases/kernel/syscalls/statx/.gitignore |   3 +-
+ testcases/kernel/syscalls/statx/statx03.c  | 134 +++++++++++++++++++++++++++++
+ 3 files changed, 138 insertions(+), 2 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/statx/statx03.c
 
-diff --git a/configure.ac b/configure.ac
-index df64ce2e2..e1ecb32a7 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -200,6 +200,7 @@ LTP_CHECK_OPENAT
- LTP_CHECK_EXECVEAT
- LTP_CHECK_RENAMEAT
- LTP_CHECK_RENAMEAT2
-+LTP_CHECK_STATX
- LTP_CHECK_FALLOCATE
- LTP_CHECK_SYSCALL_FCNTL
- LTP_CHECK_SYSCALL_PERF_EVENT_OPEN
-diff --git a/include/lapi/fs.h b/include/lapi/fs.h
-new file mode 100644
-index 000000000..a5db48903
---- /dev/null
-+++ b/include/lapi/fs.h
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0 or later
-+/*
-+ * Referred from linux kernel -github/torvalds/linux/include/uapi/linux/fs.h
-+ * Copyright (c) Zilogic Systems Pvt. Ltd., 2018
-+ * Email: code@zilogic.com
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+#ifdef HAVE_LINUX_FS_H
-+# include <linux/fs.h>
-+#endif
-+
-+#ifndef LAPI_FS_H
-+#define LAPI_FS_H
-+
-+#ifndef FS_IOC_GETFLAGS
-+#define	FS_IOC_GETFLAGS	_IOR('f', 1, long)
-+#endif
-+
-+#ifndef FS_IOC_SETFLAGS
-+#define	FS_IOC_SETFLAGS	_IOW('f', 2, long)
-+#endif
-+
-+#ifndef FS_COMPR_FL
-+#define	FS_COMPR_FL        0x00000004 /* Compress file */
-+#endif
-+
-+#ifndef FS_IMMUTABLE_FL
-+#define FS_IMMUTABLE_FL	   0x00000010 /* Immutable file */
-+#endif
-+
-+#ifndef FS_APPEND_FL
-+#define FS_APPEND_FL	   0x00000020 /* writes to file may only append */
-+#endif
-+
-+#ifndef FS_NODUMP_FL
-+#define FS_NODUMP_FL	   0x00000040 /* do not dump file */
-+#endif
-+
-+#endif
-diff --git a/include/lapi/stat.h b/include/lapi/stat.h
-new file mode 100644
-index 000000000..a5da7a558
---- /dev/null
-+++ b/include/lapi/stat.h
-@@ -0,0 +1,270 @@
-+//SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Referred from linux kernel -github/torvalds/linux/include/uapi/linux/fcntl.h
-+ * Copyright (c) Zilogic Systems Pvt. Ltd., 2018
-+ * Email: code@zilogic.com
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+#ifndef LAPI_STAT_H
-+#define LAPI_STAT_H
-+
-+#include <stdint.h>
-+#include <unistd.h>
-+#include "lapi/syscalls.h"
-+/*
-+ * Timestamp structure for the timestamps in struct statx.
-+ *
-+ * tv_sec holds the number of seconds before (negative) or after (positive)
-+ * 00:00:00 1st January 1970 UTC.
-+ *
-+ * tv_nsec holds a number of nanoseconds (0..999,999,999) after the tv_sec time.
-+ *
-+ * __reserved is held in case we need a yet finer resolution.
-+ */
-+#if defined(HAVE_STRUCT_STATX_TIMESTAMP)
-+#include <sys/stat.h>
-+#else
-+struct statx_timestamp {
-+	int64_t tv_sec;
-+	uint32_t tv_nsec;
-+	int32_t __reserved;
-+};
-+#endif
-+/*
-+ * Structures for the extended file attribute retrieval system call
-+ * (statx()).
-+ *
-+ * The caller passes a mask of what they're specifically interested in as a
-+ * parameter to statx().  What statx() actually got will be indicated in
-+ * st_mask upon return.
-+ *
-+ * For each bit in the mask argument:
-+ *
-+ * - if the datum is not supported:
-+ *
-+ *   - the bit will be cleared, and
-+ *
-+ *   - the datum will be set to an appropriate fabricated value if one is
-+ *     available (eg. CIFS can take a default uid and gid), otherwise
-+ *
-+ *   - the field will be cleared;
-+ *
-+ * - otherwise, if explicitly requested:
-+ *
-+ *   - the datum will be synchronised to the server if AT_STATX_FORCE_SYNC is
-+ *     set or if the datum is considered out of date, and
-+ *
-+ *   - the field will be filled in and the bit will be set;
-+ *
-+ * - otherwise, if not requested, but available in approximate form without any
-+ *   effort, it will be filled in anyway, and the bit will be set upon return
-+ *   (it might not be up to date, however, and no attempt will be made to
-+ *   synchronise the internal state first);
-+ *
-+ * - otherwise the field and the bit will be cleared before returning.
-+ *
-+ * Items in STATX_BASIC_STATS may be marked unavailable on return, but they
-+ * will have values installed for compatibility purposes so that stat() and
-+ * co. can be emulated in userspace.
-+ */
-+#if defined(HAVE_STRUCT_STATX)
-+#include <sys/stat.h>
-+#else
-+struct statx {
-+	/* 0x00 */
-+	uint32_t	stx_mask;
-+	uint32_t	stx_blksize;
-+	uint64_t	stx_attributes;
-+	/* 0x10 */
-+	uint32_t	stx_nlink;
-+	uint32_t	stx_uid;
-+	uint32_t	stx_gid;
-+	uint16_t	stx_mode;
-+	uint16_t	__spare0[1];
-+	/* 0x20 */
-+	uint64_t	stx_ino;
-+	uint64_t	stx_size;
-+	uint64_t	stx_blocks;
-+	uint64_t	stx_attributes_mask;
-+	/* 0x40 */
-+	const struct statx_timestamp	stx_atime;
-+	const struct statx_timestamp	stx_btime;
-+	const struct statx_timestamp	stx_ctime;
-+	const struct statx_timestamp	stx_mtime;
-+	/* 0x80 */
-+	uint32_t	stx_rdev_major;
-+	uint32_t	stx_rdev_minor;
-+	uint32_t	stx_dev_major;
-+	uint32_t	stx_dev_minor;
-+	/* 0x90 */
-+	uint64_t	__spare2[14];
-+	/* 0x100 */
-+};
-+#endif
-+
-+#if !defined(HAVE_STATX)
-+
-+/*
-+ * statx: wrapper function of statx
-+ *
-+ * Returns: It returns status of statx syscall
-+ */
-+static inline int statx(int dirfd, const char *pathname, unsigned int flags,
-+			unsigned int mask, struct statx *statxbuf)
-+{
-+	return syscall(__NR_statx, dirfd, pathname, flags, mask, statxbuf);
-+}
-+#endif
-+
-+/*
-+ * Flags to be stx_mask
-+ *
-+ * Query request/result mask for statx() and struct statx::stx_mask.
-+ *
-+ * These bits should be set in the mask argument of statx() to request
-+ * particular items when calling statx().
-+ */
-+#ifndef STATX_TYPE
-+# define STATX_TYPE		0x00000001U
-+#endif
-+
-+#ifndef STATX_MODE
-+# define STATX_MODE		0x00000002U
-+#endif
-+
-+#ifndef STATX_NLINK
-+# define STATX_NLINK		0x00000004U
-+#endif
-+
-+#ifndef STATX_UID
-+# define STATX_UID		0x00000008U
-+#endif
-+
-+#ifndef STATX_GID
-+# define STATX_GID		0x00000010U
-+#endif
-+
-+#ifndef STATX_ATIME
-+# define STATX_ATIME		0x00000020U
-+#endif
-+
-+#ifndef STATX_MTIME
-+# define STATX_MTIME		0x00000040U
-+#endif
-+
-+#ifndef STATX_CTIME
-+# define STATX_CTIME		0x00000080U
-+#endif
-+
-+#ifndef STATX_INO
-+# define STATX_INO		0x00000100U
-+#endif
-+
-+#ifndef STATX_SIZE
-+# define STATX_SIZE		0x00000200U
-+#endif
-+
-+#ifndef STATX_BLOCKS
-+# define STATX_BLOCKS		0x00000400U
-+#endif
-+
-+#ifndef STATX_BASIC_STATS
-+# define STATX_BASIC_STATS	0x000007ffU
-+#endif
-+
-+#ifndef STATX_BTIME
-+# define STATX_BTIME		0x00000800U
-+#endif
-+
-+#ifndef STATX_ALL
-+# define STATX_ALL		0x00000fffU
-+#endif
-+
-+#ifndef STATX__RESERVED
-+# define STATX__RESERVED	0x80000000U
-+#endif
-+
-+/*
-+ * Attributes to be found in stx_attributes and masked in stx_attributes_mask.
-+ *
-+ * These give information about the features or the state of a file that might
-+ * be of use to ordinary userspace programs such as GUIs or ls rather than
-+ * specialised tools.
-+ *
-+ * Note that the flags marked [I] correspond to generic FS_IOC_FLAGS
-+ * semantically.  Where possible, the numerical value is picked to correspond
-+ * also.
-+ */
-+#ifndef STATX_ATTR_COMPRESSED
-+# define STATX_ATTR_COMPRESSED	0x00000004
-+#endif
-+
-+#ifndef STATX_ATTR_IMMUTABLE
-+# define STATX_ATTR_IMMUTABLE	0x00000010
-+#endif
-+
-+#ifndef STATX_ATTR_APPEND
-+# define STATX_ATTR_APPEND	0x00000020
-+#endif
-+
-+#ifndef STATX_ATTR_NODUMP
-+# define STATX_ATTR_NODUMP	0x00000040
-+#endif
-+
-+#ifndef STATX_ATTR_ENCRYPTED
-+# define STATX_ATTR_ENCRYPTED	0x00000800
-+#endif
-+
-+#ifndef STATX_ATTR_AUTOMOUNT
-+# define STATX_ATTR_AUTOMOUNT	0x00001000
-+#endif
-+
-+#ifndef AT_SYMLINK_NOFOLLOW
-+# define AT_SYMLINK_NOFOLLOW	0x100
-+#endif
-+
-+#ifndef AT_REMOVEDIR
-+# define AT_REMOVEDIR		0x200
-+#endif
-+
-+#ifndef AT_SYMLINK_FOLLOW
-+# define AT_SYMLINK_FOLLOW	0x400
-+#endif
-+
-+#ifndef AT_NO_AUTOMOUNT
-+# define AT_NO_AUTOMOUNT	0x800
-+#endif
-+
-+#ifndef AT_EMPTY_PATH
-+# define AT_EMPTY_PATH		0x1000
-+#endif
-+
-+#ifndef AT_STATX_SYNC_TYPE
-+# define AT_STATX_SYNC_TYPE	0x6000
-+#endif
-+
-+#ifndef AT_STATX_SYNC_AS_STAT
-+# define AT_STATX_SYNC_AS_STAT	0x0000
-+#endif
-+
-+#ifndef AT_STATX_FORCE_SYNC
-+# define AT_STATX_FORCE_SYNC	0x2000
-+#endif
-+
-+#ifndef AT_STATX_DONT_SYNC
-+# define AT_STATX_DONT_SYNC	0x4000
-+#endif
-+
-+#endif
-diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
-index c44adcd7e..a355ba36b 100644
---- a/include/lapi/syscalls/arm.in
-+++ b/include/lapi/syscalls/arm.in
-@@ -342,3 +342,4 @@ getrandom (__NR_SYSCALL_BASE+384)
- memfd_create (__NR_SYSCALL_BASE+385)
- execveat (__NR_SYSCALL_BASE+387)
- copy_file_range (__NR_SYSCALL_BASE+391)
-+statx (__NR_SYSCALL+397)
-diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
-index 19f0148fe..fa4b529ad 100644
---- a/include/lapi/syscalls/i386.in
-+++ b/include/lapi/syscalls/i386.in
-@@ -342,3 +342,4 @@ getrandom 355
- memfd_create 356
- execveat 358
- copy_file_range 377
-+statx 383
-diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
-index 11ddca34e..10fb238bf 100644
---- a/include/lapi/syscalls/powerpc.in
-+++ b/include/lapi/syscalls/powerpc.in
-@@ -348,3 +348,4 @@ renameat2 357
- getrandom 359
- memfd_create 360
- copy_file_range 379
-+statx 383
-diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
-index 11ddca34e..10fb238bf 100644
---- a/include/lapi/syscalls/powerpc64.in
-+++ b/include/lapi/syscalls/powerpc64.in
-@@ -348,3 +348,4 @@ renameat2 357
- getrandom 359
- memfd_create 360
- copy_file_range 379
-+statx 383
-diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
-index d95b282f8..66ee19e61 100644
---- a/include/lapi/syscalls/s390.in
-+++ b/include/lapi/syscalls/s390.in
-@@ -333,3 +333,4 @@ getrandom 349
- memfd_create 350
- execveat 354
- copy_file_range 375
-+statx 379
-diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
-index 296d694a8..bbab51b72 100644
---- a/include/lapi/syscalls/sparc.in
-+++ b/include/lapi/syscalls/sparc.in
-@@ -337,3 +337,4 @@ renameat2 345
- getrandom 347
- memfd_create 348
- copy_file_range 357
-+statx 360
-diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
-index 169347a6a..ebff38265 100644
---- a/include/lapi/syscalls/sparc64.in
-+++ b/include/lapi/syscalls/sparc64.in
-@@ -313,3 +313,4 @@ renameat2 345
- getrandom 347
- memfd_create 348
- copy_file_range 357
-+statx 360
-diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
-index 7907c3108..5d926dfff 100644
---- a/include/lapi/syscalls/x86_64.in
-+++ b/include/lapi/syscalls/x86_64.in
-@@ -309,3 +309,4 @@ getrandom 318
- memfd_create 319
- execveat 322
- copy_file_range 326
-+statx 332
-diff --git a/m4/ltp-statx.m4 b/m4/ltp-statx.m4
-new file mode 100644
-index 000000000..2043057bc
---- /dev/null
-+++ b/m4/ltp-statx.m4
-@@ -0,0 +1,30 @@
-+dnl
-+dnl Copyright (c) Zilogic Systems Pvt. Ltd., 2018
-+dnl
-+dnl This program is free software;  you can redistribute it and/or modify
-+dnl it under the terms of the GNU General Public License as published by
-+dnl the Free Software Foundation; either version 2 of the License, or
-+dnl (at your option) any later version.
-+dnl
-+dnl This program is distributed in the hope that it will be useful,
-+dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+dnl the GNU General Public License for more details.
-+dnl
-+dnl You should have received a copy of the GNU General Public License
-+dnl along with this program;  if not, write to the Free Software
-+dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+dnl
-+
-+dnl
-+dnl LTP_CHECK_STATX
-+dnl ----------------------------
-+dnl
-+AC_DEFUN([LTP_CHECK_STATX],[
-+AC_CHECK_FUNCS(statx,,)
-+AC_CHECK_HEADER(linux/fs.h,,,)
-+AC_MSG_CHECKING([for struct statx])
-+AC_CHECK_MEMBERS([struct statx.stx_blksize, struct statx.stx_attributes, struct statx.stx_nlink, struct statx.stx_uid, struct statx.stx_gid, struct statx.stx_ino, struct statx.stx_size,struct statx.stx_mtime, struct statx.stx_atime, struct statx.stx_btime, struct statx.stx_ctime], AC_DEFINE(HAVE_STRUCT_STATX,1,[Define to 1 when struct statx is available]),,[[#include <linux/stat.h>]])
-+AC_MSG_CHECKING([for struct statx_timestamp])
-+AC_CHECK_MEMBERS([struct statx_timestamp.tv_sec, struct statx_timestamp.tv_nsec], AC_DEFINE(HAVE_STRUCT_STATX_TIMESTAMP,1,[Define to 1 when struct statx_timestamp is available]),,[[#include <linux/stat.h>]])
-+])
 diff --git a/runtest/syscalls b/runtest/syscalls
-index ccc3eff59..b7c74446b 100644
+index 079c18fc7..554ebe63f 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -1495,3 +1495,5 @@ memfd_create03 memfd_create03
- memfd_create04 memfd_create04
- 
+@@ -1497,4 +1497,5 @@ memfd_create04 memfd_create04
  copy_file_range01 copy_file_range01
-+
-+statx01 statx01
+ 
+ statx01 statx01
+-statx02 statx02
+\ No newline at end of file
++statx02 statx02
++statx03 statx03
 \ No newline at end of file
 diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
-new file mode 100644
-index 000000000..aec497382
---- /dev/null
+index 1849891d6..067ac6493 100644
+--- a/testcases/kernel/syscalls/statx/.gitignore
 +++ b/testcases/kernel/syscalls/statx/.gitignore
-@@ -0,0 +1 @@
-+/statx01
-diff --git a/testcases/kernel/syscalls/statx/Makefile b/testcases/kernel/syscalls/statx/Makefile
+@@ -1,2 +1,3 @@
+ /statx01
+-/statx02
+\ No newline at end of file
++/statx02
++/statx03
+\ No newline at end of file
+diff --git a/testcases/kernel/syscalls/statx/statx03.c b/testcases/kernel/syscalls/statx/statx03.c
 new file mode 100644
-index 000000000..3a9c66d6d
+index 000000000..3c11f198e
 --- /dev/null
-+++ b/testcases/kernel/syscalls/statx/Makefile
-@@ -0,0 +1,26 @@
-+#
-+#  Copyright (c) Zilogic Systems Pvt. Ltd., 2018
-+#  Email: code@zilogic.com
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+%_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/statx/statx01.c b/testcases/kernel/syscalls/statx/statx01.c
-new file mode 100644
-index 000000000..8df95752b
---- /dev/null
-+++ b/testcases/kernel/syscalls/statx/statx01.c
-@@ -0,0 +1,199 @@
++++ b/testcases/kernel/syscalls/statx/statx03.c
+@@ -0,0 +1,134 @@
 +// SPDX-License-Identifier: GPL-2.0 or later
 +/*
 + * Copyright (c) Zilogic Systems Pvt. Ltd., 2018
@@ -572,166 +75,102 @@ index 000000000..8df95752b
 +/*
 + * Test statx
 + *
-+ * This code tests the functionality of statx system call.
++ * This code tests if expected error values are returned for specific cases by
++ * statx.
++ * The error cases are simulated and the return value is checked against
++ * expected error number value.
++ * The following error values are tested:
++ * 1) EBADF - Bad file descriptor
++ * 2) EFAULT - Bad address
++ * 3) EINVAL - Invalid argument
++ * 4) ENOENT - No such file or directory
++ * 5) ENOTDIR - Not a directory
++ * 6) ENAMETOOLONG - Filename too long
 + *
-+ * TESTCASE 1:
-+ * The metadata for normal file are tested against predefined values:
-+ * 1) gid
-+ * 2) uid
-+ * 3) mode
-+ * 4) blocks
-+ * 5) size
++ * Error scenario is simulated for each listed flag by passing
++ * respective arguments.
++ * The obtained error flag is checked against the expected
++ * flag value for that scenario.
 + *
-+ * A file is created and metadata values are set with
-+ * predefined values.
-+ * Then the values obtained using statx is checked against
-+ * the predefined values.
-+ *
-+ * TESTCASE 2:
-+ * The metadata for device file are tested against predefined values:
-+ * 1) MAJOR number
-+ * 2) MINOR number
-+ *
-+ * A device file is created seperately using mknod(must be a root user).
-+ * The major number and minor number are set while creation.
-+ * Major and minor numbers obtained using statx is checked against
-+ * predefined values.
-+ * Minimum kernel version required is 4.11.
++ * Minimum Kernel version required is 4.11.
 + */
 +#include <stdio.h>
-+#include <sys/types.h>
-+#include <sys/sysmacros.h>
++#include <string.h>
 +#include "tst_test.h"
 +#include "tst_safe_macros.h"
++#include "tst_get_bad_addr.h"
 +#include "lapi/stat.h"
-+#include <string.h>
-+#include <inttypes.h>
 +
 +#define TESTFILE "test_file"
-+#define DEVICEFILE "blk_dev"
 +#define MODE 0644
 +
 +static int file_fd;
-+#define SIZE 256
-+#define MAJOR 8
-+#define MINOR 1
++static char long_pathname[257];
 +
-+static void test_normal_file(void)
-+{
-+	struct statx buff;
-+	uint64_t blocks;
++static char *test_fname = TESTFILE;
++static char *efault_fname;
++static char *empty_fname = "";
++static char *etoolong_fname = long_pathname;
 +
-+	TEST(statx(AT_FDCWD, TESTFILE, 0, 0, &buff));
-+	if (TST_RET == 0)
-+		tst_res(TPASS,
-+			"statx(AT_FDCWD, %s, 0, 0, &buff)", TESTFILE);
-+	else
-+		tst_brk(TFAIL | TTERRNO,
-+			"statx(AT_FDCWD, %s, 0, 0, &buff)", TESTFILE);
-+
-+	if (geteuid() == buff.stx_uid)
-+		tst_res(TPASS,
-+			"stx_uid(%u) obtained is correct", buff.stx_uid);
-+	else
-+		tst_res(TFAIL,
-+			"stx_uid(%u) obtained is different from euid(%u)",
-+			buff.stx_uid, geteuid());
-+
-+	if (getegid() == buff.stx_gid)
-+		tst_res(TPASS,
-+			"stx_gid(%u) obtained is correct", buff.stx_gid);
-+	else
-+		tst_res(TFAIL,
-+			"stx_gid(%u) obtained is different from egid(%u)",
-+			buff.stx_gid, getegid());
-+
-+	if (buff.stx_size == SIZE)
-+		tst_res(TPASS,
-+			"stx_size(%"PRIu64") obtained is correct",
-+			buff.stx_size);
-+	else
-+		tst_res(TFAIL,
-+			"stx_size(%"PRIu64") obtained is different from expected(%u)",
-+			buff.stx_size, SIZE);
-+
-+	if ((buff.stx_mode & ~(S_IFMT)) == MODE)
-+		tst_res(TPASS,
-+			"stx_mode(%u) obtained is correct", buff.stx_mode);
-+	else
-+		tst_res(TFAIL,
-+			"stx_mode(%u) obtained is different from expected(%u)",
-+			buff.stx_mode, MODE);
-+
-+
-+	blocks = buff.stx_blocks >> 50;
-+	if (blocks == 0)
-+		tst_res(TPASS, " stx_blocks(%"PRIu64") obtained is valid",
-+			buff.stx_blocks);
-+
-+	else
-+		tst_res(TFAIL,
-+			"stx_blocks(%"PRIu64") obtained is invalid",
-+			buff.stx_blocks);
-+
-+}
-+
-+static void test_device_file(void)
-+{
-+	struct statx buff;
-+
-+	TEST(statx(AT_FDCWD, DEVICEFILE, 0, 0, &buff));
-+	if (TST_RET == 0)
-+		tst_res(TPASS,
-+			"statx(AT_FDCWD, %s, 0, 0, &buff)", DEVICEFILE);
-+	else
-+		tst_brk(TFAIL | TTERRNO,
-+			"statx(AT_FDCWD, %s, 0, 0, &buff)", DEVICEFILE);
-+
-+	if (buff.stx_rdev_major == MAJOR)
-+		tst_res(TPASS,
-+			"stx_rdev_major(%u) obtained is correct",
-+			buff.stx_rdev_major);
-+	else
-+		tst_res(TFAIL,
-+			"stx_rdev_major(%u) obtained is different from expected(%u)",
-+			buff.stx_rdev_major, MAJOR);
-+
-+	if (buff.stx_rdev_minor == MINOR)
-+		tst_res(TPASS,
-+			"stx_rdev_minor(%u) obtained is correct",
-+			buff.stx_rdev_minor);
-+	else
-+		tst_res(TFAIL,
-+			"stx_rdev_minor(%u) obtained is different from expected(%u)",
-+			buff.stx_rdev_minor, MINOR);
-+}
-+
-+
-+struct tcase {
-+	void (*tfunc)(void);
++static struct test_case {
++	uint32_t dfd;
++	char **filename;
++	uint32_t flag;
++	uint32_t mask;
++	int32_t errnum;
 +} tcases[] = {
-+	{&test_normal_file},
-+	{&test_device_file}
++	{.dfd = -1, .filename = &test_fname, .flag = 0,
++	 .mask = 0, .errnum = EBADF},
++
++	{.dfd = AT_FDCWD, .filename = &efault_fname, .flag = 0,
++	 .mask = 0, .errnum = EFAULT},
++
++	{.dfd = AT_FDCWD, .filename = &test_fname, .flag = -1,
++	 .mask = 0, .errnum = EINVAL},
++
++	{.dfd = AT_FDCWD, .filename = &test_fname, .flag = 0,
++	 .mask = -1, .errnum = EINVAL},
++
++	{.dfd = AT_FDCWD, .filename = &empty_fname, .flag = 0,
++	 .mask = 0, .errnum = ENOENT},
++
++	{.dfd = 1, .filename = &test_fname, .flag = 0,
++	 .mask = 0, .errnum = ENOTDIR},
++
++	{.dfd = AT_FDCWD, .filename = &etoolong_fname, .flag = 0,
++	 .mask = 0, .errnum = ENAMETOOLONG},
 +};
 +
-+static void run(unsigned int i)
++static void run_test(unsigned int i)
 +{
-+	struct tcase *t;
++	struct statx buf;
++	struct test_case *tc = &tcases[i];
 +
-+	t = &tcases[i];
-+	t->tfunc();
++	TEST(statx(tc->dfd, *(tc->filename), tc->flag,
++		   tc->mask, &buf));
++
++	if (TST_RET != -1) {
++		tst_res(TFAIL, "statx() returned with %ld", TST_RET);
++		return;
++	}
++
++	if (tc->errnum == TST_ERR) {
++		tst_res(TPASS | TTERRNO, "statx() failed with");
++		return;
++	}
++
++	tst_res(TFAIL | TTERRNO,
++		"statx() should fail with %s", tst_strerrno(tc->errnum));
 +}
 +
 +static void setup(void)
 +{
-+	char data_buff[SIZE];
++	file_fd = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, MODE);
 +
-+	memset(data_buff, '@', sizeof(data_buff));
++	memset(long_pathname, '@', sizeof(long_pathname));
++	long_pathname[sizeof(long_pathname) - 1] = 0;
 +
-+	file_fd =  SAFE_OPEN(TESTFILE, O_RDWR|O_CREAT, MODE);
-+	SAFE_WRITE(0, file_fd, data_buff, sizeof(data_buff));
-+
-+	SAFE_MKNOD(DEVICEFILE, S_IFBLK | 0777, makedev(MAJOR, MINOR));
++	efault_fname = tst_get_bad_addr(NULL);
 +}
 +
 +static void cleanup(void)
@@ -741,12 +180,11 @@ index 000000000..8df95752b
 +}
 +
 +static struct tst_test test = {
-+	.test = run,
 +	.tcnt = ARRAY_SIZE(tcases),
++	.test = run_test,
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.min_kver = "4.11",
-+	.needs_root = 1,
 +	.needs_tmpdir = 1,
 +};
 -- 
