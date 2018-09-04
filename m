@@ -1,12 +1,9 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 4 Sep 2018 04:10:28 -0400 (EDT)
-Subject: [LTP] [PATCH v2 4/4] syscalls/mlock202: Add new testcase
-In-Reply-To: <1945225887.43673570.1535633035153.JavaMail.zimbra@redhat.com>
-References: <864746561.43466655.1535545169373.JavaMail.zimbra@redhat.com>
- <1535699602-28185-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1535699602-28185-2-git-send-email-yangx.jy@cn.fujitsu.com>
- <1945225887.43673570.1535633035153.JavaMail.zimbra@redhat.com>
-Message-ID: <1760945915.44375868.1536048628588.JavaMail.zimbra@redhat.com>
+Date: Tue, 4 Sep 2018 04:20:02 -0400 (EDT)
+Subject: [LTP] [PATCH] syscalls/mlock203: Add new regression testcase
+In-Reply-To: <1535008217-27041-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1535008217-27041-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1090164327.44377797.1536049202389.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,24 +13,20 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
+> This issue has been fixed in kernel:
+> 'b155b4fde5bd("mm: mlock: avoid increase mm->locked_vm on mlock() when
+> already mlock2(,MLOCK_ONFAULT)")'
 > 
+> Note:
+> This patch is based on the following patch set:
+> http://lists.linux.it/pipermail/ltp/2018-August/009086.html
+> http://lists.linux.it/pipermail/ltp/2018-August/009085.html
+> http://lists.linux.it/pipermail/ltp/2018-August/009084.html
+> http://lists.linux.it/pipermail/ltp/2018-August/009087.html
 > 
-> ----- Original Message -----
-> > Check various errnos for mlock2(2) since kernel v2.6.9.
-> > 
-> > Note:
-> > 1) We use tst_syscall() to check if mlock2() is supported.
-> > 2) since kernel v2.6.9, the limits and permissions of mlock2()
-> >    changed, so we just check mlock2() since the version.
-> > 
-> > Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> 
-> Ack
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 
-Series pushed with few tweaks to 3/4:
-- couple variables renamed
-- added comments
-- vec allocated statically, dropped cleanup()
+Pushed with tweaked commit message.
 
 Thanks,
 Jan
