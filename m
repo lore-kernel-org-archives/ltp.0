@@ -1,7 +1,7 @@
 From: subash <subash@zilogic.com>
-Date: Tue, 04 Sep 2018 08:03:57 -0000
-Subject: [LTP] [PATCH v2 3/4] Testing statx syscall Timestamp fields
-Message-ID: <20180904080357.22601-1-subash@zilogic.com>
+Date: Tue, 04 Sep 2018 08:03:03 -0000
+Subject: [LTP] [PATCH v2 2/4] Testing statx syscall Timestamp fields
+Message-ID: <20180904080303.22546-1-subash@zilogic.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,43 +9,44 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
-* statx_mtime.c:The time before and after the execution of the write
+* statx_atime.c:The time before and after the execution of the read
 system call is noted.
-It is checked whether the modification time returned by statx lies in this range.
+It is checked whether the access time returned by statx lies in this range.
 
 Signed-off-by: Subash <subash@zilogic.com>
 Signed-off-by: Vaishnavi.D <vaishnavi.d@zilogic.com>
 ---
  runtest/syscalls                              |  1 +
- testcases/kernel/syscalls/statx/.gitignore    |  1 +
- testcases/kernel/syscalls/statx/statx_mtime.c | 97 +++++++++++++++++++++++++++
- 3 files changed, 99 insertions(+)
- create mode 100644 testcases/kernel/syscalls/statx/statx_mtime.c
+ testcases/kernel/syscalls/statx/.gitignore    |  3 +-
+ testcases/kernel/syscalls/statx/statx_atime.c | 96 +++++++++++++++++++++++++++
+ 3 files changed, 99 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/kernel/syscalls/statx/statx_atime.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 6f5eb656a..eea045aac 100644
+index 048fb9cc4..6f5eb656a 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -1496,3 +1496,4 @@ copy_file_range01 copy_file_range01
+@@ -1495,3 +1495,4 @@ memfd_create02 memfd_create02
+ copy_file_range01 copy_file_range01
  
  statx_btime statx_btime
- statx_atime statx_atime
-+statx_mtime statx_mtime
++statx_atime statx_atime
 diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
-index c5433d6bc..c9aef59be 100644
+index 4fb6f516f..c5433d6bc 100644
 --- a/testcases/kernel/syscalls/statx/.gitignore
 +++ b/testcases/kernel/syscalls/statx/.gitignore
-@@ -1,3 +1,4 @@
+@@ -1,2 +1,3 @@
  /timestamp_helper
- /statx_btime
- /statx_atime
-+/statx_mtime
-diff --git a/testcases/kernel/syscalls/statx/statx_mtime.c b/testcases/kernel/syscalls/statx/statx_mtime.c
+-/statx_btime
+\ No newline at end of file
++/statx_btime
++/statx_atime
+diff --git a/testcases/kernel/syscalls/statx/statx_atime.c b/testcases/kernel/syscalls/statx/statx_atime.c
 new file mode 100644
-index 000000000..c3fb1ea40
+index 000000000..3e0ed8c2f
 --- /dev/null
-+++ b/testcases/kernel/syscalls/statx/statx_mtime.c
-@@ -0,0 +1,97 @@
++++ b/testcases/kernel/syscalls/statx/statx_atime.c
+@@ -0,0 +1,96 @@
 +//SPDX-License-Identifier:GPL-2.0-or-later
 +/*
 + *  Copyright (c) Zilogic Systems Pvt. Ltd., 2018
@@ -62,10 +63,10 @@ index 000000000..c3fb1ea40
 + * the GNU General Public License for more details.
 + */
 +/*
-+ * Test case for statx_mtime.
++ * Test case for statx_atime.
 + *
-+ * DESCRIPTION : The time before and after the execution of the write
-+ *	system call is noted. It is checked whether the modified time
++ * DESCRIPTION : The time before and after the execution of the read
++ *	system call is noted. It is checked whether the access time
 + *	returned by statx lies in this range.
 + *
 + */
@@ -88,24 +89,23 @@ index 000000000..c3fb1ea40
 +	test_file_fd = SAFE_OPEN(TEST_FILE, O_CREAT | O_RDWR, 0666);
 +}
 +
-+static void write_file(void)
++static void read_file(void)
 +{
-+	char data[SIZE] = "hi";
++	char data[SIZE];
 +
-+	SAFE_WRITE(0, test_file_fd, data, sizeof(data));
++	SAFE_READ(0, test_file_fd, data, sizeof(data));
 +}
 +
-+static void test_statx_mtime(void)
++static void test_statx_atime(void)
 +{
 +	struct statx buff;
 +	struct timespec before_time;
 +	struct timespec after_time;
 +	struct timespec statx_time;
 +
-+
 +	SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &before_time);
 +	clock_wait_tick();
-+	write_file();
++	read_file();
 +	clock_wait_tick();
 +	SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &after_time);
 +
@@ -114,14 +114,14 @@ index 000000000..c3fb1ea40
 +		tst_brk(TFAIL | TTERRNO,
 +			"statx(AT_FDCWD, %s, 0, STATX_ALL, &buff)", TEST_FILE);
 +
-+	statx_timestamp_to_timespec(&buff.stx_mtime, &statx_time);
++	statx_timestamp_to_timespec(&buff.stx_atime, &statx_time);
 +
 +	if (tst_timespec_lt(statx_time, before_time))
-+		tst_res(TFAIL, "Modification time < before time");
++		tst_res(TFAIL, "Access time < before time");
 +	else if (tst_timespec_lt(after_time, statx_time))
-+		tst_res(TFAIL, "Modification time > after_time");
++		tst_res(TFAIL, "Access time > after_time");
 +	else
-+		tst_res(TPASS, "Modification time Passed\n");
++		tst_res(TPASS, "Access Time Passed\n");
 +}
 +
 +static void cleanup(void)
@@ -133,7 +133,7 @@ index 000000000..c3fb1ea40
 +static struct tst_test test = {
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = test_statx_mtime,
++	.test_all = test_statx_atime,
 +	.min_kver = "4.11",
 +	.needs_root = 1,
 +	.needs_tmpdir = 1,
