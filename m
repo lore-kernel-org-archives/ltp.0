@@ -1,63 +1,47 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 4 Sep 2018 14:40:32 +0200
-Subject: [LTP] [PATCH v7 1/4] Testing statx syscall
-In-Reply-To: <20180903121631.3652-1-vaishnavi.d@zilogic.com>
-References: <20180903121631.3652-1-vaishnavi.d@zilogic.com>
-Message-ID: <20180904124032.GA5625@rei>
+Date: Tue,  4 Sep 2018 16:05:07 +0200
+Subject: [LTP] [PATCH] syscalls/statx01: Update the stx_blocks check
+Message-ID: <20180904140507.30225-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-I've further split this patch into one that adds the configure checks
-and fallback headers and another that adds the first test.
+After talking with Jan Kara we decided that the previous check wasn't
+100% right.
 
-And also did following adjustements:
+* In some cases the data for small files can be stored along with the
+  file metadata and in such case the number of allocated blocks would be
+  zero.
 
-* The right configure check for structure existence is AC_CHECK_TYPES()
+* I've been assured that the filesystem blocks size is <= than the
+  optimal transfer block size and while the definition for stx_blksize
+  is quite vague it should be good enough for the test.
 
-  Also things break badly if you check for the structure in the
-  linux/stat.h but include sys/stat.h in the lapi fallback header, so we
-  have to check for the sys/stat.h in the configure check as well.
+  Note that we also rely on the fact that we write 256 bytes to the
+  file, which is smaller than any known block size, so@most one block
+  would be allocated.
 
-* The statx() wrapper has to use tst_syscall() so that you get correct
-  response when the syscall number is not defined on the system or in
-  the fallback file
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+CC: Jan Kara <jack@suse.cz>
+---
+ testcases/kernel/syscalls/statx/statx01.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-* Removed the full GPLv2 from the lapi headers, it's not needed when the
-  SPDX identifier has been added, also since that is a machine readable
-  string it has to be exactly SPDX-License-Identifier: GPL-2.0-or-later
-
-And for the statx01:
-
-* Added the newly added .needs_defs flag so that the test works fine on
-  systems with /tmp mounted with nodev
-
-* Changed the test to close the fd in the test setup, there is no reason
-  to keep it open until cleanup
-
-* Changed the SAFE_WRITE(0, ...) to SAFE_WRITE(1, ...) since we need to
-  make sure the whole buffer has been written prior the test
-
-* Remove the word "obtained" from the test messages as it was only
-  making the messages unnecessarily longer
-
-* The check for stx_block was bogus, after thinking about it we create
-  file that contains 256 bytes so the number of blocks has to be
-  reasonably small number. Btrfs tends to allocate page_size blocks,
-  which means that the reported size there would be 128 which I suppose
-  is good enough upper bound. So we now check that the reported number
-  of blocks is > 0 and <= 128, which I guess is the best without
-  dwelling into filesystem details.
-
-* Removed the full GPLv2 from the lapi headers, it's not needed when the
-  SPDX identifier has been added, also since that is a machine readable
-  string it has to be exactly SPDX-License-Identifier: GPL-2.0-or-later
-
-And pushed the resulting two patches, thanks!
-
+diff --git a/testcases/kernel/syscalls/statx/statx01.c b/testcases/kernel/syscalls/statx/statx01.c
+index 806cea636..574560b5d 100644
+--- a/testcases/kernel/syscalls/statx/statx01.c
++++ b/testcases/kernel/syscalls/statx/statx01.c
+@@ -90,7 +90,7 @@ static void test_normal_file(void)
+ 			buff.stx_mode, MODE);
+ 
+ 
+-	if (buff.stx_blocks > 0 && buff.stx_blocks <= 128)
++	if (buff.stx_blocks <= buff.stx_blksize/512)
+ 		tst_res(TPASS, "stx_blocks(%"PRIu64") is valid",
+ 			buff.stx_blocks);
+ 	else
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.16.4
+
