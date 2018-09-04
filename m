@@ -1,10 +1,11 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 3 Sep 2018 19:31:21 +0200
-Subject: [LTP] [PATCH 1/1] runltp: Remove RHOST setup
-In-Reply-To: <20180903113015.GA21765@rei>
-References: <20180903105017.31106-1-pvorel@suse.cz>
- <20180903113015.GA21765@rei>
-Message-ID: <20180903173121.GA13332@dell5510>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Tue, 4 Sep 2018 14:37:47 +0800
+Subject: [LTP] [PATCH v2] newlib_tests/test_exec.c: Fix compiler error
+ before glibc v2.11
+In-Reply-To: <1535328355-16759-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20180824145656.GA5131@rei>
+ <1535328355-16759-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <5B8E283B.2080707@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,24 +14,73 @@ To: ltp@lists.linux.it
 
 Hi,
 
-> Hi!
-> > To be honest, I'd prefer removing -N option from runltp or replace it
-> > with info "Run network tests via network.sh script" (+ remove
-> > scenario_groups/network).
+Could you help me push the v2 patch? Thanks a lot.  :-) 
 
-> Hmm, that may be a good solution for the moment, but in the long term we
-> may want to have a single tool to run all our tests
-Just to clarify: network tests are able to run by either runner (runltp or
-network.sh). It's just the issue that runltp in inflexible for network tests.
-It's because all network tests load tst_net.sh themselves.
-So with the new runner, network tests will be able to be run by it anyway.
+Thanks,
+Xiao Yang
 
-> > I'm looking forward the day this crazy script is replaced with something
-> > more convenient.
+On 2018/08/27 8:05, Xiao Yang wrote:
 
-> Yes indeed, but it seems that I will need another hackweek to make the
-> proof of concept more usable...
+> Before glibc v2.11, execvpe() was not introduced and resulted in
+> compiler error, so we replace execvpe() with execve() and update
+> test-writing-guidelines.txt.
+>
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  doc/test-writing-guidelines.txt | 8 ++++++--
+>  lib/newlib_tests/test_exec.c    | 8 ++++++--
+>  2 files changed, 12 insertions(+), 4 deletions(-)
+>
+> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+> index a169724..0b89cf9 100644
+> --- a/doc/test-writing-guidelines.txt
+> +++ b/doc/test-writing-guidelines.txt
+> @@ -697,14 +697,18 @@ a non zero exit code.
+>  -------------------------------------------------------------------------------
+>  /* test.c */
+>  #define _GNU_SOURCE
+> -#include <stdlib.h>
+> +#include <unistd.h>
+>  #include "tst_test.h"
+>  
+>  static void do_test(void)
+>  {
+>  	char *const argv[] = {"test_exec_child", NULL};
+> +	char path[4096];
+>  
+> -	execvpe(argv[0], argv, environ);
+> +	if (tst_get_path("test_exec_child", path, sizeof(path)))
+> +		tst_brk(TCONF, "Couldn't find test_exec_child in $PATH");
+> +
+> +	execve(path, argv, environ);
+>  
+>  	tst_res(TBROK | TERRNO, "EXEC!");
+>  }
+> diff --git a/lib/newlib_tests/test_exec.c b/lib/newlib_tests/test_exec.c
+> index 8aef621..2c86568 100644
+> --- a/lib/newlib_tests/test_exec.c
+> +++ b/lib/newlib_tests/test_exec.c
+> @@ -25,14 +25,18 @@
+>   */
+>  
+>  #define _GNU_SOURCE
+> -#include <stdlib.h>
+> +#include <unistd.h>
+>  #include "tst_test.h"
+>  
+>  static void do_test(void)
+>  {
+>  	char *const argv[] = {"test_exec_child", NULL};
+> +	char path[4096];
+>  
+> -	execvpe(argv[0], argv, environ);
+> +	if (tst_get_path("test_exec_child", path, sizeof(path)))
+> +		tst_brk(TCONF, "Couldn't find test_exec_child in $PATH");
+> +
+> +	execve(path, argv, environ);
+>  
+>  	tst_res(TBROK | TERRNO, "EXEC!");
+>  }
 
 
-Kind regards,
-Petr
+
