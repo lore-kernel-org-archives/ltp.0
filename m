@@ -1,299 +1,253 @@
-From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
-Date: Mon, 10 Sep 2018 14:38:05 +0200
-Subject: [LTP] [PATCH v1] setregid03: convert to newlib
-Message-ID: <20180910123805.15668-1-cfamullaconrad@suse.de>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Mon, 10 Sep 2018 14:44:38 +0200
+Subject: [LTP] [PATCH v1 3/5] setregid02: Convert to newlib
+In-Reply-To: <20180910091059.12198-1-cfamullaconrad@suse.de>
+References: <20180910090933.12080-1-cfamullaconrad@suse.de>
+ <20180910091059.12198-1-cfamullaconrad@suse.de>
+Message-ID: <87sh2h5xop.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Do not fork, cause I don't see the need for it. Maybe a left over
-from previous changes.
+Hello,
 
-It requires SAFE_GETGRNAM_FALLBACK() which is not in master, but in
-a previous patch "tst_safe_macros: add SAFE_GETGRNAM_FALLBACK()".
+Clemens Famulla-Conrad <cfamullaconrad@suse.de> writes:
 
-Signed-off-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
----
- testcases/kernel/syscalls/setregid/setregid03.c | 216 ++++++++----------------
- 1 file changed, 66 insertions(+), 150 deletions(-)
+> Also changed some messaged to show errno as string.
+> Used SAVE_* functions for getgrnam(), getgrgid() and getpwnam()
+>
+> Signed-off-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+> ---
+>  testcases/kernel/syscalls/setregid/setregid02.c | 136 ++++++++----------------
+>  1 file changed, 42 insertions(+), 94 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/setregid/setregid02.c b/testcases/kernel/syscalls/setregid/setregid02.c
+> index 21d1c823a..747515645 100644
+> --- a/testcases/kernel/syscalls/setregid/setregid02.c
+> +++ b/testcases/kernel/syscalls/setregid/setregid02.c
+> @@ -1,21 +1,7 @@
+> +// SPDX-License-Identifier: GPL-2.0
+>  /*
+> - *
+>   *   Copyright (c) International Business Machines  Corp., 2001
+>   *
+> - *   This program is free software;  you can redistribute it and/or modify
+> - *   it under the terms of the GNU General Public License as published by
+> - *   the Free Software Foundation; either version 2 of the License, or
+> - *   (at your option) any later version.
+> - *
+> - *   This program is distributed in the hope that it will be useful,
+> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - *   the GNU General Public License for more details.
+> - *
+> - *   You should have received a copy of the GNU General Public License
+> - *   along with this program;  if not, write to the Free Software
+> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> - *
+>   *   Ported by John George
+>   */
+>
+> @@ -29,13 +15,9 @@
+>  #include <pwd.h>
+>  #include <grp.h>
+>  #include <stdlib.h>
+> -#include <string.h>
+>
+> -#include "test.h"
+> -#include "safe_macros.h"
+> -#include "compat_16.h"
+> -
+> -TCID_DEFINE(setregid02);
+> +#include "tst_test.h"
+> +#include "compat_tst_16.h"
+>
+>  static gid_t neg_one = -1;
+>
+> @@ -48,14 +30,14 @@ static struct group ltpgroup, root, bin;
+>   * is used for a separate test.  The tests are executed in the for loop below.
+>   */
+>
+> -struct test_data_t {
+> +static struct tcase {
+>  	gid_t *real_gid;
+>  	gid_t *eff_gid;
+>  	int exp_errno;
+>  	struct group *exp_real_usr;
+>  	struct group *exp_eff_usr;
+>  	char *test_msg;
+> -} test_data[] = {
+> +} tcases[] = {
+>  	{
+>  	&neg_one, &root.gr_gid, EPERM, &ltpgroup, &ltpgroup,
+>  		    "After setregid(-1, root),"}, {
+> @@ -71,113 +53,79 @@ struct test_data_t {
+>  		    "After setregid(bin, root),"}
+>  };
+>
+> -int TST_TOTAL = ARRAY_SIZE(test_data);
+> -
+> -static void setup(void);
+>  static void gid_verify(struct group *ru, struct group *eu, char *when);
+>  static struct group get_group_by_name(const char *name);
+>  static struct group get_group_by_gid(gid_t gid);
+>
+> -int main(int ac, char **av)
+> +static  void run(unsigned int n)
+>  {
+> -	int lc;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		int i;
+> -
+> -		tst_count = 0;
+> -
+> -		for (i = 0; i < TST_TOTAL; i++) {
+> -			/* Set the real or effective group id */
+> -			TEST(SETREGID(NULL, *test_data[i].real_gid,
+> -				      *test_data[i].eff_gid));
+> -
+> -			if (TEST_RETURN == -1) {
+> -				if (TEST_ERRNO == test_data[i].exp_errno) {
+> -					tst_resm(TPASS, "setregid(%d, %d) "
+> -						 "failed as expected.",
+> -						 *test_data[i].real_gid,
+> -						 *test_data[i].eff_gid);
+> -				} else {
+> -					tst_resm(TFAIL, "setregid(%d, %d) "
+> -						 "failed (%d) but did not set the "
+> -						 "expected errno (%d).",
+> -						 *test_data[i].real_gid,
+> -						 *test_data[i].eff_gid,
+> -						 TEST_ERRNO,
+> -						 test_data[i].exp_errno);
+> -				}
+> -			} else {
+> -				tst_resm(TFAIL, "setregid(%d, %d) "
+> -					 "did not fail (ret: %ld) as expected (ret: -1).",
+> -					 *test_data[i].real_gid,
+> -					 *test_data[i].eff_gid, TEST_RETURN);
+> -			}
+> -			gid_verify(test_data[i].exp_real_usr,
+> -				   test_data[i].exp_eff_usr,
+> -				   test_data[i].test_msg);
+> +	struct tcase *tc = &tcases[n];
+> +
+> +	/* Set the real or effective group id */
+> +	TEST(SETREGID(*tc->real_gid, *tc->eff_gid));
+> +
+> +	if (TST_RET == -1) {
+> +		if (TST_ERR == tc->exp_errno) {
 
-diff --git a/testcases/kernel/syscalls/setregid/setregid03.c b/testcases/kernel/syscalls/setregid/setregid03.c
-index a4caf238d..e48e28d19 100644
---- a/testcases/kernel/syscalls/setregid/setregid03.c
-+++ b/testcases/kernel/syscalls/setregid/setregid03.c
-@@ -1,20 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (c) International Business Machines  Corp., 2001
-  *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- *
-  * Ported by John George
-  */
- 
-@@ -22,32 +9,22 @@
-  * Test setregid() when executed by a non-root user.
-  */
- 
--#include <errno.h>
--#include <grp.h>
--#include <stdlib.h>
- #include <pwd.h>
--#include <string.h>
--#include <sys/wait.h>
- 
--#include "test.h"
--#include "safe_macros.h"
--#include "compat_16.h"
-+#include "tst_test.h"
-+#include "compat_tst_16.h"
- 
--TCID_DEFINE(setregid03);
- static int fail = -1;
- static int pass;
- static gid_t neg_one = -1;
- 
--/* flag to tell parent if child passed or failed. */
--static int flag;
--
- struct group nobody_gr, daemon_gr, root_gr, bin_gr;
- struct passwd nobody;
-+
- /*
-  * The following structure contains all test data.  Each structure in the array
-  * is used for a separate test.  The tests are executed in the for loop below.
-  */
--
- struct test_data_t {
- 	gid_t *real_gid;
- 	gid_t *eff_gid;
-@@ -80,150 +57,89 @@ struct test_data_t {
- 	&daemon_gr.gr_gid, &daemon_gr.gr_gid, &fail, &bin_gr, &bin_gr,
- 		    "After setregid(daemon, daemon)"},};
- 
--int TST_TOTAL = sizeof(test_data) / sizeof(test_data[0]);
- 
- static void setup(void);
- static void gid_verify(struct group *ru, struct group *eu, char *when);
-+static struct group get_group_fallback(const char *gr1, const char *gr2);
-+static struct group get_group(const char *group);
- 
--int main(int ac, char **av)
-+static void run(unsigned int i)
- {
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		pid_t pid;
--		int status, i;
--
--		pass = 0;
--		flag = 0;
--
--		tst_count = 0;
--
--		/* set the appropriate ownership values */
--		if (SETREGID(NULL, daemon_gr.gr_gid, bin_gr.gr_gid) == -1)
--			tst_brkm(TBROK, NULL, "Initial setregid failed");
--
--		SAFE_SETEUID(NULL, nobody.pw_uid);
--
--		if ((pid = FORK_OR_VFORK()) == -1) {
--			tst_brkm(TBROK, NULL, "fork failed");
--		} else if (pid == 0) {	/* child */
--			for (i = 0; i < TST_TOTAL; i++) {
--				gid_t test_ret;
--				/* Set the real or effective group id */
--				TEST(SETREGID(NULL, *test_data[i].real_gid,
--					      *test_data[i].eff_gid));
--				test_ret = TEST_RETURN;
--
--				if (test_ret == *test_data[i].exp_ret) {
--					if (test_ret == neg_one) {
--						if (TEST_ERRNO != EPERM) {
--							tst_resm(TFAIL,
--								 "setregid(%d, %d) "
--								 "did not set errno "
--								 "value as expected.",
--								 *test_data
--								 [i].real_gid,
--								 *test_data
--								 [i].eff_gid);
--							fail = -1;
--							continue;
--						} else {
--							tst_resm(TPASS,
--								 "setregid(%d, %d) "
--								 "failed as expected.",
--								 *test_data
--								 [i].real_gid,
--								 *test_data
--								 [i].eff_gid);
--						}
--					} else {
--						tst_resm(TPASS,
--							 "setregid(%d, %d) "
--							 "succeeded as expected.",
--							 *test_data[i].real_gid,
--							 *test_data[i].eff_gid);
--					}
--				} else {
--					tst_resm(TFAIL, "setregid(%d, %d) "
--						 "did not return as expected.",
--						 *test_data[i].real_gid,
--						 *test_data[i].eff_gid);
--					flag = -1;
--				}
--				if (test_ret == -1) {
--				}
--
--				gid_verify(test_data[i].exp_real_usr,
--					   test_data[i].exp_eff_usr,
--					   test_data[i].test_msg);
--			}
--			exit(flag);
--		} else {	/* parent */
--			waitpid(pid, &status, 0);
--			if (WEXITSTATUS(status) != 0) {
--				tst_resm(TFAIL, "test failed within "
--					 "child process.");
-+	struct test_data_t *tc = &test_data[i];
-+
-+	/* Set the real or effective group id */
-+	TEST(SETREGID(*tc->real_gid, *tc->eff_gid));
-+
-+	if (TST_RET == *tc->exp_ret) {
-+		if (TST_RET == -1) {
-+			if (TST_ERR != EPERM) {
-+				tst_res(TFAIL | TTERRNO,
-+					"setregid(%d, %d) did not set errno "
-+					"value as expected.",
-+					*tc->real_gid, *tc->eff_gid);
-+			} else {
-+				tst_res(TPASS,
-+					"setregid(%d, %d) failed as expected.",
-+					*tc->real_gid, *tc->eff_gid);
- 			}
-+		} else {
-+			tst_res(TPASS,
-+				"setregid(%d, %d) succeeded as expected.",
-+				*tc->real_gid, *tc->eff_gid);
- 		}
-+	} else {
-+		tst_res(TFAIL, "setregid(%d, %d) did not return as expected.",
-+			*tc->real_gid, *tc->eff_gid);
- 	}
--
--	tst_exit();
-+	gid_verify(tc->exp_real_usr, tc->exp_eff_usr, tc->test_msg);
- }
- 
- static void setup(void)
-+{
-+	nobody = *SAFE_GETPWNAM("nobody");
-+
-+	nobody_gr = get_group_fallback("nobody", "nogroup");
-+	daemon_gr = get_group("daemon");
-+	bin_gr = get_group("bin");
-+
-+	/* set the appropriate ownership values */
-+	SAFE_SETREGID(daemon_gr.gr_gid, bin_gr.gr_gid);
-+	SAFE_SETEUID(nobody.pw_uid);
-+}
-+
-+static struct group get_group_fallback(const char *gr1, const char *gr2)
-+{
-+	struct group *junk;
-+
-+	junk = SAFE_GETGRNAM_FALLBACK(gr1, gr2);
-+	GID16_CHECK(junk->gr_gid, setregid);
-+	return *junk;
-+}
-+
-+static struct group get_group(const char *group)
- {
- 	struct group *junk;
- 
--	tst_require_root();
--
--	tst_sig(FORK, DEF_HANDLER, NULL);
--
--	if (getpwnam("nobody") == NULL)
--		tst_brkm(TBROK, NULL, "nobody must be a valid user.");
--	nobody = *(getpwnam("nobody"));
--
--#define GET_GID(group) do { \
--	junk = getgrnam(#group); \
--	if (junk == NULL) { \
--		tst_brkm(TBROK, NULL, "%s must be a valid group", #group); \
--	} \
--	GID16_CHECK(junk->gr_gid, setregid, NULL); \
--	group ## _gr = *(junk); \
--} while (0)
--
--#define GET_GID_FALLBACK(group, group2) do { \
--	junk = getgrnam(#group); \
--	if (junk == NULL) { \
--		tst_resm(TINFO, "%s not found, trying fallback %s", #group, #group2); \
--		junk = getgrnam(#group2); \
--		if (junk == NULL) { \
--			tst_brkm(TBROK, NULL, "%s or %s must be a valid group", #group, #group2); \
--		} \
--	} \
--	GID16_CHECK(junk->gr_gid, setregid, NULL); \
--	group ## _gr = *(junk); \
--} while (0)
--
--	GET_GID_FALLBACK(nobody, nogroup);
--	GET_GID(daemon);
--	GET_GID(bin);
--
--	TEST_PAUSE;
-+	junk = SAFE_GETGRNAM(group);
-+	GID16_CHECK(junk->gr_gid, setregid);
-+	return *junk;
- }
- 
- static void gid_verify(struct group *rg, struct group *eg, char *when)
- {
- 	if ((getgid() != rg->gr_gid) || (getegid() != eg->gr_gid)) {
--		tst_resm(TFAIL, "ERROR: %s real gid = %d; effective gid = %d",
-+		tst_res(TFAIL, "ERROR: %s real gid = %d; effective gid = %d",
- 			 when, getgid(), getegid());
--		tst_resm(TINFO, "Expected: real gid = %d; effective gid = %d",
-+		tst_res(TINFO, "Expected: real gid = %d; effective gid = %d",
- 			 rg->gr_gid, eg->gr_gid);
--		flag = -1;
- 	} else {
--		tst_resm(TPASS, "real or effective gid was modified as expected");
-+		tst_res(TPASS, "real or effective gid was modified as expected");
- 	}
- }
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(test_data),
-+	.needs_root = 1,
-+	.test = run,
-+	.setup = setup,
-+};
--- 
-2.16.4
+Only a minor nit, but please run check_patch from the kernel on this
+(e.g. linux/scripts/checkpatch.pl --no-tree -f setregid02.c)
 
+WARNING: Comparisons should place the constant on the right side of the test
+#68: FILE: setregid02.c:68:
++               if (TST_ERR == tc->exp_errno) {
+
+I don't think all the warnings are worth fixing, but this seems reasonable.
+
+> +			tst_res(TPASS | TTERRNO, "setregid(%d, %d) failed "
+> +				"as expected", *tc->real_gid, *tc->eff_gid);
+> +		} else {
+> +			tst_res(TFAIL | TTERRNO, "setregid(%d, %d) failed "
+> +				"unexpectedly, expected %s", *tc->real_gid,
+> +				*tc->eff_gid, tst_strerrno(tc->exp_errno));
+>  		}
+> +	} else {
+> +		tst_res(TFAIL, "setregid(%d, %d) did not fail (ret: %ld) "
+> +			"as expected (ret: -1).", *tc->real_gid,
+> +			*tc->eff_gid, TST_RET);
+>  	}
+> -
+> -	tst_exit();
+> +	gid_verify(tc->exp_real_usr, tc->exp_eff_usr, tc->test_msg);
+>  }
+>
+>  static void setup(void)
+>  {
+> -	tst_require_root();
+> +	ltpuser = SAFE_GETPWNAM("nobody");
+>
+> -	tst_sig(FORK, DEF_HANDLER, NULL);
+> -
+> -	ltpuser = getpwnam("nobody");
+> -	if (ltpuser == NULL)
+> -		tst_brkm(TBROK, NULL, "getpwnam(\"nobody\") failed");
+> -
+> -	SAFE_SETGID(NULL, ltpuser->pw_gid);
+> -	SAFE_SETUID(NULL, ltpuser->pw_uid);
+> +	SAFE_SETGID(ltpuser->pw_gid);
+> +	SAFE_SETUID(ltpuser->pw_uid);
+>
+>  	root = get_group_by_name("root");
+>  	ltpgroup = get_group_by_gid(ltpuser->pw_gid);
+>  	bin = get_group_by_name("bin");
+> -
+> -	TEST_PAUSE;
+>  }
+>
+>  static struct group get_group_by_name(const char *name)
+>  {
+> -	struct group *ret = getgrnam(name);
+> -
+> -	if (ret == NULL)
+> -		tst_brkm(TBROK|TERRNO, NULL, "getgrnam(\"%s\") failed", name);
+> +	struct group *ret = SAFE_GETGRNAM(name);
+>
+> -	GID16_CHECK(ret->gr_gid, setregid, NULL);
+> +	GID16_CHECK(ret->gr_gid, setregid);
+>
+>  	return *ret;
+>  }
+>
+>  static struct group get_group_by_gid(gid_t gid)
+>  {
+> -	struct group *ret = getgrgid(gid);
+> +	struct group *ret = SAFE_GETGRGID(gid);
+>
+> -	if (ret == NULL)
+> -		tst_brkm(TBROK|TERRNO, NULL, "getgrgid(\"%d\") failed", gid);
+> -
+> -	GID16_CHECK(ret->gr_gid, setregid, NULL);
+> +	GID16_CHECK(ret->gr_gid, setregid);
+>
+>  	return *ret;
+>  }
+> -
+>  void gid_verify(struct group *rg, struct group *eg, char *when)
+>  {
+>  	if ((getgid() != rg->gr_gid) || (getegid() != eg->gr_gid)) {
+> -		tst_resm(TFAIL, "ERROR: %s real gid = %d; effective gid = %d",
+> +		tst_res(TFAIL, "ERROR: %s real gid = %d; effective gid = %d",
+>  			 when, getgid(), getegid());
+> -		tst_resm(TINFO, "Expected: real gid = %d; effective gid = %d",
+> +		tst_res(TINFO, "Expected: real gid = %d; effective gid = %d",
+>  			 rg->gr_gid, eg->gr_gid);
+>  	} else {
+> -		tst_resm(TPASS, "real or effective gid was modified as expected");
+> +		tst_res(TPASS,
+> +			"real or effective gid was modified as expected");
+>  	}
+>  }
+> +
+> +static struct tst_test test = {
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.needs_root = 1,
+> +	.test = run,
+> +	.setup = setup,
+> +};
+> --
+> 2.16.4
+
+
+--
+Thank you,
+Richard.
