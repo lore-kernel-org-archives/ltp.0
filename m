@@ -1,68 +1,178 @@
 From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
-Date: Mon, 10 Sep 2018 16:19:00 +0200
-Subject: [LTP] [PATCH v2 4/5] tst_safe_macros: add SAFE_GETGRNAM_FALLBACK()
+Date: Mon, 10 Sep 2018 16:19:01 +0200
+Subject: [LTP] [PATCH v2 5/5] setregid04: Convert to newlib
 In-Reply-To: <20180910141901.20541-1-cfamullaconrad@suse.de>
 References: <20180910141901.20541-1-cfamullaconrad@suse.de>
-Message-ID: <20180910141901.20541-4-cfamullaconrad@suse.de>
+Message-ID: <20180910141901.20541-5-cfamullaconrad@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This function retrieves the group by name. If the group doesn't
-exists fall back to the second name given. If the second group
-doesn't exists, exit with TBROK.
-
 Signed-off-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
 ---
- include/tst_safe_macros.h |  5 +++++
- lib/tst_safe_macros.c     | 16 ++++++++++++++++
- 2 files changed, 21 insertions(+)
+ testcases/kernel/syscalls/setregid/setregid04.c | 116 ++++++------------------
+ 1 file changed, 27 insertions(+), 89 deletions(-)
 
-diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index d457ae92a..e8b68ce9d 100644
---- a/include/tst_safe_macros.h
-+++ b/include/tst_safe_macros.h
-@@ -441,6 +441,11 @@ struct group *safe_getgrnam(const char *file, const int lineno,
- #define SAFE_GETGRNAM(name) \
- 	safe_getgrnam(__FILE__, __LINE__, (name))
+diff --git a/testcases/kernel/syscalls/setregid/setregid04.c b/testcases/kernel/syscalls/setregid/setregid04.c
+index bf744ff05..e0f1853a1 100644
+--- a/testcases/kernel/syscalls/setregid/setregid04.c
++++ b/testcases/kernel/syscalls/setregid/setregid04.c
+@@ -1,20 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+  * Copyright (c) International Business Machines  Corp., 2001
+  *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- *
+  * Ported by John George
+  */
  
-+struct group *safe_getgrnam_fallback(const char *file, const int lineno,
-+		const char *name, const char *fallback);
-+#define SAFE_GETGRNAM_FALLBACK(name, fallback) \
-+	safe_getgrnam_fallback(__FILE__, __LINE__, (name), (fallback))
-+
- struct group *safe_getgrgid(const char *file, const int lineno, gid_t gid);
- #define SAFE_GETGRGID(gid) \
- 	safe_getgrgid(__FILE__, __LINE__, (gid))
-diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
-index 2e041c460..83994cdea 100644
---- a/lib/tst_safe_macros.c
-+++ b/lib/tst_safe_macros.c
-@@ -153,6 +153,22 @@ struct group *safe_getgrnam(const char *file, const int lineno,
- 	return rval;
+@@ -22,16 +9,8 @@
+  * Test setregid() when executed by root.
+  */
+ 
+-#include <errno.h>
+-#include <pwd.h>
+-#include <grp.h>
+-#include <stdlib.h>
+-#include <string.h>
+-
+-#include "test.h"
+-#include "compat_16.h"
+-
+-TCID_DEFINE(setregid04);
++#include "tst_test.h"
++#include "compat_tst_16.h"
+ 
+ static gid_t neg_one = -1;
+ 
+@@ -70,88 +49,47 @@ struct test_data_t {
+ 		    "After setregid(-1, nobody)"}
+ };
+ 
+-int TST_TOTAL = sizeof(test_data) / sizeof(test_data[0]);
+-
+ static void setup(void);
+-static void cleanup(void);
+ static void gid_verify(struct group *ru, struct group *eu, const char *when);
+ 
+-int main(int ac, char **av)
++static void run(unsigned int i)
+ {
+-	int lc;
++	/* Set the real or effective group id */
++	TEST(SETREGID(*test_data[i].real_gid, *test_data[i].eff_gid));
+ 
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		int i;
+-
+-		tst_count = 0;
+-
+-		for (i = 0; i < TST_TOTAL; i++) {
+-			/* Set the real or effective group id */
+-			TEST(SETREGID(cleanup, *test_data[i].real_gid,
+-				      *test_data[i].eff_gid));
+-
+-			if (TEST_RETURN == -1) {
+-				tst_resm(TBROK, "setregid(%d, %d) failed",
+-					 *test_data[i].real_gid,
+-					 *test_data[i].eff_gid);
+-			} else {
+-				gid_verify(test_data[i].exp_real_usr,
+-					   test_data[i].exp_eff_usr,
+-					   test_data[i].test_msg);
+-			}
+-		}
++	if (TST_RET == -1) {
++		tst_res(TBROK | TTERRNO, "setregid(%d, %d) failed",
++			*test_data[i].real_gid, *test_data[i].eff_gid);
++	} else {
++		gid_verify(test_data[i].exp_real_usr, test_data[i].exp_eff_usr,
++			   test_data[i].test_msg);
+ 	}
+-
+-	cleanup();
+-	tst_exit();
  }
  
-+struct group *safe_getgrnam_fallback(const char *file, const int lineno,
-+				     const char *name, const char *fallback)
-+{
-+	struct group *rval;
-+
-+	rval = getgrnam(name);
-+	if (rval == NULL) {
-+		tst_res_(file, lineno, TINFO,
-+			 "getgrnam(%s) failed - try fallback %s",
-+			 name, fallback);
-+		rval = safe_getgrnam(file, lineno, fallback);
-+	}
-+
-+	return rval;
-+}
-+
- struct group *safe_getgrgid(const char *file, const int lineno, gid_t gid)
+-#define SAFE_GETGROUP(GROUPNAME)	\
+-	if (getgrnam(#GROUPNAME) == NULL) { \
+-		tst_brkm(TBROK, NULL, "Couldn't find the `" #GROUPNAME "' group"); \
+-	} \
+-	GROUPNAME ## _gr = *(getgrnam(#GROUPNAME));
+-
+-#define SAFE_GETGROUP_FALLBACK(GROUPNAME, GROUPNAME2)	\
+-	if (getgrnam(#GROUPNAME) != NULL) \
+-		GROUPNAME ## _gr = *(getgrnam(#GROUPNAME)); \
+-	else if (getgrnam(#GROUPNAME2) != NULL) { \
+-		GROUPNAME ## _gr = *(getgrnam(#GROUPNAME2)); \
+-		tst_resm(TINFO, "`" #GROUPNAME "' group not found, trying fallback `" #GROUPNAME2 "' group"); \
+-	} else \
+-		tst_brkm(TBROK, NULL, "Couldn't find neither`" #GROUPNAME "' `" #GROUPNAME2 "' nor group");
+-
+ static void setup(void)
  {
- 	struct group *rval;
+-	tst_require_root();
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	SAFE_GETGROUP(root);
+-	SAFE_GETGROUP_FALLBACK(nobody, nogroup);
+-	SAFE_GETGROUP(daemon);
+-	SAFE_GETGROUP(bin);
+-
+-	TEST_PAUSE;
+-}
+-
+-static void cleanup(void)
+-{
++	root_gr = *SAFE_GETGRNAM("root");
++	nobody_gr = *SAFE_GETGRNAM_FALLBACK("nobody", "nogroup");
++	daemon_gr = *SAFE_GETGRNAM("daemon");
++	bin_gr = *SAFE_GETGRNAM("bin");
+ }
+ 
+ static void gid_verify(struct group *rg, struct group *eg, const char *when)
+ {
+ 	if ((getgid() != rg->gr_gid) || (getegid() != eg->gr_gid)) {
+-		tst_resm(TFAIL, "ERROR: %s real gid = %d; effective gid = %d",
++		tst_res(TFAIL, "ERROR: %s real gid = %d; effective gid = %d",
+ 			 when, getgid(), getegid());
+-		tst_resm(TINFO, "Expected: real gid = %d; effective gid = %d",
++		tst_res(TINFO, "Expected: real gid = %d; effective gid = %d",
+ 			 rg->gr_gid, eg->gr_gid);
+ 	} else {
+-		tst_resm(TPASS, "real or effective gid was modified as "
+-			 "expected");
++		tst_res(TPASS,
++			"real or effective gid was modified as expected");
+ 	}
+ }
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(test_data),
++	.needs_root = 1,
++	.test = run,
++	.setup = setup,
++};
 -- 
 2.16.4
 
