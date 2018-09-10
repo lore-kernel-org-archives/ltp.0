@@ -1,60 +1,37 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 11 Sep 2018 00:18:44 +0200
-Subject: [LTP] [PATCH v2 1/4] tst_timer: Add nano second conversions
-In-Reply-To: <20180910084442.17720-2-rpalethorpe@suse.com>
+Date: Tue, 11 Sep 2018 00:38:08 +0200
+Subject: [LTP] [PATCH v2 4/4] Add delay bias for difficult races
+In-Reply-To: <20180910084442.17720-5-rpalethorpe@suse.com>
 References: <20180910084442.17720-1-rpalethorpe@suse.com>
- <20180910084442.17720-2-rpalethorpe@suse.com>
-Message-ID: <20180910221843.GA28616@dell5510>
+ <20180910084442.17720-5-rpalethorpe@suse.com>
+Message-ID: <20180910223806.GA9189@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
 Hi Richard,
 
+> Races with short exploitation windows and nonlinear timings, given varying
+> chronological order, appear to require an offset to the synchronisation to
+> achieve the correct order so that the average timings are valid for the race
+> condition.
+
 > Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-It'd be nice to add doc into doc/test-writing-guidelines.txt.
-(I know the docs isn't complete, at least tst_timeval_diff_ms() is not
-mentioned.
-
 > ---
->  include/tst_timer.h | 11 +++++++++++
->  1 file changed, 11 insertions(+)
 
-> diff --git a/include/tst_timer.h b/include/tst_timer.h
-> index 0fd7ed6cf..577bc88ef 100644
-> --- a/include/tst_timer.h
-> +++ b/include/tst_timer.h
-> @@ -34,6 +34,11 @@
->  #include <sys/time.h>
->  #include <time.h>
-
-> +static inline long long tst_timespec_to_ns(struct timespec t)
+> +static void tst_fzsync_pair_add_bias(struct tst_fzsync_pair *pair, int change)
 > +{
-> +	return t.tv_sec * 1000000000 + t.tv_nsec;
+> +	if (pair->sampling > 0) {
+> +		pair->delay_bias += change;
+> +		pair->discard_flag = 1;
+> +	}
 > +}
-> +
->  /*
->   * Converts timespec to microseconds.
->   */
-> @@ -166,6 +171,12 @@ static inline struct timespec tst_timespec_diff(struct timespec t1,
->  	return res;
->  }
 
-> +static inline long long tst_timespec_diff_ns(struct timespec t1,
-> +					     struct timespec t2)
-> +{
-> +	return t1.tv_nsec - t2.tv_nsec + 1000000000LL * (t1.tv_sec - t2.tv_sec);
-I guess this can be just 1000000000 (nitpicking).
-
-> +}
-> +
->  static inline long long tst_timespec_diff_us(struct timespec t1,
->                                               struct timespec t2)
->  {
+Minor warning due being in header and not in C file:
+../../../include/tst_fuzzy_sync.h:753:13: warning: ‘tst_fzsync_pair_add_bias’ defined but not used [-Wunused-function]
+ static void tst_fzsync_pair_add_bias(struct tst_fzsync_pair *pair, int change)
 
 
 Kind regards,
