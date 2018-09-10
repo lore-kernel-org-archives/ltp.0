@@ -1,272 +1,218 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 10 Sep 2018 16:00:13 +0200
-Subject: [LTP] [PATCH v1] Test statx syscall for SYNC_FLAGS
-In-Reply-To: <20180910120513.14069-1-kewal@zilogic.com>
-References: <20180910120513.14069-1-kewal@zilogic.com>
-Message-ID: <87o9d55u6q.fsf@rpws.prws.suse.cz>
+From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+Date: Mon, 10 Sep 2018 16:18:57 +0200
+Subject: [LTP] [PATCH v2 1/5] setregid01: Convert to newlib
+Message-ID: <20180910141901.20541-1-cfamullaconrad@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Compared to previous patchset, change tst_brk() to tst_res() as it
+was in the original tests.
 
-kewal <kewal@zilogic.com> writes:
+Store testcases in array and use newlib to iterate over this.
 
-> * statx06.c :-
->
->  Testcase 1: AT_STATX_DONT_SYNC
->   With AT_STATX_DONT_SYNC server changes should not get sync with client.
->
->  Testcase 2: AT_STATX_FORCE_SYNC
->   With AT_STATX_FORCE_SYNC server changes should get sync with client.
->
-> Signed-off-by: Kewal Ukunde <kewal@zilogic.com>
-> Signed-off-by: Vaishnavi.d <vaishnavi.d@zilogic.com>
-> Signed-off-by: Tarun.T.U <tarun@zilogic.com>
-> ---
->  runtest/syscalls                           |   1 +
->  testcases/kernel/syscalls/statx/.gitignore |   1 +
->  testcases/kernel/syscalls/statx/statx06.c  | 183 +++++++++++++++++++++++++++++
->  3 files changed, 185 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/statx/statx06.c
->
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 0d0be7713..71b83b25c 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1504,3 +1504,4 @@ statx02 statx02
->  statx03 statx03
->  statx04 statx04
->  statx05 statx05
-> +statx06 statx06
-> diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
-> index 209fc3a33..c1ceddabf 100644
-> --- a/testcases/kernel/syscalls/statx/.gitignore
-> +++ b/testcases/kernel/syscalls/statx/.gitignore
-> @@ -3,3 +3,4 @@
->  /statx03
->  /statx04
->  /statx05
-> +/statx06
-> diff --git a/testcases/kernel/syscalls/statx/statx06.c b/testcases/kernel/syscalls/statx/statx06.c
-> new file mode 100644
-> index 000000000..8b66bf832
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/statx/statx06.c
-> @@ -0,0 +1,183 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + *  Copyright (c) Zilogic Systems Pvt. Ltd., 2018
-> + *  Email : code@zilogic.com
-> + */
-> +
-> +/*
-> + * Test statx
-> + *
-> + * This code tests the following flags:
-> + * 1) AT_STATX_FORCE_SYNC
-> + * 2) AT_STATX_DONT_SYNC
-> + *
-> + * By exportfs cmd creating NFS setup.
-> + *
-> + * A test file is created in server folder and statx is being
-> + * done in client folder.
-> + *
-> + * TESTCASE 1:
-> + * BY AT_STATX_SYNC_AS_STAT getting predefined mode value.
-> + * Then, by using AT_STATX_FORCE_SYNC getting new updated vaue
-> + * from server file changes.
-> + *
-> + * TESTCASE 2:
-> + * BY AT_STATX_SYNC_AS_STAT getting predefined mode value.
-> + * AT_STATX_FORCE_SYNC is called to create cache data of the file.
-> + * Then, by using DONT_SYNC_FILE getting old cached data in client folder,
-> + * but mode has been chaged in server file.
-> + *
-> + * Minimum kernel version required is 4.11.
-> + */
-> +
-> +#include <netdb.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include "tst_test.h"
-> +#include "lapi/stat.h"
-> +
-> +#define MODE(X) (X & (~S_IFMT))
-> +#define BUFF_SIZE 512
-> +#define DEFAULT_MODE 0644
-> +#define CURRENT_MODE 0777
-> +
-> +#define CLIENT_PATH "client"
-> +#define SERVER_PATH "server"
-> +#define FORCE_SYNC_FILE  "force_sync_file"
-> +#define DONT_SYNC_FILE "dont_sync_file"
-> +
-> +static char cwd[BUFF_SIZE];
-> +static char cmd[BUFF_SIZE];
-> +
-> +static int get_mode(char *file_name, int flag_type, char *flag_name)
-> +{
-> +	char client_path[BUFF_SIZE];
-> +	struct statx buff;
-> +
-> +	sprintf(client_path, "%s/%s/%s", cwd, CLIENT_PATH, file_name);
-> +
-> +	TEST(statx(AT_FDCWD, client_path, flag_type, STATX_ALL, &buff));
-> +
-> +	if (TST_RET == -1)
-> +		tst_brk(TFAIL | TST_ERR,
-> +				"statx(AT_FDCWD, %s, %s, STATX_ALL, &buff)",
-> +				file_name, flag_name);
-> +	else
-> +		tst_res(TINFO, "statx(AT_FDCWD, %s, %s, STATX_ALL, &buff)",
-> +				file_name, flag_name);
+Signed-off-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+---
+ testcases/kernel/syscalls/setregid/setregid01.c | 171 +++++-------------------
+ 1 file changed, 36 insertions(+), 135 deletions(-)
 
-Seems like something strange is happening with the whitespace.
+diff --git a/testcases/kernel/syscalls/setregid/setregid01.c b/testcases/kernel/syscalls/setregid/setregid01.c
+index 57a38eb62..f2e41e134 100644
+--- a/testcases/kernel/syscalls/setregid/setregid01.c
++++ b/testcases/kernel/syscalls/setregid/setregid01.c
+@@ -1,25 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+  *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+  * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+  * Mountain View, CA  94043, or:
+  *
+@@ -37,128 +19,47 @@
+  * Testcase to test the basic functionality of setregid(2) systemm call.
+  */
+ 
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-#include <sys/types.h>
+-
+-#include "test.h"
+-#include "compat_16.h"
+-
+-static void setup(void);
+-
+-TCID_DEFINE(setregid01);
+-int TST_TOTAL = 5;
+-
+-static gid_t gid, egid;	/* current real and effective group id */
+-
+-int main(int ac, char **av)
++#include "tst_test.h"
++#include "compat_tst_16.h"
++
++static gid_t gid, egid;	    /* current real and effective group id */
++static gid_t neg_one = -1;
++
++static struct tcase {
++	gid_t *arg1;
++	gid_t *arg2;
++	const char *msg;
++} tcases[] = {
++	{&neg_one, &neg_one, "Dont change either real or effective gid" },
++	{&neg_one, &egid,    "Change effective to effective gid" },
++	{&gid,     &neg_one, "Change real to real gid" },
++	{&neg_one, &gid,     "Change effective to real gid" },
++	{&gid,     &gid,     "Try to change real to current real" }
++};
++
++static void run(unsigned int n)
+ {
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		/*
+-		 * TEST CASE:
+-		 *  Dont change either real or effective gid
+-		 */
+-		gid = getgid();
+-		GID16_CHECK(gid, setregid, NULL);
+-
+-		egid = getegid();
+-		GID16_CHECK(egid, setregid, NULL);
++	struct tcase *tc = &tcases[n];
+ 
+-		TEST(SETREGID(NULL, -1, -1));
++	TEST(SETREGID(*tc->arg1, *tc->arg2));
+ 
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL,
+-				 "setregid -  Dont change either real or effective gid failed, errno=%d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-			tst_resm(TPASS,
+-				 "setregid -  Dont change either real or effective gid returned %ld",
+-				 TEST_RETURN);
+-		}
+-
+-		/*
+-		 * TEST CASE:
+-		 *  change effective to effective gid
+-		 */
+-
+-		TEST(SETREGID(NULL, -1, egid));
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL,
+-				 "setregid -  change effective to effective gid failed, errno=%d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-			tst_resm(TPASS,
+-				 "setregid -  change effective to effective gid returned %ld",
+-				 TEST_RETURN);
+-		}
+-
+-		/*
+-		 * TEST CASE:
+-		 *  change real to real gid
+-		 */
+-
+-		TEST(SETREGID(NULL, gid, -1));
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL,
+-				 "setregid -  change real to real gid failed, errno=%d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-			tst_resm(TPASS,
+-				 "setregid -  change real to real gid returned %ld",
+-				 TEST_RETURN);
+-		}
+-
+-		/*
+-		 * TEST CASE:
+-		 *  change effective to real gid
+-		 */
+-
+-		TEST(SETREGID(NULL, -1, gid));
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL,
+-				 "setregid -  change effective to real gid failed, errno=%d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-			tst_resm(TPASS,
+-				 "setregid -  change effective to real gid returned %ld",
+-				 TEST_RETURN);
+-		}
+-
+-		/*
+-		 * TEST CASE:
+-		 *  try to change real to current real
+-		 */
+-
+-		TEST(SETREGID(NULL, gid, gid));
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL | TTERRNO, "setregid failed");
+-		} else {
+-			tst_resm(TPASS, "setregid return %ld",
+-				 TEST_RETURN);
+-		}
+-
+-	}
+-
+-	tst_exit();
++	if (TST_RET == -1)
++		tst_res(TFAIL | TTERRNO, tc->msg);
++	else
++		tst_res(TPASS, tc->msg);
+ }
+ 
+ static void setup(void)
+ {
+-	tst_sig(NOFORK, DEF_HANDLER, NULL);
++	gid = getgid();
++	GID16_CHECK(gid, setregid);
+ 
+-	TEST_PAUSE;
++	egid = getegid();
++	GID16_CHECK(egid, setregid);
+ }
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = run,
++	.setup = setup,
++};
+-- 
+2.16.4
 
-> +
-> +	return buff.stx_mode;
-> +}
-> +
-> +static void test_for_dont_sync(void)
-> +{
-> +	unsigned int cur_mode;
-> +	char server_path[BUFF_SIZE];
-> +
-> +	sprintf(server_path, "%s/%s/%s", cwd, SERVER_PATH, DONT_SYNC_FILE);
-> +
-> +	get_mode(DONT_SYNC_FILE, AT_STATX_FORCE_SYNC,
-> +			"AT_STATX_FORCE_SYNC");
-> +
-> +	SAFE_CHMOD(server_path, CURRENT_MODE);
-> +	cur_mode = get_mode(DONT_SYNC_FILE, AT_STATX_DONT_SYNC,
-> +			"AT_STATX_DONT_SYNC");
-> +
-> +	if (DEFAULT_MODE == MODE(cur_mode))
-
-Try running check_patch from the kernel on this:
-
-WARNING: Comparisons should place the constant on the right side of the test
-#86: FILE: statx06.c:86:
-+       if (DEFAULT_MODE == MODE(cur_mode))
-
-> +		tst_res(TPASS,
-> +				"statx() with AT_STATX_DONT_SYNC for mode %o %o",
-> +				DEFAULT_MODE, (cur_mode & ~S_IFMT));
-> +	else
-> +		tst_res(TFAIL,
-> +				"statx() with AT_STATX_DONT_SYNC for mode %o %o",
-> +				DEFAULT_MODE, (cur_mode & ~S_IFMT));
-> +}
-> +
-> +static void test_for_force_sync(void)
-> +{
-> +	unsigned int cur_mode;
-> +	char server_path[BUFF_SIZE];
-> +
-> +	sprintf(server_path, "%s/%s/%s", cwd, SERVER_PATH, FORCE_SYNC_FILE);
-> +
-> +	SAFE_CHMOD(server_path, CURRENT_MODE);
-> +	cur_mode = get_mode(FORCE_SYNC_FILE, AT_STATX_FORCE_SYNC,
-> +			"AT_STATX_FORCE_SYNC");
-> +
-> +	if (CURRENT_MODE == MODE(cur_mode))
-> +		tst_res(TPASS,
-> +				"statx() with AT_STATX_FORCE_SYNC for mode %o %o",
-> +				CURRENT_MODE, (cur_mode & ~S_IFMT));
-> +	else
-> +		tst_res(TFAIL,
-> +				"statx() with AT_STATX_FORCE_SYNC for mode %o %o",
-> +				CURRENT_MODE, (cur_mode & ~S_IFMT));
-> +}
-> +
-> +struct test_cases {
-> +	void (*func)(void);
-> +} tcases[] = {
-> +	{test_for_dont_sync},
-> +	{test_for_force_sync}
-> +};
-> +
-> +static void test_statx(unsigned int nr)
-> +{
-> +	struct test_cases *tc = &tcases[nr];
-> +
-> +	tc->func();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	char force_sync_file[BUFF_SIZE];
-> +	char dont_sync_file[BUFF_SIZE];
-> +	char server_path[BUFF_SIZE];
-> +	char client_path[BUFF_SIZE];
-> +	char mount_data[BUFF_SIZE];
-> +	char *ip = "127.0.0.1";
-> +
-> +	TESTPTR(getcwd(cwd, BUFF_SIZE));
-> +	if (TST_RET_PTR == NULL)
-> +		tst_brk(TBROK | TST_ERR, "Failed to get PWD");
-> +
-> +	sprintf(force_sync_file, "%s/%s", SERVER_PATH, FORCE_SYNC_FILE);
-> +	sprintf(dont_sync_file, "%s/%s", SERVER_PATH, DONT_SYNC_FILE);
-> +
-> +	SAFE_MKDIR(SERVER_PATH, DEFAULT_MODE);
-> +	SAFE_MKDIR(CLIENT_PATH, DEFAULT_MODE);
-> +	SAFE_CREAT(force_sync_file, DEFAULT_MODE);
-> +	SAFE_CREAT(dont_sync_file, DEFAULT_MODE);
-> +
-> +	sprintf(server_path, ":%s/%s", cwd, SERVER_PATH);
-> +	sprintf(client_path, "%s/%s", cwd, CLIENT_PATH);
-> +	sprintf(mount_data, "addr=%s", ip);
-
-I get a lot of warnings when compiling with gcc8 like
-
-statx06.c:152:27: warning: ‘/’ directive writing 1 byte into a region of size between 0 and 511 [-Wformat-overflow=]
-  sprintf(server_path, ":%s/%s", cwd, SERVER_PATH);
-
-
-> +
-> +	sprintf(cmd,
-> +			"exportfs -i -o no_root_squash,rw,sync,no_subtree_check *%s",
-> +			server_path);
-
-Must we use an absolute path here and when mounting?
-
-> +
-> +	if (WEXITSTATUS(tst_system(cmd)) == 127)
-> +		tst_brk(TBROK | TST_ERR, "%s not found", cmd);
-
-This should probably be just TCONF as we shouldn't expect all systems to
-support running an NFS server. Also you should check for other errors.
-
-> +
-> +	SAFE_MOUNT(server_path, client_path, "nfs", 0, mount_data);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (WEXITSTATUS(tst_system("exportfs -ua")) == 127)
-> +		tst_brk(TBROK | TST_ERR, "%s", cmd);
-> +
-> +	SAFE_UMOUNT(CLIENT_PATH);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.test = test_statx,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.min_kver = "4.11",
-> +	.needs_tmpdir = 1,
-> +	.dev_fs_type = "nfs",
-> +	.needs_root = 1,
-> +};
-> --
-> 2.11.0
-
-
---
-Thank you,
-Richard.
