@@ -1,177 +1,104 @@
-From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
-Date: Mon, 10 Sep 2018 11:11:43 +0200
-Subject: [LTP] [PATCH v1 5/5] setregid04: Convert to newlib
-In-Reply-To: <20180910090933.12080-1-cfamullaconrad@suse.de>
-References: <20180910090933.12080-1-cfamullaconrad@suse.de>
-Message-ID: <20180910091143.12312-1-cfamullaconrad@suse.de>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Mon, 10 Sep 2018 11:36:21 +0200
+Subject: [LTP] [PATCH] aiodio: Remove dirty freeblocks
+Message-ID: <20180910093621.21622-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
----
- testcases/kernel/syscalls/setregid/setregid04.c | 114 ++++++------------------
- 1 file changed, 26 insertions(+), 88 deletions(-)
+At the beginning of the test it attempts to write some junk data to disk in
+order to increase the chance that the blocks allocated are not filled with
+zeroes.
 
-diff --git a/testcases/kernel/syscalls/setregid/setregid04.c b/testcases/kernel/syscalls/setregid/setregid04.c
-index bf744ff05..1ecf03f9b 100644
---- a/testcases/kernel/syscalls/setregid/setregid04.c
-+++ b/testcases/kernel/syscalls/setregid/setregid04.c
-@@ -1,20 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (c) International Business Machines  Corp., 2001
-  *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- *
-  * Ported by John George
-  */
- 
-@@ -22,16 +9,8 @@
-  * Test setregid() when executed by root.
-  */
- 
--#include <errno.h>
--#include <pwd.h>
--#include <grp.h>
--#include <stdlib.h>
--#include <string.h>
--
--#include "test.h"
--#include "compat_16.h"
--
--TCID_DEFINE(setregid04);
-+#include "tst_test.h"
-+#include "compat_tst_16.h"
- 
- static gid_t neg_one = -1;
- 
-@@ -70,88 +49,47 @@ struct test_data_t {
- 		    "After setregid(-1, nobody)"}
- };
- 
--int TST_TOTAL = sizeof(test_data) / sizeof(test_data[0]);
--
- static void setup(void);
--static void cleanup(void);
- static void gid_verify(struct group *ru, struct group *eu, const char *when);
- 
--int main(int ac, char **av)
-+static void run(unsigned int i)
- {
--	int lc;
-+	/* Set the real or effective group id */
-+	TEST(SETREGID(*test_data[i].real_gid, *test_data[i].eff_gid));
- 
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		int i;
--
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++) {
--			/* Set the real or effective group id */
--			TEST(SETREGID(cleanup, *test_data[i].real_gid,
--				      *test_data[i].eff_gid));
--
--			if (TEST_RETURN == -1) {
--				tst_resm(TBROK, "setregid(%d, %d) failed",
--					 *test_data[i].real_gid,
--					 *test_data[i].eff_gid);
--			} else {
--				gid_verify(test_data[i].exp_real_usr,
--					   test_data[i].exp_eff_usr,
--					   test_data[i].test_msg);
--			}
--		}
-+	if (TST_RET == -1) {
-+		tst_res(TBROK | TTERRNO, "setregid(%d, %d) failed",
-+			*test_data[i].real_gid, *test_data[i].eff_gid);
-+	} else {
-+		gid_verify(test_data[i].exp_real_usr, test_data[i].exp_eff_usr,
-+			   test_data[i].test_msg);
+It does this by memory mapping a new file and writing 0xaa to the mapped
+memory, then syncs and unlinks the file. This uses buffered I/O which should
+not be mixed with direct I/O.
+
+Possibly we could use direct I/O to create the dirty blocks or ensure the
+buffers have been completely flushed and any writes finalised before
+continuing. However it seems unlikely that this is either effective or
+necessary. It seems much simpler and thorough to run the test many times,
+which we do.
+
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ .../kernel/io/ltp-aiodio/aiodio_sparse.c      |  2 --
+ .../kernel/io/ltp-aiodio/common_sparse.h      | 33 -------------------
+ testcases/kernel/io/ltp-aiodio/dio_sparse.c   |  2 --
+ 3 files changed, 37 deletions(-)
+
+diff --git a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+index 4767f49d2..8953586ba 100644
+--- a/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
++++ b/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+@@ -258,8 +258,6 @@ int main(int argc, char **argv)
  	}
--
--	cleanup();
--	tst_exit();
- }
  
--#define SAFE_GETGROUP(GROUPNAME)	\
--	if (getgrnam(#GROUPNAME) == NULL) { \
--		tst_brkm(TBROK, NULL, "Couldn't find the `" #GROUPNAME "' group"); \
--	} \
--	GROUPNAME ## _gr = *(getgrnam(#GROUPNAME));
+ 	setup();
+-	tst_resm(TINFO, "Dirtying free blocks");
+-	dirty_freeblocks(filesize);
+ 
+ 	fd = SAFE_OPEN(cleanup, filename,
+ 		O_DIRECT | O_WRONLY | O_CREAT | O_EXCL, 0600);
+diff --git a/testcases/kernel/io/ltp-aiodio/common_sparse.h b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+index 3819e00a6..6c98f2c7e 100644
+--- a/testcases/kernel/io/ltp-aiodio/common_sparse.h
++++ b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+@@ -21,39 +21,6 @@
+ 
+ #include "common_checkzero.h"
+ 
+-/*
+- * This code tries to create dirty free blocks on
+- * the HDD so there is a chance that blocks to be allocated
+- * for a file are filled with something else than zeroes.
+- *
+- * The usefulness of this is IMHO questionable.
+- */
+-static void dirty_freeblocks(int size)
+-{
+-	int fd;
+-	void *p;
+-	int pg;
+-	char *filename = "dirty_freeblocks";
 -
--#define SAFE_GETGROUP_FALLBACK(GROUPNAME, GROUPNAME2)	\
--	if (getgrnam(#GROUPNAME) != NULL) \
--		GROUPNAME ## _gr = *(getgrnam(#GROUPNAME)); \
--	else if (getgrnam(#GROUPNAME2) != NULL) { \
--		GROUPNAME ## _gr = *(getgrnam(#GROUPNAME2)); \
--		tst_resm(TINFO, "`" #GROUPNAME "' group not found, trying fallback `" #GROUPNAME2 "' group"); \
--	} else \
--		tst_brkm(TBROK, NULL, "Couldn't find neither`" #GROUPNAME "' `" #GROUPNAME2 "' nor group");
+-	pg = getpagesize();
+-	size = ((size + pg - 1) / pg) * pg;
 -
- static void setup(void)
- {
--	tst_require_root();
+-	fd = open(filename, O_CREAT|O_RDWR|O_EXCL, 0600);
 -
--	tst_sig(FORK, DEF_HANDLER, cleanup);
+-	if (fd < 0)
+-		tst_brkm(TBROK|TERRNO, cleanup, "failed to open '%s'", filename);
 -
--	SAFE_GETGROUP(root);
--	SAFE_GETGROUP_FALLBACK(nobody, nogroup);
--	SAFE_GETGROUP(daemon);
--	SAFE_GETGROUP(bin);
+-	SAFE_FTRUNCATE(cleanup, fd, size);
 -
--	TEST_PAUSE;
+-	p = SAFE_MMAP(cleanup, NULL, size, PROT_WRITE|PROT_READ, MAP_SHARED|MAP_FILE, fd, 0);
+-
+-	memset(p, 0xaa, size);
+-	msync(p, size, MS_SYNC);
+-	munmap(p, size);
+-	close(fd);
+-	unlink(filename);
 -}
 -
--static void cleanup(void)
--{
-+	root_gr = *SAFE_GETGRNAM("root");
-+	nobody_gr = *SAFE_GETGRNAM_FALLBACK("nobody", "nogroup");
-+	daemon_gr = *SAFE_GETGRNAM("daemon");
-+	bin_gr = *SAFE_GETGRNAM("bin");
- }
- 
- static void gid_verify(struct group *rg, struct group *eg, const char *when)
- {
- 	if ((getgid() != rg->gr_gid) || (getegid() != eg->gr_gid)) {
--		tst_resm(TFAIL, "ERROR: %s real gid = %d; effective gid = %d",
-+		tst_res(TFAIL, "ERROR: %s real gid = %d; effective gid = %d",
- 			 when, getgid(), getegid());
--		tst_resm(TINFO, "Expected: real gid = %d; effective gid = %d",
-+		tst_res(TINFO, "Expected: real gid = %d; effective gid = %d",
- 			 rg->gr_gid, eg->gr_gid);
- 	} else {
--		tst_resm(TPASS, "real or effective gid was modified as "
-+		tst_res(TPASS, "real or effective gid was modified as "
- 			 "expected");
+ /*
+  * Scale value by kilo, mega, or giga.
+  */
+diff --git a/testcases/kernel/io/ltp-aiodio/dio_sparse.c b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+index 67b338b3f..f52c46734 100644
+--- a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
++++ b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+@@ -139,8 +139,6 @@ int main(int argc, char **argv)
  	}
- }
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(test_data),
-+	.needs_root = 1,
-+	.test = run,
-+	.setup = setup,
-+};
+ 
+ 	setup();
+-	tst_resm(TINFO, "Dirtying free blocks");
+-	dirty_freeblocks(filesize);
+ 
+ 	fd = SAFE_OPEN(cleanup, filename,
+ 		O_DIRECT | O_WRONLY | O_CREAT | O_EXCL, 0600);
 -- 
-2.16.4
+2.18.0
 
