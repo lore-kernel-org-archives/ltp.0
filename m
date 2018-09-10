@@ -1,216 +1,299 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 10 Sep 2018 14:21:21 +0200
-Subject: [LTP] [PATCH] [WIP] Add fanout01 CVE-2017-15649
-Message-ID: <20180910122121.26752-1-rpalethorpe@suse.com>
+From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+Date: Mon, 10 Sep 2018 14:38:05 +0200
+Subject: [LTP] [PATCH v1] setregid03: convert to newlib
+Message-ID: <20180910123805.15668-1-cfamullaconrad@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Do not fork, cause I don't see the need for it. Maybe a left over
+from previous changes.
+
+It requires SAFE_GETGRNAM_FALLBACK() which is not in master, but in
+a previous patch "tst_safe_macros: add SAFE_GETGRNAM_FALLBACK()".
+
+Signed-off-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
 ---
+ testcases/kernel/syscalls/setregid/setregid03.c | 216 ++++++++----------------
+ 1 file changed, 66 insertions(+), 150 deletions(-)
 
-Note that this requires the new Fuzzy Sync library which has not been merged
-at the time of writting. Hence why I have marked it with [WIP].
-
- runtest/cve                         |   1 +
- runtest/net.features                |   2 +
- testcases/network/packet/.gitignore |   1 +
- testcases/network/packet/Makefile   |  25 ++++++
- testcases/network/packet/fanout01.c | 121 ++++++++++++++++++++++++++++
- 5 files changed, 150 insertions(+)
- create mode 100644 testcases/network/packet/.gitignore
- create mode 100644 testcases/network/packet/Makefile
- create mode 100644 testcases/network/packet/fanout01.c
-
-diff --git a/runtest/cve b/runtest/cve
-index b38fb3503..1b27477f0 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -25,6 +25,7 @@ cve-2017-12193 add_key04
- cve-2017-15274 add_key02
- cve-2017-15299 request_key03 -b cve-2017-15299
- cve-2017-15537 ptrace07
-+cve-2017-15649 fanout01
- cve-2017-15951 request_key03 -b cve-2017-15951
- cve-2017-17807 request_key04
- cve-2017-1000364 stack_clash
-diff --git a/runtest/net.features b/runtest/net.features
-index eac1b2bf2..154d74900 100644
---- a/runtest/net.features
-+++ b/runtest/net.features
-@@ -58,3 +58,5 @@ dctcp_ipv6_01 dctcp01.sh -6
- 
- geneve01 geneve01.sh
- geneve01_ipv6 geneve01.sh -6
-+
-+fanout01 fanout01
-diff --git a/testcases/network/packet/.gitignore b/testcases/network/packet/.gitignore
-new file mode 100644
-index 000000000..48f13bf9f
---- /dev/null
-+++ b/testcases/network/packet/.gitignore
-@@ -0,0 +1 @@
-+fanout01
-diff --git a/testcases/network/packet/Makefile b/testcases/network/packet/Makefile
-new file mode 100644
-index 000000000..76f3fd23f
---- /dev/null
-+++ b/testcases/network/packet/Makefile
-@@ -0,0 +1,25 @@
-+# Copyright (c) 2018 Linux Test Project
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program. If not, see <http://www.gnu.org/licenses/>.
-+
-+top_srcdir		?= ../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+CFLAGS			+= -D_GNU_SOURCE
-+
-+fanout01:	CFLAGS += -pthread
-+fanout01:	LDLIBS += -lrt
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/packet/fanout01.c b/testcases/network/packet/fanout01.c
-new file mode 100644
-index 000000000..bc5813bdd
---- /dev/null
-+++ b/testcases/network/packet/fanout01.c
-@@ -0,0 +1,121 @@
+diff --git a/testcases/kernel/syscalls/setregid/setregid03.c b/testcases/kernel/syscalls/setregid/setregid03.c
+index a4caf238d..e48e28d19 100644
+--- a/testcases/kernel/syscalls/setregid/setregid03.c
++++ b/testcases/kernel/syscalls/setregid/setregid03.c
+@@ -1,20 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2018 Richard Palethorpe <rpalethorpe@suse.com>
-+ * Original reproducer: https://blogs.securiteam.com/index.php/archives/3484
-+ * Other copyrights may apply.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+/* CVE-2017-15649
-+ *
-+ * Fixed by the following commits:
-+ * 4971613c "packet: in packet_do_bind, test fanout with bind_lock held"
-+ * 008ba2a1 "packet: hold bind lock when rebinding to fanout hook"
-+ *
-+ * See blogpost in copyright notice for more details.
-+ */
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <sched.h>
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <sys/ioctl.h>
-+#include <net/if.h>
-+#include <linux/if_packet.h>
-+
+ /*
+  * Copyright (c) International Business Machines  Corp., 2001
+  *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- *
+  * Ported by John George
+  */
+ 
+@@ -22,32 +9,22 @@
+  * Test setregid() when executed by a non-root user.
+  */
+ 
+-#include <errno.h>
+-#include <grp.h>
+-#include <stdlib.h>
+ #include <pwd.h>
+-#include <string.h>
+-#include <sys/wait.h>
+ 
+-#include "test.h"
+-#include "safe_macros.h"
+-#include "compat_16.h"
 +#include "tst_test.h"
-+#include "tst_fuzzy_sync.h"
++#include "compat_tst_16.h"
+ 
+-TCID_DEFINE(setregid03);
+ static int fail = -1;
+ static int pass;
+ static gid_t neg_one = -1;
+ 
+-/* flag to tell parent if child passed or failed. */
+-static int flag;
+-
+ struct group nobody_gr, daemon_gr, root_gr, bin_gr;
+ struct passwd nobody;
 +
-+static struct tst_fzsync_pair pair;
-+static int fd;
-+static struct sockaddr_ll addr;
+ /*
+  * The following structure contains all test data.  Each structure in the array
+  * is used for a separate test.  The tests are executed in the for loop below.
+  */
+-
+ struct test_data_t {
+ 	gid_t *real_gid;
+ 	gid_t *eff_gid;
+@@ -80,150 +57,89 @@ struct test_data_t {
+ 	&daemon_gr.gr_gid, &daemon_gr.gr_gid, &fail, &bin_gr, &bin_gr,
+ 		    "After setregid(daemon, daemon)"},};
+ 
+-int TST_TOTAL = sizeof(test_data) / sizeof(test_data[0]);
+ 
+ static void setup(void);
+ static void gid_verify(struct group *ru, struct group *eu, char *when);
++static struct group get_group_fallback(const char *gr1, const char *gr2);
++static struct group get_group(const char *group);
+ 
+-int main(int ac, char **av)
++static void run(unsigned int i)
+ {
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		pid_t pid;
+-		int status, i;
+-
+-		pass = 0;
+-		flag = 0;
+-
+-		tst_count = 0;
+-
+-		/* set the appropriate ownership values */
+-		if (SETREGID(NULL, daemon_gr.gr_gid, bin_gr.gr_gid) == -1)
+-			tst_brkm(TBROK, NULL, "Initial setregid failed");
+-
+-		SAFE_SETEUID(NULL, nobody.pw_uid);
+-
+-		if ((pid = FORK_OR_VFORK()) == -1) {
+-			tst_brkm(TBROK, NULL, "fork failed");
+-		} else if (pid == 0) {	/* child */
+-			for (i = 0; i < TST_TOTAL; i++) {
+-				gid_t test_ret;
+-				/* Set the real or effective group id */
+-				TEST(SETREGID(NULL, *test_data[i].real_gid,
+-					      *test_data[i].eff_gid));
+-				test_ret = TEST_RETURN;
+-
+-				if (test_ret == *test_data[i].exp_ret) {
+-					if (test_ret == neg_one) {
+-						if (TEST_ERRNO != EPERM) {
+-							tst_resm(TFAIL,
+-								 "setregid(%d, %d) "
+-								 "did not set errno "
+-								 "value as expected.",
+-								 *test_data
+-								 [i].real_gid,
+-								 *test_data
+-								 [i].eff_gid);
+-							fail = -1;
+-							continue;
+-						} else {
+-							tst_resm(TPASS,
+-								 "setregid(%d, %d) "
+-								 "failed as expected.",
+-								 *test_data
+-								 [i].real_gid,
+-								 *test_data
+-								 [i].eff_gid);
+-						}
+-					} else {
+-						tst_resm(TPASS,
+-							 "setregid(%d, %d) "
+-							 "succeeded as expected.",
+-							 *test_data[i].real_gid,
+-							 *test_data[i].eff_gid);
+-					}
+-				} else {
+-					tst_resm(TFAIL, "setregid(%d, %d) "
+-						 "did not return as expected.",
+-						 *test_data[i].real_gid,
+-						 *test_data[i].eff_gid);
+-					flag = -1;
+-				}
+-				if (test_ret == -1) {
+-				}
+-
+-				gid_verify(test_data[i].exp_real_usr,
+-					   test_data[i].exp_eff_usr,
+-					   test_data[i].test_msg);
+-			}
+-			exit(flag);
+-		} else {	/* parent */
+-			waitpid(pid, &status, 0);
+-			if (WEXITSTATUS(status) != 0) {
+-				tst_resm(TFAIL, "test failed within "
+-					 "child process.");
++	struct test_data_t *tc = &test_data[i];
 +
-+void setup(void)
++	/* Set the real or effective group id */
++	TEST(SETREGID(*tc->real_gid, *tc->eff_gid));
++
++	if (TST_RET == *tc->exp_ret) {
++		if (TST_RET == -1) {
++			if (TST_ERR != EPERM) {
++				tst_res(TFAIL | TTERRNO,
++					"setregid(%d, %d) did not set errno "
++					"value as expected.",
++					*tc->real_gid, *tc->eff_gid);
++			} else {
++				tst_res(TPASS,
++					"setregid(%d, %d) failed as expected.",
++					*tc->real_gid, *tc->eff_gid);
+ 			}
++		} else {
++			tst_res(TPASS,
++				"setregid(%d, %d) succeeded as expected.",
++				*tc->real_gid, *tc->eff_gid);
+ 		}
++	} else {
++		tst_res(TFAIL, "setregid(%d, %d) did not return as expected.",
++			*tc->real_gid, *tc->eff_gid);
+ 	}
+-
+-	tst_exit();
++	gid_verify(tc->exp_real_usr, tc->exp_eff_usr, tc->test_msg);
+ }
+ 
+ static void setup(void)
 +{
-+	int real_uid = getuid();
-+	int real_gid = getgid();
++	nobody = *SAFE_GETPWNAM("nobody");
 +
-+	TEST(unshare(CLONE_NEWUSER));
-+	if (TST_RET)
-+		tst_brk(TBROK | TTERRNO, "Can't create new user namespace");
++	nobody_gr = get_group_fallback("nobody", "nogroup");
++	daemon_gr = get_group("daemon");
++	bin_gr = get_group("bin");
 +
-+	TEST(unshare(CLONE_NEWNET));
-+	if (TST_RET)
-+		tst_brk(TBROK | TTERRNO, "Can't create new net namespace");
-+
-+	FILE_PRINTF("/proc/self/setgroups", "deny");
-+	FILE_PRINTF("/proc/self/uid_map", "0 %d 1\n", real_uid);
-+	FILE_PRINTF("/proc/self/gid_map", "0 %d 1\n", real_gid);
-+
-+	tst_fzsync_pair_init(&pair);
++	/* set the appropriate ownership values */
++	SAFE_SETREGID(daemon_gr.gr_gid, bin_gr.gr_gid);
++	SAFE_SETEUID(nobody.pw_uid);
 +}
 +
-+void cleanup(void)
++static struct group get_group_fallback(const char *gr1, const char *gr2)
 +{
-+	tst_fzsync_pair_cleanup(&pair);
++	struct group *junk;
++
++	junk = SAFE_GETGRNAM_FALLBACK(gr1, gr2);
++	GID16_CHECK(junk->gr_gid, setregid);
++	return *junk;
 +}
 +
-+void *binder(void *unused)
-+{
-+	while (tst_fzsync_run_b(&pair)) {
-+		tst_fzsync_start_race_b(&pair);
-+		bind(fd, (struct sockaddr *)&addr, sizeof(addr));
-+		tst_fzsync_end_race_b(&pair);
-+	}
-+
-+	return unused;
-+}
-+
-+void run(void)
-+{
-+	int fanout_val = PACKET_FANOUT_ROLLOVER, index;
-+	struct ifreq ifr = { 0 };
-+
-+	tst_fzsync_pair_reset(&pair, binder);
-+	while (tst_fzsync_run_a(&pair)) {
-+		fd = SAFE_SOCKET(AF_PACKET, SOCK_RAW, PF_PACKET);
-+
-+		strcpy((char *)&ifr.ifr_name, "lo");
-+		SAFE_IOCTL(fd, SIOCGIFINDEX, &ifr);
-+		index = ifr.ifr_ifindex;
-+
-+		SAFE_IOCTL(fd, SIOCGIFFLAGS, &ifr);
-+		ifr.ifr_flags &= ~(short)IFF_UP;
-+		SAFE_IOCTL(fd, SIOCSIFFLAGS, &ifr);
-+
-+		addr.sll_family = AF_PACKET;
-+		/* need something different to rehook && 0 to skip register_prot_hook */
-+		addr.sll_protocol = 0x0;
-+		addr.sll_ifindex = index;
-+
-+		tst_fzsync_start_race_a(&pair);
-+		setsockopt(fd, SOL_PACKET, PACKET_FANOUT,
-+			   &fanout_val, sizeof(fanout_val));
-+		tst_fzsync_end_race_a(&pair);
-+
-+		/* UAF */
-+		close(fd);
-+	}
-+
-+	tst_res(TPASS, "Nothing bad happened, probably...");
-+}
++static struct group get_group(const char *group)
+ {
+ 	struct group *junk;
+ 
+-	tst_require_root();
+-
+-	tst_sig(FORK, DEF_HANDLER, NULL);
+-
+-	if (getpwnam("nobody") == NULL)
+-		tst_brkm(TBROK, NULL, "nobody must be a valid user.");
+-	nobody = *(getpwnam("nobody"));
+-
+-#define GET_GID(group) do { \
+-	junk = getgrnam(#group); \
+-	if (junk == NULL) { \
+-		tst_brkm(TBROK, NULL, "%s must be a valid group", #group); \
+-	} \
+-	GID16_CHECK(junk->gr_gid, setregid, NULL); \
+-	group ## _gr = *(junk); \
+-} while (0)
+-
+-#define GET_GID_FALLBACK(group, group2) do { \
+-	junk = getgrnam(#group); \
+-	if (junk == NULL) { \
+-		tst_resm(TINFO, "%s not found, trying fallback %s", #group, #group2); \
+-		junk = getgrnam(#group2); \
+-		if (junk == NULL) { \
+-			tst_brkm(TBROK, NULL, "%s or %s must be a valid group", #group, #group2); \
+-		} \
+-	} \
+-	GID16_CHECK(junk->gr_gid, setregid, NULL); \
+-	group ## _gr = *(junk); \
+-} while (0)
+-
+-	GET_GID_FALLBACK(nobody, nogroup);
+-	GET_GID(daemon);
+-	GET_GID(bin);
+-
+-	TEST_PAUSE;
++	junk = SAFE_GETGRNAM(group);
++	GID16_CHECK(junk->gr_gid, setregid);
++	return *junk;
+ }
+ 
+ static void gid_verify(struct group *rg, struct group *eg, char *when)
+ {
+ 	if ((getgid() != rg->gr_gid) || (getegid() != eg->gr_gid)) {
+-		tst_resm(TFAIL, "ERROR: %s real gid = %d; effective gid = %d",
++		tst_res(TFAIL, "ERROR: %s real gid = %d; effective gid = %d",
+ 			 when, getgid(), getegid());
+-		tst_resm(TINFO, "Expected: real gid = %d; effective gid = %d",
++		tst_res(TINFO, "Expected: real gid = %d; effective gid = %d",
+ 			 rg->gr_gid, eg->gr_gid);
+-		flag = -1;
+ 	} else {
+-		tst_resm(TPASS, "real or effective gid was modified as expected");
++		tst_res(TPASS, "real or effective gid was modified as expected");
+ 	}
+ }
 +
 +static struct tst_test test = {
-+	.min_kver = "3.19",
-+	.setup = setup,
-+	.test_all = run,
-+	.cleanup = cleanup,
++	.tcnt = ARRAY_SIZE(test_data),
 +	.needs_root = 1,
++	.test = run,
++	.setup = setup,
 +};
 -- 
-2.18.0
+2.16.4
 
