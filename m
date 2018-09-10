@@ -1,63 +1,61 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Mon, 10 Sep 2018 21:20:31 +0300
-Subject: [LTP] [PATCH] syscalls/fanotify: misc cleanups
-In-Reply-To: <87musp5sk7.fsf@rpws.prws.suse.cz>
-References: <20180908142453.21532-1-amir73il@gmail.com>
- <87musp5sk7.fsf@rpws.prws.suse.cz>
-Message-ID: <CAOQ4uxgDBT4TkkZrHOrfde+uLEQcUPnP8m=s37i1pP27dK2bwg@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 11 Sep 2018 00:18:44 +0200
+Subject: [LTP] [PATCH v2 1/4] tst_timer: Add nano second conversions
+In-Reply-To: <20180910084442.17720-2-rpalethorpe@suse.com>
+References: <20180910084442.17720-1-rpalethorpe@suse.com>
+ <20180910084442.17720-2-rpalethorpe@suse.com>
+Message-ID: <20180910221843.GA28616@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Sep 10, 2018 at 5:35 PM Richard Palethorpe <rpalethorpe@suse.de> wrote:
->
-> Hello Amir,
->
-> Amir Goldstein <amir73il@gmail.com> writes:
->
-> > * Cleanup backup file descriptor in fanotify03
->
-> Please send the fanotify03 changes on their own. It is generally best to
-> send the smallest "reasonable" patch set possible to make the feeback and
-> correction cycle as fast as possible.
->
+Hi Richard,
 
-ok.
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-> >
-> > * Fix whitespace and indentation
->
-> Although it is nice to clean up the whitespace, it doesn't justify
-> overwritting the git history (because it makes git-blame less usable)
-> and we have to verify that there are no logic changes hidden in the
-> whitespace changes. It is better to mix whitespace corrections in with
-> actual logic changes where we have to read every line anyway.
->
+It'd be nice to add doc into doc/test-writing-guidelines.txt.
+(I know the docs isn't complete, at least tst_timeval_diff_ms() is not
+mentioned.
 
-It's fine by me to drop the whitespace cleanup, although about the
-argument of verifying no logic changes, git diff -w is quite useful.
+> ---
+>  include/tst_timer.h | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 
-> Also use "checkpatch.pl --no-tree -f" from the kernel when checking
-> whitespace and style.
->
-> > @@ -262,6 +262,8 @@ static void cleanup(void)
-> >  {
-> >       if (fd_notify > 0)
-> >               SAFE_CLOSE(fd_notify);
-> > +     if (fd_notify_backup > 0)
-> > +             SAFE_CLOSE(fd_notify_backup);
-> >  }
-> >
->
-> Unless I am mistaken the call to SAFE_DUP may fail leaving fd_notify
-> with a valid fd and nothing in fd_notify_backup. So it is probably best
-> to check and close both of them.
->
+> diff --git a/include/tst_timer.h b/include/tst_timer.h
+> index 0fd7ed6cf..577bc88ef 100644
+> --- a/include/tst_timer.h
+> +++ b/include/tst_timer.h
+> @@ -34,6 +34,11 @@
+>  #include <sys/time.h>
+>  #include <time.h>
 
-I'm not following.
-Isn't "checking and closing both of them" what my fix does??
+> +static inline long long tst_timespec_to_ns(struct timespec t)
+> +{
+> +	return t.tv_sec * 1000000000 + t.tv_nsec;
+> +}
+> +
+>  /*
+>   * Converts timespec to microseconds.
+>   */
+> @@ -166,6 +171,12 @@ static inline struct timespec tst_timespec_diff(struct timespec t1,
+>  	return res;
+>  }
 
-Thanks,
-Amir.
+> +static inline long long tst_timespec_diff_ns(struct timespec t1,
+> +					     struct timespec t2)
+> +{
+> +	return t1.tv_nsec - t2.tv_nsec + 1000000000LL * (t1.tv_sec - t2.tv_sec);
+I guess this can be just 1000000000 (nitpicking).
+
+> +}
+> +
+>  static inline long long tst_timespec_diff_us(struct timespec t1,
+>                                               struct timespec t2)
+>  {
+
+
+Kind regards,
+Petr
