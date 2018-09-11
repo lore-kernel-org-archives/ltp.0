@@ -1,51 +1,59 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 11 Sep 2018 17:32:18 +0300
-Subject: [LTP] [PATCH] syscalls/fanotify: new test for mount ignore mask
-In-Reply-To: <87in3c5rn6.fsf@rpws.prws.suse.cz>
-References: <20180908142453.21532-1-amir73il@gmail.com>
- <20180908142453.21532-2-amir73il@gmail.com>
- <87in3c5rn6.fsf@rpws.prws.suse.cz>
-Message-ID: <CAOQ4uxho8Fh7=eJr962UeTr4dwqnOjFQJZxvJ4ZreMa_MRJDfQ@mail.gmail.com>
+Date: Tue, 11 Sep 2018 17:56:02 +0300
+Subject: [LTP] [PATCH] syscalls/fanotify03: Cleanup backup file descriptor
+Message-ID: <20180911145602.18106-1-amir73il@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Sep 11, 2018 at 12:07 PM Richard Palethorpe <rpalethorpe@suse.de> wrote:
->
-> Hello,
->
-> If a test can handle two different regressions with only slight
-> modifications then we should use the test index feature:
-> https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial#6-split-the-test
->
-> In more complex cases common code can be put into a shared header file
-> or library. Whatever is simpler and cleaner overall. A lot of older
-> tests have been copied and pasted which leads to big problems in the
-> long term.
->
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+---
 
-All right. I have already written this test with a test index to cover
-all possible
-mixes of mark types include and exclude masks:
-https://github.com/amir73il/ltp/blob/fanotify_sb/testcases/kernel/syscalls/fanotify/fanotify13.c
-This gives better coverage than fanotify06 and fanotify10 combined.
+Cyril,
 
-However, if I modify test fanotify06 instead of forking test fanotify10, the
-test (fanotify06) is going to start failing on non-master kernels.
-Is that acceptable for LTP? I am asking because in fstests project, we have
-the practice not to change an existing test to failing. When we find a
-new regression
-we write a new variant of the test for it.
-
-If changing an existing test to cover more cases is appropriate than I am
-going to generalize fanotify06 (as fanotify13 linked above) and then
-when FAN_MARK_FILESYSTEM mark type support is added to kernel
-all I will need to do is change the test again to add another mark type
-to  fanotify_mark_types array.
-
-Thoughts?
+As requested by Richard, here is the fanotify03 minor fix separated from
+whitespace cleanup.
+If you wish to take the whitespace cleanup patch you can find it here:
+https://github.com/amir73il/ltp/commits/fanotify_sb
 
 Thanks,
 Amir.
+
+ testcases/kernel/syscalls/fanotify/fanotify03.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
+index 50401157b..966366a72 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify03.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
+@@ -57,6 +57,7 @@
+ static char fname[BUF_SIZE];
+ static char buf[BUF_SIZE];
+ static volatile int fd_notify;
++static int fd_notify_backup = -1;
+ 
+ static pid_t child_pid;
+ 
+@@ -140,7 +141,7 @@ static void check_child(void)
+ 
+ void test01(void)
+ {
+-	int tst_count, fd_notify_backup = -1;
++	int tst_count;
+ 
+ 	int ret, len = 0, i = 0, test_num = 0;
+ 
+@@ -262,6 +263,8 @@ static void cleanup(void)
+ {
+ 	if (fd_notify > 0)
+ 		SAFE_CLOSE(fd_notify);
++	if (fd_notify_backup > 0)
++		SAFE_CLOSE(fd_notify_backup);
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.17.1
+
