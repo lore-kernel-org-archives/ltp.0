@@ -1,11 +1,10 @@
 From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 11 Sep 2018 09:51:07 +0200
-Subject: [LTP] [PATCH] syscalls/fanotify: misc cleanups
-In-Reply-To: <CAOQ4uxgDBT4TkkZrHOrfde+uLEQcUPnP8m=s37i1pP27dK2bwg@mail.gmail.com>
+Date: Tue, 11 Sep 2018 11:07:25 +0200
+Subject: [LTP] [PATCH] syscalls/fanotify: new test for mount ignore mask
+In-Reply-To: <20180908142453.21532-2-amir73il@gmail.com>
 References: <20180908142453.21532-1-amir73il@gmail.com>
- <87musp5sk7.fsf@rpws.prws.suse.cz>
- <CAOQ4uxgDBT4TkkZrHOrfde+uLEQcUPnP8m=s37i1pP27dK2bwg@mail.gmail.com>
-Message-ID: <87k1ns5v6c.fsf@rpws.prws.suse.cz>
+ <20180908142453.21532-2-amir73il@gmail.com>
+Message-ID: <87in3c5rn6.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,61 +13,307 @@ To: ltp@lists.linux.it
 
 Hello,
 
+If a test can handle two different regressions with only slight
+modifications then we should use the test index feature:
+https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial#6-split-the-test
+
+In more complex cases common code can be put into a shared header file
+or library. Whatever is simpler and cleaner overall. A lot of older
+tests have been copied and pasted which leads to big problems in the
+long term.
+
 Amir Goldstein <amir73il@gmail.com> writes:
 
-> On Mon, Sep 10, 2018 at 5:35 PM Richard Palethorpe <rpalethorpe@suse.de> wrote:
->>
->> Hello Amir,
->>
->> Amir Goldstein <amir73il@gmail.com> writes:
->>
->> > * Cleanup backup file descriptor in fanotify03
->>
->> Please send the fanotify03 changes on their own. It is generally best to
->> send the smallest "reasonable" patch set possible to make the feeback and
->> correction cycle as fast as possible.
->>
+> This is a regression test for commit:
+>     9bdda4e9cf2d fsnotify: fix ignore mask logic in fsnotify()
 >
-> ok.
+> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+> ---
+>  runtest/syscalls                              |   1 +
+>  testcases/kernel/syscalls/fanotify/.gitignore |   1 +
+>  .../kernel/syscalls/fanotify/fanotify10.c     | 248 ++++++++++++++++++
+>  3 files changed, 250 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/fanotify/fanotify10.c
 >
->> >
->> > * Fix whitespace and indentation
->>
->> Although it is nice to clean up the whitespace, it doesn't justify
->> overwritting the git history (because it makes git-blame less usable)
->> and we have to verify that there are no logic changes hidden in the
->> whitespace changes. It is better to mix whitespace corrections in with
->> actual logic changes where we have to read every line anyway.
->>
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 62fb890cd..33b8d8625 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -497,6 +497,7 @@ fanotify06 fanotify06
+>  fanotify07 fanotify07
+>  fanotify08 fanotify08
+>  fanotify09 fanotify09
+> +fanotify10 fanotify10
 >
-> It's fine by me to drop the whitespace cleanup, although about the
-> argument of verifying no logic changes, git diff -w is quite useful.
->
->> Also use "checkpatch.pl --no-tree -f" from the kernel when checking
->> whitespace and style.
->>
->> > @@ -262,6 +262,8 @@ static void cleanup(void)
->> >  {
->> >       if (fd_notify > 0)
->> >               SAFE_CLOSE(fd_notify);
->> > +     if (fd_notify_backup > 0)
->> > +             SAFE_CLOSE(fd_notify_backup);
->> >  }
->> >
->>
->> Unless I am mistaken the call to SAFE_DUP may fail leaving fd_notify
->> with a valid fd and nothing in fd_notify_backup. So it is probably best
->> to check and close both of them.
->>
->
-> I'm not following.
-> Isn't "checking and closing both of them" what my fix does??
->
-> Thanks,
-> Amir.
+>  ioperm01 ioperm01
+>  ioperm02 ioperm02
+> diff --git a/testcases/kernel/syscalls/fanotify/.gitignore b/testcases/kernel/syscalls/fanotify/.gitignore
+> index ec7553995..c26f2bd27 100644
+> --- a/testcases/kernel/syscalls/fanotify/.gitignore
+> +++ b/testcases/kernel/syscalls/fanotify/.gitignore
+> @@ -7,3 +7,4 @@
+>  /fanotify07
+>  /fanotify08
+>  /fanotify09
+> +/fanotify10
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
+> new file mode 100644
+> index 000000000..5245eb6f8
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
+> @@ -0,0 +1,248 @@
+> +/*
+> + * Copyright (c) 2014 SUSE.  All Rights Reserved.
+> + * Copyright (c) 2018 CTERA Networks.  All Rights Reserved.
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * Further, this software is distributed without any warranty that it is
+> + * free of the rightful claim of any third person regarding infringement
+> + * or the like.  Any license provided herein, whether implied or
+> + * otherwise, applies only to this software file.  Patent licenses, if
+> + * any, provided herein do not apply to combinations of this program with
+> + * other software, or any other product whatsoever.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, write the Free Software Foundation, Inc.,
+> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> + *
+> + * Started by Jan Kara <jack@suse.cz>
+> + * Forked from fanotify06.c by Amir Goldstein <amir73il@gmail.com>
+> + *
+> + * DESCRIPTION
+> + *     Check that fanotify properly merges ignore mask of a mount mark
+> + *     with a mask of an inode mark on the same group.  Unlike the
+> + *     prototype test fanotify06, do not use FAN_MODIFY event for the
+> + *     test mask, because it hides the bug.
+> + *
+> + * This is a regression test for commit:
+> + *
+> + *     9bdda4e9cf2d fsnotify: fix ignore mask logic in fsnotify()
+> + */
+> +#define _GNU_SOURCE
+> +#include "config.h"
+> +
+> +#include <stdio.h>
+> +#include <sys/stat.h>
+> +#include <sys/types.h>
+> +#include <fcntl.h>
+> +#include <errno.h>
+> +#include <string.h>
+> +#include <sys/mount.h>
+> +#include <sys/syscall.h>
+> +#include "tst_test.h"
+> +#include "fanotify.h"
+> +
+> +#if defined(HAVE_SYS_FANOTIFY_H)
+> +#include <sys/fanotify.h>
+> +
+> +#define EVENT_MAX 1024
+> +/* size of the event structure, not counting name */
+> +#define EVENT_SIZE  (sizeof (struct fanotify_event_metadata))
+> +/* reasonable guess as to size of 1024 events */
+> +#define EVENT_BUF_LEN        (EVENT_MAX * EVENT_SIZE)
+> +
+> +unsigned int fanotify_prio[] = {
+> +	FAN_CLASS_PRE_CONTENT,
+> +	FAN_CLASS_CONTENT,
+> +	FAN_CLASS_NOTIF
+> +};
+> +#define FANOTIFY_PRIORITIES ARRAY_SIZE(fanotify_prio)
+> +
+> +#define GROUPS_PER_PRIO 3
+> +
+> +#define BUF_SIZE 256
+> +static char fname[BUF_SIZE];
+> +static int fd_notify[FANOTIFY_PRIORITIES][GROUPS_PER_PRIO];
+> +
+> +static char event_buf[EVENT_BUF_LEN];
+> +
+> +#define MOUNT_NAME "mntpoint"
+> +static int mount_created;
+> +
+> +static void create_fanotify_groups(void)
+> +{
+> +	unsigned int p, i;
+> +	int ret;
+> +
+> +	for (p = 0; p < FANOTIFY_PRIORITIES; p++) {
+> +		for (i = 0; i < GROUPS_PER_PRIO; i++) {
+> +			fd_notify[p][i] = SAFE_FANOTIFY_INIT(fanotify_prio[p] |
+> +							     FAN_NONBLOCK,
+> +							     O_RDONLY);
+> +
+> +			/* Add mount mark for each group */
+> +			ret = fanotify_mark(fd_notify[p][i],
+> +					    FAN_MARK_ADD,
+> +					    FAN_OPEN,
+> +					    AT_FDCWD, fname);
+> +			if (ret < 0) {
+> +				tst_brk(TBROK | TERRNO,
+> +					"fanotify_mark(%d, FAN_MARK_ADD | "
+> +					"FAN_MARK_MOUNT, FAN_OPEN, AT_FDCWD,"
+> +					" %s) failed", fd_notify[p][i],
+> +					fname);
+> +			}
+> +			/* Add ignore mark for groups with higher priority */
+> +			if (p == 0)
+> +				continue;
+> +			ret = fanotify_mark(fd_notify[p][i],
+> +					    FAN_MARK_ADD | FAN_MARK_MOUNT |
+> +					    FAN_MARK_IGNORED_MASK |
+> +					    FAN_MARK_IGNORED_SURV_MODIFY,
+> +					    FAN_OPEN, AT_FDCWD, fname);
+> +			if (ret < 0) {
+> +				tst_brk(TBROK | TERRNO,
+> +					"fanotify_mark(%d, FAN_MARK_ADD | "
+> +					"FAN_MARK_IGNORED_MASK | "
+> +					"FAN_MARK_IGNORED_SURV_MODIFY, "
+> +					"FAN_OPEN, AT_FDCWD, %s) failed",
+> +					fd_notify[p][i], fname);
+> +			}
+> +		}
+> +	}
+> +}
+> +
+> +static void cleanup_fanotify_groups(void)
+> +{
+> +	unsigned int i, p;
+> +
+> +	for (p = 0; p < FANOTIFY_PRIORITIES; p++) {
+> +		for (i = 0; i < GROUPS_PER_PRIO; i++) {
+> +			if (fd_notify[p][i] > 0)
+> +				SAFE_CLOSE(fd_notify[p][i]);
+> +		}
+> +	}
+> +}
+> +
+> +static void verify_event(int group, struct fanotify_event_metadata *event)
+> +{
+> +	if (event->mask != FAN_OPEN) {
+> +		tst_res(TFAIL, "group %d get event: mask %llx (expected %llx) "
+> +			"pid=%u fd=%u", group, (unsigned long long)event->mask,
+> +			(unsigned long long)FAN_OPEN,
+> +			(unsigned)event->pid, event->fd);
+> +	} else if (event->pid != getpid()) {
+> +		tst_res(TFAIL, "group %d get event: mask %llx pid=%u "
+> +			"(expected %u) fd=%u", group,
+> +			(unsigned long long)event->mask, (unsigned)event->pid,
+> +			(unsigned)getpid(), event->fd);
+> +	} else {
+> +		tst_res(TPASS, "group %d get event: mask %llx pid=%u fd=%u",
+> +			group, (unsigned long long)event->mask,
+> +			(unsigned)event->pid, event->fd);
+> +	}
+> +}
+> +
+> +void test01(void)
+> +{
+> +	int ret, fd;
+> +	unsigned int p, i;
+> +	struct fanotify_event_metadata *event;
+> +
+> +	create_fanotify_groups();
+> +
+> +	/*
+> +	 * generate sequence of events
+> +	 */
+> +	fd = SAFE_OPEN(fname, O_RDONLY);
+> +	SAFE_CLOSE(fd);
+> +
+> +	/* First verify all groups without ignore mask got the event */
+> +	for (i = 0; i < GROUPS_PER_PRIO; i++) {
+> +		ret = read(fd_notify[0][i], event_buf, EVENT_BUF_LEN);
+> +		if (ret < 0) {
+> +			if (errno == EAGAIN) {
+> +				tst_res(TFAIL, "group %d did not get "
+> +					"event", i);
+> +			}
+> +			tst_brk(TBROK | TERRNO,
+> +				"reading fanotify events failed");
+> +		}
+> +		if (ret < (int)FAN_EVENT_METADATA_LEN) {
+> +			tst_brk(TBROK,
+> +				"short read when reading fanotify "
+> +				"events (%d < %d)", ret,
+> +				(int)EVENT_BUF_LEN);
+> +		}
+> +		event = (struct fanotify_event_metadata *)event_buf;
+> +		if (ret > (int)event->event_len) {
+> +			tst_res(TFAIL, "group %d got more than one "
+> +				"event (%d > %d)", i, ret,
+> +				event->event_len);
+> +		} else {
+> +			verify_event(i, event);
+> +		}
+> +		if (event->fd != FAN_NOFD)
+> +			SAFE_CLOSE(event->fd);
+> +	}
+> +	for (p = 1; p < FANOTIFY_PRIORITIES; p++) {
+> +		for (i = 0; i < GROUPS_PER_PRIO; i++) {
+> +			ret = read(fd_notify[p][i], event_buf, EVENT_BUF_LEN);
+> +			if (ret > 0) {
+> +				tst_res(TFAIL, "group %d got event",
+> +					p*GROUPS_PER_PRIO + i);
+> +				if (event->fd != FAN_NOFD)
+> +					SAFE_CLOSE(event->fd);
+> +			} else if (ret == 0) {
+> +				tst_brk(TBROK, "zero length "
+> +					"read from fanotify fd");
+> +			} else if (errno != EAGAIN) {
+> +				tst_brk(TBROK | TERRNO,
+> +					"reading fanotify events failed");
+> +			} else {
+> +				tst_res(TPASS, "group %d got no event",
+> +					p*GROUPS_PER_PRIO + i);
+> +			}
+> +		}
+> +	}
+> +	cleanup_fanotify_groups();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	SAFE_MKDIR(MOUNT_NAME, 0755);
+> +	SAFE_MOUNT(MOUNT_NAME, MOUNT_NAME, "none", MS_BIND, NULL);
+> +	mount_created = 1;
+> +	SAFE_CHDIR(MOUNT_NAME);
+> +
+> +	sprintf(fname, "tfile_%d", getpid());
+> +	SAFE_FILE_PRINTF(fname, "1");
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	cleanup_fanotify_groups();
+> +
+> +	SAFE_CHDIR("../");
+> +
+> +	if (mount_created && tst_umount(MOUNT_NAME) < 0)
+> +		tst_brk(TBROK | TERRNO, "umount failed");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = test01,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.needs_tmpdir = 1,
+> +	.needs_root = 1
+> +};
+> +
+> +#else
+> +	TST_TEST_TCONF("system doesn't have required fanotify support");
+> +#endif
+> --
+> 2.17.1
 
-Sorry, of course you are right.
 
--- 
+--
 Thank you,
 Richard.
