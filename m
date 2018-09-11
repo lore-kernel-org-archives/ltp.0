@@ -1,59 +1,45 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 11 Sep 2018 17:56:02 +0300
-Subject: [LTP] [PATCH] syscalls/fanotify03: Cleanup backup file descriptor
-Message-ID: <20180911145602.18106-1-amir73il@gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 11 Sep 2018 11:24:37 -0400 (EDT)
+Subject: [LTP] [PATCH v2] syscalls/execveat01: new test to verify
+ execveat unlinked fd
+In-Reply-To: <1533111474.1176.4.camel@mtkswgap22>
+References: <1533111474.1176.4.camel@mtkswgap22>
+Message-ID: <1149740228.46962437.1536679477401.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
----
 
-Cyril,
 
-As requested by Richard, here is the fanotify03 minor fix separated from
-whitespace cleanup.
-If you wish to take the whitespace cleanup patch you can find it here:
-https://github.com/amir73il/ltp/commits/fanotify_sb
+----- Original Message -----
+> + * DESCRIPTION
+> + *     Check if an unlinked executable can run in overlayfs mount.
+> + *     The regression is introduced from 8db6c34f1dbc ("Introduce v3
+> + *     namespaced file capabilities"). in security/commoncap.c,
+> + *     cap_inode_getsecurity() use d_find_alias() cause unhashed dentry
+> + *     can't be found. The solution could use d_find_any_alias() instead of
+> + *     d_find_alias().
+> + *
+> + *     From kernel 4.14, this case is expected fails, execveat shell
+> + *     return EINVAL.
+> + *
+> + */
 
-Thanks,
-Amir.
+We should fix this for release. If EINVAL is expected behaviour,
+test should give PASS.
 
- testcases/kernel/syscalls/fanotify/fanotify03.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+It's failing with 4.18:
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
-index 50401157b..966366a72 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify03.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
-@@ -57,6 +57,7 @@
- static char fname[BUF_SIZE];
- static char buf[BUF_SIZE];
- static volatile int fd_notify;
-+static int fd_notify_backup = -1;
- 
- static pid_t child_pid;
- 
-@@ -140,7 +141,7 @@ static void check_child(void)
- 
- void test01(void)
- {
--	int tst_count, fd_notify_backup = -1;
-+	int tst_count;
- 
- 	int ret, len = 0, i = 0, test_num = 0;
- 
-@@ -262,6 +263,8 @@ static void cleanup(void)
- {
- 	if (fd_notify > 0)
- 		SAFE_CLOSE(fd_notify);
-+	if (fd_notify_backup > 0)
-+		SAFE_CLOSE(fd_notify_backup);
- }
- 
- static struct tst_test test = {
--- 
-2.17.1
+tst_test.c:1063: INFO: Timeout per run is 0h 05m 00s
+execveat03.c:71: FAIL: execveat() returned unexpected errno: EINVAL
 
+Summary:
+passed   0
+failed   1
+skipped  0
+warnings 0
+
+Regards,
+Jan
