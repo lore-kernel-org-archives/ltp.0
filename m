@@ -1,76 +1,281 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 11 Sep 2018 11:44:00 +0200
-Subject: [LTP] [PATCH v2 1/4] tst_timer: Add nano second conversions
-In-Reply-To: <20180910221843.GA28616@dell5510>
-References: <20180910084442.17720-1-rpalethorpe@suse.com>
- <20180910084442.17720-2-rpalethorpe@suse.com>
- <20180910221843.GA28616@dell5510>
-Message-ID: <87ftyg5py7.fsf@rpws.prws.suse.cz>
+From: Ammy Yi <ammy.yi@intel.com>
+Date: Tue, 11 Sep 2018 10:33:29 +0800
+Subject: [LTP] [PATCH ltp] Add Intel PT full trace mode basic test case
+Message-ID: <20180911023329.9376-1-ammy.yi@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Signed-off-by: Ammy Yi <ammy.yi@intel.com>
+---
+ runtest/tracing                             |   1 +
+ testcases/kernel/tracing/pt_test/.gitignore |   1 +
+ testcases/kernel/tracing/pt_test/Makefile   |  21 +++
+ testcases/kernel/tracing/pt_test/pt_test.c  | 207 ++++++++++++++++++++++++++++
+ 4 files changed, 230 insertions(+)
+ create mode 100644 testcases/kernel/tracing/pt_test/.gitignore
+ create mode 100644 testcases/kernel/tracing/pt_test/Makefile
+ create mode 100644 testcases/kernel/tracing/pt_test/pt_test.c
 
-Petr Vorel <pvorel@suse.cz> writes:
-
-> Hi Richard,
->
->> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
->
-> It'd be nice to add doc into doc/test-writing-guidelines.txt.
-> (I know the docs isn't complete, at least tst_timeval_diff_ms() is not
-> mentioned.
->
->> ---
->>  include/tst_timer.h | 11 +++++++++++
->>  1 file changed, 11 insertions(+)
->
->> diff --git a/include/tst_timer.h b/include/tst_timer.h
->> index 0fd7ed6cf..577bc88ef 100644
->> --- a/include/tst_timer.h
->> +++ b/include/tst_timer.h
->> @@ -34,6 +34,11 @@
->>  #include <sys/time.h>
->>  #include <time.h>
->
->> +static inline long long tst_timespec_to_ns(struct timespec t)
->> +{
->> +	return t.tv_sec * 1000000000 + t.tv_nsec;
->> +}
->> +
->>  /*
->>   * Converts timespec to microseconds.
->>   */
->> @@ -166,6 +171,12 @@ static inline struct timespec tst_timespec_diff(struct timespec t1,
->>  	return res;
->>  }
->
->> +static inline long long tst_timespec_diff_ns(struct timespec t1,
->> +					     struct timespec t2)
->> +{
->> +	return t1.tv_nsec - t2.tv_nsec + 1000000000LL * (t1.tv_sec - t2.tv_sec);
-> I guess this can be just 1000000000 (nitpicking).
-
-Is tv_sec (time_t) guaranteed to be 64bits? That is how it is defined in the
-headers, but in the POSIX specification it just says it should be an
-integer. Either way it is only two extra characters :-p
-
->
->> +}
->> +
->>  static inline long long tst_timespec_diff_us(struct timespec t1,
->>                                               struct timespec t2)
->>  {
->
->
-> Kind regards,
-> Petr
-
-
+diff --git a/runtest/tracing b/runtest/tracing
+index 8285eeb43..504132d70 100644
+--- a/runtest/tracing
++++ b/runtest/tracing
+@@ -3,3 +3,4 @@ ftrace_regression01	ftrace_regression01.sh
+ ftrace_regression02	ftrace_regression02.sh
+ ftrace-stress-test	ftrace_stress_test.sh 90
+ dynamic_debug01		dynamic_debug01.sh
++pt_full_trace_basic pt_test
+diff --git a/testcases/kernel/tracing/pt_test/.gitignore b/testcases/kernel/tracing/pt_test/.gitignore
+new file mode 100644
+index 000000000..96efc142d
+--- /dev/null
++++ b/testcases/kernel/tracing/pt_test/.gitignore
+@@ -0,0 +1 @@
++/pt_test
+diff --git a/testcases/kernel/tracing/pt_test/Makefile b/testcases/kernel/tracing/pt_test/Makefile
+new file mode 100644
+index 000000000..81fc8620f
+--- /dev/null
++++ b/testcases/kernel/tracing/pt_test/Makefile
+@@ -0,0 +1,21 @@
++# Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write the Free Software Foundation,
++# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+\ No newline at end of file
+diff --git a/testcases/kernel/tracing/pt_test/pt_test.c b/testcases/kernel/tracing/pt_test/pt_test.c
+new file mode 100644
+index 000000000..0e85652e5
+--- /dev/null
++++ b/testcases/kernel/tracing/pt_test/pt_test.c
+@@ -0,0 +1,207 @@
++/*
++ * Copyright (C) 2018 Intel Corporation
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ *
++ * author: Ammy Yi (ammy.yi@intel.com)
++ * date:   8/20/2018
++ */
++
++/*
++ * This test will check if Intel PT(Intel Processer Trace) full trace mode is
++ * working. It is only applied on X86 platforms.
++ */
++
++#include "tst_test.h"
++#include <linux/perf_event.h>
++#include <sys/syscall.h>
++#include <sched.h>
++#include <stdlib.h>
++#include <stdio.h>
++
++#define PAGESIZE 4096
++#define INTEL_PT_MEMSIZE 17*PAGESIZE
++
++#define BIT(nr)                 (1UL << (nr))
++
++#define INTEL_PT_PMU_TYPE "/sys/devices/intel_pt/type"
++#define INTEL_PT_FORMAT_TSC "/sys/devices/intel_pt/format/tsc"
++#define INTEL_PT_FORMAT_NRT "/sys/devices/intel_pt/format/noretcomp"
++
++//Intel PT event handle
++int FDE = -1;
++//map head and size
++uint64_t ** BUFM = NULL;
++long BUFSZ = 0;
++
++/*
++ * mapping management
++ */
++uint64_t ** creaMap(int fde,long bufsize)
++{
++	int PROTo;
++	long pbufSz;
++	uint64_t **bufEv;
++	struct perf_event_mmap_page *pc;
++
++	bufEv = malloc(2*sizeof(uint64_t *));
++	if (!bufEv) {
++		return NULL;
++	}
++
++	PROTo = PROT_READ | PROT_WRITE;
++
++	pbufSz = INTEL_PT_MEMSIZE;
++
++	bufEv[0] = mmap(NULL, pbufSz, PROT_READ | PROT_WRITE, MAP_SHARED, fde, 0);
++
++
++	if (bufEv[0]!=MAP_FAILED) {
++		pc=(struct perf_event_mmap_page *)bufEv[0];
++		pc->aux_offset=pbufSz;
++		pc->aux_size=bufsize;
++		bufEv[1] = mmap(NULL, bufsize, PROTo, MAP_SHARED, fde, pbufSz);
++
++	}
++	return bufEv;
++}
++
++
++/*
++ * get sysfs value
++ */
++int Intel_PT_pmu_value(char *dir)
++{
++	char *value;
++	int temp = 0, val = 0;
++	char delims[] = ":";
++	FILE *f = fopen(dir, "r");
++
++	if (f) {
++		temp = fscanf(f, "%m[^\n]", &value);
++		if (temp != 1){
++			tst_res(TINFO, "Read value fail!");
++        }
++		else {
++			if (strstr(value, delims) == NULL){
++				val = atoi(value);
++			}
++			else {
++				strsep(&value, delims);
++				val = atoi(value);
++			}
++		}
++		fclose(f);
++	}
++
++	return val;
++}
++
++void delMap(uint64_t **bufEv,long bufsize)
++{
++	long pbufSz;
++
++	pbufSz = INTEL_PT_MEMSIZE;
++
++	munmap(bufEv[0],pbufSz);
++	munmap(bufEv[1],bufsize);
++
++	free(bufEv);
++}
++
++/*
++ * Will test Intel PT Full Trace mode working normal
++ */
++static void INTEL_PT_FULL_TRACE_CHECK(void)
++{
++	struct perf_event_attr attr = {};
++	struct perf_event_mmap_page *pmp;
++	uint64_t aux_head = 0;
++	BUFSZ = 2 * PAGESIZE;
++	//set attr for Intel PT trace
++	attr.type			= Intel_PT_pmu_value(INTEL_PT_PMU_TYPE);
++	attr.read_format		= PERF_FORMAT_ID | PERF_FORMAT_TOTAL_TIME_RUNNING | PERF_FORMAT_TOTAL_TIME_ENABLED;
++	attr.disabled			= 1;
++	attr.config			= BIT(Intel_PT_pmu_value(INTEL_PT_FORMAT_TSC)) | BIT(Intel_PT_pmu_value(INTEL_PT_FORMAT_NRT));
++	attr.size			= sizeof(struct perf_event_attr);
++	attr.exclude_kernel		= 0;
++	attr.exclude_user		= 0;
++	attr.mmap			= 1;
++
++	//only get trace for own pid
++	FDE = syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
++	if (FDE < 0) {
++		tst_res(TINFO,"Open Intel PT event failed!");
++		tst_res(TFAIL, "perf trace full mode is failed!");
++		return;
++	}
++
++	/* allocate memory for trace */
++	BUFM =  creaMap(FDE,BUFSZ);
++
++	if (!BUFM || (BUFM)[0]==MAP_FAILED || (BUFM)[1]==MAP_FAILED) {
++		tst_res(TINFO,"creaMap failed!");
++		tst_res(TFAIL, "perf trace full mode is failed!");
++		return;
++	}
++
++	/* enable tracing */
++	if(ioctl(FDE, PERF_EVENT_IOC_RESET) != 0) {
++		tst_res(TFAIL, "ioctl with PERF_EVENT_IOC_RESET is failed!");
++		return;
++	}
++	if(ioctl(FDE, PERF_EVENT_IOC_ENABLE) != 0) {
++		tst_res(TFAIL, "ioctl with PERF_EVENT_IOC_ENABLE is failed!");
++		return;
++	}
++
++	/* stop tracing */
++	if(ioctl(FDE, PERF_EVENT_IOC_DISABLE) != 0) {
++		tst_res(TFAIL, "ioctl with PERF_EVENT_IOC_DISABLE is failed!");
++		return;
++	}
++
++	// check if there is some trace generated
++	pmp = (struct perf_event_mmap_page *)BUFM[0];
++	aux_head = *(volatile uint64_t *)&pmp->aux_head;
++	if(aux_head == 0) {
++		tst_res(TFAIL, "There is no trace, so failed!");
++		return;
++	}
++
++	tst_res(TPASS, "perf trace full mode is passed!");
++
++}
++
++/*
++* clean up for Intel PT test.
++*/
++void Cleanup(void) {
++
++	//close device id
++	if(FDE != -1){
++		close(FDE);
++	}
++	// free memory
++	if (!BUFM || (BUFM)[0]==MAP_FAILED || (BUFM)[1]==MAP_FAILED){
++		delMap(BUFM,BUFSZ);
++	}
++}
++
++static struct tst_test test = {
++	.test_all = INTEL_PT_FULL_TRACE_CHECK,
++	.min_kver = "4.1",
++	.cleanup = Cleanup,
++	.needs_root = 1,
++};
 -- 
-Thank you,
-Richard.
+2.14.1
+
