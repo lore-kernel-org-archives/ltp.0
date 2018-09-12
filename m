@@ -1,75 +1,89 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 12 Sep 2018 14:33:32 +0200
-Subject: [LTP] [PATCH] lib/tst_device.c: Make sure all loop deivces fot
- test are detached
-In-Reply-To: <1536832085-8071-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1536832085-8071-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20180912123332.GC463@rei>
+From: Steve Muckle <smuckle.linux@gmail.com>
+Date: Wed, 12 Sep 2018 10:32:08 -0700
+Subject: [LTP] [PATCH] syscalls/getcpu01: support Android
+Message-ID: <20180912173208.131065-1-smuckle.linux@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Running statx05 by runltp without -b option every time attached a loop
-> device but didn't detach it, as below:
-> ------------------------------------------------------------------
-> ...
-> tst_device.c:230: INFO: Using test device LTP_DEV='/dev/loop0'
-> tst_device.c:268: INFO: Skipping $LTP_DEV size 256MB, requested size 512MB
-> tst_device.c:83: INFO: Found free device '/dev/loop1'
-> tst_mkfs.c:83: INFO: Formatting /dev/loop1 with ext4 opts='' extra opts='-O encrypt'
-> ...
-> NAME       SIZELIMIT OFFSET AUTOCLEAR RO BACK-FILE                                         DIO
-> /dev/loop1         0      0         0  0 /tmp/ltp-gsrcFAkGpZ/Wka3bp/test_dev.img (deleted)   0
-> ------------------------------------------------------------------
-> 
-> runltp created a block device with default 256M size by attaching a free loop
-> device and set LTP_DEV variable, but statx05 needed a 512M block device, so
-> tst_acquire_device__() in setup skipped the $LTP_DEV device and created another
-> block device with 512M size by attaching another free loop device.  Unfortunately,
-> tst_release_device() in cleanup cannot detach the 512M block device due to the
-> defined LTP_DEV.
+Android platforms have the required support for this test.
 
-Btw his has been fixed for statx since:
+Signed-off-by: Steve Muckle <smuckle.linux@gmail.com>
+---
+ testcases/kernel/syscalls/getcpu/getcpu01.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-commit e583eacf3c9781116c19dec4c7e8c0aa4ed01ed5
-Author: Cyril Hrubis <chrubis@suse.cz>
-Date:   Tue Sep 11 17:27:43 2018 +0200
-
-    syscalls/statx05: Fix test on ppc64le
-
-
-But yes apart from that the test library is still broken.
-
-> We should just skip the detach in tst_release_device() when LTP_DEV variable is
-> set and device_acquired flag is not set.
-> 
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  lib/tst_device.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/lib/tst_device.c b/lib/tst_device.c
-> index 463743443..23c99dba2 100644
-> --- a/lib/tst_device.c
-> +++ b/lib/tst_device.c
-> @@ -313,7 +313,7 @@ int tst_release_device(const char *dev)
->  {
->  	int ret;
->  
-> -	if (getenv("LTP_DEV"))
-> +	if (getenv("LTP_DEV") && !device_acquired)
->  		return 0;
-
-I guess that this really should be just:
-
-	if (!device_acquired)
-		return 0;
-
-I will double check and test it later today.
-
+diff --git a/testcases/kernel/syscalls/getcpu/getcpu01.c b/testcases/kernel/syscalls/getcpu/getcpu01.c
+index c927512ca..73db5a21a 100644
+--- a/testcases/kernel/syscalls/getcpu/getcpu01.c
++++ b/testcases/kernel/syscalls/getcpu/getcpu01.c
+@@ -61,7 +61,9 @@
+ #include <sys/types.h>
+ #include <dirent.h>
+ 
+-#if defined(__i386__) || defined(__x86_64__)
++#ifdef ANDROID
++int sys_support = 1;
++#elif defined(__i386__) || defined(__x86_64__)
+ #if __GLIBC_PREREQ(2,6)
+ #if defined(__x86_64__)
+ #include <utmpx.h>
+@@ -164,7 +166,7 @@ static inline int getcpu(unsigned *cpu_id, unsigned *node_id,
+ {
+ #if defined(__i386__)
+ 	return syscall(318, cpu_id, node_id, cache_struct);
+-#elif __GLIBC_PREREQ(2,6)
++#elif __GLIBC_PREREQ(2,6) || defined(ANDROID)
+ 	*cpu_id = sched_getcpu();
+ #endif
+ 	return 0;
+@@ -191,7 +193,7 @@ unsigned int set_cpu_affinity(void)
+ 	cpu_set_t *set;
+ 	size_t size;
+ 	int nrcpus = 1024;
+-#if __GLIBC_PREREQ(2, 7)
++#if __GLIBC_PREREQ(2, 7) || defined(ANDROID)
+ realloc:
+ 	set = CPU_ALLOC(nrcpus);
+ #else
+@@ -200,7 +202,7 @@ realloc:
+ 	if (set == NULL) {
+ 		tst_brkm(TFAIL, NULL, "CPU_ALLOC:errno:%d", errno);
+ 	}
+-#if __GLIBC_PREREQ(2, 7)
++#if __GLIBC_PREREQ(2, 7) || defined(ANDROID)
+ 	size = CPU_ALLOC_SIZE(nrcpus);
+ 	CPU_ZERO_S(size, set);
+ #else
+@@ -209,7 +211,7 @@ realloc:
+ #endif
+ 	if (sched_getaffinity(0, size, set) < 0) {
+ 		CPU_FREE(set);
+-#if __GLIBC_PREREQ(2, 7)
++#if __GLIBC_PREREQ(2, 7) || defined(ANDROID)
+ 		if (errno == EINVAL && nrcpus < (1024 << 8)) {
+ 			nrcpus = nrcpus << 2;
+ 			goto realloc;
+@@ -224,7 +226,7 @@ realloc:
+ 		tst_exit();
+ 	}
+ 	cpu_max = max_cpuid(size, set);
+-#if __GLIBC_PREREQ(2, 7)
++#if __GLIBC_PREREQ(2, 7) || defined(ANDROID)
+ 	CPU_ZERO_S(size, set);
+ 	CPU_SET_S(cpu_max, size, set);
+ #else
+@@ -247,7 +249,7 @@ unsigned int max_cpuid(size_t size, cpu_set_t * set)
+ {
+ 	unsigned int index, max = 0;
+ 	for (index = 0; index < size * BITS_PER_BYTE; index++)
+-#if __GLIBC_PREREQ(2, 7)
++#if __GLIBC_PREREQ(2, 7) || defined(ANDROID)
+ 		if (CPU_ISSET_S(index, size, set))
+ #else
+ 		if (CPU_ISSET(index, set))
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.19.0.rc2.392.g5ba43deb5a-goog
+
