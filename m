@@ -1,50 +1,75 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 12 Sep 2018 03:04:53 -0400 (EDT)
-Subject: [LTP] [PATCH v2] syscalls/execveat01: new test to verify
- execveat unlinked fd
-In-Reply-To: <CALLuPvqTLbtY1yFNFRgdTkf2keR1FoCF0RGrf_TREfWAvOy_JA@mail.gmail.com>
-References: <1533111474.1176.4.camel@mtkswgap22>
- <1149740228.46962437.1536679477401.JavaMail.zimbra@redhat.com>
- <CALLuPvqTLbtY1yFNFRgdTkf2keR1FoCF0RGrf_TREfWAvOy_JA@mail.gmail.com>
-Message-ID: <500978530.47285642.1536735893652.JavaMail.zimbra@redhat.com>
+Date: Wed, 12 Sep 2018 10:09:15 +0200
+Subject: [LTP] [PATCH] sigwaitinfo01: recent glibc calls syscall directly
+Message-ID: <dbe33b2d18cd674954668fa62ab61f0d57e0c704.1536739517.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+glibc commit
+  8b0e795aaa44 ("Simplify Linux sig{timed}wait{info} implementations")
+changed sigwaitinfo to call sigtimedwait, which calls rt_sigtimedwait
+syscall directly.
 
------ Original Message -----
-> Jan Stancek <jstancek@redhat.com> 於 2018年9月11日 週二 下午11:24寫道：
-> > We should fix this for release. If EINVAL is expected behaviour,
-> > test should give PASS.
-> >
-> > It's failing with 4.18:
-> >
-> > tst_test.c:1063: INFO: Timeout per run is 0h 05m 00s
-> > execveat03.c:71: FAIL: execveat() returned unexpected errno: EINVAL
-> >
-> 
-> Hi Jan,
-> The fix of original regression, ie. EINVAL returns in execveat03 test case,
-> has been added to 4.18-stable and 4.14-stable:
-> https://www.spinics.net/lists/stable/msg255906.html
-> https://www.spinics.net/lists/stable/msg255724.html
-> If give EINVAL as PASS, the case will PASS with or without the regression
-> fix. I'm not sure which behavior of execveat03 is more appropriate.
-> Please advise.
+So, an invalid pointer no longer crashes child process and test
+reports failure. Fix it by accepting either crash or EFAULT.
 
-Hi Eddie,
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../kernel/syscalls/sigwaitinfo/sigwaitinfo01.c    | 29 +++++++++++++++++++---
+ 1 file changed, 25 insertions(+), 4 deletions(-)
 
-thanks for the links. I think I confused myself with the comment in testcase.
-I thought EINVAL is expected behavior with the fix.
+diff --git a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
+index 95a9436a44c9..02730364db4d 100644
+--- a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
++++ b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
+@@ -371,19 +371,40 @@ void test_bad_address2(swi_func sigwaitinfo, int signo)
+ 		tst_brkm(TBROK | TERRNO, NULL, "fork() failed");
+ 	case 0:
+ 		signal(SIGSEGV, SIG_DFL);
++
++		/*
++		 * depending on glibc implementation we should
++		 * either crash or get EFAULT
++		 */
+ 		TEST(sigwaitinfo((void *)1, NULL, NULL));
+ 
+-		_exit(0);
++		if (TEST_RETURN == -1 && TEST_ERRNO == EFAULT)
++			_exit(0);
++
++		tst_resm(TINFO, "swi_func returned: %ld, errno: %d",
++			TEST_RETURN, TEST_ERRNO);
++		_exit(1);
+ 		break;
+ 	default:
+ 		break;
+ 	}
+ 
+ 	SUCCEED_OR_DIE(waitpid, "waitpid failed", pid, &status, 0);
+-	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
++
++	if ((WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
++		|| (WIFEXITED(status) && WEXITSTATUS(status) == 0)) {
+ 		tst_resm(TPASS, "Test passed");
+-	else
+-		tst_resm(TFAIL, "Unrecognised child exit code");
++		return;
++	}
++
++	if (WIFEXITED(status)) {
++		tst_resm(TFAIL, "Unrecognised child exit code: %d",
++			WEXITSTATUS(status));
++	}
++	if (WIFSIGNALED(status)) {
++		tst_resm(TFAIL, "Unrecognised child termsig: %d",
++			WTERMSIG(status));
++	}
+ }
+ 
+ void test_bad_address3(swi_func sigwaitinfo, int signo)
+-- 
+1.8.3.1
 
-For now, I only added comment with commit id of the fix to testcase.
-
-Thanks,
-Jan
-
-> 
-> Thanks,
-> Eddie
-> 
