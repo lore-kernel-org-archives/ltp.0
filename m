@@ -1,43 +1,44 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 13 Sep 2018 10:30:48 +0200
-Subject: [LTP] [PATCH] syscalls/mmap15: relax condition a bit
-Message-ID: <1fbbf1d06b0e08fc2b078c0ad24f2dd2111348c3.1536827409.git.jstancek@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 13 Sep 2018 13:45:32 +0200
+Subject: [LTP] [PATCH] syscalls/fanotify: new test for mount ignore mask
+In-Reply-To: <CAOQ4uxho8Fh7=eJr962UeTr4dwqnOjFQJZxvJ4ZreMa_MRJDfQ@mail.gmail.com>
+References: <20180908142453.21532-1-amir73il@gmail.com>
+ <20180908142453.21532-2-amir73il@gmail.com>
+ <87in3c5rn6.fsf@rpws.prws.suse.cz>
+ <CAOQ4uxho8Fh7=eJr962UeTr4dwqnOjFQJZxvJ4ZreMa_MRJDfQ@mail.gmail.com>
+Message-ID: <20180913114531.GA3030@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-High address is arch specific, and it also occasionally changes
-as can be seen in history of this test.
+Hi!
+> All right. I have already written this test with a test index to cover
+> all possible
+> mixes of mark types include and exclude masks:
+> https://github.com/amir73il/ltp/blob/fanotify_sb/testcases/kernel/syscalls/fanotify/fanotify13.c
+> This gives better coverage than fanotify06 and fanotify10 combined.
+> 
+> However, if I modify test fanotify06 instead of forking test fanotify10, the
+> test (fanotify06) is going to start failing on non-master kernels.
+> Is that acceptable for LTP? I am asking because in fstests project, we have
+> the practice not to change an existing test to failing. When we find a
+> new regression we write a new variant of the test for it.
 
-Relax the condition and accept both ENOMEM and EINVAL
-as expected outcome.
+We do not have a rule lik this but it sounds like a reasonable rule to
+me, since when existing test starts to fail it does look like a
+regression in the tests itself.
 
-Fixes: #390
+> If changing an existing test to cover more cases is appropriate than I am
+> going to generalize fanotify06 (as fanotify13 linked above) and then
+> when FAN_MARK_FILESYSTEM mark type support is added to kernel
+> all I will need to do is change the test again to add another mark type
+> to  fanotify_mark_types array.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/mmap/mmap15.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+I guess that either would be fine. In the end someone has to look
+closely at failing tests anyway to say what exactly happened.
 
-diff --git a/testcases/kernel/syscalls/mmap/mmap15.c b/testcases/kernel/syscalls/mmap/mmap15.c
-index eff27d6585e0..c8a77873a254 100644
---- a/testcases/kernel/syscalls/mmap/mmap15.c
-+++ b/testcases/kernel/syscalls/mmap/mmap15.c
-@@ -80,10 +80,9 @@ int main(int ac, char **av)
- 			continue;
- 		}
- 
--		if (errno != ENOMEM) {
-+		if (errno != ENOMEM && errno != EINVAL) {
- 			tst_resm(TFAIL | TERRNO, "mmap into high region "
--				 "failed unexpectedly - expect "
--				 "errno=ENOMEM, got");
-+				 "failed unexpectedly");
- 		} else {
- 			tst_resm(TPASS | TERRNO, "mmap into high region "
- 				 "failed as expected");
 -- 
-1.8.3.1
-
+Cyril Hrubis
+chrubis@suse.cz
