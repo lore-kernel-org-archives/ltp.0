@@ -1,43 +1,42 @@
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 13 Sep 2018 17:44:40 +0300
-Subject: [LTP] [RFC PATCH 3/5] runtest/sched: removed sched_{set,
-	get}attr test cases
+Date: Thu, 13 Sep 2018 17:44:41 +0300
+Subject: [LTP] [RFC PATCH 4/5] runtest/commands: adjust names for keyctl01,
+	sysctl01, unshare01
 In-Reply-To: <1536849882-28897-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 References: <1536849882-28897-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Message-ID: <1536849882-28897-4-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <1536849882-28897-5-git-send-email-stanislav.kholmanskikh@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-All these test cases do not fall into the category of
-"Scheduler Stress Tests", so their better location is in runtest/syscalls,
-where they are already defined.
-
-Both runtest/sched and runtest/syscalls are part of the default
-scenario, these test cases will be executed in a default run anyway.
+runtest/syscalls already defines tests with these ids, but there
+they point to different commands. In order to avoid name conflicts
+we need to rename tests either in runtest/commands or in runtest/syscalls.
+Since the tests in runtest/syscalls are much older, I chose to rename
+the tests in runtest/commands.
 
 Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- runtest/sched | 4 ----
- 1 file changed, 4 deletions(-)
+ runtest/commands | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/runtest/sched b/runtest/sched
-index 774d11f..bfc4f27 100644
---- a/runtest/sched
-+++ b/runtest/sched
-@@ -9,10 +9,6 @@ trace_sched01		trace_sched -c 1
- hackbench01 hackbench 50 process 1000
- hackbench02 hackbench 20 thread 1000
- 
--sched_setattr01 sched_setattr01
--sched_getattr01 sched_getattr01
--sched_getattr02 sched_getattr02
--
- sched_cli_serv run_sched_cliserv.sh
- # Run this stress test for 2 minutes
- sched_stress sched_stress.sh
+diff --git a/runtest/commands b/runtest/commands
+index ee7e9f4..f27d2fa 100644
+--- a/runtest/commands
++++ b/runtest/commands
+@@ -37,7 +37,7 @@ which01 which01.sh
+ lsmod01 lsmod01.sh
+ insmod01 insmod01.sh
+ wc01 wc01.sh
+-keyctl01 keyctl01.sh
++keyctl_01 keyctl01.sh
+ gdb01 gdb01.sh
+-unshare01 unshare01.sh
+-sysctl01 sysctl01.sh
++unshare_01 unshare01.sh
++sysctl_01 sysctl01.sh
 -- 
 1.8.3.1
 
