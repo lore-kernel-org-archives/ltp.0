@@ -1,37 +1,57 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 12 Sep 2018 11:52:47 +0200
-Subject: [LTP] [PATCH 2/2] syscalls/statx05: Fix test on ppc64le
-In-Reply-To: <831588265.47297951.1536741222106.JavaMail.zimbra@redhat.com>
-References: <20180911153013.2609-1-chrubis@suse.cz>
- <20180911153013.2609-2-chrubis@suse.cz>
- <831588265.47297951.1536741222106.JavaMail.zimbra@redhat.com>
-Message-ID: <20180912095247.GA29460@rei>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 13 Sep 2018 17:48:05 +0800
+Subject: [LTP] [PATCH] lib/tst_device.c: Make sure all loop deivces fot test
+	are detached
+Message-ID: <1536832085-8071-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> It's not easy to guess what role library plays, when only needs_device is
-> used, but you set also dev_fs_type and mntpoint. If you dropped both,
-> then all needed would be to MKDIR/RMDIR(mntpoint), correct?
+Running statx05 by runltp without -b option every time attached a loop
+device but didn't detach it, as below:
+------------------------------------------------------------------
+...
+tst_device.c:230: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_device.c:268: INFO: Skipping $LTP_DEV size 256MB, requested size 512MB
+tst_device.c:83: INFO: Found free device '/dev/loop1'
+tst_mkfs.c:83: INFO: Formatting /dev/loop1 with ext4 opts='' extra opts='-O encrypt'
+...
+NAME       SIZELIMIT OFFSET AUTOCLEAR RO BACK-FILE                                         DIO
+/dev/loop1         0      0         0  0 /tmp/ltp-gsrcFAkGpZ/Wka3bp/test_dev.img (deleted)   0
+------------------------------------------------------------------
 
-I also use the tst_device->fs_type instead of doing #define FSTYPE
-"ext4".
+runltp created a block device with default 256M size by attaching a free loop
+device and set LTP_DEV variable, but statx05 needed a 512M block device, so
+tst_acquire_device__() in setup skipped the $LTP_DEV device and created another
+block device with 512M size by attaching another free loop device.  Unfortunately,
+tst_release_device() in cleanup cannot detach the 512M block device due to the
+defined LTP_DEV.
 
-And in a case that some other filesystem gains encryption support we
-will need a way how generate the mkfs options dynamically based on the
-filesystem type anyway, so I suppose that the extra opts in tst_test
-will end up being a callback that will generate the data just before we
-do mkfs. However I wanted to make minimal amount of changes to fix the
-test for now as we are approaching the release. I can redesign the mkfs
-options later on.
+We should just skip the detach in tst_release_device() when LTP_DEV variable is
+set and device_acquired flag is not set.
 
-> Anyway, ACK to both patches.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ lib/tst_device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Both pushed, thanks.
-
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index 463743443..23c99dba2 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -313,7 +313,7 @@ int tst_release_device(const char *dev)
+ {
+ 	int ret;
+ 
+-	if (getenv("LTP_DEV"))
++	if (getenv("LTP_DEV") && !device_acquired)
+ 		return 0;
+ 
+ 	/*
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.17.0
+
+
+
