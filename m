@@ -1,81 +1,87 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 13 Sep 2018 15:12:54 +0200
-Subject: [LTP] [PATCH] syscalls/fanotify: new test for mount ignore mask
-In-Reply-To: <CAOQ4uxjb_qLX6O0BcGF3QZpy=0FKHqmwUL52bniDdj=Y7BXtFw@mail.gmail.com>
-References: <20180908142453.21532-1-amir73il@gmail.com>
- <20180908142453.21532-2-amir73il@gmail.com>
- <87in3c5rn6.fsf@rpws.prws.suse.cz>
- <CAOQ4uxho8Fh7=eJr962UeTr4dwqnOjFQJZxvJ4ZreMa_MRJDfQ@mail.gmail.com>
- <20180913114531.GA3030@rei.lan>
- <CAOQ4uxjb_qLX6O0BcGF3QZpy=0FKHqmwUL52bniDdj=Y7BXtFw@mail.gmail.com>
-Message-ID: <87efdxzgkp.fsf@rpws.prws.suse.cz>
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu, 13 Sep 2018 17:44:38 +0300
+Subject: [LTP] [RFC PATCH 1/5] Remove the pipes runtest file
+In-Reply-To: <1536849882-28897-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1536849882-28897-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <1536849882-28897-2-git-send-email-stanislav.kholmanskikh@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+We have two almost identical runtest files:
 
-Amir Goldstein <amir73il@gmail.com> writes:
+[root@localhost runtest]# diff ipc pipes
+1c1
+< #DESCRIPTION:Interprocess communication stress
+---
+> #DESCRIPTION:IPC pipes stress
+30,32d29
+<
+< sem01 sem01
+< sem02 sem02
+[root@localhost runtest]#
 
-> On Thu, Sep 13, 2018 at 2:45 PM Cyril Hrubis <chrubis@suse.cz> wrote:
->>
->> Hi!
->> > All right. I have already written this test with a test index to cover
->> > all possible
->> > mixes of mark types include and exclude masks:
->> > https://github.com/amir73il/ltp/blob/fanotify_sb/testcases/kernel/syscalls/fanotify/fanotify13.c
->> > This gives better coverage than fanotify06 and fanotify10 combined.
->> >
->> > However, if I modify test fanotify06 instead of forking test fanotify10, the
->> > test (fanotify06) is going to start failing on non-master kernels.
->> > Is that acceptable for LTP? I am asking because in fstests project, we have
->> > the practice not to change an existing test to failing. When we find a
->> > new regression we write a new variant of the test for it.
->>
->> We do not have a rule lik this but it sounds like a reasonable rule to
->> me, since when existing test starts to fail it does look like a
->> regression in the tests itself.
->>
->> > If changing an existing test to cover more cases is appropriate than I am
->> > going to generalize fanotify06 (as fanotify13 linked above) and then
->> > when FAN_MARK_FILESYSTEM mark type support is added to kernel
->> > all I will need to do is change the test again to add another mark type
->> > to  fanotify_mark_types array.
->>
->> I guess that either would be fine. In the end someone has to look
->> closely at failing tests anyway to say what exactly happened.
->>
->
-> So here is what I suggest, which seems most reasonable w.r.t code reuse
-> and friendliness to testers:
-> - Leave fanotify06 untouched because it checks the common case
->   (ignore on inode mark)
-> - Add new test fanotify10 that checks all combinations of marks types
->   (like referenced fanotify13)
-> - After FAN_MARK_FILESYSTEM patches are merged, add the new mark
->   type to fanotify10 test matrix, but disable it on runtime if new mark type
->   is not supported by kernel.
->
-> Thanks,
-> Amir.
+Since both are part of the default scenario, their common tests
+are executed twice by LTP run. Let's fix that by removing the pipes file.
+If one needs to execute only pipeio* test cases, he/she will still be able
+to do it by executing the ipc file.
 
-Maybe it does make sense to introduce a new test if you are testing a
-new feature (even if it is only a minor change). But to clarify, I also
-think that for long term maintainability, it makes sense to refactor
-common code into a header file.
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ runtest/pipes           | 29 -----------------------------
+ scenario_groups/default |  1 -
+ 2 files changed, 30 deletions(-)
+ delete mode 100644 runtest/pipes
 
-There are instances in the LTP where a test has been copied, then
-various fixes and improvements applied to one copy, but not the others
-(sometimes a fix is not needed straight away in a particular test copy,
-but then something else changes and it starts failing). Eventually
-someone has to combine all the copies in one big painful refactoring,
-instead of appying incremental changes along the way.
+diff --git a/runtest/pipes b/runtest/pipes
+deleted file mode 100644
+index 900c9a2..0000000
+--- a/runtest/pipes
++++ /dev/null
+@@ -1,29 +0,0 @@
+-#DESCRIPTION:IPC pipes stress
+-# These tests use tests/pipeio to put pipes (named or unnamed) through a workout
+-#
+-pipeio_1 pipeio -T pipeio_1 -c 5 -s 4090 -i 100 -b -f x80
+-# spawns 5 children to write 100 chunks of 4090 bytes to a named pipe
+-# using blocking I/O
+-#pipeio_2 pipeio -T pipeio_2 -c 5 -s 4090 -i 100 -f x80
+-# spawns 5 children to write 100 chunks of 4090 bytes to a named pipe
+-# using non-blocking I/O
+-# This test hits EAGAIN, which pipeio doesn't handle at the moment
+-pipeio_3 pipeio -T pipeio_3 -c 5 -s 4090 -i 100 -u -b -f x80
+-# spawns 5 children to write 100 chunks of 4090 bytes to an unnamed pipe
+-# using blocking I/O
+-pipeio_4 pipeio -T pipeio_4 -c 5 -s 4090 -i 100 -u -f x80
+-# spawns 5 children to write 100 chunks of 4090 bytes to an unnamed pipe
+-# using non-blocking I/O
+-pipeio_5 pipeio -T pipeio_5 -c 5 -s 5000 -i 10 -b -f x80
+-# spawns 5 children to write 10 chunks of 5000 bytes to a named pipe
+-# using blocking I/O
+-pipeio_6 pipeio -T pipeio_6 -c 5 -s 5000 -i 10 -b -u -f x80
+-# spawns 5 children to write 10 chunks of 5000 bytes to an unnamed pipe
+-# using blocking I/O
+-#pipeio_7 pipeio -T pipeio_7 -c 5 -s 5000 -i 10 -f x80
+-# spawns 5 children to write 10 chunks of 5000 bytes to a named pipe
+-# using non-blocking I/O
+-# This test hits EAGAIN, which pipeio doesn't handle at the moment
+-pipeio_8 pipeio -T pipeio_8 -c 5 -s 5000 -i 10 -u -f x80
+-# spawns 5 children to write 10 chunks of 5000 bytes to an unnamed pipe
+-# using non-blocking I/O
+diff --git a/scenario_groups/default b/scenario_groups/default
+index 5658a61..a0179c2 100644
+--- a/scenario_groups/default
++++ b/scenario_groups/default
+@@ -27,7 +27,6 @@ hyperthreading
+ kernel_misc
+ modules
+ fs_ext4
+-pipes
+ can
+ cpuhotplug
+ net.ipv6_lib
+-- 
+1.8.3.1
 
-Obviously if you touch fanotify06 in any way you are increasing the risk
-of breaking the test, but I think it is worth the risk over time.
-
---
-Thank you,
-Richard.
