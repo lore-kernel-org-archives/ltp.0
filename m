@@ -1,65 +1,43 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 13 Sep 2018 15:41:05 +0800
-Subject: [LTP] [PATCH] hotplug/cpu_hotplug05.sh: Fix obsolete output of
- offline CPU
-In-Reply-To: <1531899217-27690-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1531899217-27690-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <5B9A1491.5070407@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 13 Sep 2018 10:30:48 +0200
+Subject: [LTP] [PATCH] syscalls/mmap15: relax condition a bit
+Message-ID: <1fbbf1d06b0e08fc2b078c0ad24f2dd2111348c3.1536827409.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+High address is arch specific, and it also occasionally changes
+as can be seen in history of this test.
 
-Ping :-)
+Relax the condition and accept both ENOMEM and EINVAL
+as expected outcome.
 
-Thanks,
-Xiao Yang
-On 2018/07/18 15:33, Xiao Yang wrote:
-> With sysstat-11.7.1, running cpu_hotplug05.sh got the following error:
-> ---------------------------------------------------------------------
-> cpuhotplug05 1 TBROK: Field 3 is '%user', '0.00' expected
-> ---------------------------------------------------------------------
->
-> According to commit 970cae1 and 1f71a6f, sar/sadf didn't display offline
-> CPU since sysstat-11.7.1.  It is reasonable for offline CPU to get nothing.
->
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  .../hotplug/cpu_hotplug/functional/cpuhotplug05.sh     | 18 ++++++++++++------
->  1 file changed, 12 insertions(+), 6 deletions(-)
->
-> diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
-> index 59c8324..ab81684 100755
-> --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
-> +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
-> @@ -108,12 +108,18 @@ until [ $LOOP_COUNT -gt $HOTPLUG05_LOOPS ]; do
->  		tst_brkm TBROK "SAR output file is empty"
->  	fi
->  
-> -	for i in $(seq 3 8); do
-> -		field=$(get_field "$offline_status" "$i")
-> -		if [ "$field" != "0.00" ]; then
-> -			tst_brkm TBROK "Field $i is '$field', '0.00' expected"
-> -		fi
-> -	done
-> +	cpu_field=$(get_field "$offline_status" "2")
-> +	if [ "${cpu_field}" = "CPU" ]; then
-> +		# Since sysstat-11.7.1, sar/sadf didn't display offline CPU
-> +		tst_resm TINFO "SAR didn't display offline CPU"
-> +	else
-> +		for i in $(seq 3 8); do
-> +			field=$(get_field "$offline_status" "$i")
-> +			if [ "$field" != "0.00" ]; then
-> +				tst_brkm TBROK "Field $i is '$field', '0.00' expected"
-> +			fi
-> +		done
-> +	fi
->  
->  	# Online the CPU
->  	if ! online_cpu ${CPU_TO_TEST}; then
+Fixes: #390
 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/mmap/mmap15.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/mmap/mmap15.c b/testcases/kernel/syscalls/mmap/mmap15.c
+index eff27d6585e0..c8a77873a254 100644
+--- a/testcases/kernel/syscalls/mmap/mmap15.c
++++ b/testcases/kernel/syscalls/mmap/mmap15.c
+@@ -80,10 +80,9 @@ int main(int ac, char **av)
+ 			continue;
+ 		}
+ 
+-		if (errno != ENOMEM) {
++		if (errno != ENOMEM && errno != EINVAL) {
+ 			tst_resm(TFAIL | TERRNO, "mmap into high region "
+-				 "failed unexpectedly - expect "
+-				 "errno=ENOMEM, got");
++				 "failed unexpectedly");
+ 		} else {
+ 			tst_resm(TPASS | TERRNO, "mmap into high region "
+ 				 "failed as expected");
+-- 
+1.8.3.1
 
