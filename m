@@ -1,75 +1,97 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 12 Sep 2018 10:09:15 +0200
-Subject: [LTP] [PATCH] sigwaitinfo01: recent glibc calls syscall directly
-Message-ID: <dbe33b2d18cd674954668fa62ab61f0d57e0c704.1536739517.git.jstancek@redhat.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 13 Sep 2018 15:53:15 +0800
+Subject: [LTP] [PATCH] syscalls/statx*: Fix compiler errors on old distros
+Message-ID: <1536825195-522-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-glibc commit
-  8b0e795aaa44 ("Simplify Linux sig{timed}wait{info} implementations")
-changed sigwaitinfo to call sigtimedwait, which calls rt_sigtimedwait
-syscall directly.
+With glibc-2.5 on RHEL5, compilation failed because of undefined
+AT_FDCWD, O_DIRECTORY or WEXITSTATUS().
 
-So, an invalid pointer no longer crashes child process and test
-reports failure. Fix it by accepting either crash or EFAULT.
+1) Fix undefined AT_FDCWD and O_DIRECTORY by defining _GNU_SOURCE.
+2) Fix undefined WEXITSTATUS() by including <sys/wait.h>.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- .../kernel/syscalls/sigwaitinfo/sigwaitinfo01.c    | 29 +++++++++++++++++++---
- 1 file changed, 25 insertions(+), 4 deletions(-)
+ testcases/kernel/syscalls/statx/statx01.c | 2 ++
+ testcases/kernel/syscalls/statx/statx02.c | 1 +
+ testcases/kernel/syscalls/statx/statx03.c | 2 ++
+ testcases/kernel/syscalls/statx/statx04.c | 1 +
+ testcases/kernel/syscalls/statx/statx05.c | 3 +++
+ 5 files changed, 9 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-index 95a9436a44c9..02730364db4d 100644
---- a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-+++ b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-@@ -371,19 +371,40 @@ void test_bad_address2(swi_func sigwaitinfo, int signo)
- 		tst_brkm(TBROK | TERRNO, NULL, "fork() failed");
- 	case 0:
- 		signal(SIGSEGV, SIG_DFL);
+diff --git a/testcases/kernel/syscalls/statx/statx01.c b/testcases/kernel/syscalls/statx/statx01.c
+index 574560b..23ea99b 100644
+--- a/testcases/kernel/syscalls/statx/statx01.c
++++ b/testcases/kernel/syscalls/statx/statx01.c
+@@ -33,6 +33,8 @@
+  * predefined values.
+  * Minimum kernel version required is 4.11.
+  */
 +
-+		/*
-+		 * depending on glibc implementation we should
-+		 * either crash or get EFAULT
-+		 */
- 		TEST(sigwaitinfo((void *)1, NULL, NULL));
++#define _GNU_SOURCE
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <sys/sysmacros.h>
+diff --git a/testcases/kernel/syscalls/statx/statx02.c b/testcases/kernel/syscalls/statx/statx02.c
+index f21abf2..08ea940 100644
+--- a/testcases/kernel/syscalls/statx/statx02.c
++++ b/testcases/kernel/syscalls/statx/statx02.c
+@@ -22,6 +22,7 @@
+  * Minimum kernel version required is 4.11.
+  */
  
--		_exit(0);
-+		if (TEST_RETURN == -1 && TEST_ERRNO == EFAULT)
-+			_exit(0);
++#define _GNU_SOURCE
+ #include <stdio.h>
+ #include <inttypes.h>
+ #include "tst_test.h"
+diff --git a/testcases/kernel/syscalls/statx/statx03.c b/testcases/kernel/syscalls/statx/statx03.c
+index 4dc1cd0..c72d7fe 100644
+--- a/testcases/kernel/syscalls/statx/statx03.c
++++ b/testcases/kernel/syscalls/statx/statx03.c
+@@ -26,6 +26,8 @@
+  *
+  * Minimum Kernel version required is 4.11.
+  */
 +
-+		tst_resm(TINFO, "swi_func returned: %ld, errno: %d",
-+			TEST_RETURN, TEST_ERRNO);
-+		_exit(1);
- 		break;
- 	default:
- 		break;
- 	}
++#define _GNU_SOURCE
+ #include <stdio.h>
+ #include <string.h>
+ #include "tst_test.h"
+diff --git a/testcases/kernel/syscalls/statx/statx04.c b/testcases/kernel/syscalls/statx/statx04.c
+index f27cec7..8caf092 100644
+--- a/testcases/kernel/syscalls/statx/statx04.c
++++ b/testcases/kernel/syscalls/statx/statx04.c
+@@ -23,6 +23,7 @@
+  * Minimum kernel version required is 4.11.
+  */
  
- 	SUCCEED_OR_DIE(waitpid, "waitpid failed", pid, &status, 0);
--	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
-+
-+	if ((WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
-+		|| (WIFEXITED(status) && WEXITSTATUS(status) == 0)) {
- 		tst_resm(TPASS, "Test passed");
--	else
--		tst_resm(TFAIL, "Unrecognised child exit code");
-+		return;
-+	}
-+
-+	if (WIFEXITED(status)) {
-+		tst_resm(TFAIL, "Unrecognised child exit code: %d",
-+			WEXITSTATUS(status));
-+	}
-+	if (WIFSIGNALED(status)) {
-+		tst_resm(TFAIL, "Unrecognised child termsig: %d",
-+			WTERMSIG(status));
-+	}
- }
++#define _GNU_SOURCE
+ #include "tst_test.h"
+ #include "lapi/fs.h"
+ #include <stdlib.h>
+diff --git a/testcases/kernel/syscalls/statx/statx05.c b/testcases/kernel/syscalls/statx/statx05.c
+index 1a890cf..130e5bc 100644
+--- a/testcases/kernel/syscalls/statx/statx05.c
++++ b/testcases/kernel/syscalls/statx/statx05.c
+@@ -19,9 +19,12 @@
+  * Minimum kernel version required is 4.11.
+  */
  
- void test_bad_address3(swi_func sigwaitinfo, int signo)
++#define _GNU_SOURCE
+ #include "tst_test.h"
+ #include "lapi/fs.h"
+ #include <stdlib.h>
++#include <sys/types.h>
++#include <sys/wait.h>
+ #include "lapi/stat.h"
+ 
+ #define MOUNT_POINT "mnt_point"
 -- 
-1.8.3.1
+1.7.11.rc0
+
+
 
