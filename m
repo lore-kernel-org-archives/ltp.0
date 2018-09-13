@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 13 Sep 2018 14:28:47 +0200
-Subject: [LTP] [PATCH] syscalls/mmap15: relax condition a bit
-In-Reply-To: <1fbbf1d06b0e08fc2b078c0ad24f2dd2111348c3.1536827409.git.jstancek@redhat.com>
-References: <1fbbf1d06b0e08fc2b078c0ad24f2dd2111348c3.1536827409.git.jstancek@redhat.com>
-Message-ID: <20180913122847.GB18036@rei.lan>
+Date: Thu, 13 Sep 2018 14:35:01 +0200
+Subject: [LTP] [PATCH v2 2/4] lib/tst_test.sh: add TST_NEEDS_DRIVERS
+ parameter
+In-Reply-To: <1534764229-26993-2-git-send-email-alexey.kodanev@oracle.com>
+References: <1534764229-26993-1-git-send-email-alexey.kodanev@oracle.com>
+ <1534764229-26993-2-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20180913123501.GC18036@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,17 +13,14 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> High address is arch specific, and it also occasionally changes
-> as can be seen in history of this test.
-> 
-> Relax the condition and accept both ENOMEM and EINVAL
-> as expected outcome.
-> 
-> Fixes: #390
+> +tst_test_drivers()
+> +{
+> +	[ $# -eq 0 ] && return 0
+> +
+> +	local drv="$(tst_check_drivers $@ 2>&1)"
 
-I've already acked that on GitHub...
-
-But just for a clarity, acked.
+Wouldn't it be easier to just redirect the stderr into /dev/null here
+and check the $? instead of [ -n "$drv" ] ?
 
 -- 
 Cyril Hrubis
