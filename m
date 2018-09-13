@@ -1,9 +1,10 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 13 Sep 2018 15:39:07 +0800
-Subject: [LTP] [PATCH] zram/zram03.c: Fix obsolete zram status files
-In-Reply-To: <1531385810-22036-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1531385810-22036-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <5B9A141B.1050106@cn.fujitsu.com>
+Date: Thu, 13 Sep 2018 15:41:05 +0800
+Subject: [LTP] [PATCH] hotplug/cpu_hotplug05.sh: Fix obsolete output of
+ offline CPU
+In-Reply-To: <1531899217-27690-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1531899217-27690-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <5B9A1491.5070407@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,102 +17,49 @@ Ping :-)
 
 Thanks,
 Xiao Yang
-On 2018/07/12 16:56, Xiao Yang wrote:
-> Since kernel commit c87d1655c295, separate zram status files("compr_data_size",
-> "num_reads" etc.) which can be accessed via one of zram<id>/stat or
-> zram<id>/io_stat or zram<id>/mm_stat were removed.
+On 2018/07/18 15:33, Xiao Yang wrote:
+> With sysstat-11.7.1, running cpu_hotplug05.sh got the following error:
+> ---------------------------------------------------------------------
+> cpuhotplug05 1 TBROK: Field 3 is '%user', '0.00' expected
+> ---------------------------------------------------------------------
 >
-> This commit broke zram03, as below:
-> ----------------------------------------------------------------------
-> safe_file_ops.c:144: Failed to open FILE '/sys/block/zram0/compr_data_size'
-> for reading at zram03.c:181: errno=ENOENT(2): No such file or directory
-> ----------------------------------------------------------------------
->
-> Also, zero pages in zram<id>/mm_stat was extended to same element pages
-> since kernel commit 8e19d540d107.
->
-> We try to get requested zram status by zram<id>/stat and zram<id>/mm_stat
-> if separate zram status files don't exist.
->
-> URL for detailed zram status:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/blockdev/zram.txt
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/block/stat.txt
+> According to commit 970cae1 and 1f71a6f, sar/sadf didn't display offline
+> CPU since sysstat-11.7.1.  It is reasonable for offline CPU to get nothing.
 >
 > Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 > ---
->  testcases/kernel/device-drivers/zram/zram03.c | 50 +++++++++++++++++++++++----
->  1 file changed, 44 insertions(+), 6 deletions(-)
+>  .../hotplug/cpu_hotplug/functional/cpuhotplug05.sh     | 18 ++++++++++++------
+>  1 file changed, 12 insertions(+), 6 deletions(-)
 >
-> diff --git a/testcases/kernel/device-drivers/zram/zram03.c b/testcases/kernel/device-drivers/zram/zram03.c
-> index 3f7ab4e..06995fd 100644
-> --- a/testcases/kernel/device-drivers/zram/zram03.c
-> +++ b/testcases/kernel/device-drivers/zram/zram03.c
-> @@ -40,6 +40,9 @@ char *TCID = "zram03";
->  int TST_TOTAL = 1;
+> diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+> index 59c8324..ab81684 100755
+> --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+> +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+> @@ -108,12 +108,18 @@ until [ $LOOP_COUNT -gt $HOTPLUG05_LOOPS ]; do
+>  		tst_brkm TBROK "SAR output file is empty"
+>  	fi
 >  
->  #define PATH_ZRAM	"/sys/block/zram0"
-> +#define OBSOLETE_ZRAM_FILE	"/sys/block/zram0/num_reads"
-> +#define PATH_ZRAM_STAT	"/sys/block/zram0/stat"
-> +#define PATH_ZRAM_MM_STAT	"/sys/block/zram0/mm_stat"
->  #define SIZE		(512 * 1024 * 1024L)
->  #define DEVICE		"/dev/zram0"
+> -	for i in $(seq 3 8); do
+> -		field=$(get_field "$offline_status" "$i")
+> -		if [ "$field" != "0.00" ]; then
+> -			tst_brkm TBROK "Field $i is '$field', '0.00' expected"
+> -		fi
+> -	done
+> +	cpu_field=$(get_field "$offline_status" "2")
+> +	if [ "${cpu_field}" = "CPU" ]; then
+> +		# Since sysstat-11.7.1, sar/sadf didn't display offline CPU
+> +		tst_resm TINFO "SAR didn't display offline CPU"
+> +	else
+> +		for i in $(seq 3 8); do
+> +			field=$(get_field "$offline_status" "$i")
+> +			if [ "$field" != "0.00" ]; then
+> +				tst_brkm TBROK "Field $i is '$field', '0.00' expected"
+> +			fi
+> +		done
+> +	fi
 >  
-> @@ -182,14 +185,49 @@ static void print(char *string)
->  	tst_resm(TINFO, "%s is %s", filename, value);
->  }
->  
-> +static void print_stat(char *nread, char *nwrite)
-> +{
-> +	char nread_val[BUFSIZ], nwrite_val[BUFSIZ];
-> +
-> +	SAFE_FILE_SCANF(cleanup, PATH_ZRAM_STAT, "%s %*s %*s %*s %s",
-> +			nread_val, nwrite_val);
-> +	tst_resm(TINFO, "%s from %s is %s", nread, PATH_ZRAM_STAT,
-> +		 nread_val);
-> +	tst_resm(TINFO, "%s from %s is %s", nwrite, PATH_ZRAM_STAT,
-> +		 nwrite_val);
-> +}
-> +
-> +static void print_mm_stat(char *orig, char *compr, char *mem, char *zero)
-> +{
-> +	char orig_val[BUFSIZ], compr_val[BUFSIZ];
-> +	char mem_val[BUFSIZ], zero_val[BUFSIZ];
-> +
-> +	SAFE_FILE_SCANF(cleanup, PATH_ZRAM_MM_STAT, "%s %s %s %*s %*s %s",
-> +			orig_val, compr_val, mem_val, zero_val);
-> +	tst_resm(TINFO, "%s from %s is %s", orig, PATH_ZRAM_MM_STAT,
-> +		 orig_val);
-> +	tst_resm(TINFO, "%s from %s is %s", compr, PATH_ZRAM_MM_STAT,
-> +		compr_val);
-> +	tst_resm(TINFO, "%s from %s is %s", mem, PATH_ZRAM_MM_STAT,
-> +		 mem_val);
-> +	tst_resm(TINFO, "%s from %s is %s", zero, PATH_ZRAM_MM_STAT,
-> +		 zero_val);
-> +}
-> +
->  static void dump_info(void)
->  {
->  	print("initstate");
-> -	print("compr_data_size");
-> -	print("orig_data_size");
->  	print("disksize");
-> -	print("mem_used_total");
-> -	print("num_reads");
-> -	print("num_writes");
-> -	print("zero_pages");
-> +	if (!access(OBSOLETE_ZRAM_FILE, F_OK)) {
-> +		print("orig_data_size");
-> +		print("compr_data_size");
-> +		print("mem_used_total");
-> +		print("zero_pages");
-> +		print("num_reads");
-> +		print("num_writes");
-> +	} else {
-> +		print_mm_stat("orig_data_size", "compr_data_size",
-> +			      "mem_used_total", "zero/same_pages");
-> +		print_stat("num_reads", "num_writes");
-> +	}
->  }
+>  	# Online the CPU
+>  	if ! online_cpu ${CPU_TO_TEST}; then
 
 
 
