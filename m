@@ -1,79 +1,99 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 14 Sep 2018 18:02:09 +0300
-Subject: [LTP] [PATCH v3 2/2] lib/tst_test.sh: add TST_NEEDS_DRIVERS
-	parameter
-In-Reply-To: <1536937329-13902-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1536937329-13902-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1536937329-13902-2-git-send-email-alexey.kodanev@oracle.com>
+From: Kenneth Magic <kmagic@google.com>
+Date: Fri, 14 Sep 2018 11:40:21 -0700
+Subject: [LTP] [PATCH] Correct the kernel_bits value in x86 PER_LINUX32.
+Message-ID: <CABHszYso3QWR7yi8b2ZBrJLpVQALWCSnaEHNk0+pL_cOuP_DUg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The drivers are checked with 'tst_check_drivers' command.
+Android runs all 32bit programs in a PER_LIINUX32 personality
+even under a 64 bit kernel, causing the machine to show up as
+"i686". Check for and correct this case so tests use the correct
+kernel_bits value.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Kenneth Magic <kmagic@google.com>
 ---
-v3: check the command exit status instead of the returned error message
+ lib/tst_kernel.c | 47 +++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 41 insertions(+), 6 deletions(-)
 
-v2: add a check for empty TST_NEEDS_DRIVERS
+diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
+index 42d64cbdc..8edafb8ff 100644
+--- a/lib/tst_kernel.c
++++ b/lib/tst_kernel.c
+@@ -15,21 +15,28 @@
+  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+  */
 
- doc/test-writing-guidelines.txt |    1 +
- testcases/lib/tst_test.sh       |   14 ++++++++++++++
- 2 files changed, 15 insertions(+), 0 deletions(-)
++#include <linux/personality.h>
+ #include <sys/utsname.h>
+ #include "test.h"
+ #include "tst_kernel.h"
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index 78c524f..f590896 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -1662,6 +1662,7 @@ simply by setting right '$TST_NEEDS_FOO'.
- | 'TST_NEEDS_CMDS'   | String with command names that has to be present for
-                        the test (see below).
- | 'TST_NEEDS_MODULE' | Test module name needed for the test (see below).
-+| 'TST_NEEDS_DRIVERS'| Checks kernel drivers support for the test.
- |=============================================================================
- 
- Checking for presence of commands
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index faf3bd5..7a41309 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -302,6 +302,18 @@ tst_check_cmds()
- 	return 0
- }
- 
-+tst_test_drivers()
-+{
-+	[ $# -eq 0 ] && return 0
-+
-+	local drv
-+
-+	drv="$(tst_check_drivers $@ 2>&1)"
-+
-+	[ $? -ne 0 ] && tst_brk TCONF "$drv driver not available"
-+	return 0
+-int tst_kernel_bits(void)
++static int get_kernel_bits_from_uname(struct utsname *buf)
+ {
+- struct utsname buf;
+- int kernel_bits;
+-
+- if (uname(&buf)) {
++ if (uname(buf)) {
+  tst_brkm(TBROK | TERRNO, NULL, "uname()");
+  return -1;
+  }
+
+- kernel_bits = strstr(buf.machine, "64") ? 64 : 32;
++ return strstr(buf->machine, "64") ? 64 : 32;
 +}
 +
- tst_is_int()
- {
- 	[ "$1" -eq "$1" ] 2>/dev/null
-@@ -349,6 +361,7 @@ tst_run()
- 			OPTS|USAGE|PARSE_ARGS|POS_ARGS);;
- 			NEEDS_ROOT|NEEDS_TMPDIR|NEEDS_DEVICE|DEVICE);;
- 			NEEDS_CMDS|NEEDS_MODULE|MODPATH|DATAROOT);;
-+			NEEDS_DRIVERS);;
- 			IPV6|IPVER|TEST_DATA|TEST_DATA_IFS);;
- 			RETRY_FUNC|RETRY_FN_EXP_BACKOFF);;
- 			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
-@@ -386,6 +399,7 @@ tst_run()
- 	fi
- 
- 	tst_test_cmds $TST_NEEDS_CMDS
-+	tst_test_drivers $TST_NEEDS_DRIVERS
- 
- 	if [ -n "$TST_MIN_KVER" ]; then
- 		tst_kvcmp -lt "$TST_MIN_KVER" && \
--- 
-1.7.1
++int tst_kernel_bits(void)
++{
++ struct utsname buf;
++ int kernel_bits = get_kernel_bits_from_uname(&buf);
++
++ if (kernel_bits == -1)
++ return -1;
 
+  /*
+  * ARM64 (aarch64) defines 32-bit compatibility modes as
+@@ -40,6 +47,34 @@ int tst_kernel_bits(void)
+  || !strcmp(buf.machine, "s390x"))
+  kernel_bits = 64;
+
++#ifdef __ANDROID__
++ /* Android's bionic libc sets the PER_LINUX32 personality for all 32-bit
++ * programs. This will cause buf.machine to report as i686 even though
++ * the kernel itself is 64-bit.
++ */
++ if (!strcmp(buf.machine, "i686") &&
++ (personality(0xffffffff) & PER_MASK) == PER_LINUX32) {
++ /* Set the personality back to the default. */
++ if (personality(PER_LINUX) == -1) {
++ tst_brkm(TBROK | TERRNO, NULL, "personality()");
++ return -1;
++ }
++
++ /* Redo the uname check without the PER_LINUX32 personality to
++ * determine the actual kernel bits value.
++ */
++ kernel_bits = get_kernel_bits_from_uname(&buf);
++ if (kernel_bits == -1)
++ return -1;
++
++ /* Set the personality back to PER_LINUX32. */
++ if (personality(PER_LINUX32) == -1) {
++ tst_brkm(TBROK | TERRNO, NULL, "personality()");
++ return -1;
++ }
++ }
++#endif  /* __ANDROID__ */
++
+  tst_resm(TINFO, "uname.machine=%s kernel is %ibit",
+           buf.machine, kernel_bits);
+
+-- 
+2.19.0.397.gdd90340f6a-goog
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180914/48e093ea/attachment-0001.html>
