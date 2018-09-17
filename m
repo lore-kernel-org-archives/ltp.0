@@ -1,251 +1,50 @@
-From: kewal <kewal@zilogic.com>
-Date: Mon, 17 Sep 2018 07:52:48 -0000
-Subject: [LTP] [PATCH v2] Test statx syscall for SYNC_FLAGS
-Message-ID: <20180917075248.28004-1-kewal@zilogic.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 17 Sep 2018 10:27:52 +0200
+Subject: [LTP] statx04.c:53: FAIL: STATX_ATTR_COMPRESSED flag is not set
+ - Testing on ext2
+In-Reply-To: <CA+G9fYsr=iYgaaepEnJOOu_-bR0p=3gCxAhcw6adQWPUnPfiYA@mail.gmail.com>
+References: <CA+G9fYsr=iYgaaepEnJOOu_-bR0p=3gCxAhcw6adQWPUnPfiYA@mail.gmail.com>
+Message-ID: <20180917082752.GA7857@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> statx04 test failed on Hikey (arm64) while testing for ext2 which is
+> running 4.18 stable kernel and LTP master branch. Same test case got
+> PASS for ext3 and ext4.
+> 
+> Is this test case need any special prerequirements ?
 
-* statx06.c :-
+That is a confirmed kernel bug that I've been told by kernel dev will be fixed,
+it's written in the test commit message as well:
 
- Testcase 1: AT_STATX_DONT_SYNC
-  With AT_STATX_DONT_SYNC server changes should not get sync with client.
+commit 5ffb23e2c051c718814515527275e92a8d3155e0
+Author: vaishnavid <vaishnavi.d@zilogic.com>
+Date:   Mon Sep 3 12:18:28 2018 +0000
 
- Testcase 2: AT_STATX_FORCE_SYNC
-  With AT_STATX_FORCE_SYNC server changes should get sync with client.
+    syscalls/statx04: Add new test.
 
-Signed-off-by: Kewal Ukunde <kewal@zilogic.com>
-Signed-off-by: Vaishnavi.d <vaishnavi.d@zilogic.com>
-Signed-off-by: Tarun.T.U <tarun@zilogic.com>
----
- runtest/syscalls                           |   1 +
- testcases/kernel/syscalls/statx/.gitignore |   1 +
- testcases/kernel/syscalls/statx/statx06.c  | 195 +++++++++++++++++++++++++++++
- 3 files changed, 197 insertions(+)
- create mode 100644 testcases/kernel/syscalls/statx/statx06.c
+    This test will check if statx() reports attribute flags by adding
+    FS_COMPR_FL, FS_APPEND_FL, FS_IMMUTABLE_FL and FS_NODUMP_FL to a
+    direcotry and checks that the flags are reported correctly and also
+    tests a directory with no flags.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 0d0be7713..71b83b25c 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1504,3 +1504,4 @@ statx02 statx02
- statx03 statx03
- statx04 statx04
- statx05 statx05
-+statx06 statx06
-diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
-index 209fc3a33..c1ceddabf 100644
---- a/testcases/kernel/syscalls/statx/.gitignore
-+++ b/testcases/kernel/syscalls/statx/.gitignore
-@@ -3,3 +3,4 @@
- /statx03
- /statx04
- /statx05
-+/statx06
-diff --git a/testcases/kernel/syscalls/statx/statx06.c b/testcases/kernel/syscalls/statx/statx06.c
-new file mode 100644
-index 000000000..f64322d7d
---- /dev/null
-+++ b/testcases/kernel/syscalls/statx/statx06.c
-@@ -0,0 +1,195 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ *  Copyright (c) Zilogic Systems Pvt. Ltd., 2018
-+ *  Email : code@zilogic.com
-+ */
-+
-+/*
-+ * Test statx
-+ *
-+ * This code tests the following flags:
-+ * 1) AT_STATX_FORCE_SYNC
-+ * 2) AT_STATX_DONT_SYNC
-+ *
-+ * By exportfs cmd creating NFS setup.
-+ *
-+ * A test file is created in server folder and statx is being
-+ * done in client folder.
-+ *
-+ * TESTCASE 1:
-+ * BY AT_STATX_SYNC_AS_STAT getting predefined mode value.
-+ * Then, by using AT_STATX_FORCE_SYNC getting new updated vaue
-+ * from server file changes.
-+ *
-+ * TESTCASE 2:
-+ * BY AT_STATX_SYNC_AS_STAT getting predefined mode value.
-+ * AT_STATX_FORCE_SYNC is called to create cache data of the file.
-+ * Then, by using DONT_SYNC_FILE getting old cached data in client folder,
-+ * but mode has been chaged in server file.
-+ *
-+ * Minimum kernel version required is 4.11.
-+ */
-+
-+#include <netdb.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <linux/limits.h>
-+#include <sys/mount.h>
-+#include "tst_test.h"
-+#include "lapi/stat.h"
-+
-+#define MODE(X) (X & (~S_IFMT))
-+#define F_PATH_SIZE 50
-+#define BUFF_SIZE (PATH_MAX + 50)
-+#define DEFAULT_MODE 0644
-+#define CURRENT_MODE 0777
-+
-+#define CLIENT_PATH "client"
-+#define SERVER_PATH "server"
-+#define FORCE_SYNC_FILE  "force_sync_file"
-+#define DONT_SYNC_FILE "dont_sync_file"
-+
-+static char cwd[PATH_MAX];
-+static char cmd[BUFF_SIZE];
-+
-+static int get_mode(char *file_name, int flag_type, char *flag_name)
-+{
-+	char client_path[F_PATH_SIZE];
-+	struct statx buff;
-+
-+	snprintf(client_path, sizeof(client_path), "%s/%s",
-+		 CLIENT_PATH, file_name);
-+
-+	TEST(statx(AT_FDCWD, client_path, flag_type, STATX_ALL, &buff));
-+
-+	if (TST_RET == -1)
-+		tst_brk(TFAIL | TST_ERR,
-+			"statx(AT_FDCWD, %s, %s, STATX_ALL, &buff)",
-+			file_name, flag_name);
-+	else
-+		tst_res(TINFO, "statx(AT_FDCWD, %s, %s, STATX_ALL, &buff)",
-+			file_name, flag_name);
-+
-+	return buff.stx_mode;
-+}
-+
-+static void test_for_dont_sync(void)
-+{
-+	unsigned int cur_mode;
-+	char server_path[F_PATH_SIZE];
-+
-+	snprintf(server_path, sizeof(server_path), "%s/%s", SERVER_PATH,
-+		 DONT_SYNC_FILE);
-+
-+	get_mode(DONT_SYNC_FILE, AT_STATX_FORCE_SYNC,
-+		 "AT_STATX_FORCE_SYNC");
-+
-+	SAFE_CHMOD(server_path, CURRENT_MODE);
-+	cur_mode = get_mode(DONT_SYNC_FILE, AT_STATX_DONT_SYNC,
-+			    "AT_STATX_DONT_SYNC");
-+
-+	if (MODE(cur_mode) == DEFAULT_MODE)
-+		tst_res(TPASS,
-+			"statx() with AT_STATX_DONT_SYNC for mode %o %o",
-+			DEFAULT_MODE, MODE(cur_mode));
-+	else
-+		tst_res(TFAIL,
-+			"statx() with AT_STATX_DONT_SYNC for mode %o %o",
-+			DEFAULT_MODE, MODE(cur_mode));
-+}
-+
-+static void test_for_force_sync(void)
-+{
-+	unsigned int cur_mode;
-+	char server_path[F_PATH_SIZE];
-+
-+	snprintf(server_path, sizeof(server_path), "%s/%s", SERVER_PATH,
-+		 FORCE_SYNC_FILE);
-+
-+	SAFE_CHMOD(server_path, CURRENT_MODE);
-+	cur_mode = get_mode(FORCE_SYNC_FILE, AT_STATX_FORCE_SYNC,
-+			    "AT_STATX_FORCE_SYNC");
-+
-+	if (MODE(cur_mode) == CURRENT_MODE)
-+		tst_res(TPASS,
-+			"statx() with AT_STATX_FORCE_SYNC for mode %o %o",
-+			CURRENT_MODE, MODE(cur_mode));
-+	else
-+		tst_res(TFAIL,
-+			"statx() with AT_STATX_FORCE_SYNC for mode %o %o",
-+			CURRENT_MODE, MODE(cur_mode));
-+}
-+
-+const struct test_cases {
-+	void (*func)(void);
-+} tcases[] = {
-+	{test_for_dont_sync},
-+	{test_for_force_sync}
-+};
-+
-+static void test_statx(unsigned int nr)
-+{
-+	const struct test_cases *tc = &tcases[nr];
-+
-+	tc->func();
-+}
-+
-+static void setup(void)
-+{
-+	int ret;
-+	char force_sync_file[F_PATH_SIZE];
-+	char dont_sync_file[F_PATH_SIZE];
-+	char mount_data[F_PATH_SIZE];
-+	char server_path[BUFF_SIZE];
-+	char client_path[BUFF_SIZE];
-+	char *ip = "127.0.0.1";
-+
-+	TESTPTR(getcwd(cwd, PATH_MAX));
-+	if (TST_RET_PTR == NULL)
-+		tst_brk(TBROK | TST_ERR, "Failed to get PWD");
-+
-+	snprintf(force_sync_file, sizeof(force_sync_file), "%s/%s",
-+		 SERVER_PATH, FORCE_SYNC_FILE);
-+	snprintf(dont_sync_file, sizeof(dont_sync_file), "%s/%s",
-+		 SERVER_PATH, DONT_SYNC_FILE);
-+
-+	SAFE_MKDIR(SERVER_PATH, DEFAULT_MODE);
-+	SAFE_MKDIR(CLIENT_PATH, DEFAULT_MODE);
-+	SAFE_CREAT(force_sync_file, DEFAULT_MODE);
-+	SAFE_CREAT(dont_sync_file, DEFAULT_MODE);
-+
-+	snprintf(server_path, sizeof(server_path), ":%s/%s", cwd, SERVER_PATH);
-+	snprintf(client_path, sizeof(client_path), "%s/%s", cwd, CLIENT_PATH);
-+	snprintf(mount_data, sizeof(mount_data), "addr=%s", ip);
-+
-+	snprintf(cmd, sizeof(cmd),
-+		 "exportfs -i -o no_root_squash,rw,sync,no_subtree_check *%s",
-+		 server_path);
-+
-+	ret = tst_system(cmd);
-+	if (WEXITSTATUS(ret) == 127)
-+		tst_brk(TCONF | TST_ERR, "%s not found", cmd);
-+	if (ret == -1)
-+		tst_brk(TBROK | TST_ERR, "failed to exportfs");
-+
-+	SAFE_MOUNT(server_path, client_path, "nfs", 0, mount_data);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (tst_system("exportfs -ua") == -1)
-+		tst_brk(TBROK | TST_ERR, "failed to clear exportfs");
-+
-+	SAFE_UMOUNT(CLIENT_PATH);
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = test_statx,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.min_kver = "4.11",
-+	.needs_tmpdir = 1,
-+	.dev_fs_type = "nfs",
-+	.needs_root = 1,
-+};
+    The test is executed against all filesystems, since most of the kernel
+    code that implements this functionality is filesystem specific.
+
+    * The ntfs3g fuse driver reports wrong errno for unimplemented ioctls()
+      EINVAL while every other filesystem reports ENOTTY correctly
+
+    * The test fails for ext2 filesystem mounted by kernel ext2 driver,
+      which is confirmed to be kernel bug that will be fixed later on
+      ^
+      |
+     See this part
+
+
 -- 
-2.11.0
-
+Cyril Hrubis
+chrubis@suse.cz
