@@ -1,11 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 17 Sep 2018 10:36:27 +0200
-Subject: [LTP] statx04.c:53: FAIL: STATX_ATTR_COMPRESSED flag is not set
- - Testing on ext2
-In-Reply-To: <CABdQkv-VBcEUx=mat_F-eUg9a-3Z95Z44zcWGmdGkP0kBeGB0w@mail.gmail.com>
-References: <CA+G9fYsr=iYgaaepEnJOOu_-bR0p=3gCxAhcw6adQWPUnPfiYA@mail.gmail.com>
- <CABdQkv-VBcEUx=mat_F-eUg9a-3Z95Z44zcWGmdGkP0kBeGB0w@mail.gmail.com>
-Message-ID: <20180917083627.GA8085@rei>
+Date: Mon, 17 Sep 2018 10:44:53 +0200
+Subject: [LTP] LTP master: arm64 : fsetxattr02.c:214:
+ open(mntpoint/fsetxattr02blk, 0, 00) failed: ENXIO
+In-Reply-To: <CADtBP2DrGG8743zKzi0_SJQLSJrG27NgiOeHHvWga=RzcYPjTQ@mail.gmail.com>
+References: <CA+G9fYtAuGixa5x6kgmBOa7bDkhkz6rQMY5AdBgXLjp8uZKHzg@mail.gmail.com>
+ <CADtBP2DrGG8743zKzi0_SJQLSJrG27NgiOeHHvWga=RzcYPjTQ@mail.gmail.com>
+Message-ID: <20180917084453.GB7857@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,18 +13,13 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> I suppose this error is because Hikey builds are actually using EXT2
-> code and not EXT4 as EXT2 compatible code.
+> Not sure if there is a way, using LTP API, to enforce a module
+> existing/being loaded, but BROK is definitely the correct error in this
+> condition.
 
-I wouldn't say this to be error, different configuration maybe.
+There is an in-flight patch set from Alexey see:
 
-> Now, the REAL QUESTION, should EXT2 old code support attributes for
-> directories ?
-> Is this a regression or a feature that never existed for EXT2 old code ?
-
-I've talked about that to Jan Kara and he told me that he will get this
-fixed so I left the test as it is and noted that it fails on ext2 when
-using ext2 driver in the commit message.
+[PATCH v3 1/2] lib/tst_test.c: add 'needs_drivers' option with tst_check_drivers cmd
 
 -- 
 Cyril Hrubis
