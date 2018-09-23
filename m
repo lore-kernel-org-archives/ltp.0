@@ -1,242 +1,421 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Sat, 22 Sep 2018 17:30:44 +0800
-Subject: [LTP] [PATCH 2/2] syscalls/getxattr05: Add new regression testcase
-In-Reply-To: <1537608644-14994-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1537608644-14994-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1537608644-14994-2-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Sun, 23 Sep 2018 11:53:02 +0300
+Subject: [LTP] [PATCH v2] syscalls/fanotify10: new test for mount ignore mask
+Message-ID: <20180923085302.29446-1-amir73il@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test POSIX Access Control Lists by getxattr(2) with/without a
-user namespace.  The following issue is included by the new
-testcase and has been fixed in kernel:
-'82c9a927bc5d ("getxattr: use correct xattr length")'
+This is a regression test for commit:
+    9bdda4e9cf2d fsnotify: fix ignore mask logic in fsnotify()
 
-Fix #396
-
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- runtest/syscalls                                |   1 +
- testcases/kernel/syscalls/getxattr/.gitignore   |   1 +
- testcases/kernel/syscalls/getxattr/Makefile     |   2 +
- testcases/kernel/syscalls/getxattr/getxattr05.c | 171 ++++++++++++++++++++++++
- 4 files changed, 175 insertions(+)
- create mode 100644 testcases/kernel/syscalls/getxattr/getxattr05.c
+Cyril,
+
+Following discussion with you and Richard, I decided to leave fanotify06
+unchanged, because this new test is sufficiently different and also
+fails on old kernels.
+
+I implemented the test with index and added 4 new test cases instead of
+just the one that checks the regression.
+
+This test structure makes it easy to add coverage for to the upcoming
+filesystem mark type (see my fanotify_sb tests [1]).
+
+Changes from v1:
+- Use test index to iterate test cases
+
+[1] https://github.com/amir73il/ltp/commits/fanotify_sb
+
+ runtest/syscalls                              |   1 +
+ testcases/kernel/syscalls/fanotify/.gitignore |   1 +
+ testcases/kernel/syscalls/fanotify/fanotify.h |  12 +
+ .../kernel/syscalls/fanotify/fanotify10.c     | 331 ++++++++++++++++++
+ 4 files changed, 345 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify10.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 0d0be77..bfdd450 100644
+index 0d0be7713..cd52561a5 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -461,6 +461,7 @@ getxattr01 getxattr01
- getxattr02 getxattr02
- getxattr03 getxattr03
- getxattr04 getxattr04
-+getxattr05 getxattr05
+@@ -497,6 +497,7 @@ fanotify06 fanotify06
+ fanotify07 fanotify07
+ fanotify08 fanotify08
+ fanotify09 fanotify09
++fanotify10 fanotify10
  
- #Needs tty device.
- #ioctl01 ioctl01 -D /dev/tty0
-diff --git a/testcases/kernel/syscalls/getxattr/.gitignore b/testcases/kernel/syscalls/getxattr/.gitignore
-index 3918a30..cded941 100644
---- a/testcases/kernel/syscalls/getxattr/.gitignore
-+++ b/testcases/kernel/syscalls/getxattr/.gitignore
-@@ -2,3 +2,4 @@
- /getxattr02
- /getxattr03
- /getxattr04
-+/getxattr05
-diff --git a/testcases/kernel/syscalls/getxattr/Makefile b/testcases/kernel/syscalls/getxattr/Makefile
-index 72544c1..3f78745 100644
---- a/testcases/kernel/syscalls/getxattr/Makefile
-+++ b/testcases/kernel/syscalls/getxattr/Makefile
-@@ -20,4 +20,6 @@ top_srcdir		?= ../../../..
+ ioperm01 ioperm01
+ ioperm02 ioperm02
+diff --git a/testcases/kernel/syscalls/fanotify/.gitignore b/testcases/kernel/syscalls/fanotify/.gitignore
+index ec7553995..c26f2bd27 100644
+--- a/testcases/kernel/syscalls/fanotify/.gitignore
++++ b/testcases/kernel/syscalls/fanotify/.gitignore
+@@ -7,3 +7,4 @@
+ /fanotify07
+ /fanotify08
+ /fanotify09
++/fanotify10
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
+index f5f7df25e..5adef54d7 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify.h
++++ b/testcases/kernel/syscalls/fanotify/fanotify.h
+@@ -54,4 +54,16 @@ static long fanotify_mark(int fd, unsigned int flags, uint64_t mask,
  
- include $(top_srcdir)/include/mk/testcases.mk
+ #endif /* HAVE_SYS_FANOTIFY_H */
  
-+getxattr05: LDLIBS	+= $(ACL_LIBS)
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/getxattr/getxattr05.c b/testcases/kernel/syscalls/getxattr/getxattr05.c
-new file mode 100644
-index 0000000..8656205
---- /dev/null
-+++ b/testcases/kernel/syscalls/getxattr/getxattr05.c
-@@ -0,0 +1,171 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
-+ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ */
-+
-+/*
-+ * Description:
-+ * 1) Witout a user namespace, getxattr(2) should get same data when
-+ *    acquiring the value of system.posix_acl_access twice.
-+ * 2) With/Without mapped root UID in a user namespaces, getxattr(2) should
-+ *    get same data when acquiring the value of system.posix_acl_access twice.
-+ *
-+ * This issue included by getxattr05 has been fixed in kernel:
-+ * '82c9a927bc5d ("getxattr: use correct xattr length")'
-+ */
-+
-+#define _GNU_SOURCE
-+#include "config.h"
-+#include <errno.h>
-+#include <unistd.h>
-+#include <sys/types.h>
-+#include <sched.h>
-+#include <stdlib.h>
-+
-+#ifdef HAVE_SYS_XATTR_H
-+# include <sys/xattr.h>
++#ifndef FAN_MARK_INODE
++#define FAN_MARK_INODE		0
 +#endif
 +
-+#ifdef HAVE_LIBACL
-+# include <sys/acl.h>
-+#endif
-+
-+#include "tst_test.h"
-+#include "lapi/namespaces_constants.h"
-+
-+#if defined(HAVE_SYS_XATTR_H) && defined(HAVE_LIBACL)
-+
-+#define TEST_FILE	"testfile"
-+#define MAX_USERNS	"/proc/sys/user/max_user_namespaces"
-+#define UID_MAP	"/proc/self/uid_map"
-+
-+static acl_t acl;
-+static int orig_max_userns = -1;
-+
-+static struct tcase {
-+	/* 0: without userns, 1: with userns */
-+	int set_userns;
-+	/* 0: don't map root UID in userns, 1: map root UID in userns */
-+	int map_root;
-+} tcases[] = {
-+	{0, 0},
-+	{1, 0},
-+	{1, 1},
++struct fanotify_mark_type {
++	unsigned int flag;
++	const char * name;
 +};
 +
-+static void verify_getxattr(void)
-+{
-+	ssize_t i, res1, res2;
-+	char buf1[128], buf2[132];
++#define INIT_FANOTIFY_MARK_TYPE(t) \
++	{ FAN_MARK_ ## t, "FAN_MARK_" #t }
 +
-+	res1 = SAFE_GETXATTR(TEST_FILE, "system.posix_acl_access",
-+			     buf1, sizeof(buf1));
-+	res2 = SAFE_GETXATTR(TEST_FILE, "system.posix_acl_access",
-+			     buf2, sizeof(buf2));
+ #endif /* __FANOTIFY_H__ */
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
+new file mode 100644
+index 000000000..75e747c29
+--- /dev/null
++++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
+@@ -0,0 +1,331 @@
++/*
++ * Copyright (c) 2014 SUSE.  All Rights Reserved.
++ * Copyright (c) 2018 CTERA Networks.  All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it is
++ * free of the rightful claim of any third person regarding infringement
++ * or the like.  Any license provided herein, whether implied or
++ * otherwise, applies only to this software file.  Patent licenses, if
++ * any, provided herein do not apply to combinations of this program with
++ * other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ * Started by Jan Kara <jack@suse.cz>
++ * Forked from fanotify06.c by Amir Goldstein <amir73il@gmail.com>
++ *
++ * DESCRIPTION
++ *     Check that fanotify properly merges ignore mask of a mount mark
++ *     with a mask of an inode mark on the same group.  Unlike the
++ *     prototype test fanotify06, do not use FAN_MODIFY event for the
++ *     test mask, because it hides the bug.
++ *
++ * This is a regression test for commit:
++ *
++ *     9bdda4e9cf2d fsnotify: fix ignore mask logic in fsnotify()
++ */
++#define _GNU_SOURCE
++#include "config.h"
 +
-+	if (res1 != res2) {
-+		tst_res(TFAIL, "Return different sizes when acquiring "
-+			"the value of system.posix_acl_access twice");
-+		return;
-+	}
++#include <stdio.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <fcntl.h>
++#include <errno.h>
++#include <string.h>
++#include <sys/mount.h>
++#include <sys/syscall.h>
++#include "tst_test.h"
++#include "fanotify.h"
 +
-+	for (i = 0; i < res1; i++) {
-+		if (buf1[i] != buf2[i])
-+			break;
-+	}
++#if defined(HAVE_SYS_FANOTIFY_H)
++#include <sys/fanotify.h>
 +
-+	if (i < res1) {
-+		tst_res(TFAIL, "Got different data(%02x != %02x)@%ld",
-+			buf1[i], buf2[i], i);
-+		return;
-+	}
++#define EVENT_MAX 1024
++/* size of the event structure, not counting name */
++#define EVENT_SIZE  (sizeof (struct fanotify_event_metadata))
++/* reasonable guess as to size of 1024 events */
++#define EVENT_BUF_LEN        (EVENT_MAX * EVENT_SIZE)
 +
-+	tst_res(TPASS, "Got same data when acquiring the value of "
-+		"system.posix_acl_access twice");
-+}
++static unsigned int fanotify_prio[] = {
++	FAN_CLASS_PRE_CONTENT,
++	FAN_CLASS_CONTENT,
++	FAN_CLASS_NOTIF
++};
++#define FANOTIFY_PRIORITIES ARRAY_SIZE(fanotify_prio)
 +
-+static void do_unshare(int map_root)
-+{
-+	int res;
++#define GROUPS_PER_PRIO 3
 +
-+	/* unshare() should support CLONE_NEWUSER flag since Linux 3.8 */
-+	res = unshare(CLONE_NEWUSER);
-+	if (res == -1)
-+		tst_brk(TFAIL | TERRNO, "unshare(CLONE_NEWUSER) failed");
++static int fd_notify[FANOTIFY_PRIORITIES][GROUPS_PER_PRIO];
 +
-+	if (map_root) {
-+		/* uid_map file should exist since Linux 3.8 because
-+		 * it is available on Linux 3.5
-+		 */
-+		if (access(UID_MAP, F_OK))
-+			tst_brk(TBROK, "file %s didn't exist", UID_MAP);
++static char event_buf[EVENT_BUF_LEN];
 +
-+		SAFE_FILE_PRINTF(UID_MAP, "%d %d %d", 0, 0, 1);
-+	}
-+}
++#define MOUNT_PATH "fs_mnt"
++#define MNT2_PATH "mntpoint"
++#define FILE_NAME "testfile"
++#define FILE2_NAME "testfile2"
++#define FILE_PATH MOUNT_PATH"/"FILE_NAME
++#define FILE2_PATH MOUNT_PATH"/"FILE2_NAME
++#define FILE_MNT2 MNT2_PATH"/"FILE_NAME
++#define FILE2_MNT2 MNT2_PATH"/"FILE2_NAME
 +
-+static void do_getxattr(unsigned int n)
++static int mount_created, bind_mount_created;
++
++enum {
++	FANOTIFY_INODE,
++	FANOTIFY_MOUNT,
++};
++
++static struct fanotify_mark_type fanotify_mark_types[] = {
++	INIT_FANOTIFY_MARK_TYPE(INODE),
++	INIT_FANOTIFY_MARK_TYPE(MOUNT),
++};
++
++static struct tcase {
++	const char *tname;
++	const char *mark_path;
++	int mark_type;
++	const char *ignore_path;
++	int ignore_mark_type;
++	const char *event_path;
++	int expect_event;
++} tcases[] = {
++	{
++		"ignore mount events created on a specific file",
++		MOUNT_PATH, FANOTIFY_MOUNT,
++		FILE_MNT2, FANOTIFY_INODE,
++		FILE_PATH, 0
++	},
++	{
++		"don't ignore mount events created on another file",
++		MOUNT_PATH, FANOTIFY_MOUNT,
++		FILE_PATH, FANOTIFY_INODE,
++		FILE2_PATH, 1
++	},
++	{
++		"ignore inode events created on a specific mount point",
++		FILE_PATH, FANOTIFY_INODE,
++		MNT2_PATH, FANOTIFY_MOUNT,
++		FILE_MNT2, 0
++	},
++	{
++		"don't ignore inode events created on another mount point",
++		FILE_MNT2, FANOTIFY_INODE,
++		MNT2_PATH, FANOTIFY_MOUNT,
++		FILE_PATH, 1
++	},
++};
++
++static void create_fanotify_groups(unsigned int n)
 +{
 +	struct tcase *tc = &tcases[n];
-+	pid_t pid;
++	struct fanotify_mark_type *mark, *ignore_mark;
++	unsigned int p, i;
++	int ret;
 +
-+	pid = SAFE_FORK();
-+	if (!pid) {
-+		if (tc->set_userns)
-+			do_unshare(tc->map_root);
++	mark = &fanotify_mark_types[tc->mark_type];
++	ignore_mark = &fanotify_mark_types[tc->ignore_mark_type];
 +
-+		verify_getxattr();
-+		exit(0);
++	for (p = 0; p < FANOTIFY_PRIORITIES; p++) {
++		for (i = 0; i < GROUPS_PER_PRIO; i++) {
++			fd_notify[p][i] = SAFE_FANOTIFY_INIT(fanotify_prio[p] |
++							     FAN_NONBLOCK,
++							     O_RDONLY);
++
++			/* Add mark for each group */
++			ret = fanotify_mark(fd_notify[p][i],
++					    FAN_MARK_ADD | mark->flag,
++					    FAN_OPEN, AT_FDCWD, tc->mark_path);
++			if (ret < 0) {
++				tst_brk(TBROK | TERRNO,
++					"fanotify_mark(%d, FAN_MARK_ADD | %s,"
++					"FAN_OPEN, AT_FDCWD, %s) failed",
++					fd_notify[p][i], mark->name,
++					tc->mark_path);
++			}
++			/* Add ignore mark for groups with higher priority */
++			if (p == 0)
++				continue;
++			ret = fanotify_mark(fd_notify[p][i],
++					    FAN_MARK_ADD | ignore_mark->flag |
++					    FAN_MARK_IGNORED_MASK |
++					    FAN_MARK_IGNORED_SURV_MODIFY,
++					    FAN_OPEN, AT_FDCWD,
++					    tc->ignore_path);
++			if (ret < 0) {
++				tst_brk(TBROK | TERRNO,
++					"fanotify_mark(%d, FAN_MARK_ADD | %s | "
++					"FAN_MARK_IGNORED_MASK | "
++					"FAN_MARK_IGNORED_SURV_MODIFY, "
++					"FAN_OPEN, AT_FDCWD, %s) failed",
++					fd_notify[p][i], ignore_mark->name,
++					tc->ignore_path);
++			}
++		}
 +	}
++}
 +
-+	tst_reap_children();
++static void cleanup_fanotify_groups(void)
++{
++	unsigned int i, p;
++
++	for (p = 0; p < FANOTIFY_PRIORITIES; p++) {
++		for (i = 0; i < GROUPS_PER_PRIO; i++) {
++			if (fd_notify[p][i] > 0)
++				SAFE_CLOSE(fd_notify[p][i]);
++		}
++	}
++}
++
++static void verify_event(int group, struct fanotify_event_metadata *event)
++{
++	if (event->mask != FAN_OPEN) {
++		tst_res(TFAIL, "group %d got event: mask %llx (expected %llx) "
++			"pid=%u fd=%u", group, (unsigned long long)event->mask,
++			(unsigned long long)FAN_OPEN,
++			(unsigned)event->pid, event->fd);
++	} else if (event->pid != getpid()) {
++		tst_res(TFAIL, "group %d got event: mask %llx pid=%u "
++			"(expected %u) fd=%u", group,
++			(unsigned long long)event->mask, (unsigned)event->pid,
++			(unsigned)getpid(), event->fd);
++	} else {
++		tst_res(TPASS, "group %d got event: mask %llx pid=%u fd=%u",
++			group, (unsigned long long)event->mask,
++			(unsigned)event->pid, event->fd);
++	}
++}
++
++static void test_fanotify(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++	struct fanotify_mark_type *mark, *ignore_mark;
++	int ret, fd;
++	unsigned int p, i;
++	struct fanotify_event_metadata *event;
++
++	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
++
++	create_fanotify_groups(n);
++
++	mark = &fanotify_mark_types[tc->mark_type];
++	ignore_mark = &fanotify_mark_types[tc->ignore_mark_type];
++
++	/*
++	 * generate sequence of events
++	 */
++	fd = SAFE_OPEN(tc->event_path, O_RDONLY);
++	SAFE_CLOSE(fd);
++
++	/* First verify all groups without matching ignore mask got the event */
++	for (p = 0; p < FANOTIFY_PRIORITIES; p++) {
++		if (p > 0 && !tc->expect_event)
++			break;
++
++		for (i = 0; i < GROUPS_PER_PRIO; i++) {
++			ret = read(fd_notify[p][i], event_buf, EVENT_BUF_LEN);
++			if (ret < 0) {
++				if (errno == EAGAIN) {
++					tst_res(TFAIL, "group %d (prio %d) "
++						"with %s did not get event",
++						i, p, mark->name);
++				}
++				tst_brk(TBROK | TERRNO,
++					"reading fanotify events failed");
++			}
++			if (ret < (int)FAN_EVENT_METADATA_LEN) {
++				tst_brk(TBROK,
++					"short read when reading fanotify "
++					"events (%d < %d)", ret,
++					(int)EVENT_BUF_LEN);
++			}
++			event = (struct fanotify_event_metadata *)event_buf;
++			if (ret > (int)event->event_len) {
++				tst_res(TFAIL, "group %d (prio %d) with %s "
++					"got more than one event (%d > %d)",
++					i, p, mark->name, ret,
++					event->event_len);
++			} else {
++				verify_event(i, event);
++			}
++			if (event->fd != FAN_NOFD)
++				SAFE_CLOSE(event->fd);
++		}
++	}
++	/* Then verify all groups with matching ignore mask did got the event */
++	for (p = 1; p < FANOTIFY_PRIORITIES && !tc->expect_event; p++) {
++		for (i = 0; i < GROUPS_PER_PRIO; i++) {
++			ret = read(fd_notify[p][i], event_buf, EVENT_BUF_LEN);
++			if (ret == 0) {
++				tst_brk(TBROK,
++					"zero length read from fanotify fd");
++			}
++			if (ret > 0) {
++				tst_res(TFAIL, "group %d (prio %d) with %s and "
++					"%s ignore mask got event",
++					i, p, mark->name, ignore_mark->name);
++				if (event->fd != FAN_NOFD)
++					SAFE_CLOSE(event->fd);
++			} else if (errno == EAGAIN) {
++				tst_res(TPASS, "group %d (prio %d) with %s and "
++					"%s ignore mask got no event",
++					i, p, mark->name, ignore_mark->name);
++			} else {
++				tst_brk(TBROK | TERRNO,
++					"reading fanotify events failed");
++			}
++		}
++	}
++	cleanup_fanotify_groups();
 +}
 +
 +static void setup(void)
 +{
-+	const char *acl_text = "u::rw-,u:root:rwx,g::r--,o::r--,m::rwx";
-+	int res;
++	/* Mount the filesystem at one path for watching events */
++	SAFE_MKDIR(MOUNT_PATH, 0755);
++	SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type, 0, NULL);
++	mount_created = 1;
 +
-+	SAFE_TOUCH(TEST_FILE, 0644, NULL);
++	/* Create another bind mount at another path for generating events */
++	SAFE_MKDIR(MNT2_PATH, 0755);
++	SAFE_MOUNT(MOUNT_PATH, MNT2_PATH, "none", MS_BIND, NULL);
++	bind_mount_created = 1;
 +
-+	acl = acl_from_text(acl_text);
-+	if (!acl)
-+		tst_brk(TBROK | TERRNO, "acl_from_text() failed");
-+
-+	res = acl_set_file(TEST_FILE, ACL_TYPE_ACCESS, acl);
-+	if (res == -1)
-+		tst_brk(TBROK | TERRNO, "acl_set_file(%s) failed", TEST_FILE);
-+
-+	/* The default value of max_user_namespaces is set to 0 on some distros,
-+	 * We need to change the default value to call unshare().
-+	 */
-+	if (!access(MAX_USERNS, F_OK)) {
-+		SAFE_FILE_SCANF(MAX_USERNS, "%d", &orig_max_userns);
-+		SAFE_FILE_PRINTF(MAX_USERNS, "%d", 10);
-+	}
++	SAFE_FILE_PRINTF(FILE_PATH, "1");
++	SAFE_FILE_PRINTF(FILE2_PATH, "1");
 +}
 +
 +static void cleanup(void)
 +{
-+	if (orig_max_userns != -1)
-+		SAFE_FILE_PRINTF(MAX_USERNS, "%d", orig_max_userns);
++	cleanup_fanotify_groups();
 +
-+	if (acl)
-+		acl_free(acl);
++	if (bind_mount_created && tst_umount(MNT2_PATH) < 0)
++		tst_brk(TBROK | TERRNO, "bind umount failed");
++
++	if (mount_created && tst_umount(MOUNT_PATH) < 0)
++		tst_brk(TBROK | TERRNO, "fs umount failed");
 +}
 +
 +static struct tst_test test = {
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
-+	.forks_child = 1,
++	.test = test_fanotify,
++	.tcnt = ARRAY_SIZE(tcases),
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = do_getxattr,
-+	.min_kver = "3.8",
++	.format_device = 1,
++	.needs_tmpdir = 1,
++	.needs_root = 1
 +};
 +
-+#else /* HAVE_SYS_XATTR_H && HAVE_LIBACL*/
-+	TST_TEST_TCONF("<sys/xattr.h> or <sys/acl.h> does not exist.");
++#else
++	TST_TEST_TCONF("system doesn't have required fanotify support");
 +#endif
 -- 
-1.8.3.1
-
-
+2.17.1
 
