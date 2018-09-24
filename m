@@ -1,123 +1,503 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 24 Sep 2018 10:51:50 +0200
-Subject: [LTP] [RFC PATCH 3/3] Remove cron tests
+Date: Mon, 24 Sep 2018 10:51:49 +0200
+Subject: [LTP] [RFC PATCH 2/3] net: Remove network_commands (ftp, ssh)
 In-Reply-To: <20180924085150.17555-1-pvorel@suse.cz>
 References: <20180924085150.17555-1-pvorel@suse.cz>
-Message-ID: <20180924085150.17555-4-pvorel@suse.cz>
+Message-ID: <20180924085150.17555-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Removing them as they don't really fit into "kernel testing",
+network_commands contains ftp and ssh login tests as a part of EAL2
+testsuite. Removing them as they don't really fit into "kernel testing",
 it'd be better to have them in some "LTP userspace" project.
-
-+ remove admin_tools runtest file which run them (as a part of EAL2
-testsuite).
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- runtest/admin_tools                           |   9 -
- runtest/commands                              |   1 -
- scenario_groups/default                       |   1 -
- testcases/commands/.gitignore                 |   1 -
- testcases/commands/cron/00_Descriptions.txt   |   4 -
- testcases/commands/cron/Makefile              |  29 --
- testcases/commands/cron/README.tests          |  25 --
- testcases/commands/cron/cron02                |  80 -----
- testcases/commands/cron/cron03                |  83 ------
- testcases/commands/cron/cron_allow01          | 202 -------------
- testcases/commands/cron/cron_deny01           | 192 ------------
- testcases/commands/cron/cron_dirs_check.c     |  44 ---
- testcases/commands/cron/cron_dirs_checks01    |  46 ---
- .../commands/cron/cron_illegal_cron_lines     |  39 ---
- testcases/commands/cron/cron_neg_tests.sh     | 141 ---------
- testcases/commands/cron/cron_pos_tests.sh     | 118 --------
- testcases/commands/cron/cron_tests.sh         | 276 ------------------
- 17 files changed, 1291 deletions(-)
- delete mode 100644 runtest/admin_tools
- delete mode 100644 testcases/commands/cron/00_Descriptions.txt
- delete mode 100644 testcases/commands/cron/Makefile
- delete mode 100644 testcases/commands/cron/README.tests
- delete mode 100755 testcases/commands/cron/cron02
- delete mode 100755 testcases/commands/cron/cron03
- delete mode 100755 testcases/commands/cron/cron_allow01
- delete mode 100755 testcases/commands/cron/cron_deny01
- delete mode 100644 testcases/commands/cron/cron_dirs_check.c
- delete mode 100755 testcases/commands/cron/cron_dirs_checks01
- delete mode 100644 testcases/commands/cron/cron_illegal_cron_lines
- delete mode 100755 testcases/commands/cron/cron_neg_tests.sh
- delete mode 100755 testcases/commands/cron/cron_pos_tests.sh
- delete mode 100644 testcases/commands/cron/cron_tests.sh
+ runtest/network_commands                 |   8 --
+ scenario_groups/network                  |   1 -
+ testcases/network/tcp_cmds/ftp/ftp02     |  98 --------------------
+ testcases/network/tcp_cmds/ftp/ftp03     | 106 ----------------------
+ testcases/network/tcp_cmds/ftp/ftp04     |  81 -----------------
+ testcases/network/tcp_cmds/ftp/ftp05     | 110 -----------------------
+ testcases/network/tcp_cmds/ssh/Makefile  |  31 -------
+ testcases/network/tcp_cmds/ssh/ssh01     |  57 ------------
+ testcases/network/tcp_cmds/ssh/ssh01_s1  |  72 ---------------
+ testcases/network/tcp_cmds/ssh/ssh02     |  57 ------------
+ testcases/network/tcp_cmds/ssh/ssh02_s1  |  73 ---------------
+ testcases/network/tcp_cmds/ssh/ssh03     |  52 -----------
+ testcases/network/tcp_cmds/ssh/ssh03_s1  |  67 --------------
+ testcases/network/tcp_cmds/ssh/ssh_setup |  54 -----------
+ 14 files changed, 867 deletions(-)
+ delete mode 100644 runtest/network_commands
+ delete mode 100755 testcases/network/tcp_cmds/ftp/ftp02
+ delete mode 100755 testcases/network/tcp_cmds/ftp/ftp03
+ delete mode 100755 testcases/network/tcp_cmds/ftp/ftp04
+ delete mode 100755 testcases/network/tcp_cmds/ftp/ftp05
+ delete mode 100644 testcases/network/tcp_cmds/ssh/Makefile
+ delete mode 100755 testcases/network/tcp_cmds/ssh/ssh01
+ delete mode 100755 testcases/network/tcp_cmds/ssh/ssh01_s1
+ delete mode 100755 testcases/network/tcp_cmds/ssh/ssh02
+ delete mode 100755 testcases/network/tcp_cmds/ssh/ssh02_s1
+ delete mode 100755 testcases/network/tcp_cmds/ssh/ssh03
+ delete mode 100755 testcases/network/tcp_cmds/ssh/ssh03_s1
+ delete mode 100755 testcases/network/tcp_cmds/ssh/ssh_setup
 
-diff --git a/runtest/admin_tools b/runtest/admin_tools
+diff --git a/runtest/network_commands b/runtest/network_commands
 deleted file mode 100644
-index 0a46468c8..000000000
---- a/runtest/admin_tools
+index c2eb142b3..000000000
+--- a/runtest/network_commands
 +++ /dev/null
-@@ -1,9 +0,0 @@
--su01 export TCbin=$LTPROOT/testcases/bin;su01
--#cron01 cron01
--cron02 cron02
--cron_deny01 cron_deny01
--cron_allow01 cron_allow01
--cron_dirs_checks01 cron_dirs_checks01
--at_deny01 at_deny01
--at_allow01 at_allow01
--acl_test01 acl_test01
-diff --git a/runtest/commands b/runtest/commands
-index ee7e9f440..462633017 100644
---- a/runtest/commands
-+++ b/runtest/commands
-@@ -5,7 +5,6 @@ ldd01 ldd01
- nm01 nm01
- file01 file01.sh
- tar01  tar_tests.sh
--cron cron_tests.sh
- logrotate export TCdat=$LTPROOT/testcases/bin; logrotate_tests.sh
- cpio01 cpio_tests.sh
- unzip01 unzip01.sh
-diff --git a/scenario_groups/default b/scenario_groups/default
-index 5658a618b..b1739b77e 100644
---- a/scenario_groups/default
-+++ b/scenario_groups/default
-@@ -17,7 +17,6 @@ filecaps
- cap_bounds
- fcntl-locktests
- connectors
--admin_tools
- timers
- power_management_tests
- numa
-diff --git a/testcases/commands/.gitignore b/testcases/commands/.gitignore
-index 9aa1caf6c..0ed343881 100644
---- a/testcases/commands/.gitignore
-+++ b/testcases/commands/.gitignore
-@@ -1,5 +1,4 @@
- /ldd/datafiles/lddfile.out
- /ldd/datafiles/*.obj.so
--/cron/cron_dirs_check
- /eject/eject_check_tray
- /insmod/ltp_insmod01.ko
-diff --git a/testcases/commands/cron/00_Descriptions.txt b/testcases/commands/cron/00_Descriptions.txt
-deleted file mode 100644
-index 9566e0aaa..000000000
---- a/testcases/commands/cron/00_Descriptions.txt
-+++ /dev/null
-@@ -1,4 +0,0 @@
--cron01
--	Test that crontab <filename> installs the cron-job-file and cron will
--	schedule the job correctly.
+@@ -1,8 +0,0 @@
+-ftp02 ftp02
+-ftp03 ftp03
+-ftp04 ftp04
+-ftp05 ftp05
 -
-diff --git a/testcases/commands/cron/Makefile b/testcases/commands/cron/Makefile
-deleted file mode 100644
-index 4969ec7bb..000000000
---- a/testcases/commands/cron/Makefile
+-ssh01 ssh01
+-ssh02 ssh02
+-ssh03 ssh03
+diff --git a/scenario_groups/network b/scenario_groups/network
+index d447daf88..46829501f 100644
+--- a/scenario_groups/network
++++ b/scenario_groups/network
+@@ -9,7 +9,6 @@ net.nfs
+ net.rpc_tests
+ net.tirpc_tests
+ net.sctp
+-network_commands
+ net_stress.appl
+ net_stress.broken_ip
+ net_stress.interface
+diff --git a/testcases/network/tcp_cmds/ftp/ftp02 b/testcases/network/tcp_cmds/ftp/ftp02
+deleted file mode 100755
+index 131610903..000000000
+--- a/testcases/network/tcp_cmds/ftp/ftp02
 +++ /dev/null
-@@ -1,29 +0,0 @@
+@@ -1,98 +0,0 @@
+-#!/bin/sh
 -#
--#    commands/cron testcases Makefile.
+-#   Copyright (c) International Business Machines  Corp., 2003
+-#
+-#   This program is free software;  you can redistribute it and/or modify
+-#   it under the terms of the GNU General Public License as published by
+-#   the Free Software Foundation; either version 2 of the License, or
+-#   (at your option) any later version.
+-#
+-#   This program is distributed in the hope that it will be useful,
+-#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#   the GNU General Public License for more details.
+-#
+-#   You should have received a copy of the GNU General Public License
+-#   along with this program;  if not, write to the Free Software
+-#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-#
+-#
+-#
+-#  FILE   : ftp
+-#
+-#  PURPOSE: Test to see if ftp rejects a user with an invalid password
+-#
+-#  HISTORY:
+-#     03/03  Jerone Young (jeroney@us.ibm.com)
+-#
+-#  NOTE:
+-#       This version is intended for EAL certification, it will need modification
+-#       to conform with LTP standards in the offical LTP tree.
+-#
+-# DESCRIPTION:
+-#	Create Test User
+-#	Make sure test user cannont log in with invalid password
+-#	Cleanup Test User from system
+-#	Exit with exit code of script called upon
+-#
+-
+-setup()
+-{
+-	export TEST_USER="ftpuser2"
+-}
+-
+-do_test()
+-{
+-	CONNECTION_FAILED="Connection failed; test FAILED"
+-	EXPECTED="Login failed as expected; test PASSED"
+-	UNEXPECTED="Login succeeded unexpectedly; test FAILED"
+-
+-	set PASSWD "invaild_password?!!"
+-	set timeout 90
+-
+-	expect -c "
+-		#ftp to host
+-		spawn ftp $RHOST
+-		sleep 1
+-		# Check if connection succeeded.
+-		expect {
+-			\"Name\" {}
+-			timeout {send_user \"\n$CONNECTION_FAILED\n\";exit 1}
+-		}
+-
+-		send \"$RUSER\r\"
+-		sleep 1
+-		expect -re \"Password:\"
+-		send \"$PASSWD\r\"
+-		sleep 1
+-
+-		expect {
+-			# 530 - Login failed
+-			\"530\" {send_user \"$EXPECTED\n\";exit 0}
+-			# 230 - Login successful
+-			\"230\" {send_user \"$UNEXPECTED\n\"; exit 1}
+-		}
+-
+-		expect \"ftp>\"
+-		send \"exit\r\"
+-	"
+-}
+-
+-TCID="ftp02"
+-TST_TOTAL=1
+-
+-. test.sh
+-. ftp_setup
+-
+-setup
+-do_setup
+-TST_CLEANUP=do_cleanup
+-
+-do_test
+-if [ $? -ne 0 ]; then
+-	tst_resm TFAIL "Test $TCID FAIL"
+-else
+-	tst_resm TPASS "Test $TCID PASS"
+-fi
+-
+-tst_exit
+diff --git a/testcases/network/tcp_cmds/ftp/ftp03 b/testcases/network/tcp_cmds/ftp/ftp03
+deleted file mode 100755
+index e2925e8e6..000000000
+--- a/testcases/network/tcp_cmds/ftp/ftp03
++++ /dev/null
+@@ -1,106 +0,0 @@
+-#!/bin/sh
+-#
+-#   Copyright (c) International Business Machines  Corp., 2003, 2005
+-#
+-#   This program is free software;  you can redistribute it and/or modify
+-#   it under the terms of the GNU General Public License as published by
+-#   the Free Software Foundation; either version 2 of the License, or
+-#   (at your option) any later version.
+-#
+-#   This program is distributed in the hope that it will be useful,
+-#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#   the GNU General Public License for more details.
+-#
+-#   You should have received a copy of the GNU General Public License
+-#   along with this program;  if not, write to the Free Software
+-#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-#
+-#
+-#
+-#  FILE   : ftp
+-#
+-#  PURPOSE: Ftp into a remote hosts successfully as a vaild user (other than root)
+-#
+-#  HISTORY:
+-#     03/03  Jerone Young (jeroney@us.ibm.com)
+-#     04/03  Dustin Kirkland (k1rkland@us.ibm.com)
+-#     09/05  Kris Wilson (krisw@us.ibm.com) Check if vsftpd.conf was found.
+-#
+-#  NOTE:
+-#	This version is intended for EAL certification, it will need modification
+-#	to conform with LTP standards in the offical LTP tree.
+-
+-setup()
+-{
+-	export TEST_USER="ftpuser3"
+-}
+-
+-do_test()
+-{
+-	FAIL_530="==> TEST : FAIL (ftp rejected login attempt)"
+-	PASS_230="==> TEST : PASS (ftp allowed login attempt)"
+-	FAIL_230="==> TEST : FAIL (ftp allowed login attempt)"
+-	PASS_500="==> TEST : PASS (ftp rejected login attempt)"
+-	PASS_530="==> TEST : PASS (ftp rejected login attempt)"
+-
+-	echo "TEST: Ftp into a remote host as a local user (other than root),"
+-	echo "LOCAL_ENABLE=$LOCAL_ENABLE"
+-
+-	if [ "$LOCAL_ENABLE" = "YES" ]; then
+-	expect -c "
+-		spawn ftp $RHOST
+-		sleep 1
+-		expect -re \": \"
+-		send \"$TEST_USER\r\"
+-		expect -re \"Password:\"
+-		send \"$TEST_USER_PASSWD\r\"
+-		expect {
+-			# 530 - Login failed
+-			\"530\" {send_user \"$FAIL_530\n\";exit 1}
+-			# 230 - Login successful
+-			\"230\" {send_user \"$PASS_230\n\";exit 0}
+-		}
+-		expect \"ftp> \"
+-		send \"quit\r\"
+-	"
+-	else
+-	expect -c "
+-		spawn ftp $RHOST
+-		sleep 1
+-		expect -re \": \"
+-		send \"$TEST_USER\r\"
+-		expect -re \"Password:\"
+-		send \"$TEST_USER_PASSWD\r\"
+-		expect {
+-			# 230 - Login successful
+-			\"230\" {send_user \"$FAIL_230\n\";exit 1}
+-			# 500 - Login failed
+-			\"500\" {send_user \"$PASS_500\n\";exit 0}
+-			# 530 - Login failed
+-			\"530\" {send_user \"$PASS_530\n\";exit 0}
+-		}
+-		expect \"ftp> \"
+-		send \"quit\r\"
+-	"
+-	fi
+-}
+-
+-TCID="ftp03"
+-TST_TOTAL=1
+-
+-. test.sh
+-. ftp_setup
+-
+-setup
+-do_setup
+-TST_CLEANUP=do_cleanup
+-
+-do_test
+-if [ $? -ne 0 ]; then
+-	tst_resm TFAIL "Test $TCID FAIL"
+-else
+-	tst_resm TPASS "Test $TCID PASS"
+-fi
+-
+-tst_exit
+diff --git a/testcases/network/tcp_cmds/ftp/ftp04 b/testcases/network/tcp_cmds/ftp/ftp04
+deleted file mode 100755
+index beb90cf40..000000000
+--- a/testcases/network/tcp_cmds/ftp/ftp04
++++ /dev/null
+@@ -1,81 +0,0 @@
+-#!/bin/sh
+-#
+-#   Copyright (c) International Business Machines  Corp., 2003, 2005
+-#
+-#   This program is free software;  you can redistribute it and/or modify
+-#   it under the terms of the GNU General Public License as published by
+-#   the Free Software Foundation; either version 2 of the License, or
+-#   (at your option) any later version.
+-#
+-#   This program is distributed in the hope that it will be useful,
+-#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#   the GNU General Public License for more details.
+-#
+-#   You should have received a copy of the GNU General Public License
+-#   along with this program;  if not, write to the Free Software
+-#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-#
+-#
+-#
+-#  FILE   : ftp
+-#
+-#  PURPOSE: Tests to see if ftp rejects a 'root' login attempt.
+-#
+-#  SETUP: The program `/usr/bin/expect' MUST be installed.
+-#
+-#  HISTORY:
+-#   03/04/03 Jerone Young (jeroney@us.ibm.com)
+-#   09/21/05 Kris Wilson (krisw@us.ibm.com) Check if vsftpd is on system.
+-
+-setup()
+-{
+-	TEST_USER=root
+-
+-	ftpusers="/etc/ftpusers"
+-	[ -f "$ftpusers" ] || ftpusers="/etc/vsftpd/ftpusers"
+-
+-	grep -q ^${TEST_USER}$ $ftpusers || \
+-		tst_brkm TCONF "user '$TEST_USER' not found in $ftpusers file"
+-}
+-
+-do_test()
+-{
+-	FAIL_230="==> TEST : FAIL (ftp allowed login attempt)"
+-	PASS_530="==> TEST : PASS (ftp rejected login attempt)"
+-	echo "Ftp should reject $TEST_USER from loging in successfully"
+-	expect -c "
+-		spawn ftp $RHOST
+-		sleep 1
+-		expect -re \": \"
+-		send \"$TEST_USER\r\"
+-		expect -re \"Password:\"
+-		send \"$TEST_USER_PASSWD\r\"
+-		expect {
+-			# 230 - Login successful
+-			\"230\" {send_user \"$FAIL_230\n\";exit 1}
+-			# 530 - Login failed
+-			\"530\" {send_user \"$PASS_530\n\";exit 0}
+-		}
+-		expect \"ftp> \"
+-		send \"quit\r\"
+-	"
+-}
+-
+-TCID="ftp04"
+-TST_TOTAL=1
+-
+-. test.sh
+-. ftp_setup
+-
+-setup
+-do_setup
+-
+-do_test
+-if [ $? -ne 0 ]; then
+-	tst_resm TFAIL "Test $TCID FAIL"
+-else
+-	tst_resm TPASS "Test $TCID PASS"
+-fi
+-
+-tst_exit
+diff --git a/testcases/network/tcp_cmds/ftp/ftp05 b/testcases/network/tcp_cmds/ftp/ftp05
+deleted file mode 100755
+index e9e42725e..000000000
+--- a/testcases/network/tcp_cmds/ftp/ftp05
++++ /dev/null
+@@ -1,110 +0,0 @@
+-#!/bin/sh
+-#
+-#   Copyright (c) International Business Machines  Corp., 2003, 2005
+-#
+-#   This program is free software;  you can redistribute it and/or modify
+-#   it under the terms of the GNU General Public License as published by
+-#   the Free Software Foundation; either version 2 of the License, or
+-#   (at your option) any later version.
+-#
+-#   This program is distributed in the hope that it will be useful,
+-#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#   the GNU General Public License for more details.
+-#
+-#   You should have received a copy of the GNU General Public License
+-#   along with this program;  if not, write to the Free Software
+-#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-#
+-#
+-#
+-#  FILE   : ftp
+-#
+-#  PURPOSE: Ftp into a remote hosts successfully as a vaild user (other than root)
+-#
+-#  HISTORY:
+-#     03/03  Jerone Young (jeroney@us.ibm.com)
+-#     04/03  Dustin Kirkland (k1rkland@us.ibm.com)
+-#     09/05  Kris Wilson (krisw@us.ibm.com) Check if vsftpd is on system.
+-#
+-#  NOTE:
+-#	This version is intended for EAL certification, it will need modification
+-#	to conform with LTP standards in the offical LTP tree.
+-#
+-# DESCRIPTION:
+-#	The anonymous user will ftp in and create a directory in his/her
+-#	home directory on the remote host.
+-#
+-
+-setup()
+-{
+-	TEST_USER="anonymous"
+-}
+-
+-do_test()
+-{
+-	FAIL_530="==> TEST : FAIL (ftp rejected login attempt)"
+-	PASS_230="==> TEST : PASS (ftp allowed login attempt)"
+-	FAIL_230="==> TEST : FAIL (ftp allowed login attempt)"
+-	PASS_500="==> TEST : PASS (ftp rejected login attempt)"
+-	PASS_530="==> TEST : PASS (ftp rejected login attempt)"
+-
+-	echo "Ftp into a remote host as anonymous user;"
+-	echo "ANONYMOUS_ENABLE=$ANONYMOUS_ENABLE"
+-
+-	if [ "$ANONYMOUS_ENABLE" = "YES" ]; then
+-	expect -c "
+-		spawn ftp $RHOST
+-		sleep 1
+-		expect -re \": \"
+-		send \"$TEST_USER\r\"
+-		expect -re \"Password:\"
+-		send \"$TEST_USER_PASSWD\r\"
+-		expect {
+-			# 530 - Login failed
+-			\"530\" {send_user \"$FAIL_530\n\";exit 1}
+-			# 230 - Login successful
+-			\"230\" {send_user \"$PASS_230\n\";exit 0}
+-		}
+-		expect \"ftp> \"
+-		send \"quit\r\"
+-	"
+-	else
+-	expect -c "
+-		spawn ftp $RHOST
+-		sleep 1
+-		expect -re \": \"
+-		send \"$TEST_USER\r\"
+-		expect -re \"Password:\"
+-		send \"$TEST_USER_PASSWD\r\"
+-		expect {
+-			# 230 - Login successful
+-			\"230\" {send_user \"$FAIL_230\n\";exit 1}
+-			# 500 - Login failed
+-			\"500\" {send_user \"$PASS_500\n\";exit 0}
+-			# 530 - Login failed
+-			\"530\" {send_user \"$PASS_530\n\";exit 0}
+-		}
+-		expect \"ftp> \"
+-		send \"quit\r\"
+-	"
+-	fi
+-}
+-
+-TCID="ftp05"
+-TST_TOTAL=1
+-
+-. test.sh
+-. ftp_setup
+-
+-setup
+-do_setup
+-
+-do_test
+-if [ $? -ne 0 ]; then
+-	tst_resm TFAIL "Test $TCID FAIL"
+-else
+-	tst_resm TPASS "Test $TCID PASS"
+-fi
+-
+-tst_exit
+diff --git a/testcases/network/tcp_cmds/ssh/Makefile b/testcases/network/tcp_cmds/ssh/Makefile
+deleted file mode 100644
+index 8ce99e068..000000000
+--- a/testcases/network/tcp_cmds/ssh/Makefile
++++ /dev/null
+@@ -1,31 +0,0 @@
+-#
+-#    network/tcp_cmds/ssh testcases Makefile.
 -#
 -#    Copyright (C) 2009, Cisco Systems Inc.
 -#
@@ -138,50 +518,21 @@ index 4969ec7bb..000000000
 -# Ngie Cooper, July 2009
 -#
 -
--top_srcdir		?= ../../..
+-top_srcdir		?= ../../../..
 -
 -include $(top_srcdir)/include/mk/env_pre.mk
 -
--INSTALL_TARGETS		:= cron0[23] cron_illegal_cron_lines cron_allow01 cron_deny01 cron_dirs_checks01 *.sh
+-INSTALL_TARGETS		:= ssh*
+-
+-MAKE_TARGETS		:=
 -
 -include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/commands/cron/README.tests b/testcases/commands/cron/README.tests
-deleted file mode 100644
-index 0d5db7113..000000000
---- a/testcases/commands/cron/README.tests
-+++ /dev/null
-@@ -1,25 +0,0 @@
--This directory contains two scripts and one data file to test cron. Both
--shouldn't be run as root but they warn for themselves. If a username is
--given as parameter they run as this user.
--
--Both scripts save the current crontab and restore it after finishing.
--
--* Positive tests
--
--	cron_pos_tests.sh [username]
--
--	- add new job
--	- check correct execution of job
--	- delete job
--
--* Negative tests
--
--	cron_neg_tests.sh [username]
--
--	- try to edit the crontab of root
--	- try to set illegal or nondefined execution times
--	  Here the script uses file illegal_cron_lines which contains two
--	  fields per line: the cron line to be tested (without script name),
--	  and the description of this test. The description is written to
--	  stdout during execution of the test.
--	- try to do things you aren't allowed as non-root (cron runs as root)
-diff --git a/testcases/commands/cron/cron02 b/testcases/commands/cron/cron02
+diff --git a/testcases/network/tcp_cmds/ssh/ssh01 b/testcases/network/tcp_cmds/ssh/ssh01
 deleted file mode 100755
-index 16b425de3..000000000
---- a/testcases/commands/cron/cron02
+index e2f2c9c0f..000000000
+--- a/testcases/network/tcp_cmds/ssh/ssh01
 +++ /dev/null
-@@ -1,80 +0,0 @@
+@@ -1,57 +0,0 @@
 -#!/bin/sh
 -#*********************************************************************
 -#   Copyright (c) International Business Machines  Corp., 2000
@@ -200,1263 +551,456 @@ index 16b425de3..000000000
 -#   along with this program;  if not, write to the Free Software
 -#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 -#
--#  FILE   : cron02
+-#  FILE   : ssh
 -#
--#  PURPOSE: Test a postive cron job
--#			- add new job
--#   		- check correct execution of job
--#   		- delete job
+-#  PURPOSE: Tests to see that ssh rejects an invalid password
+-#
+-#  SETUP: The program `/usr/bin/expect' MUST be installed.
 -#
 -#  HISTORY:
--#     	SUSE
+-#    03/03 Jerone Young (jeroney@us.ibm.com)
 -#
--
--TEST_USER="c01_user"
--TEST_USER_GROUP="users"
--TEST_USER_HOMEDIR="/home/$TEST_USER"
--
--#-----------------------------------------------------------------------
--# FUNCTION:  do_setup
--#-----------------------------------------------------------------------
--
--do_setup(){
--	#erase any data from potential defunt cron test
--	rm -rf /tmp/crontest > /dev/null 2>&1
--
--    #erase user if he may exist , so we can have a clean env
--        rm -rf /home/$TEST_USER
--        userdel $TEST_USER
--	sleep 1
--
--        useradd -m -g $TEST_USER_GROUP $TEST_USER
--        if [ $? != 0 ]
--        then {
--                echo "Could not add test user $TEST_USER to system $RHOST."
--                exit 1
--        }
--        fi
--
--	if [ -n "$CROND_DAEMON" ]; then
--		restart_daemon $CROND_DAEMON
--	else
--		tst_brkm TBROK "Couldn't find crond or cron"
--	fi
--}
--
--#-----------------------------------------------------------------------
--# FUNCTION:  do_cleanup
--#-----------------------------------------------------------------------
--
--do_cleanup(){
--        rm -rf /home/$TEST_USER
--        userdel $TEST_USER
--}
--
--#-----------------------------------------------------------------------
--# FUNCTION:  MAIN
--#-----------------------------------------------------------------------
--. cmdlib.sh
--
--do_setup
--cron_pos_tests.sh $TEST_USER
--EXIT_CODE=$?
--do_cleanup
--exit $EXIT_CODE
-diff --git a/testcases/commands/cron/cron03 b/testcases/commands/cron/cron03
-deleted file mode 100755
-index 7ba7bf40c..000000000
---- a/testcases/commands/cron/cron03
-+++ /dev/null
-@@ -1,83 +0,0 @@
--#!/bin/sh
--#*********************************************************************
--#   Copyright (c) International Business Machines  Corp., 2000
--#
--#   This program is free software;  you can redistribute it and/or modify
--#   it under the terms of the GNU General Public License as published by
--#   the Free Software Foundation; either version 2 of the License, or
--#   (at your option) any later version.
--#
--#   This program is distributed in the hope that it will be useful,
--#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
--#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
--#   the GNU General Public License for more details.
--#
--#   You should have received a copy of the GNU General Public License
--#   along with this program;  if not, write to the Free Software
--#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
--#
--#  FILE   : cron
--#
--#  PURPOSE: Test a bad (negative) cron job
--#			- try to edit the crontab of root
--#   		- try to set illegal or nondefined execution times
--#      	 	  Here the script uses file illegal_cron_lines which contains two
--#      		  fields per line: the cron line to be tested (without script name),
--#      		  and the description of this test. The description is written to
--#      		  stdout during execution of the test.
--#    		- try to do things you aren't allowed as non-root (cron runs as root)
--
--#
--#  HISTORY:
--#     	SUSE
--#
--
--
--TEST_USER="c02_user"
--TEST_USER_GROUP="users"
--TEST_USER_HOMEDIR="/home/$TEST_USER"
--
--#-----------------------------------------------------------------------
--# FUNCTION:  do_setup
--#-----------------------------------------------------------------------
--
--do_setup(){
--
--    #erase user if he may exist , so we can have a clean env
--        rm -rf /home/$TEST_USER
--        userdel $TEST_USER
--	sleep 1
--
--        useradd -m -g $TEST_USER_GROUP $TEST_USER
--        if [ $? != 0 ]
--        then {
--                echo "Could not add test user $TEST_USER to system $RHOST."
--                exit 1
--        }
--        fi
--        # restart cron daemon
--	# Red Hat uses crond, SuSE/Other uses cron.
--	if [ -f /etc/init.d/crond ]; then
--		/etc/init.d/crond restart
--	else
--		/etc/init.d/cron restart
--	fi
--}
--
--#-----------------------------------------------------------------------
--# FUNCTION:  do_cleanup
--#-----------------------------------------------------------------------
--
--do_cleanup(){
--        rm -rf /home/$TEST_USER
--        userdel $TEST_USER
--}
--
--#-----------------------------------------------------------------------
--# FUNCTION:  MAIN
--#-----------------------------------------------------------------------
--do_setup
--cron_neg_tests.sh $TEST_USER
--EXIT_CODE=$?
--do_cleanup
--exit $EXIT_CODE
-diff --git a/testcases/commands/cron/cron_allow01 b/testcases/commands/cron/cron_allow01
-deleted file mode 100755
-index 9a5e4d240..000000000
---- a/testcases/commands/cron/cron_allow01
-+++ /dev/null
-@@ -1,202 +0,0 @@
--#!/bin/bash
--#
--#   Copyright (c) International Business Machines  Corp., 2003
--#
--#   This program is free software;  you can redistribute it and/or modify
--#   it under the terms of the GNU General Public License as published by
--#   the Free Software Foundation; either version 2 of the License, or
--#   (at your option) any later version.
--#
--#   This program is distributed in the hope that it will be useful,
--#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
--#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
--#   the GNU General Public License for more details.
--#
--#   You should have received a copy of the GNU General Public License
--#   along with this program;  if not, write to the Free Software
--#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
--#
--#	FILE: /var/spool/cron/allow
--#
--#	PURPOSE: Test that /var/spool/cron/allow , only allows those in the file to run cron jobs.
--#
--#	HISTORY:
--#		04/03 Jerone Young (jyoung5@us.ibm.com)
--#
--
--echo "This script contains bashism that needs to be fixed!"
--
--iam=`whoami`
--
--tvar=${MACHTYPE%-*}
--tvar=${tvar#*-}
--
--if [ "$tvar" = "redhat" -o "$tvar" = "redhat-linux" ]
--then
--CRON_ALLOW="/etc/cron.allow"
--else
--CRON_ALLOW="/var/spool/cron/allow"
--fi
--
--TEST_USER1="ca_user1"
--TEST_USER1_HOME="/home/$TEST_USER1"
--TEST_USER2="ca_user2"
--TEST_USER2_HOME="/home/$TEST_USER2"
--
--#-----------------------------------------------------------------------
--# FUNCTION:  do_setup
--#-----------------------------------------------------------------------
--
--do_setup() {
--	#move any files that may get in the way
--	rm /tmp/cron_allow_test > /dev/null 2>&1
--	rm /tmp/cron_allow_test1 > /dev/null 2>&1
--	mv $CRON_ALLOW $CRON_ALLOW.old > /dev/null 2>&1
--
--	#remove users for clean enviroment
--    su $TEST_USER1 -c "crontab -r"
--    su $TEST_USER2 -c "crontab -r"
--        rm -rf /home/$TEST_USER1
--        rm -rf /home/$TEST_USER2
--	userdel $TEST_USER1
--	userdel $TEST_USER2
--	sleep 1
--
--#create 1st user
--	useradd -m -g users $TEST_USER1
--	if [ $? != 0 ]
--    then {
--        echo "Could not add test user $TEST_USER1 to system."
--        exit 1
--    }
--    fi
--
--#create 2nd user
--	useradd -m -g users $TEST_USER2
--    if [ $? != 0 ]
--    then {
--        echo "Could not add test user $TEST_USER2 to system."
--        exit 1
--    }
--    fi
--}
--
--#-----------------------------------------------------------------------
--# FUNCTION:  do_cleanup
--#-----------------------------------------------------------------------
--do_cleanup(){
--    su $TEST_USER1 -c "crontab -r"
--    su $TEST_USER2 -c "crontab -r"
--        rm -rf /home/$TEST_USER1
--        rm -rf /home/$TEST_USER2
--	userdel $TEST_USER1
--	userdel $TEST_USER2
--	rm $CRON_ALLOW
--	mv $CRON_ALLOW.old $CRON_ALLOW > /dev/null 2>&1
--	rm /tmp/cron_allow_test >/dev/null 2>&1
--}
--
--#-----------------------------------------------------------------------
--# FUNCTION:  run_test
--#-----------------------------------------------------------------------
--run_test() {
--
--if [ $iam = $TEST_USER1 ]
--then
--	echo "TEST: $CRON_ALLOW should only allow those in the file to
--run cron jobs."
--
--	echo "(1) TEST THAT PERSON IN $CRON_ALLOW IS ABLE TO RUN JOB."
--
--	echo "backup crontab...."
--    crontab -l | grep '^[^#]' > /tmp/crontab-cronallow-save-$iam
--
--	crontab - << EOF
--        `date '+%M' | awk '{ORS=""; print ($1+2)%60 " * * * * "}'` echo "TEST JOB RAN" >> /tmp/cron_allow_test 2>&1
--EOF
--	if [ $? != 0 ]; then
--	echo Error while adding crontab for user $TEST_USER1
--	exit 1
--	fi
--
--	echo "sleeping for 130 seconds...."
--	sleep 130
--
--	EXIT_CODE=1
--	test -e /tmp/cron_allow_test && EXIT_CODE=0
--
--	if [ $EXIT_CODE = 1 ]; then
--		echo "Cron did not allow user to execute job , TEST FAILED"
--	else
--		echo "Cron allowed user to execute test job, TEST PASSED"
--	fi
--
--	 echo "restore old crontab..."
--     crontab /tmp/crontab-cronallow-save-$iam
--     rm -f /tmp/crontab-cronallow-save-$iam
--
--
--	rm -f /tmp/cron_allow_test
--
--	exit $EXIT_CODE
--fi
--
--if [ $iam = $TEST_USER2 ]
--then
--        echo "(2) TEST THAT PERSON NOT IN $CRON_ALLOW IS NOT ABLE TO RUN JOB."
--
--		echo "backup crontab...."
--    	crontab -l | grep '^[^#]' > /tmp/crontab-cronallow-save-$iam
--
--        crontab - << EOF
--        `date '+%M' | awk '{ORS=""; print ($1+2)%60 " * * * * "}'` echo "TEST JOB RAN" >> /tmp/cron_allow_test1 2>&1
--EOF
--        if [ $? != 0 ]; then
--        echo Error while adding crontab for user $TEST_USER2
--        fi
--
--        echo "sleeping for 130 seconds...."
--        sleep 130
--
--        EXIT_CODE=0
--        test -e /tmp/cron_allow_test1 && EXIT_CODE=1
--
--        if [ $EXIT_CODE = 0 ]; then
--                echo "Cron did not allow user to execute job , TEST PASSED"
--        else
--                echo "Cron allowed user to execute test job, TEST FAILED"
--        fi
--
--		echo "restore old crontab..."
--     	crontab /tmp/crontab-cronallow-save-$iam
--     	rm -f /tmp/crontab-cronallow-save-$iam
--
--        rm -f /tmp/cron_allow_test1
--
--        exit $EXIT_CODE
--fi
--
--}
--
--#-----------------------------------------------------------------------
--# FUNCTION: main
--#-----------------------------------------------------------------------
--if [ $iam = "root" ]
--then
--	do_setup
--	echo $TEST_USER1 > $CRON_ALLOW
--	EXIT_CODE=0
--	su $TEST_USER1 -c "$0"
--	if [ $? != 0 ]
--	then
--	   EXIT_CODE=1
--	fi
--	su $TEST_USER2 -c "$0"
--	if [ $? != 0 ]
--	then EXIT_CODE=1
--	fi
--	do_cleanup
--	exit $EXIT_CODE
--else
--	run_test
--fi
-diff --git a/testcases/commands/cron/cron_deny01 b/testcases/commands/cron/cron_deny01
-deleted file mode 100755
-index 9d3203925..000000000
---- a/testcases/commands/cron/cron_deny01
-+++ /dev/null
-@@ -1,192 +0,0 @@
--#!/bin/bash
--#
--#   Copyright (c) International Business Machines  Corp., 2003
--#
--#   This program is free software;  you can redistribute it and/or modify
--#   it under the terms of the GNU General Public License as published by
--#   the Free Software Foundation; either version 2 of the License, or
--#   (at your option) any later version.
--#
--#   This program is distributed in the hope that it will be useful,
--#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
--#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
--#   the GNU General Public License for more details.
--#
--#   You should have received a copy of the GNU General Public License
--#   along with this program;  if not, write to the Free Software
--#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
--#
--#	FILE: /var/spool/cron/allow
--#
--#	PURPOSE: Test that /var/spool/cron/deny , does not allow those in the file to run cron jobs.
--#
--#	HISTORY:
--#		04/03 Jerone Young (jyoung5@us.ibm.com)
--#
--
--echo "This script contains bashism that needs to be fixed!"
--
--iam=`whoami`
--
--tvar=${MACHTYPE%-*}
--tvar=${tvar#*-}
--
--if [ "$tvar" = "redhat" -o "$tvar" = "redhat-linux" ]
--then
--CRON_DENY="/etc/cron.deny"
--CRON_ALLOW="/etc/cron.allow"
--else
--CRON_DENY="/var/spool/cron/deny"
--CRON_ALLOW="/var/spool/cron/allow"
--fi
--
--TEST_USER1="cd_user1"
--TEST_USER1_HOME="/home/$TEST_USER1"
--TEST_USER2="cd_user2"
--TEST_USER2_HOME="/home/$TEST_USER2"
--
--#-----------------------------------------------------------------------
--# FUNCTION:  do_setup
--#-----------------------------------------------------------------------
--
--do_setup() {
--	#move any files that may get in the way
--	rm /tmp/cron_deny_test > /dev/null 2>&1
--        rm /tmp/cron_deny_test1 > /dev/null 2>&1
--
--	mv $CRON_DENY $CRON_DENY.old > /dev/null 2>&1
--	mv $CRON_ALLOW $CRON_ALLOW.old > /dev/null 2>&1
--
--	#remove users for clean enviroment
--    su $TEST_USER1 -c "crontab -r"
--    su $TEST_USER2 -c "crontab -r"
--        rm -rf /home/$TEST_USER1
--        rm -rf /home/$TEST_USER2
--	userdel $TEST_USER1
--	userdel $TEST_USER2
--	sleep 1
--
--#create 1st user
--	useradd -m -g users $TEST_USER1
--	if [ $? != 0 ]
--    then {
--        echo "Could not add test user $TEST_USER1 to system."
--        exit 1
--    }
--    fi
--
--#create 2nd user
--	useradd -m -g users $TEST_USER2
--    if [ $? != 0 ]
--    then {
--        echo "Could not add test user $TEST_USER2 to system."
--        exit 1
--    }
--    fi
--}
--
--#-----------------------------------------------------------------------
--# FUNCTION:  do_cleanup
--#-----------------------------------------------------------------------
--do_cleanup(){
--    su $TEST_USER1 -c "crontab -r"
--    su $TEST_USER2 -c "crontab -r"
--        rm -rf /home/$TEST_USER1
--        rm -rf /home/$TEST_USER2
--	userdel $TEST_USER1
--	userdel $TEST_USER2
--	rm $CRON_DENY
--	mv $CRON_DENY.old $CRON_DENY > /dev/null 2>&1
--	mv $CRON_ALLOW.old $CRON_ALLOW > /dev/null 2>&1
--	rm /tmp/cron_allow_test >/dev/null 2>&1
--}
--
--#-----------------------------------------------------------------------
--# FUNCTION:  run_test
--#-----------------------------------------------------------------------
--run_test() {
--
--if [ $iam = $TEST_USER1 ]
--then
--	echo "TEST: $CRON_DENY should allow only allow those who are not in the file to
--run cron jobs."
--
--	echo "(1) TEST THAT PERSON NOT IN $CRON_DENY IS ABLE TO RUN JOB."
--
--	crontab - << EOF
--	`date '+%M' | awk '{ORS=""; print ($1+2)%60" * * * * "}'` echo "TEST JOB RAN" >> /tmp/cron_deny_test 2>&1
--EOF
--	if [ $? != 0 ]; then
--	echo Error while adding crontab for user $TEST_USER1
--	exit 1
--	fi
--
--	echo "sleeping for 130 seconds...."
--	sleep 130
--
--	EXIT_CODE=1
--	test -e /tmp/cron_deny_test && EXIT_CODE=0
--
--	if [ $EXIT_CODE = 1 ]; then
--		echo "Cron did not allow user to execute job , TEST FAILED"
--	else
--		echo "Cron allowed user to execute test job, TEST PASSED"
--	fi
--
--	rm -f /tmp/cron_deny_test
--
--	exit $EXIT_CODE
--fi
--
--if [ $iam = $TEST_USER2 ]
--then
--        echo "(2) TEST THAT PERSON IN $CRON_DENY IS NOT ABLE TO RUN JOB."
--
--        crontab - << EOF
--        `date '+%M' | awk '{ORS=""; print ($1+2)%60 " * * * * "}'` echo "TEST JOB RAN" >> /tmp/cron_deny_test 2>&1
--EOF
--        if [ $? != 0 ]; then
--        echo Error while adding crontab for user $TEST_USER2
--        fi
--
--        echo "sleeping for 130 seconds...."
--        sleep 130
--
--        EXIT_CODE=0
--        test -e /tmp/cron_deny_test1 && EXIT_CODE=1
--
--        if [ $EXIT_CODE = 0 ]; then
--                echo "Cron did not allow user to execute job , TEST PASSED"
--        else
--                echo "Cron allowed user to execute test job, TEST FAILED"
--        fi
--
--        rm -f /tmp/cron_deny_test1
--
--        exit $EXIT_CODE
--fi
--
--}
--
--#-----------------------------------------------------------------------
--# FUNCTION: main
--#-----------------------------------------------------------------------
--if [ $iam = "root" ]
--then
--	do_setup
--	echo $TEST_USER2 > $CRON_DENY
--	EXIT_CODE=0
--	su $TEST_USER1 -c "$0"
--	if [ $? != 0 ]
--	then
--	   EXIT_CODE=1
--	fi
--	su $TEST_USER2 -c "$0"
--	if [ $? != 0 ]
--	then EXIT_CODE=1
--	fi
--	do_cleanup
--	exit $EXIT_CODE
--else
--	run_test
--fi
-diff --git a/testcases/commands/cron/cron_dirs_check.c b/testcases/commands/cron/cron_dirs_check.c
-deleted file mode 100644
-index cc9e0ad25..000000000
---- a/testcases/commands/cron/cron_dirs_check.c
-+++ /dev/null
-@@ -1,44 +0,0 @@
--#include <sys/types.h>
--#include <sys/param.h>
--#include <sys/stat.h>
--#include <stdio.h>
--#include <unistd.h>
--
--/* Check directory Access */
--int check_directory_access(char *directory)
--{
--
--	struct stat statbuf;
--
--	printf("Checking %s\n", directory);
--
--	if (stat(directory, &statbuf) == -1) {
--		printf("FAIL: %s. Could not obtain directory status\n",
--		       directory);
--		return 1;
--	}
--
--	if (statbuf.st_uid != 0) {
--		printf("FAIL: %s. Invalid owner\n", directory);
--		return 1;
--	}
--
--	if ((statbuf.st_mode & S_IWGRP) || (statbuf.st_mode & S_IWOTH)) {
--		printf("FAIL: %s. Invalid write access\n", directory);
--		return 1;
--	}
--
--	printf("PASS: %s\n", directory);
--	return 0;
--}
--
--int main(int argc, char *argv[])
--{
--
--	if (argc != 2) {
--		printf("Please enter target directory");
--		return 1;
--	}
--
--	return check_directory_access(argv[1]);
--}
-diff --git a/testcases/commands/cron/cron_dirs_checks01 b/testcases/commands/cron/cron_dirs_checks01
-deleted file mode 100755
-index ea1215e8d..000000000
---- a/testcases/commands/cron/cron_dirs_checks01
-+++ /dev/null
-@@ -1,46 +0,0 @@
--#!/bin/sh
--#*********************************************************************
--#   Copyright (c) International Business Machines  Corp., 2000
--#
--#   This program is free software;  you can redistribute it and/or modify
--#   it under the terms of the GNU General Public License as published by
--#   the Free Software Foundation; either version 2 of the License, or
--#   (at your option) any later version.
--#
--#   This program is distributed in the hope that it will be useful,
--#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
--#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
--#   the GNU General Public License for more details.
--#
--#   You should have received a copy of the GNU General Public License
--#   along with this program;  if not, write to the Free Software
--#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
--#
--#  FILE   : cron
--#
--#  PUROPOSE: Ensure that the following directories only have root write access
--#			/etc/cron.d
--#			/etc/cron.daily
--#			/etc/cron.hourly
--#			/etc/cron.monthly
--#			/etc/cron.weekly
--#			/var/spool/cron
--#	HISTORY:
--#		Jerone Young (jyoung5@us.ibm.com)
--#
--
--DIRS="/etc/cron.d /etc/cron.daily /etc/cron.hourly /etc/cron.monthly /etc/cron.weekly /var/spool/cron"
--
--EXIT_CODE=0
--for i in $DIRS
--do
--	cron_dirs_check $i
--	if [ $? != 0 ]
--	then
--		echo "$i FAILED TEST!!!!!"
--		EXIT_CODE=1
--	fi
--
--done
--
--exit $EXIT_CODE
-diff --git a/testcases/commands/cron/cron_illegal_cron_lines b/testcases/commands/cron/cron_illegal_cron_lines
-deleted file mode 100644
-index 3b32dc844..000000000
---- a/testcases/commands/cron/cron_illegal_cron_lines
-+++ /dev/null
-@@ -1,39 +0,0 @@
--# Collection of illegal cron lines
--# Comment lines must habe its '#' as first character.
--# The cron conf line and its description is seperated by '|'.
--# cron job command 'true' is appended automatically
--
--# Illegal Minutes
--61 * * * * | Minute 61
---1 * * * * | Minute -1 (might be interpreted as range)
--0.5 * * * * | Minute 0.5
---1-10 * * * *| Minute Range -1-10
--0-61 * * * * | Minute Range 0-61
--
--# Illegal hours
--0 25 * * * | Hour 25
--0 -2 * * * | Hour -2
--0 3.5 * * *| Hour 3.5
--0 -4-10 * * *| Hour Range -4-10
--0 0-25 * * * | Hour Range 0-25
--
--# Illegal day of month
--0 0 32 * * | Day 32
--0 0 -1 * * | Day -1
--0 0 3.5 * *| Day 3.5
--0 0 -3-3 * *| Day Range -3-3
--0 0 0-32 * *| Day Range 0-32
--
--# Illegal month
--0 0 1 13 * | Month 13
--0 0 1 -1 * | Month -1
--0 0 1 2.5 * | Month 2.5
--0 0 1 -2-3 * | Month Range -2-3
--0 0 1 0-13 * | Month Range 0-13
--
--# Illegal day of week
--0 0 * * 8 | Day of Week 8
--0 0 * * -2 | Day of Week -2
--0 0 * * 2.5 | Day of Week 2.5
--0 0 * * -7-7 | Day of Week Range -7-7
--0 0 * * 0-8 | Day of Week Range 0-8
-diff --git a/testcases/commands/cron/cron_neg_tests.sh b/testcases/commands/cron/cron_neg_tests.sh
-deleted file mode 100755
-index 9c3d6f6c7..000000000
---- a/testcases/commands/cron/cron_neg_tests.sh
-+++ /dev/null
-@@ -1,141 +0,0 @@
--#!/bin/bash
--########################################################
--#
--# CHANGE ACTIVITY
--#
--#    10/01/04  Kris Wilson    RHEL4 only allows super user
--#                               to use crontab.
--#                               to use crontab.
--#    12/03/04  Marty Ridgeway Pull RHEl4 tests out from script
--########################################################
--
--iam=`whoami`
--
--if [ $iam = "root" ]; then
--	if [ $# -lt 1 ] ; then
--		echo Either do not run this script as root or start it like
--		echo "  $0 <user>"
--		exit 1
--	fi
--
--	su $1 -c "$0 $*"
--	exit $?
--fi
--
--#
--# 1. root einen cronjob unterjubeln
--#
--
--finalrc=0
--
--
--crontab -u root - << EOF
--0 * * * * true
--EOF
--
--rc=$?
--
--if [ $rc = "0" ]; then
--	echo root has now an interesting cron job
--	echo "crontab has a severe security breach (FAIL)"
--	echo
--	finalrc=1
--else
--	echo "Editing a crontab of another user failed successfully (PASS)"
--	echo
--fi
--
--
--#
--# 2. write some illegal crontabs
--#
--
--# Save crontab
--
--#crontab -l > /dev/null 2> /dev/null
--#if [ $? = "0" ]; then
--#	echo Saving current crontab...
--#	echo
--#	crontab -l > /tmp/save-crontab-`whoami`
--#	savedcrontab=1
--#	crontab -r
--#fi
--
--#for line in `cat cron_illegal_cron_lines | grep '^[^#]' | sed -e 's/[ \t][ \t]*/_/g'` ; do
--#	line=`echo $line | sed -e 's/_/ /g'`
--	# echo Line: "$line"
--#	cronconf=`echo "$line" | cut -f 1 -d '|'`
--#	desc=`echo "$line" | cut -f 2 -d '|'`
--
--#	echo "Test: $desc"
--#	echo "$cronconf true" | crontab -
--	# echo "$cronconf"
--#	if [ $? = "0" ]; then
--#		echo 'Test FAILED (or crontab returned wrong exit code)'
--#		echo 'crontab -l:'
--#		crontab -l
--#		finalrc=1
--#	fi
--#	echo
--#done
--
--
--# Test whether cron uses setuid correctly
--
--echo
--echo setuid test
--echo
--
--tmpscript=cron_neg01_test
--rm -rf $tmpscript.out >/dev/null 2>&1
--
--
--cat > /tmp/$tmpscript << EOF
--touch /root/halloichwarhier
--sleep 1
--cat /root/halloichwarhier ; echo "res:$?"
--rm /root/halloichwarhier
--EOF
--
--chmod 755 /tmp/$tmpscript
--
--#
--cronline=`date '+%M' | awk '{print ($1+2)%60 " * * * * "}'`
--(echo "$cronline /tmp/$tmpscript >> /tmp/$tmpscript.out 2>> /tmp/$tmpscript.out" ; \
-- echo "$cronline /tmp/$tmpscript >> /$tmpscript.out 2>> /$tmpscript.out") \
-- | crontab -
--
--echo "sleeping 130 secs..."
--sleep 130
--
--echo
--echo "Results:"
--if [ "1" = `cat /tmp/$tmpscript.out | grep "res:0" | wc -l` ]; then
--	echo "setuid test part 1 successfully failed (PASS)"
--else
--	echo "cron executed scripts have root privileges! (FAIL)"
--	finalrc=1
--fi
--
--CODE=0
--test -e /tmp/$tmpscript.out && CODE=1
--if [ $CODE = "1" ]; then
--	echo "setuid test part 2 successfully failed (PASS)"
--else
--	echo "cron writes script output with root privileges! (FAIL)"
--	finalrc=1
--fi
--echo
--
--rm /tmp/$tmpscript* >/dev/null 2>&1
--crontab -r
--
--# Restore crontab
--
--if [ "$savedcrontab" = "1" ]; then
--	echo "Restoring crontab..."
--	cat /tmp/save-crontab-`whoami` | grep '^[^#]' | crontab -
--	# rm -r /tmp/save-crontab-`whoami`
--fi
--
--exit $finalrc
-diff --git a/testcases/commands/cron/cron_pos_tests.sh b/testcases/commands/cron/cron_pos_tests.sh
-deleted file mode 100755
-index ece114c84..000000000
---- a/testcases/commands/cron/cron_pos_tests.sh
-+++ /dev/null
-@@ -1,118 +0,0 @@
--#!/bin/bash
--
--# Positive tests for cron, that means these tests have to pass
--
--iam=`whoami`
--
--tvar=${MACHTYPE%-*}
--tvar=${tvar#*-}
--
--if [ "$tvar" = "redhat" -o "$tvar" = "redhat-linux" ]
--then
--	CRON_ALLOW="/etc/cron.allow"
--else
--	CRON_ALLOW="/var/spool/cron/allow"
--fi
--
--
--if [ $iam = "root" ]; then
--	if [ $# -lt 1 ] ; then
--		echo Either do not run this script as root or start it like
--		echo "  $0 <user>"
--		exit 1
--	fi
--
--	mv $CRON_ALLOW $CRON_ALLOW.old >/dev/null 2>&1
--	su $1 -c "$0 $*"
--        RC=$?
--	mv $CRON_ALLOW.old $CRON_ALLOW >/dev/null 2>&1
--	exit $RC
--fi
--
--function restorecrontab () {
--	test -e /tmp/crontab-save-$iam && \
--		crontab /tmp/crontab-save-$iam && \
--		rm -f /tmp/crontab-save-$iam && \
--		echo restored old crontab
--}
--
--echo Running as user $iam...
--
--# Save current users crontab
--
--test -e /tmp/crontab-save-$iam && rm -f /tmp/crontab-save-$iam
--
--if [ "0" -lt `crontab -l 2>/dev/null | wc -l` ]; then
--
--	echo 'crontab of this user exists -> creating backup'
--	crontab -l | grep '^[^#]' > /tmp/crontab-save-$iam
--fi
--
--
--# Do tests
--
--# 1. Add new job
--
--rm -rf /tmp/crontest >/dev/null 2>&1
--mkdir -p /tmp/crontest
--
--cat > /tmp/crontest/testjob_cron01 << EOF
--echo Testjob running
--date
--EOF
--
--chmod 755 /tmp/crontest/testjob_cron01
--
--crontab - << EOF
--`date '+%M' | awk '{ print ($1+2)%60 " * * * * "
--}'` /tmp/crontest/testjob_cron01 >> /tmp/crontest/output_cron01 2>&1
--EOF
--
--rc=$?
--
--if [ $rc = "1" ]; then
--	echo Error while adding crontab for user $iam
--	restorecrontab
--	exit 1
--fi
--
--echo new job added successfully
--
--# 2. Wait for execution of job
--
--echo 'sleeping for 130 seconds...'
--sleep 130
--
--rc=1
--test -e /tmp/crontest/output_cron01 && rc=0
--
--if [ $rc = "1" ]; then
--	echo Job has not been executed
--	restorecrontab
--	exit 1
--fi
--
--grep "Testjob running" /tmp/crontest/output_cron01
--rc=$?
--if [ $rc = "1" ]; then
--	echo Job has not produced valid output
--	restorecrontab
--fi
--
--echo 'job has been executed :-)'
--echo "testjob's output:"
--echo
--
--rm -rf /tmp/crontest
--
--# 3. Delete crontab
--
--crontab -r
--
--echo removed crontab
--
--# Restore old crontab file
--
--restorecrontab
--
--exit $rc
-diff --git a/testcases/commands/cron/cron_tests.sh b/testcases/commands/cron/cron_tests.sh
-deleted file mode 100644
-index 47614f9e3..000000000
---- a/testcases/commands/cron/cron_tests.sh
-+++ /dev/null
-@@ -1,276 +0,0 @@
--#!/bin/sh
--
--# Copyright (c) International Business Machines Corp., 2001
--# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
--#
--# This program is free software; you can redistribute it and/or
--# modify it under the terms of the GNU General Public License as
--# published by the Free Software Foundation; either version 2 of
--# the License, or (at your option) any later version.
--#
--# This program is distributed in the hope that it would be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--# GNU General Public License for more details.
--#
--# You should have received a copy of the GNU General Public License
--# along with this program; if not, write the Free Software Foundation,
--# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--#
--# Author: Manoj Iyer <manjo@mail.utexas.edu>
--
--TST_CNT=3
--TST_TESTFUNC=do_test
--TST_NEEDS_TMPDIR=1
--TST_SETUP=setup
--TST_CLEANUP=cleanup
--. tst_test.sh
--
--. daemonlib.sh
--
--SYSLOG_STARTED=
--CROND_STARTED=
--LOGS=
--
--grep_logs()
--{
--	local pattern="$1"
--	local fail_msg="$2"
--	local pass_msg="${3:-}"
--	local n="${4:-10}"
--
--	local lines=10
--	local out=out.$$
--	local err=err.$$
--	local i ret
--
--	for i in $(seq 1 $n); do
--		if [ "$LOGS" ]; then
--			tail -n $lines $LOGS | grep "$pattern" > $out 2> $err
--		else
--			journalctl -n $lines | grep "$pattern" > $out 2> $err
--		fi
--		ret=$?
--		[ $ret -eq 0 ] && break
--		sleep 1
--	done
--
--	if [ $ret -ne 0 ]; then
--		tst_res TFAIL "$fail_msg: `cat $err`"
--	else
--		[ "$pass_msg" ] && tst_res TPASS "$pass_msg"
--	fi
--}
--
--create_crontab()
--{
--	local crontab=cronjob.cron
--	local script=$1
--	local out=out.$$
--
--	tst_res TINFO "creating crontab: $script"
--
--	cat > $crontab <<EOF
--* * * * * $script
--EOF
--
--	tst_res TINFO "installing crontab file"
--	crontab $crontab > $out 2>&1
--	if [ $? -ne 0 ]; then
--		tst_brk TBROK "crontab: error while installing crontab file: `cat $out`"
--		return 1
--	fi
--	return 0
--}
--
--remove_crontab()
--{
--	local out=out.$$
--	tst_res TINFO "removing crontab file"
--	crontab -r > $out 2>&1
--	if [ $? -ne 0 ]; then
--		tst_brk TBROK "crontab: error while removing crontab file `cat $out`"
--		return 1
--	fi
--	return 0
--}
--
--create_hello_script()
--{
--	local script=$1
--
--	cat > $script <<EOF
--#!/bin/sh
--echo "Hello Hell"
--exit 0
--EOF
--	chmod +x $script
--}
--
--install_cron_test()
--{
--	local script=$PWD/cronprg.sh
--	local cron_out=$PWD/tst1_cron.out
--	local err=err.log
--	local sleep_sec
--	local ts_min1 ts_min2 fail
--
--	tst_res TINFO "test install cron job"
--
--	cat > $script <<EOF
--#! /bin/sh
--DATE=\`LC_ALL=C date\`
--echo "Hello Hell today is \$DATE" > $cron_out 2>&1
--exit 0
--EOF
--	chmod +x $script
--
--	create_crontab $script 2> $err
--
--	if [ $? -ne 0 ]; then
--		tst_brk TBROK "crontab: error while creating cron job: `cat $err`"
--	else
--		tst_res TINFO "cron job installed successfully"
--	fi
--
--	grep_logs 'crontab.*REPLACE' \
--		"cron activity not recorded" \
--		"cron activity logged"
--
--	# Sleep 3s after next minute since the loop below sleeps for 62 seconds, we
--	# should start this 5-iteration loop closely following the start of a
--	# minute.
--	sleep_sec=$((123-`date +%-S`))
--	tst_res TINFO "sleep for ${sleep_sec}s"
--	sleep $sleep_sec
--
--	# $script executed by the cron job will record the date and time into file
--	# $cron_out. Get the minute recorded by the program, sleep to allow the cron
--	# job to update file after 1m, and check if the value is advanced by 1.
--	for i in $(seq 1 5); do
--		tst_res TINFO "loop: $i: start"
--
--		if [ ! -f "$cron_out" ]; then
--			tst_res TFAIL "loop $i: file $cron_out doesn't exist"
--			fail=1
--			break
--		fi
--
--		ts_min1=$(awk '{print $8}' $cron_out | awk -F: '{printf("%d", $2);}')
--
--		# wait for the cron job to update output file
--		sleep 62
--
--		# Check the time recorded in output file, this should be 1 minute ahead of
--		# what was recored earlier.
--		ts_min2=$(awk '{print $8}' $cron_out | awk -F: '{printf("%d", $2);}')
--
--		if [ "x${ts_min1}" = "x" ] || [ "x${ts_min2}" = "x" ]; then
--			tst_res TFAIL "loop $i: failed to get time: ts_min1: $ts_min1, ts_min2: $ts_min2"
--			fail=1
--			break
--		fi
--
--		[ $ts_min1 -eq 59 ] && ts_min1=0 || ts_min1=$(( $ts_min1+1 ))
--
--		if [ $ts_min2 -ne $ts_min1 ]; then
--			tst_res TFAIL "loop $i: failed to update every minute: expected: $ts_min1, received: $ts_min2"
--			fail=1
--			break
--		fi
--	done
--
--	if [ ! "$fail" ]; then
--		grep_logs "CMD ($script)" \
--			"failed to install cron job installed and execute it" \
--			"cron job installed and executed" 1
--	fi
--
--	remove_crontab
--}
--
--remove_cron_job_test()
--{
--	local script=$PWD/cronprg.sh
--
--	tst_res TINFO "test remove cron job"
--
--	create_hello_script $script
--	create_crontab $script
--
--	grep_logs 'crontab.*REPLACE' \
--		"crontab activity not recorded"
--
--	remove_crontab && grep_logs DELETE \
--		"crontab activity not recorded" \
--		"crontab removed the cron job" 1
--}
--
--list_cron_jobs_test()
--{
--	local script=$PWD/cronprg.sh
--	local out=cron.out
--
--	tst_res TINFO "test list installed cron jobs"
--
--	create_hello_script $script
--	create_crontab $script
--
--	tst_res TINFO "crontab: listing cron jobs"
--	crontab -l | grep "$script" > $out 2>&1 || \
--		tst_brk TBROK "crontab failed while listing installed cron jobs: `cat $out`"
--
--	remove_crontab
--
--	crontab -l > $out 2>&1
--	if [ $? -ne 0 ]; then
--		grep -q "no crontab for" $out
--		if [ $? -ne 0 ]; then
--			tst_res TFAIL "crontab failed removing cron job: `cat $out`"
--		else
--			tst_res TPASS "crontab did not list any cron jobs"
--		fi
--	else
--		tst_res TFAIL "crontab failed removing cron job: `cat $out`"
--	fi
--}
+-# DESCRIPTION:
+-#	Create test user
+-#	Make sure test user can't login with invalid password
+-#	Cleanup test user from system
+-#	Exit with exit code of script called upon
 -
 -setup()
 -{
--	if [ "$SYSLOG_DAEMON" ]; then
--		status_daemon $SYSLOG_DAEMON
--		if [ $? -ne 0 ]; then
--			restart_daemon $SYSLOG_DAEMON
--			SYSLOG_STARTED=1
--		fi
+-	tst_test_cmds ssh01_s1
+-	export TEST_USER="ssh_usr1"
+-}
+-
+-TCID="ssh01"
+-TST_TOTAL=1
+-
+-. test.sh
+-. ssh_setup
+-
+-setup
+-do_setup
+-TST_CLEANUP=do_cleanup
+-
+-ssh01_s1
+-if [ $? -ne 0 ]; then
+-	tst_resm TFAIL "Test $TCID FAIL"
+-else
+-	tst_resm TPASS "Test $TCID PASS"
+-fi
+-
+-tst_exit
+diff --git a/testcases/network/tcp_cmds/ssh/ssh01_s1 b/testcases/network/tcp_cmds/ssh/ssh01_s1
+deleted file mode 100755
+index ab86e2ae0..000000000
+--- a/testcases/network/tcp_cmds/ssh/ssh01_s1
++++ /dev/null
+@@ -1,72 +0,0 @@
+-#! /usr/bin/expect -f
+-#*********************************************************************
+-#   Copyright (c) International Business Machines  Corp., 2000
+-#
+-#   This program is free software;  you can redistribute it and/or modify
+-#   it under the terms of the GNU General Public License as published by
+-#   the Free Software Foundation; either version 2 of the License, or
+-#   (at your option) any later version.
+-#
+-#   This program is distributed in the hope that it will be useful,
+-#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#   the GNU General Public License for more details.
+-#
+-#   You should have received a copy of the GNU General Public License
+-#   along with this program;  if not, write to the Free Software
+-#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-#
+-#  FILE   : ssh
+-#
+-#  PURPOSE: Tests to see that ssh rejects an invalid password
+-#
+-#  SETUP: The program `/usr/bin/expect' MUST be installed.
+-#
+-#  HISTORY:
+-#    03/03 Jerone Young (jeroney@us.ibm.com)
+-#
+-#
+-set RHOST $env(RHOST)
+-set TEST_USER $env(TEST_USER)
+-set TEST_USER_PASSWD $env(TEST_USER_PASSWD)
+-
+-set RUSER $TEST_USER
+-set PASSWD $TEST_USER_PASSWD
+-
+-set timeout 90
+-
+-#test invalid password
+-
+-send_user "TEST: SSH Test Invalid Password \n"
+-
+-# Set PASSWD to an invalid password
+-set PASSWD "invalid_password!"
+-
+-spawn ssh -l $RUSER $RHOST whoami
+-
+-while 1 {
+-	sleep 2
+-	expect {
+-
+-		"Are you sure you want to continue connecting (yes/no)?" {
+-			exp_send "yes\r"
+-		}
+-		"assword:" {
+-			exp_send "$PASSWD\r"
+-		}
+-		-re "Permission denied (.*)\." {
+-			send_user "SSH would not allow $RUSER to login with\
+-				   invalid password, Test Passed \n"
+-			send_user "\nTEST_PASSED\n"
+-			exit 0
+-		}
+-		"$RUSER" {
+-			send_user "SSH allowed $RUSER to login with invalid\
+-				   pass, Test Failed \n"
+-			exit 1
+-		}
+-	}
+-	sleep 1
+-}
+-
+-exit 1
+diff --git a/testcases/network/tcp_cmds/ssh/ssh02 b/testcases/network/tcp_cmds/ssh/ssh02
+deleted file mode 100755
+index 815168118..000000000
+--- a/testcases/network/tcp_cmds/ssh/ssh02
++++ /dev/null
+@@ -1,57 +0,0 @@
+-#!/bin/sh
+-#*********************************************************************
+-#   Copyright (c) International Business Machines  Corp., 2000
+-#
+-#   This program is free software;  you can redistribute it and/or modify
+-#   it under the terms of the GNU General Public License as published by
+-#   the Free Software Foundation; either version 2 of the License, or
+-#   (at your option) any later version.
+-#
+-#   This program is distributed in the hope that it will be useful,
+-#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#   the GNU General Public License for more details.
+-#
+-#   You should have received a copy of the GNU General Public License
+-#   along with this program;  if not, write to the Free Software
+-#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-#
+-#  FILE   : ssh
+-#
+-#  PURPOSE: Tests to see that ssh rejects an invalid username
+-#
+-#  SETUP: The program `/usr/bin/expect' MUST be installed.
+-#
+-#  HISTORY:
+-#    03/03 Jerone Young (jeroney@us.ibm.com)
+-#
+-# DESCRIPTION:
+-#	Create Test User
+-#	Make sure an invalid user can not have access
+-#	Cleanup Test User from system
+-#	Exit with exit code of script called upon
+-
+-setup()
+-{
+-	tst_test_cmds ssh02_s1
+-	export TEST_USER="ssh_usr2"
+-}
+-
+-TCID="ssh02"
+-TST_TOTAL=1
+-
+-. test.sh
+-. ssh_setup
+-
+-setup
+-do_setup
+-TST_CLEANUP=do_cleanup
+-
+-ssh02_s1
+-if [ $? -ne 0 ]; then
+-	tst_resm TFAIL "Test $TCID FAIL"
+-else
+-	tst_resm TPASS "Test $TCID PASS"
+-fi
+-
+-tst_exit
+diff --git a/testcases/network/tcp_cmds/ssh/ssh02_s1 b/testcases/network/tcp_cmds/ssh/ssh02_s1
+deleted file mode 100755
+index cf95709e5..000000000
+--- a/testcases/network/tcp_cmds/ssh/ssh02_s1
++++ /dev/null
+@@ -1,73 +0,0 @@
+-#! /usr/bin/expect -f
+-#*********************************************************************
+-#   Copyright (c) International Business Machines  Corp., 2000
+-#
+-#   This program is free software;  you can redistribute it and/or modify
+-#   it under the terms of the GNU General Public License as published by
+-#   the Free Software Foundation; either version 2 of the License, or
+-#   (at your option) any later version.
+-#
+-#   This program is distributed in the hope that it will be useful,
+-#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#   the GNU General Public License for more details.
+-#
+-#   You should have received a copy of the GNU General Public License
+-#   along with this program;  if not, write to the Free Software
+-#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-#
+-#  FILE   : ssh
+-#
+-#  PURPOSE: Tests to see that ssh rejects an invalid username
+-#
+-#  SETUP: The program `/usr/bin/expect' MUST be installed.
+-#
+-#  HISTORY:
+-#    03/03 Jerone Young (jeroney@us.ibm.com)
+-#    05/03 Dustin Kirkland (k1rkland@us.ibm.com)
+-#
+-#
+-set RHOST $env(RHOST)
+-set TEST_USER $env(TEST_USER)
+-set TEST_USER_PASSWD $env(TEST_USER_PASSWD)
+-
+-set RUSER $TEST_USER
+-set PASSWD $TEST_USER_PASSWD
+-
+-set timeout 90
+-
+-#test invalid username
+-
+-send_user "TEST: Test to see if ssh rejects Invalid User \n"
+-
+-# Set RUSER to an invalid user
+-set RUSER "Invaild_User"
+-
+-spawn ssh -l $RUSER $RHOST whoami
+-
+-while 1 {
+-	sleep 2
+-	expect {
+-
+-		"Are you sure you want to continue connecting (yes/no)?" {
+-			exp_send "yes\r"
+-		}
+-		"assword:" {
+-			exp_send "$PASSWD\r"
+-		}
+-		-re "Permission denied (.*)\." {
+-			send_user "SSH would not allow $RUSER to login with\
+-				   invalid password, Test Passed \n"
+-			send_user "\nTEST_PASSED\n"
+-			exit 0
+-		}
+-		"$RUSER" {
+-			send_user "SSH allowed $RUSER to login with invalid\
+-				   pass, Test Failed \n"
+-			exit 1
+-		}
+-	}
+-	sleep 1
+-}
+-
+-exit 1
+diff --git a/testcases/network/tcp_cmds/ssh/ssh03 b/testcases/network/tcp_cmds/ssh/ssh03
+deleted file mode 100755
+index a8d39ee81..000000000
+--- a/testcases/network/tcp_cmds/ssh/ssh03
++++ /dev/null
+@@ -1,52 +0,0 @@
+-#!/bin/sh
+-#*********************************************************************
+-#   Copyright (c) International Business Machines  Corp., 2000
+-#
+-#   This program is free software;  you can redistribute it and/or modify
+-#   it under the terms of the GNU General Public License as published by
+-#   the Free Software Foundation; either version 2 of the License, or
+-#   (at your option) any later version.
+-#
+-#   This program is distributed in the hope that it will be useful,
+-#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#   the GNU General Public License for more details.
+-#
+-#   You should have received a copy of the GNU General Public License
+-#   along with this program;  if not, write to the Free Software
+-#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-#
+-#  FILE   : ssh
+-#
+-#  PURPOSE: Tests to see that ssh allows a valid username (non-root)
+-#
+-#  SETUP: The program `/usr/bin/expect' MUST be installed.
+-#
+-#  HISTORY:
+-#    03/03 Jerone Young (jeroney@us.ibm.com)
+-#
+-
+-setup()
+-{
+-	tst_test_cmds ssh03_s1
+-	export TEST_USER="ssh_usr3"
+-}
+-
+-TCID="ssh03"
+-TST_TOTAL=1
+-
+-. test.sh
+-. ssh_setup
+-
+-setup
+-do_setup
+-TST_CLEANUP=do_cleanup
+-
+-ssh03_s1
+-if [ $? -ne 0 ]; then
+-	tst_resm TFAIL "Test $TCID FAIL"
+-else
+-	tst_resm TPASS "Test $TCID PASS"
+-fi
+-
+-tst_exit
+diff --git a/testcases/network/tcp_cmds/ssh/ssh03_s1 b/testcases/network/tcp_cmds/ssh/ssh03_s1
+deleted file mode 100755
+index e3f8cebbe..000000000
+--- a/testcases/network/tcp_cmds/ssh/ssh03_s1
++++ /dev/null
+@@ -1,67 +0,0 @@
+-#! /usr/bin/expect -f
+-#*********************************************************************
+-#   Copyright (c) International Business Machines  Corp., 2000
+-#
+-#   This program is free software;  you can redistribute it and/or modify
+-#   it under the terms of the GNU General Public License as published by
+-#   the Free Software Foundation; either version 2 of the License, or
+-#   (at your option) any later version.
+-#
+-#   This program is distributed in the hope that it will be useful,
+-#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#   the GNU General Public License for more details.
+-#
+-#   You should have received a copy of the GNU General Public License
+-#   along with this program;  if not, write to the Free Software
+-#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-#
+-#  FILE   : ssh
+-#
+-#  PURPOSE: Tests to see that ssh accepts a valid user (non-root)
+-#
+-#  SETUP: The program `/usr/bin/expect' MUST be installed.
+-#
+-#  HISTORY:
+-#    03/03 Jerone Young (jeroney@us.ibm.com)
+-#
+-#
+-set RHOST $env(RHOST)
+-set TEST_USER $env(TEST_USER)
+-set TEST_USER_PASSWD $env(TEST_USER_PASSWD)
+-
+-set RUSER $TEST_USER
+-set PASSWD $TEST_USER_PASSWD
+-
+-set timeout 90
+-
+-#test valid username
+-
+-send_user "TEST: SSH allow (non-root) valid User \n"
+-
+-spawn ssh -l $RUSER $RHOST whoami
+-
+-while 1 {
+-	sleep 2
+-	expect {
+-
+-		"Are you sure you want to continue connecting (yes/no)?" {
+-			exp_send "yes\r"
+-		}
+-		"assword:" {
+-			exp_send "$PASSWD\r"
+-		}
+-		-re "Permission denied (.*)\." {
+-			send_user "\nSSH would not allow $RUSER to login, Test\
+-				   FAILED \n"
+-			exit 1
+-		}
+-		"$RUSER" {
+-			send_user "SSH allowed $RUSER to login, Test PASSED \n"
+-			exit 0
+-		}
+-	}
+-	sleep 1
+-}
+-
+-exit 1
+diff --git a/testcases/network/tcp_cmds/ssh/ssh_setup b/testcases/network/tcp_cmds/ssh/ssh_setup
+deleted file mode 100755
+index 3e8ab8b3f..000000000
+--- a/testcases/network/tcp_cmds/ssh/ssh_setup
++++ /dev/null
+@@ -1,54 +0,0 @@
+-#!/bin/sh
+-################################################################################
+-## Copyright (c) International Business Machines  Corp., 2000                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and/or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful,            ##
+-## but WITHOUT ANY WARRANTY;  without even the implied warranty of            ##
+-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  ##
+-## the GNU General Public License for more details.                           ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software Foundation,   ##
+-## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
+-##                                                                            ##
+-################################################################################
+-
+-do_setup()
+-{
+-	export RHOST="localhost"
+-	export TEST_USER_PASSWD="now_this_is_a_good_ltp_test_password"
+-	export TEST_USER_HOMEDIR="/home/$TEST_USER"
+-
+-	tst_test_cmds expect ssh useradd userdel
+-
+-	# erase user if he/she already exists, so we can have a clean env
+-	do_cleanup
+-	sleep 1
+-
+-	if ! useradd -m -d "$TEST_USER_HOMEDIR" $TEST_USER; then
+-		tst_brkm TBROK "Failed to add user $TEST_USER to system $RHOST."
 -	fi
 -
--	if [ "$CROND_DAEMON" ]; then
--		status_daemon $CROND_DAEMON
--		if [ $? -ne 0 ]; then
--			restart_daemon $CROND_DAEMON
--			CROND_STARTED=1
+-	echo "$TEST_USER:$TEST_USER_PASSWD" | chpasswd
+-
+-	# create users home diretory (SLES 8 does not do this, even when
+-	# specified in adduser)
+-	if [ ! -d "$TEST_USER_HOMEDIR" ]; then
+-		USER_UID=$(id -u $TEST_USER)
+-		USER_GID=$(id -g $TEST_USER)
+-		if ! mkdir -p "$TEST_USER_HOMEDIR"; then
+-			tst_brkm TBROK "Failed to create $TEST_USER_HOMEDIR"
 -		fi
+-		chown -Rf $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
 -	fi
--
--	for f in /var/log/syslog /var/log/messages /var/log/cron /var/log/cron.log; do
--		[ -f "$f" ] && LOGS="$f $LOGS"
--	done
 -}
 -
--cleanup()
+-do_cleanup()
 -{
--	[ "$SYSLOG_STARTED" = "1" ] && stop_daemon $SYSLOG_DAEMON
--	[ "$CROND_STARTED" = "1" ] && stop_daemon $CROND_DAEMON
+-	userdel -r $TEST_USER 2> /dev/null
 -}
--
--do_test()
--{
--	case $1 in
--	1) install_cron_test;;
--	2) remove_cron_job_test;;
--	3) list_cron_jobs_test;;
--	esac
--}
--
--tst_run
 -- 
 2.19.0
 
