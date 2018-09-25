@@ -1,124 +1,130 @@
-From: Jan Kara <jack@suse.cz>
-Date: Mon, 24 Sep 2018 12:52:09 +0200
-Subject: [LTP] [PATCH v2][RFC] syscalls/fanotify03: simplify test
-In-Reply-To: <20180923094032.32078-1-amir73il@gmail.com>
-References: <20180923094032.32078-1-amir73il@gmail.com>
-Message-ID: <20180924105209.GB28775@quack2.suse.cz>
+From: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+Date: Tue, 25 Sep 2018 16:18:54 +0800
+Subject: [LTP] [PATCH 1/2] lapi/syscalls: Add syscall numbers for execveat
+Message-ID: <1537863535-25744-1-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Sun 23-09-18 12:40:32, Amir Goldstein wrote:
-> Re-init fanotify fd on every test iteration instead of storing and
-> restoring fd_notify from duplicated fd_notify_backup.
-> 
-> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> ---
-> 
-> Jan,
-> 
-> Do you see any problem with this "simplification"?
-> Does this test need to have the fanotify fd preserved between test
-> iterations?
-> 
-> I would rather make this change instead of adding the missing cleanup for
-> fd_notify_backup, because it sits better with my plans to re-structure
-> this test [1].
+Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+---
+ include/lapi/syscalls/aarch64.in   | 1 +
+ include/lapi/syscalls/hppa.in      | 1 +
+ include/lapi/syscalls/ia64.in      | 1 +
+ include/lapi/syscalls/powerpc.in   | 1 +
+ include/lapi/syscalls/powerpc64.in | 1 +
+ include/lapi/syscalls/s390x.in     | 1 +
+ include/lapi/syscalls/sh.in        | 1 +
+ include/lapi/syscalls/sparc.in     | 1 +
+ include/lapi/syscalls/sparc64.in   | 1 +
+ 9 files changed, 9 insertions(+)
 
-The patch looks good to me and yes, the test looks cleaner that way.
-
-								Honza
-
-> [1] https://github.com/amir73il/ltp/commits/fanotify_sb
-> 
->  .../kernel/syscalls/fanotify/fanotify03.c     | 52 +++++++++----------
->  1 file changed, 26 insertions(+), 26 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
-> index 83cd26640..59dedbe21 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify03.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
-> @@ -138,15 +138,33 @@ static void check_child(void)
->  		tst_res(TFAIL, "child %s", tst_strstatus(child_ret));
->  }
->  
-> -void test01(void)
-> +static void setup_mark(void)
->  {
-> -	int tst_count, fd_notify_backup = -1;
-> +	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
-> +
-> +	if (fanotify_mark(fd_notify, FAN_MARK_ADD,
-> +			  FAN_ACCESS_PERM | FAN_OPEN_PERM,
-> +			  AT_FDCWD, fname) < 0) {
-> +		if (errno == EINVAL) {
-> +			tst_brk(TCONF | TERRNO,
-> +				"CONFIG_FANOTIFY_ACCESS_PERMISSIONS not "
-> +				"configured in kernel?");
-> +		} else {
-> +			tst_brk(TBROK | TERRNO,
-> +				"fanotify_mark (%d, FAN_MARK_ADD, "
-> +				"FAN_ACCESS_PERM | FAN_OPEN_PERM, "
-> +				"AT_FDCWD, %s) failed.",
-> +				fd_notify, fname);
-> +		}
-> +	}
-> +}
->  
-> +void test01(void)
-> +{
-> +	int tst_count;
->  	int ret, len = 0, i = 0, test_num = 0;
->  
-> -	if (fd_notify_backup == -1) {
-> -		fd_notify_backup = SAFE_DUP(fd_notify);
-> -	}
-> +	setup_mark();
->  	run_child();
->  
->  	tst_count = 0;
-> @@ -229,33 +247,15 @@ void test01(void)
->  
->  	}
->  	check_child();
-> -	/* We got SIGCHLD while running, resetup fd_notify */
-> -	if (fd_notify == -1) {
-> -		fd_notify = fd_notify_backup;
-> -		fd_notify_backup = -1;
-> -	}
-> +
-> +	if (fd_notify > 0)
-> +		SAFE_CLOSE(fd_notify);
->  }
->  
->  static void setup(void)
->  {
->  	sprintf(fname, "fname_%d", getpid());
->  	SAFE_FILE_PRINTF(fname, "1");
-> -
-> -	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
-> -
-> -	if (fanotify_mark(fd_notify, FAN_MARK_ADD, FAN_ACCESS_PERM |
-> -			    FAN_OPEN_PERM, AT_FDCWD, fname) < 0) {
-> -		if (errno == EINVAL) {
-> -			tst_brk(TCONF | TERRNO,
-> -				 "CONFIG_FANOTIFY_ACCESS_PERMISSIONS not "
-> -				 "configured in kernel?");
-> -		} else {
-> -			tst_brk(TBROK | TERRNO,
-> -				 "fanotify_mark (%d, FAN_MARK_ADD, FAN_ACCESS_PERM | "
-> -				 "FAN_OPEN_PERM, AT_FDCWD, %s) failed.", fd_notify, fname);
-> -		}
-> -	}
-> -
->  }
->  
->  static void cleanup(void)
-> -- 
-> 2.17.1
-> 
+diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
+index 9ac7f99..b39a923 100644
+--- a/include/lapi/syscalls/aarch64.in
++++ b/include/lapi/syscalls/aarch64.in
+@@ -256,6 +256,7 @@ sendmmsg 269
+ kcmp 272
+ getrandom 278
+ memfd_create 279
++execveat 281
+ mlock2 284
+ copy_file_range 285
+ _sysctl 1078
+diff --git a/include/lapi/syscalls/hppa.in b/include/lapi/syscalls/hppa.in
+index 3db9780..f90fe1b 100644
+--- a/include/lapi/syscalls/hppa.in
++++ b/include/lapi/syscalls/hppa.in
+@@ -17,5 +17,6 @@ splice 291
+ tee 293
+ vmsplice 294
+ memfd_create 340
++execveat 342
+ mlock2 345
+ copy_file_range 346
+diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
+index 2788193..b239643 100644
+--- a/include/lapi/syscalls/ia64.in
++++ b/include/lapi/syscalls/ia64.in
+@@ -296,5 +296,6 @@ prlimit64 1325
+ renameat2 1338
+ getrandom 1339
+ memfd_create 1340
++execveat 1342
+ mlock2 1346
+ copy_file_range 1347
+diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
+index c0b4226..588e152 100644
+--- a/include/lapi/syscalls/powerpc.in
++++ b/include/lapi/syscalls/powerpc.in
+@@ -347,6 +347,7 @@ sched_getattr 356
+ renameat2 357
+ getrandom 359
+ memfd_create 360
++execveat 362
+ mlock2 378
+ copy_file_range 379
+ statx 383
+diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
+index c0b4226..588e152 100644
+--- a/include/lapi/syscalls/powerpc64.in
++++ b/include/lapi/syscalls/powerpc64.in
+@@ -347,6 +347,7 @@ sched_getattr 356
+ renameat2 357
+ getrandom 359
+ memfd_create 360
++execveat 362
+ mlock2 378
+ copy_file_range 379
+ statx 383
+diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
+index 83732ff..47a04de 100644
+--- a/include/lapi/syscalls/s390x.in
++++ b/include/lapi/syscalls/s390x.in
+@@ -331,5 +331,6 @@ sched_getattr 346
+ renameat2 347
+ getrandom 349
+ memfd_create 350
++execveat 354
+ mlock2 374
+ copy_file_range 375
+diff --git a/include/lapi/syscalls/sh.in b/include/lapi/syscalls/sh.in
+index 407be7a..e3db4f0 100644
+--- a/include/lapi/syscalls/sh.in
++++ b/include/lapi/syscalls/sh.in
+@@ -364,5 +364,6 @@ fanotify_mark 368
+ prlimit64 369
+ kcmp 378
+ memfd_create 385
++execveat 387
+ mlock2 390
+ copy_file_range 391
+diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
+index 2b06a79..4c094ef 100644
+--- a/include/lapi/syscalls/sparc.in
++++ b/include/lapi/syscalls/sparc.in
+@@ -336,5 +336,6 @@ kcmp 341
+ renameat2 345
+ getrandom 347
+ memfd_create 348
++execveat 350
+ mlock2 356
+ copy_file_range 357
+diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
+index 8c8a866..b94f442 100644
+--- a/include/lapi/syscalls/sparc64.in
++++ b/include/lapi/syscalls/sparc64.in
+@@ -312,5 +312,6 @@ kcmp 341
+ renameat2 345
+ getrandom 347
+ memfd_create 348
++execveat 350
+ mlock2 356
+ copy_file_range 357
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+1.8.3.1
+
+
+
