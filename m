@@ -1,129 +1,46 @@
 From: Li Wang <liwang@redhat.com>
-Date: Wed, 26 Sep 2018 17:40:47 +0800
-Subject: [LTP] [PATCH v2 2/4] fzsync: Simplify API with start/end race
- calls and limit exec time
-In-Reply-To: <20180910084442.17720-3-rpalethorpe@suse.com>
-References: <20180910084442.17720-1-rpalethorpe@suse.com>
- <20180910084442.17720-3-rpalethorpe@suse.com>
-Message-ID: <CAEemH2f1NZut2amfmntr0+rr7GTzFCCgT3LoOQmO_n=jMhmKdA@mail.gmail.com>
+Date: Wed, 26 Sep 2018 17:59:02 +0800
+Subject: [LTP] September release
+In-Reply-To: <20180925085640.GA12264@rei>
+References: <20180925085640.GA12264@rei>
+Message-ID: <CAEemH2dRuE9g9iqyGo+nznqi_fmE17VqYGTj5OvHUxw_FnAFmQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richard,
+On Tue, Sep 25, 2018 at 4:56 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
 
-Sorry for late reply. This patch V2 is good, not sure if below comments are
-useful to you, so just FYI.
-
-Richard Palethorpe <rpalethorpe@suse.com> wrote:
-
-> Make it so the test writer simply has to mark the beginning and end of a
-> race
-> in each thread. Previously they must choose where to call a delay and
-> where to
-> call a timestamp function which is used to calculate the delay as well as
-> the
-> update function.
-> ...
-> +       /**
-> +        * Internal; Number of spins to use in the delay.
-> +        *
-> +        * A negative value delays thread A and a positive delays thread B.
-> +        */
-> +       int delay;
-> +       /**
-> +        *  Internal; The number of samples left or the sampling state.
-> +        *
-> +        *  A positive value is the number of remaining mandatory
-> +        *  samples. Zero or a negative indicate ssome other state.
+> Hi!
+> Are there any fixes that should go in before the release is finalized?
 >
 
-s/ssome/some/, a typo here?
+What about merging Richard's fzsync API in LTP new release? Is the time
+ample?
 
-+
-> +       /** Internal; Atomic counter used by fzsync_pair_wait() */
->         int a_cntr;
-> +       /** Internal; Atomic counter used by fzsync_pair_wait() */
->         int b_cntr;
-> +       /** Internal; Used by tst_fzsync_pair_exit() and
-> fzsync_pair_wait() */
->         int exit;
-> +       /**
-> +        * The maximum desired execution time as a proportion of the
-> timeout
-> +        *
-> +        * A value x so that 0 < x < 1 which decides how long the test
-> should
-> +        * be run for (assuming the loop limit is not exceeded first).
-> +        *
-> +        * Defaults to 0.1 (~30 seconds with default timeout).
-> +        */
-> +       float exec_time_p;
-> +       /** Internal; The test time remaining on tst_fzsync_pair_reset() */
-> +       float exec_time_start;
+
+> I would like to proceed with the release either tomorrow or a day after
+> that.
+>
+>
+> Also I would like to ask everyone who is waiting for a patch to be
+> reviewed to be patient, we will resume with the normal patch review at
+> the end of the week, once the relase is done.
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 >
 
-I think maybe call it as 'exec_time_remain' or 'exec_time_total' is better?
-because this value is the remain part of the whole timeout time before next
-resetting.
-
-+
-> -#define TST_FZSYNC_PAIR_INIT { \
-> -       .avg_alpha = 0.25,      \
-> -       .delay_inc = 1,         \
-> -       .update_gap = 0xF,      \
-> -       .info_gap = 0x7FFFF     \
-> +static void tst_fzsync_pair_init(struct tst_fzsync_pair *pair)
-> +{
-> +       CHK(avg_alpha, 0, 1, 0.25);
-> +       CHK(min_samples, 20, INT_MAX, 1024);
-> +       CHK(max_dev_ratio, 0, 1, 0.1);
-> +       CHK(exec_time_p, 0, 1, 0.2);
->
-
-The code comment says the default is 0.1, but why here gives 0.2?
-
-+static void tst_fzsync_pair_reset(struct tst_fzsync_pair *pair,
-> +                                 void *(*run_b)(void *))
-> +{
-> +       tst_fzsync_pair_cleanup(pair);
-> +
-> +       tst_init_stat(&pair->diff_ss);
-> +       tst_init_stat(&pair->diff_sa);
-> +       tst_init_stat(&pair->diff_sb);
-> +       tst_init_stat(&pair->diff_ab);
-> +       tst_init_stat(&pair->spins_avg);
-> +       pair->delay = 0;
-> +       pair->sampling = pair->min_samples;
-> +
-> +       pair->exec_loop = 0;
-> +
-> +       pair->a_cntr = 0;
-> +       pair->b_cntr = 0;
-> +       tst_atomic_store(0, &pair->exit);
-> +       if (run_b)
-> +               SAFE_PTHREAD_CREATE(&pair->thread_b, 0, run_b, 0);
-> +
-> +       pair->exec_time_start = (float)tst_timeout_remaining();
 
 
-Here we start to get the whole remain time before reaching timeout
-aborting, and base on that to comparing in tst_fzsync_run_a() to guarantee
-test exit when execute time exceed. That's fine, but it is too early to get
-the time here I guess, because samples collection will also cost some of
-the limitation_time(~30 seconds), and we don't know what proportion the
-sampling occupied in exec_time_p, if it's too much, then there only has
-very little time on race execution.
-
-To avoid this, maybe we should make the limitation time all spend on race
-execution but any on samplings.
-So, I suggest to get pair->exec_time_start value after samples data
-collection in the end of tst_fzsync_pair_update() function.
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20180926/bcb7822b/attachment.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20180926/7a41c255/attachment.html>
