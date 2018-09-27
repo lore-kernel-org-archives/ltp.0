@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 27 Sep 2018 14:24:32 +0200
-Subject: [LTP] [PATCH] aiodio: Remove dirty freeblocks
-In-Reply-To: <20180910093621.21622-1-rpalethorpe@suse.com>
-References: <20180910093621.21622-1-rpalethorpe@suse.com>
-Message-ID: <20180927122432.GA11658@rei>
+Date: Thu, 27 Sep 2018 14:40:11 +0200
+Subject: [LTP] [PATCH] ver_linux: use lscpu command result instead of
+ /proc/cpuinfo
+In-Reply-To: <20180815185516.32726-1-msys.mizuma@gmail.com>
+References: <20180815185516.32726-1-msys.mizuma@gmail.com>
+Message-ID: <20180927124010.GB11658@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,28 +12,32 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> At the beginning of the test it attempts to write some junk data to disk in
-> order to increase the chance that the blocks allocated are not filled with
-> zeroes.
+> Signed-off-by: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
+> ---
+>  ver_linux | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 > 
-> It does this by memory mapping a new file and writing 0xaa to the mapped
-> memory, then syncs and unlinks the file. This uses buffered I/O which should
-> not be mixed with direct I/O.
+> diff --git a/ver_linux b/ver_linux
+> index dda337926..5f9260f5f 100755
+> --- a/ver_linux
+> +++ b/ver_linux
+> @@ -96,5 +96,10 @@ echo 'free reports:'
+>  free
+>  
+>  echo
+> -echo '/proc/cpuinfo'
+> -cat /proc/cpuinfo
+> +echo 'cpuinfo:'
+> +which lscpu > /dev/null 2>&1
+> +if [ $? -eq 0 ]; then
 
-I do not follow here. Direct and buffered I/O should not be mixed for a
-given file, that can lead to strange artifacts. But in this case we do
-open a file, fill it with data, sync it, and then close it and we do
-that before the test even starts. No direct and buffered I/O is being
-mixed here or do I miss something?
+You can just write:
 
-> Possibly we could use direct I/O to create the dirty blocks or ensure the
-> buffers have been completely flushed and any writes finalised before
-> continuing. However it seems unlikely that this is either effective or
-> necessary. It seems much simpler and thorough to run the test many times,
-> which we do.
+if which lscpu > /dev/null 2>&1; then
+...
 
-I do agree that the value of such function is indeed questionable but I
-fail to see where is this actually hurting anything.
+
+Other than that it's fine.
 
 -- 
 Cyril Hrubis
