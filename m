@@ -1,289 +1,289 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 28 Sep 2018 17:10:50 +0800
-Subject: [LTP] [PATCH 2/3] syscalls/preadv201: Add new testcase
-In-Reply-To: <1538125851-26738-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1538125851-26738-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1538125851-26738-2-git-send-email-yangx.jy@cn.fujitsu.com>
+From: nixiaoming <nixiaoming@huawei.com>
+Date: Thu, 27 Sep 2018 18:10:28 +0800
+Subject: [LTP] [PATCH v2] syscalls/fanotify11: new test for report thread id
+Message-ID: <20180927101028.61686-1-nixiaoming@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Check the basic functionality of the preadv2(2).
+syscalls/fanotify11
+test fanotify_init with FAN_EVENT_INFO_TID
+	data->pid is ID(pid)  of the thread that caused the event
+test fanotify_init without FAN_EVENT_INFO_TID
+	data->pid is ID(tgid) of the process that caused the event
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: nixiaoming <nixiaoming@huawei.com>
 ---
- configure.ac                                  |   1 +
- m4/ltp-preadv2.m4                             |   9 ++
- runtest/ltplite                               |   2 +
- runtest/stress.part3                          |   2 +
- runtest/syscalls                              |   3 +
- testcases/kernel/syscalls/preadv2/.gitignore  |   2 +
- testcases/kernel/syscalls/preadv2/Makefile    |  14 +++
- testcases/kernel/syscalls/preadv2/preadv2.h   |  26 ++++++
- testcases/kernel/syscalls/preadv2/preadv201.c | 119 ++++++++++++++++++++++++++
- 9 files changed, 178 insertions(+)
- create mode 100644 m4/ltp-preadv2.m4
- create mode 100644 testcases/kernel/syscalls/preadv2/.gitignore
- create mode 100644 testcases/kernel/syscalls/preadv2/Makefile
- create mode 100644 testcases/kernel/syscalls/preadv2/preadv2.h
- create mode 100644 testcases/kernel/syscalls/preadv2/preadv201.c
+ runtest/syscalls                                |   1 +
+ testcases/kernel/syscalls/fanotify/.gitignore   |   1 +
+ testcases/kernel/syscalls/fanotify/Makefile     |   2 +-
+ testcases/kernel/syscalls/fanotify/fanotify11.c | 221 ++++++++++++++++++++++++
+ 4 files changed, 224 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify11.c
 
-diff --git a/configure.ac b/configure.ac
-index e1ecb32..0f0d8c1 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -218,6 +218,7 @@ LTP_CHECK_KCMP
- LTP_CHECK_KCMP_TYPE
- LTP_CHECK_PREADV
- LTP_CHECK_PWRITEV
-+LTP_CHECK_PREADV2
- LTP_CHECK_EPOLL_PWAIT
- LTP_CHECK_KEYUTILS_SUPPORT
- LTP_CHECK_SYNC_ADD_AND_FETCH
-diff --git a/m4/ltp-preadv2.m4 b/m4/ltp-preadv2.m4
-new file mode 100644
-index 0000000..a1e5327
---- /dev/null
-+++ b/m4/ltp-preadv2.m4
-@@ -0,0 +1,9 @@
-+dnl SPDX-License-Identifier: GPL-2.0-or-later
-+dnl Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
-+dnl Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+
-+dnl LTP_CHECK_PREADV2
-+dnl ----------------------------
-+AC_DEFUN([LTP_CHECK_PREADV2],[
-+AC_CHECK_FUNCS(preadv2,,)
-+])
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 61ab275..6959536 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -586,6 +586,8 @@ preadv01 preadv01
- preadv02 preadv02
- preadv03 preadv03
- 
-+preadv201 preadv201
-+
- profil01 profil01
- 
- pselect01 pselect01
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index 332daa9..525d33b 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -495,6 +495,8 @@ preadv01 preadv01
- preadv02 preadv02
- preadv03 preadv03
- 
-+preadv201 preadv201
-+
- profil01 profil01
- 
- pselect01 pselect01
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 0d0be77..02b02b8 100644
+index 0d0be77..84b0d6e 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -834,6 +834,9 @@ preadv02_64 preadv02_64
- preadv03 preadv03
- preadv03_64 preadv03_64
+@@ -497,6 +497,7 @@ fanotify06 fanotify06
+ fanotify07 fanotify07
+ fanotify08 fanotify08
+ fanotify09 fanotify09
++fanotify11 fanotify11
  
-+preadv201 preadv201
-+preadv201_64 preadv201_64
-+
- profil01 profil01
+ ioperm01 ioperm01
+ ioperm02 ioperm02
+diff --git a/testcases/kernel/syscalls/fanotify/.gitignore b/testcases/kernel/syscalls/fanotify/.gitignore
+index ec75539..62180ab 100644
+--- a/testcases/kernel/syscalls/fanotify/.gitignore
++++ b/testcases/kernel/syscalls/fanotify/.gitignore
+@@ -7,3 +7,4 @@
+ /fanotify07
+ /fanotify08
+ /fanotify09
++/fanotify11
+diff --git a/testcases/kernel/syscalls/fanotify/Makefile b/testcases/kernel/syscalls/fanotify/Makefile
+index bb58878..5d01b48 100644
+--- a/testcases/kernel/syscalls/fanotify/Makefile
++++ b/testcases/kernel/syscalls/fanotify/Makefile
+@@ -17,7 +17,7 @@
+ #
  
- process_vm_readv01 process_vm01 -r
-diff --git a/testcases/kernel/syscalls/preadv2/.gitignore b/testcases/kernel/syscalls/preadv2/.gitignore
+ top_srcdir		?= ../../../..
+-
++fanotify11: CFLAGS+=-pthread
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify11.c b/testcases/kernel/syscalls/fanotify/fanotify11.c
 new file mode 100644
-index 0000000..0ed1a00
+index 0000000..6218b22
 --- /dev/null
-+++ b/testcases/kernel/syscalls/preadv2/.gitignore
-@@ -0,0 +1,2 @@
-+/preadv201
-+/preadv201_64
-diff --git a/testcases/kernel/syscalls/preadv2/Makefile b/testcases/kernel/syscalls/preadv2/Makefile
-new file mode 100644
-index 0000000..fc1fbf3
---- /dev/null
-+++ b/testcases/kernel/syscalls/preadv2/Makefile
-@@ -0,0 +1,14 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
-+# Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(abs_srcdir)/../utils/newer_64.mk
-+
-+%_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/preadv2/preadv2.h b/testcases/kernel/syscalls/preadv2/preadv2.h
-new file mode 100644
-index 0000000..aacf96f
---- /dev/null
-+++ b/testcases/kernel/syscalls/preadv2/preadv2.h
-@@ -0,0 +1,26 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
++++ b/testcases/kernel/syscalls/fanotify/fanotify11.c
+@@ -0,0 +1,221 @@
 +/*
-+ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
-+ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++ * Copyright (c) 2013 SUSE.  All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it is
++ * free of the rightful claim of any third person regarding infringement
++ * or the like.  Any license provided herein, whether implied or
++ * otherwise, applies only to this software file.  Patent licenses, if
++ * any, provided herein do not apply to combinations of this program with
++ * other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ * Started by nixiaoming <nixiaoming@huawei.com>
++ *
++ * DESCRIPTION
++ *     After fanotify_init adds flags FAN_EVENT_INFO_TID,
++ *     check whether the program can accurately identify which thread id
++ *     in the multithreaded program triggered the event..
++ *
 + */
-+
-+#ifndef PREADV2_H
-+#define PREADV2_H
-+
-+#include "config.h"
-+#include "lapi/syscalls.h"
-+
-+#if !defined(HAVE_PREADV2)
-+
-+/* LO_HI_LONG taken from glibc */
-+# define LO_HI_LONG(val) (long) (val), (long) (((uint64_t) (val)) >> 32)
-+
-+ssize_t preadv2(int fd, const struct iovec *iov, int iovcnt, off_t offset,
-+		int flags)
-+{
-+	return tst_syscall(__NR_preadv2, fd, iov, iovcnt,
-+			   LO_HI_LONG(offset), flags);
-+}
-+#endif
-+
-+#endif /* PREADV2_H */
-diff --git a/testcases/kernel/syscalls/preadv2/preadv201.c b/testcases/kernel/syscalls/preadv2/preadv201.c
-new file mode 100644
-index 0000000..e8e9e6e
---- /dev/null
-+++ b/testcases/kernel/syscalls/preadv2/preadv201.c
-@@ -0,0 +1,119 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
-+ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ */
-+
-+/*
-+ * Description:
-+ * Testcase to check the basic functionality of the preadv2(2).
-+ * 1) If the file offset argument is not -1, preadv2() should succeed
-+ *    in reading the expected content of data and the file offset is
-+ *    not changed after reading.
-+ * 2) If the file offset argument is -1, preadv2() should succeed in
-+ *    reading the expected content of data and the current file offset
-+ *    is used and changed after reading.
-+ */
-+
 +#define _GNU_SOURCE
++#include "config.h"
++
++#include <stdio.h>
++#include <stdlib.h>
++
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <fcntl.h>
++#include <errno.h>
 +#include <string.h>
-+#include <sys/uio.h>
-+
++#include <unistd.h>
++#include <sys/syscall.h>
++#include <pthread.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <linux/limits.h>
 +#include "tst_test.h"
-+#include "preadv2.h"
++#include "fanotify.h"
 +
-+#define CHUNK           64
++#if defined(HAVE_SYS_FANOTIFY_H)
++#include <sys/fanotify.h>
++#define FAN_EVENT_INFO_TID 0x02000000
++#ifdef FAN_EVENT_INFO_TID
 +
-+static int fd;
-+static char buf[CHUNK];
++#define BUF_SIZE 256
++#define gettid() syscall(SYS_gettid)
 +
-+static struct iovec rd_iovec[] = {
-+	{buf, CHUNK},
-+	{NULL, 0},
-+};
++static char fname[BUF_SIZE];
 +
-+static struct tcase {
-+	off_t seek_off;
-+	int count;
-+	off_t read_off;
-+	ssize_t size;
-+	char content;
-+	off_t exp_off;
-+} tcases[] = {
-+	{0, 1, 0, CHUNK, 'a', 0},
-+	{CHUNK, 2, 0, CHUNK, 'a', CHUNK},
-+	{0, 1, CHUNK * 3 / 2, CHUNK / 2, 'b', 0},
-+	{0, 1, -1, CHUNK, 'a', CHUNK},
-+	{0, 2, -1, CHUNK, 'a', CHUNK},
-+	{CHUNK, 1, -1, CHUNK, 'b', CHUNK * 2},
-+};
++static int tid;
++static int tgid;
 +
-+static void verify_preadv2(unsigned int n)
++void *thread_create_file(void *arg LTP_ATTRIBUTE_UNUSED)
 +{
-+	int i;
-+	char *vec;
-+	struct tcase *tc = &tcases[n];
++	int fd;
++	char tid_file[64] = {0};
++	char buf[64];
 +
-+	vec = rd_iovec[0].iov_base;
-+	memset(vec, 0x00, CHUNK);
++	tid = gettid();
++	snprintf(tid_file, sizeof(tid_file), "%s/test_tid_%d", fname, tid);
++	fd = SAFE_OPEN(tid_file, O_RDWR|O_CREAT, 0600);
++	tst_res(TINFO, "file=%s. fd=%d, tid=%i\n", tid_file, fd, tid);
++	SAFE_WRITE(1, fd, tid_file, sizeof(tid_file));
++	lseek(fd, 0, SEEK_SET);
++	SAFE_READ(0, fd, buf, sizeof(buf));
++	SAFE_CLOSE(fd);
++	SAFE_UNLINK(tid_file);
++	pthread_exit(0);
++}
 +
-+	SAFE_LSEEK(fd, tc->seek_off, SEEK_SET);
++static const char *mask2str(uint64_t mask)
++{
++	static char buffer[10];
++	int offset = 0;
 +
-+	TEST(preadv2(fd, rd_iovec, tc->count, tc->read_off, 0));
-+	if (TST_RET < 0) {
-+		tst_res(TFAIL | TTERRNO, "preadv2() failed");
-+		return;
++	if (mask & FAN_ACCESS)
++		buffer[offset++] = 'R';
++	if (mask & FAN_ONDIR)
++		buffer[offset++] = 'D';
++	if (mask & FAN_OPEN)
++		buffer[offset++] = 'O';
++	if (mask & FAN_CLOSE_WRITE || mask & FAN_CLOSE_NOWRITE)
++		buffer[offset++] = 'C';
++	if (mask & FAN_MODIFY || mask & FAN_CLOSE_WRITE)
++		buffer[offset++] = 'W';
++	buffer[offset] = '\0';
++
++	return buffer;
++}
++
++
++static void show_data(const struct fanotify_event_metadata *data)
++{
++	static char printbuf[100];
++	static char pathname[PATH_MAX];
++	struct stat st;
++	int len;
++
++	snprintf(printbuf, sizeof(printbuf), "/proc/self/fd/%i", data->fd);
++	len = readlink(printbuf, pathname, sizeof(pathname));
++	if (len < 0) {
++		/* fall back to the device/inode */
++		if (fstat(data->fd, &st) < 0) {
++			perror("stat");
++			exit(1);
++		}
++		snprintf(pathname, sizeof(pathname), "device %i:%i inode %ld\n",
++				major(st.st_dev), minor(st.st_dev), st.st_ino);
++	} else {
++		pathname[len] = '\0';
++	}
++	tst_res(TINFO, "envnt: %i %s %s\n", data->pid, mask2str(data->mask),
++			pathname);
++}
++
++void test_init_bit(unsigned int flags, unsigned long long mask)
++{
++	int ret;
++	pthread_t p_id;
++	struct fanotify_event_metadata data;
++	int fd_notify;
++
++	fd_notify = fanotify_init(flags, 0);
++	if (fd_notify == -EINVAL)
++		tst_brk(TCONF, "no support FAN_EVENT_INFO_TID\n");
++
++	ret = fanotify_mark(fd_notify, FAN_MARK_ADD, mask | FAN_EVENT_ON_CHILD, AT_FDCWD, fname);
++	if (ret != 0) {
++		tst_brk(TBROK, "fanotify_mark (%d, FAN_MARK_ADD, %x, AT_FDCWD, %s) failed, ret=%d\n", mask | FAN_EVENT_ON_CHILD, fd_notify, fname, ret);
++	}
++	pthread_create(&p_id, NULL, thread_create_file, NULL);
++	res = SAFE_READ(0, fd_notify, &data, sizeof(struct fanotify_event_metadata));
++	show_data(&data);
++	if (((flags & FAN_EVENT_INFO_TID) && (data.pid == tid)) ||
++			((!(flags & FAN_EVENT_INFO_TID)) && (data.pid == tgid)))
++		tst_res(TPASS, "%s FAN_EVENT_INFO_TID: tgid=%d, tid=%d, data->pid=%d\n", (flags & FAN_EVENT_INFO_TID) ? "with" : "without", tgid, tid, data.pid);
++	else
++		tst_res(TFAIL, "%s FAN_EVENT_INFO_TID: tgid=%d, tid=%d, data->pid=%d\n", (flags & FAN_EVENT_INFO_TID) ? "with" : "without", tgid, tid, data.pid);
++	if (data.fd != FAN_NOFD)
++		SAFE_CLOSE(data.fd);
++
++	/* Remove mark to clear FAN_MARK_IGNORED_SURV_MODIFY */
++	ret = fanotify_mark(fd_notify, FAN_MARK_REMOVE, mask | FAN_EVENT_ON_CHILD, AT_FDCWD, fname);
++	if (ret != 0) {
++		tst_brk(TBROK, "fanotify_mark (%d, FAN_MARK_REMOVE, %x, AT_FDCWD, %s) failed, ret=%d\n", mask | FAN_EVENT_ON_CHILD, fd_notify, fname, ret);
 +	}
 +
-+	if (TST_RET != tc->size) {
-+		tst_res(TFAIL, "preadv2() read %li bytes, expected %zi",
-+			 TST_RET, tc->size);
-+		return;
-+	}
++	SAFE_CLOSE(fd_notify);
 +
-+	for (i = 0; i < tc->size; i++) {
-+		if (vec[i] != tc->content)
-+			break;
-+	}
++}
 +
-+	if (i < tc->size) {
-+		tst_res(TFAIL, "Buffer wrong at %i have %02x expected %02x",
-+			 i, vec[i], tc->content);
-+		return;
++static void run(unsigned int i)
++{
++	switch (i) {
++	case 0:
++		test_init_bit(FAN_EVENT_INFO_TID, FAN_CLOSE);
++		break;
++	case 1:
++		test_init_bit(FAN_EVENT_INFO_TID, FAN_OPEN);
++		break;
++	case 2:
++		test_init_bit(FAN_EVENT_INFO_TID, FAN_MODIFY);
++		break;
++	case 3:
++		test_init_bit(FAN_EVENT_INFO_TID, FAN_ACCESS);
++		break;
++	case 4:
++		test_init_bit(0, FAN_CLOSE);
++		break;
++	case 5:
++		test_init_bit(0, FAN_OPEN);
++		break;
++	case 6:
++		test_init_bit(0, FAN_MODIFY);
++		break;
++	case 7:
++		test_init_bit(0, FAN_ACCESS);
++		break;
 +	}
-+
-+	if (SAFE_LSEEK(fd, 0, SEEK_CUR) != tc->exp_off) {
-+		tst_res(TFAIL, "preadv2() has changed file offset");
-+		return;
-+	}
-+
-+	tst_res(TPASS, "preadv2() read %zi bytes with content '%c' expectedly",
-+		tc->size, tc->content);
 +}
 +
 +static void setup(void)
 +{
-+	char buf[CHUNK];
-+
-+	fd = SAFE_OPEN("file", O_RDWR | O_CREAT, 0644);
-+
-+	memset(buf, 'a', sizeof(buf));
-+	SAFE_WRITE(1, fd, buf, sizeof(buf));
-+
-+	memset(buf, 'b', sizeof(buf));
-+	SAFE_WRITE(1, fd, buf, sizeof(buf));
++	tgid = getpid();
++	sprintf(fname, "tfile_%d", tgid);
++	mkdir(fname, 0755);
 +}
 +
 +static void cleanup(void)
 +{
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
++	rmdir(fname);
 +}
 +
 +static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
++	.test = run,
++	.tcnt = 8,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test = verify_preadv2,
 +	.needs_tmpdir = 1,
++	.needs_root = 1,
 +};
++
++
++#else
++TST_TEST_TCONF("system doesn't support fanotify_init flags: FAN_EVENT_INFO_TID");
++#endif /* ifdef FAN_EVENT_INFO_TID */
++
++#else
++TST_TEST_TCONF("system doesn't have required fanotify support");
++#endif
 -- 
-1.8.3.1
-
-
+2.10.1
 
