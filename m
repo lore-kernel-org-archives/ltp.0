@@ -1,25 +1,27 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 27 Sep 2018 15:35:24 +0200
-Subject: [LTP] [PATCH] syscalls/getcpu01: support Android
-In-Reply-To: <20180912173208.131065-1-smuckle.linux@gmail.com>
-References: <20180912173208.131065-1-smuckle.linux@gmail.com>
-Message-ID: <20180927133523.GA18835@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 27 Sep 2018 15:56:11 +0200
+Subject: [LTP] [RFC PATCH 3/3] Remove cron tests
+In-Reply-To: <20180926150111.GC5524@rei>
+References: <20180924085150.17555-1-pvorel@suse.cz>
+ <20180924085150.17555-4-pvorel@suse.cz> <20180926150111.GC5524@rei>
+Message-ID: <20180927135611.GA23431@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Android platforms have the required support for this test.
+Hi Cyril,
 
-This is getting way too ugly with all the ifdefs...
+> Hi!
+> > + remove admin_tools runtest file which run them (as a part of EAL2
+> > testsuite).
 
-And actually we do have a fallback implementation for the CPU_* macros.
-I guess that it would be cleaner if we moved the sched_setaffinity.h
-from syscalls/sched_setaffinity/ to include/lapi/ so that we can use it
-here, that should eliminate most of the ugliness.
+> Can we get rid of the at_allow01 and at_deny01 tests as well?
+Sure, I'll put it into v2.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Other than that this patchset looks good to me.
+
+
+Kind regards,
+Petr
