@@ -1,27 +1,46 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 27 Sep 2018 15:56:11 +0200
-Subject: [LTP] [RFC PATCH 3/3] Remove cron tests
-In-Reply-To: <20180926150111.GC5524@rei>
-References: <20180924085150.17555-1-pvorel@suse.cz>
- <20180924085150.17555-4-pvorel@suse.cz> <20180926150111.GC5524@rei>
-Message-ID: <20180927135611.GA23431@dell5510>
+From: Masayoshi Mizuma <msys.mizuma@gmail.com>
+Date: Thu, 27 Sep 2018 10:02:04 -0400
+Subject: [LTP] [PATCH] ver_linux: use lscpu command result instead of
+ /proc/cpuinfo
+In-Reply-To: <20180927124010.GB11658@rei>
+References: <20180815185516.32726-1-msys.mizuma@gmail.com>
+ <20180927124010.GB11658@rei>
+Message-ID: <20180927140203.udiw3qsgx5wsn3fm@gabell>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
-
+On Thu, Sep 27, 2018 at 02:40:11PM +0200, Cyril Hrubis wrote:
 > Hi!
-> > + remove admin_tools runtest file which run them (as a part of EAL2
-> > testsuite).
+> > Signed-off-by: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
+> > ---
+> >  ver_linux | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/ver_linux b/ver_linux
+> > index dda337926..5f9260f5f 100755
+> > --- a/ver_linux
+> > +++ b/ver_linux
+> > @@ -96,5 +96,10 @@ echo 'free reports:'
+> >  free
+> >  
+> >  echo
+> > -echo '/proc/cpuinfo'
+> > -cat /proc/cpuinfo
+> > +echo 'cpuinfo:'
+> > +which lscpu > /dev/null 2>&1
+> > +if [ $? -eq 0 ]; then
+> 
+> You can just write:
+> 
+> if which lscpu > /dev/null 2>&1; then
+> ...
+> 
+> 
+> Other than that it's fine.
 
-> Can we get rid of the at_allow01 and at_deny01 tests as well?
-Sure, I'll put it into v2.
+Thanks! I'll send the v2 soon.
 
-> Other than that this patchset looks good to me.
-
-
-Kind regards,
-Petr
+- Masa
