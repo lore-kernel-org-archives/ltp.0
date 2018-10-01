@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 1 Oct 2018 16:38:56 +0200
-Subject: [LTP] [PATCH 1/2] module: Remove obsolete create_module(2) and
- query_module(2)
-In-Reply-To: <1538124736-1183-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1538124736-1183-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20181001143855.GD27555@rei>
+Date: Mon, 1 Oct 2018 16:47:18 +0200
+Subject: [LTP] [PATCH] Correct the kernel_bits value in x86 PER_LINUX32.
+In-Reply-To: <CABHszYso3QWR7yi8b2ZBrJLpVQALWCSnaEHNk0+pL_cOuP_DUg@mail.gmail.com>
+References: <CABHszYso3QWR7yi8b2ZBrJLpVQALWCSnaEHNk0+pL_cOuP_DUg@mail.gmail.com>
+Message-ID: <20181001144717.GE27555@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,7 +11,12 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Both pushed, thanks.
+Looks like the patch was mangled by your mail client (all the
+whitespaces are gone), can you please try adjust your mail client
+configuration and resend?
+
+See:
+https://www.kernel.org/doc/html/latest/process/email-clients.html?highlight=email%20clients#some-email-client-mua-hints
 
 -- 
 Cyril Hrubis
