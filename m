@@ -1,59 +1,72 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 2 Oct 2018 19:25:17 +0300
-Subject: [LTP] [RFC PATCH 5/5] runtest/numa: remove move_pages* test
-	cases
-In-Reply-To: <20181002130928.GH24796@rei>
-References: <1536849882-28897-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1536849882-28897-6-git-send-email-stanislav.kholmanskikh@oracle.com>
- <20181002130928.GH24796@rei>
-Message-ID: <461467d5-36bb-5f14-f002-224904ad0091@oracle.com>
+From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+Date: Wed, 3 Oct 2018 01:23:30 +0200
+Subject: [LTP] [PATCH v2 2/5] tst_safe_macros: add SAFE_GETGRGID()
+In-Reply-To: <20181002142047.GK24796@rei>
+References: <20180910141901.20541-1-cfamullaconrad@suse.de>
+ <20180910141901.20541-2-cfamullaconrad@suse.de> <20181002142047.GK24796@rei>
+Message-ID: <43441f97-3b86-e646-2693-4f396fa40ff6@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
-On 10/02/2018 04:09 PM, Cyril Hrubis wrote:
+Hi,
+On 10/2/18 4:20 PM, Cyril Hrubis wrote:
 > Hi!
->> since they are already defined in runtest/syscalls.
->>
->> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
->> ---
->>  runtest/numa | 12 ------------
->>  1 file changed, 12 deletions(-)
->>
->> diff --git a/runtest/numa b/runtest/numa
->> index 12aedbb..510c353 100644
->> --- a/runtest/numa
->> +++ b/runtest/numa
->> @@ -1,13 +1 @@
->>  Numa-testcases numa01.sh
->> -move_pages01 move_pages01
->> -move_pages02 move_pages02
->> -move_pages03 move_pages03
->> -move_pages04 move_pages04
->> -move_pages05 move_pages05
->> -move_pages06 move_pages06
->> -move_pages07 move_pages07
->> -move_pages08 move_pages08
->> -move_pages09 move_pages09
->> -move_pages10 move_pages10
->> -move_pages11 move_pages11
->> -move_pages12 move_pages12
+>> +struct group *safe_getgrgid(const char *file, const int lineno, gid_t gid);
+>> +#define SAFE_GETGRGID(gid) \
+>> +	safe_getgrgid(__FILE__, __LINE__, (gid))
+>> +
+>>  int safe_setxattr(const char *file, const int lineno, const char *path,
+>>              const char *name, const void *value, size_t size, int flags);
+>>  #define SAFE_SETXATTR(path, name, value, size, flags) \
+>> diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
+>> index 17384f32c..2e041c460 100644
+>> --- a/lib/tst_safe_macros.c
+>> +++ b/lib/tst_safe_macros.c
+>> @@ -153,6 +153,19 @@ struct group *safe_getgrnam(const char *file, const int lineno,
+>>  	return rval;
+>>  }
+>>  
+>> +struct group *safe_getgrgid(const char *file, const int lineno, gid_t gid)
+>> +{
+>> +	struct group *rval;
 > 
-> Or we may remove the numa runtest file from the default scenario, given
-> that the move_pages tests are in syscalls and the numa01.sh is known to
-> be broken there is a little value in keeping it in default scenario.
-> 
-> And once I finish the numa01.sh rewrite, we will get set_mempolicy
-> syscall tests in syscalls runtest file anyways, so we may keep the numa
-> to be a separate runtest file for a case that someone wants to run only
-> numa related tests.
-> 
+> Looking at manual pages we should zero the errno here, since we print it
+> in the tst_brk_() in a case of NULL.
 
-Alright, I will remove the numa runtest file from the default scenario
-in the next series.
+Thanks for pointing that. I'm going to change it here and in getgrnam().
 
-Thank you.
+> 
+>> +	rval = getgrgid(gid);
+>> +	if (rval == NULL) {
+>> +		tst_brk_(file, lineno, TBROK | TERRNO,
+>> +			"getgrgid(%li) failed", (long)gid);
+>> +	}
+> 
+> I also wonder if it's okay to break the test in case that the entry
+> wasn't found (the return value would be NULL and errno would be
+> untouched) but I guess that it's OK for most of the cases.
+
+I think so too. Also I thought these safe_* functions are more for
+setting up the test, where it is more likely requesting existing groups.
+
+Maybe for the fallback approach it could be handy. But if we really need
+more then two options, I think passing a array would do it.
+Or should we go with an array now?
+
+> 
+>> +	return rval;
+>> +}
+>> +
+>>  int safe_chroot(const char *file, const int lineno, const char *path)
+>>  {
+>>  	int rval;
+>> -- 
+>> 2.16.4
+>>
+>>
+>> -- 
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
