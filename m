@@ -1,99 +1,69 @@
-From: kmagic@google.com <kmagic@google.com>
-Date: Mon,  1 Oct 2018 10:11:16 -0700
-Subject: [LTP] [PATCH] Correct the kernel_bits value in x86 PER_LINUX32.
-Message-ID: <20181001171116.235573-1-kmagic@google.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 2 Oct 2018 10:24:49 +0200
+Subject: [LTP] LTP network tests
+In-Reply-To: <BL0PR06MB4257D11CFDE625F69F318E8793140@BL0PR06MB4257.namprd06.prod.outlook.com>
+References: <BL0PR06MB4257D11CFDE625F69F318E8793140@BL0PR06MB4257.namprd06.prod.outlook.com>
+Message-ID: <20181002082449.GA24414@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Kenneth Magic <kmagic@google.com>
+Hi Yulu,
 
-Android runs all 32bit programs in a PER_LIINUX32 personality
-even under a 64 bit kernel, causing the machine to show up as
-"i686". Check for and correct this case so tests use the correct
-kernel_bits value.
+there are 3 ways of running LTP network tests (see testcases/lib/tst_net.sh):
+* single host configuration using network namespaces (TST_USE_NETNS, it's
+  default one if you don't set RHOST). It requires kernel with network
+  namespaces support (CONFIG_NET_NS) + veth support (CONFIG_VETH), some tests
+  require additional support.
+* using SSH (via TST_USE_SSH and RHOST variables): need to setup SSH access with keys or
+  define password in PASSWD variable
+* using RSH (via RHOST variable)
+There is a helper script testscripts/network.sh (installed into
+/opt/ltp/testscripts/network.sh), which you can use instead of /opt/ltp/runltp.
 
-Signed-off-by: Kenneth Magic <kmagic@google.com>
----
- lib/tst_kernel.c | 47 +++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 41 insertions(+), 6 deletions(-)
+I removed RHOST to have the same default behavior for both runltp and
+network.sh. So, running "runltp -N" now performs testing via network namespaces.
 
-diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
-index 4206e3c0d..d051f3b07 100644
---- a/lib/tst_kernel.c
-+++ b/lib/tst_kernel.c
-@@ -15,21 +15,28 @@
-  * along with this program. If not, see <http://www.gnu.org/licenses/>.
-  */
- 
-+#include <linux/personality.h>
- #include <sys/utsname.h>
- #include "test.h"
- #include "tst_kernel.h"
- 
--int tst_kernel_bits(void)
-+static int get_kernel_bits_from_uname(struct utsname *buf)
- {
--	struct utsname buf;
--	int kernel_bits;
--
--	if (uname(&buf)) {
-+	if (uname(buf)) {
- 		tst_brkm(TBROK | TERRNO, NULL, "uname()");
- 		return -1;
- 	}
- 
--	kernel_bits = strstr(buf.machine, "64") ? 64 : 32;
-+	return strstr(buf->machine, "64") ? 64 : 32;
-+}
-+
-+int tst_kernel_bits(void)
-+{
-+	struct utsname buf;
-+	int kernel_bits = get_kernel_bits_from_uname(&buf);
-+
-+	if (kernel_bits == -1)
-+		return -1;
- 
- 	/*
- 	 * ARM64 (aarch64) defines 32-bit compatibility modes as
-@@ -40,6 +47,34 @@ int tst_kernel_bits(void)
- 			|| !strcmp(buf.machine, "s390x"))
- 		kernel_bits = 64;
- 
-+#ifdef __ANDROID__
-+	/* Android's bionic libc sets the PER_LINUX32 personality for all 32-bit
-+	 * programs. This will cause buf.machine to report as i686 even though
-+	 * the kernel itself is 64-bit.
-+	 */
-+	if (!strcmp(buf.machine, "i686") &&
-+			(personality(0xffffffff) & PER_MASK) == PER_LINUX32) {
-+		/* Set the personality back to the default. */
-+		if (personality(PER_LINUX) == -1) {
-+			tst_brkm(TBROK | TERRNO, NULL, "personality()");
-+			return -1;
-+		}
-+
-+		/* Redo the uname check without the PER_LINUX32 personality to
-+		 * determine the actual kernel bits value.
-+		 */
-+		kernel_bits = get_kernel_bits_from_uname(&buf);
-+		if (kernel_bits == -1)
-+			return -1;
-+
-+		/* Set the personality back to PER_LINUX32. */
-+		if (personality(PER_LINUX32) == -1) {
-+			tst_brkm(TBROK | TERRNO, NULL, "personality()");
-+			return -1;
-+		}
-+	}
-+#endif  /* __ANDROID__ */
-+
- 	tst_resm(TINFO, "uname.machine=%s kernel is %ibit",
- 	         buf.machine, kernel_bits);
- 
--- 
-2.19.0.605.g01d371f741-goog
+LTP/net doc (somehow obsolete, we need to update it):
+https://github.com/linux-test-project/ltp/tree/master/testcases/network
+https://github.com/linux-test-project/ltp/blob/master/INSTALL#L190
+
+Some tests aren't ported to use tst_net.sh (route and multicast stress tests,
+RPC and TCP tests, ...) and still use rsh via LTP_RSH variable. These tests needs
+to be rewritten:
+https://github.com/linux-test-project/ltp/issues/128
+https://github.com/linux-test-project/ltp/issues/310
+
+Kind regards,
+Petr
+
+PS: CC LTP mailing list in case somebody is interested.
+
+> Hi Petr,
+
+> I'm new to LTP and trying to get LTP running in our environment. One particular area I'm having problem with is running network tests. I looked at the commit history of the LTP test and saw that you recently made some changes on how to run network tests. I wonder if you can help me on this.
+
+> Do you need a remote host to run the network tests?
+> If so, how do you specify the remote host? When I did "runltp -N", it didn't ask for any information on a remote host. Are there any setup I have to perform before issuing "runltp -N".
+
+> Regards,
+> Yulu Diao
+
+> commit 22a0cb31a5cb66bdeabbeb5d42299ecb4898fc2e
+> Author: Petr Vorel <pvorel@suse.cz>
+> Date:   Mon Sep 3 12:41:34 2018 +0200
+
+>     runltp: Remove RHOST setup
+
+>     as RSH is deprecated. The default management link of network tests are
+>     network namespaces.
+
+>     For remote management is (instead of RSH) recommended to use SSH. Setup:
+>     TST_USE_SSH=1
+
+>     Signed-off-by: Petr Vorel <pvorel@suse.cz>
+
+
 
