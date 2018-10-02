@@ -1,12 +1,12 @@
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 2 Oct 2018 19:21:38 +0300
-Subject: [LTP] [RFC PATCH 4/5] runtest/commands: adjust names for
- keyctl01, sysctl01, unshare01
-In-Reply-To: <20181002130338.GG24796@rei>
+Date: Tue, 2 Oct 2018 19:25:17 +0300
+Subject: [LTP] [RFC PATCH 5/5] runtest/numa: remove move_pages* test
+	cases
+In-Reply-To: <20181002130928.GH24796@rei>
 References: <1536849882-28897-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1536849882-28897-5-git-send-email-stanislav.kholmanskikh@oracle.com>
- <20181002130338.GG24796@rei>
-Message-ID: <bf0bbc7d-e1f8-bad1-b07a-cecfc34ab968@oracle.com>
+ <1536849882-28897-6-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <20181002130928.GH24796@rei>
+Message-ID: <461467d5-36bb-5f14-f002-224904ad0091@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,47 +15,45 @@ To: ltp@lists.linux.it
 
 
 
-On 10/02/2018 04:03 PM, Cyril Hrubis wrote:
+On 10/02/2018 04:09 PM, Cyril Hrubis wrote:
 > Hi!
->> runtest/syscalls already defines tests with these ids, but there
->> they point to different commands. In order to avoid name conflicts
->> we need to rename tests either in runtest/commands or in runtest/syscalls.
->> Since the tests in runtest/syscalls are much older, I chose to rename
->> the tests in runtest/commands.
+>> since they are already defined in runtest/syscalls.
 >>
 >> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 >> ---
->>  runtest/commands | 6 +++---
->>  1 file changed, 3 insertions(+), 3 deletions(-)
+>>  runtest/numa | 12 ------------
+>>  1 file changed, 12 deletions(-)
 >>
->> diff --git a/runtest/commands b/runtest/commands
->> index ee7e9f4..f27d2fa 100644
->> --- a/runtest/commands
->> +++ b/runtest/commands
->> @@ -37,7 +37,7 @@ which01 which01.sh
->>  lsmod01 lsmod01.sh
->>  insmod01 insmod01.sh
->>  wc01 wc01.sh
->> -keyctl01 keyctl01.sh
->> +keyctl_01 keyctl01.sh
->>  gdb01 gdb01.sh
->> -unshare01 unshare01.sh
->> -sysctl01 sysctl01.sh
->> +unshare_01 unshare01.sh
->> +sysctl_01 sysctl01.sh
+>> diff --git a/runtest/numa b/runtest/numa
+>> index 12aedbb..510c353 100644
+>> --- a/runtest/numa
+>> +++ b/runtest/numa
+>> @@ -1,13 +1 @@
+>>  Numa-testcases numa01.sh
+>> -move_pages01 move_pages01
+>> -move_pages02 move_pages02
+>> -move_pages03 move_pages03
+>> -move_pages04 move_pages04
+>> -move_pages05 move_pages05
+>> -move_pages06 move_pages06
+>> -move_pages07 move_pages07
+>> -move_pages08 move_pages08
+>> -move_pages09 move_pages09
+>> -move_pages10 move_pages10
+>> -move_pages11 move_pages11
+>> -move_pages12 move_pages12
 > 
-> Hmm, that's a bit hacky. Maybe we should add a _sh suffix to all the
-> testcases in commands so that it's clear that these are shell scripts.
+> Or we may remove the numa runtest file from the default scenario, given
+> that the move_pages tests are in syscalls and the numa01.sh is known to
+> be broken there is a little value in keeping it in default scenario.
+> 
+> And once I finish the numa01.sh rewrite, we will get set_mempolicy
+> syscall tests in syscalls runtest file anyways, so we may keep the numa
+> to be a separate runtest file for a case that someone wants to run only
+> numa related tests.
 > 
 
-As if
+Alright, I will remove the numa runtest file from the default scenario
+in the next series.
 
-keyctl01 keyctl01.sh
-
-was changed to
-
-keyctl01_sh keyctl01.sh
-
-Correct?
-
-
+Thank you.
