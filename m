@@ -1,11 +1,11 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 3 Oct 2018 08:48:25 -0400 (EDT)
-Subject: [LTP] [PATCH 3/4] syscalls/readahead02: test readahead() on
-	an	overlayfs file
-In-Reply-To: <20180928130621.28932-4-amir73il@gmail.com>
+Date: Wed, 3 Oct 2018 08:48:49 -0400 (EDT)
+Subject: [LTP] [PATCH 4/4] syscalls/readahead02: test readahead
+	using	posix_fadvise()
+In-Reply-To: <20180928130621.28932-5-amir73il@gmail.com>
 References: <20180928130621.28932-1-amir73il@gmail.com>
- <20180928130621.28932-4-amir73il@gmail.com>
-Message-ID: <71991096.55763280.1538570905233.JavaMail.zimbra@redhat.com>
+ <20180928130621.28932-5-amir73il@gmail.com>
+Message-ID: <459121114.55763310.1538570929368.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,159 +15,155 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> Repeat the test case on an overlayfs file.
+> The call to posix_fadvise(POSIX_FADV_WILLNEED) should have the same
+> effect as the call to readahead() syscall.
+> 
+> Repeat the test cases for local file and overlayfs file with
+> posix_fadvise().
 > 
 > The new test case is a regression test for kernel commit b833a3660394
-> ("ovl: add ovl_fadvise()") which fixes a regression of readahead() on
+> ("ovl: add ovl_fadvise()") which fixes a regression of fadvise() on
 > an overlay file that was introduced by kernel commit 5b910bd615ba
 > ("ovl: fix GPF in swapfile_activate of file from overlayfs over xfs").
 > 
 > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 > ---
->  .../kernel/syscalls/readahead/readahead02.c   | 55 +++++++++++++++++--
->  1 file changed, 49 insertions(+), 6 deletions(-)
+>  .../kernel/syscalls/readahead/readahead02.c   | 57 +++++++++++++++++--
+>  1 file changed, 51 insertions(+), 6 deletions(-)
 > 
 > diff --git a/testcases/kernel/syscalls/readahead/readahead02.c
 > b/testcases/kernel/syscalls/readahead/readahead02.c
-> index 4132b4de1..191116f62 100644
+> index 191116f62..9ebed359d 100644
 > --- a/testcases/kernel/syscalls/readahead/readahead02.c
 > +++ b/testcases/kernel/syscalls/readahead/readahead02.c
-> @@ -14,6 +14,7 @@
->  #include <sys/types.h>
->  #include <sys/syscall.h>
->  #include <sys/mman.h>
-> +#include <sys/mount.h>
->  #include <sys/stat.h>
->  #include <sys/types.h>
->  #include <sys/time.h>
-> @@ -34,9 +35,15 @@ static const char meminfo_fname[] = "/proc/meminfo";
->  static size_t testfile_size = 64 * 1024 * 1024;
->  static char *opt_fsizestr;
->  static int pagesize;
-> +static int ovl_mounted;
+> @@ -51,6 +51,42 @@ static struct tst_option options[] = {
+>  	{NULL, NULL, NULL}
+>  };
 >  
->  #define MNTPOINT        "mntpoint"
-> -static const char mntpoint[] = "mntpoint";
-> +#define OVL_LOWER	MNTPOINT"/lower"
-> +#define OVL_UPPER	MNTPOINT"/upper"
-> +#define OVL_WORK	MNTPOINT"/work"
-> +#define OVL_MNT		MNTPOINT"/ovl"
+> +#ifndef _FILE_OFFSET_BITS
+> +#define _FILE_OFFSET_BITS 32
+> +#endif
+
+I don't think we should be touching this.
+
 > +
-> +static const char mntpoint[] = MNTPOINT;
->  #define MIN_SANE_READAHEAD (4u * 1024u)
->  
->  static struct tst_option options[] = {
-> @@ -109,12 +116,39 @@ static unsigned long get_cached_size(void)
->  	return parse_entry(meminfo_fname, entry);
->  }
->  
-> -static void create_testfile(void)
-> +static int setup_overlay(void)
+> +#ifndef __NR_fadvise64
+> +#define __NR_fadvise64 0
+> +#endif
+> +
+> +static struct tcase {
+> +	const char *tname;
+> +	int use_overlay;
+> +	int use_fadvise;
+> +} tcases[] = {
+> +	{ "readahead on file", 0, 0 },
+> +	{ "readahead on overlayfs file", 1, 0 },
+> +/* Check this system has fadvise64 system which is used in posix_fadvise. */
+> +#if ((_FILE_OFFSET_BITS == 64) || (__NR_fadvise64 != 0))
+
+Can you elaborate on this check? Why do we need to care
+about _FILE_OFFSET_BITS?
+
+> +	{ "POSIX_FADV_WILLNEED on file", 0, 1 },
+> +	{ "POSIX_FADV_WILLNEED on overlayfs file", 1, 1 },
+> +#endif
+> +};
+> +
+> +static int fadvise_willneed(int fd, off_t offset, size_t len)
 > +{
-> +	int ret;
-> +
-> +	/* Setup an overlay mount with lower dir and file */
-> +	SAFE_MKDIR(OVL_LOWER, 0755);
-> +	SAFE_MKDIR(OVL_UPPER, 0755);
-> +	SAFE_MKDIR(OVL_WORK, 0755);
-> +	SAFE_MKDIR(OVL_MNT, 0755);
-> +	ret = mount("overlay", OVL_MNT, "overlay", 0, "lowerdir="OVL_LOWER
-> +		    ",upperdir="OVL_UPPER",workdir="OVL_WORK);
-> +	if (ret < 0) {
-> +		if (errno == ENODEV) {
-> +			tst_res(TCONF,
-> +				"overlayfs is not configured in this kernel.");
-> +			return ret;
-> +		}
-> +		tst_brk(TBROK | TERRNO, "overlayfs mount failed");
-> +	}
-> +	ovl_mounted = 1;
-> +	return 0;
+> +	/* Should have the same effect as readahead() syscall */
+> +	return posix_fadvise(fd, offset, len, POSIX_FADV_WILLNEED);
 > +}
 > +
-> +static int create_testfile(unsigned int use_overlay)
->  {
->  	int fd;
->  	char *tmp;
->  	size_t i;
->  
-> +	if (use_overlay && setup_overlay() != 0)
-> +		return -1;
-> +
-> +	sprintf(testfile, "%s/testfile", use_overlay ? OVL_MNT : MNTPOINT);
->  	tst_res(TINFO, "creating test file of size: %zu", testfile_size);
->  	tmp = SAFE_MALLOC(pagesize);
->  
-> @@ -127,6 +161,7 @@ static void create_testfile(void)
->  	SAFE_FSYNC(fd);
->  	SAFE_CLOSE(fd);
->  	free(tmp);
-> +	return 0;
->  }
->  
->  
-> @@ -221,7 +256,7 @@ static void read_testfile(int do_readahead, const char
-> *fname, size_t fsize,
->  	SAFE_CLOSE(fd);
->  }
->  
-> -static void test_readahead(void)
-> +static void test_readahead(unsigned int use_overlay)
->  {
->  	unsigned long read_bytes, read_bytes_ra;
->  	long usec, usec_ra;
-> @@ -229,6 +264,9 @@ static void test_readahead(void)
->  	char proc_io_fname[128];
->  	sprintf(proc_io_fname, "/proc/%u/io", getpid());
->  
-> +	if (create_testfile(use_overlay) != 0)
-> +		return;
-> +
-
-This could use some TINFO message, what is being tested.
-.. and I see you added it in 4/4.
-
->  	/* find out how much can cache hold if we read whole file */
->  	read_testfile(0, testfile, testfile_size, &read_bytes, &usec, &cached);
->  	cached_max = get_cached_size();
-> @@ -302,9 +340,12 @@ static void setup(void)
->  	tst_syscall(__NR_readahead, 0, 0, 0);
->  
->  	pagesize = getpagesize();
-> +}
->  
-> -	sprintf(testfile, "%s/testfile", mntpoint);
-> -	create_testfile();
-> +static void cleanup(void)
+> +static int libc_readahead(int fd, off_t offset, size_t len)
 > +{
+> +	return readahead(fd, offset, len);
+> +}
+> +
+> +typedef int (*readahead_func_t)(int, off_t, size_t);
+> +static readahead_func_t readahead_func = libc_readahead;
+> +
+>  static int check_ret(long expected_ret)
+>  {
+>  	if (expected_ret == TST_RET) {
+> @@ -120,6 +156,9 @@ static int setup_overlay(void)
+>  {
+>  	int ret;
+>  
 > +	if (ovl_mounted)
-> +		SAFE_UMOUNT(OVL_MNT);
->  }
+> +		return 0;
+> +
 
-This creates a small conflict, because setup and cleanup don't match.
-If you run this with multiple iterations (parameter -i), it's going
-to fail:
-  safe_macros.c:169: BROK: readahead02.c:124: mkdir(mntpoint/lower,0755) failed: EEXIST
-
->  
->  static struct tst_test test = {
-> @@ -313,8 +354,10 @@ static struct tst_test test = {
->  	.mount_device = 1,
->  	.mntpoint = mntpoint,
->  	.setup = setup,
-> +	.cleanup = cleanup,
->  	.options = options,
-> -	.test_all = test_readahead,
-> +	.test = test_readahead,
-> +	.tcnt = 2, /* Repeat with overlayfs */
-
-I'd rather add a function to call old and new test,
-single int will make it harder to add additional tests in future.
-.. and I see you changed this in 4/4 already.
+You could call it once from setup() and drop check above
+and other call from create_testfile().
 
 Regards,
 Jan
 
+>  	/* Setup an overlay mount with lower dir and file */
+>  	SAFE_MKDIR(OVL_LOWER, 0755);
+>  	SAFE_MKDIR(OVL_UPPER, 0755);
+> @@ -139,7 +178,7 @@ static int setup_overlay(void)
+>  	return 0;
+>  }
+>  
+> -static int create_testfile(unsigned int use_overlay)
+> +static int create_testfile(int use_overlay)
+>  {
+>  	int fd;
+>  	char *tmp;
+> @@ -164,7 +203,6 @@ static int create_testfile(unsigned int use_overlay)
+>  	return 0;
+>  }
+>  
+> -
+>  /* read_testfile - mmap testfile and read every page.
+>   * This functions measures how many I/O and time it takes to fully
+>   * read contents of test file.
+> @@ -194,7 +232,7 @@ static void read_testfile(int do_readahead, const char
+> *fname, size_t fsize,
+>  	if (do_readahead) {
+>  		cached_start = get_cached_size();
+>  		do {
+> -			TEST(readahead(fd, offset, fsize - offset));
+> +			TEST(readahead_func(fd, offset, fsize - offset));
+>  			if (TST_RET != 0) {
+>  				check_ret(0);
+>  				break;
+> @@ -256,17 +294,24 @@ static void read_testfile(int do_readahead, const char
+> *fname, size_t fsize,
+>  	SAFE_CLOSE(fd);
+>  }
+>  
+> -static void test_readahead(unsigned int use_overlay)
+> +static void test_readahead(unsigned int n)
+>  {
+>  	unsigned long read_bytes, read_bytes_ra;
+>  	long usec, usec_ra;
+>  	unsigned long cached_max, cached_low, cached, cached_ra;
+>  	char proc_io_fname[128];
+> +	struct tcase *tc = &tcases[n];
+> +
+> +	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+> +
+>  	sprintf(proc_io_fname, "/proc/%u/io", getpid());
+>  
+> -	if (create_testfile(use_overlay) != 0)
+> +	if (create_testfile(tc->use_overlay) != 0)
+>  		return;
+>  
+> +	/* Use either readahead() syscall or POSIX_FADV_WILLNEED */
+> +	readahead_func = tc->use_fadvise ? fadvise_willneed : libc_readahead;
+> +
+>  	/* find out how much can cache hold if we read whole file */
+>  	read_testfile(0, testfile, testfile_size, &read_bytes, &usec, &cached);
+>  	cached_max = get_cached_size();
+> @@ -357,7 +402,7 @@ static struct tst_test test = {
+>  	.cleanup = cleanup,
+>  	.options = options,
+>  	.test = test_readahead,
+> -	.tcnt = 2, /* Repeat with overlayfs */
+> +	.tcnt = ARRAY_SIZE(tcases),
 >  };
 >  
 >  #else /* __NR_readahead */
