@@ -1,91 +1,38 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 3 Oct 2018 16:51:25 +0300
-Subject: [LTP] [PATCH 2/4] syscalls/readahead02: Convert to newlib and
-	cleanup
-In-Reply-To: <1801488452.55763249.1538570871657.JavaMail.zimbra@redhat.com>
-References: <20180928130621.28932-1-amir73il@gmail.com>
- <20180928130621.28932-3-amir73il@gmail.com>
- <1801488452.55763249.1538570871657.JavaMail.zimbra@redhat.com>
-Message-ID: <CAOQ4uxjCgVYeG1eGUF1whFmMnorzaCk_d0KjXYni1=zpSwRHfQ@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed,  3 Oct 2018 17:37:51 +0200
+Subject: [LTP] [PATCH 0/5] Fixes for DHCP tests
+Message-ID: <20181003153756.3825-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Oct 3, 2018 at 3:47 PM Jan Stancek <jstancek@redhat.com> wrote:
->
->
-> ----- Original Message -----
-> > * Use SAFE macros
-> >
-> > * Use SPDX-License-Identifier
-> >
-> > * No need to cleanup test file from temp dir
-> >
-> > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
->
-> Hi,
->
-> ack to 1/4
->
-> >
-> >  static int has_file(const char *fname, int required)
-> >  {
-> > -     int ret;
-> >       struct stat buf;
-> > -     ret = stat(fname, &buf);
-> > -     if (ret == -1) {
-> > -             if (errno == ENOENT)
-> > -                     if (required)
-> > -                             tst_brkm(TCONF, cleanup, "%s not available",
-> > -                                      fname);
-> > -                     else
-> > -                             return 0;
-> > -             else
-> > -                     tst_brkm(TBROK | TERRNO, cleanup, "stat %s", fname);
-> > +
-> > +     if (stat(fname, &buf) == -1) {
-> > +             if (errno != ENOENT)
-> > +                     tst_brk(TBROK | TERRNO, "stat %s", fname);
-> > +             if (required)
-> > +                     tst_brk(TCONF, "%s not available", fname);
-> >       }
-> >       return 1;
-> >  }
->
-> This will return 1 even when file doesn't exist.
-> (Not that it makes big difference for test)
->
+Hi,
 
-Oops. better fix it anyway.
-I think it matters if /proc/pid/io does not exist.
+while debugging a failure of DHCP tests on SUSE Linux Enterprise I did
+some fixes and enhancements of these tests. I tested patchset on various
+versions of Debian, SUSE and CentOS, using NetworkManager and Wicked.
 
->
-> > +static struct tst_test test = {
-> > +     .needs_root = 1,
-> > +     .needs_tmpdir = 1,
-> > +     .mount_device = 1,
-> > +     .mntpoint = mntpoint,
-> > +     .setup = setup,
-> > +     .options = options,
-> > +     .test_all = test_readahead,
-> > +};
->
-> Would it make sense to enable this for 'all_filesystems = 1'?
+Due different approach of using dhclient in these two network managers
+and specific /sbin/dhclient-script for each distro it's quite pain to
+have these tests working on all distros, so there might be more patches.
 
-I don't know. Not sure which tests are good candidates for that.
-But anyway it's a different change.
+Kind regards,
+Petr
 
-> Previously we used whatever fs /tmp was, now we seem to default
-> always to ext2.
->
+Petr Vorel (5):
+  net/dhcp: Add support for wicked
+  net/dhcp: Disable DNS for dnsmasq
+  net/dhcp: Print client and server versions
+  net/dhcp: Pass lease file location to dhcpd via -lf
+  net/dhcp: TBROK when dnsmasq does not start
 
-Not exactly. Before cleanup we either used whatever fs /tmp was
-or if it was tmpfs we created a loop backed default fs (ext2?).
+ testcases/network/dhcp/dhcp_lib.sh      | 21 +++++++++++++++++++++
+ testcases/network/dhcp/dhcpd_tests.sh   | 13 +++++++------
+ testcases/network/dhcp/dnsmasq_tests.sh |  7 ++++++-
+ 3 files changed, 34 insertions(+), 7 deletions(-)
 
-Now we skip the conditional part and always format fs.
-Do you think that matters for the test?
+-- 
+2.19.0
 
-Thanks,
-Amir.
