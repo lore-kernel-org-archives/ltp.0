@@ -1,13 +1,13 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 3 Oct 2018 09:40:43 +0200
-Subject: [LTP] [PATCH] device-drivers/acpi: skip certain tests for
- HW-reduced ACPI
-In-Reply-To: <d64f1f57-c630-b893-afab-1247917a4fb8@oracle.com>
-References: <1534520593-14253-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <d10e9ad6-0b17-bac4-8f8b-09e8ad5be09a@oracle.com>
- <20181001124227.GB27555@rei>
- <d64f1f57-c630-b893-afab-1247917a4fb8@oracle.com>
-Message-ID: <20181003074043.GA23398@rei>
+Date: Wed, 3 Oct 2018 09:42:40 +0200
+Subject: [LTP] [RFC PATCH 4/5] runtest/commands: adjust names for
+ keyctl01, sysctl01, unshare01
+In-Reply-To: <bf0bbc7d-e1f8-bad1-b07a-cecfc34ab968@oracle.com>
+References: <1536849882-28897-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <1536849882-28897-5-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <20181002130338.GG24796@rei>
+ <bf0bbc7d-e1f8-bad1-b07a-cecfc34ab968@oracle.com>
+Message-ID: <20181003074240.GB23398@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,9 +15,21 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Am I applying the patch then?
+> As if
+> 
+> keyctl01 keyctl01.sh
+> 
+> was changed to
+> 
+> keyctl01_sh keyctl01.sh
+> 
+> Correct?
 
-Yes please.
+Or we can, for the cases where command has the same name as syscall,
+increment the numbers for the command tests by 50, that should avoid the
+collisions.
+
+So the keyctl01.sh will become keyctl51.sh.
 
 -- 
 Cyril Hrubis
