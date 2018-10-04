@@ -1,57 +1,52 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 4 Oct 2018 09:15:40 +0300
-Subject: [LTP] [PATCH 2/4] syscalls/readahead02: Convert to newlib and
-	cleanup
-In-Reply-To: <701041971.55976403.1538583426048.JavaMail.zimbra@redhat.com>
-References: <20180928130621.28932-1-amir73il@gmail.com>
- <20180928130621.28932-3-amir73il@gmail.com>
- <1801488452.55763249.1538570871657.JavaMail.zimbra@redhat.com>
- <CAOQ4uxjCgVYeG1eGUF1whFmMnorzaCk_d0KjXYni1=zpSwRHfQ@mail.gmail.com>
- <701041971.55976403.1538583426048.JavaMail.zimbra@redhat.com>
-Message-ID: <CAOQ4uxioCbWRyWDAdrsK6bT2YMpUzuxLNAXS3+_p7x6ZMHv5Vw@mail.gmail.com>
+Date: Thu,  4 Oct 2018 09:26:19 +0300
+Subject: [LTP] [PATCH v2 0/5] Tests for readahead() and fadvise() on
+	overlayfs
+Message-ID: <20181004062624.27295-1-amir73il@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Oct 3, 2018 at 7:17 PM Jan Stancek <jstancek@redhat.com> wrote:
->
-[...]
-> > > Would it make sense to enable this for 'all_filesystems = 1'?
-> >
-> > I don't know. Not sure which tests are good candidates for that.
-> > But anyway it's a different change.
-> >
-[...]
->
-> Isn't the reason for your series to test on different fs as well? :-)
->
+Cyril,
 
-Well, yes and no.
+The following series adds test covergae for readahead() syscall
+over overlayfs file and adds test coverage for a specific
+posix_fadvise() syscall advice (POSIX_FADV_WILLNEED).
 
-Yes, overlayfs is a filesystem driver.
+So far, the posix_fadvise syscall tests in LTP only test for error
+conditions, but not functionality.
 
-No, I don't think overlayfs was what the author of all_filesystems had in mind,
-because setting .dev_fs_type = "overlay" is not enough to describe the setup.
-That sort of setup would need to be described something like this:
-.dev_fs_type = "foo",
-.mntpoint = MNTPOINT,
-.overlay_mount = OVL_MNT,
+The functionality of the advice POSIX_FADV_WILLNEED is indentical
+to readahead() and since kernel commit 3d8f7615319b ("vfs: implement
+readahead(2) using POSIX_FADV_WILLNEED"), the implementations are
+also bound together.
 
-So overlayfs does not belong on the all_filesystems axis IMO, it belongs
-on a tangent axis of the test matrix, e.g.:
-.all_filesystems = 1,
-.needs_overlay = 1,
-.mntpoint = MNTPOINT,
-.overlay_mount = OVL_MNT,
-
-I personally question the value of such feature, but putting something like
-setup_overlay() in a library is probably not a bad idea.
-A similar pattern already exists in inotify07/inotify08, however in
-those tests as
-well as in readahead02, a feature of .need_overlay = 1 if existed would not
-have been sufficient.
+To add test coverage of the advice POSIX_FADV_WILLNEED, I decided not
+to duplicate the readahead() functional test and add test cases to
+readahead02 that use the POSIX_FADV_WILLNEED implementation.
 
 Thanks,
 Amir.
+
+Changes since v1:
+- Fix bugs in loop invocation of test (i.e. -i 2)
+- Address review comments from Jan Stancek
+- Make cached_max a global maximum over all test cases
+- Improve reliability of overlayfs readahead test case failure
+
+Amir Goldstein (5):
+  syscalls/readahead01: Convert to newlib
+  syscalls/readahead02: Convert to newlib and cleanup
+  syscalls/readahead02: test readahead() on an overlayfs file
+  syscalls/readahead02: test readahead using posix_fadvise()
+  syscalls/readahead02: fail test if readahead did not use any cache
+
+ .../kernel/syscalls/readahead/readahead01.c   | 119 ++-----
+ .../kernel/syscalls/readahead/readahead02.c   | 333 +++++++++---------
+ 2 files changed, 195 insertions(+), 257 deletions(-)
+
+-- 
+2.17.1
+
