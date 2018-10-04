@@ -1,40 +1,25 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 4 Oct 2018 15:04:23 +0300
-Subject: [LTP] [PATCH 0/5] Fixes for DHCP tests
-In-Reply-To: <20181003153756.3825-1-pvorel@suse.cz>
-References: <20181003153756.3825-1-pvorel@suse.cz>
-Message-ID: <5536e7b8-0579-61a5-a3c5-bc020daabd9e@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 4 Oct 2018 14:16:57 +0200
+Subject: [LTP] [PATCH 2/3] syscalls/preadv201: Add new testcase
+In-Reply-To: <1538125851-26738-2-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1538125851-26738-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1538125851-26738-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20181004121656.GA7724@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 10/03/2018 06:37 PM, Petr Vorel wrote:
-> Hi,
-> 
-> while debugging a failure of DHCP tests on SUSE Linux Enterprise I did
-> some fixes and enhancements of these tests. I tested patchset on various
-> versions of Debian, SUSE and CentOS, using NetworkManager and Wicked.
-> 
-> Due different approach of using dhclient in these two network managers
-> and specific /sbin/dhclient-script for each distro it's quite pain to
-> have these tests working on all distros, so there might be more patches.
-> 
-> Kind regards,
-> Petr
-> 
-> Petr Vorel (5):
->   net/dhcp: Add support for wicked
->   net/dhcp: Disable DNS for dnsmasq
->   net/dhcp: Print client and server versions
->   net/dhcp: Pass lease file location to dhcpd via -lf
->   net/dhcp: TBROK when dnsmasq does not start
-> 
->  testcases/network/dhcp/dhcp_lib.sh      | 21 +++++++++++++++++++++
->  testcases/network/dhcp/dhcpd_tests.sh   | 13 +++++++------
->  testcases/network/dhcp/dnsmasq_tests.sh |  7 ++++++-
->  3 files changed, 34 insertions(+), 7 deletions(-)
-> 
+Hi!
+Pushed with minor changes:
 
-The patch-set looks good, acked. Thanks Petr!
+1. moved the preadv2.h into include/lapi
+
+2. reformatted the struct testcase array so that it's easier to read
+
+Thanks!
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
