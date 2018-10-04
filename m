@@ -1,48 +1,108 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 4 Oct 2018 15:06:11 +0200
-Subject: [LTP] [PATCH 2/2] testcases: netns: Handle "Operation not
- supported" error
-In-Reply-To: <20180802141251.1571-2-mylene.josserand@bootlin.com>
-References: <20180802141251.1571-1-mylene.josserand@bootlin.com>
- <20180802141251.1571-2-mylene.josserand@bootlin.com>
-Message-ID: <20181004130611.GB32169@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu,  4 Oct 2018 16:31:10 +0200
+Subject: [LTP] [PATCH] [COMMITTED] safe_macros: Make safe_*xattr more verbose
+Message-ID: <20181004143110.6489-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Mylène,
+Print parameters passed to SAFE_*XATTR() on failure
 
-> If there is no support for "dummy" or "veth", the tests will fail
-> with errors:
->    RTNETLINK answers: Operation not supported
->    netns_sysfs 1 TBROK: failed to add a new (host) dummy device
-> and
->    RTNETLINK answers: Operation not supported
->    netns_comm_ip_ipv6_ioctl 1 TBROK: unable to create veth pair devices
->    Cannot find device "veth0"
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ lib/safe_macros.c | 35 +++++++++++++++++++++--------------
+ 1 file changed, 21 insertions(+), 14 deletions(-)
 
-> This commit is storing the output of the commands and verifies
-> if there is any reference to "Operation not supported".
-> This code is based on what it is already done in "ipsec_lib.sh"
-> stress test.
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index 9588ef5bc..bac34cdb7 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -854,8 +854,9 @@ ssize_t safe_getxattr(const char *file, const int lineno, const char *path,
+ 				 "without user_xattr option", file, lineno);
+ 		}
+ 
+-		tst_brkm(TBROK | TERRNO, NULL, "%s:%d: getxattr() failed",
+-			 file, lineno);
++		tst_brkm(TBROK | TERRNO, NULL,
++			 "%s:%d: getxattr(%s, %s, %p, %zu) failed",
++			 file, lineno, path, name, value, size);
+ 	}
+ 
+ 	return rval;
+@@ -875,8 +876,9 @@ int safe_setxattr(const char *file, const int lineno, const char *path,
+ 				 "without user_xattr option", file, lineno);
+ 		}
+ 
+-		tst_brkm(TBROK | TERRNO, NULL, "%s:%d: setxattr() failed",
+-			     file, lineno);
++		tst_brkm(TBROK | TERRNO, NULL,
++			 "%s:%d: setxattr(%s, %s, %p, %zu) failed",
++			 file, lineno, path, name, value, size);
+ 	}
+ 
+ 	return rval;
+@@ -896,8 +898,9 @@ int safe_lsetxattr(const char *file, const int lineno, const char *path,
+ 				 "without user_xattr option", file, lineno);
+ 		}
+ 
+-		tst_brkm(TBROK | TERRNO, NULL, "%s:%d: lsetxattr() failed",
+-			     file, lineno);
++		tst_brkm(TBROK | TERRNO, NULL,
++			 "%s:%d: lsetxattr(%s, %s, %p, %zu, %i) failed",
++			 file, lineno, path, name, value, size, flags);
+ 	}
+ 
+ 	return rval;
+@@ -917,8 +920,9 @@ int safe_fsetxattr(const char *file, const int lineno, int fd, const char *name,
+ 				 "without user_xattr option", file, lineno);
+ 		}
+ 
+-		tst_brkm(TBROK | TERRNO, NULL, "%s:%d: fsetxattr() failed",
+-			     file, lineno);
++		tst_brkm(TBROK | TERRNO, NULL,
++			 "%s:%d: fsetxattr(%i, %s, %p, %zu, %i) failed",
++			 file, lineno, fd, name, value, size, flags);
+ 	}
+ 
+ 	return rval;
+@@ -938,8 +942,9 @@ int safe_removexattr(const char *file, const int lineno, const char *path,
+ 				"without user_xattr option", file, lineno);
+ 		}
+ 
+-		tst_brkm(TBROK | TERRNO, NULL, "%s:%d: removexattr() failed",
+-			file, lineno);
++		tst_brkm(TBROK | TERRNO, NULL,
++			 "%s:%d: removexattr(%s, %s) failed",
++			 file, lineno, path, name);
+ 	}
+ 
+ 	return rval;
+@@ -959,8 +964,9 @@ int safe_lremovexattr(const char *file, const int lineno, const char *path,
+ 				"without user_xattr option", file, lineno);
+ 		}
+ 
+-		tst_brkm(TBROK | TERRNO, NULL, "%s:%d: lremovexattr() failed",
+-			file, lineno);
++		tst_brkm(TBROK | TERRNO, NULL,
++			 "%s:%d: lremovexattr(%s, %s) failed",
++			 file, lineno, path, name);
+ 	}
+ 
+ 	return rval;
+@@ -980,8 +986,9 @@ int safe_fremovexattr(const char *file, const int lineno, int fd,
+ 				"without user_xattr option", file, lineno);
+ 		}
+ 
+-		tst_brkm(TBROK | TERRNO, NULL, "%s:%d: fremovexattr() failed",
+-			file, lineno);
++		tst_brkm(TBROK | TERRNO, NULL,
++			 "%s:%d: fremovexattr(%i, %s) failed",
++			 file, lineno, fd, name);
+ 	}
+ 
+ 	return rval;
+-- 
+2.16.4
 
-> Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
-
-..
-> diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
-...
-> +			tst_brkm TCONF "Command not supported (maybe missing 'veth' support)"
-
-..
-> diff --git a/testcases/kernel/containers/netns/netns_sysfs.sh b/testcases/kernel/containers/netns/netns_sysfs.sh
-..
-> +		tst_brkm TCONF "Command not supported (maybe missing 'dummy' support)"
-
-Can you implement this patch with TST_NEEDS_DRIVERS (recently contributed by
-Alexey Kodanev)? Thanks a lot!
-
-
-Kind regards,
-Petr
