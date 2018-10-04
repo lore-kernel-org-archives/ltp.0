@@ -1,46 +1,55 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 4 Oct 2018 14:19:17 +0200
-Subject: [LTP] [PATCH 3/3] syscalls/preadv202: Add new testcase
-In-Reply-To: <1538125851-26738-3-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1538125851-26738-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1538125851-26738-3-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20181004121916.GB7724@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 4 Oct 2018 14:59:52 +0200
+Subject: [LTP] [PATCH 1/2] testcases: netns: Check TUN support enabled
+In-Reply-To: <20180802141251.1571-1-mylene.josserand@bootlin.com>
+References: <20180802141251.1571-1-mylene.josserand@bootlin.com>
+Message-ID: <20181004125952.GA32169@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-> Note:
-> From preadv2(2) manpage, preadv2() with invalid flag should return
-> EINVAL, but it actually returned EOPNOTSUPP in current upstream
-> kernel, as below:
-> ---------------------------------------------------------------
-> include/uapi/linux/fs.h:
-> define RWF_SUPPORTED   (RWF_HIPRI | RWF_DSYNC | RWF_SYNC | RWF_NOWAIT |\
->                          RWF_APPEND)
-> ...
-> 
-> include/linux/fs.h:
-> static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
-> {
->         if (unlikely(flags & ~RWF_SUPPORTED)) {
->                 return -EOPNOTSUPP;
->         }
-> ...
-> ---------------------------------------------------------------
-> 
-> We use EOPNOTSUPP as expected errno for the time being.
+Hi Mylène,
 
-This is probably worth a patch for the man-pages project, will you take
-care of that?
+> In case TUN support is not enabled, the test will fail while
+> performing the "ip" command with following error:
+>    open: No such file or directory
+>    netns_netlink    1  TBROK  :  netns_netlink.c:143: system() failed
 
-Pushed with a minor change, I've changed the EFAULT test to get address
-from tst_get_bad_addr() instead of the hardcoded -1.
+> As the system() call is not setting errno, we are not able to know
+> if the error is produced by a mis-configuration or not.
 
-Thanks!
+> Because of that, this commit adds a check during the setup function to see
+> if the device "/dev/net/tun" is available or not. It is the file
+> that "ip tuntap add mode tap" command is looking for (and fails with
+> the "open" error).
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>
+> ---
+>  testcases/kernel/containers/netns/netns_netlink.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+
+> diff --git a/testcases/kernel/containers/netns/netns_netlink.c b/testcases/kernel/containers/netns/netns_netlink.c
+> index 47e8235d6..077ec5dab 100644
+> --- a/testcases/kernel/containers/netns/netns_netlink.c
+> +++ b/testcases/kernel/containers/netns/netns_netlink.c
+> @@ -57,6 +57,15 @@ static void cleanup(void)
+
+>  static void setup(void)
+>  {
+> +	/* Check that the TUN support is available */
+> +	int netfd = open("/dev/net/tun", O_RDWR);
+> +	if (netfd == -1) {
+> +		if (errno == ENODEV || errno == ENOENT)
+> +			tst_brkm(TCONF, NULL, "TUN support is missing?");
+> +
+> +		tst_brkm(TBROK | TERRNO, NULL, "opening /dev/net/tun failed");
+> +	}
+
+Can you please implement your patch via .needs_drivers (recently contributed by
+Alexey Kodanev)?
+
+
+Kind regards,
+Petr
