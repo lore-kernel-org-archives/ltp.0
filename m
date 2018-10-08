@@ -1,62 +1,51 @@
-From: =?unknown-8bit?q?Myl=C3=A8ne?= Josserand <mylene.josserand@bootlin.com>
-Date: Mon, 8 Oct 2018 11:28:55 +0200
-Subject: [LTP] [PATCH 2/2] testcases: netns: Handle "Operation not
- supported" error
-In-Reply-To: <20181004130611.GB32169@dell5510>
-References: <20180802141251.1571-1-mylene.josserand@bootlin.com>
- <20180802141251.1571-2-mylene.josserand@bootlin.com>
- <20181004130611.GB32169@dell5510>
-Message-ID: <20181008112855.5a7d3052@dell-desktop.home>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon,  8 Oct 2018 11:33:22 +0200
+Subject: [LTP] [PATCH 1/1] syscalls/statx04: TCONF on BTRFS for kernel < 4.13
+Message-ID: <20181008093322.8624-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+BTRFS support for statx flags was added in 4.13:
+04a87e347282 ("Btrfs: add statx support")
 
-On Thu, 4 Oct 2018 15:06:11 +0200
-Petr Vorel <pvorel@suse.cz> wrote:
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/kernel/syscalls/statx/statx04.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-> Hi Mylène,
-> 
-> > If there is no support for "dummy" or "veth", the tests will fail
-> > with errors:
-> >    RTNETLINK answers: Operation not supported
-> >    netns_sysfs 1 TBROK: failed to add a new (host) dummy device
-> > and
-> >    RTNETLINK answers: Operation not supported
-> >    netns_comm_ip_ipv6_ioctl 1 TBROK: unable to create veth pair devices
-> >    Cannot find device "veth0"  
-> 
-> > This commit is storing the output of the commands and verifies
-> > if there is any reference to "Operation not supported".
-> > This code is based on what it is already done in "ipsec_lib.sh"
-> > stress test.  
-> 
-> > Signed-off-by: Mylène Josserand <mylene.josserand@bootlin.com>  
-> 
-> ..
-> > diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh  
-> ...
-> > +			tst_brkm TCONF "Command not supported (maybe missing 'veth' support)"  
-> 
-> ..
-> > diff --git a/testcases/kernel/containers/netns/netns_sysfs.sh b/testcases/kernel/containers/netns/netns_sysfs.sh  
-> ..
-> > +		tst_brkm TCONF "Command not supported (maybe missing 'dummy' support)"  
-> 
-> Can you implement this patch with TST_NEEDS_DRIVERS (recently contributed by
-> Alexey Kodanev)? Thanks a lot!
-
-Yes, sure !
-
-I will implement it but not in the next weeks because I am going to be
-away until the end of November.
-
-Best regards,
-
+diff --git a/testcases/kernel/syscalls/statx/statx04.c b/testcases/kernel/syscalls/statx/statx04.c
+index 8caf092db..2e1dc8569 100644
+--- a/testcases/kernel/syscalls/statx/statx04.c
++++ b/testcases/kernel/syscalls/statx/statx04.c
+@@ -32,6 +32,7 @@
+ #define MOUNT_POINT "mntpoint"
+ #define TESTDIR_FLAGGED MOUNT_POINT"/test_dir1"
+ #define TESTDIR_UNFLAGGED MOUNT_POINT"/test_dir2"
++#define BTRFS_STATX_SUPPORT "4.13.0"
+ 
+ static int fd, clear_flags;
+ 
+@@ -152,6 +153,17 @@ static void setup(void)
+ 	SAFE_MKDIR(TESTDIR_FLAGGED, 0777);
+ 	SAFE_MKDIR(TESTDIR_UNFLAGGED, 0777);
+ 
++	if (!strcmp(tst_device->fs_type, "btrfs")) {
++		int v1, v2, v3;
++		if (tst_parse_kver(BTRFS_STATX_SUPPORT, &v1, &v2, &v3))
++			tst_res(TWARN,
++					"Invalid kernel version %s, expected %%d.%%d.%%d",
++					BTRFS_STATX_SUPPORT);
++		if (tst_kvercmp(v1, v2, v3) < 0)
++			tst_brk(TCONF, "BTRFS supports statx from kernel %s ",
++					BTRFS_STATX_SUPPORT);
++	}
++
+ 	caid_flags_setup();
+ }
+ 
 -- 
-Mylène Josserand, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.19.0
+
