@@ -1,67 +1,72 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 8 Oct 2018 03:11:14 -0400 (EDT)
-Subject: [LTP] [PATCH v2 0/5] Tests for readahead() and fadvise() on
-	overlayfs
-In-Reply-To: <20181004062624.27295-1-amir73il@gmail.com>
-References: <20181004062624.27295-1-amir73il@gmail.com>
-Message-ID: <1498422724.56763494.1538982674701.JavaMail.zimbra@redhat.com>
+From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+Date: Mon,  8 Oct 2018 09:16:48 +0200
+Subject: [LTP] [PATCH v3 2/5] tst_safe_macros: add SAFE_GETGRGID()
+Message-ID: <20181008071651.16384-1-cfamullaconrad@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Add tst safe wrapper for getgrgid() function.
 
+Zero errno before calling getgrnam() or getgrgid() to get the
+correct errno printed in tst_brk_(TERRNO).
 
------ Original Message -----
-> Cyril,
-> 
-> The following series adds test covergae for readahead() syscall
-> over overlayfs file and adds test coverage for a specific
-> posix_fadvise() syscall advice (POSIX_FADV_WILLNEED).
-> 
-> So far, the posix_fadvise syscall tests in LTP only test for error
-> conditions, but not functionality.
-> 
-> The functionality of the advice POSIX_FADV_WILLNEED is indentical
-> to readahead() and since kernel commit 3d8f7615319b ("vfs: implement
-> readahead(2) using POSIX_FADV_WILLNEED"), the implementations are
-> also bound together.
-> 
-> To add test coverage of the advice POSIX_FADV_WILLNEED, I decided not
-> to duplicate the readahead() functional test and add test cases to
-> readahead02 that use the POSIX_FADV_WILLNEED implementation.
-> 
-> Thanks,
-> Amir.
-> 
-> Changes since v1:
-> - Fix bugs in loop invocation of test (i.e. -i 2)
-> - Address review comments from Jan Stancek
-> - Make cached_max a global maximum over all test cases
-> - Improve reliability of overlayfs readahead test case failure
+Signed-off-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+---
+ include/tst_safe_macros.h |  4 ++++
+ lib/tst_safe_macros.c     | 15 +++++++++++++++
+ 2 files changed, 19 insertions(+)
 
-Looks good to me.
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 413226eaf..0e5a6d304 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -441,6 +441,10 @@ struct group *safe_getgrnam(const char *file, const int lineno,
+ #define SAFE_GETGRNAM(name) \
+ 	safe_getgrnam(__FILE__, __LINE__, (name))
+ 
++struct group *safe_getgrgid(const char *file, const int lineno, gid_t gid);
++#define SAFE_GETGRGID(gid) \
++	safe_getgrgid(__FILE__, __LINE__, (gid))
++
+ ssize_t safe_getxattr(const char *file, const int lineno, const char *path,
+ 	const char *name, void *value, size_t size);
+ #define SAFE_GETXATTR(path, name, value, size) \
+diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
+index 17384f32c..e1d4fd124 100644
+--- a/lib/tst_safe_macros.c
++++ b/lib/tst_safe_macros.c
+@@ -144,6 +144,7 @@ struct group *safe_getgrnam(const char *file, const int lineno,
+ {
+ 	struct group *rval;
+ 
++	errno = 0;
+ 	rval = getgrnam(name);
+ 	if (rval == NULL) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+@@ -153,6 +154,20 @@ struct group *safe_getgrnam(const char *file, const int lineno,
+ 	return rval;
+ }
+ 
++struct group *safe_getgrgid(const char *file, const int lineno, gid_t gid)
++{
++	struct group *rval;
++
++	errno = 0;
++	rval = getgrgid(gid);
++	if (rval == NULL) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"getgrgid(%li) failed", (long)gid);
++	}
++
++	return rval;
++}
++
+ int safe_chroot(const char *file, const int lineno, const char *path)
+ {
+ 	int rval;
+-- 
+2.16.4
 
-When you say "This is the only system configuration supported by the posix_fadvise tests",
-are you talking about glibc?
-
-Regards,
-Jan
-
-> 
-> Amir Goldstein (5):
->   syscalls/readahead01: Convert to newlib
->   syscalls/readahead02: Convert to newlib and cleanup
->   syscalls/readahead02: test readahead() on an overlayfs file
->   syscalls/readahead02: test readahead using posix_fadvise()
->   syscalls/readahead02: fail test if readahead did not use any cache
-> 
->  .../kernel/syscalls/readahead/readahead01.c   | 119 ++-----
->  .../kernel/syscalls/readahead/readahead02.c   | 333 +++++++++---------
->  2 files changed, 195 insertions(+), 257 deletions(-)
-> 
-> --
-> 2.17.1
-> 
-> 
