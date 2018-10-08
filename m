@@ -1,42 +1,698 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 8 Oct 2018 15:23:08 +0200
-Subject: [LTP] [PATCH v2 ltp] runtest/{ltplite,
- stress.part1}: update commands for
- gf01-30/rwtest01-05/fs_inod01/iogen01
-In-Reply-To: <20180815064405.13247-1-yixin.zhang@intel.com>
-References: <20180815064405.13247-1-yixin.zhang@intel.com>
-Message-ID: <20181008132308.GA9870@dell5510>
+From: Rafael David Tinoco <rafael.tinoco@linaro.org>
+Date: Mon,  8 Oct 2018 10:29:14 -0300
+Subject: [LTP] [PATCH v4] syscalls/membarrier: Add membarrier() initial test
+In-Reply-To: <243767154.55279006.1538383679362.JavaMail.zimbra@redhat.com>
+References: <243767154.55279006.1538383679362.JavaMail.zimbra@redhat.com>
+Message-ID: <20181008132914.8246-1-rafael.tinoco@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yixin,
+Fixes: #265
 
-> gf01-30/rwtest01-05/fs_inod01/iogen01 are orignal defined in runtest file 'fs',
-> and they are updated multiple times in file 'fs' but missed in
-> 'ltplite'/'stress.part1'. So this patch copy all updates to the tests in
-> 'ltplite'/'stress.part1'.
+Initial test for membarrier() syscall. It tests all existing membarrier
+"commands" (or features), including the need (or not) for previous
+registration for the call to work.
 
-> Ref:
-> c9dd96e6b2f811dbad119c3558d90cb7dfc3919b
-> 95e8b61433efcefb83699aaf859e92ad2b576373
-> 606e544932248858f65c7ab3061f77c542c07cfe
-> b0458a3c838c86faf2d8855c097628c0c435532a
+Some features did not exist in older kernels and that is covered by
+skipping some calls, flagging test as skipped & okay, and forcing
+others, making sure that return codes and errno are set right in those
+cases.
 
-> Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
-> ---
->  runtest/ltplite      | 71 +++++++++++++++++++++---------------------
->  runtest/stress.part1 | 74 ++++++++++++++++++++++----------------------
+Tests are done in a child process due to inexistent kernel interface to
+"unregister" the process from being affected by membarrier() call.
 
-while this change is correct, I'd prefer to delete these aggregated runtest files (ltplite,
-stress.part*) than keeping them in sync.
+Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
+---
+ configure.ac                                  |   1 +
+ include/lapi/membarrier.h                     |  30 ++
+ include/lapi/syscalls/aarch64.in              |   1 +
+ include/lapi/syscalls/arm.in                  |   1 +
+ include/lapi/syscalls/hppa.in                 |   1 +
+ include/lapi/syscalls/i386.in                 |   1 +
+ include/lapi/syscalls/ia64.in                 |   1 +
+ include/lapi/syscalls/powerpc.in              |   1 +
+ include/lapi/syscalls/powerpc64.in            |   1 +
+ include/lapi/syscalls/s390.in                 |   1 +
+ include/lapi/syscalls/s390x.in                |   1 +
+ include/lapi/syscalls/sparc.in                |   1 +
+ include/lapi/syscalls/sparc64.in              |   1 +
+ include/lapi/syscalls/x86_64.in               |   1 +
+ runtest/syscalls                              |   2 +
+ .../kernel/syscalls/membarrier/.gitignore     |   1 +
+ testcases/kernel/syscalls/membarrier/Makefile |   8 +
+ .../kernel/syscalls/membarrier/membarrier01.c | 418 ++++++++++++++++++
+ 18 files changed, 472 insertions(+)
+ create mode 100644 include/lapi/membarrier.h
+ create mode 100644 testcases/kernel/syscalls/membarrier/.gitignore
+ create mode 100644 testcases/kernel/syscalls/membarrier/Makefile
+ create mode 100644 testcases/kernel/syscalls/membarrier/membarrier01.c
 
-Another option is implement some import feature for ltp-pan. But I guess it's
-better to invest the effort into Cyril's new test runner [1].
+diff --git a/configure.ac b/configure.ac
+index e1ecb32a7..98425f997 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -45,6 +45,7 @@ AC_CHECK_HEADERS([ \
+     linux/mempolicy.h \
+     linux/module.h \
+     linux/netlink.h \
++    linux/membarrier.h \
+     mm.h \
+     netinet/sctp.h \
+     pthread.h \
+diff --git a/include/lapi/membarrier.h b/include/lapi/membarrier.h
+new file mode 100644
+index 000000000..2b6c57fb3
+--- /dev/null
++++ b/include/lapi/membarrier.h
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2018 Linaro Limited. All rights reserved.
++ * Author: Rafael David Tinoco <rafael.tinoco@linaro.org>
++ */
++
++#ifndef LAPI_MEMBARRIER_H
++#define LAPI_MEMBARRIER_H
++
++/*
++ * Having <linux/membarrier.h> is enough to know if the test should run or
++ * not, but it might not define all needed MEMBARRIER_CMD_* being tested,
++ * since its first versions included just a few commands.
++ */
++
++enum membarrier_cmd {
++	MEMBARRIER_CMD_QUERY					= 0,
++	MEMBARRIER_CMD_GLOBAL					= (1 << 0),
++	MEMBARRIER_CMD_GLOBAL_EXPEDITED				= (1 << 1),
++	MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED		= (1 << 2),
++	MEMBARRIER_CMD_PRIVATE_EXPEDITED			= (1 << 3),
++	MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED		= (1 << 4),
++	MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE		= (1 << 5),
++	MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE	= (1 << 6),
++
++	/* Alias for header backward compatibility. */
++	MEMBARRIER_CMD_SHARED			= MEMBARRIER_CMD_GLOBAL,
++};
++
++#endif
+diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
+index 9ac7f997b..f6b0b2949 100644
+--- a/include/lapi/syscalls/aarch64.in
++++ b/include/lapi/syscalls/aarch64.in
+@@ -256,6 +256,7 @@ sendmmsg 269
+ kcmp 272
+ getrandom 278
+ memfd_create 279
++membarrier 283
+ mlock2 284
+ copy_file_range 285
+ _sysctl 1078
+diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
+index 0a7f98ac5..d8897b180 100644
+--- a/include/lapi/syscalls/arm.in
++++ b/include/lapi/syscalls/arm.in
+@@ -341,6 +341,7 @@ renameat2 (__NR_SYSCALL_BASE+382)
+ getrandom (__NR_SYSCALL_BASE+384)
+ memfd_create (__NR_SYSCALL_BASE+385)
+ execveat (__NR_SYSCALL_BASE+387)
++membarrier (__NR_SYSCALL_BASE+389)
+ mlock2 (__NR_SYSCALL_BASE+390)
+ copy_file_range (__NR_SYSCALL_BASE+391)
+ statx (__NR_SYSCALL_BASE+397)
+diff --git a/include/lapi/syscalls/hppa.in b/include/lapi/syscalls/hppa.in
+index 3db978069..e961dabe3 100644
+--- a/include/lapi/syscalls/hppa.in
++++ b/include/lapi/syscalls/hppa.in
+@@ -17,5 +17,6 @@ splice 291
+ tee 293
+ vmsplice 294
+ memfd_create 340
++membarrier 343
+ mlock2 345
+ copy_file_range 346
+diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
+index a000564d2..2a6df8bda 100644
+--- a/include/lapi/syscalls/i386.in
++++ b/include/lapi/syscalls/i386.in
+@@ -341,6 +341,7 @@ renameat2 354
+ getrandom 355
+ memfd_create 356
+ execveat 358
++membarrier 375
+ mlock2 376
+ copy_file_range 377
+ statx 383
+diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
+index 278819387..02f86d7d3 100644
+--- a/include/lapi/syscalls/ia64.in
++++ b/include/lapi/syscalls/ia64.in
+@@ -296,5 +296,6 @@ prlimit64 1325
+ renameat2 1338
+ getrandom 1339
+ memfd_create 1340
++membarrier 1344
+ mlock2 1346
+ copy_file_range 1347
+diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
+index c0b4226eb..e8e5acb3b 100644
+--- a/include/lapi/syscalls/powerpc.in
++++ b/include/lapi/syscalls/powerpc.in
+@@ -347,6 +347,7 @@ sched_getattr 356
+ renameat2 357
+ getrandom 359
+ memfd_create 360
++membarrier 365
+ mlock2 378
+ copy_file_range 379
+ statx 383
+diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
+index c0b4226eb..e8e5acb3b 100644
+--- a/include/lapi/syscalls/powerpc64.in
++++ b/include/lapi/syscalls/powerpc64.in
+@@ -347,6 +347,7 @@ sched_getattr 356
+ renameat2 357
+ getrandom 359
+ memfd_create 360
++membarrier 365
+ mlock2 378
+ copy_file_range 379
+ statx 383
+diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
+index 47a04de27..8f0ba9278 100644
+--- a/include/lapi/syscalls/s390.in
++++ b/include/lapi/syscalls/s390.in
+@@ -331,6 +331,7 @@ sched_getattr 346
+ renameat2 347
+ getrandom 349
+ memfd_create 350
++membarrier 356
+ execveat 354
+ mlock2 374
+ copy_file_range 375
+diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
+index 83732ffbe..4fe69f41e 100644
+--- a/include/lapi/syscalls/s390x.in
++++ b/include/lapi/syscalls/s390x.in
+@@ -331,5 +331,6 @@ sched_getattr 346
+ renameat2 347
+ getrandom 349
+ memfd_create 350
++membarrier 356
+ mlock2 374
+ copy_file_range 375
+diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
+index 2b06a797a..e611ffae8 100644
+--- a/include/lapi/syscalls/sparc.in
++++ b/include/lapi/syscalls/sparc.in
+@@ -336,5 +336,6 @@ kcmp 341
+ renameat2 345
+ getrandom 347
+ memfd_create 348
++membarrier 351
+ mlock2 356
+ copy_file_range 357
+diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
+index 8c8a86673..9794078e4 100644
+--- a/include/lapi/syscalls/sparc64.in
++++ b/include/lapi/syscalls/sparc64.in
+@@ -312,5 +312,6 @@ kcmp 341
+ renameat2 345
+ getrandom 347
+ memfd_create 348
++membarrier 351
+ mlock2 356
+ copy_file_range 357
+diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
+index 4ce8477de..9a1832114 100644
+--- a/include/lapi/syscalls/x86_64.in
++++ b/include/lapi/syscalls/x86_64.in
+@@ -308,6 +308,7 @@ renameat2 316
+ getrandom 318
+ memfd_create 319
+ execveat 322
++membarrier 324
+ mlock2 325
+ copy_file_range 326
+ statx 332
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 0d0be7713..19be14098 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1504,3 +1504,5 @@ statx02 statx02
+ statx03 statx03
+ statx04 statx04
+ statx05 statx05
++
++membarrier01 membarrier01
+diff --git a/testcases/kernel/syscalls/membarrier/.gitignore b/testcases/kernel/syscalls/membarrier/.gitignore
+new file mode 100644
+index 000000000..eec8058b9
+--- /dev/null
++++ b/testcases/kernel/syscalls/membarrier/.gitignore
+@@ -0,0 +1 @@
++/membarrier01
+diff --git a/testcases/kernel/syscalls/membarrier/Makefile b/testcases/kernel/syscalls/membarrier/Makefile
+new file mode 100644
+index 000000000..f71e4fc25
+--- /dev/null
++++ b/testcases/kernel/syscalls/membarrier/Makefile
+@@ -0,0 +1,8 @@
++# Copyright (c) 2018 - Linaro Limited. All rights reserved.
++# SPDX-License-Identifier: GPL-2.0-or-later
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+\ No newline@end of file
+diff --git a/testcases/kernel/syscalls/membarrier/membarrier01.c b/testcases/kernel/syscalls/membarrier/membarrier01.c
+new file mode 100644
+index 000000000..cb5ef0a76
+--- /dev/null
++++ b/testcases/kernel/syscalls/membarrier/membarrier01.c
+@@ -0,0 +1,418 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2018 Linaro Limited. All rights reserved.
++ * Author: Rafael David Tinoco <rafael.tinoco@linaro.org>
++ */
++/*
++ * Basic tests for membarrier(2) syscall. Tests below are responsible for
++ * testing the membarrier(2) interface only, without checking if the barrier
++ * was successful or not. Check test_case structure for each test description.
++ */
++
++#include "config.h"
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/wait.h>
++#include <syscall.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <signal.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++#include "lapi/membarrier.h"
++
++#ifdef HAVE_LINUX_MEMBARRIER_H
++
++struct test_case {
++	char testname[80];
++	int command;		/* membarrier cmd                            */
++	int needregister;	/* membarrier cmd needs register cmd	     */
++	int flags;		/* flags for given membarrier cmd	     */
++	long exp_ret;		/* expected return code for given cmd        */
++	int exp_errno;		/* expected errno for given cmd failure      */
++	int enabled;		/* enabled, despite results from CMD_QUERY   */
++	int always;		/* CMD_QUERY should always enable this test  */
++	int force;		/* force if CMD_QUERY reports not enabled    */
++	int force_exp_errno;	/* expected errno after forced cmd           */
++	int change_exp_errno;	/* previous kernels forced errno result      */
++	int change_kernver[3];	/* kernel version having diff expected errno */
++};
++
++struct test_case tc[] = {
++	{
++	 /*
++	  * case 00) invalid cmd
++	  *     - enabled by default
++	  *     - should always fail with EINVAL
++	  */
++	 .testname = "cmd_fail",
++	 .command = -1,
++	 .exp_ret = -1,
++	 .exp_errno = EINVAL,
++	 .enabled = 1,
++	 },
++	{
++	 /*
++	  * case 01) invalid flags
++	  *     - enabled by default
++	  *     - should always fail with EINVAL
++	  */
++	 .testname = "cmd_flags_fail",
++	 .command = MEMBARRIER_CMD_QUERY,
++	 .flags = 1,
++	 .exp_ret = -1,
++	 .exp_errno = EINVAL,
++	 .enabled = 1,
++	 },
++	{
++	 /*
++	  * case 02) global barrier
++	  *     - should ALWAYS be enabled by CMD_QUERY
++	  *     - should always succeed
++	  */
++	 .testname = "cmd_global_success",
++	 .command = MEMBARRIER_CMD_GLOBAL,
++	 .flags = 0,
++	 .exp_ret = 0,
++	 .always = 1,
++	 },
++	 /*
++	  * commit 22e4ebb975 (v4.14-rc1) added cases 03, 04 and 05 features:
++	  */
++	{
++	 /*
++	  * case 03) private expedited barrier with no registrations
++	  *     - should fail with errno=EPERM due to no registrations
++	  *     - or be skipped if unsupported by running kernel
++	  */
++	 .testname = "cmd_private_expedited_fail",
++	 .command = MEMBARRIER_CMD_PRIVATE_EXPEDITED,
++	 .flags = 0,
++	 .exp_ret = -1,
++	 .exp_errno = EPERM,
++	 },
++	{
++	 /*
++	  * case 04) register private expedited
++	  *     - should succeed when supported by running kernel
++	  *     - or fail with errno=EINVAL if unsupported and forced
++	  */
++	 .testname = "cmd_private_expedited_register_success",
++	 .command = MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED,
++	 .flags = 0,
++	 .exp_ret = 0,
++	 .force = 1,
++	 .force_exp_errno = EINVAL,
++	 },
++	{
++	 /*
++	  * case 05) private expedited barrier with registration
++	  *     - should succeed due to existing registration
++	  *     - or fail with errno=EINVAL if unsupported and forced
++	  *     - NOTE: commit 70216e18e5 (v4.16-rc1) changed behavior:
++	  *     -       (a) if unsupported, and forced, < 4.16 , errno is EINVAL
++	  *     -       (b) if unsupported, and forced, >= 4.16, errno is EPERM
++	  */
++	 .testname = "cmd_private_expedited_success",
++	 .needregister = MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED,
++	 .command = MEMBARRIER_CMD_PRIVATE_EXPEDITED,
++	 .flags = 0,
++	 .exp_ret = 0,
++	 .force = 1,
++	 .force_exp_errno = EPERM,
++	 .change_exp_errno = EINVAL,
++	 .change_kernver = { 4, 16, 0 },
++	 },
++	 /*
++	  * commit 70216e18e5 (v4.16-rc1) added cases 06, 07 and 08 features:
++	  */
++	{
++	 /*
++	  * case 06) private expedited sync core barrier with no registrations
++	  *     - should fail with errno=EPERM due to no registrations
++	  *     - or be skipped if unsupported by running kernel
++	  */
++	 .testname = "cmd_private_expedited_sync_core_fail",
++	 .command = MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE,
++	 .flags = 0,
++	 .exp_ret = -1,
++	 .exp_errno = EPERM,
++	 },
++	{
++	 /*
++	  * case 07) register private expedited sync core
++	  *     - should succeed when supported by running kernel
++	  *     - or fail with errno=EINVAL if unsupported and forced
++	  */
++	 .testname = "cmd_private_expedited_sync_core_register_success",
++	 .command = MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE,
++	 .flags = 0,
++	 .exp_ret = 0,
++	 .force = 1,
++	 .force_exp_errno = EINVAL,
++	 },
++	{
++	 /*
++	  * case 08) private expedited sync core barrier with registration
++	  *     - should succeed due to existing registration
++	  *     - or fail with errno=EINVAL if unsupported and forced
++	  */
++	 .testname = "cmd_private_expedited_sync_core_success",
++	 .needregister = MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE,
++	 .command = MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE,
++	 .flags = 0,
++	 .exp_ret = 0,
++	 .force = 1,
++	 .force_exp_errno = EINVAL,
++	 },
++	 /*
++	  * commit c5f58bd58f4 (v4.16-rc1) added cases 09, 10 and 11 features:
++	  */
++	{
++	 /*
++	  * case 09) global expedited barrier with no registrations
++	  *     - should never fail due to no registrations
++	  *     - or be skipped if unsupported by running kernel
++	  */
++	 .testname = "cmd_global_expedited_success",
++	 .command = MEMBARRIER_CMD_GLOBAL_EXPEDITED,
++	 .flags = 0,
++	 .exp_ret = 0,
++	 },
++	{
++	 /*
++	  * case 10) register global expedited
++	  *     - should succeed when supported by running kernel
++	  *     - or fail with errno=EINVAL if unsupported and forced
++	  */
++	 .testname = "cmd_global_expedited_register_success",
++	 .command = MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED,
++	 .flags = 0,
++	 .exp_ret = 0,
++	 .force = 1,
++	 .force_exp_errno = EINVAL,
++	 },
++	{
++	 /*
++	  * case 11) global expedited barrier with registration
++	  *     - should also succeed with registrations
++	  *     - or fail with errno=EINVAL if unsupported and forced
++	  */
++	 .testname = "cmd_global_expedited_success",
++	 .needregister = MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED,
++	 .command = MEMBARRIER_CMD_GLOBAL_EXPEDITED,
++	 .flags = 0,
++	 .exp_ret = 0,
++	 .force = 1,
++	 .force_exp_errno = EINVAL,
++	 },
++};
++
++#define passed_ok(_test)						       \
++	do {								       \
++		tst_res(TPASS, "membarrier(2): %s passed", _test.testname);    \
++		return;							       \
++	} while (0)
++
++#define passed_unexpec(_test)						       \
++	do {								       \
++		tst_res(TFAIL, "membarrier(2): %s passed unexpectedly. "       \
++			"ret = %ld with errno %d were expected. (force: %d)",  \
++			_test.testname, _test.exp_ret, _test.exp_errno,        \
++			_test.force);					       \
++		return;							       \
++	} while (0)
++
++#define failed_ok(_test)						       \
++	do {								       \
++		tst_res(TPASS, "membarrier(2): %s failed as expected",	       \
++			_test.testname);				       \
++		return;							       \
++	} while (0)
++
++#define failed_ok_unsupported(_test)					       \
++	do {								       \
++		tst_res(TPASS, "membarrier(2): %s failed as expected "	       \
++			"(unsupported)", _test.testname);		       \
++		return;							       \
++	} while (0)
++
++#define failed_not_ok(_test, _gotret, _goterr)				       \
++	do {								       \
++		tst_res(TFAIL, "membarrier(2): %s failed. "		       \
++			"ret = %ld when expected was %ld. "		       \
++			"errno = %d when expected was %d. (force: %d)",        \
++			_test.testname, _gotret, _test.exp_ret, _goterr,       \
++			_test.exp_errno, _test.force);			       \
++		return;							       \
++	} while (0)
++
++#define failed_unexpec(_test, _gotret, _goterr) 			       \
++	do {								       \
++		tst_res(TFAIL, "membarrier(2): %s failed unexpectedly. "       \
++			"Got ret = %ld with errno %d. (force: %d)",	       \
++			_test.testname, _gotret, _goterr, _test.force);	       \
++		return;							       \
++	} while (0)
++
++#define skipped(_test)							       \
++	do {								       \
++		tst_res(TPASS, "membarrier(2): %s skipped (unsupported)",      \
++			_test.testname);				       \
++		return;							       \
++	} while (0)
++
++#define skipped_fail(_test)						       \
++	do {								       \
++		tst_res(TFAIL, "membarrier(2): %s reported as not supported",  \
++			_test.testname);				       \
++		return;							       \
++	} while (0)
++
++static int sys_membarrier(int cmd, int flags)
++{
++	return tst_syscall(__NR_membarrier, cmd, flags);
++}
++
++static void verify_membarrier(unsigned int i)
++{
++	int ret;
++
++	/* not enabled and not enforced: test is skipped */
++
++	if (!tc[i].enabled && !tc[i].force) {
++
++		if (tc[i].always == 0)
++			skipped(tc[i]);
++
++		skipped_fail(tc[i]);
++	}
++
++	/* iterations: registration needed for some cases */
++
++	if (tc[i].needregister && tc[i].enabled) {
++		ret = sys_membarrier(tc[i].needregister, 0);
++		if (ret < 0) {
++			tst_brk(TBROK, "membarrier(2): %s could not register",
++					tc[i].testname);
++		}
++	}
++
++	TEST(sys_membarrier(tc[i].command, tc[i].flags));
++
++	/* enabled and not enforced: regular expected results only */
++
++	if (tc[i].enabled && !tc[i].force) {
++
++		if (TST_RET >= 0 && tc[i].exp_ret == TST_RET)
++			passed_ok(tc[i]);
++
++		if (TST_RET < 0) {
++			if (tc[i].exp_ret == TST_RET)
++				failed_ok(tc[i]);
++			else
++				failed_not_ok(tc[i], TST_RET, TST_ERR);
++		}
++	}
++
++	/* not enabled and enforced: failure and expected errors */
++
++	if (!tc[i].enabled && tc[i].force) {
++
++		if (TST_RET >= 0)
++			passed_unexpec(tc[i]);
++
++		if (TST_RET < 0) {
++			if (tc[i].force_exp_errno == TST_ERR)
++				failed_ok_unsupported(tc[i]);
++			else
++				failed_unexpec(tc[i], TST_RET, TST_ERR);
++		}
++	}
++
++	/* enabled and enforced: tricky */
++
++	if (tc[i].enabled && tc[i].force) {
++
++		if (TST_RET >= 0) {
++			if (tc[i].exp_ret == TST_RET)
++				passed_ok(tc[i]);
++			else
++				passed_unexpec(tc[i]);
++		}
++
++		if (TST_RET < 0) {
++
++			if (tc[i].exp_ret == TST_RET) {
++
++				if (tc[i].exp_errno == TST_ERR)
++					failed_ok(tc[i]);
++				else
++					failed_unexpec(tc[i], TST_RET, TST_ERR);
++			}
++
++			/* unknown on force failure if enabled and forced */
++			failed_unexpec(tc[i], TST_RET, TST_ERR);
++		}
++	}
++}
++
++static void wrap_verify_membarrier(unsigned int i)
++{
++	pid_t pid;
++
++	/*
++	 * The Linux kernel does not provide a way to unregister the process
++	 * (mm->membarrier_state) intent of being affected by the membarrier(2)
++	 * system call, thus the need of having a wrapper to fork() a child.
++	 */
++
++	pid = SAFE_FORK();
++
++	if (pid)
++		SAFE_WAITPID(pid, NULL, 0);
++	else
++		verify_membarrier(i);
++}
++
++static void setup(void)
++{
++	size_t i;
++	int ret;
++
++	ret = sys_membarrier(MEMBARRIER_CMD_QUERY, 0);
++	if (ret < 0) {
++		if (errno == ENOSYS)
++			tst_brk(TBROK, "membarrier(2): not supported");
++	}
++
++	for (i = 0; i < ARRAY_SIZE(tc); i++) {
++		if ((tc[i].command > 0) && (ret & tc[i].command))
++			tc[i].enabled = 1;
++
++		/* forcing unsupported command might have different errno */
++
++		if (tc[i].change_exp_errno && tc[i].enabled == 0) {
++			if (tst_kvercmp(tc[i].change_kernver[0],
++					tc[i].change_kernver[1],
++					tc[i].change_kernver[2]) < 0)
++				tc[i].force_exp_errno = tc[i].change_exp_errno;
++		}
++	}
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.test = wrap_verify_membarrier,
++	.tcnt = ARRAY_SIZE(tc),
++	.min_kver = "4.3.0",	/* commit: 5b25b13ab0 (sys_membarrier(): ...) */
++	.forks_child = 1,
++};
++
++#else /* HAVE_LINUX_MEMBARRIER_H */
++TST_TEST_TCONF("<linux/membarrier.h> does not exist");
++#endif
+-- 
+2.19.0.rc2
 
-Kind regards,
-Petr
-
-[1] https://github.com/metan-ucw/ltp/commits/master
