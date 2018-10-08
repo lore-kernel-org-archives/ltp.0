@@ -1,178 +1,45 @@
-From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
-Date: Mon,  8 Oct 2018 09:16:51 +0200
-Subject: [LTP] [PATCH v3 5/5] setregid04: Convert to newlib
-In-Reply-To: <20181008071651.16384-1-cfamullaconrad@suse.de>
-References: <20181008071651.16384-1-cfamullaconrad@suse.de>
-Message-ID: <20181008071651.16384-4-cfamullaconrad@suse.de>
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 8 Oct 2018 12:01:56 +0300
+Subject: [LTP] [RFC PATCH 4/5] runtest/commands: adjust names for
+ keyctl01, sysctl01, unshare01
+In-Reply-To: <20181003074240.GB23398@rei>
+References: <1536849882-28897-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <1536849882-28897-5-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <20181002130338.GG24796@rei>
+ <bf0bbc7d-e1f8-bad1-b07a-cecfc34ab968@oracle.com>
+ <20181003074240.GB23398@rei>
+Message-ID: <29edc470-5eca-cd6d-f7ab-8c7a65eb9092@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
----
- testcases/kernel/syscalls/setregid/setregid04.c | 116 ++++++------------------
- 1 file changed, 27 insertions(+), 89 deletions(-)
+Hi
 
-diff --git a/testcases/kernel/syscalls/setregid/setregid04.c b/testcases/kernel/syscalls/setregid/setregid04.c
-index bf744ff05..e0f1853a1 100644
---- a/testcases/kernel/syscalls/setregid/setregid04.c
-+++ b/testcases/kernel/syscalls/setregid/setregid04.c
-@@ -1,20 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (c) International Business Machines  Corp., 2001
-  *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- *
-  * Ported by John George
-  */
- 
-@@ -22,16 +9,8 @@
-  * Test setregid() when executed by root.
-  */
- 
--#include <errno.h>
--#include <pwd.h>
--#include <grp.h>
--#include <stdlib.h>
--#include <string.h>
--
--#include "test.h"
--#include "compat_16.h"
--
--TCID_DEFINE(setregid04);
-+#include "tst_test.h"
-+#include "compat_tst_16.h"
- 
- static gid_t neg_one = -1;
- 
-@@ -70,88 +49,47 @@ struct test_data_t {
- 		    "After setregid(-1, nobody)"}
- };
- 
--int TST_TOTAL = sizeof(test_data) / sizeof(test_data[0]);
--
- static void setup(void);
--static void cleanup(void);
- static void gid_verify(struct group *ru, struct group *eu, const char *when);
- 
--int main(int ac, char **av)
-+static void run(unsigned int i)
- {
--	int lc;
-+	/* Set the real or effective group id */
-+	TEST(SETREGID(*test_data[i].real_gid, *test_data[i].eff_gid));
- 
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		int i;
--
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++) {
--			/* Set the real or effective group id */
--			TEST(SETREGID(cleanup, *test_data[i].real_gid,
--				      *test_data[i].eff_gid));
--
--			if (TEST_RETURN == -1) {
--				tst_resm(TBROK, "setregid(%d, %d) failed",
--					 *test_data[i].real_gid,
--					 *test_data[i].eff_gid);
--			} else {
--				gid_verify(test_data[i].exp_real_usr,
--					   test_data[i].exp_eff_usr,
--					   test_data[i].test_msg);
--			}
--		}
-+	if (TST_RET == -1) {
-+		tst_res(TBROK | TTERRNO, "setregid(%d, %d) failed",
-+			*test_data[i].real_gid, *test_data[i].eff_gid);
-+	} else {
-+		gid_verify(test_data[i].exp_real_usr, test_data[i].exp_eff_usr,
-+			   test_data[i].test_msg);
- 	}
--
--	cleanup();
--	tst_exit();
- }
- 
--#define SAFE_GETGROUP(GROUPNAME)	\
--	if (getgrnam(#GROUPNAME) == NULL) { \
--		tst_brkm(TBROK, NULL, "Couldn't find the `" #GROUPNAME "' group"); \
--	} \
--	GROUPNAME ## _gr = *(getgrnam(#GROUPNAME));
--
--#define SAFE_GETGROUP_FALLBACK(GROUPNAME, GROUPNAME2)	\
--	if (getgrnam(#GROUPNAME) != NULL) \
--		GROUPNAME ## _gr = *(getgrnam(#GROUPNAME)); \
--	else if (getgrnam(#GROUPNAME2) != NULL) { \
--		GROUPNAME ## _gr = *(getgrnam(#GROUPNAME2)); \
--		tst_resm(TINFO, "`" #GROUPNAME "' group not found, trying fallback `" #GROUPNAME2 "' group"); \
--	} else \
--		tst_brkm(TBROK, NULL, "Couldn't find neither`" #GROUPNAME "' `" #GROUPNAME2 "' nor group");
--
- static void setup(void)
- {
--	tst_require_root();
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	SAFE_GETGROUP(root);
--	SAFE_GETGROUP_FALLBACK(nobody, nogroup);
--	SAFE_GETGROUP(daemon);
--	SAFE_GETGROUP(bin);
--
--	TEST_PAUSE;
--}
--
--static void cleanup(void)
--{
-+	root_gr = *SAFE_GETGRNAM("root");
-+	nobody_gr = *SAFE_GETGRNAM_FALLBACK("nobody", "nogroup");
-+	daemon_gr = *SAFE_GETGRNAM("daemon");
-+	bin_gr = *SAFE_GETGRNAM("bin");
- }
- 
- static void gid_verify(struct group *rg, struct group *eg, const char *when)
- {
- 	if ((getgid() != rg->gr_gid) || (getegid() != eg->gr_gid)) {
--		tst_resm(TFAIL, "ERROR: %s real gid = %d; effective gid = %d",
-+		tst_res(TFAIL, "ERROR: %s real gid = %d; effective gid = %d",
- 			 when, getgid(), getegid());
--		tst_resm(TINFO, "Expected: real gid = %d; effective gid = %d",
-+		tst_res(TINFO, "Expected: real gid = %d; effective gid = %d",
- 			 rg->gr_gid, eg->gr_gid);
- 	} else {
--		tst_resm(TPASS, "real or effective gid was modified as "
--			 "expected");
-+		tst_res(TPASS,
-+			"real or effective gid was modified as expected");
- 	}
- }
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(test_data),
-+	.needs_root = 1,
-+	.test = run,
-+	.setup = setup,
-+};
--- 
-2.16.4
+On 10/03/2018 10:42 AM, Cyril Hrubis wrote:
+> Hi!
+>> As if
+>>
+>> keyctl01 keyctl01.sh
+>>
+>> was changed to
+>>
+>> keyctl01_sh keyctl01.sh
+>>
+>> Correct?
+> 
+> Or we can, for the cases where command has the same name as syscall,
+> increment the numbers for the command tests by 50, that should avoid the
+> collisions.
+> 
+> So the keyctl01.sh will become keyctl51.sh.
+> 
 
+Maybe we better stick to your previous proposal, i.e. adding _sh to the
+end of a name (in runtest files)? In my opinion, it's more clear and
+straightforward, i.e. if one has a look at a runtest file, it will take
+little time to understand why some tests have _sh at the end. Plus it
+doesn't require renaming of the sh test cases.
+
+Shifting the numbering by a big number looks a bit tricky.
