@@ -1,41 +1,58 @@
-From: Travis CI <builds@travis-ci.org>
-Date: Mon, 08 Oct 2018 12:47:40 +0000
-Subject: [LTP] Errored: linux-test-project/ltp#1067 (master - c190fcf)
-In-Reply-To: <linux-test-project/ltp+438590992+errored@travis-ci.org>
-Message-ID: <5bbb51ec217f3_43f99aebcef0817677@ae4f584f-7fdd-454a-8c2b-b783248f7ef1.mail>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 8 Oct 2018 09:06:26 -0400 (EDT)
+Subject: [LTP] rt_sigqueueinfo: Invalid argument
+In-Reply-To: <20181008124541.GB13162@rei.lan>
+References: <CA+G9fYtxvj0j6BVVZ_YoBkZn6m6ZpEMmDjBjwqY7uvpgMbNQbQ@mail.gmail.com>
+ <20181008124541.GB13162@rei.lan>
+Message-ID: <695083613.56872050.1539003986782.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Build Update for linux-test-project/ltp
--------------------------------------
 
-Build: #1067
-Status: Errored
 
-Duration: 37 mins and 52 secs
-Commit: c190fcf (master)
-Author: Petr Vorel
-Message: syscalls/statx04: TCONF on BTRFS for kernel < 4.13
+----- Original Message -----
+> Hi!
+> > rt_sigqueueinfo01 failed on all device (x86_64, i386, arm / arm64)
+> > started failing from Linux version 4.19.0-rc6-next-20181004.
+> > Do you see this failure at your end?
+> >
+> > rt_sigqueueinfo01: rt_sigqueueinfo: Invalid argument
+> > rt_sigqueueinfo01: rt_sigqueueinfo: Invalid argument
+> > rt_sigqueueinfo01    1  TFAIL  :  rt_sigqueueinfo01.c:97: Test Failed
+> > rt_sigqueueinfo01    0  TINFO  :  Failed to record test working dir
+> > rt_sigqueueinfo01    1  TFAIL  :  rt_sigqueueinfo01.c:97: Test Failed
+> > rt_sigqueueinfo01    0  TINFO  :  Failed to record test working dir
+> > rt_sigqueueinfo01    2  TFAIL  :  rt_sigqueueinfo01.c:97: Test Failed
+> > 
+> > Full log  details.
+> > https://lkft.validation.linaro.org/scheduler/job/451548#L10339
+> 
+> I do not recall seeing this test to fail.
+> 
+> However the test is old messy code, one thing that I guess may happen is
+> that there is random garbage in the siginfo_t structure we pass to the
+> syscall and in you case you were unlucky enough so that kernel rejects
+> the value, but that is just wild guess.
 
-BTRFS support for statx flags was added in 4.13:
-04a87e347282 ("Btrfs: add statx support")
+Mainline doesn't seem to mind if we pass garbage atm. (4.19-rc7)
+but we should initialize entire struct anyway.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+In -next there is:
+  https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/kernel/signal.c?id=e75dc036c445b91b8b2ad4e6c9b05f04b6be6d3f
+and test doesn't set si_signo.
 
-View the changeset: https://github.com/linux-test-project/ltp/compare/76d8343ad300...c190fcf131bf
+Regards,
+Jan
 
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/438590992?utm_medium=notification&utm_source=email
-
---
-
-You can unsubscribe from build emails from the linux-test-project/ltp repository going to https://travis-ci.org/account/preferences/unsubscribe?repository=1224421&utm_medium=notification&utm_source=email.
-Or unsubscribe from *all* email updating your settings at https://travis-ci.org/account/preferences/unsubscribe?utm_medium=notification&utm_source=email.
-Or configure specific recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications.
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20181008/3dafba6a/attachment.html>
+> 
+> Btw, I've opened an issue to clean up the test in:
+> 
+> https://github.com/linux-test-project/ltp/issues/404
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
