@@ -1,33 +1,41 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 8 Oct 2018 15:30:59 +0200
-Subject: [LTP] LTP: futex_wake04 hangs forever on i386
-In-Reply-To: <CA+G9fYs13QZtsREe3dvic+G6VPQ1dJroKH0sguBiNdtizRTeNQ@mail.gmail.com>
-References: <CA+G9fYs13QZtsREe3dvic+G6VPQ1dJroKH0sguBiNdtizRTeNQ@mail.gmail.com>
-Message-ID: <20181008133059.GB30978@rei>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 8 Oct 2018 10:07:32 -0400 (EDT)
+Subject: [LTP] [PATCH v4] syscalls/membarrier: Add membarrier() initial
+	test
+In-Reply-To: <20181008132914.8246-1-rafael.tinoco@linaro.org>
+References: <243767154.55279006.1538383679362.JavaMail.zimbra@redhat.com>
+ <20181008132914.8246-1-rafael.tinoco@linaro.org>
+Message-ID: <1320883984.56890565.1539007652586.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> LTP syscall test case futex_wake04 hangs forever on i386 kernel
-> running on x86_64 server machine.
+
+
+----- Original Message -----
+> Fixes: #265
 > 
-> Test PASS on qemu_i386 and other devices.
-> Test HANGs on i386 (i386 kernel booting on x86_64 machine).
+> Initial test for membarrier() syscall. It tests all existing membarrier
+> "commands" (or features), including the need (or not) for previous
+> registration for the call to work.
 > 
-> output,
-> incrementing stop
-> futex_wake04    0  TINFO  :  Hugepagesize 4194304
+> Some features did not exist in older kernels and that is covered by
+> skipping some calls, flagging test as skipped & okay, and forcing
+> others, making sure that return codes and errno are set right in those
+> cases.
+> 
+> Tests are done in a child process due to inexistent kernel interface to
+> "unregister" the process from being affected by membarrier() call.
+> 
+> Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
 
-Looks like we are trying to fault 4GB hugepage, that may be quite slow,
-but then, the test is a kernel reproducer as well.
+Looks good to me.
 
-Can you connect to the process with gdb and check if we happened to
-timeout before or after the two threads that are are supposed to trigger
-kernel bug are started?
+We probably can drop linux/membarrier.h configure check, right?
+(since v4 doesn't include it and unsupported kernel should
+hit ENOSYS and TCONF)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Jan
