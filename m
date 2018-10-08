@@ -1,196 +1,289 @@
-From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Date: Fri, 12 Oct 2018 11:00:08 +0800
-Subject: [LTP] [PATCH] fallocate04: continues after failure of front test
-Message-ID: <20181012030008.GA26983@hptatwork>
+From: subash <subash@zilogic.com>
+Date: Mon, 08 Oct 2018 13:54:16 -0000
+Subject: [LTP] [PATCH v3] Testing statx syscall Timestamp fields
+Message-ID: <20181008135416.31833-1-subash@zilogic.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When run this case, a failure of test02 will prevent test03, test04, ...
-to be run. This patch replace tst_brk() with tst_res() and return after
-a failure in each sub-cases.
----
- testcases/kernel/syscalls/fallocate/fallocate04.c | 74 +++++++++++++++--------
- 1 file changed, 49 insertions(+), 25 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c b/testcases/kernel/syscalls/fallocate/fallocate04.c
-index e576d728d..afb4cd107 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate04.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
-@@ -96,9 +96,12 @@ static void test01(void)
- 	tst_res(TINFO, "allocate '%zu' bytes", buf_size);
+The time before and after the execution of the corresponding
+system call is noted.
+
+It is checked whether the time returned by statx lies in this range.
+
+open syscall with O_CREAT flag for birth time.
+write syscall for modified time.
+read syscall for access time.
+chmod syscall for status change time.
+
+Signed-off-by: Subash <subash@zilogic.com>
+Signed-off-by: Vaishnavi.D <vaishnavi.d@zilogic.com>
+---
+ include/safe_macros_fn.h                   |   4 +
+ include/tst_safe_macros.h                  |   5 +
+ lib/safe_macros.c                          |  23 ++++
+ runtest/syscalls                           |   1 +
+ testcases/kernel/syscalls/statx/.gitignore |   1 +
+ testcases/kernel/syscalls/statx/statx06.c  | 168 +++++++++++++++++++++++++++++
+ 6 files changed, 202 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/statx/statx06.c
+
+diff --git a/include/safe_macros_fn.h b/include/safe_macros_fn.h
+index 3df952811..f66c5e5a9 100644
+--- a/include/safe_macros_fn.h
++++ b/include/safe_macros_fn.h
+@@ -183,5 +183,9 @@ struct dirent *safe_readdir(const char *file, const int lineno,
+ int safe_closedir(const char *file, const int lineno,
+                   void (cleanup_fn)(void),
+                   DIR *dirp);
++void safe_clock_getres(const char *file, const int lineno,
++		       clockid_t clk_id, struct timespec *res);
  
- 	if (fallocate(fd, 0, 0, buf_size) == -1) {
--		if (errno == ENOSYS || errno == EOPNOTSUPP)
--			tst_brk(TCONF, "fallocate() not supported");
--		tst_brk(TFAIL | TERRNO, "fallocate() failed");
-+		if (errno == ENOSYS || errno == EOPNOTSUPP) {
-+			tst_res(TCONF, "fallocate() not supported");
-+			return;
-+		}
-+		tst_res(TFAIL | TERRNO, "fallocate() failed");
-+		return;
- 	}
++void safe_clock_gettime(const char *file, const int lineno,
++			clockid_t clk_id, struct timespec *tp);
+ #endif /* SAFE_MACROS_FN_H__ */
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 413226eaf..e2d0e6419 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -516,5 +516,10 @@ int safe_personality(const char *filename, unsigned int lineno,
+ 			name, value, overwrite);		\
+ 	}							\
+ 	} while (0)
++#define SAFE_CLOCK_GETRES(clk_id, res)\
++	safe_clock_getres(__FILE__, __LINE__, (clk_id), (res))
++
++#define SAFE_CLOCK_GETTIME(clk_id, tp)\
++	safe_clock_gettime(__FILE__, __LINE__, (clk_id), (tp))
  
- 	char buf[buf_size];
-@@ -118,17 +121,20 @@ static void test02(void)
- 	tst_res(TINFO, "make a hole with FALLOC_FL_PUNCH_HOLE");
+ #endif /* SAFE_MACROS_H__ */
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index bac34cdb7..b94e17270 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -1076,3 +1076,26 @@ int safe_mincore(const char *file, const int lineno, void *start,
  
- 	if (tst_kvercmp(2, 6, 38) < 0) {
--		tst_brk(TCONF,
-+		tst_res(TCONF,
- 			"FALLOC_FL_PUNCH_HOLE needs Linux 2.6.38 or newer");
-+		return;
- 	}
- 
- 	if (fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
- 	    block_size, block_size) == -1) {
- 		if (errno == EOPNOTSUPP) {
--			tst_brk(TCONF,
-+			tst_res(TCONF,
- 			        "FALLOC_FL_PUNCH_HOLE not supported");
-+			return;
- 		}
--		tst_brk(TFAIL | TERRNO, "fallocate() failed");
-+		tst_res(TFAIL | TERRNO, "fallocate() failed");
-+		return;
- 	}
- 
- 	tst_res(TINFO, "check that file has a hole with lseek(,,SEEK_HOLE)");
-@@ -137,14 +143,15 @@ static void test02(void)
- 	if (ret != (ssize_t)block_size) {
- 		/* exclude error when kernel doesn't have SEEK_HOLE support */
- 		if (errno != EINVAL) {
--			tst_brk(TFAIL | TERRNO,
-+			tst_res(TFAIL | TERRNO,
- 				 "fallocate() or lseek() failed");
-+			return;
- 		}
- 		if (tst_kvercmp(3, 1, 0) < 0) {
- 			tst_res(TINFO, "lseek() doesn't support SEEK_HOLE, "
- 				 "this is expected for < 3.1 kernels");
- 		} else {
--			tst_brk(TBROK | TERRNO,
-+			tst_res(TBROK | TERRNO,
- 				 "lseek() doesn't support SEEK_HOLE");
- 		}
- 	} else {
-@@ -155,8 +162,10 @@ static void test02(void)
- 
- 	tst_res(TINFO, "allocated file size before '%zu' and after '%zu'",
- 		 alloc_size0, alloc_size1);
--	if ((alloc_size0 - block_size) != alloc_size1)
--		tst_brk(TFAIL, "not expected allocated size");
-+	if ((alloc_size0 - block_size) != alloc_size1) {
-+		tst_res(TFAIL, "not expected allocated size");
-+		return;
+ 	return rval;
+ }
++
++void safe_clock_getres(const char *file, const int lineno,
++	clockid_t clk_id, struct timespec *res)
++{
++	int rval;
++
++	rval = clock_getres(clk_id, res);
++	if (rval == -1)
++		tst_brkm(TBROK | TERRNO, NULL,
++			"%s:%d:, clock_getres() failed", file, lineno);
++
++}
++
++void safe_clock_gettime(const char *file, const int lineno,
++	clockid_t clk_id, struct timespec *tp)
++{
++	int rval;
++
++	rval = clock_gettime(clk_id, tp);
++	if (rval == -1)
++		tst_brkm(TBROK | TERRNO, NULL, 
++			"%s:%d:, clock_gettime() failed", file, lineno);
++}
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 53a4a427e..1f76cd9de 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1514,3 +1514,4 @@ statx02 statx02
+ statx03 statx03
+ statx04 statx04
+ statx05 statx05
++statx06 statx06
+diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
+index 209fc3a33..c129d99e9 100644
+--- a/testcases/kernel/syscalls/statx/.gitignore
++++ b/testcases/kernel/syscalls/statx/.gitignore
+@@ -3,3 +3,4 @@
+ /statx03
+ /statx04
+ /statx05
++/statx06
+\ No newline at end of file
+diff --git a/testcases/kernel/syscalls/statx/statx06.c b/testcases/kernel/syscalls/statx/statx06.c
+new file mode 100644
+index 000000000..6b11ae927
+--- /dev/null
++++ b/testcases/kernel/syscalls/statx/statx06.c
+@@ -0,0 +1,168 @@
++// SPDX-License-Identifier: GPL-2.0 or later
++/*
++ *  Copyright (c) Zilogic Systems Pvt. Ltd., 2018
++ *  Email : code@zilogic.com
++ */
++
++/*
++ * DESCRIPTION :
++ *
++ * Test-Case 1 : Testing btime
++ * flow :       The time before and after the execution of the create
++ *              system call is noted.
++ *		It is checked whether the birth time returned by statx lies in
++ *              this range.
++ *
++ * Test-Case 2 : Testing mtime
++ * flow :       The time before and after the execution of the write
++ *              system call is noted.
++ *              It is checked whether the modification time returned
++ *              by statx lies in this range.
++ *
++ * Test-Case 3 : Testing atime
++ * flow :       The time before and after the execution of the read
++ *              system call is noted.
++ *              It is checked whether the access time returned by statx lies in
++ *              this range.
++ *
++ * Test-Case 4 : Testing ctime
++ * flow :	The time before and after the execution of the chmod
++ *              system call is noted.
++ *              It is checked whether the status change time returned by statx
++ *              lies in this range.
++ *
++ */
++
++#include <stdio.h>
++#include "tst_test.h"
++#include "lapi/stat.h"
++#include "tst_safe_macros.h"
++#include "tst_timer.h"
++#include <sys/mount.h>
++#include <time.h>
++
++#define MOUNT_POINT "mount_ext"
++#define TEST_FILE MOUNT_POINT"/test_file.txt"
++#define SIZE 2
++
++static int test_file_fd;
++
++static void statx_timestamp_to_timespec(const struct statx_timestamp *timestamp,
++				 struct timespec *timespec)
++{
++	timespec->tv_sec = timestamp->tv_sec;
++	timespec->tv_nsec = timestamp->tv_nsec;
++}
++
++static void clock_wait_tick(void)
++{
++	struct timespec res;
++	unsigned int usecs;
++
++	SAFE_CLOCK_GETRES(CLOCK_REALTIME_COARSE, &res);
++	usecs = ((res.tv_sec * 1000000) + (res.tv_nsec / 1000)) * 1.5;
++
++	usleep(usecs);
++}
++
++static void create_file(void)
++{
++	test_file_fd = SAFE_OPEN(TEST_FILE, O_CREAT | O_RDWR, 0666);
++}
++
++static void write_file(void)
++{
++	char data[SIZE] = "hi";
++
++	SAFE_WRITE(0, test_file_fd, data, sizeof(data));
++}
++
++static void read_file(void)
++{
++	char data[SIZE];
++
++	SAFE_READ(0, test_file_fd, data, sizeof(data));
++}
++
++static void change_mode(void)
++{
++	SAFE_CHMOD(TEST_FILE, 0777);
++}
++
++static struct test_case {
++	void (*operation)(void);
++	char *op_name;
++} tcases[] = {
++	{.operation = create_file,
++	 .op_name = "Birth time"},
++	{.operation = write_file,
++	 .op_name = "Modified time"},
++	{.operation = read_file,
++	 .op_name = "Access time"},
++	{.operation = change_mode,
++	 .op_name = "Change time"}
++};
++
++static void test_statx(unsigned int test_nr)
++{
++	struct statx buff;
++	struct timespec before_time;
++	struct timespec after_time;
++	struct timespec statx_time = {0, 0};
++
++	struct test_case *tc = &tcases[test_nr];
++
++	SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &before_time);
++	clock_wait_tick();
++	tc->operation();
++	clock_wait_tick();
++	SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &after_time);
++
++	TEST(statx(AT_FDCWD, TEST_FILE, 0, STATX_ALL, &buff));
++	if (TST_RET != 0)
++		tst_brk(TFAIL | TTERRNO,
++			"statx(AT_FDCWD, %s, 0, STATX_ALL, &buff)",
++			TEST_FILE);
++
++	switch (test_nr) {
++	case 0:
++		statx_timestamp_to_timespec(&buff.stx_btime, &statx_time);
++		break;
++	case 1:
++		statx_timestamp_to_timespec(&buff.stx_mtime, &statx_time);
++		break;
++	case 2:
++		statx_timestamp_to_timespec(&buff.stx_atime, &statx_time);
++		break;
++	case 3:
++		statx_timestamp_to_timespec(&buff.stx_ctime, &statx_time);
++		break;
 +	}
- 
- 	char exp_buf[buf_size];
- 
-@@ -173,8 +182,9 @@ static void test03(void)
- 	tst_res(TINFO, "zeroing file space with FALLOC_FL_ZERO_RANGE");
- 
- 	if (tst_kvercmp(3, 15, 0) < 0) {
--		tst_brk(TCONF,
-+		tst_res(TCONF,
- 			"FALLOC_FL_ZERO_RANGE needs Linux 3.15 or newer");
-+		return;
- 	}
- 
- 	size_t alloc_size0 = get_allocsize();
-@@ -184,10 +194,12 @@ static void test03(void)
- 	if (fallocate(fd, FALLOC_FL_ZERO_RANGE, block_size - 1,
- 	    block_size + 2) == -1) {
- 		if (errno == EOPNOTSUPP) {
--			tst_brk(TCONF,
-+			tst_res(TCONF,
- 			        "FALLOC_FL_ZERO_RANGE not supported");
-+			return;
- 		}
--		tst_brk(TFAIL | TERRNO, "fallocate failed");
-+		tst_res(TFAIL | TERRNO, "fallocate failed");
-+		return;
- 	}
- 
- 	/* The file hole in the specified range must be allocated and
-@@ -197,8 +209,10 @@ static void test03(void)
- 
- 	tst_res(TINFO, "allocated file size before '%zu' and after '%zu'",
- 		 alloc_size0, alloc_size1);
--	if ((alloc_size0 + block_size) != alloc_size1)
--		tst_brk(TFAIL, "not expected allocated size");
-+	if ((alloc_size0 + block_size) != alloc_size1) {
-+		tst_res(TFAIL, "not expected allocated size");
-+		return;
-+	}
- 
- 	char exp_buf[buf_size];
- 
-@@ -221,18 +235,22 @@ static void test04(void)
- 	if (fallocate(fd, FALLOC_FL_COLLAPSE_RANGE, block_size,
- 	    block_size) == -1) {
- 		if (errno == EOPNOTSUPP) {
--			tst_brk(TCONF,
-+			tst_res(TCONF,
- 			        "FALLOC_FL_COLLAPSE_RANGE not supported");
-+			return;
- 		}
--		tst_brk(TFAIL | TERRNO, "fallocate failed");
-+		tst_res(TFAIL | TERRNO, "fallocate failed");
-+		return;
- 	}
- 
- 	size_t alloc_size1 = get_allocsize();
- 
- 	tst_res(TINFO, "allocated file size before '%zu' and after '%zu'",
- 		 alloc_size0, alloc_size1);
--	if ((alloc_size0 - block_size) != alloc_size1)
--		tst_brk(TFAIL, "not expected allocated size");
-+	if ((alloc_size0 - block_size) != alloc_size1) {
-+		tst_res(TFAIL, "not expected allocated size");
-+		return;
-+	}
- 
- 	size_t size = buf_size - block_size;
- 	char tmp_buf[buf_size];
-@@ -261,22 +279,28 @@ static void test05(void)
- 	if (fallocate(fd, FALLOC_FL_INSERT_RANGE, block_size,
- 	    block_size) == -1) {
- 		if (errno == EOPNOTSUPP) {
--			tst_brk(TCONF,
-+			tst_res(TCONF,
- 				"FALLOC_FL_INSERT_RANGE not supported");
-+			return;
- 		}
--		tst_brk(TFAIL | TERRNO, "fallocate failed");
-+		tst_res(TFAIL | TERRNO, "fallocate failed");
-+		return;
- 	}
- 
- 	/* allocate space and ensure that it filled with zeroes */
--	if (fallocate(fd, FALLOC_FL_ZERO_RANGE, block_size, block_size) == -1)
--		tst_brk(TFAIL | TERRNO, "fallocate failed");
-+	if (fallocate(fd, FALLOC_FL_ZERO_RANGE, block_size, block_size) == -1) {
-+		tst_res(TFAIL | TERRNO, "fallocate failed");
-+		return;
-+	}
- 
- 	size_t alloc_size1 = get_allocsize();
- 
- 	tst_res(TINFO, "allocated file size before '%zu' and after '%zu'",
- 		 alloc_size0, alloc_size1);
--	if ((alloc_size0 + block_size) != alloc_size1)
--		tst_brk(TFAIL, "not expected allocated size");
-+	if ((alloc_size0 + block_size) != alloc_size1) {
-+		tst_res(TFAIL, "not expected allocated size");
-+		return;
-+	}
- 
- 	char exp_buf[buf_size];
- 
++	if (tst_timespec_lt(statx_time, before_time))
++		tst_res(TFAIL, "%s < before time", tc->op_name);
++	else if (tst_timespec_lt(after_time, statx_time))
++		tst_res(TFAIL, "%s > after_time", tc->op_name);
++	else
++		tst_res(TPASS, "%s Passed\n", tc->op_name);
++}
++
++
++static void cleanup(void)
++{
++	SAFE_CLOSE(test_file_fd);
++	SAFE_UNLINK(TEST_FILE);
++}
++
++static struct tst_test test = {
++	.cleanup = cleanup,
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = test_statx,
++	.min_kver = "4.11",
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++	.mntpoint = MOUNT_POINT,
++	.mount_device = 1,
++	.dev_fs_type = "ext4",
++	.dev_min_size = 512,
++	.mnt_flags = MS_STRICTATIME,
++};
 -- 
-2.14.4
+2.11.0
 
