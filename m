@@ -1,31 +1,27 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 8 Oct 2018 14:09:40 +0200
-Subject: [LTP] [PATCH 1/1] syscalls/statx04: TCONF on BTRFS for kernel <
-	4.13
-In-Reply-To: <20181008115411.GA13162@rei.lan>
-References: <20181008093322.8624-1-pvorel@suse.cz>
- <20181008115411.GA13162@rei.lan>
-Message-ID: <20181008120939.GA31388@dell5510>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Mon, 8 Oct 2018 17:56:35 +0530
+Subject: [LTP] rt_sigqueueinfo: Invalid argument
+Message-ID: <CA+G9fYtxvj0j6BVVZ_YoBkZn6m6ZpEMmDjBjwqY7uvpgMbNQbQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+rt_sigqueueinfo01 failed on all device (x86_64, i386, arm / arm64)
+started failing from Linux version 4.19.0-rc6-next-20181004.
+Do you see this failure at your end?
 
-> Why not just:
+rt_sigqueueinfo01: rt_sigqueueinfo: Invalid argument
+rt_sigqueueinfo01: rt_sigqueueinfo: Invalid argument
+rt_sigqueueinfo01    1  TFAIL  :  rt_sigqueueinfo01.c:97: Test Failed
+rt_sigqueueinfo01    0  TINFO  :  Failed to record test working dir
+rt_sigqueueinfo01    1  TFAIL  :  rt_sigqueueinfo01.c:97: Test Failed
+rt_sigqueueinfo01    0  TINFO  :  Failed to record test working dir
+rt_sigqueueinfo01    2  TFAIL  :  rt_sigqueueinfo01.c:97: Test Failed
 
-> 	if (!strcmp(tst_device->fs_type, "btrfs") && tst_kvercmp(4, 13, 0) < 0)
-> 		tst_brk(TCONF, "Btrfs statx() supported since 4.13");
+Full log  details.
+https://lkft.validation.linaro.org/scheduler/job/451548#L10339
 
-
-> There is no point in parsing a statically defined string that will never
-> change with tst_parse_kver().
-
-Sure, make sense.
-Thanks for pointing out silly code.
-Pushed with your reviewed-by tag.
-
-Kind regards,
-Petr
+Best regards
+Naresh Kamboju
