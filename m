@@ -1,113 +1,200 @@
-From: Eric W. Biederman <ebiederm@xmission.com>
-Date: Mon, 08 Oct 2018 17:52:57 +0200
-Subject: [LTP] rt_sigqueueinfo: Invalid argument
-In-Reply-To: <CA+G9fYvK4CBeAzcvzh1w5bcq9tgpFpum5yTjrnCxYQHmfzJ4_A@mail.gmail.com>
- (Naresh Kamboju's message of "Mon, 8 Oct 2018 20:22:00 +0530")
-References: <CA+G9fYtxvj0j6BVVZ_YoBkZn6m6ZpEMmDjBjwqY7uvpgMbNQbQ@mail.gmail.com>
- <20181008124541.GB13162@rei.lan>
- <695083613.56872050.1539003986782.JavaMail.zimbra@redhat.com>
- <CA+G9fYvK4CBeAzcvzh1w5bcq9tgpFpum5yTjrnCxYQHmfzJ4_A@mail.gmail.com>
-Message-ID: <87va6cwi3q.fsf@xmission.com>
+From: Rafael David Tinoco <rafael.tinoco@linaro.org>
+Date: Mon, 8 Oct 2018 23:05:16 -0300
+Subject: [LTP] LTP: futex_wake04 hangs forever on i386
+In-Reply-To: <20181008133059.GB30978@rei>
+References: <CA+G9fYs13QZtsREe3dvic+G6VPQ1dJroKH0sguBiNdtizRTeNQ@mail.gmail.com>
+ <20181008133059.GB30978@rei>
+Message-ID: <3dbee853-6bce-d057-f42a-655a8f2991c3@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Naresh Kamboju <naresh.kamboju@linaro.org> writes:
+On 10/8/18 10:30 AM, Cyril Hrubis wrote:
+> Hi!
+>> LTP syscall test case futex_wake04 hangs forever on i386 kernel 
+>> running on x86_64 server machine.
+>> 
+>> Test PASS on qemu_i386 and other devices. Test HANGs on i386 (i386
+>>  kernel booting on x86_64 machine).
+>> 
+>> output, incrementing stop futex_wake04    0  TINFO  : Hugepagesize
+>> 4194304
+> 
+> Looks like we are trying to fault 4GB hugepage, that may be quite 
+> slow, but then, the test is a kernel reproducer as well.
 
-> + Eric
->
-> Eric,
-> If you have any comments.
-> Good note is that, you broke the test and we need to fix it for better
-> test coverage :-)
+This is i386 without PAE so the hugepage here is 4 MB (or else it would
+be a 2 MB with PAE). I have configured the same environment on my side:
+
+(k)inaddy@bug3984:~$ sudo hugeadm --hard --pool-pages-max 4M:128
+(k)inaddy@bug3984:~$ sudo hugeadm --hard --pool-pages-min 4M:128
+(k)inaddy@bug3984:~$ sudo hugeadm --pool-list
+       Size  Minimum  Current  Maximum  Default
+    4194304      128      128      128        *
+
+And ran the test with 500 iterations, multiple times, without a single
+issue.
+
+(k)root@bug3984:~$ while true; do cat /proc/meminfo | grep -i
+hugepages_free; done
+
+Shoes me the hugepages are being used:
+
+HugePages_Free:       93
+HugePages_Free:        4
+HugePages_Free:      128
+HugePages_Free:        0
+HugePages_Free:      128
+HugePages_Free:        1
+HugePages_Free:        8
+HugePages_Free:      128
+HugePages_Free:       27
+HugePages_Free:        0
+HugePages_Free:      102
+
+> Can you connect to the process with gdb and check if we happened to 
+> timeout before or after the two threads that are are supposed to 
+> trigger kernel bug are started?
+> 
+
+Reading the test and commit 13d60f4b6a it looks like this test is
+testing futexes indexes stored in hugepages (one in head and the other
+outside the hugepage head) and a indexing problem on which futex() was
+signalized as non-contended.
+
+Kernel code was using page->index (of page hosting the futex) for futex
+offset and, after this commit, it started taking in consideration if the
+page was a hugepage (head or tail) or a compound page, when then it
+would use the compound_idx for the futex offset, fixing the issue.
+
+In order for the issue to happen we would have to face:
+
+test thread #1                    test thread #2
+--------------                    --------------
+[hugepage #1 head] *futex1 offset [hugepage #1 head]
+[page]                            [page] *futex2 offset
+[page]                            [page]
+[page]                            [page]
+...                               ...
+
+where futex2 key points to futex1.
+
+And test case does NOT look like something intermittent (since it is a
+lock ordering issue - depending on pthreads sharing futexes - with wrong
+futexes indexes, like described in kernel commit).
+
+* Test case problem would either happen or not *
+
+I tried to extend a bit number of iterations and something caught my 
+attention... when running the same test, multiple times, after some time 
+I would face something like:
+
+futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
+futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
+futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
+futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
+futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
+futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
+futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
+futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
+futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
+
+And there wasn't a second thread task id inside:
+
+/proc/<pid>/task/{<pid>, <tid1>, <tid2>}
+
+like it should.
+
+Likely the task creation (because of error ? check last part) logic here 
+was faster than wait_for_threads() logic could expect... causing a race 
+for the test's logic.
+
+* This would explain the timeout error we had, right ? *
+
+Since stdout/stderr are being directed to a file: @Naresh, is it 
+possible to get output from stdout/err files from the same LKFT URL you 
+showed ?
+
+* Wait, there is more ... *
+
+While running the test, and monitoring meminfo, I could see the 
+HugePages_Total oscillating:
+
+HugePages_Total:       1
+HugePages_Free:        1
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+
+HugePages_Total:       1
+HugePages_Free:        1
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+
+HugePages_Total:      54
+HugePages_Free:       53
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+
+HugePages_Total:       1
+HugePages_Free:        1
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+
+HugePages_Total:       1
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+
+HugePages_Total:     101
+HugePages_Free:      101
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+
+HugePages_Total:     128
+HugePages_Free:      128
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+
+HugePages_Total:       1
+HugePages_Free:        1
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+
+HugePages_Total:       1
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+
+despite the fact that I had configured:
+
+(k)inaddy@bug3984:~$ sudo hugeadm --hard --pool-pages-min 4M:128
+(k)inaddy@bug3984:~$ sudo hugeadm --hard --pool-pages-max 4M:128
+
+And had "128" for HugePages_Total in the beginning of the test. Number 
+of hugepages total oscillates during a successful test and, at the very 
+end, the number for HugePages_Total goes back to 128. I have disabled 
+THP completely after this test and there was the same result.
+
+Reading hugetlb_report_meminfo() in hugetlb.c, I am not sure (struct 
+hstat *h)->nr_huge_pages should change that much (through new hugepages 
+being asked for, sysctl, or numa balance, among other options). I'll try 
+to trace this tomorrow to see who is touching the HugePages_Total during 
+the test.
+
+* Theory *
+
+HugePages_Total flacks and causes 1 pthread to have errors before the 
+test readdir() logic on /proc/<pid>/task/X catches if thread went to 
+sleep, causing a race in the readdir() logic.
+
+* Obs *
+
+I still need to finish this last part investigation. I haven't tried 
+with other architectures yet, only x86 on non-pae kernel. I have tested 
+a 4.18 kernel (debian) and latest mainline and both can reproduce this.
+
+Will get back to this soon...
 
 
-Ok.  So I have tracked down the test and I think I see what is going on.
-I believe this is the source code to your failing test:
-https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo01.c
-
-There are two cases I have changed that might possibly break something.
-One was verifying that si_signo matched sig.  This is my second report
-and it feels credible that that change was a regression in userspace and
-I have fixed that in my development branch and that should be showing
-up in linux-next in a day or so.
-
-The other change is verifying that the tail end of siginfo_t is 0 if
-we don't recognize the si_code.  In this case SI_QUEUE is hard coded
-so that check should not be coming into play.
-
-Thank you for letting me know this broke an ltp test.
-
-I was hoping that no one would care but it is clear now that people
-really do ignore si_signo in favor of the signal parameter of the system
-call.  So not fixing this would be introducing regressions in
-applications.
-
-Eric
-
-> Thank you.
->
-> On Mon, 8 Oct 2018 at 18:36, Jan Stancek <jstancek@redhat.com> wrote:
->>
->>
->>
->> ----- Original Message -----
->> > Hi!
->> > > rt_sigqueueinfo01 failed on all device (x86_64, i386, arm / arm64)
->> > > started failing from Linux version 4.19.0-rc6-next-20181004.
->> > > Do you see this failure at your end?
->> > >
->> > > rt_sigqueueinfo01: rt_sigqueueinfo: Invalid argument
->> > > rt_sigqueueinfo01: rt_sigqueueinfo: Invalid argument
->> > > rt_sigqueueinfo01    1  TFAIL  :  rt_sigqueueinfo01.c:97: Test Failed
->> > > rt_sigqueueinfo01    0  TINFO  :  Failed to record test working dir
->> > > rt_sigqueueinfo01    1  TFAIL  :  rt_sigqueueinfo01.c:97: Test Failed
->> > > rt_sigqueueinfo01    0  TINFO  :  Failed to record test working dir
->> > > rt_sigqueueinfo01    2  TFAIL  :  rt_sigqueueinfo01.c:97: Test Failed
->> > >
->> > > Full log  details.
->> > > https://lkft.validation.linaro.org/scheduler/job/451548#L10339
->> >
->> > I do not recall seeing this test to fail.
->> >
->> > However the test is old messy code, one thing that I guess may happen is
->> > that there is random garbage in the siginfo_t structure we pass to the
->> > syscall and in you case you were unlucky enough so that kernel rejects
->> > the value, but that is just wild guess.
->>
->
-> Jan,
->
->> Mainline doesn't seem to mind if we pass garbage atm. (4.19-rc7)
->> but we should initialize entire struct anyway.
->>
->> In -next there is:
->>   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/kernel/signal.c?id=e75dc036c445b91b8b2ad4e6c9b05f04b6be6d3f
->> and test doesn't set si_signo.
->
-> Thanks for the quick reply.
-> This help me a lot.
->
->>
->> Regards,
->> Jan
->>
->> >
->
-> Cyril,
->
->> > Btw, I've opened an issue to clean up the test in:
->> >
->> > https://github.com/linux-test-project/ltp/issues/404
->
-> Thanks for creating an issue. I have subscribed to this one.
->
-> - Naresh
->
->> >
->> > --
->> > Cyril Hrubis
->> > chrubis@suse.cz
->> >
