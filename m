@@ -1,200 +1,247 @@
-From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Mon, 8 Oct 2018 23:05:16 -0300
-Subject: [LTP] LTP: futex_wake04 hangs forever on i386
-In-Reply-To: <20181008133059.GB30978@rei>
-References: <CA+G9fYs13QZtsREe3dvic+G6VPQ1dJroKH0sguBiNdtizRTeNQ@mail.gmail.com>
- <20181008133059.GB30978@rei>
-Message-ID: <3dbee853-6bce-d057-f42a-655a8f2991c3@linaro.org>
+From: Ammy Yi <ammy.yi@intel.com>
+Date: Tue,  9 Oct 2018 13:11:49 +0800
+Subject: [LTP] [PATCH v4 ltp] Add Intel PT full trace mode basic test case
+Message-ID: <20181009051149.6055-1-ammy.yi@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 10/8/18 10:30 AM, Cyril Hrubis wrote:
-> Hi!
->> LTP syscall test case futex_wake04 hangs forever on i386 kernel 
->> running on x86_64 server machine.
->> 
->> Test PASS on qemu_i386 and other devices. Test HANGs on i386 (i386
->>  kernel booting on x86_64 machine).
->> 
->> output, incrementing stop futex_wake04    0  TINFO  : Hugepagesize
->> 4194304
-> 
-> Looks like we are trying to fault 4GB hugepage, that may be quite 
-> slow, but then, the test is a kernel reproducer as well.
+This test will do Intel PT full trace mode with test case PID to check
+if enable/stop/trace generation works with Intel PT.
 
-This is i386 without PAE so the hugepage here is 4 MB (or else it would
-be a 2 MB with PAE). I have configured the same environment on my side:
+Signed-off-by: Ammy Yi <ammy.yi@intel.com>
+---
+ runtest/tracing                             |   1 +
+ testcases/kernel/tracing/pt_test/.gitignore |   1 +
+ testcases/kernel/tracing/pt_test/Makefile   |  21 ++++
+ testcases/kernel/tracing/pt_test/pt_test.c  | 170 ++++++++++++++++++++++++++++
+ 4 files changed, 193 insertions(+)
+ create mode 100644 testcases/kernel/tracing/pt_test/.gitignore
+ create mode 100644 testcases/kernel/tracing/pt_test/Makefile
+ create mode 100644 testcases/kernel/tracing/pt_test/pt_test.c
 
-(k)inaddy@bug3984:~$ sudo hugeadm --hard --pool-pages-max 4M:128
-(k)inaddy@bug3984:~$ sudo hugeadm --hard --pool-pages-min 4M:128
-(k)inaddy@bug3984:~$ sudo hugeadm --pool-list
-       Size  Minimum  Current  Maximum  Default
-    4194304      128      128      128        *
-
-And ran the test with 500 iterations, multiple times, without a single
-issue.
-
-(k)root@bug3984:~$ while true; do cat /proc/meminfo | grep -i
-hugepages_free; done
-
-Shoes me the hugepages are being used:
-
-HugePages_Free:       93
-HugePages_Free:        4
-HugePages_Free:      128
-HugePages_Free:        0
-HugePages_Free:      128
-HugePages_Free:        1
-HugePages_Free:        8
-HugePages_Free:      128
-HugePages_Free:       27
-HugePages_Free:        0
-HugePages_Free:      102
-
-> Can you connect to the process with gdb and check if we happened to 
-> timeout before or after the two threads that are are supposed to 
-> trigger kernel bug are started?
-> 
-
-Reading the test and commit 13d60f4b6a it looks like this test is
-testing futexes indexes stored in hugepages (one in head and the other
-outside the hugepage head) and a indexing problem on which futex() was
-signalized as non-contended.
-
-Kernel code was using page->index (of page hosting the futex) for futex
-offset and, after this commit, it started taking in consideration if the
-page was a hugepage (head or tail) or a compound page, when then it
-would use the compound_idx for the futex offset, fixing the issue.
-
-In order for the issue to happen we would have to face:
-
-test thread #1                    test thread #2
---------------                    --------------
-[hugepage #1 head] *futex1 offset [hugepage #1 head]
-[page]                            [page] *futex2 offset
-[page]                            [page]
-[page]                            [page]
-...                               ...
-
-where futex2 key points to futex1.
-
-And test case does NOT look like something intermittent (since it is a
-lock ordering issue - depending on pthreads sharing futexes - with wrong
-futexes indexes, like described in kernel commit).
-
-* Test case problem would either happen or not *
-
-I tried to extend a bit number of iterations and something caught my 
-attention... when running the same test, multiple times, after some time 
-I would face something like:
-
-futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
-futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
-futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
-futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
-futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
-futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
-futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
-futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
-futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
-
-And there wasn't a second thread task id inside:
-
-/proc/<pid>/task/{<pid>, <tid1>, <tid2>}
-
-like it should.
-
-Likely the task creation (because of error ? check last part) logic here 
-was faster than wait_for_threads() logic could expect... causing a race 
-for the test's logic.
-
-* This would explain the timeout error we had, right ? *
-
-Since stdout/stderr are being directed to a file: @Naresh, is it 
-possible to get output from stdout/err files from the same LKFT URL you 
-showed ?
-
-* Wait, there is more ... *
-
-While running the test, and monitoring meminfo, I could see the 
-HugePages_Total oscillating:
-
-HugePages_Total:       1
-HugePages_Free:        1
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-
-HugePages_Total:       1
-HugePages_Free:        1
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-
-HugePages_Total:      54
-HugePages_Free:       53
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-
-HugePages_Total:       1
-HugePages_Free:        1
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-
-HugePages_Total:       1
-HugePages_Free:        0
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-
-HugePages_Total:     101
-HugePages_Free:      101
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-
-HugePages_Total:     128
-HugePages_Free:      128
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-
-HugePages_Total:       1
-HugePages_Free:        1
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-
-HugePages_Total:       1
-HugePages_Free:        0
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-
-despite the fact that I had configured:
-
-(k)inaddy@bug3984:~$ sudo hugeadm --hard --pool-pages-min 4M:128
-(k)inaddy@bug3984:~$ sudo hugeadm --hard --pool-pages-max 4M:128
-
-And had "128" for HugePages_Total in the beginning of the test. Number 
-of hugepages total oscillates during a successful test and, at the very 
-end, the number for HugePages_Total goes back to 128. I have disabled 
-THP completely after this test and there was the same result.
-
-Reading hugetlb_report_meminfo() in hugetlb.c, I am not sure (struct 
-hstat *h)->nr_huge_pages should change that much (through new hugepages 
-being asked for, sysctl, or numa balance, among other options). I'll try 
-to trace this tomorrow to see who is touching the HugePages_Total during 
-the test.
-
-* Theory *
-
-HugePages_Total flacks and causes 1 pthread to have errors before the 
-test readdir() logic on /proc/<pid>/task/X catches if thread went to 
-sleep, causing a race in the readdir() logic.
-
-* Obs *
-
-I still need to finish this last part investigation. I haven't tried 
-with other architectures yet, only x86 on non-pae kernel. I have tested 
-a 4.18 kernel (debian) and latest mainline and both can reproduce this.
-
-Will get back to this soon...
-
+diff --git a/runtest/tracing b/runtest/tracing
+index 8285eeb43..504132d70 100644
+--- a/runtest/tracing
++++ b/runtest/tracing
+@@ -3,3 +3,4 @@ ftrace_regression01	ftrace_regression01.sh
+ ftrace_regression02	ftrace_regression02.sh
+ ftrace-stress-test	ftrace_stress_test.sh 90
+ dynamic_debug01		dynamic_debug01.sh
++pt_full_trace_basic pt_test
+diff --git a/testcases/kernel/tracing/pt_test/.gitignore b/testcases/kernel/tracing/pt_test/.gitignore
+new file mode 100644
+index 000000000..96efc142d
+--- /dev/null
++++ b/testcases/kernel/tracing/pt_test/.gitignore
+@@ -0,0 +1 @@
++/pt_test
+diff --git a/testcases/kernel/tracing/pt_test/Makefile b/testcases/kernel/tracing/pt_test/Makefile
+new file mode 100644
+index 000000000..a114fed1b
+--- /dev/null
++++ b/testcases/kernel/tracing/pt_test/Makefile
+@@ -0,0 +1,21 @@
++#
++# Copyright (C) 2018 Intel Corporation
++#
++# This program is free software: you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation, either version 2 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program. If not, see <http://www.gnu.org/licenses/>.
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+\ No newline at end of file
+diff --git a/testcases/kernel/tracing/pt_test/pt_test.c b/testcases/kernel/tracing/pt_test/pt_test.c
+new file mode 100644
+index 000000000..bbd641b06
+--- /dev/null
++++ b/testcases/kernel/tracing/pt_test/pt_test.c
+@@ -0,0 +1,170 @@
++/*
++ * Copyright (C) 2018 Intel Corporation
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ *
++ * author: Ammy Yi (ammy.yi@intel.com)
++ * date:   8/20/2018
++ */
++
++/*
++ * This test will check if Intel PT(Intel Processer Trace) full trace mode is
++ * working. It is only applied on X86 platforms.
++ */
++
++#include <linux/perf_event.h>
++#include <sched.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++
++#define PAGESIZE 4096
++#define INTEL_PT_MEMSIZE (17*PAGESIZE)
++
++#define BIT(nr)                 (1UL << (nr))
++
++#define INTEL_PT_PMU_TYPE "/sys/devices/intel_pt/type"
++#define INTEL_PT_FORMAT_TSC "/sys/devices/intel_pt/format/tsc"
++#define INTEL_PT_FORMAT_NRT "/sys/devices/intel_pt/format/noretcomp"
++
++//Intel PT event handle
++int fde = -1;
++//map head and size
++uint64_t **bufm;
++long buhsz;
++
++uint64_t **create_map(int fde, long bufsize)
++{
++	int PROTo;
++	uint64_t **buf_ev;
++	struct perf_event_mmap_page *pc;
++
++	buf_ev = SAFE_MALLOC(2*sizeof(uint64_t *));
++
++	PROTo = PROT_READ | PROT_WRITE;
++	buf_ev[0] = NULL;
++	buf_ev[1] = NULL;
++//try to mmap for trace
++	buf_ev[0] = SAFE_MMAP(NULL, INTEL_PT_MEMSIZE, PROT_READ | PROT_WRITE,
++							MAP_SHARED, fde, 0);
++
++	pc = (struct perf_event_mmap_page *)buf_ev[0];
++	pc->aux_offset = INTEL_PT_MEMSIZE;
++	pc->aux_size = bufsize;
++	buf_ev[1] = SAFE_MMAP(NULL, bufsize, PROTo,
++					MAP_SHARED, fde, INTEL_PT_MEMSIZE);
++	return buf_ev;
++}
++
++
++int intel_pt_pmu_value(char *dir)
++{
++	char *value;
++	int val = 0;
++	char delims[] = ":";
++
++	SAFE_FILE_SCANF(dir, "%m[^\n]", &value);
++	if (strstr(value, delims) == NULL) {
++		val = atoi(value);
++	} else {
++		strsep(&value, delims);
++		val = atoi(value);
++	}
++	return val;
++}
++
++void del_map(uint64_t **buf_ev, long bufsize)
++{
++	long pbuhsz;
++
++	pbuhsz = INTEL_PT_MEMSIZE;
++	if (buf_ev) {
++		if (buf_ev[0])
++			munmap(buf_ev[0], pbuhsz);
++		if (buf_ev[1])
++			munmap(buf_ev[1], bufsize);
++	}
++
++	free(buf_ev);
++}
++
++static void intel_pt_full_trace_check(void)
++{
++	uint64_t aux_head = 0;
++	struct perf_event_mmap_page *pmp;
++	/* enable tracing */
++	SAFE_IOCTL(fde, PERF_EVENT_IOC_RESET);
++	SAFE_IOCTL(fde, PERF_EVENT_IOC_ENABLE);
++
++	/* stop tracing */
++	SAFE_IOCTL(fde, PERF_EVENT_IOC_DISABLE);
++
++	// check if there is some trace generated
++	pmp = (struct perf_event_mmap_page *)bufm[0];
++	aux_head = *(volatile uint64_t *)&pmp->aux_head;
++	if (aux_head == 0) {
++		tst_res(TFAIL, "There is no trace, so failed!");
++		return;
++	}
++
++	tst_res(TPASS, "perf trace full mode is passed!");
++}
++
++void setup(void)
++{
++	struct perf_event_attr attr = {};
++
++	buhsz = 2 * PAGESIZE;
++
++	//set attr for Intel PT trace
++	attr.type	= intel_pt_pmu_value(INTEL_PT_PMU_TYPE);
++	attr.read_format = PERF_FORMAT_ID | PERF_FORMAT_TOTAL_TIME_RUNNING |
++				PERF_FORMAT_TOTAL_TIME_ENABLED;
++	attr.disabled	= 1;
++	attr.config	= BIT(intel_pt_pmu_value(INTEL_PT_FORMAT_TSC)) |
++				BIT(intel_pt_pmu_value(INTEL_PT_FORMAT_NRT));
++	attr.size	= sizeof(struct perf_event_attr);
++	attr.exclude_kernel		= 0;
++	attr.exclude_user		= 0;
++	attr.mmap			= 1;
++
++	//only get trace for own pid
++	fde = tst_syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
++	if (fde < 0) {
++		tst_res(TINFO, "Open Intel PT event failed!");
++		tst_res(TFAIL, "perf trace full mode is failed!");
++		return;
++	}
++	bufm = NULL;
++	/* allocate memory for trace */
++	bufm =  create_map(fde, buhsz);
++
++}
++
++void cleanup(void)
++{
++	if (fde != -1)
++		close(fde);
++
++	del_map(bufm, buhsz);
++}
++
++static struct tst_test test = {
++	.test_all = intel_pt_full_trace_check,
++	.min_kver = "4.1",
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++};
+-- 
+2.14.1
 
