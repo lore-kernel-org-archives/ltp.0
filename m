@@ -1,83 +1,70 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 9 Oct 2018 23:10:45 +0300
-Subject: [LTP] [PATCH v2 0/5] Tests for readahead() and fadvise() on
-	overlayfs
-In-Reply-To: <CAOQ4uxjBxzF+kyDOvzLG1hg+q-m=cV26GWEEnXUKHehKDxkQwg@mail.gmail.com>
-References: <20181004062624.27295-1-amir73il@gmail.com>
- <1498422724.56763494.1538982674701.JavaMail.zimbra@redhat.com>
- <CAOQ4uxjBxzF+kyDOvzLG1hg+q-m=cV26GWEEnXUKHehKDxkQwg@mail.gmail.com>
-Message-ID: <CAOQ4uxhjeV1QXyibFcng+voTTTbuwkBWtPjVL5UgACxCUs9gQg@mail.gmail.com>
+From: Rafael David Tinoco <rafael.tinoco@linaro.org>
+Date: Tue,  9 Oct 2018 18:06:02 -0300
+Subject: [LTP] [PATCH] futex/futex_wake04.c: fix issues with hugepages and
+	usleep
+In-Reply-To: <6903290a-523f-7130-b64f-d1a73b601c38@linaro.org>
+References: <6903290a-523f-7130-b64f-d1a73b601c38@linaro.org>
+Message-ID: <20181009210602.23261-1-rafael.tinoco@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Oct 8, 2018 at 2:26 PM Amir Goldstein <amir73il@gmail.com> wrote:
->
-> On Mon, Oct 8, 2018 at 10:11 AM Jan Stancek <jstancek@redhat.com> wrote:
-> >
-> >
-> >
-> > ----- Original Message -----
-> > > Cyril,
-> > >
-> > > The following series adds test covergae for readahead() syscall
-> > > over overlayfs file and adds test coverage for a specific
-> > > posix_fadvise() syscall advice (POSIX_FADV_WILLNEED).
-> > >
-> > > So far, the posix_fadvise syscall tests in LTP only test for error
-> > > conditions, but not functionality.
-> > >
-> > > The functionality of the advice POSIX_FADV_WILLNEED is indentical
-> > > to readahead() and since kernel commit 3d8f7615319b ("vfs: implement
-> > > readahead(2) using POSIX_FADV_WILLNEED"), the implementations are
-> > > also bound together.
-> > >
-> > > To add test coverage of the advice POSIX_FADV_WILLNEED, I decided not
-> > > to duplicate the readahead() functional test and add test cases to
-> > > readahead02 that use the POSIX_FADV_WILLNEED implementation.
-> > >
-> > > Thanks,
-> > > Amir.
-> > >
-> > > Changes since v1:
-> > > - Fix bugs in loop invocation of test (i.e. -i 2)
-> > > - Address review comments from Jan Stancek
-> > > - Make cached_max a global maximum over all test cases
-> > > - Improve reliability of overlayfs readahead test case failure
-> >
-> > Looks good to me.
-> >
-> > When you say "This is the only system configuration supported by the posix_fadvise tests",
-> > are you talking about glibc?
-> >
->
-> I was trying to mimic the check in posix_fadvise tests:
->
->         /* Check this system has fadvise64 system which is used
->            in posix_fadvise. */
->         if ((_FILE_OFFSET_BITS != 64) && (__NR_fadvise64 == 0)) {
->                 tst_resm(TWARN,
->                          "This test can only run on kernels that implements ");
->                 tst_resm(TWARN, "fadvise64 which is used from posix_fadvise");
->                 exit(0);
->         }
->
-> If my understanding of man posix_fadvise(2) is correct, this wants to make sure
-> that the glibc wrapper posix_fadvise calls the syscall fadvise64 and not some
-> architecture specific syscall (e.g. arm_fadvise64_64).
->
-> I am not really sure why that matters to those tests at all.
-> and it's probably better just return TCONF if the call fails with ENOSYS?
-> If someone has ideas, let me know.
->
+This commit fixes 2 observed issues:
 
-FYI, I removed the build time checks from my test and added runtime checks
-for both readahead and posix_fadvise kernel support:
-https://github.com/amir73il/ltp/commits/overlayfs-devel
+1) usleep() time is too small if test is being executed in slower
+terminal devices (specially embedded systems). Raising it to 0.001
+seconds was enough to finish 10240 iterations in around 90 seconds in a
+4 vcpu kvm guest (fully emulated serial being used as console).
 
-I will post v3 tomorrow.
+2) Test was changing number of hugepages during setup()/cleanup() phase
+despite the system had (or not) available hugepages. This was causing
+overhead of destroying (or creating) hugepages during the test
+execution.  Now, if system has > 0 hugepages available, the test doesn't
+touch it.
 
-Thanks,
-Amir.
+Link: https://bugs.linaro.org/show_bug.cgi?id=3984
+Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
+---
+ testcases/kernel/syscalls/futex/futex_wake04.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/futex/futex_wake04.c b/testcases/kernel/syscalls/futex/futex_wake04.c
+index 3c7038317..93d36ac33 100644
+--- a/testcases/kernel/syscalls/futex/futex_wake04.c
++++ b/testcases/kernel/syscalls/futex/futex_wake04.c
+@@ -76,14 +76,17 @@ static void setup(void)
+ 	tst_tmpdir();
+ 
+ 	SAFE_FILE_SCANF(NULL, PATH_NR_HUGEPAGES, "%ld", &orig_hugepages);
+-	SAFE_FILE_PRINTF(NULL, PATH_NR_HUGEPAGES, "%d", 1);
++
++	if (!orig_hugepages)
++		SAFE_FILE_PRINTF(NULL, PATH_NR_HUGEPAGES, "%d", 1);
+ 
+ 	TEST_PAUSE;
+ }
+ 
+ static void cleanup(void)
+ {
+-	SAFE_FILE_PRINTF(NULL, PATH_NR_HUGEPAGES, "%ld", orig_hugepages);
++	if (!orig_hugepages)
++		SAFE_FILE_PRINTF(NULL, PATH_NR_HUGEPAGES, "%d", 0);
+ 
+ 	tst_rmdir();
+ }
+@@ -172,8 +175,9 @@ static void wakeup_thread2(void)
+ 				tst_strerrno(res));
+ 	}
+ 
++	/* 0.001 seconds: less might cause lockups for slower terminals */
+ 	while (wait_for_threads(2))
+-		usleep(100);
++		usleep(1000);
+ 
+ 	futex_wake(futex2, 1, 0);
+ 
+-- 
+2.19.1
+
