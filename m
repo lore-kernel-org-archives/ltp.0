@@ -1,198 +1,83 @@
-From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Tue, 9 Oct 2018 15:49:07 -0300
-Subject: [LTP] LTP: futex_wake04 hangs forever on i386
-In-Reply-To: <20181009092821.GA16630@rei>
-References: <CA+G9fYs13QZtsREe3dvic+G6VPQ1dJroKH0sguBiNdtizRTeNQ@mail.gmail.com>
- <20181008133059.GB30978@rei>
- <3dbee853-6bce-d057-f42a-655a8f2991c3@linaro.org>
- <20181009092821.GA16630@rei>
-Message-ID: <6903290a-523f-7130-b64f-d1a73b601c38@linaro.org>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 9 Oct 2018 23:10:45 +0300
+Subject: [LTP] [PATCH v2 0/5] Tests for readahead() and fadvise() on
+	overlayfs
+In-Reply-To: <CAOQ4uxjBxzF+kyDOvzLG1hg+q-m=cV26GWEEnXUKHehKDxkQwg@mail.gmail.com>
+References: <20181004062624.27295-1-amir73il@gmail.com>
+ <1498422724.56763494.1538982674701.JavaMail.zimbra@redhat.com>
+ <CAOQ4uxjBxzF+kyDOvzLG1hg+q-m=cV26GWEEnXUKHehKDxkQwg@mail.gmail.com>
+Message-ID: <CAOQ4uxhjeV1QXyibFcng+voTTTbuwkBWtPjVL5UgACxCUs9gQg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
->> futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
->> futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
->> futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
->> futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
->> futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
->> futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
->> futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
->> futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
->> futex_wake04    0  TINFO  :  Thread 7495 not sleeping yet
->>
->> And there wasn't a second thread task id inside:
->>
->> /proc/<pid>/task/{<pid>, <tid1>, <tid2>}
->>
->> like it should.
->>
->> Likely the task creation (because of error ? check last part) logic here
->> was faster than wait_for_threads() logic could expect... causing a race
->> for the test's logic.
-> 
-> That shouldn't really happen, the wait_for_threads(2) function is called
-> in a loop until there are two sleeping threads under the
-> /proc/$pid/task/ directory (minus the main thread). So unless there is a
-> problem with starting a thread or locking on a futex the loop will end
-> eventually and the futexes are unlocked only after this loop finishes.
+On Mon, Oct 8, 2018 at 2:26 PM Amir Goldstein <amir73il@gmail.com> wrote:
+>
+> On Mon, Oct 8, 2018 at 10:11 AM Jan Stancek <jstancek@redhat.com> wrote:
+> >
+> >
+> >
+> > ----- Original Message -----
+> > > Cyril,
+> > >
+> > > The following series adds test covergae for readahead() syscall
+> > > over overlayfs file and adds test coverage for a specific
+> > > posix_fadvise() syscall advice (POSIX_FADV_WILLNEED).
+> > >
+> > > So far, the posix_fadvise syscall tests in LTP only test for error
+> > > conditions, but not functionality.
+> > >
+> > > The functionality of the advice POSIX_FADV_WILLNEED is indentical
+> > > to readahead() and since kernel commit 3d8f7615319b ("vfs: implement
+> > > readahead(2) using POSIX_FADV_WILLNEED"), the implementations are
+> > > also bound together.
+> > >
+> > > To add test coverage of the advice POSIX_FADV_WILLNEED, I decided not
+> > > to duplicate the readahead() functional test and add test cases to
+> > > readahead02 that use the POSIX_FADV_WILLNEED implementation.
+> > >
+> > > Thanks,
+> > > Amir.
+> > >
+> > > Changes since v1:
+> > > - Fix bugs in loop invocation of test (i.e. -i 2)
+> > > - Address review comments from Jan Stancek
+> > > - Make cached_max a global maximum over all test cases
+> > > - Improve reliability of overlayfs readahead test case failure
+> >
+> > Looks good to me.
+> >
+> > When you say "This is the only system configuration supported by the posix_fadvise tests",
+> > are you talking about glibc?
+> >
+>
+> I was trying to mimic the check in posix_fadvise tests:
+>
+>         /* Check this system has fadvise64 system which is used
+>            in posix_fadvise. */
+>         if ((_FILE_OFFSET_BITS != 64) && (__NR_fadvise64 == 0)) {
+>                 tst_resm(TWARN,
+>                          "This test can only run on kernels that implements ");
+>                 tst_resm(TWARN, "fadvise64 which is used from posix_fadvise");
+>                 exit(0);
+>         }
+>
+> If my understanding of man posix_fadvise(2) is correct, this wants to make sure
+> that the glibc wrapper posix_fadvise calls the syscall fadvise64 and not some
+> architecture specific syscall (e.g. arm_fadvise64_64).
+>
+> I am not really sure why that matters to those tests at all.
+> and it's probably better just return TCONF if the call fails with ENOSYS?
+> If someone has ideas, let me know.
+>
 
-Okay, so this is what is happening...
+FYI, I removed the build time checks from my test and added runtime checks
+for both readahead and posix_fadvise kernel support:
+https://github.com/amir73il/ltp/commits/overlayfs-devel
 
-Like we predicted, one of the threads had an issue and the logic was 
-stuck with 2 tasks only: parent and 1 thread. The parent in (R) mode and 
-the thread in (S) mode.
+I will post v3 tomorrow.
 
-Quoting as an example this situation:
-
-futex_wake04    0  TINFO  :  Thread 11405 not sleeping yet
-futex_wake04    0  TINFO  :  Thread 11405 not sleeping yet
-futex_wake04    0  TINFO  :  Thread 11405 not sleeping yet
-futex_wake04    0  TINFO  :  Thread 11405 not sleeping yet
-...
-
-Despite, in the beginning, we had a situation that would allow the 
-"while(wait_for_threads(2))" to break, like showed here:
-
-(k)inaddy@bug3984:/proc$ PID=11405 ; echo ==== PID=$PID ====; ls -d 
-$PID/task/* ; echo COMM ==== ; cat $PID/task/*/comm ; echo STAT ==== ; 
-cat $PID/task/*/stat | awk '{print $1" "$2" "$3}' ; echo STACK ====; 
-sudo cat $PID/task/*/stack
-
-==== PID=11405 ====
-11405/task/11403  11405/task/11404  11405/task/11405
-COMM ====
-futex_wake04
-futex_wake04
-futex_wake04
-STAT ====
-11403 (futex_wake04) S
-11404 (futex_wake04) S
-11405 (futex_wake04) R
-STACK ====
-[<0>] hrtimer_nanosleep+0xe6/0x250
-[<0>] sys_nanosleep+0x64/0xa0
-[<0>] do_fast_syscall_32+0x7f/0x1b0
-[<0>] entry_SYSENTER_32+0x4e/0x7c
-[<0>] 0xffffffff
-[<0>] futex_wait_queue_me+0xb8/0x120
-[<0>] futex_wait+0xda/0x210
-[<0>] do_futex+0x433/0x9b0
-[<0>] sys_futex+0xe9/0x120
-[<0>] do_fast_syscall_32+0x7f/0x1b0
-[<0>] entry_SYSENTER_32+0x4e/0x7c
-[<0>] 0xffffffff
-[<0>] apic_timer_interrupt+0x3c/0x44
-[<0>] 0xffffffff
-
-Something else happened, interfering in the expected behavior:
-
-(k)inaddy@bug3984:/proc$ PID=11405 ; echo ==== PID=$PID ====; ls -d 
-$PID/task/* ; echo COMM ==== ; cat $PID/task/*/comm ; echo STAT ==== ; 
-cat $PID/task/*/stat | awk '{print $1" "$2" "$3}' ; echo STACK ====; 
-sudo cat $PID/task/*/{comm,stack}
-
-==== PID=11405 ====
-11405/task/11403  11405/task/11405
-COMM ====
-futex_wake04
-futex_wake04
-STAT ====
-11403 (futex_wake04) S
-11405 (futex_wake04) R
-STACK ====
-futex_wake04
-futex_wake04
-[<0>] wait_woken+0x37/0x70
-[<0>] n_tty_write+0x393/0x400
-[<0>] tty_write+0x17d/0x310
-[<0>] __vfs_write+0x1c/0x50
-[<0>] vfs_write+0x94/0x1a0
-[<0>] ksys_write+0x49/0xb0
-[<0>] sys_write+0x16/0x20
-[<0>] do_fast_syscall_32+0x7f/0x1b0
-[<0>] entry_SYSENTER_32+0x4e/0x7c
-[<0>] 0xffffffff
-[<0>] apic_timer_interrupt+0x3c/0x44
-[<0>] 0xffffffff
-
-11404 thread is missing in this last sample, meaning it could already be 
-gone, but the parent, 11405, running the wait_for_threads() function, 
-did not catch that (yet ?) due to a CPU stall related to the terminal 
-controller interrupts:
-
-==============================================================
-[  147.582036] INFO: rcu_sched detected stalls on CPUs/tasks:
-[  147.583782] 	1-....: (2 GPs behind) idle=602/1/1073741828 
-softirq=20147/20148 fqs=2239
-[  147.585973] 	(detected by 2, t=5252 jiffies, g=7585, c=7584, q=62923)
-[  147.587806] Sending NMI from CPU 2 to CPUs 1:
-[  147.590144] NMI backtrace for cpu 1
-
-[  147.590145] CPU: 1 PID: 11405 Comm: futex_wake04 Not tainted 
-4.18.0-1-686 #1 Debian 4.18.6-1
-
-[  147.590146] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
-BIOS 1.11.1-1 04/01/2014
-[  147.590146] EIP: io_serial_out+0x17/0x20
-[  147.590147] Code: ...
-[  147.590165] EAX: 00000079 EBX: 00000079 ECX: 00000000 EDX: 000003f8
-[  147.590165] ESI: f3be0000 EDI: d1446d60 EBP: f393bf2c ESP: f393bf28
-[  147.590166] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00000002
-[  147.590166] CR0: 80050033 CR2: 0192144c CR3: 31f3b000 CR4: 000406d0
-[  147.590167] Call Trace:
-[  147.590167]  <IRQ>
-[  147.590168]  serial8250_tx_chars+0xf5/0x1f0
-[  147.590168]  serial8250_handle_irq.part.21+0xa7/0xd0
-[  147.590168]  serial8250_default_handle_irq+0x49/0x60
-[  147.590169]  serial8250_interrupt+0x61/0x130
-[  147.590169]  __handle_irq_event_percpu+0x42/0x1a0
-[  147.590170]  ? handle_level_irq+0x100/0x100
-[  147.590170]  handle_irq_event_percpu+0x2b/0x70
-[  147.590171]  handle_irq_event+0x2f/0x50
-[  147.590171]  ? handle_level_irq+0x100/0x100
-[  147.590172]  handle_edge_irq+0x71/0x160
-[  147.590172]  handle_irq+0x92/0xa0
-[  147.590173]  </IRQ>
-[  147.590173]  <SOFTIRQ>
-[  147.590173]  do_IRQ+0x44/0xc0
-[  147.590174]  ? __softirqentry_text_start+0x8/0x8
-[  147.590174]  common_interrupt+0x3b/0x40
-[  147.590174] EIP: __do_softirq+0x5b/0x255
-[  147.590175] Code: ...
-[  147.590192] EAX: 00000282 EBX: f273bf84 ECX: 0000000f EDX: f393e000
-[  147.590193] ESI: 00400040 EDI: d1647580 EBP: f393dff8 ESP: f393dfd4
-[  147.590194] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00000202
-[  147.590194]  ? __softirqentry_text_start+0x8/0x8
-[  147.590194]  ? __softirqentry_text_start+0x8/0x8
-[  147.590195]  call_on_stack+0x45/0x50
-[  147.590196]  </SOFTIRQ>
-[  147.590196]  ? irq_exit+0xb5/0xc0
-[  147.590196]  ? smp_apic_timer_interrupt+0x6c/0x120
-[  147.590197]  ? apic_timer_interrupt+0x3c/0x44
-==============================================================
-
-Possibly the terminal I/O rate (stdout) has interfered with test 
-behavior. When having, together with this, the adding/removing 
-hugepages, I was able to "lock" this "sleep task detector" behavior for 
-quite sometime.
-
-Testing all this in a ssh session I had no issues. Adding 1 second delay 
-in between while() loop for the logic also mitigated the issue =).
-
-LKFT depends on serial console for the test results. Unfortunately we 
-don't have a stack trace to analyze, but, I would bet the console rate 
-limit could play tricks on us specially if we have already overloaded 
-console serial lines with buffer from other runs.
-
-So, with all that, if you agree, I'll send a patch fixing both issues:
-
-1) delay in between the wait_for_threads() logic
-2) keep existing hugepages configured
-
-Opened to any comments ...
-
-Best,
--Rafael
+Thanks,
+Amir.
