@@ -1,43 +1,64 @@
-From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Wed, 10 Oct 2018 08:41:36 -0300
-Subject: [LTP] [PATCH v2 2/2] futex/futex_wake04.c: raise delay waiting for
-	threads
-In-Reply-To: <20181010114136.23957-1-rafael.tinoco@linaro.org>
-References: <20181010104317.GB1990@rei>
- <20181010114136.23957-1-rafael.tinoco@linaro.org>
-Message-ID: <20181010114136.23957-2-rafael.tinoco@linaro.org>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 10 Oct 2018 14:05:50 +0200
+Subject: [LTP] LTP: futex_wake04 hangs forever on i386
+In-Reply-To: <29fce88c-c771-0ca4-19b9-c9eb25484999@linaro.org>
+References: <CA+G9fYs13QZtsREe3dvic+G6VPQ1dJroKH0sguBiNdtizRTeNQ@mail.gmail.com>
+ <20181008133059.GB30978@rei>
+ <3dbee853-6bce-d057-f42a-655a8f2991c3@linaro.org>
+ <20181009092821.GA16630@rei>
+ <6903290a-523f-7130-b64f-d1a73b601c38@linaro.org>
+ <20181010104101.GA1990@rei>
+ <29fce88c-c771-0ca4-19b9-c9eb25484999@linaro.org>
+Message-ID: <20181010120550.GA1093@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-usleep() time was too small if test is being executed in slower terminal
-devices (specially embedded systems). Raising it to 0.001 seconds was
-enough to finish 10240 iterations in around 90 seconds in a 4 vcpu kvm
-guest (fully emulated serial being used as console).
+Hi!
+> > Doing a simple math if you have serial line on 115200 it can transwer
+> > about 11.5 bits in 100uS so yes we can easily overload serial connection
+> > if we print messages that fast, so increasing the sleep 10x times sounds
+> > only reasonable.
+> > 
+> > On the other hand I guess that kernel shouldn't produce stalls just
+> > because we write to serial too fast. I guess that the task writing to
+> > serial should be sleeping in a waitqueue somewhere in kernel if it
+> > attempts to write to a full serial buffer, which will effectivelly
+> > slow down the writer and the test would work fine in this case...
+> 
+> That is what happened, no ? Stack trace shows that possibly same process 
+> that had its execution interrupted by the time handler in a recent past 
+> (with a leftover frame pointer indicated by ? apic_timer_interrupt) also 
+> ran the handler for serial8250_interrupt() and that execution caused 
+> some dmesg warnings like:
+> 
+> serial8250: too much work for irq
+> 
+> which I had. I guess having the terminal with a smaller buffer would 
+> help here as well, since the calls to the interrupt handler would be 
+> more often and less time consuming (because of baud rate).
+> 
+> Continuing, there was a software interrupt to flush serial 8250 contents 
+> and it took too long to flush to the device, causing the task, waiting 
+> on the line, to wait.
+> 
+> HOWEVER, for this case, for example, every single byte written to a 
+> terminal memory mapped I/O register causes a VM_EXIT (in the host: 
+> cpu->kvm_run->exit_reason == 2), giving execution back to the QEMU vCPU 
+> (that had entered VM mode), that will schedule a function inside the 
+> emulation thread to deal with that I/O (for the virtualized serial HW 
+> being emulated) and calling the VM_ENTER again at some further point. 
+> This could make the interrupt handler even slower.
 
-Link: https://bugs.linaro.org/show_bug.cgi?id=3984
-Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
----
- testcases/kernel/syscalls/futex/futex_wake04.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Ok, I guess that I understand why this is so slow, we emulate PC memory
+mapped serial port and we go back and forth for each byte we write. And
+I guess that we cannot do much about this.
 
-diff --git a/testcases/kernel/syscalls/futex/futex_wake04.c b/testcases/kernel/syscalls/futex/futex_wake04.c
-index 1ae9599ab..bd10e56af 100644
---- a/testcases/kernel/syscalls/futex/futex_wake04.c
-+++ b/testcases/kernel/syscalls/futex/futex_wake04.c
-@@ -175,8 +175,9 @@ static void wakeup_thread2(void)
- 				tst_strerrno(res));
- 	}
- 
-+    /* 0.001 seconds: less might cause lockups for slower terminals */
- 	while (wait_for_threads(2))
--		usleep(100);
-+		usleep(1000);
- 
- 	futex_wake(futex2, 1, 0);
- 
+Also I suppose that it could be "fixed" by switching to virtio serial
+driver that should be able to read the whole buffer in one go.
+
 -- 
-2.19.1
-
+Cyril Hrubis
+chrubis@suse.cz
