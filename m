@@ -1,40 +1,45 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 11 Oct 2018 05:06:33 -0400 (EDT)
-Subject: [LTP] [PATCH v4] syscalls/membarrier: Add membarrier() initial
- test
-In-Reply-To: <54dd0c4a-e843-38b6-ee26-021353cbfb31@linaro.org>
-References: <243767154.55279006.1538383679362.JavaMail.zimbra@redhat.com>
- <20181008132914.8246-1-rafael.tinoco@linaro.org>
- <1320883984.56890565.1539007652586.JavaMail.zimbra@redhat.com>
- <75dc7e79-ddc2-f5ee-4fb5-dfcb7385e4df@linaro.org>
- <357830099.56894195.1539008719156.JavaMail.zimbra@redhat.com>
- <54dd0c4a-e843-38b6-ee26-021353cbfb31@linaro.org>
-Message-ID: <1573563504.57641045.1539248793339.JavaMail.zimbra@redhat.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 11 Oct 2018 17:20:54 +0800
+Subject: [LTP] [PATCH] syslog/syslog-lib.sh: Match rsyslog config written by
+	RainerScript
+Message-ID: <1539249654-24401-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Since rsyslog commit 3b55048094d759adf8162f0829f239e115ebf2c0, rsyslog
+by default deletes log socket during restart, unless socket is provided
+by systemd.
+
+If default rsyslog config written by RainerScript uses imjournal module
+(e.g. module(load="imjournal"...) and doesn't specify $SystemLogSocketName,
+syslog-lib.sh cannot match imjournal module and just write imuxsock module
+into the rsyslog.conf constructed by test.  In this case, "/dev/log" is
+owned by journald but rsyslog deletes it as its default log socket after
+testing.
+
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/syslog/syslog-lib.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/syslog/syslog-lib.sh b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+index 35c13da..30c797a 100755
+--- a/testcases/kernel/syscalls/syslog/syslog-lib.sh
++++ b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+@@ -71,7 +71,7 @@ setup()
+ 		CONFIG_FILE="/etc/syslog-ng/syslog-ng.conf"
+ 	elif [ "$SYSLOG_DAEMON" = "rsyslog" ]; then
+ 		CONFIG_FILE="/etc/rsyslog.conf"
+-		if grep -q -r '^\$ModLoad[[:space:]]*imjournal' /etc/rsyslog.conf /etc/rsyslog.d/ ; then
++		if grep -qri '^[^#].*load.*imjournal' /etc/rsyslog.conf /etc/rsyslog.d/ ; then
+ 			systemd_journal=$(grep -Ehoi "^[^#].*(imjournal|workdirectory).*" -r /etc/rsyslog.conf /etc/rsyslog.d/)
+ 			RSYSLOG_CONFIG=$(cat <<EOF
+ $systemd_journal
+-- 
+1.8.3.1
 
 
------ Original Message -----
-> On 10/8/18 11:25 AM, Jan Stancek wrote:
-> >>> Looks good to me.
-> >>>
-> >>> We probably can drop linux/membarrier.h configure check, right?
-> >>> (since v4 doesn't include it and unsupported kernel should
-> >>> hit ENOSYS and TCONF)
-> 
-> >> Ooops, true. No need to check HAVE_LINUX_MEMBARRIER_H if we are
-> >> declaring all CMDs and will be given ENOSYS. Want me to send a v5 ?
-> 
-> > Let's give a couple days to other potential reviewers. If nothing
-> > else comes up, I can drop it before push.
-> 
-> Thanks a lot for reviewing this.
 
-Pushed.
-
-Regards,
-Jan
