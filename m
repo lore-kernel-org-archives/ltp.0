@@ -1,43 +1,71 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 11 Oct 2018 02:34:41 +0300
-Subject: [LTP] [PATCH v3 6/6] syscalls/readahead02: fail test if readahead
-	did not use any cache
-In-Reply-To: <20181010233441.5337-1-amir73il@gmail.com>
-References: <20181010233441.5337-1-amir73il@gmail.com>
-Message-ID: <20181010233441.5337-7-amir73il@gmail.com>
+From: Hongzhi.Song <hongzhi.song@windriver.com>
+Date: Wed, 10 Oct 2018 22:58:53 -0400
+Subject: [LTP] [PATCH] open_posix_testsuite/mmap24-2: Relax condition a bit
+Message-ID: <1539226733-18212-1-git-send-email-hongzhi.song@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The heuristic of failing the test only if not saving any io has false
-negatives with overlayfs readahead() bug, but readahead() with overlayfs
-always warns on "using less cache then expected", when actually, it is
-using no cache at all.
+Mips will return EINVAL instead of ENOMEM as expected
+if the range [addr + len) exceeds TASK_SIZE.
 
-Add another condition to fail the test if readahead did not use any
-cache at all, which always detected the overlayfs bug.
+Linux kernel code: arch/mips/mm/mmap.c
+if (flags & MAP_FIXED) {
+    /* Even MAP_FIXED mappings must reside within TASK_SIZE */
+    if (TASK_SIZE - len < addr)
+        return -EINVAL;
 
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-Acked-by: Jan Stancek <jstancek@redhat.com>
+Relax the condition and accept both ENOMEM and EINVAL
+as expected outcome.
+
+Signed-off-by: Hongzhi.Song <hongzhi.song@windriver.com>
 ---
- testcases/kernel/syscalls/readahead/readahead02.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../open_posix_testsuite/conformance/interfaces/mmap/24-2.c    | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
-index d5cc7677b..657461905 100644
---- a/testcases/kernel/syscalls/readahead/readahead02.c
-+++ b/testcases/kernel/syscalls/readahead/readahead02.c
-@@ -346,6 +346,8 @@ static void test_readahead(unsigned int n)
- 		 */
- 		if (cached_ra * 1024 > testfile_size / 2)
- 			tst_res(TPASS, "using cache as expected");
-+		else if (!cached_ra)
-+			tst_res(TFAIL, "readahead failed to use any cache");
- 		else
- 			tst_res(TWARN, "using less cache than expected");
- 	} else {
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
+index de51d43..810e5c8 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
+@@ -7,7 +7,7 @@
+  * source tree.
+  *
+  * The mmap() function shall fail if:
+- * [ENOMEM] MAP_FIXED was specified,
++ * [ENOMEM or EINVAL] MAP_FIXED was specified,
+  * and the range [addr,addr+len) exceeds that allowed
+  * for the address space of a process; or, if MAP_FIXED was not specified and
+  * there is insufficient room in the address space to effect the mapping.
+@@ -15,7 +15,7 @@
+  * Test Step:
+  * 1. Map a shared memory object, with size exceeding the value get from
+  *    rlim_cur of resource RLIMIT_AS, setting MAP_FIXED;
+- * 3. Should get ENOMEM.
++ * 3. Should get ENOMEM or EINVAL.
+  */
+ 
+ #define _XOPEN_SOURCE 600
+@@ -93,8 +93,8 @@ int main(void)
+ 	       (unsigned long)len);
+ 	pa = mmap(addr, len, PROT_READ | PROT_WRITE, MAP_FIXED | MAP_SHARED, fd,
+ 		  0);
+-	if (pa == MAP_FAILED && errno == ENOMEM) {
+-		printf("Got ENOMEM: %s\nTest PASSED\n", strerror(errno));
++	if (pa == MAP_FAILED && (errno == ENOMEM || errno == EINVAL)) {
++		printf("Got ENOMEM or EINVAL: %s\nTest PASSED\n", strerror(errno));
+ 		exit(PTS_PASS);
+ 	}
+ 
+@@ -103,6 +103,6 @@ int main(void)
+ 	else
+ 		munmap(pa, len);
+ 	close(fd);
+-	printf("Test Fail: Did not get ENOMEM as expected\n");
++	printf("Test Failed: Did not get ENOMEM or EINVAL as expected\n");
+ 	return PTS_FAIL;
+ }
 -- 
-2.17.1
+2.8.1
 
