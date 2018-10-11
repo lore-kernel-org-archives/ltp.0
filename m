@@ -1,88 +1,39 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 12 Oct 2018 00:05:24 +0200
-Subject: [LTP] [PATCH 3/4] ver_linux: Print AppArmor and SELinux status
+Date: Fri, 12 Oct 2018 00:05:25 +0200
+Subject: [LTP] [PATCH 4/4] tst_net.sh: Warn about enabled AppArmor
 In-Reply-To: <20181011220525.24628-1-pvorel@suse.cz>
 References: <20181011220525.24628-1-pvorel@suse.cz>
-Message-ID: <20181011220525.24628-4-pvorel@suse.cz>
+Message-ID: <20181011220525.24628-5-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-+ add some helper functions
+This is due some false positives because improper usage or bugs
+in AppArmor profiles (e.g. traceroute, dnsmasq).
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-If you don't like the functions, I can remove them.
----
- ver_linux | 46 ++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 42 insertions(+), 4 deletions(-)
+ testcases/lib/tst_net.sh | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/ver_linux b/ver_linux
-index 897571703..5994c0e0f 100755
---- a/ver_linux
-+++ b/ver_linux
-@@ -3,8 +3,35 @@
- # typical as you use for compilation/istallation. I use
- # /bin /sbin /usr/bin /usr/sbin /usr/local/bin, but it may
- # differ on your system.
--#
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index a4467da7c..d60d50820 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -713,6 +713,11 @@ if [ -z "$TST_PARSE_VARIABLES" ]; then
+ 	tst_res_ TINFO "$LHOST_IFACES -- $RHOST_IFACES"
+ 	tst_res_ TINFO "$IPV4_LHOST/$IPV4_LPREFIX -- $IPV4_RHOST/$IPV4_RPREFIX"
+ 	tst_res_ TINFO "$IPV6_LHOST/$IPV6_LPREFIX -- $IPV6_RHOST/$IPV6_RPREFIX"
 +
- PATH=/sbin:/usr/sbin:/bin:/usr/bin:$PATH
-+
-+tst_cmd_available()
-+{
-+	if type command > /dev/null 2>&1; then
-+		command -v $1 > /dev/null 2>&1 || return 1
-+	else
-+		which $1 > /dev/null 2>&1
-+		if [ $? -eq 0 ]; then
-+			return 0
-+		else
-+			return 1
-+		fi
++	if [ -f /sys/module/apparmor/parameters/enabled ] && [ "$(cat /sys/module/apparmor/parameters/enabled)" = "Y" ]; then
++		tst_res_ TINFO "AppArmor enabled, this may affect test results"
 +	fi
-+}
 +
-+tst_cmd_run()
-+{
-+	local cmd="$1"
-+	shift
-+	tst_cmd_available $cmd && eval "$cmd $@"
-+}
-+
-+is_enabled()
-+{
-+	[ -f "$1" ] && [ "$(cat $1)" = "Y" -o "$(cat $1)" = "1" ]
-+}
-+
- echo 'If some fields are empty or look unusual you may have an old version.'
- echo 'Compare to the current minimal requirements in Documentation/Changes.'
- 
-@@ -101,8 +128,19 @@ free
- 
- echo
- echo 'cpuinfo:'
--if which lscpu > /dev/null 2>&1; then
--	lscpu
-+tst_cmd_run lscpu || cat /proc/cpuinfo
-+
-+echo
-+if is_enabled /sys/module/apparmor/parameters/enabled; then
-+	echo 'AppArmor enabled'
-+	tst_cmd_run aa-status
- else
--	cat /proc/cpuinfo
-+	echo 'AppArmor disabled'
-+fi
-+
-+echo
-+
-+if ! tst_cmd_run sestatus; then
-+	printf 'SELinux mode: '
-+	tst_cmd_run getenforce || echo 'unknown'
+ 	export TST_PARSE_VARIABLES="yes"
  fi
+ 
 -- 
 2.19.0
 
