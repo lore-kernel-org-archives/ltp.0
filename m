@@ -1,71 +1,40 @@
-From: Hongzhi.Song <hongzhi.song@windriver.com>
-Date: Wed, 10 Oct 2018 22:58:53 -0400
-Subject: [LTP] [PATCH] open_posix_testsuite/mmap24-2: Relax condition a bit
-Message-ID: <1539226733-18212-1-git-send-email-hongzhi.song@windriver.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 11 Oct 2018 05:06:33 -0400 (EDT)
+Subject: [LTP] [PATCH v4] syscalls/membarrier: Add membarrier() initial
+ test
+In-Reply-To: <54dd0c4a-e843-38b6-ee26-021353cbfb31@linaro.org>
+References: <243767154.55279006.1538383679362.JavaMail.zimbra@redhat.com>
+ <20181008132914.8246-1-rafael.tinoco@linaro.org>
+ <1320883984.56890565.1539007652586.JavaMail.zimbra@redhat.com>
+ <75dc7e79-ddc2-f5ee-4fb5-dfcb7385e4df@linaro.org>
+ <357830099.56894195.1539008719156.JavaMail.zimbra@redhat.com>
+ <54dd0c4a-e843-38b6-ee26-021353cbfb31@linaro.org>
+Message-ID: <1573563504.57641045.1539248793339.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Mips will return EINVAL instead of ENOMEM as expected
-if the range [addr + len) exceeds TASK_SIZE.
 
-Linux kernel code: arch/mips/mm/mmap.c
-if (flags & MAP_FIXED) {
-    /* Even MAP_FIXED mappings must reside within TASK_SIZE */
-    if (TASK_SIZE - len < addr)
-        return -EINVAL;
 
-Relax the condition and accept both ENOMEM and EINVAL
-as expected outcome.
+----- Original Message -----
+> On 10/8/18 11:25 AM, Jan Stancek wrote:
+> >>> Looks good to me.
+> >>>
+> >>> We probably can drop linux/membarrier.h configure check, right?
+> >>> (since v4 doesn't include it and unsupported kernel should
+> >>> hit ENOSYS and TCONF)
+> 
+> >> Ooops, true. No need to check HAVE_LINUX_MEMBARRIER_H if we are
+> >> declaring all CMDs and will be given ENOSYS. Want me to send a v5 ?
+> 
+> > Let's give a couple days to other potential reviewers. If nothing
+> > else comes up, I can drop it before push.
+> 
+> Thanks a lot for reviewing this.
 
-Signed-off-by: Hongzhi.Song <hongzhi.song@windriver.com>
----
- .../open_posix_testsuite/conformance/interfaces/mmap/24-2.c    | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Pushed.
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
-index de51d43..810e5c8 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
-@@ -7,7 +7,7 @@
-  * source tree.
-  *
-  * The mmap() function shall fail if:
-- * [ENOMEM] MAP_FIXED was specified,
-+ * [ENOMEM or EINVAL] MAP_FIXED was specified,
-  * and the range [addr,addr+len) exceeds that allowed
-  * for the address space of a process; or, if MAP_FIXED was not specified and
-  * there is insufficient room in the address space to effect the mapping.
-@@ -15,7 +15,7 @@
-  * Test Step:
-  * 1. Map a shared memory object, with size exceeding the value get from
-  *    rlim_cur of resource RLIMIT_AS, setting MAP_FIXED;
-- * 3. Should get ENOMEM.
-+ * 3. Should get ENOMEM or EINVAL.
-  */
- 
- #define _XOPEN_SOURCE 600
-@@ -93,8 +93,8 @@ int main(void)
- 	       (unsigned long)len);
- 	pa = mmap(addr, len, PROT_READ | PROT_WRITE, MAP_FIXED | MAP_SHARED, fd,
- 		  0);
--	if (pa == MAP_FAILED && errno == ENOMEM) {
--		printf("Got ENOMEM: %s\nTest PASSED\n", strerror(errno));
-+	if (pa == MAP_FAILED && (errno == ENOMEM || errno == EINVAL)) {
-+		printf("Got ENOMEM or EINVAL: %s\nTest PASSED\n", strerror(errno));
- 		exit(PTS_PASS);
- 	}
- 
-@@ -103,6 +103,6 @@ int main(void)
- 	else
- 		munmap(pa, len);
- 	close(fd);
--	printf("Test Fail: Did not get ENOMEM as expected\n");
-+	printf("Test Failed: Did not get ENOMEM or EINVAL as expected\n");
- 	return PTS_FAIL;
- }
--- 
-2.8.1
-
+Regards,
+Jan
