@@ -1,28 +1,34 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 12 Oct 2018 17:24:21 +0200
-Subject: [LTP] [PATCH] fallocate04: continues after failure of front test
-In-Reply-To: <20181012030008.GA26983@hptatwork>
-References: <20181012030008.GA26983@hptatwork>
-Message-ID: <20181012152420.GE5080@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 12 Oct 2018 18:13:25 +0200
+Subject: [LTP] [PATCH] network/nfs: support default setup,
+	use local mount
+In-Reply-To: <1539091079-21887-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1539091079-21887-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20181012161325.GA29781@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> When run this case, a failure of test02 will prevent test03, test04, ...
-> to be run. This patch replace tst_brk() with tst_res() and return after
-> a failure in each sub-cases.
+Hi Alexey,
 
-As far as I can tell these tests depends on each other, so if we failed
-at one of them it does not make any sense to continue.
+> For default setup, start the server locally instead and mount
+> inside netns to run NFS traffic over the veth or whatever is
+> used for a single machine setup.
 
-At least when I remove test02 from tcases the test03 fails because of
-that. So unless the the test is redesigned so that the tests are
-independed it does not make any sense to let it continue to run if
-something has failed.
+> We could also use lo interface, we just need to skip the last
+> check in nfs_mount()/nfs_lib.sh.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Acked-by: Petr Vorel <pvorel@suse.cz>
+
+LGTM, thanks for the patch!
+
+BTW how about split runtest/net.nfs, so it takes shorter to run?
+Maybe it takes so long on my side as I still experience some problems with NFS,
+which I haven't debugged yet (timeout).
+
+
+Kind regards,
+Petr
