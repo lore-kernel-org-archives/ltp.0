@@ -1,51 +1,51 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 12 Oct 2018 00:15:24 +0200
-Subject: [LTP] [PATCH 1/4] net/dhcp: Use paths allowed by AppArmor for
-	dnsmasq
-In-Reply-To: <20181011220525.24628-2-pvorel@suse.cz>
-References: <20181011220525.24628-1-pvorel@suse.cz>
- <20181011220525.24628-2-pvorel@suse.cz>
-Message-ID: <20181011221524.GA26301@dell5510>
+From: Zhang, Yixin <yixin.zhang@intel.com>
+Date: Fri, 12 Oct 2018 10:39:56 +0800
+Subject: [LTP] [PATCH v2 ltp] runtest/{ltplite,
+ stress.part1}: update commands for
+ gf01-30/rwtest01-05/fs_inod01/iogen01
+In-Reply-To: <20181008132308.GA9870@dell5510>
+References: <20180815064405.13247-1-yixin.zhang@intel.com>
+ <20181008132308.GA9870@dell5510>
+Message-ID: <20181012023956.GJ19438@yixin-dev>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Petr,
 
-> Fixes for --log-facility and --dhcp-leasefile.
+I alos think we should remove the ltplite/stress.part* files. You will submit
+a patch for that, right?
 
-> Path for log file expects AppArmor commit
-> 025c7dc6 ("dnsmasq: Add permission to open log files").
+Yixin
 
-> NOTE: AppArmor optimization isn't needed for dhcpd.
-
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-...
-> Changing path to /var/log require root, but we run most of network tests
-> under root anyway, at least for network  namespaces.
-> I didn't add TST_NEEDS_ROOT=1, maybe I should.
-
-...
-> +++ b/testcases/network/dhcp/dnsmasq_tests.sh
-...
-
-
-> +log="/var/log/tst_dnsmasq.log"
-Another option (instead of writing int /var/log/) is to detect enabled AppArmor
-and /etc/apparmor.d/local/.  If enabled and dir exist, then append/create
-/etc/apparmor.d/local/usr.sbin.dnsmasq with write permissions to our directory.
-But this would require restart AppArmor.
-
-> +
->  common_opt="--no-hosts --no-resolv --dhcp-authoritative \
-> -	--log-facility=./tst_dnsmasq.log --interface=$iface0 \
-> -	--dhcp-leasefile=tst_dnsmasq.lease --port=0 --conf-file= "
-> +	--log-facility=$log --interface=$iface0 \
-> +	--dhcp-leasefile=/var/lib/misc/dnsmasq.tst.leases --port=0 --conf-file= "
-
-
-Kind regards,
-Petr
+On 2018-10-08 at 15:23:08 +0200, Petr Vorel wrote:
+> Hi Yixin,
+> 
+> > gf01-30/rwtest01-05/fs_inod01/iogen01 are orignal defined in runtest file 'fs',
+> > and they are updated multiple times in file 'fs' but missed in
+> > 'ltplite'/'stress.part1'. So this patch copy all updates to the tests in
+> > 'ltplite'/'stress.part1'.
+> 
+> > Ref:
+> > c9dd96e6b2f811dbad119c3558d90cb7dfc3919b
+> > 95e8b61433efcefb83699aaf859e92ad2b576373
+> > 606e544932248858f65c7ab3061f77c542c07cfe
+> > b0458a3c838c86faf2d8855c097628c0c435532a
+> 
+> > Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+> > ---
+> >  runtest/ltplite      | 71 +++++++++++++++++++++---------------------
+> >  runtest/stress.part1 | 74 ++++++++++++++++++++++----------------------
+> 
+> while this change is correct, I'd prefer to delete these aggregated runtest files (ltplite,
+> stress.part*) than keeping them in sync.
+> 
+> Another option is implement some import feature for ltp-pan. But I guess it's
+> better to invest the effort into Cyril's new test runner [1].
+> 
+> Kind regards,
+> Petr
+> 
+> [1] https://github.com/metan-ucw/ltp/commits/master
