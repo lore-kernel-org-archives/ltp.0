@@ -1,33 +1,27 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 12 Oct 2018 18:13:25 +0200
-Subject: [LTP] [PATCH] network/nfs: support default setup,
-	use local mount
-In-Reply-To: <1539091079-21887-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1539091079-21887-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20181012161325.GA29781@dell5510>
+Date: Fri, 12 Oct 2018 18:16:07 +0200
+Subject: [LTP] [PATCH] Correct the kernel_bits value in x86 PER_LINUX32.
+In-Reply-To: <20181001171116.235573-1-kmagic@google.com>
+References: <20181001171116.235573-1-kmagic@google.com>
+Message-ID: <20181012161607.GA30991@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi Kenneth,
 
-> For default setup, start the server locally instead and mount
-> inside netns to run NFS traffic over the veth or whatever is
-> used for a single machine setup.
+> From: Kenneth Magic <kmagic@google.com>
 
-> We could also use lo interface, we just need to skip the last
-> check in nfs_mount()/nfs_lib.sh.
+> Android runs all 32bit programs in a PER_LIINUX32 personality
+> even under a 64 bit kernel, causing the machine to show up as
+> "i686". Check for and correct this case so tests use the correct
+> kernel_bits value.
 
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-Acked-by: Petr Vorel <pvorel@suse.cz>
+> Signed-off-by: Kenneth Magic <kmagic@google.com>
 
-LGTM, thanks for the patch!
-
-BTW how about split runtest/net.nfs, so it takes shorter to run?
-Maybe it takes so long on my side as I still experience some problems with NFS,
-which I haven't debugged yet (timeout).
+Pushed. Thanks for your patch!
 
 
 Kind regards,
