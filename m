@@ -1,27 +1,34 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 12 Oct 2018 18:16:07 +0200
-Subject: [LTP] [PATCH] Correct the kernel_bits value in x86 PER_LINUX32.
-In-Reply-To: <20181001171116.235573-1-kmagic@google.com>
-References: <20181001171116.235573-1-kmagic@google.com>
-Message-ID: <20181012161607.GA30991@dell5510>
+Date: Fri, 12 Oct 2018 18:20:00 +0200
+Subject: [LTP] [PATCH] open_posix_testsuite/mmap24-2: Relax condition a
+ bit
+In-Reply-To: <1539226733-18212-1-git-send-email-hongzhi.song@windriver.com>
+References: <1539226733-18212-1-git-send-email-hongzhi.song@windriver.com>
+Message-ID: <20181012162000.GB30991@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Kenneth,
+Hi Hongzhi,
 
-> From: Kenneth Magic <kmagic@google.com>
+> Mips will return EINVAL instead of ENOMEM as expected
+> if the range [addr + len) exceeds TASK_SIZE.
 
-> Android runs all 32bit programs in a PER_LIINUX32 personality
-> even under a 64 bit kernel, causing the machine to show up as
-> "i686". Check for and correct this case so tests use the correct
-> kernel_bits value.
+> Linux kernel code: arch/mips/mm/mmap.c
+> if (flags & MAP_FIXED) {
+>     /* Even MAP_FIXED mappings must reside within TASK_SIZE */
+>     if (TASK_SIZE - len < addr)
+>         return -EINVAL;
 
-> Signed-off-by: Kenneth Magic <kmagic@google.com>
+> Relax the condition and accept both ENOMEM and EINVAL
+> as expected outcome.
 
-Pushed. Thanks for your patch!
+> Signed-off-by: Hongzhi.Song <hongzhi.song@windriver.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Thanks for your patch, LGTM.
 
 
 Kind regards,
