@@ -1,32 +1,44 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Mon, 15 Oct 2018 17:35:08 +0300
-Subject: [LTP] [PATCH V2 1/5] Remove the pipes runtest file
-In-Reply-To: <20181015131943.GA28106@rei>
-References: <1539349857-10633-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <20181012151656.GD5080@rei> <0294e94b-9e98-80b4-59f2-77c83e0fdb32@oracle.com>
- <20181015131943.GA28106@rei>
-Message-ID: <920f3512-8683-8e64-251f-caf82854ca3d@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 15 Oct 2018 16:51:26 +0200
+Subject: [LTP] [PATCH v2 ltp] runltp: fix shellcheck error for sending
+ email
+In-Reply-To: <20181015141857.2q7yhvhs6q3c7hdm@xps.therub.org>
+References: <20180726083426.19026-1-yixin.zhang@intel.com>
+ <20181015095214.GA32587@dell5510>
+ <20181015141857.2q7yhvhs6q3c7hdm@xps.therub.org>
+Message-ID: <20181015145126.GB28106@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> It might be easier to get people using it if it were in tree. Would it
+> be possible to have runltp and runltp-ng both in tree? Until then, it's
+> hard to not support the only available runner.
 
+That is a fair point.
 
-On 10/15/2018 04:19 PM, Cyril Hrubis wrote:
-> Hi!
->> Thank you. I committed the series.
->>
->> Sadly, but I missed that 'git am' was not happy with the description
->> message for the first patch, so now it looks like:
-> 
-> Well, it cat still be fixed, the obvious way how to do that is to revert
-> the broken patch and apply a correct one.
-> 
+> Looking at the README at
+> https://github.com/metan-ucw/ltp/tree/master/tools/runltp-ng, it's hard
+> to tell if it has feature parity with runltp, or if there are still
+> gaps. Some example usecases would be nice too. For example, I see the
+> list of back ends, but what if I want to run it locally (today's
+> behavior)?
 
-Thank you. I reverted the patch and applied it again but with the
-corrected description. It should be fine now.
+And the lack of documentation and the fact that the code is not yet
+considered stable enough is the reason why it's not in-tree.
 
-Sorry for the trouble.
+I guess that the test-runner can be put into a separate git repo, it
+does not depend on the rest of the LTP in any way, which should make it
+easier to get the source code, without pulling in the outdated LTP
+repostitory.
 
+Also the local test execution is called shell backend, in that case the
+testrunner forks a shell instead of doing a ssh connection and executes
+the testcases locally.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
