@@ -1,42 +1,1579 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 15 Oct 2018 22:18:17 +0200
-Subject: [LTP] [RFC PATCH 0/2] Cleanup runtests containing duplicate
-	definitions
-Message-ID: <20181015201819.10868-1-pvorel@suse.cz>
+Date: Mon, 15 Oct 2018 22:18:18 +0200
+Subject: [LTP] [RFC PATCH 1/2] Remove LTP stress tests
+In-Reply-To: <20181015201819.10868-1-pvorel@suse.cz>
+References: <20181015201819.10868-1-pvorel@suse.cz>
+Message-ID: <20181015201819.10868-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+ltpstress.sh runs stress.part[1-3]. But these runtest files just
+duplicate definitions:
+* stress.part1: fs, mm, nfs
+* stress.part2: ipc, math, nptl
+* stress.part3: net.multicast, pty, syscalls
 
-anyone using these? Objections?
-IMHO there is no point trying to keep them sync.
+Definitions are outdated anyway. There is no point trying trying
+to keep them sync.
 
-Kind regards,
-Petr
-
-Petr Vorel (2):
-  Remove LTP stress tests
-  Remove ltplite and runltplite.sh
-
- Makefile                 |    2 +-
- doc/ltp-run-files.txt    |    3 -
- runltplite.sh            |  392 --------------
- runtest/ltplite          | 1113 --------------------------------------
- runtest/stress.part1     |  209 -------
- runtest/stress.part2     |   53 --
- runtest/stress.part3     |  893 ------------------------------
- testscripts/ltpstress.sh |  349 ------------
- 8 files changed, 1 insertion(+), 3013 deletions(-)
- delete mode 100755 runltplite.sh
- delete mode 100644 runtest/ltplite
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ doc/ltp-run-files.txt    |   3 -
+ runtest/stress.part1     | 209 ---------
+ runtest/stress.part2     |  53 ---
+ runtest/stress.part3     | 893 ---------------------------------------
+ testscripts/ltpstress.sh | 349 ---------------
+ 5 files changed, 1507 deletions(-)
  delete mode 100644 runtest/stress.part1
  delete mode 100644 runtest/stress.part2
  delete mode 100644 runtest/stress.part3
  delete mode 100755 testscripts/ltpstress.sh
 
+diff --git a/doc/ltp-run-files.txt b/doc/ltp-run-files.txt
+index f8cc36b9e..c29086987 100644
+--- a/doc/ltp-run-files.txt
++++ b/doc/ltp-run-files.txt
+@@ -75,9 +75,6 @@ other filesystem or disk type tests
+  - isofs.sh
+  - sysfs.sh
+ 
+-LTP Stress tests
+- - ltpstress.sh
+-
+ AIO/DIO filesystem tests
+  - ltp-aiodio.sh
+ 
+diff --git a/runtest/stress.part1 b/runtest/stress.part1
+deleted file mode 100644
+index 423d25e38..000000000
+--- a/runtest/stress.part1
++++ /dev/null
+@@ -1,209 +0,0 @@
+-#DESCRIPTION:Part one for ltpstress.sh
+-mm01 mmap001 -m 10000
+-# 40 Mb mmap() test.
+-# Creates a 10000 page mmap, touches all of the map, sync's it, and
+-# munmap()s it.
+-mm02 mmap001
+-# simple mmap() test.
+-#mm03 mmap001 -i 0 -I 1 -m 100
+-# repetitive mmapping test.
+-# Creates a one page map repetitively for one minute.
+-
+-mtest01 mtest01 -p80
+-mtest01w mtest01 -p80 -w
+-
+-#test for race conditions
+-mtest05 mmstress
+-mtest06 mmap1 -x 0.05
+-
+-mem02 mem02
+-
+-# Test for mmap() page corruption. This test is meant for
+-# 1 hour and more. Please change -h(hour), -m(minute) &
+-# -s(seconds) settings, if default not desired
+-mmap-corruption01 mmap-corruption01 -h1 -m1 -s1
+-
+-page01 page01
+-page02 page02
+-
+-data_space data_space
+-stack_space stack_space
+-
+-shmt02 shmt02
+-shmt03 shmt03
+-shmt04 shmt04
+-shmt05 shmt05
+-shmt06 shmt06
+-shmt07 shmt07
+-shmt08 shmt08
+-shmt09 shmt09
+-shmt10 shmt10
+-
+-cpuset01 cpuset01 -I 3600
+-
+-fsx-linux export TCbin=$LTPROOT/testcases/bin;fsxtest02 10000
+-#fsx-ext2 fsxtest $SCRATCHDEV ext2 10000
+-#fsx-ext3 fsxtest $SCRATCHDEV ext3 10000
+-#fsx-jfs fsxtest $SCRATCHDEV jfs 10000
+-#fsx-xfs  fsxtest $SCRATCHDEV xfs 10000
+-#fsx-reiserfs fsxtest $SCRATCHDEV reiserfs 10000
+-
+-## Complete a default run.
+-dio01 diotest1
+-dio02 diotest2
+-dio03 diotest3
+-dio04 diotest4
+-dio05 diotest5
+-dio06 diotest6
+-
+-## Run the tests with larger buffersize
+-dio07 diotest1 -b 65536
+-dio08 diotest2 -b 65536
+-dio09 diotest3 -b 65536
+-dio10 diotest4 -b 65536
+-dio11 diotest5 -b 65536
+-dio12 diotest6 -b 65536
+-
+-### Run the tests with larger iterations
+-dio13 diotest1 -b 65536 -n 2000
+-dio14 diotest2 -b 65536 -i 1000
+-dio15 diotest3 -b 65536 -i 1000
+-dio16 diotest5 -b 65536 -i 1000
+-dio17 diotest6 -b 65536 -i 1000
+-
+-## Run the tests with larger offset - 1MB
+-dio18 diotest2 -b 65536 -i 1000 -o 1024000
+-dio19 diotest3 -b 65536 -i 1000 -o 1024000
+-dio20 diotest5 -b 65536 -i 1000 -o 1024000
+-dio21 diotest6 -b 65536 -i 1000 -o 1024000
+-
+-## Run the tests with larger offset - 100 MB
+-dio22 diotest2 -b 65536 -i 1000 -o 104857600
+-dio23 diotest3 -b 65536 -i 1000 -o 104857600
+-dio24 diotest5 -b 65536 -i 1000 -o 104857600
+-dio25 diotest6 -b 65536 -i 1000 -o 104857600
+-
+-### Run tests with larger vector array
+-dio26 diotest6 -b 8192 -v 100
+-dio27 diotest6 -b 8192 -o 1024000 -i 1000 -v 100
+-dio28 diotest6 -b 8192 -o 1024000 -i 1000 -v 200
+-
+-### Run the tests with more children
+-#dio29 diotest3 -b 65536 -n 100 -i 1000 -o 1024000
+-#dio30 diotest6 -b 65536 -n 100 -i 1000 -o 1024000
+-#
+-# RAW DEVICE TEST SECTION
+-#   DEV1 and DEV2 should be exported prior to execution or
+-# replaced with the actual device ids, i.e.
+-#   dio33 diotest1 -i /dev/sda2 -o /dev/sda3
+-#
+-### Run the tests with raw device
+-#dio33 diotest1 -i $DEV1 -o $DEV2
+-#dio34 diotest2 -f $DEV1
+-#dio36 diotest3 -f $DEV1
+-#dio37 diotest5 -f $DEV1
+-#dio38 diotest6 -f $DEV1
+-#
+-### Run the tests with raw device and larger iterations
+-#dio39 diotest1 -b 65536 -n 2000 -i $DEV1 -o $DEV2
+-#dio40 diotest2 -b 65536 -i 1000 -f $DEV1
+-#dio41 diotest3 -b 65536 -i 1000 -f $DEV1
+-#dio42 diotest5 -b 65536 -i 1000 -f $DEV1
+-#dio43 diotest6 -b 65536 -i 1000 -f $DEV1
+-#
+-## Run the tests with raw device and larger offset - 100 MB
+-#dio44 diotest2 -b 65536 -i 1000 -o 104857600 -f $DEV1
+-#dio45 diotest3 -b 65536 -i 1000 -o 104857600 -f $DEV1
+-#dio46 diotest5 -b 65536 -i 1000 -o 104857600 -f $DEV1
+-#dio47 diotest6 -b 65536 -i 1000 -o 104857600 -f $DEV1
+-
+-gf01 growfiles -W gf01 -b -e 1 -u -i 0 -L 20 -w -C 1 -l -I r -T 10 glseek20 glseek20.2
+-gf02 growfiles -W gf02 -b -e 1 -L 10 -i 100 -I p -S 2 -u -f gf03_
+-gf03 growfiles -W gf03 -b -e 1 -g 1 -i 1 -S 150 -u -f gf05_
+-gf04 growfiles -W gf04 -b -e 1 -g 4090 -i 500 -t 39000 -u -f gf06_
+-gf05 growfiles -W gf05 -b -e 1 -g 5000 -i 500 -t 49900 -T10 -c9 -I p -u -f gf07_
+-gf06 growfiles -W gf06 -b -e 1 -u -r 1-5000 -R 0--1 -i 0 -L 30 -C 1 g_rand10 g_rand10.2
+-gf07 growfiles -W gf07 -b -e 1 -u -r 1-5000 -R 0--2 -i 0 -L 30 -C 1 -I p g_rand13 g_rand13.2
+-gf08 growfiles -W gf08 -b -e 1 -u -r 1-5000 -R 0--2 -i 0 -L 30 -C 1 g_rand11 g_rand11.2
+-gf09 growfiles -W gf09 -b -e 1 -u -r 1-5000 -R 0--1 -i 0 -L 30 -C 1 -I p g_rand12 g_rand12.2
+-gf10 growfiles -W gf10 -b -e 1 -u -r 1-5000 -i 0 -L 30 -C 1 -I l g_lio14 g_lio14.2
+-gf11 growfiles -W gf11 -b -e 1 -u -r 1-5000 -i 0 -L 30 -C 1 -I L g_lio15 g_lio15.2
+-gf12 mkfifo gffifo17; growfiles -W gf12 -b -e 1 -u -i 0 -L 30 gffifo17
+-gf13 mkfifo gffifo18; growfiles -W gf13 -b -e 1 -u -i 0 -L 30 -I r -r 1-4096 gffifo18
+-gf14 growfiles -W gf14 -b -e 1 -u -i 0 -L 20 -w -l -C 1 -T 10 glseek19 glseek19.2
+-gf15 growfiles -W gf15 -b -e 1 -u -r 1-49600 -I r -u -i 0 -L 120 Lgfile1
+-gf16 growfiles -W gf16 -b -e 1 -i 0 -L 120 -u -g 4090 -T 100 -t 408990 -l -C 10 -c 1000 -S 10 -f Lgf02_
+-gf17 growfiles -W gf17 -b -e 1 -i 0 -L 120 -u -g 5000 -T 100 -t 499990 -l -C 10 -c 1000 -S 10 -f Lgf03_
+-gf18 growfiles -W gf18 -b -e 1 -i 0 -L 120 -w -u -r 10-5000 -I r -l -S 2 -f Lgf04_
+-gf19 growfiles -W gf19 -b -e 1 -g 5000 -i 500 -t 49900 -T10 -c9 -I p -o O_RDWR,O_CREAT,O_TRUNC -u -f gf08i_
+-gf20 growfiles -W gf20 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -r 1-256000:512 -R 512-256000 -T 4 gfbigio-$$
+-gf21 growfiles -W gf21 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -g 20480 -T 10 -t 20480 gf-bld-$$
+-gf22 growfiles -W gf22 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -g 20480 -T 10 -t 20480 gf-bldf-$$
+-gf23 growfiles -W gf23 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -r 512-64000:1024 -R 1-384000 -T 4 gf-inf-$$
+-gf24 growfiles -W gf24 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -g 20480 gf-jbld-$$
+-gf25 growfiles -W gf25 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -r 1024000-2048000:2048 -R 4095-2048000 -T 1 gf-large-gs-$$
+-gf26 growfiles -W gf26 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -r 128-32768:128 -R 512-64000 -T 4 gfsmallio-$$
+-gf27 growfiles -W gf27 -b -D 0 -w -g 8b -C 1 -b -i 1000 -u gfsparse-1-$$
+-gf28 growfiles -W gf28 -b -D 0 -w -g 16b -C 1 -b -i 1000 -u gfsparse-2-$$
+-gf29 growfiles -W gf29 -b -D 0 -r 1-4096 -R 0-33554432 -i 0 -L 60 -C 1 -u gfsparse-3-$$
+-gf30 growfiles -W gf30 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -o O_RDWR,O_CREAT,O_SYNC -g 20480 -T 10 -t 20480 gf-sync-$$
+-rwtest01 export LTPROOT; rwtest -N rwtest01 -c -q -i 60s  -f sync 10%25000:rw-sync-$$
+-rwtest02 export LTPROOT; rwtest -N rwtest02 -c -q -i 60s  -f buffered 10%25000:rw-buffered-$$
+-rwtest03 export LTPROOT; rwtest -N rwtest03 -c -q -i 60s -n 2  -f buffered -s mmread,mmwrite -m random -Dv 10%25000:mm-buff-$$
+-rwtest04 export LTPROOT; rwtest -N rwtest04 -c -q -i 60s -n 2  -f sync -s mmread,mmwrite -m random -Dv 10%25000:mm-sync-$$
+-rwtest05 export LTPROOT; rwtest -N rwtest05 -c -q -i 50 -T 64b 500b:/tmp/rwtest01%f
+-
+-#must be run as root
+-#iogen01 iogen -i 120s -s read,write 500b:doio.f1.$$ 1000b:doio.f2.$$ | doio -akv -n 2
+-iogen01 export LTPROOT; rwtest -N iogen01 -i 120s -s read,write -Da -Dv -n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
+-
+-fs_inod01 fs_inod $TMPDIR 10 10 1
+-linker01 linktest.sh 1000 1000
+-openfile01 openfile -f10 -t10
+-inode01 inode01
+-inode02 inode02
+-stream01 stream01
+-stream02 stream02
+-stream03 stream03
+-stream04 stream04
+-stream05 stream05
+-ftest01 ftest01
+-ftest02 ftest02
+-ftest03 ftest03
+-ftest04 ftest04
+-ftest05 ftest05
+-ftest06 ftest06
+-ftest07 ftest07
+-ftest08 ftest08
+-
+-nfs01 export VERSION=2 SOCKET_TYPE=udp; nfs01
+-nfs01 export VERSION=2 SOCKET_TYPE=tcp; nfs01
+-nfs01 export VERSION=3 SOCKET_TYPE=udp; nfs01
+-nfs01 export VERSION=3 SOCKET_TYPE=tcp; nfs01
+-
+-nfs02 export VERSION=2 SOCKET_TYPE=udp; nfs02
+-nfs02 export VERSION=2 SOCKET_TYPE=tcp; nfs02
+-nfs02 export VERSION=3 SOCKET_TYPE=udp; nfs02
+-nfs02 export VERSION=3 SOCKET_TYPE=tcp; nfs02
+-
+-nfs03 export VERSION=2 SOCKET_TYPE=udp; nfs03
+-nfs03 export VERSION=2 SOCKET_TYPE=tcp; nfs03
+-nfs03 export VERSION=3 SOCKET_TYPE=udp; nfs03
+-nfs03 export VERSION=3 SOCKET_TYPE=tcp; nfs03
+-
+-nfs04 export VERSION=2 SOCKET_TYPE=udp; nfs04
+-nfs04 export VERSION=2 SOCKET_TYPE=tcp; nfs04
+-nfs04 export VERSION=3 SOCKET_TYPE=udp; nfs04
+-nfs04 export VERSION=3 SOCKET_TYPE=tcp; nfs04
+-
+-nfs05 export VERSION=2 SOCKET_TYPE=udp; nfs05
+-nfs05 export VERSION=2 SOCKET_TYPE=tcp; nfs05
+-nfs05 export VERSION=3 SOCKET_TYPE=udp; nfs05
+-nfs05 export VERSION=3 SOCKET_TYPE=tcp; nfs05
+-
+-nfsx-linux export VERSION=2 SOCKET_TYPE=udp; export TCbin=$LTPROOT/testcases/bin; fsx.sh
+-nfsx-linux export VERSION=2 SOCKET_TYPE=tcp; export TCbin=$LTPROOT/testcases/bin; fsx.sh
+-nfsx-linux export VERSION=3 SOCKET_TYPE=udp; export TCbin=$LTPROOT/testcases/bin; fsx.sh
+-nfsx-linux export VERSION=3 SOCKET_TYPE=tcp; export TCbin=$LTPROOT/testcases/bin; fsx.sh
+-
+-
+diff --git a/runtest/stress.part2 b/runtest/stress.part2
+deleted file mode 100644
+index 74357081a..000000000
+--- a/runtest/stress.part2
++++ /dev/null
+@@ -1,53 +0,0 @@
+-#DESCRIPTION:Part two for ltpstress.sh
+-abs01 abs01
+-
+-atof01 atof01
+-
+-float_bessel float_bessel -D $LTPROOT/testcases/bin -v
+-float_exp_log float_exp_log -D $LTPROOT/testcases/bin -v
+-float_iperb float_iperb  -D $LTPROOT/testcases/bin -v
+-float_power float_power  -D $LTPROOT/testcases/bin -v
+-float_trigo float_trigo  -D $LTPROOT/testcases/bin -v
+-
+-fptest01 fptest01
+-fptest02 fptest02
+-
+-nextafter01 nextafter01
+-pth_str01 pth_str01
+-pth_str02 pth_str02 -n1000
+-pth_str03 pth_str03
+-
+-
+-# These tests use tests/pipeio to put pipes (named or unnamed) through a workout
+-#
+-pipeio_1 pipeio -T pipeio_1 -c 5 -s 4090 -i 100 -b -f x80
+-# spawns 5 children to write 100 chunks of 4090 bytes to a named pipe
+-# using blocking I/O
+-#pipeio_2 pipeio -T pipeio_2 -c 5 -s 4090 -i 100 -f x80
+-# spawns 5 children to write 100 chunks of 4090 bytes to a named pipe
+-# using non-blocking I/O
+-# This test hits EAGAIN, which pipeio doesn't handle at the moment
+-pipeio_3 pipeio -T pipeio_3 -c 5 -s 4090 -i 100 -u -b -f x80
+-# spawns 5 children to write 100 chunks of 4090 bytes to an unnamed pipe
+-# using blocking I/O
+-pipeio_4 pipeio -T pipeio_4 -c 5 -s 4090 -i 100 -u -f x80
+-# spawns 5 children to write 100 chunks of 4090 bytes to an unnamed pipe
+-# using non-blocking I/O
+-pipeio_5 pipeio -T pipeio_5 -c 5 -s 5000 -i 10 -b -f x80
+-# spawns 5 children to write 10 chunks of 5000 bytes to a named pipe
+-# using blocking I/O
+-pipeio_6 pipeio -T pipeio_6 -c 5 -s 5000 -i 10 -b -u -f x80
+-# spawns 5 children to write 10 chunks of 5000 bytes to an unnamed pipe
+-# using blocking I/O
+-#pipeio_7 pipeio -T pipeio_7 -c 5 -s 5000 -i 10 -f x80
+-# spawns 5 children to write 10 chunks of 5000 bytes to a named pipe
+-# using non-blocking I/O
+-# This test hits EAGAIN, which pipeio doesn't handle at the moment
+-pipeio_8 pipeio -T pipeio_8 -c 5 -s 5000 -i 10 -u -f x80
+-# spawns 5 children to write 10 chunks of 5000 bytes to an unnamed pipe
+-# using non-blocking I/O
+-
+-sem01 sem01
+-sem02 sem02
+-
+-nptl01 nptl01
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+deleted file mode 100644
+index 3de70c99b..000000000
+--- a/runtest/stress.part3
++++ /dev/null
+@@ -1,893 +0,0 @@
+-#DESCRIPTION:Part three for ltpstress.sh
+-abort01 abort01
+-
+-accept01 accept01
+-
+-access01 access01
+-access02 access02
+-access03 access03
+-access04 access04
+-
+-acct01 acct01
+-
+-adjtimex01 adjtimex01
+-adjtimex02 adjtimex02
+-
+-alarm02 alarm02
+-alarm03 alarm03
+-alarm05 alarm05
+-alarm06 alarm06
+-alarm07 alarm07
+-
+-asyncio02 asyncio02
+-
+-bind01 bind01
+-bind02 bind02
+-
+-brk01 brk01
+-
+-capget01 capget01
+-capget02 capget02
+-
+-capset01 capset01
+-capset02 capset02
+-
+-chdir01 chdir01
+-chdir01A symlink01 -T chdir01
+-chdir02 chdir02
+-chdir03 chdir03
+-chdir04 chdir04
+-
+-chmod01 chmod01
+-chmod01A symlink01 -T chmod01
+-chmod02 chmod02
+-chmod03 chmod03
+-chmod04 chmod04
+-chmod05 chmod05
+-chmod06 chmod06
+-chmod07 chmod07
+-
+-chown01 chown01
+-chown02 chown02
+-chown03 chown03
+-chown04 chown04
+-chown05 chown05
+-
+-chroot01 chroot01
+-chroot02 chroot02
+-chroot03 chroot03
+-chroot04 chroot04
+-
+-clone01 clone01
+-clone02 clone02
+-clone03 clone03
+-clone04 clone04
+-clone05 clone05
+-clone06 clone06
+-clone07 clone07
+-clone08 clone08
+-
+-close01 close01
+-close02 close02
+-close08 close08
+-
+-confstr01 confstr01
+-
+-connect01 connect01
+-
+-creat01 creat01
+-creat03 creat03
+-creat04 creat04
+-creat05 creat05
+-creat06 creat06
+-creat07 creat07
+-creat08 creat08
+-
+-dup01 dup01
+-dup02 dup02
+-dup03 dup03
+-dup04 dup04
+-dup05 dup05
+-dup06 dup06
+-dup07 dup07
+-
+-dup201 dup201
+-dup202 dup202
+-dup203 dup203
+-dup204 dup204
+-dup205 dup205
+-
+-epoll_ctl01 epoll_ctl01
+-epoll_ctl02 epoll_ctl02
+-
+-epoll_wait01 epoll_wait01
+-epoll_wait02 epoll_wait02
+-epoll_wait03 epoll_wait03
+-
+-epoll_pwait01 epoll_pwait01
+-
+-execl01 execl01
+-execle01 execle01
+-execlp01 execlp01
+-
+-execv01 execv01
+-execve01 execve01
+-execve02 execve02
+-execve03 execve03
+-execve04 execve04
+-execve05 execve05 -i 5 -n 32
+-execvp01 execvp01
+-
+-exit01 exit01
+-exit02 exit02
+-
+-fchdir01 fchdir01
+-fchdir02 fchdir02
+-fchdir03 fchdir03
+-
+-fchmod01 fchmod01
+-fchmod02 fchmod02
+-fchmod03 fchmod03
+-fchmod04 fchmod04
+-fchmod05 fchmod05
+-fchmod06 fchmod06
+-
+-fchown01 fchown01
+-fchown02 fchown02
+-fchown03 fchown03
+-fchown04 fchown04
+-fchown05 fchown05
+-
+-fcntl01 fcntl01
+-fcntl03 fcntl03
+-fcntl04 fcntl04
+-fcntl05 fcntl05
+-fcntl06 fcntl06
+-fcntl07 fcntl07
+-fcntl08 fcntl08
+-fcntl09 fcntl09
+-fcntl10 fcntl10
+-fcntl11 fcntl11
+-fcntl12 fcntl12
+-fcntl13 fcntl13
+-fcntl14 fcntl14
+-#fcntl16 fcntl16 #Contains errors.
+-fcntl17 fcntl17
+-fcntl18 fcntl18
+-fcntl19 fcntl19
+-fcntl20 fcntl20
+-fcntl21 fcntl21
+-fcntl22 fcntl22
+-fcntl23 fcntl23
+-fcntl24 fcntl24
+-fcntl25 fcntl25
+-fcntl26 fcntl26
+-# The tests for these system calls  fcntl27 and fcntl28 are temporarily being disabled
+-# fcntl27 fcntl27
+-# fcntl28 fcntl28
+-fcntl29 fcntl29
+-fcntl30 fcntl30
+-fcntl31 fcntl31
+-fcntl32 fcntl32
+-fcntl33 fcntl33
+-
+-fdatasync01 fdatasync01
+-fdatasync02 fdatasync02
+-
+-flock01 flock01
+-flock02 flock02
+-flock03 flock03
+-flock04 flock04
+-flock06 flock06
+-
+-fmtmsg01 fmtmsg01
+-
+-fork01 fork01
+-fork02 fork02
+-fork03 fork03
+-fork04 fork04
+-fork05 fork05
+-fork06 fork06
+-fork07 fork07
+-fork08 fork08
+-fork09 fork09
+-fork10 fork10
+-fork11 fork11
+-
+-fpathconf01 fpathconf01
+-
+-fstat01 fstat01
+-fstat02 fstat02
+-fstat03 fstat03
+-fstat05 fstat05
+-
+-fstatfs01 fstatfs01
+-fstatfs02 fstatfs02
+-
+-fsync01 fsync01
+-fsync02 fsync02
+-fsync03 fsync03
+-
+-ftruncate01 ftruncate01
+-ftruncate02 ftruncate02
+-ftruncate03 ftruncate03
+-ftruncate04 ftruncate04
+-
+-getcontext01 getcontext01
+-
+-getcwd01 getcwd01
+-getcwd02 getcwd02
+-getcwd03 getcwd03
+-getcwd04 getcwd04
+-getcwd05 getcwd05
+-
+-getdents01 getdents01
+-getdents02 getdents02
+-
+-getdomainname01 getdomainname01
+-
+-getdtablesize01 getdtablesize01
+-
+-getegid01 getegid01
+-
+-geteuid01 geteuid01
+-geteuid02 geteuid02
+-
+-getgid01 getgid01
+-getgid03 getgid03
+-
+-getgroups01 getgroups01
+-
+-gethostid01 gethostid01
+-
+-gethostname01 gethostname01
+-
+-getitimer01 getitimer01
+-getitimer02 getitimer02
+-getitimer03 getitimer03
+-
+-getpagesize01 getpagesize01
+-
+-getpeername01 getpeername01
+-
+-getpgid01 getpgid01
+-getpgid02 getpgid02
+-
+-getpgrp01 getpgrp01
+-
+-getpid01 getpid01
+-getpid02 getpid02
+-
+-getppid01 getppid01
+-getppid02 getppid02
+-
+-getpriority01 getpriority01
+-getpriority02 getpriority02
+-
+-getresgid01 getresgid01
+-getresgid02 getresgid02
+-getresgid03 getresgid03
+-
+-getresuid01 getresuid01
+-getresuid02 getresuid02
+-getresuid03 getresuid03
+-
+-getrlimit01 getrlimit01
+-getrlimit02 getrlimit02
+-
+-getrusage01 getrusage01
+-getrusage02 getrusage02
+-
+-getsid01 getsid01
+-getsid02 getsid02
+-
+-getsockname01 getsockname01
+-
+-getsockopt01 getsockopt01
+-
+-gettimeofday01 gettimeofday01
+-gettimeofday02 gettimeofday02
+-
+-getuid01 getuid01
+-getuid03 getuid03
+-
+-ioperm01 ioperm01
+-ioperm02 ioperm02
+-
+-iopl01 iopl01
+-iopl02 iopl02
+-
+-kill01 kill01
+-kill02 kill02
+-kill03 kill03
+-kill04 kill04
+-kill05 kill05
+-kill06 kill06
+-kill07 kill07
+-kill08 kill08
+-kill09 kill09
+-kill10 kill10
+-kill11 kill11
+-kill12 kill12
+-
+-lchown01 lchown01
+-lchown02 lchown02
+-lchown03 lchown03
+-
+-link01 symlink01 -T link01
+-link02 link02
+-link03 link03
+-link04 link04
+-link05 link05
+-link06 link06
+-link07 link07
+-link08 link08
+-
+-listen01 listen01
+-
+-llseek01 llseek01
+-llseek02 llseek02
+-llseek03 llseek03
+-
+-lseek01 lseek01
+-lseek02 lseek02
+-lseek07 lseek07
+-lseek11 lseek11
+-
+-lstat01A symlink01 -T lstat01
+-lstat01 lstat01
+-lstat02 lstat02
+-lstat03 lstat03
+-
+-mallopt01 mallopt01
+-
+-memset01 memset01
+-memcmp01 memcmp01
+-memcpy01 memcpy01
+-
+-mlockall01 mlockall01
+-mlockall02 mlockall02
+-mlockall03 mlockall03
+-
+-mkdir02 mkdir02
+-mkdir03 mkdir03
+-mkdir04 mkdir04
+-mkdir05 mkdir05
+-mkdir05A symlink01 -T mkdir05
+-mkdir09 mkdir09
+-
+-mknod01 mknod01
+-mknod02 mknod02
+-mknod03 mknod03
+-mknod04 mknod04
+-mknod05 mknod05
+-mknod06 mknod06
+-mknod07 mknod07
+-mknod08 mknod08
+-mknod09 mknod09
+-
+-mlock01 mlock01
+-mlock02 mlock02
+-
+-mlock201 mlock201
+-mlock202 mlock202
+-mlock203 mlock203
+-
+-qmm01 mmap001 -m 1
+-mmap01 mmap01
+-mmap02 mmap02
+-mmap03 mmap03
+-mmap04 mmap04
+-mmap05 mmap05
+-mmap06 mmap06
+-mmap07 mmap07
+-mmap08 mmap08
+-mmap09 mmap09
+-mmap16 mmap16 -i 5
+-
+-modify_ldt01 modify_ldt01
+-modify_ldt02 modify_ldt02
+-modify_ldt03 modify_ldt03
+-
+-mprotect01 mprotect01
+-mprotect02 mprotect02
+-mprotect03 mprotect03
+-mprotect04 mprotect04
+-
+-mremap01 mremap01
+-mremap02 mremap02
+-mremap03 mremap03
+-mremap04 mremap04
+-
+-msgctl01 msgctl01
+-msgctl02 msgctl02
+-msgctl03 msgctl03
+-msgctl04 msgctl04
+-msgstress01 msgstress01
+-msgstress02 msgstress02
+-
+-msgget01 msgget01
+-msgget02 msgget02
+-msgget03 msgget03
+-
+-msgrcv01 msgrcv01
+-msgrcv02 msgrcv02
+-msgrcv03 msgrcv03
+-msgrcv04 msgrcv04
+-msgrcv05 msgrcv05
+-msgrcv06 msgrcv06
+-msgrcv07 msgrcv07
+-
+-msgsnd01 msgsnd01
+-msgsnd02 msgsnd02
+-msgsnd05 msgsnd05
+-msgsnd06 msgsnd06
+-
+-msync01 msync01
+-msync02 msync02
+-msync03 msync03
+-
+-munlock01 munlock01
+-munlock02 munlock02
+-
+-munlockall01 munlockall01
+-
+-munmap01 munmap01
+-munmap02 munmap02
+-munmap03 munmap03
+-
+-nanosleep01 nanosleep01
+-nanosleep03 nanosleep03
+-nanosleep04 nanosleep04
+-
+-nftw01 nftw01
+-nftw6401 nftw6401
+-
+-nice01 nice01
+-nice02 nice02
+-nice03 nice03
+-nice04 nice04
+-
+-open01 open01
+-open01A symlink01 -T open01
+-open02 open02
+-open03 open03
+-open04 open04
+-open05 open05
+-open06 open06
+-open07 open07
+-open08 open08
+-open09 open09
+-open10 open10
+-open11 open11
+-open12 open12
+-open13 open13
+-
+-pathconf01 pathconf01
+-
+-pause01 pause01
+-pause02 pause02
+-pause03 pause03
+-
+-pipe01 pipe01
+-pipe02 pipe02
+-pipe03 pipe03
+-pipe04 pipe04
+-pipe05 pipe05
+-pipe06 pipe06
+-pipe07 pipe07
+-pipe08 pipe08
+-pipe09 pipe09
+-pipe10 pipe10
+-pipe11 pipe11
+-
+-poll01 poll01
+-
+-prctl01 prctl01
+-prctl02 prctl02
+-prctl03 prctl03
+-
+-pread01 pread01
+-pread02 pread02
+-pread03 pread03
+-
+-preadv01 preadv01
+-preadv02 preadv02
+-preadv03 preadv03
+-
+-preadv201 preadv201
+-preadv202 preadv202
+-
+-profil01 profil01
+-
+-pselect01 pselect01
+-pselect02 pselect02
+-
+-ptrace01 ptrace01
+-ptrace02 ptrace02
+-ptrace03 ptrace03
+-
+-pwrite01 pwrite01
+-pwrite02 pwrite02
+-pwrite04 pwrite04
+-
+-pwrite01_64 pwrite01_64
+-pwrite02_64 pwrite02_64
+-pwrite04_64 pwrite04_64
+-
+-pwritev01 pwritev01
+-pwritev02 pwritev02
+-pwritev03 pwritev03
+-
+-read01 read01
+-read02 read02
+-read03 read03
+-read04 read04
+-
+-readdir01 readdir01
+-readdir02 readdir02
+-readdir21 readdir21
+-
+-readlink01A symlink01 -T readlink01
+-readlink01 readlink01
+-readlink03 readlink03
+-
+-readv01 readv01
+-readv02 readv02
+-readv03 readv03
+-
+-reboot01 reboot01
+-reboot02 reboot02
+-
+-recv01 recv01
+-
+-recvfrom01 recvfrom01
+-
+-recvmsg01 recvmsg01
+-
+-rename01 rename01
+-rename01A symlink01 -T rename01
+-rename02 rename02
+-rename03 rename03
+-rename04 rename04
+-rename05 rename05
+-rename06 rename06
+-rename07 rename07
+-rename08 rename08
+-rename09 rename09
+-rename10 rename10
+-rename11 rename11
+-rename12 rename12
+-rename13 rename13
+-rename14 rename14
+-
+-rmdir01 rmdir01
+-rmdir02 rmdir02
+-rmdir03 rmdir03
+-rmdir03A symlink01 -T rmdir03
+-
+-sbrk01 sbrk01
+-sbrk02 sbrk02
+-
+-sched_get_priority_max01 sched_get_priority_max01
+-sched_get_priority_max02 sched_get_priority_max02
+-
+-sched_get_priority_min01 sched_get_priority_min01
+-sched_get_priority_min02 sched_get_priority_min02
+-
+-sched_getparam01 sched_getparam01
+-sched_getparam02 sched_getparam02
+-sched_getparam03 sched_getparam03
+-
+-sched_rr_get_interval01 sched_rr_get_interval01
+-sched_rr_get_interval02 sched_rr_get_interval02
+-sched_rr_get_interval03 sched_rr_get_interval03
+-
+-sched_setparam01 sched_setparam01
+-sched_setparam02 sched_setparam02
+-sched_setparam03 sched_setparam03
+-sched_setparam04 sched_setparam04
+-sched_setparam05 sched_setparam05
+-
+-sched_getscheduler01 sched_getscheduler01
+-sched_getscheduler02 sched_getscheduler02
+-
+-sched_setscheduler01 sched_setscheduler01
+-sched_setscheduler02 sched_setscheduler02
+-
+-sched_yield01 sched_yield01
+-
+-select01 select01
+-select02 select02
+-select03 select03
+-
+-semctl02 semctl02
+-semctl03 semctl03
+-semctl04 semctl04
+-semctl05 semctl05
+-semctl06 semctl06
+-semctl07 semctl07
+-
+-semget01 semget01
+-semget02 semget02
+-semget03 semget03
+-semget05 semget05
+-semget06 semget06
+-
+-semop01 semop01
+-semop02 semop02
+-semop03 semop03
+-semop04 semop04
+-semop05 semop05
+-
+-send01 send01
+-
+-sendfile02 sendfile02
+-sendfile03 sendfile03
+-
+-sendmsg01 sendmsg01
+-
+-sendto01 sendto01
+-
+-setdomainname01	setdomainname01
+-setdomainname02	setdomainname02
+-setdomainname03	setdomainname03
+-
+-setfsgid01 setfsgid01
+-
+-setfsuid01 setfsuid01
+-
+-setgid01 setgid01
+-setgid02 setgid02
+-setgid03 setgid03
+-
+-setegid01 setegid01
+-setegid02 setegid02
+-
+-setgroups01 setgroups01
+-setgroups02 setgroups02
+-setgroups03 setgroups03
+-setgroups04 setgroups04
+-
+-sethostname01 sethostname01
+-sethostname02 sethostname02
+-sethostname03 sethostname03
+-
+-setitimer01 setitimer01
+-setitimer02 setitimer02
+-setitimer03 setitimer03
+-
+-setpgid01 setpgid01
+-setpgid02 setpgid02
+-setpgid03 setpgid03
+-
+-setpgrp01 setpgrp01
+-setpgrp02 setpgrp02
+-
+-setpriority01 setpriority01
+-setpriority02 setpriority02
+-
+-setregid01 setregid01
+-setregid02 setregid02
+-setregid03 setregid03
+-setregid04 setregid04
+-
+-setresgid01 setresgid01
+-setresgid02 setresgid02
+-setresgid03 setresgid03
+-setresgid04 setresgid04
+-
+-setresuid01 setresuid01
+-setresuid02 setresuid02
+-setresuid03 setresuid03
+-setresuid04 setresuid04
+-setresuid05 setresuid05
+-
+-setreuid01 setreuid01
+-setreuid02 setreuid02
+-setreuid03 setreuid03
+-setreuid04 setreuid04
+-setreuid05 setreuid05
+-setreuid06 setreuid06
+-setreuid07 setreuid07
+-
+-setrlimit01 setrlimit01
+-setrlimit02 setrlimit02
+-setrlimit03 setrlimit03
+-
+-setsid01 setsid01
+-
+-setsockopt01 setsockopt01
+-
+-settimeofday01 settimeofday01
+-settimeofday02 settimeofday02
+-
+-setuid01 setuid01
+-setuid03 setuid03
+-setuid04 setuid04
+-
+-shmat01 shmat01
+-shmat02 shmat02
+-
+-shmctl02 shmctl02
+-shmctl03 shmctl03
+-shmctl04 shmctl04
+-
+-shmdt01 shmdt01
+-shmdt02 shmdt02
+-
+-shmget01 shmget01
+-shmget02 shmget02
+-shmget03 shmget03
+-shmget04 shmget04
+-shmget05 shmget05
+-
+-sigaction01 sigaction01
+-sigaction02 sigaction02
+-
+-
+-sigaltstack01 sigaltstack01
+-sigaltstack02 sigaltstack02
+-
+-
+-
+-sighold02 sighold02
+-
+-
+-signal01 signal01
+-signal02 signal02
+-signal03 signal03
+-signal04 signal04
+-signal05 signal05
+-signal06 signal06
+-
+-sigpending02 sigpending02
+-
+-sigprocmask01 sigprocmask01
+-
+-sigrelse01 sigrelse01
+-
+-sigsuspend01 sigsuspend01
+-
+-
+-socket01 socket01
+-
+-socketcall01 socketcall01
+-socketcall02 socketcall02
+-socketcall03 socketcall03
+-socketcall04 socketcall04
+-
+-socketpair01 socketpair01
+-
+-sockioctl01 sockioctl01
+-
+-stat01 stat01
+-stat02 stat02
+-stat03 stat03
+-stat04 symlink01 -T stat04
+-stat05 stat05
+-stat06 stat06
+-
+-statfs01 statfs01
+-statfs02 statfs02
+-statfs03 statfs03
+-
+-statvfs01 statvfs01
+-statvfs02 statvfs02
+-
+-# This syscall is obsoleted by settimeofday.
+-#stime01 stime01
+-#stime02 stime02
+-
+-string01 string01
+-
+-swapoff01 swapoff01
+-swapoff02 swapoff02
+-
+-swapon01 swapon01
+-swapon02 swapon02
+-swapon03 swapon03
+-
+-symlink01 symlink01
+-symlink02 symlink02
+-symlink03 symlink03
+-symlink04 symlink04
+-symlink05 symlink05
+-
+-syscall01 syscall01
+-
+-sysconf01 sysconf01
+-
+-sysctl01 sysctl01
+-sysctl03 sysctl03
+-sysctl04 sysctl04
+-
+-sysfs01 sysfs01
+-sysfs02 sysfs02
+-sysfs03 sysfs03
+-sysfs04 sysfs04
+-sysfs05 sysfs05
+-sysfs06 sysfs06
+-
+-sysinfo01 sysinfo01
+-sysinfo02 sysinfo02
+-
+-# This syscall is obsoleted by gettimeofday.
+-#time01 time01
+-#time02 time02
+-
+-times01 times01
+-times03 times03
+-
+-truncate01 truncate01
+-truncate02 truncate02
+-truncate03 truncate03
+-
+-# This syscall is obsolete.  The latest glibc does not even
+-# include the ulimit.h file anymore.  The test will fail
+-# because the error handling has been simplified.
+-#
+-# ulimit01 ulimit01
+-
+-umask01 umask01
+-
+-uname01 uname01
+-uname02 uname02
+-uname03 uname03
+-
+-unlink01 symlink01 -T unlink01
+-unlink05 unlink05
+-unlink07 unlink07
+-unlink08 unlink08
+-
+-utime01 utime01
+-utime01A symlink01 -T utime01
+-utime02 utime02
+-utime03 utime03
+-utime04 utime04
+-utime05 utime05
+-utime06 utime06
+-
+-vfork01 vfork01
+-vfork02 vfork02
+-
+-vhangup01 vhangup01
+-vhangup02 vhangup02
+-
+-wait01 wait01
+-wait02 wait02
+-
+-wait401 wait401
+-wait402 wait402
+-
+-waitpid01 waitpid01
+-waitpid02 waitpid02
+-waitpid03 waitpid03
+-waitpid04 waitpid04
+-waitpid05 waitpid05
+-waitpid06 waitpid06
+-waitpid07 waitpid07
+-waitpid08 waitpid08
+-waitpid09 waitpid09
+-waitpid10 waitpid10
+-waitpid11 waitpid11
+-waitpid12 waitpid12
+-waitpid13 waitpid13
+-
+-write01 write01
+-write03 write03
+-write04 write04
+-write05 write05
+-
+-writev01 writev01
+-writev02 writev02
+-writev05 writev05
+-writev06 writev06
+-writev07 writev07
+-
+-pty01 pty01
+-hangup01 hangup01
+-
+-mc_cmds mc_cmds
+-mc_opts export TCsrc=$LTPROOT/testcases/network/multicast/mc_opts; mc_opts
+-rpc01 rpc01
+diff --git a/testscripts/ltpstress.sh b/testscripts/ltpstress.sh
+deleted file mode 100755
+index cd041b1d7..000000000
+--- a/testscripts/ltpstress.sh
++++ /dev/null
+@@ -1,349 +0,0 @@
+-#!/bin/sh
+-
+-#    Copyright (c) International Business Machines  Corp., 2003
+-#
+-#    This program is free software;  you can redistribute it and/or modify
+-#    it under the terms of the GNU General Public License as published by
+-#    the Free Software Foundation; either version 2 of the License, or
+-#    (at your option) any later version.
+-#
+-#    This program is distributed in the hope that it will be useful,
+-#    but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#    the GNU General Public License for more details.
+-#
+-#    You should have received a copy of the GNU General Public License
+-#    along with this program;  if not, write to the Free Software
+-#    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-#
+-#   FILE        : ltpstress.sh
+-#   DESCRIPTION : A script that will stress your system using the LTP testsuite.
+-#   REQUIREMENTS:
+-#                 1) The 'rsh' daemon must be running and NFS (versions 2 &3) must be
+-#                    configured into the kernel and installed for networking tests.
+-#		  2) The 'sar' application must be installed to use the "-S" option
+-#   HISTORY     :
+-#       02/11/2003 Robbie Williamson (robbiew@austin.ibm.com)
+-#               written
+-#	11/20/2008 Aime Le Rouzic (aime.lerouzic@bull.net)
+-#		adapt script to work with portmap and rpcbind
+-##############################################################
+-
+-export LTPROOT=${PWD}
+-echo $LTPROOT | grep testscripts > /dev/null 2>&1
+-if [ $? -eq 0 ]; then
+- cd ..
+- export LTPROOT=${PWD}
+-fi
+-export TMPBASE="/tmp"
+-export PATH=$LTPROOT/testcases/bin:$PATH
+-memsize=0
+-hours=24
+-PROC_NUM=0
+-leftover_memsize=0
+-duration=86400
+-datafile="/tmp/ltpstress.data"
+-iofile="/tmp/ltpstress.iodata"
+-logfile="/tmp/ltpstress.log"
+-interval=10
+-Sar=0
+-Top=0
+-Iostat=0
+-LOGGING=0
+-PRETTY_PRT=""
+-QUIET_MODE=""
+-NO_NETWORK=0
+-
+-usage()
+-{
+-
+-	cat <<-END >&2
+-    usage: ${0##*/} [ -d datafile ] [ -i # (in seconds) ] [ -I iofile ] [ -l logfile ] [ -m # (in Mb) ]
+-    [ -n ] [ -p ] [ -q ] [ -t duration ] [ -x TMPDIR ] [-b DEVICE] [-B LTP_DEV_FS_TYPE] [ [-S]|[-T] ]
+-
+-    -d datafile     Data file for 'sar' or 'top' to log to. Default is "/tmp/ltpstress.data".
+-    -i # (in sec)   Interval that 'sar' or 'top' should take snapshots. Default is 10 seconds.
+-    -I iofile       Log results of 'iostat' to a file every interval. Default is "/tmp/ltpstress.iodata".
+-    -l logfile      Log results of test in a logfile. Default is "/tmp/ltpstress.log"
+-    -m # (in Mb)    Specify the _minimum_ memory load of # megabytes in background. Default is all the RAM + 1/2 swap.
+-    -n              Disable networking stress.
+-    -p              Human readable format logfiles.
+-    -q              Print less verbose output to the output files.
+-    -S              Use 'sar' to measure data.
+-    -T              Use LTP's modified 'top' tool to measure data.
+-    -t duration     Execute the testsuite for given duration in hours. Default is 24.
+-    -x TMPDIR       Directory where temporary files will be created.
+-    -b DEVICE       Some tests require an unmounted block device
+-                    to run correctly. If DEVICE is not set, a loop device is
+-                    created and used automatically.
+-    -B LTP_DEV_FS_TYPE The file system of DEVICE.
+-
+-	example: ${0##*/} -d /tmp/sardata -l /tmp/ltplog.$$ -m 128 -t 24 -S
+-	END
+-exit
+-}
+-
+-check_memsize()
+-{
+-  while [ $memsize -gt 1048576 ]   #if greater than 1GB
+-  do
+-    PROC_NUM=$(( PROC_NUM + 1 ))
+-    memsize=$(( $memsize - 1048576 ))
+-  done
+-  leftover_memsize=$memsize
+-}
+-
+-while getopts d:hi:I:l:STt:m:npqx:b:B:\? arg
+-do  case $arg in
+-
+-	d)	datafile="$OPTARG";;
+-
+-        h)      echo "Help info:"
+-		usage;;
+-
+-	i)	interval=$OPTARG;;
+-
+-	I)	Iostat=1
+-		iofile=$OPTARG;;
+-
+-        l)      logfile=$OPTARG
+-		LOGGING=1;;
+-
+-        m)	memsize=$(($OPTARG * 1024))
+-		check_memsize;;
+-
+-	n)	NO_NETWORK=1;;
+-
+-	p)	PRETTY_PRT=" -p ";;
+-
+-	q)	QUIET_MODE=" -q ";;
+-
+-        S)      if [ $Top -eq 0 ]; then
+-                  Sar=1
+-                else
+-                  echo "Cannot specify -S and -T...exiting"
+-                  exit
+-                fi;;
+-
+-	T)	if [ $Sar -eq 0 ]; then
+-                  $LTPROOT/testcases/bin/top -h 2>&1 | grep "\-f filename" >/dev/null
+-		  if [ $? -eq 0 ]; then
+-                    Top=1
+-                  else
+-		    echo "ERROR: Please build and install the version of top in the /tools dir"
+-		    exit
+- 		  fi
+-                else
+-                  echo "Cannot specify -S and -T...exiting"
+-                  exit
+-                fi;;
+-
+-        t)      hours=$OPTARG
+-		duration=$(($hours * 60 * 60));;
+-
+-	x)	export TMPBASE=$(readlink -f ${OPTARG});;
+-
+-	b)	export LTP_DEV=${OPTARG};;
+-
+-	B)	export LTP_DEV_FS_TYPE=${OPTARG};;
+-
+-        \?)     echo "Help info:"
+-		usage;;
+-        esac
+-done
+-
+-export TMP="${TMPBASE}/ltpstress-$$"
+-export TMPDIR=${TMP}
+-mkdir -p ${TMP}
+-
+-# to write as user nobody into tst_tmpdir()
+-chmod 777 $TMP || \
+-{
+-	echo "unable to chmod 777 $TMP ... aborting"
+-	exit 1
+-}
+-
+-cd $TMP || \
+-{
+-	echo "could not cd ${TMP} ... exiting"
+-	exit 1
+-}
+-
+-if [ $NO_NETWORK -eq 0 ];then
+-  # Networking setup
+-  echo `hostname` >> /root/.rhosts
+-  chmod 644 /root/.rhosts
+-
+-  netstat -an | grep 514
+-  if [ $? -eq 1 ];then
+-    echo "Error: 'rsh' daemon not active on this machine."
+-    exit 1
+-  fi
+-
+-  ps -ef | grep portmap | grep -v grep
+-  if [ $? -eq 1 ];then
+-    ps -ef | grep rpcbind | grep -v grep
+-    if [ $? -eq 1 ];then
+-      echo "Portmap and rpcbind not running"
+-      echo "Let's start portmap"
+-      /sbin/portmap &
+-      sleep 1
+-      ps -ef | grep portmap | grep -v grep
+-      if [ $? -eq 1 ];then
+-        echo "Could not start portmap, Let's start rpcbind"
+-        /sbin/rpcbind &
+-        sleep 1
+-        ps -ef | grep rpcbind | grep -v grep
+-        if [ $? -eq 1 ];then
+-          Echo "Error: Could not start rpcbind daemon."
+-          exit 1
+-        else
+-          echo "The RPC test suite is using rpcbind"
+-        fi
+-      else
+-	echo "The RPC test suite is using portmap"
+-      fi
+-    else
+-      echo "The RPC test suite is using rpcbind"
+-    fi
+-  else
+-    echo "The RPC test suite is using portmap"
+-  fi
+-
+-  ps -e | grep nfsd
+-  if [ $? -eq 1 ];then
+-    /usr/sbin/rpc.nfsd
+-  fi
+-  sleep 1
+-  ps -e | grep nfsd
+-  if [ $? -eq 1 ];then
+-    echo "Error: Could not start nfs server daemon."
+-    exit 1
+-  fi
+-
+-  ps -e | grep rpc.statd
+-  if [ $? -eq 1 ];then
+-    /sbin/rpc.statd
+-  fi
+-  sleep 1
+-  ps -e | grep rpc.statd
+-  if [ $? -eq 1 ];then
+-    echo "Error: Could not start statd daemon."
+-    exit 1
+-  fi
+-
+-  ps -e | grep rpc.mountd
+-  if [ $? -eq 1 ];then
+-    /usr/sbin/rpc.mountd
+-  fi
+-  sleep 1
+-  ps -e | grep rpc.mountd
+-  if [ $? -eq 1 ];then
+-    echo "Error: Could not start mountd daemon."
+-    exit 1
+-  fi
+-  # End of network setup
+-fi
+-
+-#If -m not set, use all the RAM + 1/2 swapspace
+-if [ $memsize -eq 0 ]; then
+-  TOTALRAM=$(free -m | grep Mem: | awk {'print $2'})
+-  TOTALSWAP=$(free -m | grep Swap: | awk {'print $2'})
+-  TESTSWAP=$(($TOTALSWAP / 2))
+-  if [ $TESTSWAP -eq 0 ]; then
+-       #if there is no swap in the system, use only the free RAM
+-       TESTMEM=$(free -m | grep Mem: | awk {'print $4'})
+-  else
+-       TESTMEM=$(($TESTSWAP + $TOTALRAM))
+-  fi
+- #Convert to kilobytes
+-  memsize=$(($TESTMEM * 1024))
+-  check_memsize
+-fi
+-
+-# Set max processes to unlimited.
+-ulimit -u unlimited
+-
+-if [ $PROC_NUM -gt 0 ];then
+-  genload --vm $PROC_NUM --vm-bytes 1073741824 >/dev/null 2>&1 &
+-fi
+-if [ $leftover_memsize -gt 0 ];then
+-  genload --vm 1 --vm-bytes $(($leftover_memsize * 1024)) >/dev/null 2>&1 &
+-fi
+-
+-sort -R ${LTPROOT}/runtest/stress.part1 -o ${TMP}/stress.part1
+-sort -R ${LTPROOT}/runtest/stress.part2 -o ${TMP}/stress.part2
+-sort -R ${LTPROOT}/runtest/stress.part3 -o ${TMP}/stress.part3
+-
+-sleep 2
+-
+-if [ $Sar -eq 1 ]; then
+-  sar -o $datafile $interval > /dev/null &
+-fi
+-
+-if [ $Top -eq 1 ]; then
+-  screen -d -m $LTPROOT/testcases/bin/top -o $datafile -d $interval &
+-  SCREEN_PID=$(ps -e | grep screen | awk {'print $1'})
+-fi
+-
+-sleep 2
+-
+-if [ $Iostat -eq 1 ]; then
+-  while [ 0 = 0 ];do iostat -dt >> $iofile; sleep $interval;done &
+-  Iostat_PID=$?
+-fi
+-
+-sleep 2
+-
+-output1=${TMPBASE}/ltpstress.$$.output1
+-output2=${TMPBASE}/ltpstress.$$.output2
+-output3=${TMPBASE}/ltpstress.$$.output3
+-
+-${LTPROOT}/bin/ltp-pan -e ${PRETTY_PRT} ${QUIET_MODE} -S -t ${hours}h -a stress1 -n stress1 -l $logfile -f ${TMP}/stress.part1 -o $output1 &
+-${LTPROOT}/bin/ltp-pan -e ${PRETTY_PRT} ${QUIET_MODE} -S -t ${hours}h -a stress2 -n stress2 -l $logfile -f ${TMP}/stress.part2 -o $output2 &
+-${LTPROOT}/bin/ltp-pan -e ${PRETTY_PRT} ${QUIET_MODE} -S -t ${hours}h -a stress3 -n stress3 -l $logfile -f ${TMP}/stress.part3 -o $output3 &
+-
+-echo "Running LTP Stress for $hours hour(s) using $(($memsize/1024)) Mb"
+-echo ""
+-echo "Test output recorded in:"
+-echo "        $output1"
+-echo "        $output2"
+-echo "        $output3"
+-
+-# Sleep a little longer than duration to let ltp-pan "try" to gracefully end itself.
+-sleep $(($duration + 10))
+-
+-if [ $Sar -eq 1 ]; then
+-  killall -9 sadc >/dev/null 2>&1
+-fi
+-if [ $Top -eq 1 ]; then
+-  kill $SCREEN_PID >/dev/null 2>&1
+-fi
+-killall -9 ltp-pan >/dev/null 2>&1
+-killall -9 genload >/dev/null 2>&1
+-if [ $NO_NETWORK -eq 0 ];then
+-  killall -9 NPtcp >/dev/null 2>&1
+-fi
+-if [ $Iostat -eq 1 ];then
+-  kill -9 $Iostat_PID >/dev/null 2>&1
+-fi
+-rm -rf ${TMP}
+-echo "Testing done"
+-if [ $LOGGING -eq 1 ];then
+-  if [ ! -z $PRETTY_PRT ]; then
+-    grep FAIL $logfile > /dev/null 2>&1
+-  else
+-    grep 'stat=' $logfile | grep -v 'stat=0' > /dev/null 2>&1
+-  fi
+-
+-  if [ $? -eq 1 ]; then
+-    echo "All Tests PASSED!"
+-  else
+-    echo "Testing yielded failures. See logfile: $logfile"
+-    if [ $NO_NETWORK -eq 1 ];then
+-      echo "The NFS related tests should fail because network stress was disabled"
+-    fi
+-  fi
+-fi
+-
+-
 -- 
 2.19.0
 
