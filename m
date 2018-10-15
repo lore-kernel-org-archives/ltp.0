@@ -1,48 +1,53 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 15 Oct 2018 21:07:54 +0200
+Date: Mon, 15 Oct 2018 21:16:31 +0200
 Subject: [LTP] [PATCH v2 ltp] runltp: fix shellcheck error for sending
  email
-In-Reply-To: <20181015095214.GA32587@dell5510>
+In-Reply-To: <20181015145126.GB28106@rei>
 References: <20180726083426.19026-1-yixin.zhang@intel.com>
  <20181015095214.GA32587@dell5510>
-Message-ID: <20181015190754.GA26321@dell5510>
+ <20181015141857.2q7yhvhs6q3c7hdm@xps.therub.org>
+ <20181015145126.GB28106@rei>
+Message-ID: <20181015191631.GA26749@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yixin,
+Hi,
 
-> > Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
-> > ---
-> >  runltp | 139 +++++++++++++++++++++++++++++++----------------------------------
-> >  1 file changed, 67 insertions(+), 72 deletions(-)
+> > It might be easier to get people using it if it were in tree. Would it
+> > be possible to have runltp and runltp-ng both in tree? Until then, it's
+> > hard to not support the only available runner.
 
-> ...
-> > +    if [ "$ALT_EMAIL_OUT" -eq 1 ] ; then                    ## User wants reports to be e-mailed
-> > +        TAR_FILE_NAME=LTP_RUN_$version_date$DEFAULT_FILE_NAME_GENERATION_TIME.tar
-> > +        if [ "$HTMLFILE_NAME" ] ; then                      ## HTML file Exists
-> > +            if [ "$ALT_HTML_OUT" -ne 1 ] ; then             ## The HTML file path is absolute and not $LTPROOT/output
-> > +                mkdir -p $LTPROOT/output                    ## We need to create this Directory
-> > +                cp $HTMLFILE_NAME $LTPROOT/output/
-> > +            fi
-> > +        fi
-> > +        if [ "$OUTPUTFILE_NAME" ] ; then                    ## Output file exists
-> > +            if [ "$ALT_DIR_OUT" -ne 1 ] ; then              ## The Output file path is absolute and not $LTPROOT/output
-> > +                mkdir -p $LTPROOT/output                    ## We need to create this Directory
-> > +                cp $OUTPUTFILE_NAME $LTPROOT/output/
-> > +            fi
-> > +        fi
-> > +        if [ "$LOGFILE_NAME" ] ; then                       ## Log file exists
-> As I wrote in comment to v1 [3], $LOGFILE_NAME is always defined, so no need to check for it.
-> And the same is for for $OUTPUTFILE_NAME
-Although we should omit this check, I ignored that because the state of the file
-(it's in maintenance mode). The main point of this commit was to fix basishm and
-remove dead branch.
+> That is a fair point.
+You're right. I pushed the commit (no matter the state of the code, bashisms
+should be fixed).
 
-Pushed, with commit message adjustment.
-Thanks for your time and care.
+> > Looking at the README at
+> > https://github.com/metan-ucw/ltp/tree/master/tools/runltp-ng, it's hard
+> > to tell if it has feature parity with runltp, or if there are still
+> > gaps. Some example usecases would be nice too. For example, I see the
+> > list of back ends, but what if I want to run it locally (today's
+> > behavior)?
+
+> And the lack of documentation and the fact that the code is not yet
+> considered stable enough is the reason why it's not in-tree.
+
+Sorry for pointing to runltp-ng, which might not be yet ready for using/testing.
+I meant that more like info for users, not to waste time with something
+which should have been either rewritten from scratch or replaced.
+
+> I guess that the test-runner can be put into a separate git repo, it
+> does not depend on the rest of the LTP in any way, which should make it
+> easier to get the source code, without pulling in the outdated LTP
+> repostitory.
+
+> Also the local test execution is called shell backend, in that case the
+> testrunner forks a shell instead of doing a ssh connection and executes
+> the testcases locally.
+
+I haven't looked into the code myself (planning to), but it's really promising :).
 
 Kind regards,
 Petr
