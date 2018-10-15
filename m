@@ -1,100 +1,465 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 15 Oct 2018 22:18:18 +0200
-Subject: [LTP] [RFC PATCH 1/2] Remove LTP stress tests
+Date: Mon, 15 Oct 2018 22:18:19 +0200
+Subject: [LTP] [RFC PATCH 2/2] Remove ltplite and runltplite.sh
 In-Reply-To: <20181015201819.10868-1-pvorel@suse.cz>
 References: <20181015201819.10868-1-pvorel@suse.cz>
-Message-ID: <20181015201819.10868-2-pvorel@suse.cz>
+Message-ID: <20181015201819.10868-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-ltpstress.sh runs stress.part[1-3]. But these runtest files just
-duplicate definitions:
-* stress.part1: fs, mm, nfs
-* stress.part2: ipc, math, nptl
-* stress.part3: net.multicast, pty, syscalls
+ltplite was meant to be used as a quick test for install base.
+It contains duplicate definitions:
+fs, ipc, math, mm, nptl, pty, sched, syscalls
 
 Definitions are outdated anyway. There is no point trying trying
 to keep them sync.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- doc/ltp-run-files.txt    |   3 -
- runtest/stress.part1     | 209 ---------
- runtest/stress.part2     |  53 ---
- runtest/stress.part3     | 893 ---------------------------------------
- testscripts/ltpstress.sh | 349 ---------------
- 5 files changed, 1507 deletions(-)
- delete mode 100644 runtest/stress.part1
- delete mode 100644 runtest/stress.part2
- delete mode 100644 runtest/stress.part3
- delete mode 100755 testscripts/ltpstress.sh
+ Makefile        |    2 +-
+ runltplite.sh   |  392 -----------------
+ runtest/ltplite | 1113 -----------------------------------------------
+ 3 files changed, 1 insertion(+), 1506 deletions(-)
+ delete mode 100755 runltplite.sh
+ delete mode 100644 runtest/ltplite
 
-diff --git a/doc/ltp-run-files.txt b/doc/ltp-run-files.txt
-index f8cc36b9e..c29086987 100644
---- a/doc/ltp-run-files.txt
-+++ b/doc/ltp-run-files.txt
-@@ -75,9 +75,6 @@ other filesystem or disk type tests
-  - isofs.sh
-  - sysfs.sh
+diff --git a/Makefile b/Makefile
+index b0368a472..bcadd21b2 100644
+--- a/Makefile
++++ b/Makefile
+@@ -163,7 +163,7 @@ clean:: $(CLEAN_TARGETS)
+ $(foreach tgt,$(MAKE_TARGETS) include-all lib-all $(filter-out clean_install_dir,$(CLEAN_TARGETS)) $(INSTALL_TARGETS) include-install lib-install,$(eval $(call target_to_dir_dep_mapping,$(tgt))))
  
--LTP Stress tests
-- - ltpstress.sh
--
- AIO/DIO filesystem tests
-  - ltp-aiodio.sh
+ BINDIR_INSTALL_SCRIPTS	:= execltp
+-SRCDIR_INSTALL_SCRIPTS	:= IDcheck.sh runltp runltplite.sh ver_linux
++SRCDIR_INSTALL_SCRIPTS	:= IDcheck.sh runltp ver_linux
+ SRCDIR_INSTALL_READONLY	:= Version
+ SRCDIR_INSTALL_TARGETS	:= $(SRCDIR_INSTALL_SCRIPTS) $(SRCDIR_INSTALL_READONLY)
  
-diff --git a/runtest/stress.part1 b/runtest/stress.part1
-deleted file mode 100644
-index 423d25e38..000000000
---- a/runtest/stress.part1
+diff --git a/runltplite.sh b/runltplite.sh
+deleted file mode 100755
+index 000e50869..000000000
+--- a/runltplite.sh
 +++ /dev/null
-@@ -1,209 +0,0 @@
--#DESCRIPTION:Part one for ltpstress.sh
--mm01 mmap001 -m 10000
--# 40 Mb mmap() test.
--# Creates a 10000 page mmap, touches all of the map, sync's it, and
--# munmap()s it.
--mm02 mmap001
--# simple mmap() test.
--#mm03 mmap001 -i 0 -I 1 -m 100
--# repetitive mmapping test.
--# Creates a one page map repetitively for one minute.
+@@ -1,392 +0,0 @@
+-#!/bin/sh
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2001,2005            ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-################################################################################
+-# File: runltplite
+-#
+-# Description:  This script can be used to run a subset the tests in the LTP test suite
+-#               This script is typically used as a quick test to check an install base.
+-#
+-# Authors:      Manoj Iyer - manoji@us.ibm.com
+-#               Robbie Williamson - robbiew@us.ibm.com
+-#               Marty Ridgeway - mridge@us.ibm.com
+-#
+-# History:      Created runltplite script to run a subset of the LTP testsuite
+-#
+-#
+-#
+-#
+-#
+-#
+-#
+-#
 -
--mtest01 mtest01 -p80
--mtest01w mtest01 -p80 -w
+-. "$(dirname $0)/runltp"
 -
--#test for race conditions
--mtest05 mmstress
--mtest06 mmap1 -x 0.05
+-setup()
+-{
+-    cd `dirname $0` || \
+-    {
+-        echo "FATAL: unable to change directory to $(dirname $0)"
+-        exit 1
+-    }
+-    export LTPROOT=${PWD}
+-    export TMPBASE="/tmp"
+-    export TMP="${TMPBASE}/ltp-$$"
+-    export PATH="${PATH}:${LTPROOT}/testcases/bin:${LTPROOT}/bin"
 -
--mem02 mem02
 -
--# Test for mmap() page corruption. This test is meant for
--# 1 hour and more. Please change -h(hour), -m(minute) &
--# -s(seconds) settings, if default not desired
--mmap-corruption01 mmap-corruption01 -h1 -m1 -s1
+-    export LTP_DEV=""
+-    export LTP_DEV_FS_TYPE="ext2"
 -
--page01 page01
--page02 page02
+-    [ -d $LTPROOT/testcases/bin ] ||
+-    {
+-        echo "FATAL: LTP not installed correctly"
+-        echo "INFO:  Follow directions in INSTALL!"
+-        exit 1
+-    }
 -
--data_space data_space
--stack_space stack_space
+-    [ -e $LTPROOT/bin/ltp-pan ] ||
+-    {
+-        echo "FATAL: Test suite driver 'ltp-pan' not found"
+-        echo "INFO:  Follow directions in INSTALL!"
+-        exit 1
+-    }
+-}
 -
--shmt02 shmt02
--shmt03 shmt03
--shmt04 shmt04
--shmt05 shmt05
--shmt06 shmt06
--shmt07 shmt07
--shmt08 shmt08
--shmt09 shmt09
--shmt10 shmt10
 -
--cpuset01 cpuset01 -I 3600
+-usage()
+-{
+-    cat <<-EOF >&2
 -
+-    usage: ${0##*/} -c [-d TMPDIR] [-i # (in Mb)]
+-    [ -l LOGFILE ] [ -o OUTPUTFILE ] [ -m # (in Mb)] -N -q
+-    [ -r LTPROOT ] -v
+-
+-    -c NUM_PROCS    Run LTP under additional background CPU load.
+-    -d TMPDIR       Directory where temporary files will be created.
+-    -h              Help. Prints all available options.
+-    -i # (in Mb)    Run LTP with a _min_ IO load of # Mb in background.
+-    -l LOGFILE      Log results of test in a logfile.
+-    -m # (in Mb)    Run LTP with a _min_ memory load of # Mb in background.
+-    -N              Run all the networking tests.
+-    -o OUTPUTFILE   Redirect test output to a file.
+-    -p              Human readable format logfiles.
+-    -q              Print less verbose output to screen.
+-    -r LTPROOT      Fully qualified path where testsuite is installed.
+-    -S SKIPFILE     Skip tests specified in SKIPFILE.
+-    -b DEVICE       Some tests require an unmounted block device to run
+-                    correctly.
+-    -B LTP_DEV_FS_TYPE  The file system of test block devices.
+-
+-    example: ${0##*/} -i 1024 -m 128 -p -q  -l /tmp/resultlog.$$ -d ${PWD}
+-
+-
+-	EOF
+-exit 0
+-}
+-
+-
+-main()
+-{
+-    local CMDFILE="ltplite"
+-    local PRETTY_PRT=""
+-    local ALT_DIR=0
+-    local RUN_NETEST=0
+-    local QUIET_MODE=""
+-    local VERBOSE_MODE=""
+-    local NETPIPE=0
+-    local GENLOAD=0
+-    local MEMSIZE=0
+-    local DURATION=""
+-    local BYTESIZE=0
+-    local LOGFILE=""
+-    local PRETTY_PRT=""
+-    local TAG_RESTRICT_STRING=""
+-    local PAN_COMMAND=""
+-
+-    local scenfile=""
+-
+-    while getopts c:d:hi:l:m:No:pqr:S:b:B: arg
+-    do  case $arg in
+-        c)
+-	    NUM_PROCS=$(($OPTARG))
+-            $LTPROOT/testcases/bin/genload --cpu $NUM_PROCS >/dev/null 2>&1 &
+-            GENLOAD=1 ;;
+-
+-        d)  # append $$ to TMP, as it is recursively
+-            # removed at end of script.
+-            TMPBASE=$OPTARG
+-            TMP="${TMPBASE}/ltp-$$"
+-            export TMPDIR="$TMP";;
+-
+-        h)  usage;;
+-
+-        i)
+-            BYTESIZE=$(($OPTARG * 1024 * 1024))
+-            $LTPROOT/testcases/bin/genload --io 1 >/dev/null 2>&1 &
+-            $LTPROOT/testcases/bin/genload --hdd 0 --hdd-bytes $BYTESIZE \
+-            >/dev/null 2>&1 &
+-            GENLOAD=1 ;;
+-
+-        l)
+-
+-            [ ! -d $LTPROOT/results ] && \
+-            {
+-               echo "INFO: creating $LTPROOT/results directory"
+-               mkdir -p $LTPROOT/results || \
+-               {
+-                   echo "ERROR: failed to create $LTPROOT/results"
+-                   exit 1
+-                }
+-            }
+-            case $OPTARG in
+-	    /*)
+-                LOGFILE="-l $OPTARG" ;;
+-            *)
+-                LOGFILE="-l $LTPROOT/results/$OPTARG"
+-                ALT_DIR=1 ;;
+-            esac ;;
+-
+-        m)
+-            MEMSIZE=$(($OPTARG * 1024 * 1024))
+-            $LTPROOT/testcases/bin/genload  --vm 0 --vm-bytes $MEMSIZE \
+-                >/dev/null 2>&1 &
+-            GENLOAD=1;;
+-
+-        N)  RUN_NETEST=1;;
+-
+-        o)  OUTPUTFILE="-o $OPTARG" ;;
+-
+-        p)  PRETTY_PRT=" -p ";;
+-
+-        q)  QUIET_MODE=" -q ";;
+-
+-        r)  LTPROOT=$OPTARG;;
+-
+-        S)  case $OPTARG in
+-                /*)
+-                    SKIPFILE=$OPTARG;;
+-                *)
+-                    SKIPFILE="$LTPROOT/$OPTARG";;
+-            esac ;;
+-
+-        b)  DEVICE=$OPTARG;;
+-
+-        B)  LTP_DEV_FS_TYPE=$OPTARG;;
+-
+-
+-        \?) usage;;
+-        esac
+-    done
+-
+-
+-    mkdir -p $TMP || \
+-    {
+-        echo "FATAL: Unable to make temporary directory $TMP"
+-        exit 1
+-    }
+-
+-    cd $TMP || \
+-    {
+-      echo "could not cd ${TMP} ... exiting"
+-      exit 1
+-    }
+-
+-# Run Networking tests ?
+-
+-    [ "$RUN_NETEST" -eq 1 ] && \
+-    {
+-        [ -z "$RHOST" ] || [ -z "$PASSWD" ] && \
+-        {
+-            [ -z "$RHOST" ] && \
+-            {
+-                echo \
+-                "INFO: Enter RHOST = 'name of the remote host machine'"
+-                echo -n "-> "
+-                read RHOST
+-            }
+-
+-            [ -z "$PASSWD" ] && \
+-            {
+-                echo " "
+-                echo \
+-                "INFO: Enter PASSWD = 'root passwd of the remote host machine'"
+-                echo -n "-> "
+-                read PASSWD
+-            }
+-            export RHOST=$RHOST
+-            export PASSWD=$PASSWD
+-            echo "WARNING: security of $RHOST may be compromised"
+-        }
+-    }
+-
+-    # If user does not provide a command file select a default set of testcases
+-    # to execute.
+-    if   [ -f $CMDFILE ] || \
+-                CMDFILE="$LTPROOT/runtest/$CMDFILE"
+-	then
+-        cat $CMDFILE > ${TMP}/alltests || \
+-        {
+-            echo "FATAL: Unable to create command file"
+-            exit 1
+-        }
+-    fi
+-
+-    if [ "$RUN_NETEST" -eq 1 ]; then
+-        SCENARIO_LISTS="$SCENARIO_LISTS $LTPROOT/scenario_groups/network"
+-    fi
+-
+-    # DO NOT INDENT/DEDENT!
+-        if [ -n "$SCENARIO_LISTS" ]; then
+-            # Insurance to make sure that the first element in the pipe
+-            # completed successfully.
+-            cat_ok_sentinel=$TMP/cat_ok.$$
+-	    (cat $SCENARIO_LISTS && touch "$cat_ok_sentinel") | \
+-                while read scenfile; do
+-
+-                    scenfile=${LTPROOT}/runtest/$scenfile
+-
+-                    # Skip over non-existent scenario files; things are
+-                    # robust enough now that the build will fail if these
+-                    # files don't exist.
+-                    [ -f "$scenfile" ] || continue
+-
+-                    cat $scenfile >> "$TMP/alltests" || {
+-                        echo "FATAL: unable to append to command file"
+-                        rm -Rf "$TMP"
+-                        rm -f "$cat_ok_sentinel"
+-                        exit 1
+-                    }
+-
+-                done
+-
+-            rm -f "$cat_ok_sentinel"
+-
+-        fi
+-    # ^^DO NOT INDENT/DEDENT!^^
+-
+-    # The fsx-linux tests use the SCRATCHDEV environment variable as a location
+-    # that can be reformatted and run on.  Set SCRATCHDEV if you want to run
+-    # these tests.  As a safeguard, this is disabled.
+-    unset SCRATCHDEV
+-    [ -n "$SCRATCHDEV" ] && \
+-    {
+-         cat ${LTPROOT}/runtest/fsx >> ${TMP}/alltests ||
+-         {
+-             echo "FATAL: unable to create  fsx-linux tests command file"
+-             exit 1
+-         }
+-    }
+-
+-    # check for required users and groups
+-    ${LTPROOT}/IDcheck.sh >/dev/null 2>&1 || \
+-    {
+-        echo "WARNING: required users and groups not present"
+-        echo "WARNING: some test cases may fail"
+-    }
+-
+-    [ -n "$CMDFILES" ] && \
+-    {
+-        for scenfile in `echo "$CMDFILES" | tr ',' ' '`
+-        do
+-            [ -f "$scenfile" ] || scenfile="$LTPROOT/runtest/$scenfile"
+-            cat "$scenfile" >> ${TMP}/alltests || \
+-            {
+-                echo "FATAL: unable to create command file"
+-                rm -Rf "$TMP"
+-                exit 1
+-            }
+-        done
+-    }
+-
+-    # Blacklist or skip tests if a SKIPFILE was specified with -S
+-    if [ -n "${SKIPFILE}" ]; then
+-        for test_name in $(awk '{print $1}' "${SKIPFILE}"); do
+-            case "${test_name}" in \#*) continue;; esac
+-            sed -i "/\<${test_name}\>/c\\${test_name} exit 32;" alltests
+-        done
+-    fi
+-
+-    # display versions of installed software
+-    [ -z "$QUIET_MODE" ] && \
+-    {
+-        ${LTPROOT}/ver_linux || \
+-        {
+-            echo "WARNING: unable to display versions of software installed"
+-            exit 1
+-        }
+-    }
+-
+-    set_block_device
+-
+-    [ ! -z "$QUIET_MODE" ] && { echo "INFO: Test start time: $(date)" ; }
+-    PAN_COMMAND="${LTPROOT}/bin/ltp-pan $QUIET_MODE -e -S $INSTANCES $DURATION -a $$ \
+-    -n $$ $PRETTY_PRT -f ${TMP}/alltests $LOGFILE $OUTPUTFILE"
+-    if [ ! -z "$VERBOSE_MODE" ] ; then
+-      echo "COMMAND:    $PAN_COMMAND"
+-      if [ ! -z "$TAG_RESTRICT_STRING" ] ; then
+-        echo "INFO: Restricted to $TAG_RESTRICT_STRING"
+-      fi
+-    fi
+-    #$PAN_COMMAND #Duplicated code here, because otherwise if we fail, only "PAN_COMMAND" gets output
+-    # Some tests need to run inside the "bin" directory.
+-    cd "${LTPROOT}/testcases/bin"
+-    ${LTPROOT}/bin/ltp-pan $QUIET_MODE -e -S $INSTANCES $DURATION -a $$ \
+-    -n $$ $PRETTY_PRT -f ${TMP}/alltests $LOGFILE $OUTPUTFILE
+-
+-    if [ $? -eq 0 ]; then
+-      echo "INFO: ltp-pan reported all tests PASS"
+-      VALUE=0
+-    else
+-      echo "INFO: ltp-pan reported some tests FAIL"
+-      VALUE=1
+-    fi
+-    cd ..
+-    [ ! -z "$QUIET_MODE" ] && { echo "INFO: Test end time: $(date)" ; }
+-
+-    [ "$GENLOAD" -eq 1 ] && { killall -9 genload ; }
+-    [ "$NETPIPE" -eq 1 ] && { killall -9 NPtcp ; }
+-
+-    [ "$ALT_DIR" -eq 1 ] && \
+-    {
+-    cat <<-EOF >&1
+-
+-       ###############################################################"
+-
+-            Done executing testcases."
+-            result log is in the $LTPROOT/results directory"
+-
+-       ###############################################################"
+-
+-	EOF
+-    }
+-    exit $VALUE
+-}
+-
+-cleanup()
+-{
+-    rm -rf ${TMP}
+-}
+-
+-trap "cleanup" 0
+-setup
+-main "$@"
+-
+-#vim: syntax=sh
+diff --git a/runtest/ltplite b/runtest/ltplite
+deleted file mode 100644
+index 9b2696910..000000000
+--- a/runtest/ltplite
++++ /dev/null
+@@ -1,1113 +0,0 @@
+-#DESCRIPTION:Math library tests - CPU tests
+-abs01 abs01
+-
+-atof01 atof01
+-
+-float_bessel cd $LTPROOT/testcases/bin; float_bessel -v
+-float_exp_log cd $LTPROOT/testcases/bin; float_exp_log -v
+-float_iperb cd $LTPROOT/testcases/bin; float_iperb -v
+-float_power cd $LTPROOT/testcases/bin; float_power -v
+-float_trigo cd $LTPROOT/testcases/bin; float_trigo -v
+-
+-fptest01 fptest01
+-fptest02 fptest02
+-
+-nextafter01 nextafter01
+-
+-#DESCRIPTION:fsx filesystem stress tests
 -fsx-linux export TCbin=$LTPROOT/testcases/bin;fsxtest02 10000
 -#fsx-ext2 fsxtest $SCRATCHDEV ext2 10000
 -#fsx-ext3 fsxtest $SCRATCHDEV ext3 10000
@@ -102,191 +467,7 @@ index 423d25e38..000000000
 -#fsx-xfs  fsxtest $SCRATCHDEV xfs 10000
 -#fsx-reiserfs fsxtest $SCRATCHDEV reiserfs 10000
 -
--## Complete a default run.
--dio01 diotest1
--dio02 diotest2
--dio03 diotest3
--dio04 diotest4
--dio05 diotest5
--dio06 diotest6
--
--## Run the tests with larger buffersize
--dio07 diotest1 -b 65536
--dio08 diotest2 -b 65536
--dio09 diotest3 -b 65536
--dio10 diotest4 -b 65536
--dio11 diotest5 -b 65536
--dio12 diotest6 -b 65536
--
--### Run the tests with larger iterations
--dio13 diotest1 -b 65536 -n 2000
--dio14 diotest2 -b 65536 -i 1000
--dio15 diotest3 -b 65536 -i 1000
--dio16 diotest5 -b 65536 -i 1000
--dio17 diotest6 -b 65536 -i 1000
--
--## Run the tests with larger offset - 1MB
--dio18 diotest2 -b 65536 -i 1000 -o 1024000
--dio19 diotest3 -b 65536 -i 1000 -o 1024000
--dio20 diotest5 -b 65536 -i 1000 -o 1024000
--dio21 diotest6 -b 65536 -i 1000 -o 1024000
--
--## Run the tests with larger offset - 100 MB
--dio22 diotest2 -b 65536 -i 1000 -o 104857600
--dio23 diotest3 -b 65536 -i 1000 -o 104857600
--dio24 diotest5 -b 65536 -i 1000 -o 104857600
--dio25 diotest6 -b 65536 -i 1000 -o 104857600
--
--### Run tests with larger vector array
--dio26 diotest6 -b 8192 -v 100
--dio27 diotest6 -b 8192 -o 1024000 -i 1000 -v 100
--dio28 diotest6 -b 8192 -o 1024000 -i 1000 -v 200
--
--### Run the tests with more children
--#dio29 diotest3 -b 65536 -n 100 -i 1000 -o 1024000
--#dio30 diotest6 -b 65536 -n 100 -i 1000 -o 1024000
--#
--# RAW DEVICE TEST SECTION
--#   DEV1 and DEV2 should be exported prior to execution or
--# replaced with the actual device ids, i.e.
--#   dio33 diotest1 -i /dev/sda2 -o /dev/sda3
--#
--### Run the tests with raw device
--#dio33 diotest1 -i $DEV1 -o $DEV2
--#dio34 diotest2 -f $DEV1
--#dio36 diotest3 -f $DEV1
--#dio37 diotest5 -f $DEV1
--#dio38 diotest6 -f $DEV1
--#
--### Run the tests with raw device and larger iterations
--#dio39 diotest1 -b 65536 -n 2000 -i $DEV1 -o $DEV2
--#dio40 diotest2 -b 65536 -i 1000 -f $DEV1
--#dio41 diotest3 -b 65536 -i 1000 -f $DEV1
--#dio42 diotest5 -b 65536 -i 1000 -f $DEV1
--#dio43 diotest6 -b 65536 -i 1000 -f $DEV1
--#
--## Run the tests with raw device and larger offset - 100 MB
--#dio44 diotest2 -b 65536 -i 1000 -o 104857600 -f $DEV1
--#dio45 diotest3 -b 65536 -i 1000 -o 104857600 -f $DEV1
--#dio46 diotest5 -b 65536 -i 1000 -o 104857600 -f $DEV1
--#dio47 diotest6 -b 65536 -i 1000 -o 104857600 -f $DEV1
--
--gf01 growfiles -W gf01 -b -e 1 -u -i 0 -L 20 -w -C 1 -l -I r -T 10 glseek20 glseek20.2
--gf02 growfiles -W gf02 -b -e 1 -L 10 -i 100 -I p -S 2 -u -f gf03_
--gf03 growfiles -W gf03 -b -e 1 -g 1 -i 1 -S 150 -u -f gf05_
--gf04 growfiles -W gf04 -b -e 1 -g 4090 -i 500 -t 39000 -u -f gf06_
--gf05 growfiles -W gf05 -b -e 1 -g 5000 -i 500 -t 49900 -T10 -c9 -I p -u -f gf07_
--gf06 growfiles -W gf06 -b -e 1 -u -r 1-5000 -R 0--1 -i 0 -L 30 -C 1 g_rand10 g_rand10.2
--gf07 growfiles -W gf07 -b -e 1 -u -r 1-5000 -R 0--2 -i 0 -L 30 -C 1 -I p g_rand13 g_rand13.2
--gf08 growfiles -W gf08 -b -e 1 -u -r 1-5000 -R 0--2 -i 0 -L 30 -C 1 g_rand11 g_rand11.2
--gf09 growfiles -W gf09 -b -e 1 -u -r 1-5000 -R 0--1 -i 0 -L 30 -C 1 -I p g_rand12 g_rand12.2
--gf10 growfiles -W gf10 -b -e 1 -u -r 1-5000 -i 0 -L 30 -C 1 -I l g_lio14 g_lio14.2
--gf11 growfiles -W gf11 -b -e 1 -u -r 1-5000 -i 0 -L 30 -C 1 -I L g_lio15 g_lio15.2
--gf12 mkfifo gffifo17; growfiles -W gf12 -b -e 1 -u -i 0 -L 30 gffifo17
--gf13 mkfifo gffifo18; growfiles -W gf13 -b -e 1 -u -i 0 -L 30 -I r -r 1-4096 gffifo18
--gf14 growfiles -W gf14 -b -e 1 -u -i 0 -L 20 -w -l -C 1 -T 10 glseek19 glseek19.2
--gf15 growfiles -W gf15 -b -e 1 -u -r 1-49600 -I r -u -i 0 -L 120 Lgfile1
--gf16 growfiles -W gf16 -b -e 1 -i 0 -L 120 -u -g 4090 -T 100 -t 408990 -l -C 10 -c 1000 -S 10 -f Lgf02_
--gf17 growfiles -W gf17 -b -e 1 -i 0 -L 120 -u -g 5000 -T 100 -t 499990 -l -C 10 -c 1000 -S 10 -f Lgf03_
--gf18 growfiles -W gf18 -b -e 1 -i 0 -L 120 -w -u -r 10-5000 -I r -l -S 2 -f Lgf04_
--gf19 growfiles -W gf19 -b -e 1 -g 5000 -i 500 -t 49900 -T10 -c9 -I p -o O_RDWR,O_CREAT,O_TRUNC -u -f gf08i_
--gf20 growfiles -W gf20 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -r 1-256000:512 -R 512-256000 -T 4 gfbigio-$$
--gf21 growfiles -W gf21 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -g 20480 -T 10 -t 20480 gf-bld-$$
--gf22 growfiles -W gf22 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -g 20480 -T 10 -t 20480 gf-bldf-$$
--gf23 growfiles -W gf23 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -r 512-64000:1024 -R 1-384000 -T 4 gf-inf-$$
--gf24 growfiles -W gf24 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -g 20480 gf-jbld-$$
--gf25 growfiles -W gf25 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -r 1024000-2048000:2048 -R 4095-2048000 -T 1 gf-large-gs-$$
--gf26 growfiles -W gf26 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -r 128-32768:128 -R 512-64000 -T 4 gfsmallio-$$
--gf27 growfiles -W gf27 -b -D 0 -w -g 8b -C 1 -b -i 1000 -u gfsparse-1-$$
--gf28 growfiles -W gf28 -b -D 0 -w -g 16b -C 1 -b -i 1000 -u gfsparse-2-$$
--gf29 growfiles -W gf29 -b -D 0 -r 1-4096 -R 0-33554432 -i 0 -L 60 -C 1 -u gfsparse-3-$$
--gf30 growfiles -W gf30 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -o O_RDWR,O_CREAT,O_SYNC -g 20480 -T 10 -t 20480 gf-sync-$$
--rwtest01 export LTPROOT; rwtest -N rwtest01 -c -q -i 60s  -f sync 10%25000:rw-sync-$$
--rwtest02 export LTPROOT; rwtest -N rwtest02 -c -q -i 60s  -f buffered 10%25000:rw-buffered-$$
--rwtest03 export LTPROOT; rwtest -N rwtest03 -c -q -i 60s -n 2  -f buffered -s mmread,mmwrite -m random -Dv 10%25000:mm-buff-$$
--rwtest04 export LTPROOT; rwtest -N rwtest04 -c -q -i 60s -n 2  -f sync -s mmread,mmwrite -m random -Dv 10%25000:mm-sync-$$
--rwtest05 export LTPROOT; rwtest -N rwtest05 -c -q -i 50 -T 64b 500b:/tmp/rwtest01%f
--
--#must be run as root
--#iogen01 iogen -i 120s -s read,write 500b:doio.f1.$$ 1000b:doio.f2.$$ | doio -akv -n 2
--iogen01 export LTPROOT; rwtest -N iogen01 -i 120s -s read,write -Da -Dv -n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
--
--fs_inod01 fs_inod $TMPDIR 10 10 1
--linker01 linktest.sh 1000 1000
--openfile01 openfile -f10 -t10
--inode01 inode01
--inode02 inode02
--stream01 stream01
--stream02 stream02
--stream03 stream03
--stream04 stream04
--stream05 stream05
--ftest01 ftest01
--ftest02 ftest02
--ftest03 ftest03
--ftest04 ftest04
--ftest05 ftest05
--ftest06 ftest06
--ftest07 ftest07
--ftest08 ftest08
--
--nfs01 export VERSION=2 SOCKET_TYPE=udp; nfs01
--nfs01 export VERSION=2 SOCKET_TYPE=tcp; nfs01
--nfs01 export VERSION=3 SOCKET_TYPE=udp; nfs01
--nfs01 export VERSION=3 SOCKET_TYPE=tcp; nfs01
--
--nfs02 export VERSION=2 SOCKET_TYPE=udp; nfs02
--nfs02 export VERSION=2 SOCKET_TYPE=tcp; nfs02
--nfs02 export VERSION=3 SOCKET_TYPE=udp; nfs02
--nfs02 export VERSION=3 SOCKET_TYPE=tcp; nfs02
--
--nfs03 export VERSION=2 SOCKET_TYPE=udp; nfs03
--nfs03 export VERSION=2 SOCKET_TYPE=tcp; nfs03
--nfs03 export VERSION=3 SOCKET_TYPE=udp; nfs03
--nfs03 export VERSION=3 SOCKET_TYPE=tcp; nfs03
--
--nfs04 export VERSION=2 SOCKET_TYPE=udp; nfs04
--nfs04 export VERSION=2 SOCKET_TYPE=tcp; nfs04
--nfs04 export VERSION=3 SOCKET_TYPE=udp; nfs04
--nfs04 export VERSION=3 SOCKET_TYPE=tcp; nfs04
--
--nfs05 export VERSION=2 SOCKET_TYPE=udp; nfs05
--nfs05 export VERSION=2 SOCKET_TYPE=tcp; nfs05
--nfs05 export VERSION=3 SOCKET_TYPE=udp; nfs05
--nfs05 export VERSION=3 SOCKET_TYPE=tcp; nfs05
--
--nfsx-linux export VERSION=2 SOCKET_TYPE=udp; export TCbin=$LTPROOT/testcases/bin; fsx.sh
--nfsx-linux export VERSION=2 SOCKET_TYPE=tcp; export TCbin=$LTPROOT/testcases/bin; fsx.sh
--nfsx-linux export VERSION=3 SOCKET_TYPE=udp; export TCbin=$LTPROOT/testcases/bin; fsx.sh
--nfsx-linux export VERSION=3 SOCKET_TYPE=tcp; export TCbin=$LTPROOT/testcases/bin; fsx.sh
--
--
-diff --git a/runtest/stress.part2 b/runtest/stress.part2
-deleted file mode 100644
-index 74357081a..000000000
---- a/runtest/stress.part2
-+++ /dev/null
-@@ -1,53 +0,0 @@
--#DESCRIPTION:Part two for ltpstress.sh
--abs01 abs01
--
--atof01 atof01
--
--float_bessel float_bessel -D $LTPROOT/testcases/bin -v
--float_exp_log float_exp_log -D $LTPROOT/testcases/bin -v
--float_iperb float_iperb  -D $LTPROOT/testcases/bin -v
--float_power float_power  -D $LTPROOT/testcases/bin -v
--float_trigo float_trigo  -D $LTPROOT/testcases/bin -v
--
--fptest01 fptest01
--fptest02 fptest02
--
--nextafter01 nextafter01
--pth_str01 pth_str01
--pth_str02 pth_str02 -n1000
--pth_str03 pth_str03
--
--
+-#DESCRIPTION:Interprocess communication stress
 -# These tests use tests/pipeio to put pipes (named or unnamed) through a workout
 -#
 -pipeio_1 pipeio -T pipeio_1 -c 5 -s 4090 -i 100 -b -f x80
@@ -319,14 +500,8 @@ index 74357081a..000000000
 -sem01 sem01
 -sem02 sem02
 -
--nptl01 nptl01
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-deleted file mode 100644
-index 3de70c99b..000000000
---- a/runtest/stress.part3
-+++ /dev/null
-@@ -1,893 +0,0 @@
--#DESCRIPTION:Part three for ltpstress.sh
+-
+-#DESCRIPTION:Kernel system calls
 -abort01 abort01
 -
 -accept01 accept01
@@ -385,6 +560,7 @@ index 3de70c99b..000000000
 -chroot02 chroot02
 -chroot03 chroot03
 -chroot04 chroot04
+-
 -
 -clone01 clone01
 -clone02 clone02
@@ -467,6 +643,7 @@ index 3de70c99b..000000000
 -fchown05 fchown05
 -
 -fcntl01 fcntl01
+-fcntl02 fcntl02
 -fcntl03 fcntl03
 -fcntl04 fcntl04
 -fcntl05 fcntl05
@@ -479,6 +656,7 @@ index 3de70c99b..000000000
 -fcntl12 fcntl12
 -fcntl13 fcntl13
 -fcntl14 fcntl14
+-fcntl15 fcntl15
 -#fcntl16 fcntl16 #Contains errors.
 -fcntl17 fcntl17
 -fcntl18 fcntl18
@@ -565,6 +743,7 @@ index 3de70c99b..000000000
 -getgid03 getgid03
 -
 -getgroups01 getgroups01
+-getgroups03 getgroups03
 -
 -gethostid01 gethostid01
 -
@@ -573,8 +752,6 @@ index 3de70c99b..000000000
 -getitimer01 getitimer01
 -getitimer02 getitimer02
 -getitimer03 getitimer03
--
--getpagesize01 getpagesize01
 -
 -getpeername01 getpeername01
 -
@@ -619,6 +796,13 @@ index 3de70c99b..000000000
 -getuid01 getuid01
 -getuid03 getuid03
 -
+-#Needs tty device.
+-#ioctl01 ioctl01 -D /dev/tty0
+-#ioctl02 ioctl02 -D /dev/tty0
+-
+-# Introducing ioctl tests for all /dev/tty* devices
+-ioctl test_ioctl
+-
 -ioperm01 ioperm01
 -ioperm02 ioperm02
 -
@@ -642,6 +826,9 @@ index 3de70c99b..000000000
 -lchown02 lchown02
 -lchown03 lchown03
 -
+-lgetxattr01 lgetxattr01
+-lgetxattr02 lgetxattr02
+-
 -link01 symlink01 -T link01
 -link02 link02
 -link03 link03
@@ -652,6 +839,10 @@ index 3de70c99b..000000000
 -link08 link08
 -
 -listen01 listen01
+-
+-llistxattr01 llistxattr01
+-llistxattr02 llistxattr02
+-llistxattr03 llistxattr03
 -
 -llseek01 llseek01
 -llseek02 llseek02
@@ -711,11 +902,21 @@ index 3de70c99b..000000000
 -mmap07 mmap07
 -mmap08 mmap08
 -mmap09 mmap09
--mmap16 mmap16 -i 5
+-mmap16 mmap16
 -
 -modify_ldt01 modify_ldt01
 -modify_ldt02 modify_ldt02
 -modify_ldt03 modify_ldt03
+-
+-#
+-# These tests require an unmounted block device
+-# to run correctly. Please see individual test
+-# code for more information.
+-#
+-#mount01 mount01 -D /dev/...
+-#mount02 mount02 -D /dev/...
+-#mount03 mount03 -D /dev/...
+-#mount04 mount04 -D /dev/...
 -
 -mprotect01 mprotect01
 -mprotect02 mprotect02
@@ -731,8 +932,6 @@ index 3de70c99b..000000000
 -msgctl02 msgctl02
 -msgctl03 msgctl03
 -msgctl04 msgctl04
--msgstress01 msgstress01
--msgstress02 msgstress02
 -
 -msgget01 msgget01
 -msgget02 msgget02
@@ -745,6 +944,7 @@ index 3de70c99b..000000000
 -msgrcv05 msgrcv05
 -msgrcv06 msgrcv06
 -msgrcv07 msgrcv07
+-msgrcv08 msgrcv08
 -
 -msgsnd01 msgsnd01
 -msgsnd02 msgsnd02
@@ -765,6 +965,7 @@ index 3de70c99b..000000000
 -munmap03 munmap03
 -
 -nanosleep01 nanosleep01
+-nanosleep02 nanosleep02
 -nanosleep03 nanosleep03
 -nanosleep04 nanosleep04
 -
@@ -791,11 +992,18 @@ index 3de70c99b..000000000
 -open12 open12
 -open13 open13
 -
+-mincore01 mincore01
+-#mincore02 mincore02 currently hangs and does not exit correctly
+-madvise01 madvise01
+-madvise02 madvise02
+-
 -pathconf01 pathconf01
 -
 -pause01 pause01
 -pause02 pause02
 -pause03 pause03
+-
+-personality01 personality01
 -
 -pipe01 pipe01
 -pipe02 pipe02
@@ -830,10 +1038,12 @@ index 3de70c99b..000000000
 -
 -pselect01 pselect01
 -pselect02 pselect02
+-pselect03 pselect03
 -
 -ptrace01 ptrace01
 -ptrace02 ptrace02
 -ptrace03 ptrace03
+-ptrace05 ptrace05
 -
 -pwrite01 pwrite01
 -pwrite02 pwrite02
@@ -873,6 +1083,9 @@ index 3de70c99b..000000000
 -
 -recvmsg01 recvmsg01
 -
+-removexattr01 removexattr01
+-removexattr02 removexattr02
+-
 -rename01 rename01
 -rename01A symlink01 -T rename01
 -rename02 rename02
@@ -889,6 +1102,9 @@ index 3de70c99b..000000000
 -rename13 rename13
 -rename14 rename14
 -
+-request_key01 request_key01
+-request_key02 request_key02
+-
 -rmdir01 rmdir01
 -rmdir02 rmdir02
 -rmdir03 rmdir03
@@ -896,6 +1112,7 @@ index 3de70c99b..000000000
 -
 -sbrk01 sbrk01
 -sbrk02 sbrk02
+-sbrk03 sbrk03
 -
 -sched_get_priority_max01 sched_get_priority_max01
 -sched_get_priority_max02 sched_get_priority_max02
@@ -922,13 +1139,16 @@ index 3de70c99b..000000000
 -
 -sched_setscheduler01 sched_setscheduler01
 -sched_setscheduler02 sched_setscheduler02
+-sched_setscheduler03 sched_setscheduler03
 -
 -sched_yield01 sched_yield01
 -
 -select01 select01
 -select02 select02
 -select03 select03
+-select04 select04
 -
+-semctl01 semctl01
 -semctl02 semctl02
 -semctl03 semctl03
 -semctl04 semctl04
@@ -962,8 +1182,13 @@ index 3de70c99b..000000000
 -setdomainname03	setdomainname03
 -
 -setfsgid01 setfsgid01
+-setfsgid02 setfsgid02
+-setfsgid03 setfsgid03
 -
 -setfsuid01 setfsuid01
+-setfsuid02 setfsuid02
+-setfsuid03 setfsuid03
+-setfsuid04 setfsuid04
 -
 -setgid01 setgid01
 -setgid02 setgid02
@@ -1037,6 +1262,7 @@ index 3de70c99b..000000000
 -shmat01 shmat01
 -shmat02 shmat02
 -
+-shmctl01 shmctl01
 -shmctl02 shmctl02
 -shmctl03 shmctl03
 -shmctl04 shmctl04
@@ -1053,14 +1279,11 @@ index 3de70c99b..000000000
 -sigaction01 sigaction01
 -sigaction02 sigaction02
 -
--
 -sigaltstack01 sigaltstack01
 -sigaltstack02 sigaltstack02
 -
 -
--
 -sighold02 sighold02
--
 -
 -signal01 signal01
 -signal02 signal02
@@ -1122,6 +1345,9 @@ index 3de70c99b..000000000
 -symlink04 symlink04
 -symlink05 symlink05
 -
+-sync01 sync01
+-sync02 sync02
+-
 -syscall01 syscall01
 -
 -sysconf01 sysconf01
@@ -1140,9 +1366,22 @@ index 3de70c99b..000000000
 -sysinfo01 sysinfo01
 -sysinfo02 sysinfo02
 -
+-syslog01 syslog01
+-syslog02 syslog02
+-syslog03 syslog03
+-syslog04 syslog04
+-syslog05 syslog05
+-syslog06 syslog06
+-syslog07 syslog07
+-syslog08 syslog08
+-syslog09 syslog09
+-syslog10 syslog10
+-syslog11 syslog11
+-syslog12 syslog12
+-
 -# This syscall is obsoleted by gettimeofday.
--#time01 time01
--#time02 time02
+-# time01 time01
+-# time02 time02
 -
 -times01 times01
 -times03 times03
@@ -1167,6 +1406,22 @@ index 3de70c99b..000000000
 -unlink05 unlink05
 -unlink07 unlink07
 -unlink08 unlink08
+-
+-#
+-# These tests require an unmounted block device
+-# to run correctly. Please see individual test
+-# code for more information.
+-#
+-#umount01 umount01 -D /dev/...
+-#umount02 umount02 -D /dev/...
+-#umount03 umount03 -D /dev/...
+-
+-umount2_01 umount2_01
+-umount2_02 umount2_02
+-umount2_03 umount2_03
+-
+-ustat01 ustat01
+-ustat02 ustat02
 -
 -utime01 utime01
 -utime01A symlink01 -T utime01
@@ -1213,365 +1468,92 @@ index 3de70c99b..000000000
 -writev06 writev06
 -writev07 writev07
 -
+-#DESCRIPTION:Memory Mgmt tests
+-mm01 mmap001 -m 10000
+-# 40 Mb mmap() test.
+-# Creates a 10000 page mmap, touches all of the map, sync's it, and
+-# munmap()s it.
+-mm02 mmap001
+-# simple mmap() test.
+-#mm03 mmap001 -i 0 -I 1 -m 100
+-# repetitive mmapping test.
+-# Creates a one page map repetitively for one minute.
+-
+-mtest01 mtest01 -p80
+-mtest01w mtest01 -p80 -w
+-
+-#test for race conditions
+-mtest05 mmstress
+-mtest06 mmap1 -x 0.05
+-
+-mem01 mem01
+-mem02 mem02
+-
+-page01 page01
+-page02 page02
+-
+-data_space data_space
+-stack_space stack_space
+-
+-shmt02 shmt02
+-shmt03 shmt03
+-shmt04 shmt04
+-shmt05 shmt05
+-shmt06 shmt06
+-shmt07 shmt07
+-shmt08 shmt08
+-shmt09 shmt09
+-shmt10 shmt10
+-
+-#DESCRIPTION:Scheduler Stress Tests
+-pth_str01 pth_str01
+-pth_str02 pth_str02 -n1000
+-pth_str03 pth_str03
+-
+-#DESCRIPTION:Native POSIX Thread Library (NPTL) Tests
+-nptl01 nptl01
+-
+-#DESCRIPTION:Terminal type stress
 -pty01 pty01
+-ptem01 ptem01
 -hangup01 hangup01
 -
--mc_cmds mc_cmds
--mc_opts export TCsrc=$LTPROOT/testcases/network/multicast/mc_opts; mc_opts
--rpc01 rpc01
-diff --git a/testscripts/ltpstress.sh b/testscripts/ltpstress.sh
-deleted file mode 100755
-index cd041b1d7..000000000
---- a/testscripts/ltpstress.sh
-+++ /dev/null
-@@ -1,349 +0,0 @@
--#!/bin/sh
--
--#    Copyright (c) International Business Machines  Corp., 2003
--#
--#    This program is free software;  you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY;  without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
--#    the GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License
--#    along with this program;  if not, write to the Free Software
--#    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
--#
--#   FILE        : ltpstress.sh
--#   DESCRIPTION : A script that will stress your system using the LTP testsuite.
--#   REQUIREMENTS:
--#                 1) The 'rsh' daemon must be running and NFS (versions 2 &3) must be
--#                    configured into the kernel and installed for networking tests.
--#		  2) The 'sar' application must be installed to use the "-S" option
--#   HISTORY     :
--#       02/11/2003 Robbie Williamson (robbiew@austin.ibm.com)
--#               written
--#	11/20/2008 Aime Le Rouzic (aime.lerouzic@bull.net)
--#		adapt script to work with portmap and rpcbind
--##############################################################
--
--export LTPROOT=${PWD}
--echo $LTPROOT | grep testscripts > /dev/null 2>&1
--if [ $? -eq 0 ]; then
-- cd ..
-- export LTPROOT=${PWD}
--fi
--export TMPBASE="/tmp"
--export PATH=$LTPROOT/testcases/bin:$PATH
--memsize=0
--hours=24
--PROC_NUM=0
--leftover_memsize=0
--duration=86400
--datafile="/tmp/ltpstress.data"
--iofile="/tmp/ltpstress.iodata"
--logfile="/tmp/ltpstress.log"
--interval=10
--Sar=0
--Top=0
--Iostat=0
--LOGGING=0
--PRETTY_PRT=""
--QUIET_MODE=""
--NO_NETWORK=0
--
--usage()
--{
--
--	cat <<-END >&2
--    usage: ${0##*/} [ -d datafile ] [ -i # (in seconds) ] [ -I iofile ] [ -l logfile ] [ -m # (in Mb) ]
--    [ -n ] [ -p ] [ -q ] [ -t duration ] [ -x TMPDIR ] [-b DEVICE] [-B LTP_DEV_FS_TYPE] [ [-S]|[-T] ]
--
--    -d datafile     Data file for 'sar' or 'top' to log to. Default is "/tmp/ltpstress.data".
--    -i # (in sec)   Interval that 'sar' or 'top' should take snapshots. Default is 10 seconds.
--    -I iofile       Log results of 'iostat' to a file every interval. Default is "/tmp/ltpstress.iodata".
--    -l logfile      Log results of test in a logfile. Default is "/tmp/ltpstress.log"
--    -m # (in Mb)    Specify the _minimum_ memory load of # megabytes in background. Default is all the RAM + 1/2 swap.
--    -n              Disable networking stress.
--    -p              Human readable format logfiles.
--    -q              Print less verbose output to the output files.
--    -S              Use 'sar' to measure data.
--    -T              Use LTP's modified 'top' tool to measure data.
--    -t duration     Execute the testsuite for given duration in hours. Default is 24.
--    -x TMPDIR       Directory where temporary files will be created.
--    -b DEVICE       Some tests require an unmounted block device
--                    to run correctly. If DEVICE is not set, a loop device is
--                    created and used automatically.
--    -B LTP_DEV_FS_TYPE The file system of DEVICE.
--
--	example: ${0##*/} -d /tmp/sardata -l /tmp/ltplog.$$ -m 128 -t 24 -S
--	END
--exit
--}
--
--check_memsize()
--{
--  while [ $memsize -gt 1048576 ]   #if greater than 1GB
--  do
--    PROC_NUM=$(( PROC_NUM + 1 ))
--    memsize=$(( $memsize - 1048576 ))
--  done
--  leftover_memsize=$memsize
--}
--
--while getopts d:hi:I:l:STt:m:npqx:b:B:\? arg
--do  case $arg in
--
--	d)	datafile="$OPTARG";;
--
--        h)      echo "Help info:"
--		usage;;
--
--	i)	interval=$OPTARG;;
--
--	I)	Iostat=1
--		iofile=$OPTARG;;
--
--        l)      logfile=$OPTARG
--		LOGGING=1;;
--
--        m)	memsize=$(($OPTARG * 1024))
--		check_memsize;;
--
--	n)	NO_NETWORK=1;;
--
--	p)	PRETTY_PRT=" -p ";;
--
--	q)	QUIET_MODE=" -q ";;
--
--        S)      if [ $Top -eq 0 ]; then
--                  Sar=1
--                else
--                  echo "Cannot specify -S and -T...exiting"
--                  exit
--                fi;;
--
--	T)	if [ $Sar -eq 0 ]; then
--                  $LTPROOT/testcases/bin/top -h 2>&1 | grep "\-f filename" >/dev/null
--		  if [ $? -eq 0 ]; then
--                    Top=1
--                  else
--		    echo "ERROR: Please build and install the version of top in the /tools dir"
--		    exit
-- 		  fi
--                else
--                  echo "Cannot specify -S and -T...exiting"
--                  exit
--                fi;;
--
--        t)      hours=$OPTARG
--		duration=$(($hours * 60 * 60));;
--
--	x)	export TMPBASE=$(readlink -f ${OPTARG});;
--
--	b)	export LTP_DEV=${OPTARG};;
--
--	B)	export LTP_DEV_FS_TYPE=${OPTARG};;
--
--        \?)     echo "Help info:"
--		usage;;
--        esac
--done
--
--export TMP="${TMPBASE}/ltpstress-$$"
--export TMPDIR=${TMP}
--mkdir -p ${TMP}
--
--# to write as user nobody into tst_tmpdir()
--chmod 777 $TMP || \
--{
--	echo "unable to chmod 777 $TMP ... aborting"
--	exit 1
--}
--
--cd $TMP || \
--{
--	echo "could not cd ${TMP} ... exiting"
--	exit 1
--}
--
--if [ $NO_NETWORK -eq 0 ];then
--  # Networking setup
--  echo `hostname` >> /root/.rhosts
--  chmod 644 /root/.rhosts
--
--  netstat -an | grep 514
--  if [ $? -eq 1 ];then
--    echo "Error: 'rsh' daemon not active on this machine."
--    exit 1
--  fi
--
--  ps -ef | grep portmap | grep -v grep
--  if [ $? -eq 1 ];then
--    ps -ef | grep rpcbind | grep -v grep
--    if [ $? -eq 1 ];then
--      echo "Portmap and rpcbind not running"
--      echo "Let's start portmap"
--      /sbin/portmap &
--      sleep 1
--      ps -ef | grep portmap | grep -v grep
--      if [ $? -eq 1 ];then
--        echo "Could not start portmap, Let's start rpcbind"
--        /sbin/rpcbind &
--        sleep 1
--        ps -ef | grep rpcbind | grep -v grep
--        if [ $? -eq 1 ];then
--          Echo "Error: Could not start rpcbind daemon."
--          exit 1
--        else
--          echo "The RPC test suite is using rpcbind"
--        fi
--      else
--	echo "The RPC test suite is using portmap"
--      fi
--    else
--      echo "The RPC test suite is using rpcbind"
--    fi
--  else
--    echo "The RPC test suite is using portmap"
--  fi
--
--  ps -e | grep nfsd
--  if [ $? -eq 1 ];then
--    /usr/sbin/rpc.nfsd
--  fi
--  sleep 1
--  ps -e | grep nfsd
--  if [ $? -eq 1 ];then
--    echo "Error: Could not start nfs server daemon."
--    exit 1
--  fi
--
--  ps -e | grep rpc.statd
--  if [ $? -eq 1 ];then
--    /sbin/rpc.statd
--  fi
--  sleep 1
--  ps -e | grep rpc.statd
--  if [ $? -eq 1 ];then
--    echo "Error: Could not start statd daemon."
--    exit 1
--  fi
--
--  ps -e | grep rpc.mountd
--  if [ $? -eq 1 ];then
--    /usr/sbin/rpc.mountd
--  fi
--  sleep 1
--  ps -e | grep rpc.mountd
--  if [ $? -eq 1 ];then
--    echo "Error: Could not start mountd daemon."
--    exit 1
--  fi
--  # End of network setup
--fi
--
--#If -m not set, use all the RAM + 1/2 swapspace
--if [ $memsize -eq 0 ]; then
--  TOTALRAM=$(free -m | grep Mem: | awk {'print $2'})
--  TOTALSWAP=$(free -m | grep Swap: | awk {'print $2'})
--  TESTSWAP=$(($TOTALSWAP / 2))
--  if [ $TESTSWAP -eq 0 ]; then
--       #if there is no swap in the system, use only the free RAM
--       TESTMEM=$(free -m | grep Mem: | awk {'print $4'})
--  else
--       TESTMEM=$(($TESTSWAP + $TOTALRAM))
--  fi
-- #Convert to kilobytes
--  memsize=$(($TESTMEM * 1024))
--  check_memsize
--fi
--
--# Set max processes to unlimited.
--ulimit -u unlimited
--
--if [ $PROC_NUM -gt 0 ];then
--  genload --vm $PROC_NUM --vm-bytes 1073741824 >/dev/null 2>&1 &
--fi
--if [ $leftover_memsize -gt 0 ];then
--  genload --vm 1 --vm-bytes $(($leftover_memsize * 1024)) >/dev/null 2>&1 &
--fi
--
--sort -R ${LTPROOT}/runtest/stress.part1 -o ${TMP}/stress.part1
--sort -R ${LTPROOT}/runtest/stress.part2 -o ${TMP}/stress.part2
--sort -R ${LTPROOT}/runtest/stress.part3 -o ${TMP}/stress.part3
--
--sleep 2
--
--if [ $Sar -eq 1 ]; then
--  sar -o $datafile $interval > /dev/null &
--fi
--
--if [ $Top -eq 1 ]; then
--  screen -d -m $LTPROOT/testcases/bin/top -o $datafile -d $interval &
--  SCREEN_PID=$(ps -e | grep screen | awk {'print $1'})
--fi
--
--sleep 2
--
--if [ $Iostat -eq 1 ]; then
--  while [ 0 = 0 ];do iostat -dt >> $iofile; sleep $interval;done &
--  Iostat_PID=$?
--fi
--
--sleep 2
--
--output1=${TMPBASE}/ltpstress.$$.output1
--output2=${TMPBASE}/ltpstress.$$.output2
--output3=${TMPBASE}/ltpstress.$$.output3
--
--${LTPROOT}/bin/ltp-pan -e ${PRETTY_PRT} ${QUIET_MODE} -S -t ${hours}h -a stress1 -n stress1 -l $logfile -f ${TMP}/stress.part1 -o $output1 &
--${LTPROOT}/bin/ltp-pan -e ${PRETTY_PRT} ${QUIET_MODE} -S -t ${hours}h -a stress2 -n stress2 -l $logfile -f ${TMP}/stress.part2 -o $output2 &
--${LTPROOT}/bin/ltp-pan -e ${PRETTY_PRT} ${QUIET_MODE} -S -t ${hours}h -a stress3 -n stress3 -l $logfile -f ${TMP}/stress.part3 -o $output3 &
--
--echo "Running LTP Stress for $hours hour(s) using $(($memsize/1024)) Mb"
--echo ""
--echo "Test output recorded in:"
--echo "        $output1"
--echo "        $output2"
--echo "        $output3"
--
--# Sleep a little longer than duration to let ltp-pan "try" to gracefully end itself.
--sleep $(($duration + 10))
--
--if [ $Sar -eq 1 ]; then
--  killall -9 sadc >/dev/null 2>&1
--fi
--if [ $Top -eq 1 ]; then
--  kill $SCREEN_PID >/dev/null 2>&1
--fi
--killall -9 ltp-pan >/dev/null 2>&1
--killall -9 genload >/dev/null 2>&1
--if [ $NO_NETWORK -eq 0 ];then
--  killall -9 NPtcp >/dev/null 2>&1
--fi
--if [ $Iostat -eq 1 ];then
--  kill -9 $Iostat_PID >/dev/null 2>&1
--fi
--rm -rf ${TMP}
--echo "Testing done"
--if [ $LOGGING -eq 1 ];then
--  if [ ! -z $PRETTY_PRT ]; then
--    grep FAIL $logfile > /dev/null 2>&1
--  else
--    grep 'stat=' $logfile | grep -v 'stat=0' > /dev/null 2>&1
--  fi
--
--  if [ $? -eq 1 ]; then
--    echo "All Tests PASSED!"
--  else
--    echo "Testing yielded failures. See logfile: $logfile"
--    if [ $NO_NETWORK -eq 1 ];then
--      echo "The NFS related tests should fail because network stress was disabled"
--    fi
--  fi
--fi
+-#DESCRIPTION:Filesystem stress tests
+-gf01 growfiles -W gf01 -b -e 1 -u -i 0 -L 20 -w -C 1 -l -I r -T 10 glseek20 glseek20.2
+-gf02 growfiles -W gf02 -b -e 1 -L 10 -i 100 -I p -S 2 -u -f gf03_
+-gf03 growfiles -W gf03 -b -e 1 -g 1 -i 1 -S 150 -u -f gf05_
+-#gf04 growfiles -W gf04 -b -e 1 -g 4090 -i 500 -t 39000 -u -f gf06_
+-#gf05 growfiles -W gf05 -b -e 1 -g 5000 -i 500 -t 49900 -T10 -c9 -I p -u -f gf07_
+-gf06 growfiles -W gf06 -b -e 1 -u -r 1-5000 -R 0--1 -i 0 -L 30 -C 1 g_rand10 g_rand10.2
+-gf07 growfiles -W gf07 -b -e 1 -u -r 1-5000 -R 0--2 -i 0 -L 30 -C 1 -I p g_rand13 g_rand13.2
+-#gf08 growfiles -W gf08 -b -e 1 -u -r 1-5000 -R 0--2 -i 0 -L 30 -C 1 g_rand11 g_rand11.2
+-#gf09 growfiles -W gf09 -b -e 1 -u -r 1-5000 -R 0--1 -i 0 -L 30 -C 1 -I p g_rand12 g_rand12.2
+-gf10 growfiles -W gf10 -b -e 1 -u -r 1-5000 -i 0 -L 30 -C 1 -I l g_lio14 g_lio14.2
+-gf11 growfiles -W gf11 -b -e 1 -u -r 1-5000 -i 0 -L 30 -C 1 -I L g_lio15 g_lio15.2
+-gf12 mkfifo gffifo17; growfiles -b -W gf12 -e 1 -u -i 0 -L 30 gffifo17
+-gf13 mkfifo gffifo18; growfiles -b -W gf13 -e 1 -u -i 0 -L 30 -I r -r 1-4096 gffifo18
+-gf14 growfiles -W gf14 -b -e 1 -u -i 0 -L 20 -w -l -C 1 -T 10 glseek19 glseek19.2
+-gf15 growfiles -W gf15 -b -e 1 -u -r 1-49600 -I r -u -i 0 -L 120 Lgfile1
+-#gf16 growfiles -W gf16 -b -e 1 -i 0 -L 120 -u -g 4090 -T 100 -t 408990 -l -C 10 -c 1000 -S 10 -f Lgf02_
+-gf17 growfiles -W gf17 -b -e 1 -i 0 -L 120 -u -g 5000 -T 100 -t 499990 -l -C 10 -c 1000 -S 10 -f Lgf03_
+-gf18 growfiles -W gf18 -b -e 1 -i 0 -L 120 -w -u -r 10-5000 -I r -l -S 2 -f Lgf04_
+-gf19 growfiles -W gf19 -b -e 1 -g 5000 -i 500 -t 49900 -T10 -c9 -I p -o O_RDWR,O_CREAT,O_TRUNC -u -f gf08i_
+-gf20 growfiles -W gf20 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -r 1-256000:512 -R 512-256000 -T 4 gfbigio-$$
+-#gf21 growfiles -W gf21 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -g 20480 -T 10 -t 20480 gf-bld-$$
+-#gf22 growfiles -W gf22 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -g 20480 -T 10 -t 20480 gf-bldf-$$
+-gf23 growfiles -W gf23 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -r 512-64000:1024 -R 1-384000 -T 4 gf-inf-$$
+-gf24 growfiles -W gf24 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -g 20480 gf-jbld-$$
+-gf25 growfiles -W gf25 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -r 1024000-2048000:2048 -R 4095-2048000 -T 1 gf-large-gs-$$
+-gf26 growfiles -W gf26 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -r 128-32768:128 -R 512-64000 -T 4 gfsmallio-$$
+-gf27 growfiles -W gf27 -b -D 0 -w -g 8b -C 1 -b -i 1000 -u gfsparse-1-$$
+-#gf28 growfiles -W gf28 -b -D 0 -w -g 16b -C 1 -b -i 1000 -u gfsparse-2-$$
+-#gf29 growfiles -W gf29 -b -D 0 -r 1-4096 -R 0-33554432 -i 0 -L 60 -C 1 -u gfsparse-3-$$
+-gf30 growfiles -W gf30 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -o O_RDWR,O_CREAT,O_SYNC -g 20480 -T 10 -t 20480 gf-sync-$$
+-rwtest01 export LTPROOT; rwtest -N rwtest01 -c -q -i 60s  -f sync 10%25000:rw-sync-$$
+-rwtest02 export LTPROOT; rwtest -N rwtest02 -c -q -i 60s  -f buffered 10%25000:rw-buffered-$$
+-rwtest03 export LTPROOT; rwtest -N rwtest03 -c -q -i 60s -n 2  -f buffered -s mmread,mmwrite -m random -Dv 10%25000:mm-buff-$$
+-rwtest04 export LTPROOT; rwtest -N rwtest04 -c -q -i 60s -n 2  -f sync -s mmread,mmwrite -m random -Dv 10%25000:mm-sync-$$
+-rwtest05 export LTPROOT; rwtest -N rwtest05 -c -q -i 50 -T 64b 500b:/tmp/rwtest01%f
 -
 -
 -- 
