@@ -1,38 +1,48 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 15 Oct 2018 19:03:39 +0300
-Subject: [LTP] [PATCH] network/nfs: support default setup,
-	use local mount
-In-Reply-To: <20181012161325.GA29781@dell5510>
-References: <1539091079-21887-1-git-send-email-alexey.kodanev@oracle.com>
- <20181012161325.GA29781@dell5510>
-Message-ID: <11a7fe7e-7aa7-1fc9-faa0-81a23855e6d5@oracle.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 15 Oct 2018 21:07:54 +0200
+Subject: [LTP] [PATCH v2 ltp] runltp: fix shellcheck error for sending
+ email
+In-Reply-To: <20181015095214.GA32587@dell5510>
+References: <20180726083426.19026-1-yixin.zhang@intel.com>
+ <20181015095214.GA32587@dell5510>
+Message-ID: <20181015190754.GA26321@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 10/12/2018 07:13 PM, Petr Vorel wrote:
-> Hi Alexey,
-> 
->> For default setup, start the server locally instead and mount
->> inside netns to run NFS traffic over the veth or whatever is
->> used for a single machine setup.
-> 
->> We could also use lo interface, we just need to skip the last
->> check in nfs_mount()/nfs_lib.sh.
-> 
->> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> Acked-by: Petr Vorel <pvorel@suse.cz>
-> 
-> LGTM, thanks for the patch!
-> 
+Hi Yixin,
 
-Applied, thanks for review Petr!
+> > Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+> > ---
+> >  runltp | 139 +++++++++++++++++++++++++++++++----------------------------------
+> >  1 file changed, 67 insertions(+), 72 deletions(-)
 
-> BTW how about split runtest/net.nfs, so it takes shorter to run?
-> Maybe it takes so long on my side as I still experience some problems with NFS,
-> which I haven't debugged yet (timeout).
+> ...
+> > +    if [ "$ALT_EMAIL_OUT" -eq 1 ] ; then                    ## User wants reports to be e-mailed
+> > +        TAR_FILE_NAME=LTP_RUN_$version_date$DEFAULT_FILE_NAME_GENERATION_TIME.tar
+> > +        if [ "$HTMLFILE_NAME" ] ; then                      ## HTML file Exists
+> > +            if [ "$ALT_HTML_OUT" -ne 1 ] ; then             ## The HTML file path is absolute and not $LTPROOT/output
+> > +                mkdir -p $LTPROOT/output                    ## We need to create this Directory
+> > +                cp $HTMLFILE_NAME $LTPROOT/output/
+> > +            fi
+> > +        fi
+> > +        if [ "$OUTPUTFILE_NAME" ] ; then                    ## Output file exists
+> > +            if [ "$ALT_DIR_OUT" -ne 1 ] ; then              ## The Output file path is absolute and not $LTPROOT/output
+> > +                mkdir -p $LTPROOT/output                    ## We need to create this Directory
+> > +                cp $OUTPUTFILE_NAME $LTPROOT/output/
+> > +            fi
+> > +        fi
+> > +        if [ "$LOGFILE_NAME" ] ; then                       ## Log file exists
+> As I wrote in comment to v1 [3], $LOGFILE_NAME is always defined, so no need to check for it.
+> And the same is for for $OUTPUTFILE_NAME
+Although we should omit this check, I ignored that because the state of the file
+(it's in maintenance mode). The main point of this commit was to fix basishm and
+remove dead branch.
 
-Perhaps some default parameters are unreasonably large, e.g. DIR_NUM, FILE_NUM,
-THREAD_NUM (nfs03, nfs05 tests)...
+Pushed, with commit message adjustment.
+Thanks for your time and care.
+
+Kind regards,
+Petr
