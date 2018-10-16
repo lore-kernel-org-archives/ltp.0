@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 16 Oct 2018 15:02:09 +0200
-Subject: [LTP] [PATCH] open_posix_testsuite/mmap24-2: Relax condition a
- bit
-In-Reply-To: <1539226733-18212-1-git-send-email-hongzhi.song@windriver.com>
-References: <1539226733-18212-1-git-send-email-hongzhi.song@windriver.com>
-Message-ID: <20181016130209.GB6980@rei>
+Date: Tue, 16 Oct 2018 17:40:20 +0200
+Subject: [LTP] [PATCH v2] setregid03: convert to newlib
+In-Reply-To: <20180910142327.20753-1-cfamullaconrad@suse.de>
+References: <20180910142327.20753-1-cfamullaconrad@suse.de>
+Message-ID: <20181016154020.GA19342@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,26 +11,16 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Linux kernel code: arch/mips/mm/mmap.c
-> if (flags & MAP_FIXED) {
->     /* Even MAP_FIXED mappings must reside within TASK_SIZE */
->     if (TASK_SIZE - len < addr)
->         return -EINVAL;
-> 
-> Relax the condition and accept both ENOMEM and EINVAL
-> as expected outcome.
+> Do not fork, cause I don't see the need for it. Maybe a left over
+> from previous changes.
 
-Hmm, it's always complicated with these POSIX tests, since we have to
-follow the POSIX specification there.
+And I figured out why it was there. If we do not fork the possitive
+testcases fail on the second and subsequent iterations, try to run the
+test with -i 2.
 
-And the POSIX clearly says that mmap() shall fail with ENOMEM if
-MAP_FIXED was specified, and the range [addr,addr+len) exceeds that
-allowed for the address space of a process. So I guess that the best
-solution here would be limiting the address space with rlimit, so that
-we actually happen to hit the ENOMEM instead of EINVAL.
-
-At least we cannot say that we passed the test with EINVAL because the
-assertion we tried to test wasn't triggered.
+Also it may be a bit cleaner to just split the test into two one with
+possitive and one with negative tests, which will simplify the code and
+we can then fork only for the test that tests for the positive cases.
 
 -- 
 Cyril Hrubis
