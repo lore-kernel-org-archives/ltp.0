@@ -1,82 +1,156 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 17 Oct 2018 09:32:37 -0400 (EDT)
-Subject: [LTP] [PATCH v2] syscalls/keyctl02: wait for last key to be
- garbage collected
-In-Reply-To: <20181017132528.GB31018@rei>
-References: <79fc54a1540ed236a5539d9f848cc18045aa6c4d.1539781539.git.jstancek@redhat.com>
- <20181017132528.GB31018@rei>
-Message-ID: <22181421.58966566.1539783157977.JavaMail.zimbra@redhat.com>
+Date: Wed, 17 Oct 2018 15:50:05 +0200
+Subject: [LTP] [PATCH v2] syscalls/fcntl: make OFD commands use fcntl64()
+	syscall on 32-bit
+Message-ID: <a278cb39d5c72eeb51184afdbcb085defea50195.1539784033.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+OFD commands require 64-bit argument (struct flock64). Until
+glibc commit 06ab719d30b0 ("Fix Linux fcntl OFD locks for
+non-LFS architectures (BZ#20251)") we relied on glibc passing
+arg directly to syscall.
 
+This creates problem for 32-bit version of the test, because old
+glibc is passing arg directly, while new one is casting it to
+struct flock.
 
------ Original Message -----
-> Hi!
-> >  static void do_test(void)
-> >  {
-> > -	int i;
-> > -	key_serial_t key;
-> > +	int i, ret;
-> > +	key_serial_t key, key_inv;
-> >  	pthread_t pth[4];
-> >  
-> >  	for (i = 0; i < LOOPS; i++) {
-> > @@ -94,13 +95,45 @@ static void do_test(void)
-> >  		SAFE_PTHREAD_JOIN(pth[3], NULL);
-> >  	}
-> >  
-> > +	/*
-> > +	 * Kernel should start garbage collect when last reference to key
-> > +	 * is removed (see key_put()). Since we are adding keys with identical
-> > +	 * description and type, each replacement should schedule a gc run,
-> > +	 * see comment at __key_link().
-> > +	 *
-> > +	 * We create extra key here, to remove reference to last revoked key.
-> > +	 */
-> > +	key_inv = add_key("user", "ltptestkey", "foo", 3,
-> > +		KEY_SPEC_PROCESS_KEYRING);
-> > +	if (key_inv == -1)
-> > +		tst_brk(TBROK | TERRNO, "Failed to add key");
-> > +
-> > +	/*
-> > +	 * If we have invalidate, we can drop extra key immediately as well,
-> > +	 * which also schedules gc.
-> > +	 */
-> > +	if (keyctl(KEYCTL_INVALIDATE, key_inv) == -1 && errno != EOPNOTSUPP)
-> > +		tst_brk(TBROK | TERRNO, "Failed to invalidate key");
-> > +
-> > +	/*
-> > +	 * At this point we are quite confident that gc has been scheduled,
-> > +	 * so we wait and periodically check for last test key to be removed.
-> > +	 */
-> > +	for (i = 0; i < MAX_WAIT_FOR_GC_MS; i += 100) {
-> > +		ret = keyctl(KEYCTL_REVOKE, key);
-> > +		if (ret == -1 && errno == ENOKEY)
-> > +			break;
-> > +		usleep(100*1000);
-> > +	}
-> > +
-> > +	tst_res(TINFO, "waiting for key gc took: %d ms", i);
-> 
-> Minor enhancement may be:
-> 
-> 	if (i)
-> 		tst_res(TINFO, "waiting for key gc took: %d ms", i);
-> 
-> 
-> Anyways, the patch looks good, acked.
+We could add a configure check for glibc version, but that may
+not help with other libc libraries.
 
-Pushed with "if (i)" above.
+We could do a runtime check that exploits non-zero l_pid returning
+EINVAL. This however complicates SAFE_FCNTL macro substantially.
 
-Regards,
-Jan
+This patch changes 32-bit version of test to use syscall directly.
 
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+
+Changes in v2:
+  - use struct flock64 as well on 64-bit, since it should be identical
+    to struct flock, it allows us to drop couple ifdefs
+
+ testcases/kernel/syscalls/fcntl/fcntl34.c      |  5 ++--
+ testcases/kernel/syscalls/fcntl/fcntl36.c      |  9 ++++----
+ testcases/kernel/syscalls/fcntl/fcntl_common.h | 32 ++++++++++++++++++++++++++
+ 3 files changed, 40 insertions(+), 6 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/fcntl/fcntl_common.h
+
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl34.c b/testcases/kernel/syscalls/fcntl/fcntl34.c
+index aa29cf9ea0d8..6c7dd8c03963 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl34.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl34.c
+@@ -28,6 +28,7 @@
+ #include "lapi/fcntl.h"
+ #include "tst_safe_pthread.h"
+ #include "tst_test.h"
++#include "fcntl_common.h"
+ 
+ static int thread_cnt;
+ static const int max_thread_cnt = 32;
+@@ -76,13 +77,13 @@ void *thread_fn_01(void *arg)
+ 
+ 	for (i = 0; i < writes_num; ++i) {
+ 		lck.l_type = F_WRLCK;
+-		SAFE_FCNTL(fd, F_OFD_SETLKW, &lck);
++		my_fcntl(fd, F_OFD_SETLKW, &lck);
+ 
+ 		SAFE_LSEEK(fd, 0, SEEK_END);
+ 		SAFE_WRITE(1, fd, buf, write_size);
+ 
+ 		lck.l_type = F_UNLCK;
+-		SAFE_FCNTL(fd, F_OFD_SETLKW, &lck);
++		my_fcntl(fd, F_OFD_SETLKW, &lck);
+ 
+ 		sched_yield();
+ 	}
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl36.c b/testcases/kernel/syscalls/fcntl/fcntl36.c
+index 81bd5a647e4c..2942e4e6adc2 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl36.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl36.c
+@@ -57,6 +57,7 @@
+ #include "lapi/fcntl.h"
+ #include "tst_safe_pthread.h"
+ #include "tst_test.h"
++#include "fcntl_common.h"
+ 
+ static int thread_cnt;
+ static int fail_flag = 0;
+@@ -99,13 +100,13 @@ static void *fn_ofd_w(void *arg)
+ 		memset(buf, wt, pa->length);
+ 
+ 		lck.l_type = F_WRLCK;
+-		SAFE_FCNTL(fd, F_OFD_SETLKW, &lck);
++		my_fcntl(fd, F_OFD_SETLKW, &lck);
+ 
+ 		SAFE_LSEEK(fd, pa->offset, SEEK_SET);
+ 		SAFE_WRITE(1, fd, buf, pa->length);
+ 
+ 		lck.l_type = F_UNLCK;
+-		SAFE_FCNTL(fd, F_OFD_SETLKW, &lck);
++		my_fcntl(fd, F_OFD_SETLKW, &lck);
+ 
+ 		wt++;
+ 		if (wt >= 255)
+@@ -178,7 +179,7 @@ static void *fn_ofd_r(void *arg)
+ 		memset(buf, 0, pa->length);
+ 
+ 		lck.l_type = F_RDLCK;
+-		SAFE_FCNTL(fd, F_OFD_SETLKW, &lck);
++		my_fcntl(fd, F_OFD_SETLKW, &lck);
+ 
+ 		/* rlock acquired */
+ 		SAFE_LSEEK(fd, pa->offset, SEEK_SET);
+@@ -209,7 +210,7 @@ static void *fn_ofd_r(void *arg)
+ 		}
+ 
+ 		lck.l_type = F_UNLCK;
+-		SAFE_FCNTL(fd, F_OFD_SETLK, &lck);
++		my_fcntl(fd, F_OFD_SETLK, &lck);
+ 
+ 		sched_yield();
+ 	}
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl_common.h b/testcases/kernel/syscalls/fcntl/fcntl_common.h
+new file mode 100644
+index 000000000000..07229a0f831e
+--- /dev/null
++++ b/testcases/kernel/syscalls/fcntl/fcntl_common.h
+@@ -0,0 +1,32 @@
++#include "lapi/syscalls.h"
++
++/*
++ * glibc commit:
++ *   06ab719d30b0 ("Fix Linux fcntl OFD locks for non-LFS architectures (BZ#20251)")
++ * changed behavior of arg parameter for OFD commands. It is no
++ * longer passing arg directly to syscall, but expects it to be
++ * 'struct flock'.
++ *
++ * On 64-bit or _FILE_OFFSET_BITS == 64 we can use fcntl() and
++ * struct flock64 with any glibc version. struct flock and flock64
++ * should be identical.
++ *
++ * On 32-bit, older glibc would pass arg directly, recent one treats
++ * it as 'struct flock' and converts it to 'struct flock64'.
++ * So, to support both version, on 32-bit we use fcntl64 syscall
++ * directly with struct flock64.
++ */
++#if __WORDSIZE == 64 || _FILE_OFFSET_BITS == 64
++static int my_fcntl(int fd, int cmd, void *lck)
++{
++	return SAFE_FCNTL(fd, cmd, lck);
++}
++#else
++static int my_fcntl(int fd, int cmd, void *lck)
++{
++	int ret = tst_syscall(__NR_fcntl64, fd, cmd, lck);
++	if (ret == -1)
++		tst_brk(TBROK|TERRNO, "fcntl64");
++	return ret;
++}
++#endif
+-- 
+1.8.3.1
+
