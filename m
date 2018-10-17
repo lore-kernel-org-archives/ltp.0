@@ -1,41 +1,80 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 17 Oct 2018 16:13:21 +0200
-Subject: [LTP] Broken: linux-test-project/ltp#1087 (master - e816127)
-In-Reply-To: <5bc74297c66d_43fb51dcf2da03635fd@4b4f3520-7c9e-4919-8edc-54be81f81d1b.mail>
-References: <linux-test-project/ltp+442701001+broken@travis-ci.org>
- <5bc74297c66d_43fb51dcf2da03635fd@4b4f3520-7c9e-4919-8edc-54be81f81d1b.mail>
-Message-ID: <20181017141321.GD31018@rei>
+Date: Wed, 17 Oct 2018 17:38:33 +0200
+Subject: [LTP] [PATCH] tracing/intel_pt: Fix build on older userspace.
+Message-ID: <20181017153833.27187-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Build Update for linux-test-project/ltp
-> -------------------------------------
-> 
-> Build: #1087
-> Status: Broken
-> 
-> Duration: 10 mins and 19 secs
-> Commit: e816127 (master)
-> Author: Ammy Yi
-> Message: Add Intel PT full trace mode basic test case
-> 
-> This test will do Intel PT full trace mode with test case PID to check
-> if enable/stop/trace generation works with Intel PT.
-> 
-> Signed-off-by: Ammy Yi <ammy.yi@intel.com>
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> 
-> View the changeset: https://github.com/linux-test-project/ltp/compare/75dd92ce36ea...e816127e5d8e
-> 
-> View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/442701001?utm_medium=notification&utm_source=email
+Older userspace linux headers do not have aux_* fields struct
+perf_event_mmap_page. This commit disables the test build if older
+headers were detected, the alternative would be adding a fallback
+definition to LTP but I doubt that it's worth the effort.
 
-Looks like we need configure checks for the struct perf_event_mmap_page,
-I will have a look into that.
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+CC: Ammy Yi <ammy.yi@intel.com>
+---
+ configure.ac                               |  1 +
+ m4/ltp-perf_event.m4                       | 13 +++++++++++++
+ testcases/kernel/tracing/pt_test/pt_test.c |  7 +++++++
+ 3 files changed, 21 insertions(+)
+ create mode 100644 m4/ltp-perf_event.m4
 
+diff --git a/configure.ac b/configure.ac
+index 0f0d8c17a..e81d2add5 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -229,6 +229,7 @@ LTP_CHECK_X_TABLES
+ LTP_CHECK_ATOMIC_MEMORY_MODEL
+ LTP_CHECK_TPACKET_V3
+ LTP_DETECT_HOST_CPU
++LTP_CHECK_PERF_EVENT
+ 
+ if test "x$with_numa" = xyes; then
+ 	LTP_CHECK_SYSCALL_NUMA
+diff --git a/m4/ltp-perf_event.m4 b/m4/ltp-perf_event.m4
+new file mode 100644
+index 000000000..109ad4935
+--- /dev/null
++++ b/m4/ltp-perf_event.m4
+@@ -0,0 +1,13 @@
++dnl
++dnl Copyright (c) 2018 Cyril Hrubis <chrubis@suse.cz>
++dnl
++dnl SPDX-License-Identifier: GPL-2.0-or-later
++dnl
++
++dnl
++dnl LTP_CHECK_PERF_EVENT
++dnl ----------------------------
++dnl
++AC_DEFUN([LTP_CHECK_PERF_EVENT],[
++AC_CHECK_MEMBERS([struct perf_event_mmap_page.aux_head],,,[#include <linux/perf_event.h>])
++])
+diff --git a/testcases/kernel/tracing/pt_test/pt_test.c b/testcases/kernel/tracing/pt_test/pt_test.c
+index 517427992..abf575d37 100644
+--- a/testcases/kernel/tracing/pt_test/pt_test.c
++++ b/testcases/kernel/tracing/pt_test/pt_test.c
+@@ -20,6 +20,9 @@
+ #include <stdio.h>
+ #include "tst_test.h"
+ #include "lapi/syscalls.h"
++#include "config.h"
++
++#ifdef HAVE_STRUCT_PERF_EVENT_MMAP_PAGE_AUX_HEAD
+ 
+ #define PAGESIZE 4096
+ #define INTEL_PT_MEMSIZE (17*PAGESIZE)
+@@ -157,3 +160,7 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.needs_root = 1,
+ };
++
++#else
++TST_TEST_TCONF("missing aux_* fields in struct perf_event_mmap_page");
++#endif /* HAVE_STRUCT_PERF_EVENT_MMAP_PAGE_AUX_HEAD */
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.16.4
+
