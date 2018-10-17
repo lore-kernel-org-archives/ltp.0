@@ -1,88 +1,41 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 17 Oct 2018 16:02:44 +0200
-Subject: [LTP] [PATCH v5 ltp] Add Intel PT full trace mode basic test
-	case
-In-Reply-To: <20181017055929.28193-1-ammy.yi@intel.com>
-References: <20181017055929.28193-1-ammy.yi@intel.com>
-Message-ID: <20181017140244.GC31018@rei>
+From: Travis CI <builds@travis-ci.org>
+Date: Wed, 17 Oct 2018 14:09:27 +0000
+Subject: [LTP] Broken: linux-test-project/ltp#1087 (master - e816127)
+In-Reply-To: <linux-test-project/ltp+442701001+broken@travis-ci.org>
+Message-ID: <5bc74297c66d_43fb51dcf2da03635fd@4b4f3520-7c9e-4919-8edc-54be81f81d1b.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with following changes, thanks.
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-diff --git a/testcases/kernel/tracing/pt_test/pt_test.c b/testcases/kernel/tracing/pt_test/pt_test.c
-index d46d7726e..517427992 100644
---- a/testcases/kernel/tracing/pt_test/pt_test.c
-+++ b/testcases/kernel/tracing/pt_test/pt_test.c
-@@ -7,7 +7,10 @@
- 
- /*
-  * This test will check if Intel PT(Intel Processer Trace) full trace mode is
-- * working. It is only applied on X86 platforms.
-+ * working.
-+ *
-+ * Intel CPU of 5th-generation Core (Broadwell) or newer is required for the test.
-+ *
-  * kconfig requirement: CONFIG_PERF_EVENTS
-  */
+Build: #1087
+Status: Broken
 
+Duration: 10 mins and 19 secs
+Commit: e816127 (master)
+Author: Ammy Yi
+Message: Add Intel PT full trace mode basic test case
 
-I found out that the perf manual says we need at least broadwell to run
-the test, so I documented it here (and I had to borow recent enough
-machine to check the test, since the newest I have is Ivy Bridge).
+This test will do Intel PT full trace mode with test case PID to check
+if enable/stop/trace generation works with Intel PT.
 
+Signed-off-by: Ammy Yi <ammy.yi@intel.com>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
-@@ -93,11 +96,11 @@ static void intel_pt_full_trace_check(void)
- 	/* stop tracing */
- 	SAFE_IOCTL(fde, PERF_EVENT_IOC_DISABLE);
- 
--	// check if there is some trace generated
-+	/* check if there is some trace generated */
- 	pmp = (struct perf_event_mmap_page *)bufm[0];
- 	aux_head = *(volatile uint64_t *)&pmp->aux_head;
- 	if (aux_head == 0) {
--		tst_res(TFAIL, "There is no trace, so failed!");
-+		tst_res(TFAIL, "There is no trace!");
- 		return;
- 	}
- 
-@@ -109,10 +112,13 @@ static void setup(void)
- 	struct perf_event_attr attr = {};
- 
- 	buhsz = 2 * PAGESIZE;
--	if (tst_dir_is_empty(INTEL_PT_PATH, 1))
--		tst_brk(TCONF, "PT not enabled, please check kconfig!");
-+	if (access(INTEL_PT_PATH, F_OK)) {
-+		tst_brk(TCONF,
-+			"Requires Intel Core 5th+ generation (Broadwell and newer)"
-+			" and CONFIG_PERF_EVENTS enabled.");
-+	}
+View the changeset: https://github.com/linux-test-project/ltp/compare/75dd92ce36ea...e816127e5d8e
 
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/442701001?utm_medium=notification&utm_source=email
 
-The tst_dir_is_empty() does not work here because the directory does not
-exists, at least on my machines, if the CPU does not support PT.
+--
 
-We usually use acess() with F_OK in these cases.
+You can unsubscribe from build emails from the linux-test-project/ltp repository going to https://travis-ci.org/account/preferences/unsubscribe?repository=1224421&utm_medium=notification&utm_source=email.
+Or unsubscribe from *all* email updating your settings at https://travis-ci.org/account/preferences/unsubscribe?utm_medium=notification&utm_source=email.
+Or configure specific recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications.
 
--	//set attr for Intel PT trace
-+	/* set attr for Intel PT trace */
- 	attr.type	= intel_pt_pmu_value(INTEL_PT_PMU_TYPE);
- 	attr.read_format = PERF_FORMAT_ID | PERF_FORMAT_TOTAL_TIME_RUNNING |
- 				PERF_FORMAT_TOTAL_TIME_ENABLED;
-@@ -124,7 +130,7 @@ static void setup(void)
- 	attr.exclude_user		= 0;
- 	attr.mmap			= 1;
- 
--	//only get trace for own pid
-+	/* only get trace for own pid */
- 	fde = tst_syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
- 	if (fde < 0) {
- 		tst_res(TINFO, "Open Intel PT event failed!");
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20181017/1009933c/attachment-0001.html>
