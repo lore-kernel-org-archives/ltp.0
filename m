@@ -1,56 +1,64 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 17 Oct 2018 10:39:45 +0200
+From: Hongzhi, Song <hongzhi.song@windriver.com>
+Date: Wed, 17 Oct 2018 17:43:54 +0800
 Subject: [LTP] [PATCH] open_posix_testsuite/mmap24-2: Relax condition a
  bit
-In-Reply-To: <21d93aaa-3047-42b4-cb8e-747ef1036a53@windriver.com>
+In-Reply-To: <20181017083945.GA4192@rei.lan>
 References: <1539226733-18212-1-git-send-email-hongzhi.song@windriver.com>
  <20181016130209.GB6980@rei>
  <21d93aaa-3047-42b4-cb8e-747ef1036a53@windriver.com>
-Message-ID: <20181017083945.GA4192@rei.lan>
+ <20181017083945.GA4192@rei.lan>
+Message-ID: <6a9f7bb4-413f-60d2-297f-898ffa341458@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Hmm, it's always complicated with these POSIX tests, since we have to
-> > follow the POSIX specification there.
-> >
-> > And the POSIX clearly says that mmap() shall fail with ENOMEM if
-> > MAP_FIXED was specified, and the range [addr,addr+len) exceeds that
-> > allowed for the address space of a process. So I guess that the best
-> > solution here would be limiting the address space with rlimit, so that
-> > we actually happen to hit the ENOMEM instead of EINVAL.
-> I just referred to follow commit which has similar issue.
-> 
->  ?????? [commit id: e7bab61882847]
->  ?????? syscalls/mmap15: relax condition a bit
-> 
->  ?????? High address is arch specific, and it also occasionally changes
->  ?????? as can be se?????????????????????????????????en in history of this test.
-> 
->  ?????? Relax the co?????????????????????????????????ndition and accept both ENOMEM and 
-> EINVAL
->  ?????? as expected outcome.
->  ?????? ?????????????????????????????????
->  ?????? Fixes: #390
 
-The difference is that the mmap15 is a Linux specific test, we can
-accept any behavior we think is reasonable.
 
-> Mips returns EINVAL and never returns ENOMEM if [addr+len]
->  ??exceeds task size. I think it's has no relation with rlimit.
+On 10/17/2018 04:39 PM, Cyril Hrubis wrote:
+> Hi!
+>>> Hmm, it's always complicated with these POSIX tests, since we have to
+>>> follow the POSIX specification there.
+>>>
+>>> And the POSIX clearly says that mmap() shall fail with ENOMEM if
+>>> MAP_FIXED was specified, and the range [addr,addr+len) exceeds that
+>>> allowed for the address space of a process. So I guess that the best
+>>> solution here would be limiting the address space with rlimit, so that
+>>> we actually happen to hit the ENOMEM instead of EINVAL.
+>> I just referred to follow commit which has similar issue.
+>>
+>>   ?????? [commit id: e7bab61882847]
+>>   ?????? syscalls/mmap15: relax condition a bit
+>>
+>>   ?????? High address is arch specific, and it also occasionally changes
+>>   ?????? as can be se?????????????????????????????????en in history of this test.
+>>
+>>   ?????? Relax the co?????????????????????????????????ndition and accept both ENOMEM and
+>> EINVAL
+>>   ?????? as expected outcome.
+>>   ?????? ?????????????????????????????????
+>>   ?????? Fixes: #390
+> The difference is that the mmap15 is a Linux specific test, we can
+> accept any behavior we think is reasonable.
+>
+>> Mips returns EINVAL and never returns ENOMEM if [addr+len]
+>>   ??exceeds task size. I think it's has no relation with rlimit.
+> While the POSIX tests are written to test the conformity of the
+> implementation, we have to stick to POSIX there and actually it seems to
+> require that ENOMEM has to be returned if [addr,addr+len) exceeds that
+> allowed for the address space of a process, so I guess that mips is not
+> strictly conforming to POSIX here, however that is not a reason to
+> change the test.
 
-While the POSIX tests are written to test the conformity of the
-implementation, we have to stick to POSIX there and actually it seems to
-require that ENOMEM has to be returned if [addr,addr+len) exceeds that
-allowed for the address space of a process, so I guess that mips is not
-strictly conforming to POSIX here, however that is not a reason to
-change the test. And in this case it's not a big deal and we can
-possilby just ignore the failure in the same way we do for a few rwlock
-tests where Linux behavior differs from the one mandated by POSIX.
+How about to skip mips arch by using "ifdef __mips__" ?
+Otherwise the test will failed on mips.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+--Hongzhi
+
+
+> And in this case it's not a big deal and we can
+> possilby just ignore the failure in the same way we do for a few rwlock
+> tests where Linux behavior differs from the one mandated by POSIX.
+>
+
