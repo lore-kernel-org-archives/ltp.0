@@ -1,64 +1,77 @@
-From: Hongzhi, Song <hongzhi.song@windriver.com>
-Date: Wed, 17 Oct 2018 17:43:54 +0800
-Subject: [LTP] [PATCH] open_posix_testsuite/mmap24-2: Relax condition a
- bit
-In-Reply-To: <20181017083945.GA4192@rei.lan>
-References: <1539226733-18212-1-git-send-email-hongzhi.song@windriver.com>
- <20181016130209.GB6980@rei>
- <21d93aaa-3047-42b4-cb8e-747ef1036a53@windriver.com>
- <20181017083945.GA4192@rei.lan>
-Message-ID: <6a9f7bb4-413f-60d2-297f-898ffa341458@windriver.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 17 Oct 2018 17:59:56 +0800
+Subject: [LTP] [PATCH] syscalls/fcntl: make OFD commands use fcntl64()
+ syscall on 32-bit
+In-Reply-To: <20d04a28a6254edd95f0bee0e3662c147603665b.1537174128.git.jstancek@redhat.com>
+References: <20d04a28a6254edd95f0bee0e3662c147603665b.1537174128.git.jstancek@redhat.com>
+Message-ID: <CAEemH2dKJTaxwCCqF0=Pjwy5J88S3APumouvgbt3oHmZLfZamw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On Mon, Sep 17, 2018 at 4:53 PM, Jan Stancek <jstancek@redhat.com> wrote:
 
-
-On 10/17/2018 04:39 PM, Cyril Hrubis wrote:
-> Hi!
->>> Hmm, it's always complicated with these POSIX tests, since we have to
->>> follow the POSIX specification there.
->>>
->>> And the POSIX clearly says that mmap() shall fail with ENOMEM if
->>> MAP_FIXED was specified, and the range [addr,addr+len) exceeds that
->>> allowed for the address space of a process. So I guess that the best
->>> solution here would be limiting the address space with rlimit, so that
->>> we actually happen to hit the ENOMEM instead of EINVAL.
->> I just referred to follow commit which has similar issue.
->>
->>   ?????? [commit id: e7bab61882847]
->>   ?????? syscalls/mmap15: relax condition a bit
->>
->>   ?????? High address is arch specific, and it also occasionally changes
->>   ?????? as can be se?????????????????????????????????en in history of this test.
->>
->>   ?????? Relax the co?????????????????????????????????ndition and accept both ENOMEM and
->> EINVAL
->>   ?????? as expected outcome.
->>   ?????? ?????????????????????????????????
->>   ?????? Fixes: #390
-> The difference is that the mmap15 is a Linux specific test, we can
-> accept any behavior we think is reasonable.
+> OFD commands require 64-bit argument (struct flock64). Until
+> glibc commit 06ab719d30b0 ("Fix Linux fcntl OFD locks for
+> non-LFS architectures (BZ#20251)") we relied on glibc passing
+> arg directly to syscall.
 >
->> Mips returns EINVAL and never returns ENOMEM if [addr+len]
->>   ??exceeds task size. I think it's has no relation with rlimit.
-> While the POSIX tests are written to test the conformity of the
-> implementation, we have to stick to POSIX there and actually it seems to
-> require that ENOMEM has to be returned if [addr,addr+len) exceeds that
-> allowed for the address space of a process, so I guess that mips is not
-> strictly conforming to POSIX here, however that is not a reason to
-> change the test.
-
-How about to skip mips arch by using "ifdef __mips__" ?
-Otherwise the test will failed on mips.
-
---Hongzhi
-
-
-> And in this case it's not a big deal and we can
-> possilby just ignore the failure in the same way we do for a few rwlock
-> tests where Linux behavior differs from the one mandated by POSIX.
+> This creates problem for 32-bit version of the test, because old
+> glibc is passing arg directly, while new one is casting it to
+> struct flock.
+>
+> We could add a configure check for glibc version, but that may
+> not help with other libc libraries.
+>
+> We could do a runtime check that exploits non-zero l_pid returning
+> EINVAL. This however complicates SAFE_FCNTL macro substantially.
+>
+> This patch changes 32-bit version of test to use syscall directly.
+>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  testcases/kernel/syscalls/fcntl/fcntl34.c      | 10 ++++++--
+>  testcases/kernel/syscalls/fcntl/fcntl36.c      | 19 +++++++++++----
+>  testcases/kernel/syscalls/fcntl/fcntl_common.h | 33
+> ++++++++++++++++++++++++++
+>  3 files changed, 56 insertions(+), 6 deletions(-)
+>  create mode 100644 testcases/kernel/syscalls/fcntl/fcntl_common.h
+>
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl34.c
+> b/testcases/kernel/syscalls/fcntl/fcntl34.c
+> index aa29cf9ea0d8..90c40f9cf4c6 100644
+> --- a/testcases/kernel/syscalls/fcntl/fcntl34.c
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl34.c
+> @@ -28,6 +28,7 @@
+>  #include "lapi/fcntl.h"
+>  #include "tst_safe_pthread.h"
+>  #include "tst_test.h"
+> +#include "fcntl_common.h"
+>
+>  static int thread_cnt;
+>  static const int max_thread_cnt = 32;
+> @@ -68,7 +69,12 @@ void *thread_fn_01(void *arg)
+>
+>         memset(buf, (intptr_t)arg, write_size);
+>
+> +/* see explanation in fcntl_common.h */
+> +#ifdef USE_STRUCT_FLOCK64
+>         struct flock64 lck = {
+> +#else
+> +       struct flock lck = {
+> +#endif
 >
 
+It seems the 'struct flock64' can satisfy both 64-bit and 32-bit platform,
+why here adding 'struct flock' here? Eventually, as the code comment says:
+On 32-bit, ..., recent one treats it as 'struct flock' and converts it to
+'struct flock64'. Why not use 'struct flock64'  directly?
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20181017/5da77892/attachment.html>
