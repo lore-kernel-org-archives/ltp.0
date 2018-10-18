@@ -1,63 +1,61 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 18 Oct 2018 16:42:11 +0200
-Subject: [LTP] [PATCH v2 1/1] net: Fix missing ping6
-Message-ID: <20181018144211.8298-1-pvorel@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 18 Oct 2018 17:02:09 +0200
+Subject: [LTP] [PATCH v3 0/4] New Fuzzy Sync library API
+In-Reply-To: <20181010140405.24496-1-rpalethorpe@suse.com>
+References: <20181010140405.24496-1-rpalethorpe@suse.com>
+Message-ID: <20181018150209.GA26947@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-ping6 is needed for some tst_net.sh based tests (and for
-netns_helper.sh, but it handles the dependency itself).
+Hi!
+I've dusted off my old pxa270 PDA and tried to compare the different
+implementations of the fuzzy sync library:
 
-iputils commit ebad35f ("ping: merge `ping6` command into `ping`") [1],
-released in s20150815 stopped providing ping6 and left it on
-distributions (see also [2]).
-Some distros don't create it (or didn't create it in the past [3]),
-use workaround and warn about it (as it's also a bug which should
-be fixed).
+|-------------------------------------------------------------|
+| test          |  old library  |  new library                |
+|-------------------------------------------------------------|
+| shmctl05      | timeouts      | timeouts                    |
+|-------------------------------------------------------------|
+| inotify09     | timeouts      | exits in sampling with WARN |
+|-------------------------------------------------------------|
+| cve-2017-2671 | kernel crash  | kernel crash                |
+|-------------------------------------------------------------|
+| cve-2016-7117 | kernel crash  | exits in sampling with WARN |
+|-------------------------------------------------------------|
+| cve-2014-0196 | timetous      | exits in sampling with WARN |
+|-------------------------------------------------------------|
 
-NOTE: Unfortunately we cannot use 'ping -${TST_IPVER}' as ping got '-6'
-switch (as a part of support for IPv6) was in commit 25aaaf4 ("Allow ping
-to use IPv6 addresses") [4], released in s20150815 (previous versions
-supported only ping6).
+The shmctl05 timeouts because the remap_file_pages is too slow and we
+fail to do even one iteration, it's possible that this is because we are
+hitting the race as well since this is kernel 3.0.0, but I cannot say
+that for sure.
 
-[1] https://github.com/iputils/iputils/commit/ebad35fee3de851b809c7b72ccc654a72b6af61d
-[2] https://bugzilla.redhat.com/show_bug.cgi?id=617934#c22
-[3] https://bugzilla.opensuse.org/show_bug.cgi?id=1017616
-[4] https://github.com/iputils/iputils/commit/25aaaf4c58b485a5d9ec758a1f170cc5ec4073c4
+The real problem is that we fail to callibrate because the machine is
+too slow and we do not manage to take the minimal amount of samples
+until the default timeout.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
-Suggested-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
-Hi Alexey,
+If I increase the timeout percentage to 0.5, we manage to take at least
+minimal amount of samples and to trigger the cve-2016-7117 from time to
+time. But it looks like the bias computation does not work reasonably
+reliably there, not sure why. But looking at the latest version adding
+bias no longer resets the averages, which may be the reason because the
+bias seems to be more or less the same as the number minimal samples.
 
-used a bit strange syntax, but it handles aliases.
+So there are a few things to consider, first one is that the default
+timeout percentage could be probably increased so that we do not have to
+tune the LTP_TIMEOUT_MUL even on slower processors. The downside is that
+these testcase would take longer on modern harware. Maybe we can do some
+simple CPU benchmarking to callibrate the timeout.
 
+Second thing to consider is if and how to tune the minimal amount of
+samples, Maybe we can set the minimal amount of samples to be smaller
+and then exit the callibration if our deviation was small enough three
+times in a row. But then there is this bias that we have to take into an
+account somehow.
 
-Kind regards,
-Petr
----
- testcases/lib/tst_net.sh | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-index a4467da7c..29080f92b 100644
---- a/testcases/lib/tst_net.sh
-+++ b/testcases/lib/tst_net.sh
-@@ -756,3 +756,11 @@ export RHOST_HWADDRS="${RHOST_HWADDRS:-$(tst_get_hwaddrs rhost)}"
- if [ -n "$TST_USE_LEGACY_API" ]; then
- 	tst_net_remote_tmpdir
- fi
-+
-+if ! tst_cmd_available ping6; then
-+	ping6()
-+	{
-+		ping -6 $@
-+	}
-+	tst_res_ TINFO "ping6 binary/symlink is missing, using workaround. Please, report missing ping6 to your distribution."
-+fi
 -- 
-2.19.1
-
+Cyril Hrubis
+chrubis@suse.cz
