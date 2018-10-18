@@ -1,45 +1,38 @@
-From: Travis CI <builds@travis-ci.org>
-Date: Thu, 18 Oct 2018 08:40:12 +0000
-Subject: [LTP] Fixed: linux-test-project/ltp#1088 (master - dd79c1f)
-In-Reply-To: <linux-test-project/ltp+443068920+fixed@travis-ci.org>
-Message-ID: <5bc846ebb79f1_43fa85b417c402004c5@cc8db2bc-8554-4e72-9d97-92a76092c66a.mail>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 18 Oct 2018 11:14:39 +0200
+Subject: [LTP] [COMMITTED][PATCH 1/1] m4: Remove include from AC_CHECK_FUNCS
+Message-ID: <20181018091439.20354-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Build Update for linux-test-project/ltp
--------------------------------------
+As AC_CHECK_FUNCS doesn't use it (unlike AC_CHECK_TYPES). The purpose
+of AC_CHECK_FUNCS is to check whether the linker can find a function
+by that name, independently of system headers, so there is no reason
+to include any system headers.
 
-Build: #1088
-Status: Fixed
+Fixes: 0d28feaac ("syscalls: Prepare for testing statx syscall")
 
-Duration: 13 mins and 47 secs
-Commit: dd79c1f (master)
-Author: Cyril Hrubis
-Message: tracing/intel_pt: Fix build on older userspace.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ m4/ltp-statx.m4 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Older userspace linux headers do not have aux_* fields struct
-perf_event_mmap_page. This commit disables the test build if older
-headers were detected, the alternative would be adding a fallback
-definition to LTP but I doubt that it's worth the effort.
+diff --git a/m4/ltp-statx.m4 b/m4/ltp-statx.m4
+index 5f79a94cd..7629f51c2 100644
+--- a/m4/ltp-statx.m4
++++ b/m4/ltp-statx.m4
+@@ -21,7 +21,7 @@ dnl LTP_CHECK_STATX
+ dnl ----------------------------
+ dnl
+ AC_DEFUN([LTP_CHECK_STATX],[
+-AC_CHECK_FUNCS(statx,,,[[#include <sys/stat.h>]])
++AC_CHECK_FUNCS(statx,,)
+ AC_CHECK_HEADER(linux/fs.h,,,)
+ AC_CHECK_TYPES([struct statx],,,[[
+ 	#define _GNU_SOURCE
+-- 
+2.19.0
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-CC: Ammy Yi <ammy.yi@intel.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Acked-by: Jan Stancek <jstancek@redhat.com>
-
-View the changeset: https://github.com/linux-test-project/ltp/compare/e816127e5d8e...dd79c1f16b20
-
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/443068920?utm_medium=notification&utm_source=email
-
---
-
-You can unsubscribe from build emails from the linux-test-project/ltp repository going to https://travis-ci.org/account/preferences/unsubscribe?repository=1224421&utm_medium=notification&utm_source=email.
-Or unsubscribe from *all* email updating your settings at https://travis-ci.org/account/preferences/unsubscribe?utm_medium=notification&utm_source=email.
-Or configure specific recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications.
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20181018/73ced2b7/attachment-0001.html>
