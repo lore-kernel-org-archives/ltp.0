@@ -1,77 +1,63 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 18 Oct 2018 16:00:23 +0200
-Subject: [LTP] [PATCH 1/1] net: Introduce $TST_PING
-In-Reply-To: <40613a15-b157-df57-1ec9-1eccb0cc1f0d@oracle.com>
-References: <20181008115849.30826-1-pvorel@suse.cz>
- <40613a15-b157-df57-1ec9-1eccb0cc1f0d@oracle.com>
-Message-ID: <20181018140023.GB30125@dell5510>
+Date: Thu, 18 Oct 2018 16:42:11 +0200
+Subject: [LTP] [PATCH v2 1/1] net: Fix missing ping6
+Message-ID: <20181018144211.8298-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+ping6 is needed for some tst_net.sh based tests (and for
+netns_helper.sh, but it handles the dependency itself).
+
+iputils commit ebad35f ("ping: merge `ping6` command into `ping`") [1],
+released in s20150815 stopped providing ping6 and left it on
+distributions (see also [2]).
+Some distros don't create it (or didn't create it in the past [3]),
+use workaround and warn about it (as it's also a bug which should
+be fixed).
+
+NOTE: Unfortunately we cannot use 'ping -${TST_IPVER}' as ping got '-6'
+switch (as a part of support for IPv6) was in commit 25aaaf4 ("Allow ping
+to use IPv6 addresses") [4], released in s20150815 (previous versions
+supported only ping6).
+
+[1] https://github.com/iputils/iputils/commit/ebad35fee3de851b809c7b72ccc654a72b6af61d
+[2] https://bugzilla.redhat.com/show_bug.cgi?id=617934#c22
+[3] https://bugzilla.opensuse.org/show_bug.cgi?id=1017616
+[4] https://github.com/iputils/iputils/commit/25aaaf4c58b485a5d9ec758a1f170cc5ec4073c4
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Suggested-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
 Hi Alexey,
 
-> Hi Petr,
-
-> >  [ -n "$TST_USE_LEGACY_API" ] && . test.sh || . tst_test.sh
-> > +tst_net_fix_ping_cmd
-
-> It is called twice, i.e. also in tst_net_parse_args(), though it should be
-> enough to have it only here?
-No. This is for hypothetical case when you manually set TST_IPV6=6 and use test
-without getopts.
-
-
-> For IPv4 tests we would eventually need tst_ping() with IPv6, so that TST_IPV6
-> is empty, for example for some tunnels that are working for both protocols over
-> IPv4, checking dst address to decide which command to use. I've not posted the
-> patch yet, I guess I will do it after this one.
-OK, make sense.
-
-> So I think we shouldn't use TST_PING variable...  it could be the new variable
-> for the ping6 only, or some general wrapper for the both commands?
-
-> Or may be something like this:
-
-> ping6()
-> {
->     ping -6 $@
-> }
-
-> if which ping6 >/dev/null 2>&1; then
->     unset ping6
-> fi
-I have a respect to use function of the same name as binary in $PATH because
-possible race conditions, but this should be safe.
-Simple solution => I'll use it in v2.
-
-
-> >  	# ping cmd use 56 as default message size
-> >  	for size in ${msg_sizes:-"56"}; do
-> > -		$cmd -I $src_iface -c $PING_MAX $dst_addr \
-> > +		$TST_PING -I $src_iface -c $PING_MAX $dst_addr \
-> >  			-s $size -i 0 > /dev/null 2>&1
-> >  		ret=$?
-> >  		if [ $ret -eq 0 ]; then
-> > diff --git a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
-> > index e22e17aae..558057d9c 100755
-> > --- a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
-> > +++ b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
-> > @@ -45,7 +45,7 @@ do_setup()
-> >  		;;
-> >  	esac
-
-> > -	tst_test_cmds $CMD ping$TST_IPV6
-> > +	tst_test_cmds $CMD $TST_PING
-
-> Are you sure it will work with the "ping -6" command as expected?
-You're right, that'd be a bug. Another reason to use ping6 function.
-TCONF: '-6' not found
-
-Thanks for your review!
+used a bit strange syntax, but it handles aliases.
 
 
 Kind regards,
 Petr
+---
+ testcases/lib/tst_net.sh | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index a4467da7c..29080f92b 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -756,3 +756,11 @@ export RHOST_HWADDRS="${RHOST_HWADDRS:-$(tst_get_hwaddrs rhost)}"
+ if [ -n "$TST_USE_LEGACY_API" ]; then
+ 	tst_net_remote_tmpdir
+ fi
++
++if ! tst_cmd_available ping6; then
++	ping6()
++	{
++		ping -6 $@
++	}
++	tst_res_ TINFO "ping6 binary/symlink is missing, using workaround. Please, report missing ping6 to your distribution."
++fi
+-- 
+2.19.1
+
