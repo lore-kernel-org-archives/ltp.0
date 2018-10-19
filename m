@@ -1,78 +1,47 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 19 Oct 2018 13:01:10 +0800
-Subject: [LTP] [PATCH] ipc/msgstress*: Update test name in output
-Message-ID: <1539925270-12034-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 19 Oct 2018 13:18:18 +0200
+Subject: [LTP] [PATCH RFC] lib: add helper funcs to save and restore
+ /proc|sys content
+In-Reply-To: <bc3a3f3599064b34d60a2f2f21c5cac578582a50.1539866505.git.jstancek@redhat.com>
+References: <bc3a3f3599064b34d60a2f2f21c5cac578582a50.1539866505.git.jstancek@redhat.com>
+Message-ID: <20181019111817.GA31934@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-msgctl[08-11] have been renamed as msgstress[01-04] in
-commit 3e882e3e4c2d, so fix the wrong name in output.
+Hi!
+> To avoid adding specially crafted functions for every feature
+> where we need to save/restore some proc/sys config, this patch
+> introduces a struct (linked list) where user pushes files names
+> whose values should be saved. These can be later restored in
+> cleanup or during the test.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/ipc/msgstress/msgstress01.c | 2 +-
- testcases/kernel/syscalls/ipc/msgstress/msgstress02.c | 2 +-
- testcases/kernel/syscalls/ipc/msgstress/msgstress03.c | 2 +-
- testcases/kernel/syscalls/ipc/msgstress/msgstress04.c | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+This is a great idea, but I guess that the user API could be even more
+simplified.
 
-diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
-index 6e7f0c1..4c392f9 100644
---- a/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
-+++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
-@@ -193,7 +193,7 @@ int main(int argc, char **argv)
- 			 count, nprocs);
- 	}
- 
--	tst_resm(TPASS, "msgctl08 ran successfully!");
-+	tst_resm(TPASS, "msgstress01 ran successfully!");
- 
- 	cleanup();
- 	tst_exit();
-diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress02.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress02.c
-index 1e63c56..58321e2 100644
---- a/testcases/kernel/syscalls/ipc/msgstress/msgstress02.c
-+++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress02.c
-@@ -203,7 +203,7 @@ int main(int argc, char **argv)
- 			 count, nprocs);
- 	}
- 
--	tst_resm(TPASS, "msgctl09 ran successfully!");
-+	tst_resm(TPASS, "msgstress02 ran successfully!");
- 
- 	cleanup();
- 	tst_exit();
-diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c
-index da4db1c..6fb20e2 100644
---- a/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c
-+++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c
-@@ -190,7 +190,7 @@ int main(int argc, char **argv)
- 			 count, nprocs);
- 	}
- 
--	tst_resm(TPASS, "msgctl10 ran successfully!");
-+	tst_resm(TPASS, "msgstress03 ran successfully!");
- 
- 	cleanup();
- 	tst_exit();
-diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-index 61a8108..131c41c 100644
---- a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-+++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-@@ -183,7 +183,7 @@ int main(int argc, char **argv)
- 		dotest_iteration(i*(MSGMNI / maxnprocs));
- 	}
- 
--	tst_resm(TPASS, "msgctl11 ran successfully!");
-+	tst_resm(TPASS, "msgstress04 ran successfully!");
- 
- 	cleanup();
- 	tst_exit();
+I would go for an NULL terminated array of strings that could be passed
+in the tst_test structure. Also that way the values would be restored in the
+test library even after the test has crashed.
+
+Something as:
+
+static const char *save_restore[] = {
+	"/proc/sys/kernel/core_pattern",
+	"/proc/sys/kernel/numa_balancing",
+	NULL,
+};
+
+
+static struct tst_test test = {
+	...
+
+	.save_restore = save_restore,
+};
+
+What do you think?
+
 -- 
-1.8.3.1
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
