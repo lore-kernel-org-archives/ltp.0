@@ -1,39 +1,34 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 18 Oct 2018 19:03:34 +0300
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 19 Oct 2018 07:38:22 +0200
 Subject: [LTP] [PATCH v2 1/1] net: Fix missing ping6
-In-Reply-To: <20181018144211.8298-1-pvorel@suse.cz>
+In-Reply-To: <61a9206d-2af4-396a-44dc-ecff4f4ce27f@oracle.com>
 References: <20181018144211.8298-1-pvorel@suse.cz>
-Message-ID: <61a9206d-2af4-396a-44dc-ecff4f4ce27f@oracle.com>
+ <61a9206d-2af4-396a-44dc-ecff4f4ce27f@oracle.com>
+Message-ID: <20181019053822.GA19290@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 18.10.2018 17:42, Petr Vorel wrote:
-> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-> index a4467da7c..29080f92b 100644
-> --- a/testcases/lib/tst_net.sh
-> +++ b/testcases/lib/tst_net.sh
-> @@ -756,3 +756,11 @@ export RHOST_HWADDRS="${RHOST_HWADDRS:-$(tst_get_hwaddrs rhost)}"
->  if [ -n "$TST_USE_LEGACY_API" ]; then
->  	tst_net_remote_tmpdir
->  fi
-> +
-> +if ! tst_cmd_available ping6; then
-> +	ping6()
-> +	{
+Hi Alexey,
 
-What about printing the message on the first usage only?
+> > +if ! tst_cmd_available ping6; then
+> > +	ping6()
+> > +	{
 
-                if [ -z "$ping6_warn_printed" ]; then
-                        tst_res_ TINFO "ping6 ..."
-                        ping6_warn_printed=yes
-                fi
+> What about printing the message on the first usage only?
 
-> +		ping -6 $@
-> +	}
-> +	tst_res_ TINFO "ping6 binary/symlink is missing, using workaround. Please, report missing ping6 to your distribution."
-> +fi
+>                 if [ -z "$ping6_warn_printed" ]; then
+>                         tst_res_ TINFO "ping6 ..."
+>                         ping6_warn_printed=yes
+Make sense. Added with export (required to be working properly).
 
-The rest looks good.
+> The rest looks good.
+Applied with your ack-by and suggested-by
+
+Thanks for your comments!
+
+
+Kind regards,
+Petr
