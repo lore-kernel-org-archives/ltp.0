@@ -1,28 +1,64 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 19 Oct 2018 19:50:24 +0800
-Subject: [LTP] [PATCH] ipc/msgstress*: Update test name in output
-In-Reply-To: <20181019113244.GB31934@rei>
-References: <1539925270-12034-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20181019113244.GB31934@rei>
-Message-ID: <5BC9C500.2030603@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 19 Oct 2018 07:52:15 -0400 (EDT)
+Subject: [LTP] [PATCH RFC] lib: add helper funcs to save and restore
+ /proc|sys content
+In-Reply-To: <20181019111817.GA31934@rei>
+References: <bc3a3f3599064b34d60a2f2f21c5cac578582a50.1539866505.git.jstancek@redhat.com>
+ <20181019111817.GA31934@rei>
+Message-ID: <939223686.59977826.1539949935214.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2018/10/19 19:32, Cyril Hrubis wrote:
+
+
+----- Original Message -----
 > Hi!
->> msgctl[08-11] have been renamed as msgstress[01-04] in
->> commit 3e882e3e4c2d, so fix the wrong name in output.
-> Maybe we should just change these messages into "Test ran successfully!"
-> 	instead. But I do not have strong opinion on this.
-Hi Cyril,
+> > To avoid adding specially crafted functions for every feature
+> > where we need to save/restore some proc/sys config, this patch
+> > introduces a struct (linked list) where user pushes files names
+> > whose values should be saved. These can be later restored in
+> > cleanup or during the test.
+> 
+> This is a great idea, but I guess that the user API could be even more
+> simplified.
+> 
+> I would go for an NULL terminated array of strings that could be passed
+> in the tst_test structure. Also that way the values would be restored in the
+> test library even after the test has crashed.
+> 
+> Something as:
+> 
+> static const char *save_restore[] = {
+> 	"/proc/sys/kernel/core_pattern",
+> 	"/proc/sys/kernel/numa_balancing",
+> 	NULL,
+> };
+> 
+> 
+> static struct tst_test test = {
+> 	...
+> 
+> 	.save_restore = save_restore,
+> };
+> 
+> What do you think?
 
-It's ok for me to do it as you said.  V2 patch is coming. :-)
+Looks good to me - I agree this makes it easier for user.
 
-Best Regards,
-Xiao Yang
+I was already thinking about corner cases with function
+approach, but that would be easy to add if we find need
+for it later.
 
+I'll post v2 that uses tst_test struct.
 
+Regards,
+Jan
 
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
