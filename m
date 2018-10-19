@@ -1,64 +1,80 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 19 Oct 2018 07:52:15 -0400 (EDT)
-Subject: [LTP] [PATCH RFC] lib: add helper funcs to save and restore
- /proc|sys content
-In-Reply-To: <20181019111817.GA31934@rei>
-References: <bc3a3f3599064b34d60a2f2f21c5cac578582a50.1539866505.git.jstancek@redhat.com>
- <20181019111817.GA31934@rei>
-Message-ID: <939223686.59977826.1539949935214.JavaMail.zimbra@redhat.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Fri, 19 Oct 2018 19:13:34 +0800
+Subject: [LTP] [PATCH v2] ipc/msgstress*: Update test name in output
+In-Reply-To: <20181019113244.GB31934@rei>
+References: <20181019113244.GB31934@rei>
+Message-ID: <1539947614-3797-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+msgctl[08-11] have been renamed in commit 3e882e3e4c2d,
+so fix the obsolete name in output.
+
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/ipc/msgstress/msgstress01.c | 2 +-
+ testcases/kernel/syscalls/ipc/msgstress/msgstress02.c | 2 +-
+ testcases/kernel/syscalls/ipc/msgstress/msgstress03.c | 2 +-
+ testcases/kernel/syscalls/ipc/msgstress/msgstress04.c | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
+index 6e7f0c1..7117e38 100644
+--- a/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
++++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress01.c
+@@ -193,7 +193,7 @@ int main(int argc, char **argv)
+ 			 count, nprocs);
+ 	}
+ 
+-	tst_resm(TPASS, "msgctl08 ran successfully!");
++	tst_resm(TPASS, "Test ran successfully!");
+ 
+ 	cleanup();
+ 	tst_exit();
+diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress02.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress02.c
+index 1e63c56..43982bd 100644
+--- a/testcases/kernel/syscalls/ipc/msgstress/msgstress02.c
++++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress02.c
+@@ -203,7 +203,7 @@ int main(int argc, char **argv)
+ 			 count, nprocs);
+ 	}
+ 
+-	tst_resm(TPASS, "msgctl09 ran successfully!");
++	tst_resm(TPASS, "Test ran successfully!");
+ 
+ 	cleanup();
+ 	tst_exit();
+diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c
+index da4db1c..de4b459 100644
+--- a/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c
++++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress03.c
+@@ -190,7 +190,7 @@ int main(int argc, char **argv)
+ 			 count, nprocs);
+ 	}
+ 
+-	tst_resm(TPASS, "msgctl10 ran successfully!");
++	tst_resm(TPASS, "Test ran successfully!");
+ 
+ 	cleanup();
+ 	tst_exit();
+diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
+index 61a8108..18fad4f 100644
+--- a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
++++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
+@@ -183,7 +183,7 @@ int main(int argc, char **argv)
+ 		dotest_iteration(i*(MSGMNI / maxnprocs));
+ 	}
+ 
+-	tst_resm(TPASS, "msgctl11 ran successfully!");
++	tst_resm(TPASS, "Test ran successfully!");
+ 
+ 	cleanup();
+ 	tst_exit();
+-- 
+1.8.3.1
 
 
------ Original Message -----
-> Hi!
-> > To avoid adding specially crafted functions for every feature
-> > where we need to save/restore some proc/sys config, this patch
-> > introduces a struct (linked list) where user pushes files names
-> > whose values should be saved. These can be later restored in
-> > cleanup or during the test.
-> 
-> This is a great idea, but I guess that the user API could be even more
-> simplified.
-> 
-> I would go for an NULL terminated array of strings that could be passed
-> in the tst_test structure. Also that way the values would be restored in the
-> test library even after the test has crashed.
-> 
-> Something as:
-> 
-> static const char *save_restore[] = {
-> 	"/proc/sys/kernel/core_pattern",
-> 	"/proc/sys/kernel/numa_balancing",
-> 	NULL,
-> };
-> 
-> 
-> static struct tst_test test = {
-> 	...
-> 
-> 	.save_restore = save_restore,
-> };
-> 
-> What do you think?
 
-Looks good to me - I agree this makes it easier for user.
-
-I was already thinking about corner cases with function
-approach, but that would be easy to add if we find need
-for it later.
-
-I'll post v2 that uses tst_test struct.
-
-Regards,
-Jan
-
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
