@@ -1,92 +1,62 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 22 Oct 2018 11:24:53 +0200
-Subject: [LTP] [PATCH v3 0/4] New Fuzzy Sync library API
-In-Reply-To: <20181018150209.GA26947@rei>
-References: <20181010140405.24496-1-rpalethorpe@suse.com>
- <20181018150209.GA26947@rei>
-Message-ID: <87a7n6tjtm.fsf@rpws.prws.suse.cz>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Tue, 23 Oct 2018 10:29:03 +0800
+Subject: [LTP] [PATCH] tbio/ltp_tbio.c: Change the order of calling
+ blk_cleanup_queue() and del_gendisk()
+In-Reply-To: <1540193371-5689-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1540193371-5689-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <5BCE876F.4070500@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+On 2018/10/22 15:29, Xiao Yang wrote:
+> Removing ltp_tbio.ko module always reproduced a warning and panic
+> on the old kernels that have backported kernel commit a063057d7c73
+> (e.g. RHEL7.6).
+Hi,
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+Sorry, the RHEL version is sensltive, so please remove it when pushing
+the patch.
 
-> Hi!
-> I've dusted off my old pxa270 PDA and tried to compare the different
-> implementations of the fuzzy sync library:
-
-Good stuff!
-
+Best Regards,
+Xiao Yang
+> Removing ltp_tbio.ko module calls blk_cleanup_queue() and del_gendisk()
+> in the order so that it triggers races or warnings since commit a063057d7c73
+> in kernel, and some kernel modules have fixed the issue, as below:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=57678e5a3d5145e5f08aa1d307ba219b27b1765a
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0fa8ebdd4244b8e652cc5341c3d5b4b06f84a637
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d8115c35bf3ee575cfc9c51ac9853f58a21a43dc
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=392db38058eb47250a9d0cc737af37e78a7e443d
 >
-> |-------------------------------------------------------------|
-> | test          |  old library  |  new library                |
-> |-------------------------------------------------------------|
-> | shmctl05      | timeouts      | timeouts                    |
-> |-------------------------------------------------------------|
-> | inotify09     | timeouts      | exits in sampling with WARN |
-> |-------------------------------------------------------------|
-> | cve-2017-2671 | kernel crash  | kernel crash                |
-> |-------------------------------------------------------------|
-> | cve-2016-7117 | kernel crash  | exits in sampling with WARN |
-> |-------------------------------------------------------------|
-> | cve-2014-0196 | timetous      | exits in sampling with WARN |
-> |-------------------------------------------------------------|
+> We also try to fix the issue in the same way.
 >
-> The shmctl05 timeouts because the remap_file_pages is too slow and we
-> fail to do even one iteration, it's possible that this is because we are
-> hitting the race as well since this is kernel 3.0.0, but I cannot say
-> that for sure.
+> Note:
+> A lot of structs and functions in ltp_tbio.ko module based on old
+> kernel(e.g. 3.10.0) has been changed on upstream kernel, so ltp_tbio.ko
+> module cannot be built on upstream kernel.  Perhaps ltp_tbio.ko
+> module needs to be updated, but we want to fix the issue first.
 >
-> The real problem is that we fail to callibrate because the machine is
-> too slow and we do not manage to take the minimal amount of samples
-> until the default timeout.
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> If I increase the timeout percentage to 0.5, we manage to take at least
-> minimal amount of samples and to trigger the cve-2016-7117 from time to
-> time. But it looks like the bias computation does not work reasonably
-> reliably there, not sure why. But looking at the latest version adding
-> bias no longer resets the averages, which may be the reason because the
-> bias seems to be more or less the same as the number minimal samples.
+> diff --git a/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c b/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
+> index 48cc588..0a9cd40 100644
+> --- a/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
+> +++ b/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
+> @@ -562,8 +562,8 @@ module_init(tbio_init);
+>  
+>  static void tbio_exit(void)
+>  {
+> -	blk_cleanup_queue(tbio_dev.q);
+>  	del_gendisk(tbio_dev.gd);
+> +	blk_cleanup_queue(tbio_dev.q);
+>  	put_disk(tbio_dev.gd);
+>  	unregister_blkdev(TBIO_MAJOR, DEVICE_NAME);
+>  	vfree(tbio_dev.data);
 
-Sounds correct. I guess context switches take a large number of cycles
-on this CPU relative to x86.
 
->
-> So there are a few things to consider, first one is that the default
-> timeout percentage could be probably increased so that we do not have to
-> tune the LTP_TIMEOUT_MUL even on slower processors. The downside is that
-> these testcase would take longer on modern harware. Maybe we can do some
-> simple CPU benchmarking to callibrate the timeout.
 
-Perhaps the test runner or test library should tune LTP_TIMEOUT_MUL?
-Assuming the user allows it.
-
->
-> Second thing to consider is if and how to tune the minimal amount of
-> samples, Maybe we can set the minimal amount of samples to be smaller
-> and then exit the callibration if our deviation was small enough three
-> times in a row. But then there is this bias that we have to take into an
-> account somehow.
-
-I think the only way is to benchmark a selection of syscalls and then
-pass this data to the test somehow. Then it can calculate some
-reasonable time and sample limits.
-
-However I also think this is beyond the scope of this patch set because
-fuzzy sync tests are just one potential user of such metrics. I suspect
-also that it will be a big enough change to justify its own discussion
-and patch set.
-
-For now, if we increase the minimum time limit and samples so that
-cve-2016-7117 behaves sensibly on a pxa270 then we are probably covering
-most users. The downside is that we are wasting some time and
-electricity on server grade hardware, but at least the tests are being
-performed correctly on most hardware.
-
---
-Thank you,
-Richard.
