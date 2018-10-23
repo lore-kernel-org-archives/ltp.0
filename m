@@ -1,62 +1,81 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 23 Oct 2018 10:29:03 +0800
-Subject: [LTP] [PATCH] tbio/ltp_tbio.c: Change the order of calling
- blk_cleanup_queue() and del_gendisk()
-In-Reply-To: <1540193371-5689-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1540193371-5689-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <5BCE876F.4070500@cn.fujitsu.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 23 Oct 2018 17:03:51 +0300
+Subject: [LTP] [PATCH 1/4] net/dhcp: Use paths allowed by AppArmor for
+	dnsmasq
+In-Reply-To: <20181011220525.24628-2-pvorel@suse.cz>
+References: <20181011220525.24628-1-pvorel@suse.cz>
+ <20181011220525.24628-2-pvorel@suse.cz>
+Message-ID: <85563193-f74e-8287-8f59-debbf9ff6705@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2018/10/22 15:29, Xiao Yang wrote:
-> Removing ltp_tbio.ko module always reproduced a warning and panic
-> on the old kernels that have backported kernel commit a063057d7c73
-> (e.g. RHEL7.6).
-Hi,
-
-Sorry, the RHEL version is sensltive, so please remove it when pushing
-the patch.
-
-Best Regards,
-Xiao Yang
-> Removing ltp_tbio.ko module calls blk_cleanup_queue() and del_gendisk()
-> in the order so that it triggers races or warnings since commit a063057d7c73
-> in kernel, and some kernel modules have fixed the issue, as below:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=57678e5a3d5145e5f08aa1d307ba219b27b1765a
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0fa8ebdd4244b8e652cc5341c3d5b4b06f84a637
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d8115c35bf3ee575cfc9c51ac9853f58a21a43dc
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=392db38058eb47250a9d0cc737af37e78a7e443d
->
-> We also try to fix the issue in the same way.
->
-> Note:
-> A lot of structs and functions in ltp_tbio.ko module based on old
-> kernel(e.g. 3.10.0) has been changed on upstream kernel, so ltp_tbio.ko
-> module cannot be built on upstream kernel.  Perhaps ltp_tbio.ko
-> module needs to be updated, but we want to fix the issue first.
->
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+On 12.10.2018 01:05, Petr Vorel wrote:
+> Fixes for --log-facility and --dhcp-leasefile.
+> 
+> Path for log file expects AppArmor commit
+> 025c7dc6 ("dnsmasq: Add permission to open log files").
+> 
+> NOTE: AppArmor optimization isn't needed for dhcpd.
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
->  testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c b/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
-> index 48cc588..0a9cd40 100644
-> --- a/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
-> +++ b/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
-> @@ -562,8 +562,8 @@ module_init(tbio_init);
+> Changing path to /var/log require root, but we run most of network tests
+> under root anyway, at least for network  namespaces.
+> I didn't add TST_NEEDS_ROOT=1, maybe I should.
+> 
+> 
+> Kind regards,
+> Petr
+> ---
+>  testcases/network/dhcp/dnsmasq_tests.sh | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/network/dhcp/dnsmasq_tests.sh b/testcases/network/dhcp/dnsmasq_tests.sh
+> index ad5885c84..43961f85f 100755
+> --- a/testcases/network/dhcp/dnsmasq_tests.sh
+> +++ b/testcases/network/dhcp/dnsmasq_tests.sh
+> @@ -9,9 +9,11 @@ dhcp_name="dnsmasq"
 >  
->  static void tbio_exit(void)
+>  . dhcp_lib.sh
+>  
+> +log="/var/log/tst_dnsmasq.log"
+> +
+>  common_opt="--no-hosts --no-resolv --dhcp-authoritative \
+> -	--log-facility=./tst_dnsmasq.log --interface=$iface0 \
+> -	--dhcp-leasefile=tst_dnsmasq.lease --port=0 --conf-file= "
+> +	--log-facility=$log --interface=$iface0 \
+
+It could be stderr with writing the output of dnsmasq to the test directory:
+
+  --log-facility=-
+
+> +	--dhcp-leasefile=/var/lib/misc/dnsmasq.tst.leases --port=0 --conf-file= "
+>  
+
+What if this directory doesn't exist? Why not to use the standard one for dnsmasq /var/lib/dnsmasq/?
+
+Forgot to remove this file in cleanup? BTW, it's better to have "ltp" instead of "tst" in this path.
+
+
+>  start_dhcp()
 >  {
-> -	blk_cleanup_queue(tbio_dev.q);
->  	del_gendisk(tbio_dev.gd);
-> +	blk_cleanup_queue(tbio_dev.q);
->  	put_disk(tbio_dev.gd);
->  	unregister_blkdev(TBIO_MAJOR, DEVICE_NAME);
->  	vfree(tbio_dev.data);
-
-
+> @@ -33,12 +35,12 @@ start_dhcp6()
+>  
+>  cleanup_dhcp()
+>  {
+> -	rm -f tst_dnsmasq.log
+> +	rm -f $log
+>  }
+>  
+>  print_dhcp_log()
+>  {
+> -	cat tst_dnsmasq.log
+> +	cat $log
+>  }
+>  
+>  print_dhcp_version()
+> 
 
