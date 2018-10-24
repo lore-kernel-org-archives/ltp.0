@@ -1,79 +1,179 @@
-From: Hongzhi.Song <hongzhi.song@windriver.com>
-Date: Tue, 23 Oct 2018 22:36:47 -0400
-Subject: [LTP] [PATCH] open_posix_testsuite/mmap24-2: Support mips
-Message-ID: <1540348607-217391-1-git-send-email-hongzhi.song@windriver.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 24 Oct 2018 08:23:47 +0300
+Subject: [LTP] [RFC 1/3] syscalls/fanotify03: defined additional tcase
+ members to support more tcase control
+In-Reply-To: <2e4b79178a769f3657fee97ebc48f533d5218602.1540348505.git.mbobrowski@mbobrowski.org>
+References: <cover.1540348505.git.mbobrowski@mbobrowski.org>
+ <2e4b79178a769f3657fee97ebc48f533d5218602.1540348505.git.mbobrowski@mbobrowski.org>
+Message-ID: <CAOQ4uxg1s0tMOVzXzTOBbym924drT8-1q=hYy77UXLre-m3G=w@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Mips will return EINVAL instead of ENOMEM as expected
-if MAP_FIXED is set and the range of [addr + len) exceeds
-TASK_SIZE.
+On Wed, Oct 24, 2018 at 6:27 AM Matthew Bobrowski
+<mbobrowski@mbobrowski.org> wrote:
+>
+> * Included the event mask member to be used for fanotify_mark() within
+>   the tcase. This allows control over what event types are to be
+>   generated on a tcase by tcase level as oppose to having it globally
+>   defined for all tcases.
+>
+> * Included the event_set and event_resp arrays into a tcase so that
+>   the sequence of expected events can be defined on a test case by test
+>   case level. Both event_set and event_resp are now represented by the
+>   event struct.
+>
+> * Added event_count member to tcase in order to represent the number of
+>   expected events for each tcase.
+>
+> * Fanotify permission events cannot be merged, thus cleaned up some
+>   unnecessary code in test_fanotify() that checks whether any additional
+>   bits are left within event->mask.
+>
+> Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+> ---
 
-Linux kernel code: arch/mips/mm/mmap.c
-if (flags & MAP_FIXED) {
-    /* Even MAP_FIXED mappings must reside within TASK_SIZE */
-    if (TASK_SIZE - len < addr)
-        return -EINVAL;
+Looks good! nits below.
 
-The POSIX specification says:
-"If MAP_FIXED is set, mmap() may return MAP_FAILED and set errno to
-[EINVAL]."
-[http://pubs.opengroup.org/onlinepubs/9699919799/functions/mmap.html]
+>  .../kernel/syscalls/fanotify/fanotify03.c     | 90 ++++++++++---------
+>  1 file changed, 50 insertions(+), 40 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
+> index 5c105ed32..cca15aa00 100644
+> --- a/testcases/kernel/syscalls/fanotify/fanotify03.c
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
+> @@ -42,28 +42,48 @@ static volatile int fd_notify;
+>
+>  static pid_t child_pid;
+>
+> -static unsigned long long event_set[EVENT_MAX];
+> -static unsigned int event_resp[EVENT_MAX];
+> -
+>  static char event_buf[EVENT_BUF_LEN];
+>  static int support_perm_events;
+>
+> +struct event {
+> +       unsigned long long type;
 
-So I think the mips kernel remains POSIX compliant.
+It's better to name this also 'mask' as in the near future you will
+want to assign it the value of OPEN_PERM|OPEN_EXEC_PERM
+which is not a 'type'.
 
-Relax the condition and accept both ENOMEM and EINVAL
-as expected outcome.
+> +       unsigned int response;
+> +};
+> +
+>  static struct tcase {
+>         const char *tname;
+>         struct fanotify_mark_type mark;
+> +       unsigned long long mask;
+> +       int event_count;
+> +       struct event event_set[EVENT_MAX];
 
-Signed-off-by: Hongzhi.Song <hongzhi.song@windriver.com>
----
- .../open_posix_testsuite/conformance/interfaces/mmap/24-2.c    | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Better change the value of EVENT_MAX...
+or even decouple it from EVENT_BUF_LEN
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
-index de51d43..810e5c8 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
-@@ -7,7 +7,7 @@
-  * source tree.
-  *
-  * The mmap() function shall fail if:
-- * [ENOMEM] MAP_FIXED was specified,
-+ * [ENOMEM or EINVAL] MAP_FIXED was specified,
-  * and the range [addr,addr+len) exceeds that allowed
-  * for the address space of a process; or, if MAP_FIXED was not specified and
-  * there is insufficient room in the address space to effect the mapping.
-@@ -15,7 +15,7 @@
-  * Test Step:
-  * 1. Map a shared memory object, with size exceeding the value get from
-  *    rlim_cur of resource RLIMIT_AS, setting MAP_FIXED;
-- * 3. Should get ENOMEM.
-+ * 3. Should get ENOMEM or EINVAL.
-  */
- 
- #define _XOPEN_SOURCE 600
-@@ -93,8 +93,8 @@ int main(void)
- 	       (unsigned long)len);
- 	pa = mmap(addr, len, PROT_READ | PROT_WRITE, MAP_FIXED | MAP_SHARED, fd,
- 		  0);
--	if (pa == MAP_FAILED && errno == ENOMEM) {
--		printf("Got ENOMEM: %s\nTest PASSED\n", strerror(errno));
-+	if (pa == MAP_FAILED && (errno == ENOMEM || errno == EINVAL)) {
-+		printf("Got ENOMEM or EINVAL: %s\nTest PASSED\n", strerror(errno));
- 		exit(PTS_PASS);
- 	}
- 
-@@ -103,6 +103,6 @@ int main(void)
- 	else
- 		munmap(pa, len);
- 	close(fd);
--	printf("Test Fail: Did not get ENOMEM as expected\n");
-+	printf("Test Failed: Did not get ENOMEM or EINVAL as expected\n");
- 	return PTS_FAIL;
- }
--- 
-2.8.1
+>  } tcases[] = {
+>         {
+>                 "inode mark permission events",
+>                 INIT_FANOTIFY_MARK_TYPE(INODE),
+> +               FAN_OPEN_PERM | FAN_ACCESS_PERM, 2,
+> +               {
+> +                       {FAN_OPEN_PERM, FAN_ALLOW},
+> +                       {FAN_ACCESS_PERM, FAN_DENY}
+> +               }
+>         },
+>         {
+>                 "mount mark permission events",
+>                 INIT_FANOTIFY_MARK_TYPE(MOUNT),
+> +               FAN_OPEN_PERM | FAN_ACCESS_PERM, 2,
+> +               {
+> +                       {FAN_OPEN_PERM, FAN_ALLOW},
+> +                       {FAN_ACCESS_PERM, FAN_DENY}
+> +               }
+>         },
+>         {
+>                 "filesystem mark permission events",
+>                 INIT_FANOTIFY_MARK_TYPE(FILESYSTEM),
+> -       },
+> +               FAN_OPEN_PERM | FAN_ACCESS_PERM, 2,
+> +               {
+> +                       {FAN_OPEN_PERM, FAN_ALLOW},
+> +                       {FAN_ACCESS_PERM, FAN_DENY}
+> +               }
+> +       }
+>  };
+>
+>  static void generate_events(void)
+> @@ -146,8 +166,7 @@ static int setup_mark(unsigned int n)
+>
+>         fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
+>
+> -       if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
+> -                         FAN_ACCESS_PERM | FAN_OPEN_PERM,
+> +       if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag, tc->mask,
+>                           AT_FDCWD, fname) < 0) {
+>                 if (errno == EINVAL && support_perm_events &&
+>                     mark->flag == FAN_MARK_FILESYSTEM) {
+> @@ -167,7 +186,7 @@ static int setup_mark(unsigned int n)
+>                 }
+>         } else {
+>                 /*
+> -                * To distigouish between perm event not supported and
+> +                * To distinguish between perm event not supported and
+>                  * filesystem mark not supported.
+>                  */
+>                 support_perm_events = 1;
+> @@ -179,32 +198,22 @@ static int setup_mark(unsigned int n)
+>
+>  static void test_fanotify(unsigned int n)
+>  {
+> -       int tst_count;
+>         int ret, len = 0, i = 0, test_num = 0;
+> +       struct tcase *tc = &tcases[n];
+> +       struct event *event_set = tc->event_set;
+>
+>         if (setup_mark(n) != 0)
+>                 return;
+>
+>         run_child();
+>
+> -       tst_count = 0;
+> -
+> -       event_set[tst_count] = FAN_OPEN_PERM;
+> -       event_resp[tst_count++] = FAN_ALLOW;
+> -       event_set[tst_count] = FAN_ACCESS_PERM;
+> -       event_resp[tst_count++] = FAN_DENY;
+> -
+> -       /* tst_count + 1 is for checking child return value */
+> -       if (TST_TOTAL != tst_count + 1) {
+> -               tst_brk(TBROK,
+> -                       "TST_TOTAL and tst_count do not match");
+> -       }
+> -       tst_count = 0;
+> -
+>         /*
+> -        * check events
+> +        * Process events
+> +        *
+> +        * tc->count + 1 is to accommodate for checking the child process
+> +        * return value
+>          */
+> -       while (test_num < TST_TOTAL && fd_notify != -1) {
+> +       while (test_num < tc->event_count + 1 && fd_notify != -1) {
+>                 struct fanotify_event_metadata *event;
+>
+>                 if (i == len) {
+> @@ -222,12 +231,12 @@ static void test_fanotify(unsigned int n)
+>                 }
+>
+>                 event = (struct fanotify_event_metadata *)&event_buf[i];
+> -               if (!(event->mask & event_set[test_num])) {
+> +               if (!(event->mask & event_set[test_num].type)) {
 
+/* Permission events cannot be merged, so... */
++               if (event->mask != event_set[test_num].mask) {
+
+Thanks,
+Amir.
