@@ -1,85 +1,74 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 23 Oct 2018 23:57:41 +0200
-Subject: [LTP] [PATCH 1/4] net/dhcp: Use paths allowed by AppArmor for
-	dnsmasq
-In-Reply-To: <85563193-f74e-8287-8f59-debbf9ff6705@oracle.com>
-References: <20181011220525.24628-1-pvorel@suse.cz>
- <20181011220525.24628-2-pvorel@suse.cz>
- <85563193-f74e-8287-8f59-debbf9ff6705@oracle.com>
-Message-ID: <20181023215741.GA26131@dell5510>
+From: Hongzhi, Song <hongzhi.song@windriver.com>
+Date: Wed, 24 Oct 2018 10:29:56 +0800
+Subject: [LTP] [PATCH] open_posix_testsuite/mmap24-2: Relax condition a
+ bit
+In-Reply-To: <20181017083945.GA4192@rei.lan>
+References: <1539226733-18212-1-git-send-email-hongzhi.song@windriver.com>
+ <20181016130209.GB6980@rei>
+ <21d93aaa-3047-42b4-cb8e-747ef1036a53@windriver.com>
+ <20181017083945.GA4192@rei.lan>
+Message-ID: <2de81dcd-301e-07bc-23c5-5e3d00a9c136@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
-
-thanks for you review!
-
-> On 12.10.2018 01:05, Petr Vorel wrote:
-> > Fixes for --log-facility and --dhcp-leasefile.
-
-> > Path for log file expects AppArmor commit
-> > 025c7dc6 ("dnsmasq: Add permission to open log files").
-
-> > NOTE: AppArmor optimization isn't needed for dhcpd.
-
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-> > Changing path to /var/log require root, but we run most of network tests
-> > under root anyway, at least for network  namespaces.
-> > I didn't add TST_NEEDS_ROOT=1, maybe I should.
-
-...
-> >  common_opt="--no-hosts --no-resolv --dhcp-authoritative \
-> > -	--log-facility=./tst_dnsmasq.log --interface=$iface0 \
-> > -	--dhcp-leasefile=tst_dnsmasq.lease --port=0 --conf-file= "
-> > +	--log-facility=$log --interface=$iface0 \
-
-> It could be stderr with writing the output of dnsmasq to the test directory:
-
->   --log-facility=-
-Yes, I noticed the possibility to use stderr as well. But it's since 2.53, which
-breaks old distros (centos6/rhel6) and would require check for version.
-Is it worth of it?
-And isn't there anything else requiring root anyway on SSH/RSH based testing?
-(default netns testing requires root).
-
-> > +	--dhcp-leasefile=/var/lib/misc/dnsmasq.tst.leases --port=0 --conf-file= "
-
-> What if this directory doesn't exist? Why not to use the standard one for dnsmasq /var/lib/dnsmasq/?
-No, default path for linux is /var/lib/misc/dnsmasq.leases [1]:
-define LEASEFILE "/var/lib/misc/dnsmasq.leases"
-
-AppArmor also expects it there [2]:
-/var/lib/misc/dnsmasq.leases rw, # Required only for DHCP server usage
-
-but also accept different paths:
-/var/lib/misc/dnsmasq.*.leases rw,
-/var/lib/lxd-bridge/dnsmasq.*.leases rw,
-/var/lib/NetworkManager/dnsmasq-*.leases rw,
-
-> Forgot to remove this file in cleanup?
-Yes, I should be consistent. But is it really needed to cleanup files, when
-temporary directory is being deleted after test?  I was actually thinking to
-remove cleanup_dhcp at all from both test scripts.
-
-> BTW, it's better to have "ltp" instead of "tst" in this path.
-Yes, but I wanted to be consistent with dhcpd_tests.sh - there is:
-tst_dhcpd.conf, tst_hdcpd.lease
-
-BTW: Others possible improvements of DHCP tests (not planning them before
-finishing this):
-* I was also thinking about passing file location of config file instead of
-  changing content of global files in setup_dhcpd_conf().
-* Handle situation when dhclient is already running in daemon mode (rare
-  situation nowadays, probably started manually).
-* Handle situation, when DHCP server is already running (and blocking port)
 
 
-Kind regards,
-Petr
+On 10/17/2018 04:39 PM, Cyril Hrubis wrote:
+> Hi!
+>>> Hmm, it's always complicated with these POSIX tests, since we have to
+>>> follow the POSIX specification there.
+>>>
+>>> And the POSIX clearly says that mmap() shall fail with ENOMEM if
+>>> MAP_FIXED was specified, and the range [addr,addr+len) exceeds that
+>>> allowed for the address space of a process. So I guess that the best
+>>> solution here would be limiting the address space with rlimit, so that
+>>> we actually happen to hit the ENOMEM instead of EINVAL.
+>> I just referred to follow commit which has similar issue.
+>>
+>>   ?????? [commit id: e7bab61882847]
+>>   ?????? syscalls/mmap15: relax condition a bit
+>>
+>>   ?????? High address is arch specific, and it also occasionally changes
+>>   ?????? as can be se?????????????????????????????????en in history of this test.
+>>
+>>   ?????? Relax the co?????????????????????????????????ndition and accept both ENOMEM and
+>> EINVAL
+>>   ?????? as expected outcome.
+>>   ?????? ?????????????????????????????????
+>>   ?????? Fixes: #390
+> The difference is that the mmap15 is a Linux specific test, we can
+> accept any behavior we think is reasonable.
+>
+>> Mips returns EINVAL and never returns ENOMEM if [addr+len]
+>>   ??exceeds task size. I think it's has no relation with rlimit.
+> While the POSIX tests are written to test the conformity of the
+> implementation, we have to stick to POSIX there and actually it seems to
+> require that ENOMEM has to be returned if [addr,addr+len) exceeds that
+> allowed for the address space of a process, so I guess that mips is not
+> strictly conforming to POSIX here,
 
-[1] http://thekelleys.org.uk/gitweb/?p=dnsmasq.git;a=blob;f=src/config.h;h=762c49b586bb26fb05d0eceac87d28f939693a6f;hb=HEAD#l193
-[2] https://gitlab.com/apparmor/apparmor/blob/master/profiles/apparmor.d/usr.sbin.dnsmasq#L58
+Hi Cyril,
+
+The POSIX specification says:
+"If MAP_FIXED is set, mmap() may return MAP_FAILED and set errno to 
+[EINVAL]."
+[http://pubs.opengroup.org/onlinepubs/9699919799/functions/mmap.html]
+
+So I think the mips kernel remains POSIX compliant.
+
+I hope to send V2 with commit log explaining this clearly.
+With the patch, the testcase will support more Arches.
+
+
+--Hongzhi
+
+
+> however that is not a reason to
+> change the test. And in this case it's not a big deal and we can
+> possilby just ignore the failure in the same way we do for a few rwlock
+> tests where Linux behavior differs from the one mandated by POSIX.
+>
+
