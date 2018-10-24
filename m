@@ -1,32 +1,41 @@
-From: Jaggi, Manish <Manish.Jaggi@cavium.com>
-Date: Wed, 24 Oct 2018 08:40:11 +0000
-Subject: [LTP] cpuhotplug03 test fails in FULL ltp run,
-	but passes individually
-Message-ID: <D2251CD4-ED6B-4C5F-959D-9F850E3CFED2@caviumnetworks.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 24 Oct 2018 13:40:59 +0300
+Subject: [LTP] [PATCH 1/4] net/dhcp: Use paths allowed by AppArmor for
+	dnsmasq
+In-Reply-To: <20181023215741.GA26131@dell5510>
+References: <20181011220525.24628-1-pvorel@suse.cz>
+ <20181011220525.24628-2-pvorel@suse.cz>
+ <85563193-f74e-8287-8f59-debbf9ff6705@oracle.com>
+ <20181023215741.GA26131@dell5510>
+Message-ID: <911cf2d7-7716-33d4-0329-168ba3660431@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi All,
+Hi Petr,
+On 24.10.2018 00:57, Petr Vorel wrote:
+...
+>> What if this directory doesn't exist? Why not to use the standard one for dnsmasq /var/lib/dnsmasq/?
+> No, default path for linux is /var/lib/misc/dnsmasq.leases [1]:
+> define LEASEFILE "/var/lib/misc/dnsmasq.leases"
+> 
+> AppArmor also expects it there [2]:
+> /var/lib/misc/dnsmasq.leases rw, # Required only for DHCP server usage
+> 
+> but also accept different paths:
+> /var/lib/misc/dnsmasq.*.leases rw,
+> /var/lib/lxd-bridge/dnsmasq.*.leases rw,
+> /var/lib/NetworkManager/dnsmasq-*.leases rw,
+>
 
-cpuhotplug03 test fails in full ltp run.
----
-cpuhotplug03 1 TFAIL: No cpuhotplug_do_spin_loop processes found on CPU1
-<<<execution_status>>>
-initiation_status=3D"ok"
-duration=3D210 termination_type=3Dexited termination_id=3D1 corefile=3Dno
-cutime=3D20941 cstime=3D65
-<<<test_end>>>
-INFO: ltp-pan reported some tests FAIL
-=E2=80=94
+May be it is for the newest versions only, I was looking at 2.48/2.76 and it is
+/var/lib/dnsmasq/dnsmasq.leases.
+ 
+>> Forgot to remove this file in cleanup?
+> Yes, I should be consistent. But is it really needed to cleanup files, when
+> temporary directory is being deleted after test?  I was actually thinking to
+> remove cleanup_dhcp at all from both test scripts.
 
-This failure is only observed with full LTP run. This doesn't happens with =
-individual test run.
-I am running this test on Cavium ThunderX ARM64 machine with 200+ cores.
-
-Need some pointers to debug this issue.
-
--Thanks
-Manish
+But the file now outside of LTP temp directory, in /var/lib/misc/...
