@@ -1,89 +1,191 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 24 Oct 2018 17:53:32 +0200
-Subject: [LTP] [PATCH 1/4] net/dhcp: Use paths allowed by AppArmor for
-	dnsmasq
-In-Reply-To: <911cf2d7-7716-33d4-0329-168ba3660431@oracle.com>
-References: <20181011220525.24628-1-pvorel@suse.cz>
- <20181011220525.24628-2-pvorel@suse.cz>
- <85563193-f74e-8287-8f59-debbf9ff6705@oracle.com>
- <20181023215741.GA26131@dell5510>
- <911cf2d7-7716-33d4-0329-168ba3660431@oracle.com>
-Message-ID: <20181024155332.GA10380@dell5510>
+From: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+Date: Thu, 25 Oct 2018 17:19:49 +1100
+Subject: [LTP] [RFC 1/3] syscalls/fanotify03: defined additional tcase
+ members to support more tcase control
+In-Reply-To: <CAOQ4uxg1s0tMOVzXzTOBbym924drT8-1q=hYy77UXLre-m3G=w@mail.gmail.com>
+References: <cover.1540348505.git.mbobrowski@mbobrowski.org>
+ <2e4b79178a769f3657fee97ebc48f533d5218602.1540348505.git.mbobrowski@mbobrowski.org>
+ <CAOQ4uxg1s0tMOVzXzTOBbym924drT8-1q=hYy77UXLre-m3G=w@mail.gmail.com>
+Message-ID: <20181025061942.GA5791@development.internal.lab>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+On Wed, Oct 24, 2018 at 08:23:47AM +0300, Amir Goldstein wrote:
+> On Wed, Oct 24, 2018 at 6:27 AM Matthew Bobrowski
+> <mbobrowski@mbobrowski.org> wrote:
+> >
+> > * Included the event mask member to be used for fanotify_mark() within
+> >   the tcase. This allows control over what event types are to be
+> >   generated on a tcase by tcase level as oppose to having it globally
+> >   defined for all tcases.
+> >
+> > * Included the event_set and event_resp arrays into a tcase so that
+> >   the sequence of expected events can be defined on a test case by test
+> >   case level. Both event_set and event_resp are now represented by the
+> >   event struct.
+> >
+> > * Added event_count member to tcase in order to represent the number of
+> >   expected events for each tcase.
+> >
+> > * Fanotify permission events cannot be merged, thus cleaned up some
+> >   unnecessary code in test_fanotify() that checks whether any additional
+> >   bits are left within event->mask.
+> >
+> > Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+> > ---
+> 
+> Looks good! nits below.
+> 
+> >  .../kernel/syscalls/fanotify/fanotify03.c     | 90 ++++++++++---------
+> >  1 file changed, 50 insertions(+), 40 deletions(-)
+> >
+> > diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
+> > index 5c105ed32..cca15aa00 100644
+> > --- a/testcases/kernel/syscalls/fanotify/fanotify03.c
+> > +++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
+> > @@ -42,28 +42,48 @@ static volatile int fd_notify;
+> >
+> >  static pid_t child_pid;
+> >
+> > -static unsigned long long event_set[EVENT_MAX];
+> > -static unsigned int event_resp[EVENT_MAX];
+> > -
+> >  static char event_buf[EVENT_BUF_LEN];
+> >  static int support_perm_events;
+> >
+> > +struct event {
+> > +       unsigned long long type;
+> 
+> It's better to name this also 'mask' as in the near future you will
+> want to assign it the value of OPEN_PERM|OPEN_EXEC_PERM
+> which is not a 'type'.
+> 
+Yes, I also agree.
 
-> Hi Petr,
-> On 24.10.2018 00:57, Petr Vorel wrote:
-> ...
-> >> What if this directory doesn't exist? Why not to use the standard one for dnsmasq /var/lib/dnsmasq/?
-> > No, default path for linux is /var/lib/misc/dnsmasq.leases [1]:
-> > define LEASEFILE "/var/lib/misc/dnsmasq.leases"
+> > +       unsigned int response;
+> > +};
+> > +
+> >  static struct tcase {
+> >         const char *tname;
+> >         struct fanotify_mark_type mark;
+> > +       unsigned long long mask;
+> > +       int event_count;
+> > +       struct event event_set[EVENT_MAX];
+> 
+> Better change the value of EVENT_MAX...
+> or even decouple it from EVENT_BUF_LEN
+> 
+Good point. OK, providing that's the case, I think doing something along
+the lines of the below would be reasonable? I'm under the assumption that
+this is what you meant by changing the value?
 
-> > AppArmor also expects it there [2]:
-> > /var/lib/misc/dnsmasq.leases rw, # Required only for DHCP server usage
+#define EVENT_SET_SIZE	(sizeof (struct event) * 16)
 
-> > but also accept different paths:
-> > /var/lib/misc/dnsmasq.*.leases rw,
-> > /var/lib/lxd-bridge/dnsmasq.*.leases rw,
-> > /var/lib/NetworkManager/dnsmasq-*.leases rw,
+> >  } tcases[] = {
+> >         {
+> >                 "inode mark permission events",
+> >                 INIT_FANOTIFY_MARK_TYPE(INODE),
+> > +               FAN_OPEN_PERM | FAN_ACCESS_PERM, 2,
+> > +               {
+> > +                       {FAN_OPEN_PERM, FAN_ALLOW},
+> > +                       {FAN_ACCESS_PERM, FAN_DENY}
+> > +               }
+> >         },
+> >         {
+> >                 "mount mark permission events",
+> >                 INIT_FANOTIFY_MARK_TYPE(MOUNT),
+> > +               FAN_OPEN_PERM | FAN_ACCESS_PERM, 2,
+> > +               {
+> > +                       {FAN_OPEN_PERM, FAN_ALLOW},
+> > +                       {FAN_ACCESS_PERM, FAN_DENY}
+> > +               }
+> >         },
+> >         {
+> >                 "filesystem mark permission events",
+> >                 INIT_FANOTIFY_MARK_TYPE(FILESYSTEM),
+> > -       },
+> > +               FAN_OPEN_PERM | FAN_ACCESS_PERM, 2,
+> > +               {
+> > +                       {FAN_OPEN_PERM, FAN_ALLOW},
+> > +                       {FAN_ACCESS_PERM, FAN_DENY}
+> > +               }
+> > +       }
+> >  };
+> >
+> >  static void generate_events(void)
+> > @@ -146,8 +166,7 @@ static int setup_mark(unsigned int n)
+> >
+> >         fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
+> >
+> > -       if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
+> > -                         FAN_ACCESS_PERM | FAN_OPEN_PERM,
+> > +       if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag, tc->mask,
+> >                           AT_FDCWD, fname) < 0) {
+> >                 if (errno == EINVAL && support_perm_events &&
+> >                     mark->flag == FAN_MARK_FILESYSTEM) {
+> > @@ -167,7 +186,7 @@ static int setup_mark(unsigned int n)
+> >                 }
+> >         } else {
+> >                 /*
+> > -                * To distigouish between perm event not supported and
+> > +                * To distinguish between perm event not supported and
+> >                  * filesystem mark not supported.
+> >                  */
+> >                 support_perm_events = 1;
+> > @@ -179,32 +198,22 @@ static int setup_mark(unsigned int n)
+> >
+> >  static void test_fanotify(unsigned int n)
+> >  {
+> > -       int tst_count;
+> >         int ret, len = 0, i = 0, test_num = 0;
+> > +       struct tcase *tc = &tcases[n];
+> > +       struct event *event_set = tc->event_set;
+> >
+> >         if (setup_mark(n) != 0)
+> >                 return;
+> >
+> >         run_child();
+> >
+> > -       tst_count = 0;
+> > -
+> > -       event_set[tst_count] = FAN_OPEN_PERM;
+> > -       event_resp[tst_count++] = FAN_ALLOW;
+> > -       event_set[tst_count] = FAN_ACCESS_PERM;
+> > -       event_resp[tst_count++] = FAN_DENY;
+> > -
+> > -       /* tst_count + 1 is for checking child return value */
+> > -       if (TST_TOTAL != tst_count + 1) {
+> > -               tst_brk(TBROK,
+> > -                       "TST_TOTAL and tst_count do not match");
+> > -       }
+> > -       tst_count = 0;
+> > -
+> >         /*
+> > -        * check events
+> > +        * Process events
+> > +        *
+> > +        * tc->count + 1 is to accommodate for checking the child process
+> > +        * return value
+> >          */
+> > -       while (test_num < TST_TOTAL && fd_notify != -1) {
+> > +       while (test_num < tc->event_count + 1 && fd_notify != -1) {
+> >                 struct fanotify_event_metadata *event;
+> >
+> >                 if (i == len) {
+> > @@ -222,12 +231,12 @@ static void test_fanotify(unsigned int n)
+> >                 }
+> >
+> >                 event = (struct fanotify_event_metadata *)&event_buf[i];
+> > -               if (!(event->mask & event_set[test_num])) {
+> > +               if (!(event->mask & event_set[test_num].type)) {
+> 
+> /* Permission events cannot be merged, so... */
+> +               if (event->mask != event_set[test_num].mask) {
+> 
+Updated.
 
-> May be it is for the newest versions only, I was looking at 2.48/2.76 and it is
-> /var/lib/dnsmasq/dnsmasq.leases.
-It's not upstream, src/config.h haven't changed for linux since 2.0.
-/var/lib/dnsmasq/ is Fedora/RHEL/CentOS/Oracle Linux (RHEL*) specific [1], changed since
-2.41 (in 2007) [2] [3]. I checked various other distros and others (SUSE, Debian,
-Archlinux, Gentoo, Ubuntu) use default location in /var/lib/misc/.
-
-/var/lib/misc/ also exists on RHEL* (filesystem package, which is on every RHEL*
-system), so maybe we could be happy about that.
-
-But RHEL* doesn't use AppArmor and SELinux supports wildcard on /var/lib/dnsmasq/
-but in /var/lib/misc/ support just dnsmasq.leases [4]:
-	/var/lib/misc/dnsmasq\.leases	--	gen_context(system_u:object_r:dnsmasq_lease_t,s0)
-	/var/lib/dnsmasq(/.*)?	gen_context(system_u:object_r:dnsmasq_lease_t,s0)
-
-so for RHEL* it'd be really better to use /var/lib/misc/.
-
-Therefore could use /var/lib/misc/ as default and if directory not exist use
-/var/lib/dnsmasq/ (as it's probably RHEL*). Writing into either of them
-requires root, so we need to add TST_NEEDS_ROOT=1.
-But still paths aren't compatible, either SELinux or AppArmor need to be more
-relax (add star for both log and lease file).
-
-Similar situation is for logging file:
-SELinux [4]
-	/var/log/dnsmasq.*	--	gen_context(system_u:object_r:dnsmasq_var_log_t,s0)
-AppArmor [5]:
-	/var/log/*dnsmasq.log w,
-
-I'll report it to both projects. In meanwhile we could workaround with adjusting
-dnsmasq's policy/profile (AppArmor: create /etc/apparmor.d/local/usr.sbin.dnsmasq,
-SELinux: create /etc/selinux/targeted/contexts/files/file_contexts.local).
-Or just to temporarily disable AppArmor or SELinux).
-
-Not sure what is a better approach. Unfortunately these tests look to me more
-like userspace related and catching AppArmor or SELinux policy/profile bugs than
-kernel networking problems.
-
-> >> Forgot to remove this file in cleanup?
-> > Yes, I should be consistent. But is it really needed to cleanup files, when
-> > temporary directory is being deleted after test?  I was actually thinking to
-> > remove cleanup_dhcp at all from both test scripts.
-
-> But the file now outside of LTP temp directory, in /var/lib/misc/...
-OK, that needs to be removed.
-
-
-Kind regards,
-Petr
-
-[1] https://src.fedoraproject.org/cgit/rpms/dnsmasq.git/tree/dnsmasq.spec#n67
-[2] https://src.fedoraproject.org/cgit/rpms/dnsmasq.git/commit/?id=91d4b30e7b55bbb561547312e83ce4d709e505e2
-[3] https://bugzilla.redhat.com/show_bug.cgi?id=407901
-[4] https://github.com/SELinuxProject/refpolicy/blob/master/policy/modules/services/dnsmasq.fc
-[5] https://gitlab.com/apparmor/apparmor/blob/master/profiles/apparmor.d/usr.sbin.dnsmasq
+-- 
+Matthew Bobrowski <mbobrowski@mbobrowski.org>
