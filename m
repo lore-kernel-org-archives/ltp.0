@@ -1,87 +1,130 @@
-From: Hongzhi, Song <hongzhi.song@windriver.com>
-Date: Mon, 29 Oct 2018 15:42:24 +0800
-Subject: [LTP] [PATCH] open_posix_testsuite/mmap24-2: Support mips
-In-Reply-To: <1540348607-217391-1-git-send-email-hongzhi.song@windriver.com>
-References: <1540348607-217391-1-git-send-email-hongzhi.song@windriver.com>
-Message-ID: <67700119-68c3-20a0-d10c-a825ac940277@windriver.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Mon, 29 Oct 2018 11:04:50 +0100
+Subject: [LTP] [PATCH v3 0/4] New Fuzzy Sync library API
+In-Reply-To: <CAEemH2eKG+Z9gZazB-nMT7ySiYko0R4p0Cu1fNhm2wH9p82pKw@mail.gmail.com>
+References: <20181010140405.24496-1-rpalethorpe@suse.com>
+ <20181018150209.GA26947@rei> <87a7n6tjtm.fsf@rpws.prws.suse.cz>
+ <CAEemH2eKG+Z9gZazB-nMT7ySiYko0R4p0Cu1fNhm2wH9p82pKw@mail.gmail.com>
+Message-ID: <874ld5t6f1.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Sorry, this is V2.
+Hello,
 
-Kindly ping
+Li Wang <liwang@redhat.com> writes:
 
---Hongzhi
+> On Mon, Oct 22, 2018 at 5:24 PM, Richard Palethorpe <rpalethorpe@suse.de>
+> wrote:
+>
+>> Hello,
+>>
+>> Cyril Hrubis <chrubis@suse.cz> writes:
+>>
+>> > Hi!
+>> > I've dusted off my old pxa270 PDA and tried to compare the different
+>> > implementations of the fuzzy sync library:
+>>
+>> Good stuff!
+>>
+>> >
+>> > |-------------------------------------------------------------|
+>> > | test          |  old library  |  new library                |
+>> > |-------------------------------------------------------------|
+>> > | shmctl05      | timeouts      | timeouts                    |
+>> > |-------------------------------------------------------------|
+>> > | inotify09     | timeouts      | exits in sampling with WARN |
+>> > |-------------------------------------------------------------|
+>> > | cve-2017-2671 | kernel crash  | kernel crash                |
+>> > |-------------------------------------------------------------|
+>> > | cve-2016-7117 | kernel crash  | exits in sampling with WARN |
+>> > |-------------------------------------------------------------|
+>> > | cve-2014-0196 | timetous      | exits in sampling with WARN |
+>> > |-------------------------------------------------------------|
+>> >
+>> > The shmctl05 timeouts because the remap_file_pages is too slow and we
+>> > fail to do even one iteration, it's possible that this is because we are
+>> > hitting the race as well since this is kernel 3.0.0, but I cannot say
+>> > that for sure.
+>> >
+>> > The real problem is that we fail to callibrate because the machine is
+>> > too slow and we do not manage to take the minimal amount of samples
+>> > until the default timeout.
+>> >
+>> > If I increase the timeout percentage to 0.5, we manage to take at least
+>> > minimal amount of samples and to trigger the cve-2016-7117 from time to
+>> > time. But it looks like the bias computation does not work reasonably
+>> > reliably there, not sure why. But looking at the latest version adding
+>> > bias no longer resets the averages, which may be the reason because the
+>> > bias seems to be more or less the same as the number minimal samples.
+>>
+>> Sounds correct. I guess context switches take a large number of cycles
+>> on this CPU relative to x86.
+>>
+>> >
+>> > So there are a few things to consider, first one is that the default
+>> > timeout percentage could be probably increased so that we do not have to
+>> > tune the LTP_TIMEOUT_MUL even on slower processors. The downside is that
+>> > these testcase would take longer on modern harware. Maybe we can do some
+>> > simple CPU benchmarking to callibrate the timeout.
+>>
+>> Perhaps the test runner or test library should tune LTP_TIMEOUT_MUL?
+>> Assuming the user allows it.
+>>
+>> >
+>> > Second thing to consider is if and how to tune the minimal amount of
+>> > samples, Maybe we can set the minimal amount of samples to be smaller
+>> > and then exit the callibration if our deviation was small enough three
+>> > times in a row. But then there is this bias that we have to take into an
+>> > account somehow.
+>>
+>> I think the only way is to benchmark a selection of syscalls and then
+>> pass this data to the test somehow. Then it can calculate some
+>> reasonable time and sample limits.
+>>
+>
+> Maybe we can also reduce the sampling time via remove pair->diff_ss average
+> counting.
+>
+> Looking at the pair->delay algorithm:
+>
+>         per_spin_time = fabsf(pair->diff_ab.avg) / pair->spins_avg.avg;
+>         time_delay = drand48() * (pair->diff_sa.avg + pair->diff_sb.avg) -
+> pair->diff_sb.avg;
+>         pair->delay += (int)(time_delay / per_spin_time);
+> the pair->diff_ss is not in use and why we do average calculation in
+> tst_upd_diff_stat()? On the other hand, it has overlap with pair->diff_ab
+> in functional, we could reduce 1/4 of total sampling time if we remove
+>         it.
+
+It is just a few maths ops and a highly predictable branch on data that
+should (at least) be in the cache. Compared to a context switch or even
+a memory barrier (on non x86) it should be insignificant.
+
+>
+>
+>> However I also think this is beyond the scope of this patch set because
+>> fuzzy sync tests are just one potential user of such metrics. I suspect
+>> also that it will be a big enough change to justify its own discussion
+>> and patch set.
+>>
+>> For now, if we increase the minimum time limit and samples so that
+>> cve-2016-7117 behaves sensibly on a pxa270 then we are probably covering
+>> most users. The downside is that we are wasting some time and
+>> electricity on server grade hardware, but at least the tests are being
+>> performed correctly on most hardware.
+>>
+>> --
+>> Thank you,
+>> Richard.
+>>
+>> --
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+>>
 
 
-On 10/24/2018 10:36 AM, Hongzhi.Song wrote:
-> Mips will return EINVAL instead of ENOMEM as expected
-> if MAP_FIXED is set and the range of [addr + len) exceeds
-> TASK_SIZE.
->
-> Linux kernel code: arch/mips/mm/mmap.c
-> if (flags & MAP_FIXED) {
->      /* Even MAP_FIXED mappings must reside within TASK_SIZE */
->      if (TASK_SIZE - len < addr)
->          return -EINVAL;
->
-> The POSIX specification says:
-> "If MAP_FIXED is set, mmap() may return MAP_FAILED and set errno to
-> [EINVAL]."
-> [http://pubs.opengroup.org/onlinepubs/9699919799/functions/mmap.html]
->
-> So I think the mips kernel remains POSIX compliant.
->
-> Relax the condition and accept both ENOMEM and EINVAL
-> as expected outcome.
->
-> Signed-off-by: Hongzhi.Song <hongzhi.song@windriver.com>
-> ---
->   .../open_posix_testsuite/conformance/interfaces/mmap/24-2.c    | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
-> index de51d43..810e5c8 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
-> @@ -7,7 +7,7 @@
->    * source tree.
->    *
->    * The mmap() function shall fail if:
-> - * [ENOMEM] MAP_FIXED was specified,
-> + * [ENOMEM or EINVAL] MAP_FIXED was specified,
->    * and the range [addr,addr+len) exceeds that allowed
->    * for the address space of a process; or, if MAP_FIXED was not specified and
->    * there is insufficient room in the address space to effect the mapping.
-> @@ -15,7 +15,7 @@
->    * Test Step:
->    * 1. Map a shared memory object, with size exceeding the value get from
->    *    rlim_cur of resource RLIMIT_AS, setting MAP_FIXED;
-> - * 3. Should get ENOMEM.
-> + * 3. Should get ENOMEM or EINVAL.
->    */
->   
->   #define _XOPEN_SOURCE 600
-> @@ -93,8 +93,8 @@ int main(void)
->   	       (unsigned long)len);
->   	pa = mmap(addr, len, PROT_READ | PROT_WRITE, MAP_FIXED | MAP_SHARED, fd,
->   		  0);
-> -	if (pa == MAP_FAILED && errno == ENOMEM) {
-> -		printf("Got ENOMEM: %s\nTest PASSED\n", strerror(errno));
-> +	if (pa == MAP_FAILED && (errno == ENOMEM || errno == EINVAL)) {
-> +		printf("Got ENOMEM or EINVAL: %s\nTest PASSED\n", strerror(errno));
->   		exit(PTS_PASS);
->   	}
->   
-> @@ -103,6 +103,6 @@ int main(void)
->   	else
->   		munmap(pa, len);
->   	close(fd);
-> -	printf("Test Fail: Did not get ENOMEM as expected\n");
-> +	printf("Test Failed: Did not get ENOMEM or EINVAL as expected\n");
->   	return PTS_FAIL;
->   }
-
+--
+Thank you,
+Richard.
