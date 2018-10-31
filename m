@@ -1,58 +1,20 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Sat, 29 Sep 2018 12:44:32 +0300
-Subject: [LTP] [PATCH 5/5] syscalls/readahead02: fail test if readahead did
-	not use any cache
-Message-ID: <20180929094432.30197-1-amir73il@gmail.com>
+From: Ramon Pantin <pantin@google.com>
+Date: Wed, 31 Oct 2018 16:57:37 -0700
+Subject: [LTP] recvmmsg(2) system call tests
+Message-ID: <ecdea1f2-4931-5dc3-6695-4f8dd78d796d@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The heuristic of failing the test only if not saving any io has false
-negatives with overlayfs readahead() bug, but readahead() with overlayfs
-always warns on "using less cache then expected", when actually, it is
-using no cache at all.
+Per Rafael's earlier email about how to proceed, find attached the path 
+with the test cases.
 
-Add another condition to fail the test if readahead did not use any
-cache at all, which always detected the overlayfs bug.
-
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
----
-
-Cyril,
-
-This is a followup for the overlayfs readahead series.
-With the patches already posted, the test fails sometimes, but
-most of the times it just gets a warning.
-
-With this additional patch test fails reliably.
-Note that test only fails between these upstream commits:
-  good  b833a3660394 ("ovl: add ovl_fadvise()")
-  bad   5b910bd615ba ("ovl: fix GPF in swapfile_activate...")
-
-I have a few more minor fixes for the v2 series, but I will hold
-them back until v1 is reviewed.
-
-Thanks,
-Amir.
-
- testcases/kernel/syscalls/readahead/readahead02.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
-index b497fb5db..fbcae1df8 100644
---- a/testcases/kernel/syscalls/readahead/readahead02.c
-+++ b/testcases/kernel/syscalls/readahead/readahead02.c
-@@ -341,6 +341,8 @@ static void test_readahead(unsigned int n)
- 		 */
- 		if (cached_ra * 1024 > testfile_size / 2)
- 			tst_res(TPASS, "using cache as expected");
-+		else if (!cached_ra)
-+			tst_res(TFAIL, "readahead failed to use any cache");
- 		else
- 			tst_res(TWARN, "using less cache than expected");
- 	} else {
--- 
-2.17.1
-
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-recvmmsg-2-test-cases.patch
+Type: text/x-patch
+Size: 70158 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20181031/cc02a2b4/attachment-0001.bin>
