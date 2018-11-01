@@ -1,93 +1,45 @@
-From: Hongzhi, Song <hongzhi.song@windriver.com>
-Date: Thu, 1 Nov 2018 09:49:25 +0800
-Subject: [LTP] [PATCH] open_posix_testsuite/mmap24-2: Support mips
-In-Reply-To: <1540348607-217391-1-git-send-email-hongzhi.song@windriver.com>
-References: <1540348607-217391-1-git-send-email-hongzhi.song@windriver.com>
-Message-ID: <da19c43f-39f7-81b4-7173-18fdec6ea1d9@windriver.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 1 Nov 2018 14:56:53 +0800
+Subject: [LTP] [PATCH] tracing/pt_test.c: Fix compiler errors on old distros
+Message-ID: <1541055413-29268-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi guys,
+Compilation fails on old distros which don't have linux/perf_event.h
+and LTP_CHECK_PERF_EVENT can check the existence of linux/perf_event.h
+as well, so we just include perf_event.h header file when
+HAVE_STRUCT_PERF_EVENT_MMAP_PAGE_AUX_HEAD is defined.
 
-Referring to POSIX spec, the return values, EINVAL and ENOMEM,
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/tracing/pt_test/pt_test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-are all right if MAP_FIXED is set. So I think Mips also keep to POSIX.
+diff --git a/testcases/kernel/tracing/pt_test/pt_test.c b/testcases/kernel/tracing/pt_test/pt_test.c
+index fe5b1e9..5feb1aa 100644
+--- a/testcases/kernel/tracing/pt_test/pt_test.c
++++ b/testcases/kernel/tracing/pt_test/pt_test.c
+@@ -14,7 +14,6 @@
+  * kconfig requirement: CONFIG_PERF_EVENTS
+  */
+ 
+-#include <linux/perf_event.h>
+ #include <sched.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+@@ -24,6 +23,7 @@
+ #include "config.h"
+ 
+ #ifdef HAVE_STRUCT_PERF_EVENT_MMAP_PAGE_AUX_HEAD
++# include <linux/perf_event.h>
+ 
+ #define PAGESIZE 4096
+ #define INTEL_PT_MEMSIZE (17*PAGESIZE)
+-- 
+1.8.3.1
 
 
-Please review this patch.
-
-
---Hongzhi
-
-
-On 10/24/2018 10:36 AM, Hongzhi.Song wrote:
-> Mips will return EINVAL instead of ENOMEM as expected
-> if MAP_FIXED is set and the range of [addr + len) exceeds
-> TASK_SIZE.
->
-> Linux kernel code: arch/mips/mm/mmap.c
-> if (flags & MAP_FIXED) {
->      /* Even MAP_FIXED mappings must reside within TASK_SIZE */
->      if (TASK_SIZE - len < addr)
->          return -EINVAL;
->
-> The POSIX specification says:
-> "If MAP_FIXED is set, mmap() may return MAP_FAILED and set errno to
-> [EINVAL]."
-> [http://pubs.opengroup.org/onlinepubs/9699919799/functions/mmap.html]
->
-> So I think the mips kernel remains POSIX compliant.
->
-> Relax the condition and accept both ENOMEM and EINVAL
-> as expected outcome.
->
-> Signed-off-by: Hongzhi.Song <hongzhi.song@windriver.com>
-> ---
->   .../open_posix_testsuite/conformance/interfaces/mmap/24-2.c    | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
-> index de51d43..810e5c8 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
-> @@ -7,7 +7,7 @@
->    * source tree.
->    *
->    * The mmap() function shall fail if:
-> - * [ENOMEM] MAP_FIXED was specified,
-> + * [ENOMEM or EINVAL] MAP_FIXED was specified,
->    * and the range [addr,addr+len) exceeds that allowed
->    * for the address space of a process; or, if MAP_FIXED was not specified and
->    * there is insufficient room in the address space to effect the mapping.
-> @@ -15,7 +15,7 @@
->    * Test Step:
->    * 1. Map a shared memory object, with size exceeding the value get from
->    *    rlim_cur of resource RLIMIT_AS, setting MAP_FIXED;
-> - * 3. Should get ENOMEM.
-> + * 3. Should get ENOMEM or EINVAL.
->    */
->   
->   #define _XOPEN_SOURCE 600
-> @@ -93,8 +93,8 @@ int main(void)
->   	       (unsigned long)len);
->   	pa = mmap(addr, len, PROT_READ | PROT_WRITE, MAP_FIXED | MAP_SHARED, fd,
->   		  0);
-> -	if (pa == MAP_FAILED && errno == ENOMEM) {
-> -		printf("Got ENOMEM: %s\nTest PASSED\n", strerror(errno));
-> +	if (pa == MAP_FAILED && (errno == ENOMEM || errno == EINVAL)) {
-> +		printf("Got ENOMEM or EINVAL: %s\nTest PASSED\n", strerror(errno));
->   		exit(PTS_PASS);
->   	}
->   
-> @@ -103,6 +103,6 @@ int main(void)
->   	else
->   		munmap(pa, len);
->   	close(fd);
-> -	printf("Test Fail: Did not get ENOMEM as expected\n");
-> +	printf("Test Failed: Did not get ENOMEM or EINVAL as expected\n");
->   	return PTS_FAIL;
->   }
 
