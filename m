@@ -1,54 +1,65 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 2 Nov 2018 18:09:45 +0200
-Subject: [LTP] [PATCH v3] syscalls/fanotify10: new test for mount ignore
-	mask
-In-Reply-To: <20181102155812.GD30704@rei.lan>
-References: <20180928075117.4789-1-amir73il@gmail.com>
- <CAOQ4uxgKVQt3j8hUBS3YrMS4AmBWJNK33e5_LVXdFrnQ=R52Fg@mail.gmail.com>
- <20181102155812.GD30704@rei.lan>
-Message-ID: <CAOQ4uxip80-zU4BYTYSkd25js-E7FhE+9+AwMQOdCPEZ9W+WGg@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 2 Nov 2018 21:02:07 +0100
+Subject: [LTP] [PATCH 4/6] network/mpls02: new test with lwtunnel
+In-Reply-To: <1540818202-11247-5-git-send-email-alexey.kodanev@oracle.com>
+References: <1540818202-11247-1-git-send-email-alexey.kodanev@oracle.com>
+ <1540818202-11247-5-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20181102200207.GA17405@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Nov 2, 2018 at 5:59 PM Cyril Hrubis <chrubis@suse.cz> wrote:
->
-> Hi!
-> > FYI, I pushed an independent clean branch to:
-> > https://github.com/amir73il/ltp/commits/fanotify_cleanup
->
-> Should I pull them from there or will you send it to the ML?
+Hi,
 
-You can pull it - it's just minor SPDX and indentation fixes
-noise for the ML.
+> Setup MPLS encapsulation over the default test network setup,
+> use ICMP, UDP and TCP inner protocols.
 
->
-> > You may want to start herding those cleanup patches,
-> > because I have more patches based on top of them to test new fanotify
-> > functionality that was just merged to master:
-> > https://github.com/amir73il/ltp/commits/fanotify_tid
->
-> Ok.
->
-> > BTW, what is the policy w.r.t tests of new API?
-> > Would you like me to post those tests only after a point release? (i.e. 4.20)
-> > or is posting the tests during early -rc preferred so new API can get test
-> > wider test coverage (on different systems) before the point release?
->
-> We usually wait for the changes to hit a point release since the API is
-> set into stone at that point. But given that LTP is supposedly being
-> used to test the linux-next tree as well, we may reconsider that in the
-> future. If the test is correctly skipped on older kernels I wouldn't
-> mind including it earlier.
->
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> ---
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Just some minor things bellow.
 
-OK. I'll wait till ~rc3 to see nobody is surprised from the discovery of the
-new API and will post the new tests.
+> +TST_MIN_KVER="4.3"
+> +TST_NEEDS_TMPDIR=1
+> +TST_NEEDS_ROOT=1
+> +TST_NEEDS_DRIVERS="mpls_router mpls_iptunnel"
+Here is missing mpls_gso
 
-Yes, they do get skipped correctly on older kernels with
-correct TCONF message.
+...
+> +mpls_setup()
+> +{
+> +	local label="$1"
+> +
+> +	ROD modprobe mpls_router
+> +	ROD modprobe mpls_iptunnel
+> +	ROD modprobe mpls_gso
+Maybe just?
+ROD modprobe mpls_gso $TST_NEEDS_DRIVERS
 
-Thanks,
-Amir.
+> +	ROD sysctl -q net.mpls.conf.$(tst_iface).input=1
+> +	ROD sysctl -q net.mpls.conf.lo.input=1
+This one can be set with tst_set_sysctl, as it's the same for both lhost and
+rhost.
+> +	ROD sysctl -q net.mpls.platform_labels=$label
+The same is for this one ...
+> +	rpf_loc="$(sysctl -n net.ipv4.conf.all.rp_filter)"
+> +	ROD sysctl -q net.ipv4.conf.all.rp_filter=2
+... and this one.
+
+> +	tst_rhost_run -s -c "modprobe mpls_router"
+> +	tst_rhost_run -s -c "modprobe mpls_iptunnel"
+> +	tst_rhost_run -s -c "modprobe mpls_gso"
+tst_rhost_run -s -c "modprobe $TST_NEEDS_DRIVERS"
+
+> +	tst_rhost_run -s -c "sysctl -q net.mpls.conf.$(tst_iface rhost).input=1"
+> +	tst_rhost_run -s -c "sysctl -q net.mpls.conf.lo.input=1"
+> +	tst_rhost_run -s -c "sysctl -q net.mpls.platform_labels=$label"
+> +	rpf_rmt="$(tst_rhost_run -c 'sysctl -n net.ipv4.conf.all.rp_filter')"
+> +	tst_rhost_run -s -c "sysctl -q net.ipv4.conf.all.rp_filter=2"
+> +}
+
+
+Kind regards,
+Petr
