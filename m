@@ -1,75 +1,427 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 2 Nov 2018 12:32:59 +0200
-Subject: [LTP] [PATCH v3 0/6] Tests for readahead() and fadvise() on
-	overlayfs
-In-Reply-To: <20181010233441.5337-1-amir73il@gmail.com>
-References: <20181010233441.5337-1-amir73il@gmail.com>
-Message-ID: <CAOQ4uxi5Gyq8yn8dgGxtbeymkhKQnhS-cS+5FmTcn40dgfd=5Q@mail.gmail.com>
+Date: Fri, 2 Nov 2018 12:48:23 +0200
+Subject: [LTP] [PATCH v3] syscalls/fanotify10: new test for mount ignore
+	mask
+In-Reply-To: <20180928075117.4789-1-amir73il@gmail.com>
+References: <20180928075117.4789-1-amir73il@gmail.com>
+Message-ID: <CAOQ4uxgKVQt3j8hUBS3YrMS4AmBWJNK33e5_LVXdFrnQ=R52Fg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Oct 11, 2018 at 2:34 AM Amir Goldstein <amir73il@gmail.com> wrote:
+On Fri, Sep 28, 2018 at 10:51 AM Amir Goldstein <amir73il@gmail.com> wrote:
+>
+> This is a regression test for commit:
+>     9bdda4e9cf2d fsnotify: fix ignore mask logic in fsnotify()
+>
+> The test is derived from fanotify06 and adds more test cases.
+>
+> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+> ---
 >
 > Cyril,
+>
+> Please accept this regression test for a bug that was fixes upstream.
 >
 
 Ping.
 
-The affected kernel code as well as fix commits are now in v4.19.
-Pushed rebased branch to:
-https://github.com/amir73il/ltp/commits/overlayfs-devel
+The referenced fix commit is now in v4.19.
+The bug is in every past kernel version AFAIK.
 
-Also, there is an unrelated (besides the word "fadvise") cleanup branch
-https://github.com/amir73il/ltp/commits/fadvise_cleanup
-that converts the fadvise tests to newlib.
+FYI, I pushed an independent clean branch to:
+https://github.com/amir73il/ltp/commits/fanotify_cleanup
+
+You may want to start herding those cleanup patches,
+because I have more patches based on top of them to test new fanotify
+functionality that was just merged to master:
+https://github.com/amir73il/ltp/commits/fanotify_tid
+
+BTW, what is the policy w.r.t tests of new API?
+Would you like me to post those tests only after a point release? (i.e. 4.20)
+or is posting the tests during early -rc preferred so new API can get test
+wider test coverage (on different systems) before the point release?
 
 Thanks,
 Amir.
 
-> The following series adds test covergae for readahead() syscall
-> over overlayfs file and adds test coverage for a specific
-> posix_fadvise() syscall advice (POSIX_FADV_WILLNEED).
 >
-> So far, the posix_fadvise syscall tests in LTP only test for error
-> conditions, but not functionality.
+> Changes from v2:
+> - Use SPDX identifier
 >
-> The functionality of the advice POSIX_FADV_WILLNEED is identical
-> to readahead() and since kernel commit 3d8f7615319b ("vfs: implement
-> readahead(2) using POSIX_FADV_WILLNEED"), the implementations are
-> also bound together.
+> Changes from v1:
+> - Use test index to iterate test cases
 >
-> To add test coverage of the advice POSIX_FADV_WILLNEED, I decided not
-> to duplicate the readahead() functional test and add test cases to
-> readahead02 that use the POSIX_FADV_WILLNEED implementation.
+>  runtest/syscalls                              |   1 +
+>  testcases/kernel/syscalls/fanotify/.gitignore |   1 +
+>  testcases/kernel/syscalls/fanotify/fanotify.h |  12 +
+>  .../kernel/syscalls/fanotify/fanotify10.c     | 313 ++++++++++++++++++
+>  4 files changed, 327 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/fanotify/fanotify10.c
 >
-> Thanks,
-> Amir.
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 0d0be7713..cd52561a5 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -497,6 +497,7 @@ fanotify06 fanotify06
+>  fanotify07 fanotify07
+>  fanotify08 fanotify08
+>  fanotify09 fanotify09
+> +fanotify10 fanotify10
 >
-> Changes since v2:
-> - Runtime check for readahead/fadvise support
-> - Abort test case immediately if syscall fail
+>  ioperm01 ioperm01
+>  ioperm02 ioperm02
+> diff --git a/testcases/kernel/syscalls/fanotify/.gitignore b/testcases/kernel/syscalls/fanotify/.gitignore
+> index ec7553995..c26f2bd27 100644
+> --- a/testcases/kernel/syscalls/fanotify/.gitignore
+> +++ b/testcases/kernel/syscalls/fanotify/.gitignore
+> @@ -7,3 +7,4 @@
+>  /fanotify07
+>  /fanotify08
+>  /fanotify09
+> +/fanotify10
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
+> index f5f7df25e..5adef54d7 100644
+> --- a/testcases/kernel/syscalls/fanotify/fanotify.h
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
+> @@ -54,4 +54,16 @@ static long fanotify_mark(int fd, unsigned int flags, uint64_t mask,
 >
-> Changes since v1:
-> - Fix bugs in loop invocation of test (i.e. -i 2)
-> - Address review comments from Jan Stancek
-> - Make cached_max a global maximum over all test cases
-> - Improve reliability of overlayfs readahead test case failure
+>  #endif /* HAVE_SYS_FANOTIFY_H */
 >
-> Amir Goldstein (6):
->   syscalls/readahead01: Convert to newlib
->   syscalls/readahead02: Convert to newlib and cleanup
->   syscalls/readahead02: abort test if readahead syscall fails
->   syscalls/readahead02: test readahead() on an overlayfs file
->   syscalls/readahead02: test readahead using posix_fadvise()
->   syscalls/readahead02: fail test if readahead did not use any cache
->
->  .../kernel/syscalls/readahead/readahead01.c   | 119 ++----
->  .../kernel/syscalls/readahead/readahead02.c   | 339 +++++++++---------
->  2 files changed, 198 insertions(+), 260 deletions(-)
->
+> +#ifndef FAN_MARK_INODE
+> +#define FAN_MARK_INODE         0
+> +#endif
+> +
+> +struct fanotify_mark_type {
+> +       unsigned int flag;
+> +       const char * name;
+> +};
+> +
+> +#define INIT_FANOTIFY_MARK_TYPE(t) \
+> +       { FAN_MARK_ ## t, "FAN_MARK_" #t }
+> +
+>  #endif /* __FANOTIFY_H__ */
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
+> new file mode 100644
+> index 000000000..e71264be2
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
+> @@ -0,0 +1,313 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2014 SUSE.  All Rights Reserved.
+> + * Copyright (c) 2018 CTERA Networks.  All Rights Reserved.
+> + *
+> + * Started by Jan Kara <jack@suse.cz>
+> + * Forked from fanotify06.c by Amir Goldstein <amir73il@gmail.com>
+> + *
+> + * DESCRIPTION
+> + *     Check that fanotify properly merges ignore mask of a mount mark
+> + *     with a mask of an inode mark on the same group.  Unlike the
+> + *     prototype test fanotify06, do not use FAN_MODIFY event for the
+> + *     test mask, because it hides the bug.
+> + *
+> + * This is a regression test for commit:
+> + *
+> + *     9bdda4e9cf2d fsnotify: fix ignore mask logic in fsnotify()
+> + */
+> +#define _GNU_SOURCE
+> +#include "config.h"
+> +
+> +#include <stdio.h>
+> +#include <sys/stat.h>
+> +#include <sys/types.h>
+> +#include <fcntl.h>
+> +#include <errno.h>
+> +#include <string.h>
+> +#include <sys/mount.h>
+> +#include <sys/syscall.h>
+> +#include "tst_test.h"
+> +#include "fanotify.h"
+> +
+> +#if defined(HAVE_SYS_FANOTIFY_H)
+> +#include <sys/fanotify.h>
+> +
+> +#define EVENT_MAX 1024
+> +/* size of the event structure, not counting name */
+> +#define EVENT_SIZE  (sizeof (struct fanotify_event_metadata))
+> +/* reasonable guess as to size of 1024 events */
+> +#define EVENT_BUF_LEN        (EVENT_MAX * EVENT_SIZE)
+> +
+> +static unsigned int fanotify_prio[] = {
+> +       FAN_CLASS_PRE_CONTENT,
+> +       FAN_CLASS_CONTENT,
+> +       FAN_CLASS_NOTIF
+> +};
+> +#define FANOTIFY_PRIORITIES ARRAY_SIZE(fanotify_prio)
+> +
+> +#define GROUPS_PER_PRIO 3
+> +
+> +static int fd_notify[FANOTIFY_PRIORITIES][GROUPS_PER_PRIO];
+> +
+> +static char event_buf[EVENT_BUF_LEN];
+> +
+> +#define MOUNT_PATH "fs_mnt"
+> +#define MNT2_PATH "mntpoint"
+> +#define FILE_NAME "testfile"
+> +#define FILE2_NAME "testfile2"
+> +#define FILE_PATH MOUNT_PATH"/"FILE_NAME
+> +#define FILE2_PATH MOUNT_PATH"/"FILE2_NAME
+> +#define FILE_MNT2 MNT2_PATH"/"FILE_NAME
+> +#define FILE2_MNT2 MNT2_PATH"/"FILE2_NAME
+> +
+> +static int mount_created, bind_mount_created;
+> +
+> +enum {
+> +       FANOTIFY_INODE,
+> +       FANOTIFY_MOUNT,
+> +};
+> +
+> +static struct fanotify_mark_type fanotify_mark_types[] = {
+> +       INIT_FANOTIFY_MARK_TYPE(INODE),
+> +       INIT_FANOTIFY_MARK_TYPE(MOUNT),
+> +};
+> +
+> +static struct tcase {
+> +       const char *tname;
+> +       const char *mark_path;
+> +       int mark_type;
+> +       const char *ignore_path;
+> +       int ignore_mark_type;
+> +       const char *event_path;
+> +       int expect_event;
+> +} tcases[] = {
+> +       {
+> +               "ignore mount events created on a specific file",
+> +               MOUNT_PATH, FANOTIFY_MOUNT,
+> +               FILE_MNT2, FANOTIFY_INODE,
+> +               FILE_PATH, 0
+> +       },
+> +       {
+> +               "don't ignore mount events created on another file",
+> +               MOUNT_PATH, FANOTIFY_MOUNT,
+> +               FILE_PATH, FANOTIFY_INODE,
+> +               FILE2_PATH, 1
+> +       },
+> +       {
+> +               "ignore inode events created on a specific mount point",
+> +               FILE_PATH, FANOTIFY_INODE,
+> +               MNT2_PATH, FANOTIFY_MOUNT,
+> +               FILE_MNT2, 0
+> +       },
+> +       {
+> +               "don't ignore inode events created on another mount point",
+> +               FILE_MNT2, FANOTIFY_INODE,
+> +               MNT2_PATH, FANOTIFY_MOUNT,
+> +               FILE_PATH, 1
+> +       },
+> +};
+> +
+> +static void create_fanotify_groups(unsigned int n)
+> +{
+> +       struct tcase *tc = &tcases[n];
+> +       struct fanotify_mark_type *mark, *ignore_mark;
+> +       unsigned int p, i;
+> +       int ret;
+> +
+> +       mark = &fanotify_mark_types[tc->mark_type];
+> +       ignore_mark = &fanotify_mark_types[tc->ignore_mark_type];
+> +
+> +       for (p = 0; p < FANOTIFY_PRIORITIES; p++) {
+> +               for (i = 0; i < GROUPS_PER_PRIO; i++) {
+> +                       fd_notify[p][i] = SAFE_FANOTIFY_INIT(fanotify_prio[p] |
+> +                                                            FAN_NONBLOCK,
+> +                                                            O_RDONLY);
+> +
+> +                       /* Add mark for each group */
+> +                       ret = fanotify_mark(fd_notify[p][i],
+> +                                           FAN_MARK_ADD | mark->flag,
+> +                                           FAN_OPEN, AT_FDCWD, tc->mark_path);
+> +                       if (ret < 0) {
+> +                               tst_brk(TBROK | TERRNO,
+> +                                       "fanotify_mark(%d, FAN_MARK_ADD | %s,"
+> +                                       "FAN_OPEN, AT_FDCWD, %s) failed",
+> +                                       fd_notify[p][i], mark->name,
+> +                                       tc->mark_path);
+> +                       }
+> +                       /* Add ignore mark for groups with higher priority */
+> +                       if (p == 0)
+> +                               continue;
+> +                       ret = fanotify_mark(fd_notify[p][i],
+> +                                           FAN_MARK_ADD | ignore_mark->flag |
+> +                                           FAN_MARK_IGNORED_MASK |
+> +                                           FAN_MARK_IGNORED_SURV_MODIFY,
+> +                                           FAN_OPEN, AT_FDCWD,
+> +                                           tc->ignore_path);
+> +                       if (ret < 0) {
+> +                               tst_brk(TBROK | TERRNO,
+> +                                       "fanotify_mark(%d, FAN_MARK_ADD | %s | "
+> +                                       "FAN_MARK_IGNORED_MASK | "
+> +                                       "FAN_MARK_IGNORED_SURV_MODIFY, "
+> +                                       "FAN_OPEN, AT_FDCWD, %s) failed",
+> +                                       fd_notify[p][i], ignore_mark->name,
+> +                                       tc->ignore_path);
+> +                       }
+> +               }
+> +       }
+> +}
+> +
+> +static void cleanup_fanotify_groups(void)
+> +{
+> +       unsigned int i, p;
+> +
+> +       for (p = 0; p < FANOTIFY_PRIORITIES; p++) {
+> +               for (i = 0; i < GROUPS_PER_PRIO; i++) {
+> +                       if (fd_notify[p][i] > 0)
+> +                               SAFE_CLOSE(fd_notify[p][i]);
+> +               }
+> +       }
+> +}
+> +
+> +static void verify_event(int group, struct fanotify_event_metadata *event)
+> +{
+> +       if (event->mask != FAN_OPEN) {
+> +               tst_res(TFAIL, "group %d got event: mask %llx (expected %llx) "
+> +                       "pid=%u fd=%u", group, (unsigned long long)event->mask,
+> +                       (unsigned long long)FAN_OPEN,
+> +                       (unsigned)event->pid, event->fd);
+> +       } else if (event->pid != getpid()) {
+> +               tst_res(TFAIL, "group %d got event: mask %llx pid=%u "
+> +                       "(expected %u) fd=%u", group,
+> +                       (unsigned long long)event->mask, (unsigned)event->pid,
+> +                       (unsigned)getpid(), event->fd);
+> +       } else {
+> +               tst_res(TPASS, "group %d got event: mask %llx pid=%u fd=%u",
+> +                       group, (unsigned long long)event->mask,
+> +                       (unsigned)event->pid, event->fd);
+> +       }
+> +}
+> +
+> +static void test_fanotify(unsigned int n)
+> +{
+> +       struct tcase *tc = &tcases[n];
+> +       struct fanotify_mark_type *mark, *ignore_mark;
+> +       int ret, fd;
+> +       unsigned int p, i;
+> +       struct fanotify_event_metadata *event;
+> +
+> +       tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+> +
+> +       create_fanotify_groups(n);
+> +
+> +       mark = &fanotify_mark_types[tc->mark_type];
+> +       ignore_mark = &fanotify_mark_types[tc->ignore_mark_type];
+> +
+> +       /*
+> +        * generate sequence of events
+> +        */
+> +       fd = SAFE_OPEN(tc->event_path, O_RDONLY);
+> +       SAFE_CLOSE(fd);
+> +
+> +       /* First verify all groups without matching ignore mask got the event */
+> +       for (p = 0; p < FANOTIFY_PRIORITIES; p++) {
+> +               if (p > 0 && !tc->expect_event)
+> +                       break;
+> +
+> +               for (i = 0; i < GROUPS_PER_PRIO; i++) {
+> +                       ret = read(fd_notify[p][i], event_buf, EVENT_BUF_LEN);
+> +                       if (ret < 0) {
+> +                               if (errno == EAGAIN) {
+> +                                       tst_res(TFAIL, "group %d (prio %d) "
+> +                                               "with %s did not get event",
+> +                                               i, p, mark->name);
+> +                               }
+> +                               tst_brk(TBROK | TERRNO,
+> +                                       "reading fanotify events failed");
+> +                       }
+> +                       if (ret < (int)FAN_EVENT_METADATA_LEN) {
+> +                               tst_brk(TBROK,
+> +                                       "short read when reading fanotify "
+> +                                       "events (%d < %d)", ret,
+> +                                       (int)EVENT_BUF_LEN);
+> +                       }
+> +                       event = (struct fanotify_event_metadata *)event_buf;
+> +                       if (ret > (int)event->event_len) {
+> +                               tst_res(TFAIL, "group %d (prio %d) with %s "
+> +                                       "got more than one event (%d > %d)",
+> +                                       i, p, mark->name, ret,
+> +                                       event->event_len);
+> +                       } else {
+> +                               verify_event(i, event);
+> +                       }
+> +                       if (event->fd != FAN_NOFD)
+> +                               SAFE_CLOSE(event->fd);
+> +               }
+> +       }
+> +       /* Then verify all groups with matching ignore mask did got the event */
+> +       for (p = 1; p < FANOTIFY_PRIORITIES && !tc->expect_event; p++) {
+> +               for (i = 0; i < GROUPS_PER_PRIO; i++) {
+> +                       ret = read(fd_notify[p][i], event_buf, EVENT_BUF_LEN);
+> +                       if (ret == 0) {
+> +                               tst_brk(TBROK,
+> +                                       "zero length read from fanotify fd");
+> +                       }
+> +                       if (ret > 0) {
+> +                               tst_res(TFAIL, "group %d (prio %d) with %s and "
+> +                                       "%s ignore mask got event",
+> +                                       i, p, mark->name, ignore_mark->name);
+> +                               if (event->fd != FAN_NOFD)
+> +                                       SAFE_CLOSE(event->fd);
+> +                       } else if (errno == EAGAIN) {
+> +                               tst_res(TPASS, "group %d (prio %d) with %s and "
+> +                                       "%s ignore mask got no event",
+> +                                       i, p, mark->name, ignore_mark->name);
+> +                       } else {
+> +                               tst_brk(TBROK | TERRNO,
+> +                                       "reading fanotify events failed");
+> +                       }
+> +               }
+> +       }
+> +       cleanup_fanotify_groups();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +       /* Mount the filesystem at one path for watching events */
+> +       SAFE_MKDIR(MOUNT_PATH, 0755);
+> +       SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type, 0, NULL);
+> +       mount_created = 1;
+> +
+> +       /* Create another bind mount at another path for generating events */
+> +       SAFE_MKDIR(MNT2_PATH, 0755);
+> +       SAFE_MOUNT(MOUNT_PATH, MNT2_PATH, "none", MS_BIND, NULL);
+> +       bind_mount_created = 1;
+> +
+> +       SAFE_FILE_PRINTF(FILE_PATH, "1");
+> +       SAFE_FILE_PRINTF(FILE2_PATH, "1");
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +       cleanup_fanotify_groups();
+> +
+> +       if (bind_mount_created && tst_umount(MNT2_PATH) < 0)
+> +               tst_brk(TBROK | TERRNO, "bind umount failed");
+> +
+> +       if (mount_created && tst_umount(MOUNT_PATH) < 0)
+> +               tst_brk(TBROK | TERRNO, "fs umount failed");
+> +}
+> +
+> +static struct tst_test test = {
+> +       .test = test_fanotify,
+> +       .tcnt = ARRAY_SIZE(tcases),
+> +       .setup = setup,
+> +       .cleanup = cleanup,
+> +       .format_device = 1,
+> +       .needs_tmpdir = 1,
+> +       .needs_root = 1
+> +};
+> +
+> +#else
+> +       TST_TEST_TCONF("system doesn't have required fanotify support");
+> +#endif
 > --
 > 2.17.1
 >
