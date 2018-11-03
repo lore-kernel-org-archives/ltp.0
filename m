@@ -1,56 +1,31 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 2 Nov 2018 23:37:36 +0100
-Subject: [LTP] [PATCH 2/2] net/ipsec: Add check for xfrm_user
-In-Reply-To: <20181102221454.5056-2-pvorel@suse.cz>
-References: <20181102221454.5056-1-pvorel@suse.cz>
- <20181102221454.5056-2-pvorel@suse.cz>
-Message-ID: <20181102223736.GA7615@dell5510>
+From: Ramon Pantin <pantin@google.com>
+Date: Sat, 3 Nov 2018 15:16:54 -0700
+Subject: [LTP] recvmmsg(2) system call tests
+In-Reply-To: <20181102105206.GA22411@rei>
+References: <ecdea1f2-4931-5dc3-6695-4f8dd78d796d@google.com>
+ <20181101113857.GB22042@dell5510>
+ <3C276F4D-DC1A-4CB6-A5BC-BBC6B07E23A6@google.com>
+ <20181102105206.GA22411@rei>
+Message-ID: <c5eb4e3a-a164-d207-ccee-f84b10d51ec6@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Cyril,
 
-> which is required by ip xfrm command.
-> As ipsec_lib.sh is used for other commands than it,
-> check it only when used. Call in cleanup function could trigger infinite
-> loop, therefore check only once.
+Can you help me understand why you don't want to allow this test case to 
+make use of the C99 programming language?
 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-...
-> +tst_ipsec_check_driver()
-> +{
-> +	if [ -z "$ipsec_driver_checked" ]; then
-> +		export ipsec_driver_checked=1
-> +		tst_net_driver "xfrm_user"
-> +	fi
-I know that all *_ipsec_vti.sh are affected, but I think it's better to be universal.
+It is only a 19 year old standard.
 
+If there is a problem with C99 use, can you indicate that the problem is?
 
-And maybe ip xfrm calls in tst_init_iface() (in tst_net.sh) should have stderr redirected:
+thank you,
+Ramon
 
-$ udp_ipsec_vti.sh -p comp -m tunnel -s 1500
-udp_ipsec_vti 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface
-Cannot open netlink socket: Protocol not supported
-udp_ipsec_vti 1 TINFO: initialize 'rhost' 'ltp_ns_veth1' interface
-Cannot open netlink socket: Protocol not supported
-# tst_net_iface_prefix.c:145: INFO: prefix and interface not found for '10.0.0.2'.
+On 11/02/18 03:52, Cyril Hrubis wrote:
+> Actually the default for gcc is gnu90 which is close to c99 anyways, so
+> we do not have to do anything about it.
 
-# tst_net_iface_prefix.c:145: INFO: prefix and interface not found for 'fd00:1:1:1::2'.
-
-udp_ipsec_vti 1 TINFO: Network config (local -- remote):
-udp_ipsec_vti 1 TINFO: ltp_ns_veth2 -- ltp_ns_veth1
-udp_ipsec_vti 1 TINFO: 10.0.0.2/24 -- 10.0.0.1/24
-udp_ipsec_vti 1 TINFO: fd00:1:1:1::2/64 -- fd00:1:1:1::1/64
-udp_ipsec_vti 1 TINFO: Test vti + IPsec[comp/tunnel]
-udp_ipsec_vti 1 TCONF: xfrm_user driver not available
-Cannot open netlink socket: Protocol not supported
-Cannot open netlink socket: Protocol not supported
-Cannot open netlink socket: Protocol not supported
-
-
-Kind regards,
-Petr
