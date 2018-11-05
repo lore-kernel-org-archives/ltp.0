@@ -1,55 +1,45 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon,  5 Nov 2018 16:46:17 +0100
-Subject: [LTP] [PATCH 4/4] syscalls/migrate_pages02: run with numa balancing
-	disabled
-In-Reply-To: <4ab262666b5022a1f62a2e2967899dfecc56396d.1541431525.git.jstancek@redhat.com>
-References: <4ab262666b5022a1f62a2e2967899dfecc56396d.1541431525.git.jstancek@redhat.com>
-Message-ID: <775b030997cb22f90d812bb798311b46b3ab3217.1541431525.git.jstancek@redhat.com>
+From: Ramon Pantin <pantin@google.com>
+Date: Mon, 5 Nov 2018 10:35:17 -0800
+Subject: [LTP] recvmmsg(2) system call tests
+In-Reply-To: <20181105094005.GA8687@rei>
+References: <ecdea1f2-4931-5dc3-6695-4f8dd78d796d@google.com>
+ <20181101113857.GB22042@dell5510>
+ <3C276F4D-DC1A-4CB6-A5BC-BBC6B07E23A6@google.com>
+ <20181102105206.GA22411@rei>
+ <c5eb4e3a-a164-d207-ccee-f84b10d51ec6@google.com> <20181105094005.GA8687@rei>
+Message-ID: <7cd10b3c-3127-f6eb-0b95-0b9b42b5a77a@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixes: #407
+Ok, so my test cases are using arrays on the stack dimensioned at 
+run-time based on other values computed at run time. C99 is needed for 
+that. I don't see any value in changing them to use alloca(), its a 
+waste of time.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/migrate_pages/migrate_pages02.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Is it really going to be an issue if I use a feature of a 19 year old 
+language?
 
-diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
-index e11d52ba4400..99b6623a703f 100644
---- a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
-+++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
-@@ -63,6 +63,11 @@ static struct passwd *ltpuser;
- static int *nodes, nodeA, nodeB;
- static int num_nodes;
- 
-+static const char * const save_restore[] = {
-+	"?/proc/sys/kernel/numa_balancing",
-+	NULL,
-+};
-+
- static void print_mem_stats(pid_t pid, int node)
- {
- 	char s[64];
-@@ -295,6 +300,7 @@ static void setup(void)
- 	else if (tst_kvercmp(2, 6, 18) < 0)
- 		tst_brk(TCONF, "2.6.18 or greater kernel required");
- 
-+	FILE_PRINTF("/proc/sys/kernel/numa_balancing", "0");
- 	/*
- 	 * find 2 nodes, which can hold NODE_MIN_FREEMEM bytes
- 	 * The reason is that:
-@@ -345,6 +351,7 @@ static struct tst_test test = {
- 	.forks_child = 1,
- 	.test_all = run,
- 	.setup = setup,
-+	.save_restore = save_restore,
- };
- #else
- TST_TEST_TCONF(NUMA_ERROR_MSG);
--- 
-1.8.3.1
+
+On 11/05/2018 01:40 AM, Cyril Hrubis wrote:
+> Hi!
+>> Can you help me understand why you don't want to allow this test case to
+>> make use of the C99 programming language?
+>>
+>> It is only a 19 year old standard.
+>>
+>> If there is a problem with C99 use, can you indicate that the problem is?
+> What I'm trying to say is:
+>
+> * Reasonable recent compilers support c99 features without -c99
+>    explicitelly passed on command line
+>
+> * It's a very bad idea to hardcode switches in random leaf Makefiles
+>    as from maintenance point of view this is real disaster
+>
+> If we ever want to stick to some C standard it has to be a top level
+> decision, but honestly I do prefer the compiler defaults.
+>
 
