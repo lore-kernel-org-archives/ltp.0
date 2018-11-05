@@ -1,9 +1,10 @@
 From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Sun,  4 Nov 2018 22:25:35 -0200
-Subject: [LTP] [PATCH v2 1/2] syscalls/fremovexattr: Add fremovexattr() tests
-In-Reply-To: <CABdQkv_WgpXPyeNzKRBhkgRg4vMPU7oRCgC1i=tv_TSEkg7buw@mail.gmail.com>
+Date: Sun,  4 Nov 2018 22:25:36 -0200
+Subject: [LTP] [PATCH v2 2/2] syscalls/lremovexattr: Add lremovexattr() test
+In-Reply-To: <20181105002536.29715-1-rafael.tinoco@linaro.org>
 References: <CABdQkv_WgpXPyeNzKRBhkgRg4vMPU7oRCgC1i=tv_TSEkg7buw@mail.gmail.com>
-Message-ID: <20181105002536.29715-1-rafael.tinoco@linaro.org>
+ <20181105002536.29715-1-rafael.tinoco@linaro.org>
+Message-ID: <20181105002536.29715-2-rafael.tinoco@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,55 +13,48 @@ To: ltp@lists.linux.it
 
 Fixes: #276
 
-Following the same logic and tests used to test removexattr() syscall,
-this commit implements tests for fremovexattr(). It only differs from
-removexattr() on the given arguments: using a file descriptor instead of
-the filename.
-
-Kernel has different entry points for both, with slightly different
-execution paths, mainly related to dealing with the passed file
-descriptor.
+This commit implements a test for lremovexattr(). According to attr(5),
+extended attributes are interpreted differently among files, directories
+and symbolic links. User attributes are only allowed for regular files
+and directories, thus the need to test security.* attributes being
+removed from symbolic links.
 
 Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
 ---
- runtest/syscalls                              |   3 +
- .../kernel/syscalls/fremovexattr/.gitignore   |   2 +
- .../kernel/syscalls/fremovexattr/Makefile     |   8 ++
- .../syscalls/fremovexattr/fremovexattr01.c    | 106 ++++++++++++++
- .../syscalls/fremovexattr/fremovexattr02.c    | 130 ++++++++++++++++++
- 5 files changed, 249 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fremovexattr/.gitignore
- create mode 100644 testcases/kernel/syscalls/fremovexattr/Makefile
- create mode 100644 testcases/kernel/syscalls/fremovexattr/fremovexattr01.c
- create mode 100644 testcases/kernel/syscalls/fremovexattr/fremovexattr02.c
+ runtest/syscalls                              |   2 +
+ .../kernel/syscalls/lremovexattr/.gitignore   |   1 +
+ .../kernel/syscalls/lremovexattr/Makefile     |   8 +
+ .../syscalls/lremovexattr/lremovexattr01.c    | 140 ++++++++++++++++++
+ 4 files changed, 151 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/lremovexattr/.gitignore
+ create mode 100644 testcases/kernel/syscalls/lremovexattr/Makefile
+ create mode 100644 testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 2ac9f7665..c48ada707 100644
+index c48ada707..77a36b1f5 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -319,6 +319,9 @@ fork14 fork14
+@@ -581,6 +581,8 @@ llseek01 llseek01
+ llseek02 llseek02
+ llseek03 llseek03
  
- fpathconf01 fpathconf01
- 
-+fremovexattr01 fremovexattr01
-+fremovexattr02 fremovexattr02
++lremovexattr01 lremovexattr01
 +
- fstat01 fstat01
- fstat01_64 fstat01_64
- fstat02 fstat02
-diff --git a/testcases/kernel/syscalls/fremovexattr/.gitignore b/testcases/kernel/syscalls/fremovexattr/.gitignore
+ lseek01 lseek01
+ lseek02 lseek02
+ lseek07 lseek07
+diff --git a/testcases/kernel/syscalls/lremovexattr/.gitignore b/testcases/kernel/syscalls/lremovexattr/.gitignore
 new file mode 100644
-index 000000000..455a9db2e
+index 000000000..810f86214
 --- /dev/null
-+++ b/testcases/kernel/syscalls/fremovexattr/.gitignore
-@@ -0,0 +1,2 @@
-+fremovexattr01
-+fremovexattr02
-diff --git a/testcases/kernel/syscalls/fremovexattr/Makefile b/testcases/kernel/syscalls/fremovexattr/Makefile
++++ b/testcases/kernel/syscalls/lremovexattr/.gitignore
+@@ -0,0 +1 @@
++lremovexattr01
+diff --git a/testcases/kernel/syscalls/lremovexattr/Makefile b/testcases/kernel/syscalls/lremovexattr/Makefile
 new file mode 100644
 index 000000000..f71e4fc25
 --- /dev/null
-+++ b/testcases/kernel/syscalls/fremovexattr/Makefile
++++ b/testcases/kernel/syscalls/lremovexattr/Makefile
 @@ -0,0 +1,8 @@
 +# Copyright (c) 2018 - Linaro Limited. All rights reserved.
 +# SPDX-License-Identifier: GPL-2.0-or-later
@@ -71,12 +65,12 @@ index 000000000..f71e4fc25
 +
 +include $(top_srcdir)/include/mk/generic_leaf_target.mk
 \ No newline at end of file
-diff --git a/testcases/kernel/syscalls/fremovexattr/fremovexattr01.c b/testcases/kernel/syscalls/fremovexattr/fremovexattr01.c
+diff --git a/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c b/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
 new file mode 100644
-index 000000000..543016f01
+index 000000000..3084cd318
 --- /dev/null
-+++ b/testcases/kernel/syscalls/fremovexattr/fremovexattr01.c
-@@ -0,0 +1,106 @@
++++ b/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
+@@ -0,0 +1,140 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2018 Linaro Limited. All rights reserved.
@@ -84,18 +78,29 @@ index 000000000..543016f01
 + */
 +
 +/*
-+ * Test Name: fremovexattr01
++ * Test Name: lremovexattr01
 + *
 + * Description:
-+ * Like removexattr(2), fremovexattr(2) also removes an extended attribute,
-+ * identified by a name, from a file but, instead of using a filename path, it
-+ * uses a descriptor. This test verifies that a simple call to fremovexattr(2)
-+ * removes, indeed, a previously set attribute key/value from a file.
++ * lremovexattr(2) removes the extended attribute identified by a name and
++ * associated with a given path in the filesystem. Unlike removexattr(2),
++ * lremovexattr(2) removes the attribute from the symbolic link only, and not
++ * the file. This test verifies that a simple call to lremovexattr(2) removes,
++ * indeed, a previously set attribute key/value from a symbolic link, and the
++ * symbolic link _only_.
++ *
++ * Note:
++ * According to attr(5), extended attributes are interpreted differently from
++ * regular files, directories and symbolic links. User attributes are only
++ * allowed for regular files and directories, thus the need of using security.*
++ * attributes for this test.
 + */
 +
 +#include "config.h"
 +#include <errno.h>
 +#include <stdlib.h>
++#include <stdio.h>
++#include <unistd.h>
++#include <fcntl.h>
 +
 +#ifdef HAVE_SYS_XATTR_H
 +# include <sys/xattr.h>
@@ -107,208 +112,95 @@ index 000000000..543016f01
 +
 +#define ENOATTR ENODATA
 +
-+#define XATTR_TEST_KEY "user.testkey"
-+#define XATTR_TEST_VALUE "this is a test value"
-+#define XATTR_TEST_VALUE_SIZE 20
++#define XATTR_KEY		"security.key1"
++#define XATTR_VALUE		"file and link"
++#define XATTR_VALUE_SIZE	13
 +
 +#define MNTPOINT "mntpoint"
-+#define FNAME MNTPOINT"/fremovexattr01testfile"
++#define FILENAME MNTPOINT"/lremovexattr01testfile"
++#define SYMLINK  MNTPOINT"/lremovexattr01symlink"
 +
-+static int fd = -1;
 +static char *got_value;
 +
-+static void verify_fremovexattr(void)
++static void verify_lremovexattr(void)
 +{
-+	SAFE_FSETXATTR(fd, XATTR_TEST_KEY, XATTR_TEST_VALUE,
-+			XATTR_TEST_VALUE_SIZE, XATTR_CREATE);
++	/* set attribute on both: file and symlink */
 +
-+	TEST(fremovexattr(fd, XATTR_TEST_KEY));
++	SAFE_SETXATTR(FILENAME, XATTR_KEY, XATTR_VALUE, XATTR_VALUE_SIZE,
++			XATTR_CREATE);
++
++	SAFE_LSETXATTR(SYMLINK, XATTR_KEY, XATTR_VALUE, XATTR_VALUE_SIZE,
++			XATTR_CREATE);
++
++	/* remove attribute from symlink only */
++
++	TEST(lremovexattr(SYMLINK, XATTR_KEY));
 +
 +	if (TST_RET != 0) {
-+		tst_res(TFAIL | TTERRNO, "fremovexattr(2) failed");
++		tst_res(TFAIL | TTERRNO, "lremovexattr(2) failed");
 +		return;
 +	}
 +
-+	memset(got_value, 0, XATTR_TEST_VALUE_SIZE);
++	/* make sure attribute is gone from symlink */
 +
-+	TEST(fgetxattr(fd, XATTR_TEST_KEY, got_value, XATTR_TEST_VALUE_SIZE));
++	memset(got_value, 0, XATTR_VALUE_SIZE);
++
++	TEST(lgetxattr(SYMLINK, XATTR_KEY, got_value, XATTR_VALUE_SIZE));
 +
 +	if (TST_RET >= 0) {
-+		tst_res(TFAIL, "fremovexattr(2) did not remove attribute");
++		tst_res(TFAIL, "lremovexattr(2) did not work");
 +		return;
 +	}
 +
 +	if (TST_RET < 0 && TST_ERR != ENOATTR) {
-+		tst_brk(TBROK, "fremovexattr(2) could not verify removal");
++		tst_brk(TBROK, "lgetxattr(2) failed unexpectedly");
 +		return;
 +	}
 +
-+	tst_res(TPASS, "fremovexattr(2) removed attribute as expected");
++	/* check if file is unchanged, like it should be */
++
++	memset(got_value, 0, XATTR_VALUE_SIZE);
++
++	TEST(getxattr(FILENAME, XATTR_KEY, got_value, XATTR_VALUE_SIZE));
++
++	if (TST_RET <= 0) {
++		tst_res(TFAIL, "lremovexattr(2) deleted file attribute");
++		return;
++	}
++
++	if (strcmp(got_value, XATTR_VALUE)) {
++		tst_res(TFAIL, "lremovexattr(2) changed file attribute");
++		return;
++	}
++
++	/* cleanup file attribute for iteration */
++
++	SAFE_REMOVEXATTR(FILENAME, XATTR_KEY);
++
++	tst_res(TPASS, "lremovexattr(2) removed attribute as expected");
 +}
 +
 +static void cleanup(void)
 +{
 +	free(got_value);
-+
-+	close(fd);
 +}
 +
 +static void setup(void)
 +{
-+	SAFE_TOUCH(FNAME, 0644, NULL);
++	SAFE_TOUCH(FILENAME, 0644, NULL);
 +
-+	fd = SAFE_OPEN(FNAME, O_RDWR, NULL);
-+
-+	TEST(fremovexattr(fd, XATTR_TEST_KEY));
-+
-+	if (TST_RET == -1 && TST_ERR == EOPNOTSUPP) {
-+		tst_brk(TCONF, "fremovexattr(2) not supported");
++	if (symlink(FILENAME, SYMLINK) < 0) {
++		tst_brk(TCONF, "symlink() not supported");
 +		return;
 +	}
 +
-+	got_value = SAFE_MALLOC(XATTR_TEST_VALUE_SIZE);
++	got_value = SAFE_MALLOC(XATTR_VALUE_SIZE);
 +}
 +
 +static struct tst_test test = {
 +	.setup = setup,
-+	.test_all = verify_fremovexattr,
++	.test_all = verify_lremovexattr,
 +	.cleanup = cleanup,
-+	.mntpoint = MNTPOINT,
-+	.mount_device = 1,
-+	.all_filesystems = 1,
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
-+};
-+
-+#else /* HAVE_SYS_XATTR_H */
-+TST_TEST_TCONF("<sys/xattr.h> does not exist");
-+#endif
-diff --git a/testcases/kernel/syscalls/fremovexattr/fremovexattr02.c b/testcases/kernel/syscalls/fremovexattr/fremovexattr02.c
-new file mode 100644
-index 000000000..5585b6abe
---- /dev/null
-+++ b/testcases/kernel/syscalls/fremovexattr/fremovexattr02.c
-@@ -0,0 +1,130 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2018 Linaro Limited. All rights reserved.
-+ * Author: Rafael David Tinoco <rafael.tinoco@linaro.org>
-+ */
-+
-+/*
-+ * Test Name: fremovexattr02
-+ *
-+ * Test cases::
-+ * 1) fremovexattr(2) fails if the named attribute does not exist.
-+ * 2) fremovexattr(2) fails if file descriptor is not valid.
-+ * 3) fremovexattr(2) fails if named attribute has an invalid address.
-+ *
-+ * Expected Results:
-+ * fremovexattr(2) should return -1 and set errno to ENODATA.
-+ * fremovexattr(2) should return -1 and set errno to EBADF.
-+ * fremovexattr(2) should return -1 and set errno to EFAULT.
-+ */
-+
-+#include "config.h"
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+
-+#ifdef HAVE_SYS_XATTR_H
-+# include <sys/xattr.h>
-+#endif
-+
-+#include "tst_test.h"
-+
-+#ifdef HAVE_SYS_XATTR_H
-+
-+#define XATTR_TEST_KEY "user.testkey"
-+
-+#define MNTPOINT "mntpoint"
-+#define FNAME MNTPOINT"/fremovexattr02testfile"
-+
-+static int fd = -1;
-+
-+struct test_case {
-+	int fd;
-+	char *key;
-+	char *value;
-+	char *gotvalue;
-+	int size;
-+	int exp_ret;
-+	int exp_err;
-+};
-+
-+struct test_case tc[] = {
-+	{				/* case 1: attribute does not exist */
-+	 .key = XATTR_TEST_KEY,
-+	 .exp_ret = -1,
-+	 .exp_err = ENODATA,
-+	 },
-+	{				/* case 2: file descriptor is invalid */
-+	 .fd = -1,
-+	 .key = XATTR_TEST_KEY,
-+	 .exp_ret = -1,
-+	 .exp_err = EBADF,
-+	 },
-+	{				/* case 3: bad name attribute */
-+	 .exp_ret = -1,
-+	 .exp_err = EFAULT,
-+	},
-+};
-+
-+static void verify_fremovexattr(unsigned int i)
-+{
-+	TEST(fremovexattr(tc[i].fd, tc[i].key));
-+
-+	if (TST_RET == -1 && TST_ERR == EOPNOTSUPP)
-+		tst_brk(TCONF, "fremovexattr(2) not supported");
-+
-+	if (tc[i].exp_ret == TST_RET) {
-+
-+		if (tc[i].exp_err) {
-+			if (tc[i].exp_err == TST_ERR) {
-+				tst_res(TPASS, "fremovexattr(2) passed");
-+				return;
-+			}
-+		} else  {
-+			tst_res(TPASS, "fremovexattr(2) passed");
-+			return;
-+		}
-+	}
-+
-+	tst_res(TFAIL | TTERRNO, "fremovexattr(2) failed");
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static void setup(void)
-+{
-+	size_t i = 0;
-+
-+	SAFE_TOUCH(FNAME, 0644, NULL);
-+	fd = SAFE_OPEN(FNAME, O_RDWR, NULL);
-+
-+	for (i = 0; i < ARRAY_SIZE(tc); i++) {
-+
-+		if (tc[i].fd != -1)
-+			tc[i].fd = fd;
-+
-+		if (!tc[i].key && tc[i].exp_err == EFAULT)
-+			tc[i].key = tst_get_bad_addr(cleanup);
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test = verify_fremovexattr,
-+	.cleanup = cleanup,
-+	.tcnt = ARRAY_SIZE(tc),
 +	.mntpoint = MNTPOINT,
 +	.mount_device = 1,
 +	.all_filesystems = 1,
