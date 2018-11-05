@@ -1,9 +1,10 @@
 From: Sandeep Patil <sspatil@google.com>
-Date: Mon,  5 Nov 2018 15:50:18 -0800
-Subject: [LTP] [PATCH 4/5] syscalls/chmod05: Use new ltp library
+Date: Mon,  5 Nov 2018 15:50:19 -0800
+Subject: [LTP] [PATCH 5/5] syscalls/posix_fadvise0[13]: Start using new
+	library.
 In-Reply-To: <20181105235019.254846-1-sspatil@google.com>
 References: <20181105235019.254846-1-sspatil@google.com>
-Message-ID: <20181105235019.254846-5-sspatil@google.com>
+Message-ID: <20181105235019.254846-6-sspatil@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,21 +12,24 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Use SPDX-Licence-Identifier and delete dead comments / code while at it.
+Make sure the tests can work on any system by creating its own file
+and using it for testing.
 
 Signed-off-by: Sandeep Patil <sspatil@google.com>
 ---
- testcases/kernel/syscalls/chmod/chmod05.c | 187 ++++------------------
- 1 file changed, 33 insertions(+), 154 deletions(-)
+ .../kernel/syscalls/fadvise/posix_fadvise01.c | 135 ++++-----------
+ .../kernel/syscalls/fadvise/posix_fadvise03.c | 163 ++++--------------
+ 2 files changed, 68 insertions(+), 230 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/chmod/chmod05.c b/testcases/kernel/syscalls/chmod/chmod05.c
-index 3cf4db5d0..c18a4778a 100644
---- a/testcases/kernel/syscalls/chmod/chmod05.c
-+++ b/testcases/kernel/syscalls/chmod/chmod05.c
-@@ -1,30 +1,12 @@
-+/// SPDX-License-Identifier: GPL-2.0
+diff --git a/testcases/kernel/syscalls/fadvise/posix_fadvise01.c b/testcases/kernel/syscalls/fadvise/posix_fadvise01.c
+index c12f0563c..ad139a66b 100644
+--- a/testcases/kernel/syscalls/fadvise/posix_fadvise01.c
++++ b/testcases/kernel/syscalls/fadvise/posix_fadvise01.c
+@@ -1,20 +1,6 @@
++// SPDX-License-Identifier: GPL-2.0
  /*
 - *
-  *   Copyright (c) International Business Machines  Corp., 2001
+  *   Copyright (c) Red Hat Inc., 2007
 - *
 - *   This program is free software;  you can redistribute it and/or modify
 - *   it under the terms of the GNU General Public License as published by
@@ -43,223 +47,378 @@ index 3cf4db5d0..c18a4778a 100644
   */
  
  /*
-  * Test Name: chmod05
-  *
-  * Test Description:
--//wjh
--//This test seems to be invalid see comments below
--//The man page for chmod doesn't seem to indicate that the setgid bit can
--//only be set by root
-  *  Verify that, chmod(2) will succeed to change the mode of a directory
-  *  but fails to set the setgid bit on it if invoked by non-root (uid != 0)
-  *  process with the following constraints,
-@@ -36,48 +18,6 @@
-  *  chmod() should return value 0 on success and though succeeds to change
-  *  the mode of a directory but fails to set setgid bit on it.
-  *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Create temporary directory.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *	Log the errno and Issue a FAIL message.
-- *   Otherwise,
-- *	Verify the Functionality of system call
-- *      if successful,
-- *		Issue Functionality-Pass message.
-- *      Otherwise,
-- *		Issue Functionality-Fail message.
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *   Delete the temporary directory created.
-- *
-- * Usage:  <for command-line>
-- *  chmod05 [-c n] [-e] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *             -f   : Turn off functionality Testing.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *	05/2002 Fixes by wjhuie and Ferhan Shareef
-- *                  changed conditional to check for valid tests only and
-- *                  in a more logically understandable way
-- *	07/2002 Additional fixes to #defines to allow comparisions to work.
-- *		-Robbie Williamson
-- *
-- * RESTRICTIONS:
-- *  This test should be run by root.
-- *
+@@ -34,15 +20,13 @@
+  *	None
   */
  
- #ifndef _GNU_SOURCE
-@@ -96,126 +36,65 @@
- #include <grp.h>
- #include <pwd.h>
+-#define _XOPEN_SOURCE 600
+ #include <fcntl.h>
+ 
+ #include <unistd.h>
+ #include <signal.h>
+ #include <errno.h>
  
 -#include "test.h"
 -#include "safe_macros.h"
--
--#define DEBUG 0
 +#include "tst_test.h"
  
- #define MODE_RWX	(mode_t)(S_IRWXU | S_IRWXG | S_IRWXO)
- #define DIR_MODE	(mode_t)(S_ISVTX | S_ISGID | S_IFDIR)
- #define PERMS		(mode_t)(MODE_RWX | DIR_MODE)
- #define TESTDIR		"testdir"
+ #include "lapi/syscalls.h"
+ #ifndef _FILE_OFFSET_BITS
+@@ -53,15 +37,8 @@
+ #define __NR_fadvise64 0
+ #endif
  
--char *TCID = "chmod05";
--int TST_TOTAL = 1;
+-void setup();
+-void cleanup();
 -
--void setup();			/* Main setup function for test */
--void cleanup();			/* Main cleanup function for test */
+-TCID_DEFINE(posix_fadvise01);
+-
+-char fname[] = "/bin/cat";	/* test executable to open */
+-int fd = -1;			/* initialized in open */
+-
+-int expected_return = 0;
++const char *fname = "testfile";
++int fd = -1;
+ 
+ int defined_advise[] = {
+ 	POSIX_FADV_NORMAL,
+@@ -72,91 +49,41 @@ int defined_advise[] = {
+ 	POSIX_FADV_DONTNEED,
+ };
+ 
+-#define defined_advise_total ARRAY_SIZE(defined_advise)
+-
+-int TST_TOTAL = defined_advise_total;
 -
 -int main(int ac, char **av)
-+void test_chmod(void)
++void test_posix_fadvise(unsigned int nr)
  {
- 	struct stat stat_buf;	/* stat struct */
 -	int lc;
- 	mode_t dir_mode;	/* mode permissions set on test directory */
- 
+-	int i;
+-
+-	/* Check this system has fadvise64 system which is used
+-	   in posix_fadvise. */
+-	if ((_FILE_OFFSET_BITS != 64) && (__NR_fadvise64 == 0)) {
+-		tst_resm(TWARN,
+-			 "This test can only run on kernels that implements ");
+-		tst_resm(TWARN, "fadvise64 which is used from posix_fadvise");
+-		exit(0);
++	TEST(posix_fadvise(fd, 0, 0, defined_advise[nr]));
++	if (TST_RET == 0) {
++		tst_res(TPASS, "call succeeded expectedly");
++	} else {
++		tst_res(TFAIL, "unexpected return - %ld w/ advise %d",
++				TST_RET, defined_advise[nr]);
+ 	}
+-
+-	/*
+-	 * parse standard options
+-	 */
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
+-	/*
+-	 * perform global setup for test
+-	 */
 -	setup();
 -
+-	/*
+-	 * check looping state if -i option given on the command line
+-	 */
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
 -		tst_count = 0;
 -
--		TEST(chmod(TESTDIR, PERMS));
+-		/* loop through the test cases */
+-		for (i = 0; i < defined_advise_total; i++) {
 -
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL, "chmod(%s, %#o) failed",
--				 TESTDIR, PERMS);
--			continue;
+-			TEST(posix_fadvise(fd, 0, 0, defined_advise[i]));
+-
+-			/* Man page says:
+-			   "On error, an error number is returned." */
+-			if (TEST_RETURN == expected_return) {
+-				tst_resm(TPASS, "call succeeded expectedly");
+-			} else {
+-				tst_resm(TFAIL,
+-					 "unexpected return value - %ld : %s, advise %d - "
+-					 "expected %d",
+-					 TEST_RETURN,
+-					 strerror(TEST_RETURN),
+-					 defined_advise[i], expected_return);
+-			}
 -		}
--		/*
--		 * Get the directory information using
--		 * stat(2).
--		 */
--		if (stat(TESTDIR, &stat_buf) < 0) {
--			tst_brkm(TFAIL | TERRNO, cleanup,
--				 "stat(%s) failed", TESTDIR);
--		}
--		dir_mode = stat_buf.st_mode;
--#if DEBUG
--		printf("DIR_MODE = 0%03o\n", DIR_MODE);
--		printf("MODE_RWX = 0%03o\n", MODE_RWX);
--		printf("PERMS = 0%03o\n", PERMS);
--		printf("dir_mode = 0%03o\n", dir_mode);
--#endif
--		if ((PERMS & ~S_ISGID) != dir_mode)
--			tst_resm(TFAIL, "%s: Incorrect modes 0%03o, "
--				 "Expected 0%03o", TESTDIR, dir_mode,
--				 PERMS & ~S_ISGID);
--		else
--			tst_resm(TPASS,
--				 "Functionality of chmod(%s, %#o) successful",
--					 TESTDIR, PERMS);
-+	TEST(chmod(TESTDIR, PERMS));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL, "chmod(%s, %#o) failed", TESTDIR, PERMS);
+-	}
+-
+-	/*
+-	 * cleanup and exit
+-	 */
+-	cleanup();
+-
+-	tst_exit();
+ }
+ 
+-/*
+- * setup() - performs all ONE TIME setup for this test.
+- */
+ void setup(void)
+ {
++	unsigned long pagesz = getpagesize();
++	char buf[10 * pagesz];
+ 
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	/* Check this system has fadvise64 system which is used
++	   in posix_fadvise. */
++	if ((_FILE_OFFSET_BITS != 64) && (__NR_fadvise64 == 0)) {
++		tst_brk(TCONF,
++			"This test can only run on kernels that implements "
++			"fadvise64 which is used from posix_fadvise");
++	}
+ 
+-	TEST_PAUSE;
++	/* create 10 x pagesize file to be used for fadvise checks */
++	fd = SAFE_CREAT(fname, 0644);
++	SAFE_WRITE(1, fd, buf, 10 * pagesz);
++	SAFE_CLOSE(fd);
+ 
+-	fd = SAFE_OPEN(cleanup, fname, O_RDONLY);
++	fd = SAFE_OPEN(fname, O_RDONLY);
+ }
+ 
+-/*
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- */
+-void cleanup(void)
+-{
+-
+-	if (fd != -1) {
+-		close(fd);
+-	}
+-
+-}
++struct tst_test test = {
++	.tcnt = ARRAY_SIZE(defined_advise),
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.test = test_posix_fadvise,
++};
+diff --git a/testcases/kernel/syscalls/fadvise/posix_fadvise03.c b/testcases/kernel/syscalls/fadvise/posix_fadvise03.c
+index 4aa3a8cd1..ffb196743 100644
+--- a/testcases/kernel/syscalls/fadvise/posix_fadvise03.c
++++ b/testcases/kernel/syscalls/fadvise/posix_fadvise03.c
+@@ -1,20 +1,6 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+- *
+  *   Copyright (c) Red Hat Inc., 2007
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+ 
+ /*
+@@ -34,14 +20,12 @@
+  *	None
+  */
+ 
+-#define _XOPEN_SOURCE 600
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <signal.h>
+ #include <errno.h>
+ #include <limits.h>
+-#include "test.h"
+-#include "safe_macros.h"
++#include "tst_test.h"
+ 
+ #include "lapi/syscalls.h"
+ #ifndef _FILE_OFFSET_BITS
+@@ -52,14 +36,10 @@
+ #define __NR_fadvise64 0
+ #endif
+ 
+-void setup();
+-void cleanup();
+-
+-TCID_DEFINE(posix_fadvise03);
+-
+-char fname[] = "/bin/cat";	/* test executable to open */
+-int fd = -1;			/* initialized in open */
++#define ADVISE_LIMIT	(32)
+ 
++const char *fname = "testfile";
++int fd = -1;
+ int expected_error = EINVAL;
+ 
+ int defined_advise[] = {
+@@ -87,24 +67,10 @@ int defined_advise[] = {
+ #endif
+ };
+ 
+-#define defined_advise_total ARRAY_SIZE(defined_advise)
+-
+-#if 0
+-/* Too many test cases. */
+-int TST_TOTAL = (INT_MAX - defined_advise_total);
+-int advise_limit = INT_MAX;
+-#else
+-int TST_TOTAL = (32 - defined_advise_total);
+-int advise_limit = 32;
+-#endif /* 0 */
+-
+-/* is_defined_advise:
+-   Return 1 if advise is in defined_advise.
+-   Return 0 if not. */
+ static int is_defined_advise(int advise)
+ {
+ 	int i;
+-	for (i = 0; i < defined_advise_total; i++) {
++	for (i = 0; i < ARRAY_SIZE(defined_advise); i++) {
+ 		if (defined_advise[i] == advise)
+ 			return 1;
+ 	}
+@@ -112,101 +78,46 @@ static int is_defined_advise(int advise)
+ 	return 0;
+ }
+ 
+-int main(int ac, char **av)
++int test_posix_fadvise(unsigned int nr)
+ {
+-	int lc;
+-	int advise;
+-
+-	/* Check this system has fadvise64 system which is used
+-	   in posix_fadvise. */
+-	if ((_FILE_OFFSET_BITS != 64) && (__NR_fadvise64 == 0)) {
+-		tst_resm(TWARN,
+-			 "This test can only run on kernels that implements ");
+-		tst_resm(TWARN, "fadvise64 which is used from posix_fadvise");
+-		exit(0);
++	int advise = nr;
++	
++	/* Don't use defined advise as an argument. */
++	if (is_defined_advise(advise)) {
++		return;
  	}
  
+-	/*
+-	 * parse standard options
+-	 */
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	/*
+-	 * perform global setup for test
+-	 */
+-	setup();
+-
+-	/*
+-	 * check looping state if -i option given on the command line
+-	 */
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		/* loop through the test cases */
+-		for (advise = 0; advise < advise_limit; advise++) {
+-
+-			/* Don't use defiend advise as an argument. */
+-			if (is_defined_advise(advise)) {
+-				continue;
+-			}
+-
+-			TEST(posix_fadvise(fd, 0, 0, advise));
+-
+-			if (TEST_RETURN == 0) {
+-				tst_resm(TFAIL, "call succeeded unexpectedly");
+-				continue;
+-			}
+-
+-			/* Man page says:
+-			   "On error, an error number is returned." */
+-			if (TEST_RETURN == expected_error) {
+-				tst_resm(TPASS,
+-					 "expected failure - "
+-					 "returned value = %ld, advise = %d : %s",
+-					 TEST_RETURN,
+-					 advise, strerror(TEST_RETURN));
+-			} else {
+-				tst_resm(TFAIL,
+-					 "unexpected return value - %ld : %s, advise %d - "
+-					 "expected %d",
+-					 TEST_RETURN,
+-					 strerror(TEST_RETURN),
+-					 advise, expected_error);
+-			}
+-		}
++	TEST(posix_fadvise(fd, 0, 0, advise));
++	if (TST_RET == 0) {
++		tst_res(TFAIL, "call succeeded unexpectedly");
++		return;
+ 	}
+ 
+-	/*
+-	 * cleanup and exit
+-	 */
 -	cleanup();
+-
 -	tst_exit();
-+	/* Get the directory information using stat(2) and compare with
-+	 * expected results.
-+	 */
-+	SAFE_STAT(TESTDIR, &stat_buf);
-+	dir_mode = stat_buf.st_mode;
-+	if ((PERMS & ~S_ISGID) != dir_mode) {
-+		tst_res(TFAIL, "%s: Incorrect modes 0%03o, "
-+				"Expected 0%03o", TESTDIR, dir_mode,
-+				PERMS & ~S_ISGID);
++	if (TST_RET == expected_error) {
++		tst_res(TPASS, "expected failure - returned %ld for advise %d",
++				TST_RET, advise);
 +	} else {
-+		tst_res(TPASS, "Functionality of chmod(%s, %#o) successful",
-+				TESTDIR, PERMS);
++		tst_res(TFAIL, "unexpected return - %ld for advise %d",
++				TST_RET, advise);
 +	}
  }
  
 -/*
-- * void
 - * setup() - performs all ONE TIME setup for this test.
-- *  Create a temporary directory and cd to it.
-- *  Create a test directory under temporary directory.
--//wjh we are root so do we really need this kluged helper program?
-- *  Invoke setuid to root program to modify group ownership
-- *  on test directory.
 - */
  void setup(void)
  {
- 	struct passwd *nobody_u;
--	struct group *bin_group;
 -
--	tst_require_root();
-+	struct group *bin_gr;
- 
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
 -	TEST_PAUSE;
 -
--	tst_tmpdir();
+-	fd = SAFE_OPEN(cleanup, fname, O_RDONLY);
+-}
 -
--	nobody_u = getpwnam("nobody");
--	if (nobody_u == NULL)
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "getpwnam(\"nobody\") failed");
--
--	bin_group = getgrnam("bin");
--	if (bin_group == NULL)
--		tst_brkm(TBROK | TERRNO, cleanup, "getgrnam(\"bin\") failed");
-+	nobody_u = SAFE_GETPWNAM("nobody");
-+	bin_gr = SAFE_GETGRNAM("bin");
- 
- 	/*
- 	 * Create a test directory under temporary directory with specified
- 	 * mode permissions and change the gid of test directory to nobody's
- 	 * gid.
- 	 */
--	SAFE_MKDIR(cleanup, TESTDIR, MODE_RWX);
--
-+	SAFE_MKDIR(TESTDIR, MODE_RWX);
- 	if (setgroups(1, &nobody_u->pw_gid) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "setgroups to nobody's gid failed");
-+		tst_brk(TBROK | TERRNO, "setgroups to nobody's gid failed");
- 
--	SAFE_CHOWN(cleanup, TESTDIR, nobody_u->pw_uid, bin_group->gr_gid);
-+	SAFE_CHOWN(TESTDIR, nobody_u->pw_uid, bin_group->gr_gid);
- 
- 	/* change to nobody:nobody */
--	if (setegid(nobody_u->pw_gid) == -1 || seteuid(nobody_u->pw_uid) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "Couldn't switch to nobody:nobody");
-+	SAGE_SETEGID(nobody_u->pw_gid);
-+	SAFE_SETEUID(nobody_u->pw_uid);
- }
- 
+-/*
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- */
 -void cleanup(void)
 -{
--	if (setegid(0) == -1)
--		tst_resm(TWARN | TERRNO, "setegid(0) failed");
--	if (seteuid(0) == -1)
--		tst_resm(TWARN | TERRNO, "seteuid(0) failed");
 -
--	tst_rmdir();
--}
-+static struct tst_test test = {
-+	.needs_root = 1,
+-	if (fd != -1) {
+-		close(fd);
++	/* Check this system has fadvise64 system which is used
++	   in posix_fadvise. */
++	if ((_FILE_OFFSET_BITS != 64) && (__NR_fadvise64 == 0)) {
++		tst_brk(TCONF,
++			"This test can only run on kernels that implements "
++			"fadvise64 which is used from posix_fadvise");
+ 	}
+ 
++	fd = SAFE_OPEN(, fname, O_RDONLY);
+ }
++
++struct tst_test test = {
++	.tcnt = ADVISE_LIMIT,
 +	.needs_tmpdir = 1,
 +	.setup = setup,
-+	.test_all = test_chmod,
++	.test = test_posix_fadvise,
 +};
 -- 
 2.19.1.930.g4563a0d9d0-goog
