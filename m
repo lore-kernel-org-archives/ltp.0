@@ -1,608 +1,914 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon,  5 Nov 2018 16:42:16 +0100
-Subject: [LTP] [PATCH v4 3/4] Convert tests to use fzsync_{start,
-	end}_race API
+Date: Mon,  5 Nov 2018 16:42:15 +0100
+Subject: [LTP] [PATCH v4 2/4] fzsync: Simplify API with start/end race calls
+	and limit exec time
 In-Reply-To: <20181105154217.18879-1-rpalethorpe@suse.com>
 References: <20181105154217.18879-1-rpalethorpe@suse.com>
-Message-ID: <20181105154217.18879-4-rpalethorpe@suse.com>
+Message-ID: <20181105154217.18879-3-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- lib/newlib_tests/test16.c                     | 62 ++++++++++---------
- testcases/cve/cve-2014-0196.c                 | 39 +++++-------
- testcases/cve/cve-2016-7117.c                 | 58 ++++++++---------
- testcases/cve/cve-2017-2671.c                 | 32 ++++------
- testcases/kernel/syscalls/inotify/inotify09.c | 33 ++++------
- .../kernel/syscalls/ipc/shmctl/shmctl05.c     | 30 +++------
- 6 files changed, 107 insertions(+), 147 deletions(-)
+Make it so the test writer simply has to mark the beginning and end of a race
+in each thread. Previously they must choose where to call a delay and where to
+call a timestamp function which is used to calculate the delay as well as the
+update function.
 
-diff --git a/lib/newlib_tests/test16.c b/lib/newlib_tests/test16.c
-index d80bd5369..f453968cd 100644
---- a/lib/newlib_tests/test16.c
-+++ b/lib/newlib_tests/test16.c
-@@ -27,51 +27,54 @@
- #include "tst_fuzzy_sync.h"
+Along with the new API a randomised delay has been introduced which helps hit
+some race conditions (see doc comments).
+
+Also use the tst_timer library to check how long the main test loop has been
+running for and break the loop if it exceeds (60 * LTP_TIMEOUT_MUL)
+seconds. This prevents an overall test timeout which is reported as a failure.
+
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Reviewed-by: Cyril Hrubis <chrubis@suse.com>
+Reviewed-by: Li Wang <liwang@redhat.com>
+---
+ include/tst_fuzzy_sync.h | 737 +++++++++++++++++++++++++++++----------
+ 1 file changed, 560 insertions(+), 177 deletions(-)
+
+diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
+index bcc625e24..59b5917f8 100644
+--- a/include/tst_fuzzy_sync.h
++++ b/include/tst_fuzzy_sync.h
+@@ -1,3 +1,4 @@
++/* SPDX-License-Identifier: GPL-2.0 */
+ /*
+  * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
+  *
+@@ -14,225 +15,513 @@
+  * You should have received a copy of the GNU General Public License
+  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+  */
+-/*
++/**
++ * @file tst_fuzzy_sync.h
+  * Fuzzy Synchronisation - abreviated to fzsync
+  *
+- * This library is intended to help reproduce race conditions by providing two
+- * thread synchronisation mechanisms. The first is a 'checkpoint' system where
+- * each thread will wait indefinitely for the other to enter a checkpoint
+- * before continuing. This is acheived by calling tst_fzsync_wait() and/or
+- * tst_fzsync_wait_update() at the points you want to synchronise in each
+- * thread. This is functionally very similar to using pthread_barrier_wait()
+- * with two threads. However tst_fzsync_wait() can be inlined and is
+- * guaranteed not to call sleep or futex.
+- *
+- * The second takes the form a of a delay which is calculated by measuring the
+- * time difference between two points in each thread and comparing it to the
+- * desired difference (default is zero). Using a delay allows you to
+- * synchronise the threads at a point outside of your direct control
+- * (e.g. inside the kernel) or just increase the accuracy for the first
+- * mechanism. It is acheived using tst_fzsync_delay_{a,b}(),
+- * tst_fzsync_time_{a,b}() and tst_fzsync[_wait_]update().
++ * This library is intended to help reproduce race conditions by synchronising
++ * two threads at a given place by marking the range a race may occur
++ * in. Because the exact place where any race occurs is within the kernel,
++ * and therefor impossible to mark accurately, the library may add randomised
++ * delays to either thread in order to help find the exact race timing.
++ *
++ * Currently only two way races are explicitly supported, that is races
++ * involving two threads or processes. We refer to the main test thread as
++ * thread A and the child thread as thread B.
++ *
++ * In each thread you need a simple while- or for-loop which the tst_fzsync_*
++ * functions are called in. In the simplest case thread A will look something
++ * like:
++ *
++ * tst_fzsync_pair_reset(&pair, run_thread_b);
++ * while (tst_fzsync_run_a(&pair)) {
++ *	// Perform some setup which must happen before the race
++ *	tst_fzsync_start_race_a(&pair);
++ *	// Do some dodgy syscall
++ *	tst_fzsync_end_race_a(&pair);
++ * }
++ *
++ * Then in thread B (run_thread_b):
++ *
++ * while (tst_fzsync_run_b(&pair)) {
++ *	tst_fzsync_start_race_b(&pair);
++ *	// Do something which can race with the dodgy syscall in A
++ *	tst_fzsync_end_race_b(&pair)
++ * }
++ *
++ * The calls to tst_fzsync_start/end_race and tst_fzsync_run_a/b block (at
++ * least) until both threads have enter them. These functions can only be
++ * called once for each iteration, but further sychronisation points can be
++ * added by calling tst_fzsync_wait_a() and tst_fzsync_wait_b() in each
++ * thread.
++ *
++ * The execution of the loops in threads A and B are bounded by both iteration
++ * count and time. A slow machine is likely to be limited by time and a fast
++ * one by iteration count. The user can use the -i parameter to run the test
++ * multiple times or LTP_TIMEOUT_MUL to give the test more time.
++ *
++ * It is possible to use the library just for tst_fzsync_pair_wait() to get a
++ * basic spin wait. However if you are actually testing a race condition then
++ * it is recommended to use tst_fzsync_start_race_a/b even if the
++ * randomisation is not needed. It provides some semantic information which
++ * may be useful in the future.
+  *
+  * For a usage example see testcases/cve/cve-2016-7117.c or just run
+  * 'git grep tst_fuzzy_sync.h'
++ *
++ * @sa tst_fzsync_pair
+  */
  
- /* LOOPS * 2 + 1 must be less than INT_MAX */
--#define LOOPS 0xFFFFFFULL
-+#define LOOPS 0xFFFFULL
+ #include <sys/time.h>
+ #include <time.h>
+ #include <math.h>
++#include <stdlib.h>
+ #include "tst_atomic.h"
++#include "tst_timer.h"
++#include "tst_safe_pthread.h"
  
--static pthread_t thrd;
- static volatile char seq[LOOPS * 2 + 1];
--static struct tst_fzsync_pair pair = TST_FZSYNC_PAIR_INIT;
-+static struct tst_fzsync_pair pair;
- static volatile int seq_n;
--static volatile int iterations;
-+static volatile char last_wins;
+-#ifndef CLOCK_MONOTONIC_RAW
+-# define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
+-#endif
++/** Some statistics for a variable */
++struct tst_fzsync_stat {
++	float avg;
++	float avg_dev;
++	float dev_ratio;
++};
+ 
+ /**
+- * struct tst_fzsync_pair - the state of a two way synchronisation
+- * @avg_diff: Internal; the average time difference over multiple iterations.
+- * @avg_diff_trgt: The desired average time difference, defaults to 0.
+- * @avg_alpha: The rate at which old diff samples are forgotten,
+- *             defaults to 0.25.
+- * @avg_dev: Internal; Absolute average deviation.
+- * @a: Internal; The time at which call site A was last passed.
+- * @b: Internal; The time at which call site B was last passed.
+- * @delay: Internal; The size of the delay, positive to delay A,
+- *         negative to delay B.
+- * @delay_inc: The step size of a delay increment, defaults to 1.
+- * @update_gap: The number of iterations between recalculating the delay.
+- *              Defaults to 0xF and must be of the form $2^n - 1$
+- * @info_gap: The number of iterations between printing some statistics.
+- *            Defaults to 0x7FFFF and must also be one less than a power of 2.
+- * @a_cntr: Internal; Atomic counter used by fzsync_pair_wait()
+- * @b_cntr: Internal; Atomic counter used by fzsync_pair_wait()
+- * @exit: Internal; Used by tst_fzsync_pair_exit() and fzsync_pair_wait()
+- *
+- * This contains all the necessary state for synchronising two points A and
+- * B. Where A is the time of an event in one process and B is the time of an
+- * event in another process.
++ * The state of a two way synchronisation or race.
++ *
++ * This contains all the necessary state for approximately synchronising two
++ * sections of code in different threads.
++ *
++ * Some of the fields can be configured before calling
++ * tst_fzsync_pair_reset(), however this is mainly for debugging purposes. If
++ * a test requires one of the parameters to be modified, we should consider
++ * finding a way of automatically selecting an appropriate value at runtime.
+  *
+  * Internal fields should only be accessed by library functions.
+  */
+ struct tst_fzsync_pair {
+-	float avg_diff;
+-	float avg_diff_trgt;
++	/**
++	 * The rate at which old diff samples are forgotten
++	 *
++	 * Defaults to 0.25.
++	 */
+ 	float avg_alpha;
+-	float avg_dev;
+-	struct timespec a;
+-	struct timespec b;
+-	long delay;
+-	long delay_inc;
+-	int update_gap;
+-	int info_gap;
++	/** Internal; Thread A start time */
++	struct timespec a_start;
++	/** Internal; Thread B start time */
++	struct timespec b_start;
++	/** Internal; Thread A end time */
++	struct timespec a_end;
++	/** Internal; Thread B end time */
++	struct timespec b_end;
++	/** Internal; Avg. difference between a_start and b_start */
++	struct tst_fzsync_stat diff_ss;
++	/** Internal; Avg. difference between a_start and a_end */
++	struct tst_fzsync_stat diff_sa;
++	/** Internal; Avg. difference between b_start and b_end */
++	struct tst_fzsync_stat diff_sb;
++	/** Internal; Avg. difference between a_end and b_end */
++	struct tst_fzsync_stat diff_ab;
++	/** Internal; Number of spins while waiting for the slower thread */
++	int spins;
++	struct tst_fzsync_stat spins_avg;
++	/**
++	 * Internal; Number of spins to use in the delay.
++	 *
++	 * A negative value delays thread A and a positive delays thread B.
++	 */
++	int delay;
++	/**
++	 *  Internal; The number of samples left or the sampling state.
++	 *
++	 *  A positive value is the number of remaining mandatory
++	 *  samples. Zero or a negative indicate some other state.
++	 */
++	int sampling;
++	/**
++	 * The Minimum number of statistical samples which must be collected.
++	 *
++	 * The minimum number of iterations which must be performed before a
++	 * random delay can be calculated. Defaults to 1024.
++	 */
++	int min_samples;
++	/**
++	 * The maximum allowed proportional average deviation.
++	 *
++	 * A value in the range (0, 1) which gives the maximum average
++	 * deviation which must be attained before random delays can be
++	 * calculated.
++	 *
++	 * It is a ratio of (average_deviation / total_time). The default is
++	 * 0.1, so this allows an average deviation of at most 10%.
++	 */
++	float max_dev_ratio;
 +
-+static void setup(void)
++	/** Internal; Atomic counter used by fzsync_pair_wait() */
+ 	int a_cntr;
++	/** Internal; Atomic counter used by fzsync_pair_wait() */
+ 	int b_cntr;
++	/** Internal; Used by tst_fzsync_pair_exit() and fzsync_pair_wait() */
+ 	int exit;
++	/**
++	 * The maximum desired execution time as a proportion of the timeout
++	 *
++	 * A value x so that 0 < x < 1 which decides how long the test should
++	 * be run for (assuming the loop limit is not exceeded first).
++	 *
++	 * Defaults to 0.5 (~150 seconds with default timeout).
++	 */
++	float exec_time_p;
++	/** Internal; The test time remaining on tst_fzsync_pair_reset() */
++	float exec_time_start;
++	/**
++	 * The maximum number of iterations to execute during the test
++	 *
++	 * Defaults to a large number, but not too large.
++	 */
++	int exec_loops;
++	/** Internal; The current loop index  */
++	int exec_loop;
++	/** Internal; The second thread or NULL */
++	pthread_t thread_b;
+ };
+ 
++#define CHK(param, low, hi, def) do {					      \
++	pair->param = (pair->param ? pair->param : def);		      \
++	if (pair->param < low)						      \
++		tst_brk(TBROK, #param " is less than the lower bound " #low); \
++	if (pair->param > hi)						      \
++		tst_brk(TBROK, #param " is more than the upper bound " #hi);  \
++	} while (0)
+ /**
+- * TST_FZSYNC_PAIR_INIT - Default values for struct tst_fzysnc_pair
++ * Ensures that any Fuzzy Sync parameters are properly set
++ *
++ * @relates tst_fzsync_pair
++ *
++ * Usually called from the setup function, it sets default parameter values or
++ * validates any existing non-defaults.
++ *
++ * @sa tst_fzsync_pair_reset()
+  */
+-#define TST_FZSYNC_PAIR_INIT {	\
+-	.avg_alpha = 0.25,	\
+-	.delay_inc = 1,	        \
+-	.update_gap = 0xF,	\
+-	.info_gap = 0x7FFFF     \
++static void tst_fzsync_pair_init(struct tst_fzsync_pair *pair)
 +{
-+	pair.exec_loops = LOOPS;
-+	tst_fzsync_pair_init(&pair);
++	CHK(avg_alpha, 0, 1, 0.25);
++	CHK(min_samples, 20, INT_MAX, 1024);
++	CHK(max_dev_ratio, 0, 1, 0.1);
++	CHK(exec_time_p, 0, 1, 0.5);
++	CHK(exec_loops, 20, INT_MAX, 3000000);
+ }
++#undef CHK
+ 
+ /**
+- * tst_fzsync_pair_info - Print some synchronisation statistics
++ * Exit and join thread B if necessary.
++ *
++ * @relates tst_fzsync_pair
++ *
++ * Call this from your cleanup function.
+  */
+-static void tst_fzsync_pair_info(struct tst_fzsync_pair *pair)
++static void tst_fzsync_pair_cleanup(struct tst_fzsync_pair *pair)
+ {
+-	tst_res(TINFO,
+-		"avg_diff = %.0fns, avg_dev = %.0fns, delay = %05ld loops",
+-		pair->avg_diff, pair->avg_dev, pair->delay);
++	if (pair->thread_b) {
++		tst_atomic_store(1, &pair->exit);
++		SAFE_PTHREAD_JOIN(pair->thread_b, NULL);
++		pair->thread_b = 0;
++	}
++}
++
++/**
++ * Zero some stat fields
++ *
++ * @relates tst_fzsync_stat
++ */
++static void tst_init_stat(struct tst_fzsync_stat *s)
++{
++	s->avg = 0;
++	s->avg_dev = 0;
+ }
+ 
+ /**
+- * tst_fzsync_delay_a - Perform spin delay for A, if needed
++ * Reset or initialise fzsync.
++ *
++ * @relates tst_fzsync_pair
++ * @param pair The state structure initialised with TST_FZSYNC_PAIR_INIT.
++ * @param run_b The function defining thread B or NULL.
+  *
+- * Usually called just before the point you want to synchronise.
++ * Call this from your main test function (thread A), just before entering the
++ * main loop. It will (re)set any variables needed by fzsync and (re)start
++ * thread B using the function provided.
++ *
++ * If you need to use fork or clone to start the second thread/process then
++ * you can pass NULL to run_b and handle starting and stopping thread B
++ * yourself. You may need to place tst_fzsync_pair in some shared memory as
++ * well.
++ *
++ * @sa tst_fzsync_pair_init()
+  */
+-static inline void tst_fzsync_delay_a(struct tst_fzsync_pair *pair)
++static void tst_fzsync_pair_reset(struct tst_fzsync_pair *pair,
++				  void *(*run_b)(void *))
+ {
+-	volatile long spin_delay = pair->delay;
++	tst_fzsync_pair_cleanup(pair);
++
++	tst_init_stat(&pair->diff_ss);
++	tst_init_stat(&pair->diff_sa);
++	tst_init_stat(&pair->diff_sb);
++	tst_init_stat(&pair->diff_ab);
++	tst_init_stat(&pair->spins_avg);
++	pair->delay = 0;
++	pair->sampling = pair->min_samples;
++
++	pair->exec_loop = 0;
+ 
+-	while (spin_delay > 0)
+-		spin_delay--;
++	pair->a_cntr = 0;
++	pair->b_cntr = 0;
++	pair->exit = 0;
++	if (run_b)
++		SAFE_PTHREAD_CREATE(&pair->thread_b, 0, run_b, 0);
++
++	pair->exec_time_start = (float)tst_timeout_remaining();
+ }
+ 
+ /**
+- * tst_fzsync_delay_b - Perform spin delay for B, if needed
++ * Print stat
+  *
+- * Usually called just before the point you want to synchronise.
++ * @relates tst_fzsync_stat
+  */
+-static inline void tst_fzsync_delay_b(struct tst_fzsync_pair *pair)
++static inline void tst_fzsync_stat_info(struct tst_fzsync_stat stat,
++					char *unit, char *name)
+ {
+-	volatile long spin_delay = pair->delay;
++	tst_res(TINFO,
++		"%1$-17s: { avg = %3$5.0f%2$s, avg_dev = %4$5.0f%2$s, dev_ratio = %5$.2f }",
++		name, unit, stat.avg, stat.avg_dev, stat.dev_ratio);
 +}
  
- static void *worker(void *v LTP_ATTRIBUTE_UNUSED)
+-	while (spin_delay < 0)
+-		spin_delay++;
++/**
++ * Print some synchronisation statistics
++ *
++ * @relates tst_fzsync_pair
++ */
++static void tst_fzsync_pair_info(struct tst_fzsync_pair *pair)
++{
++	tst_res(TINFO, "loop = %d", pair->exec_loop);
++	tst_fzsync_stat_info(pair->diff_ss, "ns", "start_a - start_b");
++	tst_fzsync_stat_info(pair->diff_sa, "ns", "end_a - start_a");
++	tst_fzsync_stat_info(pair->diff_sb, "ns", "end_b - start_b");
++	tst_fzsync_stat_info(pair->diff_ab, "ns", "end_a - end_b");
++	tst_fzsync_stat_info(pair->spins_avg, "  ", "spins");
+ }
+ 
++/** Wraps clock_gettime */
+ static inline void tst_fzsync_time(struct timespec *t)
  {
- 	unsigned long long i;
++#ifdef CLOCK_MONOTONIC_RAW
+ 	clock_gettime(CLOCK_MONOTONIC_RAW, t);
++#else
++	clock_gettime(CLOCK_MONOTONIC, t);
++#endif
+ }
  
--	for (i = 0; tst_fzsync_wait_update_b(&pair); i++) {
--		tst_fzsync_delay_b(&pair);
--		tst_fzsync_time_b(&pair);
--		if (!tst_fzsync_wait_b(&pair))
--			break;
-+	for (i = 0; tst_fzsync_run_b(&pair); i++) {
-+		tst_fzsync_start_race_b(&pair);
-+		usleep(1);
-+		last_wins = 'B';
-+		tst_fzsync_end_race_b(&pair);
- 		seq[seq_n] = 'B';
- 		seq_n = (i + 1) * 2 % (int)LOOPS * 2;
- 	}
+ /**
+- * tst_fzsync_time_a - Set A's time to now.
++ * Exponential moving average
+  *
+- * Called at the point you want to synchronise.
++ * @param alpha The preference for recent samples over old ones.
++ * @param sample The current sample
++ * @param prev_avg The average of the all the previous samples
++ *
++ * @return The average including the current sample.
+  */
+-static inline void tst_fzsync_time_a(struct tst_fzsync_pair *pair)
++static inline float tst_exp_moving_avg(float alpha,
++					float sample,
++					float prev_avg)
+ {
+-	tst_fzsync_time(&pair->a);
++	return alpha * sample + (1.0 - alpha) * prev_avg;
+ }
  
--	if (i > LOOPS * iterations)
--		tst_res(TWARN, "Worker performed too many iterations: %lld > %lld",
--			i, LOOPS * iterations);
-+	if (i != LOOPS) {
-+		tst_res(TFAIL,
-+			"Worker performed wrong number of iterations: %lld != %lld",
-+			i, LOOPS);
+ /**
+- * tst_fzsync_time_b - Set B's call time to now.
++ * Update a stat with a new sample
+  *
+- * Called at the point you want to synchronise.
++ * @relates tst_fzsync_stat
+  */
+-static inline void tst_fzsync_time_b(struct tst_fzsync_pair *pair)
++static inline void tst_upd_stat(struct tst_fzsync_stat *s,
++				 float alpha,
++				 float sample)
+ {
+-	tst_fzsync_time(&pair->b);
++	s->avg = tst_exp_moving_avg(alpha, sample, s->avg);
++	s->avg_dev = tst_exp_moving_avg(alpha,
++					fabs(s->avg - sample), s->avg_dev);
++	s->dev_ratio = fabs(s->avg ? s->avg_dev / s->avg : 0);
+ }
+ 
+ /**
+- * tst_exp_moving_avg - Exponential moving average
+- * @alpha: The preference for recent samples over old ones.
+- * @sample: The current sample
+- * @prev_avg: The average of the all the previous samples
++ * Update a stat with a new diff sample
+  *
+- * Returns average including the current sample.
++ * @relates tst_fzsync_stat
+  */
+-static inline float tst_exp_moving_avg(float alpha,
+-					float sample,
+-					float prev_avg)
++static inline void tst_upd_diff_stat(struct tst_fzsync_stat *s,
++				     float alpha,
++				     struct timespec t1,
++				     struct timespec t2)
+ {
+-	return alpha * sample + (1.0 - alpha) * prev_avg;
++	tst_upd_stat(s, alpha, tst_timespec_diff_ns(t1, t2));
+ }
+ 
+ /**
+- * tst_fzsync_pair_update - Recalculate the delay
+- * @loop_index: The i in "for(i = 0;..." or zero to ignore update_gap
+- * @pair: The state necessary for calculating the delay
+- *
+- * This should be called at the end of each loop to update the average
+- * measured time difference (between A and B) and update the delay. It is
+- * assumed that A and B are less than a second apart.
+- *
+- * The values of update_gap, avg_alpha and delay_inc decide the speed at which
+- * the algorithm approaches the optimum delay value and whether it is
+- * stable. If your test is behaving strangely, it could be because this
+- * algorithm is behaving chaotically and flip-flopping between large positve
+- * and negative delay values. You can call tst_fzysync_pair_info every few
+- * loops to check whether the average difference and delay values are stable.
++ * Calculate various statistics and the delay
++ *
++ * This function helps create the fuzz in fuzzy sync. Imagine we have the
++ * following timelines in threads A and B:
++ *
++ *  start_race_a
++ *      ^                    end_race_a (a)
++ *      |                        ^
++ *      |                        |
++ *  - --+------------------------+-- - -
++ *      |        Syscall A       |                 Thread A
++ *  - --+------------------------+-- - -
++ *  - --+----------------+-------+-- - -
++ *      |   Syscall B    | spin  |                 Thread B
++ *  - --+----------------+-------+-- - -
++ *      |                |
++ *      ^                ^
++ *  start_race_b     end_race_b
++ *
++ * Here we have synchronised the calls to syscall A and B with start_race_{a,
++ * b} so that they happen at approximately the same time in threads A and
++ * B. If the race condition occurs during the entry code for these two
++ * functions then we will quickly hit it. If it occurs during the exit code of
++ * B and mid way through A, then we will quickly hit it.
++ *
++ * However if the exit paths of A and B need to be aligned and (end_race_a -
++ * end_race_b) is large relative to the variation in call times, the
++ * probability of hitting the race condition is close to zero. To solve this
++ * scenario (and others) a randomised delay is introduced before the syscalls
++ * in A and B. Given enough time the following should happen where the exit
++ * paths are now synchronised:
++ *
++ *  start_race_a
++ *      ^                    end_race_a (a)
++ *      |                        ^
++ *      |                        |
++ *  - --+------------------------+-- - -
++ *      |        Syscall A       |                 Thread A
++ *  - --+------------------------+-- - -
++ *  - --+-------+----------------+-- - -
++ *      | delay |   Syscall B    |                 Thread B
++ *  - --+-------+----------------+-- - -
++ *      |                        |
++ *      ^                        ^
++ *  start_race_b             end_race_b
++ *
++ * The delay is not introduced immediately and the delay range is only
++ * calculated once the average relative deviation has dropped below some
++ * percentage of the total time.
++ *
++ * The delay range is chosen so that any point in Syscall A could be
++ * synchronised with any point in Syscall B using a value from the
++ * range. Because the delay range may be too large for a linear search, we use
++ * an evenly distributed random function to pick a value from it.
++ *
++ * The delay range goes from positive to negative. A negative delay will delay
++ * thread A and a positive one will delay thread B. The range is bounded by
++ * the point where the entry code to Syscall A is synchronised with the exit
++ * to Syscall B and the entry code to Syscall B is synchronised with the exit
++ * of A.
++ *
++ * In order to calculate the lower bound (the max delay of A) we can simply
++ * negate the execution time of Syscall B and convert it to a spin count. For
++ * the upper bound (the max delay of B), we just take the execution time of A
++ * and convert it to a spin count.
++ *
++ * In order to calculate spin count we need to know approximately how long a
++ * spin takes and divide the delay time with it. We find this by first
++ * counting how many spins one thread spends waiting for the other during
++ * end_race[1]. We also know when each syscall exits so we can take the
++ * difference between the exit times and divide it with the number of spins
++ * spent waiting.
++ *
++ * All the times and counts we use in the calculation are averaged over a
++ * variable number of iterations. There is an initial sampling period where we
++ * simply collect time and count samples then calculate their averages. When a
++ * minimum number of samples have been collected, and if the average deviation
++ * is below some proportion of the average sample magnitude, then the sampling
++ * period is ended. On all further iterations a random delay is calculated and
++ * applied, but the averages are not updated.
++ *
++ * [1] This assumes there is always a significant difference. The algorithm
++ * may fail to introduce a delay (when one is needed) in situations where
++ * Syscall A and B finish at approximately the same time.
++ *
++ * @relates tst_fzsync_pair
+  */
+-static void tst_fzsync_pair_update(int loop_index, struct tst_fzsync_pair *pair)
++static void tst_fzsync_pair_update(struct tst_fzsync_pair *pair)
+ {
+-	long diff;
+-	long inc = pair->delay_inc;
+-	float target = pair->avg_diff_trgt;
+-	float avg = pair->avg_diff;
+-
+-	diff = pair->a.tv_nsec - pair->b.tv_nsec
+-		+ 1000000000 * (pair->a.tv_sec - pair->b.tv_sec);
+-	avg = tst_exp_moving_avg(pair->avg_alpha, diff, avg);
+-	pair->avg_dev = tst_exp_moving_avg(pair->avg_alpha,
+-					   fabs(diff - avg),
+-					   pair->avg_dev);
+-
+-	if (!(loop_index & pair->update_gap)) {
+-		if (avg > target)
+-			pair->delay -= inc;
+-		else if (avg < target)
+-			pair->delay += inc;
+-	}
++	float alpha = pair->avg_alpha;
++	float per_spin_time, time_delay, dev_ratio;
+ 
+-	if (!(loop_index & pair->info_gap))
+-		tst_fzsync_pair_info(pair);
++	dev_ratio = (pair->diff_sa.dev_ratio
++		     + pair->diff_sb.dev_ratio
++		     + pair->diff_ab.dev_ratio
++		     + pair->spins_avg.dev_ratio) / 4;
+ 
+-	pair->avg_diff = avg;
++	if (pair->sampling > 0 || dev_ratio > pair->max_dev_ratio) {
++		tst_upd_diff_stat(&pair->diff_ss, alpha,
++				  pair->a_start, pair->b_start);
++		tst_upd_diff_stat(&pair->diff_sa, alpha,
++				  pair->a_end, pair->a_start);
++		tst_upd_diff_stat(&pair->diff_sb, alpha,
++				  pair->b_end, pair->b_start);
++		tst_upd_diff_stat(&pair->diff_ab, alpha,
++				  pair->a_end, pair->b_end);
++		tst_upd_stat(&pair->spins_avg, alpha, pair->spins);
++		if (pair->sampling > 0 && --pair->sampling == 0) {
++			tst_res(TINFO,
++				"Minimum sampling period ended, deviation ratio = %.2f",
++				dev_ratio);
++			tst_fzsync_pair_info(pair);
++		}
++	} else if (fabsf(pair->diff_ab.avg) >= 1 && pair->spins_avg.avg >= 1) {
++		per_spin_time = fabsf(pair->diff_ab.avg) / pair->spins_avg.avg;
++		time_delay = drand48() * (pair->diff_sa.avg + pair->diff_sb.avg)
++			- pair->diff_sb.avg;
++		pair->delay = (int)(time_delay / per_spin_time);
++
++		if (!pair->sampling) {
++			tst_res(TINFO,
++				"Reached deviation ratio %.2f (max %.2f), introducing randomness",
++				dev_ratio, pair->max_dev_ratio);
++			tst_res(TINFO, "Delay range is [-%d, %d]",
++				(int)(pair->diff_sb.avg / per_spin_time),
++				(int)(pair->diff_sa.avg / per_spin_time));
++			tst_fzsync_pair_info(pair);
++			pair->sampling = -1;
++		}
++	} else if (!pair->sampling) {
++		tst_res(TWARN, "Can't calculate random delay");
++		pair->sampling = -1;
 +	}
- 
- 	return NULL;
- }
- 
--static void setup(void)
--{
--	SAFE_PTHREAD_CREATE(&thrd, NULL, worker, NULL);
--}
--
- static void run(void)
- {
--	unsigned int i, j, fail = 0;
-+	unsigned int i, j, fail = 0, lost_race = 0;
- 
--	for (i = 0; i < LOOPS; i++) {
--		tst_fzsync_wait_update_a(&pair);
--		tst_fzsync_delay_a(&pair);
-+	tst_fzsync_pair_reset(&pair, worker);
-+	for (i = 0; tst_fzsync_run_a(&pair); i++) {
-+		tst_fzsync_start_race_a(&pair);
- 		seq[seq_n] = 'A';
- 		seq_n = i * 2 + 1;
--		tst_fzsync_time_a(&pair);
--		if (!tst_fzsync_wait_a(&pair))
--			break;
-+		last_wins = 'A';
-+		tst_fzsync_end_race_a(&pair);
-+		if (last_wins == 'B')
-+			lost_race++;
- 	}
- 
- 	tst_res(TINFO, "Checking sequence...");
-@@ -93,16 +96,15 @@ static void run(void)
- 	if (!fail)
- 		tst_res(TPASS, "Sequence is correct");
- 
--	if (labs(pair.delay) > 1000)
--		tst_res(TFAIL, "Delay is suspiciously large");
--
--	iterations++;
-+	if (lost_race < 100)
-+		tst_res(TFAIL, "A only lost the race %d times", lost_race);
-+	else
-+		tst_res(TPASS, "A lost the race %d times", lost_race);
- }
- 
- static void cleanup(void)
- {
--	tst_fzsync_pair_exit(&pair);
--	SAFE_PTHREAD_JOIN(thrd, NULL);
-+	tst_fzsync_pair_cleanup(&pair);
- }
- 
- static struct tst_test test = {
-diff --git a/testcases/cve/cve-2014-0196.c b/testcases/cve/cve-2014-0196.c
-index d18108897..50a8b35a5 100644
---- a/testcases/cve/cve-2014-0196.c
-+++ b/testcases/cve/cve-2014-0196.c
-@@ -48,7 +48,6 @@
- 
- #define ONEOFF_ALLOCS 200
- #define RUN_ALLOCS    30
--#define ATTEMPTS      0x7000
- #define BUFLEN        512
- 
- static volatile int master_fd, slave_fd;
-@@ -56,9 +55,8 @@ static int filler_ptys[ONEOFF_ALLOCS * 2];
- static int target_ptys[RUN_ALLOCS * 2];
- static char buf[BUFLEN];
- 
--static pthread_t overwrite_thread;
- static void *overwrite_thread_fn(void *);
--static struct tst_fzsync_pair fzsync_pair = TST_FZSYNC_PAIR_INIT;
-+static struct tst_fzsync_pair fzsync_pair;
- 
- static void create_pty(int *amaster, int *aslave)
- {
-@@ -70,27 +68,24 @@ static void setup(void)
- {
- 	int i;
- 
-+	fzsync_pair.exec_loops = 50000;
 +
-+	tst_fzsync_pair_init(&fzsync_pair);
-+
- 	for (i = 0; i < ONEOFF_ALLOCS; i++) {
- 		create_pty(&filler_ptys[i],
- 			   &filler_ptys[i + ONEOFF_ALLOCS]);
- 	}
--
--	fzsync_pair.info_gap = 0xFFF;
--	SAFE_PTHREAD_CREATE(&overwrite_thread, NULL,
--			    overwrite_thread_fn, NULL);
++	pair->spins = 0;
  }
  
- static void *overwrite_thread_fn(void *p LTP_ATTRIBUTE_UNUSED)
+ /**
+- * tst_fzsync_pair_wait - Wait for the other thread
+- * @our_cntr: The counter for the thread we are on
+- * @other_cntr: The counter for the thread we are synchronising with
++ * Wait for the other thread
++ *
++ * @relates tst_fzsync_pair
++ * @param our_cntr The counter for the thread we are on
++ * @param other_cntr The counter for the thread we are synchronising with
++ * @param spins A pointer to the spin counter or NULL
+  *
+- * Use this (through tst_fzsync_pair_wait_a() and tst_fzsync_pair_wait_b()) if
+- * you need an additional synchronisation point in a thread or you do not want
+- * to use the delay facility (not recommended). See
+- * tst_fzsync_pair_wait_update().
++ * Used by tst_fzsync_pair_wait_a(), tst_fzsync_pair_wait_b(),
++ * tst_fzsync_start_race_a(), etc. If the calling thread is ahead of the other
++ * thread, then it will spin wait. Unlike pthread_barrier_wait it will never
++ * use futex and can count the number of spins spent waiting.
+  *
+- * Returns a non-zero value if the thread should continue otherwise the
++ * @return A non-zero value if the thread should continue otherwise the
+  * calling thread should exit.
+  */
+-static inline int tst_fzsync_pair_wait(struct tst_fzsync_pair *pair,
+-				       int *our_cntr, int *other_cntr)
++static inline void tst_fzsync_pair_wait(int *our_cntr,
++					int *other_cntr,
++					int *spins)
  {
--	while(tst_fzsync_wait_update_b(&fzsync_pair)) {
--		tst_fzsync_delay_b(&fzsync_pair);
--		tst_fzsync_time_b(&fzsync_pair);
--
-+	while(tst_fzsync_run_b(&fzsync_pair)) {
-+		tst_fzsync_start_race_b(&fzsync_pair);
- 		SAFE_WRITE(0, slave_fd, buf, BUFLEN - 1);
- 		SAFE_WRITE(0, slave_fd, buf, BUFLEN - 1);
- 		SAFE_WRITE(0, slave_fd, buf, BUFLEN);
--		if (!tst_fzsync_wait_b(&fzsync_pair))
--			break;
-+		tst_fzsync_end_race_b(&fzsync_pair);
- 	}
- 	return 0;
- }
-@@ -98,11 +93,12 @@ static void *overwrite_thread_fn(void *p LTP_ATTRIBUTE_UNUSED)
- static void run(void)
- {
- 	struct termios t;
--	int i, j;
-+	int j;
+ 	if (tst_atomic_inc(other_cntr) == INT_MAX) {
+ 		/*
+@@ -243,84 +532,178 @@ static inline int tst_fzsync_pair_wait(struct tst_fzsync_pair *pair,
+ 		 * then our counter may already have been set to zero.
+ 		 */
+ 		while (tst_atomic_load(our_cntr) > 0
+-		       && tst_atomic_load(our_cntr) < INT_MAX
+-		       && !tst_atomic_load(&pair->exit))
+-			;
++		       && tst_atomic_load(our_cntr) < INT_MAX) {
++			if (spins)
++				(*spins)++;
++		}
  
- 	tst_res(TINFO, "Attempting to overflow into a tty_struct...");
- 
--	for (i = 0; i < ATTEMPTS; i++) {
-+	tst_fzsync_pair_reset(&fzsync_pair, overwrite_thread_fn);
-+	while (tst_fzsync_run_a(&fzsync_pair)) {
- 		create_pty((int *)&master_fd, (int *)&slave_fd);
- 
- 		for (j = 0; j < RUN_ALLOCS; j++)
-@@ -118,13 +114,9 @@ static void run(void)
- 		t.c_lflag |= ECHO;
- 		tcsetattr(master_fd, TCSANOW, &t);
- 
--		tst_fzsync_wait_update_a(&fzsync_pair);
--
--		tst_fzsync_delay_a(&fzsync_pair);
--		tst_fzsync_time_a(&fzsync_pair);
-+		tst_fzsync_start_race_a(&fzsync_pair);
- 		SAFE_WRITE(0, master_fd, "A", 1);
--
--		tst_fzsync_wait_a(&fzsync_pair);
-+		tst_fzsync_end_race_a(&fzsync_pair);
- 
- 		for (j = 0; j < RUN_ALLOCS; j++) {
- 			if (j == RUN_ALLOCS / 2)
-@@ -149,10 +141,7 @@ static void cleanup(void)
- {
- 	int i;
- 
--	if (overwrite_thread) {
--		tst_fzsync_pair_exit(&fzsync_pair);
--		SAFE_PTHREAD_JOIN(overwrite_thread, NULL);
--	}
-+	tst_fzsync_pair_cleanup(&fzsync_pair);
- 
- 	for (i = 0; i < ONEOFF_ALLOCS * 2; i++)
- 		close(filler_ptys[i]);
-diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
-index 3cb7efcdf..f3d9970c3 100644
---- a/testcases/cve/cve-2016-7117.c
-+++ b/testcases/cve/cve-2016-7117.c
-@@ -51,7 +51,6 @@
- 
- #include "tst_test.h"
- #include "tst_safe_net.h"
--#include "tst_safe_pthread.h"
- #include "tst_timer.h"
- #include "tst_fuzzy_sync.h"
- 
-@@ -93,13 +92,12 @@ static struct mmsghdr msghdrs[2] = {
- };
- static char rbuf[sizeof(MSG)];
- static struct timespec timeout = { .tv_sec = RECV_TIMEOUT };
--static struct tst_fzsync_pair fzsync_pair = TST_FZSYNC_PAIR_INIT;
--static pthread_t pt_send;
-+static struct tst_fzsync_pair fzsync_pair;
- static void *send_and_close(void *);
- 
- static void setup(void)
- {
--	SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, 0);
-+	tst_fzsync_pair_init(&fzsync_pair);
- }
- 
- static void cleanup(void)
-@@ -107,61 +105,63 @@ static void cleanup(void)
- 	close(socket_fds[0]);
- 	close(socket_fds[1]);
- 
--	if (pt_send) {
--		tst_fzsync_pair_exit(&fzsync_pair);
--		SAFE_PTHREAD_JOIN(pt_send, 0);
--	}
-+	tst_fzsync_pair_cleanup(&fzsync_pair);
- }
- 
- static void *send_and_close(void *arg)
- {
--	while (tst_fzsync_wait_update_b(&fzsync_pair)) {
-+	while (tst_fzsync_run_b(&fzsync_pair)) {
-+
-+		tst_fzsync_wait_b(&fzsync_pair);
- 		send(socket_fds[0], MSG, sizeof(MSG), 0);
- 		send(socket_fds[0], MSG, sizeof(MSG), 0);
- 
--		tst_fzsync_delay_b(&fzsync_pair);
--
- 		close(socket_fds[0]);
-+
-+		tst_fzsync_start_race_b(&fzsync_pair);
- 		close(socket_fds[1]);
--		tst_fzsync_time_b(&fzsync_pair);
--		if (!tst_fzsync_wait_b(&fzsync_pair))
--			break;
-+		tst_fzsync_end_race_b(&fzsync_pair);
- 	}
- 	return arg;
- }
- 
- static void run(void)
- {
--	int i, stat, too_early_count = 0;
-+	int stat, too_early_count = 0;
- 
- 	msghdrs[0].msg_hdr.msg_iov->iov_base = (void *)&rbuf;
- 
--	for (i = 1; i < ATTEMPTS; i++) {
-+	tst_fzsync_pair_reset(&fzsync_pair, send_and_close);
-+	while (tst_fzsync_run_a(&fzsync_pair)) {
-+
- 		if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, (int *)socket_fds))
- 			tst_brk(TBROK | TERRNO, "Socket creation failed");
-+		tst_fzsync_wait_a(&fzsync_pair);
- 
--		tst_fzsync_wait_update_a(&fzsync_pair);
--		tst_fzsync_delay_a(&fzsync_pair);
--
-+		tst_fzsync_start_race_a(&fzsync_pair);
- 		stat = tst_syscall(__NR_recvmmsg,
- 				   socket_fds[1], msghdrs, 2, 0, &timeout);
--		tst_fzsync_time_a(&fzsync_pair);
--		if (stat < 0 && errno == EBADF)
--			too_early_count++;
--		else if (stat == 0)
--			tst_res(TWARN, "No messages received, should be one");
--		else if (stat < 0)
--			tst_res(TWARN | TERRNO, "recvmmsg failed unexpectedly");
-+		tst_fzsync_end_race_a(&fzsync_pair);
- 
--		tst_fzsync_wait_a(&fzsync_pair);
-+		if (stat == 0)
-+			tst_res(TWARN, "No messages received, should be one");
-+		else if (stat < 0) {
-+			if (errno != EBADF) {
-+				tst_res(TWARN | TERRNO,
-+					"recvmmsg failed unexpectedly");
-+			} else {
-+				too_early_count++;
-+			}
+ 		tst_atomic_store(0, other_cntr);
+ 		/*
+ 		 * Once both counters have been set to zero the invariant
+ 		 * is restored and we can continue.
+ 		 */
+-		while (tst_atomic_load(our_cntr) > 1
+-		       && !tst_atomic_load(&pair->exit))
++		while (tst_atomic_load(our_cntr) > 1)
+ 			;
+ 	} else {
+ 		/*
+ 		 * If our counter is less than the other thread's we are ahead
+ 		 * of it and need to wait.
+ 		 */
+-		while (tst_atomic_load(our_cntr) < tst_atomic_load(other_cntr)
+-		       && !tst_atomic_load(&pair->exit))
+-			;
++		while (tst_atomic_load(our_cntr) < tst_atomic_load(other_cntr)) {
++			if (spins)
++				(*spins)++;
 +		}
  	}
++}
  
--	tst_res(TPASS, "Nothing happened after %d attempts", ATTEMPTS);
-+	tst_res(TPASS, "Nothing bad happened, probably.");
-+	tst_res(TINFO, "Socket was closed too early %d times", too_early_count);
+-	/* Only exit if we have done the same amount of work as the other thread */
+-	return !tst_atomic_load(&pair->exit) ||
+-	  tst_atomic_load(other_cntr) <= tst_atomic_load(our_cntr);
++/**
++ * Wait in thread A
++ *
++ * @relates tst_fzsync_pair
++ * @sa tst_fzsync_pair_wait
++ */
++static inline void tst_fzsync_wait_a(struct tst_fzsync_pair *pair)
++{
++	tst_fzsync_pair_wait(&pair->a_cntr, &pair->b_cntr, NULL);
  }
  
- static struct tst_test test = {
--	.setup = setup,
- 	.test_all = run,
-+	.setup = setup,
- 	.cleanup = cleanup,
- 	.min_kver = "2.6.33",
- };
-diff --git a/testcases/cve/cve-2017-2671.c b/testcases/cve/cve-2017-2671.c
-index b0471bfff..5bdb37b69 100644
---- a/testcases/cve/cve-2017-2671.c
-+++ b/testcases/cve/cve-2017-2671.c
-@@ -54,9 +54,8 @@
+-static inline int tst_fzsync_wait_a(struct tst_fzsync_pair *pair)
++/**
++ * Wait in thread B
++ *
++ * @relates tst_fzsync_pair
++ * @sa tst_fzsync_pair_wait
++ */
++static inline void tst_fzsync_wait_b(struct tst_fzsync_pair *pair)
+ {
+-	return tst_fzsync_pair_wait(pair, &pair->a_cntr, &pair->b_cntr);
++	tst_fzsync_pair_wait(&pair->b_cntr, &pair->a_cntr, NULL);
+ }
  
- static int sockfd;
- static unsigned int ping_min_grp, ping_max_grp;
--static struct tst_fzsync_pair fzsync_pair = TST_FZSYNC_PAIR_INIT;
-+static struct tst_fzsync_pair fzsync_pair;
- static struct sockaddr_in iaddr, uaddr;
--static pthread_t thrd;
- static void *connect_b(void *);
- 
- static void setup(void)
-@@ -65,7 +64,6 @@ static void setup(void)
- 	uaddr = iaddr;
- 	iaddr.sin_family = AF_INET;
- 	uaddr.sin_family = AF_UNSPEC;
--	fzsync_pair.delay_inc = 1;
- 
- 	if (access(PING_SYSCTL_PATH, F_OK))
- 		tst_brk(TCONF, "socket() does not support IPPROTO_ICMP");
-@@ -75,16 +73,14 @@ static void setup(void)
- 	SAFE_FILE_PRINTF(PING_SYSCTL_PATH, "0 0");
- 
- 	sockfd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, IPPROTO_ICMP);
--	SAFE_PTHREAD_CREATE(&thrd, 0, connect_b, 0);
- 	tst_res(TINFO, "Created ping socket, attempting to race...");
+-static inline int tst_fzsync_wait_b(struct tst_fzsync_pair *pair)
++/**
++ * Decide whether to continue running thread A
++ *
++ * @relates tst_fzsync_pair
++ *
++ * Checks some values and decides whether it is time to break the loop of
++ * thread A.
++ *
++ * @return True to continue and false to break.
++ * @sa tst_fzsync_run_a
++ */
++static inline int tst_fzsync_run_a(struct tst_fzsync_pair *pair)
+ {
+-	return tst_fzsync_pair_wait(pair, &pair->b_cntr, &pair->a_cntr);
++	int exit = 0;
 +
-+	tst_fzsync_pair_init(&fzsync_pair);
- }
- 
- static void cleanup(void)
- {
--	if (thrd) {
--		tst_fzsync_pair_exit(&fzsync_pair);
--		SAFE_PTHREAD_JOIN(thrd, NULL);
--	}
-+	tst_fzsync_pair_cleanup(&fzsync_pair);
- 
- 	if (sockfd > 0)
- 		SAFE_CLOSE(sockfd);
-@@ -96,12 +92,10 @@ static void cleanup(void)
- 
- static void *connect_b(void * param LTP_ATTRIBUTE_UNUSED)
- {
--	while(tst_fzsync_wait_update_b(&fzsync_pair)) {
--		tst_fzsync_delay_b(&fzsync_pair);
-+	while (tst_fzsync_run_b(&fzsync_pair)) {
-+		tst_fzsync_start_race_b(&fzsync_pair);
- 		connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
--		tst_fzsync_time_b(&fzsync_pair);
--		if (!tst_fzsync_wait_b(&fzsync_pair))
--			break;
-+		tst_fzsync_end_race_b(&fzsync_pair);
- 	}
- 
- 	return 0;
-@@ -109,18 +103,14 @@ static void *connect_b(void * param LTP_ATTRIBUTE_UNUSED)
- 
- static void run(void)
- {
--	int i;
--
--	for (i = 0; i < ATTEMPTS; i++) {
-+	tst_fzsync_pair_reset(&fzsync_pair, connect_b);
-+	while (tst_fzsync_run_a(&fzsync_pair)) {
- 		SAFE_CONNECT(sockfd,
- 			     (struct sockaddr *)&iaddr, sizeof(iaddr));
- 
--		tst_fzsync_wait_update_a(&fzsync_pair);
--		tst_fzsync_delay_a(&fzsync_pair);
-+		tst_fzsync_start_race_a(&fzsync_pair);
- 		connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
--		tst_fzsync_time_a(&fzsync_pair);
--
--		tst_fzsync_wait_a(&fzsync_pair);
-+		tst_fzsync_end_race_a(&fzsync_pair);
- 	}
- 
- 	tst_res(TPASS, "We didn't crash");
-diff --git a/testcases/kernel/syscalls/inotify/inotify09.c b/testcases/kernel/syscalls/inotify/inotify09.c
-index 475411311..f587a3a3c 100644
---- a/testcases/kernel/syscalls/inotify/inotify09.c
-+++ b/testcases/kernel/syscalls/inotify/inotify09.c
-@@ -46,26 +46,22 @@
- #include "inotify.h"
- 
- #define FNAME "stress_fname"
--#define TEARDOWNS 200000
- 
- #if defined(HAVE_SYS_INOTIFY_H)
- #include <sys/inotify.h>
- 
--static struct tst_fzsync_pair fzsync_pair = TST_FZSYNC_PAIR_INIT;
--static pthread_t pt_write_seek;
-+static struct tst_fzsync_pair fzsync_pair;
- static int fd;
- 
- static void *write_seek(void *unused)
- {
- 	char buf[64];
- 
--	while (tst_fzsync_wait_update_b(&fzsync_pair)) {
--		tst_fzsync_delay_b(&fzsync_pair);
-+	while (tst_fzsync_run_b(&fzsync_pair)) {
-+		tst_fzsync_start_race_b(&fzsync_pair);
- 		SAFE_WRITE(0, fd, buf, sizeof(buf));
--		tst_fzsync_time_b(&fzsync_pair);
- 		SAFE_LSEEK(fd, 0, SEEK_SET);
--		if (!tst_fzsync_wait_b(&fzsync_pair))
--			break;
-+		tst_fzsync_end_race_b(&fzsync_pair);
- 	}
- 	return unused;
- }
-@@ -73,8 +69,7 @@ static void *write_seek(void *unused)
- static void setup(void)
- {
- 	fd = SAFE_OPEN(FNAME, O_CREAT | O_RDWR, 0600);
--	fzsync_pair.info_gap = 0x7fff;
--	SAFE_PTHREAD_CREATE(&pt_write_seek, 0, write_seek, NULL);
-+	tst_fzsync_pair_init(&fzsync_pair);
- }
- 
- static void cleanup(void)
-@@ -82,35 +77,29 @@ static void cleanup(void)
- 	if (fd > 0)
- 		SAFE_CLOSE(fd);
- 
--	if (pt_write_seek) {
--		tst_fzsync_pair_exit(&fzsync_pair);
--		SAFE_PTHREAD_JOIN(pt_write_seek, NULL);
--	}
-+	tst_fzsync_pair_cleanup(&fzsync_pair);
- }
- 
- static void verify_inotify(void)
- {
- 	int inotify_fd;
- 	int wd;
--	int tests;
- 
- 	inotify_fd = myinotify_init1(0);
- 	if (inotify_fd < 0)
- 		tst_brk(TBROK | TERRNO, "inotify_init failed");
--	for (tests = 0; tests < TEARDOWNS; tests++) {
++	if (pair->exec_time_p
++	    < 1 - tst_timeout_remaining() / pair->exec_time_start) {
++		tst_res(TINFO,
++			"Exceeded execution time, requesting exit");
++		exit = 1;
 +
-+	tst_fzsync_pair_reset(&fzsync_pair, write_seek);
-+	while (tst_fzsync_run_a(&fzsync_pair)) {
- 		wd = myinotify_add_watch(inotify_fd, FNAME, IN_MODIFY);
- 		if (wd < 0)
- 			tst_brk(TBROK | TERRNO, "inotify_add_watch() failed.");
- 
--		tst_fzsync_wait_update_a(&fzsync_pair);
--		tst_fzsync_delay_a(&fzsync_pair);
--
-+		tst_fzsync_start_race_a(&fzsync_pair);
- 		wd = myinotify_rm_watch(inotify_fd, wd);
-+		tst_fzsync_end_race_a(&fzsync_pair);
- 		if (wd < 0)
- 			tst_brk(TBROK | TERRNO, "inotify_rm_watch() failed.");
--
--		tst_fzsync_time_a(&fzsync_pair);
--		tst_fzsync_wait_a(&fzsync_pair);
- 	}
- 	SAFE_CLOSE(inotify_fd);
- 	/* We survived for given time - test succeeded */
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
-index 51879c220..ecae202e8 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
-@@ -32,9 +32,7 @@
- #include "tst_safe_sysv_ipc.h"
- #include "tst_timer.h"
- 
--static struct tst_fzsync_pair fzsync_pair = TST_FZSYNC_PAIR_INIT;
--
--static pthread_t thrd;
-+static struct tst_fzsync_pair fzsync_pair;
- 
- /*
-  * Thread 2: repeatedly remove the shm ID and reallocate it again for a
-@@ -44,54 +42,49 @@ static void *thrproc(void *unused)
- {
- 	int id = SAFE_SHMGET(0xF00F, 4096, IPC_CREAT|0700);
- 
--	for (;;) {
--		if (!tst_fzsync_wait_b(&fzsync_pair))
--			break;
-+	while (tst_fzsync_run_b(&fzsync_pair)) {
-+		tst_fzsync_start_race_b(&fzsync_pair);
- 		SAFE_SHMCTL(id, IPC_RMID, NULL);
- 		id = SAFE_SHMGET(0xF00F, 4096, IPC_CREAT|0700);
--		if (!tst_fzsync_wait_b(&fzsync_pair))
--			break;
-+		tst_fzsync_end_race_b(&fzsync_pair);
- 	}
- 	return unused;
++		if (pair->sampling > 0) {
++			tst_res(TWARN,
++				"Still sampling, consider increasing LTP_TIMEOUT_MUL");
++		}
++	}
++
++	if (++pair->exec_loop > pair->exec_loops) {
++		tst_res(TINFO,
++			"Exceeded execution loops, requesting exit");
++		exit = 1;
++	}
++
++	tst_atomic_store(exit, &pair->exit);
++	tst_fzsync_wait_a(pair);
++
++	if (exit) {
++		tst_fzsync_pair_cleanup(pair);
++		return 0;
++	}
++
++	return 1;
  }
  
- static void setup(void)
+ /**
+- * tst_fzsync_pair_wait_update_{a,b} - Wait and then recalculate
++ * Decide whether to continue running thread B
++ *
++ * @relates tst_fzsync_pair
++ * @sa tst_fzsync_run_a
++ */
++static inline int tst_fzsync_run_b(struct tst_fzsync_pair *pair)
++{
++	tst_fzsync_wait_b(pair);
++	return !tst_atomic_load(&pair->exit);
++}
++
++/**
++ * Marks the start of a race region in thread A
++ *
++ * @relates tst_fzsync_pair
+  *
+- * This allows you to have two long running threads which wait for each other
+- * every iteration. So each thread will exit this function at approximately
+- * the same time. It also updates the delay values in a thread safe manner.
++ * This should be placed just before performing whatever action can cause a
++ * race condition. Usually it is placed just before a syscall and
++ * tst_fzsync_end_race_a() is placed just afterward.
+  *
+- * You must call this function in both threads the same number of times each
+- * iteration. So a call in one thread must match with a call in the
+- * other. Make sure that calls to tst_fzsync_pair_wait() and
+- * tst_fzsync_pair_wait_update() happen in the same order in each thread. That
+- * is, make sure that a call to tst_fzsync_pair_wait_update_a() in one thread
+- * corresponds to a call to tst_fzsync_pair_wait_update_b() in the other.
++ * A corrosponding call to tst_fzsync_start_race_b() should be made in thread
++ * B.
+  *
+- * Returns a non-zero value if the calling thread should continue to loop. If
++ * @return A non-zero value if the calling thread should continue to loop. If
+  * it returns zero then tst_fzsync_exit() has been called and you must exit
+  * the thread.
++ *
++ * @sa tst_fzsync_pair_update
+  */
+-static inline int tst_fzsync_wait_update_a(struct tst_fzsync_pair *pair)
++static inline void tst_fzsync_start_race_a(struct tst_fzsync_pair *pair)
  {
--	tst_timer_check(CLOCK_MONOTONIC);
--
- 	/* Skip test if either remap_file_pages() or SysV IPC is unavailable */
- 	tst_syscall(__NR_remap_file_pages, NULL, 0, 0, 0, 0);
- 	tst_syscall(__NR_shmctl, 0xF00F, IPC_RMID, NULL);
+-	static int loop_index;
++	volatile int delay;
++
++	tst_fzsync_pair_update(pair);
  
--	SAFE_PTHREAD_CREATE(&thrd, NULL, thrproc, NULL);
-+	tst_fzsync_pair_init(&fzsync_pair);
+-	tst_fzsync_pair_wait(pair, &pair->a_cntr, &pair->b_cntr);
+-	loop_index++;
+-	tst_fzsync_pair_update(loop_index, pair);
+-	return tst_fzsync_pair_wait(pair, &pair->a_cntr, &pair->b_cntr);
++	tst_fzsync_wait_a(pair);
++	tst_fzsync_time(&pair->a_start);
++
++	delay = pair->delay;
++	while (delay < 0)
++		delay++;
++}
++
++/**
++ * Marks the end of a race region in thread A
++ *
++ * @relates tst_fzsync_pair
++ * @sa tst_fzsync_start_race_a
++ */
++static inline void tst_fzsync_end_race_a(struct tst_fzsync_pair *pair)
++{
++	tst_fzsync_time(&pair->a_end);
++	tst_fzsync_pair_wait(&pair->a_cntr, &pair->b_cntr, &pair->spins);
  }
  
- static void do_test(void)
+-static inline int tst_fzsync_wait_update_b(struct tst_fzsync_pair *pair)
++/**
++ * Marks the start of a race region in thread B
++ *
++ * @relates tst_fzsync_pair
++ * @sa tst_fzsync_start_race_a
++ */
++static inline void tst_fzsync_start_race_b(struct tst_fzsync_pair *pair)
  {
--	tst_timer_start(CLOCK_MONOTONIC);
--
- 	/*
- 	 * Thread 1: repeatedly attach a shm segment, then remap it until the ID
- 	 * seems to have been removed by the other process.
- 	 */
--	while (!tst_timer_expired_ms(5000)) {
-+	tst_fzsync_pair_reset(&fzsync_pair, thrproc);
-+	while (tst_fzsync_run_a(&fzsync_pair)) {
- 		int id;
- 		void *addr;
- 
- 		id = SAFE_SHMGET(0xF00F, 4096, IPC_CREAT|0700);
- 		addr = SAFE_SHMAT(id, NULL, 0);
--		tst_fzsync_wait_a(&fzsync_pair);
-+		tst_fzsync_start_race_a(&fzsync_pair);
- 		do {
- 			/* This is the system call that crashed */
- 			TEST(syscall(__NR_remap_file_pages, addr, 4096,
- 				     0, 0, 0));
- 		} while (TST_RET == 0);
-+		tst_fzsync_end_race_a(&fzsync_pair);
- 
- 		if (TST_ERR != EIDRM && TST_ERR != EINVAL) {
- 			tst_brk(TBROK | TTERRNO,
- 				"Unexpected remap_file_pages() error");
- 		}
--		tst_fzsync_wait_a(&fzsync_pair);
- 
- 		/*
- 		 * Ensure that a shm segment will actually be destroyed.
-@@ -106,10 +99,7 @@ static void do_test(void)
- 
- static void cleanup(void)
- {
--	if (thrd) {
--		tst_fzsync_pair_exit(&fzsync_pair);
--		SAFE_PTHREAD_JOIN(thrd, NULL);
--	}
-+	tst_fzsync_pair_cleanup(&fzsync_pair);
- 	shmctl(0xF00F, IPC_RMID, NULL);
+-	tst_fzsync_pair_wait(pair, &pair->b_cntr, &pair->a_cntr);
+-	return tst_fzsync_pair_wait(pair, &pair->b_cntr, &pair->a_cntr);
++	volatile int delay;
++
++	tst_fzsync_wait_b(pair);
++	tst_fzsync_time(&pair->b_start);
++
++	delay = pair->delay;
++	while (delay > 0)
++		delay--;
  }
  
+ /**
+- * tst_fzsync_pair_exit - Signal that the other thread should exit
++ * Marks the end of a race region in thread B
+  *
+- * Causes tst_fzsync_pair_wait() and tst_fzsync_pair_wait_update() to return
+- * 0.
++ * @relates tst_fzsync_pair
++ * @sa tst_fzsync_start_race_a
+  */
+-static inline void tst_fzsync_pair_exit(struct tst_fzsync_pair *pair)
++static inline void tst_fzsync_end_race_b(struct tst_fzsync_pair *pair)
+ {
+-	tst_atomic_store(1, &pair->exit);
++	tst_fzsync_time(&pair->b_end);
++	tst_fzsync_pair_wait(&pair->b_cntr, &pair->a_cntr, &pair->spins);
+ }
 -- 
 2.18.0
 
