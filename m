@@ -1,47 +1,47 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 5 Nov 2018 10:05:02 -0500 (EST)
-Subject: [LTP] [RFC PATCH 0/2] Cleanup runtests containing duplicate
- definitions
-In-Reply-To: <CAEemH2fxHBmWmuj314ZdB+E2i2wXBtOg40SrSgt2Vxtqcns=0Q@mail.gmail.com>
-References: <20181015201819.10868-1-pvorel@suse.cz>
- <20181105114301.GA3591@dell5510>
- <CAEemH2fxHBmWmuj314ZdB+E2i2wXBtOg40SrSgt2Vxtqcns=0Q@mail.gmail.com>
-Message-ID: <863155656.69419841.1541430302026.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 5 Nov 2018 16:22:37 +0100
+Subject: [LTP] [PATCH] kernel/syscall/setrlimit05.c: use a legal bad
+ address for mips
+In-Reply-To: <1541403031-141386-1-git-send-email-hongzhi.song@windriver.com>
+References: <1541403031-141386-1-git-send-email-hongzhi.song@windriver.com>
+Message-ID: <20181105152237.GA3478@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit05.c b/testcases/kernel/syscalls/setrlimit/setrlimit05.c
+> index e716722..57b0b82 100644
+> --- a/testcases/kernel/syscalls/setrlimit/setrlimit05.c
+> +++ b/testcases/kernel/syscalls/setrlimit/setrlimit05.c
+> @@ -31,9 +31,13 @@ static void verify_setrlimit(void)
+>  	int status;
+>  	pid_t pid;
+>  
+> +    void *bad_addr;
+> +
+> +    bad_addr = tst_get_bad_addr(NULL);
 
------ Original Message -----
-> Jan, did we internal ltp-lite take reference from the ltplite file?
+It would be better if we called this only once in the test setup()
+function as the function actually maps a page of memory, the test may
+fail if we pass large enough -i parameter.
 
-Probably only at the beginning, when original author of beaker test
-forked ltplite runtest file. I've been using syscalls/other runtest
-files, since those are more up to date.
-
-> I wanna
-> know how do we customize our internal ltp-lite testcases.
-
-syscalls + cherry-picked tests from other runtest files.
-We might be getting off-topic w.r.t this mailing list.
-
-Regards,
-Jan
-
+>  	pid = SAFE_FORK();
+>  	if (!pid) {
+> -		TEST(setrlimit(RLIMIT_NOFILE, (void *) -1));
+> +		TEST(setrlimit(RLIMIT_NOFILE,(struct rlimit *)bad_addr));
+>  		if (TST_RET != -1) {
+>  			tst_res(TFAIL, "setrlimit()  succeeded unexpectedly");
+>  			exit(0);
+> -- 
+> 2.8.1
 > 
-> -- Sending by my PH1 phone.
 > 
-> On Mon, Nov 5, 2018, 19:43 Petr Vorel <pvorel@suse.cz wrote:
-> 
-> > Hi,
-> >
-> > > anyone using these? Objections?
-> > > IMHO there is no point trying to keep them sync.
-> > It looks like no objection to this, so I'll remove it.
-> >
-> > Kind regards,
-> > Petr
-> >
-> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
