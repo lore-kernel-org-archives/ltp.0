@@ -1,216 +1,108 @@
-From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Sun,  4 Nov 2018 22:25:36 -0200
-Subject: [LTP] [PATCH v2 2/2] syscalls/lremovexattr: Add lremovexattr() test
-In-Reply-To: <20181105002536.29715-1-rafael.tinoco@linaro.org>
-References: <CABdQkv_WgpXPyeNzKRBhkgRg4vMPU7oRCgC1i=tv_TSEkg7buw@mail.gmail.com>
- <20181105002536.29715-1-rafael.tinoco@linaro.org>
-Message-ID: <20181105002536.29715-2-rafael.tinoco@linaro.org>
+From: Hongzhi, Song <hongzhi.song@windriver.com>
+Date: Mon, 5 Nov 2018 09:15:41 +0800
+Subject: [LTP] [PATCH] open_posix_testsuite/mmap24-2: Support mips
+In-Reply-To: <da19c43f-39f7-81b4-7173-18fdec6ea1d9@windriver.com>
+References: <1540348607-217391-1-git-send-email-hongzhi.song@windriver.com>
+ <da19c43f-39f7-81b4-7173-18fdec6ea1d9@windriver.com>
+Message-ID: <4ebbc29e-d46a-5954-2c2f-903126a48ab7@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Fixes: #276
+Kindly ping
 
-This commit implements a test for lremovexattr(). According to attr(5),
-extended attributes are interpreted differently among files, directories
-and symbolic links. User attributes are only allowed for regular files
-and directories, thus the need to test security.* attributes being
-removed from symbolic links.
+--Hongzhi
 
-Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
----
- runtest/syscalls                              |   2 +
- .../kernel/syscalls/lremovexattr/.gitignore   |   1 +
- .../kernel/syscalls/lremovexattr/Makefile     |   8 +
- .../syscalls/lremovexattr/lremovexattr01.c    | 140 ++++++++++++++++++
- 4 files changed, 151 insertions(+)
- create mode 100644 testcases/kernel/syscalls/lremovexattr/.gitignore
- create mode 100644 testcases/kernel/syscalls/lremovexattr/Makefile
- create mode 100644 testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index c48ada707..77a36b1f5 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -581,6 +581,8 @@ llseek01 llseek01
- llseek02 llseek02
- llseek03 llseek03
- 
-+lremovexattr01 lremovexattr01
-+
- lseek01 lseek01
- lseek02 lseek02
- lseek07 lseek07
-diff --git a/testcases/kernel/syscalls/lremovexattr/.gitignore b/testcases/kernel/syscalls/lremovexattr/.gitignore
-new file mode 100644
-index 000000000..810f86214
---- /dev/null
-+++ b/testcases/kernel/syscalls/lremovexattr/.gitignore
-@@ -0,0 +1 @@
-+lremovexattr01
-diff --git a/testcases/kernel/syscalls/lremovexattr/Makefile b/testcases/kernel/syscalls/lremovexattr/Makefile
-new file mode 100644
-index 000000000..f71e4fc25
---- /dev/null
-+++ b/testcases/kernel/syscalls/lremovexattr/Makefile
-@@ -0,0 +1,8 @@
-+# Copyright (c) 2018 - Linaro Limited. All rights reserved.
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-\ No newline at end of file
-diff --git a/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c b/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
-new file mode 100644
-index 000000000..3084cd318
---- /dev/null
-+++ b/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
-@@ -0,0 +1,140 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2018 Linaro Limited. All rights reserved.
-+ * Author: Rafael David Tinoco <rafael.tinoco@linaro.org>
-+ */
-+
-+/*
-+ * Test Name: lremovexattr01
-+ *
-+ * Description:
-+ * lremovexattr(2) removes the extended attribute identified by a name and
-+ * associated with a given path in the filesystem. Unlike removexattr(2),
-+ * lremovexattr(2) removes the attribute from the symbolic link only, and not
-+ * the file. This test verifies that a simple call to lremovexattr(2) removes,
-+ * indeed, a previously set attribute key/value from a symbolic link, and the
-+ * symbolic link _only_.
-+ *
-+ * Note:
-+ * According to attr(5), extended attributes are interpreted differently from
-+ * regular files, directories and symbolic links. User attributes are only
-+ * allowed for regular files and directories, thus the need of using security.*
-+ * attributes for this test.
-+ */
-+
-+#include "config.h"
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+
-+#ifdef HAVE_SYS_XATTR_H
-+# include <sys/xattr.h>
-+#endif
-+
-+#include "tst_test.h"
-+
-+#ifdef HAVE_SYS_XATTR_H
-+
-+#define ENOATTR ENODATA
-+
-+#define XATTR_KEY		"security.key1"
-+#define XATTR_VALUE		"file and link"
-+#define XATTR_VALUE_SIZE	13
-+
-+#define MNTPOINT "mntpoint"
-+#define FILENAME MNTPOINT"/lremovexattr01testfile"
-+#define SYMLINK  MNTPOINT"/lremovexattr01symlink"
-+
-+static char *got_value;
-+
-+static void verify_lremovexattr(void)
-+{
-+	/* set attribute on both: file and symlink */
-+
-+	SAFE_SETXATTR(FILENAME, XATTR_KEY, XATTR_VALUE, XATTR_VALUE_SIZE,
-+			XATTR_CREATE);
-+
-+	SAFE_LSETXATTR(SYMLINK, XATTR_KEY, XATTR_VALUE, XATTR_VALUE_SIZE,
-+			XATTR_CREATE);
-+
-+	/* remove attribute from symlink only */
-+
-+	TEST(lremovexattr(SYMLINK, XATTR_KEY));
-+
-+	if (TST_RET != 0) {
-+		tst_res(TFAIL | TTERRNO, "lremovexattr(2) failed");
-+		return;
-+	}
-+
-+	/* make sure attribute is gone from symlink */
-+
-+	memset(got_value, 0, XATTR_VALUE_SIZE);
-+
-+	TEST(lgetxattr(SYMLINK, XATTR_KEY, got_value, XATTR_VALUE_SIZE));
-+
-+	if (TST_RET >= 0) {
-+		tst_res(TFAIL, "lremovexattr(2) did not work");
-+		return;
-+	}
-+
-+	if (TST_RET < 0 && TST_ERR != ENOATTR) {
-+		tst_brk(TBROK, "lgetxattr(2) failed unexpectedly");
-+		return;
-+	}
-+
-+	/* check if file is unchanged, like it should be */
-+
-+	memset(got_value, 0, XATTR_VALUE_SIZE);
-+
-+	TEST(getxattr(FILENAME, XATTR_KEY, got_value, XATTR_VALUE_SIZE));
-+
-+	if (TST_RET <= 0) {
-+		tst_res(TFAIL, "lremovexattr(2) deleted file attribute");
-+		return;
-+	}
-+
-+	if (strcmp(got_value, XATTR_VALUE)) {
-+		tst_res(TFAIL, "lremovexattr(2) changed file attribute");
-+		return;
-+	}
-+
-+	/* cleanup file attribute for iteration */
-+
-+	SAFE_REMOVEXATTR(FILENAME, XATTR_KEY);
-+
-+	tst_res(TPASS, "lremovexattr(2) removed attribute as expected");
-+}
-+
-+static void cleanup(void)
-+{
-+	free(got_value);
-+}
-+
-+static void setup(void)
-+{
-+	SAFE_TOUCH(FILENAME, 0644, NULL);
-+
-+	if (symlink(FILENAME, SYMLINK) < 0) {
-+		tst_brk(TCONF, "symlink() not supported");
-+		return;
-+	}
-+
-+	got_value = SAFE_MALLOC(XATTR_VALUE_SIZE);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = verify_lremovexattr,
-+	.cleanup = cleanup,
-+	.mntpoint = MNTPOINT,
-+	.mount_device = 1,
-+	.all_filesystems = 1,
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
-+};
-+
-+#else /* HAVE_SYS_XATTR_H */
-+TST_TEST_TCONF("<sys/xattr.h> does not exist");
-+#endif
--- 
-2.19.1
+On 11/01/2018 09:49 AM, Hongzhi, Song wrote:
+> Hi guys,
+>
+> Referring to POSIX spec, the return values, EINVAL and ENOMEM,
+>
+> are all right if MAP_FIXED is set. So I think Mips also keep to POSIX.
+>
+>
+> Please review this patch.
+>
+>
+> --Hongzhi
+>
+>
+> On 10/24/2018 10:36 AM, Hongzhi.Song wrote:
+>> Mips will return EINVAL instead of ENOMEM as expected
+>> if MAP_FIXED is set and the range of [addr + len) exceeds
+>> TASK_SIZE.
+>>
+>> Linux kernel code: arch/mips/mm/mmap.c
+>> if (flags & MAP_FIXED) {
+>>      /* Even MAP_FIXED mappings must reside within TASK_SIZE */
+>>      if (TASK_SIZE - len < addr)
+>>          return -EINVAL;
+>>
+>> The POSIX specification says:
+>> "If MAP_FIXED is set, mmap() may return MAP_FAILED and set errno to
+>> [EINVAL]."
+>> [http://pubs.opengroup.org/onlinepubs/9699919799/functions/mmap.html]
+>>
+>> So I think the mips kernel remains POSIX compliant.
+>>
+>> Relax the condition and accept both ENOMEM and EINVAL
+>> as expected outcome.
+>>
+>> Signed-off-by: Hongzhi.Song <hongzhi.song@windriver.com>
+>> ---
+>>   .../open_posix_testsuite/conformance/interfaces/mmap/24-2.c | 10 
+>> +++++-----
+>>   1 file changed, 5 insertions(+), 5 deletions(-)
+>>
+>> diff --git 
+>> a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c 
+>> b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
+>> index de51d43..810e5c8 100644
+>> --- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
+>> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
+>> @@ -7,7 +7,7 @@
+>>    * source tree.
+>>    *
+>>    * The mmap() function shall fail if:
+>> - * [ENOMEM] MAP_FIXED was specified,
+>> + * [ENOMEM or EINVAL] MAP_FIXED was specified,
+>>    * and the range [addr,addr+len) exceeds that allowed
+>>    * for the address space of a process; or, if MAP_FIXED was not 
+>> specified and
+>>    * there is insufficient room in the address space to effect the 
+>> mapping.
+>> @@ -15,7 +15,7 @@
+>>    * Test Step:
+>>    * 1. Map a shared memory object, with size exceeding the value get 
+>> from
+>>    *    rlim_cur of resource RLIMIT_AS, setting MAP_FIXED;
+>> - * 3. Should get ENOMEM.
+>> + * 3. Should get ENOMEM or EINVAL.
+>>    */
+>>     #define _XOPEN_SOURCE 600
+>> @@ -93,8 +93,8 @@ int main(void)
+>>              (unsigned long)len);
+>>       pa = mmap(addr, len, PROT_READ | PROT_WRITE, MAP_FIXED | 
+>> MAP_SHARED, fd,
+>>             0);
+>> -    if (pa == MAP_FAILED && errno == ENOMEM) {
+>> -        printf("Got ENOMEM: %s\nTest PASSED\n", strerror(errno));
+>> +    if (pa == MAP_FAILED && (errno == ENOMEM || errno == EINVAL)) {
+>> +        printf("Got ENOMEM or EINVAL: %s\nTest PASSED\n", 
+>> strerror(errno));
+>>           exit(PTS_PASS);
+>>       }
+>>   @@ -103,6 +103,6 @@ int main(void)
+>>       else
+>>           munmap(pa, len);
+>>       close(fd);
+>> -    printf("Test Fail: Did not get ENOMEM as expected\n");
+>> +    printf("Test Failed: Did not get ENOMEM or EINVAL as expected\n");
+>>       return PTS_FAIL;
+>>   }
+>
+>
 
