@@ -1,15 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 6 Nov 2018 11:25:39 +0100
-Subject: [LTP] recvmmsg(2) system call tests
-In-Reply-To: <7cd10b3c-3127-f6eb-0b95-0b9b42b5a77a@google.com>
-References: <ecdea1f2-4931-5dc3-6695-4f8dd78d796d@google.com>
- <20181101113857.GB22042@dell5510>
- <3C276F4D-DC1A-4CB6-A5BC-BBC6B07E23A6@google.com>
- <20181102105206.GA22411@rei>
- <c5eb4e3a-a164-d207-ccee-f84b10d51ec6@google.com>
- <20181105094005.GA8687@rei>
- <7cd10b3c-3127-f6eb-0b95-0b9b42b5a77a@google.com>
-Message-ID: <20181106102538.GA13657@rei.lan>
+Date: Tue, 6 Nov 2018 13:20:55 +0100
+Subject: [LTP] [PATCH V2] kernel/syscall/setrlimit05.c: use a legal bad
+ address for mips
+In-Reply-To: <1541488193-67790-2-git-send-email-hongzhi.song@windriver.com>
+References: <1541488193-67790-1-git-send-email-hongzhi.song@windriver.com>
+ <1541488193-67790-2-git-send-email-hongzhi.song@windriver.com>
+Message-ID: <20181106122055.GA4834@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -17,24 +13,78 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Ok, so my test cases are using arrays on the stack dimensioned at 
-> run-time based on other values computed at run time. C99 is needed for 
-> that. I don't see any value in changing them to use alloca(), its a 
-> waste of time.
+> This testcase fails on mips32. The process is killed by SIGBUS which
+> doesn't return EFAULT as expect.
+> 
+> This is because:
+> ((void *)-1) is not a legal bad address which causes the process
+> killed by SIGBUG on mips.
+> 
+> 'tst_get_bad_addr()' returns an address that should work on mips
+> and other arches.
 
-That is not true, at least for gcc variable arrays have been supported
-as an extension in the default gnu89 mode for years now. I think that it
-even predates the c99 standard, which is what I'm trying to explain for
-quite some time now.
+Generally looks good, minor nits pointed out below.
 
-The only difference I'm aware of is how inline keyword behaves between
-c99 and gnu89 mode, there may be some other minor differencies though.
+> Signed-off-by: Hongzhi.Song <hongzhi.song@windriver.com>
+> ---
+>  testcases/kernel/syscalls/setrlimit/setrlimit05.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit05.c b/testcases/kernel/syscalls/setrlimit/setrlimit05.c
+> index e716722..92ff33c 100644
+> --- a/testcases/kernel/syscalls/setrlimit/setrlimit05.c
+> +++ b/testcases/kernel/syscalls/setrlimit/setrlimit05.c
+> @@ -26,6 +26,8 @@
+>  
+>  #include "tst_test.h"
+>  
+> +static void *bad_addr;
+> +
+>  static void verify_setrlimit(void)
+>  {
+>  	int status;
+> @@ -33,7 +35,7 @@ static void verify_setrlimit(void)
+>  
+>  	pid = SAFE_FORK();
+>  	if (!pid) {
+> -		TEST(setrlimit(RLIMIT_NOFILE, (void *) -1));
+> +		TEST(setrlimit(RLIMIT_NOFILE, (struct rlimit *)bad_addr));
+                                                  ^
+						  This cast is not
+						  needed, in C void *
+						  pointer is converted
+						  to any other pointer
+						  automatically.
 
-The C accepted by default by a modern (10 years old+) compilers is much
-closer than c99 than to the original c89.
+>  		if (TST_RET != -1) {
+>  			tst_res(TFAIL, "setrlimit()  succeeded unexpectedly");
+>  			exit(0);
+> @@ -67,7 +69,13 @@ static void verify_setrlimit(void)
+>  	tst_res(TBROK, "child %s", tst_strstatus(status));
+>  }
+>  
+> +static void setup(void)
+> +{
+> +    bad_addr = tst_get_bad_addr(NULL);
 
-Can we please stop this useless arguemnts and focus on the actual code
-now?
+You really should use tabs instead of spaces for indentation.
+
+> +}
+> +
+>  static struct tst_test test = {
+>  	.test_all = verify_setrlimit,
+>  	.forks_child = 1,
+> +    .setup = setup,
+
+Here as well.
+
+>  };
+> -- 
+> 2.8.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
