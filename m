@@ -1,55 +1,82 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 6 Nov 2018 15:32:33 +0200
-Subject: [LTP] [PATCH 1/1] syscalls/fanotify10: Require kernel v4.19
-In-Reply-To: <20181106130641.GB28469@dell5510>
-References: <20181106124802.27170-1-pvorel@suse.cz>
- <20181106125015.GB4834@rei.lan> <20181106125556.GA28469@dell5510>
- <CAOQ4uxhd9XZj=zvkm1j8mZBkBRw0qhvfwcaRQKzs24bVjsfUZw@mail.gmail.com>
- <20181106130641.GB28469@dell5510>
-Message-ID: <CAOQ4uxjVnAUYfH8_fuHXruObt1WVqObHxQxLmCxcPCNL-S5PjQ@mail.gmail.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 6 Nov 2018 18:30:44 +0300
+Subject: [LTP] [PATCH 4/6] network/mpls02: new test with lwtunnel
+In-Reply-To: <20181102200207.GA17405@dell5510>
+References: <1540818202-11247-1-git-send-email-alexey.kodanev@oracle.com>
+ <1540818202-11247-5-git-send-email-alexey.kodanev@oracle.com>
+ <20181102200207.GA17405@dell5510>
+Message-ID: <14316198-1a4b-ad70-5ff3-295b75f5faf9@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Nov 6, 2018 at 3:06 PM Petr Vorel <pvorel@suse.cz> wrote:
->
-> Hi Amir,
->
-> > There must be some confusion.
-> > FAN_MARK_MOUNT was NOT added in v4.19-rc2.
-> > It has been there from the start.
-> > FAN_MARK_INODE was NOT added either
-> > the define FAN_MARK_INODE  0 is just a convenience readability define
-> > it does not change the API.
-> I'm sorry, you're right.
->
-> > You may be confusing with FAN_MARK_FILESYSTEM
-> > just was just added in kernel v4.20-rc1.
-> > The extension of tests to cover FAN_MARK_FILESYSTEM
-> > is waiting in my queue:
-> > https://github.com/amir73il/ltp/commits/fanotify_sb
->
-> > And it already includes runtime checks for FAN_MARK_FILESYSTEM
-> > support.
->
-> > Did I miss anything?
-> Testing your branch on older kernel, fanotify10 fails earlier than new TCONF
+Hi Petr,
 
-Because fanotify10 checks for a bug that existed since the beginning
-and fixed by 9bdda4e9cf2d fsnotify: fix ignore mask logic in fsnotify().
-So test SHOULD fail until the backported patch is applied to the old kernel.
+On 11/02/2018 11:02 PM, Petr Vorel wrote:
+> Hi,
+> 
+>> Setup MPLS encapsulation over the default test network setup,
+>> use ICMP, UDP and TCP inner protocols.
+> 
+>> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+>> ---
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> Just some minor things bellow.
+> 
+>> +TST_MIN_KVER="4.3"
+>> +TST_NEEDS_TMPDIR=1
+>> +TST_NEEDS_ROOT=1
+>> +TST_NEEDS_DRIVERS="mpls_router mpls_iptunnel"
+> Here is missing mpls_gso
+> 
 
-The patch does not apply cleanly to kernels <= v4.17.
-Tested backport patch for v4.14.y attached.
+Right.
 
-Thanks,
-Amir.
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: 0001-backport-fsnotify-fix-ignore-mask-logic-in-fsnotify.patch
-Type: text/x-patch
-Size: 2236 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20181106/2894ab23/attachment.bin>
+> ...
+>> +mpls_setup()
+>> +{
+>> +	local label="$1"
+>> +
+>> +	ROD modprobe mpls_router
+>> +	ROD modprobe mpls_iptunnel
+>> +	ROD modprobe mpls_gso
+> Maybe just?
+> ROD modprobe mpls_gso $TST_NEEDS_DRIVERS
+
+
+OK, and it will need the '-a' option.
+
+> 
+>> +	ROD sysctl -q net.mpls.conf.$(tst_iface).input=1
+>> +	ROD sysctl -q net.mpls.conf.lo.input=1
+> This one can be set with tst_set_sysctl, as it's the same for both lhost and
+> rhost.
+>> +	ROD sysctl -q net.mpls.platform_labels=$label
+> The same is for this one ...
+>> +	rpf_loc="$(sysctl -n net.ipv4.conf.all.rp_filter)"
+>> +	ROD sysctl -q net.ipv4.conf.all.rp_filter=2
+> ... and this one.
+> 
+
+Indeed, I almost forgot that we have such a function helper in
+the library, thanks!
+
+>> +	tst_rhost_run -s -c "modprobe mpls_router"
+>> +	tst_rhost_run -s -c "modprobe mpls_iptunnel"
+>> +	tst_rhost_run -s -c "modprobe mpls_gso"
+> tst_rhost_run -s -c "modprobe $TST_NEEDS_DRIVERS"
+> 
+>> +	tst_rhost_run -s -c "sysctl -q net.mpls.conf.$(tst_iface rhost).input=1"
+>> +	tst_rhost_run -s -c "sysctl -q net.mpls.conf.lo.input=1"
+>> +	tst_rhost_run -s -c "sysctl -q net.mpls.platform_labels=$label"
+>> +	rpf_rmt="$(tst_rhost_run -c 'sysctl -n net.ipv4.conf.all.rp_filter')"
+>> +	tst_rhost_run -s -c "sysctl -q net.ipv4.conf.all.rp_filter=2"
+>> +}
+> 
+> 
+> Kind regards,
+> Petr
+> 
+
