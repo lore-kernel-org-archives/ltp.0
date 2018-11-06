@@ -1,44 +1,41 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 6 Nov 2018 10:43:19 +0100
-Subject: [LTP] [RFC PATCH 0/2] Cleanup runtests containing duplicate
-	definitions
-In-Reply-To: <CAEemH2cndLR3ZkF2MJdc7+SVxtKiYhepj=_fUAstgXH2e8bk7w@mail.gmail.com>
-References: <20181015201819.10868-1-pvorel@suse.cz>
- <20181105114301.GA3591@dell5510>
- <CAEemH2fxHBmWmuj314ZdB+E2i2wXBtOg40SrSgt2Vxtqcns=0Q@mail.gmail.com>
- <863155656.69419841.1541430302026.JavaMail.zimbra@redhat.com>
- <20181105190134.GA12879@dell5510>
- <CAEemH2cndLR3ZkF2MJdc7+SVxtKiYhepj=_fUAstgXH2e8bk7w@mail.gmail.com>
-Message-ID: <20181106094319.GA1639@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 6 Nov 2018 11:25:39 +0100
+Subject: [LTP] recvmmsg(2) system call tests
+In-Reply-To: <7cd10b3c-3127-f6eb-0b95-0b9b42b5a77a@google.com>
+References: <ecdea1f2-4931-5dc3-6695-4f8dd78d796d@google.com>
+ <20181101113857.GB22042@dell5510>
+ <3C276F4D-DC1A-4CB6-A5BC-BBC6B07E23A6@google.com>
+ <20181102105206.GA22411@rei>
+ <c5eb4e3a-a164-d207-ccee-f84b10d51ec6@google.com>
+ <20181105094005.GA8687@rei>
+ <7cd10b3c-3127-f6eb-0b95-0b9b42b5a77a@google.com>
+Message-ID: <20181106102538.GA13657@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
-> On Tue, Nov 6, 2018 at 3:01 AM, Petr Vorel <pvorel@suse.cz> wrote:
+Hi!
+> Ok, so my test cases are using arrays on the stack dimensioned at 
+> run-time based on other values computed at run time. C99 is needed for 
+> that. I don't see any value in changing them to use alloca(), its a 
+> waste of time.
 
-> > Hi Jan, Li,
+That is not true, at least for gcc variable arrays have been supported
+as an extension in the default gnu89 mode for years now. I think that it
+even predates the c99 standard, which is what I'm trying to explain for
+quite some time now.
 
-> > > > Jan, did we internal ltp-lite take reference from the ltplite file?
+The only difference I'm aware of is how inline keyword behaves between
+c99 and gnu89 mode, there may be some other minor differencies though.
 
-> > > Probably only at the beginning, when original author of beaker test
-> > > forked ltplite runtest file. I've been using syscalls/other runtest
-> > > files, since those are more up to date.
+The C accepted by default by a modern (10 years old+) compilers is much
+closer than c99 than to the original c89.
 
-> > > > I wanna
-> > > > know how do we customize our internal ltp-lite testcases.
+Can we please stop this useless arguemnts and focus on the actual code
+now?
 
-> > > syscalls + cherry-picked tests from other runtest files.
-
-> > Is it problematic for you to remove these runtest files?
-
-
-> I think we're OK to remove that in upstream.
-
-Thanks for info, pushed.
-
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
