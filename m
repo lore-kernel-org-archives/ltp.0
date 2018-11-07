@@ -1,35 +1,36 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 7 Nov 2018 18:36:16 +0100
-Subject: [LTP] [PATCH 4/6] network/mpls02: new test with lwtunnel
-In-Reply-To: <14316198-1a4b-ad70-5ff3-295b75f5faf9@oracle.com>
-References: <1540818202-11247-1-git-send-email-alexey.kodanev@oracle.com>
- <1540818202-11247-5-git-send-email-alexey.kodanev@oracle.com>
- <20181102200207.GA17405@dell5510>
- <14316198-1a4b-ad70-5ff3-295b75f5faf9@oracle.com>
-Message-ID: <20181107173615.GA12378@dell5510>
+From: Greg Hackmann <ghackmann@google.com>
+Date: Wed, 7 Nov 2018 13:11:47 -0800
+Subject: [LTP] [PATCH] getrlimit/getrlimit03: new test for underlying
+ syscall variants
+In-Reply-To: <20181106194725.GA11344@rei.lan>
+References: <20181106180804.163305-1-ghackmann@google.com>
+ <629612842.70327511.1541533513279.JavaMail.zimbra@redhat.com>
+ <20181106194725.GA11344@rei.lan>
+Message-ID: <f05a9bd7-0a81-1f1e-185f-71ba498fdd69@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+On 11/06/2018 11:47 AM, Cyril Hrubis wrote:
+> Hi!
+>>> +const uint64_t RLIM_INFINITY_U64 = UINT64_MAX;
+>>> +
+>>> +static int getrlimit_u64(int resource, struct rlimit64 *rlim)
+>>> +{
+>>> +	return syscall(__NR_prlimit64, 0, resource, NULL, rlim);
+>>
+>> Hi,
+>>
+>> (Likely an issue for old distro kernels, but)
+>> consider using ltp_syscall here, or in setup(). Syscall __NR defines
+>                   ^
+> 		 That would be tst_syscall() for new tst_test.h library
+> 
+>> come from LTP, so those will be always present, but syscall can still
+>> be unsupported by kernel, so test can end up comparing with 'ENOSYS'.
+> 
+> 
 
-> >> +	ROD modprobe mpls_router
-> >> +	ROD modprobe mpls_iptunnel
-> >> +	ROD modprobe mpls_gso
-> > Maybe just?
-> > ROD modprobe mpls_gso $TST_NEEDS_DRIVERS
-
-> OK, and it will need the '-a' option.
-I wonder if we want to have a simple helper in tst_net.sh for loading modules on
-both sides, similar to tst_set_sysctl and tst_net_driver (from my pull request):
-
-tst_net_driver()
-{
-	ROD modprobe -a $@
-	tst_rhost_run -c "modprobe -a $@"
-}
-
-Kind regards,
-Petr
+Thanks for the feedback.  I'll send a v2 with this change shortly.
