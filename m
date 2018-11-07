@@ -1,67 +1,20 @@
-From: Hongzhi.Song <hongzhi.song@windriver.com>
-Date: Tue, 6 Nov 2018 20:46:41 -0500
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 7 Nov 2018 10:18:47 +0100
 Subject: [LTP] [PATCH V3] kernel/syscall/setrlimit05.c: use a legal bad
-	address for mips
-In-Reply-To: <1541555201-125675-1-git-send-email-hongzhi.song@windriver.com>
+ address for mips
+In-Reply-To: <1541555201-125675-2-git-send-email-hongzhi.song@windriver.com>
 References: <1541555201-125675-1-git-send-email-hongzhi.song@windriver.com>
-Message-ID: <1541555201-125675-2-git-send-email-hongzhi.song@windriver.com>
+ <1541555201-125675-2-git-send-email-hongzhi.song@windriver.com>
+Message-ID: <20181107091847.GA8603@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This testcase fails on mips32. The process is killed by SIGBUS which
-is not as expect.
+Hi!
+Applied, thanks.
 
-This is because:
-((void *)-1) is not a legal bad address which causes the process
-killed by SIGBUG on mips.
-
-'tst_get_bad_addr()' returns an address that should works on mips
-and other arches.
-
-Signed-off-by: Hongzhi.Song <hongzhi.song@windriver.com>
----
- testcases/kernel/syscalls/setrlimit/setrlimit05.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit05.c b/testcases/kernel/syscalls/setrlimit/setrlimit05.c
-index e716722..004a149 100644
---- a/testcases/kernel/syscalls/setrlimit/setrlimit05.c
-+++ b/testcases/kernel/syscalls/setrlimit/setrlimit05.c
-@@ -26,6 +26,8 @@
- 
- #include "tst_test.h"
- 
-+static void *bad_addr;
-+
- static void verify_setrlimit(void)
- {
- 	int status;
-@@ -33,7 +35,7 @@ static void verify_setrlimit(void)
- 
- 	pid = SAFE_FORK();
- 	if (!pid) {
--		TEST(setrlimit(RLIMIT_NOFILE, (void *) -1));
-+		TEST(setrlimit(RLIMIT_NOFILE, bad_addr));
- 		if (TST_RET != -1) {
- 			tst_res(TFAIL, "setrlimit()  succeeded unexpectedly");
- 			exit(0);
-@@ -67,7 +69,13 @@ static void verify_setrlimit(void)
- 	tst_res(TBROK, "child %s", tst_strstatus(status));
- }
- 
-+static void setup(void)
-+{
-+	bad_addr = tst_get_bad_addr(NULL);
-+}
-+
- static struct tst_test test = {
- 	.test_all = verify_setrlimit,
- 	.forks_child = 1,
-+	.setup = setup,
- };
 -- 
-2.8.1
-
+Cyril Hrubis
+chrubis@suse.cz
