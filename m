@@ -1,58 +1,34 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu,  8 Nov 2018 14:58:03 +0100
-Subject: [LTP] [RFC PATCH 1/2] net: Add tst_net_run helper
-Message-ID: <20181108135804.32448-1-pvorel@suse.cz>
+Date: Thu, 8 Nov 2018 15:01:10 +0100
+Subject: [LTP] [PATCH 4/6] network/mpls02: new test with lwtunnel
+In-Reply-To: <855bab25-b1db-87a9-fd0e-3576ce2d8427@oracle.com>
+References: <1540818202-11247-1-git-send-email-alexey.kodanev@oracle.com>
+ <1540818202-11247-5-git-send-email-alexey.kodanev@oracle.com>
+ <20181102200207.GA17405@dell5510>
+ <14316198-1a4b-ad70-5ff3-295b75f5faf9@oracle.com>
+ <20181107173615.GA12378@dell5510>
+ <855bab25-b1db-87a9-fd0e-3576ce2d8427@oracle.com>
+Message-ID: <20181108140110.GA23376@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Changes v1->v2:
-tst_net_driver removed and created generic command tst_net_run
+Hi Alexey,
 
-TODO: For ROD it does not handle escape for >. E.g. it'd be nice to
-handle this:
-ROD foo \> bar.log
-as passing the escape will not work for sh (non-safe local) and for
-tst_rhost_run. Do we care?
+> > I wonder if we want to have a simple helper in tst_net.sh for loading modules on
+> > both sides, similar to tst_set_sysctl and tst_net_driver (from my pull request):
+
+> > tst_net_driver()
+> > {
+> > 	ROD modprobe -a $@
+> > 	tst_rhost_run -c "modprobe -a $@"
+> > }
+
+> Sure or even more generic, for any commands?
+Added here:
+https://patchwork.ozlabs.org/patch/994893/
 
 Kind regards,
 Petr
----
- testcases/lib/tst_net.sh | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-index d1206e285..ff5c58c3c 100644
---- a/testcases/lib/tst_net.sh
-+++ b/testcases/lib/tst_net.sh
-@@ -191,6 +191,23 @@ tst_rhost_run()
- 	return $ret
- }
- 
-+# Run command on both lhost and rhost.
-+# tst_net_run [-s] CMD [ARG [ARG2]]
-+tst_net_run()
-+{
-+	local safe
-+	local OPTIND
-+	while getopts s opt; do
-+		case "$opt" in
-+		s) safe="-s" ;;
-+		*) tst_brk_ TBROK "tst_net_run: unknown option: $OPTARG" ;;
-+		esac
-+	done
-+	shift $((OPTIND - 1))
-+	[ -n "$safe" ] && ROD $@ || sh -c $@
-+	tst_rhost_run $safe -c "$@"
-+}
-+
- EXPECT_RHOST_PASS()
- {
- 	tst_rhost_run -c "$*" > /dev/null
--- 
-2.19.1
-
