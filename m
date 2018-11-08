@@ -1,112 +1,68 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 8 Nov 2018 20:55:33 +0800
-Subject: [LTP] [PATCH 2/2] lib/tst_test.c: Restrict that tst_brk() only
-	works with TBROK/TCONF
-In-Reply-To: <1541681733-18845-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1541681733-18845-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1541681733-18845-2-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu,  8 Nov 2018 14:58:04 +0100
+Subject: [LTP] [RFC PATCH 2/2] net/ipsec: Add check for xfrm_user
+In-Reply-To: <20181108135804.32448-1-pvorel@suse.cz>
+References: <20181108135804.32448-1-pvorel@suse.cz>
+Message-ID: <20181108135804.32448-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) Add tst_check_ttype() to check if TPASS/TFAIL/TWARN/TINFO is
-   passed into tst_brk() and convert it to TBROK forcely.
-2) Only update test result in library process and main test process
-   because the exit status of child can be passed into main test
-   process by check_child_status().
-3) Increase the number of skipped when calling tst_brk(TCONF).
-4) Increase the number of warnings when calling tst_brk(TBROK) in
-   test cleanup(), other than that print "Test broken!" when calling
-   tst_brk(TBROK).
+which is required by ip xfrm command.
+As ipsec_lib.sh is used for other commands than it,
+check it only when used. Call in cleanup function could trigger infinite
+loop, therefore check only once.
 
-Fix: #408
-
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- lib/tst_test.c | 28 ++++++++++++++++++++++++++--
- 1 file changed, 26 insertions(+), 2 deletions(-)
+ testcases/network/stress/ipsec/ipsec_lib.sh | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 661fbbf..c8d8eff 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -55,6 +55,7 @@ struct results {
- 	int skipped;
- 	int failed;
- 	int warnings;
-+	int broken;
- 	unsigned int timeout;
- };
+diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
+index b099fdeaf..a9ac5bc50 100644
+--- a/testcases/network/stress/ipsec/ipsec_lib.sh
++++ b/testcases/network/stress/ipsec/ipsec_lib.sh
+@@ -89,6 +89,14 @@ TST_SETUP=${TST_SETUP:-ipsec_lib_setup}
+ TST_USAGE=ipsec_lib_usage
+ . tst_net.sh
  
-@@ -159,6 +160,18 @@ void tst_reinit(void)
- 	SAFE_CLOSE(fd);
- }
- 
-+static int tst_check_ttype(int ttype)
++tst_ipsec_check_driver()
 +{
-+	if (TTYPE_RESULT(ttype) != TCONF && TTYPE_RESULT(ttype) != TBROK) {
-+		tst_res(TINFO, "tst_brk(): invalid type %s, use TBROK forcely",
-+			tst_strttype(ttype));
-+		ttype &= ~TTYPE_MASK;
-+		ttype |= TBROK;
-+	}
-+
-+	return ttype;
++	if [ -z "$ipsec_driver_checked" ]; then
++		export ipsec_driver_checked=1
++		tst_net_run "tst_test_drivers xfrm_user"
++	fi
 +}
 +
- static void update_results(int ttype)
+ get_key()
  {
- 	if (!results)
-@@ -177,6 +190,9 @@ static void update_results(int ttype)
- 	case TFAIL:
- 		tst_atomic_inc(&results->failed);
- 	break;
-+	case TBROK:
-+		tst_atomic_inc(&results->broken);
-+	break;
- 	}
- }
+ 	local bits=$1
+@@ -110,6 +118,7 @@ tst_ipsec_setup()
+ # tst_ipsec_cleanup: flush ipsec state and policy rules
+ tst_ipsec_cleanup()
+ {
++	tst_ipsec_check_driver
+ 	ip xfrm state flush
+ 	ip xfrm policy flush
+ 	tst_rhost_run -c "ip xfrm state flush && ip xfrm policy flush"
+@@ -175,6 +184,7 @@ tst_ipsec()
+ 	local p="proto $IPSEC_PROTO"
+ 	[ "$IPSEC_PROTO" = "esp_aead" ] && p="proto esp"
  
-@@ -305,11 +321,15 @@ void tst_vbrk_(const char *file, const int lineno, int ttype,
- 	 * specified but CLONE_THREAD is not. Use direct syscall to avoid
- 	 * cleanup running in the child.
- 	 */
--	if (syscall(SYS_getpid) == main_pid)
-+	if (syscall(SYS_getpid) == main_pid) {
-+		update_results(ttype);
- 		do_test_cleanup();
-+	}
++	tst_ipsec_check_driver
+ 	ipsec_set_algoline
  
--	if (getpid() == lib_pid)
-+	if (getpid() == lib_pid) {
-+		update_results(ttype);
- 		do_exit(TTYPE_RESULT(ttype));
-+	}
+ 	if [ $target = lhost ]; then
+@@ -234,6 +244,7 @@ tst_ipsec_vti()
+ 		tst_brk TCONF "iproute doesn't support 'vti'"
  
- 	exit(TTYPE_RESULT(ttype));
- }
-@@ -330,6 +350,7 @@ void tst_brk_(const char *file, const int lineno, int ttype,
- 	va_list va;
+ 	ipsec_set_algoline
++	tst_ipsec_check_driver
  
- 	va_start(va, fmt);
-+	ttype = tst_check_ttype(ttype);
- 	tst_brk_handler(file, lineno, ttype, fmt, va);
- 	va_end(va);
- }
-@@ -605,6 +626,9 @@ static void do_exit(int ret)
- 			ret |= TWARN;
- 	}
- 
-+	if (results->broken)
-+		printf("Test broken!\n");
-+
- 	do_cleanup();
- 
- 	exit(ret);
+ 	local o_dir="src $src dst $dst"
+ 	local i_dir="src $dst dst $src"
 -- 
-1.8.3.1
-
-
+2.19.1
 
