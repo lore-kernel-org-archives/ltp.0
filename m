@@ -1,68 +1,106 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu,  8 Nov 2018 15:24:09 +0100
-Subject: [LTP] [PATCH v3 2/2] net/ipsec: Add check for xfrm_user
-In-Reply-To: <20181108142409.4955-1-pvorel@suse.cz>
-References: <20181108142409.4955-1-pvorel@suse.cz>
-Message-ID: <20181108142409.4955-2-pvorel@suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 8 Nov 2018 12:30:07 -0500 (EST)
+Subject: [LTP] [RFC] [PATCH] lib: Add support for test tags
+In-Reply-To: <20181107142209.8965-1-chrubis@suse.cz>
+References: <20181107142209.8965-1-chrubis@suse.cz>
+Message-ID: <156962223.71358453.1541698207250.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-which is required by ip xfrm command.
-As ipsec_lib.sh is used for other commands than it,
-check it only when used. Call in cleanup function could trigger infinite
-loop, therefore check only once.
+Hi,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/network/stress/ipsec/ipsec_lib.sh | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+----- Original Message -----
+> This is just proof of concept of moving some of the test metadata into
+> more structured form. If implemented it will move some information from
+> comments in the test source code to an array to the tst_test structure.
+> 
+> It's not finished and certainly not set into a stone, this patch is
+> mainly intended to start a discussion.
+> 
+> The newly introduced test tags are generic name-value pairs that can
+> hold test metadata, the intended use for now is to store kernel commit
+> hashes for kernel reproducers as well as CVE ids. The mechanism is
+> however choosen to be very generic so that it's easy to add basically
+> any information later on.
+> 
+> As it is the main purpose is to print hints for a test failures. If a
+> test that has been written as a kernel reproducer fails it prints nice
+> URL pointing to a kernel commit that may be missing.
+> 
+> Example output:
+> 
+> tst_test.c:1145: INFO: Timeout per run is 0h 05m 00s
+> add_key02.c:98: FAIL: unexpected error with key type 'asymmetric': EINVAL
+> add_key02.c:98: FAIL: unexpected error with key type 'cifs.idmap': EINVAL
+> add_key02.c:98: FAIL: unexpected error with key type 'cifs.spnego': EINVAL
+> add_key02.c:98: FAIL: unexpected error with key type 'pkcs7_test': EINVAL
+> add_key02.c:98: FAIL: unexpected error with key type 'rxrpc': EINVAL
+> add_key02.c:98: FAIL: unexpected error with key type 'rxrpc_s': EINVAL
+> add_key02.c:98: FAIL: unexpected error with key type 'user': EINVAL
+> add_key02.c:98: FAIL: unexpected error with key type 'logon': EINVAL
+> 
+> HINT: This is a regression test for linux kernel, see commit:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5649645d725c
+> 
+> HINT: This test also tests for CVE-2017-15274, see:
+> 
+> https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-15274
+> 
+> Summary:
+> passed   0
+> failed   8
+> skipped  0
+> warnings 0
+> 
+> This commit also adds adds the -q test flag, that can be used to query
+> test information, which includes these tags, but is not limited to them.
+> 
+> The main inteded use for the query operation is to export test metadata
+> and constraints to the test execution system. The long term goal for
+> this would be parallel test execution as for this case the test runner
+> would need to know which global system resources is the test using to
+> avoid unexpected failures.
+> 
+> So far it exposes only if test needs root and if block device is needed
+> for the test, but I would expect that we will need a few more tags for
+> various resources, one that comes to my mind would be "test is using
+> SystemV SHM" for that we can do something as add a "constraint" tag with
+> value "SysV SHM" or anything else that would be fitting. Another would
+> be "Test is changing system wide clocks", etc.
+> 
+> So far the output from the query operation looks as:
+> 
+> sh$ ./add_key02 -q
+> {
+>  "root": false
+>  "blk_device": false
+>  "linux-git": "5649645d725c"
+>  "CVE": "2017-15274"
+> }
 
-diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
-index b099fdeaf..a9ac5bc50 100644
---- a/testcases/network/stress/ipsec/ipsec_lib.sh
-+++ b/testcases/network/stress/ipsec/ipsec_lib.sh
-@@ -89,6 +89,14 @@ TST_SETUP=${TST_SETUP:-ipsec_lib_setup}
- TST_USAGE=ipsec_lib_usage
- . tst_net.sh
- 
-+tst_ipsec_check_driver()
-+{
-+	if [ -z "$ipsec_driver_checked" ]; then
-+		export ipsec_driver_checked=1
-+		tst_net_run "tst_test_drivers xfrm_user"
-+	fi
-+}
-+
- get_key()
- {
- 	local bits=$1
-@@ -110,6 +118,7 @@ tst_ipsec_setup()
- # tst_ipsec_cleanup: flush ipsec state and policy rules
- tst_ipsec_cleanup()
- {
-+	tst_ipsec_check_driver
- 	ip xfrm state flush
- 	ip xfrm policy flush
- 	tst_rhost_run -c "ip xfrm state flush && ip xfrm policy flush"
-@@ -175,6 +184,7 @@ tst_ipsec()
- 	local p="proto $IPSEC_PROTO"
- 	[ "$IPSEC_PROTO" = "esp_aead" ] && p="proto esp"
- 
-+	tst_ipsec_check_driver
- 	ipsec_set_algoline
- 
- 	if [ $target = lhost ]; then
-@@ -234,6 +244,7 @@ tst_ipsec_vti()
- 		tst_brk TCONF "iproute doesn't support 'vti'"
- 
- 	ipsec_set_algoline
-+	tst_ipsec_check_driver
- 
- 	local o_dir="src $src dst $dst"
- 	local i_dir="src $dst dst $src"
--- 
-2.19.1
+So, only way to get metadata for tools is to run the test
+with -q on supported target? (since I assume when
+TST_TEST_TCONF branch hits, there won't be any data).
+
+Would there be any benefit to having metadata in a (json)
+file from the start? Negative would be likely duplicating
+things like "needs_root". Positive is we could check for
+errors/typos during build time.
+
+Regards,
+Jan
+
+> 
+> The format is meant to be machine-parseable, but it is certainly not
+> final as there are no consumers for the data yet.
+> 
+> Another nice feature of having this information in the test runner is
+> that we can include the URL pointing to a kernel git commit fixing the
+> issue even for kernel reproducers that crashed the kernel under test and
+> failed to write out any logs. Which is not that important I guess, but
+> still nice to have.
 
