@@ -1,44 +1,42 @@
-From: kai.kang@windriver.com <kai.kang@windriver.com>
-Date: Thu, 8 Nov 2018 17:33:24 +0800
-Subject: [LTP] [PATCH] msgstress04: make sure not pass IPC_PRIVATE to msgget
-Message-ID: <20181108093324.14028-1-kai.kang@windriver.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 8 Nov 2018 11:13:45 +0100
+Subject: [LTP] [PATCH ltp v2 1/2] Add Intel umip(User Mode Instruction
+ Prevention) basic function tests
+In-Reply-To: <20181107132004.6dc7t36pxznb4xyb@xpf-desktop>
+References: <20181101014928.23628-1-pengfei.xu@intel.com>
+ <20181107101520.GB8603@rei>
+ <20181107132004.6dc7t36pxznb4xyb@xpf-desktop>
+Message-ID: <20181108101345.GA29767@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Kai Kang <kai.kang@windriver.com>
+Hi!
+> > Is there any other way how to find out UMIP has been enabled in kernel?
+> > 
+> > I would like to avoid maitaing code that tries to look for all possible
+> > config locations if possible.
+> > 
+>   Could find "Activated the Intel User Mode Instruction Prevention (UMIP)
+>   CPU feature" info in the head of dmesg, but afraid boot long time dmesg
+>   head is covered... And no sysfs file for umip to check.
+>   So could I add the info when cases failed???"possible due to
+>   kconfig not set CONFIG_X86_INTEL_UMIP=y"?
 
-It fails to run case msgstress04:
+I was looking into this yesterday and even talked to our kernel devs and
+it seems that there is no other option than checking the .config to be
+sure it was enabled.
 
-$ ./msgstress04 -n 1 -c 1 -l 1
+So we may end up adding support for parsing the kernel config, it would
+be probably useful in differents parts of LTP. But to make this happen
+we should make it a library function and make sure it's accesible for C
+testcases as well.
 
-It only inits the first MSGMNI members of keyarray. So if argument off
-of function dotest_iteration is greater than MSGMNI, the argument key
-passed to function dotest() will be IPC_PRIVATE(0) which will finally
-pass to syscall msgget(), then cause case fails.
+I can look into that and try to post a RFC patch later on, but it would
+probably take more than week to get sorted out.
 
-Make sure get the value for key from the initialized members of keyarray.
-
-Signed-off-by: Kai Kang <kai.kang@windriver.com>
----
- testcases/kernel/syscalls/ipc/msgstress/msgstress04.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-index 18fad4fbd..a357ce59a 100644
---- a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-+++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-@@ -198,7 +198,7 @@ static void dotest_iteration(int off)
- 	memset(pidarray, 0, sizeof(pidarray));
- 
- 	for (i = 0; i < nprocs; i++) {
--		key = keyarray[off + i];
-+		key = keyarray[(off + i) % MSGMNI];
- 
- 		if ((pid = FORK_OR_VFORK()) < 0)
- 			tst_brkm(TFAIL, cleanup,
 -- 
-2.17.0
-
+Cyril Hrubis
+chrubis@suse.cz
