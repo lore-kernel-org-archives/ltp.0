@@ -1,106 +1,127 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 8 Nov 2018 12:30:07 -0500 (EST)
-Subject: [LTP] [RFC] [PATCH] lib: Add support for test tags
-In-Reply-To: <20181107142209.8965-1-chrubis@suse.cz>
-References: <20181107142209.8965-1-chrubis@suse.cz>
-Message-ID: <156962223.71358453.1541698207250.JavaMail.zimbra@redhat.com>
+Date: Thu, 8 Nov 2018 12:53:03 -0500 (EST)
+Subject: [LTP] [PATCH 2/2] lib/tst_test.c: Restrict that tst_brk() only
+ works with TBROK/TCONF
+In-Reply-To: <1541681733-18845-2-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1541681733-18845-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1541681733-18845-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <60497535.71361444.1541699583188.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
 
 ----- Original Message -----
-> This is just proof of concept of moving some of the test metadata into
-> more structured form. If implemented it will move some information from
-> comments in the test source code to an array to the tst_test structure.
+> 1) Add tst_check_ttype() to check if TPASS/TFAIL/TWARN/TINFO is
+>    passed into tst_brk() and convert it to TBROK forcely.
+> 2) Only update test result in library process and main test process
+>    because the exit status of child can be passed into main test
+>    process by check_child_status().
+> 3) Increase the number of skipped when calling tst_brk(TCONF).
+> 4) Increase the number of warnings when calling tst_brk(TBROK) in
+>    test cleanup(), other than that print "Test broken!" when calling
+>    tst_brk(TBROK).
 > 
-> It's not finished and certainly not set into a stone, this patch is
-> mainly intended to start a discussion.
+> Fix: #408
 > 
-> The newly introduced test tags are generic name-value pairs that can
-> hold test metadata, the intended use for now is to store kernel commit
-> hashes for kernel reproducers as well as CVE ids. The mechanism is
-> however choosen to be very generic so that it's easy to add basically
-> any information later on.
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  lib/tst_test.c | 28 ++++++++++++++++++++++++++--
+>  1 file changed, 26 insertions(+), 2 deletions(-)
 > 
-> As it is the main purpose is to print hints for a test failures. If a
-> test that has been written as a kernel reproducer fails it prints nice
-> URL pointing to a kernel commit that may be missing.
-> 
-> Example output:
-> 
-> tst_test.c:1145: INFO: Timeout per run is 0h 05m 00s
-> add_key02.c:98: FAIL: unexpected error with key type 'asymmetric': EINVAL
-> add_key02.c:98: FAIL: unexpected error with key type 'cifs.idmap': EINVAL
-> add_key02.c:98: FAIL: unexpected error with key type 'cifs.spnego': EINVAL
-> add_key02.c:98: FAIL: unexpected error with key type 'pkcs7_test': EINVAL
-> add_key02.c:98: FAIL: unexpected error with key type 'rxrpc': EINVAL
-> add_key02.c:98: FAIL: unexpected error with key type 'rxrpc_s': EINVAL
-> add_key02.c:98: FAIL: unexpected error with key type 'user': EINVAL
-> add_key02.c:98: FAIL: unexpected error with key type 'logon': EINVAL
-> 
-> HINT: This is a regression test for linux kernel, see commit:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5649645d725c
-> 
-> HINT: This test also tests for CVE-2017-15274, see:
-> 
-> https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-15274
-> 
-> Summary:
-> passed   0
-> failed   8
-> skipped  0
-> warnings 0
-> 
-> This commit also adds adds the -q test flag, that can be used to query
-> test information, which includes these tags, but is not limited to them.
-> 
-> The main inteded use for the query operation is to export test metadata
-> and constraints to the test execution system. The long term goal for
-> this would be parallel test execution as for this case the test runner
-> would need to know which global system resources is the test using to
-> avoid unexpected failures.
-> 
-> So far it exposes only if test needs root and if block device is needed
-> for the test, but I would expect that we will need a few more tags for
-> various resources, one that comes to my mind would be "test is using
-> SystemV SHM" for that we can do something as add a "constraint" tag with
-> value "SysV SHM" or anything else that would be fitting. Another would
-> be "Test is changing system wide clocks", etc.
-> 
-> So far the output from the query operation looks as:
-> 
-> sh$ ./add_key02 -q
-> {
->  "root": false
->  "blk_device": false
->  "linux-git": "5649645d725c"
->  "CVE": "2017-15274"
-> }
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index 661fbbf..c8d8eff 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -55,6 +55,7 @@ struct results {
+>  	int skipped;
+>  	int failed;
+>  	int warnings;
+> +	int broken;
 
-So, only way to get metadata for tools is to run the test
-with -q on supported target? (since I assume when
-TST_TEST_TCONF branch hits, there won't be any data).
+Hi,
 
-Would there be any benefit to having metadata in a (json)
-file from the start? Negative would be likely duplicating
-things like "needs_root". Positive is we could check for
-errors/typos during build time.
+I don't follow what benefit this provides. It generates message "Test broken",
+but we already know that test is broken by message in tst_vbrk_() / tst_cvres().
 
 Regards,
 Jan
 
+>  	unsigned int timeout;
+>  };
+>  
+> @@ -159,6 +160,18 @@ void tst_reinit(void)
+>  	SAFE_CLOSE(fd);
+>  }
+>  
+> +static int tst_check_ttype(int ttype)
+> +{
+> +	if (TTYPE_RESULT(ttype) != TCONF && TTYPE_RESULT(ttype) != TBROK) {
+> +		tst_res(TINFO, "tst_brk(): invalid type %s, use TBROK forcely",
+> +			tst_strttype(ttype));
+> +		ttype &= ~TTYPE_MASK;
+> +		ttype |= TBROK;
+> +	}
+> +
+> +	return ttype;
+> +}
+> +
+>  static void update_results(int ttype)
+>  {
+>  	if (!results)
+> @@ -177,6 +190,9 @@ static void update_results(int ttype)
+>  	case TFAIL:
+>  		tst_atomic_inc(&results->failed);
+>  	break;
+> +	case TBROK:
+> +		tst_atomic_inc(&results->broken);
+> +	break;
+>  	}
+>  }
+>  
+> @@ -305,11 +321,15 @@ void tst_vbrk_(const char *file, const int lineno, int
+> ttype,
+>  	 * specified but CLONE_THREAD is not. Use direct syscall to avoid
+>  	 * cleanup running in the child.
+>  	 */
+> -	if (syscall(SYS_getpid) == main_pid)
+> +	if (syscall(SYS_getpid) == main_pid) {
+> +		update_results(ttype);
+>  		do_test_cleanup();
+> +	}
+>  
+> -	if (getpid() == lib_pid)
+> +	if (getpid() == lib_pid) {
+> +		update_results(ttype);
+>  		do_exit(TTYPE_RESULT(ttype));
+> +	}
+>  
+>  	exit(TTYPE_RESULT(ttype));
+>  }
+> @@ -330,6 +350,7 @@ void tst_brk_(const char *file, const int lineno, int
+> ttype,
+>  	va_list va;
+>  
+>  	va_start(va, fmt);
+> +	ttype = tst_check_ttype(ttype);
+>  	tst_brk_handler(file, lineno, ttype, fmt, va);
+>  	va_end(va);
+>  }
+> @@ -605,6 +626,9 @@ static void do_exit(int ret)
+>  			ret |= TWARN;
+>  	}
+>  
+> +	if (results->broken)
+> +		printf("Test broken!\n");
+> +
+>  	do_cleanup();
+>  
+>  	exit(ret);
+> --
+> 1.8.3.1
 > 
-> The format is meant to be machine-parseable, but it is certainly not
-> final as there are no consumers for the data yet.
 > 
-> Another nice feature of having this information in the test runner is
-> that we can include the URL pointing to a kernel git commit fixing the
-> issue even for kernel reproducers that crashed the kernel under test and
-> failed to write out any logs. Which is not that important I guess, but
-> still nice to have.
-
+> 
+> 
