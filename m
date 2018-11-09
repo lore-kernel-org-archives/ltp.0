@@ -1,17 +1,27 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 9 Nov 2018 15:06:18 +0800
-Subject: [LTP] [PATCH v2 1/2] lib: Introduce tst_strttype()
-In-Reply-To: <60497535.71361444.1541699583188.JavaMail.zimbra@redhat.com>
+Date: Fri, 9 Nov 2018 15:06:19 +0800
+Subject: [LTP] [PATCH v2 2/2] lib/tst_test.c: Update result counters when
+	calling tst_brk()
+In-Reply-To: <1541747179-15679-1-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <60497535.71361444.1541699583188.JavaMail.zimbra@redhat.com>
-Message-ID: <1541747179-15679-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1541747179-15679-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1541747179-15679-2-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Rename strttype() to tst_strttype() and introduce the function
-for old and new library.
+1) Only update result counters in library process and main test
+   process because the exit status of child can be reported by
+   main test process.
+2) Increase the skipped counter when calling tst_brk(TCONF).
+3) Increase the warnings counter when calling tst_brk(TBROK/TFAIL)
+   in test cleanup(), other than that increase the failed counter
+   when calling tst_brk(TBROK/TFAIL).
+4) Remove duplicate update_results() in run_tcases_per_fs().
+
+Fix: #408
 
 Note:
 It is based on the following patch:
@@ -19,61 +29,64 @@ http://lists.linux.it/pipermail/ltp/2018-November/009923.html
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- include/old/test.h | 2 +-
- include/tst_test.h | 4 ++++
- lib/tst_res.c      | 4 ++--
- 3 files changed, 7 insertions(+), 3 deletions(-)
+ lib/tst_test.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/include/old/test.h b/include/old/test.h
-index 0738237..3dce395 100644
---- a/include/old/test.h
-+++ b/include/old/test.h
-@@ -113,7 +113,7 @@ void tst_parse_opts(int argc, char *argv[], const option_t *user_optarg,
-                     void (*user_help)(void));
- 
- /* lib/tst_res.c */
--const char *strttype(int ttype);
-+const char *tst_strttype(int ttype);
- 
- void tst_resm_(const char *file, const int lineno, int ttype,
- 	const char *arg_fmt, ...)
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 8b7204a..b0f079a 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -225,6 +225,10 @@ extern void *TST_RET_PTR;
-  */
- const char *tst_strerrno(int err);
- const char *tst_strsig(int sig);
-+
-+// Function to convert ttype to its name.
-+const char *tst_strttype(int ttype);
-+
- /*
-  * Returns string describing status as returned by wait().
-  *
-diff --git a/lib/tst_res.c b/lib/tst_res.c
-index c35f41b..8c69b75 100644
---- a/lib/tst_res.c
-+++ b/lib/tst_res.c
-@@ -139,7 +139,7 @@ struct pair {
- 	return pair_arr[idx].name;                            \
- } while (0)
- 
--const char *strttype(int ttype)
-+const char *tst_strttype(int ttype)
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 661fbbf..b98be0d 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -174,6 +174,7 @@ static void update_results(int ttype)
+ 	case TWARN:
+ 		tst_atomic_inc(&results->warnings);
+ 	break;
++	case TBROK:
+ 	case TFAIL:
+ 		tst_atomic_inc(&results->failed);
+ 	break;
+@@ -275,7 +276,9 @@ static void (*tst_brk_handler)(const char *file, const int lineno, int ttype,
+ static void tst_cvres(const char *file, const int lineno, int ttype,
+ 		      const char *fmt, va_list va)
  {
- 	static const struct pair ttype_pairs[] = {
- 		PAIR(TPASS)
-@@ -296,7 +296,7 @@ static void tst_print(const char *tcid, int tnum, int ttype, const char *tmesg)
- 	/*
- 	 * Build the result line and print it.
+-	if (TTYPE_RESULT(ttype) == TBROK) {
++	if (TTYPE_RESULT(ttype) == TBROK || TTYPE_RESULT(ttype) == TFAIL) {
++		tst_res(TINFO, "Convert ttype %s to TWARN in test cleanup",
++			tst_strttype(ttype));
+ 		ttype &= ~TTYPE_MASK;
+ 		ttype |= TWARN;
+ 	}
+@@ -305,11 +308,15 @@ void tst_vbrk_(const char *file, const int lineno, int ttype,
+ 	 * specified but CLONE_THREAD is not. Use direct syscall to avoid
+ 	 * cleanup running in the child.
  	 */
--	type = strttype(ttype);
-+	type = tst_strttype(ttype);
+-	if (syscall(SYS_getpid) == main_pid)
++	if (syscall(SYS_getpid) == main_pid) {
++		update_results(TTYPE_RESULT(ttype));
+ 		do_test_cleanup();
++	}
  
- 	if (T_mode == VERBOSE) {
- 		size += snprintf(message + size, sizeof(message) - size,
+-	if (getpid() == lib_pid)
++	if (getpid() == lib_pid) {
++		update_results(TTYPE_RESULT(ttype));
+ 		do_exit(TTYPE_RESULT(ttype));
++	}
+ 
+ 	exit(TTYPE_RESULT(ttype));
+ }
+@@ -1155,12 +1162,7 @@ static int run_tcases_per_fs(void)
+ 			mntpoint_mounted = 0;
+ 		}
+ 
+-		if (ret == TCONF) {
+-			update_results(ret);
+-			continue;
+-		}
+-
+-		if (ret == 0)
++		if (ret == TCONF || ret == 0)
+ 			continue;
+ 
+ 		do_exit(ret);
 -- 
 1.8.3.1
 
