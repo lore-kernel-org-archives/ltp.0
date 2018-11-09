@@ -1,15 +1,11 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 9 Nov 2018 12:52:00 -0500 (EST)
-Subject: [LTP] [PATCH 2/2] lib/tst_test.c: Restrict that tst_brk() only
- works with TBROK/TCONF
-In-Reply-To: <5BE542AD.4060207@cn.fujitsu.com>
-References: <1541681733-18845-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1541681733-18845-2-git-send-email-yangx.jy@cn.fujitsu.com>
- <60497535.71361444.1541699583188.JavaMail.zimbra@redhat.com>
- <5BE4F51E.3060900@cn.fujitsu.com>
- <1919219905.71573908.1541750091092.JavaMail.zimbra@redhat.com>
- <5BE542AD.4060207@cn.fujitsu.com>
-Message-ID: <1931132489.71956282.1541785920854.JavaMail.zimbra@redhat.com>
+Date: Fri, 9 Nov 2018 12:57:09 -0500 (EST)
+Subject: [LTP] [PATCH 2/2] lib: build check parameters for tst_brk()
+In-Reply-To: <5BE4E95E.4000303@cn.fujitsu.com>
+References: <88db8a4def940c63ec2836cec1d0041db00ffd4c.1541710635.git.jstancek@redhat.com>
+ <d3ce5d3247f7f09cfabd288b40893bb631fb190f.1541710635.git.jstancek@redhat.com>
+ <5BE4E95E.4000303@cn.fujitsu.com>
+Message-ID: <1582215982.71956713.1541786229415.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -17,106 +13,76 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
-
 ----- Original Message -----
-> On 2018/11/09 15:54, Jan Stancek wrote:
+> On 2018/11/09 4:59, Jan Stancek wrote:
+> > This patch adds simple build-check that allows only
+> > TFAIL, TBROK and TCONF as parameter for tst_brk().
 > >
-> > ----- Original Message -----
-> >> On 2018/11/09 1:53, Jan Stancek wrote:
-> >>> ----- Original Message -----
-> >>>> 1) Add tst_check_ttype() to check if TPASS/TFAIL/TWARN/TINFO is
-> >>>>      passed into tst_brk() and convert it to TBROK forcely.
-> >>>> 2) Only update test result in library process and main test process
-> >>>>      because the exit status of child can be passed into main test
-> >>>>      process by check_child_status().
-> >>>> 3) Increase the number of skipped when calling tst_brk(TCONF).
-> >>>> 4) Increase the number of warnings when calling tst_brk(TBROK) in
-> >>>>      test cleanup(), other than that print "Test broken!" when calling
-> >>>>      tst_brk(TBROK).
-> >>>>
-> >>>> Fix: #408
-> >>>>
-> >>>> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
-> >>>> ---
-> >>>>    lib/tst_test.c | 28 ++++++++++++++++++++++++++--
-> >>>>    1 file changed, 26 insertions(+), 2 deletions(-)
-> >>>>
-> >>>> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> >>>> index 661fbbf..c8d8eff 100644
-> >>>> --- a/lib/tst_test.c
-> >>>> +++ b/lib/tst_test.c
-> >>>> @@ -55,6 +55,7 @@ struct results {
-> >>>>    	int skipped;
-> >>>>    	int failed;
-> >>>>    	int warnings;
-> >>>> +	int broken;
-> >>> Hi,
-> >>>
-> >>> I don't follow what benefit this provides. It generates message "Test
-> >>> broken",
-> >>> but we already know that test is broken by message in tst_vbrk_() /
-> >>> tst_cvres().
-> >> Hi Jan,
-> >>
-> >> We can remove the unnecessary message "Test broken", and also apply the
-> >> check
-> >> for
-> >> ttype in tst_brk() written by your patch.
-> > Or maybe add "Broken: " to summary?
+> > TFAIL is currently quite commonly used as a shortcut for
+> > TFAIL + exit() by many tests. I kept it for now, since
+> > it doesn't go against current doc description.
 > >
-> >> According to the issue #$08, we want to increase result counters when
-> >> calling
-> >> tst_brk().
-> >> e.g.
-> >> 1) Increase the skipped counter when calling tst_brk(TCONF).
-> >> 2) Increase the warnings counter when calling tst_brk(TBROK/FAIL) in
-> >>      test cleanup(), other than that increase the failed counter when
-> >>      calling tst_brk(TBROK/FAIL).
-> > I'd keep counters reflecting the messages. I imagine if summary says
-> > "warnings: 1", people would be searching for 'WARN' in output.
+> > Per kernel comments this approach works fine for simple
+> > cases, which should be sufficient for LTP, e.g. we don't
+> > pass TBROK as a paramter to inlined function, that passes
+> > it further down to tst_brk().
 > >
-> > TCONF - print CONF message, increase skipped
-> > TFAIL - print FAIL message, increase failed
-> > TBROK - print BROK message, increase broken
+> > Signed-off-by: Jan Stancek<jstancek@redhat.com>
+> > ---
+> >   include/tst_common.h | 3 +++
+> >   include/tst_test.h   | 7 +++++--
+> >   2 files changed, 8 insertions(+), 2 deletions(-)
 > >
-> > What do you think?
+> > diff --git a/include/tst_common.h b/include/tst_common.h
+> > index 27924766ef6e..358f2a76ecda 100644
+> > --- a/include/tst_common.h
+> > +++ b/include/tst_common.h
+> > @@ -65,4 +65,7 @@
+> >   	ERET;								\
+> >   })
+> >
+> > +#define BUILD_BUG_ON(condition) \
+> > +	do { ((void)sizeof(char[1 - 2 * !!(condition)])); } while (0)
+> > +
+> >   #endif /* TST_COMMON_H__ */
+> > diff --git a/include/tst_test.h b/include/tst_test.h
+> > index 2ebf746eb720..cd936eb792bd 100644
+> > --- a/include/tst_test.h
+> > +++ b/include/tst_test.h
+> > @@ -69,8 +69,11 @@ void tst_brk_(const char *file, const int lineno, int
+> > ttype,
+> >                 const char *fmt, ...)
+> >                 __attribute__ ((format (printf, 4, 5)));
+> >
+> > -#define tst_brk(ttype, arg_fmt, ...) \
+> > -	tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__)
+> > +#define tst_brk(ttype, arg_fmt, ...)						\
+> > +	({									\
+> > +		BUILD_BUG_ON(!((ttype)&  (TBROK | TCONF | TFAIL)));		\
+> > +		tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
+> > +	})
 > Hi Jan,
 > 
-> Usually, calling tst_brk() can do above behaviors as you said.
-> 
-> How about doing the following behaviors when calling tst_brk() in test
-> cleanup?
-> -----------------------------------------------
-> TCONF - print CONF message, increase skipped
-> TFAIL - print FAIL message, increase warnings
-> TBROK - print BROK message, increase warnings
-> -----------------------------------------------
+> Perhaps, we could add some hints about the invalid ttype.
+> e.g. "tst_brk(): invalid type, please use TBROK/TCONF/TFAIL"
 
-I don't think this matches your v2 patch. In your v2, we would
-convert FAIL and BROK during test cleanup to WARN. This happens
-before message is printed. So I think your v2 is proposing:
+Do you have suggestion how to achieve that?
 
-TCONF - print CONF message, increase skipped
-TFAIL - print WARN message, increase warnings
-TBROK - print WARN message, increase warnings
-
-I find v2 style more clear, because message in log matches
-summary at the end.
+There's an __attribute__(error), but it's supported only from gcc 4.3 as I recall.
+Alternative would be link time failure, with a symbol name suggesting what went wrong.
 
 Regards,
 Jan
 
 > 
-> Best Reagrds,
+> Other than that, this patch set looks good to me.
+> 
+> Best Regards,
 > Xiao Yang
 > 
-> > Regards,
-> > Jan
 > >
-> >
-> >
-> > .
-> >
+> >   /* flush stderr and stdout */
+> >   void tst_flush(void);
 > 
 > 
 > 
