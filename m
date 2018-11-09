@@ -1,285 +1,276 @@
-From: Subash Ganesan <subash@zilogic.com>
-Date: Fri, 09 Nov 2018 10:30:57 -0000
-Subject: [LTP] [PATCH v4] Testing statx syscall Timestamp fields
-Message-ID: <20181109103057.4473-1-subash@zilogic.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Fri,  9 Nov 2018 13:15:20 +0200
+Subject: [LTP] [PATCH v2] fanotify09: check merging of events on child subdir
+Message-ID: <20181109111520.27473-1-amir73il@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+In a setup of mount mark and directory inode mark on children
+mount mark should not be getting double events "on child" and "on self"
+for the same action.
 
-The time before and after the execution of the corresponding
-system call is noted.
+Add a regression test case for b469e7e47c8a ("fanotify: fix handling of
+events on child sub-directory").
 
-It is checked whether the time returned by statx lies in this range.
-
-open syscall with O_CREAT flag for birth time.
-write syscall for modified time.
-read syscall for access time.
-chmod syscall for status change time.
-
-Signed-off-by: Subash Ganesan <subash@zilogic.com>
-Signed-off-by: Vaishnavi.D <vaishnavi.d@zilogic.com>
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- include/tst_safe_clocks.h                  |  32 ++++++
- runtest/syscalls                           |   1 +
- testcases/kernel/syscalls/statx/.gitignore |   2 +
- testcases/kernel/syscalls/statx/Makefile   |   4 +
- testcases/kernel/syscalls/statx/statx06.c  | 174 +++++++++++++++++++++++++++++
- 5 files changed, 213 insertions(+)
- create mode 100644 include/tst_safe_clocks.h
- create mode 100644 testcases/kernel/syscalls/statx/statx06.c
 
-diff --git a/include/tst_safe_clocks.h b/include/tst_safe_clocks.h
-new file mode 100644
-index 000000000..5c7b97925
---- /dev/null
-+++ b/include/tst_safe_clocks.h
-@@ -0,0 +1,32 @@
-+#include <time.h>
-+#include "tst_test.h"
-+
-+static inline void safe_clock_getres(const char *file, const int lineno,
-+	clockid_t clk_id, struct timespec *res)
-+{
-+	int rval;
-+
-+	rval = clock_getres(clk_id, res);
-+	if (rval == -1)
-+		tst_brk(TBROK | TERRNO,
-+			"%s:%d:, clock_getres() failed", file, lineno);
-+
-+}
-+
-+static inline void safe_clock_gettime(const char *file, const int lineno,
-+	clockid_t clk_id, struct timespec *tp)
-+{
-+	int rval;
-+
-+	rval = clock_gettime(clk_id, tp);
-+	if (rval == -1)
-+		tst_brk(TBROK | TERRNO, 
-+			"%s:%d:, clock_gettime() failed", file, lineno);
-+}
-+
-+#define SAFE_CLOCK_GETRES(clk_id, res)\
-+	safe_clock_getres(__FILE__, __LINE__, (clk_id), (res))
-+
-+#define SAFE_CLOCK_GETTIME(clk_id, tp)\
-+	safe_clock_gettime(__FILE__, __LINE__, (clk_id), (tp))
-+
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 53a4a427e..1f76cd9de 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1514,3 +1514,4 @@ statx02 statx02
- statx03 statx03
- statx04 statx04
- statx05 statx05
-+statx06 statx06
-diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
-index 209fc3a33..40b5ee392 100644
---- a/testcases/kernel/syscalls/statx/.gitignore
-+++ b/testcases/kernel/syscalls/statx/.gitignore
-@@ -3,3 +3,5 @@
- /statx03
- /statx04
- /statx05
-+/statx06
-+
-diff --git a/testcases/kernel/syscalls/statx/Makefile b/testcases/kernel/syscalls/statx/Makefile
-index 3a9c66d6d..563c868e5 100644
---- a/testcases/kernel/syscalls/statx/Makefile
-+++ b/testcases/kernel/syscalls/statx/Makefile
-@@ -24,3 +24,7 @@ include $(top_srcdir)/include/mk/testcases.mk
- %_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64
+Cyril,
+
+FYI, kernel commit b469e7e47c8a ("fanotify: fix handling of events on child
+sub-directory") has been queued by Jan.
+
+This patch adds a test case to fanotify09 which exercises another corner
+case of merging inode and mount marks.
+
+The new test case fails on current master and passes on Jan's for_next
+branch. The existing test case passes on both.
+
+Thanks,
+Amir.
+
+Changes since v1:
+- Add test case instead of changing existing test
+- Record expected upsteam commit id
+
+ .../kernel/syscalls/fanotify/fanotify09.c     | 124 +++++++++++++-----
+ 1 file changed, 90 insertions(+), 34 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify09.c b/testcases/kernel/syscalls/fanotify/fanotify09.c
+index 511ccc0e0..1814ae6b0 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify09.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify09.c
+@@ -11,6 +11,10 @@
+  * This is a regression test for commit 54a307ba8d3c:
+  *
+  *      fanotify: fix logic of events on child
++ *
++ * Test case #2 is a regression test for commit b469e7e47c8a:
++ *
++ *      fanotify: fix handling of events on child sub-directory
+  */
+ #define _GNU_SOURCE
+ #include "config.h"
+@@ -39,14 +43,34 @@
  
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+
-+statx06: LDLIBS += -lrt
-+
-+
-diff --git a/testcases/kernel/syscalls/statx/statx06.c b/testcases/kernel/syscalls/statx/statx06.c
-new file mode 100644
-index 000000000..db38ceda7
---- /dev/null
-+++ b/testcases/kernel/syscalls/statx/statx06.c
-@@ -0,0 +1,174 @@
-+// SPDX-License-Identifier: GPL-2.0 or later
-+/*
-+ *  Copyright (c) Zilogic Systems Pvt. Ltd., 2018
-+ *  Email : code@zilogic.com
-+ */
-+
-+/*
-+ * DESCRIPTION :
-+ *
-+ * Test-Case 1 : Testing btime
-+ * flow :       The time before and after the execution of the create
-+ *              system call is noted.
-+ *		It is checked whether the birth time returned by statx lies in
-+ *              this range.
-+ *
-+ * Test-Case 2 : Testing mtime
-+ * flow :       The time before and after the execution of the write
-+ *              system call is noted.
-+ *              It is checked whether the modification time returned
-+ *              by statx lies in this range.
-+ *
-+ * Test-Case 3 : Testing atime
-+ * flow :       The time before and after the execution of the read
-+ *              system call is noted.
-+ *              It is checked whether the access time returned by statx lies in
-+ *              this range.
-+ *
-+ * Test-Case 4 : Testing ctime
-+ * flow :	The time before and after the execution of the chmod
-+ *              system call is noted.
-+ *              It is checked whether the status change time returned by statx
-+ *              lies in this range.
-+ *
-+ */
-+
-+#include <stdio.h>
-+#include "tst_test.h"
-+#include "lapi/stat.h"
-+#include "tst_safe_clocks.h"
-+#include "tst_safe_macros.h"
-+#include "tst_timer.h"
-+#include <sys/mount.h>
-+#include <time.h>
-+
-+#define MOUNT_POINT "mount_ext"
-+#define TEST_FILE MOUNT_POINT"/test_file.txt"
-+#define SIZE 2
-+
-+static int fd;
-+
-+static void timestamp_to_timespec(const struct statx_timestamp *timestamp,
-+				  struct timespec *timespec)
-+{
-+	timespec->tv_sec = timestamp->tv_sec;
-+	timespec->tv_nsec = timestamp->tv_nsec;
-+}
-+
-+static void clock_wait_tick(void)
-+{
-+	struct timespec res;
-+	unsigned int usecs;
-+
-+	SAFE_CLOCK_GETRES(CLOCK_REALTIME_COARSE, &res);
-+	usecs = tst_timespec_to_us(res);
-+
-+	usleep(usecs);
-+}
-+
-+static void create_file(void)
-+{
-+	if (fd > 0) {
-+		SAFE_CLOSE(fd);
-+		SAFE_UNLINK(TEST_FILE);
-+        }
-+	fd = SAFE_OPEN(TEST_FILE, O_CREAT | O_RDWR, 0666);
-+}
-+
-+static void write_file(void)
-+{
-+	char data[SIZE] = "hi";
-+
-+	SAFE_WRITE(0, fd, data, sizeof(data));
-+}
-+
-+static void read_file(void)
-+{
-+	char data[SIZE];
-+
-+	SAFE_READ(0, fd, data, sizeof(data));
-+}
-+
-+static void change_mode(void)
-+{
-+	SAFE_CHMOD(TEST_FILE, 0777);
-+}
-+
-+static struct test_case {
-+	void (*operation)(void);
-+	char *op_name;
+ #define BUF_SIZE 256
+ static char fname[BUF_SIZE];
++static char symlnk[BUF_SIZE];
++static char fdpath[BUF_SIZE];
+ static int fd_notify[NUM_GROUPS];
+ 
+ static char event_buf[EVENT_BUF_LEN];
+ 
+ #define MOUNT_NAME "mntpoint"
++#define DIR_NAME "testdir"
+ static int mount_created;
+ 
+-static void create_fanotify_groups(void)
++static struct tcase {
++	const char *tname;
++	unsigned int ondir;
++	int nevents;
 +} tcases[] = {
-+	{.operation = create_file,
-+	 .op_name = "Birth time"},
-+	{.operation = write_file,
-+	 .op_name = "Modified time"},
-+	{.operation = read_file,
-+	 .op_name = "Access time"},
-+	{.operation = change_mode,
-+	 .op_name = "Change time"}
++	{
++		"Events on children with both inode and mount marks",
++		0,
++		1,
++	},
++	{
++		"Events on children and subdirs with both inode and mount marks",
++		FAN_ONDIR,
++		2,
++	},
 +};
 +
-+static void test_statx(unsigned int test_nr)
-+{
-+	struct statx buff;
-+	struct timespec before_time;
-+	struct timespec after_time;
-+	struct timespec statx_time = {0, 0};
++static void create_fanotify_groups(unsigned int ondir)
+ {
+ 	unsigned int i, onchild;
+ 	int ret;
+@@ -57,15 +81,17 @@ static void create_fanotify_groups(void)
+ 						  O_RDONLY);
+ 
+ 		/* Add mount mark for each group without MODIFY event */
++		onchild = (i == 0) ? FAN_EVENT_ON_CHILD | ondir : 0;
+ 		ret = fanotify_mark(fd_notify[i],
+ 				    FAN_MARK_ADD | FAN_MARK_MOUNT,
+-				    FAN_CLOSE_NOWRITE,
++				    FAN_CLOSE_NOWRITE | onchild,
+ 				    AT_FDCWD, ".");
+ 		if (ret < 0) {
+ 			tst_brk(TBROK | TERRNO,
+ 				"fanotify_mark(%d, FAN_MARK_ADD | "
+-				"FAN_MARK_MOUNT, FAN_MODIFY, AT_FDCWD,"
+-				" '.') failed", fd_notify[i]);
++				"FAN_MARK_MOUNT, FAN_MODIFY%s, AT_FDCWD,"
++				" '.') failed", fd_notify[i],
++				ondir ? " | FAN_ONDIR" : "");
+ 		}
+ 		/*
+ 		 * Add inode mark on parent for each group with MODIFY
+@@ -74,15 +100,15 @@ static void create_fanotify_groups(void)
+ 		 * setting the DCACHE_FSNOTIFY_PARENT_WATCHED dentry
+ 		 * flag.
+ 		 */
+-		onchild = (i == 0) ? FAN_EVENT_ON_CHILD : 0;
+-		ret = fanotify_mark(fd_notify[i],
+-				    FAN_MARK_ADD,
+-				    FAN_MODIFY | onchild, AT_FDCWD, ".");
++		ret = fanotify_mark(fd_notify[i], FAN_MARK_ADD,
++				    FAN_MODIFY | ondir | onchild,
++				    AT_FDCWD, ".");
+ 		if (ret < 0) {
+ 			tst_brk(TBROK | TERRNO,
+ 				"fanotify_mark(%d, FAN_MARK_ADD, "
+-				"FAN_MODIFY%s, AT_FDCWD, '.') failed",
++				"FAN_MODIFY%s%s, AT_FDCWD, '.') failed",
+ 				fd_notify[i],
++				ondir ? " | FAN_ONDIR" : "",
+ 				onchild ? " | FAN_EVENT_ON_CHILD" : "");
+ 		}
+ 	}
+@@ -98,12 +124,13 @@ static void cleanup_fanotify_groups(void)
+ 	}
+ }
+ 
+-static void verify_event(int group, struct fanotify_event_metadata *event)
++static void verify_event(int group, struct fanotify_event_metadata *event,
++			 __u32 expect)
+ {
+-	if (event->mask != FAN_MODIFY) {
++	if (event->mask != expect) {
+ 		tst_res(TFAIL, "group %d got event: mask %llx (expected %llx) "
+ 			"pid=%u fd=%d", group, (unsigned long long)event->mask,
+-			(unsigned long long)FAN_MODIFY,
++			(unsigned long long)expect,
+ 			(unsigned)event->pid, event->fd);
+ 	} else if (event->pid != getpid()) {
+ 		tst_res(TFAIL, "group %d got event: mask %llx pid=%u "
+@@ -111,26 +138,44 @@ static void verify_event(int group, struct fanotify_event_metadata *event)
+ 			(unsigned long long)event->mask, (unsigned)event->pid,
+ 			(unsigned)getpid(), event->fd);
+ 	} else {
+-		tst_res(TPASS, "group %d got event: mask %llx pid=%u fd=%d",
++		int len;
++		sprintf(symlnk, "/proc/self/fd/%d", event->fd);
++		len = readlink(symlnk, fdpath, sizeof(fdpath));
++		if (len < 0)
++			len = 0;
++		fdpath[len] = 0;
++		tst_res(TPASS, "group %d got event: mask %llx pid=%u fd=%d path=%s",
+ 			group, (unsigned long long)event->mask,
+-			(unsigned)event->pid, event->fd);
++			(unsigned)event->pid, event->fd, fdpath);
+ 	}
+ }
+ 
+-void test01(void)
++static void test_fanotify(unsigned int n)
+ {
+-	int ret;
++	int ret, dirfd;
+ 	unsigned int i;
+-	struct fanotify_event_metadata *event;
++	struct fanotify_event_metadata *event, *ev;
++	struct tcase *tc = &tcases[n];
 +
-+	struct test_case *tc = &tcases[test_nr];
-+
-+	SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &before_time);
-+	clock_wait_tick();
-+	tc->operation();
-+	clock_wait_tick();
-+	SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &after_time);
-+
-+	TEST(statx(AT_FDCWD, TEST_FILE, 0, STATX_ALL, &buff));
-+	if (TST_RET != 0)
-+		tst_brk(TFAIL | TTERRNO,
-+			"statx(AT_FDCWD, %s, 0, STATX_ALL, &buff)",
-+			TEST_FILE);
-+
-+	switch (test_nr) {
-+	case 0:
-+		timestamp_to_timespec(&buff.stx_btime, &statx_time);
-+		break;
-+	case 1:
-+		timestamp_to_timespec(&buff.stx_mtime, &statx_time);
-+		break;
-+	case 2:
-+		timestamp_to_timespec(&buff.stx_atime, &statx_time);
-+		break;
-+	case 3:
-+		timestamp_to_timespec(&buff.stx_ctime, &statx_time);
-+		break;
++	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+ 
+-	create_fanotify_groups();
++	create_fanotify_groups(tc->ondir);
+ 
+ 	/*
+ 	 * generate MODIFY event and no FAN_CLOSE_NOWRITE event.
+ 	 */
+ 	SAFE_FILE_PRINTF(fname, "1");
++	/*
++	 * generate FAN_CLOSE_NOWRITE event on a child subdir.
++	 */
++	dirfd = SAFE_OPEN(DIR_NAME, O_RDONLY);
++	if (dirfd >= 0)
++		SAFE_CLOSE(dirfd);
+ 
+-	/* First verify the first group got the MODIFY event */
++	/*
++	 * First verify the first group got the file MODIFY event and got just
++	 * one FAN_CLOSE_NOWRITE event.
++	 */
+ 	ret = read(fd_notify[0], event_buf, EVENT_BUF_LEN);
+ 	if (ret < 0) {
+ 		if (errno == EAGAIN) {
+@@ -140,28 +185,37 @@ void test01(void)
+ 				"reading fanotify events failed");
+ 		}
+ 	}
+-	if (ret < (int)FAN_EVENT_METADATA_LEN) {
++	if (ret < tc->nevents * (int)FAN_EVENT_METADATA_LEN) {
+ 		tst_brk(TBROK,
+-			"short read when reading fanotify "
+-			"events (%d < %d)", ret,
+-			(int)EVENT_BUF_LEN);
++			"short read when reading fanotify events (%d < %d)",
++			ret, tc->nevents * (int)FAN_EVENT_METADATA_LEN);
+ 	}
+ 	event = (struct fanotify_event_metadata *)event_buf;
+-	if (ret > (int)event->event_len) {
+-		tst_res(TFAIL, "first group got more than one "
+-			"event (%d > %d)", ret,
+-			event->event_len);
+-	} else {
+-		verify_event(0, event);
++	verify_event(0, event, FAN_MODIFY);
++	if (tc->ondir)
++		verify_event(0, event + 1, FAN_CLOSE_NOWRITE);
++	if (ret > tc->nevents * (int)FAN_EVENT_METADATA_LEN) {
++		tst_res(TFAIL,
++			"first group got more than %d events (%d > %d)",
++			tc->nevents, ret,
++			tc->nevents * (int)FAN_EVENT_METADATA_LEN);
 +	}
-+	if (tst_timespec_lt(statx_time, before_time))
-+		tst_res(TFAIL, "%s < before time", tc->op_name);
-+	else if (tst_timespec_lt(after_time, statx_time))
-+		tst_res(TFAIL, "%s > after_time", tc->op_name);
-+	else
-+		tst_res(TPASS, "%s Passed\n", tc->op_name);
-+}
-+
-+
-+static void cleanup(void)
-+{
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.cleanup = cleanup,
++	/* Close all file descriptors of read events */
++	for (ev = event; ret >= (int)FAN_EVENT_METADATA_LEN; ev++) {
++		if (ev->fd != FAN_NOFD)
++			SAFE_CLOSE(ev->fd);
++		ret -= (int)FAN_EVENT_METADATA_LEN;
+ 	}
+-	if (event->fd != FAN_NOFD)
+-		SAFE_CLOSE(event->fd);
+ 
+-	/* Then verify the rest of the groups did not get the MODIFY event */
++	/*
++	 * Then verify the rest of the groups did not get the MODIFY event and
++	 * did not get the FAN_CLOSE_NOWRITE event on subdir.
++	 */
+ 	for (i = 1; i < NUM_GROUPS; i++) {
+-		ret = read(fd_notify[i], event_buf, EVENT_BUF_LEN);
++		ret = read(fd_notify[i], event_buf, FAN_EVENT_METADATA_LEN);
+ 		if (ret > 0) {
+ 			tst_res(TFAIL, "group %d got event", i);
++			verify_event(0, event, FAN_CLOSE_NOWRITE);
+ 			if (event->fd != FAN_NOFD)
+ 				SAFE_CLOSE(event->fd);
+ 			continue;
+@@ -187,6 +241,7 @@ static void setup(void)
+ 	SAFE_MOUNT(MOUNT_NAME, MOUNT_NAME, "none", MS_BIND, NULL);
+ 	mount_created = 1;
+ 	SAFE_CHDIR(MOUNT_NAME);
++	SAFE_MKDIR(DIR_NAME, 0755);
+ 
+ 	sprintf(fname, "tfile_%d", getpid());
+ 	SAFE_FILE_PRINTF(fname, "1");
+@@ -203,7 +258,8 @@ static void cleanup(void)
+ }
+ 
+ static struct tst_test test = {
+-	.test_all = test01,
++	.test = test_fanotify,
 +	.tcnt = ARRAY_SIZE(tcases),
-+	.test = test_statx,
-+	.min_kver = "4.11",
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.mntpoint = MOUNT_POINT,
-+	.mount_device = 1,
-+	.dev_fs_type = "ext4",
-+	.dev_min_size = 512,
-+	.mnt_flags = MS_STRICTATIME,
-+};
-+
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.needs_tmpdir = 1,
 -- 
-2.11.0
+2.17.1
 
