@@ -1,92 +1,65 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 9 Nov 2018 05:24:00 -0500 (EST)
-Subject: [LTP] [PATCH] msgstress04: make sure not pass IPC_PRIVATE to
- msgget
-In-Reply-To: <20181108093324.14028-1-kai.kang@windriver.com>
-References: <20181108093324.14028-1-kai.kang@windriver.com>
-Message-ID: <1149365280.71650211.1541759040124.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 9 Nov 2018 11:28:59 +0100
+Subject: [LTP] [Automated-testing] [RFC] [PATCH] lib: Add support for
+ test tags
+In-Reply-To: <ECADFF3FD767C149AD96A924E7EA6EAF88A346A7@USCULXMSG01.am.sony.com>
+References: <20181107142209.8965-1-chrubis@suse.cz>
+ <156962223.71358453.1541698207250.JavaMail.zimbra@redhat.com>
+ <ECADFF3FD767C149AD96A924E7EA6EAF88A346A7@USCULXMSG01.am.sony.com>
+Message-ID: <20181109102859.GA19700@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
------ Original Message -----
-> From: Kai Kang <kai.kang@windriver.com>
+Hi!
+> > So, only way to get metadata for tools is to run the test
+> > with -q on supported target? (since I assume when
+> > TST_TEST_TCONF branch hits, there won't be any data).
+> > 
+> > Would there be any benefit to having metadata in a (json)
+> > file from the start? Negative would be likely duplicating
+> > things like "needs_root". Positive is we could check for
+> > errors/typos during build time.
 > 
-> It fails to run case msgstress04:
-> 
-> $ ./msgstress04 -n 1 -c 1 -l 1
-> 
-> It only inits the first MSGMNI members of keyarray. So if argument off
-> of function dotest_iteration is greater than MSGMNI, the argument key
-> passed to function dotest() will be IPC_PRIVATE(0) which will finally
-> pass to syscall msgget(), then cause case fails.
-> 
-> Make sure get the value for key from the initialized members of keyarray.
-> 
-> Signed-off-by: Kai Kang <kai.kang@windriver.com>
-> ---
->  testcases/kernel/syscalls/ipc/msgstress/msgstress04.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-> b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-> index 18fad4fbd..a357ce59a 100644
-> --- a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-> +++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-> @@ -198,7 +198,7 @@ static void dotest_iteration(int off)
->  	memset(pidarray, 0, sizeof(pidarray));
->  
->  	for (i = 0; i < nprocs; i++) {
-> -		key = keyarray[off + i];
-> +		key = keyarray[(off + i) % MSGMNI];
+> I'd like to see a way to extract this data without having to 
+> run the test as well.  That way test frameworks using LTP
+> could extract the data and handle test scheduling,
+> test dependencies, etc. without having to build or execute
+> the code.  In the case of Fuego, test dependencies are analyzed
+> on a separate machine from the one running the test.  Also,
+> we try to process some dependencies prior to building the test.
 
-Hi,
+What I had in mind was some additional database build step where
+all tests would be executed with -q parameter on the target machine
+which would create a big structured file with all the metadata. So first
+thing before any test would be executed would be a script that would
+check if there is a database file or not and and if there is none it
+would build it, then we can get the database from the target machine
+and the test runner can make use of that.
 
-Isn't this going to pick same key over and over again?
+This process has to be either part of the LTP build or has to be
+executed before first testrun anyways, sice there is no other way
+to keep the data in sync with the binaries.
 
-Say maxnprocs is '1', and MSGMNI is 10000:
-  dotest_iteration(i*(10000 / 1));
-will become:
-  key = keyarray[(10000 + 0) % 10000];
-  key = keyarray[(20000 + 0) % 10000];
-  key = keyarray[(30000 + 0) % 10000];
-  ...
+> One mechanism for storing the data would be a separate json
+> file, but you could also embed the information in the source
+> using some regularized markup (json or something simpler)
+> that could be handled both in-source (for your -q operation),
+> or by an external scanner/converter.
 
-If test intention is to exercise queues for all keys, shouldn't we fix main() instead?
+Actually I've started to think that this may be the answer, if we manage
+to encode the metadata into C string as well as into some structured
+form we can have test description as well as some of the metadata
+available both at the runtime as well as in a format that could be
+parsed without compiling the test.
 
-diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-index 18fad4fbdca1..81383d6c8b11 100644
---- a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-+++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-@@ -176,11 +176,11 @@ int main(int argc, char **argv)
-        } else {
-                for (i = 0; i < (MSGMNI / maxnprocs); i++) {
-                        nprocs = maxnprocs;
--                       dotest_iteration(i*(MSGMNI / maxnprocs));
-+                       dotest_iteration(i * maxnprocs);
-                }
- 
-                nprocs = MSGMNI % maxnprocs;
--               dotest_iteration(i*(MSGMNI / maxnprocs));
-+               dotest_iteration(i * maxnprocs);
-        }
- 
-        tst_resm(TPASS, "Test ran successfully!");
+But there are drawbacks, I do not think that it's sane to encode if test
+requires root or not, or if it needs a block device in some kind of
+markup text. I think that it's mutch better when it's encoded in the
+tst_test structure as it is now.
 
-Regards,
-Jan
-
->  
->  		if ((pid = FORK_OR_VFORK()) < 0)
->  			tst_brkm(TFAIL, cleanup,
-> --
-> 2.17.0
-> 
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
