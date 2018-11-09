@@ -1,75 +1,147 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 9 Nov 2018 09:56:46 +0800
-Subject: [LTP] [PATCH 2/2] lib: build check parameters for tst_brk()
-In-Reply-To: <d3ce5d3247f7f09cfabd288b40893bb631fb190f.1541710635.git.jstancek@redhat.com>
-References: <88db8a4def940c63ec2836cec1d0041db00ffd4c.1541710635.git.jstancek@redhat.com>
- <d3ce5d3247f7f09cfabd288b40893bb631fb190f.1541710635.git.jstancek@redhat.com>
-Message-ID: <5BE4E95E.4000303@cn.fujitsu.com>
+Date: Fri, 9 Nov 2018 10:46:54 +0800
+Subject: [LTP] [PATCH 2/2] lib/tst_test.c: Restrict that tst_brk() only
+ works with TBROK/TCONF
+In-Reply-To: <60497535.71361444.1541699583188.JavaMail.zimbra@redhat.com>
+References: <1541681733-18845-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1541681733-18845-2-git-send-email-yangx.jy@cn.fujitsu.com>
+ <60497535.71361444.1541699583188.JavaMail.zimbra@redhat.com>
+Message-ID: <5BE4F51E.3060900@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2018/11/09 4:59, Jan Stancek wrote:
-> This patch adds simple build-check that allows only
-> TFAIL, TBROK and TCONF as parameter for tst_brk().
+On 2018/11/09 1:53, Jan Stancek wrote:
+> ----- Original Message -----
+>> 1) Add tst_check_ttype() to check if TPASS/TFAIL/TWARN/TINFO is
+>>     passed into tst_brk() and convert it to TBROK forcely.
+>> 2) Only update test result in library process and main test process
+>>     because the exit status of child can be passed into main test
+>>     process by check_child_status().
+>> 3) Increase the number of skipped when calling tst_brk(TCONF).
+>> 4) Increase the number of warnings when calling tst_brk(TBROK) in
+>>     test cleanup(), other than that print "Test broken!" when calling
+>>     tst_brk(TBROK).
+>>
+>> Fix: #408
+>>
+>> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
+>> ---
+>>   lib/tst_test.c | 28 ++++++++++++++++++++++++++--
+>>   1 file changed, 26 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/lib/tst_test.c b/lib/tst_test.c
+>> index 661fbbf..c8d8eff 100644
+>> --- a/lib/tst_test.c
+>> +++ b/lib/tst_test.c
+>> @@ -55,6 +55,7 @@ struct results {
+>>   	int skipped;
+>>   	int failed;
+>>   	int warnings;
+>> +	int broken;
+> Hi,
 >
-> TFAIL is currently quite commonly used as a shortcut for
-> TFAIL + exit() by many tests. I kept it for now, since
-> it doesn't go against current doc description.
->
-> Per kernel comments this approach works fine for simple
-> cases, which should be sufficient for LTP, e.g. we don't
-> pass TBROK as a paramter to inlined function, that passes
-> it further down to tst_brk().
->
-> Signed-off-by: Jan Stancek<jstancek@redhat.com>
-> ---
->   include/tst_common.h | 3 +++
->   include/tst_test.h   | 7 +++++--
->   2 files changed, 8 insertions(+), 2 deletions(-)
->
-> diff --git a/include/tst_common.h b/include/tst_common.h
-> index 27924766ef6e..358f2a76ecda 100644
-> --- a/include/tst_common.h
-> +++ b/include/tst_common.h
-> @@ -65,4 +65,7 @@
->   	ERET;								\
->   })
->
-> +#define BUILD_BUG_ON(condition) \
-> +	do { ((void)sizeof(char[1 - 2 * !!(condition)])); } while (0)
-> +
->   #endif /* TST_COMMON_H__ */
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index 2ebf746eb720..cd936eb792bd 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -69,8 +69,11 @@ void tst_brk_(const char *file, const int lineno, int ttype,
->                 const char *fmt, ...)
->                 __attribute__ ((format (printf, 4, 5)));
->
-> -#define tst_brk(ttype, arg_fmt, ...) \
-> -	tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__)
-> +#define tst_brk(ttype, arg_fmt, ...)						\
-> +	({									\
-> +		BUILD_BUG_ON(!((ttype)&  (TBROK | TCONF | TFAIL)));		\
-> +		tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
-> +	})
+> I don't follow what benefit this provides. It generates message "Test broken",
+> but we already know that test is broken by message in tst_vbrk_() / tst_cvres().
 Hi Jan,
 
-Perhaps, we could add some hints about the invalid ttype.
-e.g. "tst_brk(): invalid type, please use TBROK/TCONF/TFAIL"
+We can remove the unnecessary message "Test broken", and also apply the check for
+ttype in tst_brk() written by your patch.
 
-Other than that, this patch set looks good to me.
+According to the issue #$08, we want to increase result counters when calling tst_brk().
+e.g.
+1) Increase the skipped counter when calling tst_brk(TCONF).
+2) Increase the warnings counter when calling tst_brk(TBROK/FAIL) in
+    test cleanup(), other than that increase the failed counter when
+    calling tst_brk(TBROK/FAIL).
 
 Best Regards,
 Xiao Yang
 
+> Regards,
+> Jan
 >
->   /* flush stderr and stdout */
->   void tst_flush(void);
+>>   	unsigned int timeout;
+>>   };
+>>
+>> @@ -159,6 +160,18 @@ void tst_reinit(void)
+>>   	SAFE_CLOSE(fd);
+>>   }
+>>
+>> +static int tst_check_ttype(int ttype)
+>> +{
+>> +	if (TTYPE_RESULT(ttype) != TCONF&&  TTYPE_RESULT(ttype) != TBROK) {
+>> +		tst_res(TINFO, "tst_brk(): invalid type %s, use TBROK forcely",
+>> +			tst_strttype(ttype));
+>> +		ttype&= ~TTYPE_MASK;
+>> +		ttype |= TBROK;
+>> +	}
+>> +
+>> +	return ttype;
+>> +}
+>> +
+>>   static void update_results(int ttype)
+>>   {
+>>   	if (!results)
+>> @@ -177,6 +190,9 @@ static void update_results(int ttype)
+>>   	case TFAIL:
+>>   		tst_atomic_inc(&results->failed);
+>>   	break;
+>> +	case TBROK:
+>> +		tst_atomic_inc(&results->broken);
+>> +	break;
+>>   	}
+>>   }
+>>
+>> @@ -305,11 +321,15 @@ void tst_vbrk_(const char *file, const int lineno, int
+>> ttype,
+>>   	 * specified but CLONE_THREAD is not. Use direct syscall to avoid
+>>   	 * cleanup running in the child.
+>>   	 */
+>> -	if (syscall(SYS_getpid) == main_pid)
+>> +	if (syscall(SYS_getpid) == main_pid) {
+>> +		update_results(ttype);
+>>   		do_test_cleanup();
+>> +	}
+>>
+>> -	if (getpid() == lib_pid)
+>> +	if (getpid() == lib_pid) {
+>> +		update_results(ttype);
+>>   		do_exit(TTYPE_RESULT(ttype));
+>> +	}
+>>
+>>   	exit(TTYPE_RESULT(ttype));
+>>   }
+>> @@ -330,6 +350,7 @@ void tst_brk_(const char *file, const int lineno, int
+>> ttype,
+>>   	va_list va;
+>>
+>>   	va_start(va, fmt);
+>> +	ttype = tst_check_ttype(ttype);
+>>   	tst_brk_handler(file, lineno, ttype, fmt, va);
+>>   	va_end(va);
+>>   }
+>> @@ -605,6 +626,9 @@ static void do_exit(int ret)
+>>   			ret |= TWARN;
+>>   	}
+>>
+>> +	if (results->broken)
+>> +		printf("Test broken!\n");
+>> +
+>>   	do_cleanup();
+>>
+>>   	exit(ret);
+>> --
+>> 1.8.3.1
+>>
+>>
+>>
+>>
+>
+> .
+>
 
 
 
