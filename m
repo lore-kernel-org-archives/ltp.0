@@ -1,65 +1,285 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 9 Nov 2018 11:28:59 +0100
-Subject: [LTP] [Automated-testing] [RFC] [PATCH] lib: Add support for
- test tags
-In-Reply-To: <ECADFF3FD767C149AD96A924E7EA6EAF88A346A7@USCULXMSG01.am.sony.com>
-References: <20181107142209.8965-1-chrubis@suse.cz>
- <156962223.71358453.1541698207250.JavaMail.zimbra@redhat.com>
- <ECADFF3FD767C149AD96A924E7EA6EAF88A346A7@USCULXMSG01.am.sony.com>
-Message-ID: <20181109102859.GA19700@rei.lan>
+From: Subash Ganesan <subash@zilogic.com>
+Date: Fri, 09 Nov 2018 10:30:57 -0000
+Subject: [LTP] [PATCH v4] Testing statx syscall Timestamp fields
+Message-ID: <20181109103057.4473-1-subash@zilogic.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > So, only way to get metadata for tools is to run the test
-> > with -q on supported target? (since I assume when
-> > TST_TEST_TCONF branch hits, there won't be any data).
-> > 
-> > Would there be any benefit to having metadata in a (json)
-> > file from the start? Negative would be likely duplicating
-> > things like "needs_root". Positive is we could check for
-> > errors/typos during build time.
-> 
-> I'd like to see a way to extract this data without having to 
-> run the test as well.  That way test frameworks using LTP
-> could extract the data and handle test scheduling,
-> test dependencies, etc. without having to build or execute
-> the code.  In the case of Fuego, test dependencies are analyzed
-> on a separate machine from the one running the test.  Also,
-> we try to process some dependencies prior to building the test.
 
-What I had in mind was some additional database build step where
-all tests would be executed with -q parameter on the target machine
-which would create a big structured file with all the metadata. So first
-thing before any test would be executed would be a script that would
-check if there is a database file or not and and if there is none it
-would build it, then we can get the database from the target machine
-and the test runner can make use of that.
+The time before and after the execution of the corresponding
+system call is noted.
 
-This process has to be either part of the LTP build or has to be
-executed before first testrun anyways, sice there is no other way
-to keep the data in sync with the binaries.
+It is checked whether the time returned by statx lies in this range.
 
-> One mechanism for storing the data would be a separate json
-> file, but you could also embed the information in the source
-> using some regularized markup (json or something simpler)
-> that could be handled both in-source (for your -q operation),
-> or by an external scanner/converter.
+open syscall with O_CREAT flag for birth time.
+write syscall for modified time.
+read syscall for access time.
+chmod syscall for status change time.
 
-Actually I've started to think that this may be the answer, if we manage
-to encode the metadata into C string as well as into some structured
-form we can have test description as well as some of the metadata
-available both at the runtime as well as in a format that could be
-parsed without compiling the test.
+Signed-off-by: Subash Ganesan <subash@zilogic.com>
+Signed-off-by: Vaishnavi.D <vaishnavi.d@zilogic.com>
+---
+ include/tst_safe_clocks.h                  |  32 ++++++
+ runtest/syscalls                           |   1 +
+ testcases/kernel/syscalls/statx/.gitignore |   2 +
+ testcases/kernel/syscalls/statx/Makefile   |   4 +
+ testcases/kernel/syscalls/statx/statx06.c  | 174 +++++++++++++++++++++++++++++
+ 5 files changed, 213 insertions(+)
+ create mode 100644 include/tst_safe_clocks.h
+ create mode 100644 testcases/kernel/syscalls/statx/statx06.c
 
-But there are drawbacks, I do not think that it's sane to encode if test
-requires root or not, or if it needs a block device in some kind of
-markup text. I think that it's mutch better when it's encoded in the
-tst_test structure as it is now.
-
+diff --git a/include/tst_safe_clocks.h b/include/tst_safe_clocks.h
+new file mode 100644
+index 000000000..5c7b97925
+--- /dev/null
++++ b/include/tst_safe_clocks.h
+@@ -0,0 +1,32 @@
++#include <time.h>
++#include "tst_test.h"
++
++static inline void safe_clock_getres(const char *file, const int lineno,
++	clockid_t clk_id, struct timespec *res)
++{
++	int rval;
++
++	rval = clock_getres(clk_id, res);
++	if (rval == -1)
++		tst_brk(TBROK | TERRNO,
++			"%s:%d:, clock_getres() failed", file, lineno);
++
++}
++
++static inline void safe_clock_gettime(const char *file, const int lineno,
++	clockid_t clk_id, struct timespec *tp)
++{
++	int rval;
++
++	rval = clock_gettime(clk_id, tp);
++	if (rval == -1)
++		tst_brk(TBROK | TERRNO, 
++			"%s:%d:, clock_gettime() failed", file, lineno);
++}
++
++#define SAFE_CLOCK_GETRES(clk_id, res)\
++	safe_clock_getres(__FILE__, __LINE__, (clk_id), (res))
++
++#define SAFE_CLOCK_GETTIME(clk_id, tp)\
++	safe_clock_gettime(__FILE__, __LINE__, (clk_id), (tp))
++
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 53a4a427e..1f76cd9de 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1514,3 +1514,4 @@ statx02 statx02
+ statx03 statx03
+ statx04 statx04
+ statx05 statx05
++statx06 statx06
+diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
+index 209fc3a33..40b5ee392 100644
+--- a/testcases/kernel/syscalls/statx/.gitignore
++++ b/testcases/kernel/syscalls/statx/.gitignore
+@@ -3,3 +3,5 @@
+ /statx03
+ /statx04
+ /statx05
++/statx06
++
+diff --git a/testcases/kernel/syscalls/statx/Makefile b/testcases/kernel/syscalls/statx/Makefile
+index 3a9c66d6d..563c868e5 100644
+--- a/testcases/kernel/syscalls/statx/Makefile
++++ b/testcases/kernel/syscalls/statx/Makefile
+@@ -24,3 +24,7 @@ include $(top_srcdir)/include/mk/testcases.mk
+ %_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
++
++statx06: LDLIBS += -lrt
++
++
+diff --git a/testcases/kernel/syscalls/statx/statx06.c b/testcases/kernel/syscalls/statx/statx06.c
+new file mode 100644
+index 000000000..db38ceda7
+--- /dev/null
++++ b/testcases/kernel/syscalls/statx/statx06.c
+@@ -0,0 +1,174 @@
++// SPDX-License-Identifier: GPL-2.0 or later
++/*
++ *  Copyright (c) Zilogic Systems Pvt. Ltd., 2018
++ *  Email : code@zilogic.com
++ */
++
++/*
++ * DESCRIPTION :
++ *
++ * Test-Case 1 : Testing btime
++ * flow :       The time before and after the execution of the create
++ *              system call is noted.
++ *		It is checked whether the birth time returned by statx lies in
++ *              this range.
++ *
++ * Test-Case 2 : Testing mtime
++ * flow :       The time before and after the execution of the write
++ *              system call is noted.
++ *              It is checked whether the modification time returned
++ *              by statx lies in this range.
++ *
++ * Test-Case 3 : Testing atime
++ * flow :       The time before and after the execution of the read
++ *              system call is noted.
++ *              It is checked whether the access time returned by statx lies in
++ *              this range.
++ *
++ * Test-Case 4 : Testing ctime
++ * flow :	The time before and after the execution of the chmod
++ *              system call is noted.
++ *              It is checked whether the status change time returned by statx
++ *              lies in this range.
++ *
++ */
++
++#include <stdio.h>
++#include "tst_test.h"
++#include "lapi/stat.h"
++#include "tst_safe_clocks.h"
++#include "tst_safe_macros.h"
++#include "tst_timer.h"
++#include <sys/mount.h>
++#include <time.h>
++
++#define MOUNT_POINT "mount_ext"
++#define TEST_FILE MOUNT_POINT"/test_file.txt"
++#define SIZE 2
++
++static int fd;
++
++static void timestamp_to_timespec(const struct statx_timestamp *timestamp,
++				  struct timespec *timespec)
++{
++	timespec->tv_sec = timestamp->tv_sec;
++	timespec->tv_nsec = timestamp->tv_nsec;
++}
++
++static void clock_wait_tick(void)
++{
++	struct timespec res;
++	unsigned int usecs;
++
++	SAFE_CLOCK_GETRES(CLOCK_REALTIME_COARSE, &res);
++	usecs = tst_timespec_to_us(res);
++
++	usleep(usecs);
++}
++
++static void create_file(void)
++{
++	if (fd > 0) {
++		SAFE_CLOSE(fd);
++		SAFE_UNLINK(TEST_FILE);
++        }
++	fd = SAFE_OPEN(TEST_FILE, O_CREAT | O_RDWR, 0666);
++}
++
++static void write_file(void)
++{
++	char data[SIZE] = "hi";
++
++	SAFE_WRITE(0, fd, data, sizeof(data));
++}
++
++static void read_file(void)
++{
++	char data[SIZE];
++
++	SAFE_READ(0, fd, data, sizeof(data));
++}
++
++static void change_mode(void)
++{
++	SAFE_CHMOD(TEST_FILE, 0777);
++}
++
++static struct test_case {
++	void (*operation)(void);
++	char *op_name;
++} tcases[] = {
++	{.operation = create_file,
++	 .op_name = "Birth time"},
++	{.operation = write_file,
++	 .op_name = "Modified time"},
++	{.operation = read_file,
++	 .op_name = "Access time"},
++	{.operation = change_mode,
++	 .op_name = "Change time"}
++};
++
++static void test_statx(unsigned int test_nr)
++{
++	struct statx buff;
++	struct timespec before_time;
++	struct timespec after_time;
++	struct timespec statx_time = {0, 0};
++
++	struct test_case *tc = &tcases[test_nr];
++
++	SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &before_time);
++	clock_wait_tick();
++	tc->operation();
++	clock_wait_tick();
++	SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &after_time);
++
++	TEST(statx(AT_FDCWD, TEST_FILE, 0, STATX_ALL, &buff));
++	if (TST_RET != 0)
++		tst_brk(TFAIL | TTERRNO,
++			"statx(AT_FDCWD, %s, 0, STATX_ALL, &buff)",
++			TEST_FILE);
++
++	switch (test_nr) {
++	case 0:
++		timestamp_to_timespec(&buff.stx_btime, &statx_time);
++		break;
++	case 1:
++		timestamp_to_timespec(&buff.stx_mtime, &statx_time);
++		break;
++	case 2:
++		timestamp_to_timespec(&buff.stx_atime, &statx_time);
++		break;
++	case 3:
++		timestamp_to_timespec(&buff.stx_ctime, &statx_time);
++		break;
++	}
++	if (tst_timespec_lt(statx_time, before_time))
++		tst_res(TFAIL, "%s < before time", tc->op_name);
++	else if (tst_timespec_lt(after_time, statx_time))
++		tst_res(TFAIL, "%s > after_time", tc->op_name);
++	else
++		tst_res(TPASS, "%s Passed\n", tc->op_name);
++}
++
++
++static void cleanup(void)
++{
++	if (fd > 0)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.cleanup = cleanup,
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = test_statx,
++	.min_kver = "4.11",
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++	.mntpoint = MOUNT_POINT,
++	.mount_device = 1,
++	.dev_fs_type = "ext4",
++	.dev_min_size = 512,
++	.mnt_flags = MS_STRICTATIME,
++};
++
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.11.0
+
