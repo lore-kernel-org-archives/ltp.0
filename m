@@ -1,117 +1,123 @@
-From: Tim.Bird@sony.com <Tim.Bird@sony.com>
-Date: Thu, 8 Nov 2018 20:19:09 +0000
-Subject: [LTP] [Automated-testing] [RFC] [PATCH] lib: Add support
-	for	test tags
-In-Reply-To: <156962223.71358453.1541698207250.JavaMail.zimbra@redhat.com>
-References: <20181107142209.8965-1-chrubis@suse.cz>
- <156962223.71358453.1541698207250.JavaMail.zimbra@redhat.com>
-Message-ID: <ECADFF3FD767C149AD96A924E7EA6EAF88A346A7@USCULXMSG01.am.sony.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 9 Nov 2018 12:52:00 -0500 (EST)
+Subject: [LTP] [PATCH 2/2] lib/tst_test.c: Restrict that tst_brk() only
+ works with TBROK/TCONF
+In-Reply-To: <5BE542AD.4060207@cn.fujitsu.com>
+References: <1541681733-18845-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1541681733-18845-2-git-send-email-yangx.jy@cn.fujitsu.com>
+ <60497535.71361444.1541699583188.JavaMail.zimbra@redhat.com>
+ <5BE4F51E.3060900@cn.fujitsu.com>
+ <1919219905.71573908.1541750091092.JavaMail.zimbra@redhat.com>
+ <5BE542AD.4060207@cn.fujitsu.com>
+Message-ID: <1931132489.71956282.1541785920854.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> -----Original Message-----
-> From: Jan Stancek
-> 
-> Hi,
-> 
-> ----- Original Message -----
-> > This is just proof of concept of moving some of the test metadata into
-> > more structured form. If implemented it will move some information from
-> > comments in the test source code to an array to the tst_test structure.
-> >
-> > It's not finished and certainly not set into a stone, this patch is
-> > mainly intended to start a discussion.
-> >
-> > The newly introduced test tags are generic name-value pairs that can
-> > hold test metadata, the intended use for now is to store kernel commit
-> > hashes for kernel reproducers as well as CVE ids. The mechanism is
-> > however choosen to be very generic so that it's easy to add basically
-> > any information later on.
-> >
-> > As it is the main purpose is to print hints for a test failures. If a
-> > test that has been written as a kernel reproducer fails it prints nice
-> > URL pointing to a kernel commit that may be missing.
-> >
-> > Example output:
-> >
-> > tst_test.c:1145: INFO: Timeout per run is 0h 05m 00s
-> > add_key02.c:98: FAIL: unexpected error with key type 'asymmetric':
-> EINVAL
-> > add_key02.c:98: FAIL: unexpected error with key type 'cifs.idmap': EINVAL
-> > add_key02.c:98: FAIL: unexpected error with key type 'cifs.spnego': EINVAL
-> > add_key02.c:98: FAIL: unexpected error with key type 'pkcs7_test': EINVAL
-> > add_key02.c:98: FAIL: unexpected error with key type 'rxrpc': EINVAL
-> > add_key02.c:98: FAIL: unexpected error with key type 'rxrpc_s': EINVAL
-> > add_key02.c:98: FAIL: unexpected error with key type 'user': EINVAL
-> > add_key02.c:98: FAIL: unexpected error with key type 'logon': EINVAL
-> >
-> > HINT: This is a regression test for linux kernel, see commit:
-> >
-> >
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?i
-> d=5649645d725c
-> >
-> > HINT: This test also tests for CVE-2017-15274, see:
-> >
-> > https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-15274
-> >
-> > Summary:
-> > passed   0
-> > failed   8
-> > skipped  0
-> > warnings 0
-> >
-> > This commit also adds adds the -q test flag, that can be used to query
-> > test information, which includes these tags, but is not limited to them.
-> >
-> > The main inteded use for the query operation is to export test metadata
-> > and constraints to the test execution system. The long term goal for
-> > this would be parallel test execution as for this case the test runner
-> > would need to know which global system resources is the test using to
-> > avoid unexpected failures.
-> >
-> > So far it exposes only if test needs root and if block device is needed
-> > for the test, but I would expect that we will need a few more tags for
-> > various resources, one that comes to my mind would be "test is using
-> > SystemV SHM" for that we can do something as add a "constraint" tag with
-> > value "SysV SHM" or anything else that would be fitting. Another would
-> > be "Test is changing system wide clocks", etc.
-> >
-> > So far the output from the query operation looks as:
-> >
-> > sh$ ./add_key02 -q
-> > {
-> >  "root": false
-> >  "blk_device": false
-> >  "linux-git": "5649645d725c"
-> >  "CVE": "2017-15274"
-> > }
-> 
-> So, only way to get metadata for tools is to run the test
-> with -q on supported target? (since I assume when
-> TST_TEST_TCONF branch hits, there won't be any data).
-> 
-> Would there be any benefit to having metadata in a (json)
-> file from the start? Negative would be likely duplicating
-> things like "needs_root". Positive is we could check for
-> errors/typos during build time.
-
-I'd like to see a way to extract this data without having to 
-run the test as well.  That way test frameworks using LTP
-could extract the data and handle test scheduling,
-test dependencies, etc. without having to build or execute
-the code.  In the case of Fuego, test dependencies are analyzed
-on a separate machine from the one running the test.  Also,
-we try to process some dependencies prior to building the test.
-
-One mechanism for storing the data would be a separate json
-file, but you could also embed the information in the source
-using some regularized markup (json or something simpler)
-that could be handled both in-source (for your -q operation),
-or by an external scanner/converter.
- -- Tim
 
 
+----- Original Message -----
+> On 2018/11/09 15:54, Jan Stancek wrote:
+> >
+> > ----- Original Message -----
+> >> On 2018/11/09 1:53, Jan Stancek wrote:
+> >>> ----- Original Message -----
+> >>>> 1) Add tst_check_ttype() to check if TPASS/TFAIL/TWARN/TINFO is
+> >>>>      passed into tst_brk() and convert it to TBROK forcely.
+> >>>> 2) Only update test result in library process and main test process
+> >>>>      because the exit status of child can be passed into main test
+> >>>>      process by check_child_status().
+> >>>> 3) Increase the number of skipped when calling tst_brk(TCONF).
+> >>>> 4) Increase the number of warnings when calling tst_brk(TBROK) in
+> >>>>      test cleanup(), other than that print "Test broken!" when calling
+> >>>>      tst_brk(TBROK).
+> >>>>
+> >>>> Fix: #408
+> >>>>
+> >>>> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
+> >>>> ---
+> >>>>    lib/tst_test.c | 28 ++++++++++++++++++++++++++--
+> >>>>    1 file changed, 26 insertions(+), 2 deletions(-)
+> >>>>
+> >>>> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> >>>> index 661fbbf..c8d8eff 100644
+> >>>> --- a/lib/tst_test.c
+> >>>> +++ b/lib/tst_test.c
+> >>>> @@ -55,6 +55,7 @@ struct results {
+> >>>>    	int skipped;
+> >>>>    	int failed;
+> >>>>    	int warnings;
+> >>>> +	int broken;
+> >>> Hi,
+> >>>
+> >>> I don't follow what benefit this provides. It generates message "Test
+> >>> broken",
+> >>> but we already know that test is broken by message in tst_vbrk_() /
+> >>> tst_cvres().
+> >> Hi Jan,
+> >>
+> >> We can remove the unnecessary message "Test broken", and also apply the
+> >> check
+> >> for
+> >> ttype in tst_brk() written by your patch.
+> > Or maybe add "Broken: " to summary?
+> >
+> >> According to the issue #$08, we want to increase result counters when
+> >> calling
+> >> tst_brk().
+> >> e.g.
+> >> 1) Increase the skipped counter when calling tst_brk(TCONF).
+> >> 2) Increase the warnings counter when calling tst_brk(TBROK/FAIL) in
+> >>      test cleanup(), other than that increase the failed counter when
+> >>      calling tst_brk(TBROK/FAIL).
+> > I'd keep counters reflecting the messages. I imagine if summary says
+> > "warnings: 1", people would be searching for 'WARN' in output.
+> >
+> > TCONF - print CONF message, increase skipped
+> > TFAIL - print FAIL message, increase failed
+> > TBROK - print BROK message, increase broken
+> >
+> > What do you think?
+> Hi Jan,
+> 
+> Usually, calling tst_brk() can do above behaviors as you said.
+> 
+> How about doing the following behaviors when calling tst_brk() in test
+> cleanup?
+> -----------------------------------------------
+> TCONF - print CONF message, increase skipped
+> TFAIL - print FAIL message, increase warnings
+> TBROK - print BROK message, increase warnings
+> -----------------------------------------------
+
+I don't think this matches your v2 patch. In your v2, we would
+convert FAIL and BROK during test cleanup to WARN. This happens
+before message is printed. So I think your v2 is proposing:
+
+TCONF - print CONF message, increase skipped
+TFAIL - print WARN message, increase warnings
+TBROK - print WARN message, increase warnings
+
+I find v2 style more clear, because message in log matches
+summary at the end.
+
+Regards,
+Jan
+
+> 
+> Best Reagrds,
+> Xiao Yang
+> 
+> > Regards,
+> > Jan
+> >
+> >
+> >
+> > .
+> >
+> 
+> 
+> 
+> 
