@@ -1,63 +1,54 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu,  8 Nov 2018 21:59:02 +0100
-Subject: [LTP] [PATCH 2/2] lib: build check parameters for tst_brk()
-In-Reply-To: <88db8a4def940c63ec2836cec1d0041db00ffd4c.1541710635.git.jstancek@redhat.com>
-References: <88db8a4def940c63ec2836cec1d0041db00ffd4c.1541710635.git.jstancek@redhat.com>
-Message-ID: <d3ce5d3247f7f09cfabd288b40893bb631fb190f.1541710635.git.jstancek@redhat.com>
+From: Steve Muckle <smuckle@google.com>
+Date: Thu,  8 Nov 2018 17:46:15 -0800
+Subject: [LTP] [PATCH 1/2] syscalls/rt_sigsuspend01: ignore reserved signals
+Message-ID: <20181109014616.165281-1-smuckle@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This patch adds simple build-check that allows only
-TFAIL, TBROK and TCONF as parameter for tst_brk().
+Some signals may be internally used by the C library. Do not attempt to
+verify these.
 
-TFAIL is currently quite commonly used as a shortcut for
-TFAIL + exit() by many tests. I kept it for now, since
-it doesn't go against current doc description.
-
-Per kernel comments this approach works fine for simple
-cases, which should be sufficient for LTP, e.g. we don't
-pass TBROK as a paramter to inlined function, that passes
-it further down to tst_brk().
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Change-Id: Ia5b8148c9273b9d13001b07824e9d55680382519
 ---
- include/tst_common.h | 3 +++
- include/tst_test.h   | 7 +++++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ .../syscalls/rt_sigsuspend/rt_sigsuspend01.c      | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/include/tst_common.h b/include/tst_common.h
-index 27924766ef6e..358f2a76ecda 100644
---- a/include/tst_common.h
-+++ b/include/tst_common.h
-@@ -65,4 +65,7 @@
- 	ERET;								\
- })
- 
-+#define BUILD_BUG_ON(condition) \
-+	do { ((void)sizeof(char[1 - 2 * !!(condition)])); } while (0)
-+
- #endif /* TST_COMMON_H__ */
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 2ebf746eb720..cd936eb792bd 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -69,8 +69,11 @@ void tst_brk_(const char *file, const int lineno, int ttype,
-               const char *fmt, ...)
-               __attribute__ ((format (printf, 4, 5)));
- 
--#define tst_brk(ttype, arg_fmt, ...) \
--	tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__)
-+#define tst_brk(ttype, arg_fmt, ...)						\
-+	({									\
-+		BUILD_BUG_ON(!((ttype) & (TBROK | TCONF | TFAIL)));		\
-+		tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
-+	})
- 
- /* flush stderr and stdout */
- void tst_flush(void);
+diff --git a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+index c8c228a47..edc913b44 100644
+--- a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
++++ b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+@@ -87,19 +87,22 @@ int main(int ac, char **av)
+ 			SIGSETSIZE));
+ 		TEST(alarm(0));
+ 		if (result == -1 && TEST_ERRNO != EINTR) {
++			int i;
+ 			TEST(ltp_syscall(__NR_rt_sigprocmask, SIG_UNBLOCK, 0,
+ 				&set2, SIGSETSIZE));
+-			if (TEST_RETURN == -1) {
++			if (TEST_RETURN == -1)
+ 				tst_brkm(TFAIL | TTERRNO, cleanup,
+ 					 "rt_sigprocmask failed");
+-			} else if (memcmp(&set1, &set2,
+-				   sizeof(unsigned long))) {
+-				tst_brkm(TFAIL | TTERRNO, cleanup,
++			for (i = 1; i < SIGRTMAX; i++) {
++				if (i >= __SIGRTMIN && i < SIGRTMIN)
++					continue;
++				if (sigismember(&set1, i) !=
++				    sigismember(&set2, i))
++					tst_brkm(TFAIL | TTERRNO, cleanup,
+ 					 "rt_sigsuspend failed to "
+ 					 "preserve signal mask");
+-			} else {
+-				tst_resm(TPASS, "rt_sigsuspend PASSED");
+ 			}
++			tst_resm(TPASS, "rt_sigsuspend PASSED");
+ 		} else {
+ 			tst_resm(TFAIL | TTERRNO, "rt_sigsuspend failed");
+ 		}
 -- 
-1.8.3.1
+2.19.1.930.g4563a0d9d0-goog
 
