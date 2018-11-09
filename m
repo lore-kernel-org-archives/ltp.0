@@ -1,100 +1,92 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 9 Nov 2018 16:17:49 +0800
-Subject: [LTP] [PATCH 2/2] lib/tst_test.c: Restrict that tst_brk() only
- works with TBROK/TCONF
-In-Reply-To: <1919219905.71573908.1541750091092.JavaMail.zimbra@redhat.com>
-References: <1541681733-18845-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1541681733-18845-2-git-send-email-yangx.jy@cn.fujitsu.com>
- <60497535.71361444.1541699583188.JavaMail.zimbra@redhat.com>
- <5BE4F51E.3060900@cn.fujitsu.com>
- <1919219905.71573908.1541750091092.JavaMail.zimbra@redhat.com>
-Message-ID: <5BE542AD.4060207@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 9 Nov 2018 05:24:00 -0500 (EST)
+Subject: [LTP] [PATCH] msgstress04: make sure not pass IPC_PRIVATE to
+ msgget
+In-Reply-To: <20181108093324.14028-1-kai.kang@windriver.com>
+References: <20181108093324.14028-1-kai.kang@windriver.com>
+Message-ID: <1149365280.71650211.1541759040124.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2018/11/09 15:54, Jan Stancek wrote:
->
-> ----- Original Message -----
->> On 2018/11/09 1:53, Jan Stancek wrote:
->>> ----- Original Message -----
->>>> 1) Add tst_check_ttype() to check if TPASS/TFAIL/TWARN/TINFO is
->>>>      passed into tst_brk() and convert it to TBROK forcely.
->>>> 2) Only update test result in library process and main test process
->>>>      because the exit status of child can be passed into main test
->>>>      process by check_child_status().
->>>> 3) Increase the number of skipped when calling tst_brk(TCONF).
->>>> 4) Increase the number of warnings when calling tst_brk(TBROK) in
->>>>      test cleanup(), other than that print "Test broken!" when calling
->>>>      tst_brk(TBROK).
->>>>
->>>> Fix: #408
->>>>
->>>> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
->>>> ---
->>>>    lib/tst_test.c | 28 ++++++++++++++++++++++++++--
->>>>    1 file changed, 26 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/lib/tst_test.c b/lib/tst_test.c
->>>> index 661fbbf..c8d8eff 100644
->>>> --- a/lib/tst_test.c
->>>> +++ b/lib/tst_test.c
->>>> @@ -55,6 +55,7 @@ struct results {
->>>>    	int skipped;
->>>>    	int failed;
->>>>    	int warnings;
->>>> +	int broken;
->>> Hi,
->>>
->>> I don't follow what benefit this provides. It generates message "Test
->>> broken",
->>> but we already know that test is broken by message in tst_vbrk_() /
->>> tst_cvres().
->> Hi Jan,
->>
->> We can remove the unnecessary message "Test broken", and also apply the check
->> for
->> ttype in tst_brk() written by your patch.
-> Or maybe add "Broken: " to summary?
->
->> According to the issue #$08, we want to increase result counters when calling
->> tst_brk().
->> e.g.
->> 1) Increase the skipped counter when calling tst_brk(TCONF).
->> 2) Increase the warnings counter when calling tst_brk(TBROK/FAIL) in
->>      test cleanup(), other than that increase the failed counter when
->>      calling tst_brk(TBROK/FAIL).
-> I'd keep counters reflecting the messages. I imagine if summary says
-> "warnings: 1", people would be searching for 'WARN' in output.
->
-> TCONF - print CONF message, increase skipped
-> TFAIL - print FAIL message, increase failed
-> TBROK - print BROK message, increase broken
->
-> What do you think?
-Hi Jan,
-
-Usually, calling tst_brk() can do above behaviors as you said.
-
-How about doing the following behaviors when calling tst_brk() in test cleanup?
------------------------------------------------
-TCONF - print CONF message, increase skipped
-TFAIL - print FAIL message, increase warnings
-TBROK - print BROK message, increase warnings
------------------------------------------------
-
-Best Reagrds,
-Xiao Yang
-
-> Regards,
-> Jan
->
->
->
-> .
->
 
 
+----- Original Message -----
+> From: Kai Kang <kai.kang@windriver.com>
+> 
+> It fails to run case msgstress04:
+> 
+> $ ./msgstress04 -n 1 -c 1 -l 1
+> 
+> It only inits the first MSGMNI members of keyarray. So if argument off
+> of function dotest_iteration is greater than MSGMNI, the argument key
+> passed to function dotest() will be IPC_PRIVATE(0) which will finally
+> pass to syscall msgget(), then cause case fails.
+> 
+> Make sure get the value for key from the initialized members of keyarray.
+> 
+> Signed-off-by: Kai Kang <kai.kang@windriver.com>
+> ---
+>  testcases/kernel/syscalls/ipc/msgstress/msgstress04.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
+> b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
+> index 18fad4fbd..a357ce59a 100644
+> --- a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
+> +++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
+> @@ -198,7 +198,7 @@ static void dotest_iteration(int off)
+>  	memset(pidarray, 0, sizeof(pidarray));
+>  
+>  	for (i = 0; i < nprocs; i++) {
+> -		key = keyarray[off + i];
+> +		key = keyarray[(off + i) % MSGMNI];
 
+Hi,
+
+Isn't this going to pick same key over and over again?
+
+Say maxnprocs is '1', and MSGMNI is 10000:
+  dotest_iteration(i*(10000 / 1));
+will become:
+  key = keyarray[(10000 + 0) % 10000];
+  key = keyarray[(20000 + 0) % 10000];
+  key = keyarray[(30000 + 0) % 10000];
+  ...
+
+If test intention is to exercise queues for all keys, shouldn't we fix main() instead?
+
+diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
+index 18fad4fbdca1..81383d6c8b11 100644
+--- a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
++++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
+@@ -176,11 +176,11 @@ int main(int argc, char **argv)
+        } else {
+                for (i = 0; i < (MSGMNI / maxnprocs); i++) {
+                        nprocs = maxnprocs;
+-                       dotest_iteration(i*(MSGMNI / maxnprocs));
++                       dotest_iteration(i * maxnprocs);
+                }
+ 
+                nprocs = MSGMNI % maxnprocs;
+-               dotest_iteration(i*(MSGMNI / maxnprocs));
++               dotest_iteration(i * maxnprocs);
+        }
+ 
+        tst_resm(TPASS, "Test ran successfully!");
+
+Regards,
+Jan
+
+>  
+>  		if ((pid = FORK_OR_VFORK()) < 0)
+>  			tst_brkm(TFAIL, cleanup,
+> --
+> 2.17.0
+> 
+> 
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
