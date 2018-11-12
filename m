@@ -1,44 +1,133 @@
-From: Christophe Lyon <christophe.lyon@linaro.org>
-Date: Sun, 11 Nov 2018 21:23:17 +0100
-Subject: [LTP] uclinux support?
-Message-ID: <CAKdteOY=B3m0NvOcPuAPbmoVkCgwuXq7PsiJZw-sPAyVdtkDQQ@mail.gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Mon, 12 Nov 2018 10:29:47 +0800
+Subject: [LTP] [PATCH 2/2] lib/tst_test.c: Restrict that tst_brk() only
+ works with TBROK/TCONF
+In-Reply-To: <1931132489.71956282.1541785920854.JavaMail.zimbra@redhat.com>
+References: <1541681733-18845-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1541681733-18845-2-git-send-email-yangx.jy@cn.fujitsu.com>
+ <60497535.71361444.1541699583188.JavaMail.zimbra@redhat.com>
+ <5BE4F51E.3060900@cn.fujitsu.com>
+ <1919219905.71573908.1541750091092.JavaMail.zimbra@redhat.com>
+ <5BE542AD.4060207@cn.fujitsu.com>
+ <1931132489.71956282.1541785920854.JavaMail.zimbra@redhat.com>
+Message-ID: <5BE8E59B.2020703@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+On 2018/11/10 1:52, Jan Stancek wrote:
+>
+> ----- Original Message -----
+>> On 2018/11/09 15:54, Jan Stancek wrote:
+>>> ----- Original Message -----
+>>>> On 2018/11/09 1:53, Jan Stancek wrote:
+>>>>> ----- Original Message -----
+>>>>>> 1) Add tst_check_ttype() to check if TPASS/TFAIL/TWARN/TINFO is
+>>>>>>       passed into tst_brk() and convert it to TBROK forcely.
+>>>>>> 2) Only update test result in library process and main test process
+>>>>>>       because the exit status of child can be passed into main test
+>>>>>>       process by check_child_status().
+>>>>>> 3) Increase the number of skipped when calling tst_brk(TCONF).
+>>>>>> 4) Increase the number of warnings when calling tst_brk(TBROK) in
+>>>>>>       test cleanup(), other than that print "Test broken!" when calling
+>>>>>>       tst_brk(TBROK).
+>>>>>>
+>>>>>> Fix: #408
+>>>>>>
+>>>>>> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
+>>>>>> ---
+>>>>>>     lib/tst_test.c | 28 ++++++++++++++++++++++++++--
+>>>>>>     1 file changed, 26 insertions(+), 2 deletions(-)
+>>>>>>
+>>>>>> diff --git a/lib/tst_test.c b/lib/tst_test.c
+>>>>>> index 661fbbf..c8d8eff 100644
+>>>>>> --- a/lib/tst_test.c
+>>>>>> +++ b/lib/tst_test.c
+>>>>>> @@ -55,6 +55,7 @@ struct results {
+>>>>>>     	int skipped;
+>>>>>>     	int failed;
+>>>>>>     	int warnings;
+>>>>>> +	int broken;
+>>>>> Hi,
+>>>>>
+>>>>> I don't follow what benefit this provides. It generates message "Test
+>>>>> broken",
+>>>>> but we already know that test is broken by message in tst_vbrk_() /
+>>>>> tst_cvres().
+>>>> Hi Jan,
+>>>>
+>>>> We can remove the unnecessary message "Test broken", and also apply the
+>>>> check
+>>>> for
+>>>> ttype in tst_brk() written by your patch.
+>>> Or maybe add "Broken: " to summary?
+>>>
+>>>> According to the issue #$08, we want to increase result counters when
+>>>> calling
+>>>> tst_brk().
+>>>> e.g.
+>>>> 1) Increase the skipped counter when calling tst_brk(TCONF).
+>>>> 2) Increase the warnings counter when calling tst_brk(TBROK/FAIL) in
+>>>>       test cleanup(), other than that increase the failed counter when
+>>>>       calling tst_brk(TBROK/FAIL).
+>>> I'd keep counters reflecting the messages. I imagine if summary says
+>>> "warnings: 1", people would be searching for 'WARN' in output.
+>>>
+>>> TCONF - print CONF message, increase skipped
+>>> TFAIL - print FAIL message, increase failed
+>>> TBROK - print BROK message, increase broken
+>>>
+>>> What do you think?
+>> Hi Jan,
+>>
+>> Usually, calling tst_brk() can do above behaviors as you said.
+>>
+>> How about doing the following behaviors when calling tst_brk() in test
+>> cleanup?
+>> -----------------------------------------------
+>> TCONF - print CONF message, increase skipped
+>> TFAIL - print FAIL message, increase warnings
+>> TBROK - print BROK message, increase warnings
+>> -----------------------------------------------
+> I don't think this matches your v2 patch. In your v2, we would
+> convert FAIL and BROK during test cleanup to WARN. This happens
+> before message is printed. So I think your v2 is proposing:
+>
+> TCONF - print CONF message, increase skipped
+> TFAIL - print WARN message, increase warnings
+> TBROK - print WARN message, increase warnings
+>
+> I find v2 style more clear, because message in log matches
+> summary at the end.
+Hi Jan,
 
-I wanted to try to run at least some of the LTP tests on a uclinux
-system for arm (arm-uclinuxfdpiceabi), as I am in the process of
-upstreaming the toolchain support for the FDPIC ABI for ARM.
+Sorry, i gave a mismatched example.
 
-I've tried this:
-$ make autotools
-$ configure CC=~XXX/bin/arm-none-uclinuxfdpiceabi-gcc
-CXX=~XXX/bin/arm-none-uclinuxfdpiceabi-g++ --host
-arm-none-uclinuxfdpiceabi
-$ make all
-XXX/lib/gcc/arm-none-uclinuxfdpiceabi/9.0.0/../../../../arm-none-uclinuxfdpiceabi/bin/ld:
-../../lib/libltp.a(tst_test.o): in function `fork_testrun':
-XXX/ltp/lib/tst_test.c:1104: undefined reference to `fork'
-XXX/lib/gcc/arm-none-uclinuxfdpiceabi/9.0.0/../../../../arm-none-uclinuxfdpiceabi/bin/ld:
-../../lib/libltp.a(tst_test.o): in function `safe_fork':
-XXX/ltp/lib/tst_test.c:395: undefined reference to `fork'
-XXX/lib/gcc/arm-none-uclinuxfdpiceabi/9.0.0/../../../../arm-none-uclinuxfdpiceabi/bin/ld:
-../../lib/libltp.a(tst_res.o): in function `tst_fork':
-XXX/ltp/lib/tst_res.c:421: undefined reference to `fork'
+You are right, and i will send a v3 patch as you suggested.
 
-config.h has:
-#define UCLINUX 1
-/* #undef HAVE_FORK */
-#define HAVE_VFORK 1
+Best Regards,
+Xiao Yang
+> Regards,
+> Jan
+>
+>> Best Reagrds,
+>> Xiao Yang
+>>
+>>> Regards,
+>>> Jan
+>>>
+>>>
+>>>
+>>> .
+>>>
+>>
+>>
+>>
+>
+> .
+>
 
-so it looks like confgure correctly detected the target system.
 
-Am I missing something?
 
-Thanks
-
-Christophe
