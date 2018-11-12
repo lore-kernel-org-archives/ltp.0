@@ -1,62 +1,54 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 12 Nov 2018 03:45:12 -0500 (EST)
-Subject: [LTP] [PATCH v2] msgstress04: correct the logic to use all
- values in keyarray
-In-Reply-To: <20181112075600.1155-1-kai.kang@windriver.com>
-References: <20181112075600.1155-1-kai.kang@windriver.com>
-Message-ID: <973630772.72986739.1542012312980.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 12 Nov 2018 12:01:51 +0100
+Subject: [LTP] uclinux support?
+In-Reply-To: <CAKdteOY=B3m0NvOcPuAPbmoVkCgwuXq7PsiJZw-sPAyVdtkDQQ@mail.gmail.com>
+References: <CAKdteOY=B3m0NvOcPuAPbmoVkCgwuXq7PsiJZw-sPAyVdtkDQQ@mail.gmail.com>
+Message-ID: <20181112110151.GA23335@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> I wanted to try to run at least some of the LTP tests on a uclinux
+> system for arm (arm-uclinuxfdpiceabi), as I am in the process of
+> upstreaming the toolchain support for the FDPIC ABI for ARM.
+> 
+> I've tried this:
+> $ make autotools
+> $ configure CC=~XXX/bin/arm-none-uclinuxfdpiceabi-gcc
+> CXX=~XXX/bin/arm-none-uclinuxfdpiceabi-g++ --host
+> arm-none-uclinuxfdpiceabi
+> $ make all
+> XXX/lib/gcc/arm-none-uclinuxfdpiceabi/9.0.0/../../../../arm-none-uclinuxfdpiceabi/bin/ld:
+> ../../lib/libltp.a(tst_test.o): in function `fork_testrun':
+> XXX/ltp/lib/tst_test.c:1104: undefined reference to `fork'
+> XXX/lib/gcc/arm-none-uclinuxfdpiceabi/9.0.0/../../../../arm-none-uclinuxfdpiceabi/bin/ld:
+> ../../lib/libltp.a(tst_test.o): in function `safe_fork':
+> XXX/ltp/lib/tst_test.c:395: undefined reference to `fork'
+> XXX/lib/gcc/arm-none-uclinuxfdpiceabi/9.0.0/../../../../arm-none-uclinuxfdpiceabi/bin/ld:
+> ../../lib/libltp.a(tst_res.o): in function `tst_fork':
+> XXX/ltp/lib/tst_res.c:421: undefined reference to `fork'
+> 
+> config.h has:
+> #define UCLINUX 1
+> /* #undef HAVE_FORK */
+> #define HAVE_VFORK 1
+> 
+> so it looks like confgure correctly detected the target system.
+> 
+> Am I missing something?
 
+uClinux support in LTP has been broken for years and nobody seemed to
+really care. I even tried to ask if there is someone interesting in
+running LTP on uClinux on the uClinux mailing list but it seems that
+even the list is basically dead at this point. So for a last year or so
+we are slowly getting rid of the uClinux specific bits from the codebase
+in order to simplify the LTP maintenance. You are free to step up and
+restore uClinux support in LTP if you have time for that but unless that
+happens we will continue to stage it out.
 
------ Original Message -----
-> From: Kai Kang <kai.kang@windriver.com>
-> 
-> There are some problems of the logic to use all values in keyarray. It
-> fails to run:
-> 
-> $ ./msgstress04 -n 1 -c 1 -l 1
-> 
-> Only the first MSGMNI members of keyarray are initialized. But it will
-> use the member whose index exceeds MSGMNI in keyarray.
-> 
-> Correct the logic to make sure to use the initialized members of
-> keyarray.
-> 
-> Signed-off-by: Kai Kang <kai.kang@windriver.com>
-> ---
->  testcases/kernel/syscalls/ipc/msgstress/msgstress04.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-> b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-> index 18fad4fbd..81383d6c8 100644
-> --- a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-> +++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-> @@ -176,11 +176,11 @@ int main(int argc, char **argv)
->  	} else {
->  		for (i = 0; i < (MSGMNI / maxnprocs); i++) {
->  			nprocs = maxnprocs;
-> -			dotest_iteration(i*(MSGMNI / maxnprocs));
-> +			dotest_iteration(i * maxnprocs);
->  		}
->  
->  		nprocs = MSGMNI % maxnprocs;
-> -		dotest_iteration(i*(MSGMNI / maxnprocs));
-> +		dotest_iteration(i * maxnprocs);
->  	}
->  
->  	tst_resm(TPASS, "Test ran successfully!");
-> --
-> 2.17.0
-> 
-> 
-
-Pushed.
-
-Thanks,
-Jan
+-- 
+Cyril Hrubis
+chrubis@suse.cz
