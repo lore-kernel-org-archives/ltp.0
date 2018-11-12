@@ -1,34 +1,78 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 12 Nov 2018 14:11:48 +0100
-Subject: [LTP] [PATCH 1/1] syscalls/fanotify10: Require kernel v4.19
-In-Reply-To: <CAOQ4uxjVnAUYfH8_fuHXruObt1WVqObHxQxLmCxcPCNL-S5PjQ@mail.gmail.com>
-References: <20181106124802.27170-1-pvorel@suse.cz>
- <20181106125015.GB4834@rei.lan> <20181106125556.GA28469@dell5510>
- <CAOQ4uxhd9XZj=zvkm1j8mZBkBRw0qhvfwcaRQKzs24bVjsfUZw@mail.gmail.com>
- <20181106130641.GB28469@dell5510>
- <CAOQ4uxjVnAUYfH8_fuHXruObt1WVqObHxQxLmCxcPCNL-S5PjQ@mail.gmail.com>
-Message-ID: <20181112131148.GK3470@dell5510>
+From: Christophe Lyon <christophe.lyon@linaro.org>
+Date: Mon, 12 Nov 2018 14:47:30 +0100
+Subject: [LTP] uclinux support?
+In-Reply-To: <20181112110151.GA23335@rei.lan>
+References: <CAKdteOY=B3m0NvOcPuAPbmoVkCgwuXq7PsiJZw-sPAyVdtkDQQ@mail.gmail.com>
+ <20181112110151.GA23335@rei.lan>
+Message-ID: <CAKdteObcqQaLfHmSCt5VCSp8KEUsZL7af8gfZPvuZkpa1QNvGA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Amir,
+On Mon, 12 Nov 2018 at 12:03, Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+> Hi!
+> > I wanted to try to run at least some of the LTP tests on a uclinux
+> > system for arm (arm-uclinuxfdpiceabi), as I am in the process of
+> > upstreaming the toolchain support for the FDPIC ABI for ARM.
+> >
+> > I've tried this:
+> > $ make autotools
+> > $ configure CC=~XXX/bin/arm-none-uclinuxfdpiceabi-gcc
+> > CXX=~XXX/bin/arm-none-uclinuxfdpiceabi-g++ --host
+> > arm-none-uclinuxfdpiceabi
+> > $ make all
+> > XXX/lib/gcc/arm-none-uclinuxfdpiceabi/9.0.0/../../../../arm-none-uclinuxfdpiceabi/bin/ld:
+> > ../../lib/libltp.a(tst_test.o): in function `fork_testrun':
+> > XXX/ltp/lib/tst_test.c:1104: undefined reference to `fork'
+> > XXX/lib/gcc/arm-none-uclinuxfdpiceabi/9.0.0/../../../../arm-none-uclinuxfdpiceabi/bin/ld:
+> > ../../lib/libltp.a(tst_test.o): in function `safe_fork':
+> > XXX/ltp/lib/tst_test.c:395: undefined reference to `fork'
+> > XXX/lib/gcc/arm-none-uclinuxfdpiceabi/9.0.0/../../../../arm-none-uclinuxfdpiceabi/bin/ld:
+> > ../../lib/libltp.a(tst_res.o): in function `tst_fork':
+> > XXX/ltp/lib/tst_res.c:421: undefined reference to `fork'
+> >
+> > config.h has:
+> > #define UCLINUX 1
+> > /* #undef HAVE_FORK */
+> > #define HAVE_VFORK 1
+> >
+> > so it looks like confgure correctly detected the target system.
+> >
+> > Am I missing something?
+>
+> uClinux support in LTP has been broken for years and nobody seemed to
+> really care. I even tried to ask if there is someone interesting in
+> running LTP on uClinux on the uClinux mailing list but it seems that
+> even the list is basically dead at this point. So for a last year or so
+> we are slowly getting rid of the uClinux specific bits from the codebase
+> in order to simplify the LTP maintenance. You are free to step up and
+> restore uClinux support in LTP if you have time for that but unless that
+> happens we will continue to stage it out.
+>
 
-> > > Did I miss anything?
-> > Testing your branch on older kernel, fanotify10 fails earlier than new TCONF
+OK understood, I was right to ask :)
 
-> Because fanotify10 checks for a bug that existed since the beginning
-> and fixed by 9bdda4e9cf2d fsnotify: fix ignore mask logic in fsnotify().
-> So test SHOULD fail until the backported patch is applied to the old kernel.
+I'd like to roll back to a point where it was mostly working, any idea
+when that would be?
+I've looked at the history, and tried several commits that seemed to
+remove uclinux support,
+but I'm still facing similar errors (I'm now back to 2011....)
 
-> The patch does not apply cleanly to kernels <= v4.17.
-> Tested backport patch for v4.14.y attached.
+A point were a subset worked would be nice, I'd like to run tests
+involving unwinding and
+signals.
 
-Thanks for info and Cc us for your patch in kernel.
+I'm not sure I'll have time to work on resurrecting uclinux support in
+LTP though,
+I didn't anticipate it was beeing removed.
 
-> Thanks,
-> Amir.
-Kind regards,
-Petr
+Thanks
+
+Christophe
+
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
