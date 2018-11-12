@@ -1,104 +1,50 @@
-From: Kang Kai <Kai.Kang@windriver.com>
-Date: Mon, 12 Nov 2018 15:16:51 +0800
-Subject: [LTP] [PATCH] msgstress04: make sure not pass IPC_PRIVATE to
- msgget
-In-Reply-To: <1149365280.71650211.1541759040124.JavaMail.zimbra@redhat.com>
-References: <20181108093324.14028-1-kai.kang@windriver.com>
- <1149365280.71650211.1541759040124.JavaMail.zimbra@redhat.com>
-Message-ID: <83f9256e-072b-74d2-23f1-b6c7a145989b@windriver.com>
+From: kai.kang@windriver.com <kai.kang@windriver.com>
+Date: Mon, 12 Nov 2018 15:56:00 +0800
+Subject: [LTP] [PATCH v2] msgstress04: correct the logic to use all values
+	in keyarray
+Message-ID: <20181112075600.1155-1-kai.kang@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2018/11/9 下午6:24, Jan Stancek wrote:
->
-> ----- Original Message -----
->> From: Kai Kang <kai.kang@windriver.com>
->>
->> It fails to run case msgstress04:
->>
->> $ ./msgstress04 -n 1 -c 1 -l 1
->>
->> It only inits the first MSGMNI members of keyarray. So if argument off
->> of function dotest_iteration is greater than MSGMNI, the argument key
->> passed to function dotest() will be IPC_PRIVATE(0) which will finally
->> pass to syscall msgget(), then cause case fails.
->>
->> Make sure get the value for key from the initialized members of keyarray.
->>
->> Signed-off-by: Kai Kang <kai.kang@windriver.com>
->> ---
->>   testcases/kernel/syscalls/ipc/msgstress/msgstress04.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
->> b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
->> index 18fad4fbd..a357ce59a 100644
->> --- a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
->> +++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
->> @@ -198,7 +198,7 @@ static void dotest_iteration(int off)
->>   	memset(pidarray, 0, sizeof(pidarray));
->>   
->>   	for (i = 0; i < nprocs; i++) {
->> -		key = keyarray[off + i];
->> +		key = keyarray[(off + i) % MSGMNI];
-> Hi,
->
-> Isn't this going to pick same key over and over again?
->
-> Say maxnprocs is '1', and MSGMNI is 10000:
->    dotest_iteration(i*(10000 / 1));
-> will become:
->    key = keyarray[(10000 + 0) % 10000];
->    key = keyarray[(20000 + 0) % 10000];
->    key = keyarray[(30000 + 0) % 10000];
->    ...
->
-> If test intention is to exercise queues for all keys, shouldn't we fix main() instead?
+From: Kai Kang <kai.kang@windriver.com>
 
+There are some problems of the logic to use all values in keyarray. It
+fails to run:
 
-Yes, you're right. Thanks for comment. V2 will be sent.
+$ ./msgstress04 -n 1 -c 1 -l 1
 
---Kai
+Only the first MSGMNI members of keyarray are initialized. But it will
+use the member whose index exceeds MSGMNI in keyarray.
 
+Correct the logic to make sure to use the initialized members of
+keyarray.
 
->
-> diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-> index 18fad4fbdca1..81383d6c8b11 100644
-> --- a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-> +++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
-> @@ -176,11 +176,11 @@ int main(int argc, char **argv)
->          } else {
->                  for (i = 0; i < (MSGMNI / maxnprocs); i++) {
->                          nprocs = maxnprocs;
-> -                       dotest_iteration(i*(MSGMNI / maxnprocs));
-> +                       dotest_iteration(i * maxnprocs);
->                  }
->   
->                  nprocs = MSGMNI % maxnprocs;
-> -               dotest_iteration(i*(MSGMNI / maxnprocs));
-> +               dotest_iteration(i * maxnprocs);
->          }
->   
->          tst_resm(TPASS, "Test ran successfully!");
->
-> Regards,
-> Jan
->
->>   
->>   		if ((pid = FORK_OR_VFORK()) < 0)
->>   			tst_brkm(TFAIL, cleanup,
->> --
->> 2.17.0
->>
->>
->> --
->> Mailing list info: https://lists.linux.it/listinfo/ltp
->>
+Signed-off-by: Kai Kang <kai.kang@windriver.com>
+---
+ testcases/kernel/syscalls/ipc/msgstress/msgstress04.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
+index 18fad4fbd..81383d6c8 100644
+--- a/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
++++ b/testcases/kernel/syscalls/ipc/msgstress/msgstress04.c
+@@ -176,11 +176,11 @@ int main(int argc, char **argv)
+ 	} else {
+ 		for (i = 0; i < (MSGMNI / maxnprocs); i++) {
+ 			nprocs = maxnprocs;
+-			dotest_iteration(i*(MSGMNI / maxnprocs));
++			dotest_iteration(i * maxnprocs);
+ 		}
+ 
+ 		nprocs = MSGMNI % maxnprocs;
+-		dotest_iteration(i*(MSGMNI / maxnprocs));
++		dotest_iteration(i * maxnprocs);
+ 	}
+ 
+ 	tst_resm(TPASS, "Test ran successfully!");
 -- 
-Regards,
-Neil | Kai Kang
+2.17.0
 
