@@ -1,100 +1,35 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 12 Nov 2018 20:33:23 +0300
-Subject: [LTP] [PATCH v3 2/2] net/ipsec: Add check for xfrm_user
-In-Reply-To: <20181108142409.4955-2-pvorel@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 12 Nov 2018 21:37:23 +0100
+Subject: [LTP] [PATCH v3 1/2] net: Add tst_net_run helper
+In-Reply-To: <d25987dd-f70b-224e-19cf-f887fbb342f0@oracle.com>
 References: <20181108142409.4955-1-pvorel@suse.cz>
- <20181108142409.4955-2-pvorel@suse.cz>
-Message-ID: <0497ccad-3a37-4ad5-9ee2-94dbc819c680@oracle.com>
+ <d25987dd-f70b-224e-19cf-f887fbb342f0@oracle.com>
+Message-ID: <20181112203723.GC13928@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 08.11.2018 17:24, Petr Vorel wrote:
-> which is required by ip xfrm command.
-> As ipsec_lib.sh is used for other commands than it,
-> check it only when used. Call in cleanup function could trigger infinite
-> loop, therefore check only once.
+Hi Alexey,
 
-What about adding cleanup_xfrm flag to cleanup() instead, something like this:
+> > +	[ -n "$safe" ] && ROD $cmd || sh -c "$cmd"
+>                                       ^
+>                                   just $cmd?
+Yes, sh -c does not work for shell functions unless are exported
+(tst_test_drivers() in next commit is a shell function).
+I somehow overlooked it.
 
-diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
-index b099fde..28d457b 100644
---- a/testcases/network/stress/ipsec/ipsec_lib.sh
-+++ b/testcases/network/stress/ipsec/ipsec_lib.sh
-@@ -81,6 +81,11 @@ ipsec_lib_setup()
-        cleanup_vti=
-        ALG=
-        ALGR=
-+
-+       if [ -n "$IPSEC_MODE" ]; then
-+               tst_net_run "tst_test_drivers xfrm_user"
-+               cleanup_xfrm=1
-+       fi
- }
- 
- TST_OPTS="l:m:p:s:S:k:A:e:a:c:r:"
-@@ -110,6 +115,8 @@ tst_ipsec_setup()
- # tst_ipsec_cleanup: flush ipsec state and policy rules
- tst_ipsec_cleanup()
- {
-+       [ -z "$cleanup_xfrm" ] && return
-+
-        ip xfrm state flush
-        ip xfrm policy flush
-        tst_rhost_run -c "ip xfrm state flush && ip xfrm policy flush"
+But sh -c is used for all test links in tst_rhost_run(),
+I guess we don't want to do export -f FUNCNAME for all functions in tst_net.sh,
+do we?
+
+> > +
+> > +	cmd="$cmd $rparams $@"
+>                ^
+> So, now it is "$cmd $lparams $@", we need to store $1 in a separate variable.
+Good catch, thx!
 
 
-
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  testcases/network/stress/ipsec/ipsec_lib.sh | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
-> index b099fdeaf..a9ac5bc50 100644
-> --- a/testcases/network/stress/ipsec/ipsec_lib.sh
-> +++ b/testcases/network/stress/ipsec/ipsec_lib.sh
-> @@ -89,6 +89,14 @@ TST_SETUP=${TST_SETUP:-ipsec_lib_setup}
->  TST_USAGE=ipsec_lib_usage
->  . tst_net.sh
->  
-> +tst_ipsec_check_driver()
-> +{
-> +	if [ -z "$ipsec_driver_checked" ]; then
-> +		export ipsec_driver_checked=1
-> +		tst_net_run "tst_test_drivers xfrm_user"
-> +	fi
-> +}
-> +
->  get_key()
->  {
->  	local bits=$1
-> @@ -110,6 +118,7 @@ tst_ipsec_setup()
->  # tst_ipsec_cleanup: flush ipsec state and policy rules
->  tst_ipsec_cleanup()
->  {
-> +	tst_ipsec_check_driver
->  	ip xfrm state flush
->  	ip xfrm policy flush
->  	tst_rhost_run -c "ip xfrm state flush && ip xfrm policy flush"
-> @@ -175,6 +184,7 @@ tst_ipsec()
->  	local p="proto $IPSEC_PROTO"
->  	[ "$IPSEC_PROTO" = "esp_aead" ] && p="proto esp"
->  
-> +	tst_ipsec_check_driver
->  	ipsec_set_algoline
->  
->  	if [ $target = lhost ]; then
-> @@ -234,6 +244,7 @@ tst_ipsec_vti()
->  		tst_brk TCONF "iproute doesn't support 'vti'"
->  
->  	ipsec_set_algoline
-> +	tst_ipsec_check_driver
->  
->  	local o_dir="src $src dst $dst"
->  	local i_dir="src $dst dst $src"
-> 
-
+Kind regards,
+Petr
