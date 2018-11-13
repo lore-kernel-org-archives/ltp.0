@@ -1,43 +1,41 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 13 Nov 2018 15:02:09 +0100
-Subject: [LTP] uclinux support?
-In-Reply-To: <CAKdteOZ7Zj_qJA+NFCnCOVi4_K_7MfsVrHY9qJ5iRYjD_p3SSg@mail.gmail.com>
-References: <CAKdteOY=B3m0NvOcPuAPbmoVkCgwuXq7PsiJZw-sPAyVdtkDQQ@mail.gmail.com>
- <20181112110151.GA23335@rei.lan>
- <CAKdteObcqQaLfHmSCt5VCSp8KEUsZL7af8gfZPvuZkpa1QNvGA@mail.gmail.com>
- <20181112142240.GA10234@rei.lan> <20181113085615.GD7182@dell5510>
- <CAKdteOZ7Zj_qJA+NFCnCOVi4_K_7MfsVrHY9qJ5iRYjD_p3SSg@mail.gmail.com>
-Message-ID: <20181113140209.GA24439@dell5510>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 13 Nov 2018 18:11:44 +0300
+Subject: [LTP] [PATCH 0/6] network: new tests for mpls over gre,
+ gre6 and sit
+In-Reply-To: <20181102201553.GA14718@dell5510>
+References: <1540818202-11247-1-git-send-email-alexey.kodanev@oracle.com>
+ <20181102201553.GA14718@dell5510>
+Message-ID: <b10bea1c-bfe9-3b52-a5cb-a30bf6b85d50@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+On 11/02/2018 11:15 PM, Petr Vorel wrote:
+> Hi Alexey,
+> 
+>> Before using sit tunnels with MPLS, add stand-alone sit01 test.
+>> It is done by the first two patches.
+> 
+>> The rest of the patches add various MPLS tests:
+>>  * mpls01: functional test, creates/removes MPLS routes,
+>>    checks sysctl parameters.
+>>  * mpls02: MPLS over the default test network configuration
+>>  * mpls03/mpls04: MPLS over GRE and SIT.
+> 
+>> Alexey Kodanev (6):
+>>   network/virt: add support for sit tunnel
+>>   network/sit01: new test for sit tunnel
+>>   network/mpls01: new test for mpls labels
+>>   network/mpls02: new test with lwtunnel
+>>   network/mpls03: add MPLS over GRE and GREv6
+>>   network/mpls04: new test with mpls over sit tunnel
+> 
+> Thanks for patches, LGTM.
+> Acked-by: Petr Vorel <pvorel@suse.cz>
+> 
+> I've sent some minor issues to 4/6 and 5/6.
+> 
 
-> > FYI LTP compiles under uclibc-ng. Buildroot distribution (which uses glibc,
-> > uclibc-ng and musl) disabled it just for musl [1]. It's tested with their
-> > autobuild service [2] and currently no build reports are for latest release [3].
-> > IMHO it shouldn't be difficult to support musl as well.
-
-> > [1] https://git.busybox.net/buildroot/tree/package/ltp-testsuite/Config.in
-
-> IIUC, it depends on BR2_USE_MMU, which probably means that it
-> runs only on targets with an MMU,
-Yep.
-> which is not my case.
-OK, I didn't consider non-MMU system.
-
-> And the "#fork()" comment seems to indicate that otherwise
-> LTP fails to build for lack of fork(), which is precisely what I'm seeing.
-
-> Using a brutal -Dfork=vfork helped me go much further,
-> and I was actually able to run some of the tests involving pthreads and signals.
-I see some vfork support for uclibc in legacy C API (include/old/test.h),
-but no support in new C API (as Cyril mentioned).
-
-Good luck.
-
-Kind regards,
-Petr
+All fixed, thanks for review Petr! Applied.
