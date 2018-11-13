@@ -1,81 +1,36 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 13 Nov 2018 16:17:44 +0100
-Subject: [LTP] [PATCH 2/3] lapi/safe_rt_signal.h: Add.
-In-Reply-To: <20181113151745.24676-1-chrubis@suse.cz>
-References: <20181113151745.24676-1-chrubis@suse.cz>
-Message-ID: <20181113151745.24676-3-chrubis@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 13 Nov 2018 16:26:51 +0100
+Subject: [LTP] [PATCH v3 1/2] net: Add tst_net_run helper
+In-Reply-To: <20181113082724.GC7182@dell5510>
+References: <20181108142409.4955-1-pvorel@suse.cz>
+ <d25987dd-f70b-224e-19cf-f887fbb342f0@oracle.com>
+ <20181112203723.GC13928@dell5510> <20181113082724.GC7182@dell5510>
+Message-ID: <20181113152651.GA3712@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This commits adds SAFE_RT_* calls, the file is created in lapi/ because
-these are wrappers around low level kernel syscalls rather than around
-the libc interfaces.
+Hi Alexey,
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- include/lapi/safe_rt_signal.h | 50 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
- create mode 100644 include/lapi/safe_rt_signal.h
+> > > > +	[ -n "$safe" ] && ROD $cmd || sh -c "$cmd"
+> > >                                       ^
+> > >                                   just $cmd?
+> > Yes, sh -c does not work for shell functions unless are exported
+> > (tst_test_drivers() in next commit is a shell function).
+> > I somehow overlooked it.
 
-diff --git a/include/lapi/safe_rt_signal.h b/include/lapi/safe_rt_signal.h
-new file mode 100644
-index 000000000..67fa44417
---- /dev/null
-+++ b/include/lapi/safe_rt_signal.h
-@@ -0,0 +1,50 @@
-+/*
-+ * Copyright (c) 2018 Cyril Hrubis <chrubis@suse.cz>
-+ */
-+
-+#ifndef SAFE_RT_SIGNAL_H__
-+#define SAFE_RT_SIGNAL_H__
-+
-+#include <signal.h>
-+#include "lapi/rt_sigaction.h"
-+
-+static inline int safe_rt_sigaction(const char *file, const int lineno,
-+                                    int signum, const struct sigaction *act,
-+                                    struct sigaction *oact, size_t sigsetsize)
-+{
-+	int ret;
-+
-+	ret = ltp_rt_sigaction(signum, act, oact, sigsetsize);
-+	if (ret < 0) {
-+		tst_brk(TBROK | TERRNO,
-+			"%s:%d: ltp_rt_sigaction(%i, %p, %p, %zu) failed",
-+			file, lineno, signum, act, oact, sigsetsize);
-+	}
-+
-+	return ret;
-+}
-+
-+#define SAFE_RT_SIGACTION(signum, act, oldact, sigsetsize) \
-+	safe_rt_sigaction(__FILE__, __LINE__, signum, act, oldact, sigsetsize)
-+
-+
-+static inline int safe_rt_sigprocmask(const char *file, const int lineno,
-+                                      int how, const sigset_t *set,
-+                                      sigset_t *oldset, size_t sigsetsize)
-+{
-+	int ret;
-+
-+	ret = tst_syscall(__NR_rt_sigprocmask, how, set, oldset, sigsetsize);
-+	if (ret < 0) {
-+		tst_brk(TBROK | TERRNO,
-+		        "%s:%d: rt_sigprocmask(%i, %p, %p, %zu) failed",
-+			file, lineno, how, set, oldset, sigsetsize);
-+	}
-+
-+	return ret;
-+}
-+
-+#define SAFE_RT_SIGPROCMASK(how, set, oldset, sigsetsize) \
-+	safe_rt_sigprocmask(__FILE__, __LINE__, how, set, oldset, sigsetsize)
-+
-+#endif /* SAFE_RT_SIGNAL_H__ */
--- 
-2.16.4
+> > But sh -c is used for all test links in tst_rhost_run(),
+> > I guess we don't want to do export -f FUNCNAME for all functions in tst_net.sh,
+> > do we?
+> OK, export -f FUNCNAME is a bashism, we cannot use it.
+> I'll check whether we can replace sh -c with brackets.
+> If not, tst_rhost_run() won't be able to use functions (just binaries).
+OK, execvp() used in testcases/kernel/containers/share/ns_exec.c (used for netns) requires binary.
+I guess I have to live with the fact that tst_rhost_run() is not able to call
+shell functions.
 
+
+Kind regards,
+Petr
