@@ -1,74 +1,150 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 14 Nov 2018 13:21:39 +0100
-Subject: [LTP] [PATCH] [COMMITTED] containers/pidns13: Fix race between
-	threads
-Message-ID: <20181114122139.14690-1-chrubis@suse.cz>
+Date: Wed, 14 Nov 2018 13:45:46 +0100
+Subject: [LTP] [PATCH] [RFC] doc/tmp-commands.txt
+Message-ID: <20181114124546.17222-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The original code was not thread safe and relied on thread ordering to
-run correctly. The problem is that the thread id was passed as a pointer
-to a variable that has been changed afterwards, which is obviously not
-safe.
-
-So now the code simply casts integer to pointer and back so we pass the
-actual value rather than pointer to it, which makes the code simpler and
-is race free.
-
-This has been originaly reported in:
-
-https://github.com/linux-test-project/ltp/pull/167
+Remove obsolete documentation.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/containers/pidns/pidns13.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ doc/tpm-commands.txt | 123 ---------------------------------------------------
+ 1 file changed, 123 deletions(-)
+ delete mode 100644 doc/tpm-commands.txt
 
-diff --git a/testcases/kernel/containers/pidns/pidns13.c b/testcases/kernel/containers/pidns/pidns13.c
-index e8ab7ce60..003bb61ea 100644
---- a/testcases/kernel/containers/pidns/pidns13.c
-+++ b/testcases/kernel/containers/pidns/pidns13.c
-@@ -75,7 +75,7 @@ int child_fn(void *arg)
- 	siginfo_t info;
- 	struct timespec timeout;
- 	pid_t pid, ppid;
--	int cinit_no = *((int *)arg);
-+	intptr_t cinit_no = (intptr_t)arg;
- 
- 	/* Set process id and parent pid */
- 	pid = getpid();
-@@ -176,7 +176,6 @@ static void setup(void)
- int main(int argc, char *argv[])
- {
- 	int status;
--	int *cinit_no = malloc(sizeof(int));
- 	pid_t cpid1, cpid2;
- 
- 	setup();
-@@ -186,18 +185,11 @@ int main(int argc, char *argv[])
- 		tst_resm(TBROK, "parent: pipe creation failed");
- 	}
- 
--	/* container creation on PID namespace */
--	if (!cinit_no) {
--		tst_resm(TBROK, "memory allocation failed.");
--	}
+diff --git a/doc/tpm-commands.txt b/doc/tpm-commands.txt
+deleted file mode 100644
+index 59a432494..000000000
+--- a/doc/tpm-commands.txt
++++ /dev/null
+@@ -1,123 +0,0 @@
+-ade
+----
+-ar01
 -
- 	/* Create container 1 */
--	*cinit_no = 1;
--	cpid1 = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_fn, cinit_no);
-+	cpid1 = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_fn, (void*)(intptr_t)1);
- 
- 	/* Create container 2 */
--	*cinit_no = 2;
--	cpid2 = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_fn, cinit_no);
-+	cpid2 = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_fn, (void*)(intptr_t)2);
- 	if (cpid1 < 0 || cpid2 < 0) {
- 		tst_resm(TBROK, "parent: clone() failed.");
- 	}
+-	Construct one or more command lines which use options that do not
+-	take arguments
+-	For each of these invocations
+-	Specify the options separately
+-	Group the options together
+-	Compare the behavior of the two cases
+-	If they behave differently, then fail
+-	If none of the cases fail, then pass
+-
+-ld01
+-
+-	 To test the basic functionality of the `ld` command.
+-
+-ldd01
+-
+-	 To test the basic functionality of the `ldd` command.
+-
+-nm01
+-
+-	To test the basic functionality of the `nm` command.
+-
+-objdump01
+-
+-	Tests the functionality of the `objdump` command.
+-
+-size01
+-
+-	To test the basic functionality of `size`.
+-
+-
+-
+-cpio
+-----
+-cpio_test.sh
+-
+-	Tests the basic functionality of `cpio` command
+-
+-
+-
+-cron
+-----
+-cron_test.sh
+-
+-	This testcase tests if crontab <filename> installs the cronjob
+-	and cron schedules the job correctly.
+-
+-
+-
+-eject
+------
+-eject_tests.sh
+-
+-	Tests the basic functionality of `eject` command.
+-
+-
+-
+-fileutils
+----------
+-cp_tests.sh
+-
+-	Test basic functionality of `cp` command
+-
+-ln_tests.sh
+-
+-	Test basic functionality of `ln` command
+-
+-mkdir_tests.sh
+-
+-	Test basic functionality of `mkdir` command
+-
+-mv_test.sh
+-
+-	Test basic functionality of `mv` command
+-
+-
+-
+-gzip
+-----
+-gzip_tests.sh
+-
+-	Test basic functionality of `gzip` and `gunzip` command
+-
+-
+-
+-logrotate
+----------
+-logrotate_tests.sh
+-
+-	Test basic functionality of `logrotate` command.
+-
+-
+-
+-mail
+-----
+-mail_tests.sh
+-
+-	Test basic functionality of `mail` command.
+-
+-
+-
+-tar
+----
+-tar_tests.sh
+-
+-	Test basic functionality of `tar` command.
+-
+-
+-tpm-tools
+---------
+-
+-	Test basic functionality of the tpm-tools commands.
+-
+-
+-unzip
+------
+-unzip_tests.sh
+-
+-	Test basic functionality of `unzip` command.
+-
 -- 
 2.16.4
 
