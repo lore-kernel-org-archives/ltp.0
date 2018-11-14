@@ -1,187 +1,74 @@
-From: Steve Muckle <smuckle@google.com>
-Date: Tue, 13 Nov 2018 12:18:05 -0800
-Subject: [LTP] [PATCH 3/3] syscalls/rt_sigsuspend01: Cleanup && convert
- to newlib
-In-Reply-To: <20181113151745.24676-4-chrubis@suse.cz>
-References: <20181113151745.24676-1-chrubis@suse.cz>
- <20181113151745.24676-4-chrubis@suse.cz>
-Message-ID: <6693549a-14f5-da18-cbd0-784b412d66ba@google.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 14 Nov 2018 13:21:39 +0100
+Subject: [LTP] [PATCH] [COMMITTED] containers/pidns13: Fix race between
+	threads
+Message-ID: <20181114122139.14690-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-LGTM
+The original code was not thread safe and relied on thread ordering to
+run correctly. The problem is that the thread id was passed as a pointer
+to a variable that has been changed afterwards, which is obviously not
+safe.
 
-On 11/13/2018 07:17 AM, Cyril Hrubis wrote:
-> Also there is no need to sleep for 5 seconds so we only sleep for 1 now.
-> 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> CC: Steve Muckle <smuckle@google.com>
-> ---
->   .../syscalls/rt_sigsuspend/rt_sigsuspend01.c       | 135 +++++++--------------
->   1 file changed, 43 insertions(+), 92 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
-> index c8c228a47..14b6bb332 100644
-> --- a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
-> +++ b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
-> @@ -1,112 +1,63 @@
->   /******************************************************************************/
->   /* Copyright (c) Crackerjack Project., 2007                                   */
->   /*                                                                            */
-> -/* This program is free software;  you can redistribute it and/or modify      */
-> -/* it under the terms of the GNU General Public License as published by       */
-> -/* the Free Software Foundation; either version 2 of the License, or          */
-> -/* (at your option) any later version.                                        */
-> -/*                                                                            */
-> -/* This program is distributed in the hope that it will be useful,            */
-> -/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
-> -/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
-> -/* the GNU General Public License for more details.                           */
-> -/*                                                                            */
-> -/* You should have received a copy of the GNU General Public License          */
-> -/* along with this program;  if not, write to the Free Software Foundation,   */
-> -/* Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           */
-> -/*                                                                            */
->   /* History:     Porting from Crackerjack to LTP is done by                    */
->   /*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
->   /******************************************************************************/
->   
-> -/******************************************************************************/
-> -/* Description: This tests the rt_sigsuspend() syscall.                       */
-> -/******************************************************************************/
-> +/*
-> + * Description: This tests the rt_sigsuspend() syscall.
-> + *
-> + * Waits for SIGALRM in rt_sigsuspend() then checks that process mask wasn't
-> + * modified.
-> + */
->   
-> -#include <stdio.h>
->   #include <signal.h>
->   #include <errno.h>
-> -#include <string.h>
->   
-> -#include "test.h"
-> +#include "tst_test.h"
->   #include "lapi/syscalls.h"
-> -#include "lapi/rt_sigaction.h"
-> -
-> -char *TCID = "rt_sigsuspend01";
-> -int TST_TOTAL = 1;
-> -
-> -static void cleanup(void)
-> -{
-> -	tst_rmdir();
-> -}
-> -
-> -static void setup(void)
-> -{
-> -	TEST_PAUSE;
-> -	tst_tmpdir();
-> -}
-> +#include "lapi/safe_rt_signal.h"
->   
->   static void sig_handler(int sig)
->   {
-> +	(void) sig;
->   }
->   
-> -int main(int ac, char **av)
-> +static void verify_rt_sigsuspend(void)
->   {
->   	sigset_t set, set1, set2;
-> -	int lc;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); ++lc) {
-> -
-> -		tst_count = 0;
-> -
-> -		if (sigemptyset(&set) < 0)
-> -			tst_brkm(TFAIL | TERRNO, cleanup, "sigemptyset failed");
-> -		struct sigaction act, oact;
-> -		memset(&act, 0, sizeof(act));
-> -		memset(&oact, 0, sizeof(oact));
-> -		act.sa_handler = sig_handler;
-> -
-> -		TEST(ltp_rt_sigaction(SIGALRM, &act, &oact, SIGSETSIZE));
-> -		if (TEST_RETURN == -1)
-> -			tst_brkm(TFAIL | TTERRNO, cleanup,
-> -				 "rt_sigaction failed");
-> -
-> -		TEST(ltp_syscall(__NR_rt_sigprocmask, SIG_UNBLOCK, 0,
-> -			     &set1, SIGSETSIZE));
-> -		if (TEST_RETURN == -1)
-> -			tst_brkm(TFAIL | TTERRNO, cleanup,
-> -				 "rt_sigprocmask failed");
-> -
-> -		TEST(alarm(5));
-> -		int result;
-> -		TEST(result = ltp_syscall(__NR_rt_sigsuspend, &set,
-> -			SIGSETSIZE));
-> -		TEST(alarm(0));
-> -		if (result == -1 && TEST_ERRNO != EINTR) {
-> -			TEST(ltp_syscall(__NR_rt_sigprocmask, SIG_UNBLOCK, 0,
-> -				&set2, SIGSETSIZE));
-> -			if (TEST_RETURN == -1) {
-> -				tst_brkm(TFAIL | TTERRNO, cleanup,
-> -					 "rt_sigprocmask failed");
-> -			} else if (memcmp(&set1, &set2,
-> -				   sizeof(unsigned long))) {
-> -				tst_brkm(TFAIL | TTERRNO, cleanup,
-> -					 "rt_sigsuspend failed to "
-> -					 "preserve signal mask");
-> -			} else {
-> -				tst_resm(TPASS, "rt_sigsuspend PASSED");
-> -			}
-> -		} else {
-> -			tst_resm(TFAIL | TTERRNO, "rt_sigsuspend failed");
-> -		}
-> -
-> -	}
-> -
-> -	cleanup();
-> -
-> -	tst_exit();
-> +	struct sigaction act = {.sa_handler = sig_handler};
-> +
-> +	if (sigemptyset(&set) < 0)
-> +		tst_brk(TFAIL | TERRNO, "sigemptyset failed");
-> +
-> +	SAFE_RT_SIGACTION(SIGALRM, &act, NULL, SIGSETSIZE);
-> +
-> +	SAFE_RT_SIGPROCMASK(0, NULL, &set1, SIGSETSIZE);
-> +
-> +	alarm(1);
-> +
-> +	TEST(tst_syscall(__NR_rt_sigsuspend, &set, SIGSETSIZE));
-> +
-> +	alarm(0);
-> +
-> +	if (TST_RET != -1)
-> +		tst_brk(TFAIL, "rt_sigsuspend returned %ld", TST_RET);
-> +
-> +	if (TST_ERR != EINTR)
-> +		tst_brk(TFAIL | TTERRNO, "rt_sigsuspend() failed unexpectedly");
-> +
-> +	tst_res(TPASS, "rt_sigsuspend() returned with -1 and EINTR");
-> +
-> +	SAFE_RT_SIGPROCMASK(0, NULL, &set2, SIGSETSIZE);
-> +
-> +	if (memcmp(&set1, &set2, sizeof(unsigned long)))
-> +		tst_res(TFAIL, "signal mask not preserved");
-> +	else
-> +		tst_res(TPASS, "signal mask preserved");
->   }
-> +
-> +static struct tst_test test = {
-> +	.test_all = verify_rt_sigsuspend,
-> +};
-> 
+So now the code simply casts integer to pointer and back so we pass the
+actual value rather than pointer to it, which makes the code simpler and
+is race free.
+
+This has been originaly reported in:
+
+https://github.com/linux-test-project/ltp/pull/167
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/containers/pidns/pidns13.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
+
+diff --git a/testcases/kernel/containers/pidns/pidns13.c b/testcases/kernel/containers/pidns/pidns13.c
+index e8ab7ce60..003bb61ea 100644
+--- a/testcases/kernel/containers/pidns/pidns13.c
++++ b/testcases/kernel/containers/pidns/pidns13.c
+@@ -75,7 +75,7 @@ int child_fn(void *arg)
+ 	siginfo_t info;
+ 	struct timespec timeout;
+ 	pid_t pid, ppid;
+-	int cinit_no = *((int *)arg);
++	intptr_t cinit_no = (intptr_t)arg;
+ 
+ 	/* Set process id and parent pid */
+ 	pid = getpid();
+@@ -176,7 +176,6 @@ static void setup(void)
+ int main(int argc, char *argv[])
+ {
+ 	int status;
+-	int *cinit_no = malloc(sizeof(int));
+ 	pid_t cpid1, cpid2;
+ 
+ 	setup();
+@@ -186,18 +185,11 @@ int main(int argc, char *argv[])
+ 		tst_resm(TBROK, "parent: pipe creation failed");
+ 	}
+ 
+-	/* container creation on PID namespace */
+-	if (!cinit_no) {
+-		tst_resm(TBROK, "memory allocation failed.");
+-	}
+-
+ 	/* Create container 1 */
+-	*cinit_no = 1;
+-	cpid1 = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_fn, cinit_no);
++	cpid1 = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_fn, (void*)(intptr_t)1);
+ 
+ 	/* Create container 2 */
+-	*cinit_no = 2;
+-	cpid2 = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_fn, cinit_no);
++	cpid2 = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_fn, (void*)(intptr_t)2);
+ 	if (cpid1 < 0 || cpid2 < 0) {
+ 		tst_resm(TBROK, "parent: clone() failed.");
+ 	}
+-- 
+2.16.4
 
