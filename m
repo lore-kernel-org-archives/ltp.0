@@ -1,8 +1,9 @@
 From: Travis CI <builds@travis-ci.org>
-Date: Thu, 15 Nov 2018 15:25:13 +0000
-Subject: [LTP] Failed: linux-test-project/ltp#1144 (metan - 3eaa550)
-In-Reply-To: <linux-test-project/ltp+455547759+failed@travis-ci.org>
-Message-ID: <5bed8fd8ccf6f_43fe21bc429d422451d@95b25bf9-ed58-45a2-a808-4dc37ea0628e.mail>
+Date: Thu, 15 Nov 2018 15:39:09 +0000
+Subject: [LTP] Passed: linux-test-project/ltp#1145 (fn-verify-982347 -
+	3eaa550)
+In-Reply-To: <linux-test-project/ltp+455548336+passed@travis-ci.org>
+Message-ID: <5bed931d42e43_43fe21bc43488231351@95b25bf9-ed58-45a2-a808-4dc37ea0628e.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,11 +13,11 @@ To: ltp@lists.linux.it
 Build Update for linux-test-project/ltp
 -------------------------------------
 
-Build: #1144
-Status: Failed
+Build: #1145
+Status: Passed
 
-Duration: 5 mins and 23 secs
-Commit: 3eaa550 (metan)
+Duration: 15 mins and 13 secs
+Commit: 3eaa550 (fn-verify-982347)
 Author: Cristian Marussi
 Message: cpuset_hotplug: fix cpuset_list_compute
 
@@ -47,9 +48,9 @@ cpuset_list_compute.c:35:41: warning: comparison is always true due to limited r
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 Acked-by: Cyril Hrubis <chrubis@suse.cz>
 
-View the changeset: https://github.com/linux-test-project/ltp/compare/metan
+View the changeset: https://github.com/linux-test-project/ltp/compare/fn-verify-982347
 
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/455547759?utm_medium=notification&utm_source=email
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/455548336?utm_medium=notification&utm_source=email
 
 --
 
@@ -59,4 +60,4 @@ Or configure specific recipients for build notifications in your .travis.yml fil
 
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20181115/d9659f2c/attachment-0001.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20181115/caf07036/attachment.html>
