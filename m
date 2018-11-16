@@ -1,15 +1,14 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 16 Nov 2018 15:51:06 +0100
+Date: Fri, 16 Nov 2018 16:02:45 +0100
 Subject: [LTP] [Automated-testing] [RFC] [PATCH] lib: Add support for
  test tags
-In-Reply-To: <ECADFF3FD767C149AD96A924E7EA6EAF88A3CBD9@USCULXMSG01.am.sony.com>
+In-Reply-To: <ECADFF3FD767C149AD96A924E7EA6EAF88A3CC04@USCULXMSG01.am.sony.com>
 References: <20181107142209.8965-1-chrubis@suse.cz>
- <CAEemH2dw1qeKgswzh8k_PdesQwGtRm72wzfG2erqw3J-WTJG0A@mail.gmail.com>
- <20181108125210.GB29767@rei>
- <ECADFF3FD767C149AD96A924E7EA6EAF88A34661@USCULXMSG01.am.sony.com>
- <20181109122804.GB19700@rei.lan>
- <ECADFF3FD767C149AD96A924E7EA6EAF88A3CBD9@USCULXMSG01.am.sony.com>
-Message-ID: <20181116145106.GA13883@rei.lan>
+ <156962223.71358453.1541698207250.JavaMail.zimbra@redhat.com>
+ <ECADFF3FD767C149AD96A924E7EA6EAF88A346A7@USCULXMSG01.am.sony.com>
+ <20181109102859.GA19700@rei.lan>
+ <ECADFF3FD767C149AD96A924E7EA6EAF88A3CC04@USCULXMSG01.am.sony.com>
+Message-ID: <20181116150245.GB13883@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -17,84 +16,78 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > > It sounds like you will be preserving test metadata with two different uses:
-> > > 1) dependencies required for the test to execute
-> > > 2) possible explanations for test failure
-> > >
-> > > There might be a value in keeping these distinct.
+> > > I'd like to see a way to extract this data without having to
+> > > run the test as well.  That way test frameworks using LTP
+> > > could extract the data and handle test scheduling,
+> > > test dependencies, etc. without having to build or execute
+> > > the code.  In the case of Fuego, test dependencies are analyzed
+> > > on a separate machine from the one running the test.  Also,
+> > > we try to process some dependencies prior to building the test.
 > > 
-> > It's a bit more complicated than this in LTP we have basically three sets:
+> > What I had in mind was some additional database build step where
+> > all tests would be executed with -q parameter on the target machine
+> > which would create a big structured file with all the metadata. So first
+> > thing before any test would be executed would be a script that would
+> > check if there is a database file or not and and if there is none it
+> > would build it, then we can get the database from the target machine
+> > and the test runner can make use of that.
 > > 
-> > 1) test dependencies that could be derived from the test structure
-> >    (these are the needs_root, needs_device, but also needs mkfs.foo or
-> > others)
+> > This process has to be either part of the LTP build or has to be
+> > executed before first testrun anyways, sice there is no other way
+> > to keep the data in sync with the binaries.
+> 
+> OK - I think we could make that work in Fuego.
+> 
+> Is any of the information you are encoding architecture-specific?
+
+As it is test are disabled on missing library headers on compile time
+and in rare case based on architecture. In that case the tst_test
+structure is ifdefed out and the test library only gets a dummy one
+which means that there will be no data. I guess that I will have to look
+into that.
+
+> It might be convenient for Fuego to build LTP on x86_64 to extract
+> this data, and then build the actual test binaries for the target architecture
+> in a separate step.  But that wouldn't work if the x86_64
+> binaries gave different '-q' results than the (say) ARM binaries.
+
+Agreed, the cross compilation would become much more complex if we
+required to run target binaries.
+
+> > > One mechanism for storing the data would be a separate json
+> > > file, but you could also embed the information in the source
+> > > using some regularized markup (json or something simpler)
+> > > that could be handled both in-source (for your -q operation),
+> > > or by an external scanner/converter.
 > > 
-> > 2) test dependencies that has to be specified explicitely
-> >    (test is doing something with global resources, SysV IPC, Wall
-> >    clock)
+> > Actually I've started to think that this may be the answer, if we manage
+> > to encode the metadata into C string as well as into some structured
+> > form we can have test description as well as some of the metadata
+> > available both at the runtime as well as in a format that could be
+> > parsed without compiling the test.
+> > 
+> > But there are drawbacks, I do not think that it's sane to encode if test
+> > requires root or not, or if it needs a block device in some kind of
+> > markup text. I think that it's mutch better when it's encoded in the
+> > tst_test structure as it is now.
+> If there's a standard way of expressing this that can be reliably grepp'ed,
+> I don't think everything needs to be in a structured form.
+> As long as it's not too difficult to write a parser, and there are
+> some conventions that naturally keep the data parsable, I think having
+> the metadata in C strings is fine.
 > 
-> Ahhh.   This turned on a light bulb in my head, and was a new thought
-> for me, that really blew my mind.
-> 
-> The reason is that Fuego runs only one test at a time on the target, so
-> any test automatically has exclusive access (from a test standpoint)
-> to on-target resources.  This is a result of how Fuego uses Jenkins
-> to schedule testing jobs.
-> 
-> I've been focused on off-target resource allocation (like the netperf
-> server, or off-board power measurement hardware).  It's important
-> for tests that work in the same "lab" to be able to reserve these
-> exclusively to avoid contention and perturbation of the test results.
-> And this is a difficult problem because there are no standards whatsoever
-> for doing this.  This ends up being a test scheduling issue (and possibly
-> a deadlock avoidance/resolution issue).
-> 
-> But this dependency you mention is focused on on-target resources, to
-> which a test might also need exclusive access.  This also presents a 
-> test scheduling issue.
-> 
-> A few questions:
-> 
-> Can LTP run multiple tests simultaneously?    I seem to recall something
-> about ltp-pan running multiple tests at the same time (for stress testing).
+> For example, "grep needs_root -R * | grep -v Binary" shows a list which
+> is pretty clear.   Maybe it's missing some instances, due to a program setting
+> setting this field in a weird way,  but I kind of doubt it.
+> (This field is usually declared statically like this, right?
+> It would be harder to parse if needs_root is assigned at runtime.)
 
-Not at the moment, but given that even embedded hardware have multicore
-CPUs these days it's a waste of resources and even more on server grade
-hardware with many cores.
-
-There is subset of tests that will fail if the machine is under load for
-example, which also prevents us from runnig the testsuite with some kind
-of backgroud CPU load and under memory pressure, which is just another
-reason why we need annotations like this.
-
-> Does LTP have a mechanism to "claim" or "reserve" a resource
-> on the system under test?
-
-There is none, which is the reason I started to look into this.
-
-My take on the problem is that each test would export this information
-to the testrunner so that the testrunner can make informed decisions.
-
-It could be as simple as a sinle bit of data that tells the testrunner
-not to run the tests in parallel, but I would like to be a bit more
-granular from the start. For instance we can run a few tests that
-require loop device in parallel as well, no need to limit this.
-
-> Does LTP have a mechanism to schedule tests?  That is, to check for
-> resource availability and hold off test execution until a resource
-> becomes available?
-
-Not yet, this is what I'm currently looking into.
-
-But I do not see any complications down the road, once the testrunner
-has the information, we just need to refrain from running conflicting
-tests while saturating the CPU usage with running NCPU+1 test at a time
-or so.
-
-> Thanks.  I really appreciate that you posted this to the automated-testing
-> list so we could think about it and the problems it's solving for you.
-
-And I do appreciate that there is some discussion around this :-).
+In the new library it's all static data passed in the test library. The
+old LTP API was a mess of random functions, so at some point I've
+decided to rewrite it so that we specify most of the test information in
+a form of a constant data. However so far we managed to covert about 30%
+of tests to the new API and converting the rest will take a few more
+years...
 
 -- 
 Cyril Hrubis
