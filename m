@@ -1,102 +1,63 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 16 Nov 2018 08:51:16 +0200
-Subject: [LTP] [PATCH 2/5] syscalls/fanotify03: check permission events also
-	on mountpoint mark
+Date: Fri, 16 Nov 2018 08:51:17 +0200
+Subject: [LTP] [PATCH 3/5] syscalls/fanotify01: add test for
+	FAN_MARK_FILESYSTEM events
 In-Reply-To: <20181116065119.6912-1-amir73il@gmail.com>
 References: <20181116065119.6912-1-amir73il@gmail.com>
-Message-ID: <20181116065119.6912-3-amir73il@gmail.com>
+Message-ID: <20181116065119.6912-4-amir73il@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add index to test and repeat it for mark types inode and mountpoint.
-
 Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- .../kernel/syscalls/fanotify/fanotify03.c     | 34 +++++++++++++++----
- 1 file changed, 27 insertions(+), 7 deletions(-)
+ testcases/kernel/syscalls/fanotify/fanotify.h   | 3 +++
+ testcases/kernel/syscalls/fanotify/fanotify01.c | 9 +++++++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
-index 42aac813e..19daf57ef 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify03.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
-@@ -47,6 +47,20 @@ static unsigned int event_resp[EVENT_MAX];
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
+index 5adef54d7..535f1cef2 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify.h
++++ b/testcases/kernel/syscalls/fanotify/fanotify.h
+@@ -57,6 +57,9 @@ static long fanotify_mark(int fd, unsigned int flags, uint64_t mask,
+ #ifndef FAN_MARK_INODE
+ #define FAN_MARK_INODE		0
+ #endif
++#ifndef FAN_MARK_FILESYSTEM
++#define FAN_MARK_FILESYSTEM	0x00000100
++#endif
  
- static char event_buf[EVENT_BUF_LEN];
- 
-+static struct tcase {
-+	const char *tname;
-+	struct fanotify_mark_type mark;
-+} tcases[] = {
+ struct fanotify_mark_type {
+ 	unsigned int flag;
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify01.c b/testcases/kernel/syscalls/fanotify/fanotify01.c
+index 5dfb67b61..c3d299474 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify01.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify01.c
+@@ -44,6 +44,10 @@ static struct tcase {
+ 		"mount mark events",
+ 		INIT_FANOTIFY_MARK_TYPE(MOUNT),
+ 	},
 +	{
-+		"inode mark permission events",
-+		INIT_FANOTIFY_MARK_TYPE(INODE),
++		"filesystem mark events",
++		INIT_FANOTIFY_MARK_TYPE(FILESYSTEM),
 +	},
-+	{
-+		"mount mark permission events",
-+		INIT_FANOTIFY_MARK_TYPE(MOUNT),
-+	},
-+};
-+
- static void generate_events(void)
- {
- 	int fd;
-@@ -120,11 +134,14 @@ static void check_child(void)
- 		tst_res(TFAIL, "child %s", tst_strstatus(child_ret));
- }
+ };
  
--static void setup_mark(void)
-+static void setup_mark(unsigned int n)
- {
-+	struct tcase *tc = &tcases[n];
-+	struct fanotify_mark_type *mark = &tc->mark;
-+
- 	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
- 
--	if (fanotify_mark(fd_notify, FAN_MARK_ADD,
-+	if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
- 			  FAN_ACCESS_PERM | FAN_OPEN_PERM,
+ static char fname[BUF_SIZE];
+@@ -68,6 +72,11 @@ static void test_fanotify(unsigned int n)
+ 	if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
+ 			  FAN_ACCESS | FAN_MODIFY | FAN_CLOSE | FAN_OPEN,
  			  AT_FDCWD, fname) < 0) {
- 		if (errno == EINVAL) {
-@@ -133,20 +150,22 @@ static void setup_mark(void)
- 				"configured in kernel?");
- 		} else {
- 			tst_brk(TBROK | TERRNO,
--				"fanotify_mark (%d, FAN_MARK_ADD, "
-+				"fanotify_mark (%d, FAN_MARK_ADD | %s, "
- 				"FAN_ACCESS_PERM | FAN_OPEN_PERM, "
- 				"AT_FDCWD, %s) failed.",
--				fd_notify, fname);
-+				fd_notify, mark->name, fname);
- 		}
- 	}
-+
-+	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
- }
- 
--void test01(void)
-+static void test_fanotify(unsigned int n)
- {
- 	int tst_count;
- 	int ret, len = 0, i = 0, test_num = 0;
- 
--	setup_mark();
-+	setup_mark(n);
- 	run_child();
- 
- 	tst_count = 0;
-@@ -247,7 +266,8 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
--	.test_all = test01,
-+	.test = test_fanotify,
-+	.tcnt = ARRAY_SIZE(tcases),
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.needs_tmpdir = 1,
++		if (errno == EINVAL && mark->flag == FAN_MARK_FILESYSTEM) {
++			tst_res(TCONF,
++				"FAN_MARK_FILESYSTEM not supported in kernel?");
++			return;
++		}
+ 		tst_brk(TBROK | TERRNO,
+ 			"fanotify_mark (%d, FAN_MARK_ADD, FAN_ACCESS | %s | "
+ 			"FAN_MODIFY | FAN_CLOSE | FAN_OPEN, AT_FDCWD, %s) "
 -- 
 2.17.1
 
