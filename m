@@ -1,70 +1,68 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 16 Nov 2018 15:24:11 +0100
-Subject: [LTP] [PATCH v4 1/2] net: Add tst_net_run helper
-In-Reply-To: <09aff1dd-a89f-479b-49da-c0c776b08b91@oracle.com>
-References: <20181113163008.9093-1-pvorel@suse.cz>
- <09aff1dd-a89f-479b-49da-c0c776b08b91@oracle.com>
-Message-ID: <20181116142411.GA24956@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 16 Nov 2018 22:33:44 +0800
+Subject: [LTP] [PATCH v4 0/4] New Fuzzy Sync library API
+In-Reply-To: <20181105154217.18879-1-rpalethorpe@suse.com>
+References: <20181105154217.18879-1-rpalethorpe@suse.com>
+Message-ID: <CAEemH2dF4Mg6C_uu6GUxixev_pZqbmL-h0sE73X2_6CyN1x7nA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+On Mon, Nov 5, 2018 at 11:42 PM, Richard Palethorpe
+<rpalethorpe@suse.com> wrote:
+> Changes for V4:
+>
+> * Increase fzsync timeout to 50% of the overall LTP test timeout
+> * Increase default iterations to 3 million
+> * Set cve-2014-0196 iterations to 50,000
+> * Increase sample iterations for cve-2016-7117
+>
+> With these defaults almost all of the tests should reliably trigger their
+> bugs while not taking more than 30 seconds to execute on server grade
+> hardware. On slow embedded systems the tests should also be fairly reliable,
+> however will take up to 150 seconds.
+>
+> Hopefully none of the tests will exit with a warning on slow systems because
+> they failed to complete the sampling phase. However on a very slow system
+> cve-2016-7117 will probably not have time to finish the sampling phase, but
+> this bug is simply very difficult to reproduce[1] on some kernels and a long
+> sampling time is required to get the optimal delay bias.
 
-> > Maybe we could signal where error occurred:
-> > * return 0: ok on both lhost and rhost
-> > * return 1: failure on lhost
-> > * return 2: failure on rhost
-> > * return 3: failure on both lhost and rhost
+I run these corresponding tests[1] with applying the new fuzzy_sync
+API on some slow systems. The follows are the test status and sampling
+time consumption.
 
+1. KVM Guest, RHEL-7.6GA, x86_64, 1vcpu, 1G RAM
+cve-2016-7117 and shmctl05 failed to complete the sampling phase and
+eventually exit with warnings.
 
-> It is only when there is no "safe" option, right?
-yes, as safe exit with TCONF and warning.
+Sampling time consume:
+-------------------------------
+cve-2016-7117: ~440.31s
+cve-2014-0196: ~33.77s
+cve-2017-2671: ~33.81s
+inotify09: ~33.83s
+shmctl05: ~33.78s
+test16: ~44.91s
 
-> when doing cleanup?
-IMHO in any "non-safe" run.
+My extra proposal for test shmctl05 is to extend its timeout from 20s
+to 100s. Because from the time cost detection on such a slow(1cpu, 1G
+ram) machine, 10s(1/2 of .timeout=20) is too short to finish sampling.
 
-> Could we print TWARN message inside tst_net_run() in such case?
-I wanted tst_net_run() to behave similarly as tst_rhost_run(), which doesn't
-warn about it. So I propose to add warning to both functions, but also add -q
-flag (quiet), which suppress this warning.
+2. KVM Guest, RHEL-7.6GA, x86_64, 2vcpu, 2G RAM
+All test[1] PASS with execution time/loops exceeded. I didn't do time
+consume detection on this system.
 
-The reason for quiet mode is, that (I suppose) there are cases when some
-features is tested and TWARN isn't wanted. Some examples (looks -s is used often
-in cleanup functions):
+3. Raspberry Pi3, CentOS-7.5(4.14.78-v7.1.el7 armv7l), 4cpus, 1G RAM
+All test[1] PASS with execution time/loops exceeded.
+What surprised me was that the average of sampling time is only 9~11
+seconds on the RaspbeeryPi3. Even includes cve-2016-7117 also complete
+its sampling phase so fast!
 
-testcases/network/stress/multicast/grp-operation/mcast-lib.sh:
+[1] cve-2014-0196 cve-2016-7117 cve-2017-2671 inotify09 shmctl05 test16
 
-mcast_cleanup()
-{
-    [ "$TST_IPV6" ] && mcast_cleanup6 || mcast_cleanup4
-
-    pkill -SIGHUP -f "$MCAST_LCMD"
-    tst_sleep 10ms
-    pkill -9 -f "$MCAST_LCMD"
-
-    tst_rhost_run -c "pkill -SIGHUP -f '$MCAST_RCMD'"
-}
-
-testcases/network/virt/virt_lib.sh
-virt_cleanup_rmt()
-{
-    cleanup_vifaces
-    tst_rhost_run -c "ip link delete ltp_v0 2>/dev/null"
-    if [ "$virt_tcp_syn" ]; then
-        sysctl -q net.ipv4.tcp_syn_retries=$virt_tcp_syn
-        virt_tcp_syn=
-    fi
-}
-
-nfs_setup_server() in testcases/network/nfs/nfs_stress/nfs_lib.sh:
-
-	if ! tst_rhost_run -c "test -d $remote_dir"; then
-        tst_rhost_run -s -c "mkdir -p $remote_dir; $export_cmd"
-    fi
-
-
-Kind regards,
-Petr
+--
+Regards,
+Li Wang
