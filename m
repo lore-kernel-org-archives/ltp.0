@@ -1,39 +1,50 @@
-From: Pengfei Xu <pengfei.xu@intel.com>
-Date: Fri, 16 Nov 2018 12:57:04 +0800
-Subject: [LTP] [PATCH] lib: Add library function for parsing kernel
-	config
-In-Reply-To: <ECADFF3FD767C149AD96A924E7EA6EAF88A41437@USCULXMSG01.am.sony.com>
-References: <20181115134441.27359-1-chrubis@suse.cz>
- <20181116035401.z2o67pjhxtutap6x@xpf-desktop>
- <ECADFF3FD767C149AD96A924E7EA6EAF88A41437@USCULXMSG01.am.sony.com>
-Message-ID: <20181116045704.uielxgrhj4uubcdp@xpf-desktop>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Fri, 16 Nov 2018 08:51:14 +0200
+Subject: [LTP] [PATCH 0/5] fanotify filesystem mark tests
+Message-ID: <20181116065119.6912-1-amir73il@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Tim,
-  Only Clear Linux does at present, not a new standard.
-  Thanks.
+Hi Cyril,
 
-On 2018-11-16 at 04:03:13 +0000, Tim.Bird@sony.com wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Pengfei Xu
-> > 
-> > Hi Cyril,
-> >   Thanks for kconfig checking API!
-> >   It's worked in most of Linux OS.
-> > 
-> >   Just add konfig to support Clear Linux which kconfig is saved
-> >   in "/lib/kernel/config-xxx"
-> 
-> Pengfei,
-> 
-> Is /lib/kernel/config-xxx something that only Clear Linux does,
-> or is this a new standard, done by lots of distros?
-> 
->  -- Tim
-> 
+This series adds some new tests to fanotify and is also available on
+my github tree [1].
+
+Patches 1-2 re-structure tests fanotify{01,03} to iterate over the
+fanotify mark types and add some missing test coverage for FAN_MARK_MOUNT.
+
+Patches 3-5 add test coverage for the new FAN_MARK_FILESYSTEM API, that
+was merged for kernel v4.20-rc1, to tests fanotify{01,03,10}.
+Older kernels will report TCONF on the new test cases.
+
+Previous patches from me pending your review:
+- Add test case to fanotify09 to track a bug fix in linux-next [2]
+- Enhance readahead02 to track an overlayfs regression fix in v4.19 [3]
+
+Thanks,
+Amir.
+
+[1] https://github.com/amir73il/ltp/commits/fanotify_sb
+[2] https://github.com/amir73il/ltp/commits/fanotify_ignore
+[3] https://github.com/amir73il/ltp/commits/readahead_fadvise
+
+Amir Goldstein (5):
+  syscalls/fanotify01: check events also on mountpoint mark
+  syscalls/fanotify03: check permission events also on mountpoint mark
+  syscalls/fanotify01: add test for FAN_MARK_FILESYSTEM events
+  syscalls/fanotify03: add test for FAN_MARK_FILESYSTEM permission
+    events
+  syscalls/fanotify10: add tests for FAN_MARK_FILESYSTEM and ignore mask
+
+ testcases/kernel/syscalls/fanotify/fanotify.h |  3 +
+ .../kernel/syscalls/fanotify/fanotify01.c     | 92 ++++++++++++-------
+ .../kernel/syscalls/fanotify/fanotify03.c     | 55 +++++++++--
+ .../kernel/syscalls/fanotify/fanotify10.c     | 40 +++++++-
+ 4 files changed, 148 insertions(+), 42 deletions(-)
+
+-- 
+2.17.1
+
