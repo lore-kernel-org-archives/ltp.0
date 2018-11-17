@@ -1,75 +1,52 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 16 Nov 2018 20:37:47 +0100
-Subject: [LTP] [PATCH v3 2/2] syscalls/lremovexattr: Add lremovexattr()
-	test
-In-Reply-To: <20181108183320.11262-2-rafael.tinoco@linaro.org>
-References: <20181107153855.GA8153@rei>
- <20181108183320.11262-1-rafael.tinoco@linaro.org>
- <20181108183320.11262-2-rafael.tinoco@linaro.org>
-Message-ID: <20181116193747.GA17471@rei.lan>
+From: Steve Muckle <smuckle@google.com>
+Date: Fri, 16 Nov 2018 20:51:59 -0800
+Subject: [LTP] [PATCH] syscalls/rt_sigsuspend01: ignore reserved signals
+Message-ID: <20181117045159.215245-1-smuckle@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with minor changes, see below, thanks.
+Some signals may be internally used by the C library. Do not attempt to
+verify these.
 
-diff --git a/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c b/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
-index 2cf46ebdf..26194f114 100644
---- a/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
-+++ b/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
-@@ -18,7 +18,7 @@
-  * Note:
-  * According to attr(5), extended attributes are interpreted differently from
-  * regular files, directories and symbolic links. User attributes are only
-- * allowed for regular files and directories, thus the need of using security.*
-+ * allowed for regular files and directories, thus the need of using trusted.*
-  * attributes for this test.
-  */
+Signed-off-by: Steve Muckle <smuckle@google.com>
+---
+ .../kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+index 14b6bb332..f17a9aae6 100644
+--- a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
++++ b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+@@ -26,6 +26,7 @@ static void sig_handler(int sig)
  
-@@ -39,7 +39,7 @@
- 
- #define ENOATTR ENODATA
- 
--#define XATTR_KEY		"security.key1"
-+#define XATTR_KEY		"trusted.key1"
- #define XATTR_VALUE		"file and link"
- #define XATTR_VALUE_SIZE	13
- 
-@@ -79,8 +79,8 @@ static void verify_lremovexattr(void)
- 		return;
- 	}
- 
--	if (TST_RET < 0 && TST_ERR != ENOATTR) {
--		tst_brk(TBROK, "lgetxattr(2) failed unexpectedly");
-+	if (TST_ERR != ENOATTR) {
-+		tst_brk(TBROK | TTERRNO, "lgetxattr(2) failed unexpectedly");
- 		return;
- 	}
- 
-@@ -111,10 +111,8 @@ static void setup(void)
+ static void verify_rt_sigsuspend(void)
  {
- 	SAFE_TOUCH(FILENAME, 0644, NULL);
++	int i;
+ 	sigset_t set, set1, set2;
+ 	struct sigaction act = {.sa_handler = sig_handler};
  
--	if (symlink(FILENAME, SYMLINK) < 0) {
-+	if (symlink(FILENAME, SYMLINK) < 0)
- 		tst_brk(TCONF, "symlink() not supported");
--		return;
--	}
+@@ -51,11 +52,13 @@ static void verify_rt_sigsuspend(void)
+ 	tst_res(TPASS, "rt_sigsuspend() returned with -1 and EINTR");
+ 
+ 	SAFE_RT_SIGPROCMASK(0, NULL, &set2, SIGSETSIZE);
+-
+-	if (memcmp(&set1, &set2, sizeof(unsigned long)))
+-		tst_res(TFAIL, "signal mask not preserved");
+-	else
+-		tst_res(TPASS, "signal mask preserved");
++	for (i = 1; i < SIGRTMAX; i++) {
++		if (i >= __SIGRTMIN && i < SIGRTMIN)
++			continue;
++		if (sigismember(&set1, i) != sigismember(&set2, i))
++			tst_brk(TFAIL, "signal mask not preserved");
++	}
++	tst_res(TPASS, "signal mask preserved");
  }
  
  static struct tst_test test = {
-
-
-
-I've found that the trusted attributes works as well and cannot be
-disabled in kernel (at least for ext3 security attributes have their own
-CONFIG switches).
-
-The rest is just removed unreachable or always true code.
-
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.19.1.1215.g8438c0b245-goog
+
