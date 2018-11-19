@@ -1,59 +1,85 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 19 Nov 2018 16:40:04 +0100
-Subject: [LTP] [PATCH v4 1/2] net: Add tst_net_run helper
-In-Reply-To: <37a6f27b-096e-8701-b8ee-4132d10ef889@oracle.com>
-References: <20181113163008.9093-1-pvorel@suse.cz>
- <09aff1dd-a89f-479b-49da-c0c776b08b91@oracle.com>
- <20181116142411.GA24956@dell5510>
- <37a6f27b-096e-8701-b8ee-4132d10ef889@oracle.com>
-Message-ID: <20181119154004.GB26645@dell5510>
+From: Cristian Marussi <cristian.marussi@arm.com>
+Date: Mon, 19 Nov 2018 15:47:40 +0000
+Subject: [LTP] [PATCH]  unshare01.sh: protect parameters expansion
+Message-ID: <20181119154740.55898-1-cristian.marussi@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+The script passes around as args some strings with spaces using
+positional parameters: these are then in turn used unquoted to declare
+local function vars; this usage of 'local' together with the unquoted
+expansion is broken and leads to:
 
-> >>> Maybe we could signal where error occurred:
-> >>> * return 0: ok on both lhost and rhost
-> >>> * return 1: failure on lhost
-> >>> * return 2: failure on rhost
-> >>> * return 3: failure on both lhost and rhost
+unshare_test()
+{
+        local unshare_opts=$1
+        local verify_cmd=$2        <<<----124:
+...
+case $1 in
+ unshare_test "--user" "id -u" "65534";;
+....
 
+unshare01.sh: 124: local: -u: bad variable name
 
-> >> It is only when there is no "safe" option, right?
-> > yes, as safe exit with TCONF and warning.
+This works fine on Bash but not on Dash (despite not being detected
+by checkbashism) and it is closely related to the use of 'local';
+i.e. removing instead 'local' while leaving the unquoted expansion
+solves too.
 
-> >> when doing cleanup?
-> > IMHO in any "non-safe" run.
+Protect the positional parameter expansion with double quotes to
+prevent globbing and word splitting.
 
-> >> Could we print TWARN message inside tst_net_run() in such case?
-> > I wanted tst_net_run() to behave similarly as tst_rhost_run(), which doesn't
-> > warn about it. So I propose to add warning to both functions, but also add -q
-> > flag (quiet), which suppress this warning.
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+---
+ testcases/commands/unshare/unshare01.sh | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-> I think we don't need it for tst_rhost_run() as it is clear where the
-> error has happened. Unlike tst_net_run() without safe option.
-OK, make sense, I'll put it just into tst_net_run().
+diff --git a/testcases/commands/unshare/unshare01.sh b/testcases/commands/unshare/unshare01.sh
+index 71b50ba3a..075511fd7 100755
+--- a/testcases/commands/unshare/unshare01.sh
++++ b/testcases/commands/unshare/unshare01.sh
+@@ -81,9 +81,9 @@ cleanup()
+ 
+ check_id()
+ {
+-	local act_id=$1
+-	local exp_id=$2
+-	local cmd=$3
++	local act_id="$1"
++	local exp_id="$2"
++	local cmd="$3"
+ 
+ 	if [ ${act_id} -ne ${exp_id} ]; then
+ 		tst_res TFAIL "$cmd got wrong uid/gid"
+@@ -94,9 +94,9 @@ check_id()
+ 
+ check_mount()
+ {
+-	local tst_dir=$1
+-	local exp_stat=$2
+-	local cmd=$3
++	local tst_dir="$1"
++	local exp_stat="$2"
++	local cmd="$3"
+ 
+ 	case ${exp_stat} in
+ 	unmounted)
+@@ -120,9 +120,9 @@ check_mount()
+ 
+ unshare_test()
+ {
+-	local unshare_opts=$1
+-	local verify_cmd=$2
+-	local exp_result=$3
++	local unshare_opts="$1"
++	local verify_cmd="$2"
++	local exp_result="$3"
+ 
+ 	local unshare_cmd="unshare ${unshare_opts} ${verify_cmd}"
+ 
+-- 
+2.17.1
 
-
-> > The reason for quiet mode is, that (I suppose) there are cases when some
-> > features is tested and TWARN isn't wanted. Some examples (looks -s is used often
-> > in cleanup functions):
-
-> '-s' is used often in cleanup with tst_rhost_run()?
-Sorry, I was wrong. Previously I meant tst_rhost_run *without -s* option.
-
-tst_rhost_run with -s option in cleanup is only in 2 files:
-testcases/network/mpls/mpls_lib.sh
-testcases/network/tcp_cmds/sendfile/sendfile01
-Maybe that's a mistake (unlike C functions where error in SAFE_* continue with
-warning, in shell it exits during cleanup).
-
-Without -s we don't get any warning, which is often desirable.
-=> I'll put warning and -q switch to suppress it only into tst_net_run().
-
-
-Kind regards,
-Petr
