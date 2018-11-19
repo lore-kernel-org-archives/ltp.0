@@ -1,68 +1,82 @@
-From: Jonatas Bastos <jonatasfbastos@gmail.com>
-Date: Sun, 18 Nov 2018 13:32:11 -0500
-Subject: [LTP] Survey - LTP
-Message-ID: <CADKPhiNrw4kzP3=ckEVi_e+S7DW8PXTH0uh5o329Aan=cdXnog@mail.gmail.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 19 Nov 2018 13:44:15 +0300
+Subject: [LTP] [PATCH v4 1/2] net: Add tst_net_run helper
+In-Reply-To: <20181116142411.GA24956@dell5510>
+References: <20181113163008.9093-1-pvorel@suse.cz>
+ <09aff1dd-a89f-479b-49da-c0c776b08b91@oracle.com>
+ <20181116142411.GA24956@dell5510>
+Message-ID: <37a6f27b-096e-8701-b8ee-4132d10ef889@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-MSc. Jonatas Bastos, Ph.D. student in Comp. Science at Federal University
-of Bahia, Brazil;
+Hi Petr,
+On 16.11.2018 17:24, Petr Vorel wrote:
+> Hi Alexey,
+> 
+>>> Maybe we could signal where error occurred:
+>>> * return 0: ok on both lhost and rhost
+>>> * return 1: failure on lhost
+>>> * return 2: failure on rhost
+>>> * return 3: failure on both lhost and rhost
+> 
+> 
+>> It is only when there is no "safe" option, right?
+> yes, as safe exit with TCONF and warning.
+> 
+>> when doing cleanup?
+> IMHO in any "non-safe" run.
+> 
+>> Could we print TWARN message inside tst_net_run() in such case?
+> I wanted tst_net_run() to behave similarly as tst_rhost_run(), which doesn't
+> warn about it. So I propose to add warning to both functions, but also add -q
+> flag (quiet), which suppress this warning.
 
-Dr. Paulo Cesar Masiero,
+I think we don't need it for tst_rhost_run() as it is clear where the
+error has happened. Unlike tst_net_run() without safe option.
 
-Dr. Paulo Anselmo Neto,
+> 
+> The reason for quiet mode is, that (I suppose) there are cases when some
+> features is tested and TWARN isn't wanted. Some examples (looks -s is used often
+> in cleanup functions):
 
-Dr. Ivan Machado,
+'-s' is used often in cleanup with tst_rhost_run()?
 
-Dr. Eduardo Almeida, Associate professor at Federal University of Bahia,
-Brazil.
+>
+> testcases/network/stress/multicast/grp-operation/mcast-lib.sh:
+> 
+> mcast_cleanup()
+> {
+>     [ "$TST_IPV6" ] && mcast_cleanup6 || mcast_cleanup4
+> 
+>     pkill -SIGHUP -f "$MCAST_LCMD"
+>     tst_sleep 10ms
+>     pkill -9 -f "$MCAST_LCMD"
+> 
+>     tst_rhost_run -c "pkill -SIGHUP -f '$MCAST_RCMD'"
+> }
+> 
+> testcases/network/virt/virt_lib.sh
+> virt_cleanup_rmt()
+> {
+>     cleanup_vifaces
+>     tst_rhost_run -c "ip link delete ltp_v0 2>/dev/null"
+>     if [ "$virt_tcp_syn" ]; then
+>         sysctl -q net.ipv4.tcp_syn_retries=$virt_tcp_syn
+>         virt_tcp_syn=
+>     fi
+> }
+> 
+> nfs_setup_server() in testcases/network/nfs/nfs_stress/nfs_lib.sh:
+> 
+> 	if ! tst_rhost_run -c "test -d $remote_dir"; then
+>         tst_rhost_run -s -c "mkdir -p $remote_dir; $export_cmd"
+>     fi
+> 
+> 
+> Kind regards,
+> Petr
+> 
 
-Hello,
-
-We are conducting a survey to investigate and validate findings from a
-previous study that analyzes the history of the Linux Test Project (LTP).
-In the this study, we analyzed over 400,000 test cases, spanning the LTP
-for over 16 years of development and analyzing more than 63 million lines
-of code.  You are being contacted because of your contribution to the LTP
-project and your knowledge on Highly-configurable System and Tests.
-
-  We would like to invite you to answer a survey questionnaire to collect
-data for the Ph.D. research "Test evolution in highly-configurable systems
-". The questionnaire has twenty-one questions and it should take no more
-than 20 minutes. Your responses are confidential and will be aggregated
-with other contributors who were invited. Your responses will be stored on
-a password-protected computer that is securely stored. Moreover, your
-responses are very important for the development of research in the field
-and contributes profoundly to the understanding of LTP.
-
-  If you have any questions about this study, please give us the
-opportunity to answer them. Otherwise, if you agree to participate in this
-survey, please access the online questionnaire
-<https://docs.google.com/forms/d/e/1FAIpQLSePEESEVOCVtjuAIvm1BkToLJzEcxv_m4HBRiJzuRcQQ4DzHQ/viewform?vc=0&c=0&w=1>,
-read and mark the consent term, and answer the questionnaire.
-
-In the end of the process, you will be contacted with the Survey results.
-
-Thank you in advance.
-
-Best regards,
-
-Jonatas Bastos, Paulo Cesar Masiero, Paulo Neto, Ivan Machado, and  Eduardo
-Almeida.
-
-
--- 
-Jonatas Bastos
------------------------------------------------------------- --------
-Professor de Computação no Instituto Federal (IFBA)
-M.Sc. Computer Science - CIn/UFPE
-skype: jonatasfbastos
-gtalk: jonatasfbastos@...
-
-“Face your fears, live your dreams"
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20181118/88aed6fe/attachment.html>
