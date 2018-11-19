@@ -1,8 +1,8 @@
 From: Travis CI <builds@travis-ci.org>
-Date: Mon, 19 Nov 2018 17:55:59 +0000
-Subject: [LTP] Broken: linux-test-project/ltp#1152 (master - 5b5740c)
-In-Reply-To: <linux-test-project/ltp+457083294+broken@travis-ci.org>
-Message-ID: <5bf2f92f159c2_43f7f0fb14a542087d4@803409bf-289e-49de-911f-4df3ccb709c8.mail>
+Date: Mon, 19 Nov 2018 18:17:47 +0000
+Subject: [LTP] Fixed: linux-test-project/ltp#1153 (master - 56e2f32)
+In-Reply-To: <linux-test-project/ltp+457090481+fixed@travis-ci.org>
+Message-ID: <5bf2fe4af0152_43fac88629b881054ec@4ab8e342-69a6-4da7-8439-8f420f945584.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,11 +12,11 @@ To: ltp@lists.linux.it
 Build Update for linux-test-project/ltp
 -------------------------------------
 
-Build: #1152
-Status: Broken
+Build: #1153
+Status: Fixed
 
-Duration: 9 mins and 3 secs
-Commit: 5b5740c (master)
+Duration: 13 mins and 42 secs
+Commit: 56e2f32 (master)
 Author: Subash Ganesan
 Message: Testing statx syscall Timestamp fields
 
@@ -34,9 +34,9 @@ Signed-off-by: Subash Ganesan <subash@zilogic.com>
 Signed-off-by: Vaishnavi.D <vaishnavi.d@zilogic.com>
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
-View the changeset: https://github.com/linux-test-project/ltp/compare/e139a4dfc878...5b5740c9582c
+View the changeset: https://github.com/linux-test-project/ltp/compare/5b5740c9582c...56e2f3253c7b
 
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/457083294?utm_medium=notification&utm_source=email
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/457090481?utm_medium=notification&utm_source=email
 
 --
 
@@ -46,4 +46,4 @@ Or configure specific recipients for build notifications in your .travis.yml fil
 
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20181119/40a4f389/attachment-0001.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20181119/3a169cd2/attachment.html>
