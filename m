@@ -1,24 +1,36 @@
-From: Jan =?unknown-8bit?q?L=C3=BCbbe?= <jlu@pengutronix.de>
-Date: Tue, 20 Nov 2018 10:07:48 +0100
-Subject: [LTP] [Automated-testing] FOSDEM 2019
-In-Reply-To: <CADYN=9J6D0URQv+DjV25qqtnOeEnieKMtXfmLysy=BRdp+c_hg@mail.gmail.com>
-References: <CADYN=9J6D0URQv+DjV25qqtnOeEnieKMtXfmLysy=BRdp+c_hg@mail.gmail.com>
-Message-ID: <1542704868.5651.6.camel@pengutronix.de>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 20 Nov 2018 11:16:16 +0100
+Subject: [LTP] [PATCH] syscalls/statx06.c: Fix compiler errors on old
+ distros
+In-Reply-To: <1542769532-7487-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1542769532-7487-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20181120101616.GA22768@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, 2018-11-19 at 22:54 +0100, Anders Roxell wrote:
-> If you going to be there please reply.
+Hi!
+> --- a/testcases/kernel/syscalls/statx/statx06.c
+> +++ b/testcases/kernel/syscalls/statx/statx06.c
+> @@ -36,6 +36,9 @@
+>  #include <stdio.h>
+>  #include "tst_test.h"
+>  #include "lapi/stat.h"
+> +#include "lapi/mount.h"
+> +#include "lapi/fcntl.h"
+> +#include "lapi/posix_clocks.h"
+>  #include "tst_safe_clocks.h"
+>  #include "tst_safe_macros.h"
+>  #include "tst_timer.h"
 
-I'll be there. Likely Chris Fiege and Rouven Czerwinski as well.
+I had to move the lapi headers down so that they are included after the
+sys ones (especially sys/mount.h), othewrise the test would fail to
+compile if these definitions were present in the respective sys headers.
 
-Regards,
-Jan
+Pushed, thanks.
+
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Cyril Hrubis
+chrubis@suse.cz
