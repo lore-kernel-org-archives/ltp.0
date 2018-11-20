@@ -1,93 +1,73 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 20 Nov 2018 12:35:10 +0100
-Subject: [LTP] [PATCH v4 0/4] New Fuzzy Sync library API
-In-Reply-To: <CAEemH2dF4Mg6C_uu6GUxixev_pZqbmL-h0sE73X2_6CyN1x7nA@mail.gmail.com>
-References: <20181105154217.18879-1-rpalethorpe@suse.com>
- <CAEemH2dF4Mg6C_uu6GUxixev_pZqbmL-h0sE73X2_6CyN1x7nA@mail.gmail.com>
-Message-ID: <87bm6kasnl.fsf@rpws.prws.suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 20 Nov 2018 13:47:26 +0100
+Subject: [LTP] [PATCH 2/2] syscalls/execveat01: Add new testcase
+In-Reply-To: <1537863535-25744-2-git-send-email-huangjh.jy@cn.fujitsu.com>
+References: <1537863535-25744-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+ <1537863535-25744-2-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <20181120124726.GB22768@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi!
+> 1) Factor out check_execveat().
+> 2) Check the basic functionality of execveat(2).
 
-Li Wang <liwang@redhat.com> writes:
+I looked into the kernel and it seems that the test is mostly
+excercising common filesystem lookup code and since we have a dentry
+cache I doubt that we will ever call to the filesystem driver for the
+pathname lookup for the directory and file we just created. Hence AFAIK
+there is no point in running the test for all filesystems.
 
-> On Mon, Nov 5, 2018 at 11:42 PM, Richard Palethorpe
-> <rpalethorpe@suse.com> wrote:
->> Changes for V4:
->>
->> * Increase fzsync timeout to 50% of the overall LTP test timeout
->> * Increase default iterations to 3 million
->> * Set cve-2014-0196 iterations to 50,000
->> * Increase sample iterations for cve-2016-7117
->>
->> With these defaults almost all of the tests should reliably trigger their
->> bugs while not taking more than 30 seconds to execute on server grade
->> hardware. On slow embedded systems the tests should also be fairly reliable,
->> however will take up to 150 seconds.
->>
->> Hopefully none of the tests will exit with a warning on slow systems because
->> they failed to complete the sampling phase. However on a very slow system
->> cve-2016-7117 will probably not have time to finish the sampling phase, but
->> this bug is simply very difficult to reproduce[1] on some kernels and a long
->> sampling time is required to get the optimal delay bias.
->
-> I run these corresponding tests[1] with applying the new fuzzy_sync
-> API on some slow systems. The follows are the test status and sampling
-> time consumption.
->
-> 1. KVM Guest, RHEL-7.6GA, x86_64, 1vcpu, 1G RAM
-> cve-2016-7117 and shmctl05 failed to complete the sampling phase and
-> eventually exit with warnings.
->
-> Sampling time consume:
-> -------------------------------
-> cve-2016-7117: ~440.31s
-> cve-2014-0196: ~33.77s
-> cve-2017-2671: ~33.81s
-> inotify09: ~33.83s
-> shmctl05: ~33.78s
-> test16: ~44.91s
->
-> My extra proposal for test shmctl05 is to extend its timeout from 20s
-> to 100s. Because from the time cost detection on such a slow(1cpu, 1G
-> ram) machine, 10s(1/2 of .timeout=20) is too short to finish sampling.
+So I've simplified the test so that it does not set .all_filesystems and
+pushed, thanks!
 
-Interesting that it is so slow on an x86 system, but it also makes sense
-with a single core because these are all multi-threaded tests. If the
-kernel is completely preemptive then it may be theoretically possible to
-trigger one of these bugs on a single core, but most people seem to
-think the probability of it happening is lower than on a multi-core
-machine.
+diff --git a/testcases/kernel/syscalls/execveat/execveat01.c b/testcases/kernel/syscalls/execveat/execveat01.c
+index e563a4869..5325d484b 100644
+--- a/testcases/kernel/syscalls/execveat/execveat01.c
++++ b/testcases/kernel/syscalls/execveat/execveat01.c
+@@ -27,9 +27,9 @@
+ #include "lapi/fcntl.h"
+ #include "execveat.h"
+ 
+-#define MNTPOINT "mntpoint"
++#define TESTDIR "testdir"
+ #define TEST_APP "execveat_child"
+-#define TEST_REL_APP MNTPOINT"/"TEST_APP
++#define TEST_REL_APP TESTDIR"/"TEST_APP
+ 
+ static int fd1, fd4;
+ static int fd2 = AT_FDCWD, fd3 = -1;
+@@ -65,12 +65,13 @@ static void setup(void)
+ 
+ 	check_execveat();
+ 
++	SAFE_MKDIR(TESTDIR, 0777);
+ 	SAFE_CP(TEST_APP, TEST_REL_APP);
+ 
+ 	SAFE_GETCWD(cur_dir_path, sizeof(cur_dir_path));
+ 	sprintf(app_abs_path, "%s/%s", cur_dir_path, TEST_REL_APP);
+ 
+-	fd1 = SAFE_OPEN(MNTPOINT, O_DIRECTORY);
++	fd1 = SAFE_OPEN(TESTDIR, O_DIRECTORY);
+ 	fd4 = SAFE_OPEN(TEST_REL_APP, O_PATH);
+ }
+ 
+@@ -93,11 +94,7 @@ static struct tst_test test = {
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.test = verify_execveat,
+ 	.child_needs_reinit = 1,
+-	.all_filesystems = 1,
+-	.mntpoint = MNTPOINT,
+-	.mount_device = 1,
+ 	.forks_child = 1,
+-	.needs_root = 1,
+ 	.cleanup = cleanup,
+ 	.setup = setup,
+ };
 
-I am tempted to simply exit the test with TCONF if it is a single core
-system. If we do allow them to run on a single core then we have to test
-that they work reasonably well on single cores (given enough
-time). Which I just don't think is worth doing based on the times you
-have given.
-
->
-> 2. KVM Guest, RHEL-7.6GA, x86_64, 2vcpu, 2G RAM
-> All test[1] PASS with execution time/loops exceeded. I didn't do time
-> consume detection on this system.
->
-> 3. Raspberry Pi3, CentOS-7.5(4.14.78-v7.1.el7 armv7l), 4cpus, 1G RAM
-> All test[1] PASS with execution time/loops exceeded.
-> What surprised me was that the average of sampling time is only 9~11
-> seconds on the RaspbeeryPi3. Even includes cve-2016-7117 also complete
-> its sampling phase so fast!
->
-> [1] cve-2014-0196 cve-2016-7117 cve-2017-2671 inotify09 shmctl05 test16
-
-Again, interesting. I found the Pi3 was significantly slower (although
-still quite good), but possibly it is better now because I removed some
-memory barriers although we still sync the memory a lot. Having 3+ cores
-probably helps as well because it leaves one or more cores to do
-background tasks.
-
---
-Thank you,
-Richard.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
