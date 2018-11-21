@@ -1,77 +1,73 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 21 Nov 2018 18:18:12 +0200
-Subject: [LTP] [PATCH 1/5] syscalls/fanotify01: check events also on
-	mountpoint mark
-In-Reply-To: <20181121120103.GB2954@rei>
+Date: Wed, 21 Nov 2018 18:36:41 +0200
+Subject: [LTP] [PATCH 4/5] syscalls/fanotify03: add test for
+ FAN_MARK_FILESYSTEM permission events
+In-Reply-To: <20181121131448.GE2954@rei>
 References: <20181116065119.6912-1-amir73il@gmail.com>
- <20181116065119.6912-2-amir73il@gmail.com>
- <20181121120103.GB2954@rei>
-Message-ID: <CAOQ4uxhBON0ej_ABZAVqwa3NfrpRKQcSsDqXV4wW8VoQLWk16g@mail.gmail.com>
+ <20181116065119.6912-5-amir73il@gmail.com>
+ <20181121131448.GE2954@rei>
+Message-ID: <CAOQ4uxjQQahvt0b=i50XeoG7Db8BzudqoXwaoHwMZ-qQHhWfxw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Nov 21, 2018 at 2:02 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+On Wed, Nov 21, 2018 at 3:16 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 >
 > Hi!
-> >       /* This event should be ignored */
-> > @@ -181,13 +200,13 @@ void test01(void)
-> >
-> >       /* Now remove open and close from ignored mask */
-> >       if (fanotify_mark(fd_notify,
-> > -                       FAN_MARK_REMOVE | FAN_MARK_IGNORED_MASK,
-> > +                       FAN_MARK_REMOVE | mark->flag | FAN_MARK_IGNORED_MASK,
-> >                         FAN_OPEN | FAN_CLOSE, AT_FDCWD, fname) < 0) {
-> >               tst_brk(TBROK | TERRNO,
-> > -                     "fanotify_mark (%d, FAN_MARK_REMOVE | "
-> > -                     "FAN_MARK_IGNORED_MASK, FAN_OPEN | "
-> > -                     "FAN_CLOSE, AT_FDCWD, %s) failed", fd_notify,
-> > -                     fname);
-> > +                     "fanotify_mark (%d, FAN_MARK_REMOVE | %s | "
-> > +                     "FAN_MARK_IGNORED_MASK, FAN_OPEN | FAN_CLOSE, "
-> > +                     "AT_FDCWD, %s) failed", fd_notify,
-> > +                     mark->name, fname);
-> >       }
-> >
-> >       SAFE_CLOSE(fd);
-> > @@ -283,12 +302,13 @@ pass:
-> >
-> >       }
-> >       /* Remove mark to clear FAN_MARK_IGNORED_SURV_MODIFY */
-> > -     if (fanotify_mark(fd_notify, FAN_MARK_REMOVE, FAN_ACCESS | FAN_MODIFY |
-> > -                         FAN_CLOSE | FAN_OPEN, AT_FDCWD, fname) < 0) {
-> > +     if (fanotify_mark(fd_notify, FAN_MARK_REMOVE | mark->flag,
-> > +                       FAN_ACCESS | FAN_MODIFY | FAN_CLOSE | FAN_OPEN,
-> > +                       AT_FDCWD, fname) < 0) {
-> >               tst_brk(TBROK | TERRNO,
-> > -                     "fanotify_mark (%d, FAN_MARK_REMOVE, FAN_ACCESS | "
-> > +                     "fanotify_mark (%d, FAN_MARK_REMOVE | %s, FAN_ACCESS | "
-> >                       "FAN_MODIFY | FAN_CLOSE | FAN_OPEN, AT_FDCWD, %s) "
-> > -                     "failed", fd_notify, fname);
-> > +                     "failed", fd_notify, mark->name, fname);
-> >       }
-> >  }
-> >
-> > @@ -296,8 +316,6 @@ static void setup(void)
+> > -static void setup_mark(unsigned int n)
+> > +static int setup_mark(unsigned int n)
 > >  {
-> >       sprintf(fname, "tfile_%d", getpid());
-> >       SAFE_FILE_PRINTF(fname, "1");
-> > -
-> > -     fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF, O_RDONLY);
+> >       struct tcase *tc = &tcases[n];
+> >       struct fanotify_mark_type *mark = &tc->mark;
+> > @@ -144,7 +149,12 @@ static void setup_mark(unsigned int n)
+> >       if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
+> >                         FAN_ACCESS_PERM | FAN_OPEN_PERM,
+> >                         AT_FDCWD, fname) < 0) {
+> > -             if (errno == EINVAL) {
+> > +             if (errno == EINVAL && support_perm_events &&
+> > +                 mark->flag == FAN_MARK_FILESYSTEM) {
+> > +                     tst_res(TCONF,
+> > +                             "FAN_MARK_FILESYSTEM not supported in kernel?");
+> > +                     return -1;
+> > +             } else if (errno == EINVAL) {
+> >                       tst_brk(TCONF | TERRNO,
+> >                               "CONFIG_FANOTIFY_ACCESS_PERMISSIONS not "
+> >                               "configured in kernel?");
+> > @@ -155,9 +165,16 @@ static void setup_mark(unsigned int n)
+> >                               "AT_FDCWD, %s) failed.",
+> >                               fd_notify, mark->name, fname);
+> >               }
+> > +     } else {
+> > +             /*
+> > +              * To distigouish between perm event not supported and
+> > +              * filesystem mark not supported.
+> > +              */
+> > +             support_perm_events = 1;
 >
-> I've added SAFE_CLOSE(fd_notify) here so that we do not use all
-> available file descriptors with large enough -i parameter and pushed.
->
-> I do wonder what is the reason to move the fanotify_init() from setup
-> the the test_fanotify(), is there a problem with recycling the same fd
-> for different tests?
+> I'm a bit puzzled here, so we attempted to cache if perm_events are
+> supported here?
 >
 
-Closing fd_notify is an easier and better cleanup between test cases.
-Otherwise we would need to FAN_MARK_FLUSH all the individual marks
-that we added.
+Yes.
+
+> I guess that we depend on the order of the tcases[] array here, which is
+> not very nice.
+>
+
+Indeed. It is a simplification. All test cases are permission events,
+so the order of failure types is not likely to change, but I could add a
+comment about the order near test cases definition.
+Would you rather that I did an explicit test for permission support at setup()
+time?
+
+> Also it does not have to be in else branch, if we get EINVAL the first
+> time we call fanotify_mark() tst_brk() is called, which exits the test,
+> so if we ever get to this point in the program, we did at least one
+> successful mark.
+
+Right. I'll change that.
 
 Thanks,
 Amir.
