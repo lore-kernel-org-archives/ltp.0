@@ -1,27 +1,37 @@
-From: Anders Roxell <anders.roxell@linaro.org>
-Date: Mon, 19 Nov 2018 22:54:11 +0100
-Subject: [LTP] FOSDEM 2019
-Message-ID: <CADYN=9J6D0URQv+DjV25qqtnOeEnieKMtXfmLysy=BRdp+c_hg@mail.gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 21 Nov 2018 11:05:32 +0800
+Subject: [LTP] [PATCH] syscalls/statx06.c: Fix compiler errors on old distros
+Message-ID: <1542769532-7487-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Compilation fails on old distros due to undefined CLOCK_REALTIME_COARSE,
+AT_FDCWD or MS_STRICTATIME.
 
-Matt and I will attend FOSDEM2019 and thought it would be a good
-opportunity to see if others plan to attend as well. If so, we had an
-idea of trying to organize some adhoc meetings and try to talk about
-some topics that people are interested in.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/statx/statx06.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-One topic could be:
-Cyril's "[RFC] [PATCH] lib: Add support for test tags" [1].
+diff --git a/testcases/kernel/syscalls/statx/statx06.c b/testcases/kernel/syscalls/statx/statx06.c
+index 17fccc8..1ce7d48 100644
+--- a/testcases/kernel/syscalls/statx/statx06.c
++++ b/testcases/kernel/syscalls/statx/statx06.c
+@@ -36,6 +36,9 @@
+ #include <stdio.h>
+ #include "tst_test.h"
+ #include "lapi/stat.h"
++#include "lapi/mount.h"
++#include "lapi/fcntl.h"
++#include "lapi/posix_clocks.h"
+ #include "tst_safe_clocks.h"
+ #include "tst_safe_macros.h"
+ #include "tst_timer.h"
+-- 
+1.7.11.rc0
 
-If you have any other suggestions on topic you would like to discuss
-please let us know.
-If you going to be there please reply.
 
-Cheers,
-Anders
-[1] http://lists.linux.it/pipermail/ltp/2018-November/009895.html
+
