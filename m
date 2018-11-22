@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 22 Nov 2018 16:35:45 +0100
-Subject: [LTP] [PATCH v4 0/4] New Fuzzy Sync library API
-In-Reply-To: <20181105154217.18879-1-rpalethorpe@suse.com>
+Date: Thu, 22 Nov 2018 16:41:22 +0100
+Subject: [LTP] [PATCH v4 2/4] fzsync: Simplify API with start/end race
+ calls and limit exec time
+In-Reply-To: <20181105154217.18879-3-rpalethorpe@suse.com>
 References: <20181105154217.18879-1-rpalethorpe@suse.com>
-Message-ID: <20181122153545.GA907@rei.lan>
+ <20181105154217.18879-3-rpalethorpe@suse.com>
+Message-ID: <20181122154121.GB907@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,111 +13,85 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-I've finally pushed the first three patches, thanks.
 
-I will have a look at the final patch soon enough, quite likely
-tomorrow.
+...
 
-The second one was pushed with mostly typo fixes (see below), I really
-do like the comments and explanations now, it's much better explained
-than the first version. There are a few things that I want to possibly
-adjust but these are quite minor so I applied the patchset as it it for
-now.
+> +/** Wraps clock_gettime */
+>  static inline void tst_fzsync_time(struct timespec *t)
+>  {
+> +#ifdef CLOCK_MONOTONIC_RAW
+>  	clock_gettime(CLOCK_MONOTONIC_RAW, t);
+> +#else
+> +	clock_gettime(CLOCK_MONOTONIC, t);
+> +#endif
+>  }
 
-diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-index 59b5917f8..03f69b78b 100644
---- a/include/tst_fuzzy_sync.h
-+++ b/include/tst_fuzzy_sync.h
-@@ -1,28 +1,15 @@
--/* SPDX-License-Identifier: GPL-2.0 */
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
- /*
-- * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-- *
-- * This program is free software: you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation, either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ * Copyright (c) 2017-2018 Richard Palethorpe <rpalethorpe@suse.com>
-  */
- /**
-  * @file tst_fuzzy_sync.h
-- * Fuzzy Synchronisation - abreviated to fzsync
-+ * Fuzzy Synchronisation - abbreviated to fzsync
-  *
-  * This library is intended to help reproduce race conditions by synchronising
-  * two threads at a given place by marking the range a race may occur
-  * in. Because the exact place where any race occurs is within the kernel,
-- * and therefor impossible to mark accurately, the library may add randomised
-+ * and therefore impossible to mark accurately, the library may add randomised
-  * delays to either thread in order to help find the exact race timing.
-  *
-  * Currently only two way races are explicitly supported, that is races
-@@ -51,7 +38,7 @@
-  *
-  * The calls to tst_fzsync_start/end_race and tst_fzsync_run_a/b block (at
-  * least) until both threads have enter them. These functions can only be
-- * called once for each iteration, but further sychronisation points can be
-+ * called once for each iteration, but further synchronisation points can be
-  * added by calling tst_fzsync_wait_a() and tst_fzsync_wait_b() in each
-  * thread.
-  *
-@@ -80,6 +67,9 @@
- #include "tst_timer.h"
- #include "tst_safe_pthread.h"
- 
-+#ifndef TST_FUZZY_SYNC_H__
-+#define TST_FUZZY_SYNC_H__
-+
- /** Some statistics for a variable */
- struct tst_fzsync_stat {
- 	float avg;
-@@ -183,7 +173,7 @@ struct tst_fzsync_pair {
- 	int exec_loops;
- 	/** Internal; The current loop index  */
- 	int exec_loop;
--	/** Internal; The second thread or NULL */
-+	/** Internal; The second thread or 0 */
- 	pthread_t thread_b;
- };
- 
-@@ -527,7 +517,7 @@ static inline void tst_fzsync_pair_wait(int *our_cntr,
- 		/*
- 		 * We are about to break the invariant that the thread with
- 		 * the lowest count is in front of the other. So we must wait
--		 * here to ensure the other thread has atleast reached the
-+		 * here to ensure the other thread has at least reached the
- 		 * line above before doing that. If we are in rear position
- 		 * then our counter may already have been set to zero.
- 		 */
-@@ -641,9 +631,9 @@ static inline int tst_fzsync_run_b(struct tst_fzsync_pair *pair)
-  *
-  * This should be placed just before performing whatever action can cause a
-  * race condition. Usually it is placed just before a syscall and
-- * tst_fzsync_end_race_a() is placed just afterward.
-+ * tst_fzsync_end_race_a() is placed just afterwards.
-  *
-- * A corrosponding call to tst_fzsync_start_race_b() should be made in thread
-+ * A corresponding call to tst_fzsync_start_race_b() should be made in thread
-  * B.
-  *
-  * @return A non-zero value if the calling thread should continue to loop. If
-@@ -707,3 +697,5 @@ static inline void tst_fzsync_end_race_b(struct tst_fzsync_pair *pair)
- 	tst_fzsync_time(&pair->b_end);
- 	tst_fzsync_pair_wait(&pair->b_cntr, &pair->a_cntr, &pair->spins);
- }
-+
-+#endif /* TST_FUZZY_SYNC_H__ */
+We should switch to a runtime detection here.
 
+>  /**
+> - * tst_fzsync_time_a - Set A's time to now.
+> + * Exponential moving average
+>   *
+> - * Called at the point you want to synchronise.
+> + * @param alpha The preference for recent samples over old ones.
+> + * @param sample The current sample
+> + * @param prev_avg The average of the all the previous samples
+> + *
+> + * @return The average including the current sample.
+>   */
+> -static inline void tst_fzsync_time_a(struct tst_fzsync_pair *pair)
+> +static inline float tst_exp_moving_avg(float alpha,
+> +					float sample,
+> +					float prev_avg)
+>  {
+> -	tst_fzsync_time(&pair->a);
+> +	return alpha * sample + (1.0 - alpha) * prev_avg;
+>  }
 
+...
+
+> +static inline void tst_fzsync_pair_wait(int *our_cntr,
+> +					int *other_cntr,
+> +					int *spins)
+>  {
+>  	if (tst_atomic_inc(other_cntr) == INT_MAX) {
+>  		/*
+> @@ -243,84 +532,178 @@ static inline int tst_fzsync_pair_wait(struct tst_fzsync_pair *pair,
+>  		 * then our counter may already have been set to zero.
+>  		 */
+>  		while (tst_atomic_load(our_cntr) > 0
+> -		       && tst_atomic_load(our_cntr) < INT_MAX
+> -		       && !tst_atomic_load(&pair->exit))
+> -			;
+> +		       && tst_atomic_load(our_cntr) < INT_MAX) {
+> +			if (spins)
+> +				(*spins)++;
+> +		}
+>  
+>  		tst_atomic_store(0, other_cntr);
+>  		/*
+>  		 * Once both counters have been set to zero the invariant
+>  		 * is restored and we can continue.
+>  		 */
+> -		while (tst_atomic_load(our_cntr) > 1
+> -		       && !tst_atomic_load(&pair->exit))
+> +		while (tst_atomic_load(our_cntr) > 1)
+>  			;
+>  	} else {
+>  		/*
+>  		 * If our counter is less than the other thread's we are ahead
+>  		 * of it and need to wait.
+>  		 */
+> -		while (tst_atomic_load(our_cntr) < tst_atomic_load(other_cntr)
+> -		       && !tst_atomic_load(&pair->exit))
+> -			;
+> +		while (tst_atomic_load(our_cntr) < tst_atomic_load(other_cntr)) {
+> +			if (spins)
+> +				(*spins)++;
+
+I do wonder if the if () condition inside of the loop makes actually
+difference in the measurements. If it does we should pass a dummy
+pointer from the functions that pass NULL here.
 
 -- 
 Cyril Hrubis
