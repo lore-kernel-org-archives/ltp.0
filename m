@@ -1,38 +1,43 @@
-From: Philip Balister <philip@balister.org>
-Date: Thu, 22 Nov 2018 07:17:57 -0500
+From: Kieran Bingham <kieran@bingham.xyz>
+Date: Thu, 22 Nov 2018 13:22:06 +0000
 Subject: [LTP] [Automated-testing] FOSDEM 2019
-In-Reply-To: <aa90781b-573e-0af5-c39a-2e06f60103c8@pengutronix.de>
+In-Reply-To: <CADYN=9J6D0URQv+DjV25qqtnOeEnieKMtXfmLysy=BRdp+c_hg@mail.gmail.com>
 References: <CADYN=9J6D0URQv+DjV25qqtnOeEnieKMtXfmLysy=BRdp+c_hg@mail.gmail.com>
- <1542704868.5651.6.camel@pengutronix.de>
- <aa90781b-573e-0af5-c39a-2e06f60103c8@pengutronix.de>
-Message-ID: <67dd93ac-f75f-1108-6fca-78b7a4838b43@balister.org>
+Message-ID: <39372c10-c8b9-dffe-6790-485f44140146@bingham.xyz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11/22/2018 05:21 AM, Chris Fiege wrote:
-> Hi Anders,
->=20
-> On 20.11.18 10:07, Jan L=C3=BCbbe wrote:
->> On Mon, 2018-11-19 at 22:54 +0100, Anders Roxell wrote:
->>> If you going to be there please reply.
->>
->> I'll be there. Likely Chris Fiege and Rouven Czerwinski as well.
->=20
-> I am planning to be at FOSDEM and would like to join an ad-hoc meeting.
->=20
-> Since FOSDEM is usually quite crowded: Does anyone know if it is
-> possible to organize a room for that meeting.
+On 19/11/2018 21:54, Anders Roxell wrote:
+> Hi,
+> 
+> Matt and I will attend FOSDEM2019 and thought it would be a good
+> opportunity to see if others plan to attend as well. If so, we had an
+> idea of trying to organize some adhoc meetings and try to talk about
+> some topics that people are interested in.
+> 
+> One topic could be:
+> Cyril's "[RFC] [PATCH] lib: Add support for test tags" [1].
+> 
+> If you have any other suggestions on topic you would like to discuss
+> please let us know.
+> If you going to be there please reply.
 
-It is possible to (at least last year) to sign up for a room for an hour
-at a time. You may need to ask around to find out where the sign up. I
-think last year it may have been on a wall by th eK info desk. Or online
-and possibly no syncing between them. Hopefully a bit smother this year.
 
-Philip
+Hi,
 
->=20
-> Cheers
-> Chris
+I'll be there.
+Please add me to the list of interested attendees.
+
+Regards
+--
+Kieran
+
+
+> Cheers,
+> Anders
+> [1] http://lists.linux.it/pipermail/ltp/2018-November/009895.html
+> 
+
