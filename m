@@ -1,43 +1,48 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 22 Nov 2018 18:57:47 +0200
-Subject: [LTP] [PATCH 1/5] syscalls/fanotify01: check events also on
-	mountpoint mark
-In-Reply-To: <20181122160608.GE907@rei.lan>
-References: <20181116065119.6912-1-amir73il@gmail.com>
- <20181116065119.6912-2-amir73il@gmail.com>
- <20181121120103.GB2954@rei>
- <CAOQ4uxhBON0ej_ABZAVqwa3NfrpRKQcSsDqXV4wW8VoQLWk16g@mail.gmail.com>
- <20181122160608.GE907@rei.lan>
-Message-ID: <CAOQ4uxgt4UqHhkROP_JZQ2Y54_RrrNReKgtiHi5hLTeW_rkYsQ@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 23 Nov 2018 11:16:04 +0800
+Subject: [LTP] [PATCH] shmctl05: extend timeout to 120 seconds
+Message-ID: <20181123031604.21400-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Nov 22, 2018 at 6:07 PM Cyril Hrubis <chrubis@suse.cz> wrote:
->
-> Hi!
-> > > I've added SAFE_CLOSE(fd_notify) here so that we do not use all
-> > > available file descriptors with large enough -i parameter and pushed.
-> > >
-> > > I do wonder what is the reason to move the fanotify_init() from setup
-> > > the the test_fanotify(), is there a problem with recycling the same fd
-> > > for different tests?
-> > >
-> >
-> > Closing fd_notify is an easier and better cleanup between test cases.
-> > Otherwise we would need to FAN_MARK_FLUSH all the individual marks
-> > that we added.
->
-> Wouldn't that cover more of kernel codepaths? If we reused the fd and
-> cleared all the marks we would test that the API for clearing the marks
-> works as expected. Or should we write a separate test for that?
+This patch is a following to fuzzy sync library update because that
+makes shmctl05 cost almost 34 seconds in sampling phase on slow system,
+so here prolong test timeout beyond triple of the consumption to avoid
+exiting early with warning.
 
-I see that fanotify04 exercises FAN_MARK_FLUSH.
-Besides it is probably the less common case (??).
-Most of the time I imagine that a monitoring program sets a mark
-and watches events until it closes the fd.
+  # ./shmctl05
+  tst_test.c:1085: INFO: Timeout per run is 0h 00m 20s
+  ../../../../../include/tst_fuzzy_sync.h:589: INFO: Exceeded execution time, requesting exit
+  ../../../../../include/tst_fuzzy_sync.h:594: WARN: Still sampling, consider increasing LTP_TIMEOUT_MUL
+  shmctl05.c:97: PASS: didn't crash
 
-Thanks,
-Amir.
+  Summary:
+  passed   1
+  failed   0
+  skipped  0
+  warnings 1
+
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/syscalls/ipc/shmctl/shmctl05.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
+index ecae202e8..9df1ab80b 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
+@@ -104,7 +104,7 @@ static void cleanup(void)
+ }
+ 
+ static struct tst_test test = {
+-	.timeout = 20,
++	.timeout = 120,
+ 	.setup = setup,
+ 	.test_all = do_test,
+ 	.cleanup = cleanup,
+-- 
+2.14.4
+
