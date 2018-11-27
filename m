@@ -1,20 +1,38 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 27 Nov 2018 18:06:08 +0100
-Subject: [LTP] [PATCH] [WIP] Add fanout01 CVE-2017-15649
-In-Reply-To: <20180910122121.26752-1-rpalethorpe@suse.com>
-References: <20180910122121.26752-1-rpalethorpe@suse.com>
-Message-ID: <20181127170608.GA13895@dell5510>
+From: Anders Roxell <anders.roxell@linaro.org>
+Date: Tue, 27 Nov 2018 18:09:27 +0100
+Subject: [LTP] [Automated-testing] FOSDEM 2019
+In-Reply-To: <aa90781b-573e-0af5-c39a-2e06f60103c8@pengutronix.de>
+References: <CADYN=9J6D0URQv+DjV25qqtnOeEnieKMtXfmLysy=BRdp+c_hg@mail.gmail.com>
+ <1542704868.5651.6.camel@pengutronix.de>
+ <aa90781b-573e-0af5-c39a-2e06f60103c8@pengutronix.de>
+Message-ID: <CADYN=9JnUCkjKEV06u6a0TFiva2vxs=y0DEt2-1NJg58Q6dmaw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-Hi Richard,
+On Thu, 22 Nov 2018 at 11:21, Chris Fiege <cfi@pengutronix.de> wrote:
+>
+> Hi Anders,
+>
+> On 20.11.18 10:07, Jan L=C3=BCbbe wrote:
+> > On Mon, 2018-11-19 at 22:54 +0100, Anders Roxell wrote:
+> >> If you going to be there please reply.
+> >
+> > I'll be there. Likely Chris Fiege and Rouven Czerwinski as well.
+>
+> I am planning to be at FOSDEM and would like to join an ad-hoc meeting.
+>
+> Since FOSDEM is usually quite crowded: Does anyone know if it is possible
+> to organize a room for that meeting.
 
-thanks for your patch, pushed, with tiny changes (removed unused imports, add
-leading slash in .gitignore, changing license to GPLv2+ in SPDX license
-identifier and remove verbose GPL related text).
+That's a good question, I've asked the FOSDEM organizers and they said that
+they are already using all the rooms at campus. However, there's few BoF
+rooms that can "book" for shorter meetings. The downside is that they can
+only be booked on site.
 
-Kind regards,
-Petr
+Do we have any topics we would like to discuss?
+
+Cheers,
+Anders
