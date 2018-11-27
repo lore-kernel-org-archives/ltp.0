@@ -1,38 +1,34 @@
-From: Anders Roxell <anders.roxell@linaro.org>
-Date: Tue, 27 Nov 2018 18:09:27 +0100
-Subject: [LTP] [Automated-testing] FOSDEM 2019
-In-Reply-To: <aa90781b-573e-0af5-c39a-2e06f60103c8@pengutronix.de>
-References: <CADYN=9J6D0URQv+DjV25qqtnOeEnieKMtXfmLysy=BRdp+c_hg@mail.gmail.com>
- <1542704868.5651.6.camel@pengutronix.de>
- <aa90781b-573e-0af5-c39a-2e06f60103c8@pengutronix.de>
-Message-ID: <CADYN=9JnUCkjKEV06u6a0TFiva2vxs=y0DEt2-1NJg58Q6dmaw@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 27 Nov 2018 18:41:56 +0100
+Subject: [LTP] [PATCH v2] getrlimit/getrlimit03: new test for underlying
+ syscall variants
+In-Reply-To: <20181107212213.129534-1-ghackmann@google.com>
+References: <20181106194725.GA11344@rei.lan>
+ <20181107212213.129534-1-ghackmann@google.com>
+Message-ID: <20181127174156.GA19801@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, 22 Nov 2018 at 11:21, Chris Fiege <cfi@pengutronix.de> wrote:
->
-> Hi Anders,
->
-> On 20.11.18 10:07, Jan L=C3=BCbbe wrote:
-> > On Mon, 2018-11-19 at 22:54 +0100, Anders Roxell wrote:
-> >> If you going to be there please reply.
-> >
-> > I'll be there. Likely Chris Fiege and Rouven Czerwinski as well.
->
-> I am planning to be at FOSDEM and would like to join an ad-hoc meeting.
->
-> Since FOSDEM is usually quite crowded: Does anyone know if it is possible
-> to organize a room for that meeting.
+Hi Greg,
 
-That's a good question, I've asked the FOSDEM organizers and they said that
-they are already using all the rooms at campus. However, there's few BoF
-rooms that can "book" for shorter meetings. The downside is that they can
-only be booked on site.
+> Depending on the architecture, Linux provides up to three syscalls that
+> have been used to implement getrlimit(2) in different libc
+> implementations.  These syscalls differ in the size and signedness of
+> rlim_t.
 
-Do we have any topics we would like to discuss?
+> This test compares the results returned by all three syscalls, confirming
+> that they either match or were appropriately capped at the respective
+> RLIM_INFINITY constant.
 
-Cheers,
-Anders
+> Signed-off-by: Greg Hackmann <ghackmann@google.com>
+> ---
+
+Thanks for your patch, pushed with minor GPL related change (replaced GPL text
+with SPDX-License-Identifier).
+
+
+Kind regards,
+Petr
