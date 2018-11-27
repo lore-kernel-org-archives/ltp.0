@@ -1,50 +1,65 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 27 Nov 2018 14:51:50 +0100
-Subject: [LTP] [PATCH] open_posix_testsuite/mmap24-2: Support mips
-In-Reply-To: <1540348607-217391-1-git-send-email-hongzhi.song@windriver.com>
-References: <1540348607-217391-1-git-send-email-hongzhi.song@windriver.com>
-Message-ID: <20181127135149.GA26575@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 27 Nov 2018 16:01:20 +0100
+Subject: [LTP] [PATCH] lib/tst_test.sh: don't call _tst_do_exit()
+ recursively with tst_brk()
+In-Reply-To: <f96d10e9-fb35-fe98-0ab0-3fd0c7891c42@oracle.com>
+References: <1542729786-4097-1-git-send-email-alexey.kodanev@oracle.com>
+ <20181127090439.GA23733@dell5510>
+ <f96d10e9-fb35-fe98-0ab0-3fd0c7891c42@oracle.com>
+Message-ID: <20181127150120.GA14077@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-First of all sorry for the late reply.
+Hi Alexey,
 
-> Mips will return EINVAL instead of ENOMEM as expected
-> if MAP_FIXED is set and the range of [addr + len) exceeds
-> TASK_SIZE.
-> 
-> Linux kernel code: arch/mips/mm/mmap.c
-> if (flags & MAP_FIXED) {
->     /* Even MAP_FIXED mappings must reside within TASK_SIZE */
->     if (TASK_SIZE - len < addr)
->         return -EINVAL;
-> 
-> The POSIX specification says:
-> "If MAP_FIXED is set, mmap() may return MAP_FAILED and set errno to
-> [EINVAL]."
-> [http://pubs.opengroup.org/onlinepubs/9699919799/functions/mmap.html]
-> 
-> So I think the mips kernel remains POSIX compliant.
+> > +	[ "$safe" -eq 1 ] && ttype=TWARN
+> > +
 
-There is a subtle difference between the ENOMEM and EINVAL error for
-MAP_FIXED though.
+> ttype=TBROK?
+Correct, I'm sorry.
 
-If you look at POSIX specification terminology it says that 'shall'
-defines mandatory features while 'may' describes optional features.
+> >  	if [ -z "$cmd" ]; then
+> > -		[ "$safe" -eq 1 ] && \
+> > -			tst_brk_ TBROK "tst_rhost_run: command not defined"
+> > -		tst_res_ TWARN "tst_rhost_run: command not defined"
+> > +		tst_brk_ $ttype "tst_rhost_run: command not defined"
+> >  		return 1
 
-Which means that the MAP_FIXED returning ENOMEM for addresses above
-TASK_SIZE is mandatory since it's defined in the shall fail list. And
-that EINVAL is recomended to be used for other unsuitable address that
-fit into the process address space but are not suitable for a different
-reasons which could be mostly translated to hardware limits.
+> I think we should only remove tst_res_ TWARN here. Otherwise it will exit
+> the test for non-safe option too.
+I see, I wrongly I use tst_brk_ on non safe as well.
 
-To sum it up, as far as I can tell mips is not POSIX confirmant here and
-even if this is a very minor issue we shouldn't change the test here.
+...
+> > -		[ "$safe" -eq 1 ] && \
+> > +		if [ "$safe" -eq 1 ]; then
+> >  			tst_brk_ TBROK "'$cmd' failed on '$RHOST': '$output'"
+> > +			return 1
+> > +		fi
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+> It looks as if someone forgot that tst_brk_ terminates the test :)
+And here I got confused by _tst_do_exit :)
+
+I'd keep TWARN, so correct part to your commit could be something like 
+patch bellow.
+
+
+Kind regards,
+Petr
+
+@@ -161,9 +161,11 @@ tst_rhost_run()
+ 	OPTIND=0
+ 
+ 	if [ -z "$cmd" ]; then
+-		[ "$safe" -eq 1 ] && \
++		if [ "$safe" -eq 1 ]; then
+ 			tst_brk_ TBROK "tst_rhost_run: command not defined"
+-		tst_res_ TWARN "tst_rhost_run: command not defined"
++		else
++			tst_res_ TWARN "tst_rhost_run: command not defined"
++		fi
+ 		return 1
+ 	fi
