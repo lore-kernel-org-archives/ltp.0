@@ -1,51 +1,50 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 27 Nov 2018 14:35:28 +0100
-Subject: [LTP] [PATCH] lib/tst_test.sh: setup timeout per test run for
- the shell tests
-In-Reply-To: <1539867130-14299-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1539867130-14299-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20181127133528.GB31527@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 27 Nov 2018 14:51:50 +0100
+Subject: [LTP] [PATCH] open_posix_testsuite/mmap24-2: Support mips
+In-Reply-To: <1540348607-217391-1-git-send-email-hongzhi.song@windriver.com>
+References: <1540348607-217391-1-git-send-email-hongzhi.song@windriver.com>
+Message-ID: <20181127135149.GA26575@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi!
+First of all sorry for the late reply.
 
-> Use LTP_TIMEOUT_MUL environment variable, similar to what we have
-> in the C library.
+> Mips will return EINVAL instead of ENOMEM as expected
+> if MAP_FIXED is set and the range of [addr + len) exceeds
+> TASK_SIZE.
+> 
+> Linux kernel code: arch/mips/mm/mmap.c
+> if (flags & MAP_FIXED) {
+>     /* Even MAP_FIXED mappings must reside within TASK_SIZE */
+>     if (TASK_SIZE - len < addr)
+>         return -EINVAL;
+> 
+> The POSIX specification says:
+> "If MAP_FIXED is set, mmap() may return MAP_FAILED and set errno to
+> [EINVAL]."
+> [http://pubs.opengroup.org/onlinepubs/9699919799/functions/mmap.html]
+> 
+> So I think the mips kernel remains POSIX compliant.
 
-> Basically, the patch puts the child process with kill command to
-> the background to signal the test process group processes after
-> the certain timeout, which is controlled by LTP_TIMEOUT_MUL.
+There is a subtle difference between the ENOMEM and EINVAL error for
+MAP_FIXED though.
 
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  testcases/lib/tst_test.sh |   24 ++++++++++++++++++++++++
->  1 files changed, 24 insertions(+), 0 deletions(-)
+If you look at POSIX specification terminology it says that 'shall'
+defines mandatory features while 'may' describes optional features.
 
-> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> index 7a41309..a7aa608 100644
-> --- a/testcases/lib/tst_test.sh
-> +++ b/testcases/lib/tst_test.sh
-> @@ -42,6 +42,11 @@ _tst_do_exit()
->  {
->  	local ret=0
+Which means that the MAP_FIXED returning ENOMEM for addresses above
+TASK_SIZE is mandatory since it's defined in the shall fail list. And
+that EINVAL is recomended to be used for other unsuitable address that
+fit into the process address space but are not suitable for a different
+reasons which could be mostly translated to hardware limits.
 
-> +	if [ -n "$_tst_setup_timer_pid" ]; then
-> +		kill $_tst_setup_timer_pid
-> +		wait $_tst_setup_timer_pid 2>/dev/null
+To sum it up, as far as I can tell mips is not POSIX confirmant here and
+even if this is a very minor issue we shouldn't change the test here.
 
-STDERR redirection to /dev/null must be on kill, not on wait:
-	   kill $_tst_setup_timer_pid 2>/dev/null
-	   wait $_tst_setup_timer_pid
-
-Otherwise warning is issued when timeout occurs:
-udp_ipsec 1 TINFO: run client 'netstress -l -T udp -H 10.0.0.1 -n 100 -N 100 -a 2 -r 500 -d tst_netload.res -g 49072'
-udp_ipsec 1 TBROK: test interrupted
-/opt/ltp/testcases/bin/udp_ipsec.sh: 46: kill: No such process
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
