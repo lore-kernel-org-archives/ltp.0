@@ -1,10 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 27 Nov 2018 17:29:28 +0100
+Date: Tue, 27 Nov 2018 17:47:55 +0100
 Subject: [LTP] [Automated-testing] [PATCH v2] lib: Add library function
  for parsing kernel config
 In-Reply-To: <20181127132117.21326-1-chrubis@suse.cz>
 References: <20181127132117.21326-1-chrubis@suse.cz>
-Message-ID: <20181127162928.GA5152@dell5510>
+Message-ID: <20181127164755.GA6668@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,13 +13,24 @@ To: ltp@lists.linux.it
 
 Hi Cyril,
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> +++ b/lib/newlib_tests/test_kconfig.sh
+> @@ -0,0 +1,11 @@
+> +#!/bin/sh
+> +
+> +echo "Attempting to parse currently running kernel config"
+Could you please add cd into test directory to save people to cd into directory?
+cd $(dirname $0)
 
-Nice patch.
+This might not be needed once I'll finish [1] my "make: Add test target" patch.
+(wanted to finish unit testing shell library [2][3] before it).
 
-> +	/* Debian and derivatives */
-> +	snprintf(path_buf, path_buf_len, "/boot/config-%s", un.release);
-/boot/config-$(uname -r) use also non Debian (and it's derivates) distros :).
+> +./test_kconfig
+> +echo
+
 
 Kind regards,
 Petr
+
+[1] https://patchwork.ozlabs.org/patch/960363/
+[2] https://patchwork.ozlabs.org/patch/964552/
+[3] https://github.com/linux-test-project/ltp/issues/312
