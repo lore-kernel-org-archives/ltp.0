@@ -1,36 +1,20 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 27 Nov 2018 17:47:55 +0100
-Subject: [LTP] [Automated-testing] [PATCH v2] lib: Add library function
- for parsing kernel config
-In-Reply-To: <20181127132117.21326-1-chrubis@suse.cz>
-References: <20181127132117.21326-1-chrubis@suse.cz>
-Message-ID: <20181127164755.GA6668@dell5510>
+Date: Tue, 27 Nov 2018 18:06:08 +0100
+Subject: [LTP] [PATCH] [WIP] Add fanout01 CVE-2017-15649
+In-Reply-To: <20180910122121.26752-1-rpalethorpe@suse.com>
+References: <20180910122121.26752-1-rpalethorpe@suse.com>
+Message-ID: <20181127170608.GA13895@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Richard,
 
-> +++ b/lib/newlib_tests/test_kconfig.sh
-> @@ -0,0 +1,11 @@
-> +#!/bin/sh
-> +
-> +echo "Attempting to parse currently running kernel config"
-Could you please add cd into test directory to save people to cd into directory?
-cd $(dirname $0)
-
-This might not be needed once I'll finish [1] my "make: Add test target" patch.
-(wanted to finish unit testing shell library [2][3] before it).
-
-> +./test_kconfig
-> +echo
-
+thanks for your patch, pushed, with tiny changes (removed unused imports, add
+leading slash in .gitignore, changing license to GPLv2+ in SPDX license
+identifier and remove verbose GPL related text).
 
 Kind regards,
 Petr
-
-[1] https://patchwork.ozlabs.org/patch/960363/
-[2] https://patchwork.ozlabs.org/patch/964552/
-[3] https://github.com/linux-test-project/ltp/issues/312
