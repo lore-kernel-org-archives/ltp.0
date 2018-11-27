@@ -1,27 +1,25 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 27 Nov 2018 16:09:38 +0100
-Subject: [LTP] [PATCH] lib/tst_test.sh: don't call _tst_do_exit()
- recursively with tst_brk()
-In-Reply-To: <f96d10e9-fb35-fe98-0ab0-3fd0c7891c42@oracle.com>
-References: <1542729786-4097-1-git-send-email-alexey.kodanev@oracle.com>
- <20181127090439.GA23733@dell5510>
- <f96d10e9-fb35-fe98-0ab0-3fd0c7891c42@oracle.com>
-Message-ID: <20181127150937.GB14077@dell5510>
+Date: Tue, 27 Nov 2018 17:29:28 +0100
+Subject: [LTP] [Automated-testing] [PATCH v2] lib: Add library function
+ for parsing kernel config
+In-Reply-To: <20181127132117.21326-1-chrubis@suse.cz>
+References: <20181127132117.21326-1-chrubis@suse.cz>
+Message-ID: <20181127162928.GA5152@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi Cyril,
 
-> OK, we should add similar "WARNING" from 2.2 section to 2.3, right?
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-> "WARNING: Calling tst_brk() in test 'cleanup()' does not exit the test as well
-> and 'TBROK' is converted to 'TWARN'."
+Nice patch.
 
-Yes, that'd be enough. Thanks for handling it.
-
+> +	/* Debian and derivatives */
+> +	snprintf(path_buf, path_buf_len, "/boot/config-%s", un.release);
+/boot/config-$(uname -r) use also non Debian (and it's derivates) distros :).
 
 Kind regards,
 Petr
