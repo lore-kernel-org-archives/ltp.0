@@ -1,77 +1,120 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 27 Nov 2018 03:54:42 -0500 (EST)
-Subject: [LTP] [PATCH v2] mtest06/mmap1: rewrite to newlib
-In-Reply-To: <CAEemH2eOUxC+M17kagF=9fOPeEBHJFEFYYBO20LnhUtwa+qmNA@mail.gmail.com>
-References: <0e62adebbb4e5c8e3aa28440f860234b937d3e56.1543219161.git.jstancek@redhat.com>
- <CAEemH2eOUxC+M17kagF=9fOPeEBHJFEFYYBO20LnhUtwa+qmNA@mail.gmail.com>
-Message-ID: <1068520574.79012810.1543308882560.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 27 Nov 2018 10:04:39 +0100
+Subject: [LTP] [PATCH] lib/tst_test.sh: don't call _tst_do_exit()
+ recursively with tst_brk()
+In-Reply-To: <1542729786-4097-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1542729786-4097-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20181127090439.GA23733@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Alexey,
 
------ Original Message -----
-> On Mon, Nov 26, 2018 at 4:21 PM Jan Stancek <jstancek@redhat.com> wrote:
-> 
-> > +static void sig_handler(int signal, siginfo_t *info,
-> > +       LTP_ATTRIBUTE_UNUSED void *ut)
-> > +{
-> > +       int ar_m, ar_u;
-> > +
-> > +       switch (signal) {
-> > +       case SIGSEGV:
-> > +               /* if we hit SIGSEGV between map/unmap, something is wrong
-> > */
-> > +               ar_u = tst_atomic_load(&unmapcnt);
-> > +               ar_m = tst_atomic_load(&mapcnt);
-> > +               if (was_area_mapped(br_map, br_unmap, ar_m, ar_u)) {
-> > +                       tst_res(TFAIL, "got sigsegv while mapped");
-> > +                       _exit(TFAIL);
-> 
-> why not use tst_brk() here?
+> With this patch, "safe" functions such as "ROD" and "tst_rhost_run -s"
+> can be used in a test cleanup function, i.e. in case of an error, "safe"
+> command won't recursively call the cleanup function again but will only
+> print the warning message about the failure.
 
-Because it calls exit(), which is not advised to do in signal handler.
-(doc/test-writing-guidelines.txt, line 841)
+> This behavior is consistent with the LTP C library.
 
-> 
-> > +               }
-> > +
-> > +               mapped_sigsegv_count++;
-> > +               longjmp(jmpbuf, 1);
-> > +               break;
-> > +       default:
-> > +               tst_res(TFAIL, "Unexpected signal - %d, addr: %p,
-> > exiting\n",
-> > +                       signal, info->si_addr);
-> > +               _exit(TBROK);
-> 
-> tst_brk() ?
-> 
-> > +       }
-> > +}
-> > +
-> > +void *map_write_unmap(void *ptr)
-> > +{
-> > +       long *args = ptr;
-> > +       void *tmp;
-> 
-> remove tmp pointer?
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/lib/tst_test.sh |    6 ++++++
+>  1 files changed, 6 insertions(+), 0 deletions(-)
 
-It introduces warning in safe_munmap(), because map_address is volatile.
-That is why I kept 'tmp'.
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index 16081fa..e84cf7f 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -41,6 +41,7 @@ trap "tst_brk TBROK 'test interrupted'" INT
+>  _tst_do_exit()
+>  {
+>  	local ret=0
+> +	TST_DO_EXIT=1
 
-> 
-> Beside these tiny issues, patch v2 looks good to me.
-> 
-> Reviewed-by: Li Wang <liwang@redhat.com>
+>  	if [ -n "$TST_SETUP_STARTED" -a -n "$TST_CLEANUP" -a \
+>  	     -z "$TST_NO_CLEANUP" ]; then
+> @@ -123,6 +124,11 @@ tst_brk()
+>  	local res=$1
+>  	shift
 
-Thanks,
-Jan
+> +	if [ "$TST_DO_EXIT" = 1 ]; then
+> +		tst_res TWARN "$@"
+> +		return
+> +	fi
+> +
+>  	tst_res "$res" "$@"
+>  	_tst_do_exit
+>  }
 
-> 
-> --
-> Regards,
-> Li Wang
-> 
+Shouldn't we return explicitly after any tst_brk_ call in tst_rhost_run()?
+Without that we get warning twice, when called from cleanup.
+test 2 TWARN: tst_rhost_run: command not defined
+test 2 TWARN: tst_rhost_run: command not defined
+
+This should fix it:
+
+diff --git testcases/lib/tst_net.sh testcases/lib/tst_net.sh
+index d1206e285..385e3bf5c 100644
+--- testcases/lib/tst_net.sh
++++ testcases/lib/tst_net.sh
+@@ -140,8 +140,11 @@ tst_rhost_run()
+ 	local user="root"
+ 	local cmd=
+ 	local safe=0
++	local ttype=TWARN
+ 	local bg=
+ 
++	[ "$safe" -eq 1 ] && ttype=TWARN
++
+ 	OPTIND=0
+ 
+ 	while getopts :bBsc:u: opt; do
+@@ -161,9 +164,7 @@ tst_rhost_run()
+ 	OPTIND=0
+ 
+ 	if [ -z "$cmd" ]; then
+-		[ "$safe" -eq 1 ] && \
+-			tst_brk_ TBROK "tst_rhost_run: command not defined"
+-		tst_res_ TWARN "tst_rhost_run: command not defined"
++		tst_brk_ $ttype "tst_rhost_run: command not defined"
+ 		return 1
+ 	fi
+ 
+@@ -182,8 +183,10 @@ tst_rhost_run()
+ 	echo "$output" | grep -q 'RTERR$' && ret=1
+ 	if [ $ret -eq 1 ]; then
+ 		output=$(echo "$output" | sed 's/RTERR//')
+-		[ "$safe" -eq 1 ] && \
++		if [ "$safe" -eq 1 ]; then
+ 			tst_brk_ TBROK "'$cmd' failed on '$RHOST': '$output'"
++			return 1
++		fi
+ 	fi
+ 
+ 	[ -z "$out" -a -n "$output" ] && echo "$output"
+
+
+Other option is really run $TST_CLEANUP function only once, but that's
+inconsistent with C library :-(. Code would be simple:
+
+diff --git testcases/lib/tst_test.sh testcases/lib/tst_test.sh
+index adfaea47e..beb1275ba 100644
+--- testcases/lib/tst_test.sh
++++ testcases/lib/tst_test.sh
+@@ -44,6 +44,7 @@ _tst_do_exit()
+ 
+ 	if [ -n "$TST_SETUP_STARTED" -a -n "$TST_CLEANUP" -a \
+ 	     -z "$TST_NO_CLEANUP" ]; then
++		TST_NO_CLEANUP=1
+ 		$TST_CLEANUP
+ 	fi
+ 
+And we should update doc.
+
+Kind regards,
+Petr
