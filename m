@@ -1,92 +1,165 @@
-From: Nikita Gupta <nikitarulz@gmail.com>
-Date: Tue, 27 Nov 2018 16:33:20 +0530
-Subject: [LTP] LTP: HugeTLB failures in version ltp-20170516-179-g18916a2
-In-Reply-To: <CAEemH2f+WkO6s7+FaiXoSWFf9Fm5UZRyF3Xv4ivSNR3znGAZrg@mail.gmail.com>
-References: <CAGyGwR2x=f=h2ZsXz1AEHhjoChRffY69zRndA_7SC1C1D53qHg@mail.gmail.com>
- <CAEemH2f+WkO6s7+FaiXoSWFf9Fm5UZRyF3Xv4ivSNR3znGAZrg@mail.gmail.com>
-Message-ID: <CAGyGwR1702Bp_ocoPTGabE1+NvyynSVjSGFEszkWu-Jc-n1OHA@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 27 Nov 2018 12:59:06 +0100
+Subject: [LTP] [PATCH v2] Test statx syscall for SYNC_FLAGS
+In-Reply-To: <20180917075248.28004-1-kewal@zilogic.com>
+References: <20180917075248.28004-1-kewal@zilogic.com>
+Message-ID: <20181127115905.GB4792@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Yes, it shows CONF on 20180926 release.
-Looks like the issue was introduced in release 20170516 itself, because it
-was showing CONF as expected in previous version "20170116".
+Hi Kewal,
 
-Thanks,
-Nikita
+LGTM, bellow are some minor enhancement tips.
 
-On Mon, Nov 26, 2018 at 10:20 AM Li Wang <liwang@redhat.com> wrote:
+> * statx06.c :-
+This could be deleted.
 
-> On Mon, Nov 26, 2018 at 11:55 AM Nikita Gupta <nikitarulz@gmail.com>
-> wrote:
-> >
-> > Hi All,
-> >
-> > HugeTLB is resulting into Conf in one version and Fail in another
-> version for same kernel configuration.
->
-> Thanks for reporting this.
->
-> >
-> > Version LTP-20170116:
-> > All test cases of HugeTLB are marked Conf by ltp, stating:
-> > 1  TCONF  :  hugetlb.c:45: Huge page is not supported.
-> > 2  TCONF  :  hugetlb.c:45: Remaining cases not appropriate for
-> configuration
-> >
-> > Version LTP-20170516-179-g18916a2:
->
-> LTP-20170516-179-g18916a2e6 is not a stable release for LTP, it just
-> contains part of patch set in hugetlb tests.
->
-> The warning you mentioned has been fixed(merged by 20180118) in commit:
->
-> commit a5489f1bc843b7bda74fca10fad2f8714b5fb090
-> Author: Li Wang <liwang@redhat.com>
-> Date:   Fri Dec 1 11:55:59 2017 +0800
->
->     hugetlb: fix warnings in cleanup()
->
->     Adding two functions [save|restore]_nr_hugepages() to the hugetlb
->     library, and meanwhile initialize the 'orig_hugepages' to '-1', then
->     we can make use of that to avoid those warnings on a system without
->     huge page supporting.
->
->     WARNING:
->        safe_file_ops.c:283: WARN: Failed to open FILE
-> '/proc/sys/vm/nr_hugepages'
->        for writing at mem.c:853: ENOENT
->
->     Also, including "mem.h" in hugetlb lib to get rid of compile warnings.
->
-> > All test cases of HugeTLB are marked Fail by LTP, stating:
-> > tst_test.c:908: INFO: Timeout per run is 0h 05m 00s hugetlb.c:46: CONF:
-> Huge page is not supported. mem.c:850: INFO: set nr_hugepages to 0
-> safe_file_ops.c:283: WARN: Failed to open FILE '/proc/sys/vm/nr_hugepages'
-> for writing at mem.c:853: ENOENT
-> >
-> > Isn't in version ltp-20170516-179-g18916a2 also, all test cases should
-> be marked Conf.
-> > As the file /proc/sys/vm/nr_hugepages is not present for both the
-> versions.
->
-> Yes, they should be marked as Conf too. But I think this kind of
-> issues would be gone if you use latest LTP version. Can you have a try
-> the 20180926 release?
-> https://github.com/linux-test-project/ltp/releases/tag/20180926
->
-> --
-> Regards,
-> Li Wang
->
+Maybe first line of commit message "syscalls/statx: Add test for sync flags"
+(SYNC_FLAGS looks like a constant, which is misleading).
+
+>  Testcase 1: AT_STATX_DONT_SYNC
+>   With AT_STATX_DONT_SYNC server changes should not get sync with client.
+
+>  Testcase 2: AT_STATX_FORCE_SYNC
+>   With AT_STATX_FORCE_SYNC server changes should get sync with client.
+
+> Signed-off-by: Kewal Ukunde <kewal@zilogic.com>
+> Signed-off-by: Vaishnavi.d <vaishnavi.d@zilogic.com>
+> Signed-off-by: Tarun.T.U <tarun@zilogic.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  runtest/syscalls                           |   1 +
+>  testcases/kernel/syscalls/statx/.gitignore |   1 +
+>  testcases/kernel/syscalls/statx/statx06.c  | 195 +++++++++++++++++++++++++++++
+>  3 files changed, 197 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/statx/statx06.c
+
+It's needed to rename statx06.c to statx07.c (as previous was taken).
+
+...
+> diff --git a/testcases/kernel/syscalls/statx/statx06.c b/testcases/kernel/syscalls/statx/statx06.c
+...
+
+> +static void test_for_dont_sync(void)
+> +{
+> +	unsigned int cur_mode;
+> +	char server_path[F_PATH_SIZE];
+> +
+> +	snprintf(server_path, sizeof(server_path), "%s/%s", SERVER_PATH,
+> +		 DONT_SYNC_FILE);
+> +
+> +	get_mode(DONT_SYNC_FILE, AT_STATX_FORCE_SYNC,
+> +		 "AT_STATX_FORCE_SYNC");
+> +
+> +	SAFE_CHMOD(server_path, CURRENT_MODE);
+> +	cur_mode = get_mode(DONT_SYNC_FILE, AT_STATX_DONT_SYNC,
+> +			    "AT_STATX_DONT_SYNC");
+> +
+> +	if (MODE(cur_mode) == DEFAULT_MODE)
+> +		tst_res(TPASS,
+> +			"statx() with AT_STATX_DONT_SYNC for mode %o %o",
+> +			DEFAULT_MODE, MODE(cur_mode));
+> +	else
+> +		tst_res(TFAIL,
+> +			"statx() with AT_STATX_DONT_SYNC for mode %o %o",
+> +			DEFAULT_MODE, MODE(cur_mode));
+> +}
+> +
+> +static void test_for_force_sync(void)
+> +{
+> +	unsigned int cur_mode;
+> +	char server_path[F_PATH_SIZE];
+> +
+> +	snprintf(server_path, sizeof(server_path), "%s/%s", SERVER_PATH,
+> +		 FORCE_SYNC_FILE);
+> +
+> +	SAFE_CHMOD(server_path, CURRENT_MODE);
+> +	cur_mode = get_mode(FORCE_SYNC_FILE, AT_STATX_FORCE_SYNC,
+> +			    "AT_STATX_FORCE_SYNC");
+> +
+> +	if (MODE(cur_mode) == CURRENT_MODE)
+> +		tst_res(TPASS,
+> +			"statx() with AT_STATX_FORCE_SYNC for mode %o %o",
+> +			CURRENT_MODE, MODE(cur_mode));
+> +	else
+> +		tst_res(TFAIL,
+> +			"statx() with AT_STATX_FORCE_SYNC for mode %o %o",
+> +			CURRENT_MODE, MODE(cur_mode));
+> +}
+> +
+> +const struct test_cases {
+> +	void (*func)(void);
+> +} tcases[] = {
+> +	{test_for_dont_sync},
+> +	{test_for_force_sync}
+> +};
+Both testing functions are nearly the same, why to repeat yourself?
+How about, instead of passing test function pointer, pass mode and other needed
+parameters to single test function?
+
+> +
+> +static void test_statx(unsigned int nr)
+> +{
+> +	const struct test_cases *tc = &tcases[nr];
+> +
+> +	tc->func();
+> +}
+
+I suggest other changes (see following diff):
+
+* Add mount flag to avoid false positive warning:
+safe_macros.c:773: WARN: statx07.c:181: umount(client) failed: EINVAL
+
+* Fix gcc-8 format-truncation error (1024 is far too much, it could be less).
+
+* Use tst_res(TWARN, ...) for exportfs.
 
 
--- 
-Regards,
-Nikita Gupta
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20181127/6798cf10/attachment.html>
+Kind regards,
+Petr
+
+
+
+diff --git testcases/kernel/syscalls/statx/statx07.c testcases/kernel/syscalls/statx/statx07.c
+index f64322d7d..ff988fd00 100644
+--- testcases/kernel/syscalls/statx/statx07.c
++++ testcases/kernel/syscalls/statx/statx07.c
+@@ -51,6 +51,7 @@
+ 
+ static char cwd[PATH_MAX];
+ static char cmd[BUFF_SIZE];
++static int mounted;
+ 
+ static int get_mode(char *file_name, int flag_type, char *flag_name)
+ {
+@@ -163,7 +162,7 @@ static void setup(void)
+ 	snprintf(mount_data, sizeof(mount_data), "addr=%s", ip);
+ 
+ 	snprintf(cmd, sizeof(cmd),
+-		 "exportfs -i -o no_root_squash,rw,sync,no_subtree_check *%s",
++		 "exportfs -i -o no_root_squash,rw,sync,no_subtree_check *%.1024s",
+ 		 server_path);
+ 
+ 	ret = tst_system(cmd);
+@@ -173,14 +172,16 @@ static void setup(void)
+ 		tst_brk(TBROK | TST_ERR, "failed to exportfs");
+ 
+ 	SAFE_MOUNT(server_path, client_path, "nfs", 0, mount_data);
++	mounted = 1;
+ }
+ 
+ static void cleanup(void)
+ {
+ 	if (tst_system("exportfs -ua") == -1)
+-		tst_brk(TBROK | TST_ERR, "failed to clear exportfs");
++		tst_res(TWARN | TST_ERR, "failed to clear exportfs");
+ 
+-	SAFE_UMOUNT(CLIENT_PATH);
++	if (mounted)
++		SAFE_UMOUNT(CLIENT_PATH);
+ }
+ 
+ static struct tst_test test = {
