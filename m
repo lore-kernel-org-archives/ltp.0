@@ -1,106 +1,196 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 28 Nov 2018 18:46:43 +0200
-Subject: [LTP] [PATCH v4 4/6] syscalls/readahead02: Convert to tst_timer
-	helpers
+Date: Wed, 28 Nov 2018 18:46:44 +0200
+Subject: [LTP] [PATCH v4 5/6] syscalls/readahead02: test readahead() on an
+	overlayfs file
 In-Reply-To: <20181128164645.783-1-amir73il@gmail.com>
 References: <20181128164645.783-1-amir73il@gmail.com>
-Message-ID: <20181128164645.783-5-amir73il@gmail.com>
+Message-ID: <20181128164645.783-6-amir73il@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To avoid usinf wall clock and get rid of gettimeofday boiler plate code.
+Repeat the test case on an overlayfs file.
+
+The new test case is a regression test for kernel commit b833a3660394
+("ovl: add ovl_fadvise()") which fixes a regression of readahead() on
+an overlay file that was introduced by kernel commit 5b910bd615ba
+("ovl: fix GPF in swapfile_activate of file from overlayfs over xfs").
 
 Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- .../kernel/syscalls/readahead/readahead02.c   | 22 +++++++------------
- 1 file changed, 8 insertions(+), 14 deletions(-)
+ .../kernel/syscalls/readahead/readahead02.c   | 80 ++++++++++++++++---
+ 1 file changed, 71 insertions(+), 9 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
-index 0acdad482..24f045900 100644
+index 24f045900..73c8a6ce6 100644
 --- a/testcases/kernel/syscalls/readahead/readahead02.c
 +++ b/testcases/kernel/syscalls/readahead/readahead02.c
-@@ -16,7 +16,6 @@
+@@ -14,6 +14,7 @@
+ #include <sys/types.h>
+ #include <sys/syscall.h>
  #include <sys/mman.h>
++#include <sys/mount.h>
  #include <sys/stat.h>
  #include <sys/types.h>
--#include <sys/time.h>
  #include <errno.h>
- #include <stdio.h>
- #include <stdlib.h>
-@@ -25,6 +24,7 @@
- #include <fcntl.h>
- #include "config.h"
- #include "tst_test.h"
-+#include "tst_timer.h"
- #include "lapi/syscalls.h"
+@@ -33,8 +34,14 @@ static const char meminfo_fname[] = "/proc/meminfo";
+ static size_t testfile_size = 64 * 1024 * 1024;
+ static char *opt_fsizestr;
+ static int pagesize;
++static unsigned long cached_max;
++static int ovl_mounted;
  
- static char testfile[PATH_MAX] = "testfile";
-@@ -130,17 +130,15 @@ static void create_testfile(void)
-  * @cached: returns cached kB from /proc/meminfo
-  */
- static void read_testfile(int do_readahead, const char *fname, size_t fsize,
--			  unsigned long *read_bytes, long *usec,
-+			  unsigned long *read_bytes, long long *usec,
- 			  unsigned long *cached)
+ #define MNTPOINT        "mntpoint"
++#define OVL_LOWER	MNTPOINT"/lower"
++#define OVL_UPPER	MNTPOINT"/upper"
++#define OVL_WORK	MNTPOINT"/work"
++#define OVL_MNT		MNTPOINT"/ovl"
+ #define MIN_SANE_READAHEAD (4u * 1024u)
+ 
+ static const char mntpoint[] = MNTPOINT;
+@@ -44,6 +51,16 @@ static struct tst_option options[] = {
+ 	{NULL, NULL, NULL}
+ };
+ 
++static struct tcase {
++	const char *tname;
++	int use_overlay;
++} tcases[] = {
++	{ "readahead on file", 0 },
++	{ "readahead on overlayfs file", 1 },
++};
++
++static int readahead_supported = 1;
++
+ static int has_file(const char *fname, int required)
+ {
+ 	struct stat buf;
+@@ -97,12 +114,13 @@ static unsigned long get_cached_size(void)
+ 	return parse_entry(meminfo_fname, entry);
+ }
+ 
+-static void create_testfile(void)
++static void create_testfile(int use_overlay)
  {
  	int fd;
- 	size_t i = 0;
- 	long read_bytes_start;
- 	unsigned char *p, tmp;
--	unsigned long time_start_usec, time_end_usec;
- 	unsigned long cached_start, max_ra_estimate = 0;
- 	off_t offset = 0;
--	struct timeval now;
+ 	char *tmp;
+ 	size_t i;
  
- 	fd = SAFE_OPEN(fname, O_RDONLY);
++	sprintf(testfile, "%s/testfile", use_overlay ? OVL_MNT : MNTPOINT);
+ 	tst_res(TINFO, "creating test file of size: %zu", testfile_size);
+ 	tmp = SAFE_MALLOC(pagesize);
  
-@@ -180,9 +178,7 @@ static void read_testfile(int do_readahead, const char *fname, size_t fsize,
- 			tst_res(TFAIL, "offset has changed to: %lu", offset);
- 	}
- 
--	if (gettimeofday(&now, NULL) == -1)
--		tst_brk(TBROK | TERRNO, "gettimeofday failed");
--	time_start_usec = now.tv_sec * 1000000 + now.tv_usec;
-+	tst_timer_start(CLOCK_MONOTONIC);
- 	read_bytes_start = get_bytes_read();
- 
- 	p = SAFE_MMAP(NULL, fsize, PROT_READ, MAP_SHARED | MAP_POPULATE, fd, 0);
-@@ -201,10 +197,8 @@ static void read_testfile(int do_readahead, const char *fname, size_t fsize,
- 	SAFE_MUNMAP(p, fsize);
- 
- 	*read_bytes = get_bytes_read() - read_bytes_start;
--	if (gettimeofday(&now, NULL) == -1)
--		tst_brk(TBROK | TERRNO, "gettimeofday failed");
--	time_end_usec = now.tv_sec * 1000000 + now.tv_usec;
--	*usec = time_end_usec - time_start_usec;
-+	tst_timer_stop();
-+	*usec = tst_timer_elapsed_us();
- 
+@@ -203,21 +221,33 @@ static void read_testfile(int do_readahead, const char *fname, size_t fsize,
  	SAFE_CLOSE(fd);
  }
-@@ -212,7 +206,7 @@ static void read_testfile(int do_readahead, const char *fname, size_t fsize,
- static void test_readahead(void)
+ 
+-static void test_readahead(void)
++static void test_readahead(unsigned int n)
  {
  	unsigned long read_bytes, read_bytes_ra;
--	long usec, usec_ra;
-+	long long usec, usec_ra;
- 	unsigned long cached_max, cached_low, cached, cached_ra;
+ 	long long usec, usec_ra;
+-	unsigned long cached_max, cached_low, cached, cached_ra;
++	unsigned long cached_high, cached_low, cached, cached_ra;
  	char proc_io_fname[128];
++	struct tcase *tc = &tcases[n];
++
++	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
++
  	sprintf(proc_io_fname, "/proc/%u/io", getpid());
-@@ -253,8 +247,8 @@ static void test_readahead(void)
- 	else
- 		cached_ra = 0;
  
--	tst_res(TINFO, "read_testfile(0) took: %ld usec", usec);
--	tst_res(TINFO, "read_testfile(1) took: %ld usec", usec_ra);
-+	tst_res(TINFO, "read_testfile(0) took: %lli usec", usec);
-+	tst_res(TINFO, "read_testfile(1) took: %lli usec", usec_ra);
- 	if (has_file(proc_io_fname, 0)) {
- 		tst_res(TINFO, "read_testfile(0) read: %ld bytes", read_bytes);
- 		tst_res(TINFO, "read_testfile(1) read: %ld bytes",
++	if (tc->use_overlay && !ovl_mounted) {
++		tst_res(TCONF,
++			"overlayfs is not configured in this kernel.");
++		return;
++	}
++
++	create_testfile(tc->use_overlay);
++
+ 	/* find out how much can cache hold if we read whole file */
+ 	read_testfile(0, testfile, testfile_size, &read_bytes, &usec, &cached);
+-	cached_max = get_cached_size();
++	cached_high = get_cached_size();
+ 	sync();
+ 	drop_caches();
+ 	cached_low = get_cached_size();
+-	cached_max = cached_max - cached_low;
++	cached_max = MAX(cached_max, cached_high - cached_low);
+ 
+ 	tst_res(TINFO, "read_testfile(0)");
+ 	read_testfile(0, testfile, testfile_size, &read_bytes, &usec, &cached);
+@@ -233,11 +263,14 @@ static void test_readahead(void)
+ 	read_testfile(1, testfile, testfile_size, &read_bytes_ra,
+ 		      &usec_ra, &cached_ra);
+ 	if (TST_RET != 0) {
+-		if (TST_ERR == EINVAL) {
++		if (TST_ERR == EINVAL &&
++		    (!tc->use_overlay || !readahead_supported)) {
++			readahead_supported = 0;
+ 			tst_res(TCONF, "readahead not supported on %s",
+ 				tst_device->fs_type);
+ 		} else {
+ 			tst_res(TFAIL | TTERRNO, "readahead failed on %s",
++				tc->use_overlay ? "overlayfs" :
+ 				tst_device->fs_type);
+ 		}
+ 		return;
+@@ -284,6 +317,28 @@ static void test_readahead(void)
+ 	}
+ }
+ 
++static void setup_overlay(void)
++{
++	int ret;
++
++	/* Setup an overlay mount with lower dir and file */
++	SAFE_MKDIR(OVL_LOWER, 0755);
++	SAFE_MKDIR(OVL_UPPER, 0755);
++	SAFE_MKDIR(OVL_WORK, 0755);
++	SAFE_MKDIR(OVL_MNT, 0755);
++	ret = mount("overlay", OVL_MNT, "overlay", 0, "lowerdir="OVL_LOWER
++		    ",upperdir="OVL_UPPER",workdir="OVL_WORK);
++	if (ret < 0) {
++		if (errno == ENODEV) {
++			tst_res(TINFO,
++				"overlayfs is not configured in this kernel.");
++			return;
++		}
++		tst_brk(TBROK | TERRNO, "overlayfs mount failed");
++	}
++	ovl_mounted = 1;
++}
++
+ static void setup(void)
+ {
+ 	if (opt_fsizestr)
+@@ -297,8 +352,13 @@ static void setup(void)
+ 
+ 	pagesize = getpagesize();
+ 
+-	sprintf(testfile, "%s/testfile", mntpoint);
+-	create_testfile();
++	setup_overlay();
++}
++
++static void cleanup(void)
++{
++	if (ovl_mounted)
++		SAFE_UMOUNT(OVL_MNT);
+ }
+ 
+ static struct tst_test test = {
+@@ -307,6 +367,8 @@ static struct tst_test test = {
+ 	.mount_device = 1,
+ 	.mntpoint = mntpoint,
+ 	.setup = setup,
++	.cleanup = cleanup,
+ 	.options = options,
+-	.test_all = test_readahead,
++	.test = test_readahead,
++	.tcnt = ARRAY_SIZE(tcases),
+ };
 -- 
 2.17.1
 
