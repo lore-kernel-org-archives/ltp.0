@@ -1,41 +1,33 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 30 Nov 2018 19:14:44 +0100
-Subject: [LTP] [PATCH 1/1] tst_test.sh: Add info about LTP_TIMEOUT_MUL into
-	TBROK message
-Message-ID: <20181130181444.26565-1-pvorel@suse.cz>
+Date: Fri, 30 Nov 2018 19:18:05 +0100
+Subject: [LTP] WIKI updates via git
+In-Reply-To: <20181127150937.GB14077@dell5510>
+References: <1542729786-4097-1-git-send-email-alexey.kodanev@oracle.com>
+ <20181127090439.GA23733@dell5510>
+ <f96d10e9-fb35-fe98-0ab0-3fd0c7891c42@oracle.com>
+ <20181127150937.GB14077@dell5510>
+Message-ID: <20181130181805.GA26705@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
 Hi Alexey,
 
-maybe it makes sense to add info about LTP_TIMEOUT_MUL variable.
-I'm sorry, I didn't notice before.
-This is the same message as it's in C API.
+> > OK, we should add similar "WARNING" from 2.2 section to 2.3, right?
+
+> > "WARNING: Calling tst_brk() in test 'cleanup()' does not exit the test as well
+> > and 'TBROK' is converted to 'TWARN'."
+
+> Yes, that'd be enough. Thanks for handling it.
+Noticed you pushed the changes, but didn't update wiki.
+I did it.
+
+BTW: There is a git repository, which makes it easier to update it:
+https://github.com/linux-test-project/ltp.wiki.git
+(simple git commit is equivalent of change via web)
+
 
 Kind regards,
 Petr
----
- testcases/lib/tst_test.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 8bf5f84d1..c6ce7b6f3 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -371,7 +371,7 @@ _tst_setup_timer()
- 
- 	tst_res TINFO "timeout per run is ${h}h ${m}m ${s}s"
- 
--	sleep $sec && tst_res TBROK "test killed, timeout!" && kill -9 -$pid &
-+	sleep $sec && tst_res TBROK "test killed, timeout! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1" && kill -9 -$pid &
- 
- 	_tst_setup_timer_pid=$!
- }
--- 
-2.19.1
-
