@@ -1,80 +1,81 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 29 Nov 2018 17:29:30 +0100
-Subject: [LTP] [PATCH] syscalls/migrate_pages03: skip migratition of shared
-	pages
-Message-ID: <12d3ccf40055c225b97a4a94ed1c6a46d4fd2048.1543508512.git.jstancek@redhat.com>
+Date: Fri, 30 Nov 2018 04:46:32 -0500 (EST)
+Subject: [LTP] [PATCH v2] mtest06/mmap1: rewrite to newlib
+In-Reply-To: <20181129134411.GA22216@rei.lan>
+References: <0e62adebbb4e5c8e3aa28440f860234b937d3e56.1543219161.git.jstancek@redhat.com>
+ <20181129134411.GA22216@rei.lan>
+Message-ID: <2002461812.80702248.1543571192512.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixes: #431
 
-Migrating shared pages (as root) includes also executable pages
-(glibc, etc.) Kernel might need to invalidate icache, which can
-be an expensive operation on some architectures (arm64).
 
-This test is repeating migration thousands of times, and because
-migration (and icache flush) runs for each page, it all stacks
-up and test is hitting a timeout.
+----- Original Message -----
+> Hi!
+> > Instead each mmap/munmap increases a map/unmap counter. Upon hitting
+> > SIGSEGV or when comparing read value, these counter values are used
+> > to determine state of mapped area as observed by first thread.
+> > This isn't 100% accurrate as first thread might be faster than the
+> > check, but it allows second thread to race against map/unmap for
+> > its entire duration.
+> 
+> Looks good to me, using atomic counters and comparing values before and
+> after we access the memory is very clever as well. You can add my
+> Reviewed-by.
+> 
+> Very minor comments below.
+> > +/* compare "before read" counters  with "after read" counters */
+> > +static inline int was_area_mapped(int br_m, int br_u, int ar_m, int ar_u)
+> > +{
+> > +	return (br_m == ar_m && br_u == ar_u && br_m > br_u);
+> > +}
+> 
+> Since the br_map and br_unmap are global I would consider passing only
+> the values after to this function.
 
-It's enough for this reproducer to migrate pages it allocates
-and merges (via KSM), so do the migration as unprivileged user
-and we can avoid the overhead of migrating everything. Such
-scenario is already covered by migrate_pages02.
+Hi,
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/migrate_pages/migrate_pages03.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+I find it more clear if it doesn't depend on globals. Since it's inlined
+there should be no penalty, so I kept it as is.
 
-diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
-index ecfc55288691..7317b11283d8 100644
---- a/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
-+++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages03.c
-@@ -33,6 +33,7 @@
- #include <errno.h>
- #include <unistd.h>
- #include <stdlib.h>
-+#include <pwd.h>
- 
- #include "tst_test.h"
- #include "lapi/syscalls.h"
-@@ -52,6 +53,8 @@ static void *test_pages[N_PAGES];
- static int num_nodes, max_node;
- static int *nodes;
- static unsigned long *new_nodes[2];
-+static const char nobody_uid[] = "nobody";
-+static struct passwd *ltpuser;
- 
- static void setup(void)
- {
-@@ -69,6 +72,8 @@ static void setup(void)
- 			TEST_NODES);
- 	}
- 
-+	ltpuser = SAFE_GETPWNAM(nobody_uid);
-+
- 	max_node = LTP_ALIGN(get_max_node(), sizeof(unsigned long) * 8);
- 	nodemask_size = max_node / 8;
- 	new_nodes[0] = SAFE_MALLOC(nodemask_size);
-@@ -125,6 +130,7 @@ static void migrate_test(void)
- {
- 	int loop, i, ret;
- 
-+	SAFE_SETEUID(ltpuser->pw_uid);
- 	for (loop = 0; loop < N_LOOPS; loop++) {
- 		i = loop % 2;
- 		ret = tst_syscall(__NR_migrate_pages, 0, max_node,
-@@ -134,6 +140,7 @@ static void migrate_test(void)
- 			return;
- 		}
- 	}
-+	SAFE_SETEUID(0);
- 
- 	tst_res(TPASS, "migrate_pages() passed");
- }
--- 
-1.8.3.1
+> > +
+> > +void *read_mem(LTP_ATTRIBUTE_UNUSED void *ptr)
+> > +{
+> > +	int i, j, ar_map, ar_unmap;
+> > +	unsigned char c;
+> > +
+> > +	for (i = 0; i < num_iter; i++) {
+> > +		if (setjmp(jmpbuf) == 1)
+> > +			continue;
 
+I made 'i' volatile, since longjmp could clobber it.
+
+> > +static void run(void)
+> > +{
+> > +	pthread_t thid[2];
+> > +	long chld_args[1];
+> > +	int remaining = tst_timeout_remaining();
+> > +	int elapsed = 0;
+> > +
+> > +	while (tst_timeout_remaining() > STOP_THRESHOLD) {
+> > +		int fd = mkfile(file_size);
+> > +
+> > +		tst_atomic_store(0, &mapcnt);
+> > +		tst_atomic_store(0, &unmapcnt);
+> > +
+> > +		chld_args[0] = fd;
+> 
+> I would have just casted the fd here to long or intptr_t (to make sure
+> compiler padds it with zeroes) then to (void*) and passed the value
+> directly, i.e. (void*)(inptr_t)fd and then back in the thread we do
+> fd = (intptr_t)ptr.
+
+I changed this to pass int ptr directly, which requires no casts AFAICT.
+
+... and pushed.
+
+Thanks,
+Jan
