@@ -1,42 +1,50 @@
-From: Li Wang <liwan@redhat.com>
-Date: Mon, 3 Dec 2018 16:41:30 +0800
-Subject: [LTP] [PATCH] syscalls/migrate_pages03: skip migratition of
-	shared pages
-In-Reply-To: <12d3ccf40055c225b97a4a94ed1c6a46d4fd2048.1543508512.git.jstancek@redhat.com>
-References: <12d3ccf40055c225b97a4a94ed1c6a46d4fd2048.1543508512.git.jstancek@redhat.com>
-Message-ID: <CAEemH2cLauQLtEPMjOsGdaFfndAW+Nzr=qiFWPyEWfaLjQh6ww@mail.gmail.com>
+From: Cristian Marussi <cristian.marussi@arm.com>
+Date: Mon, 3 Dec 2018 08:51:12 +0000
+Subject: [LTP] [PATCH] cgroup_regression_test.sh: fixed test_5
+In-Reply-To: <20181121134021.52225-1-cristian.marussi@arm.com>
+References: <20181121134021.52225-1-cristian.marussi@arm.com>
+Message-ID: <71f43407-6a11-11e6-b8d3-06dc97f0b653@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Nov 30, 2018 at 12:29 AM Jan Stancek <jstancek@redhat.com> wrote:
->
-> Fixes: #431
->
-> Migrating shared pages (as root) includes also executable pages
-> (glibc, etc.) Kernel might need to invalidate icache, which can
-> be an expensive operation on some architectures (arm64).
->
-> This test is repeating migration thousands of times, and because
-> migration (and icache flush) runs for each page, it all stacks
-> up and test is hitting a timeout.
->
-> It's enough for this reproducer to migrate pages it allocates
-> and merges (via KSM), so do the migration as unprivileged user
-> and we can avoid the overhead of migrating everything. Such
-> scenario is already covered by migrate_pages02.
 
-I'm OK to drop privileges before calling migrate_pages() in this
-testcase, but if we can start a new topic in LKML for more discussion
-that would be better?
+Hi
 
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+On 21/11/2018 13:40, Cristian Marussi wrote:
+> test_5 checked for possible regressions using a pair of cgroups mounts
+> operations designed to expose a kernel crash; the trigger being the
+> attempt to co-mount and mount the same cgroup subsystem onto two
+> distinct fs hierarchies: the expected failure in the second mount
+> attempt was not properly handled in 2.6.29-rc2 and lead to a kernel
+> crash.
+> Unfortunately the test assumed that the randomly chosen subsystems
+> were NOT already mounted somewhere when attempting the first co-mount:
+> this assumption is falsified when userspace is configured to mount all
+> available subsystems at /sysfs on boot (systemd).
+> So the test was failing straight away during the setup phase:
+> 
+> cgroup_regression_test    5  TFAIL  :  ltpapicmd.c:188: mount pids and hugetlb failed
+> 
+> Being not trivial to forcibly release and unmount the populated
+> /sysfs cgroups once booted, the script has been reviewed to detect
+> this condition upfront and cope with it dynamically:
+> 
+>  - if not already mounted: co-mount + failing mount (as before)
+>  - already mounted: use existing mntpoint + failing co-mount
+> 
+> Since the original fix was on a 2.6.29 kernel the surrounding cgroup
+> code has changed a lot and so the patch was no more trivially 'revertable'
+> for testing purposes: as such this reviewed test script has been verified
+> using a QEMU x86_64 instance running a Kernel 2.6.39 with and without
+> the known fix as detailed in test_5 comments.
+> 
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+any update on this ?
 
---
-Regards,
-Li Wang
+Thanks
+
+Cristian
