@@ -1,32 +1,42 @@
 From: Li Wang <liwan@redhat.com>
-Date: Sat, 1 Dec 2018 17:57:41 +0800
-Subject: [LTP] [PATCH] fzsync: limit sampling time
-In-Reply-To: <45587008.81059248.1543654685122.JavaMail.zimbra@redhat.com>
-References: <c49a5628139703513cb66d84d03953ddb5cc1560.1543489660.git.jstancek@redhat.com>
- <CAEemH2cVjYJLwLvkvS3QK7PwmM=g+HzFFaPo5YK3uAex3SEghA@mail.gmail.com>
- <45587008.81059248.1543654685122.JavaMail.zimbra@redhat.com>
-Message-ID: <CAEemH2c0ZFO1xOy00QEuAsrx8JPS7_00DwHqGHKaHfGVN-VW=A@mail.gmail.com>
+Date: Mon, 3 Dec 2018 16:41:30 +0800
+Subject: [LTP] [PATCH] syscalls/migrate_pages03: skip migratition of
+	shared pages
+In-Reply-To: <12d3ccf40055c225b97a4a94ed1c6a46d4fd2048.1543508512.git.jstancek@redhat.com>
+References: <12d3ccf40055c225b97a4a94ed1c6a46d4fd2048.1543508512.git.jstancek@redhat.com>
+Message-ID: <CAEemH2cLauQLtEPMjOsGdaFfndAW+Nzr=qiFWPyEWfaLjQh6ww@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Oops, I click send button before input anything in last email. Sorry about that.
+On Fri, Nov 30, 2018 at 12:29 AM Jan Stancek <jstancek@redhat.com> wrote:
+>
+> Fixes: #431
+>
+> Migrating shared pages (as root) includes also executable pages
+> (glibc, etc.) Kernel might need to invalidate icache, which can
+> be an expensive operation on some architectures (arm64).
+>
+> This test is repeating migration thousands of times, and because
+> migration (and icache flush) runs for each page, it all stacks
+> up and test is hitting a timeout.
+>
+> It's enough for this reproducer to migrate pages it allocates
+> and merges (via KSM), so do the migration as unprivileged user
+> and we can avoid the overhead of migrating everything. Such
+> scenario is already covered by migrate_pages02.
 
-On Sat, Dec 1, 2018 at 4:58 PM Jan Stancek <jstancek@redhat.com> wrote:
-> Wouldn't we spend too much time sampling on fast systems
-> without much gain?
-
-Well, seems there is no need to do much sampling on faster system.
+I'm OK to drop privileges before calling migrate_pages() in this
+testcase, but if we can start a new topic in LKML for more discussion
+that would be better?
 
 >
-> My impression was we want to get out of sampling phase ASAP,
-> so library can start inserting random delays.
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-Ok, after thinking over, to drop min_samples maybe doesn't make much
-sense for library. Now I'd keep the patch as the V2.
+Reviewed-by: Li Wang <liwang@redhat.com>
 
--- 
+--
 Regards,
 Li Wang
