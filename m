@@ -1,53 +1,39 @@
-From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Mon, 3 Dec 2018 13:14:58 -0200
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 3 Dec 2018 17:37:02 +0100
 Subject: [LTP] with-numa/without-numa option not working ?
-Message-ID: <9a9b8890-5bc0-1123-1ceb-68dedb6e7a5c@linaro.org>
+In-Reply-To: <9a9b8890-5bc0-1123-1ceb-68dedb6e7a5c@linaro.org>
+References: <9a9b8890-5bc0-1123-1ceb-68dedb6e7a5c@linaro.org>
+Message-ID: <20181203163701.GA19576@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi Rafael,
 
-Daniel has discovered that --with-numa and --without-numa practically
-have the same effect, disabling NUMA support. This can be seen when
-executing test "migrate_pages03", for example.
+> Hello,
 
-In both situations it will display:
+> Daniel has discovered that --with-numa and --without-numa practically
+> have the same effect, disabling NUMA support. This can be seen when
+> executing test "migrate_pages03", for example.
 
-tst_test.c:771: CONF: require libnuma >= 2 and it's development packages
+> In both situations it will display:
 
-config.log shows:
+> tst_test.c:771: CONF: require libnuma >= 2 and it's development packages
 
-when --with-numa AND when --without-numa are set (or --with-numa=yes or
---with-numa=no):
+> config.log shows:
 
-NUMA_LIBS=''
+> when --with-numa AND when --without-numa are set (or --with-numa=yes or
+> --with-numa=no):
+Thanks for your report. I'm the author of numa configure option, I'm aware of
+it (39a85a1f1 and 4ace68a6b).
+It was never meant that --with-numa would be working.  There was only
+--without-numa as workaround for systems without numa libraries and devel files.
+Before it was a dependency for LTP compilation.
+But I know it's confusing, as it's expected both --with-PACKAGE
+and--without-PACKAGE are implemented, so I'll fix it => with --with-numa
+(which will be the default) it will fail to compile.
 
-
-
-#define NUMA_ERROR_MSG "NUMA support was disabled during build"
-
-
-
-when nothing is specificied:
-
-NUMA_LIBS='-lnuma'
-
-
-
-#define HAVE_NUMA_H 1
-
-
-#define HAVE_NUMAIF_H 1
-#define HAVE_NUMA_V2 1
-#define NUMA_ERROR_MSG "test requires libnuma >= 2..."
-
-I believe something is wrong with configure.ac for NUMA (maybe some
-other options ?). I'm not an autoconf expert, could someone take a look ?
-
-Thank you
--- 
-Rafael D. Tinoco
-Linaro - Kernel Validation
+Kind regards,
+Petr
