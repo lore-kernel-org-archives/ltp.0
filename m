@@ -1,18 +1,20 @@
-From: Li Wang <liwan@redhat.com>
-Date: Mon, 3 Dec 2018 16:58:45 +0800
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Mon, 03 Dec 2018 10:18:34 +0100
 Subject: [LTP] [PATCH v2] fzsync: limit sampling time
 In-Reply-To: <3557fc1c46246a58e69ed0c5bbd39458410472a4.1543655165.git.jstancek@redhat.com>
 References: <c49a5628139703513cb66d84d03953ddb5cc1560.1543489660.git.jstancek@redhat.com>
  <3557fc1c46246a58e69ed0c5bbd39458410472a4.1543655165.git.jstancek@redhat.com>
-Message-ID: <CAEemH2ey40AZ8gsCm6vt09SQEJduBW0XrhdQnu0M=CLWrREh1A@mail.gmail.com>
+Message-ID: <87zhtnm0id.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Sat, Dec 1, 2018 at 5:12 PM Jan Stancek <jstancek@redhat.com> wrote:
->
+Hello Jan,
+
+Jan Stancek <jstancek@redhat.com> writes:
+
 > Fixes: #429
 >
 > Sampling can take considerably longer time on single CPU
@@ -21,14 +23,78 @@ On Sat, Dec 1, 2018 at 5:12 PM Jan Stancek <jstancek@redhat.com> wrote:
 > have enough samples by that time, stop sampling and use
 > stats we gathered so far.
 
-Patch v2 looks good to me, and I'd suggest to reserve more time before
-pushing, in case Richard has some extra comments.
+I suppose this improves the worst case where the race condition will never
+trigger without a random delay. As even in cases where the delay makes
+the chances worse, we still get 50% of the time without a delay (the new
+worst case).
 
 >
 > Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  include/tst_fuzzy_sync.h | 20 +++++++++++++-------
+>  1 file changed, 13 insertions(+), 7 deletions(-)
+>
+> Changes in v2:
+>  - drop 'still sampling' warning
+>  - use exec_loop in 'stopping sampling at' message
+>
+> diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
+> index 03f69b78bc82..d572461c24b6 100644
+> --- a/include/tst_fuzzy_sync.h
+> +++ b/include/tst_fuzzy_sync.h
+> @@ -162,6 +162,7 @@ struct tst_fzsync_pair {
+>  	 *
+>  	 * Defaults to 0.5 (~150 seconds with default timeout).
+>  	 */
+> +	float max_sampling_p;
+>  	float exec_time_p;
+>  	/** Internal; The test time remaining on tst_fzsync_pair_reset() */
+>  	float exec_time_start;
+> @@ -199,6 +200,7 @@ static void tst_fzsync_pair_init(struct tst_fzsync_pair *pair)
+>  	CHK(avg_alpha, 0, 1, 0.25);
+>  	CHK(min_samples, 20, INT_MAX, 1024);
+>  	CHK(max_dev_ratio, 0, 1, 0.1);
+> +	CHK(max_sampling_p, 0, 1, 0.25);
+>  	CHK(exec_time_p, 0, 1, 0.5);
+>  	CHK(exec_loops, 20, INT_MAX, 3000000);
+>  }
+> @@ -582,17 +584,21 @@ static inline void tst_fzsync_wait_b(struct tst_fzsync_pair *pair)
+>  static inline int tst_fzsync_run_a(struct tst_fzsync_pair *pair)
+>  {
+>  	int exit = 0;
+> +	float rem_p = 1 - tst_timeout_remaining() / pair->exec_time_start;
+> +
+> +	/* Limit amount of time spent on sampling */
+> +	if ((pair->max_sampling_p < rem_p)
+> +		&& (pair->sampling > 0)) {
+> +		tst_res(TINFO, "stopping sampling at %d samples",
+> +			pair->exec_loop);
+> +		pair->sampling = 0;
+> +		tst_fzsync_pair_info(pair);
+> +	}
+>
+> -	if (pair->exec_time_p
+> -	    < 1 - tst_timeout_remaining() / pair->exec_time_start) {
+> +	if (pair->exec_time_p < rem_p) {
+>  		tst_res(TINFO,
+>  			"Exceeded execution time, requesting exit");
+>  		exit = 1;
+> -
+> -		if (pair->sampling > 0) {
+> -			tst_res(TWARN,
+> -				"Still sampling, consider increasing LTP_TIMEOUT_MUL");
+> -		}
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+I worry a little bit about removing this warning and replacing it with
+an info message. However assuming a benchmarking module is introduced to
+set/check LTP_TIMEOUT_MUL then it would be better not to print a warning
+here. So LGTM.
+
+>  	}
+>
+>  	if (++pair->exec_loop > pair->exec_loops) {
+
 
 --
-Regards,
-Li Wang
+Thank you,
+Richard.
