@@ -1,36 +1,47 @@
-From: Greg Hackmann <ghackmann@google.com>
-Date: Mon,  3 Dec 2018 11:01:48 -0800
-Subject: [LTP] [PATCH 2/2] getrlimit/getrlimit03: add test to
-	runtest/syscalls
-In-Reply-To: <20181203190148.93108-1-ghackmann@google.com>
-References: <20181203190148.93108-1-ghackmann@google.com>
-Message-ID: <20181203190148.93108-2-ghackmann@google.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 3 Dec 2018 21:27:56 +0100
+Subject: [LTP] [PATCH] mem/overcommit_memory.c: Fix "CommitLimit <
+ Committed_AS" error in some situations
+In-Reply-To: <1539938660-18786-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1539938660-18786-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20181203202755.GA8919@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When I added this test, I forgot to add it to runtest/syscalls.  Let's
-fix that.
+Hi Xiao,
 
-Signed-off-by: Greg Hackmann <ghackmann@google.com>
----
- runtest/syscalls | 1 +
- 1 file changed, 1 insertion(+)
+> By default, system with overcommit_memory=2 will ensure "CommitLimit >=
+> Committed_AS" when setting overcommit_ratio.  But we change overcommit_ratio
+> to a random value forcely, so it's possible to decrease CommitLimit less
+> than current Committed_AS when setting overcommit_ratio to a quite small
+> value(e.g. 0).
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index ac1d2d2cd..34b47f36b 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -439,6 +439,7 @@ getresuid03 getresuid03
- 
- getrlimit01 getrlimit01
- getrlimit02 getrlimit02
-+getrlimit03 getrlimit03
- 
- get_mempolicy01 get_mempolicy01
- get_robust_list01 get_robust_list01
--- 
-2.20.0.rc1.387.gf8505762e3-goog
+> For example, there are 5G physical memory, 4G swap and 5G allocated memory
+> (i.e. Committed_AS) on system, and then running overcommit_memory02(i.e.
+> overcommit_memory -R 0) always triggers the "CommitLimit < Committed_AS"
+> error:
+> ----------------------------------------------------------------------
+> mem.c:839: INFO: set overcommit_ratio to 0
+> mem.c:839: INFO: set overcommit_memory to 2
+> overcommit_memory.c:235: INFO: CommitLimit is 4194300, Committed_AS is 5405908
+> overcommit_memory.c:237: BROK: Unexpected error: CommitLimit < Committed_AS
+> ----------------------------------------------------------------------
 
+> We try to skip test if setting a small value of overcommit_ratio results in
+> "CommitLimit < Committed_AS".
+
+> Fix: #215
+
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+> ---
+>  .../kernel/mem/tunable/overcommit_memory.c    | 30 ++++++++++++-------
+>  1 file changed, 20 insertions(+), 10 deletions(-)
+
+
+Kind regards,
+Petr
