@@ -1,52 +1,34 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 4 Dec 2018 04:14:26 -0500 (EST)
-Subject: [LTP] [PATCH v4] fzsync: limit sampling time
-In-Reply-To: <CAEemH2eLpM0UN9xOcnFQSKmx4_Wh1418sB=uL2PwiS0b0_-QMg@mail.gmail.com>
-References: <8361c9b264ceb4c212319fcb366d85a854495ffe.1543912963.git.jstancek@redhat.com>
- <CAEemH2eLpM0UN9xOcnFQSKmx4_Wh1418sB=uL2PwiS0b0_-QMg@mail.gmail.com>
-Message-ID: <1158867065.82011776.1543914866734.JavaMail.zimbra@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 4 Dec 2018 14:47:11 +0300
+Subject: [LTP] WIKI updates via git
+In-Reply-To: <20181130181805.GA26705@dell5510>
+References: <1542729786-4097-1-git-send-email-alexey.kodanev@oracle.com>
+ <20181127090439.GA23733@dell5510>
+ <f96d10e9-fb35-fe98-0ab0-3fd0c7891c42@oracle.com>
+ <20181127150937.GB14077@dell5510> <20181130181805.GA26705@dell5510>
+Message-ID: <837d0efb-fd6e-b317-534c-378b617e994e@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Petr,
+On 11/30/2018 09:18 PM, Petr Vorel wrote:
+> Hi Alexey,
+> 
+>>> OK, we should add similar "WARNING" from 2.2 section to 2.3, right?
+> 
+>>> "WARNING: Calling tst_brk() in test 'cleanup()' does not exit the test as well
+>>> and 'TBROK' is converted to 'TWARN'."
+> 
+>> Yes, that'd be enough. Thanks for handling it.
+> Noticed you pushed the changes, but didn't update wiki.
+> I did it.
+> 
+> BTW: There is a git repository, which makes it easier to update it:
+> https://github.com/linux-test-project/ltp.wiki.git
+> (simple git commit is equivalent of change via web)
+> 
 
-
------ Original Message -----
-> On Tue, Dec 4, 2018 at 4:46 PM Jan Stancek <jstancek@redhat.com> wrote:
-> 
-> > +       float rem_p = 1 - tst_timeout_remaining() / pair->exec_time_start;
-> > +
-> > +       if ((pair->exec_time_p * SAMPLING_SLICE < rem_p)
-> > +               && (pair->sampling > 0)) {
-> > +               tst_res(TINFO, "Stopped sampling at %d (out of %d) samples,
-> > "
-> > +                       "sampling time reached 50% of the total time
-> > limit",
-> > +                       pair->exec_loop, pair->min_samples);
-> 
-> '50%' can not be quoted correctly here, since it makes compiler regard
-> it as print symbol. Beside this tiny typo issue, I have no more
-> comment for V4.  LGTM.
-
-*facepalm*, thanks for catching that.
-
-> 
-> ../../include/tst_fuzzy_sync.h:592:3: warning: ' ' flag used with ‘%o’
-> gnu_printf format [-Wformat=]
->    tst_res(TINFO, "Stopped sampling at %d (out of %d) samples, "
->    ^
-> ../../include/tst_fuzzy_sync.h:592:3: warning: format ‘%o’ expects a
-> matching ‘unsigned int’ argument [-Wformat=]
-> 
-> # ./shmctl05
-> tst_test.c:1085: INFO: Timeout per run is 0h 00m 20s
-> ../../../../../include/tst_fuzzy_sync.h:594: INFO: Stopped sampling at
-> 166 (out of 1024) samples, sampling time reached 5036122336437f the
-> total time limit
-> 
-> --
-> Regards,
-> Li Wang
-> 
+Got it, thanks!
