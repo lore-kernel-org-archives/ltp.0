@@ -1,19 +1,19 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 4 Dec 2018 17:55:42 +0100
-Subject: [LTP] [PATCH] fs/growfiles.c: Fix the max size of every growing
- file
-In-Reply-To: <1539771685-28323-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1539771685-28323-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20181204165542.GB30799@dell5510>
+Date: Tue, 4 Dec 2018 17:58:17 +0100
+Subject: [LTP] [PATCH 1/2] syscalls/mq: don't use TWARN with tst_brk()
+In-Reply-To: <88db8a4def940c63ec2836cec1d0041db00ffd4c.1541710635.git.jstancek@redhat.com>
+References: <88db8a4def940c63ec2836cec1d0041db00ffd4c.1541710635.git.jstancek@redhat.com>
+Message-ID: <20181204165817.GC30799@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao,
+Hi Jan,
 
-thanks for your patch, pushed.
+Acked-by: Petr Vorel <pvorel@suse.cz>
+
 
 Kind regards,
 Petr
