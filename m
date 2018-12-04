@@ -1,35 +1,61 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 4 Dec 2018 18:35:42 +0100
-Subject: [LTP] [PATCH 2/2] lib: build check parameters for tst_brk()
-In-Reply-To: <1582215982.71956713.1541786229415.JavaMail.zimbra@redhat.com>
-References: <88db8a4def940c63ec2836cec1d0041db00ffd4c.1541710635.git.jstancek@redhat.com>
- <d3ce5d3247f7f09cfabd288b40893bb631fb190f.1541710635.git.jstancek@redhat.com>
- <5BE4E95E.4000303@cn.fujitsu.com>
- <1582215982.71956713.1541786229415.JavaMail.zimbra@redhat.com>
-Message-ID: <20181204173542.GD30799@dell5510>
+From: Greg Hackmann <ghackmann@google.com>
+Date: Tue,  4 Dec 2018 10:23:53 -0800
+Subject: [LTP] [PATCH] cve/stack_clash: inhibit test-breaking optimizations
+Message-ID: <20181204182353.86453-1-ghackmann@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
+stack_clash relies on the compiler doing fairly specific things with the
+stack pointer.  We've run into a couple of places where clang optimized
+away the intended behavior:
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+(1) exhaust_stack_into_sigsegv() tries to grow the stack via infinite
+recursion.  Since this happens through a tail call, the compiler may
+transform this into an iterative equivalent which loops forever without
+growing the stack.  -fno-optimize-sibling-calls explicitly blocks this
+optimization on both gcc and clang.
 
-> > Perhaps, we could add some hints about the invalid ttype.
-> > e.g. "tst_brk(): invalid type, please use TBROK/TCONF/TFAIL"
+(2) If preallocate_stack() is inlined, its ~1 MB stack frame may not be
+released until the parent function returns.  This can cause the stack
+pointer to cross the stack guard in the middle of do_child(), before the
+SIGSEGV handler has actually been set up.  Prevent this by marking the
+function noinline.
 
-> Do you have suggestion how to achieve that?
+Signed-off-by: Greg Hackmann <ghackmann@google.com>
+---
+ testcases/cve/Makefile      | 2 ++
+ testcases/cve/stack_clash.c | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-> There's an __attribute__(error), but it's supported only from gcc 4.3 as I recall.
-Do you mean __attribute__ format?
+diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
+index 3a05dd4fe..6dc401cff 100644
+--- a/testcases/cve/Makefile
++++ b/testcases/cve/Makefile
+@@ -19,6 +19,8 @@ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ CFLAGS			+= -D_GNU_SOURCE
+ 
++stack_clash:	CFLAGS += -fno-optimize-sibling-calls
++
+ cve-2016-7042:	LDLIBS += $(KEYUTILS_LIBS)
+ 
+ cve-2016-7117:	CFLAGS += -pthread
+diff --git a/testcases/cve/stack_clash.c b/testcases/cve/stack_clash.c
+index f25e19b3f..ac4a31af6 100644
+--- a/testcases/cve/stack_clash.c
++++ b/testcases/cve/stack_clash.c
+@@ -136,7 +136,7 @@ void dump_proc_self_maps(void)
+ 	tst_run_cmd(cmd, NULL, NULL, 0);
+ }
+ 
+-void preallocate_stack(unsigned long required)
++void __attribute__((noinline)) preallocate_stack(unsigned long required)
+ {
+ 	volatile char *garbage;
+ 
+-- 
+2.20.0.rc1.387.gf8505762e3-goog
 
-> Alternative would be link time failure, with a symbol name suggesting what went wrong.
-Not sure, how exactly you want to do it, but seems to be more portable than
-requiring specific gcc version (although 4.3 is very old and __attribute__
-format is supported by clang as well).
-
-
-Kind regards,
-Petr
