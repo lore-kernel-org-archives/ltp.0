@@ -1,34 +1,60 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 4 Dec 2018 14:47:11 +0300
-Subject: [LTP] WIKI updates via git
-In-Reply-To: <20181130181805.GA26705@dell5510>
-References: <1542729786-4097-1-git-send-email-alexey.kodanev@oracle.com>
- <20181127090439.GA23733@dell5510>
- <f96d10e9-fb35-fe98-0ab0-3fd0c7891c42@oracle.com>
- <20181127150937.GB14077@dell5510> <20181130181805.GA26705@dell5510>
-Message-ID: <837d0efb-fd6e-b317-534c-378b617e994e@oracle.com>
+From: Chris Fiege <cfi@pengutronix.de>
+Date: Tue, 4 Dec 2018 13:05:24 +0100
+Subject: [LTP] [Automated-testing] FOSDEM 2019
+In-Reply-To: <CADYN=9JnUCkjKEV06u6a0TFiva2vxs=y0DEt2-1NJg58Q6dmaw@mail.gmail.com>
+References: <CADYN=9J6D0URQv+DjV25qqtnOeEnieKMtXfmLysy=BRdp+c_hg@mail.gmail.com>
+ <1542704868.5651.6.camel@pengutronix.de>
+ <aa90781b-573e-0af5-c39a-2e06f60103c8@pengutronix.de>
+ <CADYN=9JnUCkjKEV06u6a0TFiva2vxs=y0DEt2-1NJg58Q6dmaw@mail.gmail.com>
+Message-ID: <674980dd-cc03-c097-91be-b3aa5625670e@pengutronix.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-Hi Petr,
-On 11/30/2018 09:18 PM, Petr Vorel wrote:
-> Hi Alexey,
-> 
->>> OK, we should add similar "WARNING" from 2.2 section to 2.3, right?
-> 
->>> "WARNING: Calling tst_brk() in test 'cleanup()' does not exit the test as well
->>> and 'TBROK' is converted to 'TWARN'."
-> 
->> Yes, that'd be enough. Thanks for handling it.
-> Noticed you pushed the changes, but didn't update wiki.
-> I did it.
-> 
-> BTW: There is a git repository, which makes it easier to update it:
-> https://github.com/linux-test-project/ltp.wiki.git
-> (simple git commit is equivalent of change via web)
-> 
+Hi everyone,
 
-Got it, thanks!
+I have created a page at the elinux.org wiki with the information about a=20
+possible meeting I found on this list:
+
+https://elinux.org/Automated_Testing_FOSDEM2019
+
+Feel free to update the page. If we have enough topics for a meeting we=20
+could try to get one of the BoF-rooms.
+Otherwise we could still try to have an informal meeting outside the campus=
+=20
+(Maybe in the evening?).
+
+Regards
+Chris
+
+
+On 27.11.18 18:09, Anders Roxell wrote:
+> On Thu, 22 Nov 2018 at 11:21, Chris Fiege <cfi@pengutronix.de> wrote:
+>>
+>> Hi Anders,
+>>
+>> On 20.11.18 10:07, Jan L=C3=BCbbe wrote:
+>>> On Mon, 2018-11-19 at 22:54 +0100, Anders Roxell wrote:
+>>>> If you going to be there please reply.
+>>>
+>>> I'll be there. Likely Chris Fiege and Rouven Czerwinski as well.
+>>
+>> I am planning to be at FOSDEM and would like to join an ad-hoc meeting.
+>>
+>> Since FOSDEM is usually quite crowded: Does anyone know if it is possible
+>> to organize a room for that meeting.
+>=20
+> That's a good question, I've asked the FOSDEM organizers and they said th=
+at
+> they are already using all the rooms at campus. However, there's few BoF
+> rooms that can "book" for shorter meetings. The downside is that they can
+> only be booked on site.
+>=20
+> Do we have any topics we would like to discuss?
+>=20
+> Cheers,
+> Anders
+>=20
+
