@@ -1,60 +1,82 @@
-From: Chris Fiege <cfi@pengutronix.de>
-Date: Tue, 4 Dec 2018 13:05:24 +0100
-Subject: [LTP] [Automated-testing] FOSDEM 2019
-In-Reply-To: <CADYN=9JnUCkjKEV06u6a0TFiva2vxs=y0DEt2-1NJg58Q6dmaw@mail.gmail.com>
-References: <CADYN=9J6D0URQv+DjV25qqtnOeEnieKMtXfmLysy=BRdp+c_hg@mail.gmail.com>
- <1542704868.5651.6.camel@pengutronix.de>
- <aa90781b-573e-0af5-c39a-2e06f60103c8@pengutronix.de>
- <CADYN=9JnUCkjKEV06u6a0TFiva2vxs=y0DEt2-1NJg58Q6dmaw@mail.gmail.com>
-Message-ID: <674980dd-cc03-c097-91be-b3aa5625670e@pengutronix.de>
+From: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+Date: Tue, 4 Dec 2018 20:53:12 +0800
+Subject: [LTP] [PATCH] packet/fanout01.c: Fix compiler errors and warning
+Message-ID: <1543927992-29054-1-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi everyone,
+1)Compilations fail on some older distros:
+  a.CLONE_NEWUSER and CLONE_NEWNET are undefined on RHEL5, so include
+    lapi/namespaces_constants.h to fix it.
+  b.PACKET_FANOUT and PACKET_FANOUT_ROLLOVER are undefined on RHEL5/6,
+    so create and include lapi/if_packet.h to fix it.
+2)A warning occurs when initializing ifreq structure on RHEL5/6/7, so
+  use memset() to fix it.
 
-I have created a page at the elinux.org wiki with the information about a=20
-possible meeting I found on this list:
+Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+---
+ include/lapi/if_packet.h            | 18 ++++++++++++++++++
+ testcases/network/packet/fanout01.c |  7 ++++++-
+ 2 files changed, 24 insertions(+), 1 deletion(-)
+ create mode 100644 include/lapi/if_packet.h
 
-https://elinux.org/Automated_Testing_FOSDEM2019
+diff --git a/include/lapi/if_packet.h b/include/lapi/if_packet.h
+new file mode 100644
+index 0000000..c077b56
+--- /dev/null
++++ b/include/lapi/if_packet.h
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
++ * Author: Jinhui huang <huangjh.jy@cn.fujitsu.com>
++ */
++
++#ifndef __LAPI_IF_PACKET_H__
++#define __LAPI_IF_PACKET_H__
++
++#ifndef PACKET_FANOUT
++#define PACKET_FANOUT	18
++#endif
++
++#ifndef PACKET_FANOUT_ROLLOVER
++#define PACKET_FANOUT_ROLLOVER	3
++#endif
++
++#endif /* __LAPI_IF_PACKET_H__ */
+diff --git a/testcases/network/packet/fanout01.c b/testcases/network/packet/fanout01.c
+index 9f2d9bb..f5ce19a 100644
+--- a/testcases/network/packet/fanout01.c
++++ b/testcases/network/packet/fanout01.c
+@@ -17,9 +17,12 @@
+ #include <sys/types.h>
+ #include <net/if.h>
+ #include <linux/if_packet.h>
++#include <string.h>
+ 
+ #include "tst_test.h"
+ #include "tst_fuzzy_sync.h"
++#include "lapi/if_packet.h"
++#include "lapi/namespaces_constants.h"
+ 
+ static struct tst_fzsync_pair pair;
+ static int fd;
+@@ -64,7 +67,9 @@ void *binder(void *unused)
+ void run(void)
+ {
+ 	int fanout_val = PACKET_FANOUT_ROLLOVER, index;
+-	struct ifreq ifr = { 0 };
++	struct ifreq ifr;
++
++	memset(&ifr, 0, sizeof(struct ifreq));
+ 
+ 	tst_fzsync_pair_reset(&pair, binder);
+ 	while (tst_fzsync_run_a(&pair)) {
+-- 
+1.8.3.1
 
-Feel free to update the page. If we have enough topics for a meeting we=20
-could try to get one of the BoF-rooms.
-Otherwise we could still try to have an informal meeting outside the campus=
-=20
-(Maybe in the evening?).
 
-Regards
-Chris
-
-
-On 27.11.18 18:09, Anders Roxell wrote:
-> On Thu, 22 Nov 2018 at 11:21, Chris Fiege <cfi@pengutronix.de> wrote:
->>
->> Hi Anders,
->>
->> On 20.11.18 10:07, Jan L=C3=BCbbe wrote:
->>> On Mon, 2018-11-19 at 22:54 +0100, Anders Roxell wrote:
->>>> If you going to be there please reply.
->>>
->>> I'll be there. Likely Chris Fiege and Rouven Czerwinski as well.
->>
->> I am planning to be at FOSDEM and would like to join an ad-hoc meeting.
->>
->> Since FOSDEM is usually quite crowded: Does anyone know if it is possible
->> to organize a room for that meeting.
->=20
-> That's a good question, I've asked the FOSDEM organizers and they said th=
-at
-> they are already using all the rooms at campus. However, there's few BoF
-> rooms that can "book" for shorter meetings. The downside is that they can
-> only be booked on site.
->=20
-> Do we have any topics we would like to discuss?
->=20
-> Cheers,
-> Anders
->=20
 
