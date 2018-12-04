@@ -1,32 +1,59 @@
-From: Greg Hackmann <ghackmann@google.com>
-Date: Mon, 3 Dec 2018 14:20:25 -0800
-Subject: [LTP] [PATCH 1/2] getrlimit/getrlimit03: add configure-time
- check for struct ulimit64
-In-Reply-To: <20181203212505.GA2022@x230>
-References: <20181203190148.93108-1-ghackmann@google.com>
- <20181203212505.GA2022@x230>
-Message-ID: <98a5058e-939b-3fb5-4f78-4e11f6901e0e@google.com>
+From: Jason Xing <kerneljasonxing@linux.alibaba.com>
+Date: Tue, 04 Dec 2018 10:49:21 +0800
+Subject: [LTP] [PATCH] syscalls/cma: test case should return TCONF if
+ syscall doesn't exist
+In-Reply-To: <1599893739.81506187.1543831094598.JavaMail.zimbra@redhat.com>
+References: <1543830227-15605-1-git-send-email-kerneljasonxing@linux.alibaba.com>
+ <1599893739.81506187.1543831094598.JavaMail.zimbra@redhat.com>
+Message-ID: <5C05EB31.1030707@linux.alibaba.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-On 12/03/2018 01:25 PM, Petr Vorel wrote:
-> Glibc and uclibc-ng define struct rlimit64 only #ifdef __USE_LARGEFILE64.
 
-Makes sense.  I ran into this issue with bionic, which doesn't require 
--D_LARGEFILE64_SOURCE for these kinds of definitions.
 
-> Would it make sense to change autoconf test to AC_COMPILE_IFELSE and pass -D_LARGEFILE64_SOURCE to it?
-> + Use it in Makefile, of course.
-> 
-> 
-> Kind regards,
-> Petr
-> 
+On 2018/12/3 下午5:58, Jan Stancek wrote:
+>
+>
+> ----- Original Message -----
+>> The original code returns TFAIL when process_vm_readv/_writev syscalls
+>> do not exist, while we are expecting a TCONF. During investigation, we
+>> find it is due to '#if defined(__NR_process_vm_readv/_writev)' fails to
+>> work as expected.  We fix this issue by using ltp_syscall() function in
+>> setup function. BTW, we don't use new tst_syscall() interface due to
+>> compatibility issue exists between old apis and new ones.
+>
+> Fine by me, but then you should also add syscall numbers to
+> include/lapi/syscalls:
+>
 
-I'm honestly not that familiar with autotools, so I'm not sure I follow 
-this.  Are you suggesting that we assume struct rlimit64 is defined 
-(possibly conditionally on -D_LARGEFILE64_SOURCE), and we really ought 
-to probe whether -D_LARGEFILE64_SOURCE is required to make it visible?
+Thanks.
+I have TWO questions:
+
+1. If I use this command #./strip_syscall.awk 
+/usr/include/asm/unistd_64.h > x86_64.in, it will update and add more 
+new syscall numbers into x86_64.in file which includes many other 
+syscall numbers not only process_vm_readv/_writev. To solve this 
+problem, can I just add the process_vm_readv/_writev syscall numbers and 
+let go of other numbers?
+
+2. I don't have so many types of machines that support different 
+architectures like hppa and s390x. So what should I do to know this 
+syscall number on other architectures. I'm running the tests on x86_64 arch.
+
+Jason
+
+> process_vm01.c: In function ‘setup’:
+> process_vm01.c:97: warning: unused parameter ‘argv’
+> process_vm01.c: In function ‘cma_test_params_read’:
+> process_vm01.c:127: error: ‘__NR_process_vm_readv’ undeclared (first use in this function)
+> process_vm01.c:127: error: (Each undeclared identifier is reported only once
+> process_vm01.c:127: error: for each function it appears in.)
+> process_vm01.c: In function ‘cma_test_params_write’:
+> process_vm01.c:136: error: ‘__NR_process_vm_writev’ undeclared (first use in this function)
+>
+> Regards,
+> Jan
+>
