@@ -1,43 +1,90 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 5 Dec 2018 17:47:22 +0100
-Subject: [LTP] [PATCH 1/2] getrlimit/getrlimit03: add configure-time
- check for struct ulimit64
-In-Reply-To: <4cf455cd-8734-f606-ef6e-11dcf7d42d19@google.com>
-References: <20181203190148.93108-1-ghackmann@google.com>
- <20181203212505.GA2022@x230>
- <98a5058e-939b-3fb5-4f78-4e11f6901e0e@google.com>
- <20181204090130.GA24014@dell5510>
- <4cf455cd-8734-f606-ef6e-11dcf7d42d19@google.com>
-Message-ID: <20181205164722.GA321@dell5510>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Wed, 5 Dec 2018 19:16:41 +0100
+Subject: [LTP] [PATCH]  cgroup_regression_test.sh: fixed test_5
+In-Reply-To: <20181121134021.52225-1-cristian.marussi@arm.com>
+References: <20181121134021.52225-1-cristian.marussi@arm.com>
+Message-ID: <20181205181640.GA11567@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Greg,
+Hi Cristian,
 
-> bionic prefers to grab kernel-facing definitions directly from the UAPI
-> headers, so sys/resource.h includes linux/resource.h.
-Thanks for info.
+Thanks for your patch.
 
-> I could switch the test to explicitly use linux/resource.h, if you feel that
-> makes more sense.  I originally used sys/resource.h to get all the other
-> rlimit-related constants.  I actually didn't realize that the kernel already
-> exported a struct rlimit64 definition that we could use in place of
-> open-coding something.
-You answer yourself - RLIM_NLIMITS and other rlimit-related constants are
-needed.
+...
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  .../cgroup/cgroup_regression_test.sh          | 51 +++++++++++++------
 
-+ using <linux/resource.h> conflicts with other <time.h> usage in LTP library headers.
+...
+> +	# Accounting here for the fact that the chosen subsystems could
+> +	# have been already previously mounted at boot time: in such a
+> +	# case we must skip the initial co-mount step (which would
+> +	# fail anyway) and properly re-organize the $tst_mntpoint and
+> +	# $failing_subsys params to be used in the following expected-to-fail
+> +	# mount action.
+> +	already_mounted_subsys=none
+Better would be, to be as local (defined at top, I know there are other
+variables without local) and empty:
+It's a bit long variable name, how about simple mounted (or mounted_subs)?
+local mounted
 
-In file included from /usr/include/time.h:48,
-                 from ../../../../include/safe_file_ops_fn.h:22,
-                 from ../../../../include/tst_safe_file_ops.h:27,
-                 from ../../../../include/tst_test.h:87,
-                 from getrlimit03.c:29:
-/usr/include/bits/types/struct_itimerspec.h: At top level:
-/usr/include/bits/types/struct_itimerspec.h:8:8: error: redefinition of ‘struct itimerspec’
+> +	mount | grep cgroup | grep -q $subsys1 && already_mounted_subsys=$subsys1
+> +	mount | grep cgroup | grep -q $subsys2 && already_mounted_subsys=$subsys2
+> +        if [ "x$already_mounted_subsys" == "xnone" ]; then
+'==' is a bashism, use simple '='. When empty as default, then check would be:
+if [ -z "$mounted" ]; then
+
+> +		tst_mntpoint=cgroup
+> +		failing_subsys=$subsys1
+> +		mount -t cgroup -o $subsys1,$subsys2 xxx $tst_mntpoint/
+> +		if [ $? -ne 0 ]; then
+> +			tst_resm TFAIL "mount $subsys1 and $subsys2 failed"
+> +			failed=1
+> +			return
+> +		fi
+> +	else
+> +		# Use the pre-esistent mountpoint as $tst_mntpoint and use a
+> +		# co-mount with $failing_subsys: this way the 2nd mount will
+> +		# also fail (as expected) in this 'mirrored' configuration.
+> +		tst_mntpoint=$(mount | grep cgroup | grep $already_mounted_subsys | cut -d ' ' -f 3)
+Maybe use awk, when it's used before?
+> +		failing_subsys=$subsys1,$subsys2
+>  	fi
+
+> -	# This 2nd mount should fail
+> -	mount -t cgroup -o $subsys1 xxx cgroup/ 2> /dev/null
+> +	# This 2nd mount has been properly configured to fail
+> +	mount -t cgroup -o $failing_subsys xxx $tst_mntpoint/ 2> /dev/null
+>  	if [ $? -eq 0 ]; then
+> -		tst_resm TFAIL "mount $subsys1 should fail"
+> -		umount cgroup/
+> +		tst_resm TFAIL "mount $failing_subsys should fail"
+> +		# Do NOT unmount pre-existent mountpoints...
+> +	        [[ "x$already_mounted_subsys" == "xnone" ]] && umount $tst_mntpoint
+Also == here, here also with double square brackets, which are also bashism (use
+single brackets).
+
+
+...
+>  	check_kernel_bug
+>  	if [ $? -eq 1 ]; then
+> @@ -296,8 +316,9 @@ test_5()
+>  	# clean up
+>  	/bin/kill -SIGTERM $! > /dev/null
+>  	wait $!
+> -	rmdir cgroup/0
+> -	umount cgroup/
+> +	rmdir $tst_mntpoint/0
+> +	# Do NOT unmount pre-existent mountpoints...
+> +	[[ "x$already_mounted_subsys" == "xnone" ]] && umount $tst_mntpoint
+And the same here.
+
++ as with many tests, this tests needs rewrite into new API and cleanup.
 
 
 Kind regards,
