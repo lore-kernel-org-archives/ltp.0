@@ -1,91 +1,88 @@
-From: Petr Vorel <petr.vorel@gmail.com>
-Date: Wed, 5 Dec 2018 19:16:41 +0100
-Subject: [LTP] [PATCH]  cgroup_regression_test.sh: fixed test_5
-In-Reply-To: <20181121134021.52225-1-cristian.marussi@arm.com>
-References: <20181121134021.52225-1-cristian.marussi@arm.com>
-Message-ID: <20181205181640.GA11567@x230>
+From: Greg Hackmann <ghackmann@google.com>
+Date: Wed,  5 Dec 2018 10:19:13 -0800
+Subject: [LTP] [PATCH v2] getrlimit/getrlimit03: add configure-time check
+	for struct ulimit64
+Message-ID: <20181205181913.214565-1-ghackmann@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cristian,
+The kernel's UAPI headers export a definition of struct ulimit64 which
+can conflict with the open-coded one in getrlimit03.  Depending on the
+libc implementation, this may only be visible when _LARGEFILE64_SOURCE
+is defined.  Fix this by moving getrlimit03's definition behind a
+configure-time check.
 
-Thanks for your patch.
+Signed-off-by: Greg Hackmann <ghackmann@google.com>
+---
+v2: define _LARGEFILE64_SOURCE, since it's needed to use the rlimit64
+    definition included in glibc and uclibc-ng
 
-...
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  .../cgroup/cgroup_regression_test.sh          | 51 +++++++++++++------
+ configure.ac                                      |  1 +
+ m4/ltp-rlimit64.m4                                | 10 ++++++++++
+ testcases/kernel/syscalls/getrlimit/Makefile      |  2 ++
+ testcases/kernel/syscalls/getrlimit/getrlimit03.c |  2 ++
+ 4 files changed, 15 insertions(+)
+ create mode 100644 m4/ltp-rlimit64.m4
 
-...
-> +	# Accounting here for the fact that the chosen subsystems could
-> +	# have been already previously mounted at boot time: in such a
-> +	# case we must skip the initial co-mount step (which would
-> +	# fail anyway) and properly re-organize the $tst_mntpoint and
-> +	# $failing_subsys params to be used in the following expected-to-fail
-> +	# mount action.
-> +	already_mounted_subsys=none
-Better would be, to be as local (defined at top, I know there are other
-variables without local) and empty:
-It's a bit long variable name, how about simple mounted (or mounted_subs)?
-local mounted
+diff --git a/configure.ac b/configure.ac
+index e81d2add5..caea34462 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -228,6 +228,7 @@ LTP_CHECK_UNAME_DOMAINNAME
+ LTP_CHECK_X_TABLES
+ LTP_CHECK_ATOMIC_MEMORY_MODEL
+ LTP_CHECK_TPACKET_V3
++LTP_CHECK_RLIMIT64
+ LTP_DETECT_HOST_CPU
+ LTP_CHECK_PERF_EVENT
+ 
+diff --git a/m4/ltp-rlimit64.m4 b/m4/ltp-rlimit64.m4
+new file mode 100644
+index 000000000..93289fae6
+--- /dev/null
++++ b/m4/ltp-rlimit64.m4
+@@ -0,0 +1,10 @@
++dnl SPDX-License-Identifier: GPL-2.0-or-later
++dnl Copyright (c) 2018 Google, Inc.
++
++AC_DEFUN([LTP_CHECK_RLIMIT64],[
++AC_CHECK_TYPES([struct rlimit64],,,[
++#define _LARGEFILE64_SOURCE
++#include <sys/resource.h>
++])
++])
++
+diff --git a/testcases/kernel/syscalls/getrlimit/Makefile b/testcases/kernel/syscalls/getrlimit/Makefile
+index bd617d806..58c5a5478 100644
+--- a/testcases/kernel/syscalls/getrlimit/Makefile
++++ b/testcases/kernel/syscalls/getrlimit/Makefile
+@@ -20,4 +20,6 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
++getrlimit03: CFLAGS += -D_LARGEFILE64_SOURCE
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit03.c b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+index 9ff28acb6..376ef7241 100644
+--- a/testcases/kernel/syscalls/getrlimit/getrlimit03.c
++++ b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+@@ -44,10 +44,12 @@
+ #define __NR_getrlimit_ulong_str	"__NR_getrlimit"
+ #endif
+ 
++#ifndef HAVE_STRUCT_RLIMIT64
+ struct rlimit64 {
+ 	uint64_t rlim_cur;
+ 	uint64_t rlim_max;
+ };
++#endif
+ const uint64_t RLIM_INFINITY_U64 = UINT64_MAX;
+ 
+ static int getrlimit_u64(int resource, struct rlimit64 *rlim)
+-- 
+2.20.0.rc1.387.gf8505762e3-goog
 
-> +	mount | grep cgroup | grep -q $subsys1 && already_mounted_subsys=$subsys1
-> +	mount | grep cgroup | grep -q $subsys2 && already_mounted_subsys=$subsys2
-> +        if [ "x$already_mounted_subsys" == "xnone" ]; then
-'==' is a bashism, use simple '='. When empty as default, then check would be:
-if [ -z "$mounted" ]; then
-
-> +		tst_mntpoint=cgroup
-> +		failing_subsys=$subsys1
-> +		mount -t cgroup -o $subsys1,$subsys2 xxx $tst_mntpoint/
-> +		if [ $? -ne 0 ]; then
-> +			tst_resm TFAIL "mount $subsys1 and $subsys2 failed"
-> +			failed=1
-> +			return
-> +		fi
-> +	else
-> +		# Use the pre-esistent mountpoint as $tst_mntpoint and use a
-> +		# co-mount with $failing_subsys: this way the 2nd mount will
-> +		# also fail (as expected) in this 'mirrored' configuration.
-> +		tst_mntpoint=$(mount | grep cgroup | grep $already_mounted_subsys | cut -d ' ' -f 3)
-Maybe use awk, when it's used before?
-> +		failing_subsys=$subsys1,$subsys2
->  	fi
-
-> -	# This 2nd mount should fail
-> -	mount -t cgroup -o $subsys1 xxx cgroup/ 2> /dev/null
-> +	# This 2nd mount has been properly configured to fail
-> +	mount -t cgroup -o $failing_subsys xxx $tst_mntpoint/ 2> /dev/null
->  	if [ $? -eq 0 ]; then
-> -		tst_resm TFAIL "mount $subsys1 should fail"
-> -		umount cgroup/
-> +		tst_resm TFAIL "mount $failing_subsys should fail"
-> +		# Do NOT unmount pre-existent mountpoints...
-> +	        [[ "x$already_mounted_subsys" == "xnone" ]] && umount $tst_mntpoint
-Also == here, here also with double square brackets, which are also bashism (use
-single brackets).
-
-
-...
->  	check_kernel_bug
->  	if [ $? -eq 1 ]; then
-> @@ -296,8 +316,9 @@ test_5()
->  	# clean up
->  	/bin/kill -SIGTERM $! > /dev/null
->  	wait $!
-> -	rmdir cgroup/0
-> -	umount cgroup/
-> +	rmdir $tst_mntpoint/0
-> +	# Do NOT unmount pre-existent mountpoints...
-> +	[[ "x$already_mounted_subsys" == "xnone" ]] && umount $tst_mntpoint
-And the same here.
-
-+ as with many tests, this tests needs rewrite into new API and cleanup.
-
-
-Kind regards,
-Petr
