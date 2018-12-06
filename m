@@ -1,299 +1,137 @@
-From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Thu, 6 Dec 2018 12:49:12 -0200
-Subject: [LTP] [PATCH 1/2] syscalls/clock_settime01.c: create syscall
- clock_settime test
-In-Reply-To: <20181206130309.GA22250@rei>
-References: <20181205193058.11146-1-rafael.tinoco@linaro.org>
- <20181206130309.GA22250@rei>
-Message-ID: <8de1817d-8a05-4313-ec1d-ae6ee5617641@linaro.org>
+From: Cristian Marussi <cristian.marussi@arm.com>
+Date: Thu,  6 Dec 2018 16:41:20 +0000
+Subject: [LTP] [PATCH v2]  cgroup_regression_test.sh: fixed test_5
+Message-ID: <20181206164120.42877-1-cristian.marussi@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 12/6/18 11:03 AM, Cyril Hrubis wrote:
-> Hi!
->> ---
->>  runtest/syscalls                              |   2 +
->>  .../kernel/syscalls/clock_settime/.gitignore  |   1 +
->>  .../kernel/syscalls/clock_settime/Makefile    |   8 +
->>  .../syscalls/clock_settime/clock_settime01.c  | 187 ++++++++++++++++++
->>  4 files changed, 198 insertions(+)
->>  create mode 100644 testcases/kernel/syscalls/clock_settime/.gitignore
->>  create mode 100644 testcases/kernel/syscalls/clock_settime/Makefile
->>  create mode 100644 testcases/kernel/syscalls/clock_settime/clock_settime01.c
->>
->> diff --git a/runtest/syscalls b/runtest/syscalls
->> index ac1d2d2cd..4cbc13209 100644
->> --- a/runtest/syscalls
->> +++ b/runtest/syscalls
->> @@ -79,6 +79,8 @@ clock_nanosleep01 clock_nanosleep01
->>  clock_nanosleep02 clock_nanosleep02
->>  clock_nanosleep2_01 clock_nanosleep2_01
->>  
->> +clock_settime01 clock_settime01
->> +
->>  clone01 clone01
->>  clone02 clone02
->>  clone03 clone03
->> diff --git a/testcases/kernel/syscalls/clock_settime/.gitignore b/testcases/kernel/syscalls/clock_settime/.gitignore
->> new file mode 100644
->> index 000000000..fcbb9fecc
->> --- /dev/null
->> +++ b/testcases/kernel/syscalls/clock_settime/.gitignore
->> @@ -0,0 +1 @@
->> +clock_settime01
->> diff --git a/testcases/kernel/syscalls/clock_settime/Makefile b/testcases/kernel/syscalls/clock_settime/Makefile
->> new file mode 100644
->> index 000000000..e6674a6b2
->> --- /dev/null
->> +++ b/testcases/kernel/syscalls/clock_settime/Makefile
->> @@ -0,0 +1,8 @@
->> +# Copyright (c) 2018 - Linaro Limited. All rights reserved.
->> +# SPDX-License-Identifier: GPL-2.0-or-later
->> +
->> +top_srcdir		?= ../../../..
->> +
->> +include $(top_srcdir)/include/mk/testcases.mk
->> +
->> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
->> diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime01.c b/testcases/kernel/syscalls/clock_settime/clock_settime01.c
->> new file mode 100644
->> index 000000000..591e5c723
->> --- /dev/null
->> +++ b/testcases/kernel/syscalls/clock_settime/clock_settime01.c
->> @@ -0,0 +1,187 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * Copyright (c) 2018 Linaro Limited. All rights reserved.
->> + * Author: Rafael David Tinoco <rafael.tinoco@linaro.org>
->> + */
->> +
->> +/*
->> + * Basic tests for clock_settime(2) on different clock types
->> + */
->> +
->> +#include "config.h"
->> +#include "tst_test.h"
->> +#include "lapi/syscalls.h"
->> +
->> +#define NSEC_PER_SEC (1000000000L)
->> +#define MAX_CLOCKS 16
->> +
->> +static struct timespec clock_realtime_saved;
->> +
->> +struct test_case {
->> +	clockid_t type;
->> +	struct timespec newtime;
->> +	int exp_ret;
->> +	int exp_err;
->> +	int replace;
->> +};
->> +
->> +struct test_case tc[] = {
->> +	{				/* case 01: REALTIME		      */
->> +	 .type = CLOCK_REALTIME,
->> +	 .exp_ret = 0,
->> +	 },
-> 
-> What about we separate the only positive case to a separate test, then
-> we can also do more a few more sanity checks there. I would probably go
-> for sequence of something as:
-> 
-> * get the realtime time
-> * increasing it by some value in seconds
-> * set the realtime time
-> * get the realtime time
-> * check that the value is aprox the first value increased by the value
-> * decrease by the value
-> * set it again
-> * check it again
-> 
-> That would cover both cases of setting time forward and backward and at
-> the end we would end up with the correct time as a bonus.
-> 
+test_5 checked for possible regressions using a pair of cgroups mounts
+operations designed to expose a kernel crash; the trigger being the
+attempt to co-mount and mount the same cgroup subsystem onto two
+distinct fs hierarchies: the expected failure in the second mount
+attempt was not properly handled in 2.6.29-rc2 and lead to a kernel
+crash.
+Unfortunately the test assumed that the randomly chosen subsystems
+were NOT already mounted somewhere when attempting the first co-mount:
+this assumption is falsified when userspace is configured to mount all
+available subsystems at /sysfs on boot (systemd).
+So the test was failing straight away during the setup phase:
 
-Alright. Will do.
+cgroup_regression_test    5  TFAIL  :  ltpapicmd.c:188: mount pids and hugetlb failed
 
->> +	{				/* case 02: REALTIME: timespec NULL   */
->> +	 .type = CLOCK_REALTIME,
->> +	 .newtime.tv_sec = -2,
->> +	 .exp_ret = -1,
->> +	 .exp_err = EFAULT,
->> +	 .replace = 1,
->> +	 },
->> +	{				/* case 03: REALTIME: tv_sec = -1     */
->> +	 .type = CLOCK_REALTIME,
->> +	 .newtime.tv_sec = -1,
->> +	 .exp_ret = -1,
->> +	 .exp_err = EINVAL,
->> +	 .replace = 1,
->> +	 },
->> +	{				/* case 04: REALTIME: tv_nsec = -1    */
->> +	 .type = CLOCK_REALTIME,
->> +	 .newtime.tv_nsec = -1,
->> +	 .exp_ret = -1,
->> +	 .exp_err = EINVAL,
->> +	 .replace = 1,
->> +	 },
->> +	{				/* case 05: REALTIME: tv_nsec = 1s+1  */
->> +	 .type = CLOCK_REALTIME,
->> +	 .newtime.tv_nsec = NSEC_PER_SEC + 1,
->> +	 .exp_ret = -1,
->> +	 .exp_err = EINVAL,
->> +	 .replace = 1,
->> +	 },
->> +	{				/* case 06: MONOTONIC		      */
->> +	 .type = CLOCK_MONOTONIC,
->> +	 .exp_ret = -1,
->> +	 .exp_err = EINVAL,
->> +	 },
->> +	{				/* case 07: MAXCLOCK		      */
->> +	 .type = MAX_CLOCKS,
->> +	 .exp_ret = -1,
->> +	 .exp_err = EINVAL,
->> +	 },
->> +	{				/* case 08: MAXCLOCK+1		      */
->> +	 .type = MAX_CLOCKS + 1,
->> +	 .exp_ret = -1,
->> +	 .exp_err = EINVAL,
->> +	 },
->> +	/* Linux specific */
->> +	{				/* case 09: CLOCK_MONOTONIC_COARSE    */
->> +	 .type = CLOCK_MONOTONIC_COARSE,
->> +	 .exp_ret = -1,
->> +	 .exp_err = EINVAL,
->> +	 },
->> +	{				/* case 10: CLOCK_MONOTONIC_RAW       */
->> +	 .type = CLOCK_MONOTONIC_RAW,
->> +	 .exp_ret = -1,
->> +	 .exp_err = EINVAL,
->> +	 },
->> +	{				/* case 11: CLOCK_BOOTTIME	      */
->> +	 .type = CLOCK_BOOTTIME,
->> +	 .exp_ret = -1,
->> +	 .exp_err = EINVAL,
->> +	 },
->> +	{				/* case 12: CLOCK_PROCESS_CPUTIME_ID  */
->> +	 .type = CLOCK_PROCESS_CPUTIME_ID,
->> +	 .exp_ret = -1,
->> +	 .exp_err = EINVAL,
->> +	 },
->> +	{				/* case 13: CLOCK_THREAD_CPUTIME_ID   */
->> +	 .type = CLOCK_THREAD_CPUTIME_ID,
->> +	 .exp_ret = -1,
->> +	 .exp_err = EINVAL,
->> +	 },
->> +};
->> +
->> +static int sys_clock_settime(clockid_t clk_id, struct timespec *tp)
->> +{
->> +	return tst_syscall(__NR_clock_settime, clk_id, tp);
->> +}
->> +
->> +static int sys_clock_gettime(clockid_t clk_id, struct timespec *tp)
->> +{
->> +	return tst_syscall(__NR_clock_gettime, clk_id, tp);
->> +}
-> 
-> Any reason why we avoid the clock_settime and clock_gettime libc
-> functions here?
+Being not trivial to forcibly release and unmount the populated
+/sysfs cgroups once booted, the script has been reviewed to detect
+this condition upfront and cope with it dynamically:
 
-Nope. I guess I could use libc one.
+ - if not already mounted: co-mount + failing mount (as before)
+ - already mounted: use existing mntpoint + failing co-mount
 
-> 
->> +static void cleanup(void)
->> +{
->> +	/* restore realtime clock */
->> +
->> +	if (sys_clock_settime(CLOCK_REALTIME, &clock_realtime_saved) < 0)
->> +		tst_res(TBROK | TTERRNO, "clock_settime(2): could not set "
->> +				"current time back");
->> +}
->> +
->> +static void setup(void)
->> +{
->> +	if (sys_clock_gettime(CLOCK_REALTIME, &clock_realtime_saved) < 0)
->> +		tst_res(TBROK | TTERRNO, "clock_gettime(2): could not get "
->> +				"current time");
->> +}
->> +
->> +static void verify_clock_settime(unsigned int i)
->> +{
->> +	struct timespec spec, *specptr;
->> +
->> +	if (tc[i].replace == 0) {
->> +
->> +		/* add 1 sec to test clock */
->> +
->> +		specptr = &spec;
->> +		specptr->tv_sec = clock_realtime_saved.tv_sec + 1;
->> +		specptr->tv_nsec = clock_realtime_saved.tv_nsec;
->> +
->> +	} else {
->> +
->> +		/* bad pointer case */
->> +
->> +		if (tc[i].newtime.tv_sec == -2)
->> +			specptr = tst_get_bad_addr(cleanup);
->> +
->> +		/* use given values */
->> +
->> +		else {
->> +			specptr = &spec;
->> +			specptr->tv_sec = tc[i].newtime.tv_sec;
->> +			specptr->tv_nsec = tc[i].newtime.tv_nsec;
->> +		}
->> +	}
->> +
->> +	TEST(sys_clock_settime(tc[i].type, specptr));
->> +
->> +	if (tc[i].exp_ret == TST_RET) {
->> +
->> +		if (TST_RET >= 0)
->> +			tst_res(TPASS, "clock_settime(2): worked as expected");
->> +
->> +		else {
->> +			if (tc[i].exp_err == TST_ERR)
->> +				tst_res(TPASS, "clock_settime(2): failed as "
->> +						"expected");
->> +			else
->> +				tst_res(TFAIL | TTERRNO, "clock_settime(2): "
->> +						"failed with different error");
->> +		}
-> 
-> 
-> LKML coding style prefers curly braces around both blocks if they are
-> around one of them, but that's a minor one.
+Since the original fix was on a 2.6.29 kernel the surrounding cgroup
+code has changed a lot and so the patch was no more trivially 'revertable'
+for testing purposes: as such this reviewed test script has been verified
+using a QEMU x86_64 instance running a Kernel 2.6.39 with and without
+the known fix as detailed in test_5 comments.
 
-Will fix.
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+---
+ .../cgroup/cgroup_regression_test.sh          | 55 ++++++++++++++-----
+ 1 file changed, 40 insertions(+), 15 deletions(-)
 
-> 
->> +		return;
->> +	}
->> +
->> +	tst_res(TFAIL | TTERRNO, "clock_settime(2): clock type %d failed",
->> +			tc[i].type);
->> +}
->> +
->> +static struct tst_test test = {
->> +	.setup = setup,
->> +	.test = verify_clock_settime,
->> +	.cleanup = cleanup,
->> +	.tcnt = ARRAY_SIZE(tc),
->> +	.needs_root = 1,
->> +};
->> -- 
->> 2.20.0.rc1
->>
->>
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
-
-Thanks for reviewing it.
-
+diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+index 30d0dbfbc..6d946ecd8 100755
+--- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
++++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+@@ -253,6 +253,10 @@ test_4()
+ #---------------------------------------------------------------------------
+ test_5()
+ {
++	local mounted
++	local failing
++	local t_mntpoint
++
+ 	lines=`cat /proc/cgroups | wc -l`
+ 	if [ $lines -le 2 ]; then
+ 		tst_resm TCONF "require at least 2 cgroup subsystems"
+@@ -262,31 +266,51 @@ test_5()
+ 	subsys1=`tail -n 1 /proc/cgroups | awk '{ print $1 }'`
+ 	subsys2=`tail -n 2 /proc/cgroups | head -1 | awk '{ print $1 }'`
+ 
+-	mount -t cgroup -o $subsys1,$subsys2 xxx cgroup/
+-	if [ $? -ne 0 ]; then
+-		tst_resm TFAIL "mount $subsys1 and $subsys2 failed"
+-		failed=1
+-		return
++	# Accounting here for the fact that the chosen subsystems could
++	# have been already previously mounted at boot time: in such a
++	# case we must skip the initial co-mount step (which would
++	# fail anyway) and properly re-organize the $t_mntpoint and
++	# $failing params to be used in the following expected-to-fail
++	# mount action. Note that the subsysN name itself will be listed
++	# amongst mounts options.
++	cat /proc/mounts | grep cgroup | grep -q $subsys1 2> /dev/null && mounted=$subsys1
++	[ -z "$mounted" ] && cat /proc/mounts | grep cgroup | grep -q $subsys2 2> /dev/null && mounted=$subsys2
++	if [ -z "$mounted" ]; then
++		t_mntpoint=cgroup
++		failing=$subsys1
++		mount -t cgroup -o $subsys1,$subsys2 xxx $t_mntpoint/
++		if [ $? -ne 0 ]; then
++			tst_resm TFAIL "mount $subsys1 and $subsys2 failed"
++			failed=1
++			return
++		fi
++	else
++		# Use the pre-esistent mountpoint as $t_mntpoint and use a
++		# co-mount with $failing: this way the 2nd mount will
++		# also fail (as expected) in this 'mirrored' configuration.
++		t_mntpoint=$(cat /proc/mounts | grep cgroup | grep $mounted | awk '{ print $2 }')
++		failing=$subsys1,$subsys2
+ 	fi
+ 
+-	# This 2nd mount should fail
+-	mount -t cgroup -o $subsys1 xxx cgroup/ 2> /dev/null
++	# This 2nd mount has been properly configured to fail
++	mount -t cgroup -o $failing xxx $t_mntpoint/ 2> /dev/null
+ 	if [ $? -eq 0 ]; then
+-		tst_resm TFAIL "mount $subsys1 should fail"
+-		umount cgroup/
++		tst_resm TFAIL "mount $failing should fail"
++		# Do NOT unmount pre-existent mountpoints...
++		[ -z "$mounted" ] && umount $t_mntpoint
+ 		failed=1
+ 		return
+ 	fi
+ 
+-	mkdir cgroup/0
++	mkdir $t_mntpoint/0
+ 	# Otherwise we can't attach task
+ 	if [ "$subsys1" = cpuset -o "$subsys2" = cpuset ]; then
+-		echo 0 > cgroup/0/cpuset.cpus 2> /dev/null
+-		echo 0 > cgroup/0/cpuset.mems 2> /dev/null
++		echo 0 > $t_mntpoint/0/cpuset.cpus 2> /dev/null
++		echo 0 > $t_mntpoint/0/cpuset.mems 2> /dev/null
+ 	fi
+ 
+ 	sleep 100 &
+-	echo $! > cgroup/0/tasks
++	echo $! > $t_mntpoint/0/tasks
+ 
+ 	check_kernel_bug
+ 	if [ $? -eq 1 ]; then
+@@ -296,8 +320,9 @@ test_5()
+ 	# clean up
+ 	/bin/kill -SIGTERM $! > /dev/null
+ 	wait $!
+-	rmdir cgroup/0
+-	umount cgroup/
++	rmdir $t_mntpoint/0
++	# Do NOT unmount pre-existent mountpoints...
++	[ -z "$mounted" ] && umount $t_mntpoint
+ }
+ 
+ #---------------------------------------------------------------------------
 -- 
-Rafael D. Tinoco
-Linaro - Kernel Validation
+2.17.1
+
