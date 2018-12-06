@@ -1,60 +1,91 @@
-From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Thu, 6 Dec 2018 17:11:45 -0200
-Subject: [LTP] [PATCH v2 1/2] syscalls/clock_settime01.c: create syscall
- clock_settime
-In-Reply-To: <20181206190710.22471-1-rafael.tinoco@linaro.org>
-References: <20181206130309.GA22250@rei>
- <20181206190710.22471-1-rafael.tinoco@linaro.org>
-Message-ID: <7cf88d1e-edbf-bbe9-4930-7eccc86d8457@linaro.org>
+From: Ramon Pantin <pantin@google.com>
+Date: Thu, 6 Dec 2018 14:58:25 -0800
+Subject: [LTP] added SAFE_SOCKETPAIR()
+Message-ID: <515a2ca2-1f68-d2d1-524d-f4fc89be337d@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 12/6/18 5:07 PM, Rafael David Tinoco wrote:
-> Fixes: 343
-> 
-> clock_settime01 creates a new test, using new API, based on existing and
-> older kernel/timers/clock_settime tests. It includes tests from files
-> clock_settime02 and clock_settime03, which will be deleted in next
-> commits.
-> 
-> Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
-> ---
+Signed-off-by: Ramon Pantin <pantin@google.com>
+---
+  include/safe_net_fn.h  |  3 +++
+  include/tst_safe_net.h |  3 +++
+  lib/safe_net.c         | 28 ++++++++++++++++++++++++++++
+  3 files changed, 34 insertions(+)
 
-Cyril,
-
-Please if you accept this patch, amend the description to:
-
-"""
-clock_settime01 creates a new test, using new API, based on existing
-and older kernel/timers/clock_settime02 test. clock_settime02 creates
-another test based on older kernel/timers/clock_settime03 test. Both
-will be deleted in the next commits.
-
-Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
-"""
-
-I forgot to change description before sending v2. Sorry.
-
-About the first test, best way to check good results is:
-
-$ date ; time sudo $(find . -name clock_settime01) -I 10 2>&1 >
-/dev/null 2>&1 ; date
-
-Thu Dec  6 17:09:24 -02 2018
-
-real	0m10.032s
-user	0m2.710s
-sys	0m11.911s
-
-Thu Dec  6 17:09:34 -02 2018
-
-Using CLOCK_MONOTONIC_RAW we can make sure to restore a good time to
-CLOCK_REALTIME after the test has run (independently of how many seconds
-it took or iterations it had).
-
+diff --git a/include/safe_net_fn.h b/include/safe_net_fn.h
+index 89e5bf0cc..3183b2a1c 100644
+--- a/include/safe_net_fn.h
++++ b/include/safe_net_fn.h
+@@ -33,6 +33,9 @@ int tst_getsockport(const char *file, const int lineno, int sockfd);
+  int safe_socket(const char *file, const int lineno, void (cleanup_fn)(void),
+  		int domain, int type, int protocol);
+  
++int safe_socketpair(const char *file, const int lineno, int domain, int type,
++		    int protocol, int sv[]);
++
+  int safe_getsockopt(const char *file, const int lineno, int sockfd, int level,
+  		    int optname, void *optval, socklen_t *optlen);
+  
+diff --git a/include/tst_safe_net.h b/include/tst_safe_net.h
+index d0c0a1dc5..83a2f27bf 100644
+--- a/include/tst_safe_net.h
++++ b/include/tst_safe_net.h
+@@ -32,6 +32,9 @@
+  #define SAFE_SOCKET(domain, type, protocol) \
+  	safe_socket(__FILE__, __LINE__, NULL, domain, type, protocol)
+  
++#define SAFE_SOCKETPAIR(domain, type, protocol, sv) \
++	safe_socketpair(__FILE__, __LINE__, domain, type, protocol, sv)
++
+  #define SAFE_GETSOCKOPT(fd, level, optname, optval, optlen) \
+  	safe_getsockopt(__FILE__, __LINE__, fd, level, optname, optval, optlen)
+  
+diff --git a/lib/safe_net.c b/lib/safe_net.c
+index 64e2cbcf6..4ab6ae48e 100644
+--- a/lib/safe_net.c
++++ b/lib/safe_net.c
+@@ -132,6 +132,34 @@ int safe_socket(const char *file, const int lineno, void (cleanup_fn)(void),
+  	return rval;
+  }
+  
++int safe_socketpair(const char *file, const int lineno, int domain, int type,
++		    int protocol, int sv[])
++{
++	int rval, ttype;
++
++	rval = socketpair(domain, type, protocol, sv);
++
++	if (rval < 0) {
++		switch (errno) {
++		case EPROTONOSUPPORT:
++		case ESOCKTNOSUPPORT:
++		case EOPNOTSUPP:
++		case EPFNOSUPPORT:
++		case EAFNOSUPPORT:
++			ttype = TCONF;
++			break;
++		default:
++			ttype = TBROK;
++		}
++
++		tst_brkm(ttype | TERRNO, NULL,
++			 "%s:%d: socketpair(%d, %d, %d, %p) failed",
++			 file, lineno, domain, type, protocol, sv);
++	}
++
++	return rval;
++}
++
+  int safe_getsockopt(const char *file, const int lineno, int sockfd, int level,
+  		    int optname, void *optval, socklen_t *optlen)
+  {
 -- 
-Rafael D. Tinoco
-Linaro - Kernel Validation
+2.20.0.rc2.403.gdbc3b29805-goog
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20181206/712d4e6f/attachment.html>
