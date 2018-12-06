@@ -1,47 +1,285 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 6 Dec 2018 13:59:05 +0100
-Subject: [LTP] [PATCH 2/2] lib: build check parameters for tst_brk()
-In-Reply-To: <CAEemH2cCL0O4Um6yBfpqH4sNxRE1fRLTzsDprDEODP1z+cQGXg@mail.gmail.com>
-References: <88db8a4def940c63ec2836cec1d0041db00ffd4c.1541710635.git.jstancek@redhat.com>
- <d3ce5d3247f7f09cfabd288b40893bb631fb190f.1541710635.git.jstancek@redhat.com>
- <5BE4E95E.4000303@cn.fujitsu.com>
- <1582215982.71956713.1541786229415.JavaMail.zimbra@redhat.com>
- <20181204173542.GD30799@dell5510>
- <CAEemH2cD71UjUJ-b3HeTyf58JSUCcb+iCo9Om9Vez=L7UYwKmg@mail.gmail.com>
- <20181205092521.GA7618@dell5510>
- <CAEemH2f1xJnQV3dt_B1-coRgMRjggPXuHUPQLQq7fsTFkV9GMg@mail.gmail.com>
- <CAEemH2cCL0O4Um6yBfpqH4sNxRE1fRLTzsDprDEODP1z+cQGXg@mail.gmail.com>
-Message-ID: <20181206125904.GA31874@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 6 Dec 2018 14:03:09 +0100
+Subject: [LTP] [PATCH 1/2] syscalls/clock_settime01.c: create syscall
+ clock_settime test
+In-Reply-To: <20181205193058.11146-1-rafael.tinoco@linaro.org>
+References: <20181205193058.11146-1-rafael.tinoco@linaro.org>
+Message-ID: <20181206130309.GA22250@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Hi!
+> ---
+>  runtest/syscalls                              |   2 +
+>  .../kernel/syscalls/clock_settime/.gitignore  |   1 +
+>  .../kernel/syscalls/clock_settime/Makefile    |   8 +
+>  .../syscalls/clock_settime/clock_settime01.c  | 187 ++++++++++++++++++
+>  4 files changed, 198 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/clock_settime/.gitignore
+>  create mode 100644 testcases/kernel/syscalls/clock_settime/Makefile
+>  create mode 100644 testcases/kernel/syscalls/clock_settime/clock_settime01.c
+> 
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index ac1d2d2cd..4cbc13209 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -79,6 +79,8 @@ clock_nanosleep01 clock_nanosleep01
+>  clock_nanosleep02 clock_nanosleep02
+>  clock_nanosleep2_01 clock_nanosleep2_01
+>  
+> +clock_settime01 clock_settime01
+> +
+>  clone01 clone01
+>  clone02 clone02
+>  clone03 clone03
+> diff --git a/testcases/kernel/syscalls/clock_settime/.gitignore b/testcases/kernel/syscalls/clock_settime/.gitignore
+> new file mode 100644
+> index 000000000..fcbb9fecc
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/clock_settime/.gitignore
+> @@ -0,0 +1 @@
+> +clock_settime01
+> diff --git a/testcases/kernel/syscalls/clock_settime/Makefile b/testcases/kernel/syscalls/clock_settime/Makefile
+> new file mode 100644
+> index 000000000..e6674a6b2
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/clock_settime/Makefile
+> @@ -0,0 +1,8 @@
+> +# Copyright (c) 2018 - Linaro Limited. All rights reserved.
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +top_srcdir		?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime01.c b/testcases/kernel/syscalls/clock_settime/clock_settime01.c
+> new file mode 100644
+> index 000000000..591e5c723
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/clock_settime/clock_settime01.c
+> @@ -0,0 +1,187 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2018 Linaro Limited. All rights reserved.
+> + * Author: Rafael David Tinoco <rafael.tinoco@linaro.org>
+> + */
+> +
+> +/*
+> + * Basic tests for clock_settime(2) on different clock types
+> + */
+> +
+> +#include "config.h"
+> +#include "tst_test.h"
+> +#include "lapi/syscalls.h"
+> +
+> +#define NSEC_PER_SEC (1000000000L)
+> +#define MAX_CLOCKS 16
+> +
+> +static struct timespec clock_realtime_saved;
+> +
+> +struct test_case {
+> +	clockid_t type;
+> +	struct timespec newtime;
+> +	int exp_ret;
+> +	int exp_err;
+> +	int replace;
+> +};
+> +
+> +struct test_case tc[] = {
+> +	{				/* case 01: REALTIME		      */
+> +	 .type = CLOCK_REALTIME,
+> +	 .exp_ret = 0,
+> +	 },
 
-> Can you help to test this commit with same configuration in build#860?
-> (I haven't mastered how to use Travis CI yet)
-> https://github.com/wangli5665/ltp/commit/bbf236875c11861e40845edd875e517dd475bfac
-Sure. This commit is on
-https://travis-ci.org/pevik/ltp/builds/464316410
-=> failing on
-../../../../include/tst_common.h:72:35: error: call to ‘check_tst_brk_parameter_’ declared with attribute error: tst_brk(): invalid type, please use TBROK/TCONF/TFAIL
+What about we separate the only positive case to a separate test, then
+we can also do more a few more sanity checks there. I would probably go
+for sequence of something as:
 
-+ your branch check-tst_brk-parameter (with code cleanup commit)
-https://github.com/wangli5665/ltp/commits/check-tst_brk-parameter
-is on
-https://travis-ci.org/pevik/ltp/builds/464316329
-=> the same failure:
-../../../../include/tst_common.h:72:35: warning: implicit declaration of function ‘check_tst_brk_parameter_’ [-Wimplicit-function-declaration]
+* get the realtime time
+* increasing it by some value in seconds
+* set the realtime time
+* get the realtime time
+* check that the value is aprox the first value increased by the value
+* decrease by the value
+* set it again
+* check it again
 
-Travis is not complicated: 1) register 2) give it rights to your account (I
-don't like this) 3) enable ltp repository.
-Every push since it it's triggered.
+That would cover both cases of setting time forward and backward and at
+the end we would end up with the correct time as a bonus.
 
-> I used gcc version 4.1.2 and didn't hit the un-supportted issue
-> locally, I'm inclined to suspect there's no demands on gcc compiler.
-The oldest gcc I have available is 4.3.
+> +	{				/* case 02: REALTIME: timespec NULL   */
+> +	 .type = CLOCK_REALTIME,
+> +	 .newtime.tv_sec = -2,
+> +	 .exp_ret = -1,
+> +	 .exp_err = EFAULT,
+> +	 .replace = 1,
+> +	 },
+> +	{				/* case 03: REALTIME: tv_sec = -1     */
+> +	 .type = CLOCK_REALTIME,
+> +	 .newtime.tv_sec = -1,
+> +	 .exp_ret = -1,
+> +	 .exp_err = EINVAL,
+> +	 .replace = 1,
+> +	 },
+> +	{				/* case 04: REALTIME: tv_nsec = -1    */
+> +	 .type = CLOCK_REALTIME,
+> +	 .newtime.tv_nsec = -1,
+> +	 .exp_ret = -1,
+> +	 .exp_err = EINVAL,
+> +	 .replace = 1,
+> +	 },
+> +	{				/* case 05: REALTIME: tv_nsec = 1s+1  */
+> +	 .type = CLOCK_REALTIME,
+> +	 .newtime.tv_nsec = NSEC_PER_SEC + 1,
+> +	 .exp_ret = -1,
+> +	 .exp_err = EINVAL,
+> +	 .replace = 1,
+> +	 },
+> +	{				/* case 06: MONOTONIC		      */
+> +	 .type = CLOCK_MONOTONIC,
+> +	 .exp_ret = -1,
+> +	 .exp_err = EINVAL,
+> +	 },
+> +	{				/* case 07: MAXCLOCK		      */
+> +	 .type = MAX_CLOCKS,
+> +	 .exp_ret = -1,
+> +	 .exp_err = EINVAL,
+> +	 },
+> +	{				/* case 08: MAXCLOCK+1		      */
+> +	 .type = MAX_CLOCKS + 1,
+> +	 .exp_ret = -1,
+> +	 .exp_err = EINVAL,
+> +	 },
+> +	/* Linux specific */
+> +	{				/* case 09: CLOCK_MONOTONIC_COARSE    */
+> +	 .type = CLOCK_MONOTONIC_COARSE,
+> +	 .exp_ret = -1,
+> +	 .exp_err = EINVAL,
+> +	 },
+> +	{				/* case 10: CLOCK_MONOTONIC_RAW       */
+> +	 .type = CLOCK_MONOTONIC_RAW,
+> +	 .exp_ret = -1,
+> +	 .exp_err = EINVAL,
+> +	 },
+> +	{				/* case 11: CLOCK_BOOTTIME	      */
+> +	 .type = CLOCK_BOOTTIME,
+> +	 .exp_ret = -1,
+> +	 .exp_err = EINVAL,
+> +	 },
+> +	{				/* case 12: CLOCK_PROCESS_CPUTIME_ID  */
+> +	 .type = CLOCK_PROCESS_CPUTIME_ID,
+> +	 .exp_ret = -1,
+> +	 .exp_err = EINVAL,
+> +	 },
+> +	{				/* case 13: CLOCK_THREAD_CPUTIME_ID   */
+> +	 .type = CLOCK_THREAD_CPUTIME_ID,
+> +	 .exp_ret = -1,
+> +	 .exp_err = EINVAL,
+> +	 },
+> +};
+> +
+> +static int sys_clock_settime(clockid_t clk_id, struct timespec *tp)
+> +{
+> +	return tst_syscall(__NR_clock_settime, clk_id, tp);
+> +}
+> +
+> +static int sys_clock_gettime(clockid_t clk_id, struct timespec *tp)
+> +{
+> +	return tst_syscall(__NR_clock_gettime, clk_id, tp);
+> +}
 
-Kind regards,
-Petr
+Any reason why we avoid the clock_settime and clock_gettime libc
+functions here?
+
+> +static void cleanup(void)
+> +{
+> +	/* restore realtime clock */
+> +
+> +	if (sys_clock_settime(CLOCK_REALTIME, &clock_realtime_saved) < 0)
+> +		tst_res(TBROK | TTERRNO, "clock_settime(2): could not set "
+> +				"current time back");
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	if (sys_clock_gettime(CLOCK_REALTIME, &clock_realtime_saved) < 0)
+> +		tst_res(TBROK | TTERRNO, "clock_gettime(2): could not get "
+> +				"current time");
+> +}
+> +
+> +static void verify_clock_settime(unsigned int i)
+> +{
+> +	struct timespec spec, *specptr;
+> +
+> +	if (tc[i].replace == 0) {
+> +
+> +		/* add 1 sec to test clock */
+> +
+> +		specptr = &spec;
+> +		specptr->tv_sec = clock_realtime_saved.tv_sec + 1;
+> +		specptr->tv_nsec = clock_realtime_saved.tv_nsec;
+> +
+> +	} else {
+> +
+> +		/* bad pointer case */
+> +
+> +		if (tc[i].newtime.tv_sec == -2)
+> +			specptr = tst_get_bad_addr(cleanup);
+> +
+> +		/* use given values */
+> +
+> +		else {
+> +			specptr = &spec;
+> +			specptr->tv_sec = tc[i].newtime.tv_sec;
+> +			specptr->tv_nsec = tc[i].newtime.tv_nsec;
+> +		}
+> +	}
+> +
+> +	TEST(sys_clock_settime(tc[i].type, specptr));
+> +
+> +	if (tc[i].exp_ret == TST_RET) {
+> +
+> +		if (TST_RET >= 0)
+> +			tst_res(TPASS, "clock_settime(2): worked as expected");
+> +
+> +		else {
+> +			if (tc[i].exp_err == TST_ERR)
+> +				tst_res(TPASS, "clock_settime(2): failed as "
+> +						"expected");
+> +			else
+> +				tst_res(TFAIL | TTERRNO, "clock_settime(2): "
+> +						"failed with different error");
+> +		}
+
+
+LKML coding style prefers curly braces around both blocks if they are
+around one of them, but that's a minor one.
+
+> +		return;
+> +	}
+> +
+> +	tst_res(TFAIL | TTERRNO, "clock_settime(2): clock type %d failed",
+> +			tc[i].type);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.test = verify_clock_settime,
+> +	.cleanup = cleanup,
+> +	.tcnt = ARRAY_SIZE(tc),
+> +	.needs_root = 1,
+> +};
+> -- 
+> 2.20.0.rc1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
