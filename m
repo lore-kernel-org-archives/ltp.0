@@ -1,9 +1,9 @@
 From: Eric Biggers <ebiggers@kernel.org>
-Date: Thu,  6 Dec 2018 10:18:12 -0800
-Subject: [LTP] [PATCH 1/3] lapi/cryptouser.h: add more declarations
+Date: Thu,  6 Dec 2018 10:18:13 -0800
+Subject: [LTP] [PATCH 2/3] tst_netlink: inline functions in header
 In-Reply-To: <20181206181814.85583-1-ebiggers@kernel.org>
 References: <20181206181814.85583-1-ebiggers@kernel.org>
-Message-ID: <20181206181814.85583-2-ebiggers@kernel.org>
+Message-ID: <20181206181814.85583-3-ebiggers@kernel.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,105 +12,43 @@ To: ltp@lists.linux.it
 
 From: Eric Biggers <ebiggers@google.com>
 
-Add some missing declarations for the crypto user configuration API,
-a.k.a. NETLINK_CRYPTO.
+safe_netlink_send() and safe_netlink_recv() need to be static inline,
+since they're defined in a .h file.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- include/lapi/cryptouser.h | 73 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
+ include/tst_netlink.h | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/include/lapi/cryptouser.h b/include/lapi/cryptouser.h
-index 61ff21ad3..94d641446 100644
---- a/include/lapi/cryptouser.h
-+++ b/include/lapi/cryptouser.h
-@@ -34,6 +34,24 @@ enum {
- 	__CRYPTO_MSG_MAX
- };
+diff --git a/include/tst_netlink.h b/include/tst_netlink.h
+index 42232a169..892ef8f78 100644
+--- a/include/tst_netlink.h
++++ b/include/tst_netlink.h
+@@ -33,9 +33,9 @@
+ #endif
  
-+enum crypto_attr_type_t {
-+	CRYPTOCFGA_UNSPEC,
-+	CRYPTOCFGA_PRIORITY_VAL,	/* uint32_t */
-+	CRYPTOCFGA_REPORT_LARVAL,	/* struct crypto_report_larval */
-+	CRYPTOCFGA_REPORT_HASH,		/* struct crypto_report_hash */
-+	CRYPTOCFGA_REPORT_BLKCIPHER,	/* struct crypto_report_blkcipher */
-+	CRYPTOCFGA_REPORT_AEAD,		/* struct crypto_report_aead */
-+	CRYPTOCFGA_REPORT_COMPRESS,	/* struct crypto_report_comp */
-+	CRYPTOCFGA_REPORT_RNG,		/* struct crypto_report_rng */
-+	CRYPTOCFGA_REPORT_CIPHER,	/* struct crypto_report_cipher */
-+	CRYPTOCFGA_REPORT_AKCIPHER,	/* struct crypto_report_akcipher */
-+	CRYPTOCFGA_REPORT_KPP,		/* struct crypto_report_kpp */
-+	CRYPTOCFGA_REPORT_ACOMP,	/* struct crypto_report_acomp */
-+	__CRYPTOCFGA_MAX
-+
-+#define CRYPTOCFGA_MAX (__CRYPTOCFGA_MAX - 1)
-+};
-+
- struct crypto_user_alg {
- 	char cru_name[CRYPTO_MAX_NAME];
- 	char cru_driver_name[CRYPTO_MAX_NAME];
-@@ -44,6 +62,61 @@ struct crypto_user_alg {
- 	uint32_t cru_flags;
- };
+ /** @private */
+-ssize_t safe_netlink_send(const char *file, const int lineno,
+-			  int fd, const struct nlmsghdr *nh,
+-			  const void *payload)
++static inline ssize_t safe_netlink_send(const char *file, const int lineno,
++					int fd, const struct nlmsghdr *nh,
++					const void *payload)
+ {
+ 	struct sockaddr_nl sa = { .nl_family = AF_NETLINK };
+ 	struct iovec iov[2] = {
+@@ -68,8 +68,9 @@ ssize_t safe_netlink_send(const char *file, const int lineno,
+ 	safe_netlink_send(__FILE__, __LINE__, fd, nl_header, payload)
  
-+struct crypto_report_larval {
-+	char type[CRYPTO_MAX_NAME];
-+};
-+
-+struct crypto_report_hash {
-+	char type[CRYPTO_MAX_NAME];
-+	unsigned int blocksize;
-+	unsigned int digestsize;
-+};
-+
-+struct crypto_report_cipher {
-+	char type[CRYPTO_MAX_NAME];
-+	unsigned int blocksize;
-+	unsigned int min_keysize;
-+	unsigned int max_keysize;
-+};
-+
-+struct crypto_report_blkcipher {
-+	char type[CRYPTO_MAX_NAME];
-+	char geniv[CRYPTO_MAX_NAME];
-+	unsigned int blocksize;
-+	unsigned int min_keysize;
-+	unsigned int max_keysize;
-+	unsigned int ivsize;
-+};
-+
-+struct crypto_report_aead {
-+	char type[CRYPTO_MAX_NAME];
-+	char geniv[CRYPTO_MAX_NAME];
-+	unsigned int blocksize;
-+	unsigned int maxauthsize;
-+	unsigned int ivsize;
-+};
-+
-+struct crypto_report_comp {
-+	char type[CRYPTO_MAX_NAME];
-+};
-+
-+struct crypto_report_rng {
-+	char type[CRYPTO_MAX_NAME];
-+	unsigned int seedsize;
-+};
-+
-+struct crypto_report_akcipher {
-+	char type[CRYPTO_MAX_NAME];
-+};
-+
-+struct crypto_report_kpp {
-+	char type[CRYPTO_MAX_NAME];
-+};
-+
-+struct crypto_report_acomp {
-+	char type[CRYPTO_MAX_NAME];
-+};
-+
- #endif	/* HAVE_LINUX_CRYPTOUSER_H */
- 
- /* These are taken from include/crypto.h in the kernel tree. They are not
+ /** @private */
+-ssize_t safe_netlink_recv(const char *file, const int lineno,
+-			  int fd, char *nl_headers_buf, size_t buf_len)
++static inline ssize_t safe_netlink_recv(const char *file, const int lineno,
++					int fd, char *nl_headers_buf,
++					size_t buf_len)
+ {
+ 	struct iovec iov = { nl_headers_buf, buf_len };
+ 	struct sockaddr_nl sa;
 -- 
 2.20.0.rc1.387.gf8505762e3-goog
 
