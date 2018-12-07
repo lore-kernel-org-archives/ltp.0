@@ -1,227 +1,55 @@
-From: Vaishnavi <vaishnavi.d@zilogic.com>
-Date: Fri, 07 Dec 2018 08:42:21 -0000
-Subject: [LTP] [PATCH v4] syscalls/statx: Add test for sync flags
-Message-ID: <1544172141-1676-1-git-send-email-vaishnavi.d@zilogic.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri,  7 Dec 2018 10:31:26 +0100
+Subject: [LTP] [PATCH 1/1] travis: Use gcc 8 and clang 7
+Message-ID: <20181207093126.12901-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Replacing gcc 5 with gcc 8 and clang 4 with clang 7.
+This gives us shiny new versions, older and very old ones, while
+still keeping the same number of jobs.
 
-Testcase 1: AT_STATX_DONT_SYNC
- With AT_STATX_DONT_SYNC server changes should not get sync with client.
-
-Testcase 2: AT_STATX_FORCE_SYNC
- With AT_STATX_FORCE_SYNC server changes should get sync with client.
-
-Signed-off-by: Kewal Ukunde <kewal@zilogic.com>
-Signed-off-by: Vaishnavi.d <vaishnavi.d@zilogic.com>
-Signed-off-by: Tarun.T.U <tarun@zilogic.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- runtest/syscalls                           |   1 +
- testcases/kernel/syscalls/statx/.gitignore |   1 +
- testcases/kernel/syscalls/statx/statx07.c  | 170 +++++++++++++++++++++++++++++
- 3 files changed, 172 insertions(+)
- create mode 100644 testcases/kernel/syscalls/statx/statx07.c
+ .travis.yml | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index ac1d2d2..957b999 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1524,5 +1524,6 @@ statx03 statx03
- statx04 statx04
- statx05 statx05
- statx06 statx06
-+statx07 statx07
+diff --git a/.travis.yml b/.travis.yml
+index 078028f9b..f4e9bfe9d 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -11,11 +11,11 @@ matrix:
+         ### native builds ###
+         - os: linux
+           env: BUILD="native" INSTALL_PACKAGES="$BUILD"
+-          compiler: gcc-5
++          compiler: gcc-8
+           addons:
+               apt:
+                   sources: ['ubuntu-toolchain-r-test']
+-                  packages: ['gcc-5']
++                  packages: ['gcc-8']
  
- membarrier01 membarrier01
-diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
-index c1cedda..2f5457e 100644
---- a/testcases/kernel/syscalls/statx/.gitignore
-+++ b/testcases/kernel/syscalls/statx/.gitignore
-@@ -4,3 +4,4 @@
- /statx04
- /statx05
- /statx06
-+/statx07
-diff --git a/testcases/kernel/syscalls/statx/statx07.c b/testcases/kernel/syscalls/statx/statx07.c
-new file mode 100644
-index 0000000..b5fbaf3
---- /dev/null
-+++ b/testcases/kernel/syscalls/statx/statx07.c
-@@ -0,0 +1,170 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ *  Copyright (c) Zilogic Systems Pvt. Ltd., 2018
-+ *  Email : code@zilogic.com
-+ */
-+
-+/*
-+ * Test statx
-+ *
-+ * This code tests the following flags:
-+ * 1) AT_STATX_FORCE_SYNC
-+ * 2) AT_STATX_DONT_SYNC
-+ *
-+ * By exportfs cmd creating NFS setup.
-+ *
-+ * A test file is created in server folder and statx is being
-+ * done in client folder.
-+ *
-+ * TESTCASE 1:
-+ * BY AT_STATX_SYNC_AS_STAT getting predefined mode value.
-+
-+ * Then, by using AT_STATX_FORCE_SYNC getting new updated vaue
-+ * from server file changes.
-+ *
-+ * TESTCASE 2:
-+ * BY AT_STATX_SYNC_AS_STAT getting predefined mode value.
-+ * AT_STATX_FORCE_SYNC is called to create cache data of the file.
-+ * Then, by using DONT_SYNC_FILE getting old cached data in client folder,
-+ * but mode has been chaged in server file.
-+ *
-+ * Minimum kernel version required is 4.16.
-+ */
-+
-+#include <netdb.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+#include <linux/limits.h>
-+#include <sys/mount.h>
-+#include "tst_test.h"
-+#include "lapi/stat.h"
-+#include "old_tmpdir.h"
-+
-+#define MODE(X) (X & (~S_IFMT))
-+#define BUFF_SIZE PATH_MAX
-+#define DEFAULT_MODE 0644
-+#define CURRENT_MODE 0777
-+
-+#define CLIENT_PATH "client"
-+#define SERVER_PATH "server"
-+#define CLI_FORCE_SYNC "client/force_sync_file"
-+#define CLI_DONT_SYNC "client/dont_sync_file"
-+#define SERV_FORCE_SYNC "server/force_sync_file"
-+#define SERV_DONT_SYNC "server/dont_sync_file"
-+
-+static char *cwd;
-+static char cmd[BUFF_SIZE];
-+static int mounted;
-+
-+static int get_mode(char *file_name, int flag_type, char *flag_name)
-+{
-+	struct statx buff;
-+
-+	TEST(statx(AT_FDCWD, file_name, flag_type, STATX_ALL, &buff));
-+
-+	if (TST_RET == -1)
-+		tst_brk(TFAIL | TST_ERR,
-+			"statx(AT_FDCWD, %s, %s, STATX_ALL, &buff)",
-+			file_name, flag_name);
-+	else
-+		tst_res(TINFO, "statx(AT_FDCWD, %s, %s, STATX_ALL, &buff)",
-+			file_name, flag_name);
-+
-+	return buff.stx_mode;
-+}
-+
-+const struct test_cases {
-+	char *server_file;
-+	char *client_file;
-+	char *flag_name;
-+	int flag;
-+	unsigned int mode;
-+
-+} tcases[] = {
-+	{SERV_DONT_SYNC,
-+	 CLI_DONT_SYNC,
-+	 "AT_STATX_DONT_SYNC",
-+	 AT_STATX_DONT_SYNC,
-+	 DEFAULT_MODE},
-+	{SERV_FORCE_SYNC,
-+	 CLI_FORCE_SYNC,
-+	 "AT_STATX_FORCE_SYNC",
-+	 AT_STATX_FORCE_SYNC,
-+	 CURRENT_MODE}
-+};
-+
-+static void test_statx(unsigned int nr)
-+{
-+	const struct test_cases *tc = &tcases[nr];
-+	unsigned int cur_mode;
-+
-+	get_mode(tc->client_file, AT_STATX_FORCE_SYNC, "AT_STATX_FORCE_SYNC");
-+
-+	SAFE_CHMOD(tc->server_file, CURRENT_MODE);
-+	cur_mode = get_mode(tc->client_file, tc->flag, tc->flag_name);
-+
-+	if (MODE(cur_mode) == tc->mode)
-+		tst_res(TPASS,
-+			"statx() with %s for mode %o %o",
-+			tc->flag_name, tc->mode, MODE(cur_mode));
-+	else
-+		tst_res(TFAIL,
-+			"statx() with %s for mode %o %o",
-+			tc->flag_name, tc->mode, MODE(cur_mode));
-+}
-+
-+static void setup(void)
-+{
-+	int ret;
-+	char server_path[BUFF_SIZE];
-+
-+	cwd = tst_get_tmpdir();
-+
-+	SAFE_MKDIR(SERVER_PATH, DEFAULT_MODE);
-+	SAFE_MKDIR(CLIENT_PATH, DEFAULT_MODE);
-+	SAFE_CREAT(SERV_FORCE_SYNC, DEFAULT_MODE);
-+	SAFE_CREAT(SERV_DONT_SYNC, DEFAULT_MODE);
-+
-+	snprintf(server_path, sizeof(server_path), ":%s/%s", cwd, SERVER_PATH);
-+
-+	snprintf(cmd, sizeof(cmd),
-+		 "exportfs -i -o no_root_squash,rw,sync,no_subtree_check *%.1024s",
-+		 server_path);
-+
-+	ret = tst_system(cmd);
-+	if (WEXITSTATUS(ret) == 127)
-+		tst_brk(TCONF | TST_ERR, "%s not found", cmd);
-+	if (ret)
-+		tst_brk(TBROK | TST_ERR, "failed to exportfs");
-+
-+	if (mount(server_path, CLIENT_PATH, "nfs", 0, "addr=127.0.0.1")) {
-+		if (errno == EOPNOTSUPP)
-+			tst_brk(TCONF | TERRNO, "nfs server not set up?");
-+		tst_brk(TBROK | TERRNO, "mount() nfs failed");
-+	}
-+	mounted = 1;
-+}
-+
-+static void cleanup(void)
-+{
-+	snprintf(cmd, sizeof(cmd),
-+		 "exportfs -u *:%s/%s", cwd, SERVER_PATH);
-+
-+	if (tst_system(cmd) == -1)
-+		tst_res(TWARN | TST_ERR, "failed to clear exportfs");
-+
-+	if (mounted)
-+		SAFE_UMOUNT(CLIENT_PATH);
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = test_statx,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.min_kver = "4.16",
-+	.needs_tmpdir = 1,
-+	.dev_fs_type = "nfs",
-+	.needs_root = 1,
-+};
+         - os: linux
+           env: BUILD="native" TREE="out" INSTALL_PACKAGES="$BUILD"
+@@ -27,11 +27,11 @@ matrix:
+ 
+         - os: linux
+           env: BUILD="native" TREE="out"
+-          compiler: clang-4.0
++          compiler: clang-7
+           addons:
+               apt:
+-                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
+-                  packages: ['clang-4.0']
++                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
++                  packages: ['clang-7']
+ 
+         - os: linux
+           env: BUILD="native" INSTALL_PACKAGES="$BUILD"
 -- 
-2.1.4
+2.19.2
 
