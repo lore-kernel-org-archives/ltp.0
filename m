@@ -1,104 +1,49 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 7 Dec 2018 11:00:13 +0100
-Subject: [LTP] [PATCH] openposix: Remove _XOPEN_SOURCE in
- strchr/strcpy/strncpy
-In-Reply-To: <1544089211-8138-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1544089211-8138-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20181207100013.GA14165@dell5510>
+Date: Fri,  7 Dec 2018 13:35:10 +0100
+Subject: [LTP] [PATCH v2 0/6] DHCP tests and AppArmor/SELinux improvements
+Message-ID: <20181207123516.30867-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao,
+Hi,
 
-> We have defined _XOPEN_SOURCE to 600 by gcc -D in open_posix_testsuite/CF=
-LAGS=EF=BC=8C
-> So defining _XOPEN_SOURCE to different value in test results in a "_XOPEN=
-_SOURCE
-> redefined" warning.
+this further enhances patchset "DHCP tests and AppArmor improvements" [1]
+Main change is adding tst_security.sh and using it (last 2 commits).
 
-> It seems that all of tests get pass even if _XOPEN_SOURCE is defined to 6=
-00
-> by default, so remove the duplicate _XOPEN_SOURCE in test.
-
-FYI I also mentioned it in https://github.com/linux-test-project/ltp/pull/4=
-23
-but it was ignored.
-This is a side effect, that we use mailing list and github pull requests.
-
-I guess _XOPEN_SOURCE 600 is ok.
-If _XOPEN_SOURCE 700 is really needed, we can use:
-#ifdef _XOPEN_SOURCE
-#undef _XOPEN_SOURCE
-#endif
-#define _XOPEN_SOURCE 700
+Thanks for review.
 
 Kind regards,
 Petr
 
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
+[1] https://patchwork.ozlabs.org/project/ltp/list/?series=70357&state=*
 
+Petr Vorel (6):
+  net/dhcp: Rename setup & cleanup functions
+  net/dhcp: Use paths allowed by AppArmor for dnsmasq
+  net/dhcp: Move print_dhcp_log() into dhcp library
+  ver_linux: Print AppArmor and SELinux status
+  shell: Add tst_security.sh helper
+  net: Add security warning flag to some net tests
 
->  testcases/open_posix_testsuite/conformance/interfaces/strchr/1-1.c  | 1 -
->  testcases/open_posix_testsuite/conformance/interfaces/strcpy/1-1.c  | 1 -
->  testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c | 1 -
->  testcases/open_posix_testsuite/conformance/interfaces/strncpy/2-1.c | 1 -
->  4 files changed, 4 deletions(-)
+ testcases/lib/tst_security.sh                 | 64 +++++++++++++++++++
+ testcases/lib/tst_test.sh                     | 14 +++-
+ testcases/network/dhcp/dhcp_lib.sh            | 15 +++--
+ testcases/network/dhcp/dhcpd_tests.sh         |  7 +-
+ testcases/network/dhcp/dnsmasq_tests.sh       | 28 +++++---
+ testcases/network/mpls/mpls02.sh              |  1 +
+ testcases/network/mpls/mpls_lib.sh            |  1 +
+ .../network/stress/icmp/icmp-uni-basic.sh     |  1 +
+ testcases/network/stress/icmp/icmp-uni-vti.sh |  1 +
+ .../network/stress/interface/if-mtu-change    |  1 +
+ .../network/stress/interface/if4-addr-change  |  1 +
+ testcases/network/traceroute/traceroute01.sh  |  1 +
+ ver_linux                                     | 46 +++++++++++--
+ 13 files changed, 158 insertions(+), 23 deletions(-)
+ create mode 100644 testcases/lib/tst_security.sh
 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/strchr=
-/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/strchr/1-1.c
-> index 95eda79..611a64d 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/strchr/1-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/strchr/1-1.c
-> @@ -25,7 +25,6 @@
->   *	-Repeat the above all steps for given number of iterations.
->  */
+-- 
+2.19.2
 
-> -#define _XOPEN_SOURCE 700
->  #include <stdio.h>
->  #include <string.h>
->  #include <stdlib.h>
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/strcpy=
-/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/strcpy/1-1.c
-> index 2fdc002..adfbfc3 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/strcpy/1-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/strcpy/1-1.c
-> @@ -17,7 +17,6 @@
->   *  -Also compare returned pointer with s2.
->  */
-
-> -#define _XOPEN_SOURCE 700
->  #include <stdio.h>
->  #include <string.h>
->  #include <stdlib.h>
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/strncp=
-y/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1=
-.c
-> index 3458015..396bd60 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c
-> @@ -20,7 +20,6 @@
->   *  -Repeat the above steps for given number of iterations.
->  */
-
-> -#define _XOPEN_SOURCE 700
->  #include <stdio.h>
->  #include <string.h>
->  #include <stdlib.h>
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/strncp=
-y/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/strncpy/2-1=
-.c
-> index a7761c5..2a20872 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/strncpy/2-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/strncpy/2-1.c
-> @@ -20,7 +20,6 @@
->   *  -Repeat the above steps for given number of iterations.
->  */
-
-> -#define _XOPEN_SOURCE 700
->  #include <stdio.h>
->  #include <string.h>
->  #include <stdlib.h>
