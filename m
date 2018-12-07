@@ -1,130 +1,154 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri,  7 Dec 2018 13:35:16 +0100
-Subject: [LTP] [PATCH v2 6/6] net: Add security warning flag to some net
-	tests
-In-Reply-To: <20181207123516.30867-1-pvorel@suse.cz>
-References: <20181207123516.30867-1-pvorel@suse.cz>
-Message-ID: <20181207123516.30867-7-pvorel@suse.cz>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Fri, 07 Dec 2018 15:11:04 +0100
+Subject: [LTP] [PATCH 3/3] crypto/crypto_user01.c: new test for
+	information leak bug
+In-Reply-To: <20181206181814.85583-4-ebiggers@kernel.org>
+References: <20181206181814.85583-1-ebiggers@kernel.org>
+ <20181206181814.85583-4-ebiggers@kernel.org>
+Message-ID: <87pnudmnpj.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Added to dnsmasq and traceroute tests and other network tests which use
-tst_ping() and has been ported to new shell API (tst_security.sh
-requirement).
+Hello,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-New in this version.
----
- testcases/network/dhcp/dnsmasq_tests.sh            | 1 +
- testcases/network/mpls/mpls02.sh                   | 1 +
- testcases/network/mpls/mpls_lib.sh                 | 1 +
- testcases/network/stress/icmp/icmp-uni-basic.sh    | 1 +
- testcases/network/stress/icmp/icmp-uni-vti.sh      | 1 +
- testcases/network/stress/interface/if-mtu-change   | 1 +
- testcases/network/stress/interface/if4-addr-change | 1 +
- testcases/network/traceroute/traceroute01.sh       | 1 +
- 8 files changed, 8 insertions(+)
+Eric Biggers <ebiggers@kernel.org> writes:
 
-diff --git a/testcases/network/dhcp/dnsmasq_tests.sh b/testcases/network/dhcp/dnsmasq_tests.sh
-index 284c3cce1..d5f89ae81 100755
---- a/testcases/network/dhcp/dnsmasq_tests.sh
-+++ b/testcases/network/dhcp/dnsmasq_tests.sh
-@@ -6,6 +6,7 @@
- # Author: Alexey Kodanev alexey.kodanev@oracle.com
- 
- dhcp_name="dnsmasq"
-+TST_SECURITY_WARN=1
- 
- . dhcp_lib.sh
- TST_SETUP="setup"
-diff --git a/testcases/network/mpls/mpls02.sh b/testcases/network/mpls/mpls02.sh
-index 745a414f6..a2c93ff58 100755
---- a/testcases/network/mpls/mpls02.sh
-+++ b/testcases/network/mpls/mpls02.sh
-@@ -5,6 +5,7 @@
- TST_SETUP="setup"
- TST_TESTFUNC="do_test"
- TST_CLEANUP="cleanup"
-+TST_SECURITY_WARN=1
- 
- . mpls_lib.sh
- 
-diff --git a/testcases/network/mpls/mpls_lib.sh b/testcases/network/mpls/mpls_lib.sh
-index 43ec16a6e..20bb24022 100755
---- a/testcases/network/mpls/mpls_lib.sh
-+++ b/testcases/network/mpls/mpls_lib.sh
-@@ -8,6 +8,7 @@ TST_NEEDS_ROOT=1
- TST_NEEDS_DRIVERS="mpls_router mpls_iptunnel mpls_gso"
- TST_NEEDS_CMDS="sysctl modprobe"
- TST_TEST_DATA="icmp tcp udp"
-+TST_SECURITY_WARN=1
- 
- . tst_net.sh
- 
-diff --git a/testcases/network/stress/icmp/icmp-uni-basic.sh b/testcases/network/stress/icmp/icmp-uni-basic.sh
-index 5980b81e5..436f33bfd 100755
---- a/testcases/network/stress/icmp/icmp-uni-basic.sh
-+++ b/testcases/network/stress/icmp/icmp-uni-basic.sh
-@@ -8,6 +8,7 @@
- TST_TESTFUNC=do_test
- TST_SETUP=do_setup
- TST_CLEANUP=tst_ipsec_cleanup
-+TST_SECURITY_WARN=1
- . ipsec_lib.sh
- 
- do_setup()
-diff --git a/testcases/network/stress/icmp/icmp-uni-vti.sh b/testcases/network/stress/icmp/icmp-uni-vti.sh
-index 24eca177c..c9c39331d 100755
---- a/testcases/network/stress/icmp/icmp-uni-vti.sh
-+++ b/testcases/network/stress/icmp/icmp-uni-vti.sh
-@@ -7,6 +7,7 @@
- TST_TESTFUNC=do_test
- TST_SETUP=do_setup
- TST_CLEANUP=tst_ipsec_cleanup
-+TST_SECURITY_WARN=1
- . ipsec_lib.sh
- 
- do_setup()
-diff --git a/testcases/network/stress/interface/if-mtu-change b/testcases/network/stress/interface/if-mtu-change
-index 19bcffe1e..0872bca8c 100644
---- a/testcases/network/stress/interface/if-mtu-change
-+++ b/testcases/network/stress/interface/if-mtu-change
-@@ -21,6 +21,7 @@
- IF_CMD='ifconfig'
- TST_SETUP="do_setup"
- TST_CLEANUP="do_cleanup"
-+TST_SECURITY_WARN=1
- . if-lib.sh
- 
- # The interval of the mtu change [second]
-diff --git a/testcases/network/stress/interface/if4-addr-change b/testcases/network/stress/interface/if4-addr-change
-index 5ab67751e..8e5ab85f5 100644
---- a/testcases/network/stress/interface/if4-addr-change
-+++ b/testcases/network/stress/interface/if4-addr-change
-@@ -22,6 +22,7 @@ TCID=if4-addr-change
- TST_CLEANUP="do_cleanup"
- TST_TESTFUNC="test_body"
- TST_NEEDS_CMDS="ifconfig"
-+TST_SECURITY_WARN=1
- . tst_net.sh
- 
- CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
-diff --git a/testcases/network/traceroute/traceroute01.sh b/testcases/network/traceroute/traceroute01.sh
-index 1c8b66f55..4ea1fd9db 100755
---- a/testcases/network/traceroute/traceroute01.sh
-+++ b/testcases/network/traceroute/traceroute01.sh
-@@ -18,6 +18,7 @@
- TST_TOTAL=6
- TCID="traceroute01"
- TST_CLEANUP="cleanup"
-+TST_SECURITY_WARN=1
- 
- TST_USE_LEGACY_API=1
- . tst_net.sh
+> From: Eric Biggers <ebiggers@google.com>
+>
+> Test for a bug in the crypto user configuration API (NETLINK_CRYPTO)
+> that leaked uninitialized memory to userspace.  This bug was assigned
+> CVE-2018-19854, and it was also a re-introduction of CVE-2013-2547.
+>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  runtest/crypto                          |   1 +
+>  runtest/cve                             |   2 +
+>  testcases/kernel/crypto/.gitignore      |   1 +
+>  testcases/kernel/crypto/crypto_user01.c | 208 ++++++++++++++++++++++++
+>  4 files changed, 212 insertions(+)
+>  create mode 100644 testcases/kernel/crypto/crypto_user01.c
+>
+> diff --git a/runtest/crypto b/runtest/crypto
+> index e5ba61e5e..cdbc44cc8 100644
+> --- a/runtest/crypto
+> +++ b/runtest/crypto
+> @@ -1 +1,2 @@
+>  pcrypt_aead01 pcrypt_aead01
+> +crypto_user01 crypto_user01
+> diff --git a/runtest/cve b/runtest/cve
+> index c4ba74186..78a5d8db2 100644
+> --- a/runtest/cve
+> +++ b/runtest/cve
+> @@ -3,6 +3,7 @@ cve-2011-0999 thp01 -I 120
+>  cve-2011-2183 ksm05 -I 10
+>  cve-2011-2496 vma03
+>  cve-2012-0957 uname04
+> +cve-2013-2547 crypto_user01
+>  cve-2014-0196 cve-2014-0196
+>  cve-2015-0235 gethostbyname_r01
+>  cve-2015-7550 keyctl02
+> @@ -36,3 +37,4 @@ cve-2017-17053 cve-2017-17053
+>  cve-2017-18075 pcrypt_aead01
+>  cve-2018-5803 sctp_big_chunk
+>  cve-2018-1000001 realpath01
+> +cve-2018-19854 crypto_user01
+> diff --git a/testcases/kernel/crypto/.gitignore b/testcases/kernel/crypto/.gitignore
+> index fafe5c972..759592fbd 100644
+> --- a/testcases/kernel/crypto/.gitignore
+> +++ b/testcases/kernel/crypto/.gitignore
+> @@ -1 +1,2 @@
+>  pcrypt_aead01
+> +crypto_user01
+> diff --git a/testcases/kernel/crypto/crypto_user01.c b/testcases/kernel/crypto/crypto_user01.c
+> new file mode 100644
+> index 000000000..b648fcbdc
+> --- /dev/null
+> +++ b/testcases/kernel/crypto/crypto_user01.c
+> @@ -0,0 +1,208 @@
+> +/*
+> + * Copyright 2018 Google LLC
+> + *
+> + * This program is free software: you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation, either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program, if not, see <http://www.gnu.org/licenses/>.
+> + */
+> +
+> +/*
+> + * Regression test for commit f43f39958beb ("crypto: user - fix leaking
+> + * uninitialized memory to userspace"), or CVE-2018-19854; it was also a
+> + * re-introduction of CVE-2013-2547.  This bug caused uninitialized kernel stack
+> + * memory to be leaked in some string fields in the replies to CRYPTO_MSG_GETALG
+> + * messages over NETLINK_CRYPTO.  To try to detect the bug, this test dumps all
+> + * algorithms using NLM_F_DUMP mode and checks all string fields for unexpected
+> + * nonzero bytes.
+> + */
+> +
+> +#include <stdlib.h>
+> +#include <linux/rtnetlink.h>
+> +
+> +#include "tst_test.h"
+> +#include "tst_crypto.h"
+> +#include "tst_netlink.h"
+> +
+> +static struct tst_crypto_session ses = TST_CRYPTO_SESSION_INIT;
+> +
+> +static void setup(void)
+> +{
+> +	tst_crypto_open(&ses);
+> +}
+> +
+> +static void __check_for_leaks(const char *name, const char *value,
+> size_t vlen)
+
+IIRC we don't allow functions beginning with underscores because they
+are reserved by the compiler or C library.
+
+> +{
+> +	size_t i;
+> +
+> +	for (i = strnlen(value, vlen); i < vlen; i++) {
+> +		if (value[i] != '\0')
+> +			tst_brk(TFAIL, "information leak in field '%s'", name);
+> +	}
+> +}
+> +
+> +#define check_for_leaks(name, field)  \
+> +	__check_for_leaks(name, field, sizeof(field))
+> +
+> +static void validate_one_alg(const struct nlmsghdr *nh)
+> +{
+> +	const struct crypto_user_alg *alg = NLMSG_DATA(nh);
+> +	const struct rtattr *rta = (void *)alg + NLMSG_ALIGN(sizeof(*alg));
+> +	const struct rtattr *tb[CRYPTOCFGA_MAX + 1] = { 0 };
+> +	size_t remaining = NLMSG_PAYLOAD(nh, sizeof(*alg));
+> +
+> +	check_for_leaks("crypto_user_alg::cru_name", alg->cru_name);
+> +	check_for_leaks("crypto_user_alg::cru_driver_name",
+> +			alg->cru_driver_name);
+> +	check_for_leaks("crypto_user_alg::cru_module_name",
+> +			alg->cru_module_name);
+> +
+> +	while (RTA_OK(rta, remaining)) {
+> +		if (rta->rta_type < CRYPTOCFGA_MAX &&
+> !tb[rta->rta_type])
+
+So does this mean we get multiple instances of the same RTA type and we
+just check the first? If so I wonder if there is any advantage to testing
+all of them?
+
+
 -- 
-2.19.2
-
+Thank you,
+Richard.
