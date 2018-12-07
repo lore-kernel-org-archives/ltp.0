@@ -1,49 +1,54 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri,  7 Dec 2018 13:35:10 +0100
-Subject: [LTP] [PATCH v2 0/6] DHCP tests and AppArmor/SELinux improvements
-Message-ID: <20181207123516.30867-1-pvorel@suse.cz>
+Date: Fri,  7 Dec 2018 13:35:11 +0100
+Subject: [LTP] [PATCH v2 1/6] net/dhcp: Rename setup & cleanup functions
+In-Reply-To: <20181207123516.30867-1-pvorel@suse.cz>
+References: <20181207123516.30867-1-pvorel@suse.cz>
+Message-ID: <20181207123516.30867-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/network/dhcp/dhcp_lib.sh | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-this further enhances patchset "DHCP tests and AppArmor improvements" [1]
-Main change is adding tst_security.sh and using it (last 2 commits).
-
-Thanks for review.
-
-Kind regards,
-Petr
-
-[1] https://patchwork.ozlabs.org/project/ltp/list/?series=70357&state=*
-
-Petr Vorel (6):
-  net/dhcp: Rename setup & cleanup functions
-  net/dhcp: Use paths allowed by AppArmor for dnsmasq
-  net/dhcp: Move print_dhcp_log() into dhcp library
-  ver_linux: Print AppArmor and SELinux status
-  shell: Add tst_security.sh helper
-  net: Add security warning flag to some net tests
-
- testcases/lib/tst_security.sh                 | 64 +++++++++++++++++++
- testcases/lib/tst_test.sh                     | 14 +++-
- testcases/network/dhcp/dhcp_lib.sh            | 15 +++--
- testcases/network/dhcp/dhcpd_tests.sh         |  7 +-
- testcases/network/dhcp/dnsmasq_tests.sh       | 28 +++++---
- testcases/network/mpls/mpls02.sh              |  1 +
- testcases/network/mpls/mpls_lib.sh            |  1 +
- .../network/stress/icmp/icmp-uni-basic.sh     |  1 +
- testcases/network/stress/icmp/icmp-uni-vti.sh |  1 +
- .../network/stress/interface/if-mtu-change    |  1 +
- .../network/stress/interface/if4-addr-change  |  1 +
- testcases/network/traceroute/traceroute01.sh  |  1 +
- ver_linux                                     | 46 +++++++++++--
- 13 files changed, 158 insertions(+), 23 deletions(-)
- create mode 100644 testcases/lib/tst_security.sh
-
+diff --git a/testcases/network/dhcp/dhcp_lib.sh b/testcases/network/dhcp/dhcp_lib.sh
+index 29b8027de..08838a479 100755
+--- a/testcases/network/dhcp/dhcp_lib.sh
++++ b/testcases/network/dhcp/dhcp_lib.sh
+@@ -5,9 +5,9 @@
+ #
+ # Author:       Alexey Kodanev alexey.kodanev@oracle.com
+ 
+-TST_SETUP="init"
++TST_SETUP="dhcp_lib_setup"
++TST_CLEANUP="dhcp_lib_cleanup"
+ TST_TESTFUNC="test01"
+-TST_CLEANUP="cleanup"
+ TST_NEEDS_TMPDIR=1
+ TST_NEEDS_ROOT=1
+ TST_NEEDS_CMDS="cat $dhcp_name awk ip pgrep pkill dhclient"
+@@ -36,7 +36,7 @@ stop_dhcp()
+ 	[ "$(pgrep -x $dhcp_name)" ] && return 1 || return 0
+ }
+ 
+-init()
++dhcp_lib_setup()
+ {
+ 	if [ $TST_IPV6 ]; then
+ 		ip_addr="fd00:1:1:2::12/64"
+@@ -69,7 +69,7 @@ init()
+ 		tst_brk TBROK "failed to add ip address"
+ }
+ 
+-cleanup()
++dhcp_lib_cleanup()
+ {
+ 	[ -z "$veth_loaded" ] && return
+ 
 -- 
 2.19.2
 
