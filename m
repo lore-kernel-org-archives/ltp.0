@@ -1,18 +1,18 @@
 From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 07 Dec 2018 15:11:04 +0100
+Date: Fri, 07 Dec 2018 15:30:39 +0100
 Subject: [LTP] [PATCH 3/3] crypto/crypto_user01.c: new test for
 	information leak bug
 In-Reply-To: <20181206181814.85583-4-ebiggers@kernel.org>
 References: <20181206181814.85583-1-ebiggers@kernel.org>
  <20181206181814.85583-4-ebiggers@kernel.org>
-Message-ID: <87pnudmnpj.fsf@rpws.prws.suse.cz>
+Message-ID: <87o99xmmsw.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hello again,
 
 Eric Biggers <ebiggers@kernel.org> writes:
 
@@ -102,52 +102,10 @@ Eric Biggers <ebiggers@kernel.org> writes:
 > +#include "tst_crypto.h"
 > +#include "tst_netlink.h"
 > +
-> +static struct tst_crypto_session ses = TST_CRYPTO_SESSION_INIT;
-> +
-> +static void setup(void)
-> +{
-> +	tst_crypto_open(&ses);
-> +}
-> +
-> +static void __check_for_leaks(const char *name, const char *value,
-> size_t vlen)
 
-IIRC we don't allow functions beginning with underscores because they
-are reserved by the compiler or C library.
-
-> +{
-> +	size_t i;
-> +
-> +	for (i = strnlen(value, vlen); i < vlen; i++) {
-> +		if (value[i] != '\0')
-> +			tst_brk(TFAIL, "information leak in field '%s'", name);
-> +	}
-> +}
-> +
-> +#define check_for_leaks(name, field)  \
-> +	__check_for_leaks(name, field, sizeof(field))
-> +
-> +static void validate_one_alg(const struct nlmsghdr *nh)
-> +{
-> +	const struct crypto_user_alg *alg = NLMSG_DATA(nh);
-> +	const struct rtattr *rta = (void *)alg + NLMSG_ALIGN(sizeof(*alg));
-> +	const struct rtattr *tb[CRYPTOCFGA_MAX + 1] = { 0 };
-> +	size_t remaining = NLMSG_PAYLOAD(nh, sizeof(*alg));
-> +
-> +	check_for_leaks("crypto_user_alg::cru_name", alg->cru_name);
-> +	check_for_leaks("crypto_user_alg::cru_driver_name",
-> +			alg->cru_driver_name);
-> +	check_for_leaks("crypto_user_alg::cru_module_name",
-> +			alg->cru_module_name);
-> +
-> +	while (RTA_OK(rta, remaining)) {
-> +		if (rta->rta_type < CRYPTOCFGA_MAX &&
-> !tb[rta->rta_type])
-
-So does this mean we get multiple instances of the same RTA type and we
-just check the first? If so I wonder if there is any advantage to testing
-all of them?
-
+It seems that on SLE11 there is a bug in the kernel headers which means
+compilation fails if you include linux/rtnetlink.h before
+linux/netlink.h. If you switch the order then it compiles OK.
 
 -- 
 Thank you,
