@@ -1,33 +1,28 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 10 Dec 2018 17:58:41 +0800
-Subject: [LTP] [PATCH] syscalls/fanotify09.c: Fix wrong group number
-Message-ID: <1544435921-17431-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 10 Dec 2018 13:24:55 +0100
+Subject: [LTP] [PATCH 3/3] crypto/crypto_user01.c: new test for
+ information leak bug
+In-Reply-To: <87pnudmnpj.fsf@rpws.prws.suse.cz>
+References: <20181206181814.85583-1-ebiggers@kernel.org>
+ <20181206181814.85583-4-ebiggers@kernel.org>
+ <87pnudmnpj.fsf@rpws.prws.suse.cz>
+Message-ID: <20181210122455.GA9930@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/fanotify/fanotify09.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi!
+> > +static void __check_for_leaks(const char *name, const char *value,
+> > size_t vlen)
+> 
+> IIRC we don't allow functions beginning with underscores because they
+> are reserved by the compiler or C library.
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify09.c b/testcases/kernel/syscalls/fanotify/fanotify09.c
-index 625634a..0f926c4 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify09.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify09.c
-@@ -216,7 +216,7 @@ static void test_fanotify(unsigned int n)
- 		ret = read(fd_notify[i], event_buf, FAN_EVENT_METADATA_LEN);
- 		if (ret > 0) {
- 			tst_res(TFAIL, "group %d got event", i);
--			verify_event(0, event, FAN_CLOSE_NOWRITE);
-+			verify_event(i, event, FAN_CLOSE_NOWRITE);
- 			if (event->fd != FAN_NOFD)
- 				SAFE_CLOSE(event->fd);
- 			continue;
+We do append underscores at the end of the identifiers in order not to
+redefine symbols from compiler/libc.
+
 -- 
-1.8.3.1
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
