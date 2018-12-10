@@ -1,112 +1,71 @@
-From: Enji Cooper <yaneurabeya@gmail.com>
-Date: Sun, 9 Dec 2018 12:27:24 -0800
-Subject: [LTP] [PATCH] openposix: Remove _XOPEN_SOURCE in
- strchr/strcpy/strncpy
-In-Reply-To: <20181207100013.GA14165@dell5510>
-References: <1544089211-8138-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20181207100013.GA14165@dell5510>
-Message-ID: <E3AC0FBF-9E7E-4127-BCC2-67490FB84BCA@gmail.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Mon, 10 Dec 2018 14:19:52 +0100
+Subject: [LTP] [PATCH] getrlimit03: Allow for missing getrlimit syscall at
+	runtime
+Message-ID: <20181210131952.27010-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-All,
-	I think we should try moving forward to 700. Staying at 600 doesn’t really buy us much in the longterm (it’s testing the 2001 POSIX spec), and the underlying implementation likely supports both—unless the implementers were pedantic, and anecdotally this hasn’t been the general case in GNU/Linux, compared to *BSD.
-	Thank you Xiao for pointing this out. I misunderstood what you meant in the PR.
-	I’ll push for removing the _XOPEN_SOURCE #defines and bumping the version to 700.
-Thank you!
--Enji
+It appears that __NR_getrlimit can be missing or disabled in the kernel. For
+example this appears to be the case on the PPC64le platform. So this changes
+the test to return TCONF under these circumstances as this system call is
+redundant and libc can implement it in terms of other calls.
 
-> On Dec 7, 2018, at 2:00 AM, Petr Vorel <pvorel@suse.cz> wrote:
-> 
-> Hi Xiao,
-> 
->> We have defined _XOPEN_SOURCE to 600 by gcc -D in open_posix_testsuite/CFLAGS，
->> So defining _XOPEN_SOURCE to different value in test results in a "_XOPEN_SOURCE
->> redefined" warning.
-> 
->> It seems that all of tests get pass even if _XOPEN_SOURCE is defined to 600
->> by default, so remove the duplicate _XOPEN_SOURCE in test.
-> 
-> FYI I also mentioned it in https://github.com/linux-test-project/ltp/pull/423
-> but it was ignored.
-> This is a side effect, that we use mailing list and github pull requests.
-> 
-> I guess _XOPEN_SOURCE 600 is ok.
-> If _XOPEN_SOURCE 700 is really needed, we can use:
-> #ifdef _XOPEN_SOURCE
-> #undef _XOPEN_SOURCE
-> #endif
-> #define _XOPEN_SOURCE 700
-> 
-> Kind regards,
-> Petr
-> 
->> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
->> ---
-> 
-> 
->> testcases/open_posix_testsuite/conformance/interfaces/strchr/1-1.c  | 1 -
->> testcases/open_posix_testsuite/conformance/interfaces/strcpy/1-1.c  | 1 -
->> testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c | 1 -
->> testcases/open_posix_testsuite/conformance/interfaces/strncpy/2-1.c | 1 -
->> 4 files changed, 4 deletions(-)
-> 
->> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/strchr/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/strchr/1-1.c
->> index 95eda79..611a64d 100644
->> --- a/testcases/open_posix_testsuite/conformance/interfaces/strchr/1-1.c
->> +++ b/testcases/open_posix_testsuite/conformance/interfaces/strchr/1-1.c
->> @@ -25,7 +25,6 @@
->>  *	-Repeat the above all steps for given number of iterations.
->> */
-> 
->> -#define _XOPEN_SOURCE 700
->> #include <stdio.h>
->> #include <string.h>
->> #include <stdlib.h>
->> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/strcpy/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/strcpy/1-1.c
->> index 2fdc002..adfbfc3 100644
->> --- a/testcases/open_posix_testsuite/conformance/interfaces/strcpy/1-1.c
->> +++ b/testcases/open_posix_testsuite/conformance/interfaces/strcpy/1-1.c
->> @@ -17,7 +17,6 @@
->>  *  -Also compare returned pointer with s2.
->> */
-> 
->> -#define _XOPEN_SOURCE 700
->> #include <stdio.h>
->> #include <string.h>
->> #include <stdlib.h>
->> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c
->> index 3458015..396bd60 100644
->> --- a/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c
->> +++ b/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c
->> @@ -20,7 +20,6 @@
->>  *  -Repeat the above steps for given number of iterations.
->> */
-> 
->> -#define _XOPEN_SOURCE 700
->> #include <stdio.h>
->> #include <string.h>
->> #include <stdlib.h>
->> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/strncpy/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/strncpy/2-1.c
->> index a7761c5..2a20872 100644
->> --- a/testcases/open_posix_testsuite/conformance/interfaces/strncpy/2-1.c
->> +++ b/testcases/open_posix_testsuite/conformance/interfaces/strncpy/2-1.c
->> @@ -20,7 +20,6 @@
->>  *  -Repeat the above steps for given number of iterations.
->> */
-> 
->> -#define _XOPEN_SOURCE 700
->> #include <stdio.h>
->> #include <string.h>
->> #include <stdlib.h>
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
 
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: signature.asc
-Type: application/pgp-signature
-Size: 833 bytes
-Desc: Message signed with OpenPGP
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20181209/8ef721c8/attachment.sig>
+It also occurred to me that __NR_getrlimit may not be defined in user land for
+some very new architectures like RISC-V. I'm not sure exactly what would
+happen in that case or if it is likely.
+
+ testcases/kernel/syscalls/getrlimit/getrlimit03.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit03.c b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+index 376ef7241..f470c0b3b 100644
+--- a/testcases/kernel/syscalls/getrlimit/getrlimit03.c
++++ b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+@@ -79,6 +79,8 @@ static int getrlimit_long(int resource, struct rlimit_long *rlim)
+ {
+ 	return syscall(__NR_getrlimit, resource, rlim);
+ }
++
++static int seen_getrlimit_nosys = 0;
+ #endif
+ 
+ static int compare_retval(int resource, int ret_u64, int errno_u64,
+@@ -159,10 +161,20 @@ static void run(unsigned int resource)
+ 		return;
+ 
+ #if SIGNED_GETRLIMIT
++	if (seen_getrlimit_nosys)
++		goto EXIT;
++
+ 	errno = 0;
+ 	ret_l = getrlimit_long(resource, &rlim_l);
+ 	errno_l = errno;
+ 
++	if (errno_l == ENOSYS) {
++		tst_res(TCONF,
++			"__NR_getrlimit(%d) is not present", __NR_getrlimit);
++		seen_getrlimit_nosys = 1;
++		return;
++	}
++
+ 	if (compare_retval(resource, ret_u64, errno_u64, ret_l, errno_l,
+ 			   "__NR_getrlimit") ||
+ 	    compare_u64_long(resource, rlim_u64.rlim_cur, rlim_l.rlim_cur,
+@@ -172,6 +184,7 @@ static void run(unsigned int resource)
+ 		return;
+ #endif
+ 
++EXIT:
+ 	tst_res(TPASS, "getrlimit(%u) was consistent during all syscalls",
+ 		resource);
+ }
+-- 
+2.19.1
+
