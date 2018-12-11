@@ -1,54 +1,42 @@
-From: Eric Biggers <ebiggers@kernel.org>
-Date: Mon, 10 Dec 2018 22:03:16 -0800
-Subject: [LTP] [PATCH v2 2/3] tst_netlink: inline functions in header
-In-Reply-To: <20181211060317.18698-1-ebiggers@kernel.org>
-References: <20181211060317.18698-1-ebiggers@kernel.org>
-Message-ID: <20181211060317.18698-3-ebiggers@kernel.org>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 11 Dec 2018 08:33:18 +0200
+Subject: [LTP] [PATCH] syscalls/fanotify09.c: Fix wrong group number
+In-Reply-To: <1544435921-17431-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1544435921-17431-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <CAOQ4uxjJ3Nhy0Gu0+jOyjgdgddmmVfH_DqBdR3O_iE62mLOCeQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Eric Biggers <ebiggers@google.com>
+On Mon, Dec 10, 2018 at 11:58 AM Xiao Yang <yangx.jy@cn.fujitsu.com> wrote:
+>
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Acked-by: Amir Goldstein <amir73il@gmail.com>
 
-safe_netlink_send() and safe_netlink_recv() need to be static inline,
-since they're defined in a .h file.
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- include/tst_netlink.h | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/include/tst_netlink.h b/include/tst_netlink.h
-index 42232a169..892ef8f78 100644
---- a/include/tst_netlink.h
-+++ b/include/tst_netlink.h
-@@ -33,9 +33,9 @@
- #endif
- 
- /** @private */
--ssize_t safe_netlink_send(const char *file, const int lineno,
--			  int fd, const struct nlmsghdr *nh,
--			  const void *payload)
-+static inline ssize_t safe_netlink_send(const char *file, const int lineno,
-+					int fd, const struct nlmsghdr *nh,
-+					const void *payload)
- {
- 	struct sockaddr_nl sa = { .nl_family = AF_NETLINK };
- 	struct iovec iov[2] = {
-@@ -68,8 +68,9 @@ ssize_t safe_netlink_send(const char *file, const int lineno,
- 	safe_netlink_send(__FILE__, __LINE__, fd, nl_header, payload)
- 
- /** @private */
--ssize_t safe_netlink_recv(const char *file, const int lineno,
--			  int fd, char *nl_headers_buf, size_t buf_len)
-+static inline ssize_t safe_netlink_recv(const char *file, const int lineno,
-+					int fd, char *nl_headers_buf,
-+					size_t buf_len)
- {
- 	struct iovec iov = { nl_headers_buf, buf_len };
- 	struct sockaddr_nl sa;
--- 
-2.19.2
-
+> ---
+>  testcases/kernel/syscalls/fanotify/fanotify09.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify09.c b/testcases/kernel/syscalls/fanotify/fanotify09.c
+> index 625634a..0f926c4 100644
+> --- a/testcases/kernel/syscalls/fanotify/fanotify09.c
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify09.c
+> @@ -216,7 +216,7 @@ static void test_fanotify(unsigned int n)
+>                 ret = read(fd_notify[i], event_buf, FAN_EVENT_METADATA_LEN);
+>                 if (ret > 0) {
+>                         tst_res(TFAIL, "group %d got event", i);
+> -                       verify_event(0, event, FAN_CLOSE_NOWRITE);
+> +                       verify_event(i, event, FAN_CLOSE_NOWRITE);
+>                         if (event->fd != FAN_NOFD)
+>                                 SAFE_CLOSE(event->fd);
+>                         continue;
+> --
+> 1.8.3.1
+>
+>
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
