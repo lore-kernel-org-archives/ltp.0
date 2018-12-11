@@ -1,54 +1,82 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 11 Dec 2018 13:32:52 +0100
-Subject: [LTP] [PATCH v2 3/3] crypto/crypto_user01.c: new test for
- information leak bug
-In-Reply-To: <20181211060317.18698-4-ebiggers@kernel.org>
-References: <20181211060317.18698-1-ebiggers@kernel.org>
- <20181211060317.18698-4-ebiggers@kernel.org>
-Message-ID: <20181211123251.GA27346@rei>
+From: Cristian Marussi <cristian.marussi@arm.com>
+Date: Tue, 11 Dec 2018 12:38:49 +0000
+Subject: [LTP] [PATCH v2]  cgroup_regression_test.sh: fixed test_5
+In-Reply-To: <20181211111648.GA14703@dell5510>
+References: <20181206164120.42877-1-cristian.marussi@arm.com>
+ <20181211111648.GA14703@dell5510>
+Message-ID: <96930fde-3022-992b-e23a-8e2041ff6c8c@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> --- a/runtest/crypto
-> +++ b/runtest/crypto
-> @@ -1 +1,2 @@
->  pcrypt_aead01 pcrypt_aead01
-> +crypto_user01 crypto_user01
-> diff --git a/runtest/cve b/runtest/cve
-> index c4ba74186..78a5d8db2 100644
-> --- a/runtest/cve
-> +++ b/runtest/cve
-> @@ -3,6 +3,7 @@ cve-2011-0999 thp01 -I 120
->  cve-2011-2183 ksm05 -I 10
->  cve-2011-2496 vma03
->  cve-2012-0957 uname04
-> +cve-2013-2547 crypto_user01
->  cve-2014-0196 cve-2014-0196
->  cve-2015-0235 gethostbyname_r01
->  cve-2015-7550 keyctl02
-> @@ -36,3 +37,4 @@ cve-2017-17053 cve-2017-17053
->  cve-2017-18075 pcrypt_aead01
->  cve-2018-5803 sctp_big_chunk
->  cve-2018-1000001 realpath01
-> +cve-2018-19854 crypto_user01
+Hi
 
-Does it really make sense to run this test twice just under different
-name?
+On 11/12/2018 11:16, Petr Vorel wrote:
+> Hi Cristian,
+> 
+>> test_5 checked for possible regressions using a pair of cgroups mounts
+>> operations designed to expose a kernel crash; the trigger being the
+>> attempt to co-mount and mount the same cgroup subsystem onto two
+>> distinct fs hierarchies: the expected failure in the second mount
+>> attempt was not properly handled in 2.6.29-rc2 and lead to a kernel
+>> crash.
+>> Unfortunately the test assumed that the randomly chosen subsystems
+>> were NOT already mounted somewhere when attempting the first co-mount:
+>> this assumption is falsified when userspace is configured to mount all
+>> available subsystems at /sysfs on boot (systemd).
+>> So the test was failing straight away during the setup phase:
+> 
+>> cgroup_regression_test    5  TFAIL  :  ltpapicmd.c:188: mount pids and hugetlb failed
+> 
+>> Being not trivial to forcibly release and unmount the populated
+>> /sysfs cgroups once booted, the script has been reviewed to detect
+>> this condition upfront and cope with it dynamically:
+> 
+>>  - if not already mounted: co-mount + failing mount (as before)
+>>  - already mounted: use existing mntpoint + failing co-mount
+> 
+>> Since the original fix was on a 2.6.29 kernel the surrounding cgroup
+>> code has changed a lot and so the patch was no more trivially 'revertable'
+>> for testing purposes: as such this reviewed test script has been verified
+>> using a QEMU x86_64 instance running a Kernel 2.6.39 with and without
+>> the known fix as detailed in test_5 comments.
+> Thanks for your testing.
+> 
+>> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> Acked-by: Petr Vorel <pvorel@suse.cz>
+> 
+> Thanks for your patch! Two tiny details bellow.
+Thanks for you review.
 
-BTW: I'm working on test tags and metadata patches that would make
-failed tests print list of CVEs and kernel commits that fixed them on a
-failure and also under the -h help switch, which should fix this once
-for all.
+> ...
+>> +++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+>> @@ -253,6 +253,10 @@ test_4()
+>>  #---------------------------------------------------------------------------
+>>  test_5()
+>>  {
+>> +	local mounted
+>> +	local failing
+>> +	local t_mntpoint
+> I'd use just mntpoint. But that's nitpicking, up to you.
+I'll do.
 
-See:
+> 
+>> +	cat /proc/mounts | grep cgroup | grep -q $subsys1 2> /dev/null && mounted=$subsys1
+>> +	[ -z "$mounted" ] && cat /proc/mounts | grep cgroup | grep -q $subsys2 2> /dev/null && mounted=$subsys2
+> Is stderr redirection really needed?
 
-http://lists.linux.it/pipermail/ltp/2018-November/009895.html
-http://lists.linux.it/pipermail/ltp/2018-November/010118.html
+I added it in v2 probably for some paranoid reasons I cannot even recall
+now...:D..so no it's not really needed. I'm removing it.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+v3 is oncoming..
+> 
+> Kind regards,
+> Petr
+> 
+Thanks
+
+Regards
+
+Cristian
