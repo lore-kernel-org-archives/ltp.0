@@ -1,42 +1,36 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 11 Dec 2018 08:33:18 +0200
-Subject: [LTP] [PATCH] syscalls/fanotify09.c: Fix wrong group number
-In-Reply-To: <1544435921-17431-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1544435921-17431-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <CAOQ4uxjJ3Nhy0Gu0+jOyjgdgddmmVfH_DqBdR3O_iE62mLOCeQ@mail.gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 11 Dec 2018 03:26:41 -0500 (EST)
+Subject: [LTP] [PATCH v4] fzsync: limit sampling time
+In-Reply-To: <87k1khmn8z.fsf@rpws.prws.suse.cz>
+References: <8361c9b264ceb4c212319fcb366d85a854495ffe.1543912963.git.jstancek@redhat.com>
+ <1713839002.84458666.1544449224828.JavaMail.zimbra@redhat.com>
+ <87k1khmn8z.fsf@rpws.prws.suse.cz>
+Message-ID: <611481988.85005143.1544516801404.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Dec 10, 2018 at 11:58 AM Xiao Yang <yangx.jy@cn.fujitsu.com> wrote:
->
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Acked-by: Amir Goldstein <amir73il@gmail.com>
 
-> ---
->  testcases/kernel/syscalls/fanotify/fanotify09.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify09.c b/testcases/kernel/syscalls/fanotify/fanotify09.c
-> index 625634a..0f926c4 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify09.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify09.c
-> @@ -216,7 +216,7 @@ static void test_fanotify(unsigned int n)
->                 ret = read(fd_notify[i], event_buf, FAN_EVENT_METADATA_LEN);
->                 if (ret > 0) {
->                         tst_res(TFAIL, "group %d got event", i);
-> -                       verify_event(0, event, FAN_CLOSE_NOWRITE);
-> +                       verify_event(i, event, FAN_CLOSE_NOWRITE);
->                         if (event->fd != FAN_NOFD)
->                                 SAFE_CLOSE(event->fd);
->                         continue;
-> --
-> 1.8.3.1
->
->
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+----- Original Message -----
+> Hell Jan,
+> 
+> Jan Stancek <jstancek@redhat.com> writes:
+> 
+> > ----- Original Message -----
+> >> Fixes: #429
+> >> 
+> >> Sampling can take considerably longer time on single CPU
+> >> and very slow systems. This patch limits sampling time to
+> >> 1/2 of fuzzing runtime. If we don't have enough samples by
+> >> that time, stop sampling and use stats we gathered so far.
+> >
+> > @Richard: Are you OK with v4 (with %% typo fixed)?
+> 
+> Yes, thanks.
+
+Pushed.
+
+Regards,
+Jan
