@@ -1,96 +1,56 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 10 Dec 2018 16:10:04 +0100
-Subject: [LTP] [PATCH v4] fzsync: limit sampling time
-In-Reply-To: <1713839002.84458666.1544449224828.JavaMail.zimbra@redhat.com>
-References: <8361c9b264ceb4c212319fcb366d85a854495ffe.1543912963.git.jstancek@redhat.com>
- <1713839002.84458666.1544449224828.JavaMail.zimbra@redhat.com>
-Message-ID: <87k1khmn8z.fsf@rpws.prws.suse.cz>
+From: Eric Biggers <ebiggers@kernel.org>
+Date: Mon, 10 Dec 2018 21:37:55 -0800
+Subject: [LTP] [PATCH 3/3] crypto/crypto_user01.c: new test for
+ information leak bug
+In-Reply-To: <87lg4xn4e5.fsf@rpws.prws.suse.cz>
+References: <20181206181814.85583-1-ebiggers@kernel.org>
+ <20181206181814.85583-4-ebiggers@kernel.org>
+ <87o99xmmsw.fsf@rpws.prws.suse.cz>
+ <20181207163442.GB14562@dell5510>
+ <87lg4xn4e5.fsf@rpws.prws.suse.cz>
+Message-ID: <20181211053753.GA847@sol.localdomain>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hell Jan,
+On Mon, Dec 10, 2018 at 09:59:46AM +0100, Richard Palethorpe wrote:
+> Hello,
+> 
+> Petr Vorel <pvorel@suse.cz> writes:
+> 
+> > Hi Eric, Richard,
+> >
+> >> > +#include <linux/rtnetlink.h>
+> >> > +
+> >> > +#include "tst_test.h"
+> >> > +#include "tst_crypto.h"
+> >> > +#include "tst_netlink.h"
+> >
+> >> It seems that on SLE11 there is a bug in the kernel headers which means
+> >> compilation fails if you include linux/rtnetlink.h before
+> >> linux/netlink.h. If you switch the order then it compiles OK.
+> >
+> > Correct, it suffers from bug:
+> > https://www.spinics.net/lists/netdev/msg171764.html
+> > How about adding include <linux/rtnetlink.h> into
+> > include/tst_netlink.h?
+> 
+> I think we would also have to include sys/socket.h in tst_netlink.h to
+> really solve the problem.
+> 
+> I am not sure if that is a good idea.
 
-Jan Stancek <jstancek@redhat.com> writes:
+tst_netlink.h already has an implicit dependency on safe_net_fn.h which already
+includes <sys/socket.h>.  So it appears the real issue is including
+<linux/rtnetlink.h> (which includes <linux/netlink.h>) before tst_test.h.
 
-> ----- Original Message -----
->> Fixes: #429
->> 
->> Sampling can take considerably longer time on single CPU
->> and very slow systems. This patch limits sampling time to
->> 1/2 of fuzzing runtime. If we don't have enough samples by
->> that time, stop sampling and use stats we gathered so far.
->
-> @Richard: Are you OK with v4 (with %% typo fixed)?
+But various other <linux/*> headers include <linux/netlink.h> too, and I don't
+think all should be included in tst_netlink.h, so I guess I'll just move the
+include within the test .c file itself...
 
-Yes, thanks.
+BTW, I have no system to reproduce this problem on, so you'll just have to tell
+me whether it works.  I tried CentOS 6, but this is already fixed there.
 
->
->> 
->> Signed-off-by: Jan Stancek <jstancek@redhat.com>
->> ---
->>  include/tst_fuzzy_sync.h | 21 ++++++++++++++-------
->>  1 file changed, 14 insertions(+), 7 deletions(-)
->> 
->> Changes in v4:
->>  - drop comment
->>  - tweak info message when timeout is reached
->> 
->> diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
->> index 03f69b78bc82..0e534bb041f8 100644
->> --- a/include/tst_fuzzy_sync.h
->> +++ b/include/tst_fuzzy_sync.h
->> @@ -70,6 +70,9 @@
->>  #ifndef TST_FUZZY_SYNC_H__
->>  #define TST_FUZZY_SYNC_H__
->>  
->> +/* how much of exec time is sampling allowed to take */
->> +#define SAMPLING_SLICE 0.5f
->> +
->>  /** Some statistics for a variable */
->>  struct tst_fzsync_stat {
->>  	float avg;
->> @@ -582,17 +585,21 @@ static inline void tst_fzsync_wait_b(struct
->> tst_fzsync_pair *pair)
->>  static inline int tst_fzsync_run_a(struct tst_fzsync_pair *pair)
->>  {
->>  	int exit = 0;
->> +	float rem_p = 1 - tst_timeout_remaining() / pair->exec_time_start;
->> +
->> +	if ((pair->exec_time_p * SAMPLING_SLICE < rem_p)
->> +		&& (pair->sampling > 0)) {
->> +		tst_res(TINFO, "Stopped sampling at %d (out of %d) samples, "
->> +			"sampling time reached 50% of the total time limit",
->> +			pair->exec_loop, pair->min_samples);
->> +		pair->sampling = 0;
->> +		tst_fzsync_pair_info(pair);
->> +	}
->>  
->> -	if (pair->exec_time_p
->> -	    < 1 - tst_timeout_remaining() / pair->exec_time_start) {
->> +	if (pair->exec_time_p < rem_p) {
->>  		tst_res(TINFO,
->>  			"Exceeded execution time, requesting exit");
->>  		exit = 1;
->> -
->> -		if (pair->sampling > 0) {
->> -			tst_res(TWARN,
->> -				"Still sampling, consider increasing LTP_TIMEOUT_MUL");
->> -		}
->>  	}
->>  
->>  	if (++pair->exec_loop > pair->exec_loops) {
->> --
->> 1.8.3.1
->> 
->> 
->> --
->> Mailing list info: https://lists.linux.it/listinfo/ltp
->> 
-
-
--- 
-Thank you,
-Richard.
+- Eric
