@@ -1,36 +1,31 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 11 Dec 2018 03:26:41 -0500 (EST)
-Subject: [LTP] [PATCH v4] fzsync: limit sampling time
-In-Reply-To: <87k1khmn8z.fsf@rpws.prws.suse.cz>
-References: <8361c9b264ceb4c212319fcb366d85a854495ffe.1543912963.git.jstancek@redhat.com>
- <1713839002.84458666.1544449224828.JavaMail.zimbra@redhat.com>
- <87k1khmn8z.fsf@rpws.prws.suse.cz>
-Message-ID: <611481988.85005143.1544516801404.JavaMail.zimbra@redhat.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 11 Dec 2018 09:46:36 +0100
+Subject: [LTP] [PATCH v2 0/3] ltp: new test for crypto_user information
+	leak bug
+In-Reply-To: <20181211060317.18698-1-ebiggers@kernel.org>
+References: <20181211060317.18698-1-ebiggers@kernel.org>
+Message-ID: <87in00mowj.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hello Eric,
 
------ Original Message -----
-> Hell Jan,
-> 
-> Jan Stancek <jstancek@redhat.com> writes:
-> 
-> > ----- Original Message -----
-> >> Fixes: #429
-> >> 
-> >> Sampling can take considerably longer time on single CPU
-> >> and very slow systems. This patch limits sampling time to
-> >> 1/2 of fuzzing runtime. If we don't have enough samples by
-> >> that time, stop sampling and use stats we gathered so far.
-> >
-> > @Richard: Are you OK with v4 (with %% typo fixed)?
-> 
-> Yes, thanks.
+Eric Biggers <ebiggers@kernel.org> writes:
 
-Pushed.
+> This series adds a test for an information leak bug in the crypto user
+> configuration API which was recently fixed.
+>
+> Changed since v1:
+>   - Check all attributes, not just the first of each type
+>   - Work around dependency bug in old kernel headers
+>   - Rename __check_for_leaks() to do_check_for_leaks()
+>   - Use SPDX license identifier
 
-Regards,
-Jan
+Thanks, I tested it and it LGTM.
+
+-- 
+Thank you,
+Richard.
