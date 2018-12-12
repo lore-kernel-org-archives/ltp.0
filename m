@@ -1,195 +1,75 @@
-From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Wed, 12 Dec 2018 18:46:54 -0200
-Subject: [LTP] [PATCH v3 5/6] syscalls/clock_settime: create syscall
- clock_settime tests
-In-Reply-To: <20181212203723.18810-5-rafael.tinoco@linaro.org>
-References: <20181211142750.GA27159@rei>
- <20181212203723.18810-1-rafael.tinoco@linaro.org>
- <20181212203723.18810-5-rafael.tinoco@linaro.org>
-Message-ID: <bd26bf86-a679-09cf-60f6-c61049a475e2@linaro.org>
+From: Anders Roxell <anders.roxell@linaro.org>
+Date: Thu, 13 Dec 2018 00:42:30 +0100
+Subject: [LTP] [Automated-testing] FOSDEM 2019
+In-Reply-To: <674980dd-cc03-c097-91be-b3aa5625670e@pengutronix.de>
+References: <CADYN=9J6D0URQv+DjV25qqtnOeEnieKMtXfmLysy=BRdp+c_hg@mail.gmail.com>
+ <1542704868.5651.6.camel@pengutronix.de>
+ <aa90781b-573e-0af5-c39a-2e06f60103c8@pengutronix.de>
+ <CADYN=9JnUCkjKEV06u6a0TFiva2vxs=y0DEt2-1NJg58Q6dmaw@mail.gmail.com>
+ <674980dd-cc03-c097-91be-b3aa5625670e@pengutronix.de>
+Message-ID: <CADYN=9LzuKt1XX3LD5Uh682Mvtk=JYaVmSaLbfwkL_434jzoDg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-On 12/12/18 6:37 PM, Rafael David Tinoco wrote:
-> Fixes: 343
-> 
-> clock_settime01 creates a new test, using new API, based on existing
-> and older kernel/timers/clock_settime02 test. clock_settime02 creates
-> another test based on older kernel/timers/clock_settime03 test. Both
-> will be deleted in the next commits.
-> 
-> Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
-> ---
->  runtest/syscalls                              |   3 +
->  .../kernel/syscalls/clock_settime/.gitignore  |   2 +
->  .../kernel/syscalls/clock_settime/Makefile    |   8 +
->  .../syscalls/clock_settime/clock_settime01.c  |  75 +++++++++
->  .../syscalls/clock_settime/clock_settime02.c  | 150 ++++++++++++++++++
->  5 files changed, 238 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/clock_settime/.gitignore
->  create mode 100644 testcases/kernel/syscalls/clock_settime/Makefile
->  create mode 100644 testcases/kernel/syscalls/clock_settime/clock_settime01.c
->  create mode 100644 testcases/kernel/syscalls/clock_settime/clock_settime02.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 34b47f36b..dd03ad31a 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -79,6 +79,9 @@ clock_nanosleep01 clock_nanosleep01
->  clock_nanosleep02 clock_nanosleep02
->  clock_nanosleep2_01 clock_nanosleep2_01
->  
-> +clock_settime01 clock_settime01
-> +clock_settime02 clock_settime02
-> +
->  clone01 clone01
->  clone02 clone02
->  clone03 clone03
-> diff --git a/testcases/kernel/syscalls/clock_settime/.gitignore b/testcases/kernel/syscalls/clock_settime/.gitignore
-> new file mode 100644
-> index 000000000..281217550
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/clock_settime/.gitignore
-> @@ -0,0 +1,2 @@
-> +clock_settime01
-> +clock_settime02
-> diff --git a/testcases/kernel/syscalls/clock_settime/Makefile b/testcases/kernel/syscalls/clock_settime/Makefile
-> new file mode 100644
-> index 000000000..e6674a6b2
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/clock_settime/Makefile
-> @@ -0,0 +1,8 @@
-> +# Copyright (c) 2018 - Linaro Limited. All rights reserved.
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +top_srcdir		?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime01.c b/testcases/kernel/syscalls/clock_settime/clock_settime01.c
-> new file mode 100644
-> index 000000000..6e0ee47c4
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/clock_settime/clock_settime01.c
-> @@ -0,0 +1,75 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2018 Linaro Limited. All rights reserved.
-> + * Author: Rafael David Tinoco <rafael.tinoco@linaro.org>
-> + */
-> +
-> +/*
-> + * Basic test for clock_settime(2) on REALTIME clock:
-> + *
-> + *      1) advance DELTA_SEC seconds
-> + *      2) go backwards DELTA_SEC seconds
-> + *
-> + * Restore wall clock at the end of test.
-> + */
-> +
-> +#include "config.h"
-> +#include "tst_timer.h"
-> +#include "tst_safe_clocks.h"
-> +#include "tst_test.h"
-> +#include "lapi/syscalls.h"
-> +
-> +#define DELTA_SEC 10
-> +#define DELTA_SEC_US (long long) (DELTA_SEC * 1000000)
-> +#define DELTA_SEC_VAR_POS (long long) (DELTA_SEC_US * 1.10)
-> +#define DELTA_SEC_VAR_NEG (long long) (DELTA_SEC_US * 0.90)
-> +
-> +static void verify_clock_settime(void)
-> +{
-> +	long long elapsed;
-> +	struct timespec begin, change, end;
-> +
-> +	/* test 01: move forward */
-> +
-> +	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &begin);
-> +
-> +	change = tst_timespec_add_us(begin, DELTA_SEC_US);
-> +
-> +	if (clock_settime(CLOCK_REALTIME, &change) != 0)
-> +		tst_brk(TBROK | TTERRNO, "could not set realtime change");
-> +
-> +	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &end);
-> +
-> +	elapsed = tst_timespec_diff_us(end, begin);
-> +
-> +	if (elapsed > DELTA_SEC_US && elapsed < DELTA_SEC_VAR_POS) {
-> +		tst_res(TPASS, "clock_settime(2): was able to advance time");
-> +	} else {
-> +		tst_res(TFAIL, "clock_settime(2): could not advance time");
-> +	}
-> +
-> +	/* test 02: move backward */
-> +
-> +	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &begin);
-> +
-> +	change = tst_timespec_rem_us(begin, DELTA_SEC_US);
-> +
-> +	if (clock_settime(CLOCK_REALTIME, &change) != 0)
-> +		tst_brk(TBROK | TTERRNO, "could not set realtime change");
-> +
-> +	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &end);
-> +
-> +	elapsed = tst_timespec_diff_us(end, begin);
-> +
-> +	if (~(elapsed) > DELTA_SEC_VAR_NEG) {
-> +		tst_res(TPASS, "clock_settime(2): was able to recede time");
-> +	} else {
-> +		tst_res(TFAIL, "clock_settime(2): could not recede time");
-> +	}
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = verify_clock_settime,
-> +	.needs_root = 1,
-> +	.restore_wallclock = 1,
-> +};
-> diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime02.c b/testcases/kernel/syscalls/clock_settime/clock_settime02.c
-> new file mode 100644
-> index 000000000..25fcbfe09
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/clock_settime/clock_settime02.c
-> @@ -0,0 +1,150 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2018 Linaro Limited. All rights reserved.
-> + * Author: Rafael David Tinoco <rafael.tinoco@linaro.org>
-> + */
-> +
-> +/*
-> + * Basic tests for errors of clock_settime(2) on different clock types.
-> + */
-> +
-> +#include "config.h"
-> +#include "tst_test.h"
-> +#include "lapi/syscalls.h"
-> +#include "tst_timer.h"
-> +#include "tst_safe_clocks.h"
-> +
-> +#define DELTA_SEC 10
-> +#define NSEC_PER_SEC (1000000000L)
-> +#define MAX_CLOCKS 16
-> +
-> +struct test_case {
-> +	clockid_t type;
-> +	struct timespec newtime;
-> +	int exp_err;
-> +	int replace;
-> +};
+On Tue, 4 Dec 2018 at 13:05, Chris Fiege <cfi@pengutronix.de> wrote:
+>
+> Hi everyone,
+>
+> I have created a page at the elinux.org wiki with the information about a
+> possible meeting I found on this list:
+>
+> https://elinux.org/Automated_Testing_FOSDEM2019
+>
+> Feel free to update the page. If we have enough topics for a meeting we
+> could try to get one of the BoF-rooms.
 
-Cyril, I haven't done a global timespec, having a pointer inside the
-test_case structure, just because there are a few other tests, like when
-having sec to -1, nsec to -1, etc.. and I wouldn't be able to set those
-during compilation time.. I hope you don't mind, test is functional and
-working good.
+We can only book the BoF-rooms on site and only short slots. =3D/
 
--- 
-Rafael D. Tinoco
-Linaro - Kernel Validation
+> Otherwise we could still try to have an informal meeting outside the camp=
+us
+> (Maybe in the evening?).
+
+If peole are up for that why not ?
+If yes, is there anyone that know a good place where we can meet up?
+
+Cheers,
+Anders
+
+>
+> Regards
+> Chris
+>
+>
+> On 27.11.18 18:09, Anders Roxell wrote:
+> > On Thu, 22 Nov 2018 at 11:21, Chris Fiege <cfi@pengutronix.de> wrote:
+> >>
+> >> Hi Anders,
+> >>
+> >> On 20.11.18 10:07, Jan L=C3=BCbbe wrote:
+> >>> On Mon, 2018-11-19 at 22:54 +0100, Anders Roxell wrote:
+> >>>> If you going to be there please reply.
+> >>>
+> >>> I'll be there. Likely Chris Fiege and Rouven Czerwinski as well.
+> >>
+> >> I am planning to be at FOSDEM and would like to join an ad-hoc meeting.
+> >>
+> >> Since FOSDEM is usually quite crowded: Does anyone know if it is possi=
+ble
+> >> to organize a room for that meeting.
+> >
+> > That's a good question, I've asked the FOSDEM organizers and they said =
+that
+> > they are already using all the rooms at campus. However, there's few BoF
+> > rooms that can "book" for shorter meetings. The downside is that they c=
+an
+> > only be booked on site.
+> >
+> > Do we have any topics we would like to discuss?
+> >
+> > Cheers,
+> > Anders
+> >
+>
