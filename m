@@ -1,46 +1,48 @@
-From: Eric Biggers <ebiggers@kernel.org>
-Date: Tue, 11 Dec 2018 12:52:45 -0800
-Subject: [LTP] [PATCH v2 3/3] crypto/crypto_user01.c: new test for
- information leak bug
-In-Reply-To: <20181211191543.GA5389@rei>
-References: <20181211060317.18698-1-ebiggers@kernel.org>
- <20181211060317.18698-4-ebiggers@kernel.org>
- <20181211123251.GA27346@rei> <20181211184334.GD221175@gmail.com>
- <20181211191543.GA5389@rei>
-Message-ID: <20181211205243.GE221175@gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 12 Dec 2018 15:14:51 +0800
+Subject: [LTP] [PATCH 2/2] lib/tst_test.c: Restrict that tst_brk() only
+ works with TBROK/TCONF
+In-Reply-To: <20181211151733.GC1180@rei>
+References: <1541681733-18845-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1541681733-18845-2-git-send-email-yangx.jy@cn.fujitsu.com>
+ <60497535.71361444.1541699583188.JavaMail.zimbra@redhat.com>
+ <5BE4F51E.3060900@cn.fujitsu.com>
+ <1919219905.71573908.1541750091092.JavaMail.zimbra@redhat.com>
+ <5BE542AD.4060207@cn.fujitsu.com>
+ <1931132489.71956282.1541785920854.JavaMail.zimbra@redhat.com>
+ <5BE8E59B.2020703@cn.fujitsu.com> <20181211151733.GC1180@rei>
+Message-ID: <5C10B56B.9030809@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On 2018/12/11 23:17, Cyril Hrubis wrote:
+> Hi!
+>> You are right, and i will send a v3 patch as you suggested.
+> Are you going to send v3?
+>
+> I think that we really should increase counters on tst_brk(), that was
+> an oversight when I designed the library.
+>
+> However summing up TBROK and TFAIL under results->failed does not look
+> right to me.
 Hi Cyril,
 
-On Tue, Dec 11, 2018 at 08:15:43PM +0100, Cyril Hrubis wrote:
-> Hi!
-> > No it doesn't really make sense to run a test twice, but this has two associated
-> > CVE numbers, resulting in two runs when tests are run by CVE number.  Are you
-> > saying you'd prefer that it be listed under just the more recent CVE?  Or are
-> > you saying the runtest/cve file will be going away and replaced by something
-> > else anyway?
-> 
-> For now I would just put it under the newer CVE number.
-> 
-> For a future I would like to be able to export all the metadata from the
-> tests to the tesrunner, so the testrunner would know, among other
-> things, which tests are associated with CVEs. That, in turn, would
-> eliminate the need to maintain various different sets of runtest files.
-> 
-> But given that I just started to work on that I do not expect it to be
-> finished anytime soon.
-> 
-> Does that sounds reasonable to you?
-> 
-> Also no need to resent the patchset, I can remove the runtest entry when
-> applying the patch.
-> 
+Yes, I am going to send v3.
+I will pass TBROK to results->broken and  TFAIL to results->failed in my 
+v3 patch.
+> Also I'm not sure if we want to convert TFAIL to TWARN inside of test
+> cleanup. And even if we wanted that change it should most likely go in
+> in a separate patch.
+Why do we need to convert TBROK to TWARN in test cleanup?  Your fix 
+patch(commit 6440c5d)
+has avoided the Infinite loop in test cleanup, so can we just keep the 
+actual result by removing
+the existed conversion?
 
-Yes that sounds reasonable to me, please feel free to just put it under the
-newer CVE number.  Thanks!
+Best Regards,
+Xiao Yang
 
-- Eric
+
