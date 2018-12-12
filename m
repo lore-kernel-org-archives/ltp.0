@@ -1,48 +1,51 @@
 From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Wed, 12 Dec 2018 18:37:19 -0200
-Subject: [LTP] [PATCH v3 2/6] lib: add tst_clock_settime() to tst_clocks.h
+Date: Wed, 12 Dec 2018 18:37:20 -0200
+Subject: [LTP] [PATCH v3 3/6] lib: include SAFE_CLOCK_SETTIME() macro
 In-Reply-To: <20181212203723.18810-1-rafael.tinoco@linaro.org>
 References: <20181211142750.GA27159@rei>
  <20181212203723.18810-1-rafael.tinoco@linaro.org>
-Message-ID: <20181212203723.18810-2-rafael.tinoco@linaro.org>
+Message-ID: <20181212203723.18810-3-rafael.tinoco@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Adds tst_clock_settime() function to the lib.
+Adds SAFE_CLOCK_SETTIME() macro to tst_safe_clocks.h.
 
 Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
 ---
- include/tst_clocks.h | 2 ++
- lib/tst_clocks.c     | 5 +++++
- 2 files changed, 7 insertions(+)
+ include/tst_safe_clocks.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/include/tst_clocks.h b/include/tst_clocks.h
-index ee2f645c7..90784a3fd 100644
---- a/include/tst_clocks.h
-+++ b/include/tst_clocks.h
-@@ -26,4 +26,6 @@ int tst_clock_getres(clockid_t clk_id, struct timespec *res);
- 
- int tst_clock_gettime(clockid_t clk_id, struct timespec *ts);
- 
-+int tst_clock_settime(clockid_t clk_id, struct timespec *ts);
-+
- #endif /* TST_CLOCKS__ */
-diff --git a/lib/tst_clocks.c b/lib/tst_clocks.c
-index 87413a339..35798a4aa 100644
---- a/lib/tst_clocks.c
-+++ b/lib/tst_clocks.c
-@@ -35,3 +35,8 @@ int tst_clock_gettime(clockid_t clk_id, struct timespec *ts)
- {
- 	return syscall(SYS_clock_gettime, clk_id, ts);
+diff --git a/include/tst_safe_clocks.h b/include/tst_safe_clocks.h
+index 1b4d48543..553f8464a 100644
+--- a/include/tst_safe_clocks.h
++++ b/include/tst_safe_clocks.h
+@@ -30,9 +30,23 @@ static inline void safe_clock_gettime(const char *file, const int lineno,
+ 			"%s:%d clock_gettime() failed", file, lineno);
  }
+ 
 +
-+int tst_clock_settime(clockid_t clk_id, struct timespec *ts)
++static inline void safe_clock_settime(const char *file, const int lineno,
++	clockid_t clk_id, struct timespec *tp)
 +{
-+	return syscall(SYS_clock_settime, clk_id, ts);
++	int rval;
++
++	rval = clock_settime(clk_id, tp);
++	if (rval != 0)
++		tst_brk(TBROK | TERRNO,
++			"%s:%d clock_gettime() failed", file, lineno);
 +}
++
+ #define SAFE_CLOCK_GETRES(clk_id, res)\
+ 	safe_clock_getres(__FILE__, __LINE__, (clk_id), (res))
+ 
+ #define SAFE_CLOCK_GETTIME(clk_id, tp)\
+ 	safe_clock_gettime(__FILE__, __LINE__, (clk_id), (tp))
+ 
++#define SAFE_CLOCK_SETTIME(clk_id, tp)\
++	safe_clock_settime(__FILE__, __LINE__, (clk_id), (tp))
 -- 
 2.20.0.rc1
 
