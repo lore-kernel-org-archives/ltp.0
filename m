@@ -1,89 +1,46 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 13 Dec 2018 17:24:26 +0100
-Subject: [LTP] [PATCH 2/2] cgroup: fix mount errors in cgroup subsys
-In-Reply-To: <20171122073848.6172-2-liwang@redhat.com>
-References: <20171122073848.6172-1-liwang@redhat.com>
- <20171122073848.6172-2-liwang@redhat.com>
-Message-ID: <20181213162426.GA2369@dell5510>
+From: Travis CI <builds@travis-ci.org>
+Date: Thu, 13 Dec 2018 16:32:25 +0000
+Subject: [LTP] Passed: linux-test-project/ltp#1232 (master - 00a83eb)
+In-Reply-To: <linux-test-project/ltp+467586694+passed@travis-ci.org>
+Message-ID: <5c128998ea420_43fc0b9a3c578216185@0f0454a5-7e6c-4f65-9630-adc625b727e7.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li, Cristian,
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-> It is very easy to get failures when running these cgroup regression
-> tests on the newer kernel. Maybe the cases should be rewriten in LTP
-> new API someday, but currently this fix just as a workaround for it.
+Build: #1232
+Status: Passed
 
-> Errors:
->   cgroup_regression_test    3  TFAIL  :  ltpapicmd.c:190: Failed to mount cpu subsys
->   cgroup_regression_test    5  TFAIL  :  ltpapicmd.c:190: mount net_prio and pids failed
->   cgroup_regression_test    7  TFAIL  :  ltpapicmd.c:190: failed to mount net_prio
+Duration: 17 mins and 28 secs
+Commit: 00a83eb (master)
+Author: Li Wang
+Message: cgroup: fix mount errors in cgroup subsys test 3 and 7
 
-Li, I pushed your old patch with some changes (see diff bellow):
-* remove fix for 5th test (already fixed by Cristian 877c1228d)
-* use awk for consistency (although I prefer using cut, I have feeling it's more
-common than awk on embedded devices)
-* remove bashism
-* add local
+It is very easy to get failures when running these cgroup regression
+tests on the newer kernel.
 
-@Cristian: some of issues, which needs to be addressed when rewriting into new API:
-* remove bashisms, use #!/bin/sh
-* Remove absolute (/bin/kill) and relative paths and cd into $LTPROOT/testcases/bin
-* function for parsing /proc/mounts
-* use local in functions, don't use global variables (failed)
-* maybe shell code can be generated on the fly into tmp files. If not it'd be
-better to use more obvious names than "test_10_2.sh"
-* ...
+Errors:
+  cgroup_regression_test    3  TFAIL  :  ltpapicmd.c:190: Failed to mount cpu subsys
+  cgroup_regression_test    7  TFAIL  :  ltpapicmd.c:190: failed to mount net_prio
 
-Kind regards,
-Petr
+Signed-off-by: Li Wang <liwang@redhat.com>
+[ pvorel: removed fix for test 5, which has been fixed by 877c1228d; fixed bashisms ]
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
+View the changeset: https://github.com/linux-test-project/ltp/compare/310c9eb6e6af...00a83ebb71a0
 
-diff --git testcases/kernel/controllers/cgroup/cgroup_regression_test.sh testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-index 8b2918c3a..6cfc63866 100755
---- testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-+++ testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-@@ -170,13 +170,15 @@ test_2()
- #---------------------------------------------------------------------------
- test_3()
- {
-+	local cpu_subsys_path
-+
- 	if [ ! -e /proc/sched_debug ]; then
- 		tst_resm TCONF "CONFIG_SCHED_DEBUG is not enabled"
- 		return
- 	fi
- 
- 	if grep -q -w "cpu" /proc/cgroups ; then
--		cpu_subsys_path=$(grep -w cpu /proc/mounts | cut -d ' ' -f 2)
-+		cpu_subsys_path=$(grep -w cpu /proc/mounts | awk '{ print $2 }')
- 	else
- 		tst_resm TCONF "CONFIG_CGROUP_SCHED is not enabled"
- 		return
-@@ -269,14 +271,7 @@ test_5()
- 	fi
- 
- 	subsys1=`tail -n 1 /proc/cgroups | awk '{ print $1 }'`
--	subsys1_mount=$(basename $(grep -w $subsys1 /proc/mounts | cut -d ' ' -f 2))
- 	subsys2=`tail -n 2 /proc/cgroups | head -1 | awk '{ print $1 }'`
--	subsys2_mount=$(basename $(grep -w $subsys2 /proc/mounts | cut -d ' ' -f 2))
--
--	if [ -n "$subsys1_mount" ] || [ -n "$subsys2_mount" ]; then
--		tst_resm TCONF "$subsys1 or $subsys2 has been mounted, skip"
--		return
--	fi
- 
- 	# Accounting here for the fact that the chosen subsystems could
- 	# have been already previously mounted at boot time: in such a
-@@ -402,7 +397,7 @@ test_7_1()
- 	# remount with new subsystems added
- 	# since 2.6.28, this remount will fail
- 
--	if [ "$subsys_path" == "cgroup" ]; then
-+	if [ "$subsys_path" = "cgroup" ]; then
- 		mount -t cgroup -o remount xxx cgroup/ 2> /dev/null
- 		/bin/kill -SIGTERM $!
- 		wait $!
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/467586694?utm_medium=notification&utm_source=email
+
+--
+
+You can unsubscribe from build emails from the linux-test-project/ltp repository going to https://travis-ci.org/account/preferences/unsubscribe?repository=1224421&utm_medium=notification&utm_source=email.
+Or unsubscribe from *all* email updating your settings at https://travis-ci.org/account/preferences/unsubscribe?utm_medium=notification&utm_source=email.
+Or configure specific recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20181213/0b531c42/attachment-0001.html>
