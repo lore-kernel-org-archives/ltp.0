@@ -1,66 +1,49 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 13 Dec 2018 18:38:19 +0100
-Subject: [LTP] [PATCH v2 5/6] shell: Add tst_security.sh helper
-In-Reply-To: <0fabb62a-e758-80f8-79e1-e3d4ccec7ede@oracle.com>
-References: <20181207123516.30867-1-pvorel@suse.cz>
- <20181207123516.30867-6-pvorel@suse.cz>
- <0fabb62a-e758-80f8-79e1-e3d4ccec7ede@oracle.com>
-Message-ID: <20181213173819.GA26670@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 14 Dec 2018 09:33:13 +0100
+Subject: [LTP] [PATCH] openposix/strncpy1-1: Fix compiler errors/warnings
+In-Reply-To: <1544611203-22197-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20181211123931.GC27346@rei>
+ <1544611203-22197-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20181214083313.GA18691@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi!
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  .../conformance/interfaces/strncpy/1-1.c           |   10 +++++++---
+>  testcases/open_posix_testsuite/include/posixtest.h |    2 ++
+>  2 files changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c
+> index 396bd60..7006b5f 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c
+> @@ -61,10 +61,14 @@ int main(void)
+>          sample_str_1 = random_string(i);
+>          num_bytes = rand() % i;
+>  
+> -        #pragma GCC diagnostic push
+> -        #pragma GCC diagnostic ignored "-Wstringop-truncation"
+> +	#if GCC_VERSION >= 80100
+> +	# pragma GCC diagnostic push
+> +	# pragma GCC diagnostic ignored "-Wstringop-truncation"
+> +	#endif
+>          ret_str = strncpy(sample_str_2, sample_str_1, num_bytes);
+> -        #pragma GCC diagnostic pop
+> +	#if GCC_VERSION >= 80100
+> +	# pragma GCC diagnostic pop
+> +	#endif
 
-thanks for your review.
+That looks even more silly than the original. I do not think that it's
+reasonable to mess up the code that bad only to surpress a single
+warning.
 
-> On 07.12.2018 15:35, Petr Vorel wrote:
-> > It prints info about AppArmor and SELinux and allows to disable it.
-> > This is due some false positives because improper usage or bugs
-> > in AppArmor profiles (e.g. traceroute, dnsmasq).
+So what abour removing the pragmas entirely?
 
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-
-> ...
-
-> > -	if [ "$TST_NEEDS_ROOT" = 1 ]; then
-> > +	if [ "$TST_NEEDS_ROOT" = 1 ] || [ "$TST_DISABLE_APPARMOR" = 1 ] || [ "$TST_DISABLE_SELINUX" = 1 ]; then
-> >  		if [ "$(id -ru)" != 0 ]; then
-> >  			tst_brk TCONF "Must be super/root for this test!"
-> >  		fi
-> >  	fi
-
-> > +	[ "$TST_DISABLE_APPARMOR" = 1 ] && tst_disable_apparmor
-> > +	[ "$TST_DISABLE_SELINUX" = 1 ] && tst_disable_selinux
-> > +
-> > +	if [ "$TST_SECURITY_WARN" = 1 ]; then
-> > +		tst_apparmor_enabled && \
-> > +			tst_res TINFO "AppArmor enabled, this may affect test results. Disable it with TST_DISABLE_APPARMOR=1 (requires super/root)"
-> > +		tst_selinux_enabled && \
-> > +			tst_res TINFO "SELinux enabled, this may affect test results. Disable it with TST_DISABLE_SELINUX=1 (requires super/root)"
-> > +	fi
-> > +
-> >  	tst_test_cmds $TST_NEEDS_CMDS
-
-> Since it may not affect test results, I don't think we should complicate
-> the tests with TST_SECURITY_WARN parameter. The usage is not obvious either.
-> Whether the test used dnsmasq or ping, for example, can be obtained from
-> $TST_NEEDS_CMDS.
-I didn't want to add this warning for any test failure when AppArmor/SELinux
-enabled. Sometimes it's not obvious, that problem was caused by
-AppArmor/SELinux, but this is relevant only for user space tests (networking and
-some command tests).
-For AppArmor it's easy to list policies (for newer kernels) and by parsing $TST_NEEDS_CMDS
-detect detect the relevance of warning. I'll have a look if this is the same for
-SELinux. Then TST_SECURITY_WARN flag wouldn't be needed.
-
-> And it's better to write these messages only if the test fails, suggesting
-> to change configuration.
-This make sense, I'll change it.
-
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
