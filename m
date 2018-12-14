@@ -1,60 +1,53 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 14 Dec 2018 16:40:17 +0800
-Subject: [LTP] [PATCH] openposix/strncpy1-1: Fix compiler errors/warnings
+Date: Fri, 14 Dec 2018 16:17:37 +0800
+Subject: [LTP] [PATCH v2] openposix/strncpy1-1: Fix compiler errors/warnings
 In-Reply-To: <20181214083313.GA18691@rei>
-References: <20181211123931.GC27346@rei>
- <1544611203-22197-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20181214083313.GA18691@rei>
-Message-ID: <5C136C71.5040104@cn.fujitsu.com>
+References: <20181214083313.GA18691@rei>
+Message-ID: <1544775457-16266-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-On 2018/12/14 16:33, Cyril Hrubis wrote:
-> Hi!
->> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
->> ---
->>   .../conformance/interfaces/strncpy/1-1.c           |   10 +++++++---
->>   testcases/open_posix_testsuite/include/posixtest.h |    2 ++
->>   2 files changed, 9 insertions(+), 3 deletions(-)
->>
->> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c
->> index 396bd60..7006b5f 100644
->> --- a/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c
->> +++ b/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c
->> @@ -61,10 +61,14 @@ int main(void)
->>           sample_str_1 = random_string(i);
->>           num_bytes = rand() % i;
->>
->> -        #pragma GCC diagnostic push
->> -        #pragma GCC diagnostic ignored "-Wstringop-truncation"
->> +	#if GCC_VERSION>= 80100
->> +	# pragma GCC diagnostic push
->> +	# pragma GCC diagnostic ignored "-Wstringop-truncation"
->> +	#endif
->>           ret_str = strncpy(sample_str_2, sample_str_1, num_bytes);
->> -        #pragma GCC diagnostic pop
->> +	#if GCC_VERSION>= 80100
->> +	# pragma GCC diagnostic pop
->> +	#endif
-> That looks even more silly than the original. I do not think that it's
-> reasonable to mess up the code that bad only to surpress a single
-> warning.
->
-> So what abour removing the pragmas entirely?
->
-Hi Cyril,
+pragma diagnostic can support push/pop and be allowed inside functions
+by commit 0955be65 on gcc-4.6, and it can support -Wstringop-truncation
+by commit d8aad78 on gcc-8.1.  We try to avoid some compiler errors or
+warnings by removing pragma diagnostic for test directly, because we
+don't get any failure after removing it on old/new gcc.
 
-I didn't get any failure after removing the pragmas on older/newer gcc, 
-so i think
+For example:
+1)compiling test gets the following error on gcc-4.4:
+  ------------------------------------------------------
+  error: #pragma GCC diagnostic not allowed inside functions
+  ------------------------------------------------------
+2)compiling test gets the following warning on gcc-4.8:
+  -----------------------------------------------------
+  warning: unknown option after ‘#pragma GCC diagnostic’ kind [-Wpragmas]
+  ------------------------------------------------------
 
-we can remove it directly.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-
-Best Regards,
-Xiao Yang
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c
+index 396bd60..b67d09d 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/strncpy/1-1.c
+@@ -61,10 +61,7 @@ int main(void)
+         sample_str_1 = random_string(i);
+         num_bytes = rand() % i;
+ 
+-        #pragma GCC diagnostic push
+-        #pragma GCC diagnostic ignored "-Wstringop-truncation"
+         ret_str = strncpy(sample_str_2, sample_str_1, num_bytes);
+-        #pragma GCC diagnostic pop
+ 
+         sample_str_2[num_bytes] = '\0';
+         sample_str_1[num_bytes] = '\0';
+-- 
+1.8.3.1
 
 
 
