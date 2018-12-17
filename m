@@ -1,25 +1,25 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 17 Dec 2018 10:17:27 +0100
-Subject: [LTP] [PATCH 1/1] tst_test.sh: Add info about LTP_TIMEOUT_MUL
- into TBROK message
-In-Reply-To: <20181130181444.26565-1-pvorel@suse.cz>
-References: <20181130181444.26565-1-pvorel@suse.cz>
-Message-ID: <20181217091727.GA471@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 17 Dec 2018 14:01:01 +0100
+Subject: [LTP] [PATCH v2 3/3] crypto/crypto_user01.c: new test for
+ information leak bug
+In-Reply-To: <20181211205243.GE221175@gmail.com>
+References: <20181211060317.18698-1-ebiggers@kernel.org>
+ <20181211060317.18698-4-ebiggers@kernel.org>
+ <20181211123251.GA27346@rei> <20181211184334.GD221175@gmail.com>
+ <20181211191543.GA5389@rei> <20181211205243.GE221175@gmail.com>
+Message-ID: <20181217130101.GA12026@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> Yes that sounds reasonable to me, please feel free to just put it under the
+> newer CVE number.  Thanks!
 
-..
-> +++ b/testcases/lib/tst_test.sh
-...
-> -	sleep $sec && tst_res TBROK "test killed, timeout!" && kill -9 -$pid &
-> +	sleep $sec && tst_res TBROK "test killed, timeout! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1" && kill -9 -$pid &
+Pushed, thanks.
 
-FYI: pushed.
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
