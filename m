@@ -1,54 +1,42 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 18 Dec 2018 02:02:15 +0100
-Subject: [LTP] [PATCH v3 1/6] net/dhcp: Rename setup & cleanup functions
-In-Reply-To: <20181218010220.2446-1-pvorel@suse.cz>
-References: <20181218010220.2446-1-pvorel@suse.cz>
-Message-ID: <20181218010220.2446-2-pvorel@suse.cz>
+Date: Tue, 18 Dec 2018 02:02:14 +0100
+Subject: [LTP] [PATCH v3 0/6] DHCP tests and AppArmor/SELinux improvements
+Message-ID: <20181218010220.2446-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/network/dhcp/dhcp_lib.sh | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Hi,
 
-diff --git a/testcases/network/dhcp/dhcp_lib.sh b/testcases/network/dhcp/dhcp_lib.sh
-index 29b8027de..08838a479 100755
---- a/testcases/network/dhcp/dhcp_lib.sh
-+++ b/testcases/network/dhcp/dhcp_lib.sh
-@@ -5,9 +5,9 @@
- #
- # Author:       Alexey Kodanev alexey.kodanev@oracle.com
- 
--TST_SETUP="init"
-+TST_SETUP="dhcp_lib_setup"
-+TST_CLEANUP="dhcp_lib_cleanup"
- TST_TESTFUNC="test01"
--TST_CLEANUP="cleanup"
- TST_NEEDS_TMPDIR=1
- TST_NEEDS_ROOT=1
- TST_NEEDS_CMDS="cat $dhcp_name awk ip pgrep pkill dhclient"
-@@ -36,7 +36,7 @@ stop_dhcp()
- 	[ "$(pgrep -x $dhcp_name)" ] && return 1 || return 0
- }
- 
--init()
-+dhcp_lib_setup()
- {
- 	if [ $TST_IPV6 ]; then
- 		ip_addr="fd00:1:1:2::12/64"
-@@ -69,7 +69,7 @@ init()
- 		tst_brk TBROK "failed to add ip address"
- }
- 
--cleanup()
-+dhcp_lib_cleanup()
- {
- 	[ -z "$veth_loaded" ] && return
- 
+another version of DHCP tests and AppArmor/SELinux improvements.
+Changes v2->v3:
+* Remove TST_SECURITY_WARN and try to detect affected test
+automatically via grepping current policy with $TST_NEEDS_CMDS. There is
+still printed warning on enforced AppArmor/SELinux even no policy is
+found. Suggested by Alexey Kodanev.
+* Warning is printed only on TFAIL. Suggested by Alexey Kodanev.
+* Root check in tst_test.sh is moved to _tst_require_root()
+* Add dhcpd and dhclient path fixes.
+
+Petr Vorel (6):
+  net/dhcp: Rename setup & cleanup functions
+  shell: Add tst_security.sh helper
+  net/dhcp: Use for allowed by AppArmor and SELinux
+  net/dhcp: Check also default dhclient lease file path
+  net/dhcp: Move print_dhcp_log() into dhcp library
+  ver_linux: Print AppArmor and SELinux status
+
+ testcases/lib/tst_security.sh           | 124 ++++++++++++++++++++++++
+ testcases/lib/tst_test.sh               |  17 +++-
+ testcases/network/dhcp/dhcp_lib.sh      |  24 ++++-
+ testcases/network/dhcp/dhcpd_tests.sh   |  19 ++--
+ testcases/network/dhcp/dnsmasq_tests.sh |  17 ++--
+ ver_linux                               |  46 ++++++++-
+ 6 files changed, 219 insertions(+), 28 deletions(-)
+ create mode 100644 testcases/lib/tst_security.sh
+
 -- 
 2.19.2
 
