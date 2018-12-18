@@ -1,30 +1,46 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 18 Dec 2018 10:17:56 +0100
-Subject: [LTP] LTP Release
-In-Reply-To: <20181214150951.GA20724@rei>
-References: <20181214150951.GA20724@rei>
-Message-ID: <20181218091756.GA11593@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 18 Dec 2018 14:01:07 +0100
+Subject: [LTP] [PATCH v5] syscalls/readahead02: test readahead using
+ posix_fadvise()
+In-Reply-To: <20181204153528.26176-1-amir73il@gmail.com>
+References: <20181204153528.26176-1-amir73il@gmail.com>
+Message-ID: <20181218130107.GB18871@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril, Alexey,
+Hi!
+Sorry for the delay.
 
 ...
-> Feel free to start pointing out which patches you think should be merged
-> before the release now, I will try to do the review ASAP.
-I'd like to get merged my patchset "DHCP tests and AppArmor/SELinux
-improvements" [1] [2].
 
-> And lastly but not least Merry Christmas and a Happy New Year for
-> everyone who will celebrate them!
-For you as well.
+> -	if (ret == EINVAL &&
+> -	    (!tc->use_overlay || !readahead_supported)) {
+> -		readahead_supported = 0;
+> -		tst_res(TCONF, "readahead not supported on %s",
+> -			tst_device->fs_type);
+> -		return;
+> +	if (ret == EINVAL) {
+> +		if (tc->use_fadvise &&
+> +		    (!tc->use_overlay || !fadvise_supported)) {
+> +			fadvise_supported = 0;
+> +			tst_res(TCONF, "CONFIG_ADVISE_SYSCALLS not configured "
+> +				"in kernel?");
+> +			return;
+> +		} else if (!tc->use_overlay || !readahead_supported) {
 
+I got rid of the else block here, since we do return at the end of the
+if block before it anyways and pushed, thanks.
 
-Kind regards,
-Petr
+> +			readahead_supported = 0;
+> +			tst_res(TCONF, "readahead not supported on %s",
+> +				tst_device->fs_type);
+> +			return;
+> +		}
+>  	}
 
-[1] https://patchwork.ozlabs.org/project/ltp/list/?series=82472&state=*
-[2] http://lists.linux.it/pipermail/ltp/2018-December/010327.html
+-- 
+Cyril Hrubis
+chrubis@suse.cz
