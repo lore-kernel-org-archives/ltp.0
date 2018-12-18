@@ -1,98 +1,86 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 18 Dec 2018 02:02:19 +0100
-Subject: [LTP] [PATCH v3 5/6] net/dhcp: Move print_dhcp_log() into dhcp
-	library
+Date: Tue, 18 Dec 2018 02:02:20 +0100
+Subject: [LTP] [PATCH v3 6/6] ver_linux: Print AppArmor and SELinux status
 In-Reply-To: <20181218010220.2446-1-pvorel@suse.cz>
 References: <20181218010220.2446-1-pvorel@suse.cz>
-Message-ID: <20181218010220.2446-6-pvorel@suse.cz>
+Message-ID: <20181218010220.2446-7-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Create default path for log file, but allow test to specify it.
-This is needed for AppArmor respected paths, which was already defined
-in 3e76b9896 ("net/dhcp: Use paths allowed by AppArmor for dnsmasq").
-
-Also check if file exists. This is needed for dnsmasq --log-facility
-switch when AppArmor enabled, because according to dnsmasq(8) errors
-whilst reading configuration will still go to syslog. And then error
-report of cat of missing file is misleading.
++ add some helper functions
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/network/dhcp/dhcp_lib.sh      | 7 +++++++
- testcases/network/dhcp/dhcpd_tests.sh   | 7 +------
- testcases/network/dhcp/dnsmasq_tests.sh | 5 -----
- 3 files changed, 8 insertions(+), 11 deletions(-)
+ ver_linux | 46 ++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 42 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/network/dhcp/dhcp_lib.sh b/testcases/network/dhcp/dhcp_lib.sh
-index 632b1a9b1..c92117f47 100755
---- a/testcases/network/dhcp/dhcp_lib.sh
-+++ b/testcases/network/dhcp/dhcp_lib.sh
-@@ -38,6 +38,8 @@ stop_dhcp()
- 
- dhcp_lib_setup()
- {
-+	[ -z "$log" ] && log="$PWD/$(basename $0 '.sh').log"
+diff --git a/ver_linux b/ver_linux
+index 897571703..5994c0e0f 100755
+--- a/ver_linux
++++ b/ver_linux
+@@ -3,8 +3,35 @@
+ # typical as you use for compilation/istallation. I use
+ # /bin /sbin /usr/bin /usr/sbin /usr/local/bin, but it may
+ # differ on your system.
+-#
 +
- 	if [ $TST_IPV6 ]; then
- 		ip_addr="fd00:1:1:2::12/64"
- 		ip_addr_check="fd00:1:1:2::100/64"
-@@ -98,6 +100,11 @@ dhcp_lib_cleanup()
- 	[ "$veth_loaded" = "no" ] && lsmod | grep -q '^veth ' && rmmod veth
- }
- 
-+print_dhcp_log()
+ PATH=/sbin:/usr/sbin:/bin:/usr/bin:$PATH
++
++tst_cmd_available()
 +{
-+	[ -f "$log" ] && cat $log
++	if type command > /dev/null 2>&1; then
++		command -v $1 > /dev/null 2>&1 || return 1
++	else
++		which $1 > /dev/null 2>&1
++		if [ $? -eq 0 ]; then
++			return 0
++		else
++			return 1
++		fi
++	fi
 +}
 +
- test01()
- {
- 	local wicked
-diff --git a/testcases/network/dhcp/dhcpd_tests.sh b/testcases/network/dhcp/dhcpd_tests.sh
-index 5d695bf24..23dc8a45b 100755
---- a/testcases/network/dhcp/dhcpd_tests.sh
-+++ b/testcases/network/dhcp/dhcpd_tests.sh
-@@ -40,7 +40,7 @@ setup_dhcpd_conf()
- start_dhcpd()
- {
- 	touch $lease_file
--	dhcpd -lf $lease_file -$TST_IPVER $iface0 > tst_dhcpd.err 2>&1
-+	dhcpd -lf $lease_file -$TST_IPVER $iface0 > $log 2>&1
- }
++tst_cmd_run()
++{
++	local cmd="$1"
++	shift
++	tst_cmd_available $cmd && eval "$cmd $@"
++}
++
++is_enabled()
++{
++	[ -f "$1" ] && [ "$(cat $1)" = "Y" -o "$(cat $1)" = "1" ]
++}
++
+ echo 'If some fields are empty or look unusual you may have an old version.'
+ echo 'Compare to the current minimal requirements in Documentation/Changes.'
  
- start_dhcp()
-@@ -79,11 +79,6 @@ cleanup_dhcp()
- 	rm -f $lease_file
- }
+@@ -101,8 +128,19 @@ free
  
--print_dhcp_log()
--{
--	cat tst_dhcpd.err
--}
--
- print_dhcp_version()
- {
- 	dhcpd --version 2>&1
-diff --git a/testcases/network/dhcp/dnsmasq_tests.sh b/testcases/network/dhcp/dnsmasq_tests.sh
-index 8e466dafe..f80ce1e0b 100755
---- a/testcases/network/dhcp/dnsmasq_tests.sh
-+++ b/testcases/network/dhcp/dnsmasq_tests.sh
-@@ -42,11 +42,6 @@ cleanup_dhcp()
- 	rm -f $log
- }
- 
--print_dhcp_log()
--{
--	cat $log
--}
--
- print_dhcp_version()
- {
- 	dnsmasq --version | head -2
+ echo
+ echo 'cpuinfo:'
+-if which lscpu > /dev/null 2>&1; then
+-	lscpu
++tst_cmd_run lscpu || cat /proc/cpuinfo
++
++echo
++if is_enabled /sys/module/apparmor/parameters/enabled; then
++	echo 'AppArmor enabled'
++	tst_cmd_run aa-status
+ else
+-	cat /proc/cpuinfo
++	echo 'AppArmor disabled'
++fi
++
++echo
++
++if ! tst_cmd_run sestatus; then
++	printf 'SELinux mode: '
++	tst_cmd_run getenforce || echo 'unknown'
+ fi
 -- 
 2.19.2
 
