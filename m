@@ -1,23 +1,26 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 19 Dec 2018 15:16:29 +0100
-Subject: [LTP] [PATCH 3/3] travis: Use docker based builds
-In-Reply-To: <20181219141415.3495-3-pvorel@suse.cz>
-References: <20181219141415.3495-1-pvorel@suse.cz>
- <20181219141415.3495-3-pvorel@suse.cz>
-Message-ID: <20181219141629.GA3759@dell5510>
+Date: Wed, 19 Dec 2018 15:26:29 +0100
+Subject: [LTP] [PATCH] getcpu01: Rename getcpu to avoid conflict with
+ glibc >= 2.29
+In-Reply-To: <20181214225316.43732-1-raj.khem@gmail.com>
+References: <20181214225316.43732-1-raj.khem@gmail.com>
+Message-ID: <20181219142629.GA8369@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Khem,
 
-Proposed docker based build in travis:
-https://travis-ci.org/pevik/ltp/builds/470037766
+> glibc has added getcpu() API starting with glibc 2.29 release, this
+> makes the static function in conflict and signatures are not same as
+> well.
 
-Compare with previous Trusty based build:
-https://travis-ci.org/linux-test-project/ltp/builds/469670856
+> Renaming helps to keep ltp build going
+
+> Signed-off-by: Khem Raj <raj.khem@gmail.com>
+Thanks, pushed.
 
 
 Kind regards,
