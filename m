@@ -1,45 +1,35 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 20 Dec 2018 13:03:26 +0100
-Subject: [LTP] [PATCH] mem/overcommit_memory.c: Fix "CommitLimit <
- Committed_AS" error in some situations
-In-Reply-To: <220eb28e-9187-d9f3-8e55-56b1a9c497f7@arm.com>
-References: <1539938660-18786-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20181203202755.GA8919@x230>
- <220eb28e-9187-d9f3-8e55-56b1a9c497f7@arm.com>
-Message-ID: <20181220120326.GA20573@dell5510>
+Date: Thu, 20 Dec 2018 15:22:43 +0100
+Subject: [LTP] [PATCH] controllers/cpuacct.sh: Fix timeout for cpuacct.sh
+In-Reply-To: <1544087108-5717-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1544087108-5717-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20181220142243.GA30787@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao, Cristian,
+Hi Xiao,
 
-> Any chance this reviewed/fixed patch will be merged soon ?
-Thanks for pointing out. Pushed, with following diff bellow.
-(TCONF is for <=, not <).
+> With commit fbea02a, cpuacct.sh always gets timeout because wait
+> command tries to wait all background processes including the timeout
+> process.  We should just wait the processes created for test.
 
-> Thanks
+> e.g. running cpuacct_1_1 gets the following timeout:
+> -----------------------------------------------------------
+> cpuacct 1 TINFO: timeout per run is 0h 5m 0s
+> cpuacct 1 TINFO: cpuacct:
+> cpuacct 1 TINFO: Creating 1 subgroups each with 1 processes
+> cpuacct 1 TBROK: test killed, timeout!
+> -----------------------------------------------------------
 
-> Cristian
+> Fixes: fbea02a("lib/tst_test.sh: setup timeout per test run for the shell tests")
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+
+Thanks for your fix, merged.
+
+I look for other plain wait usage, this was the only one using new shell API.
 
 Kind regards,
 Petr
-
-diff --git testcases/kernel/mem/tunable/overcommit_memory.c testcases/kernel/mem/tunable/overcommit_memory.c
-index b92232b8d..07f824328 100644
---- testcases/kernel/mem/tunable/overcommit_memory.c
-+++ testcases/kernel/mem/tunable/overcommit_memory.c
-@@ -243,9 +243,9 @@ static void update_mem_commit(void)
- 				"CommitLimit < Committed_AS");
- 		}
- 
--		tst_brk(TCONF, "Specified overcommit_ratio %ld < default %ld, "
--			"so it's possible for CommitLimit < Committed_AS and "
--			"skip test", overcommit_ratio, old_overcommit_ratio);
-+		tst_brk(TCONF, "Specified overcommit_ratio %ld <= default %ld, "
-+			"so it's possible for CommitLimit < Committed_AS and skip test",
-+			overcommit_ratio, old_overcommit_ratio);
- 	}
- }
- 
