@@ -1,156 +1,40 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 20 Dec 2018 16:02:09 +0100
-Subject: [LTP] [RFC PATCH 1/1] Remove ADP tests
-Message-ID: <20181220150209.5186-1-pvorel@suse.cz>
+From: Travis CI <builds@travis-ci.org>
+Date: Thu, 20 Dec 2018 17:23:51 +0000
+Subject: [LTP] Errored: linux-test-project/ltp#1255 (master - db9eace)
+In-Reply-To: <linux-test-project/ltp+470610616+errored@travis-ci.org>
+Message-ID: <5c1bd026de21d_43fd381d20ca016348e@20234192-579e-48da-866c-ed792f5a2b3e.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-They're not used in any runtest, not using shell API.
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
+Build: #1255
+Status: Errored
 
-I know I cannot delete everything, but I don't see much value in these tests.
+Duration: 15 mins and 29 secs
+Commit: db9eace (master)
+Author: Alexey Kodanev
+Message: lib/tst_net.sh: determine ping command based on dst addr
 
-Kind regards,
-Petr
----
- testscripts/adp.sh          | 89 -------------------------------------
- testscripts/adp_children.sh | 11 -----
- testscripts/adp_test.sh     |  6 ---
- 3 files changed, 106 deletions(-)
- delete mode 100755 testscripts/adp.sh
- delete mode 100755 testscripts/adp_children.sh
- delete mode 100755 testscripts/adp_test.sh
+tst_ping() can be used with the empty TST_IPV6, for example in
+the virtual tunnel tests, with IPv6 over IPv4 scenario.
 
-diff --git a/testscripts/adp.sh b/testscripts/adp.sh
-deleted file mode 100755
-index d22bf8f81..000000000
---- a/testscripts/adp.sh
-+++ /dev/null
-@@ -1,89 +0,0 @@
--#!/bin/bash
--#
--# adp.sh -- run ADP's stress test on /proc/[0-9]*/cmdline
--#
--#
--
--usage()
--{
--  cat << EOF
--  usage: $0 options
--
--  This script runs ADP's stress test on /proc/[0-0]*/cmdline.
--
--  OPTIONS
--    -h    display this message and exit
--    -d    delay for top, in seconds
--    -n    number of iterations for top
--EOF
--}
--
--
--checkvar()
--{
--  VAR=$1
--  eval VALUE='$'$VAR
--  if [ "x$VALUE" = "x" ]; then
--      echo "`basename $0`: $VAR is not set."
--      return 1
--	else
--      return 0
--  fi
--}
--
--
--while getopts hd:n: OPTION
--do
--  case $OPTION in
--    h)
--      usage
--      exit 1
--      ;;
--    d)
--      delay=$OPTARG
--      ;;
--    n)
--      iterations=$OPTARG
--      ;;
--    ?)
--      usage
--      exit 1
--      ;;
--  esac
--done
--
--
--#check all vars
--checkvar delay && checkvar iterations || {
--  usage
--  exit 2
--}
--
--echo "-------------------------------------------------------------------------"
--date
--echo "Starting tests..."
--
--for i in 1 2 3 4 5
--do
--	./adp_children.sh &
--done
--
--echo "Stressing /proc/[0-9]*/cmdline..."
--
--for i in 1 2 3 4 5
--do
--	./adp_test.sh &
--done
--
--echo "Starting 'top', redirecting output to 'adp.log'..."
--top -b -d $delay -n $iterations > adp.log &
--
--echo "LTP ADP Test done. Killing processes..."
--killall adp_test.sh
--killall adp_children.sh
--
--echo "Done. Please check adp.log."
--date
--
--echo "-------------------------------------------------------------------------"
--
-diff --git a/testscripts/adp_children.sh b/testscripts/adp_children.sh
-deleted file mode 100755
-index 4c1c94e36..000000000
---- a/testscripts/adp_children.sh
-+++ /dev/null
-@@ -1,11 +0,0 @@
--#!/bin/bash
--
--while :
--do
--	for i in 1 2 3 4 5 6 7 8 9 0
--	do
--		sleep 1 &
--	done
--
--	wait
--done
-diff --git a/testscripts/adp_test.sh b/testscripts/adp_test.sh
-deleted file mode 100755
-index df0d48acf..000000000
---- a/testscripts/adp_test.sh
-+++ /dev/null
-@@ -1,6 +0,0 @@
--#!/bin/bash
--
--while :
--do
--	cat /proc/[0-9]*/cmdline > /dev/null 2>/dev/null
--done
--- 
-2.19.2
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 
+View the changeset: https://github.com/linux-test-project/ltp/compare/49cbfb45a050...db9eace87950
+
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/470610616?utm_medium=notification&utm_source=email
+
+--
+
+You can unsubscribe from build emails from the linux-test-project/ltp repository going to https://travis-ci.org/account/preferences/unsubscribe?repository=1224421&utm_medium=notification&utm_source=email.
+Or unsubscribe from *all* email updating your settings at https://travis-ci.org/account/preferences/unsubscribe?utm_medium=notification&utm_source=email.
+Or configure specific recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20181220/f8c51d73/attachment-0001.html>
