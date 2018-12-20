@@ -1,41 +1,66 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 20 Dec 2018 14:00:25 +0800
-Subject: [LTP] [PATCH] openposix/threads: Add missing Makefile
-Message-ID: <1545285625-11556-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Thu, 20 Dec 2018 14:05:29 +0800
+Subject: [LTP] [PATCH] controllers/cpuacct.sh: Fix timeout for cpuacct.sh
+In-Reply-To: <1544087108-5717-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1544087108-5717-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <5C1B3129.8090806@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The Makefile in functional/threads directory was removed by mistake.
+Hi,
 
-Fixes: 310c9eb ("Remove explicit #define's for `_POSIX_C_SOURCE` and `_XOPEN_SOURCE`")
+Ping :-)
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- testcases/open_posix_testsuite/functional/threads/Makefile | 10 ++++++++++
- 1 file changed, 10 insertions(+)
- create mode 100644 testcases/open_posix_testsuite/functional/threads/Makefile
-
-diff --git a/testcases/open_posix_testsuite/functional/threads/Makefile b/testcases/open_posix_testsuite/functional/threads/Makefile
-new file mode 100644
-index 0000000..6cf8b06
---- /dev/null
-+++ b/testcases/open_posix_testsuite/functional/threads/Makefile
-@@ -0,0 +1,10 @@
-+#
-+# Read COPYING for licensing details.
-+#
-+# Ngie Cooper, June 2010
-+#
-+
-+all clean install test:
-+	@for dir in `ls -d */Makefile 2>/dev/null | sed -e 's,/Makefile$$,,g'`; do \
-+		$(MAKE) -C $$dir $@;						   \
-+	done
--- 
-1.8.3.1
+Best Regards,
+Xiao Yang
+On 2018/12/06 17:05, Xiao Yang wrote:
+> With commit fbea02a, cpuacct.sh always gets timeout because wait
+> command tries to wait all background processes including the timeout
+> process.  We should just wait the processes created for test.
+>
+> e.g. running cpuacct_1_1 gets the following timeout:
+> -----------------------------------------------------------
+> cpuacct 1 TINFO: timeout per run is 0h 5m 0s
+> cpuacct 1 TINFO: cpuacct:
+> cpuacct 1 TINFO: Creating 1 subgroups each with 1 processes
+> cpuacct 1 TBROK: test killed, timeout!
+> -----------------------------------------------------------
+>
+> Fixes: fbea02a("lib/tst_test.sh: setup timeout per test run for the shell tests")
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/controllers/cpuacct/cpuacct.sh | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/testcases/kernel/controllers/cpuacct/cpuacct.sh b/testcases/kernel/controllers/cpuacct/cpuacct.sh
+> index edd4a98..5e90b05 100755
+> --- a/testcases/kernel/controllers/cpuacct/cpuacct.sh
+> +++ b/testcases/kernel/controllers/cpuacct/cpuacct.sh
+> @@ -41,6 +41,7 @@ TST_TESTFUNC=do_test
+>  TST_POS_ARGS=2
+>  TST_USAGE=usage
+>  TST_NEEDS_ROOT=1
+> +TST_NEEDS_TMPDIR=1
+>  
+>  . tst_test.sh
+>  
+> @@ -114,10 +115,12 @@ do_test()
+>  	for i in `seq 1 $max`; do
+>  		for j in `seq 1 $nbprocess`; do
+>  			cpuacct_task $testpath/subgroup_$i/tasks &
+> +			echo $! >> task_pids
+>  		done
+>  	done
+>  
+> -	wait
+> +	for pid in $(cat task_pids); do wait $pid; done
+> +	rm -f task_pids
+>  
+>  	acc=0
+>  	fails=0
 
 
 
