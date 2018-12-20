@@ -1,76 +1,45 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 20 Dec 2018 19:11:34 +0800
-Subject: [LTP] [PATCH] openposix/20-1-buildonly,
-	signal_h_23-1: Fix compiler errors on newer glibc
-Message-ID: <1545304294-31111-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 20 Dec 2018 13:03:26 +0100
+Subject: [LTP] [PATCH] mem/overcommit_memory.c: Fix "CommitLimit <
+ Committed_AS" error in some situations
+In-Reply-To: <220eb28e-9187-d9f3-8e55-56b1a9c497f7@arm.com>
+References: <1539938660-18786-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20181203202755.GA8919@x230>
+ <220eb28e-9187-d9f3-8e55-56b1a9c497f7@arm.com>
+Message-ID: <20181220120326.GA20573@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Since glibc 2.26, the __USE_XOPEN2K8 macro defined by _POSIX_C_SOURCE = 200809L &&
-_XOPEN_SOURCE = 700 resulted in the following compiler errors, because both sigstack
-structure and bsd_signal function are only declared if __USE_XOPEN_EXTENDED is
-defined and __USE_XOPEN2K8 is not defined:
--------------------------------------------------------------------------------
-20-1-buildonly.c:13:8: error: invalid use of undefined type ‘struct sigstack’
-  sp = t.ss_sp;
-...
-signal_h/23-1.c:15:13: error: ‘bsd_signal’ undeclared (first use in this function); did you mean ‘psignal’?
-  dummyvar = bsd_signal;
--------------------------------------------------------------------------------
+Hi Xiao, Cristian,
 
-We just use _POSIX_C_SOURCE = 200112L && _XOPEN_SOURCE = 600 to run these tests.
+> Any chance this reviewed/fixed patch will be merged soon ?
+Thanks for pointing out. Pushed, with following diff bellow.
+(TCONF is for <=, not <).
 
-References:
-https://sourceware.org/git/?p=glibc.git;a=commit;h=666c0c5efa6db73632a6894bf028fef9f3b60d71
-https://sourceware.org/git/?p=glibc.git;a=commit;h=4c3992fc459322a7c712700ba3244fcb125163d7
+> Thanks
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- .../conformance/definitions/signal_h/20-1-buildonly.c              | 7 +++++++
- .../open_posix_testsuite/conformance/definitions/signal_h/23-1.c   | 7 +++++++
- 2 files changed, 14 insertions(+)
+> Cristian
 
-diff --git a/testcases/open_posix_testsuite/conformance/definitions/signal_h/20-1-buildonly.c b/testcases/open_posix_testsuite/conformance/definitions/signal_h/20-1-buildonly.c
-index 21d8cb4..fdb2fb8 100644
---- a/testcases/open_posix_testsuite/conformance/definitions/signal_h/20-1-buildonly.c
-+++ b/testcases/open_posix_testsuite/conformance/definitions/signal_h/20-1-buildonly.c
-@@ -2,6 +2,13 @@
-      Test the definition of sigstack.
-    */
+Kind regards,
+Petr
+
+diff --git testcases/kernel/mem/tunable/overcommit_memory.c testcases/kernel/mem/tunable/overcommit_memory.c
+index b92232b8d..07f824328 100644
+--- testcases/kernel/mem/tunable/overcommit_memory.c
++++ testcases/kernel/mem/tunable/overcommit_memory.c
+@@ -243,9 +243,9 @@ static void update_mem_commit(void)
+ 				"CommitLimit < Committed_AS");
+ 		}
  
-+#if _POSIX_C_SOURCE >= 200809L
-+# undef _POSIX_C_SOURCE
-+# undef _XOPEN_SOURCE
-+# define _POSIX_C_SOURCE	200112L
-+# define _XOPEN_SOURCE		600
-+#endif
-+
- #include <signal.h>
+-		tst_brk(TCONF, "Specified overcommit_ratio %ld < default %ld, "
+-			"so it's possible for CommitLimit < Committed_AS and "
+-			"skip test", overcommit_ratio, old_overcommit_ratio);
++		tst_brk(TCONF, "Specified overcommit_ratio %ld <= default %ld, "
++			"so it's possible for CommitLimit < Committed_AS and skip test",
++			overcommit_ratio, old_overcommit_ratio);
+ 	}
+ }
  
- struct sigstack this_type_should_exist, t;
-diff --git a/testcases/open_posix_testsuite/conformance/definitions/signal_h/23-1.c b/testcases/open_posix_testsuite/conformance/definitions/signal_h/23-1.c
-index 9a4d200..4f22e07 100644
---- a/testcases/open_posix_testsuite/conformance/definitions/signal_h/23-1.c
-+++ b/testcases/open_posix_testsuite/conformance/definitions/signal_h/23-1.c
-@@ -5,6 +5,13 @@
-      is declared.
-    */
- 
-+#if _POSIX_C_SOURCE >= 200809L
-+# undef _POSIX_C_SOURCE
-+# undef _XOPEN_SOURCE
-+# define _POSIX_C_SOURCE	200112L
-+# define _XOPEN_SOURCE		600
-+#endif
-+
- #include <signal.h>
- 
- typedef void (*(*bsd_signal_test) (int, void (*)(int))) (int);
--- 
-1.8.3.1
-
-
-
