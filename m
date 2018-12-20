@@ -1,61 +1,76 @@
-From: Cristian Marussi <cristian.marussi@arm.com>
-Date: Thu, 20 Dec 2018 10:42:12 +0000
-Subject: [LTP] [PATCH] mem/overcommit_memory.c: Fix "CommitLimit <
- Committed_AS" error in some situations
-In-Reply-To: <20181203202755.GA8919@x230>
-References: <1539938660-18786-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20181203202755.GA8919@x230>
-Message-ID: <220eb28e-9187-d9f3-8e55-56b1a9c497f7@arm.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 20 Dec 2018 19:11:34 +0800
+Subject: [LTP] [PATCH] openposix/20-1-buildonly,
+	signal_h_23-1: Fix compiler errors on newer glibc
+Message-ID: <1545304294-31111-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
+Since glibc 2.26, the __USE_XOPEN2K8 macro defined by _POSIX_C_SOURCE = 200809L &&
+_XOPEN_SOURCE = 700 resulted in the following compiler errors, because both sigstack
+structure and bsd_signal function are only declared if __USE_XOPEN_EXTENDED is
+defined and __USE_XOPEN2K8 is not defined:
+-------------------------------------------------------------------------------
+20-1-buildonly.c:13:8: error: invalid use of undefined type ‘struct sigstack’
+  sp = t.ss_sp;
+...
+signal_h/23-1.c:15:13: error: ‘bsd_signal’ undeclared (first use in this function); did you mean ‘psignal’?
+  dummyvar = bsd_signal;
+-------------------------------------------------------------------------------
 
-Hi
+We just use _POSIX_C_SOURCE = 200112L && _XOPEN_SOURCE = 600 to run these tests.
 
-On 03/12/2018 20:27, Petr Vorel wrote:
-> Hi Xiao,
-> 
->> By default, system with overcommit_memory=2 will ensure "CommitLimit >=
->> Committed_AS" when setting overcommit_ratio.  But we change overcommit_ratio
->> to a random value forcely, so it's possible to decrease CommitLimit less
->> than current Committed_AS when setting overcommit_ratio to a quite small
->> value(e.g. 0).
-> 
->> For example, there are 5G physical memory, 4G swap and 5G allocated memory
->> (i.e. Committed_AS) on system, and then running overcommit_memory02(i.e.
->> overcommit_memory -R 0) always triggers the "CommitLimit < Committed_AS"
->> error:
->> ----------------------------------------------------------------------
->> mem.c:839: INFO: set overcommit_ratio to 0
->> mem.c:839: INFO: set overcommit_memory to 2
->> overcommit_memory.c:235: INFO: CommitLimit is 4194300, Committed_AS is 5405908
->> overcommit_memory.c:237: BROK: Unexpected error: CommitLimit < Committed_AS
->> ----------------------------------------------------------------------
-> 
->> We try to skip test if setting a small value of overcommit_ratio results in
->> "CommitLimit < Committed_AS".
-> 
->> Fix: #215
-> 
->> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+References:
+https://sourceware.org/git/?p=glibc.git;a=commit;h=666c0c5efa6db73632a6894bf028fef9f3b60d71
+https://sourceware.org/git/?p=glibc.git;a=commit;h=4c3992fc459322a7c712700ba3244fcb125163d7
 
-Any chance this reviewed/fixed patch will be merged soon ?
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ .../conformance/definitions/signal_h/20-1-buildonly.c              | 7 +++++++
+ .../open_posix_testsuite/conformance/definitions/signal_h/23-1.c   | 7 +++++++
+ 2 files changed, 14 insertions(+)
 
-Thanks
+diff --git a/testcases/open_posix_testsuite/conformance/definitions/signal_h/20-1-buildonly.c b/testcases/open_posix_testsuite/conformance/definitions/signal_h/20-1-buildonly.c
+index 21d8cb4..fdb2fb8 100644
+--- a/testcases/open_posix_testsuite/conformance/definitions/signal_h/20-1-buildonly.c
++++ b/testcases/open_posix_testsuite/conformance/definitions/signal_h/20-1-buildonly.c
+@@ -2,6 +2,13 @@
+      Test the definition of sigstack.
+    */
+ 
++#if _POSIX_C_SOURCE >= 200809L
++# undef _POSIX_C_SOURCE
++# undef _XOPEN_SOURCE
++# define _POSIX_C_SOURCE	200112L
++# define _XOPEN_SOURCE		600
++#endif
++
+ #include <signal.h>
+ 
+ struct sigstack this_type_should_exist, t;
+diff --git a/testcases/open_posix_testsuite/conformance/definitions/signal_h/23-1.c b/testcases/open_posix_testsuite/conformance/definitions/signal_h/23-1.c
+index 9a4d200..4f22e07 100644
+--- a/testcases/open_posix_testsuite/conformance/definitions/signal_h/23-1.c
++++ b/testcases/open_posix_testsuite/conformance/definitions/signal_h/23-1.c
+@@ -5,6 +5,13 @@
+      is declared.
+    */
+ 
++#if _POSIX_C_SOURCE >= 200809L
++# undef _POSIX_C_SOURCE
++# undef _XOPEN_SOURCE
++# define _POSIX_C_SOURCE	200112L
++# define _XOPEN_SOURCE		600
++#endif
++
+ #include <signal.h>
+ 
+ typedef void (*(*bsd_signal_test) (int, void (*)(int))) (int);
+-- 
+1.8.3.1
 
-Cristian
 
-> 
->> ---
->>  .../kernel/mem/tunable/overcommit_memory.c    | 30 ++++++++++++-------
->>  1 file changed, 20 insertions(+), 10 deletions(-)
-> 
-> 
-> Kind regards,
-> Petr
-> 
 
