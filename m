@@ -1,92 +1,101 @@
 From: Cristian Marussi <cristian.marussi@arm.com>
-Date: Fri, 21 Dec 2018 15:27:20 +0000
-Subject: [LTP] [PATCH v2 1/4] cgroup_regression_test.sh ported to newlib
-In-Reply-To: <20181221143507.GB27446@dell5510>
+Date: Fri, 21 Dec 2018 15:29:39 +0000
+Subject: [LTP] [PATCH v2 4/4]  cgroup: helpers various fixes
+In-Reply-To: <20181221140118.GA22257@dell5510>
 References: <20181220182149.48326-1-cristian.marussi@arm.com>
- <20181220182149.48326-2-cristian.marussi@arm.com>
- <20181221143507.GB27446@dell5510>
-Message-ID: <d5a4fb0d-ca6f-d0e5-0016-af83c32930a3@arm.com>
+ <20181220182149.48326-5-cristian.marussi@arm.com>
+ <20181221140118.GA22257@dell5510>
+Message-ID: <ea29001c-59a8-21b8-867b-5dd9fbfbfd2a@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi Petr
+Hi
 
-On 21/12/2018 14:35, Petr Vorel wrote:
+On 21/12/2018 14:01, Petr Vorel wrote:
 > Hi Cristian,
 > 
+>> diff --git a/testcases/kernel/controllers/cgroup/cgroup_regress_test_6_2.c b/testcases/kernel/controllers/cgroup/cgroup_regress_test_6_2.c
+>> new file mode 100644
+> When you add new file, you need to put it also into .gitignore.
+> + Remove /test_6_2 from it (original file).
+> 
+
+Didn't know. I'll do that.
+
 > ...
->> +++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> ...
->> -cd $LTPROOT/testcases/bin
-> You left this even after second commit. It's not needed.
-
-because I misunderstood your indication in the previous mail
-
->> * Remove absolute (/bin/kill) and relative paths and cd into
-$LTPROOT/testcases/bin
-
-getting it like "remove A and remove B AND then CD into..." o.O
-
-my bad ...:D I'll fix it
-
+>> +++ b/testcases/kernel/controllers/cgroup/cgroup_regress_test_6_2.c
+>> @@ -0,0 +1,37 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * Copyright (c) 2009 FUJITSU LIMITED
+>> + *
+>> + * Author: Li Zefan <lizf@cn.fujitsu.com>
+>> + */
+>> +
+>> +#define _GNU_SOURCE
+> Is _GNU_SOURCE really needed?
 > 
->> +TST_TESTFUNC=do_test
->> +TST_SETUP=do_setup
->> +TST_CLEANUP=do_cleanup
->> +TST_CNT=10
->> +TST_NEEDS_ROOT=1
->> +TST_NEEDS_CMDS="dmesg mountpoint mount umount cat kill find mkdir rmdir grep"
-> Test needs also using temporary directory (as it creates directories):
-> TST_NEEDS_TMPDIR=1
 
-Fine. I missed that.
+I'll have a better look.
 
+>> +#include <sched.h>
+>> +#include <stdlib.h>
+>> +#include <unistd.h>
+>> +#include "test.h"
+> Please don't use legacy API.
 > 
-> 
->> -export TCID="cgroup_regression_test"
->> -export TST_TOTAL=10
->> -export TST_COUNT=1
->> +. tst_test.sh
-> 
->> -failed=0
->> +do_setup()
+
+Ok.
+
+>> +
+>> +#define DEFAULT_USEC	30000
+>> +
+>> +int foo(void __attribute__ ((unused)) * arg)
 >> +{
->> +	cd $LTPROOT/testcases/bin
-> And here.
-> 
-o.O
-
-> ...
->> +do_cleanup()
+>> +	return 0;
+>> +}
+>> +
+>> +int main(int argc, char **argv)
 >> +{
->> +	cd $LTPROOT/testcases/bin
-> One more time.
+>> +	int usec;
+>> +
+>> +	if (argc == 2)
+>> +		usec = atoi(argv[1]);
+>> +	else
+>> +		usec = DEFAULT_USEC;
+>> +
+>> +	while (1) {
+>> +		usleep(usec);
+>> +		ltp_clone_quick(CLONE_NEWNS, foo, NULL);
+>> +	}
+>> +
+>> +	tst_exit();
+>> +}
 > 
-o.O
-
 > ...
->> -for ((cur = 1; cur <= $TST_TOTAL; cur++))
->> +do_test()
->>  {
->> -	export TST_COUNT=$cur
->> +	local cur=$1
 > 
->>  	test_$cur
->>  }
+>> +++ b/testcases/kernel/controllers/cgroup/getdelays.c
+>> @@ -1,3 +1,4 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>>  /* getdelays.c
 > 
-> do_test() function is not needed at all, looping can be done automatically:
-> Remove underscore from test functions (s/test_([0-9]+)/test$1/)
-> and change setup: TST_TESTFUNC=test
+> There is build warning, can you please fix it:
 > 
-> See
-> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#user-content-2-3-1-basic-test-interface
+> getdelays.c: In function ‘get_family_id’:
+> getdelays.c:177:14: warning: variable ‘rc’ set but not used [-Wunused-but-set-variable]
+>   int id = 0, rc;
+>               ^~
+> getdelays.c: In function ‘main’:
+> getdelays.c:418:7: warning: variable ‘i’ set but not used [-Wunused-but-set-variable]
+>    int i;
+>        ^
 > 
-Sure.
 
-> 
+Fine.
+
 > Kind regards,
 > Petr
 > 
