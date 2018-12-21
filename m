@@ -1,84 +1,35 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 21 Dec 2018 15:01:18 +0100
-Subject: [LTP] [PATCH v2 4/4]  cgroup: helpers various fixes
-In-Reply-To: <20181220182149.48326-5-cristian.marussi@arm.com>
+Date: Fri, 21 Dec 2018 15:25:38 +0100
+Subject: [LTP] [PATCH v2 1/4] cgroup_regression_test.sh ported to newlib
+In-Reply-To: <20181220182149.48326-2-cristian.marussi@arm.com>
 References: <20181220182149.48326-1-cristian.marussi@arm.com>
- <20181220182149.48326-5-cristian.marussi@arm.com>
-Message-ID: <20181221140118.GA22257@dell5510>
+ <20181220182149.48326-2-cristian.marussi@arm.com>
+Message-ID: <20181221142538.GB22257@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi Cristian,
 
-> diff --git a/testcases/kernel/controllers/cgroup/cgroup_regress_test_6_2.c b/testcases/kernel/controllers/cgroup/cgroup_regress_test_6_2.c
-> new file mode 100644
-When you add new file, you need to put it also into .gitignore.
-+ Remove /test_6_2 from it (original file).
-
 ...
-> +++ b/testcases/kernel/controllers/cgroup/cgroup_regress_test_6_2.c
-> @@ -0,0 +1,37 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2009 FUJITSU LIMITED
-> + *
-> + * Author: Li Zefan <lizf@cn.fujitsu.com>
-> + */
-> +
-> +#define _GNU_SOURCE
-Is _GNU_SOURCE really needed?
+> --- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+>  {
+>  	grep -q -w "ns" /proc/cgroups
+>  	if [ $? -ne 0 ]; then
+> -		tst_resm TCONF "CONFIG_CGROUP_NS"
+> +		tst_res TCONF "CONFIG_CGROUP_NS"
+>  		return
+>  	fi
 
-> +#include <sched.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include "test.h"
-Please don't use legacy API.
+This could be just
 
-> +
-> +#define DEFAULT_USEC	30000
-> +
-> +int foo(void __attribute__ ((unused)) * arg)
-> +{
-> +	return 0;
-> +}
-> +
-> +int main(int argc, char **argv)
-> +{
-> +	int usec;
-> +
-> +	if (argc == 2)
-> +		usec = atoi(argv[1]);
-> +	else
-> +		usec = DEFAULT_USEC;
-> +
-> +	while (1) {
-> +		usleep(usec);
-> +		ltp_clone_quick(CLONE_NEWNS, foo, NULL);
-> +	}
-> +
-> +	tst_exit();
-> +}
+grep -q -w "ns" /proc/cgroups || tst_res TCONF "CONFIG_CGROUP_NS is not enabled"
 
-...
-
-> +++ b/testcases/kernel/controllers/cgroup/getdelays.c
-> @@ -1,3 +1,4 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
->  /* getdelays.c
-
-There is build warning, can you please fix it:
-
-getdelays.c: In function ‘get_family_id’:
-getdelays.c:177:14: warning: variable ‘rc’ set but not used [-Wunused-but-set-variable]
-  int id = 0, rc;
-              ^~
-getdelays.c: In function ‘main’:
-getdelays.c:418:7: warning: variable ‘i’ set but not used [-Wunused-but-set-variable]
-   int i;
-       ^
+But CONFIG_CGROUP_NS was removed in a77aea92010a ("cgroup: remove the ns_cgroup")
+in v3.0. We don't have TST_MAX_KVER, so we cannot use TST_MAX_KVER="3.0", but
+maybe compare kernel version with tst_kvcmp (see doc) and adjust warning for new kernels.
 
 Kind regards,
 Petr
