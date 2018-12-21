@@ -1,54 +1,80 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 21 Dec 2018 14:39:04 +0100
-Subject: [LTP] [PATCH v2 0/4]  cgroup tests newlib-porting
-In-Reply-To: <20181220182149.48326-1-cristian.marussi@arm.com>
-References: <20181220182149.48326-1-cristian.marussi@arm.com>
-Message-ID: <20181221133904.GA27446@dell5510>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 21 Dec 2018 14:51:43 +0100
+Subject: [LTP] [PATCH] syscalls/ptrace07: handle potential SIGSEGV on older
+	kernels
+Message-ID: <b8db71df3a21f600e2a52064df6d2a21ed2195a9.1545400016.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cristian,
+If a ptraced test process hits SIGSEGV, the entire testcase hangs.
 
-thanks for your work, good work. I have some comments bellow.
+Older kernels such as RHEL7 (3.10.0), check the error code returned
+by restore_fpu_checking() and do drop_init_fpu() if it fails.
+So the FPU state of the prev task can't leak.
 
-> This series converts cgroup/ regression tests to LTP newlib and performs
-> a general cleanup as follows:
+But in the more likely case a task with xcomp_bv != 0 will be killed
+by SIGSEGV; either from do_device_not_available() or from
+sys_rt_sigreturn()->__restore_xstate_sig().
 
-> - remove bashism from all tests' scripts
-> - mostly remove usage of global vars
-> - convert to SPDX headers
-You left big copyright in cpuacct.sh.
+And this is why the test case hangs; it wrongly assumes that the
+traced child can only exit and report nothing else. But since it
+receives SIGSEGV it reports this signal to the main process and
+sleeps in ptrace_stop(), it does not exit and thus the test-case
+hangs in tst_reap_children() after return from do_test().
 
-> - expose a controllers' common /proc/mounts parsing function
-> - rename tests' helpers prefixing them with a test-specific tag to avoid
->   name clashes on install: I have not renamed the tests' helpers using
->   more specific meaningful name, since all of them performs really
->   trivial ops needed and meaningful in the context of the regression-test
->   subcase they serve; so I thought it would have been better to keep their
->   names as they are now, bound to the subcase they help.
+Replace PTRACE_CONT with PTRACE_DETACH, so we don't need to
+handle subsequent stops. And treat exit code from test process
+as info-only.
 
-> Cristian Marussi (4):
->   [LTP] cgroup_regression_test.sh ported to newlib
->   [LTP] cgroup_regression_test.sh cleanup
->   [LTP] cgroup_regression_test.sh: added helper
->   [LTP] cgroup: helpers various fixes
+Debugged-by: Oleg Nesterov <onestero@redhat.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/ptrace/ptrace07.c | 26 +++++++++++++++++++++++---
+ 1 file changed, 23 insertions(+), 3 deletions(-)
 
-Can you please squash it into single commit?
-Or in two (first cleanup & rewrite of group_regression_test.sh, second for
-helpers). It does not bring much to split it like this.
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace07.c b/testcases/kernel/syscalls/ptrace/ptrace07.c
+index 46ae59a105cf..9cbaefc3fbda 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace07.c
++++ b/testcases/kernel/syscalls/ptrace/ptrace07.c
+@@ -153,12 +153,32 @@ static void do_test(void)
+ 			"PTRACE_SETREGSET failed with unexpected error");
+ 	}
+ 
+-	TEST(ptrace(PTRACE_CONT, pid, 0, 0));
++	/*
++	 * It is possible for test child 'pid' to crash on AMD
++	 * systems (e.g. AMD Opteron(TM) Processor 6234) with
++	 * older kernels. This causes tracee to stop and sleep
++	 * in ptrace_stop(). Without resuming the tracee, the
++	 * test hangs at do_test()->tst_reap_children() called
++	 * by the library. Use detach here, so we don't need to
++	 * worry about potential stops after this point.
++	 */
++	TEST(ptrace(PTRACE_DETACH, pid, 0, 0));
+ 	if (TST_RET != 0)
+-		tst_brk(TBROK | TTERRNO, "PTRACE_CONT failed");
++		tst_brk(TBROK | TTERRNO, "PTRACE_DETACH failed");
++
++	/* If child 'pid' crashes, only report it as info. */
++	SAFE_WAITPID(pid, &status, 0);
++	if (WIFEXITED(status)) {
++		tst_res(TINFO, "test child %d exited, retcode: %d",
++			pid, WEXITSTATUS(status));
++	}
++	if (WIFSIGNALED(status)) {
++		tst_res(TINFO, "test child %d exited, termsig: %d",
++			pid, WTERMSIG(status));
++	}
+ 
+ 	okay = true;
+-	for (i = 0; i < num_cpus + 1; i++) {
++	for (i = 0; i < num_cpus; i++) {
+ 		SAFE_WAIT(&status);
+ 		okay &= (WIFEXITED(status) && WEXITSTATUS(status) == 0);
+ 	}
+-- 
+1.8.3.1
 
-I guess fork_processes.c and getdelays.c can be using new C API as well.
-You don't have to do it, but it can bring benefits (using tst_res(), info about
-command).
-
-During cleanup please delete useless comments (getdelays.c: Compile with ...).
-I personally take SPDX license as sign that test has been cleanup from bad code
-and useless comments and ported into new API.
-
-NOTE: you can add your copyright to the files.
-
-Kind regards,
-Petr
