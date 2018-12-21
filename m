@@ -1,10 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 21 Dec 2018 15:25:38 +0100
+Date: Fri, 21 Dec 2018 15:35:07 +0100
 Subject: [LTP] [PATCH v2 1/4] cgroup_regression_test.sh ported to newlib
 In-Reply-To: <20181220182149.48326-2-cristian.marussi@arm.com>
 References: <20181220182149.48326-1-cristian.marussi@arm.com>
  <20181220182149.48326-2-cristian.marussi@arm.com>
-Message-ID: <20181221142538.GB22257@dell5510>
+Message-ID: <20181221143507.GB27446@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,22 +14,55 @@ To: ltp@lists.linux.it
 Hi Cristian,
 
 ...
-> --- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+> +++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+...
+> -cd $LTPROOT/testcases/bin
+You left this even after second commit. It's not needed.
+
+> +TST_TESTFUNC=do_test
+> +TST_SETUP=do_setup
+> +TST_CLEANUP=do_cleanup
+> +TST_CNT=10
+> +TST_NEEDS_ROOT=1
+> +TST_NEEDS_CMDS="dmesg mountpoint mount umount cat kill find mkdir rmdir grep"
+Test needs also using temporary directory (as it creates directories):
+TST_NEEDS_TMPDIR=1
+
+
+> -export TCID="cgroup_regression_test"
+> -export TST_TOTAL=10
+> -export TST_COUNT=1
+> +. tst_test.sh
+
+> -failed=0
+> +do_setup()
+> +{
+> +	cd $LTPROOT/testcases/bin
+And here.
+
+...
+> +do_cleanup()
+> +{
+> +	cd $LTPROOT/testcases/bin
+One more time.
+
+...
+> -for ((cur = 1; cur <= $TST_TOTAL; cur++))
+> +do_test()
 >  {
->  	grep -q -w "ns" /proc/cgroups
->  	if [ $? -ne 0 ]; then
-> -		tst_resm TCONF "CONFIG_CGROUP_NS"
-> +		tst_res TCONF "CONFIG_CGROUP_NS"
->  		return
->  	fi
+> -	export TST_COUNT=$cur
+> +	local cur=$1
 
-This could be just
+>  	test_$cur
+>  }
 
-grep -q -w "ns" /proc/cgroups || tst_res TCONF "CONFIG_CGROUP_NS is not enabled"
+do_test() function is not needed at all, looping can be done automatically:
+Remove underscore from test functions (s/test_([0-9]+)/test$1/)
+and change setup: TST_TESTFUNC=test
 
-But CONFIG_CGROUP_NS was removed in a77aea92010a ("cgroup: remove the ns_cgroup")
-in v3.0. We don't have TST_MAX_KVER, so we cannot use TST_MAX_KVER="3.0", but
-maybe compare kernel version with tst_kvcmp (see doc) and adjust warning for new kernels.
+See
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#user-content-2-3-1-basic-test-interface
+
 
 Kind regards,
 Petr
