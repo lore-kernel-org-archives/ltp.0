@@ -1,63 +1,44 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 21 Dec 2018 16:11:44 +0800
-Subject: [LTP] [PATCH] tbio/ltp_tbio.c: Change the order of calling
- blk_cleanup_queue() and del_gendisk()
-In-Reply-To: <1540193371-5689-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1540193371-5689-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <5C1CA040.8080904@cn.fujitsu.com>
+From: Travis CI <builds@travis-ci.org>
+Date: Fri, 21 Dec 2018 11:00:37 +0000
+Subject: [LTP] Passed: linux-test-project/ltp#1256 (master - e36643e)
+In-Reply-To: <linux-test-project/ltp+470920918+passed@travis-ci.org>
+Message-ID: <5c1cc7d4d917c_43f89c2f7e7f893899@6bb8627b-fe73-4ec2-90fb-a70c0fff3e22.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-Ping :-)
+Build: #1256
+Status: Passed
 
-Best Regards,
-Xiao Yang
+Duration: 14 mins and 33 secs
+Commit: e36643e (master)
+Author: Alexey Kodanev
+Message: lib/tst_net.sh: fix checking ping6 command availability
 
-On 2018/10/22 15:29, Xiao Yang wrote:
-> Removing ltp_tbio.ko module always reproduced a warning and panic
-> on the old kernels that have backported kernel commit a063057d7c73
-> (e.g. RHEL7.6).
->
-> Removing ltp_tbio.ko module calls blk_cleanup_queue() and del_gendisk()
-> in the order so that it triggers races or warnings since commit a063057d7c73
-> in kernel, and some kernel modules have fixed the issue, as below:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=57678e5a3d5145e5f08aa1d307ba219b27b1765a
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0fa8ebdd4244b8e652cc5341c3d5b4b06f84a637
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d8115c35bf3ee575cfc9c51ac9853f58a21a43dc
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=392db38058eb47250a9d0cc737af37e78a7e443d
->
-> We also try to fix the issue in the same way.
->
-> Note:
-> A lot of structs and functions in ltp_tbio.ko module based on old
-> kernel(e.g. 3.10.0) has been changed on upstream kernel, so ltp_tbio.ko
-> module cannot be built on upstream kernel.  Perhaps ltp_tbio.ko
-> module needs to be updated, but we want to fix the issue first.
->
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c b/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
-> index 48cc588..0a9cd40 100644
-> --- a/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
-> +++ b/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
-> @@ -562,8 +562,8 @@ module_init(tbio_init);
->  
->  static void tbio_exit(void)
->  {
-> -	blk_cleanup_queue(tbio_dev.q);
->  	del_gendisk(tbio_dev.gd);
-> +	blk_cleanup_queue(tbio_dev.q);
->  	put_disk(tbio_dev.gd);
->  	unregister_blkdev(TBIO_MAJOR, DEVICE_NAME);
->  	vfree(tbio_dev.data);
+* Fix the previous patch with tst_ping(), move setting $cmd before
+  tst_test_cmds().
 
+* Avoid misleading 'iface' in the info messages, rename 'iface' to
+  'iface/saddr' since we can pass a source address instead of an
+  interface name.
 
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 
+View the changeset: https://github.com/linux-test-project/ltp/compare/db9eace87950...e36643ed895d
+
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/470920918?utm_medium=notification&utm_source=email
+
+--
+
+You can unsubscribe from build emails from the linux-test-project/ltp repository going to https://travis-ci.org/account/preferences/unsubscribe?repository=1224421&utm_medium=notification&utm_source=email.
+Or unsubscribe from *all* email updating your settings at https://travis-ci.org/account/preferences/unsubscribe?utm_medium=notification&utm_source=email.
+Or configure specific recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20181221/59116682/attachment.html>
