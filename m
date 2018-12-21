@@ -1,101 +1,63 @@
 From: Cristian Marussi <cristian.marussi@arm.com>
-Date: Fri, 21 Dec 2018 18:23:44 +0000
-Subject: [LTP] [PATCH v2 4/4]  cgroup: helpers various fixes
-In-Reply-To: <20181221140118.GA22257@dell5510>
+Date: Fri, 21 Dec 2018 18:23:54 +0000
+Subject: [LTP] [PATCH v2 0/4]  cgroup tests newlib-porting
+In-Reply-To: <20181221154744.GA13971@dell5510>
 References: <20181220182149.48326-1-cristian.marussi@arm.com>
- <20181220182149.48326-5-cristian.marussi@arm.com>
- <20181221140118.GA22257@dell5510>
-Message-ID: <7c20bbf9-278b-82d0-75a0-51047443b90d@arm.com>
+ <20181221133904.GA27446@dell5510>
+ <6645abe6-4ab0-a1b2-6351-41325eff720b@arm.com>
+ <20181221154744.GA13971@dell5510>
+Message-ID: <2c88fa9c-c98a-557f-e5f1-5a84b7f7fdfd@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi
 
-On 21/12/2018 14:01, Petr Vorel wrote:
+On 21/12/2018 15:47, Petr Vorel wrote:
 > Hi Cristian,
 > 
->> diff --git a/testcases/kernel/controllers/cgroup/cgroup_regress_test_6_2.c b/testcases/kernel/controllers/cgroup/cgroup_regress_test_6_2.c
->> new file mode 100644
-> When you add new file, you need to put it also into .gitignore.
-> + Remove /test_6_2 from it (original file).
+>>> You left big copyright in cpuacct.sh.
+>> In this patch I have NOT touched anything else than the content of
+>> testcases/kernel/controllers/cgroup which are files related to the
+>> cgroup_regression_test.sh testcase; the file you mentioned is in
+>> testcases/kernel/controllers/cpuacct/ ... am I missing something ?
+> Sorry, I was wrong.
 > 
-> ...
->> +++ b/testcases/kernel/controllers/cgroup/cgroup_regress_test_6_2.c
->> @@ -0,0 +1,37 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * Copyright (c) 2009 FUJITSU LIMITED
->> + *
->> + * Author: Li Zefan <lizf@cn.fujitsu.com>
->> + */
->> +
->> +#define _GNU_SOURCE
-> Is _GNU_SOURCE really needed?
 > 
+>>> Can you please squash it into single commit?
+>>> Or in two (first cleanup & rewrite of group_regression_test.sh, second for
+>>> helpers). It does not bring much to split it like this.
+> 
+>> Ok I'll squash..I splitted thinking it could have been complained of being not
+>> splitted :D
+> For small changes we like to have it atomic (split), but rewrite is IMHO better
+> do it in one commit or two (group_regression_test.sh and then the rest - that's
+> up to you). I focus too much on details for tests which are for very old kernel.
+> 
+> 
+>>> I guess fork_processes.c and getdelays.c can be using new C API as well.
+>>> You don't have to do it, but it can bring benefits (using tst_res(), info about
+>>> command).
+> 
+>> I'll review those too...I focused only on the shell-scripts logic ... not sure
+>> why in fact.
+> I'd prefer to convert it to new C API or leave it as they are.
 
-Yes..needed to compile the CLONE_NEWNS flag passed down the newlib function
-ltp_clone_quick()
+I removed usage/references of the old API from fork_processes while getdelay it
+was completely unrelated from LTP API; in fact both are helpers launched by the
+LTP test scripts merely as background processes without any direct feedback
+reported to the testcase caller.
 
->> +#include <sched.h>
->> +#include <stdlib.h>
->> +#include <unistd.h>
->> +#include "test.h"
-> Please don't use legacy API.
-
-Done.
-> 
->> +
->> +#define DEFAULT_USEC	30000
->> +
->> +int foo(void __attribute__ ((unused)) * arg)
->> +{
->> +	return 0;
->> +}
->> +
->> +int main(int argc, char **argv)
->> +{
->> +	int usec;
->> +
->> +	if (argc == 2)
->> +		usec = atoi(argv[1]);
->> +	else
->> +		usec = DEFAULT_USEC;
->> +
->> +	while (1) {
->> +		usleep(usec);
->> +		ltp_clone_quick(CLONE_NEWNS, foo, NULL);
->> +	}
->> +
->> +	tst_exit();
->> +}
-> 
-> ...
-> 
->> +++ b/testcases/kernel/controllers/cgroup/getdelays.c
->> @@ -1,3 +1,4 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->>  /* getdelays.c
-> 
-> There is build warning, can you please fix it:
-> 
-> getdelays.c: In function ‘get_family_id’:
-> getdelays.c:177:14: warning: variable ‘rc’ set but not used [-Wunused-but-set-variable]
->   int id = 0, rc;
->               ^~
-> getdelays.c: In function ‘main’:
-> getdelays.c:418:7: warning: variable ‘i’ set but not used [-Wunused-but-set-variable]
->    int i;
->        ^
-> 
-Done.
+How could I use the new C API in this case ?
 
 Regards
 
 Cristian
 
+> 
+> 
 > Kind regards,
 > Petr
 > 
