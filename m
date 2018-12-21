@@ -1,48 +1,96 @@
 From: Cristian Marussi <cristian.marussi@arm.com>
-Date: Fri, 21 Dec 2018 15:20:24 +0000
+Date: Fri, 21 Dec 2018 15:27:20 +0000
 Subject: [LTP] [PATCH v2 1/4] cgroup_regression_test.sh ported to newlib
-In-Reply-To: <20181221142538.GB22257@dell5510>
+In-Reply-To: <20181221143507.GB27446@dell5510>
 References: <20181220182149.48326-1-cristian.marussi@arm.com>
  <20181220182149.48326-2-cristian.marussi@arm.com>
- <20181221142538.GB22257@dell5510>
-Message-ID: <b664fcee-17b8-dea2-313a-0b73e11651c8@arm.com>
+ <20181221143507.GB27446@dell5510>
+Message-ID: <d5a4fb0d-ca6f-d0e5-0016-af83c32930a3@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi
+Hi Petr
 
-On 21/12/2018 14:25, Petr Vorel wrote:
+On 21/12/2018 14:35, Petr Vorel wrote:
 > Hi Cristian,
 > 
 > ...
->> --- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+>> +++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+> ...
+>> -cd $LTPROOT/testcases/bin
+> You left this even after second commit. It's not needed.
+
+because I misunderstood your indication in the previous mail
+
+>> * Remove absolute (/bin/kill) and relative paths and cd into
+$LTPROOT/testcases/bin
+
+getting it like "remove A and remove B AND then CD into..." o.O
+
+my bad ...:D I'll fix it
+
+> 
+>> +TST_TESTFUNC=do_test
+>> +TST_SETUP=do_setup
+>> +TST_CLEANUP=do_cleanup
+>> +TST_CNT=10
+>> +TST_NEEDS_ROOT=1
+>> +TST_NEEDS_CMDS="dmesg mountpoint mount umount cat kill find mkdir rmdir grep"
+> Test needs also using temporary directory (as it creates directories):
+> TST_NEEDS_TMPDIR=1
+
+Fine. I missed that.
+
+> 
+> 
+>> -export TCID="cgroup_regression_test"
+>> -export TST_TOTAL=10
+>> -export TST_COUNT=1
+>> +. tst_test.sh
+> 
+>> -failed=0
+>> +do_setup()
+>> +{
+>> +	cd $LTPROOT/testcases/bin
+> And here.
+> 
+o.O
+
+> ...
+>> +do_cleanup()
+>> +{
+>> +	cd $LTPROOT/testcases/bin
+> One more time.
+> 
+o.O
+
+> ...
+>> -for ((cur = 1; cur <= $TST_TOTAL; cur++))
+>> +do_test()
 >>  {
->>  	grep -q -w "ns" /proc/cgroups
->>  	if [ $? -ne 0 ]; then
->> -		tst_resm TCONF "CONFIG_CGROUP_NS"
->> +		tst_res TCONF "CONFIG_CGROUP_NS"
->>  		return
->>  	fi
+>> -	export TST_COUNT=$cur
+>> +	local cur=$1
 > 
-> This could be just
+>>  	test_$cur
+>>  }
 > 
-> grep -q -w "ns" /proc/cgroups || tst_res TCONF "CONFIG_CGROUP_NS is not enabled"
+> do_test() function is not needed at all, looping can be done automatically:
+> Remove underscore from test functions (s/test_([0-9]+)/test$1/)
+> and change setup: TST_TESTFUNC=test
 > 
-> But CONFIG_CGROUP_NS was removed in a77aea92010a ("cgroup: remove the ns_cgroup")
-> in v3.0. We don't have TST_MAX_KVER, so we cannot use TST_MAX_KVER="3.0", but
-> maybe compare kernel version with tst_kvcmp (see doc) and adjust warning for new kernels.
+> See
+> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#user-content-2-3-1-basic-test-interface
+> 
+Sure.
 
-Fine I'll do. In fact I could see it working properly only when testing on QEMU
-2.6.39.
-
-Regards
-
-Cristian
 > 
 > Kind regards,
 > Petr
 > 
 
+Regards
+
+Cristian
