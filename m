@@ -1,44 +1,53 @@
-From: Travis CI <builds@travis-ci.org>
-Date: Fri, 21 Dec 2018 11:00:37 +0000
-Subject: [LTP] Passed: linux-test-project/ltp#1256 (master - e36643e)
-In-Reply-To: <linux-test-project/ltp+470920918+passed@travis-ci.org>
-Message-ID: <5c1cc7d4d917c_43f89c2f7e7f893899@6bb8627b-fe73-4ec2-90fb-a70c0fff3e22.mail>
+From: vaishnavi.d <vaishnavi.d@zilogic.com>
+Date: Fri, 21 Dec 2018 11:06:48 -0000
+Subject: [LTP] [PATCH v2] Test statx syscall for SYNC_FLAGS
+References: <20180917075248.28004-1-kewal@zilogic.com>
+ <20181220082009.GA27700@dell5510>
+Message-ID: <7723ae02218c2bbca1a40d9c701a7bb2.squirrel@pike.zilogic.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Build Update for linux-test-project/ltp
--------------------------------------
 
-Build: #1256
-Status: Passed
+Hi,
 
-Duration: 14 mins and 33 secs
-Commit: e36643e (master)
-Author: Alexey Kodanev
-Message: lib/tst_net.sh: fix checking ping6 command availability
+> Hi Kewal,
+>
+>> +++ b/testcases/kernel/syscalls/statx/statx07.c
+> ...
+>> + * Minimum kernel version required is 4.11.
+>> + */
+>
+> One more thing, you need to define _GNU_SOURCE here as it's needed for
+> glibc and
+> thus used for detection in m4/ltp-statx.m4.
+>
+>
+> #define _GNU_SOURCE
+>
+>> +#include <netdb.h>
+>> +#include <stdio.h>
+>> +#include <stdlib.h>
+>> +#include <linux/limits.h>
+>> +#include <sys/mount.h>
+>> +#include "tst_test.h"
+>> +#include "lapi/stat.h"
+>
+> Without it it fails on glibc >= 2.28
+> https://travis-ci.org/pevik/ltp/builds/470077800
+>
+> I thing it'd be better to remove _GNU_SOURCE from statx0*.c and put it
+> into
+> lapi/stat.h.
 
-* Fix the previous patch with tst_ping(), move setting $cmd before
-  tst_test_cmds().
+These changes have already been made in v5 of this test case. This patch
+has been renamed to syscalls/statx: Add test for sync flags. Waiting for
+the tst_get_tmpdir() function to be ported to new library for the patch to
+be merged.
 
-* Avoid misleading 'iface' in the info messages, rename 'iface' to
-  'iface/saddr' since we can pass a source address instead of an
-  interface name.
+Regards,
+Vaishnavi D
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 
-View the changeset: https://github.com/linux-test-project/ltp/compare/db9eace87950...e36643ed895d
-
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/470920918?utm_medium=notification&utm_source=email
-
---
-
-You can unsubscribe from build emails from the linux-test-project/ltp repository going to https://travis-ci.org/account/preferences/unsubscribe?repository=1224421&utm_medium=notification&utm_source=email.
-Or unsubscribe from *all* email updating your settings at https://travis-ci.org/account/preferences/unsubscribe?utm_medium=notification&utm_source=email.
-Or configure specific recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications.
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20181221/59116682/attachment.html>
