@@ -1,43 +1,37 @@
-From: Cristian Marussi <cristian.marussi@arm.com>
-Date: Fri, 28 Dec 2018 18:32:13 +0000
-Subject: [LTP] [PATCH 2/2]  memcg_stress_test.sh: fix memory usage
-In-Reply-To: <20181228183213.36339-1-cristian.marussi@arm.com>
-References: <20181228183213.36339-1-cristian.marussi@arm.com>
-Message-ID: <20181228183213.36339-3-cristian.marussi@arm.com>
+From: Sun Lianwen <sun_lianwen@163.com>
+Date: Mon, 31 Dec 2018 18:31:26 +0800
+Subject: [LTP] [PATCH] network/busy_poll: Change the "ethtool
+	--show-features to "ethtool -k"
+Message-ID: <20181231103126.3679-1-sun_lianwen@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When this test was run on a 'swap-less' system, the max quantity of
-memory to allocate for the test runners was wrongly set as the whole
-amount of free memory.
-This caused the test to fail badly without even properly cleanup all
-the memcg related configurations, so impacting also a lot of following
-memcg related test-cases. With this fix, when the available swap space
-is zero, the test limit itself to use only half of all the available
-free memory.
+To keep the same struct of "ethtool -i $(tst_iface)",
+change the "ethtool --show-features" to "ethtool -k".
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+Signed-off-by: Sun Lianwen <sun_lianwen@163.com>
 ---
- testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ testcases/network/busy_poll/busy_poll_lib.sh | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-index 2c5c13e3e..507d17a3d 100755
---- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-+++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-@@ -33,7 +33,8 @@ do_setup()
- 	local mem_free=`cat /proc/meminfo | grep MemFree | awk '{ print $2 }'`
- 	local swap_free=`cat /proc/meminfo | grep SwapFree | awk '{ print $2 }'`
+diff --git a/testcases/network/busy_poll/busy_poll_lib.sh b/testcases/network/busy_poll/busy_poll_lib.sh
+index 5270a1bbd..2a24ff262 100755
+--- a/testcases/network/busy_poll/busy_poll_lib.sh
++++ b/testcases/network/busy_poll/busy_poll_lib.sh
+@@ -22,8 +22,7 @@ busy_poll_check_config()
+ 	fi
  
--	MEM=$(( $mem_free + $swap_free / 2 ))
-+	# Limit the maximum amount of memory to use depending on swap space
-+	[ $swap_free -gt 0 ] && MEM=$(( $mem_free + $swap_free / 2 )) || MEM=$(( $mem_free / 2 ))
- 	MEM=$(( MEM / 1024 ))
- 	RUN_TIME=$(( 15 * 60 ))
- 
+ 	if tst_kvcmp -lt "4.5"; then
+-		ethtool --show-features $(tst_iface) | \
+-			grep -q 'busy-poll.*on' || \
++		ethtool -k  $(tst_iface) | grep -q 'busy-poll.*on' || \
+ 			tst_brk TCONF "busy poll not supported by driver"
+ 	else
+ 		drvs="bnx2x|bnxt|cxgb4|enic|benet|ixgbe|ixgbevf|mlx4|mlx5|myri10ge|sfc|virtio"
 -- 
-2.17.1
+2.19.0
+
 
