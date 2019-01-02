@@ -1,41 +1,46 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 2 Jan 2019 13:51:04 +0800
-Subject: [LTP] [PATCH 3/3] travis: Use docker based builds
-In-Reply-To: <20181219141415.3495-3-pvorel@suse.cz>
-References: <20181219141415.3495-1-pvorel@suse.cz>
- <20181219141415.3495-3-pvorel@suse.cz>
-Message-ID: <CAEemH2cMOJcvGG-B6Ab8DTXsVjRpe6m3LB=iY6xvqrJZ4TNvcQ@mail.gmail.com>
+From: Li Wang <liwan@redhat.com>
+Date: Wed, 2 Jan 2019 16:14:16 +0800
+Subject: [LTP] [PATCH] syscalls/ptrace07: handle potential SIGSEGV on
+	older kernels
+In-Reply-To: <b8db71df3a21f600e2a52064df6d2a21ed2195a9.1545400016.git.jstancek@redhat.com>
+References: <b8db71df3a21f600e2a52064df6d2a21ed2195a9.1545400016.git.jstancek@redhat.com>
+Message-ID: <CAEemH2eL-C0EcU9T_E6qvhqrHYcR9_vrwNuerP_fK7jUNyNKCQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Dec 19, 2018 at 10:14 PM Petr Vorel <pvorel@suse.cz> wrote:
+On Fri, Dec 21, 2018 at 9:51 PM Jan Stancek <jstancek@redhat.com> wrote:
 >
-> Previously we used 10 Trusty environment (VM) based travis jobs with
-> different gcc and clang versions installed via ubuntu-toolchain-r apt
-> repository.
+> If a ptraced test process hits SIGSEGV, the entire testcase hangs.
 >
-> We agreed that testing just different gcc/clang versions isn't enough,
-> it'd be good to test also different glibc and kernel headers, which are
-> on different distros. Therefore now we test 15 jobs based on various
-> distros (Debian, Ubuntu, Fedora, openSUSE, centOS).
-> We still test both gcc/clang, out-of-tree and cross-compilation builds.
+> Older kernels such as RHEL7 (3.10.0), check the error code returned
+> by restore_fpu_checking() and do drop_init_fpu() if it fails.
+> So the FPU state of the prev task can't leak.
+>
+> But in the more likely case a task with xcomp_bv != 0 will be killed
+> by SIGSEGV; either from do_device_not_available() or from
+> sys_rt_sigreturn()->__restore_xstate_sig().
+>
+> And this is why the test case hangs; it wrongly assumes that the
+> traced child can only exit and report nothing else. But since it
+> receives SIGSEGV it reports this signal to the main process and
+> sleeps in ptrace_stop(), it does not exit and thus the test-case
+> hangs in tst_reap_children() after return from do_test().
+>
+> Replace PTRACE_CONT with PTRACE_DETACH, so we don't need to
+> handle subsequent stops. And treat exit code from test process
+> as info-only.
 
-I have no more comment for this changes, patch set looks pretty good to me.
+ptrace07(with this patch applied) passed with kernel 3.10 and 4.18
+multi arches test.
 
 >
-> Disadvantage of this approach is that it's not obvious compiler and libc
-> version. Travis C testing environment implementation prints compiler
-> version ($CC) before installing actually used compiler via docker.
-> Therefore run ver_linux printing version info and print $CC version in
-> build.sh.
->
-> Implements: #448
->
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-Reviewed-by: Li Wang <liwang@redhat.com>
+> Debugged-by: Oleg Nesterov <onestero@redhat.com>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+
+Tested-by: Li Wang <liwang@redhat.com>
 
 -- 
 Regards,
