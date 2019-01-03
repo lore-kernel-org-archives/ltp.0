@@ -1,19 +1,52 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 3 Jan 2019 11:51:08 +0100
-Subject: [LTP] [PATCH ltp] syscalls/getrlimit: add getrlimit03 into
- .gitignore
-In-Reply-To: <20181224033942.20421-1-yixin.zhang@intel.com>
-References: <20181224033942.20421-1-yixin.zhang@intel.com>
-Message-ID: <20190103105108.GC10514@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 3 Jan 2019 06:00:58 -0500 (EST)
+Subject: [LTP] [PATCH] syscalls/ptrace07: handle potential SIGSEGV on
+ older kernels
+In-Reply-To: <CAEemH2eL-C0EcU9T_E6qvhqrHYcR9_vrwNuerP_fK7jUNyNKCQ@mail.gmail.com>
+References: <b8db71df3a21f600e2a52064df6d2a21ed2195a9.1545400016.git.jstancek@redhat.com>
+ <CAEemH2eL-C0EcU9T_E6qvhqrHYcR9_vrwNuerP_fK7jUNyNKCQ@mail.gmail.com>
+Message-ID: <949898479.93116882.1546513258421.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed, thanks.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+----- Original Message -----
+> On Fri, Dec 21, 2018 at 9:51 PM Jan Stancek <jstancek@redhat.com> wrote:
+> >
+> > If a ptraced test process hits SIGSEGV, the entire testcase hangs.
+> >
+> > Older kernels such as RHEL7 (3.10.0), check the error code returned
+> > by restore_fpu_checking() and do drop_init_fpu() if it fails.
+> > So the FPU state of the prev task can't leak.
+> >
+> > But in the more likely case a task with xcomp_bv != 0 will be killed
+> > by SIGSEGV; either from do_device_not_available() or from
+> > sys_rt_sigreturn()->__restore_xstate_sig().
+> >
+> > And this is why the test case hangs; it wrongly assumes that the
+> > traced child can only exit and report nothing else. But since it
+> > receives SIGSEGV it reports this signal to the main process and
+> > sleeps in ptrace_stop(), it does not exit and thus the test-case
+> > hangs in tst_reap_children() after return from do_test().
+> >
+> > Replace PTRACE_CONT with PTRACE_DETACH, so we don't need to
+> > handle subsequent stops. And treat exit code from test process
+> > as info-only.
+> 
+> ptrace07(with this patch applied) passed with kernel 3.10 and 4.18
+> multi arches test.
+> 
+> >
+> > Debugged-by: Oleg Nesterov <onestero@redhat.com>
+> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> 
+> Tested-by: Li Wang <liwang@redhat.com>
+
+Pushed.
+
+Regards,
+Jan
