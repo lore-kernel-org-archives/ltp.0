@@ -1,31 +1,29 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 3 Jan 2019 06:52:28 -0500 (EST)
-Subject: [LTP] [PATCH 2/2] lib: build check parameters for tst_brk()
-In-Reply-To: <20181211145833.GB1180@rei>
-References: <88db8a4def940c63ec2836cec1d0041db00ffd4c.1541710635.git.jstancek@redhat.com>
- <d3ce5d3247f7f09cfabd288b40893bb631fb190f.1541710635.git.jstancek@redhat.com>
- <5BE4E95E.4000303@cn.fujitsu.com>
- <1582215982.71956713.1541786229415.JavaMail.zimbra@redhat.com>
- <20181211145833.GB1180@rei>
-Message-ID: <124327317.93121782.1546516348350.JavaMail.zimbra@redhat.com>
+From: Cristian Marussi <cristian.marussi@arm.com>
+Date: Thu,  3 Jan 2019 12:11:27 +0000
+Subject: [LTP] [PATCH v2 0/1]  memcg_stress newlib porting
+Message-ID: <20190103121128.17395-1-cristian.marussi@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+This converts memcg stress tests and its helper to LTP newlib and
+performs a general cleanup.
 
------ Original Message -----
-> Hi!
-> > Do you have suggestion how to achieve that?
-> 
-> We can always name the BUILD_BUG_ON() macro to be
-> TST_BRK_ONLY_SUPPORTS_TCONF_TBROK_TFAIL() and be done with it.
-> 
-> I would rather avoided playing with specific compiler features etc. So
-> this version looks good to me.
+This patch is dependent on [1] since it factors out a common helper
+to cgroup_lib.sh (introduced in [1])
 
-Pushed the original version for now.
+Changes from v1:
+----------------
 
-Regards,
-Jan
+ - Restored the original usage of SIGKILL to terminate memcg_process_stress
+   helpers preocesses, after having had a look at what said in previous commit:
+	9b9a6bb10258bc975bd1707b418699264d3bdcef
+
+Cristian Marussi (1):
+	[PATCH v2] [LTP] memcg_stress_test.sh: ported to newlib
+
+[1]: http://lists.linux.it/pipermail/ltp/2018-December/010385.html
+
+
