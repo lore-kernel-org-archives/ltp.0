@@ -1,11 +1,9 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 3 Jan 2019 06:06:49 -0500 (EST)
-Subject: [LTP] [PATCH] tbio/ltp_tbio.c: Change the order of calling
- blk_cleanup_queue() and del_gendisk()
-In-Reply-To: <5BCE876F.4070500@cn.fujitsu.com>
-References: <1540193371-5689-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <5BCE876F.4070500@cn.fujitsu.com>
-Message-ID: <2118209189.93118010.1546513609600.JavaMail.zimbra@redhat.com>
+Date: Thu, 3 Jan 2019 06:39:55 -0500 (EST)
+Subject: [LTP] [PATCH v3] syscalls: Add set_mempolicy numa tests.
+In-Reply-To: <20181218155752.7028-1-chrubis@suse.cz>
+References: <20181218155752.7028-1-chrubis@suse.cz>
+Message-ID: <728475501.93120973.1546515595304.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,62 +13,97 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> On 2018/10/22 15:29, Xiao Yang wrote:
-> > Removing ltp_tbio.ko module always reproduced a warning and panic
-> > on the old kernels that have backported kernel commit a063057d7c73
-> > (e.g. RHEL7.6).
-> Hi,
+> This is initial attempt to replace numa.sh tests that despite having
+> been fixed several times have still many shortcommings that wouldn't
+> easy to fix. It's not finished nor 100% replacement at this point but it
+> should be pretty good start.
 > 
-> Sorry, the RHEL version is sensltive, so please remove it when pushing
-> the patch.
+> The main selling points of these testcases are:
+> 
+> The memory allocated for the testing is tracked exactly. We are using
+> get_mempolicy() with MPOL_F_NODE | MPOL_F_ADDR that returns the node ID on
+> which specified address is allocated on to count pages allocated per node
+> after
+> we set desired memory policy.
+> 
+> We also check for free memory on each numa memory mode and skip nodes
+> that don't have sufficient amount of memory for a particular test. The
+> tests checks usuall for twice as much memory per each node in order to
+> allow for allocations to be "misplaced".
+> 
+> The tests for file based shared interleaved mappings are no longer
+> mapping a single small file but rather than that we accumulate statistic
+> for larger amount of files over longer period of time and we also allow
+> for small offset (currently 10%). We should probably also increase the
+> number of samples we take as currently it's about 5MB in total on x86
+> although I haven't managed to make this test fail so far. This also
+> fixes the test on Btrfs where the synthetic test that expects the pages
+> to be distributed exactly equally fails.
+> 
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> CC: Michal Hocko <mhocko@kernel.org>
+> CC: Vlastimil Babka <vbabka@suse.cz>
+> CC: Jan Stancek <jstancek@redhat.com>
 
-Not sure what you mean by 'sensitive'. Anyway, pushed with
-the note about RHEL7.6 dropped.
+Hi,
+
+> +
+> +
+> +void tst_numa_alloc_parse(struct tst_nodemap *nodes, const char *path,
+> +                          unsigned int pages)
+
+I'd change this to a function that only counts allocated pages,
+and increases counters.
+
+> +{
+> +	size_t page_size = getpagesize();
+> +	char *ptr;
+> +	int fd = -1;
+> +	int flags = MAP_PRIVATE|MAP_ANONYMOUS;
+> +	int node;
+> +	unsigned int i;
+> +
+> +	if (path) {
+> +		fd = SAFE_OPEN(path, O_CREAT | O_EXCL | O_RDWR, 0666);
+> +		SAFE_FTRUNCATE(fd, pages * page_size);
+> +		flags = MAP_SHARED;
+> +	}
+> +
+> +	ptr = SAFE_MMAP(NULL, pages  * page_size,
+> +	                PROT_READ|PROT_WRITE, flags, fd, 0);
+> +
+> +	if (path) {
+> +		SAFE_CLOSE(fd);
+> +		SAFE_UNLINK(path);
+> +	}
+> +
+> +	memset(ptr, 'a', pages * page_size);
+
+I think all the alloc stuff shouldn't be in library. It's quite
+possible tests will need different ways to allocate memory. 
+
+Maybe the test will want to mmap, but not touch any pages,
+or pass different flags to mmap. Allocate with other functions
+than mmap, etc.
+
+The rest of API looks good to me.
 
 Regards,
 Jan
 
-> 
-> Best Regards,
-> Xiao Yang
-> > Removing ltp_tbio.ko module calls blk_cleanup_queue() and del_gendisk()
-> > in the order so that it triggers races or warnings since commit
-> > a063057d7c73
-> > in kernel, and some kernel modules have fixed the issue, as below:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=57678e5a3d5145e5f08aa1d307ba219b27b1765a
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0fa8ebdd4244b8e652cc5341c3d5b4b06f84a637
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d8115c35bf3ee575cfc9c51ac9853f58a21a43dc
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=392db38058eb47250a9d0cc737af37e78a7e443d
-> >
-> > We also try to fix the issue in the same way.
-> >
-> > Note:
-> > A lot of structs and functions in ltp_tbio.ko module based on old
-> > kernel(e.g. 3.10.0) has been changed on upstream kernel, so ltp_tbio.ko
-> > module cannot be built on upstream kernel.  Perhaps ltp_tbio.ko
-> > module needs to be updated, but we want to fix the issue first.
-> >
-> > Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> > ---
-> >  testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
-> > b/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
-> > index 48cc588..0a9cd40 100644
-> > --- a/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
-> > +++ b/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
-> > @@ -562,8 +562,8 @@ module_init(tbio_init);
-> >  
-> >  static void tbio_exit(void)
-> >  {
-> > -	blk_cleanup_queue(tbio_dev.q);
-> >  	del_gendisk(tbio_dev.gd);
-> > +	blk_cleanup_queue(tbio_dev.q);
-> >  	put_disk(tbio_dev.gd);
-> >  	unregister_blkdev(TBIO_MAJOR, DEVICE_NAME);
-> >  	vfree(tbio_dev.data);
-> 
-> 
-> 
-> 
+> +
+> +	for (i = 0; i < pages; i++) {
+> +		get_mempolicy(&node, NULL, 0, ptr + i * page_size, MPOL_F_NODE |
+> MPOL_F_ADDR);
+> +
+> +		if (node < 0 || (unsigned int)node >= nodes->cnt) {
+> +			tst_res(TWARN, "get_mempolicy(...) returned invalid node %i\n", node);
+> +			continue;
+> +		}
+> +
+> +		inc_counter(node, nodes);
+> +	}
+> +
+> +	SAFE_MUNMAP(ptr, pages * page_size);
+> +}
+> +
