@@ -1,11 +1,11 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 3 Jan 2019 06:00:58 -0500 (EST)
-Subject: [LTP] [PATCH] syscalls/ptrace07: handle potential SIGSEGV on
- older kernels
-In-Reply-To: <CAEemH2eL-C0EcU9T_E6qvhqrHYcR9_vrwNuerP_fK7jUNyNKCQ@mail.gmail.com>
-References: <b8db71df3a21f600e2a52064df6d2a21ed2195a9.1545400016.git.jstancek@redhat.com>
- <CAEemH2eL-C0EcU9T_E6qvhqrHYcR9_vrwNuerP_fK7jUNyNKCQ@mail.gmail.com>
-Message-ID: <949898479.93116882.1546513258421.JavaMail.zimbra@redhat.com>
+Date: Thu, 3 Jan 2019 06:06:49 -0500 (EST)
+Subject: [LTP] [PATCH] tbio/ltp_tbio.c: Change the order of calling
+ blk_cleanup_queue() and del_gendisk()
+In-Reply-To: <5BCE876F.4070500@cn.fujitsu.com>
+References: <1540193371-5689-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <5BCE876F.4070500@cn.fujitsu.com>
+Message-ID: <2118209189.93118010.1546513609600.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,38 +15,62 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> On Fri, Dec 21, 2018 at 9:51 PM Jan Stancek <jstancek@redhat.com> wrote:
-> >
-> > If a ptraced test process hits SIGSEGV, the entire testcase hangs.
-> >
-> > Older kernels such as RHEL7 (3.10.0), check the error code returned
-> > by restore_fpu_checking() and do drop_init_fpu() if it fails.
-> > So the FPU state of the prev task can't leak.
-> >
-> > But in the more likely case a task with xcomp_bv != 0 will be killed
-> > by SIGSEGV; either from do_device_not_available() or from
-> > sys_rt_sigreturn()->__restore_xstate_sig().
-> >
-> > And this is why the test case hangs; it wrongly assumes that the
-> > traced child can only exit and report nothing else. But since it
-> > receives SIGSEGV it reports this signal to the main process and
-> > sleeps in ptrace_stop(), it does not exit and thus the test-case
-> > hangs in tst_reap_children() after return from do_test().
-> >
-> > Replace PTRACE_CONT with PTRACE_DETACH, so we don't need to
-> > handle subsequent stops. And treat exit code from test process
-> > as info-only.
+> On 2018/10/22 15:29, Xiao Yang wrote:
+> > Removing ltp_tbio.ko module always reproduced a warning and panic
+> > on the old kernels that have backported kernel commit a063057d7c73
+> > (e.g. RHEL7.6).
+> Hi,
 > 
-> ptrace07(with this patch applied) passed with kernel 3.10 and 4.18
-> multi arches test.
-> 
-> >
-> > Debugged-by: Oleg Nesterov <onestero@redhat.com>
-> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> 
-> Tested-by: Li Wang <liwang@redhat.com>
+> Sorry, the RHEL version is sensltive, so please remove it when pushing
+> the patch.
 
-Pushed.
+Not sure what you mean by 'sensitive'. Anyway, pushed with
+the note about RHEL7.6 dropped.
 
 Regards,
 Jan
+
+> 
+> Best Regards,
+> Xiao Yang
+> > Removing ltp_tbio.ko module calls blk_cleanup_queue() and del_gendisk()
+> > in the order so that it triggers races or warnings since commit
+> > a063057d7c73
+> > in kernel, and some kernel modules have fixed the issue, as below:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=57678e5a3d5145e5f08aa1d307ba219b27b1765a
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0fa8ebdd4244b8e652cc5341c3d5b4b06f84a637
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d8115c35bf3ee575cfc9c51ac9853f58a21a43dc
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=392db38058eb47250a9d0cc737af37e78a7e443d
+> >
+> > We also try to fix the issue in the same way.
+> >
+> > Note:
+> > A lot of structs and functions in ltp_tbio.ko module based on old
+> > kernel(e.g. 3.10.0) has been changed on upstream kernel, so ltp_tbio.ko
+> > module cannot be built on upstream kernel.  Perhaps ltp_tbio.ko
+> > module needs to be updated, but we want to fix the issue first.
+> >
+> > Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> > ---
+> >  testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
+> > b/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
+> > index 48cc588..0a9cd40 100644
+> > --- a/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
+> > +++ b/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
+> > @@ -562,8 +562,8 @@ module_init(tbio_init);
+> >  
+> >  static void tbio_exit(void)
+> >  {
+> > -	blk_cleanup_queue(tbio_dev.q);
+> >  	del_gendisk(tbio_dev.gd);
+> > +	blk_cleanup_queue(tbio_dev.q);
+> >  	put_disk(tbio_dev.gd);
+> >  	unregister_blkdev(TBIO_MAJOR, DEVICE_NAME);
+> >  	vfree(tbio_dev.data);
+> 
+> 
+> 
+> 
