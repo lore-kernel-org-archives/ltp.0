@@ -1,102 +1,130 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 04 Jan 2019 16:02:54 +0100
-Subject: [LTP] [PATCH RFC] fzsync: tst_fzsync_pair_wait exit when parent
-	hit accidental break
-In-Reply-To: <20190104095256.12266-1-liwang@redhat.com>
-References: <20190104095256.12266-1-liwang@redhat.com>
-Message-ID: <878t00mpnl.fsf@rpws.prws.suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 4 Jan 2019 16:35:34 +0100
+Subject: [LTP] [PATCH 3/3] syscalls/getcpu01: convert to new lib,
+ cleanups, enable on Android
+In-Reply-To: <20181227003102.246617-3-smuckle@google.com>
+References: <20181227003102.246617-1-smuckle@google.com>
+ <20181227003102.246617-3-smuckle@google.com>
+Message-ID: <20190104153534.GA29238@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi!
+I've simplified the test a bit more and pushed, thanks.
 
-Li Wang <liwang@redhat.com> writes:
+The reason why the test was checking for glibc version was because the
+CPU_ALLOC() and friends macros were not present on old glibc, with the
+fallback definitions in place we can drop these ifdefs now, see patch
+below that I applied over your changes.
 
-> For system(rhel7.6, s390x) without __NR_recvmmsg supported, run
-> cve-2016-7117 result in timeout and killed by LTP framework. The
-> root reason is tst_syscall break with cleanup() function calling
-> in this trace path:
->
->   tst_syscall(__NR_recvmmsg, ...)
->     tst_brk()
->       cleanup()
->         tst_fzsync_pair_cleanup()
->           SAFE_PTHREAD_JOIN(pair->thread_b, NULL);
->
-> cve-2016-7117 hung at here to wait for thread_b send_and_close() finishing.
-> But thread_b fall into infinite loop because of tst_fzsync_wait_b without
-> an extra condition to exit. Eventually, test get timeout error like:
->
->   cve-2016-7117.c:145: CONF: syscall(-1) __NR_recvmmsg not supported
->   Test timeouted, sending SIGKILL!
->   tst_test.c:1125: INFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
->   tst_test.c:1126: BROK: Test killed! (timeout?)
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Cc: Richard Palethorpe <rpalethorpe@suse.com>
-> ---
->  include/tst_fuzzy_sync.h | 20 ++++++++++++--------
->  1 file changed, 12 insertions(+), 8 deletions(-)
->
-> diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-> index de0402c9b..7e4d48f0a 100644
-> --- a/include/tst_fuzzy_sync.h
-> +++ b/include/tst_fuzzy_sync.h
-> @@ -517,7 +517,8 @@ static void tst_fzsync_pair_update(struct tst_fzsync_pair *pair)
->   * @return A non-zero value if the thread should continue otherwise the
->   * calling thread should exit.
->   */
-> -static inline void tst_fzsync_pair_wait(int *our_cntr,
-> +static inline void tst_fzsync_pair_wait(struct tst_fzsync_pair *pair,
-> +					int *our_cntr,
->  					int *other_cntr,
->  					int *spins)
->  {
-> @@ -530,7 +531,8 @@ static inline void tst_fzsync_pair_wait(int *our_cntr,
->  		 * then our counter may already have been set to zero.
->  		 */
->  		while (tst_atomic_load(our_cntr) > 0
-> -		       && tst_atomic_load(our_cntr) < INT_MAX) {
-> +		       && tst_atomic_load(our_cntr) < INT_MAX
-> +		       && !tst_atomic_load(&pair->exit)) {
->  			if (spins)
->  				(*spins)++;
->  		}
-> @@ -540,14 +542,16 @@ static inline void tst_fzsync_pair_wait(int *our_cntr,
->  		 * Once both counters have been set to zero the invariant
->  		 * is restored and we can continue.
->  		 */
-> -		while (tst_atomic_load(our_cntr) > 1)
-> +		while (tst_atomic_load(our_cntr) > 1
-> +			&& !tst_atomic_load(&pair->exit))
->  			;
->  	} else {
->  		/*
->  		 * If our counter is less than the other thread's we are ahead
->  		 * of it and need to wait.
->  		 */
-> -		while (tst_atomic_load(our_cntr) < tst_atomic_load(other_cntr)) {
-> +		while (tst_atomic_load(our_cntr) < tst_atomic_load(other_cntr)
-> +			&& !tst_atomic_load(&pair->exit)) {
->  			if (spins)
->  				(*spins)++;
->  		}
+Also it seems that getcpu syscall is not specific to i386 and many
+architectures also have vdso implementation.
 
-This is how it worked before, so it is fairly safe. However I don't like
-atomically checking for the exit value on every spin of the delay
-loop. Also because setting exit just causes it to drop through there is
-still the (theoretical) risk of it getting stuck on another operation
-before breaking out of thread B's main loop.
+So we should probably change the test to call both getcpu syscall and
+sched_getcpu() library function and assert that both are correct.
 
-Also removing the exit variable makes formal verification a bit easier.
+diff --git a/testcases/kernel/syscalls/getcpu/getcpu01.c b/testcases/kernel/syscalls/getcpu/getcpu01.c
+index b5380dbb2..eb6ded8ab 100644
+--- a/testcases/kernel/syscalls/getcpu/getcpu01.c
++++ b/testcases/kernel/syscalls/getcpu/getcpu01.c
+@@ -15,32 +15,16 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <sys/types.h>
++#include "lapi/syscalls.h"
+ #include "lapi/cpuset.h"
+ #include "tst_test.h"
+ 
+-#ifdef ANDROID
+-	#define TEST_SUPPORTED 1
+-#elif defined(__i386__) || defined(__x86_64__)
+-	#if __GLIBC_PREREQ(2,6)
+-		#if defined(__x86_64__)
+-			#include <utmpx.h>
+-		#endif
+-		#define TEST_SUPPORTED 1
+-	#elif defined(__i386__)
+-		#define TEST_SUPPORTED 1
+-	#else
+-		#define TEST_SUPPORTED 0
+-	#endif
+-#else
+-	#define TEST_SUPPORTED 0
+-#endif
+-
+ static inline int get_cpu(unsigned *cpu_id,
+ 			  unsigned *node_id LTP_ATTRIBUTE_UNUSED,
+ 			  void *cache_struct LTP_ATTRIBUTE_UNUSED)
+ {
+ #if defined(__i386__)
+-	return syscall(318, cpu_id, node_id, cache_struct);
++	return syscall(__NR_getcpu, cpu_id, node_id, cache_struct);
+ #else
+ 	*cpu_id = sched_getcpu();
+ #endif
+@@ -66,34 +50,28 @@ static unsigned int set_cpu_affinity(void)
+ 	cpu_set_t *set;
+ 	size_t size;
+ 	int nrcpus = 1024;
++
+ realloc:
+ 	set = CPU_ALLOC(nrcpus);
+-	if (set == NULL) {
+-		tst_brk(TBROK, "CPU_ALLOC:errno:%d", errno);
+-	}
++	if (!set)
++		tst_brk(TBROK | TERRNO, "CPU_ALLOC()");
++
+ 	size = CPU_ALLOC_SIZE(nrcpus);
+ 	CPU_ZERO_S(size, set);
+ 	if (sched_getaffinity(0, size, set) < 0) {
+ 		CPU_FREE(set);
+-#if __GLIBC_PREREQ(2, 7) || defined(ANDROID)
+ 		if (errno == EINVAL && nrcpus < (1024 << 8)) {
+ 			nrcpus = nrcpus << 2;
+ 			goto realloc;
+ 		}
+-#else
+-		if (errno == EINVAL)
+-			tst_brk(TBROK,
+-				"NR_CPUS of the kernel is more than 1024, so we'd better use a newer glibc(>= 2.7)");
+-		else
+-#endif
+-			tst_brk(TBROK, "sched_getaffinity:errno:%d", errno);
++		tst_brk(TBROK | TERRNO, "sched_getaffinity()");
+ 	}
+ 	cpu_max = max_cpuid(size, set);
+ 	CPU_ZERO_S(size, set);
+ 	CPU_SET_S(cpu_max, size, set);
+ 	if (sched_setaffinity(0, size, set) < 0) {
+ 		CPU_FREE(set);
+-		tst_brk(TBROK, "sched_setaffinity:errno:%d", errno);
++		tst_brk(TBROK | TERRNO, "sched_setaffinity()");
+ 	}
+ 	CPU_FREE(set);
+ 	return cpu_max;
+@@ -104,7 +82,7 @@ static unsigned int get_nodeid(unsigned int cpu_id)
+ {
+ 	DIR *directory_parent, *directory_node;
+ 	struct dirent *de, *dn;
+-	char directory_path[255];
++	char directory_path[PATH_MAX];
+ 	unsigned int cpu;
+ 	int node_id = 0;
+ 
+@@ -181,8 +159,6 @@ static void setup(void)
+ {
+ 	if (tst_kvercmp(2, 6, 20) < 0)
+ 		tst_brk(TCONF, "kernel >= 2.6.20 required");
+-	if (!TEST_SUPPORTED)
+-		tst_brk(TCONF, "insufficient C library support");
+ }
+ 
+ static struct tst_test test = {
 
-Another option might be to use pthread_kill with a realtime signal and
-a signal handler which immediately exits the current thread. I am not
-sure how much complexity that will introduce though?
-
---
-Thank you,
-Richard.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
