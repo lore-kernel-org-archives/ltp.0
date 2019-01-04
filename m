@@ -1,70 +1,46 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 4 Jan 2019 10:38:44 +0800
-Subject: [LTP] [PATCH] cpu_hotplug/cpuhotplug03.sh: Accurately select
- command name by -C option
-In-Reply-To: <20190103210325.GA23827@dell5510>
-References: <1542366655-3891-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20181205211352.GC21236@x230> <5C20BF16.6080903@cn.fujitsu.com>
- <20190103210325.GA23827@dell5510>
-Message-ID: <5C2EC734.7060006@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 4 Jan 2019 04:45:55 +0100
+Subject: [LTP] [PATCH v3]  cgroup_regression_test.sh ported to newlib
+In-Reply-To: <20181221182516.45689-1-cristian.marussi@arm.com>
+References: <20181221182516.45689-1-cristian.marussi@arm.com>
+Message-ID: <20190104034555.GA5992@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2019/01/04 5:03, Petr Vorel wrote:
-> Hi Xiao,
->
-> ...
->>>> References:
->>>> procps commit: bb272580a6f3c192c61e307f9e341514d892d06e
->>>> procps commit: 14005a371e5c14289e96a4927ffd1a827d3c9d85
->>>> procps commit: 2cfdbbe897f0d4e41460c7c2b92acfc5804652c8
->>>> kernel commit: 6b59808bfe482642287ddf3fe9d4cccb10756652
-> Merged with minor changes: remove references from code and use standard
-> references (short has + commit message) in commit message.
->
-> Thanks for your patch!.
-Hi Petr,
+Hi Cristian,
 
-Thanks for your push.
->>>> Note:
->>>> I think the lastest ps(1) manpage for command name length is confused
->>>> because kernel only extend workqueue worker name to 64 characters by
->>>> commit 6b59808 and still truncate normal command name to 16 characters.
->>>> e.g:
->>>> ---------------------------------------------------------------------
->>>> cd /root/ltp/testcases/kernel/hotplug/cpu_hotplug/tools
->>>> PATH=$PATH:$PWD cpuhotplug_do_spin_loop&
->>>> [1] 8732
->>>> cat /proc/8732/stat
->>>> 8732 (cpuhotplug_do_s) ...
->>>> cat /proc/8732/status | grep Name
->>>> Name:   cpuhotplug_do_s
->>>> ---------------------------------------------------------------------
->>> Agree.
->>>> I will try to update ps(1) manpage for command name length.
->>> Good :).
-> Out of curiosity: have you reported it to procps upstream?
-I have reported and sent a fix patch to procps mail list(i.e. 
-procps@freelists.org), but it
-seems that nobody reveiws and pushes it.   I am going to ping. :-)
+> Ported to newlib and cleaned up.
 
-Please see attachment for our fix patch.
+>  - removed absolute/relative commands invocations
+>  - avoid bashism
+>   + removed bash shebang
+>   + giving up 'kill' bash-builtin: this needs redefining
+>     used sigspec strings
+>  - A common function 'get_cgroup_mountpoint' is added to help
+>    parse /proc/mounts in search of specific cgroup subsystems
+>    mountpoints. It is added as part of a common cgroup_lib.sh.
+>  - converted Copyright headers to SPDX
+>  - renamed each helper to include a tag prefix (cgroup_regress_)
+>    in order to avoid possible name clashes once installed all together
+>    into testcases/bin
 
-Best Regards,
-Xiao Yang
->
-> Kind regards,
-> Petr
->
->
->
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 
+Thanks for your patch, merged with several code style changes:
+ - unify file names (cgroup_regress_* => cgroup_regression_)
+ - rename also getdelays.c and fork_processes.c
+ - redirect wait's stderr to /dev/null to keep it quiet
+ - remove mandatory commands from TST_NEEDS_CMDS
+ - move tst_test.sh loading into library
+ - cleanup get_cgroup_mountpoint()
+ - minor code style fixes
 
+See diff bellow. I also added 4 commits related to this test,
+one of them is fixing regression I added while changing your code
+(I'm sorry).
 
--------------- next part --------------
-An embedded and charset-unspecified text was scrubbed...
-Name: 0001-docs-Correct-ps.1-for-command-name-length.patch
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190104/b5db03ce/attachment-0001.ksh>
+Kind regards,
+Petr
