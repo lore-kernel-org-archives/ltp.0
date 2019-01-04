@@ -1,27 +1,70 @@
-From: Andrew Morton <akpm@linux-foundation.org>
-Date: Thu, 3 Jan 2019 13:59:57 -0800
-Subject: [LTP] [bug] problems with migration of huge pages with
- v4.20-10214-ge1ef035d272e
-In-Reply-To: <6e341052-fe38-b71c-ebb2-47e2e34f5963@oracle.com>
-References: <1323128903.93005102.1546461004635.JavaMail.zimbra@redhat.com>
- <6e608107-e071-90c0-bd73-4215325433c1@oracle.com>
- <dc056866-0e60-6ffa-54d5-5cafa1a4a53f@oracle.com>
- <1808265696.93134171.1546519652798.JavaMail.zimbra@redhat.com>
- <495081357.93179893.1546535169172.JavaMail.zimbra@redhat.com>
- <6e341052-fe38-b71c-ebb2-47e2e34f5963@oracle.com>
-Message-ID: <20190103135957.68d1ef31f4e125a1a67bbcb9@linux-foundation.org>
+From: Cristian Marussi <cristian.marussi@arm.com>
+Date: Fri, 4 Jan 2019 10:21:13 +0000
+Subject: [LTP] [PATCH v3]  cgroup_regression_test.sh ported to newlib
+In-Reply-To: <20190104034555.GA5992@dell5510>
+References: <20181221182516.45689-1-cristian.marussi@arm.com>
+ <20190104034555.GA5992@dell5510>
+Message-ID: <9a580965-10d4-80d1-a0c6-23c502289ee7@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, 3 Jan 2019 13:44:20 -0800 Mike Kravetz <mike.kravetz@oracle.com> wrote:
+Hi Petr
 
-> Do I simply send a 'revert'
-> patch to you and the list?
+On 04/01/2019 03:45, Petr Vorel wrote:
+> Hi Cristian,
+> 
+>> Ported to newlib and cleaned up.
+> 
+>>  - removed absolute/relative commands invocations
+>>  - avoid bashism
+>>   + removed bash shebang
+>>   + giving up 'kill' bash-builtin: this needs redefining
+>>     used sigspec strings
+>>  - A common function 'get_cgroup_mountpoint' is added to help
+>>    parse /proc/mounts in search of specific cgroup subsystems
+>>    mountpoints. It is added as part of a common cgroup_lib.sh.
+>>  - converted Copyright headers to SPDX
+>>  - renamed each helper to include a tag prefix (cgroup_regress_)
+>>    in order to avoid possible name clashes once installed all together
+>>    into testcases/bin
+> 
+>> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> 
+> Thanks for your patch, merged with several code style changes:
+>  - unify file names (cgroup_regress_* => cgroup_regression_)
+>  - rename also getdelays.c and fork_processes.c
+>  - redirect wait's stderr to /dev/null to keep it quiet
+>  - remove mandatory commands from TST_NEEDS_CMDS
+>  - move tst_test.sh loading into library
+>  - cleanup get_cgroup_mountpoint()
+>  - minor code style fixes
+> 
+Thanks for your review and further fixes.
 
-Probably that would be best, to give us a changelog, to make sure that
-the correct things are reverted and so we have something which you
-tested.
+> See diff bellow. I also added 4 commits related to this test,
+> one of them is fixing regression I added while changing your code
+> (I'm sorry).
 
+Everything's fine but in cgroup_regress_test_6_2.c you reverted to old API,
+while you previously told me not to:
+
+> +++ b/testcases/kernel/controllers/cgroup/cgroup_regress_test_6_2.c
+> @@ -0,0 +1,37 @@
+[snip]
+
+> +#include <sched.h>
+> +#include <stdlib.h>
+> +#include <unistd.h>
+> +#include "test.h"
+Please don't use legacy API. <<<<<<
+
+is that fine ?
+
+Thanks
+
+Regards
+
+Cristian
