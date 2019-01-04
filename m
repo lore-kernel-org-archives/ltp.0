@@ -1,38 +1,66 @@
 From: Cristian Marussi <cristian.marussi@arm.com>
-Date: Fri, 4 Jan 2019 16:20:44 +0000
-Subject: [LTP] [PATCH v2 0/1] memcg_stress newlib porting
-In-Reply-To: <20190103121128.17395-1-cristian.marussi@arm.com>
-References: <20190103121128.17395-1-cristian.marussi@arm.com>
-Message-ID: <3056b183-98be-d73c-7d95-04d0e5b01389@arm.com>
+Date: Fri,  4 Jan 2019 19:02:40 +0000
+Subject: [LTP] [PATCH]  memcg_stress_test.sh: fix memory usage
+Message-ID: <20190104190240.18601-1-cristian.marussi@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Superseeded by v3.
+Currently this test roughly calculates the maximum amount of
+memory to use by barely looking up mem_free and swap_free from
+/proc/meminfo.
+Unfortunately it does not consider any special the systems
+configured without a swap, so it ends, on those systems, trying
+to use all the found mem_free while keeping only one mb
+per-worker-thread as a safety net.
+This is fine when using a 4k pagesize but it is NOT enough
+on systems configured with a 64k pagesize, resulting in an
+oom-party.
+With this patch we now consider the configured page-size to
+decide how many memory to set aside as a safety area.
 
-Cristian
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+---
+ .../kernel/controllers/memcg/stress/memcg_stress_test.sh    | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-On 03/01/2019 12:11, Cristian Marussi wrote:
-> This converts memcg stress tests and its helper to LTP newlib and
-> performs a general cleanup.
-> 
-> This patch is dependent on [1] since it factors out a common helper
-> to cgroup_lib.sh (introduced in [1])
-> 
-> Changes from v1:
-> ----------------
-> 
->  - Restored the original usage of SIGKILL to terminate memcg_process_stress
->    helpers preocesses, after having had a look at what said in previous commit:
-> 	9b9a6bb10258bc975bd1707b418699264d3bdcef
-> 
-> Cristian Marussi (1):
-> 	[PATCH v2] [LTP] memcg_stress_test.sh: ported to newlib
-> 
-> [1]: http://lists.linux.it/pipermail/ltp/2018-December/010385.html
-> 
-> 
-> 
+diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+index 652d99e55..97a4d444e 100755
+--- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
++++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+@@ -32,10 +32,12 @@ do_setup()
+ 	sleep 2
+ 	local mem_free=`cat /proc/meminfo | grep MemFree | awk '{ print $2 }'`
+ 	local swap_free=`cat /proc/meminfo | grep SwapFree | awk '{ print $2 }'`
++	local pgsize=`tst_getconf PAGESIZE`
+ 
+ 	MEM=$(( $mem_free + $swap_free / 2 ))
+ 	MEM=$(( $MEM / 1024 ))
+ 	RUN_TIME=$(( 15 * 60 ))
++	[ "$pgsize" = "4096" ] && THREAD_SPARE_MB=1 || THREAD_SPARE_MB=8
+ 
+ 	tst_res TINFO "Calculated available memory $MEM MB"
+ }
+@@ -100,7 +102,7 @@ testcase_1()
+ {
+ 	tst_res TINFO "testcase 1 started...it will run for $RUN_TIME secs"
+ 
+-	run_stress 150 $(( ($MEM - 150) / 150 )) 5 $RUN_TIME
++	run_stress 150 $(( ($MEM - 150 * $THREAD_SPARE_MB) / 150 )) 5 $RUN_TIME
+ 
+ 	tst_res TPASS "stress test 1 passed"
+ }
+@@ -109,7 +111,7 @@ testcase_2()
+ {
+ 	tst_res TINFO "testcase 2 started...it will run for $RUN_TIME secs"
+ 
+-	run_stress 1 $MEM 5 $RUN_TIME
++	run_stress 1 $(( $MEM - $THREAD_SPARE_MB)) 5 $RUN_TIME
+ 
+ 	tst_res TPASS "stress test 2 passed"
+ }
+-- 
+2.17.1
 
