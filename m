@@ -1,104 +1,86 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 7 Jan 2019 16:06:19 +0100
-Subject: [LTP] [PATCH v3 2/3] lib/tst_test.c: Update result counters
- when calling tst_brk()
-In-Reply-To: <1544690160-13900-2-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <20181211151733.GC1180@rei>
- <1544690160-13900-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1544690160-13900-2-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20190107150619.GC15221@rei.lan>
+From: Jia Zhang <zhang.jia@linux.alibaba.com>
+Date: Mon, 7 Jan 2019 23:59:23 +0800
+Subject: [LTP] [PATCH 6/6] ima: Use ima tcb policy files for test
+In-Reply-To: <1546827989-43569-7-git-send-email-zhang.jia@linux.alibaba.com>
+References: <1546827989-43569-1-git-send-email-zhang.jia@linux.alibaba.com>
+ <1546827989-43569-7-git-send-email-zhang.jia@linux.alibaba.com>
+Message-ID: <af3c44cd-2296-97e2-573e-b80da216738d@linux.alibaba.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-> 1) Catch and report the TFAIL exit status of child process.
+On 2019/1/7 上午10:26, Jia Zhang wrote:
+> In order to make all tests running smoothly, the policy files should
+> keep up ith the default ima tcb policy. Especially ima_violations.sh
+> expects to have a func=FILE_CHECK with mask=MAY_WRITE to trigger open
 
-Looking at the codebase we do have a few usages of tst_brk(TFAIL, "...")
-to exit the child process, which sort of works but it's incorrect. The
-tst_brk() always meant "unrecoverable failure have happened, exit the
-current process as fast as possible". Looking over our codebase most of
-the tst_brk(TFAIL, "...") should not actually cause the main test
-process to exit, these were only meant to exit the child and report the
-result in one call. It will for instance break the test with -i option
-on the first failure, which is incorrect.
+Oops ... This is not true. mask=MAY_READ is already working well for
+open writer and ToMToU violations. So please drop this patch.
 
-So if we ever want to have a function to exit child process with a result we
-should implement tst_ret() that would be equivalent to tst_res() followed by
-exit(0).
+Jia
 
-It could be even implemented as:
-
-#define tst_ret(ttype, fmt, ...) \
-	do { \
-		tst_res_(__FILE__, __LINE__, (ttype), (fmt), ##__VA_ARGS__); \
-		exit(0); \
-	} while (0)
-
-This function has one big advantage, it increments the results counters
-before the child process exits.
-
-Actually one of the big points of the new test library was that the
-results counters are atomically increased, because passing the results
-in exit values is nightmare that cannot be done correclty.
-
-> 2) Only update result counters in library process and main test
->    process because the exit status of child can be reported by
->    main test process.
-
-Actually after I spend some time on it I think that the best solution is
-to update the results in the piece of shared memory as fast as possible,
-anything else is prone to various races and corner cases.
-
-> 3) Print TCONF message and increase skipped when calling tst_brk(TCONF).
->    Print TBROK message and increase broken when calling tst_brk(TBROK).
->    Print TFAIL message and increase failed when calling tst_brk(TFAIL).
-> 4) Remove duplicate update_results() in run_tcases_per_fs().
-
-I've been thinking about this and the problem is more complex, and I'm
-even not sure that it's possible to write the library so that the
-counters are consistent at the time we exit the test if something
-unexpected happened and we called tst_brk().
-
-Consider for instance this example:
-
-#include "tst_test.h"
-
-static void do_test(void)
-{
-        if (!SAFE_FORK())
-                tst_brk(TBROK, "child");
-        tst_brk(TBROK, "parent");
-}
-
-static struct tst_test test = {
-        .test_all = do_test,
-        .forks_child = 1,
-};
-
-When tst_brk() is called both in parent and child the counter would be
-incremented only once because the child is not waited for by the main
-test.
-
-We can close this special case by changing the main test pid to wait for the
-children before it calls exit() in the tst_brk() but that may cause the
-main process to get stuck undefinitely if the child processes get stuck,
-so we would have to be careful.
-
-Also from the very definition of the TBROK return status the test
-results would be incomplete at best, since TBROK really means
-"unrecoverable error happened during the test" which would mostly means
-that something as low level as filesystem got corrupted and there is no
-point in presenting the results in that case, so I guess that the best
-we could do in the case of TBROK is to print big message that says
-"things went horribly wrong!" or something similar.
-
-All in all I would like to avoid applying patches to the test library
-before we finalize the release, since there is not much time for
-testing now.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> writer and ToMtoU violations. Unfortunately, if ima_policy.sh
+> which would change the system IMA policy ran before ima_violations.sh,
+> ima_violations.sh would fail for sure because its prerequisite is broken.
+> 
+> Signed-off-by: Jia Zhang <zhang.jia@linux.alibaba.com>
+> ---
+>  .../security/integrity/ima/datafiles/measure.policy     | 17 +++++++++++++++--
+>  .../integrity/ima/datafiles/measure.policy-invalid      | 17 +++++++++++++++--
+>  2 files changed, 30 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/kernel/security/integrity/ima/datafiles/measure.policy b/testcases/kernel/security/integrity/ima/datafiles/measure.policy
+> index 9976ddf..546267c 100644
+> --- a/testcases/kernel/security/integrity/ima/datafiles/measure.policy
+> +++ b/testcases/kernel/security/integrity/ima/datafiles/measure.policy
+> @@ -11,6 +11,19 @@ dont_measure fsmagic=0x64626720
+>  dont_measure fsmagic=0x01021994
+>  # SECURITYFS_MAGIC
+>  dont_measure fsmagic=0x73636673
+> -measure func=FILE_MMAP mask=MAY_EXEC
+> +# DEVPTS_SUPER_MAGIC
+> +dont_measure fsmagic=0x1cd1
+> +# BINFMTFS_MAGIC
+> +dont_measure fsmagic=0x42494e4d
+> +# SELINUX_MAGIC
+> +dont_measure fsmagic=0xf97cff8c
+> +# CGROUP_SUPER_MAGIC
+> +dont_measure fsmagic=0x27e0eb
+> +# NSFS_MAGIC
+> +dont_measure fsmagic=0x6e736673
+> +measure func=MMAP_CHECK mask=MAY_EXEC
+>  measure func=BPRM_CHECK mask=MAY_EXEC
+> -measure func=FILE_CHECK mask=MAY_READ uid=0
+> +measure func=FILE_CHECK euid=0
+> +measure func=FILE_CHECK uid=0
+> +measure func=MODULE_CHECK
+> +measure func=FIRMWARE_CHECK
+> diff --git a/testcases/kernel/security/integrity/ima/datafiles/measure.policy-invalid b/testcases/kernel/security/integrity/ima/datafiles/measure.policy-invalid
+> index 04dff89..bc72d0c 100644
+> --- a/testcases/kernel/security/integrity/ima/datafiles/measure.policy-invalid
+> +++ b/testcases/kernel/security/integrity/ima/datafiles/measure.policy-invalid
+> @@ -11,6 +11,19 @@ dont_measure fsmagic=0x64626720
+>  dont_measure fsmagic=0x01021994
+>  # SECURITYFS_MAGIC
+>  dnt_measure fsmagic=0x73636673
+> -measure func=FILE_MMAP mask=MAY_EXEC
+> +# DEVPTS_SUPER_MAGIC
+> +dont_measure fsmagic=0x1cd1
+> +# BINFMTFS_MAGIC
+> +dont_measure fsmagic=0x42494e4d
+> +# SELINUX_MAGIC
+> +dont_measure fsmagic=0xf97cff8c
+> +# CGROUP_SUPER_MAGIC
+> +dont_measure fsmagic=0x27e0eb
+> +# NSFS_MAGIC
+> +dont_measure fsmagic=0x6e736673
+> +measure func=MMAP_CHECK mask=MAY_EXEC
+>  measure func=BPRM_CHECK mask=MAY_EXEC
+> -measure func=FILE_CHECK mask=MAY_READ uid=0
+> +measure func=FILE_CHECK euid=0
+> +measure func=FILE_CHECK uid=0
+> +measure func=MODULE_CHECK
+> +measure func=FIRMWARE_CHECK
+> 
