@@ -1,57 +1,40 @@
 From: Jia Zhang <zhang.jia@linux.alibaba.com>
-Date: Mon,  7 Jan 2019 10:26:25 +0800
-Subject: [LTP] [PATCH 2/6] ima/ima_boot_aggregate: Don't hard code the
-	length of sha1 hash
-In-Reply-To: <1546827989-43569-1-git-send-email-zhang.jia@linux.alibaba.com>
-References: <1546827989-43569-1-git-send-email-zhang.jia@linux.alibaba.com>
-Message-ID: <1546827989-43569-3-git-send-email-zhang.jia@linux.alibaba.com>
+Date: Mon,  7 Jan 2019 10:26:23 +0800
+Subject: [LTP] [PATCH 0/6] LTP IMA fix bundle
+Message-ID: <1546827989-43569-1-git-send-email-zhang.jia@linux.alibaba.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Instead, use SHA_DIGEST_LENGTH.
+Hi Mimi & Petr,
 
-Signed-off-by: Jia Zhang <zhang.jia@linux.alibaba.com>
----
- testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+This fix bundle fixes and cleans up IMA-related testcases in LTP.
 
-diff --git a/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c b/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
-index d85d222..67be6a7 100644
---- a/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
-+++ b/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
-@@ -42,7 +42,7 @@ static void display_sha1_digest(unsigned char *pcr)
- {
- 	int i;
- 
--	for (i = 0; i < 20; i++)
-+	for (i = 0; i < SHA_DIGEST_LENGTH; i++)
- 		printf("%02x", *(pcr + i) & 0xff);
- 	printf("\n");
- }
-@@ -94,8 +94,9 @@ int main(int argc, char *argv[])
- 			display_sha1_digest(event.header.digest);
- 		}
- 		SHA1_Init(&c);
--		SHA1_Update(&c, pcr[event.header.pcr].digest, 20);
--		SHA1_Update(&c, event.header.digest, 20);
-+		SHA1_Update(&c, pcr[event.header.pcr].digest,
-+			    SHA_DIGEST_LENGTH);
-+		SHA1_Update(&c, event.header.digest, SHA_DIGEST_LENGTH);
- 		SHA1_Final(pcr[event.header.pcr].digest, &c);
- #if MAX_EVENT_DATA_SIZE < USHRT_MAX
- 		if (event.header.len > MAX_EVENT_DATA_SIZE) {
-@@ -116,7 +117,7 @@ int main(int argc, char *argv[])
- 			printf("PCR-%2.2x: ", i);
- 			display_sha1_digest(pcr[i].digest);
- 		}
--		SHA1_Update(&c, pcr[i].digest, 20);
-+		SHA1_Update(&c, pcr[i].digest, SHA_DIGEST_LENGTH);
- 	}
- 	SHA1_Final(boot_aggregate, &c);
- 
--- 
-1.8.3.1
+My test result is attached here.
 
+#cat LTP_RUN_ON-2019_01_07-10h_05m_16s.log 
+Test Start Time: Mon Jan  7 10:05:18 2019
+-----------------------------------------
+Testcase                                           Result     Exit Value
+--------                                           ------     ----------
+ima_measurements                                   PASS       0    
+ima_policy                                         PASS       0    
+ima_tpm                                            CONF       32   
+ima_violations                                     PASS       0    
+
+-----------------------------------------------
+Total Tests: 4
+Total Skipped Tests: 1
+Total Failures: 0
+Kernel Version: 4.20.0+
+Machine Architecture: x86_64
+Hostname: test-machine
+
+Note:
+- The original PR is available at https://github.com/linux-test-project/ltp/pull/459
+- The test2() in ima_tpm requires /sys/class/tpm/tpm0/device/pcrs but this interface
+  is not available if TPM2 device used. So the test result showed above is expected.
+
+Jia
