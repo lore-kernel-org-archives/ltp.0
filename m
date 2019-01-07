@@ -1,37 +1,58 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 7 Jan 2019 10:18:29 +0800
-Subject: [LTP] LTP Release
-In-Reply-To: <20190104154234.GB29238@rei>
-References: <20181214150951.GA20724@rei> <20190102102830.GA13826@rei>
- <20190104154234.GB29238@rei>
-Message-ID: <5C32B6F5.4060405@cn.fujitsu.com>
+From: Jia Zhang <zhang.jia@linux.alibaba.com>
+Date: Mon,  7 Jan 2019 10:26:27 +0800
+Subject: [LTP] [PATCH 4/6] ima: Code cleanup
+In-Reply-To: <1546827989-43569-1-git-send-email-zhang.jia@linux.alibaba.com>
+References: <1546827989-43569-1-git-send-email-zhang.jia@linux.alibaba.com>
+Message-ID: <1546827989-43569-5-git-send-email-zhang.jia@linux.alibaba.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2019/01/04 23:42, Cyril Hrubis wrote:
-> Hi!
-> In order to proceed I would like to declare git freeze starting next
-> week and ask everyone for round of pre-release testing.
->
-> As for patches that should be included in the release I would like to
-> include fixes for:
->
-> * http://patchwork.ozlabs.org/patch/1020662/
-> * https://github.com/linux-test-project/ltp/pull/444
->
-> Anything else I should look into?
-Hi Cyril,
+- Don't use the legacy policy function name in policy files.
+- Use the variable IMA_POLICY instead of hard code path.
 
-Can you try to review and push my patch set[1] fixing issue #408?
-[1] http://patchwork.ozlabs.org/patch/1011665/
-     http://patchwork.ozlabs.org/patch/1011667/
-     http://patchwork.ozlabs.org/patch/1011666/
+Signed-off-by: Jia Zhang <zhang.jia@linux.alibaba.com>
+---
+ testcases/kernel/security/integrity/ima/policy/measure.policy         | 2 +-
+ testcases/kernel/security/integrity/ima/policy/measure.policy-invalid | 2 +-
+ testcases/kernel/security/integrity/ima/tests/ima_policy.sh           | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-Best Regards,
-Xiao Yang
-
-
+diff --git a/testcases/kernel/security/integrity/ima/policy/measure.policy b/testcases/kernel/security/integrity/ima/policy/measure.policy
+index c68e722..9976ddf 100644
+--- a/testcases/kernel/security/integrity/ima/policy/measure.policy
++++ b/testcases/kernel/security/integrity/ima/policy/measure.policy
+@@ -13,4 +13,4 @@ dont_measure fsmagic=0x01021994
+ dont_measure fsmagic=0x73636673
+ measure func=FILE_MMAP mask=MAY_EXEC
+ measure func=BPRM_CHECK mask=MAY_EXEC
+-measure func=PATH_CHECK mask=MAY_READ uid=0
++measure func=FILE_CHECK mask=MAY_READ uid=0
+diff --git a/testcases/kernel/security/integrity/ima/policy/measure.policy-invalid b/testcases/kernel/security/integrity/ima/policy/measure.policy-invalid
+index e406757..04dff89 100644
+--- a/testcases/kernel/security/integrity/ima/policy/measure.policy-invalid
++++ b/testcases/kernel/security/integrity/ima/policy/measure.policy-invalid
+@@ -13,4 +13,4 @@ dont_measure fsmagic=0x01021994
+ dnt_measure fsmagic=0x73636673
+ measure func=FILE_MMAP mask=MAY_EXEC
+ measure func=BPRM_CHECK mask=MAY_EXEC
+-measure func=PATH_CHECK mask=MAY_READ uid=0
++measure func=FILE_CHECK mask=MAY_READ uid=0
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
+index 64aa8cb..a0c7869 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
+@@ -28,7 +28,7 @@ check_policy_writable()
+ {
+ 	local err="IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)"
+ 
+-	[ -f /sys/kernel/security/ima/policy ] || tst_brk TCONF "$err"
++	[ -f $IMA_POLICY ] || tst_brk TCONF "$err"
+ 	# CONFIG_IMA_READ_POLICY
+ 	echo "" 2> log > $IMA_POLICY
+ 	grep -q "Device or resource busy" log && tst_brk TCONF "$err"
+-- 
+1.8.3.1
 
