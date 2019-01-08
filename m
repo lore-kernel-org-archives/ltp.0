@@ -1,67 +1,119 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 8 Jan 2019 15:01:45 +0800
-Subject: [LTP] [PATCH RFC] fzsync: tst_fzsync_pair_wait exit when parent
- hit accidental break
-In-Reply-To: <877efgn599.fsf@rpws.prws.suse.cz>
-References: <20190104095256.12266-1-liwang@redhat.com>
- <878t00mpnl.fsf@rpws.prws.suse.cz>
- <CAEemH2eq49h48bxe17i3c_GWrbhTAHQMHr0t1_rwEdZvccJ-mg@mail.gmail.com>
- <877efgn599.fsf@rpws.prws.suse.cz>
-Message-ID: <CAEemH2dQ5HCm74JdW4LWFSUH9ngk1-KbCKrpC2D-m+kAH03oTw@mail.gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Tue, 8 Jan 2019 17:08:11 +0800
+Subject: [LTP] [PATCH v3 2/3] lib/tst_test.c: Update result counters
+ when calling tst_brk()
+In-Reply-To: <20190107150619.GC15221@rei.lan>
+References: <20181211151733.GC1180@rei>
+ <1544690160-13900-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1544690160-13900-2-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20190107150619.GC15221@rei.lan>
+Message-ID: <5C34687B.9020902@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richard,
+On 2019/01/07 23:06, Cyril Hrubis wrote:
+> Hi!
+>> 1) Catch and report the TFAIL exit status of child process.
+> Looking at the codebase we do have a few usages of tst_brk(TFAIL, "...")
+> to exit the child process, which sort of works but it's incorrect. The
+> tst_brk() always meant "unrecoverable failure have happened, exit the
+> current process as fast as possible". Looking over our codebase most of
+> the tst_brk(TFAIL, "...") should not actually cause the main test
+> process to exit, these were only meant to exit the child and report the
+> result in one call. It will for instance break the test with -i option
+> on the first failure, which is incorrect.
+Hi Cyril,
 
-Richard Palethorpe <rpalethorpe@suse.de> wrote:
+Detailed explanation, and i got it.
 
-> > Well we can have a try, seems the only disadvantage of this method is
-> > thread_B sets signal handler at each loop start in tst_fzsync_run_b
-> > repeatedly.
+> So if we ever want to have a function to exit child process with a result we
+> should implement tst_ret() that would be equivalent to tst_res() followed by
+> exit(0).
 >
-> We could wrap thread B's main function 'run_b', which is passed to
-> tst_fzsync_pair_reset, in another function which sets the singal handler
-> at the start of the thread.
-
-Good suggestion! This make sense to me.
-
-> > -       /** Internal; Used by tst_fzsync_pair_exit() and fzsync_pair_wait() */
-> > -       int exit;
+> It could be even implemented as:
 >
-> I was thinking of keeping the exit variable and using the kill signal as
-> a backup. The reason being it should allow thread B to exit gracefully
-> in most scenarious. In theory this should not matter because the test
-> writer should not do any setup in thread B, but it might result in some
-> wierd error/warning messages being printed for some tests.
-
-Yes, that's not a bad solution, but I was a little worried before is
-that would make things a bit mixed for the thread exiting. However, if
-we use pair->exit only for normal exiting and signal for unexpected
-abort, that's also accessible I guess.
-
+> #define tst_ret(ttype, fmt, ...) \
+> 	do { \
+> 		tst_res_(__FILE__, __LINE__, (ttype), (fmt), ##__VA_ARGS__); \
+> 		exit(0); \
+> 	} while (0)
 >
-> Unfortunately pthread_join has no timeout and pthread_timedjoin_np is
-> non-standard.
-
-or maybe we could achieve a LTP private pthread_timedjoin_np version? I haven't
-look into more about that so have no idea for the detail/complexity.
-
+> This function has one big advantage, it increments the results counters
+> before the child process exits.
 >
-> Another option might be to spin-wait for 'exit' to be incremented to 2
-> by thread B and send the signal after some arbitrarily large number of
-> spins. What do you think?
+> Actually one of the big points of the new test library was that the
+> results counters are atomically increased, because passing the results
+> in exit values is nightmare that cannot be done correclty.
+Agreed.  All of tst_brk(TFAIL, ...) can be converted to tst_ret(TFAIL, ...) or
+tst_brk(TBROK, ...) in this way and then add TFAIL to tst_brk compile time check
+as Jan replied, so that only TCONF and TBROK can be passed into tst_brk().
 
-Hmm, what's the best value for arbitrarily large number? it seems hard
-to decide.
+>> 2) Only update result counters in library process and main test
+>>     process because the exit status of child can be reported by
+>>     main test process.
+> Actually after I spend some time on it I think that the best solution is
+> to update the results in the piece of shared memory as fast as possible,
+> anything else is prone to various races and corner cases.
+...
 
-Comparing the above approaches, currently it's hard to say which one
-is better. If I have to make a choice, I'd like to try the first
-method: pair->exit (for normal exiting) + signal(for unexpected
-abort).
+>> 3) Print TCONF message and increase skipped when calling tst_brk(TCONF).
+>>     Print TBROK message and increase broken when calling tst_brk(TBROK).
+>>     Print TFAIL message and increase failed when calling tst_brk(TFAIL).
+>> 4) Remove duplicate update_results() in run_tcases_per_fs().
+> I've been thinking about this and the problem is more complex, and I'm
+> even not sure that it's possible to write the library so that the
+> counters are consistent at the time we exit the test if something
+> unexpected happened and we called tst_brk().
+>
+> Consider for instance this example:
+>
+> #include "tst_test.h"
+>
+> static void do_test(void)
+> {
+>          if (!SAFE_FORK())
+>                  tst_brk(TBROK, "child");
+>          tst_brk(TBROK, "parent");
+> }
+>
+> static struct tst_test test = {
+>          .test_all = do_test,
+>          .forks_child = 1,
+> };
+>
+> When tst_brk() is called both in parent and child the counter would be
+> incremented only once because the child is not waited for by the main
+> test.
+>
+> We can close this special case by changing the main test pid to wait for the
+> children before it calls exit() in the tst_brk() but that may cause the
+> main process to get stuck undefinitely if the child processes get stuck,
+> so we would have to be careful.
+>
+> Also from the very definition of the TBROK return status the test
+> results would be incomplete at best, since TBROK really means
+> "unrecoverable error happened during the test" which would mostly means
+> that something as low level as filesystem got corrupted and there is no
+> point in presenting the results in that case, so I guess that the best
+> we could do in the case of TBROK is to print big message that says
+> "things went horribly wrong!" or something similar.
+Sorry, my patch is too rough becasue some suitations are not taken into account.
+For tst_brk(TCONF), do you mean to replace the current solution using wait() in
+check_child_status() with your suggested shared memory?
+For tst_brk(TBROK), do you mean to just print big message instead of updating
+test results?
 
--- 
-Regards,
-Li Wang
+> All in all I would like to avoid applying patches to the test library
+> before we finalize the release, since there is not much time for
+> testing now.
+Agreed, drop these patches during the upcoming release.  We still need to do
+future investigation and testing.
+
+Best Regards,
+Xiao Yang
+
+
+
