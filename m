@@ -1,46 +1,29 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 8 Jan 2019 06:14:30 -0500 (EST)
-Subject: [LTP] [PATCH 2/2] lib: build check parameters for tst_brk()
-In-Reply-To: <20190107192226.GF15221@rei.lan>
-References: <88db8a4def940c63ec2836cec1d0041db00ffd4c.1541710635.git.jstancek@redhat.com>
- <5BE4E95E.4000303@cn.fujitsu.com>
- <1582215982.71956713.1541786229415.JavaMail.zimbra@redhat.com>
- <20181211145833.GB1180@rei>
- <124327317.93121782.1546516348350.JavaMail.zimbra@redhat.com>
- <20190107182514.GD15221@rei.lan>
- <500744608.93718432.1546887963138.JavaMail.zimbra@redhat.com>
- <20190107192226.GF15221@rei.lan>
-Message-ID: <2095445076.93880979.1546946070949.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 8 Jan 2019 12:27:37 +0100
+Subject: [LTP] [PATCH] device-drivers/cpufreq_boost.c: skip test if
+ turbo is disabled by BIOS or unavailable on processor
+In-Reply-To: <cd870461-e84f-d16a-0621-f3466fd59f32@arm.com>
+References: <1546852515-19045-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20190108093344.GA2687@x230> <5C347181.8080303@cn.fujitsu.com>
+ <cd870461-e84f-d16a-0621-f3466fd59f32@arm.com>
+Message-ID: <20190108112737.GA25178@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Xiao, Cristian,
+
+> I could be wrong but i think that if you keep the string unsplitted and move it
+> on its own line checkpatch.pl should be fine, like in:
+
+> tst_brkm(TCONF, NULL,
+>          "Turbo is disabled by BIOS or unavailable on processor");
+Yes.
+
+Xiao, no need to repost patch, this can be done during merge.
 
 
------ Original Message -----
-> Hi!
-> > > > > We can always name the BUILD_BUG_ON() macro to be
-> > > > > TST_BRK_ONLY_SUPPORTS_TCONF_TBROK_TFAIL() and be done with it.
-> > > > > 
-> > > > > I would rather avoided playing with specific compiler features etc.
-> > > > > So
-> > > > > this version looks good to me.
-> > > > 
-> > > > Pushed the original version for now.
-> > > 
-> > > FYI looks like we need to rename the BUILD_BUG_ON() after all:
-> > 
-> > LTP_BUILD_BUG_ON() or do you have something other in mind?
-> 
-> Most of the new library has TST_ prefix, but we can still rename it to
-> TST_BRK_SUPPORTS_ONLY_TCONF_TBROK()...
-
-OK, I pushed patch that renames it to above.
-
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+Kind regards,
+Petr
