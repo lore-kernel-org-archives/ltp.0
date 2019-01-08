@@ -1,29 +1,29 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 8 Jan 2019 12:27:37 +0100
-Subject: [LTP] [PATCH] device-drivers/cpufreq_boost.c: skip test if
- turbo is disabled by BIOS or unavailable on processor
-In-Reply-To: <cd870461-e84f-d16a-0621-f3466fd59f32@arm.com>
-References: <1546852515-19045-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20190108093344.GA2687@x230> <5C347181.8080303@cn.fujitsu.com>
- <cd870461-e84f-d16a-0621-f3466fd59f32@arm.com>
-Message-ID: <20190108112737.GA25178@x230>
+From: Rafael David Tinoco <rafael.tinoco@linaro.org>
+Date: Tue, 8 Jan 2019 10:04:25 -0200
+Subject: [LTP] [PATCH v3 6/6] timers/clock_settime: remove clock_settime
+	tests
+In-Reply-To: <20181212203723.18810-6-rafael.tinoco@linaro.org>
+References: <20181211142750.GA27159@rei>
+ <20181212203723.18810-1-rafael.tinoco@linaro.org>
+ <20181212203723.18810-6-rafael.tinoco@linaro.org>
+Message-ID: <D64591D4-0B65-490B-98C1-6D75EDFC1590@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao, Cristian,
+Ping ? =o)
 
-> I could be wrong but i think that if you keep the string unsplitted and move it
-> on its own line checkpatch.pl should be fine, like in:
+> On 12 Dec 2018, at 18:37, Rafael David Tinoco <rafael.tinoco@linaro.org> wrote:
+> 
+> Fixes: 343
+> 
+> clock_settime01 creates a new test, using new API, based on existing and
+> older kernel/timers/clock_settime tests. It includes tests from files
+> clock_settime02 and clock_settime03.
+> 
+> This commit deletes timers/clock_settime/* tests.
+> 
+> Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
 
-> tst_brkm(TCONF, NULL,
->          "Turbo is disabled by BIOS or unavailable on processor");
-Yes.
-
-Xiao, no need to repost patch, this can be done during merge.
-
-
-Kind regards,
-Petr
