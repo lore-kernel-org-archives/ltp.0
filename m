@@ -1,74 +1,58 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 08 Jan 2019 13:48:59 +0100
-Subject: [LTP] [PATCH RFC] fzsync: tst_fzsync_pair_wait exit when parent
-	hit accidental break
-In-Reply-To: <CAEemH2dQ5HCm74JdW4LWFSUH9ngk1-KbCKrpC2D-m+kAH03oTw@mail.gmail.com>
-References: <20190104095256.12266-1-liwang@redhat.com>
- <878t00mpnl.fsf@rpws.prws.suse.cz>
- <CAEemH2eq49h48bxe17i3c_GWrbhTAHQMHr0t1_rwEdZvccJ-mg@mail.gmail.com>
- <877efgn599.fsf@rpws.prws.suse.cz>
- <CAEemH2dQ5HCm74JdW4LWFSUH9ngk1-KbCKrpC2D-m+kAH03oTw@mail.gmail.com>
-Message-ID: <875zuzmi10.fsf@rpws.prws.suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 8 Jan 2019 14:11:03 +0100
+Subject: [LTP] [PATCH v3 2/3] lib/tst_test.c: Update result counters
+ when calling tst_brk()
+In-Reply-To: <1383176395.93706380.1546882774990.JavaMail.zimbra@redhat.com>
+References: <20181211151733.GC1180@rei>
+ <1544690160-13900-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1544690160-13900-2-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20190107150619.GC15221@rei.lan>
+ <1383176395.93706380.1546882774990.JavaMail.zimbra@redhat.com>
+Message-ID: <20190108131103.GB30528@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Li,
+Hi!
+> > So if we ever want to have a function to exit child process with a result we
+> > should implement tst_ret() that would be equivalent to tst_res() followed by
+> > exit(0).
+> > 
+> > It could be even implemented as:
+> > 
+> > #define tst_ret(ttype, fmt, ...) \
+> > 	do { \
+> > 		tst_res_(__FILE__, __LINE__, (ttype), (fmt), ##__VA_ARGS__); \
+> > 		exit(0); \
+> > 	} while (0)
+> > 
+> > This function has one big advantage, it increments the results counters
+> > before the child process exits.
+> 
+> If all call-sites switch to tst_ret(), we could add TFAIL to tst_brk
+> compile time check.
 
-Li Wang <liwang@redhat.com> writes:
+And it's even more complicated than this.
 
-> Hi Richard,
->
-> Richard Palethorpe <rpalethorpe@suse.de> wrote:
->
->> > Well we can have a try, seems the only disadvantage of this method is
->> > thread_B sets signal handler at each loop start in tst_fzsync_run_b
->> > repeatedly.
->>
->> We could wrap thread B's main function 'run_b', which is passed to
->> tst_fzsync_pair_reset, in another function which sets the singal handler
->> at the start of the thread.
->
-> Good suggestion! This make sense to me.
->
->> > -       /** Internal; Used by tst_fzsync_pair_exit() and fzsync_pair_wait() */
->> > -       int exit;
->>
->> I was thinking of keeping the exit variable and using the kill signal as
->> a backup. The reason being it should allow thread B to exit gracefully
->> in most scenarious. In theory this should not matter because the test
->> writer should not do any setup in thread B, but it might result in some
->> wierd error/warning messages being printed for some tests.
->
-> Yes, that's not a bad solution, but I was a little worried before is
-> that would make things a bit mixed for the thread exiting. However, if
-> we use pair->exit only for normal exiting and signal for unexpected
-> abort, that's also accessible I guess.
->
->>
->> Unfortunately pthread_join has no timeout and pthread_timedjoin_np is
->> non-standard.
->
-> or maybe we could achieve a LTP private pthread_timedjoin_np version? I haven't
-> look into more about that so have no idea for the detail/complexity.
->
->>
->> Another option might be to spin-wait for 'exit' to be incremented to 2
->> by thread B and send the signal after some arbitrarily large number of
->> spins. What do you think?
->
-> Hmm, what's the best value for arbitrarily large number? it seems hard
-> to decide.
->
-> Comparing the above approaches, currently it's hard to say which one
-> is better. If I have to make a choice, I'd like to try the first
-> method: pair->exit (for normal exiting) + signal(for unexpected
-> abort).
+The problem is that if we add tst_ret() that calls exit(0) it will have
+slightly different semantics for the main test process and for the
+children.
 
-Yes, this is better than adding another arbitrary constant IMO.
+The subtle difference is that we run the loop that executes the tests in
+the case of the -i parameter or in the case that we defined tcnt is in
+the main test process. If we call tst_ret() there it will exit the test
+before we manage to run rest of the iterations and I would like to avoid
+adding an API that is slightly confusing easy to misuse.
 
---
-Thank you,
-Richard.
+I will try to rethink this, however it looks like there is no silver
+bullet to solve the problem. And it's certainly late for the release.
+
+Also I've opened an issue for the problem in order not to forget:
+
+https://github.com/linux-test-project/ltp/issues/462
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
