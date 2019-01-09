@@ -1,45 +1,41 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed,  9 Jan 2019 15:57:40 +0300
-Subject: [LTP] [PATCH] lib/tst_net.sh: fix tst_set_sysctl() for non-netns
-	setup
-Message-ID: <1547038660-14008-1-git-send-email-alexey.kodanev@oracle.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Wed,  9 Jan 2019 14:32:05 +0100
+Subject: [LTP] [PATCH] Check recvmmsg exists before entering fuzzy loop
+In-Reply-To: <20190109120129.GA19502@rei>
+Message-ID: <20190109133205.31061-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When we don't use netns setup, $rparam is empty in tst_set_sysctl(),
-and tst_net_run() mistakenly set sysctl command to $rparam. This results
-to the following error, $cmd is empty:
+Avoid thread B entering infinite loop if recvmmsg doesn't exist causing
+tst_brk to be called and thread A to make an ungraceful exit.
 
-  bbr01 1 TINFO: timeout per run is 0h 20m 0s
-  bbr01 1 TINFO: emulate congestion with packet loss 0.5%
-  bbr01 1 TINFO: compare 'cubic' and 'bbr' congestion alg. results
-  bbr01 1 TINFO: setting cubic
-  bbr01 1 TBROK: tst_net_run: command not defined
+A more general fix can be added to tst_fuzzy_sync as well, but will take
+longer to develop.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Reported-by: Li Wang <liwang@redhat.com>
 ---
- testcases/lib/tst_net.sh |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ testcases/cve/cve-2016-7117.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-index 209cf9b..eca616f 100644
---- a/testcases/lib/tst_net.sh
-+++ b/testcases/lib/tst_net.sh
-@@ -718,9 +718,9 @@ tst_set_sysctl()
- 	[ "$3" = "safe" ] && safe="-s"
+diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
+index 6290af077..effab083d 100644
+--- a/testcases/cve/cve-2016-7117.c
++++ b/testcases/cve/cve-2016-7117.c
+@@ -99,6 +99,10 @@ static void setup(void)
+ {
+ 	fzsync_pair.min_samples = 10000;
  
- 	local rparam=
--	[ "$TST_USE_NETNS" = "yes" ] && rparam="-e"
-+	[ "$TST_USE_NETNS" = "yes" ] && rparam="-r -e"
- 
--	tst_net_run $safe -r $rparam "sysctl -q -w $name=$value"
-+	tst_net_run $safe $rparam "sysctl -q -w $name=$value"
++	tst_syscall(__NR_recvmmsg);
++	if (errno == ENOSYS)
++		tst_brk(TCONF, "recvmmsg not supported");
++
+ 	tst_fzsync_pair_init(&fzsync_pair);
  }
  
- tst_cleanup_rhost()
 -- 
-1.7.1
+2.19.1
 
