@@ -1,26 +1,82 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 9 Jan 2019 16:25:32 +0100
-Subject: [LTP] LTP survey
-Message-ID: <20190109152532.GA346@rei.lan>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 10 Jan 2019 11:39:38 +0800
+Subject: [LTP] [PATCH] Check recvmmsg exists before entering fuzzy loop
+In-Reply-To: <20190109133205.31061-1-rpalethorpe@suse.com>
+References: <20190109120129.GA19502@rei>
+ <20190109133205.31061-1-rpalethorpe@suse.com>
+Message-ID: <CAEemH2cRO5PytjrqvFjCnUji+XQ7KeaXua+DDzxOT7Eu3+Wd2A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-I've been asked if we can help to fill in data for the LTP Survey from
-Jonatas send to the mailing list earlier.
+Hi Richard,
 
-So if you haven't done so yet and can spare 10 minutes of your time,
-please go to:
+Richard Palethorpe <rpalethorpe@suse.com> wrote:
 
-https://docs.google.com/forms/d/e/1FAIpQLSePEESEVOCVtjuAIvm1BkToLJzEcxv_m4HBRiJzuRcQQ4DzHQ/viewform?vc=0&c=0&w=1
+> Avoid thread B entering infinite loop if recvmmsg doesn't exist causing
+> tst_brk to be called and thread A to make an ungraceful exit.
+>
+> A more general fix can be added to tst_fuzzy_sync as well, but will take
+> longer to develop.
 
-And fill it in.
+Yes, now we just add a syscall checking in setup() as a workaround,
+for the fzsync library issue we could take more time to find a best
+solution after this new LTP releasing.
 
-Many thanks on behalf of Jonatas!
+>
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Reported-by: Li Wang <liwang@redhat.com>
+> ---
+>  testcases/cve/cve-2016-7117.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
+> index 6290af077..effab083d 100644
+> --- a/testcases/cve/cve-2016-7117.c
+> +++ b/testcases/cve/cve-2016-7117.c
+> @@ -99,6 +99,10 @@ static void setup(void)
+>  {
+>         fzsync_pair.min_samples = 10000;
+>
+> +       tst_syscall(__NR_recvmmsg);
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+maybe adding with useless parameters?
+  tst_syscall(__NR_recvmmsg, 0 ,0, 0, 0, 0);
+
+> +       if (errno == ENOSYS)
+> +               tst_brk(TCONF, "recvmmsg not supported");
+
+Seems errno check is not necessary here, the macro tst_syscall() has
+already defined with tst_brk(TCONF,) calling when errno is ENOSYS.
+
+FYI:
+
+#define tst_syscall(NR, ...) ({ \\
+        int tst_ret; \\
+        if (NR == __LTP__NR_INVALID_SYSCALL) { \\
+                errno = ENOSYS; \\
+                tst_ret = -1; \\
+        } else { \\
+                tst_ret = syscall(NR, ##__VA_ARGS__); \\
+        } \\
+        if (tst_ret == -1 && errno == ENOSYS) { \\
+                tst_brk(TCONF, "syscall(%d) " #NR " not supported", NR); \\
+        } \\
+        tst_ret; \\
+})
+
+> +
+>         tst_fzsync_pair_init(&fzsync_pair);
+>  }
+
+>
+> --
+> 2.19.1
+>
+
+
+--
+Regards,
+Li Wang
