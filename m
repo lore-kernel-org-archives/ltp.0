@@ -1,34 +1,47 @@
 From: Cristian Marussi <cristian.marussi@arm.com>
-Date: Fri, 11 Jan 2019 16:10:17 +0000
-Subject: [LTP] [PATCH]  Fix cgroup_lib.sh helper
-Message-ID: <20190111161017.52307-1-cristian.marussi@arm.com>
+Date: Fri, 11 Jan 2019 16:16:47 +0000
+Subject: [LTP] LTP Release
+In-Reply-To: <20190111132504.GA32178@rei.lan>
+References: <20181214150951.GA20724@rei> <20190102102830.GA13826@rei>
+ <20190104154234.GB29238@rei> <20190111132504.GA32178@rei.lan>
+Message-ID: <59f7de91-3175-8446-08e7-708a1ac27226@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-A typo compromised get_cgroup_mountpoint() effectiveness
-leading to cgroup_regression test_5 systematic failure.
+Hi
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
- testcases/kernel/controllers/cgroup_lib.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 11/01/2019 13:25, Cyril Hrubis wrote:
+> Hi!
+> I've commited last patch that I found worth to be included in the
+> release. With that I would like to tag the release early next week.
+> 
+> In other words now is your last chance to test the latest head and
+> report regressions and unexpected failures that happened to slip in.
+> 
 
-diff --git a/testcases/kernel/controllers/cgroup_lib.sh b/testcases/kernel/controllers/cgroup_lib.sh
-index 8c19c6c3e..45ab51b87 100644
---- a/testcases/kernel/controllers/cgroup_lib.sh
-+++ b/testcases/kernel/controllers/cgroup_lib.sh
-@@ -16,7 +16,7 @@ get_cgroup_mountpoint()
- 	[ $# -eq 0 ] && tst_brk TBROK "get_cgroup_mountpoint: subsystem not defined"
- 
- 	mntpoint=$(grep cgroup /proc/mounts | grep -w $subsystem | awk '{ print $2 }')
--	[ -z "$mountpoint" ] && return 1
-+	[ -z "$mntpoint" ] && return 1
- 
- 	echo $mntpoint
- 	return 0
--- 
-2.17.1
+I've just tested the tip of release candidate and spotted a regression
+on cgroup (since test_5 failure was exactly what a previous patch of mine
+should have fixed a few weeks ago :D)
 
+It has been introduced probably by a typo while cleaning up the final commit for:
+
+commit 3cac1f80d87fe7f1a6631034b82683666c80fc00
+Author: Cristian Marussi <cristian.marussi@arm.com>
+Date:   Fri Dec 21 18:25:16 2018 +0000
+
+    cgroup: cgroup_regression_test.sh ported to newlib
+
+This is the fix, which I've just pushed to the ML:
+
+http://lists.linux.it/pipermail/ltp/2019-January/010518.html
+
+if you could pick it up in time for release next week
+
+Thanks
+
+Regards
+
+Cristian
