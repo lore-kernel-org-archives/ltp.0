@@ -1,59 +1,96 @@
-From: Rafael David Tinoco <rafaeldtinoco@fastmail.com>
-Date: Tue, 15 Jan 2019 09:42:26 -0200
-Subject: [LTP] LTP: '/proc/self/io' for reading at readahead02.c:113:
- ENOENT No such file or directory
-In-Reply-To: <1555912299.96157256.1547552179354.JavaMail.zimbra@redhat.com>
-References: <CA+G9fYvA4XWajkvS9pP8vpFjPx=j+3F9TiueUrGjQ2RQ8vJiAQ@mail.gmail.com>
- <1555912299.96157256.1547552179354.JavaMail.zimbra@redhat.com>
-Message-ID: <5870BC5B-530B-49CE-A251-DBF950C1F994@fastmail.com>
+From: Mimi Zohar <zohar@linux.ibm.com>
+Date: Mon, 14 Jan 2019 14:32:22 -0500
+Subject: [LTP] [PATCH 6/6] ima: Use ima tcb policy files for test
+In-Reply-To: <1546827989-43569-7-git-send-email-zhang.jia@linux.alibaba.com>
+References: <1546827989-43569-1-git-send-email-zhang.jia@linux.alibaba.com>
+ <1546827989-43569-7-git-send-email-zhang.jia@linux.alibaba.com>
+Message-ID: <1547494342.4156.188.camel@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-> On 15 Jan 2019, at 09:36, Jan Stancek <jstancek@redhat.com> wrote:
-> 
-> ----- Original Message -----
->> readahead02 used to pass on arm32 on LTP-20180926 release. Now using
->> the latest LTP master it is getting FAILED.
->> 
->> tst_device.c:230: INFO: Using test device LTP_DEV='/dev/loop0'
->> tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
->> mke2fs 1.43.5 (04-Aug-2017)
->> [  603.092608] EXT4-fs (loop0): mounting ext2 file system using the
->> ext4 subsystem
->> [  603.107967] EXT4-fs (loop0): mounted filesystem without journal. Opts:
->> (null)
->> tst_test.c:1085: INFO: Timeout per run is 0h 15m 00s
->> readahead02.c:359: INFO: overlayfs is not configured in this kernel.
->> readahead02.c:244: INFO: Test #0: readahead on file
->> readahead02.c:134: INFO: creating test file of size: 67108864
->> safe_file_ops.c:202: BROK: Failed to open FILE '/proc/self/io' for
->> reading at readahead02.c:113: ENOENT
-> 
-> We switched from /proc/$pid to /proc/self in December:
->  commit 75506e4f1b52ea6bb63a52afb34035d9dde55d14
->  Date:   Tue Dec 4 14:54:19 2018 +0100
->    syscalls/readahead02: Simplify reading proc files
-> 
->    Use SAFE_FILE_LINES_SCANF() for parsing multiline /proc/ files
->     Use /proc/self/io instead of /proc/$pid/io.
-> 
-> @Naresh, what is the kernel version you see this fail with?
+On Mon, 2019-01-07 at 10:26 +0800, Jia Zhang wrote:
+> In order to make all tests running smoothly, the policy files should
+> keep up with the default ima tcb policy.
 
-I missed /proc/$pid/io in my previous e-mail, so it is likely that
-the only thing missing is CONFIG_TASKSTATS and CONFIG_TASK_IO_ACCOUNTING
-to be set in kernel config for our builds. This shall enable
-/proc/self/io and get rid of this error.
+Keeping the policy rules in sync is a good idea, but some of the rules
+might cause a regression with older kernels (eg. NSFS magic).  Not
+including the rule, also poses a problem.
 
->> Best regards
->> Naresh Kamboju
->> 
->> --
->> Mailing list info: https://lists.linux.it/listinfo/ltp
+The kernel headers package includes magic.h.  One solution would be to check whether a magic name is included in magic.h.
+
+> Especially ima_violations.sh
+> expects to have a func=FILE_CHECK with mask=MAY_WRITE to trigger open
+> writer and ToMtoU violations. Unfortunately, if ima_policy.sh
+> which would change the system IMA policy ran before ima_violations.sh,
+> ima_violations.sh would fail for sure because its prerequisite is broken.
+
+We're not really interested in measuring files that are opened for
+write.  They're changing.  The violation checking is independent of
+having a measurement write rule.  Look at the
+kernel ima_rdwr_violation_check().
+
+Mimi
+
 > 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+> Signed-off-by: Jia Zhang <zhang.jia@linux.alibaba.com>
+> ---
+>  .../security/integrity/ima/datafiles/measure.policy     | 17 +++++++++++++++--
+>  .../integrity/ima/datafiles/measure.policy-invalid      | 17 +++++++++++++++--
+>  2 files changed, 30 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/kernel/security/integrity/ima/datafiles/measure.policy b/testcases/kernel/security/integrity/ima/datafiles/measure.policy
+> index 9976ddf..546267c 100644
+> --- a/testcases/kernel/security/integrity/ima/datafiles/measure.policy
+> +++ b/testcases/kernel/security/integrity/ima/datafiles/measure.policy
+> @@ -11,6 +11,19 @@ dont_measure fsmagic=0x64626720
+>  dont_measure fsmagic=0x01021994
+>  # SECURITYFS_MAGIC
+>  dont_measure fsmagic=0x73636673
+> -measure func=FILE_MMAP mask=MAY_EXEC
+> +# DEVPTS_SUPER_MAGIC
+> +dont_measure fsmagic=0x1cd1
+> +# BINFMTFS_MAGIC
+> +dont_measure fsmagic=0x42494e4d
+> +# SELINUX_MAGIC
+> +dont_measure fsmagic=0xf97cff8c
+> +# CGROUP_SUPER_MAGIC
+> +dont_measure fsmagic=0x27e0eb
+> +# NSFS_MAGIC
+> +dont_measure fsmagic=0x6e736673
+> +measure func=MMAP_CHECK mask=MAY_EXEC
+>  measure func=BPRM_CHECK mask=MAY_EXEC
+> -measure func=FILE_CHECK mask=MAY_READ uid=0
+> +measure func=FILE_CHECK euid=0
+> +measure func=FILE_CHECK uid=0
+> +measure func=MODULE_CHECK
+> +measure func=FIRMWARE_CHECK
+> diff --git a/testcases/kernel/security/integrity/ima/datafiles/measure.policy-invalid b/testcases/kernel/security/integrity/ima/datafiles/measure.policy-invalid
+> index 04dff89..bc72d0c 100644
+> --- a/testcases/kernel/security/integrity/ima/datafiles/measure.policy-invalid
+> +++ b/testcases/kernel/security/integrity/ima/datafiles/measure.policy-invalid
+> @@ -11,6 +11,19 @@ dont_measure fsmagic=0x64626720
+>  dont_measure fsmagic=0x01021994
+>  # SECURITYFS_MAGIC
+>  dnt_measure fsmagic=0x73636673
+> -measure func=FILE_MMAP mask=MAY_EXEC
+> +# DEVPTS_SUPER_MAGIC
+> +dont_measure fsmagic=0x1cd1
+> +# BINFMTFS_MAGIC
+> +dont_measure fsmagic=0x42494e4d
+> +# SELINUX_MAGIC
+> +dont_measure fsmagic=0xf97cff8c
+> +# CGROUP_SUPER_MAGIC
+> +dont_measure fsmagic=0x27e0eb
+> +# NSFS_MAGIC
+> +dont_measure fsmagic=0x6e736673
+> +measure func=MMAP_CHECK mask=MAY_EXEC
+>  measure func=BPRM_CHECK mask=MAY_EXEC
+> -measure func=FILE_CHECK mask=MAY_READ uid=0
+> +measure func=FILE_CHECK euid=0
+> +measure func=FILE_CHECK uid=0
+> +measure func=MODULE_CHECK
+> +measure func=FIRMWARE_CHECK
 
