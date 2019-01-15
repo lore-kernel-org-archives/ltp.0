@@ -1,40 +1,24 @@
-From: yangj <yangj.fnst@cn.fujitsu.com>
-Date: Tue, 15 Jan 2019 18:55:01 +0800
-Subject: [LTP] [PATCH] change ip command of route6-change-gw
-Message-ID: <20190115105501.13491-1-yangj.fnst@cn.fujitsu.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 15 Jan 2019 16:47:59 +0530
+Subject: [LTP] LTP: fanotify11: ENOSYS: Function not implemented
+Message-ID: <CA+G9fYvcLVds0t6Ayuewdfhmf-wXYe7DWqNY86u8SjkK-1-3pw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-when useing old ip commond to test,it will get the following
- error:
+fanotify11 is newly added test case for upcoming LTP release.
 
-RTNETLINK answers: File exists
+Pass on arm64.
+Failed on arm(32), x86_64 and i386.
+fanotify11.c:72: BROK: fanotify_init(0x0, 0) failed: ENOSYS ( Function
+not implemented )
 
-So I changed this case like the ip command of route4-change-gw
-Signed-off-by:jian yang <yangj.fnst@cn.fujitsu.com>
----
- testcases/network/stress/route/route6-change-gw | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+The reason for failure is pre-required Kconfigs not enabled for
+arm(32), x86_64 and i386.
+CONFIG_FANOTIFY=y
+CONFIG_FANOTIFY_ACCESS_PERMISSIONS=y
 
-diff --git a/testcases/network/stress/route/route6-change-gw b/testcases/network/stress/route/route6-change-gw
-index 96fd7ee66..05e45b907 100644
---- a/testcases/network/stress/route/route6-change-gw
-+++ b/testcases/network/stress/route/route6-change-gw
-@@ -245,8 +245,7 @@ test_body()
- 	    route -A inet6 del ${dst_network}/64 gw ${IPV6_NETWORK}:${pre_rhost_part_hex} dev $lhost_ifname
- 	    ;;
- 	    2)
--	    ip -f inet6 route add ${dst_network}/64 via ${IPV6_NETWORK}:${rhost_part_hex} dev $lhost_ifname
--	    ip -f inet6 route del ${dst_network}/64 via ${IPV6_NETWORK}:${pre_rhost_part_hex} dev $lhost_ifname
-+	    ip -f inet6 route change ${dst_network}/64 via ${IPV6_NETWORK}:${rhost_part_hex} dev $lhost_ifname
- 	    ;;
- 	esac
- 	if [ $? -ne 0 ]; then
--- 
-2.17.0
-
-
-
+Best regards
+Naresh Kamboju
