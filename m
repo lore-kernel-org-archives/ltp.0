@@ -1,47 +1,51 @@
 From: Jia Zhang <zhang.jia@linux.alibaba.com>
-Date: Tue, 15 Jan 2019 10:14:31 +0800
-Subject: [LTP] [PATCH 1/6] ima/ima_boot_aggregate: Fix the definition of
-	event log
+Date: Tue, 15 Jan 2019 10:14:33 +0800
+Subject: [LTP] [PATCH 3/6] ima/ima_boot_aggregate: Fix extending PCRs beyond
+	PCR 0-7
 In-Reply-To: <1547518476-34008-1-git-send-email-zhang.jia@linux.alibaba.com>
 References: <1547518476-34008-1-git-send-email-zhang.jia@linux.alibaba.com>
-Message-ID: <1547518476-34008-2-git-send-email-zhang.jia@linux.alibaba.com>
+Message-ID: <1547518476-34008-4-git-send-email-zhang.jia@linux.alibaba.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-According to [1], the structure of event log should be packed,
-and certain fields should be 32-bit unsigned integer. Fortunately,
-keeping natural alignment seems to make everything working as
-expected all the time.
-
-[1] page 17,18 @https://trustedcomputinggroup.org/wp-content/uploads/TCG_EFI_Protocol_1_22_Final-v05.pdf
+The boot aggragate calculation should never touch PCRs beyond PCR 0-7,
+even a PCR extension really manipulates out-of-domain PCRs.
 
 Signed-off-by: Jia Zhang <zhang.jia@linux.alibaba.com>
+Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
 ---
- testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ .../security/integrity/ima/src/ima_boot_aggregate.c       | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
 diff --git a/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c b/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
-index f6e7be0..d85d222 100644
+index 67be6a7..98893b9 100644
 --- a/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
 +++ b/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
-@@ -53,10 +53,10 @@ int main(int argc, char *argv[])
- 	struct {
- 		struct {
- 			u_int32_t pcr;
--			int type;
--			unsigned char digest[SHA_DIGEST_LENGTH];
--			u_int16_t len;
--		} header;
-+			u_int32_t type;
-+			u_int8_t digest[SHA_DIGEST_LENGTH];
-+			u_int32_t len;
-+		} header __attribute__ ((packed));
- 		char *data;
- 	} event;
- 	struct {
+@@ -93,11 +93,16 @@ int main(int argc, char *argv[])
+ 			printf("%03u ", event.header.pcr);
+ 			display_sha1_digest(event.header.digest);
+ 		}
+-		SHA1_Init(&c);
+-		SHA1_Update(&c, pcr[event.header.pcr].digest,
+-			    SHA_DIGEST_LENGTH);
+-		SHA1_Update(&c, event.header.digest, SHA_DIGEST_LENGTH);
+-		SHA1_Final(pcr[event.header.pcr].digest, &c);
++
++		if (event.header.pcr < NUM_PCRS) {
++			SHA1_Init(&c);
++			SHA1_Update(&c, pcr[event.header.pcr].digest,
++				    SHA_DIGEST_LENGTH);
++			SHA1_Update(&c, event.header.digest,
++				    SHA_DIGEST_LENGTH);
++			SHA1_Final(pcr[event.header.pcr].digest, &c);
++		}
++
+ #if MAX_EVENT_DATA_SIZE < USHRT_MAX
+ 		if (event.header.len > MAX_EVENT_DATA_SIZE) {
+ 			printf("Error event too long\n");
 -- 
 1.8.3.1
 
