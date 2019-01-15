@@ -1,70 +1,47 @@
 From: Jia Zhang <zhang.jia@linux.alibaba.com>
-Date: Tue, 15 Jan 2019 10:14:36 +0800
-Subject: [LTP] [PATCH 6/6] ima/ima_violations: Temporarily remove the printk
-	rate limit
+Date: Tue, 15 Jan 2019 10:14:31 +0800
+Subject: [LTP] [PATCH 1/6] ima/ima_boot_aggregate: Fix the definition of
+	event log
 In-Reply-To: <1547518476-34008-1-git-send-email-zhang.jia@linux.alibaba.com>
 References: <1547518476-34008-1-git-send-email-zhang.jia@linux.alibaba.com>
-Message-ID: <1547518476-34008-7-git-send-email-zhang.jia@linux.alibaba.com>
+Message-ID: <1547518476-34008-2-git-send-email-zhang.jia@linux.alibaba.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The output frequency of audit log is limited by printk_ratelimit()
-in kernel if auditd not used. Thus, the test heavily depending on
-searching keywords in log file may fail if the matching patterns
-are exactly suppressed by printk_ratelimit().
+According to [1], the structure of event log should be packed,
+and certain fields should be 32-bit unsigned integer. Fortunately,
+keeping natural alignment seems to make everything working as
+expected all the time.
 
-In order to fix such a sort of failure, just temporarily remove
-the limit, and recover its setting at the end of test.
+[1] page 17,18 @https://trustedcomputinggroup.org/wp-content/uploads/TCG_EFI_Protocol_1_22_Final-v05.pdf
 
 Signed-off-by: Jia Zhang <zhang.jia@linux.alibaba.com>
 ---
- .../kernel/security/integrity/ima/tests/ima_violations.sh  | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
-index f3f40d4..a1360b8 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
-@@ -31,15 +31,27 @@ setup()
- 	FILE="test.txt"
- 	IMA_VIOLATIONS="$SECURITYFS/ima/violations"
- 	LOG="/var/log/messages"
-+	PRINTK_RATE_LIMIT="0"
- 
- 	if status_daemon auditd; then
- 		LOG="/var/log/audit/audit.log"
-+	else
-+		tst_check_cmds sysctl
-+
-+		PRINTK_RATE_LIMIT=`sysctl -n kernel.printk_ratelimit`
-+		sysctl -wq kernel.printk_ratelimit=0
- 	fi
- 	[ -f "$LOG" ] || \
- 		tst_brk TBROK "log $LOG does not exist (bug in detection?)"
- 	tst_res TINFO "using log $LOG"
- }
- 
-+reset_printk_ratelimit()
-+{
-+	[ "$PRINTK_RATE_LIMIT" != "0" ] && \
-+		sysctl -wq kernel.printk_ratelimit=$PRINTK_RATE_LIMIT
-+}
-+
- open_file_read()
- {
- 	exec 3< $FILE || exit 1
-@@ -151,6 +163,8 @@ test3()
- 
- 	validate $num_violations $count $search
- 
-+	reset_printk_ratelimit
-+
- 	# wait for ima_mmap to exit, so we can umount
- 	tst_sleep 2s
- }
+diff --git a/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c b/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
+index f6e7be0..d85d222 100644
+--- a/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
++++ b/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
+@@ -53,10 +53,10 @@ int main(int argc, char *argv[])
+ 	struct {
+ 		struct {
+ 			u_int32_t pcr;
+-			int type;
+-			unsigned char digest[SHA_DIGEST_LENGTH];
+-			u_int16_t len;
+-		} header;
++			u_int32_t type;
++			u_int8_t digest[SHA_DIGEST_LENGTH];
++			u_int32_t len;
++		} header __attribute__ ((packed));
+ 		char *data;
+ 	} event;
+ 	struct {
 -- 
 1.8.3.1
 
