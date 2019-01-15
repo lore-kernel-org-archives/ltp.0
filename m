@@ -1,63 +1,41 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 15 Jan 2019 06:43:00 -0500 (EST)
-Subject: [LTP] LTP: '/proc/self/io' for reading at readahead02.c:113:
- ENOENT No such file or directory
-In-Reply-To: <1555912299.96157256.1547552179354.JavaMail.zimbra@redhat.com>
-References: <CA+G9fYvA4XWajkvS9pP8vpFjPx=j+3F9TiueUrGjQ2RQ8vJiAQ@mail.gmail.com>
- <1555912299.96157256.1547552179354.JavaMail.zimbra@redhat.com>
-Message-ID: <1597449692.96157621.1547552580870.JavaMail.zimbra@redhat.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 15 Jan 2019 13:55:02 +0200
+Subject: [LTP] LTP: fanotify11: ENOSYS: Function not implemented
+In-Reply-To: <CA+G9fYvcLVds0t6Ayuewdfhmf-wXYe7DWqNY86u8SjkK-1-3pw@mail.gmail.com>
+References: <CA+G9fYvcLVds0t6Ayuewdfhmf-wXYe7DWqNY86u8SjkK-1-3pw@mail.gmail.com>
+Message-ID: <CAOQ4uxgE00WHjiedOTaAJa+KcyaL8u80g2z4Kv4EQ1cZO17HGg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On Tue, Jan 15, 2019 at 1:18 PM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
+>
+> fanotify11 is newly added test case for upcoming LTP release.
+>
+> Pass on arm64.
+> Failed on arm(32), x86_64 and i386.
+> fanotify11.c:72: BROK: fanotify_init(0x0, 0) failed: ENOSYS ( Function
+> not implemented )
+>
+> The reason for failure is pre-required Kconfigs not enabled for
+> arm(32), x86_64 and i386.
+> CONFIG_FANOTIFY=y
+> CONFIG_FANOTIFY_ACCESS_PERMISSIONS=y
+>
+> Best regards
+> Naresh Kamboju
+
+Wasn't this fixed by:
+
+commit 2b37d84051ac2fa8e30f19d9024e5a7f3b4bcbb4
+Author: Tommi Rantala <tommi.t.rantala@nokia.com>
+Date:   Wed Dec 12 13:26:26 2018 +0200
+
+    syscalls/fanotify11.c: check fanotify kernel support
 
 
------ Original Message -----
-> 
-> 
-> ----- Original Message -----
-> > readahead02 used to pass on arm32 on LTP-20180926 release. Now using
-> > the latest LTP master it is getting FAILED.
-> > 
-> > tst_device.c:230: INFO: Using test device LTP_DEV='/dev/loop0'
-> > tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-> > mke2fs 1.43.5 (04-Aug-2017)
-> > [  603.092608] EXT4-fs (loop0): mounting ext2 file system using the
-> > ext4 subsystem
-> > [  603.107967] EXT4-fs (loop0): mounted filesystem without journal. Opts:
-> > (null)
-> > tst_test.c:1085: INFO: Timeout per run is 0h 15m 00s
-> > readahead02.c:359: INFO: overlayfs is not configured in this kernel.
-> > readahead02.c:244: INFO: Test #0: readahead on file
-> > readahead02.c:134: INFO: creating test file of size: 67108864
-> > safe_file_ops.c:202: BROK: Failed to open FILE '/proc/self/io' for
-> > reading at readahead02.c:113: ENOENT
-> 
-> We switched from /proc/$pid to /proc/self in December:
->   commit 75506e4f1b52ea6bb63a52afb34035d9dde55d14
->   Date:   Tue Dec 4 14:54:19 2018 +0100
->     syscalls/readahead02: Simplify reading proc files
->    
->     Use SAFE_FILE_LINES_SCANF() for parsing multiline /proc/ files
->      Use /proc/self/io instead of /proc/$pid/io.
-> 
-> @Naresh, what is the kernel version you see this fail with?
-
-I see Rafael found possible explanation. get_bytes_read() wouldn't
-loudly fail before commit above. Now it's using SAFE_ func, that
-triggers TBROK if file doesn't exist.
-
-> 
-> > 
-> > Best regards
-> > Naresh Kamboju
-> > 
-> > --
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
-> > 
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
+Thanks,
+Amir.
