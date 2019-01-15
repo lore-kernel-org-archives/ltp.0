@@ -1,51 +1,41 @@
 From: Jia Zhang <zhang.jia@linux.alibaba.com>
-Date: Tue, 15 Jan 2019 10:14:33 +0800
-Subject: [LTP] [PATCH 3/6] ima/ima_boot_aggregate: Fix extending PCRs beyond
-	PCR 0-7
-In-Reply-To: <1547518476-34008-1-git-send-email-zhang.jia@linux.alibaba.com>
-References: <1547518476-34008-1-git-send-email-zhang.jia@linux.alibaba.com>
-Message-ID: <1547518476-34008-4-git-send-email-zhang.jia@linux.alibaba.com>
+Date: Tue, 15 Jan 2019 10:14:30 +0800
+Subject: [LTP] [PATCH v2 0/6] LTP IMA fix bundle
+Message-ID: <1547518476-34008-1-git-send-email-zhang.jia@linux.alibaba.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The boot aggragate calculation should never touch PCRs beyond PCR 0-7,
-even a PCR extension really manipulates out-of-domain PCRs.
+Hi Mimi and Petr,
 
-Signed-off-by: Jia Zhang <zhang.jia@linux.alibaba.com>
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
----
- .../security/integrity/ima/src/ima_boot_aggregate.c       | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+Here is the v2 patch series.
 
-diff --git a/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c b/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
-index 67be6a7..98893b9 100644
---- a/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
-+++ b/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
-@@ -93,11 +93,16 @@ int main(int argc, char *argv[])
- 			printf("%03u ", event.header.pcr);
- 			display_sha1_digest(event.header.digest);
- 		}
--		SHA1_Init(&c);
--		SHA1_Update(&c, pcr[event.header.pcr].digest,
--			    SHA_DIGEST_LENGTH);
--		SHA1_Update(&c, event.header.digest, SHA_DIGEST_LENGTH);
--		SHA1_Final(pcr[event.header.pcr].digest, &c);
-+
-+		if (event.header.pcr < NUM_PCRS) {
-+			SHA1_Init(&c);
-+			SHA1_Update(&c, pcr[event.header.pcr].digest,
-+				    SHA_DIGEST_LENGTH);
-+			SHA1_Update(&c, event.header.digest,
-+				    SHA_DIGEST_LENGTH);
-+			SHA1_Final(pcr[event.header.pcr].digest, &c);
-+		}
-+
- #if MAX_EVENT_DATA_SIZE < USHRT_MAX
- 		if (event.header.len > MAX_EVENT_DATA_SIZE) {
- 			printf("Error event too long\n");
--- 
-1.8.3.1
+Changelogs since V1: 
+- Don't use the word "policy" in patch 4's commit header.
+- Drop patch 6 ("ima: Use ima tcb policy files for test") because it
+  bases on a faulty misjudgement.
+- Add a new patch to address ima_violations failure.
 
+The latest test result is attached.
+
+Test Start Time: Tue Jan 15 10:09:14 2019
+-----------------------------------------
+Testcase                                           Result     Exit Value
+--------                                           ------     ----------
+ima_measurements                                   PASS       0    
+ima_policy                                         PASS       0    
+ima_tpm                                            CONF       32   
+ima_violations                                     PASS       0    
+
+-----------------------------------------------
+Total Tests: 4
+Total Skipped Tests: 1
+Total Failures: 0
+Kernel Version: 5.0.0-rc1+
+Machine Architecture: x86_64
+Hostname: test-machine
+
+Thanks,
+Jia
