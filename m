@@ -1,51 +1,164 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 15 Jan 2019 15:02:42 +0100
-Subject: [LTP] [PATCH] change ip command of route6-change-gw
-In-Reply-To: <20190115020846.625-1-yangj.fnst@cn.fujitsu.com>
-References: <20190115020846.625-1-yangj.fnst@cn.fujitsu.com>
-Message-ID: <20190115140241.GA16344@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 15 Jan 2019 15:57:47 +0100
+Subject: [LTP] [ANNOUNCE] The Linux Test Project has been released for
+ JANUARY 2019
+Message-ID: <20190115145747.GB7842@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jian,
+Good news everyone,
 
-> when useing old ip commond to test,it will get the following
->  error:
+the Linux Test Project test suite stable release for *January 2019* has been
+released.
 
-> RTNETLINK answers: File exists
+Since the last release 246 patches by 40 authors were merged.
 
-> So I changed this case like the ip command of route4-change-gw
-> Signed-off-by:jian yang <yangj.fnst@cn.fujitsu.com>
-> ---
->  testcases/network/stress/route/route6-change-gw | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+NOTABLE CHANGES
+===============
 
-> diff --git a/testcases/network/stress/route/route6-change-gw b/testcases/network/stress/route/route6-change-gw
-> index 96fd7ee66..05e45b907 100644
-> --- a/testcases/network/stress/route/route6-change-gw
-> +++ b/testcases/network/stress/route/route6-change-gw
-> @@ -245,8 +245,7 @@ test_body()
->  	    route -A inet6 del ${dst_network}/64 gw ${IPV6_NETWORK}:${pre_rhost_part_hex} dev $lhost_ifname
->  	    ;;
->  	    2)
-> -	    ip -f inet6 route add ${dst_network}/64 via ${IPV6_NETWORK}:${rhost_part_hex} dev $lhost_ifname
-> -	    ip -f inet6 route del ${dst_network}/64 via ${IPV6_NETWORK}:${pre_rhost_part_hex} dev $lhost_ifname
-> +	    ip -f inet6 route change ${dst_network}/64 via ${IPV6_NETWORK}:${rhost_part_hex} dev $lhost_ifname
->  	    ;;
->  	esac
->  	if [ $? -ne 0 ]; then
+* New tests
+  - fanotify11 - test for FAN_REPORT_TID
+  - fanotify01, fanotify03, fanotify10
+    - added coverage for FAN_MARK_FILESYSTEM
+  - fanotify03
+    - added coverage for mountpoint mark
+  - getrlimit03 - test if getrlimit syscalls return consistent data
+  - increased coverage for readahead and posix_fadvise on overlayfs
+  - execveat01 - functional tests
+  - execveat02 - invalid inputs tests
+  - statx06 - checks for correct statx timestamps
+  - lremovexattr01 - functional tests
+  - fremovexattr01 - functional tests
+  - fremovexattr02 - invalid inputs tests
+  - pt_test - Intel PT full trace test
+  - membarier01 - functional tests
+  - preadv201 - functional tests
+  - preadv202 - invalid inputs tests
+  - new open posix conformance tests for strchr, strcpy, strncpy
 
-Thanks for your patch, merged.
+* New regression tests
+  - crypto_user01 aka CVE-2018-19854 (previously known as CVE-2013-2547)
+  - fanout01 aka CVE-2017-15649
+  - fanotify09
+    - added coverage for merging events on child subdir
+      fixed in b469e7e47c8a "fanotify: fix handling of events on child sub-directory"
+  - fanotify10 - test for mount ignore mask
+     fixed in 9bdda4e9cf2d fsnotify: fix ignore mask logic in fsnotify()
+  - getxattr05
+     fixed in 82c9a927bc5d ("getxattr: use correct xattr length")
 
-FYI these tests are in terrible state, needs complete rewrite, see [1].
-I've already had several attempts in the past, last one [2] still wasn't good
-enough. Currently I'm rewritting route*-change-* tests into C using rtnetlink.
+* Additional 37 tests were converted to the new test library; with that about
+  30% of the LTP syscall testcases have been converted so far
 
-Kind regards,
-Petr
+* The travis build-testing is now done using docker ensuring that latest LTP
+  git HEAD builds smoothly on major distributions and architectures
 
-[1] https://github.com/linux-test-project/ltp/issues/440
-[2] https://patchwork.ozlabs.org/project/ltp/list/?series=44924&state=*
+* The fzsync library intended to trigger kernel races has been rewritten again,
+  the code is simpler now and at the same time the probability to hit races
+  has increased.
+
+NOTABLE CHANGES IN NETWORK TESTS
+================================
+brought to you by Peter Vorel
+
+New features/tests:
+
+ - tests for SIT tunnel
+ - tests for MPLS labels
+ - netstress: add support for SO_BINDTODEVICE
+ - added tst_net_run() shell API function
+ - nfs tests were rewritten to new API
+ - various fixes in dhcp, ipsec, rpc and virt tests
+ - removed ftp and ssh tests
+
+DOWNLOAD AND LINKS
+==================
+
+The latest version of the test-suite contains 3000+ tests for the Linux
+and can be downloaded at:
+
+https://github.com/linux-test-project/ltp/releases/tag/20190115
+
+The project pages as well as GIT repository are hosted on GitHub:
+
+https://github.com/linux-test-project/ltp
+http://linux-test-project.github.io/
+
+If you ever wondered how to write a LTP testcase, don't miss our developer
+documentation at:
+
+https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
+https://github.com/linux-test-project/ltp/wiki/BuildSystem
+
+Patches, new tests, bugs, comments or questions should go to to our mailing
+list at ltp@lists.linux.it.
+
+CREDITS
+=======
+
+Many thanks to the people contributing to this release:
+
+git shortlog -s -e -n 20180926..
+    41  Petr Vorel <pvorel@suse.cz>
+    28  Amir Goldstein <amir73il@gmail.com>
+    25  Alexey Kodanev <alexey.kodanev@oracle.com>
+    25  Xiao Yang <yangx.jy@cn.fujitsu.com>
+    16  Jan Stancek <jstancek@redhat.com>
+    13  Cyril Hrubis <chrubis@suse.cz>
+     8  Enji Cooper <yaneurabeya@gmail.com>
+     8  Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+     7  Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+     6  Cristian Marussi <cristian.marussi@arm.com>
+     6  Greg Hackmann <ghackmann@google.com>
+     6  Rafael David Tinoco <rafael.tinoco@linaro.org>
+     6  Richard Palethorpe <rpalethorpe@suse.com>
+     6  Steve Muckle <smuckle@google.com>
+     4  Jinhui huang <huangjh.jy@cn.fujitsu.com>
+     4  Mandri, Padmashree <padmashree.mandri@intel.com>
+     4  Sandeep Patil <sspatil@google.com>
+     3  Eric Biggers <ebiggers@google.com>
+     3  Yixin Zhang <yixin.zhang@intel.com>
+     2  Jason Xing <kerneljasonxing@linux.alibaba.com>
+     2  Li Wang <liwang@redhat.com>
+     2  Subash Ganesan <subash@zilogic.com>
+     1  Allen, John <John.Allen@amd.com>
+     1  Ammy Yi <ammy.yi@intel.com>
+     1  Hongzhi.Song <hongzhi.song@windriver.com>
+     1  Kai Kang <kai.kang@windriver.com>
+     1  Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+     1  Kenneth Magic <kmagic@google.com>
+     1  Khem Raj <raj.khem@gmail.com>
+     1  Lei Yang <Lei.Yang@windriver.com>
+     1  Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
+     1  Michael Moese <mmoese@suse.de>
+     1  Myungho Jung <mhjungk@gmail.com>
+     1  Po-Hsu Lin <po-hsu.lin@canonical.com>
+     1  Shaoting Lei <leist.fnst@cn.fujitsu.com>
+     1  Sun Lianwen <sun_lianwen@163.com>
+     1  Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+     1  Tommi Rantala <tommi.t.rantala@nokia.com>
+     1  nixiaoming <nixiaoming@huawei.com>
+     1  yangj <yangj.fnst@cn.fujitsu.com>
+
+And also thanks to patch reviewers:
+
+git log 20180926.. | grep -Ei '(reviewed|acked)-by:' | sed 's/.*by: //' | sort | uniq -c | sort -n -r
+     86 Cyril Hrubis <chrubis@suse.cz>
+     20 Petr Vorel <pvorel@suse.cz>
+     13 Li Wang <liwang@redhat.com>
+     10 Jan Stancek <jstancek@redhat.com>
+      7 Alexey Kodanev <alexey.kodanev@oracle.com>
+      4 Xiao Yang <yangx.jy@cn.fujitsu.com>
+      3 Richard Palethorpe <rpalethorpe@suse.de>
+      1 Steve Muckle <smuckle@google.com>
+      1 Richard Palethorpe <rpalethorpe@suse.com>
+      1 Jan Kara <jack@suse.cz>
+      1 Amir Goldstein <amir73il@gmail.com>
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
