@@ -1,41 +1,36 @@
-From: Jia Zhang <zhang.jia@linux.alibaba.com>
-Date: Tue, 15 Jan 2019 10:14:30 +0800
-Subject: [LTP] [PATCH v2 0/6] LTP IMA fix bundle
-Message-ID: <1547518476-34008-1-git-send-email-zhang.jia@linux.alibaba.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 15 Jan 2019 11:50:05 +0100
+Subject: [LTP] [PATCH 6/6] ima: Use ima tcb policy files for test
+In-Reply-To: <1547494342.4156.188.camel@linux.ibm.com>
+References: <1546827989-43569-1-git-send-email-zhang.jia@linux.alibaba.com>
+ <1546827989-43569-7-git-send-email-zhang.jia@linux.alibaba.com>
+ <1547494342.4156.188.camel@linux.ibm.com>
+Message-ID: <20190115105005.GA12143@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi Mimi and Petr,
+Hi Mimi, Jia,
 
-Here is the v2 patch series.
+> On Mon, 2019-01-07 at 10:26 +0800, Jia Zhang wrote:
+> > In order to make all tests running smoothly, the policy files should
+> > keep up with the default ima tcb policy.
 
-Changelogs since V1: 
-- Don't use the word "policy" in patch 4's commit header.
-- Drop patch 6 ("ima: Use ima tcb policy files for test") because it
-  bases on a faulty misjudgement.
-- Add a new patch to address ima_violations failure.
+> Keeping the policy rules in sync is a good idea, but some of the rules
+> might cause a regression with older kernels (eg. NSFS magic).  Not
+> including the rule, also poses a problem.
 
-The latest test result is attached.
+Mimi, you added NSFS_MAGIC into policy in v4.2 (cd025f7f9410 "ima: do not
+measure or appraise the NSFS filesystem"), in the commit is Cc for 3.19, but
+it's not in origin/linux-3.19.y stable tree (v3.19.8). So regression could be
+from kernel <= 4.1.
 
-Test Start Time: Tue Jan 15 10:09:14 2019
------------------------------------------
-Testcase                                           Result     Exit Value
---------                                           ------     ----------
-ima_measurements                                   PASS       0    
-ima_policy                                         PASS       0    
-ima_tpm                                            CONF       32   
-ima_violations                                     PASS       0    
+> The kernel headers package includes magic.h.  One solution would be to check whether a magic name is included in magic.h.
+Interesting approach, I like this approach. Policy would have to be generated on
+the fly, but that shouldn't be a problem.
 
------------------------------------------------
-Total Tests: 4
-Total Skipped Tests: 1
-Total Failures: 0
-Kernel Version: 5.0.0-rc1+
-Machine Architecture: x86_64
-Hostname: test-machine
 
-Thanks,
-Jia
+Kind regards,
+Petr
