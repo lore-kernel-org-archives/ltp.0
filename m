@@ -1,40 +1,59 @@
-From: yangj <yangj.fnst@cn.fujitsu.com>
-Date: Tue, 15 Jan 2019 10:08:46 +0800
-Subject: [LTP] [PATCH] change ip command of route6-change-gw
-Message-ID: <20190115020846.625-1-yangj.fnst@cn.fujitsu.com>
+From: Rafael David Tinoco <rafaeldtinoco@fastmail.com>
+Date: Tue, 15 Jan 2019 09:42:26 -0200
+Subject: [LTP] LTP: '/proc/self/io' for reading at readahead02.c:113:
+ ENOENT No such file or directory
+In-Reply-To: <1555912299.96157256.1547552179354.JavaMail.zimbra@redhat.com>
+References: <CA+G9fYvA4XWajkvS9pP8vpFjPx=j+3F9TiueUrGjQ2RQ8vJiAQ@mail.gmail.com>
+ <1555912299.96157256.1547552179354.JavaMail.zimbra@redhat.com>
+Message-ID: <5870BC5B-530B-49CE-A251-DBF950C1F994@fastmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-when useing old ip commond to test,it will get the following
- error:
+> On 15 Jan 2019, at 09:36, Jan Stancek <jstancek@redhat.com> wrote:
+> 
+> ----- Original Message -----
+>> readahead02 used to pass on arm32 on LTP-20180926 release. Now using
+>> the latest LTP master it is getting FAILED.
+>> 
+>> tst_device.c:230: INFO: Using test device LTP_DEV='/dev/loop0'
+>> tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+>> mke2fs 1.43.5 (04-Aug-2017)
+>> [  603.092608] EXT4-fs (loop0): mounting ext2 file system using the
+>> ext4 subsystem
+>> [  603.107967] EXT4-fs (loop0): mounted filesystem without journal. Opts:
+>> (null)
+>> tst_test.c:1085: INFO: Timeout per run is 0h 15m 00s
+>> readahead02.c:359: INFO: overlayfs is not configured in this kernel.
+>> readahead02.c:244: INFO: Test #0: readahead on file
+>> readahead02.c:134: INFO: creating test file of size: 67108864
+>> safe_file_ops.c:202: BROK: Failed to open FILE '/proc/self/io' for
+>> reading at readahead02.c:113: ENOENT
+> 
+> We switched from /proc/$pid to /proc/self in December:
+>  commit 75506e4f1b52ea6bb63a52afb34035d9dde55d14
+>  Date:   Tue Dec 4 14:54:19 2018 +0100
+>    syscalls/readahead02: Simplify reading proc files
+> 
+>    Use SAFE_FILE_LINES_SCANF() for parsing multiline /proc/ files
+>     Use /proc/self/io instead of /proc/$pid/io.
+> 
+> @Naresh, what is the kernel version you see this fail with?
 
-RTNETLINK answers: File exists
+I missed /proc/$pid/io in my previous e-mail, so it is likely that
+the only thing missing is CONFIG_TASKSTATS and CONFIG_TASK_IO_ACCOUNTING
+to be set in kernel config for our builds. This shall enable
+/proc/self/io and get rid of this error.
 
-So I changed this case like the ip command of route4-change-gw
-Signed-off-by:jian yang <yangj.fnst@cn.fujitsu.com>
----
- testcases/network/stress/route/route6-change-gw | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/testcases/network/stress/route/route6-change-gw b/testcases/network/stress/route/route6-change-gw
-index 96fd7ee66..05e45b907 100644
---- a/testcases/network/stress/route/route6-change-gw
-+++ b/testcases/network/stress/route/route6-change-gw
-@@ -245,8 +245,7 @@ test_body()
- 	    route -A inet6 del ${dst_network}/64 gw ${IPV6_NETWORK}:${pre_rhost_part_hex} dev $lhost_ifname
- 	    ;;
- 	    2)
--	    ip -f inet6 route add ${dst_network}/64 via ${IPV6_NETWORK}:${rhost_part_hex} dev $lhost_ifname
--	    ip -f inet6 route del ${dst_network}/64 via ${IPV6_NETWORK}:${pre_rhost_part_hex} dev $lhost_ifname
-+	    ip -f inet6 route change ${dst_network}/64 via ${IPV6_NETWORK}:${rhost_part_hex} dev $lhost_ifname
- 	    ;;
- 	esac
- 	if [ $? -ne 0 ]; then
--- 
-2.17.0
-
+>> Best regards
+>> Naresh Kamboju
+>> 
+>> --
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 
