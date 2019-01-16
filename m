@@ -1,59 +1,21 @@
-From: Jia Zhang <zhang.jia@linux.alibaba.com>
-Date: Wed, 16 Jan 2019 10:57:39 +0800
-Subject: [LTP] [PATCH v3 4/6] ima: Code cleanup
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 16 Jan 2019 08:20:04 +0100
+Subject: [LTP] [PATCH v3 0/6] LTP IMA fix bundle
 In-Reply-To: <1547607461-11233-1-git-send-email-zhang.jia@linux.alibaba.com>
 References: <1547607461-11233-1-git-send-email-zhang.jia@linux.alibaba.com>
-Message-ID: <1547607461-11233-5-git-send-email-zhang.jia@linux.alibaba.com>
+Message-ID: <20190116072004.GA10601@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-- Change the legacy function name from PATH_CHECK to FILE_CHECK.
-- Use the variable IMA_POLICY instead of hard code path.
+Hi Jia, Mimi,
 
-Signed-off-by: Jia Zhang <zhang.jia@linux.alibaba.com>
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
----
- testcases/kernel/security/integrity/ima/policy/measure.policy         | 2 +-
- testcases/kernel/security/integrity/ima/policy/measure.policy-invalid | 2 +-
- testcases/kernel/security/integrity/ima/tests/ima_policy.sh           | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+> Changelog since V2:
+> - Rework patch 6. Here is a quick diff against V2:
 
-diff --git a/testcases/kernel/security/integrity/ima/policy/measure.policy b/testcases/kernel/security/integrity/ima/policy/measure.policy
-index c68e722..9976ddf 100644
---- a/testcases/kernel/security/integrity/ima/policy/measure.policy
-+++ b/testcases/kernel/security/integrity/ima/policy/measure.policy
-@@ -13,4 +13,4 @@ dont_measure fsmagic=0x01021994
- dont_measure fsmagic=0x73636673
- measure func=FILE_MMAP mask=MAY_EXEC
- measure func=BPRM_CHECK mask=MAY_EXEC
--measure func=PATH_CHECK mask=MAY_READ uid=0
-+measure func=FILE_CHECK mask=MAY_READ uid=0
-diff --git a/testcases/kernel/security/integrity/ima/policy/measure.policy-invalid b/testcases/kernel/security/integrity/ima/policy/measure.policy-invalid
-index e406757..04dff89 100644
---- a/testcases/kernel/security/integrity/ima/policy/measure.policy-invalid
-+++ b/testcases/kernel/security/integrity/ima/policy/measure.policy-invalid
-@@ -13,4 +13,4 @@ dont_measure fsmagic=0x01021994
- dnt_measure fsmagic=0x73636673
- measure func=FILE_MMAP mask=MAY_EXEC
- measure func=BPRM_CHECK mask=MAY_EXEC
--measure func=PATH_CHECK mask=MAY_READ uid=0
-+measure func=FILE_CHECK mask=MAY_READ uid=0
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-index 64aa8cb..a0c7869 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-@@ -28,7 +28,7 @@ check_policy_writable()
- {
- 	local err="IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)"
- 
--	[ -f /sys/kernel/security/ima/policy ] || tst_brk TCONF "$err"
-+	[ -f $IMA_POLICY ] || tst_brk TCONF "$err"
- 	# CONFIG_IMA_READ_POLICY
- 	echo "" 2> log > $IMA_POLICY
- 	grep -q "Device or resource busy" log && tst_brk TCONF "$err"
--- 
-1.8.3.1
+LGTM, just waiting if Mimi reviews 1st and 6th commit.
 
+Kind regards,
+Petr
