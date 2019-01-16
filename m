@@ -1,77 +1,35 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 16 Jan 2019 14:45:24 +0100
-Subject: [LTP] [PATCH v4 ltp] Add Intel umip(User Mode Instruction
- Prevention) basic function tests
-In-Reply-To: <20190110105856.32422-1-pengfei.xu@intel.com>
-References: <20190110105856.32422-1-pengfei.xu@intel.com>
-Message-ID: <20190116134523.GE24833@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 16 Jan 2019 16:20:53 +0100
+Subject: [LTP] [PATCH v3 2/6] shell: Add tst_security.sh helper
+In-Reply-To: <20190116131230.GC24833@rei>
+References: <20181218010220.2446-1-pvorel@suse.cz>
+ <20181218010220.2446-3-pvorel@suse.cz> <20190116131230.GC24833@rei>
+Message-ID: <20190116152053.GA28027@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +static void sig_handler(int signal)
-> +{
-> +	int exp_sigsegv = 11;
-> +
-> +	if (exp_sigsegv == signal) {
-> +		sigsegv_cnt++;
-> +		tst_res(TPASS, "Received SIGSEGV signal:%d, num:%d",
-> +			signal, sigsegv_cnt);
-> +		// signal handler by app, kernel will not kill, need exit
-> +		exit(EXIT_VALUE);
-> +	} else {
-> +		tst_res(TWARN, "Received unexpected signal:%d", signal);
-> +		SAFE_KILL(pid, SIGINT);
-> +	}
-> +}
+Hi Cyril,
 
-I think I already tried to explain that signal handler runs
-asynchronously to the rest of the code and that calling anything else
-than a few signal-async-safe functions may cause undefined behavior,
-which mostly translates to deadlocks.
+> > It prints info about AppArmor and SELinux and allows to disable it.
+> > This is due some false positives because improper usage or bugs
+> > in AppArmor profiles (e.g. traceroute, dnsmasq).
 
-Why can't we write the test as:
+> Looks good, the only piece I'm not 100% sure about is if this should be
+> sourced by default in tst_test.sh. Shouldn't we just include this in
+> network tests?
+Understand, most of user space related tests are network tests.
 
-static void asm_sgdt(void)
-{
-	unsigned char val[GDT_LEN];
+I decided to add it for all tests as AppArmor default [1] and non-default [2]
+contains various non-networking tools (syslog-ng, syslogd, klogd, cron, passwd,
+useradd, userdel); SELinux has some kernel [3] and system [4] related modules.
 
-	tst_res(TINFO, "TEST sgdt, sgdt result save at [%p]", val);
-	asm volatile("sgdt %0\n" : "=m" (val));
-	exit(0);
-}
+Kind regards,
+Petr
 
-...
-
-static void do_test(unsigned int n)
-{
-	int pid, status;
-
-	pid = SAFE_FORK();
-
-	if (!pid) {
-		switch (n) {
-		case 0:
-			asm_sgdt();
-		break;
-		...
-		}
-	}
-
-	SAFE_WAITPID(pid, &status, 0);
-
-	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV) {
-		tst_res(TPASS, "Got SIGSEGV");
-		return;
-	}
-
-	tst_res(TFAIL, "Child exitted with %s", tst_strstatus(status));
-}
-
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+[1] https://gitlab.com/apparmor/apparmor/tree/master/profiles/apparmor.d
+[2] https://gitlab.com/apparmor/apparmor/tree/master/profiles/apparmor/profiles/extras
+[3] https://github.com/SELinuxProject/refpolicy/tree/master/policy/modules/kernel
+[4] https://github.com/SELinuxProject/refpolicy/tree/master/policy/modules/system
