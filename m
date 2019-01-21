@@ -1,114 +1,66 @@
-From: Jia Zhang <zhang.jia@linux.alibaba.com>
-Date: Mon, 21 Jan 2019 09:49:36 +0800
-Subject: [LTP] [PATCH v3 6/6] ima/ima_violations: Temporarily remove the
- printk rate limit
-In-Reply-To: <1548009534.3982.216.camel@linux.ibm.com>
-References: <1547607461-11233-1-git-send-email-zhang.jia@linux.alibaba.com>
- <1547607461-11233-7-git-send-email-zhang.jia@linux.alibaba.com>
- <1548009534.3982.216.camel@linux.ibm.com>
-Message-ID: <f06ff349-0dcb-b86b-35ef-e9aca48c65fd@linux.alibaba.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Mon, 21 Jan 2019 15:18:29 +0800
+Subject: [LTP] [PATCH v2] openposix/20-1-buildonly: Remove test for sigstack
+	structure
+In-Reply-To: <5C3EF3A1.30503@cn.fujitsu.com>
+References: <5C3EF3A1.30503@cn.fujitsu.com>
+Message-ID: <1548055109-4960-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Since glibc 2.26, the __USE_XOPEN2K8 macro defined by default _POSIX_C_SOURCE = 200809L
+&& _XOPEN_SOURCE = 700 in CFLAGS triggered the following compiler errors, because both
+sigstack structure and bsd_signal function are only declared if __USE_XOPEN_EXTENDED is
+defined and __USE_XOPEN2K8 is not defined:
+-------------------------------------------------------------------------------
+20-1-buildonly.c:13:8: error: invalid use of undefined type 'struct sigstack'
+  sp = t.ss_sp;
+...
+signal_h/23-1.c:15:13: error: 'bsd_signal' undeclared (first use in this function); did you mean 'psignal'?
+  dummyvar = bsd_signal;
+-------------------------------------------------------------------------------
+
+signal_h/23-1.c has been removed by commit d256a97, so just remove obsolete
+signal_h/20-1-buildonly.c as well.
+
+References:
+https://sourceware.org/git/?p=glibc.git;a=commit;h=666c0c5efa6db73632a6894bf028fef9f3b60d71
+https://sourceware.org/git/?p=glibc.git;a=commit;h=4c3992fc459322a7c712700ba3244fcb125163d7
+
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ .../conformance/definitions/signal_h/20-1-buildonly.c   | 17 -----------------
+ 1 file changed, 17 deletions(-)
+ delete mode 100644 testcases/open_posix_testsuite/conformance/definitions/signal_h/20-1-buildonly.c
+
+diff --git a/testcases/open_posix_testsuite/conformance/definitions/signal_h/20-1-buildonly.c b/testcases/open_posix_testsuite/conformance/definitions/signal_h/20-1-buildonly.c
+deleted file mode 100644
+index 21d8cb4..0000000
+--- a/testcases/open_posix_testsuite/conformance/definitions/signal_h/20-1-buildonly.c
++++ /dev/null
+@@ -1,17 +0,0 @@
+-  /*
+-     Test the definition of sigstack.
+-   */
+-
+-#include <signal.h>
+-
+-struct sigstack this_type_should_exist, t;
+-int onstack;
+-void *sp;
+-
+-int dummyfcn(void)
+-{
+-	sp = t.ss_sp;
+-	onstack = t.ss_onstack;
+-
+-	return 0;
+-}
+-- 
+1.8.3.1
 
 
-On 2019/1/21 上午2:38, Mimi Zohar wrote:
-> On Wed, 2019-01-16 at 10:57 +0800, Jia Zhang wrote:
->> The output frequency of audit log is limited by printk_ratelimit()
->> in kernel if auditd not used. Thus, the test cases heavily depending
->> on searching certain keywords in log file may fail if the matching
->> patterns are exactly suppressed by printk_ratelimit().
->>
->> In order to fix such a sort of failure, just temporarily remove the
->> printk rate limit, and restore its original setting when doing
->> cleanup.
->>
->> Signed-off-by: Jia Zhang <zhang.jia@linux.alibaba.com>
-> 
-> Thanks, I wasn't aware of the sysctl.  If the message isn't in
-> /var/log/messages or /var/log/audit/audit.log, do we now need to also
-> check journalctl?
 
-Not necessary. If user land's auditd is not used, kauditd will send the
-log to /var/log/message with printk rate limit:
-
-static void kauditd_printk_skb(struct sk_buff *skb)
-{
-        struct nlmsghdr *nlh = nlmsg_hdr(skb);
-        char *data = nlmsg_data(nlh);
-
-        if (nlh->nlmsg_type != AUDIT_EOE && printk_ratelimit())
-                pr_notice("type=%d %s\n", nlh->nlmsg_type, data);
-}
-
-So just work around the potential loss with sysctl to temporarily
-disable the limit.
-
-Jia
-
-> 
-> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-> 
->> ---
->>  .../kernel/security/integrity/ima/tests/ima_setup.sh      |  2 +-
->>  .../kernel/security/integrity/ima/tests/ima_violations.sh | 15 +++++++++++++++
->>  2 files changed, 16 insertions(+), 1 deletion(-)
->>
->> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
->> index 6dfb4d2..fe60981 100644
->> --- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
->> +++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
->> @@ -20,7 +20,7 @@
->>  TST_TESTFUNC="test"
->>  TST_SETUP_CALLER="$TST_SETUP"
->>  TST_SETUP="ima_setup"
->> -TST_CLEANUP="ima_cleanup"
->> +TST_CLEANUP="${TST_CLEANUP:-ima_cleanup}"
->>  TST_NEEDS_TMPDIR=1
->>  TST_NEEDS_ROOT=1
->>  
->> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
->> index f3f40d4..74223c2 100755
->> --- a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
->> +++ b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
->> @@ -20,6 +20,7 @@
->>  # Test whether ToMToU and open_writer violations invalidatethe PCR and are logged.
->>  
->>  TST_SETUP="setup"
->> +TST_CLEANUP="cleanup"
->>  TST_CNT=3
->>  TST_NEEDS_DEVICE=1
->>  
->> @@ -31,15 +32,29 @@ setup()
->>  	FILE="test.txt"
->>  	IMA_VIOLATIONS="$SECURITYFS/ima/violations"
->>  	LOG="/var/log/messages"
->> +	PRINTK_RATE_LIMIT="0"
->>  
->>  	if status_daemon auditd; then
->>  		LOG="/var/log/audit/audit.log"
->> +	else
->> +		tst_check_cmds sysctl
->> +
->> +		PRINTK_RATE_LIMIT=`sysctl -n kernel.printk_ratelimit`
->> +		sysctl -wq kernel.printk_ratelimit=0
->>  	fi
->>  	[ -f "$LOG" ] || \
->>  		tst_brk TBROK "log $LOG does not exist (bug in detection?)"
->>  	tst_res TINFO "using log $LOG"
->>  }
->>  
->> +cleanup()
->> +{
->> +	[ "$PRINTK_RATE_LIMIT" != "0" ] && \
->> +		sysctl -wq kernel.printk_ratelimit=$PRINTK_RATE_LIMIT
->> +
->> +	ima_cleanup
->> +}
->> +
->>  open_file_read()
->>  {
->>  	exec 3< $FILE || exit 1
