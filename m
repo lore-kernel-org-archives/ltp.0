@@ -1,83 +1,197 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 21 Jan 2019 15:40:30 +0800
-Subject: [LTP] [PATCH v2] openposix/20-1-buildonly: Remove test for
- sigstack structure
-In-Reply-To: <594891AE-21EE-4C26-BF4B-B48BDD95D97F@gmail.com>
-References: <5C3EF3A1.30503@cn.fujitsu.com>
- <1548055109-4960-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <594891AE-21EE-4C26-BF4B-B48BDD95D97F@gmail.com>
-Message-ID: <5C45776E.5080908@cn.fujitsu.com>
+From: Matthias Maennich <maennich@google.com>
+Date: Mon, 21 Jan 2019 16:06:56 +0000
+Subject: [LTP] [PATCH v1] syscalls/sigpending02: convert to new lib
+Message-ID: <20190121160656.135681-1-maennich@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2019/01/21 15:22, Enji Cooper wrote:
-> LGTM!
-> -Enji
-Hi Enji,
+Signed-off-by: Matthias Maennich <maennich@google.com>
+---
+ .../kernel/syscalls/sigpending/sigpending02.c | 155 ++++--------------
+ 1 file changed, 31 insertions(+), 124 deletions(-)
 
-Pushed, thanks.  :-)
-
-Best Regards,
-Xiao Yang
-
->> On Jan 20, 2019, at 11:18 PM, Xiao Yang<yangx.jy@cn.fujitsu.com>  wrote:
->>
->> Since glibc 2.26, the __USE_XOPEN2K8 macro defined by default _POSIX_C_SOURCE = 200809L
->> &&  _XOPEN_SOURCE = 700 in CFLAGS triggered the following compiler errors, because both
->> sigstack structure and bsd_signal function are only declared if __USE_XOPEN_EXTENDED is
->> defined and __USE_XOPEN2K8 is not defined:
->> -------------------------------------------------------------------------------
->> 20-1-buildonly.c:13:8: error: invalid use of undefined type 'struct sigstack'
->>   sp = t.ss_sp;
->> ...
->> signal_h/23-1.c:15:13: error: 'bsd_signal' undeclared (first use in this function); did you mean 'psignal'?
->>   dummyvar = bsd_signal;
->> -------------------------------------------------------------------------------
->>
->> signal_h/23-1.c has been removed by commit d256a97, so just remove obsolete
->> signal_h/20-1-buildonly.c as well.
->>
->> References:
->> https://sourceware.org/git/?p=glibc.git;a=commit;h=666c0c5efa6db73632a6894bf028fef9f3b60d71
->> https://sourceware.org/git/?p=glibc.git;a=commit;h=4c3992fc459322a7c712700ba3244fcb125163d7
->>
->> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
->> ---
->> .../conformance/definitions/signal_h/20-1-buildonly.c   | 17 -----------------
->> 1 file changed, 17 deletions(-)
->> delete mode 100644 testcases/open_posix_testsuite/conformance/definitions/signal_h/20-1-buildonly.c
->>
->> diff --git a/testcases/open_posix_testsuite/conformance/definitions/signal_h/20-1-buildonly.c b/testcases/open_posix_testsuite/conformance/definitions/signal_h/20-1-buildonly.c
->> deleted file mode 100644
->> index 21d8cb4..0000000
->> --- a/testcases/open_posix_testsuite/conformance/definitions/signal_h/20-1-buildonly.c
->> +++ /dev/null
->> @@ -1,17 +0,0 @@
->> -  /*
->> -     Test the definition of sigstack.
->> -   */
->> -
->> -#include<signal.h>
->> -
->> -struct sigstack this_type_should_exist, t;
->> -int onstack;
->> -void *sp;
->> -
->> -int dummyfcn(void)
->> -{
->> -	sp = t.ss_sp;
->> -	onstack = t.ss_onstack;
->> -
->> -	return 0;
->> -}
->> --
->> 1.8.3.1
->>
->>
->>
-
-
+diff --git a/testcases/kernel/syscalls/sigpending/sigpending02.c b/testcases/kernel/syscalls/sigpending/sigpending02.c
+index 5fd4eefbf..04c832abf 100644
+--- a/testcases/kernel/syscalls/sigpending/sigpending02.c
++++ b/testcases/kernel/syscalls/sigpending/sigpending02.c
+@@ -1,143 +1,50 @@
+-
+-/*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2002
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- */
+-
++// SPDX-License-Identifier: GPL-2.0
+ /*
+- * NAME
+- * 	sigpending02.c
++ *  Copyright (c) International Business Machines  Corp., 2002
+  *
+  * DESCRIPTION
+- * 	Test to see the the proper errors are returned by sigpending
+- *$
+- * ALGORITHM
+- * 	test 1:
+- * 	Call sigpending(sigset_t*=-1), it should return -1 with errno EFAULT
++ *	Test to see that the proper errors are returned by sigpending
+  *
+- * USAGE:  <for command-line>
+- *         -c n    Run n copies concurrently
+- *         -e      Turn on errno logging
+- *         -f      Turn off functional testing
+- *         -h      Show this help screen
+- *         -i n    Execute test n times
+- *         -I x    Execute test for x seconds
+- *         -p      Pause for SIGUSR1 before starting
+- *         -P x    Pause for x seconds between iterations
+- *         -t      Turn on syscall timing
++ *	Test 1:
++ *		Call sigpending(sigset_t*=-1), it should return -1 with errno EFAULT
+  *
+  * HISTORY
+  *	02/2002 Written by Paul Larson
+  *
+  * RESTRICTIONS
+- * 	None
++ *	None
+  */
+-#include <sys/types.h>
+-#include <fcntl.h>
+-#include <sys/stat.h>
++
+ #include <errno.h>
+-#include <string.h>
+ #include <signal.h>
+-#include "test.h"
+-
+-void setup();
+-void help();
+-void cleanup();
++#include <sys/types.h>
+ 
+-char *TCID = "sigpending02";
+-int TST_TOTAL = 1;
++#include "tst_test.h"
+ 
+-/***********************************************************************
+- * Main
+- ***********************************************************************/
+-int main(int ac, char **av)
++static void run(void)
+ {
+-	int lc;
+-	sigset_t *sigset;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-    /***************************************************************
+-     * perform global setup for test
+-     ***************************************************************/
+-	setup();
+-
+ 	/* set sigset to point to an invalid location */
+-	sigset = (sigset_t *) - 1;
+-
+-    /***************************************************************
+-     * check looping state
+-     ***************************************************************/
+-	/* TEST_LOOPING() is a macro that will make sure the test continues
+-	 * looping according to the standard command line args.
+-	 */
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		TEST(sigpending(sigset));
+-
+-		/* check return code */
+-		if (TEST_RETURN == -1) {
+-			if (TEST_ERRNO != EFAULT)
+-				tst_brkm(TFAIL, cleanup,
+-					 "sigpending() Failed with wrong "
+-					 "errno, expected errno=%d, got errno=%d : %s",
+-					 EFAULT, TEST_ERRNO,
+-					 strerror(TEST_ERRNO));
+-			else
+-				tst_resm(TPASS,
+-					 "expected failure - errno = %d : %s",
+-					 TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-			tst_brkm(TFAIL, cleanup,
+-				 "sigpending() Failed, expected "
+-				 "return value=-1, got %ld", TEST_RETURN);
+-		}
++	sigset_t *sigset = (sigset_t *) - 1;
++
++	TEST(sigpending(sigset));
++
++	/* check return code */
++	if (TST_RET == -1) {
++		if (TST_ERR != EFAULT)
++			tst_brk(TFAIL,
++				"sigpending() Failed with wrong errno, "
++				"expected errno=%d, got errno=%d : %s",
++				EFAULT, TST_ERR, strerror(TST_ERR));
++		else
++			tst_res(TPASS,
++				"expected failure - errno = %d : %s",
++				TST_ERR, strerror(TST_ERR));
++	} else {
++		tst_brk(TFAIL,
++			"sigpending() Failed, expected return value=-1, got %ld", TST_RET);
+ 	}
+-
+-    /***************************************************************
+-     * cleanup and exit
+-     ***************************************************************/
+-	cleanup();
+-	tst_exit();
+-
+-}
+-
+-/***************************************************************
+- * help
+- ***************************************************************/
+-void help(void)
+-{
+-	printf("test\n");
+ }
+ 
+-/***************************************************************
+- * setup() - performs all ONE TIME setup for this test.
+- ***************************************************************/
+-void setup(void)
+-{
+-	TEST_PAUSE;
+-}
+-
+-/***************************************************************
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- ***************************************************************/
+-void cleanup(void)
+-{
+-}
++static struct tst_test test = {
++	.test_all = run
++};
+-- 
+2.20.1.321.g9e740568ce-goog
 
