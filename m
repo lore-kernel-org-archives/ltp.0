@@ -1,192 +1,341 @@
 From: Matthew Bobrowski <mbobrowski@mbobrowski.org>
-Date: Wed, 23 Jan 2019 09:36:06 +1100
-Subject: [LTP] [PATCH 3/5] syscalls/fanotify03: add FAN_OPEN_EXEC_PERM tcase
- support
-Message-ID: <20190122223601.GA327@lithium.mbobrowski.org>
+Date: Wed, 23 Jan 2019 09:36:27 +1100
+Subject: [LTP] [PATCH 4/5] syscalls/fanotify12: add new test for
+ FAN_OPEN_EXEC event mask
+Message-ID: <20190122223621.GA404@lithium.mbobrowski.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-* Defined FAN_OPEN_EXEC_PERM flag in local tests header file to
-  accommodate for the fact if it's not defined in system user space
-  headers
+* Defined FAN_OPEN_EXEC flag in local fanotify header file in case the
+  user space system header files do not have this event type defined
 
-* Defined new tcase's for each mark type to support new fanotify flag
-  FAN_OPEN_EXEC_PERM tests
-
-* Updated fanotify_mark failure logic to report the instance where
-  FAN_OPEN_EXEC_PERM flag is not available within the kernel
+* Added a new test file fanotify12 that contains the necessary test
+  cases to support and test the FAN_OPEN_EXEC event mask
 
 Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
 Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 ---
- testcases/kernel/syscalls/fanotify/fanotify.h   | 13 +++++
- testcases/kernel/syscalls/fanotify/fanotify03.c | 63 +++++++++++++++++++++----
- 2 files changed, 66 insertions(+), 10 deletions(-)
+ testcases/kernel/syscalls/fanotify/.gitignore   |   1 +
+ testcases/kernel/syscalls/fanotify/fanotify.h   |   3 +
+ testcases/kernel/syscalls/fanotify/fanotify12.c | 282 ++++++++++++++++++++++++
+ 3 files changed, 286 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify12.c
 
+diff --git a/testcases/kernel/syscalls/fanotify/.gitignore b/testcases/kernel/syscalls/fanotify/.gitignore
+index e08310ed4..4256b8cd3 100644
+--- a/testcases/kernel/syscalls/fanotify/.gitignore
++++ b/testcases/kernel/syscalls/fanotify/.gitignore
+@@ -9,4 +9,5 @@
+ /fanotify09
+ /fanotify10
+ /fanotify11
++/fanotify12
+ /fanotify_child
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-index 880dea534..c77e7a4ac 100644
+index c77e7a4ac..e5cc59232 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify.h
 +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-@@ -64,6 +64,19 @@ static long fanotify_mark(int fd, unsigned int flags, uint64_t mask,
+@@ -64,6 +64,9 @@ static long fanotify_mark(int fd, unsigned int flags, uint64_t mask,
  #ifndef FAN_MARK_FILESYSTEM
  #define FAN_MARK_FILESYSTEM	0x00000100
  #endif
-+#ifndef FAN_OPEN_EXEC_PERM
-+#define FAN_OPEN_EXEC_PERM	0x00040000
++#ifndef FAN_OPEN_EXEC
++#define FAN_OPEN_EXEC		0x00001000
 +#endif
+ #ifndef FAN_OPEN_EXEC_PERM
+ #define FAN_OPEN_EXEC_PERM	0x00040000
+ #endif
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify12.c b/testcases/kernel/syscalls/fanotify/fanotify12.c
+new file mode 100644
+index 000000000..e2ae3576a
+--- /dev/null
++++ b/testcases/kernel/syscalls/fanotify/fanotify12.c
+@@ -0,0 +1,282 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2018 Matthew Bobrowski. All Rights Reserved.
++ *
++ * Started by Matthew Bobrowski <mbobrowski@mbobrowski.org>
++ *
++ * DESCRIPTION
++ *	Validate that the newly introduced FAN_OPEN_EXEC mask functions as
++ *	expected. The idea is to generate a sequence of open related
++ *	actions to ensure that the correct event flags are being set
++ *	depending on what event mask was requested when the object was
++ *	marked.
++ */
++#define _GNU_SOURCE
++#include "config.h"
 +
-+/*
-+ * FAN_ALL_PERM_EVENTS has been deprecated, so any new permission events
-+ * are not to be added to it. To cover the instance where a new permission
-+ * event is defined, we create a new macro that is to include all
-+ * permission events. Any new permission events should be added to this
-+ * macro.
-+ */
-+#define LTP_ALL_PERM_EVENTS	(FAN_OPEN_PERM | FAN_OPEN_EXEC_PERM | \
-+				 FAN_ACCESS_PERM)
- 
- struct fanotify_mark_type {
- 	unsigned int flag;
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
-index 3fdd1aba8..c93f7a93e 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify03.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
-@@ -47,12 +47,18 @@ static pid_t child_pid;
- 
- static char event_buf[EVENT_BUF_LEN];
- static int support_perm_events;
-+static int support_exec_events;
- 
- struct event {
- 	unsigned long long mask;
- 	unsigned int response;
- };
- 
-+/*
-+ * Ensure to keep the first FAN_OPEN_EXEC_PERM test case before the first
-+ * MARK_TYPE(FILESYSTEM) in order to allow for correct detection between
-+ * exec events not supported and filesystem marks not supported.
-+ */
- static struct tcase {
- 	const char *tname;
- 	struct fanotify_mark_type mark;
-@@ -61,7 +67,7 @@ static struct tcase {
- 	struct event event_set[EVENT_SET_MAX];
- } tcases[] = {
- 	{
--		"inode mark permission events",
-+		"inode mark, FAN_OPEN_PERM | FAN_ACCESS_PERM events",
- 		INIT_FANOTIFY_MARK_TYPE(INODE),
- 		FAN_OPEN_PERM | FAN_ACCESS_PERM, 3,
- 		{
-@@ -71,7 +77,16 @@ static struct tcase {
- 		}
- 	},
- 	{
--		"mount mark permission events",
-+		"inode mark, FAN_ACCESS_PERM | FAN_OPEN_EXEC_PERM events",
++#include <stdio.h>
++#include <errno.h>
++#include <stdlib.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include "tst_test.h"
++#include "fanotify.h"
++
++#if defined(HAVE_SYS_FANOTIFY_H)
++#include <sys/fanotify.h>
++
++#define EVENT_MAX 1024
++#define EVENT_SIZE (sizeof (struct fanotify_event_metadata))
++#define EVENT_BUF_LEN (EVENT_MAX * EVENT_SIZE)
++#define EVENT_SET_BUF 32
++
++#define BUF_SIZE 256
++#define TEST_APP "fanotify_child"
++
++static pid_t child_pid;
++static char fname[BUF_SIZE];
++static volatile int fd_notify;
++static volatile int complete;
++static char event_buf[EVENT_BUF_LEN];
++
++static struct test_case_t {
++	const char *tname;
++	struct fanotify_mark_type mark;
++	unsigned long long mask;
++	unsigned long long ignore_mask;
++	int event_count;
++	unsigned long long event_set[EVENT_SET_BUF];
++} test_cases[] = {
++	{
++		"inode mark, FAN_OPEN events",
 +		INIT_FANOTIFY_MARK_TYPE(INODE),
-+		FAN_ACCESS_PERM | FAN_OPEN_EXEC_PERM, 2,
-+		{
-+			{FAN_ACCESS_PERM, FAN_DENY},
-+			{FAN_OPEN_EXEC_PERM, FAN_DENY}
-+		}
++		FAN_OPEN,
++		0,
++		2,
++		{FAN_OPEN, FAN_OPEN}
 +	},
 +	{
-+		"mount mark, FAN_OPEN_PERM | FAN_ACCESS_PERM events",
- 		INIT_FANOTIFY_MARK_TYPE(MOUNT),
- 		FAN_OPEN_PERM | FAN_ACCESS_PERM, 3,
- 		{
-@@ -81,7 +96,16 @@ static struct tcase {
- 		}
- 	},
- 	{
--		"filesystem mark permission events",
-+		"mount mark, FAN_ACCESS_PERM | FAN_OPEN_EXEC_PERM events",
-+		INIT_FANOTIFY_MARK_TYPE(MOUNT),
-+		FAN_ACCESS_PERM | FAN_OPEN_EXEC_PERM, 2,
-+		{
-+			{FAN_ACCESS_PERM, FAN_DENY},
-+			{FAN_OPEN_EXEC_PERM, FAN_DENY}
-+		}
++		"inode mark, FAN_OPEN_EXEC events",
++		INIT_FANOTIFY_MARK_TYPE(INODE),
++		FAN_OPEN_EXEC,
++		0,
++		1,
++		{FAN_OPEN_EXEC}
 +	},
 +	{
-+		"filesystem mark, FAN_OPEN_PERM | FAN_ACCESS_PERM events",
- 		INIT_FANOTIFY_MARK_TYPE(FILESYSTEM),
- 		FAN_OPEN_PERM | FAN_ACCESS_PERM, 3,
- 		{
-@@ -89,7 +113,16 @@ static struct tcase {
- 			{FAN_ACCESS_PERM, FAN_DENY},
- 			{FAN_OPEN_PERM, FAN_DENY}
- 		}
--	}
++		"inode mark, FAN_OPEN | FAN_OPEN_EXEC events",
++		INIT_FANOTIFY_MARK_TYPE(INODE),
++		FAN_OPEN | FAN_OPEN_EXEC,
++		0,
++		2,
++		{FAN_OPEN, FAN_OPEN | FAN_OPEN_EXEC}
 +	},
 +	{
-+		"filesystem mark, FAN_ACCESS_PERM | FAN_OPEN_EXEC_PERM events",
-+		INIT_FANOTIFY_MARK_TYPE(FILESYSTEM),
-+		FAN_ACCESS_PERM | FAN_OPEN_EXEC_PERM, 2,
-+		{
-+			{FAN_ACCESS_PERM, FAN_DENY},
-+			{FAN_OPEN_EXEC_PERM, FAN_DENY}
-+		}
++		"inode mark, FAN_OPEN events, ignore FAN_OPEN_EXEC",
++		INIT_FANOTIFY_MARK_TYPE(INODE),
++		FAN_OPEN,
++		FAN_OPEN_EXEC,
++		2,
++		{FAN_OPEN, FAN_OPEN}
 +	},
- };
- 
- static void generate_events(void)
-@@ -183,8 +216,15 @@ static int setup_mark(unsigned int n)
- 	for (; i < ARRAY_SIZE(files); i++) {
- 		if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
- 				  tc->mask, AT_FDCWD, files[i]) < 0) {
--			if (errno == EINVAL && 
--				mark->flag == FAN_MARK_FILESYSTEM) {
-+			if (errno == EINVAL &&
-+				(tc->mask & FAN_OPEN_EXEC_PERM && 
-+				 !support_exec_events)) {
++	{
++		"inode mark, FAN_OPEN_EXEC events, ignore FAN_OPEN",
++		INIT_FANOTIFY_MARK_TYPE(INODE),
++		FAN_OPEN_EXEC,
++		FAN_OPEN,
++		1,
++		{FAN_OPEN_EXEC}
++	},
++	{
++		"inode mark, FAN_OPEN | FAN_OPEN_EXEC events, ignore "
++		"FAN_OPEN_EXEC",
++		INIT_FANOTIFY_MARK_TYPE(INODE),
++		FAN_OPEN | FAN_OPEN_EXEC,
++		FAN_OPEN_EXEC,
++		2,
++		{FAN_OPEN, FAN_OPEN}
++	}
++};
++
++static int generate_events(void)
++{
++	int fd, status;
++
++	child_pid = SAFE_FORK();
++
++	/*
++	 * Generate a sequence of events
++	 */
++	if (child_pid == 0) {
++		SAFE_CLOSE(fd_notify);
++
++		fd = SAFE_OPEN(fname, O_RDONLY);
++
++		if (fd > 0)
++			SAFE_CLOSE(fd);
++
++		SAFE_EXECL(TEST_APP, TEST_APP, NULL);
++		exit(1);
++	}
++
++	SAFE_WAITPID(child_pid, &status, 0);
++
++	if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
++		return 1;
++	return 0;
++}
++
++static int setup_mark(unsigned int n)
++{
++	unsigned int i = 0;
++	struct test_case_t *tc = &test_cases[n];
++	struct fanotify_mark_type *mark = &tc->mark;
++	const char *const files[] = {fname, TEST_APP};
++
++	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
++	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF, O_RDONLY);
++
++	for (; i < ARRAY_SIZE(files); i++) {
++		/* Setup normal mark on object */
++		if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
++					tc->mask, AT_FDCWD, files[i]) < 0) {
++			if (errno == EINVAL && tc->mask & FAN_OPEN_EXEC) {
 +				tst_res(TCONF,
-+					"FAN_OPEN_EXEC_PERM not supported in "
++					"FAN_OPEN_EXEC not supported in "
 +					"kernel?");
 +				return -1;
-+			} else if (errno == EINVAL &&
-+					mark->flag == FAN_MARK_FILESYSTEM) {
- 				tst_res(TCONF,
- 					"FAN_MARK_FILESYSTEM not supported in "
- 					"kernel?");
-@@ -195,17 +235,20 @@ static int setup_mark(unsigned int n)
- 					"not configured in kernel?");
- 			} else {
- 				tst_brk(TBROK | TERRNO,
--					"fanotify_mark (%d, FAN_MARK_ADD | %s, "
++			} else if (errno == EINVAL) {
++				tst_brk(TCONF | TERRNO,
++					"CONFIG_FANOTIFY_ACCESS_PERMISSIONS "
++					"not configured in kernel?");
++			}else {
++				tst_brk(TBROK | TERRNO,
 +					"fanotify_mark(%d, FAN_MARK_ADD | %s, "
- 					"FAN_ACCESS_PERM | FAN_OPEN_PERM, "
- 					"AT_FDCWD, %s) failed.",
- 					fd_notify, mark->name, fname);
- 			}
- 		} else {
- 			/*
--			 * To distinguish between perm event not supported and
--			 * filesystem mark not supported.
-+			 * To distinguish between perm not supported, exec
-+			 * events not supported and filesystem mark not
-+			 * supported.
- 			 */
- 			support_perm_events = 1;
-+			if (tc->mask & FAN_OPEN_EXEC_PERM)
-+				support_exec_events = 1;
- 		}
- 	}
- 
-@@ -274,7 +317,7 @@ static void test_fanotify(unsigned int n)
- 		}
- 
- 		/* Write response to the permission event */
--		if (event_set[test_num].mask & FAN_ALL_PERM_EVENTS) {
-+		if (event_set[test_num].mask & LTP_ALL_PERM_EVENTS) {
- 			struct fanotify_response resp;
- 
- 			resp.fd = event->fd;
++					"%llx, AT_FDCWD, %s) failed",
++					fd_notify,
++					mark->name,
++					tc->mask,
++					files[i]);
++			}
++		}
++
++		/* Setup ignore mark on object */
++		if (tc->ignore_mask) {
++			if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag
++						| FAN_MARK_IGNORED_MASK,
++						tc->ignore_mask, AT_FDCWD,
++						files[i]) < 0) {
++				if (errno == EINVAL &&
++					tc->ignore_mask & FAN_OPEN_EXEC) {
++					tst_res(TCONF,
++						"FAN_OPEN_EXEC not supported "
++						"in kernel?");
++					return -1;
++				} else if (errno == EINVAL) {
++					tst_brk(TCONF | TERRNO,
++						"CONFIG_FANOTIFY_ACCESS_"
++						"PERMISSIONS not configured in "
++						"kernel?");
++				} else {
++					tst_brk(TBROK | TERRNO,
++						"fanotify_mark (%d, "
++						"FAN_MARK_ADD | %s "
++						"| FAN_MARK_IGNORED_MASK, "
++						"%llx, AT_FDCWD, %s) failed",
++						fd_notify, mark->name,
++						tc->ignore_mask, files[i]);
++				}
++			}
++		}
++	}
++
++	return 0;
++}
++
++static void do_test(unsigned int n)
++{
++	int len = 0, event_num = 0;
++	struct test_case_t *tc = &test_cases[n];
++	struct fanotify_event_metadata *event;
++
++	/* Place a mark on the object */
++	if (setup_mark(n) != 0)
++		goto cleanup;
++
++	/* Generate events in child process */
++	if (!generate_events())
++		goto cleanup;
++
++	/* Read available events into buffer */
++	len = SAFE_READ(0, fd_notify, event_buf, EVENT_BUF_LEN);
++
++	event = (struct fanotify_event_metadata *) event_buf;
++
++	/* Process events */
++	while (FAN_EVENT_OK(event, len) && event_num < tc->event_count) {
++		if (event->mask != *(tc->event_set + event_num)) {
++			tst_res(TFAIL,
++				"Received event: mask=%llx (expected %llx, "
++				"pid=%u, fd=%d",
++				(unsigned long long) event->mask,
++				*(tc->event_set + event_num),
++				(unsigned) event->pid,
++				event->fd);
++		} else if (event->pid != child_pid) {
++			tst_res(TFAIL,
++				"Received event: mask=%llx, pid=%u (expected "
++				"%u), fd=%d",
++				(unsigned long long) event->mask,
++				(unsigned) event->pid,
++				(unsigned) child_pid,
++				event->fd);
++		} else {
++			tst_res(TPASS,
++				"Received event: mask=%llx, pid=%u, fd=%d",
++				(unsigned long long) event->mask,
++				(unsigned) event->pid,
++				event->fd);
++		}
++
++		if (event->fd != FAN_NOFD)
++			SAFE_CLOSE(event->fd);
++
++		event_num++;
++		event = FAN_EVENT_NEXT(event, len);
++	}
++
++cleanup:
++	if (fd_notify > 0)
++		SAFE_CLOSE(fd_notify);
++}
++
++static void do_setup(void)
++{
++	sprintf(fname, "fname_%d", getpid());
++	SAFE_FILE_PRINTF(fname, "1");
++}
++
++static void do_cleanup(void)
++{
++	if (fd_notify > 0)
++		SAFE_CLOSE(fd_notify);
++}
++
++static const char *const resource_files[] = {
++	TEST_APP,
++	NULL
++};
++
++static struct tst_test test = {
++	.setup = do_setup,
++	.test = do_test,
++	.tcnt = ARRAY_SIZE(test_cases),
++	.cleanup = do_cleanup,
++	.forks_child = 1,
++	.needs_root = 1,
++	.resource_files = resource_files
++};
++#else
++	TST_TEST_CONF("System does not contain required fanotify support");
++#endif
 -- 
 2.16.4
 
