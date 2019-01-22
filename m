@@ -1,199 +1,229 @@
-From: Matthias Maennich <maennich@google.com>
-Date: Tue, 22 Jan 2019 10:01:10 +0000
-Subject: [LTP] [PATCH v2] syscalls/sigpending02: convert to new lib
-Message-ID: <20190122100110.120507-1-maennich@google.com>
+From: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+Date: Wed, 23 Jan 2019 09:35:32 +1100
+Subject: [LTP] [PATCH 1/5] syscalls/fanotify03: defined additional tcase
+ members for added control
+Message-ID: <20190122223526.GA32694@lithium.mbobrowski.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Matthias Maennich <maennich@google.com>
-Reviewed-by: Sandeep Patil <sspatil@android.com>
+* Included the event mask member to be used for fanotify_mark() within
+  the tcase. This allows control over what event types are to be
+  generated on a tcase by tcase level as oppose to having it globally
+  defined for all tcases.
+
+* Included the event_set and event_resp arrays into a tcase so that
+  the sequence of expected events can be defined on a test case by test
+  case level. Both event_set and event_resp are now represented by the
+  event struct.
+
+* Added event_count member to tcase in order to represent the number of
+  expected events for each tcase.
+
+* Fanotify permission events cannot be merged, thus cleaned up some
+  unnecessary code in test_fanotify() that checks whether any additional
+  bits are left within event->mask.
+
+Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 ---
- .../kernel/syscalls/sigpending/sigpending02.c | 160 ++++--------------
- 1 file changed, 32 insertions(+), 128 deletions(-)
+ testcases/kernel/syscalls/fanotify/fanotify03.c | 96 ++++++++++++++-----------
+ 1 file changed, 56 insertions(+), 40 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sigpending/sigpending02.c b/testcases/kernel/syscalls/sigpending/sigpending02.c
-index 5fd4eefbf..3898001b2 100644
---- a/testcases/kernel/syscalls/sigpending/sigpending02.c
-+++ b/testcases/kernel/syscalls/sigpending/sigpending02.c
-@@ -1,143 +1,47 @@
--
-+// SPDX-License-Identifier: GPL-2.0
- /*
-+ *  Copyright (c) International Business Machines  Corp., 2002
-  *
-- *   Copyright (c) International Business Machines  Corp., 2002
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * NAME
-- * 	sigpending02.c
-+ * AUTHORS
-+ *	Paul Larson
-  *
-  * DESCRIPTION
-- * 	Test to see the the proper errors are returned by sigpending
-- *$
-- * ALGORITHM
-- * 	test 1:
-- * 	Call sigpending(sigset_t*=-1), it should return -1 with errno EFAULT
-- *
-- * USAGE:  <for command-line>
-- *         -c n    Run n copies concurrently
-- *         -e      Turn on errno logging
-- *         -f      Turn off functional testing
-- *         -h      Show this help screen
-- *         -i n    Execute test n times
-- *         -I x    Execute test for x seconds
-- *         -p      Pause for SIGUSR1 before starting
-- *         -P x    Pause for x seconds between iterations
-- *         -t      Turn on syscall timing
-+ *	Test to see that the proper errors are returned by sigpending
-  *
-- * HISTORY
-- *	02/2002 Written by Paul Larson
-- *
-- * RESTRICTIONS
-- * 	None
-+ *	Test 1:
-+ *		Call sigpending(sigset_t*=-1), it should return -1 with errno EFAULT
-  */
--#include <sys/types.h>
--#include <fcntl.h>
--#include <sys/stat.h>
-+
- #include <errno.h>
--#include <string.h>
- #include <signal.h>
--#include "test.h"
--
--void setup();
--void help();
--void cleanup();
-+#include <sys/types.h>
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
+index 0bf64577f..aa16039a3 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify03.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
+@@ -32,6 +32,8 @@
+ #define EVENT_SIZE  (sizeof (struct fanotify_event_metadata))
+ /* reasonable guess as to size of 1024 events */
+ #define EVENT_BUF_LEN        (EVENT_MAX * EVENT_SIZE)
++/* Size large enough to hold a reasonable amount of expected event objects */
++#define EVENT_SET_MAX 16
  
--char *TCID = "sigpending02";
--int TST_TOTAL = 1;
-+#include "tst_test.h"
+ #define BUF_SIZE 256
+ #define TST_TOTAL 3
+@@ -42,28 +44,48 @@ static volatile int fd_notify;
  
--/***********************************************************************
-- * Main
-- ***********************************************************************/
--int main(int ac, char **av)
-+static void run(void)
- {
--	int lc;
--	sigset_t *sigset;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--    /***************************************************************
--     * perform global setup for test
--     ***************************************************************/
--	setup();
--
- 	/* set sigset to point to an invalid location */
--	sigset = (sigset_t *) - 1;
--
--    /***************************************************************
--     * check looping state
--     ***************************************************************/
--	/* TEST_LOOPING() is a macro that will make sure the test continues
--	 * looping according to the standard command line args.
--	 */
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		TEST(sigpending(sigset));
--
--		/* check return code */
--		if (TEST_RETURN == -1) {
--			if (TEST_ERRNO != EFAULT)
--				tst_brkm(TFAIL, cleanup,
--					 "sigpending() Failed with wrong "
--					 "errno, expected errno=%d, got errno=%d : %s",
--					 EFAULT, TEST_ERRNO,
--					 strerror(TEST_ERRNO));
--			else
--				tst_resm(TPASS,
--					 "expected failure - errno = %d : %s",
--					 TEST_ERRNO, strerror(TEST_ERRNO));
--		} else {
--			tst_brkm(TFAIL, cleanup,
--				 "sigpending() Failed, expected "
--				 "return value=-1, got %ld", TEST_RETURN);
--		}
-+	sigset_t *sigset = (sigset_t *) - 1;
-+
-+	TEST(sigpending(sigset));
-+
-+	/* check return code */
-+	if (TST_RET == -1) {
-+		if (TST_ERR != EFAULT)
-+			tst_brk(TFAIL,
-+				"sigpending() Failed with wrong errno, "
-+				"expected errno=%d, got errno=%d : %s",
-+				EFAULT, TST_ERR, strerror(TST_ERR));
-+		else
-+			tst_res(TPASS,
-+				"expected failure - errno = %d : %s",
-+				TST_ERR, strerror(TST_ERR));
-+	} else {
-+		tst_brk(TFAIL,
-+			"sigpending() Failed, expected return value=-1, got %ld", TST_RET);
- 	}
--
--    /***************************************************************
--     * cleanup and exit
--     ***************************************************************/
--	cleanup();
--	tst_exit();
--
- }
+ static pid_t child_pid;
  
--/***************************************************************
-- * help
-- ***************************************************************/
--void help(void)
--{
--	printf("test\n");
--}
+-static unsigned long long event_set[EVENT_MAX];
+-static unsigned int event_resp[EVENT_MAX];
 -
--/***************************************************************
-- * setup() - performs all ONE TIME setup for this test.
-- ***************************************************************/
--void setup(void)
--{
--	TEST_PAUSE;
--}
--
--/***************************************************************
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *		completion or premature exit.
-- ***************************************************************/
--void cleanup(void)
--{
--}
-+static struct tst_test test = {
-+	.test_all = run
+ static char event_buf[EVENT_BUF_LEN];
+ static int support_perm_events;
+ 
++struct event {
++	unsigned long long mask;
++	unsigned int response;
 +};
++
+ static struct tcase {
+ 	const char *tname;
+ 	struct fanotify_mark_type mark;
++	unsigned long long mask;
++	int event_count;
++	struct event event_set[EVENT_SET_MAX];
+ } tcases[] = {
+ 	{
+ 		"inode mark permission events",
+ 		INIT_FANOTIFY_MARK_TYPE(INODE),
++		FAN_OPEN_PERM | FAN_ACCESS_PERM, 2,
++		{
++			{FAN_OPEN_PERM, FAN_ALLOW},
++			{FAN_ACCESS_PERM, FAN_DENY}
++		}
+ 	},
+ 	{
+ 		"mount mark permission events",
+ 		INIT_FANOTIFY_MARK_TYPE(MOUNT),
++		FAN_OPEN_PERM | FAN_ACCESS_PERM, 2,
++		{
++			{FAN_OPEN_PERM, FAN_ALLOW},
++			{FAN_ACCESS_PERM, FAN_DENY}
++		}
+ 	},
+ 	{
+ 		"filesystem mark permission events",
+ 		INIT_FANOTIFY_MARK_TYPE(FILESYSTEM),
+-	},
++		FAN_OPEN_PERM | FAN_ACCESS_PERM, 2,
++		{
++			{FAN_OPEN_PERM, FAN_ALLOW},
++			{FAN_ACCESS_PERM, FAN_DENY}
++		}
++	}
+ };
+ 
+ static void generate_events(void)
+@@ -146,8 +168,7 @@ static int setup_mark(unsigned int n)
+ 
+ 	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
+ 
+-	if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
+-			  FAN_ACCESS_PERM | FAN_OPEN_PERM,
++	if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag, tc->mask,
+ 			  AT_FDCWD, fname) < 0) {
+ 		if (errno == EINVAL && mark->flag == FAN_MARK_FILESYSTEM) {
+ 			tst_res(TCONF,
+@@ -166,7 +187,7 @@ static int setup_mark(unsigned int n)
+ 		}
+ 	} else {
+ 		/*
+-		 * To distigouish between perm event not supported and
++		 * To distinguish between perm event not supported and
+ 		 * filesystem mark not supported.
+ 		 */
+ 		support_perm_events = 1;
+@@ -178,32 +199,22 @@ static int setup_mark(unsigned int n)
+ 
+ static void test_fanotify(unsigned int n)
+ {
+-	int tst_count;
+ 	int ret, len = 0, i = 0, test_num = 0;
++	struct tcase *tc = &tcases[n];
++	struct event *event_set = tc->event_set;
+ 
+ 	if (setup_mark(n) != 0)
+ 		return;
+ 
+ 	run_child();
+ 
+-	tst_count = 0;
+-
+-	event_set[tst_count] = FAN_OPEN_PERM;
+-	event_resp[tst_count++] = FAN_ALLOW;
+-	event_set[tst_count] = FAN_ACCESS_PERM;
+-	event_resp[tst_count++] = FAN_DENY;
+-
+-	/* tst_count + 1 is for checking child return value */
+-	if (TST_TOTAL != tst_count + 1) {
+-		tst_brk(TBROK,
+-			"TST_TOTAL and tst_count do not match");
+-	}
+-	tst_count = 0;
+-
+ 	/*
+-	 * check events
++	 * Process events
++	 *
++	 * tc->count + 1 is to accommodate for checking the child process
++	 * return value
+ 	 */
+-	while (test_num < TST_TOTAL && fd_notify != -1) {
++	while (test_num < tc->event_count + 1 && fd_notify != -1) {
+ 		struct fanotify_event_metadata *event;
+ 
+ 		if (i == len) {
+@@ -221,12 +232,16 @@ static void test_fanotify(unsigned int n)
+ 		}
+ 
+ 		event = (struct fanotify_event_metadata *)&event_buf[i];
+-		if (!(event->mask & event_set[test_num])) {
++		/* Permission events cannot be merged, so the event mask
++		 * reported should exactly match the event mask within the
++		 * event set.
++		 */
++		if (event->mask != event_set[test_num].mask) {
+ 			tst_res(TFAIL,
+ 				"got event: mask=%llx (expected %llx) "
+ 				"pid=%u fd=%d",
+ 				(unsigned long long)event->mask,
+-				event_set[test_num],
++				event_set[test_num].mask,
+ 				(unsigned)event->pid, event->fd);
+ 		} else if (event->pid != child_pid) {
+ 			tst_res(TFAIL,
+@@ -242,29 +257,30 @@ static void test_fanotify(unsigned int n)
+ 				(unsigned long long)event->mask,
+ 				(unsigned)event->pid, event->fd);
+ 		}
+-		/* Write response to permission event */
+-		if (event_set[test_num] & FAN_ALL_PERM_EVENTS) {
++
++		/* Write response to the permission event */
++		if (event_set[test_num].mask & FAN_ALL_PERM_EVENTS) {
+ 			struct fanotify_response resp;
+ 
+ 			resp.fd = event->fd;
+-			resp.response = event_resp[test_num];
+-			SAFE_WRITE(1, fd_notify, &resp,
+-				   sizeof(resp));
+-		}
+-		event->mask &= ~event_set[test_num];
+-		/* No events left in current mask? Go for next event */
+-		if (event->mask == 0) {
+-			i += event->event_len;
+-			if (event->fd != FAN_NOFD)
+-				SAFE_CLOSE(event->fd);
++			resp.response = event_set[test_num].response;
++			SAFE_WRITE(1, fd_notify, &resp, sizeof(resp));
+ 		}
++
++		i += event->event_len;
++
++		if (event->fd != FAN_NOFD)
++			SAFE_CLOSE(event->fd);
++
+ 		test_num++;
+ 	}
+-	for (; test_num < TST_TOTAL - 1; test_num++) {
++
++	for (; test_num < tc->event_count; test_num++) {
+ 		tst_res(TFAIL, "didn't get event: mask=%llx",
+-			event_set[test_num]);
++			event_set[test_num].mask);
+ 
+ 	}
++
+ 	check_child();
+ 
+ 	if (fd_notify > 0)
 -- 
-2.20.1.321.g9e740568ce-goog
+2.16.4
 
+
+-- 
+Matthew Bobrowski
