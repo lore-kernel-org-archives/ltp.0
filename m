@@ -1,33 +1,31 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 23 Jan 2019 18:27:27 +0100
-Subject: [LTP] [PATCH] device-drivers/cpufreq_boost.c: skip test if
- turbo is disabled by BIOS or unavailable on processor
-In-Reply-To: <20190108112737.GA25178@x230>
-References: <1546852515-19045-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20190108093344.GA2687@x230> <5C347181.8080303@cn.fujitsu.com>
- <cd870461-e84f-d16a-0621-f3466fd59f32@arm.com>
- <20190108112737.GA25178@x230>
-Message-ID: <20190123172727.GA18294@dell5510>
+From: Jia Zhang <zhang.jia@linux.alibaba.com>
+Date: Thu, 24 Jan 2019 10:19:39 +0800
+Subject: [LTP] [PATCH v3 0/6] LTP IMA fix bundle
+In-Reply-To: <20190116072004.GA10601@dell5510>
+References: <1547607461-11233-1-git-send-email-zhang.jia@linux.alibaba.com>
+ <20190116072004.GA10601@dell5510>
+Message-ID: <6857d8c9-c35c-7967-895f-7c4452365bc9@linux.alibaba.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi Xiao,
+Hi Petr,
 
-> > I could be wrong but i think that if you keep the string unsplitted and move it
-> > on its own line checkpatch.pl should be fine, like in:
+Is it good enough to merge this patch series?
 
-> > tst_brkm(TCONF, NULL,
-> >          "Turbo is disabled by BIOS or unavailable on processor");
-> Yes.
+Thanks,
+Jia
 
-> Xiao, no need to repost patch, this can be done during merge.
-Merged with unsplitted string change.
-
-Thanks for your work.
-
-
-Kind regards,
-Petr
+On 2019/1/16 下午3:20, Petr Vorel wrote:
+> Hi Jia, Mimi,
+> 
+>> Changelog since V2:
+>> - Rework patch 6. Here is a quick diff against V2:
+> 
+> LGTM, just waiting if Mimi reviews 1st and 6th commit.
+> 
+> Kind regards,
+> Petr
+> 
