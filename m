@@ -1,287 +1,95 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 24 Jan 2019 17:11:59 +0100
-Subject: [LTP] [PATCH v3 5/6] syscalls/clock_settime: create syscall
- clock_settime tests
-In-Reply-To: <20181212203723.18810-5-rafael.tinoco@linaro.org>
-References: <20181211142750.GA27159@rei>
- <20181212203723.18810-1-rafael.tinoco@linaro.org>
- <20181212203723.18810-5-rafael.tinoco@linaro.org>
-Message-ID: <20190124161159.GC16804@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 24 Jan 2019 17:17:34 +0100
+Subject: [LTP] [RFC PATCH 1/2] tst_net: Add missing includes,
+	make functions inline
+In-Reply-To: <20190124161735.19609-1-pvorel@suse.cz>
+References: <20190124161735.19609-1-pvorel@suse.cz>
+Message-ID: <20190124161735.19609-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +#include "config.h"
-> +#include "tst_timer.h"
-> +#include "tst_safe_clocks.h"
-> +#include "tst_test.h"
-> +#include "lapi/syscalls.h"
-> +
-> +#define DELTA_SEC 10
-> +#define DELTA_SEC_US (long long) (DELTA_SEC * 1000000)
-             ^
-	     Maybe just DELTA_US having both SEC and US in the name is
-	     confusing.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ include/tst_net.h | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-> +#define DELTA_SEC_VAR_POS (long long) (DELTA_SEC_US * 1.10)
-> +#define DELTA_SEC_VAR_NEG (long long) (DELTA_SEC_US * 0.90)
-
-It would be probably more clear to just define epsilon here as
-
-#define DELTA_EPS (DELTA_US * 0.1)
-
-Then use it as DELTA_US + DELTA_EPS and DELTA_US - DELTA_EPS
-
-> +static void verify_clock_settime(void)
-> +{
-> +	long long elapsed;
-> +	struct timespec begin, change, end;
-> +
-> +	/* test 01: move forward */
-> +
-> +	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &begin);
-> +
-> +	change = tst_timespec_add_us(begin, DELTA_SEC_US);
-> +
-> +	if (clock_settime(CLOCK_REALTIME, &change) != 0)
-> +		tst_brk(TBROK | TTERRNO, "could not set realtime change");
-> +
-> +	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &end);
-> +
-> +	elapsed = tst_timespec_diff_us(end, begin);
-> +
-> +	if (elapsed > DELTA_SEC_US && elapsed < DELTA_SEC_VAR_POS) {
-> +		tst_res(TPASS, "clock_settime(2): was able to advance time");
-> +	} else {
-> +		tst_res(TFAIL, "clock_settime(2): could not advance time");
-> +	}
-
-The curly braces around these one line statements are useless here.
-
-> +	/* test 02: move backward */
-> +
-> +	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &begin);
-> +
-> +	change = tst_timespec_rem_us(begin, DELTA_SEC_US);
-> +
-> +	if (clock_settime(CLOCK_REALTIME, &change) != 0)
-> +		tst_brk(TBROK | TTERRNO, "could not set realtime change");
-> +
-> +	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &end);
-> +
-> +	elapsed = tst_timespec_diff_us(end, begin);
-> +
-> +	if (~(elapsed) > DELTA_SEC_VAR_NEG) {
-
-We still does not check that the time wasn't set too much into history
-so this should be adjusted just like the previous condition to:
-
-	if (~(elapsed) < DELTA_US && ~(elapsed) > DELTA_US - DELTA_EPS)
-
-> +		tst_res(TPASS, "clock_settime(2): was able to recede time");
-> +	} else {
-> +		tst_res(TFAIL, "clock_settime(2): could not recede time");
-> +	}
-
-Again useless curly braces.
-
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = verify_clock_settime,
-> +	.needs_root = 1,
-> +	.restore_wallclock = 1,
-> +};
-> diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime02.c b/testcases/kernel/syscalls/clock_settime/clock_settime02.c
-> new file mode 100644
-> index 000000000..25fcbfe09
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/clock_settime/clock_settime02.c
-> @@ -0,0 +1,150 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2018 Linaro Limited. All rights reserved.
-> + * Author: Rafael David Tinoco <rafael.tinoco@linaro.org>
-> + */
-> +
-> +/*
-> + * Basic tests for errors of clock_settime(2) on different clock types.
-> + */
-> +
-> +#include "config.h"
-> +#include "tst_test.h"
-> +#include "lapi/syscalls.h"
-> +#include "tst_timer.h"
-> +#include "tst_safe_clocks.h"
-> +
-> +#define DELTA_SEC 10
-> +#define NSEC_PER_SEC (1000000000L)
-> +#define MAX_CLOCKS 16
-> +
-> +struct test_case {
-> +	clockid_t type;
-> +	struct timespec newtime;
-> +	int exp_err;
-> +	int replace;
-> +};
-> +
-> +struct test_case tc[] = {
-> +	{				/* case 01: REALTIME: timespec NULL   */
-> +	 .type = CLOCK_REALTIME,
-> +	 .newtime.tv_sec = -2,
-> +	 .exp_err = EFAULT,
-> +	 .replace = 1,
-> +	 },
-> +	{				/* case 02: REALTIME: tv_sec = -1     */
-> +	 .type = CLOCK_REALTIME,
-> +	 .newtime.tv_sec = -1,
-> +	 .exp_err = EINVAL,
-> +	 .replace = 1,
-> +	 },
-> +	{				/* case 03: REALTIME: tv_nsec = -1    */
-> +	 .type = CLOCK_REALTIME,
-> +	 .newtime.tv_nsec = -1,
-> +	 .exp_err = EINVAL,
-> +	 .replace = 1,
-> +	 },
-> +	{				/* case 04: REALTIME: tv_nsec = 1s+1  */
-> +	 .type = CLOCK_REALTIME,
-> +	 .newtime.tv_nsec = NSEC_PER_SEC + 1,
-> +	 .exp_err = EINVAL,
-> +	 .replace = 1,
-> +	 },
-> +	{				/* case 05: MONOTONIC		      */
-> +	 .type = CLOCK_MONOTONIC,
-> +	 .exp_err = EINVAL,
-> +	 },
-> +	{				/* case 06: MAXCLOCK		      */
-> +	 .type = MAX_CLOCKS,
-> +	 .exp_err = EINVAL,
-> +	 },
-> +	{				/* case 07: MAXCLOCK+1		      */
-> +	 .type = MAX_CLOCKS + 1,
-> +	 .exp_err = EINVAL,
-> +	 },
-> +	/* Linux specific */
-> +	{				/* case 08: CLOCK_MONOTONIC_COARSE    */
-> +	 .type = CLOCK_MONOTONIC_COARSE,
-> +	 .exp_err = EINVAL,
-> +	 },
-> +	{				/* case 09: CLOCK_MONOTONIC_RAW       */
-> +	 .type = CLOCK_MONOTONIC_RAW,
-> +	 .exp_err = EINVAL,
-> +	 },
-> +	{				/* case 10: CLOCK_BOOTTIME	      */
-> +	 .type = CLOCK_BOOTTIME,
-> +	 .exp_err = EINVAL,
-> +	 },
-> +	{				/* case 11: CLOCK_PROCESS_CPUTIME_ID  */
-> +	 .type = CLOCK_PROCESS_CPUTIME_ID,
-> +	 .exp_err = EINVAL,
-> +	 },
-> +	{				/* case 12: CLOCK_THREAD_CPUTIME_ID   */
-> +	 .type = CLOCK_THREAD_CPUTIME_ID,
-> +	 .exp_err = EINVAL,
-> +	 },
-> +};
-> +
-> +/*
-> + * Some tests may cause libc to segfault when passing bad arguments.
-> + */
-> +static int sys_clock_settime(clockid_t clk_id, struct timespec *tp)
-> +{
-> +	return tst_syscall(__NR_clock_settime, clk_id, tp);
-> +}
-> +
-> +static void verify_clock_settime(unsigned int i)
-> +{
-> +	struct timespec saved, spec, *specptr;
-
-
-I would have initialized the specptr = &spec here and only replaced it
-down there if we are hitting the EFAULT case.
-
-> +	if (tc[i].replace == 0) {
-> +
-> +		SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &saved);
-> +
-> +		/* add 1 sec to test clock */
-> +		specptr = &spec;
-> +		specptr->tv_sec = saved.tv_sec + 1;
-> +		specptr->tv_nsec = saved.tv_nsec;
-
-And we don't need the saved here anymore, so we can really do
-clock_gettime() on the specptr here, right?
-
-> +	} else {
-> +
-> +
-> +		if (tc[i].newtime.tv_sec == -2) {
-> +
-> +			/* bad pointer case */
-> +			specptr = tst_get_bad_addr(NULL);
-
-Maybe we can just look for EFAULT errno instead of having magic tv_sec
-value.
-
-> +		} else {
-> +
-> +			/* use given values */
-> +			specptr = &spec;
-> +			specptr->tv_sec = tc[i].newtime.tv_sec;
-> +			specptr->tv_nsec = tc[i].newtime.tv_nsec;
-
-You can do simple spec = tc[i].newtime here.
-
-> +		}
-> +	}
-
-
-
-> +	TEST(sys_clock_settime(tc[i].type, specptr));
-> +
-> +	if (TST_RET == -1) {
-> +
-> +		if (tc[i].exp_err == TST_ERR) {
-> +
-> +			tst_res(TPASS, "clock_settime(2): failed as expected");
-> +
-> +		} else {
-> +			tst_res(TFAIL | TTERRNO, "clock_settime(2): "
-> +					"failed with different error");
-
-I would be better to print the expected errno here as well something as:
-
-	tst_res(TFAIL | TTERRNO, "clock_settime(%s, ...) expected %s",
-	        clock_name(tc[i].type), tst_strerrno(tc[i].exp_err));
-> +		}
-> +
-> +		return;
-> +	}
-> +
-> +	tst_res(TFAIL | TTERRNO, "clock_settime(2): clock type %d failed",
-> +			tc[i].type);
-
-Shouldn't this say:
-
-	tst_res(TFAIL, "clock_settime(%s, ...) passed unexpectedly, expected %s",
-	        clock_name(tc[i].type), tst_strerrno(tc[i].exp_err));
-
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test = verify_clock_settime,
-> +	.tcnt = ARRAY_SIZE(tc),
-> +	.needs_root = 1,
-> +	.restore_wallclock = 1,
-> +};
-> -- 
-> 2.20.0.rc1
-> 
-
+diff --git a/include/tst_net.h b/include/tst_net.h
+index cb97b7b61..c943fd4c2 100644
+--- a/include/tst_net.h
++++ b/include/tst_net.h
+@@ -17,6 +17,8 @@
+ 
+ #include <arpa/inet.h>
+ #include <errno.h>
++#include <stdio.h>
++#include <stdlib.h>
+ 
+ #define MAX_IPV4_PREFIX 32
+ #define MAX_IPV6_PREFIX 128
+@@ -45,7 +47,7 @@ static inline void print_svar_change(const char *name, const char *val)
+ /*
+  * Function bit_count is from ipcalc project, ipcalc.c.
+  */
+-static int bit_count(uint32_t i)
++static inline int bit_count(uint32_t i)
+ {
+ 	int c = 0;
+ 	unsigned int seen_one = 0;
+@@ -67,7 +69,7 @@ static int bit_count(uint32_t i)
+ /*
+  * Function mask2prefix is from ipcalc project, ipcalc.c.
+  */
+-static int mask2prefix(struct in_addr mask)
++static inline int mask2prefix(struct in_addr mask)
+ {
+ 	return bit_count(ntohl(mask.s_addr));
+ }
+@@ -75,7 +77,7 @@ static int mask2prefix(struct in_addr mask)
+ /*
+  * Function ipv4_mask_to_int is from ipcalc project, ipcalc.c.
+  */
+-static int ipv4_mask_to_int(const char *prefix)
++static inline int ipv4_mask_to_int(const char *prefix)
+ {
+ 	int ret;
+ 	struct in_addr in;
+@@ -90,7 +92,7 @@ static int ipv4_mask_to_int(const char *prefix)
+ /*
+  * Function safe_atoi is from ipcalc project, ipcalc.c.
+  */
+-static int safe_atoi(const char *s, int *ret_i)
++static inline int safe_atoi(const char *s, int *ret_i)
+ {
+ 	char *x = NULL;
+ 	long l;
+@@ -112,7 +114,7 @@ static int safe_atoi(const char *s, int *ret_i)
+ /*
+  * Function get_prefix use code from ipcalc project, str_to_prefix/ipcalc.c.
+  */
+-static int get_prefix(const char *ip_str, int is_ipv6)
++static inline int get_prefix(const char *ip_str, int is_ipv6)
+ {
+ 	char *prefix_str = NULL;
+ 	int prefix = -1, r;
+@@ -140,13 +142,13 @@ static int get_prefix(const char *ip_str, int is_ipv6)
+ 	return prefix;
+ }
+ 
+-static void get_in_addr(const char *ip_str, struct in_addr *ip)
++static inline void get_in_addr(const char *ip_str, struct in_addr *ip)
+ {
+ 	if (inet_pton(AF_INET, ip_str, ip) <= 0)
+ 		tst_brk_comment("bad IPv4 address: '%s'", ip_str);
+ }
+ 
+-static void get_in6_addr(const char *ip_str, struct in6_addr *ip6)
++static inline void get_in6_addr(const char *ip_str, struct in6_addr *ip6)
+ {
+ 	if (inet_pton(AF_INET6, ip_str, ip6) <= 0)
+ 		tst_brk_comment("bad IPv6 address: '%s'", ip_str);
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.19.2
+
