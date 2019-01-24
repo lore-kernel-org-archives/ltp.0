@@ -1,80 +1,71 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 24 Jan 2019 17:17:33 +0100
-Subject: [LTP] [RFC PATCH 0/2] Rewrite route stress tests into C
-Message-ID: <20190124161735.19609-1-pvorel@suse.cz>
+From: Rafael David Tinoco <rafael.tinoco@linaro.org>
+Date: Thu, 24 Jan 2019 15:26:07 -0200
+Subject: [LTP] vma05.sh issues
+Message-ID: <BF5EE541-6259-45D4-9555-78BFCE044606@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+We are getting false positives with vma05.sh tests:
 
-this is prove of concept of route stress tests rewrite into C.  I'm
-myself not convinced it's a good way. The main motivation for rewriting
-tests from shell to C is speed and thus more efficient stress testing.
+Bug: https://bugs.linaro.org/show_bug.cgi?id=4256#c2
 
-Some issues:
-* The test is only on lhost, no attempt to set iface on rhost and check
-connection. The only check is done via error of libnl used. It's
-questionable whether this way is good enough.
-If we want to have established connection, it'd be better to get back to
-shell testing [1], just replace netstress to new tool (I'd prefer not
-use ns-udpsender).
+Original commit for vma05 test, has stated that:
 
-* rtnetlink is used via libnl, which is very lazy approach.
-As subject of testing is route testing and not rtnetlink testing I
-didn't reimplement rtnetlink socket communication from scratch, but I
-guess I should. Also using link caching (used by functions from libnl-cli)
-might not be a good idea (maybe using libmnl or only libnl-route would
-be better if using library).
+"
+Second part of the test checks regression of vdso permissions bug
+(fixed with b6558c4a2378 ("fix [vdso] page permissions") and
+e5b97dde514f ("add VM_ALWAYSDUMP")). As a consequence of this bug, vdso
+pages were not included in core dumps which caused incomplete
+backtraces:
 
-* C code needs environment variables, that's the only reason for having
-shell. It'd be possible to load variables in runtest file:
-route4-change-dst-test TST_NO_DEFAULT_RUN=1 . tst_net.sh; route-change-dst -d ltp_ns_veth2 -c 5
-route6-change-dst-test TST_NO_DEFAULT_RUN=1 . tst_net.sh; route-change-dst -6 -d $(tst_iface) -c 5
+    Program terminated with signal 11, Segmentation fault.
+    #0  0x005f0402 in ?? ()
 
-but I don't want to introduce more commands in runtest files (it looks
-non-standard to me, one day we'll have new shell runner, which might not
-be compatible with it).
+    Thread 1 (process 14859):
+    #0  0x005f0402 in ?? ()
+    #1  0x00336366 in ?? () from /lib/i686/nosegneg/libc.so.6
+    #2  0x0804845f in handle_alrm (signo=14) at small.c:9
+    #3  0x005f0420 in ?? ()
+    #4  0x0000000e in ?? ()
+    #5  0x00000033 in ?? ()
+    #6  0x00000000 in ?? ()
+"
 
-If we agreed on it, I'd add functionality for changing gateway and
-interface (i.e. route{4,6}-change-{gw,if} + rename C source to
-route-change.c).
+But the existing test seems to have a small issue...
 
-Comments are more than welcome.
 
-Kind regards,
-Petr
+	rm -rf core*
+	{ vma05_vdso; } > /dev/null 2>&1
+	TRACE=$(gdb -silent -ex="thread apply all backtrace" -ex="quit"\
+		vma05_vdso ./core* 2> /dev/null)
+	if echo "$TRACE" | grep -qF "??"; then
+		tst_res TFAIL "[vdso] bug not patched"
+	else
+		tst_res TPASS "[vdso] backtrace complete"
+	fi
 
-[1] http://lists.linux.it/pipermail/ltp/2018-July/008778.html
+It simply checks if there was ANY incomplete backtrace for a given
+generated main() { } core dump. Since there is no linked shared library,
+or function called, it assumes there will be no symbols to be solved and
+any incomplete symbol will be related to the missing vDSO missing page.
 
-Petr Vorel (2):
-  tst_net: Add missing includes, make functions inline
-  net/route: Rewrite route{4,6}-change-dst into C
+This doesn’t seem accurate to me :\. There are no vDSO symbols in the
+stack frames I’m getting from vma05_vdso.c. 
 
- configure.ac                                  |   1 +
- include/mk/config.mk.default                  |   3 +
- include/mk/config.mk.in                       |   2 +
- include/tst_net.h                             |  16 ++-
- m4/ltp-libnl.m4                               |   7 +
- runtest/net_stress.route                      |   4 +-
- testcases/network/stress/route/.gitignore     |   1 +
- testcases/network/stress/route/Makefile       |   7 +-
- .../network/stress/route/route-change-dst.c   | 129 ++++++++++++++++++
- .../network/stress/route/route-change-dst.sh  |  16 +++
- travis/debian.cross-compile.aarch64.sh        |   6 +-
- travis/debian.cross-compile.ppc64le.sh        |   9 +-
- travis/debian.i386.sh                         |   3 +-
- travis/debian.sh                              |   5 +-
- travis/fedora.sh                              |   1 +
- travis/tumbleweed.sh                          |   3 +
- 16 files changed, 198 insertions(+), 15 deletions(-)
- create mode 100644 m4/ltp-libnl.m4
- create mode 100644 testcases/network/stress/route/.gitignore
- create mode 100644 testcases/network/stress/route/route-change-dst.c
- create mode 100755 testcases/network/stress/route/route-change-dst.sh
+Besides,
 
--- 
-2.19.2
+Unfortunately, a stripped vma05_vdso binary will also cause incomplete
+backtraces, causing a false positive for this test, and it would be
+impossible to know if it was due to a missing vDSO page or not.
+
+Thoughts ?
+
+Cheers o/
+
+--
+Rafael D. Tinoco
+Linaro Kernel Validation
 
