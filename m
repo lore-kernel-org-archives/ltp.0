@@ -1,25 +1,26 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 25 Jan 2019 15:46:24 +0100
-Subject: [LTP] [PATCH 1/1] commands/ld01: Fix shared library detection
- on file >= 5.33
-In-Reply-To: <20190123091118.28303-1-pvorel@suse.cz>
-References: <20190123091118.28303-1-pvorel@suse.cz>
-Message-ID: <20190125144624.GA12068@dell5510>
+Date: Fri, 25 Jan 2019 16:22:16 +0100
+Subject: [LTP] [PATCH] syscalls: add getresgid*_16,
+ getresuid*_16 to runtest/syscalls
+In-Reply-To: <20190124192849.47482-1-smuckle@google.com>
+References: <20190124192849.47482-1-smuckle@google.com>
+Message-ID: <20190125152216.GA19438@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Steve,
 
-> Since commit 6876ebad ("add a conditional in description") in file util
-> shared library is described as "LSB pie executable", thus check for it
-> as well.
+> These tests were recently created. Add them to the syscalls suite
+> of tests.
 
-> + do more precise check for old versions ('shared object').
+> Signed-off-by: Steve Muckle <smuckle@google.com>
+> ---
+I'm sorry, I overlooked missing definitions in runtest file.
+Thanks for fixing it.
 
-FYI merged.
 
 Kind regards,
 Petr
