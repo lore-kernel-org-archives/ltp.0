@@ -1,93 +1,47 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 29 Jan 2019 19:38:51 +0300
-Subject: [LTP] [RFC PATCH 0/2] Rewrite route stress tests into C
-In-Reply-To: <20190124161735.19609-1-pvorel@suse.cz>
-References: <20190124161735.19609-1-pvorel@suse.cz>
-Message-ID: <cd8be415-a4e0-06ac-997a-4195b396fa47@oracle.com>
+From: Rafael David Tinoco <rafael.tinoco@linaro.org>
+Date: Tue, 29 Jan 2019 15:36:52 -0200
+Subject: [LTP] [PATCH v4 1/8] lib: add tst_clock_settime() to tst_clocks.h
+In-Reply-To: <20190124161159.GC16804@rei.lan>
+References: <20190124161159.GC16804@rei.lan>
+Message-ID: <20190129173659.27901-1-rafael.tinoco@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
-On 01/24/2019 07:17 PM, Petr Vorel wrote:
-> Hi Alexey,
-> 
-> this is prove of concept of route stress tests rewrite into C.  I'm
-> myself not convinced it's a good way. The main motivation for rewriting
-> tests from shell to C is speed and thus more efficient stress testing.
-> 
-> Some issues:
-> * The test is only on lhost, no attempt to set iface on rhost and check
-> connection. The only check is done via error of libnl used. It's
-> questionable whether this way is good enough.
+Adds tst_clock_settime() function to the lib.
 
-True, it would be better to verify that the route is working and usable.
+Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
+---
+ include/tst_clocks.h | 2 ++
+ lib/tst_clocks.c     | 5 +++++
+ 2 files changed, 7 insertions(+)
 
-At least, we could open a socket and send something using the route
-(ns-udpsender way)...
-
-> If we want to have established connection, it'd be better to get back to
-> shell testing [1], just replace netstress to new tool (I'd prefer not
-> use ns-udpsender).> 
-> * rtnetlink is used via libnl, which is very lazy approach.
-> As subject of testing is route testing and not rtnetlink testing I
-> didn't reimplement rtnetlink socket communication from scratch, but I
-> guess I should. Also using link caching (used by functions from libnl-cli)
-> might not be a good idea (maybe using libmnl or only libnl-route would
-> be better if using library).
-
-And libmnl has an example:
-https://git.netfilter.org/libmnl/tree/examples/rtnl/rtnl-route-add.c
-
-> 
-> * C code needs environment variables, that's the only reason for having
-> shell. It'd be possible to load variables in runtest file:> route4-change-dst-test TST_NO_DEFAULT_RUN=1 . tst_net.sh; route-change-dst -d ltp_ns_veth2 -c 5
-> route6-change-dst-test TST_NO_DEFAULT_RUN=1 . tst_net.sh; route-change-dst -6 -d $(tst_iface) -c 5
-> 
-> but I don't want to introduce more commands in runtest files (it looks
-> non-standard to me, one day we'll have new shell runner, which might not
-> be compatible with it).
-
-Yes, it's better to use a shell wrapper than this.
-
-> 
-> If we agreed on it, I'd add functionality for changing gateway and
-> interface (i.e. route{4,6}-change-{gw,if} + rename C source to
-> route-change.c).
-> 
-> Comments are more than welcome.
-> 
-> Kind regards,
-> Petr
-> 
-> [1] http://lists.linux.it/pipermail/ltp/2018-July/008778.html
-> 
-> Petr Vorel (2):
->   tst_net: Add missing includes, make functions inline
->   net/route: Rewrite route{4,6}-change-dst into C
-> 
->  configure.ac                                  |   1 +
->  include/mk/config.mk.default                  |   3 +
->  include/mk/config.mk.in                       |   2 +
->  include/tst_net.h                             |  16 ++-
->  m4/ltp-libnl.m4                               |   7 +
->  runtest/net_stress.route                      |   4 +-
->  testcases/network/stress/route/.gitignore     |   1 +
->  testcases/network/stress/route/Makefile       |   7 +-
->  .../network/stress/route/route-change-dst.c   | 129 ++++++++++++++++++
->  .../network/stress/route/route-change-dst.sh  |  16 +++
->  travis/debian.cross-compile.aarch64.sh        |   6 +-
->  travis/debian.cross-compile.ppc64le.sh        |   9 +-
->  travis/debian.i386.sh                         |   3 +-
->  travis/debian.sh                              |   5 +-
->  travis/fedora.sh                              |   1 +
->  travis/tumbleweed.sh                          |   3 +
->  16 files changed, 198 insertions(+), 15 deletions(-)
->  create mode 100644 m4/ltp-libnl.m4
->  create mode 100644 testcases/network/stress/route/.gitignore
->  create mode 100644 testcases/network/stress/route/route-change-dst.c
->  create mode 100755 testcases/network/stress/route/route-change-dst.sh
-> 
+diff --git a/include/tst_clocks.h b/include/tst_clocks.h
+index ee2f645c7..90784a3fd 100644
+--- a/include/tst_clocks.h
++++ b/include/tst_clocks.h
+@@ -26,4 +26,6 @@ int tst_clock_getres(clockid_t clk_id, struct timespec *res);
+ 
+ int tst_clock_gettime(clockid_t clk_id, struct timespec *ts);
+ 
++int tst_clock_settime(clockid_t clk_id, struct timespec *ts);
++
+ #endif /* TST_CLOCKS__ */
+diff --git a/lib/tst_clocks.c b/lib/tst_clocks.c
+index 87413a339..35798a4aa 100644
+--- a/lib/tst_clocks.c
++++ b/lib/tst_clocks.c
+@@ -35,3 +35,8 @@ int tst_clock_gettime(clockid_t clk_id, struct timespec *ts)
+ {
+ 	return syscall(SYS_clock_gettime, clk_id, ts);
+ }
++
++int tst_clock_settime(clockid_t clk_id, struct timespec *ts)
++{
++	return syscall(SYS_clock_settime, clk_id, ts);
++}
+-- 
+2.20.1
 
