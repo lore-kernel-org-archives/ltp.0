@@ -1,51 +1,93 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 29 Jan 2019 19:07:01 +0800
-Subject: [LTP] [PATCH] controllers/cpuset: cpuset.cpus file doesn't
- exist which triggers TFAIL
-In-Reply-To: <1548756794-121129-1-git-send-email-kerneljasonxing@linux.alibaba.com>
-References: <1548756794-121129-1-git-send-email-kerneljasonxing@linux.alibaba.com>
-Message-ID: <5C5033D5.10705@cn.fujitsu.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 29 Jan 2019 19:38:51 +0300
+Subject: [LTP] [RFC PATCH 0/2] Rewrite route stress tests into C
+In-Reply-To: <20190124161735.19609-1-pvorel@suse.cz>
+References: <20190124161735.19609-1-pvorel@suse.cz>
+Message-ID: <cd8be415-a4e0-06ac-997a-4195b396fa47@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2019/01/29 18:13, Jason Xing wrote:
-> When doing cpuset_hotplug test, it will mount cpuset filesystem on
-> /dev/cpuset and try to 'cat' cpuset.cpus file. But the cpuset.cpus
-> doesn't exist because the cgroup system generates cpus without 'cpuset'
-> prefix instead. The result is undoubtly TFAIL.
->
-> The old ltp test uses "mount -t cpuset cpuset "$CPUSET"" which will
-> mount with 'noprefix' options in the kernel(see kernel/cgroup/cpuset.c).
-> The reason is that it wants the backwards compatibility for the old
-> cpuset file system. Therefore, using "mount -t cgroup -o" method
-> surely fixes this issue once for all.
-Hi Jason,
+Hi Petr,
+On 01/24/2019 07:17 PM, Petr Vorel wrote:
+> Hi Alexey,
+> 
+> this is prove of concept of route stress tests rewrite into C.  I'm
+> myself not convinced it's a good way. The main motivation for rewriting
+> tests from shell to C is speed and thus more efficient stress testing.
+> 
+> Some issues:
+> * The test is only on lhost, no attempt to set iface on rhost and check
+> connection. The only check is done via error of libnl used. It's
+> questionable whether this way is good enough.
 
-It looks good to me. :-)
+True, it would be better to verify that the route is working and usable.
 
-Best Regards,
-Xiao Yang
-> Signed-off-by: Jason Xing<kerneljasonxing@linux.alibaba.com>
-> ---
->   testcases/kernel/controllers/cpuset/cpuset_funcs.sh | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-> index cc31729..935a41e 100755
-> --- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-> +++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-> @@ -128,7 +128,7 @@ setup()
->
->   	mkdir -p "$CPUSET_TMP"
->   	mkdir "$CPUSET"
-> -	mount -t cpuset cpuset "$CPUSET" 2>  /dev/null
-> +	mount -t cgroup -o cpuset cpuset "$CPUSET" 2>  /dev/null
->   	if [ $? -ne 0 ]; then
->   		cleanup
->   		tst_brkm TFAIL "Could not mount cgroup filesystem with"\
+At least, we could open a socket and send something using the route
+(ns-udpsender way)...
 
+> If we want to have established connection, it'd be better to get back to
+> shell testing [1], just replace netstress to new tool (I'd prefer not
+> use ns-udpsender).> 
+> * rtnetlink is used via libnl, which is very lazy approach.
+> As subject of testing is route testing and not rtnetlink testing I
+> didn't reimplement rtnetlink socket communication from scratch, but I
+> guess I should. Also using link caching (used by functions from libnl-cli)
+> might not be a good idea (maybe using libmnl or only libnl-route would
+> be better if using library).
 
+And libmnl has an example:
+https://git.netfilter.org/libmnl/tree/examples/rtnl/rtnl-route-add.c
+
+> 
+> * C code needs environment variables, that's the only reason for having
+> shell. It'd be possible to load variables in runtest file:> route4-change-dst-test TST_NO_DEFAULT_RUN=1 . tst_net.sh; route-change-dst -d ltp_ns_veth2 -c 5
+> route6-change-dst-test TST_NO_DEFAULT_RUN=1 . tst_net.sh; route-change-dst -6 -d $(tst_iface) -c 5
+> 
+> but I don't want to introduce more commands in runtest files (it looks
+> non-standard to me, one day we'll have new shell runner, which might not
+> be compatible with it).
+
+Yes, it's better to use a shell wrapper than this.
+
+> 
+> If we agreed on it, I'd add functionality for changing gateway and
+> interface (i.e. route{4,6}-change-{gw,if} + rename C source to
+> route-change.c).
+> 
+> Comments are more than welcome.
+> 
+> Kind regards,
+> Petr
+> 
+> [1] http://lists.linux.it/pipermail/ltp/2018-July/008778.html
+> 
+> Petr Vorel (2):
+>   tst_net: Add missing includes, make functions inline
+>   net/route: Rewrite route{4,6}-change-dst into C
+> 
+>  configure.ac                                  |   1 +
+>  include/mk/config.mk.default                  |   3 +
+>  include/mk/config.mk.in                       |   2 +
+>  include/tst_net.h                             |  16 ++-
+>  m4/ltp-libnl.m4                               |   7 +
+>  runtest/net_stress.route                      |   4 +-
+>  testcases/network/stress/route/.gitignore     |   1 +
+>  testcases/network/stress/route/Makefile       |   7 +-
+>  .../network/stress/route/route-change-dst.c   | 129 ++++++++++++++++++
+>  .../network/stress/route/route-change-dst.sh  |  16 +++
+>  travis/debian.cross-compile.aarch64.sh        |   6 +-
+>  travis/debian.cross-compile.ppc64le.sh        |   9 +-
+>  travis/debian.i386.sh                         |   3 +-
+>  travis/debian.sh                              |   5 +-
+>  travis/fedora.sh                              |   1 +
+>  travis/tumbleweed.sh                          |   3 +
+>  16 files changed, 198 insertions(+), 15 deletions(-)
+>  create mode 100644 m4/ltp-libnl.m4
+>  create mode 100644 testcases/network/stress/route/.gitignore
+>  create mode 100644 testcases/network/stress/route/route-change-dst.c
+>  create mode 100755 testcases/network/stress/route/route-change-dst.sh
+> 
 
