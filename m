@@ -1,56 +1,45 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 29 Jan 2019 19:06:17 +0100
-Subject: [LTP] [PATCH] syscalls/ustat: convert to new lib,
- use direct syscall
-In-Reply-To: <20190129023714.191820-1-smuckle@google.com>
-References: <20190129023714.191820-1-smuckle@google.com>
-Message-ID: <20190129180617.GD14252@dell5510>
+Date: Tue, 29 Jan 2019 19:18:56 +0100
+Subject: [LTP] [RFC PATCH 0/2] Rewrite route stress tests into C
+In-Reply-To: <cd8be415-a4e0-06ac-997a-4195b396fa47@oracle.com>
+References: <20190124161735.19609-1-pvorel@suse.cz>
+ <cd8be415-a4e0-06ac-997a-4195b396fa47@oracle.com>
+Message-ID: <20190129181856.GA17728@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Steve, Cyril,
+Hi Alexey,
 
-> +++ b/include/lapi/ustat.h
-> @@ -0,0 +1,8 @@
-> +#include <sys/types.h>
-I'd put here at least
-//SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +struct ustat {
-> +	daddr_t f_tfree;
-> +	ino_t f_tinode;
-> +	char f_fname[6];
-> +	char f_fpack[6];
-> +};
-Thinking about it twice, wouldn't be better to include <sys/ustat.h> and detect
-with autotools whether struct ustat is defined and use this only if it's not
-defined? The same approach we use for struct statx?
+thanks for your comments.
 
+> > Some issues:
+> > * The test is only on lhost, no attempt to set iface on rhost and check
+> > connection. The only check is done via error of libnl used. It's
+> > questionable whether this way is good enough.
 
-> +++ b/testcases/kernel/syscalls/ustat/ustat01.c
-> @@ -1,21 +1,7 @@
-> +// SPDX-License-Identifier: GPL-2.0
-@Cyril: can we use GPL-2.0-or-later? Original was GPL only.
+> True, it would be better to verify that the route is working and usable.
 
->  /*
->   * Copyright (c) Wipro Technologies Ltd, 2003.  All Rights Reserved.
->   *
-> - * This program is free software; you can redistribute it and/or modify it
-> - * under the terms of version 2 of the GNU General Public License as
-> - * published by the Free Software Foundation.
-> - *
-> - * This program is distributed in the hope that it would be useful, but
-> - * WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> - *
-> - * You should have received a copy of the GNU General Public License along
-> - * with this program; if not, write the Free Software Foundation, Inc.,
-> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> - *
-> - */
+> At least, we could open a socket and send something using the route
+> (ns-udpsender way)...
+OK, I'll try at least this. And if it's not suitable enough, I'll have to get
+back to shell (or I'd have to implement tst_rhost_run() in C).
+
+> > If we want to have established connection, it'd be better to get back to
+> > shell testing [1], just replace netstress to new tool (I'd prefer not
+> > use ns-udpsender).> 
+> > * rtnetlink is used via libnl, which is very lazy approach.
+> > As subject of testing is route testing and not rtnetlink testing I
+> > didn't reimplement rtnetlink socket communication from scratch, but I
+> > guess I should. Also using link caching (used by functions from libnl-cli)
+> > might not be a good idea (maybe using libmnl or only libnl-route would
+> > be better if using library).
+
+> And libmnl has an example:
+> https://git.netfilter.org/libmnl/tree/examples/rtnl/rtnl-route-add.c
+I noticed this as well, I'll use libmnl.
 
 Kind regards,
 Petr
