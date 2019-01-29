@@ -1,120 +1,180 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 29 Jan 2019 18:44:08 +0100
-Subject: [LTP] [PATCH 1/1] memcg_stress_test.sh: Further cleanup
-Message-ID: <20190129174408.13796-1-pvorel@suse.cz>
+Date: Tue, 29 Jan 2019 18:50:19 +0100
+Subject: [LTP] [PATCH v3]  memcg_stress_test.sh: ported to newlib
+In-Reply-To: <20190128163207.GA26834@dell5510>
+References: <20190104105407.48123-1-cristian.marussi@arm.com>
+ <20190104105407.48123-2-cristian.marussi@arm.com>
+ <20190128163207.GA26834@dell5510>
+Message-ID: <20190129175019.GA14252@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
 Hi Cristian,
 
-I suggest this changes, to be applied after your patch
-"[v3] memcg_stress_test.sh: ported to newlib" [1].
+I suggest following cleanup of your patch (see bellow).
 
-Do you agree? Could you test it?
-
-Some more questions:
-* I wonder if rmdir in cleanup is needed (at least on latest kernel umount
-is enough):
-		rmdir /dev/memcg 2> /dev/null
-* I'd drop cleanup either from do_mount or run_stress. It does not harm,
-but it looks to be redundant.
+This change, with my other cleanup patch [1] + your patch [2] can be seen on [3].
 
 Kind regards,
 Petr
 
-[1] https://patchwork.ozlabs.org/patch/1020689/
----
- .../memcg/stress/memcg_stress_test.sh         | 46 +++++++++----------
- 1 file changed, 23 insertions(+), 23 deletions(-)
+[1] https://patchwork.ozlabs.org/patch/1032923/
+[2] https://patchwork.ozlabs.org/patch/1020887/
+[3] https://github.com/pevik/ltp/commits/christian/memcg_stress_test.sh.v3.fixes
 
-diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-index 9972b6c45..3e0d40e84 100755
---- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-+++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-@@ -54,35 +54,41 @@ do_mount()
+diff --git testcases/kernel/controllers/cgroup_lib.sh testcases/kernel/controllers/cgroup_lib.sh
+index c164932fa..7918b5636 100644
+--- testcases/kernel/controllers/cgroup_lib.sh
++++ testcases/kernel/controllers/cgroup_lib.sh
+@@ -33,7 +33,7 @@ is_cgroup_subsystem_available_and_enabled()
+ 	[ $# -eq 0 ] && tst_brk TBROK "is_cgroup_subsystem_available_and_enabled: subsystem not defined"
+ 
+ 	val=$(grep -w $subsystem /proc/cgroups | awk '{ print $4 }')
+-	[ "x$val" = "x1" ] && return 0
++	[ "$val" = "1" ] && return 0
+ 
+ 	return 1
+ }
+diff --git testcases/kernel/controllers/memcg/stress/Makefile testcases/kernel/controllers/memcg/stress/Makefile
+index 773363cfc..a9678bf3b 100644
+--- testcases/kernel/controllers/memcg/stress/Makefile
++++ testcases/kernel/controllers/memcg/stress/Makefile
+@@ -1,9 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (C) 2009, Cisco Systems Inc.
+ # Author: Ngie Cooper, September 2009
+-#
+-#    kernel/controllers/memcg/stress testcase suite Makefile.
+-#
+ 
+ top_srcdir		?= ../../../../..
+ 
+diff --git testcases/kernel/controllers/memcg/stress/memcg_process_stress.c testcases/kernel/controllers/memcg/stress/memcg_process_stress.c
+index 6af550012..422deaeee 100644
+--- testcases/kernel/controllers/memcg/stress/memcg_process_stress.c
++++ testcases/kernel/controllers/memcg/stress/memcg_process_stress.c
+@@ -1,7 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2009 FUJITSU LIMITED
+- *
+  * Author: Li Zefan <lizf@cn.fujitsu.com>
+  */
+ 
+diff --git testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+index 652d99e55..9972b6c45 100755
+--- testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
++++ testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+@@ -7,25 +7,23 @@
+ # Restructure for LTP: Shi Weihua <shiwh@cn.fujitsu.com>
+ # Added memcg enable/disable functionality: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com
+ 
+-TST_TESTFUNC=testcase_
+-TST_SETUP=do_setup
+-TST_CLEANUP=do_cleanup
++TST_TESTFUNC=test
++TST_SETUP=setup
++TST_CLEANUP=cleanup
+ TST_CNT=2
+ TST_NEEDS_ROOT=1
+ TST_NEEDS_CMDS="mount umount cat kill mkdir rmdir grep awk cut"
+ 
+-# Each test case runs for 900 secs when everything fine...
+-# ...so the default 5mins timeout is not enough.
++# Each test case runs for 900 secs when everything fine
++# therefore the default 5 mins timeout is not enough.
+ LTP_TIMEOUT_MUL=7
+ 
+-. tst_test.sh
+ . cgroup_lib.sh
+ 
+-do_setup()
++setup()
+ {
+-	if ! is_cgroup_subsystem_available_and_enabled "memory";then
+-		tst_res TWARN "Either Kernel does not support MEMORY resource controller or feature not enabled"
+-		tst_brk TCONF ignored "Skipping all memory cgroup testcases...."
++	if ! is_cgroup_subsystem_available_and_enabled "memory"; then
++		tst_brk TCONF "Either kernel does not support Memory Resource Controller or feature not enabled"
+ 	fi
+ 
+ 	echo 3 > /proc/sys/vm/drop_caches
+@@ -40,7 +38,7 @@ do_setup()
+ 	tst_res TINFO "Calculated available memory $MEM MB"
+ }
+ 
+-do_cleanup()
++cleanup()
+ {
+ 	if [ -e /dev/memcg ]; then
+ 		umount /dev/memcg 2> /dev/null
+@@ -50,15 +48,12 @@ do_cleanup()
+ 
+ do_mount()
+ {
+-	do_cleanup
++	cleanup
+ 
+ 	mkdir /dev/memcg 2> /dev/null
  	mount -t cgroup -omemory memcg /dev/memcg
  }
  
--# $1 - Number of cgroups
--# $2 - Allocated how much memory in one process? in MB
--# $3 - The interval to touch memory in a process
--# $4 - How long does this test run ? in second
-+# $1 Number of cgroups
-+# $2 Allocated how much memory in one process? in MB
-+# $3 The interval to touch memory in a process
-+# $4 How long does this test run ? in second
- run_stress()
- {
--	local i
-+	local cgroups="$1"
-+	local mem_size="$2"
-+	local interval="$3"
-+	local timeout="$4"
-+	local i pids
-+
-+	tst_res TINFO "Testing $cgroups cgroups, using $mem_size MB, interval $interval, run for $RUN_TIME secs"
+-
+-# Run the stress test
+-#
+ # $1 - Number of cgroups
+ # $2 - Allocated how much memory in one process? in MB
+ # $3 - The interval to touch memory in a process
+@@ -69,34 +64,31 @@ run_stress()
  
  	do_mount
  
--	for i in $(seq 0 $(($1-1))); do
-+	for i in $(seq 0 $(($cgroups-1))); do
+-	for i in $(seq 0 $(($1-1)))
+-	do
++	for i in $(seq 0 $(($1-1))); do
  		mkdir /dev/memcg/$i 2> /dev/null
--		memcg_process_stress $2 $3 &
--		eval pid$i=$!
--
--		eval echo \$pid$i > /dev/memcg/$i/tasks
-+		memcg_process_stress $mem_size $interval &
-+		echo $! > /dev/memcg/$i/tasks
-+		pids="$! $pids"
+ 		memcg_process_stress $2 $3 &
+-		eval local pid$i=$!
++		eval pid$i=$!
+ 
+ 		eval echo \$pid$i > /dev/memcg/$i/tasks
  	done
  
--	for i in $(seq 0 $(($1-1))); do
--		eval kill -USR1 \$pid$i 2> /dev/null
-+	for pid in $pids; do
-+		kill -USR1 $pid 2> /dev/null
+-	for i in $(seq 0 $(($1-1)))
+-	do
++	for i in $(seq 0 $(($1-1))); do
+ 		eval kill -USR1 \$pid$i 2> /dev/null
  	done
  
--	sleep $4
--
--	for i in $(seq 0 $(($1-1))); do
--		eval kill -KILL \$pid$i 2> /dev/null
--		eval wait \$pid$i
-+	sleep $timeout
+ 	sleep $4
  
-+	i=0
-+	for pid in $pids; do
-+		kill -KILL $pid 2> /dev/null
-+		wait $pid
+-	for i in $(seq 0 $(($1-1)))
+-	do
++	for i in $(seq 0 $(($1-1))); do
+ 		eval kill -KILL \$pid$i 2> /dev/null
+ 		eval wait \$pid$i
+ 
  		rmdir /dev/memcg/$i 2> /dev/null
-+		i=$((i+1))
  	done
  
- 	cleanup
-@@ -90,19 +96,13 @@ run_stress()
+-	do_cleanup
++	cleanup
+ }
  
- test1()
+-testcase_1()
++test1()
  {
--	tst_res TINFO "testcase 1 started...it will run for $RUN_TIME secs"
--
- 	run_stress 150 $(( ($MEM - 150) / 150 )) 5 $RUN_TIME
--
+ 	tst_res TINFO "testcase 1 started...it will run for $RUN_TIME secs"
+ 
+@@ -105,7 +97,7 @@ testcase_1()
  	tst_res TPASS "stress test 1 passed"
  }
  
- test2()
+-testcase_2()
++test2()
  {
--	tst_res TINFO "testcase 2 started...it will run for $RUN_TIME secs"
--
- 	run_stress 1 $MEM 5 $RUN_TIME
--
- 	tst_res TPASS "stress test 2 passed"
- }
+ 	tst_res TINFO "testcase 2 started...it will run for $RUN_TIME secs"
  
--- 
-2.19.2
-
