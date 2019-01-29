@@ -1,148 +1,277 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 28 Jan 2019 17:32:07 +0100
-Subject: [LTP] [PATCH v3]  memcg_stress_test.sh: ported to newlib
-In-Reply-To: <20190104105407.48123-2-cristian.marussi@arm.com>
-References: <20190104105407.48123-1-cristian.marussi@arm.com>
- <20190104105407.48123-2-cristian.marussi@arm.com>
-Message-ID: <20190128163207.GA26834@dell5510>
+From: Steve Muckle <smuckle@google.com>
+Date: Mon, 28 Jan 2019 18:37:14 -0800
+Subject: [LTP] [PATCH] syscalls/ustat: convert to new lib, use direct syscall
+Message-ID: <20190129023714.191820-1-smuckle@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cristian,
+Use direct syscall to expand test compatibility to Android.
 
-thanks for your patch. I was thinking just to fix minor formatting issues, but
-eval in run_stress() deserve to be rewritten.
+Signed-off-by: Steve Muckle <smuckle@google.com>
+---
+ include/lapi/ustat.h                      |  8 ++
+ testcases/kernel/syscalls/ustat/ustat01.c | 84 +++++----------------
+ testcases/kernel/syscalls/ustat/ustat02.c | 92 +++++------------------
+ 3 files changed, 45 insertions(+), 139 deletions(-)
+ create mode 100644 include/lapi/ustat.h
 
-> Ported to newlib framework and general cleanup.
-> Moved an helper function out into cgroup_lib.sh.
+diff --git a/include/lapi/ustat.h b/include/lapi/ustat.h
+new file mode 100644
+index 000000000..bcc4e83eb
+--- /dev/null
++++ b/include/lapi/ustat.h
+@@ -0,0 +1,8 @@
++#include <sys/types.h>
++
++struct ustat {
++	daddr_t f_tfree;
++	ino_t f_tinode;
++	char f_fname[6];
++	char f_fpack[6];
++};
+diff --git a/testcases/kernel/syscalls/ustat/ustat01.c b/testcases/kernel/syscalls/ustat/ustat01.c
+index 31d7f86dc..3f1186c49 100644
+--- a/testcases/kernel/syscalls/ustat/ustat01.c
++++ b/testcases/kernel/syscalls/ustat/ustat01.c
+@@ -1,21 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+  * Copyright (c) Wipro Technologies Ltd, 2003.  All Rights Reserved.
+  *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- */
+-
+-/*
+  * Check that ustat() succeeds given correct parameters.
+  */
+ 
+@@ -24,71 +10,35 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ 
+-#include "config.h"
+-#include "test.h"
+-#include "safe_macros.h"
+-
+-char *TCID = "ustat01";
+-
+-#ifdef HAVE_USTAT
+-# ifdef HAVE_SYS_USTAT_H
+-#  include <sys/ustat.h>
+-# endif
+-
+-static void setup(void);
+-
+-int TST_TOTAL = 1;
++#include "lapi/syscalls.h"
++#include "lapi/ustat.h"
++#include "tst_test.h"
+ 
+ static dev_t dev_num;
+-static struct ustat ubuf;
+ 
+-int main(int argc, char *argv[])
++void run(void)
+ {
+-	int lc, i;
+-
+-	tst_parse_opts(argc, argv, NULL, NULL);
++	struct ustat ubuf;
+ 
+-	setup();
++	TEST(tst_syscall(__NR_ustat, dev_num, &ubuf));
+ 
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		for (i = 0; i < TST_TOTAL; i++) {
+-			TEST(ustat(dev_num, &ubuf));
+-
+-			if (TEST_RETURN == -1 && TEST_ERRNO == ENOSYS)
+-				tst_brkm(TCONF, NULL, "ustat not supported");
+-
+-			if (TEST_RETURN == -1) {
+-				tst_resm(TFAIL, "ustat(2) failed and set"
+-					 "the errno to %d : %s",
+-					 TEST_ERRNO, strerror(TEST_ERRNO));
+-			} else {
+-				tst_resm(TPASS, "ustat(2) passed");
+-			}
+-		}
+-	}
+-
+-	tst_exit();
++	if (TST_RET == -1)
++		tst_res(TFAIL | TTERRNO, "ustat(2) failed");
++	else
++		tst_res(TPASS, "ustat(2) passed");
+ }
+ 
+ static void setup(void)
+ {
+ 	struct stat buf;
+ 
+-	tst_sig(NOFORK, DEF_HANDLER, NULL);
+-
+-	TEST_PAUSE;
+-
+ 	/* Find a valid device number */
+-	SAFE_STAT(NULL, "/", &buf);
++	SAFE_STAT("/", &buf);
+ 
+ 	dev_num = buf.st_dev;
+ }
+-#else
+-int main(void)
+-{
+-	tst_brkm(TCONF, NULL, "system doesn't have ustat() support");
+-}
+-#endif
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++};
+diff --git a/testcases/kernel/syscalls/ustat/ustat02.c b/testcases/kernel/syscalls/ustat/ustat02.c
+index fe644f9a9..9bbe4f3f5 100644
+--- a/testcases/kernel/syscalls/ustat/ustat02.c
++++ b/testcases/kernel/syscalls/ustat/ustat02.c
+@@ -1,21 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+  *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- */
+-
+-/*
+  * Test whether ustat(2) system call returns appropriate error number for
+  * invalid dev_t parameter and for bad address paramater.
+  */
+@@ -25,18 +11,9 @@
+ #include <sys/stat.h>
+ #include <sys/types.h>
+ 
+-#include "config.h"
+-#include "test.h"
+-#include "safe_macros.h"
+-
+-char *TCID = "ustat02";
+-
+-#ifdef HAVE_USTAT
+-# ifdef HAVE_SYS_USTAT_H
+-#  include <sys/ustat.h>
+-# endif
+-
+-static void setup(void);
++#include "lapi/syscalls.h"
++#include "lapi/ustat.h"
++#include "tst_test.h"
+ 
+ static dev_t invalid_dev = -1;
+ static dev_t root_dev;
+@@ -57,59 +34,30 @@ static struct test_case_t {
+ 
+ int TST_TOTAL = ARRAY_SIZE(tc);
+ 
+-int main(int ac, char **av)
++void run(unsigned int test)
+ {
+-
+-	int lc, i;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		for (i = 0; i < TST_TOTAL; i++) {
+-			TEST(ustat(*tc[i].dev, tc[i].buf));
+-
+-			if (TEST_RETURN == -1 && TEST_ERRNO == ENOSYS)
+-				tst_brkm(TCONF, NULL, "ustat not supported");
+-
+-			if ((TEST_RETURN == -1)
+-			    && (TEST_ERRNO == tc[i].exp_errno)) {
+-				tst_resm(TPASS,
+-					 "ustat(2) expected failure;"
+-					 " Got errno - %s : %s",
+-					 tc[i].exp_errval, tc[i].err_desc);
+-			} else {
+-				tst_resm(TFAIL | TTERRNO,
+-				         "ustat(2) failed to produce"
+-					 " expected error; %d, errno"
+-					 ": %s",
+-					 tc[i].exp_errno, tc[i].exp_errval);
+-			}
+-		}
+-	}
+-
+-	tst_exit();
++	TEST(tst_syscall(__NR_ustat, *tc[test].dev, tc[test].buf));
++
++	if ((TST_RET == -1) && (TST_ERR == tc[test].exp_errno))
++		tst_res(TPASS | TTERRNO, "ustat(2) expected failure");
++	else
++		tst_res(TFAIL | TTERRNO,
++			"ustat(2) failed to produce expected error; %d, errno"
++			": %s", tc[test].exp_errno, tc[test].exp_errval);
+ }
+ 
+ static void setup(void)
+ {
+ 	struct stat buf;
+ 
+-	tst_sig(NOFORK, DEF_HANDLER, NULL);
+-
+-	TEST_PAUSE;
+-
+ 	/* Find a valid device number */
+-	SAFE_STAT(NULL, "/", &buf);
++	SAFE_STAT("/", &buf);
+ 
+ 	root_dev = buf.st_dev;
+ }
+-#else
+-int main(void)
+-{
+-	tst_brkm(TCONF, NULL, "system doesn't have ustat() support");
+-}
+-#endif
++
++static struct tst_test test = {
++	.test = run,
++	.setup = setup,
++	.tcnt = ARRAY_SIZE(tc),
++};
+-- 
+2.20.1.495.gaa96b0ce6b-goog
 
-..
-> +	[ "x$val" = "x1" ] && return 0
-drop x, it's portable enough like this::
-[ "$val" = "1" ] && return 0
-
-...
-> +++ b/testcases/kernel/controllers/memcg/stress/Makefile
-> @@ -1,24 +1,9 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (C) 2009, Cisco Systems Inc.
-> +# Author: Ngie Cooper, September 2009
-
->  #    kernel/controllers/memcg/stress testcase suite Makefile.
-Delete this as well.
-
-> +++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-...
-> +	if ! is_cgroup_subsystem_available_and_enabled "memory";then
-> +		tst_res TWARN "Either Kernel does not support MEMORY resource controller or feature not enabled"
-> +		tst_brk TCONF ignored "Skipping all memory cgroup testcases...."
-TWARN followed by TCONF does not make sense. Also skip is redundant. Please,
-avoid using dots (even in comments).
-This is enough:
-
-    if ! is_cgroup_subsystem_available_and_enabled "memory"; then
-        tst_res TCONF "Either Kernel does not support MEMORY resource controller or feature not enabled"
-    fi
-
-...
-> +
-> +	echo 3 > /proc/sys/vm/drop_caches
-> +	sleep 2
-> +	local mem_free=`cat /proc/meminfo | grep MemFree | awk '{ print $2 }'`
-> +	local swap_free=`cat /proc/meminfo | grep SwapFree | awk '{ print $2 }'`
-Test started using awk, which might not be everywhere (even it's quite basic.
-TST_NEEDS_CMDS="awk" would be good for tests.
-
-And also TST_NEEDS_CMDS="$TST_NEEDS_CMDS awk" would be good for cgroup_lib.sh.
-
-> +
-> +	MEM=$(( $mem_free + $swap_free / 2 ))
-> +	MEM=$(( $MEM / 1024 ))
-> +	RUN_TIME=$(( 15 * 60 ))
-> +
-> +	tst_res TINFO "Calculated available memory $MEM MB"
->  }
-
-> +do_cleanup()
-> +{
-> +	if [ -e /dev/memcg ]; then
-> +		umount /dev/memcg 2> /dev/null
-> +		rmdir /dev/memcg 2> /dev/null
-> +	fi
-> +}
-
->  do_mount()
->  {
-> -	cleanup;
-> +	do_cleanup
-
->  	mkdir /dev/memcg 2> /dev/null
->  	mount -t cgroup -omemory memcg /dev/memcg
-> @@ -65,62 +65,53 @@ do_mount()
->  # $4 - How long does this test run ? in second
->  run_stress()
->  {
-> -	do_mount;
-> +	local i
-> +
-> +	do_mount
-
->  	for i in $(seq 0 $(($1-1)))
->  	do
-Please keep do on the same line (in memcg_stress_test.sh on several times):
-for i in $(seq 0 $(($1-1))); do
-
->  		mkdir /dev/memcg/$i 2> /dev/null
-> -		./memcg_process_stress $2 $3 &
-> -		eval pid$i=$!
-Eval is evil. And eval with local is even more evil. Even if it works on dash,
-using eval in whole function is just bad. Could you please rewrite it into
-single variable?  You can just separate pids with space.
-+ maybe describe variables instead of using positional variables, e.g.:
-local cgroups="$1"
-local mem="$2"
-...
-
-> +		memcg_process_stress $2 $3 &
-> +		eval local pid$i=$!
-
->  		eval echo \$pid$i > /dev/memcg/$i/tasks
->  	done
-
->  	for i in $(seq 0 $(($1-1)))
->  	do
-> -		eval /bin/kill -s SIGUSR1 \$pid$i 2> /dev/null
-> +		eval kill -USR1 \$pid$i 2> /dev/null
->  	done
-
->  	sleep $4
-
->  	for i in $(seq 0 $(($1-1)))
->  	do
-> -		eval /bin/kill -s SIGKILL \$pid$i 2> /dev/null
-> +		eval kill -KILL \$pid$i 2> /dev/null
->  		eval wait \$pid$i
-
->  		rmdir /dev/memcg/$i 2> /dev/null
->  	done
-
-> -	cleanup;
-> +	do_cleanup
->  }
-
->  testcase_1()
-I'd rename it to test1.
-
->  {
-> -	run_stress 150 $(( ($mem-150) / 150 )) 5 $RUN_TIME
-> +	tst_res TINFO "testcase 1 started...it will run for $RUN_TIME secs"
-Can you avoid dots, will?
-Maybe describe it a bit.
-I'd print test info in run_stress(), something like this:
-tst_res TINFO "Testing $cgroups cgroups, using $mem, run for $RUN_TIME secs"
-
-Kind regards,
-Petr
