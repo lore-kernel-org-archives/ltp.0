@@ -1,45 +1,75 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 29 Jan 2019 19:18:56 +0100
-Subject: [LTP] [RFC PATCH 0/2] Rewrite route stress tests into C
-In-Reply-To: <cd8be415-a4e0-06ac-997a-4195b396fa47@oracle.com>
-References: <20190124161735.19609-1-pvorel@suse.cz>
- <cd8be415-a4e0-06ac-997a-4195b396fa47@oracle.com>
-Message-ID: <20190129181856.GA17728@dell5510>
+From: Steve Muckle <smuckle@google.com>
+Date: Tue, 29 Jan 2019 10:19:34 -0800
+Subject: [LTP] [PATCH v2 2/2] aio_tio: determine alignment based on
+ target filesystem
+In-Reply-To: <20190111085326.171826-2-maennich@google.com>
+References: <20190111085326.171826-1-maennich@google.com>
+ <20190111085326.171826-2-maennich@google.com>
+Message-ID: <03129a05-6a2c-f2b4-7615-e1e9d87c7966@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Reviewed-by: Steve Muckle <smuckle@google.com>
 
-thanks for your comments.
+On 01/11/2019 12:53 AM, Matthias Maennich wrote:
+> The alignment for O_DIRECT operations has to match the blocksize of the
+> underlying filesystem. Determine the alignment from the target file's
+> file system.
+> 
+> aio_tio test cases 1 and 2 failed (nondeterministic) on aarch64 when run
+> on a 4096 byte blocksize filesystem and with an alignment of 512 bytes.
+> 
+> Determining the blocksize from the file system and using it for the
+> alignment resolves the test issue.
+> 
+> Signed-off-by: Matthias Maennich <maennich@google.com>
+> Reviewed-by: Alessio Balsini <balsini@google.com>
+> ---
+>   testcases/kernel/io/aio/aio02/aio_tio.c | 8 +++++++-
+>   1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/io/aio/aio02/aio_tio.c b/testcases/kernel/io/aio/aio02/aio_tio.c
+> index 623c81a5e..db6fa2688 100644
+> --- a/testcases/kernel/io/aio/aio02/aio_tio.c
+> +++ b/testcases/kernel/io/aio/aio02/aio_tio.c
+> @@ -34,6 +34,7 @@
+>   #include "config.h"
+>   #include "common.h"
+>   #include "test.h"
+> +#include "safe_macros.h"
+>   #include <string.h>
+>   #include <errno.h>
+>   
+> @@ -42,7 +43,6 @@
+>   #define AIO_MAXIO 32
+>   #define AIO_BLKSIZE (64*1024)
+>   
+> -static int alignment = 512;
+>   static int wait_count = 0;
+>   
+>   /*
+> @@ -94,6 +94,8 @@ int io_tio(char *pathname, int flag, int n, int operation)
+>   	void *bufptr = NULL;
+>   	off_t offset = 0;
+>   	struct timespec timeout;
+> +	struct stat fi_stat;
+> +	size_t alignment;
+>   
+>   	io_context_t myctx;
+>   	struct iocb iocb_array[AIO_MAXIO];
+> @@ -105,6 +107,10 @@ int io_tio(char *pathname, int flag, int n, int operation)
+>   		return -1;
+>   	}
+>   
+> +	/* determine the alignment from the blksize of the underlying fs */
+> +	SAFE_FSTAT(NULL, fd, &fi_stat);
+> +	alignment = fi_stat.st_blksize;
+> +
+>   	res = io_queue_init(n, &myctx);
+>   	//printf (" res = %d \n", res);
+>   
+> 
 
-> > Some issues:
-> > * The test is only on lhost, no attempt to set iface on rhost and check
-> > connection. The only check is done via error of libnl used. It's
-> > questionable whether this way is good enough.
-
-> True, it would be better to verify that the route is working and usable.
-
-> At least, we could open a socket and send something using the route
-> (ns-udpsender way)...
-OK, I'll try at least this. And if it's not suitable enough, I'll have to get
-back to shell (or I'd have to implement tst_rhost_run() in C).
-
-> > If we want to have established connection, it'd be better to get back to
-> > shell testing [1], just replace netstress to new tool (I'd prefer not
-> > use ns-udpsender).> 
-> > * rtnetlink is used via libnl, which is very lazy approach.
-> > As subject of testing is route testing and not rtnetlink testing I
-> > didn't reimplement rtnetlink socket communication from scratch, but I
-> > guess I should. Also using link caching (used by functions from libnl-cli)
-> > might not be a good idea (maybe using libmnl or only libnl-route would
-> > be better if using library).
-
-> And libmnl has an example:
-> https://git.netfilter.org/libmnl/tree/examples/rtnl/rtnl-route-add.c
-I noticed this as well, I'll use libmnl.
-
-Kind regards,
-Petr
