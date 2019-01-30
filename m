@@ -1,37 +1,59 @@
-From: Tommi Rantala <tt.rantala@gmail.com>
-Date: Wed, 30 Jan 2019 18:22:57 +0200
-Subject: [LTP] [PATCH] syscalls/setrlimit03.c: read /proc/sys/fs/nr_open
- for RLIMIT_NOFILE limit
-In-Reply-To: <20190130161514.GA27751@rei>
-References: <20190130150047.26307-1-tt.rantala@gmail.com>
- <20190130161514.GA27751@rei>
-Message-ID: <CA+ydwtotsfNpF=g5mAiidFqr_5fc3xatOCf-B_FYs6WAt1OapA@mail.gmail.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 30 Jan 2019 22:29:20 +0530
+Subject: [LTP] LTP: cpuhotplug05 is an intermittent failures
+Message-ID: <CA+G9fYtYCNGC+g4x90rfTHeVYCLpRpapa1jrqH5FoxyrQ1dp0w@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-ke 30. tammik. 2019 klo 18.15 Cyril Hrubis (chrubis@suse.cz) kirjoitti:
-> >  static void setup(void)
-> >  {
-> > +     if (tst_kvercmp(2, 6, 25) < 0) {
-> > +             nr_open = NR_OPEN;
-> > +     } else {
-> > +             SAFE_FILE_SCANF("/proc/sys/fs/nr_open", "%u", &nr_open);
-> > +     }
->
-> Can we do here without the explicit kernel version check?
->
-> What about:
->
-> #define NR_OPEN_PATH "/proc/sys/fs/nr_open"
->
-> ...
->
->         if (acess(NR_OPEN_PATH, F_OK))
->                 SAFE_FILE_SCANF(NR_OPEN_APTH, "%u", &nr_open);
+cpuhotplug05 is an intermittent failures on hikey, x86 device,
+qemu_x86_64, qemu_i386.
 
-Alright, that should work too. I'll send patch v2 tomorrow.
+Test log from Hikey,
+--------------------
+Name:   cpuhotplug05
+Date:   Tue Dec 11 22:26:18 UTC 2018
+Desc:   Does sar behave properly during CPU hotplug events?
+CPU is 1
+[   84.711648] CPU1: shutdown
+[   84.714585] psci: CPU1 killed.
+cpuhotplug05 1 TBROK: Field 3 is '(hikey)', '0.00' expected
+ 4167 ?        00:00:00 sar
+[   89.053786] Detected VIPT I-cache on CPU1
+[   89.057912] CPU1: Booted secondary processor 0x0000000001 [0x410fd033]
 
--Tommi
+Test log from x86_64 :
+--------------------------
+Name:   cpuhotplug05
+Date:   Wed Jan 16 22:33:14 UTC 2019
+Desc:   Does sar behave properly during CPU hotplug events?
+
+CPU is 1
+[   21.994395] smpboot: CPU 1 is now offline
+cpuhotplug05 1 TBROK: Field 3 is '(intel-corei7-64)', '0.00' expected
+ 3008 ttyS0    00:00:00 sar
+[   26.070091] x86: Booting SMP configuration:
+[   26.073268] smpboot: Booting Node 0 Processor 1 APIC 0x1
+
+
+Test log from qemu_x86_64 :
+--------------------------
+Name:   cpuhotplug05
+Date:   Fri Jan 25 01:55:01 UTC 2019
+Desc:   Does sar behave properly during CPU hotplug events?
+CPU is 1
+[   23.177802] smpboot: CPU 1 is now offline
+cpuhotplug05 1 TBROK: SAR output file is empty
+ 3268 ttyS0    00:00:00 sar
+[   30.252340] x86: Booting SMP configuration:
+[   30.254308] smpboot: Booting Node 0 Processor 1 APIC 0x1
+
+
+Test results comparison,
+------------------------
+https://qa-reports.linaro.org/_/comparetest/?project=22&project=6&project=58&project=135&project=141&project=40&project=23&suite=ltp-cpuhotplug-tests&test=cpuhotplug05
+
+Best regards
+Naresh Kamboju
