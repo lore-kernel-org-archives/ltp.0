@@ -1,60 +1,62 @@
-From: Alistair Strachan <astrachan@google.com>
-Date: Tue, 29 Jan 2019 12:54:25 -0800
-Subject: [LTP] [PATCH] lib/tst_kernel.c: Fix tst_check_driver() for Android
-Message-ID: <20190129205425.62110-1-astrachan@google.com>
+From: Jason Xing <kerneljasonxing@linux.alibaba.com>
+Date: Wed, 30 Jan 2019 15:54:00 +0800
+Subject: [LTP] [PATCH] controllers/cpuset: cpuset.cpus file doesn't
+ exist which triggers TFAIL
+In-Reply-To: <5C5033D5.10705@cn.fujitsu.com>
+References: <1548756794-121129-1-git-send-email-kerneljasonxing@linux.alibaba.com>
+ <5C5033D5.10705@cn.fujitsu.com>
+Message-ID: <ca762b1e-499e-2082-c1dc-a8bba4707898@linux.alibaba.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-The change 1f70b0a ("lib/tst_test.c: add 'needs_drivers' option with
-tst_check_drivers cmd") and subsequent changes to tests to use
-.needs_drivers caused some tests from older LTP releases to longer run
-successfully under Android.
 
-Android's modprobe currently lacks a dry-run mode, so it will return a
-positive error code when invoked as 'modprobe -n', which pessimistically
-disables tests that could run (such as fsetxattr2) with a TCONF status.
+On 2019/1/29 下午7:07, Xiao Yang wrote:
+> On 2019/01/29 18:13, Jason Xing wrote:
+>> When doing cpuset_hotplug test, it will mount cpuset filesystem on
+>> /dev/cpuset and try to 'cat' cpuset.cpus file. But the cpuset.cpus
+>> doesn't exist because the cgroup system generates cpus without 'cpuset'
+>> prefix instead. The result is undoubtly TFAIL.
+>>
+>> The old ltp test uses "mount -t cpuset cpuset "$CPUSET"" which will
+>> mount with 'noprefix' options in the kernel(see kernel/cgroup/cpuset.c).
+>> The reason is that it wants the backwards compatibility for the old
+>> cpuset file system. Therefore, using "mount -t cgroup -o" method
+>> surely fixes this issue once for all.
+> Hi Jason,
+>
+> It looks good to me. :-)
+>
+> Best Regards,
+> Xiao Yang
 
-Even if this was fixed, Android systems might not have the
-modprobe.*.bin files available to determine which drivers were built
-into the kernel, so this probing method does not work for Android.
+Hi Yang,
 
-For now, allow tests that set .needs_drivers to continue to run under
-Android by assuming that drivers are always present. The Android
-ecosystem has other ways to enforce the presence of kernel features.
+Thanks for your review.
 
-Signed-off-by: Alistair Strachan <astrachan@google.com>
-Cc: Cyril Hrubis <chrubis@suse.cz>
-Cc: Steve Muckle <smuckle@google.com>
-Cc: kernel-team@android.com
----
- lib/tst_kernel.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+But it seems that the maintainers miss this patch, it's not a 
+complicated one, just one line changed. So I decided to reply to you all.
 
-diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
-index d051f3b07..a7fd38b4d 100644
---- a/lib/tst_kernel.c
-+++ b/lib/tst_kernel.c
-@@ -83,9 +83,17 @@ int tst_kernel_bits(void)
- 
- int tst_check_driver(const char *name)
- {
-+#ifndef __ANDROID__
- 	const char * const argv[] = { "modprobe", "-n", name, NULL };
- 	int res = tst_run_cmd_(NULL, argv, "/dev/null", "/dev/null", 1);
- 
- 	/* 255 - it looks like modprobe not available */
- 	return (res == 255) ? 0 : res;
-+#else
-+	/* Android modprobe may not have '-n', or properly installed
-+	 * module.*.bin files to determine built-in drivers. Assume
-+	 * all drivers are available.
-+	 */
-+	return 0;
-+#endif
- }
--- 
-2.20.1.495.gaa96b0ce6b-goog
-
+>> Signed-off-by: Jason Xing<kerneljasonxing@linux.alibaba.com>
+>> ---
+>>   testcases/kernel/controllers/cpuset/cpuset_funcs.sh | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+>> b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+>> index cc31729..935a41e 100755
+>> --- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+>> +++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+>> @@ -128,7 +128,7 @@ setup()
+>>
+>>       mkdir -p "$CPUSET_TMP"
+>>       mkdir "$CPUSET"
+>> -    mount -t cpuset cpuset "$CPUSET" 2>  /dev/null
+>> +    mount -t cgroup -o cpuset cpuset "$CPUSET" 2>  /dev/null
+>>       if [ $? -ne 0 ]; then
+>>           cleanup
+>>           tst_brkm TFAIL "Could not mount cgroup filesystem with"\
+>
+>
