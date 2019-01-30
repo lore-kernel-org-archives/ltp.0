@@ -1,38 +1,39 @@
 From: Petr Vorel <petr.vorel@gmail.com>
-Date: Wed, 30 Jan 2019 12:28:25 +0100
-Subject: [LTP] [PATCH 2/3] lib/tst_kernel.c: Use <sys/personality.h>
+Date: Wed, 30 Jan 2019 12:28:26 +0100
+Subject: [LTP] [PATCH 3/3] lib: Build tst_path_has_mnt_flags.c also on
+	Android
 In-Reply-To: <20190130112826.7157-1-petr.vorel@gmail.com>
 References: <20190130112826.7157-1-petr.vorel@gmail.com>
-Message-ID: <20190130112826.7157-3-petr.vorel@gmail.com>
+Message-ID: <20190130112826.7157-4-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-personality() has been defined in <sys/personality.h> since glibc 2.3
-(long enough to be used).
+This fixes android build, as since 7313a879d7 is needed in library:
+tst_test.c:737: error: undefined reference to 'tst_path_has_mnt_flags_'
 
-This fixes build on Android.
+Fixes: 7313a879d7 ("lib/tst_test.c: Add .needs_devfs flag")
 
 Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
 ---
- lib/tst_kernel.c | 2 +-
+ lib/Makefile | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
-index a7fd38b4d..73ab9f1b1 100644
---- a/lib/tst_kernel.c
-+++ b/lib/tst_kernel.c
-@@ -15,7 +15,7 @@
-  * along with this program. If not, see <http://www.gnu.org/licenses/>.
-  */
+diff --git a/lib/Makefile b/lib/Makefile
+index 4ab7c394a..e7fc753da 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -29,7 +29,7 @@ CFLAGS			+= -I. -DLTPLIB
+ ifneq ($(ANDROID),1)
+ FILTER_OUT_DIRS		+= android_libpthread android_librt
+ else
+-FILTER_OUT_LIBSRCS	+= tlibio.c tst_path_has_mnt_flags.c tst_safe_sysv_ipc.c
++FILTER_OUT_LIBSRCS	+= tlibio.c tst_safe_sysv_ipc.c
+ endif
  
--#include <linux/personality.h>
-+#include <sys/personality.h>
- #include <sys/utsname.h>
- #include "test.h"
- #include "tst_kernel.h"
+ LIB			:= libltp.a
 -- 
 2.20.1
 
