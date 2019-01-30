@@ -1,19 +1,34 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 30 Jan 2019 11:53:22 +0100
-Subject: [LTP] [PATCH] lib/tst_kernel.c: Fix tst_check_driver() for
-	Android
-In-Reply-To: <20190129205425.62110-1-astrachan@google.com>
-References: <20190129205425.62110-1-astrachan@google.com>
-Message-ID: <20190130105322.GB32120@rei>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Wed, 30 Jan 2019 12:28:23 +0100
+Subject: [LTP] [PATCH 0/3] Build android fixes
+Message-ID: <20190130112826.7157-1-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed, thanks.
+Hi,
+
+some obvious failures for Android.
+
+Kind regards,
+Petr
+
+Petr Vorel (3):
+  lib: Add missing <string.h> and <strings.h> includes
+  lib/tst_kernel.c: Use <sys/personality.h>
+  lib: Build tst_path_has_mnt_flags.c also on Android
+
+ lib/Makefile                         | 2 +-
+ lib/newlib_tests/tst_strstatus.c     | 1 +
+ lib/tst_kconfig.c                    | 1 +
+ lib/tst_kernel.c                     | 2 +-
+ lib/tst_sys_conf.c                   | 1 +
+ lib/tst_timer_test.c                 | 1 +
+ utils/sctp/func_tests/test_getname.c | 1 +
+ 7 files changed, 7 insertions(+), 2 deletions(-)
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.20.1
+
