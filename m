@@ -1,39 +1,165 @@
-From: Steve Muckle <smuckle@google.com>
-Date: Wed, 30 Jan 2019 15:02:23 -0800
-Subject: [LTP] [PATCH 0/3] Build android fixes
-In-Reply-To: <20190130112826.7157-1-petr.vorel@gmail.com>
-References: <20190130112826.7157-1-petr.vorel@gmail.com>
-Message-ID: <56309f29-d63c-2975-eb2c-1294f55e37e8@google.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 31 Jan 2019 16:54:36 +0800
+Subject: [LTP] [PATCH] syscalls/setrlimit06: Add new test for RLIMIT_CPU
+Message-ID: <1548924876-4509-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+Set CPU time limit for a process and check its behavior when
+reaching CPU time limit.
 
-On 01/30/2019 03:28 AM, Petr Vorel wrote:
-> some obvious failures for Android.
-> 
-> Kind regards,
-> Petr
-> 
-> Petr Vorel (3):
->    lib: Add missing <string.h> and <strings.h> includes
->    lib/tst_kernel.c: Use <sys/personality.h>
->    lib: Build tst_path_has_mnt_flags.c also on Android
-> 
->   lib/Makefile                         | 2 +-
->   lib/newlib_tests/tst_strstatus.c     | 1 +
->   lib/tst_kconfig.c                    | 1 +
->   lib/tst_kernel.c                     | 2 +-
->   lib/tst_sys_conf.c                   | 1 +
->   lib/tst_timer_test.c                 | 1 +
->   utils/sctp/func_tests/test_getname.c | 1 +
->   7 files changed, 7 insertions(+), 2 deletions(-)
+Note:
+This is also a regression test for commit c3bca5d450b62 in kernel:
+"posix-cpu-timers: Ensure set_process_cpu_timer is always evaluated"
 
-How did you come across these issues? We have yet to see them. Did you 
-merge tip of LTP into an Android AOSP tree and build it that way?
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ runtest/syscalls                                  |   1 +
+ testcases/kernel/syscalls/setrlimit/.gitignore    |   1 +
+ testcases/kernel/syscalls/setrlimit/setrlimit06.c | 108 ++++++++++++++++++++++
+ 3 files changed, 110 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/setrlimit/setrlimit06.c
 
-thanks,
-Steve
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 668c87c..2e36709 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1197,6 +1197,7 @@ setrlimit02 setrlimit02
+ setrlimit03 setrlimit03
+ setrlimit04 setrlimit04
+ setrlimit05 setrlimit05
++setrlimit06 setrlimit06
+ 
+ set_robust_list01 set_robust_list01
+ set_thread_area01 set_thread_area01
+diff --git a/testcases/kernel/syscalls/setrlimit/.gitignore b/testcases/kernel/syscalls/setrlimit/.gitignore
+index e91f7e8..a790eb9 100644
+--- a/testcases/kernel/syscalls/setrlimit/.gitignore
++++ b/testcases/kernel/syscalls/setrlimit/.gitignore
+@@ -3,3 +3,4 @@
+ /setrlimit03
+ /setrlimit04
+ /setrlimit05
++/setrlimit06
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit06.c b/testcases/kernel/syscalls/setrlimit/setrlimit06.c
+new file mode 100644
+index 0000000..d6004a5
+--- /dev/null
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit06.c
+@@ -0,0 +1,108 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
++ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++ */
++
++/*
++ * Description:
++ * Set CPU time limit for a process and check its behavior
++ * when reaching CPU time limit.
++ * 1) Process received SIGXCPU signal when reaching soft limit
++ *    of CPU time.
++ * 2) Process received SIGKILL signal when reaching hard limit
++ *    of CPU time.
++ *
++ * Note:
++ * This is also a regression test for the following kernel bug:
++ * 'c3bca5d450b62 ("posix-cpu-timers: Ensure set_process_cpu_timer is always evaluated")'
++ */
++
++#define _GNU_SOURCE
++#include <errno.h>
++#include <sys/types.h>
++#include <unistd.h>
++#include <sys/time.h>
++#include <sys/resource.h>
++#include <sys/wait.h>
++
++#include "tst_test.h"
++
++static volatile int end;
++
++static void sighandler(int sig)
++{
++	end = sig;
++}
++
++static void setup(void)
++{
++	SAFE_SIGNAL(SIGALRM, SIG_DFL);
++	SAFE_SIGNAL(SIGXCPU, sighandler);
++}
++
++static void verify_setrlimit(void)
++{
++	int status;
++	pid_t pid;
++
++	pid = vfork();
++	if (pid == -1)
++		tst_brk(TBROK, "vfork() failed");
++
++	if (!pid) {
++		struct rlimit rlim = {
++			.rlim_cur = 2,
++			.rlim_max = 3,
++		};
++
++		TEST(setrlimit(RLIMIT_CPU, &rlim));
++		if (TST_RET == -1) {
++			tst_res(TFAIL | TTERRNO,
++				"setrlimit(RLIMIT_CPU) failed");
++			_exit(1);
++		}
++
++		alarm(10);
++
++		while (1);
++	}
++
++	SAFE_WAITPID(pid, &status, 0);
++
++	if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
++		return;
++
++	if (WIFSIGNALED(status)) {
++		if (WTERMSIG(status) == SIGKILL && end == SIGXCPU) {
++			tst_res(TPASS,
++				"Process received SIGXCPU and SIGKILL when reaching soft and hard limit of CPU time");
++			return;
++		}
++
++		if (WTERMSIG(status) == SIGKILL && !end) {
++			tst_res(TFAIL,
++				"Process only received SIGKILL when reaching CPU time hard limit");
++			return;
++		}
++
++		if (WTERMSIG(status) == SIGALRM && end == SIGXCPU) {
++			tst_res(TFAIL,
++				"Process only received SIGXCPU when reaching CPU time soft limit");
++			return;
++		}
++
++		if (WTERMSIG(status) == SIGALRM && !end) {
++			tst_res(TFAIL,
++				"Process didn't receive any signal when reaching soft and hard limit of CPU time");
++			return;
++		}
++	}
++
++	tst_res(TBROK, "child %s", tst_strstatus(status));
++}
++
++static struct tst_test test = {
++	.test_all = verify_setrlimit,
++	.setup = setup,
++};
+-- 
+1.8.3.1
+
+
+
