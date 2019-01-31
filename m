@@ -1,34 +1,72 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 31 Jan 2019 14:47:01 +0100
-Subject: [LTP] [PATCH] syscalls/vhangup: convert to new lib,
- use direct syscall
-In-Reply-To: <20190126015606.236588-1-smuckle@google.com>
-References: <20190126015606.236588-1-smuckle@google.com>
-Message-ID: <20190131134701.GC18486@rei.lan>
+From: Tommi Rantala <tt.rantala@gmail.com>
+Date: Thu, 31 Jan 2019 19:49:00 +0200
+Subject: [LTP] [PATCH v2] syscalls/setrlimit03.c: read /proc/sys/fs/nr_open
+	for RLIMIT_NOFILE limit
+Message-ID: <20190131174900.11052-1-tt.rantala@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +	if ((pid = SAFE_FORK()) < 0) {
-> +		tst_brk(TBROK | TTERRNO, "fork failed");
+From: Tommi Rantala <tommi.t.rantala@nokia.com>
 
-I've removed this pid < 0 check, since the whole point of SAFE_* macros
-is that the call will either succeed or exit the test.
+Since kernel v2.6.25 RLIMIT_NOFILE limit is no longer hardcoded to
+NR_OPEN, but can be set via /proc/sys/fs/nr_open, see kernel commit
+9cfe015aa424b3c003baba3841a60dd9b5ad319b ("get rid of NR_OPEN and
+introduce a sysctl_nr_open").
 
-> +	} else if (pid > 0) {
-> +		/* parent */
-> +		waitpid(pid, NULL, 0);
-> +	} else {
-> +		/* child */
+nr_open default value is 1024*1024, so setrlimit03 has been passing fine
+on new kernels, only "unexpectedly succeeding" if nr_open is set to some
+larger value.
 
-And also these useless /* parent */ and /* child */ comments.
+Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
+---
+ testcases/kernel/syscalls/setrlimit/setrlimit03.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-
-And pushed, thanks!
-
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit03.c b/testcases/kernel/syscalls/setrlimit/setrlimit03.c
+index 29b52aa7f..12455fe05 100644
+--- a/testcases/kernel/syscalls/setrlimit/setrlimit03.c
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit03.c
+@@ -35,7 +35,10 @@
+ # define NR_OPEN (1024*1024)
+ #endif
+ 
++#define NR_OPEN_PATH "/proc/sys/fs/nr_open"
++
+ static struct rlimit rlim1, rlim2;
++static unsigned int nr_open = NR_OPEN;
+ 
+ static struct tcase {
+ 	struct rlimit *rlimt;
+@@ -51,7 +54,10 @@ static void verify_setrlimit(unsigned int n)
+ 
+ 	TEST(setrlimit(RLIMIT_NOFILE, tc->rlimt));
+ 	if (TST_RET != -1) {
+-		tst_res(TFAIL, "call succeeded unexpectedly");
++		tst_res(TFAIL, "call succeeded unexpectedly "
++			"(nr_open=%u rlim_cur=%lu rlim_max=%lu)", nr_open,
++			(unsigned long)(tc->rlimt->rlim_cur),
++			(unsigned long)(tc->rlimt->rlim_max));
+ 		return;
+ 	}
+ 
+@@ -65,10 +71,13 @@ static void verify_setrlimit(unsigned int n)
+ 
+ static void setup(void)
+ {
++	if (!access(NR_OPEN_PATH, F_OK))
++		SAFE_FILE_SCANF(NR_OPEN_PATH, "%u", &nr_open);
++
+ 	SAFE_GETRLIMIT(RLIMIT_NOFILE, &rlim1);
+ 	rlim2.rlim_max = rlim1.rlim_cur;
+ 	rlim2.rlim_cur = rlim1.rlim_max + 1;
+-	rlim1.rlim_max = NR_OPEN + 1;
++	rlim1.rlim_max = nr_open + 1;
+ }
+ 
+ static struct tst_test test = {
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.19.2
+
