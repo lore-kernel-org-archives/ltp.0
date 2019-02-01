@@ -1,174 +1,48 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 1 Feb 2019 13:04:06 +0800
-Subject: [LTP] [PATCH v2] syscalls/setrlimit06: Add new test for RLIMIT_CPU
-In-Reply-To: <20190131105343.GA11386@rei>
-References: <20190131105343.GA11386@rei>
-Message-ID: <1548997446-3969-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 1 Feb 2019 14:59:06 +0800
+Subject: [LTP] [PATCH 2/2] readdir02: use invalid DIR stream descriptor
+In-Reply-To: <20190128151622.GA10646@rei.lan>
+References: <20181220090811.21514-1-liwang@redhat.com>
+ <20181220090811.21514-2-liwang@redhat.com>
+ <20190128151622.GA10646@rei.lan>
+Message-ID: <CAEemH2dC2M2UgnzbKK=WRnKjrP6UKOB6AierxE=hMbRmSn=Vcw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Set CPU time limit for a process and check its behavior when
-reaching CPU time limit.
+On Mon, Jan 28, 2019 at 11:19 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-Note:
-This is also a regression test for commit c3bca5d450b62 in kernel:
-"posix-cpu-timers: Ensure set_process_cpu_timer is always evaluated"
+> >
+> > In this patch, I simply modify the test to use an exist FILE *
+> > stream to simulate the invalid directory stream descriptor. Then
+> > it won't hit the use-after-free issue any more.
+>
+> Actually I think that the best we can do here is to delete the testcase
+> because:
+>
+> * Casting FILE* to DIR* is IMHO invoking even worse undefined behavior
+>   than the original test that called readdir() on closed DIR*
+>
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- runtest/syscalls                                  |   1 +
- testcases/kernel/syscalls/setrlimit/.gitignore    |   1 +
- testcases/kernel/syscalls/setrlimit/setrlimit06.c | 115 ++++++++++++++++++++++
- 3 files changed, 117 insertions(+)
- create mode 100644 testcases/kernel/syscalls/setrlimit/setrlimit06.c
+Why say this? Does this CASTING will do something more bad? AFAICT that
+changing an variable of one data type into another, and the worst
+harmness is to loss of information in the variable so we'd better avoid
+that. But in this test we only need a invalid DIR* for readdir() tesst, it
+does *not* really care about the pointer content I guess?
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 668c87c..2e36709 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1197,6 +1197,7 @@ setrlimit02 setrlimit02
- setrlimit03 setrlimit03
- setrlimit04 setrlimit04
- setrlimit05 setrlimit05
-+setrlimit06 setrlimit06
- 
- set_robust_list01 set_robust_list01
- set_thread_area01 set_thread_area01
-diff --git a/testcases/kernel/syscalls/setrlimit/.gitignore b/testcases/kernel/syscalls/setrlimit/.gitignore
-index e91f7e8..a790eb9 100644
---- a/testcases/kernel/syscalls/setrlimit/.gitignore
-+++ b/testcases/kernel/syscalls/setrlimit/.gitignore
-@@ -3,3 +3,4 @@
- /setrlimit03
- /setrlimit04
- /setrlimit05
-+/setrlimit06
-diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit06.c b/testcases/kernel/syscalls/setrlimit/setrlimit06.c
-new file mode 100644
-index 0000000..76e84e3
---- /dev/null
-+++ b/testcases/kernel/syscalls/setrlimit/setrlimit06.c
-@@ -0,0 +1,115 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-+ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ */
-+
-+/*
-+ * Description:
-+ * Set CPU time limit for a process and check its behavior
-+ * after reaching CPU time limit.
-+ * 1) Process got SIGXCPU after reaching soft limit of CPU time.
-+ * 2) Process got SIGKILL after reaching hard limit of CPU time.
-+ *
-+ * Note:
-+ * This is also a regression test for the following kernel bug:
-+ * 'c3bca5d450b62 ("posix-cpu-timers: Ensure set_process_cpu_timer is always evaluated")'
-+ */
-+
-+#define _GNU_SOURCE
-+#include <errno.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <sys/time.h>
-+#include <sys/resource.h>
-+#include <sys/wait.h>
-+#include <stdlib.h>
-+#include <sys/mman.h>
-+
-+#include "tst_test.h"
-+
-+static int *end;
-+
-+static void sighandler(int sig)
-+{
-+	*end = sig;
-+}
-+
-+static void setup(void)
-+{
-+	SAFE_SIGNAL(SIGXCPU, sighandler);
-+
-+	end = SAFE_MMAP(NULL, sizeof(int), PROT_READ | PROT_WRITE,
-+			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (end)
-+		SAFE_MUNMAP(end, sizeof(int));
-+}
-+
-+static void verify_setrlimit(void)
-+{
-+	int status;
-+	pid_t pid;
-+
-+	pid = SAFE_FORK();
-+	if (!pid) {
-+		struct rlimit rlim = {
-+			.rlim_cur = 2,
-+			.rlim_max = 3,
-+		};
-+
-+		TEST(setrlimit(RLIMIT_CPU, &rlim));
-+		if (TST_RET == -1) {
-+			tst_res(TFAIL | TTERRNO,
-+				"setrlimit(RLIMIT_CPU) failed");
-+			exit(1);
-+		}
-+
-+		alarm(10);
-+
-+		while (1);
-+	}
-+
-+	SAFE_WAITPID(pid, &status, 0);
-+
-+	if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
-+		return;
-+
-+	if (WIFSIGNALED(status)) {
-+		if (WTERMSIG(status) == SIGKILL && *end == SIGXCPU) {
-+			tst_res(TPASS,
-+				"Got SIGXCPU then SIGKILL after reaching both limit");
-+			return;
-+		}
-+
-+		if (WTERMSIG(status) == SIGKILL && !*end) {
-+			tst_res(TFAIL,
-+				"Got only SIGKILL after reaching both limit");
-+			return;
-+		}
-+
-+		if (WTERMSIG(status) == SIGALRM && *end == SIGXCPU) {
-+			tst_res(TFAIL,
-+				"Got only SIGXCPU after reaching both limit");
-+			return;
-+		}
-+
-+		if (WTERMSIG(status) == SIGALRM && !*end) {
-+			tst_res(TFAIL,
-+				"Got no signal after reaching both limit");
-+			return;
-+		}
-+	}
-+
-+	tst_res(TBROK, "Child %s", tst_strstatus(status));
-+}
-+
-+static struct tst_test test = {
-+	.test_all = verify_setrlimit,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.forks_child = 1,
-+};
+
+
+>
+> * We do cover the EBADF for getents() syscalls getents02 test
+>
+
+I'm sorry, I don't find this testcase in LTP, or did I miss anything?
+
 -- 
-1.8.3.1
-
-
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190201/b5f0bd6a/attachment-0001.html>
