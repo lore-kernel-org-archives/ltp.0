@@ -1,37 +1,53 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date: Mon, 4 Feb 2019 11:35:06 +0100
-Subject: [LTP] [PATCH 4.14 00/68] 4.14.97-stable review
-In-Reply-To: <CAOQ4uxhVqttqKDyJjqe-F5JV7_LLcSUP+Xao+WYRDM4azt_4NQ@mail.gmail.com>
-References: <20190129113131.751891514@linuxfoundation.org>
- <CA+G9fYvh6axRDLWpR3_ozw46JUknsYgEjvYOZfQEUbhroHPVTA@mail.gmail.com>
- <CAOQ4uxiZ2ZPfcVNSX64ZD_JqQuBwz45_WAoNjpYEhfvTuHgZHQ@mail.gmail.com>
- <20190130193223.GA20667@kroah.com>
- <CAOQ4uxhVqttqKDyJjqe-F5JV7_LLcSUP+Xao+WYRDM4azt_4NQ@mail.gmail.com>
-Message-ID: <20190204103506.GB3614@kroah.com>
+From: Cristian Marussi <cristian.marussi@arm.com>
+Date: Mon, 4 Feb 2019 11:56:29 +0000
+Subject: [LTP] [PATCH v3] memcg_stress_test.sh: ported to newlib
+In-Reply-To: <20190201134537.GA17626@x230>
+References: <20190104105407.48123-1-cristian.marussi@arm.com>
+ <20190104105407.48123-2-cristian.marussi@arm.com>
+ <20190128163207.GA26834@dell5510> <20190129175019.GA14252@dell5510>
+ <VI1PR08MB31815A4CF9A142A5B8A5E69F9E970@VI1PR08MB3181.eurprd08.prod.outlook.com>
+ <20190201134537.GA17626@x230>
+Message-ID: <c328de8d-418f-d81e-910a-890e6639af6c@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Feb 04, 2019 at 12:12:39PM +0200, Amir Goldstein wrote:
-> > > > fanotify09 failed on arm64 devices running 4.14 version kernel
-> > > > fanotify09.c:202: FAIL: first group got more than 2 events (72 > 48)
-> > > > https://bugs.linaro.org/show_bug.cgi?id=4271
-> > > >
-> > >
-> > > fanotify09 was added a new regression test case for commit
-> > >   b469e7e47c8a: fanotify: fix handling of events on child sub-directory
-> > >
-> > > That commit was backported to v4.19. As I wrote in "backport hint", the bug
-> > > exists in older kernels, but fix does not apply cleanly to older kernels.
-> >
-> > If someone were to provide a tested backport to 4.14 and older, I'll be
-> > glad to queue it up (hint hint hint...)
-> >
+Hi
+
+On 01/02/2019 13:45, Petr Vorel wrote:
+> Hi Cristian,
 > 
-> Attached backport applies and tested on 4.14 and 4.9
+>> Thanks for the review and the cleanup. (next I was going to rework following your today's advises, but you've been faster...)
+> I'm sorry, I'll be patient next time :).
+> I was thinking to add these changes to your commit and merge patchset,
+> but as I introduced 2 regressions in your patchset last time (I test it of
+> course), I was careful.
+> 
+>> I'll test asap.
+> Thanks a lot!
 
-Nice, thanks for this!  Now queued up.
+Tested from you branch with ToT as:
 
-greg k-h
+10df48aa7 (HEAD -> pevik_ltp/christian/memcg_stress_test.sh.v3.fixes)
+memcg_stress_test.sh: fix memory usage
+ebd6efaa6 memcg_stress_test.sh: Further cleanup
+02c520928 memcg_stress_test.sh: ported to newlib
+fc544f842 controllers/mem_process.c: Fix comparison warning
+...
+
+on 4k/64k pages defocnfig....looks fine to me.
+
+Thanks a lot for the cleanup.
+
+Regards
+
+Cristian
+
+> 
+> 
+> Kind regards,
+> Petr
+> 
+
