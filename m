@@ -1,42 +1,41 @@
 From: Steve Muckle <smuckle@google.com>
-Date: Mon, 4 Feb 2019 16:00:43 -0800
+Date: Mon, 4 Feb 2019 16:06:58 -0800
 Subject: [LTP] [PATCH 0/3] Build android fixes
-In-Reply-To: <20190202172245.GA979@x230>
+In-Reply-To: <20190204192004.GB222456@google.com>
 References: <20190130112826.7157-1-petr.vorel@gmail.com>
  <56309f29-d63c-2975-eb2c-1294f55e37e8@google.com> <20190202172245.GA979@x230>
-Message-ID: <3b103f67-48da-dc9a-0920-76e3a9cba766@google.com>
+ <20190204192004.GB222456@google.com>
+Message-ID: <de590605-f11d-5617-b107-6456de3d0b7e@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 02/02/2019 09:22 AM, Petr Vorel wrote:
-> Hi Steve,
-> 
->> How did you come across these issues? We have yet to see them. Did you merge
->> tip of LTP into an Android AOSP tree and build it that way?
-> Any sane person who wants to tests Android kernel uses LTP build inside of AOSP
-> to get all your custom (not yet upstreamed) fixes, skip non relevant test etc.
-> But I don't want to store whole AOSP on my disc, so I tried to cross compile
-> upstream LTP with android standalone toolchain (with make ANDROID=1).
-> 
-> Looking now, you're using lib/tst_safe_sysv_ipc.c in gen.bp and that was missing
-> in our Makefile.
-> 
-> I thought you might not build tests needing includes, but you do. Do you pass
-> some flag to compiler?
-> 
-> Compiler used:
-> 
-> $ ~/usr/android-standalone-toolchain.api-27/bin/arm-linux-androideabi-gcc --version
-> Android (5058415 based on r339409) clang version 8.0.2 (https://android.googlesource.com/toolchain/clang 40173bab62ec746213857d083c0e8b0abb568790) (https://android.googlesource.com/toolchain/llvm 7a6618d69e7e8111e1d49dc9e7813767c5ca756a) (based on LLVM 8.0.2svn)
-> Target: armv7a-unknown-linux-android27
-> Thread model: posix
-> InstalledDir: ~/usr/android-standalone-toolchain.api-27/bin
+On 02/04/2019 11:20 AM, Sandeep Patil wrote:
+> I think I asked about the "make ANDROID" option a while ago and my
+> understanding was that its building LTP against the Android NDK. Steve, may
+> be this is the path we go? I do remember however that with that build, the
+> number of tests that we can build against Android was far less than what we
+> do right now (haven't tried in a while though).
 
-Thanks. Yes include directories are specified both in gen.bp and also in 
-Android.bp at the top level of our LTP repo.
+Seems worth a try. Offhand I'm not sure why this should enable fewer 
+tests than building it as part of aosp...
+
+> Also, FWIW, there are almost zero non-upstream tests in AOSP LTP. I can only
+> think of one test suite but that is just very *android specific* and still
+> being worked on.
+
+Is this by chance the eas test suite you're referring to? Despite the 
+name there are eight or so generic scheduler/cpufreq tests that should 
+be fairly upstream-ready, it's just blocked on me getting time to send 
+them upstream for review and work on feedback. Other tests which are 
+specific to EAS need some review to determine how applicable they are to 
+the upstream kernel.
+
+If anyone wants to poke around and look at these they are here:
+
+https://android.googlesource.com/platform/external/ltp/+/master/testcases/kernel/sched/eas/
 
 cheers,
 Steve
