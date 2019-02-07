@@ -1,77 +1,55 @@
-From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Thu, 7 Feb 2019 10:36:17 -0200
-Subject: [LTP] [PATCH 1/2] syscalls/clock_gettime: create syscall
- clock_gettime tests
-In-Reply-To: <20190207123137.GA9277@rei>
-References: <20190206171703.5761-1-rafael.tinoco@linaro.org>
- <20190207123137.GA9277@rei>
-Message-ID: <85F9DAC4-4CE2-4F83-A2EC-6576C87541F6@linaro.org>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 7 Feb 2019 13:51:29 +0100
+Subject: [LTP] [PATCH 2/2] readdir02: use invalid DIR stream descriptor
+In-Reply-To: <CAEemH2dC2M2UgnzbKK=WRnKjrP6UKOB6AierxE=hMbRmSn=Vcw@mail.gmail.com>
+References: <20181220090811.21514-1-liwang@redhat.com>
+ <20181220090811.21514-2-liwang@redhat.com>
+ <20190128151622.GA10646@rei.lan>
+ <CAEemH2dC2M2UgnzbKK=WRnKjrP6UKOB6AierxE=hMbRmSn=Vcw@mail.gmail.com>
+Message-ID: <20190207125129.GB9277@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hey o/
-
-> On 7 Feb 2019, at 10:31, Cyril Hrubis <chrubis@suse.cz> wrote:
+Hi!
+> > > In this patch, I simply modify the test to use an exist FILE *
+> > > stream to simulate the invalid directory stream descriptor. Then
+> > > it won't hit the use-after-free issue any more.
+> >
+> > Actually I think that the best we can do here is to delete the testcase
+> > because:
+> >
+> > * Casting FILE* to DIR* is IMHO invoking even worse undefined behavior
+> >   than the original test that called readdir() on closed DIR*
+> >
 > 
-> Hi!
->> +struct test_case {
->> +	clockid_t clocktype;
->> +	int exp_ret;
->> +	int exp_err;
->> +	int unsupported;
->> +};
->> +
->> +struct test_case tc[] = {
->> +	{
->> +	 .clocktype = CLOCK_REALTIME,
->> +	 },
->> +	{
->> +	 .clocktype = CLOCK_REALTIME_COARSE,
->> +#ifndef CLOCK_REALTIME_COARSE
->> +	 .exp_ret = -1,
->> +	 .exp_err = EINVAL,
->> +#endif
+> Why say this? Does this CASTING will do something more bad?
+
+Yes.
+
+> AFAICT that changing an variable of one data type into another, and
+> the worst harmness is to loss of information in the variable so we'd
+> better avoid that. But in this test we only need a invalid DIR* for
+> readdir() tesst, it does *not* really care about the pointer content I
+> guess?
+
+Not at all, both FILE and DIR are typedefs to C structures, which are
+just chunks of memory, by doing this you are basically passing random
+data to the call because all it does when the C library gets the fd from
+these strucutres is that it takes bytes from at some offest in the chunk
+of memory. There are no abstract types, methods or objects in C, just
+chunks of memory.
+
+> >
+> > * We do cover the EBADF for getents() syscalls getents02 test
+> >
 > 
-> Depending on the constant beind defined is completely wrong here. The
-> only way how to figure out if the clock is being supported or not is to
-> call the clock_gettime() with correct paramters and check for EINVAL.
-> 
+> I'm sorry, I don't find this testcase in LTP, or did I miss anything?
 
-Yes I had doubts about compilation vs runtime also for the #ifndefs. 
+Sorry typo, it's getdents02.
 
-> So I guess that in this test we should call clock_gettime() for
-> paticular clock and:
-> 
-> * For certain clocks that are implemented for long enough, we expect
->  success, I would say that at least CLOCK_REALTIME, CLOCK_MONOTONIC and
->  CLOCK_*_CPUTIME_ID should be implemented for long enough to be
->  supported everywhere
-
-Alright.
-
-> 
-> * The rest of the clocks should be allowed either to pass or return EINVAL
-> 
-
-Makes sense.
-
-> * In case that the call passed we should check that the timespec has
->  been changed (we should zero it before the call)
-
-Ok.
-
-> * Also many architectures have vDSO for clock_gettime() we should also
->  check that the syscall and vDSO are consistent in this case
-
-
-Alright, will force the syscall and later use regular libc call to wrap into vDSO is available. 
-
-Thanks for the feedback!
-
-Rafael
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190207/88b0bdb1/attachment-0001.html>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
