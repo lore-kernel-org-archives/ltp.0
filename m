@@ -1,390 +1,103 @@
-From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Wed,  6 Feb 2019 15:17:03 -0200
-Subject: [LTP] [PATCH 2/2] timers/clock_gettime: remove clock_gettime tests
-In-Reply-To: <20190206171703.5761-1-rafael.tinoco@linaro.org>
-References: <20190206171703.5761-1-rafael.tinoco@linaro.org>
-Message-ID: <20190206171703.5761-2-rafael.tinoco@linaro.org>
+From: Daniel Mentz <danielmentz@google.com>
+Date: Wed,  6 Feb 2019 17:40:55 -0800
+Subject: [LTP] [PATCH] mprotect04: Support execute-only page access
+	permissions
+Message-ID: <20190207014055.166152-1-danielmentz@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-clock_gettime{01,02} syscall tests were created, using the new API,
-based on existing and older kernel/timers/clock_gettime{02,03} tests.
+Linux version 4.9 introduced support for execute-only page access permissions on
+arm64. As a result, user space processes, by default, cannot read from
+their own .text sections. This change adds an extra call to mprotect()
+to explicitly change access protections to allow relevant parts of the
+.text section to be read.
 
-This commit deletes older timers/clock_gettime/* tests.
+Without this change, mprotect04 generates false TBROK results. We
+previously saw this test output:
 
-Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
+mprotect04    1  TPASS  :  test PROT_NONE for mprotect success
+mprotect04    0  TINFO  :  exec_func: 0x5ac82d3588, page_to_copy: 0x5ac82d3000
+mprotect04    2  TBROK  :  ltp/testcases/kernel/syscalls/mprotect/mprotect04.c:236: page_to_copy not present
+mprotect04    3  TBROK  :  ltp/testcases/kernel/syscalls/mprotect/mprotect04.c:236: Remaining cases broken
+
+Signed-off-by: Daniel Mentz <danielmentz@google.com>
 ---
- runtest/timers                                |   2 -
- .../kernel/timers/clock_gettime/.gitignore    |   2 -
- .../kernel/timers/clock_gettime/Makefile      |  27 ---
- .../timers/clock_gettime/clock_gettime02.c    | 120 ------------
- .../timers/clock_gettime/clock_gettime03.c    | 173 ------------------
- 5 files changed, 324 deletions(-)
- delete mode 100644 testcases/kernel/timers/clock_gettime/.gitignore
- delete mode 100644 testcases/kernel/timers/clock_gettime/Makefile
- delete mode 100644 testcases/kernel/timers/clock_gettime/clock_gettime02.c
- delete mode 100644 testcases/kernel/timers/clock_gettime/clock_gettime03.c
+ .../kernel/syscalls/mprotect/mprotect04.c     | 31 ++++++++++++++++---
+ 1 file changed, 27 insertions(+), 4 deletions(-)
 
-diff --git a/runtest/timers b/runtest/timers
-index 618d2cb0c..5f5ecb6ee 100644
---- a/runtest/timers
-+++ b/runtest/timers
-@@ -1,6 +1,4 @@
- #DESCRIPTION:Posix Timer Tests
--clock_gettime02 clock_gettime02
--clock_gettime03 clock_gettime03
- timer_create02 timer_create02
- timer_create03 timer_create03
- timer_create04 timer_create04
-diff --git a/testcases/kernel/timers/clock_gettime/.gitignore b/testcases/kernel/timers/clock_gettime/.gitignore
-deleted file mode 100644
-index 004e74214..000000000
---- a/testcases/kernel/timers/clock_gettime/.gitignore
-+++ /dev/null
-@@ -1,2 +0,0 @@
--/clock_gettime02
--/clock_gettime03
-diff --git a/testcases/kernel/timers/clock_gettime/Makefile b/testcases/kernel/timers/clock_gettime/Makefile
-deleted file mode 100644
-index 8de247075..000000000
---- a/testcases/kernel/timers/clock_gettime/Makefile
-+++ /dev/null
-@@ -1,27 +0,0 @@
--#
--#  Copyright (c) International Business Machines  Corp., 2001
--#
--#  This program is free software;  you can redistribute it and/or modify
--#  it under the terms of the GNU General Public License as published by
--#  the Free Software Foundation; either version 2 of the License, or
--#  (at your option) any later version.
--#
--#  This program is distributed in the hope that it will be useful,
--#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
--#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
--#  the GNU General Public License for more details.
--#
--#  You should have received a copy of the GNU General Public License
--#  along with this program;  if not, write to the Free Software
--#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--#
--
--top_srcdir		?= ../../../..
--
--include $(top_srcdir)/include/mk/testcases.mk
--
--CPPFLAGS		+= -D_GNU_SOURCE -I$(abs_srcdir)/../include
--
--LDLIBS			+= -lpthread -lrt
--
--include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/timers/clock_gettime/clock_gettime02.c b/testcases/kernel/timers/clock_gettime/clock_gettime02.c
-deleted file mode 100644
-index e68a2070c..000000000
---- a/testcases/kernel/timers/clock_gettime/clock_gettime02.c
-+++ /dev/null
-@@ -1,120 +0,0 @@
--/*
-- * Copyright (c) Wipro Technologies Ltd, 2003.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- */
--/**************************************************************************
-- *
-- *    TEST IDENTIFIER	: clock_gettime02
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Basic test for clock_gettime(2)
-- *
-- *    TEST CASE TOTAL	: 2
-- *
-- *    AUTHOR		: Aniruddha Marathe <aniruddha.marathe@wipro.com>
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    DESCRIPTION
-- *     This is a Phase I test for the clock_gettime(2) system call.
-- *     It is intended to provide a limited exposure of the system call.
-- *
-- * 	Setup:
-- *	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- *	 Execute system call for each defined clock value
-- *	 Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	 Otherwise, Issue a PASS message.
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
-- *
-- * USAGE:  <for command-line>
-- * clock_gettime02 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-p]
-- * where:
-- * 	-c n : Run n copies simultaneously.
-- *	-e   : Turn on errno logging.
-- *	-i n : Execute test n times.
-- *	-I x : Execute test for x seconds.
-- *	-p   : Pause for SIGUSR1 before starting
-- *	-P x : Pause for x seconds between iterations.
-- *	-t   : Turn on syscall timing.
-- *
-- *RESTRICTIONS:
-- * None
-- *****************************************************************************/
--
--#include <stdlib.h>
--#include <errno.h>
--#include <time.h>
--#include <signal.h>
--
--#include "test.h"
--#include "common_timers.h"
--
--void setup(void);
--static clockid_t clocks[2] = { CLOCK_REALTIME, CLOCK_MONOTONIC };
--
--char *TCID = "clock_gettime02";
--int TST_TOTAL = ARRAY_SIZE(clocks);
--
--int main(int ac, char **av)
--{
--	int lc, i;
--	struct timespec spec;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++) {
--			TEST(ltp_syscall(__NR_clock_gettime, clocks[i], &spec));
--			tst_resm((TEST_RETURN < 0 ? TFAIL | TTERRNO : TPASS),
--				 "%s",
--				 (TEST_RETURN == 0 ? "passed" : "failed"));
--		}
--	}
--
--	CLEANUP();
--	tst_exit();
--}
--
--/* setup() - performs all ONE TIME setup for this test */
--void setup(void)
--{
--
--	tst_sig(NOFORK, DEF_HANDLER, CLEANUP);
--
--	TEST_PAUSE;
--}
--
--/*
-- * CLEANUP() - Performs one time CLEANUP for this test at
-- * completion or premature exit
-- */
--void cleanup(void)
--{
--}
-diff --git a/testcases/kernel/timers/clock_gettime/clock_gettime03.c b/testcases/kernel/timers/clock_gettime/clock_gettime03.c
-deleted file mode 100644
-index 2194d104a..000000000
---- a/testcases/kernel/timers/clock_gettime/clock_gettime03.c
-+++ /dev/null
-@@ -1,173 +0,0 @@
--/*
-- * Copyright (c) Wipro Technologies Ltd, 2003.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- */
--/**************************************************************************
-- *
-- *    TEST IDENTIFIER	: clock_gettime03
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Test checking for basic error conditions for
-- *    			  clock_gettime(2)
-- *
-- *    TEST CASE TOTAL	: 7
-- *
-- *    AUTHOR		: Aniruddha Marathe <aniruddha.marathe@wipro.com>
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    DESCRIPTION
-- *    	This test case check whether clock_gettime(2) returns appropriate error
-- *    	value for invalid parameter
-- *
-- * 	Setup:
-- *	 Setup signal handling.
-- *	 Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- *	 If it is the first test case
-- *	 	make temp a bad pointer
-- *	 Otherwise pass defined struct timespec variable to temp
-- *	 Execute system call with invalid parameter
-- *	 Check return code, if system call fails with errno == expected errno
-- * 	 	Issue syscall passed with expected errno
-- *	 Otherwise, Issue syscall failed to produce expected errno
-- *
-- * 	Cleanup:
-- * 	 Print errno log and/or timing stats if options given
-- *
-- * USAGE:  <for command-line>
-- * clock_gettime03 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-p]
-- * where:
-- * 	-c n : run n copies simultaneously
-- *	-e   : Turn on errno logging.
-- *	-i n : Execute test n times.
-- *	-I x : Execute test for x seconds.
-- *	-p   : Pause for SIGUSR1 before starting
-- *	-P x : Pause for x seconds between iterations.
-- *	-t   : Turn on syscall timing.
-- *
-- * RESTRICTIONS:
-- * None
-- *****************************************************************************/
--
--#include <stdlib.h>
--#include <errno.h>
--#include <time.h>
--#include <signal.h>
--
--#include "test.h"
--#include "common_timers.h"
--
--void setup(void);
--
--int testcase[6] = {
--	EFAULT,			/* Bad timespec   */
--	EFAULT,			/* Bad timespec   */
--	EINVAL,			/* MAX_CLOCKS     */
--	EINVAL			/* MAX_CLOCKS + 1 */
--};
--
--char *TCID = "clock_gettime03";	/* Test program identifier.    */
--int TST_TOTAL = ARRAY_SIZE(testcase);
--
--int main(int ac, char **av)
--{
--	int i, lc;
--	struct timespec spec, *temp;
--
--	clockid_t clocks[] = {
--		CLOCK_REALTIME,
--		CLOCK_MONOTONIC,
--		MAX_CLOCKS,
--		MAX_CLOCKS + 1,
--		CLOCK_PROCESS_CPUTIME_ID,
--		CLOCK_THREAD_CPUTIME_ID
--	};
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	/*
--	 * PROCESS_CPUTIME_ID & THREAD_CPUTIME_ID are not supported on
--	 * kernel versions lower than 2.6.12
--	 */
--	if ((tst_kvercmp(2, 6, 12)) < 0) {
--		testcase[4] = EINVAL;
--		testcase[5] = EINVAL;
--	} else {
--		testcase[4] = EFAULT;
--		testcase[5] = EFAULT;
--	}
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++) {
--			temp = &spec;
--
--			if (i == 0) {
--				temp = (struct timespec *)-1;
--			} else if (i == 1) {
--				temp = NULL;
--			} else if ((i >= 4) && (tst_kvercmp(2, 6, 12) >= 0)) {
--				temp = NULL;
--			}
--
--			TEST(ltp_syscall(__NR_clock_gettime, clocks[i], temp));
--
--			/* check return code */
--			if (TEST_RETURN == -1 && TEST_ERRNO == testcase[i]) {
--				tst_resm(TPASS | TTERRNO,
--					 "got expected failure");
--			} else {
--				tst_resm(TFAIL | TTERRNO,
--					 "failed to produce expected error "
--					 "[expected errno = %d (%s), "
--					 "TEST_RETURN = %ld]",
--					 testcase[i], strerror(testcase[i]),
--					 TEST_RETURN);
--			}	/* end of else */
--
--		}		/*End of TEST CASE LOOPING */
--
--	}			/*End for TEST_LOOPING */
--
--	cleanup();
--	tst_exit();
--}
--
--/* setup() - performs all ONE TIME setup for this test */
--void setup(void)
--{
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--}
--
--/*
-- * cleanup() - Performs one time cleanup for this test at
-- * completion or premature exit
-- */
--void cleanup(void)
--{
--}
+diff --git a/testcases/kernel/syscalls/mprotect/mprotect04.c b/testcases/kernel/syscalls/mprotect/mprotect04.c
+index 60941a422..811449f6a 100644
+--- a/testcases/kernel/syscalls/mprotect/mprotect04.c
++++ b/testcases/kernel/syscalls/mprotect/mprotect04.c
+@@ -217,6 +217,7 @@ static void *get_func(void *mem)
+ 	uintptr_t func_page_offset;
+ 	void *func_copy_start, *page_to_copy;
+ 	void *mem_start = mem;
++	int exec_only_platform = 0;
+ 
+ #ifdef USE_FUNCTION_DESCRIPTORS
+ 	func_descr_t *opd =  (func_descr_t *)&exec_func;
+@@ -229,17 +230,35 @@ static void *get_func(void *mem)
+ 	page_to_copy = (void *)((uintptr_t)&exec_func & page_mask);
+ #endif
+ 
+-	/* copy 1st page, if it's not present something is wrong */
++	/* Copy 1st page. If it's not accessible, we might be running on a
++	 * platform that supports execute-only page access permissions, in which
++	 * case we have to explicitly change access protections to allow the
++	 * memory to be read. */
+ 	if (!page_present(page_to_copy)) {
+-		tst_resm(TINFO, "exec_func: %p, page_to_copy: %p\n",
+-			&exec_func, page_to_copy);
+-		tst_brkm(TBROK, cleanup, "page_to_copy not present\n");
++		TEST(mprotect(page_to_copy, page_sz, PROT_READ | PROT_EXEC));
++		if (TEST_RETURN == -1) {
++			tst_resm(TFAIL | TTERRNO,
++				 "mprotect(PROT_READ|PROT_EXEC) failed");
++			return NULL;
++		}
++		/* If the memory is still not accessible, then something must be
++		 * wrong. */
++		if (!page_present(page_to_copy)) {
++			tst_resm(TINFO, "exec_func: %p, page_to_copy: %p\n",
++				&exec_func, page_to_copy);
++			tst_brkm(TBROK, cleanup, "page_to_copy not present\n");
++		}
++		exec_only_platform = 1;
+ 	}
+ 	memcpy(mem, page_to_copy, page_sz);
+ 
+ 	/* copy 2nd page if possible */
+ 	mem += page_sz;
+ 	page_to_copy += page_sz;
++	/* Mark page readable on platforms that support execute-only page access
++	 * permissions. */
++	if (exec_only_platform)
++		mprotect(page_to_copy, page_sz, PROT_READ | PROT_EXEC);
+ 	if (page_present(page_to_copy))
+ 		memcpy(mem, page_to_copy, page_sz);
+ 	else
+@@ -271,6 +290,9 @@ static void testfunc_protexec(void)
+ 	func = get_func(p);
+ #endif
+ 
++	if (!func)
++		goto out;
++
+ 	/* Change the protection to PROT_EXEC. */
+ 	TEST(mprotect(p, copy_sz, PROT_EXEC));
+ 
+@@ -294,6 +316,7 @@ static void testfunc_protexec(void)
+ 		}
+ 	}
+ 
++out:
+ 	SAFE_MUNMAP(cleanup, p, copy_sz);
+ }
+ 
 -- 
-2.20.1
+2.20.1.611.gfbb209baf1-goog
 
