@@ -1,50 +1,40 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 07 Feb 2019 15:38:58 +0100
-Subject: [LTP] [PATCH] ustat: Fix EFAULT in 32bit compatability mode
-In-Reply-To: <20190207130746.GB20833@dell5510>
-References: <20190202001727.13269-1-smuckle@google.com>
- <20190207101835.641-1-rpalethorpe@suse.com>
- <532035050.101837579.1549541815701.JavaMail.zimbra@redhat.com>
- <20190207130746.GB20833@dell5510>
-Message-ID: <87k1ib8xz1.fsf@rpws.prws.suse.cz>
+From: Matthias Maennich <maennich@google.com>
+Date: Thu,  7 Feb 2019 15:51:53 +0000
+Subject: [LTP] [PATCH v1] sigpending: use direct syscall
+Message-ID: <20190207155153.41816-1-maennich@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Expand coverage to the Android platform.
 
-Petr Vorel <pvorel@suse.cz> writes:
+Signed-off-by: Matthias Maennich <maennich@google.com>
+---
+ testcases/kernel/syscalls/sigpending/sigpending02.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> Hi Jan,
->
->> > From looking at glibc, this test may also be broken on mips, but I am not
->> > sure
->> > if that matters. AFAICT on all other platforms glibc always casts to uint
->> > after performing a sanity check..
->
->> LGTM, LTP is using only 0 (and -1 for errno tests), so it shouldn't matter.
-> I'm sorry I missed your mail, so pushed without your ack.
->
->> What about ustat02? Are you planning on sending something similar for that test?
-> It's not needed for ustat02. Is it because *tc[test].dev in ustat02 is
-> pointer?
+diff --git a/testcases/kernel/syscalls/sigpending/sigpending02.c b/testcases/kernel/syscalls/sigpending/sigpending02.c
+index a38157ae1..ff8b59c8c 100644
+--- a/testcases/kernel/syscalls/sigpending/sigpending02.c
++++ b/testcases/kernel/syscalls/sigpending/sigpending02.c
+@@ -17,13 +17,14 @@
+ #include <sys/types.h>
+ 
+ #include "tst_test.h"
++#include "lapi/syscalls.h"
+ 
+ static void run(void)
+ {
+ 	/* set sigset to point to an invalid location */
+ 	sigset_t *sigset = (sigset_t *) - 1;
+ 
+-	TEST(sigpending(sigset));
++	TEST(tst_syscall(__NR_rt_sigpending, sigset, NSIG / 8));
+ 
+ 	/* check return code */
+ 	if (TST_RET == -1) {
+-- 
+2.20.1.611.gfbb209baf1-goog
 
-I don't think so, but AFAICT ustat02 is still valid because passing the
-wrong data type still has the desired effect of creating an invalid
-buffer pointer in the bad address test. On the invalid parameter test,
-only the first 32bits of dev are checked before EINVAL is thrown, so
-again, it doesn't matter.
-
-So I won't send another patch, but I am not against adding the cast
-either.
-
->
-> Kind regards,
-> Petr
-
-
---
-Thank you,
-Richard.
