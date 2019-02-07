@@ -1,41 +1,63 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu,  7 Feb 2019 11:18:35 +0100
-Subject: [LTP] [PATCH] ustat: Fix EFAULT in 32bit compatability mode
-In-Reply-To: <20190202001727.13269-1-smuckle@google.com>
-References: <20190202001727.13269-1-smuckle@google.com>
-Message-ID: <20190207101835.641-1-rpalethorpe@suse.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 7 Feb 2019 12:47:17 +0100
+Subject: [LTP] [PATCH] syscalls/preadv203: Add basic RWF_NOWAIT test
+In-Reply-To: <20190206120724.GB13516@rei>
+References: <20190128134656.27979-1-metan@ucw.cz> <20190206075159.GA13396@x230>
+ <20190206120724.GB13516@rei>
+Message-ID: <20190207114717.GA9428@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This test fails with -m32 on Intel because the user land dev_num is too
-large.
+Hi Cyril,
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
+> > I wonder if we want either warn user or run it both via (g)libc wrapper and
+> > directly the syscall.
 
-From looking at glibc, this test may also be broken on mips, but I am not sure
-if that matters. AFAICT on all other platforms glibc always casts to uint
-after performing a sanity check..
+> I guess that we may drop a hint in the error message.
 
- testcases/kernel/syscalls/ustat/ustat01.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > BTW testing on kernel 4.20.0, glibc 2.28 with sys_preadv2() and still get TBROK
+> > EOPNOTSUPP. I tried to test on ext[2-4], btrfs. I wonder what I'm missing.
 
-diff --git a/testcases/kernel/syscalls/ustat/ustat01.c b/testcases/kernel/syscalls/ustat/ustat01.c
-index 3f1186c49..2e7dcc9d7 100644
---- a/testcases/kernel/syscalls/ustat/ustat01.c
-+++ b/testcases/kernel/syscalls/ustat/ustat01.c
-@@ -20,7 +20,7 @@ void run(void)
+> That's strange, are you sure that the test was calling the wrapper
+> instead of the glibc call?
+See diff below, but I guess it's what you meant :).
+
+> This should really work unless the support in kernel has been disabled
+> in distribution kernel for some reason. I was testing it on vanilla
+> kernel where it worked as expected.
+What config option is needed?
+
+It does not work on both my machines (glibc 2.27 and 2.28) and it's working on
+various VMs with these versions.
+
+
+Kind regards,
+Petr
+
+
++++ testcases/kernel/syscalls/preadv2/preadv203.c
+@@ -95,6 +95,12 @@ static int verify_short_read(struct iovec *iov, size_t iov_cnt,
+ 	return 0;
+ }
+ 
++ static ssize_t sys_preadv2(int fd, const struct iovec *iov, int iovcnt,
++                            off_t offset, int flags)
++ {
++ 	return syscall(SYS_preadv2, fd, iov, iovcnt, offset, offset>>32, flags);
++ }
++
+ static void *nowait_reader(void *unused LTP_ATTRIBUTE_UNUSED)
  {
- 	struct ustat ubuf;
+ 	char buf1[CHUNK_SZ/2];
+@@ -115,7 +121,7 @@ static void *nowait_reader(void *unused LTP_ATTRIBUTE_UNUSED)
+ 		off_t off = random() % ((CHUNKS - 2) * CHUNK_SZ);
+ 		int fd = fds[random() % FILES];
  
--	TEST(tst_syscall(__NR_ustat, dev_num, &ubuf));
-+	TEST(tst_syscall(__NR_ustat, (unsigned int)dev_num, &ubuf));
+-		TEST(preadv2(fd, rd_iovec, 2, off, RWF_NOWAIT));
++		TEST(sys_preadv2(fd, rd_iovec, 2, off, RWF_NOWAIT));
  
- 	if (TST_RET == -1)
- 		tst_res(TFAIL | TTERRNO, "ustat(2) failed");
--- 
-2.20.1
-
+ 		if (TST_RET < 0) {
+ 			if (TST_ERR != EAGAIN)
