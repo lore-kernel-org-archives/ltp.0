@@ -1,55 +1,66 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 7 Feb 2019 13:51:29 +0100
-Subject: [LTP] [PATCH 2/2] readdir02: use invalid DIR stream descriptor
-In-Reply-To: <CAEemH2dC2M2UgnzbKK=WRnKjrP6UKOB6AierxE=hMbRmSn=Vcw@mail.gmail.com>
-References: <20181220090811.21514-1-liwang@redhat.com>
- <20181220090811.21514-2-liwang@redhat.com>
- <20190128151622.GA10646@rei.lan>
- <CAEemH2dC2M2UgnzbKK=WRnKjrP6UKOB6AierxE=hMbRmSn=Vcw@mail.gmail.com>
-Message-ID: <20190207125129.GB9277@rei>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 7 Feb 2019 07:52:09 -0500 (EST)
+Subject: [LTP] [PATCH] adding s390x tests to ltp
+In-Reply-To: <20190204161328.4616-1-elas@linux.vnet.ibm.com>
+References: <20190204161328.4616-1-elas@linux.vnet.ibm.com>
+Message-ID: <1740320205.101841684.1549543929404.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > > In this patch, I simply modify the test to use an exist FILE *
-> > > stream to simulate the invalid directory stream descriptor. Then
-> > > it won't hit the use-after-free issue any more.
-> >
-> > Actually I think that the best we can do here is to delete the testcase
-> > because:
-> >
-> > * Casting FILE* to DIR* is IMHO invoking even worse undefined behavior
-> >   than the original test that called readdir() on closed DIR*
-> >
+
+
+----- Original Message -----
+> ---
+>  runtest/s390x_tools                           |  2 +
+>  testcases/commands/s390x_tools/vmcp/vmcp_m.sh | 58 +++++++++++++++++++
+>  2 files changed, 60 insertions(+)
+>  create mode 100644 runtest/s390x_tools
+>  create mode 100644 testcases/commands/s390x_tools/vmcp/vmcp_m.sh
 > 
-> Why say this? Does this CASTING will do something more bad?
+> diff --git a/runtest/s390x_tools b/runtest/s390x_tools
+> new file mode 100644
+> index 000000000..c88f0cac4
+> --- /dev/null
+> +++ b/runtest/s390x_tools
+> @@ -0,0 +1,2 @@
+> +#DESCRIPTION:s390x_tools tests
+> +vmcp vmcp_m.sh
 
-Yes.
+Hi,
 
-> AFAICT that changing an variable of one data type into another, and
-> the worst harmness is to loss of information in the variable so we'd
-> better avoid that. But in this test we only need a invalid DIR* for
-> readdir() tesst, it does *not* really care about the pointer content I
-> guess?
+There is already a runtest/commands, any reason for making new one?
 
-Not at all, both FILE and DIR are typedefs to C structures, which are
-just chunks of memory, by doing this you are basically passing random
-data to the call because all it does when the C library gets the fd from
-these strucutres is that it takes bytes from at some offest in the chunk
-of memory. There are no abstract types, methods or objects in C, just
-chunks of memory.
+> diff --git a/testcases/commands/s390x_tools/vmcp/vmcp_m.sh
+> b/testcases/commands/s390x_tools/vmcp/vmcp_m.sh
+> new file mode 100644
+> index 000000000..d1f7752de
+> --- /dev/null
+> +++ b/testcases/commands/s390x_tools/vmcp/vmcp_m.sh
+> @@ -0,0 +1,58 @@
+> +#!/bin/sh
+> +#
+> +# Copyright (C) 2018 IBM Corp.
+> +#
+> +# Copying and distribution of this file, with or without modification,
+> +# are permitted in any medium without royalty provided the copyright
+> +# notice and this notice are preserved.  This file is offered as-is,
+> +# without any warranty.
+> +
+> +#set -x
+> +#
+> +
+> +TST_CNT=2
+> +TST_TESTFUNC=vmcp_main
+> +TST_USAGE=usage
 
-> >
-> > * We do cover the EBADF for getents() syscalls getents02 test
-> >
-> 
-> I'm sorry, I don't find this testcase in LTP, or did I miss anything?
+Maybe also: TST_NEEDS_CMDS="vmcp" ?
+Not sure if all s390x distros have this command installed.
 
-Sorry typo, it's getdents02.
+But that should also be sufficient check to run this on any arch,
+if command doesn't exist it will TCONF.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Jan
