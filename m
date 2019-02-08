@@ -1,137 +1,89 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 8 Feb 2019 11:37:55 +0800
-Subject: [LTP] [PATCH v2] block/ltp_block_dev.c: Update tests for the newer
-	kernel
-In-Reply-To: <20190206070648.GA1720@x230>
-References: <20190206070648.GA1720@x230>
-Message-ID: <1549597075-7589-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 8 Feb 2019 03:13:00 -0500 (EST)
+Subject: [LTP] [PATCH] mprotect04: Support execute-only page access
+ permissions
+In-Reply-To: <CAE2F3rBSkosrHixJLVab2mMYmTf+OuG3HbCz_fb0drA3fvMRNQ@mail.gmail.com>
+References: <20190207014055.166152-1-danielmentz@google.com>
+ <444884877.101394412.1549523065054.JavaMail.zimbra@redhat.com>
+ <CAE2F3rBSkosrHixJLVab2mMYmTf+OuG3HbCz_fb0drA3fvMRNQ@mail.gmail.com>
+Message-ID: <1261056777.102052911.1549613580845.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The maximum major number is set to 511 since kernel commit 133d55c,
-so register_blkdev() with a major number grater than the maximum(511)
-will get failure instead of pass as expected.
 
-1) Update tests for the newer behavior of register_blkdev().
-2) Add more major numbers(i.e. 511 and 512) to test.
 
-Note:
-It is possible that specified major numbers have been used
-by system, so we skip them if register_blkdev() returns EBUSY.
+----- Original Message -----
+> From: "Daniel Mentz" <danielmentz@google.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp@lists.linux.it, liwang@redhat.com, "peter maydell" <peter.maydell@linaro.org>, chrubis@suse.cz, "gux fnst"
+> <gux.fnst@cn.fujitsu.com>
+> Sent: Friday, 8 February, 2019 1:12:41 AM
+> Subject: Re: [PATCH] mprotect04: Support execute-only page access permissions
+> 
+> On Wed, Feb 6, 2019 at 11:04 PM Jan Stancek <jstancek@redhat.com> wrote:
+> > > +     /* Mark page readable on platforms that support execute-only page
+> > > access
+> > > +      * permissions. */
+> > > +     if (exec_only_platform)
+> > > +             mprotect(page_to_copy, page_sz, PROT_READ | PROT_EXEC);
+> >
+> > Is there a chance 2nd page will be something else than code?
+> > E.g. some section that was previously also writeable.
+> 
+> Ok. I can see that concern. We could read /proc/$$/maps to determine
+> if the 2nd page is writable, but that'd be a lot of work to implement.
+> What about making the 2nd page writable (PROT_WRITE) just in case? Is
+> that a solution you would support? Can you think of another solution?
+> 
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+I'm thinking using another "(!page_present(page_to_copy))" check
+for 2nd page as well.
+
+Or making sure we never cross page boundary, then we
+could drop 2nd page entirely:
+
 ---
- .../block/block_dev_kernel/ltp_block_dev.c         | 64 +++++++++++-----------
- 1 file changed, 32 insertions(+), 32 deletions(-)
 
-diff --git a/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c b/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c
-index d573085..b0f6ce5 100644
---- a/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c
-+++ b/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c
-@@ -1,20 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-  *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License as
-- * published by the Free Software Foundation; either version 2 of
-- * the License, or (at your option) any later version.
-- *
-- * This program is distributed in the hope that it would be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write the Free Software Foundation,
-- * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-- *
-  * Only those functions are tested here which are declared in <linux/fs.h>
-  *
-  * Changes:
-@@ -52,7 +39,8 @@ MODULE_LICENSE("GPL");
-  *             |--------------------------+---------+-------------
-  *             | [1..255]                 | valid   | tc03
-  *             |--------------------------+---------+-------------
-- *             | [256..UINT_MAX]          | valid   | tc04, tc05
-+ *             | [256..511]               | valid   | tc04
-+ *             | [512..UINT_MAX]          | invalid | tc05
-  *  -----------+--------------------------+---------+-------------
-  *  name       | [valid pointer to a zero |         |
-  *             |  terminated string]      | valid   | tc01, tc02
-@@ -205,17 +193,25 @@ static int tc03(void)
- static int tc04(void)
- {
- 	int major, pass = 8;
-+	unsigned int i, test_major[2] = {256, 511};
- 
--	prk_info("Test Case 4: register_blkdev() with major=256\n");
-+	prk_info("Test Case 4: register_blkdev() with major=%u/%u\n",
-+		 test_major[0], test_major[1]);
- 
--	major = register_blkdev(256, BLK_DEV_NAME);
--	prk_debug("major = %i\n", major);
-+	for (i = 0; i < sizeof(test_major) / sizeof(unsigned int); i++) {
-+		major = register_blkdev(test_major[i], BLK_DEV_NAME);
-+		prk_debug("major = %i\n", major);
- 
--	if (major == 0) {
--		unregister_blkdev(256, BLK_DEV_NAME);
--	} else {
--		pass = 0;
--		prk_debug("register_blkdev() failed with error %i\n", major);
-+		if (major == 0) {
-+			unregister_blkdev(test_major[i], BLK_DEV_NAME);
-+		} else if (major == -EBUSY) {
-+			prk_debug("device was busy, register_blkdev() with major %u skipped\n",
-+				  test_major[i]);
-+		} else {
-+			pass = 0;
-+			prk_debug("register_blkdev() with major %u got error %i\n",
-+				  test_major[i], major);
-+		}
- 	}
- 
- 	prk_info("Test Case Result: %s\n", result_str(pass));
-@@ -225,18 +221,22 @@ static int tc04(void)
- static int tc05(void)
- {
- 	int major, pass = 16;
-+	unsigned int i, test_major[2] = {512, UINT_MAX};
- 
--	prk_info("Test Case 5: register_blkdev() with major=%u\n", UINT_MAX);
-+	prk_info("Test Case 5: register_blkdev() with major=%u/%u\n",
-+		 test_major[0], test_major[1]);
- 
--	major = register_blkdev(UINT_MAX, BLK_DEV_NAME);
--	prk_debug("major = %i\n", major);
-+	for (i = 0; i < sizeof(test_major) / sizeof(unsigned int); i++) {
-+		major = register_blkdev(test_major[i], BLK_DEV_NAME);
-+		prk_debug("major = %i\n", major);
- 
--	if (major == 0) {
--		unregister_blkdev(UINT_MAX, BLK_DEV_NAME);
--	} else {
--		prk_debug("reg blkdev with major %d failed with error %i\n",
--			UINT_MAX, major);
--		pass = 0;
-+		if (major == 0) {
-+			unregister_blkdev(test_major[i], BLK_DEV_NAME);
-+			pass = 0;
-+		} else {
-+			prk_debug("register_blkdev() with major %u got error %i\n",
-+				  test_major[i], major);
-+		}
- 	}
- 
- 	prk_info("Test Case Result: %s\n", result_str(pass));
--- 
-1.8.3.1
+diff --git a/testcases/kernel/syscalls/mprotect/Makefile b/testcases/kernel/syscalls/mprotect/Makefile
+index bd617d806675..bc5c8bc10395 100644
+--- a/testcases/kernel/syscalls/mprotect/Makefile
++++ b/testcases/kernel/syscalls/mprotect/Makefile
+@@ -20,4 +20,6 @@ top_srcdir            ?= ../../../..
 
+ include $(top_srcdir)/include/mk/testcases.mk
 
++mprotect04: CFLAGS += -falign-functions=64
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/mprotect/mprotect04.c b/testcases/kernel/syscalls/mprotect/mprotect04.c
+index 60941a4220d5..6894b31fc528 100644
+--- a/testcases/kernel/syscalls/mprotect/mprotect04.c
++++ b/testcases/kernel/syscalls/mprotect/mprotect04.c
+@@ -133,7 +133,7 @@ static void testfunc_protnone(void)
+
+ #ifdef __ia64__
+
+-static char exec_func[] = {
++static char exec_func[] __attribute__ ((aligned (64))) = {
+        0x11, 0x00, 0x00, 0x00, 0x01, 0x00, /* nop.m 0x0             */
+        0x00, 0x00, 0x00, 0x02, 0x00, 0x80, /* nop.i 0x0             */
+        0x08, 0x00, 0x84, 0x00,             /* br.ret.sptk.many b0;; */
+@@ -237,14 +237,6 @@ static void *get_func(void *mem)
+        }
+        memcpy(mem, page_to_copy, page_sz);
+
+-       /* copy 2nd page if possible */
+-       mem += page_sz;
+-       page_to_copy += page_sz;
+-       if (page_present(page_to_copy))
+-               memcpy(mem, page_to_copy, page_sz);
+-       else
+-               memset(mem, 0, page_sz);
+-
+        clear_cache(mem_start, copy_sz);
+
+        /* return pointer to area where copy of exec_func resides */
 
