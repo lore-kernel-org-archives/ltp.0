@@ -1,50 +1,27 @@
-From: Steve Muckle <smuckle@google.com>
-Date: Thu, 7 Feb 2019 10:58:22 -0800
-Subject: [LTP] [PATCH v1] sigpending: use direct syscall
-In-Reply-To: <20190207155153.41816-1-maennich@google.com>
-References: <20190207155153.41816-1-maennich@google.com>
-Message-ID: <aaf4de2f-9171-3e27-e9ab-3811eea7b5c3@google.com>
+From: Daniel Mentz <danielmentz@google.com>
+Date: Thu, 7 Feb 2019 16:12:41 -0800
+Subject: [LTP] [PATCH] mprotect04: Support execute-only page access
+	permissions
+In-Reply-To: <444884877.101394412.1549523065054.JavaMail.zimbra@redhat.com>
+References: <20190207014055.166152-1-danielmentz@google.com>
+ <444884877.101394412.1549523065054.JavaMail.zimbra@redhat.com>
+Message-ID: <CAE2F3rBSkosrHixJLVab2mMYmTf+OuG3HbCz_fb0drA3fvMRNQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 02/07/2019 07:51 AM, Matthias Maennich wrote:
-> Expand coverage to the Android platform.
-> 
-> Signed-off-by: Matthias Maennich <maennich@google.com>
-> ---
->   testcases/kernel/syscalls/sigpending/sigpending02.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/syscalls/sigpending/sigpending02.c b/testcases/kernel/syscalls/sigpending/sigpending02.c
-> index a38157ae1..ff8b59c8c 100644
-> --- a/testcases/kernel/syscalls/sigpending/sigpending02.c
-> +++ b/testcases/kernel/syscalls/sigpending/sigpending02.c
-> @@ -17,13 +17,14 @@
->   #include <sys/types.h>
->   
->   #include "tst_test.h"
-> +#include "lapi/syscalls.h"
->   
->   static void run(void)
->   {
->   	/* set sigset to point to an invalid location */
->   	sigset_t *sigset = (sigset_t *) - 1;
->   
-> -	TEST(sigpending(sigset));
-> +	TEST(tst_syscall(__NR_rt_sigpending, sigset, NSIG / 8));
->   
->   	/* check return code */
->   	if (TST_RET == -1) {
+On Wed, Feb 6, 2019 at 11:04 PM Jan Stancek <jstancek@redhat.com> wrote:
+> > +     /* Mark page readable on platforms that support execute-only page access
+> > +      * permissions. */
+> > +     if (exec_only_platform)
+> > +             mprotect(page_to_copy, page_sz, PROT_READ | PROT_EXEC);
+>
+> Is there a chance 2nd page will be something else than code?
+> E.g. some section that was previously also writeable.
 
-Should this be using __NR_sigpending instead? That worked for me (for 
-32-bit anyway, it's not available on arm64).
-
-Alternately, this test/dir could be renamed to rt_sigpending, though we 
-should also add a test for sigpending.
-
-thanks,
-steve
-
+Ok. I can see that concern. We could read /proc/$$/maps to determine
+if the 2nd page is writable, but that'd be a lot of work to implement.
+What about making the 2nd page writable (PROT_WRITE) just in case? Is
+that a solution you would support? Can you think of another solution?
