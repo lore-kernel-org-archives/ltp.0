@@ -1,366 +1,392 @@
 From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Fri,  8 Feb 2019 11:29:55 -0200
-Subject: [LTP] [PATCH v2 1/2] syscalls/clock_gettime: create clock_gettime
-	syscall tests
-In-Reply-To: <20190207123137.GA9277@rei>
+Date: Fri,  8 Feb 2019 11:29:56 -0200
+Subject: [LTP] [PATCH v2 2/2] timers/clock_gettime: remove clock_gettime
+	tests
+In-Reply-To: <20190208132956.18990-1-rafael.tinoco@linaro.org>
 References: <20190207123137.GA9277@rei>
-Message-ID: <20190208132956.18990-1-rafael.tinoco@linaro.org>
+ <20190208132956.18990-1-rafael.tinoco@linaro.org>
+Message-ID: <20190208132956.18990-2-rafael.tinoco@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixes: 342
+clock_gettime{01,02} syscall tests were created, using the new API,
+based on existing and older kernel/timers/clock_gettime{02,03} tests.
 
-clock_gettime{01,02} are created using the new API, based on existing
-kernel/timers/clock_gettime{02,03} tests, which will be deleted in the
-next commits.
+This commit deletes older timers/clock_gettime/* tests.
 
 Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
 ---
- runtest/syscalls                              |   3 +
- .../kernel/syscalls/clock_gettime/.gitignore  |   2 +
- .../kernel/syscalls/clock_gettime/Makefile    |  10 ++
- .../syscalls/clock_gettime/clock_gettime01.c  | 141 ++++++++++++++++++
- .../syscalls/clock_gettime/clock_gettime02.c  | 139 +++++++++++++++++
- 5 files changed, 295 insertions(+)
- create mode 100644 testcases/kernel/syscalls/clock_gettime/.gitignore
- create mode 100644 testcases/kernel/syscalls/clock_gettime/Makefile
- create mode 100644 testcases/kernel/syscalls/clock_gettime/clock_gettime01.c
- create mode 100644 testcases/kernel/syscalls/clock_gettime/clock_gettime02.c
+ runtest/timers                                |   2 -
+ .../kernel/timers/clock_gettime/.gitignore    |   2 -
+ .../kernel/timers/clock_gettime/Makefile      |  27 ---
+ .../timers/clock_gettime/clock_gettime02.c    | 120 ------------
+ .../timers/clock_gettime/clock_gettime03.c    | 173 ------------------
+ 5 files changed, 324 deletions(-)
+ delete mode 100644 testcases/kernel/timers/clock_gettime/.gitignore
+ delete mode 100644 testcases/kernel/timers/clock_gettime/Makefile
+ delete mode 100644 testcases/kernel/timers/clock_gettime/clock_gettime02.c
+ delete mode 100644 testcases/kernel/timers/clock_gettime/clock_gettime03.c
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 668c87cd1..7bccda996 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -79,6 +79,9 @@ clock_nanosleep01 clock_nanosleep01
- clock_nanosleep02 clock_nanosleep02
- clock_nanosleep2_01 clock_nanosleep2_01
- 
-+clock_gettime01 clock_gettime01
-+clock_gettime02 clock_gettime02
-+
- clock_settime01 clock_settime01
- clock_settime02 clock_settime02
- 
-diff --git a/testcases/kernel/syscalls/clock_gettime/.gitignore b/testcases/kernel/syscalls/clock_gettime/.gitignore
-new file mode 100644
-index 000000000..0f9b24ab6
---- /dev/null
-+++ b/testcases/kernel/syscalls/clock_gettime/.gitignore
-@@ -0,0 +1,2 @@
-+clock_gettime01
-+clock_gettime02
-diff --git a/testcases/kernel/syscalls/clock_gettime/Makefile b/testcases/kernel/syscalls/clock_gettime/Makefile
-new file mode 100644
-index 000000000..79f671f1c
---- /dev/null
-+++ b/testcases/kernel/syscalls/clock_gettime/Makefile
-@@ -0,0 +1,10 @@
-+# Copyright (c) 2019 - Linaro Limited. All rights reserved.
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+LDLIBS+=-lrt
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-\ No newline at end of file
-diff --git a/testcases/kernel/syscalls/clock_gettime/clock_gettime01.c b/testcases/kernel/syscalls/clock_gettime/clock_gettime01.c
-new file mode 100644
-index 000000000..d365823b2
---- /dev/null
-+++ b/testcases/kernel/syscalls/clock_gettime/clock_gettime01.c
-@@ -0,0 +1,141 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Linaro Limited. All rights reserved.
-+ * Author: Rafael David Tinoco <rafael.tinoco@linaro.org>
-+ */
-+/*
-+ * Basic test for clock_gettime(2) on multiple clocks:
-+ *
-+ *  1) CLOCK_REALTIME
-+ *  2) CLOCK_MONOTONIC
-+ *  3) CLOCK_PROCESS_CPUTIME_ID
-+ *  4) CLOCK_THREAD_CPUTIME_ID
-+ *  5) CLOCK_REALTIME_COARSE
-+ *  6) CLOCK_MONOTONIC_COARSE
-+ *  7) CLOCK_MONOTONIC_RAW
-+ *  8) CLOCK_BOOTTIME
-+ */
-+
-+#include "config.h"
-+#include "tst_timer.h"
-+#include "tst_safe_clocks.h"
-+#include "tst_test.h"
-+#include "lapi/syscalls.h"
-+
-+struct test_case {
-+	clockid_t clktype;
-+	int allow_inval;
-+};
-+
-+struct tmpfunc {
-+	int (*func)(clockid_t clk_id, struct timespec *tp);
-+	char *desc;
-+};
-+
-+struct test_case tc[] = {
-+	{
-+	 .clktype = CLOCK_REALTIME,
-+	 },
-+	{
-+	 .clktype = CLOCK_MONOTONIC,
-+	 },
-+	{
-+	 .clktype = CLOCK_PROCESS_CPUTIME_ID,
-+	 },
-+	{
-+	 .clktype = CLOCK_THREAD_CPUTIME_ID,
-+	 },
-+	{
-+	 .clktype = CLOCK_REALTIME_COARSE,
-+	 .allow_inval = 1,
-+	 },
-+	{
-+	 .clktype = CLOCK_MONOTONIC_COARSE,
-+	 .allow_inval = 1,
-+	 },
-+	{
-+	 .clktype = CLOCK_MONOTONIC_RAW,
-+	 .allow_inval = 1,
-+	 },
-+	{
-+	 .clktype = CLOCK_BOOTTIME,
-+	 .allow_inval = 1,
-+	 },
-+};
-+
-+static int sys_clock_gettime(clockid_t clk_id, struct timespec *tp)
-+{
-+	return tst_syscall(__NR_clock_gettime, clk_id, tp);
-+}
-+
-+static int check_spec(struct timespec *spec)
-+{
-+	return (spec->tv_nsec != 0 || spec->tv_sec != 0) ? 1 : 0;
-+}
-+
-+static void verify_clock_gettime(unsigned int i)
-+{
-+	size_t sz;
-+	struct timespec spec;
-+
-+	/*
-+	 * check clock_gettime() syscall AND libc (or vDSO) functions
-+	 */
-+	struct tmpfunc tf[] = {
-+		{ .func = sys_clock_gettime, .desc = "syscall"      },
-+		{ .func = clock_gettime, .desc = "vDSO or syscall"  },
-+	};
-+
-+	for (sz = 0; sz < ARRAY_SIZE(tf); sz++) {
-+
-+		memset(&spec, 0, sizeof(struct timespec));
-+
-+		TEST(tf[sz].func(tc[i].clktype, &spec));
-+
-+		if (TST_RET == -1) {
-+
-+			/* errors: allow unsupported clock types */
-+
-+			if (tc[i].allow_inval && TST_ERR == EINVAL) {
-+
-+				tst_res(TPASS, "clock_gettime(2): unsupported "
-+						"clock %s (%s) failed as "
-+						"expected",
-+						tst_clock_name(tc[i].clktype),
-+						tf[sz].desc);
-+
-+			} else {
-+
-+				tst_res(TFAIL | TTERRNO, "clock_gettime(2): "
-+						"clock %s (%s) failed "
-+						"unexpectedly",
-+						tst_clock_name(tc[i].clktype),
-+						tf[sz].desc);
-+			}
-+
-+		} else {
-+
-+			/* success: also check if timespec was changed */
-+
-+			if (check_spec(&spec)) {
-+				tst_res(TPASS, "clock_gettime(2): clock %s "
-+						"(%s) passed",
-+						tst_clock_name(tc[i].clktype),
-+						tf[sz].desc);
-+			} else {
-+
-+				tst_res(TFAIL, "clock_gettime(2): clock %s "
-+						"(%s) passed, unchanged "
-+						"timespec",
-+						tst_clock_name(tc[i].clktype),
-+						tf[sz].desc);
-+			}
-+		}
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.test = verify_clock_gettime,
-+	.tcnt = ARRAY_SIZE(tc),
-+	.needs_root = 1,
-+};
-diff --git a/testcases/kernel/syscalls/clock_gettime/clock_gettime02.c b/testcases/kernel/syscalls/clock_gettime/clock_gettime02.c
-new file mode 100644
-index 000000000..4db52c09d
---- /dev/null
-+++ b/testcases/kernel/syscalls/clock_gettime/clock_gettime02.c
-@@ -0,0 +1,139 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Linaro Limited. All rights reserved.
-+ * Author: Rafael David Tinoco <rafael.tinoco@linaro.org>
-+ */
-+/*
-+ * Bad argument tests for clock_gettime(2) on multiple clocks:
-+ *
-+ *  1) MAX_CLOCKS
-+ *  2) MAX_CLOCKS + 1
-+ *  3) CLOCK_REALTIME
-+ *  4) CLOCK_MONOTONIC
-+ *  5) CLOCK_PROCESS_CPUTIME_ID
-+ *  6) CLOCK_THREAD_CPUTIME_ID
-+ *  7) CLOCK_REALTIME_COARSE
-+ *  8) CLOCK_MONOTONIC_COARSE
-+ *  9) CLOCK_MONOTONIC_RAW
-+ * 10) CLOCK_BOOTTIME
-+ */
-+
-+#include "config.h"
-+#include "tst_test.h"
-+#include "lapi/syscalls.h"
-+#include "lapi/posix_clocks.h"
-+#include "tst_timer.h"
-+#include "tst_safe_clocks.h"
-+
-+#include <stdio.h>
-+
-+#define DELTA_SEC 10
-+#define NSEC_PER_SEC (1000000000L)
-+#define MAX_CLOCKS 16
-+
-+struct test_case {
-+	clockid_t clktype;
-+	int exp_err;
-+	int allow_inval;
-+};
-+
-+struct test_case tc[] = {
-+	{
-+	 .clktype = MAX_CLOCKS,
-+	 .exp_err = EINVAL,
-+	 },
-+	{
-+	 .clktype = MAX_CLOCKS + 1,
-+	 .exp_err = EINVAL,
-+	 },
-+	/*
-+	 * Different POSIX clocks have different (*clock_get)() handlers.
-+	 * It justifies testing EFAULT for all.
-+	 */
-+	{
-+	 .clktype = CLOCK_REALTIME,
-+	 .exp_err = EFAULT,
-+	 },
-+	{
-+	 .clktype = CLOCK_MONOTONIC,
-+	 .exp_err = EFAULT,
-+	 },
-+	{
-+	 .clktype = CLOCK_PROCESS_CPUTIME_ID,
-+	 .exp_err = EFAULT,
-+	 },
-+	{
-+	 .clktype = CLOCK_THREAD_CPUTIME_ID,
-+	 .exp_err = EFAULT,
-+	 },
-+	{
-+	 .clktype = CLOCK_REALTIME_COARSE,
-+	 .exp_err = EFAULT,
-+	 .allow_inval = 1,
-+	 },
-+	{
-+	 .clktype = CLOCK_MONOTONIC_COARSE,
-+	 .exp_err = EFAULT,
-+	 .allow_inval = 1,
-+	 },
-+	{
-+	 .clktype = CLOCK_MONOTONIC_RAW,
-+	 .exp_err = EFAULT,
-+	 .allow_inval = 1,
-+	 },
-+	{
-+	 .clktype = CLOCK_BOOTTIME,
-+	 .exp_err = EFAULT,
-+	 .allow_inval = 1,
-+	 },
-+};
-+
-+/*
-+ * bad pointer w/ libc causes SIGSEGV signal, call syscall directly
-+ */
-+static int sys_clock_gettime(clockid_t clk_id, struct timespec *tp)
-+{
-+	return tst_syscall(__NR_clock_gettime, clk_id, tp);
-+}
-+
-+static void verify_clock_gettime(unsigned int i)
-+{
-+	struct timespec spec, *specptr;
-+
-+	specptr = &spec;
-+
-+	/* bad pointer cases */
-+	if (tc[i].exp_err == EFAULT)
-+		specptr = tst_get_bad_addr(NULL);
-+
-+	TEST(sys_clock_gettime(tc[i].clktype, specptr));
-+
-+	if (TST_RET == -1) {
-+
-+		if ((tc[i].exp_err == TST_ERR) ||
-+			(tc[i].allow_inval && TST_ERR == EINVAL)) {
-+
-+			tst_res(TPASS | TTERRNO, "clock_gettime(2): "
-+					"clock %s failed as expected",
-+					tst_clock_name(tc[i].clktype));
-+
-+		} else {
-+
-+			tst_res(TFAIL | TTERRNO, "clock_gettime(2): "
-+					"clock %s failed unexpectedly",
-+					tst_clock_name(tc[i].clktype));
-+		}
-+
-+	} else {
-+
-+		tst_res(TFAIL, "clock_gettime(2): clock %s passed"
-+				" unexcpectedly",
-+				tst_clock_name(tc[i].clktype));
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.test = verify_clock_gettime,
-+	.tcnt = ARRAY_SIZE(tc),
-+	.needs_root = 1,
-+};
+diff --git a/runtest/timers b/runtest/timers
+index 618d2cb0c..5f5ecb6ee 100644
+--- a/runtest/timers
++++ b/runtest/timers
+@@ -1,6 +1,4 @@
+ #DESCRIPTION:Posix Timer Tests
+-clock_gettime02 clock_gettime02
+-clock_gettime03 clock_gettime03
+ timer_create02 timer_create02
+ timer_create03 timer_create03
+ timer_create04 timer_create04
+diff --git a/testcases/kernel/timers/clock_gettime/.gitignore b/testcases/kernel/timers/clock_gettime/.gitignore
+deleted file mode 100644
+index 004e74214..000000000
+--- a/testcases/kernel/timers/clock_gettime/.gitignore
++++ /dev/null
+@@ -1,2 +0,0 @@
+-/clock_gettime02
+-/clock_gettime03
+diff --git a/testcases/kernel/timers/clock_gettime/Makefile b/testcases/kernel/timers/clock_gettime/Makefile
+deleted file mode 100644
+index 8de247075..000000000
+--- a/testcases/kernel/timers/clock_gettime/Makefile
++++ /dev/null
+@@ -1,27 +0,0 @@
+-#
+-#  Copyright (c) International Business Machines  Corp., 2001
+-#
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
+-#
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
+-#
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+-#
+-
+-top_srcdir		?= ../../../..
+-
+-include $(top_srcdir)/include/mk/testcases.mk
+-
+-CPPFLAGS		+= -D_GNU_SOURCE -I$(abs_srcdir)/../include
+-
+-LDLIBS			+= -lpthread -lrt
+-
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/timers/clock_gettime/clock_gettime02.c b/testcases/kernel/timers/clock_gettime/clock_gettime02.c
+deleted file mode 100644
+index e68a2070c..000000000
+--- a/testcases/kernel/timers/clock_gettime/clock_gettime02.c
++++ /dev/null
+@@ -1,120 +0,0 @@
+-/*
+- * Copyright (c) Wipro Technologies Ltd, 2003.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- */
+-/**************************************************************************
+- *
+- *    TEST IDENTIFIER	: clock_gettime02
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Basic test for clock_gettime(2)
+- *
+- *    TEST CASE TOTAL	: 2
+- *
+- *    AUTHOR		: Aniruddha Marathe <aniruddha.marathe@wipro.com>
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    DESCRIPTION
+- *     This is a Phase I test for the clock_gettime(2) system call.
+- *     It is intended to provide a limited exposure of the system call.
+- *
+- * 	Setup:
+- *	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- *	 Execute system call for each defined clock value
+- *	 Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	 Otherwise, Issue a PASS message.
+- *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
+- *
+- * USAGE:  <for command-line>
+- * clock_gettime02 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-p]
+- * where:
+- * 	-c n : Run n copies simultaneously.
+- *	-e   : Turn on errno logging.
+- *	-i n : Execute test n times.
+- *	-I x : Execute test for x seconds.
+- *	-p   : Pause for SIGUSR1 before starting
+- *	-P x : Pause for x seconds between iterations.
+- *	-t   : Turn on syscall timing.
+- *
+- *RESTRICTIONS:
+- * None
+- *****************************************************************************/
+-
+-#include <stdlib.h>
+-#include <errno.h>
+-#include <time.h>
+-#include <signal.h>
+-
+-#include "test.h"
+-#include "common_timers.h"
+-
+-void setup(void);
+-static clockid_t clocks[2] = { CLOCK_REALTIME, CLOCK_MONOTONIC };
+-
+-char *TCID = "clock_gettime02";
+-int TST_TOTAL = ARRAY_SIZE(clocks);
+-
+-int main(int ac, char **av)
+-{
+-	int lc, i;
+-	struct timespec spec;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		for (i = 0; i < TST_TOTAL; i++) {
+-			TEST(ltp_syscall(__NR_clock_gettime, clocks[i], &spec));
+-			tst_resm((TEST_RETURN < 0 ? TFAIL | TTERRNO : TPASS),
+-				 "%s",
+-				 (TEST_RETURN == 0 ? "passed" : "failed"));
+-		}
+-	}
+-
+-	CLEANUP();
+-	tst_exit();
+-}
+-
+-/* setup() - performs all ONE TIME setup for this test */
+-void setup(void)
+-{
+-
+-	tst_sig(NOFORK, DEF_HANDLER, CLEANUP);
+-
+-	TEST_PAUSE;
+-}
+-
+-/*
+- * CLEANUP() - Performs one time CLEANUP for this test at
+- * completion or premature exit
+- */
+-void cleanup(void)
+-{
+-}
+diff --git a/testcases/kernel/timers/clock_gettime/clock_gettime03.c b/testcases/kernel/timers/clock_gettime/clock_gettime03.c
+deleted file mode 100644
+index 2194d104a..000000000
+--- a/testcases/kernel/timers/clock_gettime/clock_gettime03.c
++++ /dev/null
+@@ -1,173 +0,0 @@
+-/*
+- * Copyright (c) Wipro Technologies Ltd, 2003.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- */
+-/**************************************************************************
+- *
+- *    TEST IDENTIFIER	: clock_gettime03
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Test checking for basic error conditions for
+- *    			  clock_gettime(2)
+- *
+- *    TEST CASE TOTAL	: 7
+- *
+- *    AUTHOR		: Aniruddha Marathe <aniruddha.marathe@wipro.com>
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    DESCRIPTION
+- *    	This test case check whether clock_gettime(2) returns appropriate error
+- *    	value for invalid parameter
+- *
+- * 	Setup:
+- *	 Setup signal handling.
+- *	 Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- *	 If it is the first test case
+- *	 	make temp a bad pointer
+- *	 Otherwise pass defined struct timespec variable to temp
+- *	 Execute system call with invalid parameter
+- *	 Check return code, if system call fails with errno == expected errno
+- * 	 	Issue syscall passed with expected errno
+- *	 Otherwise, Issue syscall failed to produce expected errno
+- *
+- * 	Cleanup:
+- * 	 Print errno log and/or timing stats if options given
+- *
+- * USAGE:  <for command-line>
+- * clock_gettime03 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-p]
+- * where:
+- * 	-c n : run n copies simultaneously
+- *	-e   : Turn on errno logging.
+- *	-i n : Execute test n times.
+- *	-I x : Execute test for x seconds.
+- *	-p   : Pause for SIGUSR1 before starting
+- *	-P x : Pause for x seconds between iterations.
+- *	-t   : Turn on syscall timing.
+- *
+- * RESTRICTIONS:
+- * None
+- *****************************************************************************/
+-
+-#include <stdlib.h>
+-#include <errno.h>
+-#include <time.h>
+-#include <signal.h>
+-
+-#include "test.h"
+-#include "common_timers.h"
+-
+-void setup(void);
+-
+-int testcase[6] = {
+-	EFAULT,			/* Bad timespec   */
+-	EFAULT,			/* Bad timespec   */
+-	EINVAL,			/* MAX_CLOCKS     */
+-	EINVAL			/* MAX_CLOCKS + 1 */
+-};
+-
+-char *TCID = "clock_gettime03";	/* Test program identifier.    */
+-int TST_TOTAL = ARRAY_SIZE(testcase);
+-
+-int main(int ac, char **av)
+-{
+-	int i, lc;
+-	struct timespec spec, *temp;
+-
+-	clockid_t clocks[] = {
+-		CLOCK_REALTIME,
+-		CLOCK_MONOTONIC,
+-		MAX_CLOCKS,
+-		MAX_CLOCKS + 1,
+-		CLOCK_PROCESS_CPUTIME_ID,
+-		CLOCK_THREAD_CPUTIME_ID
+-	};
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	/*
+-	 * PROCESS_CPUTIME_ID & THREAD_CPUTIME_ID are not supported on
+-	 * kernel versions lower than 2.6.12
+-	 */
+-	if ((tst_kvercmp(2, 6, 12)) < 0) {
+-		testcase[4] = EINVAL;
+-		testcase[5] = EINVAL;
+-	} else {
+-		testcase[4] = EFAULT;
+-		testcase[5] = EFAULT;
+-	}
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		for (i = 0; i < TST_TOTAL; i++) {
+-			temp = &spec;
+-
+-			if (i == 0) {
+-				temp = (struct timespec *)-1;
+-			} else if (i == 1) {
+-				temp = NULL;
+-			} else if ((i >= 4) && (tst_kvercmp(2, 6, 12) >= 0)) {
+-				temp = NULL;
+-			}
+-
+-			TEST(ltp_syscall(__NR_clock_gettime, clocks[i], temp));
+-
+-			/* check return code */
+-			if (TEST_RETURN == -1 && TEST_ERRNO == testcase[i]) {
+-				tst_resm(TPASS | TTERRNO,
+-					 "got expected failure");
+-			} else {
+-				tst_resm(TFAIL | TTERRNO,
+-					 "failed to produce expected error "
+-					 "[expected errno = %d (%s), "
+-					 "TEST_RETURN = %ld]",
+-					 testcase[i], strerror(testcase[i]),
+-					 TEST_RETURN);
+-			}	/* end of else */
+-
+-		}		/*End of TEST CASE LOOPING */
+-
+-	}			/*End for TEST_LOOPING */
+-
+-	cleanup();
+-	tst_exit();
+-}
+-
+-/* setup() - performs all ONE TIME setup for this test */
+-void setup(void)
+-{
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-}
+-
+-/*
+- * cleanup() - Performs one time cleanup for this test at
+- * completion or premature exit
+- */
+-void cleanup(void)
+-{
+-}
 -- 
 2.20.1
 
