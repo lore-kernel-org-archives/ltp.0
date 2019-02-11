@@ -1,62 +1,99 @@
-From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Fri, 8 Feb 2019 11:34:01 -0200
-Subject: [LTP] [PATCH v2 1/2] syscalls/clock_gettime: create
- clock_gettime syscall tests
-In-Reply-To: <20190208132956.18990-1-rafael.tinoco@linaro.org>
-References: <20190207123137.GA9277@rei>
- <20190208132956.18990-1-rafael.tinoco@linaro.org>
-Message-ID: <C6777BF2-0ADF-45B7-B788-BDF333BA057F@linaro.org>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Mon, 11 Feb 2019 10:18:02 +0800
+Subject: [LTP] [PATCH v2] block/ltp_block_dev.c: Update tests for the
+ newer kernel
+In-Reply-To: <20190208114833.GA26843@dell5510>
+References: <20190206070648.GA1720@x230>
+ <1549597075-7589-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20190208114833.GA26843@dell5510>
+Message-ID: <5C60DB5A.2030701@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On 2019/02/08 19:48, Petr Vorel wrote:
+> Hi Xiao,
+>
+>> The maximum major number is set to 511 since kernel commit 133d55c,
+>> so register_blkdev() with a major number grater than the maximum(511)
+>> will get failure instead of pass as expected.
+>> 1) Update tests for the newer behavior of register_blkdev().
+>> 2) Add more major numbers(i.e. 511 and 512) to test.
+>> Note:
+>> It is possible that specified major numbers have been used
+>> by system, so we skip them if register_blkdev() returns EBUSY.
+>> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
+>> Reviewed-by: Petr Vorel<pvorel@suse.cz>
+> Acked-by: Petr Vorel<pvorel@suse.cz>
+> Thanks for your updates.
+>
+>> ---
+>>   .../block/block_dev_kernel/ltp_block_dev.c         | 64 +++++++++++-----------
+>>   1 file changed, 32 insertions(+), 32 deletions(-)
+>> diff --git a/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c b/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c
+> ...
+>> @@ -225,18 +221,22 @@ static int tc04(void)
+>>   static int tc05(void)
+> ...
+>
+>> -	major = register_blkdev(UINT_MAX, BLK_DEV_NAME);
+>> -	prk_debug("major = %i\n", major);
+>> +	for (i = 0; i<  sizeof(test_major) / sizeof(unsigned int); i++) {
+>> +		major = register_blkdev(test_major[i], BLK_DEV_NAME);
+>> +		prk_debug("major = %i\n", major);
+>> -	if (major == 0) {
+>> -		unregister_blkdev(UINT_MAX, BLK_DEV_NAME);
+>> -	} else {
+>> -		prk_debug("reg blkdev with major %d failed with error %i\n",
+>> -			UINT_MAX, major);
+>> -		pass = 0;
+>> +		if (major == 0) {
+> In v1 this was major>= 0.
+> It looks to me as well that major == 0 is correct.
+Hi Petr,
 
-> diff --git a/testcases/kernel/syscalls/clock_gettime/clock_gettime02.c b/=
-testcases/kernel/syscalls/clock_gettime/clock_gettime02.c
-> new file mode 100644
-> index 000000000..4db52c09d
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/clock_gettime/clock_gettime02.c
-> @@ -0,0 +1,139 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2019 Linaro Limited. All rights reserved.
-> + * Author: Rafael David Tinoco <rafael.tinoco@linaro.org>
-> + */
-> +/*
-> + * Bad argument tests for clock_gettime(2) on multiple clocks:
-> + *
-> + *  1) MAX_CLOCKS
-> + *  2) MAX_CLOCKS + 1
-> + *  3) CLOCK_REALTIME
-> + *  4) CLOCK_MONOTONIC
-> + *  5) CLOCK_PROCESS_CPUTIME_ID
-> + *  6) CLOCK_THREAD_CPUTIME_ID
-> + *  7) CLOCK_REALTIME_COARSE
-> + *  8) CLOCK_MONOTONIC_COARSE
-> + *  9) CLOCK_MONOTONIC_RAW
-> + * 10) CLOCK_BOOTTIME
-> + */
-> +
-> +#include "config.h"
-> +#include "tst_test.h"
-> +#include "lapi/syscalls.h"
-> +#include "lapi/posix_clocks.h"
-> +#include "tst_timer.h"
-> +#include =E2=80=9Ctst_safe_clocks.h"
+Thanks for your ack. :-)
 
-<garbage>
+According to the comment of register_blkdev() at block/genhd.c in 
+kernel,  i think register_blkdev() only
+returns zero or a negative error if a positive major number(i.e. 
+nonzero) is passed to register_blkdev().
+---------------------------------------------------------------------------------------------------------------------------------
 
-> +#include <stdio.h>
-> +
-> +#define DELTA_SEC 10
-> +#define NSEC_PER_SEC (1000000000L)
+||
 
-</garbage>
+  *  - if a major device number was requested in range [1..BLKDEV_MAJOR_MAX-1]
+  *    then the function returns zero on success, or a negative error code
+  *  - if any unused major number was requested with @major = 0 parameter
+  *    then the return value is the allocated major number in range
+  *    [1..BLKDEV_MAJOR_MAX-1] or a negative error code otherwise
 
-Sorry, sent out the patch too soon. Let me know if you can amend it, removi=
-ng those 3 lines, or you want me to submit it again.=20
+---------------------------------------------------------------------------------------------------------------------------------
 
-Thanks a lot.
+So i perfer to use major == 0. :-)
+
+Best Regards,
+Xiao Yang
+>> +			unregister_blkdev(test_major[i], BLK_DEV_NAME);
+>> +			pass = 0;
+>> +		} else {
+>> +			prk_debug("register_blkdev() with major %u got error %i\n",
+>> +				  test_major[i], major);
+>> +		}
+>>   	}
+>>   	prk_info("Test Case Result: %s\n", result_str(pass));
+>
+> Kind regards,
+> Petr
+>
+>
+> .
+>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190211/0df21593/attachment.html>
