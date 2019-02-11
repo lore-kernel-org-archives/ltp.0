@@ -1,36 +1,71 @@
-From: Matthias =?unknown-8bit?q?M=C3=A4nnich?= <maennich@google.com>
-Date: Mon, 11 Feb 2019 08:28:33 +0000
-Subject: [LTP] [PATCH v1] sigpending: use direct syscall
-In-Reply-To: <aaf4de2f-9171-3e27-e9ab-3811eea7b5c3@google.com>
-References: <20190207155153.41816-1-maennich@google.com>
- <aaf4de2f-9171-3e27-e9ab-3811eea7b5c3@google.com>
-Message-ID: <E5659E9E-4279-4C8E-B51F-50E6B04832ED@google.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 11 Feb 2019 16:03:59 +0100
+Subject: [LTP] [PATCH] syscalls/mprotect04: align exec_func to 64 bytes
+Message-ID: <42aa7fc222cbfbf10136b2a9ae6f74b3b9a2235a.1549897252.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+exec_func() is dummy/empty function. If we make sure it's aligned,
+we can be pretty confident that it will located in single page and
+can drop code that deals with 2nd page.
 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/mprotect/Makefile     |  2 ++
+ testcases/kernel/syscalls/mprotect/mprotect04.c | 12 ++----------
+ 2 files changed, 4 insertions(+), 10 deletions(-)
 
-> On 7 Feb 2019, at 18:58, Steve Muckle <smuckle@google.com> wrote:
-> 
-> On 02/07/2019 07:51 AM, Matthias Maennich wrote:
->>  	/* set sigset to point to an invalid location */
->>  	sigset_t *sigset = (sigset_t *) - 1;
->>  -	TEST(sigpending(sigset));
->> +	TEST(tst_syscall(__NR_rt_sigpending, sigset, NSIG / 8));
->>    	/* check return code */
->>  	if (TST_RET == -1) {
-> 
-> Should this be using __NR_sigpending instead? That worked for me (for 32-bit anyway, it's not available on arm64).
-> 
-> Alternately, this test/dir could be renamed to rt_sigpending, though we should also add a test for sigpending.
-> 
+diff --git a/testcases/kernel/syscalls/mprotect/Makefile b/testcases/kernel/syscalls/mprotect/Makefile
+index bd617d806675..bc5c8bc10395 100644
+--- a/testcases/kernel/syscalls/mprotect/Makefile
++++ b/testcases/kernel/syscalls/mprotect/Makefile
+@@ -20,4 +20,6 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
++mprotect04: CFLAGS += -falign-functions=64
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/mprotect/mprotect04.c b/testcases/kernel/syscalls/mprotect/mprotect04.c
+index 60941a4220d5..3125f344795d 100644
+--- a/testcases/kernel/syscalls/mprotect/mprotect04.c
++++ b/testcases/kernel/syscalls/mprotect/mprotect04.c
+@@ -88,7 +88,7 @@ static void setup(void)
+ {
+ 	tst_tmpdir();
+ 	tst_sig(NOFORK, sighandler, cleanup);
+-	copy_sz = getpagesize() * 2;
++	copy_sz = getpagesize();
+ 
+ 	TEST_PAUSE;
+ }
+@@ -133,7 +133,7 @@ static void testfunc_protnone(void)
+ 
+ #ifdef __ia64__
+ 
+-static char exec_func[] = {
++static char exec_func[] __attribute__ ((aligned (64))) = {
+ 	0x11, 0x00, 0x00, 0x00, 0x01, 0x00, /* nop.m 0x0             */
+ 	0x00, 0x00, 0x00, 0x02, 0x00, 0x80, /* nop.i 0x0             */
+ 	0x08, 0x00, 0x84, 0x00,             /* br.ret.sptk.many b0;; */
+@@ -237,14 +237,6 @@ static void *get_func(void *mem)
+ 	}
+ 	memcpy(mem, page_to_copy, page_sz);
+ 
+-	/* copy 2nd page if possible */
+-	mem += page_sz;
+-	page_to_copy += page_sz;
+-	if (page_present(page_to_copy))
+-		memcpy(mem, page_to_copy, page_sz);
+-	else
+-		memset(mem, 0, page_sz);
+-
+ 	clear_cache(mem_start, copy_sz);
+ 
+ 	/* return pointer to area where copy of exec_func resides */
+-- 
+1.8.3.1
 
-Syscall wrappers usually call __NR_rt_sigpending if the kernel provides it. So, I was going with this. But I guess you are right: if we already bypass the wrappers, we should adjust the tests accordingly.
-
-I will update the patch.
-
-Cheers,
-Matthias
