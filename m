@@ -1,103 +1,178 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 11 Feb 2019 17:11:37 -0500 (EST)
-Subject: [LTP] [PATCH] syscalls/mprotect04: align exec_func to 64 bytes
-In-Reply-To: <CAE2F3rBjc_m_pRb_w2+iJoQpgcBUzxvhD2V23VMM2hK5wAjS8w@mail.gmail.com>
-References: <42aa7fc222cbfbf10136b2a9ae6f74b3b9a2235a.1549897252.git.jstancek@redhat.com>
- <CAE2F3rBjc_m_pRb_w2+iJoQpgcBUzxvhD2V23VMM2hK5wAjS8w@mail.gmail.com>
-Message-ID: <856912859.250579.1549923097312.JavaMail.zimbra@redhat.com>
+Date: Mon, 11 Feb 2019 23:15:10 +0100
+Subject: [LTP] [PATCH v2] syscalls/mprotect: align exec_func to 64 bytes
+Message-ID: <e1b5efb3d806fa26da13d46247b46ea5d78271c4.1549922861.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+exec_func() is dummy/empty function. Try to align it so we don't
+need to worry about copying 2 pages. But also check that compiler
+aligned it and there's sufficient space between start of func_exec
+and end of page.
 
+This patch also removes copy_sz, which is now replaced with page_sz.
 
------ Original Message -----
-> Consider consolidating page_sz (currently in get_func()) and copy_sz
-> (global) since they are now identical. Maybe make page_sz a global
-> variable.
-> 
-> I had some concerns around "-falign-functions=64": For example,
-> https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html states
-> "Enabled at levels -O2, -O3.". The way I read this is that
-> -falign-functions is ignored for optimization levels other than O2 and
-> O3. An ad-hoc test with gcc 7.3.0, however, showed that functions are
-> indeed aligned on 64 byte boundaries even with O0. I also tried clang
-> (llvm), and it also behaves as desired (for x86-64 and aarch64).
-> 
-> I guess one thing you could do is to calculate the difference between
-> the address of exec_func and the end of the page and programmatically
-> verify that there is enough cushion between the start of exec_func and
-> the end of the page. This would catch the case where some compiler
-> ignores "-falign-functions=64".
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/mprotect/Makefile     |  2 +
+ testcases/kernel/syscalls/mprotect/mprotect04.c | 55 +++++++++++--------------
+ 2 files changed, 27 insertions(+), 30 deletions(-)
 
-That sounds like reasonable precaution, I'll send v2 shortly.
+diff --git a/testcases/kernel/syscalls/mprotect/Makefile b/testcases/kernel/syscalls/mprotect/Makefile
+index bd617d806675..bc5c8bc10395 100644
+--- a/testcases/kernel/syscalls/mprotect/Makefile
++++ b/testcases/kernel/syscalls/mprotect/Makefile
+@@ -20,4 +20,6 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
++mprotect04: CFLAGS += -falign-functions=64
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/mprotect/mprotect04.c b/testcases/kernel/syscalls/mprotect/mprotect04.c
+index 60941a4220d5..0f7890dca03b 100644
+--- a/testcases/kernel/syscalls/mprotect/mprotect04.c
++++ b/testcases/kernel/syscalls/mprotect/mprotect04.c
+@@ -55,7 +55,7 @@ int TST_TOTAL = ARRAY_SIZE(testfunc);
+ 
+ static volatile int sig_caught;
+ static sigjmp_buf env;
+-static unsigned int copy_sz;
++static unsigned int page_sz;
+ typedef void (*func_ptr_t)(void);
+ 
+ int main(int ac, char **av)
+@@ -88,7 +88,7 @@ static void setup(void)
+ {
+ 	tst_tmpdir();
+ 	tst_sig(NOFORK, sighandler, cleanup);
+-	copy_sz = getpagesize() * 2;
++	page_sz = getpagesize();
+ 
+ 	TEST_PAUSE;
+ }
+@@ -96,12 +96,9 @@ static void setup(void)
+ static void testfunc_protnone(void)
+ {
+ 	char *addr;
+-	int page_sz;
+ 
+ 	sig_caught = 0;
+ 
+-	page_sz = getpagesize();
+-
+ 	addr = SAFE_MMAP(cleanup, 0, page_sz, PROT_READ | PROT_WRITE,
+ 					 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+ 
+@@ -133,7 +130,7 @@ static void testfunc_protnone(void)
+ 
+ #ifdef __ia64__
+ 
+-static char exec_func[] = {
++static char exec_func[] __attribute__ ((aligned (64))) = {
+ 	0x11, 0x00, 0x00, 0x00, 0x01, 0x00, /* nop.m 0x0             */
+ 	0x00, 0x00, 0x00, 0x02, 0x00, 0x80, /* nop.i 0x0             */
+ 	0x08, 0x00, 0x84, 0x00,             /* br.ret.sptk.many b0;; */
+@@ -210,42 +207,33 @@ typedef struct {
+  * Copy page where &exec_func resides. Also try to copy subsequent page
+  * in case exec_func is close to page boundary.
+  */
+-static void *get_func(void *mem)
++static void *get_func(void *mem, uintptr_t *func_page_offset)
+ {
+ 	uintptr_t page_sz = getpagesize();
+ 	uintptr_t page_mask = ~(page_sz - 1);
+-	uintptr_t func_page_offset;
+ 	void *func_copy_start, *page_to_copy;
+ 	void *mem_start = mem;
+ 
+ #ifdef USE_FUNCTION_DESCRIPTORS
+ 	func_descr_t *opd =  (func_descr_t *)&exec_func;
+-	func_page_offset = (uintptr_t)opd->entry & (page_sz - 1);
+-	func_copy_start = mem + func_page_offset;
++	*func_page_offset = (uintptr_t)opd->entry & (page_sz - 1);
++	func_copy_start = mem + *func_page_offset;
+ 	page_to_copy = (void *)((uintptr_t)opd->entry & page_mask);
+ #else
+-	func_page_offset = (uintptr_t)&exec_func & (page_sz - 1);
+-	func_copy_start = mem + func_page_offset;
++	*func_page_offset = (uintptr_t)&exec_func & (page_sz - 1);
++	func_copy_start = mem + *func_page_offset;
+ 	page_to_copy = (void *)((uintptr_t)&exec_func & page_mask);
+ #endif
++	tst_resm(TINFO, "exec_func: %p, page_to_copy: %p",
++		&exec_func, page_to_copy);
+ 
+ 	/* copy 1st page, if it's not present something is wrong */
+-	if (!page_present(page_to_copy)) {
+-		tst_resm(TINFO, "exec_func: %p, page_to_copy: %p\n",
+-			&exec_func, page_to_copy);
++	if (!page_present(page_to_copy))
+ 		tst_brkm(TBROK, cleanup, "page_to_copy not present\n");
+-	}
+-	memcpy(mem, page_to_copy, page_sz);
+ 
+-	/* copy 2nd page if possible */
+-	mem += page_sz;
+-	page_to_copy += page_sz;
+-	if (page_present(page_to_copy))
+-		memcpy(mem, page_to_copy, page_sz);
+-	else
+-		memset(mem, 0, page_sz);
++	memcpy(mem, page_to_copy, page_sz);
+ 
+-	clear_cache(mem_start, copy_sz);
++	clear_cache(mem_start, page_sz);
+ 
+ 	/* return pointer to area where copy of exec_func resides */
+ 	return func_copy_start;
+@@ -256,23 +244,30 @@ static void *get_func(void *mem)
+ static void testfunc_protexec(void)
+ {
+ 	func_ptr_t func;
++	uintptr_t func_page_offset;
+ 	void *p;
+ 
+ 	sig_caught = 0;
+ 
+-	p = SAFE_MMAP(cleanup, 0, copy_sz, PROT_READ | PROT_WRITE,
++	p = SAFE_MMAP(cleanup, 0, page_sz, PROT_READ | PROT_WRITE,
+ 		 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+ 
+ #ifdef USE_FUNCTION_DESCRIPTORS
+ 	func_descr_t opd;
+-	opd.entry = (uintptr_t)get_func(p);
++	opd.entry = (uintptr_t)get_func(p, &func_page_offset);
+ 	func = (func_ptr_t)&opd;
+ #else
+-	func = get_func(p);
++	func = get_func(p, &func_page_offset);
+ #endif
+ 
++	if (func_page_offset + 64 >= page_sz) {
++		SAFE_MUNMAP(cleanup, p, page_sz);
++		tst_brkm(TCONF, cleanup, "func too close to page boundary, "
++			"maybe your compiler ignores -falign-functions?");
++	}
++
+ 	/* Change the protection to PROT_EXEC. */
+-	TEST(mprotect(p, copy_sz, PROT_EXEC));
++	TEST(mprotect(p, page_sz, PROT_EXEC));
+ 
+ 	if (TEST_RETURN == -1) {
+ 		tst_resm(TFAIL | TTERRNO, "mprotect failed");
+@@ -294,7 +289,7 @@ static void testfunc_protexec(void)
+ 		}
+ 	}
+ 
+-	SAFE_MUNMAP(cleanup, p, copy_sz);
++	SAFE_MUNMAP(cleanup, p, page_sz);
+ }
+ 
+ static void cleanup(void)
+-- 
+1.8.3.1
 
-> 
-> On Mon, Feb 11, 2019 at 7:04 AM Jan Stancek <jstancek@redhat.com> wrote:
-> >
-> > exec_func() is dummy/empty function. If we make sure it's aligned,
-> > we can be pretty confident that it will located in single page and
-> > can drop code that deals with 2nd page.
-> >
-> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> > ---
-> >  testcases/kernel/syscalls/mprotect/Makefile     |  2 ++
-> >  testcases/kernel/syscalls/mprotect/mprotect04.c | 12 ++----------
-> >  2 files changed, 4 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/testcases/kernel/syscalls/mprotect/Makefile
-> > b/testcases/kernel/syscalls/mprotect/Makefile
-> > index bd617d806675..bc5c8bc10395 100644
-> > --- a/testcases/kernel/syscalls/mprotect/Makefile
-> > +++ b/testcases/kernel/syscalls/mprotect/Makefile
-> > @@ -20,4 +20,6 @@ top_srcdir            ?= ../../../..
-> >
-> >  include $(top_srcdir)/include/mk/testcases.mk
-> >
-> > +mprotect04: CFLAGS += -falign-functions=64
-> > +
-> >  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> > diff --git a/testcases/kernel/syscalls/mprotect/mprotect04.c
-> > b/testcases/kernel/syscalls/mprotect/mprotect04.c
-> > index 60941a4220d5..3125f344795d 100644
-> > --- a/testcases/kernel/syscalls/mprotect/mprotect04.c
-> > +++ b/testcases/kernel/syscalls/mprotect/mprotect04.c
-> > @@ -88,7 +88,7 @@ static void setup(void)
-> >  {
-> >         tst_tmpdir();
-> >         tst_sig(NOFORK, sighandler, cleanup);
-> > -       copy_sz = getpagesize() * 2;
-> > +       copy_sz = getpagesize();
-> >
-> >         TEST_PAUSE;
-> >  }
-> > @@ -133,7 +133,7 @@ static void testfunc_protnone(void)
-> >
-> >  #ifdef __ia64__
-> >
-> > -static char exec_func[] = {
-> > +static char exec_func[] __attribute__ ((aligned (64))) = {
-> >         0x11, 0x00, 0x00, 0x00, 0x01, 0x00, /* nop.m 0x0             */
-> >         0x00, 0x00, 0x00, 0x02, 0x00, 0x80, /* nop.i 0x0             */
-> >         0x08, 0x00, 0x84, 0x00,             /* br.ret.sptk.many b0;; */
-> > @@ -237,14 +237,6 @@ static void *get_func(void *mem)
-> >         }
-> >         memcpy(mem, page_to_copy, page_sz);
-> >
-> > -       /* copy 2nd page if possible */
-> > -       mem += page_sz;
-> > -       page_to_copy += page_sz;
-> > -       if (page_present(page_to_copy))
-> > -               memcpy(mem, page_to_copy, page_sz);
-> > -       else
-> > -               memset(mem, 0, page_sz);
-> > -
-> >         clear_cache(mem_start, copy_sz);
-> >
-> >         /* return pointer to area where copy of exec_func resides */
-> > --
-> > 1.8.3.1
-> >
-> 
