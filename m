@@ -1,99 +1,36 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 11 Feb 2019 10:18:02 +0800
-Subject: [LTP] [PATCH v2] block/ltp_block_dev.c: Update tests for the
- newer kernel
-In-Reply-To: <20190208114833.GA26843@dell5510>
-References: <20190206070648.GA1720@x230>
- <1549597075-7589-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20190208114833.GA26843@dell5510>
-Message-ID: <5C60DB5A.2030701@cn.fujitsu.com>
+From: Matthias =?unknown-8bit?q?M=C3=A4nnich?= <maennich@google.com>
+Date: Mon, 11 Feb 2019 08:28:33 +0000
+Subject: [LTP] [PATCH v1] sigpending: use direct syscall
+In-Reply-To: <aaf4de2f-9171-3e27-e9ab-3811eea7b5c3@google.com>
+References: <20190207155153.41816-1-maennich@google.com>
+ <aaf4de2f-9171-3e27-e9ab-3811eea7b5c3@google.com>
+Message-ID: <E5659E9E-4279-4C8E-B51F-50E6B04832ED@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2019/02/08 19:48, Petr Vorel wrote:
-> Hi Xiao,
->
->> The maximum major number is set to 511 since kernel commit 133d55c,
->> so register_blkdev() with a major number grater than the maximum(511)
->> will get failure instead of pass as expected.
->> 1) Update tests for the newer behavior of register_blkdev().
->> 2) Add more major numbers(i.e. 511 and 512) to test.
->> Note:
->> It is possible that specified major numbers have been used
->> by system, so we skip them if register_blkdev() returns EBUSY.
->> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
->> Reviewed-by: Petr Vorel<pvorel@suse.cz>
-> Acked-by: Petr Vorel<pvorel@suse.cz>
-> Thanks for your updates.
->
->> ---
->>   .../block/block_dev_kernel/ltp_block_dev.c         | 64 +++++++++++-----------
->>   1 file changed, 32 insertions(+), 32 deletions(-)
->> diff --git a/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c b/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c
-> ...
->> @@ -225,18 +221,22 @@ static int tc04(void)
->>   static int tc05(void)
-> ...
->
->> -	major = register_blkdev(UINT_MAX, BLK_DEV_NAME);
->> -	prk_debug("major = %i\n", major);
->> +	for (i = 0; i<  sizeof(test_major) / sizeof(unsigned int); i++) {
->> +		major = register_blkdev(test_major[i], BLK_DEV_NAME);
->> +		prk_debug("major = %i\n", major);
->> -	if (major == 0) {
->> -		unregister_blkdev(UINT_MAX, BLK_DEV_NAME);
->> -	} else {
->> -		prk_debug("reg blkdev with major %d failed with error %i\n",
->> -			UINT_MAX, major);
->> -		pass = 0;
->> +		if (major == 0) {
-> In v1 this was major>= 0.
-> It looks to me as well that major == 0 is correct.
-Hi Petr,
-
-Thanks for your ack. :-)
-
-According to the comment of register_blkdev() at block/genhd.c in 
-kernel,  i think register_blkdev() only
-returns zero or a negative error if a positive major number(i.e. 
-nonzero) is passed to register_blkdev().
----------------------------------------------------------------------------------------------------------------------------------
-
-||
-
-  *  - if a major device number was requested in range [1..BLKDEV_MAJOR_MAX-1]
-  *    then the function returns zero on success, or a negative error code
-  *  - if any unused major number was requested with @major = 0 parameter
-  *    then the return value is the allocated major number in range
-  *    [1..BLKDEV_MAJOR_MAX-1] or a negative error code otherwise
-
----------------------------------------------------------------------------------------------------------------------------------
-
-So i perfer to use major == 0. :-)
-
-Best Regards,
-Xiao Yang
->> +			unregister_blkdev(test_major[i], BLK_DEV_NAME);
->> +			pass = 0;
->> +		} else {
->> +			prk_debug("register_blkdev() with major %u got error %i\n",
->> +				  test_major[i], major);
->> +		}
->>   	}
->>   	prk_info("Test Case Result: %s\n", result_str(pass));
->
-> Kind regards,
-> Petr
->
->
-> .
->
 
 
+> On 7 Feb 2019, at 18:58, Steve Muckle <smuckle@google.com> wrote:
+> 
+> On 02/07/2019 07:51 AM, Matthias Maennich wrote:
+>>  	/* set sigset to point to an invalid location */
+>>  	sigset_t *sigset = (sigset_t *) - 1;
+>>  -	TEST(sigpending(sigset));
+>> +	TEST(tst_syscall(__NR_rt_sigpending, sigset, NSIG / 8));
+>>    	/* check return code */
+>>  	if (TST_RET == -1) {
+> 
+> Should this be using __NR_sigpending instead? That worked for me (for 32-bit anyway, it's not available on arm64).
+> 
+> Alternately, this test/dir could be renamed to rt_sigpending, though we should also add a test for sigpending.
+> 
 
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190211/0df21593/attachment.html>
+Syscall wrappers usually call __NR_rt_sigpending if the kernel provides it. So, I was going with this. But I guess you are right: if we already bypass the wrappers, we should adjust the tests accordingly.
+
+I will update the patch.
+
+Cheers,
+Matthias
