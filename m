@@ -1,132 +1,79 @@
-From: Matthias Maennich <maennich@google.com>
-Date: Tue, 12 Feb 2019 16:12:36 +0000
-Subject: [LTP] [PATCH v2 2/2] rt_sigpending: add rt_sigpending02 test case
-In-Reply-To: <20190212161236.74385-1-maennich@google.com>
-References: <20190207155153.41816-1-maennich@google.com>
- <20190212161236.74385-1-maennich@google.com>
-Message-ID: <20190212161236.74385-3-maennich@google.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 13 Feb 2019 18:11:32 +0800
+Subject: [LTP] [PATCH v2] block/ltp_block_dev.c: Update tests for the
+ newer kernel
+In-Reply-To: <20190208114833.GA26843@dell5510>
+References: <20190206070648.GA1720@x230>
+ <1549597075-7589-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20190208114833.GA26843@dell5510>
+Message-ID: <5C63ED54.4080009@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This is effectively a copy of the sigpending/sigpending02 test case.
-Both of them are now bypassing any syscall wrapper.
+Hi Petr,
 
-Signed-off-by: Matthias Maennich <maennich@google.com>
----
- runtest/syscalls                              |  1 +
- .../kernel/syscalls/rt_sigpending/.gitignore  |  1 +
- .../kernel/syscalls/rt_sigpending/Makefile    | 23 +++++++++
- .../syscalls/rt_sigpending/rt_sigpending02.c  | 48 +++++++++++++++++++
- 4 files changed, 73 insertions(+)
- create mode 100644 testcases/kernel/syscalls/rt_sigpending/.gitignore
- create mode 100644 testcases/kernel/syscalls/rt_sigpending/Makefile
- create mode 100644 testcases/kernel/syscalls/rt_sigpending/rt_sigpending02.c
+Pushed,  thanks for your review again. :-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 668c87cd1..6280034d0 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -990,6 +990,7 @@ rmdir03A symlink01 -T rmdir03
- rt_sigaction01 rt_sigaction01
- rt_sigaction02 rt_sigaction02
- rt_sigaction03 rt_sigaction03
-+rt_sigpending02 rt_sigpending02
- rt_sigprocmask01 rt_sigprocmask01
- rt_sigprocmask02 rt_sigprocmask02
- rt_sigqueueinfo01 rt_sigqueueinfo01
-diff --git a/testcases/kernel/syscalls/rt_sigpending/.gitignore b/testcases/kernel/syscalls/rt_sigpending/.gitignore
-new file mode 100644
-index 000000000..85905fc83
---- /dev/null
-+++ b/testcases/kernel/syscalls/rt_sigpending/.gitignore
-@@ -0,0 +1 @@
-+/rt_sigpending02
-diff --git a/testcases/kernel/syscalls/rt_sigpending/Makefile b/testcases/kernel/syscalls/rt_sigpending/Makefile
-new file mode 100644
-index 000000000..bd617d806
---- /dev/null
-+++ b/testcases/kernel/syscalls/rt_sigpending/Makefile
-@@ -0,0 +1,23 @@
-+#
-+#  Copyright (c) International Business Machines  Corp., 2001
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/rt_sigpending/rt_sigpending02.c b/testcases/kernel/syscalls/rt_sigpending/rt_sigpending02.c
-new file mode 100644
-index 000000000..06d1c1578
---- /dev/null
-+++ b/testcases/kernel/syscalls/rt_sigpending/rt_sigpending02.c
-@@ -0,0 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ *  Copyright (c) International Business Machines  Corp., 2002
-+ *
-+ * AUTHORS
-+ *	Paul Larson
-+ *
-+ * DESCRIPTION
-+ *	Test to see that the proper errors are returned by rt_sigpending
-+ *
-+ *	Test 1:
-+ *		Call rt_sigpending(sigset_t*=-1, SIGSETSIZE),
-+ *		it should return -1 with errno EFAULT
-+ */
-+
-+#include <errno.h>
-+#include <signal.h>
-+#include <sys/types.h>
-+
-+#include "tst_test.h"
-+#include "ltp_signal.h"
-+#include "lapi/syscalls.h"
-+
-+static void run(void)
-+{
-+	/* set sigset to point to an invalid location */
-+	sigset_t *sigset = (sigset_t *) - 1;
-+
-+	TEST(tst_syscall(__NR_rt_sigpending, sigset, SIGSETSIZE));
-+
-+	/* check return code */
-+	if (TST_RET == -1) {
-+		if (TST_ERR != EFAULT) {
-+			tst_res(TFAIL | TTERRNO,
-+				"rt_sigpending() Failed with wrong errno, "
-+				"expected errno=%d, got ", EFAULT);
-+		} else {
-+			tst_res(TPASS | TTERRNO, "expected failure");
-+		}
-+	} else {
-+		tst_res(TFAIL,
-+			"rt_sigpending() Failed, expected return value=-1, got %ld", TST_RET);
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run
-+};
--- 
-2.20.1.791.gb4d0f1c61a-goog
+Best Regards,
+Xiao Yang
+On 2019/02/08 19:48, Petr Vorel wrote:
+> Hi Xiao,
+>
+>> The maximum major number is set to 511 since kernel commit 133d55c,
+>> so register_blkdev() with a major number grater than the maximum(511)
+>> will get failure instead of pass as expected.
+>> 1) Update tests for the newer behavior of register_blkdev().
+>> 2) Add more major numbers(i.e. 511 and 512) to test.
+>> Note:
+>> It is possible that specified major numbers have been used
+>> by system, so we skip them if register_blkdev() returns EBUSY.
+>> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
+>> Reviewed-by: Petr Vorel<pvorel@suse.cz>
+> Acked-by: Petr Vorel<pvorel@suse.cz>
+> Thanks for your updates.
+>
+>> ---
+>>   .../block/block_dev_kernel/ltp_block_dev.c         | 64 +++++++++++-----------
+>>   1 file changed, 32 insertions(+), 32 deletions(-)
+>> diff --git a/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c b/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c
+> ...
+>> @@ -225,18 +221,22 @@ static int tc04(void)
+>>   static int tc05(void)
+> ...
+>
+>> -	major = register_blkdev(UINT_MAX, BLK_DEV_NAME);
+>> -	prk_debug("major = %i\n", major);
+>> +	for (i = 0; i<  sizeof(test_major) / sizeof(unsigned int); i++) {
+>> +		major = register_blkdev(test_major[i], BLK_DEV_NAME);
+>> +		prk_debug("major = %i\n", major);
+>> -	if (major == 0) {
+>> -		unregister_blkdev(UINT_MAX, BLK_DEV_NAME);
+>> -	} else {
+>> -		prk_debug("reg blkdev with major %d failed with error %i\n",
+>> -			UINT_MAX, major);
+>> -		pass = 0;
+>> +		if (major == 0) {
+> In v1 this was major>= 0.
+> It looks to me as well that major == 0 is correct.
+>
+>> +			unregister_blkdev(test_major[i], BLK_DEV_NAME);
+>> +			pass = 0;
+>> +		} else {
+>> +			prk_debug("register_blkdev() with major %u got error %i\n",
+>> +				  test_major[i], major);
+>> +		}
+>>   	}
+>>   	prk_info("Test Case Result: %s\n", result_str(pass));
+>
+> Kind regards,
+> Petr
+>
+>
+> .
+>
+
+
 
