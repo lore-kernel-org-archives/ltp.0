@@ -1,78 +1,100 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 13 Feb 2019 18:11:32 +0800
-Subject: [LTP] [PATCH v2] block/ltp_block_dev.c: Update tests for the
- newer kernel
-In-Reply-To: <20190208114833.GA26843@dell5510>
-References: <20190206070648.GA1720@x230>
- <1549597075-7589-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20190208114833.GA26843@dell5510>
-Message-ID: <5C63ED54.4080009@cn.fujitsu.com>
+Date: Thu, 14 Feb 2019 16:32:52 +0800
+Subject: [LTP] [PATCH v3] memcg_stress_test.sh: ported to newlib
+In-Reply-To: <20190204233435.GA14637@dell5510>
+References: <20190104105407.48123-1-cristian.marussi@arm.com>
+ <20190104105407.48123-2-cristian.marussi@arm.com>
+ <20190128163207.GA26834@dell5510> <20190129175019.GA14252@dell5510>
+ <VI1PR08MB31815A4CF9A142A5B8A5E69F9E970@VI1PR08MB3181.eurprd08.prod.outlook.com>
+ <20190201134537.GA17626@x230> <c328de8d-418f-d81e-910a-890e6639af6c@arm.com>
+ <20190204233435.GA14637@dell5510>
+Message-ID: <5C6527B4.4060204@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+On 2019/02/05 7:34, Petr Vorel wrote:
+> Hi Cristian,
+>
+>> Tested from you branch with ToT as:
+>> 10df48aa7 (HEAD ->  pevik_ltp/christian/memcg_stress_test.sh.v3.fixes)
+>> memcg_stress_test.sh: fix memory usage
+>> ebd6efaa6 memcg_stress_test.sh: Further cleanup
+>> 02c520928 memcg_stress_test.sh: ported to newlib
+>> fc544f842 controllers/mem_process.c: Fix comparison warning
+>> ...
+>> on 4k/64k pages defocnfig....looks fine to me.
+>> Thanks a lot for the cleanup.
+> Thanks a lot for testing!
+> Pushed (with your Tested-by on my commit).
+>
+> I did few cleanup changes in my commit (TINFO messages, fix missing local pid, redirect
+> stderr for wait to make it quiet, move TPASS message into run_stress()).
+>
+> I wonder how to suppress kill message for the first cgroup pid:
+> /opt/ltp/testcases/bin/memcg_stress_test.sh: line 65: 14750 User defined signal 1   memcg_process_stress $mem_size $interval
 
-Pushed,  thanks for your review again. :-)
+Hi Petr, Cristian
+
+I also saw the same message occasionally when running memcg_stress_test, 
+as below:
+-----------------------------------------------------------------------
+...
+/opt/ltp/testcases/bin/memcg_stress_test.sh: line 65: 11262 User defined 
+signal 1   memcg_process_stress $mem_size $interval
+/opt/ltp/testcases/bin/memcg_stress_test.sh: line 65: 11264 User defined 
+signal 1   memcg_process_stress $mem_size $interval
+/opt/ltp/testcases/bin/memcg_stress_test.sh: line 65: 11267 User defined 
+signal 1   memcg_process_stress $mem_size $interval
+...
+-----------------------------------------------------------------------
+
+It is possible for memcg_process_stress to be killed by SIGUSR1(default 
+action), because it may
+have received SIGUSR1 before completing the specified initialization of 
+SIGUSR1 signal action.
+
+Perpahs, we should sleep a few seconds to wait for the completion of 
+initializing SIGUSR1 signal action. :-)
+
+Please see my patch for details:
+-----------------------------------------------------------------------
+diff --git 
+a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh 
+b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+index 5b19cc2..697a973 100755
+--- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
++++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+@@ -81,6 +81,13 @@ run_stress()
+                 pids="$! $pids"
+         done
+
++       # If memcg_process_stress has received SIGUSR1 before completing the
++       # specified initialization of SIGUSR1 signal action, 
+memcg_process_stress
++       # will be killed by SIGUSR1(i.e. default action).  So we should 
+wait for
++       # the completion of initializing SIGUSR1 signal action by 
+sleeping a few
++       # seconds.
++       sleep 2
++
+         for pid in $pids; do
+                 kill -USR1 $pid 2> /dev/null
+         done
+-----------------------------------------------------------------------
 
 Best Regards,
 Xiao Yang
-On 2019/02/08 19:48, Petr Vorel wrote:
-> Hi Xiao,
->
->> The maximum major number is set to 511 since kernel commit 133d55c,
->> so register_blkdev() with a major number grater than the maximum(511)
->> will get failure instead of pass as expected.
->> 1) Update tests for the newer behavior of register_blkdev().
->> 2) Add more major numbers(i.e. 511 and 512) to test.
->> Note:
->> It is possible that specified major numbers have been used
->> by system, so we skip them if register_blkdev() returns EBUSY.
->> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
->> Reviewed-by: Petr Vorel<pvorel@suse.cz>
-> Acked-by: Petr Vorel<pvorel@suse.cz>
-> Thanks for your updates.
->
->> ---
->>   .../block/block_dev_kernel/ltp_block_dev.c         | 64 +++++++++++-----------
->>   1 file changed, 32 insertions(+), 32 deletions(-)
->> diff --git a/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c b/testcases/kernel/device-drivers/block/block_dev_kernel/ltp_block_dev.c
-> ...
->> @@ -225,18 +221,22 @@ static int tc04(void)
->>   static int tc05(void)
-> ...
->
->> -	major = register_blkdev(UINT_MAX, BLK_DEV_NAME);
->> -	prk_debug("major = %i\n", major);
->> +	for (i = 0; i<  sizeof(test_major) / sizeof(unsigned int); i++) {
->> +		major = register_blkdev(test_major[i], BLK_DEV_NAME);
->> +		prk_debug("major = %i\n", major);
->> -	if (major == 0) {
->> -		unregister_blkdev(UINT_MAX, BLK_DEV_NAME);
->> -	} else {
->> -		prk_debug("reg blkdev with major %d failed with error %i\n",
->> -			UINT_MAX, major);
->> -		pass = 0;
->> +		if (major == 0) {
-> In v1 this was major>= 0.
-> It looks to me as well that major == 0 is correct.
->
->> +			unregister_blkdev(test_major[i], BLK_DEV_NAME);
->> +			pass = 0;
->> +		} else {
->> +			prk_debug("register_blkdev() with major %u got error %i\n",
->> +				  test_major[i], major);
->> +		}
->>   	}
->>   	prk_info("Test Case Result: %s\n", result_str(pass));
+
+> This pid is the only one killed by -USR1, but line 65 is not in fist kill loop.
+> Therefore it cannot be killed by -KILL (second kill loop).
 >
 > Kind regards,
 > Petr
 >
->
-> .
 >
 
 
