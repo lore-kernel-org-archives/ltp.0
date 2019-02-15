@@ -1,37 +1,45 @@
-From: Cristian Marussi <cristian.marussi@arm.com>
-Date: Fri, 15 Feb 2019 14:52:39 +0000
-Subject: [LTP] [PATCH 1/1] cgroup_regression_test.sh: Fix TWARN usage
-In-Reply-To: <20190215145239.51806-1-cristian.marussi@arm.com>
-References: <20190215145239.51806-1-cristian.marussi@arm.com>
-Message-ID: <20190215145239.51806-2-cristian.marussi@arm.com>
+From: Steve Muckle <smuckle@google.com>
+Date: Fri, 15 Feb 2019 15:47:36 -0800
+Subject: [LTP] [PATCH v2 1/2] sigpending: use direct syscall
+In-Reply-To: <20190212161236.74385-2-maennich@google.com>
+References: <20190207155153.41816-1-maennich@google.com>
+ <20190212161236.74385-1-maennich@google.com>
+ <20190212161236.74385-2-maennich@google.com>
+Message-ID: <22cfe1f7-2357-8b9f-df34-3534ec5b3404@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Using TWARN to report that a specific sub-testcase is skipped
-caused the whole cgroup_regression_test.sh to be reported as
-FAILING. Using TCONF instead.
+On 02/12/2019 08:12 AM, 'Matthias Maennich' via kernel-team wrote:
+> Expand coverage to the Android platform.
+> 
+> Signed-off-by: Matthias Maennich <maennich@google.com>
+> ---
+>   testcases/kernel/syscalls/sigpending/sigpending02.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/syscalls/sigpending/sigpending02.c b/testcases/kernel/syscalls/sigpending/sigpending02.c
+> index a38157ae1..e7ec0d681 100644
+> --- a/testcases/kernel/syscalls/sigpending/sigpending02.c
+> +++ b/testcases/kernel/syscalls/sigpending/sigpending02.c
+> @@ -17,13 +17,14 @@
+>   #include <sys/types.h>
+>   
+>   #include "tst_test.h"
+> +#include "lapi/syscalls.h"
+>   
+>   static void run(void)
+>   {
+>   	/* set sigset to point to an invalid location */
+>   	sigset_t *sigset = (sigset_t *) - 1;
+>   
+> -	TEST(sigpending(sigset));
+> +	TEST(tst_syscall(__NR_sigpending, sigset));
+>   
+>   	/* check return code */
+>   	if (TST_RET == -1) {
+> 
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
- testcases/kernel/controllers/cgroup/cgroup_regression_test.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-index 686860923..e197f5d3f 100755
---- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-+++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-@@ -408,7 +408,7 @@ test_7_2()
- 
- 	grep -q -w "cpu" /proc/cgroups
- 	if [ $? -ne 0 -o ! -e /proc/sched_debug ]; then
--		tst_res TWARN "skip rest of testing due possible oops triggered by reading /proc/sched_debug"
-+		tst_res TCONF "skip rest of testing due possible oops triggered by reading /proc/sched_debug"
- 		return
- 	fi
- 
--- 
-2.17.1
-
+Reviewed-by: Steve Muckle <smuckle@google.com>
