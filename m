@@ -1,127 +1,97 @@
-From: Cristian Marussi <cristian.marussi@arm.com>
-Date: Fri, 15 Feb 2019 10:09:55 +0000
-Subject: [LTP] [PATCH v3] memcg_stress_test.sh: ported to newlib
-In-Reply-To: <5C6527B4.4060204@cn.fujitsu.com>
-References: <20190104105407.48123-1-cristian.marussi@arm.com>
- <20190104105407.48123-2-cristian.marussi@arm.com>
- <20190128163207.GA26834@dell5510> <20190129175019.GA14252@dell5510>
- <VI1PR08MB31815A4CF9A142A5B8A5E69F9E970@VI1PR08MB3181.eurprd08.prod.outlook.com>
- <20190201134537.GA17626@x230> <c328de8d-418f-d81e-910a-890e6639af6c@arm.com>
- <20190204233435.GA14637@dell5510> <5C6527B4.4060204@cn.fujitsu.com>
-Message-ID: <f88e3984-6f6b-52db-6774-5414db1e54c1@arm.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 15 Feb 2019 18:50:53 +0800
+Subject: [LTP] [PATCH v2 1/2] syscalls/cma: test case should return
+ TCONF if syscall doesn't exist
+In-Reply-To: <1544017426-10669-1-git-send-email-kerneljasonxing@linux.alibaba.com>
+References: <1514394255.82007574.1543913641122.JavaMail.zimbra@redhat.com>
+ <1544017426-10669-1-git-send-email-kerneljasonxing@linux.alibaba.com>
+Message-ID: <CAEemH2fvR1WQBEmwPM_rpy4z3xN6Ueeqk9Ri8BHrFoPQgaAJqw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao
+Hi Jason,
 
-On 14/02/2019 08:32, Xiao Yang wrote:
-> On 2019/02/05 7:34, Petr Vorel wrote:
->> Hi Cristian,
+A new failure was occured after applying this new patch.
 
-> Hi Petr, Cristian
-> 
-> I also saw the same message occasionally when running memcg_stress_test, 
-> as below:
-> -----------------------------------------------------------------------
-> ...
-> /opt/ltp/testcases/bin/memcg_stress_test.sh: line 65: 11262 User defined 
-> signal 1   memcg_process_stress $mem_size $interval
-> /opt/ltp/testcases/bin/memcg_stress_test.sh: line 65: 11264 User defined 
-> signal 1   memcg_process_stress $mem_size $interval
-> /opt/ltp/testcases/bin/memcg_stress_test.sh: line 65: 11267 User defined 
-> signal 1   memcg_process_stress $mem_size $interval
-> ...
-> -----------------------------------------------------------------------
-> 
-> It is possible for memcg_process_stress to be killed by SIGUSR1(default 
-> action), because it may
-> have received SIGUSR1 before completing the specified initialization of 
-> SIGUSR1 signal action
-> 
-> Perpahs, we should sleep a few seconds to wait for the completion of 
-> initializing SIGUSR1 signal action. :-)
+From our observation, the latest process_vm_readv03.c failed with
+process_vm_readv() Invalid argument error on rhel7.3 platfrom. We suspect
+that this problem maybe caused by glibc or compiler, because if compile the
+test program with -O0 it get pass, but with the ltp
+default optimization -O2 it get fail.  Also, if we revert this new patch,
+the test PASS whatever with -O2 and -O0, that's very strange.
 
-Mmm...yes that's a possibility....but I was noticing that we spawn a lot of bg
-processes in a loop before starting signaling all of them in the following loop
-(i.e. after all the forks)...but I just realized than then we signal them
-starting from the most recently spawned...not the oldest (in reverse
-order)....so maybe it could be enough to start signalling from the oldest.
+--------------------------------
+# gcc -g -O2 -g -O2   -fno-strict-aliasing -pipe -Wall -W
+-Wold-style-definition -D_FORTIFY_SOURCE=2 -I../../../../include
+-I../../../../include -I../../../../include/old/   -L../../../../lib
+process_vm_readv03.c   -lltp -o process_vm_readv03_O2
 
-Signaling in the natural-born order...
+# ./process_vm_readv03_O2
+process_vm_readv03    0  TINFO  :  child 0: 10 iovecs allocated and
+initialized.
+process_vm_readv03    0  TINFO  :  child 1: 10 remote iovecs received.
+process_vm_readv03    0  TINFO  :  child 1: 4 local iovecs initialized.
+process_vm_readv03    1  TBROK  :  process_vm_readv03.c:220:
+process_vm_readv: errno=EINVAL(22): Invalid argument
+process_vm_readv03    2  TBROK  :  process_vm_readv03.c:220: Remaining
+cases broken
+process_vm_readv03    1  TFAIL  :  process_vm_readv03.c:103: child 1
+returns 512
 
-diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-index 5b19cc292..aa91f77b2 100755
---- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-+++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-@@ -78,7 +78,7 @@ run_stress()
-                mkdir /dev/memcg/$i 2> /dev/null
-                memcg_process_stress $mem_size $interval &
-                echo $! > /dev/memcg/$i/tasks
--               pids="$! $pids"
-+               pids="$pids $!"
-        done
+# strace -f ./process_vm_readv03_O2
+...
+[pid 14676] process_vm_readv(14675, 0x7ffe40232ea0, 4, 0x7640c0, 10,
+140728898420736) = -1 EINVAL (Invalid argument)
+[pid 14676] write(1, "process_vm_readv03    1  \33[1;31m"...,
+125process_vm_readv03    1  TBROK  :  process_vm_readv03.c:220:
+process_vm_readv: errno=EINVAL(22): Invalid argument
+) = 125
+...
 
-        for pid in $pids; do
+--------------------------------------------
+# gcc -g -O0 -g -O0   -fno-strict-aliasing -pipe -Wall -W
+-Wold-style-definition -D_FORTIFY_SOURCE=2 -I../../../../include
+-I../../../../include -I../../../../include/old/   -L../../../../lib
+process_vm_readv03.c   -lltp -o process_vm_readv03_O0
 
+# ./process_vm_readv03_O0
+process_vm_readv03    0  TINFO  :  child 0: 10 iovecs allocated and
+initialized.
+process_vm_readv03    0  TINFO  :  child 1: 10 remote iovecs received.
+process_vm_readv03    0  TINFO  :  child 1: 4 local iovecs initialized.
+process_vm_readv03    1  TPASS  :  child 1: all bytes are correctly
+received.
 
-I understand that this approach is NO more deterministic than your sleeping
-solution, anyway.
-IMHO the only real deterministic solution would be to somehow explicitly "sync"
-at the end of process-spawn loop, with the test script waiting for all the
-spawned child to be ready....but it is maybe a bit overkill for the issue we face.
-Maybe it is worth trying signaling in the correct order and then sleeping a bit
-and see if it solves...I haven't seen this issue at all on my local setup on ARM.
+# strace -f ./process_vm_readv03_O0
+...
+[pid 14703] process_vm_readv(14702,
+[{"\0\1\2\3\4\5\6\7\10\t\n\v\f\r\16\17\20\21\22\23\24\25\26\27\30\31\32\33\34\35\36\37"...,
+43269},
+{"\5\6\7\10\t\n\v\f\r\16\17\20\21\22\23\24\25\26\27\30\31\32\33\34\35\36\37
+!\"#$"..., 18907},
+{"\340\341\342\343\344\345\346\347\350\351\352\353\354\355\356\357\360\361\362\363\364\365\366\367\370\371\372\373\374\375\376\377"...,
+3203}, {"cdefghijklmnopqrstuvwxyz{|}~\177\200\201\202"..., 34621}], 4,
+[{0x9570c0, 24638}, {0x95d110, 35640}, {0x965c50, 19802}, {0x96a9c0, 490},
+{0x96abc0, 8624}, {0x96cd80, 3571}, {0x96db80, 2114}, {0x96e3d0, 2374},
+{0x96ed20, 1139}, {0x96f1a0, 1608}], 10, 0) = 100000
+[pid 14703] write(1, "process_vm_readv03    1  \33[1;32m"...,
+89process_vm_readv03    1  TPASS  :  child 1: all bytes are correctly
+received.
+) = 89
+...
 
-Regards
+# uname  -r
+3.10.0-514.55.4.el7.x86_64
 
-Thanks
+# rpm -q glibc
+glibc-2.17-157.el7_3.5.x86_64
 
-Cristian
-
-
-> 
-> Please see my patch for details:
-> -----------------------------------------------------------------------
-> diff --git 
-> a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh 
-> b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-> index 5b19cc2..697a973 100755
-> --- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-> +++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-> @@ -81,6 +81,13 @@ run_stress()
->                  pids="$! $pids"
->          done
-> 
-> +       # If memcg_process_stress has received SIGUSR1 before completing the
-> +       # specified initialization of SIGUSR1 signal action, 
-> memcg_process_stress
-> +       # will be killed by SIGUSR1(i.e. default action).  So we should 
-> wait for
-> +       # the completion of initializing SIGUSR1 signal action by 
-> sleeping a few
-> +       # seconds.
-> +       sleep 2
-> +
->          for pid in $pids; do
->                  kill -USR1 $pid 2> /dev/null
->          done
-> -----------------------------------------------------------------------
-> 
-> Best Regards,
-> Xiao Yang
-> 
->> This pid is the only one killed by -USR1, but line 65 is not in fist kill loop.
->> Therefore it cannot be killed by -KILL (second kill loop).
->>
->> Kind regards,
->> Petr
->>
->>
-> 
-> 
-> 
-
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190215/02b113eb/attachment-0001.html>
