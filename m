@@ -1,62 +1,47 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 15 Feb 2019 14:45:42 +0100
-Subject: [LTP] [PATCH 2/4] netstress: allow setting MSG_ZEROCOPY for
- other protocols
-In-Reply-To: <71eb61bc-4a65-bc35-d039-8b4099256c10@oracle.com>
-References: <1549908467-15609-1-git-send-email-alexey.kodanev@oracle.com>
- <1549908467-15609-3-git-send-email-alexey.kodanev@oracle.com>
- <20190214233442.GB12954@x230>
- <71eb61bc-4a65-bc35-d039-8b4099256c10@oracle.com>
-Message-ID: <20190215134542.GA30668@dell5510>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Fri, 15 Feb 2019 19:21:43 +0530
+Subject: [LTP] [PATCH v2] syscalls: add syscall syncfs test
+In-Reply-To: <20190215132526.GC26339@rei>
+References: <1550215053-6795-1-git-send-email-sumit.garg@linaro.org>
+ <5C667060.7020405@cn.fujitsu.com>
+ <CAFA6WYO8qg79rQ-qwU3i6FpfNRQhiTNXzGHtDsJ6FpTty6W77g@mail.gmail.com>
+ <20190215121611.GA14270@rei>
+ <CAFA6WYOF1Kh1rspdiPgne9q4jUQsMW4p5BN_J4evcsr9O-KD1Q@mail.gmail.com>
+ <20190215132251.GB26339@rei> <20190215132526.GC26339@rei>
+Message-ID: <CAFA6WYPCZc8TSim3VFJaExDd_9FcNpf6Py3pDEYkEscMfbCbAA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+On Fri, 15 Feb 2019 at 18:55, Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+> Hi!
+> > > Thanks for the pointers. IIUC, you are referring to following change:
+> > >
+> > > -       TEST(syncfs(fd));
+> > > +       TEST(tst_syscall(__NR_syncfs, fd));
+> > >
+> > > If yes, then I will incorporate it.
+> >
+> > The most complete solution is configure check + fallback definition.
+> >
+> > Have a look at:
+> >
+> > include/lapi/execveat.h
+> > m4/ltp-execveat.m4
+> > configure.ac
+>
+> And then you have to also check for the return value to exit the test
+> with TCONF on missing kernel support, you will most likely get EINVAL in
+> that case as the syscall number is not known.
+>
 
-> > BTW MSG_ZEROCOPY is enabled only for TCP and UDP, but we allow it to be set on
-> > all, which leads to BROK:
-> > ./netstress -z -T sctp
-> > tst_test.c:1096: INFO: Timeout per run is 0h 05m 00s
-> > netstress.c:938: INFO: max requests '3'
-> > netstress.c:990: INFO: SCTP server
-> > netstress.c:693: INFO: assigning a name to the server socket...
-> > netstress.c:700: INFO: bind to port 37196
-> > safe_net.c:186: BROK: netstress.c:717: setsockopt(3, 1, 60, 0x7fff155701a4, 4) failed: ???
+Ok got it. Will incorporate it.
 
-> This is expected fail, I would keep it.
-Agree, other protocols might gain the support one day.
+-Sumit
 
-> Hmm, there is no error description. I've checked the errno returned and the
-> kernel sources, found that it is actually returning ENOTSUPP(524). I think it
-> should rather be EOPNOTSUPP(95), since the error is returned to user-space [1]:
-
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 6aa2e7e..f6c57de 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -1023,9 +1023,9 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
->                                sk->sk_protocol == IPPROTO_TCP) ||
->                               (sk->sk_type == SOCK_DGRAM &&
->                                sk->sk_protocol == IPPROTO_UDP)))
-> -                               ret = -ENOTSUPP;
-> +                               ret = -EOPNOTSUPP;
->                 } else if (sk->sk_family != PF_RDS) {
-> -                       ret = -ENOTSUPP;
-> +                       ret = -EOPNOTSUPP;
->                 }
->                 if (!ret) {
->                         if (val < 0 || val > 1)
-Interesting. IMHO it'd make sense to fix it.
-
-> For LTP library: may be we need to return the actual errno if strerror()
-> returns nothing?
-yes, that'd be useful. Assume you send a patch.
-
-> [1] https://lists.gt.net/linux/kernel/2207071
-
-
-Kind regards,
-Petr
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
