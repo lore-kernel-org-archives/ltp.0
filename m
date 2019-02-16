@@ -1,192 +1,110 @@
-From: Li Wang <liwang@redhat.com>
-Date: Sat, 16 Feb 2019 15:54:58 +0800
-Subject: [LTP] [PATCH v2] readdir: delete readdir02
-Message-ID: <20190216075458.3418-1-liwang@redhat.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Sat, 16 Feb 2019 05:28:05 -0500 (EST)
+Subject: [LTP] [PATCH v2 1/2] syscalls/cma: test case should return
+ TCONF if syscall doesn't exist
+In-Reply-To: <CAEemH2cFhdjMMF9RTyRHTBcLR7SqXNWNf41R+RLbdOY7CBOwpQ@mail.gmail.com>
+References: <1514394255.82007574.1543913641122.JavaMail.zimbra@redhat.com>
+ <1544017426-10669-1-git-send-email-kerneljasonxing@linux.alibaba.com>
+ <CAEemH2fvR1WQBEmwPM_rpy4z3xN6Ueeqk9Ri8BHrFoPQgaAJqw@mail.gmail.com>
+ <853398062.984884.1550238809858.JavaMail.zimbra@redhat.com>
+ <CAEemH2cFhdjMMF9RTyRHTBcLR7SqXNWNf41R+RLbdOY7CBOwpQ@mail.gmail.com>
+Message-ID: <1937154233.1109562.1550312885136.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Issue:
-  On ppc64le and aarch64, when testing in NFS mountpoint, test
-  process receives SIGSEGV when calling readdir on a DIR which
-  has just been closed by closedir().
 
-  Unfortunately, ltp/readdir02.c handles SIGSEGV. This makes it
-  hits SIGSEGV again in its cleanup function. So readdir02 hangs
-  there hitting SEGV endlessly.
 
-That's because a DIR * is NOT a file descriptor. It's memory
-allocated by opendir() that contains libc internal information
-about the directory. closedir(test_dir) frees any memory associated
-with the open directory pointer test_dir.
+----- Original Message -----
+> On Fri, Feb 15, 2019 at 9:53 PM Jan Stancek <jstancek@redhat.com> wrote:
+> 
+> >
+> >
+> > ------------------------------
+> >
+> > Hi Jason,
+> >
+> > A new failure was occured after applying this new patch.
+> >
+> > From our observation, the latest process_vm_readv03.c failed with
+> > process_vm_readv() Invalid argument error on rhel7.3 platfrom. We suspect
+> > that this problem maybe caused by glibc or compiler, because if compile the
+> > test program with -O0 it get pass, but with the ltp
+> > default optimization -O2 it get fail.  Also, if we revert this new patch,
+> > the test PASS whatever with -O2 and -O0, that's very strange.
+> >
+> >
+> > One difference is that the extra function promoted int to long.
+> >
+> 
+> Good catch.
+> 
+> > Can you try with patch below? (Note that I dropped also root requirement,
+> > man page
+> > says that it has same requirements as ptrace - you should be able to read
+> > from processes you own)
+> >
+> > This change works for me(one comment in below).
+> 
+> But there still have a tiny question, in the syscall tracing log, I noticed
+> a process_vm_readv() calling does not get this failure in function
+> fetch_remote_addrs, what makes it difference with other two calls is
+> something I'm thinking now.
 
-To then pass the freed dir pointer to readdir() is a use-after-free.
-It probably won't return EBADF, it will dereference freed memory
-and whatever happens after that is undefined.
+"Garbage" on stack most likely. On x86_64, 6th parameter is passed
+via stack, glibc copies quadword:
 
-And, considering LTP does cover the EBADF for getents() syscalls
-getdents02 test already, here let's remove this readdir02 directly.
+ENTRY (syscall)
+        movq %rdi, %rax         /* Syscall number -> rax.  */
+        movq %rsi, %rdi         /* shift arg1 - arg5.  */
+        movq %rdx, %rsi
+        movq %rcx, %rdx
+        movq %r8, %r10
+        movq %r9, %r8
+        movq 8(%rsp),%r9        /* arg6 is on the stack.  */
+        syscall                 /* Do the system call.  */
 
-Reported-by: Xiong Zhou <xzhou@redhat.com>
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Dave Chinner <dchinner@redhat.com>
-Cc: Scott Mayhew <smayhew@redhat.com>
-Cc: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/syscalls/readdir/readdir02.c | 142 ------------------
- 1 file changed, 142 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/readdir/readdir02.c
+> 
+> ====Tracing log without '0L' change====
+> 12211 process_vm_readv(12211, 0, 0, 0, 0, 140728898420736) = -1 EINVAL
+> (Invalid argument)
+> ...
+> 12213 process_vm_readv(12212,
+> [{"\300`\334\0\0\0\0\0`\2\335\0\0\0\0\0\340\26\335\0\0\0\0\0\220h\335\0\0\0\0\0"...,
+> 80}], 1, [{0xdc6060, 80}], 1, 0) = 80
+> ...
+> 12213 process_vm_readv(12212, 0x7ffecef1e330, 4, 0xdc60c0, 10,
+> 140728898420736) = -1 EINVAL (Invalid argument)
+> 
+> 
+> 
+> >
+> > diff --git a/testcases/kernel/syscalls/cma/process_vm_readv03.c
+> > b/testcases/kernel/syscalls/cma/process_vm_readv03.c
+> > index 45f7c92e499c..1cec442b3456 100644
+> > --- a/testcases/kernel/syscalls/cma/process_vm_readv03.c
+> > +++ b/testcases/kernel/syscalls/cma/process_vm_readv03.c
+> > @@ -181,7 +181,7 @@ static long *fetch_remote_addrs(void)
+> >         remote.iov_len = len;
+> >
+> >         TEST(ltp_syscall(__NR_process_vm_readv, pids[0], &local,
+> > -                        1, &remote, 1, 0));
+> > +                        1, &remote, 1, 0L));
+> >
+> 
+> To make things more safely, probably we'd better change all the integer
+> parameter too?
+> 
+> -                        1, &remote, 1, 0));
+> +                        1L, &remote, 1L, 0L));
 
-diff --git a/testcases/kernel/syscalls/readdir/readdir02.c b/testcases/kernel/syscalls/readdir/readdir02.c
-deleted file mode 100644
-index 3f3151f6a..000000000
---- a/testcases/kernel/syscalls/readdir/readdir02.c
-+++ /dev/null
-@@ -1,142 +0,0 @@
--/*
-- * Copyright (C) Bull S.A. 2001
-- * Copyright (c) International Business Machines  Corp., 2001
-- *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * DESCRIPTION
-- *      Try to readdir with Invalid directory stream descriptor dir.
-- *
-- * ALGORITHM
-- *      loop if that option was specified
-- *      call readdir() with an invalid file descriptor
-- *      check the errno value
-- *        issue a PASS message if we get EBADF - errno 9
-- *      otherwise, the tests fails
-- *        issue a FAIL message
-- *        call cleanup
-- *
-- * NOTE
-- *	The POSIX standard says:
-- *	  The readdir() function may fail if:
-- *	  [EBADF] The dirp argument does not refer to an open directory stream.
-- *	  (Note that readdir() is not _required_ to fail in this case.)
-- *
-- * HISTORY
-- *      04/2002 - Written by Jacky Malcles
-- *
-- *      06/2003 - Added code to catch SIGSEGV and return TCONF.
-- *		Robbie Williamson<robbiew@us.ibm.com>
-- */
--
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <fcntl.h>
--#include <dirent.h>
--#include <unistd.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--
--#include "test.h"
--
--static void setup(void);
--static void cleanup(void);
--
--char *TCID = "readdir02";
--int TST_TOTAL = 1;
--
--int main(int ac, char **av)
--{
--	int lc;
--	DIR *test_dir;
--	struct dirent *dptr;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		if ((test_dir = opendir(".")) == NULL) {
--			tst_resm(TFAIL, "opendir(\".\") Failed, errno=%d : %s",
--				 errno, strerror(errno));
--		} else {
--			if (closedir(test_dir) < 0) {
--				tst_resm(TFAIL,
--					 "closedir(\".\") Failed, errno=%d : %s",
--					 errno, strerror(errno));
--			} else {
--				dptr = readdir(test_dir);
--				switch (errno) {
--				case EBADF:
--					tst_resm(TPASS,
--						 "expected failure - errno = %d : %s",
--						 errno, strerror(errno));
--					break;
--				default:
--					if (dptr != NULL) {
--						tst_brkm(TFAIL, cleanup,
--							 "call failed with an "
--							 "unexpected error - %d : %s",
--							 errno,
--							 strerror(errno));
--					} else {
--						tst_resm(TINFO,
--							 "readdir() is not _required_ to fail, "
--							 "errno = %d  ", errno);
--					}
--				}
--			}
--
--		}
--
--	}
--
--	cleanup();
--	tst_exit();
--}
--
--static void sigsegv_handler(int sig)
--{
--	tst_resm(TCONF,
--		 "This system's implementation of closedir() will not allow this test to execute properly.");
--	cleanup();
--}
--
--static void setup(void)
--{
--	struct sigaction act;
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	act.sa_handler = sigsegv_handler;
--	act.sa_flags = 0;
--	sigemptyset(&act.sa_mask);
--	sigaction(SIGSEGV, &act, NULL);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--}
--
--static void cleanup(void)
--{
--	tst_rmdir();
--}
--- 
-2.19.1
+Agreed, let's match all parameters types as before commit:
+ 9b02cd465f70 ("syscalls/cma: test case should return TCONF if syscall doesn't exist")
 
+> 
+> --
+> Regards,
+> Li Wang
+> 
