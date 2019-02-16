@@ -1,41 +1,27 @@
 From: Steve Muckle <smuckle@google.com>
-Date: Fri, 15 Feb 2019 16:17:32 -0800
-Subject: [LTP] [PATCH v2] syscalls: add syscall syncfs test
-In-Reply-To: <20190215132251.GB26339@rei>
-References: <1550215053-6795-1-git-send-email-sumit.garg@linaro.org>
- <5C667060.7020405@cn.fujitsu.com>
- <CAFA6WYO8qg79rQ-qwU3i6FpfNRQhiTNXzGHtDsJ6FpTty6W77g@mail.gmail.com>
- <20190215121611.GA14270@rei>
- <CAFA6WYOF1Kh1rspdiPgne9q4jUQsMW4p5BN_J4evcsr9O-KD1Q@mail.gmail.com>
- <20190215132251.GB26339@rei>
-Message-ID: <4cae2a11-47c2-c319-19cf-9a8fecc7793d@google.com>
+Date: Fri, 15 Feb 2019 17:21:56 -0800
+Subject: [LTP] patch with recvmmsg/sendmmsg test cases
+In-Reply-To: <f4cb5500-a3b7-144e-98dd-3faea58b4707@google.com>
+References: <f4cb5500-a3b7-144e-98dd-3faea58b4707@google.com>
+Message-ID: <b73de08f-2e37-5e3f-aaf5-ccdca6f8b07a@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 02/15/2019 05:22 AM, Cyril Hrubis wrote:
-> Hi!
->> Thanks for the pointers. IIUC, you are referring to following change:
->>
->> -       TEST(syncfs(fd));
->> +       TEST(tst_syscall(__NR_syncfs, fd));
->>
->> If yes, then I will incorporate it.
-> 
-> The most complete solution is configure check + fallback definition.
-> 
-> Have a look at:
-> 
-> include/lapi/execveat.h
-> m4/ltp-execveat.m4
-> configure.ac
+Hi Ramon,
 
-For tests in testcases/kernel/syscalls, should the tests typically 
-directly call the syscall? I'd think this is preferable to the use of C 
-library wrappers as these tests (by their location in the tree) seem to 
-be focused on the syscall functionality in the kernel.
+On 02/14/2019 10:49 PM, Ramon Pantin wrote:
+>  From 59d293fed8db662b3c252e1a063300a4a25bf969 Mon Sep 17 00:00:00 2001
+> From: Ramon Pantin<pantin@google.com>
+> Date: Thu, 14 Feb 2019 22:36:04 -0800
+> Subject: [PATCH] Tests for sendmmsg/recvmmsg, it also contains a bunch of
+>   tests not covered by the existing test sendmsg/recvmsg tests cases. Not going
+>   to separate those into independent tests because they are used in the
+>   multiple-message syscall tests to form a variety of multi-message test cases.
+
+Let's discuss offline before further upstream review.
 
 thanks,
-steve
+Steve
