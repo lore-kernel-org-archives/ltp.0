@@ -1,216 +1,50 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 18 Feb 2019 17:13:16 +0100
-Subject: [LTP] [PATCH] fs/binfmt_misc01.sh: Add new test for invalid
- inputs
-In-Reply-To: <1550489550-14561-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1550489550-14561-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20190218161316.GE25025@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 18 Feb 2019 19:21:38 +0100
+Subject: [LTP] [PATCH] adding s390x tests to ltp
+In-Reply-To: <1740320205.101841684.1549543929404.JavaMail.zimbra@redhat.com>
+References: <20190204161328.4616-1-elas@linux.vnet.ibm.com>
+ <1740320205.101841684.1549543929404.JavaMail.zimbra@redhat.com>
+Message-ID: <20190218182137.GA27553@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  runtest/fs                                         |  2 +
->  testcases/kernel/fs/binfmt_misc/Makefile           | 12 ++++
->  testcases/kernel/fs/binfmt_misc/binfmt_misc01.sh   | 65 ++++++++++++++++++++++
->  testcases/kernel/fs/binfmt_misc/binfmt_misc_lib.sh | 64 +++++++++++++++++++++
->  4 files changed, 143 insertions(+)
->  create mode 100644 testcases/kernel/fs/binfmt_misc/Makefile
->  create mode 100755 testcases/kernel/fs/binfmt_misc/binfmt_misc01.sh
->  create mode 100755 testcases/kernel/fs/binfmt_misc/binfmt_misc_lib.sh
-> 
-> diff --git a/runtest/fs b/runtest/fs
-> index aca7e35..227c186 100644
-> --- a/runtest/fs
-> +++ b/runtest/fs
-> @@ -82,3 +82,5 @@ quota_remount_test01 quota_remount_test01.sh
->  isofs isofs.sh
->  
->  fs_fill fs_fill
-> +
-> +binfmt_misc01 binfmt_misc01.sh
-> diff --git a/testcases/kernel/fs/binfmt_misc/Makefile b/testcases/kernel/fs/binfmt_misc/Makefile
-> new file mode 100644
-> index 0000000..f9819ad
-> --- /dev/null
-> +++ b/testcases/kernel/fs/binfmt_misc/Makefile
-> @@ -0,0 +1,12 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
+Hi Jan, Cyril,
+
+> Maybe also: TST_NEEDS_CMDS="vmcp" ?
+> Not sure if all s390x distros have this command installed.
+
+> But that should also be sufficient check to run this on any arch,
+> if command doesn't exist it will TCONF.
+
+The reason, why I suggested to move these tests to upstream [1]
+is that testing "vmcp --version" or "vmcp --help" does not really depend on
+anyhow on SUT. Adding it to upstream into make check (there are none check yet)
+would bring 1) earlier catch of potencial bugs as upstream developers can run it
+for each commit (CI) and distros during package build.
+
+We had some discussion before about removing some user space packages [2].
+Cyril suggested to to keep tests that are working with files (cp/df/ln)
+and remove at least unzip and wc.
+Doing some real testing (really using vmcp.ko) would make this tests useful to
+run on LTP, but current code IMHO does nothing with kernel. Or do I miss
+something?
+
+Anyway, it looks like you have no objection about adding it to LTP, so I changed
+state of this test New. In that case, I suggest to
+
+remove debugging:
+> +#set -x
 > +#
-> +# Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-> +# Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> +
-> +top_srcdir              ?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/env_pre.mk
-> +
-> +INSTALL_TARGETS         := binfmt_misc01.sh binfmt_misc_lib.sh
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/fs/binfmt_misc/binfmt_misc01.sh b/testcases/kernel/fs/binfmt_misc/binfmt_misc01.sh
-> new file mode 100755
-> index 0000000..1e9e9b9
-> --- /dev/null
-> +++ b/testcases/kernel/fs/binfmt_misc/binfmt_misc01.sh
-> @@ -0,0 +1,65 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +#
-> +# Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-> +# Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> +#
-> +# Description:
-> +# Use various invalid inputs to register a new binary type.
-> +# 1) Invalid format of string fails to register a new binary type.
-> +# 2) Invalid type fails to register a new binary type.
-> +# 3) Invalid name containing slashes fails to register a new
-> +#    binary type.
-> +# 4) If extension matching is chosen, invalid magic containing
-> +#    slashes fails to register a new binary type.
-> +# 5) If magic matching is chosen, invalid offset(e.g. -1 and
-> +#    2500000000) fails to register a new binary type.
-> +# 6) Invalid flag fails to register a new binary type.
-> +#
-> +# Note:
-> +# This is also a regression test for the following kernel bug:
-> +# '5cc41e099504 ("fs/binfmt_misc.c: do not allow offset overflow")'
-> +
-> +
-> +TST_CNT=9
-> +TST_TESTFUNC=do_test
-> +TST_NEEDS_CMDS="cat"
 
-TST_NEEDS_ROOT=1 ?
+use tst_res TINFO instead of echo
++	echo "verifyBasicVMCPCommands"
++	echo "verifyErrorCondition"
 
-> +. binfmt_misc_lib.sh
-> +
-> +verify_binfmt_misc()
-> +{
-> +	local name=$(echo "$1" | awk -F ':' '{print $2}')
-> +	local mntpoint=$(get_binfmt_misc_mntpoint)
-> +
-> +	(echo "$1" >"$mntpoint/register") 2>/dev/null
+Kind regards,
+Petr
 
-We should check the return value here as well, it should be non-zero.
-
-> +	if [ ! -f "$mntpoint/$name" ]; then
-> +		tst_res TPASS "Failed to register a binary type"
-> +		return
-> +	fi
-> +
-> +	# Trigger kernel crash reliably by cat command.
-> +	cat "$mntpoint/$name" >/dev/null
-> +	tst_res TFAIL "Register a binary type successfully"
-> +
-> +	(echo -1 >"$mntpoint/$name") 2>/dev/null
-
-Here as well, we should check the return value.
-
-> +	[ -f "$mntpoint/$name" ] && \
-> +		tst_res TWARN "Failed to remove a binary type"
-> +}
-> +
-> +do_test()
-> +{
-> +	case $1 in
-> +	1) verify_binfmt_misc ".textension,E,,ltp,,$(which cat),";;
-> +	2) verify_binfmt_misc ":tnone:X::ltp::$(which cat):";;
-> +	3) verify_binfmt_misc ":textension/:E::ltp::$(which cat):";;
-> +	4) verify_binfmt_misc ":tmagic/:M::ltp::$(which cat):";;
-> +	5) verify_binfmt_misc ":textension:E::ltp/::$(which cat):";;
-> +	6) verify_binfmt_misc ":tmagic:M:-1:ltp::$(which cat):";;
-> +	7) verify_binfmt_misc ":tmagic:M:2500000000:ltp::$(which cat):";;
-> +	8) verify_binfmt_misc ":textension:E::ltp::$(which cat):A";;
-> +	9) verify_binfmt_misc ":tmagic:M::ltp::$(which cat):A";;
-> +	esac
-> +}
-> +
-> +tst_run
-> diff --git a/testcases/kernel/fs/binfmt_misc/binfmt_misc_lib.sh b/testcases/kernel/fs/binfmt_misc/binfmt_misc_lib.sh
-> new file mode 100755
-> index 0000000..d188601
-> --- /dev/null
-> +++ b/testcases/kernel/fs/binfmt_misc/binfmt_misc_lib.sh
-> @@ -0,0 +1,64 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +#
-> +# Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-> +# Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> +
-> +TST_SETUP=binfmt_misc_setup
-> +TST_CLEANUP=binfmt_misc_cleanup
-> +TST_NEEDS_DRIVERS="binfmt_misc"
-> +TST_NEEDS_TMPDIR=1
-> +TST_NEEDS_CMDS="${TST_NEEDS_CMDS} modprobe mount umount mkdir rm"
-> +
-> +. tst_test.sh
-> +
-> +rmod_binfmt_misc=0
-> +umount_binfmt_misc=0
-> +binfmt_misc_mntpoint="ltp_binfmt_misc"
-> +
-> +get_binfmt_misc_mntpoint()
-> +{
-> +	local mntpoint
-> +
-> +	mntpoint=$(grep " binfmt_misc " /proc/mounts | awk '{ print $2 }')
-> +	[ -z "$mntpoint" ] && tst_brk TBROK "Can't get binfmt_misc mntpoint"
-> +
-> +	echo "$mntpoint"
-> +}
-> +
-> +binfmt_misc_setup()
-> +{
-> +	local mntpoint
-> +
-> +	if ! grep -q "binfmt_misc" /proc/filesystems; then
-> +		ROD modprobe binfmt_misc
-> +		rmod_binfmt_misc=1
-> +	fi
-> +
-> +	# Match fs type accurately, because autofs is also mounted on
-> +	# /proc/sys/fs/binfmt_misc on some distros, as below:
-> +	# cat /proc/mounts | grep binfmt_misc
-> +	# systemd-1 /proc/sys/fs/binfmt_misc autofs ...
-> +	# binfmt_misc /proc/sys/fs/binfmt_misc binfmt_misc ...
-> +	mntpoint=$(grep " binfmt_misc " /proc/mounts | awk '{ print $2 }')
-
-You can do just: awk '/binfmt_misc/ { print $2 }' /proc/mounts
-
-> +	[ -n "$mntpoint" ] && return
-> +
-> +	ROD mkdir ${binfmt_misc_mntpoint}
-> +	ROD mount -t binfmt_misc none ${binfmt_misc_mntpoint}
-> +	umount_binfmt_misc=1
-> +}
-> +
-> +binfmt_misc_cleanup()
-> +{
-> +	if [ ${umount_binfmt_misc} -ne 0 ]; then
-> +		umount ${binfmt_misc_mntpoint}
-> +		umount_binfmt_misc=0
-> +	fi
-> +
-> +	[ -d ${binfmt_misc_mntpoint} ] && rm -rf ${binfmt_misc_mntpoint}
-> +
-> +	if [ ${rmod_binfmt_misc} -ne 0 ]; then
-> +		modprobe -r binfmt_misc
-> +		rmod_binfmt_misc=0
-> +	fi
-> +}
-
-Other than the minor things it looks fine.
-
-Also it would be nice to have functional test as well, I guess that we
-can register /bin/sh to be interpreter for a file with specific magic
-and extension then execute a script that does just echo test or
-something like this.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+[1] https://github.com/ibm-s390-tools/s390-tools
+[2] https://patchwork.ozlabs.org/patch/905064/#1902070
