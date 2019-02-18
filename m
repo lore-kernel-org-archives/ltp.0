@@ -1,110 +1,182 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Sat, 16 Feb 2019 05:28:05 -0500 (EST)
-Subject: [LTP] [PATCH v2 1/2] syscalls/cma: test case should return
- TCONF if syscall doesn't exist
-In-Reply-To: <CAEemH2cFhdjMMF9RTyRHTBcLR7SqXNWNf41R+RLbdOY7CBOwpQ@mail.gmail.com>
-References: <1514394255.82007574.1543913641122.JavaMail.zimbra@redhat.com>
- <1544017426-10669-1-git-send-email-kerneljasonxing@linux.alibaba.com>
- <CAEemH2fvR1WQBEmwPM_rpy4z3xN6Ueeqk9Ri8BHrFoPQgaAJqw@mail.gmail.com>
- <853398062.984884.1550238809858.JavaMail.zimbra@redhat.com>
- <CAEemH2cFhdjMMF9RTyRHTBcLR7SqXNWNf41R+RLbdOY7CBOwpQ@mail.gmail.com>
-Message-ID: <1937154233.1109562.1550312885136.JavaMail.zimbra@redhat.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Mon, 18 Feb 2019 10:08:40 +0800
+Subject: [LTP] [PATCH v2] syscalls/setrlimit06: Add new test for
+	RLIMIT_CPU
+In-Reply-To: <1548997446-3969-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20190131105343.GA11386@rei>
+ <1548997446-3969-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <5C6A13A8.5030009@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Cyril,
+
+Could you help me review the v2 patch.
+Thanks a lot. :-)
+
+Best Regards,
+Xiao Yang
+On 2019/02/01 13:04, Xiao Yang wrote:
+> Set CPU time limit for a process and check its behavior when
+> reaching CPU time limit.
+>
+> Note:
+> This is also a regression test for commit c3bca5d450b62 in kernel:
+> "posix-cpu-timers: Ensure set_process_cpu_timer is always evaluated"
+>
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  runtest/syscalls                                  |   1 +
+>  testcases/kernel/syscalls/setrlimit/.gitignore    |   1 +
+>  testcases/kernel/syscalls/setrlimit/setrlimit06.c | 115 ++++++++++++++++++++++
+>  3 files changed, 117 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/setrlimit/setrlimit06.c
+>
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 668c87c..2e36709 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -1197,6 +1197,7 @@ setrlimit02 setrlimit02
+>  setrlimit03 setrlimit03
+>  setrlimit04 setrlimit04
+>  setrlimit05 setrlimit05
+> +setrlimit06 setrlimit06
+>  
+>  set_robust_list01 set_robust_list01
+>  set_thread_area01 set_thread_area01
+> diff --git a/testcases/kernel/syscalls/setrlimit/.gitignore b/testcases/kernel/syscalls/setrlimit/.gitignore
+> index e91f7e8..a790eb9 100644
+> --- a/testcases/kernel/syscalls/setrlimit/.gitignore
+> +++ b/testcases/kernel/syscalls/setrlimit/.gitignore
+> @@ -3,3 +3,4 @@
+>  /setrlimit03
+>  /setrlimit04
+>  /setrlimit05
+> +/setrlimit06
+> diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit06.c b/testcases/kernel/syscalls/setrlimit/setrlimit06.c
+> new file mode 100644
+> index 0000000..76e84e3
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/setrlimit/setrlimit06.c
+> @@ -0,0 +1,115 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
+> + * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> + */
+> +
+> +/*
+> + * Description:
+> + * Set CPU time limit for a process and check its behavior
+> + * after reaching CPU time limit.
+> + * 1) Process got SIGXCPU after reaching soft limit of CPU time.
+> + * 2) Process got SIGKILL after reaching hard limit of CPU time.
+> + *
+> + * Note:
+> + * This is also a regression test for the following kernel bug:
+> + * 'c3bca5d450b62 ("posix-cpu-timers: Ensure set_process_cpu_timer is always evaluated")'
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <errno.h>
+> +#include <sys/types.h>
+> +#include <unistd.h>
+> +#include <sys/time.h>
+> +#include <sys/resource.h>
+> +#include <sys/wait.h>
+> +#include <stdlib.h>
+> +#include <sys/mman.h>
+> +
+> +#include "tst_test.h"
+> +
+> +static int *end;
+> +
+> +static void sighandler(int sig)
+> +{
+> +	*end = sig;
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	SAFE_SIGNAL(SIGXCPU, sighandler);
+> +
+> +	end = SAFE_MMAP(NULL, sizeof(int), PROT_READ | PROT_WRITE,
+> +			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (end)
+> +		SAFE_MUNMAP(end, sizeof(int));
+> +}
+> +
+> +static void verify_setrlimit(void)
+> +{
+> +	int status;
+> +	pid_t pid;
+> +
+> +	pid = SAFE_FORK();
+> +	if (!pid) {
+> +		struct rlimit rlim = {
+> +			.rlim_cur = 2,
+> +			.rlim_max = 3,
+> +		};
+> +
+> +		TEST(setrlimit(RLIMIT_CPU, &rlim));
+> +		if (TST_RET == -1) {
+> +			tst_res(TFAIL | TTERRNO,
+> +				"setrlimit(RLIMIT_CPU) failed");
+> +			exit(1);
+> +		}
+> +
+> +		alarm(10);
+> +
+> +		while (1);
+> +	}
+> +
+> +	SAFE_WAITPID(pid, &status, 0);
+> +
+> +	if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
+> +		return;
+> +
+> +	if (WIFSIGNALED(status)) {
+> +		if (WTERMSIG(status) == SIGKILL && *end == SIGXCPU) {
+> +			tst_res(TPASS,
+> +				"Got SIGXCPU then SIGKILL after reaching both limit");
+> +			return;
+> +		}
+> +
+> +		if (WTERMSIG(status) == SIGKILL && !*end) {
+> +			tst_res(TFAIL,
+> +				"Got only SIGKILL after reaching both limit");
+> +			return;
+> +		}
+> +
+> +		if (WTERMSIG(status) == SIGALRM && *end == SIGXCPU) {
+> +			tst_res(TFAIL,
+> +				"Got only SIGXCPU after reaching both limit");
+> +			return;
+> +		}
+> +
+> +		if (WTERMSIG(status) == SIGALRM && !*end) {
+> +			tst_res(TFAIL,
+> +				"Got no signal after reaching both limit");
+> +			return;
+> +		}
+> +	}
+> +
+> +	tst_res(TBROK, "Child %s", tst_strstatus(status));
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = verify_setrlimit,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.forks_child = 1,
+> +};
 
 
------ Original Message -----
-> On Fri, Feb 15, 2019 at 9:53 PM Jan Stancek <jstancek@redhat.com> wrote:
-> 
-> >
-> >
-> > ------------------------------
-> >
-> > Hi Jason,
-> >
-> > A new failure was occured after applying this new patch.
-> >
-> > From our observation, the latest process_vm_readv03.c failed with
-> > process_vm_readv() Invalid argument error on rhel7.3 platfrom. We suspect
-> > that this problem maybe caused by glibc or compiler, because if compile the
-> > test program with -O0 it get pass, but with the ltp
-> > default optimization -O2 it get fail.  Also, if we revert this new patch,
-> > the test PASS whatever with -O2 and -O0, that's very strange.
-> >
-> >
-> > One difference is that the extra function promoted int to long.
-> >
-> 
-> Good catch.
-> 
-> > Can you try with patch below? (Note that I dropped also root requirement,
-> > man page
-> > says that it has same requirements as ptrace - you should be able to read
-> > from processes you own)
-> >
-> > This change works for me(one comment in below).
-> 
-> But there still have a tiny question, in the syscall tracing log, I noticed
-> a process_vm_readv() calling does not get this failure in function
-> fetch_remote_addrs, what makes it difference with other two calls is
-> something I'm thinking now.
 
-"Garbage" on stack most likely. On x86_64, 6th parameter is passed
-via stack, glibc copies quadword:
-
-ENTRY (syscall)
-        movq %rdi, %rax         /* Syscall number -> rax.  */
-        movq %rsi, %rdi         /* shift arg1 - arg5.  */
-        movq %rdx, %rsi
-        movq %rcx, %rdx
-        movq %r8, %r10
-        movq %r9, %r8
-        movq 8(%rsp),%r9        /* arg6 is on the stack.  */
-        syscall                 /* Do the system call.  */
-
-> 
-> ====Tracing log without '0L' change====
-> 12211 process_vm_readv(12211, 0, 0, 0, 0, 140728898420736) = -1 EINVAL
-> (Invalid argument)
-> ...
-> 12213 process_vm_readv(12212,
-> [{"\300`\334\0\0\0\0\0`\2\335\0\0\0\0\0\340\26\335\0\0\0\0\0\220h\335\0\0\0\0\0"...,
-> 80}], 1, [{0xdc6060, 80}], 1, 0) = 80
-> ...
-> 12213 process_vm_readv(12212, 0x7ffecef1e330, 4, 0xdc60c0, 10,
-> 140728898420736) = -1 EINVAL (Invalid argument)
-> 
-> 
-> 
-> >
-> > diff --git a/testcases/kernel/syscalls/cma/process_vm_readv03.c
-> > b/testcases/kernel/syscalls/cma/process_vm_readv03.c
-> > index 45f7c92e499c..1cec442b3456 100644
-> > --- a/testcases/kernel/syscalls/cma/process_vm_readv03.c
-> > +++ b/testcases/kernel/syscalls/cma/process_vm_readv03.c
-> > @@ -181,7 +181,7 @@ static long *fetch_remote_addrs(void)
-> >         remote.iov_len = len;
-> >
-> >         TEST(ltp_syscall(__NR_process_vm_readv, pids[0], &local,
-> > -                        1, &remote, 1, 0));
-> > +                        1, &remote, 1, 0L));
-> >
-> 
-> To make things more safely, probably we'd better change all the integer
-> parameter too?
-> 
-> -                        1, &remote, 1, 0));
-> +                        1L, &remote, 1L, 0L));
-
-Agreed, let's match all parameters types as before commit:
- 9b02cd465f70 ("syscalls/cma: test case should return TCONF if syscall doesn't exist")
-
-> 
-> --
-> Regards,
-> Li Wang
-> 
