@@ -1,7 +1,7 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 18 Feb 2019 12:57:46 +0100
+Date: Mon, 18 Feb 2019 13:24:53 +0100
 Subject: [LTP] [PATCH v2] syscalls: add syscall syncfs test
-In-Reply-To: <4cae2a11-47c2-c319-19cf-9a8fecc7793d@google.com>
+In-Reply-To: <CAFA6WYMEveSLb0i7Yaw-p+W9gGG521RWOO2wBammALkcw7NiYQ@mail.gmail.com>
 References: <1550215053-6795-1-git-send-email-sumit.garg@linaro.org>
  <5C667060.7020405@cn.fujitsu.com>
  <CAFA6WYO8qg79rQ-qwU3i6FpfNRQhiTNXzGHtDsJ6FpTty6W77g@mail.gmail.com>
@@ -9,7 +9,8 @@ References: <1550215053-6795-1-git-send-email-sumit.garg@linaro.org>
  <CAFA6WYOF1Kh1rspdiPgne9q4jUQsMW4p5BN_J4evcsr9O-KD1Q@mail.gmail.com>
  <20190215132251.GB26339@rei>
  <4cae2a11-47c2-c319-19cf-9a8fecc7793d@google.com>
-Message-ID: <20190218115746.GA25025@rei.lan>
+ <CAFA6WYMEveSLb0i7Yaw-p+W9gGG521RWOO2wBammALkcw7NiYQ@mail.gmail.com>
+Message-ID: <20190218122453.GB25025@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -17,44 +18,54 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> >> Thanks for the pointers. IIUC, you are referring to following change:
-> >>
-> >> -       TEST(syncfs(fd));
-> >> +       TEST(tst_syscall(__NR_syncfs, fd));
-> >>
-> >> If yes, then I will incorporate it.
-> > 
-> > The most complete solution is configure check + fallback definition.
-> > 
-> > Have a look at:
-> > 
-> > include/lapi/execveat.h
-> > m4/ltp-execveat.m4
-> > configure.ac
+> > >> Thanks for the pointers. IIUC, you are referring to following change:
+> > >>
+> > >> -       TEST(syncfs(fd));
+> > >> +       TEST(tst_syscall(__NR_syncfs, fd));
+> > >>
+> > >> If yes, then I will incorporate it.
+> > >
+> > > The most complete solution is configure check + fallback definition.
+> > >
+> > > Have a look at:
+> > >
+> > > include/lapi/execveat.h
+> > > m4/ltp-execveat.m4
+> > > configure.ac
+> >
+> > For tests in testcases/kernel/syscalls, should the tests typically
+> > directly call the syscall? I'd think this is preferable to the use of C
+> > library wrappers as these tests (by their location in the tree) seem to
+> > be focused on the syscall functionality in the kernel.
+> >
 > 
-> For tests in testcases/kernel/syscalls, should the tests typically 
-> directly call the syscall? I'd think this is preferable to the use of C 
-> library wrappers as these tests (by their location in the tree) seem to 
-> be focused on the syscall functionality in the kernel.
+> Sounds reasonable to me. But as per following manpage text for syscall():
+> 
+> "Each architecture ABI has its own requirements on how system call
+> arguments are passed to the kernel.  For system calls that have a
+> glibc  wrapper  (e.g., most  system  calls), glibc handles the details
+> of copying arguments to the right registers in a manner suitable for
+> the architecture. However, when using syscall() to make a system call,
+> the caller might need to handle architecture-dependent details; this
+> requirement is most commonly encountered  on certain 32-bit
+> architectures."
+> 
+> So I am not sure how we handle this architecture specific stuff if
+> required in test-cases.
 
-My take on this is that for a functional testing we really have to test
-the kernel together with the library that wraps the syscalls because
-otherwise bugs are bound to happen such as these:
+In more than 99% of the cases this is not an issue, as far as the
+arguments are passed as long int and we do not have to pass more than
+six, which is the common case, we don't have to do anything.
 
-https://sourceware.org/bugzilla/show_bug.cgi?id=23069
-https://sourceware.org/bugzilla/show_bug.cgi?id=23579
+In some cases we have to split 64bit values in half and pass them as two
+arguments, then we put the code into the lapi hader such as
+include/lapi/fallocate.h.
 
-And I always cared about syscalls being correct on the C library level.
-
-I guess that for most of the syscalls that are just thin wrappers it
-does not matter since these just prepare the parameters and jump to the
-kernel, but in certain cases libc does quite a lot of work which is
-sometimes complex code I do not want to replicate that unless really
-needed. And with that I think that it's actually much easier to go with
-the libc API whenever possible rather than reviewing the libc code each
-time we write a testcase.
-
-Does that sound reasonable to you?
+Then there are cases where we pass a pointer to architecture specific
+structure such as the sigaction which sometimes contains a pointer to
+function that restores the program state after we return from the signal
+handler and this is where calling the kernel syscall directly gets
+complex. We do carry that code under include/lapi/rt_sigaction.h.
 
 -- 
 Cyril Hrubis
