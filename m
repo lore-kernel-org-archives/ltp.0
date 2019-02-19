@@ -1,54 +1,84 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 19 Feb 2019 17:47:49 +0300
-Subject: [LTP] [PATCH 0/4] network: new random message size test-cases
-Message-ID: <1550587673-7995-1-git-send-email-alexey.kodanev@oracle.com>
+Date: Tue, 19 Feb 2019 17:47:50 +0300
+Subject: [LTP] [PATCH 1/4] network/gre01: move setup to library
+In-Reply-To: <1550587673-7995-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1550587673-7995-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1550587673-7995-2-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-New tests in the series with random message sizes: geneve02, gre02,
-macsec03, vxlan04.
+The same setup can be used with the other gre tests.
 
-This patch-set also introduces "TST_NET_MAX_PKT" environment variable
-to control the upper limit of the message payload size. By default it
-is set to 1.1 * MTU (of the test interface).
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/network/virt/gre01.sh    |   19 ++-----------------
+ testcases/network/virt/virt_lib.sh |   15 +++++++++++++++
+ 2 files changed, 17 insertions(+), 17 deletions(-)
 
-Alexey Kodanev (4):
-  network/gre01: move setup to library
-  lib/tst_net.sh: add new TST_NET_MAX_PKT env variable
-  network: use TST_NET_MAX_PKT
-  network: add new test-cases with randomized message length
-
- runtest/net.features                            |    9 +
- runtest/net_stress.ipsec_dccp                   |  208 +++++++++++-----------
- runtest/net_stress.ipsec_sctp                   |  208 +++++++++++-----------
- runtest/net_stress.ipsec_tcp                    |  208 +++++++++++-----------
- runtest/net_stress.ipsec_udp                    |  212 +++++++++++-----------
- testcases/lib/tst_net.sh                        |   10 +-
- testcases/lib/tst_test.sh                       |    1 +
- testcases/network/mpls/mpls02.sh                |    2 +-
- testcases/network/mpls/mpls_lib.sh              |    2 +-
- testcases/network/sockets/bind_noport01.sh      |   15 ++-
- testcases/network/stress/dccp/dccp_ipsec.sh     |    6 +-
- testcases/network/stress/dccp/dccp_ipsec_vti.sh |    6 +-
- testcases/network/stress/sctp/sctp_ipsec.sh     |    6 +-
- testcases/network/stress/sctp/sctp_ipsec_vti.sh |    6 +-
- testcases/network/stress/tcp/tcp_ipsec.sh       |    6 +-
- testcases/network/stress/tcp/tcp_ipsec_vti.sh   |    6 +-
- testcases/network/stress/udp/udp_ipsec.sh       |    7 +-
- testcases/network/stress/udp/udp_ipsec_vti.sh   |    7 +-
- testcases/network/tcp_cc/tcp_cc_lib.sh          |    4 +-
- testcases/network/virt/geneve02.sh              |   38 ++++
- testcases/network/virt/gre01.sh                 |   19 +--
- testcases/network/virt/gre02.sh                 |   11 ++
- testcases/network/virt/macsec03.sh              |   13 ++
- testcases/network/virt/virt_lib.sh              |   27 +++-
- testcases/network/virt/vxlan04.sh               |   39 ++++
- 25 files changed, 624 insertions(+), 452 deletions(-)
- create mode 100755 testcases/network/virt/geneve02.sh
- create mode 100755 testcases/network/virt/gre02.sh
- create mode 100755 testcases/network/virt/macsec03.sh
- create mode 100755 testcases/network/virt/vxlan04.sh
+diff --git a/testcases/network/virt/gre01.sh b/testcases/network/virt/gre01.sh
+index 27373fd..db5be6d 100755
+--- a/testcases/network/virt/gre01.sh
++++ b/testcases/network/virt/gre01.sh
+@@ -1,7 +1,7 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
+-# Copyright (c) 2015-2017 Oracle and/or its affiliates.
++# Copyright (c) 2015-2019 Oracle and/or its affiliates.
+ # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+ #
+ # It requires remote host. Test will setup IPv4 and IPv6 virtual
+@@ -10,23 +10,8 @@
+ 
+ TST_NEEDS_TMPDIR=1
+ TST_TESTFUNC=virt_netperf_msg_sizes
+-TST_SETUP=do_setup
++TST_SETUP=virt_gre_setup
+ TST_CLEANUP=virt_cleanup
+ . virt_lib.sh
+ 
+-do_setup()
+-{
+-	virt_type="gre"
+-	[ "$TST_IPV6" ] && virt_type="ip6gre"
+-	virt_lib_setup
+-
+-	if [ -z $ip_local -o -z $ip_remote ]; then
+-		tst_brk TBROK "you must specify IP address"
+-	fi
+-
+-	tst_res TINFO "test $virt_type"
+-	virt_setup "local $(tst_ipaddr) remote $(tst_ipaddr rhost) dev $(tst_iface)" \
+-	"local $(tst_ipaddr rhost) remote $(tst_ipaddr) dev $(tst_iface rhost)"
+-}
+-
+ tst_run
+diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
+index c9fe80c..eb9d052 100644
+--- a/testcases/network/virt/virt_lib.sh
++++ b/testcases/network/virt/virt_lib.sh
+@@ -355,3 +355,18 @@ virt_test_02()
+ 	virt_add_delete_test "$2"
+ 	start_id=$(($start_id + $NS_TIMES))
+ }
++
++virt_gre_setup()
++{
++	virt_type="gre"
++	[ "$TST_IPV6" ] && virt_type="ip6gre"
++	virt_lib_setup
++
++	if [ -z $ip_local -o -z $ip_remote ]; then
++		tst_brk TBROK "you must specify IP address"
++	fi
++
++	tst_res TINFO "test $virt_type"
++	virt_setup "local $(tst_ipaddr) remote $(tst_ipaddr rhost) dev $(tst_iface)" \
++	"local $(tst_ipaddr rhost) remote $(tst_ipaddr) dev $(tst_iface rhost)"
++}
+-- 
+1.7.1
 
