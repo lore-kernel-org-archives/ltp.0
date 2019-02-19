@@ -1,45 +1,88 @@
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 19 Feb 2019 21:29:04 +0800
-Subject: [LTP] [PATCH v2] syscalls/mprotect: align exec_func to 64 bytes
-In-Reply-To: <e1b5efb3d806fa26da13d46247b46ea5d78271c4.1549922861.git.jstancek@redhat.com>
-References: <e1b5efb3d806fa26da13d46247b46ea5d78271c4.1549922861.git.jstancek@redhat.com>
-Message-ID: <CAEemH2f6=VqWp7f=2VrFQPN_7BfTv7H4J-r5CdFcPE5xTXOLQg@mail.gmail.com>
+Date: Tue, 19 Feb 2019 21:34:03 +0800
+Subject: [LTP] [PATCH v2] mprotect04: Support execute-only page access
+	permissions
+In-Reply-To: <20190212000008.57085-1-danielmentz@google.com>
+References: <20190212000008.57085-1-danielmentz@google.com>
+Message-ID: <CAEemH2d+jAXjtv=AnQ=GFP4gm7Hu_9Lc32x4v2gSkw1JFc2boQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Feb 12, 2019 at 6:15 AM Jan Stancek <jstancek@redhat.com> wrote:
+Hi Daniel,
 
-> exec_func() is dummy/empty function. Try to align it so we don't
-> need to worry about copying 2 pages. But also check that compiler
-> aligned it and there's sufficient space between start of func_exec
-> and end of page.
+On Tue, Feb 12, 2019 at 8:00 AM Daniel Mentz <danielmentz@google.com> wrote:
+
+> Linux version 4.9 introduced support for execute-only page access
+> permissions on
+> arm64. As a result, user space processes, by default, cannot read from
+> their own .text sections. This change adds an extra call to mprotect()
+> to explicitly change access protections to allow relevant parts of the
+> .text section to be read.
 >
-> This patch also removes copy_sz, which is now replaced with page_sz.
+> Without this change, mprotect04 generates false TBROK results. We
+> previously saw this test output:
 >
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> mprotect04    1  TPASS  :  test PROT_NONE for mprotect success
+> mprotect04    0  TINFO  :  exec_func: 0x5ac82d3588, page_to_copy:
+> 0x5ac82d3000
+> mprotect04    2  TBROK  :
+> ltp/testcases/kernel/syscalls/mprotect/mprotect04.c:236: page_to_copy not
+> present
+> mprotect04    3  TBROK  :
+> ltp/testcases/kernel/syscalls/mprotect/mprotect04.c:236: Remaining cases
+> broken
 >
-
-Reviewed-by: Li Wang <liwang@redhat.com>
-
-
-> +mprotect04: CFLAGS += -falign-functions=64
 >
+I believe your patch make sense, but I can't reproduce that problem on my
+aarch64 platform with upstream kernel-v5.0-rc7. Is that execute-only page
+permission needs a special config to enable? or can you point me which
+commit made the change?
 
-One of my concern was this option maybe not supported by kind of compiler
-and probably broken in the compiling phase. So I just submitted these
-two(another is Daniel's) patches to Travis CI, the result looks good and no
-compiler error found there.
-https://travis-ci.com/wangli5665/ltp/builds/101429714
+===== without your patch ====
+# uname -rm
+5.0.0-rc7 aarch64
 
-Beside that, I also manually tried that with old gcc(gcc version 4.1.2) and
-verify that works fine.
+# ./mprotect04
+mprotect04    1  TPASS  :  test PROT_NONE for mprotect success
+mprotect04    2  TPASS  :  test PROT_EXEC for mprotect success
+
+I confirmed the '&exec_func == 0x403460' has READ&EXEC permission in the
+.text section. Or, did I missed anything?
+
+00400000-00420000 r-xp 00000000 fd:00 101414360
+/root/ltp/testcases/kernel/syscalls/mprotect/mprotect04
+00420000-00430000 r--p 00010000 fd:00 101414360
+/root/ltp/testcases/kernel/syscalls/mprotect/mprotect04
+00430000-00440000 rw-p 00020000 fd:00 101414360
+/root/ltp/testcases/kernel/syscalls/mprotect/mprotect04
+2ff00000-2ff30000 rw-p 00000000 00:00 0
+[heap]
+ffff86b00000-ffff86b20000 --xp 00000000 00:00 0
+ffff86b20000-ffff86c80000 r-xp 00000000 fd:00 1164
+ /usr/lib64/libc-2.28.so
+ffff86c80000-ffff86c90000 r--p 00150000 fd:00 1164
+ /usr/lib64/libc-2.28.so
+ffff86c90000-ffff86ca0000 rw-p 00160000 fd:00 1164
+ /usr/lib64/libc-2.28.so
+ffff86cb0000-ffff86cc0000 r--p 00000000 00:00 0
+[vvar]
+ffff86cc0000-ffff86cd0000 r-xp 00000000 00:00 0
+[vdso]
+ffff86cd0000-ffff86cf0000 r-xp 00000000 fd:00 1157
+ /usr/lib64/ld-2.28.so
+ffff86cf0000-ffff86d00000 r--p 00010000 fd:00 1157
+ /usr/lib64/ld-2.28.so
+ffff86d00000-ffff86d10000 rw-p 00020000 fd:00 1157
+ /usr/lib64/ld-2.28.so
+ffffed310000-ffffed340000 rw-p 00000000 00:00 0
+[stack]
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190219/73dc6da9/attachment.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190219/44ca0d04/attachment.html>
