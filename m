@@ -1,73 +1,53 @@
 From: Sumit Garg <sumit.garg@linaro.org>
-Date: Tue, 19 Feb 2019 14:58:16 +0530
-Subject: [LTP] [PATCH v3 3/7] syscalls/sync: add sync device test-case
+Date: Tue, 19 Feb 2019 14:58:17 +0530
+Subject: [LTP] [PATCH v3 4/7] syscalls/fsync: add sync device test-case
 In-Reply-To: <1550568500-10871-1-git-send-email-sumit.garg@linaro.org>
 References: <1550568500-10871-1-git-send-email-sumit.garg@linaro.org>
-Message-ID: <1550568500-10871-4-git-send-email-sumit.garg@linaro.org>
+Message-ID: <1550568500-10871-5-git-send-email-sumit.garg@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-sync03 tests to sync file having large dirty file pages to block device.
-It tests all supported filesystems on a test block device.
-
-Also define TEST_VOID macro in tst_test.h.
+fsync04 tests to sync file having large dirty file pages to block
+device. Also, it tests all supported filesystems on a test block device.
 
 Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 ---
- include/tst_test.h                        |  7 ++++
- runtest/syscalls                          |  1 +
- testcases/kernel/syscalls/sync/.gitignore |  1 +
- testcases/kernel/syscalls/sync/sync03.c   | 59 +++++++++++++++++++++++++++++++
- 4 files changed, 68 insertions(+)
- create mode 100644 testcases/kernel/syscalls/sync/sync03.c
+ runtest/syscalls                           |  1 +
+ testcases/kernel/syscalls/fsync/.gitignore |  1 +
+ testcases/kernel/syscalls/fsync/fsync04.c  | 61 ++++++++++++++++++++++++++++++
+ 3 files changed, 63 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fsync/fsync04.c
 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 12dda2e..03c88e3 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -216,6 +216,13 @@ void tst_reinit(void);
- 		TST_ERR = errno; \
- 	} while (0)
- 
-+#define TEST_VOID(SCALL) \
-+	do { \
-+		errno = 0; \
-+		SCALL; \
-+		TST_ERR = errno; \
-+	} while (0)
-+
- extern long TST_RET;
- extern int TST_ERR;
- 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 9442740..dba0dee 100644
+index dba0dee..0d09509 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -1345,6 +1345,7 @@ symlinkat01 symlinkat01
+@@ -347,6 +347,7 @@ fstatfs02_64 fstatfs02_64
+ fsync01 fsync01
+ fsync02 fsync02
+ fsync03 fsync03
++fsync04 fsync04
  
- sync01 sync01
- sync02 sync02
-+sync03 sync03
- 
- syncfs01 syncfs01
- 
-diff --git a/testcases/kernel/syscalls/sync/.gitignore b/testcases/kernel/syscalls/sync/.gitignore
-index d8d304d..04f4710 100644
---- a/testcases/kernel/syscalls/sync/.gitignore
-+++ b/testcases/kernel/syscalls/sync/.gitignore
-@@ -1,2 +1,3 @@
- /sync01
- /sync02
-+/sync03
-diff --git a/testcases/kernel/syscalls/sync/sync03.c b/testcases/kernel/syscalls/sync/sync03.c
+ ftruncate01 ftruncate01
+ ftruncate01_64 ftruncate01_64
+diff --git a/testcases/kernel/syscalls/fsync/.gitignore b/testcases/kernel/syscalls/fsync/.gitignore
+index 3c694a4..4b5ea83 100644
+--- a/testcases/kernel/syscalls/fsync/.gitignore
++++ b/testcases/kernel/syscalls/fsync/.gitignore
+@@ -1,3 +1,4 @@
+ /fsync01
+ /fsync02
+ /fsync03
++/fsync04
+diff --git a/testcases/kernel/syscalls/fsync/fsync04.c b/testcases/kernel/syscalls/fsync/fsync04.c
 new file mode 100644
-index 0000000..419f9b9
+index 0000000..72c73ce
 --- /dev/null
-+++ b/testcases/kernel/syscalls/sync/sync03.c
-@@ -0,0 +1,59 @@
++++ b/testcases/kernel/syscalls/fsync/fsync04.c
+@@ -0,0 +1,61 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2019 Linaro Limited. All rights reserved.
@@ -75,9 +55,9 @@ index 0000000..419f9b9
 + */
 +
 +/*
-+ * sync03
++ * fsync04
 + *
-+ * It basically tests sync() to sync test file having large dirty file pages
++ * It basically tests fsync() to sync test file having large dirty file pages
 + * to block device. Also, it tests all supported filesystems on a test block
 + * device.
 + */
@@ -94,13 +74,15 @@ index 0000000..419f9b9
 +#define TST_FILE		MNTPOINT"/test"
 +#define TST_FILE_SIZE_MB	32
 +
-+static void verify_sync(void)
++static void verify_fsync(void)
 +{
-+	tst_sync_device_write(TST_FILE, TST_FILE_SIZE_MB);
++	int fd;
 +
-+	TEST_VOID(sync());
++	fd = tst_sync_device_write(TST_FILE, TST_FILE_SIZE_MB);
++
++	TEST(fsync(fd));
 +	if (TST_RET != 0)
-+		tst_brk(TFAIL | TTERRNO, "sync() failed");
++		tst_brk(TFAIL | TTERRNO, "fsync(fd) failed");
 +
 +	if (tst_sync_device_check(TST_FILE_SIZE_MB))
 +		tst_res(TPASS, "Test file synced to device");
@@ -125,7 +107,7 @@ index 0000000..419f9b9
 +	.mntpoint = MNTPOINT,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = verify_sync,
++	.test_all = verify_fsync,
 +};
 -- 
 2.7.4
