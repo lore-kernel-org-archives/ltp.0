@@ -1,123 +1,45 @@
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Tue, 19 Feb 2019 14:58:20 +0530
-Subject: [LTP] [PATCH v3 7/7] syscalls/sync_file_range: add sync device
-	test-case
-In-Reply-To: <1550568500-10871-1-git-send-email-sumit.garg@linaro.org>
-References: <1550568500-10871-1-git-send-email-sumit.garg@linaro.org>
-Message-ID: <1550568500-10871-8-git-send-email-sumit.garg@linaro.org>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 19 Feb 2019 21:29:04 +0800
+Subject: [LTP] [PATCH v2] syscalls/mprotect: align exec_func to 64 bytes
+In-Reply-To: <e1b5efb3d806fa26da13d46247b46ea5d78271c4.1549922861.git.jstancek@redhat.com>
+References: <e1b5efb3d806fa26da13d46247b46ea5d78271c4.1549922861.git.jstancek@redhat.com>
+Message-ID: <CAEemH2f6=VqWp7f=2VrFQPN_7BfTv7H4J-r5CdFcPE5xTXOLQg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-sync_file_range02 tests to sync file data range having large dirty file
-pages to block device. Also, it tests all supported filesystems on a
-test block device.
+On Tue, Feb 12, 2019 at 6:15 AM Jan Stancek <jstancek@redhat.com> wrote:
 
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
----
- runtest/syscalls                                   |  1 +
- .../kernel/syscalls/sync_file_range/.gitignore     |  1 +
- .../syscalls/sync_file_range/sync_file_range02.c   | 70 ++++++++++++++++++++++
- 3 files changed, 72 insertions(+)
- create mode 100644 testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+> exec_func() is dummy/empty function. Try to align it so we don't
+> need to worry about copying 2 pages. But also check that compiler
+> aligned it and there's sufficient space between start of func_exec
+> and end of page.
+>
+> This patch also removes copy_sz, which is now replaced with page_sz.
+>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+>
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index aaad651..70d3561 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1353,6 +1353,7 @@ syncfs01 syncfs01
- 
- #testcases for sync_file_range
- sync_file_range01 sync_file_range01
-+sync_file_range02 sync_file_range02
- 
- syscall01 syscall01
- 
-diff --git a/testcases/kernel/syscalls/sync_file_range/.gitignore b/testcases/kernel/syscalls/sync_file_range/.gitignore
-index 3f6bd75..e6485f7 100644
---- a/testcases/kernel/syscalls/sync_file_range/.gitignore
-+++ b/testcases/kernel/syscalls/sync_file_range/.gitignore
-@@ -1 +1,2 @@
- /sync_file_range01
-+/sync_file_range02
-diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-new file mode 100644
-index 0000000..fb7a5f7
---- /dev/null
-+++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-@@ -0,0 +1,70 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Linaro Limited. All rights reserved.
-+ * Author: Sumit Garg <sumit.garg@linaro.org>
-+ */
-+
-+/*
-+ * sync_file_range02
-+ *
-+ * It basically tests sync_file_range() to sync test file range having large
-+ * dirty file pages to block device. Also, it tests all supported filesystems
-+ * on a test block device.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <sys/types.h>
-+#include "tst_sync_device.h"
-+#include "tst_test.h"
-+#include "lapi/sync_file_range.h"
-+#include "check_sync_file_range.h"
-+
-+#define MNTPOINT		"mnt_point"
-+#define TST_FILE		MNTPOINT"/test"
-+#define TST_FILE_SIZE_MB	32
-+#define SIZE_MB			(1024*1024)
-+
-+static void verify_sync_file_range(void)
-+{
-+	int fd;
-+
-+	fd = tst_sync_device_write(TST_FILE, TST_FILE_SIZE_MB);
-+
-+	TEST(sync_file_range(fd, 0, TST_FILE_SIZE_MB * SIZE_MB,
-+			     SYNC_FILE_RANGE_WAIT_BEFORE |
-+			     SYNC_FILE_RANGE_WRITE |
-+			     SYNC_FILE_RANGE_WAIT_AFTER));
-+	if (TST_RET != 0)
-+		tst_brk(TFAIL | TTERRNO, "sync_file_range() failed");
-+
-+	if (tst_sync_device_check(TST_FILE_SIZE_MB))
-+		tst_res(TPASS, "Test file range synced to device");
-+	else
-+		tst_res(TFAIL, "Failed to sync test file range to device");
-+}
-+
-+static void setup(void)
-+{
-+	tst_sync_device_init(tst_device->dev);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (!check_sync_file_range())
-+		tst_brk(TCONF, "sync_file_range() not supported");
-+
-+	tst_sync_device_cleanup();
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.mount_device = 1,
-+	.all_filesystems = 1,
-+	.mntpoint = MNTPOINT,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_sync_file_range,
-+};
+Reviewed-by: Li Wang <liwang@redhat.com>
+
+
+> +mprotect04: CFLAGS += -falign-functions=64
+>
+
+One of my concern was this option maybe not supported by kind of compiler
+and probably broken in the compiling phase. So I just submitted these
+two(another is Daniel's) patches to Travis CI, the result looks good and no
+compiler error found there.
+https://travis-ci.com/wangli5665/ltp/builds/101429714
+
+Beside that, I also manually tried that with old gcc(gcc version 4.1.2) and
+verify that works fine.
+
 -- 
-2.7.4
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190219/73dc6da9/attachment.html>
