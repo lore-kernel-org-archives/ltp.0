@@ -1,88 +1,182 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 19 Feb 2019 21:34:03 +0800
-Subject: [LTP] [PATCH v2] mprotect04: Support execute-only page access
-	permissions
-In-Reply-To: <20190212000008.57085-1-danielmentz@google.com>
-References: <20190212000008.57085-1-danielmentz@google.com>
-Message-ID: <CAEemH2d+jAXjtv=AnQ=GFP4gm7Hu_9Lc32x4v2gSkw1JFc2boQ@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 19 Feb 2019 15:06:27 +0100
+Subject: [LTP] [PATCH v3 1/7] lib: Add library functions for sync
+ related syscalls
+In-Reply-To: <1550568500-10871-2-git-send-email-sumit.garg@linaro.org>
+References: <1550568500-10871-1-git-send-email-sumit.garg@linaro.org>
+ <1550568500-10871-2-git-send-email-sumit.garg@linaro.org>
+Message-ID: <20190219140627.GC32031@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Daniel,
+Hi!
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>  include/tst_sync_device.h | 17 ++++++++++
+>  lib/tst_sync_device.c     | 80 +++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 97 insertions(+)
+>  create mode 100644 include/tst_sync_device.h
+>  create mode 100644 lib/tst_sync_device.c
+> 
+> diff --git a/include/tst_sync_device.h b/include/tst_sync_device.h
+> new file mode 100644
+> index 0000000..b07c490
+> --- /dev/null
+> +++ b/include/tst_sync_device.h
+> @@ -0,0 +1,17 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2019 Linaro Limited. All rights reserved.
+> + * Author: Sumit Garg <sumit.garg@linaro.org>
+> + */
+> +
+> +#ifndef TST_SYNC_DEVICE_H__
+> +#define TST_SYNC_DEVICE_H__
+> +
+> +#include <stdbool.h>
+> +
+> +void tst_sync_device_init(const char *dev);
+> +int tst_sync_device_write(const char *file, unsigned int size_mb);
+> +bool tst_sync_device_check(unsigned int size_mb);
+> +void tst_sync_device_cleanup(void);
+> +
+> +#endif
+> diff --git a/lib/tst_sync_device.c b/lib/tst_sync_device.c
+> new file mode 100644
+> index 0000000..5a0a17c
+> --- /dev/null
+> +++ b/lib/tst_sync_device.c
+> @@ -0,0 +1,80 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2019 Linaro Limited. All rights reserved.
+> + * Author: Sumit Garg <sumit.garg@linaro.org>
+> + */
+> +
+> +#include <stdlib.h>
+> +#include <stdio.h>
+> +#include <sys/types.h>
+> +
+> +#define TST_NO_DEFAULT_MAIN
+> +#include "tst_test.h"
+> +#include "lapi/stat.h"
+> +#include "tst_sync_device.h"
+> +
+> +#define SIZE_MB			(1024*1024)
+> +#define MODE			0644
+> +
+> +static char dev_stat_path[1024];
+> +static char *buffer;
+> +static int fd;
+> +static unsigned long prev_write_sec;
+> +
+> +void tst_sync_device_init(const char *dev)
+> +{
+> +	struct stat st;
+> +
+> +	snprintf(dev_stat_path, sizeof(dev_stat_path), "/sys/block/%s/stat",
+> +		 strrchr(dev, '/') + 1);
+> +
+> +	if (stat(dev_stat_path, &st) != 0)
+> +		tst_brk(TCONF, "Test device stat file: %s not found",
+> +			dev_stat_path);
+> +
+> +	buffer = SAFE_MALLOC(SIZE_MB);
+> +
+> +	memset(buffer, 0, SIZE_MB);
+> +}
+> +
+> +int tst_sync_device_write(const char *file, unsigned int size_mb)
+> +{
+> +	unsigned int counter;
+                     ^
+		     It's kind of strange to name this variable anything
+		     else but i.
 
-On Tue, Feb 12, 2019 at 8:00 AM Daniel Mentz <danielmentz@google.com> wrote:
+> +	SAFE_FILE_SCANF(dev_stat_path, "%*s %*s %*s %*s %*s %*s %lu",
+> +			&prev_write_sec);
+> +
+> +	fd =  SAFE_OPEN(file, O_RDWR|O_CREAT, MODE);
+            ^
+	    Extra space.
 
-> Linux version 4.9 introduced support for execute-only page access
-> permissions on
-> arm64. As a result, user space processes, by default, cannot read from
-> their own .text sections. This change adds an extra call to mprotect()
-> to explicitly change access protections to allow relevant parts of the
-> .text section to be read.
->
-> Without this change, mprotect04 generates false TBROK results. We
-> previously saw this test output:
->
-> mprotect04    1  TPASS  :  test PROT_NONE for mprotect success
-> mprotect04    0  TINFO  :  exec_func: 0x5ac82d3588, page_to_copy:
-> 0x5ac82d3000
-> mprotect04    2  TBROK  :
-> ltp/testcases/kernel/syscalls/mprotect/mprotect04.c:236: page_to_copy not
-> present
-> mprotect04    3  TBROK  :
-> ltp/testcases/kernel/syscalls/mprotect/mprotect04.c:236: Remaining cases
-> broken
->
->
-I believe your patch make sense, but I can't reproduce that problem on my
-aarch64 platform with upstream kernel-v5.0-rc7. Is that execute-only page
-permission needs a special config to enable? or can you point me which
-commit made the change?
+> +	/* Filling the test file */
+         ^
+	 Useless comment, it's pretty clear what we do here.
 
-===== without your patch ====
-# uname -rm
-5.0.0-rc7 aarch64
+> +	for (counter = 0; counter < size_mb; counter++)
+> +		SAFE_WRITE(1, fd, buffer, SIZE_MB);
+> +
+> +	return fd;
+> +}
+> +
+> +bool tst_sync_device_check(unsigned int size_mb)
+> +{
+> +	unsigned long write_sec = 0;
+> +	bool res = false;
+> +
+> +	SAFE_FILE_SCANF(dev_stat_path, "%*s %*s %*s %*s %*s %*s %lu",
+> +			&write_sec);
+> +
+> +	if ((write_sec - prev_write_sec) * 512 >=
+> +	    (size_mb * SIZE_MB))
+> +		res = true;
+> +
+> +	SAFE_CLOSE(fd);
+> +
+> +	return res;
+> +}
 
-# ./mprotect04
-mprotect04    1  TPASS  :  test PROT_NONE for mprotect success
-mprotect04    2  TPASS  :  test PROT_EXEC for mprotect success
+I do not like that this API is tailored just to this specific usecase.
 
-I confirmed the '&exec_func == 0x403460' has READ&EXEC permission in the
-.text section. Or, did I missed anything?
+I would rather see the code that writes the file separated from the code
+that measures the bytes written.
 
-00400000-00420000 r-xp 00000000 fd:00 101414360
-/root/ltp/testcases/kernel/syscalls/mprotect/mprotect04
-00420000-00430000 r--p 00010000 fd:00 101414360
-/root/ltp/testcases/kernel/syscalls/mprotect/mprotect04
-00430000-00440000 rw-p 00020000 fd:00 101414360
-/root/ltp/testcases/kernel/syscalls/mprotect/mprotect04
-2ff00000-2ff30000 rw-p 00000000 00:00 0
-[heap]
-ffff86b00000-ffff86b20000 --xp 00000000 00:00 0
-ffff86b20000-ffff86c80000 r-xp 00000000 fd:00 1164
- /usr/lib64/libc-2.28.so
-ffff86c80000-ffff86c90000 r--p 00150000 fd:00 1164
- /usr/lib64/libc-2.28.so
-ffff86c90000-ffff86ca0000 rw-p 00160000 fd:00 1164
- /usr/lib64/libc-2.28.so
-ffff86cb0000-ffff86cc0000 r--p 00000000 00:00 0
-[vvar]
-ffff86cc0000-ffff86cd0000 r-xp 00000000 00:00 0
-[vdso]
-ffff86cd0000-ffff86cf0000 r-xp 00000000 fd:00 1157
- /usr/lib64/ld-2.28.so
-ffff86cf0000-ffff86d00000 r--p 00010000 fd:00 1157
- /usr/lib64/ld-2.28.so
-ffff86d00000-ffff86d10000 rw-p 00020000 fd:00 1157
- /usr/lib64/ld-2.28.so
-ffffed310000-ffffed340000 rw-p 00000000 00:00 0
-[stack]
+Maybe we just need a tst_dev_bytes_written() function that would return
+the bytes written since the last call of the function so that we could
+do:
+
+	fd = SAFE_OPEN(...);
+
+	tst_dev_blocks_written(tst_device.dev);
+
+	tst_fill_fd(fd, 0, TST_MB, size_mb);
+
+	TEST(fdsync(fd));
+
+	if (TST_RET)
+		tst_brk(TFAIL | TTERRNO, "syncfd() failed with %i", TST_RET);
+
+	written = tst_dev_blocks_written(tst_device.dev);
+
+	SAFE_CLOSE(fd);
+
+	if (written >= size_mb * TST_DEV_BLOCKS_IN_MB)
+		tst_res(TPASS, ...);
+	else
+		tst_res(TFAIL, ...);
+
+
+The test a bit longer, but the library functions are more reusable, if
+you do 'git grep -B 1 SAFE_WRITE' you can see that the tst_fill_fd
+function that loops over SAFE_WRITE could be used in a few places
+already.
+
+> +void tst_sync_device_cleanup(void)
+> +{
+> +	if (buffer)
+> +		free(buffer);
+> +
+> +	if (fd > 0)
+> +		SAFE_CLOSE(fd);
+> +}
+> -- 
+> 2.7.4
+> 
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190219/44ca0d04/attachment.html>
+Cyril Hrubis
+chrubis@suse.cz
