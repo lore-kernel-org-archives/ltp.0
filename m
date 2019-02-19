@@ -1,131 +1,56 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 19 Feb 2019 15:20:58 +0100
-Subject: [LTP] [PATCH v3 7/7] syscalls/sync_file_range: add sync device
- test-case
-In-Reply-To: <1550568500-10871-8-git-send-email-sumit.garg@linaro.org>
-References: <1550568500-10871-1-git-send-email-sumit.garg@linaro.org>
- <1550568500-10871-8-git-send-email-sumit.garg@linaro.org>
-Message-ID: <20190219142058.GF32031@rei.lan>
+From: Matthias =?unknown-8bit?q?M=C3=A4nnich?= <maennich@google.com>
+Date: Tue, 19 Feb 2019 14:28:22 +0000
+Subject: [LTP] [PATCH v2 2/2] rt_sigpending: add rt_sigpending02 test
+	case
+In-Reply-To: <2ad02580-8de8-b4a9-38a6-c14f507d8741@google.com>
+References: <20190207155153.41816-1-maennich@google.com>
+ <20190212161236.74385-1-maennich@google.com>
+ <20190212161236.74385-3-maennich@google.com>
+ <2ad02580-8de8-b4a9-38a6-c14f507d8741@google.com>
+Message-ID: <5e4da8a6-f495-ebe6-f457-1a564f4ebc4d@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
 Hi!
-> sync_file_range02 tests to sync file data range having large dirty file
-> pages to block device. Also, it tests all supported filesystems on a
-> test block device.
-> 
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> ---
->  runtest/syscalls                                   |  1 +
->  .../kernel/syscalls/sync_file_range/.gitignore     |  1 +
->  .../syscalls/sync_file_range/sync_file_range02.c   | 70 ++++++++++++++++++++++
->  3 files changed, 72 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index aaad651..70d3561 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1353,6 +1353,7 @@ syncfs01 syncfs01
->  
->  #testcases for sync_file_range
->  sync_file_range01 sync_file_range01
-> +sync_file_range02 sync_file_range02
->  
->  syscall01 syscall01
->  
-> diff --git a/testcases/kernel/syscalls/sync_file_range/.gitignore b/testcases/kernel/syscalls/sync_file_range/.gitignore
-> index 3f6bd75..e6485f7 100644
-> --- a/testcases/kernel/syscalls/sync_file_range/.gitignore
-> +++ b/testcases/kernel/syscalls/sync_file_range/.gitignore
-> @@ -1 +1,2 @@
->  /sync_file_range01
-> +/sync_file_range02
-> diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-> new file mode 100644
-> index 0000000..fb7a5f7
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-> @@ -0,0 +1,70 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2019 Linaro Limited. All rights reserved.
-> + * Author: Sumit Garg <sumit.garg@linaro.org>
-> + */
-> +
-> +/*
-> + * sync_file_range02
-> + *
-> + * It basically tests sync_file_range() to sync test file range having large
-> + * dirty file pages to block device. Also, it tests all supported filesystems
-> + * on a test block device.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <errno.h>
-> +#include <stdlib.h>
-> +#include <stdio.h>
-> +#include <sys/types.h>
-> +#include "tst_sync_device.h"
-> +#include "tst_test.h"
-> +#include "lapi/sync_file_range.h"
-> +#include "check_sync_file_range.h"
-> +
-> +#define MNTPOINT		"mnt_point"
-> +#define TST_FILE		MNTPOINT"/test"
-> +#define TST_FILE_SIZE_MB	32
-> +#define SIZE_MB			(1024*1024)
-> +
-> +static void verify_sync_file_range(void)
-> +{
-> +	int fd;
-> +
-> +	fd = tst_sync_device_write(TST_FILE, TST_FILE_SIZE_MB);
-> +
-> +	TEST(sync_file_range(fd, 0, TST_FILE_SIZE_MB * SIZE_MB,
-> +			     SYNC_FILE_RANGE_WAIT_BEFORE |
-> +			     SYNC_FILE_RANGE_WRITE |
-> +			     SYNC_FILE_RANGE_WAIT_AFTER));
-> +	if (TST_RET != 0)
-> +		tst_brk(TFAIL | TTERRNO, "sync_file_range() failed");
-> +
-> +	if (tst_sync_device_check(TST_FILE_SIZE_MB))
-> +		tst_res(TPASS, "Test file range synced to device");
-> +	else
-> +		tst_res(TFAIL, "Failed to sync test file range to device");
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tst_sync_device_init(tst_device->dev);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (!check_sync_file_range())
-> +		tst_brk(TCONF, "sync_file_range() not supported");
 
-This check is supposed to be in the test setup, right?
-
-> +	tst_sync_device_cleanup();
-> +}
-> +
-> +static struct tst_test test = {
-> +	.needs_root = 1,
-> +	.mount_device = 1,
-> +	.all_filesystems = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = verify_sync_file_range,
-> +};
-> -- 
-> 2.7.4
+On 16/02/2019 00:01, Steve Muckle wrote:
+> On 02/12/2019 08:12 AM, 'Matthias Maennich' via kernel-team wrote:
+>> This is effectively a copy of the sigpending/sigpending02 test case.
+>> Both of them are now bypassing any syscall wrapper.
+>>
+>> Signed-off-by: Matthias Maennich <maennich@google.com>
+>> ---
+>>   runtest/syscalls                              |  1 +
+>>   .../kernel/syscalls/rt_sigpending/.gitignore  |  1 +
+>>   .../kernel/syscalls/rt_sigpending/Makefile    | 23 +++++++++
+>>   .../syscalls/rt_sigpending/rt_sigpending02.c  | 48 +++++++++++++++++++
+>>   4 files changed, 73 insertions(+)
+>>   create mode 100644 testcases/kernel/syscalls/rt_sigpending/.gitignore
+>>   create mode 100644 testcases/kernel/syscalls/rt_sigpending/Makefile
+>>   create mode 100644 
+>> testcases/kernel/syscalls/rt_sigpending/rt_sigpending02.c
 > 
+> I believe this new test should also be added to runtest/syscalls.
+> 
+>>
+>> diff --git a/runtest/syscalls b/runtest/syscalls
+>> index 668c87cd1..6280034d0 100644
+>> --- a/runtest/syscalls
+>> +++ b/runtest/syscalls
+>> @@ -990,6 +990,7 @@ rmdir03A symlink01 -T rmdir03
+>>   rt_sigaction01 rt_sigaction01
+>>   rt_sigaction02 rt_sigaction02
+>>   rt_sigaction03 rt_sigaction03
+>> +rt_sigpending02 rt_sigpending02
+>>   rt_sigprocmask01 rt_sigprocmask01
+>>   rt_sigprocmask02 rt_sigprocmask02
+>>   rt_sigqueueinfo01 rt_sigqueueinfo01 
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+I added rt_sigpending02 to runtest/syscalls here. sigpending02 has 
+already been there before.
+
+Cheers,
+Matthias
