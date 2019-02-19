@@ -1,56 +1,54 @@
-From: Matthias =?unknown-8bit?q?M=C3=A4nnich?= <maennich@google.com>
-Date: Tue, 19 Feb 2019 14:28:22 +0000
-Subject: [LTP] [PATCH v2 2/2] rt_sigpending: add rt_sigpending02 test
-	case
-In-Reply-To: <2ad02580-8de8-b4a9-38a6-c14f507d8741@google.com>
-References: <20190207155153.41816-1-maennich@google.com>
- <20190212161236.74385-1-maennich@google.com>
- <20190212161236.74385-3-maennich@google.com>
- <2ad02580-8de8-b4a9-38a6-c14f507d8741@google.com>
-Message-ID: <5e4da8a6-f495-ebe6-f457-1a564f4ebc4d@google.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 19 Feb 2019 17:47:49 +0300
+Subject: [LTP] [PATCH 0/4] network: new random message size test-cases
+Message-ID: <1550587673-7995-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+New tests in the series with random message sizes: geneve02, gre02,
+macsec03, vxlan04.
 
-On 16/02/2019 00:01, Steve Muckle wrote:
-> On 02/12/2019 08:12 AM, 'Matthias Maennich' via kernel-team wrote:
->> This is effectively a copy of the sigpending/sigpending02 test case.
->> Both of them are now bypassing any syscall wrapper.
->>
->> Signed-off-by: Matthias Maennich <maennich@google.com>
->> ---
->>   runtest/syscalls                              |  1 +
->>   .../kernel/syscalls/rt_sigpending/.gitignore  |  1 +
->>   .../kernel/syscalls/rt_sigpending/Makefile    | 23 +++++++++
->>   .../syscalls/rt_sigpending/rt_sigpending02.c  | 48 +++++++++++++++++++
->>   4 files changed, 73 insertions(+)
->>   create mode 100644 testcases/kernel/syscalls/rt_sigpending/.gitignore
->>   create mode 100644 testcases/kernel/syscalls/rt_sigpending/Makefile
->>   create mode 100644 
->> testcases/kernel/syscalls/rt_sigpending/rt_sigpending02.c
-> 
-> I believe this new test should also be added to runtest/syscalls.
-> 
->>
->> diff --git a/runtest/syscalls b/runtest/syscalls
->> index 668c87cd1..6280034d0 100644
->> --- a/runtest/syscalls
->> +++ b/runtest/syscalls
->> @@ -990,6 +990,7 @@ rmdir03A symlink01 -T rmdir03
->>   rt_sigaction01 rt_sigaction01
->>   rt_sigaction02 rt_sigaction02
->>   rt_sigaction03 rt_sigaction03
->> +rt_sigpending02 rt_sigpending02
->>   rt_sigprocmask01 rt_sigprocmask01
->>   rt_sigprocmask02 rt_sigprocmask02
->>   rt_sigqueueinfo01 rt_sigqueueinfo01 
+This patch-set also introduces "TST_NET_MAX_PKT" environment variable
+to control the upper limit of the message payload size. By default it
+is set to 1.1 * MTU (of the test interface).
 
-I added rt_sigpending02 to runtest/syscalls here. sigpending02 has 
-already been there before.
+Alexey Kodanev (4):
+  network/gre01: move setup to library
+  lib/tst_net.sh: add new TST_NET_MAX_PKT env variable
+  network: use TST_NET_MAX_PKT
+  network: add new test-cases with randomized message length
 
-Cheers,
-Matthias
+ runtest/net.features                            |    9 +
+ runtest/net_stress.ipsec_dccp                   |  208 +++++++++++-----------
+ runtest/net_stress.ipsec_sctp                   |  208 +++++++++++-----------
+ runtest/net_stress.ipsec_tcp                    |  208 +++++++++++-----------
+ runtest/net_stress.ipsec_udp                    |  212 +++++++++++-----------
+ testcases/lib/tst_net.sh                        |   10 +-
+ testcases/lib/tst_test.sh                       |    1 +
+ testcases/network/mpls/mpls02.sh                |    2 +-
+ testcases/network/mpls/mpls_lib.sh              |    2 +-
+ testcases/network/sockets/bind_noport01.sh      |   15 ++-
+ testcases/network/stress/dccp/dccp_ipsec.sh     |    6 +-
+ testcases/network/stress/dccp/dccp_ipsec_vti.sh |    6 +-
+ testcases/network/stress/sctp/sctp_ipsec.sh     |    6 +-
+ testcases/network/stress/sctp/sctp_ipsec_vti.sh |    6 +-
+ testcases/network/stress/tcp/tcp_ipsec.sh       |    6 +-
+ testcases/network/stress/tcp/tcp_ipsec_vti.sh   |    6 +-
+ testcases/network/stress/udp/udp_ipsec.sh       |    7 +-
+ testcases/network/stress/udp/udp_ipsec_vti.sh   |    7 +-
+ testcases/network/tcp_cc/tcp_cc_lib.sh          |    4 +-
+ testcases/network/virt/geneve02.sh              |   38 ++++
+ testcases/network/virt/gre01.sh                 |   19 +--
+ testcases/network/virt/gre02.sh                 |   11 ++
+ testcases/network/virt/macsec03.sh              |   13 ++
+ testcases/network/virt/virt_lib.sh              |   27 +++-
+ testcases/network/virt/vxlan04.sh               |   39 ++++
+ 25 files changed, 624 insertions(+), 452 deletions(-)
+ create mode 100755 testcases/network/virt/geneve02.sh
+ create mode 100755 testcases/network/virt/gre02.sh
+ create mode 100755 testcases/network/virt/macsec03.sh
+ create mode 100755 testcases/network/virt/vxlan04.sh
+
