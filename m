@@ -1,136 +1,88 @@
 From: Sumit Garg <sumit.garg@linaro.org>
-Date: Tue, 19 Feb 2019 14:58:14 +0530
-Subject: [LTP] [PATCH v3 1/7] lib: Add library functions for sync related
-	syscalls
-In-Reply-To: <1550568500-10871-1-git-send-email-sumit.garg@linaro.org>
-References: <1550568500-10871-1-git-send-email-sumit.garg@linaro.org>
-Message-ID: <1550568500-10871-2-git-send-email-sumit.garg@linaro.org>
+Date: Tue, 19 Feb 2019 14:58:13 +0530
+Subject: [LTP] [PATCH v3 0/7] syscalls: add sync device test-cases
+Message-ID: <1550568500-10871-1-git-send-email-sumit.garg@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-These library functions are used to add common test for minimal sectors
-written on device for various sync related syscalls.
+This patch-set adds common test for minimal sectors written on device
+for various sync related syscalls:
+1. syncfs()
+2. sync()
+3. fsync()
+4. fdatasync()
+5. sync_file_range()
 
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
----
- include/tst_sync_device.h | 17 ++++++++++
- lib/tst_sync_device.c     | 80 +++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 97 insertions(+)
+Also this test is run on all supported filesystems on a test block
+device.
+
+Changes in v3:
+1. Scope increased from single patch to this patch-set to add common
+   test for sync(), fsync(), fdatasync() and sync_file_range() syscalls.
+2. Move common functionality to library functions.
+3. Use %lu rather than %s while parsing sectors written.
+4. Add config check for C library wrapper and fallback definition for
+   syncfs() and sync_file_range() syscalls.
+
+Changes in v2:
+1. Remove unused header file include.
+2. Remove redundant tst_device check.
+3. Remove redundant flags from tst_test struct.
+
+Fixes: https://github.com/linux-test-project/ltp/issues/294
+
+Sumit Garg (7):
+  lib: Add library functions for sync related syscalls
+  syscalls: add syncfs() sync device test-case
+  syscalls/sync: add sync device test-case
+  syscalls/fsync: add sync device test-case
+  syscalls/fdatasync: add sync device test-case
+  syscalls/sync_file_range: Use C library wrapper if present
+  syscalls/sync_file_range: add sync device test-case
+
+ configure.ac                                       |  2 +
+ include/lapi/sync_file_range.h                     | 64 +++++++++++++++++
+ include/lapi/syncfs.h                              | 21 ++++++
+ include/tst_sync_device.h                          | 17 +++++
+ include/tst_test.h                                 |  7 ++
+ lib/tst_sync_device.c                              | 80 ++++++++++++++++++++++
+ m4/ltp-sync_file_range.m4                          | 10 +++
+ m4/ltp-syncfs.m4                                   | 10 +++
+ runtest/syscalls                                   |  6 ++
+ testcases/kernel/syscalls/fdatasync/.gitignore     |  1 +
+ testcases/kernel/syscalls/fdatasync/fdatasync03.c  | 61 +++++++++++++++++
+ testcases/kernel/syscalls/fsync/.gitignore         |  1 +
+ testcases/kernel/syscalls/fsync/fsync04.c          | 61 +++++++++++++++++
+ testcases/kernel/syscalls/sync/.gitignore          |  1 +
+ testcases/kernel/syscalls/sync/sync03.c            | 59 ++++++++++++++++
+ .../kernel/syscalls/sync_file_range/.gitignore     |  1 +
+ .../sync_file_range/check_sync_file_range.h        | 23 +++++++
+ .../syscalls/sync_file_range/sync_file_range01.c   | 62 ++---------------
+ .../syscalls/sync_file_range/sync_file_range02.c   | 70 +++++++++++++++++++
+ testcases/kernel/syscalls/syncfs/.gitignore        |  1 +
+ testcases/kernel/syscalls/syncfs/Makefile          |  8 +++
+ testcases/kernel/syscalls/syncfs/check_syncfs.h    | 19 +++++
+ testcases/kernel/syscalls/syncfs/syncfs01.c        | 64 +++++++++++++++++
+ 23 files changed, 592 insertions(+), 57 deletions(-)
+ create mode 100644 include/lapi/sync_file_range.h
+ create mode 100644 include/lapi/syncfs.h
  create mode 100644 include/tst_sync_device.h
  create mode 100644 lib/tst_sync_device.c
+ create mode 100644 m4/ltp-sync_file_range.m4
+ create mode 100644 m4/ltp-syncfs.m4
+ create mode 100644 testcases/kernel/syscalls/fdatasync/fdatasync03.c
+ create mode 100644 testcases/kernel/syscalls/fsync/fsync04.c
+ create mode 100644 testcases/kernel/syscalls/sync/sync03.c
+ create mode 100644 testcases/kernel/syscalls/sync_file_range/check_sync_file_range.h
+ create mode 100644 testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+ create mode 100644 testcases/kernel/syscalls/syncfs/.gitignore
+ create mode 100644 testcases/kernel/syscalls/syncfs/Makefile
+ create mode 100644 testcases/kernel/syscalls/syncfs/check_syncfs.h
+ create mode 100644 testcases/kernel/syscalls/syncfs/syncfs01.c
 
-diff --git a/include/tst_sync_device.h b/include/tst_sync_device.h
-new file mode 100644
-index 0000000..b07c490
---- /dev/null
-+++ b/include/tst_sync_device.h
-@@ -0,0 +1,17 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Linaro Limited. All rights reserved.
-+ * Author: Sumit Garg <sumit.garg@linaro.org>
-+ */
-+
-+#ifndef TST_SYNC_DEVICE_H__
-+#define TST_SYNC_DEVICE_H__
-+
-+#include <stdbool.h>
-+
-+void tst_sync_device_init(const char *dev);
-+int tst_sync_device_write(const char *file, unsigned int size_mb);
-+bool tst_sync_device_check(unsigned int size_mb);
-+void tst_sync_device_cleanup(void);
-+
-+#endif
-diff --git a/lib/tst_sync_device.c b/lib/tst_sync_device.c
-new file mode 100644
-index 0000000..5a0a17c
---- /dev/null
-+++ b/lib/tst_sync_device.c
-@@ -0,0 +1,80 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Linaro Limited. All rights reserved.
-+ * Author: Sumit Garg <sumit.garg@linaro.org>
-+ */
-+
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <sys/types.h>
-+
-+#define TST_NO_DEFAULT_MAIN
-+#include "tst_test.h"
-+#include "lapi/stat.h"
-+#include "tst_sync_device.h"
-+
-+#define SIZE_MB			(1024*1024)
-+#define MODE			0644
-+
-+static char dev_stat_path[1024];
-+static char *buffer;
-+static int fd;
-+static unsigned long prev_write_sec;
-+
-+void tst_sync_device_init(const char *dev)
-+{
-+	struct stat st;
-+
-+	snprintf(dev_stat_path, sizeof(dev_stat_path), "/sys/block/%s/stat",
-+		 strrchr(dev, '/') + 1);
-+
-+	if (stat(dev_stat_path, &st) != 0)
-+		tst_brk(TCONF, "Test device stat file: %s not found",
-+			dev_stat_path);
-+
-+	buffer = SAFE_MALLOC(SIZE_MB);
-+
-+	memset(buffer, 0, SIZE_MB);
-+}
-+
-+int tst_sync_device_write(const char *file, unsigned int size_mb)
-+{
-+	unsigned int counter;
-+
-+	SAFE_FILE_SCANF(dev_stat_path, "%*s %*s %*s %*s %*s %*s %lu",
-+			&prev_write_sec);
-+
-+	fd =  SAFE_OPEN(file, O_RDWR|O_CREAT, MODE);
-+
-+	/* Filling the test file */
-+	for (counter = 0; counter < size_mb; counter++)
-+		SAFE_WRITE(1, fd, buffer, SIZE_MB);
-+
-+	return fd;
-+}
-+
-+bool tst_sync_device_check(unsigned int size_mb)
-+{
-+	unsigned long write_sec = 0;
-+	bool res = false;
-+
-+	SAFE_FILE_SCANF(dev_stat_path, "%*s %*s %*s %*s %*s %*s %lu",
-+			&write_sec);
-+
-+	if ((write_sec - prev_write_sec) * 512 >=
-+	    (size_mb * SIZE_MB))
-+		res = true;
-+
-+	SAFE_CLOSE(fd);
-+
-+	return res;
-+}
-+
-+void tst_sync_device_cleanup(void)
-+{
-+	if (buffer)
-+		free(buffer);
-+
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
-+}
 -- 
 2.7.4
 
