@@ -1,11 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 19 Feb 2019 15:19:30 +0100
-Subject: [LTP] [PATCH v3 6/7] syscalls/sync_file_range: Use C library
- wrapper if present
-In-Reply-To: <1550568500-10871-7-git-send-email-sumit.garg@linaro.org>
+Date: Tue, 19 Feb 2019 15:20:58 +0100
+Subject: [LTP] [PATCH v3 7/7] syscalls/sync_file_range: add sync device
+ test-case
+In-Reply-To: <1550568500-10871-8-git-send-email-sumit.garg@linaro.org>
 References: <1550568500-10871-1-git-send-email-sumit.garg@linaro.org>
- <1550568500-10871-7-git-send-email-sumit.garg@linaro.org>
-Message-ID: <20190219141930.GE32031@rei.lan>
+ <1550568500-10871-8-git-send-email-sumit.garg@linaro.org>
+Message-ID: <20190219142058.GF32031@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,248 +13,118 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> diff --git a/configure.ac b/configure.ac
-> index 9122b6d..d15bff3 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -232,6 +232,7 @@ LTP_CHECK_RLIMIT64
->  LTP_DETECT_HOST_CPU
->  LTP_CHECK_PERF_EVENT
->  LTP_CHECK_SYNCFS
-> +LTP_CHECK_SYNC_FILE_RANGE
+> sync_file_range02 tests to sync file data range having large dirty file
+> pages to block device. Also, it tests all supported filesystems on a
+> test block device.
+> 
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>  runtest/syscalls                                   |  1 +
+>  .../kernel/syscalls/sync_file_range/.gitignore     |  1 +
+>  .../syscalls/sync_file_range/sync_file_range02.c   | 70 ++++++++++++++++++++++
+>  3 files changed, 72 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+> 
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index aaad651..70d3561 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -1353,6 +1353,7 @@ syncfs01 syncfs01
 >  
->  if test "x$with_numa" = xyes; then
->  	LTP_CHECK_SYSCALL_NUMA
-> diff --git a/include/lapi/sync_file_range.h b/include/lapi/sync_file_range.h
+>  #testcases for sync_file_range
+>  sync_file_range01 sync_file_range01
+> +sync_file_range02 sync_file_range02
+>  
+>  syscall01 syscall01
+>  
+> diff --git a/testcases/kernel/syscalls/sync_file_range/.gitignore b/testcases/kernel/syscalls/sync_file_range/.gitignore
+> index 3f6bd75..e6485f7 100644
+> --- a/testcases/kernel/syscalls/sync_file_range/.gitignore
+> +++ b/testcases/kernel/syscalls/sync_file_range/.gitignore
+> @@ -1 +1,2 @@
+>  /sync_file_range01
+> +/sync_file_range02
+> diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
 > new file mode 100644
-> index 0000000..7b0ef69
+> index 0000000..fb7a5f7
 > --- /dev/null
-> +++ b/include/lapi/sync_file_range.h
-> @@ -0,0 +1,64 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) International Business Machines  Corp., 2008
-> + */
-> +
-> +#ifndef SYNC_FILE_RANGE_H
-> +#define SYNC_FILE_RANGE_H
-> +
-> +#include <sys/types.h>
-> +#include "config.h"
-> +#include "lapi/syscalls.h"
-> +
-> +#if !defined(HAVE_SYNC_FILE_RANGE)
-> +
-> +#ifdef TST_TEST_H__
-> +# define TST_SYSCALL tst_syscall
-> +#else
-> +# define TST_SYSCALL ltp_syscall
-> +#endif
-> +
-> +/*****************************************************************************
-> + * Wraper function to call sync_file_range system call
-> + ******************************************************************************/
-> +static inline long sync_file_range(int fd, off64_t offset, off64_t nbytes,
-> +				   unsigned int flags)
-> +{
-> +/* arm and powerpc */
-> +#if (defined(__arm__) || defined(__powerpc__) || defined(__powerpc64__))
-> +#if (__WORDSIZE == 32)
-> +#if __BYTE_ORDER == __BIG_ENDIAN
-> +	return TST_SYSCALL(__NR_sync_file_range2, fd, flags,
-> +		(int)(offset >> 32), (int)offset, (int)(nbytes >> 32),
-> +		(int)nbytes);
-> +#elif __BYTE_ORDER == __LITTLE_ENDIAN
-> +	return TST_SYSCALL(__NR_sync_file_range2, fd, flags, (int)offset,
-> +		       (int)(offset >> 32), nbytes, (int)(nbytes >> 32));
-> +#endif
-> +#else
-> +	return TST_SYSCALL(__NR_sync_file_range2, fd, flags, offset, nbytes);
-> +#endif
-> +
-> +/* s390 */
-
-Instead of comment like this the usuall way how to make this maze easier
-to read is to stick spaces after the hash to inner conditions, so this
-would become:
-
-#if (defined(__arm__) || defined (__powerpc__) || defined(__powerpc64__))
-# if (__WORDSIZE == 32)
-#  if __BYTE_ORDER == __BIG_ENDIAN
-	return ...;
-#  elif __BYTE_ORDER == __LITTLE_ENDIAN
-	return ...;
-#  endif
-# else
-	return ...;
-#endif
-
-
-> +#elif (defined(__s390__) || defined(__s390x__)) && __WORDSIZE == 32
-> +	return TST_SYSCALL(__NR_sync_file_range, fd, (int)(offset >> 32),
-> +		(int)offset, (int)(nbytes >> 32), (int)nbytes, flags);
-> +
-> +/* mips */
-> +#elif defined(__mips__) && __WORDSIZE == 32
-> +#if __BYTE_ORDER == __BIG_ENDIAN
-> +	return TST_SYSCALL(__NR_sync_file_range, fd, 0, (int)(offset >> 32),
-> +		(int)offset, (int)(nbytes >> 32), (int)nbytes, flags);
-> +#elif __BYTE_ORDER == __LITTLE_ENDIAN
-> +	return TST_SYSCALL(__NR_sync_file_range, fd, 0, (int)offset,
-> +		(int)(offset >> 32), (int)nbytes, (int)(nbytes >> 32), flags);
-> +#endif
-> +
-> +/* other */
-> +#else
-> +	return TST_SYSCALL(__NR_sync_file_range, fd, offset, nbytes, flags);
-> +#endif
-> +}
-> +#endif
-
-
-
-> +#endif /* SYNC_FILE_RANGE_H */
-> diff --git a/m4/ltp-sync_file_range.m4 b/m4/ltp-sync_file_range.m4
-> new file mode 100644
-> index 0000000..b47a091
-> --- /dev/null
-> +++ b/m4/ltp-sync_file_range.m4
-> @@ -0,0 +1,10 @@
-> +dnl SPDX-License-Identifier: GPL-2.0-or-later
-> +dnl Copyright (c) 2019 Linaro Limited. All rights reserved.
-> +
-> +dnl
-> +dnl LTP_CHECK_SYNC_FILE_RANGE
-> +dnl ----------------------------
-> +dnl
-> +AC_DEFUN([LTP_CHECK_SYNC_FILE_RANGE],[
-> +AC_CHECK_FUNCS(sync_file_range,,)
-> +])
-> diff --git a/testcases/kernel/syscalls/sync_file_range/check_sync_file_range.h b/testcases/kernel/syscalls/sync_file_range/check_sync_file_range.h
-> new file mode 100644
-> index 0000000..3d932f6
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/sync_file_range/check_sync_file_range.h
-> @@ -0,0 +1,23 @@
+> +++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+> @@ -0,0 +1,70 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
 > +/*
 > + * Copyright (c) 2019 Linaro Limited. All rights reserved.
 > + * Author: Sumit Garg <sumit.garg@linaro.org>
 > + */
 > +
-> +#ifndef CHECK_SYNC_FILE_RANGE_H
-> +#define CHECK_SYNC_FILE_RANGE_H
+> +/*
+> + * sync_file_range02
+> + *
+> + * It basically tests sync_file_range() to sync test file range having large
+> + * dirty file pages to block device. Also, it tests all supported filesystems
+> + * on a test block device.
+> + */
 > +
-> +#include <stdbool.h>
-> +
-> +bool check_sync_file_range(void)
-> +{
-> +	int ret;
-> +
-> +	ret = sync_file_range(-1, 0, 0, 0);
-> +	if (ret == -1 && errno == EINVAL)
-> +		return false;
-> +
-> +	return true;
-> +}
-
-I would rather stick to return 0 and return 1 instead of including the
-stdbool, but that is very minor.
-
-> +#endif /* CHECK_SYNC_FILE_RANGE_H */
-> diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c
-> index cebb919..3a97183 100644
-> --- a/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c
-> +++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c
-> @@ -92,7 +92,8 @@
->  #include <unistd.h>
->  
->  #include "test.h"
-> -#include "lapi/syscalls.h"
+> +#define _GNU_SOURCE
+> +#include <errno.h>
+> +#include <stdlib.h>
+> +#include <stdio.h>
+> +#include <sys/types.h>
+> +#include "tst_sync_device.h"
+> +#include "tst_test.h"
 > +#include "lapi/sync_file_range.h"
 > +#include "check_sync_file_range.h"
->  
->  #ifndef SYNC_FILE_RANGE_WAIT_BEFORE
->  #define SYNC_FILE_RANGE_WAIT_BEFORE 1
-> @@ -190,48 +191,6 @@ void setup(void)
->  	sfd = open(spl_file, O_RDWR | O_CREAT, 0700);
->  }
->  
-> -/*****************************************************************************
-> - * Wraper function to call sync_file_range system call
-> - ******************************************************************************/
-> -static inline long syncfilerange(int fd, off64_t offset, off64_t nbytes,
-> -				 unsigned int flags)
-> -{
-> -/* arm and powerpc */
-> -#if (defined(__arm__) || defined(__powerpc__) || defined(__powerpc64__))
-> -#if (__WORDSIZE == 32)
-> -#if __BYTE_ORDER == __BIG_ENDIAN
-> -	return ltp_syscall(__NR_sync_file_range2, fd, flags,
-> -		(int)(offset >> 32), (int)offset, (int)(nbytes >> 32),
-> -		(int)nbytes);
-> -#elif __BYTE_ORDER == __LITTLE_ENDIAN
-> -	return ltp_syscall(__NR_sync_file_range2, fd, flags, (int)offset,
-> -		       (int)(offset >> 32), nbytes, (int)(nbytes >> 32));
-> -#endif
-> -#else
-> -	return ltp_syscall(__NR_sync_file_range2, fd, flags, offset, nbytes);
-> -#endif
-> -
-> -/* s390 */
-> -#elif (defined(__s390__) || defined(__s390x__)) && __WORDSIZE == 32
-> -	return ltp_syscall(__NR_sync_file_range, fd, (int)(offset >> 32),
-> -		(int)offset, (int)(nbytes >> 32), (int)nbytes, flags);
-> -
-> -/* mips */
-> -#elif defined(__mips__) && __WORDSIZE == 32
-> -#if __BYTE_ORDER == __BIG_ENDIAN
-> -	return ltp_syscall(__NR_sync_file_range, fd, 0, (int)(offset >> 32),
-> -		(int)offset, (int)(nbytes >> 32), (int)nbytes, flags);
-> -#elif __BYTE_ORDER == __LITTLE_ENDIAN
-> -	return ltp_syscall(__NR_sync_file_range, fd, 0, (int)offset,
-> -		(int)(offset >> 32), (int)nbytes, (int)(nbytes >> 32), flags);
-> -#endif
-> -
-> -/* other */
-> -#else
-> -	return ltp_syscall(__NR_sync_file_range, fd, offset, nbytes, flags);
-> -#endif
-> -}
-> -
->  /******************************************************************************/
->  /*									    */
->  /* Function:    main							  */
-> @@ -258,24 +217,13 @@ int main(int ac, char **av)
->  
->  	tst_parse_opts(ac, av, NULL, NULL);
->  
-> -#if defined(__powerpc__) || defined(__powerpc64__)	/* for PPC, kernel version > 2.6.21 needed */
-> -	if (tst_kvercmp(2, 16, 22) < 0) {
-> -		tst_brkm(TCONF, NULL,
-> -			 "System doesn't support execution of the test");
-> -	}
-> -#else
-> -	/* For other archs, need kernel version > 2.6.16 */
-> -
-> -	if (tst_kvercmp(2, 6, 17) < 0) {
-> -		tst_brkm(TCONF, NULL,
-> -			 "System doesn't support execution of the test");
-> -	}
-> -#endif
+> +
+> +#define MNTPOINT		"mnt_point"
+> +#define TST_FILE		MNTPOINT"/test"
+> +#define TST_FILE_SIZE_MB	32
+> +#define SIZE_MB			(1024*1024)
+> +
+> +static void verify_sync_file_range(void)
+> +{
+> +	int fd;
+> +
+> +	fd = tst_sync_device_write(TST_FILE, TST_FILE_SIZE_MB);
+> +
+> +	TEST(sync_file_range(fd, 0, TST_FILE_SIZE_MB * SIZE_MB,
+> +			     SYNC_FILE_RANGE_WAIT_BEFORE |
+> +			     SYNC_FILE_RANGE_WRITE |
+> +			     SYNC_FILE_RANGE_WAIT_AFTER));
+> +	if (TST_RET != 0)
+> +		tst_brk(TFAIL | TTERRNO, "sync_file_range() failed");
+> +
+> +	if (tst_sync_device_check(TST_FILE_SIZE_MB))
+> +		tst_res(TPASS, "Test file range synced to device");
+> +	else
+> +		tst_res(TFAIL, "Failed to sync test file range to device");
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	tst_sync_device_init(tst_device->dev);
+> +}
+> +
+> +static void cleanup(void)
+> +{
 > +	if (!check_sync_file_range())
-> +		tst_brkm(TCONF, NULL, "sync_file_range() not supported");
->  
->  	setup();
->  
->  	for (test_index = 0; test_index < TST_TOTAL; test_index++) {
-> -		TEST(syncfilerange
-> +		TEST(sync_file_range
->  		     (*(test_data[test_index].fd),
->  		      test_data[test_index].offset,
->  		      test_data[test_index].nbytes,
+> +		tst_brk(TCONF, "sync_file_range() not supported");
 
-Other than the minor things, this is great work.
+This check is supposed to be in the test setup, right?
+
+> +	tst_sync_device_cleanup();
+> +}
+> +
+> +static struct tst_test test = {
+> +	.needs_root = 1,
+> +	.mount_device = 1,
+> +	.all_filesystems = 1,
+> +	.mntpoint = MNTPOINT,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = verify_sync_file_range,
+> +};
+> -- 
+> 2.7.4
+> 
 
 -- 
 Cyril Hrubis
