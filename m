@@ -1,19 +1,29 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 20 Feb 2019 09:16:53 +0100
-Subject: [LTP] [PATCH 3/4] network: use TST_NET_MAX_PKT
-In-Reply-To: <1550587673-7995-4-git-send-email-alexey.kodanev@oracle.com>
-References: <1550587673-7995-1-git-send-email-alexey.kodanev@oracle.com>
- <1550587673-7995-4-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20190220081653.GC15392@x230>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Wed, 20 Feb 2019 13:50:15 +0530
+Subject: [LTP] [PATCH v3 3/7] syscalls/sync: add sync device test-case
+In-Reply-To: <20190219140929.GD32031@rei.lan>
+References: <1550568500-10871-1-git-send-email-sumit.garg@linaro.org>
+ <1550568500-10871-4-git-send-email-sumit.garg@linaro.org>
+ <20190219140929.GD32031@rei.lan>
+Message-ID: <CAFA6WYP9a6r6UHZ50Gce0qMZ+6dpwVidBznqCRcqT07gb8n=Vg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+On Tue, 19 Feb 2019 at 19:39, Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+> Hi!
+> > Also define TEST_VOID macro in tst_test.h.
+>
+> This should be in a separate patch, otherwise this all looks good.
+>
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Sure, will create separate patch for this.
 
-Kind regards,
-Petr
+-Sumit
+
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
