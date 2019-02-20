@@ -1,56 +1,37 @@
 From: Daniel =?unknown-8bit?q?D=C3=ADaz?= <daniel.diaz@linaro.org>
-Date: Wed, 20 Feb 2019 09:34:10 -0600
-Subject: [LTP] [PATCH 1/3] Add header file lapi/signal.h
-Message-ID: <20190220153412.18090-1-daniel.diaz@linaro.org>
+Date: Wed, 20 Feb 2019 09:34:11 -0600
+Subject: [LTP] [PATCH 2/3] syscalls/sighold02: Include lapi/signal.h for
+	__SIGRT{MIN, MAX}
+In-Reply-To: <20190220153412.18090-1-daniel.diaz@linaro.org>
+References: <20190220153412.18090-1-daniel.diaz@linaro.org>
+Message-ID: <20190220153412.18090-2-daniel.diaz@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-Some libc implementations might differ in the definitions they
-include. Exempli gratia: MUSL does not define __SIGRTMAX nor
-__SIGRTMIN.
+MUSL does not include __SIGRTMIN nor __SIGRTMAX. The
+compatibility header can help here.
 
-This header covers those differences for all tests that
-require those definitions.
-
-Signed-off-by: Daniel Díaz <daniel.diaz@linaro.org>
+Signed-off-by: Daniel D=C3=ADaz <daniel.diaz@linaro.org>
 ---
- include/lapi/signal.h | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
- create mode 100644 include/lapi/signal.h
+ testcases/kernel/syscalls/sighold/sighold02.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/lapi/signal.h b/include/lapi/signal.h
-new file mode 100644
-index 000000000..d22965a94
---- /dev/null
-+++ b/include/lapi/signal.h
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Linaro Limited. All rights reserved.
-+ * Author: Daniel Díaz <daniel.diaz@linaro.org>
-+ */
-+
-+#ifndef LAPI_SIGNAL_H
-+#define LAPI_SIGNAL_H
-+
-+#include <signal.h>
-+
-+/*
-+ * Some libc implementations might differ in the definitions they include. This
-+ * covers those differences for all tests to successfully build.
-+ */
-+
-+#ifndef __SIGRTMIN
-+# define __SIGRTMIN 32
-+#endif
-+#ifndef __SIGRTMAX
-+# define __SIGRTMAX (_NSIG - 1)
-+#endif
-+
-+#endif
--- 
+diff --git a/testcases/kernel/syscalls/sighold/sighold02.c b/testcases/kern=
+el/syscalls/sighold/sighold02.c
+index d1d4b0b06..b763142df 100644
+--- a/testcases/kernel/syscalls/sighold/sighold02.c
++++ b/testcases/kernel/syscalls/sighold/sighold02.c
+@@ -49,6 +49,7 @@
+ #include <sys/wait.h>
+ #include "test.h"
+ #include "safe_macros.h"
++#include "lapi/signal.h"
+=20
+ /* _XOPEN_SOURCE disables NSIG */
+ #ifndef NSIG
+--=20
 2.17.1
 
