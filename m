@@ -1,49 +1,66 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 20 Feb 2019 10:36:25 +0100
-Subject: [LTP] [PATCH] Define SIGRTMIN and SIGRTMAX for musl
-In-Reply-To: <20190219221053.458-1-rafael.tinoco@linaro.org>
-References: <20190219221053.458-1-rafael.tinoco@linaro.org>
-Message-ID: <20190220093625.GA2171@x230>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 20 Feb 2019 13:03:34 +0100
+Subject: [LTP] [PATCH v3 1/7] lib: Add library functions for sync
+ related syscalls
+In-Reply-To: <CAFA6WYN2f4iT85y5hJbk3m8zDkfgwi1kEKES59B2ZOOiS22YDA@mail.gmail.com>
+References: <1550568500-10871-1-git-send-email-sumit.garg@linaro.org>
+ <1550568500-10871-2-git-send-email-sumit.garg@linaro.org>
+ <20190219140627.GC32031@rei.lan>
+ <CAFA6WYN2f4iT85y5hJbk3m8zDkfgwi1kEKES59B2ZOOiS22YDA@mail.gmail.com>
+Message-ID: <20190220120334.GA32140@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Rafael,
+Hi!
+> > Maybe we just need a tst_dev_bytes_written() function that would return
+> > the bytes written since the last call of the function so that we could
+> > do:
+> >
+> >         fd = SAFE_OPEN(...);
+> >
+> >         tst_dev_blocks_written(tst_device.dev);
+> >
+> >         tst_fill_fd(fd, 0, TST_MB, size_mb);
+> >
+> >         TEST(fdsync(fd));
+> >
+> >         if (TST_RET)
+> >                 tst_brk(TFAIL | TTERRNO, "syncfd() failed with %i", TST_RET);
+> >
+> >         written = tst_dev_blocks_written(tst_device.dev);
+> >
+> >         SAFE_CLOSE(fd);
+> >
+> >         if (written >= size_mb * TST_DEV_BLOCKS_IN_MB)
+> >                 tst_res(TPASS, ...);
+> >         else
+> >                 tst_res(TFAIL, ...);
+> >
+> 
+> Seems to be nicer approach. So rather than new file should I add
+> tst_dev_bytes_written() function in "lib/tst_device.c" file?
 
-> Although unsupported, musl enablement is always good to pursue.
-> Defining __SIGRTMIN and __SIGRTMAX is needed for musl enablement.
+Sounds good to me.
 
-> Signed-off-by: Daniel Diaz <daniel.diaz@linaro.org>
-> Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
-> ---
->  include/old/test.h | 7 +++++++
-Good catch, thanks :). But could you please create include/lapi/signal.h and add
-it there?  (+ load <signal.h> before). And then include it in all 4 missing
-places? In this case it can be used also in the future.
+> > The test a bit longer, but the library functions are more reusable, if
+> > you do 'git grep -B 1 SAFE_WRITE' you can see that the tst_fill_fd
+> > function that loops over SAFE_WRITE could be used in a few places
+> > already.
+> >
+> 
+> I am not able to locate tst_fill_fd function. Are you referring to
+> tst_fill_file function? If yes, then we could split that function to
+> create tst_fill_fd function.
 
+There is none, I was trying to state that there are several places that
+use the same pattern and that such function would be generally useful.
 
-Kind regards,
-Petr
+And yes, buiding tst_fill_file on the top of tst_fill_fd sounds like a
+good approach.
 
->  1 file changed, 7 insertions(+)
-
-> diff --git a/include/old/test.h b/include/old/test.h
-> index 0738237e9..01b0bd4de 100644
-> --- a/include/old/test.h
-> +++ b/include/old/test.h
-> @@ -50,6 +50,13 @@
->  #define NUMSIGS NSIG
->  #endif
-
-> +#ifndef __SIGRTMIN
-> +#define __SIGRTMIN 32
-> +#endif
-> +
-> +#ifndef __SIGRTMAX
-> +#define __SIGRTMAX (_NSIG - 1)
-> +#endif
-
->  /* defines for unexpected signal setup routine (set_usig.c) */
->  #define FORK    1		/* SIGCHLD is to be ignored */
+-- 
+Cyril Hrubis
+chrubis@suse.cz
