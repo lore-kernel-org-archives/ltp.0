@@ -1,77 +1,36 @@
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Wed, 20 Feb 2019 17:38:51 +0530
-Subject: [LTP] [PATCH v3 1/7] lib: Add library functions for sync
-	related syscalls
-In-Reply-To: <20190220120334.GA32140@rei>
-References: <1550568500-10871-1-git-send-email-sumit.garg@linaro.org>
- <1550568500-10871-2-git-send-email-sumit.garg@linaro.org>
- <20190219140627.GC32031@rei.lan>
- <CAFA6WYN2f4iT85y5hJbk3m8zDkfgwi1kEKES59B2ZOOiS22YDA@mail.gmail.com>
- <20190220120334.GA32140@rei>
-Message-ID: <CAFA6WYMBKiVs8FaxSn-1+ti6r8P-jbNmQL9kw2MC6jzN7VCqAA@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 20 Feb 2019 14:14:43 +0100
+Subject: [LTP] [PATCH v2] syscalls: add syscall syncfs test
+In-Reply-To: <6c93cc5b-f871-0160-0e81-0d964059cdf2@google.com>
+References: <1550215053-6795-1-git-send-email-sumit.garg@linaro.org>
+ <5C667060.7020405@cn.fujitsu.com>
+ <CAFA6WYO8qg79rQ-qwU3i6FpfNRQhiTNXzGHtDsJ6FpTty6W77g@mail.gmail.com>
+ <20190215121611.GA14270@rei>
+ <CAFA6WYOF1Kh1rspdiPgne9q4jUQsMW4p5BN_J4evcsr9O-KD1Q@mail.gmail.com>
+ <20190215132251.GB26339@rei>
+ <4cae2a11-47c2-c319-19cf-9a8fecc7793d@google.com>
+ <20190218115746.GA25025@rei.lan>
+ <6c93cc5b-f871-0160-0e81-0d964059cdf2@google.com>
+Message-ID: <20190220131443.GA5256@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, 20 Feb 2019 at 17:34, Cyril Hrubis <chrubis@suse.cz> wrote:
->
-> Hi!
-> > > Maybe we just need a tst_dev_bytes_written() function that would return
-> > > the bytes written since the last call of the function so that we could
-> > > do:
-> > >
-> > >         fd = SAFE_OPEN(...);
-> > >
-> > >         tst_dev_blocks_written(tst_device.dev);
-> > >
-> > >         tst_fill_fd(fd, 0, TST_MB, size_mb);
-> > >
-> > >         TEST(fdsync(fd));
-> > >
-> > >         if (TST_RET)
-> > >                 tst_brk(TFAIL | TTERRNO, "syncfd() failed with %i", TST_RET);
-> > >
-> > >         written = tst_dev_blocks_written(tst_device.dev);
-> > >
-> > >         SAFE_CLOSE(fd);
-> > >
-> > >         if (written >= size_mb * TST_DEV_BLOCKS_IN_MB)
-> > >                 tst_res(TPASS, ...);
-> > >         else
-> > >                 tst_res(TFAIL, ...);
-> > >
-> >
-> > Seems to be nicer approach. So rather than new file should I add
-> > tst_dev_bytes_written() function in "lib/tst_device.c" file?
->
-> Sounds good to me.
->
-> > > The test a bit longer, but the library functions are more reusable, if
-> > > you do 'git grep -B 1 SAFE_WRITE' you can see that the tst_fill_fd
-> > > function that loops over SAFE_WRITE could be used in a few places
-> > > already.
-> > >
-> >
-> > I am not able to locate tst_fill_fd function. Are you referring to
-> > tst_fill_file function? If yes, then we could split that function to
-> > create tst_fill_fd function.
->
-> There is none, I was trying to state that there are several places that
-> use the same pattern and that such function would be generally useful.
->
+Hi!
+> Sure. My concern is being able to test syscalls in Android where the C 
+> library may not have some wrappers. So far these have all been cases 
+> where one can just replace the library call with the direct syscall, as 
+> a number of recent patches have done. If I run into a case where more 
+> substantial library support is needed maybe we'll just have to focus on 
+> getting that into bionic or look at other options.
 
-Ah, ok.
+I guess that we can also auto-generate fallback syscall wrappers for
+these cases so that we don't have to bother dealing with this in the
+actual testcases. Should be as easy as listing the function prototypes
+in a file and a few lines of shell.
 
-> And yes, buiding tst_fill_file on the top of tst_fill_fd sounds like a
-> good approach.
->
-
-Will incorporate in v4.
-
--Sumit
-
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+-- 
+Cyril Hrubis
+chrubis@suse.cz
