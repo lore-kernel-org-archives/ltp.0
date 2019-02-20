@@ -1,73 +1,139 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 20 Feb 2019 09:28:54 +0100
-Subject: [LTP] [PATCH 4/4] network: add new test-cases with randomized
- message length
-In-Reply-To: <1550587673-7995-5-git-send-email-alexey.kodanev@oracle.com>
-References: <1550587673-7995-1-git-send-email-alexey.kodanev@oracle.com>
- <1550587673-7995-5-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20190220082854.GD15392@x230>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Wed, 20 Feb 2019 14:04:01 +0530
+Subject: [LTP] [PATCH v3 7/7] syscalls/sync_file_range: add sync device
+	test-case
+In-Reply-To: <20190219142058.GF32031@rei.lan>
+References: <1550568500-10871-1-git-send-email-sumit.garg@linaro.org>
+ <1550568500-10871-8-git-send-email-sumit.garg@linaro.org>
+ <20190219142058.GF32031@rei.lan>
+Message-ID: <CAFA6WYNMD=8UUvqKByZOTq5ZDH_6HwQerO=6=o7wYV+CmiGBfQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+On Tue, 19 Feb 2019 at 19:51, Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+> Hi!
+> > sync_file_range02 tests to sync file data range having large dirty file
+> > pages to block device. Also, it tests all supported filesystems on a
+> > test block device.
+> >
+> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > ---
+> >  runtest/syscalls                                   |  1 +
+> >  .../kernel/syscalls/sync_file_range/.gitignore     |  1 +
+> >  .../syscalls/sync_file_range/sync_file_range02.c   | 70 ++++++++++++++++++++++
+> >  3 files changed, 72 insertions(+)
+> >  create mode 100644 testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+> >
+> > diff --git a/runtest/syscalls b/runtest/syscalls
+> > index aaad651..70d3561 100644
+> > --- a/runtest/syscalls
+> > +++ b/runtest/syscalls
+> > @@ -1353,6 +1353,7 @@ syncfs01 syncfs01
+> >
+> >  #testcases for sync_file_range
+> >  sync_file_range01 sync_file_range01
+> > +sync_file_range02 sync_file_range02
+> >
+> >  syscall01 syscall01
+> >
+> > diff --git a/testcases/kernel/syscalls/sync_file_range/.gitignore b/testcases/kernel/syscalls/sync_file_range/.gitignore
+> > index 3f6bd75..e6485f7 100644
+> > --- a/testcases/kernel/syscalls/sync_file_range/.gitignore
+> > +++ b/testcases/kernel/syscalls/sync_file_range/.gitignore
+> > @@ -1 +1,2 @@
+> >  /sync_file_range01
+> > +/sync_file_range02
+> > diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+> > new file mode 100644
+> > index 0000000..fb7a5f7
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+> > @@ -0,0 +1,70 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright (c) 2019 Linaro Limited. All rights reserved.
+> > + * Author: Sumit Garg <sumit.garg@linaro.org>
+> > + */
+> > +
+> > +/*
+> > + * sync_file_range02
+> > + *
+> > + * It basically tests sync_file_range() to sync test file range having large
+> > + * dirty file pages to block device. Also, it tests all supported filesystems
+> > + * on a test block device.
+> > + */
+> > +
+> > +#define _GNU_SOURCE
+> > +#include <errno.h>
+> > +#include <stdlib.h>
+> > +#include <stdio.h>
+> > +#include <sys/types.h>
+> > +#include "tst_sync_device.h"
+> > +#include "tst_test.h"
+> > +#include "lapi/sync_file_range.h"
+> > +#include "check_sync_file_range.h"
+> > +
+> > +#define MNTPOINT             "mnt_point"
+> > +#define TST_FILE             MNTPOINT"/test"
+> > +#define TST_FILE_SIZE_MB     32
+> > +#define SIZE_MB                      (1024*1024)
+> > +
+> > +static void verify_sync_file_range(void)
+> > +{
+> > +     int fd;
+> > +
+> > +     fd = tst_sync_device_write(TST_FILE, TST_FILE_SIZE_MB);
+> > +
+> > +     TEST(sync_file_range(fd, 0, TST_FILE_SIZE_MB * SIZE_MB,
+> > +                          SYNC_FILE_RANGE_WAIT_BEFORE |
+> > +                          SYNC_FILE_RANGE_WRITE |
+> > +                          SYNC_FILE_RANGE_WAIT_AFTER));
+> > +     if (TST_RET != 0)
+> > +             tst_brk(TFAIL | TTERRNO, "sync_file_range() failed");
+> > +
+> > +     if (tst_sync_device_check(TST_FILE_SIZE_MB))
+> > +             tst_res(TPASS, "Test file range synced to device");
+> > +     else
+> > +             tst_res(TFAIL, "Failed to sync test file range to device");
+> > +}
+> > +
+> > +static void setup(void)
+> > +{
+> > +     tst_sync_device_init(tst_device->dev);
+> > +}
+> > +
+> > +static void cleanup(void)
+> > +{
+> > +     if (!check_sync_file_range())
+> > +             tst_brk(TCONF, "sync_file_range() not supported");
+>
+> This check is supposed to be in the test setup, right?
+>
 
-> * Change test-cases in dctcp01 (TCP). Default size changed to random size.
+Ah, right. I will correct it.
 
-> * New test-cases added to tcp, sctp and udp IPsec tests
+-Sumit
 
-> * Updated bind_noport01
-
-> * New tests: gre02, geneve02, macsec03, vxlan04
-Commit is quite big. I know, that all is related to randomized message length.
-But maybe these new tests can be added in separate commit.
-
-> * Besides random payload changes:
->   - in macsec03, replay window increased from 300 to 1000
->   - vxlan04 and geneve02: new checksum testcases
->   - new tests use different protocol types
-
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  runtest/net.features                            |    9 +
->  runtest/net_stress.ipsec_dccp                   |  208 +++++++++++-----------
->  runtest/net_stress.ipsec_sctp                   |  208 +++++++++++-----------
->  runtest/net_stress.ipsec_tcp                    |  208 +++++++++++-----------
->  runtest/net_stress.ipsec_udp                    |  212 +++++++++++-----------
->  testcases/network/sockets/bind_noport01.sh      |   15 ++-
->  testcases/network/stress/dccp/dccp_ipsec.sh     |    6 +-
->  testcases/network/stress/dccp/dccp_ipsec_vti.sh |    6 +-
->  testcases/network/stress/sctp/sctp_ipsec.sh     |    6 +-
->  testcases/network/stress/sctp/sctp_ipsec_vti.sh |    6 +-
->  testcases/network/stress/tcp/tcp_ipsec.sh       |    6 +-
->  testcases/network/stress/tcp/tcp_ipsec_vti.sh   |    6 +-
->  testcases/network/stress/udp/udp_ipsec.sh       |    7 +-
->  testcases/network/stress/udp/udp_ipsec_vti.sh   |    7 +-
->  testcases/network/virt/geneve02.sh              |   38 ++++
->  testcases/network/virt/gre02.sh                 |   11 ++
->  testcases/network/virt/macsec03.sh              |   13 ++
->  testcases/network/virt/virt_lib.sh              |   10 +
->  testcases/network/virt/vxlan04.sh               |   39 ++++
->  19 files changed, 592 insertions(+), 429 deletions(-)
->  create mode 100755 testcases/network/virt/geneve02.sh
->  create mode 100755 testcases/network/virt/gre02.sh
->  create mode 100755 testcases/network/virt/macsec03.sh
->  create mode 100755 testcases/network/virt/vxlan04.sh
-...
-
-> +++ b/testcases/network/virt/geneve02.sh
-...
-> +. virt_lib.sh
-> +
-> +VIRT_PERF_THRESHOLD=${VIRT_PERF_THRESHOLD:-160}
-VIRT_PERF_THRESHOLD is read in virt_lib.sh. So this first line does not have
-to be here. That applies also for vxlan04.sh (this commit) + other testcases
-which already use this variable.
-> +[ "$VIRT_PERF_THRESHOLD" -lt 160 ] && VIRT_PERF_THRESHOLD=160
-
-
-Kind regards,
-Petr
+> > +     tst_sync_device_cleanup();
+> > +}
+> > +
+> > +static struct tst_test test = {
+> > +     .needs_root = 1,
+> > +     .mount_device = 1,
+> > +     .all_filesystems = 1,
+> > +     .mntpoint = MNTPOINT,
+> > +     .setup = setup,
+> > +     .cleanup = cleanup,
+> > +     .test_all = verify_sync_file_range,
+> > +};
+> > --
+> > 2.7.4
+> >
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
