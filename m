@@ -1,33 +1,35 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 20 Feb 2019 16:17:49 +0100
-Subject: [LTP] [PATCH] [COMMITTED] lapi/include/ustat.h: Include config.h
-Message-ID: <20190220151749.5506-1-chrubis@suse.cz>
+From: Matthias Maennich <maennich@google.com>
+Date: Wed, 20 Feb 2019 15:20:22 +0000
+Subject: [LTP] [PATCH v3 0/3] aio_tio: fixes and conversion to new lib
+In-Reply-To: <20190111085326.171826-1-maennich@google.com>
+References: <20190111085326.171826-1-maennich@google.com>
+Message-ID: <20190220152025.261625-1-maennich@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Otherwise we don't use the system ustat.h header at all.
+This patch series is a resend of an earlier series for two bug fixes. In
+addition, it now contains a patch to migrate the test to the new lib
+along with some cleanup.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- include/lapi/ustat.h | 2 ++
- 1 file changed, 2 insertions(+)
+Cheers,
+Matthias
 
-diff --git a/include/lapi/ustat.h b/include/lapi/ustat.h
-index b32749925..12c073582 100644
---- a/include/lapi/ustat.h
-+++ b/include/lapi/ustat.h
-@@ -3,6 +3,8 @@
- #ifndef LAPI_USTAT_H
- #define LAPI_USTAT_H
- 
-+#include "config.h"
-+
- #include <sys/types.h>
- 
- #ifdef HAVE_SYS_USTAT_H
+Matthias Maennich (3):
+  aio_tio: fix error diagnosis for byte transfers
+  aio_tio: determine alignment based on target filesystem
+  aio_tio: convert to new lib
+
+ testcases/kernel/io/aio/aio02/Makefile  |  24 +--
+ testcases/kernel/io/aio/aio02/aio_tio.c | 207 +++++++++++++-----------
+ testcases/kernel/io/aio/aio02/common.h  |  28 ----
+ testcases/kernel/io/aio/aio02/main.c    |  37 -----
+ 4 files changed, 112 insertions(+), 184 deletions(-)
+ delete mode 100644 testcases/kernel/io/aio/aio02/common.h
+ delete mode 100644 testcases/kernel/io/aio/aio02/main.c
+
 -- 
-2.19.2
+2.21.0.rc0.258.g878e2cd30e-goog
 
