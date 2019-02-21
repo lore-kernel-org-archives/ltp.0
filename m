@@ -1,52 +1,52 @@
 From: Sumit Garg <sumit.garg@linaro.org>
-Date: Thu, 21 Feb 2019 14:30:13 +0530
-Subject: [LTP] [PATCH v4 6/9] syscalls/fsync: add sync device test-case
+Date: Thu, 21 Feb 2019 14:30:14 +0530
+Subject: [LTP] [PATCH v4 7/9] syscalls/fdatasync: add sync device test-case
 In-Reply-To: <1550739616-24054-1-git-send-email-sumit.garg@linaro.org>
 References: <1550739616-24054-1-git-send-email-sumit.garg@linaro.org>
-Message-ID: <1550739616-24054-7-git-send-email-sumit.garg@linaro.org>
+Message-ID: <1550739616-24054-8-git-send-email-sumit.garg@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-fsync04 tests to sync file having large dirty file pages to block
-device. Also, it tests all supported filesystems on a test block device.
+fdatasync03 tests to sync file data having large dirty file pages to
+block device. Also, it tests all supported filesystems on a test block
+device.
 
 Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 ---
- runtest/syscalls                           |  1 +
- testcases/kernel/syscalls/fsync/.gitignore |  1 +
- testcases/kernel/syscalls/fsync/fsync04.c  | 60 ++++++++++++++++++++++++++++++
+ runtest/syscalls                                  |  1 +
+ testcases/kernel/syscalls/fdatasync/.gitignore    |  1 +
+ testcases/kernel/syscalls/fdatasync/fdatasync03.c | 60 +++++++++++++++++++++++
  3 files changed, 62 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fsync/fsync04.c
+ create mode 100644 testcases/kernel/syscalls/fdatasync/fdatasync03.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index dba0dee..0d09509 100644
+index 0d09509..aaad651 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -347,6 +347,7 @@ fstatfs02_64 fstatfs02_64
- fsync01 fsync01
- fsync02 fsync02
- fsync03 fsync03
-+fsync04 fsync04
+@@ -291,6 +291,7 @@ fcntl36_64 fcntl36_64
  
- ftruncate01 ftruncate01
- ftruncate01_64 ftruncate01_64
-diff --git a/testcases/kernel/syscalls/fsync/.gitignore b/testcases/kernel/syscalls/fsync/.gitignore
-index 3c694a4..4b5ea83 100644
---- a/testcases/kernel/syscalls/fsync/.gitignore
-+++ b/testcases/kernel/syscalls/fsync/.gitignore
-@@ -1,3 +1,4 @@
- /fsync01
- /fsync02
- /fsync03
-+/fsync04
-diff --git a/testcases/kernel/syscalls/fsync/fsync04.c b/testcases/kernel/syscalls/fsync/fsync04.c
+ fdatasync01 fdatasync01
+ fdatasync02 fdatasync02
++fdatasync03 fdatasync03
+ 
+ fgetxattr01 fgetxattr01
+ fgetxattr02 fgetxattr02
+diff --git a/testcases/kernel/syscalls/fdatasync/.gitignore b/testcases/kernel/syscalls/fdatasync/.gitignore
+index d1d3cba..dc56ad7 100644
+--- a/testcases/kernel/syscalls/fdatasync/.gitignore
++++ b/testcases/kernel/syscalls/fdatasync/.gitignore
+@@ -1,2 +1,3 @@
+ /fdatasync01
+ /fdatasync02
++/fdatasync03
+diff --git a/testcases/kernel/syscalls/fdatasync/fdatasync03.c b/testcases/kernel/syscalls/fdatasync/fdatasync03.c
 new file mode 100644
-index 0000000..4b5b586
+index 0000000..d5c8ea9
 --- /dev/null
-+++ b/testcases/kernel/syscalls/fsync/fsync04.c
++++ b/testcases/kernel/syscalls/fdatasync/fdatasync03.c
 @@ -0,0 +1,60 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
@@ -55,11 +55,11 @@ index 0000000..4b5b586
 + */
 +
 +/*
-+ * fsync04
++ * fdatasync03
 + *
-+ * It basically tests fsync() to sync test file having large dirty file pages
-+ * to block device. Also, it tests all supported filesystems on a test block
-+ * device.
++ * It basically tests fdatasync() to sync test file data having large dirty
++ * file pages to block device. Also, it tests all supported filesystems on a
++ * test block device.
 + */
 +
 +#define _GNU_SOURCE
@@ -75,7 +75,7 @@ index 0000000..4b5b586
 +#define SIZE_MB			(1024*1024)
 +#define MODE			0644
 +
-+static void verify_fsync(void)
++static void verify_fdatasync(void)
 +{
 +	int fd;
 +	unsigned long written;
@@ -86,19 +86,19 @@ index 0000000..4b5b586
 +
 +	tst_fill_fd(fd, 0, SIZE_MB, TST_FILE_SIZE_MB);
 +
-+	TEST(fsync(fd));
++	TEST(fdatasync(fd));
 +
 +	if (TST_RET)
-+		tst_brk(TFAIL | TTERRNO, "fsync(fd) failed");
++		tst_brk(TFAIL | TTERRNO, "fdatasync(fd) failed");
 +
 +	written = tst_dev_bytes_written(tst_device->dev);
 +
 +	SAFE_CLOSE(fd);
 +
 +	if (written >= SIZE_MB * TST_FILE_SIZE_MB)
-+		tst_res(TPASS, "Test file synced to device");
++		tst_res(TPASS, "Test file data synced to device");
 +	else
-+		tst_res(TFAIL, "Failed to sync test file to device");
++		tst_res(TFAIL, "Failed to sync test file data to device");
 +}
 +
 +static struct tst_test test = {
@@ -106,7 +106,7 @@ index 0000000..4b5b586
 +	.mount_device = 1,
 +	.all_filesystems = 1,
 +	.mntpoint = MNTPOINT,
-+	.test_all = verify_fsync,
++	.test_all = verify_fdatasync,
 +};
 -- 
 2.7.4
