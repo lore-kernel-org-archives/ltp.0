@@ -1,96 +1,113 @@
 From: Sumit Garg <sumit.garg@linaro.org>
-Date: Thu, 21 Feb 2019 14:30:07 +0530
-Subject: [LTP] [PATCH v4 0/9] syscalls: add sync device test-cases
-Message-ID: <1550739616-24054-1-git-send-email-sumit.garg@linaro.org>
+Date: Thu, 21 Feb 2019 14:30:09 +0530
+Subject: [LTP] [PATCH v4 2/9] lib: split tst_fill_file() to create new
+	tst_fill_fd()
+In-Reply-To: <1550739616-24054-1-git-send-email-sumit.garg@linaro.org>
+References: <1550739616-24054-1-git-send-email-sumit.garg@linaro.org>
+Message-ID: <1550739616-24054-3-git-send-email-sumit.garg@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This patch-set adds common test for minimal sectors written on device
-for various sync related syscalls:
-1. syncfs()
-2. sync()
-3. fsync()
-4. fdatasync()
-5. sync_file_range()
+Split tst_fill_file() api to create new tst_fill_fd() api which could be
+used to fill file using fd and allows syscalls tests to operate on fd.
 
-Also this test is run on all supported filesystems on a test block
-device.
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+---
+ include/tst_fs.h    |  9 +++++++++
+ lib/tst_fill_file.c | 40 +++++++++++++++++++++++-----------------
+ 2 files changed, 32 insertions(+), 17 deletions(-)
 
-Changes in v4:
-1. Update common library functions from reusability perspective.
-2. Create separate patch for TEST_VOID macro.
-3. Add check for broken /sys/block/<device>/stat file.
-4. Miscellaneous fixups.
-
-Changes in v3:
-1. Scope increased from single patch to this patch-set to add common
-   test for sync(), fsync(), fdatasync() and sync_file_range() syscalls.
-2. Move common functionality to library functions.
-3. Use %lu rather than %s while parsing sectors written.
-4. Add config check for C library wrapper and fallback definition for
-   syncfs() and sync_file_range() syscalls.
-
-Changes in v2:
-1. Remove unused header file include.
-2. Remove redundant tst_device check.
-3. Remove redundant flags from tst_test struct.
-
-Fixes: https://github.com/linux-test-project/ltp/issues/294
-
-Sumit Garg (9):
-  lib/tst_device: add new api tst_dev_bytes_written()
-  lib: split tst_fill_file() to create new tst_fill_fd()
-  lib/tst_test: define TEST_VOID() macro
-  syscalls: add syncfs() sync device test-case
-  syscalls/sync: add sync device test-case
-  syscalls/fsync: add sync device test-case
-  syscalls/fdatasync: add sync device test-case
-  syscalls/sync_file_range: Use C library wrapper if present
-  syscalls/sync_file_range: add sync device test-case
-
- configure.ac                                       |  2 +
- include/lapi/sync_file_range.h                     | 57 +++++++++++++++++
- include/lapi/syncfs.h                              | 21 +++++++
- include/tst_device.h                               |  7 +++
- include/tst_fs.h                                   |  9 +++
- include/tst_test.h                                 |  7 +++
- lib/tst_device.c                                   | 29 +++++++++
- lib/tst_fill_file.c                                | 40 +++++++-----
- m4/ltp-sync_file_range.m4                          | 10 +++
- m4/ltp-syncfs.m4                                   | 10 +++
- runtest/syscalls                                   |  6 ++
- testcases/kernel/syscalls/fdatasync/.gitignore     |  1 +
- testcases/kernel/syscalls/fdatasync/fdatasync03.c  | 60 ++++++++++++++++++
- testcases/kernel/syscalls/fsync/.gitignore         |  1 +
- testcases/kernel/syscalls/fsync/fsync04.c          | 60 ++++++++++++++++++
- testcases/kernel/syscalls/sync/.gitignore          |  1 +
- testcases/kernel/syscalls/sync/sync03.c            | 60 ++++++++++++++++++
- .../kernel/syscalls/sync_file_range/.gitignore     |  1 +
- .../sync_file_range/check_sync_file_range.h        | 21 +++++++
- .../syscalls/sync_file_range/sync_file_range01.c   | 62 ++-----------------
- .../syscalls/sync_file_range/sync_file_range02.c   | 72 ++++++++++++++++++++++
- testcases/kernel/syscalls/syncfs/.gitignore        |  1 +
- testcases/kernel/syscalls/syncfs/Makefile          |  8 +++
- testcases/kernel/syscalls/syncfs/check_syncfs.h    | 19 ++++++
- testcases/kernel/syscalls/syncfs/syncfs01.c        | 67 ++++++++++++++++++++
- 25 files changed, 558 insertions(+), 74 deletions(-)
- create mode 100644 include/lapi/sync_file_range.h
- create mode 100644 include/lapi/syncfs.h
- create mode 100644 m4/ltp-sync_file_range.m4
- create mode 100644 m4/ltp-syncfs.m4
- create mode 100644 testcases/kernel/syscalls/fdatasync/fdatasync03.c
- create mode 100644 testcases/kernel/syscalls/fsync/fsync04.c
- create mode 100644 testcases/kernel/syscalls/sync/sync03.c
- create mode 100644 testcases/kernel/syscalls/sync_file_range/check_sync_file_range.h
- create mode 100644 testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
- create mode 100644 testcases/kernel/syscalls/syncfs/.gitignore
- create mode 100644 testcases/kernel/syscalls/syncfs/Makefile
- create mode 100644 testcases/kernel/syscalls/syncfs/check_syncfs.h
- create mode 100644 testcases/kernel/syscalls/syncfs/syncfs01.c
-
+diff --git a/include/tst_fs.h b/include/tst_fs.h
+index 23f139d..b2b19ad 100644
+--- a/include/tst_fs.h
++++ b/include/tst_fs.h
+@@ -139,6 +139,15 @@ int tst_dir_is_empty_(void (*cleanup)(void), const char *name, int verbose);
+ int tst_get_path(const char *prog_name, char *buf, size_t buf_len);
+ 
+ /*
++ * Fill a file with specified pattern
++ * @fd: file descriptor
++ * @pattern: pattern
++ * @bs: block size
++ * @bcount: blocks count
++ */
++int tst_fill_fd(int fd, char pattern, size_t bs, size_t bcount);
++
++/*
+  * Creates/ovewrites a file with specified pattern
+  * @path: path to file
+  * @pattern: pattern
+diff --git a/lib/tst_fill_file.c b/lib/tst_fill_file.c
+index 7baead8..f2bc52d 100644
+--- a/lib/tst_fill_file.c
++++ b/lib/tst_fill_file.c
+@@ -28,40 +28,46 @@
+ 
+ #include "test.h"
+ 
+-int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount)
++int tst_fill_fd(int fd, char pattern, size_t bs, size_t bcount)
+ {
+-	int fd;
+-	size_t counter;
++	size_t i;
+ 	char *buf;
+ 
+-	fd = open(path, O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR);
+-	if (fd < 0)
+-		return -1;
+-
+ 	/* Filling a memory buffer with provided pattern */
+ 	buf = malloc(bs);
+-	if (buf == NULL) {
+-		close(fd);
+-
++	if (buf == NULL)
+ 		return -1;
+-	}
+ 
+-	for (counter = 0; counter < bs; counter++)
+-		buf[counter] = pattern;
++	for (i = 0; i < bs; i++)
++		buf[i] = pattern;
+ 
+ 	/* Filling the file */
+-	for (counter = 0; counter < bcount; counter++) {
++	for (i = 0; i < bcount; i++) {
+ 		if (write(fd, buf, bs) != (ssize_t)bs) {
+ 			free(buf);
+-			close(fd);
+-			unlink(path);
+-
+ 			return -1;
+ 		}
+ 	}
+ 
+ 	free(buf);
+ 
++	return 0;
++}
++
++int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount)
++{
++	int fd;
++
++	fd = open(path, O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR);
++	if (fd < 0)
++		return -1;
++
++	if (tst_fill_fd(fd, pattern, bs, bcount)) {
++		close(fd);
++		unlink(path);
++		return -1;
++	}
++
+ 	if (close(fd) < 0) {
+ 		unlink(path);
+ 
 -- 
 2.7.4
 
