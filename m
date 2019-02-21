@@ -1,126 +1,111 @@
-From: Daniel Thompson <daniel.thompson@linaro.org>
-Date: Thu, 21 Feb 2019 11:38:40 +0000
-Subject: [LTP] [PATCH v4 2/9] lib: split tst_fill_file() to create new
- tst_fill_fd()
-In-Reply-To: <1550739616-24054-3-git-send-email-sumit.garg@linaro.org>
-References: <1550739616-24054-1-git-send-email-sumit.garg@linaro.org>
- <1550739616-24054-3-git-send-email-sumit.garg@linaro.org>
-Message-ID: <20190221113840.l2ffu4d22u72uakm@holly.lan>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Thu, 21 Feb 2019 13:34:04 +0100
+Subject: [LTP] [PATCH] syscalls/ustat: Move the syscall to lapi
+In-Reply-To: <20190221112201.18324-1-chrubis@suse.cz>
+References: <20190221112201.18324-1-chrubis@suse.cz>
+Message-ID: <87r2c12udf.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Feb 21, 2019 at 02:30:09PM +0530, Sumit Garg wrote:
-> Split tst_fill_file() api to create new tst_fill_fd() api which could be
-> used to fill file using fd and allows syscalls tests to operate on fd.
-> 
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+Hello,
+
+Cyril Hrubis <chrubis@suse.cz> writes:
+
+> The dev parameter needs to be casted to unsigned in some cases, let's
+> move call to tst_syscall() from the tests to lapi so that the tests does
+> not have to worry about the low level details.
+>
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> CC: Steve Muckle <smuckle@google.com>
+> CC: Richard Palethorpe <rpalethorpe@suse.com>
 > ---
->  include/tst_fs.h    |  9 +++++++++
->  lib/tst_fill_file.c | 40 +++++++++++++++++++++++-----------------
->  2 files changed, 32 insertions(+), 17 deletions(-)
-> 
-> diff --git a/include/tst_fs.h b/include/tst_fs.h
-> index 23f139d..b2b19ad 100644
-> --- a/include/tst_fs.h
-> +++ b/include/tst_fs.h
-> @@ -139,6 +139,15 @@ int tst_dir_is_empty_(void (*cleanup)(void), const char *name, int verbose);
->  int tst_get_path(const char *prog_name, char *buf, size_t buf_len);
->  
->  /*
-> + * Fill a file with specified pattern
-> + * @fd: file descriptor
-> + * @pattern: pattern
-> + * @bs: block size
-> + * @bcount: blocks count
-> + */
-> +int tst_fill_fd(int fd, char pattern, size_t bs, size_t bcount);
+>  include/lapi/ustat.h                      | 7 +++++++
+>  testcases/kernel/syscalls/ustat/ustat01.c | 5 ++---
+>  testcases/kernel/syscalls/ustat/ustat02.c | 5 ++---
+>  3 files changed, 11 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/lapi/ustat.h b/include/lapi/ustat.h
+> index 12c073582..6365b2e92 100644
+> --- a/include/lapi/ustat.h
+> +++ b/include/lapi/ustat.h
+> @@ -10,12 +10,19 @@
+>  #ifdef HAVE_SYS_USTAT_H
+>  # include <sys/ustat.h>
+
+Just a thought, but this is potentially a problem if lib C implementes
+ustat in user land, but the system call still exists. Which I think is
+more likely with an obsolete system call.
+
+>  #else
+> +# include "lapi/syscalls.h"
 > +
-> +/*
->   * Creates/ovewrites a file with specified pattern
->   * @path: path to file
->   * @pattern: pattern
-> diff --git a/lib/tst_fill_file.c b/lib/tst_fill_file.c
-> index 7baead8..f2bc52d 100644
-> --- a/lib/tst_fill_file.c
-> +++ b/lib/tst_fill_file.c
-> @@ -28,40 +28,46 @@
->  
->  #include "test.h"
->  
-> -int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount)
-> +int tst_fill_fd(int fd, char pattern, size_t bs, size_t bcount)
->  {
-> -	int fd;
-> -	size_t counter;
-> +	size_t i;
-
-Nitpicking perhaps but gratuitous variable renames don't make patches
-containing other changes easier to read. Nor, to be honest, does 
-"counter" seem any more descriptive then i (since i is more idiomatic
-and therefore quicker to read).
-
-
-Daniel.
-
-
-
->  	char *buf;
->  
-> -	fd = open(path, O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR);
-> -	if (fd < 0)
-> -		return -1;
-> -
->  	/* Filling a memory buffer with provided pattern */
->  	buf = malloc(bs);
-> -	if (buf == NULL) {
-> -		close(fd);
-> -
-> +	if (buf == NULL)
->  		return -1;
-> -	}
->  
-> -	for (counter = 0; counter < bs; counter++)
-> -		buf[counter] = pattern;
-> +	for (i = 0; i < bs; i++)
-> +		buf[i] = pattern;
->  
->  	/* Filling the file */
-> -	for (counter = 0; counter < bcount; counter++) {
-> +	for (i = 0; i < bcount; i++) {
->  		if (write(fd, buf, bs) != (ssize_t)bs) {
->  			free(buf);
-> -			close(fd);
-> -			unlink(path);
-> -
->  			return -1;
->  		}
->  	}
->  
->  	free(buf);
->  
-> +	return 0;
-> +}
+>  struct ustat {
+>  	daddr_t f_tfree;
+>  	ino_t f_tinode;
+>  	char f_fname[6];
+>  	char f_fpack[6];
+>  };
 > +
-> +int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount)
+> +static inline int ustat(dev_t dev, struct ustat *ubuf)
 > +{
-> +	int fd;
-> +
-> +	fd = open(path, O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR);
-> +	if (fd < 0)
-> +		return -1;
-> +
-> +	if (tst_fill_fd(fd, pattern, bs, bcount)) {
-> +		close(fd);
-> +		unlink(path);
-> +		return -1;
-> +	}
-> +
->  	if (close(fd) < 0) {
->  		unlink(path);
->  
-> -- 
-> 2.7.4
-> 
+> +	return tst_syscall(__NR_ustat, (unsigned int)dev, ubuf);
+> +}
+>  #endif
+>
+>  #endif /* LAPI_USTAT_H */
+> diff --git a/testcases/kernel/syscalls/ustat/ustat01.c b/testcases/kernel/syscalls/ustat/ustat01.c
+> index 2e7dcc9d7..729f8c106 100644
+> --- a/testcases/kernel/syscalls/ustat/ustat01.c
+> +++ b/testcases/kernel/syscalls/ustat/ustat01.c
+> @@ -10,9 +10,8 @@
+>  #include <sys/types.h>
+>  #include <sys/stat.h>
+>
+> -#include "lapi/syscalls.h"
+> -#include "lapi/ustat.h"
+>  #include "tst_test.h"
+> +#include "lapi/ustat.h"
+>
+>  static dev_t dev_num;
+>
+> @@ -20,7 +19,7 @@ void run(void)
+>  {
+>  	struct ustat ubuf;
+>
+> -	TEST(tst_syscall(__NR_ustat, (unsigned int)dev_num, &ubuf));
+> +	TEST(ustat(dev_num, &ubuf));
+>
+>  	if (TST_RET == -1)
+>  		tst_res(TFAIL | TTERRNO, "ustat(2) failed");
+> diff --git a/testcases/kernel/syscalls/ustat/ustat02.c b/testcases/kernel/syscalls/ustat/ustat02.c
+> index 9bbe4f3f5..3c9236200 100644
+> --- a/testcases/kernel/syscalls/ustat/ustat02.c
+> +++ b/testcases/kernel/syscalls/ustat/ustat02.c
+> @@ -11,9 +11,8 @@
+>  #include <sys/stat.h>
+>  #include <sys/types.h>
+>
+> -#include "lapi/syscalls.h"
+> -#include "lapi/ustat.h"
+>  #include "tst_test.h"
+> +#include "lapi/ustat.h"
+>
+>  static dev_t invalid_dev = -1;
+>  static dev_t root_dev;
+> @@ -36,7 +35,7 @@ int TST_TOTAL = ARRAY_SIZE(tc);
+>
+>  void run(unsigned int test)
+>  {
+> -	TEST(tst_syscall(__NR_ustat, *tc[test].dev, tc[test].buf));
+> +	TEST(ustat(*tc[test].dev, tc[test].buf));
+>
+>  	if ((TST_RET == -1) && (TST_ERR == tc[test].exp_errno))
+>  		tst_res(TPASS | TTERRNO, "ustat(2) expected failure");
+
+
+--
+Thank you,
+Richard.
