@@ -1,10 +1,10 @@
 From: Eric Biggers <ebiggers@kernel.org>
-Date: Wed, 20 Feb 2019 21:30:23 -0800
-Subject: [LTP] [PATCH 3/6] crypto/af_alg02: new regression test for salsa20
-	empty message bug
+Date: Wed, 20 Feb 2019 21:30:26 -0800
+Subject: [LTP] [PATCH 6/6] crypto/af_alg05: new regression test for
+	skcipher_walk error bug
 In-Reply-To: <20190221053026.18489-1-ebiggers@kernel.org>
 References: <20190221053026.18489-1-ebiggers@kernel.org>
-Message-ID: <20190221053026.18489-4-ebiggers@kernel.org>
+Message-ID: <20190221053026.18489-7-ebiggers@kernel.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,63 +15,66 @@ From: Eric Biggers <ebiggers@google.com>
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- runtest/cve                        |  1 +
  testcases/kernel/crypto/.gitignore |  1 +
- testcases/kernel/crypto/af_alg02.c | 29 +++++++++++++++++++++++++++++
- 3 files changed, 31 insertions(+)
- create mode 100644 testcases/kernel/crypto/af_alg02.c
+ testcases/kernel/crypto/af_alg05.c | 43 ++++++++++++++++++++++++++++++
+ 2 files changed, 44 insertions(+)
+ create mode 100644 testcases/kernel/crypto/af_alg05.c
 
-diff --git a/runtest/cve b/runtest/cve
-index f46c400cc4..031bcdc2a7 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -27,6 +27,7 @@ cve-2017-15299 request_key03 -b cve-2017-15299
- cve-2017-15537 ptrace07
- cve-2017-15649 fanout01
- cve-2017-15951 request_key03 -b cve-2017-15951
-+cve-2017-17805 af_alg02
- cve-2017-17806 af_alg01
- cve-2017-17807 request_key04
- cve-2017-1000364 stack_clash
 diff --git a/testcases/kernel/crypto/.gitignore b/testcases/kernel/crypto/.gitignore
-index 998af17284..dc79f3275b 100644
+index df6b7e73cb..17faf3eefc 100644
 --- a/testcases/kernel/crypto/.gitignore
 +++ b/testcases/kernel/crypto/.gitignore
-@@ -1,3 +1,4 @@
- af_alg01
-+af_alg02
+@@ -2,5 +2,6 @@ af_alg01
+ af_alg02
+ af_alg03
+ af_alg04
++af_alg05
  pcrypt_aead01
  crypto_user01
-diff --git a/testcases/kernel/crypto/af_alg02.c b/testcases/kernel/crypto/af_alg02.c
+diff --git a/testcases/kernel/crypto/af_alg05.c b/testcases/kernel/crypto/af_alg05.c
 new file mode 100644
-index 0000000000..a9e8204230
+index 0000000000..419c65eabd
 --- /dev/null
-+++ b/testcases/kernel/crypto/af_alg02.c
-@@ -0,0 +1,29 @@
++++ b/testcases/kernel/crypto/af_alg05.c
+@@ -0,0 +1,43 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright 2019 Google LLC
 + */
 +
 +/*
-+ * Regression test for commit ecaaab564978 ("crypto: salsa20 - fix
-+ * blkcipher_walk API usage"), or CVE-2017-17805.  This test verifies that an
-+ * empty message can be encrypted with Salsa20 without crashing the kernel.
++ * Regression test for commit 8088d3dd4d7c ("crypto: skcipher - fix crash
++ * flushing dcache in error path").  This test verifies the kernel doesn't crash
++ * when trying to encrypt a message with size not aligned to the block cipher's
++ * block size, and where the destination buffer starts exactly at a page
++ * boundary.  Based on the reproducer from the commit message.  Note that this
++ * issue only reproduces on certain architectures, such as arm and arm64.
 + */
++
++#include <errno.h>
 +
 +#include "tst_test.h"
 +#include "tst_af_alg.h"
 +
 +static void run(void)
 +{
-+	char buf[16];
-+	int reqfd = tst_alg_setup_reqfd("skcipher", "salsa20", NULL, 16);
++	char buffer[4096] __attribute__((aligned(4096))) = { 0 };
++	int reqfd;
 +
-+	/* With the bug the kernel crashed here */
-+	if (read(reqfd, buf, 16) == 0)
-+		tst_res(TPASS, "Successfully \"encrypted\" an empty message");
++	reqfd = tst_alg_setup_reqfd("skcipher", "cbc(aes-generic)", NULL, 16);
++
++	SAFE_WRITE(1, reqfd, buffer, 15);
++	/* with the bug, this crashed the kernel on some architectures */
++	TEST(read(reqfd, buffer, 15));
++
++	if (TST_RET == 0)
++		tst_res(TBROK, "read() unexpectedly succeeded");
++	else if (TST_ERR == EINVAL)
++		tst_res(TPASS, "read() expectedly failed with EINVAL");
 +	else
-+		tst_res(TBROK, "read() didn't return 0");
++		tst_res(TBROK | TTERRNO, "read() failed with unexpected error");
++
++	close(reqfd);
 +}
 +
 +static struct tst_test test = {
