@@ -1,11 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 21 Feb 2019 13:00:38 +0100
-Subject: [LTP] [PATCH v2] fs/binfmt_misc01.sh: Add new test for invalid
-	inputs
-In-Reply-To: <1550544166-7049-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <20190218161316.GE25025@rei.lan>
- <1550544166-7049-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20190221120038.GA17813@rei.lan>
+Date: Thu, 21 Feb 2019 13:04:42 +0100
+Subject: [LTP] [PATCH v4 2/9] lib: split tst_fill_file() to create new
+ tst_fill_fd()
+In-Reply-To: <20190221113840.l2ffu4d22u72uakm@holly.lan>
+References: <1550739616-24054-1-git-send-email-sumit.garg@linaro.org>
+ <1550739616-24054-3-git-send-email-sumit.garg@linaro.org>
+ <20190221113840.l2ffu4d22u72uakm@holly.lan>
+Message-ID: <20190221120442.GB17813@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,7 +14,21 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Pushed, thanks.
+> > -int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount)
+> > +int tst_fill_fd(int fd, char pattern, size_t bs, size_t bcount)
+> >  {
+> > -	int fd;
+> > -	size_t counter;
+> > +	size_t i;
+> 
+> Nitpicking perhaps but gratuitous variable renames don't make patches
+> containing other changes easier to read. Nor, to be honest, does 
+> "counter" seem any more descriptive then i (since i is more idiomatic
+> and therefore quicker to read).
+
+It seems you misread the patch as we are replacing the counter with i
+here and I asked for that since i is the idiomatic way of naming loop
+variables, so all the blame for this change goes to me :-).
 
 -- 
 Cyril Hrubis
