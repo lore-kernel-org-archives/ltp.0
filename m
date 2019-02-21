@@ -1,114 +1,66 @@
-From: Daniel =?unknown-8bit?q?D=C3=ADaz?= <daniel.diaz@linaro.org>
-Date: Thu, 21 Feb 2019 10:42:13 -0600
-Subject: [LTP] [PATCH] Define __SIGRTMIN and __SIGRTMAX for MUSL
-Message-ID: <20190221164213.4952-1-daniel.diaz@linaro.org>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 21 Feb 2019 17:42:35 +0100
+Subject: [LTP] [PATCH 1/5] syscalls/fanotify03: defined additional tcase
+ members for added control
+In-Reply-To: <20190122223526.GA32694@lithium.mbobrowski.org>
+References: <20190122223526.GA32694@lithium.mbobrowski.org>
+Message-ID: <20190221164234.GD17813@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Some libc implementations might differ in the definitions they
-include. Exempli gratia: MUSL does not define __SIGRTMAX nor
-__SIGRTMIN.
+Hi!
+I've finally started to look into this patchset (sorry for the long delay), the
+changes to fanotify03 looks good to me and I wanted to push them, but I'm
+getting rejects:
 
-These two tests fail to build because of the missing
-definitions:
-  testcases/kernel/syscalls/ptrace/ptrace05.c
-  testcases/kernel/syscalls/sighold/sighold02.c
+Checking patch testcases/kernel/syscalls/fanotify/fanotify03.c...
+error: while searching for:
 
-Out of precaution, these two also include this header:
-  lib/tst_sig.c
-  testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+static pid_t child_pid;
 
-Signed-off-by: Daniel Díaz <daniel.diaz@linaro.org>
----
- include/lapi/signal.h                         | 24 +++++++++++++++++++
- lib/tst_sig.c                                 |  1 +
- testcases/kernel/syscalls/ptrace/ptrace05.c   |  1 +
- .../syscalls/rt_sigsuspend/rt_sigsuspend01.c  |  1 +
- testcases/kernel/syscalls/sighold/sighold02.c |  1 +
- 5 files changed, 28 insertions(+)
- create mode 100644 include/lapi/signal.h
+static unsigned long long event_set[EVENT_MAX];
+static unsigned int event_resp[EVENT_MAX];
 
-diff --git a/include/lapi/signal.h b/include/lapi/signal.h
-new file mode 100644
-index 000000000..d22965a94
---- /dev/null
-+++ b/include/lapi/signal.h
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Linaro Limited. All rights reserved.
-+ * Author: Daniel Díaz <daniel.diaz@linaro.org>
-+ */
-+
-+#ifndef LAPI_SIGNAL_H
-+#define LAPI_SIGNAL_H
-+
-+#include <signal.h>
-+
-+/*
-+ * Some libc implementations might differ in the definitions they include. This
-+ * covers those differences for all tests to successfully build.
-+ */
-+
-+#ifndef __SIGRTMIN
-+# define __SIGRTMIN 32
-+#endif
-+#ifndef __SIGRTMAX
-+# define __SIGRTMAX (_NSIG - 1)
-+#endif
-+
-+#endif
-diff --git a/lib/tst_sig.c b/lib/tst_sig.c
-index 36565e13d..6d77aeafd 100644
---- a/lib/tst_sig.c
-+++ b/lib/tst_sig.c
-@@ -72,6 +72,7 @@
- #include <signal.h>
- #include <unistd.h>
- #include "test.h"
-+#include "lapi/signal.h"
- 
- #define MAXMESG 150		/* size of mesg string sent to tst_res */
- 
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace05.c b/testcases/kernel/syscalls/ptrace/ptrace05.c
-index 420330029..54cfa4d7b 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace05.c
-+++ b/testcases/kernel/syscalls/ptrace/ptrace05.c
-@@ -38,6 +38,7 @@
- #include "ptrace.h"
- 
- #include "test.h"
-+#include "lapi/signal.h"
- 
- char *TCID = "ptrace05";
- int TST_TOTAL = 0;
-diff --git a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
-index f17a9aae6..e577cf227 100644
---- a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
-+++ b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
-@@ -18,6 +18,7 @@
- #include "tst_test.h"
- #include "lapi/syscalls.h"
- #include "lapi/safe_rt_signal.h"
-+#include "lapi/signal.h"
- 
- static void sig_handler(int sig)
- {
-diff --git a/testcases/kernel/syscalls/sighold/sighold02.c b/testcases/kernel/syscalls/sighold/sighold02.c
-index d1d4b0b06..b763142df 100644
---- a/testcases/kernel/syscalls/sighold/sighold02.c
-+++ b/testcases/kernel/syscalls/sighold/sighold02.c
-@@ -49,6 +49,7 @@
- #include <sys/wait.h>
- #include "test.h"
- #include "safe_macros.h"
-+#include "lapi/signal.h"
- 
- /* _XOPEN_SOURCE disables NSIG */
- #ifndef NSIG
+static char event_buf[EVENT_BUF_LEN];
+static int support_perm_events;
+
+static struct tcase {
+        const char *tname;
+        struct fanotify_mark_type mark;
+} tcases[] = {
+        {
+                "inode mark permission events",
+                INIT_FANOTIFY_MARK_TYPE(INODE),
+        },
+        {
+                "mount mark permission events",
+                INIT_FANOTIFY_MARK_TYPE(MOUNT),
+        },
+        {
+                "filesystem mark permission events",
+                INIT_FANOTIFY_MARK_TYPE(FILESYSTEM),
+        },
+};
+
+static void generate_events(void)
+
+error: patch failed: testcases/kernel/syscalls/fanotify/fanotify03.c:42
+Hunk #3 succeeded at 147 (offset -21 lines).
+error: while searching for:
+                }
+        } else {
+                /*
+                 * To distigouish between perm event not supported and
+                 * filesystem mark not supported.
+                 */
+                support_perm_events = 1;
+
+
+Is this based on some yet to be merged patchset?
+
 -- 
-2.17.1
-
+Cyril Hrubis
+chrubis@suse.cz
