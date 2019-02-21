@@ -1,125 +1,128 @@
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Thu, 21 Feb 2019 14:30:16 +0530
-Subject: [LTP] [PATCH v4 9/9] syscalls/sync_file_range: add sync device
-	test-case
-In-Reply-To: <1550739616-24054-1-git-send-email-sumit.garg@linaro.org>
-References: <1550739616-24054-1-git-send-email-sumit.garg@linaro.org>
-Message-ID: <1550739616-24054-10-git-send-email-sumit.garg@linaro.org>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 21 Feb 2019 12:09:58 +0100
+Subject: [LTP] [PATCH v6] syscalls/statx: Add test for sync flags
+In-Reply-To: <1545807270-3790-1-git-send-email-vaishnavi.d@zilogic.com>
+References: <1545807270-3790-1-git-send-email-vaishnavi.d@zilogic.com>
+Message-ID: <20190221110957.GA16911@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-sync_file_range02 tests to sync file data range having large dirty file
-pages to block device. Also, it tests all supported filesystems on a
-test block device.
+Hi!
+Pushed with a few changes, see below, thanks a lot for the work.
 
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
----
- runtest/syscalls                                   |  1 +
- .../kernel/syscalls/sync_file_range/.gitignore     |  1 +
- .../syscalls/sync_file_range/sync_file_range02.c   | 72 ++++++++++++++++++++++
- 3 files changed, 74 insertions(+)
- create mode 100644 testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+Also sorry for the long delay.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index aaad651..70d3561 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1353,6 +1353,7 @@ syncfs01 syncfs01
- 
- #testcases for sync_file_range
- sync_file_range01 sync_file_range01
-+sync_file_range02 sync_file_range02
- 
- syscall01 syscall01
- 
-diff --git a/testcases/kernel/syscalls/sync_file_range/.gitignore b/testcases/kernel/syscalls/sync_file_range/.gitignore
-index 3f6bd75..e6485f7 100644
---- a/testcases/kernel/syscalls/sync_file_range/.gitignore
-+++ b/testcases/kernel/syscalls/sync_file_range/.gitignore
-@@ -1 +1,2 @@
- /sync_file_range01
-+/sync_file_range02
-diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-new file mode 100644
-index 0000000..37ea68a
---- /dev/null
-+++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-@@ -0,0 +1,72 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Linaro Limited. All rights reserved.
-+ * Author: Sumit Garg <sumit.garg@linaro.org>
-+ */
-+
-+/*
-+ * sync_file_range02
+--- a/testcases/kernel/syscalls/statx/statx07.c
++++ b/testcases/kernel/syscalls/statx/statx07.c
+@@ -26,8 +26,19 @@
+  * AT_STATX_FORCE_SYNC is called to create cache data of the file.
+  * Then, by using DONT_SYNC_FILE getting old cached data in client folder,
+  * but mode has been chaged in server file.
 + *
-+ * It basically tests sync_file_range() to sync test file range having large
-+ * dirty file pages to block device. Also, it tests all supported filesystems
-+ * on a test block device.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <sys/types.h>
-+#include "tst_test.h"
-+#include "lapi/sync_file_range.h"
-+#include "check_sync_file_range.h"
-+
-+#define MNTPOINT		"mnt_point"
-+#define TST_FILE		MNTPOINT"/test"
-+#define TST_FILE_SIZE_MB	32
-+#define SIZE_MB			(1024*1024)
-+#define MODE			0644
-+
-+static void verify_sync_file_range(void)
-+{
-+	int fd;
-+	unsigned long written;
-+
-+	fd = SAFE_OPEN(TST_FILE, O_RDWR|O_CREAT, MODE);
-+
-+	tst_dev_bytes_written(tst_device->dev);
-+
-+	tst_fill_fd(fd, 0, SIZE_MB, TST_FILE_SIZE_MB);
-+
-+	TEST(sync_file_range(fd, 0, TST_FILE_SIZE_MB * SIZE_MB,
-+			     SYNC_FILE_RANGE_WAIT_BEFORE |
-+			     SYNC_FILE_RANGE_WRITE |
-+			     SYNC_FILE_RANGE_WAIT_AFTER));
-+
-+	if (TST_RET)
-+		tst_brk(TFAIL | TTERRNO, "sync_file_range() failed");
-+
-+	written = tst_dev_bytes_written(tst_device->dev);
-+
-+	SAFE_CLOSE(fd);
-+
-+	if (written >= SIZE_MB * TST_FILE_SIZE_MB)
-+		tst_res(TPASS, "Test file range synced to device");
-+	else
-+		tst_res(TFAIL, "Failed to sync test file range to device");
-+}
-+
-+static void setup(void)
-+{
-+	if (!check_sync_file_range())
-+		tst_brk(TCONF, "sync_file_range() not supported");
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.mount_device = 1,
-+	.all_filesystems = 1,
-+	.mntpoint = MNTPOINT,
-+	.setup = setup,
-+	.test_all = verify_sync_file_range,
-+};
--- 
-2.7.4
++ * The support for SYNC flags was implemented in NFS in:
++ *
++ * commit 9ccee940bd5b766b6dab6c1a80908b9490a4850d
++ * Author: Trond Myklebust <trond.myklebust@primarydata.com>
++ * Date:   Thu Jan 4 17:46:09 2018 -0500
++ *
++ *     Support statx() mask and query flags parameters
++ *
++ * Hence we skip the test on anything older than 4.16.
+  */
 
+(Added explanation why we skip the test on kernels prior 4.16)
+
++#define _GNU_SOURCE
+(The _GNU_SOURCE has to be defined before we include anything from libc,
+moved it here from the lapi header)
+ #include <netdb.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -58,19 +69,20 @@ static int exported;
+ 
+ static int get_mode(char *file_name, int flag_type, char *flag_name)
+ {
+-	struct statx buff;
++	struct statx buf;
+ 
+-	TEST(statx(AT_FDCWD, file_name, flag_type, STATX_ALL, &buff));
++	TEST(statx(AT_FDCWD, file_name, flag_type, STATX_ALL, &buf));
+ 
+-	if (TST_RET == -1)
++	if (TST_RET == -1) {
+ 		tst_brk(TFAIL | TST_ERR,
+-			"statx(AT_FDCWD, %s, %s, STATX_ALL, &buff)",
+-			file_name, flag_name);
+-	else
+-		tst_res(TINFO, "statx(AT_FDCWD, %s, %s, STATX_ALL, &buff)",
++			"statx(AT_FDCWD, %s, %s, STATX_ALL, &buf)",
+ 			file_name, flag_name);
++	}
+ 
+-	return buff.stx_mode;
++	tst_res(TINFO, "statx(AT_FDCWD, %s, %s, STATX_ALL, &buf) = %o",
++		file_name, flag_name, buf.stx_mode);
++
++	return buf.stx_mode;
+ }
+
+(Just minor changes)
+
+ const struct test_cases {
+@@ -89,20 +101,22 @@ static void test_statx(unsigned int i)
+ 	const struct test_cases *tc = &tcases[i];
+ 	unsigned int cur_mode;
+ 
+-	if (tc->flag == AT_STATX_DONT_SYNC)
+-		get_mode(tc->client_file, tc->flag, tc->flag_name);
++	get_mode(tc->client_file, AT_STATX_FORCE_SYNC, "AT_STATX_FORCE_SYNC");
+
+(This has been changed so that we are sure that the old data are in the
+cache so we do FORCE_SYNC statx regardless the test)
+ 
+ 	SAFE_CHMOD(tc->server_file, CURRENT_MODE);
+ 	cur_mode = get_mode(tc->client_file, tc->flag, tc->flag_name);
+ 
+-	if (MODE(cur_mode) == tc->mode)
++	if (MODE(cur_mode) == tc->mode) {
+ 		tst_res(TPASS,
+-			"statx() with %s for mode %o %o",
+-			tc->flag_name, tc->mode, MODE(cur_mode));
+-	else
++			"statx() with %s for mode %o",
++			tc->flag_name, tc->mode);
++	} else {
+ 		tst_res(TFAIL,
+ 			"statx() with %s for mode %o %o",
+ 			tc->flag_name, tc->mode, MODE(cur_mode));
++	}
++
++	SAFE_CHMOD(tc->server_file, DEFAULT_MODE);
+
+(And we reset the file mode back after the test so that we do something
+meaningful for the -i test option)
+
+ }
+
+
+ static void setup(void)
+@@ -131,7 +145,7 @@ static void setup(void)
+ 		tst_brk(TBROK | TST_ERR, "failed to exportfs");
+ 
+ 	if (mount(server_path, CLI_PATH, "nfs", 0, "addr=127.0.0.1")) {
+-		if (errno == EOPNOTSUPP)
++		if (errno == EOPNOTSUPP || errno == ECONNREFUSED)
+ 			tst_brk(TCONF | TERRNO, "nfs server not set up?");
+
+(And I've found that on some distros we got ECONNREFUSED if nfs server
+is not set up)
+
+ 		tst_brk(TBROK | TERRNO, "mount() nfs failed");
+ 	}
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
