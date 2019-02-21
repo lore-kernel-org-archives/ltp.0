@@ -1,51 +1,52 @@
 From: Sumit Garg <sumit.garg@linaro.org>
-Date: Thu, 21 Feb 2019 14:30:12 +0530
-Subject: [LTP] [PATCH v4 5/9] syscalls/sync: add sync device test-case
+Date: Thu, 21 Feb 2019 14:30:13 +0530
+Subject: [LTP] [PATCH v4 6/9] syscalls/fsync: add sync device test-case
 In-Reply-To: <1550739616-24054-1-git-send-email-sumit.garg@linaro.org>
 References: <1550739616-24054-1-git-send-email-sumit.garg@linaro.org>
-Message-ID: <1550739616-24054-6-git-send-email-sumit.garg@linaro.org>
+Message-ID: <1550739616-24054-7-git-send-email-sumit.garg@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-sync03 tests to sync file having large dirty file pages to block device.
-It tests all supported filesystems on a test block device.
+fsync04 tests to sync file having large dirty file pages to block
+device. Also, it tests all supported filesystems on a test block device.
 
 Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 ---
- runtest/syscalls                          |  1 +
- testcases/kernel/syscalls/sync/.gitignore |  1 +
- testcases/kernel/syscalls/sync/sync03.c   | 60 +++++++++++++++++++++++++++++++
+ runtest/syscalls                           |  1 +
+ testcases/kernel/syscalls/fsync/.gitignore |  1 +
+ testcases/kernel/syscalls/fsync/fsync04.c  | 60 ++++++++++++++++++++++++++++++
  3 files changed, 62 insertions(+)
- create mode 100644 testcases/kernel/syscalls/sync/sync03.c
+ create mode 100644 testcases/kernel/syscalls/fsync/fsync04.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 9442740..dba0dee 100644
+index dba0dee..0d09509 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -1345,6 +1345,7 @@ symlinkat01 symlinkat01
+@@ -347,6 +347,7 @@ fstatfs02_64 fstatfs02_64
+ fsync01 fsync01
+ fsync02 fsync02
+ fsync03 fsync03
++fsync04 fsync04
  
- sync01 sync01
- sync02 sync02
-+sync03 sync03
- 
- syncfs01 syncfs01
- 
-diff --git a/testcases/kernel/syscalls/sync/.gitignore b/testcases/kernel/syscalls/sync/.gitignore
-index d8d304d..04f4710 100644
---- a/testcases/kernel/syscalls/sync/.gitignore
-+++ b/testcases/kernel/syscalls/sync/.gitignore
-@@ -1,2 +1,3 @@
- /sync01
- /sync02
-+/sync03
-diff --git a/testcases/kernel/syscalls/sync/sync03.c b/testcases/kernel/syscalls/sync/sync03.c
+ ftruncate01 ftruncate01
+ ftruncate01_64 ftruncate01_64
+diff --git a/testcases/kernel/syscalls/fsync/.gitignore b/testcases/kernel/syscalls/fsync/.gitignore
+index 3c694a4..4b5ea83 100644
+--- a/testcases/kernel/syscalls/fsync/.gitignore
++++ b/testcases/kernel/syscalls/fsync/.gitignore
+@@ -1,3 +1,4 @@
+ /fsync01
+ /fsync02
+ /fsync03
++/fsync04
+diff --git a/testcases/kernel/syscalls/fsync/fsync04.c b/testcases/kernel/syscalls/fsync/fsync04.c
 new file mode 100644
-index 0000000..4dc2ff6
+index 0000000..4b5b586
 --- /dev/null
-+++ b/testcases/kernel/syscalls/sync/sync03.c
++++ b/testcases/kernel/syscalls/fsync/fsync04.c
 @@ -0,0 +1,60 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
@@ -54,9 +55,9 @@ index 0000000..4dc2ff6
 + */
 +
 +/*
-+ * sync03
++ * fsync04
 + *
-+ * It basically tests sync() to sync test file having large dirty file pages
++ * It basically tests fsync() to sync test file having large dirty file pages
 + * to block device. Also, it tests all supported filesystems on a test block
 + * device.
 + */
@@ -74,7 +75,7 @@ index 0000000..4dc2ff6
 +#define SIZE_MB			(1024*1024)
 +#define MODE			0644
 +
-+static void verify_sync(void)
++static void verify_fsync(void)
 +{
 +	int fd;
 +	unsigned long written;
@@ -85,10 +86,10 @@ index 0000000..4dc2ff6
 +
 +	tst_fill_fd(fd, 0, SIZE_MB, TST_FILE_SIZE_MB);
 +
-+	TEST_VOID(sync());
++	TEST(fsync(fd));
 +
 +	if (TST_RET)
-+		tst_brk(TFAIL | TTERRNO, "sync() failed");
++		tst_brk(TFAIL | TTERRNO, "fsync(fd) failed");
 +
 +	written = tst_dev_bytes_written(tst_device->dev);
 +
@@ -105,7 +106,7 @@ index 0000000..4dc2ff6
 +	.mount_device = 1,
 +	.all_filesystems = 1,
 +	.mntpoint = MNTPOINT,
-+	.test_all = verify_sync,
++	.test_all = verify_fsync,
 +};
 -- 
 2.7.4
