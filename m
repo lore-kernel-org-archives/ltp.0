@@ -1,111 +1,43 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 21 Feb 2019 13:34:04 +0100
-Subject: [LTP] [PATCH] syscalls/ustat: Move the syscall to lapi
-In-Reply-To: <20190221112201.18324-1-chrubis@suse.cz>
-References: <20190221112201.18324-1-chrubis@suse.cz>
-Message-ID: <87r2c12udf.fsf@rpws.prws.suse.cz>
+From: Daniel Thompson <daniel.thompson@linaro.org>
+Date: Thu, 21 Feb 2019 13:36:18 +0000
+Subject: [LTP] [PATCH v4 2/9] lib: split tst_fill_file() to create new
+ tst_fill_fd()
+In-Reply-To: <20190221120442.GB17813@rei.lan>
+References: <1550739616-24054-1-git-send-email-sumit.garg@linaro.org>
+ <1550739616-24054-3-git-send-email-sumit.garg@linaro.org>
+ <20190221113840.l2ffu4d22u72uakm@holly.lan>
+ <20190221120442.GB17813@rei.lan>
+Message-ID: <20190221133618.kfnvhvznztz75ksp@holly.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+On Thu, Feb 21, 2019 at 01:04:42PM +0100, Cyril Hrubis wrote:
+> Hi!
+> > > -int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount)
+> > > +int tst_fill_fd(int fd, char pattern, size_t bs, size_t bcount)
+> > >  {
+> > > -	int fd;
+> > > -	size_t counter;
+> > > +	size_t i;
+> > 
+> > Nitpicking perhaps but gratuitous variable renames don't make patches
+> > containing other changes easier to read. Nor, to be honest, does 
+> > "counter" seem any more descriptive then i (since i is more idiomatic
+> > and therefore quicker to read).
+> 
+> It seems you misread the patch as we are replacing the counter with i
+> here and I asked for that since i is the idiomatic way of naming loop
+> variables, so all the blame for this change goes to me :-).
 
-Cyril Hrubis <chrubis@suse.cz> writes:
-
-> The dev parameter needs to be casted to unsigned in some cases, let's
-> move call to tst_syscall() from the tests to lapi so that the tests does
-> not have to worry about the low level details.
->
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> CC: Steve Muckle <smuckle@google.com>
-> CC: Richard Palethorpe <rpalethorpe@suse.com>
-> ---
->  include/lapi/ustat.h                      | 7 +++++++
->  testcases/kernel/syscalls/ustat/ustat01.c | 5 ++---
->  testcases/kernel/syscalls/ustat/ustat02.c | 5 ++---
->  3 files changed, 11 insertions(+), 6 deletions(-)
->
-> diff --git a/include/lapi/ustat.h b/include/lapi/ustat.h
-> index 12c073582..6365b2e92 100644
-> --- a/include/lapi/ustat.h
-> +++ b/include/lapi/ustat.h
-> @@ -10,12 +10,19 @@
->  #ifdef HAVE_SYS_USTAT_H
->  # include <sys/ustat.h>
-
-Just a thought, but this is potentially a problem if lib C implementes
-ustat in user land, but the system call still exists. Which I think is
-more likely with an obsolete system call.
-
->  #else
-> +# include "lapi/syscalls.h"
-> +
->  struct ustat {
->  	daddr_t f_tfree;
->  	ino_t f_tinode;
->  	char f_fname[6];
->  	char f_fpack[6];
->  };
-> +
-> +static inline int ustat(dev_t dev, struct ustat *ubuf)
-> +{
-> +	return tst_syscall(__NR_ustat, (unsigned int)dev, ubuf);
-> +}
->  #endif
->
->  #endif /* LAPI_USTAT_H */
-> diff --git a/testcases/kernel/syscalls/ustat/ustat01.c b/testcases/kernel/syscalls/ustat/ustat01.c
-> index 2e7dcc9d7..729f8c106 100644
-> --- a/testcases/kernel/syscalls/ustat/ustat01.c
-> +++ b/testcases/kernel/syscalls/ustat/ustat01.c
-> @@ -10,9 +10,8 @@
->  #include <sys/types.h>
->  #include <sys/stat.h>
->
-> -#include "lapi/syscalls.h"
-> -#include "lapi/ustat.h"
->  #include "tst_test.h"
-> +#include "lapi/ustat.h"
->
->  static dev_t dev_num;
->
-> @@ -20,7 +19,7 @@ void run(void)
->  {
->  	struct ustat ubuf;
->
-> -	TEST(tst_syscall(__NR_ustat, (unsigned int)dev_num, &ubuf));
-> +	TEST(ustat(dev_num, &ubuf));
->
->  	if (TST_RET == -1)
->  		tst_res(TFAIL | TTERRNO, "ustat(2) failed");
-> diff --git a/testcases/kernel/syscalls/ustat/ustat02.c b/testcases/kernel/syscalls/ustat/ustat02.c
-> index 9bbe4f3f5..3c9236200 100644
-> --- a/testcases/kernel/syscalls/ustat/ustat02.c
-> +++ b/testcases/kernel/syscalls/ustat/ustat02.c
-> @@ -11,9 +11,8 @@
->  #include <sys/stat.h>
->  #include <sys/types.h>
->
-> -#include "lapi/syscalls.h"
-> -#include "lapi/ustat.h"
->  #include "tst_test.h"
-> +#include "lapi/ustat.h"
->
->  static dev_t invalid_dev = -1;
->  static dev_t root_dev;
-> @@ -36,7 +35,7 @@ int TST_TOTAL = ARRAY_SIZE(tc);
->
->  void run(unsigned int test)
->  {
-> -	TEST(tst_syscall(__NR_ustat, *tc[test].dev, tc[test].buf));
-> +	TEST(ustat(*tc[test].dev, tc[test].buf));
->
->  	if ((TST_RET == -1) && (TST_ERR == tc[test].exp_errno))
->  		tst_res(TPASS | TTERRNO, "ustat(2) expected failure");
+Quite right. I misread it. Sorry for the noise.
 
 
---
-Thank you,
-Richard.
+Daniel.
+
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
