@@ -1,91 +1,44 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 22 Feb 2019 09:22:29 +0200
-Subject: [LTP] [PATCH 1/5] syscalls/fanotify03: defined additional tcase
- members for added control
-In-Reply-To: <20190221164234.GD17813@rei.lan>
-References: <20190122223526.GA32694@lithium.mbobrowski.org>
- <20190221164234.GD17813@rei.lan>
-Message-ID: <CAOQ4uxhbWmS2_jOjenZA11jk_TNwBE8KNUs+Na-vC13gPt+_2g@mail.gmail.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Fri, 22 Feb 2019 08:39:53 +0100
+Subject: [LTP] [PATCH] syscalls/ustat: Move the syscall to lapi
+In-Reply-To: <20190221143021.GC17813@rei.lan>
+References: <20190221112201.18324-1-chrubis@suse.cz>
+ <87r2c12udf.fsf@rpws.prws.suse.cz> <20190221143021.GC17813@rei.lan>
+Message-ID: <87pnrk2rw6.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Feb 21, 2019 at 6:43 PM Cyril Hrubis <chrubis@suse.cz> wrote:
->
+Hello,
+
+Cyril Hrubis <chrubis@suse.cz> writes:
+
 > Hi!
-> I've finally started to look into this patchset (sorry for the long delay), the
-> changes to fanotify03 looks good to me and I wanted to push them, but I'm
-> getting rejects:
+>> > diff --git a/include/lapi/ustat.h b/include/lapi/ustat.h
+>> > index 12c073582..6365b2e92 100644
+>> > --- a/include/lapi/ustat.h
+>> > +++ b/include/lapi/ustat.h
+>> > @@ -10,12 +10,19 @@
+>> >  #ifdef HAVE_SYS_USTAT_H
+>> >  # include <sys/ustat.h>
+>>
+>> Just a thought, but this is potentially a problem if lib C implementes
+>> ustat in user land, but the system call still exists. Which I think is
+>> more likely with an obsolete system call.
 >
-> Checking patch testcases/kernel/syscalls/fanotify/fanotify03.c...
-> error: while searching for:
+> Good point. So it all depends on what we want to focus on, if we are
+> after kernel, we should call the syscall directly, if we look at system
+> functionality we should go after the libc one by default.
 >
-> static pid_t child_pid;
->
-> static unsigned long long event_set[EVENT_MAX];
-> static unsigned int event_resp[EVENT_MAX];
->
-> static char event_buf[EVENT_BUF_LEN];
-> static int support_perm_events;
->
-> static struct tcase {
->         const char *tname;
->         struct fanotify_mark_type mark;
-> } tcases[] = {
->         {
->                 "inode mark permission events",
->                 INIT_FANOTIFY_MARK_TYPE(INODE),
->         },
->         {
->                 "mount mark permission events",
->                 INIT_FANOTIFY_MARK_TYPE(MOUNT),
->         },
->         {
->                 "filesystem mark permission events",
->                 INIT_FANOTIFY_MARK_TYPE(FILESYSTEM),
->         },
-> };
->
-> static void generate_events(void)
->
-> error: patch failed: testcases/kernel/syscalls/fanotify/fanotify03.c:42
-> Hunk #3 succeeded at 147 (offset -21 lines).
-> error: while searching for:
->                 }
->         } else {
->                 /*
->                  * To distigouish between perm event not supported and
->                  * filesystem mark not supported.
->                  */
->                 support_perm_events = 1;
->
->
-> Is this based on some yet to be merged patchset?
+> I guess that ideally we should test both, not sure how to achiveve that
+> reasonably easily...
 
-I see the problem.
-It is based on an older version of
-syscalls/fanotify03: add test for FAN_MARK_FILESYSTEM permission events
+Possibly we could create a config option which forcibly sets (almost)
+all the HAVE_* macros to zero. This will probably result in a lot of
+tests being skipped as well, but it might be good enough.
 
-You removed support_perm_events on commit or maybe I sent another
-version based on your review - not sure.
-
-Attached the missing prerequisite patch.
-
-You may choose to drop support_perm_events again or add a test
-for kernel permission events support in setup(), but we do need to
-distinguish between support_exec_events (which comes in a later patch)
-and FAN_MARK_FILESYSTEM support, as exec events may be backported
-to distro stable kernels and FAN_MARK_FILESYSTEM is less likely to be
-backported.
-
-Thanks,
-Amir.
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: 0001-syscalls-fanotify03-add-test-for-FAN_MARK_FILESYSTEM.patch
-Type: text/x-patch
-Size: 1218 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190222/ac8e5842/attachment.bin>
+--
+Thank you,
+Richard.
