@@ -1,44 +1,51 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 22 Feb 2019 08:39:53 +0100
-Subject: [LTP] [PATCH] syscalls/ustat: Move the syscall to lapi
-In-Reply-To: <20190221143021.GC17813@rei.lan>
-References: <20190221112201.18324-1-chrubis@suse.cz>
- <87r2c12udf.fsf@rpws.prws.suse.cz> <20190221143021.GC17813@rei.lan>
-Message-ID: <87pnrk2rw6.fsf@rpws.prws.suse.cz>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Fri, 22 Feb 2019 15:48:21 +0800
+Subject: [LTP] [PATCH ltp] syscalls: add compat_16 tests into .gitignore
+ for	getresgid, getresuid
+In-Reply-To: <20190222035345.8887-1-yixin.zhang@intel.com>
+References: <20190222035345.8887-1-yixin.zhang@intel.com>
+Message-ID: <5C6FA945.8010402@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi Yixin,
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+It looks fine to me.
 
-> Hi!
->> > diff --git a/include/lapi/ustat.h b/include/lapi/ustat.h
->> > index 12c073582..6365b2e92 100644
->> > --- a/include/lapi/ustat.h
->> > +++ b/include/lapi/ustat.h
->> > @@ -10,12 +10,19 @@
->> >  #ifdef HAVE_SYS_USTAT_H
->> >  # include <sys/ustat.h>
->>
->> Just a thought, but this is potentially a problem if lib C implementes
->> ustat in user land, but the system call still exists. Which I think is
->> more likely with an obsolete system call.
+Best Regards,
+Xiao Yang
+On 2019/02/22 11:53, Yixin Zhang wrote:
+> Signed-off-by: Yixin Zhang<yixin.zhang@intel.com>
+> ---
+>   testcases/kernel/syscalls/getresgid/.gitignore | 3 +++
+>   testcases/kernel/syscalls/getresuid/.gitignore | 3 +++
+>   2 files changed, 6 insertions(+)
 >
-> Good point. So it all depends on what we want to focus on, if we are
-> after kernel, we should call the syscall directly, if we look at system
-> functionality we should go after the libc one by default.
->
-> I guess that ideally we should test both, not sure how to achiveve that
-> reasonably easily...
+> diff --git a/testcases/kernel/syscalls/getresgid/.gitignore b/testcases/kernel/syscalls/getresgid/.gitignore
+> index e8ddb17e8..9309a2b8b 100644
+> --- a/testcases/kernel/syscalls/getresgid/.gitignore
+> +++ b/testcases/kernel/syscalls/getresgid/.gitignore
+> @@ -1,3 +1,6 @@
+>   /getresgid01
+> +/getresgid01_16
+>   /getresgid02
+> +/getresgid02_16
+>   /getresgid03
+> +/getresgid03_16
+> diff --git a/testcases/kernel/syscalls/getresuid/.gitignore b/testcases/kernel/syscalls/getresuid/.gitignore
+> index 0324bb7c0..387ed1b59 100644
+> --- a/testcases/kernel/syscalls/getresuid/.gitignore
+> +++ b/testcases/kernel/syscalls/getresuid/.gitignore
+> @@ -1,3 +1,6 @@
+>   /getresuid01
+> +/getresuid01_16
+>   /getresuid02
+> +/getresuid02_16
+>   /getresuid03
+> +/getresuid03_16
 
-Possibly we could create a config option which forcibly sets (almost)
-all the HAVE_* macros to zero. This will probably result in a lot of
-tests being skipped as well, but it might be good enough.
 
---
-Thank you,
-Richard.
+
