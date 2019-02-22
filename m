@@ -1,60 +1,91 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 22 Feb 2019 15:11:09 +0800
-Subject: [LTP] [PATCH] mem/lib: remove NH_CPUS flag from
-	get_allowed_nodes_arr
-Message-ID: <20190222071109.10970-1-liwang@redhat.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Fri, 22 Feb 2019 09:22:29 +0200
+Subject: [LTP] [PATCH 1/5] syscalls/fanotify03: defined additional tcase
+ members for added control
+In-Reply-To: <20190221164234.GD17813@rei.lan>
+References: <20190122223526.GA32694@lithium.mbobrowski.org>
+ <20190221164234.GD17813@rei.lan>
+Message-ID: <CAOQ4uxhbWmS2_jOjenZA11jk_TNwBE8KNUs+Na-vC13gPt+_2g@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-A new BROK was occurred on a special numa system which node 1 just has
-memory but no cpu. This special configuration makes numa system detection
-is_numa(NULL, NH_MEMS, 2) get pass in setup() but test failed in the mem.c
-library funcion test_ksm_merge_across_nodes becuase the NH_CPUS is to requre
-testing node should have cpu.
+On Thu, Feb 21, 2019 at 6:43 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+> Hi!
+> I've finally started to look into this patchset (sorry for the long delay), the
+> changes to fanotify03 looks good to me and I wanted to push them, but I'm
+> getting rejects:
+>
+> Checking patch testcases/kernel/syscalls/fanotify/fanotify03.c...
+> error: while searching for:
+>
+> static pid_t child_pid;
+>
+> static unsigned long long event_set[EVENT_MAX];
+> static unsigned int event_resp[EVENT_MAX];
+>
+> static char event_buf[EVENT_BUF_LEN];
+> static int support_perm_events;
+>
+> static struct tcase {
+>         const char *tname;
+>         struct fanotify_mark_type mark;
+> } tcases[] = {
+>         {
+>                 "inode mark permission events",
+>                 INIT_FANOTIFY_MARK_TYPE(INODE),
+>         },
+>         {
+>                 "mount mark permission events",
+>                 INIT_FANOTIFY_MARK_TYPE(MOUNT),
+>         },
+>         {
+>                 "filesystem mark permission events",
+>                 INIT_FANOTIFY_MARK_TYPE(FILESYSTEM),
+>         },
+> };
+>
+> static void generate_events(void)
+>
+> error: patch failed: testcases/kernel/syscalls/fanotify/fanotify03.c:42
+> Hunk #3 succeeded at 147 (offset -21 lines).
+> error: while searching for:
+>                 }
+>         } else {
+>                 /*
+>                  * To distigouish between perm event not supported and
+>                  * filesystem mark not supported.
+>                  */
+>                 support_perm_events = 1;
+>
+>
+> Is this based on some yet to be merged patchset?
 
-However, I have gone though all of our LTP ksm tests and confirmed that there
-is no necessary to do cpu check for it, actully only ksm06 invoke that funcion.
-In this patch I just remove the NH_CPUS flag to get ksm06 test pass.
+I see the problem.
+It is based on an older version of
+syscalls/fanotify03: add test for FAN_MARK_FILESYSTEM permission events
 
-  # numactl -H
-  available: 2 nodes (0-1)
-  node 0 cpus: 0 1 2 3 4 5 6 7
-  node 0 size: 31431 MB
-  node 0 free: 26355 MB
-  node 1 cpus:
-  node 1 size: 255 MB
-  node 1 free: 213 MB
-  node distances:
-  node   0   1
-    0:  10  40
-    1:  40  10
+You removed support_perm_events on commit or maybe I sent another
+version based on your review - not sure.
 
-  # ./ksm06
-  tst_test.c:1085: INFO: Timeout per run is 0h 10m 00s
-  mem.c:539: INFO: need NUMA system support
-  tst_test.c:920: BROK: Test haven't reported results!
+Attached the missing prerequisite patch.
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/mem/lib/mem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You may choose to drop support_perm_events again or add a test
+for kernel permission events support in setup(), but we do need to
+distinguish between support_exec_events (which comes in a later patch)
+and FAN_MARK_FILESYSTEM support, as exec events may be backported
+to distro stable kernels and FAN_MARK_FILESYSTEM is less likely to be
+backported.
 
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index ec1792004..a0c1b9b00 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -532,7 +532,7 @@ void test_ksm_merge_across_nodes(unsigned long nr_pages)
- 	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
- #endif
- 
--	ret = get_allowed_nodes_arr(NH_MEMS|NH_CPUS, &num_nodes, &nodes);
-+	ret = get_allowed_nodes_arr(NH_MEMS, &num_nodes, &nodes);
- 	if (ret != 0)
- 		tst_brk(TBROK|TERRNO, "get_allowed_nodes_arr");
- 	if (num_nodes < 2) {
--- 
-2.20.1
-
+Thanks,
+Amir.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-syscalls-fanotify03-add-test-for-FAN_MARK_FILESYSTEM.patch
+Type: text/x-patch
+Size: 1218 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190222/ac8e5842/attachment.bin>
