@@ -1,59 +1,57 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 25 Feb 2019 13:18:35 +0100
-Subject: [LTP] [PATCH] syscalls/ustat: Move the syscall to lapi
-In-Reply-To: <93f34d76-f1ba-c6a9-fa02-a4ffc0ec8426@google.com>
-References: <20190221112201.18324-1-chrubis@suse.cz>
- <87r2c12udf.fsf@rpws.prws.suse.cz> <20190221143021.GC17813@rei.lan>
- <87pnrk2rw6.fsf@rpws.prws.suse.cz> <20190222150006.GA23713@rei>
- <93f34d76-f1ba-c6a9-fa02-a4ffc0ec8426@google.com>
-Message-ID: <20190225121835.GB25739@rei.lan>
+From: Caspar Zhang <caspar@linux.alibaba.com>
+Date: Sat, 23 Feb 2019 14:21:35 +0800
+Subject: [LTP] [PATCH v2 1/2] syscalls/cma: test case should return
+ TCONF if syscall doesn't exist
+In-Reply-To: <255283985.2485664.1550860167075.JavaMail.zimbra@redhat.com>
+References: <1514394255.82007574.1543913641122.JavaMail.zimbra@redhat.com>
+ <1544017426-10669-1-git-send-email-kerneljasonxing@linux.alibaba.com>
+ <CAEemH2fvR1WQBEmwPM_rpy4z3xN6Ueeqk9Ri8BHrFoPQgaAJqw@mail.gmail.com>
+ <853398062.984884.1550238809858.JavaMail.zimbra@redhat.com>
+ <CAEemH2cFhdjMMF9RTyRHTBcLR7SqXNWNf41R+RLbdOY7CBOwpQ@mail.gmail.com>
+ <1937154233.1109562.1550312885136.JavaMail.zimbra@redhat.com>
+ <255283985.2485664.1550860167075.JavaMail.zimbra@redhat.com>
+Message-ID: <20190223062135.GB49700@linux.alibaba.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> >>> Good point. So it all depends on what we want to focus on, if we are
-> >>> after kernel, we should call the syscall directly, if we look at system
-> >>> functionality we should go after the libc one by default.
-> >>>
-> >>> I guess that ideally we should test both, not sure how to achiveve that
-> >>> reasonably easily...
-> 
-> This seems to me a great feature to have as well - it would address the 
-> concern that was just recently raised about having to choose between 
-> focusing on testing at the libc level or the kernel syscall level.
-> >> Possibly we could create a config option which forcibly sets (almost)
-> >> all the HAVE_* macros to zero. This will probably result in a lot of
-> >> tests being skipped as well, but it might be good enough.
-> > 
-> > I don't think that this will actully get past linking, I suppose we
-> > would end up with two confilicting syscall wrappers in most of the
-> > cases.
-> 
-> Perhaps something like how the compat_16 syscalls are handled? Test libc 
-> wrappers by default if the host has them, and for syscalls that can 
-> easily be called directly, add an extra bit in the test's Makefile that 
-> causes a "<testname>_direct" version of the test to be built using a 
-> direct syscall?
+On Fri, Feb 22, 2019 at 01:29:27PM -0500, Jan Stancek wrote:
+>
+>
+> ----- Original Message -----
+[snip]
+> > > > diff --git a/testcases/kernel/syscalls/cma/process_vm_readv03.c
+> > > > b/testcases/kernel/syscalls/cma/process_vm_readv03.c
+> > > > index 45f7c92e499c..1cec442b3456 100644
+> > > > --- a/testcases/kernel/syscalls/cma/process_vm_readv03.c
+> > > > +++ b/testcases/kernel/syscalls/cma/process_vm_readv03.c
+> > > > @@ -181,7 +181,7 @@ static long *fetch_remote_addrs(void)
+> > > >         remote.iov_len = len;
+> > > >
+> > > >         TEST(ltp_syscall(__NR_process_vm_readv, pids[0], &local,
+> > > > -                        1, &remote, 1, 0));
+> > > > +                        1, &remote, 1, 0L));
+> > > >
+> > >
+> > > To make things more safely, probably we'd better change all the integer
+> > > parameter too?
+> > >
+> > > -                        1, &remote, 1, 0));
+> > > +                        1L, &remote, 1L, 0L));
+> >
+> > Agreed, let's match all parameters types as before commit:
+> >  9b02cd465f70 ("syscalls/cma: test case should return TCONF if syscall
+> >  doesn't exist")
+>
+> So, it looks like this thread has stalled. I'll look into posting a patch,
+> unless I hear someone is already working on it.
 
-Either that or we can add a parameter to switch between them on runtime.
-I will look into this later on.
+Hi Jan,
 
-Maybe we can even add a .raw_syscal bit into the tst_test structure and
-add an infrastructure to choose what to call on runtime, e.g.
-tst_ustat() will call either libc or syscall based on some global flag
-and the test library would execute the run function twice, for each
-possiblity. The tst_ustat() function could be in fact generated based
-just on the function signature, so we can add a script to generate these
-as well.
+Jason told me he was looking into it, I'll double confirm with him about
+the progress. Will update ASAP.
 
-I've created an issue, so that we can track the discussion and progress
-on GitHub as well:
-
-https://github.com/linux-test-project/ltp/issues/506
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks,
+Caspar
