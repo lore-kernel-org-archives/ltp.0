@@ -1,10 +1,10 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 25 Feb 2019 02:37:50 -0500 (EST)
-Subject: [LTP] [PATCH v2] syscalls/mprotect: align exec_func to 64 bytes
-In-Reply-To: <CAEemH2f6=VqWp7f=2VrFQPN_7BfTv7H4J-r5CdFcPE5xTXOLQg@mail.gmail.com>
-References: <e1b5efb3d806fa26da13d46247b46ea5d78271c4.1549922861.git.jstancek@redhat.com>
- <CAEemH2f6=VqWp7f=2VrFQPN_7BfTv7H4J-r5CdFcPE5xTXOLQg@mail.gmail.com>
-Message-ID: <1508347197.2635651.1551080270164.JavaMail.zimbra@redhat.com>
+Date: Mon, 25 Feb 2019 02:39:00 -0500 (EST)
+Subject: [LTP] [PATCH v2] mprotect04: Support execute-only page access
+ permissions
+In-Reply-To: <20190212000008.57085-1-danielmentz@google.com>
+References: <20190212000008.57085-1-danielmentz@google.com>
+Message-ID: <725517488.2635953.1551080340197.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,42 +13,30 @@ To: ltp@lists.linux.it
 
 
 
-
 ----- Original Message -----
-> On Tue, Feb 12, 2019 at 6:15 AM Jan Stancek <jstancek@redhat.com> wrote:
+> Linux version 4.9 introduced support for execute-only page access permissions
+> on
+> arm64. As a result, user space processes, by default, cannot read from
+> their own .text sections. This change adds an extra call to mprotect()
+> to explicitly change access protections to allow relevant parts of the
+> .text section to be read.
 > 
-> > exec_func() is dummy/empty function. Try to align it so we don't
-> > need to worry about copying 2 pages. But also check that compiler
-> > aligned it and there's sufficient space between start of func_exec
-> > and end of page.
-> >
-> > This patch also removes copy_sz, which is now replaced with page_sz.
-> >
-> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> >
+> Without this change, mprotect04 generates false TBROK results. We
+> previously saw this test output:
 > 
-> Reviewed-by: Li Wang <liwang@redhat.com>
+> mprotect04    1  TPASS  :  test PROT_NONE for mprotect success
+> mprotect04    0  TINFO  :  exec_func: 0x5ac82d3588, page_to_copy:
+> 0x5ac82d3000
+> mprotect04    2  TBROK  :
+> ltp/testcases/kernel/syscalls/mprotect/mprotect04.c:236: page_to_copy not
+> present
+> mprotect04    3  TBROK  :
+> ltp/testcases/kernel/syscalls/mprotect/mprotect04.c:236: Remaining cases
+> broken
+> 
+> Signed-off-by: Daniel Mentz <danielmentz@google.com>
 
-Pushed.
+Pushed with minor tweaks so it applies to my v3.
 
-Regards,
+Thanks,
 Jan
-
-> 
-> 
-> > +mprotect04: CFLAGS += -falign-functions=64
-> >
-> 
-> One of my concern was this option maybe not supported by kind of compiler
-> and probably broken in the compiling phase. So I just submitted these
-> two(another is Daniel's) patches to Travis CI, the result looks good and no
-> compiler error found there.
-> https://travis-ci.com/wangli5665/ltp/builds/101429714
-> 
-> Beside that, I also manually tried that with old gcc(gcc version 4.1.2) and
-> verify that works fine.
-> 
-> --
-> Regards,
-> Li Wang
-> 
