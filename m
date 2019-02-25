@@ -1,51 +1,37 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 25 Feb 2019 10:51:59 +0800
-Subject: [LTP] [PATCH ltp] syscalls: add compat_16 tests into .gitignore
- for	getresgid, getresuid
-In-Reply-To: <20190222035345.8887-1-yixin.zhang@intel.com>
-References: <20190222035345.8887-1-yixin.zhang@intel.com>
-Message-ID: <5C73584F.7000703@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 25 Feb 2019 02:24:10 -0500 (EST)
+Subject: [LTP] [PATCH] fcntl36: make sure write threads complete at
+ least 1 loop
+In-Reply-To: <20190223101601.p4yv342uwi75scmx@XZHOUW.usersys.redhat.com>
+References: <815b921d8f5eeeabd65096c96c7572520b3287fb.1550862006.git.jstancek@redhat.com>
+ <20190223101601.p4yv342uwi75scmx@XZHOUW.usersys.redhat.com>
+Message-ID: <836137249.2634537.1551079450318.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yixin,
-
-Pushed, thanks. :-)
-
-Best Regards,
-Xiao Yang
-On 2019/02/22 11:53, Yixin Zhang wrote:
-> Signed-off-by: Yixin Zhang<yixin.zhang@intel.com>
-> ---
->   testcases/kernel/syscalls/getresgid/.gitignore | 3 +++
->   testcases/kernel/syscalls/getresuid/.gitignore | 3 +++
->   2 files changed, 6 insertions(+)
->
-> diff --git a/testcases/kernel/syscalls/getresgid/.gitignore b/testcases/kernel/syscalls/getresgid/.gitignore
-> index e8ddb17e8..9309a2b8b 100644
-> --- a/testcases/kernel/syscalls/getresgid/.gitignore
-> +++ b/testcases/kernel/syscalls/getresgid/.gitignore
-> @@ -1,3 +1,6 @@
->   /getresgid01
-> +/getresgid01_16
->   /getresgid02
-> +/getresgid02_16
->   /getresgid03
-> +/getresgid03_16
-> diff --git a/testcases/kernel/syscalls/getresuid/.gitignore b/testcases/kernel/syscalls/getresuid/.gitignore
-> index 0324bb7c0..387ed1b59 100644
-> --- a/testcases/kernel/syscalls/getresuid/.gitignore
-> +++ b/testcases/kernel/syscalls/getresuid/.gitignore
-> @@ -1,3 +1,6 @@
->   /getresuid01
-> +/getresuid01_16
->   /getresuid02
-> +/getresuid02_16
->   /getresuid03
-> +/getresuid03_16
 
 
+----- Original Message -----
+> On Fri, Feb 22, 2019 at 08:01:11PM +0100, Jan Stancek wrote:
+> > A failure has been reported while this test ran on a 1 CPU KVM guest
+> > with 4.20 kernel:
+> >   ...
+> >   fcntl36.c:303: INFO: OFD r/w lock vs POSIX read lock
+> >   fcntl36.c:360: FAIL: Unexpected data offset 3072 value 1
+> > 
+> > I wasn't able to reproduce it, to test the theory that
+> > one of write threads was given time on CPU only after
+> > loop_flag changed. Which means it wasn't able to complete
+> > a single iteration.
+> 
+> Ack. Thanks!
+> 
+
+Pushed.
+
+Regards,
+Jan
 
