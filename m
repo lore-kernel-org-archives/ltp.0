@@ -1,69 +1,59 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 25 Feb 2019 05:47:25 -0500 (EST)
-Subject: [LTP] [PATCH] syscalls/cma: fix the failure of compiling with
- O2 option
-In-Reply-To: <1551082945-75385-1-git-send-email-kerneljasonxing@linux.alibaba.com>
-References: <20190223062135.GB49700@linux.alibaba.com>
- <1551082945-75385-1-git-send-email-kerneljasonxing@linux.alibaba.com>
-Message-ID: <1507968555.2666255.1551091645854.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 25 Feb 2019 13:18:35 +0100
+Subject: [LTP] [PATCH] syscalls/ustat: Move the syscall to lapi
+In-Reply-To: <93f34d76-f1ba-c6a9-fa02-a4ffc0ec8426@google.com>
+References: <20190221112201.18324-1-chrubis@suse.cz>
+ <87r2c12udf.fsf@rpws.prws.suse.cz> <20190221143021.GC17813@rei.lan>
+ <87pnrk2rw6.fsf@rpws.prws.suse.cz> <20190222150006.GA23713@rei>
+ <93f34d76-f1ba-c6a9-fa02-a4ffc0ec8426@google.com>
+Message-ID: <20190225121835.GB25739@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
------ Original Message -----
-> This issue is triggered by the commit 9b02cd465f70 which I wrote. If
-> compile the process_vm_readv03.c with O2 option and run, it will return
-> TFAIL. By casting the int type to long type in the ltp_syscall calling
-> functions can we avoid this failure.
+Hi!
+> >>> Good point. So it all depends on what we want to focus on, if we are
+> >>> after kernel, we should call the syscall directly, if we look at system
+> >>> functionality we should go after the libc one by default.
+> >>>
+> >>> I guess that ideally we should test both, not sure how to achiveve that
+> >>> reasonably easily...
 > 
-> Signed-off-by: Jason Xing <kerneljasonxing@linux.alibaba.com>
-> ---
->  testcases/kernel/syscalls/cma/process_vm_readv03.c | 8 ++++----
+> This seems to me a great feature to have as well - it would address the 
+> concern that was just recently raised about having to choose between 
+> focusing on testing at the libc level or the kernel syscall level.
+> >> Possibly we could create a config option which forcibly sets (almost)
+> >> all the HAVE_* macros to zero. This will probably result in a lot of
+> >> tests being skipped as well, but it might be good enough.
+> > 
+> > I don't think that this will actully get past linking, I suppose we
+> > would end up with two confilicting syscall wrappers in most of the
+> > cases.
+> 
+> Perhaps something like how the compat_16 syscalls are handled? Test libc 
+> wrappers by default if the host has them, and for syscalls that can 
+> easily be called directly, add an extra bit in the test's Makefile that 
+> causes a "<testname>_direct" version of the test to be built using a 
+> direct syscall?
 
-What about other tests that were changed by commit 9b02cd465f70 ?
+Either that or we can add a parameter to switch between them on runtime.
+I will look into this later on.
 
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/cma/process_vm_readv03.c
-> b/testcases/kernel/syscalls/cma/process_vm_readv03.c
-> index 45f7c92..e15ffee 100644
-> --- a/testcases/kernel/syscalls/cma/process_vm_readv03.c
-> +++ b/testcases/kernel/syscalls/cma/process_vm_readv03.c
-> @@ -181,7 +181,7 @@ static long *fetch_remote_addrs(void)
->  	remote.iov_len = len;
->  
->  	TEST(ltp_syscall(__NR_process_vm_readv, pids[0], &local,
-> -			 1, &remote, 1, 0));
-> +			 1L, &remote, 1L, 0L));
->  	if (TEST_RETURN != len)
->  		tst_brkm(TFAIL | TERRNO, tst_exit, "process_vm_readv");
->  
-> @@ -213,8 +213,8 @@ static void child_invoke(int *bufsz_arr)
->  	tst_resm(TINFO, "child 1: %d local iovecs initialized.",
->  		 NUM_LOCAL_VECS);
->  
-> -	TEST(ltp_syscall(__NR_process_vm_readv, pids[0], local, NUM_LOCAL_VECS,
-> -				   remote, nr_iovecs, 0));
-> +	TEST(ltp_syscall(__NR_process_vm_readv, pids[0], local,
-> (long)NUM_LOCAL_VECS,
-> +				   remote, (long)nr_iovecs, 0L));
->  	if (TEST_RETURN != bufsz)
->  		tst_brkm(TBROK | TERRNO, tst_exit, "process_vm_readv");
->  
-> @@ -248,7 +248,7 @@ static void setup(void)
->  	tst_require_root();
->  
->  	/* Just a sanity check of the existence of syscall */
-> -	ltp_syscall(__NR_process_vm_readv, getpid(), NULL, 0, NULL, 0, 0);
-> +	ltp_syscall(__NR_process_vm_readv, getpid(), NULL, 0L, NULL, 0L, 0L);
->  
->  	nr_iovecs = nflag ? SAFE_STRTOL(NULL, nr_opt, 1, IOV_MAX) : 10;
->  	bufsz = sflag ? SAFE_STRTOL(NULL, sz_opt, NUM_LOCAL_VECS, LONG_MAX)
-> --
-> 1.8.3.1
-> 
-> 
+Maybe we can even add a .raw_syscal bit into the tst_test structure and
+add an infrastructure to choose what to call on runtime, e.g.
+tst_ustat() will call either libc or syscall based on some global flag
+and the test library would execute the run function twice, for each
+possiblity. The tst_ustat() function could be in fact generated based
+just on the function signature, so we can add a script to generate these
+as well.
+
+I've created an issue, so that we can track the discussion and progress
+on GitHub as well:
+
+https://github.com/linux-test-project/ltp/issues/506
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
