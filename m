@@ -1,11 +1,10 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 25 Feb 2019 02:24:10 -0500 (EST)
-Subject: [LTP] [PATCH] fcntl36: make sure write threads complete at
- least 1 loop
-In-Reply-To: <20190223101601.p4yv342uwi75scmx@XZHOUW.usersys.redhat.com>
-References: <815b921d8f5eeeabd65096c96c7572520b3287fb.1550862006.git.jstancek@redhat.com>
- <20190223101601.p4yv342uwi75scmx@XZHOUW.usersys.redhat.com>
-Message-ID: <836137249.2634537.1551079450318.JavaMail.zimbra@redhat.com>
+Date: Mon, 25 Feb 2019 02:37:50 -0500 (EST)
+Subject: [LTP] [PATCH v2] syscalls/mprotect: align exec_func to 64 bytes
+In-Reply-To: <CAEemH2f6=VqWp7f=2VrFQPN_7BfTv7H4J-r5CdFcPE5xTXOLQg@mail.gmail.com>
+References: <e1b5efb3d806fa26da13d46247b46ea5d78271c4.1549922861.git.jstancek@redhat.com>
+ <CAEemH2f6=VqWp7f=2VrFQPN_7BfTv7H4J-r5CdFcPE5xTXOLQg@mail.gmail.com>
+Message-ID: <1508347197.2635651.1551080270164.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,24 +13,42 @@ To: ltp@lists.linux.it
 
 
 
+
 ----- Original Message -----
-> On Fri, Feb 22, 2019 at 08:01:11PM +0100, Jan Stancek wrote:
-> > A failure has been reported while this test ran on a 1 CPU KVM guest
-> > with 4.20 kernel:
-> >   ...
-> >   fcntl36.c:303: INFO: OFD r/w lock vs POSIX read lock
-> >   fcntl36.c:360: FAIL: Unexpected data offset 3072 value 1
-> > 
-> > I wasn't able to reproduce it, to test the theory that
-> > one of write threads was given time on CPU only after
-> > loop_flag changed. Which means it wasn't able to complete
-> > a single iteration.
+> On Tue, Feb 12, 2019 at 6:15 AM Jan Stancek <jstancek@redhat.com> wrote:
 > 
-> Ack. Thanks!
+> > exec_func() is dummy/empty function. Try to align it so we don't
+> > need to worry about copying 2 pages. But also check that compiler
+> > aligned it and there's sufficient space between start of func_exec
+> > and end of page.
+> >
+> > This patch also removes copy_sz, which is now replaced with page_sz.
+> >
+> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> >
 > 
+> Reviewed-by: Li Wang <liwang@redhat.com>
 
 Pushed.
 
 Regards,
 Jan
 
+> 
+> 
+> > +mprotect04: CFLAGS += -falign-functions=64
+> >
+> 
+> One of my concern was this option maybe not supported by kind of compiler
+> and probably broken in the compiling phase. So I just submitted these
+> two(another is Daniel's) patches to Travis CI, the result looks good and no
+> compiler error found there.
+> https://travis-ci.com/wangli5665/ltp/builds/101429714
+> 
+> Beside that, I also manually tried that with old gcc(gcc version 4.1.2) and
+> verify that works fine.
+> 
+> --
+> Regards,
+> Li Wang
+> 
