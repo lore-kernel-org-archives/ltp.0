@@ -1,26 +1,40 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 25 Feb 2019 16:26:40 +0100
-Subject: [LTP] [PATCH v4 9/9] syscalls/sync_file_range: add sync device
- test-case
-In-Reply-To: <1550739616-24054-10-git-send-email-sumit.garg@linaro.org>
-References: <1550739616-24054-1-git-send-email-sumit.garg@linaro.org>
- <1550739616-24054-10-git-send-email-sumit.garg@linaro.org>
-Message-ID: <20190225152640.GD6132@rei.lan>
+Date: Mon, 25 Feb 2019 16:49:21 +0100
+Subject: [LTP] [PATCH] [COMMITTED] syscalls/syncfs: Fix compilation
+Message-ID: <20190225154921.13527-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-This tests fails for me for fuse based filesystems, the call returns 0
-but does not write anything, the questions is if this is desired
-behavior or not.
+The lapi/syncfs.h calls tst_syscall() which in turn uses tst_brk and
+TCONF, which is undefined until we include tst_test.h.
 
-Also we should as well add a second test here that sync only a middle of
-a written region of a file and expects that the data written are
-somewhere between a few percents of the synced size.
+This commit just swaps the tst_test.h and lapi/syncfs.h includes so that
+tst_test.h is included first, which fixed compilation on older
+distributions. This is a quick fix, cleaner solution may be done later
+on as a part of https://github.com/linux-test-project/ltp/issues/506.
 
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/syncfs/syncfs01.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/syncfs/syncfs01.c b/testcases/kernel/syscalls/syncfs/syncfs01.c
+index 2210da617..051a19ea6 100644
+--- a/testcases/kernel/syscalls/syncfs/syncfs01.c
++++ b/testcases/kernel/syscalls/syncfs/syncfs01.c
+@@ -16,8 +16,8 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <sys/types.h>
+-#include "lapi/syncfs.h"
+ #include "tst_test.h"
++#include "lapi/syncfs.h"
+ #include "check_syncfs.h"
+ 
+ #define MNTPOINT	"mnt_point"
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.19.2
+
