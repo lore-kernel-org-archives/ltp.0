@@ -1,122 +1,50 @@
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Mon, 25 Feb 2019 18:02:11 +0530
-Subject: [LTP] [PATCH] syscalls: add rt_tgsigqueueinfo() test-case
-Message-ID: <1551097931-18320-1-git-send-email-sumit.garg@linaro.org>
+From: Caspar Zhang <caspar@casparzhang.com>
+Date: Mon, 25 Feb 2019 21:16:14 +0800
+Subject: [LTP] [PATCH] syscalls/cma: fix the failure of compiling with
+ O2 option
+In-Reply-To: <1507968555.2666255.1551091645854.JavaMail.zimbra@redhat.com>
+References: <20190223062135.GB49700@linux.alibaba.com>
+ <1551082945-75385-1-git-send-email-kerneljasonxing@linux.alibaba.com>
+ <1507968555.2666255.1551091645854.JavaMail.zimbra@redhat.com>
+Message-ID: <20190225131614.GC49700@casparzhang.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This tests the rt_tgsigqueueinfo() syscall used to queue a signal and
-data to the single thread specified by the combination of tgid, a thread
-group ID, and tid, a thread in that thread group.
+On Mon, Feb 25, 2019 at 05:47:25AM -0500, Jan Stancek wrote:
+>
+>
+> ----- Original Message -----
+> > This issue is triggered by the commit 9b02cd465f70 which I wrote. If
+> > compile the process_vm_readv03.c with O2 option and run, it will return
+> > TFAIL. By casting the int type to long type in the ltp_syscall calling
+> > functions can we avoid this failure.
+> >
+> > Signed-off-by: Jason Xing <kerneljasonxing@linux.alibaba.com>
+> > ---
+> >  testcases/kernel/syscalls/cma/process_vm_readv03.c | 8 ++++----
+>
+> What about other tests that were changed by commit 9b02cd465f70 ?
 
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
----
- runtest/syscalls                                   |  1 +
- .../kernel/syscalls/rt_tgsigqueueinfo/.gitignore   |  1 +
- .../kernel/syscalls/rt_tgsigqueueinfo/Makefile     | 10 ++++
- .../rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c        | 53 ++++++++++++++++++++++
- 4 files changed, 65 insertions(+)
- create mode 100644 testcases/kernel/syscalls/rt_tgsigqueueinfo/.gitignore
- create mode 100644 testcases/kernel/syscalls/rt_tgsigqueueinfo/Makefile
- create mode 100644 testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
+I downgraded my glibc from 2.17-196 (a centos 7.4 version) to
+2.17-157 was able to reproduce this issue. I also tried modifying
+the params in all `TEST(ltp_syscall(__NR_process_vm...` calls, seemd
+that this is the only one causes (and solves) the failure:
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 70d3561..861c0a6 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -996,6 +996,7 @@ rt_sigprocmask01 rt_sigprocmask01
- rt_sigprocmask02 rt_sigprocmask02
- rt_sigqueueinfo01 rt_sigqueueinfo01
- rt_sigsuspend01 rt_sigsuspend01
-+rt_tgsigqueueinfo01 rt_tgsigqueueinfo01
- 
- sbrk01 sbrk01
- sbrk02 sbrk02
-diff --git a/testcases/kernel/syscalls/rt_tgsigqueueinfo/.gitignore b/testcases/kernel/syscalls/rt_tgsigqueueinfo/.gitignore
-new file mode 100644
-index 0000000..f9ffa58
---- /dev/null
-+++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/.gitignore
-@@ -0,0 +1 @@
-+rt_tgsigqueueinfo01
-diff --git a/testcases/kernel/syscalls/rt_tgsigqueueinfo/Makefile b/testcases/kernel/syscalls/rt_tgsigqueueinfo/Makefile
-new file mode 100644
-index 0000000..035ca64
---- /dev/null
-+++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/Makefile
-@@ -0,0 +1,10 @@
-+# Copyright (c) 2019 - Linaro Limited. All rights reserved.
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+top_srcdir             ?= ../../../..
-+
-+rt_tgsigqueueinfo01: CFLAGS+=-pthread
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
-new file mode 100644
-index 0000000..336b968
---- /dev/null
-+++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
-@@ -0,0 +1,53 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Linaro Limited. All rights reserved.
-+ * Author: Sumit Garg <sumit.garg@linaro.org>
-+ */
-+
-+/*
-+ * Test rt_tgsigqueueinfo
-+ *
-+ * This tests the rt_tgsigqueueinfo() syscall. It sends the signal and data
-+ * to the single thread specified by the combination of tgid, a thread group
-+ * ID, and tid, a thread in that thread group.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <err.h>
-+#include <pthread.h>
-+#include "tst_test.h"
-+#include "lapi/syscalls.h"
-+
-+void *tfunc(void *arg LTP_ATTRIBUTE_UNUSED)
-+{
-+	siginfo_t uinfo;
-+
-+	uinfo.si_errno = 0;
-+	uinfo.si_code = SI_QUEUE;
-+
-+	TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
-+			 syscall(__NR_gettid), SIGCHLD, &uinfo));
-+	if (TST_RET)
-+		tst_res(TFAIL, "Test Failed");
-+	else
-+		tst_res(TPASS, "Test Succeeded");
-+
-+	return NULL;
-+}
-+
-+static void verify_rt_tgsigqueueinfo(void)
-+{
-+	pthread_t pt;
-+
-+	TEST(pthread_create(&pt, NULL, tfunc, NULL));
-+	if (TST_RET)
-+		tst_brk(TFAIL | TTERRNO, "pthread_create failed");
-+
-+	TEST(pthread_join(pt, NULL));
-+	if (TST_RET)
-+		tst_brk(TFAIL | TTERRNO, "pthread_join failed");
-+}
-+
-+static struct tst_test test = {
-+	.test_all = verify_rt_tgsigqueueinfo,
-+};
--- 
-2.7.4
+        TEST(ltp_syscall(__NR_process_vm_readv, pids[0], local, NUM_LOCAL_VECS,
+-                                  remote, nr_iovecs, 0));
++                                  remote, nr_iovecs, 0UL));
 
+If we have enough time we might want to do a bisect between
+glibc-2.17-157 and 196 to dig into the real problem behind the simple
+fix, but for now I'm agree to convert all int params to correct unsigned
+long changed by this commit, so that we can get rid of any potential
+failures.
+
+Jason, can you make an updated patch to include Li Wang's and Jan's
+advices?
+
+Thanks,
+Caspar
