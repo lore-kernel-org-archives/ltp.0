@@ -1,33 +1,214 @@
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 26 Feb 2019 11:17:45 +0800
-Subject: [LTP] [PATCH v3] syscalls/cma: fix the failure of compiling
-	with O2 option
-In-Reply-To: <1551147760-52601-1-git-send-email-kerneljasonxing@linux.alibaba.com>
-References: <1551145346-34128-1-git-send-email-kerneljasonxing@linux.alibaba.com>
- <1551147760-52601-1-git-send-email-kerneljasonxing@linux.alibaba.com>
-Message-ID: <CAEemH2cwpaL=zm3yn6RF-zkTAh3GOnpt-h+Unqcoz0RifeqCTw@mail.gmail.com>
+Date: Tue, 26 Feb 2019 11:24:31 +0800
+Subject: [LTP] [PATCH v3] readdir: delete readdir02
+Message-ID: <20190226032431.10480-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Feb 26, 2019 at 10:22 AM Jason Xing <
-kerneljasonxing@linux.alibaba.com> wrote:
+Issue:
+  On ppc64le and aarch64, when testing in NFS mountpoint, test
+  process receives SIGSEGV when calling readdir on a DIR which
+  has just been closed by closedir().
 
-> This issue is triggered by the commit 9b02cd465f70 which I wrote. If
-> compile the process_vm_readv03.c with O2 option and run, it will return
-> TFAIL. By casting the int type to unsigned long type in the ltp_syscall
-> calling functions can we avoid this failure. Thus I modify all the
-> testcases which might be affected by the previous commit.
->
-> Signed-off-by: Jason Xing <kerneljasonxing@linux.alibaba.com>
->
-Reviewed-by: Li Wang <liwang@redhat.com>
+  Unfortunately, ltp/readdir02.c handles SIGSEGV. This makes it
+  hits SIGSEGV again in its cleanup function. So readdir02 hangs
+  there hitting SEGV endlessly.
 
+That's because a DIR * is NOT a file descriptor. It's memory
+allocated by opendir() that contains libc internal information
+about the directory. closedir(test_dir) frees any memory associated
+with the open directory pointer test_dir.
+
+To then pass the freed dir pointer to readdir() is a use-after-free.
+It probably won't return EBADF, it will dereference freed memory
+and whatever happens after that is undefined.
+
+And, considering LTP does cover the EBADF for getents() syscalls
+getdents02 test already, here let's remove this readdir02 directly.
+
+Reported-by: Xiong Zhou <xzhou@redhat.com>
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Dave Chinner <dchinner@redhat.com>
+Cc: Scott Mayhew <smayhew@redhat.com>
+Cc: Cyril Hrubis <chrubis@suse.cz>
+---
+ runtest/syscalls                              |   1 -
+ testcases/kernel/syscalls/readdir/.gitignore  |   1 -
+ testcases/kernel/syscalls/readdir/readdir02.c | 142 ------------------
+ 3 files changed, 144 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/readdir/readdir02.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 668c87cd1..343e78fc7 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -920,7 +920,6 @@ readahead01 readahead01
+ readahead02 readahead02
+ 
+ readdir01 readdir01
+-readdir02 readdir02
+ readdir21 readdir21
+ 
+ readlink01A symlink01 -T readlink01
+diff --git a/testcases/kernel/syscalls/readdir/.gitignore b/testcases/kernel/syscalls/readdir/.gitignore
+index b0b30ff9b..8a67a9c0c 100644
+--- a/testcases/kernel/syscalls/readdir/.gitignore
++++ b/testcases/kernel/syscalls/readdir/.gitignore
+@@ -1,3 +1,2 @@
+ /readdir01
+-/readdir02
+ /readdir21
+diff --git a/testcases/kernel/syscalls/readdir/readdir02.c b/testcases/kernel/syscalls/readdir/readdir02.c
+deleted file mode 100644
+index 3f3151f6a..000000000
+--- a/testcases/kernel/syscalls/readdir/readdir02.c
++++ /dev/null
+@@ -1,142 +0,0 @@
+-/*
+- * Copyright (C) Bull S.A. 2001
+- * Copyright (c) International Business Machines  Corp., 2001
+- *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- */
+-
+-/*
+- * DESCRIPTION
+- *      Try to readdir with Invalid directory stream descriptor dir.
+- *
+- * ALGORITHM
+- *      loop if that option was specified
+- *      call readdir() with an invalid file descriptor
+- *      check the errno value
+- *        issue a PASS message if we get EBADF - errno 9
+- *      otherwise, the tests fails
+- *        issue a FAIL message
+- *        call cleanup
+- *
+- * NOTE
+- *	The POSIX standard says:
+- *	  The readdir() function may fail if:
+- *	  [EBADF] The dirp argument does not refer to an open directory stream.
+- *	  (Note that readdir() is not _required_ to fail in this case.)
+- *
+- * HISTORY
+- *      04/2002 - Written by Jacky Malcles
+- *
+- *      06/2003 - Added code to catch SIGSEGV and return TCONF.
+- *		Robbie Williamson<robbiew@us.ibm.com>
+- */
+-
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <fcntl.h>
+-#include <dirent.h>
+-#include <unistd.h>
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-
+-#include "test.h"
+-
+-static void setup(void);
+-static void cleanup(void);
+-
+-char *TCID = "readdir02";
+-int TST_TOTAL = 1;
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-	DIR *test_dir;
+-	struct dirent *dptr;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		if ((test_dir = opendir(".")) == NULL) {
+-			tst_resm(TFAIL, "opendir(\".\") Failed, errno=%d : %s",
+-				 errno, strerror(errno));
+-		} else {
+-			if (closedir(test_dir) < 0) {
+-				tst_resm(TFAIL,
+-					 "closedir(\".\") Failed, errno=%d : %s",
+-					 errno, strerror(errno));
+-			} else {
+-				dptr = readdir(test_dir);
+-				switch (errno) {
+-				case EBADF:
+-					tst_resm(TPASS,
+-						 "expected failure - errno = %d : %s",
+-						 errno, strerror(errno));
+-					break;
+-				default:
+-					if (dptr != NULL) {
+-						tst_brkm(TFAIL, cleanup,
+-							 "call failed with an "
+-							 "unexpected error - %d : %s",
+-							 errno,
+-							 strerror(errno));
+-					} else {
+-						tst_resm(TINFO,
+-							 "readdir() is not _required_ to fail, "
+-							 "errno = %d  ", errno);
+-					}
+-				}
+-			}
+-
+-		}
+-
+-	}
+-
+-	cleanup();
+-	tst_exit();
+-}
+-
+-static void sigsegv_handler(int sig)
+-{
+-	tst_resm(TCONF,
+-		 "This system's implementation of closedir() will not allow this test to execute properly.");
+-	cleanup();
+-}
+-
+-static void setup(void)
+-{
+-	struct sigaction act;
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	act.sa_handler = sigsegv_handler;
+-	act.sa_flags = 0;
+-	sigemptyset(&act.sa_mask);
+-	sigaction(SIGSEGV, &act, NULL);
+-
+-	TEST_PAUSE;
+-
+-	tst_tmpdir();
+-}
+-
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-}
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190226/a7ad216d/attachment.html>
+2.20.1
+
