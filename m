@@ -1,74 +1,45 @@
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Tue, 26 Feb 2019 19:04:12 +0530
-Subject: [LTP] [PATCH v4 9/9] syscalls/sync_file_range: add sync device
-	test-case
-In-Reply-To: <20190226114823.kfr4vdk53mgs4vgr@holly.lan>
-References: <1550739616-24054-1-git-send-email-sumit.garg@linaro.org>
- <1550739616-24054-10-git-send-email-sumit.garg@linaro.org>
- <20190225152640.GD6132@rei.lan>
- <CAFA6WYP8GF3JuUZfn6wt-cKv+RZ5PDy6W_KOs0L753Mj_xE_xw@mail.gmail.com>
- <20190226105711.GB29783@rei.lan> <20190226114823.kfr4vdk53mgs4vgr@holly.lan>
-Message-ID: <CAFA6WYNr7C+6ditJ2WG3bmjU5-F6Vo2UnssY_8Ei+ijz=3iaGw@mail.gmail.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 26 Feb 2019 15:45:55 +0200
+Subject: [LTP] [PATCH 1/5] syscalls/fanotify03: defined additional tcase
+ members for added control
+In-Reply-To: <20190226133156.GA3281@rei.lan>
+References: <20190122223526.GA32694@lithium.mbobrowski.org>
+ <20190221164234.GD17813@rei.lan>
+ <CAOQ4uxhbWmS2_jOjenZA11jk_TNwBE8KNUs+Na-vC13gPt+_2g@mail.gmail.com>
+ <20190226133156.GA3281@rei.lan>
+Message-ID: <CAOQ4uxiN-szCCxuNYCEEKcXYRESJKwddys_j4_gVnTJYZ08MuA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, 26 Feb 2019 at 17:18, Daniel Thompson
-<daniel.thompson@linaro.org> wrote:
+On Tue, Feb 26, 2019 at 3:32 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 >
-> On Tue, Feb 26, 2019 at 11:57:11AM +0100, Cyril Hrubis wrote:
-> > Hi!
-> > > > This tests fails for me for fuse based filesystems, the call returns 0
-> > > > but does not write anything, the questions is if this is desired
-> > > > behavior or not.
-> > > >
-> > >
-> > > Interesting case. Do you see similar behaviour with other sync related syscalls?
+> Hi!
+> > I see the problem.
+> > It is based on an older version of
+> > syscalls/fanotify03: add test for FAN_MARK_FILESYSTEM permission events
 > >
-> > Just this one, I would have expected that the new syscall is not wired
-> > into fuse yet hence it does nothing silently instead of returning
-> > EOPNOTSUPP which could break applications...
+> > You removed support_perm_events on commit or maybe I sent another
+> > version based on your review - not sure.
 > >
-> > > AFAIK, fuse file-system operations are implemented in user-space
-> > > daemons exported to kernel as callbacks via libfuse. Maybe we need to
-> > > check fsync() callback operation [1] implementation?
-> > >
-> > > [1] https://libfuse.github.io/doxygen/structfuse__operations.html
->
-> For file syncs I think (admitedly without having much VFS experience)
-> that the writeback will end up being requested via the writepages VFS op;
-> since we are writing back data from a single fd then the kernel doesn't
-> need much help from the filesystem to find out which pages are
-> affected so the "big" sync API in fuse is probably not needed here.
->
-
-Hmm, I see in case of sync_file_range(), its handled via writepages
-VFS op. And fuse fsync() callback is used for fsync() and fdatasync()
-syscalls.
-
->
-> Daniel.
->
->
-> > >
-> > > > Also we should as well add a second test here that sync only a middle of
-> > > > a written region of a file and expects that the data written are
-> > > > somewhere between a few percents of the synced size.
-> > > >
-> > >
-> > > Sure, will add a test for this.
+> > Attached the missing prerequisite patch.
 > >
-> > Ideally this should be put into the existing test in order to spare time
-> > needed to format the devices etc.
-> >
+> > You may choose to drop support_perm_events again or add a test
+> > for kernel permission events support in setup(), but we do need to
+> > distinguish between support_exec_events (which comes in a later patch)
+> > and FAN_MARK_FILESYSTEM support, as exec events may be backported
+> > to distro stable kernels and FAN_MARK_FILESYSTEM is less likely to be
+> > backported.
+>
+> Unfortunately that did the trick only for the first patch, the rest is
+> still broken :-(.
+>
 
-Agree.
+Here is my branch with Matthew's patches, rebased on master
+and tested:
+https://github.com/amir73il/ltp/commits/fanotify_exec
 
-
--Sumit
-
-> > --
-> > Cyril Hrubis
-> > chrubis@suse.cz
+Thanks,
+Amir.
