@@ -1,84 +1,68 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 26 Feb 2019 19:23:32 +0300
-Subject: [LTP] [PATCH 1/2] lib/tst_net.sh: don't treat TWARN/TCONF as
-	failure in tst_netload()
-Message-ID: <1551198213-10024-1-git-send-email-alexey.kodanev@oracle.com>
+Date: Tue, 26 Feb 2019 19:23:33 +0300
+Subject: [LTP] [PATCH 2/2] lib/tst_net.sh: use SO_BINDTODEVICE in
+	tst_netload()
+In-Reply-To: <1551198213-10024-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1551198213-10024-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1551198213-10024-2-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Report TWARN and don't stop the test in that case.
+Since we have the information about the device, enable the
+usage of the option, when starting netstress.
+
+It can be disabled with TST_NETLOAD_BINDTODEVICE=0.
 
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/lib/tst_net.sh |   37 ++++++++++++++++++++++++-------------
- 1 files changed, 24 insertions(+), 13 deletions(-)
+ testcases/lib/tst_net.sh |   10 +++++++++-
+ 1 files changed, 9 insertions(+), 1 deletions(-)
 
 diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-index 3148643..7625c51 100644
+index 7625c51..9e26cee 100644
 --- a/testcases/lib/tst_net.sh
 +++ b/testcases/lib/tst_net.sh
-@@ -573,7 +573,7 @@ tst_netload()
+@@ -537,6 +537,7 @@ tst_netload()
+ 	# number of server replies after which TCP connection is closed
+ 	local s_replies="${TST_NETLOAD_MAX_SRV_REPLIES:-500000}"
+ 	local s_opts=
++	local bind_to_device=1
+ 
+ 	if [ ! "$TST_NEEDS_TMPDIR" = 1 ]; then
+ 		tst_brk_ TBROK "Using tst_netload requires setting TST_NEEDS_TMPDIR=1"
+@@ -564,7 +565,8 @@ tst_netload()
+ 		f) cs_opts="${cs_opts}-f " ;;
+ 		F) cs_opts="${cs_opts}-F " ;;
+ 		e) expect_res="$OPTARG" ;;
+-		D) cs_opts="${cs_opts}-D $OPTARG " ;;
++		D) cs_opts="${cs_opts}-D $OPTARG "
++		   bind_to_device=0 ;;
+ 		*) tst_brk_ TBROK "tst_netload: unknown option: $OPTARG" ;;
+ 		esac
+ 	done
+@@ -572,6 +574,11 @@ tst_netload()
+ 
  	[ "$setup_srchost" = 1 ] && s_opts="${s_opts}-S $hostopt "
  
- 	local expect_ret=0
--	[ "$expect_res" != "pass" ] && expect_ret=1
-+	[ "$expect_res" != "pass" ] && expect_ret=3
- 
- 	tst_rhost_run -c "pkill -9 netstress\$"
- 	s_opts="${cs_opts}${s_opts}-R $s_replies -B $TST_TMPDIR"
-@@ -590,26 +590,37 @@ tst_netload()
- 	c_opts="${cs_opts}${c_opts}-a $c_num -r $c_requests -d $rfile -g $port"
- 
- 	tst_res_ TINFO "run client 'netstress -l $c_opts'"
--	netstress -l $c_opts > tst_netload.log 2>&1 || ret=1
-+	netstress -l $c_opts > tst_netload.log 2>&1 || ret=$?
- 	tst_rhost_run -c "pkill -9 netstress\$"
- 
--	if [ "$expect_ret" -ne "$ret" ]; then
-+	if [ "$expect_ret" -ne 0 ]; then
-+		if [ $((ret & expect_ret)) -ne 0 ]; then
-+			tst_res_ TPASS "netstress failed as expected"
-+		else
-+			tst_res_ TFAIL "unexpected pass, ret is $ret"
-+		fi
-+		return $ret
++	if [ "$bind_to_device" = 1 -a "$TST_NETLOAD_BINDTODEVICE" = 1 ]; then
++		c_opts="${c_opts}-D $(tst_iface) "
++		s_opts="${s_opts}-D $(tst_iface rhost) "
 +	fi
 +
-+	if [ "$ret" -ne 0 ]; then
- 		tst_dump_rhost_cmd
- 		cat tst_netload.log
--		tst_brk_ TFAIL "expected '$expect_res' but ret: '$ret'"
-+		[ $((ret & 3)) -ne 0 ] && \
-+			tst_brk_ TFAIL "expected '$expect_res' but ret: '$ret'"
-+		[ $((ret & 32)) -ne 0 ] && \
-+			tst_brk_ TCONF "not supported configuration"
-+		[ $((ret & 4)) -ne 0 ] && \
-+			tst_res_ TWARN "netstress has warnings"
- 	fi
+ 	local expect_ret=0
+ 	[ "$expect_res" != "pass" ] && expect_ret=3
  
--	if [ "$ret" -eq 0 ]; then
--		if [ ! -f $rfile ]; then
--			tst_dump_rhost_cmd
--			cat tst_netload.log
--			tst_brk_ TFAIL "can't read $rfile"
--		fi
--		tst_res_ TPASS "netstress passed, time spent '$(cat $rfile)' ms"
--	else
--		tst_res_ TPASS "netstress failed as expected"
-+	if [ ! -f $rfile ]; then
-+		tst_dump_rhost_cmd
-+		cat tst_netload.log
-+		tst_brk_ TFAIL "can't read $rfile"
- 	fi
+@@ -788,6 +795,7 @@ fi
  
-+	tst_res_ TPASS "netstress passed, time spent '$(cat $rfile)' ms"
-+
- 	return $ret
- }
- 
+ export TST_NETLOAD_CLN_REQUESTS="${TST_NETLOAD_CLN_REQUESTS:-10000}"
+ export TST_NETLOAD_CLN_NUMBER="${TST_NETLOAD_CLN_NUMBER:-2}"
++export TST_NETLOAD_BINDTODEVICE="${TST_NETLOAD_BINDTODEVICE:-1}"
+ export HTTP_DOWNLOAD_DIR="${HTTP_DOWNLOAD_DIR:-/var/www/html}"
+ export FTP_DOWNLOAD_DIR="${FTP_DOWNLOAD_DIR:-/var/ftp}"
+ export FTP_UPLOAD_DIR="${FTP_UPLOAD_DIR:-/var/ftp/pub}"
 -- 
 1.7.1
 
