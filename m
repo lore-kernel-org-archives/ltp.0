@@ -1,29 +1,60 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 26 Feb 2019 11:03:43 -0500 (EST)
-Subject: [LTP] [PATCH v3] syscalls/cma: fix the failure of compiling
- with O2 option
-In-Reply-To: <1551147760-52601-1-git-send-email-kerneljasonxing@linux.alibaba.com>
-References: <1551145346-34128-1-git-send-email-kerneljasonxing@linux.alibaba.com>
- <1551147760-52601-1-git-send-email-kerneljasonxing@linux.alibaba.com>
-Message-ID: <1264466852.2951440.1551197023500.JavaMail.zimbra@redhat.com>
+From: Rafael David Tinoco <rafael.tinoco@linaro.org>
+Date: Tue, 26 Feb 2019 13:08:03 -0300
+Subject: [LTP] [PATCH v3 1/2] lib: include SAFE_CLOCK_ADJTIME() macro
+In-Reply-To: <20190226001716.GA12569@dell5510>
+References: <20190226001716.GA12569@dell5510>
+Message-ID: <20190226160804.16596-1-rafael.tinoco@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Adds SAFE_CLOCK_ADJTIME() macro to tst_safe_clocks.h.
 
+Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
+---
+ include/tst_safe_clocks.h | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
------ Original Message -----
-> This issue is triggered by the commit 9b02cd465f70 which I wrote. If
-> compile the process_vm_readv03.c with O2 option and run, it will return
-> TFAIL. By casting the int type to unsigned long type in the ltp_syscall
-> calling functions can we avoid this failure. Thus I modify all the
-> testcases which might be affected by the previous commit.
-> 
-> Signed-off-by: Jason Xing <kerneljasonxing@linux.alibaba.com>
+diff --git a/include/tst_safe_clocks.h b/include/tst_safe_clocks.h
+index 553f8464a..304207f6b 100644
+--- a/include/tst_safe_clocks.h
++++ b/include/tst_safe_clocks.h
+@@ -6,6 +6,8 @@
+ 
+ #include <time.h>
+ #include "tst_test.h"
++#include <sys/timex.h>
++#include "lapi/syscalls.h"
+ 
+ static inline void safe_clock_getres(const char *file, const int lineno,
+ 	clockid_t clk_id, struct timespec *res)
+@@ -42,6 +44,17 @@ static inline void safe_clock_settime(const char *file, const int lineno,
+ 			"%s:%d clock_gettime() failed", file, lineno);
+ }
+ 
++static inline void safe_clock_adjtime(const char *file, const int lineno,
++	clockid_t clk_id, struct timex *txc)
++{
++	int rval;
++
++	rval = tst_syscall(__NR_clock_adjtime, clk_id, txc);
++
++	if (rval != 0)
++		tst_brk(TBROK | TERRNO,
++			"%s:%d clock_adjtime() failed", file, lineno);
++}
+ #define SAFE_CLOCK_GETRES(clk_id, res)\
+ 	safe_clock_getres(__FILE__, __LINE__, (clk_id), (res))
+ 
+@@ -50,3 +63,6 @@ static inline void safe_clock_settime(const char *file, const int lineno,
+ 
+ #define SAFE_CLOCK_SETTIME(clk_id, tp)\
+ 	safe_clock_settime(__FILE__, __LINE__, (clk_id), (tp))
++
++#define SAFE_CLOCK_ADJTIME(clk_id, txc)\
++	safe_clock_adjtime(__FILE__, __LINE__, (clk_id), (txc))
+-- 
+2.20.1
 
-Pushed.
-
-Thanks,
-Jan
