@@ -1,31 +1,29 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 26 Feb 2019 16:45:54 +0100
-Subject: [LTP] [PATCH] [COMMITTED] syscalls/fanotify12: Fix typo.
-Message-ID: <20190226154554.8627-1-chrubis@suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 26 Feb 2019 11:03:43 -0500 (EST)
+Subject: [LTP] [PATCH v3] syscalls/cma: fix the failure of compiling
+ with O2 option
+In-Reply-To: <1551147760-52601-1-git-send-email-kerneljasonxing@linux.alibaba.com>
+References: <1551145346-34128-1-git-send-email-kerneljasonxing@linux.alibaba.com>
+ <1551147760-52601-1-git-send-email-kerneljasonxing@linux.alibaba.com>
+Message-ID: <1264466852.2951440.1551197023500.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-TST_TEST_CONF -> TST_TEST_TCONF.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/syscalls/fanotify/fanotify12.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify12.c b/testcases/kernel/syscalls/fanotify/fanotify12.c
-index e2ae3576a..fcb7ec0d3 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify12.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify12.c
-@@ -278,5 +278,5 @@ static struct tst_test test = {
- 	.resource_files = resource_files
- };
- #else
--	TST_TEST_CONF("System does not contain required fanotify support");
-+	TST_TEST_TCONF("System does not contain required fanotify support");
- #endif
--- 
-2.19.2
+----- Original Message -----
+> This issue is triggered by the commit 9b02cd465f70 which I wrote. If
+> compile the process_vm_readv03.c with O2 option and run, it will return
+> TFAIL. By casting the int type to unsigned long type in the ltp_syscall
+> calling functions can we avoid this failure. Thus I modify all the
+> testcases which might be affected by the previous commit.
+> 
+> Signed-off-by: Jason Xing <kerneljasonxing@linux.alibaba.com>
 
+Pushed.
+
+Thanks,
+Jan
