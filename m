@@ -1,47 +1,73 @@
 From: Matthias Maennich <maennich@google.com>
-Date: Tue, 26 Feb 2019 17:02:40 +0000
-Subject: [LTP] [PATCH v4 0/3] aio_tio: fixes and conversion to new lib
-In-Reply-To: <20190111085326.171826-1-maennich@google.com>
+Date: Tue, 26 Feb 2019 17:02:41 +0000
+Subject: [LTP] [PATCH v4 1/3] aio_tio: determine alignment based on target
+	block device
+In-Reply-To: <20190226170243.134366-1-maennich@google.com>
 References: <20190111085326.171826-1-maennich@google.com>
-Message-ID: <20190226170243.134366-1-maennich@google.com>
+ <20190226170243.134366-1-maennich@google.com>
+Message-ID: <20190226170243.134366-2-maennich@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This patch series fixes aio_tio and migrates the test to the new lib
-along with some cleanup.
+The alignment for O_DIRECT operations has to match the blocksize of the
+underlying block device. Determine the alignment from the target file.
 
-v3->v4: - address review comments
-        - add directory cleanup patch
+aio_tio test cases 1 and 2 failed (nondeterministic) on aarch64 when run
+on a 4096 byte blocksize and with an alignment of 512 bytes.
 
-Matthias Maennich (3):
-  aio_tio: determine alignment based on target block device
-  aio_tio: convert to new lib
-  io/aio: cleanup test directory
+Determining the blocksize from the block device and using it for the
+alignment resolves the test issue.
 
- runtest/io                                  |   2 +-
- testcases/kernel/io/aio/.gitignore          |   4 +-
- testcases/kernel/io/aio/Makefile            |  22 +-
- testcases/kernel/io/aio/{aio01 => }/aio01.c |   0
- testcases/kernel/io/aio/aio01/Makefile      |  30 ---
- testcases/kernel/io/aio/aio02.c             | 246 ++++++++++++++++++++
- testcases/kernel/io/aio/aio02/Makefile      |  36 ---
- testcases/kernel/io/aio/aio02/README        |  12 -
- testcases/kernel/io/aio/aio02/aio_tio.c     | 240 -------------------
- testcases/kernel/io/aio/aio02/common.h      |  28 ---
- testcases/kernel/io/aio/aio02/main.c        |  37 ---
- 11 files changed, 256 insertions(+), 401 deletions(-)
- rename testcases/kernel/io/aio/{aio01 => }/aio01.c (100%)
- delete mode 100644 testcases/kernel/io/aio/aio01/Makefile
- create mode 100644 testcases/kernel/io/aio/aio02.c
- delete mode 100644 testcases/kernel/io/aio/aio02/Makefile
- delete mode 100644 testcases/kernel/io/aio/aio02/README
- delete mode 100644 testcases/kernel/io/aio/aio02/aio_tio.c
- delete mode 100644 testcases/kernel/io/aio/aio02/common.h
- delete mode 100644 testcases/kernel/io/aio/aio02/main.c
+Signed-off-by: Matthias Maennich <maennich@google.com>
+Reviewed-by: Alessio Balsini <balsini@google.com>
+Reviewed-by: Steve Muckle <smuckle@google.com>
+---
+ testcases/kernel/io/aio/aio02/aio_tio.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
+diff --git a/testcases/kernel/io/aio/aio02/aio_tio.c b/testcases/kernel/io/aio/aio02/aio_tio.c
+index 623c81a5e..ddf71e85b 100644
+--- a/testcases/kernel/io/aio/aio02/aio_tio.c
++++ b/testcases/kernel/io/aio/aio02/aio_tio.c
+@@ -34,6 +34,7 @@
+ #include "config.h"
+ #include "common.h"
+ #include "test.h"
++#include "safe_macros.h"
+ #include <string.h>
+ #include <errno.h>
+ 
+@@ -42,7 +43,6 @@
+ #define AIO_MAXIO 32
+ #define AIO_BLKSIZE (64*1024)
+ 
+-static int alignment = 512;
+ static int wait_count = 0;
+ 
+ /*
+@@ -94,6 +94,8 @@ int io_tio(char *pathname, int flag, int n, int operation)
+ 	void *bufptr = NULL;
+ 	off_t offset = 0;
+ 	struct timespec timeout;
++	struct stat fi_stat;
++	size_t alignment;
+ 
+ 	io_context_t myctx;
+ 	struct iocb iocb_array[AIO_MAXIO];
+@@ -105,6 +107,10 @@ int io_tio(char *pathname, int flag, int n, int operation)
+ 		return -1;
+ 	}
+ 
++	/* determine the alignment from the blksize of the underlying device */
++	SAFE_FSTAT(NULL, fd, &fi_stat);
++	alignment = fi_stat.st_blksize;
++
+ 	res = io_queue_init(n, &myctx);
+ 	//printf (" res = %d \n", res);
+ 
 -- 
 2.21.0.rc2.261.ga7da99ff1b-goog
 
