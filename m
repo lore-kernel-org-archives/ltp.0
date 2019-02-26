@@ -1,19 +1,31 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 26 Feb 2019 16:40:02 +0100
-Subject: [LTP] [PATCH] syscalls/migrate_pages03: skip migratition of
- shared pages
-In-Reply-To: <12d3ccf40055c225b97a4a94ed1c6a46d4fd2048.1543508512.git.jstancek@redhat.com>
-References: <12d3ccf40055c225b97a4a94ed1c6a46d4fd2048.1543508512.git.jstancek@redhat.com>
-Message-ID: <20190226154002.GA8269@rei.lan>
+Date: Tue, 26 Feb 2019 16:45:54 +0100
+Subject: [LTP] [PATCH] [COMMITTED] syscalls/fanotify12: Fix typo.
+Message-ID: <20190226154554.8627-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Looks good to me, acked.
+TST_TEST_CONF -> TST_TEST_TCONF.
 
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/fanotify/fanotify12.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify12.c b/testcases/kernel/syscalls/fanotify/fanotify12.c
+index e2ae3576a..fcb7ec0d3 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify12.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify12.c
+@@ -278,5 +278,5 @@ static struct tst_test test = {
+ 	.resource_files = resource_files
+ };
+ #else
+-	TST_TEST_CONF("System does not contain required fanotify support");
++	TST_TEST_TCONF("System does not contain required fanotify support");
+ #endif
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.19.2
+
