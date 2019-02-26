@@ -1,31 +1,60 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 26 Feb 2019 01:35:30 +0100
-Subject: [LTP] [PATCH] Define __SIGRTMIN and __SIGRTMAX for MUSL
-In-Reply-To: <20190221164213.4952-1-daniel.diaz@linaro.org>
-References: <20190221164213.4952-1-daniel.diaz@linaro.org>
-Message-ID: <20190226003530.GA13898@dell5510>
+From: Jason Xing <kerneljasonxing@linux.alibaba.com>
+Date: Tue, 26 Feb 2019 09:42:26 +0800
+Subject: [LTP] [PATCH v2] syscalls/cma: fix the failure of compiling with O2
+	option
+In-Reply-To: <20190225131614.GC49700@casparzhang.com>
+References: <20190225131614.GC49700@casparzhang.com>
+Message-ID: <1551145346-34128-1-git-send-email-kerneljasonxing@linux.alibaba.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Daniel,
+This issue is triggered by the commit 9b02cd465f70 which I wrote. If
+compile the process_vm_readv03.c with O2 option and run, it will return
+TFAIL. By casting the int type to unsigned long type in the ltp_syscall
+calling functions can we avoid this failure.
 
-> Some libc implementations might differ in the definitions they
-> include. Exempli gratia: MUSL does not define __SIGRTMAX nor
-> __SIGRTMIN.
+Signed-off-by: Jason Xing <kerneljasonxing@linux.alibaba.com>
+---
+ testcases/kernel/syscalls/cma/process_vm_readv03.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-> These two tests fail to build because of the missing
-> definitions:
->   testcases/kernel/syscalls/ptrace/ptrace05.c
->   testcases/kernel/syscalls/sighold/sighold02.c
+diff --git a/testcases/kernel/syscalls/cma/process_vm_readv03.c b/testcases/kernel/syscalls/cma/process_vm_readv03.c
+index 45f7c92..f09dfb0 100644
+--- a/testcases/kernel/syscalls/cma/process_vm_readv03.c
++++ b/testcases/kernel/syscalls/cma/process_vm_readv03.c
+@@ -181,7 +181,7 @@ static long *fetch_remote_addrs(void)
+ 	remote.iov_len = len;
+ 
+ 	TEST(ltp_syscall(__NR_process_vm_readv, pids[0], &local,
+-			 1, &remote, 1, 0));
++			 1UL, &remote, 1UL, 0UL));
+ 	if (TEST_RETURN != len)
+ 		tst_brkm(TFAIL | TERRNO, tst_exit, "process_vm_readv");
+ 
+@@ -213,8 +213,9 @@ static void child_invoke(int *bufsz_arr)
+ 	tst_resm(TINFO, "child 1: %d local iovecs initialized.",
+ 		 NUM_LOCAL_VECS);
+ 
+-	TEST(ltp_syscall(__NR_process_vm_readv, pids[0], local, NUM_LOCAL_VECS,
+-				   remote, nr_iovecs, 0));
++	TEST(ltp_syscall(__NR_process_vm_readv, pids[0], local,
++			    (unsigned long)NUM_LOCAL_VECS, remote,
++			    (unsigned long)nr_iovecs, 0UL));
+ 	if (TEST_RETURN != bufsz)
+ 		tst_brkm(TBROK | TERRNO, tst_exit, "process_vm_readv");
+ 
+@@ -248,7 +249,7 @@ static void setup(void)
+ 	tst_require_root();
+ 
+ 	/* Just a sanity check of the existence of syscall */
+-	ltp_syscall(__NR_process_vm_readv, getpid(), NULL, 0, NULL, 0, 0);
++	ltp_syscall(__NR_process_vm_readv, getpid(), NULL, 0UL, NULL, 0UL, 0UL);
+ 
+ 	nr_iovecs = nflag ? SAFE_STRTOL(NULL, nr_opt, 1, IOV_MAX) : 10;
+ 	bufsz = sflag ? SAFE_STRTOL(NULL, sz_opt, NUM_LOCAL_VECS, LONG_MAX)
+-- 
+1.8.3.1
 
-> Out of precaution, these two also include this header:
->   lib/tst_sig.c
->   testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
-
-Thanks, merged!
-
-Kind regards,
-Petr
