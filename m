@@ -1,203 +1,58 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 27 Feb 2019 14:01:43 +0800
-Subject: [LTP] [PATCH v2 2/2] fs/binfmt_misc02.sh: Add new test for basic
-	functionality
-In-Reply-To: <20190226190627.GA12386@rei>
-References: <20190226190627.GA12386@rei>
-Message-ID: <1551247303-5523-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Wed, 27 Feb 2019 16:16:45 +0800
+Subject: [LTP] [PATCH 3/3] syscalls/preadv202: Add new testcase
+In-Reply-To: <20181004121916.GB7724@rei.lan>
+References: <1538125851-26738-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1538125851-26738-3-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20181004121916.GB7724@rei.lan>
+Message-ID: <5C76476D.3070005@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Register a new binary type and then check if binfmt_misc
-recognises the binary type in some conditions.
+Hi Jan,
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- runtest/fs                                         |   1 +
- testcases/kernel/fs/binfmt_misc/Makefile           |   4 +-
- testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh   | 107 +++++++++++++++++++++
- testcases/kernel/fs/binfmt_misc/datafiles/Makefile |  13 +++
- .../kernel/fs/binfmt_misc/datafiles/file.extension |   1 +
- .../kernel/fs/binfmt_misc/datafiles/file.magic     |   1 +
- 6 files changed, 125 insertions(+), 2 deletions(-)
- create mode 100755 testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh
- create mode 100644 testcases/kernel/fs/binfmt_misc/datafiles/Makefile
- create mode 100755 testcases/kernel/fs/binfmt_misc/datafiles/file.extension
- create mode 100755 testcases/kernel/fs/binfmt_misc/datafiles/file.magic
+preadv202 has used tst_get_bad_addr() instead of the hardcoded -1 to 
+test  EFAULT, so is it
+necessary to test EFAULT on s390 by truncating file as commit 856383c 
+does?  Perhaps, we
+can remove the truncation if it is unnecessary.   Sorry, i don't have 
+s390 to confirm it.
 
-diff --git a/runtest/fs b/runtest/fs
-index 227c186..ef2e848 100644
---- a/runtest/fs
-+++ b/runtest/fs
-@@ -84,3 +84,4 @@ isofs isofs.sh
- fs_fill fs_fill
- 
- binfmt_misc01 binfmt_misc01.sh
-+binfmt_misc02 binfmt_misc02.sh
-diff --git a/testcases/kernel/fs/binfmt_misc/Makefile b/testcases/kernel/fs/binfmt_misc/Makefile
-index f9819ad..14437b5 100644
---- a/testcases/kernel/fs/binfmt_misc/Makefile
-+++ b/testcases/kernel/fs/binfmt_misc/Makefile
-@@ -7,6 +7,6 @@ top_srcdir              ?= ../../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- 
--INSTALL_TARGETS         := binfmt_misc01.sh binfmt_misc_lib.sh
-+INSTALL_TARGETS         := binfmt_misc01.sh binfmt_misc02.sh binfmt_misc_lib.sh
- 
--include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh b/testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh
-new file mode 100755
-index 0000000..8d0ecd8
---- /dev/null
-+++ b/testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh
-@@ -0,0 +1,107 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+#
-+# Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-+# Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+#
-+# Description:
-+# Register a new binary type and then check if binfmt_misc
-+# recognises the binary type in some conditions.
-+# 1) binfmt_misc should recognise the binary type when extension
-+#    or magic is matched.
-+# 2) binfmt_misc should not recognise the binary type when extension
-+#    or magic is mismatched.
-+# 3) binfmt_misc should not recognise the binary type when it is
-+#    disabled.
-+#
-+# Note:
-+# We use various delimiteris to register a new binary type.
-+
-+TST_CNT=6
-+TST_TESTFUNC=do_test
-+TST_NEEDS_CMDS="which cat head"
-+
-+. binfmt_misc_lib.sh
-+
-+recognised_unrecognised()
-+{
-+	local file=$1
-+	local string=$2
-+
-+	eval $file >temp 2>&1
-+	if [ $? -ne 0 ] || ! grep -q "$string" temp; then
-+		tst_res TFAIL "Fail to recognise a binary type"
-+		return
-+	fi
-+
-+	(echo 0 >"$mntpoint/$name") 2>/dev/null
-+	if [ $? -ne 0 ] || grep -q enable "$mntpoint/$name"; then
-+		tst_res TFAIL "Fail to disable a binary type"
-+		return
-+	fi
-+
-+	eval $file >temp 2>&1
-+	if [ $? -eq 0 ] || grep -q "$string" temp; then
-+		tst_res TFAIL "Recognise a disabled binary type successfully"
-+		return
-+	fi
-+
-+	tst_res TPASS "Recognise and unrecognise a binary type as expected"
-+}
-+
-+unrecognised()
-+{
-+	local file=$1
-+	local string=$2
-+
-+	eval $file >temp 2>&1
-+	if [ $? -eq 0 ] || grep -q "$string" temp; then
-+		tst_res TFAIL "Recognise a binary type successfully"
-+	else
-+		tst_res TPASS "Fail to recognise a binary type"
-+	fi
-+}
-+
-+verify_binfmt_misc()
-+{
-+	local delimiter=$(echo "$1" | head -c1)
-+	local name=$(echo "$1" | awk -F $delimiter '{print $2}')
-+	local ttype=$(echo "$1" | awk -F $delimiter '{print $3}')
-+	local tfile=$2
-+	local valid=$3
-+	local mntpoint=$(get_binfmt_misc_mntpoint)
-+
-+	(echo "$1" >"$mntpoint/register") 2>/dev/null
-+	if [ $? -ne 0 -o ! -f "$mntpoint/$name" ]; then
-+		tst_res TFAIL "Fail to register a binary type"
-+		return
-+	fi
-+
-+	[ "$ttype" = "E" ] && local tstring="This is test for extension"
-+	[ "$ttype" = "M" ] && local tstring="This is test for magic"
-+
-+	[ "$valid" = "1" ] && recognised_unrecognised "$tfile" "$tstring"
-+	[ "$valid" = "0" ] && unrecognised "$tfile" "$tstring"
-+
-+	remove_binary_type "$mntpoint/$name"
-+}
-+
-+do_test()
-+{
-+	case $1 in
-+	1) verify_binfmt_misc ":textension:E::extension::$(which cat):" \
-+			      "$TST_DATAROOT/file.extension" "1";;
-+	2) verify_binfmt_misc ":tmagic:M:1:This::$(which cat):" \
-+			      "$TST_DATAROOT/file.magic" "1";;
-+	3) verify_binfmt_misc ".textension.E..extension..$(which cat)." \
-+			      "$TST_DATAROOT/file.extension" "1";;
-+	4) verify_binfmt_misc ",tmagic,M,1,This,,$(which cat)," \
-+			      "$TST_DATAROOT/file.magic" "1";;
-+	5) verify_binfmt_misc ":textension:E::ltp::$(which cat):" \
-+			      "$TST_DATAROOT/file.extension" "0";;
-+	6) verify_binfmt_misc ":tmagic:M:0:This::$(which cat):" \
-+			      "$TST_DATAROOT/file.magic" "0";;
-+	esac
-+}
-+
-+tst_run
-diff --git a/testcases/kernel/fs/binfmt_misc/datafiles/Makefile b/testcases/kernel/fs/binfmt_misc/datafiles/Makefile
-new file mode 100644
-index 0000000..e6d1487
---- /dev/null
-+++ b/testcases/kernel/fs/binfmt_misc/datafiles/Makefile
-@@ -0,0 +1,13 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+#
-+# Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-+# Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+
-+top_srcdir              ?= ../../../../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+
-+INSTALL_DIR		:= testcases/data/binfmt_misc02
-+INSTALL_TARGETS		:= file.extension file.magic
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/fs/binfmt_misc/datafiles/file.extension b/testcases/kernel/fs/binfmt_misc/datafiles/file.extension
-new file mode 100755
-index 0000000..8468a8f
---- /dev/null
-+++ b/testcases/kernel/fs/binfmt_misc/datafiles/file.extension
-@@ -0,0 +1 @@
-+This is test for extension
-diff --git a/testcases/kernel/fs/binfmt_misc/datafiles/file.magic b/testcases/kernel/fs/binfmt_misc/datafiles/file.magic
-new file mode 100755
-index 0000000..f2823b6
---- /dev/null
-+++ b/testcases/kernel/fs/binfmt_misc/datafiles/file.magic
-@@ -0,0 +1 @@
-+ This is test for magic
--- 
-1.8.3.1
+Best Regards,
+Xiao Yang
+On 2018/10/04 20:19, Cyril Hrubis wrote:
+> Hi!
+>> Note:
+>>  From preadv2(2) manpage, preadv2() with invalid flag should return
+>> EINVAL, but it actually returned EOPNOTSUPP in current upstream
+>> kernel, as below:
+>> ---------------------------------------------------------------
+>> include/uapi/linux/fs.h:
+>> define RWF_SUPPORTED   (RWF_HIPRI | RWF_DSYNC | RWF_SYNC | RWF_NOWAIT |\
+>>                           RWF_APPEND)
+>> ...
+>>
+>> include/linux/fs.h:
+>> static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
+>> {
+>>          if (unlikely(flags&  ~RWF_SUPPORTED)) {
+>>                  return -EOPNOTSUPP;
+>>          }
+>> ...
+>> ---------------------------------------------------------------
+>>
+>> We use EOPNOTSUPP as expected errno for the time being.
+> This is probably worth a patch for the man-pages project, will you take
+> care of that?
+>
+> Pushed with a minor change, I've changed the EFAULT test to get address
+> from tst_get_bad_addr() instead of the hardcoded -1.
+>
+> Thanks!
+>
 
 
 
