@@ -1,99 +1,146 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 27 Feb 2019 17:36:00 +0800
-Subject: [LTP] [PATCH 3/3] syscalls/preadv202: Add new testcase
-In-Reply-To: <1132129902.3082239.1551258476831.JavaMail.zimbra@redhat.com>
-References: <1538125851-26738-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1538125851-26738-3-git-send-email-yangx.jy@cn.fujitsu.com>
- <20181004121916.GB7724@rei.lan> <5C76476D.3070005@cn.fujitsu.com>
- <1132129902.3082239.1551258476831.JavaMail.zimbra@redhat.com>
-Message-ID: <5C765A00.1090307@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 27 Feb 2019 11:37:09 +0100
+Subject: [LTP] [RFC][PATCH 0/1] cgroup_regression_test.sh fix
+In-Reply-To: <20190215145239.51806-1-cristian.marussi@arm.com>
+References: <20190215145239.51806-1-cristian.marussi@arm.com>
+Message-ID: <20190227103709.GA12314@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-On 2019/02/27 17:07, Jan Stancek wrote:
->
-> ----- Original Message -----
->> Hi Jan,
->>
->> preadv202 has used tst_get_bad_addr() instead of the hardcoded -1 to
->> test  EFAULT, so is it
->> necessary to test EFAULT on s390 by truncating file as commit 856383c
->> does?
-> If s390 doesn't immediately check iovec for validity, I don't see
-> difference between -1 and other invalid address.
->
-> I missing some context for this email, what made you look into this again?
-> Anyway, I tried dropping truncate and ran test on 5.0.0-rc8 s390x:
->
-> # ./preadv202
-> tst_test.c:1085: INFO: Timeout per run is 0h 05m 00s
-> preadv202.c:82: PASS: preadv2() failed as expected: EINVAL
-> preadv202.c:82: PASS: preadv2() failed as expected: EINVAL
-> preadv202.c:82: PASS: preadv2() failed as expected: EOPNOTSUPP
-> preadv202.c:77: FAIL: preadv2() succeeded unexpectedly
-> preadv202.c:82: PASS: preadv2() failed as expected: EBADF
-> preadv202.c:82: PASS: preadv2() failed as expected: EBADF
-> preadv202.c:82: PASS: preadv2() failed as expected: EISDIR
-> preadv202.c:82: PASS: preadv2() failed as expected: ESPIPE
-Hi Jan,
+Hi Cristian,
 
-Thanks a lot for your reply and test. :-)
+I overlooked this cover letter (read the patch [1] via patchwork and didn't=
+ expect
+cover letter for single patch, I usually put info below additional ---).
+> Hi
 
-Recently, i am looking into pwritev202.c written by Jinhui Huang, and i 
-just want to
-know if it is necessary for both preadv2 and pwritev2 to test EFAULT by 
-truncating.
+> while working on this LTP tip (LTP Jan19 REL + fixes):
 
-Best Regards,
-Xiao Yang
-> Regards,
-> Jan
->
->>   Perhaps, we
->> can remove the truncation if it is unnecessary.   Sorry, i don't have
->> s390 to confirm it.
->>
->> Best Regards,
->> Xiao Yang
->> On 2018/10/04 20:19, Cyril Hrubis wrote:
->>> Hi!
->>>> Note:
->>>>   From preadv2(2) manpage, preadv2() with invalid flag should return
->>>> EINVAL, but it actually returned EOPNOTSUPP in current upstream
->>>> kernel, as below:
->>>> ---------------------------------------------------------------
->>>> include/uapi/linux/fs.h:
->>>> define RWF_SUPPORTED   (RWF_HIPRI | RWF_DSYNC | RWF_SYNC | RWF_NOWAIT |\
->>>>                            RWF_APPEND)
->>>> ...
->>>>
->>>> include/linux/fs.h:
->>>> static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
->>>> {
->>>>           if (unlikely(flags&   ~RWF_SUPPORTED)) {
->>>>                   return -EOPNOTSUPP;
->>>>           }
->>>> ...
->>>> ---------------------------------------------------------------
->>>>
->>>> We use EOPNOTSUPP as expected errno for the time being.
->>> This is probably worth a patch for the man-pages project, will you take
->>> care of that?
->>>
->>> Pushed with a minor change, I've changed the EFAULT test to get address
->>> from tst_get_bad_addr() instead of the hardcoded -1.
->>>
->>> Thanks!
->>>
->>
->>
->>
->
-> .
->
+> 81e28eab1 memcg_stress_test.sh: fix memory usage
+> b25c719de memcg_stress_test.sh: Further cleanup + print info
+> a6d7d16f4 memcg_stress_test.sh: ported to newlib
+> 6a651fe16 controllers/cpuset: cpuset.cpus file doesn't exist which trigge=
+rs TFAIL
+> fa049ec9f controllers/cgroup_regression_test.sh: Fix two issues
+> a6a5caef1 (tag: 20190115, LTP_20190115) LTP 20190115
+
+> I realized 'cgroup' testcase is now wrongly reported FAIL even if NO fail=
+ures
+> happens in the sub testcases:
+
+
+> Running tests.......
+> <<<test_start>>>
+> tag=3Dcgroup stim[  125.419776] LTP: starting cgroup (            cgroup_=
+regression_test.sh)
+> e=3D1550611029
+> cmdline=3D"               cgroup_regression_test.sh"
+> contacts=3D""
+> analysis=3Dexit
+> <<<test_output>>>
+> incrementing stop
+> cgroup_regression_test 1 TINFO: timeout per run is 0h 5m 0s
+> cgroup_regression_test 1 TPASS: no kernel bug was found
+> cgroup_regression_test 2 TPASS: notify_on_release is inherited
+> cgroup_regression_test 3 TCONF: CONFIG_SCHED_DEBUG is not enabled
+> cgroup_regression_test 4 TCONF: CONFIG_LOCKDEP is not enabled
+> cgroup_regression_test 5 TPASS: no kernel bug was found
+> cgroup_regression_test 6 TCONF: CONFIG_CGROUP_NS is NOT supported in Kern=
+els >=3D 3.0
+> cgroup_regression_test 7 TPASS: no kernel bug was found for test 1
+> [  126.879398] option changes via remount are deprecated (pid=3D8105 comm=
+=3Dmount)
+> cgroup_regression_test 7 TWARN: skip rest of testing due possible oops tr=
+iggered by reading /proc/sched_debug
+> cgroup_regression_test 7 TPASS: no kernel bug was found for test 2
+> cgroup_regression_test 8 TPASS: no kernel bug was found
+> cgroup_regression_test 9 TPASS: no kernel bug was found
+> mkdir: cannot create directory 'cgroup/0': File exists
+> cgroup_regression_test 10 TPASS: no kernel bug was found
+
+> Summary:
+> passed   8
+> failed   0
+> skipped  3
+> warnings 1
+> <<<execution_status>>>
+> initiation_status=3D"ok"
+> duration=3D61 termination_type=3Dexited termination_id=3D36 corefile=3Dno
+> cutime=3D4314 cstime=3D5792
+> <<<test_end>>>
+> INFO: ltp-pan reported some tests FAIL
+> LTP Version: 20190115
 
 
 
+>             Done executing testcases.
+>             LTP Version:  20190115
+
+
+
+> This seems to be due to the TWARN added in 78bfa7e785e87d5e7e4e6ebd518ca9=
+a67c78a1f3 which leads
+> to an exit code interpreted by ltp-pan as failure.
+> Is this expected ? An ltp-pan issue ? Is there something wrong in my setu=
+p ?
+This is maybe surprising, but deliberate behavior.
+IMHO this leads to to the fact that TWARN is fewer used than the others.
+@metan: Maybe it'd make sense to change TWARN not producing FAIL.
+
+> A possibly trivial patch follows, BUT anyway there still an unresolved pr=
+oblem: in
+> the above test run even using TINFO instead of TWARN, I'll have the whole
+> cgroup_regression_test.sh test case reported as TCONF, since some of the
+> contained sub test cases have been in fact skipped: is there any way to a=
+ddress
+> this kind of situation in the LTP framework ? (beside using TINFO everywh=
+ere)
+> I understand the scenario is tricky:=C2=A0a test case with many sub-testc=
+ases that
+> could each PASS/FAIL/SKIP. Any thought/guideline on this ?
+FAIL is IMHO in TWARN, TFAIL and TBROK.
+
+TCONF is taken as PASS, see:
+
+cgroup_regression_test 1 TINFO: timeout per run is 0h 5m 0s
+cgroup_regression_test 1 TPASS: no kernel bug was found
+cgroup_regression_test 2 TPASS: notify_on_release is inherited
+cgroup_regression_test 3 TPASS: no kernel bug was found
+cgroup_regression_test 4 TCONF: CONFIG_LOCKDEP is not enabled
+cgroup_regression_test 5 TPASS: no kernel bug was found
+cgroup_regression_test 6 TCONF: CONFIG_CGROUP_NS is NOT supported in Kernel=
+s >=3D 3.0
+cgroup_regression_test 7 TPASS: no kernel bug was found for test 1
+cgroup_regression_test 7 TPASS: no kernel bug was found for test 2
+cgroup_regression_test 8 TPASS: no kernel bug was found
+cgroup_regression_test 9 TPASS: no kernel bug was found
+cgroup_regression_test 10 TPASS: no kernel bug was found
+
+Summary:
+passed   9
+failed   0
+skipped  2
+warnings 0
+incrementing stop
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D92 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D12606 cstime=3D5151
+<<<test_end>>>
+INFO: ltp-pan reported all tests PASS
+
+
+Kind regards,
+Petr
+
+[1] https://patchwork.ozlabs.org/patch/1042942/
+
+
+> Cristian Marussi (1):
+>   cgroup_regression_test.sh: Fix TWARN usage
+
+>  testcases/kernel/controllers/cgroup/cgroup_regression_test.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
