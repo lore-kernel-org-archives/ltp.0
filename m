@@ -1,466 +1,488 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 28 Feb 2019 16:34:25 +0100
-Subject: [LTP] [PATCH 2/2] syscalls/mbind0{2,3,4}: Add basic mbind tests
-In-Reply-To: <20190228153425.10286-1-chrubis@suse.cz>
-References: <20190228153425.10286-1-chrubis@suse.cz>
-Message-ID: <20190228153425.10286-3-chrubis@suse.cz>
+From: Paul Lawrence <paullawrence@google.com>
+Date: Thu, 28 Feb 2019 11:36:45 -0800
+Subject: [LTP] [PATCH] Add ltp pivot_root test
+Message-ID: <20190228193645.51244-1-paullawrence@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This test is similar to the set_mempolicy() tests, but with mbind we are
-actually binding memory to nodes after it was mapped.
+pivot_root03.c is missing - it tests the claim that pivot_root fails
+with EBUSY if a filesystem is mounted on put_old, but this is no longer
+true.
 
-mbind02: We are trying to get EIO with MPOL_MF_STRICT and page that was already
-         faulted on wrong node.
-
-mbind03: We are moving pages with MPOL_MF_MOVE and MPOL_MF_MOVE_ALL and
-         checking the result.
-
-mbind04: We are applying memory policy before we fault the pages and check
-         that the pages were faulted accordingly.
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-CC: Michal Hocko <mhocko@kernel.org>
-CC: Vlastimil Babka <vbabka@suse.cz>
-CC: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Paul Lawrence <paullawrence@google.com>
 ---
- runtest/syscalls                           |   3 +
- testcases/kernel/syscalls/mbind/.gitignore |   3 +
- testcases/kernel/syscalls/mbind/mbind.h    |  26 +++++
- testcases/kernel/syscalls/mbind/mbind02.c  |  99 ++++++++++++++++
- testcases/kernel/syscalls/mbind/mbind03.c  | 123 ++++++++++++++++++++
- testcases/kernel/syscalls/mbind/mbind04.c  | 127 +++++++++++++++++++++
- 6 files changed, 381 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mbind/mbind.h
- create mode 100644 testcases/kernel/syscalls/mbind/mbind02.c
- create mode 100644 testcases/kernel/syscalls/mbind/mbind03.c
- create mode 100644 testcases/kernel/syscalls/mbind/mbind04.c
+ testcases/kernel/syscalls/pivot_root/Makefile | 23 +++++
+ .../kernel/syscalls/pivot_root/pivot_root01.c | 66 +++++++++++++
+ .../kernel/syscalls/pivot_root/pivot_root02.c | 78 +++++++++++++++
+ .../kernel/syscalls/pivot_root/pivot_root04.c | 82 ++++++++++++++++
+ .../kernel/syscalls/pivot_root/pivot_root05.c | 76 +++++++++++++++
+ .../kernel/syscalls/pivot_root/pivot_root06.c | 94 +++++++++++++++++++
+ 6 files changed, 419 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/pivot_root/Makefile
+ create mode 100644 testcases/kernel/syscalls/pivot_root/pivot_root01.c
+ create mode 100644 testcases/kernel/syscalls/pivot_root/pivot_root02.c
+ create mode 100644 testcases/kernel/syscalls/pivot_root/pivot_root04.c
+ create mode 100644 testcases/kernel/syscalls/pivot_root/pivot_root05.c
+ create mode 100644 testcases/kernel/syscalls/pivot_root/pivot_root06.c
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 0af0f4475..b4e9d053c 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -619,6 +619,9 @@ lstat03_64 lstat03_64
- mallopt01 mallopt01
- 
- mbind01 mbind01
-+mbind02 mbind02
-+mbind03 mbind03
-+mbind04 mbind04
- 
- memset01 memset01
- memcmp01 memcmp01
-diff --git a/testcases/kernel/syscalls/mbind/.gitignore b/testcases/kernel/syscalls/mbind/.gitignore
-index 64139f75c..b78d20264 100644
---- a/testcases/kernel/syscalls/mbind/.gitignore
-+++ b/testcases/kernel/syscalls/mbind/.gitignore
-@@ -1 +1,4 @@
- /mbind01
-+/mbind02
-+/mbind03
-+/mbind04
-diff --git a/testcases/kernel/syscalls/mbind/mbind.h b/testcases/kernel/syscalls/mbind/mbind.h
+diff --git a/testcases/kernel/syscalls/pivot_root/Makefile b/testcases/kernel/syscalls/pivot_root/Makefile
 new file mode 100644
-index 000000000..62e749bca
+index 000000000..a6f0e1499
 --- /dev/null
-+++ b/testcases/kernel/syscalls/mbind/mbind.h
-@@ -0,0 +1,26 @@
-+/*
-+ * SPDX-License-Identifier: GPL-2.0-or-later
-+ *
-+ * Copyright (c) 2019 Cyril Hrubis <chrubis@suse.cz>
-+ */
++++ b/testcases/kernel/syscalls/pivot_root/Makefile
+@@ -0,0 +1,23 @@
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
 +
-+#ifndef MBIND_H__
-+#define MBIND_H__
++top_srcdir		?= ../../../..
 +
-+static inline const char *mbind_flag_name(unsigned flag)
-+{
-+	switch (flag) {
-+	case 0:
-+		return "0";
-+	case MPOL_MF_STRICT:
-+		return "MPOL_MF_STRICT";
-+	case MPOL_MF_MOVE:
-+		return "MPOL_MF_MOVE";
-+	case MPOL_MF_MOVE_ALL:
-+		return "MPOL_MF_MOVE_ALL";
-+	default:
-+		return "???";
-+	}
-+}
++include $(top_srcdir)/include/mk/testcases.mk
 +
-+#endif /* MBIND_H__ */
-diff --git a/testcases/kernel/syscalls/mbind/mbind02.c b/testcases/kernel/syscalls/mbind/mbind02.c
++CFLAGS += -lcap
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/pivot_root/pivot_root01.c b/testcases/kernel/syscalls/pivot_root/pivot_root01.c
 new file mode 100644
-index 000000000..2ffed4cff
+index 000000000..f0b884774
 --- /dev/null
-+++ b/testcases/kernel/syscalls/mbind/mbind02.c
-@@ -0,0 +1,99 @@
-+/*
-+ * SPDX-License-Identifier: GPL-2.0-or-later
-+ *
-+ * Copyright (c) 2019 Cyril Hrubis <chrubis@suse.cz>
-+ */
++++ b/testcases/kernel/syscalls/pivot_root/pivot_root01.c
+@@ -0,0 +1,66 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++//
++// Copyright (c) 2019 Google, Inc.
 +
-+/*
-+ * We are testing mbind() EIO error.
-+ *
-+ * We first fault a allocated page, then attempt to mbind it to a different node.
-+ */
++#define _GNU_SOURCE
 +
-+#include <errno.h>
-+#include "config.h"
-+#ifdef HAVE_NUMA_H
-+# include <numa.h>
-+# include <numaif.h>
-+#endif
++#include <linux/unistd.h>
++#include <sched.h>
++#include <sys/mount.h>
++#include <stdlib.h>
++
 +#include "tst_test.h"
-+#include "tst_numa.h"
 +
-+#ifdef HAVE_NUMA_H
++#ifdef HAVE_UNSHARE
 +
-+static size_t page_size;
-+static struct tst_nodemap *nodes;
-+
-+static void setup(void)
++static void run(void)
 +{
-+	page_size = getpagesize();
++	const char* chroot_dir = "chroot";
++	const char* new_root = "/new_root";
++	const char* put_old = "/new_root/put_old";
 +
-+	nodes = tst_get_nodemap(TST_NUMA_MEM, 2 * page_size / 1024);
-+	if (nodes->cnt <= 1)
-+		tst_brk(TCONF, "Test requires@least two NUMA memory nodes");
-+}
++	int pid;
 +
-+static void cleanup(void)
-+{
-+	tst_nodemap_free(nodes);
-+}
++	if ((pid = SAFE_FORK()) == -1) {
++		tst_brk(TBROK, "Could not fork");
++	}
 +
-+static void verify_policy(int mode)
-+{
-+	struct bitmask *bm = numa_allocate_nodemask();
-+	unsigned int i;
-+	void *ptr;
-+	unsigned long size = page_size;
-+	int node = 0;
-+
-+	ptr = tst_numa_map(NULL, size);
-+	tst_nodemap_reset_counters(nodes);
-+	tst_numa_fault(ptr, size);
-+	tst_nodemap_count_pages(nodes, ptr, size);
-+	tst_nodemap_print_counters(nodes);
-+
-+	for (i = 0; i < nodes->cnt; i++) {
-+		if (!nodes->counters[i]) {
-+			node = nodes->map[i];
-+			tst_res(TINFO, "Attempting to bind to node %i", node);
-+			numa_bitmask_setbit(bm, node);
-+			break;
++	if (pid == 0) {
++		if (unshare(CLONE_NEWNS | CLONE_FS)) {
++			tst_res(TFAIL | TERRNO, "unshare failed");
++			exit (1);
 +		}
++
++		SAFE_MOUNT("none", "/", NULL, MS_REC|MS_PRIVATE, NULL);
++		SAFE_MKDIR(chroot_dir, 0777);
++		SAFE_MOUNT("none", chroot_dir, "tmpfs", 0, 0);
++		SAFE_CHROOT(chroot_dir);
++		SAFE_MKDIR(new_root, 0777);
++		SAFE_MOUNT("none", new_root, "tmpfs", 0, 0);
++		SAFE_MKDIR(put_old, 0777);
++
++		if (syscall(__NR_pivot_root, new_root, put_old) == -1) {
++			tst_res(TFAIL | TERRNO, "pivot_root failed");
++			exit (1);
++		}
++
++		tst_res(TPASS, "pivot_root succeeded");
++		exit(0);
 +	}
 +
-+	TEST(mbind(ptr, size, mode, bm->maskp, bm->size + 1, MPOL_MF_STRICT));
-+
-+	if (TST_RET) {
-+		tst_res(TPASS | TTERRNO,
-+		        "mbind(%s, MPOL_MF_STRICT) node %u",
-+		        tst_numa_mode_name(mode), node);
-+	} else {
-+		tst_res(TFAIL, "mbind(%s, MPOL_MF_STRICT) node %u succeded",
-+		        tst_numa_mode_name(mode), node);
-+	}
-+
-+	tst_numa_unmap(ptr, size);
-+	numa_free_nodemask(bm);
++	tst_reap_children();
 +}
-+
-+static void verify_mbind(unsigned int n)
-+{
-+	int mode = n ? MPOL_PREFERRED : MPOL_BIND;
-+
-+	verify_policy(mode);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = verify_mbind,
-+	.tcnt = 2,
-+	.forks_child = 1,
-+	.needs_checkpoints = 1,
-+};
 +
 +#else
-+
-+TST_TEST_TCONF(NUMA_ERROR_MSG);
-+
-+#endif /* HAVE_NUMA_H */
-diff --git a/testcases/kernel/syscalls/mbind/mbind03.c b/testcases/kernel/syscalls/mbind/mbind03.c
-new file mode 100644
-index 000000000..79ab4a62d
---- /dev/null
-+++ b/testcases/kernel/syscalls/mbind/mbind03.c
-@@ -0,0 +1,123 @@
-+/*
-+ * SPDX-License-Identifier: GPL-2.0-or-later
-+ *
-+ * Copyright (c) 2019 Cyril Hrubis <chrubis@suse.cz>
-+ */
-+
-+/*
-+ * We are testing mbind() EIO error.
-+ *
-+ * We first fault a allocated page, then attempt to mbind it to a different node.
-+ */
-+
-+#include <errno.h>
-+#include "config.h"
-+#ifdef HAVE_NUMA_H
-+# include <numa.h>
-+# include <numaif.h>
-+# include "mbind.h"
++static void run(void)
++{
++	tst_brk(TCONF, NULL, "unshare is undefined.");
++}
 +#endif
-+#include "tst_test.h"
-+#include "tst_numa.h"
-+
-+#ifdef HAVE_NUMA_H
-+
-+static size_t page_size;
-+static struct tst_nodemap *nodes;
-+
-+static void setup(void)
-+{
-+	page_size = getpagesize();
-+
-+	nodes = tst_get_nodemap(TST_NUMA_MEM, 2 * page_size / 1024);
-+	if (nodes->cnt <= 1)
-+		tst_brk(TCONF, "Test requires@least two NUMA memory nodes");
-+}
-+
-+static void cleanup(void)
-+{
-+	tst_nodemap_free(nodes);
-+}
-+
-+static void verify_policy(int mode, unsigned flag)
-+{
-+	struct bitmask *bm = numa_allocate_nodemask();
-+	unsigned int i;
-+	void *ptr;
-+	unsigned long size = page_size;
-+	unsigned int node = 0;
-+
-+	ptr = tst_numa_map(NULL, size);
-+	tst_nodemap_reset_counters(nodes);
-+	tst_numa_fault(ptr, size);
-+	tst_nodemap_count_pages(nodes, ptr, size);
-+	tst_nodemap_print_counters(nodes);
-+
-+	for (i = 0; i < nodes->cnt; i++) {
-+		if (!nodes->counters[i]) {
-+			node = nodes->map[i];
-+			tst_res(TINFO, "Attempting to move to node %i", node);
-+			numa_bitmask_setbit(bm, node);
-+			break;
-+		}
-+	}
-+
-+	TEST(mbind(ptr, size, mode, bm->maskp, bm->size + 1, flag));
-+
-+	if (TST_RET) {
-+		tst_res(TFAIL | TTERRNO,
-+		        "mbind(%s, %s) node %u",
-+		        tst_numa_mode_name(mode), mbind_flag_name(flag), node);
-+		goto exit;
-+	} else {
-+		tst_res(TPASS, "mbind(%s, %s) node %u succeded",
-+		        tst_numa_mode_name(mode), mbind_flag_name(flag), node);
-+	}
-+
-+	tst_nodemap_reset_counters(nodes);
-+	tst_nodemap_count_pages(nodes, ptr, size);
-+
-+	for (i = 0; i < nodes->cnt; i++) {
-+		if (nodes->map[i] == node) {
-+			if (nodes->counters[i] == 1) {
-+				tst_res(TPASS, "Node %u allocated %u", node, 1);
-+			} else {
-+				tst_res(TFAIL, "Node %u allocated %u, expected %u",
-+				        node, nodes->counters[i], 0);
-+			}
-+			continue;
-+		}
-+
-+		if (nodes->counters[i]) {
-+			tst_res(TFAIL, "Node %u allocated %u, expected 0",
-+			        i, nodes->counters[i]);
-+		}
-+	}
-+
-+exit:
-+	tst_numa_unmap(ptr, size);
-+	numa_free_nodemask(bm);
-+}
-+
-+void verify_mbind(unsigned int n)
-+{
-+	int mode = n ? MPOL_PREFERRED : MPOL_BIND;
-+
-+	verify_policy(mode, MPOL_MF_MOVE);
-+	verify_policy(mode, MPOL_MF_MOVE_ALL);
-+}
 +
 +static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = verify_mbind,
-+	.tcnt = 2,
++	.test_all = run,
++	.needs_tmpdir = 1,
++	.needs_root = 1,
 +	.forks_child = 1,
-+	.needs_checkpoints = 1,
 +};
-+
-+#else
-+
-+TST_TEST_TCONF(NUMA_ERROR_MSG);
-+
-+#endif /* HAVE_NUMA_H */
-diff --git a/testcases/kernel/syscalls/mbind/mbind04.c b/testcases/kernel/syscalls/mbind/mbind04.c
+diff --git a/testcases/kernel/syscalls/pivot_root/pivot_root02.c b/testcases/kernel/syscalls/pivot_root/pivot_root02.c
 new file mode 100644
-index 000000000..f2097c878
+index 000000000..41339c768
 --- /dev/null
-+++ b/testcases/kernel/syscalls/mbind/mbind04.c
-@@ -0,0 +1,127 @@
-+/*
-+ * SPDX-License-Identifier: GPL-2.0-or-later
-+ *
-+ * Copyright (c) 2019 Cyril Hrubis <chrubis@suse.cz>
-+ */
++++ b/testcases/kernel/syscalls/pivot_root/pivot_root02.c
+@@ -0,0 +1,78 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++//
++// Copyright (c) 2019 Google, Inc.
 +
-+/*
-+ * We are testing mbind() with MPOL_BIND and MPOL_PREFERRED.
-+ *
-+ * For each node with memory we set its bit in nodemask with set_mempolicy()
-+ * and verify that memory has been faulted accordingly.
-+ */
++#define _GNU_SOURCE
 +
 +#include <errno.h>
-+#include "config.h"
-+#ifdef HAVE_NUMA_H
-+# include <numa.h>
-+# include <numaif.h>
-+# include "mbind.h"
-+#endif
++#include <linux/unistd.h>
++#include <sched.h>
++#include <sys/mount.h>
++#include <stdlib.h>
++
 +#include "tst_test.h"
-+#include "tst_numa.h"
 +
-+#ifdef HAVE_NUMA_H
++#ifdef HAVE_UNSHARE
 +
-+static size_t page_size;
-+static struct tst_nodemap *nodes;
-+
-+#define PAGES_ALLOCATED 16u
-+
-+static void setup(void)
++static void run(void)
 +{
-+	page_size = getpagesize();
++	const char* chroot_dir = "chroot";
++	const char* new_root = "/new_root";
++	const char* put_old = "/new_root/put_old";
 +
-+	nodes = tst_get_nodemap(TST_NUMA_MEM, 2 * PAGES_ALLOCATED * page_size / 1024);
-+	if (nodes->cnt <= 1)
-+		tst_brk(TCONF, "Test requires@least two NUMA memory nodes");
-+}
++	int pid;
 +
-+static void cleanup(void)
-+{
-+	tst_nodemap_free(nodes);
-+}
++	if ((pid = SAFE_FORK()) == -1)
++		tst_brk(TBROK, "Could not fork");
 +
-+static void verify_policy(unsigned int node, int mode, unsigned flag)
-+{
-+	struct bitmask *bm = numa_allocate_nodemask();
-+	unsigned int i;
-+	void *ptr;
-+	unsigned long size = PAGES_ALLOCATED * page_size;
-+
-+	numa_bitmask_setbit(bm, node);
-+
-+	ptr = tst_numa_map(NULL, size);
-+
-+	TEST(mbind(ptr, size, mode, bm->maskp, bm->size + 1, flag));
-+
-+	if (TST_RET) {
-+		tst_res(TFAIL | TTERRNO,
-+		        "mbind(%s, %s) node %u",
-+		        tst_numa_mode_name(mode), mbind_flag_name(flag), node);
-+		return;
-+	}
-+
-+	tst_res(TPASS, "mbind(%s, %s) node %u",
-+	        tst_numa_mode_name(mode), mbind_flag_name(flag), node);
-+
-+	numa_free_nodemask(bm);
-+
-+	const char *prefix = "child: ";
-+
-+	if (SAFE_FORK()) {
-+		prefix = "parent: ";
-+		tst_reap_children();
-+	}
-+
-+	tst_nodemap_reset_counters(nodes);
-+	tst_numa_fault(ptr, size);
-+	tst_nodemap_count_pages(nodes, ptr, size);
-+	tst_numa_unmap(ptr, size);
-+	tst_nodemap_print_counters(nodes);
-+
-+	for (i = 0; i < nodes->cnt; i++) {
-+		if (nodes->map[i] == node) {
-+			if (nodes->counters[i] == PAGES_ALLOCATED) {
-+				tst_res(TPASS, "%sNode %u allocated %u",
-+				        prefix, node, PAGES_ALLOCATED);
-+			} else {
-+				tst_res(TFAIL, "%sNode %u allocated %u, expected %u",
-+				        prefix, node, nodes->counters[i],
-+				        PAGES_ALLOCATED);
-+			}
-+			continue;
++	if (pid == 0) {
++		if (unshare(CLONE_NEWNS | CLONE_FS)) {
++			tst_res(TFAIL | TERRNO, "unshare failed");
++			exit (1);
 +		}
 +
-+		if (nodes->counters[i]) {
-+			tst_res(TFAIL, "%sNode %u allocated %u, expected 0",
-+			        prefix, i, nodes->counters[i]);
++		SAFE_MOUNT("none", "/", NULL, MS_REC|MS_PRIVATE, NULL);
++		SAFE_MKDIR(chroot_dir, 0777);
++		SAFE_MOUNT("none", chroot_dir, "tmpfs", 0, 0);
++		SAFE_CHROOT(chroot_dir);
++		SAFE_MKDIR(new_root, 0777);
++
++		// EBUSY
++		// new_root or put_old are on the current root file system
++		//
++		// Comment out to trigger this error
++		// SAFE_MOUNT("none", new_root, "tmpfs", 0, 0);
++
++		SAFE_MKDIR(put_old, 0777);
++
++		if (syscall(__NR_pivot_root, new_root, put_old) == 0) {
++			tst_res(TFAIL, "pivot_root succeeded unexpectedly");
++			exit (1);
 +		}
++
++		if (errno != EBUSY) {
++			tst_res(TFAIL | TERRNO,
++				"pivot_root failed with wrong errno");
++			exit (1);
++		}
++
++		tst_res(TPASS, "pivot_root failed with EBUSY as expected");
++		exit(0);
 +	}
++
++	tst_reap_children();
 +}
-+
-+static void verify_mbind(unsigned int n)
-+{
-+	unsigned int i;
-+	int mode = n ? MPOL_PREFERRED : MPOL_BIND;
-+
-+	for (i = 0; i < nodes->cnt; i++) {
-+		verify_policy(nodes->map[i], mode, 0);
-+		verify_policy(nodes->map[i], mode, MPOL_MF_STRICT);
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = verify_mbind,
-+	.tcnt = 2,
-+	.forks_child = 1,
-+	.needs_checkpoints = 1,
-+};
 +
 +#else
++static void run(void)
++{
++	tst_brk(TCONF, NULL, "unshare is undefined.");
++}
++#endif
 +
-+TST_TEST_TCONF(NUMA_ERROR_MSG);
++static struct tst_test test = {
++	.test_all = run,
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++	.forks_child = 1,
++};
+diff --git a/testcases/kernel/syscalls/pivot_root/pivot_root04.c b/testcases/kernel/syscalls/pivot_root/pivot_root04.c
+new file mode 100644
+index 000000000..d2959130d
+--- /dev/null
++++ b/testcases/kernel/syscalls/pivot_root/pivot_root04.c
+@@ -0,0 +1,82 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++//
++// Copyright (c) 2019 Google, Inc.
 +
-+#endif /* HAVE_NUMA_H */
++#define _GNU_SOURCE
++
++#include <errno.h>
++#include <linux/unistd.h>
++#include <sched.h>
++#include <sys/mount.h>
++#include <stdlib.h>
++
++#include "tst_test.h"
++
++#ifdef HAVE_UNSHARE
++
++static void run(void)
++{
++	const char* chroot_dir = "chroot";
++	const char* new_root = "/new_root";
++
++	// EINVAL
++	// put_old is not underneath new_root
++	// Note: if put_old and new_root are on the same fs,
++	// pivot_root fails with EBUSY before testing reachability
++	const char* put_old_fs = "/put_old_fs";
++	const char* put_old = "/put_old_fs/put_old";
++
++	int pid;
++
++	if ((pid = SAFE_FORK()) == -1) {
++		tst_brk(TBROK, "Could not fork");
++	}
++
++	if (pid == 0) {
++		if (unshare(CLONE_NEWNS | CLONE_FS)) {
++			tst_res(TFAIL | TERRNO, "unshare failed");
++			exit (1);
++		}
++
++		SAFE_MOUNT("none", "/", NULL, MS_REC|MS_PRIVATE, NULL);
++		SAFE_MKDIR(chroot_dir, 0777);
++		SAFE_MOUNT("none", chroot_dir, "tmpfs", 0, 0);
++		SAFE_CHROOT(chroot_dir);
++		SAFE_MKDIR(new_root, 0777);
++		SAFE_MOUNT("none", new_root, "tmpfs", 0, 0);
++
++		SAFE_MKDIR(put_old_fs, 0777);
++		SAFE_MOUNT("none", put_old_fs, "tmpfs", 0, 0);
++		SAFE_MKDIR(put_old, 0777);
++
++		if (syscall(__NR_pivot_root, new_root, put_old) == 0) {
++			tst_res(TFAIL, "pivot_root succeeded unexpectedly");
++			exit (1);
++		}
++
++		if (errno != EINVAL) {
++			tst_res(TFAIL | TERRNO,
++				"pivot_root failed with wrong errno");
++			exit (1);
++		}
++
++		tst_res(TPASS, "pivot_root failed with EINVAL as expected");
++		exit(0);
++	}
++
++	tst_reap_children();
++}
++
++#else
++static void run(void)
++{
++	tst_brk(TCONF, NULL, "unshare is undefined.");
++}
++#endif
++
++static struct tst_test test = {
++	.test_all = run,
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++	.forks_child = 1,
++};
+diff --git a/testcases/kernel/syscalls/pivot_root/pivot_root05.c b/testcases/kernel/syscalls/pivot_root/pivot_root05.c
+new file mode 100644
+index 000000000..7f58fccfc
+--- /dev/null
++++ b/testcases/kernel/syscalls/pivot_root/pivot_root05.c
+@@ -0,0 +1,76 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++//
++// Copyright (c) 2019 Google, Inc.
++
++#define _GNU_SOURCE
++
++#include <errno.h>
++#include <linux/unistd.h>
++#include <sched.h>
++#include <sys/mount.h>
++#include <stdlib.h>
++
++#include "tst_test.h"
++
++#ifdef HAVE_UNSHARE
++
++static void run(void)
++{
++	const char* chroot_dir = "chroot";
++	const char* new_root = "/new_root";
++	const char* put_old = "/new_root/put_old";
++
++	int pid;
++
++	if ((pid = SAFE_FORK()) == -1) {
++		tst_brk(TBROK, "Could not fork");
++	}
++
++	if (pid == 0) {
++		if (unshare(CLONE_NEWNS | CLONE_FS)) {
++			tst_res(TFAIL | TERRNO, "unshare failed");
++			exit (1);
++		}
++
++		SAFE_MOUNT("none", "/", NULL, MS_REC|MS_PRIVATE, NULL);
++		SAFE_MKDIR(chroot_dir, 0777);
++		SAFE_MOUNT("none", chroot_dir, "tmpfs", 0, 0);
++		SAFE_CHROOT(chroot_dir);
++		SAFE_MKDIR(new_root, 0777);
++		SAFE_MOUNT("none", new_root, "tmpfs", 0, 0);
++
++		// ENOTDIR
++		// new_root or put_old is not a directory
++		SAFE_CREAT(put_old, 0777);
++
++		if (syscall(__NR_pivot_root, new_root, put_old) == 0) {
++			tst_res(TFAIL, "pivot_root succeeded unexpectedly");
++			exit (1);
++		}
++
++		if (errno != ENOTDIR) {
++			tst_res(TFAIL | TERRNO,
++				"pivot_root failed with wrong errno");
++			exit (1);
++		}
++
++		tst_res(TPASS, "pivot_root failed with EBUSY as expected");
++		exit(0);
++	}
++
++	tst_reap_children();
++}
++
++#else
++static void run(void)
++{
++	tst_brk(TCONF, NULL, "unshare is undefined.");
++}
++#endif
++
++static struct tst_test test = {
++	.test_all = run,
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++	.forks_child = 1,
++};
+diff --git a/testcases/kernel/syscalls/pivot_root/pivot_root06.c b/testcases/kernel/syscalls/pivot_root/pivot_root06.c
+new file mode 100644
+index 000000000..ac3b08321
+--- /dev/null
++++ b/testcases/kernel/syscalls/pivot_root/pivot_root06.c
+@@ -0,0 +1,94 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++//
++// Copyright (c) 2019 Google, Inc.
++
++#define _GNU_SOURCE
++
++#include <errno.h>
++#include <linux/unistd.h>
++#include <sched.h>
++#include <sys/capability.h>
++#include <sys/mount.h>
++#include <stdlib.h>
++
++#include "tst_test.h"
++
++#ifdef HAVE_UNSHARE
++
++static void run(void)
++{
++	const char* chroot_dir = "chroot";
++	const char* new_root = "/new_root";
++	const char* put_old = "/new_root/put_old";
++
++	int pid;
++
++	if ((pid = SAFE_FORK()) == -1) {
++		tst_brk(TBROK, "Could not fork");
++	}
++
++
++	if (pid == 0) {
++		if (unshare(CLONE_NEWNS | CLONE_FS)) {
++			tst_res(TFAIL | TERRNO, "unshare failed");
++			exit (1);
++		}
++
++		SAFE_MOUNT("none", "/", NULL, MS_REC|MS_PRIVATE, NULL);
++		SAFE_MKDIR(chroot_dir, 0777);
++		SAFE_MOUNT("none", chroot_dir, "tmpfs", 0, 0);
++		SAFE_CHROOT(chroot_dir);
++		SAFE_MKDIR(new_root, 0777);
++		SAFE_MOUNT("none", new_root, "tmpfs", 0, 0);
++		SAFE_MKDIR(put_old, 0777);
++
++		// EPERM
++		// The calling process does not have the CAP_SYS_ADMIN capability.
++		cap_value_t cap_value[] = { CAP_SYS_ADMIN };
++		cap_t cap = cap_get_proc();
++		if (!cap) {
++			tst_res(TFAIL | TERRNO, "cap_get_proc failed");
++			exit (1);
++		}
++
++		if (cap_set_flag(cap, CAP_EFFECTIVE, 1, cap_value, CAP_CLEAR)) {
++			tst_res(TFAIL | TERRNO, "cap_set_flag failed");
++			exit (1);
++		}
++
++		if (cap_set_proc(cap)) {
++			tst_res(TFAIL | TERRNO, "cap_set_proc failed");
++			exit (1);
++		}
++
++		if (syscall(__NR_pivot_root, new_root, put_old) == 0) {
++			tst_res(TFAIL, "pivot_root succeeded unexpectedly");
++			exit (1);
++		}
++
++		if (errno != EPERM) {
++			tst_res(TFAIL | TERRNO,
++				"pivot_root failed with wrong errno");
++			exit (1);
++		}
++
++		tst_res(TPASS, "pivot_root failed with EPERM as expected");
++		exit(0);
++	}
++
++	tst_reap_children();
++}
++
++#else
++static void run(void)
++{
++	tst_brk(TCONF, NULL, "unshare is undefined.");
++}
++#endif
++
++static struct tst_test test = {
++	.test_all = run,
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++	.forks_child = 1,
++};
 -- 
-2.19.2
+2.21.0.352.gf09ad66450-goog
 
