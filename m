@@ -1,29 +1,22 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 28 Feb 2019 16:04:34 +0300
-Subject: [LTP] [PATCH 1/2] lib/tst_net.sh: don't treat TWARN/TCONF as
- failure in tst_netload()
-In-Reply-To: <20190226182607.GB27937@dell5510>
-References: <1551198213-10024-1-git-send-email-alexey.kodanev@oracle.com>
- <20190226182607.GB27937@dell5510>
-Message-ID: <2a8114f2-93b2-0925-c4af-0d8c40b66281@oracle.com>
+From: Elif Aslan <elas@linux.vnet.ibm.com>
+Date: Thu, 28 Feb 2019 15:42:44 +0100
+Subject: [LTP] Question regarding background jobs in LTP
+Message-ID: <AD78C4C6-E57B-4E67-91CC-EFD43E8CE99E@linux.vnet.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 26.02.2019 21:26, Petr Vorel wrote:
-...
->> -	if [ "$expect_ret" -ne "$ret" ]; then
->> +	if [ "$expect_ret" -ne 0 ]; then
->> +		if [ $((ret & expect_ret)) -ne 0 ]; then
->> +			tst_res_ TPASS "netstress failed as expected"
->> +		else
->> +			tst_res_ TFAIL "unexpected pass, ret is $ret"
-> I like the previous one, which mentioned what was expected. maybe something
-> like:
-> 			tst_res_ TFAIL "unexpected pass, expected '$expect_ret', but ret: $ret"
-> 
-> Or even mention $expect_res, which is word (not number)?
+We've found an issue when executing our testcase mon_fsstatd under LTP. 
+The test logic assumes that we start some processes as shell jobs and then kill them, like in these commands
 
-Applied with $expect_res. Thanks for review Petr!
+    mon_fsstatd_run 0 "mon_procd -a &"
+    sleep 2
+    mon_fsstatd_run 0 "killall mon_procd"
+
+But so far we observe that the testcase being run as 
+./runltp -f s390x_tests
+simply hangs at the point of starting background job, it simply runs in foreground, and then test finishes with error after timeout.
+
+Is it possible to execute background jobs in LTP ?
