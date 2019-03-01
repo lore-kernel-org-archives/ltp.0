@@ -1,57 +1,98 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 1 Mar 2019 16:26:43 +0800
-Subject: [LTP] [RFC PATCH] mm: rewrite mtest01 with new API
-In-Reply-To: <138010263.3799706.1551427391091.JavaMail.zimbra@redhat.com>
-References: <20190228074002.14351-1-liwang@redhat.com>
- <646940042.3510845.1551391739985.JavaMail.zimbra@redhat.com>
- <CAEemH2d1NFFP8aQs96W-4r-OSBoXkd86TD92wp3ZZxzrhygQyw@mail.gmail.com>
- <138010263.3799706.1551427391091.JavaMail.zimbra@redhat.com>
-Message-ID: <CAEemH2cx0mPzhgAUKq01_4JXOnanQjK79JqEdPZ5N0kpO4A_QA@mail.gmail.com>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Fri,  1 Mar 2019 13:58:20 +0530
+Subject: [LTP] [PATCH 1/2] syscalls/sync_file_range: add partial file sync
+	test-case
+Message-ID: <1551428901-30162-1-git-send-email-sumit.garg@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Mar 1, 2019 at 4:03 PM Jan Stancek <jstancek@redhat.com> wrote:
+Add partial file sync test as part of sync_file_range02 test-case.
 
-Maybe give it few days, so other people can respond, if they like/don't like
-> going in this direction.
->
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+---
+ .../syscalls/sync_file_range/sync_file_range02.c   | 49 +++++++++++++++++++++-
+ 1 file changed, 47 insertions(+), 2 deletions(-)
 
-Sure.
-
-Btw, I'm not going to use shared memory here since that probably make
-things more complicated.
-I guess just do remaining time check in the parent while loop is enough for
-the two OOM situations
-which I was mentioned in last mail.
-
-==== mem_test() ======
-        ...
-
-if (pid == 0)
-child_loop_alloc();
-
-/* waits in the loop for all children finish allocating*/
-while(pid_count < pid_cntr) {
-if (tst_timeout_remaining() < 15)
-break;
-
-sleep(1);
-}
-
-if (dowrite) {
-                pre_free - post_free check...
-} else {
-...
-}
-
-       kill children here..
-
+diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+index 82d77f7..23240c0 100644
+--- a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
++++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+@@ -27,7 +27,7 @@
+ #define FILE_SIZE (FILE_SIZE_MB * TST_MB)
+ #define MODE			0644
+ 
+-static void verify_sync_file_range(void)
++static void verify_sync_full_file(void)
+ {
+ 	int fd;
+ 	unsigned long written;
+@@ -56,6 +56,50 @@ static void verify_sync_file_range(void)
+ 		tst_res(TFAIL, "Synced %li, expected %i", written, FILE_SIZE);
+ }
+ 
++static void verify_sync_partial_file(void)
++{
++	int fd;
++	unsigned long written;
++
++	fd = SAFE_OPEN(FNAME, O_RDWR|O_CREAT, MODE);
++
++	lseek(fd, FILE_SIZE/4, SEEK_SET);
++
++	tst_dev_bytes_written(tst_device->dev);
++
++	tst_fill_fd(fd, 0xff, TST_MB, FILE_SIZE_MB/2);
++
++	TEST(sync_file_range(fd, FILE_SIZE/4, FILE_SIZE/2,
++			     SYNC_FILE_RANGE_WAIT_BEFORE |
++			     SYNC_FILE_RANGE_WRITE |
++			     SYNC_FILE_RANGE_WAIT_AFTER));
++
++	if (TST_RET)
++		tst_brk(TFAIL | TTERRNO, "sync_file_range() failed");
++
++	written = tst_dev_bytes_written(tst_device->dev);
++
++	SAFE_CLOSE(fd);
++
++	if (written >= FILE_SIZE/2)
++		tst_res(TPASS, "Test file range synced to device");
++	else
++		tst_res(TFAIL, "Synced %li, expected %i", written,
++			FILE_SIZE/2);
++}
++
++static struct tcase {
++	void (*tfunc)(void);
++} tcases[] = {
++	{&verify_sync_full_file},
++	{&verify_sync_partial_file}
++};
++
++static void run(unsigned int i)
++{
++	tcases[i].tfunc();
++}
++
+ static void setup(void)
+ {
+ 	if (!check_sync_file_range())
+@@ -63,10 +107,11 @@ static void setup(void)
+ }
+ 
+ static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
+ 	.needs_root = 1,
+ 	.mount_device = 1,
+ 	.all_filesystems = 1,
+ 	.mntpoint = MNTPOINT,
+ 	.setup = setup,
+-	.test_all = verify_sync_file_range,
++	.test = run,
+ };
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190301/6952d779/attachment-0001.html>
+2.7.4
+
