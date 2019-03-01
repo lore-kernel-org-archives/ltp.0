@@ -1,53 +1,139 @@
 From: Jinhui huang <huangjh.jy@cn.fujitsu.com>
-Date: Fri, 1 Mar 2019 15:16:28 +0800
-Subject: [LTP] [PATCH v2 3/3] syscalls/pwitev202: Add new testcase
+Date: Fri, 1 Mar 2019 15:16:27 +0800
+Subject: [LTP] [PATCH v2 2/3] syscalls/pwritev201: Add new testcase
 In-Reply-To: <1551424588-27446-1-git-send-email-huangjh.jy@cn.fujitsu.com>
 References: <1551424588-27446-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-Message-ID: <1551424588-27446-3-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <1551424588-27446-2-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Check various errnos for the pwitev2().
+Check the basic functionality of the pwritev2().
 
 Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
 ---
- runtest/syscalls                                |   2 +
+ configure.ac                                    |   1 +
+ include/lapi/pwritev2.h                         |  26 ++++++
+ m4/ltp-pwritev2.m4                              |   9 ++
+ runtest/syscalls                                |   3 +
  testcases/kernel/syscalls/pwritev2/.gitignore   |   2 +
- testcases/kernel/syscalls/pwritev2/pwritev202.c | 117 ++++++++++++++++++++++++
- 3 files changed, 121 insertions(+)
- create mode 100644 testcases/kernel/syscalls/pwritev2/pwritev202.c
+ testcases/kernel/syscalls/pwritev2/Makefile     |  13 +++
+ testcases/kernel/syscalls/pwritev2/pwritev201.c | 119 ++++++++++++++++++++++++
+ 7 files changed, 173 insertions(+)
+ create mode 100644 include/lapi/pwritev2.h
+ create mode 100644 m4/ltp-pwritev2.m4
+ create mode 100644 testcases/kernel/syscalls/pwritev2/.gitignore
+ create mode 100644 testcases/kernel/syscalls/pwritev2/Makefile
+ create mode 100644 testcases/kernel/syscalls/pwritev2/pwritev201.c
 
+diff --git a/configure.ac b/configure.ac
+index d15bff3..e73f7d9 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -219,6 +219,7 @@ LTP_CHECK_KCMP_TYPE
+ LTP_CHECK_PREADV
+ LTP_CHECK_PWRITEV
+ LTP_CHECK_PREADV2
++LTP_CHECK_PWRITEV2
+ LTP_CHECK_EPOLL_PWAIT
+ LTP_CHECK_KEYUTILS_SUPPORT
+ LTP_CHECK_SYNC_ADD_AND_FETCH
+diff --git a/include/lapi/pwritev2.h b/include/lapi/pwritev2.h
+new file mode 100644
+index 0000000..305e48e
+--- /dev/null
++++ b/include/lapi/pwritev2.h
+@@ -0,0 +1,26 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
++ * Author: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
++ */
++
++#ifndef PWRITEV2_H
++#define PWRITEV2_H
++
++#include "config.h"
++#include "lapi/syscalls.h"
++
++#if !defined(HAVE_PWRITEV2)
++
++/* LO_HI_LONG taken from glibc */
++# define LO_HI_LONG(val) (long) (val), (long) (((uint64_t) (val)) >> 32)
++
++ssize_t pwritev2(int fd, const struct iovec *iov, int iovcnt, off_t offset,
++		int flags)
++{
++	return tst_syscall(__NR_pwritev2, fd, iov, iovcnt,
++			   LO_HI_LONG(offset), flags);
++}
++#endif
++
++#endif /* PWRITEV2_H */
+diff --git a/m4/ltp-pwritev2.m4 b/m4/ltp-pwritev2.m4
+new file mode 100644
+index 0000000..38148ac
+--- /dev/null
++++ b/m4/ltp-pwritev2.m4
+@@ -0,0 +1,9 @@
++dnl SPDX-License-Identifier: GPL-2.0-or-later
++dnl Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
++dnl Author: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
++
++dnl LTP_CHECK_PWRITEV2
++dnl ----------------------------
++AC_DEFUN([LTP_CHECK_PWRITEV2],[
++AC_CHECK_FUNCS(pwritev2,,)
++])
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 73caa61..0a9e8c4 100644
+index 0af0f44..73caa61 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -914,6 +914,8 @@ pwritev03_64 pwritev03_64
+@@ -912,6 +912,9 @@ pwritev02_64 pwritev02_64
+ pwritev03 pwritev03
+ pwritev03_64 pwritev03_64
  
- pwritev201 pwritev201
- pwritev201_64 pwritev201_64
-+pwritev202 pwritev202
-+pwritev202_64 pwritev202_64
- 
++pwritev201 pwritev201
++pwritev201_64 pwritev201_64
++
  quotactl01 quotactl01
  quotactl02 quotactl02
+ quotactl03 quotactl03
 diff --git a/testcases/kernel/syscalls/pwritev2/.gitignore b/testcases/kernel/syscalls/pwritev2/.gitignore
-index 46270c3..40030d9 100644
---- a/testcases/kernel/syscalls/pwritev2/.gitignore
-+++ b/testcases/kernel/syscalls/pwritev2/.gitignore
-@@ -1,2 +1,4 @@
- /pwritev201
- /pwritev201_64
-+/pwritev202
-+/pwritev202_64
-diff --git a/testcases/kernel/syscalls/pwritev2/pwritev202.c b/testcases/kernel/syscalls/pwritev2/pwritev202.c
 new file mode 100644
-index 0000000..b44620c
+index 0000000..46270c3
 --- /dev/null
-+++ b/testcases/kernel/syscalls/pwritev2/pwritev202.c
-@@ -0,0 +1,117 @@
++++ b/testcases/kernel/syscalls/pwritev2/.gitignore
+@@ -0,0 +1,2 @@
++/pwritev201
++/pwritev201_64
+diff --git a/testcases/kernel/syscalls/pwritev2/Makefile b/testcases/kernel/syscalls/pwritev2/Makefile
+new file mode 100644
+index 0000000..89756d0
+--- /dev/null
++++ b/testcases/kernel/syscalls/pwritev2/Makefile
+@@ -0,0 +1,13 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
++# Author: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
++
++top_srcdir              ?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(abs_srcdir)/../utils/newer_64.mk
++
++%_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/pwritev2/pwritev201.c b/testcases/kernel/syscalls/pwritev2/pwritev201.c
+new file mode 100644
+index 0000000..2ea8907
+--- /dev/null
++++ b/testcases/kernel/syscalls/pwritev2/pwritev201.c
+@@ -0,0 +1,119 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
@@ -55,107 +141,109 @@ index 0000000..b44620c
 + */
 +/*
 + * Description:
-+ * Check various errnos for pwritev2(2).
-+ * 1) pwritev2() fails and sets errno to EINVAL if iov_len is invalid.
-+ * 2) pwritev2() fails and sets errno to EINVAL if the vector count iovcnt is
-+ *    less than zero.
-+ * 3) pwritev2() fails and sets errno to EOPNOTSUPP if flag is invalid.
-+ * 4) pwritev2() fails and sets errno to EFAULT when writing data from invalid
-+ *    address.
-+ * 5) pwritev2() fails and sets errno to EBADF if file descriptor is invalid.
-+ * 6) pwritev2() fails and sets errno to EBADF if file descriptor is open for
-+ *    reading.
-+ * 7) pwritev2() fails and sets errno to ESPIPE if fd is associated with a pipe.
++ * Testcase to check the basic functionality of the pwritev2(2).
++ * 1) If the file offset argument is not -1, pwritev2() should succeed
++ *    in writing the expected content of data and the file offset is
++ *    not changed after writing.
++ * 2) If the file offset argument is -1, pwritev2() should succeed in
++ *    writing the expected content of data and the current file offset
++ *    is used and changed after writing.
 + */
 +
 +#define _GNU_SOURCE
++#include <string.h>
 +#include <sys/uio.h>
-+#include <unistd.h>
 +
 +#include "tst_test.h"
 +#include "lapi/pwritev2.h"
++#include "tst_safe_prw.h"
 +
 +#define CHUNK	64
 +
-+static int fd1;
-+static int fd2;
-+static int fd3 = -1;
-+static int fd4[2];
-+
++static int fd;
++static char initbuf[CHUNK * 2];
 +static char buf[CHUNK];
 +
-+static struct iovec wr_iovec1[] = {
-+	{buf, -1},
-+};
-+
-+static struct iovec wr_iovec2[] = {
++static struct iovec wr_iovec[] = {
 +	{buf, CHUNK},
-+};
-+
-+static struct iovec wr_iovec3[] = {
-+	{NULL, CHUNK},
++	{NULL, 0},
 +};
 +
 +static struct tcase {
-+	int *fd;
-+	struct iovec *name;
++	off_t seek_off;
 +	int count;
-+	off_t offset;
-+	int flag;
-+	int exp_err;
++	off_t write_off;
++	ssize_t size;
++	off_t exp_off;
 +} tcases[] = {
-+	{&fd1, wr_iovec1, 1, 0, 0, EINVAL},
-+	{&fd1, wr_iovec2, -1, 0, 0, EINVAL},
-+	{&fd1, wr_iovec2, 1, 1, -1, EOPNOTSUPP},
-+	{&fd1, wr_iovec3, 1, 0, 0, EFAULT},
-+	{&fd3, wr_iovec2, 1, 0, 0, EBADF},
-+	{&fd2, wr_iovec2, 1, 0, 0, EBADF},
-+	{&fd4[0], wr_iovec2, 1, 0, 0, ESPIPE},
++	{0,     1, 0,          CHUNK, 0},
++	{CHUNK, 2, 0,          CHUNK, CHUNK},
++	{0,     1, CHUNK / 2,  CHUNK, 0},
++	{0,     1, -1,         CHUNK, CHUNK},
++	{0,     2, -1,         CHUNK, CHUNK},
++	{CHUNK, 1, -1,         CHUNK, CHUNK * 2},
 +};
 +
 +static void verify_pwritev2(unsigned int n)
 +{
++	int i;
++	char preadbuf[CHUNK];
 +	struct tcase *tc = &tcases[n];
 +
-+	TEST(pwritev2(*tc->fd, tc->name, tc->count, tc->offset, tc->flag));
++	SAFE_PWRITE(1, fd, initbuf, sizeof(initbuf), 0);
++	SAFE_LSEEK(fd, tc->seek_off, SEEK_SET);
 +
-+	if (TST_RET == 0) {
-+		tst_res(TFAIL, "pwritev2() succeeded unexpectedly");
++	TEST(pwritev2(fd, wr_iovec, tc->count, tc->write_off, 0));
++	if (TST_RET < 0) {
++		tst_res(TFAIL | TTERRNO, "pwritev() failed");
 +		return;
 +	}
 +
-+	if (TST_ERR == tc->exp_err) {
-+		tst_res(TPASS | TTERRNO, "pwritev2() failed as expected");
++	if (TST_RET != tc->size) {
++		tst_res(TFAIL, "pwritev2() wrote %li bytes, expected %zi",
++			 TST_RET, tc->size);
 +		return;
 +	}
 +
-+	tst_res(TFAIL | TTERRNO, "pwritev2() failed unexpectedly, expected %s",
-+		tst_strerrno(tc->exp_err));
++	if (SAFE_LSEEK(fd, 0, SEEK_CUR) != tc->exp_off) {
++		tst_res(TFAIL, "pwritev2() had changed file offset");
++		return;
++	}
++
++	memset(preadbuf, 0, CHUNK);
++
++	if (tc->write_off != -1)
++		SAFE_PREAD(1, fd, preadbuf, tc->size, tc->write_off);
++	else
++		SAFE_PREAD(1, fd, preadbuf, tc->size, tc->seek_off);
++
++	for (i = 0; i < tc->size; i++) {
++		if (preadbuf[i] != 0x61)
++			break;
++	}
++
++	if (i != tc->size) {
++		tst_res(TFAIL, "buffer wrong at %i have %c expected 'a'",
++			 i, preadbuf[i]);
++		return;
++	}
++
++	tst_res(TPASS, "pwritev2() wrote %zi bytes successfully "
++		 "with content 'a' expectedly ", tc->size);
 +}
 +
 +static void setup(void)
 +{
-+	fd1 = SAFE_OPEN("file1", O_RDWR | O_CREAT, 0644);
-+	SAFE_FTRUNCATE(fd1, getpagesize());
-+	fd2 = SAFE_OPEN("file2", O_RDONLY | O_CREAT, 0644);
-+	SAFE_PIPE(fd4);
++	memset(buf, 0x61, CHUNK);
++	memset(initbuf, 0, CHUNK * 2);
 +
-+	wr_iovec3[0].iov_base = tst_get_bad_addr(NULL);
++	fd = SAFE_OPEN("file", O_RDWR | O_CREAT, 0644);
 +}
 +
 +static void cleanup(void)
 +{
-+	if (fd1 > 0)
-+		SAFE_CLOSE(fd1);
-+
-+	if (fd2 > 0)
-+		SAFE_CLOSE(fd2);
-+
-+	if (fd4[0] > 0)
-+		SAFE_CLOSE(fd4[0]);
-+
-+	if (fd4[1] > 0)
-+		SAFE_CLOSE(fd4[1]);
++	if (fd > 0)
++		SAFE_CLOSE(fd);
 +}
 +
 +static struct tst_test test = {
