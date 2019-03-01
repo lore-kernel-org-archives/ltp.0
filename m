@@ -1,66 +1,524 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 1 Mar 2019 03:44:12 -0500 (EST)
-Subject: [LTP] [RFC PATCH] mm: rewrite mtest01 with new API
-In-Reply-To: <CAEemH2cx0mPzhgAUKq01_4JXOnanQjK79JqEdPZ5N0kpO4A_QA@mail.gmail.com>
-References: <20190228074002.14351-1-liwang@redhat.com>
- <646940042.3510845.1551391739985.JavaMail.zimbra@redhat.com>
- <CAEemH2d1NFFP8aQs96W-4r-OSBoXkd86TD92wp3ZZxzrhygQyw@mail.gmail.com>
- <138010263.3799706.1551427391091.JavaMail.zimbra@redhat.com>
- <CAEemH2cx0mPzhgAUKq01_4JXOnanQjK79JqEdPZ5N0kpO4A_QA@mail.gmail.com>
-Message-ID: <269593361.3808924.1551429852336.JavaMail.zimbra@redhat.com>
+From: Matthias =?unknown-8bit?q?M=C3=A4nnich?= <maennich@google.com>
+Date: Fri, 1 Mar 2019 09:24:37 +0000
+Subject: [LTP] [PATCH] Add ltp pivot_root test
+In-Reply-To: <20190228193645.51244-1-paullawrence@google.com>
+References: <20190228193645.51244-1-paullawrence@google.com>
+Message-ID: <20190301092437.GA74734@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Paul!
 
+On Thu, Feb 28, 2019 at 11:36:45AM -0800, Paul Lawrence wrote:
+> pivot_root03.c is missing - it tests the claim that pivot_root fails
+> with EBUSY if a filesystem is mounted on put_old, but this is no longer
+> true.
+> 
+> Signed-off-by: Paul Lawrence <paullawrence@google.com>
+> ---
+>  testcases/kernel/syscalls/pivot_root/Makefile | 23 +++++
+>  .../kernel/syscalls/pivot_root/pivot_root01.c | 66 +++++++++++++
+>  .../kernel/syscalls/pivot_root/pivot_root02.c | 78 +++++++++++++++
+>  .../kernel/syscalls/pivot_root/pivot_root04.c | 82 ++++++++++++++++
+>  .../kernel/syscalls/pivot_root/pivot_root05.c | 76 +++++++++++++++
+>  .../kernel/syscalls/pivot_root/pivot_root06.c | 94 +++++++++++++++++++
+>  6 files changed, 419 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/pivot_root/Makefile
+>  create mode 100644 testcases/kernel/syscalls/pivot_root/pivot_root01.c
+>  create mode 100644 testcases/kernel/syscalls/pivot_root/pivot_root02.c
+>  create mode 100644 testcases/kernel/syscalls/pivot_root/pivot_root04.c
+>  create mode 100644 testcases/kernel/syscalls/pivot_root/pivot_root05.c
+>  create mode 100644 testcases/kernel/syscalls/pivot_root/pivot_root06.c
+> 
+> diff --git a/testcases/kernel/syscalls/pivot_root/Makefile b/testcases/kernel/syscalls/pivot_root/Makefile
+> new file mode 100644
+> index 000000000..a6f0e1499
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/pivot_root/Makefile
+> @@ -0,0 +1,23 @@
+> +#
+> +#  This program is free software;  you can redistribute it and/or modify
+> +#  it under the terms of the GNU General Public License as published by
+> +#  the Free Software Foundation; either version 2 of the License, or
+> +#  (at your option) any later version.
+> +#
+> +#  This program is distributed in the hope that it will be useful,
+> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> +#  the GNU General Public License for more details.
+> +#
+> +#  You should have received a copy of the GNU General Public License
+> +#  along with this program;  if not, write to the Free Software
+> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> +#
+You should be able to replace this block with a SPDX license tag and a
+copyright note (as you did in the source files).
 
+> +
+> +top_srcdir		?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +
+> +CFLAGS += -lcap
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/syscalls/pivot_root/pivot_root01.c b/testcases/kernel/syscalls/pivot_root/pivot_root01.c
+> new file mode 100644
+> index 000000000..f0b884774
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/pivot_root/pivot_root01.c
+> @@ -0,0 +1,66 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +//
+> +// Copyright (c) 2019 Google, Inc.
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include <linux/unistd.h>
+> +#include <sched.h>
+> +#include <sys/mount.h>
+> +#include <stdlib.h>
+> +
+> +#include "tst_test.h"
+> +
+> +#ifdef HAVE_UNSHARE
+> +
+> +static void run(void)
+> +{
+> +	const char* chroot_dir = "chroot";
+> +	const char* new_root = "/new_root";
+> +	const char* put_old = "/new_root/put_old";
+> +
+> +	int pid;
+> +
+> +	if ((pid = SAFE_FORK()) == -1) {
+SAFE_FORK is handling this case already. See lib/tst_test.c#safe_fork().
 
------ Original Message -----
-> On Fri, Mar 1, 2019 at 4:03 PM Jan Stancek <jstancek@redhat.com> wrote:
-> 
-> Maybe give it few days, so other people can respond, if they like/don't like
-> > going in this direction.
-> >
-> 
-> Sure.
-> 
-> Btw, I'm not going to use shared memory here since that probably make
-> things more complicated.
-> I guess just do remaining time check in the parent while loop is enough for
-> the two OOM situations
-> which I was mentioned in last mail.
-> 
-> ==== mem_test() ======
->         ...
-> 
-> if (pid == 0)
-> child_loop_alloc();
-> 
-> /* waits in the loop for all children finish allocating*/
-> while(pid_count < pid_cntr) {
-> if (tst_timeout_remaining() < 15)
-> break;
-> 
-> sleep(1);
-> }
-> 
-> if (dowrite) {
->                 pre_free - post_free check...
+> +		tst_brk(TBROK, "Could not fork");
+> +	}
+> +
+> +	if (pid == 0) {
+> +		if (unshare(CLONE_NEWNS | CLONE_FS)) {
+> +			tst_res(TFAIL | TERRNO, "unshare failed");
+> +			exit (1);
+Use tst_brk() to report the test error and exit.
 
-This doesn't look very accurate. Other system processes can influence this.
+> +		}
+> +
+> +		SAFE_MOUNT("none", "/", NULL, MS_REC|MS_PRIVATE, NULL);
+> +		SAFE_MKDIR(chroot_dir, 0777);
+> +		SAFE_MOUNT("none", chroot_dir, "tmpfs", 0, 0);
+> +		SAFE_CHROOT(chroot_dir);
+> +		SAFE_MKDIR(new_root, 0777);
+> +		SAFE_MOUNT("none", new_root, "tmpfs", 0, 0);
+> +		SAFE_MKDIR(put_old, 0777);
+The test cases share a fair amount of code. Consider consolidating this
+into a common `setup()` method.
 
-Do we need to check it at all? If a child didn't complete allocation
-it's not going to signal parent.
+In addition, it appears to me the testcases 1,2,4 and 5 are similar
+enough to be able to combine them in one test with several cases.
 
-> } else {
-> ...
-> }
-> 
->        kill children here..
-> 
-> --
-> Regards,
-> Li Wang
-> 
+> +
+> +		if (syscall(__NR_pivot_root, new_root, put_old) == -1) {
+> +			tst_res(TFAIL | TERRNO, "pivot_root failed");
+> +			exit (1);
+> +		}
+TEST(tst_syscall(__NR_pivot_root, new_root, put_old));
+if (TST_RET == -1)
+    tst_brk(TFAIL, TTERRNO, "pivot_root failed");
+
+There are more locations where this pattern would apply. See e.g.
+testcases/kernel/syscalls/vhangup/vhangup01.c for how to further handle
+specific errors.
+
+> +
+> +		tst_res(TPASS, "pivot_root succeeded");
+> +		exit(0);
+Reporting the error code should be done by the test framework. You could
+make the cleanup code conditional if you need to exit early here.
+
+> +	}
+> +
+> +	tst_reap_children();
+Consider putting this into a `cleanup()` method (or an else block).
+
+> +}
+> +
+> +#else
+> +static void run(void)
+> +{
+> +	tst_brk(TCONF, NULL, "unshare is undefined.");
+> +}
+> +#endif
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.needs_tmpdir = 1,
+> +	.needs_root = 1,
+> +	.forks_child = 1,
+> +};
+> diff --git a/testcases/kernel/syscalls/pivot_root/pivot_root02.c b/testcases/kernel/syscalls/pivot_root/pivot_root02.c
+> new file mode 100644
+> index 000000000..41339c768
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/pivot_root/pivot_root02.c
+> @@ -0,0 +1,78 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +//
+> +// Copyright (c) 2019 Google, Inc.
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include <errno.h>
+> +#include <linux/unistd.h>
+> +#include <sched.h>
+> +#include <sys/mount.h>
+> +#include <stdlib.h>
+> +
+> +#include "tst_test.h"
+> +
+> +#ifdef HAVE_UNSHARE
+> +
+> +static void run(void)
+> +{
+> +	const char* chroot_dir = "chroot";
+> +	const char* new_root = "/new_root";
+> +	const char* put_old = "/new_root/put_old";
+> +
+> +	int pid;
+> +
+> +	if ((pid = SAFE_FORK()) == -1)
+> +		tst_brk(TBROK, "Could not fork");
+> +
+> +	if (pid == 0) {
+> +		if (unshare(CLONE_NEWNS | CLONE_FS)) {
+> +			tst_res(TFAIL | TERRNO, "unshare failed");
+> +			exit (1);
+Use tst_brk(). There are more cases across this patch where this
+applies.
+
+> +		}
+> +
+> +		SAFE_MOUNT("none", "/", NULL, MS_REC|MS_PRIVATE, NULL);
+> +		SAFE_MKDIR(chroot_dir, 0777);
+> +		SAFE_MOUNT("none", chroot_dir, "tmpfs", 0, 0);
+> +		SAFE_CHROOT(chroot_dir);
+> +		SAFE_MKDIR(new_root, 0777);
+> +
+> +		// EBUSY
+> +		// new_root or put_old are on the current root file system
+> +		//
+> +		// Comment out to trigger this error
+> +		// SAFE_MOUNT("none", new_root, "tmpfs", 0, 0);
+> +
+> +		SAFE_MKDIR(put_old, 0777);
+> +
+> +		if (syscall(__NR_pivot_root, new_root, put_old) == 0) {
+> +			tst_res(TFAIL, "pivot_root succeeded unexpectedly");
+> +			exit (1);
+> +		}
+> +
+> +		if (errno != EBUSY) {
+> +			tst_res(TFAIL | TERRNO,
+> +				"pivot_root failed with wrong errno");
+> +			exit (1);
+> +		}
+> +
+> +		tst_res(TPASS, "pivot_root failed with EBUSY as expected");
+> +		exit(0);
+> +	}
+> +
+> +	tst_reap_children();
+> +}
+> +
+> +#else
+> +static void run(void)
+> +{
+> +	tst_brk(TCONF, NULL, "unshare is undefined.");
+> +}
+> +#endif
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.needs_tmpdir = 1,
+> +	.needs_root = 1,
+> +	.forks_child = 1,
+> +};
+> diff --git a/testcases/kernel/syscalls/pivot_root/pivot_root04.c b/testcases/kernel/syscalls/pivot_root/pivot_root04.c
+> new file mode 100644
+> index 000000000..d2959130d
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/pivot_root/pivot_root04.c
+> @@ -0,0 +1,82 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +//
+> +// Copyright (c) 2019 Google, Inc.
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include <errno.h>
+> +#include <linux/unistd.h>
+> +#include <sched.h>
+> +#include <sys/mount.h>
+> +#include <stdlib.h>
+> +
+> +#include "tst_test.h"
+> +
+> +#ifdef HAVE_UNSHARE
+> +
+> +static void run(void)
+> +{
+> +	const char* chroot_dir = "chroot";
+> +	const char* new_root = "/new_root";
+> +
+> +	// EINVAL
+> +	// put_old is not underneath new_root
+> +	// Note: if put_old and new_root are on the same fs,
+> +	// pivot_root fails with EBUSY before testing reachability
+> +	const char* put_old_fs = "/put_old_fs";
+> +	const char* put_old = "/put_old_fs/put_old";
+> +
+> +	int pid;
+> +
+> +	if ((pid = SAFE_FORK()) == -1) {
+> +		tst_brk(TBROK, "Could not fork");
+> +	}
+> +
+> +	if (pid == 0) {
+> +		if (unshare(CLONE_NEWNS | CLONE_FS)) {
+> +			tst_res(TFAIL | TERRNO, "unshare failed");
+> +			exit (1);
+> +		}
+> +
+> +		SAFE_MOUNT("none", "/", NULL, MS_REC|MS_PRIVATE, NULL);
+> +		SAFE_MKDIR(chroot_dir, 0777);
+> +		SAFE_MOUNT("none", chroot_dir, "tmpfs", 0, 0);
+> +		SAFE_CHROOT(chroot_dir);
+> +		SAFE_MKDIR(new_root, 0777);
+> +		SAFE_MOUNT("none", new_root, "tmpfs", 0, 0);
+> +
+> +		SAFE_MKDIR(put_old_fs, 0777);
+> +		SAFE_MOUNT("none", put_old_fs, "tmpfs", 0, 0);
+> +		SAFE_MKDIR(put_old, 0777);
+> +
+> +		if (syscall(__NR_pivot_root, new_root, put_old) == 0) {
+> +			tst_res(TFAIL, "pivot_root succeeded unexpectedly");
+> +			exit (1);
+> +		}
+> +
+> +		if (errno != EINVAL) {
+> +			tst_res(TFAIL | TERRNO,
+> +				"pivot_root failed with wrong errno");
+> +			exit (1);
+> +		}
+> +
+> +		tst_res(TPASS, "pivot_root failed with EINVAL as expected");
+> +		exit(0);
+> +	}
+> +
+> +	tst_reap_children();
+> +}
+> +
+> +#else
+> +static void run(void)
+> +{
+> +	tst_brk(TCONF, NULL, "unshare is undefined.");
+> +}
+> +#endif
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.needs_tmpdir = 1,
+> +	.needs_root = 1,
+> +	.forks_child = 1,
+> +};
+> diff --git a/testcases/kernel/syscalls/pivot_root/pivot_root05.c b/testcases/kernel/syscalls/pivot_root/pivot_root05.c
+> new file mode 100644
+> index 000000000..7f58fccfc
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/pivot_root/pivot_root05.c
+> @@ -0,0 +1,76 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +//
+> +// Copyright (c) 2019 Google, Inc.
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include <errno.h>
+> +#include <linux/unistd.h>
+> +#include <sched.h>
+> +#include <sys/mount.h>
+> +#include <stdlib.h>
+> +
+> +#include "tst_test.h"
+> +
+> +#ifdef HAVE_UNSHARE
+> +
+> +static void run(void)
+> +{
+> +	const char* chroot_dir = "chroot";
+> +	const char* new_root = "/new_root";
+> +	const char* put_old = "/new_root/put_old";
+> +
+> +	int pid;
+> +
+> +	if ((pid = SAFE_FORK()) == -1) {
+> +		tst_brk(TBROK, "Could not fork");
+> +	}
+> +
+> +	if (pid == 0) {
+> +		if (unshare(CLONE_NEWNS | CLONE_FS)) {
+> +			tst_res(TFAIL | TERRNO, "unshare failed");
+> +			exit (1);
+> +		}
+> +
+> +		SAFE_MOUNT("none", "/", NULL, MS_REC|MS_PRIVATE, NULL);
+> +		SAFE_MKDIR(chroot_dir, 0777);
+> +		SAFE_MOUNT("none", chroot_dir, "tmpfs", 0, 0);
+> +		SAFE_CHROOT(chroot_dir);
+> +		SAFE_MKDIR(new_root, 0777);
+> +		SAFE_MOUNT("none", new_root, "tmpfs", 0, 0);
+> +
+> +		// ENOTDIR
+> +		// new_root or put_old is not a directory
+> +		SAFE_CREAT(put_old, 0777);
+> +
+> +		if (syscall(__NR_pivot_root, new_root, put_old) == 0) {
+> +			tst_res(TFAIL, "pivot_root succeeded unexpectedly");
+> +			exit (1);
+> +		}
+> +
+> +		if (errno != ENOTDIR) {
+> +			tst_res(TFAIL | TERRNO,
+> +				"pivot_root failed with wrong errno");
+> +			exit (1);
+> +		}
+> +
+> +		tst_res(TPASS, "pivot_root failed with EBUSY as expected");
+> +		exit(0);
+> +	}
+> +
+> +	tst_reap_children();
+> +}
+> +
+> +#else
+> +static void run(void)
+> +{
+> +	tst_brk(TCONF, NULL, "unshare is undefined.");
+> +}
+> +#endif
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.needs_tmpdir = 1,
+> +	.needs_root = 1,
+> +	.forks_child = 1,
+> +};
+> diff --git a/testcases/kernel/syscalls/pivot_root/pivot_root06.c b/testcases/kernel/syscalls/pivot_root/pivot_root06.c
+> new file mode 100644
+> index 000000000..ac3b08321
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/pivot_root/pivot_root06.c
+> @@ -0,0 +1,94 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +//
+> +// Copyright (c) 2019 Google, Inc.
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include <errno.h>
+> +#include <linux/unistd.h>
+> +#include <sched.h>
+> +#include <sys/capability.h>
+> +#include <sys/mount.h>
+> +#include <stdlib.h>
+> +
+> +#include "tst_test.h"
+> +
+> +#ifdef HAVE_UNSHARE
+> +
+> +static void run(void)
+> +{
+> +	const char* chroot_dir = "chroot";
+> +	const char* new_root = "/new_root";
+> +	const char* put_old = "/new_root/put_old";
+> +
+> +	int pid;
+> +
+> +	if ((pid = SAFE_FORK()) == -1) {
+> +		tst_brk(TBROK, "Could not fork");
+> +	}
+> +
+> +
+> +	if (pid == 0) {
+> +		if (unshare(CLONE_NEWNS | CLONE_FS)) {
+> +			tst_res(TFAIL | TERRNO, "unshare failed");
+> +			exit (1);
+> +		}
+> +
+> +		SAFE_MOUNT("none", "/", NULL, MS_REC|MS_PRIVATE, NULL);
+> +		SAFE_MKDIR(chroot_dir, 0777);
+> +		SAFE_MOUNT("none", chroot_dir, "tmpfs", 0, 0);
+> +		SAFE_CHROOT(chroot_dir);
+> +		SAFE_MKDIR(new_root, 0777);
+> +		SAFE_MOUNT("none", new_root, "tmpfs", 0, 0);
+> +		SAFE_MKDIR(put_old, 0777);
+> +
+> +		// EPERM
+> +		// The calling process does not have the CAP_SYS_ADMIN capability.
+> +		cap_value_t cap_value[] = { CAP_SYS_ADMIN };
+> +		cap_t cap = cap_get_proc();
+> +		if (!cap) {
+> +			tst_res(TFAIL | TERRNO, "cap_get_proc failed");
+> +			exit (1);
+> +		}
+> +
+> +		if (cap_set_flag(cap, CAP_EFFECTIVE, 1, cap_value, CAP_CLEAR)) {
+> +			tst_res(TFAIL | TERRNO, "cap_set_flag failed");
+> +			exit (1);
+> +		}
+> +
+> +		if (cap_set_proc(cap)) {
+> +			tst_res(TFAIL | TERRNO, "cap_set_proc failed");
+> +			exit (1);
+> +		}
+> +
+> +		if (syscall(__NR_pivot_root, new_root, put_old) == 0) {
+> +			tst_res(TFAIL, "pivot_root succeeded unexpectedly");
+> +			exit (1);
+> +		}
+> +
+> +		if (errno != EPERM) {
+> +			tst_res(TFAIL | TERRNO,
+> +				"pivot_root failed with wrong errno");
+> +			exit (1);
+> +		}
+> +
+> +		tst_res(TPASS, "pivot_root failed with EPERM as expected");
+> +		exit(0);
+> +	}
+> +
+> +	tst_reap_children();
+> +}
+> +
+> +#else
+> +static void run(void)
+> +{
+> +	tst_brk(TCONF, NULL, "unshare is undefined.");
+> +}
+> +#endif
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.needs_tmpdir = 1,
+> +	.needs_root = 1,
+> +	.forks_child = 1,
+> +};
+> -- 
+> 2.21.0.352.gf09ad66450-goog
+
+Cheers,
+Matthias
