@@ -1,260 +1,180 @@
-From: Jinhui huang <huangjh.jy@cn.fujitsu.com>
-Date: Fri, 1 Mar 2019 15:16:27 +0800
-Subject: [LTP] [PATCH v2 2/3] syscalls/pwritev201: Add new testcase
-In-Reply-To: <1551424588-27446-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-References: <1551424588-27446-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-Message-ID: <1551424588-27446-2-git-send-email-huangjh.jy@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 1 Mar 2019 03:03:11 -0500 (EST)
+Subject: [LTP] [RFC PATCH] mm: rewrite mtest01 with new API
+In-Reply-To: <CAEemH2d1NFFP8aQs96W-4r-OSBoXkd86TD92wp3ZZxzrhygQyw@mail.gmail.com>
+References: <20190228074002.14351-1-liwang@redhat.com>
+ <646940042.3510845.1551391739985.JavaMail.zimbra@redhat.com>
+ <CAEemH2d1NFFP8aQs96W-4r-OSBoXkd86TD92wp3ZZxzrhygQyw@mail.gmail.com>
+Message-ID: <138010263.3799706.1551427391091.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Check the basic functionality of the pwritev2().
-
-Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
----
- configure.ac                                    |   1 +
- include/lapi/pwritev2.h                         |  26 ++++++
- m4/ltp-pwritev2.m4                              |   9 ++
- runtest/syscalls                                |   3 +
- testcases/kernel/syscalls/pwritev2/.gitignore   |   2 +
- testcases/kernel/syscalls/pwritev2/Makefile     |  13 +++
- testcases/kernel/syscalls/pwritev2/pwritev201.c | 119 ++++++++++++++++++++++++
- 7 files changed, 173 insertions(+)
- create mode 100644 include/lapi/pwritev2.h
- create mode 100644 m4/ltp-pwritev2.m4
- create mode 100644 testcases/kernel/syscalls/pwritev2/.gitignore
- create mode 100644 testcases/kernel/syscalls/pwritev2/Makefile
- create mode 100644 testcases/kernel/syscalls/pwritev2/pwritev201.c
-
-diff --git a/configure.ac b/configure.ac
-index d15bff3..e73f7d9 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -219,6 +219,7 @@ LTP_CHECK_KCMP_TYPE
- LTP_CHECK_PREADV
- LTP_CHECK_PWRITEV
- LTP_CHECK_PREADV2
-+LTP_CHECK_PWRITEV2
- LTP_CHECK_EPOLL_PWAIT
- LTP_CHECK_KEYUTILS_SUPPORT
- LTP_CHECK_SYNC_ADD_AND_FETCH
-diff --git a/include/lapi/pwritev2.h b/include/lapi/pwritev2.h
-new file mode 100644
-index 0000000..305e48e
---- /dev/null
-+++ b/include/lapi/pwritev2.h
-@@ -0,0 +1,26 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-+ * Author: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
-+ */
-+
-+#ifndef PWRITEV2_H
-+#define PWRITEV2_H
-+
-+#include "config.h"
-+#include "lapi/syscalls.h"
-+
-+#if !defined(HAVE_PWRITEV2)
-+
-+/* LO_HI_LONG taken from glibc */
-+# define LO_HI_LONG(val) (long) (val), (long) (((uint64_t) (val)) >> 32)
-+
-+ssize_t pwritev2(int fd, const struct iovec *iov, int iovcnt, off_t offset,
-+		int flags)
-+{
-+	return tst_syscall(__NR_pwritev2, fd, iov, iovcnt,
-+			   LO_HI_LONG(offset), flags);
-+}
-+#endif
-+
-+#endif /* PWRITEV2_H */
-diff --git a/m4/ltp-pwritev2.m4 b/m4/ltp-pwritev2.m4
-new file mode 100644
-index 0000000..38148ac
---- /dev/null
-+++ b/m4/ltp-pwritev2.m4
-@@ -0,0 +1,9 @@
-+dnl SPDX-License-Identifier: GPL-2.0-or-later
-+dnl Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-+dnl Author: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
-+
-+dnl LTP_CHECK_PWRITEV2
-+dnl ----------------------------
-+AC_DEFUN([LTP_CHECK_PWRITEV2],[
-+AC_CHECK_FUNCS(pwritev2,,)
-+])
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 0af0f44..73caa61 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -912,6 +912,9 @@ pwritev02_64 pwritev02_64
- pwritev03 pwritev03
- pwritev03_64 pwritev03_64
- 
-+pwritev201 pwritev201
-+pwritev201_64 pwritev201_64
-+
- quotactl01 quotactl01
- quotactl02 quotactl02
- quotactl03 quotactl03
-diff --git a/testcases/kernel/syscalls/pwritev2/.gitignore b/testcases/kernel/syscalls/pwritev2/.gitignore
-new file mode 100644
-index 0000000..46270c3
---- /dev/null
-+++ b/testcases/kernel/syscalls/pwritev2/.gitignore
-@@ -0,0 +1,2 @@
-+/pwritev201
-+/pwritev201_64
-diff --git a/testcases/kernel/syscalls/pwritev2/Makefile b/testcases/kernel/syscalls/pwritev2/Makefile
-new file mode 100644
-index 0000000..89756d0
---- /dev/null
-+++ b/testcases/kernel/syscalls/pwritev2/Makefile
-@@ -0,0 +1,13 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-+# Author: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
-+
-+top_srcdir              ?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(abs_srcdir)/../utils/newer_64.mk
-+
-+%_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/pwritev2/pwritev201.c b/testcases/kernel/syscalls/pwritev2/pwritev201.c
-new file mode 100644
-index 0000000..2ea8907
---- /dev/null
-+++ b/testcases/kernel/syscalls/pwritev2/pwritev201.c
-@@ -0,0 +1,119 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-+ * Author: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
-+ */
-+/*
-+ * Description:
-+ * Testcase to check the basic functionality of the pwritev2(2).
-+ * 1) If the file offset argument is not -1, pwritev2() should succeed
-+ *    in writing the expected content of data and the file offset is
-+ *    not changed after writing.
-+ * 2) If the file offset argument is -1, pwritev2() should succeed in
-+ *    writing the expected content of data and the current file offset
-+ *    is used and changed after writing.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <string.h>
-+#include <sys/uio.h>
-+
-+#include "tst_test.h"
-+#include "lapi/pwritev2.h"
-+#include "tst_safe_prw.h"
-+
-+#define CHUNK	64
-+
-+static int fd;
-+static char initbuf[CHUNK * 2];
-+static char buf[CHUNK];
-+
-+static struct iovec wr_iovec[] = {
-+	{buf, CHUNK},
-+	{NULL, 0},
-+};
-+
-+static struct tcase {
-+	off_t seek_off;
-+	int count;
-+	off_t write_off;
-+	ssize_t size;
-+	off_t exp_off;
-+} tcases[] = {
-+	{0,     1, 0,          CHUNK, 0},
-+	{CHUNK, 2, 0,          CHUNK, CHUNK},
-+	{0,     1, CHUNK / 2,  CHUNK, 0},
-+	{0,     1, -1,         CHUNK, CHUNK},
-+	{0,     2, -1,         CHUNK, CHUNK},
-+	{CHUNK, 1, -1,         CHUNK, CHUNK * 2},
-+};
-+
-+static void verify_pwritev2(unsigned int n)
-+{
-+	int i;
-+	char preadbuf[CHUNK];
-+	struct tcase *tc = &tcases[n];
-+
-+	SAFE_PWRITE(1, fd, initbuf, sizeof(initbuf), 0);
-+	SAFE_LSEEK(fd, tc->seek_off, SEEK_SET);
-+
-+	TEST(pwritev2(fd, wr_iovec, tc->count, tc->write_off, 0));
-+	if (TST_RET < 0) {
-+		tst_res(TFAIL | TTERRNO, "pwritev() failed");
-+		return;
-+	}
-+
-+	if (TST_RET != tc->size) {
-+		tst_res(TFAIL, "pwritev2() wrote %li bytes, expected %zi",
-+			 TST_RET, tc->size);
-+		return;
-+	}
-+
-+	if (SAFE_LSEEK(fd, 0, SEEK_CUR) != tc->exp_off) {
-+		tst_res(TFAIL, "pwritev2() had changed file offset");
-+		return;
-+	}
-+
-+	memset(preadbuf, 0, CHUNK);
-+
-+	if (tc->write_off != -1)
-+		SAFE_PREAD(1, fd, preadbuf, tc->size, tc->write_off);
-+	else
-+		SAFE_PREAD(1, fd, preadbuf, tc->size, tc->seek_off);
-+
-+	for (i = 0; i < tc->size; i++) {
-+		if (preadbuf[i] != 0x61)
-+			break;
-+	}
-+
-+	if (i != tc->size) {
-+		tst_res(TFAIL, "buffer wrong at %i have %c expected 'a'",
-+			 i, preadbuf[i]);
-+		return;
-+	}
-+
-+	tst_res(TPASS, "pwritev2() wrote %zi bytes successfully "
-+		 "with content 'a' expectedly ", tc->size);
-+}
-+
-+static void setup(void)
-+{
-+	memset(buf, 0x61, CHUNK);
-+	memset(initbuf, 0, CHUNK * 2);
-+
-+	fd = SAFE_OPEN("file", O_RDWR | O_CREAT, 0644);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = verify_pwritev2,
-+	.needs_tmpdir = 1,
-+};
--- 
-1.8.3.1
 
 
+----- Original Message -----
+> On Fri, Mar 1, 2019 at 6:09 AM Jan Stancek <jstancek@redhat.com> wrote:
+> 
+> Current behaviour varies a lot depending on system. I'm thinking if we
+> > should
+> > just set it to 80% of free RAM. We already have number of OOM tests,
+> > so maybe we don't need to worry about memory pressure here too.
+> >
+> 
+> Yes, I'm ok with that change. Since if we decrease the allocated
+> consumption to 50% mem+swap, that probably only do allocating in the part
+> of free mem too.
+> 
+> 
+> > > +
+> > > +     act.sa_handler = handler;
+> > > +     act.sa_flags = 0;
+> > > +     sigemptyset(&act.sa_mask);
+> > > +     sigaction(SIGRTMIN, &act, 0);
+> >
+> > I was thinking if we can't "abuse" tst_futexes a bit. It's a piece of
+> > shared memory we already have and could use for an atomic counter.
+> >
+> > <snip>
+> >
+> > > +     /* waits in the loop for all children finish allocating*/
+> > > +     while(pid_count < pid_cntr)
+> > > +             sleep(1);
+> >
+> > What happens if one child hits OOM?
+> >
+> 
+> LTP new API does wait and check child status for the test, if one
+> child_A(allocating finished and status paused) hits OOM, it will just break
+> and report status, but that's ok for this event, because other children
+> which still allocating will keep running after system reclaiming memory
+> from child_A. So parent process will recieve all of children's SIGRTMIN
+> signal and break from the while loop correctly.
+> 
+> Anthoer situation(I haven't hit), is one child_B(still allocating and not
+> finishes) was killed by OOM. that will make parent fall into an infinite
+> loop here. From OOM mechanism, oom-killer likes to choose high score
+> process, so this situation maybe not easy to reproduce. But that not mean
+> it will not, since oom-killer is not perfect.
+> 
+> Anyway, to avoid the second situation occuring, I'd like to take you advice
+> to make parent exiting loop safly with many check actions.
+> 
+> 
+> > >
+> > > -             if (sigchld_count) {
+> > > -                     tst_resm(TFAIL, "child process exited
+> > unexpectedly");
+> > > -             } else if (dowrite) {
+> > > -                     tst_resm(TPASS, "%llu kbytes allocated and used.",
+> > > -                              original_maxbytes / 1024);
+> > > -             } else {
+> > > -                     tst_resm(TPASS, "%llu kbytes allocated only.",
+> > > -                              original_maxbytes / 1024);
+> > > -             }
+> > > +     if (dowrite) {
+> > > +             sysinfo(&sstats);
+> > > +             /* Total Free Post-Test RAM */
+> > > +             post_mem = (unsigned long long)sstats.mem_unit *
+> > sstats.freeram;
+> > > +             post_mem = post_mem + (unsigned long long)sstats.mem_unit *
+> > > sstats.freeswap;
+> > >
+> > > +             if (((pre_mem - post_mem) < original_maxbytes))
+> > > +                     tst_res(TFAIL, "kbytes allocated and used less
+> > than expected %llu",
+> > > +                                     original_maxbytes / 1024);
+> > > +             else
+> > > +                     tst_res(TPASS, "%llu kbytes allocated and used",
+> > > +                                     original_maxbytes / 1024);
+> > > +     } else {
+> > > +             tst_res(TPASS, "%llu kbytes allocated only",
+> > > +                             original_maxbytes / 1024);
+> > > +     }
+> > > +
+> > > +     i = 0;
+> > > +     while (pid_list[i] > 0) {
+> > > +             kill(pid_list[i], SIGCONT);
+> > > +             i++;
+> > >       }
+> > > -     cleanup();
+> > > -     tst_exit();
+> > >  }
+> > > +
+> > > +static struct tst_test test = {
+> > > +     .forks_child = 1,
+> > > +     .options = mtest_options,
+> > > +     .setup = setup,
+> > > +     .cleanup = cleanup,
+> > > +     .test_all = mem_test,
+> >
+> > Is default timeout going to work on large boxes (256GB+ RAM)?
+> >
+> 
+> No.
+> 
+> I had the same worries before, but in this test, the number of
+> children(max_pids) will be increased dynamically with the system total
+> memory size. And each child allocating won't beyond the 'alloc_bytes'
+> (alloc_bytes = MIN(THREE_GB, alloc_maxbytes)) limitaion, so an extra time
+> consumption part is just by forking, but from my evaluation on a 4T ram
+> system, mtest01 finishes very faster(99% mem+swap, 2m22sec) than I
+> expected. So the default timeout is not trigger at all.
+> 
+> # cat /proc/meminfo  | grep Mem
+> MemTotal:       4227087524 kB
+> MemFree:        4223159948 kB
+> MemAvailable:   4213257308 kB
+> 
+> # time ./mtest01 -p99 -w
+> tst_test.c:1096: INFO: Timeout per run is 0h 05m 00s
+> mtest01.c:113: INFO: Total memory already used on system = 3880348 kbytes
+> mtest01.c:120: INFO: Total memory used needed to reach maximum = 4188969005
+> kbytes
+> mtest01.c:134: INFO: Filling up 99% of ram which is 4185088657 kbytes
+> ...
+> mtest01.c:185: INFO: ... 3221225472 bytes allocated and used in child 41779
+> mtest01.c:281: PASS: 4185132681 kbytes allocated and used
+> ...
+> 
+> real 2m22.213s
+> user 79m52.390s
+> sys 351m56.059s
+> 
+> 
+> >
+> > Thinking loud, what if...
+> > - we define at the start of test how much memory we want to allocate
+> > (target == 80% of free RAM)
+> > - we allocate a shared memory for counter, that each child increases
+> >   as it allocates memory (progress)
+> >   (or we abuse tst_futexes)
+> >   we could use tst_atomic_add_return() to count allocated chunks globally
+> > - once child finishes allocation it will pause()
+> > - we set timeout to ~3 minutes
+> > - main process runs in loop, sleeps, and periodically checks
+> >   - if progress reached target, PASS, break
+> >   - if progress hasn't increased in last 15 seconds, FAIL, break
+> >   - if we are 15 seconds away from timeout, end test early, PASS, break
+> >     (reason is to avoid running too long on big boxes)
+> > - kill all children, exit
+> >
+> >
+> Real good suggestions, I will try to take some of them in V2.
 
+Maybe give it few days, so other people can respond, if they like/don't like
+going in this direction.
+
+> 
+> 
+> > Regards,
+> > Jan
+> >
+> 
+> 
+> --
+> Regards,
+> Li Wang
+> 
