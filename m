@@ -1,154 +1,170 @@
 From: Jinhui huang <huangjh.jy@cn.fujitsu.com>
-Date: Fri, 1 Mar 2019 15:16:26 +0800
-Subject: [LTP] [PATCH v2 1/3] lapi/syscalls: Add syscall numbers for
-	pwritev2()
-Message-ID: <1551424588-27446-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Date: Fri, 1 Mar 2019 15:16:28 +0800
+Subject: [LTP] [PATCH v2 3/3] syscalls/pwitev202: Add new testcase
+In-Reply-To: <1551424588-27446-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+References: <1551424588-27446-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <1551424588-27446-3-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Check various errnos for the pwitev2().
+
 Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
 ---
- include/lapi/syscalls/aarch64.in   | 1 +
- include/lapi/syscalls/arm.in       | 1 +
- include/lapi/syscalls/hppa.in      | 1 +
- include/lapi/syscalls/i386.in      | 1 +
- include/lapi/syscalls/ia64.in      | 1 +
- include/lapi/syscalls/powerpc.in   | 1 +
- include/lapi/syscalls/powerpc64.in | 1 +
- include/lapi/syscalls/s390.in      | 1 +
- include/lapi/syscalls/s390x.in     | 1 +
- include/lapi/syscalls/sh.in        | 1 +
- include/lapi/syscalls/sparc.in     | 1 +
- include/lapi/syscalls/sparc64.in   | 1 +
- include/lapi/syscalls/x86_64.in    | 1 +
- 13 files changed, 13 insertions(+)
+ runtest/syscalls                                |   2 +
+ testcases/kernel/syscalls/pwritev2/.gitignore   |   2 +
+ testcases/kernel/syscalls/pwritev2/pwritev202.c | 117 ++++++++++++++++++++++++
+ 3 files changed, 121 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/pwritev2/pwritev202.c
 
-diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
-index bf04895..7ce1485 100644
---- a/include/lapi/syscalls/aarch64.in
-+++ b/include/lapi/syscalls/aarch64.in
-@@ -263,4 +263,5 @@ execveat 281
- mlock2 284
- copy_file_range 285
- preadv2 286
-+pwritev2 287
- _sysctl 1078
-diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
-index e720b08..22c76d4 100644
---- a/include/lapi/syscalls/arm.in
-+++ b/include/lapi/syscalls/arm.in
-@@ -347,4 +347,5 @@ membarrier (__NR_SYSCALL_BASE+389)
- mlock2 (__NR_SYSCALL_BASE+390)
- copy_file_range (__NR_SYSCALL_BASE+391)
- preadv2 (__NR_SYSCALL_BASE+392)
-+pwritev2 (__NR_SYSCALL_BASE+393)
- statx (__NR_SYSCALL_BASE+397)
-diff --git a/include/lapi/syscalls/hppa.in b/include/lapi/syscalls/hppa.in
-index 182d393..a0dd230 100644
---- a/include/lapi/syscalls/hppa.in
-+++ b/include/lapi/syscalls/hppa.in
-@@ -24,3 +24,4 @@ execveat 342
- mlock2 345
- copy_file_range 346
- preadv2 347
-+pwritev2 348
-diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
-index 2fb0188..7e485ae 100644
---- a/include/lapi/syscalls/i386.in
-+++ b/include/lapi/syscalls/i386.in
-@@ -345,4 +345,5 @@ membarrier 375
- mlock2 376
- copy_file_range 377
- preadv2 378
-+pwritev2 379
- statx 383
-diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
-index 081c9ed..7c9a0ea 100644
---- a/include/lapi/syscalls/ia64.in
-+++ b/include/lapi/syscalls/ia64.in
-@@ -303,3 +303,4 @@ execveat 1342
- mlock2 1346
- copy_file_range 1347
- preadv2 1348
-+pwritev2 1349
-diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
-index d16f9f9..fc1f899 100644
---- a/include/lapi/syscalls/powerpc.in
-+++ b/include/lapi/syscalls/powerpc.in
-@@ -352,4 +352,5 @@ execveat 362
- mlock2 378
- copy_file_range 379
- preadv2 380
-+pwritev2 381
- statx 383
-diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
-index d16f9f9..fc1f899 100644
---- a/include/lapi/syscalls/powerpc64.in
-+++ b/include/lapi/syscalls/powerpc64.in
-@@ -352,4 +352,5 @@ execveat 362
- mlock2 378
- copy_file_range 379
- preadv2 380
-+pwritev2 381
- statx 383
-diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
-index 4019438..6d0c895 100644
---- a/include/lapi/syscalls/s390.in
-+++ b/include/lapi/syscalls/s390.in
-@@ -336,3 +336,4 @@ execveat 354
- mlock2 374
- copy_file_range 375
- preadv2 376
-+pwritev2 377
-diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
-index e156b09..8105b55 100644
---- a/include/lapi/syscalls/s390x.in
-+++ b/include/lapi/syscalls/s390x.in
-@@ -335,3 +335,4 @@ execveat 354
- mlock2 374
- copy_file_range 375
- preadv2 376
-+pwritev2 377
-diff --git a/include/lapi/syscalls/sh.in b/include/lapi/syscalls/sh.in
-index 8520bb1..a942fb5 100644
---- a/include/lapi/syscalls/sh.in
-+++ b/include/lapi/syscalls/sh.in
-@@ -368,3 +368,4 @@ execveat 387
- mlock2 390
- copy_file_range 391
- preadv2 392
-+pwritev2 393
-diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
-index b7bb135..20a21a9 100644
---- a/include/lapi/syscalls/sparc.in
-+++ b/include/lapi/syscalls/sparc.in
-@@ -341,3 +341,4 @@ execveat 350
- mlock2 356
- copy_file_range 357
- preadv2 358
-+pwritev2 359
-diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
-index a211df8..36ab394 100644
---- a/include/lapi/syscalls/sparc64.in
-+++ b/include/lapi/syscalls/sparc64.in
-@@ -317,3 +317,4 @@ execveat 350
- mlock2 356
- copy_file_range 357
- preadv2 358
-+pwritev2 359
-diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
-index dae5769..580b298 100644
---- a/include/lapi/syscalls/x86_64.in
-+++ b/include/lapi/syscalls/x86_64.in
-@@ -312,4 +312,5 @@ membarrier 324
- mlock2 325
- copy_file_range 326
- preadv2 327
-+pwritev2 359
- statx 332
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 73caa61..0a9e8c4 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -914,6 +914,8 @@ pwritev03_64 pwritev03_64
+ 
+ pwritev201 pwritev201
+ pwritev201_64 pwritev201_64
++pwritev202 pwritev202
++pwritev202_64 pwritev202_64
+ 
+ quotactl01 quotactl01
+ quotactl02 quotactl02
+diff --git a/testcases/kernel/syscalls/pwritev2/.gitignore b/testcases/kernel/syscalls/pwritev2/.gitignore
+index 46270c3..40030d9 100644
+--- a/testcases/kernel/syscalls/pwritev2/.gitignore
++++ b/testcases/kernel/syscalls/pwritev2/.gitignore
+@@ -1,2 +1,4 @@
+ /pwritev201
+ /pwritev201_64
++/pwritev202
++/pwritev202_64
+diff --git a/testcases/kernel/syscalls/pwritev2/pwritev202.c b/testcases/kernel/syscalls/pwritev2/pwritev202.c
+new file mode 100644
+index 0000000..b44620c
+--- /dev/null
++++ b/testcases/kernel/syscalls/pwritev2/pwritev202.c
+@@ -0,0 +1,117 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
++ * Author: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
++ */
++/*
++ * Description:
++ * Check various errnos for pwritev2(2).
++ * 1) pwritev2() fails and sets errno to EINVAL if iov_len is invalid.
++ * 2) pwritev2() fails and sets errno to EINVAL if the vector count iovcnt is
++ *    less than zero.
++ * 3) pwritev2() fails and sets errno to EOPNOTSUPP if flag is invalid.
++ * 4) pwritev2() fails and sets errno to EFAULT when writing data from invalid
++ *    address.
++ * 5) pwritev2() fails and sets errno to EBADF if file descriptor is invalid.
++ * 6) pwritev2() fails and sets errno to EBADF if file descriptor is open for
++ *    reading.
++ * 7) pwritev2() fails and sets errno to ESPIPE if fd is associated with a pipe.
++ */
++
++#define _GNU_SOURCE
++#include <sys/uio.h>
++#include <unistd.h>
++
++#include "tst_test.h"
++#include "lapi/pwritev2.h"
++
++#define CHUNK	64
++
++static int fd1;
++static int fd2;
++static int fd3 = -1;
++static int fd4[2];
++
++static char buf[CHUNK];
++
++static struct iovec wr_iovec1[] = {
++	{buf, -1},
++};
++
++static struct iovec wr_iovec2[] = {
++	{buf, CHUNK},
++};
++
++static struct iovec wr_iovec3[] = {
++	{NULL, CHUNK},
++};
++
++static struct tcase {
++	int *fd;
++	struct iovec *name;
++	int count;
++	off_t offset;
++	int flag;
++	int exp_err;
++} tcases[] = {
++	{&fd1, wr_iovec1, 1, 0, 0, EINVAL},
++	{&fd1, wr_iovec2, -1, 0, 0, EINVAL},
++	{&fd1, wr_iovec2, 1, 1, -1, EOPNOTSUPP},
++	{&fd1, wr_iovec3, 1, 0, 0, EFAULT},
++	{&fd3, wr_iovec2, 1, 0, 0, EBADF},
++	{&fd2, wr_iovec2, 1, 0, 0, EBADF},
++	{&fd4[0], wr_iovec2, 1, 0, 0, ESPIPE},
++};
++
++static void verify_pwritev2(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++
++	TEST(pwritev2(*tc->fd, tc->name, tc->count, tc->offset, tc->flag));
++
++	if (TST_RET == 0) {
++		tst_res(TFAIL, "pwritev2() succeeded unexpectedly");
++		return;
++	}
++
++	if (TST_ERR == tc->exp_err) {
++		tst_res(TPASS | TTERRNO, "pwritev2() failed as expected");
++		return;
++	}
++
++	tst_res(TFAIL | TTERRNO, "pwritev2() failed unexpectedly, expected %s",
++		tst_strerrno(tc->exp_err));
++}
++
++static void setup(void)
++{
++	fd1 = SAFE_OPEN("file1", O_RDWR | O_CREAT, 0644);
++	SAFE_FTRUNCATE(fd1, getpagesize());
++	fd2 = SAFE_OPEN("file2", O_RDONLY | O_CREAT, 0644);
++	SAFE_PIPE(fd4);
++
++	wr_iovec3[0].iov_base = tst_get_bad_addr(NULL);
++}
++
++static void cleanup(void)
++{
++	if (fd1 > 0)
++		SAFE_CLOSE(fd1);
++
++	if (fd2 > 0)
++		SAFE_CLOSE(fd2);
++
++	if (fd4[0] > 0)
++		SAFE_CLOSE(fd4[0]);
++
++	if (fd4[1] > 0)
++		SAFE_CLOSE(fd4[1]);
++}
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.setup = setup,
++	.cleanup = cleanup,
++	.test = verify_pwritev2,
++	.needs_tmpdir = 1,
++};
 -- 
 1.8.3.1
 
