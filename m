@@ -1,98 +1,71 @@
 From: Sumit Garg <sumit.garg@linaro.org>
-Date: Fri,  1 Mar 2019 13:58:20 +0530
-Subject: [LTP] [PATCH 1/2] syscalls/sync_file_range: add partial file sync
-	test-case
-Message-ID: <1551428901-30162-1-git-send-email-sumit.garg@linaro.org>
+Date: Fri,  1 Mar 2019 13:58:21 +0530
+Subject: [LTP] [PATCH 2/2] doc: document new library functions
+In-Reply-To: <1551428901-30162-1-git-send-email-sumit.garg@linaro.org>
+References: <1551428901-30162-1-git-send-email-sumit.garg@linaro.org>
+Message-ID: <1551428901-30162-2-git-send-email-sumit.garg@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add partial file sync test as part of sync_file_range02 test-case.
+Document following library functions:
+1. tst_fill_file()
+2. tst_fill_fd()
+3. tst_dev_bytes_written()
 
 Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 ---
- .../syscalls/sync_file_range/sync_file_range02.c   | 49 +++++++++++++++++++++-
- 1 file changed, 47 insertions(+), 2 deletions(-)
+ doc/test-writing-guidelines.txt | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-index 82d77f7..23240c0 100644
---- a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-+++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-@@ -27,7 +27,7 @@
- #define FILE_SIZE (FILE_SIZE_MB * TST_MB)
- #define MODE			0644
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index f2f72c4..a5fe589 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -1033,6 +1033,16 @@ results in 'umount(2)' failing with 'EBUSY'.
+ IMPORTANT: All testcases should use 'tst_umount()' instead of 'umount(2)' to
+            umount filesystems.
  
--static void verify_sync_file_range(void)
-+static void verify_sync_full_file(void)
- {
- 	int fd;
- 	unsigned long written;
-@@ -56,6 +56,50 @@ static void verify_sync_file_range(void)
- 		tst_res(TFAIL, "Synced %li, expected %i", written, FILE_SIZE);
- }
++[source,c]
++-------------------------------------------------------------------------------
++#include "tst_test.h"
++
++unsigned long tst_dev_bytes_written(const char *dev);
++-------------------------------------------------------------------------------
++
++This function reads test block device stat file (/sys/block/<device>/stat) and
++returns the bytes written since the last invocation of this function.
++
+ 2.2.15 Formatting a device with a filesystem
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  
-+static void verify_sync_partial_file(void)
-+{
-+	int fd;
-+	unsigned long written;
-+
-+	fd = SAFE_OPEN(FNAME, O_RDWR|O_CREAT, MODE);
-+
-+	lseek(fd, FILE_SIZE/4, SEEK_SET);
-+
-+	tst_dev_bytes_written(tst_device->dev);
-+
-+	tst_fill_fd(fd, 0xff, TST_MB, FILE_SIZE_MB/2);
-+
-+	TEST(sync_file_range(fd, FILE_SIZE/4, FILE_SIZE/2,
-+			     SYNC_FILE_RANGE_WAIT_BEFORE |
-+			     SYNC_FILE_RANGE_WRITE |
-+			     SYNC_FILE_RANGE_WAIT_AFTER));
-+
-+	if (TST_RET)
-+		tst_brk(TFAIL | TTERRNO, "sync_file_range() failed");
-+
-+	written = tst_dev_bytes_written(tst_device->dev);
-+
-+	SAFE_CLOSE(fd);
-+
-+	if (written >= FILE_SIZE/2)
-+		tst_res(TPASS, "Test file range synced to device");
-+	else
-+		tst_res(TFAIL, "Synced %li, expected %i", written,
-+			FILE_SIZE/2);
-+}
-+
-+static struct tcase {
-+	void (*tfunc)(void);
-+} tcases[] = {
-+	{&verify_sync_full_file},
-+	{&verify_sync_partial_file}
-+};
-+
-+static void run(unsigned int i)
-+{
-+	tcases[i].tfunc();
-+}
-+
- static void setup(void)
- {
- 	if (!check_sync_file_range())
-@@ -63,10 +107,11 @@ static void setup(void)
- }
+@@ -1142,6 +1152,24 @@ Returns non-zero if directory is empty and zero otherwise.
  
- static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
- 	.needs_root = 1,
- 	.mount_device = 1,
- 	.all_filesystems = 1,
- 	.mntpoint = MNTPOINT,
- 	.setup = setup,
--	.test_all = verify_sync_file_range,
-+	.test = run,
- };
+ Directory is considered empty if it contains only '.' and '..'.
+ 
++[source,c]
++-------------------------------------------------------------------------------
++#include "tst_test.h"
++
++int tst_fill_fd(int fd, char pattern, size_t bs, size_t bcount);
++-------------------------------------------------------------------------------
++
++Fill a file with specified pattern using file descriptor.
++
++[source,c]
++-------------------------------------------------------------------------------
++#include "tst_test.h"
++
++int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
++-------------------------------------------------------------------------------
++
++Creates/ovewrites a file with specified pattern using file path.
++
+ 2.2.18 Getting an unused PID number
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 
 -- 
 2.7.4
 
