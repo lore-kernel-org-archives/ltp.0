@@ -1,53 +1,39 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri,  1 Mar 2019 11:33:04 +0100
-Subject: [LTP] [PATCH] travis: Use official opensuse images
-Message-ID: <20190301103304.20233-1-pvorel@suse.cz>
+Date: Fri, 1 Mar 2019 11:41:58 +0100
+Subject: [LTP] [PATCH v2 2/2] rt_sigpending: add rt_sigpending02 test
+	case
+In-Reply-To: <e67b74d5-554f-1858-7ec7-5693b5158ce7@google.com>
+References: <20190207155153.41816-1-maennich@google.com>
+ <20190212161236.74385-1-maennich@google.com>
+ <20190212161236.74385-3-maennich@google.com>
+ <2ad02580-8de8-b4a9-38a6-c14f507d8741@google.com>
+ <5e4da8a6-f495-ebe6-f457-1a564f4ebc4d@google.com>
+ <e67b74d5-554f-1858-7ec7-5693b5158ce7@google.com>
+Message-ID: <20190301104158.GA18192@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-We're using deprecated opensuse images [1] [2] which has been now
-removed, which cause travis failures. Replace them with the official
-ones.
+Hi Matthias, Steve,
 
-[1] https://hub.docker.com/_/opensuse/
-[2] https://github.com/docker-library/official-images/issues/5371
+> On 02/19/2019 06:28 AM, Matthias M=C3=A4nnich wrote:
+> > I added rt_sigpending02 to runtest/syscalls here. sigpending02 has
+> > already been there before.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-https://travis-ci.org/pevik/ltp/builds/500273788
----
- .travis.yml | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> Sigh, not sure how I missed that. Sorry for the noise!
 
-diff --git a/.travis.yml b/.travis.yml
-index 24de925b0..8c3aa241d 100644
---- a/.travis.yml
-+++ b/.travis.yml
-@@ -46,11 +46,11 @@ matrix:
-           compiler: gcc
- 
-         - os: linux
--          env: DISTRO=opensuse:tumbleweed
-+          env: DISTRO=opensuse/tumbleweed
-           compiler: gcc
- 
-         - os: linux
--          env: DISTRO=opensuse:leap
-+          env: DISTRO=opensuse/leap
-           compiler: gcc
- 
-         - os: linux
-@@ -72,6 +72,7 @@ before_install:
- 
- script:
-     - INSTALL="${DISTRO%%:*}"
-+    - INSTALL="${INSTALL%%/*}"
-     - if [ ! "$TREE" ]; then TREE="in"; fi
-     - case $VARIANT in cross-compile*) BUILD="cross";; i386) BUILD="32";; *) BUILD="native";; esac
-     - docker run -it ltp /bin/sh -c "cd travis && ./$INSTALL.sh && if [ \"$VARIANT\" ]; then ./$INSTALL.$VARIANT.sh; fi && ../build.sh -o $TREE -t $BUILD -c $CC"
--- 
-2.20.1
+> Reviewed-by: Steve Muckle <smuckle@google.com>
 
+Both commits merged, thanks!
+
+BTW maybe you have noticed ticket about using libc wrapper vs. direct
+syscall [1].
+Build failure of your commit is caused by our docker image [2]
+
+Kind regards,
+Petr
+
+[1] https://github.com/linux-test-project/ltp/issues/506
+[2] http://lists.linux.it/pipermail/ltp/2019-March/011050.html
