@@ -1,220 +1,339 @@
-From: Paul Lawrence <paullawrence@google.com>
-Date: Fri,  1 Mar 2019 10:55:34 -0800
-Subject: [LTP] [PATCH v2] Add ltp pivot_root test
-Message-ID: <20190301185534.37513-1-paullawrence@google.com>
+From: tarun <tarun@zilogic.com>
+Date: Sun, 03 Mar 2019 16:55:56 -0000
+Subject: [LTP] [PATCH v1] pwritev2: Add new test for pwritev2 flag RWF_APPEND
+Message-ID: <20190303165556.14574-1-tarun@zilogic.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Replaced license
-Merged all files into one parameterized file
-Modified touse test_brk where appropriate
 
-For the actual test results, using tst_brk from the child process
-meant failures were not counted correctly, so I still use tst_res
-and exit. Please let me know if there is a correct way of doing this.
+From: Tarun183 <tarun@zilogic.com>
 
-Signed-off-by: Paul Lawrence <paullawrence@google.com>
+    Signed-off-by: tarun.t.u <tarun@zilogic.com>
+    Signed-off-by: vaishnavi.d <vaishnavi.d@zilogic.com>
 ---
- testcases/kernel/syscalls/pivot_root/Makefile |  11 ++
- .../kernel/syscalls/pivot_root/pivot_root01.c | 168 ++++++++++++++++++
- 2 files changed, 179 insertions(+)
- create mode 100644 testcases/kernel/syscalls/pivot_root/Makefile
- create mode 100644 testcases/kernel/syscalls/pivot_root/pivot_root01.c
+ include/lapi/pwritev2.h                       |  35 ++++++
+ include/lapi/syscalls/arm.in                  |   1 +
+ include/lapi/syscalls/i386.in                 |   1 +
+ include/lapi/syscalls/powerpc.in              |   1 +
+ include/lapi/syscalls/powerpc64.in            |   1 +
+ include/lapi/syscalls/s390.in                 |   1 +
+ include/lapi/syscalls/s390x.in                |   1 +
+ include/lapi/syscalls/sparc.in                |   1 +
+ include/lapi/syscalls/sparc64.in              |   1 +
+ include/lapi/syscalls/x86_64.in               |   1 +
+ m4/ltp-pwritev2.m4                            |   9 ++
+ runtest/syscalls                              |   2 +
+ testcases/kernel/syscalls/pwritev2/.gitignore |   1 +
+ testcases/kernel/syscalls/pwritev2/Makefile   |  24 ++++
+ .../kernel/syscalls/pwritev2/pwritev201.c     | 108 ++++++++++++++++++
+ 15 files changed, 188 insertions(+)
+ create mode 100644 include/lapi/pwritev2.h
+ create mode 100644 m4/ltp-pwritev2.m4
+ create mode 100644 testcases/kernel/syscalls/pwritev2/.gitignore
+ create mode 100644 testcases/kernel/syscalls/pwritev2/Makefile
+ create mode 100644 testcases/kernel/syscalls/pwritev2/pwritev201.c
 
-diff --git a/testcases/kernel/syscalls/pivot_root/Makefile b/testcases/kernel/syscalls/pivot_root/Makefile
+diff --git a/include/lapi/pwritev2.h b/include/lapi/pwritev2.h
 new file mode 100644
-index 000000000..ce8f8cb68
+index 000000000..7e243e1d1
 --- /dev/null
-+++ b/testcases/kernel/syscalls/pivot_root/Makefile
-@@ -0,0 +1,11 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
++++ b/include/lapi/pwritev2.h
+@@ -0,0 +1,35 @@
++//SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Referred from linux kernel -github/torvalds/linux/include/uapi/linux/fs.h
++ * Copyright (c) Zilogic Systems Pvt. Ltd., 2019
++ * Email: code@zilogic.com
++ */
++#ifndef LAPI_PWRITEV2_H
++#define LAPI_PWRITEV2_H
++
++#include <stdint.h>
++#include <unistd.h>
++#include "lapi/syscalls.h"
++#include "config.h"
++
++#if !defined(HAVE_PWRITEV2)
++
++/* LO_HI_LONG taken from glibc */
++# define LO_HI_LONG(val) (long) (val), (long) (((uint64_t) (val)) >> 32)
++
++ssize_t pwritev2(int fd, const struct iovec *iov, int iovcnt, off_t offset,
++		int flags)
++{
++	return tst_syscall(__NR_pwritev2, fd, iov, iovcnt,
++			   LO_HI_LONG(offset), flags);
++}
++#endif
++
++/*
++ * Flag for pwritev2
++ */
++#ifndef RWF_APPEND
++# define RWF_APPEND		0x00000010U
++#endif
++
++#endif /* LAPI_PWRITEV2_H */
+diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
+index e720b08ea..552790d9d 100644
+--- a/include/lapi/syscalls/arm.in
++++ b/include/lapi/syscalls/arm.in
+@@ -348,3 +348,4 @@ mlock2 (__NR_SYSCALL_BASE+390)
+ copy_file_range (__NR_SYSCALL_BASE+391)
+ preadv2 (__NR_SYSCALL_BASE+392)
+ statx (__NR_SYSCALL_BASE+397)
++pwritev2 (__NR_SYSCALL_BASE+393)
+diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
+index 2fb018837..58526bea2 100644
+--- a/include/lapi/syscalls/i386.in
++++ b/include/lapi/syscalls/i386.in
+@@ -346,3 +346,4 @@ mlock2 376
+ copy_file_range 377
+ preadv2 378
+ statx 383
++pwritev2 379
+diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
+index d16f9f9a4..dcf8bb15f 100644
+--- a/include/lapi/syscalls/powerpc.in
++++ b/include/lapi/syscalls/powerpc.in
+@@ -353,3 +353,4 @@ mlock2 378
+ copy_file_range 379
+ preadv2 380
+ statx 383
++pwritev2 381
+diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
+index d16f9f9a4..dcf8bb15f 100644
+--- a/include/lapi/syscalls/powerpc64.in
++++ b/include/lapi/syscalls/powerpc64.in
+@@ -353,3 +353,4 @@ mlock2 378
+ copy_file_range 379
+ preadv2 380
+ statx 383
++pwritev2 381
+diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
+index 401943892..6d0c895fa 100644
+--- a/include/lapi/syscalls/s390.in
++++ b/include/lapi/syscalls/s390.in
+@@ -336,3 +336,4 @@ execveat 354
+ mlock2 374
+ copy_file_range 375
+ preadv2 376
++pwritev2 377
+diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
+index e156b0903..8105b5598 100644
+--- a/include/lapi/syscalls/s390x.in
++++ b/include/lapi/syscalls/s390x.in
+@@ -335,3 +335,4 @@ execveat 354
+ mlock2 374
+ copy_file_range 375
+ preadv2 376
++pwritev2 377
+diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
+index b7bb1358a..20a21a9ce 100644
+--- a/include/lapi/syscalls/sparc.in
++++ b/include/lapi/syscalls/sparc.in
+@@ -341,3 +341,4 @@ execveat 350
+ mlock2 356
+ copy_file_range 357
+ preadv2 358
++pwritev2 359
+diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
+index a211df8f1..36ab39420 100644
+--- a/include/lapi/syscalls/sparc64.in
++++ b/include/lapi/syscalls/sparc64.in
+@@ -317,3 +317,4 @@ execveat 350
+ mlock2 356
+ copy_file_range 357
+ preadv2 358
++pwritev2 359
+diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
+index dae5769f5..4e161eb71 100644
+--- a/include/lapi/syscalls/x86_64.in
++++ b/include/lapi/syscalls/x86_64.in
+@@ -313,3 +313,4 @@ mlock2 325
+ copy_file_range 326
+ preadv2 327
+ statx 332
++pwritev2 328
+diff --git a/m4/ltp-pwritev2.m4 b/m4/ltp-pwritev2.m4
+new file mode 100644
+index 000000000..10183d861
+--- /dev/null
++++ b/m4/ltp-pwritev2.m4
+@@ -0,0 +1,9 @@
++dnl SPDX-License-Identifier: GPL-2.0-or-later
++dnl Copyright (c) 2019 Zilogic Systems Pvt Ltd. All rights reserved.
++dnl Author: code@zilogic.com
++
++dnl LTP_CHECK_PWRITEV2
++dnl ----------------------------
++AC_DEFUN([LTP_CHECK_PWRITEV2],[
++AC_CHECK_FUNCS(pwritev2,,)
++])
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 8d5dcd014..444068d74 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1547,3 +1547,5 @@ statx06 statx06
+ statx07 statx07
+ 
+ membarrier01 membarrier01
++
++pwritev201   pwritev201
+diff --git a/testcases/kernel/syscalls/pwritev2/.gitignore b/testcases/kernel/syscalls/pwritev2/.gitignore
+new file mode 100644
+index 000000000..a9e43db82
+--- /dev/null
++++ b/testcases/kernel/syscalls/pwritev2/.gitignore
+@@ -0,0 +1 @@
++pwritev2
+diff --git a/testcases/kernel/syscalls/pwritev2/Makefile b/testcases/kernel/syscalls/pwritev2/Makefile
+new file mode 100644
+index 000000000..21b65cf86
+--- /dev/null
++++ b/testcases/kernel/syscalls/pwritev2/Makefile
+@@ -0,0 +1,24 @@
 +#
-+# Copyright (c) 2019 Google, Inc.
++#  Copyright (c) Zilogic Systems Pvt. Ltd., 2018
++#  Email: code@zilogic.com
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
 +
 +top_srcdir		?= ../../../..
 +
 +include $(top_srcdir)/include/mk/testcases.mk
 +
-+CFLAGS += -lcap
-+
 +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/pivot_root/pivot_root01.c b/testcases/kernel/syscalls/pivot_root/pivot_root01.c
+diff --git a/testcases/kernel/syscalls/pwritev2/pwritev201.c b/testcases/kernel/syscalls/pwritev2/pwritev201.c
 new file mode 100644
-index 000000000..3aa939ac9
+index 000000000..638084b83
 --- /dev/null
-+++ b/testcases/kernel/syscalls/pivot_root/pivot_root01.c
-@@ -0,0 +1,168 @@
++++ b/testcases/kernel/syscalls/pwritev2/pwritev201.c
+@@ -0,0 +1,108 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
-+//
-+// Copyright (c) 2019 Google, Inc.
++/*
++ * Copyright (c) Zilogic Systems Pvt. Ltd., 2019
++ * Email: code@zilogic.com
++ */
++
++/*
++ * Test pwritev2
++ *
++ * This code test the behaviour of  RWF_APPEND in pwritev2
++ *
++ * case 1:
++ * With offset of zero and RWF_APPEND in pwritev2
++ * Excepted result: Current file offset should not update.
++ *
++ * case 2:
++ * With offset of "5" and RWF_APPEND in pwritev2
++ * Excepted result: Current file offset should not update.
++ *
++ * case 3:
++ * With offset of -1 and RWF_APPEND in pwritev2
++ * Excepted result: Current file offset should get update to current value.
++ *
++ * Testcases:
++ * Test1: Getting offset value from written file.
++ * Test2: Getting written data from file to verify written data by using LSEEK.
++ *
++ * Minimum Kernel version required is 4.16.
++ */
 +
 +#define _GNU_SOURCE
-+
-+#include <errno.h>
-+#include <linux/unistd.h>
-+#include <sched.h>
-+#include <sys/capability.h>
-+#include <sys/mount.h>
-+#include <stdlib.h>
-+
++#include <stdio.h>
++#include <string.h>
 +#include "tst_test.h"
++#include "tst_safe_macros.h"
++#include "tst_get_bad_addr.h"
++#include "lapi/pwritev2.h"
 +
-+static const char* chroot_dir = "chroot";
-+static const char* new_root = "/new_root";
-+static const char* put_old = "/new_root/put_old";
++#define TESTFILE0 "testfile0"
++#define TESTFILE1 "testfile1"
++#define TESTFILE2 "testfile2"
++#define MODE 0644
++#define OLD_OFFSET 14
++#define UPDATED_OFFSET 25
 +
-+// Test consists of a series of steps that allow pivot_root to succeed, which is
-+// run when param is NORMAL. All other values tweak one of the steps to induce
-+// a failure, and check the errno is as expected.
-+#define NORMAL 0
++static struct test_case {
++	char *filename;
++	off_t offset;
++	off_t exp_offset;
 +
-+// EBUSY
-+// new_root or put_old are on the current root file system
-+#define NEW_ROOT_ON_CURRENT_ROOT 1
-+
-+// EINVAL
-+// put_old is not underneath new_root
-+// Note: if put_old and new_root are on the same fs,
-+// pivot_root fails with EBUSY before testing reachability
-+#define PUT_OLD_NOT_UNDERNEATH_NEW_ROOT 2
-+
-+static const char* put_old_fs = "/put_old_fs";
-+static const char* put_old_bad = "/put_old_fs/put_old";
-+
-+// ENOTDIR
-+// new_root or put_old is not a directory
-+#define PUT_OLD_NOT_DIR 3
-+
-+// EPERM
-+// The calling process does not have the CAP_SYS_ADMIN capability.
-+#define NO_CAP_SYS_ADMIN 4
-+
-+#define TEST_COUNT 5
-+
-+static int expected_error[] = {
-+	0,
-+	EBUSY,
-+	EINVAL,
-+	ENOTDIR,
-+	EPERM,
++} tcases[] = {
++	{.filename = TESTFILE0, .offset = 0, .exp_offset = OLD_OFFSET},
++	{.filename = TESTFILE1, .offset = 5, .exp_offset = OLD_OFFSET},
++	{.filename = TESTFILE2, .offset = -1, .exp_offset = UPDATED_OFFSET},
 +};
 +
-+static void drop_cap_sys_admin(void) {
-+	cap_value_t cap_value[] = { CAP_SYS_ADMIN };
-+	cap_t cap = cap_get_proc();
-+	if (!cap)
-+		tst_brk(TFAIL | TERRNO, "cap_get_proc failed");
-+
-+	if (cap_set_flag(cap, CAP_EFFECTIVE, 1, cap_value, CAP_CLEAR))
-+		tst_brk(TFAIL | TERRNO, "cap_set_flag failed");
-+
-+	if (cap_set_proc(cap))
-+		tst_brk(TFAIL | TERRNO, "cap_set_proc failed");
-+}
-+
-+#ifdef HAVE_UNSHARE
-+static void run(unsigned int param)
++static void run_test(unsigned int i)
 +{
-+	// Work in child process - needed to undo unshare and chroot
-+	if (SAFE_FORK()) {
-+		tst_reap_children();
++	struct iovec vector;
++	struct test_case *tc = &tcases[i];
++	char *std_data = "Linux Torvalds";
++	char *append_data = "Hello World";
++	char test_data[strlen(append_data) + 1];
++	off_t cur_offset;
++	int fd;
++
++	memset(test_data, 0, sizeof(test_data));
++
++	fd = SAFE_OPEN(tc->filename, O_RDWR | O_CREAT, MODE);
++	SAFE_WRITE(1, fd, std_data, strlen(std_data));
++
++	vector.iov_base = append_data;
++	vector.iov_len = strlen(append_data);
++
++	TEST(pwritev2(fd, &vector, 1, tc->offset, RWF_APPEND));
++
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "pwritev2() returned with %ld",
++			TST_RET);
 +		return;
 +	}
 +
-+	// pivot_root requires no shared mounts exist in process namespace
-+	TEST(unshare(CLONE_NEWNS | CLONE_FS));
-+	if (TST_RET == -1)
-+		tst_brk(TFAIL | TERRNO, "unshare failed");
++	cur_offset = SAFE_LSEEK(fd, 0, SEEK_CUR);
++	if (cur_offset != tc->exp_offset)
++		tst_res(TFAIL,
++			"Returned offset %ld inspite of RWF_APPEND flag",
++			tc->exp_offset);
++	else
++		tst_res(TPASS, "Returned offset %ld as expected",
++			tc->exp_offset);
 +
-+	// Create an initial root dir. pivot_root doesn't work if the initial root
-+	// dir is a initramfs, so use chroot to create a safe environment
-+	SAFE_MOUNT("none", "/", NULL, MS_REC|MS_PRIVATE, NULL);
-+	SAFE_MOUNT("none", chroot_dir, "tmpfs", 0, 0);
-+	SAFE_CHROOT(chroot_dir);
++	SAFE_LSEEK(fd, -(strlen(append_data)), SEEK_END);
 +
-+	// Create our new root location
-+	SAFE_MKDIR(new_root, 0777);
++	SAFE_READ(0, fd, test_data, sizeof(test_data));
++	if (strcmp(append_data, test_data) != 0)
++		tst_res(TFAIL, "Data not appended as expected");
++	else
++		tst_res(TPASS, "Data appended as expected");
 +
-+	// pivot_root only works if new_root is a mount point, so mount a tmpfs
-+	// unless testing for that fail mode
-+	if (param != NEW_ROOT_ON_CURRENT_ROOT)
-+		SAFE_MOUNT("none", new_root, "tmpfs", 0, 0);
-+
-+	// Create put_old under new_root, unless testing for that specific fail
-+	// mode
-+	const char* actual_put_old = NULL;
-+	if (param == PUT_OLD_NOT_UNDERNEATH_NEW_ROOT) {
-+		actual_put_old = put_old_bad;
-+		SAFE_MKDIR(put_old_fs, 0777);
-+		SAFE_MOUNT("none", put_old_fs, "tmpfs", 0, 0);
-+		SAFE_MKDIR(put_old_bad, 0777);
-+	} else {
-+		actual_put_old = put_old;
-+
-+		// put_old must be a directory for success
-+		if (param == PUT_OLD_NOT_DIR)
-+			SAFE_CREAT(put_old, 0777);
-+		else
-+			SAFE_MKDIR(put_old, 0777);
-+	}
-+
-+	if (param == NO_CAP_SYS_ADMIN)
-+		drop_cap_sys_admin();
-+
-+	// Test the syscall
-+	TEST(syscall(__NR_pivot_root, new_root, actual_put_old));
-+
-+	// If NORMAL it should have succeeded
-+	if (param == NORMAL) {
-+		if (TST_RET) {
-+			tst_res(TFAIL | TERRNO, "pivot_root failed");
-+			exit(TBROK);
-+		} else {
-+			tst_res(TPASS, "pivot_root succeeded");
-+			exit(TPASS);
-+		}
-+	}
-+
-+	// pivot_root is expected to fail
-+	if (TST_RET == 0) {
-+		tst_res(TFAIL, "pivot_root succeeded unexpectedly");
-+		exit(TBROK);
-+	}
-+
-+	// Check error code is correct
-+	if (errno != expected_error[param]) {
-+		tst_res(TFAIL | TERRNO,	"pivot_root failed with wrong errno");
-+		exit(TBROK);
-+	}
-+
-+	tst_res(TPASS, "pivot_root failed as expected with %s",
-+		strerror(errno));
-+	exit(TPASS);
-+}
-+
-+#else
-+static void run(void)
-+{
-+	tst_brk(TCONF, NULL, "unshare is undefined.");
-+}
-+#endif
-+
-+static void setup(void)
-+{
-+	SAFE_MKDIR(chroot_dir, 0777);
++	SAFE_CLOSE(fd);
 +}
 +
 +static struct tst_test test = {
-+	.test = run,
-+	.tcnt = TEST_COUNT,
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = run_test,
++	.min_kver = "4.16",
 +	.needs_tmpdir = 1,
-+	.needs_root = 1,
-+	.forks_child = 1,
-+	.setup = setup,
 +};
 -- 
-2.21.0.352.gf09ad66450-goog
+2.17.1
 
