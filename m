@@ -1,158 +1,120 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 4 Mar 2019 02:39:22 -0500 (EST)
-Subject: [LTP] [PATCH 1/2 v4] syscalls: Add set_mempolicy numa tests.
-In-Reply-To: <20190228153425.10286-2-chrubis@suse.cz>
-References: <20190228153425.10286-1-chrubis@suse.cz>
- <20190228153425.10286-2-chrubis@suse.cz>
-Message-ID: <2092842506.4709417.1551685162547.JavaMail.zimbra@redhat.com>
+From: Elif Aslan <elas@linux.vnet.ibm.com>
+Date: Mon,  4 Mar 2019 10:12:47 +0100
+Subject: [LTP] [PATCH] added vmcp test
+Message-ID: <20190304091247.2057-1-elas@linux.vnet.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+---
+ runtest/s390x_tests               |  2 ++
+ testcases/commands/vmcp/README.md | 29 ++++++++++++++++++
+ testcases/commands/vmcp/vmcp_m.sh | 49 +++++++++++++++++++++++++++++++
+ 3 files changed, 80 insertions(+)
+ create mode 100644 runtest/s390x_tests
+ create mode 100644 testcases/commands/vmcp/README.md
+ create mode 100644 testcases/commands/vmcp/vmcp_m.sh
 
+diff --git a/runtest/s390x_tests b/runtest/s390x_tests
+new file mode 100644
+index 000000000..0c2bf05a5
+--- /dev/null
++++ b/runtest/s390x_tests
+@@ -0,0 +1,2 @@
++# Those tests are designed to be executed in s390x environment (zVM or LPAR)
++vmcp vmcp_m.sh
+diff --git a/testcases/commands/vmcp/README.md b/testcases/commands/vmcp/README.md
+new file mode 100644
+index 000000000..7ff79a89c
+--- /dev/null
++++ b/testcases/commands/vmcp/README.md
+@@ -0,0 +1,29 @@
++# vmcp tool and module test
++
++The tool allows Linux users to send commands to the z/VM control program (CP). 
++The normal usage is to invoke vmcp with the command you want to execute.
++
++## Getting Started
++
++The test case contains one shell script:
++
++- **vmcp_m.sh**: *basically executes the vmcp tool with different parameters and verifies that 
++              output and exitcodes are as expected*
++
++## Prerequisites
++        
++z/VM guest must be prepared to be populated with guest Linux OS.         
++
++## Running the tests manually
++
++Transfer the scripts to the target system and run:  
++
++./vmcp_m.sh
++
++## Versioning
++
++Tested already on SLES 12 SP3
++
++## License
++
++The files in this directory are licensed under the GPL v2+ license.
+diff --git a/testcases/commands/vmcp/vmcp_m.sh b/testcases/commands/vmcp/vmcp_m.sh
+new file mode 100644
+index 000000000..f33b6fc71
+--- /dev/null
++++ b/testcases/commands/vmcp/vmcp_m.sh
+@@ -0,0 +1,49 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++
++#!/bin/sh
++
++TST_CNT=2
++TST_TESTFUNC=vmcp_main
++TST_USAGE=usage
++. tst_test.sh
++
++usage()
++{
++cat << EOF
++usage: $0
++
++OPTIONS
++EOF
++}
++
++vmcp_run()
++{
++
++        $2
++        if [ $? -eq $1 ]; then
++        tst_res TPASS "'$2' returned '$1'"
++        else
++        tst_res TFAIL "'$2' did not return '$1'"
++        fi
++}
++
++vmcp_main1()
++{
++        echo "verifyBasicVMCPCommands"
++        vmcp_run 0 "vmcp --version";
++        vmcp_run 0 "vmcp --help";
++        vmcp_run 0 "vmcp -v";
++        vmcp_run 0 "vmcp -h";
++        vmcp_run 0 "vmcp q dasd";
++}
++
++vmcp_main2()
++{
++        echo "verifyErrorCondition"
++        vmcp_run 4 "vmcp -L"
++        vmcp_run 4 "vmcp -m q dasd"
++        vmcp_run 1 "vmcp dasddasddasd"
++}
++
++
++tst_run
+-- 
+2.17.2 (Apple Git-113)
 
-
------ Original Message -----
-> This is initial attempt to replace numa.sh tests that despite having
-> been fixed several times have still many shortcommings that wouldn't
-> easy to fix. It's not finished nor 100% replacement at this point but it
-> should be pretty good start.
-> 
-> The main selling points of these testcases are:
-> 
-> The memory allocated for the testing is tracked exactly. We are using
-> get_mempolicy() with MPOL_F_NODE | MPOL_F_ADDR that returns the node ID on
-> which specified address is allocated on to count pages allocated per node
-> after
-> we set desired memory policy.
-
-Hi,
-
-> 
-> We also check for free memory on each numa memory mode and skip nodes
-> that don't have sufficient amount of memory for a particular test. The
-> tests checks usuall for twice as much memory per each node in order to
-> allow for allocations to be "misplaced".
-
-I wonder if we should add some constant to it. I have foggy idea, that
-kernel keeps some reserves.
-
-> 
-> The tests for file based shared interleaved mappings are no longer
-> mapping a single small file but rather than that we accumulate statistic
-> for larger amount of files over longer period of time and we also allow
-> for small offset (currently 10%). We should probably also increase the
-> number of samples we take as currently it's about 5MB in total on x86
-> although I haven't managed to make this test fail so far. This also
-> fixes the test on Btrfs where the synthetic test that expects the pages
-> to be distributed exactly equally fails.
-
-API looks good to me, ACK. Maybe you could split it into 2 commits, one for
-new library API, and one for new tests.
-
-Couple small comments below.
-
-> +
-> +void tst_nodemap_count_pages(struct tst_nodemap *nodes,
-> +                             void *ptr, size_t size)
-> +{
-> +	size_t page_size = getpagesize();
-> +	unsigned int i;
-> +	int node;
-> +	unsigned int pages = (size + page_size - 1)/page_size;
-> +
-> +	for (i = 0; i < pages; i++) {
-> +		get_mempolicy(&node, NULL, 0, ptr + i * page_size, MPOL_F_NODE |
-> MPOL_F_ADDR);
-
-We should check return value from get_mempolicy here.
-
-> +
-> +		if (node < 0 || (unsigned int)node >= nodes->cnt) {
-> +			tst_res(TWARN, "get_mempolicy(...) returned invalid node %i\n", node);
-> +			continue;
-> +		}
-> +
-> +		inc_counter(node, nodes);
-> +	}
-> +}
-> +
-
-<snip>
-
-> +
-> +static void verify_set_mempolicy(unsigned int n)
-> +{
-> +	struct bitmask *bm = numa_allocate_nodemask();
-> +	unsigned int exp_alloc[nodes->cnt];
-> +	unsigned int alloc_per_node = n ? 8 : 2;
-
-Can you make this "8" a define, so that "16" above can be derived from it?
-
-> +	unsigned int alloc_on_nodes = n ? 2 : nodes->cnt;
-> +	unsigned int alloc_total = alloc_per_node * alloc_on_nodes;
-> +	unsigned int i;
-> +
-> +	memset(exp_alloc, 0, sizeof(exp_alloc));
-> +
-> +	for (i = 0; i < alloc_on_nodes; i++) {
-> +		exp_alloc[i] = alloc_per_node;
-> +		numa_bitmask_setbit(bm, nodes->map[i]);
-> +	}
-> +
-> +	TEST(set_mempolicy(MPOL_INTERLEAVE, bm->maskp, bm->size+1));
-> +
-> +	tst_res(TINFO, "Allocating on nodes 1-%u - %u pages",
-> +	        alloc_on_nodes, alloc_total);
-> +
-> +	if (TST_RET) {
-> +		tst_res(TFAIL | TTERRNO,
-> +		        "set_mempolicy(MPOL_INTERLEAVE)");
-> +		return;
-> +	}
-> +
-> +	tst_res(TPASS, "set_mempolicy(MPOL_INTERLEAVE)");
-> +
-> +	numa_free_nodemask(bm);
-> +
-> +	alloc_and_check(alloc_total, exp_alloc);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test = verify_set_mempolicy,
-> +	.tcnt = 2,
-> +	.forks_child = 1,
-> +	.needs_checkpoints = 1,
-> +};
-> +
-> +#else
-> +
-> +TST_TEST_TCONF(NUMA_ERROR_MSG);
-> +
-> +#endif /* HAVE_NUMA_H */
-> diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
-> b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
-> new file mode 100644
-> index 000000000..a1e7f1eb5
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
-> @@ -0,0 +1,113 @@
-> +/*
-> + * SPDX-License-Identifier: GPL-2.0-or-later
-> + *
-> + * Copyright (c) 2018 Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +
-> +/*
-> + * We are testing set_mempolicy() with MPOL_BIND and MPOL_PREFERRED backed
-> by a
-> + * file.
-
-Maybe extend this comment to say it's across all filesystems.
-
-Regards,
-Jan
