@@ -1,45 +1,22 @@
-From: Elif Aslan <elas@linux.vnet.ibm.com>
-Date: Mon, 4 Mar 2019 10:33:09 +0100
-Subject: [LTP] Question regarding background jobs in LTP
-In-Reply-To: <20190301114953.GA32413@rei.lan>
-References: <AD78C4C6-E57B-4E67-91CC-EFD43E8CE99E@linux.vnet.ibm.com>
- <20190301114953.GA32413@rei.lan>
-Message-ID: <0AAF7904-0F33-4D6C-949E-4733722BE46B@linux.vnet.ibm.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 4 Mar 2019 13:11:28 +0300
+Subject: [LTP] [PATCH] network/virt: add mode l3s in ipvlan test
+In-Reply-To: <1551689369-224152-1-git-send-email-shile.zhang@linux.alibaba.com>
+References: <1551689369-224152-1-git-send-email-shile.zhang@linux.alibaba.com>
+Message-ID: <49f4936d-9b5d-1c09-1042-63f70ed5355f@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1254"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-SGksIApwbGVhc2UgZmluZCBpbiBhdHRhY2htZW50IHRoZSBzY3JpcHQuCgotLS0tLS0tLS0tLS0t
-LSBuZXh0IHBhcnQgLS0tLS0tLS0tLS0tLS0KQSBub24tdGV4dCBhdHRhY2htZW50IHdhcyBzY3J1
-YmJlZC4uLgpOYW1lOiBtb25fZnNzdGF0ZC5zaApUeXBlOiBhcHBsaWNhdGlvbi9vY3RldC1zdHJl
-YW0KU2l6ZTogMzE0MSBieXRlcwpEZXNjOiBub3QgYXZhaWxhYmxlClVSTDogPGh0dHA6Ly9saXN0
-cy5saW51eC5pdC9waXBlcm1haWwvbHRwL2F0dGFjaG1lbnRzLzIwMTkwMzA0Lzc3MGY4MjU3L2F0
-dGFjaG1lbnQtMDAwMS5vYmo+Ci0tLS0tLS0tLS0tLS0tIG5leHQgcGFydCAtLS0tLS0tLS0tLS0t
-LQoKCldlJ3ZlIHRyaWVkICAiIy9iaW4vc2ggLXgiIGRpZG4ndCBjaGFuZ2VkIHRoZSBvdXRwdXQK
-aXQgaGFuZ3Mgb24gdGhlIHNhbWUgY29tbWFuZDoKCm1vbl9mc3N0YXRkIDEgVFBBU1M6ICdtb25f
-cHJvY2QgLS12ZXJzaW9uJyByZXR1cm5lZCAnMCcKbW9uX2Zzc3RhdGQgMSBUUEFTUzogJ21vbl9w
-cm9jZCAtaSAzMCcgcmV0dXJuZWQgJzAnCm1vbl9mc3N0YXRkIDEgVEJST0s6IHRlc3Qga2lsbGVk
-LCB0aW1lb3V0IQp0aGUgY29tbWFuZCB3aGljaCBsZWFkIHRvIHRoZSBoYW5nIC0gaXMgdGhlIHNh
-bWU6Cgptb25fZnNzdGF0ZF9ydW4gMCAibW9uX3Byb2NkIC1hICbigJ0KCi0tLQpFbGlmIEFzbGFu
-Cgo+IE9uIDEuIE1hciAyMDE5LCBhdCAxMjo0OSwgQ3lyaWwgSHJ1YmlzIDxjaHJ1YmlzQHN1c2Uu
-Y3o+IHdyb3RlOgo+IAo+IEhpIQo+PiBXZSd2ZSBmb3VuZCBhbiBpc3N1ZSB3aGVuIGV4ZWN1dGlu
-ZyBvdXIgdGVzdGNhc2UgbW9uX2Zzc3RhdGQgdW5kZXIgTFRQLiAKPj4gVGhlIHRlc3QgbG9naWMg
-YXNzdW1lcyB0aGF0IHdlIHN0YXJ0IHNvbWUgcHJvY2Vzc2VzIGFzIHNoZWxsIGpvYnMgYW5kIHRo
-ZW4ga2lsbCB0aGVtLCBsaWtlIGluIHRoZXNlIGNvbW1hbmRzCj4+IAo+PiAgICBtb25fZnNzdGF0
-ZF9ydW4gMCAibW9uX3Byb2NkIC1hICYiCj4+ICAgIHNsZWVwIDIKPj4gICAgbW9uX2Zzc3RhdGRf
-cnVuIDAgImtpbGxhbGwgbW9uX3Byb2NkIgo+PiAKPj4gQnV0IHNvIGZhciB3ZSBvYnNlcnZlIHRo
-YXQgdGhlIHRlc3RjYXNlIGJlaW5nIHJ1biBhcyAKPj4gLi9ydW5sdHAgLWYgczM5MHhfdGVzdHMK
-Pj4gc2ltcGx5IGhhbmdzIGF0IHRoZSBwb2ludCBvZiBzdGFydGluZyBiYWNrZ3JvdW5kIGpvYiwg
-aXQgc2ltcGx5IHJ1bnMgaW4gZm9yZWdyb3VuZCwgYW5kIHRoZW4gdGVzdCBmaW5pc2hlcyB3aXRo
-IGVycm9yIGFmdGVyIHRpbWVvdXQuCj4+IAo+PiBJcyBpdCBwb3NzaWJsZSB0byBleGVjdXRlIGJh
-Y2tncm91bmQgam9icyBpbiBMVFAgPwo+IAo+IEl0IHNob3VsZCBiZSBwb3NzaWJsZSB1bmxlc3Mg
-dGhlIGNvbW1hbmQgeW91IGFyZSB0cnlpbmcgdG8gcnVuIG5lZWRzCj4gYWNjZXNzIHRvIHN0ZGlu
-IHNpbmNlIHRoYXQgY291bGQgYmUgZG9uZSBvbmx5IGJ5IHRoZSBwcm9jZXNzIGdyb3VwCj4gbGVh
-ZGVyIHdoaWNoIGlzIGFsd2F5cyB0aGUgbHRwLXBhbiBiaW5hcnkuCj4gCj4gRnJvbSB0aGUgc25p
-cHBldCBvZiBjb2RlIGl0J3Mgbm90IDEwMCUgY2xlYXIgd2hhdCB0aGUgY29kZSBkb2VzLCBjYW4g
-eW91Cj4gc2hhcmUgYXQgbGVhc3QgdGhlIGNvZGUgZm9yIG1vbl9mc3N0YWRfcnVuIGZ1bmN0aW9u
-PyBBbHNvIGhhdmUgeW91IHRyaWVkCj4gdG8gY2hhbmdlIHRoZSBzaGViYW5nIHRvICMhL2Jpbi9z
-aCAteCB0byBzZWUgd2hlcmUgZXhhY3RseSBpdCBoYW5ncz8KPiAKPiAtLSAKPiBDeXJpbCBIcnVi
-aXMKPiBjaHJ1YmlzQHN1c2UuY3oKPiAKCg==
+On 04.03.2019 11:49, shile.zhang@linux.alibaba.com wrote:
+> From: Shile Zhang <shile.zhang@linux.alibaba.com>
+> 
+> Signed-off-by: Shile Zhang <shile.zhang@linux.alibaba.com>
+> ---
+>  testcases/network/virt/ipvlan01.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+
+Applied, thanks!
