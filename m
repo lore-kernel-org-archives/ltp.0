@@ -1,139 +1,102 @@
-From: Steve Muckle <smuckle@google.com>
-Date: Mon, 4 Mar 2019 11:35:59 -0800
-Subject: [LTP] [PATCH] syscalls: add rt_tgsigqueueinfo() test-case
-In-Reply-To: <1551097931-18320-1-git-send-email-sumit.garg@linaro.org>
-References: <1551097931-18320-1-git-send-email-sumit.garg@linaro.org>
-Message-ID: <1fc28a33-6ed8-9be1-caf5-dde3606f1b6f@google.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon,  4 Mar 2019 23:16:25 +0100
+Subject: [LTP] [PATCH] syscalls/fanotify03: skip events from other pids when
+	testing MOUNT|FILESYSTEM
+Message-ID: <6e7bb2a78eea357c564b908a224e23e8231b18ef.1551737546.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Sumit,
+FAN_MARK_MOUNT and FAN_MARK_FILESYSTEM sets up monitoring that can
+cover entire root "/". So a random background process can interfere
+with test.
 
-On 02/25/2019 04:32 AM, Sumit Garg wrote:
-> This tests the rt_tgsigqueueinfo() syscall used to queue a signal and
-> data to the single thread specified by the combination of tgid, a thread
-> group ID, and tid, a thread in that thread group.
-> 
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> ---
->   runtest/syscalls                                   |  1 +
->   .../kernel/syscalls/rt_tgsigqueueinfo/.gitignore   |  1 +
->   .../kernel/syscalls/rt_tgsigqueueinfo/Makefile     | 10 ++++
->   .../rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c        | 53 ++++++++++++++++++++++
->   4 files changed, 65 insertions(+)
->   create mode 100644 testcases/kernel/syscalls/rt_tgsigqueueinfo/.gitignore
->   create mode 100644 testcases/kernel/syscalls/rt_tgsigqueueinfo/Makefile
->   create mode 100644 testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 70d3561..861c0a6 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -996,6 +996,7 @@ rt_sigprocmask01 rt_sigprocmask01
->   rt_sigprocmask02 rt_sigprocmask02
->   rt_sigqueueinfo01 rt_sigqueueinfo01
->   rt_sigsuspend01 rt_sigsuspend01
-> +rt_tgsigqueueinfo01 rt_tgsigqueueinfo01
->   
->   sbrk01 sbrk01
->   sbrk02 sbrk02
-> diff --git a/testcases/kernel/syscalls/rt_tgsigqueueinfo/.gitignore b/testcases/kernel/syscalls/rt_tgsigqueueinfo/.gitignore
-> new file mode 100644
-> index 0000000..f9ffa58
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/.gitignore
-> @@ -0,0 +1 @@
-> +rt_tgsigqueueinfo01
-> diff --git a/testcases/kernel/syscalls/rt_tgsigqueueinfo/Makefile b/testcases/kernel/syscalls/rt_tgsigqueueinfo/Makefile
-> new file mode 100644
-> index 0000000..035ca64
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/Makefile
-> @@ -0,0 +1,10 @@
-> +# Copyright (c) 2019 - Linaro Limited. All rights reserved.
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +top_srcdir             ?= ../../../..
-> +
-> +rt_tgsigqueueinfo01: CFLAGS+=-pthread
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
-> new file mode 100644
-> index 0000000..336b968
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
-> @@ -0,0 +1,53 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2019 Linaro Limited. All rights reserved.
-> + * Author: Sumit Garg <sumit.garg@linaro.org>
-> + */
-> +
-> +/*
-> + * Test rt_tgsigqueueinfo
-> + *
-> + * This tests the rt_tgsigqueueinfo() syscall. It sends the signal and data
-> + * to the single thread specified by the combination of tgid, a thread group
-> + * ID, and tid, a thread in that thread group.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <err.h>
-> +#include <pthread.h>
-> +#include "tst_test.h"
-> +#include "lapi/syscalls.h"
-> +
-> +void *tfunc(void *arg LTP_ATTRIBUTE_UNUSED)
-> +{
-> +	siginfo_t uinfo;
-> +
-> +	uinfo.si_errno = 0;
-> +	uinfo.si_code = SI_QUEUE;
-> +
-> +	TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
-> +			 syscall(__NR_gettid), SIGCHLD, &uinfo));
+For example run test while running following on another terminal
+to reproduce:
+  while [ True ]; do ls -la /root > /dev/null; done
 
-It looks like the pthread here is sending the signal to itself which 
-seems like a special case. Not that it isn't worth testing but I'd think 
-there should be a test which sends the signal to a different thread. 
-This (the self-send case) could be an additional test.
+Test fails and hangs until timeout:
+  tst_test.c:1085: INFO: Timeout per run is 0h 05m 00s
+  fanotify03.c:168: INFO: Test #0: inode mark permission events
+  fanotify03.c:236: PASS: got event: mask=10000 pid=7317 fd=7
+  fanotify03.c:236: PASS: got event: mask=20000 pid=7317 fd=7
+  fanotify03.c:136: PASS: child exited correctly
+  fanotify03.c:168: INFO: Test #1: mount mark permission events
+  fanotify03.c:236: PASS: got event: mask=10000 pid=7318 fd=7
+  fanotify03.c:231: FAIL: got event: mask=20000 pid=7306 (expected 7318) fd=7
+  fanotify03.c:223: FAIL: got event: mask=20000 (expected 0) pid=7318 fd=7
+  Test timeouted, sending SIGKILL!
+  tst_test.c:1125: INFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
+  tst_test.c:1126: BROK: Test killed! (timeout?)
 
-> +	if (TST_RET)
-> +		tst_res(TFAIL, "Test Failed");
-> +	else
-> +		tst_res(TPASS, "Test Succeeded");
+Skip events that are not from our child when testing FAN_MARK_MOUNT and
+FAN_MARK_FILESYSTEM. If these are permission events, allow everything.
 
-I recommend verifying the signal and its data (si_value) are delivered 
-successfully prior to test completion.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/fanotify/fanotify03.c | 36 +++++++++++++++++++++++--
+ 1 file changed, 34 insertions(+), 2 deletions(-)
 
-> +
-> +	return NULL;
-> +}
-> +
-> +static void verify_rt_tgsigqueueinfo(void)
-> +{
-> +	pthread_t pt;
-> +
-> +	TEST(pthread_create(&pt, NULL, tfunc, NULL));
-> +	if (TST_RET)
-> +		tst_brk(TFAIL | TTERRNO, "pthread_create failed");
-> +
-> +	TEST(pthread_join(pt, NULL));
-> +	if (TST_RET)
-> +		tst_brk(TFAIL | TTERRNO, "pthread_join failed");
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = verify_rt_tgsigqueueinfo,
-> +};
-> 
-
-thanks,
-steve
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
+index ae240a0eb505..81f1b8f76d9c 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify03.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
+@@ -292,6 +292,38 @@ static void test_fanotify(unsigned int n)
+ 		 * reported should exactly match the event mask within the
+ 		 * event set.
+ 		 */
++
++		/* When testing MOUNT or FILESYSTEM, there is a chance
++		 * we get event that is not from our child, skip it */
++		if ((tc->mark.flag & (FAN_MARK_MOUNT | FAN_MARK_FILESYSTEM))
++			&& (event->pid != child_pid)) {
++			struct fanotify_response resp;
++
++			tst_res(TINFO,
++				"skipping event: mask=%llx pid=%u fd=%d "
++				"event->fd: %d child_pid=%u ",
++				(unsigned long long)event->mask,
++				(unsigned)event->pid, event->fd,
++				event->fd, (unsigned)child_pid);
++
++			if ((event->mask & LTP_ALL_PERM_EVENTS) == 0)
++				goto next;
++
++			resp.fd = event->fd;
++			resp.response = FAN_ALLOW;
++
++			/* We could be racing with child_handler() here,
++			 * so ignore EBADF from write() */
++			TEST(write(fd_notify, &resp, sizeof(resp)));
++			if (TST_RET == -1) {
++				if (TST_ERR != EBADF)
++					tst_brk(TBROK | TTERRNO, "write failed");
++			} else if (TST_RET != sizeof(resp)) {
++				tst_brk(TBROK, "write short: %ld", TST_RET);
++			}
++			goto next;
++		}
++
+ 		if (event->mask != event_set[test_num].mask) {
+ 			tst_res(TFAIL,
+ 				"got event: mask=%llx (expected %llx) "
+@@ -323,12 +355,12 @@ static void test_fanotify(unsigned int n)
+ 			SAFE_WRITE(1, fd_notify, &resp, sizeof(resp));
+ 		}
+ 
++		test_num++;
++next:
+ 		i += event->event_len;
+ 
+ 		if (event->fd != FAN_NOFD)
+ 			SAFE_CLOSE(event->fd);
+-
+-		test_num++;
+ 	}
+ 
+ 	for (; test_num < tc->event_count; test_num++) {
+-- 
+1.8.3.1
 
