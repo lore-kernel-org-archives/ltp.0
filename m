@@ -1,45 +1,38 @@
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Tue, 5 Mar 2019 12:05:22 +0530
-Subject: [LTP] [PATCH 1/2] syscalls/sync_file_range: add partial file
-	sync test-case
-In-Reply-To: <20190304144000.GA15696@rei>
-References: <1551428901-30162-1-git-send-email-sumit.garg@linaro.org>
- <20190304144000.GA15696@rei>
-Message-ID: <CAFA6WYOvjg_ujpyqhGNtrEHEDP-et4g7SU3cnWw_tRk=oUW-zw@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 5 Mar 2019 15:04:43 +0800
+Subject: [LTP] [RFC PATCH] mm: rewrite mtest01 with new API
+In-Reply-To: <269593361.3808924.1551429852336.JavaMail.zimbra@redhat.com>
+References: <20190228074002.14351-1-liwang@redhat.com>
+ <646940042.3510845.1551391739985.JavaMail.zimbra@redhat.com>
+ <CAEemH2d1NFFP8aQs96W-4r-OSBoXkd86TD92wp3ZZxzrhygQyw@mail.gmail.com>
+ <138010263.3799706.1551427391091.JavaMail.zimbra@redhat.com>
+ <CAEemH2cx0mPzhgAUKq01_4JXOnanQjK79JqEdPZ5N0kpO4A_QA@mail.gmail.com>
+ <269593361.3808924.1551429852336.JavaMail.zimbra@redhat.com>
+Message-ID: <CAEemH2f+wNLrEcBQ08SRsAAW-QbVT5hj190+ZGucyfzUvM3uYA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, 4 Mar 2019 at 20:10, Cyril Hrubis <chrubis@suse.cz> wrote:
+On Fri, Mar 1, 2019 at 4:44 PM Jan Stancek <jstancek@redhat.com> wrote:
+
 >
-> Hi!
-> > +static void verify_sync_partial_file(void)
-> > +{
-> > +     int fd;
-> > +     unsigned long written;
-> > +
-> > +     fd = SAFE_OPEN(FNAME, O_RDWR|O_CREAT, MODE);
-> > +
-> > +     lseek(fd, FILE_SIZE/4, SEEK_SET);
-> > +
-> > +     tst_dev_bytes_written(tst_device->dev);
-> > +
-> > +     tst_fill_fd(fd, 0xff, TST_MB, FILE_SIZE_MB/2);
+> > if (dowrite) {
+> >                 pre_free - post_free check...
 >
-> Any reason why we don't do full FILE_SIZE_MB write here and then check
-> that the result was somewhere between FILE_SIZE/2 +-10% ?
+> This doesn't look very accurate. Other system processes can influence this.
+>
+> Do we need to check it at all? If a child didn't complete allocation
+> it's not going to signal parent.
 >
 
-Don't have any compelling reason to not do full file write. So will
-write whole file and test sync for particular portion of file
-(FILE_SIZE/4 to 3*FILE_SIZE/4).
+Sounds reasonable, if the parent exit from the loop correctly that means
+children finished their memory allocation.
 
--Sumit
-
-> Other than that the patch looks good.
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190305/c97248e5/attachment.html>
