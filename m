@@ -1,262 +1,77 @@
-From: Paul Lawrence <paullawrence@google.com>
-Date: Tue,  5 Mar 2019 10:44:55 -0800
-Subject: [LTP] [ltp][PATCH v3] Add ltp pivot_root test
-Message-ID: <20190305184455.93440-1-paullawrence@google.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 5 Mar 2019 22:08:02 +0200
+Subject: [LTP] [PATCH v2] syscalls/readahead02: limit max readahead to
+ backing device max_readahead_kb
+In-Reply-To: <518295220.5323766.1551804903461.JavaMail.zimbra@redhat.com>
+References: <CAOQ4uxi49WogvHDck_JXiUV8VfLDHhzu=EYVYWiTz+zagT41KA@mail.gmail.com>
+ <e27f21eef1ea317efcae24816b7a014e9e663f2d.1551802444.git.jstancek@redhat.com>
+ <CAOQ4uxgc2NqK=6Lmau08y_k6tQa17xg8Q50UB+xwkgdetTWKuQ@mail.gmail.com>
+ <518295220.5323766.1551804903461.JavaMail.zimbra@redhat.com>
+Message-ID: <CAOQ4uxhAESuU2HZ73kU0tMZ4CvQSJPo4c176MuBoN9WrT2nhTg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixed too long line
-Added const to static struct test_case
-Made fail with TCONF when HAVE_LIBCAP not defined
+On Tue, Mar 5, 2019 at 6:55 PM Jan Stancek <jstancek@redhat.com> wrote:
+>
+>
+> ----- Original Message -----
+> > On Tue, Mar 5, 2019 at 6:17 PM Jan Stancek <jstancek@redhat.com> wrote:
+> > >
+> > > Using system-wide "Cached" size is not accurate. The test is sporadically
+> > > failing with warning on ppc64le 4.18 and 5.0 kernels.
+> > >
+> > > Problem is that test over-estimates max readahead size, which then
+> > > leads to fewer readhead calls and kernel can silently trims length
+> > > in each of them:
+> > >   ...
+> > >   readahead02.c:244: INFO: Test #2: POSIX_FADV_WILLNEED on file
+> > >   readahead02.c:134: INFO: creating test file of size: 67108864
+> > >   readahead02.c:263: INFO: read_testfile(0)
+> > >   readahead02.c:274: INFO: read_testfile(1)
+> > >   readahead02.c:189: INFO: max ra estimate: 12320768
+> > >   readahead02.c:198: INFO: readahead calls made: 6
+> > >   readahead02.c:204: PASS: offset is still at 0 as expected
+> > >   readahead02.c:308: INFO: read_testfile(0) took: 492486 usec
+> > >   readahead02.c:309: INFO: read_testfile(1) took: 430627 usec
+> > >   readahead02.c:311: INFO: read_testfile(0) read: 67108864 bytes
+> > >   readahead02.c:313: INFO: read_testfile(1) read: 59244544 bytes
+> > >   readahead02.c:316: PASS: readahead saved some I/O
+> > >   readahead02.c:324: INFO: cache can hold at least: 264192 kB
+> > >   readahead02.c:325: INFO: read_testfile(0) used cache: 124992 kB
+> > >   readahead02.c:326: INFO: read_testfile(1) used cache: 12032 kB
+> > >   readahead02.c:338: WARN: using less cache than expected
+> > >
+> > > Stop relying on used cache size, and use backing device readahead
+> > > limit instead.
+> > >
+> >
+> > This is certainly better than 4K, but still feels like we are not really
+> > testing
+> > the API properly, but I'm fine with this fix.
+> >
+> > However... as follow up, how about extending the new
+> > tst_dev_bytes_written() utils from Sumit to cover also bytes_read
+> > and replace validation of readahead() from get_cached_size() diff
+> > to tst_dev_bytes_read()?
+>
+> There is something similar based on /proc/self/io. We could try using
+> that to estimate max readahead size.
+>
+> Or /sys/class/block/$dev/stat as you suggested, not sure which one is
+> more accurate/up to date.
+>
 
-Signed-off-by: Paul Lawrence <paullawrence@google.com>
----
- runtest/syscalls                              |   2 +
- testcases/kernel/syscalls/pivot_root/Makefile |  11 +
- .../kernel/syscalls/pivot_root/pivot_root01.c | 200 ++++++++++++++++++
- 3 files changed, 213 insertions(+)
- create mode 100644 testcases/kernel/syscalls/pivot_root/Makefile
- create mode 100644 testcases/kernel/syscalls/pivot_root/pivot_root01.c
+I believe /proc/self/io doesn't count IO performed by kernel async
+readahead against the process that issued the readahead, but didn't
+check. The test uses /proc/self/io to check how many IO where avoided
+by readahead...
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 668c87cd1..debda74b8 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -835,6 +835,8 @@ pipe11 pipe11
- pipe2_01 pipe2_01
- pipe2_02 pipe2_02
- 
-+pivot_root01 pivot_root01
-+
- poll01 poll01
- poll02 poll02
- 
-diff --git a/testcases/kernel/syscalls/pivot_root/Makefile b/testcases/kernel/syscalls/pivot_root/Makefile
-new file mode 100644
-index 000000000..a16974d41
---- /dev/null
-+++ b/testcases/kernel/syscalls/pivot_root/Makefile
-@@ -0,0 +1,11 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+#
-+# Copyright (c) 2019 Google, Inc.
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+LDLIBS := $(LDLIBS) $(CAP_LIBS)
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/pivot_root/pivot_root01.c b/testcases/kernel/syscalls/pivot_root/pivot_root01.c
-new file mode 100644
-index 000000000..c78428a91
---- /dev/null
-+++ b/testcases/kernel/syscalls/pivot_root/pivot_root01.c
-@@ -0,0 +1,200 @@
-+/*
-+ * SPDX-License-Identifier: GPL-2.0-or-later
-+ *
-+ * Copyright (c) 2019 Google, Inc.
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <config.h>
-+
-+#include <errno.h>
-+#include <linux/unistd.h>
-+#include <sched.h>
-+
-+#include <sys/mount.h>
-+#include <stdlib.h>
-+
-+#include "tst_test.h"
-+
-+#ifdef HAVE_LIBCAP
-+#include <sys/capability.h>
-+#endif
-+
-+static const char* chroot_dir = "chroot";
-+static const char* new_root = "/new_root";
-+static const char* put_old = "/new_root/put_old";
-+static const char* put_old_fs = "/put_old_fs";
-+static const char* put_old_bad = "/put_old_fs/put_old";
-+
-+/*
-+ * Test consists of a series of steps that allow pivot_root to succeed, which
-+ * is run when param is NORMAL. All other values tweak one of the steps to
-+ * induce a failure, and check the errno is as expected.
-+ */
-+#define NORMAL 0
-+
-+/*
-+ * EBUSY
-+ * new_root or put_old are on the current root file system
-+ */
-+#define NEW_ROOT_ON_CURRENT_ROOT 1
-+
-+/*
-+ * EINVAL
-+ * put_old is not underneath new_root
-+ * Note: if put_old and new_root are on the same fs,
-+ * pivot_root fails with EBUSY before testing reachability
-+ */
-+#define PUT_OLD_NOT_UNDERNEATH_NEW_ROOT 2
-+
-+/*
-+ * ENOTDIR
-+ * new_root or put_old is not a directory
-+ */
-+#define PUT_OLD_NOT_DIR 3
-+
-+/*
-+ * EPERM
-+ * The calling process does not have the CAP_SYS_ADMIN capability.
-+ */
-+#define NO_CAP_SYS_ADMIN 4
-+
-+static const struct test_case {
-+	int test_case;
-+	int expected_error;
-+} test_cases[] = {
-+	{NORMAL, 0},
-+	{NEW_ROOT_ON_CURRENT_ROOT, EBUSY},
-+	{PUT_OLD_NOT_UNDERNEATH_NEW_ROOT, EINVAL},
-+	{PUT_OLD_NOT_DIR, ENOTDIR},
-+	{NO_CAP_SYS_ADMIN, EPERM},
-+};
-+
-+#ifdef HAVE_LIBCAP
-+static void drop_cap_sys_admin(void)
-+{
-+	cap_value_t cap_value[] = { CAP_SYS_ADMIN };
-+	cap_t cap = cap_get_proc();
-+	if (!cap)
-+		tst_brk(TFAIL | TERRNO, "cap_get_proc failed");
-+
-+	if (cap_set_flag(cap, CAP_EFFECTIVE, 1, cap_value, CAP_CLEAR))
-+		tst_brk(TFAIL | TERRNO, "cap_set_flag failed");
-+
-+	if (cap_set_proc(cap))
-+		tst_brk(TFAIL | TERRNO, "cap_set_proc failed");
-+}
-+#endif
-+
-+#ifdef HAVE_UNSHARE
-+static void run(unsigned int test_case)
-+{
-+	/* Work in child process - needed to undo unshare and chroot */
-+	if (SAFE_FORK()) {
-+		tst_reap_children();
-+		return;
-+	}
-+
-+	/* pivot_root requires no shared mounts exist in process namespace */
-+	TEST(unshare(CLONE_NEWNS | CLONE_FS));
-+	if (TST_RET == -1)
-+		tst_brk(TFAIL | TERRNO, "unshare failed");
-+
-+	/*
-+	 * Create an initial root dir. pivot_root doesn't work if the initial root
-+	 * dir is a initramfs, so use chroot to create a safe environment
-+	 */
-+	SAFE_MOUNT("none", "/", NULL, MS_REC|MS_PRIVATE, NULL);
-+	SAFE_MOUNT("none", chroot_dir, "tmpfs", 0, 0);
-+	SAFE_CHROOT(chroot_dir);
-+
-+	/* Create our new root location */
-+	SAFE_MKDIR(new_root, 0777);
-+
-+	/*
-+	 * pivot_root only works if new_root is a mount point, so mount a tmpfs
-+	 * unless testing for that fail mode
-+	 */
-+	if (test_cases[test_case].test_case != NEW_ROOT_ON_CURRENT_ROOT)
-+		SAFE_MOUNT("none", new_root, "tmpfs", 0, 0);
-+
-+	/*
-+	 * Create put_old under new_root, unless testing for that specific fail
-+	 * mode
-+	 */
-+	const char* actual_put_old = NULL;
-+	if (test_cases[test_case].test_case == PUT_OLD_NOT_UNDERNEATH_NEW_ROOT) {
-+		actual_put_old = put_old_bad;
-+		SAFE_MKDIR(put_old_fs, 0777);
-+		SAFE_MOUNT("none", put_old_fs, "tmpfs", 0, 0);
-+		SAFE_MKDIR(put_old_bad, 0777);
-+	} else {
-+		actual_put_old = put_old;
-+
-+		/* put_old must be a directory for success */
-+		if (test_cases[test_case].test_case == PUT_OLD_NOT_DIR)
-+			SAFE_CREAT(put_old, 0777);
-+		else
-+			SAFE_MKDIR(put_old, 0777);
-+	}
-+
-+	if (test_cases[test_case].test_case == NO_CAP_SYS_ADMIN)
-+#ifdef HAVE_LIBCAP
-+		drop_cap_sys_admin();
-+#else
-+		tst_brk(TCONF,
-+			"System doesn't have POSIX capabilities support");
-+#endif
-+
-+	/* Test the syscall */
-+	TEST(syscall(__NR_pivot_root, new_root, actual_put_old));
-+
-+	/* If NORMAL it should have succeeded */
-+	if (test_cases[test_case].test_case == NORMAL) {
-+		if (TST_RET) {
-+			tst_res(TFAIL | TERRNO, "pivot_root failed");
-+			exit(TBROK);
-+		} else {
-+			tst_res(TPASS, "pivot_root succeeded");
-+			exit(TPASS);
-+		}
-+	}
-+
-+	/* pivot_root is expected to fail */
-+	if (TST_RET == 0) {
-+		tst_res(TFAIL, "pivot_root succeeded unexpectedly");
-+		exit(TBROK);
-+	}
-+
-+	/* Check error code is correct */
-+	if (errno != test_cases[test_case].expected_error) {
-+		tst_res(TFAIL | TERRNO,	"pivot_root failed with wrong errno");
-+		exit(TBROK);
-+	}
-+
-+	tst_res(TPASS, "pivot_root failed as expected with %s",
-+		strerror(errno));
-+	exit(TPASS);
-+}
-+
-+#else
-+static void run(void)
-+{
-+	tst_brk(TCONF, NULL, "unshare is undefined.");
-+}
-+#endif
-+
-+static void setup(void)
-+{
-+	SAFE_MKDIR(chroot_dir, 0777);
-+}
-+
-+static struct tst_test test = {
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(test_cases),
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
-+	.forks_child = 1,
-+	.setup = setup,
-+};
--- 
-2.21.0.352.gf09ad66450-goog
+Do its the combination of both that gives the most information, i.e.:
+X bytes read from device, Y bytes out of which read by process
+on mmap access... (the rest must have been read by kernel readahead)
 
+Thanks,
+Amir.
