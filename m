@@ -1,57 +1,45 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 5 Mar 2019 08:31:03 +0200
-Subject: [LTP] [PATCH] syscalls/fanotify03: skip events from other pids
- when testing MOUNT|FILESYSTEM
-In-Reply-To: <6e7bb2a78eea357c564b908a224e23e8231b18ef.1551737546.git.jstancek@redhat.com>
-References: <6e7bb2a78eea357c564b908a224e23e8231b18ef.1551737546.git.jstancek@redhat.com>
-Message-ID: <CAOQ4uxgExCCq+Ky4PV5NG8XLgp7CaWjtuAK0uAbYiNpXb4352A@mail.gmail.com>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Tue, 5 Mar 2019 12:05:22 +0530
+Subject: [LTP] [PATCH 1/2] syscalls/sync_file_range: add partial file
+	sync test-case
+In-Reply-To: <20190304144000.GA15696@rei>
+References: <1551428901-30162-1-git-send-email-sumit.garg@linaro.org>
+ <20190304144000.GA15696@rei>
+Message-ID: <CAFA6WYOvjg_ujpyqhGNtrEHEDP-et4g7SU3cnWw_tRk=oUW-zw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Mar 5, 2019 at 12:16 AM Jan Stancek <jstancek@redhat.com> wrote:
+On Mon, 4 Mar 2019 at 20:10, Cyril Hrubis <chrubis@suse.cz> wrote:
 >
-> FAN_MARK_MOUNT and FAN_MARK_FILESYSTEM sets up monitoring that can
-> cover entire root "/". So a random background process can interfere
-> with test.
+> Hi!
+> > +static void verify_sync_partial_file(void)
+> > +{
+> > +     int fd;
+> > +     unsigned long written;
+> > +
+> > +     fd = SAFE_OPEN(FNAME, O_RDWR|O_CREAT, MODE);
+> > +
+> > +     lseek(fd, FILE_SIZE/4, SEEK_SET);
+> > +
+> > +     tst_dev_bytes_written(tst_device->dev);
+> > +
+> > +     tst_fill_fd(fd, 0xff, TST_MB, FILE_SIZE_MB/2);
 >
-> For example run test while running following on another terminal
-> to reproduce:
->   while [ True ]; do ls -la /root > /dev/null; done
->
-> Test fails and hangs until timeout:
->   tst_test.c:1085: INFO: Timeout per run is 0h 05m 00s
->   fanotify03.c:168: INFO: Test #0: inode mark permission events
->   fanotify03.c:236: PASS: got event: mask=10000 pid=7317 fd=7
->   fanotify03.c:236: PASS: got event: mask=20000 pid=7317 fd=7
->   fanotify03.c:136: PASS: child exited correctly
->   fanotify03.c:168: INFO: Test #1: mount mark permission events
->   fanotify03.c:236: PASS: got event: mask=10000 pid=7318 fd=7
->   fanotify03.c:231: FAIL: got event: mask=20000 pid=7306 (expected 7318) fd=7
->   fanotify03.c:223: FAIL: got event: mask=20000 (expected 0) pid=7318 fd=7
->   Test timeouted, sending SIGKILL!
->   tst_test.c:1125: INFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
->   tst_test.c:1126: BROK: Test killed! (timeout?)
->
-> Skip events that are not from our child when testing FAN_MARK_MOUNT and
-> FAN_MARK_FILESYSTEM. If these are permission events, allow everything.
+> Any reason why we don't do full FILE_SIZE_MB write here and then check
+> that the result was somewhere between FILE_SIZE/2 +-10% ?
 >
 
-That's the wrong way to fix the problem.
+Don't have any compelling reason to not do full file write. So will
+write whole file and test sync for particular portion of file
+(FILE_SIZE/4 to 3*FILE_SIZE/4).
 
-Please use .mount_device = 1 to contain the effects of
-FAN_MARK_FILESYSTEM/FAN_MARK_MOUNT to events on the
-test device.
+-Sumit
 
-While at it, I see that fanotify05 also sets a FAN_MARK_MOUNT
-without having a private test mount.
-Can fix this by either .mount_device = 1 or using the bind mount
-approach taken by fanotify06.
-
-I am assuming you will take care of this.
-If you need me to get involved with the fix let me know.
-
-Thanks,
-Amir.
+> Other than that the patch looks good.
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
