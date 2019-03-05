@@ -1,178 +1,160 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 5 Mar 2019 04:01:36 -0500 (EST)
-Subject: [LTP] [PATCH] syscalls/fanotify03: skip events from other pids
- when testing MOUNT|FILESYSTEM
-In-Reply-To: <CAOQ4uxg-8nTXPRj2tXsbU4uMKvwty_Pxgk0TrknzL9yTO-R0fA@mail.gmail.com>
-References: <6e7bb2a78eea357c564b908a224e23e8231b18ef.1551737546.git.jstancek@redhat.com>
- <CAOQ4uxgExCCq+Ky4PV5NG8XLgp7CaWjtuAK0uAbYiNpXb4352A@mail.gmail.com>
- <1782236297.5156886.1551772932632.JavaMail.zimbra@redhat.com>
- <CAOQ4uxg-8nTXPRj2tXsbU4uMKvwty_Pxgk0TrknzL9yTO-R0fA@mail.gmail.com>
-Message-ID: <1828199858.5175836.1551776496417.JavaMail.zimbra@redhat.com>
+Date: Tue,  5 Mar 2019 10:50:46 +0100
+Subject: [LTP] [PATCH] syscalls/fanotify0[135]: contain effects of
+	FAN_MARK_MOUNT|FILESYSTEM to test device
+Message-ID: <3b298cac8fd8516df09a761c3eaf8538f0b5049c.1551779182.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+FAN_MARK_MOUNT|FILESYSTEM can set up monitoring for entire root /, which
+can lead to interference from other background processes.
 
+Use separate device/mount to isolate events from tests.
 
------ Original Message -----
-> On Tue, Mar 5, 2019 at 10:02 AM Jan Stancek <jstancek@redhat.com> wrote:
-> >
-> >
-> >
-> > ----- Original Message -----
-> > > On Tue, Mar 5, 2019 at 12:16 AM Jan Stancek <jstancek@redhat.com> wrote:
-> > > >
-> > > > FAN_MARK_MOUNT and FAN_MARK_FILESYSTEM sets up monitoring that can
-> > > > cover entire root "/". So a random background process can interfere
-> > > > with test.
-> > > >
-> > > > For example run test while running following on another terminal
-> > > > to reproduce:
-> > > >   while [ True ]; do ls -la /root > /dev/null; done
-> > > >
-> > > > Test fails and hangs until timeout:
-> > > >   tst_test.c:1085: INFO: Timeout per run is 0h 05m 00s
-> > > >   fanotify03.c:168: INFO: Test #0: inode mark permission events
-> > > >   fanotify03.c:236: PASS: got event: mask=10000 pid=7317 fd=7
-> > > >   fanotify03.c:236: PASS: got event: mask=20000 pid=7317 fd=7
-> > > >   fanotify03.c:136: PASS: child exited correctly
-> > > >   fanotify03.c:168: INFO: Test #1: mount mark permission events
-> > > >   fanotify03.c:236: PASS: got event: mask=10000 pid=7318 fd=7
-> > > >   fanotify03.c:231: FAIL: got event: mask=20000 pid=7306 (expected
-> > > >   7318)
-> > > >   fd=7
-> > > >   fanotify03.c:223: FAIL: got event: mask=20000 (expected 0) pid=7318
-> > > >   fd=7
-> > > >   Test timeouted, sending SIGKILL!
-> > > >   tst_test.c:1125: INFO: If you are running on slow machine, try
-> > > >   exporting
-> > > >   LTP_TIMEOUT_MUL > 1
-> > > >   tst_test.c:1126: BROK: Test killed! (timeout?)
-> > > >
-> > > > Skip events that are not from our child when testing FAN_MARK_MOUNT and
-> > > > FAN_MARK_FILESYSTEM. If these are permission events, allow everything.
-> > > >
-> > >
-> > > That's the wrong way to fix the problem.
-> >
-> > Can you elaborate? The test still fails if we don't get event
-> > from our child.
-> >
-> 
-> I overlooked the fact that test sets a mark on TEST_APP
-> outside of test device.
-> 
-> fanotify tests need to be contained to the test device, so that
-> changes to /root will not interfere with the tests.
-> 
-> Therefore, TEST_APP should be copied to MOUNT_PATH on setup.
-> 
-> This is done by fanotify10 and SHOULD be done by fanotify03
-> and fanotify12 as well.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/fanotify/fanotify01.c |  8 ++++++--
+ testcases/kernel/syscalls/fanotify/fanotify03.c | 14 ++++++++++----
+ testcases/kernel/syscalls/fanotify/fanotify05.c |  8 ++++++--
+ 3 files changed, 22 insertions(+), 8 deletions(-)
 
-OK, I'll look into .mount_device for now.
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify01.c b/testcases/kernel/syscalls/fanotify/fanotify01.c
+index a5585598705b..9b590746ed16 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify01.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify01.c
+@@ -32,6 +32,8 @@
+ #define BUF_SIZE 256
+ #define TST_TOTAL 12
+ 
++#define MOUNT_PATH "fs_mnt"
++
+ static struct tcase {
+ 	const char *tname;
+ 	struct fanotify_mark_type mark;
+@@ -325,7 +327,7 @@ pass:
+ 
+ static void setup(void)
+ {
+-	sprintf(fname, "tfile_%d", getpid());
++	sprintf(fname, MOUNT_PATH"/tfile_%d", getpid());
+ 	SAFE_FILE_PRINTF(fname, "1");
+ }
+ 
+@@ -341,7 +343,9 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.needs_tmpdir = 1,
+-	.needs_root = 1
++	.needs_root = 1,
++	.mount_device = 1,
++	.mntpoint = MOUNT_PATH,
+ };
+ 
+ #else
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
+index ae240a0eb505..1ef1c206b64a 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify03.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
+@@ -38,6 +38,8 @@
+ #define BUF_SIZE 256
+ #define TST_TOTAL 3
+ #define TEST_APP "fanotify_child"
++#define MOUNT_PATH "fs_mnt"
++#define FILE_EXEC_PATH MOUNT_PATH"/"TEST_APP
+ 
+ static char fname[BUF_SIZE];
+ static char buf[BUF_SIZE];
+@@ -127,7 +129,7 @@ static struct tcase {
+ static void generate_events(void)
+ {
+ 	int fd;
+-	char *const argv[] = {TEST_APP, NULL};
++	char *const argv[] = {FILE_EXEC_PATH, NULL};
+ 
+ 	/*
+ 	 * Generate sequence of events
+@@ -144,7 +146,7 @@ static void generate_events(void)
+ 	if (close(fd) == -1)
+ 		exit(4);
+ 
+-	if (execve(TEST_APP, argv, environ) != -1)
++	if (execve(FILE_EXEC_PATH, argv, environ) != -1)
+ 		exit(5);
+ }
+ 
+@@ -207,7 +209,7 @@ static int setup_mark(unsigned int n)
+ 	unsigned int i = 0;
+ 	struct tcase *tc = &tcases[n];
+ 	struct fanotify_mark_type *mark = &tc->mark;
+-	char *const files[] = {fname, TEST_APP};
++	char *const files[] = {fname, FILE_EXEC_PATH};
+ 
+ 	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+ 	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
+@@ -345,8 +347,10 @@ static void test_fanotify(unsigned int n)
+ 
+ static void setup(void)
+ {
+-	sprintf(fname, "fname_%d", getpid());
++	sprintf(fname, MOUNT_PATH"/fname_%d", getpid());
+ 	SAFE_FILE_PRINTF(fname, "1");
++
++	SAFE_CP(TEST_APP, FILE_EXEC_PATH);
+ }
+ 
+ static void cleanup(void)
+@@ -367,6 +371,8 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.forks_child = 1,
+ 	.needs_root = 1,
++	.mount_device = 1,
++	.mntpoint = MOUNT_PATH,
+ 	.resource_files = resource_files
+ };
+ 
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify05.c b/testcases/kernel/syscalls/fanotify/fanotify05.c
+index 52bf30ad27ab..de72e346a554 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify05.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify05.c
+@@ -26,6 +26,8 @@
+ #if defined(HAVE_SYS_FANOTIFY_H)
+ #include <sys/fanotify.h>
+ 
++#define MOUNT_PATH "fs_mnt"
++
+ /* Currently this is fixed in kernel... */
+ #define MAX_EVENTS 16384
+ 
+@@ -44,7 +46,7 @@ void test01(void)
+ 	 * generate events
+ 	 */
+ 	for (i = 0; i < MAX_EVENTS + 1; i++) {
+-		sprintf(fname, "fname_%d", i);
++		sprintf(fname, MOUNT_PATH"/fname_%d", i);
+ 		fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0644);
+ 		SAFE_CLOSE(fd);
+ 	}
+@@ -105,7 +107,7 @@ static void setup(void)
+ 			O_RDONLY);
+ 
+ 	if (fanotify_mark(fd_notify, FAN_MARK_MOUNT | FAN_MARK_ADD, FAN_OPEN,
+-			  AT_FDCWD, ".") < 0) {
++			  AT_FDCWD, MOUNT_PATH) < 0) {
+ 		tst_brk(TBROK | TERRNO,
+ 			"fanotify_mark (%d, FAN_MARK_MOUNT | FAN_MARK_ADD, "
+ 			"FAN_OPEN, AT_FDCWD, \".\") failed",
+@@ -125,6 +127,8 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.needs_root = 1,
+ 	.needs_tmpdir = 1,
++	.mount_device = 1,
++	.mntpoint = MOUNT_PATH,
+ };
+ #else
+ 	TST_TEST_TCONF("system doesn't have required fanotify support");
+-- 
+1.8.3.1
 
-> 
-> > >
-> > > Please use .mount_device = 1 to contain the effects of
-> > > FAN_MARK_FILESYSTEM/FAN_MARK_MOUNT to events on the
-> > > test device.
-> >
-> > I recall (from long time ago) that we saw some daemons that
-> > could probe new mount points, like gvsfd.
-> >
-> 
-> I am not following. How is that related to our case?
-
-It's a potential (outside) source of events, that won't originate
-from test child process.
-
-> 
-> > >
-> > > While at it, I see that fanotify05 also sets a FAN_MARK_MOUNT
-> > > without having a private test mount.
-> > > Can fix this by either .mount_device = 1 or using the bind mount
-> > > approach taken by fanotify06.
-> >
-> > I see fanotify01 failing as well.
-> >
-> 
-> Failing how? please provide more details.
-
-tst_test.c:1085: INFO: Timeout per run is 0h 05m 00s
-fanotify01.c:68: INFO: Test #0: inode mark events
-fanotify01.c:290: PASS: got event: mask=31 pid=28138 fd=8
-fanotify01.c:290: PASS: got event: mask=11 pid=28138 fd=-2
-fanotify01.c:290: PASS: got event: mask=10 pid=28138 fd=-2
-fanotify01.c:290: PASS: got event: mask=2a pid=28138 fd=9
-fanotify01.c:290: PASS: got event: mask=a pid=28138 fd=-2
-fanotify01.c:290: PASS: got event: mask=8 pid=28138 fd=-2
-fanotify01.c:290: PASS: got event: mask=20 pid=28138 fd=11
-fanotify01.c:290: PASS: got event: mask=b pid=28138 fd=10
-fanotify01.c:290: PASS: got event: mask=9 pid=28138 fd=-2
-fanotify01.c:290: PASS: got event: mask=8 pid=28138 fd=-2
-fanotify01.c:290: PASS: got event: mask=2 pid=28138 fd=13
-fanotify01.c:290: PASS: got event: mask=8 pid=28138 fd=12
-fanotify01.c:68: INFO: Test #1: mount mark events
-fanotify01.c:290: PASS: got event: mask=31 pid=28138 fd=8
-fanotify01.c:290: PASS: got event: mask=11 pid=28138 fd=-2
-fanotify01.c:290: PASS: got event: mask=10 pid=28138 fd=-2
-fanotify01.c:290: PASS: got event: mask=2a pid=28138 fd=9
-fanotify01.c:290: PASS: got event: mask=a pid=28138 fd=-2
-fanotify01.c:290: PASS: got event: mask=8 pid=28138 fd=-2
-fanotify01.c:290: PASS: got event: mask=20 pid=28138 fd=11
-fanotify01.c:256: FAIL: got event: mask=20 (expected 2) pid=5277 fd=10
-fanotify01.c:256: FAIL: got event: mask=20 (expected 1) pid=5277 fd=-2
-fanotify01.c:256: FAIL: got event: mask=20 (expected 8) pid=5277 fd=-2
-fanotify01.c:256: FAIL: got event: mask=20 (expected 2) pid=5277 fd=-2
-fanotify01.c:256: FAIL: got event: mask=20 (expected 8) pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
-... <previous message repeats hundreds of times>
-fanotify01.c:249: FAIL: got unnecessary event: mask=1 pid=28138 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=1 pid=28138 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=2 pid=28138 fd=14
-fanotify01.c:249: FAIL: got unnecessary event: mask=2 pid=28138 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=2 pid=28138 fd=-2
-fanotify01.c:249: FAIL: got unnecessary event: mask=8 pid=28138 fd=13
-fanotify01.c:68: INFO: Test #2: filesystem mark events
-fanotify01.c:77: CONF: FAN_MARK_FILESYSTEM not supported in kernel?
-
-Regards,
-Jan
