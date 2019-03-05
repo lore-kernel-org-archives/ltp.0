@@ -1,5 +1,5 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 5 Mar 2019 12:42:48 +0200
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 5 Mar 2019 05:46:54 -0500 (EST)
 Subject: [LTP] [PATCH] syscalls/fanotify03: skip events from other pids
  when testing MOUNT|FILESYSTEM
 In-Reply-To: <CAOQ4uxhe2NJ+pj67ZhviL3++7oKMo_FYvM64gnGch_vXDpSw4g@mail.gmail.com>
@@ -9,13 +9,50 @@ References: <6e7bb2a78eea357c564b908a224e23e8231b18ef.1551737546.git.jstancek@re
  <CAOQ4uxg-8nTXPRj2tXsbU4uMKvwty_Pxgk0TrknzL9yTO-R0fA@mail.gmail.com>
  <1828199858.5175836.1551776496417.JavaMail.zimbra@redhat.com>
  <CAOQ4uxhe2NJ+pj67ZhviL3++7oKMo_FYvM64gnGch_vXDpSw4g@mail.gmail.com>
-Message-ID: <CAOQ4uxifhwKnBubJCpAzxpDR_aH+L4k3s55WnwUDD_JoiH2s7g@mail.gmail.com>
+Message-ID: <1053394924.5191479.1551782814682.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+
+
+----- Original Message -----
+> > > > >
+> > > > > Please use .mount_device = 1 to contain the effects of
+> > > > > FAN_MARK_FILESYSTEM/FAN_MARK_MOUNT to events on the
+> > > > > test device.
+> > > >
+> > > > I recall (from long time ago) that we saw some daemons that
+> > > > could probe new mount points, like gvsfd.
+> > > >
+> > >
+> > > I am not following. How is that related to our case?
+> >
+> > It's a potential (outside) source of events, that won't originate
+> > from test child process.
+> >
+> 
+> Ah. I see.
+> But the problem with filtering by generator pid is that
+> you would need to fix all fanotify tests to do that and
+> some tests actually verify that reported pid is correct,
+> so chicken and egg situation.
+> 
+> Let's see if this is a real problem that people run into
+> or just a concern. The real issue that you saw was from
+> test bug that wasn't setting the mark on a test device but
+> on the system mount.
+> 
+> 
+> > >
+> > > > >
+> > > > > While at it, I see that fanotify05 also sets a FAN_MARK_MOUNT
+> > > > > without having a private test mount.
+> > > > > Can fix this by either .mount_device = 1 or using the bind mount
+> > > > > approach taken by fanotify06.
+> > > >
 > > > > I see fanotify01 failing as well.
 > > > >
 > > >
@@ -94,16 +131,25 @@ To: ltp@lists.linux.it
 > > fanotify01.c:68: INFO: Test #2: filesystem mark events
 > > fanotify01.c:77: CONF: FAN_MARK_FILESYSTEM not supported in kernel?
 > >
->
+> 
 > Which kernel is that?
->
+
+The specific case above was RHEL7.6 kernel (3.10.0 based).
+
+> 
 > Can you say which program is run by the processes with pid 5277? 28138?
->
 
-Nevermind. My work branch has already isolated fanotify01, so I didn't
-realize it was also buggy on master.
+I can't, system has been returned to pool an re-used for other jobs.
 
-Your fix should have resolved those errors I presume.
+5277 is likely some daemon, my guess would be test harness.
+28138 looks like the test itself, same pid is reported at the
+beginning of output.
 
-Thanks,
-Amir.
+I can easily reproduce fanotify01 failure on 5.0 with
+  while [ True ]; do ls -la /root > /dev/null; done
+running in parallel.
+
+> 
+> Thanks,
+> Amir.
+> 
