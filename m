@@ -1,89 +1,270 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 5 Mar 2019 10:17:22 -0500 (EST)
-Subject: [LTP] [PATCH/RFC] syscalls/readahead02: don't use cache size
-In-Reply-To: <CAOQ4uxhqzTBkxva3Zhreb6o=EjnyFUkLutEjuNd8+jPn9bVr6w@mail.gmail.com>
-References: <69e171efb14ec9078a4b70838f45ff5a550388d8.1551789098.git.jstancek@redhat.com>
- <CAOQ4uxhqzTBkxva3Zhreb6o=EjnyFUkLutEjuNd8+jPn9bVr6w@mail.gmail.com>
-Message-ID: <565188461.5295049.1551799042924.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 5 Mar 2019 16:30:26 +0100
+Subject: [LTP] [PATCH v2] syscalls: add rt_tgsigqueueinfo() test-case
+In-Reply-To: <1551795743-30614-1-git-send-email-sumit.garg@linaro.org>
+References: <1551795743-30614-1-git-send-email-sumit.garg@linaro.org>
+Message-ID: <20190305153025.GF13703@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> diff --git a/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
+> new file mode 100644
+> index 0000000..132b31c
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
+> @@ -0,0 +1,200 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2019 Linaro Limited. All rights reserved.
+> + * Author: Sumit Garg <sumit.garg@linaro.org>
+> + */
+> +
+> +/*
+> + * Test rt_tgsigqueueinfo
+> + *
+> + * This tests the rt_tgsigqueueinfo() syscall. It sends the signal and data
+> + * to the single thread specified by the combination of tgid, a thread group
+> + * ID, and tid, a thread in that thread group.
+> + *
+> + * Also this implement 3 tests differing on the basis of signal sender:
+> + * - Sender and receiver is the same thread.
+> + * - Sender is parent of the thread.
+> + * - Sender is different thread.
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <err.h>
+> +#include <string.h>
+> +#include <pthread.h>
+> +#include "tst_safe_pthread.h"
+> +#include "tst_test.h"
+> +#include "lapi/syscalls.h"
+> +
+> +static char sigval_send[] = "rt_tgsigqueueinfo data";
+> +static int signum_rcv;
 
------ Original Message -----
-> On Tue, Mar 5, 2019 at 2:34 PM Jan Stancek <jstancek@redhat.com> wrote:
-> >
-> > Using system-wide "Cached" size is not accurate. The test is sporadically
-> > failing with warning on ppc64le 4.18 and 5.0 kernels.
-> >
-> > Problem is that test over-estimates max readahead size, which then
-> > leads to fewer readhead calls and kernel can silently trims length
-> > in each of them:
-> >   ...
-> >   readahead02.c:244: INFO: Test #2: POSIX_FADV_WILLNEED on file
-> >   readahead02.c:134: INFO: creating test file of size: 67108864
-> >   readahead02.c:263: INFO: read_testfile(0)
-> >   readahead02.c:274: INFO: read_testfile(1)
-> >   readahead02.c:189: INFO: max ra estimate: 12320768
-> >   readahead02.c:198: INFO: readahead calls made: 6
-> >   readahead02.c:204: PASS: offset is still at 0 as expected
-> >   readahead02.c:308: INFO: read_testfile(0) took: 492486 usec
-> >   readahead02.c:309: INFO: read_testfile(1) took: 430627 usec
-> >   readahead02.c:311: INFO: read_testfile(0) read: 67108864 bytes
-> >   readahead02.c:313: INFO: read_testfile(1) read: 59244544 bytes
-> >   readahead02.c:316: PASS: readahead saved some I/O
-> >   readahead02.c:324: INFO: cache can hold at least: 264192 kB
-> >   readahead02.c:325: INFO: read_testfile(0) used cache: 124992 kB
-> >   readahead02.c:326: INFO: read_testfile(1) used cache: 12032 kB
-> >   readahead02.c:338: WARN: using less cache than expected
-> >
-> > Stop relying on used cache size, and use minimal sane readahead length,
-> > that should work across all systems.
-> 
-> But now instead of over estimating readahead length you definetly
-> underestimate it resulting in way too many readahead calls
-> (reahead every 4K block), which does not validate long readahead
-> code is working at all.
+This has to be volatile, otherwise compiler has no idea that the value
+could be changed asynchronically from within the signal handler and may
+miscompile the loop (when optimalizations are enabled) that waits for
+the signal arrival.
 
-We could try to cap on backing device read_ahead_kb.
+> +static char sigval_rcv[128];
+> +
+> +static pthread_cond_t sigusr1_cond = PTHREAD_COND_INITIALIZER;
+> +static pthread_mutex_t sigusr1_mutex = PTHREAD_MUTEX_INITIALIZER;
+> +
+> +static pthread_cond_t tid_cond = PTHREAD_COND_INITIALIZER;
+> +static pthread_mutex_t tid_mutex = PTHREAD_MUTEX_INITIALIZER;
+> +
+> +static void sigusr1_handler(int signum, siginfo_t *uinfo,
+> +			    void *p LTP_ATTRIBUTE_UNUSED)
+> +{
+> +	char *rcv = uinfo->_sifields._rt.si_sigval.sival_ptr;
+> +
+> +	if (rcv)
+> +		strcpy(sigval_rcv, rcv);
 
-> 
-> How about this patch instead.
-> Can you say with sufficient confidence if it solves the sporadic errors?
+I do wonder if we need to really copy the data here. If we send a
+pointer shouldn't be enough to store the pointer and check it against
+sigval_send later on?
 
-It likely won't. We started at 2M couple years back, but there
-were several commit that keep changing the limit: [1][2]
+> +	signum_rcv = signum;
+> +
+> +	pthread_cond_broadcast(&sigusr1_cond);
 
-[1] 600e19afc5f8a6c18ea49cee9511c5797db02391
-[2] https://lkml.org/lkml/2016/7/25/308
+It's not safe to call anything but a couple of signal-async-safe
+functions in the signal handler, see:
 
-> Also, IMO if you solve the estimation problem, there is no need to
-> remove the WARNING, it may still be informative.
-> 
-> Thanks,
-> Amir.
-> 
-> --- a/testcases/kernel/syscalls/readahead/readahead02.c
-> +++ b/testcases/kernel/syscalls/readahead/readahead02.c
-> @@ -50,6 +50,8 @@ static int ovl_mounted;
->  #define OVL_WORK       MNTPOINT"/work"
->  #define OVL_MNT                MNTPOINT"/ovl"
->  #define MIN_SANE_READAHEAD (4u * 1024u)
-> +/* To avoid over estimation of readahead length */
-> +#define MAX_SANE_READAHEAD (1024u * 1024u)
-> 
->  static const char mntpoint[] = MNTPOINT;
-> 
-> @@ -193,7 +195,7 @@ static int read_testfile(struct tcase *tc, int
-> do_readahead,
->                         }
-> 
->                         i++;
-> -                       offset += max_ra_estimate;
-> +                       offset += MIN(max_ra_estimate, MAX_SANE_READAHEAD);
->                 } while ((size_t)offset < fsize);
->                 tst_res(TINFO, "readahead calls made: %zu", i);
->                 *cached = get_cached_size();
-> 
+http://www.man7.org/linux/man-pages/man7/signal-safety.7.html
+
+I guess that the easiest solution here would be doing something as:
+
+	while (!signum_rcv)
+		usleep(1000);
+
+Instead of the pthread_cond_wait().
+
+> +}
+> +
+> +void *tfunc_self(void *arg LTP_ATTRIBUTE_UNUSED)
+> +{
+> +	siginfo_t uinfo;
+> +
+> +	signum_rcv = 0;
+> +	memset(sigval_rcv, 0, sizeof(sigval_rcv));
+> +
+> +	uinfo.si_errno = 0;
+> +	uinfo.si_code = SI_QUEUE;
+> +	uinfo._sifields._rt.si_sigval.sival_ptr = sigval_send;
+> +
+> +	TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
+> +			 syscall(__NR_gettid), SIGUSR1, &uinfo));
+> +	if (TST_RET)
+> +		tst_brk(TFAIL | TTERRNO, "rt_tgsigqueueinfo failed");
+> +
+> +	pthread_mutex_lock(&sigusr1_mutex);
+> +	while (!signum_rcv)
+> +		pthread_cond_wait(&sigusr1_cond, &sigusr1_mutex);
+> +	pthread_mutex_unlock(&sigusr1_mutex);
+> +
+> +	if ((signum_rcv == SIGUSR1) && !strcmp(sigval_send, sigval_rcv))
+> +		tst_res(TPASS, "Test signal to self succeeded");
+> +	else
+> +		tst_res(TFAIL, "Test failed");
+
+It wouldn't harm to be a bit more verbose here. I.e. tell the user what
+exactly was wrong.
+
+> +	return NULL;
+
+There is a nice trick we use in LTP, if you do return arg; here you can
+drop the ATTRIBUTE_UNUSED.
+
+> +}
+> +
+> +static void verify_signal_self(void)
+> +{
+> +	pthread_t pt;
+> +
+> +	SAFE_PTHREAD_CREATE(&pt, NULL, tfunc_self, NULL);
+> +
+> +	SAFE_PTHREAD_JOIN(pt, NULL);
+> +}
+> +
+> +void *t1func(void *arg)
+> +{
+> +	pid_t *tid = arg;
+> +
+> +	*tid = syscall(__NR_gettid);
+> +
+> +	pthread_cond_broadcast(&tid_cond);
+> +
+> +	signum_rcv = 0;
+> +	memset(sigval_rcv, 0, sizeof(sigval_rcv));
+
+This initialization has to be done before we notify the parent thread,
+otherwise there is a race.
+
+> +	pthread_mutex_lock(&sigusr1_mutex);
+> +	while (!signum_rcv)
+> +		pthread_cond_wait(&sigusr1_cond, &sigusr1_mutex);
+> +	pthread_mutex_unlock(&sigusr1_mutex);
+> +
+> +	if ((signum_rcv == SIGUSR1) && !strcmp(sigval_send, sigval_rcv))
+> +		tst_res(TPASS, "Test signal to different thread succeeded");
+> +	else
+> +		tst_res(TFAIL, "Test failed");
+
+Here as well, a bit more verbose, maybe we should put the code into a
+common check function, since it's the same as in the self function.
+
+> +	return NULL;
+> +}
+> +
+> +static void verify_signal_parent_thread(void)
+> +{
+> +	pid_t tid = -1;
+> +	pthread_t pt;
+> +	siginfo_t uinfo;
+> +
+> +	SAFE_PTHREAD_CREATE(&pt, NULL, t1func, &tid);
+> +
+> +	pthread_mutex_lock(&tid_mutex);
+> +	while (tid == -1)
+> +		pthread_cond_wait(&tid_cond, &tid_mutex);
+> +	pthread_mutex_unlock(&tid_mutex);
+
+We do have checkpoint library in LTP that is much easier to use than
+this, see:
+
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#229-fork-and-parent-child-synchronization
+
+> +	uinfo.si_errno = 0;
+> +	uinfo.si_code = SI_QUEUE;
+> +	uinfo._sifields._rt.si_sigval.sival_ptr = sigval_send;
+> +
+> +	TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
+> +			 tid, SIGUSR1, &uinfo));
+> +	if (TST_RET)
+> +		tst_brk(TFAIL | TTERRNO, "rt_tgsigqueueinfo failed");
+> +
+> +	SAFE_PTHREAD_JOIN(pt, NULL);
+> +}
+> +
+> +void *t2func(void *arg)
+> +{
+> +	pid_t *tid = arg;
+> +	siginfo_t uinfo;
+> +
+> +	uinfo.si_errno = 0;
+> +	uinfo.si_code = SI_QUEUE;
+> +	uinfo._sifields._rt.si_sigval.sival_ptr = sigval_send;
+> +
+> +	TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
+> +			 *tid, SIGUSR1, &uinfo));
+> +	if (TST_RET)
+> +		tst_brk(TFAIL | TTERRNO, "rt_tgsigqueueinfo failed");
+> +
+> +	return NULL;
+> +}
+> +
+> +static void verify_signal_inter_thread(void)
+> +{
+> +	pid_t tid = -1;
+> +	pthread_t pt1, pt2;
+> +
+> +	SAFE_PTHREAD_CREATE(&pt1, NULL, t1func, &tid);
+> +
+> +	pthread_mutex_lock(&tid_mutex);
+> +	while (tid == -1)
+> +		pthread_cond_wait(&tid_cond, &tid_mutex);
+> +	pthread_mutex_unlock(&tid_mutex);
+> +
+> +	SAFE_PTHREAD_CREATE(&pt2, NULL, t2func, &tid);
+
+That's very minor but maybe it would be a bit more readable if we named
+the t1func and t2func sender_func and receiver_func or anything that
+hints the function purpose.
+
+> +	SAFE_PTHREAD_JOIN(pt2, NULL);
+> +
+> +	SAFE_PTHREAD_JOIN(pt1, NULL);
+> +}
+> +
+> +static struct tcase {
+> +	void (*tfunc)(void);
+> +} tcases[] = {
+> +	{&verify_signal_self},
+> +	{&verify_signal_parent_thread},
+> +	{&verify_signal_inter_thread},
+> +};
+> +
+> +static void run(unsigned int i)
+> +{
+> +	tcases[i].tfunc();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	struct sigaction sigusr1 = {
+> +		.sa_flags = SA_SIGINFO,
+> +		.sa_sigaction = sigusr1_handler,
+> +	};
+> +
+> +	SAFE_SIGACTION(SIGUSR1, &sigusr1, NULL);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.setup = setup,
+> +	.test = run,
+> +};
+
+Otherwise it looks good.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
