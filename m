@@ -1,160 +1,159 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue,  5 Mar 2019 10:50:46 +0100
-Subject: [LTP] [PATCH] syscalls/fanotify0[135]: contain effects of
-	FAN_MARK_MOUNT|FILESYSTEM to test device
-Message-ID: <3b298cac8fd8516df09a761c3eaf8538f0b5049c.1551779182.git.jstancek@redhat.com>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Tue, 5 Mar 2019 16:03:08 +0530
+Subject: [LTP] [PATCH] syscalls: add rt_tgsigqueueinfo() test-case
+In-Reply-To: <1fc28a33-6ed8-9be1-caf5-dde3606f1b6f@google.com>
+References: <1551097931-18320-1-git-send-email-sumit.garg@linaro.org>
+ <1fc28a33-6ed8-9be1-caf5-dde3606f1b6f@google.com>
+Message-ID: <CAFA6WYOunbJdqTwC55VQjsZ-7t+-DBzrGaK2z04nPpncNsmkbQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-FAN_MARK_MOUNT|FILESYSTEM can set up monitoring for entire root /, which
-can lead to interference from other background processes.
+Thanks Steve for the review.
 
-Use separate device/mount to isolate events from tests.
+On Tue, 5 Mar 2019 at 01:06, Steve Muckle <smuckle@google.com> wrote:
+>
+> Hi Sumit,
+>
+> On 02/25/2019 04:32 AM, Sumit Garg wrote:
+> > This tests the rt_tgsigqueueinfo() syscall used to queue a signal and
+> > data to the single thread specified by the combination of tgid, a thread
+> > group ID, and tid, a thread in that thread group.
+> >
+> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > ---
+> >   runtest/syscalls                                   |  1 +
+> >   .../kernel/syscalls/rt_tgsigqueueinfo/.gitignore   |  1 +
+> >   .../kernel/syscalls/rt_tgsigqueueinfo/Makefile     | 10 ++++
+> >   .../rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c        | 53 ++++++++++++++++++++++
+> >   4 files changed, 65 insertions(+)
+> >   create mode 100644 testcases/kernel/syscalls/rt_tgsigqueueinfo/.gitignore
+> >   create mode 100644 testcases/kernel/syscalls/rt_tgsigqueueinfo/Makefile
+> >   create mode 100644 testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
+> >
+> > diff --git a/runtest/syscalls b/runtest/syscalls
+> > index 70d3561..861c0a6 100644
+> > --- a/runtest/syscalls
+> > +++ b/runtest/syscalls
+> > @@ -996,6 +996,7 @@ rt_sigprocmask01 rt_sigprocmask01
+> >   rt_sigprocmask02 rt_sigprocmask02
+> >   rt_sigqueueinfo01 rt_sigqueueinfo01
+> >   rt_sigsuspend01 rt_sigsuspend01
+> > +rt_tgsigqueueinfo01 rt_tgsigqueueinfo01
+> >
+> >   sbrk01 sbrk01
+> >   sbrk02 sbrk02
+> > diff --git a/testcases/kernel/syscalls/rt_tgsigqueueinfo/.gitignore b/testcases/kernel/syscalls/rt_tgsigqueueinfo/.gitignore
+> > new file mode 100644
+> > index 0000000..f9ffa58
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/.gitignore
+> > @@ -0,0 +1 @@
+> > +rt_tgsigqueueinfo01
+> > diff --git a/testcases/kernel/syscalls/rt_tgsigqueueinfo/Makefile b/testcases/kernel/syscalls/rt_tgsigqueueinfo/Makefile
+> > new file mode 100644
+> > index 0000000..035ca64
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/Makefile
+> > @@ -0,0 +1,10 @@
+> > +# Copyright (c) 2019 - Linaro Limited. All rights reserved.
+> > +# SPDX-License-Identifier: GPL-2.0-or-later
+> > +
+> > +top_srcdir             ?= ../../../..
+> > +
+> > +rt_tgsigqueueinfo01: CFLAGS+=-pthread
+> > +
+> > +include $(top_srcdir)/include/mk/testcases.mk
+> > +
+> > +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> > diff --git a/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
+> > new file mode 100644
+> > index 0000000..336b968
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
+> > @@ -0,0 +1,53 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright (c) 2019 Linaro Limited. All rights reserved.
+> > + * Author: Sumit Garg <sumit.garg@linaro.org>
+> > + */
+> > +
+> > +/*
+> > + * Test rt_tgsigqueueinfo
+> > + *
+> > + * This tests the rt_tgsigqueueinfo() syscall. It sends the signal and data
+> > + * to the single thread specified by the combination of tgid, a thread group
+> > + * ID, and tid, a thread in that thread group.
+> > + */
+> > +
+> > +#define _GNU_SOURCE
+> > +#include <err.h>
+> > +#include <pthread.h>
+> > +#include "tst_test.h"
+> > +#include "lapi/syscalls.h"
+> > +
+> > +void *tfunc(void *arg LTP_ATTRIBUTE_UNUSED)
+> > +{
+> > +     siginfo_t uinfo;
+> > +
+> > +     uinfo.si_errno = 0;
+> > +     uinfo.si_code = SI_QUEUE;
+> > +
+> > +     TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
+> > +                      syscall(__NR_gettid), SIGCHLD, &uinfo));
+>
+> It looks like the pthread here is sending the signal to itself which
+> seems like a special case. Not that it isn't worth testing but I'd think
+> there should be a test which sends the signal to a different thread.
+> This (the self-send case) could be an additional test.
+>
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/fanotify/fanotify01.c |  8 ++++++--
- testcases/kernel/syscalls/fanotify/fanotify03.c | 14 ++++++++++----
- testcases/kernel/syscalls/fanotify/fanotify05.c |  8 ++++++--
- 3 files changed, 22 insertions(+), 8 deletions(-)
+Hmm. So do you suggest to add following cases?
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify01.c b/testcases/kernel/syscalls/fanotify/fanotify01.c
-index a5585598705b..9b590746ed16 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify01.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify01.c
-@@ -32,6 +32,8 @@
- #define BUF_SIZE 256
- #define TST_TOTAL 12
- 
-+#define MOUNT_PATH "fs_mnt"
-+
- static struct tcase {
- 	const char *tname;
- 	struct fanotify_mark_type mark;
-@@ -325,7 +327,7 @@ pass:
- 
- static void setup(void)
- {
--	sprintf(fname, "tfile_%d", getpid());
-+	sprintf(fname, MOUNT_PATH"/tfile_%d", getpid());
- 	SAFE_FILE_PRINTF(fname, "1");
- }
- 
-@@ -341,7 +343,9 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.needs_tmpdir = 1,
--	.needs_root = 1
-+	.needs_root = 1,
-+	.mount_device = 1,
-+	.mntpoint = MOUNT_PATH,
- };
- 
- #else
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
-index ae240a0eb505..1ef1c206b64a 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify03.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
-@@ -38,6 +38,8 @@
- #define BUF_SIZE 256
- #define TST_TOTAL 3
- #define TEST_APP "fanotify_child"
-+#define MOUNT_PATH "fs_mnt"
-+#define FILE_EXEC_PATH MOUNT_PATH"/"TEST_APP
- 
- static char fname[BUF_SIZE];
- static char buf[BUF_SIZE];
-@@ -127,7 +129,7 @@ static struct tcase {
- static void generate_events(void)
- {
- 	int fd;
--	char *const argv[] = {TEST_APP, NULL};
-+	char *const argv[] = {FILE_EXEC_PATH, NULL};
- 
- 	/*
- 	 * Generate sequence of events
-@@ -144,7 +146,7 @@ static void generate_events(void)
- 	if (close(fd) == -1)
- 		exit(4);
- 
--	if (execve(TEST_APP, argv, environ) != -1)
-+	if (execve(FILE_EXEC_PATH, argv, environ) != -1)
- 		exit(5);
- }
- 
-@@ -207,7 +209,7 @@ static int setup_mark(unsigned int n)
- 	unsigned int i = 0;
- 	struct tcase *tc = &tcases[n];
- 	struct fanotify_mark_type *mark = &tc->mark;
--	char *const files[] = {fname, TEST_APP};
-+	char *const files[] = {fname, FILE_EXEC_PATH};
- 
- 	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
- 	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
-@@ -345,8 +347,10 @@ static void test_fanotify(unsigned int n)
- 
- static void setup(void)
- {
--	sprintf(fname, "fname_%d", getpid());
-+	sprintf(fname, MOUNT_PATH"/fname_%d", getpid());
- 	SAFE_FILE_PRINTF(fname, "1");
-+
-+	SAFE_CP(TEST_APP, FILE_EXEC_PATH);
- }
- 
- static void cleanup(void)
-@@ -367,6 +371,8 @@ static struct tst_test test = {
- 	.cleanup = cleanup,
- 	.forks_child = 1,
- 	.needs_root = 1,
-+	.mount_device = 1,
-+	.mntpoint = MOUNT_PATH,
- 	.resource_files = resource_files
- };
- 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify05.c b/testcases/kernel/syscalls/fanotify/fanotify05.c
-index 52bf30ad27ab..de72e346a554 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify05.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify05.c
-@@ -26,6 +26,8 @@
- #if defined(HAVE_SYS_FANOTIFY_H)
- #include <sys/fanotify.h>
- 
-+#define MOUNT_PATH "fs_mnt"
-+
- /* Currently this is fixed in kernel... */
- #define MAX_EVENTS 16384
- 
-@@ -44,7 +46,7 @@ void test01(void)
- 	 * generate events
- 	 */
- 	for (i = 0; i < MAX_EVENTS + 1; i++) {
--		sprintf(fname, "fname_%d", i);
-+		sprintf(fname, MOUNT_PATH"/fname_%d", i);
- 		fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0644);
- 		SAFE_CLOSE(fd);
- 	}
-@@ -105,7 +107,7 @@ static void setup(void)
- 			O_RDONLY);
- 
- 	if (fanotify_mark(fd_notify, FAN_MARK_MOUNT | FAN_MARK_ADD, FAN_OPEN,
--			  AT_FDCWD, ".") < 0) {
-+			  AT_FDCWD, MOUNT_PATH) < 0) {
- 		tst_brk(TBROK | TERRNO,
- 			"fanotify_mark (%d, FAN_MARK_MOUNT | FAN_MARK_ADD, "
- 			"FAN_OPEN, AT_FDCWD, \".\") failed",
-@@ -125,6 +127,8 @@ static struct tst_test test = {
- 	.cleanup = cleanup,
- 	.needs_root = 1,
- 	.needs_tmpdir = 1,
-+	.mount_device = 1,
-+	.mntpoint = MOUNT_PATH,
- };
- #else
- 	TST_TEST_TCONF("system doesn't have required fanotify support");
--- 
-1.8.3.1
+1. parent -> thread
+2. thread1 -> thread2
 
+BTW, in above cases I think we need to communicate "tid" obtained via
+gettid() to parent and other thread to queue signal which could be
+done via "arg" parameter in pthread_create().
+
+> > +     if (TST_RET)
+> > +             tst_res(TFAIL, "Test Failed");
+> > +     else
+> > +             tst_res(TPASS, "Test Succeeded");
+>
+> I recommend verifying the signal and its data (si_value) are delivered
+> successfully prior to test completion.
+>
+
+Ok, will add this verification via signal handler.
+
+-Sumit
+
+> > +
+> > +     return NULL;
+> > +}
+> > +
+> > +static void verify_rt_tgsigqueueinfo(void)
+> > +{
+> > +     pthread_t pt;
+> > +
+> > +     TEST(pthread_create(&pt, NULL, tfunc, NULL));
+> > +     if (TST_RET)
+> > +             tst_brk(TFAIL | TTERRNO, "pthread_create failed");
+> > +
+> > +     TEST(pthread_join(pt, NULL));
+> > +     if (TST_RET)
+> > +             tst_brk(TFAIL | TTERRNO, "pthread_join failed");
+> > +}
+> > +
+> > +static struct tst_test test = {
+> > +     .test_all = verify_rt_tgsigqueueinfo,
+> > +};
+> >
+>
+> thanks,
+> steve
+>
