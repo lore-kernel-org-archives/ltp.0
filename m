@@ -1,159 +1,136 @@
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Tue, 5 Mar 2019 16:03:08 +0530
-Subject: [LTP] [PATCH] syscalls: add rt_tgsigqueueinfo() test-case
-In-Reply-To: <1fc28a33-6ed8-9be1-caf5-dde3606f1b6f@google.com>
-References: <1551097931-18320-1-git-send-email-sumit.garg@linaro.org>
- <1fc28a33-6ed8-9be1-caf5-dde3606f1b6f@google.com>
-Message-ID: <CAFA6WYOunbJdqTwC55VQjsZ-7t+-DBzrGaK2z04nPpncNsmkbQ@mail.gmail.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 5 Mar 2019 12:37:17 +0200
+Subject: [LTP] [PATCH] syscalls/fanotify03: skip events from other pids
+ when testing MOUNT|FILESYSTEM
+In-Reply-To: <1828199858.5175836.1551776496417.JavaMail.zimbra@redhat.com>
+References: <6e7bb2a78eea357c564b908a224e23e8231b18ef.1551737546.git.jstancek@redhat.com>
+ <CAOQ4uxgExCCq+Ky4PV5NG8XLgp7CaWjtuAK0uAbYiNpXb4352A@mail.gmail.com>
+ <1782236297.5156886.1551772932632.JavaMail.zimbra@redhat.com>
+ <CAOQ4uxg-8nTXPRj2tXsbU4uMKvwty_Pxgk0TrknzL9yTO-R0fA@mail.gmail.com>
+ <1828199858.5175836.1551776496417.JavaMail.zimbra@redhat.com>
+Message-ID: <CAOQ4uxhe2NJ+pj67ZhviL3++7oKMo_FYvM64gnGch_vXDpSw4g@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Thanks Steve for the review.
-
-On Tue, 5 Mar 2019 at 01:06, Steve Muckle <smuckle@google.com> wrote:
->
-> Hi Sumit,
->
-> On 02/25/2019 04:32 AM, Sumit Garg wrote:
-> > This tests the rt_tgsigqueueinfo() syscall used to queue a signal and
-> > data to the single thread specified by the combination of tgid, a thread
-> > group ID, and tid, a thread in that thread group.
+> > > >
+> > > > Please use .mount_device = 1 to contain the effects of
+> > > > FAN_MARK_FILESYSTEM/FAN_MARK_MOUNT to events on the
+> > > > test device.
+> > >
+> > > I recall (from long time ago) that we saw some daemons that
+> > > could probe new mount points, like gvsfd.
+> > >
 > >
-> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > ---
-> >   runtest/syscalls                                   |  1 +
-> >   .../kernel/syscalls/rt_tgsigqueueinfo/.gitignore   |  1 +
-> >   .../kernel/syscalls/rt_tgsigqueueinfo/Makefile     | 10 ++++
-> >   .../rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c        | 53 ++++++++++++++++++++++
-> >   4 files changed, 65 insertions(+)
-> >   create mode 100644 testcases/kernel/syscalls/rt_tgsigqueueinfo/.gitignore
-> >   create mode 100644 testcases/kernel/syscalls/rt_tgsigqueueinfo/Makefile
-> >   create mode 100644 testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
+> > I am not following. How is that related to our case?
+>
+> It's a potential (outside) source of events, that won't originate
+> from test child process.
+>
+
+Ah. I see.
+But the problem with filtering by generator pid is that
+you would need to fix all fanotify tests to do that and
+some tests actually verify that reported pid is correct,
+so chicken and egg situation.
+
+Let's see if this is a real problem that people run into
+or just a concern. The real issue that you saw was from
+test bug that wasn't setting the mark on a test device but
+on the system mount.
+
+
 > >
-> > diff --git a/runtest/syscalls b/runtest/syscalls
-> > index 70d3561..861c0a6 100644
-> > --- a/runtest/syscalls
-> > +++ b/runtest/syscalls
-> > @@ -996,6 +996,7 @@ rt_sigprocmask01 rt_sigprocmask01
-> >   rt_sigprocmask02 rt_sigprocmask02
-> >   rt_sigqueueinfo01 rt_sigqueueinfo01
-> >   rt_sigsuspend01 rt_sigsuspend01
-> > +rt_tgsigqueueinfo01 rt_tgsigqueueinfo01
+> > > >
+> > > > While at it, I see that fanotify05 also sets a FAN_MARK_MOUNT
+> > > > without having a private test mount.
+> > > > Can fix this by either .mount_device = 1 or using the bind mount
+> > > > approach taken by fanotify06.
+> > >
+> > > I see fanotify01 failing as well.
+> > >
 > >
-> >   sbrk01 sbrk01
-> >   sbrk02 sbrk02
-> > diff --git a/testcases/kernel/syscalls/rt_tgsigqueueinfo/.gitignore b/testcases/kernel/syscalls/rt_tgsigqueueinfo/.gitignore
-> > new file mode 100644
-> > index 0000000..f9ffa58
-> > --- /dev/null
-> > +++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/.gitignore
-> > @@ -0,0 +1 @@
-> > +rt_tgsigqueueinfo01
-> > diff --git a/testcases/kernel/syscalls/rt_tgsigqueueinfo/Makefile b/testcases/kernel/syscalls/rt_tgsigqueueinfo/Makefile
-> > new file mode 100644
-> > index 0000000..035ca64
-> > --- /dev/null
-> > +++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/Makefile
-> > @@ -0,0 +1,10 @@
-> > +# Copyright (c) 2019 - Linaro Limited. All rights reserved.
-> > +# SPDX-License-Identifier: GPL-2.0-or-later
-> > +
-> > +top_srcdir             ?= ../../../..
-> > +
-> > +rt_tgsigqueueinfo01: CFLAGS+=-pthread
-> > +
-> > +include $(top_srcdir)/include/mk/testcases.mk
-> > +
-> > +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> > diff --git a/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
-> > new file mode 100644
-> > index 0000000..336b968
-> > --- /dev/null
-> > +++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
-> > @@ -0,0 +1,53 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/*
-> > + * Copyright (c) 2019 Linaro Limited. All rights reserved.
-> > + * Author: Sumit Garg <sumit.garg@linaro.org>
-> > + */
-> > +
-> > +/*
-> > + * Test rt_tgsigqueueinfo
-> > + *
-> > + * This tests the rt_tgsigqueueinfo() syscall. It sends the signal and data
-> > + * to the single thread specified by the combination of tgid, a thread group
-> > + * ID, and tid, a thread in that thread group.
-> > + */
-> > +
-> > +#define _GNU_SOURCE
-> > +#include <err.h>
-> > +#include <pthread.h>
-> > +#include "tst_test.h"
-> > +#include "lapi/syscalls.h"
-> > +
-> > +void *tfunc(void *arg LTP_ATTRIBUTE_UNUSED)
-> > +{
-> > +     siginfo_t uinfo;
-> > +
-> > +     uinfo.si_errno = 0;
-> > +     uinfo.si_code = SI_QUEUE;
-> > +
-> > +     TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
-> > +                      syscall(__NR_gettid), SIGCHLD, &uinfo));
+> > Failing how? please provide more details.
 >
-> It looks like the pthread here is sending the signal to itself which
-> seems like a special case. Not that it isn't worth testing but I'd think
-> there should be a test which sends the signal to a different thread.
-> This (the self-send case) could be an additional test.
->
-
-Hmm. So do you suggest to add following cases?
-
-1. parent -> thread
-2. thread1 -> thread2
-
-BTW, in above cases I think we need to communicate "tid" obtained via
-gettid() to parent and other thread to queue signal which could be
-done via "arg" parameter in pthread_create().
-
-> > +     if (TST_RET)
-> > +             tst_res(TFAIL, "Test Failed");
-> > +     else
-> > +             tst_res(TPASS, "Test Succeeded");
->
-> I recommend verifying the signal and its data (si_value) are delivered
-> successfully prior to test completion.
+> tst_test.c:1085: INFO: Timeout per run is 0h 05m 00s
+> fanotify01.c:68: INFO: Test #0: inode mark events
+> fanotify01.c:290: PASS: got event: mask=31 pid=28138 fd=8
+> fanotify01.c:290: PASS: got event: mask=11 pid=28138 fd=-2
+> fanotify01.c:290: PASS: got event: mask=10 pid=28138 fd=-2
+> fanotify01.c:290: PASS: got event: mask=2a pid=28138 fd=9
+> fanotify01.c:290: PASS: got event: mask=a pid=28138 fd=-2
+> fanotify01.c:290: PASS: got event: mask=8 pid=28138 fd=-2
+> fanotify01.c:290: PASS: got event: mask=20 pid=28138 fd=11
+> fanotify01.c:290: PASS: got event: mask=b pid=28138 fd=10
+> fanotify01.c:290: PASS: got event: mask=9 pid=28138 fd=-2
+> fanotify01.c:290: PASS: got event: mask=8 pid=28138 fd=-2
+> fanotify01.c:290: PASS: got event: mask=2 pid=28138 fd=13
+> fanotify01.c:290: PASS: got event: mask=8 pid=28138 fd=12
+> fanotify01.c:68: INFO: Test #1: mount mark events
+> fanotify01.c:290: PASS: got event: mask=31 pid=28138 fd=8
+> fanotify01.c:290: PASS: got event: mask=11 pid=28138 fd=-2
+> fanotify01.c:290: PASS: got event: mask=10 pid=28138 fd=-2
+> fanotify01.c:290: PASS: got event: mask=2a pid=28138 fd=9
+> fanotify01.c:290: PASS: got event: mask=a pid=28138 fd=-2
+> fanotify01.c:290: PASS: got event: mask=8 pid=28138 fd=-2
+> fanotify01.c:290: PASS: got event: mask=20 pid=28138 fd=11
+> fanotify01.c:256: FAIL: got event: mask=20 (expected 2) pid=5277 fd=10
+> fanotify01.c:256: FAIL: got event: mask=20 (expected 1) pid=5277 fd=-2
+> fanotify01.c:256: FAIL: got event: mask=20 (expected 8) pid=5277 fd=-2
+> fanotify01.c:256: FAIL: got event: mask=20 (expected 2) pid=5277 fd=-2
+> fanotify01.c:256: FAIL: got event: mask=20 (expected 8) pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=20 pid=5277 fd=-2
+> ... <previous message repeats hundreds of times>
+> fanotify01.c:249: FAIL: got unnecessary event: mask=1 pid=28138 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=1 pid=28138 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=2 pid=28138 fd=14
+> fanotify01.c:249: FAIL: got unnecessary event: mask=2 pid=28138 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=2 pid=28138 fd=-2
+> fanotify01.c:249: FAIL: got unnecessary event: mask=8 pid=28138 fd=13
+> fanotify01.c:68: INFO: Test #2: filesystem mark events
+> fanotify01.c:77: CONF: FAN_MARK_FILESYSTEM not supported in kernel?
 >
 
-Ok, will add this verification via signal handler.
+Which kernel is that?
 
--Sumit
+Can you say which program is run by the processes with pid 5277? 28138?
 
-> > +
-> > +     return NULL;
-> > +}
-> > +
-> > +static void verify_rt_tgsigqueueinfo(void)
-> > +{
-> > +     pthread_t pt;
-> > +
-> > +     TEST(pthread_create(&pt, NULL, tfunc, NULL));
-> > +     if (TST_RET)
-> > +             tst_brk(TFAIL | TTERRNO, "pthread_create failed");
-> > +
-> > +     TEST(pthread_join(pt, NULL));
-> > +     if (TST_RET)
-> > +             tst_brk(TFAIL | TTERRNO, "pthread_join failed");
-> > +}
-> > +
-> > +static struct tst_test test = {
-> > +     .test_all = verify_rt_tgsigqueueinfo,
-> > +};
-> >
->
-> thanks,
-> steve
->
+Thanks,
+Amir.
