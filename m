@@ -1,86 +1,82 @@
-From: Steve Muckle <smuckle@google.com>
-Date: Wed, 6 Mar 2019 12:58:56 -0800
-Subject: [LTP] [RFC PATCH 1/2] tst_test: Add test multiplex function
-In-Reply-To: <20190306152430.25219-1-chrubis@suse.cz>
-References: <20190306152430.25219-1-chrubis@suse.cz>
-Message-ID: <958f427f-647a-c92c-98ec-7ca7e1e6bca9@google.com>
+From: Saravana Kannan <saravanak@google.com>
+Date: Wed,  6 Mar 2019 13:58:59 -0800
+Subject: [LTP] [PATCH] setpriority01: Skip only PRIO_USER when unable to add
+	test user
+Message-ID: <20190306215859.66044-1-saravanak@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 03/06/2019 07:24 AM, Cyril Hrubis wrote:
-> The test multiplex function is intended for running the test function in
-> a loop for a different settings. The indended purpose is to run tests
-> for both libc wrapper and raw syscall as well as for different syscall
-> variants.
-> 
-> The commit itself adds a test_multiplex() function into the tst_test
-> structure, if set this function is called in a loop before each test
-> iteration and is responsible for changing the test variant into next
-> one. The iterations continue until the function returns zero.
-> 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> CC: Mark Salyzyn <salyzyn@android.com>
-> CC: Steve Muckle <smuckle@google.com>
-> CC: Jan Stancek <jstancek@redhat.com>
+We don't need to skip all the tests just because we are unable to add
+a test user. Not having a test user only affects PRIO_USER test case.
+So just skip that one and continue running the rest of the tests.
 
-Approach seems good to me.
+This also allows this test case to be built and run on Android.
 
-Reviewed-by: Steve Muckle <smuckle@google.com>
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+ .../kernel/syscalls/setpriority/Makefile      |  5 -----
+ .../syscalls/setpriority/setpriority01.c      | 22 +++++++++++--------
+ 2 files changed, 13 insertions(+), 14 deletions(-)
 
-> ---
->   include/tst_test.h | 14 ++++++++++++++
->   lib/tst_test.c     | 11 +++++++++--
->   2 files changed, 23 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index da41f776d..b747b24d5 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -146,6 +146,20 @@ struct tst_test {
->   	 */
->   	int all_filesystems:1;
->   
-> +	/*
-> +	 * If set this function is used to mutiplex between different test
-> +	 * variants.
-> +	 *
-> +	 * Multiplexers are the way how to run the same test for different
-> +	 * settings. The intended use is to test different syscall
-> +	 * wrappers/variants but the API is generic and does not limit the
-> +	 * usage in any way.
-> +	 *
-> +	 * Each time the function is called it switches to next test variant,
-> +	 * returns zero if all variants has been iterated over.
-> +	 */
-> +	int (*test_multiplex)(void);
-> +
->   	/* Minimal device size in megabytes */
->   	unsigned int dev_min_size;
->   
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 7dd890b8d..6b033c879 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -1009,8 +1009,15 @@ static void testrun(void)
->   		if (!cont)
->   			break;
->   
-> -		run_tests();
-> -		heartbeat();
-> +		if (tst_test->test_multiplex) {
-> +			while (tst_test->test_multiplex()) {
-> +				run_tests();
-> +				heartbeat();
-> +			}
-> +		} else {
-> +			run_tests();
-> +			heartbeat();
-> +		}
->   	}
->   
->   	do_test_cleanup();
-> 
+diff --git a/testcases/kernel/syscalls/setpriority/Makefile b/testcases/kernel/syscalls/setpriority/Makefile
+index 5d00984ea..7a1a87a28 100644
+--- a/testcases/kernel/syscalls/setpriority/Makefile
++++ b/testcases/kernel/syscalls/setpriority/Makefile
+@@ -19,9 +19,4 @@
+ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+-
+-ifeq ($(ANDROID), 1)
+-FILTER_OUT_MAKE_TARGETS	+= setpriority01
+-endif
+-
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/setpriority/setpriority01.c b/testcases/kernel/syscalls/setpriority/setpriority01.c
+index 38b77b77f..147d173c5 100644
+--- a/testcases/kernel/syscalls/setpriority/setpriority01.c
++++ b/testcases/kernel/syscalls/setpriority/setpriority01.c
+@@ -92,9 +92,16 @@ static void verify_setpriority(unsigned int n)
+ {
+ 	struct tcase *tc = &tcases[n];
+ 
++	if (tc->which == PRIO_USER && !user_added) {
++		tst_res(TCONF, "setpriority(%s(%d), %d, -20..19) skipped - Can't add user",
++			str_which(tc->which), tc->which, *tc->who);
++		return;
++	}
++
+ 	pid = SAFE_FORK();
+ 	if (pid == 0) {
+-		SAFE_SETUID(uid);
++		if (user_added)
++			SAFE_SETUID(uid);
+ 		SAFE_SETPGID(0, 0);
+ 
+ 		TST_CHECKPOINT_WAKE_AND_WAIT(0);
+@@ -116,14 +123,11 @@ static void setup(void)
+ 	const char *const cmd_useradd[] = {"useradd", username, NULL};
+ 	struct passwd *ltpuser;
+ 
+-	if (eaccess("/etc/passwd", W_OK))
+-		tst_brk(TCONF, "/etc/passwd is not accessible");
+-
+-	tst_run_cmd(cmd_useradd, NULL, NULL, 0);
+-	user_added = 1;
+-
+-	ltpuser = SAFE_GETPWNAM(username);
+-	uid = ltpuser->pw_uid;
++	if (!tst_run_cmd(cmd_useradd, NULL, NULL, 1)) {
++		user_added = 1;
++		ltpuser = SAFE_GETPWNAM(username);
++		uid = ltpuser->pw_uid;
++	}
+ }
+ 
+ static void cleanup(void)
+-- 
+2.21.0.352.gf09ad66450-goog
 
