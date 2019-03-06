@@ -1,82 +1,83 @@
-From: Saravana Kannan <saravanak@google.com>
-Date: Wed,  6 Mar 2019 13:58:59 -0800
-Subject: [LTP] [PATCH] setpriority01: Skip only PRIO_USER when unable to add
-	test user
-Message-ID: <20190306215859.66044-1-saravanak@google.com>
+From: Steve Muckle <smuckle@google.com>
+Date: Wed,  6 Mar 2019 15:44:52 -0800
+Subject: [LTP] [PATCH] syscalls/rt_tgsigqueueinfo: fix compilation for
+	Android
+Message-ID: <20190306234452.197997-1-smuckle@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We don't need to skip all the tests just because we are unable to add
-a test user. Not having a test user only affects PRIO_USER test case.
-So just skip that one and continue running the rest of the tests.
+Glibc refers to the sigval_t in _sifields._rt as si_sigval. This
+differs from what is in the kernel's uapi siginfo.h, _sigval, which is
+what is used by Android's bionic.
 
-This also allows this test case to be built and run on Android.
-
-Signed-off-by: Saravana Kannan <saravanak@google.com>
+Signed-off-by: Steve Muckle <smuckle@google.com>
 ---
- .../kernel/syscalls/setpriority/Makefile      |  5 -----
- .../syscalls/setpriority/setpriority01.c      | 22 +++++++++++--------
- 2 files changed, 13 insertions(+), 14 deletions(-)
+ .../rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c       | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/setpriority/Makefile b/testcases/kernel/syscalls/setpriority/Makefile
-index 5d00984ea..7a1a87a28 100644
---- a/testcases/kernel/syscalls/setpriority/Makefile
-+++ b/testcases/kernel/syscalls/setpriority/Makefile
-@@ -19,9 +19,4 @@
- top_srcdir		?= ../../../..
+diff --git a/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
+index 4ae17c220..c8252ed8a 100644
+--- a/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
++++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
+@@ -18,12 +18,19 @@
+  */
  
- include $(top_srcdir)/include/mk/testcases.mk
--
--ifeq ($(ANDROID), 1)
--FILTER_OUT_MAKE_TARGETS	+= setpriority01
--endif
--
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/setpriority/setpriority01.c b/testcases/kernel/syscalls/setpriority/setpriority01.c
-index 38b77b77f..147d173c5 100644
---- a/testcases/kernel/syscalls/setpriority/setpriority01.c
-+++ b/testcases/kernel/syscalls/setpriority/setpriority01.c
-@@ -92,9 +92,16 @@ static void verify_setpriority(unsigned int n)
- {
- 	struct tcase *tc = &tcases[n];
- 
-+	if (tc->which == PRIO_USER && !user_added) {
-+		tst_res(TCONF, "setpriority(%s(%d), %d, -20..19) skipped - Can't add user",
-+			str_which(tc->which), tc->which, *tc->who);
-+		return;
-+	}
+ #define _GNU_SOURCE
 +
- 	pid = SAFE_FORK();
- 	if (pid == 0) {
--		SAFE_SETUID(uid);
-+		if (user_added)
-+			SAFE_SETUID(uid);
- 		SAFE_SETPGID(0, 0);
+ #include <err.h>
+ #include <pthread.h>
+ #include "tst_safe_pthread.h"
+ #include "tst_test.h"
+ #include "lapi/syscalls.h"
  
- 		TST_CHECKPOINT_WAKE_AND_WAIT(0);
-@@ -116,14 +123,11 @@ static void setup(void)
- 	const char *const cmd_useradd[] = {"useradd", username, NULL};
- 	struct passwd *ltpuser;
- 
--	if (eaccess("/etc/passwd", W_OK))
--		tst_brk(TCONF, "/etc/passwd is not accessible");
--
--	tst_run_cmd(cmd_useradd, NULL, NULL, 0);
--	user_added = 1;
--
--	ltpuser = SAFE_GETPWNAM(username);
--	uid = ltpuser->pw_uid;
-+	if (!tst_run_cmd(cmd_useradd, NULL, NULL, 1)) {
-+		user_added = 1;
-+		ltpuser = SAFE_GETPWNAM(username);
-+		uid = ltpuser->pw_uid;
-+	}
++#ifndef ANDROID
++#define SI_SIGVAL si_sigval
++#else
++#define SI_SIGVAL _sigval
++#endif
++
+ static char sigval_send[] = "rt_tgsigqueueinfo data";
+ static volatile int signum_rcv;
+ static char *sigval_rcv;
+@@ -32,7 +39,7 @@ static void sigusr1_handler(int signum, siginfo_t *uinfo,
+ 			    void *p LTP_ATTRIBUTE_UNUSED)
+ {
+ 	signum_rcv = signum;
+-	sigval_rcv = uinfo->_sifields._rt.si_sigval.sival_ptr;
++	sigval_rcv = uinfo->_sifields._rt.SI_SIGVAL.sival_ptr;
  }
  
- static void cleanup(void)
+ void *send_rcv_func(void *arg)
+@@ -44,7 +51,7 @@ void *send_rcv_func(void *arg)
+ 
+ 	uinfo.si_errno = 0;
+ 	uinfo.si_code = SI_QUEUE;
+-	uinfo._sifields._rt.si_sigval.sival_ptr = sigval_send;
++	uinfo._sifields._rt.SI_SIGVAL.sival_ptr = sigval_send;
+ 
+ 	TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
+ 			 syscall(__NR_gettid), SIGUSR1, &uinfo));
+@@ -106,7 +113,7 @@ static void verify_signal_parent_thread(void)
+ 
+ 	uinfo.si_errno = 0;
+ 	uinfo.si_code = SI_QUEUE;
+-	uinfo._sifields._rt.si_sigval.sival_ptr = sigval_send;
++	uinfo._sifields._rt.SI_SIGVAL.sival_ptr = sigval_send;
+ 
+ 	TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
+ 			 tid, SIGUSR1, &uinfo));
+@@ -123,7 +130,7 @@ void *sender_func(void *arg)
+ 
+ 	uinfo.si_errno = 0;
+ 	uinfo.si_code = SI_QUEUE;
+-	uinfo._sifields._rt.si_sigval.sival_ptr = sigval_send;
++	uinfo._sifields._rt.SI_SIGVAL.sival_ptr = sigval_send;
+ 
+ 	TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
+ 			 *tid, SIGUSR1, &uinfo));
 -- 
 2.21.0.352.gf09ad66450-goog
 
