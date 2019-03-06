@@ -1,83 +1,311 @@
 From: Sumit Garg <sumit.garg@linaro.org>
-Date: Wed, 6 Mar 2019 12:18:58 +0530
-Subject: [LTP] [PATCH v2 1/2] syscalls/sync_file_range: add partial file
-	sync test-case
-In-Reply-To: <20190305141903.GD13703@rei>
-References: <1551770065-20444-1-git-send-email-sumit.garg@linaro.org>
- <20190305141903.GD13703@rei>
-Message-ID: <CAFA6WYOPW0mkmGFbcZRmvhXsOJouUi1d-rcV_-sgKVKpkqSMSA@mail.gmail.com>
+Date: Wed, 6 Mar 2019 13:27:31 +0530
+Subject: [LTP] [PATCH v2] syscalls: add rt_tgsigqueueinfo() test-case
+In-Reply-To: <20190305153025.GF13703@rei>
+References: <1551795743-30614-1-git-send-email-sumit.garg@linaro.org>
+ <20190305153025.GF13703@rei>
+Message-ID: <CAFA6WYP6jzL3zSTp4M65-pOEjmW=6G4hPHsnwgDe0fM_K9YQ3g@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, 5 Mar 2019 at 19:49, Cyril Hrubis <chrubis@suse.cz> wrote:
+Thanks for the review.
+
+On Tue, 5 Mar 2019 at 21:01, Cyril Hrubis <chrubis@suse.cz> wrote:
 >
 > Hi!
-> > +static void verify_sync_partial_file(void)
+> > diff --git a/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
+> > new file mode 100644
+> > index 0000000..132b31c
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
+> > @@ -0,0 +1,200 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright (c) 2019 Linaro Limited. All rights reserved.
+> > + * Author: Sumit Garg <sumit.garg@linaro.org>
+> > + */
+> > +
+> > +/*
+> > + * Test rt_tgsigqueueinfo
+> > + *
+> > + * This tests the rt_tgsigqueueinfo() syscall. It sends the signal and data
+> > + * to the single thread specified by the combination of tgid, a thread group
+> > + * ID, and tid, a thread in that thread group.
+> > + *
+> > + * Also this implement 3 tests differing on the basis of signal sender:
+> > + * - Sender and receiver is the same thread.
+> > + * - Sender is parent of the thread.
+> > + * - Sender is different thread.
+> > + */
+> > +
+> > +#define _GNU_SOURCE
+> > +#include <err.h>
+> > +#include <string.h>
+> > +#include <pthread.h>
+> > +#include "tst_safe_pthread.h"
+> > +#include "tst_test.h"
+> > +#include "lapi/syscalls.h"
+> > +
+> > +static char sigval_send[] = "rt_tgsigqueueinfo data";
+> > +static int signum_rcv;
+>
+> This has to be volatile, otherwise compiler has no idea that the value
+> could be changed asynchronically from within the signal handler and may
+> miscompile the loop (when optimalizations are enabled) that waits for
+> the signal arrival.
+>
+
+Agree, will make it volatile.
+
+> > +static char sigval_rcv[128];
+> > +
+> > +static pthread_cond_t sigusr1_cond = PTHREAD_COND_INITIALIZER;
+> > +static pthread_mutex_t sigusr1_mutex = PTHREAD_MUTEX_INITIALIZER;
+> > +
+> > +static pthread_cond_t tid_cond = PTHREAD_COND_INITIALIZER;
+> > +static pthread_mutex_t tid_mutex = PTHREAD_MUTEX_INITIALIZER;
+> > +
+> > +static void sigusr1_handler(int signum, siginfo_t *uinfo,
+> > +                         void *p LTP_ATTRIBUTE_UNUSED)
 > > +{
-> > +     int fd;
-> > +     unsigned long written;
+> > +     char *rcv = uinfo->_sifields._rt.si_sigval.sival_ptr;
 > > +
-> > +     fd = SAFE_OPEN(FNAME, O_RDWR|O_CREAT, MODE);
+> > +     if (rcv)
+> > +             strcpy(sigval_rcv, rcv);
+>
+> I do wonder if we need to really copy the data here. If we send a
+> pointer shouldn't be enough to store the pointer and check it against
+> sigval_send later on?
+>
+
+Hmm, will assign pointer only rather than copy data.
+
+> > +     signum_rcv = signum;
 > > +
-> > +     tst_dev_bytes_written(tst_device->dev);
-> > +
-> > +     tst_fill_fd(fd, 0xff, TST_MB, FILE_SIZE_MB);
-> > +
-> > +     TEST(sync_file_range(fd, FILE_SIZE/4, FILE_SIZE/2,
-> > +                          SYNC_FILE_RANGE_WAIT_BEFORE |
-> > +                          SYNC_FILE_RANGE_WRITE |
-> > +                          SYNC_FILE_RANGE_WAIT_AFTER));
-> > +
-> > +     if (TST_RET)
-> > +             tst_brk(TFAIL | TTERRNO, "sync_file_range() failed");
-> > +
-> > +     written = tst_dev_bytes_written(tst_device->dev);
-> > +
-> > +     SAFE_CLOSE(fd);
-> > +
-> > +     if (written >= FILE_SIZE/2)
-> > +             tst_res(TPASS, "Test file range synced to device");
-> > +     else
-> > +             tst_res(TFAIL, "Synced %li, expected %i", written,
-> > +                     FILE_SIZE/2);
+> > +     pthread_cond_broadcast(&sigusr1_cond);
+>
+> It's not safe to call anything but a couple of signal-async-safe
+> functions in the signal handler, see:
+>
+> http://www.man7.org/linux/man-pages/man7/signal-safety.7.html
+>
+
+Thanks for this info.
+
+> I guess that the easiest solution here would be doing something as:
+>
+>         while (!signum_rcv)
+>                 usleep(1000);
+>
+> Instead of the pthread_cond_wait().
+>
+
+Ok will use this approach instead.
+
 > > +}
+> > +
+> > +void *tfunc_self(void *arg LTP_ATTRIBUTE_UNUSED)
+> > +{
+> > +     siginfo_t uinfo;
+> > +
+> > +     signum_rcv = 0;
+> > +     memset(sigval_rcv, 0, sizeof(sigval_rcv));
+> > +
+> > +     uinfo.si_errno = 0;
+> > +     uinfo.si_code = SI_QUEUE;
+> > +     uinfo._sifields._rt.si_sigval.sival_ptr = sigval_send;
+> > +
+> > +     TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
+> > +                      syscall(__NR_gettid), SIGUSR1, &uinfo));
+> > +     if (TST_RET)
+> > +             tst_brk(TFAIL | TTERRNO, "rt_tgsigqueueinfo failed");
+> > +
+> > +     pthread_mutex_lock(&sigusr1_mutex);
+> > +     while (!signum_rcv)
+> > +             pthread_cond_wait(&sigusr1_cond, &sigusr1_mutex);
+> > +     pthread_mutex_unlock(&sigusr1_mutex);
+> > +
+> > +     if ((signum_rcv == SIGUSR1) && !strcmp(sigval_send, sigval_rcv))
+> > +             tst_res(TPASS, "Test signal to self succeeded");
+> > +     else
+> > +             tst_res(TFAIL, "Test failed");
 >
->
-> Looking at this the function is nearly the same as the other one, I
-> guess that we may as well define the function as:
->
-> static void verify_sync_file_range(off64_t off, off64_t size, char byte)
-> {
->         ...
-> }
+> It wouldn't harm to be a bit more verbose here. I.e. tell the user what
+> exactly was wrong.
 >
 
-Yeah it could be made common. But we may not be able to reuse it for
-third case you mentioned below.
+Will update failure message as follows:
 
-> Also I'm not sure I was clear enough, but I was suggesting to check for
-> upper bound for the synced size as well, which is why I suggested to do
-> full write, sync only part of it, then check that the size was within
-> bounds, i.e. >= size and  <= size + epsilon.
+tst_res(TFAIL, "Failed to deliver signal/data to self thread");
+
+> > +     return NULL;
+>
+> There is a nice trick we use in LTP, if you do return arg; here you can
+> drop the ATTRIBUTE_UNUSED.
 >
 
-Do you see any value add of upper bound check? AFAIK, device writes
-continue in back-end and we might not be sure about appropriate value
-for "epsilon".
+Ok.
 
-> I guess that we can even extend this to call the sync over a range that
-> has been only partially written, but for that we would have to be
-> careful and make sure all the data has been either synced at the end of
-> the test function or use a different file for each test.
+> > +}
+> > +
+> > +static void verify_signal_self(void)
+> > +{
+> > +     pthread_t pt;
+> > +
+> > +     SAFE_PTHREAD_CREATE(&pt, NULL, tfunc_self, NULL);
+> > +
+> > +     SAFE_PTHREAD_JOIN(pt, NULL);
+> > +}
+> > +
+> > +void *t1func(void *arg)
+> > +{
+> > +     pid_t *tid = arg;
+> > +
+> > +     *tid = syscall(__NR_gettid);
+> > +
+> > +     pthread_cond_broadcast(&tid_cond);
+> > +
+> > +     signum_rcv = 0;
+> > +     memset(sigval_rcv, 0, sizeof(sigval_rcv));
+>
+> This initialization has to be done before we notify the parent thread,
+> otherwise there is a race.
 >
 
-I think using different file for each case looks more appropriate.
+Good catch. Will move the initialization before notify.
+
+> > +     pthread_mutex_lock(&sigusr1_mutex);
+> > +     while (!signum_rcv)
+> > +             pthread_cond_wait(&sigusr1_cond, &sigusr1_mutex);
+> > +     pthread_mutex_unlock(&sigusr1_mutex);
+> > +
+> > +     if ((signum_rcv == SIGUSR1) && !strcmp(sigval_send, sigval_rcv))
+> > +             tst_res(TPASS, "Test signal to different thread succeeded");
+> > +     else
+> > +             tst_res(TFAIL, "Test failed");
+>
+> Here as well, a bit more verbose, maybe we should put the code into a
+> common check function, since it's the same as in the self function.
+>
+
+Check is same but to provide case specific info message is different as:
+
+tst_res(TFAIL, "Failed to deliver signal/data to different thread");
+
+> > +     return NULL;
+> > +}
+> > +
+> > +static void verify_signal_parent_thread(void)
+> > +{
+> > +     pid_t tid = -1;
+> > +     pthread_t pt;
+> > +     siginfo_t uinfo;
+> > +
+> > +     SAFE_PTHREAD_CREATE(&pt, NULL, t1func, &tid);
+> > +
+> > +     pthread_mutex_lock(&tid_mutex);
+> > +     while (tid == -1)
+> > +             pthread_cond_wait(&tid_cond, &tid_mutex);
+> > +     pthread_mutex_unlock(&tid_mutex);
+>
+> We do have checkpoint library in LTP that is much easier to use than
+> this, see:
+>
+> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#229-fork-and-parent-child-synchronization
+>
+
+Looks good, will use this library instead.
+
+> > +     uinfo.si_errno = 0;
+> > +     uinfo.si_code = SI_QUEUE;
+> > +     uinfo._sifields._rt.si_sigval.sival_ptr = sigval_send;
+> > +
+> > +     TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
+> > +                      tid, SIGUSR1, &uinfo));
+> > +     if (TST_RET)
+> > +             tst_brk(TFAIL | TTERRNO, "rt_tgsigqueueinfo failed");
+> > +
+> > +     SAFE_PTHREAD_JOIN(pt, NULL);
+> > +}
+> > +
+> > +void *t2func(void *arg)
+> > +{
+> > +     pid_t *tid = arg;
+> > +     siginfo_t uinfo;
+> > +
+> > +     uinfo.si_errno = 0;
+> > +     uinfo.si_code = SI_QUEUE;
+> > +     uinfo._sifields._rt.si_sigval.sival_ptr = sigval_send;
+> > +
+> > +     TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
+> > +                      *tid, SIGUSR1, &uinfo));
+> > +     if (TST_RET)
+> > +             tst_brk(TFAIL | TTERRNO, "rt_tgsigqueueinfo failed");
+> > +
+> > +     return NULL;
+> > +}
+> > +
+> > +static void verify_signal_inter_thread(void)
+> > +{
+> > +     pid_t tid = -1;
+> > +     pthread_t pt1, pt2;
+> > +
+> > +     SAFE_PTHREAD_CREATE(&pt1, NULL, t1func, &tid);
+> > +
+> > +     pthread_mutex_lock(&tid_mutex);
+> > +     while (tid == -1)
+> > +             pthread_cond_wait(&tid_cond, &tid_mutex);
+> > +     pthread_mutex_unlock(&tid_mutex);
+> > +
+> > +     SAFE_PTHREAD_CREATE(&pt2, NULL, t2func, &tid);
+>
+> That's very minor but maybe it would be a bit more readable if we named
+> the t1func and t2func sender_func and receiver_func or anything that
+> hints the function purpose.
+>
+
+Ok. Also will rename tfunc_self -> send_rcv_func.
 
 -Sumit
 
+> > +     SAFE_PTHREAD_JOIN(pt2, NULL);
+> > +
+> > +     SAFE_PTHREAD_JOIN(pt1, NULL);
+> > +}
+> > +
+> > +static struct tcase {
+> > +     void (*tfunc)(void);
+> > +} tcases[] = {
+> > +     {&verify_signal_self},
+> > +     {&verify_signal_parent_thread},
+> > +     {&verify_signal_inter_thread},
+> > +};
+> > +
+> > +static void run(unsigned int i)
+> > +{
+> > +     tcases[i].tfunc();
+> > +}
+> > +
+> > +static void setup(void)
+> > +{
+> > +     struct sigaction sigusr1 = {
+> > +             .sa_flags = SA_SIGINFO,
+> > +             .sa_sigaction = sigusr1_handler,
+> > +     };
+> > +
+> > +     SAFE_SIGACTION(SIGUSR1, &sigusr1, NULL);
+> > +}
+> > +
+> > +static struct tst_test test = {
+> > +     .tcnt = ARRAY_SIZE(tcases),
+> > +     .setup = setup,
+> > +     .test = run,
+> > +};
+>
+> Otherwise it looks good.
 > --
 > Cyril Hrubis
 > chrubis@suse.cz
