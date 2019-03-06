@@ -1,142 +1,46 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed,  6 Mar 2019 16:24:30 +0100
-Subject: [LTP] [RFC PATCH 2/2] syscalls/select04: Test four syscall variants
-In-Reply-To: <20190306152430.25219-1-chrubis@suse.cz>
-References: <20190306152430.25219-1-chrubis@suse.cz>
-Message-ID: <20190306152430.25219-2-chrubis@suse.cz>
+Date: Wed, 6 Mar 2019 16:30:54 +0100
+Subject: [LTP] [PATCH 1/2 v4] syscalls: Add set_mempolicy numa tests.
+In-Reply-To: <2092842506.4709417.1551685162547.JavaMail.zimbra@redhat.com>
+References: <20190228153425.10286-1-chrubis@suse.cz>
+ <20190228153425.10286-2-chrubis@suse.cz>
+ <2092842506.4709417.1551685162547.JavaMail.zimbra@redhat.com>
+Message-ID: <20190306153054.GC12479@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This commit makes use of the newly added test_multiplex() function to
-switch between different syscall variants/wrappers at runtime.
+Hi!
+> > We also check for free memory on each numa memory mode and skip nodes
+> > that don't have sufficient amount of memory for a particular test. The
+> > tests checks usuall for twice as much memory per each node in order to
+> > allow for allocations to be "misplaced".
+> 
+> I wonder if we should add some constant to it. I have foggy idea, that
+> kernel keeps some reserves.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-CC: Mark Salyzyn <salyzyn@android.com>
-CC: Steve Muckle <smuckle@google.com>
-CC: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/select/select04.c   |  5 +-
- testcases/kernel/syscalls/select/select_mpx.h | 79 +++++++++++++++++++
- 2 files changed, 83 insertions(+), 1 deletion(-)
- create mode 100644 testcases/kernel/syscalls/select/select_mpx.h
+Hmm, no idea about this, I guess that adding a few megabytes for a good
+luck in the library wouldn't do any harm.
 
-diff --git a/testcases/kernel/syscalls/select/select04.c b/testcases/kernel/syscalls/select/select04.c
-index 86bdffcdf..300992233 100644
---- a/testcases/kernel/syscalls/select/select04.c
-+++ b/testcases/kernel/syscalls/select/select04.c
-@@ -27,6 +27,8 @@
- 
- #include "tst_timer_test.h"
- 
-+#include "select_mpx.h"
-+
- static int fds[2];
- 
- static int sample_fn(int clk_id, long long usec)
-@@ -39,7 +41,7 @@ static int sample_fn(int clk_id, long long usec)
- 	FD_SET(fds[0], &sfds);
- 
- 	tst_timer_start(clk_id);
--	TEST(select(1, &sfds, NULL, NULL, &timeout));
-+	TEST(do_select(1, &sfds, NULL, NULL, &timeout));
- 	tst_timer_stop();
- 	tst_timer_sample();
- 
-@@ -69,5 +71,6 @@ static struct tst_test test = {
- 	.scall = "select()",
- 	.sample = sample_fn,
- 	.setup = setup,
-+	.test_multiplex = select_mpx,
- 	.cleanup = cleanup,
- };
-diff --git a/testcases/kernel/syscalls/select/select_mpx.h b/testcases/kernel/syscalls/select/select_mpx.h
-new file mode 100644
-index 000000000..39c4e6517
---- /dev/null
-+++ b/testcases/kernel/syscalls/select/select_mpx.h
-@@ -0,0 +1,79 @@
-+/*
-+ * Copyright (C) 2019 Cyril Hrubis <chrubis@suse.cz>
-+ */
-+
-+#ifndef SELECT_MPX
-+#define SELECT_MPX
-+
-+#include "lapi/syscalls.h"
-+
-+static int sys_mpx = -1;
-+
-+struct compat_sel_arg_struct {
-+	long _n;
-+	long _inp;
-+	long _outp;
-+	long _exp;
-+	long _tvp;
-+};
-+
-+static int do_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)
-+{
-+	switch (sys_mpx) {
-+	case 0:
-+		return select(nfds, readfds, writefds, exceptfds, timeout);
-+	break;
-+	case 1:
-+		return tst_syscall(__NR__newselect, nfds, readfds, writefds, exceptfds, timeout);
-+	break;
-+	case 2: {
-+		struct compat_sel_arg_struct arg = {
-+			._n = (long)nfds,
-+			._inp = (long)readfds,
-+			._outp = (long)writefds,
-+			._exp = (long)exceptfds,
-+			._tvp = (long)timeout,
-+		};
-+
-+		return tst_syscall(__NR_select, &arg);
-+	}
-+	case 3: {
-+		int ret;
-+		struct timespec ts = {
-+			.tv_sec = timeout->tv_sec,
-+			.tv_nsec = timeout->tv_usec * 1000,
-+		};
-+		ret = tst_syscall(__NR_pselect6, nfds, readfds, writefds, exceptfds, &ts, NULL);
-+		timeout->tv_sec = ts.tv_sec;
-+		timeout->tv_usec = ts.tv_nsec / 1000;
-+		return ret;
-+	}
-+	}
-+
-+	return -1;
-+}
-+
-+static int select_mpx(void)
-+{
-+	switch (++sys_mpx) {
-+	case 0:
-+		tst_res(TINFO, "Testing glibc select()");
-+	break;
-+	case 1:
-+		tst_res(TINFO, "Testing SYS__newselect syscall");
-+	break;
-+	case 2:
-+		tst_res(TINFO, "Testing SYS_select syscall");
-+	break;
-+	case 3:
-+		tst_res(TINFO, "Testing SYS_pselect6 syscall");
-+	break;
-+	case 4:
-+		sys_mpx = -1;
-+		return 0;
-+	}
-+
-+	return 1;
-+}
-+
-+#endif /* SELECT_MPX */
+> > The tests for file based shared interleaved mappings are no longer
+> > mapping a single small file but rather than that we accumulate statistic
+> > for larger amount of files over longer period of time and we also allow
+> > for small offset (currently 10%). We should probably also increase the
+> > number of samples we take as currently it's about 5MB in total on x86
+> > although I haven't managed to make this test fail so far. This also
+> > fixes the test on Btrfs where the synthetic test that expects the pages
+> > to be distributed exactly equally fails.
+> 
+> API looks good to me, ACK. Maybe you could split it into 2 commits, one for
+> new library API, and one for new tests.
+
+Sure, will do.
+
+Ok to commit the library and set_mempolicy() tests with fixed nits you
+pointed out below or should I spin v5?
+
 -- 
-2.19.2
-
+Cyril Hrubis
+chrubis@suse.cz
