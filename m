@@ -1,176 +1,131 @@
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Thu,  7 Mar 2019 12:58:48 +0530
-Subject: [LTP] [PATCH 3/3] syscalls/tgkill03: add new test
-In-Reply-To: <1551943728-16222-1-git-send-email-sumit.garg@linaro.org>
-References: <1551943728-16222-1-git-send-email-sumit.garg@linaro.org>
-Message-ID: <1551943728-16222-4-git-send-email-sumit.garg@linaro.org>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 7 Mar 2019 03:18:43 -0500 (EST)
+Subject: [LTP] [PATCH v2] syscalls/readahead02: limit max readahead to
+ backing device max_readahead_kb
+In-Reply-To: <CAOQ4uxjO+jYKzor7_eqBd8HMGs=m-EKt3jd+jRtOhh_KNPzYXQ@mail.gmail.com>
+References: <CAOQ4uxi49WogvHDck_JXiUV8VfLDHhzu=EYVYWiTz+zagT41KA@mail.gmail.com>
+ <CAOQ4uxgc2NqK=6Lmau08y_k6tQa17xg8Q50UB+xwkgdetTWKuQ@mail.gmail.com>
+ <518295220.5323766.1551804903461.JavaMail.zimbra@redhat.com>
+ <CAOQ4uxhAESuU2HZ73kU0tMZ4CvQSJPo4c176MuBoN9WrT2nhTg@mail.gmail.com>
+ <2040204176.5432824.1551817326223.JavaMail.zimbra@redhat.com>
+ <CAOQ4uxiVkayLBWPAdPSz9W17hPNp7LagdtJ2k+vL98C0KgbKtA@mail.gmail.com>
+ <20190306164256.GA570@dustball.usersys.redhat.com>
+ <CAOQ4uxjO+jYKzor7_eqBd8HMGs=m-EKt3jd+jRtOhh_KNPzYXQ@mail.gmail.com>
+Message-ID: <1883827755.5820362.1551946723163.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Greg Hackmann <ghackmann@google.com>
 
-Test simple tgkill() error cases.
 
-Signed-off-by: Greg Hackmann <ghackmann@google.com>
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
----
- runtest/syscalls                            |   1 +
- testcases/kernel/syscalls/tgkill/.gitignore |   1 +
- testcases/kernel/syscalls/tgkill/tgkill03.c | 122 ++++++++++++++++++++++++++++
- 3 files changed, 124 insertions(+)
- create mode 100644 testcases/kernel/syscalls/tgkill/tgkill03.c
+----- Original Message -----
+> On Wed, Mar 6, 2019 at 6:43 PM Jan Stancek <jstancek@redhat.com> wrote:
+> >
+> > On Tue, Mar 05, 2019 at 10:44:57PM +0200, Amir Goldstein wrote:
+> > >> > > > This is certainly better than 4K, but still feels like we are not
+> > >> > > > really
+> > >> > > > testing
+> > >> > > > the API properly, but I'm fine with this fix.
+> > >> > > >
+> > >> > > > However... as follow up, how about extending the new
+> > >> > > > tst_dev_bytes_written() utils from Sumit to cover also bytes_read
+> > >> > > > and replace validation of readahead() from get_cached_size() diff
+> > >> > > > to tst_dev_bytes_read()?
+> > >> > >
+> > >> > > There is something similar based on /proc/self/io. We could try
+> > >> > > using
+> > >> > > that to estimate max readahead size.
+> > >> > >
+> > >> > > Or /sys/class/block/$dev/stat as you suggested, not sure which one
+> > >> > > is
+> > >> > > more accurate/up to date.
+> > >> > >
+> > >> >
+> > >> > I believe /proc/self/io doesn't count IO performed by kernel async
+> > >> > readahead against the process that issued the readahead, but didn't
+> > >> > check. The test uses /proc/self/io to check how many IO where avoided
+> > >> > by readahead...
+> > >>
+> > >> We could do one readahead() on entire file, then read
+> > >> the file and see how many IO we didn't manage to avoid.
+> > >> The difference between filesize and IO we couldn't avoid,
+> > >> would be our max readahead size.
+> >
+> > This also doesn't seem 100% accurate.
+> >
+> > Any method to inspect side-effect of readahead, appears to lead to more
+> > readahead done by kernel. E.g. sequential reads leading to more async
+> > readahead started by kernel (which tries to stay ahead by async_size).
+> > mmap() approach appears to fault-in with do_fault_around().
+> >
+> > MAP_NONBLOCK is gone, mincore and pagemap doesn't help here.
+> >
+> > I'm attaching v3, where I do reads with sycalls() in reverse order.
+> > But occasionally, it still somehow leads to couple extra pages being
+> > read to cache. So, it still over-estimates. On ppc64le, it's quite
+> > significant, 4 extra pages in cache, each 64k, causes readahead
+> > loop to miss ~10MB of data.
+> >
+> > /sys/class/block/$dev/ stats appear to be increased for fs metadata
+> > as well, which can also inflate value and we over-estimate.
+> >
+> > I'm running out of ideas for something more accurate/stable than v2.
+> >
+> 
+> I'm trying to understand if maybe you are running off the rails with
+> the estimation issue.
+> What the test aims to verify is that readahead prevents waiting
+> on IO in the future.
+> The max readahead size estimation is a very small part
+> of the test and not that significant IMO.
+> Why is the test not trying to readahead more than 64MB?
+> It's arbitrary. So my first proposal to over-estimation was
+> to cap upper estimation with 1MB, i.e.:
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index fef45fd..13096f3 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1397,6 +1397,7 @@ syslog12 syslog12
- 
- tgkill01 tgkill01
- tgkill02 tgkill02
-+tgkill03 tgkill03
- 
- time01 time01
- time02 time02
-diff --git a/testcases/kernel/syscalls/tgkill/.gitignore b/testcases/kernel/syscalls/tgkill/.gitignore
-index 42be2bb..a6d2299 100644
---- a/testcases/kernel/syscalls/tgkill/.gitignore
-+++ b/testcases/kernel/syscalls/tgkill/.gitignore
-@@ -1,2 +1,3 @@
- tgkill01
- tgkill02
-+tgkill03
-diff --git a/testcases/kernel/syscalls/tgkill/tgkill03.c b/testcases/kernel/syscalls/tgkill/tgkill03.c
-new file mode 100644
-index 0000000..3597d1b
---- /dev/null
-+++ b/testcases/kernel/syscalls/tgkill/tgkill03.c
-@@ -0,0 +1,122 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2018 Google, Inc.
-+ *
-+ * Test simple tgkill() error cases.
-+ */
-+
-+#include <pthread.h>
-+#include <pwd.h>
-+#include <sys/types.h>
-+
-+#include "tst_safe_pthread.h"
-+#include "tst_test.h"
-+#include "tgkill.h"
-+
-+static pthread_t child_thread;
-+
-+static pid_t parent_tgid;
-+static pid_t parent_tid;
-+static pid_t child_tid;
-+static pid_t defunct_tid;
-+
-+static const int invalid_pid = -1;
-+
-+static int test_running;
-+static pthread_cond_t test_running_cond = PTHREAD_COND_INITIALIZER;
-+static pthread_mutex_t test_running_mutex = PTHREAD_MUTEX_INITIALIZER;
-+
-+static void *child_thread_func(void *arg)
-+{
-+	child_tid = sys_gettid();
-+
-+	TST_CHECKPOINT_WAKE(0);
-+
-+	pthread_mutex_lock(&test_running_mutex);
-+	while (test_running)
-+		pthread_cond_wait(&test_running_cond, &test_running_mutex);
-+	pthread_mutex_unlock(&test_running_mutex);
-+
-+	return arg;
-+}
-+
-+static void *defunct_thread_func(void *arg)
-+{
-+	defunct_tid = sys_gettid();
-+
-+	return arg;
-+}
-+
-+static void setup(void)
-+{
-+	sigset_t sigusr1;
-+	pthread_t defunct_thread;
-+
-+	sigemptyset(&sigusr1);
-+	sigaddset(&sigusr1, SIGUSR1);
-+	pthread_sigmask(SIG_BLOCK, &sigusr1, NULL);
-+
-+	parent_tgid = getpid();
-+	parent_tid = sys_gettid();
-+
-+	test_running = 1;
-+
-+	SAFE_PTHREAD_CREATE(&child_thread, NULL, child_thread_func, NULL);
-+
-+	TST_CHECKPOINT_WAIT(0);
-+
-+	SAFE_PTHREAD_CREATE(&defunct_thread, NULL, defunct_thread_func, NULL);
-+
-+	SAFE_PTHREAD_JOIN(defunct_thread, NULL);
-+}
-+
-+static void cleanup(void)
-+{
-+	test_running = 0;
-+	pthread_cond_broadcast(&test_running_cond);
-+
-+	SAFE_PTHREAD_JOIN(child_thread, NULL);
-+}
-+
-+static const struct testcase {
-+	const char *desc;
-+	const int *tgid;
-+	const int *tid;
-+	const int sig;
-+	const int err;
-+} testcases[] = {
-+	{ "Invalid tgid", &invalid_pid, &parent_tid, SIGUSR1, EINVAL },
-+	{ "Invalid tid", &parent_tgid, &invalid_pid, SIGUSR1, EINVAL },
-+	{ "Invalid signal", &parent_tgid, &parent_tid, -1, EINVAL },
-+	{ "Defunct thread ID", &parent_tgid, &defunct_tid, SIGUSR1, ESRCH },
-+	{ "Valid tgkill call", &parent_tgid, &child_tid, SIGUSR1, 0 },
-+};
-+
-+static void run(unsigned int i)
-+{
-+	const struct testcase *tc = &testcases[i];
-+
-+	TEST(sys_tgkill(*tc->tgid, *tc->tid, tc->sig));
-+	if (tc->err) {
-+		if (TST_RET < 0 && TST_ERR == tc->err)
-+			tst_res(TPASS | TTERRNO, "%s failed as expected",
-+				tc->desc);
-+		else
-+			tst_res(TFAIL | TTERRNO,
-+				"%s should have failed with %s", tc->desc,
-+				tst_strerrno(tc->err));
-+	} else {
-+		if (TST_RET == 0)
-+			tst_res(TPASS, "%s succeeded", tc->desc);
-+		else
-+			tst_res(TFAIL | TTERRNO, "%s failed", tc->desc);
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(testcases),
-+	.needs_checkpoints = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = run,
-+};
--- 
-2.7.4
+Problem is that max allowed readahead can be smaller than 1MB,
+so then we still over-estimate.
 
+> 
+> offset += MIN(max_ra_estimate, MAX_SANE_READAHEAD_ESTIMATION);
+> 
+> With this change we won't be testing if readahead of 64MB
+> in one go works anymore - it looks like getting that to work reliably
+> is more challenging and not sure its worth the trouble.
+> 
+> What you ended up implementing in v2 is not what I proposed
+> (you just disabled estimation altogether)
+
+Yes, v2/bdi limit is highest number I'm aware of, that should
+work across all kernels without guessing.
+
+> I am fine with the dynamic setting on min_sane_readahead
+> in v2, but it is independent of capping the upper limit for
+> estimation.
+> 
+> So what do you say about v2 + estimation (with or without reading
+> file backwards) and upper estimation limit?
+
+How could we tell if 1MB upper limit is smaller than max readahead limit?
+
+Other option could be v3, but in steps equal to "max_ra / 2":
+
+ *                        |<----- async_size ---------|
+ *     |------------------- size -------------------->|
+ *     |==================#===========================|
+ *     ^start             ^page marked with PG_readahead
+ *
+ * To overlap application thinking time and disk I/O time, we do
+ * `readahead pipelining': Do not wait until the application consumed all
+ * readahead pages and stalled on the missing page at readahead_index;
+ * Instead, submit an asynchronous readahead I/O as soon as there are
+ * only async_size pages left in the readahead window. Normally async_size
+ * will be equal to size, for maximum pipelining.
+
+
+> Does it solve the sporadic failures problem?
+> 
+> Thanks,
+> Amir.
+> 
