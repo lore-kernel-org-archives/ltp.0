@@ -1,8 +1,8 @@
 From: Saravana Kannan <saravanak@google.com>
-Date: Thu,  7 Mar 2019 15:28:04 -0800
+Date: Thu,  7 Mar 2019 15:31:54 -0800
 Subject: [LTP] [PATCH v2] setpriority01: Skip only PRIO_USER when unable to
 	add test user
-Message-ID: <20190307232804.10311-1-saravanak@google.com>
+Message-ID: <20190307233154.12873-1-saravanak@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,13 +11,28 @@ To: ltp@lists.linux.it
 
 We don't need to skip all the tests just because we are unable to add
 a test user. Not having a test user only affects PRIO_USER test case.
-So just skip that one and continue running the rest of the tests.
+So just skip that one and continue running the rest of the tests when
+useradd is not available.
+
+If useradd is present and it still fails, then consider it an error in
+the test preparation phase.
 
 This also allows this test case to be built and run on Android.
 
-Change-Id: Ie6eaf771002842fc1c768adf70bb2d1ef534f120
 Signed-off-by: Saravana Kannan <saravanak@google.com>
 ---
+
+v1:
+- Skip only PRIO_USER test when unable to add user for any reason.
+
+v2:
+- Skip only PRIO_USER test when useradd isn't present
+- Fail entire test with TBROK for all other cases where user can't be added
+
+I still think v1 is the right approach. But if you want TCONF for only
+for cases like Android where useradd itself isn't present, then v2 would
+be the right patch.
+
  .../kernel/syscalls/setpriority/Makefile      |  5 ----
  .../syscalls/setpriority/setpriority01.c      | 29 +++++++++++++------
  2 files changed, 20 insertions(+), 14 deletions(-)
