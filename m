@@ -1,52 +1,76 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 7 Mar 2019 13:49:02 +0200
-Subject: [LTP] [PATCH v2] syscalls/readahead02: limit max readahead to
- backing device max_readahead_kb
-In-Reply-To: <1016571882.5846458.1551957927293.JavaMail.zimbra@redhat.com>
-References: <CAOQ4uxi49WogvHDck_JXiUV8VfLDHhzu=EYVYWiTz+zagT41KA@mail.gmail.com>
- <CAOQ4uxiVkayLBWPAdPSz9W17hPNp7LagdtJ2k+vL98C0KgbKtA@mail.gmail.com>
- <20190306164256.GA570@dustball.usersys.redhat.com>
- <CAOQ4uxjO+jYKzor7_eqBd8HMGs=m-EKt3jd+jRtOhh_KNPzYXQ@mail.gmail.com>
- <1883827755.5820362.1551946723163.JavaMail.zimbra@redhat.com>
- <CAOQ4uxinA3x264gS=b5Wb7EkSF7EgF7DGe8Mj7LVWhK07RNsvw@mail.gmail.com>
- <982407679.5828214.1551950109663.JavaMail.zimbra@redhat.com>
- <CAOQ4uxjAJYmUAX85LfFpYw+bGi4ozvSQNfz+v7afR0dp0KfWkQ@mail.gmail.com>
- <1016571882.5846458.1551957927293.JavaMail.zimbra@redhat.com>
-Message-ID: <CAOQ4uxj_4D6VYA+8PhzNi-mzwew+b6Wue=vxVYLEqX2xKM862w@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 7 Mar 2019 12:55:59 +0100
+Subject: [LTP] [PATCH] sysctl01: fix fails on live-patched kernels
+In-Reply-To: <20190307094531.21832-1-jbaier@suse.cz>
+References: <20190307094531.21832-1-jbaier@suse.cz>
+Message-ID: <20190307115559.GB1040@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Mar 7, 2019 at 1:25 PM Jan Stancek <jstancek@redhat.com> wrote:
->
->
-> ----- Original Message -----
-> > > > Try to set bdi limit of test device on setup() to testfile_size before
-> > > > reading
-> > > > back the value?
-> > > > If that fails try testfile_size / 2 etc.
-> > >
-> > > Maybe, but we would need to start lower (2M). Kernels prior to
-> > > commit 600e19afc5f8a6c18ea49cee9511c5797db02391 will just ignore it.
-> > >
-> >
-> > Ah. Thanks for the reference.
-> > But kernels prior to this commit SHOULD fail the test if they
-> > don't comply with explicit readahead() request that is below 2M
->
-> Yes, agreed.
->
-> > and bdi limit.
->
-> What I meant was, that we can try bumping bdi limit, but our
-> max readahead length has to be capped to MIN(bdi limit, 2M).
->
-> Does that make sense?
->
+Hi!
+> Version from uname and /proc/sys/kernel/version does not match on
+> live-patched kernels (bsc#1100130, poo#38483).
 
-It does to me.
+As far as I can tell the bug and progress issue are not accessible to
+public, there is no point in including them in the commit message.
 
-Thanks,
-Amir.
+It would be better to describe here what causes the difference and how
+the difference looks like.
+
+> Adjust the string from uname in such cases.
+> 
+> Signed-off-by: Jan Baier <jbaier@suse.cz>
+> ---
+>  testcases/kernel/syscalls/sysctl/sysctl01.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git testcases/kernel/syscalls/sysctl/sysctl01.c testcases/kernel/syscalls/sysctl/sysctl01.c
+> index 70905d806..fda29f060 100644
+> --- testcases/kernel/syscalls/sysctl/sysctl01.c
+> +++ testcases/kernel/syscalls/sysctl/sysctl01.c
+> @@ -1,6 +1,7 @@
+>  /*
+>   * Copyright (c) International Business Machines  Corp., 2001
+>   * Copyright (c) 2018 Xiao Yang <yangx.jy@cn.fujitsu.com>
+> + * Copyright (c) 2019 SUSE.  All Rights Reserved.
+>   *
+>   * This program is free software;  you can redistribute it and/or modify
+>   * it under the terms of the GNU General Public License as published by
+> @@ -77,6 +78,19 @@ static void setup(void)
+>  	/* get kernel name and information */
+>  	if (uname(&buf) == -1)
+>  		tst_brk(TBROK | TERRNO, "uname() failed");
+> +
+> +	/* revert uname change in case of kGraft/livepatch */
+> +	char *klp_tag;
+> +	char *right_brace;
+> +
+> +	klp_tag = strstr(buf.version, "/kGraft-");
+> +	if (!klp_tag)
+> +		klp_tag = strstr(buf.version, "/lp-");
+> +	if (klp_tag) {
+> +		right_brace = strchr(klp_tag, ')');
+> +		if (right_brace)
+> +			strcpy(klp_tag, right_brace);
+
+This is not generally safe, the parameters passed to strcpy() must not
+overlap. I guess that the safe option would be copying the content into
+a new buffer.
+
+> +	}
+>  }
+>  
+>  static struct tst_test test = {
+> -- 
+> 2.21.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
