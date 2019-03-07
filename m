@@ -1,55 +1,37 @@
-From: Jan Baier <jbaier@suse.cz>
-Date: Thu,  7 Mar 2019 10:45:31 +0100
-Subject: [LTP] [PATCH] sysctl01: fix fails on live-patched kernels
-Message-ID: <20190307094531.21832-1-jbaier@suse.cz>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 7 Mar 2019 11:53:24 +0200
+Subject: [LTP] [PATCH v2] syscalls/readahead02: limit max readahead to
+ backing device max_readahead_kb
+In-Reply-To: <982407679.5828214.1551950109663.JavaMail.zimbra@redhat.com>
+References: <CAOQ4uxi49WogvHDck_JXiUV8VfLDHhzu=EYVYWiTz+zagT41KA@mail.gmail.com>
+ <CAOQ4uxhAESuU2HZ73kU0tMZ4CvQSJPo4c176MuBoN9WrT2nhTg@mail.gmail.com>
+ <2040204176.5432824.1551817326223.JavaMail.zimbra@redhat.com>
+ <CAOQ4uxiVkayLBWPAdPSz9W17hPNp7LagdtJ2k+vL98C0KgbKtA@mail.gmail.com>
+ <20190306164256.GA570@dustball.usersys.redhat.com>
+ <CAOQ4uxjO+jYKzor7_eqBd8HMGs=m-EKt3jd+jRtOhh_KNPzYXQ@mail.gmail.com>
+ <1883827755.5820362.1551946723163.JavaMail.zimbra@redhat.com>
+ <CAOQ4uxinA3x264gS=b5Wb7EkSF7EgF7DGe8Mj7LVWhK07RNsvw@mail.gmail.com>
+ <982407679.5828214.1551950109663.JavaMail.zimbra@redhat.com>
+Message-ID: <CAOQ4uxjAJYmUAX85LfFpYw+bGi4ozvSQNfz+v7afR0dp0KfWkQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Version from uname and /proc/sys/kernel/version does not match on
-live-patched kernels (bsc#1100130, poo#38483).
+> > Try to set bdi limit of test device on setup() to testfile_size before
+> > reading
+> > back the value?
+> > If that fails try testfile_size / 2 etc.
+>
+> Maybe, but we would need to start lower (2M). Kernels prior to
+> commit 600e19afc5f8a6c18ea49cee9511c5797db02391 will just ignore it.
+>
 
-Adjust the string from uname in such cases.
+Ah. Thanks for the reference.
+But kernels prior to this commit SHOULD fail the test if they
+don't comply with explicit readahead() request that is below 2M
+and bdi limit. That is the case that the commit sets to fix. No?
 
-Signed-off-by: Jan Baier <jbaier@suse.cz>
----
- testcases/kernel/syscalls/sysctl/sysctl01.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git testcases/kernel/syscalls/sysctl/sysctl01.c testcases/kernel/syscalls/sysctl/sysctl01.c
-index 70905d806..fda29f060 100644
---- testcases/kernel/syscalls/sysctl/sysctl01.c
-+++ testcases/kernel/syscalls/sysctl/sysctl01.c
-@@ -1,6 +1,7 @@
- /*
-  * Copyright (c) International Business Machines  Corp., 2001
-  * Copyright (c) 2018 Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ * Copyright (c) 2019 SUSE.  All Rights Reserved.
-  *
-  * This program is free software;  you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-@@ -77,6 +78,19 @@ static void setup(void)
- 	/* get kernel name and information */
- 	if (uname(&buf) == -1)
- 		tst_brk(TBROK | TERRNO, "uname() failed");
-+
-+	/* revert uname change in case of kGraft/livepatch */
-+	char *klp_tag;
-+	char *right_brace;
-+
-+	klp_tag = strstr(buf.version, "/kGraft-");
-+	if (!klp_tag)
-+		klp_tag = strstr(buf.version, "/lp-");
-+	if (klp_tag) {
-+		right_brace = strchr(klp_tag, ')');
-+		if (right_brace)
-+			strcpy(klp_tag, right_brace);
-+	}
- }
- 
- static struct tst_test test = {
--- 
-2.21.0
-
+Thanks,
+Amir.
