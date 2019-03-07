@@ -1,90 +1,62 @@
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Thu, 7 Mar 2019 11:01:54 +0530
-Subject: [LTP] [PATCH] syscalls/rt_tgsigqueueinfo: fix compilation for
-	Android
-In-Reply-To: <20190306234452.197997-1-smuckle@google.com>
-References: <20190306234452.197997-1-smuckle@google.com>
-Message-ID: <CAFA6WYN9_RDcp1oPkBRNLy2uNH5cRUbujRUzsHvnrRipsHp5dA@mail.gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 7 Mar 2019 14:02:52 +0800
+Subject: [LTP] [PATCH DRAFT] syscalls/stime: convert to new lib,
+ use direct syscall
+In-Reply-To: <20190301144831.GA16823@rei>
+References: <20190202015923.189057-1-smuckle@google.com>
+ <20190301144831.GA16823@rei>
+Message-ID: <5C80B40C.7070106@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, 7 Mar 2019 at 05:14, Steve Muckle <smuckle@google.com> wrote:
+Hi Cyril, Steve
+
+According to the source code of glibc, glibc implements stime() by 
+__NR_settimeofday
+instead of __NR_stime, and some arches(e.g. x86_64) don't define 
+__NR_stime directly.
+Therefore these updated tests will be skipped on some arches that don't 
+define __NR_stime.
+
+If glibc implements stime(), should we use it diectly?  If not, should 
+we use __NR_stime or __NR_settimeofday?
+
+Please see detail at sysdeps/unix/stime.c in glibc:
+-------------------------------------------------------------------
+int
+stime (const time_t *when)
+{
+   struct timeval tv;
+
+   if (when == NULL)
+     {
+       __set_errno (EINVAL);
+       return -1;
+     }
+
+   tv.tv_sec = *when;
+   tv.tv_usec = 0;
+   return __settimeofday (&tv, (struct timezone *) 0);
+-------------------------------------------------------------------
+
+Best Regards,
+Xiao Yang
+On 2019/03/01 22:48, Cyril Hrubis wrote:
+> Hi!
+>> I set about cleaning up the stime tests but later realized I don't
+>> have a platform that has the stime syscall so I cannot test this
+>> patch fully. If someone else has such a platform (looks like 32-bit
+>> x86 has it) and wants to take the patch over, feel free :) .
+> I've taken over and finished the patchset, thanks.
 >
-> Glibc refers to the sigval_t in _sifields._rt as si_sigval. This
-> differs from what is in the kernel's uapi siginfo.h, _sigval, which is
-> what is used by Android's bionic.
+> Also btw, you can test these testcases on x86_64 if you compile LTP with
+> -m32 flag with:
 >
-> Signed-off-by: Steve Muckle <smuckle@google.com>
-> ---
->  .../rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c       | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
+> CFLAGS=-m32 LDFLAGS=-m32 ./configure
 >
 
-Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
 
-> diff --git a/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
-> index 4ae17c220..c8252ed8a 100644
-> --- a/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
-> +++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
-> @@ -18,12 +18,19 @@
->   */
->
->  #define _GNU_SOURCE
-> +
->  #include <err.h>
->  #include <pthread.h>
->  #include "tst_safe_pthread.h"
->  #include "tst_test.h"
->  #include "lapi/syscalls.h"
->
-> +#ifndef ANDROID
-> +#define SI_SIGVAL si_sigval
-> +#else
-> +#define SI_SIGVAL _sigval
-> +#endif
-> +
->  static char sigval_send[] = "rt_tgsigqueueinfo data";
->  static volatile int signum_rcv;
->  static char *sigval_rcv;
-> @@ -32,7 +39,7 @@ static void sigusr1_handler(int signum, siginfo_t *uinfo,
->                             void *p LTP_ATTRIBUTE_UNUSED)
->  {
->         signum_rcv = signum;
-> -       sigval_rcv = uinfo->_sifields._rt.si_sigval.sival_ptr;
-> +       sigval_rcv = uinfo->_sifields._rt.SI_SIGVAL.sival_ptr;
->  }
->
->  void *send_rcv_func(void *arg)
-> @@ -44,7 +51,7 @@ void *send_rcv_func(void *arg)
->
->         uinfo.si_errno = 0;
->         uinfo.si_code = SI_QUEUE;
-> -       uinfo._sifields._rt.si_sigval.sival_ptr = sigval_send;
-> +       uinfo._sifields._rt.SI_SIGVAL.sival_ptr = sigval_send;
->
->         TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
->                          syscall(__NR_gettid), SIGUSR1, &uinfo));
-> @@ -106,7 +113,7 @@ static void verify_signal_parent_thread(void)
->
->         uinfo.si_errno = 0;
->         uinfo.si_code = SI_QUEUE;
-> -       uinfo._sifields._rt.si_sigval.sival_ptr = sigval_send;
-> +       uinfo._sifields._rt.SI_SIGVAL.sival_ptr = sigval_send;
->
->         TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
->                          tid, SIGUSR1, &uinfo));
-> @@ -123,7 +130,7 @@ void *sender_func(void *arg)
->
->         uinfo.si_errno = 0;
->         uinfo.si_code = SI_QUEUE;
-> -       uinfo._sifields._rt.si_sigval.sival_ptr = sigval_send;
-> +       uinfo._sifields._rt.SI_SIGVAL.sival_ptr = sigval_send;
->
->         TEST(tst_syscall(__NR_rt_tgsigqueueinfo, getpid(),
->                          *tid, SIGUSR1, &uinfo));
-> --
-> 2.21.0.352.gf09ad66450-goog
->
+
