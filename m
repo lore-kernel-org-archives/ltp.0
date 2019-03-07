@@ -1,52 +1,117 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 7 Mar 2019 13:29:10 +0100
-Subject: [LTP] [RFC PATCH 1/2] tst_test: Add test multiplex function
-In-Reply-To: <579318010.5729499.1551900024400.JavaMail.zimbra@redhat.com>
-References: <20190306152430.25219-1-chrubis@suse.cz>
- <1194364640.5702234.1551891235712.JavaMail.zimbra@redhat.com>
- <20190306170008.GE12479@rei>
- <815826896.5712903.1551893744593.JavaMail.zimbra@redhat.com>
- <20190306182829.GA3127@rei>
- <579318010.5729499.1551900024400.JavaMail.zimbra@redhat.com>
-Message-ID: <20190307122910.GC1040@rei.lan>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Thu,  7 Mar 2019 18:14:11 +0530
+Subject: [LTP] [PATCH v3] syscalls/sync_file_range: add partial file sync
+	test-cases
+Message-ID: <1551962651-22261-1-git-send-email-sumit.garg@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > > If this wasn't timer test, I'd ask why don't we use existing .test and
-> > > .tcnt,
-> > > your test() func can be called with a parameter, so you could change
-> > > the code to choose correct syscall/glibc func based on value of that
-> > > parameter.
-> > > 
-> > > For normal tests, this looks almost and .test/.tcnt functionality,
-> > > except test count can be also dynamic.
-> > 
-> > Well so does the .all_filesystems flag, however I see these concepts to
-> > be orthogonal to what the actual test does, which is the reason I want
-> > them hooked up in the library rather than to be part of the testcase
-> > code.
-> 
-> OK, so it's like another level on top of current test functions.
+Add partial file sync tests as part of sync_file_range02 test-case.
 
-Yes, the change to the library adds generic layer for that.
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+---
 
-> I probably would like 'variant' somewhere in name more, but overall
-> I'm not against the patch. Are you planning on adding some docs too?
+Changes in v3:
+1. Add upper bound check for synced size to device.
+2. Refactor tests for more code reuse.
+3. Add another test to check sync over partial write.
 
-I thought that calling it multiplex was descriptive enough name.
+Changes in v2:
+1. Do full file write instead of partial and test sync partial file.
 
+ .../syscalls/sync_file_range/sync_file_range02.c   | 47 +++++++++++++++++-----
+ 1 file changed, 37 insertions(+), 10 deletions(-)
 
-There is some summary in:
-
-https://github.com/linux-test-project/ltp/issues/506
-
-I guess that I can expand the text a bit and put it in the doc/
-directory in the source tree along with the change to the test library.
-
+diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+index 82d77f7..334ea5e 100644
+--- a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
++++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+@@ -22,23 +22,36 @@
+ #include "check_sync_file_range.h"
+ 
+ #define MNTPOINT		"mnt_point"
+-#define FNAME		MNTPOINT"/test"
+-#define FILE_SIZE_MB	32
+-#define FILE_SIZE (FILE_SIZE_MB * TST_MB)
++#define FNAME1			MNTPOINT"/test1"
++#define FNAME2			MNTPOINT"/test2"
++#define FNAME3			MNTPOINT"/test3"
++#define FILE_SZ_MB		32
++#define FILE_SZ			(FILE_SZ_MB * TST_MB)
+ #define MODE			0644
+ 
+-static void verify_sync_file_range(void)
++struct testcase {
++	char *fname;
++	off64_t sync_off;
++	off64_t sync_size;
++	size_t exp_sync_size;
++	off64_t write_off;
++	size_t write_size_mb;
++};
++
++static void verify_sync_file_range(struct testcase *tc)
+ {
+ 	int fd;
+ 	unsigned long written;
+ 
+-	fd = SAFE_OPEN(FNAME, O_RDWR|O_CREAT, MODE);
++	fd = SAFE_OPEN(tc->fname, O_RDWR|O_CREAT, MODE);
++
++	lseek(fd, tc->write_off, SEEK_SET);
+ 
+ 	tst_dev_bytes_written(tst_device->dev);
+ 
+-	tst_fill_fd(fd, 0, TST_MB, FILE_SIZE_MB);
++	tst_fill_fd(fd, 0, TST_MB, tc->write_size_mb);
+ 
+-	TEST(sync_file_range(fd, 0, FILE_SIZE,
++	TEST(sync_file_range(fd, tc->sync_off, tc->sync_size,
+ 			     SYNC_FILE_RANGE_WAIT_BEFORE |
+ 			     SYNC_FILE_RANGE_WRITE |
+ 			     SYNC_FILE_RANGE_WAIT_AFTER));
+@@ -50,10 +63,23 @@ static void verify_sync_file_range(void)
+ 
+ 	SAFE_CLOSE(fd);
+ 
+-	if (written >= FILE_SIZE)
++	if ((written >= tc->exp_sync_size) &&
++	    (written <= (tc->exp_sync_size + tc->exp_sync_size/10)))
+ 		tst_res(TPASS, "Test file range synced to device");
+ 	else
+-		tst_res(TFAIL, "Synced %li, expected %i", written, FILE_SIZE);
++		tst_res(TFAIL, "Synced %li, expected %li", written,
++			tc->exp_sync_size);
++}
++
++static struct testcase testcases[] = {
++	{ FNAME1, 0, FILE_SZ, FILE_SZ, 0, FILE_SZ_MB },
++	{ FNAME2, FILE_SZ/4, FILE_SZ/2, FILE_SZ/2, 0, FILE_SZ_MB },
++	{ FNAME3, FILE_SZ/4, FILE_SZ/2, FILE_SZ/4, FILE_SZ/2, FILE_SZ_MB/4 },
++};
++
++static void run(unsigned int i)
++{
++	verify_sync_file_range(&testcases[i]);
+ }
+ 
+ static void setup(void)
+@@ -63,10 +89,11 @@ static void setup(void)
+ }
+ 
+ static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(testcases),
+ 	.needs_root = 1,
+ 	.mount_device = 1,
+ 	.all_filesystems = 1,
+ 	.mntpoint = MNTPOINT,
+ 	.setup = setup,
+-	.test_all = verify_sync_file_range,
++	.test = run,
+ };
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.7.4
+
