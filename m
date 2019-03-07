@@ -1,74 +1,55 @@
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Thu, 7 Mar 2019 14:54:41 +0530
-Subject: [LTP] [PATCH v2 1/2] syscalls/sync_file_range: add partial file
-	sync test-case
-In-Reply-To: <20190306085418.GA14290@rei>
-References: <1551770065-20444-1-git-send-email-sumit.garg@linaro.org>
- <20190305141903.GD13703@rei>
- <CAFA6WYOPW0mkmGFbcZRmvhXsOJouUi1d-rcV_-sgKVKpkqSMSA@mail.gmail.com>
- <20190306085418.GA14290@rei>
-Message-ID: <CAFA6WYMnLKkSAPjxQu-gn6xiPx2Pc5hRCbyrkZF1x51HZNz5PA@mail.gmail.com>
+From: Jan Baier <jbaier@suse.cz>
+Date: Thu,  7 Mar 2019 10:45:31 +0100
+Subject: [LTP] [PATCH] sysctl01: fix fails on live-patched kernels
+Message-ID: <20190307094531.21832-1-jbaier@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, 6 Mar 2019 at 14:24, Cyril Hrubis <chrubis@suse.cz> wrote:
->
-> Hi!
-> > > Looking at this the function is nearly the same as the other one, I
-> > > guess that we may as well define the function as:
-> > >
-> > > static void verify_sync_file_range(off64_t off, off64_t size, char byte)
-> > > {
-> > >         ...
-> > > }
-> > >
-> >
-> > Yeah it could be made common. But we may not be able to reuse it for
-> > third case you mentioned below.
->
-> We may as well add offset and size for the write as well.
->
+Version from uname and /proc/sys/kernel/version does not match on
+live-patched kernels (bsc#1100130, poo#38483).
 
-Ok.
+Adjust the string from uname in such cases.
 
-> > > Also I'm not sure I was clear enough, but I was suggesting to check for
-> > > upper bound for the synced size as well, which is why I suggested to do
-> > > full write, sync only part of it, then check that the size was within
-> > > bounds, i.e. >= size and  <= size + epsilon.
-> > >
-> >
-> > Do you see any value add of upper bound check? AFAIK, device writes
-> > continue in back-end and we might not be sure about appropriate value
-> > for "epsilon".
->
-> AFAIK this makes sense as far the file written fits into RAM buffers.
-> We do write followed by a sync that asks particular range to be written
-> to the device, so unless we manage to write significant portion of the
-> file while we are calling the write syscall in a loop we will get quite
-> close to the expectations. I guess that we can also check how much data
-> was written right after we finished writing to the file and if that
-> number is neglectible it would be fairly safe to check for upper bound.
-> Does that sound reasonable to you?
->
+Signed-off-by: Jan Baier <jbaier@suse.cz>
+---
+ testcases/kernel/syscalls/sysctl/sysctl01.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-Yes, I see number is negligible after write to file. So will add this
-upper bound check with epsilon = 10%.
+diff --git testcases/kernel/syscalls/sysctl/sysctl01.c testcases/kernel/syscalls/sysctl/sysctl01.c
+index 70905d806..fda29f060 100644
+--- testcases/kernel/syscalls/sysctl/sysctl01.c
++++ testcases/kernel/syscalls/sysctl/sysctl01.c
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) International Business Machines  Corp., 2001
+  * Copyright (c) 2018 Xiao Yang <yangx.jy@cn.fujitsu.com>
++ * Copyright (c) 2019 SUSE.  All Rights Reserved.
+  *
+  * This program is free software;  you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+@@ -77,6 +78,19 @@ static void setup(void)
+ 	/* get kernel name and information */
+ 	if (uname(&buf) == -1)
+ 		tst_brk(TBROK | TERRNO, "uname() failed");
++
++	/* revert uname change in case of kGraft/livepatch */
++	char *klp_tag;
++	char *right_brace;
++
++	klp_tag = strstr(buf.version, "/kGraft-");
++	if (!klp_tag)
++		klp_tag = strstr(buf.version, "/lp-");
++	if (klp_tag) {
++		right_brace = strchr(klp_tag, ')');
++		if (right_brace)
++			strcpy(klp_tag, right_brace);
++	}
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.21.0
 
--Sumit
-
-> > > I guess that we can even extend this to call the sync over a range that
-> > > has been only partially written, but for that we would have to be
-> > > careful and make sure all the data has been either synced at the end of
-> > > the test function or use a different file for each test.
-> > >
-> >
-> > I think using different file for each case looks more appropriate.
->
-> Agreed.
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
