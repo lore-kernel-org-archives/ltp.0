@@ -1,162 +1,74 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 7 Mar 2019 04:15:09 -0500 (EST)
-Subject: [LTP] [PATCH v2] syscalls/readahead02: limit max readahead to
- backing device max_readahead_kb
-In-Reply-To: <CAOQ4uxinA3x264gS=b5Wb7EkSF7EgF7DGe8Mj7LVWhK07RNsvw@mail.gmail.com>
-References: <CAOQ4uxi49WogvHDck_JXiUV8VfLDHhzu=EYVYWiTz+zagT41KA@mail.gmail.com>
- <CAOQ4uxhAESuU2HZ73kU0tMZ4CvQSJPo4c176MuBoN9WrT2nhTg@mail.gmail.com>
- <2040204176.5432824.1551817326223.JavaMail.zimbra@redhat.com>
- <CAOQ4uxiVkayLBWPAdPSz9W17hPNp7LagdtJ2k+vL98C0KgbKtA@mail.gmail.com>
- <20190306164256.GA570@dustball.usersys.redhat.com>
- <CAOQ4uxjO+jYKzor7_eqBd8HMGs=m-EKt3jd+jRtOhh_KNPzYXQ@mail.gmail.com>
- <1883827755.5820362.1551946723163.JavaMail.zimbra@redhat.com>
- <CAOQ4uxinA3x264gS=b5Wb7EkSF7EgF7DGe8Mj7LVWhK07RNsvw@mail.gmail.com>
-Message-ID: <982407679.5828214.1551950109663.JavaMail.zimbra@redhat.com>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Thu, 7 Mar 2019 14:54:41 +0530
+Subject: [LTP] [PATCH v2 1/2] syscalls/sync_file_range: add partial file
+	sync test-case
+In-Reply-To: <20190306085418.GA14290@rei>
+References: <1551770065-20444-1-git-send-email-sumit.garg@linaro.org>
+ <20190305141903.GD13703@rei>
+ <CAFA6WYOPW0mkmGFbcZRmvhXsOJouUi1d-rcV_-sgKVKpkqSMSA@mail.gmail.com>
+ <20190306085418.GA14290@rei>
+Message-ID: <CAFA6WYMnLKkSAPjxQu-gn6xiPx2Pc5hRCbyrkZF1x51HZNz5PA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
------ Original Message -----
-> On Thu, Mar 7, 2019 at 10:18 AM Jan Stancek <jstancek@redhat.com> wrote:
-> >
-> >
-> >
-> > ----- Original Message -----
-> > > On Wed, Mar 6, 2019 at 6:43 PM Jan Stancek <jstancek@redhat.com> wrote:
-> > > >
-> > > > On Tue, Mar 05, 2019 at 10:44:57PM +0200, Amir Goldstein wrote:
-> > > > >> > > > This is certainly better than 4K, but still feels like we are
-> > > > >> > > > not
-> > > > >> > > > really
-> > > > >> > > > testing
-> > > > >> > > > the API properly, but I'm fine with this fix.
-> > > > >> > > >
-> > > > >> > > > However... as follow up, how about extending the new
-> > > > >> > > > tst_dev_bytes_written() utils from Sumit to cover also
-> > > > >> > > > bytes_read
-> > > > >> > > > and replace validation of readahead() from get_cached_size()
-> > > > >> > > > diff
-> > > > >> > > > to tst_dev_bytes_read()?
-> > > > >> > >
-> > > > >> > > There is something similar based on /proc/self/io. We could try
-> > > > >> > > using
-> > > > >> > > that to estimate max readahead size.
-> > > > >> > >
-> > > > >> > > Or /sys/class/block/$dev/stat as you suggested, not sure which
-> > > > >> > > one
-> > > > >> > > is
-> > > > >> > > more accurate/up to date.
-> > > > >> > >
-> > > > >> >
-> > > > >> > I believe /proc/self/io doesn't count IO performed by kernel async
-> > > > >> > readahead against the process that issued the readahead, but
-> > > > >> > didn't
-> > > > >> > check. The test uses /proc/self/io to check how many IO where
-> > > > >> > avoided
-> > > > >> > by readahead...
-> > > > >>
-> > > > >> We could do one readahead() on entire file, then read
-> > > > >> the file and see how many IO we didn't manage to avoid.
-> > > > >> The difference between filesize and IO we couldn't avoid,
-> > > > >> would be our max readahead size.
-> > > >
-> > > > This also doesn't seem 100% accurate.
-> > > >
-> > > > Any method to inspect side-effect of readahead, appears to lead to more
-> > > > readahead done by kernel. E.g. sequential reads leading to more async
-> > > > readahead started by kernel (which tries to stay ahead by async_size).
-> > > > mmap() approach appears to fault-in with do_fault_around().
-> > > >
-> > > > MAP_NONBLOCK is gone, mincore and pagemap doesn't help here.
-> > > >
-> > > > I'm attaching v3, where I do reads with sycalls() in reverse order.
-> > > > But occasionally, it still somehow leads to couple extra pages being
-> > > > read to cache. So, it still over-estimates. On ppc64le, it's quite
-> > > > significant, 4 extra pages in cache, each 64k, causes readahead
-> > > > loop to miss ~10MB of data.
-> > > >
-> > > > /sys/class/block/$dev/ stats appear to be increased for fs metadata
-> > > > as well, which can also inflate value and we over-estimate.
-> > > >
-> > > > I'm running out of ideas for something more accurate/stable than v2.
-> > > >
+On Wed, 6 Mar 2019 at 14:24, Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+> Hi!
+> > > Looking at this the function is nearly the same as the other one, I
+> > > guess that we may as well define the function as:
 > > >
-> > > I'm trying to understand if maybe you are running off the rails with
-> > > the estimation issue.
-> > > What the test aims to verify is that readahead prevents waiting
-> > > on IO in the future.
-> > > The max readahead size estimation is a very small part
-> > > of the test and not that significant IMO.
-> > > Why is the test not trying to readahead more than 64MB?
-> > > It's arbitrary. So my first proposal to over-estimation was
-> > > to cap upper estimation with 1MB, i.e.:
-> >
-> > Problem is that max allowed readahead can be smaller than 1MB,
-> > so then we still over-estimate.
-> >
+> > > static void verify_sync_file_range(off64_t off, off64_t size, char byte)
+> > > {
+> > >         ...
+> > > }
 > > >
-> > > offset += MIN(max_ra_estimate, MAX_SANE_READAHEAD_ESTIMATION);
+> >
+> > Yeah it could be made common. But we may not be able to reuse it for
+> > third case you mentioned below.
+>
+> We may as well add offset and size for the write as well.
+>
+
+Ok.
+
+> > > Also I'm not sure I was clear enough, but I was suggesting to check for
+> > > upper bound for the synced size as well, which is why I suggested to do
+> > > full write, sync only part of it, then check that the size was within
+> > > bounds, i.e. >= size and  <= size + epsilon.
 > > >
-> > > With this change we won't be testing if readahead of 64MB
-> > > in one go works anymore - it looks like getting that to work reliably
-> > > is more challenging and not sure its worth the trouble.
+> >
+> > Do you see any value add of upper bound check? AFAIK, device writes
+> > continue in back-end and we might not be sure about appropriate value
+> > for "epsilon".
+>
+> AFAIK this makes sense as far the file written fits into RAM buffers.
+> We do write followed by a sync that asks particular range to be written
+> to the device, so unless we manage to write significant portion of the
+> file while we are calling the write syscall in a loop we will get quite
+> close to the expectations. I guess that we can also check how much data
+> was written right after we finished writing to the file and if that
+> number is neglectible it would be fairly safe to check for upper bound.
+> Does that sound reasonable to you?
+>
+
+Yes, I see number is negligible after write to file. So will add this
+upper bound check with epsilon = 10%.
+
+-Sumit
+
+> > > I guess that we can even extend this to call the sync over a range that
+> > > has been only partially written, but for that we would have to be
+> > > careful and make sure all the data has been either synced at the end of
+> > > the test function or use a different file for each test.
 > > >
-> > > What you ended up implementing in v2 is not what I proposed
-> > > (you just disabled estimation altogether)
 > >
-> > Yes, v2/bdi limit is highest number I'm aware of, that should
-> > work across all kernels without guessing.
-> >
-> > > I am fine with the dynamic setting on min_sane_readahead
-> > > in v2, but it is independent of capping the upper limit for
-> > > estimation.
-> > >
-> > > So what do you say about v2 + estimation (with or without reading
-> > > file backwards) and upper estimation limit?
-> >
-> > How could we tell if 1MB upper limit is smaller than max readahead limit?
-> >
-> 
-> Try to set bdi limit of test device on setup() to testfile_size before
-> reading
-> back the value?
-> If that fails try testfile_size / 2 etc.
-
-Maybe, but we would need to start lower (2M). Kernels prior to
-commit 600e19afc5f8a6c18ea49cee9511c5797db02391 will just ignore it.
-
-I can give it a try.
-
-> Use the value that bdi limit ended up with.
-> 
-> > Other option could be v3, but in steps equal to "max_ra / 2":
-> >
-> >  *                        |<----- async_size ---------|
-> >  *     |------------------- size -------------------->|
-> >  *     |==================#===========================|
-> >  *     ^start             ^page marked with PG_readahead
-> >  *
-> >  * To overlap application thinking time and disk I/O time, we do
-> >  * `readahead pipelining': Do not wait until the application consumed all
-> >  * readahead pages and stalled on the missing page at readahead_index;
-> >  * Instead, submit an asynchronous readahead I/O as soon as there are
-> >  * only async_size pages left in the readahead window. Normally async_size
-> >  * will be equal to size, for maximum pipelining.
-> >
-> >
-> 
-> OK, if it works, but v2 + raising bdi limit sounds simpler,
-> so if that works
-> I think that it is better to minimize speculative code
-> in the test,
-
-readahead has been tweaked a lot throughout the years,
-so it all feels like speculation :-/
-
-> 
-> Thanks,
-> Amir.
-> 
+> > I think using different file for each case looks more appropriate.
+>
+> Agreed.
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
