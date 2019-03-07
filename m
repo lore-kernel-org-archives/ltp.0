@@ -1,10 +1,14 @@
-From: Jan Baier <jbaier@suse.cz>
-Date: Thu, 7 Mar 2019 13:20:24 +0100
-Subject: [LTP] [PATCH] sysctl01: fix fails on live-patched kernels
-In-Reply-To: <20190307115559.GB1040@rei.lan>
-References: <20190307094531.21832-1-jbaier@suse.cz>
- <20190307115559.GB1040@rei.lan>
-Message-ID: <1268ad17-b7f4-d3b0-fd05-da3b9bc205c0@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 7 Mar 2019 13:29:10 +0100
+Subject: [LTP] [RFC PATCH 1/2] tst_test: Add test multiplex function
+In-Reply-To: <579318010.5729499.1551900024400.JavaMail.zimbra@redhat.com>
+References: <20190306152430.25219-1-chrubis@suse.cz>
+ <1194364640.5702234.1551891235712.JavaMail.zimbra@redhat.com>
+ <20190306170008.GE12479@rei>
+ <815826896.5712903.1551893744593.JavaMail.zimbra@redhat.com>
+ <20190306182829.GA3127@rei>
+ <579318010.5729499.1551900024400.JavaMail.zimbra@redhat.com>
+Message-ID: <20190307122910.GC1040@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,82 +16,37 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-
->> Version from uname and /proc/sys/kernel/version does not match on
->> live-patched kernels (bsc#1100130, poo#38483).
+> > > If this wasn't timer test, I'd ask why don't we use existing .test and
+> > > .tcnt,
+> > > your test() func can be called with a parameter, so you could change
+> > > the code to choose correct syscall/glibc func based on value of that
+> > > parameter.
+> > > 
+> > > For normal tests, this looks almost and .test/.tcnt functionality,
+> > > except test count can be also dynamic.
+> > 
+> > Well so does the .all_filesystems flag, however I see these concepts to
+> > be orthogonal to what the actual test does, which is the reason I want
+> > them hooked up in the library rather than to be part of the testcase
+> > code.
 > 
-> As far as I can tell the bug and progress issue are not accessible to
-> public, there is no point in including them in the commit message.
-> 
-> It would be better to describe here what causes the difference and how
-> the difference looks like.
+> OK, so it's like another level on top of current test functions.
 
-That is a good point, I thought the bug on bugzilla is public (but
-apparently it is not).
+Yes, the change to the library adds generic layer for that.
 
->> Adjust the string from uname in such cases.
->>
->> Signed-off-by: Jan Baier <jbaier@suse.cz>
->> ---
->>  testcases/kernel/syscalls/sysctl/sysctl01.c | 14 ++++++++++++++
->>  1 file changed, 14 insertions(+)
->>
->> diff --git testcases/kernel/syscalls/sysctl/sysctl01.c testcases/kernel/syscalls/sysctl/sysctl01.c
->> index 70905d806..fda29f060 100644
->> --- testcases/kernel/syscalls/sysctl/sysctl01.c
->> +++ testcases/kernel/syscalls/sysctl/sysctl01.c
->> @@ -1,6 +1,7 @@
->>  /*
->>   * Copyright (c) International Business Machines  Corp., 2001
->>   * Copyright (c) 2018 Xiao Yang <yangx.jy@cn.fujitsu.com>
->> + * Copyright (c) 2019 SUSE.  All Rights Reserved.
->>   *
->>   * This program is free software;  you can redistribute it and/or modify
->>   * it under the terms of the GNU General Public License as published by
->> @@ -77,6 +78,19 @@ static void setup(void)
->>  	/* get kernel name and information */
->>  	if (uname(&buf) == -1)
->>  		tst_brk(TBROK | TERRNO, "uname() failed");
->> +
->> +	/* revert uname change in case of kGraft/livepatch */
->> +	char *klp_tag;
->> +	char *right_brace;
->> +
->> +	klp_tag = strstr(buf.version, "/kGraft-");
->> +	if (!klp_tag)
->> +		klp_tag = strstr(buf.version, "/lp-");
->> +	if (klp_tag) {
->> +		right_brace = strchr(klp_tag, ')');
->> +		if (right_brace)
->> +			strcpy(klp_tag, right_brace);
-> 
-> This is not generally safe, the parameters passed to strcpy() must not
-> overlap. I guess that the safe option would be copying the content into
-> a new buffer.
+> I probably would like 'variant' somewhere in name more, but overall
+> I'm not against the patch. Are you planning on adding some docs too?
 
-Oh, my fault. I changed that from memmove and did not realize this
-consequence. I will refactor this part.
+I thought that calling it multiplex was descriptive enough name.
 
->> +	}
->>  }
->>  
->>  static struct tst_test test = {
->> -- 
->> 2.21.0
->>
->>
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
 
---
-Jan Baier
-QA/Maintenance
+There is some summary in:
 
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: signature.asc
-Type: application/pgp-signature
-Size: 488 bytes
-Desc: OpenPGP digital signature
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190307/c145f133/attachment.sig>
+https://github.com/linux-test-project/ltp/issues/506
+
+I guess that I can expand the text a bit and put it in the doc/
+directory in the source tree along with the change to the test library.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
