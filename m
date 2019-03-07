@@ -1,8 +1,8 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 7 Mar 2019 03:18:43 -0500 (EST)
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 7 Mar 2019 10:48:28 +0200
 Subject: [LTP] [PATCH v2] syscalls/readahead02: limit max readahead to
  backing device max_readahead_kb
-In-Reply-To: <CAOQ4uxjO+jYKzor7_eqBd8HMGs=m-EKt3jd+jRtOhh_KNPzYXQ@mail.gmail.com>
+In-Reply-To: <1883827755.5820362.1551946723163.JavaMail.zimbra@redhat.com>
 References: <CAOQ4uxi49WogvHDck_JXiUV8VfLDHhzu=EYVYWiTz+zagT41KA@mail.gmail.com>
  <CAOQ4uxgc2NqK=6Lmau08y_k6tQa17xg8Q50UB+xwkgdetTWKuQ@mail.gmail.com>
  <518295220.5323766.1551804903461.JavaMail.zimbra@redhat.com>
@@ -11,121 +11,132 @@ References: <CAOQ4uxi49WogvHDck_JXiUV8VfLDHhzu=EYVYWiTz+zagT41KA@mail.gmail.com>
  <CAOQ4uxiVkayLBWPAdPSz9W17hPNp7LagdtJ2k+vL98C0KgbKtA@mail.gmail.com>
  <20190306164256.GA570@dustball.usersys.redhat.com>
  <CAOQ4uxjO+jYKzor7_eqBd8HMGs=m-EKt3jd+jRtOhh_KNPzYXQ@mail.gmail.com>
-Message-ID: <1883827755.5820362.1551946723163.JavaMail.zimbra@redhat.com>
+ <1883827755.5820362.1551946723163.JavaMail.zimbra@redhat.com>
+Message-ID: <CAOQ4uxinA3x264gS=b5Wb7EkSF7EgF7DGe8Mj7LVWhK07RNsvw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
------ Original Message -----
-> On Wed, Mar 6, 2019 at 6:43 PM Jan Stancek <jstancek@redhat.com> wrote:
+On Thu, Mar 7, 2019 at 10:18 AM Jan Stancek <jstancek@redhat.com> wrote:
+>
+>
+>
+> ----- Original Message -----
+> > On Wed, Mar 6, 2019 at 6:43 PM Jan Stancek <jstancek@redhat.com> wrote:
+> > >
+> > > On Tue, Mar 05, 2019 at 10:44:57PM +0200, Amir Goldstein wrote:
+> > > >> > > > This is certainly better than 4K, but still feels like we are not
+> > > >> > > > really
+> > > >> > > > testing
+> > > >> > > > the API properly, but I'm fine with this fix.
+> > > >> > > >
+> > > >> > > > However... as follow up, how about extending the new
+> > > >> > > > tst_dev_bytes_written() utils from Sumit to cover also bytes_read
+> > > >> > > > and replace validation of readahead() from get_cached_size() diff
+> > > >> > > > to tst_dev_bytes_read()?
+> > > >> > >
+> > > >> > > There is something similar based on /proc/self/io. We could try
+> > > >> > > using
+> > > >> > > that to estimate max readahead size.
+> > > >> > >
+> > > >> > > Or /sys/class/block/$dev/stat as you suggested, not sure which one
+> > > >> > > is
+> > > >> > > more accurate/up to date.
+> > > >> > >
+> > > >> >
+> > > >> > I believe /proc/self/io doesn't count IO performed by kernel async
+> > > >> > readahead against the process that issued the readahead, but didn't
+> > > >> > check. The test uses /proc/self/io to check how many IO where avoided
+> > > >> > by readahead...
+> > > >>
+> > > >> We could do one readahead() on entire file, then read
+> > > >> the file and see how many IO we didn't manage to avoid.
+> > > >> The difference between filesize and IO we couldn't avoid,
+> > > >> would be our max readahead size.
+> > >
+> > > This also doesn't seem 100% accurate.
+> > >
+> > > Any method to inspect side-effect of readahead, appears to lead to more
+> > > readahead done by kernel. E.g. sequential reads leading to more async
+> > > readahead started by kernel (which tries to stay ahead by async_size).
+> > > mmap() approach appears to fault-in with do_fault_around().
+> > >
+> > > MAP_NONBLOCK is gone, mincore and pagemap doesn't help here.
+> > >
+> > > I'm attaching v3, where I do reads with sycalls() in reverse order.
+> > > But occasionally, it still somehow leads to couple extra pages being
+> > > read to cache. So, it still over-estimates. On ppc64le, it's quite
+> > > significant, 4 extra pages in cache, each 64k, causes readahead
+> > > loop to miss ~10MB of data.
+> > >
+> > > /sys/class/block/$dev/ stats appear to be increased for fs metadata
+> > > as well, which can also inflate value and we over-estimate.
+> > >
+> > > I'm running out of ideas for something more accurate/stable than v2.
+> > >
 > >
-> > On Tue, Mar 05, 2019 at 10:44:57PM +0200, Amir Goldstein wrote:
-> > >> > > > This is certainly better than 4K, but still feels like we are not
-> > >> > > > really
-> > >> > > > testing
-> > >> > > > the API properly, but I'm fine with this fix.
-> > >> > > >
-> > >> > > > However... as follow up, how about extending the new
-> > >> > > > tst_dev_bytes_written() utils from Sumit to cover also bytes_read
-> > >> > > > and replace validation of readahead() from get_cached_size() diff
-> > >> > > > to tst_dev_bytes_read()?
-> > >> > >
-> > >> > > There is something similar based on /proc/self/io. We could try
-> > >> > > using
-> > >> > > that to estimate max readahead size.
-> > >> > >
-> > >> > > Or /sys/class/block/$dev/stat as you suggested, not sure which one
-> > >> > > is
-> > >> > > more accurate/up to date.
-> > >> > >
-> > >> >
-> > >> > I believe /proc/self/io doesn't count IO performed by kernel async
-> > >> > readahead against the process that issued the readahead, but didn't
-> > >> > check. The test uses /proc/self/io to check how many IO where avoided
-> > >> > by readahead...
-> > >>
-> > >> We could do one readahead() on entire file, then read
-> > >> the file and see how many IO we didn't manage to avoid.
-> > >> The difference between filesize and IO we couldn't avoid,
-> > >> would be our max readahead size.
+> > I'm trying to understand if maybe you are running off the rails with
+> > the estimation issue.
+> > What the test aims to verify is that readahead prevents waiting
+> > on IO in the future.
+> > The max readahead size estimation is a very small part
+> > of the test and not that significant IMO.
+> > Why is the test not trying to readahead more than 64MB?
+> > It's arbitrary. So my first proposal to over-estimation was
+> > to cap upper estimation with 1MB, i.e.:
+>
+> Problem is that max allowed readahead can be smaller than 1MB,
+> so then we still over-estimate.
+>
 > >
-> > This also doesn't seem 100% accurate.
+> > offset += MIN(max_ra_estimate, MAX_SANE_READAHEAD_ESTIMATION);
 > >
-> > Any method to inspect side-effect of readahead, appears to lead to more
-> > readahead done by kernel. E.g. sequential reads leading to more async
-> > readahead started by kernel (which tries to stay ahead by async_size).
-> > mmap() approach appears to fault-in with do_fault_around().
+> > With this change we won't be testing if readahead of 64MB
+> > in one go works anymore - it looks like getting that to work reliably
+> > is more challenging and not sure its worth the trouble.
 > >
-> > MAP_NONBLOCK is gone, mincore and pagemap doesn't help here.
+> > What you ended up implementing in v2 is not what I proposed
+> > (you just disabled estimation altogether)
+>
+> Yes, v2/bdi limit is highest number I'm aware of, that should
+> work across all kernels without guessing.
+>
+> > I am fine with the dynamic setting on min_sane_readahead
+> > in v2, but it is independent of capping the upper limit for
+> > estimation.
 > >
-> > I'm attaching v3, where I do reads with sycalls() in reverse order.
-> > But occasionally, it still somehow leads to couple extra pages being
-> > read to cache. So, it still over-estimates. On ppc64le, it's quite
-> > significant, 4 extra pages in cache, each 64k, causes readahead
-> > loop to miss ~10MB of data.
-> >
-> > /sys/class/block/$dev/ stats appear to be increased for fs metadata
-> > as well, which can also inflate value and we over-estimate.
-> >
-> > I'm running out of ideas for something more accurate/stable than v2.
-> >
-> 
-> I'm trying to understand if maybe you are running off the rails with
-> the estimation issue.
-> What the test aims to verify is that readahead prevents waiting
-> on IO in the future.
-> The max readahead size estimation is a very small part
-> of the test and not that significant IMO.
-> Why is the test not trying to readahead more than 64MB?
-> It's arbitrary. So my first proposal to over-estimation was
-> to cap upper estimation with 1MB, i.e.:
+> > So what do you say about v2 + estimation (with or without reading
+> > file backwards) and upper estimation limit?
+>
+> How could we tell if 1MB upper limit is smaller than max readahead limit?
+>
 
-Problem is that max allowed readahead can be smaller than 1MB,
-so then we still over-estimate.
+Try to set bdi limit of test device on setup() to testfile_size before reading
+back the value?
+If that fails try testfile_size / 2 etc.
+Use the value that bdi limit ended up with.
 
-> 
-> offset += MIN(max_ra_estimate, MAX_SANE_READAHEAD_ESTIMATION);
-> 
-> With this change we won't be testing if readahead of 64MB
-> in one go works anymore - it looks like getting that to work reliably
-> is more challenging and not sure its worth the trouble.
-> 
-> What you ended up implementing in v2 is not what I proposed
-> (you just disabled estimation altogether)
+> Other option could be v3, but in steps equal to "max_ra / 2":
+>
+>  *                        |<----- async_size ---------|
+>  *     |------------------- size -------------------->|
+>  *     |==================#===========================|
+>  *     ^start             ^page marked with PG_readahead
+>  *
+>  * To overlap application thinking time and disk I/O time, we do
+>  * `readahead pipelining': Do not wait until the application consumed all
+>  * readahead pages and stalled on the missing page at readahead_index;
+>  * Instead, submit an asynchronous readahead I/O as soon as there are
+>  * only async_size pages left in the readahead window. Normally async_size
+>  * will be equal to size, for maximum pipelining.
+>
+>
 
-Yes, v2/bdi limit is highest number I'm aware of, that should
-work across all kernels without guessing.
+OK, if it works, but v2 + raising bdi limit sounds simpler,
+so if that works I think that it is better to minimize speculative code
+in the test,
 
-> I am fine with the dynamic setting on min_sane_readahead
-> in v2, but it is independent of capping the upper limit for
-> estimation.
-> 
-> So what do you say about v2 + estimation (with or without reading
-> file backwards) and upper estimation limit?
-
-How could we tell if 1MB upper limit is smaller than max readahead limit?
-
-Other option could be v3, but in steps equal to "max_ra / 2":
-
- *                        |<----- async_size ---------|
- *     |------------------- size -------------------->|
- *     |==================#===========================|
- *     ^start             ^page marked with PG_readahead
- *
- * To overlap application thinking time and disk I/O time, we do
- * `readahead pipelining': Do not wait until the application consumed all
- * readahead pages and stalled on the missing page at readahead_index;
- * Instead, submit an asynchronous readahead I/O as soon as there are
- * only async_size pages left in the readahead window. Normally async_size
- * will be equal to size, for maximum pipelining.
-
-
-> Does it solve the sporadic failures problem?
-> 
-> Thanks,
-> Amir.
-> 
+Thanks,
+Amir.
