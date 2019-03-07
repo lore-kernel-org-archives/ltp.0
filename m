@@ -1,59 +1,68 @@
-From: Jan Baier <jbaier@suse.cz>
-Date: Thu,  7 Mar 2019 19:37:28 +0100
-Subject: [LTP] [PATCH v2] sysctl01: fix fails on live-patched kernels
-Message-ID: <20190307183728.7659-1-jbaier@suse.cz>
+From: Saravana Kannan <saravanak@google.com>
+Date: Thu, 7 Mar 2019 14:36:38 -0800
+Subject: [LTP] [PATCH] setpriority01: Skip only PRIO_USER when unable to
+ add test user
+In-Reply-To: <CAGETcx-07fGeAxXzD6Lo79XG-0OXJS8wzHztw4_72m2rO9Hpcw@mail.gmail.com>
+References: <20190306215859.66044-1-saravanak@google.com>
+ <20190307105933.GA1040@rei.lan>
+ <CAGETcx-07fGeAxXzD6Lo79XG-0OXJS8wzHztw4_72m2rO9Hpcw@mail.gmail.com>
+Message-ID: <CAGETcx-yRfA+zmRScronhaVe6auMkzso6cHeDFtOaXzkE99Hwg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-During live-patching, the uname syscall is overridden to reflect the
-fact that the kernel has been live-patched. The version string
-obtainable through /proc/sys/kernel/version is defined during
-compilation and it is not touched by the live-patch. In this case, the
-two interfaces can report different kernel versions.
+On Thu, Mar 7, 2019 at 7:44 AM Saravana Kannan <saravanak@google.com> wrote:
 
-Adjust the string from uname in such cases and remove the tag added
-during live-patching.
+>
+>
+> On Thu, Mar 7, 2019, 3:00 AM Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+>> Hi!
+>> > -     ltpuser = SAFE_GETPWNAM(username);
+>> > -     uid = ltpuser->pw_uid;
+>> > +     if (!tst_run_cmd(cmd_useradd, NULL, NULL, 1)) {
+>> > +             user_added = 1;
+>> > +             ltpuser = SAFE_GETPWNAM(username);
+>> > +             uid = ltpuser->pw_uid;
+>> > +     }
+>>
+>> The only thing that I don't like here is that we do not check the cause
+>> of failure here. What exactly happens on android, is useradd missing
+>> there completely?
+>
+>
+> Correct, useradd is missing.
+>
+> If so we should proceed with TCONF only if
+>> tst_run_cmd() returned 255 and TBROK the test on other non-zero return
+>> values.
+>>
+>
+> But is the test that's broken if useradd fails for wherever reason? Isn't
+> it a configuration issue?
+>
+>
+Looking more into the definition of TBROK, TCONF and the code before my
+changes:
 
-Signed-off-by: Jan Baier <jbaier@suse.cz>
----
- testcases/kernel/syscalls/sysctl/sysctl01.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+-       if (eaccess("/etc/passwd", W_OK))
+-               tst_brk(TCONF, "/etc/passwd is not accessible");
+-
+-       tst_run_cmd(cmd_useradd, NULL, NULL, 0);
+-       user_added = 1;
+-
 
-diff --git testcases/kernel/syscalls/sysctl/sysctl01.c testcases/kernel/syscalls/sysctl/sysctl01.c
-index 70905d806..9b4b1950c 100644
---- testcases/kernel/syscalls/sysctl/sysctl01.c
-+++ testcases/kernel/syscalls/sysctl/sysctl01.c
-@@ -1,6 +1,7 @@
- /*
-  * Copyright (c) International Business Machines  Corp., 2001
-  * Copyright (c) 2018 Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ * Copyright (c) 2019 SUSE.  All Rights Reserved.
-  *
-  * This program is free software;  you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-@@ -77,6 +78,19 @@ static void setup(void)
- 	/* get kernel name and information */
- 	if (uname(&buf) == -1)
- 		tst_brk(TBROK | TERRNO, "uname() failed");
-+
-+	/* revert uname change in case of kGraft/livepatch */
-+	char *klp_tag;
-+	char *right_brace;
-+
-+	klp_tag = strstr(buf.version, "/kGraft-");
-+	if (!klp_tag)
-+		klp_tag = strstr(buf.version, "/lp-");
-+	if (klp_tag) {
-+		right_brace = strchr(klp_tag, ')');
-+		if (right_brace)
-+			memmove(klp_tag, right_brace, sizeof(char) * (strlen(right_brace)+1));
-+	}
- }
- 
- static struct tst_test test = {
--- 
-2.21.0
+Should an eaccess write failure have resulted in a TCONF? Shouldn't that
+have been a TBROK too?
 
+I'm fine with whatever way we go, except not wanting to fail the entire
+test case just because useradd isn't present in android. It's still very
+useful to run the other setpriority tests.
+
+Thanks,
+Saravana
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190307/9349e098/attachment-0001.html>
