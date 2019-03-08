@@ -1,49 +1,29 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri,  8 Mar 2019 15:55:54 +0100
-Subject: [LTP] [PATCH] Fix out-of-tree build.
-Message-ID: <20190308145554.17299-1-chrubis@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 8 Mar 2019 16:09:57 +0100
+Subject: [LTP] [PATCH 2/2 v2] libs: Hook up libs into the build system
+In-Reply-To: <20190308140354.GC20072@rei>
+References: <20190308124257.25282-1-chrubis@suse.cz>
+ <20190308124257.25282-2-chrubis@suse.cz>
+ <1327941462.6119620.1552050333572.JavaMail.zimbra@redhat.com>
+ <20190308132634.GA23955@dell5510> <20190308133347.GB20072@rei>
+ <20190308140354.GC20072@rei>
+Message-ID: <20190308150957.GA30032@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Ths fixes out of tree build by making the libs directory to be
-dependency of libs-all.
+Hi,
 
-Not that the the lib and include directory are created as the side efect
-of the AC_CONFIG_FILES() and hence don't need to be created in the
-top-level Makefile.
+> And on my machine out-of-tree build does not managed to get past
+> configure step, it fails somewhere in the ffsb configure step.
+I often get
+configure:2889: error: source directory already configured; run "make distclean" there first
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-CC: Petr Vorel <pvorel@suse.cz>
-CC: Jan Stancek <jstancek@redhat.com>
----
+So I build it with a bit drastic way:
+rm -rfv *; git reset --hard; ./build.sh -o out
 
-This should be last fix for the numa build troubles.
 
-I still have out-of-tree build failures in ffsb configure but I had
-enough autoconf and make for today...
-
- Makefile | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/Makefile b/Makefile
-index bc6e9a3e0..170c2da20 100644
---- a/Makefile
-+++ b/Makefile
-@@ -110,6 +110,11 @@ $(sort $(addprefix $(abs_top_builddir)/,$(BOOTSTRAP_TARGETS)) $(INSTALL_DIR) $(D
- ## Pattern based subtarget rules.
- lib-install: lib-all
- 
-+$(abs_top_builddir)/libs:
-+	mkdir -m 00755 -p "$@"
-+
-+libs-all: $(abs_top_builddir)/libs
-+
- $(MAKE_TARGETS) include-all lib-all libs-all:
- 	$(MAKE) -C "$(subst -all,,$@)" \
- 		-f "$(abs_top_srcdir)/$(subst -all,,$@)/Makefile" all
--- 
-2.19.2
-
+Kind regards,
+Petr
