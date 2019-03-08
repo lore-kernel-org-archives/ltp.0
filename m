@@ -1,34 +1,33 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 8 Mar 2019 03:08:48 -0500 (EST)
-Subject: [LTP] [PATCH] syscalls/fanotify0[135]: contain effects of
- FAN_MARK_MOUNT|FILESYSTEM to test device
-In-Reply-To: <CAOQ4uxiEbZkw-y0sMeE8t2G6e2Wu51eLWcNANtFVNiqr+jkxjQ@mail.gmail.com>
-References: <3b298cac8fd8516df09a761c3eaf8538f0b5049c.1551779182.git.jstancek@redhat.com>
- <CAOQ4uxiEbZkw-y0sMeE8t2G6e2Wu51eLWcNANtFVNiqr+jkxjQ@mail.gmail.com>
-Message-ID: <671345018.6037235.1552032528659.JavaMail.zimbra@redhat.com>
+Date: Fri,  8 Mar 2019 11:09:46 +0100
+Subject: [LTP] [PATCH COMMITTED] mtest06/mmap1: add note about known
+	panics/stalls on s390x
+Message-ID: <197485f5586d355497da022fd264ab8d7f3ce0d1.1552039754.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/mem/mtest06/mmap1.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
+diff --git a/testcases/kernel/mem/mtest06/mmap1.c b/testcases/kernel/mem/mtest06/mmap1.c
+index 6e8269be02be..b7b742653114 100644
+--- a/testcases/kernel/mem/mtest06/mmap1.c
++++ b/testcases/kernel/mem/mtest06/mmap1.c
+@@ -11,6 +11,9 @@
+  * hit SIGSEGV in between mmap/munmap it is a failure. If a read
+  * between mmap/munmap worked, then its value must match expected
+  * value.
++ *
++ * Can trigger panics/stalls since at least 4.14 on some arches. See:
++ *   fc8efd2ddfed ("mm/memory.c: do_fault: avoid usage of stale vm_area_struct")
+  */
+ #include <errno.h>
+ #include <float.h>
+-- 
+1.8.3.1
 
------ Original Message -----
-> On Tue, Mar 5, 2019 at 11:50 AM Jan Stancek <jstancek@redhat.com> wrote:
-> >
-> > FAN_MARK_MOUNT|FILESYSTEM can set up monitoring for entire root /, which
-> > can lead to interference from other background processes.
-> >
-> > Use separate device/mount to isolate events from tests.
-> >
-> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> 
-> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> 
-> Thanks!
-
-Pushed.
-
-Regards,
-Jan
