@@ -1,44 +1,190 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 8 Mar 2019 15:03:54 +0100
-Subject: [LTP] [PATCH 2/2 v2] libs: Hook up libs into the build system
-In-Reply-To: <20190308133347.GB20072@rei>
-References: <20190308124257.25282-1-chrubis@suse.cz>
- <20190308124257.25282-2-chrubis@suse.cz>
- <1327941462.6119620.1552050333572.JavaMail.zimbra@redhat.com>
- <20190308132634.GA23955@dell5510> <20190308133347.GB20072@rei>
-Message-ID: <20190308140354.GC20072@rei>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Fri, 8 Mar 2019 16:29:19 +0200
+Subject: [LTP] [PATCH v4] syscalls/readahead02: set readahead to min(bdi
+	limit, 2M)
+In-Reply-To: <96b24288ab39333b2df77980c0665c6949080f58.1552047315.git.jstancek@redhat.com>
+References: <CAOQ4uxj_4D6VYA+8PhzNi-mzwew+b6Wue=vxVYLEqX2xKM862w@mail.gmail.com>
+ <96b24288ab39333b2df77980c0665c6949080f58.1552047315.git.jstancek@redhat.com>
+Message-ID: <CAOQ4uxgZZjxpL=66Lm6yYbr6+1RbFnDtXc_oSNR1Xs6yVXNEsA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > > I tested v2 as far back as RHEL6.2, ACK.
-> > Jan, have you tested out of tree build?
-> > 
-> > Still failing [1], mostly for out-of-tree builds [2]:
-> > make: Entering directory '/usr/src/ltp-build'
-> > make -C "lib" \
-> > 	-f "/usr/src/ltp/lib/Makefile" all
-> > make -C "libs" \
-> > 	-f "/usr/src/ltp/libs/Makefile" all
-> > make[1]: Entering directory '/usr/src/ltp-build/lib'
-> > mkdir -m 00755 -p "newlib_tests"
-> > make[1]: Entering directory '/usr/src/ltp-build'
-> > make[1]: *** libs: No such file or directory.  Stop.
-> > make[1]: Leaving directory '/usr/src/ltp-build'
-> > /usr/src/ltp/Makefile:114: recipe for target 'libs-all' failed
-> > make: *** [libs-all] Error 2
-> > make: *** Waiting for unfinished jobs....
-> 
-> Sigh, the out-of-tree build is always making things unnecessary
-> difficuilt. I have no idea why the directory is not created in the build
-> tree.
+On Fri, Mar 8, 2019 at 2:19 PM Jan Stancek <jstancek@redhat.com> wrote:
+>
+> Using system-wide "Cached" size is not accurate. The test is sporadically
+> failing with warning on ppc64le 4.18 and 5.0 kernels.
+>
+> Problem is that test over-estimates max readahead size, which then
+> leads to fewer readhead calls and kernel can silently trims length
+> in each of them:
+>   ...
+>   readahead02.c:244: INFO: Test #2: POSIX_FADV_WILLNEED on file
+>   readahead02.c:134: INFO: creating test file of size: 67108864
+>   readahead02.c:263: INFO: read_testfile(0)
+>   readahead02.c:274: INFO: read_testfile(1)
+>   readahead02.c:189: INFO: max ra estimate: 12320768
+>   readahead02.c:198: INFO: readahead calls made: 6
+>   readahead02.c:204: PASS: offset is still at 0 as expected
+>   readahead02.c:308: INFO: read_testfile(0) took: 492486 usec
+>   readahead02.c:309: INFO: read_testfile(1) took: 430627 usec
+>   readahead02.c:311: INFO: read_testfile(0) read: 67108864 bytes
+>   readahead02.c:313: INFO: read_testfile(1) read: 59244544 bytes
+>   readahead02.c:316: PASS: readahead saved some I/O
+>   readahead02.c:324: INFO: cache can hold at least: 264192 kB
+>   readahead02.c:325: INFO: read_testfile(0) used cache: 124992 kB
+>   readahead02.c:326: INFO: read_testfile(1) used cache: 12032 kB
+>   readahead02.c:338: WARN: using less cache than expected
+>
+> Try raising bdi readahead limit as much as we can. We write and read back
+> "read_ahead_kb" sysfs value, starting with filesize. If that fails, we try
+> again with lower value.
+>
+> readahead_length used in the test is then set to MIN(bdi limit, 2M),
+> so we respect also kernels prior to commit 600e19afc5f8 ("mm: use
+> only per-device readahead limit").
+>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-And on my machine out-of-tree build does not managed to get past
-configure step, it fails somewhere in the ffsb configure step.
+Looks good to me.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+I just wonder, since we readahead every 2MB, is there a point to
+setting bdi limit to 64MB and try readahead 64MB on first time?
+I believe the answer is yes, just wanted to hear your thoughts about this.
+
+Thanks,
+Amir.
+
+
+> ---
+>  testcases/kernel/syscalls/readahead/readahead02.c | 70 +++++++++++++++++------
+>  1 file changed, 53 insertions(+), 17 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
+> index 293c839e169e..39ddbd5835a6 100644
+> --- a/testcases/kernel/syscalls/readahead/readahead02.c
+> +++ b/testcases/kernel/syscalls/readahead/readahead02.c
+> @@ -49,7 +49,9 @@ static int ovl_mounted;
+>  #define OVL_UPPER      MNTPOINT"/upper"
+>  #define OVL_WORK       MNTPOINT"/work"
+>  #define OVL_MNT                MNTPOINT"/ovl"
+> -#define MIN_SANE_READAHEAD (4u * 1024u)
+> +static int readahead_length  = 4096;
+> +static char sys_bdi_ra_path[PATH_MAX];
+> +static int orig_bdi_limit;
+>
+>  static const char mntpoint[] = MNTPOINT;
+>
+> @@ -165,13 +167,11 @@ static int read_testfile(struct tcase *tc, int do_readahead,
+>         size_t i = 0;
+>         long read_bytes_start;
+>         unsigned char *p, tmp;
+> -       unsigned long cached_start, max_ra_estimate = 0;
+>         off_t offset = 0;
+>
+>         fd = SAFE_OPEN(fname, O_RDONLY);
+>
+>         if (do_readahead) {
+> -               cached_start = get_cached_size();
+>                 do {
+>                         TEST(tc->readahead(fd, offset, fsize - offset));
+>                         if (TST_RET != 0) {
+> @@ -179,21 +179,8 @@ static int read_testfile(struct tcase *tc, int do_readahead,
+>                                 return TST_ERR;
+>                         }
+>
+> -                       /* estimate max readahead size based on first call */
+> -                       if (!max_ra_estimate) {
+> -                               *cached = get_cached_size();
+> -                               if (*cached > cached_start) {
+> -                                       max_ra_estimate = (1024 *
+> -                                               (*cached - cached_start));
+> -                                       tst_res(TINFO, "max ra estimate: %lu",
+> -                                               max_ra_estimate);
+> -                               }
+> -                               max_ra_estimate = MAX(max_ra_estimate,
+> -                                       MIN_SANE_READAHEAD);
+> -                       }
+> -
+>                         i++;
+> -                       offset += max_ra_estimate;
+> +                       offset += readahead_length;
+>                 } while ((size_t)offset < fsize);
+>                 tst_res(TINFO, "readahead calls made: %zu", i);
+>                 *cached = get_cached_size();
+> @@ -364,6 +351,49 @@ static void setup_overlay(void)
+>         ovl_mounted = 1;
+>  }
+>
+> +/*
+> + * We try raising bdi readahead limit as much as we can. We write
+> + * and read back "read_ahead_kb" sysfs value, starting with filesize.
+> + * If that fails, we try again with lower value.
+> + * readahead_length used in the test is then set to MIN(bdi limit, 2M),
+> + * to respect kernels prior to commit 600e19afc5f8a6c.
+> + */
+> +static void setup_readahead_length(void)
+> +{
+> +       struct stat sbuf;
+> +       char tmp[PATH_MAX], *backing_dev;
+> +       int ra_new_limit, ra_limit;
+> +
+> +       /* Find out backing device name */
+> +       SAFE_LSTAT(tst_device->dev, &sbuf);
+> +       if (S_ISLNK(sbuf.st_mode))
+> +               SAFE_READLINK(tst_device->dev, tmp, PATH_MAX);
+> +       else
+> +               strcpy(tmp, tst_device->dev);
+> +
+> +       backing_dev = basename(tmp);
+> +       sprintf(sys_bdi_ra_path, "/sys/class/block/%s/bdi/read_ahead_kb",
+> +               backing_dev);
+> +       if (access(sys_bdi_ra_path, F_OK))
+> +               return;
+> +
+> +       SAFE_FILE_SCANF(sys_bdi_ra_path, "%d", &orig_bdi_limit);
+> +
+> +       /* raise bdi limit as much as kernel allows */
+> +       ra_new_limit = testfile_size / 1024;
+> +       while (ra_new_limit > pagesize / 1024) {
+> +               FILE_PRINTF(sys_bdi_ra_path, "%d", ra_new_limit);
+> +               SAFE_FILE_SCANF(sys_bdi_ra_path, "%d", &ra_limit);
+> +
+> +               if (ra_limit == ra_new_limit) {
+> +                       readahead_length = MIN(ra_new_limit * 1024,
+> +                               2 * 1024 * 1024);
+> +                       break;
+> +               }
+> +               ra_new_limit = ra_new_limit / 2;
+> +       }
+> +}
+> +
+>  static void setup(void)
+>  {
+>         if (opt_fsizestr)
+> @@ -380,6 +410,9 @@ static void setup(void)
+>
+>         pagesize = getpagesize();
+>
+> +       setup_readahead_length();
+> +       tst_res(TINFO, "readahead length: %d", readahead_length);
+> +
+>         setup_overlay();
+>  }
+>
+> @@ -387,6 +420,9 @@ static void cleanup(void)
+>  {
+>         if (ovl_mounted)
+>                 SAFE_UMOUNT(OVL_MNT);
+> +
+> +       if (orig_bdi_limit)
+> +               SAFE_FILE_PRINTF(sys_bdi_ra_path, "%d", orig_bdi_limit);
+>  }
+>
+>  static struct tst_test test = {
+> --
+> 1.8.3.1
+>
