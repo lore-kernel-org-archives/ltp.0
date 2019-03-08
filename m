@@ -1,190 +1,169 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 8 Mar 2019 16:29:19 +0200
-Subject: [LTP] [PATCH v4] syscalls/readahead02: set readahead to min(bdi
-	limit, 2M)
-In-Reply-To: <96b24288ab39333b2df77980c0665c6949080f58.1552047315.git.jstancek@redhat.com>
-References: <CAOQ4uxj_4D6VYA+8PhzNi-mzwew+b6Wue=vxVYLEqX2xKM862w@mail.gmail.com>
- <96b24288ab39333b2df77980c0665c6949080f58.1552047315.git.jstancek@redhat.com>
-Message-ID: <CAOQ4uxgZZjxpL=66Lm6yYbr6+1RbFnDtXc_oSNR1Xs6yVXNEsA@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 8 Mar 2019 15:49:54 +0100
+Subject: [LTP] [PATCH] libltpnuma: Fix compilation with libnuma v1
+In-Reply-To: <20190308135114.5120-1-chrubis@suse.cz>
+References: <20190308135114.5120-1-chrubis@suse.cz>
+Message-ID: <20190308144954.GA6533@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Mar 8, 2019 at 2:19 PM Jan Stancek <jstancek@redhat.com> wrote:
->
-> Using system-wide "Cached" size is not accurate. The test is sporadically
-> failing with warning on ppc64le 4.18 and 5.0 kernels.
->
-> Problem is that test over-estimates max readahead size, which then
-> leads to fewer readhead calls and kernel can silently trims length
-> in each of them:
->   ...
->   readahead02.c:244: INFO: Test #2: POSIX_FADV_WILLNEED on file
->   readahead02.c:134: INFO: creating test file of size: 67108864
->   readahead02.c:263: INFO: read_testfile(0)
->   readahead02.c:274: INFO: read_testfile(1)
->   readahead02.c:189: INFO: max ra estimate: 12320768
->   readahead02.c:198: INFO: readahead calls made: 6
->   readahead02.c:204: PASS: offset is still at 0 as expected
->   readahead02.c:308: INFO: read_testfile(0) took: 492486 usec
->   readahead02.c:309: INFO: read_testfile(1) took: 430627 usec
->   readahead02.c:311: INFO: read_testfile(0) read: 67108864 bytes
->   readahead02.c:313: INFO: read_testfile(1) read: 59244544 bytes
->   readahead02.c:316: PASS: readahead saved some I/O
->   readahead02.c:324: INFO: cache can hold at least: 264192 kB
->   readahead02.c:325: INFO: read_testfile(0) used cache: 124992 kB
->   readahead02.c:326: INFO: read_testfile(1) used cache: 12032 kB
->   readahead02.c:338: WARN: using less cache than expected
->
-> Try raising bdi readahead limit as much as we can. We write and read back
-> "read_ahead_kb" sysfs value, starting with filesize. If that fails, we try
-> again with lower value.
->
-> readahead_length used in the test is then set to MIN(bdi limit, 2M),
-> so we respect also kernels prior to commit 600e19afc5f8 ("mm: use
-> only per-device readahead limit").
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+Hi Cyril,
 
-Looks good to me.
+> With libnuma v1 HAVE_NUMA_H is defined but $(NUMA_LIBS) is not, which
+> leads to compilation failures on very very old distributions.
 
-I just wonder, since we readahead every 2MB, is there a point to
-setting bdi limit to 64MB and try readahead 64MB on first time?
-I believe the answer is yes, just wanted to hear your thoughts about this.
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> CC: Petr Vorel <pvorel@suse.cz>
+> CC: Jan Stancek <jstancek@redhat.com>
+Acked-by: Petr Vorel <pvorel@suse.cz>
 
-Thanks,
-Amir.
+FYI c9e5e75e1 ("numa: Drop NUMA API v1 support")
+There are other places, (testcases/kernel/mem/{lib,oom,vma}/),
+but these might be ok (not using our libnuma).
 
+Kind regards,
+Petr
 
 > ---
->  testcases/kernel/syscalls/readahead/readahead02.c | 70 +++++++++++++++++------
->  1 file changed, 53 insertions(+), 17 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
-> index 293c839e169e..39ddbd5835a6 100644
-> --- a/testcases/kernel/syscalls/readahead/readahead02.c
-> +++ b/testcases/kernel/syscalls/readahead/readahead02.c
-> @@ -49,7 +49,9 @@ static int ovl_mounted;
->  #define OVL_UPPER      MNTPOINT"/upper"
->  #define OVL_WORK       MNTPOINT"/work"
->  #define OVL_MNT                MNTPOINT"/ovl"
-> -#define MIN_SANE_READAHEAD (4u * 1024u)
-> +static int readahead_length  = 4096;
-> +static char sys_bdi_ra_path[PATH_MAX];
-> +static int orig_bdi_limit;
->
->  static const char mntpoint[] = MNTPOINT;
->
-> @@ -165,13 +167,11 @@ static int read_testfile(struct tcase *tc, int do_readahead,
->         size_t i = 0;
->         long read_bytes_start;
->         unsigned char *p, tmp;
-> -       unsigned long cached_start, max_ra_estimate = 0;
->         off_t offset = 0;
->
->         fd = SAFE_OPEN(fname, O_RDONLY);
->
->         if (do_readahead) {
-> -               cached_start = get_cached_size();
->                 do {
->                         TEST(tc->readahead(fd, offset, fsize - offset));
->                         if (TST_RET != 0) {
-> @@ -179,21 +179,8 @@ static int read_testfile(struct tcase *tc, int do_readahead,
->                                 return TST_ERR;
->                         }
->
-> -                       /* estimate max readahead size based on first call */
-> -                       if (!max_ra_estimate) {
-> -                               *cached = get_cached_size();
-> -                               if (*cached > cached_start) {
-> -                                       max_ra_estimate = (1024 *
-> -                                               (*cached - cached_start));
-> -                                       tst_res(TINFO, "max ra estimate: %lu",
-> -                                               max_ra_estimate);
-> -                               }
-> -                               max_ra_estimate = MAX(max_ra_estimate,
-> -                                       MIN_SANE_READAHEAD);
-> -                       }
-> -
->                         i++;
-> -                       offset += max_ra_estimate;
-> +                       offset += readahead_length;
->                 } while ((size_t)offset < fsize);
->                 tst_res(TINFO, "readahead calls made: %zu", i);
->                 *cached = get_cached_size();
-> @@ -364,6 +351,49 @@ static void setup_overlay(void)
->         ovl_mounted = 1;
+>  libs/libltpnuma/tst_numa.c                                | 4 ++--
+>  testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c | 6 +++---
+>  testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c | 6 +++---
+>  testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c | 6 +++---
+>  testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c | 6 +++---
+>  5 files changed, 14 insertions(+), 14 deletions(-)
+
+> diff --git a/libs/libltpnuma/tst_numa.c b/libs/libltpnuma/tst_numa.c
+> index 6bd23e949..0ba6daf39 100644
+> --- a/libs/libltpnuma/tst_numa.c
+> +++ b/libs/libltpnuma/tst_numa.c
+> @@ -8,7 +8,7 @@
+>  #include <stdio.h>
+>  #include <ctype.h>
+>  #include "config.h"
+> -#ifdef HAVE_NUMA_H
+> +#ifdef HAVE_NUMA_V2
+>  # include <numa.h>
+>  # include <numaif.h>
+>  #endif
+> @@ -43,7 +43,7 @@ void tst_nodemap_free(struct tst_nodemap *nodes)
+>  	free(nodes);
 >  }
->
-> +/*
-> + * We try raising bdi readahead limit as much as we can. We write
-> + * and read back "read_ahead_kb" sysfs value, starting with filesize.
-> + * If that fails, we try again with lower value.
-> + * readahead_length used in the test is then set to MIN(bdi limit, 2M),
-> + * to respect kernels prior to commit 600e19afc5f8a6c.
-> + */
-> +static void setup_readahead_length(void)
-> +{
-> +       struct stat sbuf;
-> +       char tmp[PATH_MAX], *backing_dev;
-> +       int ra_new_limit, ra_limit;
-> +
-> +       /* Find out backing device name */
-> +       SAFE_LSTAT(tst_device->dev, &sbuf);
-> +       if (S_ISLNK(sbuf.st_mode))
-> +               SAFE_READLINK(tst_device->dev, tmp, PATH_MAX);
-> +       else
-> +               strcpy(tmp, tst_device->dev);
-> +
-> +       backing_dev = basename(tmp);
-> +       sprintf(sys_bdi_ra_path, "/sys/class/block/%s/bdi/read_ahead_kb",
-> +               backing_dev);
-> +       if (access(sys_bdi_ra_path, F_OK))
-> +               return;
-> +
-> +       SAFE_FILE_SCANF(sys_bdi_ra_path, "%d", &orig_bdi_limit);
-> +
-> +       /* raise bdi limit as much as kernel allows */
-> +       ra_new_limit = testfile_size / 1024;
-> +       while (ra_new_limit > pagesize / 1024) {
-> +               FILE_PRINTF(sys_bdi_ra_path, "%d", ra_new_limit);
-> +               SAFE_FILE_SCANF(sys_bdi_ra_path, "%d", &ra_limit);
-> +
-> +               if (ra_limit == ra_new_limit) {
-> +                       readahead_length = MIN(ra_new_limit * 1024,
-> +                               2 * 1024 * 1024);
-> +                       break;
-> +               }
-> +               ra_new_limit = ra_new_limit / 2;
-> +       }
-> +}
-> +
->  static void setup(void)
+
+> -#ifdef HAVE_NUMA_H
+> +#ifdef HAVE_NUMA_V2
+
+>  const char *tst_numa_mode_name(int mode)
 >  {
->         if (opt_fsizestr)
-> @@ -380,6 +410,9 @@ static void setup(void)
->
->         pagesize = getpagesize();
->
-> +       setup_readahead_length();
-> +       tst_res(TINFO, "readahead length: %d", readahead_length);
-> +
->         setup_overlay();
->  }
->
-> @@ -387,6 +420,9 @@ static void cleanup(void)
->  {
->         if (ovl_mounted)
->                 SAFE_UMOUNT(OVL_MNT);
-> +
-> +       if (orig_bdi_limit)
-> +               SAFE_FILE_PRINTF(sys_bdi_ra_path, "%d", orig_bdi_limit);
->  }
->
->  static struct tst_test test = {
-> --
-> 1.8.3.1
->
+> diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c
+> index d3c17bb9b..96a275411 100644
+> --- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c
+> +++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c
+> @@ -13,14 +13,14 @@
+
+>  #include <errno.h>
+>  #include "config.h"
+> -#ifdef HAVE_NUMA_H
+> +#ifdef HAVE_NUMA_V2
+>  # include <numa.h>
+>  # include <numaif.h>
+>  #endif
+>  #include "tst_test.h"
+>  #include "tst_numa.h"
+
+> -#ifdef HAVE_NUMA_H
+> +#ifdef HAVE_NUMA_V2
+
+>  #include "set_mempolicy.h"
+
+> @@ -117,4 +117,4 @@ static struct tst_test test = {
+
+>  TST_TEST_TCONF(NUMA_ERROR_MSG);
+
+> -#endif /* HAVE_NUMA_H */
+> +#endif /* HAVE_NUMA_V2 */
+> diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c
+> index e257c1c2c..4cdec1785 100644
+> --- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c
+> +++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c
+> @@ -14,14 +14,14 @@
+
+>  #include <errno.h>
+>  #include "config.h"
+> -#ifdef HAVE_NUMA_H
+> +#ifdef HAVE_NUMA_V2
+>  # include <numa.h>
+>  # include <numaif.h>
+>  #endif
+>  #include "tst_test.h"
+>  #include "tst_numa.h"
+
+> -#ifdef HAVE_NUMA_H
+> +#ifdef HAVE_NUMA_V2
+
+>  #include "set_mempolicy.h"
+
+> @@ -116,4 +116,4 @@ static struct tst_test test = {
+
+>  TST_TEST_TCONF(NUMA_ERROR_MSG);
+
+> -#endif /* HAVE_NUMA_H */
+> +#endif /* HAVE_NUMA_V2 */
+> diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
+> index eb3e046f2..24775de10 100644
+> --- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
+> +++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
+> @@ -11,7 +11,7 @@
+
+>  #include <errno.h>
+>  #include "config.h"
+> -#ifdef HAVE_NUMA_H
+> +#ifdef HAVE_NUMA_V2
+>  # include <numaif.h>
+>  # include <numa.h>
+>  #endif
+> @@ -21,7 +21,7 @@
+>  #define MNTPOINT "mntpoint"
+>  #define PAGES_ALLOCATED 16u
+
+> -#ifdef HAVE_NUMA_H
+> +#ifdef HAVE_NUMA_V2
+
+>  #include "set_mempolicy.h"
+
+> @@ -110,4 +110,4 @@ static struct tst_test test = {
+
+>  TST_TEST_TCONF(NUMA_ERROR_MSG);
+
+> -#endif /* HAVE_NUMA_H */
+> +#endif /* HAVE_NUMA_V2 */
+> diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c
+> index 60601e7c1..8d8aa988d 100644
+> --- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c
+> +++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c
+> @@ -22,7 +22,7 @@
+>  #include <stdio.h>
+>  #include <errno.h>
+>  #include "config.h"
+> -#ifdef HAVE_NUMA_H
+> +#ifdef HAVE_NUMA_V2
+>  # include <numa.h>
+>  # include <numaif.h>
+>  #endif
+> @@ -32,7 +32,7 @@
+>  #define MNTPOINT "mntpoint"
+>  #define FILES 10
+
+> -#ifdef HAVE_NUMA_H
+> +#ifdef HAVE_NUMA_V2
+
+>  #include "set_mempolicy.h"
+
+> @@ -139,4 +139,4 @@ static struct tst_test test = {
+
+>  TST_TEST_TCONF(NUMA_ERROR_MSG);
+
+> -#endif /* HAVE_NUMA_H */
+> +#endif /* HAVE_NUMA_V2 */
