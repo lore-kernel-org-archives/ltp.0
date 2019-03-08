@@ -1,11 +1,9 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 8 Mar 2019 12:47:07 +0100
-Subject: [LTP] [PATCH] Fix build with libnuma-dev on some distributions
-In-Reply-To: <20190308113430.GA22791@rei>
-References: <20190307143453.9808-1-chrubis@suse.cz>
- <361211632.5905441.1551973237001.JavaMail.zimbra@redhat.com>
- <20190308104338.GA16584@dell5510> <20190308113430.GA22791@rei>
-Message-ID: <20190308114707.GA1360@dell5510>
+Date: Fri, 8 Mar 2019 12:58:31 +0100
+Subject: [LTP] [PATCH v2] sysctl01: fix fails on live-patched kernels
+In-Reply-To: <20190307183728.7659-1-jbaier@suse.cz>
+References: <20190307183728.7659-1-jbaier@suse.cz>
+Message-ID: <20190308115831.GB1360@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,13 +12,35 @@ To: ltp@lists.linux.it
 
 Hi,
 
-> > + other LTP libraries are hidden in some subdirectories (which might be
-> > confusing), but I like there is not lib/ and lib<foo>/ in root directory.
+LGTM, with 2 minor changes (no need to repost if you agree).
 
-> We can add a libs/ directory to the top level directory and put all libs
-> shared between significant number of tests in different places there.
-> How does this sound?
-Thanks, make sense to me.
+> During live-patching, the uname syscall is overridden to reflect the
+> fact that the kernel has been live-patched. The version string
+> obtainable through /proc/sys/kernel/version is defined during
+> compilation and it is not touched by the live-patch. In this case, the
+> two interfaces can report different kernel versions.
+I'd add a comment that we're removing "/kGraft-<git_new_hash>"
+from "(<git_hash>/{lp,kGraft}-<git_new_hash>)"
+But maybe that's known and obvious from the code.
+
+> Adjust the string from uname in such cases and remove the tag added
+> during live-patching.
+
+> Signed-off-by: Jan Baier <jbaier@suse.cz>
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+...
+> +	klp_tag = strstr(buf.version, "/kGraft-");
+> +	if (!klp_tag)
+> +		klp_tag = strstr(buf.version, "/lp-");
+> +	if (klp_tag) {
+> +		right_brace = strchr(klp_tag, ')');
+> +		if (right_brace)
+> +			memmove(klp_tag, right_brace, sizeof(char) * (strlen(right_brace)+1));
+sizeof(char) == 1 by definition :)
+...
+
 
 Kind regards,
 Petr
