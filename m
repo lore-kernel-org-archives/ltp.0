@@ -1,175 +1,73 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri,  8 Mar 2019 13:19:15 +0100
-Subject: [LTP] [PATCH v4] syscalls/readahead02: set readahead to min(bdi
-	limit, 2M)
-In-Reply-To: <CAOQ4uxj_4D6VYA+8PhzNi-mzwew+b6Wue=vxVYLEqX2xKM862w@mail.gmail.com>
-References: <CAOQ4uxj_4D6VYA+8PhzNi-mzwew+b6Wue=vxVYLEqX2xKM862w@mail.gmail.com>
-Message-ID: <96b24288ab39333b2df77980c0665c6949080f58.1552047315.git.jstancek@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri,  8 Mar 2019 13:42:57 +0100
+Subject: [LTP] [PATCH 2/2 v2] libs: Hook up libs into the build system
+In-Reply-To: <20190308124257.25282-1-chrubis@suse.cz>
+References: <20190308124257.25282-1-chrubis@suse.cz>
+Message-ID: <20190308124257.25282-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Using system-wide "Cached" size is not accurate. The test is sporadically
-failing with warning on ppc64le 4.18 and 5.0 kernels.
+This hooks up libs/ subdirectories into the build system so that tests
+needs only specify which library from libs/ directory we should link
+againts. Which sets up the path to the library in LDFLAGS and also
+causes the library to be rebuild even when make is executed from the
+directory with testcases.
 
-Problem is that test over-estimates max readahead size, which then
-leads to fewer readhead calls and kernel can silently trims length
-in each of them:
-  ...
-  readahead02.c:244: INFO: Test #2: POSIX_FADV_WILLNEED on file
-  readahead02.c:134: INFO: creating test file of size: 67108864
-  readahead02.c:263: INFO: read_testfile(0)
-  readahead02.c:274: INFO: read_testfile(1)
-  readahead02.c:189: INFO: max ra estimate: 12320768
-  readahead02.c:198: INFO: readahead calls made: 6
-  readahead02.c:204: PASS: offset is still at 0 as expected
-  readahead02.c:308: INFO: read_testfile(0) took: 492486 usec
-  readahead02.c:309: INFO: read_testfile(1) took: 430627 usec
-  readahead02.c:311: INFO: read_testfile(0) read: 67108864 bytes
-  readahead02.c:313: INFO: read_testfile(1) read: 59244544 bytes
-  readahead02.c:316: PASS: readahead saved some I/O
-  readahead02.c:324: INFO: cache can hold at least: 264192 kB
-  readahead02.c:325: INFO: read_testfile(0) used cache: 124992 kB
-  readahead02.c:326: INFO: read_testfile(1) used cache: 12032 kB
-  readahead02.c:338: WARN: using less cache than expected
+Now the test only needs to set up LTPLIBS variable with a list of
+optional libraries to link against and LDLIBS, since as far as I know we
+have to maintain the order of the libraries manually.
 
-Try raising bdi readahead limit as much as we can. We write and read back
-"read_ahead_kb" sysfs value, starting with filesize. If that fails, we try
-again with lower value.
-
-readahead_length used in the test is then set to MIN(bdi limit, 2M),
-so we respect also kernels prior to commit 600e19afc5f8 ("mm: use
-only per-device readahead limit").
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+CC: Jan Stancek <jstancek@redhat.com>
+CC: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/syscalls/readahead/readahead02.c | 70 +++++++++++++++++------
- 1 file changed, 53 insertions(+), 17 deletions(-)
+ include/mk/testcases.mk                          | 16 +++++++++++++++-
+ testcases/kernel/syscalls/set_mempolicy/Makefile |  3 ++-
+ 2 files changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
-index 293c839e169e..39ddbd5835a6 100644
---- a/testcases/kernel/syscalls/readahead/readahead02.c
-+++ b/testcases/kernel/syscalls/readahead/readahead02.c
-@@ -49,7 +49,9 @@ static int ovl_mounted;
- #define OVL_UPPER	MNTPOINT"/upper"
- #define OVL_WORK	MNTPOINT"/work"
- #define OVL_MNT		MNTPOINT"/ovl"
--#define MIN_SANE_READAHEAD (4u * 1024u)
-+static int readahead_length  = 4096;
-+static char sys_bdi_ra_path[PATH_MAX];
-+static int orig_bdi_limit;
+diff --git a/include/mk/testcases.mk b/include/mk/testcases.mk
+index bf97384a7..131854ec7 100644
+--- a/include/mk/testcases.mk
++++ b/include/mk/testcases.mk
+@@ -41,5 +41,19 @@ INSTALL_DIR	:= testcases/bin
  
- static const char mntpoint[] = MNTPOINT;
+ LDLIBS		+= -lltp
  
-@@ -165,13 +167,11 @@ static int read_testfile(struct tcase *tc, int do_readahead,
- 	size_t i = 0;
- 	long read_bytes_start;
- 	unsigned char *p, tmp;
--	unsigned long cached_start, max_ra_estimate = 0;
- 	off_t offset = 0;
- 
- 	fd = SAFE_OPEN(fname, O_RDONLY);
- 
- 	if (do_readahead) {
--		cached_start = get_cached_size();
- 		do {
- 			TEST(tc->readahead(fd, offset, fsize - offset));
- 			if (TST_RET != 0) {
-@@ -179,21 +179,8 @@ static int read_testfile(struct tcase *tc, int do_readahead,
- 				return TST_ERR;
- 			}
- 
--			/* estimate max readahead size based on first call */
--			if (!max_ra_estimate) {
--				*cached = get_cached_size();
--				if (*cached > cached_start) {
--					max_ra_estimate = (1024 *
--						(*cached - cached_start));
--					tst_res(TINFO, "max ra estimate: %lu",
--						max_ra_estimate);
--				}
--				max_ra_estimate = MAX(max_ra_estimate,
--					MIN_SANE_READAHEAD);
--			}
--
- 			i++;
--			offset += max_ra_estimate;
-+			offset += readahead_length;
- 		} while ((size_t)offset < fsize);
- 		tst_res(TINFO, "readahead calls made: %zu", i);
- 		*cached = get_cached_size();
-@@ -364,6 +351,49 @@ static void setup_overlay(void)
- 	ovl_mounted = 1;
- }
- 
-+/*
-+ * We try raising bdi readahead limit as much as we can. We write
-+ * and read back "read_ahead_kb" sysfs value, starting with filesize.
-+ * If that fails, we try again with lower value.
-+ * readahead_length used in the test is then set to MIN(bdi limit, 2M),
-+ * to respect kernels prior to commit 600e19afc5f8a6c.
-+ */
-+static void setup_readahead_length(void)
-+{
-+	struct stat sbuf;
-+	char tmp[PATH_MAX], *backing_dev;
-+	int ra_new_limit, ra_limit;
+-$(APICMDS_DIR) $(LIBLTP_DIR): %:
++ifdef LTPLIBS
 +
-+	/* Find out backing device name */
-+	SAFE_LSTAT(tst_device->dev, &sbuf);
-+	if (S_ISLNK(sbuf.st_mode))
-+		SAFE_READLINK(tst_device->dev, tmp, PATH_MAX);
-+	else
-+		strcpy(tmp, tst_device->dev);
++LTPLIBS_DIRS = $(addprefix $(abs_top_builddir)/libs/lib, $(LTPLIBS))
++LTPLIBS_FILES = $(addsuffix .a, $(addprefix $(abs_top_builddir)/libs/, $(foreach LIB,$(LTPLIBS),lib$(LIB)/lib$(LIB))))
 +
-+	backing_dev = basename(tmp);
-+	sprintf(sys_bdi_ra_path, "/sys/class/block/%s/bdi/read_ahead_kb",
-+		backing_dev);
-+	if (access(sys_bdi_ra_path, F_OK))
-+		return;
++MAKE_DEPS += $(LTPLIBS_FILES)
 +
-+	SAFE_FILE_SCANF(sys_bdi_ra_path, "%d", &orig_bdi_limit);
++$(LTPLIBS_FILES): $(LTPLIBS_DIRS)
++	$(MAKE) -C "$^" -f "$^/Makefile" all
 +
-+	/* raise bdi limit as much as kernel allows */
-+	ra_new_limit = testfile_size / 1024;
-+	while (ra_new_limit > pagesize / 1024) {
-+		FILE_PRINTF(sys_bdi_ra_path, "%d", ra_new_limit);
-+		SAFE_FILE_SCANF(sys_bdi_ra_path, "%d", &ra_limit);
++LDFLAGS += $(addprefix -L$(top_builddir)/libs/lib, $(LTPLIBS))
 +
-+		if (ra_limit == ra_new_limit) {
-+			readahead_length = MIN(ra_new_limit * 1024,
-+				2 * 1024 * 1024);
-+			break;
-+		}
-+		ra_new_limit = ra_new_limit / 2;
-+	}
-+}
++endif
 +
- static void setup(void)
- {
- 	if (opt_fsizestr)
-@@ -380,6 +410,9 @@ static void setup(void)
++$(LTPLIBS_DIRS) $(APICMDS_DIR) $(LIBLTP_DIR): %:
+ 	mkdir -p "$@"
+diff --git a/testcases/kernel/syscalls/set_mempolicy/Makefile b/testcases/kernel/syscalls/set_mempolicy/Makefile
+index b79a53faf..a0b79d6e1 100644
+--- a/testcases/kernel/syscalls/set_mempolicy/Makefile
++++ b/testcases/kernel/syscalls/set_mempolicy/Makefile
+@@ -1,8 +1,9 @@
+ top_srcdir		?= ../../../..
  
- 	pagesize = getpagesize();
- 
-+	setup_readahead_length();
-+	tst_res(TINFO, "readahead length: %d", readahead_length);
++LTPLIBS = ltpnuma
 +
- 	setup_overlay();
- }
+ include $(top_srcdir)/include/mk/testcases.mk
  
-@@ -387,6 +420,9 @@ static void cleanup(void)
- {
- 	if (ovl_mounted)
- 		SAFE_UMOUNT(OVL_MNT);
-+
-+	if (orig_bdi_limit)
-+		SAFE_FILE_PRINTF(sys_bdi_ra_path, "%d", orig_bdi_limit);
- }
+-LDFLAGS += -L$(top_builddir)/libs/libltpnuma
+ LDLIBS  += $(NUMA_LIBS) -lltpnuma
  
- static struct tst_test test = {
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
 -- 
-1.8.3.1
+2.19.2
 
