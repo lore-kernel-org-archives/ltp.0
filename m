@@ -1,46 +1,175 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 8 Mar 2019 12:58:31 +0100
-Subject: [LTP] [PATCH v2] sysctl01: fix fails on live-patched kernels
-In-Reply-To: <20190307183728.7659-1-jbaier@suse.cz>
-References: <20190307183728.7659-1-jbaier@suse.cz>
-Message-ID: <20190308115831.GB1360@dell5510>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri,  8 Mar 2019 13:19:15 +0100
+Subject: [LTP] [PATCH v4] syscalls/readahead02: set readahead to min(bdi
+	limit, 2M)
+In-Reply-To: <CAOQ4uxj_4D6VYA+8PhzNi-mzwew+b6Wue=vxVYLEqX2xKM862w@mail.gmail.com>
+References: <CAOQ4uxj_4D6VYA+8PhzNi-mzwew+b6Wue=vxVYLEqX2xKM862w@mail.gmail.com>
+Message-ID: <96b24288ab39333b2df77980c0665c6949080f58.1552047315.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Using system-wide "Cached" size is not accurate. The test is sporadically
+failing with warning on ppc64le 4.18 and 5.0 kernels.
 
-LGTM, with 2 minor changes (no need to repost if you agree).
+Problem is that test over-estimates max readahead size, which then
+leads to fewer readhead calls and kernel can silently trims length
+in each of them:
+  ...
+  readahead02.c:244: INFO: Test #2: POSIX_FADV_WILLNEED on file
+  readahead02.c:134: INFO: creating test file of size: 67108864
+  readahead02.c:263: INFO: read_testfile(0)
+  readahead02.c:274: INFO: read_testfile(1)
+  readahead02.c:189: INFO: max ra estimate: 12320768
+  readahead02.c:198: INFO: readahead calls made: 6
+  readahead02.c:204: PASS: offset is still at 0 as expected
+  readahead02.c:308: INFO: read_testfile(0) took: 492486 usec
+  readahead02.c:309: INFO: read_testfile(1) took: 430627 usec
+  readahead02.c:311: INFO: read_testfile(0) read: 67108864 bytes
+  readahead02.c:313: INFO: read_testfile(1) read: 59244544 bytes
+  readahead02.c:316: PASS: readahead saved some I/O
+  readahead02.c:324: INFO: cache can hold at least: 264192 kB
+  readahead02.c:325: INFO: read_testfile(0) used cache: 124992 kB
+  readahead02.c:326: INFO: read_testfile(1) used cache: 12032 kB
+  readahead02.c:338: WARN: using less cache than expected
 
-> During live-patching, the uname syscall is overridden to reflect the
-> fact that the kernel has been live-patched. The version string
-> obtainable through /proc/sys/kernel/version is defined during
-> compilation and it is not touched by the live-patch. In this case, the
-> two interfaces can report different kernel versions.
-I'd add a comment that we're removing "/kGraft-<git_new_hash>"
-from "(<git_hash>/{lp,kGraft}-<git_new_hash>)"
-But maybe that's known and obvious from the code.
+Try raising bdi readahead limit as much as we can. We write and read back
+"read_ahead_kb" sysfs value, starting with filesize. If that fails, we try
+again with lower value.
 
-> Adjust the string from uname in such cases and remove the tag added
-> during live-patching.
+readahead_length used in the test is then set to MIN(bdi limit, 2M),
+so we respect also kernels prior to commit 600e19afc5f8 ("mm: use
+only per-device readahead limit").
 
-> Signed-off-by: Jan Baier <jbaier@suse.cz>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/readahead/readahead02.c | 70 +++++++++++++++++------
+ 1 file changed, 53 insertions(+), 17 deletions(-)
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
+index 293c839e169e..39ddbd5835a6 100644
+--- a/testcases/kernel/syscalls/readahead/readahead02.c
++++ b/testcases/kernel/syscalls/readahead/readahead02.c
+@@ -49,7 +49,9 @@ static int ovl_mounted;
+ #define OVL_UPPER	MNTPOINT"/upper"
+ #define OVL_WORK	MNTPOINT"/work"
+ #define OVL_MNT		MNTPOINT"/ovl"
+-#define MIN_SANE_READAHEAD (4u * 1024u)
++static int readahead_length  = 4096;
++static char sys_bdi_ra_path[PATH_MAX];
++static int orig_bdi_limit;
+ 
+ static const char mntpoint[] = MNTPOINT;
+ 
+@@ -165,13 +167,11 @@ static int read_testfile(struct tcase *tc, int do_readahead,
+ 	size_t i = 0;
+ 	long read_bytes_start;
+ 	unsigned char *p, tmp;
+-	unsigned long cached_start, max_ra_estimate = 0;
+ 	off_t offset = 0;
+ 
+ 	fd = SAFE_OPEN(fname, O_RDONLY);
+ 
+ 	if (do_readahead) {
+-		cached_start = get_cached_size();
+ 		do {
+ 			TEST(tc->readahead(fd, offset, fsize - offset));
+ 			if (TST_RET != 0) {
+@@ -179,21 +179,8 @@ static int read_testfile(struct tcase *tc, int do_readahead,
+ 				return TST_ERR;
+ 			}
+ 
+-			/* estimate max readahead size based on first call */
+-			if (!max_ra_estimate) {
+-				*cached = get_cached_size();
+-				if (*cached > cached_start) {
+-					max_ra_estimate = (1024 *
+-						(*cached - cached_start));
+-					tst_res(TINFO, "max ra estimate: %lu",
+-						max_ra_estimate);
+-				}
+-				max_ra_estimate = MAX(max_ra_estimate,
+-					MIN_SANE_READAHEAD);
+-			}
+-
+ 			i++;
+-			offset += max_ra_estimate;
++			offset += readahead_length;
+ 		} while ((size_t)offset < fsize);
+ 		tst_res(TINFO, "readahead calls made: %zu", i);
+ 		*cached = get_cached_size();
+@@ -364,6 +351,49 @@ static void setup_overlay(void)
+ 	ovl_mounted = 1;
+ }
+ 
++/*
++ * We try raising bdi readahead limit as much as we can. We write
++ * and read back "read_ahead_kb" sysfs value, starting with filesize.
++ * If that fails, we try again with lower value.
++ * readahead_length used in the test is then set to MIN(bdi limit, 2M),
++ * to respect kernels prior to commit 600e19afc5f8a6c.
++ */
++static void setup_readahead_length(void)
++{
++	struct stat sbuf;
++	char tmp[PATH_MAX], *backing_dev;
++	int ra_new_limit, ra_limit;
++
++	/* Find out backing device name */
++	SAFE_LSTAT(tst_device->dev, &sbuf);
++	if (S_ISLNK(sbuf.st_mode))
++		SAFE_READLINK(tst_device->dev, tmp, PATH_MAX);
++	else
++		strcpy(tmp, tst_device->dev);
++
++	backing_dev = basename(tmp);
++	sprintf(sys_bdi_ra_path, "/sys/class/block/%s/bdi/read_ahead_kb",
++		backing_dev);
++	if (access(sys_bdi_ra_path, F_OK))
++		return;
++
++	SAFE_FILE_SCANF(sys_bdi_ra_path, "%d", &orig_bdi_limit);
++
++	/* raise bdi limit as much as kernel allows */
++	ra_new_limit = testfile_size / 1024;
++	while (ra_new_limit > pagesize / 1024) {
++		FILE_PRINTF(sys_bdi_ra_path, "%d", ra_new_limit);
++		SAFE_FILE_SCANF(sys_bdi_ra_path, "%d", &ra_limit);
++
++		if (ra_limit == ra_new_limit) {
++			readahead_length = MIN(ra_new_limit * 1024,
++				2 * 1024 * 1024);
++			break;
++		}
++		ra_new_limit = ra_new_limit / 2;
++	}
++}
++
+ static void setup(void)
+ {
+ 	if (opt_fsizestr)
+@@ -380,6 +410,9 @@ static void setup(void)
+ 
+ 	pagesize = getpagesize();
+ 
++	setup_readahead_length();
++	tst_res(TINFO, "readahead length: %d", readahead_length);
++
+ 	setup_overlay();
+ }
+ 
+@@ -387,6 +420,9 @@ static void cleanup(void)
+ {
+ 	if (ovl_mounted)
+ 		SAFE_UMOUNT(OVL_MNT);
++
++	if (orig_bdi_limit)
++		SAFE_FILE_PRINTF(sys_bdi_ra_path, "%d", orig_bdi_limit);
+ }
+ 
+ static struct tst_test test = {
+-- 
+1.8.3.1
 
-...
-> +	klp_tag = strstr(buf.version, "/kGraft-");
-> +	if (!klp_tag)
-> +		klp_tag = strstr(buf.version, "/lp-");
-> +	if (klp_tag) {
-> +		right_brace = strchr(klp_tag, ')');
-> +		if (right_brace)
-> +			memmove(klp_tag, right_brace, sizeof(char) * (strlen(right_brace)+1));
-sizeof(char) == 1 by definition :)
-...
-
-
-Kind regards,
-Petr
