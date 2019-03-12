@@ -1,38 +1,35 @@
-From: Vineet Gupta <vineet.gupta1@synopsys.com>
-Date: Tue, 12 Mar 2019 10:44:39 -0700
-Subject: [LTP] [PATCH] cpuset: disable for UCLIBC
-Message-ID: <1552412679-28694-1-git-send-email-vgupta@synopsys.com>
+From: Steve Muckle <smuckle@google.com>
+Date: Tue, 12 Mar 2019 10:51:36 -0700
+Subject: [LTP] [PATCH DRAFT] syscalls/stime: convert to new lib,
+ use direct syscall
+In-Reply-To: <5C80B40C.7070106@cn.fujitsu.com>
+References: <20190202015923.189057-1-smuckle@google.com>
+ <20190301144831.GA16823@rei> <5C80B40C.7070106@cn.fujitsu.com>
+Message-ID: <25ed5f17-df8a-c7f3-1b75-e301dc9a7f12@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-libcpuset.c relies on FTS which is not enabled by default on uClibc.
-Instead of needing to reconfigure, rebuild uClibc lets disable this test
-for uClibc
+Hi Xiao,
 
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
----
- testcases/kernel/controllers/Makefile | 5 +++++
- 1 file changed, 5 insertions(+)
+On 03/06/2019 10:02 PM, Xiao Yang wrote:
+> Hi Cyril, Steve
+> 
+> According to the source code of glibc, glibc implements stime() by
+> __NR_settimeofday
+> instead of __NR_stime, and some arches(e.g. x86_64) don't define
+> __NR_stime directly.
+> Therefore these updated tests will be skipped on some arches that don't
+> define __NR_stime.
+> 
+> If glibc implements stime(), should we use it diectly?  If not, should
+> we use __NR_stime or __NR_settimeofday?
 
-diff --git a/testcases/kernel/controllers/Makefile b/testcases/kernel/controllers/Makefile
-index 404073947904..9f4abe28bfcf 100644
---- a/testcases/kernel/controllers/Makefile
-+++ b/testcases/kernel/controllers/Makefile
-@@ -29,6 +29,11 @@ LIBDIR			:= libcontrollers
- LIB			:= $(LIBDIR)/libcontrollers.a
- FILTER_OUT_DIRS		:= $(LIBDIR)
- 
-+# controllers/cpuset/cpuset_lib/libcpuset.c uses fts
-+ifeq ($(UCLIBC),1)
-+FILTER_OUT_DIRS	+= cpuset
-+endif
-+
- $(LIBDIR):
- 	mkdir -p "$@"
- 
--- 
-2.7.4
+I think both should be tested. Once Cyril's test multiplex addition goes 
+into the test lib there probably needs to be an effort to revisit cases 
+like these.
 
+cheers,
+Steve
