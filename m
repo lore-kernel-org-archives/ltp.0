@@ -1,35 +1,41 @@
-From: Steve Muckle <smuckle@google.com>
-Date: Tue, 12 Mar 2019 10:51:36 -0700
-Subject: [LTP] [PATCH DRAFT] syscalls/stime: convert to new lib,
- use direct syscall
-In-Reply-To: <5C80B40C.7070106@cn.fujitsu.com>
-References: <20190202015923.189057-1-smuckle@google.com>
- <20190301144831.GA16823@rei> <5C80B40C.7070106@cn.fujitsu.com>
-Message-ID: <25ed5f17-df8a-c7f3-1b75-e301dc9a7f12@google.com>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Wed, 13 Mar 2019 11:42:50 +0530
+Subject: [LTP] [PATCH v2 0/3] syscalls: add tgkill test-cases
+Message-ID: <1552457573-1354-1-git-send-email-sumit.garg@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao,
+This patch-set is inherited from Greg which adds test-cases for tgkill
+syscall.
 
-On 03/06/2019 10:02 PM, Xiao Yang wrote:
-> Hi Cyril, Steve
-> 
-> According to the source code of glibc, glibc implements stime() by
-> __NR_settimeofday
-> instead of __NR_stime, and some arches(e.g. x86_64) don't define
-> __NR_stime directly.
-> Therefore these updated tests will be skipped on some arches that don't
-> define __NR_stime.
-> 
-> If glibc implements stime(), should we use it diectly?  If not, should
-> we use __NR_stime or __NR_settimeofday?
+Changes in v2:
+- Free allocated memory for threads.
+- Remove redundant call to stop_threads().
+- Apply reviewed-by tag.
 
-I think both should be tested. Once Cyril's test multiplex addition goes 
-into the test lib there probably needs to be an effort to revisit cases 
-like these.
+Greg Hackmann (3):
+  syscalls/tgkill01: add new test
+  syscalls/tgkill02: add new test
+  syscalls/tgkill03: add new test
 
-cheers,
-Steve
+ runtest/syscalls                            |   4 +
+ testcases/kernel/syscalls/tgkill/.gitignore |   3 +
+ testcases/kernel/syscalls/tgkill/Makefile   |  10 ++
+ testcases/kernel/syscalls/tgkill/tgkill.h   |  22 +++++
+ testcases/kernel/syscalls/tgkill/tgkill01.c | 141 ++++++++++++++++++++++++++++
+ testcases/kernel/syscalls/tgkill/tgkill02.c |  80 ++++++++++++++++
+ testcases/kernel/syscalls/tgkill/tgkill03.c | 122 ++++++++++++++++++++++++
+ 7 files changed, 382 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/tgkill/.gitignore
+ create mode 100644 testcases/kernel/syscalls/tgkill/Makefile
+ create mode 100644 testcases/kernel/syscalls/tgkill/tgkill.h
+ create mode 100644 testcases/kernel/syscalls/tgkill/tgkill01.c
+ create mode 100644 testcases/kernel/syscalls/tgkill/tgkill02.c
+ create mode 100644 testcases/kernel/syscalls/tgkill/tgkill03.c
+
+-- 
+2.7.4
+
