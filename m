@@ -1,54 +1,643 @@
-From: Matthias Maennich <maennich@google.com>
-Date: Wed, 13 Mar 2019 11:42:37 +0000
-Subject: [LTP] [PATCH v1] rt_sigpending02: reuse code from sigpending02
-In-Reply-To: <20190313094228.GA24870@rei.lan>
-References: <20190308163832.212631-1-maennich@google.com>
- <64d5553d-ac2d-fd8a-03d1-7cd05d1deeeb@google.com>
- <20190313094228.GA24870@rei.lan>
-Message-ID: <20190313114237.GA261142@google.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 13 Mar 2019 12:48:04 +0100
+Subject: [LTP] [PATCH v4] mm: rewrite mtest01 with new API
+In-Reply-To: <CAEemH2cKD7Pxa9asmRiLO6N8ZJG6R=-q1YArhJ2JQFgGBBCESg@mail.gmail.com>
+References: <CAEemH2cKD7Pxa9asmRiLO6N8ZJG6R=-q1YArhJ2JQFgGBBCESg@mail.gmail.com>
+Message-ID: <c3f11669ed0fd7a5cf14c2d5e4b977913be0e119.1552477010.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+From: Li Wang <liwang@redhat.com>
 
-On Wed, Mar 13, 2019 at 10:42:28AM +0100, Cyril Hrubis wrote:
-> Hi!
-> > One downside with this multiplexed approach is that we then don't have 
-> > an entry in the testcases/kernel/syscalls/ directory for all syscalls 
-> > which can cause some confusion, but that could perhaps be addressed by 
-> > adding symlinks for the missing ones.
-I am not sure multiplexing is the right approach here (not saying it is not!).
-In case of (rt_)sigpending, I would like to see them as separate binaries that
-effectively do disjunct things. There might be the case that sigpending is not
-available on that particular kernel and rt_sigpending is. I would like the
-sigpending to fail with TCONF and the rt_sigpending to TPASS in that case. Is
-that something that can be achieved with multiplexing?
+ Test issue:
+   mtest01 start many children to alloc chunck of memory and do write
+   page(with -w option), but occasionally some children were killed by
+   oom-killer and exit with SIGCHLD signal sending. After the parent
+   reciving this SIGCHLD signal it will report FAIL as a test result.
 
-I was already working on a v2 of this patch set to add a further test case and
-will send this out shortly. I would like to reconsider multiplexing at a later
-time and for now follow the pattern of other syscall related tests like
-sigwait, sigtimedwait, rt_sigtimedwait.
+   It seems not a real kernel bug if something just like that, it's
+   trying to use 80% of memory and swap. Once it uses most of memory,
+   system starts swapping, but the test is likely consuming memory at
+   greater rate than kswapd can provide, which eventually triggers OOM.
 
-> 
-> Actually my long term plan is to include metadata in the testcases which
-> would, among other things, describe which syscalls/libcalls the tests is
-> excercising and I want this information to be propagated to the test
-> runner as well, so instead of relying on one binary file per syscall we
-> would have proper metadata describing the tests.
-> 
-> And the biggest problem here is that it looks that there is very little
-> interest in investing time into this approach. I've send a (quick and
-> dirty) RFC patch that tried to show a direction for such work, but
-> nearly nobody replied to it, so I postponed the work a bit.
-> 
-> See:
-> 
-> http://patchwork.ozlabs.org/project/ltp/list/?series=78493
-That looks actually promising. I will have a more detailed look these days!
+   ---- FAIL LOG ----
+   mtest01     0  TINFO  :  Total memory already used on system = 1027392 kbytes
+   mtest01     0  TINFO  :  Total memory used needed to reach maximum = 12715520 kbytes
+   mtest01     0  TINFO  :  Filling up 80% of ram which is 11688128 kbytes
+   mtest01     1  TFAIL  :  mtest01.c:314: child process exited unexpectedly
+   -------------------
 
+ Rewrite changes:
+   To make mtest01 more easier to understand, I just rewrite it into
+   LTP new API and make a little changes in children behavior.
+
+   * decrease the pressure to 80% of free memory for testing
+   * drop the signal SIGCHLD action becasue new API help to check_child_status
+   * make child pause itself after finishing their memory allocating/writing
+   * parent sends SIGCONT to make children continue and exit
+   * use TST_PROCESS_STATE_WAIT to wait child changes to 'T' state
+   * involve ALLOC_THRESHOLD to rework same code in defines
+   * to make mtest01 support running with -i N > 1
+
+Signed-off-by: Li Wang <liwang@redhat.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+Li,
+
+I'm posting v4 because I'm proposing also couple other small changes.
+Changes in v4:
+- fix -b parameter, it was ignored, because maxpercent is always non-zero
+  Now, if -b is set, then maxpercent is ignored.
+- remove casts to unsigned long long, use literal with ULL suffix
+- pid_count renamed to children_done, because pid_count vs. pid_cntr was confusing
+- original_maxbytes dropped, instead alloc_maxbytes remains unchanged in mem_test()
+- do_write_page renamed to do_write_mem, since we write more than single page
+- do_write_mem loop now increases offset by page size to make it slightly faster
+- bytecount initialized to 0 in child_loop_alloc()
+- info messages expanded to show some timestamp (remaining time)
+- PASS/FAIL messages for do_write=0 and do_write=1 consolidated to single one
+- child creation loop in mem_test() tweaked:
+  - child_loop_alloc() called directly from loop
+  - pid_cntr incremented and used as index to pid_list array, 'i' variable not used
+  - while condition "((pid != 0)" removed, it's always true
+- sleep reduced to 100ms
+- "while (pid_list[i] > 0)" replaced with for loop, since we know exactly how many
+  children we spawned. memset in setup dropped.
+
+ testcases/kernel/mem/mtest01/mtest01.c | 561 ++++++++++++++-------------------
+ 1 file changed, 235 insertions(+), 326 deletions(-)
+ rewrite testcases/kernel/mem/mtest01/mtest01.c (92%)
+
+diff --git a/testcases/kernel/mem/mtest01/mtest01.c b/testcases/kernel/mem/mtest01/mtest01.c
+dissimilarity index 92%
+index ca9073a8e714..df038f50dd2f 100644
+--- a/testcases/kernel/mem/mtest01/mtest01.c
++++ b/testcases/kernel/mem/mtest01/mtest01.c
+@@ -1,326 +1,235 @@
+-/*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- */
+-
+-/*
+- *  FILE		: mtest01.c
+- *  DESCRIPTION : mallocs memory <chunksize> at a time until malloc fails.
+- *  HISTORY:
+- *	04/10/2001 Paul Larson (plars@us.ibm.com)
+- *	  written
+- *	11/09/2001 Manoj Iyer (manjo@austin.ibm.com)
+- *	  Modified.
+- *	  - Removed compile warnings.
+- *	  - Added header file #include <unistd.h> definition for getopt()
+- *	05/13/2003 Robbie Williamson (robbiew@us.ibm.com)
+- *	  Modified.
+- *	  - Rewrote the test to be able to execute on large memory machines.
+- *
+- */
+-
+-#include <sys/types.h>
+-#include <sys/sysinfo.h>
+-#include <sys/wait.h>
+-#include <limits.h>
+-#include <signal.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-
+-#include "test.h"
+-
+-#define FIVE_HUNDRED_MB (unsigned long long)(500*1024*1024)
+-#define ONE_GB	(unsigned long long)(1024*1024*1024)
+-#define THREE_GB (unsigned long long)(3*ONE_GB)
+-
+-char *TCID = "mtest01";
+-int TST_TOTAL = 1;
+-static sig_atomic_t pid_count;
+-static sig_atomic_t sigchld_count;
+-static pid_t *pid_list;
+-
+-static void handler(int signo)
+-{
+-	if (signo == SIGCHLD)
+-		sigchld_count++;
+-	pid_count++;
+-}
+-
+-static void cleanup(void)
+-{
+-	int i = 0;
+-
+-	while (pid_list[i] > 0) {
+-		kill(pid_list[i], SIGKILL);
+-		i++;
+-	}
+-
+-	free(pid_list);
+-}
+-
+-int main(int argc, char *argv[])
+-{
+-	int c;
+-	char *mem;
+-	float percent;
+-	unsigned int maxpercent = 0, dowrite = 0, verbose = 0, j;
+-	unsigned long bytecount, alloc_bytes, max_pids;
+-	unsigned long long original_maxbytes, maxbytes = 0;
+-	unsigned long long pre_mem = 0, post_mem = 0;
+-	unsigned long long total_ram, total_free, D, C;
+-	int chunksize = 1024 * 1024;	/* one meg at a time by default */
+-	struct sysinfo sstats;
+-	int i, pid_cntr;
+-	pid_t pid;
+-	struct sigaction act;
+-
+-	act.sa_handler = handler;
+-	act.sa_flags = 0;
+-	sigemptyset(&act.sa_mask);
+-	sigaction(SIGRTMIN, &act, 0);
+-	sigaction(SIGCHLD, &act, 0);
+-
+-	while ((c = getopt(argc, argv, "c:b:p:wvh")) != -1) {
+-		switch (c) {
+-		case 'c':
+-			chunksize = atoi(optarg);
+-			break;
+-		case 'b':
+-			if (maxpercent != 0)
+-				tst_brkm(TBROK, NULL,
+-					 "ERROR: -b option cannot be used with -p "
+-					 "option at the same time");
+-			maxbytes = atoll(optarg);
+-			break;
+-		case 'p':
+-			if (maxbytes != 0)
+-				tst_brkm(TBROK, NULL,
+-					 "ERROR: -p option cannot be used with -b "
+-					 "option at the same time");
+-			maxpercent = atoi(optarg);
+-			if (maxpercent <= 0)
+-				tst_brkm(TBROK, NULL,
+-					 "ERROR: -p option requires number greater "
+-					 "than 0");
+-			if (maxpercent > 99)
+-				tst_brkm(TBROK, NULL,
+-					 "ERROR: -p option cannot be greater than "
+-					 "99");
+-			break;
+-		case 'w':
+-			dowrite = 1;
+-			break;
+-		case 'v':
+-			verbose = 1;
+-			break;
+-		case 'h':
+-		default:
+-			printf
+-			    ("usage: %s [-c <bytes>] [-b <bytes>|-p <percent>] [-v]\n",
+-			     argv[0]);
+-			printf
+-			    ("\t-c <num>\tsize of chunk in bytes to malloc on each pass\n");
+-			printf
+-			    ("\t-b <bytes>\tmaximum number of bytes to allocate before stopping\n");
+-			printf
+-			    ("\t-p <bytes>\tpercent of total memory used at which the program stops\n");
+-			printf
+-			    ("\t-w\t\twrite to the memory after allocating\n");
+-			printf("\t-v\t\tverbose\n");
+-			printf("\t-h\t\tdisplay usage\n");
+-			exit(1);
+-		}
+-	}
+-
+-	sysinfo(&sstats);
+-	total_ram = sstats.totalram + sstats.totalswap;
+-	total_free = sstats.freeram + sstats.freeswap;
+-	/* Total Free Pre-Test RAM */
+-	pre_mem = sstats.mem_unit * total_free;
+-	max_pids = total_ram * sstats.mem_unit
+-		/ (unsigned long)FIVE_HUNDRED_MB + 10;
+-
+-	if ((pid_list = malloc(max_pids * sizeof(pid_t))) == NULL)
+-		tst_brkm(TBROK | TERRNO, NULL, "malloc failed.");
+-	memset(pid_list, 0, max_pids * sizeof(pid_t));
+-
+-	/* Currently used memory */
+-	C = sstats.mem_unit * (total_ram - total_free);
+-	tst_resm(TINFO, "Total memory already used on system = %llu kbytes",
+-		 C / 1024);
+-
+-	if (maxpercent) {
+-		percent = (float)maxpercent / 100.00;
+-
+-		/* Desired memory needed to reach maxpercent */
+-		D = percent * (sstats.mem_unit * total_ram);
+-		tst_resm(TINFO,
+-			 "Total memory used needed to reach maximum = %llu kbytes",
+-			 D / 1024);
+-
+-		/* Are we already using more than maxpercent? */
+-		if (C > D) {
+-			tst_resm(TFAIL,
+-				 "More memory than the maximum amount you specified "
+-				 " is already being used");
+-			free(pid_list);
+-			tst_exit();
+-		}
+-
+-		/* set maxbytes to the extra amount we want to allocate */
+-		maxbytes = D - C;
+-		tst_resm(TINFO, "Filling up %d%% of ram which is %llu kbytes",
+-			 maxpercent, maxbytes / 1024);
+-	}
+-	original_maxbytes = maxbytes;
+-	i = 0;
+-	pid_cntr = 0;
+-	pid = fork();
+-	if (pid < 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
+-	if (pid != 0) {
+-		pid_cntr++;
+-		pid_list[i] = pid;
+-	}
+-
+-#if defined (_s390_)		/* s390's 31bit addressing requires smaller chunks */
+-	while (pid != 0 && maxbytes > FIVE_HUNDRED_MB) {
+-		i++;
+-		if (i >= max_pids)
+-			tst_brkm(TBROK, cleanup, "max_pids needs to be increased");
+-		maxbytes -= FIVE_HUNDRED_MB;
+-		pid = fork();
+-		if (pid < 0)
+-			tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
+-		if (pid != 0) {
+-			pid_cntr++;
+-			pid_list[i] = pid;
+-		}
+-	}
+-	if (maxbytes > FIVE_HUNDRED_MB)
+-		alloc_bytes = FIVE_HUNDRED_MB;
+-	else
+-		alloc_bytes = (unsigned long)maxbytes;
+-
+-#elif __WORDSIZE == 32
+-	while (pid != 0 && maxbytes > ONE_GB) {
+-		i++;
+-		if (i >= max_pids)
+-			tst_brkm(TBROK, cleanup, "max_pids needs to be increased");
+-		maxbytes -= ONE_GB;
+-		pid = fork();
+-		if (pid < 0)
+-		    tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
+-		if (pid != 0) {
+-			pid_cntr++;
+-			pid_list[i] = pid;
+-		}
+-	}
+-	if (maxbytes > ONE_GB)
+-		alloc_bytes = ONE_GB;
+-	else
+-		alloc_bytes = (unsigned long)maxbytes;
+-
+-#elif __WORDSIZE == 64
+-	while (pid != 0 && maxbytes > THREE_GB) {
+-		i++;
+-		if (i >= max_pids)
+-			tst_brkm(TBROK, cleanup, "max_pids needs to be increased");
+-		maxbytes -= THREE_GB;
+-		pid = fork();
+-		if (pid < 0)
+-			tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
+-		if (pid != 0) {
+-			pid_cntr++;
+-			pid_list[i] = pid;
+-		}
+-	}
+-	alloc_bytes = MIN(THREE_GB, maxbytes);
+-#endif
+-
+-	if (pid == 0) {
+-		bytecount = chunksize;
+-		while (1) {
+-			if ((mem = malloc(chunksize)) == NULL) {
+-				tst_resm(TBROK | TERRNO,
+-					 "stopped@%lu bytes", bytecount);
+-				free(pid_list);
+-				tst_exit();
+-			}
+-			if (dowrite)
+-				for (j = 0; j < chunksize; j++)
+-					*(mem + j) = 'a';
+-			if (verbose)
+-				tst_resm(TINFO,
+-					 "allocated %lu bytes chunksize is %d",
+-					 bytecount, chunksize);
+-			bytecount += chunksize;
+-			if (alloc_bytes && bytecount >= alloc_bytes)
+-				break;
+-		}
+-		if (dowrite)
+-			tst_resm(TINFO, "... %lu bytes allocated and used.",
+-				 bytecount);
+-		else
+-			tst_resm(TINFO, "... %lu bytes allocated only.",
+-				 bytecount);
+-		kill(getppid(), SIGRTMIN);
+-		while (1)
+-			sleep(1);
+-	} else {
+-		sysinfo(&sstats);
+-
+-		if (dowrite) {
+-			/* Total Free Post-Test RAM */
+-			post_mem =
+-			    (unsigned long long)sstats.mem_unit *
+-			    sstats.freeram;
+-			post_mem =
+-			    post_mem +
+-			    (unsigned long long)sstats.mem_unit *
+-			    sstats.freeswap;
+-
+-			while ((((unsigned long long)pre_mem - post_mem) <
+-				(unsigned long long)original_maxbytes) &&
+-			       pid_count < pid_cntr && !sigchld_count) {
+-				sleep(1);
+-				sysinfo(&sstats);
+-				post_mem =
+-				    (unsigned long long)sstats.mem_unit *
+-				    sstats.freeram;
+-				post_mem =
+-				    post_mem +
+-				    (unsigned long long)sstats.mem_unit *
+-				    sstats.freeswap;
+-			}
+-		}
+-
+-		if (sigchld_count) {
+-			tst_resm(TFAIL, "child process exited unexpectedly");
+-		} else if (dowrite) {
+-			tst_resm(TPASS, "%llu kbytes allocated and used.",
+-				 original_maxbytes / 1024);
+-		} else {
+-			tst_resm(TPASS, "%llu kbytes allocated only.",
+-				 original_maxbytes / 1024);
+-		}
+-
+-	}
+-	cleanup();
+-	tst_exit();
+-}
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ *  Copyright (c) International Business Machines Corp., 2001
++ *  Copyright (c) Linux Test Project., 2019
++ *
++ *  DESCRIPTION:
++ *
++ *  mtest01 mallocs memory <chunksize> at a time until malloc fails.
++ *
++ *  Parent process starts several child processes (each child process is
++ *  tasked with allocating some amount of memory), it waits until all child
++ *  processes send SIGRTMIN signal and resumes all children by sending the
++ *  SIGCONT signal.
++ *
++ *  Child process allocates certain amount of memory and fills it with some
++ *  data (the '-w' option) so the pages are actually allocated when the desired
++ *  amount of memory is allocated then it sends SIGRTMIN signal to the parent
++ *  process, it pauses itself by raise SIGSTOP until get parent SIGCONT signal
++ *  to continue and exit.
++ */
++
++#include <sys/types.h>
++#include <sys/sysinfo.h>
++#include <sys/wait.h>
++#include <limits.h>
++#include <signal.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++
++#include "tst_test.h"
++
++#define FIVE_HUNDRED_MB         (500ULL*1024*1024)
++
++#if defined (_s390_)
++#define ALLOC_THRESHOLD		FIVE_HUNDRED_MB
++#elif __WORDSIZE == 32
++#define ALLOC_THRESHOLD		(2*FIVE_HUNDRED_MB)
++#elif __WORDSIZE == 64
++#define ALLOC_THRESHOLD		(6*FIVE_HUNDRED_MB)
++#endif
++
++#define STOP_THRESHOLD 15	/* seconds remaining before reaching timeout */
++
++static pid_t *pid_list;
++static sig_atomic_t children_done;
++static int max_pids;
++static unsigned long long alloc_maxbytes;
++
++static int chunksize = 1024*1024;
++static int maxpercent = 20;
++static long maxbytes = 0;
++static char *dowrite;
++static char *verbose;
++
++static char *opt_chunksize, *opt_maxbytes, *opt_maxpercent;
++static struct tst_option mtest_options[] = {
++	{"c:", &opt_chunksize,	"-c  size of chunk in bytes to malloc on each pass"},
++	{"b:", &opt_maxbytes,	"-b  maximum number of bytes to allocate before stopping"},
++	{"p:", &opt_maxpercent, "-u  percent of total memory used at which the program stops"},
++	{"w",  &dowrite,   	"-w  write to the memory after allocating"},
++	{"v",  &verbose,     	"-v  verbose"},
++	{NULL, NULL, 		NULL}
++};
++
++static void parse_mtest_options(char *str_chunksize, int *chunksize,
++		char *str_maxbytes, long *maxbytes,
++		char *str_maxpercent, int *maxpercent)
++{
++	if (str_chunksize)
++		if (tst_parse_int(str_chunksize, chunksize, 1, INT_MAX))
++			tst_brk(TBROK, "Invalid chunksize '%s'", str_chunksize);
++
++	if (str_maxbytes) {
++		if (tst_parse_long(str_maxbytes, maxbytes, 1, LONG_MAX)) {
++			tst_brk(TBROK, "Invalid maxbytes '%s'", str_maxbytes);
++		} else if (str_maxpercent) {
++			tst_brk(TBROK, "ERROR: -b option cannot be used with -p "
++					"option at the same time");
++		}
++		alloc_maxbytes = (unsigned long long)maxbytes;
++	}
++
++	if (str_maxpercent) {
++		if (tst_parse_int(str_maxpercent, maxpercent, 1, 99)) {
++			tst_brk(TBROK, "Invalid maxpercent '%s'", str_maxpercent);
++		} else if (str_maxbytes) {
++			tst_brk(TBROK, "ERROR: -p option cannot be used with -b "
++					"option at the same time");
++		}
++	}
++}
++
++static void handler(int sig LTP_ATTRIBUTE_UNUSED)
++{
++        children_done++;
++}
++
++static void do_write_mem(char *mem, int chunksize)
++{
++	int i, pagesz = getpagesize();
++
++	for (i = 0; i < chunksize; i += pagesz)
++		*(mem + i) = 'a';
++}
++
++static void setup(void)
++{
++	struct sysinfo sstats;
++	unsigned long long total_free;
++
++	struct sigaction act;
++	act.sa_handler = handler;
++	act.sa_flags = 0;
++	sigemptyset(&act.sa_mask);
++	sigaction(SIGRTMIN, &act, 0);
++
++	parse_mtest_options(opt_chunksize, &chunksize,
++			opt_maxbytes, &maxbytes,
++			opt_maxpercent, &maxpercent);
++	sysinfo(&sstats);
++	total_free = sstats.freeram;
++
++	max_pids = total_free * sstats.mem_unit
++		/ (unsigned long)ALLOC_THRESHOLD + 10;
++	pid_list = SAFE_MALLOC(max_pids * sizeof(pid_t));
++
++	if (!alloc_maxbytes) {
++		/* set alloc_maxbytes to the extra amount we want to allocate */
++		alloc_maxbytes = ((float)maxpercent / 100.00)
++			* (sstats.mem_unit * total_free);
++		tst_res(TINFO, "Filling up %d%% of free ram which is %llu kbytes",
++			 maxpercent, alloc_maxbytes / 1024);
++	}
++}
++
++static void cleanup(void)
++{
++	if(pid_list)
++		free(pid_list);
++}
++
++static void child_loop_alloc(unsigned long long alloc_bytes)
++{
++	unsigned long bytecount = 0;
++	char *mem;
++
++	tst_res(TINFO, "... child %d starting", getpid());
++
++	while (1) {
++		mem = SAFE_MALLOC(chunksize);
++		if (dowrite)
++			do_write_mem(mem, chunksize);
++
++		if (verbose)
++			tst_res(TINFO,
++				"child %d allocated %lu bytes chunksize is %d",
++				getpid(), bytecount, chunksize);
++		bytecount += chunksize;
++		if (bytecount >= alloc_bytes)
++			break;
++	}
++	if (dowrite)
++		tst_res(TINFO, "... [t=%d] %lu bytes allocated and used in child %d",
++				tst_timeout_remaining(), bytecount, getpid());
++	else
++		tst_res(TINFO, "... [t=%d] %lu bytes allocated only in child %d",
++				tst_timeout_remaining(), bytecount, getpid());
++
++	kill(getppid(), SIGRTMIN);
++	raise(SIGSTOP);
++	exit(0);
++}
++
++static void mem_test(void)
++{
++	pid_t pid;
++	int i = 0, pid_cntr = 0;
++	unsigned long long alloc_bytes = alloc_maxbytes;
++	const char *write_msg = "";
++
++	if (dowrite)
++		write_msg = "(and written to) ";
++
++	/* to make mtest01 support -i N */
++	children_done = 0;
++
++	do {
++		pid = SAFE_FORK();
++		if (pid == 0) {
++			alloc_bytes = MIN(ALLOC_THRESHOLD, alloc_bytes);
++			child_loop_alloc(alloc_bytes);
++		}
++
++		pid_list[pid_cntr++] = pid;
++
++		if (alloc_bytes <= ALLOC_THRESHOLD)
++			break;
++
++		alloc_bytes -= ALLOC_THRESHOLD;
++	} while (pid_cntr < max_pids);
++
++	/* wait in the loop for all children finish allocating */
++	while (children_done < pid_cntr) {
++		if (tst_timeout_remaining() < STOP_THRESHOLD) {
++			tst_res(TWARN,
++				"the remaininig time is not enough for testing");
++
++			break;
++		}
++
++		usleep(100000);
++	}
++
++	if (children_done < pid_cntr) {
++		tst_res(TFAIL, "kbytes allocated %sless than expected %llu",
++				write_msg, alloc_maxbytes / 1024);
++	} else {
++		tst_res(TPASS, "%llu kbytes allocated %s",
++				alloc_maxbytes / 1024, write_msg);
++	}
++
++	for (i = 0; i < pid_cntr; i++) {
++		TST_PROCESS_STATE_WAIT(pid_list[i], 'T');
++		kill(pid_list[i], SIGCONT);
++	}
++}
++
++static struct tst_test test = {
++	.forks_child = 1,
++	.options = mtest_options,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = mem_test,
++};
 -- 
-Cheers,
-Matthias
+1.8.3.1
+
