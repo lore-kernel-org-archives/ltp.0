@@ -1,48 +1,115 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 13 Mar 2019 19:17:00 +0530
-Subject: [LTP] LTP: mount02 was expected EINVAL(22) but got ENOENT(2): No
- such file or directory
-Message-ID: <CA+G9fYudJC07HfrU1fVptCEvgCuBsF9G2N76PiGG5Z258z0Dzg@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 13 Mar 2019 14:58:56 +0100
+Subject: [LTP] [PATCH 1/4] shell: Add tst_mount() helper
+In-Reply-To: <20190220162014.5467-1-pvorel@suse.cz>
+References: <20190220162014.5467-1-pvorel@suse.cz>
+Message-ID: <20190313135856.GA31637@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-LTP syscalls mount02 failed on mainline (Linux version 5.0.0) for all devices.
+Hi!
+> and TST_MOUNT, TST_MOUNT_PARAMS} variables.
+       ^
+       This should probably named TST_MNTPOINT and TST_MNT_PARAMS
 
-Results comparison link,
-https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/ltp-syscalls-tests/mount02
-you could see good and bad commit id in the above link.
 
-Error log,
-mount02 5 TFAIL : mount02.c:117: mount() was expected to fail with
-EINVAL(22): TEST_ERRNO=ENOENT(2): No such file or directory
+Also we seem to use $FS_TYPE inside of the library which is not
+documented anywhere in the change to the documentation, I see that it
+will error out when users fails to set it but I do not like it at all.
 
-Failure full log on x15 armv7,
-https://lkft.validation.linaro.org/scheduler/job/638009#L7462
+Ideally we should either introduce TST_FS_TYPE or pass the fs type as an
+agrument to the tst_mount function.
 
-structure Inputs,
-{&null, &mntpoint, &fs_type, 0, EINVAL, NULL, NULL},
+> + document changes.
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  doc/test-writing-guidelines.txt | 12 ++++++++----
+>  testcases/lib/tst_test.sh       | 22 +++++++++++++++++++++-
+>  2 files changed, 29 insertions(+), 5 deletions(-)
+> 
+> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+> index f2f72c4d6..5aa7e0279 100644
+> --- a/doc/test-writing-guidelines.txt
+> +++ b/doc/test-writing-guidelines.txt
+> @@ -2006,12 +2006,16 @@ The 'tst_mkfs' helper will format device with the filesystem.
+>  tst_mkfs ext2 $TST_DEVICE
+>  -------------------------------------------------------------------------------
+>  
+> -Umounting filesystems
+> -+++++++++++++++++++++
+> +Mounting and unmounting filesystems
+> ++++++++++++++++++++++++++++++++++++
+> +
+> +The 'tst_mount' and 'tst_umount' helpers are a safe way to mount/umount a filesystem.
+>  
+> -The 'tst_umount' helper is a safe way to umount a filesystem.
+> +The 'tst_mount' mounts '$TST_DEVICE' to '$TST_MOUNT', using optional '$TST_MOUNT_PARAMS'.
+> +It creates before mounting the '$TST_MOUNT' directory if not exists and fails
+> +if mounting was unsuccessful.
+>  
+> -If the path passed to the function is not mounted (present in '/proc/mounts')
+> +If the path passed to the 'tst_umount' is not mounted (present in '/proc/mounts')
+>  it's noop.
+>  
+>  Otherwise it retries to umount the filesystem a few times on a failure, which
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index 3d2f5afde..4abea6665 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -235,6 +235,25 @@ TST_RTNL_CHK()
+>  	tst_brk TBROK "$@ failed: $output"
+>  }
+>  
+> +tst_mount()
+> +{
+> +	if [ -z "$FS_TYPE" ]; then
+> +		tst_brk TBROK "Missing FS_TYPE variable"
+> +	fi
+> +
+> +	ROD_SILENT mkdir -p $TST_MOUNT
+> +	mount -t $FS_TYPE $TST_DEVICE $TST_MOUNT $TST_MOUNT_PARAMS
+> +	local ret=$?
+> +
+> +	if [ $ret -eq 32 ]; then
+> +		tst_brk TCONF "Cannot mount $FS_TYPE, missing driver?"
+> +	fi
+> +
+> +	if [ $ret -ne 0 ]; then
+> +		tst_brk TBROK "Failed to mount device: mount exit = $ret"
+> +	fi
+> +}
+> +
+>  tst_umount()
+>  {
+>  	local device="$1"
+> @@ -401,7 +420,7 @@ tst_run()
+>  			OPTS|USAGE|PARSE_ARGS|POS_ARGS);;
+>  			NEEDS_ROOT|NEEDS_TMPDIR|TMPDIR|NEEDS_DEVICE|DEVICE);;
+>  			NEEDS_CMDS|NEEDS_MODULE|MODPATH|DATAROOT);;
+> -			NEEDS_DRIVERS);;
+> +			NEEDS_DRIVERS|MOUNT|MOUNT_PARAMS);;
+>  			IPV6|IPVER|TEST_DATA|TEST_DATA_IFS);;
+>  			RETRY_FUNC|RETRY_FN_EXP_BACKOFF);;
+>  			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
+> @@ -461,6 +480,7 @@ tst_run()
+>  		cd "$TST_TMPDIR"
+>  	fi
+>  
+> +	TST_MOUNT="${TST_MOUNT:-mntpoint}"
+>  	if [ "$TST_NEEDS_DEVICE" = 1 ]; then
+>  		if [ -z ${TST_TMPDIR} ]; then
+>  			tst_brk TBROK "Use TST_NEEDS_TMPDIR must be set for TST_NEEDS_DEVICE"
+> -- 
+> 2.20.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
-Snippet  test code:
---------------------------
-TEST(mount(*tc->device, *tc->mntpoint, *tc->fs_type, tc->flag, NULL));
-
-if (TEST_RETURN != -1) {
-tst_resm(TFAIL, "mount() succeded unexpectedly (ret=%li)",
-         TEST_RETURN);
-goto cleanup;
-}
-
-if (TEST_ERRNO != tc->exp_errno) {
-tst_resm(TFAIL | TTERRNO,
-         "mount() was expected to fail with %s(%i)",
-         tst_strerrno(tc->exp_errno), tc->exp_errno);
-goto cleanup;
-}
-
-do you notice this mount02 failure on mainline kernel ?
-
-Best regards
-Naresh Kamboju
+-- 
+Cyril Hrubis
+chrubis@suse.cz
