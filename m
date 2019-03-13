@@ -1,11 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 13 Mar 2019 15:03:04 +0100
-Subject: [LTP] [PATCH 4/4] shell: Use $FS_TYPE and $TST_DEVICE as
- default params in tst_mkfs()
-In-Reply-To: <20190220162014.5467-4-pvorel@suse.cz>
-References: <20190220162014.5467-1-pvorel@suse.cz>
- <20190220162014.5467-4-pvorel@suse.cz>
-Message-ID: <20190313140304.GC31637@rei>
+Date: Wed, 13 Mar 2019 15:36:48 +0100
+Subject: [LTP] [PATCH] syscalls/fstat05.c: fix test logic error
+In-Reply-To: <20190221140221.42163-1-liwei391@huawei.com>
+References: <20190221140221.42163-1-liwei391@huawei.com>
+Message-ID: <20190313143648.GA6171@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,8 +11,11 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-This one is OK apart from the names for the variables, i.e. FS_TYPE
-should get TST_ prefix and TST_MOUNT should became TST_MNTPOINT.
+It would be better to pass the result from tst_get_bad_addr() to the
+fstat function rather than trying to guess unused address space based on
+the end of the program data segment. Can you send updated patch?
+
+Also sorry for the long delay.
 
 -- 
 Cyril Hrubis
