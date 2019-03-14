@@ -1,81 +1,112 @@
-From: Saravana Kannan <saravanak@google.com>
-Date: Wed, 13 Mar 2019 11:54:47 -0700
-Subject: [LTP] [PATCH] setpriority01: Skip only PRIO_USER when unable to
- add test user
-In-Reply-To: <CAGETcx-MnmCmjGDubaLfauQ0Rf6dayS8ykB7MbdL+U1_ajpTuw@mail.gmail.com>
-References: <20190306215859.66044-1-saravanak@google.com>
- <20190307105933.GA1040@rei.lan>
- <CAGETcx-07fGeAxXzD6Lo79XG-0OXJS8wzHztw4_72m2rO9Hpcw@mail.gmail.com>
- <CAGETcx-yRfA+zmRScronhaVe6auMkzso6cHeDFtOaXzkE99Hwg@mail.gmail.com>
- <20190311160441.GB14497@rei.lan>
- <CAGETcx-MnmCmjGDubaLfauQ0Rf6dayS8ykB7MbdL+U1_ajpTuw@mail.gmail.com>
-Message-ID: <CAGETcx9h4AooQxU4v7apAp4x+q_6xYYSaSFpEfSeBXHymqfN6Q@mail.gmail.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Thu, 14 Mar 2019 10:48:18 +0530
+Subject: [LTP] LTP: mount02 was expected EINVAL(22) but got ENOENT(2):
+ No such file or directory
+In-Reply-To: <226607771.7950393.1552490962324.JavaMail.zimbra@redhat.com>
+References: <CA+G9fYudJC07HfrU1fVptCEvgCuBsF9G2N76PiGG5Z258z0Dzg@mail.gmail.com>
+ <226607771.7950393.1552490962324.JavaMail.zimbra@redhat.com>
+Message-ID: <CA+G9fYsDK=4jJ31qeTpOxif+j7dTijznsboMHRdkfhQ3V0+8tA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Jan,
 
-Did you have any thoughts on the v2 patch? Want me to make any updates to
-it?
+Thanks for looking into this.
 
-Thanks,
-Saravana
+On Wed, 13 Mar 2019 at 20:59, Jan Stancek <jstancek@redhat.com> wrote:
+>
+>
+> ----- Original Message -----
+> > LTP syscalls mount02 failed on mainline (Linux version 5.0.0) for all
+> > devices.
+> >
+> > Results comparison link,
+> > https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/ltp-syscalls-tests/mount02
+> > you could see good and bad commit id in the above link.
+>
+> OK, so it's not "5.0.0" that fails, it's 5.0.0+ (5.0.0 + patches for 5.1.0-rc1)
+>
+> I'm guessing this part:
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/super.c#n1470
+> called by do_new_mount().
+>
 
-On Mon, Mar 11, 2019 at 11:23 AM Saravana Kannan <saravanak@google.com>
-wrote:
+You are guess is right,
+Here is the kernel commit changing the error code from EINVAL to ENOENT.
+With this change we have to modify our test code.
 
->
->
-> On Mon, Mar 11, 2019 at 9:05 AM Cyril Hrubis <chrubis@suse.cz> wrote:
->
->> Hi!
->> > > But is the test that's broken if useradd fails for wherever reason?
->> Isn't
->> > > it a configuration issue?
->> > >
->> > >
->> > Looking more into the definition of TBROK, TCONF and the code before my
->> > changes:
->> >
->> > -       if (eaccess("/etc/passwd", W_OK))
->> > -               tst_brk(TCONF, "/etc/passwd is not accessible");
->> > -
->> > -       tst_run_cmd(cmd_useradd, NULL, NULL, 0);
->> > -       user_added = 1;
->> > -
->> >
->> > Should an eaccess write failure have resulted in a TCONF? Shouldn't that
->> > have been a TBROK too?
->>
->> Looking at the git log this seems to be handling very specific case
->> where the rootfs is read only, quite likely this test was failing on
->> some specific embedded hardware. As far as I can tell this sounds like a
->> reasonable solution to the problem.
->>
->> > I'm fine with whatever way we go, except not wanting to fail the entire
->> > test case just because useradd isn't present in android. It's still very
->> > useful to run the other setpriority tests.
->>
->> Sounds good, there is no point not to map missing useradd to TCONF, I
->> just want to avoid mapping segfaulting or otherwise faulty useradd to
->> TCONF as well.
->>
->
-> Thanks for the reviews and comments! I sent out a v2 patch that addressed
-> your concerns. Can you please take a look at that and accept or suggest
-> changes to it? In that patch, I treated the "no write permissions to
-> /etc/passwd" as a TBROK and not TCONF as that seemed more appropriate to
-> me. But if you want I can map that back to TCONF -- according to man pages,
-> useradd has an error code for not being able to write to /etc/passwd.
->
-> Thanks,
-> Saravana
->
->
->>
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190313/fa165e48/attachment.html>
+From f3a09c92018a91ad0981146a4ac59414f814d801 Mon Sep 17 00:00:00 2001
+From: Al Viro <viro@zeniv.linux.org.uk>
+Date: Sun, 23 Dec 2018 18:55:56 -0500
+Subject: introduce fs_context methods
+
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ fs/super.c | 36 ++++++++++++++++++++++++++++--------
+ 1 file changed, 28 insertions(+), 8 deletions(-)
+
+(limited to 'fs/super.c')
+
+diff --git a/fs/super.c b/fs/super.c
+index 5055323..76b3181 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -894,13 +894,15 @@ int reconfigure_super(struct fs_context *fc)
+  }
+  }
+
+- retval = legacy_reconfigure(fc);
+- if (retval) {
+- if (!force)
+- goto cancel_readonly;
+- /* If forced remount, go ahead despite any errors */
+- WARN(1, "forced remount of a %s fs returned %i\n",
+-     sb->s_type->name, retval);
++ if (fc->ops->reconfigure) {
++ retval = fc->ops->reconfigure(fc);
++ if (retval) {
++ if (!force)
++ goto cancel_readonly;
++ /* If forced remount, go ahead despite any errors */
++ WARN(1, "forced remount of a %s fs returned %i\n",
++     sb->s_type->name, retval);
++ }
+  }
+
+  WRITE_ONCE(sb->s_flags, ((sb->s_flags & ~fc->sb_flags_mask) |
+@@ -1294,10 +1296,28 @@ int vfs_get_tree(struct fs_context *fc)
+  struct super_block *sb;
+  int error;
+
+- error = legacy_get_tree(fc);
++ if (fc->fs_type->fs_flags & FS_REQUIRES_DEV && !fc->source)
++ return -ENOENT;
++
++ if (fc->root)
++ return -EBUSY;
++
++ /* Get the mountable root in fc->root, with a ref on the root and a ref
++ * on the superblock.
++ */
++ error = fc->ops->get_tree(fc);
+  if (error < 0)
+  return error;
+
++ if (!fc->root) {
++ pr_err("Filesystem %s get_tree() didn't set fc->root\n",
++       fc->fs_type->name);
++ /* We don't know what the locking state of the superblock is -
++ * if there is a superblock.
++ */
++ BUG();
++ }
++
+  sb = fc->root->d_sb;
+  WARN_ON(!sb->s_bdi);
+
+
+--
+cgit v1.1
