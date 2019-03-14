@@ -1,12 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 14 Mar 2019 14:58:37 +0100
-Subject: [LTP] [PATCH v2 1/3] syscalls/tgkill01: add new test
-In-Reply-To: <CAFA6WYPFiJArJvcDGLmxF5XK-q_6Yu24o=st10LE0Lz7d1Lesg@mail.gmail.com>
-References: <1552457573-1354-1-git-send-email-sumit.garg@linaro.org>
- <1552457573-1354-2-git-send-email-sumit.garg@linaro.org>
- <20190314122232.GA17823@rei.lan>
- <CAFA6WYPFiJArJvcDGLmxF5XK-q_6Yu24o=st10LE0Lz7d1Lesg@mail.gmail.com>
-Message-ID: <20190314135837.GA2536@rei.lan>
+Date: Thu, 14 Mar 2019 15:04:00 +0100
+Subject: [LTP] [PATCH 1/3] syscalls/tgkill01: add new test
+In-Reply-To: <1551943728-16222-2-git-send-email-sumit.garg@linaro.org>
+References: <1551943728-16222-1-git-send-email-sumit.garg@linaro.org>
+ <1551943728-16222-2-git-send-email-sumit.garg@linaro.org>
+Message-ID: <20190314140400.GB2536@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,45 +12,20 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> I am not sure how we would manage actual "msec_timeout" in case we get
-> EINTR and need to retry again as we may need to take care of elapsed
-> time till we receive asynchronous signal.
+> +static void run(void)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < n_threads; i++)
+> +		threads[i].tid = -1;
+> +
+> +	test_running = 1;
+> +	for (i = 0; i < n_threads; i++)
+> +		start_thread(&threads[i]);
 
-I would have just restarted the timeout after we got signal, the worst case
-that can happen is that in an unlikely case we will send a signals fast enough
-so that the checkpoint will never timeout. But even then the test library will
-timeout and would kill the process anyways.
-
-Another option is to switch checkpoints so that they use absolute timeout and
-pass clock_gettime() + msec_timeout as timeout.
-
-I would go for something as simple as:
-
-diff --git a/lib/tst_checkpoint.c b/lib/tst_checkpoint.c
-index 5455d0378..5e5b11496 100644
---- a/lib/tst_checkpoint.c
-+++ b/lib/tst_checkpoint.c
-@@ -85,6 +85,7 @@ void tst_checkpoint_init(const char *file, const int lineno,
- int tst_checkpoint_wait(unsigned int id, unsigned int msec_timeout)
- {
-        struct timespec timeout;
-+       int ret;
- 
-        if (id >= tst_max_futexes) {
-                errno = EOVERFLOW;
-@@ -94,8 +95,12 @@ int tst_checkpoint_wait(unsigned int id, unsigned int msec_timeout)
-        timeout.tv_sec = msec_timeout/1000;
-        timeout.tv_nsec = (msec_timeout%1000) * 1000000;
- 
--       return syscall(SYS_futex, &tst_futexes[id], FUTEX_WAIT,
--                      tst_futexes[id], &timeout);
-+       do {
-+               ret = syscall(SYS_futex, &tst_futexes[id], FUTEX_WAIT,
-+                             tst_futexes[id], &timeout);
-+       } while (ret == -1 && errno == EINTR);
-+
-+       return ret;
- }
+Just a minor nit these threads should actully be started in the test
+setup() since we stop them in the test cleanup(), otherwise the test
+breaks with the looping -i option.
 
 -- 
 Cyril Hrubis
