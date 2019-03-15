@@ -1,37 +1,68 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 15 Mar 2019 11:18:11 +0100
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 15 Mar 2019 18:23:29 +0800
 Subject: [LTP] [PATCH v2 1/3] syscalls/tgkill01: add new test
-In-Reply-To: <CAFA6WYPNLiE1gFDko1uV8wnnyBVdX4CUyo0od7AkkoYgYQ6Dhg@mail.gmail.com>
+In-Reply-To: <20190315100824.GA5383@rei>
 References: <1552457573-1354-1-git-send-email-sumit.garg@linaro.org>
  <1552457573-1354-2-git-send-email-sumit.garg@linaro.org>
  <20190314122232.GA17823@rei.lan>
  <CAFA6WYPFiJArJvcDGLmxF5XK-q_6Yu24o=st10LE0Lz7d1Lesg@mail.gmail.com>
  <20190314135837.GA2536@rei.lan>
- <CAFA6WYPNLiE1gFDko1uV8wnnyBVdX4CUyo0od7AkkoYgYQ6Dhg@mail.gmail.com>
-Message-ID: <20190315101810.GB5383@rei>
+ <CAEemH2fHQ2Jq1o3UxbmD=Qxtwbob48aVeXnMNJWZrVS-jKWX7Q@mail.gmail.com>
+ <CAFA6WYPx3fZ8Q2gR1wKi9=i0ML0JT8oPVebzaL03TFbxgxKiTg@mail.gmail.com>
+ <20190315100824.GA5383@rei>
+Message-ID: <CAEemH2dS08E+au5RJSDe_PFehvMMFQqPUt3SWyty7X6uzLSOfw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Wouldn't this loop be more appropriate in
-> "tst_safe_checkpoint_wait()"? As at later stage we may have tests that
-> depends on checkpoints being interrupted by signals and could directly
-> use "tst_checkpoint_wait()".
+On Fri, Mar 15, 2019 at 6:09 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-The tst_checkpoint_wait() has a single use in the source tree and that
-is testcases/lib/tst_checkpoint.c which is binary wrapper around
-checkpoints so that we can use them in shell scripts as well, which is
-pretty cool btw. And I think that we should retry on EINTR there as
-well.
+> Hi!
+> > >>  int tst_checkpoint_wait(unsigned int id, unsigned int msec_timeout)
+> > >>  {
+> > >>         struct timespec timeout;
+> > >> +       int ret;
+> > >>
+> > >>         if (id >= tst_max_futexes) {
+> > >>                 errno = EOVERFLOW;
+> > >> @@ -94,8 +95,12 @@ int tst_checkpoint_wait(unsigned int id, unsigned
+> int msec_timeout)
+> > >>         timeout.tv_sec = msec_timeout/1000;
+> > >>         timeout.tv_nsec = (msec_timeout%1000) * 1000000;
+> > >>
+> > >> -       return syscall(SYS_futex, &tst_futexes[id], FUTEX_WAIT,
+> > >> -                      tst_futexes[id], &timeout);
+> > >> +       do {
+> > >> +               ret = syscall(SYS_futex, &tst_futexes[id], FUTEX_WAIT,
+> > >> +                             tst_futexes[id], &timeout);
+> > >
+> > >     if (ret == -1 && errno == EINTR)
+> > >         tst_res(TWARN | TERRNO, "FUTEX_WAIT operation was interrupted
+> by a signal, retry again");
+> > >
+> >
+> > I am not sure if this warning message is desired for test-cases which
+> > needs to wait on checkpoints irrespective of signals like this
+> > tgkill01 test-case.
+>
+> Agreed, it's not an error condition, it's just a coincidence that most
+> of the tests does not get signals when they sleep on futex, otherwise
+> thing would crash and burn. So I would argue that retrying on EINTR is
+> actually a bug fix rather than anything else.
+>
 
-Also there does not seem to be test relying on checkpoints being
-interrupted by signals and I would like to avoid this pattern ideally as
-asynchronous events such as signals interrupting functions is something
-rather counter intuitive.
+Okay, here I'm not insist to print the warning. But it's only use for hint
+on that worst situation which you were mentioned. If the checkpoint got
+signal leads to never timeout and test eventually killed by test lib. That
+would hard to know what happened at that moment. My concern is the
+situation is hard to reproduce later so just want to print more useful
+messeges:).
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190315/5caa91e0/attachment-0001.html>
