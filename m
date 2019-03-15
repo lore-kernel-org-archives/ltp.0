@@ -1,360 +1,40 @@
-From: Christian Amann <camann@suse.com>
-Date: Fri, 15 Mar 2019 10:45:58 +0100
-Subject: [LTP] [PATCH v3] syscall: Add userfaultfd testcase
-Message-ID: <20190315094558.17139-1-camann@suse.com>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Fri, 15 Mar 2019 15:18:33 +0530
+Subject: [LTP] [PATCH 1/3] syscalls/tgkill01: add new test
+In-Reply-To: <20190314140400.GB2536@rei.lan>
+References: <1551943728-16222-1-git-send-email-sumit.garg@linaro.org>
+ <1551943728-16222-2-git-send-email-sumit.garg@linaro.org>
+ <20190314140400.GB2536@rei.lan>
+Message-ID: <CAFA6WYM7FnqMVoWLMc1oOAS=xDYDnF6L8k+8Sg0STPYqrt+tjg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This tests the userfaultfd syscall to handle pagefault events.
-It does so by registering a userfaultfd object to the address of
-a memory page. In a second thread it handles the event and writes
-data in the monitored memory page to indicate success.
+On Thu, 14 Mar 2019 at 19:34, Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+> Hi!
+> > +static void run(void)
+> > +{
+> > +     int i;
+> > +
+> > +     for (i = 0; i < n_threads; i++)
+> > +             threads[i].tid = -1;
+> > +
+> > +     test_running = 1;
+> > +     for (i = 0; i < n_threads; i++)
+> > +             start_thread(&threads[i]);
+>
+> Just a minor nit these threads should actully be started in the test
+> setup() since we stop them in the test cleanup(), otherwise the test
+> breaks with the looping -i option.
+>
 
-Signed-off-by: Christian Amann <camann@suse.com>
----
- configure.ac                                       |   1 +
- include/lapi/syscalls/aarch64.in                   |   1 +
- include/lapi/syscalls/arm.in                       |   1 +
- include/lapi/syscalls/i386.in                      |   1 +
- include/lapi/syscalls/ia64.in                      |   1 +
- include/lapi/syscalls/powerpc.in                   |   1 +
- include/lapi/syscalls/powerpc64.in                 |   1 +
- include/lapi/syscalls/s390.in                      |   1 +
- include/lapi/syscalls/s390x.in                     |   1 +
- include/lapi/syscalls/sparc.in                     |   1 +
- include/lapi/syscalls/sparc64.in                   |   1 +
- include/lapi/syscalls/x86_64.in                    |   1 +
- runtest/syscalls                                   |   2 +
- testcases/kernel/syscalls/userfaultfd/.gitignore   |   1 +
- testcases/kernel/syscalls/userfaultfd/Makefile     |  15 +++
- .../kernel/syscalls/userfaultfd/userfaultfd01.c    | 128 +++++++++++++++++++++
- 16 files changed, 158 insertions(+)
- create mode 100644 testcases/kernel/syscalls/userfaultfd/.gitignore
- create mode 100644 testcases/kernel/syscalls/userfaultfd/Makefile
- create mode 100644 testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
+Makes sense, will fix it.
 
-diff --git a/configure.ac b/configure.ac
-index e73f7d92e..9ae10b6a0 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -45,6 +45,7 @@ AC_CHECK_HEADERS([ \
-     linux/mempolicy.h \
-     linux/module.h \
-     linux/netlink.h \
-+    linux/userfaultfd.h \
-     mm.h \
-     netinet/sctp.h \
-     pthread.h \
-diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
-index 7ce148524..177dd0115 100644
---- a/include/lapi/syscalls/aarch64.in
-+++ b/include/lapi/syscalls/aarch64.in
-@@ -258,6 +258,7 @@ process_vm_writev 271
- kcmp 272
- getrandom 278
- memfd_create 279
-+userfaultfd 282
- membarrier 283
- execveat 281
- mlock2 284
-diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
-index 22c76d4f0..f4adedb2c 100644
---- a/include/lapi/syscalls/arm.in
-+++ b/include/lapi/syscalls/arm.in
-@@ -343,6 +343,7 @@ renameat2 (__NR_SYSCALL_BASE+382)
- getrandom (__NR_SYSCALL_BASE+384)
- memfd_create (__NR_SYSCALL_BASE+385)
- execveat (__NR_SYSCALL_BASE+387)
-+userfaultfd (__NR_SYSCALL_BASE+388)
- membarrier (__NR_SYSCALL_BASE+389)
- mlock2 (__NR_SYSCALL_BASE+390)
- copy_file_range (__NR_SYSCALL_BASE+391)
-diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
-index 7e485aebf..af5254f77 100644
---- a/include/lapi/syscalls/i386.in
-+++ b/include/lapi/syscalls/i386.in
-@@ -341,6 +341,7 @@ renameat2 354
- getrandom 355
- memfd_create 356
- execveat 358
-+userfaultfd 374
- membarrier 375
- mlock2 376
- copy_file_range 377
-diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
-index 7c9a0ead6..c0aeed08b 100644
---- a/include/lapi/syscalls/ia64.in
-+++ b/include/lapi/syscalls/ia64.in
-@@ -298,6 +298,7 @@ process_vm_writev 1333
- renameat2 1338
- getrandom 1339
- memfd_create 1340
-+userfaultfd 1343
- membarrier 1344
- execveat 1342
- mlock2 1346
-diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
-index fc1f89945..6b6be58a7 100644
---- a/include/lapi/syscalls/powerpc.in
-+++ b/include/lapi/syscalls/powerpc.in
-@@ -347,6 +347,7 @@ sched_getattr 356
- renameat2 357
- getrandom 359
- memfd_create 360
-+userfaultfd 364
- membarrier 365
- execveat 362
- mlock2 378
-diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
-index fc1f89945..6b6be58a7 100644
---- a/include/lapi/syscalls/powerpc64.in
-+++ b/include/lapi/syscalls/powerpc64.in
-@@ -347,6 +347,7 @@ sched_getattr 356
- renameat2 357
- getrandom 359
- memfd_create 360
-+userfaultfd 364
- membarrier 365
- execveat 362
- mlock2 378
-diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
-index 6d0c895fa..2a2ffe223 100644
---- a/include/lapi/syscalls/s390.in
-+++ b/include/lapi/syscalls/s390.in
-@@ -331,6 +331,7 @@ sched_getattr 346
- renameat2 347
- getrandom 349
- memfd_create 350
-+userfaultfd 355
- membarrier 356
- execveat 354
- mlock2 374
-diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
-index 8105b5598..4c36ce17c 100644
---- a/include/lapi/syscalls/s390x.in
-+++ b/include/lapi/syscalls/s390x.in
-@@ -330,6 +330,7 @@ sched_getattr 346
- renameat2 347
- getrandom 349
- memfd_create 350
-+userfaultfd 355
- membarrier 356
- execveat 354
- mlock2 374
-diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
-index 20a21a9ce..20dc37b01 100644
---- a/include/lapi/syscalls/sparc.in
-+++ b/include/lapi/syscalls/sparc.in
-@@ -337,6 +337,7 @@ renameat2 345
- getrandom 347
- memfd_create 348
- membarrier 351
-+userfaultfd 352
- execveat 350
- mlock2 356
- copy_file_range 357
-diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
-index 36ab39420..c100b8e3e 100644
---- a/include/lapi/syscalls/sparc64.in
-+++ b/include/lapi/syscalls/sparc64.in
-@@ -313,6 +313,7 @@ renameat2 345
- getrandom 347
- memfd_create 348
- membarrier 351
-+userfaultfd 352
- execveat 350
- mlock2 356
- copy_file_range 357
-diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
-index 6aa9d12a8..87849e5c0 100644
---- a/include/lapi/syscalls/x86_64.in
-+++ b/include/lapi/syscalls/x86_64.in
-@@ -308,6 +308,7 @@ renameat2 316
- getrandom 318
- memfd_create 319
- execveat 322
-+userfaultfd 323
- membarrier 324
- mlock2 325
- copy_file_range 326
-diff --git a/runtest/syscalls b/runtest/syscalls
-index d752dba33..ebb4d69a5 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1464,6 +1464,8 @@ umount2_01 umount2_01
- umount2_02 umount2_02
- umount2_03 umount2_03
- 
-+userfaultfd01 userfaultfd01
-+
- ustat01 ustat01
- ustat02 ustat02
- 
-diff --git a/testcases/kernel/syscalls/userfaultfd/.gitignore b/testcases/kernel/syscalls/userfaultfd/.gitignore
-new file mode 100644
-index 000000000..d819a2a7c
---- /dev/null
-+++ b/testcases/kernel/syscalls/userfaultfd/.gitignore
-@@ -0,0 +1 @@
-+/userfaultfd01
-diff --git a/testcases/kernel/syscalls/userfaultfd/Makefile b/testcases/kernel/syscalls/userfaultfd/Makefile
-new file mode 100644
-index 000000000..33fe59e5b
---- /dev/null
-+++ b/testcases/kernel/syscalls/userfaultfd/Makefile
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+#
-+#   Copyright (c) 2019 SUSE LLC
-+#
-+#   Author: Christian Amann <camann@suse.com>
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+
-+userfaultfd01: CFLAGS += -pthread
-+
-diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
-new file mode 100644
-index 000000000..0b47f055a
---- /dev/null
-+++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
-@@ -0,0 +1,128 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 SUSE LLC
-+ *
-+ * Author: Christian Amann <camann@suse.com>
-+ *
-+ */
-+
-+/*
-+ * Test userfaultfd
-+ *
-+ * Force a pagefault event and handle it using userfaultfd
-+ * from a different thread
-+ *
-+ */
-+
-+#include "tst_test.h"
-+#include "tst_safe_macros.h"
-+#include "tst_safe_pthread.h"
-+#include "lapi/syscalls.h"
-+#include <poll.h>
-+
-+#ifdef HAVE_LINUX_USERFAULTFD_H
-+#include <linux/userfaultfd.h>
-+
-+static int page_size;
-+static char *page;
-+static void *copy_page;
-+
-+static int userfaultfd(int flags)
-+{
-+	return tst_syscall(__NR_userfaultfd, flags);
-+}
-+
-+static void set_pages(void)
-+{
-+	page_size = sysconf(_SC_PAGE_SIZE);
-+	page = SAFE_MMAP(NULL, page_size, PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	copy_page = SAFE_MMAP(NULL, page_size, PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+}
-+
-+static void *handle_thread(void *arg)
-+{
-+	static struct uffd_msg msg;
-+	int uffd;
-+	struct uffdio_copy uffdio_copy;
-+
-+	uffd = (int) arg;
-+
-+	struct pollfd pollfd;
-+	int nready;
-+
-+	pollfd.fd = uffd;
-+	pollfd.events = POLLIN;
-+	nready = poll(&pollfd, 1, -1);
-+	if (nready == -1)
-+		tst_brk(TBROK | TERRNO,
-+				"Error on poll");
-+
-+	SAFE_READ(1, uffd, &msg, sizeof(msg));
-+
-+	if (msg.event != UFFD_EVENT_PAGEFAULT)
-+		tst_brk(TBROK | TERRNO,
-+				"Received unexpected UFFD_EVENT");
-+
-+	memset(copy_page, 'X', page_size);
-+
-+	uffdio_copy.src = (unsigned long) copy_page;
-+
-+	uffdio_copy.dst = (unsigned long) msg.arg.pagefault.address
-+			& ~(page_size - 1);
-+	uffdio_copy.len = page_size;
-+	uffdio_copy.mode = 0;
-+	uffdio_copy.copy = 0;
-+	SAFE_IOCTL(uffd, UFFDIO_COPY, &uffdio_copy);
-+
-+	close(uffd);
-+}
-+
-+static void run(void)
-+{
-+	int uffd;
-+	pthread_t thr;
-+	struct uffdio_api uffdio_api;
-+	struct uffdio_register uffdio_register;
-+
-+	set_pages();
-+
-+	uffd = userfaultfd(O_CLOEXEC | O_NONBLOCK);
-+
-+	if (uffd == -1)
-+		tst_brk(TBROK | TERRNO,
-+			"Could not create userfault file descriptor");
-+
-+	uffdio_api.api = UFFD_API;
-+	uffdio_api.features = 0;
-+	SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
-+
-+	uffdio_register.range.start = (unsigned long) page;
-+	uffdio_register.range.len = page_size;
-+	uffdio_register.mode = UFFDIO_REGISTER_MODE_MISSING;
-+
-+	SAFE_IOCTL(uffd, UFFDIO_REGISTER, &uffdio_register);
-+
-+	SAFE_PTHREAD_CREATE(&thr, NULL,
-+			handle_thread, (void *) uffd);
-+
-+	char c = page[0xf];
-+
-+	if (c == 'X')
-+		tst_res(TPASS, "Pagefault handled!");
-+	else
-+		tst_res(TFAIL, "Pagefault not handled!");
-+
-+	SAFE_PTHREAD_JOIN(thr, NULL);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.min_kver = "4.3",
-+	.timeout = 20
-+};
-+
-+#else
-+	TST_TEST_TCONF("This system does not provide userfaultfd support");
-+#endif
--- 
-2.16.4
+-Sumit
 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
