@@ -1,35 +1,28 @@
-From: Eric Biggers <ebiggers@kernel.org>
-Date: Fri, 15 Mar 2019 09:42:15 -0700
-Subject: [LTP] [PATCH] lib/tst_test.c: fix error message for zero tcnt
-Message-ID: <20190315164215.96129-1-ebiggers@kernel.org>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 15 Mar 2019 19:40:18 +0100
+Subject: [LTP] [PATCH 4/6] crypto/af_alg03: new regression test for
+ rfc7539 hash alg validation
+In-Reply-To: <20190315161341.GA77949@gmail.com>
+References: <20190221053026.18489-1-ebiggers@kernel.org>
+ <20190221053026.18489-5-ebiggers@kernel.org>
+ <20190315092952.GA4990@dell5510> <20190315161341.GA77949@gmail.com>
+Message-ID: <20190315184018.GA3112@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Eric Biggers <ebiggers@google.com>
+Hi Eric,
 
-Remove the word "not".
+> > you forget to add af_alg03 into runtest/cve.
+> > The same applies to af_alg0{4,5}.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- lib/tst_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> As far as I know, there are no CVEs assigned for those bugs.
+Wouldn't be better to add them to runtest/cve (or other runtest file) just with
+filename? And rename them in runtest file once the CVEs are assigned?
 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 7dd890b8d..ba5eab011 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -698,7 +698,7 @@ static void assert_test_fn(void)
- 		tst_brk(TBROK, "You can define only one test function");
- 
- 	if (tst_test->test && !tst_test->tcnt)
--		tst_brk(TBROK, "Number of tests (tcnt) must not be > 0");
-+		tst_brk(TBROK, "Number of tests (tcnt) must be > 0");
- 
- 	if (!tst_test->test && tst_test->tcnt)
- 		tst_brk(TBROK, "You can define tcnt only for test()");
--- 
-2.21.0.360.g471c308f928-goog
+> - Eric
 
+Kind regards,
+Petr
