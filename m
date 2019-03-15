@@ -1,34 +1,36 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 15 Mar 2019 23:03:28 +0100
-Subject: [LTP] [PATCH COMMITTED] lapi/socket.h: provide SO_REUSEPORT
-	definition for older distros
-Message-ID: <0619b30959aa7b1d0e3154f939d4cb6e2964fcf3.1552687391.git.jstancek@redhat.com>
+Date: Fri, 15 Mar 2019 18:17:27 -0400 (EDT)
+Subject: [LTP] [PATCH v3] syscall: Add userfaultfd testcase
+In-Reply-To: <20190315094558.17139-1-camann@suse.com>
+References: <20190315094558.17139-1-camann@suse.com>
+Message-ID: <100593127.9468868.1552688247623.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- include/lapi/socket.h | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/include/lapi/socket.h b/include/lapi/socket.h
-index d58c460f141b..4e856dfb3183 100644
---- a/include/lapi/socket.h
-+++ b/include/lapi/socket.h
-@@ -29,6 +29,10 @@
- # define MSG_FASTOPEN	0x20000000 /* Send data in TCP SYN */
- #endif
- 
-+#ifndef SO_REUSEPORT
-+# define SO_REUSEPORT	15
-+#endif
-+
- #ifndef SO_BUSY_POLL
- # define SO_BUSY_POLL	46
- #endif
--- 
-1.8.3.1
 
+----- Original Message -----
+> This tests the userfaultfd syscall to handle pagefault events.
+> It does so by registering a userfaultfd object to the address of
+> a memory page. In a second thread it handles the event and writes
+> data in the monitored memory page to indicate success.
+> 
+> Signed-off-by: Christian Amann <camann@suse.com>
+
+Acked-by: Jan Stancek <jstancek@redhat.com>
+
+Couple small nits below (no need to repost).
+
+syscall -> syscalls in subject
+
+> +
+> +static int userfaultfd(int flags)
+
+If glibc ever provides func, my money would be on this :-).
+But looking at HEAD, we're safe now.
+
+Thanks,
+Jan
