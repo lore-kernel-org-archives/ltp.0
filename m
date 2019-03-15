@@ -1,34 +1,32 @@
-From: Matthias Maennich <maennich@google.com>
-Date: Fri, 15 Mar 2019 09:31:00 +0000
-Subject: [LTP] [PATCH v1] runtest/syscalls: add sigwait01
-Message-ID: <20190315093100.138612-1-maennich@google.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 15 Mar 2019 10:38:38 +0100
+Subject: [LTP] [PATCH 1/6] lib: add tst_af_alg lib
+In-Reply-To: <20190221053026.18489-2-ebiggers@kernel.org>
+References: <20190221053026.18489-1-ebiggers@kernel.org>
+ <20190221053026.18489-2-ebiggers@kernel.org>
+Message-ID: <20190315093838.GB4990@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-sigwait01 is a compile time variant of sigwaitinfo01 and shall be added
-to runtest/syscalls as well.
+Hi Eric,
 
-Signed-off-by: Matthias Maennich <maennich@google.com>
-Cc: kernel-team@android.com
----
- runtest/syscalls | 1 +
- 1 file changed, 1 insertion(+)
+> From: Eric Biggers <ebiggers@google.com>
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index d752dba33780..03b613c07b65 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1285,6 +1285,7 @@ sigsuspend01 sigsuspend01
- 
- sigtimedwait01 sigtimedwait01
- 
-+sigwait01 sigwait01
- sigwaitinfo01 sigwaitinfo01
- 
- socket01 socket01
--- 
-2.21.0.360.g471c308f928-goog
+> Add helper functions for creating and using AF_ALG sockets.  AF_ALG is
+> the userspace interface to algorithms in the Linux kernel's crypto API.
+> See https://www.kernel.org/doc/html/latest/crypto/userspace-if.html for
+> more information about this interface.
 
+AF_ALG is not defined in old distros [1]:
+/usr/src/ltp/lib/tst_af_alg.c: In function 'tst_alg_create':
+/usr/src/ltp/lib/tst_af_alg.c:15: error: 'AF_ALG' undeclared (first use in this function)
+
+We should add it (not sure whether to new lapi/if_alg.h or to lapi/socket.h).
+
+Kind regards,
+Petr
+
+[1] https://api.travis-ci.org/v3/job/506663263/log.txt
