@@ -1,38 +1,83 @@
-From: Vineet Gupta <vineet.gupta1@synopsys.com>
-Date: Mon, 18 Mar 2019 09:41:42 -0700
-Subject: [LTP] [PATCH] cpuset: disable for UCLIBC
-In-Reply-To: <20190314100113.GA13609@dell5510>
-References: <1552412679-28694-1-git-send-email-vgupta@synopsys.com>
- <20190314100113.GA13609@dell5510>
-Message-ID: <1021cd54-2fbd-5fb9-f374-62761c967331@synopsys.com>
+From: Eric Biggers <ebiggers@kernel.org>
+Date: Mon, 18 Mar 2019 10:13:25 -0700
+Subject: [LTP] [PATCH v2 4/6] crypto/af_alg03: new regression test for
+	rfc7539 hash alg validation
+In-Reply-To: <20190318171327.237014-1-ebiggers@kernel.org>
+References: <20190318171327.237014-1-ebiggers@kernel.org>
+Message-ID: <20190318171327.237014-5-ebiggers@kernel.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 3/14/19 3:01 AM, Petr Vorel wrote:
-> Hi Vineet,
-> 
->> libcpuset.c relies on FTS which is not enabled by default on uClibc.
->> Instead of needing to reconfigure, rebuild uClibc lets disable this test
->> for uClibc
-> Which uClibc version are you using?
-> Both uClibc and uclibc-ng has it [1] since 2011, version v0.9.32, in commit
-> a4aa01c12 ("Added fts support for traversing UNIX file hierarchies.")
+From: Eric Biggers <ebiggers@google.com>
 
-Right I'm using bleeding edge as well, and do have the header in sources, its just
-not configured/enabled by default hence not available in installation.
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ runtest/crypto                     |  1 +
+ testcases/kernel/crypto/.gitignore |  1 +
+ testcases/kernel/crypto/af_alg03.c | 31 ++++++++++++++++++++++++++++++
+ 3 files changed, 33 insertions(+)
+ create mode 100644 testcases/kernel/crypto/af_alg03.c
 
-
-> It's actually MUSL, what is missing it [2]. Although there is some
-> implementation [3], we should skip it for musl. But the clearest way is really
-> to check presence of <fts.h>, that's fix it for all libc.
-
-Spot on, that is indeed the best/ideal way of doing it. Do you know if such a
-mechanism already exists in LTP. If you point me to an example I can respin the
-patch accordingly.
-
-Thx,
--Vineet
+diff --git a/runtest/crypto b/runtest/crypto
+index 758586c19..03a49df3a 100644
+--- a/runtest/crypto
++++ b/runtest/crypto
+@@ -1,4 +1,5 @@
+ af_alg01 af_alg01
+ af_alg02 af_alg02
++af_alg03 af_alg03
+ pcrypt_aead01 pcrypt_aead01
+ crypto_user01 crypto_user01
+diff --git a/testcases/kernel/crypto/.gitignore b/testcases/kernel/crypto/.gitignore
+index dc79f3275..3e7936fc9 100644
+--- a/testcases/kernel/crypto/.gitignore
++++ b/testcases/kernel/crypto/.gitignore
+@@ -1,4 +1,5 @@
+ af_alg01
+ af_alg02
++af_alg03
+ pcrypt_aead01
+ crypto_user01
+diff --git a/testcases/kernel/crypto/af_alg03.c b/testcases/kernel/crypto/af_alg03.c
+new file mode 100644
+index 000000000..240c52835
+--- /dev/null
++++ b/testcases/kernel/crypto/af_alg03.c
+@@ -0,0 +1,31 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright 2019 Google LLC
++ */
++
++/*
++ * Regression test for commit e57121d08c38 ("crypto: chacha20poly1305 - validate
++ * the digest size").  This test verifies that the rfc7539 template can't be
++ * instantiated with a hash algorithm whose digest size is not 16 bytes.
++ */
++
++#include "tst_test.h"
++#include "tst_af_alg.h"
++
++static void run(void)
++{
++	tst_require_alg("aead", "rfc7539(chacha20,poly1305)");
++	tst_require_alg("hash", "sha256");
++
++	if (tst_have_alg("aead", "rfc7539(chacha20,sha256)")) {
++		tst_res(TFAIL,
++			"instantiated rfc7539 template with wrong digest size");
++	} else {
++		tst_res(TPASS,
++			"couldn't instantiate rfc7539 template with wrong digest size");
++	}
++}
++
++static struct tst_test test = {
++	.test_all = run,
++};
+-- 
+2.21.0.225.g810b269d1ac-goog
 
