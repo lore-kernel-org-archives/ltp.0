@@ -1,36 +1,46 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 15 Mar 2019 18:17:27 -0400 (EDT)
-Subject: [LTP] [PATCH v3] syscall: Add userfaultfd testcase
-In-Reply-To: <20190315094558.17139-1-camann@suse.com>
-References: <20190315094558.17139-1-camann@suse.com>
-Message-ID: <100593127.9468868.1552688247623.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Mon, 18 Mar 2019 04:23:25 +0100
+Subject: [LTP] [PATCH 0/5] Some MUSL fixes
+Message-ID: <20190318032330.3346-1-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi,
 
+there are numerous problems with LTP build with MUSL.
+This patchset address only few obvious ones.
 
------ Original Message -----
-> This tests the userfaultfd syscall to handle pagefault events.
-> It does so by registering a userfaultfd object to the address of
-> a memory page. In a second thread it handles the event and writes
-> data in the monitored memory page to indicate success.
-> 
-> Signed-off-by: Christian Amann <camann@suse.com>
+Kind regards,
+Petr
 
-Acked-by: Jan Stancek <jstancek@redhat.com>
+Petr Vorel (5):
+  rt_sigaction.h: Check for type sighandler_t and use if present
+  {rt_,}sigaction: Define _GNU_SOURCE to get SA_NOMASK on MUSL
+  ptrace: Use int instead of enum  __ptrace_request
+  mremap: Define _GNU_SOURCE to get MREMAP_MAYMOVE on MUSL
+  mallopt: Test only on glibc
 
-Couple small nits below (no need to repost).
+ include/lapi/rt_sigaction.h                             | 8 ++++++++
+ m4/ltp-sighandler_t.m4                                  | 8 ++++++++
+ testcases/kernel/syscalls/mallopt/mallopt01.c           | 6 +++---
+ testcases/kernel/syscalls/mremap/mremap01.c             | 4 ++--
+ testcases/kernel/syscalls/mremap/mremap02.c             | 3 +--
+ testcases/kernel/syscalls/mremap/mremap03.c             | 3 +--
+ testcases/kernel/syscalls/mremap/mremap04.c             | 3 +--
+ testcases/kernel/syscalls/ptrace/ptrace03.c             | 2 +-
+ testcases/kernel/syscalls/ptrace/ptrace06.c             | 2 +-
+ testcases/kernel/syscalls/ptrace/spawn_ptrace_child.h   | 2 +-
+ testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c | 1 +
+ testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c | 1 +
+ testcases/kernel/syscalls/rt_sigaction/rt_sigaction03.c | 1 +
+ testcases/kernel/syscalls/sigaction/sigaction02.c       | 2 ++
+ testcases/misc/crash/crash01.c                          | 1 +
+ 15 files changed, 33 insertions(+), 14 deletions(-)
+ create mode 100644 m4/ltp-sighandler_t.m4
 
-syscall -> syscalls in subject
+-- 
+2.20.1
 
-> +
-> +static int userfaultfd(int flags)
-
-If glibc ever provides func, my money would be on this :-).
-But looking at HEAD, we're safe now.
-
-Thanks,
-Jan
