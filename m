@@ -1,10 +1,10 @@
 From: Eric Biggers <ebiggers@kernel.org>
-Date: Mon, 18 Mar 2019 10:13:25 -0700
-Subject: [LTP] [PATCH v2 4/6] crypto/af_alg03: new regression test for
-	rfc7539 hash alg validation
+Date: Mon, 18 Mar 2019 10:13:24 -0700
+Subject: [LTP] [PATCH v2 3/6] crypto/af_alg02: new regression test for
+	salsa20 empty message bug
 In-Reply-To: <20190318171327.237014-1-ebiggers@kernel.org>
 References: <20190318171327.237014-1-ebiggers@kernel.org>
-Message-ID: <20190318171327.237014-5-ebiggers@kernel.org>
+Message-ID: <20190318171327.237014-4-ebiggers@kernel.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,46 +16,57 @@ From: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
  runtest/crypto                     |  1 +
+ runtest/cve                        |  1 +
  testcases/kernel/crypto/.gitignore |  1 +
- testcases/kernel/crypto/af_alg03.c | 31 ++++++++++++++++++++++++++++++
- 3 files changed, 33 insertions(+)
- create mode 100644 testcases/kernel/crypto/af_alg03.c
+ testcases/kernel/crypto/af_alg02.c | 29 +++++++++++++++++++++++++++++
+ 4 files changed, 32 insertions(+)
+ create mode 100644 testcases/kernel/crypto/af_alg02.c
 
 diff --git a/runtest/crypto b/runtest/crypto
-index 758586c19..03a49df3a 100644
+index 45c8cdd2d..758586c19 100644
 --- a/runtest/crypto
 +++ b/runtest/crypto
-@@ -1,4 +1,5 @@
+@@ -1,3 +1,4 @@
  af_alg01 af_alg01
- af_alg02 af_alg02
-+af_alg03 af_alg03
++af_alg02 af_alg02
  pcrypt_aead01 pcrypt_aead01
  crypto_user01 crypto_user01
+diff --git a/runtest/cve b/runtest/cve
+index f46c400cc..031bcdc2a 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -27,6 +27,7 @@ cve-2017-15299 request_key03 -b cve-2017-15299
+ cve-2017-15537 ptrace07
+ cve-2017-15649 fanout01
+ cve-2017-15951 request_key03 -b cve-2017-15951
++cve-2017-17805 af_alg02
+ cve-2017-17806 af_alg01
+ cve-2017-17807 request_key04
+ cve-2017-1000364 stack_clash
 diff --git a/testcases/kernel/crypto/.gitignore b/testcases/kernel/crypto/.gitignore
-index dc79f3275..3e7936fc9 100644
+index 998af1728..dc79f3275 100644
 --- a/testcases/kernel/crypto/.gitignore
 +++ b/testcases/kernel/crypto/.gitignore
-@@ -1,4 +1,5 @@
+@@ -1,3 +1,4 @@
  af_alg01
- af_alg02
-+af_alg03
++af_alg02
  pcrypt_aead01
  crypto_user01
-diff --git a/testcases/kernel/crypto/af_alg03.c b/testcases/kernel/crypto/af_alg03.c
+diff --git a/testcases/kernel/crypto/af_alg02.c b/testcases/kernel/crypto/af_alg02.c
 new file mode 100644
-index 000000000..240c52835
+index 000000000..a9e820423
 --- /dev/null
-+++ b/testcases/kernel/crypto/af_alg03.c
-@@ -0,0 +1,31 @@
++++ b/testcases/kernel/crypto/af_alg02.c
+@@ -0,0 +1,29 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright 2019 Google LLC
 + */
 +
 +/*
-+ * Regression test for commit e57121d08c38 ("crypto: chacha20poly1305 - validate
-+ * the digest size").  This test verifies that the rfc7539 template can't be
-+ * instantiated with a hash algorithm whose digest size is not 16 bytes.
++ * Regression test for commit ecaaab564978 ("crypto: salsa20 - fix
++ * blkcipher_walk API usage"), or CVE-2017-17805.  This test verifies that an
++ * empty message can be encrypted with Salsa20 without crashing the kernel.
 + */
 +
 +#include "tst_test.h"
@@ -63,16 +74,14 @@ index 000000000..240c52835
 +
 +static void run(void)
 +{
-+	tst_require_alg("aead", "rfc7539(chacha20,poly1305)");
-+	tst_require_alg("hash", "sha256");
++	char buf[16];
++	int reqfd = tst_alg_setup_reqfd("skcipher", "salsa20", NULL, 16);
 +
-+	if (tst_have_alg("aead", "rfc7539(chacha20,sha256)")) {
-+		tst_res(TFAIL,
-+			"instantiated rfc7539 template with wrong digest size");
-+	} else {
-+		tst_res(TPASS,
-+			"couldn't instantiate rfc7539 template with wrong digest size");
-+	}
++	/* With the bug the kernel crashed here */
++	if (read(reqfd, buf, 16) == 0)
++		tst_res(TPASS, "Successfully \"encrypted\" an empty message");
++	else
++		tst_res(TBROK, "read() didn't return 0");
 +}
 +
 +static struct tst_test test = {
