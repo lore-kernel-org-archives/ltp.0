@@ -1,99 +1,54 @@
 From: Petr Vorel <petr.vorel@gmail.com>
-Date: Mon, 18 Mar 2019 04:23:29 +0100
-Subject: [LTP] [PATCH 4/5] mremap: Define _GNU_SOURCE to get MREMAP_MAYMOVE
-	on MUSL
+Date: Mon, 18 Mar 2019 04:23:30 +0100
+Subject: [LTP] [PATCH 5/5] mallopt: Test only on glibc
 In-Reply-To: <20190318032330.3346-1-petr.vorel@gmail.com>
 References: <20190318032330.3346-1-petr.vorel@gmail.com>
-Message-ID: <20190318032330.3346-5-petr.vorel@gmail.com>
+Message-ID: <20190318032330.3346-6-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Unlike glibc and uclibc (which define MREMAP_MAYMOVE under __USE_MISC)
-MUSL requires _GNU_SOURCE.
-+ Remove __USE_GNU
+Test works with is glibc specific definitions M_MXFAST , M_NLBLKS, which
+aren't supported on other libc (uClibc, MUSL, Bionic), probably no other
+libc will ever define.
+uClibc also defines them in headers, that's we explicitly check glibc.
 
 Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
 ---
- testcases/kernel/syscalls/mremap/mremap01.c | 4 ++--
- testcases/kernel/syscalls/mremap/mremap02.c | 3 +--
- testcases/kernel/syscalls/mremap/mremap03.c | 3 +--
- testcases/kernel/syscalls/mremap/mremap04.c | 3 +--
- 4 files changed, 5 insertions(+), 8 deletions(-)
+Hi,
 
-diff --git a/testcases/kernel/syscalls/mremap/mremap01.c b/testcases/kernel/syscalls/mremap/mremap01.c
-index 16519a23c..4c795fee5 100644
---- a/testcases/kernel/syscalls/mremap/mremap01.c
-+++ b/testcases/kernel/syscalls/mremap/mremap01.c
-@@ -74,11 +74,11 @@
-  * RESTRICTIONS:
-  *  None.
-  */
-+
-+#define _GNU_SOURCE
- #include <unistd.h>
- #include <errno.h>
--#define __USE_GNU
- #include <sys/mman.h>
--#undef __USE_GNU
- #include <fcntl.h>
+maybe #ifdef M_MXFAST && !defined(UCLINUX) would be better.
+
+Kind regards,
+Petr
+---
+ testcases/kernel/syscalls/mallopt/mallopt01.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/mallopt/mallopt01.c b/testcases/kernel/syscalls/mallopt/mallopt01.c
+index 416fc48be..14e26dd81 100644
+--- a/testcases/kernel/syscalls/mallopt/mallopt01.c
++++ b/testcases/kernel/syscalls/mallopt/mallopt01.c
+@@ -63,7 +63,7 @@ extern int tst_COUNT;		/* Test Case counter for tst_routines */
  
- #include "test.h"
-diff --git a/testcases/kernel/syscalls/mremap/mremap02.c b/testcases/kernel/syscalls/mremap/mremap02.c
-index 5a51b9aff..2dabc6847 100644
---- a/testcases/kernel/syscalls/mremap/mremap02.c
-+++ b/testcases/kernel/syscalls/mremap/mremap02.c
-@@ -72,12 +72,11 @@
-  * RESTRICTIONS:
-  *  None.
-  */
-+#define _GNU_SOURCE
- #include <errno.h>
- #include <unistd.h>
- #include <fcntl.h>
--#define __USE_GNU
- #include <sys/mman.h>
--#undef __USE_GNU
+ void printinfo();
  
- #include "test.h"
+-#if !defined(UCLINUX)
++#if defined(__GLIBC__)
+ struct mallinfo info;
  
-diff --git a/testcases/kernel/syscalls/mremap/mremap03.c b/testcases/kernel/syscalls/mremap/mremap03.c
-index 4c9c7b069..02b79bc47 100644
---- a/testcases/kernel/syscalls/mremap/mremap03.c
-+++ b/testcases/kernel/syscalls/mremap/mremap03.c
-@@ -73,12 +73,11 @@
-  * RESTRICTIONS:
-  *  None.
-  */
-+#define _GNU_SOURCE
- #include <errno.h>
- #include <unistd.h>
- #include <fcntl.h>
--#define __USE_GNU
- #include <sys/mman.h>
--#undef __USE_GNU
- 
- #include "test.h"
- 
-diff --git a/testcases/kernel/syscalls/mremap/mremap04.c b/testcases/kernel/syscalls/mremap/mremap04.c
-index c25dbfeb4..53902df73 100644
---- a/testcases/kernel/syscalls/mremap/mremap04.c
-+++ b/testcases/kernel/syscalls/mremap/mremap04.c
-@@ -77,11 +77,10 @@
-  * RESTRICTIONS:
-  *  None.
-  */
-+#define _GNU_SOURCE
- #include <errno.h>
- #include <unistd.h>
--#define __USE_GNU
- #include <sys/mman.h>
--#undef __USE_GNU
- #include <sys/ipc.h>
- #include <sys/shm.h>
- 
+ int main(int argc, char *argv[])
+@@ -150,6 +150,6 @@ void printinfo(void)
+ #else
+ int main(void)
+ {
+-	tst_brkm(TCONF, NULL, "test is not available on uClinux");
++	tst_brkm(TCONF, NULL, "mallopt defined only for glibc");
+ }
+-#endif /* if !defined(UCLINUX) */
++#endif
 -- 
 2.20.1
 
