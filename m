@@ -1,30 +1,29 @@
-From: Petr Vorel <petr.vorel@gmail.com>
-Date: Mon, 18 Mar 2019 19:43:59 +0100
-Subject: [LTP] [PATCH 1/5] rt_sigaction.h: Check for type sighandler_t
- and use if present
-In-Reply-To: <20190318154045.GA25922@rei.lan>
-References: <20190318032330.3346-1-petr.vorel@gmail.com>
- <20190318032330.3346-2-petr.vorel@gmail.com>
- <20190318154045.GA25922@rei.lan>
-Message-ID: <20190318184357.GA9774@dell5510>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 18 Mar 2019 20:10:41 +0100
+Subject: [LTP] [PATCH v2 0/6] ltp: AF_ALG test helpers and a few
+ regression tests
+In-Reply-To: <20190318182747.GA5924@dell5510>
+References: <20190318171327.237014-1-ebiggers@kernel.org>
+ <20190318182747.GA5924@dell5510>
+Message-ID: <20190318191041.GB5924@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Eric,
 
-> > __sighandler_t is libc implementation specific and should not be relied
-> > upon. Instead, we fall back upon void (*)(int), as specified by POSIX.
+> > Changed since v1:
 
-> Can't we just use the void (* k_sa_handler)(int) in all cases and don't
-> add more ifdefs to that file?
+> >     - Define 'AF_ALG' in include/lapi/socket.h if undefined.
+> >       Also move 'SOL_ALG' definition to there.
+> The only minor issue is with missing SOL_ALG on older distros.
 
-> The __sighandler_t is defined to void (* __sighandler_t)(int) in glibc anyways.
-Thanks for a hint, make sense.
-Fixed accordingly and pushed whole patchset.
+> Going to push it with this fix including lapi/socket.h on lib/tst_af_alg.c and
+> testcases/kernel/crypto/af_alg01.c.
 
+Merged with this small fix.
 
 Kind regards,
 Petr
