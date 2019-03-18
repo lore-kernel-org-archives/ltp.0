@@ -1,74 +1,58 @@
-From: Eric Biggers <ebiggers@kernel.org>
-Date: Mon, 18 Mar 2019 10:13:21 -0700
-Subject: [LTP] [PATCH v2 0/6] ltp: AF_ALG test helpers and a few regression
-	tests
-Message-ID: <20190318171327.237014-1-ebiggers@kernel.org>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 18 Mar 2019 18:51:58 +0100
+Subject: [LTP] [PATCH v3] syscall: Add userfaultfd testcase
+In-Reply-To: <100593127.9468868.1552688247623.JavaMail.zimbra@redhat.com>
+References: <20190315094558.17139-1-camann@suse.com>
+ <100593127.9468868.1552688247623.JavaMail.zimbra@redhat.com>
+Message-ID: <20190318175158.GA3892@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi Christian, Jan,
 
-This series adds helper functions for testing AF_ALG (the userspace
-interface to algorithms in the Linux kernel's crypto API) to the
-Linux Test Project.  It then adds a few sample regression tests.
+> ----- Original Message -----
+> > This tests the userfaultfd syscall to handle pagefault events.
+> > It does so by registering a userfaultfd object to the address of
+> > a memory page. In a second thread it handles the event and writes
+> > data in the monitored memory page to indicate success.
 
-I've had these patches sitting around for a while with the goal of also
-writing some "real" tests that test for more than these specific bugs,
-but haven't gotten around to it yet.  And I now consider further
-improving the in-kernel crypto self-tests to be a higher priority.  But
-I figured I'd send this out as-is in case people are interested in
-having this merged, e.g. maybe other people want to add AF_ALG tests to
-LTP too and the 'tst_af_alg' lib would be a good starting point.
+> > Signed-off-by: Christian Amann <camann@suse.com>
 
-Changed since v1:
+> Acked-by: Jan Stancek <jstancek@redhat.com>
 
-    - Define 'AF_ALG' in include/lapi/socket.h if undefined.
-      Also move 'SOL_ALG' definition to there.
+> Couple small nits below (no need to repost).
 
-    - Add all new tests to runtest/crypto.
+> syscall -> syscalls in subject
 
-    - In af_alg01, use .test() and .tcnt rather than a 'for' loop.
+> > +
+> > +static int userfaultfd(int flags)
 
-    - Consistently use 'algfd' rather than 'alg_fd', and similarly for reqfd.
+> If glibc ever provides func, my money would be on this :-).
+> But looking at HEAD, we're safe now.
+Yes, I'd be for changing the name, see 651895c9f ("getcpu01: Rename getcpu to
+avoid conflict with glibc >= 2.29" :)
 
-    - Make two error messages in tst_af_alg.c clearer.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Nice work! Would it be possible to fix warnings?
 
-    - Add SPDX license identifier to include/lapi/if_alg.h.
+userfaultfd01.c: In function ‘handle_thread’:
+userfaultfd01.c:50:9: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  uffd = (int) arg;
+         ^
+userfaultfd01.c:80:1: warning: no return statement in function returning non-void [-Wreturn-type]
+ }
+ ^
+In file included from userfaultfd01.c:19:
+userfaultfd01.c: In function ‘run’:
+userfaultfd01.c:108:19: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+    handle_thread, (void *) uffd);
+                   ^
+../../../../include/tst_safe_pthread.h:39:70: note: in definition of macro ‘SAFE_PTHREAD_CREATE’
+  safe_pthread_create(__FILE__, __LINE__, thread_id, attr, thread_fn, arg)
+                                                                      ^~~
 
-Eric Biggers (6):
-  lib: add tst_af_alg lib
-  crypto/af_alg01: new regression test for hmac nesting bug
-  crypto/af_alg02: new regression test for salsa20 empty message bug
-  crypto/af_alg03: new regression test for rfc7539 hash alg validation
-  crypto/af_alg04: new regression test for vmac race conditions
-  crypto/af_alg05: new regression test for skcipher_walk error bug
-
- configure.ac                       |   1 +
- include/lapi/if_alg.h              |  38 ++++++++
- include/lapi/socket.h              |   8 ++
- include/tst_af_alg.h               | 136 ++++++++++++++++++++++++++
- lib/tst_af_alg.c                   | 147 +++++++++++++++++++++++++++++
- runtest/crypto                     |   5 +
- runtest/cve                        |   2 +
- testcases/kernel/crypto/.gitignore |   5 +
- testcases/kernel/crypto/af_alg01.c |  78 +++++++++++++++
- testcases/kernel/crypto/af_alg02.c |  29 ++++++
- testcases/kernel/crypto/af_alg03.c |  31 ++++++
- testcases/kernel/crypto/af_alg04.c |  56 +++++++++++
- testcases/kernel/crypto/af_alg05.c |  43 +++++++++
- 13 files changed, 579 insertions(+)
- create mode 100644 include/lapi/if_alg.h
- create mode 100644 include/tst_af_alg.h
- create mode 100644 lib/tst_af_alg.c
- create mode 100644 testcases/kernel/crypto/af_alg01.c
- create mode 100644 testcases/kernel/crypto/af_alg02.c
- create mode 100644 testcases/kernel/crypto/af_alg03.c
- create mode 100644 testcases/kernel/crypto/af_alg04.c
- create mode 100644 testcases/kernel/crypto/af_alg05.c
-
--- 
-2.21.0.225.g810b269d1ac-goog
-
+Kind regards,
+Petr
