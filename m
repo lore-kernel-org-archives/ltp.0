@@ -1,69 +1,63 @@
 From: Petr Vorel <petr.vorel@gmail.com>
-Date: Mon, 18 Mar 2019 04:23:26 +0100
-Subject: [LTP] [PATCH 1/5] rt_sigaction.h: Check for type sighandler_t and
-	use if present
+Date: Mon, 18 Mar 2019 04:23:28 +0100
+Subject: [LTP] [PATCH 3/5] ptrace: Use int instead of enum __ptrace_request
 In-Reply-To: <20190318032330.3346-1-petr.vorel@gmail.com>
 References: <20190318032330.3346-1-petr.vorel@gmail.com>
-Message-ID: <20190318032330.3346-2-petr.vorel@gmail.com>
+Message-ID: <20190318032330.3346-4-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-__sighandler_t is libc implementation specific and should not be relied
-upon. Instead, we fall back upon void (*)(int), as specified by POSIX.
-
-This fixes MUSL build.
-
-Credits: taken from util-linux
+enum __ptrace_request is glibc/uclibc specific.
 
 Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
 ---
- include/lapi/rt_sigaction.h | 8 ++++++++
- m4/ltp-sighandler_t.m4      | 8 ++++++++
- 2 files changed, 16 insertions(+)
- create mode 100644 m4/ltp-sighandler_t.m4
+ testcases/kernel/syscalls/ptrace/ptrace03.c           | 2 +-
+ testcases/kernel/syscalls/ptrace/ptrace06.c           | 2 +-
+ testcases/kernel/syscalls/ptrace/spawn_ptrace_child.h | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/lapi/rt_sigaction.h b/include/lapi/rt_sigaction.h
-index 2dbbc7672..ff1a7314d 100644
---- a/include/lapi/rt_sigaction.h
-+++ b/include/lapi/rt_sigaction.h
-@@ -36,12 +36,20 @@
- #if defined(__mips__)
- struct kernel_sigaction {
- 	unsigned int sa_flags;
-+# ifdef HAVE_SIGHANDLER_T
- 	__sighandler_t k_sa_handler;
-+# else
-+void (* k_sa_handler)(int);
-+# endif
- 	sigset_t sa_mask;
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace03.c b/testcases/kernel/syscalls/ptrace/ptrace03.c
+index a4028fc26..f326b834d 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace03.c
++++ b/testcases/kernel/syscalls/ptrace/ptrace03.c
+@@ -102,7 +102,7 @@ static pid_t unused_pid;
+ static pid_t zero_pid;
+ 
+ struct test_case_t {
+-	enum __ptrace_request request;
++	int request;
+ 	pid_t *pid;
+ 	int exp_errno;
+ } test_cases[] = {
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace06.c b/testcases/kernel/syscalls/ptrace/ptrace06.c
+index ba92ed11f..c0cb3b9bd 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace06.c
++++ b/testcases/kernel/syscalls/ptrace/ptrace06.c
+@@ -38,7 +38,7 @@
+ char *TCID = "ptrace06";
+ 
+ struct test_case_t {
+-	enum __ptrace_request request;
++	int request;
+ 	long addr;
+ 	long data;
+ } test_cases[] = {
+diff --git a/testcases/kernel/syscalls/ptrace/spawn_ptrace_child.h b/testcases/kernel/syscalls/ptrace/spawn_ptrace_child.h
+index ae538e900..83de9b447 100644
+--- a/testcases/kernel/syscalls/ptrace/spawn_ptrace_child.h
++++ b/testcases/kernel/syscalls/ptrace/spawn_ptrace_child.h
+@@ -130,7 +130,7 @@ static char *strings[] = {
+ 	SPT(KILL)
+ 	SPT(SINGLESTEP)
  };
- #else
- struct kernel_sigaction {
-+# ifdef HAVE_SIGHANDLER_T
- 	__sighandler_t k_sa_handler;
-+# else
-+void (* k_sa_handler)(int);
-+# endif
- 	unsigned long sa_flags;
- 	void (*sa_restorer) (void);
- 	sigset_t sa_mask;
-diff --git a/m4/ltp-sighandler_t.m4 b/m4/ltp-sighandler_t.m4
-new file mode 100644
-index 000000000..97c70a269
---- /dev/null
-+++ b/m4/ltp-sighandler_t.m4
-@@ -0,0 +1,8 @@
-+dnl SPDX-License-Identifier: GPL-2.0-or-later
-+dnl Copyright (c) 2019 Petr Vorel <petr.vorel@gmail.com>
-+
-+AC_DEFUN([LTP_CHECK_SIGHANDLER_T],[
-+AC_CHECK_TYPES([sighandler_t], [], [], [[
-+#include <signal.h>
-+]])
-+])
+-static inline char *strptrace(enum __ptrace_request request)
++static inline char *strptrace(int request)
+ {
+ 	return strings[request];
+ }
 -- 
 2.20.1
 
