@@ -1,59 +1,30 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 18 Mar 2019 14:39:16 +0800
-Subject: [LTP] [PATCH v2 1/3] syscalls/tgkill01: add new test
-In-Reply-To: <20190315113343.GD5383@rei>
-References: <1552457573-1354-1-git-send-email-sumit.garg@linaro.org>
- <1552457573-1354-2-git-send-email-sumit.garg@linaro.org>
- <20190314122232.GA17823@rei.lan>
- <CAFA6WYPFiJArJvcDGLmxF5XK-q_6Yu24o=st10LE0Lz7d1Lesg@mail.gmail.com>
- <20190314135837.GA2536@rei.lan>
- <CAEemH2fHQ2Jq1o3UxbmD=Qxtwbob48aVeXnMNJWZrVS-jKWX7Q@mail.gmail.com>
- <CAFA6WYPx3fZ8Q2gR1wKi9=i0ML0JT8oPVebzaL03TFbxgxKiTg@mail.gmail.com>
- <20190315100824.GA5383@rei>
- <CAEemH2dS08E+au5RJSDe_PFehvMMFQqPUt3SWyty7X6uzLSOfw@mail.gmail.com>
- <20190315113343.GD5383@rei>
-Message-ID: <CAEemH2fz+e4cMC7i3ZfTw2Kgup-xpVhiM2UioJhDX9Z1Zg0kzg@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 18 Mar 2019 13:28:52 +0100
+Subject: [LTP] [PATCH RFC] lib: invoke do_cleanup if failed to kill test
+ processes
+In-Reply-To: <20190315061733.24938-1-liwang@redhat.com>
+References: <20190315061733.24938-1-liwang@redhat.com>
+Message-ID: <20190318122851.GC10187@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Mar 15, 2019 at 7:34 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+Hi!
+> LTP liabary should invoke do_cleanup function promptly when killing
+> test process doesn't work, especially useful to testcase do mount or
+> format devices in their setup phase. Otherwise, that abnormal broken
+> will effect the testcase which LTP is preparing to execute in next.
 
-> Hi!
-> > > > I am not sure if this warning message is desired for test-cases which
-> > > > needs to wait on checkpoints irrespective of signals like this
-> > > > tgkill01 test-case.
-> > >
-> > > Agreed, it's not an error condition, it's just a coincidence that most
-> > > of the tests does not get signals when they sleep on futex, otherwise
-> > > thing would crash and burn. So I would argue that retrying on EINTR is
-> > > actually a bug fix rather than anything else.
-> > >
-> >
-> > Okay, here I'm not insist to print the warning. But it's only use for
-> hint
-> > on that worst situation which you were mentioned. If the checkpoint got
-> > signal leads to never timeout and test eventually killed by test lib.
-> That
-> > would hard to know what happened at that moment. My concern is the
-> > situation is hard to reproduce later so just want to print more useful
-> > messeges:).
->
-> As for now that's only a hypotetical corner case, someone would have to
-> send signals to such process sleeping on the checkpoint in a loop for
-> that to happen. The problem is that printing any messages when
-> checkpoint was interrupted by signal would lead to even greater
-> confusion for tests that actually have to send signals to such
-> processes.
->
+Actually this code should be executed only if the test process got stuck
+in the kernel and in such case I doubt that there is a value in doing
+the cleanup as the cleanup code will likely get stuck there as well.
 
-That's true. I'm ok to withdraw my suggestion.
+The rationale is that if process that uses particular mount point is
+stuck in the kernel the umount() will likely get stuck there as well and
+there is no point in doing anything else than rebooting the machine.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190318/0369cce3/attachment.html>
+Cyril Hrubis
+chrubis@suse.cz
