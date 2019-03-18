@@ -1,54 +1,44 @@
-From: Petr Vorel <petr.vorel@gmail.com>
-Date: Mon, 18 Mar 2019 04:23:30 +0100
-Subject: [LTP] [PATCH 5/5] mallopt: Test only on glibc
-In-Reply-To: <20190318032330.3346-1-petr.vorel@gmail.com>
-References: <20190318032330.3346-1-petr.vorel@gmail.com>
-Message-ID: <20190318032330.3346-6-petr.vorel@gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Mon, 18 Mar 2019 14:19:23 +0800
+Subject: [LTP] [PATCH] lib/tst_test.c: fix error message for zero tcnt
+In-Reply-To: <20190315164215.96129-1-ebiggers@kernel.org>
+References: <20190315164215.96129-1-ebiggers@kernel.org>
+Message-ID: <5C8F386B.1090605@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test works with is glibc specific definitions M_MXFAST , M_NLBLKS, which
-aren't supported on other libc (uClibc, MUSL, Bionic), probably no other
-libc will ever define.
-uClibc also defines them in headers, that's we explicitly check glibc.
+Hi Eric,
 
-Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
----
-Hi,
+This is obviously OK, pushed. :-)
 
-maybe #ifdef M_MXFAST && !defined(UCLINUX) would be better.
+Best Regards,
+Xiao Yang
+On 2019/03/16 0:42, Eric Biggers wrote:
+> From: Eric Biggers<ebiggers@google.com>
+>
+> Remove the word "not".
+>
+> Signed-off-by: Eric Biggers<ebiggers@google.com>
+> ---
+>   lib/tst_test.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index 7dd890b8d..ba5eab011 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -698,7 +698,7 @@ static void assert_test_fn(void)
+>   		tst_brk(TBROK, "You can define only one test function");
+>
+>   	if (tst_test->test&&  !tst_test->tcnt)
+> -		tst_brk(TBROK, "Number of tests (tcnt) must not be>  0");
+> +		tst_brk(TBROK, "Number of tests (tcnt) must be>  0");
+>
+>   	if (!tst_test->test&&  tst_test->tcnt)
+>   		tst_brk(TBROK, "You can define tcnt only for test()");
 
-Kind regards,
-Petr
----
- testcases/kernel/syscalls/mallopt/mallopt01.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mallopt/mallopt01.c b/testcases/kernel/syscalls/mallopt/mallopt01.c
-index 416fc48be..14e26dd81 100644
---- a/testcases/kernel/syscalls/mallopt/mallopt01.c
-+++ b/testcases/kernel/syscalls/mallopt/mallopt01.c
-@@ -63,7 +63,7 @@ extern int tst_COUNT;		/* Test Case counter for tst_routines */
- 
- void printinfo();
- 
--#if !defined(UCLINUX)
-+#if defined(__GLIBC__)
- struct mallinfo info;
- 
- int main(int argc, char *argv[])
-@@ -150,6 +150,6 @@ void printinfo(void)
- #else
- int main(void)
- {
--	tst_brkm(TCONF, NULL, "test is not available on uClinux");
-+	tst_brkm(TCONF, NULL, "mallopt defined only for glibc");
- }
--#endif /* if !defined(UCLINUX) */
-+#endif
--- 
-2.20.1
 
