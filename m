@@ -1,76 +1,46 @@
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Mon, 18 Mar 2019 19:49:07 +0530
-Subject: [LTP] [PATCH] lib/tst_checkpoint: Retry sleep on EINTR
-In-Reply-To: <20190318134227.17385-1-chrubis@suse.cz>
-References: <20190318134227.17385-1-chrubis@suse.cz>
-Message-ID: <CAFA6WYN570y-XLoU0A3NMBsYx8YzeCwZnQ==jqjz13stSKQgpQ@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 18 Mar 2019 15:22:06 +0100
+Subject: [LTP] [PATCH v2] Test ioctl syscall for NS_GET_* requests
+In-Reply-To: <20190311072537.22080-1-fedebonfi95@gmail.com>
+References: <20190304161602.GB15696@rei>
+ <20190311072537.22080-1-fedebonfi95@gmail.com>
+Message-ID: <20190318142206.GA18993@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, 18 Mar 2019 at 19:13, Cyril Hrubis <chrubis@suse.cz> wrote:
->
-> Previously we haven't retried on EINTR, the main reason for that was
-> that all the tests using checkpoints haven't cared at all since signals
-> were not involved. However I think that retry on EINTR should be done by
-> default, since checkpoints returning from sleep on random signal
-> delivery are broken, and no test in the tree actually depends on such
-> behavior.
->
-> Currently tests for tgkill have emerged on ML where child needs to sleep
-> while parent sends signals to the child, this commit allows to use
-> checkpoints for these tests.
->
-> This commit implements the simpliest way how to retry, it's just a
-> simple loop over the futex() call that repeats on EINTR. The only side
-> effect is that timeout is restarted after the thread sleeping in futex()
-> got signal, since we use relative timeouts after all. However the
-> hypotetical worst case that can happen is that the test will timeout and
-> will end up being killed by the test library in a case that one test
-> would sleep on checkpoint while other would send signals in a loop.
-> Hoever chances for this arrangement are quite small.
->
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> CC: Sumit Garg <sumit.garg@linaro.org>
-> CC: Jan Stancek <jstancek@redhat.com>
+Hi!
+> Thanks Cyril for your review. I hope this one is better, also I could't use 
+> SAFE_IOCTL because compilations fails this way:
+> 
+> ioctl_ns06.c: In function 'run':
+> ioctl_ns06.c:46:13: error: void value not ignored as it ought to be
+>    parent_fd = SAFE_IOCTL(child_fd, NS_GET_PARENT);
+>              ^
+> <builtin>: recipe for target 'ioctl_ns06' failed
+> make: *** [ioctl_ns06] Error 1
+> 
+> I need the return value since it's the process pid. Am I doing somthing wrong
+> with this safe call?
 
-Acked-by: Sumit Garg <sumit.garg@linaro.org>
+There is actually a bug in the macro, this patch should fix it:
 
--Sumit
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index b63e7493a..04aedb39a 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -221,7 +221,7 @@ pid_t safe_getpgid(const char *file, const int lineno, pid_t pid);
+        ({int tst_ret_ = ioctl(fd, request, ##__VA_ARGS__);  \
+          tst_ret_ < 0 ?                                     \
+           tst_brk(TBROK | TERRNO,                           \
+-                   "ioctl(%i,%s,...) failed", fd, #request) \
++                   "ioctl(%i,%s,...) failed", fd, #request), 0 \
+         : tst_ret_;})
 
-> ---
->  lib/tst_checkpoint.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/lib/tst_checkpoint.c b/lib/tst_checkpoint.c
-> index 5455d0378..5e5b11496 100644
-> --- a/lib/tst_checkpoint.c
-> +++ b/lib/tst_checkpoint.c
-> @@ -85,6 +85,7 @@ void tst_checkpoint_init(const char *file, const int lineno,
->  int tst_checkpoint_wait(unsigned int id, unsigned int msec_timeout)
->  {
->         struct timespec timeout;
-> +       int ret;
->
->         if (id >= tst_max_futexes) {
->                 errno = EOVERFLOW;
-> @@ -94,8 +95,12 @@ int tst_checkpoint_wait(unsigned int id, unsigned int msec_timeout)
->         timeout.tv_sec = msec_timeout/1000;
->         timeout.tv_nsec = (msec_timeout%1000) * 1000000;
->
-> -       return syscall(SYS_futex, &tst_futexes[id], FUTEX_WAIT,
-> -                      tst_futexes[id], &timeout);
-> +       do {
-> +               ret = syscall(SYS_futex, &tst_futexes[id], FUTEX_WAIT,
-> +                             tst_futexes[id], &timeout);
-> +       } while (ret == -1 && errno == EINTR);
-> +
-> +       return ret;
->  }
->
->  int tst_checkpoint_wake(unsigned int id, unsigned int nr_wake,
-> --
-> 2.19.2
->
+I will send a patch fixing that.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
