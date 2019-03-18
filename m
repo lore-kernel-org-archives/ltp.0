@@ -1,16 +1,17 @@
-From: Qian Cai <cai@lca.pw>
-Date: Mon, 18 Mar 2019 12:08:36 -0400
+From: Yang Shi <shy828301@gmail.com>
+Date: Mon, 18 Mar 2019 11:12:19 -0700
 Subject: [LTP] mbind() fails to fail with EIO
 In-Reply-To: <20190315160142.GA8921@rei>
 References: <20190315160142.GA8921@rei>
-Message-ID: <1552925316.26196.5.camel@lca.pw>
+Message-ID: <CAHbLzkqvQ2SW4soYHOOhWG0ShkdUhaiNK0_y+ULaYYHo62O0fQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, 2019-03-15 at 17:01 +0100, Cyril Hrubis wrote:
+On Fri, Mar 15, 2019 at 9:02 AM Cyril Hrubis <chrubis@suse.cz> wrote:
+>
 > Hi!
 > I've started to write tests for mbind() and found out that mbind() does
 > not work as described in manual page in a case that page has been
@@ -18,24 +19,58 @@ On Fri, 2019-03-15 at 17:01 +0100, Cyril Hrubis wrote:
 > this is working fine on older kernels. On my testing machine with 3.0
 > mbind() fails correctly with EIO but succeeds unexpectedly on newer
 > kernels such as 4.12.
->=20
+>
 > What the test does is:
->=20
+>
 > * mmap() private mapping
 > * fault it
 > * find out on which node it is faulted on
 > * mbind() it to a different node with MPOL_BIND and MPOL_MF_STRICT and
-> =C2=A0 expects to get EIO
->=20
-> The test code can be seen and compiled from:
->=20
-> https://github.com/metan-ucw/ltp/blob/master/testcases/kernel/syscalls/mb=
-ind/m
-> bind02.c
->=20
+>   expects to get EIO
 
-I am too lazy to checkout the repository and compile the whole thing just t=
-o be
-able to reproduce. If you can make it a standalone program without LTP mark=
-ups,
-I'd be happy to take a look.
+It looks the behavior was changed since v4.0 by the below commit:
+
+6f4576e3687b mempolicy: apply page table walker on queue_pages_range()
+
+The new queue_pages_to_pte_range() doesn't return -EIO anymore. Could
+you please try the below patch (5.1-rc1 based)?
+
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index abe7a67..6ba45aa 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -521,11 +521,14 @@ static int queue_pages_pte_range(pmd_t *pmd,
+unsigned long addr,
+                        continue;
+                if (!queue_pages_required(page, qp))
+                        continue;
+-               migrate_page_add(page, qp->pagelist, flags);
++               if (flags & (MPOL_MF_MOVE | MPOL_MF_MOVE_ALL))
++                       migrate_page_add(page, qp->pagelist, flags);
++               else
++                       break;
+        }
+        pte_unmap_unlock(pte - 1, ptl);
+        cond_resched();
+-       return 0;
++       return addr != end ? -EIO : 0;
+ }
+
+ static int queue_pages_hugetlb(pte_t *pte, unsigned long hmask,
+
+
+Yang
+
+
+
+
+
+>
+> The test code can be seen and compiled from:
+>
+> https://github.com/metan-ucw/ltp/blob/master/testcases/kernel/syscalls/mbind/mbind02.c
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+>
