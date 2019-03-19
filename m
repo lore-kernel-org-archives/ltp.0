@@ -1,48 +1,64 @@
-From: Eric Biggers <ebiggers@kernel.org>
-Date: Tue, 19 Mar 2019 09:40:19 -0700
-Subject: [LTP] [PATCH] lib/tst_af_alg.c: Fix wrong errno for unsupported
- AF_ALG
-In-Reply-To: <1552965902-22452-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1552965902-22452-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20190319164017.GA202956@gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 19 Mar 2019 17:44:16 +0100
+Subject: [LTP] [PATCH v3 1/2] rt_sigpending02: reuse code from
+ sigpending02
+In-Reply-To: <20190319113153.13436-2-maennich@google.com>
+References: <20190308163832.212631-1-maennich@google.com>
+ <20190319113153.13436-1-maennich@google.com>
+ <20190319113153.13436-2-maennich@google.com>
+Message-ID: <20190319164416.GA14664@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Mar 19, 2019 at 11:25:02AM +0800, Xiao Yang wrote:
-> According to socket(2) manpage and source code, socket(2) actually
-> returns EAFNOSUPPORT instead of EPROTONOSUPPORT when AF_ALG is not
-> supported by kernel.
-> 
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  lib/tst_af_alg.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/lib/tst_af_alg.c b/lib/tst_af_alg.c
-> index 9ce1ca4..97be548 100644
-> --- a/lib/tst_af_alg.c
-> +++ b/lib/tst_af_alg.c
-> @@ -16,7 +16,7 @@ int tst_alg_create(void)
->  	TEST(socket(AF_ALG, SOCK_SEQPACKET, 0));
->  	if (TST_RET >= 0)
->  		return TST_RET;
-> -	if (TST_ERR == EPROTONOSUPPORT)
-> +	if (TST_ERR == EAFNOSUPPORT)
->  		tst_brk(TCONF, "kernel doesn't support AF_ALG");
->  	tst_brk(TBROK | TTERRNO, "unexpected error creating AF_ALG socket");
->  	return -1;
-> -- 
-> 1.8.3.1
-> 
-> 
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+Hi Matthias,
 
-Thanks, somehow I missed this.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
+...
+>  static void run(void)
+> @@ -24,20 +28,26 @@ static void run(void)
+>  	/* set sigset to point to an invalid location */
+>  	sigset_t *sigset = (sigset_t *) - 1;
+There is (undocumented) library helper tst_get_bad_addr() which might bring some
+arch portability.
+
+> +#if defined(TEST_SIGPENDING)
+>  	TEST(tst_syscall(__NR_sigpending, sigset));
+BTW: Looking into this, which I merged in 63f8a3f77 ("sigpending: use direct
+syscall") removed testing sigpending() glibc wrapper from intel. Now:
+sigpending02.c:67: CONF: syscall(-1) __NR_sigpending not supported
+@Cyril, is it ok for us?
+I guess, we should do something about #506 [1] to solve problems like this.
+
+> +#elif defined(TEST_RT_SIGPENDING)
+> +	TEST(tst_syscall(__NR_rt_sigpending, sigset, SIGSETSIZE));
+> +#else
+> +#error Neither TEST_SIGPENDING nor TEST_RT_SIGPENDING is defined!
+> +#endif
+
+>  	/* check return code */
+>  	if (TST_RET == -1) {
+>  		if (TST_ERR != EFAULT) {
+>  			tst_res(TFAIL | TTERRNO,
+> -				"sigpending() Failed with wrong errno, "
+> +				"syscall failed with wrong errno, "
+>  				"expected errno=%d, got ", EFAULT);
+I'd join this string. + trailing space after got.
+
+>  		} else {
+>  			tst_res(TPASS | TTERRNO, "expected failure");
+>  		}
+>  	} else {
+>  		tst_res(TFAIL,
+> -			"sigpending() Failed, expected return value=-1, got %ld", TST_RET);
+> +			"syscall failed, expected return value=-1, got %ld", TST_RET);
+>  	}
+>  }
+
+Kind regards,
+Petr
+
+[1] https://github.com/linux-test-project/ltp/issues/506
