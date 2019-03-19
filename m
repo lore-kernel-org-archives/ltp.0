@@ -1,40 +1,38 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 19 Mar 2019 12:28:15 +0100
-Subject: [LTP] [PATCH v2] setpriority01: Skip only PRIO_USER when unable
- to add test user
-In-Reply-To: <20190319103140.GD6204@rei>
-References: <20190307233154.12873-1-saravanak@google.com>
- <20190319083210.GB26794@dell5510> <20190319100348.GA6204@rei>
- <20190319102803.GA13634@dell5510> <20190319103140.GD6204@rei>
-Message-ID: <20190319112815.GA19707@dell5510>
+From: Matthias Maennich <maennich@google.com>
+Date: Tue, 19 Mar 2019 11:31:51 +0000
+Subject: [LTP] [PATCH v3 0/2] new test cases for sigpending / rt_sigpending
+In-Reply-To: <20190308163832.212631-1-maennich@google.com>
+References: <20190308163832.212631-1-maennich@google.com>
+Message-ID: <20190319113153.13436-1-maennich@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
 
-> > > > > I still think v1 is the right approach. But if you want TCONF for only
-> > > > > for cases like Android where useradd itself isn't present, then v2 would
-> > > > > be the right patch.
-> > > > Agree with it, but waiting for Cyril approval to merge it.
+Reusing the code from sigpending for rt_sigpending is a patch I sent in
+earlier. Based on that this adds a new test case for both syscalls to test the
+more common use of sigpending.
 
-> > > As far as I can tell this patch still removes the read-only rootfs check
-> > > introduced in:
-> > Good catch, eaccess check should stay in.
-> > I'll put it back again and push, ok?
+v2 -> v3:
+ - fix comment style
+ - use LTP_ATTRIBUTE_UNUSED
 
-> Or we can check the return value 1 from useradd and map it to TCONF as
-> suggested by Saravana.
-Probably. According to useradd sources, exit 1 (E_PW_UPDATE) also happen when
-problems to lock /etc/passwd, which could theoretically on different
-circumstance than read-only /, but I guess we can ignore it.
+Cheers,
+Matthias
 
-Or we could use statvfs to detect read-only / ("can't update password file" does
-can be for different purposes), but I wouldn't bother and user return value 1.
+Matthias Maennich (2):
+  rt_sigpending02: reuse code from sigpending02
+  sigpending/rt_sigpending: add basic test
 
-Kind regards,
-Petr
+ .../kernel/syscalls/rt_sigpending/Makefile    |   8 ++
+ .../syscalls/rt_sigpending/rt_sigpending02.c  |  48 --------
+ testcases/kernel/syscalls/sigpending/Makefile |   2 +
+ .../kernel/syscalls/sigpending/sigpending02.c | 113 +++++++++++++++++-
+ 4 files changed, 117 insertions(+), 54 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/rt_sigpending/rt_sigpending02.c
 
-[1] https://github.com/shadow-maint/shadow/blob/master/src/useradd.c#L1626
+-- 
+2.21.0.225.g810b269d1ac-goog
+
