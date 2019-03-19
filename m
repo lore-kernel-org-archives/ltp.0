@@ -1,252 +1,114 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 19 Mar 2019 10:11:36 +0100
-Subject: [LTP] [ltp][PATCH v3] Add ltp pivot_root test
-In-Reply-To: <20190305184455.93440-1-paullawrence@google.com>
-References: <20190305184455.93440-1-paullawrence@google.com>
-Message-ID: <20190319091136.GC26794@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 19 Mar 2019 17:38:57 +0800
+Subject: [LTP] [PATCH RFC 2/3] min_free_kbytes: enable check_monitor in
+	background
+In-Reply-To: <20190319093858.584-1-liwang@redhat.com>
+References: <20190319093858.584-1-liwang@redhat.com>
+Message-ID: <20190319093858.584-2-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Paul,
+Also:
+  do i+=pagesize to make test write page faster
+  cleanup work
 
-> Fixed too long line
-> Added const to static struct test_case
-> Made fail with TCONF when HAVE_LIBCAP not defined
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ .../kernel/mem/tunable/min_free_kbytes.c      | 30 ++++++++-----------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
 
-> Signed-off-by: Paul Lawrence <paullawrence@google.com>
-> ---
+diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c b/testcases/kernel/mem/tunable/min_free_kbytes.c
+index d2378a700..2eb51bf66 100644
+--- a/testcases/kernel/mem/tunable/min_free_kbytes.c
++++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
+@@ -38,7 +38,7 @@
+ 
+ #define MAP_SIZE (1UL<<20)
+ 
+-volatile int end;
++static volatile int end;
+ static long default_tune = -1;
+ static long orig_overcommit = -1;
+ static unsigned long total_mem;
+@@ -83,8 +83,7 @@ static void min_free_kbytes_test(void)
+ 
+ static void test_tune(unsigned long overcommit_policy)
+ {
+-	int status;
+-	int pid[3];
++	int status, pid;
+ 	int ret, i;
+ 	unsigned long tune, memfree, memtotal;
+ 
+@@ -97,7 +96,7 @@ static void test_tune(unsigned long overcommit_policy)
+ 		/* case2 */
+ 		else if (i == 1) {
+ 			set_sys_tune("min_free_kbytes", 2 * default_tune, 1);
+-			/* case3 */
++		/* case3 */
+ 		} else {
+ 			memfree = SAFE_READ_MEMINFO("MemFree:");
+ 			memtotal = SAFE_READ_MEMINFO("MemTotal:");
+@@ -109,15 +108,13 @@ static void test_tune(unsigned long overcommit_policy)
+ 		}
+ 
+ 		fflush(stdout);
+-		switch (pid[i] = fork()) {
+-		case -1:
+-			tst_brk(TBROK | TERRNO, "fork");
+-		case 0:
++		pid = SAFE_FORK();
++		if (pid == 0) {
+ 			ret = eatup_mem(overcommit_policy);
+ 			exit(ret);
+ 		}
+ 
+-		SAFE_WAITPID(pid[i], &status, WUNTRACED | WCONTINUED);
++		SAFE_WAITPID(pid, &status, WUNTRACED | WCONTINUED);
+ 
+ 		if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
+ 			tst_res(TFAIL,
+@@ -141,11 +138,10 @@ static void test_tune(unsigned long overcommit_policy)
+ static int eatup_mem(unsigned long overcommit_policy)
+ {
+ 	int ret = 0;
+-	unsigned long memfree;
+-	void *addrs;
++	char *addrs;
++	unsigned long i, pagesz = getpagesize();
+ 
+-	memfree = SAFE_READ_MEMINFO("MemFree:");
+-	printf("memfree is %lu kB before eatup mem\n", memfree);
++	tst_res(TINFO, "memfree is %lu kB before eatup mem", SAFE_READ_MEMINFO("MemFree:"));
+ 	while (1) {
+ 		addrs = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE,
+ 			     MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+@@ -156,10 +152,10 @@ static int eatup_mem(unsigned long overcommit_policy)
+ 			}
+ 			break;
+ 		}
+-		memset(addrs, 1, MAP_SIZE);
++		for (i = 0; i < MAP_SIZE; i += pagesz)
++			*(addrs + i) = 'a';
+ 	}
+-	memfree = SAFE_READ_MEMINFO("MemFree:");
+-	printf("memfree is %lu kB after eatup mem\n", memfree);
++	tst_res(TINFO, "memfree is %lu kB after eatup mem", SAFE_READ_MEMINFO("MemFree:"));
+ 
+ 	return ret;
+ }
+@@ -169,7 +165,7 @@ static void check_monitor(void)
+ 	unsigned long tune;
+ 	unsigned long memfree;
+ 
+-	while (end) {
++	while (!end) {
+ 		memfree = SAFE_READ_MEMINFO("MemFree:");
+ 		tune = get_sys_tune("min_free_kbytes");
+ 
+-- 
+2.20.1
 
-LGTM, with some cleanup below.
-
-Kind regards,
-Petr
-
-...
-> +++ b/testcases/kernel/syscalls/pivot_root/pivot_root01.c
-> @@ -0,0 +1,200 @@
-> +/*
-> + * SPDX-License-Identifier: GPL-2.0-or-later
-> + *
-> + * Copyright (c) 2019 Google, Inc.
-> + */
-nit: correct form is to have SPDX at the first line, otherwise checkpatch.pl
-(from kernel) complains.
-// SPDX-License-Identifier: GPL-2.0-or-later
-
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include <config.h>
-nit: please use
-#include "config.h"
-
-> +
-> +#include <errno.h>
-> +#include <linux/unistd.h>
-> +#include <sched.h>
-> +
-> +#include <sys/mount.h>
-> +#include <stdlib.h>
-> +
-> +#include "tst_test.h"
-> +
-> +#ifdef HAVE_LIBCAP
-> +#include <sys/capability.h>
-> +#endif
-> +
-> +static const char* chroot_dir = "chroot";
-> +static const char* new_root = "/new_root";
-> +static const char* put_old = "/new_root/put_old";
-> +static const char* put_old_fs = "/put_old_fs";
-> +static const char* put_old_bad = "/put_old_fs/put_old";
-nit: can you please use 'char *foo' instead of 'char* foo'?
-When actual variable is not needed I'd use definitions
-#define CHROOT_DIR "chroot"
-...
-
-> +
-> +/*
-> + * Test consists of a series of steps that allow pivot_root to succeed, which
-> + * is run when param is NORMAL. All other values tweak one of the steps to
-> + * induce a failure, and check the errno is as expected.
-> + */
-> +#define NORMAL 0
-> +
-> +/*
-> + * EBUSY
-> + * new_root or put_old are on the current root file system
-> + */
-> +#define NEW_ROOT_ON_CURRENT_ROOT 1
-> +
-> +/*
-> + * EINVAL
-> + * put_old is not underneath new_root
-> + * Note: if put_old and new_root are on the same fs,
-> + * pivot_root fails with EBUSY before testing reachability
-> + */
-> +#define PUT_OLD_NOT_UNDERNEATH_NEW_ROOT 2
-> +
-> +/*
-> + * ENOTDIR
-> + * new_root or put_old is not a directory
-> + */
-> +#define PUT_OLD_NOT_DIR 3
-> +
-> +/*
-> + * EPERM
-> + * The calling process does not have the CAP_SYS_ADMIN capability.
-> + */
-> +#define NO_CAP_SYS_ADMIN 4
-We usually use enum for it (see ppoll01.c).
-> +
-> +static const struct test_case {
-> +	int test_case;
-> +	int expected_error;
-> +} test_cases[] = {
-> +	{NORMAL, 0},
-> +	{NEW_ROOT_ON_CURRENT_ROOT, EBUSY},
-> +	{PUT_OLD_NOT_UNDERNEATH_NEW_ROOT, EINVAL},
-> +	{PUT_OLD_NOT_DIR, ENOTDIR},
-> +	{NO_CAP_SYS_ADMIN, EPERM},
-> +};
-> +
-> +#ifdef HAVE_LIBCAP
-> +static void drop_cap_sys_admin(void)
-> +{
-> +	cap_value_t cap_value[] = { CAP_SYS_ADMIN };
-> +	cap_t cap = cap_get_proc();
-> +	if (!cap)
-> +		tst_brk(TFAIL | TERRNO, "cap_get_proc failed");
-> +
-> +	if (cap_set_flag(cap, CAP_EFFECTIVE, 1, cap_value, CAP_CLEAR))
-> +		tst_brk(TFAIL | TERRNO, "cap_set_flag failed");
-> +
-> +	if (cap_set_proc(cap))
-> +		tst_brk(TFAIL | TERRNO, "cap_set_proc failed");
-> +}
-> +#endif
-> +
-> +#ifdef HAVE_UNSHARE
-> +static void run(unsigned int test_case)
-> +{
-> +	/* Work in child process - needed to undo unshare and chroot */
-> +	if (SAFE_FORK()) {
-> +		tst_reap_children();
-> +		return;
-> +	}
-> +
-> +	/* pivot_root requires no shared mounts exist in process namespace */
-> +	TEST(unshare(CLONE_NEWNS | CLONE_FS));
-> +	if (TST_RET == -1)
-> +		tst_brk(TFAIL | TERRNO, "unshare failed");
-> +
-> +	/*
-> +	 * Create an initial root dir. pivot_root doesn't work if the initial root
-> +	 * dir is a initramfs, so use chroot to create a safe environment
-> +	 */
-> +	SAFE_MOUNT("none", "/", NULL, MS_REC|MS_PRIVATE, NULL);
-> +	SAFE_MOUNT("none", chroot_dir, "tmpfs", 0, 0);
-> +	SAFE_CHROOT(chroot_dir);
-> +
-> +	/* Create our new root location */
-> +	SAFE_MKDIR(new_root, 0777);
-> +
-> +	/*
-> +	 * pivot_root only works if new_root is a mount point, so mount a tmpfs
-> +	 * unless testing for that fail mode
-> +	 */
-> +	if (test_cases[test_case].test_case != NEW_ROOT_ON_CURRENT_ROOT)
-> +		SAFE_MOUNT("none", new_root, "tmpfs", 0, 0);
-> +
-> +	/*
-> +	 * Create put_old under new_root, unless testing for that specific fail
-> +	 * mode
-> +	 */
-> +	const char* actual_put_old = NULL;
-> +	if (test_cases[test_case].test_case == PUT_OLD_NOT_UNDERNEATH_NEW_ROOT) {
-> +		actual_put_old = put_old_bad;
-> +		SAFE_MKDIR(put_old_fs, 0777);
-> +		SAFE_MOUNT("none", put_old_fs, "tmpfs", 0, 0);
-> +		SAFE_MKDIR(put_old_bad, 0777);
-> +	} else {
-> +		actual_put_old = put_old;
-> +
-> +		/* put_old must be a directory for success */
-> +		if (test_cases[test_case].test_case == PUT_OLD_NOT_DIR)
-> +			SAFE_CREAT(put_old, 0777);
-> +		else
-> +			SAFE_MKDIR(put_old, 0777);
-> +	}
-> +
-> +	if (test_cases[test_case].test_case == NO_CAP_SYS_ADMIN)
-> +#ifdef HAVE_LIBCAP
-> +		drop_cap_sys_admin();
-> +#else
-> +		tst_brk(TCONF,
-> +			"System doesn't have POSIX capabilities support");
-> +#endif
-> +
-> +	/* Test the syscall */
-nit: I'd be for removing this and other comments (it's obvious).
-> +	TEST(syscall(__NR_pivot_root, new_root, actual_put_old));
-> +
-> +	/* If NORMAL it should have succeeded */
-> +	if (test_cases[test_case].test_case == NORMAL) {
-> +		if (TST_RET) {
-> +			tst_res(TFAIL | TERRNO, "pivot_root failed");
-> +			exit(TBROK);
-> +		} else {
-> +			tst_res(TPASS, "pivot_root succeeded");
-> +			exit(TPASS);
-> +		}
-> +	}
-> +
-> +	/* pivot_root is expected to fail */
-> +	if (TST_RET == 0) {
-> +		tst_res(TFAIL, "pivot_root succeeded unexpectedly");
-> +		exit(TBROK);
-> +	}
-> +
-> +	/* Check error code is correct */
-> +	if (errno != test_cases[test_case].expected_error) {
-> +		tst_res(TFAIL | TERRNO,	"pivot_root failed with wrong errno");
-> +		exit(TBROK);
-> +	}
-> +
-> +	tst_res(TPASS, "pivot_root failed as expected with %s",
-> +		strerror(errno));
-> +	exit(TPASS);
-> +}
-> +
-> +#else
-> +static void run(void)
-> +{
-> +	tst_brk(TCONF, NULL, "unshare is undefined.");
-Here NULL is copy paste error (that cleanup parameter is from legacy API, here
-suppress the message).
-We use TST_TEST_TCONF for cases like this.
-+ Please guard everything, otherwise we get "defined but not used".
-
-> +}
-> +#endif
-> +
-> +static void setup(void)
-> +{
-> +	SAFE_MKDIR(chroot_dir, 0777);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test = run,
-> +	.tcnt = ARRAY_SIZE(test_cases),
-> +	.needs_tmpdir = 1,
-> +	.needs_root = 1,
-> +	.forks_child = 1,
-> +	.setup = setup,
-> +};
-
-
-Kind regards,
-Petr
