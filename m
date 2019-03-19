@@ -1,266 +1,51 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 19 Mar 2019 16:55:29 +0100
-Subject: [LTP] [ltp][PATCH v3] Add ltp pivot_root test
-In-Reply-To: <20190305184455.93440-1-paullawrence@google.com>
-References: <20190305184455.93440-1-paullawrence@google.com>
-Message-ID: <20190319155529.GA13158@rei.lan>
+From: Yang Shi <shy828301@gmail.com>
+Date: Tue, 19 Mar 2019 09:25:58 -0700
+Subject: [LTP] mbind() fails to fail with EIO
+In-Reply-To: <20190319145233.rcfa6bvx6xyv64l3@kshutemo-mobl1>
+References: <20190315160142.GA8921@rei>
+ <CAHbLzkqvQ2SW4soYHOOhWG0ShkdUhaiNK0_y+ULaYYHo62O0fQ@mail.gmail.com>
+ <20190319132729.s42t3evt6d65sz6f@d104.suse.de>
+ <20190319142639.wbind5smqcji264l@kshutemo-mobl1>
+ <20190319144130.lidqtrkfl75n2haj@d104.suse.de>
+ <20190319145233.rcfa6bvx6xyv64l3@kshutemo-mobl1>
+Message-ID: <CAHbLzkpo4KHBN8YCCGGfrDnoX4FnEx6odgEUwweGTC5fGz4FQw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> diff --git a/testcases/kernel/syscalls/pivot_root/Makefile b/testcases/kernel/syscalls/pivot_root/Makefile
-> new file mode 100644
-> index 000000000..a16974d41
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/pivot_root/Makefile
-> @@ -0,0 +1,11 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +#
-> +# Copyright (c) 2019 Google, Inc.
-> +
-> +top_srcdir		?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +
-> +LDLIBS := $(LDLIBS) $(CAP_LIBS)
+On Tue, Mar 19, 2019 at 7:52 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
+>
+> On Tue, Mar 19, 2019 at 03:41:33PM +0100, Oscar Salvador wrote:
+> > On Tue, Mar 19, 2019 at 05:26:39PM +0300, Kirill A. Shutemov wrote:
+> > > That's all sounds reasonable.
+> > >
+> > > We only need to make sure the bug fixed by 77bf45e78050 will not be
+> > > re-introduced.
+> >
+> > I gave it a spin with the below patch.
+> > Your testcase works (so the bug is not re-introduced), and we get -EIO
+> > when running the ltp test [1].
+> > So unless I am missing something, it should be enough.
 
-It's kind of strange to do anything else but LDLIBS += $(CAP_LIBS)
+Thanks for adding the missing part.
 
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/pivot_root/pivot_root01.c b/testcases/kernel/syscalls/pivot_root/pivot_root01.c
-> new file mode 100644
-> index 000000000..c78428a91
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/pivot_root/pivot_root01.c
-> @@ -0,0 +1,200 @@
-> +/*
-> + * SPDX-License-Identifier: GPL-2.0-or-later
-> + *
-> + * Copyright (c) 2019 Google, Inc.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include <config.h>
-> +
-> +#include <errno.h>
-> +#include <linux/unistd.h>
+>
+> Don't we need to bypass !vma_migratable(vma) check in
+> queue_pages_test_walk() for MPOL_MF_STRICT? I mean user still might want
+> to check if all pages are on the right not even the vma is not migratable.
 
-We do have lapi/syscalls.h that also defines fallbacks for older
-distributions, you should use that one for the __NR_ definitions
-instead.
+I think we need. As long as there is "existing page was already on a
+node that does not follow the policy" with MPOL_MF_STRICT, it should
+return -EIO. So, even though the vma is not migratable it should check
+if the above condition is true or not.
 
-> +#include <sched.h>
-> +
-> +#include <sys/mount.h>
-> +#include <stdlib.h>
-> +
-> +#include "tst_test.h"
-> +
-> +#ifdef HAVE_LIBCAP
-> +#include <sys/capability.h>
-> +#endif
-> +
-> +static const char* chroot_dir = "chroot";
-> +static const char* new_root = "/new_root";
-> +static const char* put_old = "/new_root/put_old";
-> +static const char* put_old_fs = "/put_old_fs";
-> +static const char* put_old_bad = "/put_old_fs/put_old";
-> +
-> +/*
-> + * Test consists of a series of steps that allow pivot_root to succeed, which
-> + * is run when param is NORMAL. All other values tweak one of the steps to
-> + * induce a failure, and check the errno is as expected.
-> + */
-> +#define NORMAL 0
-> +
-> +/*
-> + * EBUSY
-> + * new_root or put_old are on the current root file system
-> + */
-> +#define NEW_ROOT_ON_CURRENT_ROOT 1
-> +
-> +/*
-> + * EINVAL
-> + * put_old is not underneath new_root
-> + * Note: if put_old and new_root are on the same fs,
-> + * pivot_root fails with EBUSY before testing reachability
-> + */
-> +#define PUT_OLD_NOT_UNDERNEATH_NEW_ROOT 2
-> +
-> +/*
-> + * ENOTDIR
-> + * new_root or put_old is not a directory
-> + */
-> +#define PUT_OLD_NOT_DIR 3
-> +
-> +/*
-> + * EPERM
-> + * The calling process does not have the CAP_SYS_ADMIN capability.
-> + */
-> +#define NO_CAP_SYS_ADMIN 4
-> +
-> +static const struct test_case {
-> +	int test_case;
-> +	int expected_error;
-> +} test_cases[] = {
-> +	{NORMAL, 0},
-> +	{NEW_ROOT_ON_CURRENT_ROOT, EBUSY},
-> +	{PUT_OLD_NOT_UNDERNEATH_NEW_ROOT, EINVAL},
-> +	{PUT_OLD_NOT_DIR, ENOTDIR},
-> +	{NO_CAP_SYS_ADMIN, EPERM},
-> +};
-> +
-> +#ifdef HAVE_LIBCAP
-> +static void drop_cap_sys_admin(void)
-> +{
-> +	cap_value_t cap_value[] = { CAP_SYS_ADMIN };
-> +	cap_t cap = cap_get_proc();
-> +	if (!cap)
-> +		tst_brk(TFAIL | TERRNO, "cap_get_proc failed");
-> +
-> +	if (cap_set_flag(cap, CAP_EFFECTIVE, 1, cap_value, CAP_CLEAR))
-> +		tst_brk(TFAIL | TERRNO, "cap_set_flag failed");
-> +
-> +	if (cap_set_proc(cap))
-> +		tst_brk(TFAIL | TERRNO, "cap_set_proc failed");
-> +}
-> +#endif
-> +
-> +#ifdef HAVE_UNSHARE
-> +static void run(unsigned int test_case)
-> +{
-> +	/* Work in child process - needed to undo unshare and chroot */
-> +	if (SAFE_FORK()) {
-> +		tst_reap_children();
-> +		return;
-> +	}
-> +
-> +	/* pivot_root requires no shared mounts exist in process namespace */
-> +	TEST(unshare(CLONE_NEWNS | CLONE_FS));
-> +	if (TST_RET == -1)
-> +		tst_brk(TFAIL | TERRNO, "unshare failed");
-                        ^
-			This has to be TBROK, also there is in-flight
-			patch that adds SAFE_UNSHARE(), we can use it
-			once it's added.
+I will wrap all the stuff into a formal patch.
 
+Thanks,
+Yang
 
-> +	/*
-> +	 * Create an initial root dir. pivot_root doesn't work if the initial root
-> +	 * dir is a initramfs, so use chroot to create a safe environment
-> +	 */
-> +	SAFE_MOUNT("none", "/", NULL, MS_REC|MS_PRIVATE, NULL);
-> +	SAFE_MOUNT("none", chroot_dir, "tmpfs", 0, 0);
-> +	SAFE_CHROOT(chroot_dir);
-> +
-> +	/* Create our new root location */
-> +	SAFE_MKDIR(new_root, 0777);
-> +
-> +	/*
-> +	 * pivot_root only works if new_root is a mount point, so mount a tmpfs
-> +	 * unless testing for that fail mode
-> +	 */
-> +	if (test_cases[test_case].test_case != NEW_ROOT_ON_CURRENT_ROOT)
-> +		SAFE_MOUNT("none", new_root, "tmpfs", 0, 0);
-> +
-> +	/*
-> +	 * Create put_old under new_root, unless testing for that specific fail
-> +	 * mode
-> +	 */
-> +	const char* actual_put_old = NULL;
-> +	if (test_cases[test_case].test_case == PUT_OLD_NOT_UNDERNEATH_NEW_ROOT) {
-> +		actual_put_old = put_old_bad;
-> +		SAFE_MKDIR(put_old_fs, 0777);
-> +		SAFE_MOUNT("none", put_old_fs, "tmpfs", 0, 0);
-> +		SAFE_MKDIR(put_old_bad, 0777);
-> +	} else {
-> +		actual_put_old = put_old;
-> +
-> +		/* put_old must be a directory for success */
-> +		if (test_cases[test_case].test_case == PUT_OLD_NOT_DIR)
-> +			SAFE_CREAT(put_old, 0777);
-> +		else
-> +			SAFE_MKDIR(put_old, 0777);
-> +	}
-> +
-> +	if (test_cases[test_case].test_case == NO_CAP_SYS_ADMIN)
-> +#ifdef HAVE_LIBCAP
-> +		drop_cap_sys_admin();
-> +#else
-> +		tst_brk(TCONF,
-> +			"System doesn't have POSIX capabilities support");
-
-If you just need to skip a single test you have to do
-tst_res(TCONF, ...) followed by return, tst_brk() is treated as fatal
-error and exits the whole test.
-
-> +#endif
-> +
-> +	/* Test the syscall */
-> +	TEST(syscall(__NR_pivot_root, new_root, actual_put_old));
-> +
-> +	/* If NORMAL it should have succeeded */
-> +	if (test_cases[test_case].test_case == NORMAL) {
-> +		if (TST_RET) {
-> +			tst_res(TFAIL | TERRNO, "pivot_root failed");
-> +			exit(TBROK);
-> +		} else {
-> +			tst_res(TPASS, "pivot_root succeeded");
-> +			exit(TPASS);
-> +		}
-> +	}
-> +
-> +	/* pivot_root is expected to fail */
-> +	if (TST_RET == 0) {
-> +		tst_res(TFAIL, "pivot_root succeeded unexpectedly");
-> +		exit(TBROK);
-
-You are not supposed to call exit() in the test, the only correct way
-how to report results are the tst_res() and tst_brk() functions.
-
-You can do return here instead though.
-
-> +	}
-> +
-> +	/* Check error code is correct */
-> +	if (errno != test_cases[test_case].expected_error) {
-> +		tst_res(TFAIL | TERRNO,	"pivot_root failed with wrong errno");
-> +		exit(TBROK);
-> +	}
-> +
-> +	tst_res(TPASS, "pivot_root failed as expected with %s",
-> +		strerror(errno));
-> +	exit(TPASS);
-> +}
-> +
-> +#else
-> +static void run(void)
-> +{
-> +	tst_brk(TCONF, NULL, "unshare is undefined.");
-> +}
-> +#endif
-> +
-> +static void setup(void)
-> +{
-> +	SAFE_MKDIR(chroot_dir, 0777);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test = run,
-> +	.tcnt = ARRAY_SIZE(test_cases),
-> +	.needs_tmpdir = 1,
-> +	.needs_root = 1,
-> +	.forks_child = 1,
-> +	.setup = setup,
-> +};
-> -- 
-> 2.21.0.352.gf09ad66450-goog
-> 
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+>
+> --
+>  Kirill A. Shutemov
