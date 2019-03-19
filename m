@@ -1,165 +1,357 @@
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Tue, 19 Mar 2019 12:19:41 +0530
-Subject: [LTP] [PATCH v3 3/3] syscalls/tgkill03: add new test
-In-Reply-To: <1552978181-27748-1-git-send-email-sumit.garg@linaro.org>
-References: <1552978181-27748-1-git-send-email-sumit.garg@linaro.org>
-Message-ID: <1552978181-27748-4-git-send-email-sumit.garg@linaro.org>
+From: Christian Amann <camann@suse.com>
+Date: Tue, 19 Mar 2019 09:07:32 +0100
+Subject: [LTP] [PATCH v4] syscalls: Add userfaultfd testcase
+Message-ID: <20190319080732.30819-1-camann@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Greg Hackmann <ghackmann@google.com>
+This tests the userfaultfd syscall to handle pagefault events.
+It does so by registering a userfaultfd object to the address of
+a memory page. In a second thread it handles the event and writes
+data in the monitored memory page to indicate success.
 
-Test simple tgkill() error cases.
-
-Signed-off-by: Greg Hackmann <ghackmann@google.com>
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-Reviewed-by: Li Wang <liwang@redhat.com>
+Signed-off-by: Christian Amann <camann@suse.com>
 ---
- runtest/syscalls                            |   1 +
- testcases/kernel/syscalls/tgkill/.gitignore |   1 +
- testcases/kernel/syscalls/tgkill/tgkill03.c | 110 ++++++++++++++++++++++++++++
- 3 files changed, 112 insertions(+)
- create mode 100644 testcases/kernel/syscalls/tgkill/tgkill03.c
+ configure.ac                                       |   1 +
+ include/lapi/syscalls/aarch64.in                   |   1 +
+ include/lapi/syscalls/arm.in                       |   1 +
+ include/lapi/syscalls/i386.in                      |   1 +
+ include/lapi/syscalls/ia64.in                      |   1 +
+ include/lapi/syscalls/powerpc.in                   |   1 +
+ include/lapi/syscalls/powerpc64.in                 |   1 +
+ include/lapi/syscalls/s390.in                      |   1 +
+ include/lapi/syscalls/s390x.in                     |   1 +
+ include/lapi/syscalls/sparc.in                     |   1 +
+ include/lapi/syscalls/sparc64.in                   |   1 +
+ include/lapi/syscalls/x86_64.in                    |   1 +
+ runtest/syscalls                                   |   2 +
+ testcases/kernel/syscalls/userfaultfd/.gitignore   |   1 +
+ testcases/kernel/syscalls/userfaultfd/Makefile     |  15 +++
+ .../kernel/syscalls/userfaultfd/userfaultfd01.c    | 125 +++++++++++++++++++++
+ 16 files changed, 155 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/userfaultfd/.gitignore
+ create mode 100644 testcases/kernel/syscalls/userfaultfd/Makefile
+ create mode 100644 testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
 
+diff --git a/configure.ac b/configure.ac
+index e002c248e..523ab7d87 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -46,6 +46,7 @@ AC_CHECK_HEADERS([ \
+     linux/mempolicy.h \
+     linux/module.h \
+     linux/netlink.h \
++    linux/userfaultfd.h \
+     mm.h \
+     netinet/sctp.h \
+     pthread.h \
+diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
+index 7ce148524..177dd0115 100644
+--- a/include/lapi/syscalls/aarch64.in
++++ b/include/lapi/syscalls/aarch64.in
+@@ -258,6 +258,7 @@ process_vm_writev 271
+ kcmp 272
+ getrandom 278
+ memfd_create 279
++userfaultfd 282
+ membarrier 283
+ execveat 281
+ mlock2 284
+diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
+index 22c76d4f0..f4adedb2c 100644
+--- a/include/lapi/syscalls/arm.in
++++ b/include/lapi/syscalls/arm.in
+@@ -343,6 +343,7 @@ renameat2 (__NR_SYSCALL_BASE+382)
+ getrandom (__NR_SYSCALL_BASE+384)
+ memfd_create (__NR_SYSCALL_BASE+385)
+ execveat (__NR_SYSCALL_BASE+387)
++userfaultfd (__NR_SYSCALL_BASE+388)
+ membarrier (__NR_SYSCALL_BASE+389)
+ mlock2 (__NR_SYSCALL_BASE+390)
+ copy_file_range (__NR_SYSCALL_BASE+391)
+diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
+index 7e485aebf..af5254f77 100644
+--- a/include/lapi/syscalls/i386.in
++++ b/include/lapi/syscalls/i386.in
+@@ -341,6 +341,7 @@ renameat2 354
+ getrandom 355
+ memfd_create 356
+ execveat 358
++userfaultfd 374
+ membarrier 375
+ mlock2 376
+ copy_file_range 377
+diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
+index 7c9a0ead6..c0aeed08b 100644
+--- a/include/lapi/syscalls/ia64.in
++++ b/include/lapi/syscalls/ia64.in
+@@ -298,6 +298,7 @@ process_vm_writev 1333
+ renameat2 1338
+ getrandom 1339
+ memfd_create 1340
++userfaultfd 1343
+ membarrier 1344
+ execveat 1342
+ mlock2 1346
+diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
+index fc1f89945..6b6be58a7 100644
+--- a/include/lapi/syscalls/powerpc.in
++++ b/include/lapi/syscalls/powerpc.in
+@@ -347,6 +347,7 @@ sched_getattr 356
+ renameat2 357
+ getrandom 359
+ memfd_create 360
++userfaultfd 364
+ membarrier 365
+ execveat 362
+ mlock2 378
+diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
+index fc1f89945..6b6be58a7 100644
+--- a/include/lapi/syscalls/powerpc64.in
++++ b/include/lapi/syscalls/powerpc64.in
+@@ -347,6 +347,7 @@ sched_getattr 356
+ renameat2 357
+ getrandom 359
+ memfd_create 360
++userfaultfd 364
+ membarrier 365
+ execveat 362
+ mlock2 378
+diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
+index 6d0c895fa..2a2ffe223 100644
+--- a/include/lapi/syscalls/s390.in
++++ b/include/lapi/syscalls/s390.in
+@@ -331,6 +331,7 @@ sched_getattr 346
+ renameat2 347
+ getrandom 349
+ memfd_create 350
++userfaultfd 355
+ membarrier 356
+ execveat 354
+ mlock2 374
+diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
+index 8105b5598..4c36ce17c 100644
+--- a/include/lapi/syscalls/s390x.in
++++ b/include/lapi/syscalls/s390x.in
+@@ -330,6 +330,7 @@ sched_getattr 346
+ renameat2 347
+ getrandom 349
+ memfd_create 350
++userfaultfd 355
+ membarrier 356
+ execveat 354
+ mlock2 374
+diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
+index 20a21a9ce..20dc37b01 100644
+--- a/include/lapi/syscalls/sparc.in
++++ b/include/lapi/syscalls/sparc.in
+@@ -337,6 +337,7 @@ renameat2 345
+ getrandom 347
+ memfd_create 348
+ membarrier 351
++userfaultfd 352
+ execveat 350
+ mlock2 356
+ copy_file_range 357
+diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
+index 36ab39420..c100b8e3e 100644
+--- a/include/lapi/syscalls/sparc64.in
++++ b/include/lapi/syscalls/sparc64.in
+@@ -313,6 +313,7 @@ renameat2 345
+ getrandom 347
+ memfd_create 348
+ membarrier 351
++userfaultfd 352
+ execveat 350
+ mlock2 356
+ copy_file_range 357
+diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
+index 6aa9d12a8..87849e5c0 100644
+--- a/include/lapi/syscalls/x86_64.in
++++ b/include/lapi/syscalls/x86_64.in
+@@ -308,6 +308,7 @@ renameat2 316
+ getrandom 318
+ memfd_create 319
+ execveat 322
++userfaultfd 323
+ membarrier 324
+ mlock2 325
+ copy_file_range 326
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 7af9136..b090408 100644
+index 03b613c07..89f4b5097 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -1402,6 +1402,7 @@ syslog12 syslog12
+@@ -1465,6 +1465,8 @@ umount2_01 umount2_01
+ umount2_02 umount2_02
+ umount2_03 umount2_03
  
- tgkill01 tgkill01
- tgkill02 tgkill02
-+tgkill03 tgkill03
++userfaultfd01 userfaultfd01
++
+ ustat01 ustat01
+ ustat02 ustat02
  
- time01 time01
- time02 time02
-diff --git a/testcases/kernel/syscalls/tgkill/.gitignore b/testcases/kernel/syscalls/tgkill/.gitignore
-index 42be2bb..a6d2299 100644
---- a/testcases/kernel/syscalls/tgkill/.gitignore
-+++ b/testcases/kernel/syscalls/tgkill/.gitignore
-@@ -1,2 +1,3 @@
- tgkill01
- tgkill02
-+tgkill03
-diff --git a/testcases/kernel/syscalls/tgkill/tgkill03.c b/testcases/kernel/syscalls/tgkill/tgkill03.c
+diff --git a/testcases/kernel/syscalls/userfaultfd/.gitignore b/testcases/kernel/syscalls/userfaultfd/.gitignore
 new file mode 100644
-index 0000000..b78e9d9
+index 000000000..d819a2a7c
 --- /dev/null
-+++ b/testcases/kernel/syscalls/tgkill/tgkill03.c
-@@ -0,0 +1,110 @@
++++ b/testcases/kernel/syscalls/userfaultfd/.gitignore
+@@ -0,0 +1 @@
++/userfaultfd01
+diff --git a/testcases/kernel/syscalls/userfaultfd/Makefile b/testcases/kernel/syscalls/userfaultfd/Makefile
+new file mode 100644
+index 000000000..33fe59e5b
+--- /dev/null
++++ b/testcases/kernel/syscalls/userfaultfd/Makefile
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++#
++#   Copyright (c) 2019 SUSE LLC
++#
++#   Author: Christian Amann <camann@suse.com>
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
++
++userfaultfd01: CFLAGS += -pthread
++
+diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
+new file mode 100644
+index 000000000..bb8395e7f
+--- /dev/null
++++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
+@@ -0,0 +1,125 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (c) 2018 Google, Inc.
++ * Copyright (c) 2019 SUSE LLC
 + *
-+ * Test simple tgkill() error cases.
++ * Author: Christian Amann <camann@suse.com>
++ *
 + */
 +
-+#include <pthread.h>
-+#include <pwd.h>
-+#include <sys/types.h>
++/*
++ * Test userfaultfd
++ *
++ * Force a pagefault event and handle it using userfaultfd
++ * from a different thread
++ *
++ */
 +
-+#include "tst_safe_pthread.h"
 +#include "tst_test.h"
-+#include "tgkill.h"
++#include "tst_safe_macros.h"
++#include "tst_safe_pthread.h"
++#include "lapi/syscalls.h"
++#include <poll.h>
 +
-+static pthread_t child_thread;
++#ifdef HAVE_LINUX_USERFAULTFD_H
++#include <linux/userfaultfd.h>
 +
-+static pid_t parent_tgid;
-+static pid_t parent_tid;
-+static pid_t child_tid;
-+static pid_t defunct_tid;
++static int page_size;
++static char *page;
++static void *copy_page;
++static int uffd;
 +
-+static const int invalid_pid = -1;
-+
-+static void *child_thread_func(void *arg)
++static int sys_userfaultfd(int flags)
 +{
-+	child_tid = sys_gettid();
-+
-+	TST_CHECKPOINT_WAKE_AND_WAIT(0);
-+
-+	return arg;
++	return tst_syscall(__NR_userfaultfd, flags);
 +}
 +
-+static void *defunct_thread_func(void *arg)
++static void set_pages(void)
 +{
-+	defunct_tid = sys_gettid();
-+
-+	return arg;
++	page_size = sysconf(_SC_PAGE_SIZE);
++	page = SAFE_MMAP(NULL, page_size, PROT_READ | PROT_WRITE,
++			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++	copy_page = SAFE_MMAP(NULL, page_size, PROT_READ | PROT_WRITE,
++			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 +}
 +
-+static void setup(void)
++static void handle_thread(void)
 +{
-+	sigset_t sigusr1;
-+	pthread_t defunct_thread;
++	static struct uffd_msg msg;
++	struct uffdio_copy uffdio_copy;
 +
-+	sigemptyset(&sigusr1);
-+	sigaddset(&sigusr1, SIGUSR1);
-+	pthread_sigmask(SIG_BLOCK, &sigusr1, NULL);
++	struct pollfd pollfd;
++	int nready;
 +
-+	parent_tgid = getpid();
-+	parent_tid = sys_gettid();
++	pollfd.fd = uffd;
++	pollfd.events = POLLIN;
++	nready = poll(&pollfd, 1, -1);
++	if (nready == -1)
++		tst_brk(TBROK | TERRNO,
++				"Error on poll");
 +
-+	SAFE_PTHREAD_CREATE(&child_thread, NULL, child_thread_func, NULL);
++	SAFE_READ(1, uffd, &msg, sizeof(msg));
 +
-+	TST_CHECKPOINT_WAIT(0);
++	if (msg.event != UFFD_EVENT_PAGEFAULT)
++		tst_brk(TBROK | TERRNO,
++				"Received unexpected UFFD_EVENT");
 +
-+	SAFE_PTHREAD_CREATE(&defunct_thread, NULL, defunct_thread_func, NULL);
++	memset(copy_page, 'X', page_size);
 +
-+	SAFE_PTHREAD_JOIN(defunct_thread, NULL);
++	uffdio_copy.src = (unsigned long) copy_page;
++
++	uffdio_copy.dst = (unsigned long) msg.arg.pagefault.address
++			& ~(page_size - 1);
++	uffdio_copy.len = page_size;
++	uffdio_copy.mode = 0;
++	uffdio_copy.copy = 0;
++	SAFE_IOCTL(uffd, UFFDIO_COPY, &uffdio_copy);
++
++	close(uffd);
 +}
 +
-+static void cleanup(void)
++static void run(void)
 +{
-+	TST_CHECKPOINT_WAKE(0);
++	pthread_t thr;
++	struct uffdio_api uffdio_api;
++	struct uffdio_register uffdio_register;
 +
-+	SAFE_PTHREAD_JOIN(child_thread, NULL);
-+}
++	set_pages();
 +
-+static const struct testcase {
-+	const char *desc;
-+	const int *tgid;
-+	const int *tid;
-+	const int sig;
-+	const int err;
-+} testcases[] = {
-+	{ "Invalid tgid", &invalid_pid, &parent_tid, SIGUSR1, EINVAL },
-+	{ "Invalid tid", &parent_tgid, &invalid_pid, SIGUSR1, EINVAL },
-+	{ "Invalid signal", &parent_tgid, &parent_tid, -1, EINVAL },
-+	{ "Defunct thread ID", &parent_tgid, &defunct_tid, SIGUSR1, ESRCH },
-+	{ "Valid tgkill call", &parent_tgid, &child_tid, SIGUSR1, 0 },
-+};
++	uffd = sys_userfaultfd(O_CLOEXEC | O_NONBLOCK);
 +
-+static void run(unsigned int i)
-+{
-+	const struct testcase *tc = &testcases[i];
++	if (uffd == -1)
++		tst_brk(TBROK | TERRNO,
++			"Could not create userfault file descriptor");
 +
-+	TEST(sys_tgkill(*tc->tgid, *tc->tid, tc->sig));
-+	if (tc->err) {
-+		if (TST_RET < 0 && TST_ERR == tc->err)
-+			tst_res(TPASS | TTERRNO, "%s failed as expected",
-+				tc->desc);
-+		else
-+			tst_res(TFAIL | TTERRNO,
-+				"%s should have failed with %s", tc->desc,
-+				tst_strerrno(tc->err));
-+	} else {
-+		if (TST_RET == 0)
-+			tst_res(TPASS, "%s succeeded", tc->desc);
-+		else
-+			tst_res(TFAIL | TTERRNO, "%s failed", tc->desc);
-+	}
++	uffdio_api.api = UFFD_API;
++	uffdio_api.features = 0;
++	SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
++
++	uffdio_register.range.start = (unsigned long) page;
++	uffdio_register.range.len = page_size;
++	uffdio_register.mode = UFFDIO_REGISTER_MODE_MISSING;
++
++	SAFE_IOCTL(uffd, UFFDIO_REGISTER, &uffdio_register);
++
++	SAFE_PTHREAD_CREATE(&thr, NULL,
++			(void * (*)(void *)) handle_thread, NULL);
++
++	char c = page[0xf];
++
++	if (c == 'X')
++		tst_res(TPASS, "Pagefault handled!");
++	else
++		tst_res(TFAIL, "Pagefault not handled!");
++
++	SAFE_PTHREAD_JOIN(thr, NULL);
 +}
 +
 +static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(testcases),
-+	.needs_checkpoints = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = run,
++	.test_all = run,
++	.min_kver = "4.3",
++	.timeout = 20
 +};
++
++#else
++	TST_TEST_TCONF("This system does not provide userfaultfd support");
++#endif
 -- 
-2.7.4
+2.16.4
 
