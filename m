@@ -1,118 +1,52 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 19 Mar 2019 12:30:24 -0400 (EDT)
-Subject: [LTP] [PATCH RFC 1/3] min_free_kbytes: Fix child exit status
- check conditions
-In-Reply-To: <20190319093858.584-1-liwang@redhat.com>
-References: <20190319093858.584-1-liwang@redhat.com>
-Message-ID: <1947630455.10371822.1553013024245.JavaMail.zimbra@redhat.com>
+From: Yang Shi <shy828301@gmail.com>
+Date: Tue, 19 Mar 2019 09:29:57 -0700
+Subject: [LTP] mbind() fails to fail with EIO
+In-Reply-To: <20190319151050.7ym3kdmhec7bf2ky@d104.suse.de>
+References: <20190315160142.GA8921@rei>
+ <CAHbLzkqvQ2SW4soYHOOhWG0ShkdUhaiNK0_y+ULaYYHo62O0fQ@mail.gmail.com>
+ <20190319132729.s42t3evt6d65sz6f@d104.suse.de>
+ <20190319142639.wbind5smqcji264l@kshutemo-mobl1>
+ <20190319144130.lidqtrkfl75n2haj@d104.suse.de>
+ <20190319145233.rcfa6bvx6xyv64l3@kshutemo-mobl1>
+ <20190319151050.7ym3kdmhec7bf2ky@d104.suse.de>
+Message-ID: <CAHbLzkoS0MZXHzz6d9pX=b=HqSoWimT7hOnnKworc7UGxrQztg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On Tue, Mar 19, 2019 at 8:10 AM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Tue, Mar 19, 2019 at 05:52:33PM +0300, Kirill A. Shutemov wrote:
+> > On Tue, Mar 19, 2019 at 03:41:33PM +0100, Oscar Salvador wrote:
+> > > On Tue, Mar 19, 2019 at 05:26:39PM +0300, Kirill A. Shutemov wrote:
+> > > > That's all sounds reasonable.
+> > > >
+> > > > We only need to make sure the bug fixed by 77bf45e78050 will not be
+> > > > re-introduced.
+> > >
+> > > I gave it a spin with the below patch.
+> > > Your testcase works (so the bug is not re-introduced), and we get -EIO
+> > > when running the ltp test [1].
+> > > So unless I am missing something, it should be enough.
+> >
+> > Don't we need to bypass !vma_migratable(vma) check in
+> > queue_pages_test_walk() for MPOL_MF_STRICT? I mean user still might want
+> > to check if all pages are on the right not even the vma is not migratable.
+>
+> Yeah, I missed that.
+> Then, I guess that we have to put the check into queue_pages_pte_range as well,
+> and place it right before migrate_page_add().
+> So, if it is not placed in the node and is not migreatable, we return -EIO.
 
+Sorry, I didn't see this reply before I replied Kirill's email
+earlier. Yes, I agree, it should return -EIO too.
 
------ Original Message -----
-> From: Vipin K Parashar <vipin@linux.vnet.ibm.com>
-> 
-> Fixes: #349
-> 
-> min_free_kbytes test has badly formed if conditions in mem_tune()
-> for child exit status check. 
+Thanks,
+Yang
 
-Can you please elaborate what's wrong about it?
-
-> This is causing test to declare as FAILED
-> despite that not being the case.
-
-Why? Shouldn't mmap succeed with overcommit == 1?
-
-> Fix child exit status check conditions.
-> 
-> ---ERROR LOG---
-> <..snip..>
-> mem.c:839: INFO: set overcommit_memory to 1
-> mem.c:839: INFO: set min_free_kbytes to 11580
-> memfree is 6974720 kB before eatup mem
-> memfree is 15488 kB after eatup mem
-> min_free_kbytes.c:135: FAIL: child unexpectedly failed: 0
-> mem.c:839: INFO: set min_free_kbytes to 23160
-> memfree is 7104128 kB before eatup mem
-> memfree is 26560 kB after eatup mem
-> min_free_kbytes.c:135: FAIL: child unexpectedly failed: 0
-> mem.c:839: INFO: set min_free_kbytes to 145812
-> memfree is 7101504 kB before eatup mem
-> memfree is 215872 kB after eatup mem
-> min_free_kbytes.c:135: FAIL: child unexpectedly failed: 0
-> min_free_kbytes.c:81: PASS: min_free_kbytes test pass
-> mem.c:839: INFO: set min_free_kbytes to 11580
-> ---------------
-> 
-> Signed-off-by: Vipin K Parashar <vipin@linux.vnet.ibm.com>
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Cc: Jan Stancek <jstancek@redhat.com>
-> ---
->  .../kernel/mem/tunable/min_free_kbytes.c      | 40 +++++--------------
->  1 file changed, 11 insertions(+), 29 deletions(-)
-> 
-> diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c
-> b/testcases/kernel/mem/tunable/min_free_kbytes.c
-> index f114dc493..d2378a700 100644
-> --- a/testcases/kernel/mem/tunable/min_free_kbytes.c
-> +++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
-> @@ -119,39 +119,21 @@ static void test_tune(unsigned long overcommit_policy)
->  
->  		SAFE_WAITPID(pid[i], &status, WUNTRACED | WCONTINUED);
->  
-> -		if (overcommit_policy == 2) {
-> -			if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-> -				tst_res(TFAIL,
-> -					 "child unexpectedly failed: %d",
-> -					 status);
-> -		} else if (overcommit_policy == 1) {
-> -			if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
-> +		if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
-> +			tst_res(TFAIL,
-> +				"child unexpectedly failed: %d", status);
-> +		} else if (WIFSIGNALED(status) && WTERMSIG(status) != SIGKILL) {
->  #if __WORDSIZE == 32
-> -			{
-> -				if (total_mem < 3145728UL)
-> +			if (total_mem < 3145728UL)
->  #endif
-> -					tst_res(TFAIL,
-> -						 "child unexpectedly failed: %d",
-> -						 status);
-> +				tst_res(TFAIL,
-> +					"child unexpectedly failed: %d", status);
->  #if __WORDSIZE == 32
-> -				/* in 32-bit system, a process allocate about 3Gb memory at most */
-> -				else
-> -					tst_res(TINFO, "Child can't allocate "
-> -						 ">3Gb memory in 32bit system");
-> -			}
-> +			/* in 32-bit system, a process allocate about 3Gb memory at most */
-> +			else
-> +				tst_res(TINFO, "Child can't allocate "
-> +					">3Gb memory in 32bit system");
->  #endif
-> -		} else {
-> -			if (WIFEXITED(status)) {
-> -				if (WEXITSTATUS(status) != 0) {
-> -					tst_res(TFAIL, "child unexpectedly "
-> -						 "failed: %d", status);
-> -				}
-> -			} else if (!WIFSIGNALED(status) ||
-> -				   WTERMSIG(status) != SIGKILL) {
-> -				tst_res(TFAIL,
-> -					 "child unexpectedly failed: %d",
-> -					 status);
-> -			}
->  		}
->  	}
->  }
+>
 > --
-> 2.20.1
-> 
-> 
+> Oscar Salvador
+> SUSE L3
