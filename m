@@ -1,52 +1,48 @@
-From: Yang Shi <shy828301@gmail.com>
-Date: Tue, 19 Mar 2019 09:29:57 -0700
-Subject: [LTP] mbind() fails to fail with EIO
-In-Reply-To: <20190319151050.7ym3kdmhec7bf2ky@d104.suse.de>
-References: <20190315160142.GA8921@rei>
- <CAHbLzkqvQ2SW4soYHOOhWG0ShkdUhaiNK0_y+ULaYYHo62O0fQ@mail.gmail.com>
- <20190319132729.s42t3evt6d65sz6f@d104.suse.de>
- <20190319142639.wbind5smqcji264l@kshutemo-mobl1>
- <20190319144130.lidqtrkfl75n2haj@d104.suse.de>
- <20190319145233.rcfa6bvx6xyv64l3@kshutemo-mobl1>
- <20190319151050.7ym3kdmhec7bf2ky@d104.suse.de>
-Message-ID: <CAHbLzkoS0MZXHzz6d9pX=b=HqSoWimT7hOnnKworc7UGxrQztg@mail.gmail.com>
+From: Eric Biggers <ebiggers@kernel.org>
+Date: Tue, 19 Mar 2019 09:40:19 -0700
+Subject: [LTP] [PATCH] lib/tst_af_alg.c: Fix wrong errno for unsupported
+ AF_ALG
+In-Reply-To: <1552965902-22452-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1552965902-22452-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20190319164017.GA202956@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Mar 19, 2019 at 8:10 AM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Tue, Mar 19, 2019 at 05:52:33PM +0300, Kirill A. Shutemov wrote:
-> > On Tue, Mar 19, 2019 at 03:41:33PM +0100, Oscar Salvador wrote:
-> > > On Tue, Mar 19, 2019 at 05:26:39PM +0300, Kirill A. Shutemov wrote:
-> > > > That's all sounds reasonable.
-> > > >
-> > > > We only need to make sure the bug fixed by 77bf45e78050 will not be
-> > > > re-introduced.
-> > >
-> > > I gave it a spin with the below patch.
-> > > Your testcase works (so the bug is not re-introduced), and we get -EIO
-> > > when running the ltp test [1].
-> > > So unless I am missing something, it should be enough.
-> >
-> > Don't we need to bypass !vma_migratable(vma) check in
-> > queue_pages_test_walk() for MPOL_MF_STRICT? I mean user still might want
-> > to check if all pages are on the right not even the vma is not migratable.
->
-> Yeah, I missed that.
-> Then, I guess that we have to put the check into queue_pages_pte_range as well,
-> and place it right before migrate_page_add().
-> So, if it is not placed in the node and is not migreatable, we return -EIO.
+On Tue, Mar 19, 2019 at 11:25:02AM +0800, Xiao Yang wrote:
+> According to socket(2) manpage and source code, socket(2) actually
+> returns EAFNOSUPPORT instead of EPROTONOSUPPORT when AF_ALG is not
+> supported by kernel.
+> 
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  lib/tst_af_alg.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/tst_af_alg.c b/lib/tst_af_alg.c
+> index 9ce1ca4..97be548 100644
+> --- a/lib/tst_af_alg.c
+> +++ b/lib/tst_af_alg.c
+> @@ -16,7 +16,7 @@ int tst_alg_create(void)
+>  	TEST(socket(AF_ALG, SOCK_SEQPACKET, 0));
+>  	if (TST_RET >= 0)
+>  		return TST_RET;
+> -	if (TST_ERR == EPROTONOSUPPORT)
+> +	if (TST_ERR == EAFNOSUPPORT)
+>  		tst_brk(TCONF, "kernel doesn't support AF_ALG");
+>  	tst_brk(TBROK | TTERRNO, "unexpected error creating AF_ALG socket");
+>  	return -1;
+> -- 
+> 1.8.3.1
+> 
+> 
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
-Sorry, I didn't see this reply before I replied Kirill's email
-earlier. Yes, I agree, it should return -EIO too.
+Thanks, somehow I missed this.
 
-Thanks,
-Yang
-
->
-> --
-> Oscar Salvador
-> SUSE L3
+Reviewed-by: Eric Biggers <ebiggers@google.com>
