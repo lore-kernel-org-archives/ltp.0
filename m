@@ -1,27 +1,62 @@
 From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Wed, 20 Mar 2019 17:04:36 -0300
-Subject: [LTP] check_sync_file_range()
-Message-ID: <2A02D5B5-F67F-43C4-BABA-B0C7EFF6C9F5@linaro.org>
+Date: Wed, 20 Mar 2019 18:41:33 -0300
+Subject: [LTP] [PATCH v2 1/3] lib: include SAFE_CLOCK_ADJTIME() macro
+In-Reply-To: <20190313163239.GC6171@rei>
+References: <20190313163239.GC6171@rei>
+Message-ID: <20190320214135.7029-1-rafael.tinoco@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-I believe check_sync_file_range() logic, from commit c0dc8876fb1486ee85f6dd43e36ec5b3d9d9a4ed, should use a different names since glibc seems to be implementing the syscall wrapper in recent versions and a conflict exists for me at least:
+Adds SAFE_CLOCK_ADJTIME() macro to tst_safe_clocks.h.
 
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -D_FORTIFY_SOURCE=2 -I../../../../include -I../../../../include -I../../../../include/old/   -L../../../../lib  sync_file_range02.c   -lltp -o sync_file_range02
-In file included from sync_file_range02.c:21:
-../../../../include/lapi/sync_file_range.h:24:20: error: conflicting types for ‘sync_file_range’
- static inline long sync_file_range(int fd, off64_t offset, off64_t nbytes,
-                    ^~~~~~~~~~~~~~~
-In file included from /usr/include/x86_64-linux-gnu/bits/fcntl.h:61,
-                 from /usr/include/fcntl.h:35,
-                 from ../../../../include/tst_safe_macros.h:27,
-                 from ../../../../include/tst_test.h:90,
-                 from sync_file_range02.c:20:
-/usr/include/x86_64-linux-gnu/bits/fcntl-linux.h:397:12: note: previous declaration of ‘sync_file_range’ was here
- extern int sync_file_range (int __fd, __off64_t __offset, __off64_t __count,
-            ^~~~~~~~~~~~~~~
+Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
+---
+ include/tst_safe_clocks.h | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
+diff --git a/include/tst_safe_clocks.h b/include/tst_safe_clocks.h
+index d5cd83394..a952be4bf 100644
+--- a/include/tst_safe_clocks.h
++++ b/include/tst_safe_clocks.h
+@@ -6,7 +6,9 @@
+  */
+ 
+ #include <time.h>
++#include <sys/timex.h>
+ #include "tst_test.h"
++#include "lapi/syscalls.h"
+ #include "lapi/posix_clocks.h"
+ 
+ static inline void safe_clock_getres(const char *file, const int lineno,
+@@ -44,6 +46,18 @@ static inline void safe_clock_settime(const char *file, const int lineno,
+ 			"%s:%d clock_gettime() failed", file, lineno);
+ }
+ 
++static inline void safe_clock_adjtime(const char *file, const int lineno,
++	clockid_t clk_id, struct timex *txc)
++{
++	int rval;
++
++	rval = tst_syscall(__NR_clock_adjtime, clk_id, txc);
++
++	if (rval != 0)
++		tst_brk(TBROK | TERRNO,
++			"%s:%d clock_adjtime() failed", file, lineno);
++}
++
+ #define SAFE_CLOCK_GETRES(clk_id, res)\
+ 	safe_clock_getres(__FILE__, __LINE__, (clk_id), (res))
+ 
+@@ -52,3 +66,6 @@ static inline void safe_clock_settime(const char *file, const int lineno,
+ 
+ #define SAFE_CLOCK_SETTIME(clk_id, tp)\
+ 	safe_clock_settime(__FILE__, __LINE__, (clk_id), (tp))
++
++#define SAFE_CLOCK_ADJTIME(clk_id, txc)\
++	safe_clock_adjtime(__FILE__, __LINE__, (clk_id), (txc))
+-- 
+2.20.1
 
