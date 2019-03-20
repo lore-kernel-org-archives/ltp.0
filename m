@@ -1,63 +1,612 @@
 From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Wed, 20 Mar 2019 18:41:34 -0300
-Subject: [LTP] [PATCH v2 2/3] lapi/posix_clocks.h: add MAX_CLOCKS definition
+Date: Wed, 20 Mar 2019 18:41:35 -0300
+Subject: [LTP] [PATCH v2 3/3] syscalls/clock_adjtime: create clock_adjtime
+	syscall tests
 In-Reply-To: <20190320214135.7029-1-rafael.tinoco@linaro.org>
 References: <20190313163239.GC6171@rei>
  <20190320214135.7029-1-rafael.tinoco@linaro.org>
-Message-ID: <20190320214135.7029-2-rafael.tinoco@linaro.org>
+Message-ID: <20190320214135.7029-3-rafael.tinoco@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Used by clock_XXXtime() tests, defining MAX_CLOCKS in common header.
+Fixes: 270
+
+clock_adjtime{01,02} are created using the new API, based on existing
+adjtimex(2) tests. clock_adjtime() syscall might have as execution
+path:
+
+ 1) a regular POSIX clock (only REALTIME clock implements adjtime())
+    - will behave exactly like adjtimex() system call.
+    - only one being tested here.
+
+ 2) a dynamic POSIX clock (which ops are implemented by PTP clocks)
+    - will trigger the PTP clock driver function "adjtime()"
+    - different implementations from one PTP clock to another
+    - might return EOPNOTSUPP (like ptp_kvm_caps, for example)
+    - no observed execution entry point for clock_adjtime()
 
 Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
 ---
- include/lapi/posix_clocks.h                               | 2 ++
- testcases/kernel/syscalls/clock_gettime/clock_gettime02.c | 2 --
- testcases/kernel/syscalls/clock_settime/clock_settime02.c | 1 -
- 3 files changed, 2 insertions(+), 3 deletions(-)
+ include/lapi/posix_clocks.h                   |   4 +
+ runtest/syscalls                              |   3 +
+ .../kernel/syscalls/clock_adjtime/.gitignore  |   2 +
+ .../kernel/syscalls/clock_adjtime/Makefile    |  10 +
+ .../syscalls/clock_adjtime/clock_adjtime.h    |  57 +++++
+ .../syscalls/clock_adjtime/clock_adjtime01.c  | 216 +++++++++++++++++
+ .../syscalls/clock_adjtime/clock_adjtime02.c  | 218 ++++++++++++++++++
+ 7 files changed, 510 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/clock_adjtime/.gitignore
+ create mode 100644 testcases/kernel/syscalls/clock_adjtime/Makefile
+ create mode 100644 testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h
+ create mode 100644 testcases/kernel/syscalls/clock_adjtime/clock_adjtime01.c
+ create mode 100644 testcases/kernel/syscalls/clock_adjtime/clock_adjtime02.c
 
 diff --git a/include/lapi/posix_clocks.h b/include/lapi/posix_clocks.h
-index 0d1f0e99c..4914479ac 100644
+index 4914479ac..b1f7a7c55 100644
 --- a/include/lapi/posix_clocks.h
 +++ b/include/lapi/posix_clocks.h
-@@ -9,6 +9,8 @@
- #ifndef POSIX_CLOCKS_H__
- #define POSIX_CLOCKS_H__
+@@ -11,6 +11,10 @@
  
-+#define MAX_CLOCKS 16
+ #define MAX_CLOCKS 16
+ 
++#define ADJ_ALL (ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR |  \
++		 ADJ_ESTERROR | ADJ_STATUS | ADJ_TIMECONST |  \
++		 ADJ_TICK)
 +
  #ifndef CLOCK_MONOTONIC_RAW
  # define CLOCK_MONOTONIC_RAW 4
  #endif
-diff --git a/testcases/kernel/syscalls/clock_gettime/clock_gettime02.c b/testcases/kernel/syscalls/clock_gettime/clock_gettime02.c
-index 2a29a71e6..b4bc6e2d5 100644
---- a/testcases/kernel/syscalls/clock_gettime/clock_gettime02.c
-+++ b/testcases/kernel/syscalls/clock_gettime/clock_gettime02.c
-@@ -24,8 +24,6 @@
- #include "tst_timer.h"
- #include "tst_safe_clocks.h"
+diff --git a/runtest/syscalls b/runtest/syscalls
+index a13d51918..817f3576b 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -74,6 +74,9 @@ chroot02 chroot02
+ chroot03 chroot03
+ chroot04 chroot04
  
--#define MAX_CLOCKS 16
--
- struct test_case {
- 	clockid_t clktype;
- 	int exp_err;
-diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime02.c b/testcases/kernel/syscalls/clock_settime/clock_settime02.c
-index 8db417b6b..e16e9061a 100644
---- a/testcases/kernel/syscalls/clock_settime/clock_settime02.c
-+++ b/testcases/kernel/syscalls/clock_settime/clock_settime02.c
-@@ -16,7 +16,6 @@
- 
- #define DELTA_SEC 10
- #define NSEC_PER_SEC (1000000000L)
--#define MAX_CLOCKS 16
- 
- struct test_case {
- 	clockid_t type;
++clock_adjtime01 clock_adjtime01
++clock_adjtime02 clock_adjtime02
++
+ clock_getres01 clock_getres01
+ clock_nanosleep01 clock_nanosleep01
+ clock_nanosleep02 clock_nanosleep02
+diff --git a/testcases/kernel/syscalls/clock_adjtime/.gitignore b/testcases/kernel/syscalls/clock_adjtime/.gitignore
+new file mode 100644
+index 000000000..28d5a1d45
+--- /dev/null
++++ b/testcases/kernel/syscalls/clock_adjtime/.gitignore
+@@ -0,0 +1,2 @@
++clock_adjtime01
++clock_adjtime02
+diff --git a/testcases/kernel/syscalls/clock_adjtime/Makefile b/testcases/kernel/syscalls/clock_adjtime/Makefile
+new file mode 100644
+index 000000000..79f671f1c
+--- /dev/null
++++ b/testcases/kernel/syscalls/clock_adjtime/Makefile
+@@ -0,0 +1,10 @@
++# Copyright (c) 2019 - Linaro Limited. All rights reserved.
++# SPDX-License-Identifier: GPL-2.0-or-later
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++LDLIBS+=-lrt
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+\ No newline at end of file
+diff --git a/testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h
+new file mode 100644
+index 000000000..34b97fdfa
+--- /dev/null
++++ b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h
+@@ -0,0 +1,57 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 Linaro Limited. All rights reserved.
++ * Author: Rafael David Tinoco <rafael.tinoco@linaro.org>
++ */
++
++#include "config.h"
++#include "tst_test.h"
++#include "tst_timer.h"
++#include "tst_safe_clocks.h"
++#include "lapi/syscalls.h"
++#include "lapi/posix_clocks.h"
++#include <time.h>
++#include <pwd.h>
++#include <sys/timex.h>
++#include <sys/types.h>
++
++static int sys_clock_adjtime(clockid_t, struct timex *);
++static void timex_show(char *, struct timex);
++
++/*
++ * bad pointer w/ libc causes SIGSEGV signal, call syscall directly
++ */
++static int sys_clock_adjtime(clockid_t clk_id, struct timex *txc)
++{
++	return tst_syscall(__NR_clock_adjtime, clk_id, txc);
++}
++
++static void timex_show(char *given, struct timex txc)
++{
++	tst_res(TINFO,  "%s\n"
++			"             mode: %d\n"
++			"           offset: %ld\n"
++			"        frequency: %ld\n"
++			"         maxerror: %ld\n"
++			"         esterror: %ld\n"
++			"           status: %d (0x%x)\n"
++			"    time_constant: %ld\n"
++			"        precision: %ld\n"
++			"        tolerance: %ld\n"
++			"             tick: %ld\n"
++			"         raw time: %d(s) %d(us)",
++			given,
++			txc.modes,
++			txc.offset,
++			txc.freq,
++			txc.maxerror,
++			txc.esterror,
++			txc.status,
++			txc.status,
++			txc.constant,
++			txc.precision,
++			txc.tolerance,
++			txc.tick,
++			(int)txc.time.tv_sec,
++			(int)txc.time.tv_usec);
++}
+diff --git a/testcases/kernel/syscalls/clock_adjtime/clock_adjtime01.c b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime01.c
+new file mode 100644
+index 000000000..48cfbe6c5
+--- /dev/null
++++ b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime01.c
+@@ -0,0 +1,216 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 Linaro Limited. All rights reserved.
++ * Author: Rafael David Tinoco <rafael.tinoco@linaro.org>
++ */
++
++/*
++ * clock_adjtime() syscall might have as execution path:
++ *
++ *   1) a regular POSIX clock (only REALTIME clock implements adjtime())
++ *      - will behave exactly like adjtimex() system call.
++ *      - only one being tested here.
++ *
++ *   2) a dynamic POSIX clock (which ops are implemented by PTP clocks)
++ *      - will trigger the PTP clock driver function "adjtime()"
++ *      - different implementations from one PTP clock to another
++ *      - might return EOPNOTSUPP (like ptp_kvm_caps, for example)
++ *      - no entry point for clock_adjtime(), missing "CLOCK_PTP" model
++ *
++ * so it is sane to check possible adjustments:
++ *
++ *    - ADJ_OFFSET     - usec or nsec, kernel adjusts time gradually by offset
++ *                       (-512000 < offset < 512000)
++ *    - ADJ_FREQUENCY  - system clock frequency offset
++ *    - ADJ_MAXERROR   - maximum error (usec)
++ *    - ADJ_ESTERROR   - estimated time error in us
++ *    - ADJ_STATUS     - clock command/status of ntp implementation
++ *    - ADJ_TIMECONST  - PLL stiffness (jitter dependent) + poll int for PLL
++ *    - ADJ_TICK       - us between clock ticks
++ *                       (>= 900000/HZ, <= 1100000/HZ)
++ *
++ * and also the standalone ones (using .offset variable):
++ *
++ *    - ADJ_OFFSET_SINGLESHOT - behave like adjtime()
++ *    - ADJ_OFFSET_SS_READ - ret remaining time for completion after SINGLESHOT
++ *
++ * For ADJ_STATUS, consider the following flags:
++ *
++ *      rw  STA_PLL - enable phase-locked loop updates (ADJ_OFFSET)
++ *      rw  STA_PPSFREQ - enable PPS (pulse-per-second) freq discipline
++ *      rw  STA_PPSTIME - enable PPS time discipline
++ *      rw  STA_FLL - select freq-locked loop mode.
++ *      rw  STA_INS - ins leap sec after the last sec of UTC day (all days)
++ *      rw  STA_DEL - del leap sec@last sec of UTC day (all days)
++ *      rw  STA_UNSYNC - clock unsynced
++ *      rw  STA_FREQHOLD - hold freq. ADJ_OFFSET made w/out auto small adjs
++ *      ro  STA_PPSSIGNAL - valid PPS (pulse-per-second) signal is present
++ *      ro  STA_PPSJITTER - PPS signal jitter exceeded.
++ *      ro  STA_PPSWANDER - PPS signal wander exceeded.
++ *      ro  STA_PPSERROR - PPS signal calibration error.
++ *      ro  STA_CLOKERR - clock HW fault.
++ *      ro  STA_NANO - 0 = us, 1 = ns (set = ADJ_NANO, cl = ADJ_MICRO)
++ *      rw  STA_MODE - mode: 0 = phased locked loop. 1 = freq locked loop
++ *      ro  STA_CLK - clock source. unused.
++ */
++
++#include "clock_adjtime.h"
++
++static long hz;
++static struct timex saved, ttxc;
++
++struct test_case {
++	unsigned int modes;
++	long highlimit;
++	long *ptr;
++	long delta;
++};
++
++struct test_case tc[] = {
++	{
++	 .modes = ADJ_OFFSET_SINGLESHOT,
++	},
++	{
++	 .modes = ADJ_OFFSET_SS_READ,
++	},
++	{
++	 .modes = ADJ_ALL,
++	},
++	{
++	 .modes = ADJ_OFFSET,
++	 .highlimit = 500000,
++	 .ptr = &ttxc.offset,
++	 .delta = 10000,
++	},
++	{
++	 .modes = ADJ_FREQUENCY,
++	 .ptr = &ttxc.freq,
++	 .delta = 100,
++	},
++	{
++	 .modes = ADJ_MAXERROR,
++	 .ptr = &ttxc.maxerror,
++	 .delta = 100,
++	},
++	{
++	 .modes = ADJ_ESTERROR,
++	 .ptr = &ttxc.esterror,
++	 .delta = 100,
++	},
++	{
++	 .modes = ADJ_TIMECONST,
++	 .ptr = &ttxc.constant,
++	 .delta = 1,
++	},
++	{
++	 .modes = ADJ_TICK,
++	 .highlimit = 1100000,
++	 .ptr = &ttxc.tick,
++	 .delta = 1000,
++	},
++};
++
++static void verify_clock_adjtime(unsigned int i)
++{
++	long ptroff, *ptr = NULL;
++	struct timex verify;
++
++	memset(&ttxc, 0, sizeof(struct timex));
++	memset(&verify, 0, sizeof(struct timex));
++
++	SAFE_CLOCK_ADJTIME(CLOCK_REALTIME, &ttxc);
++	timex_show("GET", ttxc);
++
++	ttxc.modes = tc[i].modes;
++
++	if (tc[i].ptr && tc[i].delta) {
++
++		*tc[i].ptr += tc[i].delta;
++
++		/* fix limits, if existent, so no errors occur */
++
++		if (tc[i].highlimit) {
++			if (*tc[i].ptr >= tc[i].highlimit)
++				*tc[i].ptr = tc[i].highlimit;
++		}
++	}
++
++	SAFE_CLOCK_ADJTIME(CLOCK_REALTIME, &ttxc);
++	timex_show("SET", ttxc);
++
++	if (tc[i].ptr) {
++
++		/* adjtimex field being tested so we can verify later */
++
++		ptroff = (long) tc[i].ptr - (long) &ttxc;
++		ptr = (void *) &verify + ptroff;
++	}
++
++	TEST(sys_clock_adjtime(CLOCK_REALTIME, &verify));
++	timex_show("VERIFY", verify);
++
++	if (tc[i].ptr && *tc[i].ptr != *ptr) {
++		tst_res(TFAIL, "clock_adjtime(): could not set value (mode=%x)",
++				tc[i].modes);
++	}
++
++	if (TST_RET < 0) {
++		tst_res(TFAIL | TTERRNO, "clock_adjtime(): mode=%x, returned "
++				"error", tc[i].modes);
++	}
++
++	tst_res(TPASS, "clock_adjtime(): success (mode=%x)", tc[i].modes);
++}
++
++static void setup(void)
++{
++	size_t i;
++
++	/* save original clock flags */
++
++	SAFE_CLOCK_ADJTIME(CLOCK_REALTIME, &saved);
++
++	hz = SAFE_SYSCONF(_SC_CLK_TCK);
++
++	for (i = 0; i < ARRAY_SIZE(tc); i++) {
++
++		/* fix high and low limits by dividing it per HZ value */
++
++		if (tc[i].modes == ADJ_TICK)
++			tc[i].highlimit /= hz;
++
++		/* fix usec as being test default resolution */
++
++		if (saved.modes & ADJ_NANO) {
++			if (tc[i].modes == ADJ_OFFSET) {
++				tc[i].highlimit *= 1000;
++				tc[i].delta *= 1000;
++			}
++		}
++	}
++}
++
++static void cleanup(void)
++{
++	saved.modes = ADJ_ALL;
++
++	/* restore clock resolution based on original status flag */
++
++	if (saved.status & STA_NANO)
++		saved.modes |= ADJ_NANO;
++	else
++		saved.modes |= ADJ_MICRO;
++
++	/* restore original clock flags */
++
++	SAFE_CLOCK_ADJTIME(CLOCK_REALTIME, &saved);
++}
++
++static struct tst_test test = {
++	.test = verify_clock_adjtime,
++	.setup = setup,
++	.cleanup = cleanup,
++	.tcnt = ARRAY_SIZE(tc),
++	.needs_root = 1,
++	.restore_wallclock = 1,
++};
+diff --git a/testcases/kernel/syscalls/clock_adjtime/clock_adjtime02.c b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime02.c
+new file mode 100644
+index 000000000..de9bae860
+--- /dev/null
++++ b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime02.c
+@@ -0,0 +1,218 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 Linaro Limited. All rights reserved.
++ * Author: Rafael David Tinoco <rafael.tinoco@linaro.org>
++ */
++
++/*
++ * clock_adjtime() syscall might have as execution path:
++ *
++ *   1) a regular POSIX clock (only REALTIME clock implements adjtime())
++ *      - will behave exactly like adjtimex() system call.
++ *      - only one being tested here.
++ *
++ *   2) a dynamic POSIX clock (which ops are implemented by PTP clocks)
++ *      - will trigger the PTP clock driver function "adjtime()"
++ *      - different implementations from one PTP clock to another
++ *      - might return EOPNOTSUPP (like ptp_kvm_caps, for example)
++ *      - no entry point for clock_adjtime(), missing "CLOCK_PTP" model
++ *
++ * so it is sane to check for the following errors:
++ *
++ *   EINVAL -  clock id being used does not exist
++ *
++ *   EFAULT - (struct timex *) does not point to valid memory
++ *
++ *   EINVAL - ADJ_OFFSET + .offset outside range -512000 < x < 512000
++ *            (after 2.6.26, kernels normalize to the limit if outside range)
++ *
++ *   EINVAL - ADJ_FREQUENCY + .freq outside range -32768000 < x < 3276800
++ *            (after 2.6.26, kernels normalize to the limit if outside range)
++ *
++ *   EINVAL - .tick outside permitted range (900000/HZ < .tick < 1100000/HZ)
++ *
++ *   EPERM  - .modes is neither 0 nor ADJ_OFFSET_SS_READ (CAP_SYS_TIME required)
++ *
++ *   EINVAL - .status other than those listed bellow
++ *
++ * For ADJ_STATUS, consider the following flags:
++ *
++ *      rw  STA_PLL - enable phase-locked loop updates (ADJ_OFFSET)
++ *      rw  STA_PPSFREQ - enable PPS (pulse-per-second) freq discipline
++ *      rw  STA_PPSTIME - enable PPS time discipline
++ *      rw  STA_FLL - select freq-locked loop mode.
++ *      rw  STA_INS - ins leap sec after the last sec of UTC day (all days)
++ *      rw  STA_DEL - del leap sec@last sec of UTC day (all days)
++ *      rw  STA_UNSYNC - clock unsynced
++ *      rw  STA_FREQHOLD - hold freq. ADJ_OFFSET made w/out auto small adjs
++ *      ro  STA_PPSSIGNAL - valid PPS (pulse-per-second) signal is present
++ *      ro  STA_PPSJITTER - PPS signal jitter exceeded.
++ *      ro  STA_PPSWANDER - PPS signal wander exceeded.
++ *      ro  STA_PPSERROR - PPS signal calibration error.
++ *      ro  STA_CLOKERR - clock HW fault.
++ *      ro  STA_NANO - 0 = us, 1 = ns (set = ADJ_NANO, cl = ADJ_MICRO)
++ *      rw  STA_MODE - mode: 0 = phased locked loop. 1 = freq locked loop
++ *      ro  STA_CLK - clock source. unused.
++ */
++
++#include "clock_adjtime.h"
++
++static long hz;
++static struct timex saved, ttxc;
++
++static void cleanup(void);
++
++struct test_case {
++	clockid_t clktype;
++	unsigned int modes;
++	long lowlimit;
++	long highlimit;
++	long *ptr;
++	long delta;
++	int exp_err;
++	int droproot;
++};
++
++struct test_case tc[] = {
++	{
++	 .clktype = MAX_CLOCKS,
++	 .exp_err = EINVAL,
++	},
++	{
++	 .clktype = MAX_CLOCKS + 1,
++	 .exp_err = EINVAL,
++	},
++	{
++	 .clktype = CLOCK_REALTIME,
++	 .modes = ADJ_ALL,
++	 .exp_err = EFAULT,
++	},
++	{
++	 .clktype = CLOCK_REALTIME,
++	 .modes = ADJ_TICK,
++	 .lowlimit = 900000,
++	 .ptr = &ttxc.tick,
++	 .delta = 1,
++	 .exp_err = EINVAL,
++	},
++	{
++	 .clktype = CLOCK_REALTIME,
++	 .modes = ADJ_TICK,
++	 .highlimit = 1100000,
++	 .ptr = &ttxc.tick,
++	 .delta = 1,
++	 .exp_err = EINVAL,
++	},
++	{
++	 .clktype = CLOCK_REALTIME,
++	 .modes = ADJ_ALL,
++	 .exp_err = EPERM,
++	 .droproot = 1,
++	},
++};
++
++static void verify_clock_adjtime(unsigned int i)
++{
++	uid_t whoami = 0;
++	struct timex *txcptr;
++	struct passwd *nobody;
++	static const char name[] = "nobody";
++
++	txcptr = &ttxc;
++
++	memset(txcptr, 0, sizeof(struct timex));
++
++	SAFE_CLOCK_ADJTIME(CLOCK_REALTIME, txcptr);
++	timex_show("GET", *txcptr);
++
++	if (tc[i].droproot) {
++		nobody = SAFE_GETPWNAM(name);
++		whoami = nobody->pw_uid;
++		SAFE_SETEUID(whoami);
++	}
++
++	txcptr->modes = tc[i].modes;
++
++	if (tc[i].ptr) {
++
++		if (tc[i].lowlimit)
++			*tc[i].ptr = tc[i].lowlimit - tc[i].delta;
++
++		if (tc[i].highlimit)
++			*tc[i].ptr = tc[i].highlimit + tc[i].delta;
++	}
++
++	/*
++	 * special case: EFAULT for NULL pointers
++	 * txcptr = tst_get_bad_addr() -> SIGSEGV is thrown (and not EFAULT)
++	 */
++
++	if (tc[i].exp_err == EFAULT)
++		txcptr = NULL;
++
++	TEST(sys_clock_adjtime(tc[i].clktype, txcptr));
++	if (txcptr)
++		timex_show("TEST", *txcptr);
++
++	if (TST_RET >= 0) {
++		tst_res(TFAIL, "clock_adjtime(): passed unexpectedly (mode=%x, "
++				"uid=%d)", tc[i].modes, whoami);
++		return;
++	}
++
++	if (tc[i].exp_err != TST_ERR) {
++		tst_res(TFAIL | TTERRNO, "clock_adjtime(): expected %d but "
++				"failed with %d (mode=%x, uid=%d)",
++				tc[i].exp_err, TST_ERR, tc[i].modes, whoami);
++		return;
++	}
++
++	tst_res(TPASS, "clock_adjtime(): failed as expected (mode=0x%x, "
++			"uid=%d)", tc[i].modes, whoami);
++
++	if (tc[i].droproot)
++		SAFE_SETEUID(0);
++}
++
++static void setup(void)
++{
++	size_t i;
++
++	hz = SAFE_SYSCONF(_SC_CLK_TCK);
++
++	/* fix high and low limits by dividing it per HZ value */
++
++	for (i = 0; i < ARRAY_SIZE(tc); i++) {
++		if (tc[i].modes == ADJ_TICK) {
++			tc[i].highlimit /= hz;
++			tc[i].lowlimit /= hz;
++		}
++	}
++
++	SAFE_CLOCK_ADJTIME(CLOCK_REALTIME, &saved);
++}
++
++static void cleanup(void)
++{
++	saved.modes = ADJ_ALL;
++
++	/* restore clock resolution based on original status flag */
++
++	if (saved.status & STA_NANO)
++		saved.modes |= ADJ_NANO;
++	else
++		saved.modes |= ADJ_MICRO;
++
++	/* restore original clock flags */
++
++	SAFE_CLOCK_ADJTIME(CLOCK_REALTIME, &saved);
++}
++
++static struct tst_test test = {
++	.test = verify_clock_adjtime,
++	.setup = setup,
++	.cleanup = cleanup,
++	.tcnt = ARRAY_SIZE(tc),
++	.needs_root = 1,
++	.restore_wallclock = 1,
++};
 -- 
 2.20.1
 
