@@ -1,178 +1,83 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 20 Mar 2019 04:10:04 -0400 (EDT)
-Subject: [LTP] [PATCH RFC 1/3] min_free_kbytes: Fix child exit status
- check conditions
-In-Reply-To: <CAEemH2eiWMPL3WsH4fanrbY0mx6n=Apurbp2sNPVfi+UMTw68Q@mail.gmail.com>
-References: <20190319093858.584-1-liwang@redhat.com>
- <1947630455.10371822.1553013024245.JavaMail.zimbra@redhat.com>
- <CAEemH2eiWMPL3WsH4fanrbY0mx6n=Apurbp2sNPVfi+UMTw68Q@mail.gmail.com>
-Message-ID: <1928792373.10466963.1553069404279.JavaMail.zimbra@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 20 Mar 2019 17:17:44 +0800
+Subject: [LTP] [PATCH] mem/lib: remove NH_CPUS flag from
+	get_allowed_nodes_arr
+In-Reply-To: <20190222071109.10970-1-liwang@redhat.com>
+References: <20190222071109.10970-1-liwang@redhat.com>
+Message-ID: <CAEemH2cGPCGOSAmPKrvH3NAx0ujhmO5+-oNCZbCUhA6Q7q7Z6g@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+ping~
 
+On Fri, Feb 22, 2019 at 3:11 PM Li Wang <liwang@redhat.com> wrote:
 
------ Original Message -----
-> @Vipin, is there any possible you can have a look Jan's question?
->=20
-> On Wed, Mar 20, 2019 at 12:30 AM Jan Stancek <jstancek@redhat.com> wrote:
->=20
-> >
-> >
-> > ----- Original Message -----
-> > > From: Vipin K Parashar <vipin@linux.vnet.ibm.com>
-> > >
-> > > Fixes: #349
-> > >
-> > > min_free_kbytes test has badly formed if conditions in mem_tune()
-> > > for child exit status check.
-> >
-> > Can you please elaborate what's wrong about it?
-> >
->=20
-> I=E2=80=98m not sure if Vipin could help to explain this. I just nocited =
-that this
-> pull request was pending there more than half year, so I re-send this pat=
-ch
-> to ML for more discussion.
-> https://github.com/linux-test-project/ltp/pull/350
->=20
->=20
-> > > This is causing test to declare as FAILED
-> > > despite that not being the case.
-> >
-> > Why? Shouldn't mmap succeed with overcommit =3D=3D 1?
-> >
->=20
-> I was unable to reproduce this. But AFAIK, 'overcommit =3D=3D 1' cann't
-> guarantee the MAP_FAILED(with ENOMEM) before oom.
-
-With 'overcommit =3D=3D 1' test always expects OOM. Test output below
-suggests that child ended normally, because mmap failed.
-
-> So I roughly made change
-> in the original patch to catch up both oom and map_failed scenario for any
-> 'overcommit'.
->=20
-> Beside that, as I was pointed out in patch 3/3, this test has an obviously
-> defect in design, I'm also not sure if MemFree + (1/10 *min_free_kbytes) =
-is
-> safty enough, but that's only what I can do for the case remedy.
->=20
->=20
-> > > Fix child exit status check conditions.
-> > >
-> > > ---ERROR LOG---
-> > > <..snip..>
-> > > mem.c:839: INFO: set overcommit_memory to 1
-> > > mem.c:839: INFO: set min_free_kbytes to 11580
-> > > memfree is 6974720 kB before eatup mem
-> > > memfree is 15488 kB after eatup mem
-> > > min_free_kbytes.c:135: FAIL: child unexpectedly failed: 0
-> > > mem.c:839: INFO: set min_free_kbytes to 23160
-> > > memfree is 7104128 kB before eatup mem
-> > > memfree is 26560 kB after eatup mem
-> > > min_free_kbytes.c:135: FAIL: child unexpectedly failed: 0
-> > > mem.c:839: INFO: set min_free_kbytes to 145812
-> > > memfree is 7101504 kB before eatup mem
-> > > memfree is 215872 kB after eatup mem
-> > > min_free_kbytes.c:135: FAIL: child unexpectedly failed: 0
-> > > min_free_kbytes.c:81: PASS: min_free_kbytes test pass
-> > > mem.c:839: INFO: set min_free_kbytes to 11580
-> > > ---------------
-> > >
-> > > Signed-off-by: Vipin K Parashar <vipin@linux.vnet.ibm.com>
-> > > Signed-off-by: Li Wang <liwang@redhat.com>
-> > > Cc: Jan Stancek <jstancek@redhat.com>
-> > > ---
-> > >  .../kernel/mem/tunable/min_free_kbytes.c      | 40 +++++------------=
---
-> > >  1 file changed, 11 insertions(+), 29 deletions(-)
-> > >
-> > > diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c
-> > > b/testcases/kernel/mem/tunable/min_free_kbytes.c
-> > > index f114dc493..d2378a700 100644
-> > > --- a/testcases/kernel/mem/tunable/min_free_kbytes.c
-> > > +++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
-> > > @@ -119,39 +119,21 @@ static void test_tune(unsigned long
-> > overcommit_policy)
-> > >
-> > >               SAFE_WAITPID(pid[i], &status, WUNTRACED | WCONTINUED);
-> > >
-> > > -             if (overcommit_policy =3D=3D 2) {
-> > > -                     if (!WIFEXITED(status) || WEXITSTATUS(status) !=
-=3D 0)
-> > > -                             tst_res(TFAIL,
-> > > -                                      "child unexpectedly failed: %d=
-",
-> > > -                                      status);
-> > > -             } else if (overcommit_policy =3D=3D 1) {
-> > > -                     if (!WIFSIGNALED(status) || WTERMSIG(status) !=
-=3D
-> > SIGKILL)
-> > > +             if (WIFEXITED(status) && WEXITSTATUS(status) !=3D 0) {
-> > > +                     tst_res(TFAIL,
-> > > +                             "child unexpectedly failed: %d", status=
-);
-> > > +             } else if (WIFSIGNALED(status) && WTERMSIG(status) !=3D
-> > SIGKILL) {
-> > >  #if __WORDSIZE =3D=3D 32
-> > > -                     {
-> > > -                             if (total_mem < 3145728UL)
-> > > +                     if (total_mem < 3145728UL)
-> > >  #endif
-> > > -                                     tst_res(TFAIL,
-> > > -                                              "child unexpectedly
-> > failed: %d",
-> > > -                                              status);
-> > > +                             tst_res(TFAIL,
-> > > +                                     "child unexpectedly failed: %d",
-> > status);
-> > >  #if __WORDSIZE =3D=3D 32
-> > > -                             /* in 32-bit system, a process allocate
-> > about 3Gb memory at most */
-> > > -                             else
-> > > -                                     tst_res(TINFO, "Child can't
-> > allocate "
-> > > -                                              ">3Gb memory in 32bit
-> > system");
-> > > -                     }
-> > > +                     /* in 32-bit system, a process allocate about 3=
-Gb
-> > memory at most */
-> > > +                     else
-> > > +                             tst_res(TINFO, "Child can't allocate "
-> > > +                                     ">3Gb memory in 32bit system");
-> > >  #endif
-> > > -             } else {
-> > > -                     if (WIFEXITED(status)) {
-> > > -                             if (WEXITSTATUS(status) !=3D 0) {
-> > > -                                     tst_res(TFAIL, "child unexpecte=
-dly
-> > "
-> > > -                                              "failed: %d", status);
-> > > -                             }
-> > > -                     } else if (!WIFSIGNALED(status) ||
-> > > -                                WTERMSIG(status) !=3D SIGKILL) {
-> > > -                             tst_res(TFAIL,
-> > > -                                      "child unexpectedly failed: %d=
-",
-> > > -                                      status);
-> > > -                     }
-> > >               }
-> > >       }
-> > >  }
-> > > --
-> > > 2.20.1
-> > >
-> > >
-> >
->=20
->=20
+> A new BROK was occurred on a special numa system which node 1 just has
+> memory but no cpu. This special configuration makes numa system detection
+> is_numa(NULL, NH_MEMS, 2) get pass in setup() but test failed in the mem.c
+> library funcion test_ksm_merge_across_nodes becuase the NH_CPUS is to
+> requre
+> testing node should have cpu.
+>
+> However, I have gone though all of our LTP ksm tests and confirmed that
+> there
+> is no necessary to do cpu check for it, actully only ksm06 invoke that
+> funcion.
+> In this patch I just remove the NH_CPUS flag to get ksm06 test pass.
+>
+>   # numactl -H
+>   available: 2 nodes (0-1)
+>   node 0 cpus: 0 1 2 3 4 5 6 7
+>   node 0 size: 31431 MB
+>   node 0 free: 26355 MB
+>   node 1 cpus:
+>   node 1 size: 255 MB
+>   node 1 free: 213 MB
+>   node distances:
+>   node   0   1
+>     0:  10  40
+>     1:  40  10
+>
+>   # ./ksm06
+>   tst_test.c:1085: INFO: Timeout per run is 0h 10m 00s
+>   mem.c:539: INFO: need NUMA system support
+>   tst_test.c:920: BROK: Test haven't reported results!
+>
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  testcases/kernel/mem/lib/mem.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/testcases/kernel/mem/lib/mem.c
+> b/testcases/kernel/mem/lib/mem.c
+> index ec1792004..a0c1b9b00 100644
+> --- a/testcases/kernel/mem/lib/mem.c
+> +++ b/testcases/kernel/mem/lib/mem.c
+> @@ -532,7 +532,7 @@ void test_ksm_merge_across_nodes(unsigned long
+> nr_pages)
+>         unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
+>  #endif
+>
+> -       ret = get_allowed_nodes_arr(NH_MEMS|NH_CPUS, &num_nodes, &nodes);
+> +       ret = get_allowed_nodes_arr(NH_MEMS, &num_nodes, &nodes);
+>         if (ret != 0)
+>                 tst_brk(TBROK|TERRNO, "get_allowed_nodes_arr");
+>         if (num_nodes < 2) {
 > --
-> Regards,
-> Li Wang
->=20
+> 2.20.1
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190320/00659e44/attachment.html>
