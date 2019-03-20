@@ -1,190 +1,163 @@
-From: Steve Muckle <smuckle@google.com>
-Date: Tue, 19 Mar 2019 19:16:18 -0700
-Subject: [LTP] [PATCH] syscalls/sendmmsg: add new test
-Message-ID: <20190320021618.36043-1-smuckle@google.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 20 Mar 2019 14:11:13 +0800
+Subject: [LTP] [PATCH RFC 1/3] min_free_kbytes: Fix child exit status
+	check conditions
+In-Reply-To: <1947630455.10371822.1553013024245.JavaMail.zimbra@redhat.com>
+References: <20190319093858.584-1-liwang@redhat.com>
+ <1947630455.10371822.1553013024245.JavaMail.zimbra@redhat.com>
+Message-ID: <CAEemH2eiWMPL3WsH4fanrbY0mx6n=Apurbp2sNPVfi+UMTw68Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-Test basic functionality of sendmmsg and recvmmsg.
+@Vipin, is there any possible you can have a look Jan's question?
 
-Signed-off-by: Steve Muckle <smuckle@google.com>
----
- runtest/syscalls                              |   2 +
- testcases/kernel/syscalls/sendmmsg/.gitignore |   1 +
- testcases/kernel/syscalls/sendmmsg/Makefile   |   9 ++
- .../kernel/syscalls/sendmmsg/sendmmsg01.c     | 123 ++++++++++++++++++
- 4 files changed, 135 insertions(+)
- create mode 100644 testcases/kernel/syscalls/sendmmsg/.gitignore
- create mode 100644 testcases/kernel/syscalls/sendmmsg/Makefile
- create mode 100644 testcases/kernel/syscalls/sendmmsg/sendmmsg01.c
+On Wed, Mar 20, 2019 at 12:30 AM Jan Stancek <jstancek@redhat.com> wrote:
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index b0904086d..742b5bef3 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1095,6 +1095,8 @@ sendfile09_64 sendfile09_64
- sendmsg01 sendmsg01
- sendmsg02 sendmsg02
- 
-+sendmmsg01 sendmmsg01
-+
- sendto01 sendto01
- sendto02 sendto02
- 
-diff --git a/testcases/kernel/syscalls/sendmmsg/.gitignore b/testcases/kernel/syscalls/sendmmsg/.gitignore
-new file mode 100644
-index 000000000..b703ececd
---- /dev/null
-+++ b/testcases/kernel/syscalls/sendmmsg/.gitignore
-@@ -0,0 +1 @@
-+sendmmsg01
-diff --git a/testcases/kernel/syscalls/sendmmsg/Makefile b/testcases/kernel/syscalls/sendmmsg/Makefile
-new file mode 100644
-index 000000000..47e063722
---- /dev/null
-+++ b/testcases/kernel/syscalls/sendmmsg/Makefile
-@@ -0,0 +1,9 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+top_srcdir		?= ../../../..
-+
-+sendmmsg01: CFLAGS+=-pthread
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c b/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c
-new file mode 100644
-index 000000000..d1bdf40a1
---- /dev/null
-+++ b/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c
-@@ -0,0 +1,123 @@
-+/*
-+ * This test is based on source contained in the man pages for sendmmsg and
-+ * recvmmsg in release 4.15 of the Linux man-pages project.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <netinet/ip.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+
-+#include "tst_test.h"
-+#include "tst_safe_macros.h"
-+#include "tst_safe_pthread.h"
-+
-+#define BUFSIZE 16
-+#define VLEN 2
-+
-+static void *sender_thread(LTP_ATTRIBUTE_UNUSED void *arg)
-+{
-+	struct sockaddr_in addr;
-+	struct mmsghdr msg[2];
-+	struct iovec msg1[2], msg2;
-+	int send_sockfd;
-+	int retval;
-+
-+	send_sockfd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, 0);
-+
-+	addr.sin_family = AF_INET;
-+	addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-+	addr.sin_port = htons(1234);
-+	SAFE_CONNECT(send_sockfd, (struct sockaddr *) &addr, sizeof(addr));
-+
-+	memset(msg1, 0, sizeof(msg1));
-+	msg1[0].iov_base = "one";
-+	msg1[0].iov_len = 3;
-+	msg1[1].iov_base = "two";
-+	msg1[1].iov_len = 3;
-+
-+	memset(&msg2, 0, sizeof(msg2));
-+	msg2.iov_base = "three";
-+	msg2.iov_len = 5;
-+
-+	memset(msg, 0, sizeof(msg));
-+	msg[0].msg_hdr.msg_iov = msg1;
-+	msg[0].msg_hdr.msg_iovlen = 2;
-+
-+	msg[1].msg_hdr.msg_iov = &msg2;
-+	msg[1].msg_hdr.msg_iovlen = 1;
-+
-+	retval = sendmmsg(send_sockfd, msg, 2, 0);
-+	if (retval < 0)
-+		tst_brk(TFAIL|TTERRNO, "sendmmsg failed");
-+
-+	return NULL;
-+}
-+
-+
-+static void *receiver_thread(LTP_ATTRIBUTE_UNUSED void *arg)
-+{
-+	int receive_sockfd;
-+	struct sockaddr_in addr;
-+	struct mmsghdr msgs[VLEN];
-+	struct iovec iovecs[VLEN];
-+	char bufs[VLEN][BUFSIZE+1];
-+	struct timespec timeout;
-+	int i, retval;
-+
-+	receive_sockfd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, 0);
-+	addr.sin_family = AF_INET;
-+	addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-+	addr.sin_port = htons(1234);
-+	SAFE_BIND(receive_sockfd, (struct sockaddr *)&addr, sizeof(addr));
-+
-+	memset(msgs, 0, sizeof(msgs));
-+	for (i = 0; i < VLEN; i++) {
-+		iovecs[i].iov_base = bufs[i];
-+		iovecs[i].iov_len = BUFSIZE;
-+		msgs[i].msg_hdr.msg_iov = &iovecs[i];
-+		msgs[i].msg_hdr.msg_iovlen = 1;
-+	}
-+
-+	timeout.tv_sec = 1;
-+	timeout.tv_nsec = 0;
-+
-+	retval = recvmmsg(receive_sockfd, msgs, VLEN, 0, &timeout);
-+	if (retval == -1)
-+		tst_brk(TFAIL | TTERRNO, "recvmmsg failed");
-+	if (retval != 2)
-+		tst_brk(TFAIL, "Received unexpected number of messages (%d)",
-+			retval);
-+
-+	bufs[0][msgs[0].msg_len] = 0;
-+	if (strcmp(bufs[0], "onetwo"))
-+		tst_res(TFAIL, "Error in first received message.");
-+	else
-+		tst_res(TPASS, "First message received successfully.");
-+
-+	bufs[1][msgs[1].msg_len] = 0;
-+	if (strcmp(bufs[1], "three"))
-+		tst_res(TFAIL, "Error in second received message.");
-+	else
-+		tst_res(TPASS, "Second message received successfully.");
-+
-+	return NULL;
-+}
-+
-+static void run(void)
-+{
-+	pthread_t sender;
-+	pthread_t receiver;
-+
-+	SAFE_PTHREAD_CREATE(&sender, NULL, sender_thread, NULL);
-+	SAFE_PTHREAD_CREATE(&receiver, NULL, receiver_thread, NULL);
-+	SAFE_PTHREAD_JOIN(sender, NULL);
-+	SAFE_PTHREAD_JOIN(receiver, NULL);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+};
--- 
-2.21.0.225.g810b269d1ac-goog
+>
+>
+> ----- Original Message -----
+> > From: Vipin K Parashar <vipin@linux.vnet.ibm.com>
+> >
+> > Fixes: #349
+> >
+> > min_free_kbytes test has badly formed if conditions in mem_tune()
+> > for child exit status check.
+>
+> Can you please elaborate what's wrong about it?
+>
 
+I=E2=80=98m not sure if Vipin could help to explain this. I just nocited th=
+at this
+pull request was pending there more than half year, so I re-send this patch
+to ML for more discussion.
+https://github.com/linux-test-project/ltp/pull/350
+
+
+> > This is causing test to declare as FAILED
+> > despite that not being the case.
+>
+> Why? Shouldn't mmap succeed with overcommit =3D=3D 1?
+>
+
+I was unable to reproduce this. But AFAIK, 'overcommit =3D=3D 1' cann't
+guarantee the MAP_FAILED(with ENOMEM) before oom. So I roughly made change
+in the original patch to catch up both oom and map_failed scenario for any
+'overcommit'.
+
+Beside that, as I was pointed out in patch 3/3, this test has an obviously
+defect in design, I'm also not sure if MemFree + (1/10 *min_free_kbytes) is
+safty enough, but that's only what I can do for the case remedy.
+
+
+> > Fix child exit status check conditions.
+> >
+> > ---ERROR LOG---
+> > <..snip..>
+> > mem.c:839: INFO: set overcommit_memory to 1
+> > mem.c:839: INFO: set min_free_kbytes to 11580
+> > memfree is 6974720 kB before eatup mem
+> > memfree is 15488 kB after eatup mem
+> > min_free_kbytes.c:135: FAIL: child unexpectedly failed: 0
+> > mem.c:839: INFO: set min_free_kbytes to 23160
+> > memfree is 7104128 kB before eatup mem
+> > memfree is 26560 kB after eatup mem
+> > min_free_kbytes.c:135: FAIL: child unexpectedly failed: 0
+> > mem.c:839: INFO: set min_free_kbytes to 145812
+> > memfree is 7101504 kB before eatup mem
+> > memfree is 215872 kB after eatup mem
+> > min_free_kbytes.c:135: FAIL: child unexpectedly failed: 0
+> > min_free_kbytes.c:81: PASS: min_free_kbytes test pass
+> > mem.c:839: INFO: set min_free_kbytes to 11580
+> > ---------------
+> >
+> > Signed-off-by: Vipin K Parashar <vipin@linux.vnet.ibm.com>
+> > Signed-off-by: Li Wang <liwang@redhat.com>
+> > Cc: Jan Stancek <jstancek@redhat.com>
+> > ---
+> >  .../kernel/mem/tunable/min_free_kbytes.c      | 40 +++++--------------
+> >  1 file changed, 11 insertions(+), 29 deletions(-)
+> >
+> > diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c
+> > b/testcases/kernel/mem/tunable/min_free_kbytes.c
+> > index f114dc493..d2378a700 100644
+> > --- a/testcases/kernel/mem/tunable/min_free_kbytes.c
+> > +++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
+> > @@ -119,39 +119,21 @@ static void test_tune(unsigned long
+> overcommit_policy)
+> >
+> >               SAFE_WAITPID(pid[i], &status, WUNTRACED | WCONTINUED);
+> >
+> > -             if (overcommit_policy =3D=3D 2) {
+> > -                     if (!WIFEXITED(status) || WEXITSTATUS(status) !=
+=3D 0)
+> > -                             tst_res(TFAIL,
+> > -                                      "child unexpectedly failed: %d",
+> > -                                      status);
+> > -             } else if (overcommit_policy =3D=3D 1) {
+> > -                     if (!WIFSIGNALED(status) || WTERMSIG(status) !=3D
+> SIGKILL)
+> > +             if (WIFEXITED(status) && WEXITSTATUS(status) !=3D 0) {
+> > +                     tst_res(TFAIL,
+> > +                             "child unexpectedly failed: %d", status);
+> > +             } else if (WIFSIGNALED(status) && WTERMSIG(status) !=3D
+> SIGKILL) {
+> >  #if __WORDSIZE =3D=3D 32
+> > -                     {
+> > -                             if (total_mem < 3145728UL)
+> > +                     if (total_mem < 3145728UL)
+> >  #endif
+> > -                                     tst_res(TFAIL,
+> > -                                              "child unexpectedly
+> failed: %d",
+> > -                                              status);
+> > +                             tst_res(TFAIL,
+> > +                                     "child unexpectedly failed: %d",
+> status);
+> >  #if __WORDSIZE =3D=3D 32
+> > -                             /* in 32-bit system, a process allocate
+> about 3Gb memory at most */
+> > -                             else
+> > -                                     tst_res(TINFO, "Child can't
+> allocate "
+> > -                                              ">3Gb memory in 32bit
+> system");
+> > -                     }
+> > +                     /* in 32-bit system, a process allocate about 3Gb
+> memory at most */
+> > +                     else
+> > +                             tst_res(TINFO, "Child can't allocate "
+> > +                                     ">3Gb memory in 32bit system");
+> >  #endif
+> > -             } else {
+> > -                     if (WIFEXITED(status)) {
+> > -                             if (WEXITSTATUS(status) !=3D 0) {
+> > -                                     tst_res(TFAIL, "child unexpectedly
+> "
+> > -                                              "failed: %d", status);
+> > -                             }
+> > -                     } else if (!WIFSIGNALED(status) ||
+> > -                                WTERMSIG(status) !=3D SIGKILL) {
+> > -                             tst_res(TFAIL,
+> > -                                      "child unexpectedly failed: %d",
+> > -                                      status);
+> > -                     }
+> >               }
+> >       }
+> >  }
+> > --
+> > 2.20.1
+> >
+> >
+>
+
+
+--=20
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190320/7ddf0f55/att=
+achment-0001.html>
