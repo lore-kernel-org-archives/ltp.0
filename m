@@ -1,53 +1,43 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 20 Mar 2019 17:25:20 +0100
-Subject: [LTP] [PATCH] libs: fix sporadic out-of-tree build failures
- related to libs
-In-Reply-To: <3fedf790971b876b20533ee3d6b5dff27b54fae3.1553076284.git.jstancek@redhat.com>
-References: <3fedf790971b876b20533ee3d6b5dff27b54fae3.1553076284.git.jstancek@redhat.com>
-Message-ID: <20190320162519.GA13644@rei>
+From: Rafael David Tinoco <rafael.tinoco@linaro.org>
+Date: Wed, 20 Mar 2019 16:37:18 -0300
+Subject: [LTP] [PATCH] lib: Add include guard to tst_safe_clocks.h
+Message-ID: <20190320193718.2320-1-rafael.tinoco@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Reported-by: Petr Vorel <pvorel@suse.cz>
-> Cc: Cyril Hrubis <chrubis@suse.cz>
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  include/mk/testcases.mk | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/mk/testcases.mk b/include/mk/testcases.mk
-> index 131854ec7346..4cbb37640687 100644
-> --- a/include/mk/testcases.mk
-> +++ b/include/mk/testcases.mk
-> @@ -43,17 +43,19 @@ LDLIBS		+= -lltp
->  
->  ifdef LTPLIBS
->  
-> -LTPLIBS_DIRS = $(addprefix $(abs_top_builddir)/libs/lib, $(LTPLIBS))
-> +LTPLIBS_DIRS = $(addprefix libs/lib, $(LTPLIBS))
->  LTPLIBS_FILES = $(addsuffix .a, $(addprefix $(abs_top_builddir)/libs/, $(foreach LIB,$(LTPLIBS),lib$(LIB)/lib$(LIB))))
->  
->  MAKE_DEPS += $(LTPLIBS_FILES)
->  
->  $(LTPLIBS_FILES): $(LTPLIBS_DIRS)
-> -	$(MAKE) -C "$^" -f "$^/Makefile" all
-> +	$(MAKE) -C "$(abs_top_builddir)/$^" -f "$(abs_top_srcdir)/$^/Makefile" all
->  
->  LDFLAGS += $(addprefix -L$(top_builddir)/libs/lib, $(LTPLIBS))
->  
-> +$(LTPLIBS_DIRS): %:
-> +	mkdir -p "$(abs_top_builddir)/$@"
+When adding a common header to my tests I missed this include guard when
+accidentally including tst_safe_clocks.h from .c and .h files. Since
+other tst_safe_*.h files have guards I thought it would be good to add
+to this one as well.
 
-The problem here is that unless the paths in LTPLIBS_DIRS match existing
-files the mkdir -p is executed every time LTPLIBS is defined in
-Makefile. I guess that we can put the absolute paths back to the
-LTPLIBS_DIRS variable and use $(subst ..) to replace the builddir with
-srcdir but I wonder if there is a better solution.
+Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
+---
+ include/tst_safe_clocks.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
+diff --git a/include/tst_safe_clocks.h b/include/tst_safe_clocks.h
+index a952be4bf..0f642148e 100644
+--- a/include/tst_safe_clocks.h
++++ b/include/tst_safe_clocks.h
+@@ -5,6 +5,9 @@
+  * Email : code@zilogic.com
+  */
+ 
++#ifndef TST_SAFE_CLOCK_H__
++#define TST_SAFE_CLOCK_H__
++
+ #include <time.h>
+ #include <sys/timex.h>
+ #include "tst_test.h"
+@@ -69,3 +72,5 @@ static inline void safe_clock_adjtime(const char *file, const int lineno,
+ 
+ #define SAFE_CLOCK_ADJTIME(clk_id, txc)\
+ 	safe_clock_adjtime(__FILE__, __LINE__, (clk_id), (txc))
++
++#endif /* SAFE_CLOCK_H__ */
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.20.1
+
