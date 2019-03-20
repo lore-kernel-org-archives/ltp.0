@@ -1,45 +1,64 @@
-From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Wed, 20 Mar 2019 18:48:49 -0300
-Subject: [LTP] [PATCH v2 3/3] syscalls/clock_adjtime: create
- clock_adjtime syscall tests
-In-Reply-To: <20190320214135.7029-3-rafael.tinoco@linaro.org>
-References: <20190313163239.GC6171@rei>
- <20190320214135.7029-1-rafael.tinoco@linaro.org>
- <20190320214135.7029-3-rafael.tinoco@linaro.org>
-Message-ID: <B9AC8C77-9F4D-463A-82B3-E9CB5A4560F2@linaro.org>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Wed, 20 Mar 2019 22:57:07 +0100
+Subject: [LTP] [PATCH 1/1] msgrcv/msgrcv08.c: Use struct msgbuf defined in
+	<sys/msg.h>
+Message-ID: <20190320215707.30268-1-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> On 20 Mar 2019, at 18:41, Rafael David Tinoco <rafael.tinoco@linaro.org> wrote:
-> 
-> +	/*
-> +	 * special case: EFAULT for NULL pointers
-> +	 * txcptr = tst_get_bad_addr() -> SIGSEGV is thrown (and not EFAULT)
-> +	 */
-> +
-> +	if (tc[i].exp_err == EFAULT)
-> +		txcptr = NULL;
+which requires to define _GNU_SOURCE.
+This fixes MUSL build.
 
-Cyril,
+NOTE: char array from struct has usually length 1, the one from test had 16,
+but that's not a limitation.
 
-clock_adjtime() returns an EFAULT in case copy_from_user() returns
-errors.
+Fixes: eccd238da ("ipc/msgrcv: add new testcase msgrcv08")
 
-Thing is that, using tst_get_bad_addr(), and having a page with no
-permissions, before getting an error from copy_from_user() and returning
-- thus getting EFAULT back - we get a SIGSEGV from _copy_from_user()
-itself, because it tries to sanitize given address, with memset(0),
-before returning to userland (to avoid leaks of some sort ?).
+Reported-by: Dengke Du <dengke.du@windriver.com>
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+Hi Li,
 
-With this, the EFAULT is only got when using NULL pointers, and not a
-*bad* pointer… So, right now, I can’tuse tst_get_bad_addr() like you
-suggested. Should I remove this test and send a v3 ?
+what was the reason to use size 16?
 
-Thanks for reviewing all this.
+Kind regards,
+Petr
 
-Best Regards
+PS: I found and fix this error independently while working on MUSL build
+fixes, but than found it was reported by Dengke Du in PR #177 [1].
 
-Rafael D. Tinoco
+[1] https://github.com/linux-test-project/ltp/pull/177/commits/87c4a4ae2817f835a594ab795dc938a27c642b92
+---
+ testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c
+index a757c0d18..21d77c9dd 100644
+--- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c
++++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c
+@@ -35,6 +35,7 @@
+  *      If this progarm is compiled as 64-bit application it works.
+  */
+ 
++#define _GNU_SOURCE
+ #include <stdio.h>
+ #include <string.h>
+ #include <unistd.h>
+@@ -48,11 +49,6 @@ const int TST_TOTAL = 1;
+ 
+ #if __WORDSIZE == 32
+ 
+-struct msgbuf {
+-	long mtype;     /* message type, must be > 0 */
+-	char mtext[16]; /* message data */
+-};
+-
+ static void msr(int msqid)
+ {
+ 	struct msgbuf msbs;
+-- 
+2.21.0
+
