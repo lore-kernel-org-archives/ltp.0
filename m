@@ -1,45 +1,37 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 20 Mar 2019 23:48:33 +0100
-Subject: [LTP] [PATCH] auto filter aio tests of libc can't support aio
-In-Reply-To: <1552939602-22335-1-git-send-email-vgupta@synopsys.com>
-References: <20190318181940.GA5494@dell5510>
- <1552939602-22335-1-git-send-email-vgupta@synopsys.com>
-Message-ID: <20190320224833.GA7254@dell5510>
+Date: Thu, 21 Mar 2019 00:04:22 +0100
+Subject: [LTP] [PATCH] syscalls/sendmmsg: add new test
+In-Reply-To: <20190320021618.36043-1-smuckle@google.com>
+References: <20190320021618.36043-1-smuckle@google.com>
+Message-ID: <20190320230422.GA9453@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Vineet,
+Hi Steve,
 
-> uClibc-ng lacks libaio.h and thus LTP UCLIBC=1 builds need to filter
-> out aio tests which it currently doesn't.
+> Test basic functionality of sendmmsg and recvmmsg.
+...
 
-> FWIW the tests sources themselves use a slightly different guard
-> HAVE_LIBAIO (while autotool generate HAVE_LIBAIO_H).
-> Anyhow that seems pointless as aio tests should not even build of libc
-> doesn't support the prerequsute header.
+> +	retval = sendmmsg(send_sockfd, msg, 2, 0);
+Unfortunately we need to have autotools check for sendmmsg() [1]
+to fix failure on old distros
+/usr/src/ltp/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c   -lltp -o sendmmsg01
+/usr/src/ltp/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c: In function 'sender_thread':
+/usr/src/ltp/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c:53: warning: implicit declaration of function 'sendmmsg'
+/tmp/ccqXXRS6.o: In function `sender_thread':
+/usr/src/ltp/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c:53: undefined reference to `sendmmsg'
 
-> Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
-> ---
->  testcases/kernel/io/Makefile | 4 ++++
->  1 file changed, 4 insertions(+)
-
-> diff --git a/testcases/kernel/io/Makefile b/testcases/kernel/io/Makefile
-> index 7db02882a530..3afae3888f63 100644
-> --- a/testcases/kernel/io/Makefile
-> +++ b/testcases/kernel/io/Makefile
-> @@ -24,4 +24,8 @@ top_srcdir		?= ../../..
-
->  include $(top_srcdir)/include/mk/env_pre.mk
-
-> +ifndef HAVE_LIBAIO_H
-> +FILTER_OUT_DIRS	+= aio
-> +endif
-This is IMHO wrong, as all files using libaio.h are guarded with
-TST_TEST_TCONF().
+> +	if (retval < 0)
+> +		tst_brk(TFAIL|TTERRNO, "sendmmsg failed");
+> +
+> +	return NULL;
+> +}
 
 
 Kind regards,
 Petr
+
+[1] https://api.travis-ci.org/v3/job/509170474/log.txt
