@@ -1,28 +1,30 @@
-From: Steve Muckle <smuckle@google.com>
-Date: Wed, 20 Mar 2019 16:57:24 -0700
-Subject: [LTP] [PATCH] syscalls/sendmmsg: add new test
-In-Reply-To: <20190320230422.GA9453@dell5510>
-References: <20190320021618.36043-1-smuckle@google.com>
- <20190320230422.GA9453@dell5510>
-Message-ID: <61a8d1e9-b39d-91c8-81a1-e86a4d33848e@google.com>
+From: Saravana Kannan <saravanak@google.com>
+Date: Wed, 20 Mar 2019 23:11:48 -0700
+Subject: [LTP] [PATCH v3] setpriority01: Skip only PRIO_USER when unable
+ to add test user
+In-Reply-To: <20190320102502.GA17262@rei.lan>
+References: <20190319214946.119766-1-saravanak@google.com>
+ <20190320102502.GA17262@rei.lan>
+Message-ID: <CAGETcx_my7sywpBh8tdjyPRc-nA-+kVordn2SAeHQVwN1r_JRw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 03/20/2019 04:04 PM, Petr Vorel wrote:
->> +	retval = sendmmsg(send_sockfd, msg, 2, 0);
-> Unfortunately we need to have autotools check for sendmmsg() [1]
-> to fix failure on old distros
-> /usr/src/ltp/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c   -lltp -o sendmmsg01
-> /usr/src/ltp/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c: In function 'sender_thread':
-> /usr/src/ltp/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c:53: warning: implicit declaration of function 'sendmmsg'
-> /tmp/ccqXXRS6.o: In function `sender_thread':
-> /usr/src/ltp/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c:53: undefined reference to `sendmmsg'
+Thanks!
 
-Thanks Petr for your review and pointing me to the issue. I will add a 
-config check for this.
+-Saravana
 
-thanks,
-Steve
+On Wed, Mar 20, 2019, 3:25 AM Cyril Hrubis <chrubis@suse.cz> wrote:
+
+> Hi!
+> Pushed, thanks.
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190320/6629ab48/attachment.html>
