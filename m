@@ -1,30 +1,32 @@
-From: Saravana Kannan <saravanak@google.com>
-Date: Wed, 20 Mar 2019 23:11:48 -0700
-Subject: [LTP] [PATCH v3] setpriority01: Skip only PRIO_USER when unable
- to add test user
-In-Reply-To: <20190320102502.GA17262@rei.lan>
-References: <20190319214946.119766-1-saravanak@google.com>
- <20190320102502.GA17262@rei.lan>
-Message-ID: <CAGETcx_my7sywpBh8tdjyPRc-nA-+kVordn2SAeHQVwN1r_JRw@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 21 Mar 2019 10:51:23 +0100
+Subject: [LTP] [PATCH 1/1] msgrcv/msgrcv08.c: Use struct msgbuf defined
+ in <sys/msg.h>
+In-Reply-To: <20190320215707.30268-1-petr.vorel@gmail.com>
+References: <20190320215707.30268-1-petr.vorel@gmail.com>
+Message-ID: <20190321095123.GA1252@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Thanks!
+Hi!
+> which requires to define _GNU_SOURCE.
+> This fixes MUSL build.
+> 
+> NOTE: char array from struct has usually length 1, the one from test had 16,
+> but that's not a limitation.
+> 
+> Fixes: eccd238da ("ipc/msgrcv: add new testcase msgrcv08")
 
--Saravana
+It does not matter much here, but actually the structure is supposed to
+be user defined, see the msgrcv manual page and you are supposed to pick
+the message buffer length accordingly to your needs.
 
-On Wed, Mar 20, 2019, 3:25 AM Cyril Hrubis <chrubis@suse.cz> wrote:
+I guess that slightly better fix would be renaming the structure name,
+the rest of the msgctl tests uses struct mbuf instead.
 
-> Hi!
-> Pushed, thanks.
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
->
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190320/6629ab48/attachment.html>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
