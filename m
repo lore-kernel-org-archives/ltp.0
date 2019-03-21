@@ -1,32 +1,63 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 21 Mar 2019 19:50:51 +0100
-Subject: [LTP] [PATCH v4 0/3] rt_sigpending02: reuse code from
- sigpending02
-In-Reply-To: <20190319184137.8357-1-maennich@google.com>
-References: <20190308163832.212631-1-maennich@google.com>
- <20190319184137.8357-1-maennich@google.com>
-Message-ID: <20190321185051.GA28973@dell5510>
+From: Rafael David Tinoco <rafael.tinoco@linaro.org>
+Date: Thu, 21 Mar 2019 17:27:29 -0300
+Subject: [LTP] [PATCH v3 1/4] lib: include SAFE_CLOCK_ADJTIME() macro
+In-Reply-To: <20190321141015.GG1252@rei>
+References: <20190321141015.GG1252@rei>
+Message-ID: <20190321202732.3331-1-rafael.tinoco@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Matthias,
+Adds SAFE_CLOCK_ADJTIME() macro to tst_safe_clocks.h.
 
-> Reusing the code from sigpending for rt_sigpending is a patch I sent in
-> earlier. Based on that this adds a new test case for both syscalls to test the
-> more common use of sigpending.
+Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
+---
+ include/tst_safe_clocks.h | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-> v3 -> v4:
->  - address review comments
+diff --git a/include/tst_safe_clocks.h b/include/tst_safe_clocks.h
+index d5cd83394..596db4099 100644
+--- a/include/tst_safe_clocks.h
++++ b/include/tst_safe_clocks.h
+@@ -6,7 +6,9 @@
+  */
+ 
+ #include <time.h>
++#include <sys/timex.h>
+ #include "tst_test.h"
++#include "lapi/syscalls.h"
+ #include "lapi/posix_clocks.h"
+ 
+ static inline void safe_clock_getres(const char *file, const int lineno,
+@@ -44,6 +46,19 @@ static inline void safe_clock_settime(const char *file, const int lineno,
+ 			"%s:%d clock_gettime() failed", file, lineno);
+ }
+ 
++static inline int safe_clock_adjtime(const char *file, const int lineno,
++	clockid_t clk_id, struct timex *txc)
++{
++	int rval;
++
++	rval = tst_syscall(__NR_clock_adjtime, clk_id, txc);
++	if (rval < 0)
++		tst_brk(TBROK | TERRNO,
++			"%s:%d clock_adjtime() failed %i", file, lineno, rval);
++
++	return rval;
++}
++
+ #define SAFE_CLOCK_GETRES(clk_id, res)\
+ 	safe_clock_getres(__FILE__, __LINE__, (clk_id), (res))
+ 
+@@ -52,3 +67,6 @@ static inline void safe_clock_settime(const char *file, const int lineno,
+ 
+ #define SAFE_CLOCK_SETTIME(clk_id, tp)\
+ 	safe_clock_settime(__FILE__, __LINE__, (clk_id), (tp))
++
++#define SAFE_CLOCK_ADJTIME(clk_id, txc)\
++	safe_clock_adjtime(__FILE__, __LINE__, (clk_id), (txc))
+-- 
+2.20.1
 
-> v2 -> v3:
->  - fix comment style
->  - use LTP_ATTRIBUTE_UNUSED
-
-Thanks for your changes, pushed!
-
-
-Kind regards,
-Petr
