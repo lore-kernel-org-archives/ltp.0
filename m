@@ -1,63 +1,46 @@
 From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Thu, 21 Mar 2019 17:27:29 -0300
-Subject: [LTP] [PATCH v3 1/4] lib: include SAFE_CLOCK_ADJTIME() macro
-In-Reply-To: <20190321141015.GG1252@rei>
+Date: Thu, 21 Mar 2019 17:27:30 -0300
+Subject: [LTP] [PATCH v3 2/4] lib: Add include guard to tst_safe_clocks.h
+In-Reply-To: <20190321202732.3331-1-rafael.tinoco@linaro.org>
 References: <20190321141015.GG1252@rei>
-Message-ID: <20190321202732.3331-1-rafael.tinoco@linaro.org>
+ <20190321202732.3331-1-rafael.tinoco@linaro.org>
+Message-ID: <20190321202732.3331-2-rafael.tinoco@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Adds SAFE_CLOCK_ADJTIME() macro to tst_safe_clocks.h.
+When adding a common header to my tests I missed this include guard when
+accidentally including tst_safe_clocks.h from .c and .h files. Since
+other tst_safe_*.h files have guards I thought it would be good to add
+to this one as well.
 
 Signed-off-by: Rafael David Tinoco <rafael.tinoco@linaro.org>
 ---
- include/tst_safe_clocks.h | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ include/tst_safe_clocks.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/include/tst_safe_clocks.h b/include/tst_safe_clocks.h
-index d5cd83394..596db4099 100644
+index 596db4099..34ed953b4 100644
 --- a/include/tst_safe_clocks.h
 +++ b/include/tst_safe_clocks.h
-@@ -6,7 +6,9 @@
+@@ -5,6 +5,9 @@
+  * Email : code@zilogic.com
   */
  
++#ifndef TST_SAFE_CLOCKS_H__
++#define TST_SAFE_CLOCKS_H__
++
  #include <time.h>
-+#include <sys/timex.h>
+ #include <sys/timex.h>
  #include "tst_test.h"
-+#include "lapi/syscalls.h"
- #include "lapi/posix_clocks.h"
+@@ -70,3 +73,5 @@ static inline int safe_clock_adjtime(const char *file, const int lineno,
  
- static inline void safe_clock_getres(const char *file, const int lineno,
-@@ -44,6 +46,19 @@ static inline void safe_clock_settime(const char *file, const int lineno,
- 			"%s:%d clock_gettime() failed", file, lineno);
- }
- 
-+static inline int safe_clock_adjtime(const char *file, const int lineno,
-+	clockid_t clk_id, struct timex *txc)
-+{
-+	int rval;
+ #define SAFE_CLOCK_ADJTIME(clk_id, txc)\
+ 	safe_clock_adjtime(__FILE__, __LINE__, (clk_id), (txc))
 +
-+	rval = tst_syscall(__NR_clock_adjtime, clk_id, txc);
-+	if (rval < 0)
-+		tst_brk(TBROK | TERRNO,
-+			"%s:%d clock_adjtime() failed %i", file, lineno, rval);
-+
-+	return rval;
-+}
-+
- #define SAFE_CLOCK_GETRES(clk_id, res)\
- 	safe_clock_getres(__FILE__, __LINE__, (clk_id), (res))
- 
-@@ -52,3 +67,6 @@ static inline void safe_clock_settime(const char *file, const int lineno,
- 
- #define SAFE_CLOCK_SETTIME(clk_id, tp)\
- 	safe_clock_settime(__FILE__, __LINE__, (clk_id), (tp))
-+
-+#define SAFE_CLOCK_ADJTIME(clk_id, txc)\
-+	safe_clock_adjtime(__FILE__, __LINE__, (clk_id), (txc))
++#endif /* SAFE_CLOCKS_H__ */
 -- 
 2.20.1
 
