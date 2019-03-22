@@ -1,51 +1,38 @@
-From: Rafael David Tinoco <rafael.tinoco@linaro.org>
-Date: Fri, 22 Mar 2019 10:36:25 -0300
-Subject: [LTP] [PATCH v3 4/4] syscalls/clock_adjtime: create
- clock_adjtime syscall tests
-In-Reply-To: <20190322133425.GB20408@rei.lan>
-References: <20190321141015.GG1252@rei>
- <20190321202732.3331-1-rafael.tinoco@linaro.org>
- <20190321202732.3331-4-rafael.tinoco@linaro.org>
- <5A6B4777-4D7E-4D2A-A338-8972236466C1@linaro.org>
- <20190322133425.GB20408@rei.lan>
-Message-ID: <1D255064-CE80-42FF-A607-6C60AFF771C8@linaro.org>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 22 Mar 2019 18:11:32 +0100
+Subject: [LTP] [PATCH v3 0/2] Implement syscall variants
+Message-ID: <20190322171134.899-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> On 22 Mar 2019, at 10:34, Cyril Hrubis <chrubis@suse.cz> wrote:
->=20
-> Hi!
->>> +	if (rval !=3D TIME_OK)
->>> +		tst_brk(TBROK | TTERRNO, "unsynced clock or on-going leap???);
->>=20
->> I choose to break test if rval > 0 mainly because it could still have
->> on-going leap operations, since clock_adjtime() is async, and also
->> because doing the test with an unsynced clock seems weird.
->=20
-> We should print the saved with timex_show() here and the rval at least.
+This is version 3 of the patchset, the main change is that the
+previously called multiplexing is now hooked up much sooner in the
+library, before we fork and run test setup().
 
-Alright. v4 on its way.
+The advange of this is that tests that exit with tst_brk(TCONF, ...) do
+not exit the whole testsuite this way and also different test variants
+are better isolated as well.
 
->=20
-> It however it looks like kernel boots with STA_UNSYNC until NTP manges
-> to sync the time and clears the flag but only if it manages to sync the
-> clock.
->=20
-> See:
->=20
-> http://linuxelf.com/blog/2017/03/27/clock-status-unsync/
->=20
-> Which itself is an argument to run the test with unsynced clock, since
-> not all environments have access to internet or ntp daemon running.
+As a side effect the API has been simplified as well.
 
-Valid point. I=E2=80=99ll allow rval being 5 then.
+Cyril Hrubis (2):
+  tst_test: Add test multiplex function
+  syscalls/select04: Test four syscall variants
 
->=20
-> --=20
-> Cyril Hrubis
-> chrubis@suse.cz
+ doc/test-writing-guidelines.txt               | 66 +++++++++++++++
+ include/tst_test.h                            | 12 +++
+ lib/newlib_tests/.gitignore                   |  1 +
+ lib/newlib_tests/variant.c                    | 55 +++++++++++++
+ lib/tst_test.c                                | 22 +++--
+ testcases/kernel/syscalls/select/select04.c   |  7 +-
+ testcases/kernel/syscalls/select/select_var.h | 82 +++++++++++++++++++
+ 7 files changed, 239 insertions(+), 6 deletions(-)
+ create mode 100644 lib/newlib_tests/variant.c
+ create mode 100644 testcases/kernel/syscalls/select/select_var.h
 
+-- 
+2.19.2
 
