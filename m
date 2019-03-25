@@ -1,39 +1,50 @@
-From: Petr Vorel <petr.vorel@gmail.com>
-Date: Mon, 25 Mar 2019 00:33:58 +0100
-Subject: [LTP] [COMMITTED][PATCH 1/1] cpuset: Detect missing fts.h
-In-Reply-To: <20190322113614.GA20408@rei.lan>
-References: <20190321223656.9615-1-petr.vorel@gmail.com>
- <20190322113614.GA20408@rei.lan>
-Message-ID: <20190324233357.GA1804@x230>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 25 Mar 2019 03:06:57 -0400 (EDT)
+Subject: [LTP] [PATCH v3 0/2] Implement syscall variants
+In-Reply-To: <20190322171134.899-1-chrubis@suse.cz>
+References: <20190322171134.899-1-chrubis@suse.cz>
+Message-ID: <1289901539.11491111.1553497617418.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
-
-> > diff --git a/configure.ac b/configure.ac
-> > index e002c248e..f05db9d2e 100644
-> > --- a/configure.ac
-> > +++ b/configure.ac
-> > @@ -235,6 +235,7 @@ LTP_DETECT_HOST_CPU
-> >  LTP_CHECK_PERF_EVENT
-> >  LTP_CHECK_SYNCFS
-> >  LTP_CHECK_SYNC_FILE_RANGE
-> > +LTP_CHECK_FTS_H
-
-> Any reason why we couldn't simply put the fts.h at the end of the
-> AC_CHECK_HEADERS() list in configure.ac?
-Yes, without AC_SUBST the result is not visible to make (it's just in config.h).
-Or am I wrong? That was the reason, why I didn't take [1] this patch [2].
-
-Anyway, I'm sorry, I thought it's simple enough not to be reviewed, but next
-time I'll send it to ML.
 
 
-Kind regards,
-Petr
+----- Original Message -----
+> This is version 3 of the patchset, the main change is that the
+> previously called multiplexing is now hooked up much sooner in the
+> library, before we fork and run test setup().
+> 
+> The advange of this is that tests that exit with tst_brk(TCONF, ...) do
+> not exit the whole testsuite this way and also different test variants
+> are better isolated as well.
+> 
+> As a side effect the API has been simplified as well.
 
-[1] http://lists.linux.it/pipermail/ltp/2019-March/011428.html
-[2] https://patchwork.ozlabs.org/patch/1058067/
+Acked-by: Jan Stancek <jstancek@redhat.com>
+
+> 
+> Cyril Hrubis (2):
+>   tst_test: Add test multiplex function
+>   syscalls/select04: Test four syscall variants
+> 
+>  doc/test-writing-guidelines.txt               | 66 +++++++++++++++
+>  include/tst_test.h                            | 12 +++
+>  lib/newlib_tests/.gitignore                   |  1 +
+>  lib/newlib_tests/variant.c                    | 55 +++++++++++++
+>  lib/tst_test.c                                | 22 +++--
+>  testcases/kernel/syscalls/select/select04.c   |  7 +-
+>  testcases/kernel/syscalls/select/select_var.h | 82 +++++++++++++++++++
+>  7 files changed, 239 insertions(+), 6 deletions(-)
+>  create mode 100644 lib/newlib_tests/variant.c
+>  create mode 100644 testcases/kernel/syscalls/select/select_var.h
+> 
+> --
+> 2.19.2
+> 
+> 
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
