@@ -1,306 +1,331 @@
 From: Sandeep Patil <sspatil@android.com>
-Date: Mon, 25 Mar 2019 16:20:10 -0700
-Subject: [LTP] [PATCH 2/4] syscalls/accept01: convert to new library.
+Date: Mon, 25 Mar 2019 16:20:11 -0700
+Subject: [LTP] [PATCH 3/4] syscalls/accept4: convert to new library
 In-Reply-To: <20190325232012.67123-1-sspatil@android.com>
 References: <20190325232012.67123-1-sspatil@android.com>
-Message-ID: <20190325232012.67123-3-sspatil@android.com>
+Message-ID: <20190325232012.67123-4-sspatil@android.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-...and drop the duplicate "invalid addrlen" test case.
+Remove all debug checks and simplify the test.
 
 Signed-off-by: Sandeep Patil <sspatil@android.com>
 ---
- testcases/kernel/syscalls/accept/accept01.c | 236 +++++++++-----------
- 1 file changed, 103 insertions(+), 133 deletions(-)
+ .../kernel/syscalls/accept4/accept4_01.c      | 241 ++++++------------
+ 1 file changed, 81 insertions(+), 160 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/accept/accept01.c b/testcases/kernel/syscalls/accept/accept01.c
-index b50056520..5982c09f8 100644
---- a/testcases/kernel/syscalls/accept/accept01.c
-+++ b/testcases/kernel/syscalls/accept/accept01.c
-@@ -1,26 +1,11 @@
+diff --git a/testcases/kernel/syscalls/accept4/accept4_01.c b/testcases/kernel/syscalls/accept4/accept4_01.c
+index dec4ef93b..036457571 100644
+--- a/testcases/kernel/syscalls/accept4/accept4_01.c
++++ b/testcases/kernel/syscalls/accept4/accept4_01.c
+@@ -1,23 +1,10 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +
  /*
 - *
-  *   Copyright (c) International Business Machines  Corp., 2001
-  *   07/2001 Ported by Wayne Boyer
+  * Copyright (C) 2008, Linux Foundation,
+  * written by Michael Kerrisk <mtk.manpages@gmail.com>
+  * Initial Porting to LTP by Subrata <subrata@linux.vnet.ibm.com>
   *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
+- * Licensed under the GNU GPLv2 or later.
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
 - *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
 - *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * Description:
-- *  Verify that accept() returns the proper errno for various failure cases
-+ *   Description:
-+ *     Verify that accept() returns the proper errno for various failure cases
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
   */
  
- #include <stdio.h>
-@@ -34,150 +19,135 @@
- 
- #include <netinet/in.h>
+ #define _GNU_SOURCE
+@@ -31,14 +18,12 @@
+ #include <string.h>
+ #include <errno.h>
  
 -#include "test.h"
--#include "safe_macros.h"
--
--char *TCID = "accept01";
--int testno;
 +#include "tst_test.h"
+ #include "lapi/fcntl.h"
+ #include "lapi/syscalls.h"
  
--int s;				/* socket descriptor */
- struct sockaddr_in sin0, fsin1;
--socklen_t sinlen;
--
--static void setup(void);
--static void cleanup(void);
--static void setup0(void);
--static void cleanup0(void);
--static void setup1(void);
--static void cleanup1(void);
--static void setup2(void);
--static void setup3(void);
--
--struct test_case_t {		/* test case structure */
-+
-+struct test_case;
-+static void setup_invalid_fd(struct test_case *tcase);
-+static void setup_nonsocket_fd(struct test_case *tcase);
-+static void setup_socket(struct test_case *tcase);
-+static void setup_fionbio(struct test_case *tcase);
-+static void cleanup_tcase(struct test_case *tcase);
-+
-+/* test cases */
-+static struct test_case {
- 	int domain;		/* PF_INET, PF_UNIX, ... */
- 	int type;		/* SOCK_STREAM, SOCK_DGRAM ... */
- 	int proto;		/* protocol number (usually 0 = default) */
-+	int socketfd;		/* socketfd for the test case */
- 	struct sockaddr *sockaddr;	/* socket address buffer */
--	socklen_t *salen;	/* accept's 3rd argument */
-+	socklen_t salen;	/* accept's 3rd argument */
- 	int retval;		/* syscall return value */
- 	int experrno;		/* expected errno */
--	void (*setup) (void);
--	void (*cleanup) (void);
-+	void (*setup) (struct test_case *);
-+	void (*cleanup) (struct test_case *);
- 	char *desc;
--} tdat[] = {
-+} tcases[] = {
- 	{
--	PF_INET, SOCK_STREAM, 0, (struct sockaddr *)&fsin1,
--		    &sinlen, -1, EBADF, setup0, cleanup0,
--		    "bad file descriptor"}, {
--	PF_INET, SOCK_STREAM, 0, (struct sockaddr *)&fsin1,
--		    &sinlen, -1, ENOTSOCK, setup0, cleanup0,
--		    "bad file descriptor"}, {
--	PF_INET, SOCK_STREAM, 0, (struct sockaddr *)3,
--		    &sinlen, -1, EINVAL, setup1, cleanup1,
--		    "invalid socket buffer"}, {
--	PF_INET, SOCK_STREAM, 0, (struct sockaddr *)&fsin1,
--		    (socklen_t *) 1, -1, EINVAL, setup1, cleanup1,
--		    "invalid salen"}, {
--	PF_INET, SOCK_STREAM, 0, (struct sockaddr *)&fsin1,
--		    &sinlen, -1, EINVAL, setup2, cleanup1,
--		    "invalid salen"}, {
--	PF_INET, SOCK_STREAM, 0, (struct sockaddr *)&fsin1,
--		    &sinlen, -1, EINVAL, setup3, cleanup1,
--		    "no queued connections"}, {
--	PF_INET, SOCK_DGRAM, 0, (struct sockaddr *)&fsin1,
--		    &sinlen, -1, EOPNOTSUPP, setup1, cleanup1,
--		    "UDP accept"},};
--
--int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
--
--int main(int ac, char *av[])
--{
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); ++lc) {
--		tst_count = 0;
--		for (testno = 0; testno < TST_TOTAL; ++testno) {
--			tdat[testno].setup();
--
--			TEST(accept(s, tdat[testno].sockaddr,
--				    tdat[testno].salen));
--			if (TEST_RETURN > 0)
--				TEST_RETURN = 0;
--			if (TEST_RETURN != tdat[testno].retval ||
--			    (TEST_RETURN < 0 &&
--			     TEST_ERRNO != tdat[testno].experrno)) {
--				tst_resm(TFAIL, "%s ; returned"
--					 " %ld (expected %d), errno %d (expected"
--					 " %d)", tdat[testno].desc,
--					 TEST_RETURN, tdat[testno].retval,
--					 TEST_ERRNO, tdat[testno].experrno);
--			} else {
--				tst_resm(TPASS, "%s successful",
--					 tdat[testno].desc);
--			}
--			tdat[testno].cleanup();
--		}
--	}
--
--	cleanup();
--	tst_exit();
--}
-+		PF_INET, SOCK_STREAM, 0, -1, (struct sockaddr *)&fsin1,
-+		sizeof(fsin1), -1, EBADF, setup_invalid_fd, NULL,
-+		"bad file descriptor"
-+	},
-+	{
-+		PF_INET, SOCK_STREAM, 0, -1, (struct sockaddr *)&fsin1,
-+		sizeof(fsin1), -1, ENOTSOCK, setup_nonsocket_fd,
-+		cleanup_tcase, "bad file descriptor"
-+	},
-+	{
-+		PF_INET, SOCK_STREAM, 0, -1, (struct sockaddr *)3,
-+		sizeof(fsin1), -1, EINVAL, setup_socket, cleanup_tcase,
-+		"invalid socket buffer"
-+	},
-+	{
-+		PF_INET, SOCK_STREAM, 0, -1, (struct sockaddr *)&fsin1,
-+		1, -1, EINVAL, setup_socket, cleanup_tcase,
-+		"invalid salen"
-+	},
-+	{
-+		PF_INET, SOCK_STREAM, 0, -1, (struct sockaddr *)&fsin1,
-+		sizeof(fsin1), -1, EINVAL, setup_fionbio, cleanup_tcase,
-+		"no queued connections"
-+	},
-+	{
-+		PF_INET, SOCK_DGRAM, 0, -1, (struct sockaddr *)&fsin1,
-+		sizeof(fsin1), -1, EOPNOTSUPP, setup_socket, cleanup_tcase,
-+		"UDP accept"
-+	},
-+};
+ #define PORT_NUM 33333
  
+-#define die(msg)	tst_brkm(TBROK|TERRNO, cleanup, msg)
+-
+ #ifndef SOCK_CLOEXEC
+ #define SOCK_CLOEXEC    O_CLOEXEC
+ #endif
+@@ -50,39 +35,13 @@
+ #define USE_SOCKETCALL 1
+ #endif
+ 
+-char *TCID = "accept04_01";
+-int TST_TOTAL = 1;
+-
 -static void setup(void)
 -{
 -	TEST_PAUSE;
- 
--	/* initialize local sockaddr */
--	sin0.sin_family = AF_INET;
--	sin0.sin_port = 0;
--	sin0.sin_addr.s_addr = INADDR_ANY;
+-	tst_tmpdir();
 -}
- 
--static void cleanup(void)
-+static void setup_invalid_fd(struct test_case *tcase)
- {
-+	tcase->socketfd = 400; /* anything that is not an open file */
- }
- 
--static void setup0(void)
-+static void setup_nonsocket_fd(struct test_case *tcase)
- {
--	if (tdat[testno].experrno == EBADF)
--		s = 400;	/* anything not an open file */
--	else if ((s = open("/dev/null", O_WRONLY)) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "error opening /dev/null");
-+	tcase->socketfd = SAFE_OPEN("/dev/null", O_WRONLY);
- }
- 
--static void cleanup0(void)
-+static void setup_socket(struct test_case *tcase)
- {
--	s = -1;
-+	tcase->socketfd = SAFE_SOCKET(tcase->domain, tcase->type, tcase->proto);
-+	SAFE_BIND(tcase->socketfd, (struct sockaddr *)&sin0, sizeof(sin0));
-+	tcase->salen = sizeof(fsin1);
- }
- 
--static void setup1(void)
-+static void setup_fionbio(struct test_case *tcase)
- {
--	s = SAFE_SOCKET(cleanup, tdat[testno].domain, tdat[testno].type,
--			tdat[testno].proto);
--	SAFE_BIND(cleanup, s, (struct sockaddr *)&sin0, sizeof(sin0));
--	sinlen = sizeof(fsin1);
-+	int one = 1;
-+	setup_socket(tcase);
-+	SAFE_IOCTL(tcase->socketfd, FIONBIO, &one);
- }
- 
--static void cleanup1(void)
-+static void cleanup_tcase(struct test_case *tcase)
- {
--	(void)close(s);
--	s = -1;
-+	if (tcase->socketfd >= 0)
-+		SAFE_CLOSE(tcase->socketfd);
-+
-+	tcase->socketfd = -1;
- }
- 
--static void setup2(void)
-+void verify_accept(unsigned int nr)
- {
--	setup1();		/* get a socket in s */
--	sinlen = 1;		/* invalid s */
-+	struct test_case *tcase = &tcases[nr];
-+
-+	if (tcase->setup)
-+		tcase->setup(tcase);
-+
-+	TEST(accept(tcase->socketfd, tcase->sockaddr, &tcase->salen));
-+	if (TST_RET > 0) {
-+		/* don't leak accepted socket, close them first */
-+		SAFE_CLOSE(TST_RET);
-+		TST_RET = 0;
-+	}
-+
-+	if (TST_RET != tcase->retval ||
-+		(TST_RET < 0 && TST_ERR != tcase->experrno)) {
-+		tst_res(TFAIL, "%s ; returned"
-+				" %ld (expected %d), errno %d (expected"
-+				" %d)", tcase->desc, TST_RET, tcase->retval,
-+				TST_ERR, tcase->experrno);
-+	} else {
-+		tst_res(TPASS, "%s successful", tcase->desc);
-+	}
-+
-+	if (tcase->cleanup)
-+		tcase->cleanup(tcase);
- }
- 
--static void setup3(void)
-+static void test_setup(void)
- {
--	int one = 1;
 -
--	setup1();
--	SAFE_IOCTL(cleanup, s, FIONBIO, &one);
-+	/* initialize local sockaddr */
-+	sin0.sin_family = AF_INET;
-+	sin0.sin_port = 0;
-+	sin0.sin_addr.s_addr = INADDR_ANY;
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-}
++struct sockaddr_in conn_addr;
++int listening_fd;
+ 
+ #if !(__GLIBC_PREREQ(2, 10))
+ static int
+ accept4_01(int fd, struct sockaddr *sockaddr, socklen_t *addrlen, int flags)
+ {
+-#ifdef DEBUG
+-	tst_resm(TINFO, "Calling accept4(): flags = %x", flags);
+-	if (flags != 0) {
+-		tst_resm(TINFO, " (");
+-		if (flags & SOCK_CLOEXEC)
+-			tst_resm(TINFO, "SOCK_CLOEXEC");
+-		if ((flags & SOCK_CLOEXEC) && (flags & SOCK_NONBLOCK))
+-			tst_resm(TINFO, " ");
+-		if (flags & SOCK_NONBLOCK)
+-			tst_resm(TINFO, "SOCK_NONBLOCK");
+-		tst_resm(TINFO, ")");
+-	}
+-	tst_resm(TINFO, "\n");
+-#endif
+-
+ #if USE_SOCKETCALL
+ 	long args[6];
+ 
+@@ -98,79 +57,7 @@ accept4_01(int fd, struct sockaddr *sockaddr, socklen_t *addrlen, int flags)
+ }
+ #endif
+ 
+-static void
+-do_test(int lfd, struct sockaddr_in *conn_addr,
+-	int closeonexec_flag, int nonblock_flag)
+-{
+-	int connfd, acceptfd;
+-	int fdf, flf, fdf_pass, flf_pass;
+-	struct sockaddr_in claddr;
+-	socklen_t addrlen;
+-
+-#ifdef DEBUG
+-	tst_resm(TINFO, "=======================================\n");
+-#endif
+-
+-	connfd = socket(AF_INET, SOCK_STREAM, 0);
+-	if (connfd == -1)
+-		die("Socket Error");
+-	if (connect(connfd, (struct sockaddr *)conn_addr,
+-		    sizeof(struct sockaddr_in)) == -1)
+-		die("Connect Error");
+-
+-	addrlen = sizeof(struct sockaddr_in);
+-#if !(__GLIBC_PREREQ(2, 10))
+-	acceptfd = accept4_01(lfd, (struct sockaddr *)&claddr, &addrlen,
+-			      closeonexec_flag | nonblock_flag);
+-#else
+-	acceptfd = accept4(lfd, (struct sockaddr *)&claddr, &addrlen,
+-			   closeonexec_flag | nonblock_flag);
+-#endif
+-	if (acceptfd == -1) {
+-		if (errno == ENOSYS) {
+-			tst_brkm(TCONF, cleanup,
+-			         "syscall __NR_accept4 not supported");
+-		} else {
+-			tst_brkm(TBROK | TERRNO, cleanup, "accept4 failed");
+-		}
+-	}
+-
+-	fdf = fcntl(acceptfd, F_GETFD);
+-	if (fdf == -1)
+-		die("fcntl:F_GETFD");
+-	fdf_pass = ((fdf & FD_CLOEXEC) != 0) ==
+-	    ((closeonexec_flag & SOCK_CLOEXEC) != 0);
+-#ifdef DEBUG
+-	tst_resm(TINFO, "Close-on-exec flag is %sset (%s); ",
+-		 (fdf & FD_CLOEXEC) ? "" : "not ", fdf_pass ? "OK" : "failed");
+-#endif
+-	if (!fdf_pass)
+-		tst_resm(TFAIL,
+-			 "Close-on-exec flag mismatch, should be %x, actual %x",
+-			 fdf & FD_CLOEXEC, closeonexec_flag & SOCK_CLOEXEC);
+-
+-	flf = fcntl(acceptfd, F_GETFL);
+-	if (flf == -1)
+-		die("fcntl:F_GETFD");
+-	flf_pass = ((flf & O_NONBLOCK) != 0) ==
+-	    ((nonblock_flag & SOCK_NONBLOCK) != 0);
+-#ifdef DEBUG
+-	tst_resm(TINFO, "nonblock flag is %sset (%s)\n",
+-		 (flf & O_NONBLOCK) ? "" : "not ", flf_pass ? "OK" : "failed");
+-#endif
+-	if (!flf_pass)
+-		tst_resm(TFAIL,
+-			 "nonblock flag mismatch, should be %x, actual %x",
+-			 fdf & O_NONBLOCK, nonblock_flag & SOCK_NONBLOCK);
+-
+-	close(acceptfd);
+-	close(connfd);
+-
+-	if (fdf_pass && flf_pass)
+-		tst_resm(TPASS, "Test passed");
+-}
+-
+-static int create_listening_socket(int port_num)
++static int create_listening_socket(void)
+ {
+ 	struct sockaddr_in svaddr;
+ 	int lfd;
+@@ -179,65 +66,99 @@ static int create_listening_socket(int port_num)
+ 	memset(&svaddr, 0, sizeof(struct sockaddr_in));
+ 	svaddr.sin_family = AF_INET;
+ 	svaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+-	svaddr.sin_port = htons(port_num);
++	svaddr.sin_port = htons(PORT_NUM);
+ 
+-	lfd = socket(AF_INET, SOCK_STREAM, 0);
+-	if (lfd == -1)
+-		die("Socket Error");
++	lfd = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
+ 
+ 	optval = 1;
+-	if (setsockopt(lfd, SOL_SOCKET, SO_REUSEADDR, &optval,
+-		       sizeof(optval)) == -1)
+-		die("Setsockopt Error");
+-
+-	if (bind(lfd, (struct sockaddr *)&svaddr,
+-		 sizeof(struct sockaddr_in)) == -1)
+-		die("Bind Error");
+-
+-	if (listen(lfd, 5) == -1)
+-		die("Listen Error");
++	SAFE_SETSOCKOPT(lfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
++	SAFE_BIND(lfd, (struct sockaddr *)&svaddr, sizeof(struct sockaddr_in));
++	SAFE_LISTEN(lfd, 5);
+ 
+ 	return lfd;
+ }
+ 
+-static char *opt_port;
++void setup(void)
++{
++	memset(&conn_addr, 0, sizeof(struct sockaddr_in));
++	conn_addr.sin_family = AF_INET;
++	conn_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
++	conn_addr.sin_port = htons(PORT_NUM);
+ 
+-static option_t options[] = {
+-	{"p:", NULL, &opt_port},
+-	{NULL, NULL, NULL}
+-};
++	listening_fd = create_listening_socket();
++}
+ 
+-static void usage(void)
++void cleanup(void)
+ {
+-	printf("  -p      Port\n");
++	SAFE_CLOSE(listening_fd);
+ }
+ 
+-int main(int argc, char *argv[])
++static struct test_case {
++	int cloexec;
++	int nonblock;
++} tcases[] = {
++	{ 0, 0 },
++	{ SOCK_CLOEXEC, 0 },
++	{ 0, SOCK_NONBLOCK },
++	{ SOCK_CLOEXEC, SOCK_NONBLOCK },
++};
++
++void verify_accept4(unsigned int nr)
+ {
+-	struct sockaddr_in conn_addr;
+-	int lfd;
+-	int port_num = PORT_NUM;
++	struct test_case *tcase = &tcases[nr];
++	int connfd, acceptfd;
++	int fdf, flf, fdf_pass, flf_pass;
++	struct sockaddr_in claddr;
++	socklen_t addrlen;
+ 
+-	tst_parse_opts(argc, argv, options, usage);
++	connfd = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
++	SAFE_CONNECT(connfd, (struct sockaddr *)&conn_addr, sizeof(conn_addr));
++	addrlen = sizeof(claddr);
+ 
+-	if (opt_port)
+-		port_num = atoi(opt_port);
++#if !(__GLIBC_PREREQ(2, 10))
++	TEST(accept4_01(listening_fd, (struct sockaddr *)&claddr, &addrlen,
++				tcase->cloexec | tcase->nonblock));
++#else
++	TEST(accept4(listening_fd, (struct sockaddr *)&claddr, &addrlen,
++				tcase->cloexec | tcase->nonblock));
++#endif
++	if (TST_RET == -1) {
++		if (TST_ERR == ENOSYS)
++			tst_brk(TCONF, "syscall __NR_accept4 not supported");
++		else
++			tst_brk(TBROK | TTERRNO, "accept4 failed");
++	}
+ 
+-	setup();
++	acceptfd = TST_RET;
+ 
+-	memset(&conn_addr, 0, sizeof(struct sockaddr_in));
+-	conn_addr.sin_family = AF_INET;
+-	conn_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+-	conn_addr.sin_port = htons(port_num);
++	/* Test to see if O_CLOEXEC is as expected */
++	fdf = SAFE_FCNTL(acceptfd, F_GETFD);
++	fdf_pass = !!(fdf & FD_CLOEXEC) == !!(tcase->cloexec & SOCK_CLOEXEC);
++	if (!fdf_pass)
++		tst_res(TFAIL,  "Close-on-exec flag mismatch, %d vs %d",
++			 !!(fdf & FD_CLOEXEC),
++			 !!(tcase->cloexec & SOCK_CLOEXEC));
++
++	/* Test to see if O_NONBLOCK is as expected */
++	flf = SAFE_FCNTL(acceptfd, F_GETFL);
++	flf_pass = !!(flf & O_NONBLOCK) == !!(tcase->nonblock & SOCK_NONBLOCK);
++	if (!flf_pass)
++		tst_res(TFAIL, "nonblock flag mismatch, %d vs %d",
++			 !!(fdf & O_NONBLOCK),
++			 !!(tcase->nonblock & SOCK_NONBLOCK));
+ 
+-	lfd = create_listening_socket(port_num);
++	SAFE_CLOSE(acceptfd);
++	SAFE_CLOSE(connfd);
+ 
+-	do_test(lfd, &conn_addr, 0, 0);
+-	do_test(lfd, &conn_addr, SOCK_CLOEXEC, 0);
+-	do_test(lfd, &conn_addr, 0, SOCK_NONBLOCK);
+-	do_test(lfd, &conn_addr, SOCK_CLOEXEC, SOCK_NONBLOCK);
++	if (fdf_pass && flf_pass)
++		tst_res(TPASS, "Test passed: Close-on-exec %d, nonblock %d",
++				fdf_pass, flf_pass);
+ 
+-	close(lfd);
+-	cleanup();
+-	tst_exit();
  }
 +
 +static struct tst_test test = {
 +	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = test_setup,
-+	.test = verify_accept,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test = verify_accept4,
 +};
 -- 
 2.21.0.392.gf8f6787159e-goog
