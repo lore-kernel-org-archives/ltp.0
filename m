@@ -1,47 +1,106 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 26 Mar 2019 13:52:02 +0100
-Subject: [LTP] [PATCH 1/2] travis: Fix testing on debian oldstable
-Message-ID: <20190326125203.21104-1-pvorel@suse.cz>
+Date: Tue, 26 Mar 2019 13:52:03 +0100
+Subject: [LTP] [PATCH 2/2] travis: Reorder builds to speedup testing
+In-Reply-To: <20190326125203.21104-1-pvorel@suse.cz>
+References: <20190326125203.21104-1-pvorel@suse.cz>
+Message-ID: <20190326125203.21104-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-which failed due missing oldstable-updates repository
+Fedora job is slow (12 min vs. ~8 min others), therefore it should be
+started earlier (there are 5 jobs running at once, for Fedora we wait
+about 3 mins).
+
+Move Centos 6 job up as it's usually the one failing due missing
+features (constants etc.) in kernel headers.
+
+Move up openSUSE jobs up, as they're sometimes slow as well.
+
+Reorder Debian oldstable and testing jobs (they were sorted by the OS
+release, it's more likely to find a bug in different OS release than
+different compiler).
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-Hi,
+ .travis.yml | 33 +++++++++++++++++++--------------
+ 1 file changed, 19 insertions(+), 14 deletions(-)
 
-probably nobody cares much about travis, but sending anyway.
-
-There is still one build failure on opensuse/tumbleweed,
-should be fixed soon by openSUSE project.
-
-Kind regards,
-Petr
----
- travis/debian.sh | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/travis/debian.sh b/travis/debian.sh
-index 3918a915f..56c8a08be 100755
---- a/travis/debian.sh
-+++ b/travis/debian.sh
-@@ -1,7 +1,11 @@
- #!/bin/sh
--# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
-+# Copyright (c) 2018-2019 Petr Vorel <pvorel@suse.cz>
- set -e
- 
-+# workaround for missing oldstable-updates repository
-+# W: Failed to fetch http://deb.debian.org/debian/dists/oldstable-updates/main/binary-amd64/Packages
-+grep -v oldstable-updates /etc/apt/sources.list > /tmp/sources.list && mv /tmp/sources.list /etc/apt/sources.list
+diff --git a/.travis.yml b/.travis.yml
+index 8c3aa241d..a29551650 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -14,6 +14,7 @@ matrix:
+         - os: linux
+           env: DISTRO=debian:stable VARIANT=cross-compile.ppc64le TREE="out"
+           compiler: powerpc64le-linux-gnu-gcc
 +
- apt update
+         - os: linux
+           env: DISTRO=debian:stable VARIANT=cross-compile.aarch64 TREE="out"
+           compiler: aarch64-linux-gnu-gcc
+@@ -23,27 +24,22 @@ matrix:
+           env: DISTRO=debian:stable VARIANT=minimal TREE="out"
+           compiler: clang
  
- apt install -y --no-install-recommends \
++        # other builds
+         - os: linux
+-          env: DISTRO=debian:testing
+-          compiler: gcc
+-        - os: linux
+-          env: DISTRO=debian:testing
++          env: DISTRO=fedora:latest
+           compiler: clang
+ 
+         - os: linux
+-          env: DISTRO=debian:oldstable
++          env: DISTRO=centos:6 TREE="out"
+           compiler: gcc
+-        - os: linux
+-          env: DISTRO=debian:oldstable
+-          compiler: clang
+ 
+         - os: linux
+-          env: DISTRO=ubuntu:latest TREE="out"
++          env: DISTRO=debian:testing
+           compiler: gcc
+ 
+         - os: linux
+-          env: DISTRO=ubuntu:xenial
+-          compiler: gcc
++          env: DISTRO=debian:oldstable
++          compiler: clang
+ 
+         - os: linux
+           env: DISTRO=opensuse/tumbleweed
+@@ -54,14 +50,23 @@ matrix:
+           compiler: gcc
+ 
+         - os: linux
+-          env: DISTRO=fedora:latest
++          env: DISTRO=debian:oldstable
++          compiler: gcc
++
++        - os: linux
++          env: DISTRO=debian:testing
+           compiler: clang
+ 
+         - os: linux
+-          env: DISTRO=centos:latest
++          env: DISTRO=ubuntu:latest TREE="out"
+           compiler: gcc
++
+         - os: linux
+-          env: DISTRO=centos:6 TREE="out"
++          env: DISTRO=ubuntu:xenial
++          compiler: gcc
++
++        - os: linux
++          env: DISTRO=centos:latest
+           compiler: gcc
+ 
+ before_install:
 -- 
 2.21.0
 
