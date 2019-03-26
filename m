@@ -1,39 +1,47 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 26 Mar 2019 13:51:32 +0100
-Subject: [LTP] [RFC PATCH 1/4] syscalls/abort01: convert to new library
-In-Reply-To: <20190326124743.GC5826@google.com>
-References: <20190325232012.67123-1-sspatil@android.com>
- <20190325232012.67123-2-sspatil@android.com>
- <20190326115825.GA32549@rei.lan> <20190326124743.GC5826@google.com>
-Message-ID: <20190326125132.GA11086@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 26 Mar 2019 13:52:02 +0100
+Subject: [LTP] [PATCH 1/2] travis: Fix testing on debian oldstable
+Message-ID: <20190326125203.21104-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > * Got rid of tst_brk(TFAIL, ...) calls
-> >   see: https://github.com/linux-test-project/ltp/issues/462
-> 
-> Thanks for this, it is good to know. What is the recommended replacement?
-> tst_res()?
+which failed due missing oldstable-updates repository
 
-Yes, tst_res() followed by either return or exit(0) if you need to
-actually exit the code flow.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Hi,
 
-> > 
-> > * Used tst_strsig() and tst_strstatus() to print signal and status
-> > 
-> > * Used tst_res() API in the child
-> > 
-> > * Got rid of unused variables, etc.
-> 
-> I am surprised that didn't throw a warning + build error for me.
-> other than that, thanks for doing this
+probably nobody cares much about travis, but sending anyway.
 
-That depends on gcc version and mix of warning flags...
+There is still one build failure on opensuse/tumbleweed,
+should be fixed soon by openSUSE project.
 
+Kind regards,
+Petr
+---
+ travis/debian.sh | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/travis/debian.sh b/travis/debian.sh
+index 3918a915f..56c8a08be 100755
+--- a/travis/debian.sh
++++ b/travis/debian.sh
+@@ -1,7 +1,11 @@
+ #!/bin/sh
+-# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2018-2019 Petr Vorel <pvorel@suse.cz>
+ set -e
+ 
++# workaround for missing oldstable-updates repository
++# W: Failed to fetch http://deb.debian.org/debian/dists/oldstable-updates/main/binary-amd64/Packages
++grep -v oldstable-updates /etc/apt/sources.list > /tmp/sources.list && mv /tmp/sources.list /etc/apt/sources.list
++
+ apt update
+ 
+ apt install -y --no-install-recommends \
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.21.0
+
