@@ -1,45 +1,61 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 27 Mar 2019 17:16:35 +0100
-Subject: [LTP] [PATCH 0/3] LTP reproducer on broken IMA on overlayfs
-Message-ID: <20190327161638.7407-1-pvorel@suse.cz>
+Date: Wed, 27 Mar 2019 17:16:36 +0100
+Subject: [LTP] [PATCH 1/3] ima: Call test's cleanup inside ima_setup.sh
+	cleanup
+In-Reply-To: <20190327161638.7407-1-pvorel@suse.cz>
+References: <20190327161638.7407-1-pvorel@suse.cz>
+Message-ID: <20190327161638.7407-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+to work the same way as setup
 
-based on reproducer made by Ignaz Forster <iforster@suse.de>
-used for his not upstreamed patchset [1] and previous report [2].
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/kernel/security/integrity/ima/tests/ima_setup.sh  | 6 +++++-
+ .../kernel/security/integrity/ima/tests/ima_violations.sh   | 2 --
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-Mimi: does this test make sense to you?
-
-[1] https://www.spinics.net/lists/linux-integrity/msg05926.html
-[2] https://www.spinics.net/lists/linux-integrity/msg03593.html
-
-Cc: Mimi Zohar <zohar@linux.vnet.ibm.com>
-Cc: Ignaz Forster <iforster@suse.de>
-Cc: Fabian Vogt <FVogt@suse.com>
-Cc: Weihua Du <WHDu@suse.com>
-Cc: linux-integrity@vger.kernel.org
-
-Petr Vorel (3):
-  ima: Call test's cleanup inside ima_setup.sh cleanup
-  shell: Add $TST_DEVICE as default parameter to tst_umount
-  ima: Add overlay test
-
- doc/test-writing-guidelines.txt               |  4 +-
- runtest/ima                                   |  1 +
- testcases/commands/df/df01.sh                 |  7 +-
- testcases/commands/mkfs/mkfs01.sh             |  2 +-
- .../integrity/ima/tests/ima_overlay.sh        | 65 +++++++++++++++++++
- .../security/integrity/ima/tests/ima_setup.sh | 12 ++--
- .../integrity/ima/tests/ima_violations.sh     |  2 -
- testcases/lib/tst_test.sh                     |  2 +-
- 8 files changed, 79 insertions(+), 16 deletions(-)
- create mode 100755 testcases/kernel/security/integrity/ima/tests/ima_overlay.sh
-
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+index 52551190a..cbded42c2 100644
+--- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+@@ -20,7 +20,8 @@
+ TST_TESTFUNC="test"
+ TST_SETUP_CALLER="$TST_SETUP"
+ TST_SETUP="ima_setup"
+-TST_CLEANUP="${TST_CLEANUP:-ima_cleanup}"
++TST_CLEANUP_CALLER="$TST_CLEANUP"
++TST_CLEANUP="ima_cleanup"
+ TST_NEEDS_TMPDIR=1
+ TST_NEEDS_ROOT=1
+ 
+@@ -95,6 +96,9 @@ ima_setup()
+ ima_cleanup()
+ {
+ 	local dir
++
++	[ -n "$TST_CLEANUP_CALLER" ] && $TST_CLEANUP_CALLER
++
+ 	for dir in $UMOUNT; do
+ 		umount $dir
+ 	done
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
+index 74223c221..a44bd1230 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
+@@ -51,8 +51,6 @@ cleanup()
+ {
+ 	[ "$PRINTK_RATE_LIMIT" != "0" ] && \
+ 		sysctl -wq kernel.printk_ratelimit=$PRINTK_RATE_LIMIT
+-
+-	ima_cleanup
+ }
+ 
+ open_file_read()
 -- 
 2.21.0
 
