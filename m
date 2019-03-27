@@ -1,37 +1,45 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 27 Mar 2019 17:03:16 +0100
-Subject: [LTP] [PATCH 1/1] shell: Fix handling default parameters in
-	tst_mkfs()
-In-Reply-To: <20190327155252.761-1-pvorel@suse.cz>
-References: <20190327155252.761-1-pvorel@suse.cz>
-Message-ID: <20190327160316.GA9691@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 27 Mar 2019 17:16:35 +0100
+Subject: [LTP] [PATCH 0/3] LTP reproducer on broken IMA on overlayfs
+Message-ID: <20190327161638.7407-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> fixes regression when testing df01.sh
-> 
-> Dash does not like shifting more than possible:
-> /opt/ltp/testcases/bin/df01.sh: 291: shift: can't shift that many
-> 
-> Fixes: 465faf47f ("shell: Use $TST_FS_TYPE and $TST_DEVICE in tst_mkfs()")
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Hi,
-> 
-> don't like checking $# twice, but don't see right now way to do it
-> simpler.
+Hi,
 
-We can do the same thing twice as well, which may be a bit more
-readable:
+based on reproducer made by Ignaz Forster <iforster@suse.de>
+used for his not upstreamed patchset [1] and previous report [2].
 
-	[ $# -ge 1 ] && shift
-	[ $# -ge 1 ] && shift
+Mimi: does this test make sense to you?
+
+[1] https://www.spinics.net/lists/linux-integrity/msg05926.html
+[2] https://www.spinics.net/lists/linux-integrity/msg03593.html
+
+Cc: Mimi Zohar <zohar@linux.vnet.ibm.com>
+Cc: Ignaz Forster <iforster@suse.de>
+Cc: Fabian Vogt <FVogt@suse.com>
+Cc: Weihua Du <WHDu@suse.com>
+Cc: linux-integrity@vger.kernel.org
+
+Petr Vorel (3):
+  ima: Call test's cleanup inside ima_setup.sh cleanup
+  shell: Add $TST_DEVICE as default parameter to tst_umount
+  ima: Add overlay test
+
+ doc/test-writing-guidelines.txt               |  4 +-
+ runtest/ima                                   |  1 +
+ testcases/commands/df/df01.sh                 |  7 +-
+ testcases/commands/mkfs/mkfs01.sh             |  2 +-
+ .../integrity/ima/tests/ima_overlay.sh        | 65 +++++++++++++++++++
+ .../security/integrity/ima/tests/ima_setup.sh | 12 ++--
+ .../integrity/ima/tests/ima_violations.sh     |  2 -
+ testcases/lib/tst_test.sh                     |  2 +-
+ 8 files changed, 79 insertions(+), 16 deletions(-)
+ create mode 100755 testcases/kernel/security/integrity/ima/tests/ima_overlay.sh
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.21.0
+
