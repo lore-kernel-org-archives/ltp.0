@@ -1,58 +1,50 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 28 Mar 2019 17:40:25 +0800
-Subject: [LTP] [PATCH] syscalls/stime: Use 3 variants via
-	test_multiplex()
-In-Reply-To: <20190328065243.GB11011@x230>
-References: <1553668210-6141-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20190328065243.GB11011@x230>
-Message-ID: <5C9C9689.8060508@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 28 Mar 2019 11:50:06 +0100
+Subject: [LTP] [PATCH 1/1] Remove break after return
+Message-ID: <20190328105006.17337-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2019/03/28 14:52, Petr Vorel wrote:
-> Hi Xiao,
->
->> diff --git a/testcases/kernel/syscalls/stime/stime01.c b/testcases/kernel/syscalls/stime/stime01.c
-> ...
->> +static int do_stime(time_t *ntime)
->> +{
->> +	switch (tst_variant) {
->> +	case 0:
->> +#ifdef __ANDROID__
->> +		tst_brk(TCONF, "libc stime() is not implemented for Android");
-> IMHO this is not optimal. 1) That might change in the future, 2) Why not to fix
-> it for other foo libc implementations, which might suffer the same problem.
-> Therefore IMHO autotools check should be used.
->
-Hi Petr,
+Reported-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/kernel/syscalls/select/select_var.h       | 1 -
+ testcases/kernel/syscalls/sigpending/sigpending02.c | 3 ---
+ 2 files changed, 4 deletions(-)
 
-Sorry, i pushed roughly. :-(
-I have sent a patch set as you suggested, so could you help me review it?
-
-Best Regards,
-Xiao Yang
->> +#else
->> +		return stime(ntime);
->> +#endif
->> +	case 1:
->> +		return tst_syscall(__NR_stime, ntime);
->> +	case 2: {
->> +		struct timeval tv;
->> +
->> +		tv.tv_sec = *ntime;
->> +		tv.tv_usec = 0;
->> +
->> +		return tst_syscall(__NR_settimeofday,&tv, (struct timezone *) 0);
->> +	}
->> +	}
-> Kind regards,
-> Petr
->
->
->
-
-
+diff --git a/testcases/kernel/syscalls/select/select_var.h b/testcases/kernel/syscalls/select/select_var.h
+index b19a1d1bf..29ebbc5ee 100644
+--- a/testcases/kernel/syscalls/select/select_var.h
++++ b/testcases/kernel/syscalls/select/select_var.h
+@@ -20,7 +20,6 @@ static int do_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
+ 	switch (tst_variant) {
+ 	case 0:
+ 		return select(nfds, readfds, writefds, exceptfds, timeout);
+-	break;
+ 	case 1: {
+ #ifdef __LP64__
+ 		return tst_syscall(__NR_select, nfds, readfds, writefds, exceptfds, timeout);
+diff --git a/testcases/kernel/syscalls/sigpending/sigpending02.c b/testcases/kernel/syscalls/sigpending/sigpending02.c
+index ce0d2ff79..d75807d77 100644
+--- a/testcases/kernel/syscalls/sigpending/sigpending02.c
++++ b/testcases/kernel/syscalls/sigpending/sigpending02.c
+@@ -37,13 +37,10 @@ static int tested_sigpending(sigset_t *sigset)
+ 	switch (tst_variant) {
+ 	case 0:
+ 		return sigpending(sigset);
+-	break;
+ 	case 1:
+ 		return tst_syscall(__NR_sigpending, sigset);
+-	break;
+ 	case 2:
+ 		return tst_syscall(__NR_rt_sigpending, sigset, SIGSETSIZE);
+-	break;
+ 	}
+ 	return -1;
+ }
+-- 
+2.20.1
 
