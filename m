@@ -1,44 +1,29 @@
-From: Petr Vorel <petr.vorel@gmail.com>
-Date: Thu, 28 Mar 2019 07:52:53 +0100
-Subject: [LTP] [PATCH] syscalls/stime: Use 3 variants via
-	test_multiplex()
-In-Reply-To: <1553668210-6141-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1553668210-6141-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20190328065243.GB11011@x230>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 28 Mar 2019 10:04:26 +0100
+Subject: [LTP] [PATCH 0/3] LTP reproducer on broken IMA on overlayfs
+In-Reply-To: <20190327161638.7407-1-pvorel@suse.cz>
+References: <20190327161638.7407-1-pvorel@suse.cz>
+Message-ID: <20190328090426.GB32178@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao,
+Hi,
 
-> diff --git a/testcases/kernel/syscalls/stime/stime01.c b/testcases/kernel/syscalls/stime/stime01.c
-...
-> +static int do_stime(time_t *ntime)
-> +{
-> +	switch (tst_variant) {
-> +	case 0:
-> +#ifdef __ANDROID__
-> +		tst_brk(TCONF, "libc stime() is not implemented for Android");
-IMHO this is not optimal. 1) That might change in the future, 2) Why not to fix
-it for other foo libc implementations, which might suffer the same problem.
-Therefore IMHO autotools check should be used.
-
-> +#else
-> +		return stime(ntime);
-> +#endif
-> +	case 1:
-> +		return tst_syscall(__NR_stime, ntime);
-> +	case 2: {
-> +		struct timeval tv;
-> +
-> +		tv.tv_sec = *ntime;
-> +		tv.tv_usec = 0;
-> +
-> +		return tst_syscall(__NR_settimeofday, &tv, (struct timezone *) 0);
-> +	}
-> +	}
+> Petr Vorel (3):
+>   ima: Call test's cleanup inside ima_setup.sh cleanup
+>   shell: Add $TST_DEVICE as default parameter to tst_umount
+>   ima: Add overlay test
+NOTE: I've posted just the third patch (didn't want to bother with
+LTP specific non-IMA stuff. These are in LTP ML [1] [2] and also
+downloadable via patchwork pwclient [3] [4].
 
 Kind regards,
 Petr
+
+[1] http://lists.linux.it/pipermail/ltp/2019-March/011512.html
+[2] http://lists.linux.it/pipermail/ltp/2019-March/011513.html
+[3] https://patchwork.ozlabs.org/patch/1067177/
+[4] https://patchwork.ozlabs.org/patch/1067178/
