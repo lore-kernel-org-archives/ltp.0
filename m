@@ -1,11 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 28 Mar 2019 14:40:54 +0100
-Subject: [LTP] [PATCH] syscalls/stime: Use 3 variants via
-	test_multiplex()
-In-Reply-To: <5C9C9689.8060508@cn.fujitsu.com>
-References: <1553668210-6141-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20190328065243.GB11011@x230> <5C9C9689.8060508@cn.fujitsu.com>
-Message-ID: <20190328134054.GA28600@x230>
+Date: Thu, 28 Mar 2019 15:56:19 +0100
+Subject: [LTP] [PATCH 1/2] m4: Use common LTP_CHECK_LIBC_FUNCS to check
+ libc implementations
+In-Reply-To: <1553765807-31789-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1553765807-31789-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20190328145619.GB28600@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,13 +13,13 @@ To: ltp@lists.linux.it
 
 Hi Xiao,
 
-> Sorry, i pushed roughly. :-(
-No worries.
-> I have sent a patch set as you suggested, so could you help me review it?
-Sure! Patch LGTM, I'll reply to the patches.
+> Use LTP_CHECK_LIBC_FUNCS if only libc implementations need to be checked.
 
-> Best Regards,
-> Xiao Yang
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+IMHO good idea.
 
 
 Kind regards,
