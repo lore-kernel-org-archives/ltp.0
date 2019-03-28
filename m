@@ -1,79 +1,191 @@
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Thu, 28 Mar 2019 10:27:26 +0530
-Subject: [LTP] [PATCH v3] syscalls/sync_file_range: add partial file
-	sync test-cases
-In-Reply-To: <20190327144826.GA30619@rei>
-References: <1551962651-22261-1-git-send-email-sumit.garg@linaro.org>
- <20190327144826.GA30619@rei>
-Message-ID: <CAFA6WYPxhVSub1SQyAk_51=NB0=yhjBfWPKdXoAjJB_TP0Za1Q@mail.gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 28 Mar 2019 13:24:35 +0800
+Subject: [LTP] [PATCH] syscalls/stime: Use 3 variants via
+	test_multiplex()
+In-Reply-To: <a09a4b26-60c5-f9c6-d7e7-3d1ae47e091d@google.com>
+References: <1553668210-6141-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <5C9B19FE.7030907@cn.fujitsu.com>
+ <a09a4b26-60c5-f9c6-d7e7-3d1ae47e091d@google.com>
+Message-ID: <5C9C5A93.80308@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, 27 Mar 2019 at 20:18, Cyril Hrubis <chrubis@suse.cz> wrote:
+On 2019/03/28 4:13, Steve Muckle wrote:
+> On 03/26/2019 11:36 PM, Xiao Yang wrote:
+>> Hi Steve,
+>>
+>> Could you tell me if Android's libc doesn't implements stime()?
+>> If libc stime() isn't implemented on Android, we should avoid testing it
+>> as the patch does.
 >
-> Hi!
-> Sorry for the long delay.
+> Hi Xiao, that is correct, bionic (Android libc) does not provide stime().
 >
-> This is altmost perfect, the only problem is that the third test fails
-> on vfat. As far as I can tell the reason is that vfat does not support
-> sparse files, hence seeking to the middle of file and writing there also
-> schedulles I/O to write zeros from the start of the file to the offset
-> we started writing to.
+> I reviewed and tested your patch on Android, looks good to me.
+>
+> Reviewed-by: Steve Muckle <smuckle@google.com>
+> Tested-by: Steve Muckle <smuckle@google.com>
+Hi Steve,
+
+Pushed, thanks for your review and test. :-)
+
+Best Regards,
+Xiao Yang
+>
+>>
+>> Best Regards,
+>> Xiao Yang
+>> On 2019/03/27 14:30, Xiao Yang wrote:
+>>> We will test stime() libc wrapper, __NR_stime and __NR_settimeofday 
+>>> syscalls.
+>>>
+>>> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+>>> ---
+>>> testcases/kernel/syscalls/stime/stime01.c | 11 ++++--
+>>> testcases/kernel/syscalls/stime/stime02.c | 8 +++--
+>>> testcases/kernel/syscalls/stime/stime_var.h | 54 
+>>> +++++++++++++++++++++++++++++
+>>> 3 files changed, 68 insertions(+), 5 deletions(-)
+>>> create mode 100644 testcases/kernel/syscalls/stime/stime_var.h
+>>>
+>>> diff --git a/testcases/kernel/syscalls/stime/stime01.c 
+>>> b/testcases/kernel/syscalls/stime/stime01.c
+>>> index 279b0b1..82a3402 100644
+>>> --- a/testcases/kernel/syscalls/stime/stime01.c
+>>> +++ b/testcases/kernel/syscalls/stime/stime01.c
+>>> @@ -17,8 +17,8 @@
+>>> #include <time.h>
+>>> #include <sys/time.h>
+>>> -#include "lapi/syscalls.h"
+>>> #include "tst_test.h"
+>>> +#include "stime_var.h"
+>>> static struct timeval real_time_tv;
+>>> @@ -32,7 +32,7 @@ static void run(void)
+>>> new_time = real_time_tv.tv_sec + 30;
+>>> - if (tst_syscall(__NR_stime, &new_time) < 0) {
+>>> + if (do_stime(&new_time) < 0) {
+>>> tst_res(TFAIL | TERRNO, "stime(%ld) failed", new_time);
+>>> return;
+>>> }
+>>> @@ -52,8 +52,15 @@ static void run(void)
+>>> }
+>>> }
+>>> +static void setup(void)
+>>> +{
+>>> + stime_info();
+>>> +}
+>>> +
+>>> static struct tst_test test = {
+>>> .test_all = run,
+>>> .needs_root = 1,
+>>> .restore_wallclock = 1,
+>>> + .setup = setup,
+>>> + .test_variants = TEST_VARIANTS,
+>>> };
+>>> diff --git a/testcases/kernel/syscalls/stime/stime02.c 
+>>> b/testcases/kernel/syscalls/stime/stime02.c
+>>> index 1aa1021..126a49a 100644
+>>> --- a/testcases/kernel/syscalls/stime/stime02.c
+>>> +++ b/testcases/kernel/syscalls/stime/stime02.c
+>>> @@ -19,15 +19,14 @@
+>>> #include <time.h>
+>>> #include <pwd.h>
+>>> -#include "lapi/syscalls.h"
+>>> #include "tst_test.h"
+>>> +#include "stime_var.h"
+>>> static time_t new_time;
+>>> static void run(void)
+>>> {
+>>> - TEST(tst_syscall(__NR_stime, &new_time));
+>>> -
+>>> + TEST(do_stime(&new_time));
+>>> if (TST_RET != -1) {
+>>> tst_res(TFAIL,
+>>> "stime() returned %ld, expected -1 EPERM", TST_RET);
+>>> @@ -48,6 +47,8 @@ static void setup(void)
+>>> time_t curr_time;
+>>> struct passwd *ltpuser;
+>>> + stime_info();
+>>> +
+>>> ltpuser = SAFE_GETPWNAM("nobody");
+>>> SAFE_SETUID(ltpuser->pw_uid);
+>>> @@ -61,4 +62,5 @@ static struct tst_test test = {
+>>> .test_all = run,
+>>> .setup = setup,
+>>> .needs_root = 1,
+>>> + .test_variants = TEST_VARIANTS,
+>>> };
+>>> diff --git a/testcases/kernel/syscalls/stime/stime_var.h 
+>>> b/testcases/kernel/syscalls/stime/stime_var.h
+>>> new file mode 100644
+>>> index 0000000..1b47441
+>>> --- /dev/null
+>>> +++ b/testcases/kernel/syscalls/stime/stime_var.h
+>>> @@ -0,0 +1,54 @@
+>>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>>> +/*
+>>> + * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
+>>> + * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+>>> + */
+>>> +
+>>> +#ifndef STIME_VAR__
+>>> +#define STIME_VAR__
+>>> +
+>>> +#include <sys/time.h>
+>>> +#include "lapi/syscalls.h"
+>>> +
+>>> +#define TEST_VARIANTS 3
+>>> +
+>>> +static int do_stime(time_t *ntime)
+>>> +{
+>>> + switch (tst_variant) {
+>>> + case 0:
+>>> +#ifdef __ANDROID__
+>>> + tst_brk(TCONF, "libc stime() is not implemented for Android");
+>>> +#else
+>>> + return stime(ntime);
+>>> +#endif
+>>> + case 1:
+>>> + return tst_syscall(__NR_stime, ntime);
+>>> + case 2: {
+>>> + struct timeval tv;
+>>> +
+>>> + tv.tv_sec = *ntime;
+>>> + tv.tv_usec = 0;
+>>> +
+>>> + return tst_syscall(__NR_settimeofday, &tv, (struct timezone *) 0);
+>>> + }
+>>> + }
+>>> +
+>>> + return -1;
+>>> +}
+>>> +
+>>> +static void stime_info(void)
+>>> +{
+>>> + switch (tst_variant) {
+>>> + case 0:
+>>> + tst_res(TINFO, "Testing libc stime()");
+>>> + break;
+>>> + case 1:
+>>> + tst_res(TINFO, "Testing SYS_stime syscall");
+>>> + break;
+>>> + case 2:
+>>> + tst_res(TINFO, "Testing SYS_settimeofday syscall");
+>>> + break;
+>>> + }
+>>> +}
+>>> +
+>>> +#endif /* STIME_VAR__ */
+>>
+>>
+>>
+>
+>
+>
+> .
 >
 
-Hmm, I see.
 
-> Following ugly patch solves the problem:
->
-> diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-> index 334ea5e88..774524c2f 100644
-> --- a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-> +++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-> @@ -45,6 +45,12 @@ static void verify_sync_file_range(struct testcase *tc)
->
->         fd = SAFE_OPEN(tc->fname, O_RDWR|O_CREAT, MODE);
->
-> +       if (!strcmp(tst_device->fs_type, "vfat")) {
-> +               tst_res(TINFO, "Pre-filling file");
-> +               tst_fill_fd(fd, 0, tc->write_off, 1);
-> +               fsync(fd);
-> +       }
-> +
->         lseek(fd, tc->write_off, SEEK_SET);
->
->
-> So either we limit the tests so that the sync region does not overlap with the
-> possible hole at the start of the file and loose some test coverage.
->
-> Or we can add a function to the test library that would return true/false if
-> sparse files are supported for a given FS.
->
 
-My initial thought behind this test-case was to run sync over a range
-which is partially written. The other partial region not being written
-could either be a hole or already synced data. So pre-fill file in
-case of vfat looks sane option, but how about if we add pre-fill as
-part of setup? Something like:
-
---- a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-+++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-@@ -86,6 +86,12 @@ static void setup(void)
- {
-        if (!check_sync_file_range())
-                tst_brk(TCONF, "sync_file_range() not supported");
-+
-+       if (!strcmp(tst_device->fs_type, "vfat")) {
-+               tst_res(TINFO, "Pre-filling file");
-+               tst_fill_file(FNAME3, 0, TST_MB, FILE_SZ_MB);
-+               sync();
-+       }
- }
-
--Sumit
-
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
