@@ -1,39 +1,44 @@
 From: Petr Vorel <petr.vorel@gmail.com>
-Date: Thu, 28 Mar 2019 07:43:09 +0100
-Subject: [LTP] [RESENT][PATCH v2 1/1] lapi: Define TST_ABI{, 32,
- 64} to detect target type
-In-Reply-To: <20190327153911.GA9223@rei.lan>
-References: <20190326105235.21177-1-petr.vorel@gmail.com>
- <20190327153911.GA9223@rei.lan>
-Message-ID: <20190328064235.GA11011@x230>
+Date: Thu, 28 Mar 2019 07:52:53 +0100
+Subject: [LTP] [PATCH] syscalls/stime: Use 3 variants via
+	test_multiplex()
+In-Reply-To: <1553668210-6141-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1553668210-6141-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20190328065243.GB11011@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Xiao,
 
-> Hi!
-> > and replace __WORDSIZE with them.
+> diff --git a/testcases/kernel/syscalls/stime/stime01.c b/testcases/kernel/syscalls/stime/stime01.c
+...
+> +static int do_stime(time_t *ntime)
+> +{
+> +	switch (tst_variant) {
+> +	case 0:
+> +#ifdef __ANDROID__
+> +		tst_brk(TCONF, "libc stime() is not implemented for Android");
+IMHO this is not optimal. 1) That might change in the future, 2) Why not to fix
+it for other foo libc implementations, which might suffer the same problem.
+Therefore IMHO autotools check should be used.
 
-> > Motivation was instead of finding, where all libc define __WORDSIZE,
-> > which is usually used for detecting target type (at least MUSL
-> > defines it in different place than other libc) we define our own
-> > constant.
-
-> > + change encoding of the comment in mem01.c to utf8 and use SPDX license
-> > identifier.
-
-> This should go in separate patch, also I do not see a reason to keep the
-> "We didn't forget you" french comment in the source file, we should
-> probably delete it.
-
-> Other than that the rest looks good.
-
-Thanks for your review!
-Split into 2 patches and merged.
-
+> +#else
+> +		return stime(ntime);
+> +#endif
+> +	case 1:
+> +		return tst_syscall(__NR_stime, ntime);
+> +	case 2: {
+> +		struct timeval tv;
+> +
+> +		tv.tv_sec = *ntime;
+> +		tv.tv_usec = 0;
+> +
+> +		return tst_syscall(__NR_settimeofday, &tv, (struct timezone *) 0);
+> +	}
+> +	}
 
 Kind regards,
 Petr
