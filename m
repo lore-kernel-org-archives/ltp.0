@@ -1,61 +1,58 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 28 Mar 2019 17:36:47 +0800
-Subject: [LTP] [PATCH 2/2] syscalls/stime: detect if libc stime() is
-	implemented dynamically
-In-Reply-To: <1553765807-31789-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1553765807-31789-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1553765807-31789-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Thu, 28 Mar 2019 17:40:25 +0800
+Subject: [LTP] [PATCH] syscalls/stime: Use 3 variants via
+	test_multiplex()
+In-Reply-To: <20190328065243.GB11011@x230>
+References: <1553668210-6141-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20190328065243.GB11011@x230>
+Message-ID: <5C9C9689.8060508@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Don't alway skip libc stime() for Android, because bionic(Android libc)
-may implement it in the future.
+On 2019/03/28 14:52, Petr Vorel wrote:
+> Hi Xiao,
+>
+>> diff --git a/testcases/kernel/syscalls/stime/stime01.c b/testcases/kernel/syscalls/stime/stime01.c
+> ...
+>> +static int do_stime(time_t *ntime)
+>> +{
+>> +	switch (tst_variant) {
+>> +	case 0:
+>> +#ifdef __ANDROID__
+>> +		tst_brk(TCONF, "libc stime() is not implemented for Android");
+> IMHO this is not optimal. 1) That might change in the future, 2) Why not to fix
+> it for other foo libc implementations, which might suffer the same problem.
+> Therefore IMHO autotools check should be used.
+>
+Hi Petr,
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- m4/ltp-libc-funcs.m4                        | 2 +-
- testcases/kernel/syscalls/stime/stime_var.h | 5 +++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
+Sorry, i pushed roughly. :-(
+I have sent a patch set as you suggested, so could you help me review it?
 
-diff --git a/m4/ltp-libc-funcs.m4 b/m4/ltp-libc-funcs.m4
-index ebbe2c9..122073f 100644
---- a/m4/ltp-libc-funcs.m4
-+++ b/m4/ltp-libc-funcs.m4
-@@ -10,5 +10,5 @@ dnl
- AC_DEFUN([LTP_CHECK_LIBC_FUNCS],[
- AC_CHECK_FUNCS(epoll_pwait execveat fallocate fchownat fstatat kcmp mkdirat \
- mknodat openat preadv preadv2 pwritev pwritev2 readlinkat renameat renameat2 \
--splice syncfs sync_file_range tee unshare vmsplice,,)
-+splice stime syncfs sync_file_range tee unshare vmsplice,,)
- ])
-diff --git a/testcases/kernel/syscalls/stime/stime_var.h b/testcases/kernel/syscalls/stime/stime_var.h
-index b014f0a..48d46b3 100644
---- a/testcases/kernel/syscalls/stime/stime_var.h
-+++ b/testcases/kernel/syscalls/stime/stime_var.h
-@@ -8,6 +8,7 @@
- #define STIME_VAR__
- 
- #include <sys/time.h>
-+#include "config.h"
- #include "lapi/syscalls.h"
- 
- #define TEST_VARIANTS 3
-@@ -16,8 +17,8 @@ static int do_stime(time_t *ntime)
- {
- 	switch (tst_variant) {
- 	case 0:
--#ifdef __ANDROID__
--		tst_brk(TCONF, "libc stime() is not implemented on Android");
-+#ifndef HAVE_STIME
-+		tst_brk(TCONF, "libc stime() is not implemented");
- #else
- 		return stime(ntime);
- #endif
--- 
-1.8.3.1
+Best Regards,
+Xiao Yang
+>> +#else
+>> +		return stime(ntime);
+>> +#endif
+>> +	case 1:
+>> +		return tst_syscall(__NR_stime, ntime);
+>> +	case 2: {
+>> +		struct timeval tv;
+>> +
+>> +		tv.tv_sec = *ntime;
+>> +		tv.tv_usec = 0;
+>> +
+>> +		return tst_syscall(__NR_settimeofday,&tv, (struct timezone *) 0);
+>> +	}
+>> +	}
+> Kind regards,
+> Petr
+>
+>
+>
 
 
 
