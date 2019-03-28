@@ -1,284 +1,323 @@
 From: Sandeep Patil <sspatil@android.com>
-Date: Thu, 28 Mar 2019 20:46:59 +0900
-Subject: [LTP] [PATCH v2 1/2] syscalls/accept01: convert to new library.
-Message-ID: <20190328114700.189583-1-sspatil@android.com>
+Date: Thu, 28 Mar 2019 20:47:00 +0900
+Subject: [LTP] [PATCH v2 2/2] syscalls/acct01: convert to new library
+In-Reply-To: <20190328114700.189583-1-sspatil@android.com>
+References: <20190328114700.189583-1-sspatil@android.com>
+Message-ID: <20190328114700.189583-2-sspatil@android.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-...and drop the duplicate "invalid addrlen" test case.
+Use pre-created files by the library instead of creating them
+by hand in the setup() routine.
 
 Signed-off-by: Sandeep Patil <sspatil@android.com>
 ---
 
 v1->v2
 ======
-- Removed the per-test case setup/cleanup function calls
-- Fixed the socket fd for "UDP accept" test case
-- Removed some needless comments
-- Changed description of ENOTSOCK test to 'fd is not socket'
-- Fixed the test result check / prints
+- Renamed file macros to match the error they trigger.
+- Stopped using '/' and /etc/fstab/
+- Use tst_strerrno()
 
- testcases/kernel/syscalls/accept/accept01.c | 211 +++++++-------------
- 1 file changed, 74 insertions(+), 137 deletions(-)
+ testcases/kernel/syscalls/acct/acct01.c | 235 ++++++++----------------
+ 1 file changed, 76 insertions(+), 159 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/accept/accept01.c b/testcases/kernel/syscalls/accept/accept01.c
-index b50056520..150faa977 100644
---- a/testcases/kernel/syscalls/accept/accept01.c
-+++ b/testcases/kernel/syscalls/accept/accept01.c
-@@ -1,26 +1,11 @@
+diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
+index eb104315b..cbcdad819 100644
+--- a/testcases/kernel/syscalls/acct/acct01.c
++++ b/testcases/kernel/syscalls/acct/acct01.c
+@@ -1,31 +1,12 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +
  /*
 - *
-  *   Copyright (c) International Business Machines  Corp., 2001
-  *   07/2001 Ported by Wayne Boyer
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
+  *  Copyright (c) International Business Machines  Corp., 2002
 - *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
+- *  This program is free software;  you can redistribute it and/or modify
+- *  it under the terms of the GNU General Public License as published by
+- *  the Free Software Foundation; either version 2 of the License, or
+- *  (at your option) any later version.
 - *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * Description:
-- *  Verify that accept() returns the proper errno for various failure cases
-+ *   Description:
-+ *     Verify that accept() returns the proper errno for various failure cases
+- *  This program is distributed in the hope that it will be useful,
+- *  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *  the GNU General Public License for more details.
+- *
+- *  You should have received a copy of the GNU General Public License
+- *  along with this program;  if not, write to the Free Software
+- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
   */
  
- #include <stdio.h>
-@@ -34,150 +19,102 @@
+ /* 12/03/2002	Port to LTP     robbiew@us.ibm.com */
+ /* 06/30/2001	Port to Linux	nsharoff@us.ibm.com */
  
- #include <netinet/in.h>
+-/*
+- * ALGORITHM
+- *	issue calls to acct and test the returned values against
+- *	expected results
+- */
+-
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <errno.h>
+@@ -36,181 +17,117 @@
+ #include <unistd.h>
+ #include <sys/mount.h>
  
 -#include "test.h"
 -#include "safe_macros.h"
 +#include "tst_test.h"
  
--char *TCID = "accept01";
--int testno;
-+struct sockaddr_in sin0, sin1, fsin1;
+ #define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
+ 			 S_IXGRP|S_IROTH|S_IXOTH)
+-#define TEST_FILE1	"/"
+-#define TEST_FILE2	"/dev/null"
+-#define TEST_FILE3	"/tmp/does/not/exist"
+-#define TEST_FILE4	"/etc/fstab/"
+-#define TEST_FILE5	"./tmpfile"
+-#define TEST_FILE6	"test_file_eloop1"
+-#define TEST_FILE7	nametoolong
+-#define TEST_FILE8	"mntpoint/tmp"
++#define FILE_EISDIR		"."
++#define FILE_EACCES		"/dev/null"
++#define FILE_ENOENT		"/tmp/does/not/exist"
++#define FILE_ENOTDIR		"./tmpfile/"
++#define TEST_TMPFILE		"./tmpfile"
++#define TEST_ELOOP		"test_file_eloop1"
++#define TEST_ENAMETOOLONG	nametoolong
++#define TEST_EROFS		"mntpoint/file"
  
--int s;				/* socket descriptor */
--struct sockaddr_in sin0, fsin1;
--socklen_t sinlen;
-+int invalid_socketfd = 400; /* anything that is not an open file */
-+int devnull_fd;
-+int socket_fd;
-+int udp_fd;
+ static char nametoolong[PATH_MAX+2];
+-static const char *fs_type;
+-static const char *device;
+-static int mount_flag;
++static struct passwd *ltpuser;
  
 -static void setup(void);
 -static void cleanup(void);
--static void setup0(void);
--static void cleanup0(void);
--static void setup1(void);
--static void cleanup1(void);
 -static void setup2(void);
--static void setup3(void);
--
--struct test_case_t {		/* test case structure */
+-static void cleanup2(void);
+-static void acct_verify(int);
++static void setup_euid(void)
++{
++	SAFE_SETEUID(ltpuser->pw_uid);
++}
+ 
+-static struct test_case_t {
++static void cleanup_euid(void)
++{
++	SAFE_SETEUID(0);
++}
++
 +static struct test_case {
- 	int domain;		/* PF_INET, PF_UNIX, ... */
- 	int type;		/* SOCK_STREAM, SOCK_DGRAM ... */
- 	int proto;		/* protocol number (usually 0 = default) */
-+	int *fd;		/* File descriptor for the test case */
- 	struct sockaddr *sockaddr;	/* socket address buffer */
--	socklen_t *salen;	/* accept's 3rd argument */
--	int retval;		/* syscall return value */
-+	socklen_t salen;	/* accept's 3rd argument */
- 	int experrno;		/* expected errno */
--	void (*setup) (void);
--	void (*cleanup) (void);
- 	char *desc;
--} tdat[] = {
+ 	char *filename;
+ 	char *exp_errval;
+ 	int exp_errno;
+ 	void (*setupfunc) ();
+ 	void (*cleanfunc) ();
+-} test_cases[] = {
+-	{TEST_FILE1, "EISDIR",  EISDIR,  NULL,   NULL},
+-	{TEST_FILE2, "EACCES",  EACCES,  NULL,   NULL},
+-	{TEST_FILE3, "ENOENT",  ENOENT,  NULL,   NULL},
+-	{TEST_FILE4, "ENOTDIR", ENOTDIR, NULL,   NULL},
+-	{TEST_FILE5, "EPERM",   EPERM,   setup2, cleanup2},
+-	{NULL,       "EPERM",   EPERM,   setup2, cleanup2},
+-	{TEST_FILE6, "ELOOP",        ELOOP,        NULL, NULL},
+-	{TEST_FILE7, "ENAMETOOLONG", ENAMETOOLONG, NULL, NULL},
+-	{TEST_FILE8, "EROFS",        EROFS,        NULL, NULL},
 +} tcases[] = {
- 	{
--	PF_INET, SOCK_STREAM, 0, (struct sockaddr *)&fsin1,
--		    &sinlen, -1, EBADF, setup0, cleanup0,
--		    "bad file descriptor"}, {
--	PF_INET, SOCK_STREAM, 0, (struct sockaddr *)&fsin1,
--		    &sinlen, -1, ENOTSOCK, setup0, cleanup0,
--		    "bad file descriptor"}, {
--	PF_INET, SOCK_STREAM, 0, (struct sockaddr *)3,
--		    &sinlen, -1, EINVAL, setup1, cleanup1,
--		    "invalid socket buffer"}, {
--	PF_INET, SOCK_STREAM, 0, (struct sockaddr *)&fsin1,
--		    (socklen_t *) 1, -1, EINVAL, setup1, cleanup1,
--		    "invalid salen"}, {
--	PF_INET, SOCK_STREAM, 0, (struct sockaddr *)&fsin1,
--		    &sinlen, -1, EINVAL, setup2, cleanup1,
--		    "invalid salen"}, {
--	PF_INET, SOCK_STREAM, 0, (struct sockaddr *)&fsin1,
--		    &sinlen, -1, EINVAL, setup3, cleanup1,
--		    "no queued connections"}, {
--	PF_INET, SOCK_DGRAM, 0, (struct sockaddr *)&fsin1,
--		    &sinlen, -1, EOPNOTSUPP, setup1, cleanup1,
--		    "UDP accept"},};
++	{FILE_EISDIR, "EISDIR",  EISDIR,  NULL,   NULL},
++	{FILE_EACCES, "EACCES",  EACCES,  NULL,   NULL},
++	{FILE_ENOENT, "ENOENT",  ENOENT,  NULL,   NULL},
++	{FILE_ENOTDIR, "ENOTDIR", ENOTDIR, NULL,   NULL},
++	{TEST_TMPFILE, "EPERM",   EPERM,   setup_euid, cleanup_euid},
++	{NULL,       "EPERM",   EPERM,   setup_euid, cleanup_euid},
++	{TEST_ELOOP, "ELOOP",        ELOOP,        NULL, NULL},
++	{TEST_ENAMETOOLONG, "ENAMETOOLONG", ENAMETOOLONG, NULL, NULL},
++	{TEST_EROFS, "EROFS",        EROFS,        NULL, NULL},
+ };
+ 
+-char *TCID = "acct01";
+-int TST_TOTAL = ARRAY_SIZE(test_cases);
+-static struct passwd *ltpuser;
 -
--int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
--
--int main(int ac, char *av[])
+-int main(int argc, char *argv[])
 -{
 -	int lc;
+-	int i;
 -
--	tst_parse_opts(ac, av, NULL, NULL);
+-	tst_parse_opts(argc, argv, NULL, NULL);
 -
 -	setup();
 -
--	for (lc = 0; TEST_LOOPING(lc); ++lc) {
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
--		for (testno = 0; testno < TST_TOTAL; ++testno) {
--			tdat[testno].setup();
--
--			TEST(accept(s, tdat[testno].sockaddr,
--				    tdat[testno].salen));
--			if (TEST_RETURN > 0)
--				TEST_RETURN = 0;
--			if (TEST_RETURN != tdat[testno].retval ||
--			    (TEST_RETURN < 0 &&
--			     TEST_ERRNO != tdat[testno].experrno)) {
--				tst_resm(TFAIL, "%s ; returned"
--					 " %ld (expected %d), errno %d (expected"
--					 " %d)", tdat[testno].desc,
--					 TEST_RETURN, tdat[testno].retval,
--					 TEST_ERRNO, tdat[testno].experrno);
--			} else {
--				tst_resm(TPASS, "%s successful",
--					 tdat[testno].desc);
--			}
--			tdat[testno].cleanup();
--		}
+-		for (i = 0; i < TST_TOTAL; i++)
+-			acct_verify(i);
 -	}
 -
 -	cleanup();
 -	tst_exit();
 -}
-+		PF_INET, SOCK_STREAM, 0, &invalid_socketfd,
-+		(struct sockaddr *)&fsin1, sizeof(fsin1), EBADF,
-+		"bad file descriptor"
-+	},
-+	{
-+		PF_INET, SOCK_STREAM, 0, &devnull_fd, (struct sockaddr *)&fsin1,
-+		sizeof(fsin1), ENOTSOCK, "fd is not socket"
-+	},
-+	{
-+		PF_INET, SOCK_STREAM, 0, &socket_fd, (struct sockaddr *)3,
-+		sizeof(fsin1), EINVAL, "invalid socket buffer"
-+	},
-+	{
-+		PF_INET, SOCK_STREAM, 0, &socket_fd, (struct sockaddr *)&fsin1,
-+		1, EINVAL, "invalid salen"
-+	},
-+	{
-+		PF_INET, SOCK_STREAM, 0, &socket_fd, (struct sockaddr *)&fsin1,
-+		sizeof(fsin1), EINVAL, "no queued connections"
-+	},
-+	{
-+		PF_INET, SOCK_STREAM, 0, &udp_fd, (struct sockaddr *)&fsin1,
-+		sizeof(fsin1), EOPNOTSUPP, "UDP accept"
-+	},
-+};
- 
--static void setup(void)
-+static void test_setup(void)
- {
--	TEST_PAUSE;
 -
- 	/* initialize local sockaddr */
- 	sin0.sin_family = AF_INET;
- 	sin0.sin_port = 0;
- 	sin0.sin_addr.s_addr = INADDR_ANY;
--}
- 
--static void cleanup(void)
+-static void check_acct_in_kernel(void)
 -{
+-	/* check if acct is implemented in kernel */
+-	if (acct(NULL) == -1) {
+-		if (errno == ENOSYS) {
+-			tst_brkm(TCONF,
+-				 NULL, "BSD process accounting is not configured in "
+-				 "this kernel");
+-		}
+-	}
 -}
-+	devnull_fd = SAFE_OPEN("/dev/null", O_WRONLY);
+-
+ static void setup(void)
+ {
+ 	int fd;
  
--static void setup0(void)
--{
--	if (tdat[testno].experrno == EBADF)
--		s = 400;	/* anything not an open file */
--	else if ((s = open("/dev/null", O_WRONLY)) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "error opening /dev/null");
--}
-+	socket_fd = SAFE_SOCKET(PF_INET, SOCK_STREAM, 0);
-+	SAFE_BIND(socket_fd, (struct sockaddr *)&sin0, sizeof(sin0));
+-	tst_require_root();
+-
+-	check_acct_in_kernel();
+-
+-	tst_tmpdir();
++	TEST(acct(NULL));
++	if (TST_RET == -1 && TST_ERR == ENOSYS)
++		tst_brk(TCONF, "acct() system call isn't configured in kernel");
  
--static void cleanup0(void)
--{
--	s = -1;
--}
-+	sin1.sin_family = AF_INET;
-+	sin1.sin_port = 0;
-+	sin1.sin_addr.s_addr = INADDR_ANY;
+-	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
++	ltpuser = SAFE_GETPWNAM("nobody");
  
--static void setup1(void)
--{
--	s = SAFE_SOCKET(cleanup, tdat[testno].domain, tdat[testno].type,
--			tdat[testno].proto);
--	SAFE_BIND(cleanup, s, (struct sockaddr *)&sin0, sizeof(sin0));
--	sinlen = sizeof(fsin1);
-+	udp_fd = SAFE_SOCKET(PF_INET, SOCK_DGRAM, 0);
-+	SAFE_BIND(udp_fd, (struct sockaddr *)&sin1, sizeof(sin1));
+-	fd = SAFE_CREAT(cleanup, TEST_FILE5, 0777);
+-	SAFE_CLOSE(cleanup, fd);
++	fd = SAFE_CREAT(TEST_TMPFILE, 0777);
++	SAFE_CLOSE(fd);
+ 
+-	if (acct(TEST_FILE5) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "acct failed unexpectedly");
++	TEST(acct(TEST_TMPFILE));
++	if (TST_RET == -1)
++		tst_brk(TBROK | TTERRNO, "acct failed unexpectedly");
+ 
+ 	/* turn off acct, so we are in a known state */
+-	if (acct(NULL) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "acct(NULL) failed");
++	TEST(acct(NULL));
++	if (TST_RET == -1)
++		tst_brk(TBROK | TTERRNO, "acct(NULL) failed");
+ 
+ 	/* ELOOP SETTING */
+-	SAFE_SYMLINK(cleanup, TEST_FILE6, "test_file_eloop2");
+-	SAFE_SYMLINK(cleanup, "test_file_eloop2", TEST_FILE6);
++	SAFE_SYMLINK(TEST_ELOOP, "test_file_eloop2");
++	SAFE_SYMLINK("test_file_eloop2", TEST_ELOOP);
+ 
+ 	/* ENAMETOOLONG SETTING */
+ 	memset(nametoolong, 'a', PATH_MAX+1);
+-
+-	/* EROFS SETTING */
+-	fs_type = tst_dev_fs_type();
+-	device = tst_acquire_device(cleanup);
+-
+-	if (!device)
+-		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
+-
+-	tst_mkfs(cleanup, device, fs_type, NULL, NULL);
+-	SAFE_MKDIR(cleanup, "mntpoint", DIR_MODE);
+-	SAFE_MOUNT(cleanup, device, "mntpoint", fs_type, 0, NULL);
+-	mount_flag = 1;
+-
+-	/* Create a file in the file system, then remount it as read-only */
+-	fd = SAFE_CREAT(cleanup, TEST_FILE8, 0644);
+-	SAFE_CLOSE(cleanup, fd);
+-	SAFE_MOUNT(cleanup, device, "mntpoint", fs_type,
+-		   MS_REMOUNT | MS_RDONLY, NULL);
  }
  
--static void cleanup1(void)
-+static void test_cleanup(void)
+-static void acct_verify(int i)
++static void cleanup(void)
  {
--	(void)close(s);
--	s = -1;
-+	SAFE_CLOSE(devnull_fd);
-+	SAFE_CLOSE(socket_fd);
+-
+-	if (test_cases[i].setupfunc)
+-		test_cases[i].setupfunc();
+-
+-	TEST(acct(test_cases[i].filename));
+-
+-	if (test_cases[i].cleanfunc)
+-		test_cases[i].cleanfunc();
+-
+-	if (TEST_RETURN != -1) {
+-		tst_resm(TFAIL, "acct(%s) succeeded unexpectedly",
+-			 test_cases[i].filename);
+-		return;
+-	}
+-
+-	if (TEST_ERRNO == test_cases[i].exp_errno) {
+-		tst_resm(TPASS | TTERRNO, "acct failed as expected");
+-	} else {
+-		tst_resm(TFAIL | TTERRNO,
+-			 "acct failed unexpectedly; expected: %d - %s",
+-			 test_cases[i].exp_errno,
+-			 strerror(test_cases[i].exp_errno));
+-	}
++	SAFE_UNLINK(TEST_TMPFILE);
++	SAFE_UNLINK(TEST_ELOOP);
  }
  
 -static void setup2(void)
-+void verify_accept(unsigned int nr)
++static void verify_acct(unsigned int nr)
  {
--	setup1();		/* get a socket in s */
--	sinlen = 1;		/* invalid s */
+-	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
 -}
 +	struct test_case *tcase = &tcases[nr];
  
--static void setup3(void)
+-static void cleanup2(void)
 -{
--	int one = 1;
-+	TEST(accept(*tcase->fd, tcase->sockaddr, &tcase->salen));
-+
-+	if (TST_RET != -1) {
-+		tst_res(TFAIL, "%s: returned %i, expected -1",
-+				tcase->desc, TST_RET);
-+		return;
-+	}
-+
-+	if (TST_ERR != tcase->experrno) {
-+		tst_res(TFAIL | TTERRNO, "%s: expected errno %s, got ",
-+				tcase->desc, tst_strerrno(tcase->experrno));
-+		return;
-+	}
+-	SAFE_SETEUID(cleanup, 0);
+-}
++	if (tcase->setupfunc)
++		tcase->setupfunc();
  
--	setup1();
--	SAFE_IOCTL(cleanup, s, FIONBIO, &one);
-+	tst_res(TPASS | TTERRNO, "%s successful", tcase->desc);
+-static void cleanup(void)
+-{
+-	if (acct(NULL) == -1)
+-		tst_resm(TWARN | TERRNO, "acct(NULL) failed");
++	TEST(acct(tcase->filename));
+ 
+-	if (mount_flag && tst_umount("mntpoint") < 0) {
+-		tst_resm(TWARN | TERRNO,
+-			 "umount device:%s failed", device);
+-	}
++	if (tcase->cleanfunc)
++		tcase->cleanfunc();
+ 
+-	if (device)
+-		tst_release_device(device);
++	if (TST_RET != -1)
++		tst_res(TFAIL, "acct(%s) succeeded unexpectedly",
++				tcase->filename);
+ 
+-	tst_rmdir();
++	if (TST_ERR == tcase->exp_errno)
++		tst_res(TPASS | TTERRNO, "acct() failed as expected");
++	else
++		tst_res(TFAIL | TTERRNO,
++				"acct() failed, expected: %s",
++				tst_strerrno(tcase->exp_errno));
  }
 +
 +static struct tst_test test = {
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++	.mntpoint = "mntpoint",
++	.needs_rofs = 1,
 +	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = test_setup,
-+	.cleanup = test_cleanup,
-+	.test = verify_accept,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test = verify_acct,
 +};
 -- 
 2.21.0.392.gf8f6787159e-goog
