@@ -1,166 +1,147 @@
-From: Ignaz Forster <iforster@suse.de>
-Date: Thu, 28 Mar 2019 18:27:59 +0100
-Subject: [LTP] [PATCH 3/3] ima: Add overlay test
-In-Reply-To: <20190327161638.7407-4-pvorel@suse.cz>
-References: <20190327161638.7407-1-pvorel@suse.cz>
- <20190327161638.7407-4-pvorel@suse.cz>
-Message-ID: <854e62ce-5e5c-7ea7-0291-0d3eaadf3fca@suse.de>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 1 Apr 2019 14:54:08 +0800
+Subject: [LTP] [PATCH v3] syscalls/sync_file_range: add partial file
+	sync test-cases
+In-Reply-To: <1551962651-22261-1-git-send-email-sumit.garg@linaro.org>
+References: <1551962651-22261-1-git-send-email-sumit.garg@linaro.org>
+Message-ID: <CAEemH2dUC8pQmN5BTM7qm9vZyudqZeATY+oD63OEQ+UOcY2G9A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+Hi Sumit,
 
-thanks a lot for the LTP integration!
+On Thu, Mar 7, 2019 at 8:44 PM Sumit Garg <sumit.garg@linaro.org> wrote:
 
-Am 27.03.19 um 17:16 Uhr schrieb Petr Vorel:
-> Based on reproducer made by Ignaz Forster <iforster@suse.de>
-> used for his not upstreamed patchset [1] and previous report [2].
-
-Just for clarification, as the test is only referring to IMA: With IMA 
-everything should be working already, the problem during copy_up 
-operations was fixed by Mimi and Goldwyn in 
-https://patchwork.kernel.org/patch/10776231/.
-As expected the test passes on my IMA-only setup.
-
-My outstanding patchset is only necessary when combining IMA with EVM - 
-in this case the test will still fail. I hope I'll be able to resume my 
-work in the next few weeks.
-
-The test itself is looking good and working as expected.
-
-> NOTE: backup variables are needed because ima_setup.sh calling
-> tst_mount as well when TMPDIR is on tmpfs device.
-> 
-> [1] https://www.spinics.net/lists/linux-integrity/msg05926.html
-> [2] https://www.spinics.net/lists/linux-integrity/msg03593.html
-> 
-> Cc: Mimi Zohar <zohar@linux.vnet.ibm.com>
-> Cc: Ignaz Forster <iforster@suse.de>
-> Cc: Fabian Vogt <FVogt@suse.com>
-> Cc: Weihua Du <WHDu@suse.com>
-> Cc: linux-integrity@vger.kernel.org
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-
-Tested-by: Ignaz Forster <iforster@suse.de>
-
+> Add partial file sync tests as part of sync_file_range02 test-case.
+>
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 > ---
->   runtest/ima                                   |  1 +
->   .../integrity/ima/tests/ima_overlay.sh        | 65 +++++++++++++++++++
->   .../security/integrity/ima/tests/ima_setup.sh |  4 +-
->   3 files changed, 68 insertions(+), 2 deletions(-)
->   create mode 100755 testcases/kernel/security/integrity/ima/tests/ima_overlay.sh
-> 
-> diff --git a/runtest/ima b/runtest/ima
-> index bcae16bb7..f96711a7d 100644
-> --- a/runtest/ima
-> +++ b/runtest/ima
-> @@ -3,3 +3,4 @@ ima_measurements ima_measurements.sh
->   ima_policy ima_policy.sh
->   ima_tpm ima_tpm.sh
->   ima_violations ima_violations.sh
-> +ima_overlay ima_overlay.sh
-> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_overlay.sh b/testcases/kernel/security/integrity/ima/tests/ima_overlay.sh
-> new file mode 100755
-> index 000000000..eedcd3753
-> --- /dev/null
-> +++ b/testcases/kernel/security/integrity/ima/tests/ima_overlay.sh
-> @@ -0,0 +1,65 @@
-> +#!/bin/sh
-> +# Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
-> +# Based on reproducer made by Ignaz Forster <iforster@suse.de>
+>
+> Changes in v3:
+> 1. Add upper bound check for synced size to device.
+> 2. Refactor tests for more code reuse.
+> 3. Add another test to check sync over partial write.
+>
+> Changes in v2:
+> 1. Do full file write instead of partial and test sync partial file.
+>
+>  .../syscalls/sync_file_range/sync_file_range02.c   | 47
+> +++++++++++++++++-----
+>  1 file changed, 37 insertions(+), 10 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+> b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+> index 82d77f7..334ea5e 100644
+> --- a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+> +++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+> @@ -22,23 +22,36 @@
+>  #include "check_sync_file_range.h"
+>
+>  #define MNTPOINT               "mnt_point"
+> -#define FNAME          MNTPOINT"/test"
+> -#define FILE_SIZE_MB   32
+> -#define FILE_SIZE (FILE_SIZE_MB * TST_MB)
+> +#define FNAME1                 MNTPOINT"/test1"
+> +#define FNAME2                 MNTPOINT"/test2"
+> +#define FNAME3                 MNTPOINT"/test3"
+> +#define FILE_SZ_MB             32
+> +#define FILE_SZ                        (FILE_SZ_MB * TST_MB)
+>  #define MODE                   0644
+>
+> -static void verify_sync_file_range(void)
+> +struct testcase {
+> +       char *fname;
+> +       off64_t sync_off;
+> +       off64_t sync_size;
+> +       size_t exp_sync_size;
+> +       off64_t write_off;
+> +       size_t write_size_mb;
+> +};
 > +
-> +TST_SETUP="setup"
-> +TST_CLEANUP="cleanup"
-> +. ima_setup.sh
-> +TST_TESTFUNC="do_test"
+> +static void verify_sync_file_range(struct testcase *tc)
+>  {
+>         int fd;
+>         unsigned long written;
+>
+> -       fd = SAFE_OPEN(FNAME, O_RDWR|O_CREAT, MODE);
+> +       fd = SAFE_OPEN(tc->fname, O_RDWR|O_CREAT, MODE);
 > +
-> +setup()
-> +{
-> +	lower="$TST_MNTPOINT/lower"
-> +	upper="$TST_MNTPOINT/upper"
-> +	work="$TST_MNTPOINT/work"
-> +	merged="$TST_MNTPOINT/merged"
-> +	mkdir -p $lower $upper $work $merged
-> +
-> +	device_backup="$TST_DEVICE"
-> +	TST_DEVICE="overlay"
-> +
-> +	fs_type_backup="$TST_FS_TYPE"
-> +	TST_FS_TYPE="overlay"
-> +
-> +	mntpoint_backup="$TST_MNTPOINT"
-> +	TST_MNTPOINT="$merged"
-> +
-> +	params_backup="$TST_MNT_PARAMS"
-> +	TST_MNT_PARAMS="-o lowerdir=$lower,upperdir=$upper,workdir=$work"
-> +
-> +	grep -q ima_appraise_tcb /proc/cmdline || \
-> +		tst_brk TCONF "Test requires ima_appraise_tcb kernel parameter"
+> +       lseek(fd, tc->write_off, SEEK_SET);
+>
+>         tst_dev_bytes_written(tst_device->dev);
+>
+> -       tst_fill_fd(fd, 0, TST_MB, FILE_SIZE_MB);
+> +       tst_fill_fd(fd, 0, TST_MB, tc->write_size_mb);
+>
+
+I'm just thinking that is probably more precise if we reverse the order of
+tst_fill_fd() and tst_dev_bytes_written()? Because that does counting the
+dev_bytes_writen only before and after sync_file_range(), we cann't
+garantee system does not wirte back to deviece when do fill_fd(), isn't it?
+
+
+>
+> -       TEST(sync_file_range(fd, 0, FILE_SIZE,
+> +       TEST(sync_file_range(fd, tc->sync_off, tc->sync_size,
+>                              SYNC_FILE_RANGE_WAIT_BEFORE |
+>                              SYNC_FILE_RANGE_WRITE |
+>                              SYNC_FILE_RANGE_WAIT_AFTER));
+> @@ -50,10 +63,23 @@ static void verify_sync_file_range(void)
+>
+>         SAFE_CLOSE(fd);
+>
+> -       if (written >= FILE_SIZE)
+> +       if ((written >= tc->exp_sync_size) &&
+> +           (written <= (tc->exp_sync_size + tc->exp_sync_size/10)))
+>                 tst_res(TPASS, "Test file range synced to device");
+>         else
+> -               tst_res(TFAIL, "Synced %li, expected %i", written,
+> FILE_SIZE);
+> +               tst_res(TFAIL, "Synced %li, expected %li", written,
+> +                       tc->exp_sync_size);
 > +}
 > +
-> +do_test()
+> +static struct testcase testcases[] = {
+> +       { FNAME1, 0, FILE_SZ, FILE_SZ, 0, FILE_SZ_MB },
+> +       { FNAME2, FILE_SZ/4, FILE_SZ/2, FILE_SZ/2, 0, FILE_SZ_MB },
+> +       { FNAME3, FILE_SZ/4, FILE_SZ/2, FILE_SZ/4, FILE_SZ/2, FILE_SZ_MB/4
+> },
+> +};
+> +
+> +static void run(unsigned int i)
 > +{
-> +	local file="foo.txt"
-> +	local f
-> +
-> +	tst_mount
-> +	mounted=1
-> +
-> +	ROD echo lower \> $lower/$file
-> +	if ! echo overlay > $merged/$file 2>/dev/null; then
-> +		tst_res TFAIL "Cannot write to merged layer"
-> +		return
-> +	fi
+> +       verify_sync_file_range(&testcases[i]);
+>  }
+>
+>  static void setup(void)
+> @@ -63,10 +89,11 @@ static void setup(void)
+>  }
+>
+>  static struct tst_test test = {
+> +       .tcnt = ARRAY_SIZE(testcases),
+>         .needs_root = 1,
+>         .mount_device = 1,
+>         .all_filesystems = 1,
+>         .mntpoint = MNTPOINT,
+>         .setup = setup,
+> -       .test_all = verify_sync_file_range,
+> +       .test = run,
+>  };
+> --
+> 2.7.4
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
 
-I can think of two additional tests here:
-1. Appending to a file (>> instead of >)
-2. Creating a new file in the overlay
 
-These cases are using different code paths and may fail independently, 
-so separate tests would be handy.
-
-Ignaz
-
-> +	for f in $(find $TST_MNTPOINT -type f); do
-> +		EXPECT_PASS cat $f \> /dev/null 2\> /dev/null
-> +	done
-> +}
-> +
-> +cleanup()
-> +{
-> +	[ -n "$mounted" ] || return 0
-> +
-> +	tst_umount $TST_DEVICE
-> +
-> +	TST_DEVICE="$device_backup"
-> +	TST_FS_TYPE="$fs_type_backup"
-> +	TST_MNTPOINT="$mntpoint_backup"
-> +	TST_MNT_PARAMS="$params_backup"
-> +}
-> +
-> +tst_run
-> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-> index da49eb1b2..08aa5300a 100644
-> --- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-> +++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-> @@ -64,14 +64,14 @@ print_ima_config()
->   	local config="/boot/config-$(uname -r)"
->   	local i
->   
-> -	tst_res TINFO "/proc/cmdline: $(cat /proc/cmdline)"
-> -
->   	if [ -r "$config" ]; then
->   		tst_res TINFO "IMA kernel config:"
->   		for i in $(grep ^CONFIG_IMA $config); do
->   			tst_res TINFO "$i"
->   		done
->   	fi
-> +
-> +	tst_res TINFO "/proc/cmdline: $(cat /proc/cmdline)"
->   }
->   
->   ima_setup()
-> 
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190401/2c6a5a02/attachment.html>
