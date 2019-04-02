@@ -1,45 +1,41 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 2 Apr 2019 11:33:37 +0800
-Subject: [LTP] [PATCH] syscalls/accept04_01.c: Correcting ltp_syscall to
-	tst_syscall
-In-Reply-To: <1554173606-20291-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-References: <1554173606-20291-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-Message-ID: <5CA2D811.2040708@cn.fujitsu.com>
+From: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+Date: Tue, 2 Apr 2019 21:01:39 +1100
+Subject: [LTP] [PATCH 0/4] fanotify: FAN_REPORT_FID and Directory
+ Modification Events
+Message-ID: <cover.1554197461.git.mbobrowski@mbobrowski.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jinhui,
+This patch series contains the changes needed to support and validate the new
+FAN_REPORT_FID flag and directory modification event functionality within the
+fanotify API.
 
-Good catch. LGTM
-Reviewed-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Amir Goldstein (1):
+  syscalls/fanotify01: add FAN_REPORT_FID test cases
 
-Best regards,
-Xiao Yang
-On 2019/04/02 10:53, Jinhui huang wrote:
-> Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/accept4/accept4_01.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/accept4/accept4_01.c b/testcases/kernel/syscalls/accept4/accept4_01.c
-> index c423b2a..dd289cf 100644
-> --- a/testcases/kernel/syscalls/accept4/accept4_01.c
-> +++ b/testcases/kernel/syscalls/accept4/accept4_01.c
-> @@ -50,9 +50,9 @@ accept4_01(int fd, struct sockaddr *sockaddr, socklen_t *addrlen, int flags)
->  	args[2] = (long)addrlen;
->  	args[3] = flags;
->  
-> -	return ltp_syscall(__NR_socketcall, SYS_ACCEPT4, args);
-> +	return tst_syscall(__NR_socketcall, SYS_ACCEPT4, args);
->  #else
-> -	return ltp_syscall(__NR_accept4, fd, sockaddr, addrlen, flags);
-> +	return tst_syscall(__NR_accept4, fd, sockaddr, addrlen, flags);
->  #endif
->  }
->  #endif
+Matthew Bobrowski (3):
+  syscalls/fanotify13: new test to verify FAN_REPORT_FID functionality
+  syscalls/fanotify14: new test to validate FAN_REPORT_FID interface
+    return values
+  syscalls/fanotify15: verify fid for dirent events
+
+ testcases/kernel/syscalls/fanotify/.gitignore   |   3 +
+ testcases/kernel/syscalls/fanotify/fanotify.h   |  41 +++
+ testcases/kernel/syscalls/fanotify/fanotify01.c |  41 ++-
+ testcases/kernel/syscalls/fanotify/fanotify13.c | 329 ++++++++++++++++++++++++
+ testcases/kernel/syscalls/fanotify/fanotify14.c | 170 ++++++++++++
+ testcases/kernel/syscalls/fanotify/fanotify15.c | 256 ++++++++++++++++++
+ 6 files changed, 838 insertions(+), 2 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify13.c
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify14.c
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify15.c
+
+-- 
+2.16.4
 
 
-
+-- 
+Matthew Bobrowski
