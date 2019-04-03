@@ -1,105 +1,18 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 3 Apr 2019 20:18:57 +0800
-Subject: [LTP] [PATCH] hugetlb/hugemmap01: dynamically change default
-	hugepages
-In-Reply-To: <20190403075935.8407-1-xiliang@redhat.com>
-References: <20190403075935.8407-1-xiliang@redhat.com>
-Message-ID: <CAEemH2ea3S1zKsGK851MbnbQnwtxwg03i6Nf-uAwnvUE0yxY0A@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 3 Apr 2019 15:56:30 +0200
+Subject: [LTP] [PATCH] syscall/pivot_root01.c: Fix compile error
+In-Reply-To: <1554272990-8651-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+References: <1554272990-8651-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <20190403135629.GA26464@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao,
-
-On Wed, Apr 3, 2019 at 7:56 PM Xiao Liang <xiliang@redhat.com> wrote:
-
-> When the system's Hugepagesize is large(eg. 512MiB), the test may
-> break as cannot set nr_hugepages to default 128.
->
-
-Yes, that's true. But each of ltp/hugemmap test has a parameter(hugemmap01
--s #nr_hpage#) to reset the nr_huagepges number before testing. What we
-have done to avoid that is to customize the hugetlb runtest file via a
-wrapper script.
-
->
-> This patch checks the memory available and Hugepagesize registered
-> to set a reasonable num.
->
-
-I have no objection on this way. But a better way maybe to achieve a new
-function in the hugetlb library to reset nr_hugepages dynamically for the
-whole hugepage tests.
-
-
->
-> With this patch:
-> tst_test.c:1096: INFO: Timeout per run is 0h 05m 00s
-> hugemmap01.c:99: INFO: max page available count is 54
-> mem.c:814: INFO: set nr_hugepages to 54
-> hugemmap01.c:73: PASS: call succeeded
-> mem.c:814: INFO: set nr_hugepages to 0
->
-> Without this patch:
-> tst_test.c:1096: INFO: Timeout per run is 0h 05m 00s
-> mem.c:814: INFO: set nr_hugepages to 128
-> mem.c:823: BROK: nr_hugepages = 54, but expect 128
-> mem.c:814: INFO: set nr_hugepages to 0
->
-> Signed-off-by: Xiao Liang <xiliang@redhat.com>
-> ---
->  testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
->
-> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-> b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-> index 4dc330dc0..ea2f42827 100644
-> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-> @@ -89,14 +89,26 @@ static void test_hugemmap(void)
->
->  void setup(void)
->  {
-> +       long page_sz = 0;
-> +       long mem_avail = 0;
-> +       long max_pages = 0;
-> +
-> +       page_sz = SAFE_READ_MEMINFO("Hugepagesize:");
-> +       mem_avail = SAFE_READ_MEMINFO("MemAvailable:");
-> +       max_pages = mem_avail/page_sz;
-> +       tst_res(TINFO, "max page available count is %ld", max_pages);
-> +
->         save_nr_hugepages();
->
->         if (!Hopt)
->                 Hopt = tst_get_tmpdir();
->         SAFE_MOUNT("none", Hopt, "hugetlbfs", 0, NULL);
->
-> -       if (nr_opt)
-> +       if (nr_opt) {
->                 hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
-> +       } else {
-> +
->  hugepages=(page_sz*hugepages>mem_avail)?max_pages:hugepages;
-> +       }
->         set_sys_tune("nr_hugepages", hugepages, 1);
->
->         snprintf(TEMPFILE, sizeof(TEMPFILE), "%s/mmapfile%d", Hopt,
-> getpid());
-> --
-> 2.17.2
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
-
+Hi!
+Pushed, thanks.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190403/b87c88fd/attachment.html>
+Cyril Hrubis
+chrubis@suse.cz
