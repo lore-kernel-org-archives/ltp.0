@@ -1,39 +1,70 @@
-From: Mel Gorman <mgorman@techsingularity.net>
-Date: Wed, 3 Apr 2019 08:09:29 +0100
-Subject: [LTP] [mm, compaction] e332f741a8: BUG:unable_to_handle_kernel
-In-Reply-To: <20190403064200.GI20952@shao2-debian>
-References: <20190403064200.GI20952@shao2-debian>
-Message-ID: <20190403070929.GR3189@techsingularity.net>
+From: Xiao Liang <xiliang@redhat.com>
+Date: Wed,  3 Apr 2019 15:59:35 +0800
+Subject: [LTP] [PATCH] hugetlb/hugemmap01: dynamically change default
+	hugepages
+Message-ID: <20190403075935.8407-1-xiliang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Apr 03, 2019 at 02:42:00PM +0800, kernel test robot wrote:
-> FYI, we noticed the following commit (built with gcc-7):
-> 
-> commit: e332f741a8dd1ec9a6dc8aa997296ecbfe64323e ("mm, compaction: be selective about what pageblocks to clear skip hints")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> in testcase: ltp
-> with following parameters:
-> 
-> 	disk: 1HDD
-> 	fs: xfs
-> 	test: syscalls_part4
-> 
-> test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
-> test-url: http://linux-test-project.github.io/
-> 
-> 
-> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
+When the system's Hugepagesize is large(eg. 512MiB), the test may
+break as cannot set nr_hugepages to default 128.
 
-There are fixes queued in Andrew's tree that should cover this.
+This patch checks the memory available and Hugepagesize registered
+to set a reasonable num.
 
+With this patch:
+tst_test.c:1096: INFO: Timeout per run is 0h 05m 00s
+hugemmap01.c:99: INFO: max page available count is 54
+mem.c:814: INFO: set nr_hugepages to 54
+hugemmap01.c:73: PASS: call succeeded
+mem.c:814: INFO: set nr_hugepages to 0
+
+Without this patch:
+tst_test.c:1096: INFO: Timeout per run is 0h 05m 00s
+mem.c:814: INFO: set nr_hugepages to 128
+mem.c:823: BROK: nr_hugepages = 54, but expect 128
+mem.c:814: INFO: set nr_hugepages to 0
+
+Signed-off-by: Xiao Liang <xiliang@redhat.com>
+---
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+index 4dc330dc0..ea2f42827 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+@@ -89,14 +89,26 @@ static void test_hugemmap(void)
+ 
+ void setup(void)
+ {
++	long page_sz = 0;
++	long mem_avail = 0;
++	long max_pages = 0;
++
++	page_sz = SAFE_READ_MEMINFO("Hugepagesize:");
++	mem_avail = SAFE_READ_MEMINFO("MemAvailable:");
++	max_pages = mem_avail/page_sz;
++	tst_res(TINFO, "max page available count is %ld", max_pages);
++
+ 	save_nr_hugepages();
+ 
+ 	if (!Hopt)
+ 		Hopt = tst_get_tmpdir();
+ 	SAFE_MOUNT("none", Hopt, "hugetlbfs", 0, NULL);
+ 
+-	if (nr_opt)
++	if (nr_opt) {
+ 		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
++	} else {
++		hugepages=(page_sz*hugepages>mem_avail)?max_pages:hugepages;
++	}
+ 	set_sys_tune("nr_hugepages", hugepages, 1);
+ 
+ 	snprintf(TEMPFILE, sizeof(TEMPFILE), "%s/mmapfile%d", Hopt, getpid());
 -- 
-Mel Gorman
-SUSE Labs
+2.17.2
+
