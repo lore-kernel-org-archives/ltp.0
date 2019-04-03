@@ -1,37 +1,62 @@
-From: Sandeep Patil <sspatil@android.com>
-Date: Wed, 3 Apr 2019 08:49:31 -0700
-Subject: [LTP] [RFC PATCH 1/4] syscalls/abort01: convert to new library
-In-Reply-To: <20190403120653.GC13658@rei>
-References: <20190325232012.67123-1-sspatil@android.com>
- <20190325232012.67123-2-sspatil@android.com>
- <20190326115825.GA32549@rei.lan> <20190326124743.GC5826@google.com>
- <20190326125132.GA11086@rei.lan> <20190328040730.GE5826@google.com>
- <20190403120653.GC13658@rei>
-Message-ID: <20190403154931.GC174313@google.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed,  3 Apr 2019 20:02:04 +0300
+Subject: [LTP] [PATCH] network/dhcp: correct prefix for expected IPv6 address
+Message-ID: <1554310924-24751-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Apr 03, 2019 at 02:06:53PM +0200, Cyril Hrubis wrote:
-> Hi!
-> > > > I am surprised that didn't throw a warning + build error for me.
-> > > > other than that, thanks for doing this
-> > > 
-> > > That depends on gcc version and mix of warning flags...
-> > 
-> > clang actually throws a lot of warnings for us when we build it natively for
-> > Android. In this case however, I just used my laptop "gcc (Debian 7.3.0-5)"
-> > and default flags for LTP builds.
-> > 
-> > Do you have plans of enabling -Werror?
-> 
-> We cannot do that with the amount of legacy code we have the build would
-> fail pretty much every time. So no, no plans for the foreseeable future.
+Assuming a /64 prefix from DHCPv6 server is wrong [1], fixed dhclient
+sets /128 prefix.
 
-Ack, thanks Cyril. I'd rather convert as many tests to the new library before
-I get to them then. By the way, I sent V2s for acct01 & accept01 addressing
-your comments now.
+With this patch the test also checks the configured address without
+the prefix, when the first check fails, and reports a more verbose
+message, plus shows an output from 'ip addr show $iface' command.
 
-- ssp
+[1] https://bugs.launchpad.net/ubuntu/+source/isc-dhcp/+bug/1609898
+
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/network/dhcp/dhcp_lib.sh |   15 +++++++++++----
+ 1 files changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/network/dhcp/dhcp_lib.sh b/testcases/network/dhcp/dhcp_lib.sh
+index c92117f..434ac1d 100755
+--- a/testcases/network/dhcp/dhcp_lib.sh
++++ b/testcases/network/dhcp/dhcp_lib.sh
+@@ -42,10 +42,12 @@ dhcp_lib_setup()
+ 
+ 	if [ $TST_IPV6 ]; then
+ 		ip_addr="fd00:1:1:2::12/64"
+-		ip_addr_check="fd00:1:1:2::100/64"
++		ip_addr_check_nm="fd00:1:1:2::100"
++		ip_addr_check="$ip_addr_check_nm/128"
+ 	else
+ 		ip_addr="10.1.1.12/24"
+-		ip_addr_check="10.1.1.100/24"
++		ip_addr_check_nm="10.1.1.100"
++		ip_addr_check="$ip_addr_check_nm/24"
+ 	fi
+ 
+ 	lsmod | grep -q '^veth ' && veth_loaded=yes || veth_loaded=no
+@@ -141,8 +143,13 @@ test01()
+ 	if [ $? -eq 0 ]; then
+ 		tst_res TPASS "'$ip_addr_check' configured by DHCPv$TST_IPVER"
+ 	else
+-		tst_res TFAIL "'$ip_addr_check' not configured by DHCPv$TST_IPVER"
+-		print_dhcp_log
++		if ip addr show $iface1 | grep -q $ip_addr_check_nm; then
++			tst_res TFAIL "'$ip_addr_check_nm' configured but has wrong prefix, expect '$ip_addr_check'"
++			ip addr show $iface1
++		else
++			tst_res TFAIL "'$ip_addr_check' not configured by DHCPv$TST_IPVER"
++			print_dhcp_log
++		fi
+ 	fi
+ 
+ 	if [ "$wicked" ]; then
+-- 
+1.7.1
+
