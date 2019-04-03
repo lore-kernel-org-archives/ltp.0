@@ -1,27 +1,37 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 3 Apr 2019 17:22:45 +0200
-Subject: [LTP] [PATCH v4 2/2] Test ioctl syscall for NS_GET_* requests
-In-Reply-To: <20190328202252.7927-1-fedebonfi95@gmail.com>
-References: <20190326192052.GA15776@rei.lan>
- <20190328202252.7927-1-fedebonfi95@gmail.com>
-Message-ID: <20190403152245.GC26464@rei.lan>
+From: Sandeep Patil <sspatil@android.com>
+Date: Wed, 3 Apr 2019 08:49:31 -0700
+Subject: [LTP] [RFC PATCH 1/4] syscalls/abort01: convert to new library
+In-Reply-To: <20190403120653.GC13658@rei>
+References: <20190325232012.67123-1-sspatil@android.com>
+ <20190325232012.67123-2-sspatil@android.com>
+ <20190326115825.GA32549@rei.lan> <20190326124743.GC5826@google.com>
+ <20190326125132.GA11086@rei.lan> <20190328040730.GE5826@google.com>
+ <20190403120653.GC13658@rei>
+Message-ID: <20190403154931.GC174313@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-This is nearly done, the only outstanding problem (minus the missing
-Signed-off-by line) is that tests number 01 and 06 does not work with
--i 2 option that causes the test to be executed more than once. The
-obvious fix would be moving the unshare call to the test setup()
-function instead.
+On Wed, Apr 03, 2019 at 02:06:53PM +0200, Cyril Hrubis wrote:
+> Hi!
+> > > > I am surprised that didn't throw a warning + build error for me.
+> > > > other than that, thanks for doing this
+> > > 
+> > > That depends on gcc version and mix of warning flags...
+> > 
+> > clang actually throws a lot of warnings for us when we build it natively for
+> > Android. In this case however, I just used my laptop "gcc (Debian 7.3.0-5)"
+> > and default flags for LTP builds.
+> > 
+> > Do you have plans of enabling -Werror?
+> 
+> We cannot do that with the amount of legacy code we have the build would
+> fail pretty much every time. So no, no plans for the foreseeable future.
 
-Also why have you skipped test 03? We do have 02 and then 04.
+Ack, thanks Cyril. I'd rather convert as many tests to the new library before
+I get to them then. By the way, I sent V2s for acct01 & accept01 addressing
+your comments now.
 
-Other than that the rest is done and ready.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+- ssp
