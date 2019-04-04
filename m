@@ -1,73 +1,53 @@
-From: Xiao Liang <xiliang@redhat.com>
-Date: Thu, 4 Apr 2019 10:29:10 +0800
-Subject: [LTP] [PATCH] hugetlb/hugemmap01: dynamically change default
-	hugepages
-In-Reply-To: <CAEemH2fqAAhahkohQSbzr2Lq3KbH-S8n2j7ZUZ4-o5Loq0WqRA@mail.gmail.com>
-References: <20190403075935.8407-1-xiliang@redhat.com>
- <CAEemH2ea3S1zKsGK851MbnbQnwtxwg03i6Nf-uAwnvUE0yxY0A@mail.gmail.com>
- <CAAb+4C6Jf2iLCcAXiaYdoBv_YG=7s7K2vUw0mNyX0qXTS4SGpA@mail.gmail.com>
- <CAEemH2fqAAhahkohQSbzr2Lq3KbH-S8n2j7ZUZ4-o5Loq0WqRA@mail.gmail.com>
-Message-ID: <CAAb+4C5tedvyWTTBxJ+7oyoVQ+_XYSFTE73KjMZVESCTMgeatg@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu,  4 Apr 2019 11:09:19 +0800
+Subject: [LTP] [PATCH] hugeshmat04: fix long integer overflow on 32bit system
+Message-ID: <20190404030919.32192-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Apr 4, 2019 at 10:20 AM Li Wang <liwang@redhat.com> wrote:
+To fix an obvious integer overflow when system(32bit) original nr_hugepages >= 512.
 
->
-> [Cc' LTP mailling list] To respect the ML:).
->
-Maybe I click reply directly. :)
+  --- Error log ---
+  # grep -i hugepage /proc/meminfo
+  HugePages_Total:     512
+  HugePages_Free:      512
+  HugePages_Rsvd:        0
+  HugePages_Surp:        0
+  Hugepagesize:       2048 kB
 
->
-> On Wed, Apr 3, 2019 at 11:12 PM Xiao Liang <xiliang@redhat.com> wrote:
->
->>
->>
->> On Wed, Apr 3, 2019 at 8:19 PM Li Wang <liwang@redhat.com> wrote:
->>
->>> Hi Xiao,
->>>
->>> On Wed, Apr 3, 2019 at 7:56 PM Xiao Liang <xiliang@redhat.com> wrote:
->>>
->>>> When the system's Hugepagesize is large(eg. 512MiB), the test may
->>>> break as cannot set nr_hugepages to default 128.
->>>>
->>>
->>> Yes, that's true. But each of ltp/hugemmap test has a
->>> parameter(hugemmap01 -s #nr_hpage#) to reset the nr_huagepges number before
->>> testing. What we have done to avoid that is to customize the hugetlb
->>> runtest file via a wrapper script.
->>>
->>  Yes, I tried '-s' option too, but runtest file does not specify it.
->> Although default 128 works in most situations, I feel it is not very
->> convenient for users to specify it or need double check it in each run in
->> different platforms.
->>
->>>
->>>> This patch checks the memory available and Hugepagesize registered
->>>> to set a reasonable num.
->>>>
->>>
->>> I have no objection on this way. But a better way maybe to achieve a new
->>> function in the hugetlb library to reset nr_hugepages dynamically for the
->>> whole hugepage tests.
->>>
->> Yes. I prefer this way than hard coding it with 128. I think we can add a
->> new function into library as other cases use it too.
->>
->
-> Ok, It'd be great if you can help to draft a new patch for this.
->
-I will prepare new patch now. Thanks
+  # readelf -h hugeshmat04 |grep -i ELF
+  ELF Header:
+    Class:                             ELF32
 
->
-> --
-> Regards,
-> Li Wang
->
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190404/83b12c0a/attachment.html>
+  # ./hugeshmat04
+  tst_test.c:1085: INFO: Timeout per run is 0h 05m 00s
+  mem.c:814: INFO: set nr_hugepages to -1024
+  mem.c:823: BROK: nr_hugepages = 512, but expect -1024
+  mem.c:814: INFO: set nr_hugepages to 512
+  -----------------
+
+Reported-by: Zhonghua Hao <zhao@redhat.com>
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+index b4dea53d1..d375810cb 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+@@ -99,7 +99,7 @@ static void setup(void)
+ 
+ 	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+ 
+-	hugepages = (orig_hugepages * hpage_size + SIZE) / hpage_size;
++	hugepages = orig_hugepages + SIZE / hpage_size;
+ 	set_sys_tune("nr_hugepages", hugepages, 1);
+ }
+ 
+-- 
+2.20.1
+
