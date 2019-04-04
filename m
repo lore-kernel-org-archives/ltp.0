@@ -1,27 +1,30 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 4 Apr 2019 16:30:47 +0200
-Subject: [LTP] [PATCH 1/1] shell: Fix handling default parameters in
-	tst_mkfs()
-In-Reply-To: <20190327160316.GA9691@rei.lan>
-References: <20190327155252.761-1-pvorel@suse.cz>
- <20190327160316.GA9691@rei.lan>
-Message-ID: <20190404143047.GA538@dell5510>
+Date: Thu, 4 Apr 2019 16:44:15 +0200
+Subject: [LTP] [PATCH] network/dhcp: correct prefix for expected IPv6
+ address
+In-Reply-To: <1554310924-24751-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1554310924-24751-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20190404144415.GA2898@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Alexey,
 
-> We can do the same thing twice as well, which may be a bit more
-> readable:
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Good catch, thanks for fixing it!
 
-> 	[ $# -ge 1 ] && shift
-> 	[ $# -ge 1 ] && shift
-
-Merged your variant. It's really more readable.
-Thanks!
+>  testcases/network/dhcp/dhcp_lib.sh |   15 +++++++++++----
+...
+>  	if [ $TST_IPV6 ]; then
+>  		ip_addr="fd00:1:1:2::12/64"
+> -		ip_addr_check="fd00:1:1:2::100/64"
+> +		ip_addr_check_nm="fd00:1:1:2::100"
+Just curious what _nm stands for :).
+> +		ip_addr_check="$ip_addr_check_nm/128"
+...
 
 Kind regards,
 Petr
