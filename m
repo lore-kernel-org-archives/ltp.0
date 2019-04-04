@@ -1,306 +1,370 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 4 Apr 2019 15:19:11 +0200
-Subject: [LTP] [PATCH 2/2] syscalls/stat03,
- 06: Cleanup && Convert to new API
-In-Reply-To: <1554280180-4089-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1554280180-4089-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1554280180-4089-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20190404131911.GB10585@rei.lan>
+Date: Thu,  4 Apr 2019 16:16:11 +0200
+Subject: [LTP] [PATCH v2] syscalls/preadv203: Add basic RWF_NOWAIT test
+Message-ID: <20190404141611.15192-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> diff --git a/testcases/kernel/syscalls/stat/stat03.c b/testcases/kernel/syscalls/stat/stat03.c
-> index 2e4c83a93..27937f852 100644
-> --- a/testcases/kernel/syscalls/stat/stat03.c
-> +++ b/testcases/kernel/syscalls/stat/stat03.c
-> @@ -1,333 +1,96 @@
-> -/*
-> - *
-> - *   Copyright (c) International Business Machines  Corp., 2001
-> - *
-> - *   This program is free software;  you can redistribute it and/or modify
-> - *   it under the terms of the GNU General Public License as published by
-> - *   the Free Software Foundation; either version 2 of the License, or
-> - *   (at your option) any later version.
-> - *
-> - *   This program is distributed in the hope that it will be useful,
-> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - *   the GNU General Public License for more details.
-> - *
-> - *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software
-> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> - */
-> -
-> -/*
-> - * Test Name: stat03
-> - *
-> - * Test Description:
-> - *   Verify that,
-> - *   1) stat(2) returns -1 and sets errno to EACCES if search permission is
-> - *      denied on a component of the path prefix.
-> - *   2) stat(2) returns -1 and sets errno to ENOENT if the specified file
-> - *	does not exists or empty string.
-> - *   3) stat(2) returns -1 and sets errno to EFAULT if pathname points
-> - *	outside user's accessible address space.
-> - *   4) stat(2) returns -1 and sets errno to ENAMETOOLONG if the pathname
-> - *	component is too long.
-> - *   5) stat(2) returns -1 and sets errno to ENOTDIR if the directory
-> - *	component in pathname is not a directory.
-> - *
-> - * Expected Result:
-> - *  stat() should fail with return value -1 and set expected errno.
-> - *
-> - * Algorithm:
-> - *  Setup:
-> - *   Setup signal handling.
-> - *   Create temporary directory.
-> - *   Pause for SIGUSR1 if option specified.
-> - *
-> - *  Test:
-> - *   Loop if the proper options are given.
-> - *   Execute system call
-> - *   Check return code, if system call failed (return=-1)
-> - *   	if errno set == expected errno
-> - *   		Issue sys call fails with expected return value and errno.
-> - *   	Otherwise,
-> - *		Issue sys call fails with unexpected errno.
-> - *   Otherwise,
-> - *	Issue sys call returns unexpected value.
-> - *
-> - *  Cleanup:
-> - *   Print errno log and/or timing stats if options given
-> - *   Delete the temporary directory(s)/file(s) created.
-> - *
-> - * Usage:  <for command-line>
-> - *  stat03 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
-> - *	where,  -c n : Run n copies concurrently.
-> - *		-e   : Turn on errno logging.
-> - *		-i n : Execute test n times.
-> - *		-I x : Execute test for x seconds.
-> - *		-P x : Pause for x seconds between iterations.
-> - *		-t   : Turn on syscall timing.
-> - *
-> - * History
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/* Copyright (c) International Business Machines  Corp., 2001
->   *	07/2001 John George
->   *		-Ported
->   *
-> - * Restrictions:
-> - *
-> + * check stat() with various error conditions that should produce
-> + * EACCES, EFAULT, ENAMETOOLONG,  ENOENT, ENOTDIR, ELOOP
->   */
->  
-> -#include <stdio.h>
-> -#include <stdlib.h>
-> -#include <unistd.h>
->  #include <fcntl.h>
->  #include <errno.h>
-> -#include <string.h>
-> -#include <signal.h>
->  #include <sys/types.h>
->  #include <sys/stat.h>
-> -#include <sys/mman.h>
->  #include <pwd.h>
-> +#include "tst_test.h"
->  
-> -#include "test.h"
-> -#include "safe_macros.h"
-> +#define TST_EACCES_DIR  "tst_eaccesdir"
-> +#define TST_EACCES_FILE "tst_eaccesdir/tst"
-> +#define TST_ENOENT      "tst_enoent/tst"
-> +#define TST_ENOTDIR_DIR "tst_enotdir/tst"
-> +#define TST_ENOTDIR_FILE "tst_enotdir"
->  
-> -#define MODE_RWX	S_IRWXU | S_IRWXG | S_IRWXO
-> -#define FILE_MODE	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
-> -#define DIR_TEMP	"testdir_1"
-> -#define TEST_FILE1	"testdir_1/tfile_1"
-> -#define TEST_FILE2	"t_file/tfile_2"
-> +#define MODE_RW	        0666
-> +#define DIR_MODE        0755
->  
-> -int no_setup();
-> -int setup1();			/* setup function to test chmod for EACCES */
-> -int setup2();			/* setup function to test chmod for ENOTDIR */
-> -int longpath_setup();		/* setup function to test chmod for ENAMETOOLONG */
-> -char nobody_uid[] = "nobody";
->  struct passwd *ltpuser;
->  
-> -char Longpathname[PATH_MAX + 2];
-> +static char long_dir[PATH_MAX + 2] = {[0 ... PATH_MAX + 1] = 'a'};
-> +static char loop_dir[PATH_MAX] = ".";
-> +
-> +struct tcase;
+We are attempting to trigger the EAGAIN path for the RWF_NOWAIT flag.
 
-It's useless to forward declare the structure if you are not using it
-for the structure members themselves.
+In order to do so the test runs three threads:
 
-> -struct test_case_t {		/* test case struct. to hold ref. test cond's */
-> +static struct tcase{
->  	char *pathname;
-> -	char *desc;
->  	int exp_errno;
-> -	int (*setupfunc) ();
-> -} Test_cases[] = {
-> -	{TEST_FILE1, "No Search permissions to process", EACCES, setup1}, {
-> -	NULL, "Invalid address", EFAULT, no_setup}, {
-> -	Longpathname, "Pathname too long", ENAMETOOLONG, longpath_setup}, {
-> -	"", "Pathname is empty", ENOENT, no_setup}, {
-> -	TEST_FILE2, "Path contains regular file", ENOTDIR, setup2}, {
-> -	NULL, NULL, 0, no_setup}
-> +} TC[] = {
-> +	{TST_EACCES_FILE, EACCES},
-> +	{NULL, EFAULT},
-> +	{long_dir, ENAMETOOLONG},
-> +	{TST_ENOENT, ENOENT},
-> +	{TST_ENOTDIR_DIR, ENOTDIR},
-> +	{loop_dir, ELOOP}
->  };
->  
-> -char *TCID = "stat03";
-> -int TST_TOTAL = ARRAY_SIZE(Test_cases);
-> -
-> -void setup();			/* Main setup function for the tests */
-> -void cleanup();			/* cleanup function for the test */
-> -
-> -int main(int ac, char **av)
-> -{
-> -	struct stat stat_buf;	/* stat structure buffer */
-> -	int lc;
-> -	char *file_name;	/* ptr. for file name whose mode is modified */
-> -	char *test_desc;	/* test specific error message */
-> -	int ind;		/* counter to test different test conditions */
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	/*
-> -	 * Invoke setup function to call individual test setup functions
-> -	 * to simulate test conditions.
-> -	 */
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -
-> -		tst_count = 0;
-> -
-> -		for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
-> -			file_name = Test_cases[ind].pathname;
-> -			test_desc = Test_cases[ind].desc;
-> -
-> -			/*
-> -			 * Call stat(2) to test different test conditions.
-> -			 * verify that it fails with -1 return value and
-> -			 * sets appropriate errno.
-> -			 */
-> -			TEST(stat(file_name, &stat_buf));
-> -
-> -			/* Check return code from stat(2) */
-> -			if (TEST_RETURN == -1) {
-> -				if (TEST_ERRNO == Test_cases[ind].exp_errno) {
-> -					tst_resm(TPASS,
-> -						 "stat() fails, %s, errno:%d",
-> -						 test_desc, TEST_ERRNO);
-> -				} else {
-> -					tst_resm(TFAIL,
-> -						 "stat() fails, %s, errno:%d, expected errno:%d",
-> -						 test_desc, TEST_ERRNO,
-> -						 Test_cases[ind].exp_errno);
-> -				}
-> -			} else {
-> -				tst_resm(TFAIL,
-> -					 "stat(2) returned %ld, expected -1, errno:%d",
-> -					 TEST_RETURN,
-> -					 Test_cases[ind].exp_errno);
-> -			}
-> -		}
-> -		tst_count++;	/* incr TEST_LOOP counter */
-> -	}
-> -
-> -	/*
-> -	 * Invoke cleanup() to delete the test directory/file(s) created
-> -	 * in the setup().
-> -	 */
-> -	cleanup();
-> -	tst_exit();
-> -
-> -}
-> -
-> -/*
-> - * void
-> - * setup(void) - performs all ONE TIME setup for this test.
-> - * 	Exit the test program on receipt of unexpected signals.
-> - *	Create a temporary directory and change directory to it.
-> - *	Invoke individual test setup functions according to the order
-> - *	set in struct. definition.
-> - */
-> -void setup(void)
-> +static void verify_stat(unsigned int n)
->  {
-> -	int ind;
-> -
-> -	tst_require_root();
-> -
-> -	/* Capture unexpected signals */
-> -	tst_sig(FORK, DEF_HANDLER, cleanup);
-> -
-> -	/* Switch to nobody user for correct error code collection */
-> -	ltpuser = getpwnam(nobody_uid);
-> -	if (setuid(ltpuser->pw_uid) == -1) {
-> -		tst_resm(TINFO, "setuid failed to "
-> -			 "to set the effective uid to %d", ltpuser->pw_uid);
-> -		perror("setuid");
-> +	struct tcase *tc = TC + n;
-> +	struct stat stat_buf;
-> +
-> +	TEST(stat(tc->pathname, &stat_buf));
-> +	if (TST_RET != -1) {
-> +		tst_res(TFAIL, "stat() returned %ld, expected -1, errno=%d",
-> +			TST_RET, tc->exp_errno);
+* nowait_reader: reads from a random offset from a random file with
+                 RWF_NOWAIT flag and expects to get EAGAIN and short
+                 read sooner or later
 
-I think that printing the expecte errno here is a bit confusing and even
-if you think that it should stay it should be printed with
-tst_strerrno().
+* writer_thread: rewrites random file in order to keep the underlying device
+                 bussy so that pages evicted from cache cannot be faulted
+                 immediatelly
 
-> +		return;
->  	}
->  
-> -	/* Pause if that option was specified
-> -	 * TEST_PAUSE contains the code to fork the test with the -i option.
-> -	 * You want to make sure you do this before you create your temporary
-> -	 * directory.
-> -	 */
-> -	TEST_PAUSE;
-> -
-> -	/* Make a temp dir and cd to it */
-> -	tst_tmpdir();
-> -
-> -	/* call individual setup functions */
-> -	for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
-> -		if (!Test_cases[ind].pathname)
-> -			Test_cases[ind].pathname = tst_get_bad_addr(cleanup);
-> -		Test_cases[ind].setupfunc();
-> +	if (TST_ERR == tc->exp_errno) {
-> +		tst_res(TPASS | TTERRNO, "stat() failed as expected");
-> +	} else {
-> +		tst_res(TFAIL | TTERRNO,
-> +			"stat() failed unexpectedly; expected: %d - %s",
-> +			tc->exp_errno, strerror(tc->exp_errno));
+* cache_dropper: attempts to evict pages from a cache in order for reader to
+                 hit evicted page sooner or later
 
-Here as well, we should use tst_strerrno() instead of strerror().
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
 
->  	}
->  }
+This is just the same as previous patch + small (typo) fixes and
+fallback definition for RWF_NOWAIT.
 
-The rest looks good.
+I've also looked into the BLKFLSBUF ioctl() however that one only seem
+to drop cached pages but no pages schedulled for writeback, hence it
+does not generate I/O pressure at all.
 
+ include/lapi/preadv2.h                        |   4 +
+ runtest/syscalls                              |   2 +
+ testcases/kernel/syscalls/preadv2/.gitignore  |   2 +
+ testcases/kernel/syscalls/preadv2/Makefile    |   4 +
+ testcases/kernel/syscalls/preadv2/preadv203.c | 267 ++++++++++++++++++
+ 5 files changed, 279 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/preadv2/preadv203.c
+
+diff --git a/include/lapi/preadv2.h b/include/lapi/preadv2.h
+index aacf96fbf..538ed7218 100644
+--- a/include/lapi/preadv2.h
++++ b/include/lapi/preadv2.h
+@@ -10,6 +10,10 @@
+ #include "config.h"
+ #include "lapi/syscalls.h"
+ 
++#ifndef RWF_NOWAIT
++# define RWF_NOWAIT 0x00000008
++#endif
++
+ #if !defined(HAVE_PREADV2)
+ 
+ /* LO_HI_LONG taken from glibc */
+diff --git a/runtest/syscalls b/runtest/syscalls
+index cf8189ebd..81906082c 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -873,6 +873,8 @@ preadv201 preadv201
+ preadv201_64 preadv201_64
+ preadv202 preadv202
+ preadv202_64 preadv202_64
++preadv203 preadv203
++preadv203_64 preadv203_64
+ 
+ profil01 profil01
+ 
+diff --git a/testcases/kernel/syscalls/preadv2/.gitignore b/testcases/kernel/syscalls/preadv2/.gitignore
+index 759d9ef5b..98b81abea 100644
+--- a/testcases/kernel/syscalls/preadv2/.gitignore
++++ b/testcases/kernel/syscalls/preadv2/.gitignore
+@@ -2,3 +2,5 @@
+ /preadv201_64
+ /preadv202
+ /preadv202_64
++/preadv203
++/preadv203_64
+diff --git a/testcases/kernel/syscalls/preadv2/Makefile b/testcases/kernel/syscalls/preadv2/Makefile
+index fc1fbf3c7..fbedd0287 100644
+--- a/testcases/kernel/syscalls/preadv2/Makefile
++++ b/testcases/kernel/syscalls/preadv2/Makefile
+@@ -11,4 +11,8 @@ include $(abs_srcdir)/../utils/newer_64.mk
+ 
+ %_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64
+ 
++preadv203: CFLAGS += -pthread
++preadv203_64: CFLAGS += -pthread
++preadv203_64: LDFLAGS += -pthread
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/preadv2/preadv203.c b/testcases/kernel/syscalls/preadv2/preadv203.c
+new file mode 100644
+index 000000000..810d1e8db
+--- /dev/null
++++ b/testcases/kernel/syscalls/preadv2/preadv203.c
+@@ -0,0 +1,267 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2019 Cyril Hrubis <chrubis@suse.cz>
++ */
++
++/*
++ * This is a basic functional test for RWF_NOWAIT flag, we are attempting to
++ * force preadv2() either to return a short read or EAGAIN with three
++ * concurently running threads:
++ *
++ *  nowait_reader: reads from a random offset from a random file with
++ *                 RWF_NOWAIT flag and expects to get EAGAIN and short
++ *                 read sooner or later
++ *
++ *  writer_thread: rewrites random file in order to keep the underlying device
++ *                 busy so that pages evicted from cache cannot be faulted
++ *                 immediately
++ *
++ *  cache_dropper: attempts to evict pages from a cache in order for reader to
++ *                 hit evicted page sooner or later
++ */
++
++/*
++ * If test fails with EOPNOTSUPP you have likely hit a glibc bug:
++ *
++ * https://sourceware.org/bugzilla/show_bug.cgi?id=23579
++ *
++ * Which can be worked around by calling preadv2() directly by syscall() such as:
++ *
++ * static ssize_t sys_preadv2(int fd, const struct iovec *iov, int iovcnt,
++ *                            off_t offset, int flags)
++ * {
++ *	return syscall(SYS_preadv2, fd, iov, iovcnt, offset, offset>>32, flags);
++ * }
++ *
++ */
++
++#define _GNU_SOURCE
++#include <string.h>
++#include <sys/uio.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <ctype.h>
++#include <pthread.h>
++
++#include "tst_test.h"
++#include "tst_safe_pthread.h"
++#include "lapi/preadv2.h"
++
++#define CHUNK_SZ 4123
++#define CHUNKS 60
++#define MNTPOINT "mntpoint"
++#define FILES 1000
++
++static int fds[FILES];
++
++static volatile int stop;
++
++static void drop_caches(void)
++{
++	SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "3");
++}
++
++/*
++ * All files are divided in chunks each filled with the same bytes starting with
++ * '0' at offset 0 and with increasing value on each next chunk.
++ *
++ * 000....000111....111.......AAA......AAA...
++ * | chunk0 || chunk1 |  ...  |  chunk17 |
++ */
++static int verify_short_read(struct iovec *iov, size_t iov_cnt,
++		             off_t off, size_t size)
++{
++	unsigned int i;
++	size_t j, checked = 0;
++
++	for (i = 0; i < iov_cnt; i++) {
++		char *buf = iov[i].iov_base;
++		for (j = 0; j < iov[i].iov_len; j++) {
++			char exp_val = '0' + (off + checked)/CHUNK_SZ;
++
++			if (exp_val != buf[j]) {
++				tst_res(TFAIL,
++				        "Wrong value read pos %zu size %zu %c (%i) %c (%i)!",
++				        checked, size, exp_val, exp_val,
++					isprint(buf[j]) ? buf[j] : ' ', buf[j]);
++				return 1;
++			}
++
++			if (++checked >= size)
++				return 0;
++		}
++	}
++
++	return 0;
++}
++
++static void *nowait_reader(void *unused LTP_ATTRIBUTE_UNUSED)
++{
++	char buf1[CHUNK_SZ/2];
++	char buf2[CHUNK_SZ];
++	unsigned int full_read_cnt = 0, eagain_cnt = 0;
++	unsigned int short_read_cnt = 0, zero_read_cnt = 0;
++
++	struct iovec rd_iovec[] = {
++		{buf1, sizeof(buf1)},
++		{buf2, sizeof(buf2)},
++	};
++
++	while (!stop) {
++		if (eagain_cnt >= 100 && short_read_cnt >= 10)
++			stop = 1;
++
++		/* Ensure short reads doesn't happen because of tripping on EOF */
++		off_t off = random() % ((CHUNKS - 2) * CHUNK_SZ);
++		int fd = fds[random() % FILES];
++
++		TEST(preadv2(fd, rd_iovec, 2, off, RWF_NOWAIT));
++
++		if (TST_RET < 0) {
++			if (TST_ERR != EAGAIN)
++				tst_brk(TBROK | TTERRNO, "preadv2() failed");
++
++			eagain_cnt++;
++			continue;
++		}
++
++
++		if (TST_RET == 0) {
++			zero_read_cnt++;
++			continue;
++		}
++
++		if (TST_RET != CHUNK_SZ + CHUNK_SZ/2) {
++			verify_short_read(rd_iovec, 2, off, TST_RET);
++			short_read_cnt++;
++			continue;
++		}
++
++		full_read_cnt++;
++	}
++
++	tst_res(TINFO,
++	        "Number of full_reads %u, short reads %u, zero len reads %u, EAGAIN(s) %u",
++		full_read_cnt, short_read_cnt, zero_read_cnt, eagain_cnt);
++
++	return (void*)(long)eagain_cnt;
++}
++
++static void *writer_thread(void *unused)
++{
++	char buf[CHUNK_SZ];
++	unsigned int j, write_cnt = 0;
++
++	struct iovec wr_iovec[] = {
++		{buf, sizeof(buf)},
++	};
++
++	while (!stop) {
++		int fd = fds[random() % FILES];
++
++		for (j = 0; j < CHUNKS; j++) {
++			memset(buf, '0' + j, sizeof(buf));
++
++			off_t off = CHUNK_SZ * j;
++
++			if (pwritev(fd, wr_iovec, 1, off) < 0) {
++				if (errno == EBADF) {
++					tst_res(TINFO | TERRNO, "FDs closed, exiting...");
++					return unused;
++				}
++
++				tst_brk(TBROK | TERRNO, "pwritev()");
++			}
++
++			write_cnt++;
++		}
++	}
++
++	tst_res(TINFO, "Number of writes %u", write_cnt);
++
++	return unused;
++}
++
++static void *cache_dropper(void *unused)
++{
++	unsigned int drop_cnt = 0;
++
++	while (!stop) {
++		drop_caches();
++		drop_cnt++;
++	}
++
++	tst_res(TINFO, "Cache dropped %u times", drop_cnt);
++
++	return unused;
++}
++
++static void verify_preadv2(void)
++{
++	pthread_t reader, dropper, writer;
++	unsigned int max_runtime = 600;
++	void *eagains;
++
++	stop = 0;
++
++	drop_caches();
++
++	SAFE_PTHREAD_CREATE(&dropper, NULL, cache_dropper, NULL);
++	SAFE_PTHREAD_CREATE(&reader, NULL, nowait_reader, NULL);
++	SAFE_PTHREAD_CREATE(&writer, NULL, writer_thread, NULL);
++
++	while (!stop && max_runtime-- > 0)
++		usleep(100000);
++
++	stop = 1;
++
++	SAFE_PTHREAD_JOIN(reader, &eagains);
++	SAFE_PTHREAD_JOIN(dropper, NULL);
++	SAFE_PTHREAD_JOIN(writer, NULL);
++
++	if (eagains)
++		tst_res(TPASS, "Got some EAGAIN");
++	else
++		tst_res(TFAIL, "Haven't got EAGAIN");
++}
++
++static void setup(void)
++{
++	char path[1024];
++	char buf[CHUNK_SZ];
++	unsigned int i;
++	char j;
++
++	for (i = 0; i < FILES; i++) {
++		snprintf(path, sizeof(path), MNTPOINT"/file_%i", i);
++
++		fds[i] = SAFE_OPEN(path, O_RDWR | O_CREAT, 0644);
++
++		for (j = 0; j < CHUNKS; j++) {
++			memset(buf, '0' + j, sizeof(buf));
++			SAFE_WRITE(1, fds[i], buf, sizeof(buf));
++		}
++	}
++}
++
++static void do_cleanup(void)
++{
++	unsigned int i;
++
++	for (i = 0; i < FILES; i++) {
++		if (fds[i] > 0)
++			SAFE_CLOSE(fds[i]);
++	}
++}
++
++TST_DECLARE_ONCE_FN(cleanup, do_cleanup);
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = verify_preadv2,
++	.mntpoint = MNTPOINT,
++	.all_filesystems = 1,
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++};
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.19.2
+
