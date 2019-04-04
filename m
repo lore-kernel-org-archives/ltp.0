@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 4 Apr 2019 14:58:43 +0200
-Subject: [LTP] [PATCH 1/2] syscalls/stat01, 02,
- 05: Cleanup && Convert to new API
-In-Reply-To: <1554280180-4089-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 4 Apr 2019 15:19:11 +0200
+Subject: [LTP] [PATCH 2/2] syscalls/stat03,
+ 06: Cleanup && Convert to new API
+In-Reply-To: <1554280180-4089-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 References: <1554280180-4089-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20190404125842.GA10585@rei.lan>
+ <1554280180-4089-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20190404131911.GB10585@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,11 +13,11 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> diff --git a/testcases/kernel/syscalls/stat/stat02.c b/testcases/kernel/syscalls/stat/stat02.c
-> index aeaa7ab82..4e0ab5a03 100644
-> --- a/testcases/kernel/syscalls/stat/stat02.c
-> +++ b/testcases/kernel/syscalls/stat/stat02.c
-> @@ -1,228 +1,106 @@
+> diff --git a/testcases/kernel/syscalls/stat/stat03.c b/testcases/kernel/syscalls/stat/stat03.c
+> index 2e4c83a93..27937f852 100644
+> --- a/testcases/kernel/syscalls/stat/stat03.c
+> +++ b/testcases/kernel/syscalls/stat/stat03.c
+> @@ -1,333 +1,96 @@
 > -/*
 > - *
 > - *   Copyright (c) International Business Machines  Corp., 2001
@@ -37,20 +38,23 @@ Hi!
 > - */
 > -
 > -/*
-> - * Test Name: stat02
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/* Copyright (c) International Business Machines  Corp., 2001
-> + *	07/2001 John George
-> + *		-Ported
->   *
+> - * Test Name: stat03
+> - *
 > - * Test Description:
->   *  Verify that, stat(2) succeeds to get the status of a file and fills the
->   *  stat structure elements though process doesn't have read access to the
->   *  file.
+> - *   Verify that,
+> - *   1) stat(2) returns -1 and sets errno to EACCES if search permission is
+> - *      denied on a component of the path prefix.
+> - *   2) stat(2) returns -1 and sets errno to ENOENT if the specified file
+> - *	does not exists or empty string.
+> - *   3) stat(2) returns -1 and sets errno to EFAULT if pathname points
+> - *	outside user's accessible address space.
+> - *   4) stat(2) returns -1 and sets errno to ENAMETOOLONG if the pathname
+> - *	component is too long.
+> - *   5) stat(2) returns -1 and sets errno to ENOTDIR if the directory
+> - *	component in pathname is not a directory.
 > - *
 > - * Expected Result:
-> - *  stat() should return value 0 on success and the stat structure elements
-> - *  should be filled with specified 'file' information.
+> - *  stat() should fail with return value -1 and set expected errno.
 > - *
 > - * Algorithm:
 > - *  Setup:
@@ -62,177 +66,209 @@ Hi!
 > - *   Loop if the proper options are given.
 > - *   Execute system call
 > - *   Check return code, if system call failed (return=-1)
-> - *   	Log the errno and Issue a FAIL message.
+> - *   	if errno set == expected errno
+> - *   		Issue sys call fails with expected return value and errno.
+> - *   	Otherwise,
+> - *		Issue sys call fails with unexpected errno.
 > - *   Otherwise,
-> - *   	Verify the Functionality of system call
-> - *      if successful,
-> - *      	Issue Functionality-Pass message.
-> - *      Otherwise,
-> - *		Issue Functionality-Fail message.
+> - *	Issue sys call returns unexpected value.
+> - *
 > - *  Cleanup:
 > - *   Print errno log and/or timing stats if options given
-> - *   Delete the temporary directory created.
+> - *   Delete the temporary directory(s)/file(s) created.
 > - *
 > - * Usage:  <for command-line>
-> - *  stat02 [-c n] [-e] [-f] [-i n] [-I x] [-p x] [-t]
+> - *  stat03 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
 > - *	where,  -c n : Run n copies concurrently.
 > - *		-e   : Turn on errno logging.
-> - *		-f   : Turn off functionality Testing.
 > - *		-i n : Execute test n times.
 > - *		-I x : Execute test for x seconds.
 > - *		-P x : Pause for x seconds between iterations.
 > - *		-t   : Turn on syscall timing.
 > - *
 > - * History
-> - *	07/2001 John George
-> - *		-Ported
-> - *
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/* Copyright (c) International Business Machines  Corp., 2001
+>   *	07/2001 John George
+>   *		-Ported
+>   *
 > - * Restrictions:
 > - *
+> + * check stat() with various error conditions that should produce
+> + * EACCES, EFAULT, ENAMETOOLONG,  ENOENT, ENOTDIR, ELOOP
 >   */
+>  
 > -#include <stdio.h>
-> +
->  #include <sys/types.h>
+> -#include <stdlib.h>
+> -#include <unistd.h>
 >  #include <fcntl.h>
->  #include <sys/stat.h>
 >  #include <errno.h>
 > -#include <string.h>
 > -#include <signal.h>
+>  #include <sys/types.h>
+>  #include <sys/stat.h>
+> -#include <sys/mman.h>
 >  #include <pwd.h>
 > +#include "tst_test.h"
 >  
 > -#include "test.h"
 > -#include "safe_macros.h"
-> -
-> -#define FILE_MODE	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
-> -#define TESTFILE	"testfile"
-> +#define FILE_MODE       0644
-> +#define TESTFILE        "testfile"
->  #define FILE_SIZE       1024
-> -#define BUF_SIZE	256
-> -#define NEW_MODE	0222
-> -#define MASK		0777
-> -
-> -char *TCID = "stat02";
-> -int TST_TOTAL = 1;
-> +#define BUF_SIZE        256
-> +#define NEW_MODE        0222
-> +#define MASK            0777
+> +#define TST_EACCES_DIR  "tst_eaccesdir"
+> +#define TST_EACCES_FILE "tst_eaccesdir/tst"
+> +#define TST_ENOENT      "tst_enoent/tst"
+> +#define TST_ENOTDIR_DIR "tst_enotdir/tst"
+> +#define TST_ENOTDIR_FILE "tst_enotdir"
 >  
-> -uid_t user_id;			/* eff. user id/group id of test process */
-> +uid_t user_id;
->  gid_t group_id;
+> -#define MODE_RWX	S_IRWXU | S_IRWXG | S_IRWXO
+> -#define FILE_MODE	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+> -#define DIR_TEMP	"testdir_1"
+> -#define TEST_FILE1	"testdir_1/tfile_1"
+> -#define TEST_FILE2	"t_file/tfile_2"
+> +#define MODE_RW	        0666
+> +#define DIR_MODE        0755
+>  
+> -int no_setup();
+> -int setup1();			/* setup function to test chmod for EACCES */
+> -int setup2();			/* setup function to test chmod for ENOTDIR */
+> -int longpath_setup();		/* setup function to test chmod for ENAMETOOLONG */
 > -char nobody_uid[] = "nobody";
 >  struct passwd *ltpuser;
 >  
-> -void setup();
-> -void cleanup();
+> -char Longpathname[PATH_MAX + 2];
+> +static char long_dir[PATH_MAX + 2] = {[0 ... PATH_MAX + 1] = 'a'};
+> +static char loop_dir[PATH_MAX] = ".";
+> +
+> +struct tcase;
+
+It's useless to forward declare the structure if you are not using it
+for the structure members themselves.
+
+> -struct test_case_t {		/* test case struct. to hold ref. test cond's */
+> +static struct tcase{
+>  	char *pathname;
+> -	char *desc;
+>  	int exp_errno;
+> -	int (*setupfunc) ();
+> -} Test_cases[] = {
+> -	{TEST_FILE1, "No Search permissions to process", EACCES, setup1}, {
+> -	NULL, "Invalid address", EFAULT, no_setup}, {
+> -	Longpathname, "Pathname too long", ENAMETOOLONG, longpath_setup}, {
+> -	"", "Pathname is empty", ENOENT, no_setup}, {
+> -	TEST_FILE2, "Path contains regular file", ENOTDIR, setup2}, {
+> -	NULL, NULL, 0, no_setup}
+> +} TC[] = {
+> +	{TST_EACCES_FILE, EACCES},
+> +	{NULL, EFAULT},
+> +	{long_dir, ENAMETOOLONG},
+> +	{TST_ENOENT, ENOENT},
+> +	{TST_ENOTDIR_DIR, ENOTDIR},
+> +	{loop_dir, ELOOP}
+>  };
+>  
+> -char *TCID = "stat03";
+> -int TST_TOTAL = ARRAY_SIZE(Test_cases);
+> -
+> -void setup();			/* Main setup function for the tests */
+> -void cleanup();			/* cleanup function for the test */
 > -
 > -int main(int ac, char **av)
-> +static void verify_stat(void)
->  {
+> -{
 > -	struct stat stat_buf;	/* stat structure buffer */
 > -	int lc;
+> -	char *file_name;	/* ptr. for file name whose mode is modified */
+> -	char *test_desc;	/* test specific error message */
+> -	int ind;		/* counter to test different test conditions */
 > -
 > -	tst_parse_opts(ac, av, NULL, NULL);
 > -
+> -	/*
+> -	 * Invoke setup function to call individual test setup functions
+> -	 * to simulate test conditions.
+> -	 */
 > -	setup();
 > -
 > -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 > -
 > -		tst_count = 0;
 > -
-> -		/*
-> -		 * Call stat(2) to get the status of
-> -		 * specified 'file' into stat structure.
-> -		 */
-> -		TEST(stat(TESTFILE, &stat_buf));
+> -		for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
+> -			file_name = Test_cases[ind].pathname;
+> -			test_desc = Test_cases[ind].desc;
 > -
-> -		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL,
-> -				 "stat(%s, &stat_buf) Failed, errno=%d : %s",
-> -				 TESTFILE, TEST_ERRNO, strerror(TEST_ERRNO));
-> -		} else {
-> -			stat_buf.st_mode &= ~S_IFREG;
 > -			/*
-> -			 * Verify the data returned by stat(2)
-> -			 * aganist the expected data.
+> -			 * Call stat(2) to test different test conditions.
+> -			 * verify that it fails with -1 return value and
+> -			 * sets appropriate errno.
 > -			 */
-> -			if ((stat_buf.st_uid != user_id) ||
-> -			    (stat_buf.st_gid != group_id) ||
-> -			    (stat_buf.st_size != FILE_SIZE) ||
-> -			    ((stat_buf.st_mode & MASK) != NEW_MODE)) {
-> -				tst_resm(TFAIL, "Functionality of "
-> -					 "stat(2) on '%s' Failed",
-> -					 TESTFILE);
+> -			TEST(stat(file_name, &stat_buf));
+> -
+> -			/* Check return code from stat(2) */
+> -			if (TEST_RETURN == -1) {
+> -				if (TEST_ERRNO == Test_cases[ind].exp_errno) {
+> -					tst_resm(TPASS,
+> -						 "stat() fails, %s, errno:%d",
+> -						 test_desc, TEST_ERRNO);
+> -				} else {
+> -					tst_resm(TFAIL,
+> -						 "stat() fails, %s, errno:%d, expected errno:%d",
+> -						 test_desc, TEST_ERRNO,
+> -						 Test_cases[ind].exp_errno);
+> -				}
 > -			} else {
-> -				tst_resm(TPASS, "Functionality of "
-> -					 "stat(2) on '%s' Succcessful",
-> -					 TESTFILE);
+> -				tst_resm(TFAIL,
+> -					 "stat(2) returned %ld, expected -1, errno:%d",
+> -					 TEST_RETURN,
+> -					 Test_cases[ind].exp_errno);
 > -			}
 > -		}
 > -		tst_count++;	/* incr TEST_LOOP counter */
-> +	struct stat stat_buf;
-> +	int fail = 0;
-> +
-> +	TEST(stat(TESTFILE, &stat_buf));
-> +
-> +	if (TST_RET == -1) {
-> +		tst_res(TFAIL | TTERRNO, "fstat(%s) failed", TESTFILE);
-> +		return;
->  	}
->  
+> -	}
+> -
+> -	/*
+> -	 * Invoke cleanup() to delete the test directory/file(s) created
+> -	 * in the setup().
+> -	 */
 > -	cleanup();
 > -	tst_exit();
+> -
 > -}
-> +	if (stat_buf.st_uid != user_id) {
-> +		tst_res(TINFO, "stat_buf.st_uid = %i expected %i",
-> +			stat_buf.st_uid, user_id);
-> +		fail++;
-> +	}
->  
+> -
 > -/*
 > - * void
-> - * setup() -  Performs setup function for the test.
-> - *  Creat a temporary directory and change directory to it.
-> - *  Creat a testfile and write some data into it.
-> - *  Modify the mode permissions of testfile such that test process
-> - *  has read-only access to testfile.
+> - * setup(void) - performs all ONE TIME setup for this test.
+> - * 	Exit the test program on receipt of unexpected signals.
+> - *	Create a temporary directory and change directory to it.
+> - *	Invoke individual test setup functions according to the order
+> - *	set in struct. definition.
 > - */
 > -void setup(void)
-> -{
-> -	int i, fd;		/* counter, file handle for file */
-> -	char tst_buff[BUF_SIZE];	/* data buffer for file */
-> -	int wbytes;		/* no. of bytes written to file */
-> -	int write_len = 0;
-> +	if (stat_buf.st_gid != group_id) {
-> +		tst_res(TINFO, "stat_buf.st_gid = %i expected %i",
-> +			stat_buf.st_gid, group_id);
-> +		fail++;
-> +	}
->  
+> +static void verify_stat(unsigned int n)
+>  {
+> -	int ind;
+> -
 > -	tst_require_root();
-> +	if (stat_buf.st_size != FILE_SIZE) {
-> +		tst_res(TINFO, "stat_buf.st_size = %li expected %i",
-> +			(long)stat_buf.st_size, FILE_SIZE);
-> +		fail++;
-> +	}
->  
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> +	if ((stat_buf.st_mode & MASK) != NEW_MODE) {
-> +		tst_res(TINFO, "stat_buf.st_mode = %o expected %o",
-> +			(stat_buf.st_mode & MASK), NEW_MODE);
-> +		fail++;
-> +	}
->  
+> -
+> -	/* Capture unexpected signals */
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> -
 > -	/* Switch to nobody user for correct error code collection */
 > -	ltpuser = getpwnam(nobody_uid);
 > -	if (setuid(ltpuser->pw_uid) == -1) {
 > -		tst_resm(TINFO, "setuid failed to "
 > -			 "to set the effective uid to %d", ltpuser->pw_uid);
 > -		perror("setuid");
-> +	if (fail) {
-> +		tst_res(TFAIL, "functionality of stat incorrect");
+> +	struct tcase *tc = TC + n;
+> +	struct stat stat_buf;
+> +
+> +	TEST(stat(tc->pathname, &stat_buf));
+> +	if (TST_RET != -1) {
+> +		tst_res(TFAIL, "stat() returned %ld, expected -1, errno=%d",
+> +			TST_RET, tc->exp_errno);
+
+I think that printing the expecte errno here is a bit confusing and even
+if you think that it should stay it should be printed with
+tst_strerrno().
+
 > +		return;
 >  	}
 >  
@@ -242,88 +278,28 @@ Hi!
 > -	 * directory.
 > -	 */
 > -	TEST_PAUSE;
-> +	tst_res(TPASS, "functionality of stat correct");
-> +}
-> +
-> +void setup(void)
-> +{
-> +	int i, fd;
-> +	char tst_buff[BUF_SIZE];
-
-The tst_ prefix is reserved for the library, it shouldn't be used in the
-testcases.
-
-> +	int write_len = 0;
->  
+> -
+> -	/* Make a temp dir and cd to it */
 > -	tst_tmpdir();
-> +	ltpuser = SAFE_GETPWNAM("nobody");
-> +	SAFE_SETUID(ltpuser->pw_uid);
->  
-> -	if ((fd = open(TESTFILE, O_RDWR | O_CREAT, FILE_MODE)) == -1) {
-> -		tst_brkm(TBROK, cleanup,
-> -			 "open(%s, O_RDWR|O_CREAT, %#o) Failed, errno=%d : %s",
-> -			 TESTFILE, FILE_MODE, errno, strerror(errno));
-> -	}
-> +	fd = SAFE_OPEN(TESTFILE, O_WRONLY | O_CREAT, FILE_MODE);
->  
-> -	/* Fill the test buffer with the known data */
->  	for (i = 0; i < BUF_SIZE; i++) {
->  		tst_buff[i] = 'a';
->  	}
->  
->  	/* Write to the file 1k data from the buffer */
->  	while (write_len < FILE_SIZE) {
-> -		if ((wbytes = write(fd, tst_buff, sizeof(tst_buff))) <= 0) {
-> -			tst_brkm(TBROK | TERRNO, cleanup, "write to %s failed",
-> -				 TESTFILE);
-> -		} else {
-> -			write_len += wbytes;
-> -		}
-> -	}
 > -
-> -	if (close(fd) == -1) {
-> -		tst_resm(TWARN | TERRNO, "closing %s failed", TESTFILE);
-> +		SAFE_WRITE(1, fd, tst_buff, sizeof(tst_buff));
-> +		write_len += BUF_SIZE;
->  	}
-> -
-> -	/* Modify mode permissions on the testfile */
-> -	SAFE_CHMOD(cleanup, TESTFILE, NEW_MODE);
-> +	SAFE_CLOSE(fd);
+> -	/* call individual setup functions */
+> -	for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
+> -		if (!Test_cases[ind].pathname)
+> -			Test_cases[ind].pathname = tst_get_bad_addr(cleanup);
+> -		Test_cases[ind].setupfunc();
+> +	if (TST_ERR == tc->exp_errno) {
+> +		tst_res(TPASS | TTERRNO, "stat() failed as expected");
+> +	} else {
+> +		tst_res(TFAIL | TTERRNO,
+> +			"stat() failed unexpectedly; expected: %d - %s",
+> +			tc->exp_errno, strerror(tc->exp_errno));
 
-We do have tst_fill_file() function exactly for this purpose.
+Here as well, we should use tst_strerrno() instead of strerror().
 
-> -	/* Get the uid/gid of the process */
-> +	SAFE_CHMOD(TESTFILE, NEW_MODE);
->  	user_id = getuid();
->  	group_id = getgid();
-> -
+>  	}
 >  }
->  
-> -/*
-> - * cleanup() - performs all ONE TIME cleanup for this test at
-> - *	       completion or premature exit.
-> - *  Remove the temporary directory and file created.
-> - */
-> -void cleanup(void)
-> -{
-> -
-> -	tst_rmdir();
-> -}
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.test_all = verify_stat,
-> +	.needs_root = 1,
-> +	.needs_tmpdir = 1,
-> +};
 
-In order to keep the coverage the same we should ideally test both with
-and without read permission on the file.
-
-Also since we are removing tests 01, 02 and 05 it would be a bit better
-to name the resulting test stat01.c.
-
-Other than that this is a great cleanup.
+The rest looks good.
 
 -- 
 Cyril Hrubis
