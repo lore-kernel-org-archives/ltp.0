@@ -1,30 +1,66 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 4 Apr 2019 16:44:15 +0200
-Subject: [LTP] [PATCH] network/dhcp: correct prefix for expected IPv6
- address
-In-Reply-To: <1554310924-24751-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1554310924-24751-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20190404144415.GA2898@dell5510>
+Date: Thu, 4 Apr 2019 20:19:02 +0200
+Subject: [LTP] [PATCH 3/3] ima: Add overlay test
+In-Reply-To: <1553856587.9420.44.camel@linux.ibm.com>
+References: <20190327161638.7407-1-pvorel@suse.cz>
+ <20190327161638.7407-4-pvorel@suse.cz>
+ <1553856587.9420.44.camel@linux.ibm.com>
+Message-ID: <20190404181901.GA22718@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi Mimi,
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Good catch, thanks for fixing it!
+thanks for your comments!
 
->  testcases/network/dhcp/dhcp_lib.sh |   15 +++++++++++----
-...
->  	if [ $TST_IPV6 ]; then
->  		ip_addr="fd00:1:1:2::12/64"
-> -		ip_addr_check="fd00:1:1:2::100/64"
-> +		ip_addr_check_nm="fd00:1:1:2::100"
-Just curious what _nm stands for :).
-> +		ip_addr_check="$ip_addr_check_nm/128"
-...
+> > +	grep -q ima_appraise_tcb /proc/cmdline || \
+> > +		tst_brk TCONF "Test requires ima_appraise_tcb kernel parameter"
+
+> Instead of specifying individual policies separately, the newer method
+> of specifying builtin IMA policies on the boot command line is
+> "ima_policy=", with a list of policies.  The builtin appraise policy
+> would be specified as "ima_policy=appraise_tcb".  Refer to
+> Documentation/admin-guide/kernel-parameters.txt for the list of
+> builtin policies.
+I guess grep for any policy (ima_policy=) or ima_appraise_tcb shold e enough.
+Am I right?
+
+BTW I guess ima_appraise_tcb should be deprecated in kernel-parameters.txt.
+
+> > +}
+> > +
+> > +do_test()
+> > +{
+> > +	local file="foo.txt"
+> > +	local f
+> > +
+> > +	tst_mount
+> > +	mounted=1
+> > +
+> > +	ROD echo lower \> $lower/$file
+
+> For some reason "mntpoint/lower" isn't loopback mounted.  With the
+> builtin appraise policy, because it is a tmpfs filesystem,
+> security.ima does not exist.  Writing to the merged directory then
+> fails.
+
+> + df -T mntpoint/lower
+> Filesystem     Type  1K-blocks   Used Available Use% Mounted on
+> tmpfs          tmpfs   4020348 262316   3758032   7% /tmp
+My bad, I forged to add TST_NEEDS_DEVICE=1 to ima_overlay.sh (I'll add it into
+v2). That was the missing piece to enable loop device (in the end of ima_setup.sh)
+
+
+> + getfattr -m '^security' --dump mntpoint/lower/foo.txt
+> # file: mntpoint/lower/foo.txt
+> security.evm=0sAq8niNi4X7cYntKSAki1Woc+Y5Yq
+> security.selinux="unconfined_u:object_r:user_tmp_t:s0"
+
+> Mimi
+
 
 Kind regards,
 Petr
