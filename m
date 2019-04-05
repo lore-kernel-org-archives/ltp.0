@@ -1,45 +1,36 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 5 Apr 2019 14:30:48 +0800
-Subject: [LTP] [PATCH] lib/tst_wallclock.c: Add check for unsupported
-	CLOCK_MONOTONIC_RAW
-Message-ID: <1554445848-437-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 5 Apr 2019 08:48:30 +0200
+Subject: [LTP] [PATCH 1/1] Remove break after return
+In-Reply-To: <20190403120655.GA20621@dell5510>
+References: <20190328105006.17337-1-pvorel@suse.cz>
+ <5C9D8B2E.1090608@cn.fujitsu.com> <20190403120220.GB13658@rei>
+ <20190403120655.GA20621@dell5510>
+Message-ID: <20190405064830.GA21316@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-CLOCK_MONOTONIC_RAW was introduced since kernel v2.6.28, so we want
-TCONF instead of TBROK if CLOCK_MONOTONIC_RAW wasn't supported on
-older kernels.
+Hi,
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- lib/tst_wallclock.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> > > Can we also remove break after calling tst_brk()?
 
-diff --git a/lib/tst_wallclock.c b/lib/tst_wallclock.c
-index f1c96c0..282d6ad 100644
---- a/lib/tst_wallclock.c
-+++ b/lib/tst_wallclock.c
-@@ -25,8 +25,14 @@ void tst_wallclock_save(void)
- 	if (tst_clock_gettime(CLOCK_REALTIME, &real_begin))
- 		tst_brk(TBROK | TERRNO, "tst_clock_gettime() realtime failed");
- 
--	if (tst_clock_gettime(CLOCK_MONOTONIC_RAW, &mono_begin))
-+	if (tst_clock_gettime(CLOCK_MONOTONIC_RAW, &mono_begin)) {
-+		if (errno == EINVAL) {
-+			tst_brk(TCONF | TERRNO,
-+				"tst_clock_gettime() didn't support CLOCK_MONOTONIC_RAW");
-+		}
-+
- 		tst_brk(TBROK | TERRNO, "tst_clock_gettime() monotonic failed");
-+	}
- 
- 	clock_saved = 1;
- }
--- 
-1.7.11.rc0
+> > AFAIK that would generate warnings, since compiler cannot deduce on it's
+> > own that the call will not return.
+> Agree.
 
+patchset merged (short variant).
 
+NOTE: Warning is produced only on gcc (to my surprise only new versions: up to
+gcc 6 it's ok, 7 and 8 warns):
+In file included from variant.c:6:
+variant.c: In function ‘do_test’:
+../../include/tst_test.h:76:3: warning: this statement may fall through [-Wimplicit-fallthrough=]
+   tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
+   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+variant.c:13:3: note: in expansion of macro ‘tst_brk’
+   tst_brk(TCONF, "Test skipped");
 
+Kind regards,
+Petr
