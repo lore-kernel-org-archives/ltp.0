@@ -1,36 +1,26 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 5 Apr 2019 08:48:30 +0200
+Date: Fri, 5 Apr 2019 08:56:09 +0200
 Subject: [LTP] [PATCH 1/1] Remove break after return
-In-Reply-To: <20190403120655.GA20621@dell5510>
+In-Reply-To: <5CA6C9F7.1060907@cn.fujitsu.com>
 References: <20190328105006.17337-1-pvorel@suse.cz>
- <5C9D8B2E.1090608@cn.fujitsu.com> <20190403120220.GB13658@rei>
- <20190403120655.GA20621@dell5510>
-Message-ID: <20190405064830.GA21316@dell5510>
+ <5CA6C9F7.1060907@cn.fujitsu.com>
+Message-ID: <20190405065609.GA26076@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Xiao,
 
-> > > Can we also remove break after calling tst_brk()?
+> I have added libc sigpending() detection by the following patch:
+> http://lists.linux.it/pipermail/ltp/2019-April/011590.html
 
-> > AFAIK that would generate warnings, since compiler cannot deduce on it's
-> > own that the call will not return.
-> Agree.
-
-patchset merged (short variant).
-
-NOTE: Warning is produced only on gcc (to my surprise only new versions: up to
-gcc 6 it's ok, 7 and 8 warns):
-In file included from variant.c:6:
-variant.c: In function ‘do_test’:
-../../include/tst_test.h:76:3: warning: this statement may fall through [-Wimplicit-fallthrough=]
-   tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
-   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-variant.c:13:3: note: in expansion of macro ‘tst_brk’
-   tst_brk(TCONF, "Test skipped");
+> Perhaps, we should avoid potential compiler warnings by keeping the
+> break here.
+Oh yes, adding break after tst_brk in [1] (in case of #ifndef HAVE_STIME) is correct.
 
 Kind regards,
 Petr
+
+[1] https://patchwork.ozlabs.org/patch/1077969/
