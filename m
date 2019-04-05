@@ -1,72 +1,800 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 5 Apr 2019 11:09:53 +0800
-Subject: [LTP] [PATCH v2 3/3] syscalls/sigpending02.c: Add libc sigpending()
-	detection && reset sighandler_counter
-In-Reply-To: <1554433793-19702-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1554433793-19702-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1554433793-19702-3-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Fri, 5 Apr 2019 11:09:51 +0800
+Subject: [LTP] [PATCH v2 1/3] m4: Use common LTP_CHECK_LIBC_FUNCS to check
+	libc implementations
+Message-ID: <1554433793-19702-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) bionic(Android libc) doesn't implement libc sigpending() currently,
-   so we can skip it on Android by the detection.
-
-2) Fix sigpending02 -i n by resetting sighandler_counter variable.
+Use LTP_CHECK_LIBC_FUNCS if only libc funcs need to be checked.
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- m4/ltp-libc-funcs.m4                                | 1 +
- testcases/kernel/syscalls/sigpending/sigpending02.c | 7 +++++++
- 2 files changed, 8 insertions(+)
+ configure.ac              | 28 +---------------------------
+ m4/ltp-epoll_pwait.m4     | 25 -------------------------
+ m4/ltp-execveat.m4        | 25 -------------------------
+ m4/ltp-fallocate.m4       | 25 -------------------------
+ m4/ltp-fchownat.m4        | 25 -------------------------
+ m4/ltp-fstatat.m4         | 26 --------------------------
+ m4/ltp-kcmp.m4            | 23 -----------------------
+ m4/ltp-libc-funcs.m4      | 37 +++++++++++++++++++++++++++++++++++++
+ m4/ltp-mkdirat.m4         | 25 -------------------------
+ m4/ltp-mknodat.m4         | 25 -------------------------
+ m4/ltp-openat.m4          | 25 -------------------------
+ m4/ltp-preadv.m4          | 23 -----------------------
+ m4/ltp-preadv2.m4         |  9 ---------
+ m4/ltp-pwritev.m4         | 23 -----------------------
+ m4/ltp-pwritev2.m4        |  9 ---------
+ m4/ltp-readlinkat.m4      | 25 -------------------------
+ m4/ltp-renameat.m4        | 25 -------------------------
+ m4/ltp-renameat2.m4       | 27 ---------------------------
+ m4/ltp-splice.m4          | 25 -------------------------
+ m4/ltp-sync_file_range.m4 | 10 ----------
+ m4/ltp-syncfs.m4          | 10 ----------
+ m4/ltp-tee.m4             | 25 -------------------------
+ m4/ltp-unshare.m4         | 25 -------------------------
+ m4/ltp-vmsplice.m4        | 25 -------------------------
+ 24 files changed, 38 insertions(+), 512 deletions(-)
+ delete mode 100644 m4/ltp-epoll_pwait.m4
+ delete mode 100644 m4/ltp-execveat.m4
+ delete mode 100644 m4/ltp-fallocate.m4
+ delete mode 100644 m4/ltp-fchownat.m4
+ delete mode 100644 m4/ltp-fstatat.m4
+ delete mode 100644 m4/ltp-kcmp.m4
+ create mode 100644 m4/ltp-libc-funcs.m4
+ delete mode 100644 m4/ltp-mkdirat.m4
+ delete mode 100644 m4/ltp-mknodat.m4
+ delete mode 100644 m4/ltp-openat.m4
+ delete mode 100644 m4/ltp-preadv.m4
+ delete mode 100644 m4/ltp-preadv2.m4
+ delete mode 100644 m4/ltp-pwritev.m4
+ delete mode 100644 m4/ltp-pwritev2.m4
+ delete mode 100644 m4/ltp-readlinkat.m4
+ delete mode 100644 m4/ltp-renameat.m4
+ delete mode 100644 m4/ltp-renameat2.m4
+ delete mode 100644 m4/ltp-splice.m4
+ delete mode 100644 m4/ltp-sync_file_range.m4
+ delete mode 100644 m4/ltp-syncfs.m4
+ delete mode 100644 m4/ltp-tee.m4
+ delete mode 100644 m4/ltp-unshare.m4
+ delete mode 100644 m4/ltp-vmsplice.m4
 
+diff --git a/configure.ac b/configure.ac
+index d71d832..4828780 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -59,11 +59,6 @@ AC_CHECK_HEADERS([ \
+     sys/xattr.h \
+ ])
+ 
+-AC_CHECK_FUNCS([ \
+-    profil \
+-    ustat \
+-])
+-
+ # Tools knobs
+ 
+ # Expect
+@@ -182,7 +177,6 @@ LTP_CHECK_SYSCALL_EVENTFD
+ LTP_CHECK_SYSCALL_MODIFY_LDT
+ LTP_CHECK_SYSCALL_QUOTACTL
+ LTP_CHECK_SYSCALL_SIGNALFD
+-LTP_CHECK_SYSCALL_UNSHARE
+ LTP_CHECK_SYSCALL_UTIMENSAT
+ LTP_CHECK_TASKSTATS
+ LTP_CHECK_TIME
+@@ -193,36 +187,17 @@ LTP_CHECK_MREMAP_FIXED
+ LTP_CHECK_KERNEL_DEVEL
+ LTP_CHECK_XFS_QUOTACTL
+ LTP_CHECK_CLONE_SUPPORTS_7_ARGS
+-LTP_CHECK_MKDIRAT
+-LTP_CHECK_FCHOWNAT
+-LTP_CHECK_FSTATAT
+-LTP_CHECK_MKNODAT
+-LTP_CHECK_READLINKAT
+-LTP_CHECK_OPENAT
+-LTP_CHECK_EXECVEAT
+-LTP_CHECK_RENAMEAT
+-LTP_CHECK_RENAMEAT2
+ LTP_CHECK_STATX
+-LTP_CHECK_FALLOCATE
+ LTP_CHECK_SYSCALL_FCNTL
+ LTP_CHECK_SYSCALL_PERF_EVENT_OPEN
+ if test "x$with_tirpc" = xyes; then
+ LTP_CHECK_TIRPC
+ fi
+-LTP_CHECK_TEE
+-LTP_CHECK_SPLICE
+-LTP_CHECK_VMSPLICE
+ LTP_CHECK_TIMERFD
+ LTP_CHECK_IOVEC
+ LTP_CHECK_LINUXRANDOM
+ LTP_CHECK_IF_LINK
+-LTP_CHECK_KCMP
+ LTP_CHECK_KCMP_TYPE
+-LTP_CHECK_PREADV
+-LTP_CHECK_PWRITEV
+-LTP_CHECK_PREADV2
+-LTP_CHECK_PWRITEV2
+-LTP_CHECK_EPOLL_PWAIT
+ LTP_CHECK_KEYUTILS_SUPPORT
+ LTP_CHECK_SYNC_ADD_AND_FETCH
+ LTP_CHECK_BUILTIN_CLEAR_CACHE
+@@ -234,10 +209,9 @@ LTP_CHECK_TPACKET_V3
+ LTP_CHECK_RLIMIT64
+ LTP_DETECT_HOST_CPU
+ LTP_CHECK_PERF_EVENT
+-LTP_CHECK_SYNCFS
+-LTP_CHECK_SYNC_FILE_RANGE
+ LTP_CHECK_FTS_H
+ LTP_CHECK_FIDEDUPE
++LTP_CHECK_LIBC_FUNCS
+ 
+ if test "x$with_numa" = xyes; then
+ 	LTP_CHECK_SYSCALL_NUMA
+diff --git a/m4/ltp-epoll_pwait.m4 b/m4/ltp-epoll_pwait.m4
+deleted file mode 100644
+index e918110..0000000
+--- a/m4/ltp-epoll_pwait.m4
++++ /dev/null
+@@ -1,25 +0,0 @@
+-dnl
+-dnl Copyright (c) 2016 Fujitsu Ltd.
+-dnl Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+-dnl
+-dnl This program is free software; you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program.
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_EPOLL_PWAIT
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_EPOLL_PWAIT],[
+-AC_CHECK_FUNCS(epoll_pwait,,)
+-])
+diff --git a/m4/ltp-execveat.m4 b/m4/ltp-execveat.m4
+deleted file mode 100644
+index 8cb6147..0000000
+--- a/m4/ltp-execveat.m4
++++ /dev/null
+@@ -1,25 +0,0 @@
+-dnl
+-dnl Copyright (c) Linux Test Project, 2014
+-dnl
+-dnl This program is free software;  you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program;  if not, write to the Free Software
+-dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_EXECVEAT
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_EXECVEAT],[
+-AC_CHECK_FUNCS(execveat,,)
+-])
+diff --git a/m4/ltp-fallocate.m4 b/m4/ltp-fallocate.m4
+deleted file mode 100644
+index c7d509e..0000000
+--- a/m4/ltp-fallocate.m4
++++ /dev/null
+@@ -1,25 +0,0 @@
+-dnl
+-dnl Copyright (c) Linux Test Project, 2014
+-dnl
+-dnl This program is free software;  you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program;  if not, write to the Free Software
+-dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_FALLOCATE
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_FALLOCATE],[
+-AC_CHECK_FUNCS(fallocate,,)
+-])
+diff --git a/m4/ltp-fchownat.m4 b/m4/ltp-fchownat.m4
+deleted file mode 100644
+index a46a397..0000000
+--- a/m4/ltp-fchownat.m4
++++ /dev/null
+@@ -1,25 +0,0 @@
+-dnl
+-dnl Copyright (c) Linux Test Project, 2014
+-dnl
+-dnl This program is free software;  you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program;  if not, write to the Free Software
+-dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_FCHOWNAT
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_FCHOWNAT],[
+-AC_CHECK_FUNCS(fchownat,,)
+-])
+diff --git a/m4/ltp-fstatat.m4 b/m4/ltp-fstatat.m4
+deleted file mode 100644
+index 8814ade..0000000
+--- a/m4/ltp-fstatat.m4
++++ /dev/null
+@@ -1,26 +0,0 @@
+-dnl
+-dnl Copyright (c) 2016 Oracle and/or its affiliates. All Rights Reserved.
+-dnl
+-dnl This program is free software;  you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program. If not, see <http://www.gnu.org/licenses/>.
+-dnl
+-dnl Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_FSTATAT
+-dnl -----------------
+-dnl
+-AC_DEFUN([LTP_CHECK_FSTATAT],[
+-AC_CHECK_FUNCS(fstatat,,)
+-])
+diff --git a/m4/ltp-kcmp.m4 b/m4/ltp-kcmp.m4
+deleted file mode 100644
+index 70bf375..0000000
+--- a/m4/ltp-kcmp.m4
++++ /dev/null
+@@ -1,23 +0,0 @@
+-dnl
+-dnl Copyright (c) Linux Test Project, 2015
+-dnl
+-dnl This program is free software;  you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program;  if not, write to the Free Software Foundation,
+-dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-dnl
+-dnl Author: Cedric Hnyda <chnyda@suse.com>
+-dnl
+-
+-AC_DEFUN([LTP_CHECK_KCMP],[
+-AC_CHECK_FUNCS(kcmp,,)
+-])
 diff --git a/m4/ltp-libc-funcs.m4 b/m4/ltp-libc-funcs.m4
-index 5b3f1ed..3ac9fc8 100644
---- a/m4/ltp-libc-funcs.m4
+new file mode 100644
+index 0000000..2c5c583
+--- /dev/null
 +++ b/m4/ltp-libc-funcs.m4
-@@ -26,6 +26,7 @@ AC_CHECK_FUNCS([ \
- 	readlinkat \
- 	renameat \
- 	renameat2 \
-+	sigpending \
- 	splice \
- 	stime \
- 	syncfs \
-diff --git a/testcases/kernel/syscalls/sigpending/sigpending02.c b/testcases/kernel/syscalls/sigpending/sigpending02.c
-index ce0d2ff..fd219aa 100644
---- a/testcases/kernel/syscalls/sigpending/sigpending02.c
-+++ b/testcases/kernel/syscalls/sigpending/sigpending02.c
-@@ -13,6 +13,7 @@
-  * Test 2: Call sigpending(sigset_t*=-1), it should return -1 with errno EFAULT.
-  */
- 
-+#include "config.h"
- #include "tst_test.h"
- #include "ltp_signal.h"
- #include "lapi/syscalls.h"
-@@ -36,7 +37,11 @@ static int tested_sigpending(sigset_t *sigset)
- {
- 	switch (tst_variant) {
- 	case 0:
-+#ifndef HAVE_SIGPENDING
-+		tst_brk(TCONF, "libc sigpending() is not implemented");
-+#else
- 		return sigpending(sigset);
-+#endif
- 	break;
- 	case 1:
- 		return tst_syscall(__NR_sigpending, sigset);
-@@ -60,6 +65,8 @@ static void test_sigpending(void)
- 
- 	int i; /* loop index */
- 
-+	sighandler_counter = 0;
+@@ -0,0 +1,37 @@
++dnl SPDX-License-Identifier: GPL-2.0-or-later
++dnl Copyright (c) 2019 Fujitsu Ltd.
++dnl Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
 +
- 	/* set up signal mask and handler */
- 	sigset_t only_SIGUSR, old_mask;
- 	sighandler_t old_sighandler1, old_sighandler2;
++dnl
++dnl LTP_CHECK_LIBC_FUNCS
++dnl ----------------------------
++dnl
++
++AC_DEFUN([LTP_CHECK_LIBC_FUNCS],[
++AC_CHECK_FUNCS([ \
++	epoll_pwait \
++	execveat \
++	fallocate \
++	fchownat \
++	fstatat \
++	kcmp \
++	mkdirat \
++	mknodat \
++	openat \
++	preadv \
++	preadv2 \
++	profil \
++	pwritev \
++	pwritev2 \
++	readlinkat \
++	renameat \
++	renameat2 \
++	splice \
++	syncfs \
++	sync_file_range \
++	tee \
++	unshare \
++	ustat \
++	vmsplice \
++],,)
++])
+diff --git a/m4/ltp-mkdirat.m4 b/m4/ltp-mkdirat.m4
+deleted file mode 100644
+index 40786c3..0000000
+--- a/m4/ltp-mkdirat.m4
++++ /dev/null
+@@ -1,25 +0,0 @@
+-dnl
+-dnl Copyright (c) Linux Test Project, 2014
+-dnl
+-dnl This program is free software;  you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program;  if not, write to the Free Software
+-dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_MKDIRAT
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_MKDIRAT],[
+-AC_CHECK_FUNCS(mkdirat,,)
+-])
+diff --git a/m4/ltp-mknodat.m4 b/m4/ltp-mknodat.m4
+deleted file mode 100644
+index 1ec22c7..0000000
+--- a/m4/ltp-mknodat.m4
++++ /dev/null
+@@ -1,25 +0,0 @@
+-dnl
+-dnl Copyright (c) Linux Test Project, 2014
+-dnl
+-dnl This program is free software;  you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program;  if not, write to the Free Software
+-dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_MKNODAT
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_MKNODAT],[
+-AC_CHECK_FUNCS(mknodat,,)
+-])
+diff --git a/m4/ltp-openat.m4 b/m4/ltp-openat.m4
+deleted file mode 100644
+index aa3b0a3..0000000
+--- a/m4/ltp-openat.m4
++++ /dev/null
+@@ -1,25 +0,0 @@
+-dnl
+-dnl Copyright (c) Linux Test Project, 2014
+-dnl
+-dnl This program is free software;  you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program;  if not, write to the Free Software
+-dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_OPENAT
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_OPENAT],[
+-AC_CHECK_FUNCS(openat,,)
+-])
+diff --git a/m4/ltp-preadv.m4 b/m4/ltp-preadv.m4
+deleted file mode 100644
+index 2046902..0000000
+--- a/m4/ltp-preadv.m4
++++ /dev/null
+@@ -1,23 +0,0 @@
+-dnl
+-dnl Copyright (c) 2015 Fujitsu Ltd.
+-dnl Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+-dnl
+-dnl This program is free software; you can redistribute it and/or modify it
+-dnl under the terms of version 2 of the GNU General Public License as
+-dnl published by the Free Software Foundation.
+-dnl
+-dnl This program is distributed in the hope that it would be useful, but
+-dnl WITHOUT ANY WARRANTY; without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl alone with this program.
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_PREADV
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_PREADV],[
+-AC_CHECK_FUNCS(preadv,,)
+-])
+diff --git a/m4/ltp-preadv2.m4 b/m4/ltp-preadv2.m4
+deleted file mode 100644
+index a1e5327..0000000
+--- a/m4/ltp-preadv2.m4
++++ /dev/null
+@@ -1,9 +0,0 @@
+-dnl SPDX-License-Identifier: GPL-2.0-or-later
+-dnl Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
+-dnl Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+-
+-dnl LTP_CHECK_PREADV2
+-dnl ----------------------------
+-AC_DEFUN([LTP_CHECK_PREADV2],[
+-AC_CHECK_FUNCS(preadv2,,)
+-])
+diff --git a/m4/ltp-pwritev.m4 b/m4/ltp-pwritev.m4
+deleted file mode 100644
+index 6565332..0000000
+--- a/m4/ltp-pwritev.m4
++++ /dev/null
+@@ -1,23 +0,0 @@
+-dnl
+-dnl Copyright (c) 2015 Fujitsu Ltd.
+-dnl Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+-dnl
+-dnl This program is free software; you can redistribute it and/or modify it
+-dnl under the terms of version 2 of the GNU General Public License as
+-dnl published by the Free Software Foundation.
+-dnl
+-dnl This program is distributed in the hope that it would be useful, but
+-dnl WITHOUT ANY WARRANTY; without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl alone with this program.
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_PWRITEV
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_PWRITEV],[
+-AC_CHECK_FUNCS(pwritev,,)
+-])
+diff --git a/m4/ltp-pwritev2.m4 b/m4/ltp-pwritev2.m4
+deleted file mode 100644
+index 38148ac..0000000
+--- a/m4/ltp-pwritev2.m4
++++ /dev/null
+@@ -1,9 +0,0 @@
+-dnl SPDX-License-Identifier: GPL-2.0-or-later
+-dnl Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
+-dnl Author: Jinhui Huang <huangjh.jy@cn.fujitsu.com>
+-
+-dnl LTP_CHECK_PWRITEV2
+-dnl ----------------------------
+-AC_DEFUN([LTP_CHECK_PWRITEV2],[
+-AC_CHECK_FUNCS(pwritev2,,)
+-])
+diff --git a/m4/ltp-readlinkat.m4 b/m4/ltp-readlinkat.m4
+deleted file mode 100644
+index 6866f3b..0000000
+--- a/m4/ltp-readlinkat.m4
++++ /dev/null
+@@ -1,25 +0,0 @@
+-dnl
+-dnl Copyright (c) Linux Test Project, 2014
+-dnl
+-dnl This program is free software;  you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program;  if not, write to the Free Software
+-dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_READLINKAT
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_READLINKAT],[
+-AC_CHECK_FUNCS(readlinkat,,)
+-])
+diff --git a/m4/ltp-renameat.m4 b/m4/ltp-renameat.m4
+deleted file mode 100644
+index f40c58e..0000000
+--- a/m4/ltp-renameat.m4
++++ /dev/null
+@@ -1,25 +0,0 @@
+-dnl
+-dnl Copyright (c) Linux Test Project, 2014
+-dnl
+-dnl This program is free software;  you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program;  if not, write to the Free Software Foundation,
+-dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_RENAMEAT
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_RENAMEAT],[
+-AC_CHECK_FUNCS(renameat,,)
+-])
+diff --git a/m4/ltp-renameat2.m4 b/m4/ltp-renameat2.m4
+deleted file mode 100644
+index 2bc7313..0000000
+--- a/m4/ltp-renameat2.m4
++++ /dev/null
+@@ -1,27 +0,0 @@
+-dnl
+-dnl Copyright (c) Linux Test Project, 2015
+-dnl
+-dnl This program is free software;  you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program;  if not, write to the Free Software Foundation,
+-dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-dnl
+-dnl Author: Cedric Hnyda <chnyda@suse.com>
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_RENAMEAT2
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_RENAMEAT2],[
+-AC_CHECK_FUNCS(renameat2,,)
+-])
+diff --git a/m4/ltp-splice.m4 b/m4/ltp-splice.m4
+deleted file mode 100644
+index 0ddaae0..0000000
+--- a/m4/ltp-splice.m4
++++ /dev/null
+@@ -1,25 +0,0 @@
+-dnl
+-dnl Copyright (c) Linux Test Project, 2014
+-dnl
+-dnl This program is free software;  you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program;  if not, write to the Free Software
+-dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_SPLICE
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_SPLICE],[
+-AC_CHECK_FUNCS(splice,,)
+-])
+diff --git a/m4/ltp-sync_file_range.m4 b/m4/ltp-sync_file_range.m4
+deleted file mode 100644
+index b47a091..0000000
+--- a/m4/ltp-sync_file_range.m4
++++ /dev/null
+@@ -1,10 +0,0 @@
+-dnl SPDX-License-Identifier: GPL-2.0-or-later
+-dnl Copyright (c) 2019 Linaro Limited. All rights reserved.
+-
+-dnl
+-dnl LTP_CHECK_SYNC_FILE_RANGE
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_SYNC_FILE_RANGE],[
+-AC_CHECK_FUNCS(sync_file_range,,)
+-])
+diff --git a/m4/ltp-syncfs.m4 b/m4/ltp-syncfs.m4
+deleted file mode 100644
+index 836a055..0000000
+--- a/m4/ltp-syncfs.m4
++++ /dev/null
+@@ -1,10 +0,0 @@
+-dnl SPDX-License-Identifier: GPL-2.0-or-later
+-dnl Copyright (c) 2019 Linaro Limited. All rights reserved.
+-
+-dnl
+-dnl LTP_CHECK_SYNCFS
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_SYNCFS],[
+-AC_CHECK_FUNCS(syncfs,,)
+-])
+diff --git a/m4/ltp-tee.m4 b/m4/ltp-tee.m4
+deleted file mode 100644
+index eb4a6b2..0000000
+--- a/m4/ltp-tee.m4
++++ /dev/null
+@@ -1,25 +0,0 @@
+-dnl
+-dnl Copyright (c) Linux Test Project, 2014
+-dnl
+-dnl This program is free software;  you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program;  if not, write to the Free Software Foundation,
+-dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_TEE
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_TEE],[
+-AC_CHECK_FUNCS(tee,,)
+-])
+diff --git a/m4/ltp-unshare.m4 b/m4/ltp-unshare.m4
+deleted file mode 100644
+index de8da73..0000000
+--- a/m4/ltp-unshare.m4
++++ /dev/null
+@@ -1,25 +0,0 @@
+-dnl
+-dnl Copyright (c) Cisco Systems Inc., 2009
+-dnl
+-dnl This program is free software;  you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program;  if not, write to the Free Software
+-dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-dnl
+-dnl Author: Ngie Cooper <yaneurabeya@gmail.com>
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_SYSCALL_UNSHARE
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_SYSCALL_UNSHARE],[AC_CHECK_FUNCS_ONCE(unshare)])
+diff --git a/m4/ltp-vmsplice.m4 b/m4/ltp-vmsplice.m4
+deleted file mode 100644
+index 6129cfe..0000000
+--- a/m4/ltp-vmsplice.m4
++++ /dev/null
+@@ -1,25 +0,0 @@
+-dnl
+-dnl Copyright (c) Linux Test Project, 2014
+-dnl
+-dnl This program is free software;  you can redistribute it and/or modify
+-dnl it under the terms of the GNU General Public License as published by
+-dnl the Free Software Foundation; either version 2 of the License, or
+-dnl (at your option) any later version.
+-dnl
+-dnl This program is distributed in the hope that it will be useful,
+-dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-dnl the GNU General Public License for more details.
+-dnl
+-dnl You should have received a copy of the GNU General Public License
+-dnl along with this program;  if not, write to the Free Software
+-dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-dnl
+-
+-dnl
+-dnl LTP_CHECK_SPLICE
+-dnl ----------------------------
+-dnl
+-AC_DEFUN([LTP_CHECK_VMSPLICE],[
+-AC_CHECK_FUNCS(vmsplice,,)
+-])
 -- 
 1.8.3.1
 
