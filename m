@@ -1,40 +1,63 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 5 Apr 2019 11:15:12 +0800
-Subject: [LTP] [PATCH 1/2] m4: Use common LTP_CHECK_LIBC_FUNCS to check
- libc implementations
-In-Reply-To: <20190404115851.GA20924@dell5510>
-References: <1553765807-31789-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20190328151228.GA6002@x230> <20190404103131.GB20565@rei.lan>
- <20190404115851.GA20924@dell5510>
-Message-ID: <5CA6C840.9010707@cn.fujitsu.com>
+Date: Fri, 5 Apr 2019 11:22:31 +0800
+Subject: [LTP] [PATCH 1/1] Remove break after return
+In-Reply-To: <20190328105006.17337-1-pvorel@suse.cz>
+References: <20190328105006.17337-1-pvorel@suse.cz>
+Message-ID: <5CA6C9F7.1060907@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr, Cyril
+On 2019/03/28 18:50, Petr Vorel wrote:
+> Reported-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/kernel/syscalls/select/select_var.h       | 1 -
+>  testcases/kernel/syscalls/sigpending/sigpending02.c | 3 ---
+>  2 files changed, 4 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/select/select_var.h b/testcases/kernel/syscalls/select/select_var.h
+> index b19a1d1bf..29ebbc5ee 100644
+> --- a/testcases/kernel/syscalls/select/select_var.h
+> +++ b/testcases/kernel/syscalls/select/select_var.h
+> @@ -20,7 +20,6 @@ static int do_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
+>  	switch (tst_variant) {
+>  	case 0:
+>  		return select(nfds, readfds, writefds, exceptfds, timeout);
+> -	break;
+>  	case 1: {
+>  #ifdef __LP64__
+>  		return tst_syscall(__NR_select, nfds, readfds, writefds, exceptfds, timeout);
+> diff --git a/testcases/kernel/syscalls/sigpending/sigpending02.c b/testcases/kernel/syscalls/sigpending/sigpending02.c
+> index ce0d2ff79..d75807d77 100644
+> --- a/testcases/kernel/syscalls/sigpending/sigpending02.c
+> +++ b/testcases/kernel/syscalls/sigpending/sigpending02.c
+> @@ -37,13 +37,10 @@ static int tested_sigpending(sigset_t *sigset)
+>  	switch (tst_variant) {
+>  	case 0:
+>  		return sigpending(sigset);
+> -	break;
+Hi Petr,
 
-Thanks for your comment.
-I will send v2 patch as you suggested. :-)
+I have added libc sigpending() detection by the following patch:
+http://lists.linux.it/pipermail/ltp/2019-April/011590.html
+
+Perhaps, we should avoid potential compiler warnings by keeping the
+break here.
 
 Best Regards,
 Xiao Yang
-On 2019/04/04 19:58, Petr Vorel wrote:
-> Hi,
->
->>> Note about formatting: maybe it'd be easier to edit the file if each function
->>> was on separate line.
->> Agreed, also we have AC_CHECK_FUNCS() in the configure.ac so the best
->> step would be moving these there as well.
-> +1 (easier to find general things like this in configure.ac than in m4/ltp-*.m4.
->
->> Other than that this is a great cleanup, thanks for doing this.
-> Kind regards,
-> Petr
->
->
->
+>  	case 1:
+>  		return tst_syscall(__NR_sigpending, sigset);
+> -	break;
+>  	case 2:
+>  		return tst_syscall(__NR_rt_sigpending, sigset, SIGSETSIZE);
+> -	break;
+>  	}
+>  	return -1;
+>  }
 
 
 
