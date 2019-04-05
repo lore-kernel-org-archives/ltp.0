@@ -1,61 +1,71 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 5 Apr 2019 15:32:13 +0800
-Subject: [LTP] [PATCH 1/2] m4: Use common LTP_CHECK_LIBC_FUNCS to check
- libc implementations
-In-Reply-To: <20190405071324.GA30802@dell5510>
-References: <1553765807-31789-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20190328151228.GA6002@x230> <20190404103131.GB20565@rei.lan>
- <20190404115851.GA20924@dell5510> <5CA6C840.9010707@cn.fujitsu.com>
- <20190405071324.GA30802@dell5510>
-Message-ID: <5CA7047D.2080606@cn.fujitsu.com>
+Date: Fri, 5 Apr 2019 15:33:17 +0800
+Subject: [LTP] [PATCH v2 3/3] syscalls/sigpending02.c: Add libc
+ sigpending() detection && reset sighandler_counter
+In-Reply-To: <20190405072112.GB31213@dell5510>
+References: <1554433793-19702-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1554433793-19702-3-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20190405072112.GB31213@dell5510>
+Message-ID: <5CA704BD.3090804@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2019/04/05 15:13, Petr Vorel wrote:
-> Hi Xiao, Cyril,
+On 2019/04/05 15:21, Petr Vorel wrote:
+> Hi Xiao,
 >
->> Thanks for your comment.
->> I will send v2 patch as you suggested. :-)
-> v2 has LTP_CHECK_LIBC_FUNCS in m4/ltp-libc-funcs.m4.
-> IMHO it'd be better to have simple AC_CHECK_FUNCS() in configure.ac, i.e. the
-> same way we handle AC_CHECK_HEADERS(). It might not be good to mix configure.ac
-> and m4/ltp-*.m4, but I guess general functions like this is easier to find in
-> configure.ac than in some of m4/ltp-*.m4.
+>> 1) bionic(Android libc) doesn't implement libc sigpending() currently,
+>>     so we can skip it on Android by the detection.
+>> 2) Fix sigpending02 -i n by resetting sighandler_counter variable.
+> Good catch, thanks!
+>
+>> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
+> Reviewed-by: Petr Vorel<pvorel@suse.cz>
+>
+> ...
+>> +++ b/testcases/kernel/syscalls/sigpending/sigpending02.c
+>> @@ -13,6 +13,7 @@
+>>    * Test 2: Call sigpending(sigset_t*=-1), it should return -1 with errno EFAULT.
+>>    */
+>> +#include "config.h"
+>>   #include "tst_test.h"
+>>   #include "ltp_signal.h"
+>>   #include "lapi/syscalls.h"
+>> @@ -36,7 +37,11 @@ static int tested_sigpending(sigset_t *sigset)
+>>   {
+>>   	switch (tst_variant) {
+>>   	case 0:
+>> +#ifndef HAVE_SIGPENDING
+>> +		tst_brk(TCONF, "libc sigpending() is not implemented");
+>> +#else
+>>   		return sigpending(sigset);
+>> +#endif
+>>   	break;
+> NOTE: I removed this break with 6d5b03aa9 ("Remove unnecessary breaks"),
+> so you need to add it when rebasing this commit.
 Hi Petr,
 
-Sorry, I missed your last comment.
-It seems easier to remove LTP_CHECK_LIBC_FUNCS directly.
-
-I will send v3 patch soon.
+Sure, i will add it in v3 patch. :-)
 
 Best Regards,
 Xiao Yang
 >
+>>   	case 1:
+>>   		return tst_syscall(__NR_sigpending, sigset);
+>> @@ -60,6 +65,8 @@ static void test_sigpending(void)
+>>   	int i; /* loop index */
+>> +	sighandler_counter = 0;
+>> +
+>>   	/* set up signal mask and handler */
+>>   	sigset_t only_SIGUSR, old_mask;
+>>   	sighandler_t old_sighandler1, old_sighandler2;
 > Kind regards,
 > Petr
 >
->> Best Regards,
->> Xiao Yang
->> On 2019/04/04 19:58, Petr Vorel wrote:
->>> Hi,
->>>>> Note about formatting: maybe it'd be easier to edit the file if each function
->>>>> was on separate line.
->>>> Agreed, also we have AC_CHECK_FUNCS() in the configure.ac so the best
->>>> step would be moving these there as well.
->>> +1 (easier to find general things like this in configure.ac than in m4/ltp-*.m4.
->>>> Other than that this is a great cleanup, thanks for doing this.
->>> Kind regards,
->>> Petr
 >
->
->
->
->
->
->
+> .
 >
 
 
