@@ -1,61 +1,44 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri,  5 Apr 2019 18:52:23 +0200
-Subject: [LTP] [PATCH v2 1/3] ima: Call test's cleanup inside ima_setup.sh
-	cleanup
-In-Reply-To: <20190405165225.27216-1-pvorel@suse.cz>
-References: <20190405165225.27216-1-pvorel@suse.cz>
-Message-ID: <20190405165225.27216-2-pvorel@suse.cz>
+Date: Fri,  5 Apr 2019 18:52:22 +0200
+Subject: [LTP] [PATCH v2 0/3]	LTP reproducer on broken IMA on overlayfs
+Message-ID: <20190405165225.27216-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-to work the same way as setup
+Hi,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/kernel/security/integrity/ima/tests/ima_setup.sh  | 6 +++++-
- .../kernel/security/integrity/ima/tests/ima_violations.sh   | 2 --
- 2 files changed, 5 insertions(+), 3 deletions(-)
+this is a second version of patch demonstrating a bug on overlayfs when
+combining IMA with EVM. There is ongoing work made by Ignaz Forster and
+Fabian Vogt [1] [2], IMA only behavior was already fixed [3].
 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-index 52551190a..cbded42c2 100644
---- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-@@ -20,7 +20,8 @@
- TST_TESTFUNC="test"
- TST_SETUP_CALLER="$TST_SETUP"
- TST_SETUP="ima_setup"
--TST_CLEANUP="${TST_CLEANUP:-ima_cleanup}"
-+TST_CLEANUP_CALLER="$TST_CLEANUP"
-+TST_CLEANUP="ima_cleanup"
- TST_NEEDS_TMPDIR=1
- TST_NEEDS_ROOT=1
- 
-@@ -95,6 +96,9 @@ ima_setup()
- ima_cleanup()
- {
- 	local dir
-+
-+	[ -n "$TST_CLEANUP_CALLER" ] && $TST_CLEANUP_CALLER
-+
- 	for dir in $UMOUNT; do
- 		umount $dir
- 	done
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
-index 74223c221..a44bd1230 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
-@@ -51,8 +51,6 @@ cleanup()
- {
- 	[ "$PRINTK_RATE_LIMIT" != "0" ] && \
- 		sysctl -wq kernel.printk_ratelimit=$PRINTK_RATE_LIMIT
--
--	ima_cleanup
- }
- 
- open_file_read()
+Main patch is the last one (previous are just a cleanup and not changed).
+
+Kind regards,
+Petr
+
+[1] https://www.spinics.net/lists/linux-integrity/msg05926.html
+[2] https://www.spinics.net/lists/linux-integrity/msg03593.html
+[3] https://patchwork.kernel.org/patch/10776231/
+
+Petr Vorel (3):
+  ima: Call test's cleanup inside ima_setup.sh cleanup
+  shell: Add $TST_DEVICE as default parameter to tst_umount
+  ima: Add overlay test
+
+ doc/test-writing-guidelines.txt               |  4 +-
+ runtest/ima                                   |  1 +
+ testcases/commands/df/df01.sh                 |  7 +-
+ testcases/commands/mkfs/mkfs01.sh             |  2 +-
+ .../integrity/ima/tests/evm_overlay.sh        | 86 +++++++++++++++++++
+ .../security/integrity/ima/tests/ima_setup.sh | 12 ++-
+ .../integrity/ima/tests/ima_violations.sh     |  2 -
+ testcases/lib/tst_test.sh                     |  2 +-
+ 8 files changed, 100 insertions(+), 16 deletions(-)
+ create mode 100755 testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
+
 -- 
 2.21.0
 
