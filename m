@@ -1,73 +1,732 @@
-From: XiaoLi Feng <xifeng@redhat.com>
-Date: Mon,  8 Apr 2019 13:40:50 +0800
-Subject: [LTP] [PATCH v1] ext4_subdir_limit_test.sh: fix "No Space" issue
-Message-ID: <20190408054050.28262-1-xifeng@redhat.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 8 Apr 2019 14:52:26 +0800
+Subject: [LTP] [PATCH v2 1/2] syscalls/stat01, 02,
+	05: Cleanup && Convert to new API
+In-Reply-To: <20190404131911.GB10585@rei.lan>
+References: <20190404131911.GB10585@rei.lan>
+Message-ID: <1554706347-2452-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Xiaoli Feng <fengxiaoli0714@gmail.com>
+1) Take use of some safe macros
+2) Remove duplicate tests stat02,stat05
 
-1G ext4 filesystem default has 65536 inode. And some inodes
-will be used after format. So it will be failed when try to
-create 65536 sub-directorys in this ext4 mountpoint. Change
-it to create 65536 - used inodes directorys.
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
+ runtest/quickhit                          |   2 -
+ runtest/syscalls                          |   4 -
+ testcases/kernel/syscalls/stat/.gitignore |   4 -
+ testcases/kernel/syscalls/stat/stat01.c   | 167 ++++++----------
+ testcases/kernel/syscalls/stat/stat02.c   | 228 ----------------------
+ testcases/kernel/syscalls/stat/stat05.c   | 194 ------------------
+ 6 files changed, 61 insertions(+), 538 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/stat/stat02.c
+ delete mode 100644 testcases/kernel/syscalls/stat/stat05.c
 
-Re-send this mail again. Because I subscripted the ltp mail list failed last
-time.
-
-Thanks.
-
- .../ext4-subdir-limit/ext4_subdir_limit_test.sh  | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
-
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-index 5cc0523a8..05581d5c6 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-@@ -46,6 +46,8 @@ prev_result=$FAIL
- ext4_run_case()
- {
- 	local dir_name_len=
-+	local free_inode=
-+	local max_directorys=$1
+diff --git a/runtest/quickhit b/runtest/quickhit
+index 74482fd46..31c571eaa 100644
+--- a/runtest/quickhit
++++ b/runtest/quickhit
+@@ -223,8 +223,6 @@ signal03 signal03
+ # and signal sending.
+ sigrelse01 sigrelse01
+ # Releasing held signals
+-stat05 stat05
+-# Basic test for stat(2)
+ stat06 stat06
+ # Negative tests for stat(2)
+ statfs01 statfs01
+diff --git a/runtest/syscalls b/runtest/syscalls
+index cf8189ebd..9fa58f7f9 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1319,14 +1319,10 @@ ssetmask01 ssetmask01
  
- 	if [ $2 -eq $SHORT_DIR ]; then
- 		dir_name_len="short name"
-@@ -53,9 +55,6 @@ ext4_run_case()
- 		dir_name_len="long name"
- 	fi
+ stat01 stat01
+ stat01_64 stat01_64
+-stat02 stat02
+-stat02_64 stat02_64
+ stat03 stat03
+ stat03_64 stat03_64
+ stat04 symlink01 -T stat04
+ stat04_64 symlink01 -T stat04_64
+-stat05 stat05
+-stat05_64 stat05_64
+ stat06 stat06
+ stat06_64 stat06_64
  
--	tst_resm TINFO "Num of dirs to create: $1, Dir name len: $dir_name_len, " \
--			"Parent dir: $3, Block size: $4"
--
- 	# only mkfs if block size has been changed,
- 	# or previous case failed
- 	if [ $prev_result -ne $PASS -o $4 -ne $prev_block_size ]; then
-@@ -80,11 +79,18 @@ ext4_run_case()
- 
- 	# create directories
- 	mkdir -p $3 2> /dev/null
-+	free_inode=`df -i $EXT4_DEV | awk '{print $4}' | tr -cd "[0-9]"`
-+	if [ "$free_inode" -lt "$1" ]; then
-+		max_directorys=$free_inode
-+	fi
+diff --git a/testcases/kernel/syscalls/stat/.gitignore b/testcases/kernel/syscalls/stat/.gitignore
+index cb3df91fd..0705df714 100644
+--- a/testcases/kernel/syscalls/stat/.gitignore
++++ b/testcases/kernel/syscalls/stat/.gitignore
+@@ -1,10 +1,6 @@
+ /stat01
+ /stat01_64
+-/stat02
+-/stat02_64
+ /stat03
+ /stat03_64
+-/stat05
+-/stat05_64
+ /stat06
+ /stat06_64
+diff --git a/testcases/kernel/syscalls/stat/stat01.c b/testcases/kernel/syscalls/stat/stat01.c
+index e041311f5..437ce0cf8 100644
+--- a/testcases/kernel/syscalls/stat/stat01.c
++++ b/testcases/kernel/syscalls/stat/stat01.c
+@@ -1,152 +1,107 @@
+-/*
+- * Copyright (c) International Business Machines  Corp., 2001
+- *  07/2001 John George
++// SPDX-License-Identifier: GPL-2.0-or-later
++/* Copyright (c) International Business Machines  Corp., 2001
++ *	07/2001 John George
++ *		-Ported
+  *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software Foundation,
+- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- */
+-/*
+  *  Verify that, stat(2) succeeds to get the status of a file and fills the
+- *  stat structure elements.
++ *  stat structure elements regardless of whether process has or doesn't
++ *  have read access to the file.
+  */
+-#include <stdio.h>
 +
-+	tst_resm TINFO "Num of dirs to create: $max_directorys, Dir name len: $dir_name_len, " \
-+			"Parent dir: $3, Block size: $4"
+ #include <sys/types.h>
+ #include <fcntl.h>
+ #include <sys/stat.h>
+ #include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+ #include <pwd.h>
+-
+-#include "test.h"
+-#include "safe_macros.h"
+-
+-#define FILE_MODE	0644
+-#define TESTFILE	"testfile"
+-#define FILE_SIZE       1024
+-#define BUF_SIZE	256
+-#define MASK		0777
+-
+-char *TCID = "stat01";
+-int TST_TOTAL = 1;
+-
+-static uid_t user_id;
+-static gid_t group_id;
+-
+-static void setup(void);
+-static void cleanup(void);
+-
+-static void verify(void)
++#include "tst_test.h"
++
++#define FILE_SIZE	 1024
++#define TST_FILEREAD     "test_fileread"
++#define TST_FILENOREAD   "test_filenoread"
++#define READ_MODE        0666
++#define NEW_MODE         0222
++#define MASK             0777
++
++uid_t user_id;
++gid_t group_id;
++struct passwd *ltpuser;
++
++static struct tcase{
++	char *pathname;
++	unsigned int mode;
++} TC[] = {
++	{TST_FILEREAD, READ_MODE},
++	{TST_FILENOREAD, NEW_MODE}
++};
++
++static void verify_stat(unsigned int n)
+ {
++	struct tcase *tc = TC + n;
+ 	struct stat stat_buf;
+ 	int fail = 0;
  
- 	if [ $2 -eq $SHORT_DIR ]; then
--		create_short_dirs $1 $3
-+		create_short_dirs $max_directorys $3
- 	else
--		create_long_dirs $1 $3
-+		create_long_dirs $max_directorys $3
- 	fi
+-	TEST(stat(TESTFILE, &stat_buf));
++	TEST(stat(tc->pathname, &stat_buf));
  
- 	if [ $? -ne 0 ]; then
+-	if (TEST_RETURN == -1) {
+-		tst_resm(TFAIL | TTERRNO, "fstat(%s) failed", TESTFILE);
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "stat(%s) failed", tc->pathname);
+ 		return;
+ 	}
+ 
+ 	if (stat_buf.st_uid != user_id) {
+-		tst_resm(TINFO, "stat_buf.st_uid = %i expected %i",
+-		         stat_buf.st_uid, user_id);
++		tst_res(TINFO, "stat_buf.st_uid = %i expected %i",
++			stat_buf.st_uid, user_id);
+ 		fail++;
+ 	}
+ 
+ 	if (stat_buf.st_gid != group_id) {
+-		tst_resm(TINFO, "stat_buf.st_gid = %i expected %i",
+-		         stat_buf.st_gid, group_id);
++		tst_res(TINFO, "stat_buf.st_gid = %i expected %i",
++			stat_buf.st_gid, group_id);
+ 		fail++;
+ 	}
+ 
+ 	if (stat_buf.st_size != FILE_SIZE) {
+-		tst_resm(TINFO, "stat_buf.st_size = %li expected %i",
+-		         (long)stat_buf.st_size, FILE_SIZE);
++		tst_res(TINFO, "stat_buf.st_size = %li expected %i",
++			(long)stat_buf.st_size, FILE_SIZE);
+ 		fail++;
+ 	}
+ 
+-        if ((stat_buf.st_mode & MASK) != FILE_MODE) {
+-		tst_resm(TINFO, "stat_buf.st_mode = %o expected %o",
+-		         (stat_buf.st_mode & MASK), FILE_MODE);
++	if ((stat_buf.st_mode & MASK) != tc->mode) {
++		tst_res(TINFO, "stat_buf.st_mode = %o expected %o",
++			(stat_buf.st_mode & MASK), tc->mode);
+ 		fail++;
+ 	}
+ 
+ 	if (fail) {
+-		tst_resm(TFAIL, "functionality of fstat incorrect");
++		tst_res(TFAIL, "functionality of stat(%s) incorrect",
++			tc->pathname);
+ 		return;
+ 	}
+ 
+-	tst_resm(TPASS, "functionality of fstat correct");
++	tst_res(TPASS, "functionality of stat(%s) correct", tc->pathname);
+ }
+ 
+-int main(int ac, char **av)
++void setup(void)
+ {
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
++	unsigned int i;
+ 
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++)
+-		verify();
+-
+-	cleanup();
+-	tst_exit();
+-}
++	ltpuser = SAFE_GETPWNAM("nobody");
++	SAFE_SETUID(ltpuser->pw_uid);
+ 
+-static void setup(void)
+-{
+-	struct passwd *ltpuser;
+-	char tst_buff[BUF_SIZE];
+-	int wbytes;
+-	int write_len = 0;
+-	int fd;
+-
+-	tst_require_root();
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	ltpuser = SAFE_GETPWNAM(NULL, "nobody");
+-	SAFE_SETUID(NULL, ltpuser->pw_uid);
+-
+-	TEST_PAUSE;
+-
+-	tst_tmpdir();
+-
+-	umask(022);
+-
+-	fd = SAFE_OPEN(tst_rmdir, TESTFILE, O_WRONLY | O_CREAT, FILE_MODE);
+-
+-	/* Fill the test buffer with the known data */
+-	memset(tst_buff, 'a', BUF_SIZE - 1);
+-
+-	/* Write to the file 1k data from the buffer */
+-	while (write_len < FILE_SIZE) {
+-		if ((wbytes = write(fd, tst_buff, sizeof(tst_buff))) <= 0)
+-			tst_brkm(TBROK | TERRNO, cleanup, "write failed");
+-		else
+-			write_len += wbytes;
++	for (i = 0; i < ARRAY_SIZE(TC); i++) {
++		if (tst_fill_file(TC[i].pathname, 'a', 256, 4))
++			tst_brk(TBROK, "Failed to create tst file %s",
++				TC[i].pathname);
++		SAFE_CHMOD(TC[i].pathname, TC[i].mode);
+ 	}
+ 
+-	SAFE_CLOSE(tst_rmdir, fd);
+-
+ 	user_id = getuid();
+ 	group_id = getgid();
+ }
+ 
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-}
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(TC),
++	.setup = setup,
++	.test = verify_stat,
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++};
+diff --git a/testcases/kernel/syscalls/stat/stat02.c b/testcases/kernel/syscalls/stat/stat02.c
+deleted file mode 100644
+index aeaa7ab82..000000000
+--- a/testcases/kernel/syscalls/stat/stat02.c
++++ /dev/null
+@@ -1,228 +0,0 @@
+-/*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- */
+-
+-/*
+- * Test Name: stat02
+- *
+- * Test Description:
+- *  Verify that, stat(2) succeeds to get the status of a file and fills the
+- *  stat structure elements though process doesn't have read access to the
+- *  file.
+- *
+- * Expected Result:
+- *  stat() should return value 0 on success and the stat structure elements
+- *  should be filled with specified 'file' information.
+- *
+- * Algorithm:
+- *  Setup:
+- *   Setup signal handling.
+- *   Create temporary directory.
+- *   Pause for SIGUSR1 if option specified.
+- *
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if system call failed (return=-1)
+- *   	Log the errno and Issue a FAIL message.
+- *   Otherwise,
+- *   	Verify the Functionality of system call
+- *      if successful,
+- *      	Issue Functionality-Pass message.
+- *      Otherwise,
+- *		Issue Functionality-Fail message.
+- *  Cleanup:
+- *   Print errno log and/or timing stats if options given
+- *   Delete the temporary directory created.
+- *
+- * Usage:  <for command-line>
+- *  stat02 [-c n] [-e] [-f] [-i n] [-I x] [-p x] [-t]
+- *	where,  -c n : Run n copies concurrently.
+- *		-e   : Turn on errno logging.
+- *		-f   : Turn off functionality Testing.
+- *		-i n : Execute test n times.
+- *		-I x : Execute test for x seconds.
+- *		-P x : Pause for x seconds between iterations.
+- *		-t   : Turn on syscall timing.
+- *
+- * History
+- *	07/2001 John George
+- *		-Ported
+- *
+- * Restrictions:
+- *
+- */
+-#include <stdio.h>
+-#include <sys/types.h>
+-#include <fcntl.h>
+-#include <sys/stat.h>
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-#include <pwd.h>
+-
+-#include "test.h"
+-#include "safe_macros.h"
+-
+-#define FILE_MODE	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+-#define TESTFILE	"testfile"
+-#define FILE_SIZE       1024
+-#define BUF_SIZE	256
+-#define NEW_MODE	0222
+-#define MASK		0777
+-
+-char *TCID = "stat02";
+-int TST_TOTAL = 1;
+-
+-uid_t user_id;			/* eff. user id/group id of test process */
+-gid_t group_id;
+-char nobody_uid[] = "nobody";
+-struct passwd *ltpuser;
+-
+-void setup();
+-void cleanup();
+-
+-int main(int ac, char **av)
+-{
+-	struct stat stat_buf;	/* stat structure buffer */
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		/*
+-		 * Call stat(2) to get the status of
+-		 * specified 'file' into stat structure.
+-		 */
+-		TEST(stat(TESTFILE, &stat_buf));
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL,
+-				 "stat(%s, &stat_buf) Failed, errno=%d : %s",
+-				 TESTFILE, TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-			stat_buf.st_mode &= ~S_IFREG;
+-			/*
+-			 * Verify the data returned by stat(2)
+-			 * aganist the expected data.
+-			 */
+-			if ((stat_buf.st_uid != user_id) ||
+-			    (stat_buf.st_gid != group_id) ||
+-			    (stat_buf.st_size != FILE_SIZE) ||
+-			    ((stat_buf.st_mode & MASK) != NEW_MODE)) {
+-				tst_resm(TFAIL, "Functionality of "
+-					 "stat(2) on '%s' Failed",
+-					 TESTFILE);
+-			} else {
+-				tst_resm(TPASS, "Functionality of "
+-					 "stat(2) on '%s' Succcessful",
+-					 TESTFILE);
+-			}
+-		}
+-		tst_count++;	/* incr TEST_LOOP counter */
+-	}
+-
+-	cleanup();
+-	tst_exit();
+-}
+-
+-/*
+- * void
+- * setup() -  Performs setup function for the test.
+- *  Creat a temporary directory and change directory to it.
+- *  Creat a testfile and write some data into it.
+- *  Modify the mode permissions of testfile such that test process
+- *  has read-only access to testfile.
+- */
+-void setup(void)
+-{
+-	int i, fd;		/* counter, file handle for file */
+-	char tst_buff[BUF_SIZE];	/* data buffer for file */
+-	int wbytes;		/* no. of bytes written to file */
+-	int write_len = 0;
+-
+-	tst_require_root();
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	/* Switch to nobody user for correct error code collection */
+-	ltpuser = getpwnam(nobody_uid);
+-	if (setuid(ltpuser->pw_uid) == -1) {
+-		tst_resm(TINFO, "setuid failed to "
+-			 "to set the effective uid to %d", ltpuser->pw_uid);
+-		perror("setuid");
+-	}
+-
+-	/* Pause if that option was specified
+-	 * TEST_PAUSE contains the code to fork the test with the -i option.
+-	 * You want to make sure you do this before you create your temporary
+-	 * directory.
+-	 */
+-	TEST_PAUSE;
+-
+-	tst_tmpdir();
+-
+-	if ((fd = open(TESTFILE, O_RDWR | O_CREAT, FILE_MODE)) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "open(%s, O_RDWR|O_CREAT, %#o) Failed, errno=%d : %s",
+-			 TESTFILE, FILE_MODE, errno, strerror(errno));
+-	}
+-
+-	/* Fill the test buffer with the known data */
+-	for (i = 0; i < BUF_SIZE; i++) {
+-		tst_buff[i] = 'a';
+-	}
+-
+-	/* Write to the file 1k data from the buffer */
+-	while (write_len < FILE_SIZE) {
+-		if ((wbytes = write(fd, tst_buff, sizeof(tst_buff))) <= 0) {
+-			tst_brkm(TBROK | TERRNO, cleanup, "write to %s failed",
+-				 TESTFILE);
+-		} else {
+-			write_len += wbytes;
+-		}
+-	}
+-
+-	if (close(fd) == -1) {
+-		tst_resm(TWARN | TERRNO, "closing %s failed", TESTFILE);
+-	}
+-
+-	/* Modify mode permissions on the testfile */
+-	SAFE_CHMOD(cleanup, TESTFILE, NEW_MODE);
+-
+-	/* Get the uid/gid of the process */
+-	user_id = getuid();
+-	group_id = getgid();
+-
+-}
+-
+-/*
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *	       completion or premature exit.
+- *  Remove the temporary directory and file created.
+- */
+-void cleanup(void)
+-{
+-
+-	tst_rmdir();
+-}
+diff --git a/testcases/kernel/syscalls/stat/stat05.c b/testcases/kernel/syscalls/stat/stat05.c
+deleted file mode 100644
+index 300649ade..000000000
+--- a/testcases/kernel/syscalls/stat/stat05.c
++++ /dev/null
+@@ -1,194 +0,0 @@
+-/*
+- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
+- *
+- * http://www.sgi.com
+- *
+- * For further information regarding this notice, see:
+- *
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+- *
+- */
+-/* $Id: stat05.c,v 1.6 2009/11/02 13:57:19 subrata_modak Exp $ */
+-/**********************************************************
+- *
+- *    OS Test - Silicon Graphics, Inc.
+- *
+- *    TEST IDENTIFIER	: stat05
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Basic test for stat(2)
+- *
+- *    PARENT DOCUMENT	: usctpl01
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    WALL CLOCK TIME	: 1
+- *
+- *    CPU TYPES		: ALL
+- *
+- *    AUTHOR		: William Roske
+- *
+- *    CO-PILOT		: Dave Fenner
+- *
+- *    DATE STARTED	: 03/30/92
+- *
+- *    INITIAL RELEASE	: UNICOS 7.0
+- *
+- *    TEST CASES
+- *
+- * 	1.) stat(2) returns...(See Description)
+- *
+- *    INPUT SPECIFICATIONS
+- * 	The standard options for system call tests are accepted.
+- *	(See the parse_opts(3) man page).
+- *
+- *    OUTPUT SPECIFICATIONS
+- *$
+- *    DURATION
+- * 	Terminates - with frequency and infinite modes.
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    RESOURCES
+- * 	None
+- *
+- *    ENVIRONMENTAL NEEDS
+- *      No run-time environmental needs.
+- *
+- *    SPECIAL PROCEDURAL REQUIREMENTS
+- * 	None
+- *
+- *    INTERCASE DEPENDENCIES
+- * 	None
+- *
+- *    DETAILED DESCRIPTION
+- *	This is a Phase I test for the stat(2) system call.  It is intended
+- *	to provide a limited exposure of the system call, for now.  It
+- *	should/will be extended when full functional tests are written for
+- *	stat(2).
+- *
+- * 	Setup:
+- * 	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- * 	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
+- *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
+- *
+- *
+- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
+-
+-#include <sys/types.h>
+-#include <fcntl.h>
+-#include <sys/stat.h>
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-#include "test.h"
+-
+-void setup();
+-void cleanup();
+-
+-char *TCID = "stat05";
+-int TST_TOTAL = 1;
+-
+-char fname[255];
+-int fd;
+-struct stat statter;
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		/*
+-		 * Call stat(2) with F_CLRALF argument on fname
+-		 */
+-		TEST(stat(fname, &statter));
+-
+-		/* check return code */
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL, "stat(%s, &statter) failed", fname);
+-		} else {
+-			tst_resm(TPASS,
+-				 "stat(%s, &statter) returned %ld",
+-				 fname, TEST_RETURN);
+-		}
+-
+-	}
+-
+-	cleanup();
+-	tst_exit();
+-}
+-
+-/***************************************************************
+- * setup() - performs all ONE TIME setup for this test.
+- ***************************************************************/
+-void setup(void)
+-{
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	tst_tmpdir();
+-
+-	sprintf(fname, "tfile_%d", getpid());
+-	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "open(%s, O_RDWR|O_CREAT,0700) Failed, errno=%d : %s",
+-			 fname, errno, strerror(errno));
+-	}
+-
+-	if (close(fd) == -1) {
+-		tst_resm(TWARN | TERRNO, "close(%s) failed", fname);
+-	}
+-}
+-
+-/***************************************************************
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- ***************************************************************/
+-void cleanup(void)
+-{
+-
+-	tst_rmdir();
+-}
 -- 
 2.18.1
+
+
 
