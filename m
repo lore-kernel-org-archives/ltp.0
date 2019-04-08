@@ -1,58 +1,73 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 8 Apr 2019 09:55:25 +0800
-Subject: [LTP] [PATCH v3 3/3] syscalls/sigpending02.c: Add libc
- sigpending() detection && reset sighandler_counter
-In-Reply-To: <20190405090620.GA8149@dell5510>
-References: <1554451660-30245-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1554451660-30245-3-git-send-email-yangx.jy@cn.fujitsu.com>
- <20190405090620.GA8149@dell5510>
-Message-ID: <5CAAAA0D.9090805@cn.fujitsu.com>
+From: XiaoLi Feng <xifeng@redhat.com>
+Date: Mon,  8 Apr 2019 13:40:50 +0800
+Subject: [LTP] [PATCH v1] ext4_subdir_limit_test.sh: fix "No Space" issue
+Message-ID: <20190408054050.28262-1-xifeng@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr, Cyril
+From: Xiaoli Feng <fengxiaoli0714@gmail.com>
 
-Pushed with left-shift break. :-)
-Thanks a lot.
+1G ext4 filesystem default has 65536 inode. And some inodes
+will be used after format. So it will be failed when try to
+create 65536 sub-directorys in this ext4 mountpoint. Change
+it to create 65536 - used inodes directorys.
+---
 
-Best Regards,
-Xiao Yang
-On 2019/04/05 17:06, Petr Vorel wrote:
-> Hi Xiao,
->
-> whole patchset LGTM.
-> ...
->> +++ b/testcases/kernel/syscalls/sigpending/sigpending02.c
->> @@ -13,6 +13,7 @@
->>    * Test 2: Call sigpending(sigset_t*=-1), it should return -1 with errno EFAULT.
->>    */
->> +#include "config.h"
->>   #include "tst_test.h"
->>   #include "ltp_signal.h"
->>   #include "lapi/syscalls.h"
->> @@ -36,7 +37,12 @@ static int tested_sigpending(sigset_t *sigset)
->>   {
->>   	switch (tst_variant) {
->>   	case 0:
->> +#ifndef HAVE_SIGPENDING
->> +		tst_brk(TCONF, "libc sigpending() is not implemented");
->> +#else
->>   		return sigpending(sigset);
->> +#endif
->> +		break;
-> very minor nit: shift left break (to be on the same level as case).
->
->>   	case 1:
->>   		return tst_syscall(__NR_sigpending, sigset);
->>   	case 2:
-> Kind regards,
-> Petr
->
->
->
+Re-send this mail again. Because I subscripted the ltp mail list failed last
+time.
 
+Thanks.
 
+ .../ext4-subdir-limit/ext4_subdir_limit_test.sh  | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
+index 5cc0523a8..05581d5c6 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
+@@ -46,6 +46,8 @@ prev_result=$FAIL
+ ext4_run_case()
+ {
+ 	local dir_name_len=
++	local free_inode=
++	local max_directorys=$1
+ 
+ 	if [ $2 -eq $SHORT_DIR ]; then
+ 		dir_name_len="short name"
+@@ -53,9 +55,6 @@ ext4_run_case()
+ 		dir_name_len="long name"
+ 	fi
+ 
+-	tst_resm TINFO "Num of dirs to create: $1, Dir name len: $dir_name_len, " \
+-			"Parent dir: $3, Block size: $4"
+-
+ 	# only mkfs if block size has been changed,
+ 	# or previous case failed
+ 	if [ $prev_result -ne $PASS -o $4 -ne $prev_block_size ]; then
+@@ -80,11 +79,18 @@ ext4_run_case()
+ 
+ 	# create directories
+ 	mkdir -p $3 2> /dev/null
++	free_inode=`df -i $EXT4_DEV | awk '{print $4}' | tr -cd "[0-9]"`
++	if [ "$free_inode" -lt "$1" ]; then
++		max_directorys=$free_inode
++	fi
++
++	tst_resm TINFO "Num of dirs to create: $max_directorys, Dir name len: $dir_name_len, " \
++			"Parent dir: $3, Block size: $4"
+ 
+ 	if [ $2 -eq $SHORT_DIR ]; then
+-		create_short_dirs $1 $3
++		create_short_dirs $max_directorys $3
+ 	else
+-		create_long_dirs $1 $3
++		create_long_dirs $max_directorys $3
+ 	fi
+ 
+ 	if [ $? -ne 0 ]; then
+-- 
+2.18.1
 
