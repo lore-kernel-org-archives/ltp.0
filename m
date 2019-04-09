@@ -1,81 +1,35 @@
-From: Enji Cooper <yaneurabeya@gmail.com>
-Date: Mon, 8 Apr 2019 09:06:44 -0700
-Subject: [LTP] [PATCH] Makefile: Remove IDcheck.sh
-In-Reply-To: <20190408152145.29005-1-chrubis@suse.cz>
-References: <20190408152145.29005-1-chrubis@suse.cz>
-Message-ID: <07C6ACE1-8F24-4DF5-89F3-8573D78BD1AC@gmail.com>
+From: Zhengwang Ruan <ruanzw@xiaopeng.com>
+Date: Tue,  9 Apr 2019 12:05:10 +0800
+Subject: [LTP] [PATCH v1] include/mk/env_post.mk: enable __ANDROID__
+	definition for Android build
+Message-ID: <1554782710-27144-1-git-send-email-ruanzw@xiaopeng.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Enable the __ANDROID__ definition by default for Android build, otherwise we
+should manually enable it by configure command.
 
-> On Apr 8, 2019, at 08:21, Cyril Hrubis <chrubis@suse.cz> wrote:
-> 
-> There is no point in running the IDcheck on 'make install' as it's
-> completely pointless to print ignored errors on installation which is
-> only confusing users.
-> 
-> Also the same script is even executed as a part of runltp script which
-> is more appropriate place for it.
+Signed-off-by: Zhengwang Ruan <ruanzw@xiaopeng.com>
+---
+ include/mk/env_post.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-LGTM!
+diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
+index 913bdf5..7953e0a 100644
+--- a/include/mk/env_post.mk
++++ b/include/mk/env_post.mk
+@@ -44,7 +44,7 @@ endif
+ ifeq ($(ANDROID),1)
+ # There are many undeclared functions, it's best not to accidentally overlook
+ # them.
+-CFLAGS				+= -Werror-implicit-function-declaration
++CFLAGS				+= -Werror-implicit-function-declaration -D__ANDROID__
+ 
+ LDFLAGS				+= -L$(top_builddir)/lib/android_libpthread
+ LDFLAGS				+= -L$(top_builddir)/lib/android_librt
+-- 
+2.7.4
 
-Reviewed-by: Enji Cooper <yaneurabeya@gmail.com>
-
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
-> Makefile | 19 -------------------
-> 1 file changed, 19 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index 170c2da20..c46d050ce 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -21,11 +21,6 @@
-> # Ngie Cooper, July 2009
-> #
-> 
-> -# Force IDcheck.sh to fix any issues found with $(DESTDIR)/etc/group and
-> -# $(DESTDIR)/etc/passwd automatically when after running the top-level
-> -# install target.
-> -CREATE_ENTRIES        ?= 0
-> -
-> top_srcdir        ?= $(CURDIR)
-> 
-> include $(top_srcdir)/include/mk/env_pre.mk
-> @@ -42,9 +37,6 @@ vpath %.in        $(top_srcdir)/include
-> vpath %.m4        $(top_srcdir)/m4
-> vpath %.mk        $(top_srcdir)/mk:$(top_srcdir)/mk/include
-> 
-> -# Skip running IDcheck.sh at the end of install?
-> -SKIP_IDCHECK        ?= 0
-> -
-> # User wants uclinux binaries?
-> UCLINUX            ?= 0
-> export UCLINUX
-> @@ -202,17 +194,6 @@ $(INSTALL_TARGETS): $(INSTALL_DIR) $(DESTDIR)/$(bindir)
-> 
-> ## Install
-> install: $(INSTALL_TARGETS)
-> -ifeq ($(SKIP_IDCHECK),0)
-> -    -@CREATE_ENTRIES=$(CREATE_ENTRIES) \
-> -     DESTDIR="$(DESTDIR)" \
-> -     "$(top_srcdir)/IDcheck.sh"
-> -else
-> -    @echo "*******************************************************"
-> -    @echo "** Will not run IDcheck.sh (SKIP_IDCHECK set to 1).  **"
-> -    @echo "*******************************************************"
-> -endif
-> -
-> -## Misc targets.
-> 
-> ## Help
-> .PHONY: help
-> -- 
-> 2.19.2
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
