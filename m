@@ -1,54 +1,61 @@
-From: =?unknown-8bit?b?6Ziu5q2j5pe6?= <ruanzw@xiaopeng.com>
-Date: Wed, 10 Apr 2019 00:45:20 +0800
-Subject: [LTP] =?utf-8?b?5Zue5aSN77yaW1BBVENIIHYxXSBpbmNsdWRlL21rL2Vudl9w?=
- =?utf-8?q?ost=2Emk=3A_enable_=5F=5FANDROID=5F=5F_definition_for_Android_b?=
- =?utf-8?q?uild?=
-In-Reply-To: <1554782710-27144-1-git-send-email-ruanzw@xiaopeng.com>
-References: <1554782710-27144-1-git-send-email-ruanzw@xiaopeng.com>
-Message-ID: <db7687f3-40ca-495e-aa76-efcce204cda7.ruanzw@xiaopeng.com>
+From: Yu Xu <xuyu@linux.alibaba.com>
+Date: Wed, 10 Apr 2019 15:04:47 +0800
+Subject: [LTP] [PATCH] controllers/cgroup_regression_test.sh: mitigate
+ potential mount error
+In-Reply-To: <20190404091051.GA20565@rei.lan>
+References: <9b3247beedd55b5a2c2ef638b26416d175775c77.1550815364.git.xuyu@linux.alibaba.com>
+ <20190404091051.GA20565@rei.lan>
+Message-ID: <d9f667f7-f836-8918-2a3a-180e37c9e2a0@linux.alibaba.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Could anyone help me to review this patch? This is useful to cross-compile ltp for Android without specifying '-D__ANDROID__' in configure step.
+On 4/4/19 5:10 PM, Cyril Hrubis wrote:
+> Hi!
+> First of all sorry for the delayed response.
+> 
+>> Immediately `umount cgroup/` after `rmdir cgroup/0` is very likely to
+>> make the corresponding num_cgroups not decrease, and causes the
+>> following mount operation with overlapping subsys to fail.
+>>
+>> A demo test script can be:
+>> mount -t cgroup -o hugetlb,pids xxx cgroup/
+>> mkdir cgroup/0
+>> rmdir cgroup/0
+>> umount cgroup/
+>> mount -t cgroup -o pids xxx cgroup/  <-- FAIL
+>>
+>> The root cause is that `rmdir cgroup/0` is asynchronous in the kernel
+>> implementation, causing `umount cgroup/` to enter `cgroup_put` path,
+>> instead of `percpu_ref_kill` path.
+>>
+>> There is no good kernel solution yet[1]. Therefore, we temporarily add
+>> `sleep` in the test script to ensure `umount cgroup/` is executed
+>> after `rmdir cgroup/0` is completed. Note that we only add `sleep` in
+>> the clean up phase of each test in the cgroup_regression_test.sh.
+>> No `sleep` is added in the cgroup_regression_6_1.sh and
+>> cgroup_regression_10_1.sh for the sake of pressure test.
+> 
+> There is always better solution than sprinking the code with sleeps,
+> here we can retry the mount instead, which would be faster and more
 
-Thanks!
-Zhengwang
+thanks for your kind reply!
 
+retry mount cannot help here(at least for the current kernel), because 
+`umount cgroup/` **immediately** after `rmdir cgroup/0` corrupts the 
+cgroup_root refcnt, and it will always cause the subsequent remount 
+failure(s) whenever remounting overlapping controllers later.
 
-------------------------------------------------------------------
-发件人：Zhengwang Ruan <ruanzw@xiaopeng.com>
-发送时间：2019年4月9日(星期二) 12:05
-收件人：ltp <ltp@lists.linux.it>
-抄　送：Zhengwang Ruan <ruanzw@xiaopeng.com>
-主　题：[PATCH v1] include/mk/env_post.mk: enable __ANDROID__ definition for Android build
+so I simply put a sleep between between `umount cgroup/` and `rmdir 
+cgroup/0` to synchronize them.  <- any good idea to this point?
 
-Enable the __ANDROID__ definition by default for Android build, otherwise we
-should manually enable it by configure command.
+and attach the related kernel issue again:
+https://marc.info/?t=155021167400005&r=1&w=2
 
-Signed-off-by: Zhengwang Ruan <ruanzw@xiaopeng.com>
----
- include/mk/env_post.mk | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+thanks, Yu.
 
-diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
-index 913bdf5..7953e0a 100644
---- a/include/mk/env_post.mk
-+++ b/include/mk/env_post.mk
-@@ -44,7 +44,7 @@ endif
- ifeq ($(ANDROID),1)
- # There are many undeclared functions, it's best not to accidentally overlook
- # them.
--CFLAGS    += -Werror-implicit-function-declaration
-+CFLAGS    += -Werror-implicit-function-declaration -D__ANDROID__
-
- LDFLAGS    += -L$(top_builddir)/lib/android_libpthread
- LDFLAGS    += -L$(top_builddir)/lib/android_librt
--- 
-2.7.4
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190410/8684835f/attachment-0001.html>
+> reliable. And we even have functions for this see
+> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#retry-a-function-in-limited-time
+> 
