@@ -1,68 +1,55 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 11 Apr 2019 07:51:14 +0200
-Subject: [LTP] [PATCH v2 1/3] ima: Call test's cleanup inside
- ima_setup.sh cleanup
-In-Reply-To: <1554944374.25614.25.camel@linux.ibm.com>
-References: <20190405165225.27216-1-pvorel@suse.cz>
- <20190405165225.27216-2-pvorel@suse.cz>
- <1554944374.25614.25.camel@linux.ibm.com>
-Message-ID: <20190411055114.GA23472@x230>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 11 Apr 2019 14:57:04 +0800
+Subject: [LTP] [PATCH] syscalls/clock_adjtime: Fix compiler error
+Message-ID: <1554965824-2374-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Mimi,
+'ADJ_OFFSET_SS_READ' 'ADJ_NANO' 'STA_NANO' and 'ADJ_MICRO' are not defined on
+some old distros, so add them into 'include/lapi/posix_clocks.h' to fix it.
 
-thanks for your comments.
+These macros are introduced by the following commit:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=52bfb36
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eea83d8
 
-...
-> > +++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-> > @@ -20,7 +20,8 @@
-> >  TST_TESTFUNC=3D"test"
-> >  TST_SETUP_CALLER=3D"$TST_SETUP"
-> >  TST_SETUP=3D"ima_setup"
-> > -TST_CLEANUP=3D"${TST_CLEANUP:-ima_cleanup}"
-> > +TST_CLEANUP_CALLER=3D"$TST_CLEANUP"
-> > +TST_CLEANUP=3D"ima_cleanup"
+sys_clock_adjtime are introduced by the following commit:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=339dc50
 
-> It seems to be working, but defining TST_SETUP and TST_CLEANUP after
-> defining the respective _CALLER looks strange. =C2=A0The _CALLER's string
-> must be empty.
-TST_{SETUP,CALLER}_CALLER takes setup from the test.
-It's IMHO cleaner way allowing tests to set their setup/cleanup functions a=
-nd
-not care that there is also some library setup/cleanup (kind of encapsulati=
-on).
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ include/lapi/posix_clocks.h | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-We already used this for setup, I wanted to have a same approach for both s=
-etup
-and cleanup. Sure I can instead add ima_setup/ima_cleanup into tests' setup=
-/cleanup
-functions, but both solutions are working and I consider encapsulation as a=
- benefit.
-The only problematic thing would be if some test needed to run it's custom
-cleanup *before* library one while other tests *after*. But that's not a ca=
-se here.
-We also use this approach in tst_net.sh [1].
-
-> >  TST_NEEDS_TMPDIR=3D1
-> >  TST_NEEDS_ROOT=3D1
-
-> > @@ -95,6 +96,9 @@ ima_setup()
-> >  ima_cleanup()
-> >  {
-> >  	local dir
-> > +
-> > +	[ -n "$TST_CLEANUP_CALLER" ] && $TST_CLEANUP_CALLER
-> > +
-
-> Is something else setting TST_CLEANUP_CALLER?
+diff --git a/include/lapi/posix_clocks.h b/include/lapi/posix_clocks.h
+index b1f7a7c55..1d29107d8 100644
+--- a/include/lapi/posix_clocks.h
++++ b/include/lapi/posix_clocks.h
+@@ -39,4 +39,20 @@
+ # define CLOCK_BOOTTIME_ALARM 9
+ #endif
+ 
++#ifndef ADJ_OFFSET_SS_READ
++# define ADJ_OFFSET_SS_READ 0xa001
++#endif
++
++#ifndef ADJ_NANO
++# define ADJ_NANO 0x2000
++#endif
++
++#ifndef STA_NANO
++# define STA_NANO 0x2000
++#endif
++
++#ifndef ADJ_MICRO
++# define ADJ_MICRO 0x1000
++#endif
++
+ #endif /* POSIX_CLOCKS_H__ */
+-- 
+2.18.1
 
 
-Kind regards,
-Petr
 
-[1] https://github.com/linux-test-project/ltp/blob/master/testcases/lib/tst=
-_net.sh#L11
