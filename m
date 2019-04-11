@@ -1,69 +1,71 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 10 Apr 2019 16:16:15 +0200
-Subject: [LTP]
- =?utf-8?b?5Zue5aSN77yaW1BBVENIIHYxXSBpbmNsdWRlL21rL2Vudl9w?=
- =?utf-8?q?ost=2Emk=3A_enable_=5F=5FANDROID=5F=5F_definition_for_Android_b?=
- =?utf-8?q?uild?=
-In-Reply-To: <db7687f3-40ca-495e-aa76-efcce204cda7.ruanzw@xiaopeng.com>
-References: <1554782710-27144-1-git-send-email-ruanzw@xiaopeng.com>
- <db7687f3-40ca-495e-aa76-efcce204cda7.ruanzw@xiaopeng.com>
-Message-ID: <20190410141615.GA10303@x230>
+From: Mimi Zohar <zohar@linux.ibm.com>
+Date: Wed, 10 Apr 2019 20:59:34 -0400
+Subject: [LTP] [PATCH v2 1/3] ima: Call test's cleanup inside
+ ima_setup.sh cleanup
+In-Reply-To: <20190405165225.27216-2-pvorel@suse.cz>
+References: <20190405165225.27216-1-pvorel@suse.cz>
+ <20190405165225.27216-2-pvorel@suse.cz>
+Message-ID: <1554944374.25614.25.camel@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-Hi Sandeep, Steve,
-
-> Could anyone help me to review this patch? This is useful to cross-compile ltp for Android without specifying '-D__ANDROID__' in configure step.
-
-> Thanks!
-> Zhengwang
-
-
-> ------------------------------------------------------------------
-> 发件人：Zhengwang Ruan <ruanzw@xiaopeng.com>
-> 发送时间：2019年4月9日(星期二) 12:05
-> 收件人：ltp <ltp@lists.linux.it>
-> 抄　送：Zhengwang Ruan <ruanzw@xiaopeng.com>
-> 主　题：[PATCH v1] include/mk/env_post.mk: enable __ANDROID__ definition for Android build
-
-> Enable the __ANDROID__ definition by default for Android build, otherwise we
-> should manually enable it by configure command.
-
-> Signed-off-by: Zhengwang Ruan <ruanzw@xiaopeng.com>
+On Fri, 2019-04-05 at 18:52 +0200, Petr Vorel wrote:
+> to work the same way as setup
+>=20
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
->  include/mk/env_post.mk | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  testcases/kernel/security/integrity/ima/tests/ima_setup.sh  | 6 +++++-
+>  .../kernel/security/integrity/ima/tests/ima_violations.sh   | 2 --
+>  2 files changed, 5 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b=
+/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> index 52551190a..cbded42c2 100644
+> --- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> +++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> @@ -20,7 +20,8 @@
+>  TST_TESTFUNC=3D"test"
+>  TST_SETUP_CALLER=3D"$TST_SETUP"
+>  TST_SETUP=3D"ima_setup"
+> -TST_CLEANUP=3D"${TST_CLEANUP:-ima_cleanup}"
+> +TST_CLEANUP_CALLER=3D"$TST_CLEANUP"
+> +TST_CLEANUP=3D"ima_cleanup"
 
-> diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
-> index 913bdf5..7953e0a 100644
-> --- a/include/mk/env_post.mk
-> +++ b/include/mk/env_post.mk
-> @@ -44,7 +44,7 @@ endif
->  ifeq ($(ANDROID),1)
->  # There are many undeclared functions, it's best not to accidentally overlook
->  # them.
-> -CFLAGS    += -Werror-implicit-function-declaration
-> +CFLAGS    += -Werror-implicit-function-declaration -D__ANDROID__
-Would adding __ANDROID__ definition help building LTP with distro
-cross-compiler? (i.e. no NDK, no inside AOSP tree)?
-I guess so and therefore, I'd be for this change.
-I see some projects added it as well (busybox [1] [2], dnsmasq [3]).
-BTW: where is defined for AOSP and NDK?
+It seems to be working, but defining TST_SETUP and TST_CLEANUP after
+defining the respective _CALLER looks strange. =C2=A0The _CALLER's string
+must be empty.
 
-BTW (@cyril): I guess -Werror-implicit-function-declaration is the code which
-requires adding <string.h> and <strings.h> (see my fix 4053a2551 ("lib: Add
-missing <string.h> and <strings.h> includes")), I'd be for either adding it to
-for all or removing it.
+>  TST_NEEDS_TMPDIR=3D1
+>  TST_NEEDS_ROOT=3D1
+>=20
+> @@ -95,6 +96,9 @@ ima_setup()
+>  ima_cleanup()
+>  {
+>  	local dir
+> +
+> +	[ -n "$TST_CLEANUP_CALLER" ] && $TST_CLEANUP_CALLER
+> +
 
->  LDFLAGS    += -L$(top_builddir)/lib/android_libpthread
->  LDFLAGS    += -L$(top_builddir)/lib/android_librt
+Is something else setting TST_CLEANUP_CALLER?
 
-Kind regards,
-Petr
+>  	for dir in $UMOUNT; do
+>  		umount $dir
+>  	done
+> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_violations=
+.sh b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
+> index 74223c221..a44bd1230 100755
+> --- a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
+> +++ b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
+> @@ -51,8 +51,6 @@ cleanup()
+>  {
+>  	[ "$PRINTK_RATE_LIMIT" !=3D "0" ] && \
+>  		sysctl -wq kernel.printk_ratelimit=3D$PRINTK_RATE_LIMIT
+> -
+> -	ima_cleanup
+>  }
+>=20
+>  open_file_read()
 
-[1] https://git.busybox.net/busybox/tree/configs/android_defconfig
-[2] https://git.busybox.net/busybox/tree/configs/android_ndk_defconfig
-[3] http://thekelleys.org.uk/gitweb/?p=dnsmasq.git;a=blob_plain;f=bld/Android.mk;hb=HEAD
