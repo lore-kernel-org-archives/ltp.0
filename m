@@ -1,70 +1,88 @@
-From: Mimi Zohar <zohar@linux.ibm.com>
-Date: Thu, 11 Apr 2019 08:22:19 -0400
-Subject: [LTP] [PATCH v2 1/3] ima: Call test's cleanup inside
- ima_setup.sh cleanup
-In-Reply-To: <20190411055114.GA23472@x230>
-References: <20190405165225.27216-1-pvorel@suse.cz>
- <20190405165225.27216-2-pvorel@suse.cz>
- <1554944374.25614.25.camel@linux.ibm.com> <20190411055114.GA23472@x230>
-Message-ID: <1554985339.7843.18.camel@linux.ibm.com>
+From: Zhengwang Ruan <ruanzw@xiaopeng.com>
+Date: Thu, 11 Apr 2019 22:18:43 +0800
+Subject: [LTP] [PATCH v1] Fix build error caused by
+	-Werror-implicit-function-declaration for Android
+Message-ID: <1554992323-14338-1-git-send-email-ruanzw@xiaopeng.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, 2019-04-11 at 07:51 +0200, Petr Vorel wrote:
-> Hi Mimi,
-> 
-> thanks for your comments.
-> 
-> ...
-> > > +++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-> > > @@ -20,7 +20,8 @@
-> > >  TST_TESTFUNC="test"
-> > >  TST_SETUP_CALLER="$TST_SETUP"
-> > >  TST_SETUP="ima_setup"
-> > > -TST_CLEANUP="${TST_CLEANUP:-ima_cleanup}"
-> > > +TST_CLEANUP_CALLER="$TST_CLEANUP"
-> > > +TST_CLEANUP="ima_cleanup"
-> 
-> > It seems to be working, but defining TST_SETUP and TST_CLEANUP after
-> > defining the respective _CALLER looks strange.  The _CALLER's string
-> > must be empty.
-> TST_{SETUP,CALLER}_CALLER takes setup from the test.
-> It's IMHO cleaner way allowing tests to set their setup/cleanup functions and
-> not care that there is also some library setup/cleanup (kind of encapsulation).
+Fix build errors caused by -Werror-implicit-function-declaration by add missing
+<string.h> and <strings.h> for Android.
 
-I'm not questioning the method for initializing this test.  I guess
-I'm asking why bother to set TST_{SETUP,CLEANUP}_CALLER this way, if
-we know that it isn't set.  Why not just initialize it as ""?
+Signed-off-by: Zhengwang Ruan <ruanzw@xiaopeng.com>
+---
+ include/tst_numa.h                                            | 2 ++
+ include/tst_test.h                                            | 1 +
+ testcases/kernel/syscalls/copy_file_range/copy_file_range01.c | 1 +
+ testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c             | 2 +-
+ testcases/kernel/syscalls/epoll_wait/epoll_wait01.c           | 1 +
+ 5 files changed, 6 insertions(+), 1 deletion(-)
 
-Mimi
-> 
-> We already used this for setup, I wanted to have a same approach for both setup
-> and cleanup. Sure I can instead add ima_setup/ima_cleanup into tests' setup/cleanup
-> functions, but both solutions are working and I consider encapsulation as a benefit.
-> The only problematic thing would be if some test needed to run it's custom
-> cleanup *before* library one while other tests *after*. But that's not a case here.
-> We also use this approach in tst_net.sh [1].
-> 
-> > >  TST_NEEDS_TMPDIR=1
-> > >  TST_NEEDS_ROOT=1
-> 
-> > > @@ -95,6 +96,9 @@ ima_setup()
-> > >  ima_cleanup()
-> > >  {
-> > >  	local dir
-> > > +
-> > > +	[ -n "$TST_CLEANUP_CALLER" ] && $TST_CLEANUP_CALLER
-> > > +
-> 
-> > Is something else setting TST_CLEANUP_CALLER?
-> 
-> 
-> Kind regards,
-> Petr
-> 
-> [1] https://github.com/linux-test-project/ltp/blob/master/testcases/lib/tst_net.sh#L11
-> 
+diff --git a/include/tst_numa.h b/include/tst_numa.h
+index a4cd1be..4f98066 100644
+--- a/include/tst_numa.h
++++ b/include/tst_numa.h
+@@ -7,6 +7,8 @@
+ #ifndef TST_NUMA_H__
+ #define TST_NUMA_H__
+ 
++#include <string.h>
++
+ /**
+  * Numa nodemap.
+  */
+diff --git a/include/tst_test.h b/include/tst_test.h
+index cf2447f..25b9763 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -24,6 +24,7 @@
+ 
+ #include <unistd.h>
+ #include <limits.h>
++#include <string.h>
+ 
+ #include "tst_common.h"
+ #include "tst_res_flags.h"
+diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
+index 2bca8a4..61a6042 100644
+--- a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
++++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
+@@ -15,6 +15,7 @@
+ #define _GNU_SOURCE
+ #include <stdio.h>
+ #include <errno.h>
++#include <stdlib.h>
+ #include "tst_test.h"
+ #include "tst_safe_stdio.h"
+ #include "lapi/syscalls.h"
+diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
+index e837913..4df55b5 100644
+--- a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
++++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
+@@ -31,7 +31,7 @@
+ 
+ #include <sys/epoll.h>
+ #include <poll.h>
+-#include <string.h>
++#include <strings.h>
+ #include <errno.h>
+ #include "tst_test.h"
+ 
+diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait01.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait01.c
+index 0ded127..6099b84 100644
+--- a/testcases/kernel/syscalls/epoll_wait/epoll_wait01.c
++++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait01.c
+@@ -26,6 +26,7 @@
+ #include <sys/epoll.h>
+ #include <poll.h>
+ #include <string.h>
++#include <strings.h>
+ #include <errno.h>
+ 
+ #include "tst_test.h"
+-- 
+2.7.4
 
