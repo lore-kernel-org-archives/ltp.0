@@ -1,104 +1,73 @@
-From: Enji Cooper <yaneurabeya@gmail.com>
-Date: Thu, 11 Apr 2019 08:16:00 -0700
-Subject: [LTP] [PATCH v1] Fix build error caused by
-	-Werror-implicit-function-declaration for Android
-In-Reply-To: <1554992323-14338-1-git-send-email-ruanzw@xiaopeng.com>
-References: <1554992323-14338-1-git-send-email-ruanzw@xiaopeng.com>
-Message-ID: <F2D8419F-5149-4D85-BBBC-53B268A38065@gmail.com>
+From: Sandeep Patil <sspatil@android.com>
+Date: Thu, 11 Apr 2019 09:27:24 -0700
+Subject: [LTP]
+ =?utf-8?b?5Zue5aSN77yaW1BBVENIIHYxXSBpbmNsdWRlL21rL2Vudl9w?=
+ =?utf-8?q?ost=2Emk=3A_enable_=5F=5FANDROID=5F=5F_definition_for_Android_b?=
+ =?utf-8?q?uild?=
+In-Reply-To: <20190410141615.GA10303@x230>
+References: <1554782710-27144-1-git-send-email-ruanzw@xiaopeng.com>
+ <db7687f3-40ca-495e-aa76-efcce204cda7.ruanzw@xiaopeng.com>
+ <20190410141615.GA10303@x230>
+Message-ID: <20190411162724.GC124555@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
+On Wed, Apr 10, 2019 at 04:16:15PM +0200, Petr Vorel wrote:
+> Hi Sandeep, Steve,
+> 
+> > Could anyone help me to review this patch? This is useful to cross-compile ltp for Android without specifying '-D__ANDROID__' in configure step.
+> 
+> > Thanks!
+> > Zhengwang
+> 
+> 
+> > ------------------------------------------------------------------
+> > 发件人：Zhengwang Ruan <ruanzw@xiaopeng.com>
+> > 发送时间：2019年4月9日(星期二) 12:05
+> > 收件人：ltp <ltp@lists.linux.it>
+> > 抄　送：Zhengwang Ruan <ruanzw@xiaopeng.com>
+> > 主　题：[PATCH v1] include/mk/env_post.mk: enable __ANDROID__ definition for Android build
+> 
+> > Enable the __ANDROID__ definition by default for Android build, otherwise we
+> > should manually enable it by configure command.
+> 
+> > Signed-off-by: Zhengwang Ruan <ruanzw@xiaopeng.com>
+> > ---
+> >  include/mk/env_post.mk | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> > diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
+> > index 913bdf5..7953e0a 100644
+> > --- a/include/mk/env_post.mk
+> > +++ b/include/mk/env_post.mk
+> > @@ -44,7 +44,7 @@ endif
+> >  ifeq ($(ANDROID),1)
+> >  # There are many undeclared functions, it's best not to accidentally overlook
+> >  # them.
+> > -CFLAGS    += -Werror-implicit-function-declaration
+> > +CFLAGS    += -Werror-implicit-function-declaration -D__ANDROID__
+> Would adding __ANDROID__ definition help building LTP with distro
+> cross-compiler? (i.e. no NDK, no inside AOSP tree)?
+> I guess so and therefore, I'd be for this change.
+> I see some projects added it as well (busybox [1] [2], dnsmasq [3]).
+> BTW: where is defined for AOSP and NDK?
 
-> On Apr 11, 2019, at 07:18, Zhengwang Ruan <ruanzw@xiaopeng.com> wrote:
-> 
-> Fix build errors caused by -Werror-implicit-function-declaration by add missing
-> <string.h> and <strings.h> for Android.
+I think I've used __ANDROID__ and __BIONIC__ in the past for android-specific
+things.  Honestly, I haven't tried to build for Android outside of AOSP tree
+yet. I am happy to test this if you tell me how? (sorry for that.)
 
-Comment next time: it would be a good idea a to note what functions were missing.
+Steve will also be back by 4/15 and he would know this more than I do.
+So,  Ideally, if we can wait for him it will be great. In the mean time, I
+can test..
 
-> Signed-off-by: Zhengwang Ruan <ruanzw@xiaopeng.com>
+FWIW, I want to be able to do this as well. I know its a lot of pain to have
+to checkout 100s of gigabytes of AOSP tree in order to build LTP for Android
+right now. So, let me know how I can test and compare.
 
-Reviewed-by: Enji Cooper <yaneurabeya@gmail.com>
+<snip>
 
-> ---
-> include/tst_numa.h                                            | 2 ++
-> include/tst_test.h                                            | 1 +
-> testcases/kernel/syscalls/copy_file_range/copy_file_range01.c | 1 +
-> testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c             | 2 +-
-> testcases/kernel/syscalls/epoll_wait/epoll_wait01.c           | 1 +
-> 5 files changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/tst_numa.h b/include/tst_numa.h
-> index a4cd1be..4f98066 100644
-> --- a/include/tst_numa.h
-> +++ b/include/tst_numa.h
-> @@ -7,6 +7,8 @@
-> #ifndef TST_NUMA_H__
-> #define TST_NUMA_H__
-> 
-> +#include <string.h>
-> +
-> /**
->  * Numa nodemap.
->  */
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index cf2447f..25b9763 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -24,6 +24,7 @@
-> 
-> #include <unistd.h>
-> #include <limits.h>
-> +#include <string.h>
-> 
-> #include "tst_common.h"
-> #include "tst_res_flags.h"
-> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
-> index 2bca8a4..61a6042 100644
-> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
-> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
-> @@ -15,6 +15,7 @@
-> #define _GNU_SOURCE
-> #include <stdio.h>
-> #include <errno.h>
-> +#include <stdlib.h>
-> #include "tst_test.h"
-> #include "tst_safe_stdio.h"
-> #include "lapi/syscalls.h"
-> diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
-> index e837913..4df55b5 100644
-> --- a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
-> +++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
-> @@ -31,7 +31,7 @@
-> 
-> #include <sys/epoll.h>
-> #include <poll.h>
-> -#include <string.h>
-> +#include <strings.h>
 
-Just a general question: did you test the non-Android case?
-
-> #include <errno.h>
-> #include "tst_test.h"
-> 
-> diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait01.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait01.c
-> index 0ded127..6099b84 100644
-> --- a/testcases/kernel/syscalls/epoll_wait/epoll_wait01.c
-> +++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait01.c
-> @@ -26,6 +26,7 @@
-> #include <sys/epoll.h>
-> #include <poll.h>
-> #include <string.h>
-> +#include <strings.h>
-> #include <errno.h>
-> 
-> #include "tst_test.h"
-> -- 
-> 2.7.4
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+- ssp
