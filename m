@@ -1,91 +1,80 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 11 Apr 2019 23:35:09 +0200
-Subject: [LTP] [PATCH v1] ext4_subdir_limit_test.sh: fix "No Space" issue
-In-Reply-To: <20190408054050.28262-1-xifeng@redhat.com>
-References: <20190408054050.28262-1-xifeng@redhat.com>
-Message-ID: <20190411213509.GA4631@dell5510>
+Date: Fri, 12 Apr 2019 01:31:12 +0200
+Subject: [LTP] [PATCH 0/3][RFC] Android fixes and
+	-Werror-implicit-function-declaration as default
+Message-ID: <20190411233115.32744-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiaoli,
+Hi,
 
-> From: Xiaoli Feng <fengxiaoli0714@gmail.com>
+patchset [1] from Zhengwang Ruan reminded me my old patchset, which I
+haven't sent. Still not sure if all this hunting for 'implicitly
+declaring library function' make sense. Maybe it'd be better just remove
+-Werror-implicit-function-declaration for Android. Nevertheless this
+patchset fixes most (or even all) of them enable
+-Werror-implicit-function-declaration for all targets/platforms.
 
-> 1G ext4 filesystem default has 65536 inode. And some inodes
-> will be used after format. So it will be failed when try to
-> create 65536 sub-directorys in this ext4 mountpoint. Change
-> it to create 65536 - used inodes directorys.
-> ---
-
-> Re-send this mail again. Because I subscripted the ltp mail list failed last
-> time.
-We got your patch twice, even into patchwork ([1]). I disabled the first patch
-in patchwork.
-
-...
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-> @@ -46,6 +46,8 @@ prev_result=$FAIL
->  ext4_run_case()
->  {
->  	local dir_name_len=
-> +	local free_inode=
-> +	local max_directorys=$1
-max_directories, please (or better max_dirs) :).
-
->  	if [ $2 -eq $SHORT_DIR ]; then
->  		dir_name_len="short name"
-> @@ -53,9 +55,6 @@ ext4_run_case()
->  		dir_name_len="long name"
->  	fi
-
-> -	tst_resm TINFO "Num of dirs to create: $1, Dir name len: $dir_name_len, " \
-> -			"Parent dir: $3, Block size: $4"
-> -
->  	# only mkfs if block size has been changed,
->  	# or previous case failed
->  	if [ $prev_result -ne $PASS -o $4 -ne $prev_block_size ]; then
-> @@ -80,11 +79,18 @@ ext4_run_case()
-
->  	# create directories
->  	mkdir -p $3 2> /dev/null
-> +	free_inode=`df -i $EXT4_DEV | awk '{print $4}' | tr -cd "[0-9]"`
-How about using tail instead of tr?
-df -i $EXT4_DEV | tail -1 | awk '{print $4}'
-
-Maybe tail is more reliable and readable (and available [*]) than tr.
-
-Not, sure if this is a correct usage:
-# dd if=/dev/zero of=test_file bs=5000MB count=1
-# /opt/ltp/runltp -f fs_ext4 -z /root/test_file
-but in this case is zero Inodes:
-
-Filesystem     Inodes IUsed IFree IUse% Mounted on
-/dev/vda2           0     0     0     - /
-
-[*]: In new API it's needed to specify required commands in TST_NEEDS_CMDS
-variable (i.e. TST_NEEDS_CMDS="tr"), but this is legacy API, which does not have
-it.
-
-> +	if [ "$free_inode" -lt "$1" ]; then
-I guess here you should use $max_directorys instead of $1
-> +		max_directorys=$free_inode
-> +	fi
-> +
-> +	tst_resm TINFO "Num of dirs to create: $max_directorys, Dir name len: $dir_name_len, " \
-> +			"Parent dir: $3, Block size: $4"
-
->  	if [ $2 -eq $SHORT_DIR ]; then
-> -		create_short_dirs $1 $3
-> +		create_short_dirs $max_directorys $3
-Ad $3: I hate using direct positional variables, but that's not related to the
-fix. Whole ext4-new-features tests would deserve rewrite into new API and
-cleanup (big work due they all depend on ext4_funcs.sh).
-
+NOTE: this still don't fix Android build (with NDK compiler, outside AOSP
+tree), but makes it closer (now it builds at least lib/ folder).
 
 Kind regards,
 Petr
 
-[1] https://patchwork.ozlabs.org/patch/1080619/
+[1] http://lists.linux.it/pipermail/ltp/2019-April/011643.html
+
+Petr Vorel (3):
+  cve/cve-2014-0196: Don't use libutil for Android
+  Add more missing <string.h> and <strings.h> includes
+  make: Add -Werror-implicit-function-declaration for all targets
+
+ include/mk/env_post.mk                                      | 4 +---
+ include/tst_net.h                                           | 1 +
+ include/tst_numa.h                                          | 2 ++
+ lib/tst_af_alg.c                                            | 1 +
+ testcases/cve/Makefile                                      | 6 +++++-
+ testcases/kernel/syscalls/acct/acct01.c                     | 1 +
+ testcases/kernel/syscalls/add_key/add_key02.c               | 1 +
+ testcases/kernel/syscalls/chmod/chmod06.c                   | 1 +
+ testcases/kernel/syscalls/clock_adjtime/clock_adjtime01.c   | 1 +
+ testcases/kernel/syscalls/clock_adjtime/clock_adjtime02.c   | 1 +
+ .../kernel/syscalls/copy_file_range/copy_file_range01.c     | 1 +
+ testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c           | 1 +
+ testcases/kernel/syscalls/epoll_wait/epoll_wait01.c         | 1 +
+ testcases/kernel/syscalls/execl/execl01_child.c             | 2 ++
+ testcases/kernel/syscalls/execle/execle01_child.c           | 4 +++-
+ testcases/kernel/syscalls/execlp/execlp01_child.c           | 2 ++
+ testcases/kernel/syscalls/execv/execv01_child.c             | 2 ++
+ testcases/kernel/syscalls/execve/execve01_child.c           | 4 +++-
+ testcases/kernel/syscalls/execve/execve_child.c             | 4 +++-
+ testcases/kernel/syscalls/execvp/execvp01_child.c           | 2 ++
+ testcases/kernel/syscalls/exit/exit02.c                     | 1 +
+ testcases/kernel/syscalls/getcwd/getcwd04.c                 | 1 +
+ testcases/kernel/syscalls/getrandom/getrandom02.c           | 2 ++
+ testcases/kernel/syscalls/ioctl/ioctl08.c                   | 1 +
+ testcases/kernel/syscalls/keyctl/keyctl05.c                 | 1 +
+ testcases/kernel/syscalls/keyctl/keyctl06.c                 | 1 +
+ testcases/kernel/syscalls/link/link08.c                     | 1 +
+ testcases/kernel/syscalls/listxattr/listxattr02.c           | 1 +
+ testcases/kernel/syscalls/llistxattr/llistxattr02.c         | 1 +
+ testcases/kernel/syscalls/lremovexattr/lremovexattr01.c     | 1 +
+ testcases/kernel/syscalls/madvise/madvise10.c               | 1 +
+ testcases/kernel/syscalls/mkdir/mkdir03.c                   | 1 +
+ testcases/kernel/syscalls/read/read01.c                     | 1 +
+ testcases/kernel/syscalls/request_key/request_key03.c       | 1 +
+ testcases/kernel/syscalls/rmdir/rmdir02.c                   | 1 +
+ testcases/kernel/syscalls/setsockopt/setsockopt03.c         | 1 +
+ testcases/kernel/syscalls/write/write03.c                   | 1 +
+ testcases/kernel/syscalls/writev/writev07.c                 | 1 +
+ testcases/lib/tst_checkpoint.c                              | 1 +
+ testcases/lib/tst_device.c                                  | 1 +
+ testcases/lib/tst_kvcmp.c                                   | 1 +
+ testcases/network/sctp/sctp_big_chunk.c                     | 1 +
+ 42 files changed, 58 insertions(+), 7 deletions(-)
+
+-- 
+2.20.1
+
