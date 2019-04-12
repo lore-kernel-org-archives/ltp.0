@@ -1,51 +1,122 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 12 Apr 2019 01:40:42 +0200
-Subject: [LTP]
- =?utf-8?b?5Zue5aSN77yaW1BBVENIIHYxXSBpbmNsdWRlL21rL2Vudl9w?=
- =?utf-8?q?ost=2Emk=3A_enable_=5F=5FANDROID=5F=5F_definition_for_Android_b?=
- =?utf-8?q?uild?=
-In-Reply-To: <20190411173755.GA9800@dell5510>
-References: <1554782710-27144-1-git-send-email-ruanzw@xiaopeng.com>
- <db7687f3-40ca-495e-aa76-efcce204cda7.ruanzw@xiaopeng.com>
- <20190410141615.GA10303@x230> <20190411162724.GC124555@google.com>
- <20190411173755.GA9800@dell5510>
-Message-ID: <20190411234041.GB381@x230>
+From: =?unknown-8bit?b?6Ziu5q2j5pe6?= <ruanzw@xiaopeng.com>
+Date: Fri, 12 Apr 2019 10:07:04 +0800
+Subject: [LTP] [PATCH v1] Fix build error caused by
+ -Werror-implicit-function-declaration for Android
+In-Reply-To: <F2D8419F-5149-4D85-BBBC-53B268A38065@gmail.com>
+References: <1554992323-14338-1-git-send-email-ruanzw@xiaopeng.com>
+ <F2D8419F-5149-4D85-BBBC-53B268A38065@gmail.com>
+Message-ID: <d8ebd073-1ba8-a399-af5e-b943f512aca3@xiaopeng.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi Sandeep,
+Hi Cooper,
 
-> > > > -CFLAGS    += -Werror-implicit-function-declaration
-> > > > +CFLAGS    += -Werror-implicit-function-declaration -D__ANDROID__
-> > > Would adding __ANDROID__ definition help building LTP with distro
-> > > cross-compiler? (i.e. no NDK, no inside AOSP tree)?
-> > > I guess so and therefore, I'd be for this change.
-> > > I see some projects added it as well (busybox [1] [2], dnsmasq [3]).
-> > > BTW: where is defined for AOSP and NDK?
 
-> > I think I've used __ANDROID__ and __BIONIC__ in the past for android-specific
-> > things.  Honestly, I haven't tried to build for Android outside of AOSP tree
-> > yet. I am happy to test this if you tell me how? (sorry for that.)
-> Great, thanks a lot!
+-------- Original Message --------
+From: Enji Cooper
+Sent: Thu, 11 Apr 2019 08:16:00 -0700
+To: Zhengwang Ruan
+Cc: Ltp
+Subject: Re: [LTP] [PATCH v1] Fix build error caused by 
+-Werror-implicit-function-declaration for Android
+>> On Apr 11, 2019, at 07:18, Zhengwang Ruan <ruanzw@xiaopeng.com> wrote:
+>>
+>> Fix build errors caused by -Werror-implicit-function-declaration by add missing
+>> <string.h> and <strings.h> for Android.
+> Comment next time: it would be a good idea a to note what functions were missing.
+>
+>> Signed-off-by: Zhengwang Ruan <ruanzw@xiaopeng.com>
+> Reviewed-by: Enji Cooper <yaneurabeya@gmail.com>
+>
+>> ---
+>> include/tst_numa.h                                            | 2 ++
+>> include/tst_test.h                                            | 1 +
+>> testcases/kernel/syscalls/copy_file_range/copy_file_range01.c | 1 +
+>> testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c             | 2 +-
+>> testcases/kernel/syscalls/epoll_wait/epoll_wait01.c           | 1 +
+>> 5 files changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/tst_numa.h b/include/tst_numa.h
+>> index a4cd1be..4f98066 100644
+>> --- a/include/tst_numa.h
+>> +++ b/include/tst_numa.h
+>> @@ -7,6 +7,8 @@
+>> #ifndef TST_NUMA_H__
+>> #define TST_NUMA_H__
+>>
+>> +#include <string.h>
+>> +
+>> /**
+>>   * Numa nodemap.
+>>   */
+>> diff --git a/include/tst_test.h b/include/tst_test.h
+>> index cf2447f..25b9763 100644
+>> --- a/include/tst_test.h
+>> +++ b/include/tst_test.h
+>> @@ -24,6 +24,7 @@
+>>
+>> #include <unistd.h>
+>> #include <limits.h>
+>> +#include <string.h>
+>>
+>> #include "tst_common.h"
+>> #include "tst_res_flags.h"
+>> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
+>> index 2bca8a4..61a6042 100644
+>> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
+>> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
+>> @@ -15,6 +15,7 @@
+>> #define _GNU_SOURCE
+>> #include <stdio.h>
+>> #include <errno.h>
+>> +#include <stdlib.h>
+>> #include "tst_test.h"
+>> #include "tst_safe_stdio.h"
+>> #include "lapi/syscalls.h"
+>> diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
+>> index e837913..4df55b5 100644
+>> --- a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
+>> +++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
+>> @@ -31,7 +31,7 @@
+>>
+>> #include <sys/epoll.h>
+>> #include <poll.h>
+>> -#include <string.h>
+>> +#include <strings.h>
+> Just a general question: did you test the non-Android case?
 
-> According to [1] android toolchain (I guess both AOSP and NDK toolchain) define
-> __ANDROID__. Which is what I'd expect.
+Yes, I have tested it using the default gcc on my Ubuntu 16.04 host.
 
-> Grepping aosp only dnsmasq and swiftshader use -D__ANDROID__ (these are from
-> externals). -DANDROID is use more times (e.g. some drivers in hardware - ril,
-> qcom, libsensors and wpa_supplicant).
 
-> From my point of view, instead of -D__ANDROID__ or -DANDROID I'd prefer to to have
-> proper #ifdef HAVE_FOO guarders made by autotools checks. As android is not the
-> only minor libc. But I understand it's not always possible and we already use
-> some #ifdef __ANDROID__ in library sources and headers, so ack from myself to
-> help compilation outside AOSP and without NDK.
-Actually I was wrong. 1) I was using NDK toolchain. I'd expect it'd generate
-__ANDROID__, but I don't see it in the output. 2) Building for android with
-distro toolchain doesn't make sense as it wouldn't have Bionic.
+Kind Regards,
 
-Kind regards,
-Petr
+Zhengwang
+
+>
+>> #include <errno.h>
+>> #include "tst_test.h"
+>>
+>> diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait01.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait01.c
+>> index 0ded127..6099b84 100644
+>> --- a/testcases/kernel/syscalls/epoll_wait/epoll_wait01.c
+>> +++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait01.c
+>> @@ -26,6 +26,7 @@
+>> #include <sys/epoll.h>
+>> #include <poll.h>
+>> #include <string.h>
+>> +#include <strings.h>
+>> #include <errno.h>
+>>
+>> #include "tst_test.h"
+>> -- 
+>> 2.7.4
+>>
+>>
+>> -- 
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190412/819835a5/attachment.html>
