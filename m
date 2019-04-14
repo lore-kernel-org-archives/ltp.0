@@ -1,67 +1,76 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Sun, 14 Apr 2019 12:26:22 +0200
-Subject: [LTP] [COMMITTED][PATCH 1/1] tst_safe_posix_ipc.h: Replace
-	definition ANDROID with __ANDROID__
-Message-ID: <20190414102622.27343-1-pvorel@suse.cz>
+Date: Sun, 14 Apr 2019 15:03:29 +0200
+Subject: [LTP] [PATCH 1/1] tst_test.h: Include common headers to fix missing
+	function declaration
+Message-ID: <20190414130329.14607-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Petr Vorel <petr.vorel@gmail.com>
+This fixes build errors caused by -Werror-implicit-function-declaration
+defined for android. Due often missing when using common memory and
+string related functions added <string.h>, <strings.h> and <stdlib.h>.
 
-Based on previous discussion on commit be944db1f and [1].
+Including headers here seems to be better than handling implicit
+function declaration error every now and then.
 
-+ use SPDX-License-Identifier.
++ update copyright, use SPDX-License-Identifier.
 
-[1] https://groups.google.com/forum/#!topic/android-ndk/cf9_f1SLXls
-
-Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+Suggested-by: Zhengwang Ruan <ruanzw@xiaopeng.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- include/tst_safe_posix_ipc.h | 24 +++---------------------
- 1 file changed, 3 insertions(+), 21 deletions(-)
+Hi,
 
-diff --git a/include/tst_safe_posix_ipc.h b/include/tst_safe_posix_ipc.h
-index b089f01b0..d74ef4ee8 100644
---- a/include/tst_safe_posix_ipc.h
-+++ b/include/tst_safe_posix_ipc.h
-@@ -1,24 +1,6 @@
+IMHO better than previous patches [1] [2] to handle this.
+I decided to include also <strings.h> (there other non-deprecated
+functions besides to deprecated bzero) and <stdlib.h> (for malloc).
+
+Kind regards,
+Petr
+
+[1] https://patchwork.ozlabs.org/patch/1084064/
+[2] https://patchwork.ozlabs.org/patch/1084370/
+---
+ include/tst_test.h | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
+
+diff --git a/include/tst_test.h b/include/tst_test.h
+index cf2447fe3..69629caff 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -1,18 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-- * Copyright (C) 2017 Petr Vorel pvorel@suse.cz
+  * Copyright (c) 2015-2016 Cyril Hrubis <chrubis@suse.cz>
 - *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
+- * This program is free software: you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation, either version 2 of the License, or
+- * (at your option) any later version.
 - *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
 - *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ * Copyright (C) 2017-2019 Petr Vorel pvorel@suse.cz
+- * You should have received a copy of the GNU General Public License
+- * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ * Copyright (c) Linux Test Project, 2016-2019
   */
  
- #ifndef TST_SAFE_POSIX_IPC_H__
-@@ -43,7 +25,7 @@ static inline int safe_mq_open(const char *file, const int lineno,
- 	/* Android's NDK's mode_t is smaller than an int, which results in
- 	 * SIGILL here when passing the mode_t type.
- 	 */
--#ifndef ANDROID
-+#ifndef __ANDROID__
- 	mode = va_arg(ap, mode_t);
- #else
- 	mode = va_arg(ap, int);
+ #ifndef TST_TEST_H__
+@@ -24,6 +13,9 @@
+ 
+ #include <unistd.h>
+ #include <limits.h>
++#include <string.h>
++#include <strings.h>
++#include <stdlib.h>
+ 
+ #include "tst_common.h"
+ #include "tst_res_flags.h"
 -- 
 2.20.1
 
