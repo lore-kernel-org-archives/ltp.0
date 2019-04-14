@@ -1,34 +1,53 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Sun, 14 Apr 2019 11:59:09 +0200
-Subject: [LTP] [RFC PATCH 1/3] cve/cve-2014-0196: Don't use libutil for
-	Android
-In-Reply-To: <20190412193929.GD124555@google.com>
-References: <20190411233115.32744-1-pvorel@suse.cz>
- <20190411233115.32744-2-pvorel@suse.cz>
- <20190412193929.GD124555@google.com>
-Message-ID: <20190414095909.GA17032@x230>
+Date: Sun, 14 Apr 2019 12:11:59 +0200
+Subject: [LTP] [PATCH v1] rt_tgsigqueueinfo01.c: replace definition
+ ANDROID with __ANDROID__
+In-Reply-To: <20190412194921.GF124555@google.com>
+References: <1554992779-14595-1-git-send-email-ruanzw@xiaopeng.com>
+ <20190411174638.GA11576@dell5510>
+ <ee2af517-8cb1-de29-0ec1-a16818087d0b@xiaopeng.com>
+ <20190412194921.GF124555@google.com>
+Message-ID: <20190414101159.GB17032@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi Sandeep,
+Hi Sandeep, Zhengwang,
 
-> On Fri, Apr 12, 2019 at 01:31:13AM +0200, Petr Vorel wrote:
-> > From: Petr Vorel <petr.vorel@gmail.com>
+> On Fri, Apr 12, 2019 at 11:36:46PM +0800, 阮正旺 wrote:
+> > Hi Petr, Sandeep, Steve,
 
-> > as it's not available for it.
 
-> > Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> > -------- Original Message --------
+> > From: Petr Vorel
+> > Sent: Thu, 11 Apr 2019 19:46:38 +0200
+> > To: Zhengwang Ruan, Steve Muckle, Sandeep Patil
+> > Cc: Ltp
+> > Subject: Re: [LTP] [PATCH v1] rt_tgsigqueueinfo01.c: replace definition
+> > ANDROID with __ANDROID__
+> > > Hi,
 
-> We've needed this for a while now and I always end up removing
-> the libutil reference in the auto-generated gen.bp file. Thanks for
-> fixing this Petr.
+> > > > Replace the incorrect definition of ANDROID with __ANDROID__.
+> > > > +++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
+> > > > @@ -25,7 +25,7 @@
+> > > >   #include "tst_test.h"
+> > > >   #include "lapi/syscalls.h"
+> > > > -#ifndef ANDROID
+> > > > +#ifndef __ANDROID__
+> > > Simple grep in AOSP tree would be for this change (and I'd personally prefer it as well)
+> > > I'd kindly ask android devs which one is correct :). BTW ANDROID was added by Steve.
+
+> > According to also [1], this patch is acceptable, right?
+
+> Yes, indeed.
 
 > Acked-by: Sandeep Patil <sspatil@android.com>
-Thanks for your review, pushed this one.
+
+Thanks for your review.
+Merged (with slightly changed commit message) + I made this change in
+include/tst_safe_posix_ipc.h in a separate commit.
 
 
 Kind regards,
