@@ -1,54 +1,67 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Sun, 14 Apr 2019 12:11:59 +0200
-Subject: [LTP] [PATCH v1] rt_tgsigqueueinfo01.c: replace definition
- ANDROID with __ANDROID__
-In-Reply-To: <20190412194921.GF124555@google.com>
-References: <1554992779-14595-1-git-send-email-ruanzw@xiaopeng.com>
- <20190411174638.GA11576@dell5510>
- <ee2af517-8cb1-de29-0ec1-a16818087d0b@xiaopeng.com>
- <20190412194921.GF124555@google.com>
-Message-ID: <20190414101159.GB17032@x230>
+Date: Sun, 14 Apr 2019 12:26:22 +0200
+Subject: [LTP] [COMMITTED][PATCH 1/1] tst_safe_posix_ipc.h: Replace
+	definition ANDROID with __ANDROID__
+Message-ID: <20190414102622.27343-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Sandeep, Zhengwang,
+From: Petr Vorel <petr.vorel@gmail.com>
 
-> On Fri, Apr 12, 2019 at 11:36:46PM +0800, 阮正旺 wrote:
-> > Hi Petr, Sandeep, Steve,
+Based on previous discussion on commit be944db1f and [1].
 
++ use SPDX-License-Identifier.
 
-> > -------- Original Message --------
-> > From: Petr Vorel
-> > Sent: Thu, 11 Apr 2019 19:46:38 +0200
-> > To: Zhengwang Ruan, Steve Muckle, Sandeep Patil
-> > Cc: Ltp
-> > Subject: Re: [LTP] [PATCH v1] rt_tgsigqueueinfo01.c: replace definition
-> > ANDROID with __ANDROID__
-> > > Hi,
+[1] https://groups.google.com/forum/#!topic/android-ndk/cf9_f1SLXls
 
-> > > > Replace the incorrect definition of ANDROID with __ANDROID__.
-> > > > +++ b/testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c
-> > > > @@ -25,7 +25,7 @@
-> > > >   #include "tst_test.h"
-> > > >   #include "lapi/syscalls.h"
-> > > > -#ifndef ANDROID
-> > > > +#ifndef __ANDROID__
-> > > Simple grep in AOSP tree would be for this change (and I'd personally prefer it as well)
-> > > I'd kindly ask android devs which one is correct :). BTW ANDROID was added by Steve.
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+ include/tst_safe_posix_ipc.h | 24 +++---------------------
+ 1 file changed, 3 insertions(+), 21 deletions(-)
 
-> > According to also [1], this patch is acceptable, right?
+diff --git a/include/tst_safe_posix_ipc.h b/include/tst_safe_posix_ipc.h
+index b089f01b0..d74ef4ee8 100644
+--- a/include/tst_safe_posix_ipc.h
++++ b/include/tst_safe_posix_ipc.h
+@@ -1,24 +1,6 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * Copyright (C) 2017 Petr Vorel pvorel@suse.cz
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ * Copyright (C) 2017-2019 Petr Vorel pvorel@suse.cz
+  */
+ 
+ #ifndef TST_SAFE_POSIX_IPC_H__
+@@ -43,7 +25,7 @@ static inline int safe_mq_open(const char *file, const int lineno,
+ 	/* Android's NDK's mode_t is smaller than an int, which results in
+ 	 * SIGILL here when passing the mode_t type.
+ 	 */
+-#ifndef ANDROID
++#ifndef __ANDROID__
+ 	mode = va_arg(ap, mode_t);
+ #else
+ 	mode = va_arg(ap, int);
+-- 
+2.20.1
 
-> Yes, indeed.
-
-> Acked-by: Sandeep Patil <sspatil@android.com>
-
-Thanks for your review.
-Merged (with slightly changed commit message) + I made this change in
-include/tst_safe_posix_ipc.h in a separate commit.
-
-
-Kind regards,
-Petr
