@@ -1,41 +1,65 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 15 Apr 2019 13:37:55 +0200
-Subject: [LTP] [COMMITTED][PATCH] runltp: Remove unused -n option
-Message-ID: <20190415113755.1386-1-pvorel@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 15 Apr 2019 13:39:37 +0200
+Subject: [LTP] [PATCH 1/1] tst_test.h: Include common headers to fix
+ missing function declaration
+In-Reply-To: <20190414130329.14607-1-pvorel@suse.cz>
+References: <20190414130329.14607-1-pvorel@suse.cz>
+Message-ID: <20190415113907.GA9404@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixes: f7201dfc ("tools: Remove unused code.")
-Fixes: #158
+Hi!
+> [1] https://patchwork.ozlabs.org/patch/1084064/
+> [2] https://patchwork.ozlabs.org/patch/1084370/
+> ---
+>  include/tst_test.h | 18 +++++-------------
+>  1 file changed, 5 insertions(+), 13 deletions(-)
+> 
+> diff --git a/include/tst_test.h b/include/tst_test.h
+> index cf2447fe3..69629caff 100644
+> --- a/include/tst_test.h
+> +++ b/include/tst_test.h
+> @@ -1,18 +1,7 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+>   * Copyright (c) 2015-2016 Cyril Hrubis <chrubis@suse.cz>
+> - *
+> - * This program is free software: you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License as published by
+> - * the Free Software Foundation, either version 2 of the License, or
+> - * (at your option) any later version.
+> - *
+> - * This program is distributed in the hope that it will be useful,
+> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> - * GNU General Public License for more details.
+> - *
+> - * You should have received a copy of the GNU General Public License
+> - * along with this program. If not, see <http://www.gnu.org/licenses/>.
+> + * Copyright (c) Linux Test Project, 2016-2019
+>   */
+>  
+>  #ifndef TST_TEST_H__
+> @@ -24,6 +13,9 @@
+>  
+>  #include <unistd.h>
+>  #include <limits.h>
+> +#include <string.h>
+> +#include <strings.h>
+> +#include <stdlib.h>
 
-Reported-by: Muthu Mohan.T <nortonmohan@yahoo.com>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
+Can we please get rid of the deprecated functions from strings.h instead
+of simply including it?
 
-there should have been "... also from help" in commit message.
+>  #include "tst_common.h"
+>  #include "tst_res_flags.h"
+> -- 
+> 2.20.1
+> 
 
-Kind regards,
-Petr
----
- runltp | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/runltp b/runltp
-index 928696b9e..ec0811834 100755
---- a/runltp
-+++ b/runltp
-@@ -148,7 +148,6 @@ usage()
- 		[CHECK_TYPE=2 => Thread Concurrency Check tracing children as well]
- 		[CHECK_TYPE=3 => Full Memory Leak & Thread Concurrency Check tracing children as well]
-     -N              Run all the networking tests.
--    -n              Run LTP with network traffic in background.
-     -o OUTPUTFILE   Redirect test output to a file.
-     -p              Human readable format logfiles.
-     -q              Print less verbose output to screen. This implies
 -- 
-2.21.0
-
+Cyril Hrubis
+chrubis@suse.cz
