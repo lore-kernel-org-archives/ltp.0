@@ -1,28 +1,41 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 15 Apr 2019 13:32:20 +0200
-Subject: [LTP] Option '-n' is processing is missing
-In-Reply-To: <657145623.3169563.1555324026007@mail.yahoo.com>
-References: <657145623.3169563.1555324026007.ref@mail.yahoo.com>
- <657145623.3169563.1555324026007@mail.yahoo.com>
-Message-ID: <20190415113220.GA994@dell5510>
+Date: Mon, 15 Apr 2019 13:37:55 +0200
+Subject: [LTP] [COMMITTED][PATCH] runltp: Remove unused -n option
+Message-ID: <20190415113755.1386-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Muthu,
+Fixes: f7201dfc ("tools: Remove unused code.")
+Fixes: #158
 
-> In the help, I am seeing the following option, but not processing in the main() function. -n Run LTP with network traffic in background.
-Thanks for your bug report. Indeed, runltp script is missing -n option.
-This is a result of 9519bb462 ("runltp: Remove references to netpipe.sh"), which
-was fix of f7201dfc ("tools: Remove unused code.") and handled in #158 [1].
-I'm going to fix it.
+Reported-by: Muthu Mohan.T <nortonmohan@yahoo.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Hi,
+
+there should have been "... also from help" in commit message.
 
 Kind regards,
 Petr
+---
+ runltp | 1 -
+ 1 file changed, 1 deletion(-)
 
-[1] https://github.com/linux-test-project/ltp/issues/158
+diff --git a/runltp b/runltp
+index 928696b9e..ec0811834 100755
+--- a/runltp
++++ b/runltp
+@@ -148,7 +148,6 @@ usage()
+ 		[CHECK_TYPE=2 => Thread Concurrency Check tracing children as well]
+ 		[CHECK_TYPE=3 => Full Memory Leak & Thread Concurrency Check tracing children as well]
+     -N              Run all the networking tests.
+-    -n              Run LTP with network traffic in background.
+     -o OUTPUTFILE   Redirect test output to a file.
+     -p              Human readable format logfiles.
+     -q              Print less verbose output to screen. This implies
+-- 
+2.21.0
 
-> Please fix.
-> RegardsMuthu Mohan
