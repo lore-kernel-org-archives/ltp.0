@@ -1,28 +1,27 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 15 Apr 2019 15:49:37 +0200
-Subject: [LTP] [PATCH v1] Fix build error caused by
- -Werror-implicit-function-declaration for Android
-In-Reply-To: <1554992323-14338-1-git-send-email-ruanzw@xiaopeng.com>
-References: <1554992323-14338-1-git-send-email-ruanzw@xiaopeng.com>
-Message-ID: <20190415134937.GA8625@dell5510>
+Date: Mon, 15 Apr 2019 15:51:46 +0200
+Subject: [LTP] [PATCH 1/1] tst_test.h: Include common headers to fix
+ missing function declaration
+In-Reply-To: <20190415124013.GA10670@rei>
+References: <20190414130329.14607-1-pvorel@suse.cz> <20190415113907.GA9404@rei>
+ <20190415120637.GA11779@x230> <20190415124013.GA10670@rei>
+Message-ID: <20190415135146.GA8796@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Hi,
 
-> Fix build errors caused by -Werror-implicit-function-declaration by add missing
-> <string.h> and <strings.h> for Android.
+> > > Can we please get rid of the deprecated functions from strings.h instead
+> > > of simply including it?
+> > Sure, I'll do it sooner or later :). I guess you're against <stdlib.h> as well
+> > (I found only one file needing it so far), so I'll include just <string.h>
+> > (which usage is massive), ok?
 
-> Signed-off-by: Zhengwang Ruan <ruanzw@xiaopeng.com>
-In the end merged this one (after rebase), which fixes android build for now and
-added a ticket for replacing deprecated functions from <strings.h>
-
-https://github.com/linux-test-project/ltp/issues/521
-
-Zhengwang, thanks for your work and testing.
+> Agreed.
+Thanks for your review, merged!
 
 Kind regards,
 Petr
