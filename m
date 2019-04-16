@@ -1,63 +1,93 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 16 Apr 2019 17:23:14 +0300
-Subject: [LTP] [PATCH 2/4] syscalls/fanotify13: new test to verify
- FAN_REPORT_FID functionality
-In-Reply-To: <20190416134105.GA20437@rei>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 16 Apr 2019 16:29:59 +0200
+Subject: [LTP] [PATCH 4/4] syscalls/fanotify15: verify fid for dirent
+ events
+In-Reply-To: <2934be190caaaf4bb75caffd731d34711fbf1c61.1554197461.git.mbobrowski@mbobrowski.org>
 References: <cover.1554197461.git.mbobrowski@mbobrowski.org>
- <da7bbaf1f0661dec476e636ed250ab640f5d2c31.1554197461.git.mbobrowski@mbobrowski.org>
- <20190416134105.GA20437@rei>
-Message-ID: <CAOQ4uxhQ_Yk9=085eN+TF6rX8CQhzdv7Ze+_Hp8t00CLL2k7+w@mail.gmail.com>
+ <2934be190caaaf4bb75caffd731d34711fbf1c61.1554197461.git.mbobrowski@mbobrowski.org>
+Message-ID: <20190416142959.GC20437@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Apr 16, 2019 at 4:41 PM Cyril Hrubis <chrubis@suse.cz> wrote:
->
-> Hi!
-> > Newly defined test file to validate the fanotify FAN_REPORT_FID
-> > functionality.
-> >
-> > Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
-> > Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> > ---
-> >  testcases/kernel/syscalls/fanotify/.gitignore   |   1 +
-> >  testcases/kernel/syscalls/fanotify/fanotify.h   |  19 +-
-> >  testcases/kernel/syscalls/fanotify/fanotify13.c | 329 ++++++++++++++++++++++++
->
-> This is missing the runtest entry in runtest/syscalls so that the test
-> is picked up by the testrunner.
->
-> And the same bug slipped in during review for fanotify12 so I've
-> commited a fix that adds it there.
->
-> ...
->
-> > +static void do_test(unsigned int number)
-> > +{
-> > +     unsigned int i;
-> > +     int len, fds[ARRAY_SIZE(objects)];
-> > +
-> > +     struct file_handle *event_file_handle;
-> > +     struct fanotify_event_metadata *metadata;
-> > +     struct fanotify_event_info_fid *event_fid;
-> > +     struct test_case_t *tc = &test_cases[number];
-> > +     struct fanotify_mark_type *mark = &tc->mark;
-> > +
-> > +     tst_res(TINFO,
-> > +             "Test #%d: FAN_REPORT_FID with mark flag: %s",
-> > +             number, mark->name);
-> > +
-> > +     /* Gets the filesystem fsid and file handle for each object */
-> > +     get_object_stats(tc);
->
-> Is there a reason why are are not calling this function once in the test
-> setup? It will be called for every test iteration when the test is
-> passed the -i option...
->
+Hi!
+This one misses runtest entry as well.
 
-I think that's an oversight. It could be called once during setup.
+> +#define BUF_SIZE 256
+> +#define EVENT_MAX 256 
+> +
+> +#define MOUNT_POINT "mntpoint"
+> +#define TEST_DIR MOUNT_POINT"/test_dir"
+> +#define DIR1 TEST_DIR"/dir1"
+> +#define DIR2 TEST_DIR"/dir2"
+> +#define FILE1 TEST_DIR"/file1"
+> +#define FILE2 TEST_DIR"/file2"
+> +
+> +struct event_t {
+> +	unsigned long long mask;
+> +	__kernel_fsid_t fsid;
+> +	struct file_handle handle;
+> +	char buf[MAX_HANDLE_SZ];
+> +};
+> +
+> +static int fanotify_fd;
+> +static char events_buf[BUF_SIZE];
+> +static struct event_t event_set[EVENT_MAX];
+> +
+> +static void do_setup(void)
+> +{
+> +	int fd;
+> +
+> +	/* Check kernel for fanotify support */
+> +	fd = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF, O_RDONLY);
+> +	SAFE_CLOSE(fd);
+> +
+> +	fanotify_fd = fanotify_init(FAN_REPORT_FID, O_RDONLY);
+> +	if (fanotify_fd == -1) {
+> +		if (errno == EINVAL)
+> +			tst_brk(TCONF,
+> +				"FAN_REPORT_FID not supported in kernel");
+> +		tst_brk(TBROK | TERRNO,
+> +			"fanotify_init(FAN_REPORT_FID, O_RDONLY) failed");
+> +	}
+> +
+> +	SAFE_MKDIR(TEST_DIR, 0755);
+> +}
+> +
+> +static void get_fid_data(int i, const char *path)
+> +{
+> +	int mount_id;
+> +	struct statfs stats;
+> +
+> +	if (statfs(path, &stats) == -1)
+> +		tst_brk(TBROK | TERRNO,
+> +			"statfs(%s, ...) failed", path);
+> +	memcpy(&event_set[i].fsid, &stats.f_fsid, sizeof(stats.f_fsid));
+> +
+> +	event_set[i].handle.handle_bytes = MAX_HANDLE_SZ;
+> +	if (name_to_handle_at(AT_FDCWD, path, &event_set[i].handle,
+> +				&mount_id, 0) == -1) {
+> +		if (errno == EOPNOTSUPP) {
+> +			tst_brk(TCONF,
+> +				"filesystem %s does not support file handles",
+> +				tst_device->fs_type);
+> +		}
+> +		tst_brk(TBROK | TERRNO,
+> +			"name_to_handle_at(AT_FDCWD, %s, ...) failed",
+> +			path);
+> +	}
+> +}
 
-Thanks,
-Amir.
+Can put this code into an header in the fanotify/ directory along with
+the event_t structure definiton so that we do not carry two copies of
+nearly identical code.
+
+If we passed a pointer to the event_t structure instead of the index we
+can call this function in a loop in the get_object_stats() in
+fanotify13, right?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
