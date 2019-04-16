@@ -1,38 +1,61 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 16 Apr 2019 15:34:33 +0200
-Subject: [LTP] [PATCH] [COMMITTED] runtest/syscalls: Add entry for fanotify12
-Message-ID: <20190416133433.21708-1-chrubis@suse.cz>
+Date: Tue, 16 Apr 2019 15:41:06 +0200
+Subject: [LTP] [PATCH 2/4] syscalls/fanotify13: new test to verify
+ FAN_REPORT_FID functionality
+In-Reply-To: <da7bbaf1f0661dec476e636ed250ab640f5d2c31.1554197461.git.mbobrowski@mbobrowski.org>
+References: <cover.1554197461.git.mbobrowski@mbobrowski.org>
+ <da7bbaf1f0661dec476e636ed250ab640f5d2c31.1554197461.git.mbobrowski@mbobrowski.org>
+Message-ID: <20190416134105.GA20437@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixes:
-commit 579a27b8c3e496a74614836e80a5f4b5085c050c
-Author: Matthew Bobrowski <mbobrowski@mbobrowski.org>
-Date:   Sat Oct 27 21:09:01 2018 +1100
+Hi!
+> Newly defined test file to validate the fanotify FAN_REPORT_FID
+> functionality.
+> 
+> Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+> ---
+>  testcases/kernel/syscalls/fanotify/.gitignore   |   1 +
+>  testcases/kernel/syscalls/fanotify/fanotify.h   |  19 +-
+>  testcases/kernel/syscalls/fanotify/fanotify13.c | 329 ++++++++++++++++++++++++
 
-    syscalls/fanotify12: add new test to support new FAN_OPEN_EXEC event mask
+This is missing the runtest entry in runtest/syscalls so that the test
+is picked up by the testrunner.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-CC: Matthew Bobrowski <mbobrowski@mbobrowski.org>
----
- runtest/syscalls | 1 +
- 1 file changed, 1 insertion(+)
+And the same bug slipped in during review for fanotify12 so I've
+commited a fix that adds it there.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 5267c4d93..2b8ca719b 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -536,6 +536,7 @@ fanotify08 fanotify08
- fanotify09 fanotify09
- fanotify10 fanotify10
- fanotify11 fanotify11
-+fanotify12 fanotify12
- 
- ioperm01 ioperm01
- ioperm02 ioperm02
+...
+
+> +static void do_test(unsigned int number)
+> +{
+> +	unsigned int i;
+> +	int len, fds[ARRAY_SIZE(objects)];
+> +
+> +	struct file_handle *event_file_handle;
+> +	struct fanotify_event_metadata *metadata;
+> +	struct fanotify_event_info_fid *event_fid;
+> +	struct test_case_t *tc = &test_cases[number];
+> +	struct fanotify_mark_type *mark = &tc->mark;
+> +
+> +	tst_res(TINFO,
+> +		"Test #%d: FAN_REPORT_FID with mark flag: %s",
+> +		number, mark->name);
+> +
+> +	/* Gets the filesystem fsid and file handle for each object */
+> +	get_object_stats(tc);
+
+Is there a reason why are are not calling this function once in the test
+setup? It will be called for every test iteration when the test is
+passed the -i option...
+
+
+Otherwise it looks good.
+
 -- 
-2.19.2
-
+Cyril Hrubis
+chrubis@suse.cz
