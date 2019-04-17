@@ -1,9 +1,7 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 17 Apr 2019 14:47:29 +0300
-Subject: [LTP] [PATCH 2/3][COMMITTED] network/clockdiff01: convert to new API
-In-Reply-To: <1555501650-16626-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1555501650-16626-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1555501650-16626-2-git-send-email-alexey.kodanev@oracle.com>
+Date: Wed, 17 Apr 2019 14:47:28 +0300
+Subject: [LTP] [PATCH 1/3][COMMITTED] network/arping01: convert to new API
+Message-ID: <1555501650-16626-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,14 +12,14 @@ Use SPDX-License-Identifier.
 
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/network/tcp_cmds/clockdiff/Makefile      |   16 +-----
- .../network/tcp_cmds/clockdiff/clockdiff01.sh      |   51 ++++++++------------
- 2 files changed, 22 insertions(+), 45 deletions(-)
+ testcases/network/tcp_cmds/arping/Makefile    |   16 +-------
+ testcases/network/tcp_cmds/arping/arping01.sh |   49 ++++++++-----------------
+ 2 files changed, 17 insertions(+), 48 deletions(-)
 
-diff --git a/testcases/network/tcp_cmds/clockdiff/Makefile b/testcases/network/tcp_cmds/clockdiff/Makefile
-index 3b212a9..d2e7251 100644
---- a/testcases/network/tcp_cmds/clockdiff/Makefile
-+++ b/testcases/network/tcp_cmds/clockdiff/Makefile
+diff --git a/testcases/network/tcp_cmds/arping/Makefile b/testcases/network/tcp_cmds/arping/Makefile
+index 9af15b3..6852542 100644
+--- a/testcases/network/tcp_cmds/arping/Makefile
++++ b/testcases/network/tcp_cmds/arping/Makefile
 @@ -1,17 +1,5 @@
 -# Copyright (c) 2016 Oracle and/or its affiliates. All Rights Reserved.
 -#
@@ -42,13 +40,13 @@ index 3b212a9..d2e7251 100644
  
  top_srcdir		?= ../../../..
  
-diff --git a/testcases/network/tcp_cmds/clockdiff/clockdiff01.sh b/testcases/network/tcp_cmds/clockdiff/clockdiff01.sh
-index e664391..db1b8d5 100755
---- a/testcases/network/tcp_cmds/clockdiff/clockdiff01.sh
-+++ b/testcases/network/tcp_cmds/clockdiff/clockdiff01.sh
-@@ -1,42 +1,31 @@
+diff --git a/testcases/network/tcp_cmds/arping/arping01.sh b/testcases/network/tcp_cmds/arping/arping01.sh
+index 774dbc1..d9c79f6 100755
+--- a/testcases/network/tcp_cmds/arping/arping01.sh
++++ b/testcases/network/tcp_cmds/arping/arping01.sh
+@@ -1,42 +1,23 @@
  #!/bin/sh
--# Copyright (c) 2016-2017 Oracle and/or its affiliates. All Rights Reserved.
+-# Copyright (c) 2016 Oracle and/or its affiliates. All Rights Reserved.
 -#
 -# This program is free software; you can redistribute it and/or
 -# modify it under the terms of the GNU General Public License as
@@ -67,44 +65,39 @@ index e664391..db1b8d5 100755
  #
  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
  
--TCID=clockdiff01
+-TCID=arping01
 -TST_TOTAL=1
 -TST_USE_LEGACY_API=1
 -. tst_net.sh
 +TST_TESTFUNC="do_test"
 +TST_NEEDS_ROOT=1
-+TST_NEEDS_CMDS="cut clockdiff"
++TST_NEEDS_CMDS="arping"
  
 -tst_require_root
--tst_test_cmds cut clockdiff
+-tst_test_cmds arping
+-
+-timeout="10"
+-ip_addr=$(tst_ipaddr rhost)
+-dev=$(tst_iface)
+-
+-tst_resm TINFO "arping host '$RHOST' with ip '$ip_addr' dev '$dev'"
+-tst_resm TINFO "with timeout '$timeout' seconds"
 +. tst_net.sh
  
--tst_resm TINFO "check time delta for $(tst_ipaddr)"
+-arping -w $timeout "$ip_addr" -I $dev -fq
 +do_test()
 +{
-+	tst_res TINFO "check time delta for $(tst_ipaddr)"
- 
--output=$(clockdiff $(tst_ipaddr))
-+	local output=$(clockdiff $(tst_ipaddr))
++	local timeout="10"
++	local ip_addr=$(tst_ipaddr rhost)
++	local dev=$(tst_iface)
  
 -if [ $? -ne 0 ]; then
--	tst_resm TFAIL "clockdiff failed to get delta"
+-	tst_resm TFAIL "arping to '$RHOST' failed"
 -else
--	delta=$(echo "$output" | cut -d' ' -f2,3)
--	if [ "$delta" = "0 0" ]; then
--		tst_resm TPASS "delta is 0 as expected"
-+	if [ $? -ne 0 ]; then
-+		tst_res TFAIL "clockdiff failed to get delta"
- 	else
--		tst_resm TFAIL "not expected data received: '$output'"
-+		delta=$(echo "$output" | cut -d' ' -f2,3)
-+		if [ "$delta" = "0 0" ]; then
-+			tst_res TPASS "delta is 0 as expected"
-+		else
-+			tst_res TFAIL "not expected data received: '$output'"
-+		fi
- 	fi
+-	tst_resm TPASS "done"
 -fi
++	tst_res TINFO "arping host '$ip_addr' via dev '$dev' with timeout '$timeout' secs"
++	EXPECT_PASS arping -w $timeout "$ip_addr" -I $dev -fq
 +}
  
 -tst_exit
