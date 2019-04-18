@@ -1,48 +1,24 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 18 Apr 2019 17:19:56 +0800
-Subject: [LTP] [PATCH] [RFC] Proof-of-concept for test documentation
-	format
-In-Reply-To: <20190415145157.GA9645@rei.lan>
-References: <20181128104420.30110-1-chrubis@suse.cz>
- <20190415145157.GA9645@rei.lan>
-Message-ID: <CAEemH2e8mJqE0f+EGPEFjA-PM5yXf8N9dkUv_iAaz9jn_jdMvg@mail.gmail.com>
+From: Al Viro <viro@zeniv.linux.org.uk>
+Date: Thu, 18 Apr 2019 08:24:54 +0100
+Subject: [LTP] LTP: mount02 was expected EINVAL(22) but got ENOENT(2):
+ No such file or directory
+In-Reply-To: <5CB823D9.8050902@cn.fujitsu.com>
+References: <CA+G9fYudJC07HfrU1fVptCEvgCuBsF9G2N76PiGG5Z258z0Dzg@mail.gmail.com>
+ <226607771.7950393.1552490962324.JavaMail.zimbra@redhat.com>
+ <CA+G9fYsDK=4jJ31qeTpOxif+j7dTijznsboMHRdkfhQ3V0+8tA@mail.gmail.com>
+ <696858120.8161208.1552551805566.JavaMail.zimbra@redhat.com>
+ <5CB823D9.8050902@cn.fujitsu.com>
+Message-ID: <20190418072454.GD2217@ZenIV.linux.org.uk>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Apr 15, 2019 at 10:52 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+On Thu, Apr 18, 2019 at 03:14:33PM +0800, Xiao Yang wrote:
 
-> Hi!
-> Has anybody any comments for this?
->
-> Even simple "concept looks OK" would be nice.
->
-> If I got at least some possitive feedback about it I would go ahead and
-> implement something less hacky to kick this forward...
->
+> Does you or Al Viro plan to replace ENOENT with ENOTBLK recently?
+> It seems that ENOENT still exists on v5.1-rc5.
 
-Personally, I think this is a good idea at least for regression tests. If
-there is any inconvenient perhaps to make the test author spent more energy
-on the comment definition. But from the template you have given, it seems
-not very complex. So I feel that we can have a try, and if you like I can
-provide some test and code review for this then.
-
-
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
-
-
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190418/c8efa978/attachment.html>
+I am; I'm sorting the next pile of mount patches at the moment,
+and fix for that is going to be in the very beginning.
