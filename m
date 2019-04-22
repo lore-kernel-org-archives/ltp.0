@@ -1,73 +1,35 @@
-From: He Zhe <zhe.he@windriver.com>
-Date: Mon, 22 Apr 2019 17:53:16 +0800
-Subject: [LTP] [PATCH v2] file01.sh: Fix in was not recognized
-In-Reply-To: <5CBD8D83.4080901@cn.fujitsu.com>
-References: <1555922118-412699-1-git-send-email-zhe.he@windriver.com>
- <5CBD8D83.4080901@cn.fujitsu.com>
-Message-ID: <04eacb36-fde2-1468-68f7-23b6d146a5f3@windriver.com>
+From: Eric Biggers <ebiggers@kernel.org>
+Date: Mon, 22 Apr 2019 10:37:42 -0700
+Subject: [LTP] [PATCH] crypto/af_alg04: log INFO message when beginning test
+Message-ID: <20190422173742.84066-1-ebiggers@kernel.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+From: Eric Biggers <ebiggers@google.com>
 
+Make it more obvious that this test will crash buggy kernels.
 
-On 4/22/19 5:46 PM, Xiao Yang wrote:
-> On 2019/04/22 16:35, zhe.he@windriver.com wrote:
->> From: He Zhe<zhe.he@windriver.com>
->>
->> Some file has "pie" appending after LSB or MSB, which causes mismatch and the
->> following error.
->>
->> "file01 10 TFAIL: in: was not recognized"
->> ..."ELF 64-bit LSB pie executable"...
->>
->> This patches tunes the regulation expression to include those cases.
->>
->> Signed-off-by: He Zhe<zhe.he@windriver.com>
->> ---
->> v1 to v2: split into two groups to just match the encountered case
->>
->>   testcases/commands/file/file01.sh | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/testcases/commands/file/file01.sh b/testcases/commands/file/file01.sh
->> index 0a8119e..55c0433 100755
->> --- a/testcases/commands/file/file01.sh
->> +++ b/testcases/commands/file/file01.sh
->> @@ -91,7 +91,9 @@ do_test()
->>        9) file_test in.m4 "M4 macro processor script, ASCII text" \
->>                   "ASCII M4 macro language pre-processor text";;
->>       10) file_test in "ELF .*-bit $TEST_ARCH executable, .*" \
->> -             "ELF .*-bit $TEST_ARCH shared object, .*";;
->> +             "ELF .*-bit $TEST_ARCH shared object, .*" \
->> +             "ELF .*-bit $TEST_ARCH pie executable, .*" \
->> +             "ELF .*-bit $TEST_ARCH pie shared object, .*";;
-> Hi He,
->
-> Perhap, it's simpler to use the ‘.*’regexp directly as your first patch does:
-> -----------------------------------------------------------------------
->
-> -    10) file_test in "ELF .*-bit $TEST_ARCH executable, .*" \
-> -             "ELF .*-bit $TEST_ARCH shared object, .*";;
-> +    10) file_test in "ELF .*-bit $TEST_ARCH .*executable, .*" \
-> +             "ELF .*-bit $TEST_ARCH .*shared object, .*";;
->
-> -----------------------------------------------------------------------
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ testcases/kernel/crypto/af_alg04.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Not exactly, now it can match 4 different cases.
-
-Zhe
-
->
-> Best Regards,
-> Xiao Yang
->>       11) file_test in.ar "current ar archive";;
->>       12) file_test in.tar "tar archive";;
->>       13) file_test in.tar.gz "gzip compressed data, .*";;
->
->
->
->
+diff --git a/testcases/kernel/crypto/af_alg04.c b/testcases/kernel/crypto/af_alg04.c
+index b8e494b87..48239e020 100644
+--- a/testcases/kernel/crypto/af_alg04.c
++++ b/testcases/kernel/crypto/af_alg04.c
+@@ -28,6 +28,8 @@ static void run(void)
+ 	else
+ 		algfd = tst_alg_setup("hash", "vmac(aes)", NULL, 16);
+ 
++	tst_res(TINFO, "Starting vmac hashing test.  May crash buggy kernels.");
++
+ 	pid = SAFE_FORK();
+ 
+ 	reqfd = tst_alg_accept(algfd);
+-- 
+2.21.0.593.g511ec345e18-goog
 
