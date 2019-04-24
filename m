@@ -1,49 +1,60 @@
-From: Zhengwang Ruan <ruanzw@xiaopeng.com>
-Date: Thu, 25 Apr 2019 00:55:39 +0800
-Subject: [LTP] [PATCH v2] include/mk/env_post.mk: enable __ANDROID__
-	definition for Android build
-Message-ID: <1556124939-7699-1-git-send-email-ruanzw@xiaopeng.com>
+From: Steve Muckle <smuckle@google.com>
+Date: Wed, 24 Apr 2019 12:23:01 -0700
+Subject: [LTP] [PATCH v1] include/mk/env_post.mk: enable __ANDROID__
+ definition for Android build
+In-Reply-To: <20190424091444.GA23977@dell5510>
+References: <1554782710-27144-1-git-send-email-ruanzw@xiaopeng.com>
+ <20190424091444.GA23977@dell5510>
+Message-ID: <edc171bb-7351-1069-5a80-8b5c67547fa5@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The definition of __ANDROID__ has been widely used to compile android-specific
-things (i.e. busybox [1] [2], dnsmasq [3]), so we expected NDK to automatically
-pass it to help build LTP for android, but unfortunately it didn't (it is tested
-with android-ndk-r19c). Currently, we have to manually specify -D__ANDROID__ in
-configure step before launch 'make ANDROID=1' command, and this is suffering for
-those who don't have good knowledge of LTP, so it is necessary to enable it if
-built for android.
+Hi Petr, Zhengwang,
 
-In the past, there had been a lot of discussion about which one of __ANDROID__
-and ANDROID was the best choice to define the android-only code, but __ANDROID__
-seems better right now [4].
+On 4/24/19 2:14 AM, Petr Vorel wrote:
+> Hi Steve, Sandeep,
+> 
+...
+> 
+> Please, when you have time, can you please have a look into this?
+> 
+> IMHO the question is whether code guarded by __ANDROID__ (lib/tst_kernel.c,
+> rt_tgsigqueueinfo01.c, etc.) works as expected in NDK build (as in aosp you use
+> definitions in Android.bp anyway).
+> 
+> According to [1] -D__ANDROID__ is defined by toolchain (I understand it by both
+> aosp build and builds using NDK), so it shouldn't be needed.
 
-[1] https://git.busybox.net/busybox/tree/configs/android_defconfig
-[2] https://git.busybox.net/busybox/tree/configs/android_ndk_defconfig
-[3] http://thekelleys.org.uk/gitweb/?p=dnsmasq.git;a=blob_plain;f=bld/Android.mk;hb=HEAD
-[4] https://groups.google.com/forum/#!topic/android-ndk/cf9_f1SLXls
+Using Sandeep's instructions and with your latest merged fixes I was 
+able to build unmodified upstream with the NDK. I just tried running one 
+of the test binaries on my device to sanity check it.
 
-Signed-off-by: Zhengwang Ruan <ruanzw@xiaopeng.com>
----
- include/mk/env_post.mk | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I put in an #error if __ANDROID__ is defined and it does look to be set 
+by the NDK compiler. FWIW I am using Android API level 26, the minimum 
+which provides hasmntopt. This gets configured in the "Set up ndk 
+toolchains for autoconf" step Sandeep mentioned by setting the CC and 
+CXX env vars appropriately.
 
-diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
-index 913bdf5..7953e0a 100644
---- a/include/mk/env_post.mk
-+++ b/include/mk/env_post.mk
-@@ -44,7 +44,7 @@ endif
- ifeq ($(ANDROID),1)
- # There are many undeclared functions, it's best not to accidentally overlook
- # them.
--CFLAGS				+= -Werror-implicit-function-declaration
-+CFLAGS				+= -Werror-implicit-function-declaration -D__ANDROID__
- 
- LDFLAGS				+= -L$(top_builddir)/lib/android_libpthread
- LDFLAGS				+= -L$(top_builddir)/lib/android_librt
--- 
-2.7.4
+Zhengwang can you try the steps Sandeep mentioned (with the API level 
+tweak I mentioned above)?
 
+> Not sure if it makes sense to build for android with non android toolchain (i.e.
+> no aosp nor NDK, use generic arm cross compile toolchain or standard gcc/clang
+> in case of intel platform). If yes, than this patch would be useful, as generic
+> toolchain obviously don't define __ANDROID__.
+
+Zhengwang had said
+
+ >  In the case of cross-compilation, I think it still makes sense, since
+ > we can use the same toolchain, such as clang,  and build parameters
+ > (the specify the include headers and libs, etc) as AOSP.
+
+but it's not clear to me since you need to have bionic around anyway, 
+and at that point, why not just use the Android toolchain?
+
+
+thanks,
+Steve
