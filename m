@@ -1,181 +1,119 @@
-From: Ammy Yi <ammy.yi@intel.com>
-Date: Sun, 28 Apr 2019 13:48:15 +0800
-Subject: [LTP] [PATCH v2 ltp] Add 4 more cases for Intel PT.
-Message-ID: <20190428054815.3266-1-ammy.yi@intel.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 29 Apr 2019 09:28:00 +0200
+Subject: [LTP] [PATCH 2/2] net/tracepath: Rewrite into new API
+In-Reply-To: <20190429072800.23067-1-pvorel@suse.cz>
+References: <20190429072800.23067-1-pvorel@suse.cz>
+Message-ID: <20190429072800.23067-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1. Add Intel PT sanpshot mode test.
-2. Add Intel PT exclude user trace mode test.
-3. Add Intel PT exclude kernel trace mode test.
-4. Add Intel PT disable branch trace mode test.
+enhancements:
+* Check for tracepath -6 when tracepath6 not available
+  tracepath6 was removed in iputils s20161105 and replaced by tracepath -6,
+  this way it's portable for both all iputils releases
 
-Signed-off-by: Ammy Yi <ammy.yi@intel.com>
+* Print tracepath version if -V is available (added in inputils s20190324)
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- runtest/tracing                            |  4 ++
- testcases/kernel/tracing/pt_test/pt_test.c | 64 ++++++++++++++++++++++++------
- 2 files changed, 55 insertions(+), 13 deletions(-)
+ .../network/tcp_cmds/tracepath/tracepath01.sh | 60 +++++++++----------
+ 1 file changed, 29 insertions(+), 31 deletions(-)
 
-diff --git a/runtest/tracing b/runtest/tracing
-index 504132d70..d2700ca57 100644
---- a/runtest/tracing
-+++ b/runtest/tracing
-@@ -4,3 +4,7 @@ ftrace_regression02	ftrace_regression02.sh
- ftrace-stress-test	ftrace_stress_test.sh 90
- dynamic_debug01		dynamic_debug01.sh
- pt_full_trace_basic pt_test
-+pt_snapshot_trace_basic pt_test -m
-+pt_ex_user pt_test -e user
-+pt_ex_kernel pt_test -e kernel
-+pt_disable_branch pt_test -b
-diff --git a/testcases/kernel/tracing/pt_test/pt_test.c b/testcases/kernel/tracing/pt_test/pt_test.c
-index 5feb1aa63..69cb498b9 100644
---- a/testcases/kernel/tracing/pt_test/pt_test.c
-+++ b/testcases/kernel/tracing/pt_test/pt_test.c
-@@ -6,14 +6,14 @@
-  */
+diff --git a/testcases/network/tcp_cmds/tracepath/tracepath01.sh b/testcases/network/tcp_cmds/tracepath/tracepath01.sh
+index fcfd54afb..037fca066 100755
+--- a/testcases/network/tcp_cmds/tracepath/tracepath01.sh
++++ b/testcases/network/tcp_cmds/tracepath/tracepath01.sh
+@@ -1,58 +1,56 @@
+ #!/bin/sh
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
+ # Copyright (c) 2016 Oracle and/or its affiliates. All Rights Reserved.
+-#
+-# This program is free software; you can redistribute it and/or
+-# modify it under the terms of the GNU General Public License as
+-# published by the Free Software Foundation; either version 2 of
+-# the License, or (at your option) any later version.
+-#
+-# This program is distributed in the hope that it would be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-#
+-# You should have received a copy of the GNU General Public License
+-# along with this program. If not, see <http://www.gnu.org/licenses/>.
+-#
+ # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
  
- /*
-- * This test will check if Intel PT(Intel Processer Trace) full trace mode is
-- * working.
-+ * This test will check if Intel PT(Intel Processer Trace) is working.
-  *
-  * Intel CPU of 5th-generation Core (Broadwell) or newer is required for the test.
-  *
-  * kconfig requirement: CONFIG_PERF_EVENTS
-  */
+-TCID=tracepath01
+-TST_TOTAL=1
+-TST_USE_LEGACY_API=1
++TST_TESTFUNC="do_test"
++TST_SETUP="setup"
+ . tst_net.sh
  
+-test_tracepath()
++setup()
++{
++	cmd="tracepath"
 +
- #include <sched.h>
- #include <stdlib.h>
- #include <stdio.h>
-@@ -40,23 +40,35 @@ int fde = -1;
- //map head and size
- uint64_t **bufm;
- long buhsz;
-+static char *str_mode;
-+static char *str_exclude_info;
-+static char *str_branch_flag;
-+int mode = 1;
- 
--static uint64_t **create_map(int fde, long bufsize)
-+static uint64_t **create_map(int rw_flag, long bufsize, int flag)
++	if [ "$TST_IPV6" ]; then
++		cmd="tracepath$TST_IPVER"
++		tst_cmd_available $cmd || cmd="tracepath -6"
++	fi
++	tst_test_cmds $(echo $cmd | cut -f 1 -d' ')
++
++	if $cmd -V >/dev/null 2>&1; then
++		tst_res TINFO "traceroute version:"
++		tst_res TINFO $($cmd -V 2>&1)
++	fi
++}
++
++do_test()
  {
- 	uint64_t **buf_ev;
-+	int pro_flag;
- 	struct perf_event_mmap_page *pc;
+-	local cmd="$1"
+ 	local len=1280
+-	local output=
+-	local ret=0
+-	local rhost="$2"
+-	tst_test_cmds "$cmd"
++	local output
++	local rhost="$(tst_ipaddr rhost)"
  
- 	buf_ev = SAFE_MALLOC(2*sizeof(uint64_t *));
- 	buf_ev[0] = NULL;
- 	buf_ev[1] = NULL;
--	buf_ev[0] = SAFE_MMAP(NULL, INTEL_PT_MEMSIZE, PROT_READ | PROT_WRITE,
--							MAP_SHARED, fde, 0);
-+	if (flag == 1) {
-+		tst_res(TINFO, "memory will be r/w for full trace mode!");
-+		pro_flag = PROT_READ | PROT_WRITE;
-+	} else {
-+		tst_res(TINFO, "memory will be r only for snapshot mode!");
-+		pro_flag = PROT_READ;
-+	}
-+	buf_ev[0] = SAFE_MMAP(rw_flag, INTEL_PT_MEMSIZE, PROT_READ | PROT_WRITE,
-+							MAP_SHARED, rw_flag, 0);
+-	tst_resm TINFO "test $cmd with $rhost, pmtu is $len"
++	tst_res TINFO "test $cmd with $rhost, pmtu is $len"
  
- 	pc = (struct perf_event_mmap_page *)buf_ev[0];
- 	pc->aux_offset = INTEL_PT_MEMSIZE;
- 	pc->aux_size = bufsize;
--	buf_ev[1] = SAFE_MMAP(NULL, bufsize, PROT_READ | PROT_WRITE,
--					MAP_SHARED, fde, INTEL_PT_MEMSIZE);
-+	buf_ev[1] = SAFE_MMAP(NULL, bufsize, pro_flag,
-+					MAP_SHARED, rw_flag, INTEL_PT_MEMSIZE);
- 	return buf_ev;
+ 	output=$($cmd $rhost -l $len | grep "pmtu $len")
+ 	if [ $? -ne 0 ]; then
+-		tst_resm TFAIL "$cmd failed: pmtu $len not found in output"
++		tst_res TFAIL "$cmd failed: pmtu $len not found in output"
+ 		return
+ 	fi
+ 
+ 	# Usually only one hop is required to get to remote test machine
+ 	hops_num=$(echo "$output" | sed -nE 's/.*hops ([0-9]+).*/\1/p')
+ 	if [ -z "$hops_num" ]; then
+-		tst_resm TFAIL "failed to trace path to '$rhost'"
++		tst_res TFAIL "failed to trace path to '$rhost'"
+ 		return
+ 	fi
+ 
+ 	if [ "$hops_num" -eq 0 ]; then
+-		tst_resm TFAIL "can't trace path to '$rhost' in 1+ hops"
++		tst_res TFAIL "can't trace path to '$rhost' in 1+ hops"
+ 		return
+ 	fi
+ 
+-	tst_resm TPASS "traced path to '$rhost' in $hops_num hops"
++	tst_res TPASS "traced path to '$rhost' in $hops_num hops"
  }
  
-@@ -89,7 +101,7 @@ static void del_map(uint64_t **buf_ev, long bufsize)
- 	free(buf_ev);
- }
- 
--static void intel_pt_full_trace_check(void)
-+static void intel_pt_trace_check(void)
- {
- 	uint64_t aux_head = 0;
- 	struct perf_event_mmap_page *pmp;
-@@ -108,7 +120,7 @@ static void intel_pt_full_trace_check(void)
- 		return;
- 	}
- 
--	tst_res(TPASS, "perf trace full mode is passed!");
-+	tst_res(TPASS, "perf trace test is passed!");
- }
- 
- static void setup(void)
-@@ -116,6 +128,7 @@ static void setup(void)
- 	struct perf_event_attr attr = {};
- 
- 	buhsz = 2 * PAGESIZE;
-+
- 	if (access(INTEL_PT_PATH, F_OK)) {
- 		tst_brk(TCONF,
- 			"Requires Intel Core 5th+ generation (Broadwell and newer)"
-@@ -130,9 +143,23 @@ static void setup(void)
- 	attr.config	= BIT(intel_pt_pmu_value(INTEL_PT_FORMAT_TSC)) |
- 				BIT(intel_pt_pmu_value(INTEL_PT_FORMAT_NRT));
- 	attr.size	= sizeof(struct perf_event_attr);
--	attr.exclude_kernel		= 0;
--	attr.exclude_user		= 0;
- 	attr.mmap			= 1;
-+	if (str_branch_flag != NULL && !str_branch_flag) {
-+		tst_res(TINFO, "Intel PT will disable branch trace!");
-+		attr.config |= 1;
-+	}
-+
-+	attr.exclude_kernel	= 0;
-+	attr.exclude_user	= 0;
-+
-+	if (str_exclude_info != NULL && strcmp(str_exclude_info, "user")) {
-+		tst_res(TINFO, "Intel PT will exclude kernel trace!");
-+		attr.exclude_kernel = 1;
-+	}
-+	if (str_exclude_info != NULL && strcmp(str_exclude_info, "kernel")) {
-+		tst_res(TINFO, "Intel PT will exclude user trace!");
-+		attr.exclude_user = 1;
-+	}
- 
- 	/* only get trace for own pid */
- 	fde = tst_syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
-@@ -142,8 +169,10 @@ static void setup(void)
- 		return;
- 	}
- 	bufm = NULL;
--	bufm = create_map(fde, buhsz);
-+	if (str_mode != NULL && !str_mode)
-+		mode = 0;
- 
-+	bufm = create_map(fde, buhsz, mode);
- }
- 
- static void cleanup(void)
-@@ -154,8 +183,17 @@ static void cleanup(void)
- 	del_map(bufm, buhsz);
- }
- 
-+static struct tst_option options[] = {
-+	{"m", &str_mode, "-m different mode, default is full mode"},
-+	{"e:", &str_exclude_info, "-e exclude info, user or kernel"},
-+	{"b", &str_branch_flag, "-b if disable branch trace"},
-+	{NULL, NULL, NULL}
-+};
-+
-+
- static struct tst_test test = {
--	.test_all = intel_pt_full_trace_check,
-+	.test_all = intel_pt_trace_check,
-+	.options = options,
- 	.min_kver = "4.1",
- 	.setup = setup,
- 	.cleanup = cleanup,
+-test_tracepath tracepath$TST_IPV6 $(tst_ipaddr rhost)
+-
+-tst_exit
++tst_run
 -- 
-2.14.1
+2.20.1
 
