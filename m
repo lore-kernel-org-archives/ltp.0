@@ -1,26 +1,19 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 30 Apr 2019 16:05:23 +0200
-Subject: [LTP] [PATCH] scenario_groups/default: Add crypto into default
- run
-In-Reply-To: <1556589704-15305-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1556589704-15305-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20190430140523.GA10513@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 30 Apr 2019 16:16:53 +0200
+Subject: [LTP] [PATCH 1/2] testcases.mk: Fix libs/ path for out-of-tree
+ build
+In-Reply-To: <20190430133836.28400-1-chrubis@suse.cz>
+References: <20190430133836.28400-1-chrubis@suse.cz>
+Message-ID: <20190430141652.GD30997@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao,
+Hi!
+Both pushed, thanks.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-> +++ b/scenario_groups/default
-> @@ -29,3 +29,4 @@ cpuhotplug
->  net.ipv6_lib
->  input
->  cve
-> +crypto
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
