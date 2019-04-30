@@ -1,10 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 30 Apr 2019 15:51:59 +0200
-Subject: [LTP] [PATCH 1/2] testcases.mk: Fix libs/ path for out-of-tree
-	build
-In-Reply-To: <20190430133836.28400-1-chrubis@suse.cz>
+Date: Tue, 30 Apr 2019 15:52:29 +0200
+Subject: [LTP] [PATCH 2/2] Makefile: Fix target redefinition
+In-Reply-To: <20190430133836.28400-2-chrubis@suse.cz>
 References: <20190430133836.28400-1-chrubis@suse.cz>
-Message-ID: <20190430135159.GA7752@dell5510>
+ <20190430133836.28400-2-chrubis@suse.cz>
+Message-ID: <20190430135229.GB7752@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,43 +13,38 @@ To: ltp@lists.linux.it
 
 Hi,
 
-> The path to the Makefile was not correct for the out-of-tree build
-> because it was pointing to the build directory rather than to the source
-> directory.
+> There is no need to add a rule for the libs directory because there is a
+> generic rule for directory creation already. All we need to do is to
+> make the libs-all target depend on the directory path, which we do
+> already so that the directory is created before we attempt to execute
+> make there.
 
-> Apparently this also caused random failures for out-of-tree build. For
-> some reason when building syscalls/set_mempolicy/ testcases the rebuild
-> of the libltpnuma.a library is triggered for out-of-tree build for about
-> 10% of the cases on massively parallel build. Which as far as I can tell
-> shouldn't happen since we build everything in the libs/ directory as a
-> prerequisite of the testcases/ directory. So there is likely some
-> strange race condition happening and while this does not fix the actual
-> race it makes it quite harmless since the target was already build and
-> the make in the libs/libltpnuma/ directory will be no-op.
+> Fixes: 17a5b0fb63bf65eff433bdee3bf5f73826a50e0f
 
 > Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 > CC: Petr Vorel <pvorel@suse.cz>
 > CC: Jan Stancek <jstancek@redhat.com>
 > ---
 Tested-by: Petr Vorel <pvorel@suse.cz>
-On 32 core machine, running for several hours (now 66 builds without failure).
-
+The same as previous patch (testing both together).
 
 Kind regards,
 Petr
 
->  include/mk/testcases.mk | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  Makefile | 3 ---
+>  1 file changed, 3 deletions(-)
 
-> diff --git a/include/mk/testcases.mk b/include/mk/testcases.mk
-> index 131854ec7..684655fbf 100644
-> --- a/include/mk/testcases.mk
-> +++ b/include/mk/testcases.mk
-> @@ -49,7 +49,7 @@ LTPLIBS_FILES = $(addsuffix .a, $(addprefix $(abs_top_builddir)/libs/, $(foreach
->  MAKE_DEPS += $(LTPLIBS_FILES)
+> diff --git a/Makefile b/Makefile
+> index c46d050ce..768ca4606 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -102,9 +102,6 @@ $(sort $(addprefix $(abs_top_builddir)/,$(BOOTSTRAP_TARGETS)) $(INSTALL_DIR) $(D
+>  ## Pattern based subtarget rules.
+>  lib-install: lib-all
 
->  $(LTPLIBS_FILES): $(LTPLIBS_DIRS)
-> -	$(MAKE) -C "$^" -f "$^/Makefile" all
-> +	$(MAKE) -C "$^" -f "$(subst $(abs_top_builddir),$(abs_top_srcdir),$^)/Makefile" all
+> -$(abs_top_builddir)/libs:
+> -	mkdir -m 00755 -p "$@"
+> -
+>  libs-all: $(abs_top_builddir)/libs
 
->  LDFLAGS += $(addprefix -L$(top_builddir)/libs/lib, $(LTPLIBS))
+>  $(MAKE_TARGETS) include-all lib-all libs-all:
