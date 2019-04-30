@@ -1,38 +1,70 @@
 From: Murphy Zhou <xzhou@redhat.com>
-Date: Tue, 30 Apr 2019 15:14:46 +0800
-Subject: [LTP] [PATCH] syscalls/swapon02: Do not fail on overlayfs
-Message-ID: <20190430071446.13716-1-xzhou@redhat.com>
+Date: Tue, 30 Apr 2019 15:34:53 +0800
+Subject: [LTP] [PATCH] fcntl33: weakup child before exit if fail in
+	parent
+In-Reply-To: <CAEemH2diyxXisD=f2DX7ptq3c_+XhNe3=xjXU+KXS2BPohaT0A@mail.gmail.com>
+References: <20190430045746.1332-1-xzhou@redhat.com>
+ <CAEemH2diyxXisD=f2DX7ptq3c_+XhNe3=xjXU+KXS2BPohaT0A@mail.gmail.com>
+Message-ID: <20190430073453.45cblrgmxh3a44hd@XZHOUW.usersys.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Currently swapfiles on Overlayfs are not supported.
+On Tue, Apr 30, 2019 at 03:18:32PM +0800, Li Wang wrote:
+> On Tue, Apr 30, 2019 at 12:58 PM Murphy Zhou <xzhou@redhat.com> wrote:
+> 
+> > Now it failis on overlayfs this way:
+> > fcntl33.c:120: INFO: .... failed on overlapfs as expected:
+> > EAGAIN/EWOULDBLOCK
+> > tst_checkpoint.c:149: BROK: fcntl33.c:178: tst_checkpoint_wait(0, 10000):
+> > ETIMEDOUT
+> > tst_test.c:357: BROK: Reported by child (12066)
+> >
+> 
+> I'm wondering that if the parent failed to set lease, should child
+> still valuable to run the remaining test after it being wakened?
 
-So if we are on overlayfs and we get EINVAL from swapon() we return TCONF.
+In do_child it just open file and calculate the time spent on it. Also
+parent will reap the child before exit anyway. That checkpoint is needed
+while everything goes fine, so even it's not that valuable to run the
+remaining tests in child, it's not hurting though, :)
 
-Signed-off-by: Murphy Zhou <xzhou@redhat.com>
----
- testcases/kernel/syscalls/swapon/swapon02.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/testcases/kernel/syscalls/swapon/swapon02.c b/testcases/kernel/syscalls/swapon/swapon02.c
-index 4af5105c6..211cdfc4e 100644
---- a/testcases/kernel/syscalls/swapon/swapon02.c
-+++ b/testcases/kernel/syscalls/swapon/swapon02.c
-@@ -86,6 +86,11 @@ static void verify_swapon(struct test_case_t *test)
- 			return;
- 	}
- 
-+	if (fs_type == TST_OVERLAYFS_MAGIC && errno == EINVAL) {
-+		tst_resm(TCONF, "Swapfile on overlayfs not implemeted");
-+			return;
-+	}
-+
- 	tst_resm(TFAIL, "swapon(2) failed to produce expected error:"
- 	         " %d, errno: %s and got %d.", test->exp_errno,
- 	         test->exp_errval, TEST_ERRNO);
--- 
-2.21.0
-
+Thanks for reviewing!
+--
+M
+> 
+> 
+> >
+> > Signed-off-by: Murphy Zhou <xzhou@redhat.com>
+> > ---
+> >  testcases/kernel/syscalls/fcntl/fcntl33.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/testcases/kernel/syscalls/fcntl/fcntl33.c
+> > b/testcases/kernel/syscalls/fcntl/fcntl33.c
+> > index 43dc5a2af..ce27e1006 100644
+> > --- a/testcases/kernel/syscalls/fcntl/fcntl33.c
+> > +++ b/testcases/kernel/syscalls/fcntl/fcntl33.c
+> > @@ -121,6 +121,7 @@ static void do_test(unsigned int i)
+> >                 } else {
+> >                         tst_res(TFAIL | TTERRNO, "fcntl() failed to set
+> > lease");
+> >                 }
+> > +               TST_CHECKPOINT_WAKE(0);
+> >                 goto exit;
+> >         }
+> >
+> > --
+> > 2.21.0
+> >
+> >
+> > --
+> > Mailing list info: https://lists.linux.it/listinfo/ltp
+> >
+> 
+> 
+> -- 
+> Regards,
+> Li Wang
