@@ -1,65 +1,38 @@
-From: Murphy Zhou <xzhou@redhat.com>
-Date: Tue, 30 Apr 2019 17:54:04 +0800
-Subject: [LTP] [PATCH] syscalls/swapon02: Do not fail on overlayfs
-In-Reply-To: <CAOQ4uxjD-YmwOt6v9s1MoXBCk2cdPrseLgDkHAaSWiVYH9SwDw@mail.gmail.com>
-References: <20190430071446.13716-1-xzhou@redhat.com>
- <CAEemH2c0FYg+WoCJfzWmaUiANE3pcpdXT2fHVGXsL_qnRJUn+A@mail.gmail.com>
- <20190430083056.b6q2p6yzqbp2q6fm@XZHOUW.usersys.redhat.com>
- <CAEemH2d-xLCFayr8uCycdYZCtwg1YRHJcpXjdzRCi6zJ6_rMPw@mail.gmail.com>
- <20190430090846.s2ctvbipxgs6nprr@XZHOUW.usersys.redhat.com>
- <CAEemH2dvDqWq7XMS_dNkuKkE31FejY59H+cvX37R8xCeo0uD3Q@mail.gmail.com>
- <CAOQ4uxjD-YmwOt6v9s1MoXBCk2cdPrseLgDkHAaSWiVYH9SwDw@mail.gmail.com>
-Message-ID: <20190430095404.ipt3tuhyfd4hqz6w@XZHOUW.usersys.redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 30 Apr 2019 14:35:10 +0200
+Subject: [LTP] LTP Release
+In-Reply-To: <20190430090406.GA30997@rei.lan>
+References: <20190418111812.GB3073@rei.lan> <20190426131258.GA18760@rei>
+ <20190429102009.GC6952@dell5510> <20190429131331.GB6265@rei>
+ <20190429204527.GA30772@dell5510> <20190430090406.GA30997@rei.lan>
+Message-ID: <20190430123510.GA30176@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Apr 30, 2019 at 05:37:36AM -0400, Amir Goldstein wrote:
-> On Tue, Apr 30, 2019 at 5:21 AM Li Wang <liwang@redhat.com> wrote:
-> >
-> >
-> >
-> > On Tue, Apr 30, 2019 at 5:08 PM Murphy Zhou <xzhou@redhat.com> wrote:
-> >>
-> >> ...
-> >> > > > > +       if (fs_type == TST_OVERLAYFS_MAGIC && errno == EINVAL) {
-> >> > > > > +               tst_resm(TCONF, "Swapfile on overlayfs not
-> >> > > implemeted");
-> >> > > > > +                       return;
-> >> > > > > +       }
-> >> > > > >
-> >> > > >
-> >> > > > The code looks correct.
-> >> > > >
-> >> > > > But it already has a test skipping for BTRFS, is there any possibility to
-> >> > > > combine these filesystems check together?
-> >> > >
-> >> > > Good idea~  Sending V2.
-> >> > >
-> >> >
-> >> > One more comment.
-> >> >
-> >> > I just noticed that it also has an FS skipping list in setup(), do u think
-> >> > can we move BTRFS and OVERLAYFS to there?
-> >>
-> >> Great! That makes perfect sense. Also I'm thinking a few other tweaks
-> >> needed:
-> >>
-> >>   NFS now actually support swapfiles. Let's remove it from skip list;
-> >
-> >
-> > But AFAIK someone still run LTP on old distro/kernel, so we can't guarantee the test works fine in that situation. So, my opinion is to reserve the NFS, or do you have a better way to make test more flexible?
-> 
-> Avoid whitelist.
-> Test for FIBMAP ioctl support.
+Hi Cyril,
 
-Hmm.. This is better. I'll try.
+> > Tested-by: Petr Vorel <pvorel@suse.cz>
 
-Thanks!
-M
+> > This one looks ok. Also testing with machine with 32 cores, ok as well (but it's
+> > hard to trigger this bug even current master).
 
-> 
-> Thanks,
-> Amir.
+> Sigh, apparenlty this has patch has two obvious typos, both
+> abs_top_builddir and abs_top_srcdir are spelled incorrectly, no wonder
+> it does not work, sorry for that.
+With this fix (used as commits [1] [2]) looks it fixed it.
+21 times or fewer was needed o trigger the build on master, now ok with 33
+builds. I'll keep it running during the day just for sure, but consider it
+fixed.
+
+> And the only reason why this works for in-tree build is because with
+> typos we do no replace anything and the path to the Makefile is correct
+> for in-tree build.
+
+Kind regards,
+Petr
+
+[1] https://github.com/pevik/ltp/commit/22fd15ad08166dc2ec4c8e93884e51be4a46c1b6
+[2] https://github.com/pevik/ltp/commit/10a783538331df8616384f1d9d62c334c117c918
