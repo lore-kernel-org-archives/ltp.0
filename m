@@ -1,5 +1,5 @@
-From: Murphy Zhou <xzhou@redhat.com>
-Date: Tue, 30 Apr 2019 17:29:37 +0800
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 30 Apr 2019 05:37:36 -0400
 Subject: [LTP] [PATCH] syscalls/swapon02: Do not fail on overlayfs
 In-Reply-To: <CAEemH2dvDqWq7XMS_dNkuKkE31FejY59H+cvX37R8xCeo0uD3Q@mail.gmail.com>
 References: <20190430071446.13716-1-xzhou@redhat.com>
@@ -8,63 +8,50 @@ References: <20190430071446.13716-1-xzhou@redhat.com>
  <CAEemH2d-xLCFayr8uCycdYZCtwg1YRHJcpXjdzRCi6zJ6_rMPw@mail.gmail.com>
  <20190430090846.s2ctvbipxgs6nprr@XZHOUW.usersys.redhat.com>
  <CAEemH2dvDqWq7XMS_dNkuKkE31FejY59H+cvX37R8xCeo0uD3Q@mail.gmail.com>
-Message-ID: <20190430092937.qzmxyainlz6r3mnp@XZHOUW.usersys.redhat.com>
+Message-ID: <CAOQ4uxjD-YmwOt6v9s1MoXBCk2cdPrseLgDkHAaSWiVYH9SwDw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Apr 30, 2019 at 05:21:34PM +0800, Li Wang wrote:
+On Tue, Apr 30, 2019 at 5:21 AM Li Wang <liwang@redhat.com> wrote:
+>
+>
+>
 > On Tue, Apr 30, 2019 at 5:08 PM Murphy Zhou <xzhou@redhat.com> wrote:
-> 
-> > ...
-> > > > > > +       if (fs_type == TST_OVERLAYFS_MAGIC && errno == EINVAL) {
-> > > > > > +               tst_resm(TCONF, "Swapfile on overlayfs not
-> > > > implemeted");
-> > > > > > +                       return;
-> > > > > > +       }
-> > > > > >
-> > > > >
-> > > > > The code looks correct.
-> > > > >
-> > > > > But it already has a test skipping for BTRFS, is there any
-> > possibility to
-> > > > > combine these filesystems check together?
-> > > >
-> > > > Good idea~  Sending V2.
-> > > >
-> > >
-> > > One more comment.
-> > >
-> > > I just noticed that it also has an FS skipping list in setup(), do u
-> > think
-> > > can we move BTRFS and OVERLAYFS to there?
-> >
-> > Great! That makes perfect sense. Also I'm thinking a few other tweaks
-> > needed:
-> >
-> >   NFS now actually support swapfiles. Let's remove it from skip list;
-> >
-> 
-> But AFAIK someone still run LTP on old distro/kernel, so we can't guarantee
-> the test works fine in that situation. So, my opinion is to reserve the
-> NFS, or do you have a better way to make test more flexible?
+>>
+>> ...
+>> > > > > +       if (fs_type == TST_OVERLAYFS_MAGIC && errno == EINVAL) {
+>> > > > > +               tst_resm(TCONF, "Swapfile on overlayfs not
+>> > > implemeted");
+>> > > > > +                       return;
+>> > > > > +       }
+>> > > > >
+>> > > >
+>> > > > The code looks correct.
+>> > > >
+>> > > > But it already has a test skipping for BTRFS, is there any possibility to
+>> > > > combine these filesystems check together?
+>> > >
+>> > > Good idea~  Sending V2.
+>> > >
+>> >
+>> > One more comment.
+>> >
+>> > I just noticed that it also has an FS skipping list in setup(), do u think
+>> > can we move BTRFS and OVERLAYFS to there?
+>>
+>> Great! That makes perfect sense. Also I'm thinking a few other tweaks
+>> needed:
+>>
+>>   NFS now actually support swapfiles. Let's remove it from skip list;
+>
+>
+> But AFAIK someone still run LTP on old distro/kernel, so we can't guarantee the test works fine in that situation. So, my opinion is to reserve the NFS, or do you have a better way to make test more flexible?
 
-Fair enough. We can reserve NFS on the skip list to avoid much false alarms.
-> 
-> 
-> >   Skip all swapon/swapoff tests on TMPFS BTRFS OVERLAYFS;
-> >   Add CIFS_MAGIC, then skip on it too;
-> >   Remove existing BTRFS return value tweaks.
-> >
-> 
-> Agree.
+Avoid whitelist.
+Test for FIBMAP ioctl support.
 
-Thanks!
-
-M
-> 
-> -- 
-> Regards,
-> Li Wang
+Thanks,
+Amir.
