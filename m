@@ -1,276 +1,199 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 30 Apr 2019 11:18:59 +0800
-Subject: [LTP] [PATCH v4] hugetlb: limit hugepages according to MemAvailable
-Message-ID: <20190430031859.28473-1-liwang@redhat.com>
+From: Murphy Zhou <xzhou@redhat.com>
+Date: Tue, 30 Apr 2019 12:39:57 +0800
+Subject: [LTP] [PATCH] OVL_MNT: put overlayfs lower, upper, work,
+	mnt dir in separated mountpoint
+Message-ID: <20190430043957.479-1-xzhou@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Xiao Liang <xiliang@redhat.com>
+Some tests are mounting overlayfs internally and run tests on it.
+This mount can fail if the filesystem we are running on does not
+support overlay mount upon it. For example, we are already running
+tests on overlayfs or NFS, or CIFS. Test will report broken and
+failure.
 
-When the system's Hugepagesize is large(eg. 512MiB), the test may
-break as cannot set nr_hugepages to default 128.
+Fixing this by put overlayfs dirs in a separaed mountpoint, like
+readahead02 by Amir.
 
-This patch continue to set 128 as default hugepages, but it checks
-the memory available and hugepagesize registered. If default 128 is
-larger than max available count, then reset the hugepages to 80% of
-the max page count.
-
-Without this patch:
-  # ./hugemmap01
-  tst_test.c:1096: INFO: Timeout per run is 0h 05m 00s
-  mem.c:814: INFO: set nr_hugepages to 128
-  mem.c:823: BROK: nr_hugepages = 54, but expect 128
-  mem.c:814: INFO: set nr_hugepages to 0
-
-With this patch:
-  # ./hugemmap01  -s 100000000
-  tst_test.c:1096: INFO: Timeout per run is 0h 05m 00s
-  hugetlb.c:67: INFO: The hugepages beyond system available, here reset to 80% of the max page count 14502
-  mem.c:814: INFO: set nr_hugepages to 11601
-  hugemmap01.c:73: PASS: call succeeded
-  mem.c:814: INFO: set nr_hugepages to 0
-
-Signed-off-by: Xiao Liang <xiliang@redhat.com>
-Signed-off-by: Li Wang <liwang@redhat.com>
+Signed-off-by: Xiong Zhou <xzhou@redhat.com>
 ---
- .../kernel/mem/hugetlb/hugemmap/hugemmap01.c  |  2 ++
- .../kernel/mem/hugetlb/hugemmap/hugemmap02.c  |  2 ++
- .../kernel/mem/hugetlb/hugemmap/hugemmap04.c  |  2 ++
- .../mem/hugetlb/hugeshmat/hugeshmat01.c       |  1 +
- .../mem/hugetlb/hugeshmat/hugeshmat02.c       |  1 +
- .../mem/hugetlb/hugeshmat/hugeshmat03.c       |  1 +
- .../mem/hugetlb/hugeshmctl/hugeshmctl01.c     |  1 +
- .../mem/hugetlb/hugeshmctl/hugeshmctl02.c     |  1 +
- .../mem/hugetlb/hugeshmctl/hugeshmctl03.c     |  1 +
- .../mem/hugetlb/hugeshmdt/hugeshmdt01.c       |  1 +
- .../mem/hugetlb/hugeshmget/hugeshmget01.c     |  1 +
- .../mem/hugetlb/hugeshmget/hugeshmget02.c     |  1 +
- .../mem/hugetlb/hugeshmget/hugeshmget03.c     |  1 +
- .../mem/hugetlb/hugeshmget/hugeshmget05.c     |  1 +
- testcases/kernel/mem/hugetlb/lib/hugetlb.c    | 24 +++++++++++++++++++
- testcases/kernel/mem/hugetlb/lib/hugetlb.h    |  1 +
- 16 files changed, 42 insertions(+)
+ .../kernel/syscalls/execveat/execveat03.c     | 21 ++++++++++-----
+ testcases/kernel/syscalls/inotify/inotify07.c | 24 +++++++++++------
+ testcases/kernel/syscalls/inotify/inotify08.c | 26 ++++++++++++-------
+ 3 files changed, 48 insertions(+), 23 deletions(-)
 
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-index 4dc330dc0..a6ffab77b 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-@@ -97,6 +97,8 @@ void setup(void)
+diff --git a/testcases/kernel/syscalls/execveat/execveat03.c b/testcases/kernel/syscalls/execveat/execveat03.c
+index def33923b..8ba6a656f 100644
+--- a/testcases/kernel/syscalls/execveat/execveat03.c
++++ b/testcases/kernel/syscalls/execveat/execveat03.c
+@@ -55,10 +55,17 @@
+ #include "lapi/fcntl.h"
+ #include "execveat.h"
  
- 	if (nr_opt)
- 		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+-#define OVL_MNT "ovl"
++#define MNTPOINT	"mntpoint"
++#define OVL_LOWER	MNTPOINT"/lower"
++#define OVL_UPPER	MNTPOINT"/upper"
++#define OVL_WORK	MNTPOINT"/work"
++#define OVL_MNT		MNTPOINT"/ovl"
 +
-+	limit_hugepages(&hugepages);
- 	set_sys_tune("nr_hugepages", hugepages, 1);
+ #define TEST_APP "execveat_child"
+ #define TEST_FILE_PATH OVL_MNT"/"TEST_APP
  
- 	snprintf(TEMPFILE, sizeof(TEMPFILE), "%s/mmapfile%d", Hopt, getpid());
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-index 9b0ab4e37..26314d125 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-@@ -144,6 +144,8 @@ static void setup(void)
- 
- 	if (nr_opt)
- 		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
++static const char mntpoint[] = MNTPOINT;
 +
-+	limit_hugepages(&hugepages);
- 	set_sys_tune("nr_hugepages", hugepages, 1);
+ static int ovl_mounted;
  
- 	snprintf(TEMPFILE, sizeof(TEMPFILE), "%s/mmapfile%d", Hopt, getpid());
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-index 55a3a24f4..35bae015b 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-@@ -115,6 +115,8 @@ void setup(void)
+ static void do_child(void)
+@@ -91,12 +98,12 @@ static void setup(void)
+ 	check_execveat();
  
- 	if (nr_opt)
- 		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+ 	/* Setup an overlay mount with lower file */
+-	SAFE_MKDIR("lower", 0755);
+-	SAFE_MKDIR("upper", 0755);
+-	SAFE_MKDIR("work", 0755);
++	SAFE_MKDIR(OVL_LOWER, 0755);
++	SAFE_MKDIR(OVL_UPPER, 0755);
++	SAFE_MKDIR(OVL_WORK, 0755);
+ 	SAFE_MKDIR(OVL_MNT, 0755);
+-	ret = mount("overlay", OVL_MNT, "overlay", 0,
+-		    "lowerdir=lower,upperdir=upper,workdir=work");
++	ret = mount("overlay", OVL_MNT, "overlay", 0, "lowerdir="OVL_LOWER
++		    ",upperdir="OVL_UPPER",workdir="OVL_WORK);
+ 	if (ret < 0) {
+ 		if (errno == ENODEV) {
+ 			tst_brk(TCONF,
+@@ -121,6 +128,8 @@ static const char *const resource_files[] = {
+ static struct tst_test test = {
+ 	.needs_root = 1,
+ 	.needs_tmpdir = 1,
++	.mount_device = 1,
++	.mntpoint = mntpoint,
+ 	.forks_child = 1,
+ 	.child_needs_reinit = 1,
+ 	.setup = setup,
+diff --git a/testcases/kernel/syscalls/inotify/inotify07.c b/testcases/kernel/syscalls/inotify/inotify07.c
+index 96370b5cf..3e2d06485 100644
+--- a/testcases/kernel/syscalls/inotify/inotify07.c
++++ b/testcases/kernel/syscalls/inotify/inotify07.c
+@@ -73,13 +73,19 @@ struct event_t {
+ 	unsigned int mask;
+ };
+ 
+-#define OVL_MNT "ovl"
++#define MNTPOINT	"mntpoint"
++#define OVL_LOWER	MNTPOINT"/lower"
++#define OVL_UPPER	MNTPOINT"/upper"
++#define OVL_WORK	MNTPOINT"/work"
++#define OVL_MNT		MNTPOINT"/ovl"
 +
-+	limit_hugepages(&hugepages);
- 	set_sys_tune("nr_hugepages", hugepages, 1);
+ #define DIR_NAME "test_dir"
+ #define DIR_PATH OVL_MNT"/"DIR_NAME
+ #define FILE_NAME "test_file"
+ #define FILE_PATH OVL_MNT"/"DIR_NAME"/"FILE_NAME
  
- 	snprintf(TEMPFILE, sizeof(TEMPFILE), "%s/mmapfile%d", Hopt, getpid());
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
-index 942f99e76..712398e27 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
-@@ -171,6 +171,7 @@ static void setup(void)
- 	if (nr_opt)
- 		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+ static int ovl_mounted;
++static const char mntpoint[] = MNTPOINT;
  
-+	limit_hugepages(&hugepages);
- 	set_sys_tune("nr_hugepages", hugepages, 1);
- 	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+ static struct event_t event_set[EVENT_MAX];
  
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
-index 1cba867e5..945de584d 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
-@@ -96,6 +96,7 @@ void setup(void)
- 	if (nr_opt)
- 		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+@@ -164,14 +170,14 @@ static void setup(void)
+ 	int ret;
  
-+	limit_hugepages(&hugepages);
- 	set_sys_tune("nr_hugepages", hugepages, 1);
- 	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+ 	/* Setup an overlay mount with lower dir and file */
+-	SAFE_MKDIR("lower", 0755);
+-	SAFE_MKDIR("lower/"DIR_NAME, 0755);
+-	SAFE_TOUCH("lower/"DIR_NAME"/"FILE_NAME, 0644, NULL);
+-	SAFE_MKDIR("upper", 0755);
+-	SAFE_MKDIR("work", 0755);
++	SAFE_MKDIR(OVL_LOWER, 0755);
++	SAFE_MKDIR(OVL_LOWER"/"DIR_NAME, 0755);
++	SAFE_TOUCH(OVL_LOWER"/"DIR_NAME"/"FILE_NAME, 0644, NULL);
++	SAFE_MKDIR(OVL_UPPER, 0755);
++	SAFE_MKDIR(OVL_WORK, 0755);
+ 	SAFE_MKDIR(OVL_MNT, 0755);
+-	ret = mount("overlay", OVL_MNT, "overlay", 0,
+-		    "lowerdir=lower,upperdir=upper,workdir=work");
++	ret = mount("overlay", OVL_MNT, "overlay", 0, "lowerdir="OVL_LOWER
++		    ",upperdir="OVL_UPPER",workdir="OVL_WORK);
+ 	if (ret < 0) {
+ 		if (errno == ENODEV) {
+ 			tst_brk(TCONF,
+@@ -234,6 +240,8 @@ static void cleanup(void)
+ static struct tst_test test = {
+ 	.needs_root = 1,
+ 	.needs_tmpdir = 1,
++	.mount_device = 1,
++	.mntpoint = mntpoint,
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.test_all = verify_inotify,
+diff --git a/testcases/kernel/syscalls/inotify/inotify08.c b/testcases/kernel/syscalls/inotify/inotify08.c
+index acdb95345..a512dfe22 100644
+--- a/testcases/kernel/syscalls/inotify/inotify08.c
++++ b/testcases/kernel/syscalls/inotify/inotify08.c
+@@ -74,11 +74,17 @@ struct event_t {
+ 	unsigned int mask;
+ };
  
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
-index 13221b1a8..34fea5cd7 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
-@@ -91,6 +91,7 @@ static void setup(void)
- 	if (nr_opt)
- 		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
- 
-+	limit_hugepages(&hugepages);
- 	set_sys_tune("nr_hugepages", hugepages, 1);
- 	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-index c639c8e5f..9353564e4 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-@@ -315,6 +315,7 @@ void setup(void)
- 	if (nr_opt)
- 		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
- 
-+	limit_hugepages(&hugepages);
- 	set_sys_tune("nr_hugepages", hugepages, 1);
- 	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-index 4009fd804..ab7dc1e6e 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-@@ -96,6 +96,7 @@ static void setup(void)
- 	if (nr_opt)
- 		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
- 
-+	limit_hugepages(&hugepages);
- 	set_sys_tune("nr_hugepages", hugepages, 1);
- 	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
-index 00872e9d6..480a51e4c 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
-@@ -121,6 +121,7 @@ void setup(void)
- 	if (nr_opt)
- 		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
- 
-+	limit_hugepages(&hugepages);
- 	set_sys_tune("nr_hugepages", hugepages, 1);
- 	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c b/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
-index d706d33b9..171868aeb 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
-@@ -136,6 +136,7 @@ void setup(void)
- 	if (nr_opt)
- 		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
- 
-+	limit_hugepages(&hugepages);
- 	set_sys_tune("nr_hugepages", hugepages, 1);
- 	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
-index 70fb13185..1636260ce 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
-@@ -71,6 +71,7 @@ static void setup(void)
- 	if (nr_opt)
- 		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
- 
-+	limit_hugepages(&hugepages);
- 	set_sys_tune("nr_hugepages", hugepages, 1);
- 	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
-index d1c0e64b8..e8de3251f 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
-@@ -89,6 +89,7 @@ void setup(void)
- 	if (nr_opt)
- 		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
- 
-+	limit_hugepages(&hugepages);
- 	set_sys_tune("nr_hugepages", hugepages, 1);
- 	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
-index 733a25cdb..d5255228b 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
-@@ -70,6 +70,7 @@ static void setup(void)
- 
- 	SAFE_FILE_SCANF(PATH_SHMMNI, "%ld", &orig_shmmni);
- 
-+	limit_hugepages(&hugepages);
- 	set_sys_tune("nr_hugepages", hugepages, 1);
- 	SAFE_FILE_PRINTF(PATH_SHMMNI, "%ld", hugepages / 2);
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
-index 841f527b7..824293fb8 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
-@@ -82,6 +82,7 @@ void setup(void)
- 	if (nr_opt)
- 		hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
- 
-+	limit_hugepages(&hugepages);
- 	set_sys_tune("nr_hugepages", hugepages, 1);
- 	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
- 
-diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.c b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
-index 1ea47ebb5..66844f3e2 100644
---- a/testcases/kernel/mem/hugetlb/lib/hugetlb.c
-+++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
-@@ -56,6 +56,30 @@ void restore_nr_hugepages(void)
- 		set_sys_tune("nr_hugepages", orig_hugepages, 0);
- }
- 
-+void limit_hugepages(long *hpages)
-+{
-+	long mem_avail, max_hpages;
+-#define OVL_MNT "ovl"
++#define MNTPOINT	"mntpoint"
++#define OVL_LOWER	MNTPOINT"/lower"
++#define OVL_UPPER	MNTPOINT"/upper"
++#define OVL_WORK	MNTPOINT"/work"
++#define OVL_MNT		MNTPOINT"/ovl"
 +
-+	if (FILE_LINES_SCANF("/proc/meminfo",
-+			"MemAvailable: %ld", &mem_avail)) {
-+		/*
-+		 * Dropping caches and using "MemFree:" on kernel
-+		 * that doesn't have "MemAvailable:" in Meminfo
-+		 */
-+		SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "3");
-+		mem_avail = SAFE_READ_MEMINFO("MemFree:");
-+	}
-+
-+	max_hpages = mem_avail / SAFE_READ_MEMINFO("Hugepagesize:");
-+
-+	if (*hpages > max_hpages) {
-+		tst_res(TINFO, "The hugepages beyond system available, here "
-+				"reset to 80%% of the max page count %ld",
-+				max_hpages);
-+		*hpages = max_hpages * 0.8;
-+	}
-+}
-+
- /*
-  * getipckey() - generates and returns a message key used by the "get"
-  *		 calls to create an IPC resource.
-diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.h b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
-index 2843f0a8e..baf643d2a 100644
---- a/testcases/kernel/mem/hugetlb/lib/hugetlb.h
-+++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
-@@ -58,5 +58,6 @@ char *Hopt;
- void check_hugepage(void);
- long save_nr_hugepages(void);
- void restore_nr_hugepages(void);
-+void limit_hugepages(long *hpages);
+ #define FILE_NAME "test_file"
+ #define FILE_PATH OVL_MNT"/"FILE_NAME
  
- #endif /* hugetlb.h */
+ static int ovl_mounted;
++static const char mntpoint[] = MNTPOINT;
+ 
+ static struct event_t event_set[EVENT_MAX];
+ 
+@@ -104,8 +110,8 @@ void verify_inotify(void)
+ 	test_cnt++;
+ 
+ 	/* Make sure events on upper/lower do not show in overlay watch */
+-	SAFE_TOUCH("lower/"FILE_NAME, 0644, NULL);
+-	SAFE_TOUCH("upper/"FILE_NAME, 0644, NULL);
++	SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
++	SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
+ 
+ 	int len = read(fd_notify, event_buf, EVENT_BUF_LEN);
+ 	if (len == -1 && errno != EAGAIN) {
+@@ -157,13 +163,13 @@ static void setup(void)
+ 	int ret;
+ 
+ 	/* Setup an overlay mount with lower file */
+-	SAFE_MKDIR("lower", 0755);
+-	SAFE_TOUCH("lower/"FILE_NAME, 0644, NULL);
+-	SAFE_MKDIR("upper", 0755);
+-	SAFE_MKDIR("work", 0755);
++	SAFE_MKDIR(OVL_LOWER, 0755);
++	SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
++	SAFE_MKDIR(OVL_UPPER, 0755);
++	SAFE_MKDIR(OVL_WORK, 0755);
+ 	SAFE_MKDIR(OVL_MNT, 0755);
+-	ret = mount("overlay", OVL_MNT, "overlay", 0,
+-		    "lowerdir=lower,upperdir=upper,workdir=work");
++	ret = mount("overlay", OVL_MNT, "overlay", 0, "lowerdir="OVL_LOWER
++		    ",upperdir="OVL_UPPER",workdir="OVL_WORK);
+ 	if (ret < 0) {
+ 		if (errno == ENODEV) {
+ 			tst_brk(TCONF,
+@@ -230,6 +236,8 @@ static void cleanup(void)
+ static struct tst_test test = {
+ 	.needs_root = 1,
+ 	.needs_tmpdir = 1,
++	.mount_device = 1,
++	.mntpoint = mntpoint,
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.test_all = verify_inotify,
 -- 
-2.20.1
+2.21.0
 
