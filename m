@@ -1,38 +1,46 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 30 Apr 2019 14:35:10 +0200
-Subject: [LTP] LTP Release
-In-Reply-To: <20190430090406.GA30997@rei.lan>
-References: <20190418111812.GB3073@rei.lan> <20190426131258.GA18760@rei>
- <20190429102009.GC6952@dell5510> <20190429131331.GB6265@rei>
- <20190429204527.GA30772@dell5510> <20190430090406.GA30997@rei.lan>
-Message-ID: <20190430123510.GA30176@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 30 Apr 2019 15:04:03 +0200
+Subject: [LTP] [PATCH v4] hugetlb: limit hugepages according to
+	MemAvailable
+In-Reply-To: <20190430031859.28473-1-liwang@redhat.com>
+References: <20190430031859.28473-1-liwang@redhat.com>
+Message-ID: <20190430130403.GC30997@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi!
+> +void limit_hugepages(long *hpages)
+> +{
+> +	long mem_avail, max_hpages;
+> +
+> +	if (FILE_LINES_SCANF("/proc/meminfo",
+> +			"MemAvailable: %ld", &mem_avail)) {
+> +		/*
+> +		 * Dropping caches and using "MemFree:" on kernel
+> +		 * that doesn't have "MemAvailable:" in Meminfo
+> +		 */
 
-> > Tested-by: Petr Vorel <pvorel@suse.cz>
+I've added one TINFO message here.
 
-> > This one looks ok. Also testing with machine with 32 cores, ok as well (but it's
-> > hard to trigger this bug even current master).
+> +		SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "3");
+> +		mem_avail = SAFE_READ_MEMINFO("MemFree:");
+> +	}
+> +
+> +	max_hpages = mem_avail / SAFE_READ_MEMINFO("Hugepagesize:");
+> +
+> +	if (*hpages > max_hpages) {
+> +		tst_res(TINFO, "The hugepages beyond system available, here "
+> +				"reset to 80%% of the max page count %ld",
+> +				max_hpages);
 
-> Sigh, apparenlty this has patch has two obvious typos, both
-> abs_top_builddir and abs_top_srcdir are spelled incorrectly, no wonder
-> it does not work, sorry for that.
-With this fix (used as commits [1] [2]) looks it fixed it.
-21 times or fewer was needed o trigger the build on master, now ok with 33
-builds. I'll keep it running during the day just for sure, but consider it
-fixed.
+Reworded this message a bit, to make it clearer.
 
-> And the only reason why this works for in-tree build is because with
-> typos we do no replace anything and the path to the Makefile is correct
-> for in-tree build.
 
-Kind regards,
-Petr
+And pushed, thanks.
 
-[1] https://github.com/pevik/ltp/commit/22fd15ad08166dc2ec4c8e93884e51be4a46c1b6
-[2] https://github.com/pevik/ltp/commit/10a783538331df8616384f1d9d62c334c117c918
+-- 
+Cyril Hrubis
+chrubis@suse.cz
