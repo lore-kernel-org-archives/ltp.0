@@ -1,64 +1,46 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 30 Apr 2019 16:54:23 +0800
-Subject: [LTP] [PATCH] syscalls/swapon02: Do not fail on overlayfs
-In-Reply-To: <20190430083056.b6q2p6yzqbp2q6fm@XZHOUW.usersys.redhat.com>
-References: <20190430071446.13716-1-xzhou@redhat.com>
- <CAEemH2c0FYg+WoCJfzWmaUiANE3pcpdXT2fHVGXsL_qnRJUn+A@mail.gmail.com>
- <20190430083056.b6q2p6yzqbp2q6fm@XZHOUW.usersys.redhat.com>
-Message-ID: <CAEemH2d-xLCFayr8uCycdYZCtwg1YRHJcpXjdzRCi6zJ6_rMPw@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 30 Apr 2019 11:04:07 +0200
+Subject: [LTP] LTP Release
+In-Reply-To: <20190429204527.GA30772@dell5510>
+References: <20190418111812.GB3073@rei.lan> <20190426131258.GA18760@rei>
+ <20190429102009.GC6952@dell5510> <20190429131331.GB6265@rei>
+ <20190429204527.GA30772@dell5510>
+Message-ID: <20190430090406.GA30997@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Apr 30, 2019 at 4:31 PM Murphy Zhou <xzhou@redhat.com> wrote:
+Hi!
+> > diff --git a/include/mk/testcases.mk b/include/mk/testcases.mk
+> > index 131854ec7..6d1b2d4ef 100644
+> > --- a/include/mk/testcases.mk
+> > +++ b/include/mk/testcases.mk
+> > @@ -49,7 +49,7 @@ LTPLIBS_FILES = $(addsuffix .a, $(addprefix $(abs_top_builddir)/libs/, $(foreach
+> >  MAKE_DEPS += $(LTPLIBS_FILES)
+> 
+> >  $(LTPLIBS_FILES): $(LTPLIBS_DIRS)
+> > -       $(MAKE) -C "$^" -f "$^/Makefile" all
+> > +       $(MAKE) -C "$^" -f "$(subst $(abs_top_buildir),$(abs_to_srcdir),$^)/Makefile" all
+> 
+> >  LDFLAGS += $(addprefix -L$(top_builddir)/libs/lib, $(LTPLIBS))
+> 
+> > I will have a look at the top level Makefile as well to see what has to
+> > be done there.
+> Tested-by: Petr Vorel <pvorel@suse.cz>
+> 
+> This one looks ok. Also testing with machine with 32 cores, ok as well (but it's
+> hard to trigger this bug even current master).
 
-> On Tue, Apr 30, 2019 at 04:14:23PM +0800, Li Wang wrote:
-> > On Tue, Apr 30, 2019 at 3:21 PM Murphy Zhou <xzhou@redhat.com> wrote:
-> >
-> > > Currently swapfiles on Overlayfs are not supported.
-> > >
-> > > So if we are on overlayfs and we get EINVAL from swapon() we return
-> TCONF.
-> > >
-> > > Signed-off-by: Murphy Zhou <xzhou@redhat.com>
-> > > ---
-> > >  testcases/kernel/syscalls/swapon/swapon02.c | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > >
-> > > diff --git a/testcases/kernel/syscalls/swapon/swapon02.c
-> > > b/testcases/kernel/syscalls/swapon/swapon02.c
-> > > index 4af5105c6..211cdfc4e 100644
-> > > --- a/testcases/kernel/syscalls/swapon/swapon02.c
-> > > +++ b/testcases/kernel/syscalls/swapon/swapon02.c
-> > > @@ -86,6 +86,11 @@ static void verify_swapon(struct test_case_t *test)
-> > >                         return;
-> > >         }
-> > >
-> > > +       if (fs_type == TST_OVERLAYFS_MAGIC && errno == EINVAL) {
-> > > +               tst_resm(TCONF, "Swapfile on overlayfs not
-> implemeted");
-> > > +                       return;
-> > > +       }
-> > >
-> >
-> > The code looks correct.
-> >
-> > But it already has a test skipping for BTRFS, is there any possibility to
-> > combine these filesystems check together?
->
-> Good idea~  Sending V2.
->
+Sigh, apparenlty this has patch has two obvious typos, both
+abs_top_builddir and abs_top_srcdir are spelled incorrectly, no wonder
+it does not work, sorry for that.
 
-One more comment.
-
-I just noticed that it also has an FS skipping list in setup(), do u think
-can we move BTRFS and OVERLAYFS to there?
+And the only reason why this works for in-tree build is because with
+typos we do no replace anything and the path to the Makefile is correct
+for in-tree build.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190430/40504742/attachment.html>
+Cyril Hrubis
+chrubis@suse.cz
