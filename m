@@ -1,19 +1,21 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 30 Apr 2019 16:18:33 +0200
-Subject: [LTP] [PATCH] scenario_groups/default: Add crypto into default
- run
-In-Reply-To: <1556589704-15305-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1556589704-15305-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20190430141833.GE30997@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 30 Apr 2019 16:33:07 +0200
+Subject: [LTP] [PATCH] fanotify06: add a test case for overlayfs
+In-Reply-To: <CAOQ4uxgSrpfo=uz29PQOO0LjZFdX+dY4PNQdb7rCWbP3T8MgAA@mail.gmail.com>
+References: <20190424085317.409-1-amir73il@gmail.com>
+ <CAOQ4uxgSrpfo=uz29PQOO0LjZFdX+dY4PNQdb7rCWbP3T8MgAA@mail.gmail.com>
+Message-ID: <20190430143307.GA15102@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Applied, thanks.
+Hi Amir,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Thanks for your patch!
+
+Kind regards,
+Petr
