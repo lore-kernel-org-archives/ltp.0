@@ -1,11 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 1 May 2019 17:30:03 +0200
-Subject: [LTP] [PATCH 2/2] net/tracepath: Rewrite into new API
-In-Reply-To: <946495a7-4f75-4cca-163d-9447818bf1c3@oracle.com>
+Date: Wed, 1 May 2019 17:34:14 +0200
+Subject: [LTP] [PATCH 1/2] net/traceroute: Rewrite into new API
+In-Reply-To: <5131c8d6-8092-5cba-f599-402e7e0dee98@oracle.com>
 References: <20190429072800.23067-1-pvorel@suse.cz>
- <20190429072800.23067-2-pvorel@suse.cz>
- <946495a7-4f75-4cca-163d-9447818bf1c3@oracle.com>
-Message-ID: <20190501153003.GA19942@x230>
+ <5131c8d6-8092-5cba-f599-402e7e0dee98@oracle.com>
+Message-ID: <20190501153414.GB19942@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,22 +13,24 @@ To: ltp@lists.linux.it
 
 Hi Alexey,
 
-> On 29.04.2019 10:28, Petr Vorel wrote:
-> > enhancements:
-> > * Check for tracepath -6 when tracepath6 not available
-> >   tracepath6 was removed in iputils s20161105 and replaced by tracepath -6,
-> >   this way it's portable for both all iputils releases
+> On 29.04.2019 10:27, Petr Vorel wrote:
+> > Add info about traceroute from iputils not being supported
 
-> > * Print tracepath version if -V is available (added in inputils s20190324)
+> >  testcases/network/traceroute/traceroute01.sh | 63 ++++++++------------
 
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-> >  .../network/tcp_cmds/tracepath/tracepath01.sh | 60 +++++++++----------
-> >  1 file changed, 29 insertions(+), 31 deletions(-)
+> > -TST_TOTAL=6
+> > -TCID="traceroute01"
+> > -TST_CLEANUP="cleanup"
+> > -
+> > -TST_USE_LEGACY_API=1
+> > +TST_CNT=2
+> > +TST_NEEDS_CMDS="traceroute"
+> > +TST_SETUP="setup"
+> > +TST_TESTFUNC="test"
 
+> TST_NEEDS_TMPDIR=1?
+Thanks, yes it's needed (redirects to files).
 
-> Acked-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-Thanks for a review, merged.
 
 Kind regards,
 Petr
