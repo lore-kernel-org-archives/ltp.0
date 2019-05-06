@@ -1,50 +1,13 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 3 May 2019 23:00:05 +0200
-Subject: [LTP] [PATCH] OVL_MNT: put overlayfs lower, upper, work,
- mnt dir in separated mountpoint
-In-Reply-To: <20190430043957.479-1-xzhou@redhat.com>
-References: <20190430043957.479-1-xzhou@redhat.com>
-Message-ID: <20190503210005.GA18171@x230>
+From: Krishnaja Balachandran1 <kribalac@in.ibm.com>
+Date: Mon, 6 May 2019 05:56:46 +0000
+Subject: [LTP] Need help with executing aiocp and aiodio testcases using
+	runltp
+Message-ID: <OF435A6BA2.86450EF6-ON002583F2.002085EF-002583F2.0020A9EA@notes.na.collabserv.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-
-Acked-by: Petr Vorel <pvorel@suse.cz>
-
->  testcases/kernel/syscalls/inotify/inotify07.c | 24 +++++++++++------
-
-> -#define OVL_MNT "ovl"
-> +#define MNTPOINT	"mntpoint"
-> +#define OVL_LOWER	MNTPOINT"/lower"
-> +#define OVL_UPPER	MNTPOINT"/upper"
-> +#define OVL_WORK	MNTPOINT"/work"
-> +#define OVL_MNT		MNTPOINT"/ovl"
-> +
->  #define TEST_APP "execveat_child"
->  #define TEST_FILE_PATH OVL_MNT"/"TEST_APP
-
-> +static const char mntpoint[] = MNTPOINT;
-> +
->  static int ovl_mounted;
-
->  static void do_child(void)
-> @@ -91,12 +98,12 @@ static void setup(void)
->  	check_execveat();
-
->  	/* Setup an overlay mount with lower file */
-> -	SAFE_MKDIR("lower", 0755);
-> -	SAFE_MKDIR("upper", 0755);
-> -	SAFE_MKDIR("work", 0755);
-> +	SAFE_MKDIR(OVL_LOWER, 0755);
-> +	SAFE_MKDIR(OVL_UPPER, 0755);
-> +	SAFE_MKDIR(OVL_WORK, 0755);
->  	SAFE_MKDIR(OVL_MNT, 0755);
-NOTE: Maybe it'd be worth of adding some helper to define these constants and creating this setup (in separate commit).
-
-
-Kind regards,
-Petr
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190506/81af7b2d/attachment.html>
