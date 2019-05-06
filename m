@@ -1,700 +1,385 @@
-From: Christian Amann <camann@suse.com>
-Date: Mon, 6 May 2019 12:57:11 +0200
-Subject: [LTP] [PATCH v4] syscalls/copy_file_range: add/restructured
-	tests
-In-Reply-To: <20190506105457.22350-1-camann@suse.com>
-References: <20190506105457.22350-1-camann@suse.com>
-Message-ID: <1ef7d8ee-ae31-b44c-71e6-7d09da55eda2@suse.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 6 May 2019 19:14:25 +0800
+Subject: [LTP] [PATCH] syscalls/prctl04.c: New test for prctl() with PR_{SET,
+	GET}_SECCOMP
+Message-ID: <1557141265-2247-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-@ Li Wang Thanks again for your review. I implemented your suggestions:
-- changed failure report type from TINFO to TFAIL (01.c) - added 2 new
-error handling tests (02.c): This still leaves out some errors described
-on the manpage but most of them are very difficult to test (out of
-memory, low level io error, etc). If anyone knows a way how to test
-this, I'm open for suggestions. - slight restructuring of error handling
-logic (02.c) - renamed getTimestamp to get_timestamp (03.c) - minor
-changes in reporting failures (03.c) Kind regards, Christian
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ configure.ac                               |   1 +
+ include/lapi/prctl.h                       |   5 +
+ include/lapi/seccomp.h                     |  36 +++
+ runtest/syscalls                           |   1 +
+ testcases/kernel/syscalls/prctl/.gitignore |   1 +
+ testcases/kernel/syscalls/prctl/prctl04.c  | 262 +++++++++++++++++++++
+ 6 files changed, 306 insertions(+)
+ create mode 100644 include/lapi/seccomp.h
+ create mode 100644 testcases/kernel/syscalls/prctl/prctl04.c
 
-On 06/05/2019 12:54, Christian Amann wrote:
-> The following tests are run for the syscall itself,
-> as well as the glibc implementation.
->
-> copy_file_range01:
-> 	restructured testcase, removed unnecessary code,
-> 	improved readability and shortened output (only
-> 	failures get printed now). This tests the basic
-> 	functionality of the syscall.
->
-> copy_file_range02:
-> 	add testcases which test basic error handling
-> 	of the syscall.
->
-> copy_file_range03:
-> 	add testcase to check if this operation updates
-> 	timestamps accordingly.
->
-> Signed-off-by: Christian Amann <camann@suse.com>
-> ---
->  configure.ac                                       |   1 +
->  m4/ltp-copy_file_range.m4                          |   7 +
->  runtest/syscalls                                   |   2 +
->  .../kernel/syscalls/copy_file_range/.gitignore     |   2 +
->  .../syscalls/copy_file_range/copy_file_range.h     |  57 +++++
->  .../syscalls/copy_file_range/copy_file_range01.c   | 239 +++++++++++----------
->  .../syscalls/copy_file_range/copy_file_range02.c   | 118 ++++++++++
->  .../syscalls/copy_file_range/copy_file_range03.c   |  77 +++++++
->  8 files changed, 387 insertions(+), 116 deletions(-)
->  create mode 100644 m4/ltp-copy_file_range.m4
->  create mode 100644 testcases/kernel/syscalls/copy_file_range/copy_file_range.h
->  create mode 100644 testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
->  create mode 100644 testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
->
-> diff --git a/configure.ac b/configure.ac
-> index fad8f8396..3fec68ede 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -197,6 +197,7 @@ LTP_CHECK_BUILTIN_CLEAR_CACHE
->  LTP_CHECK_CAPABILITY_SUPPORT
->  LTP_CHECK_CC_WARN_OLDSTYLE
->  LTP_CHECK_CLONE_SUPPORTS_7_ARGS
-> +LTP_CHECK_COPY_FILE_RANGE
->  LTP_CHECK_CRYPTO
->  LTP_CHECK_FIDEDUPE
->  LTP_CHECK_FORTIFY_SOURCE
-> diff --git a/m4/ltp-copy_file_range.m4 b/m4/ltp-copy_file_range.m4
-> new file mode 100644
-> index 000000000..2d87e8900
-> --- /dev/null
-> +++ b/m4/ltp-copy_file_range.m4
-> @@ -0,0 +1,7 @@
-> +dnl SPDX-License-Identifier: GPL-2.0-or-later
-> +dnl Copyright (c) 2019 SUSE LLC
-> +dnl Author: Christian Amann <camann@suse.com>
-> +
-> +AC_DEFUN([LTP_CHECK_COPY_FILE_RANGE],[
-> +AC_CHECK_FUNCS(copy_file_range,,)
-> +])
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 2b8ca719b..33a70ee17 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1561,6 +1561,8 @@ memfd_create03 memfd_create03
->  memfd_create04 memfd_create04
->  
->  copy_file_range01 copy_file_range01
-> +copy_file_range02 copy_file_range02
-> +copy_file_range03 copy_file_range03
->  
->  statx01 statx01
->  statx02 statx02
-> diff --git a/testcases/kernel/syscalls/copy_file_range/.gitignore b/testcases/kernel/syscalls/copy_file_range/.gitignore
-> index 6807420ef..e9e35f60f 100644
-> --- a/testcases/kernel/syscalls/copy_file_range/.gitignore
-> +++ b/testcases/kernel/syscalls/copy_file_range/.gitignore
-> @@ -1 +1,3 @@
->  /copy_file_range01
-> +/copy_file_range02
-> +/copy_file_range03
-> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range.h b/testcases/kernel/syscalls/copy_file_range/copy_file_range.h
-> new file mode 100644
-> index 000000000..d2ef1348b
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range.h
-> @@ -0,0 +1,57 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2019 SUSE LLC
-> + * Author: Christian Amann <camann@suse.com>
-> + */
-> +
-> +#ifndef __COPY_FILE_RANGE_H__
-> +#define __COPY_FILE_RANGE_H__
-> +
-> +#include <stdbool.h>
-> +#include <unistd.h>
-> +#include "lapi/syscalls.h"
-> +
-> +#define TEST_VARIANTS	2
-> +
-> +#define MNTPOINT	"mnt_point"
-> +#define FILE_SRC_PATH   "file_src"
-> +#define FILE_DEST_PATH  "file_dest"
-> +#define FILE_RDONL_PATH "file_rdonl"
-> +#define FILE_DIR_PATH	"file_dir"
-> +#define FILE_MNTED_PATH	MNTPOINT"/file_mnted"
-> +
-> +#define CONTENT		"ABCDEFGHIJKLMNOPQRSTUVWXYZ12345\n"
-> +#define CONTSIZE	(sizeof(CONTENT) - 1)
-> +
-> +static void syscall_info(void)
-> +{
-> +	switch (tst_variant) {
-> +	case 0:
-> +		tst_res(TINFO, "Testing libc copy_file_range()");
-> +		break;
-> +	case 1:
-> +		tst_res(TINFO, "Testing tst copy_file_range()");
-> +	}
-> +}
-> +
-> +static int sys_copy_file_range(int fd_in, loff_t *off_in,
-> +		int fd_out, loff_t *off_out, size_t len, unsigned int flags)
-> +{
-> +	switch (tst_variant) {
-> +
-> +	case 0:
-> +#ifdef HAVE_COPY_FILE_RANGE
-> +		return copy_file_range(fd_in, off_in,
-> +				fd_out, off_out, len, flags);
-> +#else
-> +		tst_brk(TCONF, "libc copy_file_range() not supported!");
-> +#endif
-> +		break;
-> +	case 1:
-> +		return tst_syscall(__NR_copy_file_range, fd_in, off_in, fd_out,
-> +				off_out, len, flags);
-> +	}
-> +	return -1;
-> +}
-> +
-> +#endif /* __COPY_FILE_RANGE_H__ */
-> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
-> index 61a6042d9..a5bd5e7f7 100644
-> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
-> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
-> @@ -1,66 +1,30 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
->  /*
-> - * Copyright (c) Linux Test Project, 2017
-> - *
-> - * This program is free software;  you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License as published by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
-> + * Copyright (c) Linux Test Project, 2019
-> + */
-> +
-> +/*
-> + * This tests the fundamental functionalities of the copy_file_range
-> + * syscall. It does so by copying the contents of one file into
-> + * another using various different combinations for length and
-> + * input/output offsets.
->   *
-> - * This program is distributed in the hope that it will be useful,
-> - * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - * the GNU General Public License for more details.
-> + * After a copy is done this test checks if the contents of both files
-> + * are equal at the given offsets. It is also inspected if the offsets
-> + * of the file descriptors are advanced correctly.
->   */
->  
->  #define _GNU_SOURCE
-> +
->  #include <stdio.h>
-> -#include <errno.h>
->  #include <stdlib.h>
->  #include "tst_test.h"
->  #include "tst_safe_stdio.h"
-> -#include "lapi/syscalls.h"
-> -
-> -#define TEST_FILE_1 "copy_file_range_ltp01.txt"
-> -#define TEST_FILE_2 "copy_file_range_ltp02.txt"
-> -#define STR "abcdefghijklmnopqrstuvwxyz12345\n"
-> -
-> -#define verbose 0
-> -
-> -static size_t *len_arr;
-> -static loff_t **off_arr;
-> -static int len_sz, off_sz;
-> +#include "copy_file_range.h"
->  
-> -static void setup(void)
-> -{
-> -	int i, fd, page_size;
-> -
-> -	page_size = getpagesize();
-> -
-> -	fd = SAFE_OPEN(TEST_FILE_1, O_RDWR | O_CREAT, 0664);
-> -	/* Writing page_size * 4 of data into test file */
-> -	for (i = 0; i < (int)(page_size * 4); i++)
-> -		SAFE_WRITE(1, fd, STR, strlen(STR));
-> -	SAFE_CLOSE(fd);
-> -
-> -	len_sz = 4;
-> -	len_arr = malloc(sizeof(size_t) * len_sz);
-> -	len_arr[0] = 11;
-> -	len_arr[1] = page_size - 1;
-> -	len_arr[2] = page_size;
-> -	len_arr[3] = page_size + 1;
-> -
-> -	off_sz = 6;
-> -	off_arr = malloc(sizeof(loff_t *) * off_sz);
-> -	for (i = 1; i < off_sz; i++)
-> -		off_arr[i] = malloc(sizeof(loff_t));
-> -
-> -	off_arr[0] = NULL;
-> -	*off_arr[1] = 0;
-> -	*off_arr[2] = 17;
-> -	*off_arr[3] = page_size - 1;
-> -	*off_arr[4] = page_size;
-> -	*off_arr[5] = page_size + 1;
-> -}
-> +static int page_size;
-> +static int errcount, numcopies;
-> +static int fd_in, fd_out;
->  
->  static int check_file_content(const char *fname1, const char *fname2,
->  	loff_t *off1, loff_t *off2, size_t len)
-> @@ -90,52 +54,37 @@ static int check_file_content(const char *fname1, const char *fname2,
->  }
->  
->  static int check_file_offset(const char *m, int fd, loff_t len,
-> -	loff_t *off_ori, loff_t *off_after)
-> +		loff_t *off_before, loff_t *off_after)
->  {
-> +	loff_t fd_off = SAFE_LSEEK(fd, 0, SEEK_CUR);
->  	int ret = 0;
->  
-> -	if (off_ori) {
-> -		/* FD should stay untouched, and off_in/out is updated */
-> -		loff_t fd_off = SAFE_LSEEK(fd, 0, SEEK_CUR);
-> -
-> -		if (fd_off == 0) {
-> -			if (verbose)
-> -				tst_res(TPASS, "%s FD offset unchanged", m);
-> -		} else {
-> -			tst_res(TFAIL, "%s FD offset changed: %ld",
-> +	if (off_before) {
-> +		/*
-> +		 * copy_file_range offset is given:
-> +		 * - fd offset should stay 0,
-> +		 * - copy_file_range offset is updated
-> +		 */
-> +		if (fd_off != 0) {
-> +			tst_res(TFAIL,
-> +				"%s fd offset unexpectedly changed: %ld",
->  				m, (long)fd_off);
->  			ret = 1;
-> -		}
->  
-> -		if (!off_after) {
-> -			tst_res(TFAIL, "%s offset is NULL", m);
-> -			ret = 1;
-> -		}
-> -
-> -		if ((off_after) && (*off_ori + len == *off_after)) {
-> -			if (verbose) {
-> -				tst_res(TPASS, "%s offset advanced as"
-> -					" expected: %ld", m, (long)*off_after);
-> -			}
-> -		} else {
-> +		} else if (*off_before + len != *off_after) {
->  			tst_res(TFAIL, "%s offset unexpected value: %ld",
->  				m, (long)*off_after);
->  			ret = 1;
->  		}
-> -	} else {
-> -		/* FD offset is advanced by len */
-> -		loff_t fd_off = SAFE_LSEEK(fd, 0, SEEK_CUR);
-> -
-> -		if (fd_off == len) {
-> -			if (verbose) {
-> -				tst_res(TPASS, "%s FD offset changed as"
-> -					" expected: %ld", m, (long)fd_off);
-> -			}
-> -		} else {
-> -			tst_res(TFAIL, "%s FD offset unexpected value: %ld",
-> +	}
-> +	/*
-> +	 * no copy_file_range offset given:
-> +	 * - fd offset advanced by length
-> +	 */
-> +	else if (fd_off != len) {
-> +		tst_res(TFAIL, "%s fd offset unexpected value: %ld",
->  				m, (long)fd_off);
-> -			ret = 1;
-> -		}
-> +		ret = 1;
->  	}
->  
->  	return ret;
-> @@ -143,77 +92,135 @@ static int check_file_offset(const char *m, int fd, loff_t len,
->  
->  static void test_one(size_t len, loff_t *off_in, loff_t *off_out)
->  {
-> +	int ret;
->  	size_t to_copy = len;
-> -	int fd_in, fd_out, ret;
-> -	loff_t *off_in_ori = off_in;
-> -	loff_t *off_out_ori = off_out;
-> -	loff_t off_in_copy;
-> -	loff_t off_out_copy;
-> +	loff_t off_in_value_copy, off_out_value_copy;
-> +	loff_t *off_new_in  = &off_in_value_copy;
-> +	loff_t *off_new_out = &off_out_value_copy;
->  	char str_off_in[32], str_off_out[32];
->  
->  	if (off_in) {
-> -		off_in_copy = *off_in;
-> -		off_in = &off_in_copy;
-> +		off_in_value_copy = *off_in;
->  		sprintf(str_off_in, "%ld", (long)*off_in);
->  	} else {
-> +		off_new_in = NULL;
->  		strcpy(str_off_in, "NULL");
->  	}
->  
->  	if (off_out) {
-> -		off_out_copy = *off_out;
-> -		off_out = &off_out_copy;
-> +		off_out_value_copy = *off_out;
->  		sprintf(str_off_out, "%ld", (long)*off_out);
->  	} else {
-> +		off_new_out = NULL;
->  		strcpy(str_off_out, "NULL");
->  	}
->  
-> -	fd_in = SAFE_OPEN(TEST_FILE_1, O_RDONLY);
-> -	fd_out = SAFE_OPEN(TEST_FILE_2, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-> -
->  	/*
->  	 * copy_file_range() will return the number of bytes copied between
->  	 * files. This could be less than the length originally requested.
->  	 */
->  	do {
-> -		TEST(tst_syscall(__NR_copy_file_range, fd_in, off_in, fd_out,
-> -			off_out, to_copy, 0));
-> +		TEST(sys_copy_file_range(fd_in, off_new_in, fd_out,
-> +				off_new_out, to_copy, 0));
->  		if (TST_RET == -1) {
->  			tst_res(TFAIL | TTERRNO, "copy_file_range() failed");
-> -			SAFE_CLOSE(fd_in);
-> -			SAFE_CLOSE(fd_out);
-> +			errcount++;
->  			return;
->  		}
->  
->  		to_copy -= TST_RET;
->  	} while (to_copy > 0);
->  
-> -	ret = check_file_content(TEST_FILE_1, TEST_FILE_2,
-> -		off_in_ori, off_out_ori, len);
-> -	if (ret)
-> +	ret = check_file_content(FILE_SRC_PATH, FILE_DEST_PATH,
-> +		off_in, off_out, len);
-> +	if (ret) {
->  		tst_res(TFAIL, "file contents do not match");
-> +		errcount++;
-> +		return;
-> +	}
->  
-> -	ret |= check_file_offset("(in)", fd_in, len, off_in_ori, off_in);
-> -	ret |= check_file_offset("(out)", fd_out, len, off_out_ori, off_out);
-> +	ret |= check_file_offset("(in)", fd_in, len, off_in, off_new_in);
-> +	ret |= check_file_offset("(out)", fd_out, len, off_out, off_new_out);
-> +
-> +	if (ret != 0) {
-> +		tst_res(TFAIL, "off_in: %s, off_out: %s, len: %ld",
-> +				str_off_in, str_off_out, (long)len);
-> +		errcount++;
-> +	}
-> +}
->  
-> -	tst_res(ret == 0 ? TPASS : TFAIL, "off_in: %s, off_out: %s, len: %ld",
-> -			str_off_in, str_off_out, (long)len);
-> +static void open_files(void)
-> +{
-> +	fd_in  = SAFE_OPEN(FILE_SRC_PATH, O_RDONLY);
-> +	fd_out = SAFE_OPEN(FILE_DEST_PATH, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-> +}
->  
-> -	SAFE_CLOSE(fd_in);
-> -	SAFE_CLOSE(fd_out);
-> +static void close_files(void)
-> +{
-> +	if (fd_out > 0)
-> +		SAFE_CLOSE(fd_out);
-> +	if (fd_in  > 0)
-> +		SAFE_CLOSE(fd_in);
->  }
->  
->  static void copy_file_range_verify(void)
->  {
->  	int i, j, k;
->  
-> -	for (i = 0; i < len_sz; i++)
-> -		for (j = 0; j < off_sz; j++)
-> -			for (k = 0; k < off_sz; k++)
-> +	errcount = numcopies = 0;
-> +	size_t len_arr[]	= {11, page_size-1, page_size, page_size+1};
-> +	loff_t off_arr_values[]	= {0, 17, page_size-1, page_size, page_size+1};
-> +
-> +	int num_offsets = ARRAY_SIZE(off_arr_values) + 1;
-> +	loff_t *off_arr[num_offsets];
-> +
-> +	off_arr[0] = NULL;
-> +	for (i = 1; i < num_offsets; i++)
-> +		off_arr[i] = &off_arr_values[i-1];
-> +
-> +	/* Test all possible cobinations of given lengths and offsets */
-> +	for (i = 0; i < (int)ARRAY_SIZE(len_arr); i++)
-> +		for (j = 0; j < num_offsets; j++)
-> +			for (k = 0; k < num_offsets; k++) {
-> +				open_files();
->  				test_one(len_arr[i], off_arr[j], off_arr[k]);
-> +				close_files();
-> +				numcopies++;
-> +			}
-> +
-> +	if (errcount == 0)
-> +		tst_res(TPASS,
-> +			"copy_file_range completed all %d copy jobs successfully!",
-> +			numcopies);
-> +	else
-> +		tst_res(TFAIL, "copy_file_range failed %d of %d copy jobs.",
-> +				errcount, numcopies);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	int i, fd;
-> +
-> +	syscall_info();
-> +
-> +	page_size = getpagesize();
-> +
-> +	fd = SAFE_OPEN(FILE_SRC_PATH, O_RDWR | O_CREAT, 0664);
-> +	/* Writing page_size * 4 of data into test file */
-> +	for (i = 0; i < (int)(page_size * 4); i++)
-> +		SAFE_WRITE(1, fd, CONTENT, CONTSIZE);
-> +	SAFE_CLOSE(fd);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	close_files();
->  }
->  
->  static struct tst_test test = {
->  	.setup = setup,
-> +	.cleanup = cleanup,
->  	.needs_tmpdir = 1,
->  	.test_all = copy_file_range_verify,
-> +	.test_variants = TEST_VARIANTS,
->  };
-> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-> new file mode 100644
-> index 000000000..07c0207c2
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-> @@ -0,0 +1,118 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2019 SUSE LLC
-> + * Author: Christian Amann <camann@suse.com>
-> + */
-> +
-> +/*
-> + * Tests basic error handling of the
-> + * copy_file_range syscall
-> + *
-> + * 1) Try to copy contents to file open as readonly
-> + *    -> EBADF
-> + * 2) Try to copy contents to file on different mounted
-> + *    filesystem -> EXDEV
-> + * 3) Try to copy contents to directory -> EISDIR
-> + * 4) Try to copy contents to a file opened with the
-> + *    O_APPEND flag -> EBADF
-> + * 5) Try to copy contents to closed filedescriptor
-> + *    -> EBADF
-> + * 6) Try to copy contents with invalid 'flags' value
-> + *    -> EINVAL
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include "tst_test.h"
-> +#include "copy_file_range.h"
-> +
-> +static int fd_src;
-> +static int fd_dest;
-> +static int fd_rdonly;
-> +static int fd_mnted;
-> +static int fd_dir;
-> +static int fd_closed;
-> +static int fd_append;
-> +
-> +static struct tcase {
-> +	int	*copy_to_fd;
-> +	int	flags;
-> +	int	exp_err;
-> +} tcases[] = {
-> +	{&fd_rdonly,	0,	EBADF},
-> +	{&fd_mnted,	0,	EXDEV},
-> +	{&fd_dir,	0,	EISDIR},
-> +	{&fd_append,	0,	EBADF},
-> +	{&fd_closed,	0,	EBADF},
-> +	{&fd_dest,	-1,	EINVAL},
-> +};
-> +
-> +static void verify_copy_file_range(unsigned int n)
-> +{
-> +	struct tcase *tc = &tcases[n];
-> +
-> +	TEST(sys_copy_file_range(fd_src, 0, *tc->copy_to_fd,
-> +				0, CONTSIZE, tc->flags));
-> +
-> +	if (TST_RET == -1) {
-> +		if (tc->exp_err == TST_ERR) {
-> +			tst_res(TPASS | TTERRNO,
-> +					"copy_file_range failed as expected");
-> +		} else {
-> +			tst_res(TFAIL | TTERRNO,
-> +				"copy_file_range failed unexpectedly; expected %s, but got",
-> +				tst_strerrno(tc->exp_err));
-> +			return;
-> +		}
-> +	} else {
-> +		tst_res(TFAIL,
-> +			"copy_file_range returned wrong value: %ld", TST_RET);
-> +	}
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (fd_append > 0)
-> +		SAFE_CLOSE(fd_append);
-> +	if (fd_dir > 0)
-> +		SAFE_CLOSE(fd_dir);
-> +	if (fd_mnted > 0)
-> +		SAFE_CLOSE(fd_mnted);
-> +	if (fd_rdonly > 0)
-> +		SAFE_CLOSE(fd_rdonly);
-> +	if (fd_dest > 0)
-> +		SAFE_CLOSE(fd_dest);
-> +	if (fd_src > 0)
-> +		SAFE_CLOSE(fd_src);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	syscall_info();
-> +
-> +	if (access(FILE_DIR_PATH, F_OK) == -1)
-> +		SAFE_MKDIR(FILE_DIR_PATH, 0777);
-> +
-> +	fd_src    = SAFE_OPEN(FILE_SRC_PATH, O_RDWR | O_CREAT, 0664);
-> +	fd_dest   = SAFE_OPEN(FILE_DEST_PATH, O_RDWR | O_CREAT, 0664);
-> +	fd_rdonly = SAFE_OPEN(FILE_RDONL_PATH, O_RDONLY | O_CREAT, 0664);
-> +	fd_mnted  = SAFE_OPEN(FILE_MNTED_PATH, O_RDWR | O_CREAT, 0664);
-> +	fd_dir    = SAFE_OPEN(FILE_DIR_PATH, O_DIRECTORY);
-> +	fd_closed = -1;
-> +	fd_append = SAFE_OPEN(FILE_DEST_PATH,
-> +			O_RDWR | O_CREAT | O_APPEND, 0664);
-> +
-> +	SAFE_WRITE(1, fd_src,  CONTENT,  CONTSIZE);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test = verify_copy_file_range,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_root = 1,
-> +	.mount_device = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.dev_fs_type = "ext4",
-> +	.test_variants = TEST_VARIANTS,
-> +};
-> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range03.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
-> new file mode 100644
-> index 000000000..18e411af2
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
-> @@ -0,0 +1,77 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2019 SUSE LLC
-> + * Author: Christian Amann <camann@suse.com>
-> + */
-> +
-> +/*
-> + * Copies the contents of one file into another and
-> + * checks if the timestamp gets updated in the process.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include "tst_test.h"
-> +#include "copy_file_range.h"
-> +
-> +static int fd_src;
-> +static int fd_dest;
-> +
-> +unsigned long get_timestamp(int fd)
-> +{
-> +	struct stat filestat;
-> +
-> +	fstat(fd, &filestat);
-> +	return filestat.st_mtime;
-> +}
-> +
-> +static void verify_copy_file_range_timestamp(void)
-> +{
-> +	loff_t offset;
-> +	unsigned long timestamp, updated_timestamp;
-> +
-> +	timestamp = get_timestamp(fd_dest);
-> +	usleep(1000000);
-> +
-> +	offset = 0;
-> +	TEST(sys_copy_file_range(fd_src, &offset,
-> +			fd_dest, 0, CONTSIZE, 0));
-> +	if (TST_RET == -1)
-> +		tst_brk(TBROK | TTERRNO,
-> +				"copy_file_range unexpectedly failed");
-> +
-> +	updated_timestamp = get_timestamp(fd_dest);
-> +
-> +	if (timestamp == updated_timestamp)
-> +		tst_brk(TFAIL, "copy_file_range did not update timestamp.");
-> +
-> +	tst_res(TPASS, "copy_file_range sucessfully updated the timestamp!");
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (fd_dest > 0)
-> +		SAFE_CLOSE(fd_dest);
-> +	if (fd_src  > 0)
-> +		SAFE_CLOSE(fd_src);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	syscall_info();
-> +
-> +	fd_dest = SAFE_OPEN(FILE_DEST_PATH, O_RDWR | O_CREAT, 0664);
-> +	fd_src  = SAFE_OPEN(FILE_SRC_PATH,  O_RDWR | O_CREAT, 0664);
-> +	SAFE_WRITE(1, fd_src,  CONTENT,  CONTSIZE);
-> +	SAFE_CLOSE(fd_src);
-> +	fd_src = SAFE_OPEN(FILE_SRC_PATH, O_RDONLY);
-> +}
-> +
-> +
-> +static struct tst_test test = {
-> +	.test_all = verify_copy_file_range_timestamp,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_tmpdir = 1,
-> +	.test_variants = TEST_VARIANTS,
-> +};
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190506/6c04daca/attachment-0001.html>
+diff --git a/configure.ac b/configure.ac
+index fad8f8396..c858aff42 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -46,6 +46,7 @@ AC_CHECK_HEADERS([ \
+     linux/mempolicy.h \
+     linux/module.h \
+     linux/netlink.h \
++    linux/seccomp.h \
+     linux/userfaultfd.h \
+     mm.h \
+     netinet/sctp.h \
+diff --git a/include/lapi/prctl.h b/include/lapi/prctl.h
+index 6db8a6480..c3612e643 100644
+--- a/include/lapi/prctl.h
++++ b/include/lapi/prctl.h
+@@ -14,4 +14,9 @@
+ # define PR_GET_CHILD_SUBREAPER	37
+ #endif
+ 
++#ifndef PR_SET_SECCOMP
++# define PR_GET_SECCOMP  21
++# define PR_SET_SECCOMP  22
++#endif
++
+ #endif /* LAPI_PRCTL_H__ */
+diff --git a/include/lapi/seccomp.h b/include/lapi/seccomp.h
+new file mode 100644
+index 000000000..1e5bc3933
+--- /dev/null
++++ b/include/lapi/seccomp.h
+@@ -0,0 +1,36 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
++ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
++ */
++#ifndef LAPI_SECCOMP_H__
++# define _LAPI_SECCOMP_H
++
++#include <linux/types.h>
++
++/* Valid values for seccomp.mode and prctl(PR_SET_SECCOMP, <mode>) */
++#define SECCOMP_MODE_DISABLED   0
++#define SECCOMP_MODE_STRICT     1
++#define SECCOMP_MODE_FILTER     2
++
++#define SECCOMP_RET_KILL_THREAD  0x00000000U /* kill the thread */
++#define SECCOMP_RET_KILL         SECCOMP_RET_KILL_THREAD
++#define SECCOMP_RET_ALLOW        0x7fff0000U /* allow */
++
++/**
++ * struct seccomp_data - the format the BPF program executes over.
++ * @nr: the system call number
++ * @arch: indicates system call convention as an AUDIT_ARCH_* value
++ *        as defined in <linux/audit.h>.
++ * @instruction_pointer: at the time of the system call.
++ * @args: up to 6 system call arguments always stored as 64-bit values
++ * regardless of the architecture.
++ */
++struct seccomp_data {
++	int nr;
++	__u32 arch;
++	__u64 instruction_pointer;
++	__u64 args[6];
++};
++
++#endif /* _LAPI_SECCOMP_H */
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 2b8ca719b..51bff2990 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -863,6 +863,7 @@ ppoll01 ppoll01
+ prctl01 prctl01
+ prctl02 prctl02
+ prctl03 prctl03
++prctl04 prctl04
+ 
+ pread01 pread01
+ pread01_64 pread01_64
+diff --git a/testcases/kernel/syscalls/prctl/.gitignore b/testcases/kernel/syscalls/prctl/.gitignore
+index 2f46a9a12..1c3da3052 100644
+--- a/testcases/kernel/syscalls/prctl/.gitignore
++++ b/testcases/kernel/syscalls/prctl/.gitignore
+@@ -1,3 +1,4 @@
+ /prctl01
+ /prctl02
+ /prctl03
++/prctl04
+diff --git a/testcases/kernel/syscalls/prctl/prctl04.c b/testcases/kernel/syscalls/prctl/prctl04.c
+new file mode 100644
+index 000000000..e3ba69af3
+--- /dev/null
++++ b/testcases/kernel/syscalls/prctl/prctl04.c
+@@ -0,0 +1,262 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
++ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
++ *
++ * Test PR_GET_SECCOMP and PR_SET_SECCOMP of prctl(2).
++ * 1) If PR_SET_SECCOMP sets the SECCOMP_MODE_STRICT for the calling thread,
++ *    the only system call that the thread is permitted to make are read(2),
++ *    write(2),_exit(2)(but not exit_group(2)), and sigreturn(2).  Other
++ *    system calls result in the delivery of a SIGKILL signal. This operation
++ *    is available only if the kernel is configured with CONFIG_SECCOMP enabled.
++ * 2) If PR_SET_SECCOMP sets the SECCOMP_MODE_FILTER for the calling thread,
++ *    the system calls allowed are defined by a pointer to a Berkeley Packet
++ *    Filter. Other system calls result int the delivery of a SIGSYS signal
++ *    with SECCOMP_RET_KILL. The SECCOMP_SET_MODE_FILTER operation is available
++ *    only if the kernel is configured with CONFIG_SECCOMP_FILTER enabled.
++ * 3) If SECCOMP_MODE_FILTER filters permit fork(2), then the seccomp mode
++ *    is inherited by children created by fork(2).
++ */
++
++#include <errno.h>
++#include <signal.h>
++#include <sys/prctl.h>
++#include <sys/wait.h>
++#include <sys/types.h>
++#include <linux/filter.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <stddef.h>
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++#include "lapi/prctl.h"
++#include "config.h"
++#ifdef HAVE_LINUX_SECCOMP_H
++#include <linux/seccomp.h>
++#else
++#include <lapi/seccomp.h>
++#endif
++
++#define FNAME "filename"
++
++static const struct sock_filter  strict_filter[] = {
++	BPF_STMT(BPF_LD | BPF_W | BPF_ABS, (offsetof (struct seccomp_data, nr))),
++
++	BPF_JUMP(BPF_JMP | BPF_JEQ, __NR_close, 5, 0),
++	BPF_JUMP(BPF_JMP | BPF_JEQ, __NR_exit,  4, 0),
++	BPF_JUMP(BPF_JMP | BPF_JEQ, __NR_wait4, 3, 0),
++	BPF_JUMP(BPF_JMP | BPF_JEQ, __NR_write, 2, 0),
++	BPF_JUMP(BPF_JMP | BPF_JEQ, __NR_clone, 1, 0),
++
++	BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_KILL),
++	BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_ALLOW)
++};
++
++static const struct sock_fprog  strict = {
++	.len = (unsigned short)ARRAY_SIZE(strict_filter),
++	.filter = (struct sock_filter *)strict_filter
++};
++
++static void check_strict_mode(int val)
++{
++	int fd;
++	char buf[2];
++
++	fd = SAFE_OPEN(FNAME, O_RDWR | O_CREAT, 0666);
++
++	TEST(prctl(PR_SET_SECCOMP, SECCOMP_MODE_STRICT));
++	if (TST_RET == -1) {
++		if (TST_ERR == EINVAL) {
++			tst_res(TCONF,
++				"prctl(PR_SET_SECCOMP) doesn't support "
++				"SECCOMP_MODE_STRICT");
++		} else {
++			tst_res(TFAIL | TTERRNO,
++				"prctl(PR_SET_SECCOMP) sets "
++				"SECCOMP_MODE_STRICT failed");
++		}
++		return;
++	}
++	if (val == 1) {
++		tst_res(TPASS,
++			"prctl(PR_SET_SECCOMP) sets SECCOMP_MODE_STRICT "
++			"succeed");
++		prctl(PR_GET_SECCOMP);
++		tst_res(TFAIL, "prctl(PR_GET_SECCOMP) succeed unexpectedly");
++	}
++	if (val == 2) {
++		SAFE_WRITE(1, fd, "a", 1);
++		SAFE_READ(0, fd, buf, 1);
++		tst_res(TPASS,
++			"SECCOMP_MODE_STRICT permits read(2) write(2) "
++			"and _exit(2)");
++	}
++	if (val == 3) {
++		close(fd);
++		tst_res(TFAIL,
++			"SECCOMP_MODE_STRICT permits close(2) unexpectdly");
++	}
++
++	tst_syscall(__NR_exit, 0);
++}
++
++static void check_filter_mode(int val)
++{
++	int childpid;
++	int childstatus;
++	int fd;
++
++	fd = SAFE_OPEN(FNAME, O_RDWR | O_CREAT, 0666);
++
++	TEST(prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &strict));
++	if (TST_RET == -1) {
++		if (TST_ERR == EFAULT)
++			tst_res(TFAIL, "the strict prog is an invalid address");
++		else
++			tst_res(TFAIL | TERRNO,
++				"prctl(PR_SET_SECCOMP) sets strict filter "
++				"failed");
++		return;
++	}
++	if (val == 1) {
++		tst_res(TPASS,
++			"prctl(PR_SET_SECCOMP) sets strict filter succeed");
++		prctl(PR_GET_SECCOMP);
++		tst_res(TFAIL, "prctl(PR_GET_SECCOMP) succeed unexpectedly");
++	}
++	if (val == 2) {
++		close(fd);
++		tst_res(TPASS, "SECCOMP_MODE_FILTER permits close(2)");
++	}
++	if (val == 3)
++		exit(0);
++	if (val == 4) {
++		childpid = fork();
++		if (childpid == 0) {
++			tst_res(TPASS, "SECCOMP_MODE_FILTER permits fork(2)");
++			exit(0);
++		} else {
++			wait4(childpid, &childstatus, 0, NULL);
++			if (WIFSIGNALED(childstatus) &&
++					WTERMSIG(childstatus) == SIGSYS)
++				tst_res(TPASS,
++					"SECCOMP_MODE_FILTER has been "
++					"inherited by child");
++			else
++				tst_res(TFAIL,
++					"SECCOMP_MODE_FILTER isn't been "
++					"inherited by child");
++		}
++	}
++	tst_syscall(__NR_exit, 0);
++}
++
++static void verify_prctl(void)
++{
++	int pid;
++	int status;
++
++	TEST(prctl(PR_GET_SECCOMP));
++	if (TST_RET == -1) {
++		if (TST_ERR == EINVAL) {
++			tst_res(TCONF,
++				"prctl() doesn't support PR_GET_SECCOMP");
++		} else {
++			tst_res(TFAIL | TTERRNO,
++				"prctl(PR_GET_SECCOMP) failed");
++		}
++		return;
++	}
++	tst_res(TPASS, "prctl(PR_GET_SECCOMP) succeed");
++
++	/*call get_seccomp when in stric mode ,it should be killed*/
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		check_strict_mode(1);
++	} else {
++		SAFE_WAITPID(pid, &status, 0);
++		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL)
++			tst_res(TPASS,
++				"SECCOMP_MODE_STRICT doesn't permit "
++				"GET_SECCOMP call");
++	}
++
++	/*positive check in secure computing mode*/
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		check_strict_mode(2);
++	} else {
++		SAFE_WAITPID(pid, &status, 0);
++		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL)
++			tst_res(TFAIL,
++				"SECCOMP_MODE_STRICT doesn't permit "
++				"read(2) write(2) and _exit(2)");
++	}
++
++	/*negative check in secure computing mode*/
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		check_strict_mode(3);
++	} else {
++		SAFE_WAITPID(pid, &status, 0);
++		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL)
++			tst_res(TPASS,
++				"SECCOMP_MODE_STRICT doesn't permit close(2)");
++	}
++
++	/*call get_seccomp in filter mode should be killed by SIGSYS signal*/
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		check_filter_mode(1);
++	} else {
++		SAFE_WAITPID(pid, &status, 0);
++		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSYS)
++			tst_res(TPASS,
++				"SECCOMP_MODE_FILTER doestn't permit "
++				"GET_SECCOMP call");
++	}
++
++	/*positive check in SECCOMP_MODE_FILTER*/
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		check_filter_mode(2);
++	} else {
++		SAFE_WAITPID(pid, &status, 0);
++		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSYS)
++			tst_res(TFAIL,
++				"SECCOMP_MODE_FILTER doesn't permit close(2)");
++	}
++
++	/*negative check in SECCOMP_MODE_FILTER*/
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		check_filter_mode(3);
++	} else {
++		SAFE_WAITPID(pid, &status, 0);
++		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSYS)
++			tst_res(TPASS,
++				"SECCOMP_MODE_FILTER doesn't permit exit()");
++		else
++			tst_res(TFAIL,
++				"SECCOMP_MODE_FILTER permits exit() "
++				"unexpectdly");
++	}
++
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		check_filter_mode(4);
++	} else {
++		SAFE_WAITPID(pid, &status, 0);
++		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSYS)
++			tst_res(TFAIL,
++				"SECCOMP_MODE_FILTER fork failed "
++				"unexpectdly");
++	}
++}
++
++static struct tst_test test = {
++	.test_all = verify_prctl,
++	.forks_child = 1,
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++};
+-- 
+2.18.1
+
+
+
