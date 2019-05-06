@@ -1,40 +1,31 @@
-From: Steve Muckle <smuckle@google.com>
-Date: Mon, 6 May 2019 11:06:25 -0700
-Subject: [LTP] [PATCH] ANDROID: Fix ioctl03 test for Android
-In-Reply-To: <20190506153836.232148-1-paullawrence@google.com>
-References: <20190506153836.232148-1-paullawrence@google.com>
-Message-ID: <e9e6ad70-3f35-1c07-d7e7-db2d1fe0477e@google.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 6 May 2019 21:57:03 +0200
+Subject: [LTP] [PATCH 1/1] net/broken_ip: Rewrite into new API
+In-Reply-To: <25305d65-d8ab-f0fa-dd39-defc093d6823@oracle.com>
+References: <20190427053929.7372-1-pvorel@suse.cz>
+ <5cff91e0-c566-27c3-95dd-39dd4e2b6d0e@oracle.com>
+ <20190502114459.GA32460@dell5510>
+ <0c7a3010-d7d6-1d83-0548-148adb55b2cc@oracle.com>
+ <20190506153220.GA21222@dell5510>
+ <25305d65-d8ab-f0fa-dd39-defc093d6823@oracle.com>
+Message-ID: <20190506195703.GA11266@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Reviewed-by: Steve Muckle <smuckle@google.com>
+Hi Alexey,
 
-On 5/6/19 8:38 AM, 'Paul Lawrence' via kernel-team wrote:
-> Android has tun file at /dev/tun not /dev/net/tun
-> 
-> Signed-off-by: Paul Lawrence <paullawrence@google.com>
-> ---
->   testcases/kernel/syscalls/ioctl/ioctl03.c | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/testcases/kernel/syscalls/ioctl/ioctl03.c b/testcases/kernel/syscalls/ioctl/ioctl03.c
-> index b1b50edb4..cc9a2edaf 100644
-> --- a/testcases/kernel/syscalls/ioctl/ioctl03.c
-> +++ b/testcases/kernel/syscalls/ioctl/ioctl03.c
-> @@ -79,6 +79,11 @@ static void verify_features(void)
->   	unsigned int features, i;
->   
->   	int netfd = open("/dev/net/tun", O_RDWR);
-> +
-> +	/* Android has tun at /dev/tun */
-> +	if (netfd == -1 && (errno == ENODEV || errno == ENOENT))
-> +		netfd = open("/dev/tun", O_RDWR);
-> +
->   	if (netfd == -1) {
->   		if (errno == ENODEV || errno == ENOENT)
->   			tst_brk(TCONF, "TUN support is missing?");
-> 
+> >> OK. Perhaps we should rename them to indicate that they relate to ns-icmpv_sender,
+> >> because the maximum icmp data size is 65535 - headers, not those values.
+> > True. How about this:
 
+> > export NS_ICMPV4_SENDER_DATA_MAXSIZE=1472
+> > export NS_ICMPV6_SENDER_DATA_MAXSIZE=1452
+
+> Agree.
+Thanks, merged!
+
+Kind regards,
+Petr
