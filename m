@@ -1,127 +1,226 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 7 May 2019 16:07:40 +0800
-Subject: [LTP] [PATCH v1] crypto/af_alg02: fixed read() being stuck
-In-Reply-To: <20190507065530.12174-1-camann@suse.com>
-References: <20190507065530.12174-1-camann@suse.com>
-Message-ID: <CAEemH2e=9J_7OtSsS5wq+4YgfOm1zj=PK5cnaBk69LKtdR71ZA@mail.gmail.com>
+From: Li Wang <liwan@redhat.com>
+Date: Tue, 7 May 2019 16:52:01 +0800
+Subject: [LTP] [PATCH v3] syscalls/swap{on,
+	off}: skip if FIBMAP ioctl trial fails
+In-Reply-To: <20190430235915.19512-1-xzhou@redhat.com>
+References: <20190430152949.17723-1-xzhou@redhat.com>
+ <20190430235915.19512-1-xzhou@redhat.com>
+Message-ID: <CAEemH2f3Dq9tpoD8Cq+vJ5SYoaOfVQdP3FQU-6op52U+1p=Yeg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Christian,
+Hi Murphy,
 
-On Tue, May 7, 2019 at 2:56 PM Christian Amann <camann@suse.com> wrote:
+On Wed, May 1, 2019 at 7:59 AM Murphy Zhou <xzhou@redhat.com> wrote:
 
-> On kernels < 4.14 (missing commit 2d97591ef43d) reading from
-> the request socket does not return and the testcase does not
-> finish.
+> That means swapfile in the test filesystem is not supported.
+> Add a test helper to do a FIBMAP ioctl test. Remove old fs type whitelist
+> code.
 >
-> This fix moves the logic to a child thread in order for the
-> parent to handle the timeout and report a message to the user.
->
-> Signed-off-by: Christian Amann <camann@suse.com>
+> Signed-off-by: Murphy Zhou <xzhou@redhat.com>
 > ---
->  testcases/kernel/crypto/Makefile   |  2 ++
->  testcases/kernel/crypto/af_alg02.c | 36
-> +++++++++++++++++++++++++++++++++++-
->  2 files changed, 37 insertions(+), 1 deletion(-)
+> v2:
+>    Test FIBMAP instead of fstype whitelist.
+> v3:
+>    Fix fs_type undeclared in swapoff01.c.
 >
-> diff --git a/testcases/kernel/crypto/Makefile
-> b/testcases/kernel/crypto/Makefile
-> index 76f9308c2..6547e1cb6 100644
-> --- a/testcases/kernel/crypto/Makefile
-> +++ b/testcases/kernel/crypto/Makefile
-> @@ -20,3 +20,5 @@ include $(top_srcdir)/include/mk/testcases.mk
->  CFLAGS                 += -D_GNU_SOURCE
+>  include/tst_fs.h                              |  5 +++
+>  lib/tst_ioctl.c                               | 41 +++++++++++++++++++
+>  testcases/kernel/syscalls/swapoff/swapoff01.c | 13 ++----
+>  testcases/kernel/syscalls/swapoff/swapoff02.c | 11 +++--
+>  testcases/kernel/syscalls/swapon/swapon01.c   | 13 ++----
+>  testcases/kernel/syscalls/swapon/swapon02.c   | 16 ++------
+>  testcases/kernel/syscalls/swapon/swapon03.c   | 20 ++-------
+>  7 files changed, 65 insertions(+), 54 deletions(-)
+>  create mode 100644 lib/tst_ioctl.c
 >
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> +
-> +af_alg02: CFLAGS += -pthread
-> diff --git a/testcases/kernel/crypto/af_alg02.c
-> b/testcases/kernel/crypto/af_alg02.c
-> index a9e820423..056511993 100644
-> --- a/testcases/kernel/crypto/af_alg02.c
-> +++ b/testcases/kernel/crypto/af_alg02.c
-> @@ -7,12 +7,23 @@
->   * Regression test for commit ecaaab564978 ("crypto: salsa20 - fix
->   * blkcipher_walk API usage"), or CVE-2017-17805.  This test verifies
-> that an
->   * empty message can be encrypted with Salsa20 without crashing the
-> kernel.
-> + *
-> + * read() fix:
-> + * Calls read() in child thread in order to manually kill it after
-> timeout.
-> + * With kernels missing commit 2d97591ef43d ("crypto: af_alg -
-> consolidation
-> + * of duplicate code") read() does not return.
+> diff --git a/include/tst_fs.h b/include/tst_fs.h
+> index b2b19ada6..cc38b3547 100644
+> --- a/include/tst_fs.h
+> +++ b/include/tst_fs.h
+> @@ -172,6 +172,11 @@ const char **tst_get_supported_fs_types(void);
 >   */
+>  void tst_fill_fs(const char *path, int verbose);
 >
->  #include "tst_test.h"
->  #include "tst_af_alg.h"
-> +#include "tst_safe_pthread.h"
-> +#include <pthread.h>
-> +#include <time.h>
-> +#include <errno.h>
->
-> -static void run(void)
-> +#define VERIFY_TIMEOUT (time(NULL) + 5)
->
-
-It is very neccessary to take some action before process being killed in
-timeout. In LTP, we have an tst_timeout_remaining() function. Have a look?
-
+> +/*
+> + * test if FIBMAP ioctl is supported
+> + */
+> +int tst_fibmap(void);
 > +
-> +void *verify_encrypt(void *arg)
+>  #ifdef TST_TEST_H__
+>  static inline long tst_fs_type(const char *path)
 >  {
->         char buf[16];
->         int reqfd = tst_alg_setup_reqfd("skcipher", "salsa20", NULL, 16);
-> @@ -22,6 +33,29 @@ static void run(void)
->                 tst_res(TPASS, "Successfully \"encrypted\" an empty
-> message");
->         else
->                 tst_res(TBROK, "read() didn't return 0");
-> +       return arg;
-> +}
+> diff --git a/lib/tst_ioctl.c b/lib/tst_ioctl.c
+> new file mode 100644
+> index 000000000..d468d5898
+> --- /dev/null
+> +++ b/lib/tst_ioctl.c
+> @@ -0,0 +1,41 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
 > +
-> +static void run(void)
+> +#include <errno.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <sys/ioctl.h>
+> +#include <linux/fs.h>
+> +
+> +#define TST_NO_DEFAULT_MAIN
+> +
+> +#include "tst_test.h"
+> +
+> +int tst_fibmap(void)
 > +{
-> +       pthread_t thr;
-> +       int join_ret;
-> +       struct timespec read_timeout;
+> +       /* test if FIBMAP ioctl is supported */
+> +       int fd, block = 0;
+> +       const char *tmpdir = getenv("TMPDIR");
+> +       char buf[128];
 > +
-> +       read_timeout.tv_sec  = VERIFY_TIMEOUT;
-> +       read_timeout.tv_nsec = 0;
+> +       tst_res(TINFO, "Testing if FIBMAP ioctl is supported in %s",
+> tmpdir);
 > +
-> +       SAFE_PTHREAD_CREATE(&thr, NULL, verify_encrypt, NULL);
-> +       join_ret = pthread_timedjoin_np(thr, NULL, &read_timeout);
+> +       sprintf(buf, "%s/tst_fibmap", tmpdir);
 > +
-> +       if (join_ret != 0) {
-> +               if (join_ret == ETIMEDOUT)
-> +                       tst_brk(TBROK,
-> +                               "Timed out while reading from request
-> socket.");
-> +               else
-> +                       tst_brk(TBROK | TTERRNO,
-> +                               "Error while joining child thread");
+> +       fd = open(buf, O_RDWR | O_CREAT, 0666);
+> +       if (fd < 0) {
+> +               tst_res(TWARN | TERRNO,
+> +                        "open(%s, O_RDWR | O_CREAT, 0666) failed", buf);
+> +               return 1;
 > +       }
->  }
+> +
+> +       if (ioctl(fd, FIBMAP, &block)) {
+> +               close(fd);
+> +               return 1;
+> +       }
+> +
+> +       if (close(fd)) {
+> +               tst_res(TWARN | TERRNO, "close(fd) failed");
+> +               return 1;
+> +       }
+> +       return 0;
+> +}
+> diff --git a/testcases/kernel/syscalls/swapoff/swapoff01.c
+> b/testcases/kernel/syscalls/swapoff/swapoff01.c
+> index a63e661a5..a37cd9be1 100644
+> --- a/testcases/kernel/syscalls/swapoff/swapoff01.c
+> +++ b/testcases/kernel/syscalls/swapoff/swapoff01.c
+> @@ -55,11 +55,6 @@ int main(int ac, char **av)
+>  static void verify_swapoff(void)
+>  {
+>         if (ltp_syscall(__NR_swapon, "./swapfile01", 0) != 0) {
+> -               if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
+> -                       tst_brkm(TCONF, cleanup,
+> -                                "Swapfiles on BTRFS are not implemented");
+> -               }
+> -
+>                 tst_resm(TBROK, "Failed to turn on the swap file"
+>                          ", skipping test iteration");
+>                 return;
+> @@ -86,13 +81,11 @@ static void setup(void)
 >
->  static struct tst_test test = {
-> --
-> 2.16.4
+>         tst_tmpdir();
 >
+> -       switch ((fs_type = tst_fs_type(cleanup, "."))) {
+> -       case TST_NFS_MAGIC:
+> -       case TST_TMPFS_MAGIC:
+> +       fs_type = tst_fs_type(cleanup, ".");
+> +       if (tst_fibmap()) {
+>                 tst_brkm(TCONF, cleanup,
+> -                        "Cannot do swapoff on a file on %s filesystem",
+> +                        "Cannot do FIBMAP ioctl on a file on %s
+> filesystem",
+>                          tst_fs_type_name(fs_type));
+> -       break;
+>         }
 >
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+>         if (!tst_fs_has_free(NULL, ".", 64, TST_MB)) {
+> diff --git a/testcases/kernel/syscalls/swapoff/swapoff02.c
+> b/testcases/kernel/syscalls/swapoff/swapoff02.c
+> index b5c6312a1..889f3c800 100644
+> --- a/testcases/kernel/syscalls/swapoff/swapoff02.c
+> +++ b/testcases/kernel/syscalls/swapoff/swapoff02.c
+> @@ -43,6 +43,7 @@ char *TCID = "swapoff02";
+>  int TST_TOTAL = 3;
+>
+>  static uid_t nobody_uid;
+> +static long fs_type;
+>
+>  static struct test_case_t {
+>         char *err_desc;
+> @@ -138,13 +139,11 @@ static void setup(void)
+>
+>         tst_tmpdir();
+>
+> -       switch ((type = tst_fs_type(cleanup, "."))) {
+> -       case TST_NFS_MAGIC:
+> -       case TST_TMPFS_MAGIC:
+> +       fs_type = tst_fs_type(cleanup, ".");
+> +       if (tst_fibmap()) {
+>                 tst_brkm(TCONF, cleanup,
+> -                        "Cannot do swapoff on a file on %s filesystem",
+> -                        tst_fs_type_name(type));
+> -       break;
+> +                        "Cannot do FIBMAP ioctl on a file on %s
+> filesystem",
+> +                        tst_fs_type_name(fs_type));
+>         }
+>
+>         if (!tst_fs_has_free(NULL, ".", 1, TST_KB)) {
+> diff --git a/testcases/kernel/syscalls/swapon/swapon01.c
+> b/testcases/kernel/syscalls/swapon/swapon01.c
+> index 32538f82b..0a5a3de86 100644
+> --- a/testcases/kernel/syscalls/swapon/swapon01.c
+> +++ b/testcases/kernel/syscalls/swapon/swapon01.c
+> @@ -39,11 +39,6 @@ static void verify_swapon(void)
+>         TEST(ltp_syscall(__NR_swapon, "./swapfile01", 0));
+>
+>         if (TEST_RETURN == -1) {
+> -               if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
+> -                       tst_brkm(TCONF, cleanup,
+> -                                "Swapfile on BTRFS not implemeted");
+> -                       return;
+> -               }
+>                 tst_resm(TFAIL | TTERRNO, "Failed to turn on swapfile");
+>         } else {
+>                 tst_resm(TPASS, "Succeeded to turn on swapfile");
+> @@ -84,13 +79,11 @@ static void setup(void)
+>
+>         tst_tmpdir();
+>
+> -       switch ((fs_type = tst_fs_type(cleanup, "."))) {
+> -       case TST_NFS_MAGIC:
+> -       case TST_TMPFS_MAGIC:
+> +       fs_type = tst_fs_type(cleanup, ".");
+> +       if (tst_fibmap()) {
 >
 
+I'm not sure whether FIBMAP ioctl FAIL means that swapfile is unsupportted
+on a filesystem.
+If that's true, shouldn't we verify FIBMAP ioctl on the swapfile?  Here you
+just test that in a tmp file, it probably not a correct way I guess.
+
+IMO, maybe we can define the function API as:
+    tst_fibmap(const char *filename);
+And calling it in behind of make_swapfile(cleanup, "swapfile01");
+
+Beside that, there is another issue in this patch, since the
+getenv("TMPDIR"); depend on runltp script, so we cann't run the test
+independently.
+
+# ./swapon01
+tst_ioctl.c:20: INFO: Testing if FIBMAP ioctl is supported in (null)
+tst_ioctl.c:27: WARN: open((null)/tst_fibmap, O_RDWR | O_CREAT, 0666)
+failed: ENOENT
+swapon01    1  TCONF  :  swapon01.c:86: Cannot do FIBMAP ioctl on a file on
+XFS filesystem
+swapon01    2  TCONF  :  swapon01.c:86: Remaining cases not appropriate for
+configuration
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190507/91dec0ac/attachment.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190507/9bdefaa0/attachment-0001.html>
