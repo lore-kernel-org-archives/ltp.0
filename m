@@ -1,267 +1,78 @@
-From: Murphy Zhou <xzhou@redhat.com>
-Date: Wed, 8 May 2019 22:38:19 +0800
-Subject: [LTP] [PATCH v3] syscalls/swap{on,
- off}: skip if FIBMAP ioctl trial fails
-In-Reply-To: <CAOQ4uxjDyx7JFBSmkDe-rHNe=NriT710Ldsva=s+HasaDL0CTw@mail.gmail.com>
-References: <20190430152949.17723-1-xzhou@redhat.com>
- <20190430235915.19512-1-xzhou@redhat.com>
- <CAEemH2f3Dq9tpoD8Cq+vJ5SYoaOfVQdP3FQU-6op52U+1p=Yeg@mail.gmail.com>
- <20190508034331.hc6rssg4mc66k5xc@XZHOUW.usersys.redhat.com>
- <CAOQ4uxjDyx7JFBSmkDe-rHNe=NriT710Ldsva=s+HasaDL0CTw@mail.gmail.com>
-Message-ID: <20190508143819.vbp275hnpf4nhofo@XZHOUW.usersys.redhat.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 8 May 2019 11:04:19 -0400 (EDT)
+Subject: [LTP] [PATCH 2/2] libltpnuma: remove restrictions on numa
+ node-id
+In-Reply-To: <20190508052318.9020-3-liwang@redhat.com>
+References: <20190508052318.9020-3-liwang@redhat.com>
+Message-ID: <1178223584.21691194.1557327858998.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
 
-On Wed, May 08, 2019 at 01:22:15PM +0300, Amir Goldstein wrote:
-> On Wed, May 8, 2019 at 6:43 AM Murphy Zhou <xzhou@redhat.com> wrote:
-> >
-> > Hi,
-> >
-> > Thanks for reviewing!
-> >
-> > On Tue, May 07, 2019 at 04:52:01PM +0800, Li Wang wrote:
-> > > Hi Murphy,
-> > >
-> > > On Wed, May 1, 2019 at 7:59 AM Murphy Zhou <xzhou@redhat.com> wrote:
-> > >
-> > > > That means swapfile in the test filesystem is not supported.
-> > > > Add a test helper to do a FIBMAP ioctl test. Remove old fs type whitelist
-> > > > code.
-> > > >
-> > > > Signed-off-by: Murphy Zhou <xzhou@redhat.com>
-> > > > ---
-> > > > v2:
-> > > >    Test FIBMAP instead of fstype whitelist.
-> > > > v3:
-> > > >    Fix fs_type undeclared in swapoff01.c.
-> > > >
-> > > >  include/tst_fs.h                              |  5 +++
-> > > >  lib/tst_ioctl.c                               | 41 +++++++++++++++++++
-> > > >  testcases/kernel/syscalls/swapoff/swapoff01.c | 13 ++----
-> > > >  testcases/kernel/syscalls/swapoff/swapoff02.c | 11 +++--
-> > > >  testcases/kernel/syscalls/swapon/swapon01.c   | 13 ++----
-> > > >  testcases/kernel/syscalls/swapon/swapon02.c   | 16 ++------
-> > > >  testcases/kernel/syscalls/swapon/swapon03.c   | 20 ++-------
-> > > >  7 files changed, 65 insertions(+), 54 deletions(-)
-> > > >  create mode 100644 lib/tst_ioctl.c
-> > > >
-> > > > diff --git a/include/tst_fs.h b/include/tst_fs.h
-> > > > index b2b19ada6..cc38b3547 100644
-> > > > --- a/include/tst_fs.h
-> > > > +++ b/include/tst_fs.h
-> > > > @@ -172,6 +172,11 @@ const char **tst_get_supported_fs_types(void);
-> > > >   */
-> > > >  void tst_fill_fs(const char *path, int verbose);
-> > > >
-> > > > +/*
-> > > > + * test if FIBMAP ioctl is supported
-> > > > + */
-> > > > +int tst_fibmap(void);
-> > > > +
-> > > >  #ifdef TST_TEST_H__
-> > > >  static inline long tst_fs_type(const char *path)
-> > > >  {
-> > > > diff --git a/lib/tst_ioctl.c b/lib/tst_ioctl.c
-> > > > new file mode 100644
-> > > > index 000000000..d468d5898
-> > > > --- /dev/null
-> > > > +++ b/lib/tst_ioctl.c
-> > > > @@ -0,0 +1,41 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > > > +
-> > > > +#include <errno.h>
-> > > > +#include <stdio.h>
-> > > > +#include <stdlib.h>
-> > > > +#include <sys/ioctl.h>
-> > > > +#include <linux/fs.h>
-> > > > +
-> > > > +#define TST_NO_DEFAULT_MAIN
-> > > > +
-> > > > +#include "tst_test.h"
-> > > > +
-> > > > +int tst_fibmap(void)
-> > > > +{
-> > > > +       /* test if FIBMAP ioctl is supported */
-> > > > +       int fd, block = 0;
-> > > > +       const char *tmpdir = getenv("TMPDIR");
-> > > > +       char buf[128];
-> > > > +
-> > > > +       tst_res(TINFO, "Testing if FIBMAP ioctl is supported in %s",
-> > > > tmpdir);
-> > > > +
-> > > > +       sprintf(buf, "%s/tst_fibmap", tmpdir);
-> > > > +
-> > > > +       fd = open(buf, O_RDWR | O_CREAT, 0666);
-> > > > +       if (fd < 0) {
-> > > > +               tst_res(TWARN | TERRNO,
-> > > > +                        "open(%s, O_RDWR | O_CREAT, 0666) failed", buf);
-> > > > +               return 1;
-> > > > +       }
-> > > > +
-> > > > +       if (ioctl(fd, FIBMAP, &block)) {
-> > > > +               close(fd);
-> > > > +               return 1;
-> > > > +       }
-> > > > +
-> > > > +       if (close(fd)) {
-> > > > +               tst_res(TWARN | TERRNO, "close(fd) failed");
-> > > > +               return 1;
-> > > > +       }
-> > > > +       return 0;
-> > > > +}
-> > > > diff --git a/testcases/kernel/syscalls/swapoff/swapoff01.c
-> > > > b/testcases/kernel/syscalls/swapoff/swapoff01.c
-> > > > index a63e661a5..a37cd9be1 100644
-> > > > --- a/testcases/kernel/syscalls/swapoff/swapoff01.c
-> > > > +++ b/testcases/kernel/syscalls/swapoff/swapoff01.c
-> > > > @@ -55,11 +55,6 @@ int main(int ac, char **av)
-> > > >  static void verify_swapoff(void)
-> > > >  {
-> > > >         if (ltp_syscall(__NR_swapon, "./swapfile01", 0) != 0) {
-> > > > -               if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
-> > > > -                       tst_brkm(TCONF, cleanup,
-> > > > -                                "Swapfiles on BTRFS are not implemented");
-> > > > -               }
-> > > > -
-> > > >                 tst_resm(TBROK, "Failed to turn on the swap file"
-> > > >                          ", skipping test iteration");
-> > > >                 return;
-> > > > @@ -86,13 +81,11 @@ static void setup(void)
-> > > >
-> > > >         tst_tmpdir();
-> > > >
-> > > > -       switch ((fs_type = tst_fs_type(cleanup, "."))) {
-> > > > -       case TST_NFS_MAGIC:
-> > > > -       case TST_TMPFS_MAGIC:
-> > > > +       fs_type = tst_fs_type(cleanup, ".");
-> > > > +       if (tst_fibmap()) {
-> > > >                 tst_brkm(TCONF, cleanup,
-> > > > -                        "Cannot do swapoff on a file on %s filesystem",
-> > > > +                        "Cannot do FIBMAP ioctl on a file on %s
-> > > > filesystem",
-> > > >                          tst_fs_type_name(fs_type));
-> > > > -       break;
-> > > >         }
-> > > >
-> > > >         if (!tst_fs_has_free(NULL, ".", 64, TST_MB)) {
-> > > > diff --git a/testcases/kernel/syscalls/swapoff/swapoff02.c
-> > > > b/testcases/kernel/syscalls/swapoff/swapoff02.c
-> > > > index b5c6312a1..889f3c800 100644
-> > > > --- a/testcases/kernel/syscalls/swapoff/swapoff02.c
-> > > > +++ b/testcases/kernel/syscalls/swapoff/swapoff02.c
-> > > > @@ -43,6 +43,7 @@ char *TCID = "swapoff02";
-> > > >  int TST_TOTAL = 3;
-> > > >
-> > > >  static uid_t nobody_uid;
-> > > > +static long fs_type;
-> > > >
-> > > >  static struct test_case_t {
-> > > >         char *err_desc;
-> > > > @@ -138,13 +139,11 @@ static void setup(void)
-> > > >
-> > > >         tst_tmpdir();
-> > > >
-> > > > -       switch ((type = tst_fs_type(cleanup, "."))) {
-> > > > -       case TST_NFS_MAGIC:
-> > > > -       case TST_TMPFS_MAGIC:
-> > > > +       fs_type = tst_fs_type(cleanup, ".");
-> > > > +       if (tst_fibmap()) {
-> > > >                 tst_brkm(TCONF, cleanup,
-> > > > -                        "Cannot do swapoff on a file on %s filesystem",
-> > > > -                        tst_fs_type_name(type));
-> > > > -       break;
-> > > > +                        "Cannot do FIBMAP ioctl on a file on %s
-> > > > filesystem",
-> > > > +                        tst_fs_type_name(fs_type));
-> > > >         }
-> > > >
-> > > >         if (!tst_fs_has_free(NULL, ".", 1, TST_KB)) {
-> > > > diff --git a/testcases/kernel/syscalls/swapon/swapon01.c
-> > > > b/testcases/kernel/syscalls/swapon/swapon01.c
-> > > > index 32538f82b..0a5a3de86 100644
-> > > > --- a/testcases/kernel/syscalls/swapon/swapon01.c
-> > > > +++ b/testcases/kernel/syscalls/swapon/swapon01.c
-> > > > @@ -39,11 +39,6 @@ static void verify_swapon(void)
-> > > >         TEST(ltp_syscall(__NR_swapon, "./swapfile01", 0));
-> > > >
-> > > >         if (TEST_RETURN == -1) {
-> > > > -               if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
-> > > > -                       tst_brkm(TCONF, cleanup,
-> > > > -                                "Swapfile on BTRFS not implemeted");
-> > > > -                       return;
-> > > > -               }
-> > > >                 tst_resm(TFAIL | TTERRNO, "Failed to turn on swapfile");
-> > > >         } else {
-> > > >                 tst_resm(TPASS, "Succeeded to turn on swapfile");
-> > > > @@ -84,13 +79,11 @@ static void setup(void)
-> > > >
-> > > >         tst_tmpdir();
-> > > >
-> > > > -       switch ((fs_type = tst_fs_type(cleanup, "."))) {
-> > > > -       case TST_NFS_MAGIC:
-> > > > -       case TST_TMPFS_MAGIC:
-> > > > +       fs_type = tst_fs_type(cleanup, ".");
-> > > > +       if (tst_fibmap()) {
-> > > >
-> > >
-> > > I'm not sure whether FIBMAP ioctl FAIL means that swapfile is unsupportted
-> > > on a filesystem.
+
+----- Original Message -----
+> For some ppc64le systems, it has non-continuous numa nodes in
+> hardware configuration. So we're hitting the below warnings while
+> running set_mempolicy tests on that. To fix this issue, let's just
+> remove restrictions on numa node-id in get_mempolicy().
 > 
-> Li is correct here. BTRFS and NFS on recent kernel support swapfile but not
-> support FIBMAP ioctl, so if you want to add test coverage for NFS and
-> BTRFS, I'm afraid they would have to be whitelisted after all, but not
-> is setup()
-> because depending on kernel, they may support swapfile and may not.
-> Worse even, BTRFS had FIBMAP support for a while and then removed, see:
-> ed46ff3d4237 Btrfs: support swap files
-> 35054394c4b3 Btrfs: stop providing a bmap operation to avoid swapfile
-> corruptions
-
-Great to know! Thanks for pointing that out. Much learned. :)
-
+> Error Log
+> ---------
+> tst_test.c:1096: INFO: Timeout per run is 0h 50m 00s
+> tst_numa.c:190: INFO: Found 2 NUMA memory nodes
+> set_mempolicy01.c:63: PASS: set_mempolicy(MPOL_BIND) node 0
+> tst_numa.c:26: INFO: Node 0 allocated 16 pages
+> tst_numa.c:26: INFO: Node 8 allocated 0 pages
+> set_mempolicy01.c:82: PASS: child: Node 0 allocated 16
+> set_mempolicy01.c:63: PASS: set_mempolicy(MPOL_BIND) node 8
+> tst_numa.c:92: WARN: get_mempolicy(...) returned invalid node 8
+> tst_numa.c:92: WARN: get_mempolicy(...) returned invalid node 8
+> tst_numa.c:92: WARN: get_mempolicy(...) returned invalid node 8
+> ...
+> tst_numa.c:26: INFO: Node 0 allocated 0 pages
+> tst_numa.c:26: INFO: Node 8 allocated 0 pages
+> set_mempolicy01.c:86: FAIL: child: Node 8 allocated 0, expected 16
 > 
-> Sorry I missed this before.
-
-It's my bad not checking carefully.
+> lscpu
+> -----
+> Architecture:        ppc64le
+> ...
+> CPU(s):              128
+> Core(s) per socket:  16
+> Socket(s):           2
+> NUMA node(s):        2
+> Model name:          POWER9, altivec supported
+> ...
+> NUMA node0 CPU(s):   0-63
+> NUMA node8 CPU(s):   64-127
 > 
-> > > If that's true, shouldn't we verify FIBMAP ioctl on the swapfile?  Here you
-> > > just test that in a tmp file, it probably not a correct way I guess.
-> >
-> > We don't need to test on a swapfile. If the filesystem we are testing
-> > supports FIBMAP iotcl, we can make a file in this filesystem a swapfile.
-> >
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  libs/libltpnuma/tst_numa.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> In theory, FIBMAP can work on certain files and fail on certain files
-> (e.g. reflinked xfs/ocfs2 file), but that is unlikely the case in this test
-> and not related to file being a swap file.
+> diff --git a/libs/libltpnuma/tst_numa.c b/libs/libltpnuma/tst_numa.c
+> index 0ba6daf39..56c8640ff 100644
+> --- a/libs/libltpnuma/tst_numa.c
+> +++ b/libs/libltpnuma/tst_numa.c
+> @@ -88,8 +88,9 @@ void tst_nodemap_count_pages(struct tst_nodemap *nodes,
+>  		if (ret < 0)
+>  			tst_brk(TBROK | TERRNO, "get_mempolicy() failed");
+>  
+> -		if (node < 0 || (unsigned int)node >= nodes->cnt) {
+> -			tst_res(TWARN, "get_mempolicy(...) returned invalid node %i\n", node);
+> +		if (node < 0) {
+> +			tst_res(TWARN,
+> +				"get_mempolicy(...) returned invalid node %i\n", node);
+>  			continue;
+>  		}
+>  
+> --
+> 2.20.1
 
-Agreed. Sounds like a corner case in these corner swap rests to me :)
-> 
-> In conclusion
-> 1. If filesystem supports FIBMAP its a very strong indication that
->     filesystem supports swapfile, but in theory a future  filesystem
->     could fail this test (don't see a reason for that to happen).
+2/2 looks good to me:
 
-I mainly thought about ths situation. We can let the following swap* test
-go to see what's happening.
-
-> 2. If filesystem does not support FIBMAP it can support swapfile
->     btrfs and nfs are examples in current upstream, but in future could
->     be other filesystems as well
-> 
-> Suggestion: test in setup FIBMAP. If not supported don't fail immediately
-> but do the try and fail softly with TCONF that is currently implemented
-> for TST_BTRFS_MAGIC.
-
-Reasonable to me. Thanks for the suggestion. We can go wo/ whitelist.
-
-Thanks,
-M
-> 
-> Thanks,
-> Amir.
+Acked-by: Jan Stancek <jstancek@redhat.com>
