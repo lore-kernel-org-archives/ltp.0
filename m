@@ -1,273 +1,267 @@
-From: Christian Amann <camann@suse.com>
-Date: Wed,  8 May 2019 13:28:22 +0200
-Subject: [LTP] [PATCH v3] syscalls/rt_sigqueueinfo01: rewrote testcase
-Message-ID: <20190508112822.27255-1-camann@suse.com>
+From: Murphy Zhou <xzhou@redhat.com>
+Date: Wed, 8 May 2019 22:38:19 +0800
+Subject: [LTP] [PATCH v3] syscalls/swap{on,
+ off}: skip if FIBMAP ioctl trial fails
+In-Reply-To: <CAOQ4uxjDyx7JFBSmkDe-rHNe=NriT710Ldsva=s+HasaDL0CTw@mail.gmail.com>
+References: <20190430152949.17723-1-xzhou@redhat.com>
+ <20190430235915.19512-1-xzhou@redhat.com>
+ <CAEemH2f3Dq9tpoD8Cq+vJ5SYoaOfVQdP3FQU-6op52U+1p=Yeg@mail.gmail.com>
+ <20190508034331.hc6rssg4mc66k5xc@XZHOUW.usersys.redhat.com>
+ <CAOQ4uxjDyx7JFBSmkDe-rHNe=NriT710Ldsva=s+HasaDL0CTw@mail.gmail.com>
+Message-ID: <20190508143819.vbp275hnpf4nhofo@XZHOUW.usersys.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The previous implementation only tested if the syscall can
-be called at all. Now it also checks if the correct signal
-and data is sent and received.
+Hi,
 
-Signed-off-by: Christian Amann <camann@suse.com>
----
+On Wed, May 08, 2019 at 01:22:15PM +0300, Amir Goldstein wrote:
+> On Wed, May 8, 2019 at 6:43 AM Murphy Zhou <xzhou@redhat.com> wrote:
+> >
+> > Hi,
+> >
+> > Thanks for reviewing!
+> >
+> > On Tue, May 07, 2019 at 04:52:01PM +0800, Li Wang wrote:
+> > > Hi Murphy,
+> > >
+> > > On Wed, May 1, 2019 at 7:59 AM Murphy Zhou <xzhou@redhat.com> wrote:
+> > >
+> > > > That means swapfile in the test filesystem is not supported.
+> > > > Add a test helper to do a FIBMAP ioctl test. Remove old fs type whitelist
+> > > > code.
+> > > >
+> > > > Signed-off-by: Murphy Zhou <xzhou@redhat.com>
+> > > > ---
+> > > > v2:
+> > > >    Test FIBMAP instead of fstype whitelist.
+> > > > v3:
+> > > >    Fix fs_type undeclared in swapoff01.c.
+> > > >
+> > > >  include/tst_fs.h                              |  5 +++
+> > > >  lib/tst_ioctl.c                               | 41 +++++++++++++++++++
+> > > >  testcases/kernel/syscalls/swapoff/swapoff01.c | 13 ++----
+> > > >  testcases/kernel/syscalls/swapoff/swapoff02.c | 11 +++--
+> > > >  testcases/kernel/syscalls/swapon/swapon01.c   | 13 ++----
+> > > >  testcases/kernel/syscalls/swapon/swapon02.c   | 16 ++------
+> > > >  testcases/kernel/syscalls/swapon/swapon03.c   | 20 ++-------
+> > > >  7 files changed, 65 insertions(+), 54 deletions(-)
+> > > >  create mode 100644 lib/tst_ioctl.c
+> > > >
+> > > > diff --git a/include/tst_fs.h b/include/tst_fs.h
+> > > > index b2b19ada6..cc38b3547 100644
+> > > > --- a/include/tst_fs.h
+> > > > +++ b/include/tst_fs.h
+> > > > @@ -172,6 +172,11 @@ const char **tst_get_supported_fs_types(void);
+> > > >   */
+> > > >  void tst_fill_fs(const char *path, int verbose);
+> > > >
+> > > > +/*
+> > > > + * test if FIBMAP ioctl is supported
+> > > > + */
+> > > > +int tst_fibmap(void);
+> > > > +
+> > > >  #ifdef TST_TEST_H__
+> > > >  static inline long tst_fs_type(const char *path)
+> > > >  {
+> > > > diff --git a/lib/tst_ioctl.c b/lib/tst_ioctl.c
+> > > > new file mode 100644
+> > > > index 000000000..d468d5898
+> > > > --- /dev/null
+> > > > +++ b/lib/tst_ioctl.c
+> > > > @@ -0,0 +1,41 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > > > +
+> > > > +#include <errno.h>
+> > > > +#include <stdio.h>
+> > > > +#include <stdlib.h>
+> > > > +#include <sys/ioctl.h>
+> > > > +#include <linux/fs.h>
+> > > > +
+> > > > +#define TST_NO_DEFAULT_MAIN
+> > > > +
+> > > > +#include "tst_test.h"
+> > > > +
+> > > > +int tst_fibmap(void)
+> > > > +{
+> > > > +       /* test if FIBMAP ioctl is supported */
+> > > > +       int fd, block = 0;
+> > > > +       const char *tmpdir = getenv("TMPDIR");
+> > > > +       char buf[128];
+> > > > +
+> > > > +       tst_res(TINFO, "Testing if FIBMAP ioctl is supported in %s",
+> > > > tmpdir);
+> > > > +
+> > > > +       sprintf(buf, "%s/tst_fibmap", tmpdir);
+> > > > +
+> > > > +       fd = open(buf, O_RDWR | O_CREAT, 0666);
+> > > > +       if (fd < 0) {
+> > > > +               tst_res(TWARN | TERRNO,
+> > > > +                        "open(%s, O_RDWR | O_CREAT, 0666) failed", buf);
+> > > > +               return 1;
+> > > > +       }
+> > > > +
+> > > > +       if (ioctl(fd, FIBMAP, &block)) {
+> > > > +               close(fd);
+> > > > +               return 1;
+> > > > +       }
+> > > > +
+> > > > +       if (close(fd)) {
+> > > > +               tst_res(TWARN | TERRNO, "close(fd) failed");
+> > > > +               return 1;
+> > > > +       }
+> > > > +       return 0;
+> > > > +}
+> > > > diff --git a/testcases/kernel/syscalls/swapoff/swapoff01.c
+> > > > b/testcases/kernel/syscalls/swapoff/swapoff01.c
+> > > > index a63e661a5..a37cd9be1 100644
+> > > > --- a/testcases/kernel/syscalls/swapoff/swapoff01.c
+> > > > +++ b/testcases/kernel/syscalls/swapoff/swapoff01.c
+> > > > @@ -55,11 +55,6 @@ int main(int ac, char **av)
+> > > >  static void verify_swapoff(void)
+> > > >  {
+> > > >         if (ltp_syscall(__NR_swapon, "./swapfile01", 0) != 0) {
+> > > > -               if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
+> > > > -                       tst_brkm(TCONF, cleanup,
+> > > > -                                "Swapfiles on BTRFS are not implemented");
+> > > > -               }
+> > > > -
+> > > >                 tst_resm(TBROK, "Failed to turn on the swap file"
+> > > >                          ", skipping test iteration");
+> > > >                 return;
+> > > > @@ -86,13 +81,11 @@ static void setup(void)
+> > > >
+> > > >         tst_tmpdir();
+> > > >
+> > > > -       switch ((fs_type = tst_fs_type(cleanup, "."))) {
+> > > > -       case TST_NFS_MAGIC:
+> > > > -       case TST_TMPFS_MAGIC:
+> > > > +       fs_type = tst_fs_type(cleanup, ".");
+> > > > +       if (tst_fibmap()) {
+> > > >                 tst_brkm(TCONF, cleanup,
+> > > > -                        "Cannot do swapoff on a file on %s filesystem",
+> > > > +                        "Cannot do FIBMAP ioctl on a file on %s
+> > > > filesystem",
+> > > >                          tst_fs_type_name(fs_type));
+> > > > -       break;
+> > > >         }
+> > > >
+> > > >         if (!tst_fs_has_free(NULL, ".", 64, TST_MB)) {
+> > > > diff --git a/testcases/kernel/syscalls/swapoff/swapoff02.c
+> > > > b/testcases/kernel/syscalls/swapoff/swapoff02.c
+> > > > index b5c6312a1..889f3c800 100644
+> > > > --- a/testcases/kernel/syscalls/swapoff/swapoff02.c
+> > > > +++ b/testcases/kernel/syscalls/swapoff/swapoff02.c
+> > > > @@ -43,6 +43,7 @@ char *TCID = "swapoff02";
+> > > >  int TST_TOTAL = 3;
+> > > >
+> > > >  static uid_t nobody_uid;
+> > > > +static long fs_type;
+> > > >
+> > > >  static struct test_case_t {
+> > > >         char *err_desc;
+> > > > @@ -138,13 +139,11 @@ static void setup(void)
+> > > >
+> > > >         tst_tmpdir();
+> > > >
+> > > > -       switch ((type = tst_fs_type(cleanup, "."))) {
+> > > > -       case TST_NFS_MAGIC:
+> > > > -       case TST_TMPFS_MAGIC:
+> > > > +       fs_type = tst_fs_type(cleanup, ".");
+> > > > +       if (tst_fibmap()) {
+> > > >                 tst_brkm(TCONF, cleanup,
+> > > > -                        "Cannot do swapoff on a file on %s filesystem",
+> > > > -                        tst_fs_type_name(type));
+> > > > -       break;
+> > > > +                        "Cannot do FIBMAP ioctl on a file on %s
+> > > > filesystem",
+> > > > +                        tst_fs_type_name(fs_type));
+> > > >         }
+> > > >
+> > > >         if (!tst_fs_has_free(NULL, ".", 1, TST_KB)) {
+> > > > diff --git a/testcases/kernel/syscalls/swapon/swapon01.c
+> > > > b/testcases/kernel/syscalls/swapon/swapon01.c
+> > > > index 32538f82b..0a5a3de86 100644
+> > > > --- a/testcases/kernel/syscalls/swapon/swapon01.c
+> > > > +++ b/testcases/kernel/syscalls/swapon/swapon01.c
+> > > > @@ -39,11 +39,6 @@ static void verify_swapon(void)
+> > > >         TEST(ltp_syscall(__NR_swapon, "./swapfile01", 0));
+> > > >
+> > > >         if (TEST_RETURN == -1) {
+> > > > -               if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
+> > > > -                       tst_brkm(TCONF, cleanup,
+> > > > -                                "Swapfile on BTRFS not implemeted");
+> > > > -                       return;
+> > > > -               }
+> > > >                 tst_resm(TFAIL | TTERRNO, "Failed to turn on swapfile");
+> > > >         } else {
+> > > >                 tst_resm(TPASS, "Succeeded to turn on swapfile");
+> > > > @@ -84,13 +79,11 @@ static void setup(void)
+> > > >
+> > > >         tst_tmpdir();
+> > > >
+> > > > -       switch ((fs_type = tst_fs_type(cleanup, "."))) {
+> > > > -       case TST_NFS_MAGIC:
+> > > > -       case TST_TMPFS_MAGIC:
+> > > > +       fs_type = tst_fs_type(cleanup, ".");
+> > > > +       if (tst_fibmap()) {
+> > > >
+> > >
+> > > I'm not sure whether FIBMAP ioctl FAIL means that swapfile is unsupportted
+> > > on a filesystem.
+> 
+> Li is correct here. BTRFS and NFS on recent kernel support swapfile but not
+> support FIBMAP ioctl, so if you want to add test coverage for NFS and
+> BTRFS, I'm afraid they would have to be whitelisted after all, but not
+> is setup()
+> because depending on kernel, they may support swapfile and may not.
+> Worse even, BTRFS had FIBMAP support for a while and then removed, see:
+> ed46ff3d4237 Btrfs: support swap files
+> 35054394c4b3 Btrfs: stop providing a bmap operation to avoid swapfile
+> corruptions
 
-Notes:
-    Kept header file in case of future additions.
-    Other than that: included all suggestions from v2 of this patch.
-    + added solution to avoid 'tst_brk(TFAIL, ...)'
+Great to know! Thanks for pointing that out. Much learned. :)
 
- testcases/kernel/syscalls/rt_sigqueueinfo/Makefile |   2 +
- .../syscalls/rt_sigqueueinfo/rt_sigqueueinfo.h     |  17 ++
- .../syscalls/rt_sigqueueinfo/rt_sigqueueinfo01.c   | 189 +++++++++++----------
- 3 files changed, 121 insertions(+), 87 deletions(-)
- create mode 100644 testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo.h
+> 
+> Sorry I missed this before.
 
-diff --git a/testcases/kernel/syscalls/rt_sigqueueinfo/Makefile b/testcases/kernel/syscalls/rt_sigqueueinfo/Makefile
-index 2ef86f06f..498ba8e31 100644
---- a/testcases/kernel/syscalls/rt_sigqueueinfo/Makefile
-+++ b/testcases/kernel/syscalls/rt_sigqueueinfo/Makefile
-@@ -21,3 +21,5 @@ top_srcdir		?= ../../../..
- include $(top_srcdir)/include/mk/testcases.mk
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+
-+rt_sigqueueinfo01: CFLAGS += -pthread
-diff --git a/testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo.h b/testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo.h
-new file mode 100644
-index 000000000..1489afadf
---- /dev/null
-+++ b/testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo.h
-@@ -0,0 +1,17 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 SUSE LLC
-+ * Author: Christian Amann <camann@suse.com>
-+ */
-+
-+#ifndef __RT_SIGQUEUEINFO_H__
-+#define __RT_SIGQUEUEINFO_H__
-+
-+#include "lapi/syscalls.h"
-+
-+static int sys_rt_sigqueueinfo(pid_t tgid, int sig, siginfo_t *uinfo)
-+{
-+	return tst_syscall(__NR_rt_sigqueueinfo, tgid, sig, uinfo);
-+}
-+
-+#endif /* __RT_SIGQUEUEINFO_H__ */
-diff --git a/testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo01.c b/testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo01.c
-index 9d0cff96d..5996e998b 100644
---- a/testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo01.c
-+++ b/testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqueueinfo01.c
-@@ -1,102 +1,117 @@
--/******************************************************************************/
--/* Copyright (c) Crackerjack Project., 2007                                   */
--/*                                                                            */
--/* This program is free software;  you can redistribute it and/or modify      */
--/* it under the terms of the GNU General Public License as published by       */
--/* the Free Software Foundation; either version 2 of the License, or          */
--/* (at your option) any later version.                                        */
--/*                                                                            */
--/* This program is distributed in the hope that it will be useful,            */
--/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
--/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
--/* the GNU General Public License for more details.                           */
--/*                                                                            */
--/* You should have received a copy of the GNU General Public License          */
--/* along with this program;  if not, write to the Free Software               */
--/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
--/*                                                                            */
--/******************************************************************************/
--/******************************************************************************/
--/*                                                                            */
--/* File:        rt_sigqueueinfo01.c                                           */
--/*                                                                            */
--/* Description: This tests the rt_sigqueueinfo() syscall.                     */
--/*		rt_sigqueueinfo() Send signal information to a signal	      */
--/*									      */
--/* Usage:  <for command-line>                                                 */
--/* rt_sigqueueinfo01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                     */
--/*      where,  -c n : Run n copies concurrently.                             */
--/*              -e   : Turn on errno logging.                                 */
--/*              -i n : Execute test n times.                                  */
--/*              -I x : Execute test for x seconds.                            */
--/*              -P x : Pause for x seconds between iterations.                */
--/*              -t   : Turn on syscall timing.                                */
--/*                                                                            */
--/* Total Tests: 2                                                             */
--/*                                                                            */
--/* Test Name:   rt_sigqueueinfo01                                              */
--/* History:     Porting from Crackerjack to LTP is done by                    */
--/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
--/******************************************************************************/
--#include <sys/wait.h>
--#include <stdio.h>
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 SUSE LLC
-+ * Author: Christian Amann <camann@suse.com>
-+ */
-+
-+/*
-+ * This tests the rt_sigqueueinfo() syscall.
-+ *
-+ * It does so by creating a thread which registers the corresponding
-+ * signal handler. After that the main thread sends a signal and data
-+ * to the handler thread. If the correct signal and data is received,
-+ * the test is successful.
-+ */
-+
- #include <signal.h>
--#include <err.h>
--#include <errno.h>
- #include <stdlib.h>
--#include <unistd.h>
--#include <sys/syscall.h>
--#include <string.h>
-+#include "config.h"
-+#include "tst_test.h"
-+#include "tst_safe_pthread.h"
-+
-+#ifdef HAVE_STRUCT_SIGACTION_SA_SIGACTION
-+#include "rt_sigqueueinfo.h"
- 
--#include "test.h"
--#include "lapi/syscalls.h"
-+#define SIGNAL	SIGUSR1
-+#define DATA	777
- 
--char *TCID = "rt_sigqueueinfo01";
--int testno;
--int TST_TOTAL = 2;
-+static struct sigaction *sig_action;
-+static int sig_rec;
-+static siginfo_t *uinfo;
-+static pid_t tid;
-+
-+static void received_signal(int sig, siginfo_t *info, void *ucontext)
-+{
-+	if (info && ucontext) {
-+		if (sig == SIGNAL && info->si_value.sival_int == DATA) {
-+			tst_res(TPASS, "Received correct signal and data!");
-+			sig_rec = 1;
-+		} else
-+			tst_res(TFAIL, "Received wrong signal and/or data!");
-+	} else
-+		tst_res(TFAIL, "Signal handling went wrong!");
-+}
- 
--void cleanup(void)
-+static void *handle_thread(void *arg LTP_ATTRIBUTE_UNUSED)
- {
-+	int ret;
- 
--	tst_rmdir();
-+	tid = tst_syscall(__NR_gettid);
- 
-+	ret = sigaction(SIGNAL, sig_action, NULL);
-+	if (ret)
-+		tst_brk(TBROK, "Failed to set sigaction for handler thread!");
-+
-+	TST_CHECKPOINT_WAKE(0);
-+	TST_CHECKPOINT_WAIT(1);
-+	return arg;
- }
- 
--void setup(void)
-+static void verify_sigqueueinfo(void)
- {
--	TEST_PAUSE;
--	tst_tmpdir();
-+	pthread_t thr;
-+
-+	SAFE_PTHREAD_CREATE(&thr, NULL, handle_thread, NULL);
-+
-+	TST_CHECKPOINT_WAIT(0);
-+
-+	TEST(sys_rt_sigqueueinfo(tid, SIGNAL, uinfo));
-+	if (TST_RET != 0) {
-+		tst_res(TFAIL | TTERRNO, "rt_sigqueueinfo() failed");
-+		return;
-+	}
-+
-+	TST_CHECKPOINT_WAKE(1);
-+	SAFE_PTHREAD_JOIN(thr, NULL);
-+
-+	if (sig_rec)
-+		tst_res(TPASS, "rt_sigqueueinfo() was successful!");
- }
- 
--int main(void)
-+static void setup(void)
- {
--	int status;
--	pid_t pid;
--	pid = getpid();
--	siginfo_t uinfo;
--
--	tst_count = 0;
--	for (testno = 0; testno < TST_TOTAL; ++testno) {
--		TEST(pid = fork());
--		setup();
--		if (TEST_RETURN < 0)
--			tst_brkm(TFAIL | TTERRNO, cleanup, "fork failed");
--		else if (TEST_RETURN == 0) {
--			uinfo.si_errno = 0;
--			uinfo.si_code = SI_QUEUE;
--			TEST(ltp_syscall(__NR_rt_sigqueueinfo, getpid(),
--				SIGCHLD, &uinfo));
--			if (TEST_RETURN != 0)
--				err(1, "rt_sigqueueinfo");
--			exit(0);
--		} else {
--			wait(&status);
--			if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
--				tst_resm(TPASS, "Test Succeeded");
--			else
--				tst_resm(TFAIL, "Test Failed");
--		}
--		cleanup();
--	}
--	tst_exit();
-+	sig_action = SAFE_MALLOC(sizeof(struct sigaction));
-+
-+	memset(sig_action, 0, sizeof(*sig_action));
-+	sig_action->sa_sigaction = received_signal;
-+	sig_action->sa_flags = SA_SIGINFO;
-+
-+	uinfo = SAFE_MALLOC(sizeof(siginfo_t));
-+
-+	memset(uinfo, 0, sizeof(*uinfo));
-+	uinfo->si_code = SI_QUEUE;
-+	uinfo->si_pid = getpid();
-+	uinfo->si_uid = getuid();
-+	uinfo->si_value.sival_int = DATA;
-+
-+	sig_rec = 0;
- }
-+
-+static void cleanup(void)
-+{
-+	free(uinfo);
-+	free(sig_action);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = verify_sigqueueinfo,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_checkpoints = 1,
-+	.timeout = 20,
-+};
-+
-+#else
-+	TST_TEST_TCONF(
-+		"This system does not support rt_sigqueueinfo().");
-+#endif /* HAVE_STRUCT_SIGACTION_SA_SIGACTION */
--- 
-2.16.4
+It's my bad not checking carefully.
+> 
+> > > If that's true, shouldn't we verify FIBMAP ioctl on the swapfile?  Here you
+> > > just test that in a tmp file, it probably not a correct way I guess.
+> >
+> > We don't need to test on a swapfile. If the filesystem we are testing
+> > supports FIBMAP iotcl, we can make a file in this filesystem a swapfile.
+> >
+> 
+> In theory, FIBMAP can work on certain files and fail on certain files
+> (e.g. reflinked xfs/ocfs2 file), but that is unlikely the case in this test
+> and not related to file being a swap file.
 
+Agreed. Sounds like a corner case in these corner swap rests to me :)
+> 
+> In conclusion
+> 1. If filesystem supports FIBMAP its a very strong indication that
+>     filesystem supports swapfile, but in theory a future  filesystem
+>     could fail this test (don't see a reason for that to happen).
+
+I mainly thought about ths situation. We can let the following swap* test
+go to see what's happening.
+
+> 2. If filesystem does not support FIBMAP it can support swapfile
+>     btrfs and nfs are examples in current upstream, but in future could
+>     be other filesystems as well
+> 
+> Suggestion: test in setup FIBMAP. If not supported don't fail immediately
+> but do the try and fail softly with TCONF that is currently implemented
+> for TST_BTRFS_MAGIC.
+
+Reasonable to me. Thanks for the suggestion. We can go wo/ whitelist.
+
+Thanks,
+M
+> 
+> Thanks,
+> Amir.
