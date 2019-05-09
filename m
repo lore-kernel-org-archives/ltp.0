@@ -1,88 +1,126 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 9 May 2019 12:36:03 +0800
-Subject: [LTP] [PATCH v2] file01.sh: Fix in was not recognized
-In-Reply-To: <04eacb36-fde2-1468-68f7-23b6d146a5f3@windriver.com>
-References: <1555922118-412699-1-git-send-email-zhe.he@windriver.com>
- <5CBD8D83.4080901@cn.fujitsu.com>
- <04eacb36-fde2-1468-68f7-23b6d146a5f3@windriver.com>
-Message-ID: <5CD3AE33.1080202@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 9 May 2019 12:59:46 +0800
+Subject: [LTP] [PATCH v3] crypto/af_alg02: fixed read() being stuck
+In-Reply-To: <20190508071636.13804-1-camann@suse.com>
+References: <20190508071636.13804-1-camann@suse.com>
+Message-ID: <CAEemH2cSz+JTxy6mT7H0JYj+RsBbgAuFL-q7RY775n9oJQAwoQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Zhe,
+On Wed, May 8, 2019 at 3:16 PM Christian Amann <camann@suse.com> wrote:
 
-I am sorry for the late reply.  Thanks for your pacth and pushed.
+> On kernels < 4.14 (missing commit 2d97591ef43d) reading from
+> the request socket does not return and the testcase does not
+> finish.
+>
+> This fix moves the logic to a child thread in order for the
+> parent to handle the timeout and report a message to the user.
+>
+> Signed-off-by: Christian Amann <camann@suse.com>
+>
+Reviewed-by: Li Wang <liwang@redhat.com>
 
-BTW:
-I try to think about simplifying all keywords by extended regular 
-expression.
-(e.g. use (pie )? to match your encountered keywords).
-
-Best Regards,
-Xiao Yang
-On 2019/04/22 17:53, He Zhe wrote:
+---
 >
-> On 4/22/19 5:46 PM, Xiao Yang wrote:
->> On 2019/04/22 16:35, zhe.he@windriver.com wrote:
->>> From: He Zhe<zhe.he@windriver.com>
->>>
->>> Some file has "pie" appending after LSB or MSB, which causes mismatch and the
->>> following error.
->>>
->>> "file01 10 TFAIL: in: was not recognized"
->>> ..."ELF 64-bit LSB pie executable"...
->>>
->>> This patches tunes the regulation expression to include those cases.
->>>
->>> Signed-off-by: He Zhe<zhe.he@windriver.com>
->>> ---
->>> v1 to v2: split into two groups to just match the encountered case
->>>
->>>    testcases/commands/file/file01.sh | 4 +++-
->>>    1 file changed, 3 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/testcases/commands/file/file01.sh b/testcases/commands/file/file01.sh
->>> index 0a8119e..55c0433 100755
->>> --- a/testcases/commands/file/file01.sh
->>> +++ b/testcases/commands/file/file01.sh
->>> @@ -91,7 +91,9 @@ do_test()
->>>         9) file_test in.m4 "M4 macro processor script, ASCII text" \
->>>                    "ASCII M4 macro language pre-processor text";;
->>>        10) file_test in "ELF .*-bit $TEST_ARCH executable, .*" \
->>> -             "ELF .*-bit $TEST_ARCH shared object, .*";;
->>> +             "ELF .*-bit $TEST_ARCH shared object, .*" \
->>> +             "ELF .*-bit $TEST_ARCH pie executable, .*" \
->>> +             "ELF .*-bit $TEST_ARCH pie shared object, .*";;
->> Hi He,
->>
->> Perhap, it's simpler to use the ‘.*’regexp directly as your first patch does:
->> -----------------------------------------------------------------------
->>
->> -    10) file_test in "ELF .*-bit $TEST_ARCH executable, .*" \
->> -             "ELF .*-bit $TEST_ARCH shared object, .*";;
->> +    10) file_test in "ELF .*-bit $TEST_ARCH .*executable, .*" \
->> +             "ELF .*-bit $TEST_ARCH .*shared object, .*";;
->>
->> -----------------------------------------------------------------------
-> Not exactly, now it can match 4 different cases.
+> Notes:
+>     Hi Li,
 >
-> Zhe
+>     > We could set LTP_ATTRIBUTE_UNUSED at the behind of unused parameter
+> to get
+>     > rid of compiling warning
 >
->> Best Regards,
->> Xiao Yang
->>>        11) file_test in.ar "current ar archive";;
->>>        12) file_test in.tar "tar archive";;
->>>        13) file_test in.tar.gz "gzip compressed data, .*";;
->>
->>
->>
->
->
-> .
+>     Thats very useful but I couldn't find it anywhere in the documentation.
+>     IMHO it should be put in there, because I stumbled upon this problem
+>     a couple of times.
 >
 
+This is just a definition for variable attribute which supports by GNU
+compiler, I'm not sure if we should add it to LTP documents.
+
+$ grep LTP_ATTRIBUTE_UNUSED . -r
+tst_common.h:25:#define LTP_ATTRIBUTE_UNUSED __attribute__((unused))
 
 
+>
+>     Anyway, I implemented your suggestions. I hope it's an alright patch
+> now.
+>     Thanks for your feedback!
+>
+>     Regards,
+>     Christian
+>
+>  testcases/kernel/crypto/Makefile   |  2 ++
+>  testcases/kernel/crypto/af_alg02.c | 37
+> +++++++++++++++++++++++++++++++++++--
+>  2 files changed, 37 insertions(+), 2 deletions(-)
+>
+> diff --git a/testcases/kernel/crypto/Makefile
+> b/testcases/kernel/crypto/Makefile
+> index 76f9308c2..6547e1cb6 100644
+> --- a/testcases/kernel/crypto/Makefile
+> +++ b/testcases/kernel/crypto/Makefile
+> @@ -20,3 +20,5 @@ include $(top_srcdir)/include/mk/testcases.mk
+>  CFLAGS                 += -D_GNU_SOURCE
+>
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> +
+> +af_alg02: CFLAGS += -pthread
+> diff --git a/testcases/kernel/crypto/af_alg02.c
+> b/testcases/kernel/crypto/af_alg02.c
+> index a9e820423..1c725212a 100644
+> --- a/testcases/kernel/crypto/af_alg02.c
+> +++ b/testcases/kernel/crypto/af_alg02.c
+> @@ -7,23 +7,56 @@
+>   * Regression test for commit ecaaab564978 ("crypto: salsa20 - fix
+>   * blkcipher_walk API usage"), or CVE-2017-17805.  This test verifies
+> that an
+>   * empty message can be encrypted with Salsa20 without crashing the
+> kernel.
+> + *
+> + * Fix for kernels < 4.14:
+> + * With kernels missing commit 2d97591ef43d ("crypto: af_alg -
+> consolidation
+> + * of duplicate code") read() does not return in this situation. The call
+> is
+> + * now moved to a child thread in order to cancel it in case read() takes
+> an
+> + * unusual long amount of time.
+>   */
+>
+>  #include "tst_test.h"
+>  #include "tst_af_alg.h"
+> +#include "tst_safe_pthread.h"
+> +#include <pthread.h>
+> +#include <errno.h>
+>
+> -static void run(void)
+> +void *verify_encrypt(void *arg LTP_ATTRIBUTE_UNUSED)
+>  {
+>         char buf[16];
+>         int reqfd = tst_alg_setup_reqfd("skcipher", "salsa20", NULL, 16);
+>
+> +       TST_CHECKPOINT_WAKE(0);
+> +
+>         /* With the bug the kernel crashed here */
+>         if (read(reqfd, buf, 16) == 0)
+>                 tst_res(TPASS, "Successfully \"encrypted\" an empty
+> message");
+>         else
+> -               tst_res(TBROK, "read() didn't return 0");
+> +               tst_res(TFAIL, "read() didn't return 0");
+> +       return arg;
+>
+
+Since arg has been marked as unused, so here better to return NULL.
+
+Anyway, patch V3 looks good to me.
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190509/b74f1cc3/attachment.html>
