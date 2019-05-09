@@ -1,55 +1,60 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu,  9 May 2019 18:41:24 +0200
-Subject: [LTP] [PATCH 1/2] tst_net_vars.c: Fix size for IPv4 address buffer
-Message-ID: <20190509164125.619-1-pvorel@suse.cz>
+Date: Thu,  9 May 2019 18:41:25 +0200
+Subject: [LTP] [PATCH 2/2] tst_net_vars.c: Enlarge buffer to fix format
+	overflow warnings
+In-Reply-To: <20190509164125.619-1-pvorel@suse.cz>
+References: <20190509164125.619-1-pvorel@suse.cz>
+Message-ID: <20190509164125.619-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-INET_ADDRSTRLEN is maximum IPv4 length including the terminating null
-byte, thus removing + 1 from buffer size.
+tst_net_vars.c:230:18: warning: ‘.0.0’ directive writing 4 bytes into a region of size between 1 and 128 [-Wformat-overflow=]
+  sprintf(buf, "%s.0.0", net_unused);
+                  ^~~~
+In file included from /usr/include/stdio.h:867,
+                 from tst_net_vars.c:26:
+/usr/include/bits/stdio2.h:36:10: note: ‘__builtin___sprintf_chk’ output between 5 and 132 bytes into a destination of size 128
+
+tst_net_vars.c:294:18: warning: ‘::’ directive writing 2 bytes into a region of size between 1 and 128 [-Wformat-overflow=]
+  sprintf(buf, "%s::", net_unused);
+                  ^~
+In file included from /usr/include/stdio.h:867,
+                 from tst_net_vars.c:26:
+/usr/include/bits/stdio2.h:36:10: note: ‘__builtin___sprintf_chk’ output between 3 and 130 bytes into a destination of size 128
 
 Fixes: d18e135d0 ("network: Add tools for setup IP related environment
 variables")
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/lib/tst_net_vars.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ testcases/lib/tst_net_vars.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/testcases/lib/tst_net_vars.c b/testcases/lib/tst_net_vars.c
-index fc63f1395..da9a4e64c 100644
+index da9a4e64c..43cd92bcf 100644
 --- a/testcases/lib/tst_net_vars.c
 +++ b/testcases/lib/tst_net_vars.c
-@@ -153,7 +153,7 @@ static int is_in_subnet_ipv6(const struct in6_addr *network,
-  */
- static char *get_ipv4_netmask(unsigned int prefix)
+@@ -220,7 +220,7 @@ static char *get_ipv4_net16_unused(const struct in_addr *ip,
+ 	unsigned int prefix)
  {
--	char buf[INET_ADDRSTRLEN + 1];
-+	char buf[INET_ADDRSTRLEN];
- 	struct in_addr mask = prefix2mask(prefix);
+ 	struct in_addr mask, network;
+-	char buf[128], net_unused[128];
++	char buf[132], net_unused[128];
  
- 	if (prefix > MAX_IPV4_PREFIX)
-@@ -200,7 +200,7 @@ static char *get_ipv4_broadcast(struct in_addr ip, unsigned int prefix)
+ 	mask = prefix2mask(prefix);
+ 	network = calc_network(ip, &mask);
+@@ -274,7 +274,7 @@ static char *get_ipv6_net32_unused(const struct in6_addr *ip6,
  {
- 	struct in_addr mask = prefix2mask(prefix);
- 	struct in_addr broadcast;
--	char buf[INET_ADDRSTRLEN + 1];
-+	char buf[INET_ADDRSTRLEN];
+ 	int i, j;
+ 	struct in6_addr mask, network;
+-	char buf[128], net_unused[128];
++	char buf[130], net_unused[128];
  
- 	memset(&broadcast, 0, sizeof(broadcast));
- 	broadcast.s_addr = (ip.s_addr & mask.s_addr) | ~mask.s_addr;
-@@ -471,7 +471,7 @@ static void check_prefix_range(unsigned int prefix, int is_ipv6, int is_lhost)
+ 	memset(&mask, 0x0, sizeof(mask));
  
- static char *get_ipv4_network(int ip, unsigned int prefix)
- {
--	char buf[INET_ADDRSTRLEN + 1];
-+	char buf[INET_ADDRSTRLEN];
- 	char *p_buf = buf;
- 	unsigned char byte;
- 	unsigned int i;
 -- 
 2.21.0
 
