@@ -1,99 +1,119 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 9 May 2019 18:00:17 +0800
-Subject: [LTP] [PATCH v2 1/2] numa: fix numa test error with
- non-continuous nodes
-In-Reply-To: <20190509091911.GA8751@dhcp-9-109-247-167.in.ibm.com>
-References: <20190508084447.18191-1-liwang@redhat.com>
- <20190509071605.GB6096@dhcp-9-109-247-167.in.ibm.com>
- <CAEemH2e=9eRgj_1H50dY_=fEsL3vsZbxexxUceJhW24ebsQ1Kg@mail.gmail.com>
- <20190509091911.GA8751@dhcp-9-109-247-167.in.ibm.com>
-Message-ID: <CAEemH2e6WURWFkMneL6vdEwPpbwxj0Lt=HjpfSYdyzxnhGdODQ@mail.gmail.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 9 May 2019 20:20:14 +0800
+Subject: [LTP] [PATCH] syscalls/prctl05.c: New test for prctl() with PR_{SET,
+	GET}_NAME
+Message-ID: <1557404414-3797-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Bala,
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ include/lapi/prctl.h                       |  5 +++
+ runtest/syscalls                           |  1 +
+ testcases/kernel/syscalls/prctl/.gitignore |  1 +
+ testcases/kernel/syscalls/prctl/prctl05.c  | 51 ++++++++++++++++++++++
+ 4 files changed, 58 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/prctl/prctl05.c
 
-On Thu, May 9, 2019 at 5:19 PM Balamuruhan S <bala24@linux.vnet.ibm.com>
-wrote:
-
-> [...snip...]
-> > > > --- a/testcases/kernel/numa/numa01.sh
-> > > > +++ b/testcases/kernel/numa/numa01.sh
-> > > > @@ -52,9 +52,18 @@ TST_NEEDS_CMDS="awk bc numactl numastat"
-> > > >  extract_numastat_p()
-> > > >  {
-> > > >       local pid=$1
-> > > > -     local node=$(($2 + 2))
-> > > > -
-> > > > -     echo $(numastat -p $pid |awk '/^Total/ {print $'$node'}')
-> > > > +     local node=$2
-> > > > +
-> > > > +     echo $(numastat -p $pid |               \
-> > > > +             awk -v node=$node '/Node/ {     \
-> > > > +             gsub("Node", "");               \
-> > > > +             for (i=0; i<NF; i++)            \
-> > > > +                     if ($i == node)         \
-> > > > +                             col=i+1;        \
-> > > > +                     next                    \
-> > > > +             }                               \
-> > > > +             /^Total/ {print $col}'          \
-> > > > +     )
-> > > >  }
-> > >
-> > > If we can use extract_numastat_p0 with node_index then the existing
-> code
-> > > works, for example if can index while iterating $node_list and use this
-> > > with extract_numastat_p0 then it should work.
-> > >
-> >
-> > Hi Bala,
-> >
-> > Sorry, I don't fully understand what's you mean here :(. Could you
-> explain
-> > something more for this method?
->
-> instead of changing `extract_numastat_p0()` can do something like this ?
-
-
-> diff --git a/testcases/kernel/numa/numa01.sh
-> b/testcases/kernel/numa/numa01.sh
-> index 33393ac8d..47c18edd6 100755
-> --- a/testcases/kernel/numa/numa01.sh
-> +++ b/testcases/kernel/numa/numa01.sh
-> @@ -94,6 +94,7 @@ setup()
->  test1()
->  {
->         Mem_curr=0
-> +       node_index=0
->
->         for node in $nodes_list; do
->                 numactl --cpunodebind=$node --membind=$node support_numa
-> alloc_1MB &
-> @@ -101,7 +102,8 @@ test1()
->
->                 TST_RETRY_FUNC "check_for_support_numa $pid" 0
->
-> -               Mem_curr=$(echo "$(extract_numastat_p $pid $node) * $MB"
-> |bc)
-> +               Mem_curr=$(echo "$(extract_numastat_p $pid $node_index) *
-> $MB" |bc)
-> +               let node_index++
->
-
-I guess it can be work, but the disadvantage of that is we have to involve
-a new variable(node_index) in each of the tests (from test1 to test10).
-Hence I don't think it is much better than my patch. For which way to go,
-I'd leave this to Cyril to make a choice. Or, maybe he has different
-thoughts on this:).
-
-Anyway, thanks for your suggestion.
-
+diff --git a/include/lapi/prctl.h b/include/lapi/prctl.h
+index c3612e643..91da9c2d6 100644
+--- a/include/lapi/prctl.h
++++ b/include/lapi/prctl.h
+@@ -9,6 +9,11 @@
+ 
+ #include <sys/prctl.h>
+ 
++#ifndef PR_SET_NAME
++# define PR_SET_NAME 15
++# define PR_GET_NAME 16
++#endif
++
+ #ifndef PR_SET_CHILD_SUBREAPER
+ # define PR_SET_CHILD_SUBREAPER	36
+ # define PR_GET_CHILD_SUBREAPER	37
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 51bff2990..950615bef 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -864,6 +864,7 @@ prctl01 prctl01
+ prctl02 prctl02
+ prctl03 prctl03
+ prctl04 prctl04
++prctl05 prctl05
+ 
+ pread01 pread01
+ pread01_64 pread01_64
+diff --git a/testcases/kernel/syscalls/prctl/.gitignore b/testcases/kernel/syscalls/prctl/.gitignore
+index 1c3da3052..9ecaf9854 100644
+--- a/testcases/kernel/syscalls/prctl/.gitignore
++++ b/testcases/kernel/syscalls/prctl/.gitignore
+@@ -2,3 +2,4 @@
+ /prctl02
+ /prctl03
+ /prctl04
++/prctl05
+diff --git a/testcases/kernel/syscalls/prctl/prctl05.c b/testcases/kernel/syscalls/prctl/prctl05.c
+new file mode 100644
+index 000000000..8a0ea2eb3
+--- /dev/null
++++ b/testcases/kernel/syscalls/prctl/prctl05.c
+@@ -0,0 +1,51 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
++ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
++ *
++ * Test PR_GET_NAME and PR_SET_NAME of prctl(2).
++ * 1)Set the name of the calling thread, the name can be up to 16 bytes
++ *   long, including the terminating null byte. If exceeds 16 bytes, the
++ *   string is silently truncated.
++ * 2)Return the name of the calling thread, the buffer should allow space
++ *   for up to 16 bytes, the returned string will be null-terminated.
++ */
++
++#include <errno.h>
++#include <sys/prctl.h>
++#include <string.h>
++#include <lapi/prctl.h>
++#include "tst_test.h"
++
++#define thread_name "prctl05_test_xxxxx"
++
++static void verify_prctl(void)
++{
++	char buf[20];
++
++	TEST(prctl(PR_SET_NAME, &thread_name));
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "prctl(PR_SET_NAME) failed");
++		return;
++	}
++	tst_res(TPASS, "prctl(PR_SET_NAME) succeeded, set thread name as "
++			"prctl05_test_xxxxx");
++
++	TEST(prctl(PR_GET_NAME, &buf));
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "prctl(PR_GET_NAME) failed");
++		return;
++	}
++
++	if (!strncmp(thread_name, buf, 15) && strlen(buf) == 15)
++		tst_res(TPASS, "prctl(PR_GET_NAME) succeeded, "
++				"thread name is %s", buf);
++	else
++		tst_res(TFAIL,
++			"prctl(PR_GET_NAME) failed to truncate the name into "
++			"16 byte long");
++}
++
++static struct tst_test test = {
++	.test_all = verify_prctl,
++};
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190509/55f8a078/attachment.html>
+2.18.1
+
+
+
