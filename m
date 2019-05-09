@@ -1,78 +1,88 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 8 May 2019 11:04:19 -0400 (EDT)
-Subject: [LTP] [PATCH 2/2] libltpnuma: remove restrictions on numa
- node-id
-In-Reply-To: <20190508052318.9020-3-liwang@redhat.com>
-References: <20190508052318.9020-3-liwang@redhat.com>
-Message-ID: <1178223584.21691194.1557327858998.JavaMail.zimbra@redhat.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 9 May 2019 12:36:03 +0800
+Subject: [LTP] [PATCH v2] file01.sh: Fix in was not recognized
+In-Reply-To: <04eacb36-fde2-1468-68f7-23b6d146a5f3@windriver.com>
+References: <1555922118-412699-1-git-send-email-zhe.he@windriver.com>
+ <5CBD8D83.4080901@cn.fujitsu.com>
+ <04eacb36-fde2-1468-68f7-23b6d146a5f3@windriver.com>
+Message-ID: <5CD3AE33.1080202@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
+Hi Zhe,
+
+I am sorry for the late reply.  Thanks for your pacth and pushed.
+
+BTW:
+I try to think about simplifying all keywords by extended regular 
+expression.
+(e.g. use (pie )? to match your encountered keywords).
+
+Best Regards,
+Xiao Yang
+On 2019/04/22 17:53, He Zhe wrote:
+>
+> On 4/22/19 5:46 PM, Xiao Yang wrote:
+>> On 2019/04/22 16:35, zhe.he@windriver.com wrote:
+>>> From: He Zhe<zhe.he@windriver.com>
+>>>
+>>> Some file has "pie" appending after LSB or MSB, which causes mismatch and the
+>>> following error.
+>>>
+>>> "file01 10 TFAIL: in: was not recognized"
+>>> ..."ELF 64-bit LSB pie executable"...
+>>>
+>>> This patches tunes the regulation expression to include those cases.
+>>>
+>>> Signed-off-by: He Zhe<zhe.he@windriver.com>
+>>> ---
+>>> v1 to v2: split into two groups to just match the encountered case
+>>>
+>>>    testcases/commands/file/file01.sh | 4 +++-
+>>>    1 file changed, 3 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/testcases/commands/file/file01.sh b/testcases/commands/file/file01.sh
+>>> index 0a8119e..55c0433 100755
+>>> --- a/testcases/commands/file/file01.sh
+>>> +++ b/testcases/commands/file/file01.sh
+>>> @@ -91,7 +91,9 @@ do_test()
+>>>         9) file_test in.m4 "M4 macro processor script, ASCII text" \
+>>>                    "ASCII M4 macro language pre-processor text";;
+>>>        10) file_test in "ELF .*-bit $TEST_ARCH executable, .*" \
+>>> -             "ELF .*-bit $TEST_ARCH shared object, .*";;
+>>> +             "ELF .*-bit $TEST_ARCH shared object, .*" \
+>>> +             "ELF .*-bit $TEST_ARCH pie executable, .*" \
+>>> +             "ELF .*-bit $TEST_ARCH pie shared object, .*";;
+>> Hi He,
+>>
+>> Perhap, it's simpler to use the ‘.*’regexp directly as your first patch does:
+>> -----------------------------------------------------------------------
+>>
+>> -    10) file_test in "ELF .*-bit $TEST_ARCH executable, .*" \
+>> -             "ELF .*-bit $TEST_ARCH shared object, .*";;
+>> +    10) file_test in "ELF .*-bit $TEST_ARCH .*executable, .*" \
+>> +             "ELF .*-bit $TEST_ARCH .*shared object, .*";;
+>>
+>> -----------------------------------------------------------------------
+> Not exactly, now it can match 4 different cases.
+>
+> Zhe
+>
+>> Best Regards,
+>> Xiao Yang
+>>>        11) file_test in.ar "current ar archive";;
+>>>        12) file_test in.tar "tar archive";;
+>>>        13) file_test in.tar.gz "gzip compressed data, .*";;
+>>
+>>
+>>
+>
+>
+> .
+>
 
 
------ Original Message -----
-> For some ppc64le systems, it has non-continuous numa nodes in
-> hardware configuration. So we're hitting the below warnings while
-> running set_mempolicy tests on that. To fix this issue, let's just
-> remove restrictions on numa node-id in get_mempolicy().
-> 
-> Error Log
-> ---------
-> tst_test.c:1096: INFO: Timeout per run is 0h 50m 00s
-> tst_numa.c:190: INFO: Found 2 NUMA memory nodes
-> set_mempolicy01.c:63: PASS: set_mempolicy(MPOL_BIND) node 0
-> tst_numa.c:26: INFO: Node 0 allocated 16 pages
-> tst_numa.c:26: INFO: Node 8 allocated 0 pages
-> set_mempolicy01.c:82: PASS: child: Node 0 allocated 16
-> set_mempolicy01.c:63: PASS: set_mempolicy(MPOL_BIND) node 8
-> tst_numa.c:92: WARN: get_mempolicy(...) returned invalid node 8
-> tst_numa.c:92: WARN: get_mempolicy(...) returned invalid node 8
-> tst_numa.c:92: WARN: get_mempolicy(...) returned invalid node 8
-> ...
-> tst_numa.c:26: INFO: Node 0 allocated 0 pages
-> tst_numa.c:26: INFO: Node 8 allocated 0 pages
-> set_mempolicy01.c:86: FAIL: child: Node 8 allocated 0, expected 16
-> 
-> lscpu
-> -----
-> Architecture:        ppc64le
-> ...
-> CPU(s):              128
-> Core(s) per socket:  16
-> Socket(s):           2
-> NUMA node(s):        2
-> Model name:          POWER9, altivec supported
-> ...
-> NUMA node0 CPU(s):   0-63
-> NUMA node8 CPU(s):   64-127
-> 
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  libs/libltpnuma/tst_numa.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/libs/libltpnuma/tst_numa.c b/libs/libltpnuma/tst_numa.c
-> index 0ba6daf39..56c8640ff 100644
-> --- a/libs/libltpnuma/tst_numa.c
-> +++ b/libs/libltpnuma/tst_numa.c
-> @@ -88,8 +88,9 @@ void tst_nodemap_count_pages(struct tst_nodemap *nodes,
->  		if (ret < 0)
->  			tst_brk(TBROK | TERRNO, "get_mempolicy() failed");
->  
-> -		if (node < 0 || (unsigned int)node >= nodes->cnt) {
-> -			tst_res(TWARN, "get_mempolicy(...) returned invalid node %i\n", node);
-> +		if (node < 0) {
-> +			tst_res(TWARN,
-> +				"get_mempolicy(...) returned invalid node %i\n", node);
->  			continue;
->  		}
->  
-> --
-> 2.20.1
 
-2/2 looks good to me:
-
-Acked-by: Jan Stancek <jstancek@redhat.com>
