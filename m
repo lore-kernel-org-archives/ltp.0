@@ -1,59 +1,107 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu,  9 May 2019 18:41:25 +0200
-Subject: [LTP] [PATCH 2/2] tst_net_vars.c: Enlarge buffer to fix format
-	overflow warnings
-In-Reply-To: <20190509164125.619-1-pvorel@suse.cz>
-References: <20190509164125.619-1-pvorel@suse.cz>
-Message-ID: <20190509164125.619-2-pvorel@suse.cz>
+From: Murphy Zhou <xzhou@redhat.com>
+Date: Fri, 10 May 2019 12:38:45 +0800
+Subject: [LTP] [PATCH] safe_setuid: skip if testing on CIFS
+Message-ID: <20190510043845.4977-1-xzhou@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-tst_net_vars.c:230:18: warning: ‘.0.0’ directive writing 4 bytes into a region of size between 1 and 128 [-Wformat-overflow=]
-  sprintf(buf, "%s.0.0", net_unused);
-                  ^~~~
-In file included from /usr/include/stdio.h:867,
-                 from tst_net_vars.c:26:
-/usr/include/bits/stdio2.h:36:10: note: ‘__builtin___sprintf_chk’ output between 5 and 132 bytes into a destination of size 128
+As CIFS is not supporting setuid operations.
 
-tst_net_vars.c:294:18: warning: ‘::’ directive writing 2 bytes into a region of size between 1 and 128 [-Wformat-overflow=]
-  sprintf(buf, "%s::", net_unused);
-                  ^~
-In file included from /usr/include/stdio.h:867,
-                 from tst_net_vars.c:26:
-/usr/include/bits/stdio2.h:36:10: note: ‘__builtin___sprintf_chk’ output between 3 and 130 bytes into a destination of size 128
-
-Fixes: d18e135d0 ("network: Add tools for setup IP related environment
-variables")
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Murphy Zhou <xzhou@redhat.com>
 ---
- testcases/lib/tst_net_vars.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/tst_fs.h      |  1 +
+ lib/safe_macros.c     | 16 ++++++++++++++++
+ lib/tst_fs_type.c     |  2 ++
+ lib/tst_safe_macros.c |  8 ++++++++
+ 4 files changed, 27 insertions(+)
 
-diff --git a/testcases/lib/tst_net_vars.c b/testcases/lib/tst_net_vars.c
-index da9a4e64c..43cd92bcf 100644
---- a/testcases/lib/tst_net_vars.c
-+++ b/testcases/lib/tst_net_vars.c
-@@ -220,7 +220,7 @@ static char *get_ipv4_net16_unused(const struct in_addr *ip,
- 	unsigned int prefix)
- {
- 	struct in_addr mask, network;
--	char buf[128], net_unused[128];
-+	char buf[132], net_unused[128];
+diff --git a/include/tst_fs.h b/include/tst_fs.h
+index 423ca82ec..5025f0459 100644
+--- a/include/tst_fs.h
++++ b/include/tst_fs.h
+@@ -42,6 +42,7 @@
+ #define TST_NILFS_MAGIC    0x3434
+ #define TST_EXOFS_MAGIC    0x5DF5
+ #define TST_OVERLAYFS_MAGIC 0x794c7630
++#define TST_CIFS_MAGIC     0xfe534d42
  
- 	mask = prefix2mask(prefix);
- 	network = calc_network(ip, &mask);
-@@ -274,7 +274,7 @@ static char *get_ipv6_net32_unused(const struct in6_addr *ip6,
+ enum {
+ 	TST_BYTES = 1,
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index bac34cdb7..c3ba1d5be 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -277,6 +277,14 @@ int safe_seteuid(const char *file, const int lineno, void (*cleanup_fn) (void),
+                  uid_t euid)
  {
- 	int i, j;
- 	struct in6_addr mask, network;
--	char buf[128], net_unused[128];
-+	char buf[130], net_unused[128];
+ 	int rval;
++	long fs_type;
++
++	fs_type = tst_fs_type(NULL, ".");
++	if (fs_type == TST_CIFS_MAGIC) {
++		tst_brkm(TCONF, cleanup_fn,
++			 "seteuid is not supported on %s filesystem",
++			 tst_fs_type_name(fs_type));
++	}
  
- 	memset(&mask, 0x0, sizeof(mask));
+ 	rval = seteuid(euid);
+ 	if (rval == -1) {
+@@ -307,6 +315,14 @@ int safe_setuid(const char *file, const int lineno, void (*cleanup_fn) (void),
+                 uid_t uid)
+ {
+ 	int rval;
++	long fs_type;
++
++	fs_type = tst_fs_type(NULL, ".");
++	if (fs_type == TST_CIFS_MAGIC) {
++		tst_brkm(TCONF, cleanup_fn,
++			 "setuid is not supported on %s filesystem",
++			 tst_fs_type_name(fs_type));
++	}
+ 
+ 	rval = setuid(uid);
+ 	if (rval == -1) {
+diff --git a/lib/tst_fs_type.c b/lib/tst_fs_type.c
+index 1d0ac9669..eea7c5d4b 100644
+--- a/lib/tst_fs_type.c
++++ b/lib/tst_fs_type.c
+@@ -84,6 +84,8 @@ const char *tst_fs_type_name(long f_type)
+ 		return "EXOFS";
+ 	case TST_OVERLAYFS_MAGIC:
+ 		return "OVERLAYFS";
++	case TST_CIFS_MAGIC:
++		return "CIFS";
+ 	default:
+ 		return "Unknown";
+ 	}
+diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
+index 0e59a3f98..36941ec0b 100644
+--- a/lib/tst_safe_macros.c
++++ b/lib/tst_safe_macros.c
+@@ -111,6 +111,7 @@ int safe_setreuid(const char *file, const int lineno,
+ 		  uid_t ruid, uid_t euid)
+ {
+ 	int rval;
++	long fs_type;
+ 
+ 	rval = setreuid(ruid, euid);
+ 	if (rval == -1) {
+@@ -119,6 +120,13 @@ int safe_setreuid(const char *file, const int lineno,
+ 			 (long)ruid, (long)euid);
+ 	}
+ 
++	fs_type = tst_fs_type(".");
++	if (fs_type == TST_CIFS_MAGIC) {
++		tst_brk_(file, lineno, TCONF,
++			 "setreuid is not supported on %s filesystem",
++			 tst_fs_type_name(fs_type));
++	}
++
+ 	return rval;
+ }
  
 -- 
 2.21.0
