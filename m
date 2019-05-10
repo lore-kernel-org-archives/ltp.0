@@ -1,197 +1,167 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 10 May 2019 20:31:26 +0200
-Subject: [LTP] [RFC PATCH v2 0/6] net/route: Rewrite route{4, 6}-change-{dst,
-	gw} into C
-Message-ID: <20190510183132.31039-1-pvorel@suse.cz>
+Date: Fri, 10 May 2019 20:31:31 +0200
+Subject: [LTP] [RFC PATCH v2 5/6] net: Move setup_addrinfo() from
+	netstress.c into tst_net.h
+In-Reply-To: <20190510183132.31039-1-pvorel@suse.cz>
+References: <20190510183132.31039-1-pvorel@suse.cz>
+Message-ID: <20190510183132.31039-6-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+This allows reusing it in next commit.
 
-another attempt to rewrite route{4,6}-change-{dst,gw}.
-I'm not much happy with it.
+Add missing includes into tst_net.h, make functions inline.
 
-I was trying to create server side validation over UDP, but failed.
-I didn't figure out setup where server could be on single IP address
-(there is probably a solution), so I created threads, each thread bind
-to single IP (number of threads is the same as number of IP addresses
-created in shell). Due limitation of IPv6 routes over gateway (which
-must be on rhost, for testsuite changing destination this is not
-necessary) I run server on rhost. Testsuite got complicated:
-waiting for threads to bind, save port and IP config into files
-and load it in client... => unfinished and posted solution without server.
-I can see packets sent with tcpdump, but that does not mean it reached
-server. With this result it's questionable whether moving into C code is
-a benefit, maybe shell code below is just good enough.
-
-Other questionable thing is tst_ipaddr_un() incomplete implementation in C.
-Alternatively IP addresses could be passed from shell via getopts, but
-that can be hard to debug (too long argument passed).
-Originally I wanted to create IP addresses also in C, but that's not
-possible due rhost not reachable from C.
-
-Changes from v1:
-* Handle also route{4,6}-change-gw
-* Use libmnl
-* new commits (more comments at the commits):
-- net: Move setup_addrinfo() from netstress.c into tst_net.h
-- tst_net.sh: Minor code and doc cleanup
-- tst_net.sh: Add -a IP and -s options to tst_init_iface()
-- net: Introduce TST_GET_UNUSED_PORT() macro into C API
-- net/route: Remove route{4,6}-change-if
-
-Draft of alternative implementation in shell:
-* route-change-dst
-TST_TESTFUNC="do_test"
-TST_SETUP="do_setup"
-TST_CLEANUP="restore_ipaddr"
-TST_NEEDS_CMDS="ip"
-TST_CNT=$NS_TIMES
-
-. tst_net_stress.sh
-
-do_setup()
-{
-	# FIXME: remove duplicity
-	mask=$IPV4_LPREFIX
-	udp_size=1472
-	if [ "$TST_IPV6" ]; then
-		mask=$IPV6_LPREFIX
-		udp_size=1452
-	fi
-	netstress_setup
-	tst_res TINFO "change IPv$TST_IPVER route destination $NS_TIMES times"
-}
-
-do_test()
-{
-	local iface=$(tst_iface)
-	local addr new_rt
-
-	new_rt="$(tst_ipaddr_un $1)/$mask"
-	addr="$(tst_ipaddr_un $1 1)"
-
-	tst_res TINFO "testing route '$new_rt'"
-
-	tst_rhost_run -s -c "ip addr add $addr/$mask dev $(tst_iface rhost)"
-	ROD ip route add $new_rt dev $iface
-	ROD ip neigh replace $addr lladdr $(tst_hwaddr rhost) nud permanent dev $iface
-
-	EXPECT_PASS ns-udpsender -f $TST_IPVER -D $addr -p $1 -o -s $udp_size
-
-	ROD ip neigh del $addr lladdr $(tst_hwaddr rhost) dev $iface
-	ROD ip route del $new_rt dev $iface
-	tst_rhost_run -c "ip addr del $addr/$mask dev $(tst_iface rhost)"
-}
-
-tst_run
-
-* route-change-gw:
-TST_TESTFUNC="do_test"
-TST_SETUP="do_setup"
-TST_CLEANUP="restore_ipaddr"
-TST_NEEDS_CMDS="ip"
-TST_CNT=$NS_TIMES
-
-. tst_net_stress.sh
-
-do_setup()
-{
-	mask=$IPV4_LPREFIX
-	udp_size=1472
-	if [ "$TST_IPV6" ]; then
-		mask=$IPV6_LPREFIX
-		udp_size=1452
-	fi
-	netstress_setup
-	tst_res TINFO "change IPv$TST_IPVER route gateway $NS_TIMES times"
-
-	rt="$(tst_ipaddr_un 1 0)/$mask"
-	addr="$(tst_ipaddr_un 1 1)"
-	tst_rhost_run -s -c "ip addr add $addr/$mask dev $(tst_iface rhost)"
-}
-
-do_test()
-{
-	local iface=$(tst_iface)
-	local new_gw="$(tst_ipaddr_un 1 $(($1 + 1)))"
-
-	tst_res TINFO "testing gw '$new_gw'"
-
-	ROD ip addr add $new_gw/$mask dev $(tst_iface)
-	ROD ip route replace $rt dev $iface via $new_gw
-	ROD ip neigh replace $addr lladdr $(tst_hwaddr rhost) nud permanent dev $iface
-
-	EXPECT_PASS ns-udpsender -f $TST_IPVER -D $addr -p $1 -o -s $udp_size
-
-	ROD ip neigh del $addr lladdr $(tst_hwaddr rhost) dev $iface
-	ROD ip route del $rt dev $iface via $new_gw
-	ROD ip addr del $new_gw/$mask dev $(tst_iface)
-}
-
-tst_run
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
+Maybe tst_net.c would be better than inline functions.
+tst_net.h requires tst_test.h be loaded first.
 
-Petr Vorel (6):
-  net/route: Remove route{4,6}-change-if
-  net: Introduce TST_GET_UNUSED_PORT() macro into C API
-  tst_net.sh: Add -a IP and -s options to tst_init_iface()
-  tst_net.sh: Minor code and doc cleanup
-  net: Move setup_addrinfo() from netstress.c into tst_net.h
-  net/route: Rewrite route{4,6}-change-{dst,gw} into C
+ include/tst_net.h                       | 45 +++++++++++++------------
+ testcases/network/netstress/netstress.c | 14 +-------
+ 2 files changed, 25 insertions(+), 34 deletions(-)
 
- configure.ac                                  |   1 +
- include/mk/config.mk.default                  |   2 +
- include/mk/config.mk.in                       |   2 +
- include/old/old_safe_net.h                    |   3 +
- include/old/test.h                            |   7 -
- include/safe_net_fn.h                         |  13 +-
- include/tst_net.h                             |  90 +++--
- include/tst_safe_net.h                        |   9 +-
- lib/safe_net.c                                |  66 ++++
- lib/tst_net.c                                 |  89 -----
- m4/ltp-libmnl.m4                              |   7 +
- runtest/net_stress.route                      |  12 +-
- testcases/kernel/syscalls/bind/bind01.c       |   2 +-
- testcases/kernel/syscalls/connect/connect01.c |   2 +-
- testcases/kernel/syscalls/sendmsg/sendmsg01.c |   2 +-
- testcases/lib/tst_net.sh                      | 147 ++++----
- testcases/network/netstress/netstress.c       |  14 +-
- testcases/network/stress/route/.gitignore     |   1 +
- .../network/stress/route/00_Descriptions.txt  |  64 +---
- testcases/network/stress/route/Makefile       |  30 +-
- testcases/network/stress/route/route-change.c | 243 +++++++++++++
- .../network/stress/route/route-change.sh      |  52 +++
- .../network/stress/route/route4-change-dst    | 276 ---------------
- .../network/stress/route/route4-change-gw     | 292 ----------------
- .../network/stress/route/route4-change-if     | 324 ------------------
- .../network/stress/route/route6-change-dst    | 272 ---------------
- .../network/stress/route/route6-change-gw     | 292 ----------------
- .../network/stress/route/route6-change-if     | 323 -----------------
- tools/apicmds/ltpapicmd.c                     |   2 +-
- travis/debian.cross-compile.aarch64.sh        |   6 +-
- travis/debian.cross-compile.ppc64le.sh        |   8 +-
- travis/debian.i386.sh                         |   3 +-
- travis/debian.minimal.sh                      |  28 +-
- travis/debian.sh                              |  55 +--
- travis/fedora.sh                              |   5 +-
- travis/tumbleweed.sh                          |   7 +-
- 36 files changed, 626 insertions(+), 2125 deletions(-)
- delete mode 100644 lib/tst_net.c
- create mode 100644 m4/ltp-libmnl.m4
- create mode 100644 testcases/network/stress/route/.gitignore
- create mode 100644 testcases/network/stress/route/route-change.c
- create mode 100755 testcases/network/stress/route/route-change.sh
- delete mode 100644 testcases/network/stress/route/route4-change-dst
- delete mode 100644 testcases/network/stress/route/route4-change-gw
- delete mode 100644 testcases/network/stress/route/route4-change-if
- delete mode 100644 testcases/network/stress/route/route6-change-dst
- delete mode 100644 testcases/network/stress/route/route6-change-gw
- delete mode 100644 testcases/network/stress/route/route6-change-if
-
+diff --git a/include/tst_net.h b/include/tst_net.h
+index cb97b7b61..ad067d8c6 100644
+--- a/include/tst_net.h
++++ b/include/tst_net.h
+@@ -1,22 +1,12 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
+- *
+- * This program is free software: you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation, either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ * Copyright (c) 2017-2019 Petr Vorel <pvorel@suse.cz>
+  */
+ 
+ #include <arpa/inet.h>
+ #include <errno.h>
++#include <stdio.h>
++#include <stdlib.h>
+ 
+ #define MAX_IPV4_PREFIX 32
+ #define MAX_IPV6_PREFIX 128
+@@ -45,7 +35,7 @@ static inline void print_svar_change(const char *name, const char *val)
+ /*
+  * Function bit_count is from ipcalc project, ipcalc.c.
+  */
+-static int bit_count(uint32_t i)
++static inline int bit_count(uint32_t i)
+ {
+ 	int c = 0;
+ 	unsigned int seen_one = 0;
+@@ -67,7 +57,7 @@ static int bit_count(uint32_t i)
+ /*
+  * Function mask2prefix is from ipcalc project, ipcalc.c.
+  */
+-static int mask2prefix(struct in_addr mask)
++static inline int mask2prefix(struct in_addr mask)
+ {
+ 	return bit_count(ntohl(mask.s_addr));
+ }
+@@ -75,7 +65,7 @@ static int mask2prefix(struct in_addr mask)
+ /*
+  * Function ipv4_mask_to_int is from ipcalc project, ipcalc.c.
+  */
+-static int ipv4_mask_to_int(const char *prefix)
++static inline int ipv4_mask_to_int(const char *prefix)
+ {
+ 	int ret;
+ 	struct in_addr in;
+@@ -90,7 +80,7 @@ static int ipv4_mask_to_int(const char *prefix)
+ /*
+  * Function safe_atoi is from ipcalc project, ipcalc.c.
+  */
+-static int safe_atoi(const char *s, int *ret_i)
++static inline int safe_atoi(const char *s, int *ret_i)
+ {
+ 	char *x = NULL;
+ 	long l;
+@@ -112,7 +102,7 @@ static int safe_atoi(const char *s, int *ret_i)
+ /*
+  * Function get_prefix use code from ipcalc project, str_to_prefix/ipcalc.c.
+  */
+-static int get_prefix(const char *ip_str, int is_ipv6)
++static inline int get_prefix(const char *ip_str, int is_ipv6)
+ {
+ 	char *prefix_str = NULL;
+ 	int prefix = -1, r;
+@@ -140,14 +130,27 @@ static int get_prefix(const char *ip_str, int is_ipv6)
+ 	return prefix;
+ }
+ 
+-static void get_in_addr(const char *ip_str, struct in_addr *ip)
++static inline void get_in_addr(const char *ip_str, struct in_addr *ip)
+ {
+ 	if (inet_pton(AF_INET, ip_str, ip) <= 0)
+ 		tst_brk_comment("bad IPv4 address: '%s'", ip_str);
+ }
+ 
+-static void get_in6_addr(const char *ip_str, struct in6_addr *ip6)
++static inline void get_in6_addr(const char *ip_str, struct in6_addr *ip6)
+ {
+ 	if (inet_pton(AF_INET6, ip_str, ip6) <= 0)
+ 		tst_brk_comment("bad IPv6 address: '%s'", ip_str);
+ }
++
++static inline void setup_addrinfo(const char *src_addr, const char *port,
++			   const struct addrinfo *hints,
++			   struct addrinfo **addr_info)
++{
++	int err = getaddrinfo(src_addr, port, hints, addr_info);
++
++	if (err)
++		tst_brk(TBROK, "getaddrinfo failed, %s", gai_strerror(err));
++
++	if (!*addr_info)
++		tst_brk(TBROK, "failed to get the address");
++}
+diff --git a/testcases/network/netstress/netstress.c b/testcases/network/netstress/netstress.c
+index 06882b1b3..5001f206a 100644
+--- a/testcases/network/netstress/netstress.c
++++ b/testcases/network/netstress/netstress.c
+@@ -43,6 +43,7 @@
+ #include "tst_safe_stdio.h"
+ #include "tst_safe_pthread.h"
+ #include "tst_test.h"
++#include "tst_net.h"
+ 
+ static const int max_msg_len = (1 << 16) - 1;
+ static const int min_msg_len = 5;
+@@ -455,19 +456,6 @@ static int parse_client_request(const char *msg)
+ static struct timespec tv_client_start;
+ static struct timespec tv_client_end;
+ 
+-static void setup_addrinfo(const char *src_addr, const char *port,
+-			   const struct addrinfo *hints,
+-			   struct addrinfo **addr_info)
+-{
+-	int err = getaddrinfo(src_addr, port, hints, addr_info);
+-
+-	if (err)
+-		tst_brk(TBROK, "getaddrinfo failed, %s", gai_strerror(err));
+-
+-	if (!*addr_info)
+-		tst_brk(TBROK, "failed to get the address");
+-}
+-
+ static void client_init(void)
+ {
+ 	if (clients_num >= MAX_THREADS) {
 -- 
 2.21.0
 
