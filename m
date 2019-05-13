@@ -1,68 +1,35 @@
-From: Steve French <smfrench@gmail.com>
-Date: Mon, 13 May 2019 15:13:39 -0500
-Subject: [LTP] [PATCH] safe_setuid: skip if testing on CIFS
-In-Reply-To: <20190513143413.GA4568@dell5510>
-References: <20190510043845.4977-1-xzhou@redhat.com>
- <20190513143413.GA4568@dell5510>
-Message-ID: <CAH2r5mvSS4crgid-srKr+hycN=uW-vPLGhF81RvA6UBP2T7K4A@mail.gmail.com>
+From: Yuri Norov <ynorov@marvell.com>
+Date: Mon, 13 May 2019 20:16:17 +0000
+Subject: [LTP] [EXT] Re: [PATCH v9 00/24] ILP32 for ARM64
+In-Reply-To: <mvmtvdyoi33.fsf@suse.de>
+References: <20180516081910.10067-1-ynorov@caviumnetworks.com>
+ <20190508225900.GA14091@yury-thinkpad>,<mvmtvdyoi33.fsf@suse.de>
+Message-ID: <MN2PR18MB30865B950D85C6463EB0E1D4CB0F0@MN2PR18MB3086.namprd18.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Also note that we are working on patches to improve saving of mode
-bits and ownership information even in cases where the server does not
-support POSIX Extensions.
++ ltp@lists.linux.it
 
-Currently mount options cifsacl and idsfromsid can be used for some
-use cases but they are being extended.
+> There is a problem with the stack size accounting during execve when
+> there is no stack limit:
+>
+> $ ulimit -s
+> 8192
+> $ ./hello.ilp32 
+> Hello World!
+> $ ulimit -s unlimited
+> $ ./hello.ilp32 
+> Segmentation fault
+> $ strace ./hello.ilp32 
+> execve("./hello.ilp32", ["./hello.ilp32"], 0xfffff10548f0 /* 77 vars */) = -1 ENOMEM (Cannot allocate memory)
+> +++ killed by SIGSEGV +++
+> Segmentation fault (core dumped)
+>
+> Andreas.
 
-On Mon, May 13, 2019 at 11:04 AM Petr Vorel <pvorel@suse.cz> wrote:
->
-> Hi Murphy,
->
-> > As CIFS is not supporting setuid operations.
-> Any reference to this?
-> fs/cifs/cifsfs.c and other parts of kernel cifs works with CIFS_MOUNT_SET_UID.
-> Also samba_setreuid() from lib/util/setid.c from samba git (I guess used in
-> samba libraries works with SYS_setreuid syscall or setreuid() libc wrapper.
-> What am I missing?
->
-> > diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
-> > index 0e59a3f98..36941ec0b 100644
-> > --- a/lib/tst_safe_macros.c
-> > +++ b/lib/tst_safe_macros.c
-> > @@ -111,6 +111,7 @@ int safe_setreuid(const char *file, const int lineno,
-> >                 uid_t ruid, uid_t euid)
-> >  {
-> >       int rval;
-> > +     long fs_type;
->
-> >       rval = setreuid(ruid, euid);
-> >       if (rval == -1) {
-> > @@ -119,6 +120,13 @@ int safe_setreuid(const char *file, const int lineno,
-> >                        (long)ruid, (long)euid);
-> >       }
->
-> > +     fs_type = tst_fs_type(".");
-> > +     if (fs_type == TST_CIFS_MAGIC) {
-> > +             tst_brk_(file, lineno, TCONF,
-> > +                      "setreuid is not supported on %s filesystem",
-> > +                      tst_fs_type_name(fs_type));
-> > +     }
-> I guess this check should be before setreuid() As it's in safe_seteuid() and
-> safe_setuid()
-> > +
-> >       return rval;
-> >  }
->
-> Kind regards,
-> Petr
-
-
-
--- 
-Thanks,
-
-Steve
+Thanks Andreas, I will take a look. Do we have such test in LTP?
+    
+Yury
