@@ -1,48 +1,61 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 14 May 2019 12:43:11 +0200
-Subject: [LTP] [EXT] Re: [PATCH v9 00/24] ILP32 for ARM64
-In-Reply-To: <MN2PR18MB30865B950D85C6463EB0E1D4CB0F0@MN2PR18MB3086.namprd18.prod.outlook.com>
-References: <20180516081910.10067-1-ynorov@caviumnetworks.com>
- <20190508225900.GA14091@yury-thinkpad> <mvmtvdyoi33.fsf@suse.de>
- <MN2PR18MB30865B950D85C6463EB0E1D4CB0F0@MN2PR18MB3086.namprd18.prod.outlook.com>
-Message-ID: <20190514104311.GA24708@rei>
+From: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+Date: Mon, 13 May 2019 09:46:05 +0800
+Subject: [LTP] [PATCH] syscall/ioctl: fix compiler error
+Message-ID: <1557711965-11638-1-git-send-email-huangjh.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > There is a problem with the stack size accounting during execve when
-> > there is no stack limit:
-> >
-> > $ ulimit -s
-> > 8192
-> > $ ./hello.ilp32 
-> > Hello World!
-> > $ ulimit -s unlimited
-> > $ ./hello.ilp32 
-> > Segmentation fault
-> > $ strace ./hello.ilp32 
-> > execve("./hello.ilp32", ["./hello.ilp32"], 0xfffff10548f0 /* 77 vars */) = -1 ENOMEM (Cannot allocate memory)
-> > +++ killed by SIGSEGV +++
-> > Segmentation fault (core dumped)
-> >
-> > Andreas.
-> 
-> Thanks Andreas, I will take a look. Do we have such test in LTP?
+"CLONE_NEWPID" and "CLONE_NEWUSER" are not defined on some old distros,
+so include "lapi/namespaces_constants.h" to fix it.
 
-We do have a test that we can run a binary with very small stack size
-i.e. 512kB but there does not seem to be anything that would catch this
-specific problem.
+Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/ioctl/ioctl_ns01.c | 1 +
+ testcases/kernel/syscalls/ioctl/ioctl_ns05.c | 1 +
+ testcases/kernel/syscalls/ioctl/ioctl_ns06.c | 1 +
+ 3 files changed, 3 insertions(+)
 
-Can you please open an issue and describe how to reproduce the problem
-at our github tracker:
-
-https://github.com/linux-test-project/ltp/issues
-
-Then we can create testcase based on that reproducer later on.
-
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns01.c b/testcases/kernel/syscalls/ioctl/ioctl_ns01.c
+index 59b215f..f2c77a0 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_ns01.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_ns01.c
+@@ -19,6 +19,7 @@
+ #include <sched.h>
+ #include "tst_test.h"
+ #include "lapi/ioctl_ns.h"
++#include "lapi/namespaces_constants.h"
+ 
+ #define STACK_SIZE (1024 * 1024)
+ 
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns05.c b/testcases/kernel/syscalls/ioctl/ioctl_ns05.c
+index add6980..bdef4d6 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_ns05.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_ns05.c
+@@ -18,6 +18,7 @@
+ #include <sched.h>
+ #include "tst_test.h"
+ #include "lapi/ioctl_ns.h"
++#include "lapi/namespaces_constants.h"
+ 
+ #define STACK_SIZE (1024 * 1024)
+ 
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns06.c b/testcases/kernel/syscalls/ioctl/ioctl_ns06.c
+index f077a3b..eabb7e4 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_ns06.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_ns06.c
+@@ -19,6 +19,7 @@
+ #include <sched.h>
+ #include "tst_test.h"
+ #include "lapi/ioctl_ns.h"
++#include "lapi/namespaces_constants.h"
+ 
+ #define STACK_SIZE (1024 * 1024)
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
+
+
