@@ -1,29 +1,51 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 13 May 2019 15:23:26 +0200
-Subject: [LTP] [PATCH] ANDROID: Fix ioctl03 test for Android
-In-Reply-To: <20190513093927.GC12685@rei.lan>
-References: <20190506153836.232148-1-paullawrence@google.com>
- <e9e6ad70-3f35-1c07-d7e7-db2d1fe0477e@google.com>
- <20190506200405.GA12134@dell5510> <20190513093927.GC12685@rei.lan>
-Message-ID: <20190513132326.GA29817@dell5510>
+Date: Mon, 13 May 2019 16:34:13 +0200
+Subject: [LTP] [PATCH] safe_setuid: skip if testing on CIFS
+In-Reply-To: <20190510043845.4977-1-xzhou@redhat.com>
+References: <20190510043845.4977-1-xzhou@redhat.com>
+Message-ID: <20190513143413.GA4568@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Murphy,
 
-> > > Reviewed-by: Steve Muckle <smuckle@google.com>
-> > Acked-by: Petr Vorel <pvorel@suse.cz>
-> > Thanks for your patch!
+> As CIFS is not supporting setuid operations.
+Any reference to this?
+fs/cifs/cifsfs.c and other parts of kernel cifs works with CIFS_MOUNT_SET_UID.
+Also samba_setreuid() from lib/util/setid.c from samba git (I guess used in
+samba libraries works with SYS_setreuid syscall or setreuid() libc wrapper.
+What am I missing?
 
-> > I guess this could be merged before release, but
-> > leave the decision for Cyril.
+> diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
+> index 0e59a3f98..36941ec0b 100644
+> --- a/lib/tst_safe_macros.c
+> +++ b/lib/tst_safe_macros.c
+> @@ -111,6 +111,7 @@ int safe_setreuid(const char *file, const int lineno,
+>  		  uid_t ruid, uid_t euid)
+>  {
+>  	int rval;
+> +	long fs_type;
 
-> This is pretty much safe ack from me as well, so please go ahead and
-> apply it.
-Thanks for info, pushed.
+>  	rval = setreuid(ruid, euid);
+>  	if (rval == -1) {
+> @@ -119,6 +120,13 @@ int safe_setreuid(const char *file, const int lineno,
+>  			 (long)ruid, (long)euid);
+>  	}
+
+> +	fs_type = tst_fs_type(".");
+> +	if (fs_type == TST_CIFS_MAGIC) {
+> +		tst_brk_(file, lineno, TCONF,
+> +			 "setreuid is not supported on %s filesystem",
+> +			 tst_fs_type_name(fs_type));
+> +	}
+I guess this check should be before setreuid() As it's in safe_seteuid() and
+safe_setuid()
+> +
+>  	return rval;
+>  }
 
 Kind regards,
 Petr
