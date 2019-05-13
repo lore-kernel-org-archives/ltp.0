@@ -1,13 +1,13 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 13 May 2019 10:55:20 +0200
-Subject: [LTP] [PATCH v2 2/2] syscalls/getcpu:Add libc sched_getcpu()
- detection &&fix compiler errors
-In-Reply-To: <20190513082708.GA9928@dell5510>
-References: <20190412114632.GD28648@haruka.lan>
- <1555481102-4158-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1555481102-4158-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190513082708.GA9928@dell5510>
-Message-ID: <20190513085520.GA12685@rei.lan>
+Date: Mon, 13 May 2019 11:00:51 +0200
+Subject: [LTP] NS_* ioctl commands fail in 32bit compat mode (-m32)
+In-Reply-To: <8736lrx3xu.fsf@rpws.prws.suse.cz>
+References: <20190403152245.GC26464@rei.lan>
+ <20190411192534.30525-1-fedebonfi95@gmail.com>
+ <20190412143318.GA29856@haruka.lan>
+ <874l67x53e.fsf@rpws.prws.suse.cz>
+ <8736lrx3xu.fsf@rpws.prws.suse.cz>
+Message-ID: <20190513090051.GB12685@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,39 +15,23 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > sched_getcpu() isn't defined on some old distros, so we can add dection
-> > and fix compiler error.
+> > All the tests fail with something similar to:
+> > ioctl_ns01.c:45: FAIL: unexpected ioctl error: ENOTTY
+> >
+> > when compiled with the -m32 flag on at least SUSE kernel 4.20 and
+> > 4.12.
+> >
+> > Do you know if this feature is expected to work in 32bit compat mode?
+> > Maybe the size of the arguments should be different when using 32bit mode?
 > 
-> > Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> Acked-by: Petr Vorel <pvorel@suse.cz>
-> 
-> @Metan: I'd be for pushing this before new release.
+> FYI, it seems the size of the argument and value are the same on both 32bit
+> and 64bit mode in user space.
 
-Acked, please go ahead.
+Most likely these calls were not implemented for 32bit compat mode
+because nobody needs them there. I guess that the best solution would be
+just report TCONF on ENOTTY.
 
-> ...
-> >  static inline int get_cpu(unsigned *cpu_id,
-> >  			  unsigned *node_id LTP_ATTRIBUTE_UNUSED,
-> >  			  void *cache_struct LTP_ATTRIBUTE_UNUSED)
-> >  {
-> > -#if defined(__i386__)
-> > -	return syscall(__NR_getcpu, cpu_id, node_id, cache_struct);
-> > +#ifndef HAVE_SCHED_GETCPU
-> > +	return tst_syscall(__NR_getcpu, cpu_id, node_id, cache_struct);
-> >  #else
-> >  	*cpu_id = sched_getcpu();
-> >  #endif
-> 
-> BTW: when rewriting into new C API (whenever it happens) it'd be nice to test
-> both syscall and libc sched_getcpu() (if available) via recently added test_variants [1].
-> 
-> Kind regards,
-> Petr
-> 
-> [1] https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#2229-testing-similar-syscalls-in-one-test
-
-
-Sure, but let's aim for that after the release has been finished.
+Also it would be nice to have this sorted before the upcomming release.
 
 -- 
 Cyril Hrubis
