@@ -1,39 +1,42 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 14 May 2019 14:01:19 +0200
-Subject: [LTP] [PATCH] ltp-cap.m4: add libcap version detection && fix
- compiler error
-In-Reply-To: <5CDA5124.3070708@cn.fujitsu.com>
-References: <1557732392-7049-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190513131451.GA22761@dell5510> <5CDA5124.3070708@cn.fujitsu.com>
-Message-ID: <20190514120119.GA26452@dell5510>
+Date: Tue, 14 May 2019 14:12:13 +0200
+Subject: [LTP] [PATCH v2 0/3] LTP reproducer on broken IMA on overlayfs
+In-Reply-To: <20190405165225.27216-1-pvorel@suse.cz>
+References: <20190405165225.27216-1-pvorel@suse.cz>
+Message-ID: <20190514121213.GA28655@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yang,
+Hi Mimi, Ignaz,
 
-> Hi Peter
+Mimi, could you please have a second look on this [4] patchset? We've had a
+discussion about second patch [5], I can drop it if you don't like it, but
+that's not a main concern about this test. More important is whether the
+testcase looks valid for you. It's about overlayfs broken in IMA+EVM,
+which is currently broken on mainline.
+There is different reproducer (C code) for a slightly different scenario,
+but I'm not going to port it before this got merged.
 
->   I sent a mail to you last Friday mentioned this problem.
-Noticed, before I find a time you send a patch, so I replied to it (it's always
-better to send a question in public).
-
-> At the beginning, I
->   think it makes no sense because libcap-1 is too old.  But I notices that ltp-quota.m4
->   has quota_v1 and quota_v2. I changes my mind.
-
->   Since we have drop libnuma v1, I agree with you that we also drop libcap v1(too old).
->   Also, I think we should drop quota_v1 because it is too old (since Linux 2.4.22, Q_GETINFO has
->   been supported in kernel).
-Good point. But I'm not sure if it's the same, as QFMT_VFS_OLD is part of kernel
-source tree (part of kernel space code) so it makes sense to test it, whereas
-libcap v1 and libnuma v1 are just old versions of user space library.
-Or am I wrong?
-
-> Kind Regards,
-> Yang Xu
+Ignaz, could you please test this patchset? Could you, please, share your setup?
+ima_policy=appraise_tcb kernel parameter and loading IMA and EVM keys over
+dracut-ima scripts? (IMA appraisal and EVM using digital signatures? I guess
+using hashes for IMA appraisal would work as well).
 
 Kind regards,
 Petr
+
+> this is a second version of patch demonstrating a bug on overlayfs when
+> combining IMA with EVM. There is ongoing work made by Ignaz Forster and
+> Fabian Vogt [1] [2], IMA only behavior was already fixed [3].
+
+> Main patch is the last one (previous are just a cleanup and not changed).
+
+> [1] https://www.spinics.net/lists/linux-integrity/msg05926.html
+> [2] https://www.spinics.net/lists/linux-integrity/msg03593.html
+> [3] https://patchwork.kernel.org/patch/10776231/
+
+[4] https://patchwork.ozlabs.org/project/ltp/list/?series=101213&state=*
+[5] https://patchwork.ozlabs.org/patch/1078553/
