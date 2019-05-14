@@ -1,55 +1,46 @@
-From: xuyang <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 14 May 2019 13:24:52 +0800
-Subject: [LTP] [PATCH] ltp-cap.m4: add libcap version detection && fix
- compiler error
-In-Reply-To: <20190513131451.GA22761@dell5510>
-References: <1557732392-7049-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190513131451.GA22761@dell5510>
-Message-ID: <5CDA5124.3070708@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 14 May 2019 15:16:34 +0800
+Subject: [LTP] LTP Release
+In-Reply-To: <20190418111812.GB3073@rei.lan>
+References: <20190418111812.GB3073@rei.lan>
+Message-ID: <CAEemH2c-xuoLHMmp_-jOhsLa7PVxsxeKXq=wdJ5cVFROHv4yMQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-on 2019/05/13 21:14, Petr Vorel wrote:
+Hi Cyril,
 
-> Hi Yang,
->
->
->> Current ltp-cap.m4 defines cap_libs when libcap has
->> cap_compare function.  This function was introduced by
->> libcap-2. It is only used for the two places, and another
->> places work fines with libcap-1. So add libcap version
->> detection.
-> Can't we just fix these possible compiler errors for old distros and require
-> libcap v2?  TCONF for very old distros looks OK for me.
-> libcap-2.00 was released 12 years ago (2007), these distros does not have it:
-> SLES 10 SP3 [1], RHEL-4.8 [2], Debian 4.0 [3]. Do we really want to care about
-> these old distros (it looks like only RHEL is supported)?
-> We also dropped libnuma v1 support (in 2c98cbbaf), v2 was released at similar
-> date (2008).
-Hi Peter
+I have completed the latest LTP testing on RHEL-7.6 and RHEL-8.0 across all
+arches(x86_64, ppc64le, ppc64, s390x, aarch64), here I post the summary FYI:
 
-   I sent a mail to you last Friday mentioned this problem. At the beginning, I
-   think it makes no sense because libcap-1 is too old.  But I notices that ltp-quota.m4
-   has quota_v1 and quota_v2. I changes my mind.
+RHEL7.6
+------------
+1. crypto/af_alg01/02 (all arches - fail)
+af_alg01 failure is a kernel bug.
+af_alg02 test broken as what Christian's described in the patch. It should
+be fixed on the kernel without that commit ecaaab564978 too.
 
-   Since we have drop libnuma v1, I agree with you that we also drop libcap v1(too old).
-   Also, I think we should drop quota_v1 because it is too old (since Linux 2.4.22, Q_GETINFO has
-   been supported in kernel).
+2. binfmt_misc01.sh  (x86_64, s390x - fail, ppc64le/ppc64 - panic)
+It looks like a kernel bug.
 
-Kind Regards,
-Yang Xu
+RHEL8.0
+-------------
+1. NUMA issue (ppc64le)
+Numa test failed on that machine with non-continuous NUMA nodes. Two
+patches for the problem solving has been sent to LTP-ML.
 
-> Kind regards,
-> Petr
->
-> [1] https://distrowatch.com/table.php?distribution=sle&pkglist=true&version=10-sp3#pkglist
-> [2] https://distrowatch.com/table.php?distribution=redhat&pkglist=true&version=rhel-4.8#pkglist
-> [3] https://distrowatch.com/table.php?distribution=debian&pkglist=true&version=4.0#pkglist
->
->
+2. HUGETLB issue (aarch64)
+hugetlb tests sometimes failed to request sufficient huge pages, even we
+try limiting to 80% of the max huge page count is still not being satisfied
+on 512MB huge page size system sometimes.
 
+Besides these above failures, the remaining test looks pretty good.
 
-
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190514/59eefb50/attachment.html>
