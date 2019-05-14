@@ -1,131 +1,73 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 15 May 2019 11:52:30 +0200
-Subject: [LTP] [PATCH] syscalls/ioctl_ns: Fix failures on -m32
-Message-ID: <20190515095230.12585-1-chrubis@suse.cz>
+From: Yury Norov <yury.norov@gmail.com>
+Date: Tue, 14 May 2019 16:01:58 -0700
+Subject: [LTP] [EXT] Re: [PATCH v9 00/24] ILP32 for ARM64
+In-Reply-To: <20190514104311.GA24708@rei>
+References: <20180516081910.10067-1-ynorov@caviumnetworks.com>
+ <20190508225900.GA14091@yury-thinkpad> <mvmtvdyoi33.fsf@suse.de>
+ <MN2PR18MB30865B950D85C6463EB0E1D4CB0F0@MN2PR18MB3086.namprd18.prod.outlook.com>
+ <20190514104311.GA24708@rei>
+Message-ID: <20190514230158.GA6780@yury-thinkpad>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-These are not apparently implemented in the 32bit compat layer so the
-test were failing with ENOTTY there.
+On Tue, May 14, 2019 at 12:43:11PM +0200, Cyril Hrubis wrote:
+> Hi!
+> > > There is a problem with the stack size accounting during execve when
+> > > there is no stack limit:
+> > >
+> > > $ ulimit -s
+> > > 8192
+> > > $ ./hello.ilp32 
+> > > Hello World!
+> > > $ ulimit -s unlimited
+> > > $ ./hello.ilp32 
+> > > Segmentation fault
+> > > $ strace ./hello.ilp32 
+> > > execve("./hello.ilp32", ["./hello.ilp32"], 0xfffff10548f0 /* 77 vars */) = -1 ENOMEM (Cannot allocate memory)
+> > > +++ killed by SIGSEGV +++
+> > > Segmentation fault (core dumped)
+> > >
+> > > Andreas.
+> > 
+> > Thanks Andreas, I will take a look. Do we have such test in LTP?
 
-Reported-by: Richard Palethorpe <rpalethorpe@suse.de>
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/syscalls/ioctl/ioctl_ns01.c |  3 +++
- testcases/kernel/syscalls/ioctl/ioctl_ns02.c |  3 +++
- testcases/kernel/syscalls/ioctl/ioctl_ns03.c |  5 +++++
- testcases/kernel/syscalls/ioctl/ioctl_ns04.c |  3 +++
- testcases/kernel/syscalls/ioctl/ioctl_ns05.c | 13 ++++++++++++-
- testcases/kernel/syscalls/ioctl/ioctl_ns06.c | 11 ++++++++++-
- 6 files changed, 36 insertions(+), 2 deletions(-)
+So the problem was in not converting new compat-sensitive code:
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns01.c b/testcases/kernel/syscalls/ioctl/ioctl_ns01.c
-index f2c77a01a..dfde4da6c 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_ns01.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ns01.c
-@@ -40,6 +40,9 @@ static void test_ns_get_parent(void)
- 	fd = SAFE_OPEN("/proc/self/ns/pid", O_RDONLY);
- 	parent_fd = ioctl(fd, NS_GET_PARENT);
- 	if (parent_fd == -1) {
-+		if (errno == ENOTTY)
-+			tst_brk(TCONF, "ioctl(NS_GET_PARENT) not implemented");
-+
- 		if (errno == EPERM)
- 			tst_res(TPASS, "NS_GET_PARENT fails with EPERM");
- 		else
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns02.c b/testcases/kernel/syscalls/ioctl/ioctl_ns02.c
-index 4f5cb1427..33ef757a8 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_ns02.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ns02.c
-@@ -32,6 +32,9 @@ static void run(void)
- 	fd = SAFE_OPEN("/proc/self/ns/uts", O_RDONLY);
- 	parent_fd = ioctl(fd, NS_GET_PARENT);
- 	if (parent_fd == -1) {
-+		if (errno == ENOTTY)
-+			tst_brk(TCONF, "ioctl(NS_GET_PARENT) not implemented");
-+
- 		if (errno == EINVAL)
- 			tst_res(TPASS, "NS_GET_PARENT fails with EINVAL");
- 		else
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns03.c b/testcases/kernel/syscalls/ioctl/ioctl_ns03.c
-index 2e19cff3a..279032d20 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_ns03.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ns03.c
-@@ -33,6 +33,11 @@ static void run(void)
- 
- 	owner_fd = ioctl(fd, NS_GET_OWNER_UID, &uid);
- 	if (owner_fd == -1) {
-+		if (errno == ENOTTY) {
-+			tst_brk(TCONF,
-+			        "ioctl(NS_GET_OWNER_UID) not implemented");
-+		}
-+
- 		if (errno == EINVAL)
- 			tst_res(TPASS, "NS_GET_OWNER_UID fails, UTS namespace");
- 		else
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns04.c b/testcases/kernel/syscalls/ioctl/ioctl_ns04.c
-index b9181cb3d..90035cbeb 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_ns04.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ns04.c
-@@ -31,6 +31,9 @@ static void run(void)
- 	fd = SAFE_OPEN("/proc/self/ns/user", O_RDONLY);
- 	parent_fd = ioctl(fd, NS_GET_USERNS);
- 	if (parent_fd == -1) {
-+		if (errno == ENOTTY)
-+			tst_brk(TCONF, "ioctl(NS_GET_USERNS) not implemented");
-+
- 		if (errno == EPERM)
- 			tst_res(TPASS, "NS_GET_USERNS fails with EPERM");
- 		else
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns05.c b/testcases/kernel/syscalls/ioctl/ioctl_ns05.c
-index bdef4d6e9..a8dee07a1 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_ns05.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ns05.c
-@@ -53,7 +53,18 @@ static void run(void)
- 	sprintf(child_namespace, "/proc/%i/ns/pid", pid);
- 	my_fd = SAFE_OPEN("/proc/self/ns/pid", O_RDONLY);
- 	child_fd = SAFE_OPEN(child_namespace, O_RDONLY);
--	parent_fd = SAFE_IOCTL(child_fd, NS_GET_PARENT);
-+	parent_fd = ioctl(child_fd, NS_GET_PARENT);
-+
-+	if (parent_fd == -1) {
-+		TST_CHECKPOINT_WAKE(0);
-+
-+		if (errno == ENOTTY) {
-+			tst_res(TCONF, "ioctl(NS_GET_PARENT) not implemented");
-+			return;
-+		}
-+
-+		tst_brk(TBROK | TERRNO, "ioctl(NS_GET_PARENT) failed");
-+	}
- 
- 	struct stat my_stat, child_stat, parent_stat;
- 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns06.c b/testcases/kernel/syscalls/ioctl/ioctl_ns06.c
-index eabb7e49c..805a0a072 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_ns06.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ns06.c
-@@ -50,7 +50,16 @@ static void run(void)
- 
- 	my_fd = SAFE_OPEN("/proc/self/ns/user", O_RDONLY);
- 	child_fd = SAFE_OPEN(child_namespace, O_RDONLY);
--	parent_fd = SAFE_IOCTL(child_fd, NS_GET_USERNS);
-+	parent_fd = ioctl(child_fd, NS_GET_USERNS);
-+
-+	if (parent_fd == -1) {
-+		TST_CHECKPOINT_WAKE(0);
-+
-+		if (errno == ENOTTY)
-+			tst_brk(TCONF, "ioctl(NS_GET_USERNS) not implemented");
-+
-+		tst_brk(TBROK | TERRNO, "ioctl(NS_GET_USERNS) failed");
-+	}
- 
- 	struct stat my_stat, child_stat, parent_stat;
- 
--- 
-2.19.2
+diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
+index 5bdf357169d8..c509f83fa506 100644
+--- a/arch/arm64/include/asm/processor.h
++++ b/arch/arm64/include/asm/processor.h
+@@ -63,7 +63,7 @@
+ 				TASK_SIZE_32 : TASK_SIZE_64)
+ #define TASK_SIZE_OF(tsk)	(is_compat_thread(tsk) ? \
+ 				TASK_SIZE_32 : TASK_SIZE_64)
+-#define DEFAULT_MAP_WINDOW	(test_thread_flag(TIF_32BIT) ? \
++#define DEFAULT_MAP_WINDOW	(is_compat_task() ? \
+ 				TASK_SIZE_32 : DEFAULT_MAP_WINDOW_64)
+ #else
+ #define TASK_SIZE		TASK_SIZE_64
 
+The fix is incorporated in ilp32-5.1.1:
+https://github.com/norov/linux/tree/ilp32-5.1.1
+
+> We do have a test that we can run a binary with very small stack size
+> i.e. 512kB but there does not seem to be anything that would catch this
+> specific problem.
+> 
+> Can you please open an issue and describe how to reproduce the problem
+> at our github tracker:
+> 
+> https://github.com/linux-test-project/ltp/issues
+> 
+> Then we can create testcase based on that reproducer later on.
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
+
+OK, I'll do.
+
+Yury
