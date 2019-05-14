@@ -1,10 +1,10 @@
 From: Ignaz Forster <iforster@suse.de>
-Date: Tue, 14 May 2019 20:42:05 +0200
-Subject: [LTP] [PATCH v2 3/3] ima: Add overlay test
-In-Reply-To: <20190405165225.27216-4-pvorel@suse.cz>
+Date: Tue, 14 May 2019 21:19:04 +0200
+Subject: [LTP] [PATCH v2 0/3] LTP reproducer on broken IMA on overlayfs
+In-Reply-To: <20190514121213.GA28655@dell5510>
 References: <20190405165225.27216-1-pvorel@suse.cz>
- <20190405165225.27216-4-pvorel@suse.cz>
-Message-ID: <810d4df7-1e5e-dd24-8b87-e0fa3edbd25f@suse.de>
+ <20190514121213.GA28655@dell5510>
+Message-ID: <bf41c3b5-baf4-ba7a-2136-dabbbb817473@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,42 +13,55 @@ To: ltp@lists.linux.it
 
 Hi Petr,
 
-thanks a lot for your continued work on the IMA / EVM tests and sorry 
-for missing feedback - the mail got lost in my stack of TODO items.
+Am 14.05.19 um 14:12 Uhr schrieb Petr Vorel:
+> Could you, please, share your setup?
 
-Am 05.04.19 um 18:52 Uhr schrieb Petr Vorel:
-> Should I check EVM enabled?
+The system was installed with IMA and EVM enabled during installation, 
+using the following kernel parameters:
+"ima_policy=appraise_tcb ima_appraise=fix evm=fix"
 
-As these tests require an appropriately prepared machine anyway: How 
-about printing a message whether only IMA or both IMA and EVM are 
-enabled. These tests make sense in both cases, so I wouldn't block them 
-on either setup.
+The EVM key was generated in the live system before starting the actual 
+installation and copied into the installed system later.
 
-> /sys/kernel/security/evm should be 1?
+See the attached installation notes for an openSUSE system (which should 
+also be usable on other distributions).
 
-Yes, that should be enough to detect whether EVM is enabled.
+> ima_policy=appraise_tcb kernel parameter and loading IMA and EVM keys over
+> dracut-ima scripts?
 
-> +test1()
-> +{
-> +	local file="foo1.txt"
-> +
-> +	tst_res TINFO "overwrite file in overlay"
-> +	ROD echo lower \> $lower/$file
-> +	EXPECT_PASS echo overlay \> $merged/$file
+Exactly.
 
-It seems the redirection / escaping is wrong here: the string "overlay" 
-never ends up in the target file.
+> (IMA appraisal and EVM using digital signatures? I guess
+> using hashes for IMA appraisal would work as well).
 
-> +}
-> +
-> +test2()
-> +{
-> +	local file="foo2.txt"
-> +
-> +	tst_res TINFO "append file in overlay"
-> +	ROD echo lower \> $lower/$file
-> +	EXPECT_PASS echo overlay \>\> $merged/$file
-
-Same here: "overlay" never ends up in the target file.
+I focused on hashes, as those are more relevant for the overlayfs use 
+case I was thinking of.
 
 Ignaz
+-------------- next part --------------
+Manual IMA / EVM installation:
+* Use a net install image (some of the necessary packages are not available in DVD image)
+* Boot install system with "ima_policy=appraise_tcb ima_appraise=fix evm=fix" (for IMA measurement, IMA appraisal and EVM protection)
+* Proceed with installation until summary screen, but do not start the installation yet
+* Remove "evm=fix" from kernel boot parameters
+* Change kernel boot parameter "ima_appraise=fix" to "ima_appraise=appraise_tcb"
+* Select package "dracut-ima" (required for early boot EVM support) for installation
+* Change to a console window
+* mkdir /etc/keys
+* /bin/keyctl add user kmk-user "`dd if=/dev/urandom bs=1 count=32 2>/dev/null`" @u
+* /bin/keyctl pipe `/bin/keyctl search @u user kmk-user` > /etc/keys/kmk-user.blob
+* /bin/keyctl add encrypted evm-key "new user:kmk-user 64" @u
+* /bin/keyctl pipe `/bin/keyctl search @u encrypted evm-key` >/etc/keys/evm.blob
+* cat <<END >/etc/sysconfig/masterkey
+MASTERKEYTYPE="user"
+MASTERKEY="/etc/keys/kmk-user.blob"
+END
+* cat <<END >/etc/sysconfig/evm
+EVMKEY="/etc/keys/evm.blob"
+END
+* mount -t securityfs security /sys/kernel/security
+* echo 1 >/sys/kernel/security/evm
+* Go back to the installation summary screen and start the installation
+* During the installation execute the following commands from the console:
+* cp -r /etc/keys /mnt/etc/
+* cp /etc/sysconfig/{evm,masterkey} /mnt/etc/sysconfig/
