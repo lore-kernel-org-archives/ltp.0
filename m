@@ -1,49 +1,63 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 15 May 2019 16:37:46 +0200
-Subject: [LTP] [PATCH] ltp-cap.m4: add libcap version detection && fix
- compiler error
-In-Reply-To: <5CDBD564.8010300@cn.fujitsu.com>
-References: <1557732392-7049-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190513131451.GA22761@dell5510> <5CDA5124.3070708@cn.fujitsu.com>
- <20190514120119.GA26452@dell5510> <5CDBD564.8010300@cn.fujitsu.com>
-Message-ID: <20190515143746.GA7507@dell5510>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 15 May 2019 17:50:03 +0300
+Subject: [LTP] [PATCH v2 1/3] syscalls/fanotify13: new test to verify
+ FAN_REPORT_FID functionality
+In-Reply-To: <20190427045341.GA3894@lithium.mbobrowski.org>
+References: <cover.1555763787.git.mbobrowski@mbobrowski.org>
+ <6639dd7a9ff9929ce79f4f353f3e1db075594ea2.1555763787.git.mbobrowski@mbobrowski.org>
+ <20190426152748.GA31769@rei.lan>
+ <20190427045341.GA3894@lithium.mbobrowski.org>
+Message-ID: <CAOQ4uxh7Ea02UyWeZKP5jJxhHkiTNpChH_H3=bFLNnZG4SU7-g@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yang,
+On Sat, Apr 27, 2019 at 7:53 AM Matthew Bobrowski
+<mbobrowski@mbobrowski.org> wrote:
+>
+> On Fri, Apr 26, 2019 at 05:27:48PM +0200, Cyril Hrubis wrote:
+> > Hi!
+> > I've tried these tests on buildservice to check that there are no
+> > problems on slightly older distributions and found two.
+> >
+> > The first one is that we do define fallback definitions in fanotify.h
+> > but then ifdef the whole test code in #if defined(HAVE_SYS_FANOTIFY_H)
+> > so that it's efectively disabled on older distros even with fallback
+> > definitions in place. Also it's TST_TEST_TCONF() but that is just easy
+> > to fix typo. I guess that we can remove the ifdef and sys/fanotify.h
+> > include from the test sources since we conditionally include the
+> > sys/fanotify.h in the local fanotify.h already.
+>
+> OK. In that case I can write a patch that is to be applied prior to this series
+> which essentially just removes this specific preprocessor conditional directive
+> from all the source files. Would you like me to do this?
 
-> > > At the beginning, I
-> > >    think it makes no sense because libcap-1 is too old.  But I notices that ltp-quota.m4
-> > >    has quota_v1 and quota_v2. I changes my mind.
-> > >    Since we have drop libnuma v1, I agree with you that we also drop libcap v1(too old).
-> > >    Also, I think we should drop quota_v1 because it is too old (since Linux 2.4.22, Q_GETINFO has
-> > >    been supported in kernel).
-> > Good point. But I'm not sure if it's the same, as QFMT_VFS_OLD is part of kernel
-> > source tree (part of kernel space code) so it makes sense to test it, whereas
-> > libcap v1 and libnuma v1 are just old versions of user space library.
-> > Or am I wrong?
-> Hi Petr
+If I understand the concern correctly, it is not really important
+to address now for these new tests that check functionality only available
+since kernel v5.1. It could be addressed by followup work.
 
->    I have seen kernel source about quota and try it. I think you are right.  But current quota_v1
-> and quota_v2 detection has problem. In kernel source, I disable CONFIG_QFMT_V2 and enable CONFIG_QFMT_V1
-> ,then I found ltp still detects quotav2 instead of quotav1,  and run ./quotactl01, the following error occurs:
-LTP detection in ltp-quota.m4 defines _LINUX_QUOTA_VERSION for detection.
-I guess you'd have to define HAVE_QUOTAV1 and undefine HAVE_QUOTAV2 in in
-include/config.h, but not tested.
+>
+> > The second one is that we fail to compile on older distributions because
+> > of missing name_to_handle_at() so we need configure check for that
+> > syscall and fallback definition in lapi/ header, or at least configure
+> > check and ifdef in the fanotify_get_fid() function. Which should be as
+> > easy as adding a name_to_handle_at line to AC_CHECK_FUNCS() in the
+> > configure.ac and using the macro from config.h.
+>
+> Sure. I've gone ahead an updated it to accommodate for this. Prior to
+> submitting through another patches series, changes can be found here:
+> https://github.com/matthewbobrowski/ltp/commit/54264db0e574d2f90e716a510fcb1da11ee174dc.
+>
+> I think we can do better and also provide a fallback definition though,
+> thoughts? Don't believe that it would take much effort.
+>
 
-BTW _LINUX_QUOTA_VERSION was removed from glibc in 2.25 [1] [2], which based setup
-on <linux/quota.h>. And musl defines only _LINUX_QUOTA_VERSION 2.
+No reason to do that. Those tests will only be supported on kernel >= v5.1
+old distros are less interesting for these tests.
 
-Regards man info that v1 is from kernel v2.4.22 we should probably also remove
-it's support.
+Please post the patches for  fanotify_dirent_3 branch.
 
-We got a bit away from libcap :).
-
-Kind regards,
-Petr
-
-[1] https://sourceware.org/git/?p=glibc.git;a=commitdiff;h=4d728087ef8cc826b05bd21d0c74d4eca9b1a27d;hp=de6b6d14e9b4d8e9a7333addca55163d9ebb7ff6
-[2] https://patchwork.ozlabs.org/patch/664156/
+Thanks,
+Amir.
