@@ -1,63 +1,37 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 15 May 2019 17:50:03 +0300
-Subject: [LTP] [PATCH v2 1/3] syscalls/fanotify13: new test to verify
- FAN_REPORT_FID functionality
-In-Reply-To: <20190427045341.GA3894@lithium.mbobrowski.org>
-References: <cover.1555763787.git.mbobrowski@mbobrowski.org>
- <6639dd7a9ff9929ce79f4f353f3e1db075594ea2.1555763787.git.mbobrowski@mbobrowski.org>
- <20190426152748.GA31769@rei.lan>
- <20190427045341.GA3894@lithium.mbobrowski.org>
-Message-ID: <CAOQ4uxh7Ea02UyWeZKP5jJxhHkiTNpChH_H3=bFLNnZG4SU7-g@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 15 May 2019 20:20:57 +0200
+Subject: [LTP] [PATCH v2 1/2] OVL_MNT: add setup_overlay helper
+In-Reply-To: <CAOQ4uxhaSBiKY7nLNnbvpc7mpcnyOJ8Ecf3Es8n_VTPBRnfF7g@mail.gmail.com>
+References: <20190503210005.GA18171@x230>
+ <20190515092129.26336-1-xzhou@redhat.com>
+ <20190515133102.GA5429@dell5510> <20190515134245.GC5429@dell5510>
+ <CAOQ4uxhaSBiKY7nLNnbvpc7mpcnyOJ8Ecf3Es8n_VTPBRnfF7g@mail.gmail.com>
+Message-ID: <20190515182057.GA1856@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Sat, Apr 27, 2019 at 7:53 AM Matthew Bobrowski
-<mbobrowski@mbobrowski.org> wrote:
->
-> On Fri, Apr 26, 2019 at 05:27:48PM +0200, Cyril Hrubis wrote:
-> > Hi!
-> > I've tried these tests on buildservice to check that there are no
-> > problems on slightly older distributions and found two.
-> >
-> > The first one is that we do define fallback definitions in fanotify.h
-> > but then ifdef the whole test code in #if defined(HAVE_SYS_FANOTIFY_H)
-> > so that it's efectively disabled on older distros even with fallback
-> > definitions in place. Also it's TST_TEST_TCONF() but that is just easy
-> > to fix typo. I guess that we can remove the ifdef and sys/fanotify.h
-> > include from the test sources since we conditionally include the
-> > sys/fanotify.h in the local fanotify.h already.
->
-> OK. In that case I can write a patch that is to be applied prior to this series
-> which essentially just removes this specific preprocessor conditional directive
-> from all the source files. Would you like me to do this?
+Hi Amir, Murphy,
 
-If I understand the concern correctly, it is not really important
-to address now for these new tests that check functionality only available
-since kernel v5.1. It could be addressed by followup work.
 
->
-> > The second one is that we fail to compile on older distributions because
-> > of missing name_to_handle_at() so we need configure check for that
-> > syscall and fallback definition in lapi/ header, or at least configure
-> > check and ifdef in the fanotify_get_fid() function. Which should be as
-> > easy as adding a name_to_handle_at line to AC_CHECK_FUNCS() in the
-> > configure.ac and using the macro from config.h.
->
-> Sure. I've gone ahead an updated it to accommodate for this. Prior to
-> submitting through another patches series, changes can be found here:
-> https://github.com/matthewbobrowski/ltp/commit/54264db0e574d2f90e716a510fcb1da11ee174dc.
->
-> I think we can do better and also provide a fallback definition though,
-> thoughts? Don't believe that it would take much effort.
->
+> I liked your idea of create_overlay_dirs/mount_overlay better.
+> It is more flexible for future tests that may want to umount and
+> mount overlay several times and the setup of lower/upper files
+> could be very different in future tests, not limited to just creating
+> files (maybe symlinks, xattr).
+> The experience from xfstests overlay tests suggests that the
+> create_overlay_dirs/mount_overlay helpers are a good model to follow.
 
-No reason to do that. Those tests will only be supported on kernel >= v5.1
-old distros are less interesting for these tests.
+Thanks for ideas, agree with it.
 
-Please post the patches for  fanotify_dirent_3 branch.
+Other thing is to have const char *file, const int lineno as first parameters
+for mount_overlay_() and create mount_overlay() and SAFE_MOUNT_OVERLAY() as macros,
+which would use it. See tst_mkfs{_,}() as examples.
 
-Thanks,
-Amir.
+> Thanks,
+> Amir.
+
+Kind regards,
+Petr
