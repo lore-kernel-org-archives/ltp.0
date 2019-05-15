@@ -1,64 +1,99 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 15 May 2019 05:03:55 -0400 (EDT)
-Subject: [LTP] LTP: mm: overcommit_memory01, 03...06 failed
-In-Reply-To: <CA+G9fYu254sYc77jOVifOmxrd_jNmr4wNHTrqnW54a8F=EQZ6Q@mail.gmail.com>
-References: <CA+G9fYu254sYc77jOVifOmxrd_jNmr4wNHTrqnW54a8F=EQZ6Q@mail.gmail.com>
-Message-ID: <543317293.22835729.1557911035979.JavaMail.zimbra@redhat.com>
+From: Murphy Zhou <xzhou@redhat.com>
+Date: Wed, 15 May 2019 17:21:28 +0800
+Subject: [LTP] [PATCH v2 1/2] OVL_MNT: add setup_overlay helper
+In-Reply-To: <20190503210005.GA18171@x230>
+References: <20190503210005.GA18171@x230>
+Message-ID: <20190515092129.26336-1-xzhou@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+To create overlayfs dirs, and mount overlayfs if needed.
 
+Signed-off-by: Murphy Zhou <xzhou@redhat.com>
+---
+v2:
+  define constraints in header file
+  add a setup helper to create dirs and mount
 
------ Original Message -----
-> ltp-mm-tests failed on Linux mainline kernel  5.1.0,
->   * overcommit_memory01 overcommit_memory
->   * overcommit_memory03 overcommit_memory -R 30
->   * overcommit_memory04 overcommit_memory -R 80
->   * overcommit_memory05 overcommit_memory -R 100
->   * overcommit_memory06 overcommit_memory -R 200
-> 
-> mem.c:814: INFO: set overcommit_memory to 0
-> overcommit_memory.c:185: INFO: malloc 8094844 kB successfully
-> overcommit_memory.c:204: PASS: alloc passed as expected
-> overcommit_memory.c:189: INFO: malloc 32379376 kB failed
-> overcommit_memory.c:210: PASS: alloc failed as expected
-> overcommit_memory.c:185: INFO: malloc 16360216 kB successfully
-> overcommit_memory.c:212: FAIL: alloc passed, expected to fail
-> 
-> Failed test log,
-> https://lkft.validation.linaro.org/scheduler/job/726417#L22852
-> 
-> LTP version 20190115
-> 
-> Test case link,
-> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/mem/tunable/overcommit_memory.c#L212
-> 
-> First bad commit:
-> git branch master
-> git commit e0654264c4806dc436b291294a0fbf9be7571ab6
-> git describe v5.1-10706-ge0654264c480
-> git repo https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> 
-> Last good commit:
-> git branch master
-> git commit 7e9890a3500d95c01511a4c45b7e7192dfa47ae2
-> git describe v5.1-10326-g7e9890a3500d
-> git repo https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+ include/tst_fs.h   | 12 ++++++++++++
+ lib/tst_fs_setup.c | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 54 insertions(+)
+ create mode 100644 lib/tst_fs_setup.c
 
-Heuristic changed a bit in:
-  commit 8c7829b04c523cdc732cb77f59f03320e09f3386
-  Author: Johannes Weiner <hannes@cmpxchg.org>
-  Date:   Mon May 13 17:21:50 2019 -0700
-    mm: fix false-positive OVERCOMMIT_GUESS failures
+diff --git a/include/tst_fs.h b/include/tst_fs.h
+index 423ca82ec..750bb1a91 100644
+--- a/include/tst_fs.h
++++ b/include/tst_fs.h
+@@ -50,6 +50,18 @@ enum {
+ 	TST_GB = 1073741824,
+ };
+ 
++#define OVL_BASE_MNTPOINT        "mntpoint"
++#define OVL_LOWER	OVL_BASE_MNTPOINT"/lower"
++#define OVL_UPPER	OVL_BASE_MNTPOINT"/upper"
++#define OVL_WORK	OVL_BASE_MNTPOINT"/work"
++#define OVL_MNT		OVL_BASE_MNTPOINT"/ovl"
++
++/*
++ * Create above overlayfs constraints, if mount == 1,
++ * mount overlayfs
++ */
++int setup_overlay(int mount);
++
+ /*
+  * @path: path is the pathname of any file within the mounted file system
+  * @mult: mult should be TST_KB, TST_MB or TST_GB
+diff --git a/lib/tst_fs_setup.c b/lib/tst_fs_setup.c
+new file mode 100644
+index 000000000..b1880ee11
+--- /dev/null
++++ b/lib/tst_fs_setup.c
+@@ -0,0 +1,42 @@
++/*
++ * DESCRIPTION
++ *	A place for setup filesystem helpers.
++ */
++
++#include <stdint.h>
++#include <errno.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <sys/vfs.h>
++#include <sys/mount.h>
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++#include "tst_fs.h"
++
++int setup_overlay(int mountovl)
++{
++	int ret;
++
++	/* Setup an overlay mount with lower dir and file */
++	SAFE_MKDIR(OVL_LOWER, 0755);
++	SAFE_MKDIR(OVL_UPPER, 0755);
++	SAFE_MKDIR(OVL_WORK, 0755);
++	SAFE_MKDIR(OVL_MNT, 0755);
++
++	/* Only create dirs, do not mount */
++	if (mountovl == 0)
++		return 0;
++
++	ret = mount("overlay", OVL_MNT, "overlay", 0, "lowerdir="OVL_LOWER
++		    ",upperdir="OVL_UPPER",workdir="OVL_WORK);
++	if (ret < 0) {
++		if (errno == ENODEV) {
++			tst_res(TINFO,
++				"overlayfs is not configured in this kernel.");
++			return 1;
++		}
++		tst_brk(TBROK | TERRNO, "overlayfs mount failed");
++	}
++	return 0;
++}
+-- 
+2.21.0
 
-LTP tries to allocate "mem_total + swap_total":
-  alloc_and_check(sum_total, EXPECT_FAIL);
-which now presumably falls short to trigger failure.
-
-> 
-> Best regards
-> Naresh Kamboju
-> 
