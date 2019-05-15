@@ -1,260 +1,131 @@
-From: Murphy Zhou <xzhou@redhat.com>
-Date: Wed, 15 May 2019 17:21:29 +0800
-Subject: [LTP] [PATCH v2 2/2] OVL_MNT: put overlayfs lower, upper, work,
-	mnt dir in a separated mountpoint
-In-Reply-To: <20190515092129.26336-1-xzhou@redhat.com>
-References: <20190503210005.GA18171@x230>
- <20190515092129.26336-1-xzhou@redhat.com>
-Message-ID: <20190515092129.26336-2-xzhou@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 15 May 2019 11:52:30 +0200
+Subject: [LTP] [PATCH] syscalls/ioctl_ns: Fix failures on -m32
+Message-ID: <20190515095230.12585-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Some tests are mounting overlayfs internally and run tests on it.
-This mount can fail if the filesystem we are running on does not
-support overlay mount upon it. For example, we are already running
-tests on overlayfs or NFS, or CIFS. Test will report broken and
-failure.
+These are not apparently implemented in the 32bit compat layer so the
+test were failing with ENOTTY there.
 
-Fixing this by put overlayfs dirs in a separaed mountpoint, like
-readahead02 by Amir.
-
-Signed-off-by: Murphy Zhou <xzhou@redhat.com>
+Reported-by: Richard Palethorpe <rpalethorpe@suse.de>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- .../kernel/syscalls/execveat/execveat03.c     | 24 ++++----------
- testcases/kernel/syscalls/inotify/inotify07.c | 17 +++++-----
- testcases/kernel/syscalls/inotify/inotify08.c | 19 +++++------
- .../kernel/syscalls/readahead/readahead02.c   | 33 +++----------------
- 4 files changed, 27 insertions(+), 66 deletions(-)
+ testcases/kernel/syscalls/ioctl/ioctl_ns01.c |  3 +++
+ testcases/kernel/syscalls/ioctl/ioctl_ns02.c |  3 +++
+ testcases/kernel/syscalls/ioctl/ioctl_ns03.c |  5 +++++
+ testcases/kernel/syscalls/ioctl/ioctl_ns04.c |  3 +++
+ testcases/kernel/syscalls/ioctl/ioctl_ns05.c | 13 ++++++++++++-
+ testcases/kernel/syscalls/ioctl/ioctl_ns06.c | 11 ++++++++++-
+ 6 files changed, 36 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/execveat/execveat03.c b/testcases/kernel/syscalls/execveat/execveat03.c
-index def33923b..ff4de62ee 100644
---- a/testcases/kernel/syscalls/execveat/execveat03.c
-+++ b/testcases/kernel/syscalls/execveat/execveat03.c
-@@ -55,10 +55,11 @@
- #include "lapi/fcntl.h"
- #include "execveat.h"
- 
--#define OVL_MNT "ovl"
- #define TEST_APP "execveat_child"
- #define TEST_FILE_PATH OVL_MNT"/"TEST_APP
- 
-+static const char mntpoint[] = OVL_BASE_MNTPOINT;
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns01.c b/testcases/kernel/syscalls/ioctl/ioctl_ns01.c
+index f2c77a01a..dfde4da6c 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_ns01.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_ns01.c
+@@ -40,6 +40,9 @@ static void test_ns_get_parent(void)
+ 	fd = SAFE_OPEN("/proc/self/ns/pid", O_RDONLY);
+ 	parent_fd = ioctl(fd, NS_GET_PARENT);
+ 	if (parent_fd == -1) {
++		if (errno == ENOTTY)
++			tst_brk(TCONF, "ioctl(NS_GET_PARENT) not implemented");
 +
- static int ovl_mounted;
+ 		if (errno == EPERM)
+ 			tst_res(TPASS, "NS_GET_PARENT fails with EPERM");
+ 		else
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns02.c b/testcases/kernel/syscalls/ioctl/ioctl_ns02.c
+index 4f5cb1427..33ef757a8 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_ns02.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_ns02.c
+@@ -32,6 +32,9 @@ static void run(void)
+ 	fd = SAFE_OPEN("/proc/self/ns/uts", O_RDONLY);
+ 	parent_fd = ioctl(fd, NS_GET_PARENT);
+ 	if (parent_fd == -1) {
++		if (errno == ENOTTY)
++			tst_brk(TCONF, "ioctl(NS_GET_PARENT) not implemented");
++
+ 		if (errno == EINVAL)
+ 			tst_res(TPASS, "NS_GET_PARENT fails with EINVAL");
+ 		else
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns03.c b/testcases/kernel/syscalls/ioctl/ioctl_ns03.c
+index 2e19cff3a..279032d20 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_ns03.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_ns03.c
+@@ -33,6 +33,11 @@ static void run(void)
  
- static void do_child(void)
-@@ -86,25 +87,10 @@ static void verify_execveat(void)
+ 	owner_fd = ioctl(fd, NS_GET_OWNER_UID, &uid);
+ 	if (owner_fd == -1) {
++		if (errno == ENOTTY) {
++			tst_brk(TCONF,
++			        "ioctl(NS_GET_OWNER_UID) not implemented");
++		}
++
+ 		if (errno == EINVAL)
+ 			tst_res(TPASS, "NS_GET_OWNER_UID fails, UTS namespace");
+ 		else
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns04.c b/testcases/kernel/syscalls/ioctl/ioctl_ns04.c
+index b9181cb3d..90035cbeb 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_ns04.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_ns04.c
+@@ -31,6 +31,9 @@ static void run(void)
+ 	fd = SAFE_OPEN("/proc/self/ns/user", O_RDONLY);
+ 	parent_fd = ioctl(fd, NS_GET_USERNS);
+ 	if (parent_fd == -1) {
++		if (errno == ENOTTY)
++			tst_brk(TCONF, "ioctl(NS_GET_USERNS) not implemented");
++
+ 		if (errno == EPERM)
+ 			tst_res(TPASS, "NS_GET_USERNS fails with EPERM");
+ 		else
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns05.c b/testcases/kernel/syscalls/ioctl/ioctl_ns05.c
+index bdef4d6e9..a8dee07a1 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_ns05.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_ns05.c
+@@ -53,7 +53,18 @@ static void run(void)
+ 	sprintf(child_namespace, "/proc/%i/ns/pid", pid);
+ 	my_fd = SAFE_OPEN("/proc/self/ns/pid", O_RDONLY);
+ 	child_fd = SAFE_OPEN(child_namespace, O_RDONLY);
+-	parent_fd = SAFE_IOCTL(child_fd, NS_GET_PARENT);
++	parent_fd = ioctl(child_fd, NS_GET_PARENT);
++
++	if (parent_fd == -1) {
++		TST_CHECKPOINT_WAKE(0);
++
++		if (errno == ENOTTY) {
++			tst_res(TCONF, "ioctl(NS_GET_PARENT) not implemented");
++			return;
++		}
++
++		tst_brk(TBROK | TERRNO, "ioctl(NS_GET_PARENT) failed");
++	}
  
- static void setup(void)
- {
--	int ret;
--
- 	check_execveat();
+ 	struct stat my_stat, child_stat, parent_stat;
  
--	/* Setup an overlay mount with lower file */
--	SAFE_MKDIR("lower", 0755);
--	SAFE_MKDIR("upper", 0755);
--	SAFE_MKDIR("work", 0755);
--	SAFE_MKDIR(OVL_MNT, 0755);
--	ret = mount("overlay", OVL_MNT, "overlay", 0,
--		    "lowerdir=lower,upperdir=upper,workdir=work");
--	if (ret < 0) {
--		if (errno == ENODEV) {
--			tst_brk(TCONF,
--				"overlayfs is not configured in this kernel.");
--		}
--		tst_brk(TBROK | TERRNO, "overlayfs mount failed");
--	}
--	ovl_mounted = 1;
-+	if (setup_overlay(1) == 0)
-+		ovl_mounted = 1;
- }
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns06.c b/testcases/kernel/syscalls/ioctl/ioctl_ns06.c
+index eabb7e49c..805a0a072 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_ns06.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_ns06.c
+@@ -50,7 +50,16 @@ static void run(void)
  
- static void cleanup(void)
-@@ -121,6 +107,8 @@ static const char *const resource_files[] = {
- static struct tst_test test = {
- 	.needs_root = 1,
- 	.needs_tmpdir = 1,
-+	.mount_device = 1,
-+	.mntpoint = mntpoint,
- 	.forks_child = 1,
- 	.child_needs_reinit = 1,
- 	.setup = setup,
-diff --git a/testcases/kernel/syscalls/inotify/inotify07.c b/testcases/kernel/syscalls/inotify/inotify07.c
-index 96370b5cf..fd0caff37 100644
---- a/testcases/kernel/syscalls/inotify/inotify07.c
-+++ b/testcases/kernel/syscalls/inotify/inotify07.c
-@@ -73,13 +73,13 @@ struct event_t {
- 	unsigned int mask;
- };
+ 	my_fd = SAFE_OPEN("/proc/self/ns/user", O_RDONLY);
+ 	child_fd = SAFE_OPEN(child_namespace, O_RDONLY);
+-	parent_fd = SAFE_IOCTL(child_fd, NS_GET_USERNS);
++	parent_fd = ioctl(child_fd, NS_GET_USERNS);
++
++	if (parent_fd == -1) {
++		TST_CHECKPOINT_WAKE(0);
++
++		if (errno == ENOTTY)
++			tst_brk(TCONF, "ioctl(NS_GET_USERNS) not implemented");
++
++		tst_brk(TBROK | TERRNO, "ioctl(NS_GET_USERNS) failed");
++	}
  
--#define OVL_MNT "ovl"
- #define DIR_NAME "test_dir"
- #define DIR_PATH OVL_MNT"/"DIR_NAME
- #define FILE_NAME "test_file"
- #define FILE_PATH OVL_MNT"/"DIR_NAME"/"FILE_NAME
+ 	struct stat my_stat, child_stat, parent_stat;
  
- static int ovl_mounted;
-+static const char mntpoint[] = OVL_BASE_MNTPOINT;
- 
- static struct event_t event_set[EVENT_MAX];
- 
-@@ -164,14 +164,11 @@ static void setup(void)
- 	int ret;
- 
- 	/* Setup an overlay mount with lower dir and file */
--	SAFE_MKDIR("lower", 0755);
--	SAFE_MKDIR("lower/"DIR_NAME, 0755);
--	SAFE_TOUCH("lower/"DIR_NAME"/"FILE_NAME, 0644, NULL);
--	SAFE_MKDIR("upper", 0755);
--	SAFE_MKDIR("work", 0755);
--	SAFE_MKDIR(OVL_MNT, 0755);
--	ret = mount("overlay", OVL_MNT, "overlay", 0,
--		    "lowerdir=lower,upperdir=upper,workdir=work");
-+	setup_overlay(0);
-+	SAFE_MKDIR(OVL_LOWER"/"DIR_NAME, 0755);
-+	SAFE_TOUCH(OVL_LOWER"/"DIR_NAME"/"FILE_NAME, 0644, NULL);
-+	ret = mount("overlay", OVL_MNT, "overlay", 0, "lowerdir="OVL_LOWER
-+		    ",upperdir="OVL_UPPER",workdir="OVL_WORK);
- 	if (ret < 0) {
- 		if (errno == ENODEV) {
- 			tst_brk(TCONF,
-@@ -234,6 +231,8 @@ static void cleanup(void)
- static struct tst_test test = {
- 	.needs_root = 1,
- 	.needs_tmpdir = 1,
-+	.mount_device = 1,
-+	.mntpoint = mntpoint,
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.test_all = verify_inotify,
-diff --git a/testcases/kernel/syscalls/inotify/inotify08.c b/testcases/kernel/syscalls/inotify/inotify08.c
-index acdb95345..a17a6a5c7 100644
---- a/testcases/kernel/syscalls/inotify/inotify08.c
-+++ b/testcases/kernel/syscalls/inotify/inotify08.c
-@@ -74,11 +74,11 @@ struct event_t {
- 	unsigned int mask;
- };
- 
--#define OVL_MNT "ovl"
- #define FILE_NAME "test_file"
- #define FILE_PATH OVL_MNT"/"FILE_NAME
- 
- static int ovl_mounted;
-+static const char mntpoint[] = OVL_BASE_MNTPOINT;
- 
- static struct event_t event_set[EVENT_MAX];
- 
-@@ -104,8 +104,8 @@ void verify_inotify(void)
- 	test_cnt++;
- 
- 	/* Make sure events on upper/lower do not show in overlay watch */
--	SAFE_TOUCH("lower/"FILE_NAME, 0644, NULL);
--	SAFE_TOUCH("upper/"FILE_NAME, 0644, NULL);
-+	SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
-+	SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
- 
- 	int len = read(fd_notify, event_buf, EVENT_BUF_LEN);
- 	if (len == -1 && errno != EAGAIN) {
-@@ -157,13 +157,10 @@ static void setup(void)
- 	int ret;
- 
- 	/* Setup an overlay mount with lower file */
--	SAFE_MKDIR("lower", 0755);
--	SAFE_TOUCH("lower/"FILE_NAME, 0644, NULL);
--	SAFE_MKDIR("upper", 0755);
--	SAFE_MKDIR("work", 0755);
--	SAFE_MKDIR(OVL_MNT, 0755);
--	ret = mount("overlay", OVL_MNT, "overlay", 0,
--		    "lowerdir=lower,upperdir=upper,workdir=work");
-+	setup_overlay(0);
-+	SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
-+	ret = mount("overlay", OVL_MNT, "overlay", 0, "lowerdir="OVL_LOWER
-+		    ",upperdir="OVL_UPPER",workdir="OVL_WORK);
- 	if (ret < 0) {
- 		if (errno == ENODEV) {
- 			tst_brk(TCONF,
-@@ -230,6 +227,8 @@ static void cleanup(void)
- static struct tst_test test = {
- 	.needs_root = 1,
- 	.needs_tmpdir = 1,
-+	.mount_device = 1,
-+	.mntpoint = mntpoint,
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.test_all = verify_inotify,
-diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
-index 39ddbd583..1b6b70466 100644
---- a/testcases/kernel/syscalls/readahead/readahead02.c
-+++ b/testcases/kernel/syscalls/readahead/readahead02.c
-@@ -44,16 +44,11 @@ static int pagesize;
- static unsigned long cached_max;
- static int ovl_mounted;
- 
--#define MNTPOINT        "mntpoint"
--#define OVL_LOWER	MNTPOINT"/lower"
--#define OVL_UPPER	MNTPOINT"/upper"
--#define OVL_WORK	MNTPOINT"/work"
--#define OVL_MNT		MNTPOINT"/ovl"
- static int readahead_length  = 4096;
- static char sys_bdi_ra_path[PATH_MAX];
- static int orig_bdi_limit;
- 
--static const char mntpoint[] = MNTPOINT;
-+static const char mntpoint[] = OVL_BASE_MNTPOINT;
- 
- static struct tst_option options[] = {
- 	{"s:", &opt_fsizestr, "-s    testfile size (default 64MB)"},
-@@ -132,7 +127,7 @@ static void create_testfile(int use_overlay)
- 	char *tmp;
- 	size_t i;
- 
--	sprintf(testfile, "%s/testfile", use_overlay ? OVL_MNT : MNTPOINT);
-+	sprintf(testfile, "%s/testfile", use_overlay ? OVL_MNT : OVL_BASE_MNTPOINT);
- 	tst_res(TINFO, "creating test file of size: %zu", testfile_size);
- 	tmp = SAFE_MALLOC(pagesize);
- 
-@@ -329,27 +324,6 @@ static void test_readahead(unsigned int n)
- 	}
- }
- 
--static void setup_overlay(void)
--{
--	int ret;
--
--	/* Setup an overlay mount with lower dir and file */
--	SAFE_MKDIR(OVL_LOWER, 0755);
--	SAFE_MKDIR(OVL_UPPER, 0755);
--	SAFE_MKDIR(OVL_WORK, 0755);
--	SAFE_MKDIR(OVL_MNT, 0755);
--	ret = mount("overlay", OVL_MNT, "overlay", 0, "lowerdir="OVL_LOWER
--		    ",upperdir="OVL_UPPER",workdir="OVL_WORK);
--	if (ret < 0) {
--		if (errno == ENODEV) {
--			tst_res(TINFO,
--				"overlayfs is not configured in this kernel.");
--			return;
--		}
--		tst_brk(TBROK | TERRNO, "overlayfs mount failed");
--	}
--	ovl_mounted = 1;
--}
- 
- /*
-  * We try raising bdi readahead limit as much as we can. We write
-@@ -413,7 +387,8 @@ static void setup(void)
- 	setup_readahead_length();
- 	tst_res(TINFO, "readahead length: %d", readahead_length);
- 
--	setup_overlay();
-+	if (setup_overlay(1) == 0)
-+		ovl_mounted = 1;
- }
- 
- static void cleanup(void)
 -- 
-2.21.0
+2.19.2
 
