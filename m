@@ -1,37 +1,60 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 15 May 2019 20:20:57 +0200
-Subject: [LTP] [PATCH v2 1/2] OVL_MNT: add setup_overlay helper
-In-Reply-To: <CAOQ4uxhaSBiKY7nLNnbvpc7mpcnyOJ8Ecf3Es8n_VTPBRnfF7g@mail.gmail.com>
-References: <20190503210005.GA18171@x230>
- <20190515092129.26336-1-xzhou@redhat.com>
- <20190515133102.GA5429@dell5510> <20190515134245.GC5429@dell5510>
- <CAOQ4uxhaSBiKY7nLNnbvpc7mpcnyOJ8Ecf3Es8n_VTPBRnfF7g@mail.gmail.com>
-Message-ID: <20190515182057.GA1856@x230>
+From: xuyang <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 16 May 2019 14:44:55 +0800
+Subject: [LTP] [PATCH] ltp-cap.m4: add libcap version detection && fix
+ compiler error
+In-Reply-To: <20190515143746.GA7507@dell5510>
+References: <1557732392-7049-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20190513131451.GA22761@dell5510> <5CDA5124.3070708@cn.fujitsu.com>
+ <20190514120119.GA26452@dell5510> <5CDBD564.8010300@cn.fujitsu.com>
+ <20190515143746.GA7507@dell5510>
+Message-ID: <5CDD06E7.7050100@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Amir, Murphy,
+Hi Petr
+
+> Hi Yang,
+>
+>>>> At the beginning, I
+>>>>     think it makes no sense because libcap-1 is too old.  But I notices that ltp-quota.m4
+>>>>     has quota_v1 and quota_v2. I changes my mind.
+>>>>     Since we have drop libnuma v1, I agree with you that we also drop libcap v1(too old).
+>>>>     Also, I think we should drop quota_v1 because it is too old (since Linux 2.4.22, Q_GETINFO has
+>>>>     been supported in kernel).
+>>> Good point. But I'm not sure if it's the same, as QFMT_VFS_OLD is part of kernel
+>>> source tree (part of kernel space code) so it makes sense to test it, whereas
+>>> libcap v1 and libnuma v1 are just old versions of user space library.
+>>> Or am I wrong?
+>> Hi Petr
+>>     I have seen kernel source about quota and try it. I think you are right.  But current quota_v1
+>> and quota_v2 detection has problem. In kernel source, I disable CONFIG_QFMT_V2 and enable CONFIG_QFMT_V1
+>> ,then I found ltp still detects quotav2 instead of quotav1,  and run ./quotactl01, the following error occurs:
+> LTP detection in ltp-quota.m4 defines _LINUX_QUOTA_VERSION for detection.
+> I guess you'd have to define HAVE_QUOTAV1 and undefine HAVE_QUOTAV2 in in
+> include/config.h, but not tested.
+>
+> BTW _LINUX_QUOTA_VERSION was removed from glibc in 2.25 [1] [2], which based setup
+> on<linux/quota.h>. And musl defines only _LINUX_QUOTA_VERSION 2.
+>
+> Regards man info that v1 is from kernel v2.4.22 we should probably also remove
+> it's support.
+  Thanks for your reply.
+
+> We got a bit away from libcap :).
+    :-)   let's go back to libcap. I will send a v2 patch to only fix possible compiler error.
+
+> Kind regards,
+> Petr
+>
+> [1] https://sourceware.org/git/?p=glibc.git;a=commitdiff;h=4d728087ef8cc826b05bd21d0c74d4eca9b1a27d;hp=de6b6d14e9b4d8e9a7333addca55163d9ebb7ff6
+> [2] https://patchwork.ozlabs.org/patch/664156/
+>
+>
+> .
+>
 
 
-> I liked your idea of create_overlay_dirs/mount_overlay better.
-> It is more flexible for future tests that may want to umount and
-> mount overlay several times and the setup of lower/upper files
-> could be very different in future tests, not limited to just creating
-> files (maybe symlinks, xattr).
-> The experience from xfstests overlay tests suggests that the
-> create_overlay_dirs/mount_overlay helpers are a good model to follow.
 
-Thanks for ideas, agree with it.
-
-Other thing is to have const char *file, const int lineno as first parameters
-for mount_overlay_() and create mount_overlay() and SAFE_MOUNT_OVERLAY() as macros,
-which would use it. See tst_mkfs{_,}() as examples.
-
-> Thanks,
-> Amir.
-
-Kind regards,
-Petr
