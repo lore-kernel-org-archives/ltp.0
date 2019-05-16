@@ -1,43 +1,25 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 16 May 2019 03:33:07 -0400 (EDT)
-Subject: [LTP] shmctl01 failure // Was: Re: FAIL: Test report for kernel
- 5.1.0-8317cc1.cki (mainline.kernel.org)
-In-Reply-To: <1905751327.22994884.1557943061388.JavaMail.zimbra@redhat.com>
-References: <cki.4E6B4F994B.7AOFC8BJSR@redhat.com>
- <1905751327.22994884.1557943061388.JavaMail.zimbra@redhat.com>
-Message-ID: <10143454.23082805.1557991987095.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 16 May 2019 09:38:27 +0200
+Subject: [LTP] Oldest still supported kernel
+Message-ID: <20190516073826.GA14532@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1254"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Ci0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiAKPiAKPiAtLS0tLSBPcmlnaW5hbCBNZXNz
-YWdlIC0tLS0tCj4gPiBIZWxsbywKPiA+IAo+ID4gV2UgcmFuIGF1dG9tYXRlZCB0ZXN0cyBvbiBh
-IHJlY2VudCBjb21taXQgZnJvbSB0aGlzIGtlcm5lbCB0cmVlOgo+ID4gCj4gPiAgICAgICAgS2Vy
-bmVsIHJlcG86Cj4gPiAgICAgICAgaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4
-L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0Cj4gPiAgICAgICAgICAgICBDb21taXQ6IDVh
-Yzk0MzMyMjQ4ZSAtIE1lcmdlIHRhZyAnZm9yLWxpbnVzJyBvZgo+ID4gICAgICAgICAgICAgZ2l0
-Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3JkbWEvcmRtYQo+ID4g
-Cj4gPiBUaGUgcmVzdWx0cyBvZiB0aGVzZSBhdXRvbWF0ZWQgdGVzdHMgYXJlIHByb3ZpZGVkIGJl
-bG93Lgo+ID4gCj4gPiAgICAgT3ZlcmFsbCByZXN1bHQ6IEZBSUxFRCAoc2VlIGRldGFpbHMgYmVs
-b3cpCj4gPiAgICAgICAgICAgICAgTWVyZ2U6IE9LCj4gPiAgICAgICAgICAgIENvbXBpbGU6IE9L
-Cj4gPiAgICAgICAgICAgICAgVGVzdHM6IEZBSUxFRAo+ID4gCj4gPiAKPiA+IE9uZSBvciBtb3Jl
-IGtlcm5lbCB0ZXN0cyBmYWlsZWQ6Cj4gPiAKPiA+ICAgeDg2XzY0Ogo+ID4gICAgIOKdjiBMVFAg
-bGl0ZQo+IAo+CgpjYyBMVFAgbGlzdAoKPiBUZXN0IGZhaWxzIG9uIFNITV9TVEFUOgo+ICAgc2ht
-Y3RsMDEgICAgNSAgVEZBSUwgIDogIHNobWN0bDAxLmM6MTczOiBzaG1jdGwwMSBjYWxsIGZhaWxl
-ZCAtIGVycm5vID0gMjIKPiAgIDogSW52YWxpZCBhcmd1bWVudAo+ICAgc2htY3RsKDAsIFNITV9T
-VEFULCAweDYwMTA2MCkgICAgICAgICAgID0gLUVJTlZBTAo+IAo+IFdoaWNoIGxpa2VseSBzdGFy
-dGVkIGZhaWxpbmcgYWZ0ZXI6Cj4gICBjb21taXQgOTlkYjQ2ZWEyOTI3ODBjZDk3OGQ1NjkzMmQ5
-NDQ1YjFlOGJkYWZlOAo+ICAgQXV0aG9yOiBNYW5mcmVkIFNwcmF1bCA8bWFuZnJlZEBjb2xvcmZ1
-bGxpZmUuY29tPgo+ICAgRGF0ZTogICBUdWUgTWF5IDE0IDE1OjQ2OjM2IDIwMTkgLTA3MDAKPiAg
-ICAgaXBjOiBkbyBjeWNsaWMgaWQgYWxsb2NhdGlvbiBmb3IgdGhlIGlwYyBvYmplY3QuCj4gCj4g
-UGVyIG1hbiBwYWdlOgo+ICJBIHN1Y2Nlc3NmdWwgSVBDX0lORk8gb3IgU0hNX0lORk8gb3BlcmF0
-aW9uIHJldHVybnMgdGhlIGluZGV4IG9mIHRoZSBoaWdoZXN0Cj4gdXNlZCBlbnRyeQo+IGluIHRo
-ZSBrZXJuZWwncyBpbnRlcm5hbCBhcnJheSByZWNvcmRpbmcgaW5mb3JtYXRpb24gYWJvdXQgYWxs
-IHNoYXJlZCBtZW1vcnkKPiBzZWdtZW50cy4KPiAoVGhpcyBpbmZvcm1hdGlvbiBjYW4gYmUgdXNl
-ZCB3aXRoIHJlcGVhdGVkIFNITV9TVEFUIG9yIFNITV9TVEFUX0FOWQo+IG9wZXJhdGlvbnMgdG8g
-b2J0YWluCj4gaW5mb3JtYXRpb24gYWJvdXQgYWxsIHNoYXJlZCBtZW1vcnkgc2VnbWVudHMgb24g
-dGhlIHN5c3RlbS4pIgo+IAo+IFdoaWNoIGhvd2V2ZXIgZG9lc24ndCBndWFyYW50ZWUgdGhlcmUg
-d29uJ3QgYmUgYW55IGdhcHMuCj4gSSdtIGxlYW5pbmcgdG93YXJkcyB1cGRhdGluZyB0ZXN0IGF0
-IHRoZSBtb21lbnQuCj4gCg==
+Hi,
+
+do we declare oldest still supported kernel version?
+According to distrowatch [1] still supported RHEL-6.9 is using v2.6.32.
+Is it the oldest version we want to support or even something older?
+Latest still supported stable kernel is 3.16, which is obviously too new for
+enterprise distros.
+
+It'd be nice to specify latest supported kernel (and glibc) version in docs
+and remove old autotools checks (we have some checks for v2.6.25).
+
+Kind regards,
+Petr
+
+[1] https://distrowatch.com/table.php?distribution=redhat
