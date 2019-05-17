@@ -1,36 +1,33 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 17 May 2019 17:04:56 +0200
-Subject: [LTP] [PATCH] ima: skip verifying TPM 2.0 PCR values
-In-Reply-To: <fccc3abd-f3ce-fdb1-55d7-c18ce116446c@linux.vnet.ibm.com>
-References: <1558041162.3971.2.camel@linux.ibm.com>
- <fccc3abd-f3ce-fdb1-55d7-c18ce116446c@linux.vnet.ibm.com>
-Message-ID: <20190517150456.GA11796@dell5510>
+Date: Fri, 17 May 2019 17:41:05 +0200
+Subject: [LTP] [PATCH v2 0/3] LTP reproducer on broken IMA on overlayfs
+In-Reply-To: <1558090823.4507.50.camel@linux.ibm.com>
+References: <20190405165225.27216-1-pvorel@suse.cz>
+ <20190514121213.GA28655@dell5510>
+ <1557889279.4581.14.camel@linux.ibm.com>
+ <20190515120853.GA22992@dell5510>
+ <1558044649.4507.10.camel@linux.ibm.com>
+ <20190517075057.GA12489@dell5510>
+ <1558090823.4507.50.camel@linux.ibm.com>
+Message-ID: <20190517154105.GB11796@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Nayna,
+Hi Mimi,
 
-...
-> > +	local tpm_description="/sys/class/tpm/tpm0/device/description"
-...
+> On Fri, 2019-05-17 at 09:50 +0200, Petr Vorel wrote:
 
-> I do not see a "description" file on either my PowerPC or x86 systems with
-> TPM 2.0.  Perhaps instead of testing for the "description" file, if the
-> "pcrs" file is not found, emit a more verbose informational message, for eg.
-> - "pcrs file is not found - either you are running a TPM 2.0, or having
-> sysfs failed to show pcrs for TPM 1.2"
-Some people are using /sys/class/tpm/tpm0/device/description [1] for testing TPM
-version. From the discussion on [1] I also got an expression that the file is
-not always presented. If there is really no reliable way to detect TPM version
-from sysfs (huh!) your approach would make sense for me.
+> > If it's ok for you and it's a valid test do you give an ack?
 
-> Thanks & Regards,
->       - Nayna
+> Of course!  Thanks!
+Thanks! I'll add also Ignaz's description (create README.md in IMA folder),
+thus probably send a v3 to ML first, but not expecting to get much review :).
+
+> Mimi
 
 Kind regards,
 Petr
 
-[1] https://github.com/tpm2-software/tpm2-tools/issues/604
