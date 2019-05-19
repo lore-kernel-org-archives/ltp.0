@@ -1,31 +1,31 @@
 From: Sandeep Patil <sspatil@android.com>
-Date: Sat, 18 May 2019 17:38:05 -0700
-Subject: [LTP] [PATCH 2/5] syscalls/adjtimex02: Convert to new library
+Date: Sat, 18 May 2019 17:38:06 -0700
+Subject: [LTP] [PATCH 3/5] syscalls/asyncio02: convert to new library.
 In-Reply-To: <20190519003808.47425-1-sspatil@android.com>
 References: <20190519003808.47425-1-sspatil@android.com>
-Message-ID: <20190519003808.47425-3-sspatil@android.com>
+Message-ID: <20190519003808.47425-4-sspatil@android.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-remove UCLINUX checks along the way and simplify the test.
+Drop several duplicate test cases along the way
 
 Signed-off-by: Sandeep Patil <sspatil@android.com>
 ---
- .../kernel/syscalls/adjtimex/adjtimex02.c     | 307 +++++-------------
- 1 file changed, 77 insertions(+), 230 deletions(-)
+ testcases/kernel/syscalls/asyncio/asyncio02.c | 323 ++++--------------
+ 1 file changed, 61 insertions(+), 262 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/adjtimex/adjtimex02.c b/testcases/kernel/syscalls/adjtimex/adjtimex02.c
-index 492225f19..8814b60e0 100644
---- a/testcases/kernel/syscalls/adjtimex/adjtimex02.c
-+++ b/testcases/kernel/syscalls/adjtimex/adjtimex02.c
-@@ -1,274 +1,121 @@
+diff --git a/testcases/kernel/syscalls/asyncio/asyncio02.c b/testcases/kernel/syscalls/asyncio/asyncio02.c
+index e532cc287..d86a0af9c 100644
+--- a/testcases/kernel/syscalls/asyncio/asyncio02.c
++++ b/testcases/kernel/syscalls/asyncio/asyncio02.c
+@@ -1,94 +1,10 @@
 +// SPDX-License-Identifier: GPL-2.0
 +
  /*
-  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
 - *
 - * This program is free software; you can redistribute it and/or modify it
 - * under the terms of version 2 of the GNU General Public License as
@@ -35,148 +35,168 @@ index 492225f19..8814b60e0 100644
 - * WITHOUT ANY WARRANTY; without even the implied warranty of
 - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 - *
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
 - * You should have received a copy of the GNU General Public License along
 - * with this program; if not, write the Free Software Foundation, Inc.,
 - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 - *
-+ *  AUTHOR : Saji Kumar.V.R <saji.kumar@wipro.com>
-  */
--/**********************************************************
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
 - *
-- *    TEST IDENTIFIER	: adjtimex02
+- * http://www.sgi.com
 - *
-- *    EXECUTED BY	: root / superuser
+- * For further information regarding this notice, see:
 - *
-- *    TEST TITLE	: Tests for error conditions
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
 - *
-- *    TEST CASE TOTAL	: 6
+- */
+-/* $Id: asyncio02.c,v 1.6 2009/08/28 11:17:39 vapier Exp $ */
+-/************************************************************
+- * OS Test - Silicon Graphics, Inc.
+- * Mendota Heights, Minnesota
 - *
-- *    AUTHOR		: Saji Kumar.V.R <saji.kumar@wipro.com>
+- * TEST IDENTIFIER:  aiotcs02:  write/close flushes data to the file
 - *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
+- * PARENT DOCUMENT:  aiotds01:  kernel i/o
 - *
-- *    DESCRIPTION
-- *	Verify that
-- *	1) adjtimex(2) fails with errno set to EFAULT if buf does
-- *	   not point to writable memory
-- *	2) adjtimex(2) fails with errno set to EINVAL if an attempt
-- *	   is  made  to set buf.tick to a value < 900000/HZ
-- *	3) adjtimex(2) fails with errno set to EINVAL if an attempt
-- *	   is  made  to set buf.tick to a value > 1100000/HZ
-- *	4) adjtimex(2) fails with errno set to EINVAL if an attempt
-- *	   is  made  to set buf.offset to a value > 512000L
-- *	   (This test case will be executed only if the kernel version
-- *	    is 2.6.25 or below)
-- *	5) adjtimex(2) fails with errno set to EINVAL if an attempt
-- *	   is  made  to set buf.offset to a value < 512000L
-- *	   (This test case will be executed only if the kernel version
-- *	    is 2.6.25 or below)
-- *	6) adjtimex(2) fails with errno set to EPERM if buf.mode is
-- *	   non-zero and the user is not super-user.
+  * AUTHOR: Barrie Kletscher
 - *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *	  Save current parameters in tim_save
+  * CO-PILOT: Dave Baumgartner
 - *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- *	  Call test case specific setup if needed
-- * 	  call adjtimex with saved timex structure
-- *	  Check return value is between 0 & 5
-- *		Test passed
-- *	  Otherwise
-- *		Test failed
-- *	  Call test case specific cleanup if needed
+- * TEST ITEMS:
+- * 	for each open flags set used:
+- * 	1. Multiple writes to a file work as specified for
+- * 	   more than BUFSIZ bytes.
+- * 	2. Multiple writes to a file work as specified for
+- * 	   BUFSIZ bytes.
+- * 	3. Multiple writes to a file work as specified for
+- * 	   lower than BUFSIZ bytes.
 - *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
+- * INPUT SPECIFICATIONS:
+- * 	Standard parse_opts supported options.
+- *$
+- * OUTPUT SPECIFICATIONS
+- * 	Standard tst_res output format
 - *
-- * USAGE:  <for command-line>
-- * adjtimex02 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
-- *			where,  -c n : Run n copies concurrently.
-- *				-e   : Turn on errno logging.
-- *				-h   : Show help screen
-- *				-f   : Turn off functional testing
-- *				-i n : Execute test n times.
-- *				-I x : Execute test for x seconds.
-- *				-p   : Pause for SIGUSR1 before starting
-- *				-P x : Pause for x seconds between iterations.
-- *				-t   : Turn on syscall timing.
+- * ENVIRONMENTAL NEEDS:
+- * 	This program uses the environment variable TMPDIR for the location
+- * 	of the temporary directory.
 - *
-- ****************************************************************/
--
--#if defined UCLINUX && !__THROW
--/* workaround for libc bug causing failure in sys/timex.h */
--#define __THROW
--#endif
+- *
+- * SPECIAL PROCEDURAL REQUIREMENTS:
+- * 	The program must be linked with tst_*.o and parse_opts.o.
+- *
+- * INTERCASE DEPENDENCIES:
+- * 	NONE.
+- *
+- * DETAILED DESCRIPTION:
+- * 	Attempt to get some memory to work with.
+- * 	Call testrun writing (BUFSIZ + 1) bytes
+- * 	Call testrun writing BUFSIZ bytes
+- * 	Repeated call to testrun() with decreasing write sizes
+- * 		less than BUFSIZ
+- * 	End
+- *
+- * 	Start testrun()
+- * 	Attempt to open a temporary file.
+- * 	Write the memory to the file.
+- * 	Attempt to close the file which also flushes the buffers.
+- * 	Now check to see if the number of bytes written is the
+- * 		same as the number of bytes in the file.
+- * 	Cleanup
+- *
+- * BUGS:
+- * 	NONE.
+- *
+-************************************************************/
++ */
  
+ #include <fcntl.h>
+ #include <sys/types.h>
+@@ -96,199 +12,82 @@
+ #include <sys/signal.h>
  #include <errno.h>
- #include <sys/timex.h>
- #include <unistd.h>
- #include <pwd.h>
+ #include <stdlib.h>
 -#include "test.h"
 -#include "safe_macros.h"
+-
+-#define FLAG O_RDWR | O_CREAT | O_TRUNC	/* Flags used when opening temp tile */
+-#define MODE  0777		/* Mode to open file with */
+-#define WRITES 10		/* Number of times buffer is written */
+-#define DECR 1000		/* Number of bytes decremented between */
+-					/* Calls to testrun() */
+-#define OK -1			/* Return value from testrun() */
+-
+-#define FNAME1	"aio02.1"
+-#define FNAME2	"aio02.2"
+-#define FNAME3	"aio02.3"
+-
+-#define ERR_MSG1 "Bytes in file not equal to bytes written."
+-#define ERR_MSG2 "Bytes in file (%d) not equal to bytes written (%d)."
+-
+-char *dp;			/* pointer to area of memory */
+-
+-void setup();
+-void cleanup();
+-int testrun(int flag, int bytes, int ti);
+-
+-char *TCID = "asyncio02";
+-int TST_TOTAL = 6;
+-
+-char *filename;			/* name of the temporary file */
+-
+-char *Progname;
+-int Open_flags;
+-
+-int Flags[] = {
+-	O_RDWR | O_CREAT | O_TRUNC,
+-	O_RDWR | O_CREAT | O_TRUNC
 +#include "tst_test.h"
- 
- #define SET_MODE ( ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR | \
- 	ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK )
- 
--static void setup(void);
--static int setup2(void);
--static int setup3(void);
--static int setup4(void);
--static int setup5(void);
--static int setup6(void);
--static void cleanup(void);
--static void cleanup6(void);
--
--char *TCID = "adjtimex02";
--
- static int hz;			/* HZ from sysconf */
- 
- static struct timex tim_save;
- static struct timex buff;
- 
--static char nobody_uid[] = "nobody";
- struct passwd *ltpuser;
- 
--struct test_cases_t {
-+struct test_case {
- 	struct timex *buffp;
--	int (*setup) ();
--	void (*cleanup) ();
- 	int exp_errno;
--} test_cases[] = {
--#ifndef UCLINUX
--	/* Skip since uClinux does not implement memory protection */
--	{
--	(struct timex *)-1, NULL, NULL, EFAULT},
--#endif
--	{
--	&buff, setup2, NULL, EINVAL}, {
--	&buff, setup3, NULL, EINVAL}, {
--	&buff, setup4, NULL, EINVAL}, {
--	&buff, setup5, NULL, EINVAL}, {
--	&buff, setup6, cleanup6, EPERM}
++
++/* Temporary file names */
++#define FNAME1	"asyncio02.1"
++#define FNAME2	"asyncio02.2"
++
++/* Number of times each buffer is written */
++#define NUM_WRITES	(10)
++#define BUFSIZE		(4096)
++
++char *buffer;
++
++static struct test_case {
++	const char *filename;
++	size_t bytes_to_write;
++	size_t decrement;
 +} tcases[] = {
-+	{ (struct timex *)-1, EFAULT },
-+	{ &buff, EINVAL},
-+	{ &buff, EINVAL },
-+	{ &buff, EPERM },
-+	{ &buff, EINVAL },
-+	{ &buff, EINVAL },
++	/* Write and verify BUFSIZE byte chunks */
++	{ FNAME1, BUFSIZE, BUFSIZE },
++	/* Write and verify decreasing chunk sizes */
++	{ FNAME2, BUFSIZE, 1000 }
  };
  
--int TST_TOTAL = sizeof(test_cases) / sizeof(test_cases[0]);
+-int Num_flags;
 -
+-/***********************************************************************
+- * MAIN
+- ***********************************************************************/
 -int main(int ac, char **av)
-+void verify_adjtimex(unsigned int nr)
++void verify(const char *fname, size_t bytes, size_t decrement)
  {
 -
--	int lc, i;
+-	int i;
+-	int ret_val;
+-	int eok;		/* everything is ok flag */
+-	int lc;
+-	int flag_cnt;
+-
+-	Num_flags = sizeof(Flags) / sizeof(int);
+-	TST_TOTAL = 3 * Num_flags;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
@@ -186,192 +206,176 @@ index 492225f19..8814b60e0 100644
 -
 -		tst_count = 0;
 -
--		for (i = 0; i < TST_TOTAL; ++i) {
+-		for (flag_cnt = 0; flag_cnt < Num_flags; flag_cnt++) {
+-
 -			/*
--			 * since Linux 2.6.26, if buf.offset value is outside
--			 * the acceptable range, it is simply normalized instead
--			 * of letting the syscall fail. so just skip this test
--			 * case.
+-			 * call testrun writing (BUFSIZ + 1) byte chunks
 -			 */
--			if ((i == 3 || i == 4) && tst_kvercmp(2, 6, 25) > 0) {
--				tst_resm(TCONF, "this kernel normalizes buf."
--					 "offset value if it is outside"
--					 " the acceptable range.");
--				continue;
--			}
 -
--			buff = tim_save;
--			buff.modes = SET_MODE;
--			if ((test_cases[i].setup) && (test_cases[i].setup())) {
--				tst_resm(TWARN, "setup() failed, skipping"
--					 " this test case");
--				continue;
--			}
--
--			/* Call adjtimex(2) */
--			TEST(adjtimex(test_cases[i].buffp));
--
--			if ((TEST_RETURN == -1) && (TEST_ERRNO ==
--						    test_cases[i].exp_errno)) {
--				tst_resm(TPASS | TTERRNO,
--					 "Test Passed, adjtimex() returned -1");
+-			filename = FNAME1;
+-			if (testrun(Flags[flag_cnt], BUFSIZ + 1, 1) != OK) {
+-				tst_resm(TFAIL, ERR_MSG1);
 -			} else {
--				tst_resm(TFAIL | TTERRNO,
--					 "Test Failed, adjtimex() returned %ld",
--					 TEST_RETURN);
+-				tst_resm(TPASS,
+-					 "More than BUFSIZE bytes multiple synchronous writes to a file check out ok");
 -			}
--			if (test_cases[i].cleanup) {
--				test_cases[i].cleanup();
+-
+-			/*
+-			 * call testrun writing BUFSIZ byte chunks
+-			 */
+-
+-			filename = FNAME2;
+-			if (testrun(Flags[flag_cnt], BUFSIZ, 2) != OK) {
+-				tst_resm(TFAIL, ERR_MSG1);
+-			} else {
+-				tst_resm(TPASS,
+-					 "BUFSIZE bytes multiple synchronous writes to a file checks out ok");
 -			}
--		}
-+	struct test_case *tcase = &tcases[nr];
-+	/*
-+	 * since Linux 2.6.26, if buf.offset value is outside
-+	 * the acceptable range, it is simply normalized instead
-+	 * of letting the syscall fail. so just skip this test
-+	 * case.
-+	 */
-+	if (nr > 3 && (tst_kvercmp(2, 6, 25) > 0)) {
-+		tst_res(TCONF, "this kernel normalizes buf."
-+				"offset value if it is outside"
-+				" the acceptable range.");
+-
+-			/*
+-			 * while the byte chunks are greater than 0
+-			 *      call testrun() with decreasing chunk sizes
+-			 */
+-
+-			filename = FNAME3;
+-			eok = 1;
+-			for (i = BUFSIZ - 1; i >= 0; i -= DECR) {
+-				if ((ret_val =
+-				     testrun(Flags[flag_cnt], i, 3)) != OK) {
+-					tst_resm(TFAIL, ERR_MSG2, ret_val,
+-						 i * WRITES);
+-				}
+-			}
+-
+-			if (eok) {
+-				tst_resm(TPASS,
+-					 "Less than BUFSIZE bytes multiple synchronous writes to a file checks out ok");
+-			}
++	struct stat s;
++	int fd, i;
++	size_t bytes_written = 0;
++
++	fd = SAFE_OPEN(fname, O_CREAT | O_TRUNC | O_RDWR, 0777);
++	while (bytes > 0) {
++		for (i = 0; i < NUM_WRITES; i++) {
++			SAFE_WRITE(1, fd, buffer, bytes);
++			bytes_written += bytes;
+ 		}
++		bytes -= bytes > decrement ? decrement : bytes;
+ 	}
+-	cleanup();
+-	tst_exit();
+-}				/* end main() */
+-
+-int testrun(int flag, int bytes, int ti)
+-{
+-
+-	int fildes, i, ret;
+ 
+-	struct stat buffer;	/* buffer of memory required for stat command */
++	SAFE_CLOSE(fd);
++	SAFE_STAT(fname, &s);
++	SAFE_UNLINK(fname);
+ 
+ 	/*
+-	 *      Attempt to open a temporary file.
++	 *  Now check to see if the number of bytes written was
++	 *  the same as the number of bytes in the file.
+ 	 */
+-
+-	if ((fildes = open(filename, flag, MODE)) == -1) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "open(%s) failed", filename);
++	if (s.st_size != (off_t) bytes_written) {
++		tst_res(TFAIL, "file size (%zu) not as expected (%zu) bytes",
++				s.st_size, bytes_written);
 +		return;
  	}
  
--	/* cleanup and exit */
--	cleanup();
-+	buff = tim_save;
-+	buff.modes = SET_MODE;
-+	switch (nr) {
-+	case 0:
-+		break;
-+	case 1:
-+		buff.tick = 900000 / hz - 1;
-+		break;
-+	case 2:
-+		buff.tick = 1100000 / hz + 1;
-+		break;
-+	case 3:
-+		/* Switch to nobody user for correct error code collection */
-+		ltpuser = SAFE_GETPWNAM("nobody");
-+		SAFE_SETEUID(ltpuser->pw_uid);
-+		break;
-+	case 4:
-+		buff.offset = 512000L + 1;
-+		break;
-+	case 5:
-+		buff.offset = (-1) * (512000L) - 1;
-+		break;
-+	default:
-+		tst_brk(TFAIL, "Invalid test case %u ", nr);
-+	}
+-	/*
+-	 *      Write the memory to the file.
+-	 */
+-
+-	for (i = 0; i < WRITES; i++) {
+-		TEST(write(fildes, dp, (unsigned)bytes));
+-
+-		if (TEST_RETURN == -1) {
+-			tst_brkm(TBROK | TTERRNO, cleanup, "write() failed");
+-		}
+-	}			/* end for () */
+-
+-	/*
+-	 *      Attempt to close the file which also flushes the buffers.
+-	 */
+-
+-	SAFE_CLOSE(cleanup, fildes);
+-
+-	ret = OK;
+-
+-	/*
+-	 *  Now check to see if the number of bytes written is the
+-	 *  same as the number of bytes in the file.
+-	 */
+-
+-	SAFE_STAT(cleanup, filename, &buffer);
+-
+-	if (buffer.st_size != (off_t) (bytes * WRITES)) {
+-		ret = (int)buffer.st_size;
+-	}
+-
+-	SAFE_UNLINK(cleanup, filename);
++	tst_res(TPASS, "File size reported as expected");
++}
  
--	tst_exit();
-+	TEST(adjtimex(tcase->buffp));
-+	if ((TST_RET == -1) && (TST_ERR == tcase->exp_errno)) {
-+		tst_res(TPASS | TTERRNO,
-+				"adjtimex() error %u ", tcase->exp_errno);
-+	} else {
-+		tst_res(TFAIL | TTERRNO,
-+				"Test Failed, adjtimex() returned %ld",
-+				TST_RET);
-+	}
+-	return ret;
++void verify_asynchronous_io(unsigned int nr)
++{
++	struct test_case *tcase = &tcases[nr];
  
-+	/* clean up after ourselves */
-+	if (nr == 3)
-+		SAFE_SETEUID(0);
- }
+-}				/* end testrun() */
++	verify(tcase->filename, tcase->bytes_to_write, tcase->decrement);
++}
  
--/* setup() - performs all ONE TIME setup for this test */
+-/***************************************************************
+- * setup() - performs all ONE TIME setup for this test.
+- ***************************************************************/
  void setup(void)
  {
--	tst_require_root();
 -
- 	tim_save.modes = 0;
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
 -
- 	/* set the HZ from sysconf */
--	hz = SAFE_SYSCONF(NULL, _SC_CLK_TCK);
-+	hz = SAFE_SYSCONF(_SC_CLK_TCK);
- 
 -	TEST_PAUSE;
 -
--	/* Save current parameters in tim_save */
--	if ((adjtimex(&tim_save)) == -1) {
--		tst_brkm(TBROK, NULL, "Failed to save current parameters");
+-	/* create a temporary directory and go to it */
+-	tst_tmpdir();
+-
+-	/*
+-	 *  Attempt to get some memory to work with.
+-	 */
+-
+-	if ((dp = malloc((unsigned)BUFSIZ + 1)) == NULL) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "malloc() failed");
 -	}
-+	/* Save current parameters */
-+	if ((adjtimex(&tim_save)) == -1)
-+		tst_brk(TBROK | TERRNO,
-+				"adjtimex(): failed to save current params");
+-
++	buffer = SAFE_MALLOC(BUFSIZE);
  }
  
--/*
-- *cleanup() -  performs all ONE TIME cleanup for this test at
-- *		completion or premature exit.
-- */
+-/***************************************************************
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *              completion or premature exit.
+- ***************************************************************/
  void cleanup(void)
  {
 -
- 	tim_save.modes = SET_MODE;
--	/* Restore saved parameters */
--	if ((adjtimex(&tim_save)) == -1) {
--		tst_resm(TWARN, "Failed to restore saved parameters");
--	}
--}
--
--int setup2(void)
--{
--	buff.tick = 900000 / hz - 1;
--	return 0;
--}
--
--int setup3(void)
--{
--	buff.tick = 1100000 / hz + 1;
--	return 0;
--}
--
--int setup4(void)
--{
--	buff.offset = 512000L + 1;
--	return 0;
--}
--
--int setup5(void)
--{
--	buff.offset = (-1) * (512000L) - 1;
--	return 0;
--}
- 
--int setup6(void)
--{
--	/* Switch to nobody user for correct error code collection */
--	if ((ltpuser = getpwnam(nobody_uid)) == NULL) {
--		tst_brkm(TBROK, NULL, "\"nobody\" user not present");
--	}
--	if (seteuid(ltpuser->pw_uid) == -1) {
--		tst_resm(TWARN | TERRNO, "seteuid(%d) failed", ltpuser->pw_uid);
--		return 1;
--	}
--	return 0;
-+	/* Restore saved parameters */
-+	if ((adjtimex(&tim_save)) == -1)
-+		tst_res(TWARN, "Failed to restore saved parameters");
+-	tst_rmdir();
++	free(buffer);
  }
- 
--void cleanup6(void)
--{
--	/* Set effective user id back to root */
--	SAFE_SETEUID(cleanup, 0);
--}
++
 +static struct tst_test test = {
-+	.needs_root = 1,
 +	.tcnt = ARRAY_SIZE(tcases),
++	.needs_tmpdir = 1,
++	.test = verify_asynchronous_io,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test = verify_adjtimex,
 +};
 -- 
 2.21.0.1020.gf2820cf01a-goog
