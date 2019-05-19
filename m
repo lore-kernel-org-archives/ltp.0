@@ -1,27 +1,27 @@
 From: Sandeep Patil <sspatil@android.com>
-Date: Sat, 18 May 2019 17:38:04 -0700
-Subject: [LTP] [PATCH 1/5] syscalls/adjtimex01: Convert to new library
+Date: Sat, 18 May 2019 17:38:05 -0700
+Subject: [LTP] [PATCH 2/5] syscalls/adjtimex02: Convert to new library
 In-Reply-To: <20190519003808.47425-1-sspatil@android.com>
 References: <20190519003808.47425-1-sspatil@android.com>
-Message-ID: <20190519003808.47425-2-sspatil@android.com>
+Message-ID: <20190519003808.47425-3-sspatil@android.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-remove UCLINUX checks along the way.
+remove UCLINUX checks along the way and simplify the test.
 
 Signed-off-by: Sandeep Patil <sspatil@android.com>
 ---
- .../kernel/syscalls/adjtimex/adjtimex01.c     | 122 +++++-------------
- 1 file changed, 32 insertions(+), 90 deletions(-)
+ .../kernel/syscalls/adjtimex/adjtimex02.c     | 307 +++++-------------
+ 1 file changed, 77 insertions(+), 230 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/adjtimex/adjtimex01.c b/testcases/kernel/syscalls/adjtimex/adjtimex01.c
-index 295ed6d31..758d5ab07 100644
---- a/testcases/kernel/syscalls/adjtimex/adjtimex01.c
-+++ b/testcases/kernel/syscalls/adjtimex/adjtimex01.c
-@@ -1,112 +1,54 @@
+diff --git a/testcases/kernel/syscalls/adjtimex/adjtimex02.c b/testcases/kernel/syscalls/adjtimex/adjtimex02.c
+index 492225f19..8814b60e0 100644
+--- a/testcases/kernel/syscalls/adjtimex/adjtimex02.c
++++ b/testcases/kernel/syscalls/adjtimex/adjtimex02.c
+@@ -1,274 +1,121 @@
 +// SPDX-License-Identifier: GPL-2.0
 +
  /*
@@ -38,46 +38,145 @@ index 295ed6d31..758d5ab07 100644
 - * You should have received a copy of the GNU General Public License along
 - * with this program; if not, write the Free Software Foundation, Inc.,
 - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ * AUTHOR: Saji Kumar.V.R <saji.kumar@wipro.com>
+- *
++ *  AUTHOR : Saji Kumar.V.R <saji.kumar@wipro.com>
   */
- 
--/*
--  AUTHOR: Saji Kumar.V.R <saji.kumar@wipro.com>
--  EXECUTED BY: root / superuser
--
--  TEST ITEMS:
--   1. Check to see if adjtimex succeed with mode combination :
--      ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR |
--      ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK
--   2. Check to see if adjtimex succeed with mode ADJ_OFFSET_SINGLESHOT
--*/
+-/**********************************************************
+- *
+- *    TEST IDENTIFIER	: adjtimex02
+- *
+- *    EXECUTED BY	: root / superuser
+- *
+- *    TEST TITLE	: Tests for error conditions
+- *
+- *    TEST CASE TOTAL	: 6
+- *
+- *    AUTHOR		: Saji Kumar.V.R <saji.kumar@wipro.com>
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    DESCRIPTION
+- *	Verify that
+- *	1) adjtimex(2) fails with errno set to EFAULT if buf does
+- *	   not point to writable memory
+- *	2) adjtimex(2) fails with errno set to EINVAL if an attempt
+- *	   is  made  to set buf.tick to a value < 900000/HZ
+- *	3) adjtimex(2) fails with errno set to EINVAL if an attempt
+- *	   is  made  to set buf.tick to a value > 1100000/HZ
+- *	4) adjtimex(2) fails with errno set to EINVAL if an attempt
+- *	   is  made  to set buf.offset to a value > 512000L
+- *	   (This test case will be executed only if the kernel version
+- *	    is 2.6.25 or below)
+- *	5) adjtimex(2) fails with errno set to EINVAL if an attempt
+- *	   is  made  to set buf.offset to a value < 512000L
+- *	   (This test case will be executed only if the kernel version
+- *	    is 2.6.25 or below)
+- *	6) adjtimex(2) fails with errno set to EPERM if buf.mode is
+- *	   non-zero and the user is not super-user.
+- *
+- * 	Setup:
+- * 	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *	  Save current parameters in tim_save
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- *	  Call test case specific setup if needed
+- * 	  call adjtimex with saved timex structure
+- *	  Check return value is between 0 & 5
+- *		Test passed
+- *	  Otherwise
+- *		Test failed
+- *	  Call test case specific cleanup if needed
+- *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
+- *
+- * USAGE:  <for command-line>
+- * adjtimex02 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
+- *			where,  -c n : Run n copies concurrently.
+- *				-e   : Turn on errno logging.
+- *				-h   : Show help screen
+- *				-f   : Turn off functional testing
+- *				-i n : Execute test n times.
+- *				-I x : Execute test for x seconds.
+- *				-p   : Pause for SIGUSR1 before starting
+- *				-P x : Pause for x seconds between iterations.
+- *				-t   : Turn on syscall timing.
+- *
+- ****************************************************************/
 -
 -#if defined UCLINUX && !__THROW
 -/* workaround for libc bug causing failure in sys/timex.h */
 -#define __THROW
 -#endif
--
+ 
  #include <errno.h>
  #include <sys/timex.h>
+ #include <unistd.h>
+ #include <pwd.h>
 -#include "test.h"
+-#include "safe_macros.h"
 +#include "tst_test.h"
  
- #define SET_MODE (ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR | \
- 	ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK)
+ #define SET_MODE ( ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR | \
+ 	ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK )
  
 -static void setup(void);
+-static int setup2(void);
+-static int setup3(void);
+-static int setup4(void);
+-static int setup5(void);
+-static int setup6(void);
 -static void cleanup(void);
+-static void cleanup6(void);
 -
--char *TCID = "adjtimex01";
--int TST_TOTAL = 2;
+-char *TCID = "adjtimex02";
 -
- static struct timex tim_save;
-+static struct timex buff;
+ static int hz;			/* HZ from sysconf */
  
+ static struct timex tim_save;
+ static struct timex buff;
+ 
+-static char nobody_uid[] = "nobody";
+ struct passwd *ltpuser;
+ 
+-struct test_cases_t {
++struct test_case {
+ 	struct timex *buffp;
+-	int (*setup) ();
+-	void (*cleanup) ();
+ 	int exp_errno;
+-} test_cases[] = {
+-#ifndef UCLINUX
+-	/* Skip since uClinux does not implement memory protection */
+-	{
+-	(struct timex *)-1, NULL, NULL, EFAULT},
+-#endif
+-	{
+-	&buff, setup2, NULL, EINVAL}, {
+-	&buff, setup3, NULL, EINVAL}, {
+-	&buff, setup4, NULL, EINVAL}, {
+-	&buff, setup5, NULL, EINVAL}, {
+-	&buff, setup6, cleanup6, EPERM}
++} tcases[] = {
++	{ (struct timex *)-1, EFAULT },
++	{ &buff, EINVAL},
++	{ &buff, EINVAL },
++	{ &buff, EPERM },
++	{ &buff, EINVAL },
++	{ &buff, EINVAL },
+ };
+ 
+-int TST_TOTAL = sizeof(test_cases) / sizeof(test_cases[0]);
+-
 -int main(int ac, char **av)
-+void verify_adjtimex(void)
++void verify_adjtimex(unsigned int nr)
  {
--	int lc;
+-
+-	int lc, i;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
@@ -87,59 +186,104 @@ index 295ed6d31..758d5ab07 100644
 -
 -		tst_count = 0;
 -
--		/* Call adjtimex(2) */
--		tim_save.modes = SET_MODE;
+-		for (i = 0; i < TST_TOTAL; ++i) {
+-			/*
+-			 * since Linux 2.6.26, if buf.offset value is outside
+-			 * the acceptable range, it is simply normalized instead
+-			 * of letting the syscall fail. so just skip this test
+-			 * case.
+-			 */
+-			if ((i == 3 || i == 4) && tst_kvercmp(2, 6, 25) > 0) {
+-				tst_resm(TCONF, "this kernel normalizes buf."
+-					 "offset value if it is outside"
+-					 " the acceptable range.");
+-				continue;
+-			}
 -
--		TEST(adjtimex(&tim_save));
+-			buff = tim_save;
+-			buff.modes = SET_MODE;
+-			if ((test_cases[i].setup) && (test_cases[i].setup())) {
+-				tst_resm(TWARN, "setup() failed, skipping"
+-					 " this test case");
+-				continue;
+-			}
 -
--		if ((TEST_RETURN >= 0) && (TEST_RETURN <= 5)) {
--			tst_resm(TPASS, "adjtimex() with mode %u returned %ld",
--				 SET_MODE, TEST_RETURN);
--		} else {
--			tst_resm(TFAIL | TTERRNO,
--				"Test Failed, adjtimex() with mode %u "
--				"returned %ld", SET_MODE, TEST_RETURN);
+-			/* Call adjtimex(2) */
+-			TEST(adjtimex(test_cases[i].buffp));
+-
+-			if ((TEST_RETURN == -1) && (TEST_ERRNO ==
+-						    test_cases[i].exp_errno)) {
+-				tst_resm(TPASS | TTERRNO,
+-					 "Test Passed, adjtimex() returned -1");
+-			} else {
+-				tst_resm(TFAIL | TTERRNO,
+-					 "Test Failed, adjtimex() returned %ld",
+-					 TEST_RETURN);
+-			}
+-			if (test_cases[i].cleanup) {
+-				test_cases[i].cleanup();
+-			}
 -		}
--
--		/* Call adjtimex(2) */
--		tim_save.modes = ADJ_OFFSET_SINGLESHOT;
--
--		TEST(adjtimex(&tim_save));
--
--		if ((TEST_RETURN >= 0) && (TEST_RETURN <= 5)) {
--			tst_resm(TPASS, "adjtimex() with mode %u returned %ld",
--				 ADJ_OFFSET_SINGLESHOT, TEST_RETURN);
--		} else {
--			tst_resm(TFAIL | TTERRNO,
--				"Test Failed, adjtimex() with mode %u returned "
--				"%ld", ADJ_OFFSET_SINGLESHOT, TEST_RETURN);
--		}
--	}
--
++	struct test_case *tcase = &tcases[nr];
++	/*
++	 * since Linux 2.6.26, if buf.offset value is outside
++	 * the acceptable range, it is simply normalized instead
++	 * of letting the syscall fail. so just skip this test
++	 * case.
++	 */
++	if (nr > 3 && (tst_kvercmp(2, 6, 25) > 0)) {
++		tst_res(TCONF, "this kernel normalizes buf."
++				"offset value if it is outside"
++				" the acceptable range.");
++		return;
+ 	}
+ 
+-	/* cleanup and exit */
 -	cleanup();
--
--	tst_exit();
 +	buff = tim_save;
 +	buff.modes = SET_MODE;
-+	TEST(adjtimex(&buff));
-+	if ((TST_RET >= TIME_OK) && (TST_RET <= TIME_ERROR))
-+		tst_res(TPASS, "adjtimex() with mode 0x%x ", SET_MODE);
-+	else
-+		tst_res(TFAIL | TTERRNO, "adjtimex() with mode 0x%x ",
-+				SET_MODE);
-+
-+	buff.modes = ADJ_OFFSET_SINGLESHOT;
-+	TEST(adjtimex(&buff));
-+	if ((TST_RET >= TIME_OK) && (TST_RET <= TIME_ERROR))
-+		tst_res(TPASS, "adjtimex() with mode 0x%x ",
-+				ADJ_OFFSET_SINGLESHOT);
-+	else
++	switch (nr) {
++	case 0:
++		break;
++	case 1:
++		buff.tick = 900000 / hz - 1;
++		break;
++	case 2:
++		buff.tick = 1100000 / hz + 1;
++		break;
++	case 3:
++		/* Switch to nobody user for correct error code collection */
++		ltpuser = SAFE_GETPWNAM("nobody");
++		SAFE_SETEUID(ltpuser->pw_uid);
++		break;
++	case 4:
++		buff.offset = 512000L + 1;
++		break;
++	case 5:
++		buff.offset = (-1) * (512000L) - 1;
++		break;
++	default:
++		tst_brk(TFAIL, "Invalid test case %u ", nr);
++	}
+ 
+-	tst_exit();
++	TEST(adjtimex(tcase->buffp));
++	if ((TST_RET == -1) && (TST_ERR == tcase->exp_errno)) {
++		tst_res(TPASS | TTERRNO,
++				"adjtimex() error %u ", tcase->exp_errno);
++	} else {
 +		tst_res(TFAIL | TTERRNO,
-+				"adjtimex() with mode 0x%x ",
-+				ADJ_OFFSET_SINGLESHOT);
++				"Test Failed, adjtimex() returned %ld",
++				TST_RET);
++	}
+ 
++	/* clean up after ourselves */
++	if (nr == 3)
++		SAFE_SETEUID(0);
  }
  
- static void setup(void)
+-/* setup() - performs all ONE TIME setup for this test */
+ void setup(void)
  {
 -	tst_require_root();
 -
@@ -147,24 +291,87 @@ index 295ed6d31..758d5ab07 100644
  
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
+ 	/* set the HZ from sysconf */
+-	hz = SAFE_SYSCONF(NULL, _SC_CLK_TCK);
++	hz = SAFE_SYSCONF(_SC_CLK_TCK);
+ 
 -	TEST_PAUSE;
 -
 -	/* Save current parameters in tim_save */
+-	if ((adjtimex(&tim_save)) == -1) {
+-		tst_brkm(TBROK, NULL, "Failed to save current parameters");
+-	}
 +	/* Save current parameters */
- 	if ((adjtimex(&tim_save)) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "failed to save current parameters");
++	if ((adjtimex(&tim_save)) == -1)
 +		tst_brk(TBROK | TERRNO,
 +				"adjtimex(): failed to save current params");
  }
  
--static void cleanup(void)
+-/*
+- *cleanup() -  performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- */
+ void cleanup(void)
+ {
+-
+ 	tim_save.modes = SET_MODE;
+-	/* Restore saved parameters */
+-	if ((adjtimex(&tim_save)) == -1) {
+-		tst_resm(TWARN, "Failed to restore saved parameters");
+-	}
+-}
+-
+-int setup2(void)
 -{
+-	buff.tick = 900000 / hz - 1;
+-	return 0;
+-}
+-
+-int setup3(void)
+-{
+-	buff.tick = 1100000 / hz + 1;
+-	return 0;
+-}
+-
+-int setup4(void)
+-{
+-	buff.offset = 512000L + 1;
+-	return 0;
+-}
+-
+-int setup5(void)
+-{
+-	buff.offset = (-1) * (512000L) - 1;
+-	return 0;
+-}
+ 
+-int setup6(void)
+-{
+-	/* Switch to nobody user for correct error code collection */
+-	if ((ltpuser = getpwnam(nobody_uid)) == NULL) {
+-		tst_brkm(TBROK, NULL, "\"nobody\" user not present");
+-	}
+-	if (seteuid(ltpuser->pw_uid) == -1) {
+-		tst_resm(TWARN | TERRNO, "seteuid(%d) failed", ltpuser->pw_uid);
+-		return 1;
+-	}
+-	return 0;
++	/* Restore saved parameters */
++	if ((adjtimex(&tim_save)) == -1)
++		tst_res(TWARN, "Failed to restore saved parameters");
+ }
+ 
+-void cleanup6(void)
+-{
+-	/* Set effective user id back to root */
+-	SAFE_SETEUID(cleanup, 0);
 -}
 +static struct tst_test test = {
 +	.needs_root = 1,
++	.tcnt = ARRAY_SIZE(tcases),
 +	.setup = setup,
-+	.test_all = verify_adjtimex,
++	.cleanup = cleanup,
++	.test = verify_adjtimex,
 +};
 -- 
 2.21.0.1020.gf2820cf01a-goog
