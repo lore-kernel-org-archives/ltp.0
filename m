@@ -1,33 +1,41 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 17 May 2019 17:41:05 +0200
-Subject: [LTP] [PATCH v2 0/3] LTP reproducer on broken IMA on overlayfs
-In-Reply-To: <1558090823.4507.50.camel@linux.ibm.com>
-References: <20190405165225.27216-1-pvorel@suse.cz>
- <20190514121213.GA28655@dell5510>
- <1557889279.4581.14.camel@linux.ibm.com>
- <20190515120853.GA22992@dell5510>
- <1558044649.4507.10.camel@linux.ibm.com>
- <20190517075057.GA12489@dell5510>
- <1558090823.4507.50.camel@linux.ibm.com>
-Message-ID: <20190517154105.GB11796@dell5510>
+From: Sandeep Patil <sspatil@android.com>
+Date: Sat, 18 May 2019 17:38:03 -0700
+Subject: [LTP] [PATCH 0/5] New library conversion for few system call tests
+Message-ID: <20190519003808.47425-1-sspatil@android.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Mimi,
+Following series is a set of system call tests that are converted to new
+library. Also deleted bdflush test at the same time. I have been going
+through the system call tests alphabetically and convert them to new
+library as applicable, so there will be more to come.
 
-> On Fri, 2019-05-17 at 09:50 +0200, Petr Vorel wrote:
+I have tested this on cuttlefish[1] and made sure they don't regress.
 
-> > If it's ok for you and it's a valid test do you give an ack?
+1. https://linuxplumbersconf.org/event/2/contributions/269/attachments/56/63/Kernel_Hacking_with_Cuttlefish.pdf
 
-> Of course!  Thanks!
-Thanks! I'll add also Ignaz's description (create README.md in IMA folder),
-thus probably send a v3 to ML first, but not expecting to get much review :).
+Sandeep Patil (5):
+  syscalls/adjtimex01: Convert to new library
+  syscalls/adjtimex02: Convert to new library
+  syscalls/asyncio02: convert to new library.
+  syscalls/bdflush01: delete bdflush test
+  syscalls/bind01: convert to new library.
 
-> Mimi
+ .../kernel/syscalls/adjtimex/adjtimex01.c     | 122 ++-----
+ .../kernel/syscalls/adjtimex/adjtimex02.c     | 307 +++++------------
+ testcases/kernel/syscalls/asyncio/asyncio02.c | 323 ++++--------------
+ testcases/kernel/syscalls/bdflush/.gitignore  |   1 -
+ testcases/kernel/syscalls/bdflush/Makefile    |  23 --
+ testcases/kernel/syscalls/bdflush/bdflush01.c | 126 -------
+ testcases/kernel/syscalls/bind/bind01.c       | 201 +++--------
+ 7 files changed, 219 insertions(+), 884 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/bdflush/.gitignore
+ delete mode 100644 testcases/kernel/syscalls/bdflush/Makefile
+ delete mode 100644 testcases/kernel/syscalls/bdflush/bdflush01.c
 
-Kind regards,
-Petr
+-- 
+2.21.0.1020.gf2820cf01a-goog
 
