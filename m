@@ -1,30 +1,42 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 20 May 2019 17:24:00 +0200
-Subject: [LTP] [PATCH v4] syscalls/copy_file_range: add/restructured
-	tests
-In-Reply-To: <20190520144645.GD28976@rei.lan>
-References: <20190506105457.22350-1-camann@suse.com>
- <1ef7d8ee-ae31-b44c-71e6-7d09da55eda2@suse.com>
- <20190506201948.GA9828@dell5510> <20190520143135.GA27341@dell5510>
- <20190520144645.GD28976@rei.lan>
-Message-ID: <20190520152400.GA11845@dell5510>
+Date: Mon, 20 May 2019 17:34:11 +0200
+Subject: [LTP] [PATCH 2/2] tst_net_vars.c: Enlarge buffer to fix format
+ overflow warnings
+In-Reply-To: <20190509164125.619-2-pvorel@suse.cz>
+References: <20190509164125.619-1-pvorel@suse.cz>
+ <20190509164125.619-2-pvorel@suse.cz>
+Message-ID: <20190520153411.GA14132@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
 Hi,
 
-> > 2) Glibc adds internal implementation of copy_file_range(), used as fallback
-> > when kernel < 4.5 (which brought copy_file_range()) [1]. I guess there is no way
-> > to use it explicitly :(.
+> tst_net_vars.c:230:18: warning: ‘.0.0’ directive writing 4 bytes into a region of size between 1 and 128 [-Wformat-overflow=]
+>   sprintf(buf, "%s.0.0", net_unused);
+>                   ^~~~
+> In file included from /usr/include/stdio.h:867,
+>                  from tst_net_vars.c:26:
+> /usr/include/bits/stdio2.h:36:10: note: ‘__builtin___sprintf_chk’ output between 5 and 132 bytes into a destination of size 128
 
-> Well we can always use filesystem that does not support the operation,
-> so running the test for all filesystems should get the emulation covered
-> for sure...
-Oh, that's the way :).
-Merged then, thanks for your patch, Christian.
+> tst_net_vars.c:294:18: warning: ‘::’ directive writing 2 bytes into a region of size between 1 and 128 [-Wformat-overflow=]
+>   sprintf(buf, "%s::", net_unused);
+>                   ^~
+> In file included from /usr/include/stdio.h:867,
+>                  from tst_net_vars.c:26:
+> /usr/include/bits/stdio2.h:36:10: note: ‘__builtin___sprintf_chk’ output between 3 and 130 bytes into a destination of size 128
+
+> Fixes: d18e135d0 ("network: Add tools for setup IP related environment
+> variables")
+
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/lib/tst_net_vars.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+
+Both commits pushed.
 
 Kind regards,
 Petr
