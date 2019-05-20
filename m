@@ -1,36 +1,37 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 20 May 2019 21:58:05 +0200
-Subject: [LTP] [PATCH] shmctl01: don't use hardcoded index == 0 for
- SHM_STAT test
-In-Reply-To: <a5e65ca65d88177d9142cbd2d5a3ddf5dda174b5.1558379215.git.jstancek@redhat.com>
-References: <a5e65ca65d88177d9142cbd2d5a3ddf5dda174b5.1558379215.git.jstancek@redhat.com>
-Message-ID: <20190520195805.GA22932@x230>
+Date: Mon, 20 May 2019 23:49:11 +0200
+Subject: [LTP] [PATCH] lapi/ustat.h: Replace daddr_t with long
+Message-ID: <20190520214911.1460-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
+From: Petr Vorel <petr.vorel@gmail.com>
 
-> Test fails on SHM_STAT testcase:
->    shmctl01    5  TFAIL  :  shmctl01.c:173: shmctl01 call failed
->                             errno = 22 : Invalid argument
->    shmctl(0, SHM_STAT, 0x601060)           = -EINVAL
+daddr_t is usually typedef to __kernel_daddr_t,
+which is int or long.
+Using long as daddr_t is not defined at least on musl.
 
-> since following commit:
->    commit 99db46ea292780cd978d56932d9445b1e8bdafe8
->    Author: Manfred Spraul <manfred@colorfullife.com>
->    Date:   Tue May 14 15:46:36 2019 -0700
->      ipc: do cyclic id allocation for the ipc object.
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+ include/lapi/ustat.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Don't rely on index 0 being always available, but instead
-> use (maximum) index returned by SHM_INFO.
+diff --git a/include/lapi/ustat.h b/include/lapi/ustat.h
+index 12c073582..030179c4a 100644
+--- a/include/lapi/ustat.h
++++ b/include/lapi/ustat.h
+@@ -11,7 +11,7 @@
+ # include <sys/ustat.h>
+ #else
+ struct ustat {
+-	daddr_t f_tfree;
++	long f_tfree;
+ 	ino_t f_tinode;
+ 	char f_fname[6];
+ 	char f_fpack[6];
+-- 
+2.21.0
 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-Reviewed-by: Petr Vorel <petr.vorel@gmail.com>
-
-Good catch + further improvements.
-
-Kind regards,
-Petr
