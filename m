@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 20 May 2019 13:24:51 +0200
-Subject: [LTP] [PATCH v2] syscalls/preadv203: Add basic RWF_NOWAIT test
-In-Reply-To: <CAOQ4uxgNGK=QcGcmDpjt0jhWC9=E3egSpv5G0-7tXx7bKQD7gw@mail.gmail.com>
-References: <20190404141611.15192-1-chrubis@suse.cz>
- <20190520100824.GA25813@rei.lan>
- <CAOQ4uxgNGK=QcGcmDpjt0jhWC9=E3egSpv5G0-7tXx7bKQD7gw@mail.gmail.com>
-Message-ID: <20190520112451.GB25813@rei.lan>
+Date: Mon, 20 May 2019 14:08:48 +0200
+Subject: [LTP] [PATCH 1/1] net: Introduce TST_GET_UNUSED_PORT() macro
+ into C API
+In-Reply-To: <20190423193823.4580-1-pvorel@suse.cz>
+References: <20190423193823.4580-1-pvorel@suse.cz>
+Message-ID: <20190520120848.GA27675@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,35 +12,12 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > Ping, anybody has any comments or can be this be this merged?
-> >
-> 
-> I have no objection to this test, but I have a question. Your claim is:
-> "We are attempting to trigger the EAGAIN path for the RWF_NOWAIT flag."
-> 
-> Seems like you have gone to a great length of effort to achieve this.
-> Wouldn't it be sufficient to do a single preadv2 after fsync+drop_caches in
-> order to observe EAGAIN?
+Looks good, acked.
 
-As far as I can tell the I/O to the device has to be saturated in order
-to get EAGAIN at least for a subset of filesystems. If I just drop the
-cache once then attempt to read with the NOWAIT flag it strangely works
-only for ext2 for me.
-
-So I guess that the manual page is a bit misleading and the NOWAIT flag
-actually returns EAGAIN only if the calling thread would end up in a
-queue or waiting for a lock, but I haven't looked into the kernel code
-to make sure.
-
-> There are several other ways to get EAGAIN, like DIO read/write when
-> page cache *is* populated.
-
-That is a good hint, I will have a look at that case as well.
-
-> Question is, how much is the test trying to cover.
-
-Well ideally we should excercise as much kernel code paths as
-possible... :-)
+Btw the ltpapicmd implementation should get either removed (in a case
+that it will be no longer used) or we should convert it to a standalone
+helper the testcases/lib/ directory. But that is something that should
+be done in a seprate patch...
 
 -- 
 Cyril Hrubis
