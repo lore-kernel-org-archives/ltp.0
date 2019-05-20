@@ -1,101 +1,141 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 20 May 2019 16:31:35 +0200
-Subject: [LTP] [PATCH v4] syscalls/copy_file_range: add/restructured
-	tests
-In-Reply-To: <20190506201948.GA9828@dell5510>
-References: <20190506105457.22350-1-camann@suse.com>
- <1ef7d8ee-ae31-b44c-71e6-7d09da55eda2@suse.com>
- <20190506201948.GA9828@dell5510>
-Message-ID: <20190520143135.GA27341@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 20 May 2019 16:41:45 +0200
+Subject: [LTP] [PATCH v2] syscalls/move_page12.c: Add new regression test
+In-Reply-To: <1555404533-2316-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1512100108-28359-2-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1555404533-2316-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20190520144145.GC28976@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Christian, Cyril,
+Hi!
+>  #include <errno.h>
+> @@ -49,9 +54,17 @@
+>  #define PATH_MEMINFO	"/proc/meminfo"
+>  #define PATH_NR_HUGEPAGES	"/proc/sys/vm/nr_hugepages"
+>  #define PATH_HUGEPAGES	"/sys/kernel/mm/hugepages/"
+> -#define TEST_PAGES	2
+> +#define PATH_PAGEMAP	"/proc/self/pagemap"
+>  #define TEST_NODES	2
+>  
+> +static struct tcase {
+> +	int tpages;
+> +	int offline;
+> +} tcases[] = {
+> +	{2, 0},
+> +	{2, 1},
+> +};
+> +
+>  static int pgsz, hpsz;
+>  static long orig_hugepages = -1;
+>  static char path_hugepages_node1[PATH_MAX];
+> @@ -61,9 +74,21 @@ static long orig_hugepages_node2 = -1;
+>  static unsigned int node1, node2;
+>  static void *addr;
+>  
+> -static void do_child(void)
+> +static void do_soft_offline(int tpgs)
+>  {
+> -	int test_pages = TEST_PAGES * hpsz / pgsz;
+> +	if (madvise(addr, tpgs * hpsz, MADV_SOFT_OFFLINE) == -1) {
+> +		if (errno == EINVAL) {
+> +			tst_brk(TCONF,
+> +				"madvise() didn't support MADV_SOFT_OFFLINE");
 
-Before applying (with following diff), just 2 questions:
+Can we change this to tst_res() and return a value from this function so
+that the second test could be skipped without exitting the whole test?
 
-./copy_file_range02
-tst_test.c:1096: INFO: Timeout per run is 0h 05m 00s
-copy_file_range.h:30: INFO: Testing libc copy_file_range()
-copy_file_range.h:47: CONF: libc copy_file_range() not supported!
-1) I know I was the one who asked to use .test_variants, but it probably does
-not make sense to use it until glibc (or some other libc) adds copy_file_range()
-wrapper.
+The thing is that as far as we are implementing more than one testcase
+in a test unsupported features that are only relevant for a one test
+should not exit the whole testcase in case of looping (the -i
+parameter).
 
-tst_test.c:1096: INFO: Timeout per run is 0h 05m 00s
-copy_file_range.h:33: INFO: Testing tst copy_file_range()
-copy_file_range01.c:194: PASS: copy_file_range completed all 144 copy jobs successfully!
+> +		} else {
+> +			tst_brk(TBROK | TERRNO, "madvise() failed");
+> +		}
+> +	}
+> +}
+> +
+> +static void do_child(int tpgs)
+> +{
+> +	int test_pages = tpgs * hpsz / pgsz;
+>  	int i, j;
+>  	int *nodes, *status;
+>  	void **pages;
+> @@ -96,34 +121,42 @@ static void do_child(void)
+>  	exit(0);
+>  }
+>  
+> -static void do_test(void)
+> +static void do_test(unsigned int n)
+>  {
+>  	int i;
+>  	pid_t cpid = -1;
+>  	int status;
+>  	unsigned int twenty_percent = (tst_timeout_remaining() / 5);
+>  
+> -	addr = SAFE_MMAP(NULL, TEST_PAGES * hpsz, PROT_READ | PROT_WRITE,
+> +	if (tcases[n].offline) {
+> +		if (access(PATH_PAGEMAP, F_OK))
+> +			tst_brk(TCONF, "pagemap was not supported");
+
+Here as well, can we do tst_res() and return instead?
+
+> +	}
+> +
+> +	addr = SAFE_MMAP(NULL, tcases[n].tpages * hpsz, PROT_READ | PROT_WRITE,
+>  		MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB, -1, 0);
+>  
+> -	SAFE_MUNMAP(addr, TEST_PAGES * hpsz);
+> +	SAFE_MUNMAP(addr, tcases[n].tpages * hpsz);
+>  
+>  	cpid = SAFE_FORK();
+>  	if (cpid == 0)
+> -		do_child();
+> +		do_child(tcases[n].tpages);
+>  
+>  	for (i = 0; i < LOOPS; i++) {
+>  		void *ptr;
+>  
+> -		ptr = SAFE_MMAP(NULL, TEST_PAGES * hpsz,
+> +		ptr = SAFE_MMAP(NULL, tcases[n].tpages * hpsz,
+>  			PROT_READ | PROT_WRITE,
+>  			MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB, -1, 0);
+>  		if (ptr != addr)
+>  			tst_brk(TBROK, "Failed to mmap at desired addr");
+>  
+> -		memset(addr, 0, TEST_PAGES * hpsz);
+> +		memset(addr, 0, tcases[n].tpages * hpsz);
+> +
+> +		if (tcases[n].offline)
+> +			do_soft_offline(tcases[n].tpages);
 
 
+And here we should check the return value and return if the madvise in
+the function has returned EINVAL.
 
-2) Glibc adds internal implementation of copy_file_range(), used as fallback
-when kernel < 4.5 (which brought copy_file_range()) [1]. I guess there is no way
-to use it explicitly :(.
 
-Kind regards,
-Petr
+> -		SAFE_MUNMAP(addr, TEST_PAGES * hpsz);
+> +		SAFE_MUNMAP(addr, tcases[n].tpages * hpsz);
+>  
+>  		if (tst_timeout_remaining() < twenty_percent)
+>  			break;
+> @@ -266,7 +299,8 @@ static struct tst_test test = {
+>  	.forks_child = 1,
+>  	.setup = setup,
+>  	.cleanup = cleanup,
+> -	.test_all = do_test,
+> +	.test = do_test,
+> +	.tcnt = ARRAY_SIZE(tcases),
+>  };
+>  
+>  #else
 
-[1] https://sourceware.org/git/?p=glibc.git;a=commitdiff;h=bad7a0c81f501fbbcc79af9eaa4b8254441c4a1f;hp=6cb86fd21ca6fdfc31042cda8c37f96c46b8a4da
+Otherwise it looks good.
 
-diff --git configure.ac configure.ac
-index 1d825dc1e..5dc85728a 100644
---- configure.ac
-+++ configure.ac
-@@ -60,6 +60,7 @@ AC_CHECK_HEADERS([ \
- ])
- 
- AC_CHECK_FUNCS([ \
-+    copy_file_range \
-     epoll_pwait \
-     execveat \
-     fallocate \
-@@ -198,7 +199,6 @@ LTP_CHECK_BUILTIN_CLEAR_CACHE
- LTP_CHECK_CAPABILITY_SUPPORT
- LTP_CHECK_CC_WARN_OLDSTYLE
- LTP_CHECK_CLONE_SUPPORTS_7_ARGS
--LTP_CHECK_COPY_FILE_RANGE
- LTP_CHECK_CRYPTO
- LTP_CHECK_FIDEDUPE
- LTP_CHECK_FORTIFY_SOURCE
-diff --git m4/ltp-copy_file_range.m4 m4/ltp-copy_file_range.m4
-deleted file mode 100644
-index 2d87e8900..000000000
---- m4/ltp-copy_file_range.m4
-+++ /dev/null
-@@ -1,7 +0,0 @@
--dnl SPDX-License-Identifier: GPL-2.0-or-later
--dnl Copyright (c) 2019 SUSE LLC
--dnl Author: Christian Amann <camann@suse.com>
--
--AC_DEFUN([LTP_CHECK_COPY_FILE_RANGE],[
--AC_CHECK_FUNCS(copy_file_range,,)
--])
-diff --git testcases/kernel/syscalls/copy_file_range/copy_file_range.h testcases/kernel/syscalls/copy_file_range/copy_file_range.h
-index d2ef1348b..b6d132978 100644
---- testcases/kernel/syscalls/copy_file_range/copy_file_range.h
-+++ testcases/kernel/syscalls/copy_file_range/copy_file_range.h
-@@ -44,7 +44,7 @@ static int sys_copy_file_range(int fd_in, loff_t *off_in,
- 		return copy_file_range(fd_in, off_in,
- 				fd_out, off_out, len, flags);
- #else
--		tst_brk(TCONF, "libc copy_file_range() not supported!");
-+		tst_brk(TCONF, "libc copy_file_range() not supported");
- #endif
- 		break;
- 	case 1:
-diff --git testcases/kernel/syscalls/copy_file_range/copy_file_range03.c testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
-index 18e411af2..253eb57ad 100644
---- testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
-+++ testcases/kernel/syscalls/copy_file_range/copy_file_range03.c
-@@ -45,7 +45,7 @@ static void verify_copy_file_range_timestamp(void)
- 	if (timestamp == updated_timestamp)
- 		tst_brk(TFAIL, "copy_file_range did not update timestamp.");
- 
--	tst_res(TPASS, "copy_file_range sucessfully updated the timestamp!");
-+	tst_res(TPASS, "copy_file_range sucessfully updated the timestamp");
- }
- 
- static void cleanup(void)
+-- 
+Cyril Hrubis
+chrubis@suse.cz
