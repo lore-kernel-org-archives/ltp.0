@@ -1,80 +1,36 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 20 May 2019 21:08:53 +0200
-Subject: [LTP] [PATCH] shmctl01: don't use hardcoded index == 0 for SHM_STAT
-	test
-Message-ID: <a5e65ca65d88177d9142cbd2d5a3ddf5dda174b5.1558379215.git.jstancek@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 20 May 2019 21:58:05 +0200
+Subject: [LTP] [PATCH] shmctl01: don't use hardcoded index == 0 for
+ SHM_STAT test
+In-Reply-To: <a5e65ca65d88177d9142cbd2d5a3ddf5dda174b5.1558379215.git.jstancek@redhat.com>
+References: <a5e65ca65d88177d9142cbd2d5a3ddf5dda174b5.1558379215.git.jstancek@redhat.com>
+Message-ID: <20190520195805.GA22932@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test fails on SHM_STAT testcase:
-   shmctl01    5  TFAIL  :  shmctl01.c:173: shmctl01 call failed
-                            errno = 22 : Invalid argument
-   shmctl(0, SHM_STAT, 0x601060)           = -EINVAL
+Hi Jan,
 
-since following commit:
-   commit 99db46ea292780cd978d56932d9445b1e8bdafe8
-   Author: Manfred Spraul <manfred@colorfullife.com>
-   Date:   Tue May 14 15:46:36 2019 -0700
-     ipc: do cyclic id allocation for the ipc object.
+> Test fails on SHM_STAT testcase:
+>    shmctl01    5  TFAIL  :  shmctl01.c:173: shmctl01 call failed
+>                             errno = 22 : Invalid argument
+>    shmctl(0, SHM_STAT, 0x601060)           = -EINVAL
 
-Don't rely on index 0 being always available, but instead
-use (maximum) index returned by SHM_INFO.
+> since following commit:
+>    commit 99db46ea292780cd978d56932d9445b1e8bdafe8
+>    Author: Manfred Spraul <manfred@colorfullife.com>
+>    Date:   Tue May 14 15:46:36 2019 -0700
+>      ipc: do cyclic id allocation for the ipc object.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/ipc/shmctl/shmctl01.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+> Don't rely on index 0 being always available, but instead
+> use (maximum) index returned by SHM_INFO.
 
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-index 1b46977554d5..52bf23a40fc1 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-@@ -79,6 +79,7 @@ static void func_info(int ret);
- 
- /* Check routine for SHM_STAT */
- static void func_sstat(int ret);
-+static void func_sstat_setup(void);
- 
- /* Check routine for SHM_LOCK */
- static void func_lock(int ret);
-@@ -110,7 +111,7 @@ static struct test_case_t {
- #endif
- 	{&shm_id_1, IPC_SET, &buf, func_set, set_setup},
- 	{&shm_id_1, IPC_INFO, (struct shmid_ds *) &info, func_info, NULL},
--	{&shm_index, SHM_STAT, &buf, func_sstat, NULL},
-+	{&shm_index, SHM_STAT, &buf, func_sstat, func_sstat_setup},
- 	{&shm_id_1, SHM_LOCK, NULL, func_lock, NULL},
- 	{&shm_id_1, SHM_UNLOCK, NULL, func_unlock, NULL},
- 	{&shm_id_1, IPC_RMID, NULL, func_rmid, NULL},
-@@ -407,9 +408,23 @@ static void func_info(int ret)
- static void func_sstat(int ret)
- {
- 	if (ret >= 0)
--		tst_resm(TPASS, "get correct shared memory id");
-+		tst_resm(TPASS, "get correct shared memory id for index: %d",
-+			shm_index);
- 	else
--		tst_resm(TFAIL, "shared memory id is incorrect");
-+		tst_resm(TFAIL, "shared memory id is incorrect, index: %d",
-+			shm_index);
-+}
-+
-+static void func_sstat_setup(void)
-+{
-+	struct shm_info tmp;
-+	int ret;
-+
-+	ret = shmctl(shm_id_1, SHM_INFO, (void *)&tmp);
-+	if (ret < 0)
-+		tst_resm(TFAIL|TERRNO, "shmctl(SHM_INFO)");
-+	else
-+		shm_index = ret;
- }
- 
- static void func_lock(int ret)
--- 
-1.8.3.1
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Reviewed-by: Petr Vorel <petr.vorel@gmail.com>
 
+Good catch + further improvements.
+
+Kind regards,
+Petr
