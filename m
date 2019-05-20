@@ -1,33 +1,42 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 20 May 2019 17:43:15 +0200
-Subject: [LTP] [PATCH 1/1] tst_net.sh: Remove -B option from
-	tst_rhost_run()
-In-Reply-To: <20190429124630.4834-1-pvorel@suse.cz>
-References: <20190429124630.4834-1-pvorel@suse.cz>
-Message-ID: <20190520154314.GA15837@dell5510>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Mon, 20 May 2019 19:45:16 +0300
+Subject: [LTP] [PATCH v4] syscalls/copy_file_range: add/restructured
+	tests
+In-Reply-To: <20190520152400.GA11845@dell5510>
+References: <20190506105457.22350-1-camann@suse.com>
+ <1ef7d8ee-ae31-b44c-71e6-7d09da55eda2@suse.com>
+ <20190506201948.GA9828@dell5510> <20190520143135.GA27341@dell5510>
+ <20190520144645.GD28976@rei.lan> <20190520152400.GA11845@dell5510>
+Message-ID: <CAOQ4uxivgpoMeUUxm-fboFfiXLXn+QXNzKJWSHAZhidwUsuvng@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+On Mon, May 20, 2019 at 6:24 PM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> Hi,
+>
+> > > 2) Glibc adds internal implementation of copy_file_range(), used as fallback
+> > > when kernel < 4.5 (which brought copy_file_range()) [1]. I guess there is no way
+> > > to use it explicitly :(.
+>
+> > Well we can always use filesystem that does not support the operation,
+> > so running the test for all filesystems should get the emulation covered
+> > for sure...
+> Oh, that's the way :).
 
-> This option was added in 6bcf7ce05 ("lib: tst_rhost_run: new option -B
-> for saving background log") and used in tst_dump_rhost_cmd() added in
-> 921fb2d2c ("network/tst_netload: dump background netstress output on
-> failure").
-> But d6ce33a2e ("netstress: set port dynamically on the server-side")
-> moved logging into netstress.log, created by netstress.c, -B is not
-> used any more.
+Actually, there is no such thing as filesystem that does not support
+copy_file_range() because the kernel provides a fallback default implementation
+(in-kernel copy).
 
-> NOTE: if this feature is reintroduced, it should check whether
-> TST_NEEDS_TMPDIR=1 is set (similar to fix e3a1aa106 ("net/tst_netload:
-> TBROK when TST_NEEDS_TMPDIR not set")).
+> Merged then, thanks for your patch, Christian.
+>
 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+I was going to ask that you drop the EXDEV test, because I am working on a path
+set to relax the cross-device constraint.
+Oh well. I will post a patch to remove that test case once my code is merged.
 
-Merged.
-
-Kind regards,
-Petr
+Thanks,
+Amir.
