@@ -1,47 +1,80 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 20 May 2019 19:30:35 +0200
-Subject: [LTP] [PATCH v4] syscalls/copy_file_range: add/restructured
-	tests
-In-Reply-To: <CAOQ4uxivgpoMeUUxm-fboFfiXLXn+QXNzKJWSHAZhidwUsuvng@mail.gmail.com>
-References: <20190506105457.22350-1-camann@suse.com>
- <1ef7d8ee-ae31-b44c-71e6-7d09da55eda2@suse.com>
- <20190506201948.GA9828@dell5510> <20190520143135.GA27341@dell5510>
- <20190520144645.GD28976@rei.lan> <20190520152400.GA11845@dell5510>
- <CAOQ4uxivgpoMeUUxm-fboFfiXLXn+QXNzKJWSHAZhidwUsuvng@mail.gmail.com>
-Message-ID: <20190520173035.GA27428@dell5510>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 20 May 2019 21:08:53 +0200
+Subject: [LTP] [PATCH] shmctl01: don't use hardcoded index == 0 for SHM_STAT
+	test
+Message-ID: <a5e65ca65d88177d9142cbd2d5a3ddf5dda174b5.1558379215.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Amir,
+Test fails on SHM_STAT testcase:
+   shmctl01    5  TFAIL  :  shmctl01.c:173: shmctl01 call failed
+                            errno = 22 : Invalid argument
+   shmctl(0, SHM_STAT, 0x601060)           = -EINVAL
 
-> > > > 2) Glibc adds internal implementation of copy_file_range(), used as fallback
-> > > > when kernel < 4.5 (which brought copy_file_range()) [1]. I guess there is no way
-> > > > to use it explicitly :(.
+since following commit:
+   commit 99db46ea292780cd978d56932d9445b1e8bdafe8
+   Author: Manfred Spraul <manfred@colorfullife.com>
+   Date:   Tue May 14 15:46:36 2019 -0700
+     ipc: do cyclic id allocation for the ipc object.
 
-> > > Well we can always use filesystem that does not support the operation,
-> > > so running the test for all filesystems should get the emulation covered
-> > > for sure...
-> > Oh, that's the way :).
+Don't rely on index 0 being always available, but instead
+use (maximum) index returned by SHM_INFO.
 
-> Actually, there is no such thing as filesystem that does not support
-> copy_file_range() because the kernel provides a fallback default implementation
-> (in-kernel copy).
-Thanks for explanation.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/ipc/shmctl/shmctl01.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
-> > Merged then, thanks for your patch, Christian.
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
+index 1b46977554d5..52bf23a40fc1 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
+@@ -79,6 +79,7 @@ static void func_info(int ret);
+ 
+ /* Check routine for SHM_STAT */
+ static void func_sstat(int ret);
++static void func_sstat_setup(void);
+ 
+ /* Check routine for SHM_LOCK */
+ static void func_lock(int ret);
+@@ -110,7 +111,7 @@ static struct test_case_t {
+ #endif
+ 	{&shm_id_1, IPC_SET, &buf, func_set, set_setup},
+ 	{&shm_id_1, IPC_INFO, (struct shmid_ds *) &info, func_info, NULL},
+-	{&shm_index, SHM_STAT, &buf, func_sstat, NULL},
++	{&shm_index, SHM_STAT, &buf, func_sstat, func_sstat_setup},
+ 	{&shm_id_1, SHM_LOCK, NULL, func_lock, NULL},
+ 	{&shm_id_1, SHM_UNLOCK, NULL, func_unlock, NULL},
+ 	{&shm_id_1, IPC_RMID, NULL, func_rmid, NULL},
+@@ -407,9 +408,23 @@ static void func_info(int ret)
+ static void func_sstat(int ret)
+ {
+ 	if (ret >= 0)
+-		tst_resm(TPASS, "get correct shared memory id");
++		tst_resm(TPASS, "get correct shared memory id for index: %d",
++			shm_index);
+ 	else
+-		tst_resm(TFAIL, "shared memory id is incorrect");
++		tst_resm(TFAIL, "shared memory id is incorrect, index: %d",
++			shm_index);
++}
++
++static void func_sstat_setup(void)
++{
++	struct shm_info tmp;
++	int ret;
++
++	ret = shmctl(shm_id_1, SHM_INFO, (void *)&tmp);
++	if (ret < 0)
++		tst_resm(TFAIL|TERRNO, "shmctl(SHM_INFO)");
++	else
++		shm_index = ret;
+ }
+ 
+ static void func_lock(int ret)
+-- 
+1.8.3.1
 
-
-> I was going to ask that you drop the EXDEV test, because I am working on a path
-> set to relax the cross-device constraint.
-> Oh well. I will post a patch to remove that test case once my code is merged.
-Sorry, I thought patch was in ML for some time :(.
-Yes, please do.
-
-> Thanks,
-> Amir.
-
-Kind regards,
-Petr
