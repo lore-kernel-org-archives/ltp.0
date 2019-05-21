@@ -1,40 +1,41 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 21 May 2019 16:10:31 +0200
-Subject: [LTP] [PATCH] shmctl01: don't use hardcoded index == 0 for
- SHM_STAT test
-In-Reply-To: <224303782.23845756.1558446563195.JavaMail.zimbra@redhat.com>
-References: <a5e65ca65d88177d9142cbd2d5a3ddf5dda174b5.1558379215.git.jstancek@redhat.com>
- <20190521095833.GA12205@rei>
- <224303782.23845756.1558446563195.JavaMail.zimbra@redhat.com>
-Message-ID: <20190521141030.GA6655@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 21 May 2019 16:47:33 +0200
+Subject: [LTP] [RFC PATCH v2] syscalls/sendmmsg: add new test
+In-Reply-To: <20190419210637.88522-1-smuckle@google.com>
+References: <20190419210637.88522-1-smuckle@google.com>
+Message-ID: <20190521144733.GD19326@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan, Cyril,
+Hi!
+> Known issues/questions:
+>  - This test occasionally gets stuck when the two messages get sent by
+>    separate sendmmsg calls. The two sendmmsg calls complete successfully
+>    but recvmmsg blocks indefinitely. I am not yet sure what would cause
+>    this.
 
-> ----- Original Message -----
-> > Hi!
-> > > +static void func_sstat_setup(void)
-> > > +{
-> > > +	struct shm_info tmp;
-> > > +	int ret;
-> > > +
-> > > +	ret = shmctl(shm_id_1, SHM_INFO, (void *)&tmp);
-> > > +	if (ret < 0)
-> > > +		tst_resm(TFAIL|TERRNO, "shmctl(SHM_INFO)");
+There is a race between the sender and receiver thread, if the sender
+thread finishes before the receiver thread binds the socket the packets
+are simply dropped since this is SOCK_DGRAM and nobody is listening at
+the other side of the socket yet.
 
-> > I wonder if it makes sense to continue here if shmctl() has failed,
-> > maybe we should do tst_brkm(TBROK ...) instead.
+You have to synchronize the threads with checkpoints so that the sender
+thread does not send anything until the receiver binds the socket.
 
-> It is 'setup phase', but it also is kind-of test for shmctl() as well.
-> We don't risk much if we continue, worst case is we get one more fail.
+>  - I have not used tst_get_unused_port() because I'm unsure of how that
+>    function should be made available for both the new and old test API?
+>    I can just create a duplicate function but is there a cleaner way?
 
-> @Petr: Do you have any preference?
-Cyril's point makes sense, but I prefer Jan's way.
+Peter just merged patch that adds this functionality to new library.
 
+You are also missing the SPDX licence identifier and other than this
+there are minor coding style violation (hint use checkpatch.pl).
 
-Kind regards,
-Petr
+Apart from these the code looks good.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
