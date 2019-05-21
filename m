@@ -1,41 +1,41 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 21 May 2019 15:47:52 +0200
-Subject: [LTP] [PATCH v3] syscalls/move_page12: Add new regression test
-In-Reply-To: <1558432300-2269-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <20190520144145.GC28976@rei.lan>
- <1558432300-2269-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20190521134752.GB19326@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 21 May 2019 09:49:23 -0400 (EDT)
+Subject: [LTP] [PATCH] shmctl01: don't use hardcoded index == 0 for
+ SHM_STAT test
+In-Reply-To: <20190521095833.GA12205@rei>
+References: <a5e65ca65d88177d9142cbd2d5a3ddf5dda174b5.1558379215.git.jstancek@redhat.com>
+ <20190521095833.GA12205@rei>
+Message-ID: <224303782.23845756.1558446563195.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +		if (tcases[n].offline) {
-> +			if (do_soft_offline(tcases[n].tpages) == EINVAL) {
-> +				SAFE_KILL(cpid, SIGKILL);
-> +				SAFE_WAITPID(cpid, &status, 0);
-> +				SAFE_MUNMAP(addr, tcases[n].tpages * hpsz);
-> +				tst_res(TFAIL,
-					^
-					Shouldn't this be TCONF instead?
 
-> +					"madvise() didn't support "
-> +					"MADV_SOFT_OFFLINE");
-                                             ^
-					 LKML coding style prefers not
-					 to break up user visible
-					 strings, so this string should
-					 be on one line even if the line
-					 is longer than 80 chars.
+----- Original Message -----
+> Hi!
+> > +static void func_sstat_setup(void)
+> > +{
+> > +	struct shm_info tmp;
+> > +	int ret;
+> > +
+> > +	ret = shmctl(shm_id_1, SHM_INFO, (void *)&tmp);
+> > +	if (ret < 0)
+> > +		tst_resm(TFAIL|TERRNO, "shmctl(SHM_INFO)");
+> 
+> I wonder if it makes sense to continue here if shmctl() has failed,
+> maybe we should do tst_brkm(TBROK ...) instead.
 
-> +				return;
-> +			}
-> +		}
+It is 'setup phase', but it also is kind-of test for shmctl() as well.
+We don't risk much if we continue, worst case is we get one more fail.
 
-Other than that it looks good.
+@Petr: Do you have any preference?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> 
+> Otherwise it looks good, acked.
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
