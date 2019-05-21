@@ -1,53 +1,58 @@
-From: Sandeep Patil <sspatil@android.com>
-Date: Tue, 21 May 2019 12:41:48 +0800
-Subject: [LTP] [RFC PATCH 0/1] Fix return value checks for posix apis
-In-Reply-To: <20190520094949.GA25405@rei.lan>
-References: <20190520041730.28238-1-sspatil@android.com>
- <20190520094949.GA25405@rei.lan>
-Message-ID: <20190521044148.GC7753@google.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 21 May 2019 10:25:18 +0200
+Subject: [LTP] [PATCH] overcommit_memory: update for "mm: fix false-positive
+	OVERCOMMIT_GUESS failures"
+Message-ID: <dc7300409a949189aa4ce9ef555405e36bdb50ab.1558426636.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, May 20, 2019 at 11:49:49AM +0200, Cyril Hrubis wrote:
-> Hi!
-> > This is an RFC patch to demonstrate that most of the pthread_* calls
-> > in the open_posix_testsuite seem to be doing the return value checks
-> > incorrectly. Most posix_* apis return positive errno on failure and 0 on
-> > success.
-> 
-> This is unfortunately common misconception, also I guess you meant
-> pthread_* APIs here.
+commit 8c7829b04c52 ("mm: fix false-positive OVERCOMMIT_GUESS failures")
+changes logic of __vm_enough_memory(), simplifying it to:
+    When in GUESS mode, catch wild allocations by comparing their request
+    size to total amount of ram and swap in the system.
 
-yes, pthread_* APIs.
+Testcase currently allocates mem_total + swap_total, which doesn't trigger
+new condition. Make it more extreme, but assuming free_total / 2 will PASS,
+and sum_total * 2 will FAIL.
 
-> 
-> > PATCH 1/1 demonstrates the fixes needed for pthread_sigmask/6-1 for
-> > example. This pattern is fairly widespread in open_posix_testsuite.
-> > 
-> > After going through the documentation in the project, I wasn't sure if I
-> > tested this correctly. After building, I tried the following
-> > 
-> > $ cd testcases/open_posix_testsuite
-> > $ ./bin/run_tesit.sh conformance/interfaces/pthread_sigmask pthread_sigmask_6-1.run-test
-> > 
-> > ...and that keeps running into test being skipped due to missing file.
-> > (I do have pthread_sigmask_6-1.run-test in place).
-> 
-> Actually I always just run the binary, so in this case doing
-> ./pthread_sigmask_6-1.run-test should suffice.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/mem/tunable/overcommit_memory.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-Ok, I'll try that, but IIRC it did nothing on my laptop. I'll retry.
+diff --git a/testcases/kernel/mem/tunable/overcommit_memory.c b/testcases/kernel/mem/tunable/overcommit_memory.c
+index 555298fbfd85..345764dfe427 100644
+--- a/testcases/kernel/mem/tunable/overcommit_memory.c
++++ b/testcases/kernel/mem/tunable/overcommit_memory.c
+@@ -36,11 +36,10 @@
+  *
+  * The program is designed to test the two tunables:
+  *
+- * When overcommit_memory = 0, allocatable memory can't overextends
+- * the amount of free memory. I choose the three cases:
++ * When overcommit_memory = 0, allocatable memory can't overextend
++ * the amount of total memory:
+  * a. less than free_total:    free_total / 2, alloc should pass.
+- * b. greater than free_total: free_total * 2, alloc should fail.
+- * c. equal to sum_total:      sum_tatal,      alloc should fail
++ * b. greater than sum_total:   sum_total * 2, alloc should fail.
+  *
+  * When overcommit_memory = 1, it can alloc enough much memory, I
+  * choose the three cases:
+@@ -164,9 +163,7 @@ static void overcommit_memory_test(void)
+ 
+ 	update_mem();
+ 	alloc_and_check(free_total / 2, EXPECT_PASS);
+-	update_mem();
+-	alloc_and_check(free_total * 2, EXPECT_FAIL);
+-	alloc_and_check(sum_total, EXPECT_FAIL);
++	alloc_and_check(sum_total * 2, EXPECT_FAIL);
+ 
+ 	/* start to test overcommit_memory=1 */
+ 	set_sys_tune("overcommit_memory", 1, 1);
+-- 
+1.8.3.1
 
-> 
-> > So, consider this build tested only for now. I'd love to know how we can
-> > test this and if we are still using the testsuite, then I am happy to
-> > fix rest of the places where its broken.
-> 
-> Sounds good.
-
-Thanks for the review.
-
-- ssp
