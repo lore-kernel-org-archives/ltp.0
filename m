@@ -1,27 +1,41 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 22 May 2019 16:56:07 +0200
-Subject: [LTP] [PATCH v2] syscalls/bdflush01: delete bdflush test
-In-Reply-To: <20190519233327.249118-1-sspatil@android.com>
-References: <20190519003808.47425-5-sspatil@android.com>
- <20190519233327.249118-1-sspatil@android.com>
-Message-ID: <20190522145607.GA25727@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 22 May 2019 21:03:16 +0200
+Subject: [LTP] [PATCH v4] syscalls/copy_file_range: add/restructured
+	tests
+In-Reply-To: <20190521114040.GB13910@rei>
+References: <20190506105457.22350-1-camann@suse.com>
+ <1ef7d8ee-ae31-b44c-71e6-7d09da55eda2@suse.com>
+ <20190506201948.GA9828@dell5510> <20190520143135.GA27341@dell5510>
+ <20190520144645.GD28976@rei.lan> <20190520152400.GA11845@dell5510>
+ <CAOQ4uxivgpoMeUUxm-fboFfiXLXn+QXNzKJWSHAZhidwUsuvng@mail.gmail.com>
+ <20190521114040.GB13910@rei>
+Message-ID: <20190522190316.GA6781@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> The manual says the system call is deprecated since Linux 2.6
-> and does nothing. So, remove the test.
+Hi,
 
-Applied, thanks.
+> > > > > 2) Glibc adds internal implementation of copy_file_range(), used as fallback
+> > > > > when kernel < 4.5 (which brought copy_file_range()) [1]. I guess there is no way
+> > > > > to use it explicitly :(.
 
-And actually looking into the kernel sources the syscall stub is still
-there on a subset of architectures, i.e. these that Linux was ported to
-before 2.6 with a comment that it will be removed see fs/buffer.c. Maybe
-it's a time to remove that stub as well...
+> > > > Well we can always use filesystem that does not support the operation,
+> > > > so running the test for all filesystems should get the emulation covered
+> > > > for sure...
+> > > Oh, that's the way :).
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> > Actually, there is no such thing as filesystem that does not support
+> > copy_file_range() because the kernel provides a fallback default implementation
+> > (in-kernel copy).
+
+> So the glibc fallback code is probably something that will end up being
+> used if someone wants to run application that uses this syscall on BSD
+> or other corner cases. I guess that we do not care that much about
+> testing the glibc fallback code then.
+OK, we should remove test variants then.
+
+Kind regards,
+Petr
