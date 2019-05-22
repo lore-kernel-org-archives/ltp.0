@@ -1,95 +1,360 @@
-From: Theodore Ts'o <tytso@mit.edu>
-Date: Wed, 22 May 2019 01:05:11 -0400
-Subject: [LTP] ext4 regression (was Re: [PATCH 4.19 000/105]
- 4.19.45-stable review)
-In-Reply-To: <CA+G9fYunxonkqmkhz+zmZYuMTfyRMVBxn6PkTFfjd8tTT+bzHQ@mail.gmail.com>
-References: <20190520115247.060821231@linuxfoundation.org>
- <20190520222342.wtsjx227c6qbkuua@xps.therub.org>
- <20190521085956.GC31445@kroah.com>
- <CA+G9fYvHmUimtwszwo=9fDQLn+MNh8Vq3UGPaPUdhH=dEKzqxg@mail.gmail.com>
- <20190521093849.GA9806@kroah.com>
- <CA+G9fYveeg_FMsL31aunJ2A9XLYk908Y1nSFw4kwkFk3h3uEiA@mail.gmail.com>
- <20190521162142.GA2591@mit.edu>
- <CA+G9fYunxonkqmkhz+zmZYuMTfyRMVBxn6PkTFfjd8tTT+bzHQ@mail.gmail.com>
-Message-ID: <20190522050511.GB4943@mit.edu>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 22 May 2019 18:14:16 +0800
+Subject: [LTP] [PATCH v2] syscalls/prctl04.c: New test for prctl() with
+	PR_{SET, GET}_SECCOMP
+In-Reply-To: <20190520130407.GB27675@rei.lan>
+References: <20190520130407.GB27675@rei.lan>
+Message-ID: <1558520056-2257-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, May 21, 2019 at 11:27:21PM +0530, Naresh Kamboju wrote:
-> Steps to reproduce is,
-> running LTP three test cases in sequence on x86 device.
-> # cd ltp/runtest
-> # cat syscalls ( only three test case)
-> open12 open12
-> madvise06 madvise06
-> poll02 poll02
-> #
-> 
-> as Dan referring to,
-> 
-> LTP is run using '/opt/ltp/runltp -d /scratch -f syscalls', where the
-> syscalls file has been replaced with three test case names, and
-> /scratch is an ext4 SATA drive. /scratch is created using 'mkfs -t ext4
-> /dev/disk/by-id/ata-TOSHIBA_MG03ACA100_37O9KGKWF' and mounted to
-> /scratch.
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ configure.ac                               |   1 +
+ include/lapi/prctl.h                       |   5 +
+ include/lapi/seccomp.h                     |  40 ++++
+ runtest/syscalls                           |   1 +
+ testcases/kernel/syscalls/prctl/.gitignore |   1 +
+ testcases/kernel/syscalls/prctl/prctl04.c  | 229 +++++++++++++++++++++
+ 6 files changed, 277 insertions(+)
+ create mode 100644 include/lapi/seccomp.h
+ create mode 100644 testcases/kernel/syscalls/prctl/prctl04.c
 
-I'm still having trouble reproducing the problem.  I've followed the
-above exactly, and it doesn't trigger on my system.  I think I know
-what is happening, but even given my theory, I'm still not able to
-trigger it.  So, I'm not 100% sure this is the appropriate fix.  If
-you can reproduce it, can you see if this patch, applied on top of the
-Linus's tip, fixes the problem for you?
-
-					- Ted
-
-commit 3ad7621bfff343b16d59ed418f6d4420d4ec3e63
-Author: Theodore Ts'o <tytso@mit.edu>
-Date:   Tue May 21 17:01:01 2019 -0400
-
-    ext4: don't perform block validity checks on the journal inode
-    
-    Since the journal inode is already checked when we added it to the
-    block validity's system zone, if we check it again, we'll just trigger
-    a failure.
-    
-    This was causing failures like this:
-    
-    [   53.897001] EXT4-fs error (device sda): ext4_find_extent:909: inode
-    #8: comm jbd2/sda-8: pblk 121667583 bad header/extent: invalid extent entries - magic f30a, entries 8, max 340(340), depth 0(0)
-    [   53.931430] jbd2_journal_bmap: journal block not found at offset 49 on sda-8
-    [   53.938480] Aborting journal on device sda-8.
-    
-    ... but only if the system was under enough memory pressure that
-    logical->physical mapping for the journal inode gets pushed out of the
-    extent cache.  (This is why it wasn't noticed earlier.)
-    
-    Fixes: 345c0dbf3a30 ("ext4: protect journal inode's blocks using block_validity")
-    Reported-by: Dan Rue <dan.rue@linaro.org>
-    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index f2c62e2a0c98..d40ed940001e 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -518,10 +518,14 @@ __read_extent_tree_block(const char *function, unsigned int line,
- 	}
- 	if (buffer_verified(bh) && !(flags & EXT4_EX_FORCE_CACHE))
- 		return bh;
--	err = __ext4_ext_check(function, line, inode,
--			       ext_block_hdr(bh), depth, pblk);
--	if (err)
--		goto errout;
-+	if (!ext4_has_feature_journal(inode->i_sb) ||
-+	    (inode->i_ino !=
-+	     le32_to_cpu(EXT4_SB(inode->i_sb)->s_es->s_journal_inum))) {
-+		err = __ext4_ext_check(function, line, inode,
-+				       ext_block_hdr(bh), depth, pblk);
-+		if (err)
-+			goto errout;
+diff --git a/configure.ac b/configure.ac
+index fad8f8396..c858aff42 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -46,6 +46,7 @@ AC_CHECK_HEADERS([ \
+     linux/mempolicy.h \
+     linux/module.h \
+     linux/netlink.h \
++    linux/seccomp.h \
+     linux/userfaultfd.h \
+     mm.h \
+     netinet/sctp.h \
+diff --git a/include/lapi/prctl.h b/include/lapi/prctl.h
+index 6db8a6480..f42bd6459 100644
+--- a/include/lapi/prctl.h
++++ b/include/lapi/prctl.h
+@@ -9,6 +9,11 @@
+ 
+ #include <sys/prctl.h>
+ 
++#ifndef PR_SET_SECCOMP
++# define PR_GET_SECCOMP  21
++# define PR_SET_SECCOMP  22
++#endif
++
+ #ifndef PR_SET_CHILD_SUBREAPER
+ # define PR_SET_CHILD_SUBREAPER	36
+ # define PR_GET_CHILD_SUBREAPER	37
+diff --git a/include/lapi/seccomp.h b/include/lapi/seccomp.h
+new file mode 100644
+index 000000000..eead53c48
+--- /dev/null
++++ b/include/lapi/seccomp.h
+@@ -0,0 +1,40 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
++ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
++ */
++#ifndef LAPI_SECCOMP_H__
++# define _LAPI_SECCOMP_H
++
++#include <linux/types.h>
++
++#ifdef HAVE_LINUX_SECCOMP_H
++#include <linux/seccomp.h>
++#else
++/* Valid values for seccomp.mode and prctl(PR_SET_SECCOMP, <mode>) */
++#define SECCOMP_MODE_DISABLED   0
++#define SECCOMP_MODE_STRICT     1
++#define SECCOMP_MODE_FILTER     2
++
++#define SECCOMP_RET_KILL_THREAD  0x00000000U /* kill the thread */
++#define SECCOMP_RET_KILL         SECCOMP_RET_KILL_THREAD
++#define SECCOMP_RET_ALLOW        0x7fff0000U /* allow */
++
++/**
++ * struct seccomp_data - the format the BPF program executes over.
++ * @nr: the system call number
++ * @arch: indicates system call convention as an AUDIT_ARCH_* value
++ *        as defined in <linux/audit.h>.
++ * @instruction_pointer: at the time of the system call.
++ * @args: up to 6 system call arguments always stored as 64-bit values
++ * regardless of the architecture.
++ */
++struct seccomp_data {
++	int nr;
++	__u32 arch;
++	__u64 instruction_pointer;
++	__u64 args[6];
++};
++
++#endif /* HAVE_LINUX_SECCOMP_H*/
++#endif /* _LAPI_SECCOMP_H */
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 2b8ca719b..51bff2990 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -863,6 +863,7 @@ ppoll01 ppoll01
+ prctl01 prctl01
+ prctl02 prctl02
+ prctl03 prctl03
++prctl04 prctl04
+ 
+ pread01 pread01
+ pread01_64 pread01_64
+diff --git a/testcases/kernel/syscalls/prctl/.gitignore b/testcases/kernel/syscalls/prctl/.gitignore
+index 2f46a9a12..1c3da3052 100644
+--- a/testcases/kernel/syscalls/prctl/.gitignore
++++ b/testcases/kernel/syscalls/prctl/.gitignore
+@@ -1,3 +1,4 @@
+ /prctl01
+ /prctl02
+ /prctl03
++/prctl04
+diff --git a/testcases/kernel/syscalls/prctl/prctl04.c b/testcases/kernel/syscalls/prctl/prctl04.c
+new file mode 100644
+index 000000000..9acd2c6fb
+--- /dev/null
++++ b/testcases/kernel/syscalls/prctl/prctl04.c
+@@ -0,0 +1,229 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
++ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
++ *
++ * Test PR_GET_SECCOMP and PR_SET_SECCOMP of prctl(2).
++ * 1) If PR_SET_SECCOMP sets the SECCOMP_MODE_STRICT for the calling thread,
++ *    the only system call that the thread is permitted to make are read(2),
++ *    write(2),_exit(2)(but not exit_group(2)), and sigreturn(2).  Other
++ *    system calls result in the delivery of a SIGKILL signal. This operation
++ *    is available only if the kernel is configured with CONFIG_SECCOMP enabled.
++ * 2) If PR_SET_SECCOMP sets the SECCOMP_MODE_FILTER for the calling thread,
++ *    the system calls allowed are defined by a pointer to a Berkeley Packet
++ *    Filter. Other system calls result int the delivery of a SIGSYS signal
++ *    with SECCOMP_RET_KILL. The SECCOMP_SET_MODE_FILTER operation is available
++ *    only if the kernel is configured with CONFIG_SECCOMP_FILTER enabled.
++ * 3) If SECCOMP_MODE_FILTER filters permit fork(2), then the seccomp mode
++ *    is inherited by children created by fork(2).
++ */
++
++#include <errno.h>
++#include <signal.h>
++#include <sys/prctl.h>
++#include <sys/wait.h>
++#include <sys/types.h>
++#include <linux/filter.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <stddef.h>
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++#include "lapi/prctl.h"
++#include "config.h"
++#include "lapi/seccomp.h"
++
++#define FNAME "filename"
++
++static const struct sock_filter  strict_filter[] = {
++	BPF_STMT(BPF_LD | BPF_W | BPF_ABS, (offsetof (struct seccomp_data, nr))),
++
++	BPF_JUMP(BPF_JMP | BPF_JEQ, __NR_close, 5, 0),
++	BPF_JUMP(BPF_JMP | BPF_JEQ, __NR_exit,  4, 0),
++	BPF_JUMP(BPF_JMP | BPF_JEQ, __NR_wait4, 3, 0),
++	BPF_JUMP(BPF_JMP | BPF_JEQ, __NR_write, 2, 0),
++	BPF_JUMP(BPF_JMP | BPF_JEQ, __NR_clone, 1, 0),
++
++	BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_KILL),
++	BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_ALLOW)
++};
++
++static const struct sock_fprog  strict = {
++	.len = (unsigned short)ARRAY_SIZE(strict_filter),
++	.filter = (struct sock_filter *)strict_filter
++};
++
++static void check_strict_mode(int);
++static void check_filter_mode(int);
++
++static struct tcase {
++	void (*func_check)();
++	int pass_flag;
++	int val;
++	int exp_signal;
++	char *message;
++} tcases[] = {
++	{check_strict_mode, 1, 1, SIGKILL,
++	"SECCOMP_MODE_STRICT doesn't permit GET_SECCOMP call"},
++
++	{check_strict_mode, 0, 2, SIGKILL,
++	"SECCOMP_MODE_STRICT doesn't permit read(2) write(2) and _exit(2)"},
++
++	{check_strict_mode, 1, 3, SIGKILL,
++	"SECCOMP_MODE_STRICT doesn't permit close(2)"},
++
++	{check_filter_mode, 1, 1, SIGSYS,
++	"SECCOMP_MODE_FILTER doestn't permit GET_SECCOMP call"},
++
++	{check_filter_mode, 0, 2, SIGSYS,
++	"SECCOMP_MODE_FILTER doesn't permit close(2)"},
++
++	{check_filter_mode, 1, 3, SIGSYS,
++	"SECCOMP_MODE_FILTER doesn't permit exit()"},
++
++	{check_filter_mode, 0, 4, SIGSYS,
++	"SECCOMP_MODE_FILTER doesn't permit exit()"}
++};
++
++static void check_filter_mode_inherit(void)
++{
++	int childpid;
++	int childstatus;
++
++	childpid = fork();
++	if (childpid == 0) {
++		tst_res(TPASS, "SECCOMP_MODE_FILTER permits fork(2)");
++		exit(0);
 +	}
- 	set_buffer_verified(bh);
- 	/*
- 	 * If this is a leaf block, cache all of its entries
++
++	wait4(childpid, &childstatus, 0, NULL);
++	if (WIFSIGNALED(childstatus) && WTERMSIG(childstatus) == SIGSYS)
++		tst_res(TPASS,
++			"SECCOMP_MODE_FILTER has been inherited by child");
++	else
++		tst_res(TFAIL,
++			"SECCOMP_MODE_FILTER isn't been inherited by child");
++}
++
++static void check_strict_mode(int val)
++{
++	int fd;
++	char buf[2];
++
++	fd = SAFE_OPEN(FNAME, O_RDWR | O_CREAT, 0666);
++
++	TEST(prctl(PR_SET_SECCOMP, SECCOMP_MODE_STRICT));
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO,
++			"prctl(PR_SET_SECCOMP) sets SECCOMP_MODE_STRICT failed");
++		return;
++	}
++
++	switch (val) {
++	case 1:	{
++		tst_res(TPASS,
++			"prctl(PR_SET_SECCOMP) sets SECCOMP_MODE_STRICT succeed");
++		prctl(PR_GET_SECCOMP);
++		tst_res(TFAIL, "prctl(PR_GET_SECCOMP) succeed unexpectedly");
++	break;
++	}
++	case 2: {
++		SAFE_WRITE(1, fd, "a", 1);
++		SAFE_READ(0, fd, buf, 1);
++		tst_res(TPASS,
++			"SECCOMP_MODE_STRICT permits read(2) write(2) and _exit(2)");
++	break;
++	}
++	case 3: {
++		close(fd);
++		tst_res(TFAIL,
++			"SECCOMP_MODE_STRICT permits close(2) unexpectdly");
++	break;
++	}
++	}
++
++	tst_syscall(__NR_exit, 0);
++}
++
++static void check_filter_mode(int val)
++{
++	int fd;
++
++	fd = SAFE_OPEN(FNAME, O_RDWR | O_CREAT, 0666);
++
++	TEST(prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &strict));
++	if (TST_RET == -1) {
++		if (TST_ERR == EINVAL)
++			tst_res(TCONF,
++				"kernel doesn't support SECCOMP_MODE_FILTER");
++		else
++			tst_res(TFAIL | TERRNO,
++				"prctl(PR_SET_SECCOMP) sets strict filter failed");
++		return;
++	}
++
++	switch (val) {
++	case 1: {
++		tst_res(TPASS,
++			"prctl(PR_SET_SECCOMP) sets strict filter succeed");
++		prctl(PR_GET_SECCOMP);
++		tst_res(TFAIL, "prctl(PR_GET_SECCOMP) succeed unexpectedly");
++	break;
++	}
++	case 2: {
++		close(fd);
++		tst_res(TPASS, "SECCOMP_MODE_FILTER permits close(2)");
++	break;
++	}
++	case 3:
++		exit(0);
++	break;
++	case 4:
++		check_filter_mode_inherit();
++	break;
++	}
++	tst_syscall(__NR_exit, 0);
++}
++
++static void verify_prctl(unsigned int n)
++{
++	int pid;
++	int status;
++	struct tcase *tc = &tcases[n];
++
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		tc->func_check(tc->val);
++	} else {
++		SAFE_WAITPID(pid, &status, 0);
++		if (WIFSIGNALED(status) && WTERMSIG(status) == tc->exp_signal) {
++			if (tc->pass_flag)
++				tst_res(TPASS, "%s", tc->message);
++			else
++				tst_res(TFAIL, "%s", tc->message);
++			return;
++		}
++
++		if (n == 5)
++			tst_res(TFAIL,
++				"SECCOMP_MODE_FILTER permits exit() unexpectdly");
++	}
++}
++
++static void setup(void)
++{
++	TEST(prctl(PR_GET_SECCOMP));
++	if (TST_RET == 0)
++		tst_res(TINFO, "kernel support PR_GET/SET_SECCOMP");
++	if (TST_ERR == EINVAL)
++		tst_brk(TBROK, "kernel doesn't support PR_GET/SET_SECCOMP");
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.test = verify_prctl,
++	.tcnt = ARRAY_SIZE(tcases),
++	.forks_child = 1,
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++};
+-- 
+2.18.1
+
+
+
