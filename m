@@ -1,36 +1,50 @@
-From: Murphy Zhou <xzhou@redhat.com>
-Date: Thu, 23 May 2019 22:06:11 +0800
-Subject: [LTP] [PATCH v4] syscalls/swap{on,
- off}: fail softly if FIBMAP ioctl trial fails
-In-Reply-To: <20190523135518.GF30616@rei.lan>
-References: <CAOQ4uxjDyx7JFBSmkDe-rHNe=NriT710Ldsva=s+HasaDL0CTw@mail.gmail.com>
- <20190510044217.5215-1-xzhou@redhat.com>
- <CAOQ4uxi1=Xj59GvyrJf9HiMgGvRYTC8HGG8UOZKz3B8zgGh52g@mail.gmail.com>
- <20190510081535.ax7th47uyjjkayk6@XZHOUW.usersys.redhat.com>
- <CAOQ4uxjAzTL+aN4SdvD7xEUhuOht0nc70JDUOqAHGoyChOyPbA@mail.gmail.com>
- <20190511042014.xlonuwqpg6owg6a3@XZHOUW.usersys.redhat.com>
- <CAOQ4uxjQ918iCXv3XdzmyKfQjqzBu-=N3Y+-BXDmrEDH-KVfpQ@mail.gmail.com>
- <20190513073935.t6pbbvzqlflc42do@XZHOUW.usersys.redhat.com>
- <20190523135518.GF30616@rei.lan>
-Message-ID: <20190523140611.apl55g3qdu4lyyjh@XZHOUW.usersys.redhat.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 23 May 2019 18:42:12 +0300
+Subject: [LTP] [PATCH] [COMMITTED] syscalls/fcntl33: Fix typo overlapfs
+	-> overlayfs
+In-Reply-To: <20190523134549.23103-1-chrubis@suse.cz>
+References: <20190523134549.23103-1-chrubis@suse.cz>
+Message-ID: <CAOQ4uxhHVG9f1njmPgei8-QO4UEivXbxoHkqKi4f50XN6Gup9A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+On Thu, May 23, 2019 at 4:45 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  testcases/kernel/syscalls/fcntl/fcntl33.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl33.c b/testcases/kernel/syscalls/fcntl/fcntl33.c
+> index 43dc5a2af..627823c5c 100644
+> --- a/testcases/kernel/syscalls/fcntl/fcntl33.c
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl33.c
+> @@ -117,7 +117,7 @@ static void do_test(unsigned int i)
+>         if (TST_RET == -1) {
+>                 if (type == TST_OVERLAYFS_MAGIC && TST_ERR == EAGAIN) {
+>                         tst_res(TINFO | TTERRNO,
+> -                               "fcntl(F_SETLEASE, F_WRLCK) failed on overlapfs as expected");
+> +                               "fcntl(F_SETLEASE, F_WRLCK) failed on overlayfs as expected");
 
-I'm working on a new version based on Amir's comments. Will post later. Sorry for the confusion :)
+You have 3 more of this typo in fcntl tests.
 
-Murphy
+If you ask me, silencing this error seems wrong.
+While the error is *expected* it is still a broken interface.
+It may be just a matter of terminology, but I am reading this message as:
 
-On Thu, May 23, 2019 at 03:55:18PM +0200, Cyril Hrubis wrote:
-> Hi!
-> Guys what should I merge in the end?
-> 
-> Looking at the conversation v4 was not final patch, or was it?
-> 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
+TEST PASSED: Overlayfs failed as expected
+
+While it really should be more along the lines of:
+
+TEST SKIPPED: Overlayfs doesn't support write leased
+
+Besides, this problem looks quite easy to fix.
+I think Bruce was already looking at changing the implementation of
+check_conflicting_open(), so if the test is not failing, nobody is going to
+nudge for a fix...
+
+Thanks,
+Amir.
