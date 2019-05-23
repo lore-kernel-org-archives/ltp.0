@@ -1,161 +1,195 @@
-From: Xiao Yang <ice_yangxiao@163.com>
-Date: Thu, 23 May 2019 19:51:43 +0800
-Subject: [LTP] [PATCH v2] syscalls/prctl05.c: New test for prctl() with
- PR_{SET, GET}_NAME
-In-Reply-To: <1558611333-10161-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <20190523094003.GC30616@rei.lan>
- <1558611333-10161-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <70578dc6-1a6b-9ab1-1298-0539ae8562f9@163.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 23 May 2019 13:52:36 +0200
+Subject: [LTP] [PATCH] syscalls/prctl06.c: New test for prctl() with
+ PR_{SET, GET}_NO_NEW_PRIVS
+In-Reply-To: <1557404498-3879-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1557404498-3879-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20190523115236.GD30616@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
-On 05/23/2019 07:35 PM, Yang Xu wrote:
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> ---
->   include/lapi/prctl.h                       |  5 ++
->   runtest/syscalls                           |  1 +
->   testcases/kernel/syscalls/prctl/.gitignore |  1 +
->   testcases/kernel/syscalls/prctl/prctl05.c  | 71 ++++++++++++++++++++++
->   4 files changed, 78 insertions(+)
->   create mode 100644 testcases/kernel/syscalls/prctl/prctl05.c
->
-> diff --git a/include/lapi/prctl.h b/include/lapi/prctl.h
-> index f42bd6459..ad0b12bce 100644
-> --- a/include/lapi/prctl.h
-> +++ b/include/lapi/prctl.h
-> @@ -9,6 +9,11 @@
->   
->   #include <sys/prctl.h>
->   
-> +#ifndef PR_SET_NAME
-> +# define PR_SET_NAME 15
-> +# define PR_GET_NAME 16
-> +#endif
+Hi!
+> +#define IPC_ENV_VAR "LTP_IPC_PATH"
 > +
->   #ifndef PR_SET_SECCOMP
->   # define PR_GET_SECCOMP  21
->   # define PR_SET_SECCOMP  22
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 04558a580..d2dcd2152 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -862,6 +862,7 @@ prctl01 prctl01
->   prctl02 prctl02
->   prctl03 prctl03
->   prctl04 prctl04
-> +prctl05 prctl05
->   
->   pread01 pread01
->   pread01_64 pread01_64
-> diff --git a/testcases/kernel/syscalls/prctl/.gitignore b/testcases/kernel/syscalls/prctl/.gitignore
-> index 1c3da3052..9ecaf9854 100644
-> --- a/testcases/kernel/syscalls/prctl/.gitignore
-> +++ b/testcases/kernel/syscalls/prctl/.gitignore
-> @@ -2,3 +2,4 @@
->   /prctl02
->   /prctl03
->   /prctl04
-> +/prctl05
-> diff --git a/testcases/kernel/syscalls/prctl/prctl05.c b/testcases/kernel/syscalls/prctl/prctl05.c
+> +static void check_no_new_privs(int val)
+> +{
+> +	TEST(prctl(PR_GET_NO_NEW_PRIVS, 0, 0, 0, 0));
+> +	if (TST_RET == val)
+> +		tst_res(TPASS,
+> +			"prctl(PR_GET_NO_NEW_PRIVS) got %d "
+> +			"when no_new_privs was %d", val, val);
+> +	else
+> +		tst_res(TFAIL | TTERRNO,
+> +			"prctl(PR_GET_NO_NEW_PRIVS) expected %d got %ld",
+> +			val, TST_RET);
+> +	return;
+
+This return is useless.
+
+> +}
+> +
+> +static void do_prctl(void)
+> +{
+> +	char path[4096];
+> +	char ipc_env_var[1024];
+> +	char *const argv[] = {"prctl06_execve", "parent process", NULL};
+> +	char *const childargv[] = {"prctl06_execve", "child process", NULL};
+> +	char *const envp[] = {"LTP_TEST_ENV_VAR=test", ipc_env_var, NULL };
+> +	cap_t caps = cap_init();
+> +	cap_value_t capList = CAP_SETGID;
+> +	unsigned int num_caps = 1;
+> +	int childpid;
+> +
+> +	cap_set_flag(caps, CAP_EFFECTIVE, num_caps, &capList, CAP_SET);
+> +	cap_set_flag(caps, CAP_INHERITABLE, num_caps, &capList, CAP_SET);
+> +	cap_set_flag(caps, CAP_PERMITTED, num_caps, &capList, CAP_SET);
+> +
+> +	if (cap_set_proc(caps))
+> +		tst_brk(TFAIL | TERRNO,
+> +			"cap_set_flag(CAP_SETGID) failed");
+
+You cannot use tst_brk with TFAIL, the best you can do here is to use
+tst_ret(TFAIL ... ) then return; as you do below.
+
+> +	tst_res(TINFO, "cap_set_flag(CAP_SETGID) succeeded");
+> +
+> +	check_no_new_privs(0);
+> +
+> +	TEST(prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0));
+> +	if (TST_RET == -1) {
+> +		tst_res(TFAIL | TTERRNO, "prctl(PR_SET_NO_NEW_PRIVS) failed");
+> +		return;
+> +	}
+> +	tst_res(TPASS, "prctl(PR_SET_NO_NEW_PRIVS) succeeded");
+> +
+> +	check_no_new_privs(1);
+> +
+> +	if (tst_get_path("prctl06_execve", path, sizeof(path)))
+> +		tst_brk(TCONF, "Couldn't find prctl_execve in $PATH");
+
+If the path to the binary is in $PATH you don't have to execute the
+binary by an absolute path, passing it's name to execve() should
+suffice.
+
+> +	sprintf(ipc_env_var, IPC_ENV_VAR "=%s", getenv(IPC_ENV_VAR));
+> +	childpid = SAFE_FORK();
+> +	if (childpid == 0) {
+> +		check_no_new_privs(1);
+
+		Maybe we can pass a "child" string here and "parent"
+		string in the cases above so that we can print if the
+		check was done in child/parent in the tst_res() inside
+		of this function.
+
+> +		execve(path, childargv, envp);
+> +		tst_brk(TFAIL | TERRNO,
+> +			"child process failed to execute prctl_execve");
+> +
+> +	} else {
+> +		tst_reap_children();
+> +		execve(path, argv, envp);
+> +		tst_brk(TFAIL | TERRNO,
+> +			"parent process failed to execute prctl_execve");
+> +	}
+> +	cap_free(caps);
+> +	return;
+> +}
+> +
+> +static void verify_prctl(void)
+> +{
+> +	int pid;
+> +
+> +	pid = SAFE_FORK();
+> +	if (pid == 0) {
+> +		do_prctl();
+> +		exit(0);
+> +	}
+> +	tst_reap_children();
+> +	return;
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = verify_prctl,
+> +	.forks_child = 1,
+> +	.needs_root = 1,
+> +	.child_needs_reinit = 1,
+> +};
+> diff --git a/testcases/kernel/syscalls/prctl/prctl06_execve.c b/testcases/kernel/syscalls/prctl/prctl06_execve.c
 > new file mode 100644
-> index 000000000..fad5b23bf
+> index 000000000..84c28551c
 > --- /dev/null
-> +++ b/testcases/kernel/syscalls/prctl/prctl05.c
-> @@ -0,0 +1,71 @@
+> +++ b/testcases/kernel/syscalls/prctl/prctl06_execve.c
+> @@ -0,0 +1,46 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
 > +/*
 > + * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
 > + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 > + *
-> + * Test PR_GET_NAME and PR_SET_NAME of prctl(2).
-> + * 1)Set the name of the calling thread, the name can be up to 16 bytes
-> + *   long, including the terminating null byte. If exceeds 16 bytes, the
-> + *   string is silently truncated.
-> + * 2)Return the name of the calling thread, the buffer should allow space
-> + *   for up to 16 bytes, the returned string will be null-terminated.
-> + * 3)Check /proc/self/task/[tid]/comm name whether matches the thread_name.
+> + * dummy program which is used by prctl06 testcase
 > + */
-> +
-> +#include <errno.h>
+> +#define TST_NO_DEFAULT_MAIN
+> +#include <stdlib.h>
 > +#include <sys/types.h>
-> +#include <sys/prctl.h>
-> +#include <string.h>
-> +#include <stdio.h>
-> +#include "lapi/syscalls.h"
-> +#include "lapi/prctl.h"
+> +#include <unistd.h>
+> +#include <errno.h>
+> +#include <pwd.h>
 > +#include "tst_test.h"
 > +
-> +#define thread_name "prctl05_test_xxxxx"
-Hi Xu,
-
-It seems better to use upper case for macro.
-
-> +
-> +static void verify_prctl(void)
+> +int main(int argc, char **argv)
 > +{
-> +	char buf[20];
-> +	char comm_buf[20];
-> +	char PROC_NAME_PATH[40];
-> +	pid_t tid;
+> +	struct passwd *pw;
+> +	uid_t nobody_uid;
+> +	gid_t nobody_gid;
 > +
-> +	TEST(prctl(PR_SET_NAME, &thread_name));
-
-Why do you want to use the address of macro?
-
-> +	if (TST_RET == -1) {
-> +		tst_res(TFAIL | TTERRNO, "prctl(PR_SET_NAME) failed");
-> +		return;
-> +	}
-> +	tst_res(TPASS,
-> +		"prctl(PR_SET_NAME) succeeded, set thread name as prctl05_test_xxxxx");
-
-How about using ("...set thread name as %s", thread_name)?
-
+> +	tst_reinit();
+> +	if (argc != 2)
+> +		tst_brk(TFAIL, "argc is %d, expected 2", argc);
 > +
-> +	TEST(prctl(PR_GET_NAME, &buf));
-
-&buf is the same as buf here so we can use buf directly.
-
-> +	if (TST_RET == -1) {
-> +		tst_res(TFAIL | TTERRNO, "prctl(PR_GET_NAME) failed");
-> +		return;
-> +	}
-> +
-> +	buf[19] = '\0';
-> +	if (!strncmp(thread_name, buf, 15) && strlen(buf) == 15)
-> +		tst_res(TPASS, "prctl(PR_GET_NAME) succeeded, "
-> +				"thread name is %s", buf);
+> +	pw = SAFE_GETPWNAM("nobody");
+> +	nobody_uid = pw->pw_uid;
+> +	nobody_gid = pw->pw_gid;
+> +	/*positive check*/
+> +	TEST(setgid(nobody_gid));
+> +	if (TST_RET == -1)
+> +		tst_res(TFAIL | TTERRNO,
+> +			"%s setgid(%d) isn't permmit", argv[1], nobody_gid);
 > +	else
-> +		tst_res(TFAIL,
-> +			"prctl(PR_GET_NAME) failed to truncate the name into 16 byte long");
-
-Can we test the shorter name of the calling thread(i.e. shorter than 16 
-byte) as well?
-
-Best Regards,
-Xiao Yang
-> +
-> +	tid = tst_syscall(__NR_gettid);
-> +
-> +	sprintf(PROC_NAME_PATH, "/proc/self/task/%d/comm", tid);
-> +	SAFE_FILE_SCANF(PROC_NAME_PATH, "%s", comm_buf);
-> +	if (strcmp(buf, comm_buf))
-> +		tst_res(TFAIL,
-> +			"%s sets name failed, expected prctl105_test_xx, got %s",
-> +			PROC_NAME_PATH, comm_buf);
+> +		tst_res(TPASS, "%s setgid(%d) succeed expectedly",
+> +			argv[1], nobody_gid);
+> +	/*negative check*/
+> +	TEST(setuid(nobody_uid));
+> +	if (TST_RET == -1)
+> +		tst_res(TPASS | TTERRNO,
+> +			"%s setuid(%d) isn't permmit", argv[1], nobody_uid);
 > +	else
-> +		tst_res(TPASS, "%s sets thread name succeed as %s",
-> +			PROC_NAME_PATH, comm_buf);
-> +
+> +		tst_res(TFAIL, " %s setuid(%d) succeed unexpectedly",
+> +			argv[1], nobody_gid);
+> +	return 0;
 > +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = verify_prctl,
-> +};
 
+I do not think that this is actually testing the prctl in question. Here
+we actually check that capabilities were inherited over fork() + exec().
 
+As far as I understand the PR_SET_NO_NEW_PRIVS it has been designed
+expecially to avoid misuse of capabilities associated with a particular
+file.
+
+So the check would have to do:
+
+1. copy the prctl06_execve binary to a $PWD
+2. chmod it with S_ISUID, S_ISGID
+3. the prct06_execve would be executed under user/group nobody
+4. the prct06_execve itself would check if it gained root priviledges
+
+And we can do the same for capablities as well.
+
+I guess that we would have to format a device and mount it with support
+for capabilities for the test, since as far as I can tell you cannot
+usually do neither of set-usr-id or add capabilites to files in /tmp/.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
