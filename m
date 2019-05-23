@@ -1,32 +1,28 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 23 May 2019 15:45:49 +0200
-Subject: [LTP] [PATCH] [COMMITTED] syscalls/fcntl33: Fix typo overlapfs ->
-	overlayfs
-Message-ID: <20190523134549.23103-1-chrubis@suse.cz>
+Date: Thu, 23 May 2019 15:55:18 +0200
+Subject: [LTP] [PATCH v4] syscalls/swap{on,
+ off}: fail softly if FIBMAP ioctl trial fails
+In-Reply-To: <20190513073935.t6pbbvzqlflc42do@XZHOUW.usersys.redhat.com>
+References: <CAOQ4uxjDyx7JFBSmkDe-rHNe=NriT710Ldsva=s+HasaDL0CTw@mail.gmail.com>
+ <20190510044217.5215-1-xzhou@redhat.com>
+ <CAOQ4uxi1=Xj59GvyrJf9HiMgGvRYTC8HGG8UOZKz3B8zgGh52g@mail.gmail.com>
+ <20190510081535.ax7th47uyjjkayk6@XZHOUW.usersys.redhat.com>
+ <CAOQ4uxjAzTL+aN4SdvD7xEUhuOht0nc70JDUOqAHGoyChOyPbA@mail.gmail.com>
+ <20190511042014.xlonuwqpg6owg6a3@XZHOUW.usersys.redhat.com>
+ <CAOQ4uxjQ918iCXv3XdzmyKfQjqzBu-=N3Y+-BXDmrEDH-KVfpQ@mail.gmail.com>
+ <20190513073935.t6pbbvzqlflc42do@XZHOUW.usersys.redhat.com>
+Message-ID: <20190523135518.GF30616@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/syscalls/fcntl/fcntl33.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi!
+Guys what should I merge in the end?
 
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl33.c b/testcases/kernel/syscalls/fcntl/fcntl33.c
-index 43dc5a2af..627823c5c 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl33.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl33.c
-@@ -117,7 +117,7 @@ static void do_test(unsigned int i)
- 	if (TST_RET == -1) {
- 		if (type == TST_OVERLAYFS_MAGIC && TST_ERR == EAGAIN) {
- 			tst_res(TINFO | TTERRNO,
--				"fcntl(F_SETLEASE, F_WRLCK) failed on overlapfs as expected");
-+				"fcntl(F_SETLEASE, F_WRLCK) failed on overlayfs as expected");
- 		} else {
- 			tst_res(TFAIL | TTERRNO, "fcntl() failed to set lease");
- 		}
+Looking at the conversation v4 was not final patch, or was it?
+
 -- 
-2.19.2
-
+Cyril Hrubis
+chrubis@suse.cz
