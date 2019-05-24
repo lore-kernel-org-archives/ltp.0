@@ -1,56 +1,115 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 24 May 2019 14:23:57 +0200
-Subject: [LTP] [PATCH v2 1/2] OVL_MNT: add setup_overlay helper
-In-Reply-To: <CAOQ4uxhBcMRg1+7sihQaTC217We8Hj+fAQ2xhiDTHvBDP4NZag@mail.gmail.com>
-References: <20190503210005.GA18171@x230>
- <20190515092129.26336-1-xzhou@redhat.com>
- <20190515133102.GA5429@dell5510>
- <20190524043201.sxmkm6b7dixn2kuw@XZHOUW.usersys.redhat.com>
- <20190524085452.GB29592@dell5510>
- <CAOQ4uxhBcMRg1+7sihQaTC217We8Hj+fAQ2xhiDTHvBDP4NZag@mail.gmail.com>
-Message-ID: <20190524122357.GA28108@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 24 May 2019 15:21:09 +0200
+Subject: [LTP] [PATCH v3] syscalls/prctl05.c: New test for prctl() with
+ PR_{SET, GET}_NAME
+In-Reply-To: <1558684246-2658-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <70578dc6-1a6b-9ab1-1298-0539ae8562f9@163.com>
+ <1558684246-2658-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20190524132109.GA30293@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Amir,
+Hi!
+> +#include <sys/prctl.h>
+> +#include <string.h>
+> +#include <stdio.h>
+> +#include "lapi/syscalls.h"
+> +#include "lapi/prctl.h"
+> +#include "tst_test.h"
+> +
+> +static struct tcase {
+> +	char setname[20];
+> +	char expname[20];
+> +} tcases[] = {
+> +	{"prctl05_test", "prctl05_test"},
+> +	{"prctl05_test_xxxxx", "prctl05_test_xx"}
+> +};
+> +
+> +static void verify_prctl(unsigned int n)
+> +{
+> +	char buf[20];
+> +	char comm_buf[20];
+> +	char PROC_NAME_PATH[40];
 
-thanks for your suggestions, highly appreciated :).
-...
-> > #define SAFE_MOUNT_OVERLAY() \
-> >         mount_overlay(__FILE__, __LINE__, 1);
+Uppercase identifiers are by convention used for macros, this should be
+proc_path, or just path.
 
-> > #define TST_MOUNT_OVERLAY() \
-> >         mount_overlay(__FILE__, __LINE__, 0);
+> +	pid_t tid;
+> +	struct tcase *tc = &tcases[n];
+> +
+> +	TEST(prctl(PR_SET_NAME, tc->setname));
+> +	if (TST_RET == -1) {
+> +		tst_res(TFAIL | TTERRNO, "prctl(PR_SET_NAME) failed");
+> +		return;
+> +	}
+> +	tst_res(TPASS,
+> +		"prctl(PR_SET_NAME) succeeded, set thread name as %s", tc->setname);
+
+This could be shorter, why not just:
+
+	tst_res(TPASS, "prctl(PR_SET_NAME, '%s')", tc->setname);
+
+> +	TEST(prctl(PR_GET_NAME, buf));
+> +	if (TST_RET == -1) {
+> +		tst_res(TFAIL | TTERRNO, "prctl(PR_GET_NAME) failed");
+> +		return;
+> +	}
 
 
-> I like this version of the helpers/macros.
+Looks like the null-termination got lost between v2 and v3.
 
-> I would change TST_MOUNT_OVERLAY to
-> (mount_overlay(__FILE__, __LINE__, 0) == 0)
-> so that it could be used like this:
+And it would be better not to hardcode the size with:
 
-> ovl_mounted = TST_MOUNT_OVERLAY(...)
-+1
+buf[sizeof(buf)-1] = 0;
 
-> Uses of SAFE_MOUNT_OVERLAY() should not check return value
-> could even place (void) in front of mount_overlay to enforce that.
-If we don't care, then it could be?
-#define SAFE_MOUNT_OVERLAY() \
-	(void) mount_overlay(__FILE__, __LINE__, 1);
+> +	if (strcmp(tc->expname, buf))
+> +		tst_res(TFAIL,
+> +			"prctl(PR_GET_NAME) failed ,expected %s, got %s", tc->expname, buf);
+                                                  ^
+						  The comma should be
+						  before the space.
+> +	else
+> +		tst_res(TPASS,
+> +			"prctl(PR_GET_NAME) succeeded, thread name is %s", buf);
+> +
+> +	tid = tst_syscall(__NR_gettid);
+> +
+> +	sprintf(PROC_NAME_PATH, "/proc/self/task/%d/comm", tid);
+> +	SAFE_FILE_SCANF(PROC_NAME_PATH, "%s", comm_buf);
+> +	if (strcmp(tc->expname, comm_buf))
+> +		tst_res(TFAIL,
+> +			"%s sets thread name failed, expected %s, got %s",
 
-I mean there is always mount_overlay() for special cases, macros should be
-here to make easier common usage.
+This message could be shorter and to the point, something as:
 
-> Test that use SAFE_MOUNT_OVERLAY() should either have no
-> variable ovl_mounted or set it after SAFE_MOUNT_OVERLAY() without
-> checking return value.
-+1
+tst_res(TFAIL, "%s has %s, expected %s", path, buf, tc->expname);
 
-> Thanks,
-> Amir.
 
-Kind regards,
-Petr
+> +			PROC_NAME_PATH, tc->expname, comm_buf);
+> +	else
+> +		tst_res(TPASS, "%s sets thread name succeed as %s",
+
+Here as well, something as:
+
+tst_res(TPASS, "%s set to %s", path, buf);
+
+> +			PROC_NAME_PATH, comm_buf);
+> +
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test = verify_prctl,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +};
+> -- 
+> 2.18.1
+> 
+> 
+> 
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
