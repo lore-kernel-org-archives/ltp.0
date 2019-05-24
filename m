@@ -1,63 +1,79 @@
-From: Murphy Zhou <xzhou@redhat.com>
-Date: Fri, 24 May 2019 21:44:12 +0800
-Subject: [LTP] [PATCH v2 1/2] OVL_MNT: add setup_overlay helper
-In-Reply-To: <20190524122357.GA28108@dell5510>
-References: <20190503210005.GA18171@x230>
- <20190515092129.26336-1-xzhou@redhat.com>
- <20190515133102.GA5429@dell5510>
- <20190524043201.sxmkm6b7dixn2kuw@XZHOUW.usersys.redhat.com>
- <20190524085452.GB29592@dell5510>
- <CAOQ4uxhBcMRg1+7sihQaTC217We8Hj+fAQ2xhiDTHvBDP4NZag@mail.gmail.com>
- <20190524122357.GA28108@dell5510>
-Message-ID: <20190524134412.xcc45ifc63cd5ypn@XZHOUW.usersys.redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 24 May 2019 15:45:22 +0200
+Subject: [LTP] [PATCH] [COMMITTED] syscalls/fcntl33: Fix typo overlapfs
+ -> overlayfs
+In-Reply-To: <CAOQ4uxj3X2Eh+RmzunW1Sb8PWrHWsS1_h-xEH2Bofcr+-S-tiA@mail.gmail.com>
+References: <20190523134549.23103-1-chrubis@suse.cz>
+ <CAOQ4uxhHVG9f1njmPgei8-QO4UEivXbxoHkqKi4f50XN6Gup9A@mail.gmail.com>
+ <20190524085947.GA11508@rei.lan>
+ <CAOQ4uxj3X2Eh+RmzunW1Sb8PWrHWsS1_h-xEH2Bofcr+-S-tiA@mail.gmail.com>
+Message-ID: <20190524134521.GA2251@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi guys,
+Hi!
+> > Agreed, I'm always against working around kernel bugs/deficiencies in
+> > tests, unfortunately that usually conflicts with QA deparenments that
+> > wants to skip known problems and have everything green. So we usually
+> > end up somewhere in a middle ground.
+> 
+> But is everything green though?
+> Does QA department know that if you run samba inside a container
+> whose storage driver is overlayfs, if samba is configured with
+> "kernel oplock = yes"
+> Samba clients would never be able to acquire an oplock and
+> write performance would be horrible?
+> 
+> Sure, not everyone cares about this case, but seems to be that
+> silencing the error should be in the hands of the user and that LTP
+> project should just report the problems as they are.
+> 
+> Worse is the fact that this error will only trigger for people that
+> configured LTP to test overlayfs specifically, not all LTP users.
+> This group of users is even more likely to be interested in
+> bugs/deficiencies of overlayfs.
 
-Very good ideas! Thank you both very much!
+I can see how this is wrong.
 
-M
-On Fri, May 24, 2019 at 02:23:57PM +0200, Petr Vorel wrote:
-> Hi Amir,
+On the other hand it took us some time to explain our release managers
+that kernel is OK when we say that it's OK and that the actuall test
+results are not the end result. But even then we never attempted to
+to put workarounds into the upstream tests. So I guess that we can
+remove the workaround when there is a fix in upstream.
+
+> > Also as usuall, do you care enough to send a patch? :-)
 > 
-> thanks for your suggestions, highly appreciated :).
-> ...
-> > > #define SAFE_MOUNT_OVERLAY() \
-> > >         mount_overlay(__FILE__, __LINE__, 1);
+> No, not yet.
+> Give me a few days to cook.
+> When I get to caring enough I will fix the kernel ;-)
+
+Ok.
+
+> > > Besides, this problem looks quite easy to fix.
+> > > I think Bruce was already looking at changing the implementation of
+> > > check_conflicting_open(), so if the test is not failing, nobody is going to
+> > > nudge for a fix...
+> >
+> > Once it's fixed we can change that to a failure for new enough kernels,
+> > old ones should probably stay with SKIPPED/TCONF.
+> >
 > 
-> > > #define TST_MOUNT_OVERLAY() \
-> > >         mount_overlay(__FILE__, __LINE__, 0);
-> 
-> 
-> > I like this version of the helpers/macros.
-> 
-> > I would change TST_MOUNT_OVERLAY to
-> > (mount_overlay(__FILE__, __LINE__, 0) == 0)
-> > so that it could be used like this:
-> 
-> > ovl_mounted = TST_MOUNT_OVERLAY(...)
-> +1
-> 
-> > Uses of SAFE_MOUNT_OVERLAY() should not check return value
-> > could even place (void) in front of mount_overlay to enforce that.
-> If we don't care, then it could be?
-> #define SAFE_MOUNT_OVERLAY() \
-> 	(void) mount_overlay(__FILE__, __LINE__, 1);
-> 
-> I mean there is always mount_overlay() for special cases, macros should be
-> here to make easier common usage.
-> 
-> > Test that use SAFE_MOUNT_OVERLAY() should either have no
-> > variable ovl_mounted or set it after SAFE_MOUNT_OVERLAY() without
-> > checking return value.
-> +1
-> 
-> > Thanks,
-> > Amir.
-> 
-> Kind regards,
-> Petr
+> This too would be wrong practice IMO.
+> If stable kernel users see that the test passes on mainline and fails
+> on old kernel, somebody may get the idea to backport the fix to stable kernel
+> and fix the bug.
+> IOW, setting min_kver is a tool that should be reserved IMO to situations
+> where:
+> 1. The interface/functionality does not exist -OR-
+> 2. The maintainers have made it clear that the fix will not be backported
+
+It's even worse with the distribution kernels that have arbitrary
+version numbers and thousands of patches on the top of it, so we use it
+as a last option...
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
