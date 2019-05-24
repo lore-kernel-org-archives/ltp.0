@@ -1,87 +1,62 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 24 May 2019 10:54:52 +0200
-Subject: [LTP] [PATCH v2 1/2] OVL_MNT: add setup_overlay helper
-In-Reply-To: <20190524043201.sxmkm6b7dixn2kuw@XZHOUW.usersys.redhat.com>
-References: <20190503210005.GA18171@x230>
- <20190515092129.26336-1-xzhou@redhat.com>
- <20190515133102.GA5429@dell5510>
- <20190524043201.sxmkm6b7dixn2kuw@XZHOUW.usersys.redhat.com>
-Message-ID: <20190524085452.GB29592@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 24 May 2019 10:59:47 +0200
+Subject: [LTP] [PATCH] [COMMITTED] syscalls/fcntl33: Fix typo overlapfs
+ -> overlayfs
+In-Reply-To: <CAOQ4uxhHVG9f1njmPgei8-QO4UEivXbxoHkqKi4f50XN6Gup9A@mail.gmail.com>
+References: <20190523134549.23103-1-chrubis@suse.cz>
+ <CAOQ4uxhHVG9f1njmPgei8-QO4UEivXbxoHkqKi4f50XN6Gup9A@mail.gmail.com>
+Message-ID: <20190524085947.GA11508@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Murphy,
+Hi!
+> >  testcases/kernel/syscalls/fcntl/fcntl33.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/testcases/kernel/syscalls/fcntl/fcntl33.c b/testcases/kernel/syscalls/fcntl/fcntl33.c
+> > index 43dc5a2af..627823c5c 100644
+> > --- a/testcases/kernel/syscalls/fcntl/fcntl33.c
+> > +++ b/testcases/kernel/syscalls/fcntl/fcntl33.c
+> > @@ -117,7 +117,7 @@ static void do_test(unsigned int i)
+> >         if (TST_RET == -1) {
+> >                 if (type == TST_OVERLAYFS_MAGIC && TST_ERR == EAGAIN) {
+> >                         tst_res(TINFO | TTERRNO,
+> > -                               "fcntl(F_SETLEASE, F_WRLCK) failed on overlapfs as expected");
+> > +                               "fcntl(F_SETLEASE, F_WRLCK) failed on overlayfs as expected");
+> 
+> You have 3 more of this typo in fcntl tests.
 
-> > > +	ret = mount("overlay", OVL_MNT, "overlay", 0, "lowerdir="OVL_LOWER
-> > > +		    ",upperdir="OVL_UPPER",workdir="OVL_WORK);
-> > > +	if (ret < 0) {
-> > > +		if (errno == ENODEV) {
-> > > +			tst_res(TINFO,
-> > > +				"overlayfs is not configured in this kernel.");
-> > > +			return 1;
-> > First I thought we'd implement it as a test flag (member of struct tst_test).
-> > When we have it as separate function I wonder whether we could TCONF on ENODEV
-> > instead of TINFO and return. Maybe there could be here for int strict parameter,
+Ah, right, I should have done git grep before commiting this. I will fix
+that right away.
 
-> The return value is referenced in the testcase to determine whether to run
-> tests in overlayfs. It's needed.
+> If you ask me, silencing this error seems wrong.
+> While the error is *expected* it is still a broken interface.
+> It may be just a matter of terminology, but I am reading this message as:
+> 
+> TEST PASSED: Overlayfs failed as expected
+> 
+> While it really should be more along the lines of:
+> 
+> TEST SKIPPED: Overlayfs doesn't support write leased
 
-> If this strict parameter is only for different wording on NODEV. Is it
-> necessary ?
+Agreed, I'm always against working around kernel bugs/deficiencies in
+tests, unfortunately that usually conflicts with QA deparenments that
+wants to skip known problems and have everything green. So we usually
+end up somewhere in a middle ground.
 
-I'll recap my suggestions:
-1) I like having macros to help reduce some parameters, this does not block
-functions being flexible (which requires parameters).
-2) Having helper function create_overlay_dirs() used separately, than parameter
-in single function (Amir [1] suggestion makes sense).
+Also as usuall, do you care enough to send a patch? :-)
 
-Something like this, just a suggestion:
+> Besides, this problem looks quite easy to fix.
+> I think Bruce was already looking at changing the implementation of
+> check_conflicting_open(), so if the test is not failing, nobody is going to
+> nudge for a fix...
 
-int create_overlay_dirs()
-{
-	SAFE_MKDIR(OVL_LOWER, 0755);
-	...
-	return ret;
-}
+Once it's fixed we can change that to a failure for new enough kernels,
+old ones should probably stay with SKIPPED/TCONF.
 
-int mount_overlay(const char *file, const int lineno, int safe)
-{
-	...
-	if (create_overlay_dirs())
-		tst_brk(TCONF, "...");
-
-	ret = mount("overlay", OVL_MNT, "overlay", 0, "lowerdir="OVL_LOWER
-		    ",upperdir="OVL_UPPER",workdir="OVL_WORK);
-	if (ret < 0) {
-		if (errno == ENODEV) {
-			/*
-			 * TODO: maybe safe is confusing as we use tst_brk(TBROK anyway),
-			 * + sometimes tst_res(TCONF, ..) would be preferred over
-			 * tst_brk(TCONF, ...)
-			 */
-			if (safe)
-				tst_brk(TCONF,
-					"overlayfs is not configured in this kernel.");
-			} else {
-				tst_res(TINFO,
-					"overlayfs is not configured in this kernel.");
-				return 1;
-			}
-		}
-		tst_brk(TBROK | TERRNO, "overlayfs mount failed");
-	}
-}
-
-#define SAFE_MOUNT_OVERLAY() \
-	mount_overlay(__FILE__, __LINE__, 1);
-
-#define TST_MOUNT_OVERLAY() \
-	mount_overlay(__FILE__, __LINE__, 0);
-
-Kind regards,
-Petr
-
-[1] http://lists.linux.it/pipermail/ltp/2019-May/011983.html
+-- 
+Cyril Hrubis
+chrubis@suse.cz
