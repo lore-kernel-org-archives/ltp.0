@@ -1,62 +1,71 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 24 May 2019 10:59:47 +0200
-Subject: [LTP] [PATCH] [COMMITTED] syscalls/fcntl33: Fix typo overlapfs
- -> overlayfs
-In-Reply-To: <CAOQ4uxhHVG9f1njmPgei8-QO4UEivXbxoHkqKi4f50XN6Gup9A@mail.gmail.com>
-References: <20190523134549.23103-1-chrubis@suse.cz>
- <CAOQ4uxhHVG9f1njmPgei8-QO4UEivXbxoHkqKi4f50XN6Gup9A@mail.gmail.com>
-Message-ID: <20190524085947.GA11508@rei.lan>
+Date: Fri, 24 May 2019 11:03:24 +0200
+Subject: [LTP] [PATCH] [COMMITTED] syscalls/fcntl2*: Fix typo overlapfs ->
+	overlayfs
+Message-ID: <20190524090324.15975-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> >  testcases/kernel/syscalls/fcntl/fcntl33.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/testcases/kernel/syscalls/fcntl/fcntl33.c b/testcases/kernel/syscalls/fcntl/fcntl33.c
-> > index 43dc5a2af..627823c5c 100644
-> > --- a/testcases/kernel/syscalls/fcntl/fcntl33.c
-> > +++ b/testcases/kernel/syscalls/fcntl/fcntl33.c
-> > @@ -117,7 +117,7 @@ static void do_test(unsigned int i)
-> >         if (TST_RET == -1) {
-> >                 if (type == TST_OVERLAYFS_MAGIC && TST_ERR == EAGAIN) {
-> >                         tst_res(TINFO | TTERRNO,
-> > -                               "fcntl(F_SETLEASE, F_WRLCK) failed on overlapfs as expected");
-> > +                               "fcntl(F_SETLEASE, F_WRLCK) failed on overlayfs as expected");
-> 
-> You have 3 more of this typo in fcntl tests.
+This is followup on:
 
-Ah, right, I should have done git grep before commiting this. I will fix
-that right away.
+commit 4eec12f480af98d5f1b56f8e163f2fef5b9938c3
+Author: Cyril Hrubis <chrubis@suse.cz>
+Date:   Thu May 23 15:42:35 2019 +0200
 
-> If you ask me, silencing this error seems wrong.
-> While the error is *expected* it is still a broken interface.
-> It may be just a matter of terminology, but I am reading this message as:
-> 
-> TEST PASSED: Overlayfs failed as expected
-> 
-> While it really should be more along the lines of:
-> 
-> TEST SKIPPED: Overlayfs doesn't support write leased
+    syscalls/fcntl33: Fix typo overlapfs -> overlayfs
 
-Agreed, I'm always against working around kernel bugs/deficiencies in
-tests, unfortunately that usually conflicts with QA deparenments that
-wants to skip known problems and have everything green. So we usually
-end up somewhere in a middle ground.
+I should have done git grep before commiting the first one.
 
-Also as usuall, do you care enough to send a patch? :-)
+Reported-by: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/fcntl/fcntl24.c | 2 +-
+ testcases/kernel/syscalls/fcntl/fcntl25.c | 2 +-
+ testcases/kernel/syscalls/fcntl/fcntl26.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-> Besides, this problem looks quite easy to fix.
-> I think Bruce was already looking at changing the implementation of
-> check_conflicting_open(), so if the test is not failing, nobody is going to
-> nudge for a fix...
-
-Once it's fixed we can change that to a failure for new enough kernels,
-old ones should probably stay with SKIPPED/TCONF.
-
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl24.c b/testcases/kernel/syscalls/fcntl/fcntl24.c
+index dff4009cf..63c716ff6 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl24.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl24.c
+@@ -145,7 +145,7 @@ int main(int ac, char **av)
+ 		if (TEST_RETURN == -1) {
+ 			if (type == TST_OVERLAYFS_MAGIC && TEST_ERRNO == EAGAIN) {
+ 				tst_resm(TINFO | TTERRNO,
+-					 "fcntl(F_SETLEASE, F_WRLCK) failed on overlapfs as expected");
++					 "fcntl(F_SETLEASE, F_WRLCK) failed on overlayfs as expected");
+ 			} else {
+ 				tst_resm(TFAIL,
+ 					"fcntl(%s, F_SETLEASE, F_WRLCK) Failed, errno=%d : %s",
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl25.c b/testcases/kernel/syscalls/fcntl/fcntl25.c
+index 1592ed3d5..4917584c9 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl25.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl25.c
+@@ -146,7 +146,7 @@ int main(int ac, char **av)
+ 		if (TEST_RETURN == -1) {
+ 			if (type == TST_OVERLAYFS_MAGIC && TEST_ERRNO == EAGAIN) {
+ 				tst_resm(TINFO | TTERRNO,
+-					 "fcntl(F_SETLEASE, F_WRLCK) failed on overlapfs as expected");
++					 "fcntl(F_SETLEASE, F_WRLCK) failed on overlayfs as expected");
+ 			} else {
+ 				tst_resm(TFAIL,
+ 					 "fcntl(%s, F_SETLEASE, F_WRLCK) Failed, errno=%d : %s",
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl26.c b/testcases/kernel/syscalls/fcntl/fcntl26.c
+index 28be4c362..ac74b5571 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl26.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl26.c
+@@ -146,7 +146,7 @@ int main(int ac, char **av)
+ 		if (TEST_RETURN == -1) {
+ 			if (type == TST_OVERLAYFS_MAGIC && TEST_ERRNO == EAGAIN) {
+ 				tst_resm(TINFO | TTERRNO,
+-					 "fcntl(F_SETLEASE, F_WRLCK) failed on overlapfs as expected");
++					 "fcntl(F_SETLEASE, F_WRLCK) failed on overlayfs as expected");
+ 			} else {
+ 				tst_resm(TFAIL,
+ 					"fcntl(%s, F_SETLEASE, F_WRLCK) Failed, errno=%d : %s",
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.19.2
+
