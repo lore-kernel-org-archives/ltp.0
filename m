@@ -1,79 +1,162 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 24 May 2019 15:45:22 +0200
-Subject: [LTP] [PATCH] [COMMITTED] syscalls/fcntl33: Fix typo overlapfs
- -> overlayfs
-In-Reply-To: <CAOQ4uxj3X2Eh+RmzunW1Sb8PWrHWsS1_h-xEH2Bofcr+-S-tiA@mail.gmail.com>
-References: <20190523134549.23103-1-chrubis@suse.cz>
- <CAOQ4uxhHVG9f1njmPgei8-QO4UEivXbxoHkqKi4f50XN6Gup9A@mail.gmail.com>
- <20190524085947.GA11508@rei.lan>
- <CAOQ4uxj3X2Eh+RmzunW1Sb8PWrHWsS1_h-xEH2Bofcr+-S-tiA@mail.gmail.com>
-Message-ID: <20190524134521.GA2251@rei>
+From: Xiao Yang <ice_yangxiao@163.com>
+Date: Fri, 24 May 2019 21:45:36 +0800
+Subject: [LTP] [PATCH v3] syscalls/prctl05.c: New test for prctl() with
+ PR_{SET, GET}_NAME
+In-Reply-To: <1558684246-2658-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <70578dc6-1a6b-9ab1-1298-0539ae8562f9@163.com>
+ <1558684246-2658-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <b6b85048-ff36-9681-05bd-2131721efd4f@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Agreed, I'm always against working around kernel bugs/deficiencies in
-> > tests, unfortunately that usually conflicts with QA deparenments that
-> > wants to skip known problems and have everything green. So we usually
-> > end up somewhere in a middle ground.
-> 
-> But is everything green though?
-> Does QA department know that if you run samba inside a container
-> whose storage driver is overlayfs, if samba is configured with
-> "kernel oplock = yes"
-> Samba clients would never be able to acquire an oplock and
-> write performance would be horrible?
-> 
-> Sure, not everyone cares about this case, but seems to be that
-> silencing the error should be in the hands of the user and that LTP
-> project should just report the problems as they are.
-> 
-> Worse is the fact that this error will only trigger for people that
-> configured LTP to test overlayfs specifically, not all LTP users.
-> This group of users is even more likely to be interested in
-> bugs/deficiencies of overlayfs.
+On 05/24/2019 03:50 PM, Yang Xu wrote:
+> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> ---
+>   include/lapi/prctl.h                       |  5 ++
+>   runtest/syscalls                           |  1 +
+>   testcases/kernel/syscalls/prctl/.gitignore |  1 +
+>   testcases/kernel/syscalls/prctl/prctl05.c  | 76 ++++++++++++++++++++++
+>   4 files changed, 83 insertions(+)
+>   create mode 100644 testcases/kernel/syscalls/prctl/prctl05.c
+>
+> diff --git a/include/lapi/prctl.h b/include/lapi/prctl.h
+> index f42bd6459..ad0b12bce 100644
+> --- a/include/lapi/prctl.h
+> +++ b/include/lapi/prctl.h
+> @@ -9,6 +9,11 @@
+>   
+>   #include <sys/prctl.h>
+>   
+> +#ifndef PR_SET_NAME
+> +# define PR_SET_NAME 15
+> +# define PR_GET_NAME 16
+> +#endif
+> +
+>   #ifndef PR_SET_SECCOMP
+>   # define PR_GET_SECCOMP  21
+>   # define PR_SET_SECCOMP  22
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 04558a580..d2dcd2152 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -862,6 +862,7 @@ prctl01 prctl01
+>   prctl02 prctl02
+>   prctl03 prctl03
+>   prctl04 prctl04
+> +prctl05 prctl05
+>   
+>   pread01 pread01
+>   pread01_64 pread01_64
+> diff --git a/testcases/kernel/syscalls/prctl/.gitignore b/testcases/kernel/syscalls/prctl/.gitignore
+> index 1c3da3052..9ecaf9854 100644
+> --- a/testcases/kernel/syscalls/prctl/.gitignore
+> +++ b/testcases/kernel/syscalls/prctl/.gitignore
+> @@ -2,3 +2,4 @@
+>   /prctl02
+>   /prctl03
+>   /prctl04
+> +/prctl05
+> diff --git a/testcases/kernel/syscalls/prctl/prctl05.c b/testcases/kernel/syscalls/prctl/prctl05.c
+> new file mode 100644
+> index 000000000..e1287abdf
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/prctl/prctl05.c
+> @@ -0,0 +1,76 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
+> + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> + *
+> + * Test PR_GET_NAME and PR_SET_NAME of prctl(2).
+> + * 1)Set the name of the calling thread, the name can be up to 16 bytes
+> + *   long, including the terminating null byte. If exceeds 16 bytes, the
+> + *   string is silently truncated.
+> + * 2)Return the name of the calling thread, the buffer should allow space
+> + *   for up to 16 bytes, the returned string will be null-terminated.
+> + * 3)Check /proc/self/task/[tid]/comm name whether matches the thread name.
+> + */
+> +
+> +#include <sys/prctl.h>
+> +#include <string.h>
+> +#include <stdio.h>
+> +#include "lapi/syscalls.h"
+> +#include "lapi/prctl.h"
+> +#include "tst_test.h"
+> +
+> +static struct tcase {
+> +	char setname[20];
+> +	char expname[20];
+> +} tcases[] = {
+> +	{"prctl05_test", "prctl05_test"},
+> +	{"prctl05_test_xxxxx", "prctl05_test_xx"}
+> +};
+> +
+> +static void verify_prctl(unsigned int n)
+> +{
+> +	char buf[20];
+> +	char comm_buf[20];
+> +	char PROC_NAME_PATH[40];
+> +	pid_t tid;
+> +	struct tcase *tc = &tcases[n];
+> +
+> +	TEST(prctl(PR_SET_NAME, tc->setname));
+> +	if (TST_RET == -1) {
+> +		tst_res(TFAIL | TTERRNO, "prctl(PR_SET_NAME) failed");
+> +		return;
+> +	}
+> +	tst_res(TPASS,
+> +		"prctl(PR_SET_NAME) succeeded, set thread name as %s", tc->setname);
+> +
+> +	TEST(prctl(PR_GET_NAME, buf));
+> +	if (TST_RET == -1) {
+> +		tst_res(TFAIL | TTERRNO, "prctl(PR_GET_NAME) failed");
+> +		return;
+> +	}
+> +
+> +	if (strcmp(tc->expname, buf))
+> +		tst_res(TFAIL,
+> +			"prctl(PR_GET_NAME) failed ,expected %s, got %s", tc->expname, buf);
+> +	else
+> +		tst_res(TPASS,
+> +			"prctl(PR_GET_NAME) succeeded, thread name is %s", buf);
+Hi Xu,
 
-I can see how this is wrong.
+It is not necessary to continue if buf mismatches tc->expname.
 
-On the other hand it took us some time to explain our release managers
-that kernel is OK when we say that it's OK and that the actuall test
-results are not the end result. But even then we never attempted to
-to put workarounds into the upstream tests. So I guess that we can
-remove the workaround when there is a fix in upstream.
+> +
+> +	tid = tst_syscall(__NR_gettid);
+> +
+> +	sprintf(PROC_NAME_PATH, "/proc/self/task/%d/comm", tid);
+> +	SAFE_FILE_SCANF(PROC_NAME_PATH, "%s", comm_buf);
 
-> > Also as usuall, do you care enough to send a patch? :-)
-> 
-> No, not yet.
-> Give me a few days to cook.
-> When I get to caring enough I will fix the kernel ;-)
+You didn't create multiple threads here so it seems simpler to use 
+/proc/self/comm
+instead of /proc/self/task/<tid>/comm. do you think so?
+Please see the following url for details:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/filesystems/proc.txt
 
-Ok.
+BTW:
+Should we print three TPASS messages for one test?
+Can we replace previous TPASS with TINFO and then print TPASS at the end?
 
-> > > Besides, this problem looks quite easy to fix.
-> > > I think Bruce was already looking at changing the implementation of
-> > > check_conflicting_open(), so if the test is not failing, nobody is going to
-> > > nudge for a fix...
-> >
-> > Once it's fixed we can change that to a failure for new enough kernels,
-> > old ones should probably stay with SKIPPED/TCONF.
-> >
-> 
-> This too would be wrong practice IMO.
-> If stable kernel users see that the test passes on mainline and fails
-> on old kernel, somebody may get the idea to backport the fix to stable kernel
-> and fix the bug.
-> IOW, setting min_kver is a tool that should be reserved IMO to situations
-> where:
-> 1. The interface/functionality does not exist -OR-
-> 2. The maintainers have made it clear that the fix will not be backported
+Best Regards,
+Xiao Yang
+> +	if (strcmp(tc->expname, comm_buf))
+> +		tst_res(TFAIL,
+> +			"%s sets thread name failed, expected %s, got %s",
+> +			PROC_NAME_PATH, tc->expname, comm_buf);
+> +	else
+> +		tst_res(TPASS, "%s sets thread name succeed as %s",
+> +			PROC_NAME_PATH, comm_buf);
+> +
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test = verify_prctl,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +};
 
-It's even worse with the distribution kernels that have arbitrary
-version numbers and thousands of patches on the top of it, so we use it
-as a last option...
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
