@@ -1,303 +1,143 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 24 May 2019 17:11:23 +0200
-Subject: [LTP] [PATCH] syscalls/sched_setaffinity01.c: rewrite test with
- new API
-In-Reply-To: <1558660677-13516-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-References: <1558660677-13516-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-Message-ID: <20190524151122.GB30293@rei>
+From: Murphy Zhou <xzhou@redhat.com>
+Date: Sat, 25 May 2019 19:51:11 +0800
+Subject: [LTP] [PATCH v4 1/2] OVL_MNT: add helpers to setup overlayfs
+	mountpoint
+In-Reply-To: <20190524122357.GA28108@dell5510>
+References: <20190524122357.GA28108@dell5510>
+Message-ID: <20190525115112.15399-1-xzhou@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
-> ---
->  .../sched_setaffinity/sched_setaffinity01.c        | 188 ++++++++-------------
->  1 file changed, 67 insertions(+), 121 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
-> index e9367d6..3677b88 100644
-> --- a/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
-> +++ b/testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity01.c
-> @@ -1,177 +1,123 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
->  /*
-> - * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
+Define constraints of needed overlayfs dirs;
+create_overlay_dirs() to create lower/upper/work dirs;
+mount_overlay() to mount overlayfs;
+SAFE_MOUNT_OVERLAY macro to mount overlayfs safely, tst_brk TCONF
+if mount fail with errno ENODEV;
+TST_MOUNT_OVERLAY  macro to mount overlayfs and return 0 if succeeds;
 
-You can't just remove other copyright holders like this.
+Suggested-by: Petr Vorel <pvorel@suse.cz>
+Suggested-by: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Murphy Zhou <xzhou@redhat.com>
+---
+v4:
+  Update ENODEV handle logic
+  Define TST_MOUNT_OVERLAY and SAFE_MOUNT_OVERLAY macros
+  Change helper names
+v3:
+  Split setup to 2 parts: creating files and mounting.
+  Use macro SAFE_MOUNT_OVERLAYFS.
+  Handle ENODEV differently for 4 testcases we have modified.
+v2:
+  define constraints in header file.
+  add a setup helper to create dirs and mount.
 
-> - * This program is free software; you can redistribute it and/or
-> - * modify it under the terms of the GNU General Public License as
-> - * published by the Free Software Foundation; either version 2 of
-> - * the License, or (at your option) any later version.
-> - *
-> - * This program is distributed in the hope that it would be useful,
-> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> - * GNU General Public License for more details.
-> - *
-> - * You should have received a copy of the GNU General Public License
-> - * along with this program. If not, see <http://www.gnu.org/licenses/>.
-> + * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-> + * Author: Jinhui huang <huangjh.jy@cn.fujitsu.com>
->   */
->  
->  /*
-> - * This test verifies sched_setaffinity(2) for all error conditions
-> - * to occur correctly.
-> - *
-> - * sched_setaffinity() returns -1 and sets the error code to:
-> - *
-> - * 1) EFAULT, if the supplied memory address is invalid
-> - * 2) EINVAL, if the mask doesn't contain at least one
-> - *    permitted cpu
-> - * 3) ESRCH, if the process whose id is pid could not
-> - *    be found
-> - * 4) EPERM, if the calling process doesn't have appropriate
-> - *    privileges
-> + * Description:
-> + * Check various errnos for sched_setaffinity():
-> + * 1) EFAULT, if the supplied memory address is invalid.
-> + * 2) EINVAL, if the mask doesn't contain at least one permitted cpu.
-> + * 3) ESRCH, if the process whose id is pid could not be found.
-> + * 4) EPERM, if the calling process doesn't have appropriate privileges.
->   */
-> -
->  #define _GNU_SOURCE
->  #include <errno.h>
->  #include <pwd.h>
->  #include <sched.h>
->  #include <signal.h>
->  #include <unistd.h>
-> -#include <sys/types.h>
-> -#include <sys/wait.h>
-> -#include "test.h"
-> -#include "safe_macros.h"
-> +#include <stdlib.h>
-> +
-> +#include "tst_test.h"
-> +#include "tst_safe_macros.h"
->  #include "lapi/cpuset.h"
->  #include "lapi/syscalls.h"
->  
-> -char *TCID = "sched_setaffinity01";
-> -
-> -#define PID_MAX_PATH "/proc/sys/kernel/pid_max"
-> -
->  static cpu_set_t *mask, *emask;
->  static cpu_set_t *fmask = (void *)-1;
+ include/safe_file_ops_fn.h  |  4 ++++
+ include/tst_fs.h            |  6 +++++
+ include/tst_safe_file_ops.h |  6 +++++
+ lib/tst_fs_setup.c          | 46 +++++++++++++++++++++++++++++++++++++
+ 4 files changed, 62 insertions(+)
+ create mode 100644 lib/tst_fs_setup.c
 
-This should be set with tst_get_bad_addr() in setup()
-
->  static size_t mask_size, emask_size;
->  static pid_t self_pid, privileged_pid, free_pid;
-> -static uid_t uid;
-> -static const char nobody_uid[] = "nobody";
->  static struct passwd *ltpuser;
-> -static long ncpus;
->  
-> -static struct test_case_t {
-> +static struct tcase {
->  	pid_t *pid;
-> -	size_t *mask_size;
-> +	size_t *size;
->  	cpu_set_t **mask;
->  	int exp_errno;
-> -} test_cases[] = {
-> +} tcases[] = {
->  	{&self_pid, &mask_size, &fmask, EFAULT},
->  	{&self_pid, &emask_size, &emask, EINVAL},
->  	{&free_pid, &mask_size, &mask, ESRCH},
->  	{&privileged_pid, &mask_size, &mask, EPERM},
->  };
->  
-> -int TST_TOTAL = ARRAY_SIZE(test_cases);
-> -
-> -static void cleanup(void)
-> +static void verify_test(unsigned int n)
->  {
-> -	if (mask != NULL) {
-> -		CPU_FREE(mask);
-> -		mask = NULL;
-> -	}
-> +	struct tcase *tc = &tcases[n];
->  
-> -	if (emask != NULL) {
-> -		CPU_FREE(emask);
-> -		emask = NULL;
-> +	if (tc->exp_errno == EPERM) {
-> +		privileged_pid = SAFE_FORK();
-> +		if (privileged_pid == 0) {
-> +			pause();
-> +			exit(0);
-> +		}
-> +
-> +		SAFE_SETEUID(ltpuser->pw_uid);
->  	}
->  
-> -	SAFE_SETEUID(NULL, uid);
-> +	TEST(tst_syscall(__NR_sched_setaffinity,
-> +					*tc->pid, *tc->size, *tc->mask));
-                         ^
-			 Excessive indentation, the *tc->pid should
-			 start here.
-> +
-> +	if (TST_RET != -1)
-> +		tst_res(TFAIL, "sched_setaffinity() succeded unexpectedly");
-                I guess that we should goto to the EPERM cleanup code
-		from here, otherwise we will pritn two fail messages
-		if TST_RET != -1.
-
-> +	if (TST_ERR != tc->exp_errno) {
-> +		tst_res(TFAIL | TTERRNO, "sched_setaffinity() failed with %s, "
-> +			"acctually got:", tst_strerrno(tc->exp_errno));
-
-LKML coding style prefers not to line-wrap user visible strings, also
-the message is not clear so it should be something as:
-
-		tst_res(TFAIL | TTERRNO,
-		        "sched_setaffinity() should fail with %s, got:",
-			tst_strerrno(tc->exp_errno));
-
-> +	} else {
-> +		tst_res(TPASS | TTERRNO, "sched_setaffinity() failed");
-> +	}
->  
-> -	if (privileged_pid > 0) {
-> -		kill(privileged_pid, SIGKILL);
-> -		waitpid(privileged_pid, NULL, 0);
-> -		privileged_pid = 0;
-> +	if (tc->exp_errno == EPERM) {
-> +		SAFE_KILL(privileged_pid, SIGKILL);
-> +		SAFE_WAITPID(privileged_pid, NULL, 0);
-> +		SAFE_SETEUID(0);
->  	}
->  }
->  
->  static void setup(void)
->  {
-> -	tst_require_root();
-
-The test needs to be executed under root, you have forgotten to set the
-.needs_root flag in the tst_test structure below.
-
-> -	uid = geteuid();
-> +	long ncpus;
->  	ncpus = tst_ncpus_max();
->  
-> -	/* Current mask */
->  	mask = CPU_ALLOC(ncpus);
-> -	if (mask == NULL)
-> -		tst_brkm(TBROK | TERRNO, cleanup, "CPU_ALLOC(%ld) failed",
-> -			ncpus);
-> +	if (!mask)
-> +		tst_brk(TBROK | TTERRNO, "CPU_ALLOC() failed");
-> +
->  	mask_size = CPU_ALLOC_SIZE(ncpus);
-> +
->  	if (sched_getaffinity(0, mask_size, mask) < 0)
-> -		tst_brkm(TBROK | TERRNO, cleanup, "sched_getaffinity() failed");
-> +		tst_brk(TBROK | TTERRNO, "sched_getaffinity() failed");
->  
-> -	/* Mask with one more cpu than available on the system */
->  	emask = CPU_ALLOC(ncpus + 1);
-> -	if (emask == NULL)
-> -		tst_brkm(TBROK | TERRNO, cleanup, "CPU_ALLOC(%ld) failed",
-> -			ncpus + 1);
-> +	if (!emask)
-> +		tst_brk(TBROK | TTERRNO, "CPU_ALLOC() failed");
-> +
->  	emask_size = CPU_ALLOC_SIZE(ncpus + 1);
->  	CPU_ZERO_S(emask_size, emask);
->  	CPU_SET_S(ncpus, emask_size, emask);
->  
-> -	privileged_pid = tst_fork();
-> -	if (privileged_pid == 0) {
-> -		pause();
-> -
-> -		exit(0);
-> -	} else if (privileged_pid < 0) {
-> -		tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
-> -	}
-> -
-> -	/* Dropping the root privileges */
-> -	ltpuser = getpwnam(nobody_uid);
-> -	if (ltpuser == NULL)
-> -		tst_brkm(TBROK | TERRNO, cleanup,
-> -			"getpwnam failed for user id %s", nobody_uid);
-> -
-> -	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-> +	ltpuser = SAFE_GETPWNAM("nobody");
->  
-> -	/* this pid is not used by the OS */
-> -	free_pid = tst_get_unused_pid(cleanup);
-> +	free_pid = tst_get_unused_pid();
->  }
->  
-> -int main(int argc, char *argv[])
-> +static void cleanup(void)
->  {
-> -	int lc;
-> -	int i;
-> -
-> -	tst_parse_opts(argc, argv, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		tst_count = 0;
-> -		for (i = 0; i < TST_TOTAL; i++) {
-> -			/* Avoid calling glibc wrapper function, as it may
-> -			 * try to read/validate data in cpu mask. This test
-> -			 * is passing invalid pointer on purpose. */
-> -			TEST(ltp_syscall(__NR_sched_setaffinity,
-> -				*(test_cases[i].pid),
-> -				*(test_cases[i].mask_size),
-> -				*(test_cases[i].mask)));
-> -
-> -			if (TEST_RETURN != -1)
-> -				tst_resm(TFAIL,
-> -					"sched_setaffinity() unexpectedly succeded");
-> -
-> -			if (TEST_ERRNO == test_cases[i].exp_errno) {
-> -				tst_resm(TPASS, "expected failure with '%s'",
-> -					strerror(test_cases[i].exp_errno));
-> -			} else {
-> -				tst_resm(TFAIL,
-> -					"call returned '%s', expected - '%s'",
-> -					strerror(TEST_ERRNO),
-> -					strerror(test_cases[i].exp_errno));
-> -			}
-> -		}
-> -	}
-> +	if (mask)
-> +		CPU_FREE(mask);
->  
-> -	cleanup();
-> -	tst_exit();
-> +	if (emask)
-> +		CPU_FREE(emask);
->  }
-> +
-> +static struct tst_test test = {
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.test = verify_test,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_tmpdir = 1,
-> +	.forks_child = 1,
-> +};
-> -- 
-> 1.8.3.1
-> 
-> 
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/include/safe_file_ops_fn.h b/include/safe_file_ops_fn.h
+index 35ec4fb1f..526454da7 100644
+--- a/include/safe_file_ops_fn.h
++++ b/include/safe_file_ops_fn.h
+@@ -76,4 +76,8 @@ void safe_touch(const char *file, const int lineno,
+ 		const char *pathname,
+ 		mode_t mode, const struct timespec times[2]);
+ 
++/* helper functions to setup overlayfs mountpoint */
++void create_overlay_dirs(void);
++int mount_overlay(const char *file, const int lineno, int safe);
++
+ #endif /* SAFE_FILE_OPS_FN */
+diff --git a/include/tst_fs.h b/include/tst_fs.h
+index 423ca82ec..ce110b723 100644
+--- a/include/tst_fs.h
++++ b/include/tst_fs.h
+@@ -50,6 +50,12 @@ enum {
+ 	TST_GB = 1073741824,
+ };
+ 
++#define OVL_BASE_MNTPOINT        "mntpoint"
++#define OVL_LOWER	OVL_BASE_MNTPOINT"/lower"
++#define OVL_UPPER	OVL_BASE_MNTPOINT"/upper"
++#define OVL_WORK	OVL_BASE_MNTPOINT"/work"
++#define OVL_MNT		OVL_BASE_MNTPOINT"/ovl"
++
+ /*
+  * @path: path is the pathname of any file within the mounted file system
+  * @mult: mult should be TST_KB, TST_MB or TST_GB
+diff --git a/include/tst_safe_file_ops.h b/include/tst_safe_file_ops.h
+index 5c3fea4e2..b62a7447f 100644
+--- a/include/tst_safe_file_ops.h
++++ b/include/tst_safe_file_ops.h
+@@ -59,4 +59,10 @@
+ 	safe_touch(__FILE__, __LINE__, NULL, \
+ 			(pathname), (mode), (times))
+ 
++#define SAFE_MOUNT_OVERLAY() \
++	((void) mount_overlay(__FILE__, __LINE__, 1))
++
++#define TST_MOUNT_OVERLAY() \
++	(mount_overlay(__FILE__, __LINE__, 0) == 0)
++
+ #endif /* TST_SAFE_FILE_OPS */
+diff --git a/lib/tst_fs_setup.c b/lib/tst_fs_setup.c
+new file mode 100644
+index 000000000..de09c7135
+--- /dev/null
++++ b/lib/tst_fs_setup.c
+@@ -0,0 +1,46 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * DESCRIPTION
++ *	A place for setup filesystem helpers.
++ */
++
++#include <stdint.h>
++#include <errno.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <sys/vfs.h>
++#include <sys/mount.h>
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++#include "tst_fs.h"
++
++void create_overlay_dirs(void)
++{
++	SAFE_MKDIR(OVL_LOWER, 0755);
++	SAFE_MKDIR(OVL_UPPER, 0755);
++	SAFE_MKDIR(OVL_WORK, 0755);
++	SAFE_MKDIR(OVL_MNT, 0755);
++}
++
++int mount_overlay(const char *file, const int lineno, int safe)
++{
++	int ret = 0;
++	char *cfgmsg = "overlayfs is not configured in this kernel.";
++
++	ret = mount("overlay", OVL_MNT, "overlay", 0, "lowerdir="OVL_LOWER
++		    ",upperdir="OVL_UPPER",workdir="OVL_WORK);
++	if (ret < 0) {
++		if (errno == ENODEV) {
++			if (safe) {
++				tst_brk(TCONF, cfgmsg);
++			} else {
++				tst_res(TINFO, cfgmsg);
++				return 1;
++			}
++		} else {
++			tst_brk(TBROK | TERRNO, "overlayfs mount failed");
++		}
++	}
++	return 0;
++}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.21.0
+
