@@ -1,119 +1,167 @@
-From: Christian Amann <camann@suse.com>
-Date: Mon, 27 May 2019 11:41:46 +0200
-Subject: [LTP] [PATCH v1] syscalls/setsockopt04: Add CVE-2016-9793 testcase
-Message-ID: <20190527094146.13561-1-camann@suse.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 27 May 2019 14:09:45 +0200
+Subject: [LTP] [PATCH v4 1/2] OVL_MNT: add helpers to setup overlayfs
+	mountpoint
+In-Reply-To: <20190525115112.15399-1-xzhou@redhat.com>
+References: <20190524122357.GA28108@dell5510>
+ <20190525115112.15399-1-xzhou@redhat.com>
+Message-ID: <20190527120945.GA25513@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Kernels between version 3.11 and 4.8 missing commit b98b0bc8
-are vulnerable to a priviglege escalation exploit by overflowing
-a socket send buffer size integer.
-This test checks if the system is vulnerable by testing if a
-negative buffer size can be set.
+Hi Murphy, Amir, Cyril,
 
-Signed-off-by: Christian Amann <camann@suse.com>
+just a suggestion to apply diff below:
+
+1) mount_overlay(): you don't actually use lineno and safe in error messages
+tst_fs_setup.c: In function ‘mount_overlay’:
+tst_fs_setup.c:26:31: warning: unused parameter ‘file’ [-Wunused-parameter]
+ int mount_overlay(const char *file, const int lineno, int safe)
+                   ~~~~~~~~~~~~^~~~
+tst_fs_setup.c:26:47: warning: unused parameter ‘lineno’ [-Wunused-parameter]
+ int mount_overlay(const char *file, const int lineno, int safe)
+
+2) mount_overlay(): return ret from mount (usually -1) instead of 1 (in case
+anybody is interested).
+
+3) mount_overlay(): earlier return 0 after checking ENODEV saves us one shift
+right (but might look as error, as tst_res() is usually followed by return).
+
+4) create_overlay_dirs(): checks for OVL_LOWER and thus can be called in
+mount_overlay() without any check. This saves us calling it before
+{SAFE,TST}_MOUNT_OVERLAY() in execveat03.c and readahead02.c
+
+5) removed unused headers (<stdint.h>, <stdio.h>, <stdlib.h>, <sys/vfs.h>),
+is any of them needed and the need masked by it's include in tst_test.h?
+
+5) other cleanup
+
+TODO:
+I'm still not sure about ovl_mounted. There is static int mntpoint_mounted in
+lib/tst_test.c, which does umount.  tst_test->mntpoint, I guess we should use
+it. WDYT?
+
+Kind regards,
+Petr
 ---
- runtest/syscalls                                   |  1 +
- testcases/kernel/syscalls/setsockopt/.gitignore    |  1 +
- .../kernel/syscalls/setsockopt/setsockopt04.c      | 65 ++++++++++++++++++++++
- 3 files changed, 67 insertions(+)
- create mode 100644 testcases/kernel/syscalls/setsockopt/setsockopt04.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 04558a580..b06ad949e 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1233,6 +1233,7 @@ setsid01 setsid01
- setsockopt01 setsockopt01
- setsockopt02 setsockopt02
- setsockopt03 setsockopt03
-+setsockopt04 setsockopt04
+* diff to first commit:
+diff --git lib/tst_fs_setup.c lib/tst_fs_setup.c
+index de09c7135..60dedc283 100644
+--- lib/tst_fs_setup.c
++++ lib/tst_fs_setup.c
+@@ -1,46 +1,46 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * DESCRIPTION
+- *	A place for setup filesystem helpers.
+- */
  
- settimeofday01 settimeofday01
- settimeofday02 settimeofday02
-diff --git a/testcases/kernel/syscalls/setsockopt/.gitignore b/testcases/kernel/syscalls/setsockopt/.gitignore
-index d8fb0f3b4..603e2ad7a 100644
---- a/testcases/kernel/syscalls/setsockopt/.gitignore
-+++ b/testcases/kernel/syscalls/setsockopt/.gitignore
-@@ -1,3 +1,4 @@
- /setsockopt01
- /setsockopt02
- /setsockopt03
-+/setsockopt04
-diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt04.c b/testcases/kernel/syscalls/setsockopt/setsockopt04.c
-new file mode 100644
-index 000000000..6cb4199ab
---- /dev/null
-+++ b/testcases/kernel/syscalls/setsockopt/setsockopt04.c
-@@ -0,0 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 SUSE LLC
-+ * Author: Christian Amann <camann@suse.com>
-+ */
-+/* Test for CVE-2016-9793
-+ *
-+ * With kernels between version 3.11 and 4.8 missing commit b98b0bc8 it
-+ * is possible to pass a very high unsigned integer as send buffer size
-+ * to a socket which is then interpreted as a negative value.
-+ *
-+ * This can be used to escalate privileges by every user that has the
-+ * CAP_NET_ADMIN capability.
-+ *
-+ * For additional information about this CVE see:
-+ * https://www.suse.com/security/cve/CVE-2016-9793/
-+ */
+-#include <stdint.h>
++#include <dirent.h>
+ #include <errno.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <sys/vfs.h>
+ #include <sys/mount.h>
+ 
+ #define TST_NO_DEFAULT_MAIN
+ #include "tst_test.h"
+ #include "tst_fs.h"
+ 
++#define TST_FS_SETUP_OVERLAYFS_MSG "overlayfs is not configured in this kernel"
++#define TST_FS_SETUP_OVERLAYFS_CONFIG "lowerdir="OVL_LOWER",upperdir="OVL_UPPER",workdir="OVL_WORK
 +
-+#include <sys/socket.h>
-+#include "tst_test.h"
-+#include "tst_safe_net.h"
+ void create_overlay_dirs(void)
+ {
+-	SAFE_MKDIR(OVL_LOWER, 0755);
+-	SAFE_MKDIR(OVL_UPPER, 0755);
+-	SAFE_MKDIR(OVL_WORK, 0755);
+-	SAFE_MKDIR(OVL_MNT, 0755);
++	DIR* dir = opendir(OVL_BASE_MNTPOINT);
++	if (!dir) {
++		SAFE_MKDIR(OVL_LOWER, 0755);
++		SAFE_MKDIR(OVL_UPPER, 0755);
++		SAFE_MKDIR(OVL_WORK, 0755);
++		SAFE_MKDIR(OVL_MNT, 0755);
++	}
+ }
+ 
+ int mount_overlay(const char *file, const int lineno, int safe)
+ {
+-	int ret = 0;
+-	char *cfgmsg = "overlayfs is not configured in this kernel.";
+-
+-	ret = mount("overlay", OVL_MNT, "overlay", 0, "lowerdir="OVL_LOWER
+-		    ",upperdir="OVL_UPPER",workdir="OVL_WORK);
+-	if (ret < 0) {
+-		if (errno == ENODEV) {
+-			if (safe) {
+-				tst_brk(TCONF, cfgmsg);
+-			} else {
+-				tst_res(TINFO, cfgmsg);
+-				return 1;
+-			}
++	int ret;
 +
-+#define SNDBUF	(0xffffff00)
++	create_overlay_dirs();
 +
-+static int sockfd;
++	ret = mount("overlay", OVL_MNT, "overlay", 0, TST_FS_SETUP_OVERLAYFS_CONFIG);
 +
-+static void run(void)
-+{
-+	unsigned int sndbuf, rec_sndbuf;
-+	socklen_t optlen;
++	if (!ret)
++		return 0;
 +
-+	sndbuf = SNDBUF;
-+	rec_sndbuf = 0;
-+	optlen = sizeof(sndbuf);
-+
-+	SAFE_SETSOCKOPT(sockfd, SOL_SOCKET, SO_SNDBUFFORCE, &sndbuf, optlen);
-+	SAFE_GETSOCKOPT(sockfd, SOL_SOCKET, SO_SNDBUF, &rec_sndbuf, &optlen);
-+
-+	tst_res(TINFO, "Try to set send buffer size to: %u", sndbuf);
-+	tst_res(TINFO, "Send buffer size was set to: %d", rec_sndbuf);
-+
-+	if ((int)rec_sndbuf < 0)
-+		tst_res(TFAIL, "Was able to set negative send buffer size!");
-+	else
-+		tst_res(TPASS, "Was unable to set negative send buffer size!");
-+}
-+
-+static void setup(void)
-+{
-+	sockfd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, 0);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (sockfd > 0)
-+		SAFE_CLOSE(sockfd);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.timeout = 20,
-+};
--- 
-2.16.4
++	if (errno == ENODEV) {
++		if (safe) {
++			tst_brk(TCONF, "%s:%d: " TST_FS_SETUP_OVERLAYFS_MSG, file, lineno);
+ 		} else {
+-			tst_brk(TBROK | TERRNO, "overlayfs mount failed");
++			tst_res(TINFO, "%s:%d: " TST_FS_SETUP_OVERLAYFS_MSG, file, lineno);
+ 		}
++	} else {
++		tst_brk(TBROK | TERRNO, "overlayfs mount failed");
+ 	}
+-	return 0;
++	return ret;
+ }
 
+* diff to second commit:
+diff --git testcases/kernel/syscalls/execveat/execveat03.c testcases/kernel/syscalls/execveat/execveat03.c
+index 446ff4f1d..eb088bc4c 100644
+--- testcases/kernel/syscalls/execveat/execveat03.c
++++ testcases/kernel/syscalls/execveat/execveat03.c
+@@ -88,8 +88,6 @@ static void verify_execveat(void)
+ static void setup(void)
+ {
+ 	check_execveat();
+-
+-	create_overlay_dirs();
+ 	SAFE_MOUNT_OVERLAY();
+ 	ovl_mounted = 1;
+ }
+diff --git testcases/kernel/syscalls/inotify/inotify08.c testcases/kernel/syscalls/inotify/inotify08.c
+index 929ed08f1..9433315e2 100644
+--- testcases/kernel/syscalls/inotify/inotify08.c
++++ testcases/kernel/syscalls/inotify/inotify08.c
+@@ -165,7 +165,7 @@ static void setup(void)
+ 	if (fd_notify < 0) {
+ 		if (errno == ENOSYS) {
+ 			tst_brk(TCONF,
+-				"inotify is not configured in this kernel.");
++				"inotify is not configured in this kernel");
+ 		} else {
+ 			tst_brk(TBROK | TERRNO,
+ 				"inotify_init () failed");
+diff --git testcases/kernel/syscalls/readahead/readahead02.c testcases/kernel/syscalls/readahead/readahead02.c
+index db95c2b01..f6e07173d 100644
+--- testcases/kernel/syscalls/readahead/readahead02.c
++++ testcases/kernel/syscalls/readahead/readahead02.c
+@@ -388,7 +388,6 @@ static void setup(void)
+ 	setup_readahead_length();
+ 	tst_res(TINFO, "readahead length: %d", readahead_length);
+ 
+-	create_overlay_dirs();
+ 	ovl_mounted = TST_MOUNT_OVERLAY();
+ }
