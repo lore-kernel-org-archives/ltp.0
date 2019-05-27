@@ -1,300 +1,151 @@
-From: Murphy Zhou <xzhou@redhat.com>
-Date: Sat, 25 May 2019 19:51:12 +0800
-Subject: [LTP] [PATCH v4 2/2] OVL_MNT: setup overlayfs dirs and mount in a
-	separated mountpoint
-In-Reply-To: <20190525115112.15399-1-xzhou@redhat.com>
-References: <20190524122357.GA28108@dell5510>
- <20190525115112.15399-1-xzhou@redhat.com>
-Message-ID: <20190525115112.15399-2-xzhou@redhat.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 27 May 2019 16:19:31 +0800
+Subject: [LTP] [PATCH v4] syscalls/prctl05.c: New test for prctl() with
+	PR_{SET, GET}_NAME
+In-Reply-To: <7113d89a-3eb8-5671-bb6a-26cc4cbb69bf@163.com>
+References: <7113d89a-3eb8-5671-bb6a-26cc4cbb69bf@163.com>
+Message-ID: <1558945171-2252-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Some tests are mounting overlayfs internally and run tests on it.
-This mount can fail if the filesystem we are running on does not
-support overlay mount upon it. For example, we are already running
-tests on overlayfs or NFS, or CIFS. Test will report broken and
-failure.
-
-Fixing this by put overlayfs dirs in a separated mountpoint, like in
-readahead02 by Amir.
-
-Suggested-by: Petr Vorel <pvorel@suse.cz>
-Suggested-by: Amir Goldstein <amir73il@gmail.com>
-Signed-off-by: Murphy Zhou <xzhou@redhat.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
- .../kernel/syscalls/execveat/execveat03.c     | 23 ++++---------
- testcases/kernel/syscalls/inotify/inotify07.c | 27 ++++-----------
- testcases/kernel/syscalls/inotify/inotify08.c | 29 +++++-----------
- .../kernel/syscalls/readahead/readahead02.c   | 34 +++----------------
- 4 files changed, 26 insertions(+), 87 deletions(-)
+ include/lapi/prctl.h                       |  5 ++
+ runtest/syscalls                           |  1 +
+ testcases/kernel/syscalls/prctl/.gitignore |  1 +
+ testcases/kernel/syscalls/prctl/prctl05.c  | 81 ++++++++++++++++++++++
+ 4 files changed, 88 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/prctl/prctl05.c
 
-diff --git a/testcases/kernel/syscalls/execveat/execveat03.c b/testcases/kernel/syscalls/execveat/execveat03.c
-index def33923b..446ff4f1d 100644
---- a/testcases/kernel/syscalls/execveat/execveat03.c
-+++ b/testcases/kernel/syscalls/execveat/execveat03.c
-@@ -55,10 +55,11 @@
- #include "lapi/fcntl.h"
- #include "execveat.h"
+diff --git a/include/lapi/prctl.h b/include/lapi/prctl.h
+index f42bd6459..ad0b12bce 100644
+--- a/include/lapi/prctl.h
++++ b/include/lapi/prctl.h
+@@ -9,6 +9,11 @@
  
--#define OVL_MNT "ovl"
- #define TEST_APP "execveat_child"
- #define TEST_FILE_PATH OVL_MNT"/"TEST_APP
+ #include <sys/prctl.h>
  
-+static const char mntpoint[] = OVL_BASE_MNTPOINT;
++#ifndef PR_SET_NAME
++# define PR_SET_NAME 15
++# define PR_GET_NAME 16
++#endif
 +
- static int ovl_mounted;
+ #ifndef PR_SET_SECCOMP
+ # define PR_GET_SECCOMP  21
+ # define PR_SET_SECCOMP  22
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 04558a580..d2dcd2152 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -862,6 +862,7 @@ prctl01 prctl01
+ prctl02 prctl02
+ prctl03 prctl03
+ prctl04 prctl04
++prctl05 prctl05
  
- static void do_child(void)
-@@ -86,24 +87,10 @@ static void verify_execveat(void)
- 
- static void setup(void)
- {
--	int ret;
--
- 	check_execveat();
- 
--	/* Setup an overlay mount with lower file */
--	SAFE_MKDIR("lower", 0755);
--	SAFE_MKDIR("upper", 0755);
--	SAFE_MKDIR("work", 0755);
--	SAFE_MKDIR(OVL_MNT, 0755);
--	ret = mount("overlay", OVL_MNT, "overlay", 0,
--		    "lowerdir=lower,upperdir=upper,workdir=work");
--	if (ret < 0) {
--		if (errno == ENODEV) {
--			tst_brk(TCONF,
--				"overlayfs is not configured in this kernel.");
--		}
--		tst_brk(TBROK | TERRNO, "overlayfs mount failed");
--	}
-+	create_overlay_dirs();
-+	SAFE_MOUNT_OVERLAY();
- 	ovl_mounted = 1;
- }
- 
-@@ -121,6 +108,8 @@ static const char *const resource_files[] = {
- static struct tst_test test = {
- 	.needs_root = 1,
- 	.needs_tmpdir = 1,
-+	.mount_device = 1,
-+	.mntpoint = mntpoint,
- 	.forks_child = 1,
- 	.child_needs_reinit = 1,
- 	.setup = setup,
-diff --git a/testcases/kernel/syscalls/inotify/inotify07.c b/testcases/kernel/syscalls/inotify/inotify07.c
-index 96370b5cf..7d6aba51f 100644
---- a/testcases/kernel/syscalls/inotify/inotify07.c
-+++ b/testcases/kernel/syscalls/inotify/inotify07.c
-@@ -73,13 +73,13 @@ struct event_t {
- 	unsigned int mask;
- };
- 
--#define OVL_MNT "ovl"
- #define DIR_NAME "test_dir"
- #define DIR_PATH OVL_MNT"/"DIR_NAME
- #define FILE_NAME "test_file"
- #define FILE_PATH OVL_MNT"/"DIR_NAME"/"FILE_NAME
- 
- static int ovl_mounted;
-+static const char mntpoint[] = OVL_BASE_MNTPOINT;
- 
- static struct event_t event_set[EVENT_MAX];
- 
-@@ -161,26 +161,12 @@ void verify_inotify(void)
- static void setup(void)
- {
- 	struct stat buf;
--	int ret;
- 
- 	/* Setup an overlay mount with lower dir and file */
--	SAFE_MKDIR("lower", 0755);
--	SAFE_MKDIR("lower/"DIR_NAME, 0755);
--	SAFE_TOUCH("lower/"DIR_NAME"/"FILE_NAME, 0644, NULL);
--	SAFE_MKDIR("upper", 0755);
--	SAFE_MKDIR("work", 0755);
--	SAFE_MKDIR(OVL_MNT, 0755);
--	ret = mount("overlay", OVL_MNT, "overlay", 0,
--		    "lowerdir=lower,upperdir=upper,workdir=work");
--	if (ret < 0) {
--		if (errno == ENODEV) {
--			tst_brk(TCONF,
--				"overlayfs is not configured in this kernel.");
--		} else {
--			tst_brk(TBROK | TERRNO,
--				"overlayfs mount failed");
--		}
--	}
-+	create_overlay_dirs();
-+	SAFE_MKDIR(OVL_LOWER"/"DIR_NAME, 0755);
-+	SAFE_TOUCH(OVL_LOWER"/"DIR_NAME"/"FILE_NAME, 0644, NULL);
-+	SAFE_MOUNT_OVERLAY();
- 	ovl_mounted = 1;
- 
- 	fd_notify = myinotify_init1(O_NONBLOCK);
-@@ -221,7 +207,6 @@ static void cleanup(void)
- 	if (reap_wd && myinotify_rm_watch(fd_notify, wd) < 0) {
- 		tst_res(TWARN,
- 			"inotify_rm_watch (%d, %d) failed,", fd_notify, wd);
--
- 	}
- 
- 	if (fd_notify > 0)
-@@ -234,6 +219,8 @@ static void cleanup(void)
- static struct tst_test test = {
- 	.needs_root = 1,
- 	.needs_tmpdir = 1,
-+	.mount_device = 1,
-+	.mntpoint = mntpoint,
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.test_all = verify_inotify,
-diff --git a/testcases/kernel/syscalls/inotify/inotify08.c b/testcases/kernel/syscalls/inotify/inotify08.c
-index acdb95345..929ed08f1 100644
---- a/testcases/kernel/syscalls/inotify/inotify08.c
-+++ b/testcases/kernel/syscalls/inotify/inotify08.c
-@@ -74,11 +74,11 @@ struct event_t {
- 	unsigned int mask;
- };
- 
--#define OVL_MNT "ovl"
- #define FILE_NAME "test_file"
- #define FILE_PATH OVL_MNT"/"FILE_NAME
- 
- static int ovl_mounted;
-+static const char mntpoint[] = OVL_BASE_MNTPOINT;
- 
- static struct event_t event_set[EVENT_MAX];
- 
-@@ -104,8 +104,8 @@ void verify_inotify(void)
- 	test_cnt++;
- 
- 	/* Make sure events on upper/lower do not show in overlay watch */
--	SAFE_TOUCH("lower/"FILE_NAME, 0644, NULL);
--	SAFE_TOUCH("upper/"FILE_NAME, 0644, NULL);
-+	SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
-+	SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
- 
- 	int len = read(fd_notify, event_buf, EVENT_BUF_LEN);
- 	if (len == -1 && errno != EAGAIN) {
-@@ -154,25 +154,11 @@ void verify_inotify(void)
- static void setup(void)
- {
- 	struct stat buf;
--	int ret;
- 
- 	/* Setup an overlay mount with lower file */
--	SAFE_MKDIR("lower", 0755);
--	SAFE_TOUCH("lower/"FILE_NAME, 0644, NULL);
--	SAFE_MKDIR("upper", 0755);
--	SAFE_MKDIR("work", 0755);
--	SAFE_MKDIR(OVL_MNT, 0755);
--	ret = mount("overlay", OVL_MNT, "overlay", 0,
--		    "lowerdir=lower,upperdir=upper,workdir=work");
--	if (ret < 0) {
--		if (errno == ENODEV) {
--			tst_brk(TCONF,
--				"overlayfs is not configured in this kernel.");
--		} else {
--			tst_brk(TBROK | TERRNO,
--				"overlayfs mount failed");
--		}
--	}
-+	create_overlay_dirs();
-+	SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
-+	SAFE_MOUNT_OVERLAY();
- 	ovl_mounted = 1;
- 
- 	fd_notify = myinotify_init1(O_NONBLOCK);
-@@ -217,7 +203,6 @@ static void cleanup(void)
- 	if (reap_wd && myinotify_rm_watch(fd_notify, wd) < 0) {
- 		tst_res(TWARN,
- 			"inotify_rm_watch (%d, %d) failed,", fd_notify, wd);
--
- 	}
- 
- 	if (fd_notify > 0)
-@@ -230,6 +215,8 @@ static void cleanup(void)
- static struct tst_test test = {
- 	.needs_root = 1,
- 	.needs_tmpdir = 1,
-+	.mount_device = 1,
-+	.mntpoint = mntpoint,
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.test_all = verify_inotify,
-diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
-index 39ddbd583..db95c2b01 100644
---- a/testcases/kernel/syscalls/readahead/readahead02.c
-+++ b/testcases/kernel/syscalls/readahead/readahead02.c
-@@ -44,16 +44,11 @@ static int pagesize;
- static unsigned long cached_max;
- static int ovl_mounted;
- 
--#define MNTPOINT        "mntpoint"
--#define OVL_LOWER	MNTPOINT"/lower"
--#define OVL_UPPER	MNTPOINT"/upper"
--#define OVL_WORK	MNTPOINT"/work"
--#define OVL_MNT		MNTPOINT"/ovl"
- static int readahead_length  = 4096;
- static char sys_bdi_ra_path[PATH_MAX];
- static int orig_bdi_limit;
- 
--static const char mntpoint[] = MNTPOINT;
-+static const char mntpoint[] = OVL_BASE_MNTPOINT;
- 
- static struct tst_option options[] = {
- 	{"s:", &opt_fsizestr, "-s    testfile size (default 64MB)"},
-@@ -132,7 +127,8 @@ static void create_testfile(int use_overlay)
- 	char *tmp;
- 	size_t i;
- 
--	sprintf(testfile, "%s/testfile", use_overlay ? OVL_MNT : MNTPOINT);
-+	sprintf(testfile, "%s/testfile",
-+		use_overlay ? OVL_MNT : OVL_BASE_MNTPOINT);
- 	tst_res(TINFO, "creating test file of size: %zu", testfile_size);
- 	tmp = SAFE_MALLOC(pagesize);
- 
-@@ -329,27 +325,6 @@ static void test_readahead(unsigned int n)
- 	}
- }
- 
--static void setup_overlay(void)
--{
--	int ret;
--
--	/* Setup an overlay mount with lower dir and file */
--	SAFE_MKDIR(OVL_LOWER, 0755);
--	SAFE_MKDIR(OVL_UPPER, 0755);
--	SAFE_MKDIR(OVL_WORK, 0755);
--	SAFE_MKDIR(OVL_MNT, 0755);
--	ret = mount("overlay", OVL_MNT, "overlay", 0, "lowerdir="OVL_LOWER
--		    ",upperdir="OVL_UPPER",workdir="OVL_WORK);
--	if (ret < 0) {
--		if (errno == ENODEV) {
--			tst_res(TINFO,
--				"overlayfs is not configured in this kernel.");
--			return;
--		}
--		tst_brk(TBROK | TERRNO, "overlayfs mount failed");
--	}
--	ovl_mounted = 1;
--}
- 
- /*
-  * We try raising bdi readahead limit as much as we can. We write
-@@ -413,7 +388,8 @@ static void setup(void)
- 	setup_readahead_length();
- 	tst_res(TINFO, "readahead length: %d", readahead_length);
- 
--	setup_overlay();
-+	create_overlay_dirs();
-+	ovl_mounted = TST_MOUNT_OVERLAY();
- }
- 
- static void cleanup(void)
+ pread01 pread01
+ pread01_64 pread01_64
+diff --git a/testcases/kernel/syscalls/prctl/.gitignore b/testcases/kernel/syscalls/prctl/.gitignore
+index 1c3da3052..9ecaf9854 100644
+--- a/testcases/kernel/syscalls/prctl/.gitignore
++++ b/testcases/kernel/syscalls/prctl/.gitignore
+@@ -2,3 +2,4 @@
+ /prctl02
+ /prctl03
+ /prctl04
++/prctl05
+diff --git a/testcases/kernel/syscalls/prctl/prctl05.c b/testcases/kernel/syscalls/prctl/prctl05.c
+new file mode 100644
+index 000000000..bbd2a9c98
+--- /dev/null
++++ b/testcases/kernel/syscalls/prctl/prctl05.c
+@@ -0,0 +1,81 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
++ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
++ *
++ * Test PR_GET_NAME and PR_SET_NAME of prctl(2).
++ * 1)Set the name of the calling thread, the name can be up to 16 bytes
++ *   long, including the terminating null byte. If exceeds 16 bytes, the
++ *   string is silently truncated.
++ * 2)Return the name of the calling thread, the buffer should allow space
++ *   for up to 16 bytes, the returned string will be null-terminated.
++ * 3)Check /proc/self/task/[tid]/comm and /proc/self/comm name whether
++ *   matches the thread name.
++ */
++
++#include <sys/prctl.h>
++#include <string.h>
++#include <stdio.h>
++#include "lapi/syscalls.h"
++#include "lapi/prctl.h"
++#include "tst_test.h"
++
++static struct tcase {
++	char setname[20];
++	char expname[20];
++} tcases[] = {
++	{"prctl05_test", "prctl05_test"},
++	{"prctl05_test_xxxxx", "prctl05_test_xx"}
++};
++
++static void check_proc_comm(char *path, char *name)
++{
++	char comm_buf[20];
++
++	SAFE_FILE_SCANF(path, "%s", comm_buf);
++	if (strcmp(name, comm_buf))
++		tst_res(TFAIL,
++			"%s has %s, expected %s", path, comm_buf, name);
++	else
++		tst_res(TPASS, "%s sets to %s", path, comm_buf);
++}
++
++static void verify_prctl(unsigned int n)
++{
++	char buf[20];
++	char comm_path[40];
++	pid_t tid;
++	struct tcase *tc = &tcases[n];
++
++	TEST(prctl(PR_SET_NAME, tc->setname));
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "prctl(PR_SET_NAME) failed");
++		return;
++	}
++	tst_res(TPASS, "prctl(PR_SET_NAME, '%s') succeeded", tc->setname);
++
++	TEST(prctl(PR_GET_NAME, buf));
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "prctl(PR_GET_NAME) failed");
++		return;
++	}
++
++	if (strcmp(tc->expname, buf)) {
++		tst_res(TFAIL,
++			"prctl(PR_GET_NAME) failed, expected %s, got %s", tc->expname, buf);
++		return;
++	}
++	tst_res(TPASS, "prctl(PR_GET_NAME) succeeded, thread name is %s", buf);
++
++	tid = tst_syscall(__NR_gettid);
++
++	sprintf(comm_path, "/proc/self/task/%d/comm", tid);
++	check_proc_comm(comm_path, tc->expname);
++
++	check_proc_comm("/proc/self/comm", tc->expname);
++}
++
++static struct tst_test test = {
++	.test = verify_prctl,
++	.tcnt = ARRAY_SIZE(tcases),
++};
 -- 
-2.21.0
+2.18.1
+
+
 
