@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 28 May 2019 15:22:51 +0200
-Subject: [LTP] [PATCH v1 4/4] syscalls/pidfd_send_signal03
-In-Reply-To: <20190515120116.11589-4-camann@suse.com>
-References: <20190515120116.11589-1-camann@suse.com>
- <20190515120116.11589-4-camann@suse.com>
-Message-ID: <20190528132251.GA25532@rei>
+Date: Tue, 28 May 2019 16:03:35 +0200
+Subject: [LTP] [PATCH v1 1/2] syscalls/fstat{01,02}: rewrote testcases
+In-Reply-To: <20190520055038.11499-1-camann@suse.com>
+References: <20190520055038.11499-1-camann@suse.com>
+Message-ID: <20190528140334.GA27526@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,126 +11,55 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +#define _GNU_SOURCE
+> +++ b/testcases/kernel/syscalls/fstat/fstat.h
+> @@ -0,0 +1,34 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) SUSE LLC, 2019
+> + * Author: Christian Amann <camann@suse.com>
+> + */
 > +
-> +#include <signal.h>
-> +#include <stdio.h>
+> +#ifndef __FSTAT_H__
+> +#define __FSTAT_H__
+> +
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
 > +#include <unistd.h>
-> +#include "pidfd_send_signal.h"
-> +#include "tst_safe_pthread.h"
+> +#include "lapi/syscalls.h"
 > +
-> +#define PIDTRIES	3
+> +#define TEST_VARIANTS	2
+> +#define TESTFILE	"test_file"
 > +
-> +static char *last_pid_file;
-> +static int pidfd, last_pidfd;
-> +
-> +static void verify_pidfd_send_signal(void)
+> +static void syscall_info(void)
 > +{
-> +	pid_t pid, new_pid;
-> +	char pid_filename[32];
-> +	char pid_str[16];
-> +	int i, fail;
-> +
-> +	fail = 1;
-> +	for (i = 1; i <= PIDTRIES; i++) {
-> +		pid = SAFE_FORK();
-> +		if (pid == 0) {
-> +			TST_CHECKPOINT_WAIT(0);
-> +			return;
-> +		}
-> +
-> +		sprintf(pid_filename, "/proc/%d", pid);
-> +		pidfd = SAFE_OPEN(pid_filename, O_DIRECTORY | O_CLOEXEC);
-> +
-> +		TST_CHECKPOINT_WAKE(0);
-> +		tst_reap_children();
-> +
-> +		/* Manipulate PID for next process */
-> +		sprintf(pid_str, "%d", pid - 1);
-> +		SAFE_LSEEK(last_pidfd, 0, SEEK_SET);
-> +		SAFE_WRITE(1, last_pidfd, pid_str, strlen(pid_str));
-
-		We do have SAFE_FILE_PRINTF() for this purpose.
-
-> +		new_pid = SAFE_FORK();
-> +		if (new_pid == 0) {
-> +			TST_CHECKPOINT_WAIT(i);
-> +			return;
-> +		} else if (new_pid == pid) {
-
-No need for else here if you do return in the if above.
-
-> +			fail = 0;
-> +			break;
-> +		}
-> +
-> +		if (i < PIDTRIES)
-> +			tst_res(TINFO,
-> +				"Failed to set correct PID, trying again...");
-> +		SAFE_CLOSE(pidfd);
-> +		TST_CHECKPOINT_WAKE(i);
-
-Do we really need to use checkpoint i here? The checkpoint 0 should be
-unused at this point...
-
-> +		tst_reap_children();
+> +	if (tst_variant == 0) {
+> +		tst_res(TINFO, "Testing libc fstat()");
+> +		return;
 > +	}
-> +	if (fail)
-> +		tst_brk(TBROK,
-> +			"Could not set new child to same PID as the old one!");
-> +
-> +	TEST(tst_pidfd_send_signal(pidfd, SIGUSR1, NULL, 0));
-> +	if (TST_RET == -1 && TST_ERR == ESRCH) {
-> +		tst_res(TPASS,
-> +			"Did not send signal to wrong process with same PID!");
-> +	} else
-> +		tst_res(TFAIL | TTERRNO,
-> +			"pidf_send_signal() ended unexpectedly - return value: %ld, error",
-> +			TST_RET);
-
-Other obvious test would be opening the pidfd of the new pid and
-comparing if they point out to the same file by comparing i-nodes, see
-ioctl_ns05.c.
-
-> +	TST_CHECKPOINT_WAKE(i);
-> +	tst_reap_children();
-> +
-> +	SAFE_CLOSE(pidfd);
+> +	tst_res(TINFO, "Testing syscall fstat()");
 > +}
 > +
-> +static void setup(void)
+> +static int tst_fstat(int fd, struct stat *statbuf)
 > +{
-> +	last_pid_file = "/proc/sys/kernel/ns_last_pid";
-> +	if (access(last_pid_file, F_OK) == -1)
-> +		tst_brk(TCONF, "%s does not exist, cannot set PIDs",
-> +			last_pid_file);
-> +	last_pidfd = SAFE_OPEN(last_pid_file, O_RDWR);
+> +	if (tst_variant == 0)
+> +		return fstat(fd, statbuf);
+> +	return tst_syscall(__NR_fstat, fd, statbuf);
 > +}
-> +
-> +static void cleanup(void)
-> +{
-> +	tst_reap_children();
-> +	if (pidfd > 0)
-> +		SAFE_CLOSE(pidfd);
-> +	if (last_pidfd > 0)
-> +		SAFE_CLOSE(last_pidfd);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = verify_pidfd_send_signal,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_root = 1,
-> +	.needs_checkpoints = 1,
-> +	.forks_child = 1,
-> +	.timeout = 20,
-> +};
-> -- 
-> 2.16.4
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+Have you tested this wrapper with 32bit binary?
+
+Because on x86 (among others) we do have fstat and fstat64 that differ
+in the statbuf structure size (see man fstat NOTES). If I add a printf()
+to print sizeof(struct stat) to the fstat01.c test on x86 I get 96 bytes
+with _FILE_OFFSET_BITS=64 and 88 without, so I guess that this uses
+wrong syscall with the _FILE_OFFSET_BITS=64 defined.
+
+And actually there are three fstat variants there, the old_fstat, fstat
+and fstat64, we could probably test all three variants but I guess that
+old_fstat is actually not worth of the effort...
+
+HINT: You can compile 32bit LTP on 64bit distribution with:
+      ./configure CFLAGS=-m32 LDFLAGS=-m32.
 
 -- 
 Cyril Hrubis
