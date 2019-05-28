@@ -1,42 +1,107 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 28 May 2019 13:38:47 +0200
-Subject: [LTP] [PATCH v1 3/4] syscalls/pidfd_send_signal02
-In-Reply-To: <20190515120116.11589-3-camann@suse.com>
-References: <20190515120116.11589-1-camann@suse.com>
- <20190515120116.11589-3-camann@suse.com>
-Message-ID: <20190528113847.GB14548@rei>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 28 May 2019 14:59:01 +0300
+Subject: [LTP] [PATCH v5 2/4] swapon/libswapon: add helper
+	is_swap_supported
+In-Reply-To: <20190528095622.gi5islpc7zlmpc2n@XZHOUW.usersys.redhat.com>
+References: <20190523135518.GF30616@rei.lan>
+ <20190528043929.19671-1-xzhou@redhat.com>
+ <20190528043929.19671-2-xzhou@redhat.com>
+ <CAOQ4uxj_0F3pWGCLA4Fxcq54TVViid_8G3fpJw89Un8UfCo87g@mail.gmail.com>
+ <20190528095622.gi5islpc7zlmpc2n@XZHOUW.usersys.redhat.com>
+Message-ID: <CAOQ4uxihom9Uw66c0BwuiWHOejZXDJHUe3rHBVRfk0=C-AYnAw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +static void verify_pidfd_send_signal(unsigned int n)
-> +{
-> +	struct tcase *tc = &tcases[n];
-> +
-> +	TEST(tst_pidfd_send_signal(*tc->fd, tc->signal, tc->siginf, tc->flags));
-> +	if (tc->exp_err != TST_ERR) {
-> +		tst_res(TFAIL | TTERRNO,
-> +			"pidfd_send_signal() did not fail with %s but",
-> +			tst_strerrno(tc->exp_err));
-> +		return;
-> +	}
-> +
-> +	tst_res(TPASS,
-> +		"pidfd_send_signal() failed as expected!");
+On Tue, May 28, 2019 at 12:56 PM Murphy Zhou <xzhou@redhat.com> wrote:
+>
+> On Tue, May 28, 2019 at 08:56:06AM +0300, Amir Goldstein wrote:
+> > On Tue, May 28, 2019 at 7:40 AM Murphy Zhou <xzhou@redhat.com> wrote:
+> > >
+> > > To check if the filesystem we are testing on supports swapon/swapoff
+> > > operations. Keep NFS and TMPFS on the white list. Don't report fail
+> > > if BTRFS fails with EINVAL.
+> >
+> > Changes look very good, but I don't think you need the whitelist anymore...
+> >
+> > >
+> > > Signed-off-by: Murphy Zhou <xzhou@redhat.com>
+> > > ---
+> > >  testcases/kernel/syscalls/swapon/libswapon.c | 56 ++++++++++++++++++++
+> > >  testcases/kernel/syscalls/swapon/libswapon.h |  6 +++
+> > >  2 files changed, 62 insertions(+)
+> > >
+> > > diff --git a/testcases/kernel/syscalls/swapon/libswapon.c b/testcases/kernel/syscalls/swapon/libswapon.c
+> > > index cf6a98891..e02fdd4ad 100644
+> > > --- a/testcases/kernel/syscalls/swapon/libswapon.c
+> > > +++ b/testcases/kernel/syscalls/swapon/libswapon.c
+> > > @@ -19,6 +19,8 @@
+> > >   *
+> > >   */
+> > >
+> > > +#include <errno.h>
+> > > +#include "lapi/syscalls.h"
+> > >  #include "test.h"
+> > >  #include "libswapon.h"
+> > >
+> > > @@ -47,3 +49,57 @@ void make_swapfile(void (cleanup)(void), const char *swapfile)
+> > >
+> > >         tst_run_cmd(cleanup, argv, "/dev/null", "/dev/null", 0);
+> > >  }
+> > > +
+> > > +/*
+> > > + * Check swapon/swapoff support status of filesystems or files
+> > > + * we are testing on.
+> > > + */
+> > > +void is_swap_supported(void (cleanup)(void), const char *ops,
+> > > +                               const char *filename)
+> > > +{
+> > > +       int fibmap = tst_fibmap(filename);
+> > > +       long fs_type = tst_fs_type(cleanup, filename);
+> > > +       const char *fstype = tst_fs_type_name(fs_type);
+> > > +
+> > > +       /* whitelist legacy fs */
+> > > +       switch (fs_type) {
+> > > +       case TST_NFS_MAGIC:
+> > > +       case TST_TMPFS_MAGIC:
+> > > +               tst_brkm(TCONF, cleanup,
+> > > +                        "Cannot do %s on a file on %s filesystem",
+> > > +                        ops, fstype);
+> > > +       break;
+> > > +       }
+> >
+> > If you remove this whitelist, then NFS,tmpfs will reach the fiemap != 0 case
+> > and result in tst_brkm(TCONF anyway.
+> >
+> > > +
+> > > +       make_swapfile(NULL, filename);
+> > > +
+> > > +       TEST(ltp_syscall(__NR_swapon, filename, 0));
+> > > +
+> > > +       if (TEST_RETURN == -1) {
+> > > +               if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
+> >
+> > If you replace (fs_type == TST_BTRFS_MAGIC) with (fibmap != 0)
+> > then NFS swapfile support could be tested as well and you do not
+> > special case any filesystem.
+>
+> There is a surprise that on old kernels, 2.6.32 based, this change
+> would TBROK whitelisted NFS TCONF while mkswap swapfiles.
+>
+> TBROK on mkswap failure seems the right thing to do, but the whitelist
+> here intended to fix this false alarm.
+>
+> I remember Li suggested that un-whitelist NFS would break old distros.
+> TMPFS is fine.
+>
+> Maybe we should safely check if mkswap is doable before checking swapon?
+> mkswap fail, fibmap fail --> tst_brk TCONF
+> mkswap fail, fibmap pass --> tst_brk TFAIL
+>
 
-I tend to pass TTERRNO to the passing message for negative testcases
-like this one so that the output has some information about what has
-been tested.
+Makes sense to me.
 
-I would have done something as here:
-
-	tst_res(TPASS | TTERRNO, "pidfd_send_signal() failed");
-
-Other than this the test looks good.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks,
+Amir.
