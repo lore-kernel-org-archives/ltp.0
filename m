@@ -1,66 +1,110 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 28 May 2019 16:03:35 +0200
-Subject: [LTP] [PATCH v1 1/2] syscalls/fstat{01,02}: rewrote testcases
-In-Reply-To: <20190520055038.11499-1-camann@suse.com>
-References: <20190520055038.11499-1-camann@suse.com>
-Message-ID: <20190528140334.GA27526@rei>
+From: Murphy Zhou <xzhou@redhat.com>
+Date: Tue, 28 May 2019 22:12:12 +0800
+Subject: [LTP] [PATCH v6 2/4] swapon/libswapon: add helper is_swap_supported
+In-Reply-To: <20190528141214.18752-1-xzhou@redhat.com>
+References: <CAOQ4uxihom9Uw66c0BwuiWHOejZXDJHUe3rHBVRfk0=C-AYnAw@mail.gmail.com>
+ <20190528141214.18752-1-xzhou@redhat.com>
+Message-ID: <20190528141214.18752-2-xzhou@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +++ b/testcases/kernel/syscalls/fstat/fstat.h
-> @@ -0,0 +1,34 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) SUSE LLC, 2019
-> + * Author: Christian Amann <camann@suse.com>
-> + */
-> +
-> +#ifndef __FSTAT_H__
-> +#define __FSTAT_H__
-> +
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <unistd.h>
-> +#include "lapi/syscalls.h"
-> +
-> +#define TEST_VARIANTS	2
-> +#define TESTFILE	"test_file"
-> +
-> +static void syscall_info(void)
-> +{
-> +	if (tst_variant == 0) {
-> +		tst_res(TINFO, "Testing libc fstat()");
-> +		return;
-> +	}
-> +	tst_res(TINFO, "Testing syscall fstat()");
-> +}
-> +
-> +static int tst_fstat(int fd, struct stat *statbuf)
-> +{
-> +	if (tst_variant == 0)
-> +		return fstat(fd, statbuf);
-> +	return tst_syscall(__NR_fstat, fd, statbuf);
-> +}
+To check if the filesystem we are testing on supports FIBMAP, mkswap,
+swapon and swapoff operations.
+Modify make_swapfile function to test mkswap support status safely.
 
-Have you tested this wrapper with 32bit binary?
+Signed-off-by: Murphy Zhou <xzhou@redhat.com>
+---
+ testcases/kernel/syscalls/swapon/libswapon.c | 45 +++++++++++++++++++-
+ testcases/kernel/syscalls/swapon/libswapon.h |  7 ++-
+ 2 files changed, 49 insertions(+), 3 deletions(-)
 
-Because on x86 (among others) we do have fstat and fstat64 that differ
-in the statbuf structure size (see man fstat NOTES). If I add a printf()
-to print sizeof(struct stat) to the fstat01.c test on x86 I get 96 bytes
-with _FILE_OFFSET_BITS=64 and 88 without, so I guess that this uses
-wrong syscall with the _FILE_OFFSET_BITS=64 defined.
-
-And actually there are three fstat variants there, the old_fstat, fstat
-and fstat64, we could probably test all three variants but I guess that
-old_fstat is actually not worth of the effort...
-
-HINT: You can compile 32bit LTP on 64bit distribution with:
-      ./configure CFLAGS=-m32 LDFLAGS=-m32.
-
+diff --git a/testcases/kernel/syscalls/swapon/libswapon.c b/testcases/kernel/syscalls/swapon/libswapon.c
+index cf6a98891..f66d19548 100644
+--- a/testcases/kernel/syscalls/swapon/libswapon.c
++++ b/testcases/kernel/syscalls/swapon/libswapon.c
+@@ -19,13 +19,15 @@
+  *
+  */
+ 
++#include <errno.h>
++#include "lapi/syscalls.h"
+ #include "test.h"
+ #include "libswapon.h"
+ 
+ /*
+  * Make a swap file
+  */
+-void make_swapfile(void (cleanup)(void), const char *swapfile)
++int make_swapfile(void (cleanup)(void), const char *swapfile, int safe)
+ {
+ 	if (!tst_fs_has_free(NULL, ".", sysconf(_SC_PAGESIZE) * 10,
+ 	    TST_BYTES)) {
+@@ -45,5 +47,44 @@ void make_swapfile(void (cleanup)(void), const char *swapfile)
+ 	argv[1] = swapfile;
+ 	argv[2] = NULL;
+ 
+-	tst_run_cmd(cleanup, argv, "/dev/null", "/dev/null", 0);
++	return tst_run_cmd(cleanup, argv, "/dev/null", "/dev/null", safe);
++}
++
++/*
++ * Check swapon/swapoff support status of filesystems or files
++ * we are testing on.
++ */
++void is_swap_supported(void (cleanup)(void), const char *filename)
++{
++	int fibmap = tst_fibmap(filename);
++	long fs_type = tst_fs_type(cleanup, filename);
++	const char *fstype = tst_fs_type_name(fs_type);
++
++	int ret = make_swapfile(NULL, filename, 1);
++	if (ret != 0) {
++		if (fibmap != 0) {
++			tst_brkm(TCONF, cleanup,
++				"mkswap on %s not supported", fstype);
++		} else {
++			tst_brkm(TFAIL, cleanup,
++				"mkswap on %s failed", fstype);
++		}
++	}
++
++	TEST(ltp_syscall(__NR_swapon, filename, 0));
++	if (TEST_RETURN == -1) {
++		if (fibmap != 0 && errno == EINVAL) {
++			tst_brkm(TCONF, cleanup,
++				"Swapfile on %s not implemented", fstype);
++		} else {
++			tst_brkm(TFAIL | TERRNO, cleanup,
++				 "swapon on %s failed", fstype);
++		}
++	}
++
++	TEST(ltp_syscall(__NR_swapoff, filename, 0));
++	if (TEST_RETURN == -1) {
++		tst_brkm(TFAIL | TERRNO, cleanup,
++			"swapoff on %s failed", fstype);
++	}
+ }
+diff --git a/testcases/kernel/syscalls/swapon/libswapon.h b/testcases/kernel/syscalls/swapon/libswapon.h
+index 7f7211eb4..a51833ec1 100644
+--- a/testcases/kernel/syscalls/swapon/libswapon.h
++++ b/testcases/kernel/syscalls/swapon/libswapon.h
+@@ -29,6 +29,11 @@
+ /*
+  * Make a swap file
+  */
+-void make_swapfile(void (cleanup)(void), const char *swapfile);
++int make_swapfile(void (cleanup)(void), const char *swapfile, int safe);
+ 
++/*
++ * Check swapon/swapoff support status of filesystems or files
++ * we are testing on.
++ */
++void is_swap_supported(void (cleanup)(void), const char *filename);
+ #endif /* __LIBSWAPON_H__ */
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.21.0
+
