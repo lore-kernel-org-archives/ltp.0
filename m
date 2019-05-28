@@ -1,137 +1,208 @@
-From: Murphy Zhou <xzhou@redhat.com>
-Date: Tue, 28 May 2019 17:56:22 +0800
-Subject: [LTP] [PATCH v5 2/4] swapon/libswapon: add helper
-	is_swap_supported
-In-Reply-To: <CAOQ4uxj_0F3pWGCLA4Fxcq54TVViid_8G3fpJw89Un8UfCo87g@mail.gmail.com>
-References: <20190523135518.GF30616@rei.lan>
- <20190528043929.19671-1-xzhou@redhat.com>
- <20190528043929.19671-2-xzhou@redhat.com>
- <CAOQ4uxj_0F3pWGCLA4Fxcq54TVViid_8G3fpJw89Un8UfCo87g@mail.gmail.com>
-Message-ID: <20190528095622.gi5islpc7zlmpc2n@XZHOUW.usersys.redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 28 May 2019 13:30:23 +0200
+Subject: [LTP] [PATCH v1 2/4] syscalls/pidfd_send_signal01
+In-Reply-To: <20190515120116.11589-2-camann@suse.com>
+References: <20190515120116.11589-1-camann@suse.com>
+ <20190515120116.11589-2-camann@suse.com>
+Message-ID: <20190528113022.GA14548@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, May 28, 2019 at 08:56:06AM +0300, Amir Goldstein wrote:
-> On Tue, May 28, 2019 at 7:40 AM Murphy Zhou <xzhou@redhat.com> wrote:
-> >
-> > To check if the filesystem we are testing on supports swapon/swapoff
-> > operations. Keep NFS and TMPFS on the white list. Don't report fail
-> > if BTRFS fails with EINVAL.
-> 
-> Changes look very good, but I don't think you need the whitelist anymore...
-> 
-> >
-> > Signed-off-by: Murphy Zhou <xzhou@redhat.com>
-> > ---
-> >  testcases/kernel/syscalls/swapon/libswapon.c | 56 ++++++++++++++++++++
-> >  testcases/kernel/syscalls/swapon/libswapon.h |  6 +++
-> >  2 files changed, 62 insertions(+)
-> >
-> > diff --git a/testcases/kernel/syscalls/swapon/libswapon.c b/testcases/kernel/syscalls/swapon/libswapon.c
-> > index cf6a98891..e02fdd4ad 100644
-> > --- a/testcases/kernel/syscalls/swapon/libswapon.c
-> > +++ b/testcases/kernel/syscalls/swapon/libswapon.c
-> > @@ -19,6 +19,8 @@
-> >   *
-> >   */
-> >
-> > +#include <errno.h>
-> > +#include "lapi/syscalls.h"
-> >  #include "test.h"
-> >  #include "libswapon.h"
-> >
-> > @@ -47,3 +49,57 @@ void make_swapfile(void (cleanup)(void), const char *swapfile)
-> >
-> >         tst_run_cmd(cleanup, argv, "/dev/null", "/dev/null", 0);
-> >  }
-> > +
-> > +/*
-> > + * Check swapon/swapoff support status of filesystems or files
-> > + * we are testing on.
-> > + */
-> > +void is_swap_supported(void (cleanup)(void), const char *ops,
-> > +                               const char *filename)
-> > +{
-> > +       int fibmap = tst_fibmap(filename);
-> > +       long fs_type = tst_fs_type(cleanup, filename);
-> > +       const char *fstype = tst_fs_type_name(fs_type);
-> > +
-> > +       /* whitelist legacy fs */
-> > +       switch (fs_type) {
-> > +       case TST_NFS_MAGIC:
-> > +       case TST_TMPFS_MAGIC:
-> > +               tst_brkm(TCONF, cleanup,
-> > +                        "Cannot do %s on a file on %s filesystem",
-> > +                        ops, fstype);
-> > +       break;
-> > +       }
-> 
-> If you remove this whitelist, then NFS,tmpfs will reach the fiemap != 0 case
-> and result in tst_brkm(TCONF anyway.
-> 
-> > +
-> > +       make_swapfile(NULL, filename);
-> > +
-> > +       TEST(ltp_syscall(__NR_swapon, filename, 0));
-> > +
-> > +       if (TEST_RETURN == -1) {
-> > +               if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
-> 
-> If you replace (fs_type == TST_BTRFS_MAGIC) with (fibmap != 0)
-> then NFS swapfile support could be tested as well and you do not
-> special case any filesystem.
+Hi!
+> new file mode 100644
+> index 000000000..3553c5464
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal.h
+> @@ -0,0 +1,20 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2019 SUSE LLC
+> + * Author: Christian Amann <camann@suse.com>
+> + */
+> +
+> +#ifndef __PIDFD_SEND_SIGNAL_H__
+> +#define __PIDFD_SEND_SIGNAL_H__
+           ^
 
-There is a surprise that on old kernels, 2.6.32 based, this change
-would TBROK whitelisted NFS TCONF while mkswap swapfiles.
+	   Plese don't use undescores at the beginning of identifiers.
 
-TBROK on mkswap failure seems the right thing to do, but the whitelist
-here intended to fix this false alarm.
+Identifiers starting with _ and __ are reserved for the system, i.e.
+libc and compiler.
 
-I remember Li suggested that un-whitelist NFS would break old distros.
-TMPFS is fine.
+> +#include "tst_test.h"
+> +#include "lapi/syscalls.h"
+> +
+> +static int tst_pidfd_send_signal(int pidfd, int sig, siginfo_t *info,
+> +				 unsigned int flags)
 
-Maybe we should safely check if mkswap is doable before checking swapon?
-mkswap fail, fibmap fail --> tst_brk TCONF
-mkswap fail, fibmap pass --> tst_brk TFAIL
+We probably should not use the tst_ prefix here as this is not a test
+library code.
 
-Thanks,
-Murphy
-> 
-> 
-> > +                       tst_brkm(TCONF, cleanup,
-> > +                               "Swapfile on BTRFS not implemented");
-> > +               } else {
-> > +                       if (fibmap == 0) {
-> 
-> and then you don't need this extra test.
-> 
-> > +                               tst_brkm(TFAIL | TERRNO, cleanup,
-> > +                                        "swapon on %s failed", fstype);
-> > +                       } else {
-> > +                               tst_brkm(TCONF, cleanup,
-> > +                                        "swapon on %s is not supported",
-> > +                                               fstype);
-> > +                       }
-> > +               }
-> > +       }
-> > +
-> > +       TEST(ltp_syscall(__NR_swapoff, filename, 0));
-> > +
-> > +       if (TEST_RETURN == -1) {
-> > +               if (fibmap == 0) {
-> > +                       tst_brkm(TFAIL | TERRNO, cleanup,
-> > +                               "swapoff on %s failed", fstype);
-> > +               } else {
-> > +                       tst_brkm(TCONF, cleanup,
-> > +                                "swapoff on %s is not supported", fstype);
-> > +               }
-> 
-> I don't think there should be any TCONF here.
-> If we reached here then swapon is supported - in that case
-> failure to swapoff is a real failure.
-> 
-> Thanks,
-> Amir.
+I guess that we can make this future proof with a configure check for
+pidfd_send_signal() that will get included in glibc later on.
+
+> +{
+> +	return tst_syscall(__NR_pidfd_send_signal, pidfd, sig, info, flags);
+> +}
+> +
+> +
+> +#endif /* __PIDFD_SEND_SIGNAL_H__ */
+> diff --git a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c
+> new file mode 100644
+> index 000000000..9ab1971bf
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c
+> @@ -0,0 +1,110 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2019 SUSE LLC
+> + * Author: Christian Amann <camann@suse.com>
+> + */
+> +/*
+> + * Tests if the pidfd_send_signal systemcall behaves
+                                       ^
+				       Should either be one of:
+				       * syscall
+				       * system call
+
+> + * like rt_sigqueueinfo when a pointer to a siginfo_t
+> + * struct is passed.
+> + */
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include <signal.h>
+> +#include <stdlib.h>
+> +#include "tst_safe_pthread.h"
+> +#include "pidfd_send_signal.h"
+> +
+> +#define SIGNAL  SIGUSR1
+> +#define DATA	777
+> +
+> +static struct sigaction *sig_action;
+> +static int sig_rec;
+> +static siginfo_t *uinfo;
+> +static int pidfd;
+> +
+> +static void received_signal(int sig, siginfo_t *info, void *ucontext)
+> +{
+> +	if (info && ucontext) {
+> +		if (sig == SIGNAL && uinfo->si_value.sival_int == DATA) {
+> +			tst_res(TPASS, "Received correct signal and data!");
+> +			sig_rec = 1;
+> +		} else
+> +			tst_res(TFAIL, "Received wrong signal and/or data!");
+> +	} else
+> +		tst_res(TFAIL, "Signal handling went wrong!");
+
+This is a very minor however LKML coding style prefers to have curly
+braces around both blocks if they have to be over one of them.
+
+> +}
+> +
+> +static void *handle_thread(void *arg LTP_ATTRIBUTE_UNUSED)
+                                          ^
+			You do return arg at the end of this function,
+			there is no point in the ATTRIBUTE_UNUSED
+> +{
+> +	int ret;
+> +
+> +	ret = sigaction(SIGNAL, sig_action, NULL);
+> +	if (ret)
+> +		tst_brk(TBROK | TTERRNO, "Failed to set sigaction");
+
+Why not SAFE_SIGACTION() ?
+
+> +	TST_CHECKPOINT_WAKE(0);
+> +	TST_CHECKPOINT_WAIT(1);
+
+We do have TST_CHECKPOINT_WAKE_AND_WAIT().
+
+> +	return arg;
+> +}
+> +
+> +static void verify_pidfd_send_signal(void)
+> +{
+> +	pthread_t thr;
+> +
+> +	SAFE_PTHREAD_CREATE(&thr, NULL, handle_thread, NULL);
+> +
+> +	TST_CHECKPOINT_WAIT(0);
+> +
+> +	TEST(tst_pidfd_send_signal(pidfd, SIGNAL, uinfo, 0));
+> +	if (TST_RET != 0) {
+> +		tst_res(TFAIL | TTERRNO, "pidfd_send_signal() failed");
+> +		return;
+> +	}
+> +
+> +	TST_CHECKPOINT_WAKE(1);
+> +	SAFE_PTHREAD_JOIN(thr, NULL);
+> +
+> +	if (sig_rec)
+> +		tst_res(TPASS,
+> +			"pidfd_send_signal() behaved like rt_sigqueueinfo()");
+
+Very minor as well, LKML coding style prefers curly braces around
+multiline statements like this one.
+
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	pidfd = SAFE_OPEN("/proc/self", O_DIRECTORY | O_CLOEXEC);
+> +
+> +	sig_action = SAFE_MALLOC(sizeof(struct sigaction));
+> +
+> +	memset(sig_action, 0, sizeof(*sig_action));
+> +	sig_action->sa_sigaction = received_signal;
+> +	sig_action->sa_flags = SA_SIGINFO;
+> +
+> +	uinfo = SAFE_MALLOC(sizeof(siginfo_t));
+> +
+> +	memset(uinfo, 0, sizeof(*uinfo));
+> +	uinfo->si_signo = SIGNAL;
+> +	uinfo->si_code = SI_QUEUE;
+> +	uinfo->si_pid = getpid();
+> +	uinfo->si_uid = getuid();
+> +	uinfo->si_value.sival_int = DATA;
+> +
+> +	sig_rec = 0;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	free(uinfo);
+> +	free(sig_action);
+> +	if (pidfd > 0)
+> +		SAFE_CLOSE(pidfd);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = verify_pidfd_send_signal,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.needs_checkpoints = 1,
+> +	.timeout = 20,
+
+Please do not change the default timeout unless it's needed.
+
+There are actually only two situations where this makese sense:
+
+* The test is expected to run for a long time
+   => timeout needs to be increased
+
+* The test goes into an infinit loop on a buggy kernel
+   => timeout has to be set low, so that we do not waste time
+
+> +};
+> -- 
+> 2.16.4
+
+Other than the minor comments, the test looks good.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
