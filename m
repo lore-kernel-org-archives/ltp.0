@@ -1,104 +1,112 @@
 From: Murphy Zhou <xzhou@redhat.com>
-Date: Tue, 28 May 2019 12:39:26 +0800
-Subject: [LTP] [PATCH v5 1/4] lib/tst_ioctl.c: add helper tst_fibmap
-In-Reply-To: <20190523135518.GF30616@rei.lan>
+Date: Tue, 28 May 2019 12:39:27 +0800
+Subject: [LTP] [PATCH v5 2/4] swapon/libswapon: add helper is_swap_supported
+In-Reply-To: <20190528043929.19671-1-xzhou@redhat.com>
 References: <20190523135518.GF30616@rei.lan>
-Message-ID: <20190528043929.19671-1-xzhou@redhat.com>
+ <20190528043929.19671-1-xzhou@redhat.com>
+Message-ID: <20190528043929.19671-2-xzhou@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To check if FIBMAP ioctl is supported on the filesystem we are
-testing on. It also can check the support status of specific
-files, but that may not needed for now.
+To check if the filesystem we are testing on supports swapon/swapoff
+operations. Keep NFS and TMPFS on the white list. Don't report fail
+if BTRFS fails with EINVAL.
 
 Signed-off-by: Murphy Zhou <xzhou@redhat.com>
 ---
-v5:
-  Split to 4 patches
-  Only take one filename parameter in tst_fibmap
-  Add helper is_swap_supported to check swap operation support status
-  Test fibmap/swapon and swapoff operation in the helper
-  Keep NFS/TMPFS whitelist
-  Keep BTRFS EINVAL handling logic, except above 2 situation:
-    if swapon fails and fibmap is not supported, tst_brk with TCONF
-    if swapon fails and fibmap is supported, tst_brk with TFAIL
-  If swapon test pass in the helper, test swapoff similarly
-  Put is_swap_supported helper in libswapon, link swapoff binaries to it
-  Mute a sprintf filaname wanrning by the way
-v4:
-  Fail softly if FIBMAP nit supported, instead of skip entire testcase
-v3:
-  Fix fs_type undeclared in swapoff01.c
-v2:
-  Test FIBMAP instead of fstype whitelist
+ testcases/kernel/syscalls/swapon/libswapon.c | 56 ++++++++++++++++++++
+ testcases/kernel/syscalls/swapon/libswapon.h |  6 +++
+ 2 files changed, 62 insertions(+)
 
- include/tst_fs.h |  5 +++++
- lib/tst_ioctl.c  | 37 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 42 insertions(+)
- create mode 100644 lib/tst_ioctl.c
-
-diff --git a/include/tst_fs.h b/include/tst_fs.h
-index ebca065c6..6d03371ec 100644
---- a/include/tst_fs.h
-+++ b/include/tst_fs.h
-@@ -178,6 +178,11 @@ const char **tst_get_supported_fs_types(void);
+diff --git a/testcases/kernel/syscalls/swapon/libswapon.c b/testcases/kernel/syscalls/swapon/libswapon.c
+index cf6a98891..e02fdd4ad 100644
+--- a/testcases/kernel/syscalls/swapon/libswapon.c
++++ b/testcases/kernel/syscalls/swapon/libswapon.c
+@@ -19,6 +19,8 @@
+  *
   */
- void tst_fill_fs(const char *path, int verbose);
+ 
++#include <errno.h>
++#include "lapi/syscalls.h"
+ #include "test.h"
+ #include "libswapon.h"
+ 
+@@ -47,3 +49,57 @@ void make_swapfile(void (cleanup)(void), const char *swapfile)
+ 
+ 	tst_run_cmd(cleanup, argv, "/dev/null", "/dev/null", 0);
+ }
++
++/*
++ * Check swapon/swapoff support status of filesystems or files
++ * we are testing on.
++ */
++void is_swap_supported(void (cleanup)(void), const char *ops,
++				const char *filename)
++{
++	int fibmap = tst_fibmap(filename);
++	long fs_type = tst_fs_type(cleanup, filename);
++	const char *fstype = tst_fs_type_name(fs_type);
++
++	/* whitelist legacy fs */
++	switch (fs_type) {
++	case TST_NFS_MAGIC:
++	case TST_TMPFS_MAGIC:
++		tst_brkm(TCONF, cleanup,
++			 "Cannot do %s on a file on %s filesystem",
++			 ops, fstype);
++	break;
++	}
++
++	make_swapfile(NULL, filename);
++
++	TEST(ltp_syscall(__NR_swapon, filename, 0));
++
++	if (TEST_RETURN == -1) {
++		if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
++			tst_brkm(TCONF, cleanup,
++				"Swapfile on BTRFS not implemented");
++		} else {
++			if (fibmap == 0) {
++				tst_brkm(TFAIL | TERRNO, cleanup,
++					 "swapon on %s failed", fstype);
++			} else {
++				tst_brkm(TCONF, cleanup,
++					 "swapon on %s is not supported",
++						fstype);
++			}
++		}
++	}
++
++	TEST(ltp_syscall(__NR_swapoff, filename, 0));
++
++	if (TEST_RETURN == -1) {
++		if (fibmap == 0) {
++			tst_brkm(TFAIL | TERRNO, cleanup,
++				"swapoff on %s failed", fstype);
++		} else {
++			tst_brkm(TCONF, cleanup,
++				 "swapoff on %s is not supported", fstype);
++		}
++	}
++}
+diff --git a/testcases/kernel/syscalls/swapon/libswapon.h b/testcases/kernel/syscalls/swapon/libswapon.h
+index 7f7211eb4..4f2c83614 100644
+--- a/testcases/kernel/syscalls/swapon/libswapon.h
++++ b/testcases/kernel/syscalls/swapon/libswapon.h
+@@ -31,4 +31,10 @@
+  */
+ void make_swapfile(void (cleanup)(void), const char *swapfile);
  
 +/*
-+ * test if FIBMAP ioctl is supported
++ * Check swapon/swapoff support status of filesystems or files
++ * we are testing on.
 + */
-+int tst_fibmap(const char *filename);
-+
- #ifdef TST_TEST_H__
- static inline long tst_fs_type(const char *path)
- {
-diff --git a/lib/tst_ioctl.c b/lib/tst_ioctl.c
-new file mode 100644
-index 000000000..38aa937db
---- /dev/null
-+++ b/lib/tst_ioctl.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+#include <errno.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sys/ioctl.h>
-+#include <linux/fs.h>
-+
-+#define TST_NO_DEFAULT_MAIN
-+
-+#include "tst_test.h"
-+
-+int tst_fibmap(const char *filename)
-+{
-+	/* test if FIBMAP ioctl is supported */
-+	int fd, block = 0;
-+
-+	fd = open(filename, O_RDWR | O_CREAT, 0666);
-+	if (fd < 0) {
-+		tst_res(TWARN | TERRNO,
-+			 "open(%s, O_RDWR | O_CREAT, 0666) failed", filename);
-+		return 1;
-+	}
-+
-+	if (ioctl(fd, FIBMAP, &block)) {
-+		tst_res(TINFO, "FIBMAP ioctl is NOT supported");
-+		close(fd);
-+		return 1;
-+	}
-+	tst_res(TINFO, "FIBMAP ioctl is supported");
-+
-+	if (close(fd)) {
-+		tst_res(TWARN | TERRNO, "close(fd) failed");
-+		return 1;
-+	}
-+	return 0;
-+}
++void is_swap_supported(void (cleanup)(void), const char *ops,
++				const char *filename);
+ #endif /* __LIBSWAPON_H__ */
 -- 
 2.21.0
 
