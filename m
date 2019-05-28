@@ -1,107 +1,105 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 28 May 2019 14:59:01 +0300
-Subject: [LTP] [PATCH v5 2/4] swapon/libswapon: add helper
-	is_swap_supported
-In-Reply-To: <20190528095622.gi5islpc7zlmpc2n@XZHOUW.usersys.redhat.com>
-References: <20190523135518.GF30616@rei.lan>
- <20190528043929.19671-1-xzhou@redhat.com>
- <20190528043929.19671-2-xzhou@redhat.com>
- <CAOQ4uxj_0F3pWGCLA4Fxcq54TVViid_8G3fpJw89Un8UfCo87g@mail.gmail.com>
- <20190528095622.gi5islpc7zlmpc2n@XZHOUW.usersys.redhat.com>
-Message-ID: <CAOQ4uxihom9Uw66c0BwuiWHOejZXDJHUe3rHBVRfk0=C-AYnAw@mail.gmail.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 28 May 2019 15:32:26 +0300
+Subject: [LTP] [RFC PATCH v2 0/6] net/route: Rewrite route{4,
+ 6}-change-{dst, gw} into C
+In-Reply-To: <20190510183132.31039-1-pvorel@suse.cz>
+References: <20190510183132.31039-1-pvorel@suse.cz>
+Message-ID: <187fa31b-3295-6f1f-e330-1373b2fb4c66@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, May 28, 2019 at 12:56 PM Murphy Zhou <xzhou@redhat.com> wrote:
->
-> On Tue, May 28, 2019 at 08:56:06AM +0300, Amir Goldstein wrote:
-> > On Tue, May 28, 2019 at 7:40 AM Murphy Zhou <xzhou@redhat.com> wrote:
-> > >
-> > > To check if the filesystem we are testing on supports swapon/swapoff
-> > > operations. Keep NFS and TMPFS on the white list. Don't report fail
-> > > if BTRFS fails with EINVAL.
-> >
-> > Changes look very good, but I don't think you need the whitelist anymore...
-> >
-> > >
-> > > Signed-off-by: Murphy Zhou <xzhou@redhat.com>
-> > > ---
-> > >  testcases/kernel/syscalls/swapon/libswapon.c | 56 ++++++++++++++++++++
-> > >  testcases/kernel/syscalls/swapon/libswapon.h |  6 +++
-> > >  2 files changed, 62 insertions(+)
-> > >
-> > > diff --git a/testcases/kernel/syscalls/swapon/libswapon.c b/testcases/kernel/syscalls/swapon/libswapon.c
-> > > index cf6a98891..e02fdd4ad 100644
-> > > --- a/testcases/kernel/syscalls/swapon/libswapon.c
-> > > +++ b/testcases/kernel/syscalls/swapon/libswapon.c
-> > > @@ -19,6 +19,8 @@
-> > >   *
-> > >   */
-> > >
-> > > +#include <errno.h>
-> > > +#include "lapi/syscalls.h"
-> > >  #include "test.h"
-> > >  #include "libswapon.h"
-> > >
-> > > @@ -47,3 +49,57 @@ void make_swapfile(void (cleanup)(void), const char *swapfile)
-> > >
-> > >         tst_run_cmd(cleanup, argv, "/dev/null", "/dev/null", 0);
-> > >  }
-> > > +
-> > > +/*
-> > > + * Check swapon/swapoff support status of filesystems or files
-> > > + * we are testing on.
-> > > + */
-> > > +void is_swap_supported(void (cleanup)(void), const char *ops,
-> > > +                               const char *filename)
-> > > +{
-> > > +       int fibmap = tst_fibmap(filename);
-> > > +       long fs_type = tst_fs_type(cleanup, filename);
-> > > +       const char *fstype = tst_fs_type_name(fs_type);
-> > > +
-> > > +       /* whitelist legacy fs */
-> > > +       switch (fs_type) {
-> > > +       case TST_NFS_MAGIC:
-> > > +       case TST_TMPFS_MAGIC:
-> > > +               tst_brkm(TCONF, cleanup,
-> > > +                        "Cannot do %s on a file on %s filesystem",
-> > > +                        ops, fstype);
-> > > +       break;
-> > > +       }
-> >
-> > If you remove this whitelist, then NFS,tmpfs will reach the fiemap != 0 case
-> > and result in tst_brkm(TCONF anyway.
-> >
-> > > +
-> > > +       make_swapfile(NULL, filename);
-> > > +
-> > > +       TEST(ltp_syscall(__NR_swapon, filename, 0));
-> > > +
-> > > +       if (TEST_RETURN == -1) {
-> > > +               if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
-> >
-> > If you replace (fs_type == TST_BTRFS_MAGIC) with (fibmap != 0)
-> > then NFS swapfile support could be tested as well and you do not
-> > special case any filesystem.
->
-> There is a surprise that on old kernels, 2.6.32 based, this change
-> would TBROK whitelisted NFS TCONF while mkswap swapfiles.
->
-> TBROK on mkswap failure seems the right thing to do, but the whitelist
-> here intended to fix this false alarm.
->
-> I remember Li suggested that un-whitelist NFS would break old distros.
-> TMPFS is fine.
->
-> Maybe we should safely check if mkswap is doable before checking swapon?
-> mkswap fail, fibmap fail --> tst_brk TCONF
-> mkswap fail, fibmap pass --> tst_brk TFAIL
->
+Hi Petr,
 
-Makes sense to me.
+On 5/10/19 9:31 PM, Petr Vorel wrote:
+> Hi,
+> 
+> another attempt to rewrite route{4,6}-change-{dst,gw}.
+> I'm not much happy with it.
+> 
+> I was trying to create server side validation over UDP, but failed.
+> I didn't figure out setup where server could be on single IP address
+> (there is probably a solution), so I created threads, each thread bind
+> to single IP (number of threads is the same as number of IP addresses
+> created in shell). Due limitation of IPv6 routes over gateway (which
+> must be on rhost, for testsuite changing destination this is not
+> necessary) I run server on rhost. Testsuite got complicated:
+> waiting for threads to bind, save port and IP config into files
+> and load it in client... => unfinished and posted solution without server.
+> I can see packets sent with tcpdump, but that does not mean it reached
+> server. With this result it's questionable whether moving into C code is
+> a benefit, maybe shell code below is just good enough.
+> 
+> Other questionable thing is tst_ipaddr_un() incomplete implementation in C.
+> Alternatively IP addresses could be passed from shell via getopts, but
+> that can be hard to debug (too long argument passed).
+> Originally I wanted to create IP addresses also in C, but that's not
+> possible due rhost not reachable from C.
+> 
+> Changes from v1:
+> * Handle also route{4,6}-change-gw
+> * Use libmnl
+> * new commits (more comments at the commits):
+> - net: Move setup_addrinfo() from netstress.c into tst_net.h
+> - tst_net.sh: Minor code and doc cleanup
+> - tst_net.sh: Add -a IP and -s options to tst_init_iface()
+> - net: Introduce TST_GET_UNUSED_PORT() macro into C API
+> - net/route: Remove route{4,6}-change-if
+> 
+> Draft of alternative implementation in shell:
+> * route-change-dst
+> TST_TESTFUNC="do_test"
+> TST_SETUP="do_setup"
+> TST_CLEANUP="restore_ipaddr"
+> TST_NEEDS_CMDS="ip"
+> TST_CNT=$NS_TIMES
+> 
+> . tst_net_stress.sh
+> 
+> do_setup()
+> {
+> 	# FIXME: remove duplicity
+> 	mask=$IPV4_LPREFIX
+> 	udp_size=1472
+> 	if [ "$TST_IPV6" ]; then
+> 		mask=$IPV6_LPREFIX
+> 		udp_size=1452
+> 	fi
+> 	netstress_setup
+> 	tst_res TINFO "change IPv$TST_IPVER route destination $NS_TIMES times"
+> }
+> 
+> do_test()
+> {
+> 	local iface=$(tst_iface)
+> 	local addr new_rt
+> 
+> 	new_rt="$(tst_ipaddr_un $1)/$mask"
+> 	addr="$(tst_ipaddr_un $1 1)"
+> 
+> 	tst_res TINFO "testing route '$new_rt'"
+> 
+> 	tst_rhost_run -s -c "ip addr add $addr/$mask dev $(tst_iface rhost)"
+> 	ROD ip route add $new_rt dev $iface
+> 	ROD ip neigh replace $addr lladdr $(tst_hwaddr rhost) nud permanent dev $iface
+> > 	EXPECT_PASS ns-udpsender -f $TST_IPVER -D $addr -p $1 -o -s $udp_size
+> 
+> 	ROD ip neigh del $addr lladdr $(tst_hwaddr rhost) dev $iface
+> 	ROD ip route del $new_rt dev $iface
+> 	tst_rhost_run -c "ip addr del $addr/$mask dev $(tst_iface rhost)"
 
-Thanks,
-Amir.
+With ns-udpsender, I think it can be without setting ip addresses:
+ 	ROD ip route add $new_rt dev $iface
+ 	ROD ip neigh replace $addr lladdr $(tst_hwaddr rhost) nud permanent dev $iface
+ 	EXPECT_PASS ns-udpsender -f $TST_IPVER -D $addr -p $1 -o -s $udp_size> 
+	ROD ip neigh del $addr lladdr $(tst_hwaddr rhost) dev $iface
+ 	ROD ip route del $new_rt dev $iface
+
+But with ping and neighbor discovery:
+ 	tst_rhost_run -s -c "ip addr add $addr/$mask dev $(tst_iface rhost)"
+ 	ROD ip route add $new_rt dev $iface
+ 	EXPECT_PASS ping$TST_IPVER ...
+ 	ROD ip route del $new_rt dev $iface
+ 	tst_rhost_run -c "ip addr del $addr/$mask dev $(tst_iface rhost)"
