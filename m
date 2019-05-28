@@ -1,5 +1,5 @@
 From: Murphy Zhou <xzhou@redhat.com>
-Date: Tue, 28 May 2019 16:33:04 +0800
+Date: Tue, 28 May 2019 17:56:22 +0800
 Subject: [LTP] [PATCH v5 2/4] swapon/libswapon: add helper
 	is_swap_supported
 In-Reply-To: <CAOQ4uxj_0F3pWGCLA4Fxcq54TVViid_8G3fpJw89Un8UfCo87g@mail.gmail.com>
@@ -7,7 +7,7 @@ References: <20190523135518.GF30616@rei.lan>
  <20190528043929.19671-1-xzhou@redhat.com>
  <20190528043929.19671-2-xzhou@redhat.com>
  <CAOQ4uxj_0F3pWGCLA4Fxcq54TVViid_8G3fpJw89Un8UfCo87g@mail.gmail.com>
-Message-ID: <20190528083304.pbxxlacyzi7ma6uz@XZHOUW.usersys.redhat.com>
+Message-ID: <20190528095622.gi5islpc7zlmpc2n@XZHOUW.usersys.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -84,8 +84,21 @@ On Tue, May 28, 2019 at 08:56:06AM +0300, Amir Goldstein wrote:
 > then NFS swapfile support could be tested as well and you do not
 > special case any filesystem.
 
-Very good idea!
+There is a surprise that on old kernels, 2.6.32 based, this change
+would TBROK whitelisted NFS TCONF while mkswap swapfiles.
 
+TBROK on mkswap failure seems the right thing to do, but the whitelist
+here intended to fix this false alarm.
+
+I remember Li suggested that un-whitelist NFS would break old distros.
+TMPFS is fine.
+
+Maybe we should safely check if mkswap is doable before checking swapon?
+mkswap fail, fibmap fail --> tst_brk TCONF
+mkswap fail, fibmap pass --> tst_brk TFAIL
+
+Thanks,
+Murphy
 > 
 > 
 > > +                       tst_brkm(TCONF, cleanup,
@@ -94,9 +107,6 @@ Very good idea!
 > > +                       if (fibmap == 0) {
 > 
 > and then you don't need this extra test.
-
-Yes.
-
 > 
 > > +                               tst_brkm(TFAIL | TERRNO, cleanup,
 > > +                                        "swapon on %s failed", fstype);
@@ -122,16 +132,6 @@ Yes.
 > I don't think there should be any TCONF here.
 > If we reached here then swapon is supported - in that case
 > failure to swapoff is a real failure.
-
-Hmm.. make perfect sense. I have felt this test here was a little odd..
-
-Thanks!
-
-I'll tests this more on different filesystems and then post again.
-
---
-Murphy
-
 > 
 > Thanks,
 > Amir.
