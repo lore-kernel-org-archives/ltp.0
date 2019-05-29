@@ -1,12 +1,11 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 29 May 2019 13:55:11 +0300
-Subject: [LTP] [PATCH v5 2/2] OVL_MNT: setup overlayfs dirs and mount in
- a separated mountpoint
-In-Reply-To: <20190529101849.17183-2-xzhou@redhat.com>
+Date: Wed, 29 May 2019 13:59:15 +0300
+Subject: [LTP] [PATCH v5 1/2] OVL_MNT: add helpers to setup overlayfs
+	mountpoint
+In-Reply-To: <20190529101849.17183-1-xzhou@redhat.com>
 References: <20190527153632.GA20053@dell5510>
  <20190529101849.17183-1-xzhou@redhat.com>
- <20190529101849.17183-2-xzhou@redhat.com>
-Message-ID: <CAOQ4uxhz6TaRNLF2Rc_RXfLAPY_hFUqK59ENO_h5Dt8wtAtYEQ@mail.gmail.com>
+Message-ID: <CAOQ4uxhYVDDh961PCBqikrO=QjPG-yUEUvwWn8hBCkB0ugMuzg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,326 +14,138 @@ To: ltp@lists.linux.it
 
 On Wed, May 29, 2019 at 1:19 PM Murphy Zhou <xzhou@redhat.com> wrote:
 >
-> Some tests are mounting overlayfs internally and run tests on it.
-> This mount can fail if the filesystem we are running on does not
-> support overlay mount upon it. For example, we are already running
-> tests on overlayfs or NFS, or CIFS. Test will report broken and
-> failure.
->
-> Fixing this by put overlayfs dirs in a separated mountpoint, like in
-> readahead02 by Amir.
+> Introduce tst_test->needs_overlay;
+> Define constraints of needed overlayfs dirs;
+> create_overlay_dirs() to create lower/upper/work dirs;
+> mount_overlay() to mount overlayfs;
+> SAFE_MOUNT_OVERLAY macro to mount overlayfs safely, tst_brk TCONF
+> if mount fail with errno ENODEV;
+> TST_MOUNT_OVERLAY  macro to mount overlayfs and return 0 if succeeds;
 >
 > Suggested-by: Petr Vorel <pvorel@suse.cz>
 > Suggested-by: Amir Goldstein <amir73il@gmail.com>
 > Signed-off-by: Murphy Zhou <xzhou@redhat.com>
 > ---
->  .../kernel/syscalls/execveat/execveat03.c     | 31 ++--------------
->  testcases/kernel/syscalls/inotify/inotify07.c | 33 ++++-------------
->  testcases/kernel/syscalls/inotify/inotify08.c | 37 +++++--------------
->  .../kernel/syscalls/readahead/readahead02.c   | 33 ++---------------
->  4 files changed, 26 insertions(+), 108 deletions(-)
 
-That's a very nice diffstat! :-)
+Very nice! just one minor comment, otherwise
 
 Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-
-
+> v5:
+>   Introduce tst_test->needs_overlay to mount and umount overlay
+>   Several other fixes suggested by Petr
+>   Update execveat03, inotify07/8 to use needs_overlay
+> v4:
+>   Update ENODEV handle logic
+>   Define TST_MOUNT_OVERLAY and SAFE_MOUNT_OVERLAY macros
+>   Change helper names
+> v3:
+>   Split setup to 2 parts: creating files and mounting.
+>   Use macro SAFE_MOUNT_OVERLAYFS.
+>   Handle ENODEV differently for 4 testcases we have modified.
+> v2:
+>   define constraints in header file.
+>   add a setup helper to create dirs and mount.
+>  include/safe_file_ops_fn.h  |  4 ++++
+>  include/tst_fs.h            |  6 +++++
+>  include/tst_safe_file_ops.h |  6 +++++
+>  include/tst_test.h          |  1 +
+>  lib/tst_fs_setup.c          | 48 +++++++++++++++++++++++++++++++++++++
+>  lib/tst_test.c              | 15 ++++++++++++
+>  6 files changed, 80 insertions(+)
+>  create mode 100644 lib/tst_fs_setup.c
 >
-> diff --git a/testcases/kernel/syscalls/execveat/execveat03.c b/testcases/kernel/syscalls/execveat/execveat03.c
-> index def33923b..7df1b0faa 100644
-> --- a/testcases/kernel/syscalls/execveat/execveat03.c
-> +++ b/testcases/kernel/syscalls/execveat/execveat03.c
-> @@ -55,11 +55,10 @@
->  #include "lapi/fcntl.h"
->  #include "execveat.h"
+> diff --git a/include/safe_file_ops_fn.h b/include/safe_file_ops_fn.h
+> index 35ec4fb1f..052fb1b9a 100644
+> --- a/include/safe_file_ops_fn.h
+> +++ b/include/safe_file_ops_fn.h
+> @@ -76,4 +76,8 @@ void safe_touch(const char *file, const int lineno,
+>                 const char *pathname,
+>                 mode_t mode, const struct timespec times[2]);
 >
-> -#define OVL_MNT "ovl"
->  #define TEST_APP "execveat_child"
->  #define TEST_FILE_PATH OVL_MNT"/"TEST_APP
->
-> -static int ovl_mounted;
-> +static const char mntpoint[] = OVL_BASE_MNTPOINT;
->
->  static void do_child(void)
->  {
-> @@ -86,31 +85,7 @@ static void verify_execveat(void)
->
->  static void setup(void)
->  {
-> -       int ret;
-> -
->         check_execveat();
-> -
-> -       /* Setup an overlay mount with lower file */
-> -       SAFE_MKDIR("lower", 0755);
-> -       SAFE_MKDIR("upper", 0755);
-> -       SAFE_MKDIR("work", 0755);
-> -       SAFE_MKDIR(OVL_MNT, 0755);
-> -       ret = mount("overlay", OVL_MNT, "overlay", 0,
-> -                   "lowerdir=lower,upperdir=upper,workdir=work");
-> -       if (ret < 0) {
-> -               if (errno == ENODEV) {
-> -                       tst_brk(TCONF,
-> -                               "overlayfs is not configured in this kernel.");
-> -               }
-> -               tst_brk(TBROK | TERRNO, "overlayfs mount failed");
-> -       }
-> -       ovl_mounted = 1;
-> -}
-> -
-> -static void cleanup(void)
-> -{
-> -       if (ovl_mounted)
-> -               SAFE_UMOUNT(OVL_MNT);
->  }
->
->  static const char *const resource_files[] = {
-> @@ -121,10 +96,12 @@ static const char *const resource_files[] = {
->  static struct tst_test test = {
->         .needs_root = 1,
->         .needs_tmpdir = 1,
-> +       .mount_device = 1,
-> +       .needs_overlay = 1,
-> +       .mntpoint = mntpoint,
->         .forks_child = 1,
->         .child_needs_reinit = 1,
->         .setup = setup,
-> -       .cleanup = cleanup,
->         .test_all = verify_execveat,
->         .resource_files = resource_files,
->  };
-> diff --git a/testcases/kernel/syscalls/inotify/inotify07.c b/testcases/kernel/syscalls/inotify/inotify07.c
-> index 96370b5cf..47817cd42 100644
-> --- a/testcases/kernel/syscalls/inotify/inotify07.c
-> +++ b/testcases/kernel/syscalls/inotify/inotify07.c
-> @@ -73,13 +73,12 @@ struct event_t {
->         unsigned int mask;
+> +/* helper functions to setup overlayfs mountpoint */
+> +void create_overlay_dirs(void);
+> +int mount_overlay(const char *file, const int lineno, int skip);
+> +
+>  #endif /* SAFE_FILE_OPS_FN */
+> diff --git a/include/tst_fs.h b/include/tst_fs.h
+> index b2b19ada6..ebca065c6 100644
+> --- a/include/tst_fs.h
+> +++ b/include/tst_fs.h
+> @@ -50,6 +50,12 @@ enum {
+>         TST_GB = 1073741824,
 >  };
 >
-> -#define OVL_MNT "ovl"
->  #define DIR_NAME "test_dir"
->  #define DIR_PATH OVL_MNT"/"DIR_NAME
->  #define FILE_NAME "test_file"
->  #define FILE_PATH OVL_MNT"/"DIR_NAME"/"FILE_NAME
->
-> -static int ovl_mounted;
-> +static const char mntpoint[] = OVL_BASE_MNTPOINT;
->
->  static struct event_t event_set[EVENT_MAX];
->
-> @@ -161,27 +160,12 @@ void verify_inotify(void)
->  static void setup(void)
->  {
->         struct stat buf;
-> -       int ret;
->
->         /* Setup an overlay mount with lower dir and file */
-> -       SAFE_MKDIR("lower", 0755);
-> -       SAFE_MKDIR("lower/"DIR_NAME, 0755);
-> -       SAFE_TOUCH("lower/"DIR_NAME"/"FILE_NAME, 0644, NULL);
-> -       SAFE_MKDIR("upper", 0755);
-> -       SAFE_MKDIR("work", 0755);
-> -       SAFE_MKDIR(OVL_MNT, 0755);
-> -       ret = mount("overlay", OVL_MNT, "overlay", 0,
-> -                   "lowerdir=lower,upperdir=upper,workdir=work");
-> -       if (ret < 0) {
-> -               if (errno == ENODEV) {
-> -                       tst_brk(TCONF,
-> -                               "overlayfs is not configured in this kernel.");
-> -               } else {
-> -                       tst_brk(TBROK | TERRNO,
-> -                               "overlayfs mount failed");
-> -               }
-> -       }
-> -       ovl_mounted = 1;
-> +       SAFE_UMOUNT(OVL_MNT);
-> +       SAFE_MKDIR(OVL_LOWER"/"DIR_NAME, 0755);
-> +       SAFE_TOUCH(OVL_LOWER"/"DIR_NAME"/"FILE_NAME, 0644, NULL);
-> +       SAFE_MOUNT_OVERLAY();
->
->         fd_notify = myinotify_init1(O_NONBLOCK);
->         if (fd_notify < 0) {
-> @@ -221,19 +205,18 @@ static void cleanup(void)
->         if (reap_wd && myinotify_rm_watch(fd_notify, wd) < 0) {
->                 tst_res(TWARN,
->                         "inotify_rm_watch (%d, %d) failed,", fd_notify, wd);
-> -
->         }
->
->         if (fd_notify > 0)
->                 SAFE_CLOSE(fd_notify);
-> -
-> -       if (ovl_mounted)
-> -               SAFE_UMOUNT(OVL_MNT);
->  }
->
->  static struct tst_test test = {
->         .needs_root = 1,
->         .needs_tmpdir = 1,
-> +       .mount_device = 1,
-> +       .needs_overlay = 1,
-> +       .mntpoint = mntpoint,
->         .setup = setup,
->         .cleanup = cleanup,
->         .test_all = verify_inotify,
-> diff --git a/testcases/kernel/syscalls/inotify/inotify08.c b/testcases/kernel/syscalls/inotify/inotify08.c
-> index acdb95345..067c01dbb 100644
-> --- a/testcases/kernel/syscalls/inotify/inotify08.c
-> +++ b/testcases/kernel/syscalls/inotify/inotify08.c
-> @@ -74,11 +74,10 @@ struct event_t {
->         unsigned int mask;
->  };
->
-> -#define OVL_MNT "ovl"
->  #define FILE_NAME "test_file"
->  #define FILE_PATH OVL_MNT"/"FILE_NAME
->
-> -static int ovl_mounted;
-> +static const char mntpoint[] = OVL_BASE_MNTPOINT;
->
->  static struct event_t event_set[EVENT_MAX];
->
-> @@ -104,8 +103,8 @@ void verify_inotify(void)
->         test_cnt++;
->
->         /* Make sure events on upper/lower do not show in overlay watch */
-> -       SAFE_TOUCH("lower/"FILE_NAME, 0644, NULL);
-> -       SAFE_TOUCH("upper/"FILE_NAME, 0644, NULL);
-> +       SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
-> +       SAFE_TOUCH(OVL_UPPER"/"FILE_NAME, 0644, NULL);
->
->         int len = read(fd_notify, event_buf, EVENT_BUF_LEN);
->         if (len == -1 && errno != EAGAIN) {
-> @@ -154,32 +153,17 @@ void verify_inotify(void)
->  static void setup(void)
->  {
->         struct stat buf;
-> -       int ret;
->
->         /* Setup an overlay mount with lower file */
-> -       SAFE_MKDIR("lower", 0755);
-> -       SAFE_TOUCH("lower/"FILE_NAME, 0644, NULL);
-> -       SAFE_MKDIR("upper", 0755);
-> -       SAFE_MKDIR("work", 0755);
-> -       SAFE_MKDIR(OVL_MNT, 0755);
-> -       ret = mount("overlay", OVL_MNT, "overlay", 0,
-> -                   "lowerdir=lower,upperdir=upper,workdir=work");
-> -       if (ret < 0) {
-> -               if (errno == ENODEV) {
-> -                       tst_brk(TCONF,
-> -                               "overlayfs is not configured in this kernel.");
-> -               } else {
-> -                       tst_brk(TBROK | TERRNO,
-> -                               "overlayfs mount failed");
-> -               }
-> -       }
-> -       ovl_mounted = 1;
-> +       SAFE_UMOUNT(OVL_MNT);
-> +       SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
-> +       SAFE_MOUNT_OVERLAY();
->
->         fd_notify = myinotify_init1(O_NONBLOCK);
->         if (fd_notify < 0) {
->                 if (errno == ENOSYS) {
->                         tst_brk(TCONF,
-> -                               "inotify is not configured in this kernel.");
-> +                               "inotify is not configured in this kernel");
->                 } else {
->                         tst_brk(TBROK | TERRNO,
->                                 "inotify_init () failed");
-> @@ -217,19 +201,18 @@ static void cleanup(void)
->         if (reap_wd && myinotify_rm_watch(fd_notify, wd) < 0) {
->                 tst_res(TWARN,
->                         "inotify_rm_watch (%d, %d) failed,", fd_notify, wd);
-> -
->         }
->
->         if (fd_notify > 0)
->                 SAFE_CLOSE(fd_notify);
-> -
-> -       if (ovl_mounted)
-> -               SAFE_UMOUNT(OVL_MNT);
->  }
->
->  static struct tst_test test = {
->         .needs_root = 1,
->         .needs_tmpdir = 1,
-> +       .mount_device = 1,
-> +       .needs_overlay = 1,
-> +       .mntpoint = mntpoint,
->         .setup = setup,
->         .cleanup = cleanup,
->         .test_all = verify_inotify,
-> diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
-> index 39ddbd583..f6e07173d 100644
-> --- a/testcases/kernel/syscalls/readahead/readahead02.c
-> +++ b/testcases/kernel/syscalls/readahead/readahead02.c
-> @@ -44,16 +44,11 @@ static int pagesize;
->  static unsigned long cached_max;
->  static int ovl_mounted;
->
-> -#define MNTPOINT        "mntpoint"
-> -#define OVL_LOWER      MNTPOINT"/lower"
-> -#define OVL_UPPER      MNTPOINT"/upper"
-> -#define OVL_WORK       MNTPOINT"/work"
-> -#define OVL_MNT                MNTPOINT"/ovl"
->  static int readahead_length  = 4096;
->  static char sys_bdi_ra_path[PATH_MAX];
->  static int orig_bdi_limit;
->
-> -static const char mntpoint[] = MNTPOINT;
-> +static const char mntpoint[] = OVL_BASE_MNTPOINT;
->
->  static struct tst_option options[] = {
->         {"s:", &opt_fsizestr, "-s    testfile size (default 64MB)"},
-> @@ -132,7 +127,8 @@ static void create_testfile(int use_overlay)
->         char *tmp;
->         size_t i;
->
-> -       sprintf(testfile, "%s/testfile", use_overlay ? OVL_MNT : MNTPOINT);
-> +       sprintf(testfile, "%s/testfile",
-> +               use_overlay ? OVL_MNT : OVL_BASE_MNTPOINT);
->         tst_res(TINFO, "creating test file of size: %zu", testfile_size);
->         tmp = SAFE_MALLOC(pagesize);
->
-> @@ -329,27 +325,6 @@ static void test_readahead(unsigned int n)
->         }
->  }
->
-> -static void setup_overlay(void)
-> -{
-> -       int ret;
-> -
-> -       /* Setup an overlay mount with lower dir and file */
-> -       SAFE_MKDIR(OVL_LOWER, 0755);
-> -       SAFE_MKDIR(OVL_UPPER, 0755);
-> -       SAFE_MKDIR(OVL_WORK, 0755);
-> -       SAFE_MKDIR(OVL_MNT, 0755);
-> -       ret = mount("overlay", OVL_MNT, "overlay", 0, "lowerdir="OVL_LOWER
-> -                   ",upperdir="OVL_UPPER",workdir="OVL_WORK);
-> -       if (ret < 0) {
-> -               if (errno == ENODEV) {
-> -                       tst_res(TINFO,
-> -                               "overlayfs is not configured in this kernel.");
-> -                       return;
-> -               }
-> -               tst_brk(TBROK | TERRNO, "overlayfs mount failed");
-> -       }
-> -       ovl_mounted = 1;
-> -}
->
+> +#define OVL_BASE_MNTPOINT        "mntpoint"
+> +#define OVL_LOWER      OVL_BASE_MNTPOINT"/lower"
+> +#define OVL_UPPER      OVL_BASE_MNTPOINT"/upper"
+> +#define OVL_WORK       OVL_BASE_MNTPOINT"/work"
+> +#define OVL_MNT                OVL_BASE_MNTPOINT"/ovl"
+> +
 >  /*
->   * We try raising bdi readahead limit as much as we can. We write
-> @@ -413,7 +388,7 @@ static void setup(void)
->         setup_readahead_length();
->         tst_res(TINFO, "readahead length: %d", readahead_length);
+>   * @path: path is the pathname of any file within the mounted file system
+>   * @mult: mult should be TST_KB, TST_MB or TST_GB
+> diff --git a/include/tst_safe_file_ops.h b/include/tst_safe_file_ops.h
+> index 5c3fea4e2..b62a7447f 100644
+> --- a/include/tst_safe_file_ops.h
+> +++ b/include/tst_safe_file_ops.h
+> @@ -59,4 +59,10 @@
+>         safe_touch(__FILE__, __LINE__, NULL, \
+>                         (pathname), (mode), (times))
 >
-> -       setup_overlay();
-> +       ovl_mounted = TST_MOUNT_OVERLAY();
->  }
->
->  static void cleanup(void)
-> --
-> 2.21.0
->
+> +#define SAFE_MOUNT_OVERLAY() \
+> +       ((void) mount_overlay(__FILE__, __LINE__, 1))
+> +
+> +#define TST_MOUNT_OVERLAY() \
+> +       (mount_overlay(__FILE__, __LINE__, 0) == 0)
+> +
+>  #endif /* TST_SAFE_FILE_OPS */
+> diff --git a/include/tst_test.h b/include/tst_test.h
+> index e4b935c45..f3b8901a2 100644
+> --- a/include/tst_test.h
+> +++ b/include/tst_test.h
+> @@ -121,6 +121,7 @@ struct tst_test {
+>         int needs_root:1;
+>         int forks_child:1;
+>         int needs_device:1;
+> +       int needs_overlay:1;
+>         int needs_checkpoints:1;
+>         int format_device:1;
+>         int mount_device:1;
+> diff --git a/lib/tst_fs_setup.c b/lib/tst_fs_setup.c
+> new file mode 100644
+> index 000000000..e8ae929d7
+> --- /dev/null
+> +++ b/lib/tst_fs_setup.c
+> @@ -0,0 +1,48 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +#include <dirent.h>
+> +#include <errno.h>
+> +#include <sys/mount.h>
+> +
+> +#define TST_NO_DEFAULT_MAIN
+> +#include "tst_test.h"
+> +#include "tst_fs.h"
+> +
+> +#define TST_FS_SETUP_OVERLAYFS_MSG "overlayfs is not configured in this kernel"
+> +#define TST_FS_SETUP_OVERLAYFS_CONFIG "lowerdir="OVL_LOWER",upperdir="OVL_UPPER",workdir="OVL_WORK
+> +
+> +void create_overlay_dirs(void)
+> +{
+> +       DIR *dir = opendir(OVL_LOWER);
+> +       if (dir == NULL) {
+> +               SAFE_MKDIR(OVL_LOWER, 0755);
+> +               SAFE_MKDIR(OVL_UPPER, 0755);
+> +               SAFE_MKDIR(OVL_WORK, 0755);
+> +               SAFE_MKDIR(OVL_MNT, 0755);
+
+return here so we don't closedir(NULL)?
+
+> +       }
+> +       closedir(dir);
+> +}
+> +
+
+Thanks for doing this work!
+Amir.
