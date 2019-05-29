@@ -1,46 +1,54 @@
-From: Theodore Ts'o <tytso@mit.edu>
-Date: Tue, 28 May 2019 23:56:13 -0400
-Subject: [LTP] [ext4] 079f9927c7: ltp.mmap16.fail
-In-Reply-To: <20190529025256.GB22325@shao2-debian>
-References: <20190529025256.GB22325@shao2-debian>
-Message-ID: <20190529035613.GA6210@mit.edu>
+From: Murphy Zhou <xzhou@redhat.com>
+Date: Wed, 29 May 2019 15:49:00 +0800
+Subject: [LTP] [PATCH v4 1/2] OVL_MNT: add helpers to setup overlayfs
+	mountpoint
+In-Reply-To: <20190527153632.GA20053@dell5510>
+References: <20190524122357.GA28108@dell5510>
+ <20190525115112.15399-1-xzhou@redhat.com>
+ <20190527120945.GA25513@dell5510>
+ <20190527133859.mun7h2xlzjdcwlqv@XZHOUW.usersys.redhat.com>
+ <20190527153632.GA20053@dell5510>
+Message-ID: <20190529074900.c656afgiwcb7bhta@XZHOUW.usersys.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, May 29, 2019 at 10:52:56AM +0800, kernel test robot wrote:
-> FYI, we noticed the following commit (built with gcc-7):
+On Mon, May 27, 2019 at 05:36:32PM +0200, Petr Vorel wrote:
+> Hi Amir, Murphy,
 > 
-> commit: 079f9927c7bfa026d963db1455197159ebe5b534 ("ext4: gracefully handle ext4_break_layouts() failure during truncate")
-> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> > > TODO:
+> > > I'm still not sure about ovl_mounted. There is static int mntpoint_mounted in
+> > > lib/tst_test.c, which does umount.  tst_test->mntpoint, I guess we should use
+> > > it. WDYT?
+> 
+> > mntpoint_mounted is tracking mount status of a separated mountpoint which
+> > is the base for creating overlay dirs and overlay mountpoint. This separated
+> > mountpoint is setup from scratch, grab dev, mfks etc. It's separated from
+> > runltp -d DIR. This is why this patch is needed.
+> 
+> > Overlayfs is mounted on this separated mountpoint. Testcases need to umount
+> > overlayfs in cleanup if setup overlay successfully. That's why ovl_mounted
+> > is needed.
+> 
+> > How about SAFE_UMOUNT_OVERLAY ignoring EINVAL ?
+> I don't see much benefits, when we have SAFE_UMOUNT().  More useful looks to me
+> for simple cases move ovl_mounted and SAFE_UMOUNT(OVL_MNT)  to library (the only
+> thing needed would be some flag for struct tst_test e.g. .mount_overlay = 1).
 
-Jan --- this is the old version of your patch, which I had dropped
-before sending a push request to Linus.  However, I forgot to reset
-the dev branch so it still had the old patch on it, and so it got
-picked up in linux-next.  Apologies for the confusion.
+After some digging, I think putting ovl_mounted and UMOUNT to library is
+good but creating dirs and MOUNT in library benefits less. Because splitting
+creating dirs and MOUNT was intended to be more flexible on this. Also,
+inotify07/8 needs to create extra dirs before mounting. So execveat03 is
+the only one case to benefit from creating dirs and MOUNT in the library.
 
-I've reset the dev branch on ext4.git, and the new version of your
-patch will show up there shortly, as I start reviewing patches for the
-next merge window.
+Thanks!
 
-Cheers,
-
-					- Ted
-
-> <<<test_start>>>
-> tag=mmap16 stime=1559078706
-> cmdline="mmap16"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> mke2fs 1.43.4 (31-Jan-2017)
-> mmap16      0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
-> mmap16      0  TINFO  :  Formatting /dev/loop0 with ext4 opts='-b 1024' extra opts='10240'
-> mmap16      1  TFAIL  :  mmap16.c:85: Bug is reproduced!
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=8 termination_type=exited termination_id=1 corefile=no
-> cutime=11 cstime=345
-> <<<test_end>>>
+> 
+> > Thanks!
+> > M
+> 
+> 
+> Kind regards,
+> Petr
