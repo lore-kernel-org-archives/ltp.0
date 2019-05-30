@@ -1,229 +1,166 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 29 May 2019 17:18:35 +0200
-Subject: [LTP] [PATCH v1] syscalls/acct02: add functional testcase
-In-Reply-To: <20190510132400.28963-1-camann@suse.com>
-References: <20190510132400.28963-1-camann@suse.com>
-Message-ID: <20190529151835.GA5913@rei.lan>
+From: Murphy Zhou <xzhou@redhat.com>
+Date: Thu, 30 May 2019 10:41:24 +0800
+Subject: [LTP] [PATCH v5 1/2] OVL_MNT: add helpers to setup overlayfs
+	mountpoint
+In-Reply-To: <CAOQ4uxhYVDDh961PCBqikrO=QjPG-yUEUvwWn8hBCkB0ugMuzg@mail.gmail.com>
+References: <20190527153632.GA20053@dell5510>
+ <20190529101849.17183-1-xzhou@redhat.com>
+ <CAOQ4uxhYVDDh961PCBqikrO=QjPG-yUEUvwWn8hBCkB0ugMuzg@mail.gmail.com>
+Message-ID: <20190530024124.ek6hvjjur2gknqif@XZHOUW.usersys.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> diff --git a/testcases/kernel/syscalls/acct/.gitignore b/testcases/kernel/syscalls/acct/.gitignore
-> index c2fb15611..ed68d202c 100644
-> --- a/testcases/kernel/syscalls/acct/.gitignore
-> +++ b/testcases/kernel/syscalls/acct/.gitignore
-> @@ -1 +1,2 @@
->  /acct01
-> +/acct02
-> diff --git a/testcases/kernel/syscalls/acct/acct02.c b/testcases/kernel/syscalls/acct/acct02.c
-> new file mode 100644
-> index 000000000..4ddc482c3
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/acct/acct02.c
-> @@ -0,0 +1,166 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +/*
-> + *  Copyright (c) SUSE LLC, 2019
-> + *  Author: Christian Amann <camann@suse.com>
-> + */
-> +
-> +/*
-> + * This tests if the kernel writes correct data to the
-> + * process accounting file.
-> + *
-> + * First, system-wide process accounting is turned on and the output gets
-> + * directed to a defined file. After that a simple command is issued in order
-> + * to generate data and the process accounting gets turned off again.
-> + *
-> + * To verify the written data, the entries of the accounting file get
-> + * parsed into the corresponding acct structure. Since it cannot be guaranteed
-> + * that only the command issued by this test gets written into the accounting
-> + * file, the contents get parsed until the correct entry is found, or EOF
-> + * is reached.
-> + */
-> +
-> +#include <sys/stat.h>
-> +#include <sys/types.h>
-> +#include <errno.h>
-> +#include <string.h>
-> +#include <time.h>
-> +#include <unistd.h>
-> +#include "config.h"
-> +#include "tst_kconfig.h"
-> +#include "tst_test.h"
-> +
-> +#ifdef HAVE_STRUCT_ACCT_V3
-  ^
-Can't we, rather than ifdefing the test out, add a fallback definition?
+On Wed, May 29, 2019 at 01:59:15PM +0300, Amir Goldstein wrote:
+> On Wed, May 29, 2019 at 1:19 PM Murphy Zhou <xzhou@redhat.com> wrote:
+> >
+> > Introduce tst_test->needs_overlay;
+> > Define constraints of needed overlayfs dirs;
+> > create_overlay_dirs() to create lower/upper/work dirs;
+> > mount_overlay() to mount overlayfs;
+> > SAFE_MOUNT_OVERLAY macro to mount overlayfs safely, tst_brk TCONF
+> > if mount fail with errno ENODEV;
+> > TST_MOUNT_OVERLAY  macro to mount overlayfs and return 0 if succeeds;
+> >
+> > Suggested-by: Petr Vorel <pvorel@suse.cz>
+> > Suggested-by: Amir Goldstein <amir73il@gmail.com>
+> > Signed-off-by: Murphy Zhou <xzhou@redhat.com>
+> > ---
+> 
+> Very nice! just one minor comment, otherwise
 
-> +#include <sys/acct.h>
-> +
-> +#define COMMAND		"echo"
-                                  ^
-Can we rather than this create a dummy program that has more or less
-unique name?
+Thank you very much!
 
-Bonus points for sleeping/burning cpu time for a second in the test
-program and then checking that the utime and etime are within resonable
-bounds. We can probably check different exit values as well.
+> 
+> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+> 
+> > v5:
+> >   Introduce tst_test->needs_overlay to mount and umount overlay
+> >   Several other fixes suggested by Petr
+> >   Update execveat03, inotify07/8 to use needs_overlay
+> > v4:
+> >   Update ENODEV handle logic
+> >   Define TST_MOUNT_OVERLAY and SAFE_MOUNT_OVERLAY macros
+> >   Change helper names
+> > v3:
+> >   Split setup to 2 parts: creating files and mounting.
+> >   Use macro SAFE_MOUNT_OVERLAYFS.
+> >   Handle ENODEV differently for 4 testcases we have modified.
+> > v2:
+> >   define constraints in header file.
+> >   add a setup helper to create dirs and mount.
+> >  include/safe_file_ops_fn.h  |  4 ++++
+> >  include/tst_fs.h            |  6 +++++
+> >  include/tst_safe_file_ops.h |  6 +++++
+> >  include/tst_test.h          |  1 +
+> >  lib/tst_fs_setup.c          | 48 +++++++++++++++++++++++++++++++++++++
+> >  lib/tst_test.c              | 15 ++++++++++++
+> >  6 files changed, 80 insertions(+)
+> >  create mode 100644 lib/tst_fs_setup.c
+> >
+> > diff --git a/include/safe_file_ops_fn.h b/include/safe_file_ops_fn.h
+> > index 35ec4fb1f..052fb1b9a 100644
+> > --- a/include/safe_file_ops_fn.h
+> > +++ b/include/safe_file_ops_fn.h
+> > @@ -76,4 +76,8 @@ void safe_touch(const char *file, const int lineno,
+> >                 const char *pathname,
+> >                 mode_t mode, const struct timespec times[2]);
+> >
+> > +/* helper functions to setup overlayfs mountpoint */
+> > +void create_overlay_dirs(void);
+> > +int mount_overlay(const char *file, const int lineno, int skip);
+> > +
+> >  #endif /* SAFE_FILE_OPS_FN */
+> > diff --git a/include/tst_fs.h b/include/tst_fs.h
+> > index b2b19ada6..ebca065c6 100644
+> > --- a/include/tst_fs.h
+> > +++ b/include/tst_fs.h
+> > @@ -50,6 +50,12 @@ enum {
+> >         TST_GB = 1073741824,
+> >  };
+> >
+> > +#define OVL_BASE_MNTPOINT        "mntpoint"
+> > +#define OVL_LOWER      OVL_BASE_MNTPOINT"/lower"
+> > +#define OVL_UPPER      OVL_BASE_MNTPOINT"/upper"
+> > +#define OVL_WORK       OVL_BASE_MNTPOINT"/work"
+> > +#define OVL_MNT                OVL_BASE_MNTPOINT"/ovl"
+> > +
+> >  /*
+> >   * @path: path is the pathname of any file within the mounted file system
+> >   * @mult: mult should be TST_KB, TST_MB or TST_GB
+> > diff --git a/include/tst_safe_file_ops.h b/include/tst_safe_file_ops.h
+> > index 5c3fea4e2..b62a7447f 100644
+> > --- a/include/tst_safe_file_ops.h
+> > +++ b/include/tst_safe_file_ops.h
+> > @@ -59,4 +59,10 @@
+> >         safe_touch(__FILE__, __LINE__, NULL, \
+> >                         (pathname), (mode), (times))
+> >
+> > +#define SAFE_MOUNT_OVERLAY() \
+> > +       ((void) mount_overlay(__FILE__, __LINE__, 1))
+> > +
+> > +#define TST_MOUNT_OVERLAY() \
+> > +       (mount_overlay(__FILE__, __LINE__, 0) == 0)
+> > +
+> >  #endif /* TST_SAFE_FILE_OPS */
+> > diff --git a/include/tst_test.h b/include/tst_test.h
+> > index e4b935c45..f3b8901a2 100644
+> > --- a/include/tst_test.h
+> > +++ b/include/tst_test.h
+> > @@ -121,6 +121,7 @@ struct tst_test {
+> >         int needs_root:1;
+> >         int forks_child:1;
+> >         int needs_device:1;
+> > +       int needs_overlay:1;
+> >         int needs_checkpoints:1;
+> >         int format_device:1;
+> >         int mount_device:1;
+> > diff --git a/lib/tst_fs_setup.c b/lib/tst_fs_setup.c
+> > new file mode 100644
+> > index 000000000..e8ae929d7
+> > --- /dev/null
+> > +++ b/lib/tst_fs_setup.c
+> > @@ -0,0 +1,48 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +
+> > +#include <dirent.h>
+> > +#include <errno.h>
+> > +#include <sys/mount.h>
+> > +
+> > +#define TST_NO_DEFAULT_MAIN
+> > +#include "tst_test.h"
+> > +#include "tst_fs.h"
+> > +
+> > +#define TST_FS_SETUP_OVERLAYFS_MSG "overlayfs is not configured in this kernel"
+> > +#define TST_FS_SETUP_OVERLAYFS_CONFIG "lowerdir="OVL_LOWER",upperdir="OVL_UPPER",workdir="OVL_WORK
+> > +
+> > +void create_overlay_dirs(void)
+> > +{
+> > +       DIR *dir = opendir(OVL_LOWER);
+> > +       if (dir == NULL) {
+> > +               SAFE_MKDIR(OVL_LOWER, 0755);
+> > +               SAFE_MKDIR(OVL_UPPER, 0755);
+> > +               SAFE_MKDIR(OVL_WORK, 0755);
+> > +               SAFE_MKDIR(OVL_MNT, 0755);
+> 
+> return here so we don't closedir(NULL)?
 
-> +#define OUTPUT_FILE	"acct_file"
-> +#define SIZE		sizeof(struct acct_v3)
-             ^
-	     Shouldn't this depend on the return value from the
-	     acct_version_is_3() ?
-> +
-> +static int fd;
-> +static int v3;
-> +static unsigned int rc;
-> +static unsigned int start_time;
-> +
-> +static union acct_union {
-> +	struct acct	v0;
-> +	struct acct_v3	v3;
-> +} ACCT;
-     ^
-     Uppercase identifiers are mostly used for macros.
+Sure! This needs to be fixed. Good catch!
 
-> +static int acct_version_is_3(void)
-> +{
-> +	const char *kconfig_acct_v3[] = {
-> +		"CONFIG_BSD_PROCESS_ACCT_V3",
-> +		NULL
-> +	};
-> +
-> +	struct tst_kconfig_res results[1];
-> +
-> +	tst_kconfig_read(kconfig_acct_v3, results, 1);
-> +
-> +	return results[0].match == 'y';
-> +}
-> +
-> +static void run_command(void)
-> +{
-> +	const char *const cmd[] = {COMMAND, NULL};
-> +
-> +	rc = tst_run_cmd(cmd, NULL, NULL, 1);
-> +}
-> +
-> +static int verify_acct(struct acct *acc)
-> +{
-> +	if (strcmp(acc->ac_comm, COMMAND) ||
-> +		acc->ac_btime - start_time > 1 ||
-                    ^
-This will also pass if there is a garbage in the ac_btime that happens
-to be <= start_time e.g. for ac_btime == 0. And it may also fail when we
-executed the command right before the kernel timer wheel increments.
+I'll send v6 with this fix and adding your Reivewed-by.
 
-We should rather check that ac_btime >= start_time and that ac_btime -
-start_time <= 1.
+Thank Amir and Petr very much!
 
-> +		acc->ac_uid != getuid() ||
-> +		acc->ac_gid != getgid() ||
-> +		acc->ac_exitcode != rc)
-> +		return 0;
-> +	return 1;
-> +}
-> +
-> +static int verify_acct_v3(struct acct_v3 *acc)
-> +{
-> +	if (strcmp(acc->ac_comm, COMMAND) ||
-> +		acc->ac_btime - start_time > 1 ||
+--
+Murphy
 
-Here as well.
-
-> +		acc->ac_uid != getuid() ||
-> +		acc->ac_gid != getgid() ||
-> +		acc->ac_exitcode != rc ||
-> +		acc->ac_version != 3 ||
-> +		acc->ac_pid < 1)
-> +		return 0;
-> +	return 1;
-> +}
-> +
-> +static void run(void)
-> +{
-> +	int read_bytes, ret;
-> +
-> +	fd = SAFE_OPEN(OUTPUT_FILE, O_RDWR | O_CREAT, 0644);
-> +
-> +	TEST(acct(OUTPUT_FILE));
-> +	if (TST_RET == -1)
-> +		tst_brk(TBROK | TTERRNO, "Could not set acct output file");
-> +
-> +	start_time = time(NULL);
-> +	run_command();
-> +	acct(NULL);
-> +
-> +	do {
-> +		read_bytes = SAFE_READ(0, fd, &ACCT, SIZE);
-> +
-> +		if (v3)
-> +			ret = verify_acct_v3(&ACCT.v3);
-> +		else
-> +			ret = verify_acct(&ACCT.v0);
-> +
-> +		if (!ret)
-> +			tst_res(TINFO, "acct file entry did not match; "
-> +					"trying to check next entry...");
-                                  ^
-				  This will probably flood the test
-				  output, can't we just increment
-				  counter here and print how many
-				  entries we processed?
-> +	} while (read_bytes == SIZE && !ret);
-> +
-> +	if (ret)
-> +		tst_res(TPASS, "acct() wrote correct file contents!");
-> +	else
-> +		tst_res(TFAIL, "acct() wrote incorrect file contents!");
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	TEST(acct(NULL));
-> +	if (TST_RET == -1)
-> +		tst_brk(TBROK | TTERRNO,
-> +			"acct() system call returned with error");
-> +
-> +	v3 = acct_version_is_3();
-> +	if (v3)
-> +		tst_res(TINFO, "Verifying using 'struct acct_v3'");
-> +	else
-> +		tst_res(TINFO, "Verifying using 'struct acct'");
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (fd > 0)
-> +		SAFE_CLOSE(fd);
-> +	acct(NULL);
-> +}
-> +
-> +static const char *kconfigs[] = {
-> +	"CONFIG_BSD_PROCESS_ACCT",
-> +	NULL
-> +};
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.needs_kconfigs = kconfigs,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_tmpdir = 1,
-> +	.needs_root = 1,
-> +};
-> +
-> +#else
-> +	TST_TEST_TCONF("This system does not support acct_v3 structure");
-> +#endif /* HAVE_STRUCT_ACCT_V3 */
-
-Otherwise it looks good.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> 
+> > +       }
+> > +       closedir(dir);
+> > +}
+> > +
+> 
+> Thanks for doing this work!
+> Amir.
