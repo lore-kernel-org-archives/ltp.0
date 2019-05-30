@@ -1,33 +1,39 @@
-From: Murphy Zhou <xzhou@redhat.com>
-Date: Thu, 30 May 2019 16:58:34 +0800
-Subject: [LTP] [PATCH] lib/tst_test: print INFO msg for test variants
-Message-ID: <20190530085834.21432-1-xzhou@redhat.com>
+From: Caspar Zhang <caspar@linux.alibaba.com>
+Date: Thu, 30 May 2019 17:09:56 +0800
+Subject: [LTP] [PATCH 1/3] tst_test: fix again when test has both TPASS and
+	TCONF
+Message-ID: <f11c83459b71fbf399794fb8363f2b538b0b6346.1559207183.git.caspar@casparzhang.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Make the test output clearer about what's going on when we
-run multiple variants.
+Consider this situation: we get only TPASS and TCONF in test
+results, and the last status happens to be TPASS, the check
+condition in commit fecdd885eb4b ("tst_test: Fix exit value on
+tst_brk(TCONF, ...)" won't work. Fix it by removing unnecessary
+TCONF check.
 
-Signed-off-by: Murphy Zhou <xzhou@redhat.com>
+Fixes: 5390d6ea3657 ("lib/tst_test: Report 0 if test has both TPASS and TCONF")
+Signed-off-by: Caspar Zhang <caspar@linux.alibaba.com>
 ---
- lib/tst_test.c | 1 +
- 1 file changed, 1 insertion(+)
+ lib/tst_test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 2d88adbd7..fec6c9aba 100644
+index 2d88adbd7..8ba122fbe 100644
 --- a/lib/tst_test.c
 +++ b/lib/tst_test.c
-@@ -1201,6 +1201,7 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
- 		test_variants = tst_test->test_variants;
+@@ -594,7 +594,7 @@ static void do_exit(int ret)
+ 		printf("skipped  %d\n", results->skipped);
+ 		printf("warnings %d\n", results->warnings);
  
- 	for (tst_variant = 0; tst_variant < test_variants; tst_variant++) {
-+		tst_res(TINFO, "Running tst_variant %d\n", tst_variant);
- 		if (tst_test->all_filesystems)
- 			ret |= run_tcases_per_fs();
- 		else
+-		if (results->passed && ret == TCONF)
++		if (results->passed)
+ 			ret = 0;
+ 
+ 		if (results->failed)
 -- 
 2.21.0
 
