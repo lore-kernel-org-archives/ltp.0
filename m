@@ -1,180 +1,108 @@
-From: Yi, Ammy <ammy.yi@intel.com>
-Date: Fri, 31 May 2019 03:09:41 +0000
-Subject: [LTP] [PATCH v3 ltp] Add 4 more cases for Intel PT.
-In-Reply-To: <20190529143831.GA4610@rei.lan>
-References: <20190524020123.7623-1-ammy.yi@intel.com>
- <20190529143831.GA4610@rei.lan>
-Message-ID: <6A26F11783B7464A9CE09DB41C14533C5EDE1B8B@SHSMSX101.ccr.corp.intel.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 31 May 2019 11:17:14 +0800
+Subject: [LTP] [PATCH 2/3] lib/test.sh: TCONF needs to be counted
+In-Reply-To: <5e8374fa7f4ea9d64cdfc39a2ca449761327c257.1559207183.git.caspar@casparzhang.com>
+References: <f11c83459b71fbf399794fb8363f2b538b0b6346.1559207183.git.caspar@casparzhang.com>
+ <5e8374fa7f4ea9d64cdfc39a2ca449761327c257.1559207183.git.caspar@casparzhang.com>
+Message-ID: <CAEemH2eV6RZKdZV0MMuogAzyvoXCsuvrfp3v_1TNtO1cOoAPGA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Hrubis,
+On Thu, May 30, 2019 at 5:10 PM Caspar Zhang <caspar@linux.alibaba.com>
+wrote:
 
-Add comments. Thanks.
+> TCONF should also be one of exit statuses in a single test, else the
+> output of TST_COUNT in shell tests could be wrong.
+>
+> Wrong:
+> <<<test_output>>>
+> memcg_use_hierarchy_test 1 TINFO: Starting test 1
+> memcg_use_hierarchy_test 1 TINFO: set /dev/memcg/memory.use_hierarchy to 0
+> failed
+> memcg_use_hierarchy_test 1 TPASS: process 28658 is killed
+> memcg_use_hierarchy_test 2 TINFO: Starting test 2
+> memcg_use_hierarchy_test 2 TINFO: set /dev/memcg/memory.use_hierarchy to 0
+> failed
+> memcg_use_hierarchy_test 2 TCONF: memory.use_hierarchy already been 1,
+> blame systemd, skip
+> memcg_use_hierarchy_test 2 TINFO: Starting test 3
+> memcg_use_hierarchy_test 2 TINFO: set /dev/memcg/memory.use_hierarchy to 0
+> failed
+> memcg_use_hierarchy_test 2 TPASS: echo 0 > subgroup/memory.use_hierarchy
+> failed as expected
+> <<<execution_status>>>
+>
+> Right:
+> <<<test_output>>>
+> memcg_use_hierarchy_test 1 TINFO: Starting test 1
+> memcg_use_hierarchy_test 1 TINFO: set /dev/memcg/memory.use_hierarchy to 0
+> failed
+> memcg_use_hierarchy_test 1 TPASS: process 26825 is killed
+> memcg_use_hierarchy_test 2 TINFO: Starting test 2
+> memcg_use_hierarchy_test 2 TINFO: set /dev/memcg/memory.use_hierarchy to 0
+> failed
+> memcg_use_hierarchy_test 2 TCONF: memory.use_hierarchy already been 1,
+> blame systemd, skip
+> memcg_use_hierarchy_test 3 TINFO: Starting test 3
+> memcg_use_hierarchy_test 3 TINFO: set /dev/memcg/memory.use_hierarchy to 0
+> failed
+> memcg_use_hierarchy_test 3 TPASS: echo 0 > subgroup/memory.use_hierarchy
+> failed as expected
+> <<<execution_status>>>
+>
 
-Best Regards
-Ammy Yi
+This is a good catch, but maybe it's not wise to simply regard the TCONF as
+a single test, because there are many system-config detections in setup()
+function, that will make LTP gives a mendacious report on the test numbers
+if applying this patch.
 
------Original Message-----
-From: Cyril Hrubis [mailto:chrubis@suse.cz] 
-Sent: Wednesday, May 29, 2019 10:39 PM
-To: Yi, Ammy <ammy.yi@intel.com>
-Cc: ltp@lists.linux.it
-Subject: Re: [LTP] [PATCH v3 ltp] Add 4 more cases for Intel PT.
+e.g.
 
-Hi!
-> +	if (flag == 1) {
-> +		tst_res(TINFO, "memory will be r/w for full trace mode!");
-> +		pro_flag = PROT_READ | PROT_WRITE;
-> +	} else {
-> +		tst_res(TINFO, "memory will be r only for snapshot mode!");
-> +		pro_flag = PROT_READ;
-> +	}
-> +	buf_ev[0] = SAFE_MMAP(fde, INTEL_PT_MEMSIZE, PROT_READ | PROT_WRITE,
-                               ^
-			       This should be NULL, right?
-[Ammy] Do you mean tis will get NULL? No, SAFE_MMAP should be successfully here.
+if tst_kvcmp -lt "3.10"; then
+    tst_brk TCONF "test must be run with kernel 3.10 or newer"
+fi
+if dir path not exist; then
+    tst_brk TCONF "system does not have xxxx/"
+fi
+and so on...
 
->  							MAP_SHARED, fde, 0);
->  
->  	pc = (struct perf_event_mmap_page *)buf_ev[0];
->  	pc->aux_offset = INTEL_PT_MEMSIZE;
->  	pc->aux_size = bufsize;
-> -	buf_ev[1] = SAFE_MMAP(NULL, bufsize, PROT_READ | PROT_WRITE,
-> +	buf_ev[1] = SAFE_MMAP(NULL, bufsize, pro_flag,
->  					MAP_SHARED, fde, INTEL_PT_MEMSIZE);
->  	return buf_ev;
+
+
+>
+> Signed-off-by: Caspar Zhang <caspar@linux.alibaba.com>
+> ---
+>  testcases/lib/test.sh | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
+> index 670248ee5..ade8fcdff 100644
+> --- a/testcases/lib/test.sh
+> +++ b/testcases/lib/test.sh
+> @@ -58,8 +58,7 @@ tst_resm()
+>         echo " $@"
+>
+>         case "$ret" in
+> -       TPASS|TFAIL)
+> -       TST_COUNT=$((TST_COUNT+1));;
+> +       TPASS|TFAIL|TCONF) TST_COUNT=$((TST_COUNT+1));;
+>         esac
 >  }
-> @@ -89,7 +101,7 @@ static void del_map(uint64_t **buf_ev, long bufsize)
->  	free(buf_ev);
->  }
->  
-> -static void intel_pt_full_trace_check(void)
-> +static void intel_pt_trace_check(void)
->  {
->  	uint64_t aux_head = 0;
->  	struct perf_event_mmap_page *pmp;
-> @@ -104,11 +116,11 @@ static void intel_pt_full_trace_check(void)
->  	pmp = (struct perf_event_mmap_page *)bufm[0];
->  	aux_head = *(volatile uint64_t *)&pmp->aux_head;
->  	if (aux_head == 0) {
-> -		tst_res(TFAIL, "There is no trace!");
-> +		tst_res(TFAIL, "There is no trace.");
->  		return;
->  	}
->  
-> -	tst_res(TPASS, "perf trace full mode is passed!");
-> +	tst_res(TPASS, "perf trace test is passed.");
->  }
->  
->  static void setup(void)
-> @@ -116,6 +128,7 @@ static void setup(void)
->  	struct perf_event_attr attr = {};
->  
->  	buhsz = 2 * PAGESIZE;
-> +
->  	if (access(INTEL_PT_PATH, F_OK)) {
->  		tst_brk(TCONF,
->  			"Requires Intel Core 5th+ generation (Broadwell and newer)"
-> @@ -130,20 +143,36 @@ static void setup(void)
->  	attr.config	= BIT(intel_pt_pmu_value(INTEL_PT_FORMAT_TSC)) |
->  				BIT(intel_pt_pmu_value(INTEL_PT_FORMAT_NRT));
->  	attr.size	= sizeof(struct perf_event_attr);
-> -	attr.exclude_kernel		= 0;
-> -	attr.exclude_user		= 0;
->  	attr.mmap			= 1;
-> +	if (str_branch_flag) {
-> +		tst_res(TINFO, "Intel PT will disable branch trace.");
-> +		attr.config |= 1;
-> +	}
-> +
-> +	attr.exclude_kernel	= 0;
-> +	attr.exclude_user	= 0;
-> +
-> +	if (str_exclude_info && strcmp(str_exclude_info, "user")) {
-                                ^
-				Should be !strcmp() as the function
-				returns 0 on match
-[Ammy] This is a little tricky here, if = user, means exclude user, then attr.exclude_user = 1. Here is right. If not match with user, it means not exclude user, it need exclude kernel trace, then attr.exclude_kernel = 1;
-From following execution log, we can see case name is " pt_ex_user " for exclude user test, then " Intel PT will exclude user trace " in log, they are matched.
-<<<test_start>>>
-tag=pt_ex_user stime=1559243215
-cmdline="pt_test -e user"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1096: INFO: Timeout per run is 0h 05m 00s
-pt_test.c:164: INFO: Intel PT will exclude user trace.
-pt_test.c:58: INFO: memory will be r/w for full trace mode!
-pt_test.c:67: INFO:  buf_ev[0] = -166998016
-pt_test.c:70: INFO: Open Intel PT event failed.
-pt_test.c:127: PASS: perf trace test is passed.
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-
-> +		tst_res(TINFO, "Intel PT will exclude kernel trace.");
-> +		attr.exclude_kernel = 1;
-> +	}
-> +	if (str_exclude_info && strcmp(str_exclude_info, "kernel")) {
-                                ^
-				Here as well.
-[Ammy] Same as above.
-> +		tst_res(TINFO, "Intel PT will exclude user trace.");
-> +		attr.exclude_user = 1;
-> +	}
->  
->  	/* only get trace for own pid */
->  	fde = tst_syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
->  	if (fde < 0) {
-> -		tst_res(TINFO, "Open Intel PT event failed!");
-> -		tst_res(TFAIL, "perf trace full mode is failed!");
-> +		tst_res(TINFO, "Open Intel PT event failed.");
-> +		tst_res(TFAIL, "perf trace full mode is failed.");
->  		return;
->  	}
->  	bufm = NULL;
-> -	bufm = create_map(fde, buhsz);
-> +	if (str_mode)
-> +		mode = 0;
->  
-> +	bufm = create_map(fde, buhsz, mode);
->  }
->  
->  static void cleanup(void)
-> @@ -154,8 +183,17 @@ static void cleanup(void)
->  	del_map(bufm, buhsz);
->  }
->  
-> +static struct tst_option options[] = {
-> +	{"m", &str_mode, "-m different mode, default is full mode"},
-> +	{"e:", &str_exclude_info, "-e exclude info, user or kernel"},
-> +	{"b", &str_branch_flag, "-b if disable branch trace"},
-> +	{NULL, NULL, NULL}
-> +};
-> +
-> +
->  static struct tst_test test = {
-> -	.test_all = intel_pt_full_trace_check,
-> +	.test_all = intel_pt_trace_check,
-> +	.options = options,
->  	.min_kver = "4.1",
->  	.setup = setup,
->  	.cleanup = cleanup,
-> -- 
-> 2.14.1
-> 
-> 
-> -- 
+>
+> --
+> 2.21.0
+>
+>
+> --
 > Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190531/10b12894/attachment.html>
