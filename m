@@ -1,34 +1,115 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 31 May 2019 14:00:11 +0200
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 31 May 2019 20:03:21 +0800
 Subject: [LTP] [PATCH] syscalls/copy_file_range02.c: Compatible with new
- and old kernels
-In-Reply-To: <CAEemH2eU+xcrDuW5UV=VCWhmHqrtOTE3HV=1Dr8cU8FWsBfLnw@mail.gmail.com>
+	and old kernels
+In-Reply-To: <5CF0FEB5.4030700@cn.fujitsu.com>
 References: <1559292243-2882-1-git-send-email-huangjh.jy@cn.fujitsu.com>
- <20190531110122.GA8819@rei.lan>
- <CAEemH2eU+xcrDuW5UV=VCWhmHqrtOTE3HV=1Dr8cU8FWsBfLnw@mail.gmail.com>
-Message-ID: <20190531120011.GB8819@rei.lan>
+ <5CF0FEB5.4030700@cn.fujitsu.com>
+Message-ID: <CAEemH2erJkdcKU_qg8RsjWUf7A37wj1QgMv=UZ21xUy=vXq9rg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> This is a good suggestion. Another point I can come up is, if an LTS Linux
-> distribution backports that commit 11cbfb10775a to their old kernel as
-> regression fix, then this flag will make no sense.
+On Fri, May 31, 2019 at 6:15 PM Xiao Yang <yangx.jy@cn.fujitsu.com> wrote:
 
-Well that's life, there is no way how to detect if patch was backported
-or not, so either we make the test pass on both EISDIR and EBADFD on
-older kernels or we leave it as it is. Neither of the solutions is
-perfect.
+> On 2019/05/31 16:44, Jinhui huang wrote:
+> > On new kernels, copy_file_range() returned EISDIR when copyed contents
+> > to directory, but on old kernels, it returned EBADF, we should accept
+> > EBADF to be compatible with new and old kernels.
+> >
+> > The patch as follows:
+> > commit 11cbfb10775a ("vfs: deny copy_file_range() for non regular files")
+> Hi,
+>
+> From description of commit, I wonder if we can add more tests for some
+> non regular files(e.g. block, pipe)?
+>
 
-> So, to strict we maybe need to regards the EISDIR as the only one legal
-> errno(copying content to dir) when  kernel >= 4.10(includes commit
-> 11cbfb10775a).
+I have no objection on this. But, is there really make sense to test some
+more non regular files which not being mentioned by Linux Manual Page?
 
-Yes, exactly.
+The copy_file_range02 test errors are all extract from manual page, I
+commented that in Christian's first patch version. And I don't think it's
+necessary to test undefined behavior in syscall using, because how do we
+know what error return is the expected?
+
+I just want to increase coverage and fix all similar issues as you did. :-)
+>
+> Best Regards,
+> Xiao Yang
+> > Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+> > ---
+> >  .../syscalls/copy_file_range/copy_file_range02.c   | 33
+> +++++++++++++++-------
+> >  1 file changed, 23 insertions(+), 10 deletions(-)
+> >
+> > diff --git
+> a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+> b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+> > index 07c0207..9e6356c 100644
+> > --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+> > +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+> > @@ -54,19 +54,32 @@ static void verify_copy_file_range(unsigned int n)
+> >       TEST(sys_copy_file_range(fd_src, 0, *tc->copy_to_fd,
+> >                               0, CONTSIZE, tc->flags));
+> >
+> > -     if (TST_RET == -1) {
+> > -             if (tc->exp_err == TST_ERR) {
+> > +     if (TST_RET != -1) {
+> > +             tst_res(TFAIL,
+> > +                     "copy_file_range returned wrong value: %ld",
+> TST_RET);
+> > +             return;
+> > +     }
+> > +
+> > +     if (tc->exp_err == TST_ERR) {
+> > +             tst_res(TPASS | TTERRNO,
+> > +                     "copy_file_range failed as expected");
+> > +     } else {
+> > +             /* copy_file_range() returned EISDIR when copyed contents
+> to
+> > +              * directory on new kernels, but on old kernels, it
+> returned
+> > +              * EBADF.
+> > +              *
+> > +              * the patch as follws:
+> > +              * commit 11cbfb10775a ("vfs: deny copy_file_range() for
+> non regular files")
+> > +              */
+> > +             if (tc->exp_err == EISDIR && TST_ERR == EBADF) {
+> >                       tst_res(TPASS | TTERRNO,
+> > -                                     "copy_file_range failed as
+> expected");
+> > -             } else {
+> > -                     tst_res(TFAIL | TTERRNO,
+> > -                             "copy_file_range failed unexpectedly;
+> expected %s, but got",
+> > -                             tst_strerrno(tc->exp_err));
+> > +                             "copy_file_range failed as expected");
+> >                       return;
+> >               }
+> > -     } else {
+> > -             tst_res(TFAIL,
+> > -                     "copy_file_range returned wrong value: %ld",
+> TST_RET);
+> > +
+> > +             tst_res(TFAIL | TTERRNO,
+> > +                     "copy_file_range failed unexpectedly; expected %s,
+> but got",
+> > +                     tst_strerrno(tc->exp_err));
+> >       }
+> >  }
+> >
+>
+>
+>
+>
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190531/e62514d2/attachment.html>
