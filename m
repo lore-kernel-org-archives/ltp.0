@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 31 May 2019 15:03:21 +0200
-Subject: [LTP] [PATCH] syscalls: testing on all fs for copy_file_range02
- and getxattr04
-In-Reply-To: <20190531095659.22796-1-xzhou@redhat.com>
-References: <20190531095659.22796-1-xzhou@redhat.com>
-Message-ID: <20190531130321.GB12608@rei.lan>
+Date: Fri, 31 May 2019 15:47:02 +0200
+Subject: [LTP] [PATCH v3 ltp] Add 4 more cases for Intel PT.
+In-Reply-To: <6A26F11783B7464A9CE09DB41C14533C5EDE1B8B@SHSMSX101.ccr.corp.intel.com>
+References: <20190524020123.7623-1-ammy.yi@intel.com>
+ <20190529143831.GA4610@rei.lan>
+ <6A26F11783B7464A9CE09DB41C14533C5EDE1B8B@SHSMSX101.ccr.corp.intel.com>
+Message-ID: <20190531134702.GC12608@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,57 +13,112 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> To increase test coverage. If the testing fs is not supporting
-> this syscall, tcase handles it well.
+> > +	if (flag == 1) {
+> > +		tst_res(TINFO, "memory will be r/w for full trace mode!");
+> > +		pro_flag = PROT_READ | PROT_WRITE;
+> > +	} else {
+> > +		tst_res(TINFO, "memory will be r only for snapshot mode!");
+> > +		pro_flag = PROT_READ;
+> > +	}
+> > +	buf_ev[0] = SAFE_MMAP(fde, INTEL_PT_MEMSIZE, PROT_READ | PROT_WRITE,
+>                                ^
+> 			       This should be NULL, right?
+> [Ammy] Do you mean tis will get NULL? No, SAFE_MMAP should be successfully here.
+
+Not at all. You are passing file descriptor as addr parameter to mmap()
+which is wrong and the mmap() call only passes because the address
+parameters is ignored unless we pass MAP_FIXED.
+
+> > +	if (str_branch_flag) {
+> > +		tst_res(TINFO, "Intel PT will disable branch trace.");
+> > +		attr.config |= 1;
+> > +	}
+> > +
+> > +	attr.exclude_kernel	= 0;
+> > +	attr.exclude_user	= 0;
+> > +
+> > +	if (str_exclude_info && strcmp(str_exclude_info, "user")) {
+>                                 ^
+> 				Should be !strcmp() as the function
+> 				returns 0 on match
+> [Ammy] This is a little tricky here, if = user, means exclude user, then attr.exclude_user = 1. Here is right. If not match with user, it means not exclude user, it need exclude kernel trace, then attr.exclude_kernel = 1;
+> From following execution log, we can see case name is " pt_ex_user " for exclude user test, then " Intel PT will exclude user trace " in log, they are matched.
+
+Well as it is this will also work if we pass garbage to the -e
+parameter it will set both exclude_kernel and exclude_user paramters.
+
+Why isn't this simply:
+
+	if (str_exclude) {
+		if (!strcmp(str_exclude, "user")) {
+			tst_res(TINFO, "Excluding user trace");
+			attr.exclude_user = 1;
+		} else if (!strcmp(str_exclude, "kernel")) {
+			tst_res(TINFO, "Excluding kernel trace");
+			attr.exclude_kernel = 1;
+		} else {
+			tst_brk(TBROK, "Invalid -e '%s'", str_exclude);
+		}
+	}
+
+> > +		tst_res(TINFO, "Intel PT will exclude kernel trace.");
+> > +		attr.exclude_kernel = 1;
+> > +	}
+> > +	if (str_exclude_info && strcmp(str_exclude_info, "kernel")) {
+>                                 ^
+> 				Here as well.
+> [Ammy] Same as above.
+> > +		tst_res(TINFO, "Intel PT will exclude user trace.");
+> > +		attr.exclude_user = 1;
+> > +	}
+> >  
+> >  	/* only get trace for own pid */
+> >  	fde = tst_syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
+> >  	if (fde < 0) {
+> > -		tst_res(TINFO, "Open Intel PT event failed!");
+> > -		tst_res(TFAIL, "perf trace full mode is failed!");
+> > +		tst_res(TINFO, "Open Intel PT event failed.");
+> > +		tst_res(TFAIL, "perf trace full mode is failed.");
+> >  		return;
+> >  	}
+> >  	bufm = NULL;
+> > -	bufm = create_map(fde, buhsz);
+> > +	if (str_mode)
+> > +		mode = 0;
+> >  
+> > +	bufm = create_map(fde, buhsz, mode);
+> >  }
+> >  
+> >  static void cleanup(void)
+> > @@ -154,8 +183,17 @@ static void cleanup(void)
+> >  	del_map(bufm, buhsz);
+> >  }
+> >  
+> > +static struct tst_option options[] = {
+> > +	{"m", &str_mode, "-m different mode, default is full mode"},
+> > +	{"e:", &str_exclude_info, "-e exclude info, user or kernel"},
+> > +	{"b", &str_branch_flag, "-b if disable branch trace"},
+> > +	{NULL, NULL, NULL}
+> > +};
+> > +
+> > +
+> >  static struct tst_test test = {
+> > -	.test_all = intel_pt_full_trace_check,
+> > +	.test_all = intel_pt_trace_check,
+> > +	.options = options,
+> >  	.min_kver = "4.1",
+> >  	.setup = setup,
+> >  	.cleanup = cleanup,
+> > -- 
+> > 2.14.1
+> > 
+> > 
+> > -- 
+> > Mailing list info: https://lists.linux.it/listinfo/ltp
 > 
-> Signed-off-by: Murphy Zhou <xzhou@redhat.com>
-> ---
->  testcases/kernel/syscalls/copy_file_range/copy_file_range02.c | 2 +-
->  testcases/kernel/syscalls/getxattr/getxattr04.c               | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-> index 07c0207c2..d3fb737be 100644
-> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-> @@ -113,6 +113,6 @@ static struct tst_test test = {
->  	.needs_root = 1,
->  	.mount_device = 1,
->  	.mntpoint = MNTPOINT,
-> -	.dev_fs_type = "ext4",
-> +	.all_filesystems = 1,
->  	.test_variants = TEST_VARIANTS,
->  };
-
-Actually looking at the kernel code all these error checks are done in
-the vfs_copy_file_range() function so as far as I can tell there is no
-point in running copy_file_range02 test for all filesystems. Maybe we
-can just delete all the device code and change the test to use the
-default TMPDIR instead?
-
-It would may much more sense to run the copy_file_range01 and
-copy_file_range03 for all filesystems, because these tests advance
-beyond the common checks and actually copy the file which invokes
-either the f_op->copy_file_range() or the do_splice_direct() fallback.
-
-> diff --git a/testcases/kernel/syscalls/getxattr/getxattr04.c b/testcases/kernel/syscalls/getxattr/getxattr04.c
-> index 1dcb14da3..905abd587 100644
-> --- a/testcases/kernel/syscalls/getxattr/getxattr04.c
-> +++ b/testcases/kernel/syscalls/getxattr/getxattr04.c
-> @@ -121,7 +121,7 @@ static struct tst_test test = {
->  	.needs_tmpdir = 1,
->  	.needs_root = 1,
->  	.mount_device = 1,
-> -	.dev_fs_type = "xfs",
-> +	.all_filesystems = 1,
->  	.mntpoint = MNTPOINT,
->  	.forks_child = 1,
->  	.test_all = verify_getxattr,
-
-Can you please split the patch?
-
-It's a bit cleaner (and easier when we have to revert) to enable the
-all_filesystem flags for each syscall in a separate patch.
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
 
 -- 
 Cyril Hrubis
