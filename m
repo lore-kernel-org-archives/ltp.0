@@ -1,95 +1,81 @@
 From: Li Wang <liwang@redhat.com>
-Date: Fri, 31 May 2019 11:17:14 +0800
-Subject: [LTP] [PATCH 2/3] lib/test.sh: TCONF needs to be counted
-In-Reply-To: <5e8374fa7f4ea9d64cdfc39a2ca449761327c257.1559207183.git.caspar@casparzhang.com>
+Date: Fri, 31 May 2019 11:37:34 +0800
+Subject: [LTP] [PATCH 3/3] tst_test.sh,
+ test.sh: report pass if both TPASS and TCONF exist in shell test
+In-Reply-To: <1985f9e48c4557c2ec52eded11d08f3b7b514962.1559207183.git.caspar@casparzhang.com>
 References: <f11c83459b71fbf399794fb8363f2b538b0b6346.1559207183.git.caspar@casparzhang.com>
- <5e8374fa7f4ea9d64cdfc39a2ca449761327c257.1559207183.git.caspar@casparzhang.com>
-Message-ID: <CAEemH2eV6RZKdZV0MMuogAzyvoXCsuvrfp3v_1TNtO1cOoAPGA@mail.gmail.com>
+ <1985f9e48c4557c2ec52eded11d08f3b7b514962.1559207183.git.caspar@casparzhang.com>
+Message-ID: <CAEemH2cW-zQwfs0ZPjDOTz82zkOXOeTHLunWffRyod3Acv_QCQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, May 30, 2019 at 5:10 PM Caspar Zhang <caspar@linux.alibaba.com>
+On Thu, May 30, 2019 at 5:11 PM Caspar Zhang <caspar@linux.alibaba.com>
 wrote:
 
-> TCONF should also be one of exit statuses in a single test, else the
-> output of TST_COUNT in shell tests could be wrong.
->
-> Wrong:
-> <<<test_output>>>
-> memcg_use_hierarchy_test 1 TINFO: Starting test 1
-> memcg_use_hierarchy_test 1 TINFO: set /dev/memcg/memory.use_hierarchy to 0
-> failed
-> memcg_use_hierarchy_test 1 TPASS: process 28658 is killed
-> memcg_use_hierarchy_test 2 TINFO: Starting test 2
-> memcg_use_hierarchy_test 2 TINFO: set /dev/memcg/memory.use_hierarchy to 0
-> failed
-> memcg_use_hierarchy_test 2 TCONF: memory.use_hierarchy already been 1,
-> blame systemd, skip
-> memcg_use_hierarchy_test 2 TINFO: Starting test 3
-> memcg_use_hierarchy_test 2 TINFO: set /dev/memcg/memory.use_hierarchy to 0
-> failed
-> memcg_use_hierarchy_test 2 TPASS: echo 0 > subgroup/memory.use_hierarchy
-> failed as expected
-> <<<execution_status>>>
->
-> Right:
-> <<<test_output>>>
-> memcg_use_hierarchy_test 1 TINFO: Starting test 1
-> memcg_use_hierarchy_test 1 TINFO: set /dev/memcg/memory.use_hierarchy to 0
-> failed
-> memcg_use_hierarchy_test 1 TPASS: process 26825 is killed
-> memcg_use_hierarchy_test 2 TINFO: Starting test 2
-> memcg_use_hierarchy_test 2 TINFO: set /dev/memcg/memory.use_hierarchy to 0
-> failed
-> memcg_use_hierarchy_test 2 TCONF: memory.use_hierarchy already been 1,
-> blame systemd, skip
-> memcg_use_hierarchy_test 3 TINFO: Starting test 3
-> memcg_use_hierarchy_test 3 TINFO: set /dev/memcg/memory.use_hierarchy to 0
-> failed
-> memcg_use_hierarchy_test 3 TPASS: echo 0 > subgroup/memory.use_hierarchy
-> failed as expected
-> <<<execution_status>>>
+> We don't want the test reporting TCONF if at least one TPASS existed
+> during testing. And this is also true in shell tests. So fix it.
 >
 
-This is a good catch, but maybe it's not wise to simply regard the TCONF as
-a single test, because there are many system-config detections in setup()
-function, that will make LTP gives a mendacious report on the test numbers
-if applying this patch.
+PATCH 3/3 makes sense to me.
 
-e.g.
-
-if tst_kvcmp -lt "3.10"; then
-    tst_brk TCONF "test must be run with kernel 3.10 or newer"
-fi
-if dir path not exist; then
-    tst_brk TCONF "system does not have xxxx/"
-fi
-and so on...
-
-
+Reviewed-by: Li Wang <liwang@redhat.com>
 
 >
 > Signed-off-by: Caspar Zhang <caspar@linux.alibaba.com>
 > ---
->  testcases/lib/test.sh | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  testcases/lib/test.sh     | 9 +++++++++
+>  testcases/lib/tst_test.sh | 2 +-
+>  2 files changed, 10 insertions(+), 1 deletion(-)
 >
 > diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
-> index 670248ee5..ade8fcdff 100644
+> index ade8fcdff..7cc3bb2fe 100644
 > --- a/testcases/lib/test.sh
 > +++ b/testcases/lib/test.sh
-> @@ -58,8 +58,7 @@ tst_resm()
->         echo " $@"
+> @@ -23,6 +23,7 @@
 >
+>  export LTP_RET_VAL=0
+>  export TST_COUNT=1
+> +export TST_PASS_COUNT=0
+>  export TST_LIB_LOADED=1
+>  export TST_TMPDIR_RHOST=0
+>
+> @@ -60,6 +61,10 @@ tst_resm()
 >         case "$ret" in
-> -       TPASS|TFAIL)
-> -       TST_COUNT=$((TST_COUNT+1));;
-> +       TPASS|TFAIL|TCONF) TST_COUNT=$((TST_COUNT+1));;
+>         TPASS|TFAIL|TCONF) TST_COUNT=$((TST_COUNT+1));;
 >         esac
+> +
+> +       if [ "$ret" = TPASS ]; then
+> +               TST_PASS_COUNT=$((TST_PASS_COUNT+1))
+> +       fi
 >  }
+>
+>  tst_brkm()
+> @@ -111,6 +116,10 @@ tst_exit()
+>                 rm -f "$LTP_IPC_PATH"
+>         fi
+>
+> +       # Mask out TCONF if no TFAIL/TBROK/TWARN but has TPASS
+> +       if [ $((LTP_RET_VAL & 7)) -eq 0 -a $TST_PASS_COUNT -gt 0 ]; then
+> +               LTP_RET_VAL=$((LTP_RET_VAL & ~32))
+> +       fi
+>         # Mask out TINFO
+>         exit $((LTP_RET_VAL & ~16))
+>  }
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index 512732315..bf725fdde 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -78,7 +78,7 @@ _tst_do_exit()
+>                 ret=$((ret|4))
+>         fi
+>
+> -       if [ $TST_CONF -gt 0 ]; then
+> +       if [ $TST_CONF -gt 0 -a $TST_PASS -eq 0 ]; then
+>                 ret=$((ret|32))
+>         fi
 >
 > --
 > 2.21.0
@@ -105,4 +91,4 @@ Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190531/10b12894/attachment.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190531/9ea6f2e3/attachment-0001.html>
