@@ -1,48 +1,108 @@
-From: Murphy Zhou <xzhou@redhat.com>
-Date: Fri, 31 May 2019 17:56:59 +0800
-Subject: [LTP] [PATCH] syscalls: testing on all fs for copy_file_range02 and
-	getxattr04
-Message-ID: <20190531095659.22796-1-xzhou@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 31 May 2019 18:02:36 +0800
+Subject: [LTP] [PATCH] syscalls/copy_file_range02.c: Compatible with new
+ and old kernels
+In-Reply-To: <1559292243-2882-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+References: <1559292243-2882-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <CAEemH2eupy=uOYFpUFg3mDF0M06SZ07XW9+kw2e_B=wrY5-QOQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To increase test coverage. If the testing fs is not supporting
-this syscall, tcase handles it well.
+On Fri, May 31, 2019 at 4:44 PM Jinhui huang <huangjh.jy@cn.fujitsu.com>
+wrote:
 
-Signed-off-by: Murphy Zhou <xzhou@redhat.com>
----
- testcases/kernel/syscalls/copy_file_range/copy_file_range02.c | 2 +-
- testcases/kernel/syscalls/getxattr/getxattr04.c               | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+> On new kernels, copy_file_range() returned EISDIR when copyed contents
+> to directory, but on old kernels, it returned EBADF, we should accept
+> EBADF to be compatible with new and old kernels.
+>
+> The patch as follows:
+> commit 11cbfb10775a ("vfs: deny copy_file_range() for non regular files")
+>
 
-diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-index 07c0207c2..d3fb737be 100644
---- a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-+++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-@@ -113,6 +113,6 @@ static struct tst_test test = {
- 	.needs_root = 1,
- 	.mount_device = 1,
- 	.mntpoint = MNTPOINT,
--	.dev_fs_type = "ext4",
-+	.all_filesystems = 1,
- 	.test_variants = TEST_VARIANTS,
- };
-diff --git a/testcases/kernel/syscalls/getxattr/getxattr04.c b/testcases/kernel/syscalls/getxattr/getxattr04.c
-index 1dcb14da3..905abd587 100644
---- a/testcases/kernel/syscalls/getxattr/getxattr04.c
-+++ b/testcases/kernel/syscalls/getxattr/getxattr04.c
-@@ -121,7 +121,7 @@ static struct tst_test test = {
- 	.needs_tmpdir = 1,
- 	.needs_root = 1,
- 	.mount_device = 1,
--	.dev_fs_type = "xfs",
-+	.all_filesystems = 1,
- 	.mntpoint = MNTPOINT,
- 	.forks_child = 1,
- 	.test_all = verify_getxattr,
+Patch makes sense.
+
+Reviewed-by: Li Wang <liwang@redhat.com>
+
+>
+> Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+> ---
+>  .../syscalls/copy_file_range/copy_file_range02.c   | 33
+> +++++++++++++++-------
+>  1 file changed, 23 insertions(+), 10 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+> b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+> index 07c0207..9e6356c 100644
+> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+> @@ -54,19 +54,32 @@ static void verify_copy_file_range(unsigned int n)
+>         TEST(sys_copy_file_range(fd_src, 0, *tc->copy_to_fd,
+>                                 0, CONTSIZE, tc->flags));
+>
+> -       if (TST_RET == -1) {
+> -               if (tc->exp_err == TST_ERR) {
+> +       if (TST_RET != -1) {
+> +               tst_res(TFAIL,
+> +                       "copy_file_range returned wrong value: %ld",
+> TST_RET);
+> +               return;
+> +       }
+> +
+> +       if (tc->exp_err == TST_ERR) {
+> +               tst_res(TPASS | TTERRNO,
+> +                       "copy_file_range failed as expected");
+> +       } else {
+> +               /* copy_file_range() returned EISDIR when copyed contents
+> to
+> +                * directory on new kernels, but on old kernels, it
+> returned
+> +                * EBADF.
+> +                *
+> +                * the patch as follws:
+> +                * commit 11cbfb10775a ("vfs: deny copy_file_range() for
+> non regular files")
+> +                */
+> +               if (tc->exp_err == EISDIR && TST_ERR == EBADF) {
+>                         tst_res(TPASS | TTERRNO,
+> -                                       "copy_file_range failed as
+> expected");
+> -               } else {
+> -                       tst_res(TFAIL | TTERRNO,
+> -                               "copy_file_range failed unexpectedly;
+> expected %s, but got",
+> -                               tst_strerrno(tc->exp_err));
+> +                               "copy_file_range failed as expected");
+>                         return;
+>                 }
+> -       } else {
+> -               tst_res(TFAIL,
+> -                       "copy_file_range returned wrong value: %ld",
+> TST_RET);
+> +
+> +               tst_res(TFAIL | TTERRNO,
+> +                       "copy_file_range failed unexpectedly; expected %s,
+> but got",
+> +                       tst_strerrno(tc->exp_err));
+>         }
+>  }
+>
+> --
+> 1.8.3.1
+>
+>
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+
+
 -- 
-2.21.0
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190531/9c287c61/attachment.html>
