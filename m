@@ -1,90 +1,51 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 3 Jun 2019 16:04:45 +0200
+Date: Mon, 3 Jun 2019 16:12:51 +0200
 Subject: [LTP] [PATCH 2/2] syscalls/mbind0{2, 3,
 	4}: Add basic mbind tests
 In-Reply-To: <20190228153425.10286-3-chrubis@suse.cz>
 References: <20190228153425.10286-1-chrubis@suse.cz>
  <20190228153425.10286-3-chrubis@suse.cz>
-Message-ID: <20190603140445.GB13662@dell5510>
+Message-ID: <20190603141251.GC13662@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+HI Cyril,
 
-> This test is similar to the set_mempolicy() tests, but with mbind we are
-> actually binding memory to nodes after it was mapped.
-
-> mbind02: We are trying to get EIO with MPOL_MF_STRICT and page that was already
->          faulted on wrong node.
-
-> mbind03: We are moving pages with MPOL_MF_MOVE and MPOL_MF_MOVE_ALL and
->          checking the result.
-
-> mbind04: We are applying memory policy before we fault the pages and check
->          that the pages were faulted accordingly.
-
-Generally LGTM, just Makefile needs updating after adding libltpnuma:
-LDFLAGS += -L$(top_builddir)/libs/libltpnuma
-LDLIBS  += $(NUMA_LIBS) -lltpnuma
-(mbind01 does not need that, I'd ignore that).
-
-...
-> +++ b/testcases/kernel/syscalls/mbind/mbind.h
-...
-> +static inline const char *mbind_flag_name(unsigned flag)
-> +{
-> +	switch (flag) {
-> +	case 0:
-> +		return "0";
-> +	case MPOL_MF_STRICT:
-> +		return "MPOL_MF_STRICT";
-> +	case MPOL_MF_MOVE:
-> +		return "MPOL_MF_MOVE";
-> +	case MPOL_MF_MOVE_ALL:
-> +		return "MPOL_MF_MOVE_ALL";
-> +	default:
-> +		return "???";
-I guess "???" is important for us. Otherwise I'd use macro:
-#define MBIND_FLAG_NAME(x) #x
-
-..
-> +++ b/testcases/kernel/syscalls/mbind/mbind02.c
-...
-> +static void setup(void)
-> +{
-> +	page_size = getpagesize();
+> +#include <errno.h>
+> +#include "config.h"
+> +#ifdef HAVE_NUMA_H
+> +# include <numa.h>
+> +# include <numaif.h>
+> +#endif
+> +#include "tst_test.h"
+> +#include "tst_numa.h"
 > +
-> +	nodes = tst_get_nodemap(TST_NUMA_MEM, 2 * page_size / 1024);
-> +	if (nodes->cnt <= 1)
-> +		tst_brk(TCONF, "Test requires at least two NUMA memory nodes");
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	tst_nodemap_free(nodes);
-> +}
-Maybe setup and cleanup can be put as static inline into mbind.h? As it's
-repeated. PAGES_ALLOCATED would have to be defined for all.
+> +#ifdef HAVE_NUMA_H
+This needs to be tested against HAVE_NUMA_V2 to get proper libnuma detection in
+cross-compilation [1] [2]:
 
-...
-> +++ b/testcases/kernel/syscalls/mbind/mbind03.c
-> @@ -0,0 +1,123 @@
-> +/*
-> + * SPDX-License-Identifier: GPL-2.0-or-later
-> + *
-> + * Copyright (c) 2019 Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +
-> +/*
-> + * We are testing mbind() EIO error.
-> + *
-> + * We first fault a allocated page, then attempt to mbind it to a different node.
-Here is a copy paste error. But commit message is correct:
-    mbind03: We are moving pages with MPOL_MF_MOVE and MPOL_MF_MOVE_ALL and
-             checking the result.
+/tmp/cclVNEz5.o: In function `verify_policy':
+/usr/src/ltp/testcases/kernel/syscalls/mbind/mbind04.c:46: undefined reference to `numa_allocate_nodemask'
+/usr/src/ltp/testcases/kernel/syscalls/mbind/mbind04.c:51: undefined reference to `numa_bitmask_setbit'
+/usr/src/ltp/testcases/kernel/syscalls/mbind/mbind04.c:53: undefined reference to `tst_numa_map'
+/usr/src/ltp/testcases/kernel/syscalls/mbind/mbind04.c:55: undefined reference to `mbind'
+/usr/src/ltp/testcases/kernel/syscalls/mbind/mbind04.c:58: undefined reference to `tst_numa_mode_name'
+/usr/src/ltp/testcases/kernel/syscalls/mbind/mbind04.c:64: undefined reference to `tst_numa_mode_name'
+/tmp/cclVNEz5.o: In function `numa_free_nodemask':
+/usr/include/numa.h:183: undefined reference to `numa_bitmask_free'
+/tmp/cclVNEz5.o: In function `verify_policy':
+/usr/src/ltp/testcases/kernel/syscalls/mbind/mbind04.c:78: undefined reference to `tst_nodemap_count_pages'
+/tmp/cclVNEz5.o: In function `setup':
+/usr/src/ltp/testcases/kernel/syscalls/mbind/mbind04.c:34: undefined reference to `tst_get_nodemap'
+collect2: error: ld returned 1 exit status
+
+Id' personally move numa includes after it.
 
 Kind regards,
 Petr
+
+[1] https://api.travis-ci.org/v3/job/540754157/log.txt
+[2] https://travis-ci.org/pevik/ltp/builds/540754154
