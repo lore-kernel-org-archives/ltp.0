@@ -1,237 +1,146 @@
-From: Christian Amann <camann@suse.com>
-Date: Tue,  4 Jun 2019 13:47:00 +0200
-Subject: [LTP] [PATCH v2 2/4] syscalls/pidfd_send_signal01
-Message-ID: <20190604114702.28255-1-camann@suse.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue,  4 Jun 2019 18:10:34 +0300
+Subject: [LTP] [PATCH v2 1/2] fanotify06: add a test case for overlayfs
+Message-ID: <20190604151035.6123-1-amir73il@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add testcase to check if pidfd_send_signal() can provide
-the same functionality as rt_sigqueueinfo().
+This test fails on overlayfs since kernel v4.19.
+Added a test case for overlayfs mount.
 
-Signed-off-by: Christian Amann <camann@suse.com>
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- configure.ac                                       |   2 +
- runtest/syscalls                                   |   2 +
- .../kernel/syscalls/pidfd_send_signal/.gitignore   |   1 +
- .../kernel/syscalls/pidfd_send_signal/Makefile     |  14 +++
- .../syscalls/pidfd_send_signal/pidfd_send_signal.h |  27 ++++++
- .../pidfd_send_signal/pidfd_send_signal01.c        | 108 +++++++++++++++++++++
- 6 files changed, 154 insertions(+)
- create mode 100644 testcases/kernel/syscalls/pidfd_send_signal/.gitignore
- create mode 100644 testcases/kernel/syscalls/pidfd_send_signal/Makefile
- create mode 100644 testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal.h
- create mode 100644 testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c
 
-diff --git a/configure.ac b/configure.ac
-index 5a3dc5b62..b3e108306 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -71,6 +71,7 @@ AC_CHECK_FUNCS([ \
-     mkdirat \
-     mknodat \
-     openat \
-+    pidfd_send_signal \
-     preadv \
-     preadv2 \
-     profil \
-@@ -237,6 +238,7 @@ else
- fi
- AC_DEFINE_UNQUOTED(NUMA_ERROR_MSG, ["$numa_error_msg"], [Error message when no NUMA support])
+Changes since v1:
+- Use new overlayfs mount helpers
+- Add patch to fix EBUSY error on overlayfs umount
+
+ .../kernel/syscalls/fanotify/fanotify06.c     | 61 +++++++++++++------
+ 1 file changed, 43 insertions(+), 18 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify06.c b/testcases/kernel/syscalls/fanotify/fanotify06.c
+index 6a2e2494f..e053da0e5 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify06.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify06.c
+@@ -15,6 +15,14 @@
+  *  Date:   Thu Nov 13 15:19:33 2014 -0800
+  *
+  *      fanotify: fix notification of groups with inode & mount marks
++ *
++ * The overlayfs test case is a regression test for:
++ *
++ *  commit d989903058a83e8536cc7aadf9256a47d5c173fe
++ *  Author: Amir Goldstein <amir73il@gmail.com>
++ *  Date:   Wed Apr 24 19:39:50 2019 +0300
++ *
++ *      ovl: do not generate duplicate fsnotify events for "fake" path
+  */
+ #define _GNU_SOURCE
+ #include "config.h"
+@@ -54,8 +62,18 @@ static int fd_notify[FANOTIFY_PRIORITIES][GROUPS_PER_PRIO];
  
-+
- LTP_CHECK_SYSCALL_PERF_EVENT_OPEN
- LTP_CHECK_SYSCALL_QUOTACTL
- LTP_CHECK_SYSCALL_SIGNALFD
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 762b15b1f..bd71a12f8 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -836,6 +836,8 @@ pause03 pause03
- personality01 personality01
- personality02 personality02
+ static char event_buf[EVENT_BUF_LEN];
  
-+pidfd_send_signal01 pidfd_send_signal01
+-#define MOUNT_NAME "mntpoint"
+-static int mount_created;
++static const char mntpoint[] = OVL_BASE_MNTPOINT;
 +
- pipe01 pipe01
- pipe02 pipe02
- pipe03 pipe03
-diff --git a/testcases/kernel/syscalls/pidfd_send_signal/.gitignore b/testcases/kernel/syscalls/pidfd_send_signal/.gitignore
-new file mode 100644
-index 000000000..7ccbf2d80
---- /dev/null
-+++ b/testcases/kernel/syscalls/pidfd_send_signal/.gitignore
-@@ -0,0 +1 @@
-+/pidfd_send_signal01
-diff --git a/testcases/kernel/syscalls/pidfd_send_signal/Makefile b/testcases/kernel/syscalls/pidfd_send_signal/Makefile
-new file mode 100644
-index 000000000..23e4ec478
---- /dev/null
-+++ b/testcases/kernel/syscalls/pidfd_send_signal/Makefile
-@@ -0,0 +1,14 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+#
-+#   Copyright (c) 2019 SUSE LLC
-+#
-+#   Author: Christian Amann <camann@suse.com>
-+#
++static int ovl_mounted;
 +
-+top_srcdir		?= ../../../..
++static struct tcase {
++	const char *tname;
++	const char *mnt;
++	int use_overlay;
++} tcases[] = {
++	{ "Fanotify merge mount mark", mntpoint, 0 },
++	{ "Fanotify merge overlayfs mount mark", OVL_MNT, 1 },
++};
+ 
+ static void create_fanotify_groups(void)
+ {
+@@ -72,12 +90,12 @@ static void create_fanotify_groups(void)
+ 			ret = fanotify_mark(fd_notify[p][i],
+ 					    FAN_MARK_ADD | FAN_MARK_MOUNT,
+ 					    FAN_MODIFY,
+-					    AT_FDCWD, ".");
++					    AT_FDCWD, fname);
+ 			if (ret < 0) {
+ 				tst_brk(TBROK | TERRNO,
+ 					"fanotify_mark(%d, FAN_MARK_ADD | "
+ 					"FAN_MARK_MOUNT, FAN_MODIFY, AT_FDCWD,"
+-					" '.') failed", fd_notify[p][i]);
++					" %s) failed", fd_notify[p][i], fname);
+ 			}
+ 			/* Add ignore mark for groups with higher priority */
+ 			if (p == 0)
+@@ -130,11 +148,23 @@ static void verify_event(int group, struct fanotify_event_metadata *event)
+ 	}
+ }
+ 
+-void test01(void)
++void test_fanotify(unsigned int n)
+ {
+ 	int ret;
+ 	unsigned int p, i;
+ 	struct fanotify_event_metadata *event;
++	struct tcase *tc = &tcases[n];
 +
-+include $(top_srcdir)/include/mk/testcases.mk
++	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
 +
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+
-+pidfd_send_signal01: CFLAGS += -pthread
-diff --git a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal.h b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal.h
-new file mode 100644
-index 000000000..aa883c932
---- /dev/null
-+++ b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal.h
-@@ -0,0 +1,27 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 SUSE LLC
-+ * Author: Christian Amann <camann@suse.com>
-+ */
-+
-+#ifndef PIDFD_SEND_SIGNAL_H
-+#define PIDFD_SEND_SIGNAL_H
-+
-+#include "tst_test.h"
-+#include "lapi/syscalls.h"
-+
-+static void check_syscall_support(void)
-+{
-+	/* allow the tests to fail early */
-+	tst_syscall(__NR_pidfd_send_signal);
-+}
-+
-+#ifndef HAVE_PIDFD_SEND_SIGNAL
-+static int pidfd_send_signal(int pidfd, int sig, siginfo_t *info,
-+				 unsigned int flags)
-+{
-+	return tst_syscall(__NR_pidfd_send_signal, pidfd, sig, info, flags);
-+}
-+#endif /* HAVE_PIDFD_SEND_SIGNAL */
-+
-+#endif /* PIDFD_SEND_SIGNAL_H */
-diff --git a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c
-new file mode 100644
-index 000000000..f44fce013
---- /dev/null
-+++ b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c
-@@ -0,0 +1,108 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 SUSE LLC
-+ * Author: Christian Amann <camann@suse.com>
-+ */
-+/*
-+ * Tests if the pidfd_send_signal syscall behaves
-+ * like rt_sigqueueinfo when a pointer to a siginfo_t
-+ * struct is passed.
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <signal.h>
-+#include <stdlib.h>
-+#include "tst_safe_pthread.h"
-+#include "pidfd_send_signal.h"
-+
-+#define SIGNAL  SIGUSR1
-+#define DATA	777
-+
-+static struct sigaction *sig_action;
-+static int sig_rec;
-+static siginfo_t *uinfo;
-+static int pidfd;
-+
-+static void received_signal(int sig, siginfo_t *info, void *ucontext)
-+{
-+	if (info && ucontext) {
-+		if (sig == SIGNAL && uinfo->si_value.sival_int == DATA) {
-+			tst_res(TPASS, "Received correct signal and data!");
-+			sig_rec = 1;
-+		} else {
-+			tst_res(TFAIL, "Received wrong signal and/or data!");
-+		}
-+	} else {
-+		tst_res(TFAIL, "Signal handling went wrong!");
-+	}
-+}
-+
-+static void *handle_thread(void *arg)
-+{
-+	SAFE_SIGACTION(SIGNAL, sig_action, NULL);
-+	TST_CHECKPOINT_WAKE_AND_WAIT(0);
-+	return arg;
-+}
-+
-+static void verify_pidfd_send_signal(void)
-+{
-+	pthread_t thr;
-+
-+	SAFE_PTHREAD_CREATE(&thr, NULL, handle_thread, NULL);
-+
-+	TST_CHECKPOINT_WAIT(0);
-+
-+	TEST(pidfd_send_signal(pidfd, SIGNAL, uinfo, 0));
-+	if (TST_RET != 0) {
-+		tst_res(TFAIL | TTERRNO, "pidfd_send_signal() failed");
++	if (tc->use_overlay && !ovl_mounted) {
++		tst_res(TCONF,
++		        "overlayfs is not configured in this kernel.");
 +		return;
 +	}
 +
-+	TST_CHECKPOINT_WAKE(0);
-+	SAFE_PTHREAD_JOIN(thr, NULL);
-+
-+	if (sig_rec) {
-+		tst_res(TPASS,
-+			"pidfd_send_signal() behaved like rt_sigqueueinfo()");
-+	}
-+}
-+
-+static void setup(void)
-+{
-+	check_syscall_support();
-+
-+	pidfd = SAFE_OPEN("/proc/self", O_DIRECTORY | O_CLOEXEC);
-+
-+	sig_action = SAFE_MALLOC(sizeof(struct sigaction));
-+
-+	memset(sig_action, 0, sizeof(*sig_action));
-+	sig_action->sa_sigaction = received_signal;
-+	sig_action->sa_flags = SA_SIGINFO;
-+
-+	uinfo = SAFE_MALLOC(sizeof(siginfo_t));
-+
-+	memset(uinfo, 0, sizeof(*uinfo));
-+	uinfo->si_signo = SIGNAL;
-+	uinfo->si_code = SI_QUEUE;
-+	uinfo->si_pid = getpid();
-+	uinfo->si_uid = getuid();
-+	uinfo->si_value.sival_int = DATA;
-+
-+	sig_rec = 0;
-+}
-+
-+static void cleanup(void)
-+{
-+	free(uinfo);
-+	free(sig_action);
-+	if (pidfd > 0)
-+		SAFE_CLOSE(pidfd);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = verify_pidfd_send_signal,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_checkpoints = 1,
-+};
++	sprintf(fname, "%s/tfile_%d", tc->mnt, getpid());
++	SAFE_TOUCH(fname, 0644, NULL);
+ 
+ 	create_fanotify_groups();
+ 
+@@ -196,31 +226,26 @@ void test01(void)
+ 
+ static void setup(void)
+ {
+-	SAFE_MKDIR(MOUNT_NAME, 0755);
+-	SAFE_MOUNT(MOUNT_NAME, MOUNT_NAME, "none", MS_BIND, NULL);
+-	mount_created = 1;
+-	SAFE_CHDIR(MOUNT_NAME);
+-
+-	sprintf(fname, "tfile_%d", getpid());
+-	SAFE_FILE_PRINTF(fname, "1");
++	ovl_mounted = TST_MOUNT_OVERLAY();
+ }
+ 
+ static void cleanup(void)
+ {
+ 	cleanup_fanotify_groups();
+ 
+-	SAFE_CHDIR("../");
+-
+-	if (mount_created && tst_umount(MOUNT_NAME) < 0)
+-		tst_brk(TBROK | TERRNO, "umount failed");
++	if (ovl_mounted)
++		SAFE_UMOUNT(OVL_MNT);
+ }
+ 
+ static struct tst_test test = {
+-	.test_all = test01,
++	.test = test_fanotify,
++	.tcnt = ARRAY_SIZE(tcases),
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.needs_tmpdir = 1,
+-	.needs_root = 1
++	.needs_root = 1,
++	.mount_device = 1,
++	.mntpoint = mntpoint,
+ };
+ 
+ #else
 -- 
-2.16.4
+2.17.1
 
