@@ -1,182 +1,227 @@
 From: Christian Amann <camann@suse.com>
-Date: Tue,  4 Jun 2019 13:47:02 +0200
-Subject: [LTP] [PATCH v2 4/4] syscalls/pidfd_send_signal03
-In-Reply-To: <20190604114702.28255-1-camann@suse.com>
-References: <20190604114702.28255-1-camann@suse.com>
-Message-ID: <20190604114702.28255-3-camann@suse.com>
+Date: Tue,  4 Jun 2019 13:47:00 +0200
+Subject: [LTP] [PATCH v2 2/4] syscalls/pidfd_send_signal01
+Message-ID: <20190604114702.28255-1-camann@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add testcase to check if the syscall will send a signal
-to a process with the same PID as the targeted process.
+Add testcase to check if pidfd_send_signal() can provide
+the same functionality as rt_sigqueueinfo().
 
 Signed-off-by: Christian Amann <camann@suse.com>
 ---
- runtest/syscalls                                   |   1 +
+ configure.ac                                       |   2 +
+ runtest/syscalls                                   |   2 +
  .../kernel/syscalls/pidfd_send_signal/.gitignore   |   1 +
- .../pidfd_send_signal/pidfd_send_signal03.c        | 142 +++++++++++++++++++++
- 3 files changed, 144 insertions(+)
- create mode 100644 testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c
+ .../kernel/syscalls/pidfd_send_signal/Makefile     |  14 +++
+ .../syscalls/pidfd_send_signal/pidfd_send_signal.h |  27 ++++++
+ .../pidfd_send_signal/pidfd_send_signal01.c        | 108 +++++++++++++++++++++
+ 6 files changed, 154 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/pidfd_send_signal/.gitignore
+ create mode 100644 testcases/kernel/syscalls/pidfd_send_signal/Makefile
+ create mode 100644 testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal.h
+ create mode 100644 testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c
 
+diff --git a/configure.ac b/configure.ac
+index 5a3dc5b62..b3e108306 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -71,6 +71,7 @@ AC_CHECK_FUNCS([ \
+     mkdirat \
+     mknodat \
+     openat \
++    pidfd_send_signal \
+     preadv \
+     preadv2 \
+     profil \
+@@ -237,6 +238,7 @@ else
+ fi
+ AC_DEFINE_UNQUOTED(NUMA_ERROR_MSG, ["$numa_error_msg"], [Error message when no NUMA support])
+ 
++
+ LTP_CHECK_SYSCALL_PERF_EVENT_OPEN
+ LTP_CHECK_SYSCALL_QUOTACTL
+ LTP_CHECK_SYSCALL_SIGNALFD
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 90a1cf8e6..7274c7741 100644
+index 762b15b1f..bd71a12f8 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -838,6 +838,7 @@ personality02 personality02
+@@ -836,6 +836,8 @@ pause03 pause03
+ personality01 personality01
+ personality02 personality02
  
- pidfd_send_signal01 pidfd_send_signal01
- pidfd_send_signal02 pidfd_send_signal02
-+pidfd_send_signal03 pidfd_send_signal03
- 
++pidfd_send_signal01 pidfd_send_signal01
++
  pipe01 pipe01
  pipe02 pipe02
+ pipe03 pipe03
 diff --git a/testcases/kernel/syscalls/pidfd_send_signal/.gitignore b/testcases/kernel/syscalls/pidfd_send_signal/.gitignore
-index 6ea6401a8..cba7d50a4 100644
---- a/testcases/kernel/syscalls/pidfd_send_signal/.gitignore
-+++ b/testcases/kernel/syscalls/pidfd_send_signal/.gitignore
-@@ -1,2 +1,3 @@
- /pidfd_send_signal01
- /pidfd_send_signal02
-+/pidfd_send_signal03
-diff --git a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c
 new file mode 100644
-index 000000000..a04d59ef2
+index 000000000..7ccbf2d80
 --- /dev/null
-+++ b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c
-@@ -0,0 +1,142 @@
++++ b/testcases/kernel/syscalls/pidfd_send_signal/.gitignore
+@@ -0,0 +1 @@
++/pidfd_send_signal01
+diff --git a/testcases/kernel/syscalls/pidfd_send_signal/Makefile b/testcases/kernel/syscalls/pidfd_send_signal/Makefile
+new file mode 100644
+index 000000000..23e4ec478
+--- /dev/null
++++ b/testcases/kernel/syscalls/pidfd_send_signal/Makefile
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++#
++#   Copyright (c) 2019 SUSE LLC
++#
++#   Author: Christian Amann <camann@suse.com>
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
++
++pidfd_send_signal01: CFLAGS += -pthread
+diff --git a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal.h b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal.h
+new file mode 100644
+index 000000000..aa883c932
+--- /dev/null
++++ b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal.h
+@@ -0,0 +1,27 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 SUSE LLC
++ * Author: Christian Amann <camann@suse.com>
++ */
++
++#ifndef PIDFD_SEND_SIGNAL_H
++#define PIDFD_SEND_SIGNAL_H
++
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++
++static void check_syscall_support(void)
++{
++	/* allow the tests to fail early */
++	tst_syscall(__NR_pidfd_send_signal);
++}
++
++#ifndef HAVE_PIDFD_SEND_SIGNAL
++static int pidfd_send_signal(int pidfd, int sig, siginfo_t *info,
++				 unsigned int flags)
++{
++	return tst_syscall(__NR_pidfd_send_signal, pidfd, sig, info, flags);
++}
++#endif /* HAVE_PIDFD_SEND_SIGNAL */
++
++#endif /* PIDFD_SEND_SIGNAL_H */
+diff --git a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c
+new file mode 100644
+index 000000000..f44fce013
+--- /dev/null
++++ b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c
+@@ -0,0 +1,108 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2019 SUSE LLC
 + * Author: Christian Amann <camann@suse.com>
 + */
 +/*
-+ * This test checks if the pidfd_send_signal syscall wrongfully sends
-+ * a signal to a new process which inherited the PID of the actual
-+ * target process.
-+ * In order to do so it is necessary to start a process with a pre-
-+ * determined PID. This is accomplished by writing to the
-+ * /proc/sys/kernel/ns_last_pid file.
-+ * By utilizing this, this test forks two children with the same PID.
-+ * It is then checked, if the syscall will send a signal to the second
-+ * child using the pidfd of the first one.
++ * Tests if the pidfd_send_signal syscall behaves
++ * like rt_sigqueueinfo when a pointer to a siginfo_t
++ * struct is passed.
 + */
 +
 +#define _GNU_SOURCE
 +
 +#include <signal.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include "pidfd_send_signal.h"
++#include <stdlib.h>
 +#include "tst_safe_pthread.h"
-+//#include "tst_safe_file_ops.h"
++#include "pidfd_send_signal.h"
 +
-+#define PIDTRIES	3
++#define SIGNAL  SIGUSR1
++#define DATA	777
 +
-+static char *last_pid_file;
-+static int pidfd, new_pidfd;
-+static int old_inode, new_inode;
++static struct sigaction *sig_action;
++static int sig_rec;
++static siginfo_t *uinfo;
++static int pidfd;
 +
-+static int get_inode_number(int fd)
++static void received_signal(int sig, siginfo_t *info, void *ucontext)
 +{
-+	struct stat file_stat;
++	if (info && ucontext) {
++		if (sig == SIGNAL && uinfo->si_value.sival_int == DATA) {
++			tst_res(TPASS, "Received correct signal and data!");
++			sig_rec = 1;
++		} else {
++			tst_res(TFAIL, "Received wrong signal and/or data!");
++		}
++	} else {
++		tst_res(TFAIL, "Signal handling went wrong!");
++	}
++}
 +
-+	SAFE_FSTAT(fd, &file_stat);
-+	return file_stat.st_ino;
++static void *handle_thread(void *arg)
++{
++	SAFE_SIGACTION(SIGNAL, sig_action, NULL);
++	TST_CHECKPOINT_WAKE_AND_WAIT(0);
++	return arg;
 +}
 +
 +static void verify_pidfd_send_signal(void)
 +{
-+	pid_t pid, new_pid;
-+	char pid_filename[32];
-+	char pid_str[16];
-+	int i, fail;
++	pthread_t thr;
 +
-+	fail = 1;
-+	for (i = 0; i < PIDTRIES; i++) {
-+		pid = SAFE_FORK();
-+		if (pid == 0) {
-+			TST_CHECKPOINT_WAIT(0);
-+			return;
-+		}
++	SAFE_PTHREAD_CREATE(&thr, NULL, handle_thread, NULL);
 +
-+		sprintf(pid_filename, "/proc/%d", pid);
-+		pidfd = SAFE_OPEN(pid_filename, O_DIRECTORY | O_CLOEXEC);
-+		old_inode = get_inode_number(pidfd);
++	TST_CHECKPOINT_WAIT(0);
 +
-+		TST_CHECKPOINT_WAKE(0);
-+		tst_reap_children();
-+
-+		/* Manipulate PID for next process */
-+		sprintf(pid_str, "%d", pid - 1);
-+		SAFE_FILE_PRINTF(last_pid_file, pid_str);
-+
-+		new_pid = SAFE_FORK();
-+		if (new_pid == 0) {
-+			TST_CHECKPOINT_WAIT(0);
-+			return;
-+		}
-+
-+		if (new_pid == pid) {
-+			new_pidfd = SAFE_OPEN(pid_filename,
-+					O_DIRECTORY | O_CLOEXEC);
-+			new_inode = get_inode_number(new_pidfd);
-+			SAFE_CLOSE(new_pidfd);
-+			fail = 0;
-+			break;
-+		}
-+
-+		if (i < PIDTRIES) {
-+			tst_res(TINFO,
-+				"Failed to set correct PID, trying again...");
-+		}
-+		SAFE_CLOSE(pidfd);
-+		TST_CHECKPOINT_WAKE(0);
-+		tst_reap_children();
-+	}
-+	if (fail) {
-+		tst_brk(TBROK,
-+			"Could not set new child to same PID as the old one!");
-+	}
-+	if (old_inode == new_inode) {
-+		tst_res(TWARN,
-+			"File descriptor of new process points to the inode "
-+			"of the old process!");
++	TEST(pidfd_send_signal(pidfd, SIGNAL, uinfo, 0));
++	if (TST_RET != 0) {
++		tst_res(TFAIL | TTERRNO, "pidfd_send_signal() failed");
++		return;
 +	}
 +
-+	TEST(pidfd_send_signal(pidfd, SIGUSR1, NULL, 0));
-+	if (TST_RET == -1 && TST_ERR == ESRCH) {
-+		tst_res(TPASS,
-+			"Did not send signal to wrong process with same PID!");
-+	} else {
-+		tst_res(TFAIL | TTERRNO,
-+			"pidf_send_signal() ended unexpectedly - return value: %ld, error",
-+			TST_RET);
-+	}
 +	TST_CHECKPOINT_WAKE(0);
-+	tst_reap_children();
++	SAFE_PTHREAD_JOIN(thr, NULL);
 +
-+	SAFE_CLOSE(pidfd);
++	if (sig_rec) {
++		tst_res(TPASS,
++			"pidfd_send_signal() behaved like rt_sigqueueinfo()");
++	}
 +}
 +
 +static void setup(void)
 +{
 +	check_syscall_support();
 +
-+	last_pid_file = "/proc/sys/kernel/ns_last_pid";
-+	if (access(last_pid_file, F_OK) == -1) {
-+		tst_brk(TCONF, "%s does not exist, cannot set PIDs",
-+			last_pid_file);
-+	}
++	pidfd = SAFE_OPEN("/proc/self", O_DIRECTORY | O_CLOEXEC);
++
++	sig_action = SAFE_MALLOC(sizeof(struct sigaction));
++
++	memset(sig_action, 0, sizeof(*sig_action));
++	sig_action->sa_sigaction = received_signal;
++	sig_action->sa_flags = SA_SIGINFO;
++
++	uinfo = SAFE_MALLOC(sizeof(siginfo_t));
++
++	memset(uinfo, 0, sizeof(*uinfo));
++	uinfo->si_signo = SIGNAL;
++	uinfo->si_code = SI_QUEUE;
++	uinfo->si_pid = getpid();
++	uinfo->si_uid = getuid();
++	uinfo->si_value.sival_int = DATA;
++
++	sig_rec = 0;
 +}
 +
 +static void cleanup(void)
 +{
-+	tst_reap_children();
-+	if (new_pidfd > 0)
-+		SAFE_CLOSE(new_pidfd);
++	free(uinfo);
++	free(sig_action);
 +	if (pidfd > 0)
 +		SAFE_CLOSE(pidfd);
 +}
@@ -185,9 +230,7 @@ index 000000000..a04d59ef2
 +	.test_all = verify_pidfd_send_signal,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.needs_root = 1,
 +	.needs_checkpoints = 1,
-+	.forks_child = 1,
 +};
 -- 
 2.16.4
