@@ -1,69 +1,37 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue,  4 Jun 2019 18:10:35 +0300
-Subject: [LTP] [PATCH v2 2/2] fanotify06: Close all file descriptors of read
-	events
-In-Reply-To: <20190604151035.6123-1-amir73il@gmail.com>
-References: <20190604151035.6123-1-amir73il@gmail.com>
-Message-ID: <20190604151035.6123-2-amir73il@gmail.com>
+From: Murphy Zhou <jencce.kernel@gmail.com>
+Date: Wed,  5 Jun 2019 12:42:15 +0800
+Subject: [LTP] [PATCH v2] syscalls/preadv2/preadv203: set mount_device flag
+In-Reply-To: <20190604082331.uunxtzshdgcnv4xg@XZHOUW.usersys.redhat.com>
+References: <20190604082331.uunxtzshdgcnv4xg@XZHOUW.usersys.redhat.com>
+Message-ID: <20190605044215.19448-1-jencce.kernel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-With overlayfs test case on kernel v4.19, we get extra events.
-If we do not close the event->fd file descriptros of all the events
-that we read, overlayfs will fail to unmount at the end of the test
-and test will retry un-mounting for a while.
+Now the tests are running in MOUNTPOINT without it mounted.
+Fails on ext2:
+    preadv203.c does not set mount_device, which makes BROK:
+      preadv203.c:122: BROK: preadv2() failed: EOPNOTSUPP
 
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Murphy Zhou <jencce.kernel@gmail.com>
 ---
- .../kernel/syscalls/fanotify/fanotify06.c      | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ testcases/kernel/syscalls/preadv2/preadv203.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify06.c b/testcases/kernel/syscalls/fanotify/fanotify06.c
-index e053da0e5..273c1f0c4 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify06.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify06.c
-@@ -148,6 +148,17 @@ static void verify_event(int group, struct fanotify_event_metadata *event)
- 	}
- }
- 
-+/* Close all file descriptors of read events */
-+static void close_events_fd(struct fanotify_event_metadata *event, int buflen)
-+{
-+	while (buflen >= (int)FAN_EVENT_METADATA_LEN) {
-+		if (event->fd != FAN_NOFD)
-+			SAFE_CLOSE(event->fd);
-+		buflen -= (int)FAN_EVENT_METADATA_LEN;
-+		event++;
-+	}
-+}
-+
- void test_fanotify(unsigned int n)
- {
- 	int ret;
-@@ -198,17 +209,16 @@ void test_fanotify(unsigned int n)
- 		} else {
- 			verify_event(i, event);
- 		}
--		if (event->fd != FAN_NOFD)
--			SAFE_CLOSE(event->fd);
-+		close_events_fd(event, ret);
- 	}
-+
- 	for (p = 1; p < FANOTIFY_PRIORITIES; p++) {
- 		for (i = 0; i < GROUPS_PER_PRIO; i++) {
- 			ret = read(fd_notify[p][i], event_buf, EVENT_BUF_LEN);
- 			if (ret > 0) {
- 				tst_res(TFAIL, "group %d got event",
- 					p*GROUPS_PER_PRIO + i);
--				if (event->fd != FAN_NOFD)
--					SAFE_CLOSE(event->fd);
-+				close_events_fd((void *)event_buf, ret);
- 			} else if (ret == 0) {
- 				tst_brk(TBROK, "zero length "
- 					"read from fanotify fd");
+diff --git a/testcases/kernel/syscalls/preadv2/preadv203.c b/testcases/kernel/syscalls/preadv2/preadv203.c
+index 810d1e8db..e4f68a51b 100644
+--- a/testcases/kernel/syscalls/preadv2/preadv203.c
++++ b/testcases/kernel/syscalls/preadv2/preadv203.c
+@@ -261,6 +261,7 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.test_all = verify_preadv2,
+ 	.mntpoint = MNTPOINT,
++	.mount_device = 1,
+ 	.all_filesystems = 1,
+ 	.needs_tmpdir = 1,
+ 	.needs_root = 1,
 -- 
-2.17.1
+2.21.0
 
