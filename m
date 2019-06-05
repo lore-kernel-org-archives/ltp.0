@@ -1,7 +1,9 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed,  5 Jun 2019 09:21:25 +0200
-Subject: [LTP] [PATCH 1/2] inotify: Add SAFE_MYINOTIFY_INIT{,1}() helpers
-Message-ID: <20190605072126.19856-1-pvorel@suse.cz>
+Date: Wed,  5 Jun 2019 09:21:26 +0200
+Subject: [LTP] [PATCH 2/2] inotify: Add SAFE_MYINOTIFY_ADD_WATCH() helper
+In-Reply-To: <20190605072126.19856-1-pvorel@suse.cz>
+References: <20190605072126.19856-1-pvorel@suse.cz>
+Message-ID: <20190605072126.19856-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,285 +14,217 @@ Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
 Hi,
 
-should there be inc/tst_safe_inotify.h and
-lib/tst_safe_inotify.c? I didn't do that as that would link to
-everything, which is waste of space.
+with reap_wd defined in inotify.h there could be also SAFE_MYINOTIFY_RM_WATCH().
 
 Kind regards,
 Petr
 ---
- testcases/kernel/syscalls/inotify/inotify.h   | 51 ++++++++++---------
- testcases/kernel/syscalls/inotify/inotify01.c | 10 +---
- testcases/kernel/syscalls/inotify/inotify02.c | 10 +---
- testcases/kernel/syscalls/inotify/inotify03.c | 10 +---
- testcases/kernel/syscalls/inotify/inotify04.c | 11 +---
- testcases/kernel/syscalls/inotify/inotify05.c | 11 +---
- testcases/kernel/syscalls/inotify/inotify06.c |  4 +-
- testcases/kernel/syscalls/inotify/inotify07.c | 11 +---
- testcases/kernel/syscalls/inotify/inotify08.c | 11 +---
- testcases/kernel/syscalls/inotify/inotify09.c |  4 +-
- 10 files changed, 35 insertions(+), 98 deletions(-)
+ testcases/kernel/syscalls/inotify/inotify.h   | 13 +++++++++++++
+ testcases/kernel/syscalls/inotify/inotify01.c |  9 ++-------
+ testcases/kernel/syscalls/inotify/inotify02.c |  9 ++-------
+ testcases/kernel/syscalls/inotify/inotify03.c |  7 +------
+ testcases/kernel/syscalls/inotify/inotify04.c | 13 ++-----------
+ testcases/kernel/syscalls/inotify/inotify05.c |  8 +-------
+ testcases/kernel/syscalls/inotify/inotify07.c |  8 ++------
+ testcases/kernel/syscalls/inotify/inotify08.c | 11 +++--------
+ testcases/kernel/syscalls/inotify/inotify09.c |  4 +---
+ 9 files changed, 27 insertions(+), 55 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/inotify/inotify.h b/testcases/kernel/syscalls/inotify/inotify.h
-index 0298ca715..c82a7e75e 100644
+index c82a7e75e..57669bc15 100644
 --- a/testcases/kernel/syscalls/inotify/inotify.h
 +++ b/testcases/kernel/syscalls/inotify/inotify.h
-@@ -1,27 +1,8 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * inotify testcase common definitions.
-  *
-- * Copyright (c) 2012 Linux Test Project.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-+ * Copyright (c) 2012-2019 Linux Test Project.  All Rights Reserved.
-  * Ngie Cooper, April 2012
-  */
+@@ -50,4 +50,17 @@ static inline int safe_myinotify_init(const char *file, const int lineno, int fd
+ #define SAFE_MYINOTIFY_INIT1(flags) \
+ 	safe_myinotify_init(__FILE__, __LINE__, myinotify_init1(flags))
  
-@@ -33,20 +14,40 @@
- /* inotify(7) wrappers */
- 
- #if __NR_inotify_init != __LTP__NR_INVALID_SYSCALL
--#define	myinotify_init() \
-+#define myinotify_init() \
- 	tst_syscall(__NR_inotify_init)
- #else
--#define	myinotify_init() \
-+#define myinotify_init() \
- 	tst_syscall(__NR_inotify_init1, 0)
- #endif
- 
- #define myinotify_init1(flags) \
- 	tst_syscall(__NR_inotify_init1, flags)
- 
--#define	myinotify_add_watch(fd, pathname, mask)	\
-+#define myinotify_add_watch(fd, pathname, mask)	\
- 	tst_syscall(__NR_inotify_add_watch, fd, pathname, mask)
- 
--#define	myinotify_rm_watch(fd, wd) \
-+#define myinotify_rm_watch(fd, wd) \
- 	tst_syscall(__NR_inotify_rm_watch, fd, wd)
- 
-+static inline int safe_myinotify_init(const char *file, const int lineno, int fd)
++static inline int safe_myinotify_watch(const char *file, const int lineno, int wd, int fd, const char* fname, const char* mask)
 +{
-+	if (fd < 0) {
-+		if (errno == ENOSYS) {
-+			tst_brk(TCONF, "%s:%d: inotify is not configured in this kernel",
-+				file, lineno);
-+		} else {
-+			tst_brk(TBROK | TERRNO, "%s:%d: inotify_init failed",
-+				file, lineno);
-+		}
++	if (wd < 0) {
++		tst_brk(TBROK | TERRNO,
++			"%s:%d: inotify_add_watch (%d, %s, %s) failed.",
++			file, lineno, fd, fname, mask);
 +	}
-+	return fd;
++	return wd;
 +}
 +
-+#define SAFE_MYINOTIFY_INIT() \
-+	safe_myinotify_init(__FILE__, __LINE__, myinotify_init())
-+
-+#define SAFE_MYINOTIFY_INIT1(flags) \
-+	safe_myinotify_init(__FILE__, __LINE__, myinotify_init1(flags))
++#define SAFE_MYINOTIFY_ADD_WATCH(fd, pathname, mask)	\
++	safe_myinotify_watch(__FILE__, __LINE__, myinotify_add_watch(fd, pathname, mask), fd, pathname, #mask)
 +
  #endif /* _INOTIFY_H */
 diff --git a/testcases/kernel/syscalls/inotify/inotify01.c b/testcases/kernel/syscalls/inotify/inotify01.c
-index f0cf51297..f08a75dcf 100644
+index f08a75dcf..eee98b4fa 100644
 --- a/testcases/kernel/syscalls/inotify/inotify01.c
 +++ b/testcases/kernel/syscalls/inotify/inotify01.c
-@@ -167,15 +167,7 @@ static void setup(void)
+@@ -169,13 +169,8 @@ static void setup(void)
  
- 	SAFE_FILE_PRINTF(fname, "%s", fname);
+ 	fd_notify = SAFE_MYINOTIFY_INIT();
  
--	if ((fd_notify = myinotify_init()) < 0) {
--		if (errno == ENOSYS) {
--			tst_brk(TCONF,
--				"inotify is not configured in this kernel.");
--		} else {
--			tst_brk(TBROK | TERRNO,
--				"inotify_init failed");
--		}
--	}
-+	fd_notify = SAFE_MYINOTIFY_INIT();
- 
- 	if ((wd = myinotify_add_watch(fd_notify, fname, IN_ALL_EVENTS)) < 0) {
- 		tst_brk(TBROK | TERRNO,
-diff --git a/testcases/kernel/syscalls/inotify/inotify02.c b/testcases/kernel/syscalls/inotify/inotify02.c
-index 02eb85764..ca70b4e9e 100644
---- a/testcases/kernel/syscalls/inotify/inotify02.c
-+++ b/testcases/kernel/syscalls/inotify/inotify02.c
-@@ -234,15 +234,7 @@ void verify_inotify(void)
- 
- static void setup(void)
- {
--	if ((fd_notify = myinotify_init()) < 0) {
--		if (errno == ENOSYS) {
--			tst_brk(TCONF,
--				"inotify is not configured in this kernel.");
--		} else {
--			tst_brk(TBROK | TERRNO,
--				"inotify_init () failed");
--		}
--	}
-+	fd_notify = SAFE_MYINOTIFY_INIT();
- 
- 	if ((wd = myinotify_add_watch(fd_notify, ".", IN_ALL_EVENTS)) < 0) {
- 		tst_brk(TBROK | TERRNO,
-diff --git a/testcases/kernel/syscalls/inotify/inotify03.c b/testcases/kernel/syscalls/inotify/inotify03.c
-index ff7419944..772623125 100644
---- a/testcases/kernel/syscalls/inotify/inotify03.c
-+++ b/testcases/kernel/syscalls/inotify/inotify03.c
-@@ -171,15 +171,7 @@ static void setup(void)
- 	/* close the file we have open */
- 	SAFE_CLOSE(fd);
- 
--	fd_notify = myinotify_init();
--	if (fd_notify < 0) {
--		if (errno == ENOSYS)
--			tst_brk(TCONF,
--				"inotify is not configured in this kernel.");
--		else
--			tst_brk(TBROK | TERRNO,
--				"inotify_init failed");
--	}
-+	fd_notify = SAFE_MYINOTIFY_INIT();
- 
- 	tst_umount(mntpoint);
- 	mount_flag = 0;
-diff --git a/testcases/kernel/syscalls/inotify/inotify04.c b/testcases/kernel/syscalls/inotify/inotify04.c
-index 36673d6eb..6adb41701 100644
---- a/testcases/kernel/syscalls/inotify/inotify04.c
-+++ b/testcases/kernel/syscalls/inotify/inotify04.c
-@@ -95,16 +95,7 @@ static void cleanup(void)
- 
- static void setup(void)
- {
--	fd_notify = myinotify_init();
--	if (fd_notify == -1) {
--		if (errno == ENOSYS) {
--			tst_brk(TCONF,
--				"inotify is not configured in this kernel.");
--		} else {
--			tst_brk(TBROK | TERRNO,
--				"inotify_init failed");
--		}
--	}
-+	fd_notify = SAFE_MYINOTIFY_INIT();
+-	if ((wd = myinotify_add_watch(fd_notify, fname, IN_ALL_EVENTS)) < 0) {
+-		tst_brk(TBROK | TERRNO,
+-			"inotify_add_watch (%d, %s, IN_ALL_EVENTS) failed",
+-			fd_notify, fname);
+-		reap_wd = 1;
+-	};
+-
++	wd = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, fname, IN_ALL_EVENTS);
++	reap_wd = 1;
  }
  
- void verify_inotify(void)
-diff --git a/testcases/kernel/syscalls/inotify/inotify05.c b/testcases/kernel/syscalls/inotify/inotify05.c
-index 2d8897e5d..b5813b25b 100644
---- a/testcases/kernel/syscalls/inotify/inotify05.c
-+++ b/testcases/kernel/syscalls/inotify/inotify05.c
-@@ -143,16 +143,7 @@ static void setup(void)
- 	SAFE_WRITE(1, fd, buf, BUF_SIZE);
- 	SAFE_CLOSE(fd);
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/inotify/inotify02.c b/testcases/kernel/syscalls/inotify/inotify02.c
+index ca70b4e9e..21e7fb3e8 100644
+--- a/testcases/kernel/syscalls/inotify/inotify02.c
++++ b/testcases/kernel/syscalls/inotify/inotify02.c
+@@ -236,12 +236,8 @@ static void setup(void)
+ {
+ 	fd_notify = SAFE_MYINOTIFY_INIT();
  
--	fd_notify = myinotify_init1(O_NONBLOCK);
--	if (fd_notify < 0) {
--		if (errno == ENOSYS) {
--			tst_brk(TCONF,
--				"inotify is not configured in this kernel.");
--		} else {
--			tst_brk(TBROK | TERRNO,
--				"inotify_init failed");
--		}
--	}
-+	fd_notify = SAFE_MYINOTIFY_INIT1(O_NONBLOCK);
+-	if ((wd = myinotify_add_watch(fd_notify, ".", IN_ALL_EVENTS)) < 0) {
+-		tst_brk(TBROK | TERRNO,
+-			 "inotify_add_watch (%d, \".\", IN_ALL_EVENTS) failed",
+-			 fd_notify);
+-		reap_wd = 1;
+-	};
++	wd = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, ".", IN_ALL_EVENTS);
++	reap_wd = 1;
+ }
  
- 	wd = myinotify_add_watch(fd_notify, fname, IN_ALL_EVENTS);
- 	if (wd < 0) {
-diff --git a/testcases/kernel/syscalls/inotify/inotify06.c b/testcases/kernel/syscalls/inotify/inotify06.c
-index 4475f5ea4..8ea504952 100644
---- a/testcases/kernel/syscalls/inotify/inotify06.c
-+++ b/testcases/kernel/syscalls/inotify/inotify06.c
-@@ -82,9 +82,7 @@ static void verify_inotify(void)
+ static void cleanup(void)
+@@ -249,7 +245,6 @@ static void cleanup(void)
+ 	if (reap_wd && myinotify_rm_watch(fd_notify, wd) < 0) {
+ 		tst_res(TWARN,
+ 			"inotify_rm_watch (%d, %d) failed,", fd_notify, wd);
+-
  	}
  
- 	for (tests = 0; tests < TEARDOWNS; tests++) {
--		inotify_fd = myinotify_init1(O_NONBLOCK);
--		if (inotify_fd < 0)
--			tst_brk(TBROK | TERRNO, "inotify_init failed");
-+		inotify_fd = SAFE_MYINOTIFY_INIT1(O_NONBLOCK);
+ 	if (fd_notify > 0)
+diff --git a/testcases/kernel/syscalls/inotify/inotify03.c b/testcases/kernel/syscalls/inotify/inotify03.c
+index 772623125..7363df01b 100644
+--- a/testcases/kernel/syscalls/inotify/inotify03.c
++++ b/testcases/kernel/syscalls/inotify/inotify03.c
+@@ -77,12 +77,7 @@ void verify_inotify(void)
+ 	SAFE_MOUNT(tst_device->dev, mntpoint, tst_device->fs_type, 0, NULL);
+ 	mount_flag = 1;
  
- 		for (i = 0; i < FILES; i++) {
- 			/*
+-	wd = myinotify_add_watch(fd_notify, fname, IN_ALL_EVENTS);
+-	if (wd < 0) {
+-		tst_brk(TBROK | TERRNO,
+-			"inotify_add_watch (%d, %s, IN_ALL_EVENTS) failed.",
+-			fd_notify, fname);
+-	}
++	wd = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, fname, IN_ALL_EVENTS);
+ 
+ 	event_set[test_cnt] = IN_UNMOUNT;
+ 	test_cnt++;
+diff --git a/testcases/kernel/syscalls/inotify/inotify04.c b/testcases/kernel/syscalls/inotify/inotify04.c
+index 6adb41701..2cc20fb61 100644
+--- a/testcases/kernel/syscalls/inotify/inotify04.c
++++ b/testcases/kernel/syscalls/inotify/inotify04.c
+@@ -106,19 +106,10 @@ void verify_inotify(void)
+ 	SAFE_MKDIR(TEST_DIR, 00700);
+ 	close(SAFE_CREAT(TEST_FILE, 00600));
+ 
+-	wd_dir = myinotify_add_watch(fd_notify, TEST_DIR, IN_ALL_EVENTS);
+-	if (wd_dir == -1) {
+-		tst_brk(TBROK | TERRNO,
+-			"inotify_add_watch(%d, \"%s\", IN_ALL_EVENTS) [1] failed",
+-			fd_notify, TEST_DIR);
+-	}
++	wd_dir = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, TEST_DIR, IN_ALL_EVENTS);
+ 	reap_wd_dir = 1;
+ 
+-	wd_file = myinotify_add_watch(fd_notify, TEST_FILE, IN_ALL_EVENTS);
+-	if (wd_file == -1)
+-		tst_brk(TBROK | TERRNO,
+-			"inotify_add_watch(%d, \"%s\", IN_ALL_EVENTS) [2] failed",
+-			fd_notify, TEST_FILE);
++	wd_file = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, TEST_FILE, IN_ALL_EVENTS);
+ 	reap_wd_file = 1;
+ 
+ 	SAFE_RMDIR(TEST_DIR);
+diff --git a/testcases/kernel/syscalls/inotify/inotify05.c b/testcases/kernel/syscalls/inotify/inotify05.c
+index b5813b25b..fa45d09bf 100644
+--- a/testcases/kernel/syscalls/inotify/inotify05.c
++++ b/testcases/kernel/syscalls/inotify/inotify05.c
+@@ -145,12 +145,7 @@ static void setup(void)
+ 
+ 	fd_notify = SAFE_MYINOTIFY_INIT1(O_NONBLOCK);
+ 
+-	wd = myinotify_add_watch(fd_notify, fname, IN_ALL_EVENTS);
+-	if (wd < 0) {
+-		tst_brk(TBROK | TERRNO,
+-			"inotify_add_watch (%d, %s, IN_ALL_EVENTS) failed",
+-			fd_notify, fname);
+-	};
++	wd = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, fname, IN_ALL_EVENTS);
+ 
+ 	SAFE_FILE_SCANF("/proc/sys/fs/inotify/max_queued_events",
+ 			"%d", &max_events);
+@@ -161,7 +156,6 @@ static void cleanup(void)
+ 	if (fd_notify > 0 && myinotify_rm_watch(fd_notify, wd) == -1) {
+ 		tst_res(TWARN | TERRNO, "inotify_rm_watch (%d, %d) failed",
+ 			fd_notify, wd);
+-
+ 	}
+ 
+ 	if (fd_notify > 0)
 diff --git a/testcases/kernel/syscalls/inotify/inotify07.c b/testcases/kernel/syscalls/inotify/inotify07.c
-index ba17d2081..1111b43bf 100644
+index 1111b43bf..7099e8dbf 100644
 --- a/testcases/kernel/syscalls/inotify/inotify07.c
 +++ b/testcases/kernel/syscalls/inotify/inotify07.c
-@@ -165,16 +165,7 @@ static void setup(void)
- 	SAFE_TOUCH(OVL_LOWER"/"DIR_NAME"/"FILE_NAME, 0644, NULL);
- 	SAFE_MOUNT_OVERLAY();
- 
--	fd_notify = myinotify_init1(O_NONBLOCK);
--	if (fd_notify < 0) {
--		if (errno == ENOSYS) {
--			tst_brk(TCONF,
--				"inotify is not configured in this kernel");
--		} else {
--			tst_brk(TBROK | TERRNO,
--				"inotify_init () failed");
--		}
--	}
-+	fd_notify = SAFE_MYINOTIFY_INIT1(O_NONBLOCK);
+@@ -168,12 +168,8 @@ static void setup(void)
+ 	fd_notify = SAFE_MYINOTIFY_INIT1(O_NONBLOCK);
  
  	/* Setup a watch on an overlayfs lower directory */
- 	if ((wd = myinotify_add_watch(fd_notify, DIR_PATH, IN_ALL_EVENTS)) < 0) {
+-	if ((wd = myinotify_add_watch(fd_notify, DIR_PATH, IN_ALL_EVENTS)) < 0) {
+-		tst_brk(TBROK | TERRNO,
+-			"inotify_add_watch (%d, " DIR_PATH ", IN_ALL_EVENTS) failed",
+-			fd_notify);
+-		reap_wd = 1;
+-	};
++	wd = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, DIR_PATH, IN_ALL_EVENTS);
++	reap_wd = 1;
+ 
+ 	SAFE_STAT(DIR_PATH, &buf);
+ 	tst_res(TINFO, DIR_PATH " ino=%lu", buf.st_ino);
 diff --git a/testcases/kernel/syscalls/inotify/inotify08.c b/testcases/kernel/syscalls/inotify/inotify08.c
-index b295ba48e..ee8e44fe1 100644
+index ee8e44fe1..73fdf497f 100644
 --- a/testcases/kernel/syscalls/inotify/inotify08.c
 +++ b/testcases/kernel/syscalls/inotify/inotify08.c
-@@ -157,16 +157,7 @@ static void setup(void)
- 	SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
- 	SAFE_MOUNT_OVERLAY();
- 
--	fd_notify = myinotify_init1(O_NONBLOCK);
--	if (fd_notify < 0) {
--		if (errno == ENOSYS) {
--			tst_brk(TCONF,
--				"inotify is not configured in this kernel");
--		} else {
--			tst_brk(TBROK | TERRNO,
--				"inotify_init () failed");
--		}
--	}
-+	fd_notify = SAFE_MYINOTIFY_INIT1(O_NONBLOCK);
+@@ -160,14 +160,9 @@ static void setup(void)
+ 	fd_notify = SAFE_MYINOTIFY_INIT1(O_NONBLOCK);
  
  	/* Setup a watch on an overlayfs lower file */
- 	if ((wd = myinotify_add_watch(fd_notify, FILE_PATH,
+-	if ((wd = myinotify_add_watch(fd_notify, FILE_PATH,
+-				IN_ATTRIB | IN_OPEN | IN_CLOSE_WRITE)) < 0) {
+-		tst_brk(TBROK | TERRNO,
+-			"inotify_add_watch (%d, " FILE_PATH ", "
+-			"IN_ATTRIB | IN_OPEN | IN_CLOSE_WRITE) failed",
+-			fd_notify);
+-		reap_wd = 1;
+-	};
++	wd = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, FILE_PATH,
++				IN_ATTRIB | IN_OPEN | IN_CLOSE_WRITE);
++	reap_wd = 1;
+ 
+ 	SAFE_STAT(FILE_PATH, &buf);
+ 	tst_res(TINFO, FILE_PATH " ino=%lu, dev=%u:%u", buf.st_ino,
 diff --git a/testcases/kernel/syscalls/inotify/inotify09.c b/testcases/kernel/syscalls/inotify/inotify09.c
-index f587a3a3c..cf2d38f27 100644
+index cf2d38f27..e6fed7d9d 100644
 --- a/testcases/kernel/syscalls/inotify/inotify09.c
 +++ b/testcases/kernel/syscalls/inotify/inotify09.c
-@@ -85,9 +85,7 @@ static void verify_inotify(void)
- 	int inotify_fd;
- 	int wd;
- 
--	inotify_fd = myinotify_init1(0);
--	if (inotify_fd < 0)
--		tst_brk(TBROK | TERRNO, "inotify_init failed");
-+	inotify_fd = SAFE_MYINOTIFY_INIT1(0);
+@@ -89,9 +89,7 @@ static void verify_inotify(void)
  
  	tst_fzsync_pair_reset(&fzsync_pair, write_seek);
  	while (tst_fzsync_run_a(&fzsync_pair)) {
+-		wd = myinotify_add_watch(inotify_fd, FNAME, IN_MODIFY);
+-		if (wd < 0)
+-			tst_brk(TBROK | TERRNO, "inotify_add_watch() failed.");
++		wd = SAFE_MYINOTIFY_ADD_WATCH(inotify_fd, FNAME, IN_MODIFY);
+ 
+ 		tst_fzsync_start_race_a(&fzsync_pair);
+ 		wd = myinotify_rm_watch(inotify_fd, wd);
 -- 
 2.21.0
 
