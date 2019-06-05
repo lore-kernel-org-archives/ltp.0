@@ -1,230 +1,181 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed,  5 Jun 2019 09:21:26 +0200
-Subject: [LTP] [PATCH 2/2] inotify: Add SAFE_MYINOTIFY_ADD_WATCH() helper
-In-Reply-To: <20190605072126.19856-1-pvorel@suse.cz>
-References: <20190605072126.19856-1-pvorel@suse.cz>
-Message-ID: <20190605072126.19856-2-pvorel@suse.cz>
+From: Murphy Zhou <xzhou@redhat.com>
+Date: Wed, 5 Jun 2019 17:30:05 +0800
+Subject: [LTP] [PATCH v6 2/4] swapon/libswapon: add helper
+ is_swap_supported
+In-Reply-To: <CAEemH2f275JA7f_mzyQwQeW8LJ2_YS5L42=KD1KWWGZKrmwitQ@mail.gmail.com>
+References: <CAOQ4uxihom9Uw66c0BwuiWHOejZXDJHUe3rHBVRfk0=C-AYnAw@mail.gmail.com>
+ <20190528141214.18752-1-xzhou@redhat.com>
+ <20190528141214.18752-2-xzhou@redhat.com>
+ <CAEemH2fcM18gLbM3bWRu7ddR+8QbmYCL+4U83Z5tiWgZ4suz_A@mail.gmail.com>
+ <CAEemH2f275JA7f_mzyQwQeW8LJ2_YS5L42=KD1KWWGZKrmwitQ@mail.gmail.com>
+Message-ID: <20190605093005.qwpput3zxrd22z44@XZHOUW.usersys.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
+On Wed, Jun 05, 2019 at 02:55:47PM +0800, Li Wang wrote:
+> On Wed, Jun 5, 2019 at 1:51 PM Li Wang <liwang@redhat.com> wrote:
+> 
+> >
+> >
+> > On Tue, May 28, 2019 at 10:13 PM Murphy Zhou <xzhou@redhat.com> wrote:
+> >
+> >> To check if the filesystem we are testing on supports FIBMAP, mkswap,
+> >> swapon and swapoff operations.
+> >> Modify make_swapfile function to test mkswap support status safely.
+> >>
+> >> Signed-off-by: Murphy Zhou <xzhou@redhat.com>
+> >> ---
+> >>  testcases/kernel/syscalls/swapon/libswapon.c | 45 +++++++++++++++++++-
+> >>  testcases/kernel/syscalls/swapon/libswapon.h |  7 ++-
+> >>  2 files changed, 49 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/testcases/kernel/syscalls/swapon/libswapon.c
+> >> b/testcases/kernel/syscalls/swapon/libswapon.c
+> >> index cf6a98891..f66d19548 100644
+> >> --- a/testcases/kernel/syscalls/swapon/libswapon.c
+> >> +++ b/testcases/kernel/syscalls/swapon/libswapon.c
+> >> @@ -19,13 +19,15 @@
+> >>   *
+> >>   */
+> >>
+> >> +#include <errno.h>
+> >> +#include "lapi/syscalls.h"
+> >>  #include "test.h"
+> >>  #include "libswapon.h"
+> >>
+> >>  /*
+> >>   * Make a swap file
+> >>   */
+> >> -void make_swapfile(void (cleanup)(void), const char *swapfile)
+> >> +int make_swapfile(void (cleanup)(void), const char *swapfile, int safe)
+> >>  {
+> >>         if (!tst_fs_has_free(NULL, ".", sysconf(_SC_PAGESIZE) * 10,
+> >>             TST_BYTES)) {
+> >> @@ -45,5 +47,44 @@ void make_swapfile(void (cleanup)(void), const char
+> >> *swapfile)
+> >>         argv[1] = swapfile;
+> >>         argv[2] = NULL;
+> >>
+> >> -       tst_run_cmd(cleanup, argv, "/dev/null", "/dev/null", 0);
+> >> +       return tst_run_cmd(cleanup, argv, "/dev/null", "/dev/null", safe);
+> >> +}
+> >> +
+> >> +/*
+> >> + * Check swapon/swapoff support status of filesystems or files
+> >> + * we are testing on.
+> >> + */
+> >> +void is_swap_supported(void (cleanup)(void), const char *filename)
+> >> +{
+> >> +       int fibmap = tst_fibmap(filename);
+> >> +       long fs_type = tst_fs_type(cleanup, filename);
+> >> +       const char *fstype = tst_fs_type_name(fs_type);
+> >> +
+> >> +       int ret = make_swapfile(NULL, filename, 1);
+> >> +       if (ret != 0) {
+> >> +               if (fibmap != 0) {
+> >>
+> >
+> > As I replied in patch 1/4, how do we know that means FIBMAP not support if
+> > just verify fibmap != 0?
+> > So I would suggest to make the return value of tst_fibmap() is more
+> > precise and do if (fibmap == 1) check here.
 
-with reap_wd defined in inotify.h there could be also SAFE_MYINOTIFY_RM_WATCH().
+Very good catch. The return value should be more precise. Thanks!
 
-Kind regards,
-Petr
----
- testcases/kernel/syscalls/inotify/inotify.h   | 13 +++++++++++++
- testcases/kernel/syscalls/inotify/inotify01.c |  9 ++-------
- testcases/kernel/syscalls/inotify/inotify02.c |  9 ++-------
- testcases/kernel/syscalls/inotify/inotify03.c |  7 +------
- testcases/kernel/syscalls/inotify/inotify04.c | 13 ++-----------
- testcases/kernel/syscalls/inotify/inotify05.c |  8 +-------
- testcases/kernel/syscalls/inotify/inotify07.c |  8 ++------
- testcases/kernel/syscalls/inotify/inotify08.c | 11 +++--------
- testcases/kernel/syscalls/inotify/inotify09.c |  4 +---
- 9 files changed, 27 insertions(+), 55 deletions(-)
+> >
+> 
+> And also, imagine that if swapon01 test failed on BRTFS or NFS(support
+> swapfile but not
+> support FIBMAP ioctl), then here will report the new bug as a TCONF to LTP.
 
-diff --git a/testcases/kernel/syscalls/inotify/inotify.h b/testcases/kernel/syscalls/inotify/inotify.h
-index c82a7e75e..57669bc15 100644
---- a/testcases/kernel/syscalls/inotify/inotify.h
-+++ b/testcases/kernel/syscalls/inotify/inotify.h
-@@ -50,4 +50,17 @@ static inline int safe_myinotify_init(const char *file, const int lineno, int fd
- #define SAFE_MYINOTIFY_INIT1(flags) \
- 	safe_myinotify_init(__FILE__, __LINE__, myinotify_init1(flags))
- 
-+static inline int safe_myinotify_watch(const char *file, const int lineno, int wd, int fd, const char* fname, const char* mask)
-+{
-+	if (wd < 0) {
-+		tst_brk(TBROK | TERRNO,
-+			"%s:%d: inotify_add_watch (%d, %s, %s) failed.",
-+			file, lineno, fd, fname, mask);
-+	}
-+	return wd;
-+}
-+
-+#define SAFE_MYINOTIFY_ADD_WATCH(fd, pathname, mask)	\
-+	safe_myinotify_watch(__FILE__, __LINE__, myinotify_add_watch(fd, pathname, mask), fd, pathname, #mask)
-+
- #endif /* _INOTIFY_H */
-diff --git a/testcases/kernel/syscalls/inotify/inotify01.c b/testcases/kernel/syscalls/inotify/inotify01.c
-index f08a75dcf..eee98b4fa 100644
---- a/testcases/kernel/syscalls/inotify/inotify01.c
-+++ b/testcases/kernel/syscalls/inotify/inotify01.c
-@@ -169,13 +169,8 @@ static void setup(void)
- 
- 	fd_notify = SAFE_MYINOTIFY_INIT();
- 
--	if ((wd = myinotify_add_watch(fd_notify, fname, IN_ALL_EVENTS)) < 0) {
--		tst_brk(TBROK | TERRNO,
--			"inotify_add_watch (%d, %s, IN_ALL_EVENTS) failed",
--			fd_notify, fname);
--		reap_wd = 1;
--	};
--
-+	wd = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, fname, IN_ALL_EVENTS);
-+	reap_wd = 1;
- }
- 
- static void cleanup(void)
-diff --git a/testcases/kernel/syscalls/inotify/inotify02.c b/testcases/kernel/syscalls/inotify/inotify02.c
-index ca70b4e9e..21e7fb3e8 100644
---- a/testcases/kernel/syscalls/inotify/inotify02.c
-+++ b/testcases/kernel/syscalls/inotify/inotify02.c
-@@ -236,12 +236,8 @@ static void setup(void)
- {
- 	fd_notify = SAFE_MYINOTIFY_INIT();
- 
--	if ((wd = myinotify_add_watch(fd_notify, ".", IN_ALL_EVENTS)) < 0) {
--		tst_brk(TBROK | TERRNO,
--			 "inotify_add_watch (%d, \".\", IN_ALL_EVENTS) failed",
--			 fd_notify);
--		reap_wd = 1;
--	};
-+	wd = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, ".", IN_ALL_EVENTS);
-+	reap_wd = 1;
- }
- 
- static void cleanup(void)
-@@ -249,7 +245,6 @@ static void cleanup(void)
- 	if (reap_wd && myinotify_rm_watch(fd_notify, wd) < 0) {
- 		tst_res(TWARN,
- 			"inotify_rm_watch (%d, %d) failed,", fd_notify, wd);
--
- 	}
- 
- 	if (fd_notify > 0)
-diff --git a/testcases/kernel/syscalls/inotify/inotify03.c b/testcases/kernel/syscalls/inotify/inotify03.c
-index 772623125..7363df01b 100644
---- a/testcases/kernel/syscalls/inotify/inotify03.c
-+++ b/testcases/kernel/syscalls/inotify/inotify03.c
-@@ -77,12 +77,7 @@ void verify_inotify(void)
- 	SAFE_MOUNT(tst_device->dev, mntpoint, tst_device->fs_type, 0, NULL);
- 	mount_flag = 1;
- 
--	wd = myinotify_add_watch(fd_notify, fname, IN_ALL_EVENTS);
--	if (wd < 0) {
--		tst_brk(TBROK | TERRNO,
--			"inotify_add_watch (%d, %s, IN_ALL_EVENTS) failed.",
--			fd_notify, fname);
--	}
-+	wd = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, fname, IN_ALL_EVENTS);
- 
- 	event_set[test_cnt] = IN_UNMOUNT;
- 	test_cnt++;
-diff --git a/testcases/kernel/syscalls/inotify/inotify04.c b/testcases/kernel/syscalls/inotify/inotify04.c
-index 6adb41701..2cc20fb61 100644
---- a/testcases/kernel/syscalls/inotify/inotify04.c
-+++ b/testcases/kernel/syscalls/inotify/inotify04.c
-@@ -106,19 +106,10 @@ void verify_inotify(void)
- 	SAFE_MKDIR(TEST_DIR, 00700);
- 	close(SAFE_CREAT(TEST_FILE, 00600));
- 
--	wd_dir = myinotify_add_watch(fd_notify, TEST_DIR, IN_ALL_EVENTS);
--	if (wd_dir == -1) {
--		tst_brk(TBROK | TERRNO,
--			"inotify_add_watch(%d, \"%s\", IN_ALL_EVENTS) [1] failed",
--			fd_notify, TEST_DIR);
--	}
-+	wd_dir = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, TEST_DIR, IN_ALL_EVENTS);
- 	reap_wd_dir = 1;
- 
--	wd_file = myinotify_add_watch(fd_notify, TEST_FILE, IN_ALL_EVENTS);
--	if (wd_file == -1)
--		tst_brk(TBROK | TERRNO,
--			"inotify_add_watch(%d, \"%s\", IN_ALL_EVENTS) [2] failed",
--			fd_notify, TEST_FILE);
-+	wd_file = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, TEST_FILE, IN_ALL_EVENTS);
- 	reap_wd_file = 1;
- 
- 	SAFE_RMDIR(TEST_DIR);
-diff --git a/testcases/kernel/syscalls/inotify/inotify05.c b/testcases/kernel/syscalls/inotify/inotify05.c
-index b5813b25b..fa45d09bf 100644
---- a/testcases/kernel/syscalls/inotify/inotify05.c
-+++ b/testcases/kernel/syscalls/inotify/inotify05.c
-@@ -145,12 +145,7 @@ static void setup(void)
- 
- 	fd_notify = SAFE_MYINOTIFY_INIT1(O_NONBLOCK);
- 
--	wd = myinotify_add_watch(fd_notify, fname, IN_ALL_EVENTS);
--	if (wd < 0) {
--		tst_brk(TBROK | TERRNO,
--			"inotify_add_watch (%d, %s, IN_ALL_EVENTS) failed",
--			fd_notify, fname);
--	};
-+	wd = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, fname, IN_ALL_EVENTS);
- 
- 	SAFE_FILE_SCANF("/proc/sys/fs/inotify/max_queued_events",
- 			"%d", &max_events);
-@@ -161,7 +156,6 @@ static void cleanup(void)
- 	if (fd_notify > 0 && myinotify_rm_watch(fd_notify, wd) == -1) {
- 		tst_res(TWARN | TERRNO, "inotify_rm_watch (%d, %d) failed",
- 			fd_notify, wd);
--
- 	}
- 
- 	if (fd_notify > 0)
-diff --git a/testcases/kernel/syscalls/inotify/inotify07.c b/testcases/kernel/syscalls/inotify/inotify07.c
-index 1111b43bf..7099e8dbf 100644
---- a/testcases/kernel/syscalls/inotify/inotify07.c
-+++ b/testcases/kernel/syscalls/inotify/inotify07.c
-@@ -168,12 +168,8 @@ static void setup(void)
- 	fd_notify = SAFE_MYINOTIFY_INIT1(O_NONBLOCK);
- 
- 	/* Setup a watch on an overlayfs lower directory */
--	if ((wd = myinotify_add_watch(fd_notify, DIR_PATH, IN_ALL_EVENTS)) < 0) {
--		tst_brk(TBROK | TERRNO,
--			"inotify_add_watch (%d, " DIR_PATH ", IN_ALL_EVENTS) failed",
--			fd_notify);
--		reap_wd = 1;
--	};
-+	wd = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, DIR_PATH, IN_ALL_EVENTS);
-+	reap_wd = 1;
- 
- 	SAFE_STAT(DIR_PATH, &buf);
- 	tst_res(TINFO, DIR_PATH " ino=%lu", buf.st_ino);
-diff --git a/testcases/kernel/syscalls/inotify/inotify08.c b/testcases/kernel/syscalls/inotify/inotify08.c
-index ee8e44fe1..73fdf497f 100644
---- a/testcases/kernel/syscalls/inotify/inotify08.c
-+++ b/testcases/kernel/syscalls/inotify/inotify08.c
-@@ -160,14 +160,9 @@ static void setup(void)
- 	fd_notify = SAFE_MYINOTIFY_INIT1(O_NONBLOCK);
- 
- 	/* Setup a watch on an overlayfs lower file */
--	if ((wd = myinotify_add_watch(fd_notify, FILE_PATH,
--				IN_ATTRIB | IN_OPEN | IN_CLOSE_WRITE)) < 0) {
--		tst_brk(TBROK | TERRNO,
--			"inotify_add_watch (%d, " FILE_PATH ", "
--			"IN_ATTRIB | IN_OPEN | IN_CLOSE_WRITE) failed",
--			fd_notify);
--		reap_wd = 1;
--	};
-+	wd = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, FILE_PATH,
-+				IN_ATTRIB | IN_OPEN | IN_CLOSE_WRITE);
-+	reap_wd = 1;
- 
- 	SAFE_STAT(FILE_PATH, &buf);
- 	tst_res(TINFO, FILE_PATH " ino=%lu, dev=%u:%u", buf.st_ino,
-diff --git a/testcases/kernel/syscalls/inotify/inotify09.c b/testcases/kernel/syscalls/inotify/inotify09.c
-index cf2d38f27..e6fed7d9d 100644
---- a/testcases/kernel/syscalls/inotify/inotify09.c
-+++ b/testcases/kernel/syscalls/inotify/inotify09.c
-@@ -89,9 +89,7 @@ static void verify_inotify(void)
- 
- 	tst_fzsync_pair_reset(&fzsync_pair, write_seek);
- 	while (tst_fzsync_run_a(&fzsync_pair)) {
--		wd = myinotify_add_watch(inotify_fd, FNAME, IN_MODIFY);
--		if (wd < 0)
--			tst_brk(TBROK | TERRNO, "inotify_add_watch() failed.");
-+		wd = SAFE_MYINOTIFY_ADD_WATCH(inotify_fd, FNAME, IN_MODIFY);
- 
- 		tst_fzsync_start_race_a(&fzsync_pair);
- 		wd = myinotify_rm_watch(inotify_fd, wd);
--- 
-2.21.0
+Here is testing mkswap for swapon test preparation. If mkswap fail, and
+FIBMAP not supported, it's reasonable to me that we should not go on to
+test swapon.
 
+But yes, if a regression causes mkswap fail without FIBMAP supported, we
+could miss the bug here like you described. This situation should be
+covered by tcase for mkswap IMO.
+
+I'm going to dig more on fibmap/mkswap/swapon/swapoff support status of
+varies filesystems.
+
+> 
+> 
+> > +                       tst_brkm(TCONF, cleanup,
+> >> +                               "mkswap on %s not supported", fstype);
+> >> +               } else {
+> >> +                       tst_brkm(TFAIL, cleanup,
+> >> +                               "mkswap on %s failed", fstype);
+> >> +               }
+> >> +       }
+> >> +
+> >> +       TEST(ltp_syscall(__NR_swapon, filename, 0));
+> >> +       if (TEST_RETURN == -1) {
+> >> +               if (fibmap != 0 && errno == EINVAL) {
+> >> +                       tst_brkm(TCONF, cleanup,
+> >> +                               "Swapfile on %s not implemented", fstype);
+> >>
+> >
+> > Maybe there is unnecessary to check fibmap value again? Since if the
+> > fibmap is 1, it has already broken in make_swapfile() error handler and
+> > never coming here?
+
+If mkswap succeeds, we are coming here.
+
+Thanks for reviewing!
+Murphy
+
+> >
+> >
+> >
+> >> +               } else {
+> >> +                       tst_brkm(TFAIL | TERRNO, cleanup,
+> >> +                                "swapon on %s failed", fstype);
+> >> +               }
+> >> +       }
+> >> +
+> >> +       TEST(ltp_syscall(__NR_swapoff, filename, 0));
+> >> +       if (TEST_RETURN == -1) {
+> >> +               tst_brkm(TFAIL | TERRNO, cleanup,
+> >> +                       "swapoff on %s failed", fstype);
+> >> +       }
+> >>  }
+> >> diff --git a/testcases/kernel/syscalls/swapon/libswapon.h
+> >> b/testcases/kernel/syscalls/swapon/libswapon.h
+> >> index 7f7211eb4..a51833ec1 100644
+> >> --- a/testcases/kernel/syscalls/swapon/libswapon.h
+> >> +++ b/testcases/kernel/syscalls/swapon/libswapon.h
+> >> @@ -29,6 +29,11 @@
+> >>  /*
+> >>   * Make a swap file
+> >>   */
+> >> -void make_swapfile(void (cleanup)(void), const char *swapfile);
+> >> +int make_swapfile(void (cleanup)(void), const char *swapfile, int safe);
+> >>
+> >> +/*
+> >> + * Check swapon/swapoff support status of filesystems or files
+> >> + * we are testing on.
+> >> + */
+> >> +void is_swap_supported(void (cleanup)(void), const char *filename);
+> >>  #endif /* __LIBSWAPON_H__ */
+> >> --
+> >> 2.21.0
+> >>
+> >>
+> >> --
+> >> Mailing list info: https://lists.linux.it/listinfo/ltp
+> >>
+> >
+> >
+> > --
+> > Regards,
+> > Li Wang
+> >
+> 
+> 
+> -- 
+> Regards,
+> Li Wang
