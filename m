@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 6 Jun 2019 14:14:36 +0200
-Subject: [LTP] [PATCH v2] syscalls/acct02: add functional testcase
-In-Reply-To: <20190604072228.17513-1-camann@suse.com>
-References: <20190604072228.17513-1-camann@suse.com>
-Message-ID: <20190606121436.GB27083@rei>
+Date: Thu, 6 Jun 2019 15:10:16 +0200
+Subject: [LTP] [PATCH v2 2/4] syscalls/pidfd_send_signal01
+In-Reply-To: <20190604114702.28255-1-camann@suse.com>
+References: <20190604114702.28255-1-camann@suse.com>
+Message-ID: <20190606131015.GA12020@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,23 +11,34 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Have you tried the test on the !v3 case?
+When I attempty to compile this code I get:
 
-I do have:
+In file included from pidfd_send_signal.h:11:0,
+                 from pidfd_send_signal01.c:17:
+pidfd_send_signal.h: In function 'check_syscall_support':
+pidfd_send_signal.h:16:14: error: '__NR_pidfd_send_signal' undeclared (first use in this function); did you mean '__NR_perf_event_open'?
+  tst_syscall(__NR_pidfd_send_signal);
+              ^
+../../../../include/lapi/syscalls.h:39:6: note: in definition of macro 'tst_syscall'
+  if (NR == __LTP__NR_INVALID_SYSCALL) { \
+      ^~
+pidfd_send_signal.h:16:14: note: each undeclared identifier is reported only once for each function it appears in
+  tst_syscall(__NR_pidfd_send_signal);
+              ^
+../../../../include/lapi/syscalls.h:39:6: note: in definition of macro 'tst_syscall'
+  if (NR == __LTP__NR_INVALID_SYSCALL) { \
+      ^~
+pidfd_send_signal.h: In function 'pidfd_send_signal':
+pidfd_send_signal.h:23:21: error: '__NR_pidfd_send_signal' undeclared (first use in this function); did you mean 'pidfd_send_signal'?
+  return tst_syscall(__NR_pidfd_send_signal, pidfd, sig, info, flags);
+                     ^
+../../../../include/lapi/syscalls.h:39:6: note: in definition of macro 'tst_syscall'
+  if (NR == __LTP__NR_INVALID_SYSCALL) { \
+      ^~
+make: *** [<builtin>: pidfd_send_signal01] Error 1
 
-CONFIG_BSD_PROCESS_ACCT=y
-# CONFIG_BSD_PROCESS_ACCT_V3 is not set
 
-And the test fails with:
-
-tst_kconfig.c:62: INFO: Parsing kernel config '/proc/config.gz'
-tst_test.c:1111: INFO: Timeout per run is 0h 05m 00s
-tst_kconfig.c:62: INFO: Parsing kernel config '/proc/config.gz'
-acct02.c:159: INFO: Verifying using 'struct acct'
-acct02.c:137: INFO: Number of accounting file entries tested: 0
-acct02.c:142: FAIL: acct() wrote incorrect file contents!
-
-Looks like the file is empty for me...
+Have you forgotten to git add the *.in files with syscall numbers?
 
 -- 
 Cyril Hrubis
