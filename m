@@ -1,44 +1,44 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 6 Jun 2019 16:45:49 +0200
-Subject: [LTP] TST_GET_UNUSED_PORT returns ports < 1024
-In-Reply-To: <20190606134321.GA30964@rei.lan>
-References: <7b0b763f-0b6b-fb18-7916-d25afdcb5c68@suse.com>
- <20190606134321.GA30964@rei.lan>
-Message-ID: <20190606144549.GA14501@dell5510>
+From: Yann Sionneau <ysionneau@kalray.eu>
+Date: Thu,  6 Jun 2019 17:21:17 +0200
+Subject: [LTP] [PATCH] Fix use of results after being unmapped
+Message-ID: <1559834477-21724-1-git-send-email-ysionneau@kalray.eu>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+This fixes issue reported there: https://github.com/linux-test-project/ltp/issues/537
+---
+ lib/tst_test.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> > when using the TST_GET_UNUSED_PORT macro you sometimes get ports lower
-> > than 1024 which would require a testcase to have the
-> > CAP_NET_BIND_SERVICE capability (or simply run as root).
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 95f389d..73eca58 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -138,6 +138,7 @@ static void cleanup_ipc(void)
+ 	if (results) {
+ 		msync((void*)results, size, MS_SYNC);
+ 		munmap((void*)results, size);
++		results = NULL;
+ 	}
+ }
+ 
+@@ -921,10 +922,11 @@ static void do_cleanup(void)
+ 	if (tst_test->save_restore)
+ 		tst_sys_conf_restore(0);
+ 
+-	cleanup_ipc();
+-
+ 	if (tst_test->restore_wallclock)
+ 		tst_wallclock_restore();
++
++	cleanup_ipc();
++	/* Do not use 'results' after cleanup_ipc(): it has been unmapped. */
+ }
+ 
+ static void run_tests(void)
+-- 
+1.8.3.1
 
-> Looking at the code as far as I can tell the function returns the port
-> in the network endianity, which is big endian. Intel CPUs are little
-> endian, so if you want to print the port you actually have to use
-> ntohs() function to convert it to the host endianity. And if you are
-> passing that value in the sockaddr_in structure you must not use the
-> htons() since the value is already in the correct byte order. And yes
-> this is horribly confusing, but that's how it is.
-Thanks for debugging the problem.
-
-> I guess that we should write down this piece of information in the
-> documentation, because it looks like the tst_get_unused_port shell
-> helper does this incorrectly and prints the raw value instead of
-> converting it with ntohs().
-Correct, I've sent a patch fixing it for shell tests [1].
-As I noted there, this problem was even on version for old API.
-
-Not sure about docs as there is no docs for network API shell/C functions yet
-But even the problem for shell was fixed by that patch it'd be worth to add note
-about byte order to C code tst_get_unused_port() and/or header defining
-TST_GET_UNUSED_PORT() developers using it in C.
-
-Kind regards,
-Petr
-
-[1] https://patchwork.ozlabs.org/patch/1111167/
