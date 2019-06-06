@@ -1,64 +1,44 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu,  6 Jun 2019 16:30:17 +0200
-Subject: [LTP] [PATCH] shell: Fix tst_get_unused_port endianity
-Message-ID: <20190606143017.2233-1-pvorel@suse.cz>
+Date: Thu, 6 Jun 2019 16:45:49 +0200
+Subject: [LTP] TST_GET_UNUSED_PORT returns ports < 1024
+In-Reply-To: <20190606134321.GA30964@rei.lan>
+References: <7b0b763f-0b6b-fb18-7916-d25afdcb5c68@suse.com>
+ <20190606134321.GA30964@rei.lan>
+Message-ID: <20190606144549.GA14501@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-tst_get_unused_port is a shell helper, therefore it should use host
-byte order (we're not expecting this value would be added directly to
-sockaddr_in structure, which require network byte order).
-Wrap TST_GET_UNUSED_PORT() with ntohs() to achieve it.
+Hi Cyril,
 
-Reported-by: Christian Amann <camann@suse.com>
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
+> > when using the TST_GET_UNUSED_PORT macro you sometimes get ports lower
+> > than 1024 which would require a testcase to have the
+> > CAP_NET_BIND_SERVICE capability (or simply run as root).
 
-I guess we didn't noticed this in shell script as sendfile01 is the only
-one not requiring root (dns-stress, tst_net_stress.sh, ssh-stress, ssh-stress03-rmt do require it).
+> Looking at the code as far as I can tell the function returns the port
+> in the network endianity, which is big endian. Intel CPUs are little
+> endian, so if you want to print the port you actually have to use
+> ntohs() function to convert it to the host endianity. And if you are
+> passing that value in the sockaddr_in structure you must not use the
+> htons() since the value is already in the correct byte order. And yes
+> this is horribly confusing, but that's how it is.
+Thanks for debugging the problem.
 
-I tested patch with little script (could be easily converted to proper
-test placed in lib/newlib_tests/)
+> I guess that we should write down this piece of information in the
+> documentation, because it looks like the tst_get_unused_port shell
+> helper does this incorrectly and prints the raw value instead of
+> converting it with ntohs().
+Correct, I've sent a patch fixing it for shell tests [1].
+As I noted there, this problem was even on version for old API.
 
-export PATH="/opt/ltp/testcases/bin/:$PATH"
-i=0
-while [ $i -lt 2048 ]; do
-    for j in ipv4 ipv6; do
-        for k in stream dgram; do
-            p="$(tst_get_unused_port $j $k)"
-            printf "$i ($j $k): $p "
-            if [ $p -lt 1024 ]; then
-                echo "(bad)"
-                exit 1
-            else
-                echo "(ok)"
-            fi
-        done
-    done
-    i=$((i+1))
-done
-echo "Test was ok"
+Not sure about docs as there is no docs for network API shell/C functions yet
+But even the problem for shell was fixed by that patch it'd be worth to add note
+about byte order to C code tst_get_unused_port() and/or header defining
+TST_GET_UNUSED_PORT() developers using it in C.
 
- testcases/lib/tst_get_unused_port.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Kind regards,
+Petr
 
-diff --git a/testcases/lib/tst_get_unused_port.c b/testcases/lib/tst_get_unused_port.c
-index 0173f1634..a843cc6e3 100644
---- a/testcases/lib/tst_get_unused_port.c
-+++ b/testcases/lib/tst_get_unused_port.c
-@@ -54,6 +54,6 @@ int main(int argc, char *argv[])
- 		return 1;
- 	}
- 
--	printf("%d", TST_GET_UNUSED_PORT(family, type));
-+	printf("%d", ntohs(TST_GET_UNUSED_PORT(family, type)));
- 	return 0;
- }
--- 
-2.21.0
-
+[1] https://patchwork.ozlabs.org/patch/1111167/
