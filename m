@@ -1,444 +1,62 @@
-From: Christian Amann <camann@suse.com>
-Date: Thu,  6 Jun 2019 11:00:08 +0200
-Subject: [LTP] [PATCH v2 1/2] syscalls/fstat{01,02}: rewrote testcases
-Message-ID: <20190606090009.31124-1-camann@suse.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 6 Jun 2019 18:31:20 +0800
+Subject: [LTP] [PATCH] sysctl/sysctl02: Add new regression test for overflow
+	file-max
+Message-ID: <1559817080-2991-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Merged the two tests:
-	fstat01 is a subset of fstat02 and is therefore not needed
-	anymore.
-Rewrote testcase:
-	Cleaned up and ported to new library.
+On upstream kernel, before commit[1], the max value in proc_get_long based on
+the number of chars(21). It rejects values such as 184467440737095516160 (21 chars)
+but accepts values such as 18446744073709551616 (20 chars). But we should reject all
+because both are overflows. After this commit,the permitted max value is 2^64-1.
 
-Signed-off-by: Christian Amann <camann@suse.com>
+Before commit[2], when writing echo 18446744073709551616 > /proc/sys/fs/file-max
+/proc/sys/fs/file-max will overflow and be set to 0.  It may crash the system. This
+commit sets the max and min value for file-max. After this commit,the permitted max
+value is 2^63-1.
+
+Unfortunately, commit[2] introduced a new bug because the minimum value points at
+the global 'zero' variable which is an int. It may crash system. This bug has been fixed
+bt commit[3].
+
+I will set 2^64 ,2^64-1,2^63 and 0 to file-max in case and test it.
+
+[1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7f2923c4f73f21cfd714d12a2d48de8c21f11cfe
+[2]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=32a5ad9c22852e6bd9e74bdec5934ef9d1480bc5
+[3]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9002b21465fa4d829edfc94a5a441005cffaa972
+
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
+ runtest/commands                      | 1 +
+ testcases/commands/sysctl/sysctl01.sh | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-Notes:
-    Removed test for raw fstat syscall:
-    Calling the raw syscall on a glibc provided stat struct on a
-    32 bit system caused either an overflow of the structure or
-    the values were wrong due to them having a bigger size than the
-    syscalls anticipated (tested all three: oldfstat/fstat/fstat64).
-    By providing custom stat structs I would have to make sure they
-    work on all architectures (same as glibc does). I decided to
-    remove this test variant because I couldn't guarantee
-    this.
-
- runtest/syscalls                           |   2 -
- testcases/kernel/syscalls/fstat/.gitignore |   2 -
- testcases/kernel/syscalls/fstat/fstat01.c  | 175 -----------------------------
- testcases/kernel/syscalls/fstat/fstat02.c  | 144 +++++++-----------------
- 4 files changed, 43 insertions(+), 280 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/fstat/fstat01.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 762b15b1f..6d85f9bb7 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -332,8 +332,6 @@ fpathconf01 fpathconf01
- fremovexattr01 fremovexattr01
- fremovexattr02 fremovexattr02
- 
--fstat01 fstat01
--fstat01_64 fstat01_64
- fstat02 fstat02
- fstat02_64 fstat02_64
- fstat03 fstat03
-diff --git a/testcases/kernel/syscalls/fstat/.gitignore b/testcases/kernel/syscalls/fstat/.gitignore
-index cf5205d44..1c66bdf10 100644
---- a/testcases/kernel/syscalls/fstat/.gitignore
-+++ b/testcases/kernel/syscalls/fstat/.gitignore
-@@ -1,5 +1,3 @@
--/fstat01
--/fstat01_64
- /fstat02
- /fstat02_64
- /fstat03
-diff --git a/testcases/kernel/syscalls/fstat/fstat01.c b/testcases/kernel/syscalls/fstat/fstat01.c
-deleted file mode 100644
-index a5940c627..000000000
---- a/testcases/kernel/syscalls/fstat/fstat01.c
-+++ /dev/null
-@@ -1,175 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--/* $Id: fstat01.c,v 1.6 2009/08/28 12:51:34 vapier Exp $ */
--/**********************************************************
-- *
-- *    OS Test - Silicon Graphics, Inc.
-- *
-- *    TEST IDENTIFIER	: fstat01
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Basic test for fstat(2)
-- *
-- *    PARENT DOCUMENT	: usctpl01
-- *
-- *    TEST CASE TOTAL	: 1
-- *
-- *    WALL CLOCK TIME	: 1
-- *
-- *    CPU TYPES		: ALL
-- *
-- *    AUTHOR		: William Roske
-- *
-- *    CO-PILOT		: Dave Fenner
-- *
-- *    DATE STARTED	: 03/30/92
-- *
-- *    INITIAL RELEASE	: UNICOS 7.0
-- *
-- *    TEST CASES
-- *
-- *	1.) fstat(2) returns...(See Description)
-- *
-- *    INPUT SPECIFICATIONS
-- *	The standard options for system call tests are accepted.
-- *	(See the parse_opts(3) man page).
-- *
-- *    OUTPUT SPECIFICATIONS
-- *
-- *    DURATION
-- *	Terminates - with frequency and infinite modes.
-- *
-- *    SIGNALS
-- *	Uses SIGUSR1 to pause before test if option set.
-- *	(See the parse_opts(3) man page).
-- *
-- *    RESOURCES
-- *	None
-- *
-- *    ENVIRONMENTAL NEEDS
-- *      No run-time environmental needs.
-- *
-- *    SPECIAL PROCEDURAL REQUIREMENTS
-- *	None
-- *
-- *    INTERCASE DEPENDENCIES
-- *	None
-- *
-- *    DETAILED DESCRIPTION
-- *	This is a Phase I test for the fstat(2) system call.  It is intended
-- *	to provide a limited exposure of the system call, for now.  It
-- *	should/will be extended when full functional tests are written for
-- *	fstat(2).
-- *
-- *	Setup:
-- *	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- *	Test:
-- *	 Loop if the proper options are given.
-- *	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
-- *
-- *	Cleanup:
-- *	  Print errno log and/or timing stats if options given
-- *
-- *
-- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
+diff --git a/runtest/commands b/runtest/commands
+index ac15e8b23..1870c4209 100644
+--- a/runtest/commands
++++ b/runtest/commands
+@@ -40,3 +40,4 @@ keyctl01_sh keyctl01.sh
+ gdb01_sh gdb01.sh
+ unshare01_sh unshare01.sh
+ sysctl01_sh sysctl01.sh
++sysctl02_sh sysctl02.sh
+diff --git a/testcases/commands/sysctl/sysctl01.sh b/testcases/commands/sysctl/sysctl01.sh
+index 7522da53d..bf89a6d8d 100755
+--- a/testcases/commands/sysctl/sysctl01.sh
++++ b/testcases/commands/sysctl/sysctl01.sh
+@@ -1,5 +1,5 @@
+ #!/bin/sh
 -
--#include <sys/types.h>
--#include <fcntl.h>
--#include <sys/stat.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--#include "test.h"
--#include "safe_macros.h"
--
--void setup();
--void cleanup();
--
--char *TCID = "fstat01";
--int TST_TOTAL = 1;
--
--char fname[255];
--int fd;
--struct stat statter;
--
--int main(int ac, char **av)
--{
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		TEST(fstat(fd, &statter));
--
--		if (TEST_RETURN == -1)
--			tst_resm(TFAIL | TTERRNO, "fstat failed");
--		else
--			tst_resm(TPASS, "fstat returned %ld", TEST_RETURN);
--	}
--
--	cleanup();
--	tst_exit();
--}
--
--void setup(void)
--{
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	sprintf(fname, "tfile_%d", getpid());
--	fd = SAFE_OPEN(cleanup, fname, O_RDWR | O_CREAT, 0700);
--}
--
--void cleanup(void)
--{
--	if (close(fd) == -1)
--		tst_resm(TWARN | TERRNO, "close(%s) failed", fname);
--
--	tst_rmdir();
--
--}
-diff --git a/testcases/kernel/syscalls/fstat/fstat02.c b/testcases/kernel/syscalls/fstat/fstat02.c
-index 21ef16617..aeceefe36 100644
---- a/testcases/kernel/syscalls/fstat/fstat02.c
-+++ b/testcases/kernel/syscalls/fstat/fstat02.c
-@@ -1,152 +1,94 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) International Business Machines  Corp., 2001
-  *  07/2001 Ported by Wayne Boyer
-- *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software Foundation,
-- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ *  05/2019 Ported to new library: Christian Amann <camann@suse.com>
-  */
- /*
-- * fstat() should return value 0 on success and the stat structure elements
-- * should be filled with specified 'file' information.
-+ * Tests if fstat() returns correctly and reports correct file information
-+ * using the stat structure.
-  */
--#include <stdio.h>
--#include <sys/types.h>
--#include <fcntl.h>
--#include <sys/stat.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--#include <pwd.h>
- 
--#include "test.h"
--#include "safe_macros.h"
-+#include <errno.h>
-+#include <unistd.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include "tst_test.h"
-+#include "tst_safe_macros.h"
- 
--#define FILE_MODE	0644
--#define TESTFILE	"testfile"
-+#define TESTFILE        "test_file"
- #define FILE_SIZE       1024
--#define BUF_SIZE	256
--#define MASK		0777
-+#define FILE_MODE	0644
- 
--char *TCID = "fstat02";
--int TST_TOTAL = 1;
-+static struct stat stat_buf;
- static uid_t user_id;
- static gid_t group_id;
- static int fildes;
- 
--static void setup(void);
--static void cleanup(void);
--
--static void verify(void)
-+static void run(void)
- {
--	struct stat stat_buf;
--	int fail = 0;
-+	int fail;
- 
- 	TEST(fstat(fildes, &stat_buf));
- 
--	if (TEST_RETURN == -1) {
--		tst_resm(TFAIL | TTERRNO, "fstat(%s) failed", TESTFILE);
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "fstat() failed");
- 		return;
- 	}
- 
-+	fail = 0;
- 	if (stat_buf.st_uid != user_id) {
--		tst_resm(TINFO, "stat_buf.st_uid = %i expected %i",
--		         stat_buf.st_uid, user_id);
-+		tst_res(TFAIL, "stat_buf.st_uid = %i expected %i",
-+			stat_buf.st_uid, user_id);
- 		fail++;
- 	}
- 
- 	if (stat_buf.st_gid != group_id) {
--		tst_resm(TINFO, "stat_buf.st_gid = %i expected %i",
--		         stat_buf.st_gid, group_id);
-+		tst_res(TFAIL, "stat_buf.st_gid = %i expected %i",
-+			stat_buf.st_gid, group_id);
- 		fail++;
- 	}
- 
- 	if (stat_buf.st_size != FILE_SIZE) {
--		tst_resm(TINFO, "stat_buf.st_size = %li expected %i",
--		         (long)stat_buf.st_size, FILE_SIZE);
-+		tst_res(TFAIL, "stat_buf.st_size = %li expected %i",
-+			(long)stat_buf.st_size, FILE_SIZE);
- 		fail++;
- 	}
- 
--        if ((stat_buf.st_mode & MASK) != FILE_MODE) {
--		tst_resm(TINFO, "stat_buf.st_mode = %o expected %o",
--		         (stat_buf.st_mode & MASK), FILE_MODE);
-+	if ((stat_buf.st_mode & 0777) != FILE_MODE) {
-+		tst_res(TFAIL, "stat_buf.st_mode = %o expected %o",
-+			(stat_buf.st_mode & 0777), FILE_MODE);
- 		fail++;
- 	}
- 
- 	if (fail) {
--		tst_resm(TFAIL, "functionality of fstat incorrect");
-+		tst_res(TFAIL, "fstat() reported wrong values.");
- 		return;
- 	}
- 
--	tst_resm(TPASS, "functionality of fstat correct");
--}
--
--int main(int ac, char **av)
--{
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++)
--		verify();
--
--	cleanup();
--	tst_exit();
-+	tst_res(TPASS, "fstat() reported correct values.");
- }
- 
- static void setup(void)
- {
--	struct passwd *ltpuser;
--	char tst_buff[BUF_SIZE];
--	int wbytes;
--	int write_len = 0;
--
--	tst_require_root();
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	ltpuser = SAFE_GETPWNAM(NULL, "nobody");
--	SAFE_SETUID(NULL, ltpuser->pw_uid);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	umask(022);
--
--	fildes = SAFE_OPEN(tst_rmdir, TESTFILE, O_WRONLY | O_CREAT, FILE_MODE);
--
--	/* Fill the test buffer with the known data */
--	memset(tst_buff, 'a', BUF_SIZE - 1);
-+	user_id  = getuid();
-+	group_id = getgid();
- 
--	/* Write to the file 1k data from the buffer */
--	while (write_len < FILE_SIZE) {
--		if ((wbytes = write(fildes, tst_buff, sizeof(tst_buff))) <= 0)
--			tst_brkm(TBROK | TERRNO, cleanup, "write failed");
--		else
--			write_len += wbytes;
--	}
-+	fildes = SAFE_OPEN(TESTFILE, O_WRONLY | O_CREAT, FILE_MODE);
- 
--	user_id = getuid();
--	group_id = getgid();
-+	if (tst_fill_file(TESTFILE, 'a', FILE_SIZE, 1))
-+		tst_brk(TBROK, "Could not fill Testfile!");
- }
- 
- static void cleanup(void)
- {
--	if (close(fildes) == -1)
--		tst_resm(TWARN | TERRNO, "close failed");
--
--	tst_rmdir();
-+	if (fildes > 0)
-+		SAFE_CLOSE(fildes);
- }
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_tmpdir = 1,
-+};
++#
+ # Copyright (c) 2018 FUJITSU LIMITED. All rights reserved.
+ # Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+ #
 -- 
-2.16.4
+2.18.1
+
+
 
