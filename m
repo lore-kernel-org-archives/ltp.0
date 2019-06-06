@@ -1,544 +1,444 @@
 From: Christian Amann <camann@suse.com>
-Date: Thu,  6 Jun 2019 11:00:09 +0200
-Subject: [LTP] [PATCH v2 2/2] syscalls/fstat{03,05}: rewrote testcases
-In-Reply-To: <20190606090009.31124-1-camann@suse.com>
-References: <20190606090009.31124-1-camann@suse.com>
-Message-ID: <20190606090009.31124-2-camann@suse.com>
+Date: Thu,  6 Jun 2019 11:00:08 +0200
+Subject: [LTP] [PATCH v2 1/2] syscalls/fstat{01,02}: rewrote testcases
+Message-ID: <20190606090009.31124-1-camann@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Merged fstat03 and fstat05:
-	Both testcases had lots of duplicated code which
-	could be removed by creating a single testcase
-	for both scenarios.
+Merged the two tests:
+	fstat01 is a subset of fstat02 and is therefore not needed
+	anymore.
 Rewrote testcase:
 	Cleaned up and ported to new library.
 
 Signed-off-by: Christian Amann <camann@suse.com>
 ---
+
+Notes:
+    Removed test for raw fstat syscall:
+    Calling the raw syscall on a glibc provided stat struct on a
+    32 bit system caused either an overflow of the structure or
+    the values were wrong due to them having a bigger size than the
+    syscalls anticipated (tested all three: oldfstat/fstat/fstat64).
+    By providing custom stat structs I would have to make sure they
+    work on all architectures (same as glibc does). I decided to
+    remove this test variant because I couldn't guarantee
+    this.
+
  runtest/syscalls                           |   2 -
  testcases/kernel/syscalls/fstat/.gitignore |   2 -
- testcases/kernel/syscalls/fstat/fstat03.c  | 207 +++++++++---------------
- testcases/kernel/syscalls/fstat/fstat05.c  | 244 -----------------------------
- 4 files changed, 75 insertions(+), 380 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/fstat/fstat05.c
+ testcases/kernel/syscalls/fstat/fstat01.c  | 175 -----------------------------
+ testcases/kernel/syscalls/fstat/fstat02.c  | 144 +++++++-----------------
+ 4 files changed, 43 insertions(+), 280 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/fstat/fstat01.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 6d85f9bb7..05600f9dc 100644
+index 762b15b1f..6d85f9bb7 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -336,8 +336,6 @@ fstat02 fstat02
+@@ -332,8 +332,6 @@ fpathconf01 fpathconf01
+ fremovexattr01 fremovexattr01
+ fremovexattr02 fremovexattr02
+ 
+-fstat01 fstat01
+-fstat01_64 fstat01_64
+ fstat02 fstat02
  fstat02_64 fstat02_64
  fstat03 fstat03
- fstat03_64 fstat03_64
--fstat05 fstat05
--fstat05_64 fstat05_64
- 
- #fstatat64/newfstatat test cases
- fstatat01 fstatat01
 diff --git a/testcases/kernel/syscalls/fstat/.gitignore b/testcases/kernel/syscalls/fstat/.gitignore
-index 1c66bdf10..9b1089438 100644
+index cf5205d44..1c66bdf10 100644
 --- a/testcases/kernel/syscalls/fstat/.gitignore
 +++ b/testcases/kernel/syscalls/fstat/.gitignore
-@@ -2,5 +2,3 @@
+@@ -1,5 +1,3 @@
+-/fstat01
+-/fstat01_64
+ /fstat02
  /fstat02_64
  /fstat03
- /fstat03_64
--/fstat05
--/fstat05_64
-diff --git a/testcases/kernel/syscalls/fstat/fstat03.c b/testcases/kernel/syscalls/fstat/fstat03.c
-index 0fa62b847..5676632ab 100644
---- a/testcases/kernel/syscalls/fstat/fstat03.c
-+++ b/testcases/kernel/syscalls/fstat/fstat03.c
-@@ -1,160 +1,103 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * Test Name: fstat03
+diff --git a/testcases/kernel/syscalls/fstat/fstat01.c b/testcases/kernel/syscalls/fstat/fstat01.c
+deleted file mode 100644
+index a5940c627..000000000
+--- a/testcases/kernel/syscalls/fstat/fstat01.c
++++ /dev/null
+@@ -1,175 +0,0 @@
+-/*
+- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
 - *
-- * Test Description:
-- *   Verify that, fstat(2) returns -1 and sets errno to EBADF if the file
-- *   pointed to by file descriptor is not valid.
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
 - *
-- * Expected Result:
-- *  fstat() should fail with return value -1 and set expected errno.
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 - *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Create temporary directory.
-- *   Pause for SIGUSR1 if option specified.
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
 - *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *	if errno set == expected errno
-- *		Issue sys call fails with expected return value and errno.
-- *	Otherwise,
-- *		Issue sys call fails with unexpected errno.
-- *   Otherwise,
-- *	Issue sys call returns unexpected value.
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 - *
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *   Delete the temporary directory(s)/file(s) created.
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
 - *
-- * Usage:  <for command-line>
-- *  fstat03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
+- * http://www.sgi.com
 - *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
+- * For further information regarding this notice, see:
 - *
-- * RESTRICTIONS:
-- *  This test should be executed by 'non-super-user' only.
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ *  07/2001 Ported by Wayne Boyer
-+ *  05/2019 Ported to new library: Christian Amann <camann@suse.com>
-+ */
-+/*
-+ * Tests different error scenarios:
-  *
-+ * 1) Calls fstat() with closed file descriptor
-+ *    -> EBADF
-+ * 2) Calls fstat() with an invalid address for stat structure
-+ *    -> EFAULT (or receive signal SIGSEGV)
-  */
- 
--#include <stdio.h>
-+#include <errno.h>
- #include <stdlib.h>
- #include <unistd.h>
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+- *
+- */
+-/* $Id: fstat01.c,v 1.6 2009/08/28 12:51:34 vapier Exp $ */
+-/**********************************************************
+- *
+- *    OS Test - Silicon Graphics, Inc.
+- *
+- *    TEST IDENTIFIER	: fstat01
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Basic test for fstat(2)
+- *
+- *    PARENT DOCUMENT	: usctpl01
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    WALL CLOCK TIME	: 1
+- *
+- *    CPU TYPES		: ALL
+- *
+- *    AUTHOR		: William Roske
+- *
+- *    CO-PILOT		: Dave Fenner
+- *
+- *    DATE STARTED	: 03/30/92
+- *
+- *    INITIAL RELEASE	: UNICOS 7.0
+- *
+- *    TEST CASES
+- *
+- *	1.) fstat(2) returns...(See Description)
+- *
+- *    INPUT SPECIFICATIONS
+- *	The standard options for system call tests are accepted.
+- *	(See the parse_opts(3) man page).
+- *
+- *    OUTPUT SPECIFICATIONS
+- *
+- *    DURATION
+- *	Terminates - with frequency and infinite modes.
+- *
+- *    SIGNALS
+- *	Uses SIGUSR1 to pause before test if option set.
+- *	(See the parse_opts(3) man page).
+- *
+- *    RESOURCES
+- *	None
+- *
+- *    ENVIRONMENTAL NEEDS
+- *      No run-time environmental needs.
+- *
+- *    SPECIAL PROCEDURAL REQUIREMENTS
+- *	None
+- *
+- *    INTERCASE DEPENDENCIES
+- *	None
+- *
+- *    DETAILED DESCRIPTION
+- *	This is a Phase I test for the fstat(2) system call.  It is intended
+- *	to provide a limited exposure of the system call, for now.  It
+- *	should/will be extended when full functional tests are written for
+- *	fstat(2).
+- *
+- *	Setup:
+- *	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- *	Test:
+- *	 Loop if the proper options are given.
+- *	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
+- *
+- *	Cleanup:
+- *	  Print errno log and/or timing stats if options given
+- *
+- *
+- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
+-
+-#include <sys/types.h>
 -#include <fcntl.h>
+-#include <sys/stat.h>
 -#include <errno.h>
 -#include <string.h>
 -#include <signal.h>
- #include <sys/types.h>
- #include <sys/stat.h>
-+#include "tst_test.h"
-+#include "tst_safe_macros.h"
- 
 -#include "test.h"
 -#include "safe_macros.h"
-+#define TESTFILE	"test_file"
- 
--#define FILE_MODE	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
--#define TEST_FILE	"testfile"
-+static int fd_ok;
-+static int fd_ebadf;
-+static struct stat stat_buf;
- 
--char *TCID = "fstat03";
--int TST_TOTAL = 1;
-+static struct tcase{
-+	int *fd;
-+	struct stat *stat_buf;
-+	int exp_err;
-+} tcases[] = {
-+	{&fd_ebadf, &stat_buf, EBADF},
-+	{&fd_ok, NULL, EFAULT},
-+};
- 
--int fildes;			/* testfile descriptor */
 -
--void setup();			/* Main setup function for the tests */
--void cleanup();			/* cleanup function for the test */
+-void setup();
+-void cleanup();
+-
+-char *TCID = "fstat01";
+-int TST_TOTAL = 1;
+-
+-char fname[255];
+-int fd;
+-struct stat statter;
 -
 -int main(int ac, char **av)
-+static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
- {
--	struct stat stat_buf;	/* stat structure buffer */
+-{
 -	int lc;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
--	/*
--	 * Invoke setup function to create a testfile under temporary
--	 * directory.
--	 */
 -	setup();
-+	tst_res(TPASS, "fstat() failed as expected with SIGSEGV");
-+	exit(0);
-+}
- 
+-
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+static void check_fstat(unsigned int tc_num)
-+{
-+	struct tcase *tc = &tcases[tc_num];
- 
+-
 -		tst_count = 0;
--		/*
--		 * Call fstat(2) to get the status information
--		 * of a closed testfile pointed to by 'fd'.
--		 * verify that fstat fails with -1 return value and
--		 * sets appropriate errno.
--		 */
--		TEST(fstat(fildes, &stat_buf));
-+	if (tc_num == 1)
-+		signal(SIGSEGV, &sighandler);
- 
--		/* Check return code from fstat(2) */
--		if (TEST_RETURN == -1) {
--			if (TEST_ERRNO == EBADF) {
--				tst_resm(TPASS,
--					 "fstat() fails with expected error EBADF");
--			} else {
--				tst_resm(TFAIL | TTERRNO,
--					 "fstat() did not fail with EBADF");
--			}
-+	TEST(fstat(*tc->fd, tc->stat_buf));
-+	if (TST_RET == -1) {
-+		if (tc->exp_err == TST_ERR) {
-+			tst_res(TPASS,
-+				 "fstat() fails with expected error %s",
-+				 tst_strerrno(tc->exp_err));
- 		} else {
--			tst_resm(TFAIL, "fstat() returned %ld, expected -1",
--				 TEST_RETURN);
-+			tst_res(TFAIL | TTERRNO,
-+				 "fstat() did not fail with %s, but with",
-+				 tst_strerrno(tc->exp_err));
- 		}
-+	} else {
-+		tst_res(TFAIL, "fstat() returned %ld, expected -1",
-+			 TST_RET);
- 	}
 -
--	/*
--	 * Invoke cleanup() to delete the test directory/file(s) created
--	 * in the setup().
--	 */
+-		TEST(fstat(fd, &statter));
+-
+-		if (TEST_RETURN == -1)
+-			tst_resm(TFAIL | TTERRNO, "fstat failed");
+-		else
+-			tst_resm(TPASS, "fstat returned %ld", TEST_RETURN);
+-	}
+-
 -	cleanup();
--
 -	tst_exit();
- }
- 
--/*
-- * void
-- * setup(void) - performs all ONE TIME setup for this test.
-- *	Exit the test program on receipt of unexpected signals.
-- *	Create a temporary directory and change directory to it.
-- *      Create a testfile under temporary directory.
-- *      Close the testfile.
-- */
+-}
+-
 -void setup(void)
-+static void run(unsigned int tc_num)
- {
--	/* Capture unexpected signals */
+-{
+-
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
 -
--	/* Make a temp dir and cd to it */
 -	tst_tmpdir();
-+	pid_t pid;
- 
--	/* Create a testfile under temporary directory */
--	fildes = SAFE_OPEN(cleanup, TEST_FILE, O_RDWR | O_CREAT, 0666);
 -
--	SAFE_CLOSE(cleanup, fildes);
-+	pid = SAFE_FORK();
-+	if (pid == 0) {
-+		check_fstat(tc_num);
-+		return;
-+	}
-+	tst_reap_children();
- }
- 
--/*
-- * void
-- * cleanup() - Performs all ONE TIME cleanup for this test at
-- *             completion or premature exit.
-- *	Print test timing stats and errno log if test executed with options.
-- *	Close the testfile if still opened.
-- *	Remove temporary directory and sub-directories/files under it
-- *	created during setup().
-- *	Exit the test program with normal exit code.
-- */
+-	sprintf(fname, "tfile_%d", getpid());
+-	fd = SAFE_OPEN(cleanup, fname, O_RDWR | O_CREAT, 0700);
+-}
+-
 -void cleanup(void)
-+static void setup(void)
- {
-+	fd_ebadf = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, 0644);
-+	SAFE_CLOSE(fd_ebadf);
-+	fd_ok = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, 0644);
-+}
- 
+-{
+-	if (close(fd) == -1)
+-		tst_resm(TWARN | TERRNO, "close(%s) failed", fname);
+-
 -	tst_rmdir();
 -
-+static void cleanup(void)
-+{
-+	if (fd_ok > 0)
-+		SAFE_CLOSE(fd_ok);
-+	if (fd_ebadf > 0)
-+		SAFE_CLOSE(fd_ebadf);
- }
-+
-+static struct tst_test test = {
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_tmpdir = 1,
-+	.forks_child = 1,
-+};
-diff --git a/testcases/kernel/syscalls/fstat/fstat05.c b/testcases/kernel/syscalls/fstat/fstat05.c
-deleted file mode 100644
-index 200de4130..000000000
---- a/testcases/kernel/syscalls/fstat/fstat05.c
-+++ /dev/null
-@@ -1,244 +0,0 @@
--/*
+-}
+diff --git a/testcases/kernel/syscalls/fstat/fstat02.c b/testcases/kernel/syscalls/fstat/fstat02.c
+index 21ef16617..aeceefe36 100644
+--- a/testcases/kernel/syscalls/fstat/fstat02.c
++++ b/testcases/kernel/syscalls/fstat/fstat02.c
+@@ -1,152 +1,94 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) International Business Machines  Corp., 2001
+  *  07/2001 Ported by Wayne Boyer
 - *
-- *   Copyright (C) Bull S.A. 2001
-- *   Copyright (c) International Business Machines  Corp., 2001
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
 - *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
 - *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * Test Name: fstat05
-- *
-- * Test Description:
-- *   Verify that,
-- *   if buffer points outside user's accessible address space fstat(2)
-- *	either returns -1 and sets errno to EFAULT
-- *	or SIGSEGV is returned instead of EFAULT
-- *
-- * Expected Result:
-- *   fstat() should fail with return value -1 and set expected errno.
-- *    or
-- *   fstat() should fail with SIGSEGV returned.
-- *   Both results are considered as acceptable.
-- *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling SIGSEGV included.
-- *   Switch to nobody user.
-- *   Pause for SIGUSR1 if option specified.
-- *   Create temporary directory.
-- *   Create a testfile under temporary directory.
-- *
-- *  Test:
-- *   Buffer points outside user's accessible address space.
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *	if errno set == expected errno
-- *		Issue sys call fails with expected return value and errno.
-- *	Otherwise,
-- *		Issue sys call fails with unexpected errno.
-- *   Otherwise,
-- *	Issue sys call returns unexpected value.
-- *
-- *  Sighandler:
-- *	if signal == SIGSEGV
-- *		Issue sys call fails with expected signal
-- *      Otherwise,
-- *              Issue sys call fails with unexpected signal.
-- *
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *   Close the test file
-- *   Delete the temporary directory(s)/file(s) created.
-- *
-- * Usage:  <for command-line>
-- *  fstat05 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
-- *	where,  -c n : Run n copies concurrently.
-- *		-e   : Turn on errno logging.
-- *		-i n : Execute test n times.
-- *		-I x : Execute test for x seconds.
-- *		-P x : Pause for x seconds between iterations.
-- *		-t   : Turn on syscall timing.
-- *
-- * History
-- *	05/2002 Jacky Malcles
-- *		-Ported
-- *
-- * Restrictions:
-- *      This test must be run as root.
-- */
--
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software Foundation,
+- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *  05/2019 Ported to new library: Christian Amann <camann@suse.com>
+  */
+ /*
+- * fstat() should return value 0 on success and the stat structure elements
+- * should be filled with specified 'file' information.
++ * Tests if fstat() returns correctly and reports correct file information
++ * using the stat structure.
+  */
 -#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
+-#include <sys/types.h>
 -#include <fcntl.h>
+-#include <sys/stat.h>
 -#include <errno.h>
 -#include <string.h>
 -#include <signal.h>
--#include <sys/types.h>
--#include <sys/stat.h>
 -#include <pwd.h>
--
+ 
 -#include "test.h"
 -#include "safe_macros.h"
--
--#define TEST_FILE       "testfile"
--
--char nobody_uid[] = "nobody";
--struct passwd *ltpuser;
--
--char *TCID = "fstat05";
++#include <errno.h>
++#include <unistd.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include "tst_test.h"
++#include "tst_safe_macros.h"
+ 
+-#define FILE_MODE	0644
+-#define TESTFILE	"testfile"
++#define TESTFILE        "test_file"
+ #define FILE_SIZE       1024
+-#define BUF_SIZE	256
+-#define MASK		0777
++#define FILE_MODE	0644
+ 
+-char *TCID = "fstat02";
 -int TST_TOTAL = 1;
++static struct stat stat_buf;
+ static uid_t user_id;
+ static gid_t group_id;
+ static int fildes;
+ 
+-static void setup(void);
+-static void cleanup(void);
 -
--int fildes;			/* testfile descriptor */
--
--void setup();			/* Main setup function for the tests */
--void cleanup();			/* cleanup function for the test */
--void sighandler(int sig);	/* signals handler function for the test */
--
--int siglist[] = { SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGTRAP, SIGABRT, SIGIOT,
--	SIGBUS, SIGFPE, SIGUSR1, SIGSEGV, SIGUSR2, SIGPIPE, SIGALRM,
--	SIGTERM,
--#ifdef SIGSTKFLT
--	SIGSTKFLT,
--#endif
--	SIGCHLD, SIGCONT, SIGTSTP, SIGTTIN,
--	SIGTTOU, SIGURG, SIGXCPU, SIGXFSZ, SIGVTALRM, SIGPROF,
--	SIGWINCH, SIGIO, SIGPWR, SIGSYS,
--#ifdef SIGUNUSED
--	SIGUNUSED
--#endif
--};
--
--int SIG_SEEN = sizeof(siglist) / sizeof(int);
--
--#if !defined(UCLINUX)
+-static void verify(void)
++static void run(void)
+ {
+-	struct stat stat_buf;
+-	int fail = 0;
++	int fail;
+ 
+ 	TEST(fstat(fildes, &stat_buf));
+ 
+-	if (TEST_RETURN == -1) {
+-		tst_resm(TFAIL | TTERRNO, "fstat(%s) failed", TESTFILE);
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "fstat() failed");
+ 		return;
+ 	}
+ 
++	fail = 0;
+ 	if (stat_buf.st_uid != user_id) {
+-		tst_resm(TINFO, "stat_buf.st_uid = %i expected %i",
+-		         stat_buf.st_uid, user_id);
++		tst_res(TFAIL, "stat_buf.st_uid = %i expected %i",
++			stat_buf.st_uid, user_id);
+ 		fail++;
+ 	}
+ 
+ 	if (stat_buf.st_gid != group_id) {
+-		tst_resm(TINFO, "stat_buf.st_gid = %i expected %i",
+-		         stat_buf.st_gid, group_id);
++		tst_res(TFAIL, "stat_buf.st_gid = %i expected %i",
++			stat_buf.st_gid, group_id);
+ 		fail++;
+ 	}
+ 
+ 	if (stat_buf.st_size != FILE_SIZE) {
+-		tst_resm(TINFO, "stat_buf.st_size = %li expected %i",
+-		         (long)stat_buf.st_size, FILE_SIZE);
++		tst_res(TFAIL, "stat_buf.st_size = %li expected %i",
++			(long)stat_buf.st_size, FILE_SIZE);
+ 		fail++;
+ 	}
+ 
+-        if ((stat_buf.st_mode & MASK) != FILE_MODE) {
+-		tst_resm(TINFO, "stat_buf.st_mode = %o expected %o",
+-		         (stat_buf.st_mode & MASK), FILE_MODE);
++	if ((stat_buf.st_mode & 0777) != FILE_MODE) {
++		tst_res(TFAIL, "stat_buf.st_mode = %o expected %o",
++			(stat_buf.st_mode & 0777), FILE_MODE);
+ 		fail++;
+ 	}
+ 
+ 	if (fail) {
+-		tst_resm(TFAIL, "functionality of fstat incorrect");
++		tst_res(TFAIL, "fstat() reported wrong values.");
+ 		return;
+ 	}
+ 
+-	tst_resm(TPASS, "functionality of fstat correct");
+-}
 -
 -int main(int ac, char **av)
 -{
--	struct stat *ptr_str = tst_get_bad_addr(NULL);
 -	int lc;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
--	/*
--	 * Invoke setup function
--	 */
 -	setup();
 -
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-	for (lc = 0; TEST_LOOPING(lc); lc++)
+-		verify();
 -
--		tst_count = 0;
--
--		/*
--		 * Call fstat(2).
--		 * verify that it fails with -1 return value and
--		 * sets appropriate errno.
--		 */
--		TEST(fstat(fildes, ptr_str));
--
--		/* Check return code from fstat(2) */
--		if (TEST_RETURN == -1) {
--			if (TEST_ERRNO == EFAULT)
--				tst_resm(TPASS,
--					 "fstat failed with EFAULT as expected");
--			else
--				tst_resm(TFAIL | TTERRNO,
--					 "fstat failed unexpectedly");
--		} else
--			tst_resm(TFAIL, "fstat() returned %ld but we wanted -1",
--				 TEST_RETURN);
--
--	}
--
--	/*
--	 * Invoke cleanup() to delete the test directory/file(s) created
--	 * in the setup().
--	 */
 -	cleanup();
 -	tst_exit();
--}
--
--#else
--
--int main(void)
--{
--	tst_brkm(TCONF, NULL, "test is not available on uClinux");
--}
--
--#endif /* if !defined(UCLINUX) */
--
--/*
-- * void
-- * setup(void) - performs all ONE TIME setup for this test.
-- *	Exit the test program on receipt of unexpected signals.
-- *	Create a temporary directory and change directory to it.
-- */
--void setup(void)
--{
--	int i;
++	tst_res(TPASS, "fstat() reported correct values.");
+ }
+ 
+ static void setup(void)
+ {
+-	struct passwd *ltpuser;
+-	char tst_buff[BUF_SIZE];
+-	int wbytes;
+-	int write_len = 0;
 -
 -	tst_require_root();
 -
--	/*
--	 * Capture unexpected signals SIGSEGV included
--	 * SIGSEGV being considered as acceptable as returned value
--	 */
--	for (i = 0; i < SIG_SEEN; i++)
--		signal(siglist[i], &sighandler);
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
--	ltpuser = getpwnam(nobody_uid);
+-	ltpuser = SAFE_GETPWNAM(NULL, "nobody");
 -	SAFE_SETUID(NULL, ltpuser->pw_uid);
+-
+-	TEST_PAUSE;
 -
 -	tst_tmpdir();
 -
--	/* Create a testfile under temporary directory */
--	fildes = SAFE_OPEN(cleanup, TEST_FILE, O_RDWR | O_CREAT, 0666);
+-	umask(022);
 -
--	TEST_PAUSE;
--}
+-	fildes = SAFE_OPEN(tst_rmdir, TESTFILE, O_WRONLY | O_CREAT, FILE_MODE);
 -
--/*
-- * void
-- * cleanup() - Performs all ONE TIME cleanup for this test at
-- *             completion or premature exit.
-- *	Print test timing stats and errno log if test executed with options.
-- *	Remove temporary directory and sub-directories/files under it
-- *	created during setup().
-- *	Exit the test program with normal exit code.
-- */
--void cleanup(void)
--{
--
--	SAFE_CLOSE(cleanup, fildes);
+-	/* Fill the test buffer with the known data */
+-	memset(tst_buff, 'a', BUF_SIZE - 1);
++	user_id  = getuid();
++	group_id = getgid();
+ 
+-	/* Write to the file 1k data from the buffer */
+-	while (write_len < FILE_SIZE) {
+-		if ((wbytes = write(fildes, tst_buff, sizeof(tst_buff))) <= 0)
+-			tst_brkm(TBROK | TERRNO, cleanup, "write failed");
+-		else
+-			write_len += wbytes;
+-	}
++	fildes = SAFE_OPEN(TESTFILE, O_WRONLY | O_CREAT, FILE_MODE);
+ 
+-	user_id = getuid();
+-	group_id = getgid();
++	if (tst_fill_file(TESTFILE, 'a', FILE_SIZE, 1))
++		tst_brk(TBROK, "Could not fill Testfile!");
+ }
+ 
+ static void cleanup(void)
+ {
+-	if (close(fildes) == -1)
+-		tst_resm(TWARN | TERRNO, "close failed");
 -
 -	tst_rmdir();
--
--}
--
--/*
-- * sighandler() - handle the signals
-- */
--
--void sighandler(int sig)
--{
--	if (sig == SIGSEGV)
--		tst_resm(TPASS, "fstat failed as expected with SIGSEGV");
--	else
--		tst_brkm(TBROK, NULL, "Unexpected signal %d received.", sig);
--	cleanup();
--	tst_exit();
--}
++	if (fildes > 0)
++		SAFE_CLOSE(fildes);
+ }
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_tmpdir = 1,
++};
 -- 
 2.16.4
 
