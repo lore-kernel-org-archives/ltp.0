@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 6 Jun 2019 15:10:16 +0200
-Subject: [LTP] [PATCH v2 2/4] syscalls/pidfd_send_signal01
-In-Reply-To: <20190604114702.28255-1-camann@suse.com>
-References: <20190604114702.28255-1-camann@suse.com>
-Message-ID: <20190606131015.GA12020@rei>
+Date: Thu, 6 Jun 2019 15:43:21 +0200
+Subject: [LTP] TST_GET_UNUSED_PORT returns ports < 1024
+In-Reply-To: <7b0b763f-0b6b-fb18-7916-d25afdcb5c68@suse.com>
+References: <7b0b763f-0b6b-fb18-7916-d25afdcb5c68@suse.com>
+Message-ID: <20190606134321.GA30964@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,34 +11,22 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-When I attempty to compile this code I get:
+> when using the TST_GET_UNUSED_PORT macro you sometimes get ports lower
+> than 1024 which would require a testcase to have the
+> CAP_NET_BIND_SERVICE capability (or simply run as root).
 
-In file included from pidfd_send_signal.h:11:0,
-                 from pidfd_send_signal01.c:17:
-pidfd_send_signal.h: In function 'check_syscall_support':
-pidfd_send_signal.h:16:14: error: '__NR_pidfd_send_signal' undeclared (first use in this function); did you mean '__NR_perf_event_open'?
-  tst_syscall(__NR_pidfd_send_signal);
-              ^
-../../../../include/lapi/syscalls.h:39:6: note: in definition of macro 'tst_syscall'
-  if (NR == __LTP__NR_INVALID_SYSCALL) { \
-      ^~
-pidfd_send_signal.h:16:14: note: each undeclared identifier is reported only once for each function it appears in
-  tst_syscall(__NR_pidfd_send_signal);
-              ^
-../../../../include/lapi/syscalls.h:39:6: note: in definition of macro 'tst_syscall'
-  if (NR == __LTP__NR_INVALID_SYSCALL) { \
-      ^~
-pidfd_send_signal.h: In function 'pidfd_send_signal':
-pidfd_send_signal.h:23:21: error: '__NR_pidfd_send_signal' undeclared (first use in this function); did you mean 'pidfd_send_signal'?
-  return tst_syscall(__NR_pidfd_send_signal, pidfd, sig, info, flags);
-                     ^
-../../../../include/lapi/syscalls.h:39:6: note: in definition of macro 'tst_syscall'
-  if (NR == __LTP__NR_INVALID_SYSCALL) { \
-      ^~
-make: *** [<builtin>: pidfd_send_signal01] Error 1
+Looking at the code as far as I can tell the function returns the port
+in the network endianity, which is big endian. Intel CPUs are little
+endian, so if you want to print the port you actually have to use
+ntohs() function to convert it to the host endianity. And if you are
+passing that value in the sockaddr_in structure you must not use the
+htons() since the value is already in the correct byte order. And yes
+this is horribly confusing, but that's how it is.
 
-
-Have you forgotten to git add the *.in files with syscall numbers?
+I guess that we should write down this piece of information in the
+documentation, because it looks like the tst_get_unused_port shell
+helper does this incorrectly and prints the raw value instead of
+converting it with ntohs().
 
 -- 
 Cyril Hrubis
