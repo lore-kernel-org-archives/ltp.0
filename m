@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 6 Jun 2019 13:41:34 +0200
-Subject: [LTP] [PATCH v2] sysctl/sysctl02: Add new regression test for
- overflow file-max
-In-Reply-To: <1559817930-2299-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1559817080-2991-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1559817930-2299-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20190606114134.GB13068@rei.lan>
+Date: Thu, 6 Jun 2019 13:49:56 +0200
+Subject: [LTP] [PATCH v2 2/2] syscalls/fstat{03,05}: rewrote testcases
+In-Reply-To: <20190606090009.31124-2-camann@suse.com>
+References: <20190606090009.31124-1-camann@suse.com>
+ <20190606090009.31124-2-camann@suse.com>
+Message-ID: <20190606114956.GA27083@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,147 +12,139 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Unfortunately, commit[2] introduced a new bug because the minimum value points at
-> the global 'zero' variable which is an int. It may crash system. This bug has been fixed
-> bt commit[3].
-> 
-> I will set 2^64 ,2^64-1,2^63 and 0 to file-max in case and test it.
-> 
-> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7f2923c4f73f21cfd714d12a2d48de8c21f11cfe
-> [2]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=32a5ad9c22852e6bd9e74bdec5934ef9d1480bc5
-> [3]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9002b21465fa4d829edfc94a5a441005cffaa972
-> 
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> ---
->  runtest/commands                      |  1 +
->  testcases/commands/sysctl/sysctl02.sh | 88 +++++++++++++++++++++++++++
->  2 files changed, 89 insertions(+)
->  create mode 100755 testcases/commands/sysctl/sysctl02.sh
-> 
-> diff --git a/runtest/commands b/runtest/commands
-> index ac15e8b23..1870c4209 100644
-> --- a/runtest/commands
-> +++ b/runtest/commands
-> @@ -40,3 +40,4 @@ keyctl01_sh keyctl01.sh
->  gdb01_sh gdb01.sh
->  unshare01_sh unshare01.sh
->  sysctl01_sh sysctl01.sh
-> +sysctl02_sh sysctl02.sh
-> diff --git a/testcases/commands/sysctl/sysctl02.sh b/testcases/commands/sysctl/sysctl02.sh
-> new file mode 100755
-> index 000000000..9ca9d0609
-> --- /dev/null
-> +++ b/testcases/commands/sysctl/sysctl02.sh
-> @@ -0,0 +1,88 @@
-> +#!/bin/sh
-> +
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-> +# Author: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
-> +#
-> +# Description:
-> +# This is a regression test for handling overflow for file-max.
-> +#
-> +# when writing 2^64 to /proc/sys/fs/file-max. It will overflow
-> +# and be set to 0. It crash system quickly.
-> +#
-> +# The kernel bug has been fixed in kernel:
-> +# '7f2923c4f' (sysctl: handle overflow in proc_get_long)
-> +# the permitted max value is  2^64-1.
-> +# '32a5ad9c2' (sysctl: handle overflow for file-max)
-> +# the permitted max value is 2^63-1
-> +#
-> +# After merged this patchset, if we exceed the max value, it will
-> +# keep old value. Unfortunately, it introudced a new bug when set it
-> +# to 0 and it will lead to system crash.
-> +# This bug has been fixed by commit 9002b2146
-> +# (kernel/sysctl.c: fix out-of-bounds access when setting file-max)
-> +
-> +TST_TESTFUNC=do_test
-> +TST_SETUP=setup
-> +TST_CLEANUP=cleanup
-> +TST_CNT=4
-> +TST_NEEDS_ROOT=1
-> +TST_NEEDS_CMDS="sysctl"
-> +dir="/proc/sys/fs/"
-> +name="file-max"
-> +orig_value=200000
-> +check1=18446744073709551616
-> +check2=18446744073709551615
-> +check3=9223372036854775808
-> +check4=0
-> +
-> +. tst_test.sh
-> +
-> +setup()
-> +{
-> +	[ ! -f "$dir""$name" ] && tst_brk TCONF \
-> +		"$name was not supported"
-> +	orig_value=$(cat "$dir""$name")
+> +static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
+>  {
+> -	struct stat stat_buf;	/* stat structure buffer */
+> -	int lc;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	/*
+> -	 * Invoke setup function to create a testfile under temporary
+> -	 * directory.
+> -	 */
+> -	setup();
+> +	tst_res(TPASS, "fstat() failed as expected with SIGSEGV");
+> +	exit(0);
 > +}
-> +
-> +do_test()
+
+Technically you should not use anything but signal-async-safe functions
+in signal handlers and while this would work fine most of the time it
+may deadlock the process under certain circumstatnces.
+
+So the best way how to handle this is to let the child segfault then do
+SAFE_WAITPID() and examine the status value.
+
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +static void check_fstat(unsigned int tc_num)
 > +{
-> +	case $1 in
-> +	1)sysctl_test_overflow ${check1};;
-> +	2)sysctl_test_overflow ${check2};;
-> +	3)sysctl_test_overflow ${check3};;
-> +	4)sysctl_test_zero ${check4};;
+> +	struct tcase *tc = &tcases[tc_num];
+>  
+> -		tst_count = 0;
+> -		/*
+> -		 * Call fstat(2) to get the status information
+> -		 * of a closed testfile pointed to by 'fd'.
+> -		 * verify that fstat fails with -1 return value and
+> -		 * sets appropriate errno.
+> -		 */
+> -		TEST(fstat(fildes, &stat_buf));
+> +	if (tc_num == 1)
+> +		signal(SIGSEGV, &sighandler);
+>  
+> -		/* Check return code from fstat(2) */
+> -		if (TEST_RETURN == -1) {
+> -			if (TEST_ERRNO == EBADF) {
+> -				tst_resm(TPASS,
+> -					 "fstat() fails with expected error EBADF");
+> -			} else {
+> -				tst_resm(TFAIL | TTERRNO,
+> -					 "fstat() did not fail with EBADF");
+> -			}
+> +	TEST(fstat(*tc->fd, tc->stat_buf));
+> +	if (TST_RET == -1) {
+> +		if (tc->exp_err == TST_ERR) {
+> +			tst_res(TPASS,
+> +				 "fstat() fails with expected error %s",
+> +				 tst_strerrno(tc->exp_err));
+>  		} else {
+> -			tst_resm(TFAIL, "fstat() returned %ld, expected -1",
+> -				 TEST_RETURN);
+> +			tst_res(TFAIL | TTERRNO,
+> +				 "fstat() did not fail with %s, but with",
+> +				 tst_strerrno(tc->exp_err));
+>  		}
+> +	} else {
+> +		tst_res(TFAIL, "fstat() returned %ld, expected -1",
+> +			 TST_RET);
+>  	}
+> -
+> -	/*
+> -	 * Invoke cleanup() to delete the test directory/file(s) created
+> -	 * in the setup().
+> -	 */
+> -	cleanup();
+> -
+> -	tst_exit();
+>  }
+>  
+> -/*
+> - * void
+> - * setup(void) - performs all ONE TIME setup for this test.
+> - *	Exit the test program on receipt of unexpected signals.
+> - *	Create a temporary directory and change directory to it.
+> - *      Create a testfile under temporary directory.
+> - *      Close the testfile.
+> - */
+> -void setup(void)
+> +static void run(unsigned int tc_num)
+>  {
+> -	/* Capture unexpected signals */
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> -
+> -	/* Make a temp dir and cd to it */
+> -	tst_tmpdir();
+> +	pid_t pid;
+>  
+> -	/* Create a testfile under temporary directory */
+> -	fildes = SAFE_OPEN(cleanup, TEST_FILE, O_RDWR | O_CREAT, 0666);
+> -
+> -	SAFE_CLOSE(cleanup, fildes);
+> +	pid = SAFE_FORK();
+> +	if (pid == 0) {
+> +		check_fstat(tc_num);
+> +		return;
+> +	}
+> +	tst_reap_children();
+>  }
+>  
+> -/*
+> - * void
+> - * cleanup() - Performs all ONE TIME cleanup for this test at
+> - *             completion or premature exit.
+> - *	Print test timing stats and errno log if test executed with options.
+> - *	Close the testfile if still opened.
+> - *	Remove temporary directory and sub-directories/files under it
+> - *	created during setup().
+> - *	Exit the test program with normal exit code.
+> - */
+> -void cleanup(void)
+> +static void setup(void)
+>  {
+> +	fd_ebadf = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, 0644);
+> +	SAFE_CLOSE(fd_ebadf);
 
-There is no point in having the numbers in check variables if we do case
-here, we can just pass it here.
+Actually this is kind of useless since the SAFE_CLOSE() sets the
+fd_ebadfd to -1.
 
-> +	esac
+And we even have tst_get_unused_pid() function exactly for this.
+
+> +	fd_ok = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, 0644);
 > +}
-> +
-> +sysctl_test_overflow()
-> +{
-> +	local old_value=$(cat "$dir""$name")
-> +
-> +	sysctl -w "fs.file-max"=$1 >/dev/null 2>&1
-> +
-> +	local test_value=$(cat "$dir""$name")
-> +
-> +	echo ${test_value} |grep -q ${old_value}
-> +	if [ $? -eq 0 ]; then
-> +		tst_res TPASS "file-max overflow, reject it and keep old value."
-> +	else
-> +		tst_res TFAIL "file-max overflow and set it to ${test_value}."
-> +	fi
-> +	cleanup
-> +}
-> +
-> +sysctl_test_zero()
-> +{
-> +	sysctl -w "fs.file-max"=$1 >/dev/null 2>&1
-> +	tst_res TINFO "if it doesn't report TPASS after 60s sleep, system crashes"
-> +	sleep 60
-
-What happens on the buggy kernel here?
-
-Does it crash reliably?
-
-It looks to me that reproducing this bug without KASAN enabled kernel
-would be really hard or even impossible, therefore the sleep here does
-not matter at all.
-
-> +	tst_res TPASS "file-max is set 0 and doesn't crash"
-> +}
-> +
-> +cleanup()
-> +{
-> +	sysctl -w "fs.""$name"=${orig_value} >/dev/null 2>&1
-> +}
-> +
-> +tst_run
-> -- 
-> 2.18.1
-> 
-> 
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+>  
+> -	tst_rmdir();
+> -
 
 -- 
 Cyril Hrubis
