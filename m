@@ -1,58 +1,44 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 7 Jun 2019 15:31:12 +0200
-Subject: [LTP] [PATCH v3] syscalls/fstat{03,05}: rewrote testcases
-In-Reply-To: <20190607091923.30683-1-camann@suse.com>
-References: <20190607091923.30683-1-camann@suse.com>
-Message-ID: <20190607133112.GA20202@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri,  7 Jun 2019 15:39:44 +0200
+Subject: [LTP] [COMMITTED][PATCH 1/1] ver_linux: Fix util-linux version for
+	some distros
+Message-ID: <20190607133944.17045-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with a few changes, thanks.
+Some SLES versions on s390x does not contain fdformat in util-linux
+package, which breaks util-linux detection:
 
-* Made the check for return value more strict
+util-linux             /opt/ltp/ver_linux: line 73: fdformat: command not found
 
-* Changed the code so that we do not rely on test number but on expected
-  errno in the segfault check, this makes the test more robust in a case
-  we would add tests to the tcase structure. Also this makes the code
-  more clear to the reader.
+Thus use mkswap which is in util-linux since v2.2 (the same as fdformat)
+it's common enough (there is no --disable-mkswap build flag in
+util-linux).
 
-* Added code to make sure the child has exitted with 0 in normal case
+While on it, remove also extra "linux " output before version caused by
+-F\- awk parameter.
 
-diff --git a/testcases/kernel/syscalls/fstat/fstat03.c b/testcases/kernel/syscalls/fstat/fstat03.c
-index 3d6790eb2..7d213dea9 100644
---- a/testcases/kernel/syscalls/fstat/fstat03.c
-+++ b/testcases/kernel/syscalls/fstat/fstat03.c
-@@ -42,7 +42,7 @@ static void check_fstat(unsigned int tc_num)
- 	struct tcase *tc = &tcases[tc_num];
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ ver_linux | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ver_linux b/ver_linux
+index 6c2706bae..8b8ba79a8 100755
+--- a/ver_linux
++++ b/ver_linux
+@@ -70,7 +70,7 @@ make --version 2>&1 | awk -F, '{print $1}' | awk \
+ ld -v 2>&1 | awk -F\) '{print $1}' | awk \
+       '/BFD/{print "binutils              ",$NF}'
  
- 	TEST(fstat(*tc->fd, tc->stat_buf));
--	if (TST_RET != 0) {
-+	if (TST_RET == -1) {
- 		if (tc->exp_err == TST_ERR) {
- 			tst_res(TPASS,
- 				 "fstat() fails with expected error %s",
-@@ -70,8 +70,15 @@ static void run(unsigned int tc_num)
- 	}
- 	SAFE_WAITPID(pid, &status, 0);
+-fdformat --version 2>&1 | awk -F\- '{print "util-linux            ", $NF}'
++mkswap -V 2>&1 | awk '{print "util-linux            ", $NF}'
  
--	if (tc_num == 1 && WTERMSIG(status) == SIGSEGV)
-+	if (tcases[tc_num].exp_err == EFAULT && WTERMSIG(status) == SIGSEGV) {
- 		tst_res(TPASS, "fstat() failed as expected with SIGSEGV");
-+		return;
-+	}
-+
-+	if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
-+		return;
-+
-+	tst_res(TBROK, "child %s", tst_strstatus(status));
- }
+ mount --version 2>&1 | awk -F\- '{print "mount                 ", $NF}'
  
- static void setup(void)
-
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.21.0
+
