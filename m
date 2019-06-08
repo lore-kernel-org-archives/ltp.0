@@ -1,208 +1,160 @@
-From: Xiao Yang <ice_yangxiao@163.com>
-Date: Fri,  7 Jun 2019 23:40:50 +0800
-Subject: [LTP] [PATCH v2] rcu/rcu_torture.sh: Rewrite test
-In-Reply-To: <7ad6c506-e195-db0d-3b2b-a30b95c42f8a@oracle.com>
-References: <7ad6c506-e195-db0d-3b2b-a30b95c42f8a@oracle.com>
-Message-ID: <1559922050-15221-1-git-send-email-ice_yangxiao@163.com>
+From: Li Wang <liwang@redhat.com>
+Date: Sat,  8 Jun 2019 13:45:49 +0800
+Subject: [LTP] [PATCH RFC 2/3] max_map_count: taking use of tst_on_arch in
+	testcase
+In-Reply-To: <20190608054550.13744-1-liwang@redhat.com>
+References: <20190608054550.13744-1-liwang@redhat.com>
+Message-ID: <20190608054550.13744-2-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) Cleanup and convert to new API
-2) Update valid rcutorture types(rcu, srcu, srcud, tasks)
+We have two different ways to use tst_on_arch, first is to set
+.arch = "xxx, yyy" in test struct to limit testcase running on some
+specified arch, the second is calling it directly in test functions.
 
-Note:
-Exclude valid busted* types(busted, busted_srcud) that check
-the test itself and expect failures, suggested by:
-https://www.spinics.net/lists/kernel/msg3045252.html
+Demo:
+  1. ptrace07.c, cve-2017-17053.c, meltdown.c
+  2. max_map_count.c
 
-Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
+Signed-off-by: Li Wang <liwang@redhat.com>
 ---
-v2:
-1) Add check for invalid rcutorture types
-2) Remove unnecessary code and update descriptions
-3) Exclude busted* types
+ testcases/cve/cve-2017-17053.c               |  1 +
+ testcases/cve/meltdown.c                     |  9 +----
+ testcases/kernel/mem/tunable/max_map_count.c | 36 ++++++++++----------
+ testcases/kernel/syscalls/ptrace/ptrace07.c  |  8 ++---
+ 4 files changed, 23 insertions(+), 31 deletions(-)
 
- testcases/kernel/device-drivers/rcu/rcu_torture.sh | 139 +++++++++------------
- 1 file changed, 59 insertions(+), 80 deletions(-)
-
-diff --git a/testcases/kernel/device-drivers/rcu/rcu_torture.sh b/testcases/kernel/device-drivers/rcu/rcu_torture.sh
-index c3739f9..5549bd2 100755
---- a/testcases/kernel/device-drivers/rcu/rcu_torture.sh
-+++ b/testcases/kernel/device-drivers/rcu/rcu_torture.sh
-@@ -1,20 +1,7 @@
- #!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) 2014-2015 Oracle and/or its affiliates. All Rights Reserved.
--#
--# This program is free software; you can redistribute it and/or
--# modify it under the terms of the GNU General Public License as
--# published by the Free Software Foundation; either version 2 of
--# the License, or (at your option) any later version.
--#
--# This program is distributed in the hope that it would be useful,
--# but WITHOUT ANY WARRANTY; without even the implied warranty of
--# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--# GNU General Public License for more details.
--#
--# You should have received a copy of the GNU General Public License
--# along with this program; if not, write the Free Software Foundation,
--# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--#
-+# Copyright (C) 2019 Xiao Yang <ice_yangxiao@163.com>
- # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
- #
- # One of the possible ways to test RCU is to use rcutorture kernel module.
-@@ -23,89 +10,81 @@
- # dmesg output for module's test results.
- # For more information, please read Linux Documentation: RCU/torture.txt
- 
--TCID="rcu_torture"
--TST_TOTAL=14
--TST_CLEANUP=cleanup
-+TST_CNT=4
-+TST_SETUP=rcutorture_setup
-+TST_TESTFUNC=do_test
-+TST_NEEDS_ROOT=1
-+TST_NEEDS_CMDS="modprobe rmmod dmesg sed tail"
-+TST_OPTS="t:w:"
-+TST_USAGE=rcutorture_usage
-+TST_PARSE_ARGS=rcutorture_parse_args
- 
--. test.sh
-+. tst_test.sh
- 
- # default options
--test_time=60
-+test_time=30
- num_writers=5
- 
--while getopts :ht:w: opt; do
--	case "$opt" in
--	h)
--		echo "Usage:"
--		echo "h        help"
--		echo "t x      time in seconds for each test-case"
--		echo "w x      number of writers"
--		exit 0
--	;;
--	t) test_time=$OPTARG ;;
--	w) num_writers=$OPTARG ;;
--	*)
--		tst_brkm TBROK "unknown option: $opt"
--	;;
--	esac
--done
--
--cleanup()
-+rcutorture_usage()
- {
--	tst_resm TINFO "cleanup"
--	rmmod rcutorture > /dev/null 2>&1
-+	echo "Usage:"
-+	echo "-t x    time in seconds for each test-case"
-+	echo "-w x    number of writers"
+diff --git a/testcases/cve/cve-2017-17053.c b/testcases/cve/cve-2017-17053.c
+index e01db3d4f..67bf4135f 100644
+--- a/testcases/cve/cve-2017-17053.c
++++ b/testcases/cve/cve-2017-17053.c
+@@ -162,6 +162,7 @@ void run(void)
  }
  
--tst_require_root
-+rcutorture_parse_args()
-+{
-+	case $1 in
-+	t) test_time=$2 ;;
-+	w) num_writers=$2 ;;
-+	esac
-+}
+ static struct tst_test test = {
++	.arch = "x86_64, i386",
+ 	.forks_child = 1,
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+diff --git a/testcases/cve/meltdown.c b/testcases/cve/meltdown.c
+index a53ea9b8e..da35213ec 100644
+--- a/testcases/cve/meltdown.c
++++ b/testcases/cve/meltdown.c
+@@ -20,8 +20,6 @@
+ #include "config.h"
+ #include "tst_test.h"
  
--# check if module is present
--modprobe rcutorture > /dev/null 2>&1 || \
--	tst_brkm TCONF "Test requires rcutorture module"
--rmmod rcutorture > /dev/null 2>&1
-+rcutorture_setup()
-+{
-+	# do test by inserting and removing rcutorture module
-+	# so check if it is built-in, loaded or unbuilt
-+	modprobe -n --first-time rcutorture >/dev/null 2>&1 || \
-+		tst_brk TCONF "built-in, loaded or unbuilt rcutorture"
-+}
- 
--trap cleanup INT
-+rcutorture_test()
-+{
-+	local rcu_type=$1
- 
--rcu_type="rcu rcu_bh srcu sched"
-+	tst_res TINFO "${rcu_type}-torture: running ${test_time} sec..."
- 
--if tst_kvcmp -lt "3.12"; then
--	rcu_type="$rcu_type rcu_sync rcu_expedited rcu_bh_sync rcu_bh_expedited \
--	          srcu_sync srcu_expedited sched_sync sched_expedited"
-+	modprobe rcutorture nfakewriters=${num_writers} \
-+		torture_type=${rcu_type} >/dev/null 2>&1
-+	if [ $? -ne 0 ]; then
-+		dmesg | grep -q "invalid torture type: \"${rcu_type}\"" && \
-+			tst_brk TCONF "invalid ${rcu_type} type"
- 
--	if tst_kvcmp -lt "3.11"; then
--		rcu_type="$rcu_type srcu_raw srcu_raw_sync"
-+		tst_brk TBROK "failed to load module"
- 	fi
--fi
+-#if defined(__x86_64__) || defined(__i386__)
 -
--TST_TOTAL=$(echo "$rcu_type" | wc -w)
--
--est_time=`echo "scale=2; $test_time * $TST_TOTAL / 60 " | bc`
--tst_resm TINFO "estimate time $est_time min"
--
--for type in $rcu_type; do
--
--	tst_resm TINFO "$type: running $test_time sec..."
--
--	modprobe rcutorture nfakewriters=$num_writers \
--	         stat_interval=60 test_no_idle_hz=1 shuffle_interval=3 \
--	         stutter=5 irqreader=1 fqs_duration=0 fqs_holdoff=0 \
--	         fqs_stutter=3 test_boost=1 test_boost_interval=7 \
--	         test_boost_duration=4 shutdown_secs=0 \
--	         stall_cpu=0 stall_cpu_holdoff=10 n_barrier_cbs=0 \
--	         onoff_interval=0 onoff_holdoff=0 torture_type=$type \
--	         > /dev/null 2>&1 || tst_brkm TBROK "failed to load module"
+ #include <stdio.h>
+ #include <string.h>
+ #include <signal.h>
+@@ -382,15 +380,10 @@ static void cleanup(void)
+ }
  
--	sleep $test_time
-+	sleep ${test_time}
+ static struct tst_test test = {
++	.arch = "x86_64, i386",
+ 	.needs_root = 1,
+ 	.setup = setup,
+ 	.test_all = run,
+ 	.cleanup = cleanup,
+ 	.min_kver = "2.6.32"
+ };
+-
+-#else /* #if defined(__x86_64__) || defined(__i386__) */
+-
+-TST_TEST_TCONF("not x86_64 or i386");
+-
+-#endif /* #else #if defined(__x86_64__) || defined(__i386__) */
+diff --git a/testcases/kernel/mem/tunable/max_map_count.c b/testcases/kernel/mem/tunable/max_map_count.c
+index 5b03a60ec..ae86288bf 100644
+--- a/testcases/kernel/mem/tunable/max_map_count.c
++++ b/testcases/kernel/mem/tunable/max_map_count.c
+@@ -91,24 +91,24 @@ static bool filter_map(const char *line)
+ 	if (ret != 1)
+ 		return false;
  
--	rmmod rcutorture > /dev/null 2>&1 || \
--		tst_brkm TBROK "failed to unload module"
-+	rmmod rcutorture >/dev/null 2>&1 || \
-+		tst_brk TBROK "failed to unload module"
- 
- 	# check module status in dmesg
--	result_str=`dmesg | sed -nE '$s/.*End of test: ([A-Z]+):.*/\1/p'`
--	if [ "$result_str" = "SUCCESS" ]; then
--		tst_resm TPASS "$type: completed"
-+	local res=$(dmesg | sed -nE "s/.* ${rcu_type}-torture:.* End of test: (.*): .*/\1/p" | tail -n1)
-+	if [ "$res" = "SUCCESS" ]; then
-+		tst_res TPASS "${rcu_type}-torture: $res"
- 	else
--		tst_resm TFAIL "$type: $result_str, see dmesg"
-+		tst_res TFAIL "${rcu_type}-torture: $res, see dmesg"
- 	fi
--done
-+}
+-#if defined(__x86_64__) || defined(__x86__)
+-	/* On x86, there's an old compat vsyscall page */
+-	if (!strcmp(buf, "[vsyscall]"))
+-		return true;
+-#elif defined(__ia64__)
+-	/* On ia64, the vdso is not a proper mapping */
+-	if (!strcmp(buf, "[vdso]"))
+-		return true;
+-#elif defined(__arm__)
+-	/* Skip it when run it in aarch64 */
+-	if ((!strcmp(un.machine, "aarch64"))
+-	|| (!strcmp(un.machine, "aarch64_be")))
+-		return false;
+-
+-	/* Older arm kernels didn't label their vdso maps */
+-	if (!strncmp(line, "ffff0000-ffff1000", 17))
+-		return true;
+-#endif
++	if (tst_on_arch("x86_64, x86")) {
++		/* On x86, there's an old compat vsyscall page */
++		if (!strcmp(buf, "[vsyscall]"))
++			return true;
++	} else if (tst_on_arch("ia64")) {
++		/* On ia64, the vdso is not a proper mapping */
++		if (!strcmp(buf, "[vdso]"))
++			return true;
++	} else if (tst_on_arch("arm")) {
++		/* Skip it when run it in aarch64 */
++		if ((!strcmp(un.machine, "aarch64"))
++				|| (!strcmp(un.machine, "aarch64_be")))
++			return false;
 +
-+do_test()
-+{
-+	case $1 in
-+	1) rcutorture_test rcu;;
-+	2) rcutorture_test srcu;;
-+	3) rcutorture_test srcud;;
-+	4) rcutorture_test tasks;;
-+	esac
-+}
++		/* Older arm kernels didn't label their vdso maps */
++		if (!strncmp(line, "ffff0000-ffff1000", 17))
++			return true;
++	}
  
--tst_exit
-+tst_run
+ 	return false;
+ }
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace07.c b/testcases/kernel/syscalls/ptrace/ptrace07.c
+index 9cbaefc3f..67e47ce16 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace07.c
++++ b/testcases/kernel/syscalls/ptrace/ptrace07.c
+@@ -60,13 +60,13 @@
+ # define NT_X86_XSTATE 0x202
+ #endif
+ 
+-#ifdef __x86_64__
+ static void check_regs_loop(uint32_t initval)
+ {
+ 	const unsigned long num_iters = 1000000000;
+ 	uint32_t xmm0[4] = { initval, initval, initval, initval };
+ 	int status = 1;
+ 
++#ifdef __x86_64__
+ 	asm volatile("   movdqu %0, %%xmm0\n"
+ 		     "   mov %0, %%rbx\n"
+ 		     "1: dec %2\n"
+@@ -80,6 +80,7 @@ static void check_regs_loop(uint32_t initval)
+ 		     "3:\n"
+ 		     : "+m" (xmm0), "+r" (status)
+ 		     : "r" (num_iters) : "rax", "rbx", "xmm0");
++#endif
+ 
+ 	if (status) {
+ 		tst_res(TFAIL,
+@@ -188,10 +189,7 @@ static void do_test(void)
+ 
+ static struct tst_test test = {
+ 	.test_all = do_test,
++	.arch = "x86_64",
+ 	.forks_child = 1,
+ 	.needs_checkpoints = 1,
+ };
+-
+-#else /* !__x86_64__ */
+-	TST_TEST_TCONF("this test is only supported on x86_64");
+-#endif /* __x86_64__ */
 -- 
-1.8.3.1
-
+2.17.0
 
