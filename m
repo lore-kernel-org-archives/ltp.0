@@ -1,160 +1,235 @@
 From: Li Wang <liwang@redhat.com>
-Date: Sat,  8 Jun 2019 13:45:49 +0800
-Subject: [LTP] [PATCH RFC 2/3] max_map_count: taking use of tst_on_arch in
-	testcase
-In-Reply-To: <20190608054550.13744-1-liwang@redhat.com>
-References: <20190608054550.13744-1-liwang@redhat.com>
-Message-ID: <20190608054550.13744-2-liwang@redhat.com>
+Date: Sat,  8 Jun 2019 13:45:48 +0800
+Subject: [LTP] [PATCH RFC 1/3] lib: adding tst_on_arch function in library
+Message-ID: <20190608054550.13744-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We have two different ways to use tst_on_arch, first is to set
-.arch = "xxx, yyy" in test struct to limit testcase running on some
-specified arch, the second is calling it directly in test functions.
+Testcases for specified arch should be limited on that only being supported
+platform to run, we now create a function tst_on_arch to achieve this new
+feature in LTP library.  All you need to run a test on the expected arch is
+to set the '.arch' string in the 'struct tst_test' to choose the required
+arch list. e.g. '.arch = "x86_64, i386"'.
 
-Demo:
-  1. ptrace07.c, cve-2017-17053.c, meltdown.c
-  2. max_map_count.c
+For more complicated usages such as customize your test code for a special
+arch, the tst_on_arch function could be invoked in the test directly.
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/cve/cve-2017-17053.c               |  1 +
- testcases/cve/meltdown.c                     |  9 +----
- testcases/kernel/mem/tunable/max_map_count.c | 36 ++++++++++----------
- testcases/kernel/syscalls/ptrace/ptrace07.c  |  8 ++---
- 4 files changed, 23 insertions(+), 31 deletions(-)
+ doc/test-writing-guidelines.txt | 54 +++++++++++++++++++++++++
+ include/tst_arch.h              | 16 ++++++++
+ include/tst_test.h              |  7 +++-
+ lib/tst_arch.c                  | 71 +++++++++++++++++++++++++++++++++
+ 4 files changed, 147 insertions(+), 1 deletion(-)
+ create mode 100644 include/tst_arch.h
+ create mode 100644 lib/tst_arch.c
 
-diff --git a/testcases/cve/cve-2017-17053.c b/testcases/cve/cve-2017-17053.c
-index e01db3d4f..67bf4135f 100644
---- a/testcases/cve/cve-2017-17053.c
-+++ b/testcases/cve/cve-2017-17053.c
-@@ -162,6 +162,7 @@ void run(void)
- }
- 
- static struct tst_test test = {
-+	.arch = "x86_64, i386",
- 	.forks_child = 1,
- 	.setup = setup,
- 	.cleanup = cleanup,
-diff --git a/testcases/cve/meltdown.c b/testcases/cve/meltdown.c
-index a53ea9b8e..da35213ec 100644
---- a/testcases/cve/meltdown.c
-+++ b/testcases/cve/meltdown.c
-@@ -20,8 +20,6 @@
- #include "config.h"
- #include "tst_test.h"
- 
--#if defined(__x86_64__) || defined(__i386__)
--
- #include <stdio.h>
- #include <string.h>
- #include <signal.h>
-@@ -382,15 +380,10 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.arch = "x86_64, i386",
- 	.needs_root = 1,
- 	.setup = setup,
- 	.test_all = run,
- 	.cleanup = cleanup,
- 	.min_kver = "2.6.32"
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index f1912dc12..10442d756 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -1668,6 +1668,60 @@ sturct tst_test test = {
  };
--
--#else /* #if defined(__x86_64__) || defined(__i386__) */
--
--TST_TEST_TCONF("not x86_64 or i386");
--
--#endif /* #else #if defined(__x86_64__) || defined(__i386__) */
-diff --git a/testcases/kernel/mem/tunable/max_map_count.c b/testcases/kernel/mem/tunable/max_map_count.c
-index 5b03a60ec..ae86288bf 100644
---- a/testcases/kernel/mem/tunable/max_map_count.c
-+++ b/testcases/kernel/mem/tunable/max_map_count.c
-@@ -91,24 +91,24 @@ static bool filter_map(const char *line)
- 	if (ret != 1)
- 		return false;
+ -------------------------------------------------------------------------------
  
--#if defined(__x86_64__) || defined(__x86__)
--	/* On x86, there's an old compat vsyscall page */
--	if (!strcmp(buf, "[vsyscall]"))
--		return true;
--#elif defined(__ia64__)
--	/* On ia64, the vdso is not a proper mapping */
--	if (!strcmp(buf, "[vdso]"))
--		return true;
--#elif defined(__arm__)
--	/* Skip it when run it in aarch64 */
--	if ((!strcmp(un.machine, "aarch64"))
--	|| (!strcmp(un.machine, "aarch64_be")))
--		return false;
--
--	/* Older arm kernels didn't label their vdso maps */
--	if (!strncmp(line, "ffff0000-ffff1000", 17))
--		return true;
--#endif
-+	if (tst_on_arch("x86_64, x86")) {
-+		/* On x86, there's an old compat vsyscall page */
-+		if (!strcmp(buf, "[vsyscall]"))
-+			return true;
-+	} else if (tst_on_arch("ia64")) {
-+		/* On ia64, the vdso is not a proper mapping */
-+		if (!strcmp(buf, "[vdso]"))
-+			return true;
-+	} else if (tst_on_arch("arm")) {
-+		/* Skip it when run it in aarch64 */
-+		if ((!strcmp(un.machine, "aarch64"))
-+				|| (!strcmp(un.machine, "aarch64_be")))
-+			return false;
++2.2.30 Testing on specified architecture
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +
-+		/* Older arm kernels didn't label their vdso maps */
-+		if (!strncmp(line, "ffff0000-ffff1000", 17))
-+			return true;
++Testcases for specified arch should be limited on that only being supported
++platform to run, we now create a function tst_on_arch to achieve this new
++feature in LTP library.  All you need to run a test on the expected arch is
++to set the '.arch' string in the 'struct tst_test' to choose the required
++arch list. e.g. '.arch = "x86_64, i386"'.
++
++[source,c]
++-------------------------------------------------------------------------------
++#include "tst_test.h"
++
++static void setup(void)
++{
++	...
++}
++
++static struct tst_test test = {
++	...
++	.setup = setup,
++	.arch = "x86_64, i386",
++	...
++}
++-------------------------------------------------------------------------------
++
++For more complicated usages such as customize your test code for a special
++arch, the tst_on_arch function could be invoked in the test directly.
++
++[source,c]
++-------------------------------------------------------------------------------
++#include "tst_test.h"
++
++static void do_test(void)
++{
++	if (tst_on_arch("x86_64, i386")) {
++		/* code for x86_64, i386 */
++		...
++	} else if (tst_on_arch("ppc64")) {
++		/* code for ppc64 */
++		...
++	} else if (tst_on_arch("s390, s390x")) {
++		/* code for s390x */
++		...
 +	}
++}
++
++static struct tst_test test = {
++	...
++	.test_all = do_test,
++	...
++}
++-------------------------------------------------------------------------------
++
  
- 	return false;
- }
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace07.c b/testcases/kernel/syscalls/ptrace/ptrace07.c
-index 9cbaefc3f..67e47ce16 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace07.c
-+++ b/testcases/kernel/syscalls/ptrace/ptrace07.c
-@@ -60,13 +60,13 @@
- # define NT_X86_XSTATE 0x202
- #endif
+ 2.3 Writing a testcase in shell
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+diff --git a/include/tst_arch.h b/include/tst_arch.h
+new file mode 100644
+index 000000000..7bf0493ce
+--- /dev/null
++++ b/include/tst_arch.h
+@@ -0,0 +1,16 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later
++ * Copyright (c) 2019 Li Wang <liwang@redhat.com>
++ */
++
++#ifndef TST_ARCH_H__
++#define TST_ARCH_H__
++
++/*
++ * Check if test platform is in the given arch list. If yes return 1,
++ * otherwise return 0.
++ *
++ * @arch, NULL or vliad arch list
++ */
++int tst_on_arch(const char *arch);
++
++#endif /* TST_ARCH_H__ */
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 8bdf38482..cafcb1a89 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -28,6 +28,7 @@
+ #include "tst_atomic.h"
+ #include "tst_kvercmp.h"
+ #include "tst_clone.h"
++#include "tst_arch.h"
+ #include "tst_kernel.h"
+ #include "tst_minmax.h"
+ #include "tst_get_bad_addr.h"
+@@ -114,6 +115,8 @@ struct tst_test {
  
--#ifdef __x86_64__
- static void check_regs_loop(uint32_t initval)
- {
- 	const unsigned long num_iters = 1000000000;
- 	uint32_t xmm0[4] = { initval, initval, initval, initval };
- 	int status = 1;
+ 	const char *min_kver;
  
-+#ifdef __x86_64__
- 	asm volatile("   movdqu %0, %%xmm0\n"
- 		     "   mov %0, %%rbx\n"
- 		     "1: dec %2\n"
-@@ -80,6 +80,7 @@ static void check_regs_loop(uint32_t initval)
- 		     "3:\n"
- 		     : "+m" (xmm0), "+r" (status)
- 		     : "r" (num_iters) : "rax", "rbx", "xmm0");
-+#endif
++	const char *arch;
++
+ 	/* If set the test is compiled out */
+ 	const char *tconf_msg;
  
- 	if (status) {
- 		tst_res(TFAIL,
-@@ -188,10 +189,7 @@ static void do_test(void)
+@@ -253,7 +256,6 @@ const char *tst_strstatus(int status);
+ unsigned int tst_timeout_remaining(void);
+ void tst_set_timeout(int timeout);
  
- static struct tst_test test = {
- 	.test_all = do_test,
-+	.arch = "x86_64",
- 	.forks_child = 1,
- 	.needs_checkpoints = 1,
- };
 -
--#else /* !__x86_64__ */
--	TST_TEST_TCONF("this test is only supported on x86_64");
--#endif /* __x86_64__ */
+ /*
+  * Returns path to the test temporary directory in a newly allocated buffer.
+  */
+@@ -265,6 +267,9 @@ static struct tst_test test;
+ 
+ int main(int argc, char *argv[])
+ {
++	if (!tst_on_arch(test.arch))
++		tst_brk(TCONF, "Test needs running on %s arch!", test.arch);
++
+ 	tst_run_tcases(argc, argv, &test);
+ }
+ 
+diff --git a/lib/tst_arch.c b/lib/tst_arch.c
+new file mode 100644
+index 000000000..a9f2775b4
+--- /dev/null
++++ b/lib/tst_arch.c
+@@ -0,0 +1,71 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later
++ * Copyright (c) 2019 Li Wang <liwang@redhat.com>
++ */
++
++#include <string.h>
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_arch.h"
++#include "tst_test.h"
++
++static const char *const arch_type_list[] = {
++	"i386",
++	"x86",
++	"x86_64",
++	"ia64",
++	"ppc",
++	"ppc64",
++	"s390",
++	"s390x",
++	"arm",
++	"aarch64",
++	"sparc",
++	NULL
++};
++
++static int is_valid_arch(const char *arch)
++{
++	unsigned int i;
++
++	for (i = 0; arch_type_list[i]; i++) {
++		if (strstr(arch, arch_type_list[i]))
++			return 1;
++	}
++
++	return 0;
++}
++
++int tst_on_arch(const char *arch)
++{
++#if defined(__i386__)
++	char *tst_arch = "i386";
++#elif defined(__x86__)
++	char *tst_arch = "x86";
++#elif defined(__x86_64__)
++	char *tst_arch = "x86_64";
++#elif defined(__ia64__)
++	char *tst_arch = "ia64";
++#elif defined(__powerpc__)
++	char *tst_arch = "ppc";
++#elif defined(__powerpc64__)
++	char *tst_arch = "ppc64";
++#elif defined(__s390__)
++	char *tst_arch = "s390";
++#elif defined(__s390x__)
++	char *tst_arch = "s390x";
++#elif defined(__arm__)
++	char *tst_arch = "arm";
++#elif defined(__arch64__)
++	char *tst_arch = "aarch64";
++#elif defined(__sparc__)
++	char *tst_arch = "sparc";
++#endif
++
++	if (arch != NULL && !is_valid_arch(arch))
++		tst_brk(TBROK, "please set valid arches!");
++
++	if (arch == NULL || strstr(arch, tst_arch))
++		return 1;
++
++	return 0;
++}
 -- 
 2.17.0
 
