@@ -1,470 +1,263 @@
 From: Sandeep Patil <sspatil@android.com>
-Date: Sun,  9 Jun 2019 17:26:09 -0700
-Subject: [LTP] [PATCH v2 2/3] syscalls/asyncio02: convert to new library.
+Date: Sun,  9 Jun 2019 17:26:10 -0700
+Subject: [LTP] [PATCH v2 3/3] syscalls/bind01: convert to new library.
 In-Reply-To: <20190610002610.2187-1-sspatil@android.com>
 References: <20190610002610.2187-1-sspatil@android.com>
-Message-ID: <20190610002610.2187-3-sspatil@android.com>
+Message-ID: <20190610002610.2187-4-sspatil@android.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Move the test to stat/stat02 and drop several
-duplicate test cases along the way
+Drop UCLINUX specific tests along the way.
 
 Signed-off-by: Sandeep Patil <sspatil@android.com>
 ---
 
 v1->v2
 ------
-- Move the test to stat/stat02.c
-- Delete the asyncio skeleton for good.
+- Rebased after commit 'fa6a4e708 ("net: Introduce TST_GET_UNUSED_PORT() macro..)'
 
- testcases/kernel/syscalls/asyncio/.gitignore  |   1 -
- testcases/kernel/syscalls/asyncio/Makefile    |  23 --
- testcases/kernel/syscalls/asyncio/asyncio02.c | 294 ------------------
- testcases/kernel/syscalls/stat/stat02.c       |  93 ++++++
- 4 files changed, 93 insertions(+), 318 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/asyncio/.gitignore
- delete mode 100644 testcases/kernel/syscalls/asyncio/Makefile
- delete mode 100644 testcases/kernel/syscalls/asyncio/asyncio02.c
- create mode 100644 testcases/kernel/syscalls/stat/stat02.c
+ testcases/kernel/syscalls/bind/bind01.c | 198 ++++++------------------
+ 1 file changed, 48 insertions(+), 150 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/asyncio/.gitignore b/testcases/kernel/syscalls/asyncio/.gitignore
-deleted file mode 100644
-index 35f65a6a9..000000000
---- a/testcases/kernel/syscalls/asyncio/.gitignore
-+++ /dev/null
-@@ -1 +0,0 @@
--/asyncio02
-diff --git a/testcases/kernel/syscalls/asyncio/Makefile b/testcases/kernel/syscalls/asyncio/Makefile
-deleted file mode 100644
-index bd617d806..000000000
---- a/testcases/kernel/syscalls/asyncio/Makefile
-+++ /dev/null
-@@ -1,23 +0,0 @@
--#
--#  Copyright (c) International Business Machines  Corp., 2001
--#
--#  This program is free software;  you can redistribute it and/or modify
--#  it under the terms of the GNU General Public License as published by
--#  the Free Software Foundation; either version 2 of the License, or
--#  (at your option) any later version.
--#
--#  This program is distributed in the hope that it will be useful,
--#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
--#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
--#  the GNU General Public License for more details.
--#
--#  You should have received a copy of the GNU General Public License
--#  along with this program;  if not, write to the Free Software
--#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--#
--
--top_srcdir		?= ../../../..
--
--include $(top_srcdir)/include/mk/testcases.mk
--
--include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/asyncio/asyncio02.c b/testcases/kernel/syscalls/asyncio/asyncio02.c
-deleted file mode 100644
-index e532cc287..000000000
---- a/testcases/kernel/syscalls/asyncio/asyncio02.c
-+++ /dev/null
-@@ -1,294 +0,0 @@
+diff --git a/testcases/kernel/syscalls/bind/bind01.c b/testcases/kernel/syscalls/bind/bind01.c
+index d2f50e806..49b5d866e 100644
+--- a/testcases/kernel/syscalls/bind/bind01.c
++++ b/testcases/kernel/syscalls/bind/bind01.c
+@@ -1,43 +1,7 @@
 -/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
 - *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
+- *   Copyright (c) International Business Machines  Corp., 2001
 - *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
 - *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
 - *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 - */
--/* $Id: asyncio02.c,v 1.6 2009/08/28 11:17:39 vapier Exp $ */
--/************************************************************
-- * OS Test - Silicon Graphics, Inc.
-- * Mendota Heights, Minnesota
++// SPDX-License-Identifier: GPL-2.0
+ 
+ /*
+- * Test Name: bind01
 - *
-- * TEST IDENTIFIER:  aiotcs02:  write/close flushes data to the file
+- * Test Description:
+- *  Verify that bind() returns the proper errno for various failure cases
 - *
-- * PARENT DOCUMENT:  aiotds01:  kernel i/o
+- * Usage:  <for command-line>
+- *  bind01 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
 - *
-- * AUTHOR: Barrie Kletscher
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
 - *
-- * CO-PILOT: Dave Baumgartner
+- * RESTRICTIONS:
+- *  None.
 - *
-- * TEST ITEMS:
-- * 	for each open flags set used:
-- * 	1. Multiple writes to a file work as specified for
-- * 	   more than BUFSIZ bytes.
-- * 	2. Multiple writes to a file work as specified for
-- * 	   BUFSIZ bytes.
-- * 	3. Multiple writes to a file work as specified for
-- * 	   lower than BUFSIZ bytes.
-- *
-- * INPUT SPECIFICATIONS:
-- * 	Standard parse_opts supported options.
-- *$
-- * OUTPUT SPECIFICATIONS
-- * 	Standard tst_res output format
-- *
-- * ENVIRONMENTAL NEEDS:
-- * 	This program uses the environment variable TMPDIR for the location
-- * 	of the temporary directory.
-- *
-- *
-- * SPECIAL PROCEDURAL REQUIREMENTS:
-- * 	The program must be linked with tst_*.o and parse_opts.o.
-- *
-- * INTERCASE DEPENDENCIES:
-- * 	NONE.
-- *
-- * DETAILED DESCRIPTION:
-- * 	Attempt to get some memory to work with.
-- * 	Call testrun writing (BUFSIZ + 1) bytes
-- * 	Call testrun writing BUFSIZ bytes
-- * 	Repeated call to testrun() with decreasing write sizes
-- * 		less than BUFSIZ
-- * 	End
-- *
-- * 	Start testrun()
-- * 	Attempt to open a temporary file.
-- * 	Write the memory to the file.
-- * 	Attempt to close the file which also flushes the buffers.
-- * 	Now check to see if the number of bytes written is the
-- * 		same as the number of bytes in the file.
-- * 	Cleanup
-- *
-- * BUGS:
-- * 	NONE.
-- *
--************************************************************/
--
--#include <fcntl.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <sys/signal.h>
--#include <errno.h>
--#include <stdlib.h>
++ * Copyright (c) International Business Machines  Corp., 2001
+  */
+ 
+ #include <stdio.h>
+@@ -51,104 +15,51 @@
+ 
+ #include <netinet/in.h>
+ 
 -#include "test.h"
 -#include "safe_macros.h"
++#include "tst_test.h"
+ 
+-char *TCID = "bind01";
+-int testno;
++int inet_socket;
++int dev_null;
+ 
+-int s;				/* socket descriptor */
+ struct sockaddr_in sin1, sin2, sin3;
+-struct sockaddr_un sun1;
 -
--#define FLAG O_RDWR | O_CREAT | O_TRUNC	/* Flags used when opening temp tile */
--#define MODE  0777		/* Mode to open file with */
--#define WRITES 10		/* Number of times buffer is written */
--#define DECR 1000		/* Number of bytes decremented between */
--					/* Calls to testrun() */
--#define OK -1			/* Return value from testrun() */
+-void setup(void), setup0(void), setup1(void), setup2(void),
+-cleanup(void), cleanup0(void), cleanup1(void);
++struct sockaddr_un sun;
+ 
+-struct test_case_t {		/* test case structure */
+-	int domain;		/* PF_INET, PF_UNIX, ... */
+-	int type;		/* SOCK_STREAM, SOCK_DGRAM ... */
+-	int proto;		/* protocol number (usually 0 = default) */
++static struct test_case {
++	int *socket_fd;		/* file descriptor for test case */
+ 	struct sockaddr *sockaddr;	/* socket address buffer */
+-	int salen;		/* bind's 3rd argument */
+-	int retval;		/* syscall return value */
++	socklen_t salen;		/* bind's 3rd argument */
++	int retval;		/* expected return value */
+ 	int experrno;		/* expected errno */
+-	void (*setup) (void);
+-	void (*cleanup) (void);
+ 	char *desc;
+-} tdat[] = {
+-#ifndef UCLINUX
+-/* Skip since uClinux does not implement memory protection */
+-	{
+-	PF_INET, SOCK_STREAM, 0, (struct sockaddr *)-1,
+-		    sizeof(struct sockaddr_in), -1, EFAULT, setup0,
+-		    cleanup0, "invalid sockaddr"},
+-#endif
+-	{
+-	PF_INET, SOCK_STREAM, 0, (struct sockaddr *)&sin1,
+-		    3, -1, EINVAL, setup0, cleanup0, "invalid salen"}, {
+-	0, 0, 0, (struct sockaddr *)&sin1,
+-		    sizeof(sin1), -1, ENOTSOCK, setup1, cleanup1,
+-		    "invalid socket"}
+-	, {
+-	PF_INET, SOCK_STREAM, 0, (struct sockaddr *)&sin2,
+-		    sizeof(sin2), 0, 0, setup0, cleanup0, "INADDR_ANYPORT"}
+-	, {
+-	PF_UNIX, SOCK_STREAM, 0, (struct sockaddr *)&sun1,
+-		    sizeof(sun1), -1, EADDRINUSE, setup0, cleanup0,
+-		    "UNIX-domain of current directory"}
+-	, {
+-	PF_INET, SOCK_STREAM, 0, (struct sockaddr *)&sin3,
+-		    sizeof(sin3), -1, EADDRNOTAVAIL, setup0, cleanup0,
+-		    "non-local address"}
+-,};
 -
--#define FNAME1	"aio02.1"
--#define FNAME2	"aio02.2"
--#define FNAME3	"aio02.3"
+-int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
 -
--#define ERR_MSG1 "Bytes in file not equal to bytes written."
--#define ERR_MSG2 "Bytes in file (%d) not equal to bytes written (%d)."
--
--char *dp;			/* pointer to area of memory */
--
--void setup();
--void cleanup();
--int testrun(int flag, int bytes, int ti);
--
--char *TCID = "asyncio02";
--int TST_TOTAL = 6;
--
--char *filename;			/* name of the temporary file */
--
--char *Progname;
--int Open_flags;
--
--int Flags[] = {
--	O_RDWR | O_CREAT | O_TRUNC,
--	O_RDWR | O_CREAT | O_TRUNC
--};
--
--int Num_flags;
--
--/***********************************************************************
-- * MAIN
-- ***********************************************************************/
--int main(int ac, char **av)
--{
--
--	int i;
--	int ret_val;
--	int eok;		/* everything is ok flag */
+-int main(int argc, char *argv[])
++} tcases[] = {
++	{ &inet_socket, (struct sockaddr *)&sin1, 3, -1,
++	  EINVAL, "invalid salen" },
++	{ &dev_null, (struct sockaddr *)&sin1, sizeof(sin1), -1,
++	  ENOTSOCK, "invalid socket" },
++	{ &inet_socket, (struct sockaddr *)&sin2, sizeof(sin2), 0,
++	  0, "INADDR_ANYPORT"},
++	{ &inet_socket, (struct sockaddr *)&sun, sizeof(sun), -1,
++	  EAFNOSUPPORT, "UNIX-domain of current directory" },
++	{ &inet_socket, (struct sockaddr *)&sin3, sizeof(sin3), -1,
++	  EADDRNOTAVAIL, "non-local address" },
++};
++
++void verify_bind(unsigned int nr)
+ {
 -	int lc;
--	int flag_cnt;
 -
--	Num_flags = sizeof(Flags) / sizeof(int);
--	TST_TOTAL = 3 * Num_flags;
--
--	tst_parse_opts(ac, av, NULL, NULL);
+-	tst_parse_opts(argc, argv, NULL, NULL);
 -
 -	setup();
 -
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
+-	for (lc = 0; TEST_LOOPING(lc); ++lc) {
 -		tst_count = 0;
 -
--		for (flag_cnt = 0; flag_cnt < Num_flags; flag_cnt++) {
+-		for (testno = 0; testno < TST_TOTAL; ++testno) {
+-			tdat[testno].setup();
 -
--			/*
--			 * call testrun writing (BUFSIZ + 1) byte chunks
--			 */
--
--			filename = FNAME1;
--			if (testrun(Flags[flag_cnt], BUFSIZ + 1, 1) != OK) {
--				tst_resm(TFAIL, ERR_MSG1);
+-			TEST(bind
+-			     (s, tdat[testno].sockaddr, tdat[testno].salen));
+-			if (TEST_RETURN > 0) {
+-				TEST_RETURN = 0;
 -			} else {
--				tst_resm(TPASS,
--					 "More than BUFSIZE bytes multiple synchronous writes to a file check out ok");
 -			}
--
--			/*
--			 * call testrun writing BUFSIZ byte chunks
--			 */
--
--			filename = FNAME2;
--			if (testrun(Flags[flag_cnt], BUFSIZ, 2) != OK) {
--				tst_resm(TFAIL, ERR_MSG1);
+-			if (TEST_RETURN != tdat[testno].retval ||
+-			    (TEST_RETURN < 0 &&
+-			     TEST_ERRNO != tdat[testno].experrno)) {
+-				tst_resm(TFAIL, "%s ; returned"
+-					 " %ld (expected %d), errno %d (expected"
+-					 " %d)", tdat[testno].desc,
+-					 TEST_RETURN, tdat[testno].retval,
+-					 TEST_ERRNO, tdat[testno].experrno);
 -			} else {
--				tst_resm(TPASS,
--					 "BUFSIZE bytes multiple synchronous writes to a file checks out ok");
+-				tst_resm(TPASS, "%s successful",
+-					 tdat[testno].desc);
 -			}
--
--			/*
--			 * while the byte chunks are greater than 0
--			 *      call testrun() with decreasing chunk sizes
--			 */
--
--			filename = FNAME3;
--			eok = 1;
--			for (i = BUFSIZ - 1; i >= 0; i -= DECR) {
--				if ((ret_val =
--				     testrun(Flags[flag_cnt], i, 3)) != OK) {
--					tst_resm(TFAIL, ERR_MSG2, ret_val,
--						 i * WRITES);
--				}
--			}
--
--			if (eok) {
--				tst_resm(TPASS,
--					 "Less than BUFSIZE bytes multiple synchronous writes to a file checks out ok");
--			}
+-			tdat[testno].cleanup();
 -		}
--	}
--	cleanup();
--	tst_exit();
--}				/* end main() */
--
--int testrun(int flag, int bytes, int ti)
--{
--
--	int fildes, i, ret;
--
--	struct stat buffer;	/* buffer of memory required for stat command */
--
--	/*
--	 *      Attempt to open a temporary file.
--	 */
--
--	if ((fildes = open(filename, flag, MODE)) == -1) {
--		tst_brkm(TBROK | TERRNO, cleanup, "open(%s) failed", filename);
--	}
--
--	/*
--	 *      Write the memory to the file.
--	 */
--
--	for (i = 0; i < WRITES; i++) {
--		TEST(write(fildes, dp, (unsigned)bytes));
--
--		if (TEST_RETURN == -1) {
--			tst_brkm(TBROK | TTERRNO, cleanup, "write() failed");
--		}
--	}			/* end for () */
--
--	/*
--	 *      Attempt to close the file which also flushes the buffers.
--	 */
--
--	SAFE_CLOSE(cleanup, fildes);
--
--	ret = OK;
--
--	/*
--	 *  Now check to see if the number of bytes written is the
--	 *  same as the number of bytes in the file.
--	 */
--
--	SAFE_STAT(cleanup, filename, &buffer);
--
--	if (buffer.st_size != (off_t) (bytes * WRITES)) {
--		ret = (int)buffer.st_size;
--	}
--
--	SAFE_UNLINK(cleanup, filename);
--
--	return ret;
--
--}				/* end testrun() */
--
--/***************************************************************
-- * setup() - performs all ONE TIME setup for this test.
-- ***************************************************************/
--void setup(void)
--{
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	/* create a temporary directory and go to it */
--	tst_tmpdir();
--
--	/*
--	 *  Attempt to get some memory to work with.
--	 */
--
--	if ((dp = malloc((unsigned)BUFSIZ + 1)) == NULL) {
--		tst_brkm(TBROK | TERRNO, cleanup, "malloc() failed");
--	}
--
--}
--
--/***************************************************************
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *              completion or premature exit.
-- ***************************************************************/
--void cleanup(void)
--{
--
--	tst_rmdir();
--}
-diff --git a/testcases/kernel/syscalls/stat/stat02.c b/testcases/kernel/syscalls/stat/stat02.c
-new file mode 100644
-index 000000000..8dbac7236
---- /dev/null
-+++ b/testcases/kernel/syscalls/stat/stat02.c
-@@ -0,0 +1,93 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-+ * AUTHOR: Barrie Kletscher
-+ * CO-PILOT: Dave Baumgartner
-+ */
-+
-+#include <fcntl.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/signal.h>
-+#include <errno.h>
-+#include <stdlib.h>
-+#include "tst_test.h"
-+
-+/* Temporary file names */
-+#define FNAME1	"stat02.1"
-+#define FNAME2	"stat02.2"
-+
-+/* Number of times each buffer is written */
-+#define NUM_WRITES	(10)
-+#define BUFSIZE		(4096)
-+
-+char *buffer;
-+
-+static struct test_case {
-+	const char *filename;
-+	size_t bytes_to_write;
-+	size_t decrement;
-+} tcases[] = {
-+	/* Write and verify BUFSIZE byte chunks */
-+	{ FNAME1, BUFSIZE, BUFSIZE },
-+	/* Write and verify decreasing chunk sizes */
-+	{ FNAME2, BUFSIZE, 1000 }
-+};
-+
-+void verify(const char *fname, size_t bytes, size_t decrement)
-+{
-+	struct stat s;
-+	int fd, i;
-+	size_t bytes_written = 0;
-+
-+	fd = SAFE_OPEN(fname, O_CREAT | O_TRUNC | O_RDWR, 0777);
-+	while (bytes > 0) {
-+		for (i = 0; i < NUM_WRITES; i++) {
-+			SAFE_WRITE(1, fd, buffer, bytes);
-+			bytes_written += bytes;
-+		}
-+		bytes -= bytes > decrement ? decrement : bytes;
-+	}
-+
-+	SAFE_CLOSE(fd);
-+	SAFE_STAT(fname, &s);
-+	SAFE_UNLINK(fname);
-+
-+	/*
-+	 *  Now check to see if the number of bytes written was
-+	 *  the same as the number of bytes in the file.
-+	 */
-+	if (s.st_size != (off_t) bytes_written) {
-+		tst_res(TFAIL, "file size (%zu) not as expected (%zu) bytes",
-+				s.st_size, bytes_written);
-+		return;
-+	}
-+
-+	tst_res(TPASS, "File size reported as expected");
-+}
-+
-+void verify_stat_size(unsigned int nr)
-+{
 +	struct test_case *tcase = &tcases[nr];
 +
-+	verify(tcase->filename, tcase->bytes_to_write, tcase->decrement);
-+}
-+
-+void setup(void)
-+{
-+	buffer = SAFE_MALLOC(BUFSIZE);
-+}
-+
-+void cleanup(void)
-+{
-+	free(buffer);
-+}
-+
++	TEST(bind(*tcase->socket_fd, tcase->sockaddr, tcase->salen));
++	if (TST_RET != tcase->retval && TST_ERR != tcase->experrno) {
++		tst_res(TFAIL, "%s ; returned"
++			" %ld (expected %d), errno %d (expected"
++			" %d)", tcase->desc, TST_RET, tcase->retval,
++			TST_ERR, tcase->experrno);
++	} else {
++		tst_res(TPASS, "%s successful", tcase->desc);
+ 	}
+-	cleanup();
+-
+-	tst_exit();
+ }
+ 
+-void setup(void)
++void test_setup(void)
+ {
+-
+-	TEST_PAUSE;		/* if -p option specified */
+-
+ 	/* initialize sockaddr's */
+ 	sin1.sin_family = AF_INET;
+ 	/* this port must be unused! */
+@@ -164,35 +75,22 @@ void setup(void)
+ 	/* assumes 10.255.254.253 is not a local interface address! */
+ 	sin3.sin_addr.s_addr = htonl(0x0AFFFEFD);
+ 
+-	sun1.sun_family = AF_UNIX;
+-	strncpy(sun1.sun_path, ".", sizeof(sun1.sun_path));
+-
+-}
+-
+-void cleanup(void)
+-{
+-}
++	sun.sun_family = AF_UNIX;
++	strncpy(sun.sun_path, ".", sizeof(sun.sun_path));
+ 
+-void setup0(void)
+-{
+-	s = SAFE_SOCKET(cleanup, tdat[testno].domain, tdat[testno].type,
+-		        tdat[testno].proto);
++	inet_socket = SAFE_SOCKET(PF_INET, SOCK_STREAM, 0);
++	dev_null = SAFE_OPEN("/dev/null", O_WRONLY);
+ }
+ 
+-void cleanup0(void)
++void test_cleanup(void)
+ {
+-	(void)close(s);
++	SAFE_CLOSE(inet_socket);
++	SAFE_CLOSE(dev_null);
+ }
+ 
+-void setup1(void)
+-{
+-	/* setup for the "not a socket" case */
+-	if ((s = open("/dev/null", O_WRONLY)) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "open(/dev/null) failed");
+-
+-}
+-
+-void cleanup1(void)
+-{
+-	s = -1;
+-}
 +static struct tst_test test = {
 +	.tcnt = ARRAY_SIZE(tcases),
-+	.needs_tmpdir = 1,
-+	.test = verify_stat_size,
-+	.setup = setup,
-+	.cleanup = cleanup,
++	.setup = test_setup,
++	.cleanup = test_cleanup,
++	.test = verify_bind,
 +};
 -- 
 2.22.0.rc2.383.gf4fbbf30c2-goog
