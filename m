@@ -1,105 +1,86 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 10 Jun 2019 16:01:32 +0800
-Subject: [LTP] [PATCH 2/3] lib/test.sh: TCONF needs to be counted
-In-Reply-To: <20190609154038.GA53103@linux.alibaba.com>
-References: <f11c83459b71fbf399794fb8363f2b538b0b6346.1559207183.git.caspar@casparzhang.com>
- <5e8374fa7f4ea9d64cdfc39a2ca449761327c257.1559207183.git.caspar@casparzhang.com>
- <CAEemH2eV6RZKdZV0MMuogAzyvoXCsuvrfp3v_1TNtO1cOoAPGA@mail.gmail.com>
- <20190609154038.GA53103@linux.alibaba.com>
-Message-ID: <CAEemH2dX6ESKrS0DnKYDogaTZQwpf9MbOo0W=TS0VnEeN2EbXg@mail.gmail.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 10 Jun 2019 17:06:46 +0800
+Subject: [LTP] [PATCH v2] sysctl/sysctl02: Add new regression test for
+ overflow file-max
+In-Reply-To: <20190606114134.GB13068@rei.lan>
+References: <1559817080-2991-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1559817930-2299-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20190606114134.GB13068@rei.lan>
+Message-ID: <5CFE1DA6.7010600@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Sun, Jun 9, 2019 at 11:41 PM Caspar Zhang <caspar@linux.alibaba.com>
-wrote:
+Hi cryil
 
-> On Fri, May 31, 2019 at 11:17:14AM +0800, Li Wang wrote:
-> >
-> >
-> > On Thu, May 30, 2019 at 5:10 PM Caspar Zhang <[1]
-> caspar@linux.alibaba.com>
-> > wrote:
-> >
-> >     TCONF should also be one of exit statuses in a single test, else the
-> >     output of TST_COUNT in shell tests could be wrong.
-> >
-> >     Wrong:
-> >     <<<test_output>>>
-> >     memcg_use_hierarchy_test 1 TINFO: Starting test 1
-> >     memcg_use_hierarchy_test 1 TINFO: set
-> /dev/memcg/memory.use_hierarchy to 0
-> >     failed
-> >     memcg_use_hierarchy_test 1 TPASS: process 28658 is killed
-> >     memcg_use_hierarchy_test 2 TINFO: Starting test 2
-> >     memcg_use_hierarchy_test 2 TINFO: set
-> /dev/memcg/memory.use_hierarchy to 0
-> >     failed
-> >     memcg_use_hierarchy_test 2 TCONF: memory.use_hierarchy already been
-> 1,
-> >     blame systemd, skip
-> >     memcg_use_hierarchy_test 2 TINFO: Starting test 3
-> >     memcg_use_hierarchy_test 2 TINFO: set
-> /dev/memcg/memory.use_hierarchy to 0
-> >     failed
-> >     memcg_use_hierarchy_test 2 TPASS: echo 0 >
-> subgroup/memory.use_hierarchy
-> >     failed as expected
-> >     <<<execution_status>>>
-> >
-> >     Right:
-> >     <<<test_output>>>
-> >     memcg_use_hierarchy_test 1 TINFO: Starting test 1
-> >     memcg_use_hierarchy_test 1 TINFO: set
-> /dev/memcg/memory.use_hierarchy to 0
-> >     failed
-> >     memcg_use_hierarchy_test 1 TPASS: process 26825 is killed
-> >     memcg_use_hierarchy_test 2 TINFO: Starting test 2
-> >     memcg_use_hierarchy_test 2 TINFO: set
-> /dev/memcg/memory.use_hierarchy to 0
-> >     failed
-> >     memcg_use_hierarchy_test 2 TCONF: memory.use_hierarchy already been
-> 1,
-> >     blame systemd, skip
-> >     memcg_use_hierarchy_test 3 TINFO: Starting test 3
-> >     memcg_use_hierarchy_test 3 TINFO: set
-> /dev/memcg/memory.use_hierarchy to 0
-> >     failed
-> >     memcg_use_hierarchy_test 3 TPASS: echo 0 >
-> subgroup/memory.use_hierarchy
-> >     failed as expected
-> >     <<<execution_status>>>
-> >
-> >
-> > This is a good catch, but maybe it's not wise to simply regard the TCONF
-> as a
-> > single test, because there are many system-config detections in setup()
-> > function, that will make LTP gives a mendacious report on the test
-> numbers if
-> > applying this patch.
-> >
-> > e.g.
-> >
-> > if tst_kvcmp -lt "3.10"; then
-> >     tst_brk TCONF "test must be run with kernel 3.10 or newer"
-> > fi
-> > if dir path not exist; then
-> >     tst_brk TCONF "system does not have xxxx/"
-> > fi
-> > and so on...
+> Hi!
+> +{
+> +	case $1 in
+> +	1)sysctl_test_overflow ${check1};;
+> +	2)sysctl_test_overflow ${check2};;
+> +	3)sysctl_test_overflow ${check3};;
+> +	4)sysctl_test_zero ${check4};;
+> There is no point in having the numbers in check variables if we do case
+> here, we can just pass it here.
+OK. I will pass the number directly.
+
+>> +	esac
+>> +}
+>> +
+>> +sysctl_test_overflow()
+>> +{
+>> +	local old_value=$(cat "$dir""$name")
+>> +
+>> +	sysctl -w "fs.file-max"=$1>/dev/null 2>&1
+>> +
+>> +	local test_value=$(cat "$dir""$name")
+>> +
+>> +	echo ${test_value} |grep -q ${old_value}
+>> +	if [ $? -eq 0 ]; then
+>> +		tst_res TPASS "file-max overflow, reject it and keep old value."
+>> +	else
+>> +		tst_res TFAIL "file-max overflow and set it to ${test_value}."
+>> +	fi
+>> +	cleanup
+>> +}
+>> +
+>> +sysctl_test_zero()
+>> +{
+>> +	sysctl -w "fs.file-max"=$1>/dev/null 2>&1
+>> +	tst_res TINFO "if it doesn't report TPASS after 60s sleep, system crashes"
+>> +	sleep 60
+> What happens on the buggy kernel here?
 >
-> TCONF usually report only once, I would still take it a valid report on
-> numbers. Take your case as example, I guess we are able to see results
-> like:
+> Does it crash reliably?
 >
+> It looks to me that reproducing this bug without KASAN enabled kernel
+> would be really hard or even impossible, therefore the sleep here does
+> not matter at all.
+Yes.  It crashes always on my machine but not having crash log (under /var/crash) without CONFIF_KASAN, and it hangs when sleep 120s with CONFIG_KASAN=y.
+I think it crashes or hangs because the file-max is equal to 0 and it causes some system services or daemons can not run normally. Test it makes no sense.
 
-Okay, that sounds reasonable too.
+This is not what I want to test.  I only want to test whether trigger a KASAN error by setting 0.
+I will send a v3 patch.
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190610/e109fe9c/attachment.html>
+>> +	tst_res TPASS "file-max is set 0 and doesn't crash"
+>> +}
+>> +
+>> +cleanup()
+>> +{
+>> +	sysctl -w "fs.""$name"=${orig_value}>/dev/null 2>&1
+>> +}
+>> +
+>> +tst_run
+>> -- 
+>> 2.18.1
+>>
+>>
+>>
+>>
+>> -- 
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+
+
