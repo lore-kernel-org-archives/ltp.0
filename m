@@ -1,76 +1,129 @@
-From: Jinhui huang <huangjh.jy@cn.fujitsu.com>
-Date: Mon, 10 Jun 2019 17:49:49 +0800
-Subject: [LTP] [PATCH] syscalls/copy_file_range02.c: Add new check for EINVAL
-Message-ID: <1560160189-21242-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Mon, 10 Jun 2019 15:43:16 +0530
+Subject: [LTP] [PATCH v4] syscalls/sync_file_range: add partial file sync
+	test-cases
+Message-ID: <1560161596-30156-1-git-send-email-sumit.garg@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add a new checkpoint that copy_file_range() returns EINVAL when
-copying contents to non regular file.
+Add partial file sync tests as part of sync_file_range02 test-case.
 
-Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 ---
- .../kernel/syscalls/copy_file_range/copy_file_range02.c    | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-index 07c0207..db99344 100644
---- a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-+++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-@@ -19,6 +19,13 @@
-  *    -> EBADF
-  * 6) Try to copy contents with invalid 'flags' value
-  *    -> EINVAL
-+ * 7) Try to copy contents to pipe ->EINVAL
-+ *
-+ * Note:
-+ * copy_file_range() returns EISDIR and EINVAL when copying contents to
-+ * directory and any other non regualr files since the commit:
-+ * 11cbfb10775a vfs: deny copy_file_range() for non regular files
-+ *
-  */
+Changes in v4:
+vfat FS doesn't support sparse files. So handle this via pre-filling the
+test file in case of "test3".
+
+Changes in v3:
+1. Add upper bound check for synced size to device.
+2. Refactor tests for more code reuse.
+3. Add another test to check sync over partial write.
+
+Changes in v2:
+1. Do full file write instead of partial and test sync partial file.
+
+ .../syscalls/sync_file_range/sync_file_range02.c   | 53 ++++++++++++++++++----
+ 1 file changed, 43 insertions(+), 10 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+index 82d77f7..9454a56 100644
+--- a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
++++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+@@ -22,23 +22,36 @@
+ #include "check_sync_file_range.h"
  
- #define _GNU_SOURCE
-@@ -33,6 +40,7 @@ static int fd_mnted;
- static int fd_dir;
- static int fd_closed;
- static int fd_append;
-+static int fd_pipe[2];
+ #define MNTPOINT		"mnt_point"
+-#define FNAME		MNTPOINT"/test"
+-#define FILE_SIZE_MB	32
+-#define FILE_SIZE (FILE_SIZE_MB * TST_MB)
++#define FNAME1			MNTPOINT"/test1"
++#define FNAME2			MNTPOINT"/test2"
++#define FNAME3			MNTPOINT"/test3"
++#define FILE_SZ_MB		32
++#define FILE_SZ			(FILE_SZ_MB * TST_MB)
+ #define MODE			0644
  
- static struct tcase {
- 	int	*copy_to_fd;
-@@ -45,6 +53,7 @@ static struct tcase {
- 	{&fd_append,	0,	EBADF},
- 	{&fd_closed,	0,	EBADF},
- 	{&fd_dest,	-1,	EINVAL},
-+	{&fd_pipe[0],   0,      EINVAL},
- };
+-static void verify_sync_file_range(void)
++struct testcase {
++	char *fname;
++	off64_t sync_off;
++	off64_t sync_size;
++	size_t exp_sync_size;
++	off64_t write_off;
++	size_t write_size_mb;
++};
++
++static void verify_sync_file_range(struct testcase *tc)
+ {
+ 	int fd;
+ 	unsigned long written;
  
- static void verify_copy_file_range(unsigned int n)
-@@ -84,6 +93,10 @@ static void cleanup(void)
- 		SAFE_CLOSE(fd_dest);
- 	if (fd_src > 0)
- 		SAFE_CLOSE(fd_src);
-+	if (fd_pipe[0] > 0)
-+		SAFE_CLOSE(fd_pipe[0]);
-+	if (fd_pipe[1] > 0)
-+		SAFE_CLOSE(fd_pipe[1]);
+-	fd = SAFE_OPEN(FNAME, O_RDWR|O_CREAT, MODE);
++	fd = SAFE_OPEN(tc->fname, O_RDWR|O_CREAT, MODE);
++
++	lseek(fd, tc->write_off, SEEK_SET);
+ 
+ 	tst_dev_bytes_written(tst_device->dev);
+ 
+-	tst_fill_fd(fd, 0, TST_MB, FILE_SIZE_MB);
++	tst_fill_fd(fd, 0, TST_MB, tc->write_size_mb);
+ 
+-	TEST(sync_file_range(fd, 0, FILE_SIZE,
++	TEST(sync_file_range(fd, tc->sync_off, tc->sync_size,
+ 			     SYNC_FILE_RANGE_WAIT_BEFORE |
+ 			     SYNC_FILE_RANGE_WRITE |
+ 			     SYNC_FILE_RANGE_WAIT_AFTER));
+@@ -50,23 +63,43 @@ static void verify_sync_file_range(void)
+ 
+ 	SAFE_CLOSE(fd);
+ 
+-	if (written >= FILE_SIZE)
++	if ((written >= tc->exp_sync_size) &&
++	    (written <= (tc->exp_sync_size + tc->exp_sync_size/10)))
+ 		tst_res(TPASS, "Test file range synced to device");
+ 	else
+-		tst_res(TFAIL, "Synced %li, expected %i", written, FILE_SIZE);
++		tst_res(TFAIL, "Synced %li, expected %li", written,
++			tc->exp_sync_size);
++}
++
++static struct testcase testcases[] = {
++	{ FNAME1, 0, FILE_SZ, FILE_SZ, 0, FILE_SZ_MB },
++	{ FNAME2, FILE_SZ/4, FILE_SZ/2, FILE_SZ/2, 0, FILE_SZ_MB },
++	{ FNAME3, FILE_SZ/4, FILE_SZ/2, FILE_SZ/4, FILE_SZ/2, FILE_SZ_MB/4 },
++};
++
++static void run(unsigned int i)
++{
++	verify_sync_file_range(&testcases[i]);
  }
  
  static void setup(void)
-@@ -101,6 +114,7 @@ static void setup(void)
- 	fd_closed = -1;
- 	fd_append = SAFE_OPEN(FILE_DEST_PATH,
- 			O_RDWR | O_CREAT | O_APPEND, 0664);
-+	SAFE_PIPE(fd_pipe);
- 
- 	SAFE_WRITE(1, fd_src,  CONTENT,  CONTSIZE);
+ {
+ 	if (!check_sync_file_range())
+ 		tst_brk(TCONF, "sync_file_range() not supported");
++
++	if (!strcmp(tst_device->fs_type, "vfat")) {
++		tst_res(TINFO, "Pre-filling file");
++		tst_fill_file(FNAME3, 0, TST_MB, FILE_SZ_MB);
++		sync();
++	}
  }
+ 
+ static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(testcases),
+ 	.needs_root = 1,
+ 	.mount_device = 1,
+ 	.all_filesystems = 1,
+ 	.mntpoint = MNTPOINT,
+ 	.setup = setup,
+-	.test_all = verify_sync_file_range,
++	.test = run,
+ };
 -- 
-1.8.3.1
-
-
+2.7.4
 
