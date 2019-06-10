@@ -1,28 +1,32 @@
 From: Sandeep Patil <sspatil@android.com>
-Date: Sun, 9 Jun 2019 17:26:36 -0700
-Subject: [LTP] [PATCH 5/5] syscalls/bind01: convert to new library.
-In-Reply-To: <20190529115149.GA569@rei.lan>
+Date: Sun, 9 Jun 2019 17:27:43 -0700
+Subject: [LTP] [PATCH 3/5] syscalls/asyncio02: convert to new library.
+In-Reply-To: <20190603143137.GA18922@dell5510>
 References: <20190519003808.47425-1-sspatil@android.com>
- <20190519003808.47425-6-sspatil@android.com>
- <20190529115149.GA569@rei.lan>
-Message-ID: <20190610002636.GC212690@google.com>
+ <20190519003808.47425-4-sspatil@android.com>
+ <20190529112529.GC26685@rei.lan> <20190603143137.GA18922@dell5510>
+Message-ID: <20190610002743.GD212690@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, May 29, 2019 at 01:51:49PM +0200, Cyril Hrubis wrote:
-> Hi!
-> Unfortunatelly this does not apply cleanly after:
+On Mon, Jun 03, 2019 at 04:31:37PM +0200, Petr Vorel wrote:
+> Hi,
 > 
-> commit fa6a4e708495d9177eca395717ebab4ee9afd8d6
-> Author: Petr Vorel <pvorel@suse.cz>
-> Date:   Tue Apr 23 21:38:23 2019 +0200
-> 
->     net: Introduce TST_GET_UNUSED_PORT() macro into C API
-> 
-> 
-> Can you please rebase your commit?
+> > The cleanup looks good, but we should also decide what to do with the
+> > test as it is in a wrong place. There is no asyncio syscall in Linux and
+> > the test actually looks very similar to the stat01.c test, so maybe it
+> > would be best to rename the test to stat02.c after the cleanup. What do
+> > you think?
+> I'd also move it into stat/stat02.c.
 
-Done, v2 sent
+I did this now as part of v2. However, the test is still super trivial and
+isn't at all unique. All it is now is "verify stat size" and I think stat01
+covers it too.
+
+Anyway, its there in the new series if you still see value in having a
+stat02.
+
+- ssp
