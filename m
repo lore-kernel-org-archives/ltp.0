@@ -1,156 +1,226 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Mon, 10 Jun 2019 16:51:46 +0800
-Subject: [LTP] [PATCH v3] sysctl/sysctl02: Add new regression test for
-	overflow file-max
-In-Reply-To: <20190606114134.GB13068@rei.lan>
-References: <20190606114134.GB13068@rei.lan>
-Message-ID: <1560156706-13617-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 10 Jun 2019 17:28:53 +0800
+Subject: [LTP] [PATCH v6 2/4] swapon/libswapon: add helper
+	is_swap_supported
+In-Reply-To: <20190610061209.bsdrcld6ilh4vjk5@XZHOUW.usersys.redhat.com>
+References: <CAOQ4uxihom9Uw66c0BwuiWHOejZXDJHUe3rHBVRfk0=C-AYnAw@mail.gmail.com>
+ <20190528141214.18752-1-xzhou@redhat.com>
+ <20190528141214.18752-2-xzhou@redhat.com>
+ <CAEemH2fcM18gLbM3bWRu7ddR+8QbmYCL+4U83Z5tiWgZ4suz_A@mail.gmail.com>
+ <CAEemH2f275JA7f_mzyQwQeW8LJ2_YS5L42=KD1KWWGZKrmwitQ@mail.gmail.com>
+ <20190605093005.qwpput3zxrd22z44@XZHOUW.usersys.redhat.com>
+ <CAEemH2eezXfcn=cXPNDxTHf2wUn+auxh7jpJ3LuFnF-mm8yjig@mail.gmail.com>
+ <20190610061209.bsdrcld6ilh4vjk5@XZHOUW.usersys.redhat.com>
+Message-ID: <CAEemH2e5b4q+bOeE3v8FG-piSUteCinPMVmxpnkVcYCmrUc4Uw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On upstream kernel, before commit[1], the max value in proc_get_long based on
-the number of chars(21). It rejects values such as 184467440737095516160 (21 chars)
-but accepts values such as 18446744073709551616 (20 chars). But we should reject all
-because both are overflows. After this commit,the permitted max value is 2^64-1.
+On Mon, Jun 10, 2019 at 2:12 PM Murphy Zhou <xzhou@redhat.com> wrote:
 
-Before commit[2], when writing echo 18446744073709551616 > /proc/sys/fs/file-max
-/proc/sys/fs/file-max will overflow and be set to 0.  It may crash the system. This
-commit sets the max and min value for file-max. After this commit,the permitted max
-value is 2^63-1.
+> On Wed, Jun 05, 2019 at 05:53:13PM +0800, Li Wang wrote:
+> > On Wed, Jun 5, 2019 at 5:30 PM Murphy Zhou <xzhou@redhat.com> wrote:
+> >
+> > > On Wed, Jun 05, 2019 at 02:55:47PM +0800, Li Wang wrote:
+> > > > On Wed, Jun 5, 2019 at 1:51 PM Li Wang <liwang@redhat.com> wrote:
+> > > >
+> > > > >
+> > > > >
+> > > > > On Tue, May 28, 2019 at 10:13 PM Murphy Zhou <xzhou@redhat.com>
+> wrote:
+> > > > >
+> > > > >> To check if the filesystem we are testing on supports FIBMAP,
+> mkswap,
+> > > > >> swapon and swapoff operations.
+> > > > >> Modify make_swapfile function to test mkswap support status
+> safely.
+> > > > >>
+> > > > >> Signed-off-by: Murphy Zhou <xzhou@redhat.com>
+> > > > >> ---
+> > > > >>  testcases/kernel/syscalls/swapon/libswapon.c | 45
+> > > +++++++++++++++++++-
+> > > > >>  testcases/kernel/syscalls/swapon/libswapon.h |  7 ++-
+> > > > >>  2 files changed, 49 insertions(+), 3 deletions(-)
+> > > > >>
+> > > > >> diff --git a/testcases/kernel/syscalls/swapon/libswapon.c
+> > > > >> b/testcases/kernel/syscalls/swapon/libswapon.c
+> > > > >> index cf6a98891..f66d19548 100644
+> > > > >> --- a/testcases/kernel/syscalls/swapon/libswapon.c
+> > > > >> +++ b/testcases/kernel/syscalls/swapon/libswapon.c
+> > > > >> @@ -19,13 +19,15 @@
+> > > > >>   *
+> > > > >>   */
+> > > > >>
+> > > > >> +#include <errno.h>
+> > > > >> +#include "lapi/syscalls.h"
+> > > > >>  #include "test.h"
+> > > > >>  #include "libswapon.h"
+> > > > >>
+> > > > >>  /*
+> > > > >>   * Make a swap file
+> > > > >>   */
+> > > > >> -void make_swapfile(void (cleanup)(void), const char *swapfile)
+> > > > >> +int make_swapfile(void (cleanup)(void), const char *swapfile, int
+> > > safe)
+> > > > >>  {
+> > > > >>         if (!tst_fs_has_free(NULL, ".", sysconf(_SC_PAGESIZE) *
+> 10,
+> > > > >>             TST_BYTES)) {
+> > > > >> @@ -45,5 +47,44 @@ void make_swapfile(void (cleanup)(void), const
+> char
+> > > > >> *swapfile)
+> > > > >>         argv[1] = swapfile;
+> > > > >>         argv[2] = NULL;
+> > > > >>
+> > > > >> -       tst_run_cmd(cleanup, argv, "/dev/null", "/dev/null", 0);
+> > > > >> +       return tst_run_cmd(cleanup, argv, "/dev/null",
+> "/dev/null",
+> > > safe);
+> > > > >> +}
+> > > > >> +
+> > > > >> +/*
+> > > > >> + * Check swapon/swapoff support status of filesystems or files
+> > > > >> + * we are testing on.
+> > > > >> + */
+> > > > >> +void is_swap_supported(void (cleanup)(void), const char
+> *filename)
+> > > > >> +{
+> > > > >> +       int fibmap = tst_fibmap(filename);
+> > > > >> +       long fs_type = tst_fs_type(cleanup, filename);
+> > > > >> +       const char *fstype = tst_fs_type_name(fs_type);
+> > > > >> +
+> > > > >> +       int ret = make_swapfile(NULL, filename, 1);
+> > > > >> +       if (ret != 0) {
+> > > > >> +               if (fibmap != 0) {
+> > > > >>
+> > > > >
+> > > > > As I replied in patch 1/4, how do we know that means FIBMAP not
+> > > support if
+> > > > > just verify fibmap != 0?
+> > > > > So I would suggest to make the return value of tst_fibmap() is more
+> > > > > precise and do if (fibmap == 1) check here.
+> > >
+> > > Very good catch. The return value should be more precise. Thanks!
+> > >
+> > > > >
+> > > >
+> > > > And also, imagine that if swapon01 test failed on BRTFS or
+> NFS(support
+> > > > swapfile but not
+> > > > support FIBMAP ioctl), then here will report the new bug as a TCONF
+> to
+> > > LTP.
+> > >
+> > > Here is testing mkswap for swapon test preparation. If mkswap fail, and
+> > > FIBMAP not supported, it's reasonable to me that we should not go on to
+> > > test swapon.
+> > >
+> > > But yes, if a regression causes mkswap fail without FIBMAP supported,
+> we
+> > > could miss the bug here like you described. This situation should be
+> > > covered by tcase for mkswap IMO.
+> > >
+> >
+> > I'm thinking maybe we cann't avoid adding a whilelist in the test, at
+> least
+> > for known filesystem without FIBMAP supported.
+>
+> No, I think we don't need a whilelist here. Amir and I discussed long way
+> to here, you can check that. We are not using fibmap test as a verdict for
+> swapfile is supported or not. Doing a mkswap/swapon/swapoff test before
+> real tests to detect the support situation. tst_fibmap result helps us
+> to decide how to report. If the underneath filesystem can survive these
+> test, it should be supporting swapfiles and swapon/swapoff tests should
+> run.
 
-Unfortunately, commit[2] introduced the minimum value points at the global 'zero'
-variable which is an int. This results in a KASAN splat when accessed as a long by
-proc_doulongvec_minmax on 64-bit architectures. This bug has been fixed by commit[3].
 
-I will set 2^64 ,2^64-1,2^63 and 0 to file-max in case and test it.
+> The whitelisted nfs and tmpfs are well covered by these pre-tests. More,
+> NFS should not be skipped as if we turn on kernle configs for NFS_SWAP,
+> these tests can run on NFS.
+>
+> Whitelist could skip more tests and bugs.
+>
+> I tested some fibmap/mkswap/swapon/swapoff tests for your reference:
+>
 
-[1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7f2923c4f73f21cfd714d12a2d48de8c21f11cfe
-[2]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=32a5ad9c22852e6bd9e74bdec5934ef9d1480bc5
-[3]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9002b21465fa4d829edfc94a5a441005cffaa972
+Thanks a lot for the test report, good to know these details.
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- runtest/commands                      |  1 +
- testcases/commands/sysctl/sysctl02.sh | 96 +++++++++++++++++++++++++++
- 2 files changed, 97 insertions(+)
- create mode 100755 testcases/commands/sysctl/sysctl02.sh
 
-diff --git a/runtest/commands b/runtest/commands
-index ac15e8b23..1870c4209 100644
---- a/runtest/commands
-+++ b/runtest/commands
-@@ -40,3 +40,4 @@ keyctl01_sh keyctl01.sh
- gdb01_sh gdb01.sh
- unshare01_sh unshare01.sh
- sysctl01_sh sysctl01.sh
-+sysctl02_sh sysctl02.sh
-diff --git a/testcases/commands/sysctl/sysctl02.sh b/testcases/commands/sysctl/sysctl02.sh
-new file mode 100755
-index 000000000..22dd0a429
---- /dev/null
-+++ b/testcases/commands/sysctl/sysctl02.sh
-@@ -0,0 +1,96 @@
-+#!/bin/sh
-+
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-+# Author: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
-+#
-+# Description:
-+# This is a regression test for handling overflow for file-max.
-+#
-+# when writing 2^64 to /proc/sys/fs/file-max. It will overflow
-+# and be set to 0. It crash system quickly.
-+#
-+# The kernel bug has been fixed in kernel:
-+# '7f2923c4f' (sysctl: handle overflow in proc_get_long)
-+# the permitted max value is  2^64-1.
-+# '32a5ad9c2' (sysctl: handle overflow for file-max)
-+# the permitted max value is 2^63-1
-+#
-+# After merged this patchset, if we exceed the max value, it will
-+# keep old value. Unfortunately, it introudced a new bug when set it
-+# to 0 and it will lead to system crash.
-+# This bug has been fixed by commit 9002b2146
-+# (kernel/sysctl.c: fix out-of-bounds access when setting file-max)
-+
-+TST_TESTFUNC=do_test
-+TST_SETUP=setup
-+TST_CLEANUP=cleanup
-+TST_CNT=4
-+TST_NEEDS_ROOT=1
-+TST_NEEDS_CMDS="sysctl"
-+dir="/proc/sys/fs/"
-+syms_file="/proc/kallsyms"
-+name="file-max"
-+orig_value=200000
-+
-+. tst_test.sh
-+
-+setup()
-+{
-+	[ ! -f "$dir""$name" ] && tst_brk TCONF \
-+		"$name was not supported"
-+	orig_value=$(cat "$dir""$name")
-+}
-+
-+do_test()
-+{
-+	case $1 in
-+	1)sysctl_test_overflow 18446744073709551616;;
-+	2)sysctl_test_overflow 18446744073709551615;;
-+	3)sysctl_test_overflow 9223372036854775808;;
-+	4)sysctl_test_zero;;
-+	esac
-+}
-+
-+sysctl_test_overflow()
-+{
-+	local old_value=$(cat "$dir""$name")
-+
-+	sysctl -w "fs.file-max"=$1 >/dev/null 2>&1
-+
-+	local test_value=$(cat "$dir""$name")
-+
-+	echo ${test_value} |grep -q ${old_value}
-+	if [ $? -eq 0 ]; then
-+		tst_res TPASS "file-max overflow, reject it and keep old value."
-+	else
-+		tst_res TFAIL "file-max overflow and set it to ${test_value}."
-+	fi
-+	cleanup
-+}
-+
-+sysctl_test_zero()
-+{
-+	sysctl -w "fs.file-max"=0 >/dev/null 2>&1
-+	[ ! -f "$syms_file" ] && tst_brk TCONF \
-+		"$syms_file was not supported"
-+	cat $syms_file  |grep kasan_report >/dev/null 2>&1
-+	if [ $? -eq 0 ]; then
-+		dmesg | grep "KASAN: global-out-of-bounds in __do_proc_doulongvec_minmax" >/dev/null
-+		if [ $? -eq 0 ]; then
-+			tst_res TFAIL "file-max is set 0 and trigger a KASAN error"
-+		else
-+			tst_res TPASS \
-+				"file-max is set 0 and doesn't trigger a KASAN error"
-+		fi
-+	else
-+		tst_res TCONF "kernel doesn't support KASAN"
-+	fi
-+}
-+
-+cleanup()
-+{
-+	sysctl -w "fs.""$name"=${orig_value} >/dev/null 2>&1
-+}
-+
-+tst_run
+>
+> 1 means positive, 0 means negative.
+>
+> -------- On 5.3-rc3+ kernel, NFS_SWAP=y SUNRPC_SWAP=y -------
+>         fibamp  mkswap  swapon swapoff
+> xfs     1       1       1       1
+> ext4    1       1       1       1
+>
+> btrfs   0       1       0       0
+> tmpfs   0       1       0       0
+>
+> ovl     1       1       1       1
+>
+> cifs
+> v3.11   0       1       0       0
+> v1      0       1       0       0
+> v2      0       1       0       0
+>
+> nfs
+> v4.2    0       1       1*      1
+> v4.1    0       1       1       1
+> v4.0    0       1       1*      1
+> v3      0       1       1       1
+>
+> * hang sometimes
+>
+> --------- On 3.10.0 based kernel ----------------
+>         fibamp  mkswap  swapon swapoff
+> xfs     1       1       1       1
+> ext4    1       1       1       1
+>
+> btrfs   0       1       0       0
+> tmpfs   0       1       0       0
+>
+> ovl     1       1       1       1
+>
+> cifs
+> v3.0    0       1       0       0
+>
+> nfs
+> v4.2    0       1       0       0
+>
+>
+> ---------- On 2.6.32 based kernel ---------------
+>         fibamp  mkswap  swapon swapoff
+> tmpfs   0       1       0       0
+> xfs     1       1       1       1
+> ext4    1       1       1       1
+> cifs    0       0       0       0
+> nfs     0       0       0       0
+>
+> >
+> > FYI: what do you think if change the is_swap_supported(...) like this?
+> >
+> > void is_swap_supported(void (cleanup)(void), const char *filename)
+> > {
+> >         int fibmap = tst_fibmap(filename);
+> >
+> >         if (fibmap == 1) {
+>
+> fibmap == 0 does not mean swapfile is supported. We need to make sure that
+> survivors of this function are supporting swapfiles.
+>
+
+Yes, it sounds quite reasonable. So besides that return value of
+tst_fibmap() is not precise, patch V6 LGTM. Feel free to add my review in
+patch v7:
+
+Reviewed-by: Li Wang <liwang@redhat.com>
+
 -- 
-2.18.1
-
-
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190610/9d6e1b32/attachment.html>
