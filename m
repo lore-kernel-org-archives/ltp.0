@@ -1,105 +1,105 @@
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Mon, 10 Jun 2019 12:41:19 +0530
-Subject: [LTP] [PATCH v3] syscalls/sync_file_range: add partial file
-	sync test-cases
-In-Reply-To: <CAEemH2fHYLuCpBAiyNz8cmzyT0rTJcAF56Lj1W8g0nN9Tv-Afw@mail.gmail.com>
-References: <1551962651-22261-1-git-send-email-sumit.garg@linaro.org>
- <20190327144826.GA30619@rei>
- <CAFA6WYPxhVSub1SQyAk_51=NB0=yhjBfWPKdXoAjJB_TP0Za1Q@mail.gmail.com>
- <CAEemH2fHYLuCpBAiyNz8cmzyT0rTJcAF56Lj1W8g0nN9Tv-Afw@mail.gmail.com>
-Message-ID: <CAFA6WYNPgyyag1+rBK4P_JYQtMDY7TxkAyf+ZFW7WCWgo1DfKQ@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 10 Jun 2019 16:01:32 +0800
+Subject: [LTP] [PATCH 2/3] lib/test.sh: TCONF needs to be counted
+In-Reply-To: <20190609154038.GA53103@linux.alibaba.com>
+References: <f11c83459b71fbf399794fb8363f2b538b0b6346.1559207183.git.caspar@casparzhang.com>
+ <5e8374fa7f4ea9d64cdfc39a2ca449761327c257.1559207183.git.caspar@casparzhang.com>
+ <CAEemH2eV6RZKdZV0MMuogAzyvoXCsuvrfp3v_1TNtO1cOoAPGA@mail.gmail.com>
+ <20190609154038.GA53103@linux.alibaba.com>
+Message-ID: <CAEemH2dX6ESKrS0DnKYDogaTZQwpf9MbOo0W=TS0VnEeN2EbXg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, 10 Jun 2019 at 09:03, Li Wang <liwang@redhat.com> wrote:
+On Sun, Jun 9, 2019 at 11:41 PM Caspar Zhang <caspar@linux.alibaba.com>
+wrote:
+
+> On Fri, May 31, 2019 at 11:17:14AM +0800, Li Wang wrote:
+> >
+> >
+> > On Thu, May 30, 2019 at 5:10 PM Caspar Zhang <[1]
+> caspar@linux.alibaba.com>
+> > wrote:
+> >
+> >     TCONF should also be one of exit statuses in a single test, else the
+> >     output of TST_COUNT in shell tests could be wrong.
+> >
+> >     Wrong:
+> >     <<<test_output>>>
+> >     memcg_use_hierarchy_test 1 TINFO: Starting test 1
+> >     memcg_use_hierarchy_test 1 TINFO: set
+> /dev/memcg/memory.use_hierarchy to 0
+> >     failed
+> >     memcg_use_hierarchy_test 1 TPASS: process 28658 is killed
+> >     memcg_use_hierarchy_test 2 TINFO: Starting test 2
+> >     memcg_use_hierarchy_test 2 TINFO: set
+> /dev/memcg/memory.use_hierarchy to 0
+> >     failed
+> >     memcg_use_hierarchy_test 2 TCONF: memory.use_hierarchy already been
+> 1,
+> >     blame systemd, skip
+> >     memcg_use_hierarchy_test 2 TINFO: Starting test 3
+> >     memcg_use_hierarchy_test 2 TINFO: set
+> /dev/memcg/memory.use_hierarchy to 0
+> >     failed
+> >     memcg_use_hierarchy_test 2 TPASS: echo 0 >
+> subgroup/memory.use_hierarchy
+> >     failed as expected
+> >     <<<execution_status>>>
+> >
+> >     Right:
+> >     <<<test_output>>>
+> >     memcg_use_hierarchy_test 1 TINFO: Starting test 1
+> >     memcg_use_hierarchy_test 1 TINFO: set
+> /dev/memcg/memory.use_hierarchy to 0
+> >     failed
+> >     memcg_use_hierarchy_test 1 TPASS: process 26825 is killed
+> >     memcg_use_hierarchy_test 2 TINFO: Starting test 2
+> >     memcg_use_hierarchy_test 2 TINFO: set
+> /dev/memcg/memory.use_hierarchy to 0
+> >     failed
+> >     memcg_use_hierarchy_test 2 TCONF: memory.use_hierarchy already been
+> 1,
+> >     blame systemd, skip
+> >     memcg_use_hierarchy_test 3 TINFO: Starting test 3
+> >     memcg_use_hierarchy_test 3 TINFO: set
+> /dev/memcg/memory.use_hierarchy to 0
+> >     failed
+> >     memcg_use_hierarchy_test 3 TPASS: echo 0 >
+> subgroup/memory.use_hierarchy
+> >     failed as expected
+> >     <<<execution_status>>>
+> >
+> >
+> > This is a good catch, but maybe it's not wise to simply regard the TCONF
+> as a
+> > single test, because there are many system-config detections in setup()
+> > function, that will make LTP gives a mendacious report on the test
+> numbers if
+> > applying this patch.
+> >
+> > e.g.
+> >
+> > if tst_kvcmp -lt "3.10"; then
+> >     tst_brk TCONF "test must be run with kernel 3.10 or newer"
+> > fi
+> > if dir path not exist; then
+> >     tst_brk TCONF "system does not have xxxx/"
+> > fi
+> > and so on...
 >
->
->
-> On Thu, Mar 28, 2019 at 12:57 PM Sumit Garg <sumit.garg@linaro.org> wrote:
->>
->> On Wed, 27 Mar 2019 at 20:18, Cyril Hrubis <chrubis@suse.cz> wrote:
->> >
->> > Hi!
->> > Sorry for the long delay.
->> >
->> > This is altmost perfect, the only problem is that the third test fails
->> > on vfat. As far as I can tell the reason is that vfat does not support
->> > sparse files, hence seeking to the middle of file and writing there also
->> > schedulles I/O to write zeros from the start of the file to the offset
->> > we started writing to.
->> >
->>
->> Hmm, I see.
->>
->> > Following ugly patch solves the problem:
->> >
->> > diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
->> > index 334ea5e88..774524c2f 100644
->> > --- a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
->> > +++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
->> > @@ -45,6 +45,12 @@ static void verify_sync_file_range(struct testcase *tc)
->> >
->> >         fd = SAFE_OPEN(tc->fname, O_RDWR|O_CREAT, MODE);
->> >
->> > +       if (!strcmp(tst_device->fs_type, "vfat")) {
->> > +               tst_res(TINFO, "Pre-filling file");
->> > +               tst_fill_fd(fd, 0, tc->write_off, 1);
->> > +               fsync(fd);
->> > +       }
->> > +
->> >         lseek(fd, tc->write_off, SEEK_SET);
->> >
->> >
->> > So either we limit the tests so that the sync region does not overlap with the
->> > possible hole at the start of the file and loose some test coverage.
->> >
->> > Or we can add a function to the test library that would return true/false if
->> > sparse files are supported for a given FS.
->> >
->>
->> My initial thought behind this test-case was to run sync over a range
->> which is partially written. The other partial region not being written
->> could either be a hole or already synced data. So pre-fill file in
->> case of vfat looks sane option, but how about if we add pre-fill as
->> part of setup? Something like:
->
->
-> I think this is a bit better. Could u send a new patch version?
+> TCONF usually report only once, I would still take it a valid report on
+> numbers. Take your case as example, I guess we are able to see results
+> like:
 >
 
-Sure. BTW, apologies for the delay as I was busy with some other tasks.
+Okay, that sounds reasonable too.
 
--Sumit
-
->>
->> --- a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
->> +++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
->> @@ -86,6 +86,12 @@ static void setup(void)
->>  {
->>         if (!check_sync_file_range())
->>                 tst_brk(TCONF, "sync_file_range() not supported");
->> +
->> +       if (!strcmp(tst_device->fs_type, "vfat")) {
->> +               tst_res(TINFO, "Pre-filling file");
->> +               tst_fill_file(FNAME3, 0, TST_MB, FILE_SZ_MB);
->> +               sync();
->> +       }
->>  }
->>
->> -Sumit
->>
->> > --
->> > Cyril Hrubis
->> > chrubis@suse.cz
->>
->> --
->> Mailing list info: https://lists.linux.it/listinfo/ltp
->
->
->
-> --
-> Regards,
-> Li Wang
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190610/e109fe9c/attachment.html>
