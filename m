@@ -1,32 +1,67 @@
 From: Murphy Zhou <xzhou@redhat.com>
-Date: Tue, 11 Jun 2019 15:47:40 +0800
-Subject: [LTP] [PATCH v7 3/4] syscalls/swapon/swapon0{1..3}: use helpers to
-	check support status
+Date: Tue, 11 Jun 2019 15:47:41 +0800
+Subject: [LTP] [PATCH v7 4/4] syscalls/swapoff/swapoff0{1,
+	2}: use helpers to check support status
 In-Reply-To: <20190611074741.31903-1-xzhou@redhat.com>
 References: <CAEemH2e5b4q+bOeE3v8FG-piSUteCinPMVmxpnkVcYCmrUc4Uw@mail.gmail.com>
  <20190611074741.31903-1-xzhou@redhat.com>
-Message-ID: <20190611074741.31903-3-xzhou@redhat.com>
+Message-ID: <20190611074741.31903-4-xzhou@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Of swap operations.
+Of swap operations. Change Makefile to use functions from
+../swapon/libswapon.c
 
 Reviewed-by: Li Wang <liwang@redhat.com>
 Signed-off-by: Murphy Zhou <xzhou@redhat.com>
 ---
- testcases/kernel/syscalls/swapon/swapon01.c | 11 ++---------
- testcases/kernel/syscalls/swapon/swapon02.c | 13 +++----------
- testcases/kernel/syscalls/swapon/swapon03.c | 15 ++++-----------
- 3 files changed, 9 insertions(+), 30 deletions(-)
+ testcases/kernel/syscalls/swapoff/Makefile     |  3 ++-
+ testcases/kernel/syscalls/swapoff/Makefile.inc |  6 ++++++
+ testcases/kernel/syscalls/swapoff/swapoff01.c  | 10 ++--------
+ testcases/kernel/syscalls/swapoff/swapoff02.c  | 11 ++---------
+ 4 files changed, 12 insertions(+), 18 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/swapoff/Makefile.inc
 
-diff --git a/testcases/kernel/syscalls/swapon/swapon01.c b/testcases/kernel/syscalls/swapon/swapon01.c
-index 32538f82b..f95ce0ab2 100644
---- a/testcases/kernel/syscalls/swapon/swapon01.c
-+++ b/testcases/kernel/syscalls/swapon/swapon01.c
-@@ -84,16 +84,9 @@ static void setup(void)
+diff --git a/testcases/kernel/syscalls/swapoff/Makefile b/testcases/kernel/syscalls/swapoff/Makefile
+index bd617d806..536b2dbac 100644
+--- a/testcases/kernel/syscalls/swapoff/Makefile
++++ b/testcases/kernel/syscalls/swapoff/Makefile
+@@ -19,5 +19,6 @@
+ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+-
++include $(abs_srcdir)/./Makefile.inc
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
++$(MAKE_TARGETS): %: %.o ../swapon/libswapon.o
+diff --git a/testcases/kernel/syscalls/swapoff/Makefile.inc b/testcases/kernel/syscalls/swapoff/Makefile.inc
+new file mode 100644
+index 000000000..65350cbeb
+--- /dev/null
++++ b/testcases/kernel/syscalls/swapoff/Makefile.inc
+@@ -0,0 +1,6 @@
++LIBDIR			+= ../swapon/
++LIBSWAPON		:= $(LIBDIR)/libswapon.o
++$(LIBSWAPON):
++	$(MAKE) -C $(LIBDIR)
++CPPFLAGS		+= -I$(abs_srcdir)/$(LIBDIR)
++LDFLAGS			+= -L$(abs_builddir)/$(LIBDIR)
+diff --git a/testcases/kernel/syscalls/swapoff/swapoff01.c b/testcases/kernel/syscalls/swapoff/swapoff01.c
+index a63e661a5..e115269c0 100644
+--- a/testcases/kernel/syscalls/swapoff/swapoff01.c
++++ b/testcases/kernel/syscalls/swapoff/swapoff01.c
+@@ -25,6 +25,7 @@
+ #include <stdlib.h>
+ #include "config.h"
+ #include "lapi/syscalls.h"
++#include "../swapon/libswapon.h"
+ 
+ static void setup(void);
+ static void cleanup(void);
+@@ -86,14 +87,7 @@ static void setup(void)
  
  	tst_tmpdir();
  
@@ -34,90 +69,50 @@ index 32538f82b..f95ce0ab2 100644
 -	case TST_NFS_MAGIC:
 -	case TST_TMPFS_MAGIC:
 -		tst_brkm(TCONF, cleanup,
--			 "Cannot do swapon on a file on %s filesystem",
+-			 "Cannot do swapoff on a file on %s filesystem",
 -			 tst_fs_type_name(fs_type));
 -	break;
 -	}
 +	is_swap_supported(cleanup, "./tstswap");
  
--	make_swapfile(cleanup, "swapfile01");
-+	make_swapfile(cleanup, "swapfile01", 0);
- }
+ 	if (!tst_fs_has_free(NULL, ".", 64, TST_MB)) {
+ 		tst_brkm(TBROK, cleanup,
+diff --git a/testcases/kernel/syscalls/swapoff/swapoff02.c b/testcases/kernel/syscalls/swapoff/swapoff02.c
+index b5c6312a1..8954f975f 100644
+--- a/testcases/kernel/syscalls/swapoff/swapoff02.c
++++ b/testcases/kernel/syscalls/swapoff/swapoff02.c
+@@ -33,6 +33,7 @@
+ #include "test.h"
+ #include "lapi/syscalls.h"
+ #include "safe_macros.h"
++#include "../swapon/libswapon.h"
  
- static void cleanup(void)
-diff --git a/testcases/kernel/syscalls/swapon/swapon02.c b/testcases/kernel/syscalls/swapon/swapon02.c
-index 4af5105c6..3d49d0c6b 100644
---- a/testcases/kernel/syscalls/swapon/swapon02.c
-+++ b/testcases/kernel/syscalls/swapon/swapon02.c
-@@ -132,18 +132,11 @@ static void setup(void)
+ static void setup(void);
+ static void cleanup(void);
+@@ -124,7 +125,6 @@ static void cleanup01(void)
+ 
+ static void setup(void)
+ {
+-	long type;
+ 	struct passwd *nobody;
+ 
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+@@ -138,14 +138,7 @@ static void setup(void)
  
  	tst_tmpdir();
  
--	switch ((fs_type = tst_fs_type(cleanup, "."))) {
+-	switch ((type = tst_fs_type(cleanup, "."))) {
 -	case TST_NFS_MAGIC:
 -	case TST_TMPFS_MAGIC:
 -		tst_brkm(TCONF, cleanup,
--			 "Cannot do swapon on a file on %s filesystem",
--			 tst_fs_type_name(fs_type));
+-			 "Cannot do swapoff on a file on %s filesystem",
+-			 tst_fs_type_name(type));
 -	break;
 -	}
 +	is_swap_supported(cleanup, "./tstswap");
  
- 	SAFE_TOUCH(cleanup, "notswap", 0777, NULL);
--	make_swapfile(cleanup, "swapfile01");
--	make_swapfile(cleanup, "alreadyused");
-+	make_swapfile(cleanup, "swapfile01", 0);
-+	make_swapfile(cleanup, "alreadyused", 0);
- 
- 	if (ltp_syscall(__NR_swapon, "alreadyused", 0)) {
- 		if (fs_type != TST_BTRFS_MAGIC || errno != EINVAL)
-diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
-index 955ac247b..cef57150c 100644
---- a/testcases/kernel/syscalls/swapon/swapon03.c
-+++ b/testcases/kernel/syscalls/swapon/swapon03.c
-@@ -153,7 +153,7 @@ static int setup_swap(void)
- 	int j, fd;
- 	int status;
- 	int res = 0;
--	char filename[15];
-+	char filename[FILENAME_MAX];
- 	char buf[BUFSIZ + 1];
- 
- 	/* Find out how many swapfiles (1 line per entry) already exist */
-@@ -210,7 +210,7 @@ static int setup_swap(void)
- 			}
- 
- 			/* Create the swapfile */
--			make_swapfile(cleanup, filename);
-+			make_swapfile(cleanup, filename, 0);
- 
- 			/* turn on the swap file */
- 			res = ltp_syscall(__NR_swapon, filename, 0);
-@@ -246,7 +246,7 @@ static int setup_swap(void)
- 
- 	/* Create all needed extra swapfiles for testing */
- 	for (j = 0; j < testfiles; j++)
--		make_swapfile(cleanup, swap_testfiles[j].filename);
-+		make_swapfile(cleanup, swap_testfiles[j].filename, 0);
- 
- 	return 0;
- 
-@@ -333,14 +333,7 @@ static void setup(void)
- 
- 	tst_tmpdir();
- 
--	switch ((fs_type = tst_fs_type(cleanup, "."))) {
--	case TST_NFS_MAGIC:
--	case TST_TMPFS_MAGIC:
--		tst_brkm(TCONF, cleanup,
--			 "Cannot do swapon on a file on %s filesystem",
--			 tst_fs_type_name(fs_type));
--	break;
--	}
-+	is_swap_supported(cleanup, "./tstswap");
- 
- 	TEST_PAUSE;
- }
+ 	if (!tst_fs_has_free(NULL, ".", 1, TST_KB)) {
+ 		tst_brkm(TBROK, cleanup,
 -- 
 2.21.0
 
