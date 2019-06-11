@@ -1,75 +1,58 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 11 Jun 2019 19:00:15 +0800
-Subject: [LTP] [PATCH] cgroup_regression_test.sh: fix test_5 possible mount
-	failure because of cgroup hierarchy
-Message-ID: <1560250815-2308-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Christian Amann <camann@suse.com>
+Date: Tue, 11 Jun 2019 13:12:01 +0200
+Subject: [LTP] [PATCH v2 2/4] syscalls/pidfd_send_signal01
+In-Reply-To: <20190606131015.GA12020@rei>
+References: <20190604114702.28255-1-camann@suse.com>
+ <20190606131015.GA12020@rei>
+Message-ID: <9b5fa0d0-93a4-b94a-179a-ad65351082b7@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Currently, if systems doesn't mount subsys1,subsys2 and the hierarchy is not equal to 0, running it
-reports the following error:
+Hi,
 
-mount: xxx is already mounted or /tmp/ltp-wPw08anmTI/LTP_cgroup_regression_test.V4jf0qrS7z/cgroup busy
-cgroup_regression_test 5 TFAIL: mount net_prio and pids failed
+No, the *.in file changes are in a separate commit [1]. I didn't include
+it in version 2 of this patch because it didn't change.
 
-It fails because libcgroup doesn't permmit destroy cgroup subsystem hierarchies.
-Simple umnout does not destroy the hierarchies. They still live inside kernel!
+Sorry for that, I will include those commits in the future.
 
-When  hierarchy is equal to 0 in /proc/cgroups, we can mount them together on
-a new mountpoint.
+Kind regards,
 
-I add a check for subsystem hierarchy and get subsystem from head.
+Christian
 
-Notice:
-more information about"Bug 612805 - cgroup: mount: none already mounted or /cgroups busy"
-
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- .../cgroup/cgroup_regression_test.sh           | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
-
-diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-index e197f5d3f..38cb760c2 100755
---- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-+++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-@@ -252,8 +252,10 @@ test5()
- 		return
- 	fi
- 
--	local subsys1=`tail -n 1 /proc/cgroups | awk '{ print $1 }'`
--	local subsys2=`tail -n 2 /proc/cgroups | head -1 | awk '{ print $1 }'`
-+	local subsys1=`head -2 /proc/cgroups | tail -n 1 | awk '{ print $1 }'`
-+	local subsys1_hierarchy=`head -2 /proc/cgroups | tail -n 1 | awk '{ print $2 }'`
-+	local subsys2=`head -3 /proc/cgroups | tail -n 1 | awk '{ print $1 }'`
-+	local subsys2_hierarchy=`head -3 /proc/cgroups | tail -n 1 | awk '{ print $2 }'`
- 
- 	# Accounting here for the fact that the chosen subsystems could
- 	# have been already previously mounted at boot time: in such a
-@@ -267,10 +269,16 @@ test5()
- 	if [ -z "$mounted" ]; then
- 		mntpoint=cgroup
- 		failing=$subsys1
--		mount -t cgroup -o $subsys1,$subsys2 xxx $mntpoint/
-+		mount -t cgroup -o $subsys1,$subsys2 xxx $mntpoint/ 2>/dev/null
-+		# Even subsystem has not been mounted, it still live in kernel.
-+		# So we will get EBUSY when both mount subsys1 and subsys2 if
-+		# hierarchy isn't equal to 0.
- 		if [ $? -ne 0 ]; then
--			tst_res TFAIL "mount $subsys1 and $subsys2 failed"
--			return
-+			if [ "$subsys1_hierarchy" = 0 -a "$subsys2_hierarchy" = 0 ]; then
-+				tst_res TFAIL "mount $subsys1 and $subsys2 failed"
-+				return
-+			fi
-+			failing=$subsys1,$subsys2
- 		fi
- 	else
- 		# Use the pre-esistent mountpoint as $mntpoint and use a
--- 
-2.18.1
+[1] https://patchwork.ozlabs.org/patch/1099966/
 
 
-
+On 06/06/2019 15:10, Cyril Hrubis wrote:
+> Hi!
+> When I attempty to compile this code I get:
+>
+> In file included from pidfd_send_signal.h:11:0,
+>                  from pidfd_send_signal01.c:17:
+> pidfd_send_signal.h: In function 'check_syscall_support':
+> pidfd_send_signal.h:16:14: error: '__NR_pidfd_send_signal' undeclared (first use in this function); did you mean '__NR_perf_event_open'?
+>   tst_syscall(__NR_pidfd_send_signal);
+>               ^
+> ../../../../include/lapi/syscalls.h:39:6: note: in definition of macro 'tst_syscall'
+>   if (NR == __LTP__NR_INVALID_SYSCALL) { \
+>       ^~
+> pidfd_send_signal.h:16:14: note: each undeclared identifier is reported only once for each function it appears in
+>   tst_syscall(__NR_pidfd_send_signal);
+>               ^
+> ../../../../include/lapi/syscalls.h:39:6: note: in definition of macro 'tst_syscall'
+>   if (NR == __LTP__NR_INVALID_SYSCALL) { \
+>       ^~
+> pidfd_send_signal.h: In function 'pidfd_send_signal':
+> pidfd_send_signal.h:23:21: error: '__NR_pidfd_send_signal' undeclared (first use in this function); did you mean 'pidfd_send_signal'?
+>   return tst_syscall(__NR_pidfd_send_signal, pidfd, sig, info, flags);
+>                      ^
+> ../../../../include/lapi/syscalls.h:39:6: note: in definition of macro 'tst_syscall'
+>   if (NR == __LTP__NR_INVALID_SYSCALL) { \
+>       ^~
+> make: *** [<builtin>: pidfd_send_signal01] Error 1
+>
+>
+> Have you forgotten to git add the *.in files with syscall numbers?
+>
