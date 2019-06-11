@@ -1,58 +1,42 @@
-From: Christian Amann <camann@suse.com>
-Date: Tue, 11 Jun 2019 13:12:01 +0200
-Subject: [LTP] [PATCH v2 2/4] syscalls/pidfd_send_signal01
-In-Reply-To: <20190606131015.GA12020@rei>
-References: <20190604114702.28255-1-camann@suse.com>
- <20190606131015.GA12020@rei>
-Message-ID: <9b5fa0d0-93a4-b94a-179a-ad65351082b7@suse.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 11 Jun 2019 21:30:17 +0200
+Subject: [LTP] [PATCH v3 0/4] LTP reproducer on broken IMA on overlayfs
+Message-ID: <20190611193021.17651-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Mimi, Ignaz,
 
-No, the *.in file changes are in a separate commit [1]. I didn't include
-it in version 2 of this patch because it didn't change.
+sorry for bothering you with one more version of this patchset.
 
-Sorry for that, I will include those commits in the future.
+Changes v2->v3:
+* added one commit "ima/ima_measurements.sh: Require builtin IMA tcb policy"
+to avoid false positives 
+* added README.md in last commit (might be in separate commit)
 
-Kind regards,
+Petr Vorel (4):
+  ima: Call test's cleanup inside ima_setup.sh cleanup
+  shell: Add $TST_DEVICE as default parameter to tst_umount
+  ima/ima_measurements.sh: Require builtin IMA tcb policy
+  ima: Add overlay test + doc
 
-Christian
+ doc/test-writing-guidelines.txt               |  4 +-
+ runtest/ima                                   |  1 +
+ testcases/commands/df/df01.sh                 |  7 +-
+ testcases/commands/mkfs/mkfs01.sh             |  2 +-
+ .../security/integrity/ima/tests/README.md    | 82 ++++++++++++++++
+ .../integrity/ima/tests/evm_overlay.sh        | 94 +++++++++++++++++++
+ .../integrity/ima/tests/ima_measurements.sh   |  3 +-
+ .../security/integrity/ima/tests/ima_setup.sh | 12 ++-
+ .../integrity/ima/tests/ima_violations.sh     |  2 -
+ testcases/lib/tst_test.sh                     |  2 +-
+ 10 files changed, 192 insertions(+), 17 deletions(-)
+ create mode 100644 testcases/kernel/security/integrity/ima/tests/README.md
+ create mode 100755 testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
 
-[1] https://patchwork.ozlabs.org/patch/1099966/
+-- 
+2.21.0
 
-
-On 06/06/2019 15:10, Cyril Hrubis wrote:
-> Hi!
-> When I attempty to compile this code I get:
->
-> In file included from pidfd_send_signal.h:11:0,
->                  from pidfd_send_signal01.c:17:
-> pidfd_send_signal.h: In function 'check_syscall_support':
-> pidfd_send_signal.h:16:14: error: '__NR_pidfd_send_signal' undeclared (first use in this function); did you mean '__NR_perf_event_open'?
->   tst_syscall(__NR_pidfd_send_signal);
->               ^
-> ../../../../include/lapi/syscalls.h:39:6: note: in definition of macro 'tst_syscall'
->   if (NR == __LTP__NR_INVALID_SYSCALL) { \
->       ^~
-> pidfd_send_signal.h:16:14: note: each undeclared identifier is reported only once for each function it appears in
->   tst_syscall(__NR_pidfd_send_signal);
->               ^
-> ../../../../include/lapi/syscalls.h:39:6: note: in definition of macro 'tst_syscall'
->   if (NR == __LTP__NR_INVALID_SYSCALL) { \
->       ^~
-> pidfd_send_signal.h: In function 'pidfd_send_signal':
-> pidfd_send_signal.h:23:21: error: '__NR_pidfd_send_signal' undeclared (first use in this function); did you mean 'pidfd_send_signal'?
->   return tst_syscall(__NR_pidfd_send_signal, pidfd, sig, info, flags);
->                      ^
-> ../../../../include/lapi/syscalls.h:39:6: note: in definition of macro 'tst_syscall'
->   if (NR == __LTP__NR_INVALID_SYSCALL) { \
->       ^~
-> make: *** [<builtin>: pidfd_send_signal01] Error 1
->
->
-> Have you forgotten to git add the *.in files with syscall numbers?
->
