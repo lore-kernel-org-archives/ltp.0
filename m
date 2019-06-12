@@ -1,49 +1,57 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 12 Jun 2019 10:25:49 -0400 (EDT)
-Subject: [LTP] [PATCH v2] syscalls/ioctl_ns0[156]: align stack and wait
- for child
-In-Reply-To: <20190612135929.GA3048@rei.lan>
-References: <916c20b9a379badd37a85aa1e1339566c9807d23.1560248542.git.jstancek@redhat.com>
- <20190612135929.GA3048@rei.lan>
-Message-ID: <278919491.27726511.1560349549390.JavaMail.zimbra@redhat.com>
+From: Mimi Zohar <zohar@linux.ibm.com>
+Date: Wed, 12 Jun 2019 11:06:51 -0400
+Subject: [LTP] [PATCH v3 3/4] ima/ima_measurements.sh: Require builtin
+ IMA tcb policy
+In-Reply-To: <20190611193021.17651-4-pvorel@suse.cz>
+References: <20190611193021.17651-1-pvorel@suse.cz>
+ <20190611193021.17651-4-pvorel@suse.cz>
+Message-ID: <1560352011.4578.43.camel@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
+Hi Petr,
 
------ Original Message -----
-> Hi!
-> > Test crashes (SIGBUS) when using child stack have been observed for
-> > ioctl_ns01. Align stack to 64 bytes for all testcases using clone,
-> > which should work for any arch.
-> 
-> Looking at the rest of the test it seems that all of them use malloc()
-> to allocate the child stack and depends on the libc to align the
-> buffers, maybe it would be easier to change these tests to use malloc()
-> as well.
+On Tue, 2019-06-11 at 21:30 +0200, Petr Vorel wrote:
+> Although custom policy which contains tcb can be loaded via dracut,
 
-Default alignment is not enough:
-  Alignment:                              2 * sizeof(size_t) (default)
-       (i.e., 8 byte alignment with 4byte size_t). This suffices for
-       nearly all current machines and C compilers. However, you can
-       define MALLOC_ALIGNMENT to be wider than this if necessary.
+^which may contain the equivalent measurement tcb rules
 
-I'm guessing most of tests cross M_MMAP_THRESHOLD, and get page alignment
-from mmap. But should we rely on that?
+> systemd or later manually from user space, detecting it would require
+> IMA_READ_POLICY=y. In order to simplify the check and avoid false
+> positives lets ignore this option and require builtin IMA tcb policy.
 
-How about posix_memalign()?
+This test is for adding new measurements to the measurement list.
 
 > 
-> > Add SIGCHLD to clone flags, so that LTP library can reap all children
-> > and check their return code.  Also check ltp_clone() return value.
-> > 
-> > Suppress warning for unused *arg in child().
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  .../kernel/security/integrity/ima/tests/ima_measurements.sh    | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> The rest is OK.
+> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+> index 328affc43..a3aa24d8a 100755
+> --- a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+> +++ b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+> @@ -57,7 +57,8 @@ setup()
+>  	[ -z "$DIGEST_INDEX" ] && tst_brk TCONF \
+>  		"Cannot find digest index (template: '$template')"
 > 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+> -	tst_res TINFO "IMA measurement tests assume tcb policy to be loaded (ima_policy=tcb)"
+> +	grep -q -e ima_policy=[a-z_]*tcb -e ima_tcb -e ima_appraise_tcb /proc/cmdline || \
+> +		tst_brk TCONF "IMA measurement tests require builtin IMA tcb policy (ima_policy=tcb or ima_policy=appraise_tcb kernel parameter)"
+>  }
 > 
+
+"appraise_tcb" doesn't provide the necessary measurement rules.
+"ima_policy=" isn't order specific.  The check would be for "|tcb", "|
+tcb", "tcb|", "tcb |", or just "=tcb".  The deprecated "ima_tcb"
+option is fine too.
+
+Mimi
+
+>  # TODO: find support for rmd128 rmd256 rmd320 wp256 wp384 tgr128 tgr160
+
+
