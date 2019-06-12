@@ -1,9 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 12 Jun 2019 17:16:49 +0200
-Subject: [LTP] [PATCH] Fix use of results after being unmapped
-In-Reply-To: <1559834477-21724-1-git-send-email-ysionneau@kalray.eu>
-References: <1559834477-21724-1-git-send-email-ysionneau@kalray.eu>
-Message-ID: <20190612151649.GB3048@rei.lan>
+Date: Wed, 12 Jun 2019 17:21:51 +0200
+Subject: [LTP] [PATCH v2] syscalls/ioctl_ns0[156]: align stack and wait
+ for child
+In-Reply-To: <278919491.27726511.1560349549390.JavaMail.zimbra@redhat.com>
+References: <916c20b9a379badd37a85aa1e1339566c9807d23.1560248542.git.jstancek@redhat.com>
+ <20190612135929.GA3048@rei.lan>
+ <278919491.27726511.1560349549390.JavaMail.zimbra@redhat.com>
+Message-ID: <20190612152151.GC3048@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,40 +14,21 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-You are missing Signed-off-by: line here, see:
-
-https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html#developer-s-certificate-of-origin-1-1
-
-> ---
->  lib/tst_test.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+> Default alignment is not enough:
+>   Alignment:                              2 * sizeof(size_t) (default)
+>        (i.e., 8 byte alignment with 4byte size_t). This suffices for
+>        nearly all current machines and C compilers. However, you can
+>        define MALLOC_ALIGNMENT to be wider than this if necessary.
 > 
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 95f389d..73eca58 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -138,6 +138,7 @@ static void cleanup_ipc(void)
->  	if (results) {
->  		msync((void*)results, size, MS_SYNC);
->  		munmap((void*)results, size);
-> +		results = NULL;
->  	}
->  }
->  
-> @@ -921,10 +922,11 @@ static void do_cleanup(void)
->  	if (tst_test->save_restore)
->  		tst_sys_conf_restore(0);
->  
-> -	cleanup_ipc();
-> -
->  	if (tst_test->restore_wallclock)
->  		tst_wallclock_restore();
-> +
-> +	cleanup_ipc();
-> +	/* Do not use 'results' after cleanup_ipc(): it has been unmapped. */
+> I'm guessing most of tests cross M_MMAP_THRESHOLD, and get page alignment
+> from mmap. But should we rely on that?
+> 
+> How about posix_memalign()?
 
-Actually we can remove this comment since after setting results to NULL
-we will not crash anymore.
+I guess that we need to fix the ltp_clone_malloc() function as well, we
+should probably add a helper to allocate memory to the clone library
+which would make use of the posix_memalign() and make use of it
+internally as well...
 
 -- 
 Cyril Hrubis
