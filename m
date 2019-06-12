@@ -1,33 +1,126 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 12 Jun 2019 15:59:30 +0200
-Subject: [LTP] [PATCH v2] syscalls/ioctl_ns0[156]: align stack and wait
- for child
-In-Reply-To: <916c20b9a379badd37a85aa1e1339566c9807d23.1560248542.git.jstancek@redhat.com>
-References: <916c20b9a379badd37a85aa1e1339566c9807d23.1560248542.git.jstancek@redhat.com>
-Message-ID: <20190612135929.GA3048@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 12 Jun 2019 16:13:22 +0200
+Subject: [LTP] [PATCH v2 4/4] syscalls/pidfd_send_signal03
+In-Reply-To: <20190604114702.28255-3-camann@suse.com>
+References: <20190604114702.28255-1-camann@suse.com>
+ <20190604114702.28255-3-camann@suse.com>
+Message-ID: <20190612141322.GB15090@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Test crashes (SIGBUS) when using child stack have been observed for
-> ioctl_ns01. Align stack to 64 bytes for all testcases using clone,
-> which should work for any arch.
+> Add testcase to check if the syscall will send a signal
+> to a process with the same PID as the targeted process.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-Looking at the rest of the test it seems that all of them use malloc()
-to allocate the child stack and depends on the libc to align the
-buffers, maybe it would be easier to change these tests to use malloc()
-as well.
+LGTM, thanks for your patch!
 
-> Add SIGCHLD to clone flags, so that LTP library can reap all children
-> and check their return code.  Also check ltp_clone() return value.
-> 
-> Suppress warning for unused *arg in child().
+> +++ b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c
+...
+> +#define _GNU_SOURCE
+I guess this is not needed.
+> +
+> +#include <signal.h>
+> +#include <stdio.h>
+> +#include <unistd.h>
+> +#include "pidfd_send_signal.h"
+> +#include "tst_safe_pthread.h"
+> +//#include "tst_safe_file_ops.h"
+Reviewer should remove this comment.
 
-The rest is OK.
+> +
+> +#define PIDTRIES	3
+> +
+> +static char *last_pid_file;
+> +static int pidfd, new_pidfd;
+> +static int old_inode, new_inode;
+> +
+> +static int get_inode_number(int fd)
+> +{
+> +	struct stat file_stat;
+> +
+> +	SAFE_FSTAT(fd, &file_stat);
+> +	return file_stat.st_ino;
+> +}
+> +
+> +static void verify_pidfd_send_signal(void)
+> +{
+> +	pid_t pid, new_pid;
+> +	char pid_filename[32];
+> +	char pid_str[16];
+> +	int i, fail;
+> +
+> +	fail = 1;
+> +	for (i = 0; i < PIDTRIES; i++) {
+> +		pid = SAFE_FORK();
+> +		if (pid == 0) {
+> +			TST_CHECKPOINT_WAIT(0);
+> +			return;
+> +		}
+> +
+> +		sprintf(pid_filename, "/proc/%d", pid);
+> +		pidfd = SAFE_OPEN(pid_filename, O_DIRECTORY | O_CLOEXEC);
+> +		old_inode = get_inode_number(pidfd);
+> +
+> +		TST_CHECKPOINT_WAKE(0);
+> +		tst_reap_children();
+> +
+> +		/* Manipulate PID for next process */
+> +		sprintf(pid_str, "%d", pid - 1);
+> +		SAFE_FILE_PRINTF(last_pid_file, pid_str);
+> +
+> +		new_pid = SAFE_FORK();
+> +		if (new_pid == 0) {
+> +			TST_CHECKPOINT_WAIT(0);
+> +			return;
+> +		}
+> +
+> +		if (new_pid == pid) {
+> +			new_pidfd = SAFE_OPEN(pid_filename,
+> +					O_DIRECTORY | O_CLOEXEC);
+> +			new_inode = get_inode_number(new_pidfd);
+> +			SAFE_CLOSE(new_pidfd);
+> +			fail = 0;
+> +			break;
+> +		}
+> +
+> +		if (i < PIDTRIES) {
+> +			tst_res(TINFO,
+> +				"Failed to set correct PID, trying again...");
+> +		}
+> +		SAFE_CLOSE(pidfd);
+> +		TST_CHECKPOINT_WAKE(0);
+> +		tst_reap_children();
+> +	}
+> +	if (fail) {
+> +		tst_brk(TBROK,
+> +			"Could not set new child to same PID as the old one!");
+> +	}
+> +	if (old_inode == new_inode) {
+> +		tst_res(TWARN,
+> +			"File descriptor of new process points to the inode "
+> +			"of the old process!");
+I'd join this string on a single line. Also not sure if this is not TFAIL,
+but probably not.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> +	}
+> +
+> +	TEST(pidfd_send_signal(pidfd, SIGUSR1, NULL, 0));
+> +	if (TST_RET == -1 && TST_ERR == ESRCH) {
+> +		tst_res(TPASS,
+> +			"Did not send signal to wrong process with same PID!");
+> +	} else {
+> +		tst_res(TFAIL | TTERRNO,
+> +			"pidf_send_signal() ended unexpectedly - return value: %ld, error",
+> +			TST_RET);
+> +	}
+> +	TST_CHECKPOINT_WAKE(0);
+> +	tst_reap_children();
+> +
+> +	SAFE_CLOSE(pidfd);
+A bit repeating yourself, but not important.
+
+Kind regards,
+Petr
