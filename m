@@ -1,46 +1,62 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 13 Jun 2019 18:14:10 +0200
-Subject: [LTP] [PATCH v4 0/4] LTP reproducer on broken IMA on overlayfs
-Message-ID: <20190613161414.29161-1-pvorel@suse.cz>
+Date: Thu, 13 Jun 2019 18:14:11 +0200
+Subject: [LTP] [PATCH v4 1/4] ima: Call test's cleanup inside ima_setup.sh
+	cleanup
+In-Reply-To: <20190613161414.29161-1-pvorel@suse.cz>
+References: <20190613161414.29161-1-pvorel@suse.cz>
+Message-ID: <20190613161414.29161-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Mimi, Ignaz,
+to work the same way as setup
 
-changes v3->v4:
-* Add helper check_ima_policy() and use it in ima_measurements.sh and
-  evm_overlay.sh
-* Rephrase commit message for ima_measurements.sh changes and docs
-* Use SPDX-License-Identifier: GPL-2.0-or-later
+Acked-by: Mimi Zohar <zohar@linux.ibm.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/kernel/security/integrity/ima/tests/ima_setup.sh  | 6 +++++-
+ .../kernel/security/integrity/ima/tests/ima_violations.sh   | 2 --
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-Anything wrong in docs / commit message?
-
-Kind regards,
-Petr
-
-Petr Vorel (4):
-  ima: Call test's cleanup inside ima_setup.sh cleanup
-  shell: Add $TST_DEVICE as default parameter to tst_umount
-  ima/ima_measurements.sh: Require builtin IMA tcb policy
-  ima: Add overlay test + doc
-
- doc/test-writing-guidelines.txt               |  4 +-
- runtest/ima                                   |  1 +
- testcases/commands/df/df01.sh                 |  7 +-
- testcases/commands/mkfs/mkfs01.sh             |  2 +-
- .../security/integrity/ima/tests/README.md    | 83 +++++++++++++++++
- .../integrity/ima/tests/evm_overlay.sh        | 93 +++++++++++++++++++
- .../integrity/ima/tests/ima_measurements.sh   | 23 +----
- .../security/integrity/ima/tests/ima_setup.sh | 42 +++++----
- .../integrity/ima/tests/ima_violations.sh     |  2 -
- testcases/lib/tst_test.sh                     |  2 +-
- 10 files changed, 211 insertions(+), 48 deletions(-)
- create mode 100644 testcases/kernel/security/integrity/ima/tests/README.md
- create mode 100755 testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
-
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+index 52551190a..cbded42c2 100644
+--- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+@@ -20,7 +20,8 @@
+ TST_TESTFUNC="test"
+ TST_SETUP_CALLER="$TST_SETUP"
+ TST_SETUP="ima_setup"
+-TST_CLEANUP="${TST_CLEANUP:-ima_cleanup}"
++TST_CLEANUP_CALLER="$TST_CLEANUP"
++TST_CLEANUP="ima_cleanup"
+ TST_NEEDS_TMPDIR=1
+ TST_NEEDS_ROOT=1
+ 
+@@ -95,6 +96,9 @@ ima_setup()
+ ima_cleanup()
+ {
+ 	local dir
++
++	[ -n "$TST_CLEANUP_CALLER" ] && $TST_CLEANUP_CALLER
++
+ 	for dir in $UMOUNT; do
+ 		umount $dir
+ 	done
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
+index 74223c221..a44bd1230 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
+@@ -51,8 +51,6 @@ cleanup()
+ {
+ 	[ "$PRINTK_RATE_LIMIT" != "0" ] && \
+ 		sysctl -wq kernel.printk_ratelimit=$PRINTK_RATE_LIMIT
+-
+-	ima_cleanup
+ }
+ 
+ open_file_read()
 -- 
 2.21.0
 
