@@ -1,82 +1,70 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 13 Jun 2019 09:23:59 +0200
-Subject: [LTP] [PATCH v3 1/3] lib: add ltp_alloc_stack()
-Message-ID: <adca7c08dbf20805da9b99a7fa03d498de70235d.1560410182.git.jstancek@redhat.com>
+Date: Thu, 13 Jun 2019 09:24:00 +0200
+Subject: [LTP] [PATCH v3 2/3] lib: rename ltp_clone_malloc to ltp_clone_alloc
+In-Reply-To: <adca7c08dbf20805da9b99a7fa03d498de70235d.1560410182.git.jstancek@redhat.com>
+References: <adca7c08dbf20805da9b99a7fa03d498de70235d.1560410182.git.jstancek@redhat.com>
+Message-ID: <fd8b05453a0c72f2810a53e49ca1dc9467d9dbf9.1560410182.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Meant to allocate stack with sufficient alignment for all arches.
-Use it in lib/cloner.c instead of malloc().
+There are no users outside of lib.
 
 Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- include/tst_clone.h |  1 +
- lib/cloner.c        | 23 ++++++++++++++++++++---
- 2 files changed, 21 insertions(+), 3 deletions(-)
+ include/tst_clone.h | 2 +-
+ lib/cloner.c        | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/include/tst_clone.h b/include/tst_clone.h
-index 72145fabe7cd..786cee5d1209 100644
+index 786cee5d1209..fd52097e2072 100644
 --- a/include/tst_clone.h
 +++ b/include/tst_clone.h
-@@ -33,6 +33,7 @@ int ltp_clone_malloc(unsigned long clone_flags, int (*fn)(void *arg),
+@@ -29,7 +29,7 @@ int ltp_clone(unsigned long flags, int (*fn)(void *arg), void *arg,
+ 		size_t stack_size, void *stack);
+ int ltp_clone7(unsigned long flags, int (*fn)(void *arg), void *arg,
+ 		size_t stack_size, void *stack, ...);
+-int ltp_clone_malloc(unsigned long clone_flags, int (*fn)(void *arg),
++int ltp_clone_alloc(unsigned long clone_flags, int (*fn)(void *arg),
  		void *arg, size_t stacksize);
  int ltp_clone_quick(unsigned long clone_flags, int (*fn)(void *arg),
  		void *arg);
-+void *ltp_alloc_stack(size_t size);
- 
- #define clone(...) (use_the_ltp_clone_functions__do_not_use_clone)
- 
 diff --git a/lib/cloner.c b/lib/cloner.c
-index 63f223d2a150..cf37184aa22a 100644
+index cf37184aa22a..8469745d004b 100644
 --- a/lib/cloner.c
 +++ b/lib/cloner.c
-@@ -28,8 +28,7 @@
- #include <stdlib.h>
- #include <sched.h>
- #include <stdarg.h>
--#include "test.h"
--#include "config.h"
-+#include "tst_clone.h"
- 
- #undef clone			/* we want to use clone() */
- 
-@@ -118,6 +117,24 @@ int ltp_clone7(unsigned long flags, int (*fn)(void *arg), void *arg,
+@@ -135,11 +135,11 @@ void *ltp_alloc_stack(size_t size)
  }
  
  /*
-+ * ltp_alloc_stack: allocate stack of size 'size', that is sufficiently
-+ * aligned for all arches. User is responsible for freeing allocated
-+ * memory.
-+ * Returns pointer to new stack. On error, returns NULL with errno set.
-+ */
-+void *ltp_alloc_stack(size_t size)
-+{
-+	void *ret = NULL;
-+	int err;
-+
-+	err = posix_memalign(&ret, 64, size);
-+	if (err)
-+		errno = err;
-+
-+	return ret;
-+}
-+
-+/*
-  * ltp_clone_malloc: also does the memory allocation for clone with a
+- * ltp_clone_malloc: also does the memory allocation for clone with a
++ * ltp_clone_alloc: also does the memory allocation for clone with a
   * caller-specified size.
   */
-@@ -129,7 +146,7 @@ ltp_clone_malloc(unsigned long clone_flags, int (*fn) (void *arg), void *arg,
- 	int ret;
- 	int saved_errno;
+ int
+-ltp_clone_malloc(unsigned long clone_flags, int (*fn) (void *arg), void *arg,
++ltp_clone_alloc(unsigned long clone_flags, int (*fn) (void *arg), void *arg,
+ 		 size_t stack_size)
+ {
+ 	void *stack;
+@@ -162,7 +162,7 @@ ltp_clone_malloc(unsigned long clone_flags, int (*fn) (void *arg), void *arg,
+ }
  
--	stack = malloc(stack_size);
-+	stack = ltp_alloc_stack(stack_size);
- 	if (stack == NULL)
- 		return -1;
+ /*
+- * ltp_clone_quick: calls ltp_clone_malloc with predetermined stack size.
++ * ltp_clone_quick: calls ltp_clone_alloc with predetermined stack size.
+  * Experience thus far suggests that one page is often insufficient,
+  * while 6*getpagesize() seems adequate.
+  */
+@@ -170,5 +170,5 @@ int ltp_clone_quick(unsigned long clone_flags, int (*fn) (void *arg), void *arg)
+ {
+ 	size_t stack_size = getpagesize() * 6;
  
+-	return ltp_clone_malloc(clone_flags, fn, arg, stack_size);
++	return ltp_clone_alloc(clone_flags, fn, arg, stack_size);
+ }
 -- 
 1.8.3.1
 
