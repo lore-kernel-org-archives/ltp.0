@@ -1,20 +1,45 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 14 Jun 2019 09:46:05 +0200
-Subject: [LTP] [PATCH 3/3] sh: Replace GPL verbose text by SPDX license
- identifier
-In-Reply-To: <20190614065650.8612-4-pvorel@suse.cz>
-References: <20190614065650.8612-1-pvorel@suse.cz>
- <20190614065650.8612-4-pvorel@suse.cz>
-Message-ID: <20190614074605.GA16957@dell5510>
+From: Yann Sionneau <ysionneau@kalray.eu>
+Date: Fri, 14 Jun 2019 10:26:45 +0200
+Subject: [LTP] [PATCH v2] Fix use of results after being unmapped
+Message-ID: <1560500805-26005-1-git-send-email-ysionneau@kalray.eu>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+This fixes issue reported there: https://github.com/linux-test-project/ltp/issues/537
 
-This one is wrong, shebang should be before SPDX.
+Signed-off-by: Yann Sionneau <ysionneau@kalray.eu>
+---
+ lib/tst_test.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Kind regards,
-Petr
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 95f389d..7395996 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -138,6 +138,7 @@ static void cleanup_ipc(void)
+ 	if (results) {
+ 		msync((void*)results, size, MS_SYNC);
+ 		munmap((void*)results, size);
++		results = NULL;
+ 	}
+ }
+ 
+@@ -921,10 +922,10 @@ static void do_cleanup(void)
+ 	if (tst_test->save_restore)
+ 		tst_sys_conf_restore(0);
+ 
+-	cleanup_ipc();
+-
+ 	if (tst_test->restore_wallclock)
+ 		tst_wallclock_restore();
++
++	cleanup_ipc();
+ }
+ 
+ static void run_tests(void)
+-- 
+1.8.3.1
+
