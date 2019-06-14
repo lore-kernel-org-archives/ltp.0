@@ -1,110 +1,401 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 14 Jun 2019 10:46:42 +0800
-Subject: [LTP] [PATCH v3 2/3] lib: rename ltp_clone_malloc to
-	ltp_clone_alloc
-In-Reply-To: <20190613135740.GB29926@rei.lan>
-References: <adca7c08dbf20805da9b99a7fa03d498de70235d.1560410182.git.jstancek@redhat.com>
- <fd8b05453a0c72f2810a53e49ca1dc9467d9dbf9.1560410182.git.jstancek@redhat.com>
- <CAEemH2f_oMYubEDLdOmhxrEguKkc+3smx682LF7D9uiwZ26OAQ@mail.gmail.com>
- <20190613135740.GB29926@rei.lan>
-Message-ID: <CAEemH2e7yfW3fd2kRFh-6tq8Y+sZeBvSB4Eu4JN6Htdo4_=K5g@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 14 Jun 2019 08:56:47 +0200
+Subject: [LTP] [PATCH 0/3] SPDX license identifier
+Message-ID: <20190614065650.8612-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Jun 13, 2019 at 9:58 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+Hi,
 
-> Hi!
-> > > @@ -170,5 +170,5 @@ int ltp_clone_quick(unsigned long clone_flags, int
-> > > (*fn) (void *arg), void *arg)
-> > >  {
-> > >         size_t stack_size = getpagesize() * 6;
-> > >
-> > > -       return ltp_clone_malloc(clone_flags, fn, arg, stack_size);
-> > > +       return ltp_clone_alloc(clone_flags, fn, arg, stack_size);
-> > >  }
-> > >
-> >
-> > There is another legacy problem maybe we need take care.
-> >
-> > Any thought about how releasing the stack memory[1] after calling
-> > ltp_clone_quick() in a test?
-> >
-> > [1] which allocated memory in ltp_clone_alloc().
->
-> Well, we can free the memory in ltp_clone_alloc() if the child runs in a
-> separate memory space, but if CLONE_VM was passed in flags there is no
-> way how to free the memory...
->
+I can squash these commits. It was separated for easier review.
+Not replaced in old API as this is can wait done during test rewrite.
 
-A stupid way come up to my mind is just to export the stack as global
-pointer and releasing in do_cleanup() if possible.
+Kind regards,
+Petr
 
-diff --git a/include/tst_clone.h b/include/tst_clone.h
-index fd52097..c98eb44 100644
---- a/include/tst_clone.h
-+++ b/include/tst_clone.h
-diff --git a/include/tst_clone.h b/include/tst_clone.h
-index fd52097..c98eb44 100644
---- a/include/tst_clone.h
-+++ b/include/tst_clone.h
-@@ -24,6 +24,8 @@
- #ifndef TST_CLONE_H__
- #define TST_CLONE_H__
+Petr Vorel (3):
+  doc: Use SPDX license identifier
+  c: Replace GPL verbose text by SPDX license identifier
+  sh: Replace GPL verbose text by SPDX license identifier
 
-+void *tst_clone_stack;
-+
- /* Functions from lib/cloner.c */
- int ltp_clone(unsigned long flags, int (*fn)(void *arg), void *arg,
-                size_t stack_size, void *stack);
-diff --git a/lib/cloner.c b/lib/cloner.c
-index 8469745..4534982 100644
---- a/lib/cloner.c
-+++ b/lib/cloner.c
-@@ -142,19 +142,17 @@ int
- ltp_clone_alloc(unsigned long clone_flags, int (*fn) (void *arg), void
-*arg,
-                 size_t stack_size)
- {
--       void *stack;
-        int ret;
-        int saved_errno;
--
--       stack = ltp_alloc_stack(stack_size);
--       if (stack == NULL)
-+       tst_clone_stack = ltp_alloc_stack(stack_size);
-+       if (tst_clone_stack == NULL)
-                return -1;
-
--       ret = ltp_clone(clone_flags, fn, arg, stack_size, stack);
-+       ret = ltp_clone(clone_flags, fn, arg, stack_size, tst_clone_stack);
-
-        if (ret == -1) {
-                saved_errno = errno;
--               free(stack);
-+               free(tst_clone_stack);
-                errno = saved_errno;
-        }
-
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 95f389d..e96a9c7 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -909,6 +909,9 @@ static void do_cleanup(void)
-        if (mntpoint_mounted)
-                tst_umount(tst_test->mntpoint);
-
-+       if (tst_clone_stack)
-+               free(tst_clone_stack);
-+
-        if (tst_test->needs_device && tdev.dev)
-                tst_release_device(tdev.dev);
+ doc/c-test-tutorial-simple.txt                | 30 +-------
+ doc/test-writing-guidelines.txt               | 27 +++----
+ include/tst_taint.h                           | 14 +---
+ include/tst_timer_test.h                      | 14 +---
+ lib/newlib_tests/test01.c                     | 15 +---
+ lib/newlib_tests/test02.c                     | 15 +---
+ lib/newlib_tests/test03.c                     | 15 +---
+ lib/newlib_tests/test04.c                     | 15 +---
+ lib/newlib_tests/test05.c                     | 15 +---
+ lib/newlib_tests/test06.c                     | 15 +---
+ lib/newlib_tests/test07.c                     | 15 +---
+ lib/newlib_tests/test08.c                     | 15 +---
+ lib/newlib_tests/test09.c                     | 12 +---
+ lib/newlib_tests/test10.c                     | 12 +---
+ lib/newlib_tests/test11.c                     | 12 +---
+ lib/newlib_tests/test12.c                     | 12 +---
+ lib/newlib_tests/test13.c                     | 12 +---
+ lib/newlib_tests/test14.c                     | 15 +---
+ lib/newlib_tests/test15.c                     | 14 +---
+ lib/newlib_tests/test16.c                     | 14 +---
+ lib/newlib_tests/test17.c                     | 14 +---
+ lib/newlib_tests/test18.c                     | 14 +---
+ lib/newlib_tests/test19.c                     | 14 +---
+ lib/newlib_tests/test_exec.c                  | 15 +---
+ lib/newlib_tests/test_exec_child.c            | 15 +---
+ lib/newlib_tests/tst_device.c                 | 14 +---
+ lib/newlib_tests/tst_expiration_timer.c       | 15 +---
+ lib/newlib_tests/tst_res_hexd.c               | 14 +---
+ lib/newlib_tests/tst_safe_fileops.c           | 14 +---
+ lib/newlib_tests/tst_strstatus.c              | 15 +---
+ lib/safe_pthread.c                            | 14 +---
+ lib/tst_crypto.c                              | 14 +---
+ lib/tst_fill_fs.c                             | 14 +---
+ lib/tst_safe_macros.c                         | 14 +---
+ lib/tst_safe_sysv_ipc.c                       | 14 +---
+ lib/tst_sig_proc.c                            | 11 +--
+ lib/tst_status.c                              | 14 +---
+ lib/tst_supported_fs_types.c                  | 14 +---
+ lib/tst_test.c                                | 14 +---
+ lib/tst_timer_test.c                          | 14 +---
+ testcases/commands/ar/ar01                    | 24 ++-----
+ testcases/commands/cp/cp_tests.sh             | 27 ++-----
+ testcases/commands/cpio/cpio_tests.sh         | 24 +------
+ testcases/commands/df/df01.sh                 | 13 +---
+ testcases/commands/du/du01.sh                 | 17 +----
+ testcases/commands/eject/eject-tests.sh       | 26 ++-----
+ testcases/commands/file/file01.sh             | 25 ++-----
+ testcases/commands/gdb/gdb01.sh               | 23 +-----
+ testcases/commands/gzip/gzip_tests.sh         | 34 +++------
+ testcases/commands/insmod/insmod01.sh         | 15 +---
+ testcases/commands/keyctl/keyctl01.sh         | 16 +----
+ testcases/commands/ld/ld01                    | 24 ++-----
+ testcases/commands/ldd/ldd01                  | 30 ++------
+ testcases/commands/ln/ln_tests.sh             | 27 ++-----
+ testcases/commands/lsmod/lsmod01.sh           | 16 +----
+ testcases/commands/mkdir/mkdir_tests.sh       | 25 ++-----
+ testcases/commands/mkfs/mkfs01.sh             | 13 +---
+ testcases/commands/mkswap/mkswap01.sh         | 13 +---
+ testcases/commands/mv/mv_tests.sh             | 34 +++------
+ testcases/commands/nm/nm01                    | 24 ++-----
+ testcases/commands/sysctl/sysctl01.sh         | 16 +----
+ testcases/commands/tar/tar_tests.sh           | 26 ++-----
+ testcases/commands/unshare/unshare01.sh       | 13 +---
+ testcases/commands/unzip/unzip01.sh           | 26 ++-----
+ testcases/commands/wc/wc01.sh                 | 13 +---
+ testcases/commands/which/which01.sh           | 13 +---
+ testcases/cve/cve-2014-0196.c                 | 14 +---
+ testcases/cve/cve-2015-3290.c                 | 23 +-----
+ testcases/cve/cve-2016-10044.c                | 14 +---
+ testcases/cve/cve-2016-7042.c                 | 14 +---
+ testcases/cve/cve-2016-7117.c                 | 14 +---
+ testcases/cve/cve-2017-16939.c                | 14 +---
+ testcases/cve/cve-2017-17052.c                | 14 +---
+ testcases/cve/cve-2017-17053.c                | 14 +---
+ testcases/cve/cve-2017-2618.c                 | 14 +---
+ testcases/cve/cve-2017-2671.c                 | 14 +---
+ testcases/cve/meltdown.c                      | 16 +----
+ testcases/cve/stack_clash.c                   | 16 +----
+ .../kernel/controllers/cpuacct/cpuacct.sh     | 35 ++-------
+ .../memcg/functional/memcg_process.c          | 26 ++-----
+ .../memcg/regression/memcg_test_3.c           | 14 +---
+ testcases/kernel/controllers/pids/pids.sh     | 29 ++------
+ testcases/kernel/crypto/pcrypt_aead01.c       | 22 +-----
+ testcases/kernel/fs/fs_fill/fs_fill.c         | 14 +---
+ testcases/kernel/fs/read_all/read_all.c       | 14 +---
+ testcases/kernel/lib/ksm_helper.c             | 14 +---
+ testcases/kernel/logging/kmsg/kmsg01.c        | 21 +-----
+ .../kernel/mem/hugetlb/hugemmap/hugemmap05.c  | 14 +---
+ testcases/kernel/mem/hugetlb/lib/hugetlb.h    | 17 +----
+ testcases/kernel/mem/ksm/ksm05.c              | 11 +--
+ testcases/kernel/mem/ksm/ksm_common.h         | 11 +--
+ .../kernel/mem/mmapstress/mmapstress04.c      | 14 +---
+ testcases/kernel/mem/mtest06/mmap3.c          | 27 ++-----
+ testcases/kernel/mem/mtest07/mallocstress.c   | 72 +++----------------
+ testcases/kernel/mem/thp/thp01.c              | 11 +--
+ testcases/kernel/mem/vma/vma05.sh             | 44 ++++--------
+ testcases/kernel/numa/numa01.sh               | 53 +++++---------
+ testcases/kernel/pty/pty02.c                  | 14 +---
+ .../kernel/sched/autogroup/autogroup01.c      | 14 +---
+ testcases/kernel/security/dirtyc0w/dirtyc0w.c | 14 +---
+ .../kernel/security/dirtyc0w/dirtyc0w_child.c | 14 +---
+ .../security/integrity/ima/src/ima_mmap.c     | 13 +---
+ .../security/integrity/ima/tests/ima_setup.sh | 15 +---
+ testcases/kernel/syscalls/access/access01.c   | 21 +-----
+ testcases/kernel/syscalls/access/access02.c   | 20 +-----
+ testcases/kernel/syscalls/access/access03.c   | 21 +-----
+ testcases/kernel/syscalls/access/access04.c   | 18 +----
+ testcases/kernel/syscalls/add_key/add_key01.c | 27 ++-----
+ testcases/kernel/syscalls/add_key/add_key02.c | 24 ++-----
+ testcases/kernel/syscalls/add_key/add_key03.c | 14 +---
+ testcases/kernel/syscalls/add_key/add_key04.c | 14 +---
+ testcases/kernel/syscalls/alarm/alarm05.c     | 19 +----
+ testcases/kernel/syscalls/alarm/alarm06.c     | 30 ++------
+ testcases/kernel/syscalls/brk/brk01.c         | 14 +---
+ testcases/kernel/syscalls/chdir/chdir03.c     | 17 +----
+ testcases/kernel/syscalls/chmod/chmod06.c     | 19 +----
+ .../syscalls/clock_getres/clock_getres01.c    | 35 +++------
+ .../clock_nanosleep/clock_nanosleep01.c       | 15 +---
+ .../clock_nanosleep2/clock_nanosleep2_01.c    | 24 ++-----
+ testcases/kernel/syscalls/clone/clone08.c     | 12 +---
+ testcases/kernel/syscalls/clone/clone09.c     | 14 +---
+ testcases/kernel/syscalls/creat/creat01.c     | 19 +----
+ testcases/kernel/syscalls/creat/creat03.c     | 19 +----
+ testcases/kernel/syscalls/creat/creat04.c     | 19 +----
+ testcases/kernel/syscalls/creat/creat05.c     | 19 +----
+ testcases/kernel/syscalls/creat/creat06.c     | 19 +----
+ testcases/kernel/syscalls/creat/creat07.c     | 17 +----
+ .../kernel/syscalls/creat/creat07_child.c     | 17 +----
+ .../syscalls/epoll_create1/epoll_create1_01.c | 21 +-----
+ .../kernel/syscalls/epoll_ctl/epoll_ctl01.c   | 12 +---
+ .../kernel/syscalls/epoll_ctl/epoll_ctl02.c   | 12 +---
+ .../kernel/syscalls/epoll_wait/epoll_wait01.c | 14 +---
+ testcases/kernel/syscalls/execl/execl01.c     | 15 +---
+ .../kernel/syscalls/execl/execl01_child.c     | 14 +---
+ testcases/kernel/syscalls/execle/execle01.c   | 15 +---
+ .../kernel/syscalls/execle/execle01_child.c   | 14 +---
+ testcases/kernel/syscalls/execlp/execlp01.c   | 16 +----
+ .../kernel/syscalls/execlp/execlp01_child.c   | 14 +---
+ testcases/kernel/syscalls/execv/execv01.c     | 15 +---
+ .../kernel/syscalls/execv/execv01_child.c     | 15 +---
+ testcases/kernel/syscalls/execve/execve01.c   | 15 +---
+ .../kernel/syscalls/execve/execve01_child.c   | 14 +---
+ testcases/kernel/syscalls/execve/execve02.c   | 18 +----
+ testcases/kernel/syscalls/execve/execve03.c   | 28 ++------
+ testcases/kernel/syscalls/execve/execve04.c   | 18 +----
+ testcases/kernel/syscalls/execve/execve05.c   | 18 +----
+ .../kernel/syscalls/execve/execve_child.c     | 16 +----
+ .../kernel/syscalls/execveat/execveat03.c     | 44 ++++--------
+ .../kernel/syscalls/execveat/execveat_child.c | 21 +-----
+ testcases/kernel/syscalls/execvp/execvp01.c   | 15 +---
+ .../kernel/syscalls/execvp/execvp01_child.c   | 14 +---
+ testcases/kernel/syscalls/exit/exit02.c       | 19 +----
+ .../kernel/syscalls/fallocate/fallocate04.c   | 18 +----
+ .../kernel/syscalls/fallocate/fallocate05.c   | 14 +---
+ testcases/kernel/syscalls/fchdir/fchdir03.c   | 17 +----
+ testcases/kernel/syscalls/fchmod/fchmod06.c   | 17 +----
+ testcases/kernel/syscalls/fcntl/fcntl02.c     | 30 +-------
+ testcases/kernel/syscalls/fcntl/fcntl03.c     | 30 +-------
+ testcases/kernel/syscalls/fcntl/fcntl04.c     | 30 +-------
+ testcases/kernel/syscalls/fcntl/fcntl34.c     | 16 +----
+ testcases/kernel/syscalls/fcntl/fcntl35.c     | 14 +---
+ testcases/kernel/syscalls/fcntl/fcntl36.c     | 33 +++------
+ .../kernel/syscalls/flistxattr/flistxattr01.c | 14 +---
+ .../kernel/syscalls/flistxattr/flistxattr02.c | 12 +---
+ .../kernel/syscalls/flistxattr/flistxattr03.c | 14 +---
+ testcases/kernel/syscalls/fsync/fsync01.c     | 30 +-------
+ testcases/kernel/syscalls/getcwd/getcwd01.c   | 16 +----
+ testcases/kernel/syscalls/getcwd/getcwd02.c   | 16 +----
+ testcases/kernel/syscalls/getcwd/getcwd03.c   | 16 +----
+ testcases/kernel/syscalls/getcwd/getcwd04.c   | 11 +--
+ .../syscalls/getpriority/getpriority01.c      | 18 +----
+ .../syscalls/getpriority/getpriority02.c      | 18 +----
+ .../kernel/syscalls/getrandom/getrandom01.c   | 27 +------
+ .../kernel/syscalls/getrandom/getrandom02.c   | 29 ++------
+ .../kernel/syscalls/getrandom/getrandom03.c   | 32 ++-------
+ .../kernel/syscalls/getrandom/getrandom04.c   | 32 ++-------
+ .../kernel/syscalls/getsockopt/getsockopt02.c | 14 +---
+ .../syscalls/gettimeofday/gettimeofday02.c    | 15 +---
+ .../kernel/syscalls/getxattr/getxattr04.c     | 14 +---
+ testcases/kernel/syscalls/inotify/inotify01.c | 23 +-----
+ testcases/kernel/syscalls/inotify/inotify02.c | 23 +-----
+ testcases/kernel/syscalls/inotify/inotify03.c | 25 +------
+ testcases/kernel/syscalls/inotify/inotify04.c | 28 +-------
+ testcases/kernel/syscalls/inotify/inotify05.c | 19 +----
+ testcases/kernel/syscalls/inotify/inotify06.c | 19 +----
+ testcases/kernel/syscalls/inotify/inotify07.c | 23 +-----
+ testcases/kernel/syscalls/inotify/inotify08.c | 24 +------
+ testcases/kernel/syscalls/inotify/inotify09.c | 17 +----
+ .../kernel/syscalls/io_destroy/io_destroy01.c | 15 +---
+ .../kernel/syscalls/io_setup/io_setup01.c     | 15 +---
+ .../kernel/syscalls/io_submit/io_submit01.c   | 15 +---
+ testcases/kernel/syscalls/ioctl/ioctl03.c     | 34 ++-------
+ testcases/kernel/syscalls/ioctl/ioctl04.c     | 14 +---
+ testcases/kernel/syscalls/ioctl/ioctl05.c     | 14 +---
+ testcases/kernel/syscalls/ioctl/ioctl06.c     | 14 +---
+ testcases/kernel/syscalls/ioctl/ioctl07.c     | 14 +---
+ .../kernel/syscalls/ipc/libnewipc/libnewipc.c | 14 +---
+ .../kernel/syscalls/ipc/msgctl/msgctl01.c     | 17 +----
+ .../kernel/syscalls/ipc/msgctl/msgctl02.c     | 17 +----
+ .../kernel/syscalls/ipc/msgctl/msgctl03.c     | 12 +---
+ .../kernel/syscalls/ipc/msgctl/msgctl04.c     | 17 +----
+ .../kernel/syscalls/ipc/msgctl/msgctl12.c     | 12 +---
+ .../kernel/syscalls/ipc/msgget/msgget01.c     | 16 +----
+ .../kernel/syscalls/ipc/msgget/msgget02.c     | 16 +----
+ .../kernel/syscalls/ipc/msgget/msgget03.c     | 16 +----
+ .../kernel/syscalls/ipc/msgsnd/msgsnd01.c     | 16 +----
+ .../kernel/syscalls/ipc/msgsnd/msgsnd02.c     | 16 +----
+ .../kernel/syscalls/ipc/msgsnd/msgsnd05.c     | 16 +----
+ .../kernel/syscalls/ipc/msgsnd/msgsnd06.c     | 16 +----
+ testcases/kernel/syscalls/ipc/shmat/shmat01.c | 17 +----
+ testcases/kernel/syscalls/ipc/shmat/shmat02.c | 16 +----
+ testcases/kernel/syscalls/ipc/shmat/shmat03.c | 14 +---
+ .../kernel/syscalls/ipc/shmctl/shmctl05.c     | 14 +---
+ testcases/kernel/syscalls/kcmp/kcmp01.c       | 15 +---
+ testcases/kernel/syscalls/kcmp/kcmp02.c       | 15 +---
+ testcases/kernel/syscalls/kcmp/kcmp03.c       | 14 +---
+ testcases/kernel/syscalls/keyctl/keyctl01.c   | 14 +---
+ testcases/kernel/syscalls/keyctl/keyctl02.c   | 14 +---
+ testcases/kernel/syscalls/keyctl/keyctl03.c   | 14 +---
+ testcases/kernel/syscalls/keyctl/keyctl04.c   | 14 +---
+ testcases/kernel/syscalls/keyctl/keyctl05.c   | 14 +---
+ testcases/kernel/syscalls/keyctl/keyctl06.c   | 14 +---
+ testcases/kernel/syscalls/keyctl/keyctl07.c   | 14 +---
+ testcases/kernel/syscalls/keyctl/keyctl08.c   | 14 +---
+ .../kernel/syscalls/lgetxattr/lgetxattr01.c   | 12 +---
+ .../kernel/syscalls/lgetxattr/lgetxattr02.c   | 13 +---
+ testcases/kernel/syscalls/link/link08.c       | 15 +---
+ .../kernel/syscalls/listxattr/listxattr01.c   | 14 +---
+ .../kernel/syscalls/listxattr/listxattr02.c   | 14 +---
+ .../kernel/syscalls/listxattr/listxattr03.c   | 14 +---
+ .../kernel/syscalls/llistxattr/llistxattr01.c | 12 +---
+ .../kernel/syscalls/llistxattr/llistxattr02.c | 12 +---
+ .../kernel/syscalls/llistxattr/llistxattr03.c | 12 +---
+ testcases/kernel/syscalls/lseek/lseek01.c     | 16 +----
+ testcases/kernel/syscalls/lseek/lseek02.c     | 19 +----
+ testcases/kernel/syscalls/lseek/lseek07.c     | 16 +----
+ testcases/kernel/syscalls/lseek/lseek11.c     | 47 +++++-------
+ testcases/kernel/syscalls/madvise/madvise01.c | 13 +---
+ testcases/kernel/syscalls/madvise/madvise02.c | 13 +---
+ testcases/kernel/syscalls/madvise/madvise05.c | 11 +--
+ testcases/kernel/syscalls/madvise/madvise06.c | 14 +---
+ testcases/kernel/syscalls/madvise/madvise07.c | 14 +---
+ testcases/kernel/syscalls/madvise/madvise08.c | 14 +---
+ testcases/kernel/syscalls/madvise/madvise09.c | 14 +---
+ testcases/kernel/syscalls/madvise/madvise10.c | 11 +--
+ testcases/kernel/syscalls/mbind/mbind01.c     | 14 +---
+ .../syscalls/memfd_create/memfd_create01.c    | 12 +---
+ .../syscalls/memfd_create/memfd_create02.c    | 12 +---
+ .../syscalls/memfd_create/memfd_create03.c    | 11 +--
+ .../syscalls/memfd_create/memfd_create04.c    | 11 +--
+ .../memfd_create/memfd_create_common.c        | 12 +---
+ .../syscalls/migrate_pages/migrate_pages02.c  | 21 +-----
+ .../syscalls/migrate_pages/migrate_pages03.c  | 14 +---
+ testcases/kernel/syscalls/mkdir/mkdir02.c     | 16 +----
+ testcases/kernel/syscalls/mkdir/mkdir03.c     | 19 +----
+ testcases/kernel/syscalls/mkdir/mkdir04.c     | 16 +----
+ testcases/kernel/syscalls/mkdir/mkdir05.c     | 18 +----
+ testcases/kernel/syscalls/mkdirat/mkdirat02.c | 13 +---
+ testcases/kernel/syscalls/mmap/mmap12.c       | 15 +---
+ .../kernel/syscalls/mq_notify/mq_notify01.c   | 14 +---
+ testcases/kernel/syscalls/mq_open/mq_open01.c | 15 +---
+ .../kernel/syscalls/mq_unlink/mq_unlink01.c   | 15 +---
+ testcases/kernel/syscalls/msync/msync04.c     | 14 +---
+ testcases/kernel/syscalls/nice/nice01.c       | 19 +----
+ testcases/kernel/syscalls/nice/nice02.c       | 19 +----
+ testcases/kernel/syscalls/nice/nice03.c       | 19 +----
+ testcases/kernel/syscalls/nice/nice04.c       | 19 +----
+ testcases/kernel/syscalls/open/open01.c       | 19 +----
+ testcases/kernel/syscalls/open/open02.c       | 19 +----
+ testcases/kernel/syscalls/open/open08.c       | 15 +---
+ testcases/kernel/syscalls/pause/pause01.c     | 13 +---
+ testcases/kernel/syscalls/pipe/pipe01.c       | 14 +---
+ testcases/kernel/syscalls/pipe/pipe02.c       | 16 +----
+ testcases/kernel/syscalls/pipe/pipe03.c       | 16 +----
+ testcases/kernel/syscalls/pipe/pipe11.c       | 19 +----
+ testcases/kernel/syscalls/poll/poll01.c       | 19 +----
+ testcases/kernel/syscalls/ppoll/ppoll01.c     | 11 +--
+ testcases/kernel/syscalls/preadv/preadv01.c   | 12 +---
+ testcases/kernel/syscalls/preadv/preadv02.c   | 12 +---
+ testcases/kernel/syscalls/preadv/preadv03.c   | 14 +---
+ testcases/kernel/syscalls/pselect/pselect03.c | 14 +---
+ testcases/kernel/syscalls/ptrace/ptrace07.c   | 14 +---
+ testcases/kernel/syscalls/pwrite/pwrite02.c   | 17 +----
+ testcases/kernel/syscalls/pwrite/pwrite03.c   | 14 +---
+ testcases/kernel/syscalls/pwritev/pwritev01.c | 12 +---
+ testcases/kernel/syscalls/pwritev/pwritev02.c | 12 +---
+ testcases/kernel/syscalls/pwritev/pwritev03.c | 14 +---
+ .../kernel/syscalls/quotactl/quotactl01.c     | 18 +----
+ .../kernel/syscalls/quotactl/quotactl02.c     | 13 +---
+ .../kernel/syscalls/quotactl/quotactl03.c     | 14 +---
+ testcases/kernel/syscalls/read/read01.c       | 29 +-------
+ testcases/kernel/syscalls/read/read02.c       | 19 +----
+ .../kernel/syscalls/readlink/readlink01.c     | 15 +---
+ .../kernel/syscalls/readlink/readlink03.c     | 15 +---
+ testcases/kernel/syscalls/recvmsg/recvmsg02.c | 14 +---
+ testcases/kernel/syscalls/recvmsg/recvmsg03.c | 12 +---
+ .../syscalls/request_key/request_key01.c      | 12 +---
+ .../syscalls/request_key/request_key02.c      | 14 +---
+ .../syscalls/request_key/request_key03.c      | 14 +---
+ .../syscalls/request_key/request_key04.c      | 14 +---
+ .../syscalls/request_key/request_key05.c      | 14 +---
+ testcases/kernel/syscalls/rmdir/rmdir01.c     | 16 +----
+ testcases/kernel/syscalls/rmdir/rmdir02.c     | 18 +----
+ testcases/kernel/syscalls/rmdir/rmdir03.c     | 16 +----
+ .../syscalls/rt_sigsuspend/rt_sigsuspend01.c  | 12 ++--
+ testcases/kernel/syscalls/sbrk/sbrk03.c       | 14 +---
+ .../sched_setscheduler/sched_setscheduler03.c | 14 +---
+ testcases/kernel/syscalls/sendto/sendto02.c   | 12 +---
+ .../syscalls/setpriority/setpriority01.c      | 16 +----
+ .../syscalls/setpriority/setpriority02.c      | 16 +----
+ .../kernel/syscalls/setrlimit/setrlimit02.c   | 19 +----
+ .../kernel/syscalls/setrlimit/setrlimit03.c   | 17 +----
+ .../kernel/syscalls/setrlimit/setrlimit04.c   | 30 +++-----
+ .../kernel/syscalls/setrlimit/setrlimit05.c   | 11 +--
+ .../kernel/syscalls/setsockopt/setsockopt02.c | 14 +---
+ .../kernel/syscalls/setsockopt/setsockopt03.c | 14 +---
+ testcases/kernel/syscalls/setuid/setuid01.c   | 16 +----
+ testcases/kernel/syscalls/setuid/setuid03.c   | 16 +----
+ testcases/kernel/syscalls/setuid/setuid04.c   | 16 +----
+ .../kernel/syscalls/setxattr/setxattr01.c     | 21 +-----
+ .../kernel/syscalls/setxattr/setxattr02.c     | 21 +-----
+ testcases/kernel/syscalls/socket/socket01.c   | 16 +----
+ testcases/kernel/syscalls/socket/socket02.c   | 16 +----
+ .../kernel/syscalls/socketcall/socketcall01.c | 14 +---
+ .../kernel/syscalls/socketpair/socketpair01.c | 16 +----
+ .../kernel/syscalls/socketpair/socketpair02.c | 16 +----
+ testcases/kernel/syscalls/splice/splice01.c   | 17 +----
+ testcases/kernel/syscalls/splice/splice02.c   | 29 ++------
+ testcases/kernel/syscalls/splice/splice03.c   | 13 +---
+ testcases/kernel/syscalls/splice/splice04.c   | 21 +-----
+ testcases/kernel/syscalls/splice/splice05.c   | 15 +---
+ .../kernel/syscalls/switch/endian_switch01.c  | 14 +---
+ testcases/kernel/syscalls/syscall/syscall01.c | 17 +----
+ testcases/kernel/syscalls/sysctl/sysctl03.c   | 13 +---
+ testcases/kernel/syscalls/sysctl/sysctl04.c   | 13 +---
+ testcases/kernel/syscalls/tee/tee01.c         | 29 ++------
+ testcases/kernel/syscalls/tee/tee02.c         | 13 +---
+ testcases/kernel/syscalls/times/times03.c     | 17 +----
+ testcases/kernel/syscalls/umask/umask01.c     | 17 +----
+ testcases/kernel/syscalls/umount/umount01.c   | 23 ++----
+ testcases/kernel/syscalls/umount/umount02.c   | 34 +++------
+ testcases/kernel/syscalls/umount/umount03.c   | 21 ++----
+ testcases/kernel/syscalls/uname/uname04.c     | 14 +---
+ testcases/kernel/syscalls/unlink/unlink05.c   | 14 +---
+ testcases/kernel/syscalls/unlink/unlink07.c   | 14 +---
+ testcases/kernel/syscalls/unlink/unlink08.c   | 14 +---
+ testcases/kernel/syscalls/utils/mq.h          | 14 +---
+ testcases/kernel/syscalls/utimes/utimes01.c   | 15 +---
+ .../kernel/syscalls/vmsplice/vmsplice01.c     | 29 ++------
+ .../kernel/syscalls/vmsplice/vmsplice02.c     | 13 +---
+ testcases/kernel/syscalls/wait4/wait401.c     | 17 +----
+ testcases/kernel/syscalls/waitpid/waitpid01.c | 17 +----
+ testcases/kernel/syscalls/waitpid/waitpid09.c | 21 +-----
+ .../kernel/syscalls/waitpid/waitpid_common.h  | 15 +---
+ testcases/kernel/syscalls/write/write01.c     | 20 +-----
+ testcases/kernel/syscalls/write/write02.c     | 14 +---
+ testcases/kernel/syscalls/write/write03.c     | 17 +----
+ testcases/kernel/syscalls/write/write04.c     | 17 +----
+ testcases/kernel/syscalls/write/write05.c     | 17 +----
+ testcases/kernel/syscalls/writev/writev01.c   | 16 +----
+ testcases/kernel/syscalls/writev/writev07.c   | 11 +--
+ .../tracing/dynamic_debug/dynamic_debug01.sh  | 31 ++------
+ testcases/lib/tst_checkpoint.c                | 15 +---
+ testcases/lib/tst_device.c                    | 15 +---
+ testcases/lib/tst_kvcmp.c                     | 15 +---
+ testcases/lib/tst_net_iface_prefix.c          | 14 +---
+ testcases/lib/tst_net_ip_prefix.c             | 14 +---
+ testcases/lib/tst_net_vars.c                  | 14 +---
+ testcases/lib/tst_test.sh                     | 22 +-----
+ testcases/network/lib6/in6_01.c               | 21 +-----
+ testcases/network/lib6/in6_02.c               | 18 +----
+ testcases/network/netstress/netstress.c       | 16 +----
+ .../network/nfs/nfs_stress/nfs05_make_tree.c  | 18 +----
+ 373 files changed, 754 insertions(+), 5731 deletions(-)
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190614/8e97e3c0/attachment-0001.html>
+2.21.0
+
