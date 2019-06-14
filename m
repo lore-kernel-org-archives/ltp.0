@@ -1,94 +1,137 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 14 Jun 2019 14:59:03 +0300
-Subject: [LTP] [RFC PATCH v2 6/6] net/route: Rewrite route{4,
- 6}-change-{dst, gw} into C
-In-Reply-To: <20190510183132.31039-7-pvorel@suse.cz>
-References: <20190510183132.31039-1-pvorel@suse.cz>
- <20190510183132.31039-7-pvorel@suse.cz>
-Message-ID: <5ae7fa5e-5a95-dd7b-a4cf-b4f6f699804a@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 14 Jun 2019 14:06:10 +0200
+Subject: [LTP] [PATCH] Add a regression test for CVE-2017-1000380
+In-Reply-To: <20190614111310.30548-1-mmoese@suse.de>
+References: <20190614111310.30548-1-mmoese@suse.de>
+Message-ID: <20190614120610.GA8796@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 10.05.2019 21:31, Petr Vorel wrote:
-> Code:
-> * use libmnl and new C API
-> * reuse code in tst_net.h (added in previous commit)
-> * add shell wrapper (set environment with tst_net.sh instead of using
->   deprecated helpers in testcases/network/stress/ns-tools/)
-> * Add tst_ipaddr_un() into C API, unlike shell API this implementation
->   does not support -c tst_ipaddr_un [-cCOUNTER] [TYPE] syntax.
-> 
-> Travis:
-> * add libmnl libraries to most of travis jobs
-> * replace spaces with tabs some travis shell files
-> 
-> Cleanup:
-> * cleanup test description
-> * other cleanup
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-...
+Hi!
+> +static void *ioctl_thread(void *unused)
+> +{
+> +	(void) unused;
+> +	int tread_arg = 1;
+> +	struct snd_timer_select ts;
+> +	struct snd_timer_params tp;
+> +
+> +	while (tst_fzsync_run_b(&fzsync_pair)) {
+> +
+> +		ioctl(snd_fd, SNDRV_TIMER_IOCTL_TREAD, &tread_arg);
+> +
+> +		memset(&ts, 0, sizeof(ts));
+> +		ts.id.dev_class = 1;
+> +		ioctl(snd_fd, SNDRV_TIMER_IOCTL_SELECT, &ts);
+> +
+> +		memset(&tp, 0, sizeof(tp));
+> +		tp.ticks = 1;
+> +		tp.filter = 0xf;
+> +		ioctl(snd_fd, SNDRV_TIMER_IOCTL_PARAMS, &tp);
+
+I guess that we can do these two buffer initializations outside of the
+loop, but I guess compared to the time spend in the syscall it would
+neglectible.
+
+> +		ioctl(snd_fd, SNDRV_TIMER_IOCTL_START, 0);
+> +
+> +		tst_fzsync_end_race_b(&fzsync_pair);
+> +	}
+> +	return NULL;
+
+Hint: We can do return unused; here instead of the void cast.
+
 > +}
 > +
-> +static void send_udp(char *local, char *remote)
+> +static void setup(void)
 > +{
-> +	fd = SAFE_SOCKET(family, SOCK_DGRAM, IPPROTO_UDP);
+> +	tst_fzsync_pair_init(&fzsync_pair);
+> +	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
+> +	snd_fd = SAFE_OPEN("/dev/snd/timer",
+> +			O_RDONLY|O_CREAT|O_NOCTTY|O_SYNC|O_LARGEFILE, 0);
+> +}
 > +
-> +	struct addrinfo hints;
-> +	memset(&hints, 0, sizeof(struct addrinfo));
-> +	hints.ai_family = family;
-> +	hints.ai_socktype = SOCK_DGRAM;
-> +	hints.ai_flags = 0;
-> +	hints.ai_protocol = 0;
-> +	hints.ai_addr = INADDR_ANY;
-> +	setup_addrinfo(local, NULL, &hints, &local_addrinfo);
-> +	char *port;
-> +	int _port = TST_GET_UNUSED_PORT(family, SOCK_DGRAM);
-> +	SAFE_ASPRINTF(&port, "%d", _port);
-> +	setup_addrinfo(remote, port, &hints, &remote_addrinfo);
-> +
-
-Getting local unused port and using as a remote port?
-
-
-> +	SAFE_BIND(fd, local_addrinfo->ai_addr, local_addrinfo->ai_addrlen);
-> +
-
-TST_GET_UNUSED_PORT and SAFE_BIND look redundant, what is the purpose to use
-them here?
-
-> +	SAFE_SENDTO(1, fd, remote, strlen(remote), MSG_CONFIRM,
-> +		remote_addrinfo->ai_addr, remote_addrinfo->ai_addrlen);
-> +
-> +	close(fd);
+> +static void cleanup(void)
+> +{
+> +	tst_fzsync_pair_cleanup(&fzsync_pair);
+> +	SAFE_CLOSE(snd_fd);
 > +}
 > +
 > +static void run(void)
 > +{
-> +	int i, j;
-> +	char *destination, *gateway = NULL, *local, *remote;
+> +	size_t len;
+> +	int size;
+> +	struct iovec iov;
+> +	pthread_t th;
+> +	char read_buf[MAX_BUFSIZE];
+> +	int i, nz = 0;
+> +	pthread_attr_t thread_attr;
 > +
-> +	tst_res(TINFO, "Adding and deleting route with different destination %d times", num_loops);
-> +	for (i = 0; i < num_loops; i++) {
-> +		j = i % max_ip;
-> +		local = tst_ipaddr_un(family, j, lhost);
-> +		remote = tst_ipaddr_un(family, j, rhost);
-> +		if (g_opt) {
-> +			destination = tst_ipaddr_un(family, 0, 0);
-> +			gateway = tst_ipaddr_un(family, j, gwhost);
-> +		} else {
-> +			destination = tst_ipaddr_un(family, j, 0);
+> +	pthread_attr_init(&thread_attr);
+> +	pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+> +	SAFE_PTHREAD_CREATE(&th, &thread_attr, ioctl_thread, NULL);
+> +
+> +	iov.iov_base = read_buf;
+> +	iov.iov_len = sizeof(read_buf);
+> +
+> +	while (tst_fzsync_run_a(&fzsync_pair)) {
+> +		memset(read_buf, 0, sizeof(read_buf));
+> +		size = readv(snd_fd, &iov, 1);
+> +
+> +		tst_fzsync_end_race_a(&fzsync_pair);
+> +
+> +		/* check if it could be a valid ioctl result */
+> +		if (size == 0)
+> +			continue;
+> +
+> +		/* check if the buffer is  */
+                                          ^
+					  non-empty?
+> +		for (i = 0; i < size; i++) {
+> +			if (read_buf[i]) {
+> +				nz = 1;
+> +				break;
+> +			}
 > +		}
+> +		if (!nz)
+> +			continue;
+
+Also I do not really get this part, we do not reset the nz at all so
+this is ineffective after fist non-zero buffer.
+
+> +		len = strlen(read_buf);
+
+Isn't there a possibility that the buffer was filled complelety with
+non-zero characters? Can't we just store the position of the last
+non-zereo byte in the loop above?
+
+> +		/* the kernel's struct snd_timer_read is two unsigned integers*/
+> +		if (len <= 2 * sizeof(unsigned int))
+> +			continue;
 > +
-> +		rtnl_route(iface, destination, prefix, gateway, RTM_NEWROUTE);
-> +		send_udp(local, remote);
-> +		rtnl_route(iface, destination, prefix, gateway, RTM_DELROUTE);
+> +		tst_res(TFAIL, "kernel seems vulnerable");
+> +		return;
 > +	}
 > +
-> +	tst_res(TPASS, "Routes created and deleted");
+> +	if (tst_taint_check() != 0)
+> +		tst_res(TFAIL, "kernel seems vulnerable");
+> +	else
+> +		tst_res(TPASS, "kernel seems not vulnerable");
 > +}
 > +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +};
+
+And lastly but not least, can we name this snd_timer01 so that we don't
+have to rename it in a case that someone will write sound timer tests?
+
+Other than the minor nits it looks fine.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
