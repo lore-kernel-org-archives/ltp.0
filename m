@@ -1,286 +1,110 @@
-From: Ignaz Forster <iforster@suse.de>
-Date: Thu, 13 Jun 2019 19:00:48 +0200
-Subject: [LTP] [PATCH v4 4/4] ima: Add overlay test + doc
-In-Reply-To: <20190613161414.29161-5-pvorel@suse.cz>
-References: <20190613161414.29161-1-pvorel@suse.cz>
- <20190613161414.29161-5-pvorel@suse.cz>
-Message-ID: <55f6fec4-ef01-db2b-62c0-cbbbf79c6c12@suse.de>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 14 Jun 2019 10:46:42 +0800
+Subject: [LTP] [PATCH v3 2/3] lib: rename ltp_clone_malloc to
+	ltp_clone_alloc
+In-Reply-To: <20190613135740.GB29926@rei.lan>
+References: <adca7c08dbf20805da9b99a7fa03d498de70235d.1560410182.git.jstancek@redhat.com>
+ <fd8b05453a0c72f2810a53e49ca1dc9467d9dbf9.1560410182.git.jstancek@redhat.com>
+ <CAEemH2f_oMYubEDLdOmhxrEguKkc+3smx682LF7D9uiwZ26OAQ@mail.gmail.com>
+ <20190613135740.GB29926@rei.lan>
+Message-ID: <CAEemH2e7yfW3fd2kRFh-6tq8Y+sZeBvSB4Eu4JN6Htdo4_=K5g@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Am 13.06.19 um 18:14 Uhr schrieb Petr Vorel:
-> test demonstrate a bug on overlayfs on current mainline kernel when
-> combining IMA with EVM.
-> 
-> Based on reproducer made by Ignaz Forster <iforster@suse.de>
-> used for not upstreamed patchset [1] and previous report [2].
-> IMA only behavior has already been fixed [3].
-> 
-> NOTE: backup variables are needed because ima_setup.sh calling
-> tst_mount as well when TMPDIR is on tmpfs device.
-> 
-> Documentation is based on Ignaz Forster instructions for openSUSE [4].
-> 
-> [1] https://www.spinics.net/lists/linux-integrity/msg05926.html
-> [2] https://www.spinics.net/lists/linux-integrity/msg03593.html
-> [3] https://patchwork.kernel.org/patch/10776231/
-> [4] http://lists.linux.it/pipermail/ltp/2019-May/011956.html
-> 
-> Tested-by: Ignaz Forster <iforster@suse.de>
-> Acked-by: Mimi Zohar <zohar@linux.ibm.com>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->   runtest/ima                                   |  1 +
->   .../security/integrity/ima/tests/README.md    | 83 +++++++++++++++++
->   .../integrity/ima/tests/evm_overlay.sh        | 93 +++++++++++++++++++
->   .../security/integrity/ima/tests/ima_setup.sh |  4 +-
->   4 files changed, 179 insertions(+), 2 deletions(-)
->   create mode 100644 testcases/kernel/security/integrity/ima/tests/README.md
->   create mode 100755 testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
-> 
-> diff --git a/runtest/ima b/runtest/ima
-> index bcae16bb7..f3ea88cf0 100644
-> --- a/runtest/ima
-> +++ b/runtest/ima
-> @@ -3,3 +3,4 @@ ima_measurements ima_measurements.sh
->   ima_policy ima_policy.sh
->   ima_tpm ima_tpm.sh
->   ima_violations ima_violations.sh
-> +evm_overlay evm_overlay.sh
-> diff --git a/testcases/kernel/security/integrity/ima/tests/README.md b/testcases/kernel/security/integrity/ima/tests/README.md
-> new file mode 100644
-> index 000000000..961b68a38
-> --- /dev/null
-> +++ b/testcases/kernel/security/integrity/ima/tests/README.md
-> @@ -0,0 +1,83 @@
-> +IMA + EVM testing
-> +=================
-> +
-> +IMA tests
-> +---------
-> +
-> +`ima_measurements.sh` require builtin IMA tcb policy to be loaded
-> +(`ima_policy=tcb` or `ima_policy=appraise_tcb` kernel parameter).
+On Thu, Jun 13, 2019 at 9:58 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-This test requires "appraise_tcb" ("tcb" is not enough), as the errors 
-only occur during appraisal.
+> Hi!
+> > > @@ -170,5 +170,5 @@ int ltp_clone_quick(unsigned long clone_flags, int
+> > > (*fn) (void *arg), void *arg)
+> > >  {
+> > >         size_t stack_size = getpagesize() * 6;
+> > >
+> > > -       return ltp_clone_malloc(clone_flags, fn, arg, stack_size);
+> > > +       return ltp_clone_alloc(clone_flags, fn, arg, stack_size);
+> > >  }
+> > >
+> >
+> > There is another legacy problem maybe we need take care.
+> >
+> > Any thought about how releasing the stack memory[1] after calling
+> > ltp_clone_quick() in a test?
+> >
+> > [1] which allocated memory in ltp_clone_alloc().
+>
+> Well, we can free the memory in ltp_clone_alloc() if the child runs in a
+> separate memory space, but if CLONE_VM was passed in flags there is no
+> way how to free the memory...
+>
 
-> +Although custom policy which contains which may contain the equivalent
-> +measurement tcb rules can be loaded via dracut, systemd or later manually
-> +from user space, detecting it would require `IMA_READ_POLICY=y` therefore
-> +ignore this option.
+A stupid way come up to my mind is just to export the stack as global
+pointer and releasing in do_cleanup() if possible.
 
-I guess this should be
-"Although a custom policy, loaded via dracut, systemd or manually from 
-user space, may contain equivalent measurement tcb rules, detecting them 
-would [...]"
+diff --git a/include/tst_clone.h b/include/tst_clone.h
+index fd52097..c98eb44 100644
+--- a/include/tst_clone.h
++++ b/include/tst_clone.h
+diff --git a/include/tst_clone.h b/include/tst_clone.h
+index fd52097..c98eb44 100644
+--- a/include/tst_clone.h
++++ b/include/tst_clone.h
+@@ -24,6 +24,8 @@
+ #ifndef TST_CLONE_H__
+ #define TST_CLONE_H__
 
-> +Mandatory kernel configuration for IMA:
-> +```
-> +CONFIG_INTEGRITY=y
-> +CONFIG_IMA=y
-> +```
-> +
-> +EVM tests
-> +---------
-> +
-> +`evm_overlay.sh` requires to builtin IMA appraise tcb policy (e.g. `ima_policy=appraise_tcb`                              ^^
-                              a
++void *tst_clone_stack;
++
+ /* Functions from lib/cloner.c */
+ int ltp_clone(unsigned long flags, int (*fn)(void *arg), void *arg,
+                size_t stack_size, void *stack);
+diff --git a/lib/cloner.c b/lib/cloner.c
+index 8469745..4534982 100644
+--- a/lib/cloner.c
++++ b/lib/cloner.c
+@@ -142,19 +142,17 @@ int
+ ltp_clone_alloc(unsigned long clone_flags, int (*fn) (void *arg), void
+*arg,
+                 size_t stack_size)
+ {
+-       void *stack;
+        int ret;
+        int saved_errno;
+-
+-       stack = ltp_alloc_stack(stack_size);
+-       if (stack == NULL)
++       tst_clone_stack = ltp_alloc_stack(stack_size);
++       if (tst_clone_stack == NULL)
+                return -1;
 
-> +kernel parameter) which appraises the integrity of all files owned by root and EVM setup.
-> +Again, for simplicity ignore possibility to load reuired rules via custom policy.
-                                                       ^q
+-       ret = ltp_clone(clone_flags, fn, arg, stack_size, stack);
++       ret = ltp_clone(clone_flags, fn, arg, stack_size, tst_clone_stack);
 
-> +Mandatory kernel configuration for IMA & EVM:
-> +```
-> +CONFIG_INTEGRITY=y
-> +CONFIG_INTEGRITY_SIGNATURE=y
-> +CONFIG_IMA=y
-> +CONFIG_IMA_APPRAISE=y
-> +CONFIG_EVM=y
-> +CONFIG_KEYS=y
-> +CONFIG_TRUSTED_KEYS=y
-> +CONFIG_ENCRYPTED_KEYS=y
-> +```
-> +
-> +Example of installing IMA + EVM on openSUSE:
-> +
-> +* Boot install system with `ima_policy=appraise_tcb ima_appraise=fix evm=fix` kernel parameters
+        if (ret == -1) {
+                saved_errno = errno;
+-               free(stack);
++               free(tst_clone_stack);
+                errno = saved_errno;
+        }
 
-I was missing the measurement option. ima_policy should have been
-ima_policy='tcb|appraise_tcb' for the statement below to be true.
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 95f389d..e96a9c7 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -909,6 +909,9 @@ static void do_cleanup(void)
+        if (mntpoint_mounted)
+                tst_umount(tst_test->mntpoint);
 
-> +  (for IMA measurement, IMA appraisal and EVM protection)
-> +* Proceed with installation until summary screen, but do not start the installation yet
-> +* Select package `dracut-ima` (required for early boot EVM support) for installation
-> +  (Debian based distros already contain IMA + EVM support in `dracut` package)
-> +* Change to a console window and run commands to generate keys required by EVM:
-> +```
-> +# mkdir /etc/keys
-> +# user_key=$(keyctl add user kmk-user "`dd if=/dev/urandom bs=1 count=32 2>/dev/null`" @u)
-> +# keyctl pipe "$user_key" > /etc/keys/kmk-user.blob
-> +# evm_key=$(keyctl add encrypted evm-key "new user:kmk-user 64" @u)
-> +# keyctl pipe "$evm_key" >/etc/keys/evm.blob
-> +# cat <<END >/etc/sysconfig/masterkey
-> +MASTERKEYTYPE="user"
-> +MASTERKEY="/etc/keys/kmk-user.blob"
-> +END
-> +# cat <<END >/etc/sysconfig/evm
-> +EVMKEY="/etc/keys/evm.blob"
-> +END
-> +# mount -t securityfs security /sys/kernel/security
-> +# echo 1 >/sys/kernel/security/evm
-> +```
-> +
-> +* Go back to the installation summary screen and start the installation
-> +* During the installation execute the following commands from the console:
-> +```
-> +# cp -r /etc/keys /mnt/etc/ # Debian based distributions: use /target instead of /mnt
-> +# cp /etc/sysconfig/{evm,masterkey} /mnt/etc/sysconfig/
-> +```
-> +
-> +This should work on any distribution using dracut.
-> +Loading EVM keys is also possible with initramfs-tools (Debian based distributions).
-> +
-> +Of course it's possible to install OS usual way, add keys later and fix missing xattrs with:
-> +```
-> +evmctl -r ima_fix /
-> +```
-> +
-> +or with `find` if evmctl not available:
-                            ^
-                            is
++       if (tst_clone_stack)
++               free(tst_clone_stack);
++
+        if (tst_test->needs_device && tdev.dev)
+                tst_release_device(tdev.dev);
 
-> +```
-> +find / \( -fstype rootfs -o -fstype ext4 -o -fstype btrfs -o -fstype xfs \) -exec sh -c "< '{}'" \;
-> +```
-> +Again, fixing requires `ima_policy=appraise_tcb ima_appraise=fix evm=fix` kernel parameters.
-
-Maybe also add the tcb option for measurement here.
-
-Ignaz
-
-> diff --git a/testcases/kernel/security/integrity/ima/tests/evm_overlay.sh b/testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
-> new file mode 100755
-> index 000000000..024b03917
-> --- /dev/null
-> +++ b/testcases/kernel/security/integrity/ima/tests/evm_overlay.sh
-> @@ -0,0 +1,93 @@
-> +#!/bin/sh
-> +# Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
-> +# Based on reproducer and further discussion with Ignaz Forster <iforster@suse.de>
-> +# Reproducer for not upstreamed patchset [1] and previous report [2].
-> +# [1] https://www.spinics.net/lists/linux-integrity/msg05926.html
-> +# [2] https://www.spinics.net/lists/linux-integrity/msg03593.html
-> +
-> +TST_SETUP="setup"
-> +TST_CLEANUP="cleanup"
-> +TST_NEEDS_DEVICE=1
-> +TST_CNT=4
-> +. ima_setup.sh
-> +
-> +setup()
-> +{
-> +	EVM_FILE="/sys/kernel/security/evm"
-> +
-> +	[ -f "$EVM_FILE" ] || tst_brk TCONF "EVM not enabled in kernel"
-> +	[ $(cat $EVM_FILE) -eq 1 ] || tst_brk TCONF "EVM not enabled for this boot"
-> +
-> +	check_ima_policy "appraise_tcb"
-> +
-> +	lower="$TST_MNTPOINT/lower"
-> +	upper="$TST_MNTPOINT/upper"
-> +	work="$TST_MNTPOINT/work"
-> +	merged="$TST_MNTPOINT/merged"
-> +	mkdir -p $lower $upper $work $merged
-> +
-> +	device_backup="$TST_DEVICE"
-> +	TST_DEVICE="overlay"
-> +
-> +	fs_type_backup="$TST_FS_TYPE"
-> +	TST_FS_TYPE="overlay"
-> +
-> +	mntpoint_backup="$TST_MNTPOINT"
-> +	TST_MNTPOINT="$merged"
-> +
-> +	params_backup="$TST_MNT_PARAMS"
-> +	TST_MNT_PARAMS="-o lowerdir=$lower,upperdir=$upper,workdir=$work"
-> +
-> +	tst_mount
-> +	mounted=1
-> +}
-> +
-> +test1()
-> +{
-> +	local file="foo1.txt"
-> +
-> +	tst_res TINFO "overwrite file in overlay"
-> +	EXPECT_PASS echo lower \> $lower/$file
-> +	EXPECT_PASS echo overlay \> $merged/$file
-> +}
-> +
-> +test2()
-> +{
-> +	local file="foo2.txt"
-> +
-> +	tst_res TINFO "append file in overlay"
-> +	EXPECT_PASS echo lower \> $lower/$file
-> +	EXPECT_PASS echo overlay \>\> $merged/$file
-> +}
-> +
-> +test3()
-> +{
-> +	local file="foo3.txt"
-> +
-> +	tst_res TINFO "create a new file in overlay"
-> +	EXPECT_PASS echo overlay \> $merged/$file
-> +}
-> +
-> +test4()
-> +{
-> +	local f
-> +
-> +	tst_res TINFO "read all created files"
-> +	for f in $(find $TST_MNTPOINT -type f); do
-> +		EXPECT_PASS cat $f \> /dev/null 2\> /dev/null
-> +	done
-> +}
-> +
-> +cleanup()
-> +{
-> +	[ -n "$mounted" ] || return 0
-> +
-> +	tst_umount $TST_DEVICE
-> +
-> +	TST_DEVICE="$device_backup"
-> +	TST_FS_TYPE="$fs_type_backup"
-> +	TST_MNTPOINT="$mntpoint_backup"
-> +	TST_MNT_PARAMS="$params_backup"
-> +}
-> +
-> +tst_run
-> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-> index 606034fec..529b77529 100644
-> --- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-> +++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-> @@ -66,14 +66,14 @@ print_ima_config()
->   	local config="/boot/config-$(uname -r)"
->   	local i
->   
-> -	tst_res TINFO "/proc/cmdline: $(cat /proc/cmdline)"
-> -
->   	if [ -r "$config" ]; then
->   		tst_res TINFO "IMA kernel config:"
->   		for i in $(grep ^CONFIG_IMA $config); do
->   			tst_res TINFO "$i"
->   		done
->   	fi
-> +
-> +	tst_res TINFO "/proc/cmdline: $(cat /proc/cmdline)"
->   }
->   
->   ima_setup()
-> 
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190614/8e97e3c0/attachment-0001.html>
