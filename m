@@ -1,155 +1,149 @@
 From: Christian Amann <camann@suse.com>
-Date: Fri, 14 Jun 2019 09:28:28 +0200
-Subject: [LTP] [PATCH v3 3/4] syscalls/pidfd_send_signal02
-In-Reply-To: <20190614072829.24529-1-camann@suse.com>
-References: <20190614072829.24529-1-camann@suse.com>
-Message-ID: <20190614072829.24529-3-camann@suse.com>
+Date: Fri, 14 Jun 2019 09:28:26 +0200
+Subject: [LTP] [PATCH v3 1/4] Add Syscall numbers for pidfd_send_signal
+Message-ID: <20190614072829.24529-1-camann@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add test to check basic error handling of the syscall.
-
 Signed-off-by: Christian Amann <camann@suse.com>
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 ---
- runtest/syscalls                                   |   1 +
- .../kernel/syscalls/pidfd_send_signal/.gitignore   |   1 +
- .../pidfd_send_signal/pidfd_send_signal02.c        | 104 +++++++++++++++++++++
- 3 files changed, 106 insertions(+)
- create mode 100644 testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal02.c
+ include/lapi/syscalls/aarch64.in   | 1 +
+ include/lapi/syscalls/arm.in       | 1 +
+ include/lapi/syscalls/hppa.in      | 1 +
+ include/lapi/syscalls/i386.in      | 1 +
+ include/lapi/syscalls/ia64.in      | 1 +
+ include/lapi/syscalls/powerpc.in   | 1 +
+ include/lapi/syscalls/powerpc64.in | 1 +
+ include/lapi/syscalls/s390.in      | 1 +
+ include/lapi/syscalls/s390x.in     | 1 +
+ include/lapi/syscalls/sh.in        | 1 +
+ include/lapi/syscalls/sparc.in     | 1 +
+ include/lapi/syscalls/sparc64.in   | 1 +
+ include/lapi/syscalls/x86_64.in    | 1 +
+ 13 files changed, 13 insertions(+)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index ac6000065..aa192b517 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -834,6 +834,7 @@ personality01 personality01
- personality02 personality02
- 
- pidfd_send_signal01 pidfd_send_signal01
-+pidfd_send_signal02 pidfd_send_signal02
- 
- pipe01 pipe01
- pipe02 pipe02
-diff --git a/testcases/kernel/syscalls/pidfd_send_signal/.gitignore b/testcases/kernel/syscalls/pidfd_send_signal/.gitignore
-index 7ccbf2d80..6ea6401a8 100644
---- a/testcases/kernel/syscalls/pidfd_send_signal/.gitignore
-+++ b/testcases/kernel/syscalls/pidfd_send_signal/.gitignore
-@@ -1 +1,2 @@
- /pidfd_send_signal01
-+/pidfd_send_signal02
-diff --git a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal02.c b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal02.c
-new file mode 100644
-index 000000000..c933ada84
---- /dev/null
-+++ b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal02.c
-@@ -0,0 +1,104 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 SUSE LLC
-+ * Author: Christian Amann <camann@suse.com>
-+ */
-+/*
-+ * Tests basic error handling of the pidfd_send_signal
-+ * system call.
-+ *
-+ * 1) Pass invalid flag value to syscall (value chosen
-+ *    to be unlikely to collide with future extensions)
-+ *    -> EINVAL
-+ * 2) Pass a file descriptor that is corresponding to a
-+ *    regular file instead of a pid directory
-+ *    -> EBADF
-+ * 3) Pass a signal that is different from the one used
-+ *    to initialize the siginfo_t struct
-+ *    -> EINVAL
-+ * 4) Try to send signal to other process (init) with
-+ *    missing privileges
-+ *    -> EPERM
-+ */
-+
-+#include <pwd.h>
-+#include <signal.h>
-+#include "tst_safe_pthread.h"
-+#include "pidfd_send_signal.h"
-+
-+#define CORRECT_SIGNAL		SIGUSR1
-+#define DIFFERENT_SIGNAL	SIGUSR2
-+
-+static siginfo_t info;
-+static int pidfd;
-+static int init_pidfd;
-+static int dummyfd;
-+
-+static struct tcase {
-+	int		*fd;
-+	siginfo_t	*siginf;
-+	int		signal;
-+	int		flags;
-+	int		exp_err;
-+} tcases[] = {
-+	{&pidfd, &info, CORRECT_SIGNAL, 99999, EINVAL},
-+	{&dummyfd, &info, CORRECT_SIGNAL, 0, EBADF},
-+	{&pidfd, &info, DIFFERENT_SIGNAL, 0, EINVAL},
-+	{&init_pidfd, &info, CORRECT_SIGNAL, 0, EPERM},
-+};
-+
-+static void verify_pidfd_send_signal(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+
-+	TEST(pidfd_send_signal(*tc->fd, tc->signal, tc->siginf, tc->flags));
-+	if (tc->exp_err != TST_ERR) {
-+		tst_res(TFAIL | TTERRNO,
-+			"pidfd_send_signal() did not fail with %s but",
-+			tst_strerrno(tc->exp_err));
-+		return;
-+	}
-+
-+	tst_res(TPASS | TTERRNO,
-+		"pidfd_send_signal() failed as expected");
-+}
-+
-+static void setup(void)
-+{
-+	struct passwd *pw;
-+
-+	check_syscall_support();
-+
-+	pidfd = SAFE_OPEN("/proc/self", O_DIRECTORY | O_CLOEXEC);
-+	init_pidfd = SAFE_OPEN("/proc/1", O_DIRECTORY | O_CLOEXEC);
-+	dummyfd = SAFE_OPEN("dummy_file", O_RDWR | O_CREAT, 0664);
-+
-+	if (getuid() == 0) {
-+		pw = SAFE_GETPWNAM("nobody");
-+		SAFE_SETUID(pw->pw_uid);
-+	}
-+
-+	memset(&info, 0, sizeof(info));
-+	info.si_signo = CORRECT_SIGNAL;
-+	info.si_code = SI_QUEUE;
-+	info.si_pid = getpid();
-+	info.si_uid = getuid();
-+}
-+
-+static void cleanup(void)
-+{
-+	if (dummyfd > 0)
-+		SAFE_CLOSE(dummyfd);
-+	if (init_pidfd > 0)
-+		SAFE_CLOSE(init_pidfd);
-+	if (pidfd > 0)
-+		SAFE_CLOSE(pidfd);
-+}
-+
-+static struct tst_test test = {
-+	.test = verify_pidfd_send_signal,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_tmpdir = 1,
-+};
+diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
+index 177dd0115..ce6080894 100644
+--- a/include/lapi/syscalls/aarch64.in
++++ b/include/lapi/syscalls/aarch64.in
+@@ -265,4 +265,5 @@ mlock2 284
+ copy_file_range 285
+ preadv2 286
+ pwritev2 287
++pidfd_send_signal 424
+ _sysctl 1078
+diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
+index f4adedb2c..33168889f 100644
+--- a/include/lapi/syscalls/arm.in
++++ b/include/lapi/syscalls/arm.in
+@@ -350,3 +350,4 @@ copy_file_range (__NR_SYSCALL_BASE+391)
+ preadv2 (__NR_SYSCALL_BASE+392)
+ pwritev2 (__NR_SYSCALL_BASE+393)
+ statx (__NR_SYSCALL_BASE+397)
++pidfd_send_signal (__NR_SYSCALL_BASE+424)
+diff --git a/include/lapi/syscalls/hppa.in b/include/lapi/syscalls/hppa.in
+index a0dd2307f..4cdd109fb 100644
+--- a/include/lapi/syscalls/hppa.in
++++ b/include/lapi/syscalls/hppa.in
+@@ -25,3 +25,4 @@ mlock2 345
+ copy_file_range 346
+ preadv2 347
+ pwritev2 348
++pidfd_send_signal 424
+diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
+index af5254f77..3355b9127 100644
+--- a/include/lapi/syscalls/i386.in
++++ b/include/lapi/syscalls/i386.in
+@@ -348,3 +348,4 @@ copy_file_range 377
+ preadv2 378
+ pwritev2 379
+ statx 383
++pidfd_send_signal 424
+diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
+index c0aeed08b..9ac81e91e 100644
+--- a/include/lapi/syscalls/ia64.in
++++ b/include/lapi/syscalls/ia64.in
+@@ -305,3 +305,4 @@ mlock2 1346
+ copy_file_range 1347
+ preadv2 1348
+ pwritev2 1349
++pidfd_send_signal 1448
+diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
+index 6b6be58a7..488d6dfa9 100644
+--- a/include/lapi/syscalls/powerpc.in
++++ b/include/lapi/syscalls/powerpc.in
+@@ -355,3 +355,4 @@ copy_file_range 379
+ preadv2 380
+ pwritev2 381
+ statx 383
++pidfd_send_signal 424
+diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
+index 6b6be58a7..488d6dfa9 100644
+--- a/include/lapi/syscalls/powerpc64.in
++++ b/include/lapi/syscalls/powerpc64.in
+@@ -355,3 +355,4 @@ copy_file_range 379
+ preadv2 380
+ pwritev2 381
+ statx 383
++pidfd_send_signal 424
+diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
+index 2a2ffe223..69b49eac0 100644
+--- a/include/lapi/syscalls/s390.in
++++ b/include/lapi/syscalls/s390.in
+@@ -338,3 +338,4 @@ mlock2 374
+ copy_file_range 375
+ preadv2 376
+ pwritev2 377
++pidfd_send_signal 424
+diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
+index 4c36ce17c..685c16f68 100644
+--- a/include/lapi/syscalls/s390x.in
++++ b/include/lapi/syscalls/s390x.in
+@@ -337,3 +337,4 @@ mlock2 374
+ copy_file_range 375
+ preadv2 376
+ pwritev2 377
++pidfd_send_signal 424
+diff --git a/include/lapi/syscalls/sh.in b/include/lapi/syscalls/sh.in
+index a942fb506..132492922 100644
+--- a/include/lapi/syscalls/sh.in
++++ b/include/lapi/syscalls/sh.in
+@@ -369,3 +369,4 @@ mlock2 390
+ copy_file_range 391
+ preadv2 392
+ pwritev2 393
++pidfd_send_signal 424
+diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
+index 20dc37b01..e74b48170 100644
+--- a/include/lapi/syscalls/sparc.in
++++ b/include/lapi/syscalls/sparc.in
+@@ -343,3 +343,4 @@ mlock2 356
+ copy_file_range 357
+ preadv2 358
+ pwritev2 359
++pidfd_send_signal 424
+diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
+index c100b8e3e..577aa9b35 100644
+--- a/include/lapi/syscalls/sparc64.in
++++ b/include/lapi/syscalls/sparc64.in
+@@ -319,3 +319,4 @@ mlock2 356
+ copy_file_range 357
+ preadv2 358
+ pwritev2 359
++pidfd_send_signal 424
+diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
+index 87849e5c0..99d387277 100644
+--- a/include/lapi/syscalls/x86_64.in
++++ b/include/lapi/syscalls/x86_64.in
+@@ -315,3 +315,4 @@ copy_file_range 326
+ preadv2 327
+ pwritev2 328
+ statx 332
++pidfd_send_signal 424
 -- 
 2.16.4
 
