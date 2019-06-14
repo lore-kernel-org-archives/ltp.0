@@ -1,190 +1,154 @@
 From: Christian Amann <camann@suse.com>
-Date: Fri, 14 Jun 2019 09:28:29 +0200
-Subject: [LTP] [PATCH v3 4/4] syscalls/pidfd_send_signal03
+Date: Fri, 14 Jun 2019 09:28:28 +0200
+Subject: [LTP] [PATCH v3 3/4] syscalls/pidfd_send_signal02
 In-Reply-To: <20190614072829.24529-1-camann@suse.com>
 References: <20190614072829.24529-1-camann@suse.com>
-Message-ID: <20190614072829.24529-4-camann@suse.com>
+Message-ID: <20190614072829.24529-3-camann@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add testcase to check if the syscall will send a signal
-to a process with the same PID as the targeted process.
+Add test to check basic error handling of the syscall.
 
 Signed-off-by: Christian Amann <camann@suse.com>
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 ---
  runtest/syscalls                                   |   1 +
  .../kernel/syscalls/pidfd_send_signal/.gitignore   |   1 +
- .../pidfd_send_signal/pidfd_send_signal03.c        | 138 +++++++++++++++++++++
- 3 files changed, 140 insertions(+)
- create mode 100644 testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c
+ .../pidfd_send_signal/pidfd_send_signal02.c        | 104 +++++++++++++++++++++
+ 3 files changed, 106 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal02.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index aa192b517..c3e144fc6 100644
+index ac6000065..aa192b517 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -835,6 +835,7 @@ personality02 personality02
+@@ -834,6 +834,7 @@ personality01 personality01
+ personality02 personality02
  
  pidfd_send_signal01 pidfd_send_signal01
- pidfd_send_signal02 pidfd_send_signal02
-+pidfd_send_signal03 pidfd_send_signal03
++pidfd_send_signal02 pidfd_send_signal02
  
  pipe01 pipe01
  pipe02 pipe02
 diff --git a/testcases/kernel/syscalls/pidfd_send_signal/.gitignore b/testcases/kernel/syscalls/pidfd_send_signal/.gitignore
-index 6ea6401a8..cba7d50a4 100644
+index 7ccbf2d80..6ea6401a8 100644
 --- a/testcases/kernel/syscalls/pidfd_send_signal/.gitignore
 +++ b/testcases/kernel/syscalls/pidfd_send_signal/.gitignore
-@@ -1,2 +1,3 @@
+@@ -1 +1,2 @@
  /pidfd_send_signal01
- /pidfd_send_signal02
-+/pidfd_send_signal03
-diff --git a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c
++/pidfd_send_signal02
+diff --git a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal02.c b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal02.c
 new file mode 100644
-index 000000000..27dbc6626
+index 000000000..c933ada84
 --- /dev/null
-+++ b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c
-@@ -0,0 +1,138 @@
++++ b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal02.c
+@@ -0,0 +1,104 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2019 SUSE LLC
 + * Author: Christian Amann <camann@suse.com>
 + */
 +/*
-+ * This test checks if the pidfd_send_signal syscall wrongfully sends
-+ * a signal to a new process which inherited the PID of the actual
-+ * target process.
-+ * In order to do so it is necessary to start a process with a pre-
-+ * determined PID. This is accomplished by writing to the
-+ * /proc/sys/kernel/ns_last_pid file.
-+ * By utilizing this, this test forks two children with the same PID.
-+ * It is then checked, if the syscall will send a signal to the second
-+ * child using the pidfd of the first one.
++ * Tests basic error handling of the pidfd_send_signal
++ * system call.
++ *
++ * 1) Pass invalid flag value to syscall (value chosen
++ *    to be unlikely to collide with future extensions)
++ *    -> EINVAL
++ * 2) Pass a file descriptor that is corresponding to a
++ *    regular file instead of a pid directory
++ *    -> EBADF
++ * 3) Pass a signal that is different from the one used
++ *    to initialize the siginfo_t struct
++ *    -> EINVAL
++ * 4) Try to send signal to other process (init) with
++ *    missing privileges
++ *    -> EPERM
 + */
 +
++#include <pwd.h>
 +#include <signal.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include "pidfd_send_signal.h"
 +#include "tst_safe_pthread.h"
++#include "pidfd_send_signal.h"
 +
-+#define PIDTRIES	3
++#define CORRECT_SIGNAL		SIGUSR1
++#define DIFFERENT_SIGNAL	SIGUSR2
 +
-+static char *last_pid_file;
-+static int pidfd, new_pidfd;
-+static int old_inode, new_inode;
++static siginfo_t info;
++static int pidfd;
++static int init_pidfd;
++static int dummyfd;
 +
-+static int get_inode_number(int fd)
++static struct tcase {
++	int		*fd;
++	siginfo_t	*siginf;
++	int		signal;
++	int		flags;
++	int		exp_err;
++} tcases[] = {
++	{&pidfd, &info, CORRECT_SIGNAL, 99999, EINVAL},
++	{&dummyfd, &info, CORRECT_SIGNAL, 0, EBADF},
++	{&pidfd, &info, DIFFERENT_SIGNAL, 0, EINVAL},
++	{&init_pidfd, &info, CORRECT_SIGNAL, 0, EPERM},
++};
++
++static void verify_pidfd_send_signal(unsigned int n)
 +{
-+	struct stat file_stat;
++	struct tcase *tc = &tcases[n];
 +
-+	SAFE_FSTAT(fd, &file_stat);
-+	return file_stat.st_ino;
-+}
-+
-+static void verify_pidfd_send_signal(void)
-+{
-+	pid_t pid, new_pid;
-+	char pid_filename[32];
-+	char pid_str[16];
-+	int i, fail;
-+
-+	fail = 1;
-+	for (i = 0; i < PIDTRIES; i++) {
-+		pid = SAFE_FORK();
-+		if (pid == 0) {
-+			TST_CHECKPOINT_WAIT(0);
-+			return;
-+		}
-+
-+		sprintf(pid_filename, "/proc/%d", pid);
-+		pidfd = SAFE_OPEN(pid_filename, O_DIRECTORY | O_CLOEXEC);
-+		old_inode = get_inode_number(pidfd);
-+
-+		TST_CHECKPOINT_WAKE(0);
-+		tst_reap_children();
-+
-+		/* Manipulate PID for next process */
-+		sprintf(pid_str, "%d", pid - 1);
-+		SAFE_FILE_PRINTF(last_pid_file, pid_str);
-+
-+		new_pid = SAFE_FORK();
-+		if (new_pid == 0) {
-+			TST_CHECKPOINT_WAIT(0);
-+			return;
-+		}
-+
-+		if (new_pid == pid) {
-+			new_pidfd = SAFE_OPEN(pid_filename,
-+					O_DIRECTORY | O_CLOEXEC);
-+			new_inode = get_inode_number(new_pidfd);
-+			SAFE_CLOSE(new_pidfd);
-+			fail = 0;
-+			break;
-+		}
-+
-+		if (i < PIDTRIES) {
-+			tst_res(TINFO,
-+				"Failed to set correct PID, trying again...");
-+		}
-+		SAFE_CLOSE(pidfd);
-+		TST_CHECKPOINT_WAKE(0);
-+		tst_reap_children();
-+	}
-+	if (fail) {
-+		tst_brk(TBROK,
-+			"Could not set new child to same PID as the old one!");
-+	}
-+	if (old_inode == new_inode) {
-+		tst_res(TWARN,
-+			"File descriptor of new process points to the inode of the old process!");
-+	}
-+
-+	TEST(pidfd_send_signal(pidfd, SIGUSR1, NULL, 0));
-+	if (TST_RET == -1 && TST_ERR == ESRCH) {
-+		tst_res(TPASS,
-+			"Did not send signal to wrong process with same PID!");
-+	} else {
++	TEST(pidfd_send_signal(*tc->fd, tc->signal, tc->siginf, tc->flags));
++	if (tc->exp_err != TST_ERR) {
 +		tst_res(TFAIL | TTERRNO,
-+			"pidf_send_signal() ended unexpectedly - return value: %ld, error",
-+			TST_RET);
++			"pidfd_send_signal() did not fail with %s but",
++			tst_strerrno(tc->exp_err));
++		return;
 +	}
-+	TST_CHECKPOINT_WAKE(0);
-+	tst_reap_children();
 +
-+	SAFE_CLOSE(pidfd);
++	tst_res(TPASS | TTERRNO,
++		"pidfd_send_signal() failed as expected");
 +}
 +
 +static void setup(void)
 +{
++	struct passwd *pw;
++
 +	check_syscall_support();
 +
-+	last_pid_file = "/proc/sys/kernel/ns_last_pid";
-+	if (access(last_pid_file, F_OK) == -1) {
-+		tst_brk(TCONF, "%s does not exist, cannot set PIDs",
-+			last_pid_file);
++	pidfd = SAFE_OPEN("/proc/self", O_DIRECTORY | O_CLOEXEC);
++	init_pidfd = SAFE_OPEN("/proc/1", O_DIRECTORY | O_CLOEXEC);
++	dummyfd = SAFE_OPEN("dummy_file", O_RDWR | O_CREAT, 0664);
++
++	if (getuid() == 0) {
++		pw = SAFE_GETPWNAM("nobody");
++		SAFE_SETUID(pw->pw_uid);
 +	}
++
++	memset(&info, 0, sizeof(info));
++	info.si_signo = CORRECT_SIGNAL;
++	info.si_code = SI_QUEUE;
++	info.si_pid = getpid();
++	info.si_uid = getuid();
 +}
 +
 +static void cleanup(void)
 +{
-+	tst_reap_children();
-+	if (new_pidfd > 0)
-+		SAFE_CLOSE(new_pidfd);
++	if (dummyfd > 0)
++		SAFE_CLOSE(dummyfd);
++	if (init_pidfd > 0)
++		SAFE_CLOSE(init_pidfd);
 +	if (pidfd > 0)
 +		SAFE_CLOSE(pidfd);
 +}
 +
 +static struct tst_test test = {
-+	.test_all = verify_pidfd_send_signal,
++	.test = verify_pidfd_send_signal,
++	.tcnt = ARRAY_SIZE(tcases),
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.needs_checkpoints = 1,
-+	.forks_child = 1,
++	.needs_tmpdir = 1,
 +};
 -- 
 2.16.4
