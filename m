@@ -1,226 +1,69 @@
-From: Michael Moese <mmoese@suse.de>
-Date: Fri, 14 Jun 2019 13:13:10 +0200
-Subject: [LTP] [PATCH] Add a regression test for CVE-2017-1000380
-Message-ID: <20190614111310.30548-1-mmoese@suse.de>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri, 14 Jun 2019 14:43:03 +0300
+Subject: [LTP] [RFC PATCH v2 0/6] net/route: Rewrite route{4,
+ 6}-change-{dst, gw} into C
+In-Reply-To: <20190603072605.GB14710@dell5510>
+References: <20190510183132.31039-1-pvorel@suse.cz>
+ <187fa31b-3295-6f1f-e330-1373b2fb4c66@oracle.com>
+ <20190603072605.GB14710@dell5510>
+Message-ID: <925eb48b-cb17-a06e-175d-315716852c76@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-A race condition was present in the linux kernel, which could lead to
-a leak of arbitrary kernel memory to userspace applications.
+Hi Petr,
+On 03.06.2019 10:26, Petr Vorel wrote:
+> Hi Alexey,
+> 
+> thanks for your comments. I suppose you don't see much point of rewriting tests
+> into C (and depending on libmnl). The original idea was to change it fast enough
+> with C to really stress it. OK, let's leave it :).
+> 
 
-The issue was fixed in those kernel commits:
- http://git.kernel.org/linus/d11662f4f798b50d8c8743f433842c3e40fe3378
- http://git.kernel.org/linus/ba3021b2c79b2fa9114f92790a99deb27a65b728
+Sorry for the delay, it would be good to have a shell variant with the ping (so we
+can verify the route) and also keep the libmnl test-case to stress the creation/deletion.
 
-This patch adds a regression test triggering this race condition.
-
-Signed-off-by: Michael Moese <mmoese@suse.de>
----
- runtest/cve                        |   1 +
- testcases/kernel/Makefile          |   1 +
- testcases/kernel/sound/.gitignore  |   1 +
- testcases/kernel/sound/Makefile    |  12 ++++
- testcases/kernel/sound/snd_timer.c | 137 +++++++++++++++++++++++++++++++++++++
- 5 files changed, 152 insertions(+)
- create mode 100644 testcases/kernel/sound/.gitignore
- create mode 100644 testcases/kernel/sound/Makefile
- create mode 100644 testcases/kernel/sound/snd_timer.c
-
-diff --git a/runtest/cve b/runtest/cve
-index 031bcdc2a..01324c6ce 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -36,6 +36,7 @@ cve-2017-17052 cve-2017-17052
- cve-2017-16939 cve-2017-16939
- cve-2017-17053 cve-2017-17053
- cve-2017-18075 pcrypt_aead01
-+cve-2017-1000380 snd_timer
- cve-2018-5803 sctp_big_chunk
- cve-2018-1000001 realpath01
- cve-2018-19854 crypto_user01
-diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-index 39d79c7d8..eff5b3e7d 100644
---- a/testcases/kernel/Makefile
-+++ b/testcases/kernel/Makefile
-@@ -52,6 +52,7 @@ SUBDIRS			+= connectors \
- 			   pty \
- 			   sched \
- 			   security \
-+			   sound \
- 			   timers \
- 			   tracing \
- 
-diff --git a/testcases/kernel/sound/.gitignore b/testcases/kernel/sound/.gitignore
-new file mode 100644
-index 000000000..57eae0593
---- /dev/null
-+++ b/testcases/kernel/sound/.gitignore
-@@ -0,0 +1 @@
-+snd_timer
-diff --git a/testcases/kernel/sound/Makefile b/testcases/kernel/sound/Makefile
-new file mode 100644
-index 000000000..5fdc7dd42
---- /dev/null
-+++ b/testcases/kernel/sound/Makefile
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+top_srcdir		:= ../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+CPPFLAGS		+= -D_GNU_SOURCE
-+
-+LDLIBS 			+= -pthread
-+
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/sound/snd_timer.c b/testcases/kernel/sound/snd_timer.c
-new file mode 100644
-index 000000000..2d719fc03
---- /dev/null
-+++ b/testcases/kernel/sound/snd_timer.c
-@@ -0,0 +1,137 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+/* Copyright (c) 2019 Michael Moese <mmoese@suse.com>
-+ * Regression test for CVE-2017-1000380 based on the original PoC exploit
-+ * by Alexander Potapenko <glider@google.com>
-+ *
-+ * Be careful! This test may crash your kernel!
-+ *
-+ * The test performs several ioctl() parallel with readv() on the same
-+ * file descriptor to /dev/snd/timer. A buggy kernel will leak memory
-+ * to the process, which may contain information from the the kernel or
-+ * any other process on the system.
-+ *
-+ * The issue was fixed with
-+ *   http://git.kernel.org/linus/d11662f4f798b50d8c8743f433842c3e40fe3378
-+ *   http://git.kernel.org/linus/ba3021b2c79b2fa9114f92790a99deb27a65b728
-+ */
-+
-+#include "config.h"
-+#include "tst_test.h"
-+#include "tst_taint.h"
-+#include "tst_fuzzy_sync.h"
-+#include "tst_safe_macros.h"
-+#include "tst_safe_pthread.h"
-+
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <pthread.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <sys/uio.h>
-+#include <sys/ioctl.h>
-+#include <sound/asound.h>
-+
-+#define MAX_BUFSIZE 1024
-+
-+static int snd_fd;
-+static struct tst_fzsync_pair fzsync_pair;
-+
-+static void *ioctl_thread(void *unused)
-+{
-+	(void) unused;
-+	int tread_arg = 1;
-+	struct snd_timer_select ts;
-+	struct snd_timer_params tp;
-+
-+	while (tst_fzsync_run_b(&fzsync_pair)) {
-+
-+		ioctl(snd_fd, SNDRV_TIMER_IOCTL_TREAD, &tread_arg);
-+
-+		memset(&ts, 0, sizeof(ts));
-+		ts.id.dev_class = 1;
-+		ioctl(snd_fd, SNDRV_TIMER_IOCTL_SELECT, &ts);
-+
-+		memset(&tp, 0, sizeof(tp));
-+		tp.ticks = 1;
-+		tp.filter = 0xf;
-+		ioctl(snd_fd, SNDRV_TIMER_IOCTL_PARAMS, &tp);
-+
-+		ioctl(snd_fd, SNDRV_TIMER_IOCTL_START, 0);
-+
-+		tst_fzsync_end_race_b(&fzsync_pair);
-+	}
-+	return NULL;
-+}
-+
-+static void setup(void)
-+{
-+	tst_fzsync_pair_init(&fzsync_pair);
-+	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
-+	snd_fd = SAFE_OPEN("/dev/snd/timer",
-+			O_RDONLY|O_CREAT|O_NOCTTY|O_SYNC|O_LARGEFILE, 0);
-+}
-+
-+static void cleanup(void)
-+{
-+	tst_fzsync_pair_cleanup(&fzsync_pair);
-+	SAFE_CLOSE(snd_fd);
-+}
-+
-+static void run(void)
-+{
-+	size_t len;
-+	int size;
-+	struct iovec iov;
-+	pthread_t th;
-+	char read_buf[MAX_BUFSIZE];
-+	int i, nz = 0;
-+	pthread_attr_t thread_attr;
-+
-+	pthread_attr_init(&thread_attr);
-+	pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
-+	SAFE_PTHREAD_CREATE(&th, &thread_attr, ioctl_thread, NULL);
-+
-+	iov.iov_base = read_buf;
-+	iov.iov_len = sizeof(read_buf);
-+
-+	while (tst_fzsync_run_a(&fzsync_pair)) {
-+		memset(read_buf, 0, sizeof(read_buf));
-+		size = readv(snd_fd, &iov, 1);
-+
-+		tst_fzsync_end_race_a(&fzsync_pair);
-+
-+		/* check if it could be a valid ioctl result */
-+		if (size == 0)
-+			continue;
-+
-+		/* check if the buffer is  */
-+		for (i = 0; i < size; i++) {
-+			if (read_buf[i]) {
-+				nz = 1;
-+				break;
-+			}
-+		}
-+		if (!nz)
-+			continue;
-+
-+		len = strlen(read_buf);
-+		/* the kernel's struct snd_timer_read is two unsigned integers*/
-+		if (len <= 2 * sizeof(unsigned int))
-+			continue;
-+
-+		tst_res(TFAIL, "kernel seems vulnerable");
-+		return;
-+	}
-+
-+	if (tst_taint_check() != 0)
-+		tst_res(TFAIL, "kernel seems vulnerable");
-+	else
-+		tst_res(TPASS, "kernel seems not vulnerable");
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+};
--- 
-2.16.4
+>>> do_test()
+>>> {
+>>> 	local iface=$(tst_iface)
+>>> 	local addr new_rt
+> 
+>>> 	new_rt="$(tst_ipaddr_un $1)/$mask"
+>>> 	addr="$(tst_ipaddr_un $1 1)"
+> 
+>>> 	tst_res TINFO "testing route '$new_rt'"
+> 
+>>> 	tst_rhost_run -s -c "ip addr add $addr/$mask dev $(tst_iface rhost)"
+>>> 	ROD ip route add $new_rt dev $iface
+>>> 	ROD ip neigh replace $addr lladdr $(tst_hwaddr rhost) nud permanent dev $iface
+>>>> 	EXPECT_PASS ns-udpsender -f $TST_IPVER -D $addr -p $1 -o -s $udp_size
+> 
+>>> 	ROD ip neigh del $addr lladdr $(tst_hwaddr rhost) dev $iface
+>>> 	ROD ip route del $new_rt dev $iface
+>>> 	tst_rhost_run -c "ip addr del $addr/$mask dev $(tst_iface rhost)"
+> 
+>> With ns-udpsender, I think it can be without setting ip addresses:
+> Route over gateway requires (on IPv6) gateway on rhost, which is requires to
+> create this IP address first.
+> 
+>>  	ROD ip route add $new_rt dev $iface
+>>  	ROD ip neigh replace $addr lladdr $(tst_hwaddr rhost) nud permanent dev $iface
+>>  	EXPECT_PASS ns-udpsender -f $TST_IPVER -D $addr -p $1 -o -s $udp_size> 
+>> 	ROD ip neigh del $addr lladdr $(tst_hwaddr rhost) dev $iface
+>>  	ROD ip route del $new_rt dev $iface
+> 
+>> But with ping and neighbor discovery:
+>>  	tst_rhost_run -s -c "ip addr add $addr/$mask dev $(tst_iface rhost)"
+>>  	ROD ip route add $new_rt dev $iface
+>>  	EXPECT_PASS ping$TST_IPVER ...
+>>  	ROD ip route del $new_rt dev $iface
+>>  	tst_rhost_run -c "ip addr del $addr/$mask dev $(tst_iface rhost)"
+> I prefer using ping and neighbor discovery. I suppose these are both equivalent
+> (if not it'd be good to run them both).
+> 
+> Kind regards,
+> Petr
+> 
 
