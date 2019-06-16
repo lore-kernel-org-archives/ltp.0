@@ -1,57 +1,69 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Sun, 16 Jun 2019 03:34:02 -0400 (EDT)
-Subject: [LTP] [PATCH v3 3/3] syscalls/ioctl_ns0[156]: align stack and
- wait for child
-In-Reply-To: <20190613151419.GE29926@rei.lan>
-References: <adca7c08dbf20805da9b99a7fa03d498de70235d.1560410182.git.jstancek@redhat.com>
- <1b6ddab9cd8e3620da9e37b1132e911280c22e32.1560410182.git.jstancek@redhat.com>
- <CAEemH2frt_zGSdSRL3d_J+km74p8ruQTNF6bVhEpaiTdMLCC6A@mail.gmail.com>
- <1320546599.27920597.1560420988025.JavaMail.zimbra@redhat.com>
- <20190613141714.GC29926@rei.lan>
- <1211798607.28016198.1560437855198.JavaMail.zimbra@redhat.com>
- <20190613151419.GE29926@rei.lan>
-Message-ID: <151498464.28356667.1560670442630.JavaMail.zimbra@redhat.com>
+Date: Sun, 16 Jun 2019 11:52:41 +0200
+Subject: [LTP] [PATCH] syscalls/tgkill03: wait for defunct tid to get
+	detached
+Message-ID: <a15d4137b63e4202751bea4e726658aa14be7351.1560678643.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Case where defunct tid is used has been observed to sporadically fail:
+  tgkill03.c:96: FAIL: Defunct tid should have failed with ESRCH: SUCCESS
 
+glibc __pthread_timedjoin_ex() waits for CLONE_CHILD_CLEARTID to clear tid,
+and then resumes. Kernel clears it (glibc pd->tid) at:
+  do_exit
+    exit_mm
+      mm_release
+        put_user(0, tsk->clear_child_tid);
 
------ Original Message -----
-> Hi!
-> > > If I remember correctly at some point we decided to clean up after tests
-> > > properly so that we don't upset various debugging tools, i.e. coverity,
-> > > valgrind, etc. and I think that you were part of that discussion.
-> > 
-> > I recall I started with that position (free all), and I thought you
-> > turned me around after this many years :-).
-> 
-> Well I didn't care that much, but I guess that I lean slightly to free
-> the memory :-).
+but kernel tid is still valid, presumably until:
+  release_task
+    __exit_signal
+      __unhash_process
+        detach_pid
 
-OK, so should I repost or is this good to go with free added to cleanup?
+To avoid race wait until /proc/<pid>/task/<tid> disappears.
 
-> 
-> > Do we have anything about this in style guide? I only found brief mention
-> > in "don't call cleanup from setup" section, which isn't even possible with
-> > newlib.
-> 
-> I don't think so. I guess that we should write something down, once we
-> decide what is the prefered option.
-> 
-> > ...
-> > You don't need to clean up the following:
-> >                                                                                                                                                                                                                    
-> >  * +malloc(3)+'ed memory.
-> >  * Read-only file descriptors in persistent paths (i.e. not
-> >    temporary directories).
-> 
-> Looks like this is terribly outdated, at least I tend to tell people to
-> close all filedescriptors to make things simpler.
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/tgkill/tgkill03.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/tgkill/tgkill03.c b/testcases/kernel/syscalls/tgkill/tgkill03.c
+index f5bbdc5a8d4e..5ac1d2651f7a 100644
+--- a/testcases/kernel/syscalls/tgkill/tgkill03.c
++++ b/testcases/kernel/syscalls/tgkill/tgkill03.c
+@@ -7,6 +7,7 @@
+ 
+ #include <pthread.h>
+ #include <pwd.h>
++#include <stdio.h>
+ #include <sys/types.h>
+ 
+ #include "tst_safe_pthread.h"
+@@ -42,6 +43,7 @@ static void setup(void)
+ {
+ 	sigset_t sigusr1;
+ 	pthread_t defunct_thread;
++	char defunct_tid_path[PATH_MAX];
+ 
+ 	sigemptyset(&sigusr1);
+ 	sigaddset(&sigusr1, SIGUSR1);
+@@ -55,8 +57,10 @@ static void setup(void)
+ 	TST_CHECKPOINT_WAIT(0);
+ 
+ 	SAFE_PTHREAD_CREATE(&defunct_thread, NULL, defunct_thread_func, NULL);
+-
+ 	SAFE_PTHREAD_JOIN(defunct_thread, NULL);
++	sprintf(defunct_tid_path, "/proc/%d/task/%d", getpid(), defunct_tid);
++	while (access(defunct_tid_path, R_OK) == 0)
++		usleep(10000);
+ }
+ 
+ static void cleanup(void)
+-- 
+1.8.3.1
+
