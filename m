@@ -1,108 +1,125 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 17 Jun 2019 17:06:40 +0200
-Subject: [LTP] [PATCH v4] syscalls/sync_file_range: add partial file
- sync test-cases
-In-Reply-To: <1560161596-30156-1-git-send-email-sumit.garg@linaro.org>
-References: <1560161596-30156-1-git-send-email-sumit.garg@linaro.org>
-Message-ID: <20190617150640.GD16831@rei>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Mon, 17 Jun 2019 23:31:38 +0200
+Subject: [LTP] [PATCH 1/1] syscalls/ustat: Use __kernel_daddr_t instead of
+	daddr_t
+Message-ID: <20190617213138.15896-1-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with following modifications, thanks.
+This fixes build for musl, which does not have <sys/ustat.h> nor
+typedef daddr_t. Musl does not define these as ustat is deprecated
+in favor of statfs() and daddr_t is ancient [1].
 
-With these modification the test was stable and worked fine for more
-than 100 iterations for me. It still fails for FUSE based filesystems
-but that is to be expected since FUSE does not implement sync_file_range
-yet.
+Other libc also does not have <sys/ustat.h> (ustat support was removed
+from glibc in 2.28), but they have daddr_t.
 
-diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-index 9454a560a..d4c29f9c2 100644
---- a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-+++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-@@ -36,6 +36,7 @@ struct testcase {
- 	size_t exp_sync_size;
- 	off64_t write_off;
- 	size_t write_size_mb;
-+	const char *desc;
- };
+This brings <linux/types.h> dependency for ustat testing.
+
+Typedef is needed as sparc and mips have __kernel_daddr_t long,
+otherwise it's int.
+
+[1] https://www.openwall.com/lists/musl/2019/06/10/1
+
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+ configure.ac                              | 1 +
+ include/lapi/ustat.h                      | 5 +++--
+ testcases/kernel/syscalls/ustat/ustat01.c | 8 +++++++-
+ testcases/kernel/syscalls/ustat/ustat02.c | 8 +++++++-
+ 4 files changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 53ad784d7..8ca7e8065 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -46,6 +46,7 @@ AC_CHECK_HEADERS([ \
+     linux/mempolicy.h \
+     linux/module.h \
+     linux/netlink.h \
++    linux/types.h \
+     linux/userfaultfd.h \
+     mm.h \
+     netinet/sctp.h \
+diff --git a/include/lapi/ustat.h b/include/lapi/ustat.h
+index 12c073582..98633e749 100644
+--- a/include/lapi/ustat.h
++++ b/include/lapi/ustat.h
+@@ -9,9 +9,10 @@
  
- static void verify_sync_file_range(struct testcase *tc)
-@@ -61,20 +62,34 @@ static void verify_sync_file_range(struct testcase *tc)
+ #ifdef HAVE_SYS_USTAT_H
+ # include <sys/ustat.h>
+-#else
++#elif HAVE_LINUX_TYPES_H
++# include <linux/types.h>
+ struct ustat {
+-	daddr_t f_tfree;
++	__kernel_daddr_t f_tfree;
+ 	ino_t f_tinode;
+ 	char f_fname[6];
+ 	char f_fpack[6];
+diff --git a/testcases/kernel/syscalls/ustat/ustat01.c b/testcases/kernel/syscalls/ustat/ustat01.c
+index 2e7dcc9d7..0252858be 100644
+--- a/testcases/kernel/syscalls/ustat/ustat01.c
++++ b/testcases/kernel/syscalls/ustat/ustat01.c
+@@ -5,6 +5,10 @@
+  * Check that ustat() succeeds given correct parameters.
+  */
  
- 	written = tst_dev_bytes_written(tst_device->dev);
- 
-+	fsync(fd);
++#include "config.h"
++#include "tst_test.h"
 +
-
-> Let's make sure there are no outstanding writes schedulled, fixes
-> running the test with -i 10
-
- 	SAFE_CLOSE(fd);
++#if defined(HAVE_SYS_USTAT_H) || defined(HAVE_LINUX_TYPES_H)
+ #include <unistd.h>
+ #include <errno.h>
+ #include <sys/types.h>
+@@ -12,7 +16,6 @@
  
- 	if ((written >= tc->exp_sync_size) &&
- 	    (written <= (tc->exp_sync_size + tc->exp_sync_size/10)))
--		tst_res(TPASS, "Test file range synced to device");
-+		tst_res(TPASS, "%s", tc->desc);
- 	else
--		tst_res(TFAIL, "Synced %li, expected %li", written,
--			tc->exp_sync_size);
-+		tst_res(TFAIL, "%s: Synced %li, expected %li", tc->desc,
-+		        written, tc->exp_sync_size);
- }
-
- static struct testcase testcases[] = {
--	{ FNAME1, 0, FILE_SZ, FILE_SZ, 0, FILE_SZ_MB },
--	{ FNAME2, FILE_SZ/4, FILE_SZ/2, FILE_SZ/2, 0, FILE_SZ_MB },
--	{ FNAME3, FILE_SZ/4, FILE_SZ/2, FILE_SZ/4, FILE_SZ/2, FILE_SZ_MB/4 },
-+	{FNAME1,
-+	 0, FILE_SZ,
-+	 FILE_SZ,
-+	 0, FILE_SZ_MB,
-+	 "Sync equals write"},
-+	{FNAME2,
-+	 FILE_SZ/4, FILE_SZ/2,
-+	 FILE_SZ/2,
-+	 0, FILE_SZ_MB,
-+	 "Sync inside of write"},
-+	{FNAME3,
-+	 FILE_SZ/4, FILE_SZ/2,
-+	 FILE_SZ/4,
-+	 FILE_SZ/2, FILE_SZ_MB/4,
-+	 "Sync overlaps with write"},
+ #include "lapi/syscalls.h"
+ #include "lapi/ustat.h"
+-#include "tst_test.h"
+ 
+ static dev_t dev_num;
+ 
+@@ -42,3 +45,6 @@ static struct tst_test test = {
+ 	.test_all = run,
+ 	.setup = setup,
  };
-
-> This simply adds test description so that it's clear which subtest
-> failed.
++#else
++TST_TEST_TCONF("testing ustat requires <sys/ustat.h> or <linux/types.h>");
++#endif
+diff --git a/testcases/kernel/syscalls/ustat/ustat02.c b/testcases/kernel/syscalls/ustat/ustat02.c
+index 9bbe4f3f5..4c171f7b8 100644
+--- a/testcases/kernel/syscalls/ustat/ustat02.c
++++ b/testcases/kernel/syscalls/ustat/ustat02.c
+@@ -6,6 +6,10 @@
+  * invalid dev_t parameter and for bad address paramater.
+  */
  
- static void run(unsigned int i)
-@@ -87,10 +102,17 @@ static void setup(void)
- 	if (!check_sync_file_range())
- 		tst_brk(TCONF, "sync_file_range() not supported");
++#include "config.h"
++#include "tst_test.h"
++
++#if defined(HAVE_SYS_USTAT_H) || defined(HAVE_LINUX_TYPES_H)
+ #include <unistd.h>
+ #include <errno.h>
+ #include <sys/stat.h>
+@@ -13,7 +17,6 @@
  
-+	/*
-+	 * Fat does not support sparse files, we have to pre-fill the file so
-+	 * that the zero-filled start of the file has been written to disk
-+	 * before the test starts.
-+	 */
- 	if (!strcmp(tst_device->fs_type, "vfat")) {
- 		tst_res(TINFO, "Pre-filling file");
- 		tst_fill_file(FNAME3, 0, TST_MB, FILE_SZ_MB);
--		sync();
-+		int fd = SAFE_OPEN(FNAME3, O_RDONLY);
-+		fsync(fd);
-+		SAFE_CLOSE(fd);
- 	}
-
-> Strangely doing sync(); here failed for me, that may be actually a
-> kernel bug however there is no need for using the big hammer and sync
-> everything in the system anyways.
-
- }
-
+ #include "lapi/syscalls.h"
+ #include "lapi/ustat.h"
+-#include "tst_test.h"
+ 
+ static dev_t invalid_dev = -1;
+ static dev_t root_dev;
+@@ -61,3 +64,6 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.tcnt = ARRAY_SIZE(tc),
+ };
++#else
++TST_TEST_TCONF("testing ustat requires <sys/ustat.h> or <linux/types.h>");
++#endif
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.20.1
+
