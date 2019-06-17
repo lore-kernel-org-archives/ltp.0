@@ -1,68 +1,49 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 17 Jun 2019 17:44:13 -0400 (EDT)
-Subject: [LTP] [PATCH v2 3/3] testcase: get rid of compiling errors
-In-Reply-To: <20190615042048.29839-3-liwang@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 17 Jun 2019 23:46:19 +0200
+Subject: [LTP] [PATCH v2 1/3] lib: adding .arch field in tst_test
+ structure
+In-Reply-To: <20190615042048.29839-1-liwang@redhat.com>
 References: <20190615042048.29839-1-liwang@redhat.com>
- <20190615042048.29839-3-liwang@redhat.com>
-Message-ID: <1243296203.28755912.1560807853881.JavaMail.zimbra@redhat.com>
+Message-ID: <20190617214619.GB19347@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Li,
 
------ Original Message -----
+> Testcases for specified arch should be limited on that only being supported
+> platform to run, we now create a function tst_on_arch to achieve this new
+> feature in LTP library.  All you need to run a test on the expected arch is
+> to set the '.arch' string in the 'struct tst_test' to choose the required
+> arch list. e.g. '.arch = "x86_64 i386"'.
+
 > Signed-off-by: Li Wang <liwang@redhat.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+LGTM. FYI there is also HOST_CPU variable (since 00ff2c348f),
+but that does not help your patch.
+
 > ---
->  configure.ac             | 1 +
->  testcases/cve/meltdown.c | 5 +++++
->  2 files changed, 6 insertions(+)
-> 
-> diff --git a/configure.ac b/configure.ac
-> index 5ecc92781..521f56541 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -58,6 +58,7 @@ AC_CHECK_HEADERS([ \
->      sys/shm.h \
->      sys/ustat.h \
->      sys/xattr.h \
-> +    emmintrin.h \
->  ])
->  
->  AC_CHECK_FUNCS([ \
-> diff --git a/testcases/cve/meltdown.c b/testcases/cve/meltdown.c
-> index 72c9ec907..bc649b893 100644
-> --- a/testcases/cve/meltdown.c
-> +++ b/testcases/cve/meltdown.c
-> @@ -29,6 +29,7 @@
->  #include <ctype.h>
->  #include <sys/utsname.h>
->  
-> +#ifdef HAVE_EMMINTRIN_H
->  #include <emmintrin.h>
->  
->  #include "libtsc.h"
-> @@ -387,3 +388,7 @@ static struct tst_test test = {
->  	.cleanup = cleanup,
->  	.min_kver = "2.6.32"
+>  doc/test-writing-guidelines.txt | 26 ++++++++++
+>  include/tst_arch.h              | 16 ++++++
+>  include/tst_test.h              |  7 ++-
+>  lib/tst_arch.c                  | 92 +++++++++++++++++++++++++++++++++
+>  4 files changed, 140 insertions(+), 1 deletion(-)
+>  create mode 100644 include/tst_arch.h
+>  create mode 100644 lib/tst_arch.c
+
+> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+> index f1912dc12..b4fba0190 100644
+> --- a/doc/test-writing-guidelines.txt
+> +++ b/doc/test-writing-guidelines.txt
+> @@ -1668,6 +1668,32 @@ sturct tst_test test = {
 >  };
-> +
-> +#else /* HAVE_EMMINTRIN_H */
-> +	TST_TEST_TCONF("<emmintrin.h> is not supported");
-> +#endif
+>  -------------------------------------------------------------------------------
 
-This seems more complicated to me than original - extra autoconf check, extra ifdef.
+> +2.2.30 Testing on specified architecture
+                     ^ maybe specific?
 
-I can see how tst_on_arch() would be useful. Test is valid on all arches,
-but needs different input/constants/code/etc.
-
-What is the motivation for tst_test.arch? Is it to have some annotation in tst_test struct?
-
-> --
-> 2.20.1
-> 
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
+Kind regards,
+Petr
