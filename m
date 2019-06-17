@@ -1,11 +1,10 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 17 Jun 2019 07:34:36 -0400 (EDT)
-Subject: [LTP] [PATCH v2] syscalls/tgkill03: wait for defunct tid to get
- detached
-In-Reply-To: <CAEemH2dRpyPDJ2m0soKLumhY50RFypRHnihfzqUyc-GA-pfBgg@mail.gmail.com>
-References: <ae6204b13cf5d2a8e2ebefd4ff448c33deeb26fd.1560756614.git.jstancek@redhat.com>
- <CAEemH2dRpyPDJ2m0soKLumhY50RFypRHnihfzqUyc-GA-pfBgg@mail.gmail.com>
-Message-ID: <20052285.28635197.1560771276145.JavaMail.zimbra@redhat.com>
+Date: Mon, 17 Jun 2019 07:41:31 -0400 (EDT)
+Subject: [LTP] [PATCH] [RFC] doc: Clarify what should be cleaned up at
+ test end
+In-Reply-To: <20190617094422.15846-1-chrubis@suse.cz>
+References: <20190617094422.15846-1-chrubis@suse.cz>
+Message-ID: <1039262821.28636334.1560771691828.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,81 +12,45 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
+
 ----- Original Message -----
-> On Mon, Jun 17, 2019 at 3:34 PM Jan Stancek <jstancek@redhat.com> wrote:
+> This adds a short paragraph that writes down previously unwritten rule
+> for resource cleanup.
 > 
-> > Case where defunct tid is used has been observed to sporadically fail:
-> >   tgkill03.c:96: FAIL: Defunct tid should have failed with ESRCH: SUCCESS
-> >
-> > glibc __pthread_timedjoin_ex() waits for CLONE_CHILD_CLEARTID to clear tid,
-> > and then resumes. Kernel clears it (glibc pd->tid) at:
-> >   do_exit
-> >     exit_mm
-> >       mm_release
-> >         put_user(0, tsk->clear_child_tid);
-> >
-> > but kernel tid is still valid, presumably until:
-> >   release_task
-> >     __exit_signal
-> >       __unhash_process
-> >         detach_pid
-> >
-> > To avoid race wait until /proc/<pid>/task/<tid> disappears.
-> >
-> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> > ---
-> >  testcases/kernel/syscalls/tgkill/tgkill03.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > Changes in v2:
-> >   - use helper func suggested by Li (with higher timeout)
-> >   - not tested, trying to get s390x to confirm
-> >
-> > diff --git a/testcases/kernel/syscalls/tgkill/tgkill03.c
-> > b/testcases/kernel/syscalls/tgkill/tgkill03.c
-> > index f5bbdc5a8d4e..ce046f576b5f 100644
-> > --- a/testcases/kernel/syscalls/tgkill/tgkill03.c
-> > +++ b/testcases/kernel/syscalls/tgkill/tgkill03.c
-> > @@ -7,6 +7,7 @@
-> >
-> >  #include <pthread.h>
-> >  #include <pwd.h>
-> > +#include <stdio.h>
-> >  #include <sys/types.h>
-> >
-> >  #include "tst_safe_pthread.h"
-> > @@ -42,6 +43,7 @@ static void setup(void)
-> >  {
-> >         sigset_t sigusr1;
-> >         pthread_t defunct_thread;
-> > +       char defunct_tid_path[PATH_MAX];
-> >
-> >         sigemptyset(&sigusr1);
-> >         sigaddset(&sigusr1, SIGUSR1);
-> > @@ -55,8 +57,9 @@ static void setup(void)
-> >         TST_CHECKPOINT_WAIT(0);
-> >
-> >         SAFE_PTHREAD_CREATE(&defunct_thread, NULL, defunct_thread_func,
-> > NULL);
-> > -
-> >         SAFE_PTHREAD_JOIN(defunct_thread, NULL);
-> > +       sprintf(defunct_tid_path, "/proc/%d/task/%d", getpid(),
-> > defunct_tid);
-> > +       TST_RETRY_FN_EXP_BACKOFF(access(defunct_tid_path, R_OK), -1, 15);
-> >  }
-> >
-> >  static void cleanup(void)
-> > @@ -108,4 +111,5 @@ static struct tst_test test = {
-> >         .setup = setup,
-> >         .cleanup = cleanup,
-> >         .test = run,
-> > +       .timeout = 15,
-> >
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> CC: Jan Stancek <jstancek@redhat.com>
+> ---
+>  doc/test-writing-guidelines.txt | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
-> I'd like to give a little bit more time here which larger than the
-> exponential backoff macro time.
+> diff --git a/doc/test-writing-guidelines.txt
+> b/doc/test-writing-guidelines.txt
+> index f1912dc12..21223ba03 100644
+> --- a/doc/test-writing-guidelines.txt
+> +++ b/doc/test-writing-guidelines.txt
+> @@ -347,6 +347,14 @@ assigned a valid file descriptor. For most of the things
+> you need to create
+>  extra flag that is set right after successful initialization though.
+>  Consider,
+>  for example, test setup below.
+>  
+> +We also prefer cleaning up resources that would otherwise be released on the
+> +program exit. There are two main reasons for this decision. Resources such
+> as
+> +file descriptors and mmaped memory could block umounting a block device in
+> +cases where the test library has mounted a filesystem for the test temporary
+> +directory. Not freeing allocated memory would upset static analysis and
+> tools
+> +such as valgrind and produce false-positives when checking for leaks in the
+> +libc and other low level libraries.
+> +
 
-I bumped it to 20 and pushed.
+I'm OK with the text. Do we leave the paragraph we talked about in style-guide.txt?
 
-Thanks,
-Jan
+>  [source,c]
+>  -------------------------------------------------------------------------------
+>  static int fd0, fd1, mount_flag;
+> --
+> 2.19.2
+> 
+> 
