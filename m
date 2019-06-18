@@ -1,37 +1,34 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 18 Jun 2019 07:51:19 +0200
-Subject: [LTP] [PATCH v2 1/3] lib: adding .arch field in tst_test
- structure
-In-Reply-To: <CAEemH2cAFUkmmiokVwvC5YvT1QoXaANxtCjFypnYS309ietX0g@mail.gmail.com>
-References: <20190615042048.29839-1-liwang@redhat.com>
- <20190617214901.GC19347@x230>
- <CAEemH2cAFUkmmiokVwvC5YvT1QoXaANxtCjFypnYS309ietX0g@mail.gmail.com>
-Message-ID: <20190618055119.GA13571@x230>
+Date: Tue, 18 Jun 2019 15:59:21 +0200
+Subject: [LTP] [PATCH v4 4/4] ima: Add overlay test + doc
+In-Reply-To: <20190614144611.GA869@dell5510>
+References: <20190613161414.29161-1-pvorel@suse.cz>
+ <20190613161414.29161-5-pvorel@suse.cz>
+ <55f6fec4-ef01-db2b-62c0-cbbbf79c6c12@suse.de>
+ <20190614141449.GA24614@dell5510>
+ <794ee977-463f-6670-fac6-3e27e25d64ab@suse.de>
+ <20190614144611.GA869@dell5510>
+Message-ID: <20190618135921.GA30776@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Hi Mimi, Ignaz,
 
-> > > Testcases for specified arch should be limited on that only being
-> > supported
-> > > platform to run, we now create a function tst_on_arch to achieve this new
-> > > feature in LTP library.  All you need to run a test on the expected arch
-> > is
-> > > to set the '.arch' string in the 'struct tst_test' to choose the required
-> > > arch list. e.g. '.arch = "x86_64 i386"'.
-> > Just one note, strings are error prone. I wonder if defining constants and
-> > using
-> > array would be too complicated for this use case.
+> > > > This test requires "appraise_tcb" ("tcb" is not enough), as the errors only
+> > > > occur during appraisal.
+> > > Are you sure? This is a note for ima_measurements.sh test (not for evm_overlay.sh).
+> > > I require ima_policy=tcb here, according to Mimi [1]
 
+> > Oh, sorry, you are correct - "tcb" is correct in this case. I got confused
+> > as the documentation is included in the overlayfs reproducer patch.
+> Maybe I should put it into separate commit.
+Whole patchset merged.
 
-> I thought about that array way, but it seems a bit complicted in using.
-> Yes, strings are easy to involve typo but we can make a check in library.
-OK, agree :).
+Thanks a lot both for your help!
 
-> Thanks for review.
 
 Kind regards,
 Petr
