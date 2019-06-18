@@ -1,55 +1,51 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 18 Jun 2019 19:00:46 +0300
-Subject: [LTP] [PATCH v3 3/3] syscalls/ioctl_ns0[156]: align stack and
- wait for child
-In-Reply-To: <894722811.28675645.1560782288619.JavaMail.zimbra@redhat.com>
-References: <adca7c08dbf20805da9b99a7fa03d498de70235d.1560410182.git.jstancek@redhat.com>
- <CAEemH2frt_zGSdSRL3d_J+km74p8ruQTNF6bVhEpaiTdMLCC6A@mail.gmail.com>
- <1320546599.27920597.1560420988025.JavaMail.zimbra@redhat.com>
- <20190613141714.GC29926@rei.lan>
- <1211798607.28016198.1560437855198.JavaMail.zimbra@redhat.com>
- <20190613151419.GE29926@rei.lan>
- <151498464.28356667.1560670442630.JavaMail.zimbra@redhat.com>
- <20190617085039.GA1629@rei.lan>
- <894722811.28675645.1560782288619.JavaMail.zimbra@redhat.com>
-Message-ID: <CAOQ4uxgPPoxWp5fJ-7GdgEg89683_1mL3mCHqevGX=-FrRYwmA@mail.gmail.com>
+From: Sandeep Patil <sspatil@android.com>
+Date: Tue, 18 Jun 2019 13:25:01 -0700
+Subject: [LTP] [PATCH v2 3/3] syscalls/bind01: convert to new library.
+In-Reply-To: <20190613145507.GD29926@rei.lan>
+References: <20190610002610.2187-1-sspatil@android.com>
+ <20190610002610.2187-4-sspatil@android.com>
+ <20190613145507.GD29926@rei.lan>
+Message-ID: <20190618202501.GD203031@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Jun 17, 2019 at 5:38 PM Jan Stancek <jstancek@redhat.com> wrote:
->
->
-> ----- Original Message -----
-> > Hi!
-> > > > > I recall I started with that position (free all), and I thought you
-> > > > > turned me around after this many years :-).
-> > > >
-> > > > Well I didn't care that much, but I guess that I lean slightly to free
-> > > > the memory :-).
-> > >
-> > > OK, so should I repost or is this good to go with free added to cleanup?
-> >
-> > Let's do that.
->
-> Pushed.
-> (Li, I added your Acked-by to it, since your comment has been addressed).
->
+On Thu, Jun 13, 2019 at 04:55:07PM +0200, Cyril Hrubis wrote:
+> Hi!
+> Pushed with minor changes, thanks.
+> 
+> However the test fails with -i 2 after this patch since on second
+> iteration since the socket is already bind for the possitive test
+> because we no longer close the socket after each iteration.
 
-FYI, not related to these fixes, but tests ioctl_ns0[46] have failures on kernel
-without CONFIG_USER_NS:
-tst_test.c:1112: INFO: Timeout per run is 0h 05m 00s
-ioctl_ns04.c:24: CONF: namespace not available
-safe_macros.c:225: BROK: ioctl_ns04.c:31:
-open(/proc/self/ns/user,0,01606327050) failed: ENOENT
+Ew, sorry about that. I guess I never ran it with the option as I only tried
+what is listed in runtest.
 
-And so does test getxattr05:
-getxattr05.c:85: PASS: Got same data when acquiring the value of
-system.posix_acl_access twice
-getxattr05.c:95: FAIL: unshare(CLONE_NEWUSER) failed: EINVAL
-tst_test.c:362: BROK: Invalid child (29014) exit value 1
+I'll try it with '-i 2'.
 
-Thanks,
-Amir.
+> Looking at
+> the bind tests we should move this one into a separate testcase and add
+> a few more positive tests as well we seem to test only AF_INET,
+> SOCK_STREAM combination which does not even cover ipv4 nor we attemp to
+> connect to the socket that have been bind.
+
+Agree, added to my to-do list. I am mostly burning through tests and
+converting them to the new library manually.
+
+> 
+> > +// SPDX-License-Identifier: GPL-2.0
+> 
+> Changed this to GPL-2.0-or-later to match the original license.
+
+I thought the original was GPL-2.0 (may be I misread the text, sorry).
+
+> 
+> And removed the NULL parameter from the TST_GET_UNUSED_PORT(), since
+> newlib variant does not have the cleanup callback parameter.
+
+Ack, thanks for doing this Cyril. Hopefully the next ones will apply without
+edits ;0)
+
+- ssp
