@@ -1,34 +1,31 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 18 Jun 2019 15:59:21 +0200
-Subject: [LTP] [PATCH v4 4/4] ima: Add overlay test + doc
-In-Reply-To: <20190614144611.GA869@dell5510>
-References: <20190613161414.29161-1-pvorel@suse.cz>
- <20190613161414.29161-5-pvorel@suse.cz>
- <55f6fec4-ef01-db2b-62c0-cbbbf79c6c12@suse.de>
- <20190614141449.GA24614@dell5510>
- <794ee977-463f-6670-fac6-3e27e25d64ab@suse.de>
- <20190614144611.GA869@dell5510>
-Message-ID: <20190618135921.GA30776@x230>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 18 Jun 2019 18:49:11 +0300
+Subject: [LTP] [PATCH v4] syscalls/sync_file_range: add partial file
+	sync test-cases
+In-Reply-To: <20190617150640.GD16831@rei>
+References: <1560161596-30156-1-git-send-email-sumit.garg@linaro.org>
+ <20190617150640.GD16831@rei>
+Message-ID: <CAOQ4uxithmPn6J=B2kaGKT0JOpqzyVEkHU+zMqhXCYnnH+ZHVQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Mimi, Ignaz,
+On Mon, Jun 17, 2019 at 6:06 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+> Hi!
+> Pushed with following modifications, thanks.
+>
+> With these modification the test was stable and worked fine for more
+> than 100 iterations for me. It still fails for FUSE based filesystems
+> but that is to be expected since FUSE does not implement sync_file_range
+> yet.
+>
 
-> > > > This test requires "appraise_tcb" ("tcb" is not enough), as the errors only
-> > > > occur during appraisal.
-> > > Are you sure? This is a note for ima_measurements.sh test (not for evm_overlay.sh).
-> > > I require ima_policy=tcb here, according to Mimi [1]
+What is the proposed way to resolve this failure?
+If FUSE does not implement sync_file_range, shouldn't test detect
+it and return TCONF?
 
-> > Oh, sorry, you are correct - "tcb" is correct in this case. I got confused
-> > as the documentation is included in the overlayfs reproducer patch.
-> Maybe I should put it into separate commit.
-Whole patchset merged.
-
-Thanks a lot both for your help!
-
-
-Kind regards,
-Petr
+Thanks,
+Amir.
