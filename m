@@ -1,51 +1,64 @@
-From: Sandeep Patil <sspatil@android.com>
-Date: Tue, 18 Jun 2019 13:25:01 -0700
-Subject: [LTP] [PATCH v2 3/3] syscalls/bind01: convert to new library.
-In-Reply-To: <20190613145507.GD29926@rei.lan>
-References: <20190610002610.2187-1-sspatil@android.com>
- <20190610002610.2187-4-sspatil@android.com>
- <20190613145507.GD29926@rei.lan>
-Message-ID: <20190618202501.GD203031@google.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 19 Jun 2019 00:23:34 +0300
+Subject: [LTP] [PATCH v4 1/3] syscalls/fanotify13: new test to verify
+ FAN_REPORT_FID functionality
+In-Reply-To: <6c25395422b19d2a4e2c66937afcaa767b83e776.1560766652.git.mbobrowski@mbobrowski.org>
+References: <cover.1560766652.git.mbobrowski@mbobrowski.org>
+ <6c25395422b19d2a4e2c66937afcaa767b83e776.1560766652.git.mbobrowski@mbobrowski.org>
+Message-ID: <CAOQ4uxgzA83i=rdQX+076_vZ2LE0Vihv1Fc0MXyXS4r-U4a93Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Jun 13, 2019 at 04:55:07PM +0200, Cyril Hrubis wrote:
-> Hi!
-> Pushed with minor changes, thanks.
-> 
-> However the test fails with -i 2 after this patch since on second
-> iteration since the socket is already bind for the possitive test
-> because we no longer close the socket after each iteration.
+> +static void do_test(unsigned int number)
+> +{
+> +       unsigned int i;
+> +       int len, fds[ARRAY_SIZE(objects)];
+> +
+> +       struct file_handle *event_file_handle;
+> +       struct fanotify_event_metadata *metadata;
+> +       struct fanotify_event_info_fid *event_fid;
+> +       struct test_case_t *tc = &test_cases[number];
+> +       struct fanotify_mark_type *mark = &tc->mark;
+> +
+> +       tst_res(TINFO,
+> +               "Test #%d: FAN_REPORT_FID with mark flag: %s",
+> +               number, mark->name);
+> +
+> +       fanotify_fd = fanotify_init(FAN_CLASS_NOTIF | FAN_REPORT_FID, O_RDONLY);
+> +       if (fanotify_fd == -1) {
+> +               if (errno == EINVAL) {
+> +                       tst_res(TCONF,
+> +                               "FAN_REPORT_FID not supported by kernel");
+> +                       return;
+> +               }
+> +               tst_brk(TBROK | TERRNO,
+> +                       "fanotify_init(FAN_CLASS_NOTIF | FAN_REPORT_FID, "
+> +                       "O_RDONLY) failed");
+> +       }
+> +
+> +       /* Place marks on a set of objects and setup the expected masks
+> +        * for each event that is expected to be generated
+> +        */
+> +       if (setup_marks(fanotify_fd, tc) != 0)
+> +               return;
+> +
 
-Ew, sorry about that. I guess I never ran it with the option as I only tried
-what is listed in runtest.
+Sorry, just notices a test bug.
+fanotify_fd needs to be closed before returning from this function,
+because next test case is going to overwrite fanotify_fd.
+do_cleanup() is called only at end of entire test or on tst_brk().
 
-I'll try it with '-i 2'.
+This needs to be fixed for fanotify14 and fanotify15 as well.
 
-> Looking at
-> the bind tests we should move this one into a separate testcase and add
-> a few more positive tests as well we seem to test only AF_INET,
-> SOCK_STREAM combination which does not even cover ipv4 nor we attemp to
-> connect to the socket that have been bind.
+Also, please see my fanotify_dentry branch on github for an extra
+patch to fanotify13 to cover a bug reported by syzbot:
 
-Agree, added to my to-do list. I am mostly burning through tests and
-converting them to the new library manually.
+https://lore.kernel.org/linux-fsdevel/CAOQ4uxhsnOXXVCuOT4p4c_koBMFfprWwdtCPGNGhzprFaJZwRA@mail.gmail.com/T/#t
 
-> 
-> > +// SPDX-License-Identifier: GPL-2.0
-> 
-> Changed this to GPL-2.0-or-later to match the original license.
+Please include this extra patch in your next series posting.
 
-I thought the original was GPL-2.0 (may be I misread the text, sorry).
-
-> 
-> And removed the NULL parameter from the TST_GET_UNUSED_PORT(), since
-> newlib variant does not have the cleanup callback parameter.
-
-Ack, thanks for doing this Cyril. Hopefully the next ones will apply without
-edits ;0)
-
-- ssp
+Thanks,
+Amir.
