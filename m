@@ -1,30 +1,23 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 19 Jun 2019 03:19:03 -0400 (EDT)
-Subject: [LTP] [PATCH] lib: add include config.h in cloner.c
-In-Reply-To: <20190619071401.18509-1-liwang@redhat.com>
-References: <20190619071401.18509-1-liwang@redhat.com>
-Message-ID: <1510222953.29055172.1560928743851.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 19 Jun 2019 11:29:44 +0200
+Subject: [LTP] [PATCH 3/3] sh: Replace GPL verbose text by SPDX license
+ identifier
+In-Reply-To: <20190614074605.GA16957@dell5510>
+References: <20190614065650.8612-1-pvorel@suse.cz>
+ <20190614065650.8612-4-pvorel@suse.cz>
+ <20190614074605.GA16957@dell5510>
+Message-ID: <20190619092944.GA16577@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> This one is wrong, shebang should be before SPDX.
 
+Just fix this and push the patchset, otherwise this is obviously Ok.
 
------ Original Message -----
-> This is a follow fix for commit f6164ffc2804b2a68218, otherwise clone08
-> failed with ENOSYS error:
-> 
->     clone08.c:81: INFO: running CLONE_PARENT
->     clone08.c:104: BROK: CLONE_PARENT clone() failed: ENOSYS
->     tst_test.c:357: BROK: Reported by child (2785)
-> 
-> That becuase CLONE_SUPPORTS_7_ARGS macro is included in config.h, without
-> this header file, the ltp_clone7() will fall into ENOSYS branch.
-> 
-> Reported-by: Ping Fang <pifang@redhat.com>
-> Signed-off-by: Li Wang <liwang@redhat.com>
-
-Sorry about that, that include should have stayed in.
-Pushed.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
