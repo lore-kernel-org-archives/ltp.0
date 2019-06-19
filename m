@@ -1,37 +1,25 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 19 Jun 2019 11:58:05 +0200
-Subject: [LTP] [PATCH v4] syscalls/sync_file_range: add partial file
- sync test-cases
-In-Reply-To: <CAOQ4uxithmPn6J=B2kaGKT0JOpqzyVEkHU+zMqhXCYnnH+ZHVQ@mail.gmail.com>
-References: <1560161596-30156-1-git-send-email-sumit.garg@linaro.org>
- <20190617150640.GD16831@rei>
- <CAOQ4uxithmPn6J=B2kaGKT0JOpqzyVEkHU+zMqhXCYnnH+ZHVQ@mail.gmail.com>
-Message-ID: <20190619095805.GC16577@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 19 Jun 2019 12:16:28 +0200
+Subject: [LTP] [PATCH 3/3] sh: Replace GPL verbose text by SPDX license
+ identifier
+In-Reply-To: <20190619092944.GA16577@rei.lan>
+References: <20190614065650.8612-1-pvorel@suse.cz>
+ <20190614065650.8612-4-pvorel@suse.cz>
+ <20190614074605.GA16957@dell5510> <20190619092944.GA16577@rei.lan>
+Message-ID: <20190619101628.GA17124@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > With these modification the test was stable and worked fine for more
-> > than 100 iterations for me. It still fails for FUSE based filesystems
-> > but that is to be expected since FUSE does not implement sync_file_range
-> > yet.
-> >
-> 
-> What is the proposed way to resolve this failure?
-> If FUSE does not implement sync_file_range, shouldn't test detect
-> it and return TCONF?
+Hi Cyril,
 
-Well the call returns success but does not sync anything on FUSE based
-filesystems so the choices here are:
+> Hi!
+> > This one is wrong, shebang should be before SPDX.
 
-1) Disable the test of FUSE
-2) Keep the test failing and ignore the failures
+> Just fix this and push the patchset, otherwise this is obviously Ok.
+Thanks, merged with your ack.
 
-Which one do you prefer?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
