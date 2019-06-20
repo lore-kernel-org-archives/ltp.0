@@ -1,85 +1,38 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 20 Jun 2019 15:24:36 +0200
-Subject: [LTP] [PATCH v5 0/4] syscalls/fanotify: FAN_REPORT_FID and
- Directory Modification Events
-In-Reply-To: <cover.1561018312.git.mbobrowski@mbobrowski.org>
-References: <cover.1561018312.git.mbobrowski@mbobrowski.org>
-Message-ID: <20190620132436.GA9804@dell5510>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 20 Jun 2019 16:30:31 +0300
+Subject: [LTP] [PATCH] syscalls/getxattr05: skip userns test cases when
+	not supported
+In-Reply-To: <20190619142338.GA30900@rei.lan>
+References: <20190619124707.2981-1-amir73il@gmail.com>
+ <20190619142338.GA30900@rei.lan>
+Message-ID: <CAOQ4uxi4L799rLLKQcVcChk5vM0RtgsjKzgH6iXNeMv7bXos0Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Amir, Matthew,
+On Wed, Jun 19, 2019 at 5:23 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+> Hi!
+> Pushed, thanks.
 
-LGTM. Just one of this commits fails on centos 6
+FYI, some more false positive failures I ran into.
+I've put them in my skip list, if somebody has time to fix them...
 
-https://api.travis-ci.org/v3/job/548162141/log.txt
-https://travis-ci.org/pevik/ltp/jobs/548162141
+ioctl_ns04 and ioctl_ns06 also fail when CONFIG_USER_NS is not defined:
 
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -D_FORTIFY_SOURCE=2 -I/usr/src/ltp/include -I/usr/src/ltp/../ltp-build/include -I/usr/src/ltp/include/old/   -L/usr/src/ltp/../ltp-build/lib  /usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify01.c   -lltp -o fanotify01
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -D_FORTIFY_SOURCE=2 -I/usr/src/ltp/include -I/usr/src/ltp/../ltp-build/include -I/usr/src/ltp/include/old/   -L/usr/src/ltp/../ltp-build/lib  /usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify02.c   -lltp -o fanotify02
-In file included from /usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify01.c:21:
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:130: error: expected specifier-qualifier-list before '__kernel_fsid_t'
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:141: error: expected declaration specifiers or '...' before '__kernel_fsid_t'
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:142: warning: 'struct file_handle' declared inside parameter list
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:142: warning: its scope is only this definition or declaration, which is probably not what you want
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h: In function 'fanotify_get_fid':
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:150: error: 'fsid' undeclared (first use in this function)
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:150: error: (Each undeclared identifier is reported only once
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:150: error: for each function it appears in.)
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:144: warning: unused variable 'mount_id'
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:142: warning: unused parameter 'handle'
-In file included from /usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify02.c:21:
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:130: error: expected specifier-qualifier-list before '__kernel_fsid_t'
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:141: error: expected declaration specifiers or '...' before '__kernel_fsid_t'
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:142: warning: 'struct file_handle' declared inside parameter list
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:142: warning: its scope is only this definition or declaration, which is probably not what you want
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h: In function 'fanotify_get_fid':
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:150: error: 'fsid' undeclared (first use in this function)
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:150: error: (Each undeclared identifier is reported only once
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:150: error: for each function it appears in.)
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:144: warning: unused variable 'mount_id'
-/usr/src/ltp/testcases/kernel/syscalls/fanotify/fanotify.h:142: warning: unused parameter 'handle'
+ioctl_ns04.c:24: CONF: namespace not available
+safe_macros.c:225: BROK: ioctl_ns04.c:31:
+open(/proc/self/ns/user,0,034641644410) failed: ENOENT
 
-Kind regards,
-Petr
+oom03 and oom05 fail when CONFIG_MEMCG is not defined:
 
-> This patch series contains the changes needed to validate the new
-> FAN_REPORT_FID flag and directory modification event functionality
-> within the fanotify API.
+mem.c:757: BROK: mount /dev/cgroup: ENOENT
 
-> Changes since version 4:
-> 	* Fixed problems with unbalanced file descriptor close.
-> 	* Reorded functions in the test files fanotify13, fanotify14 and
-> 	  fanotify15 so that they all follow a basic template i.e.
+And also does not cleanup /dev/cgroup afterwards, so error them becomes:
 
-> 	  test()
-> 	  ...
-> 	  do_setup()
-> 	  do_cleanup()
+safe_macros.c:169: BROK: mem.c:747: mkdir(/dev/cgroup,0777) failed: EEXIST
 
-> Thank you Amir for your feedback. 
-
-> Amir Goldstein (1):
->   syscalls/fanotify13: add test coverage for fsid cache bug
-
-> Matthew Bobrowski (3):
->   syscalls/fanotify13: new test to verify FAN_REPORT_FID functionality
->   syscalls/fanotify14: new test to validate FAN_REPORT_FID interface
->     return values
->   syscalls/fanotify15: verify fid for dirent events
-
->  configure.ac                                    |   1 +
->  runtest/syscalls                                |   3 +
->  testcases/kernel/syscalls/fanotify/.gitignore   |   3 +
->  testcases/kernel/syscalls/fanotify/fanotify.h   |  81 +++++-
->  testcases/kernel/syscalls/fanotify/fanotify05.c |   1 +
->  testcases/kernel/syscalls/fanotify/fanotify13.c | 328 ++++++++++++++++++++++++
->  testcases/kernel/syscalls/fanotify/fanotify14.c | 176 +++++++++++++
->  testcases/kernel/syscalls/fanotify/fanotify15.c | 246 ++++++++++++++++++
->  8 files changed, 836 insertions(+), 3 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/fanotify/fanotify13.c
->  create mode 100644 testcases/kernel/syscalls/fanotify/fanotify14.c
->  create mode 100644 testcases/kernel/syscalls/fanotify/fanotify15.c
+Thanks,
+Amir.
