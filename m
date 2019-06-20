@@ -1,303 +1,73 @@
-From: Matthew Bobrowski <mbobrowski@mbobrowski.org>
-Date: Thu, 20 Jun 2019 19:58:55 +1000
-Subject: [LTP] [PATCH v5 3/4] syscalls/fanotify15: verify fid for dirent
- events
+From: Amir Goldstein <mbobrowski@mbobrowski.org>
+Date: Thu, 20 Jun 2019 19:59:14 +1000
+Subject: [LTP] [PATCH v5 4/4] syscalls/fanotify13: add test coverage for
+ fsid cache bug
 In-Reply-To: <cover.1561018312.git.mbobrowski@mbobrowski.org>
 References: <cover.1561018312.git.mbobrowski@mbobrowski.org>
-Message-ID: <5abce371ba13e202fca416267c6e9c4c250cffda.1561018312.git.mbobrowski@mbobrowski.org>
+Message-ID: <c35992aa401f2b2713a2c1619638b957266d254d.1561018312.git.mbobrowski@mbobrowski.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-A new test file that provides coverage for new dirent events has been
-added. A new line entry within the runtest/syscalls file has been also
-added to support the testing of these new dirent events.
+This bug was reported by syzbot:
+https://lore.kernel.org/linux-fsdevel/CAOQ4uxhsnOXXVCuOT4p4c_koBMFfprWwdtCPGNGhzprFaJZwRA@mail.gmail.com/T/#t
 
-Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- runtest/syscalls                                |   1 +
- testcases/kernel/syscalls/fanotify/.gitignore   |   1 +
- testcases/kernel/syscalls/fanotify/fanotify15.c | 246 ++++++++++++++++++++++++
- 3 files changed, 248 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fanotify/fanotify15.c
+ testcases/kernel/syscalls/fanotify/fanotify13.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 56f84824a..25cb29dab 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -536,6 +536,7 @@ fanotify11 fanotify11
- fanotify12 fanotify12
- fanotify13 fanotify13
- fanotify14 fanotify14
-+fanotify15 fanotify15
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify13.c b/testcases/kernel/syscalls/fanotify/fanotify13.c
+index 33ee2f1c8..8f9baacfa 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify13.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify13.c
+@@ -84,6 +84,7 @@ static struct test_case_t {
+ 	}
+ };
  
- ioperm01 ioperm01
- ioperm02 ioperm02
-diff --git a/testcases/kernel/syscalls/fanotify/.gitignore b/testcases/kernel/syscalls/fanotify/.gitignore
-index bf389c96a..68e4cc7aa 100644
---- a/testcases/kernel/syscalls/fanotify/.gitignore
-+++ b/testcases/kernel/syscalls/fanotify/.gitignore
-@@ -12,4 +12,5 @@
- /fanotify12
- /fanotify13
- /fanotify14
-+/fanotify15
- /fanotify_child
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify15.c b/testcases/kernel/syscalls/fanotify/fanotify15.c
-new file mode 100644
-index 000000000..6981b7891
---- /dev/null
-+++ b/testcases/kernel/syscalls/fanotify/fanotify15.c
-@@ -0,0 +1,246 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 CTERA Networks. All Rights Reserved.
-+ *
-+ * Started by Amir Goldstein <amir73il@gmail.com>
-+ * Modified by Matthew Bobrowski <mbobrowski@mbobrowski.org>
-+ *
-+ * DESCRIPTION
-+ *	Test file that has been purposely designed to verify
-+ *	FAN_REPORT_FID functionality while using newly defined dirent
-+ *	events.
-+ */
-+#define _GNU_SOURCE
-+#include "config.h"
-+
-+#include <string.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <sys/statfs.h>
-+#include <sys/types.h>
-+
-+#include "tst_test.h"
-+#include "fanotify.h"
-+
-+#if defined(HAVE_SYS_FANOTIFY_H)
-+#include <sys/fanotify.h>
-+
-+#define BUF_SIZE 256
-+#define EVENT_MAX 256
-+
-+#define MOUNT_POINT "mntpoint"
-+#define TEST_DIR MOUNT_POINT"/test_dir"
-+#define DIR1 TEST_DIR"/dir1"
-+#define DIR2 TEST_DIR"/dir2"
-+#define FILE1 TEST_DIR"/file1"
-+#define FILE2 TEST_DIR"/file2"
-+
-+struct event_t {
-+	unsigned long long mask;
-+	__kernel_fsid_t fsid;
-+	struct file_handle handle;
-+	char buf[MAX_HANDLE_SZ];
-+};
-+
-+static int fanotify_fd;
-+static char events_buf[BUF_SIZE];
-+static struct event_t event_set[EVENT_MAX];
-+
-+static void do_test(void)
-+{
-+	int i, fd, len, count = 0;
-+
-+	struct file_handle *event_file_handle;
-+	struct fanotify_event_metadata *metadata;
-+	struct fanotify_event_info_fid *event_fid;
-+
-+	if (fanotify_mark(fanotify_fd, FAN_MARK_ADD | FAN_MARK_FILESYSTEM,
-+				FAN_CREATE | FAN_DELETE | FAN_ATTRIB |
-+				FAN_MOVED_FROM | FAN_MOVED_TO |
-+				FAN_DELETE_SELF | FAN_ONDIR,
-+				AT_FDCWD, TEST_DIR) == -1) {
-+		if (errno == ENODEV)
-+			tst_brk(TCONF,
-+				"FAN_REPORT_FID not supported on %s "
-+				"filesystem", tst_device->fs_type);
-+		tst_brk(TBROK | TERRNO,
-+			"fanotify_mark(%d, FAN_MARK_ADD, FAN_CREATE | "
-+			"FAN_DELETE | FAN_MOVED_FROM | FAN_MOVED_TO | "
-+			"FAN_DELETE_SELF | FAN_ONDIR, AT_FDCWD, %s) failed",
-+			fanotify_fd, TEST_DIR);
-+	}
-+
-+	/* Generate a sequence of events */
-+	event_set[count].mask = FAN_CREATE | FAN_MOVED_FROM | FAN_MOVED_TO | \
-+				FAN_DELETE;
-+	event_set[count].handle.handle_bytes = MAX_HANDLE_SZ;
-+	fanotify_get_fid(TEST_DIR, &event_set[count].fsid,
-+			 &event_set[count].handle);
-+	count++;
-+
-+	fd = SAFE_CREAT(FILE1, 0644);
-+	SAFE_CLOSE(fd);
-+
-+	SAFE_RENAME(FILE1, FILE2);
-+
-+	event_set[count].mask = FAN_ATTRIB | FAN_DELETE_SELF;
-+	event_set[count].handle.handle_bytes = MAX_HANDLE_SZ;
-+	fanotify_get_fid(FILE2, &event_set[count].fsid,
-+			 &event_set[count].handle);
-+	count++;
-+
-+	SAFE_UNLINK(FILE2);
-+
++static int nofid_fd;
+ static int fanotify_fd;
+ static char events_buf[BUF_SIZE];
+ static struct event_t event_set[EVENT_MAX];
+@@ -280,21 +281,32 @@ out:
+ 
+ static void do_setup(void)
+ {
+-	int fd;
+-
+ 	/* Check for kernel fanotify support */
+-	fd = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF, O_RDONLY);
+-	SAFE_CLOSE(fd);
++	nofid_fd = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF, O_RDONLY);
+ 
+ 	/* Create file and directory objects for testing */
+ 	create_objects();
+ 
 +	/*
-+	 * Generate a sequence of events on a directory. Subsequent events
-+	 * are merged, so it's required that we set FAN_ONDIR once in
-+	 * order to acknowledge that changes related to a subdirectory
-+	 * took place. Events on subdirectories are not merged with events
-+	 * on non-subdirectories.
++	 * Create a mark on first inode without FAN_REPORT_FID, to test
++	 * uninitialized connector->fsid cache. This mark remains for all test
++	 * cases and is not expected to get any events (no writes in this test).
 +	 */
-+	event_set[count].mask = FAN_ONDIR | FAN_CREATE | FAN_MOVED_FROM | \
-+				FAN_MOVED_TO | FAN_DELETE;
-+	event_set[count].handle.handle_bytes = MAX_HANDLE_SZ;
-+	fanotify_get_fid(TEST_DIR, &event_set[count].fsid,
-+			 &event_set[count].handle);
-+	count++;
-+
-+	SAFE_MKDIR(DIR1, 0755);
-+
-+	SAFE_RENAME(DIR1, DIR2);
-+
-+	event_set[count].mask = FAN_ONDIR | FAN_DELETE_SELF;
-+	event_set[count].handle.handle_bytes = MAX_HANDLE_SZ;
-+	fanotify_get_fid(DIR2, &event_set[count].fsid,
-+			 &event_set[count].handle);
-+	count++;
-+
-+	SAFE_RMDIR(DIR2);
-+
-+	/* Read events from the event queue */
-+	len = SAFE_READ(0, fanotify_fd, events_buf, BUF_SIZE);
-+
-+	/* Process each event in buffer */
-+	for (i = 0, metadata = (struct fanotify_event_metadata *) events_buf;
-+		FAN_EVENT_OK(metadata, len);
-+		metadata = FAN_EVENT_NEXT(metadata,len), i++) {
-+		event_fid = (struct fanotify_event_info_fid *) (metadata + 1);
-+		event_file_handle = (struct file_handle *) event_fid->handle;
-+
-+		if (i >= count) {
-+			tst_res(TFAIL,
-+				"got unnecessary event: mask=%llx "
-+				"pid=%u fd=%d",
-+				(unsigned long long) metadata->mask,
-+				metadata->pid,
-+				metadata->fd);
-+			metadata->mask = 0;
-+		} else if (metadata->fd != FAN_NOFD) {
-+			tst_res(TFAIL,
-+				"Received unexpected file descriptor %d in "
-+				"event. Expected to get FAN_NOFD(%d)",
-+				metadata->fd, FAN_NOFD);
-+		} else if (metadata->mask != event_set[i].mask) {
-+			tst_res(TFAIL,
-+				"Got event: mask=%llx (expected %llx) "
-+				"pid=%u fd=%d",
-+				(unsigned long long) metadata->mask,
-+				event_set[i].mask,
-+				(unsigned) metadata->pid,
-+				metadata->fd);
-+		} else if (metadata->pid != getpid()) {
-+			tst_res(TFAIL,
-+				"Got event: mask=%llx pid=%u "
-+				"(expected %u) fd=%d",
-+				(unsigned long long) metadata->mask,
-+				(unsigned) metadata->pid,
-+				(unsigned) getpid(),
-+				metadata->fd);
-+		} else if (event_file_handle->handle_bytes !=
-+				event_set[i].handle.handle_bytes) {
-+			tst_res(TFAIL,
-+				"Got event: handle_bytes (%x) returned in "
-+				"event does not equal handle_bytes (%x) "
-+				"retunred in name_to_handle_at(2)",
-+				event_file_handle->handle_bytes,
-+				event_set[i].handle.handle_bytes);
-+		} else if (event_file_handle->handle_type !=
-+				event_set[i].handle.handle_type) {
-+			tst_res(TFAIL,
-+				"handle_type (%x) returned in event does not "
-+				"equal to handle_type (%x) returned in "
-+				"name_to_handle_at(2)",
-+				event_file_handle->handle_type,
-+				event_set[i].handle.handle_type);
-+		} else if (memcmp(event_file_handle->f_handle,
-+					event_set[i].handle.f_handle,
-+					event_set[i].handle.handle_bytes)
-+					!= 0) {
-+			tst_res(TFAIL,
-+				"event_file_handle->f_handle does not match "
-+				"handle.f_handle returned in "
-+				"name_to_handle_at(2)");
-+		} else if (memcmp(&event_fid->fsid, &event_set[i].fsid,
-+					sizeof(event_set[i].fsid)) != 0) {
-+			tst_res(TFAIL,
-+				"event_fid->fsid != stats.f_fsid that was "
-+				"obtained via statfs(2)");
-+		} else {
-+			tst_res(TPASS,
-+				"Got event: mask=%llx, pid=%u, "
-+				"fid=%x.%x.%lx values",
-+				metadata->mask,
-+				getpid(),
-+				event_fid->fsid.val[0],
-+				event_fid->fsid.val[1],
-+				*(unsigned long *)
-+				event_file_handle->f_handle);
-+		}
-+	}
-+
-+	for (; i < count; i++)
-+		tst_res(TFAIL,
-+			"Didn't receive event: mask=%llx",
-+			event_set[i].mask);
-+}
-+
-+static void do_setup(void)
-+{
-+	int fd;
-+
-+	/* Check kernel for fanotify support */
-+	fd = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF, O_RDONLY);
-+	SAFE_CLOSE(fd);
-+
-+	fanotify_fd = fanotify_init(FAN_REPORT_FID, O_RDONLY);
-+	if (fanotify_fd == -1) {
-+		if (errno == EINVAL)
-+			tst_brk(TCONF,
-+				"FAN_REPORT_FID not supported in kernel");
++	if (fanotify_mark(nofid_fd, FAN_MARK_ADD, FAN_CLOSE_WRITE, AT_FDCWD,
++			  FILE_PATH_ONE) == -1) {
 +		tst_brk(TBROK | TERRNO,
-+			"fanotify_init(FAN_REPORT_FID, O_RDONLY) failed");
++			"fanotify_mark(%d, FAN_MARK_ADD, FAN_CLOSE_WRITE, "
++			"AT_FDCWD, "FILE_PATH_ONE") failed",
++			nofid_fd);
 +	}
 +
-+	SAFE_MKDIR(TEST_DIR, 0755);
-+}
-+
-+static void do_cleanup(void)
-+{
-+	if (fanotify_fd > 0)
-+		SAFE_CLOSE(fanotify_fd);
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.mount_device = 1,
-+	.mntpoint = MOUNT_POINT,
-+	.all_filesystems = 1,
-+	.test_all = do_test,
-+	.setup = do_setup,
-+	.cleanup = do_cleanup
-+};
-+
-+#else
-+	TST_TEST_TCONF("System does not have required fanotify support");
-+#endif
+ 	/* Get the filesystem fsid and file handle for each created object */
+ 	get_object_stats();
+ }
+ 
+ static void do_cleanup(void)
+ {
++	SAFE_CLOSE(nofid_fd);
+ 	if (fanotify_fd > 0)
+ 		SAFE_CLOSE(fanotify_fd);
+ }
 -- 
 2.16.4
 
