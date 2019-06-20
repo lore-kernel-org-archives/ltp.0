@@ -1,25 +1,25 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 20 Jun 2019 08:39:32 +0200
-Subject: [LTP] [PATCH v3 4/4] syscalls/pidfd_send_signal03
-In-Reply-To: <20190614072829.24529-4-camann@suse.com>
-References: <20190614072829.24529-1-camann@suse.com>
- <20190614072829.24529-4-camann@suse.com>
-Message-ID: <20190620063931.GA19535@dell5510>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 20 Jun 2019 03:39:49 -0400 (EDT)
+Subject: [LTP] [PATCH 1/2] mtest06: tweak DISTANT_MMAP_SIZE
+In-Reply-To: <20190619144346.GC30900@rei.lan>
+References: <67bee9aca637a86b8101b122d149094b50397553.1560545529.git.jstancek@redhat.com>
+ <20190619144346.GC30900@rei.lan>
+Message-ID: <1982029926.29252849.1561016389361.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Christian,
 
-> Add testcase to check if the syscall will send a signal
-> to a process with the same PID as the targeted process.
+----- Original Message -----
+> Hi!
+> Looks ok, acked.
 
-> Signed-off-by: Christian Amann <camann@suse.com>
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Both pushed.
 
-Whole patchset merged, thx!
-
-Kind regards,
-Petr
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
