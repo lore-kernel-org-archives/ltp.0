@@ -1,25 +1,34 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 20 Jun 2019 03:39:49 -0400 (EDT)
-Subject: [LTP] [PATCH 1/2] mtest06: tweak DISTANT_MMAP_SIZE
-In-Reply-To: <20190619144346.GC30900@rei.lan>
-References: <67bee9aca637a86b8101b122d149094b50397553.1560545529.git.jstancek@redhat.com>
- <20190619144346.GC30900@rei.lan>
-Message-ID: <1982029926.29252849.1561016389361.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 20 Jun 2019 09:47:03 +0200
+Subject: [LTP] [PATCH v1] syscalls/acct02: Fix wrongfully failing
+ sometimes
+In-Reply-To: <20190607141622.20316-1-camann@suse.com>
+References: <20190607141622.20316-1-camann@suse.com>
+Message-ID: <20190620074703.GC13879@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Christian,
 
------ Original Message -----
-> Hi!
-> Looks ok, acked.
+> On some systems the process calling acct() has to end before
+> process accounting is started. This caused the original test
+> to fail on those systems.
+> This fix forks a child process to call acct() in order to
+> activate process accounting before running the test program.
 
-Both pushed.
+> Signed-off-by: Christian Amann <camann@suse.com>
 
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Thanks for you patch. Could you be please more specific?
+(which kernel version / glibc)
+
+I'm testing it on various distros, all have struct acct_v3 and all fail
+(regardless this patch):
+FAIL: acct() wrote incorrect file contents!
+
+Kind regards,
+Petr
