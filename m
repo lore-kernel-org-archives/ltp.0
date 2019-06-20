@@ -1,146 +1,128 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 20 Jun 2019 16:14:27 +0200
-Subject: [LTP] [COMMITTED] [PATCH] syscalls/futex: Get rid of futex_common.h
-Message-ID: <20190620141427.26338-1-chrubis@suse.cz>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 20 Jun 2019 17:18:04 +0300
+Subject: [LTP] [PATCH] syscalls/fanotify: fix build errors on centos 6
+Message-ID: <20190620141804.20902-1-amir73il@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-There is no point in passing fd to anynomous mapping, the fd was ignored
-to begin with.
+Do not try to build fanotify1[35] and helpers when system does not
+support name_to_handle_at().
 
-This commit just moves the mmap() to particular tests as there is no
-point in having helper just for one mmap() call and removes the
-futex_common.h completely.
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- .../kernel/syscalls/futex/futex_common.h      | 46 -------------------
- .../kernel/syscalls/futex/futex_wait02.c      | 11 ++++-
- .../kernel/syscalls/futex/futex_wake03.c      | 11 ++++-
- 3 files changed, 20 insertions(+), 48 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/futex/futex_common.h
 
-diff --git a/testcases/kernel/syscalls/futex/futex_common.h b/testcases/kernel/syscalls/futex/futex_common.h
-deleted file mode 100644
-index 231fdc67e..000000000
---- a/testcases/kernel/syscalls/futex/futex_common.h
-+++ /dev/null
-@@ -1,46 +0,0 @@
--/*
-- * Copyright (C) 2015 Cyril Hrubis <chrubis@suse.cz>
-- *
-- * Licensed under the GNU GPLv2 or later.
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
-- /*
--  * Setups futex in shared memory needed for synchronization between multiple
--  * processes.
--  */
--
--static futex_t *futex;
--
--static void setup(void)
--{
--	int fd;
--
--	fd = shm_open("/LTP_futex_wait", O_RDWR | O_CREAT | O_EXCL, 0);
--
--	if (fd < 0) {
--		tst_brkm(TBROK | TERRNO, NULL,
--		         "shm_open(/LTP_futex_wait,O_RDWR|O_CREAT|O_EXCL,775)");
--	}
--	if (shm_unlink("/LTP_futex_wait"))
--		tst_brkm(TBROK | TERRNO, NULL, "shm_unlink(/LTP_futex_wait)");
--
--	futex = SAFE_MMAP(NULL, NULL, sizeof(*futex), PROT_READ | PROT_WRITE,
--			  MAP_ANONYMOUS | MAP_SHARED, fd, 0);
--
--	SAFE_CLOSE(NULL, fd);
--
--	*futex = FUTEX_INITIALIZER;
--}
-diff --git a/testcases/kernel/syscalls/futex/futex_wait02.c b/testcases/kernel/syscalls/futex/futex_wait02.c
-index 2b863fe7c..1ca1df457 100644
---- a/testcases/kernel/syscalls/futex/futex_wait02.c
-+++ b/testcases/kernel/syscalls/futex/futex_wait02.c
-@@ -29,11 +29,12 @@
- #include "test.h"
- #include "safe_macros.h"
- #include "futextest.h"
--#include "futex_common.h"
+Petr,
+
+This patch is on top of Matthew's series.
+Please see if it fixed build errors you reported in centos 6.
+
+Thanks,
+Amir.
+
+ testcases/kernel/syscalls/fanotify/fanotify.h   | 16 +++++++---------
+ testcases/kernel/syscalls/fanotify/fanotify13.c |  4 ++++
+ testcases/kernel/syscalls/fanotify/fanotify15.c |  4 ++++
+ 3 files changed, 15 insertions(+), 9 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
+index f9803c1cc..1c7623d3b 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify.h
++++ b/testcases/kernel/syscalls/fanotify/fanotify.h
+@@ -125,21 +125,22 @@ struct fanotify_event_info_header {
+ 	uint16_t len;
+ };
  
- const char *TCID="futex_wait02";
- const int TST_TOTAL=1;
++#ifdef HAVE_NAME_TO_HANDLE_AT
+ struct fanotify_event_info_fid {
+ 	struct fanotify_event_info_header hdr;
+ 	__kernel_fsid_t fsid;
+ 	unsigned char handle[0];
+ };
+-
++#endif
+ #endif
  
-+static futex_t *futex;
-+
- static void do_child(void)
++#ifdef HAVE_NAME_TO_HANDLE_AT
+ /*
+- * Helper function used to obtain __kernel_fsid_t and file_handle objects
+- * for a given path. Used by test files correlated to FAN_REPORT_FID
+- * functionality.
++ * Helper function used to obtain fsid and file_handle for a given path.
++ * Used by test files correlated to FAN_REPORT_FID functionality.
+  */
+ static inline void fanotify_get_fid(const char *path, __kernel_fsid_t *fsid,
+-			struct file_handle *handle)
++				    struct file_handle *handle)
  {
- 	int ret;
-@@ -81,6 +82,14 @@ static void verify_futex_wait(void)
- 		tst_resm(TFAIL, "child failed");
- }
+ 	int mount_id;
+ 	struct statfs stats;
+@@ -149,7 +150,6 @@ static inline void fanotify_get_fid(const char *path, __kernel_fsid_t *fsid,
+ 			"statfs(%s, ...) failed", path);
+ 	memcpy(fsid, &stats.f_fsid, sizeof(stats.f_fsid));
  
-+static void setup(void)
-+{
-+	futex = SAFE_MMAP(NULL, NULL, sizeof(*futex), PROT_READ | PROT_WRITE,
-+			  MAP_ANONYMOUS | MAP_SHARED, -1, 0);
-+
-+	*futex = FUTEX_INITIALIZER;
-+}
-+
- int main(int argc, char *argv[])
- {
- 	int lc;
-diff --git a/testcases/kernel/syscalls/futex/futex_wake03.c b/testcases/kernel/syscalls/futex/futex_wake03.c
-index 523f32851..d6e5e5422 100644
---- a/testcases/kernel/syscalls/futex/futex_wake03.c
-+++ b/testcases/kernel/syscalls/futex/futex_wake03.c
-@@ -27,11 +27,12 @@
- #include "test.h"
- #include "safe_macros.h"
- #include "futextest.h"
--#include "futex_common.h"
- 
- const char *TCID="futex_wake03";
- const int TST_TOTAL=11;
- 
-+static futex_t *futex;
-+
- static void do_child(void)
- {
- 	futex_wait(futex, *futex, NULL, 0);
-@@ -103,6 +104,14 @@ static void verify_futex_wake(void)
+-#ifdef HAVE_NAME_TO_HANDLE_AT
+ 	if (name_to_handle_at(AT_FDCWD, path, handle, &mount_id, 0) == -1) {
+ 		if (errno == EOPNOTSUPP) {
+ 			tst_brk(TCONF,
+@@ -159,10 +159,8 @@ static inline void fanotify_get_fid(const char *path, __kernel_fsid_t *fsid,
+ 		tst_brk(TBROK | TERRNO,
+ 			"name_to_handle_at(AT_FDCWD, %s, ...) failed", path);
  	}
+-#else
+-	tst_brk(TCONF, "name_to_handle_at() is not implmented");
+-#endif /* HAVE_NAME_TO_HANDLE_AT */
  }
++#endif /* HAVE_NAME_TO_HANDLE_AT */
  
-+static void setup(void)
-+{
-+	futex = SAFE_MMAP(NULL, NULL, sizeof(*futex), PROT_READ | PROT_WRITE,
-+			  MAP_ANONYMOUS | MAP_SHARED, -1, 0);
-+
-+	*futex = FUTEX_INITIALIZER;
-+}
-+
- int main(int argc, char *argv[])
- {
- 	int lc;
+ #define INIT_FANOTIFY_MARK_TYPE(t) \
+ 	{ FAN_MARK_ ## t, "FAN_MARK_" #t }
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify13.c b/testcases/kernel/syscalls/fanotify/fanotify13.c
+index 8f9baacfa..e5681c804 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify13.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify13.c
+@@ -38,6 +38,7 @@
+ #define FILE_PATH_ONE MOUNT_PATH"/"FILE_ONE
+ #define FILE_PATH_TWO MOUNT_PATH"/"FILE_TWO
+ 
++#if defined(HAVE_NAME_TO_HANDLE_AT)
+ struct event_t {
+ 	unsigned long long expected_mask;
+ 	__kernel_fsid_t fsid;
+@@ -323,6 +324,9 @@ static struct tst_test test = {
+ 	.all_filesystems = 1
+ };
+ 
++#else
++	TST_TEST_TCONF("System does not have required name_to_handle_at() support");
++#endif
+ #else
+ 	TST_TEST_TCONF("System does not have required fanotify support");
+ #endif
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify15.c b/testcases/kernel/syscalls/fanotify/fanotify15.c
+index 6981b7891..e9e926078 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify15.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify15.c
+@@ -35,6 +35,7 @@
+ #define FILE1 TEST_DIR"/file1"
+ #define FILE2 TEST_DIR"/file2"
+ 
++#if defined(HAVE_NAME_TO_HANDLE_AT)
+ struct event_t {
+ 	unsigned long long mask;
+ 	__kernel_fsid_t fsid;
+@@ -241,6 +242,9 @@ static struct tst_test test = {
+ 	.cleanup = do_cleanup
+ };
+ 
++#else
++	TST_TEST_TCONF("System does not have required name_to_handle_at() support");
++#endif
+ #else
+ 	TST_TEST_TCONF("System does not have required fanotify support");
+ #endif
 -- 
-2.19.2
+2.17.1
 
