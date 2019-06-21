@@ -1,147 +1,146 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 21 Jun 2019 18:26:41 +0800
-Subject: [LTP] [PATCH] daemonlib.sh: call tty before executing service
-In-Reply-To: <1766730430.29482900.1561112032870.JavaMail.zimbra@redhat.com>
-References: <1561110806-2734-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1766730430.29482900.1561112032870.JavaMail.zimbra@redhat.com>
-Message-ID: <5D0CB0E1.8020205@cn.fujitsu.com>
+From: Xiao Yang <ice_yangxiao@163.com>
+Date: Fri, 21 Jun 2019 18:51:11 +0800
+Subject: [LTP] [PATCH v2 2/2] syscalls/futex_cmp_requeue02.c: Add new test
+In-Reply-To: <1561114271-8351-1-git-send-email-ice_yangxiao@163.com>
+References: <1561114271-8351-1-git-send-email-ice_yangxiao@163.com>
+Message-ID: <1561114271-8351-2-git-send-email-ice_yangxiao@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Check various errnos for futex(FUTEX_CMP_REQUEUE).
 
-> ----- Original Message -----
->> On my machine, polkit-0.112-22.el7.x86_64 has contained the [1] patch.
->>
->> This patch leads service acitons(such as restart) don't stop if it doesn't
->> find controlling terminal. Even the service has been executed successfully.
->> You can reproduce it with the following code:
->>
->> test.sh
->> ----------------------------------------------
->> echo "restart daemon"
->> systemctl restart rsyslog.service>/dev/null 2>&1
->> echo "restart success"
->> ----------------------------------------------
->> ./test.sh&   (it doesn't stop)
->> restart daemon
->>
->> ps -auxf
->> --------------------------------------------------
->> .... pts/1    T      \_ /bin/bash ./test.sh
->> .... pts/1    T        \_ systemctl restart rsyslog.service
->> .... pts/1    Tl         \_ /usr/bin/pkttyagent --notify-fd 6
->> -------------------------------------------------
->>
->> /var/log/secure
->> ------------------------------------------------
->> polkitd[1310]: Registered Authentication Agent for unix-process:18472:252325
->> (system bus name :1.105 [/usr/bin/pkttyagent --notify-fd 6 --fallback],
->> object
->> path /org/freedesktop/PolicyKit1/AuthenticationAgent, locale en_US.UTF-8)
->> ------------------------------------------------
->>
->> This change leads to syslog[1-10] testcase hang. I fix it by adding tty
->> beforce
->> service, so these cases don't hang.
-> Bug 1711536 - polkit-0.112-22.el7 breaks restarting services from background process
-> https://bugzilla.redhat.com/show_bug.cgi?id=1711536
->
-> Not sure though we should be adding workarounds for what seems like a bug.
-Hi Jan
+It's also a regression test for CVE-2018-6927:
+fbe0e839d1e2 ("futex: Prevent overflow by strengthen input validation")
 
-     I also think it may be a polkit rpm bug because this action is too abnormal.
-Or, we can ask polkit mantainer about it  on gitlab.
+Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
+---
+ runtest/syscalls                                   |  1 +
+ testcases/kernel/syscalls/futex/.gitignore         |  1 +
+ testcases/kernel/syscalls/futex/Makefile           |  1 +
+ .../kernel/syscalls/futex/futex_cmp_requeue02.c    | 76 ++++++++++++++++++++++
+ 4 files changed, 79 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/futex/futex_cmp_requeue02.c
 
-Regards
-Yang Xu
-
-> Regards,
-> Jan
->
->> (pkttyagent: PolkitAgentTextListener leaves echo tty disabled if
->> SIGINT/SIGTERM)
->> [1]https://gitlab.freedesktop.org/polkit/polkit/commit/bfb722bbe5a503095cc7e860f282b142f5aa75f1
->>
->> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
->> ---
->>   testcases/lib/daemonlib.sh | 24 ++++++++++++------------
->>   1 file changed, 12 insertions(+), 12 deletions(-)
->>
->> diff --git a/testcases/lib/daemonlib.sh b/testcases/lib/daemonlib.sh
->> index 0de3f86af..5807cbea0 100644
->> --- a/testcases/lib/daemonlib.sh
->> +++ b/testcases/lib/daemonlib.sh
->> @@ -47,43 +47,43 @@ fi
->>   start_daemon()
->>   {
->>   	if [ $HAVE_SYSTEMCTL -eq 1 ]; then
->> -		systemctl start $1.service>  /dev/null 2>&1
->> +		tty | systemctl start $1.service>  /dev/null 2>&1
->>   	elif command -v service>/dev/null 2>&1; then
->> -		service $1 start>  /dev/null 2>&1
->> +		tty | service $1 start>  /dev/null 2>&1
->>   	else
->> -		/etc/init.d/$1 start>  /dev/null 2>&1
->> +		tty |/etc/init.d/$1 start>  /dev/null 2>&1
->>   	fi
->>   }
->>
->>   stop_daemon()
->>   {
->>   	if [ $HAVE_SYSTEMCTL -eq 1 ]; then
->> -		systemctl stop $1.service>  /dev/null 2>&1
->> +		tty | systemctl stop $1.service>  /dev/null 2>&1
->>   	elif command -v service>/dev/null 2>&1; then
->> -		service $1 stop>  /dev/null 2>&1
->> +		tty | service $1 stop>  /dev/null 2>&1
->>   	else
->> -		/etc/init.d/$1 stop>  /dev/null 2>&1
->> +		tty | /etc/init.d/$1 stop>  /dev/null 2>&1
->>   	fi
->>   }
->>
->>   status_daemon()
->>   {
->>   	if [ $HAVE_SYSTEMCTL -eq 1 ]; then
->> -		systemctl is-active $1.service>  /dev/null 2>&1
->> +		tty | systemctl is-active $1.service>  /dev/null 2>&1
->>   	elif command -v service>/dev/null 2>&1; then
->> -		service $1 status>  /dev/null 2>&1
->> +		tty | service $1 status>  /dev/null 2>&1
->>   	else
->> -		/etc/init.d/$1 status>  /dev/null 2>&1
->> +		tty | /etc/init.d/$1 status>  /dev/null 2>&1
->>   	fi
->>   }
->>
->>   restart_daemon()
->>   {
->>   	if [ $HAVE_SYSTEMCTL -eq 1 ]; then
->> -		systemctl restart $1.service>  /dev/null 2>&1
->> +		tty | systemctl restart $1.service>  /dev/null 2>&1
->>   	elif command -v service>/dev/null 2>&1; then
->> -		service $1 restart>  /dev/null 2>&1
->> +		tty | service $1 restart>  /dev/null 2>&1
->>   	else
->> -		/etc/init.d/$1 restart>  /dev/null 2>&1
->> +		tty | /etc/init.d/$1 restart>  /dev/null 2>&1
->>   	fi
->>   }
->> --
->> 2.18.1
->>
->>
->>
->>
->> --
->> Mailing list info: https://lists.linux.it/listinfo/ltp
->>
->
-> .
->
-
+diff --git a/runtest/syscalls b/runtest/syscalls
+index af5eda5..ff3e20e 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1550,6 +1550,7 @@ perf_event_open01 perf_event_open01
+ perf_event_open02 perf_event_open02
+ 
+ futex_cmp_requeue01 futex_cmp_requeue01
++futex_cmp_requeue02 futex_cmp_requeue02
+ futex_wait01 futex_wait01
+ futex_wait02 futex_wait02
+ futex_wait03 futex_wait03
+diff --git a/testcases/kernel/syscalls/futex/.gitignore b/testcases/kernel/syscalls/futex/.gitignore
+index 4666a2c..68bc202 100644
+--- a/testcases/kernel/syscalls/futex/.gitignore
++++ b/testcases/kernel/syscalls/futex/.gitignore
+@@ -1,4 +1,5 @@
+ /futex_cmp_requeue01
++/futex_cmp_requeue02
+ /futex_wait01
+ /futex_wait02
+ /futex_wait03
+diff --git a/testcases/kernel/syscalls/futex/Makefile b/testcases/kernel/syscalls/futex/Makefile
+index c4d5033..1a0c008 100644
+--- a/testcases/kernel/syscalls/futex/Makefile
++++ b/testcases/kernel/syscalls/futex/Makefile
+@@ -19,6 +19,7 @@
+ top_srcdir		?= ../../../..
+ 
+ futex_cmp_requeue01: LDLIBS+=-lrt
++futex_cmp_requeue02: LDLIBS+=-lrt
+ futex_wait02: LDLIBS+=-lrt
+ futex_wake03: LDLIBS+=-lrt
+ futex_wait03: CFLAGS+=-pthread
+diff --git a/testcases/kernel/syscalls/futex/futex_cmp_requeue02.c b/testcases/kernel/syscalls/futex/futex_cmp_requeue02.c
+new file mode 100644
+index 0000000..3ea1942
+--- /dev/null
++++ b/testcases/kernel/syscalls/futex/futex_cmp_requeue02.c
+@@ -0,0 +1,76 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2019 Xiao Yang <ice_yangxiao@163.com>
++ *
++ * Description:
++ * Check various errnos for futex(FUTEX_CMP_REQUEUE).
++ * 1) futex(FUTEX_CMP_REQUEUE) with invalid val returns EINVAL.
++ * 2) futex(FUTEX_CMP_REQUEUE) with invalid val2 returns EINVAL.
++ * 3) futex(FUTEX_CMP_REQUEUE) with mismatched val3 returns EAGAIN.
++ *
++ * It's also a regression test for CVE-2018-6927:
++ * fbe0e839d1e2 ("futex: Prevent overflow by strengthen input validation")
++ */
++
++#include <errno.h>
++#include <linux/futex.h>
++#include <sys/time.h>
++
++#include "tst_test.h"
++#include "futextest.h"
++
++static futex_t *futexes;
++
++static struct tcase {
++	int set_wakes;
++	int set_requeues;
++	int exp_val;
++	int exp_errno;
++} tcases[] = {
++	{1, -1, FUTEX_INITIALIZER, EINVAL},
++	{-1, 1, FUTEX_INITIALIZER, EINVAL},
++	{1, 1, FUTEX_INITIALIZER + 1, EAGAIN},
++};
++
++static void verify_futex_cmp_requeue(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++
++	TEST(futex_cmp_requeue(&futexes[0], tc->exp_val, &futexes[1],
++	     tc->set_wakes, tc->set_requeues, 0));
++	if (TST_RET != -1) {
++		tst_res(TFAIL, "futex_cmp_requeue() succeeded unexpectedly");
++		return;
++	}
++
++	if (TST_ERR != tc->exp_errno) {
++		tst_res(TFAIL | TTERRNO,
++			"futex_cmp_requeue() failed unexpectedly, expected %s",
++			tst_strerrno(tc->exp_errno));
++		return;
++	}
++
++	tst_res(TPASS | TTERRNO, "futex_cmp_requeue() failed as expected");
++}
++
++static void setup(void)
++{
++	futexes = SAFE_MMAP(NULL, sizeof(futex_t) * 2, PROT_READ | PROT_WRITE,
++			    MAP_ANONYMOUS | MAP_SHARED, -1, 0);
++
++	futexes[0] = FUTEX_INITIALIZER;
++	futexes[1] = FUTEX_INITIALIZER + 1;
++}
++
++static void cleanup(void)
++{
++	if (futexes)
++		SAFE_MUNMAP((void *)futexes, sizeof(futex_t) * 2);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test = verify_futex_cmp_requeue,
++	.tcnt = ARRAY_SIZE(tcases),
++};
+-- 
+1.8.3.1
 
 
