@@ -1,7 +1,7 @@
 From: Li Wang <liwang@redhat.com>
-Date: Fri, 21 Jun 2019 18:26:26 +0800
-Subject: [LTP] [PATCH v2 1/3] pkey: add syscall numbers for pkey
-Message-ID: <20190621102628.4800-2-liwang@redhat.com>
+Date: Fri, 21 Jun 2019 18:26:28 +0800
+Subject: [LTP] [PATCH v2 3/3] pkey: add pkey02 test
+Message-ID: <20190621102628.4800-4-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,153 +10,171 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- include/lapi/syscalls/aarch64.in   | 3 +++
- include/lapi/syscalls/arm.in       | 3 +++
- include/lapi/syscalls/i386.in      | 3 +++
- include/lapi/syscalls/ia64.in      | 3 +++
- include/lapi/syscalls/powerpc.in   | 3 +++
- include/lapi/syscalls/powerpc64.in | 3 +++
- include/lapi/syscalls/s390.in      | 3 +++
- include/lapi/syscalls/s390x.in     | 3 +++
- include/lapi/syscalls/sparc.in     | 3 +++
- include/lapi/syscalls/sparc64.in   | 3 +++
- include/lapi/syscalls/x86_64.in    | 3 +++
- 11 files changed, 33 insertions(+)
+ runtest/syscalls                           |   1 +
+ testcases/kernel/syscalls/pkeys/.gitignore |   1 +
+ testcases/kernel/syscalls/pkeys/pkey02.c   | 134 +++++++++++++++++++++
+ 3 files changed, 136 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/pkeys/pkey02.c
 
-diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
-index ce6080894..7db6e281c 100644
---- a/include/lapi/syscalls/aarch64.in
-+++ b/include/lapi/syscalls/aarch64.in
-@@ -265,5 +265,8 @@ mlock2 284
- copy_file_range 285
- preadv2 286
- pwritev2 287
-+pkey_mprotect 288
-+pkey_alloc 289
-+pkey_free 290
- pidfd_send_signal 424
- _sysctl 1078
-diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
-index 33168889f..00e99f2b9 100644
---- a/include/lapi/syscalls/arm.in
-+++ b/include/lapi/syscalls/arm.in
-@@ -349,5 +349,8 @@ mlock2 (__NR_SYSCALL_BASE+390)
- copy_file_range (__NR_SYSCALL_BASE+391)
- preadv2 (__NR_SYSCALL_BASE+392)
- pwritev2 (__NR_SYSCALL_BASE+393)
-+pkey_mprotect (__NR_SYSCALL_BASE+394)
-+pkey_alloc (__NR_SYSCALL_BASE+395)
-+pkey_free (__NR_SYSCALL_BASE+396)
- statx (__NR_SYSCALL_BASE+397)
- pidfd_send_signal (__NR_SYSCALL_BASE+424)
-diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
-index 3355b9127..02f3955ba 100644
---- a/include/lapi/syscalls/i386.in
-+++ b/include/lapi/syscalls/i386.in
-@@ -347,5 +347,8 @@ mlock2 376
- copy_file_range 377
- preadv2 378
- pwritev2 379
-+pkey_mprotect 380
-+pkey_alloc 381
-+pkey_free 382
- statx 383
- pidfd_send_signal 424
-diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
-index 9ac81e91e..cf9f73e85 100644
---- a/include/lapi/syscalls/ia64.in
-+++ b/include/lapi/syscalls/ia64.in
-@@ -305,4 +305,7 @@ mlock2 1346
- copy_file_range 1347
- preadv2 1348
- pwritev2 1349
-+pkey_mprotect 1354
-+pkey_alloc 1355
-+pkey_free 1356
- pidfd_send_signal 1448
-diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
-index 488d6dfa9..660165d7a 100644
---- a/include/lapi/syscalls/powerpc.in
-+++ b/include/lapi/syscalls/powerpc.in
-@@ -356,3 +356,6 @@ preadv2 380
- pwritev2 381
- statx 383
- pidfd_send_signal 424
-+pkey_mprotect 386
-+pkey_alloc 384
-+pkey_free 385
-diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
-index 488d6dfa9..660165d7a 100644
---- a/include/lapi/syscalls/powerpc64.in
-+++ b/include/lapi/syscalls/powerpc64.in
-@@ -356,3 +356,6 @@ preadv2 380
- pwritev2 381
- statx 383
- pidfd_send_signal 424
-+pkey_mprotect 386
-+pkey_alloc 384
-+pkey_free 385
-diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
-index 69b49eac0..c304ef4b7 100644
---- a/include/lapi/syscalls/s390.in
-+++ b/include/lapi/syscalls/s390.in
-@@ -338,4 +338,7 @@ mlock2 374
- copy_file_range 375
- preadv2 376
- pwritev2 377
-+pkey_mprotect 384
-+pkey_alloc 385
-+pkey_free 386
- pidfd_send_signal 424
-diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
-index 685c16f68..7d632d1dc 100644
---- a/include/lapi/syscalls/s390x.in
-+++ b/include/lapi/syscalls/s390x.in
-@@ -337,4 +337,7 @@ mlock2 374
- copy_file_range 375
- preadv2 376
- pwritev2 377
-+pkey_mprotect 384
-+pkey_alloc 385
-+pkey_free 386
- pidfd_send_signal 424
-diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
-index e74b48170..ab7204663 100644
---- a/include/lapi/syscalls/sparc.in
-+++ b/include/lapi/syscalls/sparc.in
-@@ -343,4 +343,7 @@ mlock2 356
- copy_file_range 357
- preadv2 358
- pwritev2 359
-+pkey_mprotect 362
-+pkey_alloc 363
-+pkey_free 364
- pidfd_send_signal 424
-diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
-index 577aa9b35..d17dce5cd 100644
---- a/include/lapi/syscalls/sparc64.in
-+++ b/include/lapi/syscalls/sparc64.in
-@@ -319,4 +319,7 @@ mlock2 356
- copy_file_range 357
- preadv2 358
- pwritev2 359
-+pkey_mprotect 362
-+pkey_alloc 363
-+pkey_free 364
- pidfd_send_signal 424
-diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
-index 99d387277..fdb414c10 100644
---- a/include/lapi/syscalls/x86_64.in
-+++ b/include/lapi/syscalls/x86_64.in
-@@ -314,5 +314,8 @@ mlock2 325
- copy_file_range 326
- preadv2 327
- pwritev2 328
-+pkey_mprotect 329
-+pkey_alloc 330
-+pkey_free 331
- statx 332
- pidfd_send_signal 424
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 6ea991f12..fddf071f9 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -722,6 +722,7 @@ mprotect03 mprotect03
+ mprotect04 mprotect04
+ 
+ pkey01 pkey01
++pkey02 pkey02
+ 
+ mq_notify01 mq_notify01
+ mq_notify02 mq_notify02
+diff --git a/testcases/kernel/syscalls/pkeys/.gitignore b/testcases/kernel/syscalls/pkeys/.gitignore
+index 6fd5addb8..2f9ea0a1f 100644
+--- a/testcases/kernel/syscalls/pkeys/.gitignore
++++ b/testcases/kernel/syscalls/pkeys/.gitignore
+@@ -1 +1,2 @@
+ /pkey01
++/pkey02
+diff --git a/testcases/kernel/syscalls/pkeys/pkey02.c b/testcases/kernel/syscalls/pkeys/pkey02.c
+new file mode 100644
+index 000000000..ed6ea3c9d
+--- /dev/null
++++ b/testcases/kernel/syscalls/pkeys/pkey02.c
+@@ -0,0 +1,134 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 Red Hat, Inc.
++ *
++ * Test for Memory Protection Keys on different memory area.
++ */
++
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <unistd.h>
++#include <errno.h>
++#include <stdlib.h>
++#include <sys/syscall.h>
++#include <sys/mman.h>
++#include <sys/wait.h>
++
++#include "pkey.h"
++
++#define TMP_DIR "tmp_pkey"
++#define TEST_FILE TMP_DIR"/testfile"
++#define STR "abcdefghijklmnopqrstuvwxyz12345\n"
++
++static int psize;
++
++static struct tcase {
++	unsigned long flags;
++	unsigned long access_rights;
++} tcases[] = {
++	{0, 0x0},
++	{0, PKEY_DISABLE_ACCESS},
++	{0, PKEY_DISABLE_WRITE},
++};
++
++static void setup(void)
++{
++	int i, fd;
++
++	psize = getpagesize();
++	SAFE_MKDIR(TMP_DIR, 0664);
++	SAFE_MOUNT(TMP_DIR, TMP_DIR, "tmpfs", 0, NULL);
++
++	check_pkey_support();
++
++	fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT, 0664);
++	for (i = 0; i < 128; i++)
++		SAFE_WRITE(1, fd, STR, strlen(STR));
++
++	SAFE_CLOSE(fd);
++}
++
++static void cleanup(void)
++{
++	SAFE_UMOUNT(TMP_DIR);
++	SAFE_RMDIR(TMP_DIR);
++}
++
++static struct mmap_param {
++	int prot;
++	int flags;
++	int fd;
++} mmap_params[] = {
++	{PROT_READ,  MAP_ANONYMOUS | MAP_PRIVATE, -1},
++	{PROT_READ,  MAP_ANONYMOUS | MAP_SHARED, -1},
++	{PROT_READ, MAP_PRIVATE, 0},
++	{PROT_READ, MAP_SHARED, 0},
++	{PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1},
++	{PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1},
++	{PROT_WRITE, MAP_PRIVATE, 0},
++	{PROT_WRITE, MAP_SHARED, 0},
++	{PROT_EXEC, MAP_ANONYMOUS | MAP_PRIVATE, -1},
++	{PROT_EXEC, MAP_ANONYMOUS | MAP_SHARED, -1},
++	{PROT_EXEC, MAP_PRIVATE, 0},
++	{PROT_EXEC, MAP_SHARED, 0},
++	{PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1},
++	{PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1},
++	{PROT_READ | PROT_WRITE, MAP_PRIVATE, 0},
++	{PROT_READ | PROT_WRITE, MAP_SHARED, 0},
++	{PROT_READ | PROT_WRITE | PROT_EXEC, MAP_ANONYMOUS | MAP_PRIVATE, -1},
++	{PROT_READ | PROT_WRITE | PROT_EXEC, MAP_ANONYMOUS | MAP_SHARED, -1},
++	{PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE, 0},
++	{PROT_READ | PROT_WRITE | PROT_EXEC, MAP_SHARED, 0},
++};
++
++static void pkey_tests(int pkey, int prot, int flags, int fd)
++{
++	char *buffer;
++
++	if (fd == 0) {
++		fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT, 0664);
++	}
++
++	buffer = SAFE_MMAP(NULL, psize, prot, flags, fd, 0);
++
++	if (pkey_mprotect(buffer, psize, prot, pkey) == -1)
++		tst_brk(TBROK, "pkey_mprotect failed");
++
++	tst_res(TPASS, "apply pkey to the buffer area success");
++
++	if (fd > 0) {
++		SAFE_CLOSE(fd);
++	}
++
++	SAFE_MUNMAP(buffer, psize);
++}
++
++static void verify_pkey(unsigned int i)
++{
++	int pkey;
++	long unsigned int j;
++
++	struct tcase *tc = &tcases[i];
++	struct mmap_param *mpa;
++
++	for (j = 0; j < ARRAY_SIZE(mmap_params); j++) {
++		mpa = &mmap_params[j];
++
++		pkey = pkey_alloc(tc->flags, tc->access_rights);
++		if (pkey == -1)
++			tst_brk(TBROK, "pkey_alloc failed");
++
++		pkey_tests(pkey, mpa->prot, mpa->flags, mpa->fd);
++
++		if (pkey_free(pkey) == -1)
++			tst_brk(TBROK, "pkey_free failed");
++	}
++}
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.forks_child = 1,
++	.test = verify_pkey,
++	.setup = setup,
++	.cleanup = cleanup,
++};
 -- 
 2.20.1
 
