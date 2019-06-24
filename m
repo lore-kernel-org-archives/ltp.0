@@ -1,83 +1,96 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Mon, 24 Jun 2019 11:52:41 +0300
-Subject: [LTP] [PATCH] syscalls/fanotify13: add test coverage for fsid cache
-	bug
-Message-ID: <20190624085241.32276-1-amir73il@gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 24 Jun 2019 05:57:14 -0400 (EDT)
+Subject: [LTP] [PATCH v2 3/3] pkey: add pkey02 test
+In-Reply-To: <CAEemH2fn9qhKBbYviKHbkDuV40kE=sK8b36-g=X31n5ihhCwtw@mail.gmail.com>
+References: <20190621102628.4800-4-liwang@redhat.com>
+ <1186374967.29667455.1561359397802.JavaMail.zimbra@redhat.com>
+ <CAEemH2chU7KYJida_09RVWDMQRQLyv9igr5-j464SsKQj3svDA@mail.gmail.com>
+ <CAEemH2fn9qhKBbYviKHbkDuV40kE=sK8b36-g=X31n5ihhCwtw@mail.gmail.com>
+Message-ID: <1232452812.29707516.1561370234695.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This bug was reported by syzbot:
-https://lore.kernel.org/linux-fsdevel/CAOQ4uxhsnOXXVCuOT4p4c_koBMFfprWwdtCPGNGhzprFaJZwRA@mail.gmail.com/T/#t
 
-And fixed by kernel commit
-c285a2f01d69 ("fanotify: update connector fsid cache on add mark")
 
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
----
+----- Original Message -----
+> On Mon, Jun 24, 2019 at 3:27 PM Li Wang <liwang@redhat.com> wrote:
+> 
+> >
+> >
+> > On Mon, Jun 24, 2019 at 2:56 PM Jan Stancek <jstancek@redhat.com> wrote:
+> >
+> >>
+> >>
+> >> ----- Original Message -----
+> >> > Signed-off-by: Li Wang <liwang@redhat.com>
+> >> > +
+> >> > +static void pkey_tests(int pkey, int prot, int flags, int fd)
+> >> > +{
+> >> > +     char *buffer;
+> >> > +
+> >> > +     if (fd == 0) {
+> >> > +             fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT, 0664);
+> >> > +     }
+> >> > +
+> >> > +     buffer = SAFE_MMAP(NULL, psize, prot, flags, fd, 0);
+> >> > +
+> >> > +     if (pkey_mprotect(buffer, psize, prot, pkey) == -1)
+> >> > +             tst_brk(TBROK, "pkey_mprotect failed");
+> >> > +
+> >> > +     tst_res(TPASS, "apply pkey to the buffer area success");
+> >> > +
+> >> > +     if (fd > 0) {
+> >> > +             SAFE_CLOSE(fd);
+> >> > +     }
+> >> > +
+> >> > +     SAFE_MUNMAP(buffer, psize);
+> >> > +}
+> >> > +
+> >>
+> >> Hi,
+> >>
+> >> pkey02 doesn't try to read/write as pkey01, but otherwise two tests look
+> >> very similar.
+> >>
+> >> Could we try to read/write here as well for all combinations of map flags?
+> >> Then pkey01 could be dropped since pkey02 would cover more than just 1
+> >> combination.
+> >> Or is there a different reason behind separate tests, that I'm missing?
+> >>
+> >>
+> > The pkey02 is a follow new test idea(test more types of memory) after I
+> > completed pkey01.
+> >
+> > Yes, the diffenrence bettwen them is pkey02 cover more map flags but not
+> > do R/W verification. That's because I'm hoping to add {0, 0x0} to the test
+> > which does not trigger SIGSEGV in pkey02, it seems a bit tricky to
+> > distinguish the SIGSEGV is come from 0x0(if bug there)
+> > or PKEY_DISABLE_ACCESS progress.
+> >
+> >
+> Well, a smple way I can find is to remove the {0, 0x0} from struct tcase,
+> and test the access right 0x0 in lastly.
 
-Cyril,
+You could also keep {0, 0x0}, but extend struct with "int fault_expected",
+and set it to 0/1 depending on flags.
 
-Here is a re-send of the patch you missed.
-I also added the kernel fix commit for reference.
+> 
+> So, what do you think about the new key02(merge key01 and old key02) in
+> this attatchment?
 
-Thanks,
-Amir.
+That works too. Some comments below:
 
- .../kernel/syscalls/fanotify/fanotify13.c     | 20 +++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+	if (fd > 0) {
+		SAFE_CLOSE(fd);
+	}
+0 is valid fd, brackets are not needed.
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify13.c b/testcases/kernel/syscalls/fanotify/fanotify13.c
-index 3e4778e68..e5681c804 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify13.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify13.c
-@@ -85,6 +85,7 @@ static struct test_case_t {
- 	}
- };
- 
-+static int nofid_fd;
- static int fanotify_fd;
- static char events_buf[BUF_SIZE];
- static struct event_t event_set[EVENT_MAX];
-@@ -281,21 +282,32 @@ out:
- 
- static void do_setup(void)
- {
--	int fd;
--
- 	/* Check for kernel fanotify support */
--	fd = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF, O_RDONLY);
--	SAFE_CLOSE(fd);
-+	nofid_fd = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF, O_RDONLY);
- 
- 	/* Create file and directory objects for testing */
- 	create_objects();
- 
-+	/*
-+	 * Create a mark on first inode without FAN_REPORT_FID, to test
-+	 * uninitialized connector->fsid cache. This mark remains for all test
-+	 * cases and is not expected to get any events (no writes in this test).
-+	 */
-+	if (fanotify_mark(nofid_fd, FAN_MARK_ADD, FAN_CLOSE_WRITE, AT_FDCWD,
-+			  FILE_PATH_ONE) == -1) {
-+		tst_brk(TBROK | TERRNO,
-+			"fanotify_mark(%d, FAN_MARK_ADD, FAN_CLOSE_WRITE, "
-+			"AT_FDCWD, "FILE_PATH_ONE") failed",
-+			nofid_fd);
-+	}
-+
- 	/* Get the filesystem fsid and file handle for each created object */
- 	get_object_stats();
- }
- 
- static void do_cleanup(void)
- {
-+	SAFE_CLOSE(nofid_fd);
- 	if (fanotify_fd > 0)
- 		SAFE_CLOSE(fanotify_fd);
- }
--- 
-2.17.1
+All tst_* functions that report failures should also have TERRNO.
 
+tst_res(TFAIL, "Child unexpectedly ended") could print also exit code.
+
+Regards,
+Jan
