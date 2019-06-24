@@ -1,41 +1,51 @@
-From: Li Wang <liwan@redhat.com>
-Date: Mon, 24 Jun 2019 10:56:02 +0800
-Subject: [LTP] [PATCH] syscalls/clock_adjtime: Fix unsupported WARN
-In-Reply-To: <20190621095134.12604-1-pifang@redhat.com>
-References: <20190621095134.12604-1-pifang@redhat.com>
-Message-ID: <CAEemH2dJAqJRY4ZM_oJ+rjoYOkqGQm=At2boHRfJZ=RLfP_+yg@mail.gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 24 Jun 2019 02:56:37 -0400 (EDT)
+Subject: [LTP] [PATCH v2 3/3] pkey: add pkey02 test
+In-Reply-To: <20190621102628.4800-4-liwang@redhat.com>
+References: <20190621102628.4800-4-liwang@redhat.com>
+Message-ID: <1186374967.29667455.1561359397802.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Jun 21, 2019 at 5:51 PM Ping Fang <pifang@redhat.com> wrote:
 
-> When clock_adjtime is not implemented, cleanup will
-> still try this call, then enter tst_cvres WARN handler.
->
-> tst_test.c:1096: INFO: Timeout per run is 0h 05m 00s
-> ../../../../include/tst_safe_clocks.h:57: CONF: syscall(-1)
-> __NR_clock_adjtime not supported
-> ../../../../include/tst_safe_clocks.h:57: CONF: syscall(-1)
-> __NR_clock_adjtime not supported
-> ../../../../include/tst_safe_clocks.h:60: WARN: clock_adjtime02.c:211
-> clock_adjtime() failed -1: ENOSYS
->
-> Summary:
-> passed   0
-> failed   0
-> skipped  1
-> warnings 1
->
-> Signed-off-by: Ping Fang <pifang@redhat.com>
->
 
-Reviewed-by: Li Wang <liwang@redhat.com>
--- 
+----- Original Message -----
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> +
+> +static void pkey_tests(int pkey, int prot, int flags, int fd)
+> +{
+> +	char *buffer;
+> +
+> +	if (fd == 0) {
+> +		fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT, 0664);
+> +	}
+> +
+> +	buffer = SAFE_MMAP(NULL, psize, prot, flags, fd, 0);
+> +
+> +	if (pkey_mprotect(buffer, psize, prot, pkey) == -1)
+> +		tst_brk(TBROK, "pkey_mprotect failed");
+> +
+> +	tst_res(TPASS, "apply pkey to the buffer area success");
+> +
+> +	if (fd > 0) {
+> +		SAFE_CLOSE(fd);
+> +	}
+> +
+> +	SAFE_MUNMAP(buffer, psize);
+> +}
+> +
+
+Hi,
+
+pkey02 doesn't try to read/write as pkey01, but otherwise two tests look
+very similar.
+
+Could we try to read/write here as well for all combinations of map flags?
+Then pkey01 could be dropped since pkey02 would cover more than just 1 combination.
+Or is there a different reason behind separate tests, that I'm missing?
+
 Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190624/4e6e3ba5/attachment.html>
+Jan
