@@ -1,330 +1,88 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Mon, 24 Jun 2019 14:09:11 +0800
-Subject: [LTP] [PATCH] syscalls/prctl07.c: New test for prctl() with
-	PR_CAP_AMBIENT
-Message-ID: <1561356551-2970-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 24 Jun 2019 16:28:12 +0800
+Subject: [LTP] [PATCH v2 3/3] pkey: add pkey02 test
+In-Reply-To: <CAEemH2chU7KYJida_09RVWDMQRQLyv9igr5-j464SsKQj3svDA@mail.gmail.com>
+References: <20190621102628.4800-4-liwang@redhat.com>
+ <1186374967.29667455.1561359397802.JavaMail.zimbra@redhat.com>
+ <CAEemH2chU7KYJida_09RVWDMQRQLyv9igr5-j464SsKQj3svDA@mail.gmail.com>
+Message-ID: <CAEemH2fn9qhKBbYviKHbkDuV40kE=sK8b36-g=X31n5ihhCwtw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Since Linux 4.3, PR_CAP_AMBIENT has been supported. We can read or change
-the ambient capability set of the calling thread by using the following
-option: PR_CAP_AMBIENT_RAISE, PR_CAP_AMBIENT_LOWER,PR_CAP_AMBIENT_IS_SET,
-PR_CAP_AMBIENT_CLEAR_ALL.
+On Mon, Jun 24, 2019 at 3:27 PM Li Wang <liwang@redhat.com> wrote:
 
-links:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5831905
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=32ae976
+>
+>
+> On Mon, Jun 24, 2019 at 2:56 PM Jan Stancek <jstancek@redhat.com> wrote:
+>
+>>
+>>
+>> ----- Original Message -----
+>> > Signed-off-by: Li Wang <liwang@redhat.com>
+>> > +
+>> > +static void pkey_tests(int pkey, int prot, int flags, int fd)
+>> > +{
+>> > +     char *buffer;
+>> > +
+>> > +     if (fd == 0) {
+>> > +             fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT, 0664);
+>> > +     }
+>> > +
+>> > +     buffer = SAFE_MMAP(NULL, psize, prot, flags, fd, 0);
+>> > +
+>> > +     if (pkey_mprotect(buffer, psize, prot, pkey) == -1)
+>> > +             tst_brk(TBROK, "pkey_mprotect failed");
+>> > +
+>> > +     tst_res(TPASS, "apply pkey to the buffer area success");
+>> > +
+>> > +     if (fd > 0) {
+>> > +             SAFE_CLOSE(fd);
+>> > +     }
+>> > +
+>> > +     SAFE_MUNMAP(buffer, psize);
+>> > +}
+>> > +
+>>
+>> Hi,
+>>
+>> pkey02 doesn't try to read/write as pkey01, but otherwise two tests look
+>> very similar.
+>>
+>> Could we try to read/write here as well for all combinations of map flags?
+>> Then pkey01 could be dropped since pkey02 would cover more than just 1
+>> combination.
+>> Or is there a different reason behind separate tests, that I'm missing?
+>>
+>>
+> The pkey02 is a follow new test idea(test more types of memory) after I
+> completed pkey01.
+>
+> Yes, the diffenrence bettwen them is pkey02 cover more map flags but not
+> do R/W verification. That's because I'm hoping to add {0, 0x0} to the test
+> which does not trigger SIGSEGV in pkey02, it seems a bit tricky to
+> distinguish the SIGSEGV is come from 0x0(if bug there)
+> or PKEY_DISABLE_ACCESS progress.
+>
+>
+Well, a smple way I can find is to remove the {0, 0x0} from struct tcase,
+and test the access right 0x0 in lastly.
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- configure.ac                               |   2 +
- include/lapi/prctl.h                       |   8 +
- include/lapi/securebits.h                  |  15 ++
- runtest/syscalls                           |   1 +
- testcases/kernel/syscalls/prctl/.gitignore |   1 +
- testcases/kernel/syscalls/prctl/Makefile   |   2 +
- testcases/kernel/syscalls/prctl/prctl07.c  | 196 +++++++++++++++++++++
- 7 files changed, 225 insertions(+)
- create mode 100644 include/lapi/securebits.h
- create mode 100644 testcases/kernel/syscalls/prctl/prctl07.c
+So, what do you think about the new key02(merge key01 and old key02) in
+this attatchment?
 
-diff --git a/configure.ac b/configure.ac
-index f78db90ce..cf1e121bd 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -33,6 +33,7 @@ AC_PROG_YACC
- AC_PREFIX_DEFAULT(/opt/ltp)
- 
- AC_CHECK_HEADERS([ \
-+    cap-ng.h \
-     ifaddrs.h \
-     keyutils.h \
-     linux/can.h \
-@@ -47,6 +48,7 @@ AC_CHECK_HEADERS([ \
-     linux/module.h \
-     linux/netlink.h \
-     linux/seccomp.h \
-+    linux/securebits.h \
-     linux/userfaultfd.h \
-     mm.h \
-     netinet/sctp.h \
-diff --git a/include/lapi/prctl.h b/include/lapi/prctl.h
-index 54b3da20f..8ee492259 100644
---- a/include/lapi/prctl.h
-+++ b/include/lapi/prctl.h
-@@ -29,4 +29,12 @@
- # define PR_GET_NO_NEW_PRIVS 39
- #endif
- 
-+#ifndef PR_CAP_AMBIENT
-+# define PR_CAP_AMBIENT             47
-+# define PR_CAP_AMBIENT_IS_SET      1
-+# define PR_CAP_AMBIENT_RAISE       2
-+# define PR_CAP_AMBIENT_LOWER       3
-+# define PR_CAP_AMBIENT_CLEAR_ALL   4
-+#endif
-+
- #endif /* LAPI_PRCTL_H__ */
-diff --git a/include/lapi/securebits.h b/include/lapi/securebits.h
-new file mode 100644
-index 000000000..9c9216e13
---- /dev/null
-+++ b/include/lapi/securebits.h
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-+ */
-+#ifndef LAPI_SECUREBITS_H
-+#define LAPI_SECUREBITS_H
-+
-+# ifdef HAVE_LINUX_SECUREBITS_H
-+#  include <linux/securebits.h>
-+# endif /* HAVE_LINUX_SECUREBITS_H*/
-+# ifndef SECBIT_NO_CAP_AMBIENT_RAISE
-+#  define SECBIT_NO_CAP_AMBIENT_RAISE  6
-+# endif
-+#endif /* LAPI_SECUREBITS_H */
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 742739c2c..4a03c5818 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -868,6 +868,7 @@ prctl03 prctl03
- prctl04 prctl04
- prctl05 prctl05
- prctl06 prctl06
-+prctl07 prctl07
- 
- pread01 pread01
- pread01_64 pread01_64
-diff --git a/testcases/kernel/syscalls/prctl/.gitignore b/testcases/kernel/syscalls/prctl/.gitignore
-index f52f6f665..b913d1798 100644
---- a/testcases/kernel/syscalls/prctl/.gitignore
-+++ b/testcases/kernel/syscalls/prctl/.gitignore
-@@ -4,3 +4,4 @@
- /prctl04
- /prctl05
- /prctl06
-+/prctl07
-diff --git a/testcases/kernel/syscalls/prctl/Makefile b/testcases/kernel/syscalls/prctl/Makefile
-index bd617d806..6bb839a7d 100644
---- a/testcases/kernel/syscalls/prctl/Makefile
-+++ b/testcases/kernel/syscalls/prctl/Makefile
-@@ -20,4 +20,6 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
-+LDLIBS			+= -lcap-ng
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/prctl/prctl07.c b/testcases/kernel/syscalls/prctl/prctl07.c
-new file mode 100644
-index 000000000..a7c8596a3
---- /dev/null
-+++ b/testcases/kernel/syscalls/prctl/prctl07.c
-@@ -0,0 +1,196 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-+ *
-+ * Test the PR_CAP_AMBIENT of prctl(2).
-+ * Reads or changes the ambient capability set of the calling thread,
-+ * according to the value of arg2, which must be one of the following:
-+ * 1)PR_CAP_AMBIENT_RAISE:
-+ * The capability specified in arg3 is added to the ambient set.
-+ * The specified capability must already be present in both pE and pI.
-+ * If we set SECBIT_NO_CAP_AMBIENT_RAISE bit, raise option will be rejected
-+ * and retrun EPERM. We also raise a CAP twice.
-+ * 2)PR_CAP_AMBIENT_LOWER:
-+ * The capability specified in arg3 is removed from the ambient set.
-+ * Even though this cap is not in set, it also should return 0.
-+ * 3)PR_CAP_AMBIENT_IS_SET:
-+ * Returns 1 if the capability in arg3 is in the ambient set and 0 if it
-+ * is not.
-+ * 4)PR_CAP_AMBIENT_CLEAR_ALL:
-+ * All capabilities will be removed from the ambient set. This operation
-+ * requires setting arg3 to zero.
-+ */
-+
-+#include <sys/prctl.h>
-+#include <string.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sys/capability.h>
-+#include <linux/capability.h>
-+#include "config.h"
-+#if HAVE_CAP_NG_H
-+#include <cap-ng.h>
-+#endif
-+#include "lapi/syscalls.h"
-+#include "lapi/prctl.h"
-+#include "lapi/securebits.h"
-+#include "tst_test.h"
-+
-+#if HAVE_CAP_NG_H
-+static void check_proc_capamb(char *message, char *path, int flag)
-+{
-+	unsigned int cap_num;
-+	char CapAmb[20];
-+
-+	SAFE_FILE_LINES_SCANF(path, "CapAmb:%s", CapAmb);
-+	cap_num = atoi(CapAmb);
-+	if (flag == 2) {
-+		if (cap_num == 0)
-+			tst_res(TPASS,
-+				"%s, %s CapAmb has been clear as %d",
-+				message, path, cap_num);
-+		else
-+			tst_res(TFAIL,
-+				"%s, %s CapAmb has been clear expect 0, got %d",
-+				message, path, cap_num);
-+		return;
-+	}
-+
-+	if (cap_num ==  400)
-+		tst_res(flag ? TPASS : TFAIL,
-+			"%s, CapAmb in %s has CAP_NET_BIND_SERVICE",
-+			message, path);
-+	else
-+		tst_res(flag ? TFAIL : TPASS,
-+			"%s, CapAmb in %s doesn't have CAP_NET_BIND_SERVICE",
-+			message, path);
-+}
-+
-+static void check_cap_raise(unsigned int cap, char *message, int fail_flag)
-+{
-+	TEST(prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_RAISE, cap, 0, 0, 0));
-+	switch (fail_flag) {
-+	case 0:
-+	if (TST_RET == 0)
-+		tst_res(TPASS, "PR_CAP_AMBIENT_RAISE %s succeeded", message);
-+	else
-+		tst_res(TFAIL, "PR_CAP_AMBIENT_RAISE %s failed unexpectedly",
-+			message);
-+	break;
-+	case 1:
-+	if (TST_RET == 0)
-+		tst_res(TFAIL,
-+			"PR_CAP_AMBIENT_RAISE succeeded unexpectedly %s",
-+			message);
-+	else if (TST_ERR == EPERM)
-+		tst_res(TPASS,
-+			"PR_CAP_AMBIENT_RAISE failed with EPERM %s", message);
-+	else
-+		tst_res(TFAIL | TERRNO,
-+			"PR_CAP_AMBIENT_RAISE failed %s", message);
-+	break;
-+	}
-+}
-+
-+static void check_cap_is_set(unsigned int cap, char *message, int val)
-+{
-+	TEST(prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_IS_SET, cap, 0, 0, 0));
-+	if (TST_RET == 1)
-+		tst_res(val ? TPASS : TFAIL,
-+			"PR_CAP_AMBIENT_IS_SET %s in AmbientCap", message);
-+	else if (TST_RET == 0)
-+		tst_res(val ? TFAIL : TPASS,
-+			"PR_CAP_AMBIENT_IS_SET %s not in AmbientCap", message);
-+	else
-+		tst_res(TFAIL | TERRNO, "PR_CAP_AMBIENT_IS_SET failed");
-+}
-+
-+static void check_cap_lower(unsigned int cap, char *message)
-+{
-+	TEST(prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_LOWER, cap, 0, 0, 0));
-+	if (TST_RET == -1)
-+		tst_res(TFAIL | TERRNO,
-+			"PR_CAP_AMBIENT_LOWER %s failed", message);
-+	else
-+		tst_res(TPASS, "PR_CAP_AMBIENT_LOWER %s succeeded", message);
-+}
-+#endif
-+
-+static void verify_prctl(void)
-+{
-+#if HAVE_CAP_NG_H
-+	pid_t pid;
-+	char path[50];
-+
-+	pid = getpid();
-+	sprintf(path, "/proc/%d/status", pid);
-+	check_proc_capamb("At the beginning", path, 0);
-+
-+	capng_get_caps_process();
-+	capng_update(CAPNG_DROP, CAPNG_INHERITABLE, CAP_NET_BIND_SERVICE);
-+	if (capng_apply(CAPNG_SELECT_CAPS) != 0)
-+		return;
-+	check_cap_raise(CAP_NET_BIND_SERVICE, "on non-inheritable cap", 1);
-+
-+	capng_update(CAPNG_ADD, CAPNG_INHERITABLE, CAP_NET_RAW);
-+	capng_update(CAPNG_DROP, CAPNG_PERMITTED, CAP_NET_RAW);
-+	capng_update(CAPNG_DROP, CAPNG_EFFECTIVE, CAP_NET_RAW);
-+	if (capng_apply(CAPNG_SELECT_CAPS) != 0)
-+		return;
-+	check_cap_raise(CAP_NET_RAW, "on non-permitted cap", 1);
-+
-+	capng_update(CAPNG_ADD, CAPNG_INHERITABLE, CAP_NET_BIND_SERVICE);
-+	if (capng_apply(CAPNG_SELECT_CAPS) != 0)
-+		return;
-+	prctl(PR_SET_SECUREBITS, SECBIT_NO_CAP_AMBIENT_RAISE);
-+	check_cap_raise(CAP_NET_BIND_SERVICE, "because of NO_RAISE_SECBIT set", 1);
-+	prctl(PR_SET_SECUREBITS, 0);
-+
-+	check_cap_raise(CAP_NET_BIND_SERVICE, "CAP_NET_BIND_SERVICE", 0);
-+	/*Even this cap has been in ambient set, raise succeeds and return 0*/
-+	check_cap_raise(CAP_NET_BIND_SERVICE, "CAP_NET_BIND_SERIVCE twice", 0);
-+
-+	check_proc_capamb("After PR_CAP_AMBIENT_RAISE", path, 1);
-+
-+	check_cap_is_set(CAP_NET_BIND_SERVICE, "CAP_NET_BIND_SERVICE was", 1);
-+	check_cap_is_set(CAP_NET_RAW, "CAP_NET_RAW was", 0);
-+	/*move a cap what was not in ambient set, it also return 0*/
-+	check_cap_lower(CAP_NET_RAW, "CAP_NET_RAW(it wasn't in ambient set)");
-+	check_cap_lower(CAP_NET_BIND_SERVICE, "CAP_NET_BIND_SERVICE(it was in ambient set)");
-+	check_proc_capamb("After PR_CAP_AMBIENT_LORWER", path, 0);
-+
-+	prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_RAISE, CAP_NET_BIND_SERVICE, 0, 0, 0);
-+	tst_res(TINFO, "raise cap for clear");
-+	TEST(prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_CLEAR_ALL, 0, 0, 0, 0));
-+	if (TST_RET == 0)
-+		tst_res(TPASS, "PR_CAP_AMBIENT_CLEAR ALL succeeded");
-+	else
-+		tst_res(TFAIL | TERRNO, "PR_AMBIENT_CLEAR_ALL failed");
-+
-+	check_proc_capamb("After PR_CAP_AMBIENT_CLEAN_ALL", path, 2);
-+#else
-+	tst_res(TCONF, "system doesn't have cap-ng library");
-+#endif
-+}
-+
-+static void setup(void)
-+{
-+	TEST(prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_CLEAR_ALL, 0, 0, 0, 0));
-+	if (TST_RET == 0) {
-+		tst_res(TINFO, "kernel supports PR_CAP_AMBIENT");
-+		return;
-+	}
-+
-+	if (TST_ERR == EINVAL)
-+		tst_brk(TCONF, "kernel doesn't support PR_CAP_AMBIENT");
-+
-+	tst_brk(TBROK | TERRNO,
-+		"current environment doesn't permit PR_CAP_AMBIENT");
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = verify_prctl,
-+	.needs_root = 1,
-+};
 -- 
-2.18.1
-
-
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190624/8f076211/attachment-0001.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: pkey02_new.c
+Type: text/x-csrc
+Size: 4325 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190624/8f076211/attachment-0001.c>
