@@ -1,123 +1,68 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 25 Jun 2019 17:33:26 +0800
-Subject: [LTP] [PATCH v3 2/2] pkey: add test for memory protection keys
-In-Reply-To: <123680949.29869386.1561453262485.JavaMail.zimbra@redhat.com>
-References: <20190625070737.30408-1-liwang@redhat.com>
- <20190625070737.30408-2-liwang@redhat.com>
- <20190625070737.30408-3-liwang@redhat.com>
- <123680949.29869386.1561453262485.JavaMail.zimbra@redhat.com>
-Message-ID: <CAEemH2fkzKd0a3oRasBy46KMtveg1UekUbYOh=6ne1W5J1a4yQ@mail.gmail.com>
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date: Tue, 25 Jun 2019 18:03:51 +0800
+Subject: [LTP] [PATCH] runpwtests03: use expr to calculate total_cpus for
+ runpwtests03
+Message-ID: <20190625100351.19800-1-po-hsu.lin@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Jun 25, 2019 at 5:01 PM Jan Stancek <jstancek@redhat.com> wrote:
+The arithmetic operation (( total_cpus-=1 )) does not work for dash,
+which was symbolic linked to /bin/sh on some OS like Ubuntu.
 
->
-> ----- Original Message -----
-> > +
-> > +#ifndef PKEYS_H
-> > +#define PKEYS_H
-> > +
-> > +#include "tst_test.h"
-> > +#include "lapi/syscalls.h"
-> > +
-> > +#ifndef PKEY_DISABLE_ACCESS
-> > +# define PKEY_DISABLE_ACCESS 0x1
-> > +# define PKEY_DISABLE_WRITE  0x2
-> > +#endif
-> > +
-> > +#ifndef HAVE_PKEY_MPROTECT
-> > +static inline int pkey_mprotect(void *addr, size_t len, int prot, int
-> pkey)
-> > +{
-> > +     return tst_syscall(SYS_pkey_mprotect, addr, len, prot, pkey);
->
-> Hi,
->
-> This should be __NR_*:
->
+In such case, people will see error like:
+  runpwtests03.sh: total_cpus-=1: not found
 
-Exactly. Sorry about that mistake.
+And this further leads to access for a non-existing file and cause
+false-positive result in the end:
+  runpwtests03.sh: cannot create
+  /sys/devices/system/cpu/cpu8/cpufreq/scaling_governor: Directory nonexistent
+  runpwtests03.sh: FAIL: Unable to set governor -- powersave for cpu8
+  Power_Management03 2 TFAIL: Changing governors
 
+Use expr instead for fix this issue.
 
->
-> In file included from pkey01.c:32:
-> pkey.h: In function ?pkey_mprotect?:
-> pkey.h:20: error: ?SYS_pkey_mprotect? undeclared (first use in this
-> function)
-> pkey.h:20: error: (Each undeclared identifier is reported only once
-> pkey.h:20: error: for each function it appears in.)
-> pkey.h: In function ?pkey_alloc?:
-> pkey.h:25: error: ?SYS_pkey_alloc? undeclared (first use in this function)
-> pkey.h: In function ?pkey_free?:
-> pkey.h:30: error: ?SYS_pkey_free? undeclared (first use in this function)
->
-> > +static void setup(void)
-> > +{
-> > +     int i, fd;
-> > +
-> > +     if (access("/proc/sys/vm/nr_hugepages", F_OK)) {
-> > +             tst_res(TINFO, "Huge page is not supported");
-> > +             size = getpagesize();
-> > +             no_hugepage = 1;
-> > +     } else {
-> > +             SAFE_FILE_PRINTF("/proc/sys/vm/nr_hugepages", "%d", 1);
->
-> There are 2 problems here, both related to fact that this file exists,
-> but may return EOPNOTSUPP on read/write.
->
-> 1. save_restore should ignore also read/open errors if path is prefixed
-> with '?'
->    I'll send this separately.
->
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+---
+ testcases/kernel/power_management/runpwtests03.sh | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-Thank you for that patch.
-
-
-
->
-> 2. SAFE_FILE_PRINTF in pkey01.c shouldn't be safe, because we need to
-> somehow
->    detect that write worked
->
-
-Yes, we should verify if that value has been wrote.
-
->
-> # ls -la /proc/sys/vm/nr_hugepages
-> -rw-r--r--. 1 root root 0 Jun 25 04:12 /proc/sys/vm/nr_hugepages
->
-> # cat /proc/sys/vm/nr_hugepages
-> cat: /proc/sys/vm/nr_hugepages: Operation not supported
->
-> > +static struct tst_test test = {
-> > +     .tcnt = ARRAY_SIZE(tcases),
-> > +     .forks_child = 1,
-> > +     .test = verify_pkey,
-> > +     .setup = setup,
-> > +     .cleanup = cleanup,
-> > +     .save_restore = save_restore,
->
-> .needs_root = 1 as well, since we write to /proc and mount tmpfs
->
-
-Agree.
-
->
-> Rest looks good to me, but I haven't found yet system that could run the
-> test.
->
-> Regards,
-> Jan
->
-
-
+diff --git a/testcases/kernel/power_management/runpwtests03.sh b/testcases/kernel/power_management/runpwtests03.sh
+index 11197937f..3fb85d273 100755
+--- a/testcases/kernel/power_management/runpwtests03.sh
++++ b/testcases/kernel/power_management/runpwtests03.sh
+@@ -25,8 +25,7 @@ export TST_TOTAL=4
+ . pm_include.sh
+ 
+ check_cpufreq_sysfs_files() {
+-	total_cpus=$(tst_ncpus)
+-	(( total_cpus-=1 ))
++	total_cpus=`expr $(tst_ncpus) - 1`
+ 	RC=0
+ 
+ 	for cpu in $(seq 0 "${total_cpus}" )
+@@ -51,8 +50,7 @@ check_cpufreq_sysfs_files() {
+ change_govr() {
+ 	available_govr=$(get_supporting_govr)
+ 
+-	total_cpus=$(tst_ncpus)
+-	(( total_cpus-=1 ))
++	total_cpus=`expr $(tst_ncpus) - 1`
+ 	RC=0
+ 
+ 	for cpu in $(seq 0 "${total_cpus}" )
+@@ -79,8 +77,7 @@ change_freq() {
+ 	available_govr=$(get_supporting_govr)
+ 	RC=0
+ 
+-	total_cpus=$(tst_ncpus)
+-	(( total_cpus-=1 ))
++	total_cpus=`expr $(tst_ncpus) - 1`
+ 
+ 	if ( echo ${available_govr} | grep -i "userspace" \
+ 		>/dev/null 2>&1 ); then
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190625/cc81287a/attachment.html>
+2.17.1
+
