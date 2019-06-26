@@ -1,67 +1,75 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 26 Jun 2019 05:59:37 -0400 (EDT)
-Subject: [LTP] [PATCH v4 2/2] pkey: add test for memory protection keys
-In-Reply-To: <CAEemH2d_7fq2RxEwZEMSUgErM7XG26RTsV1ogLTiLvALc810Gw@mail.gmail.com>
-References: <20190626071538.29486-1-liwang@redhat.com>
- <20190626071538.29486-2-liwang@redhat.com>
- <285629943.30156546.1561537194409.JavaMail.zimbra@redhat.com>
- <CAEemH2d_7fq2RxEwZEMSUgErM7XG26RTsV1ogLTiLvALc810Gw@mail.gmail.com>
-Message-ID: <1695359151.30173908.1561543177520.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 26 Jun 2019 13:36:29 +0200
+Subject: [LTP] Bug Report: fs_fill: fails on btrfs with "ENOSPC" when
+ disk size = 512M
+In-Reply-To: <a361073f-3fbd-13af-b688-01da6b443b22@windriver.com>
+References: <a361073f-3fbd-13af-b688-01da6b443b22@windriver.com>
+Message-ID: <20190626113629.GA13189@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+Not being able to delete a file on a filled filesystem sounds like a
+filesystem bug to me. CCying Btrfs mailing list.
 
------ Original Message -----
-> On Wed, Jun 26, 2019 at 4:20 PM Jan Stancek <jstancek@redhat.com> wrote:
+>       Description:
 > 
-> >
-> > ----- Original Message -----
-> > > +
-> > > +static void setup(void)
-> > > +{
-> > > +     int i, fd;
-> > > +
-> > > +     if (access(PATH_VM_NRHPS, F_OK)) {
-> > > +             tst_res(TINFO, "Huge page is not supported");
-> > > +             size = getpagesize();
-> > > +             no_hugepage = 1;
-> > > +     } else {
-> > > +             int val;
-> > > +
-> > > +             SAFE_FILE_PRINTF(PATH_VM_NRHPS, "%d", 1);
-> >
-> > This is still SAFE write, which may trigger TBROK:
-> >
-> > # ./pkey01
-> > tst_test.c:1100: INFO: Timeout per run is 0h 05m 00s
-> > safe_file_ops.c:301: BROK: Failed to close FILE
-> > '/proc/sys/vm/nr_hugepages' at pkey01.c:67: EOPNOTSUPP
-> > safe_macros.c:773: WARN: pkey01.c:91: umount(tmp_pkey) failed: ENOENT
-> > safe_macros.c:184: WARN: pkey01.c:92: rmdir(tmp_pkey) failed: ENOENT
-> >
+> fs_fill fails on Btrfs when /dev/loop//*size = 512M*/.
+> I tested other size, 256M 1G, all passed.
 > 
-> Er, sorry about still not working here.
 > 
-> If a system(e.g PowerKVM guest) configured with NO huge page support, then
-> the file '/proc/sys/vm/nr_hugepages' exist but EOPNOTSUPP to read/write. In
-> this key01, perhaps I shouldn't use the "/proc/.../nr_hugepages" to detect
-> that at the beginning.
+>       Kernel:
 > 
-> Seems the correct way is to use "/sys/kernel/mm/hugepages/" for huge page
-> detecting and leave the SAFE_FILE_* still in setup(). Because we need to
-> catch the "/proc/.../nr_hugepages" open/close or read/write issue in
-> testing.
+> v5.2-rc1, qemux86-64
+> 
+> |# make -j40 ARCH=x86_64 CROSS_COMPILE=x86-64-gcc use qemu to bootup kernel |
+> 
+> 
+>       LTP:
+> 
+> master branch: date 20190625
+> 
+> 
+>       Reproduce:
+> 
+> |build ltp source and cp ltp all outputs to qemu # vi runltp in 
+> function: create_block() dd if=/dev/zero of=${TMP}/test.img bs=1024 
+> count=262144 ---> dd if=/dev/zero of=${TMP}/test.img bs=1024 
+> count=524288 # runltp -f fs -s fs_fill |
+> 
+> 
+>       Issue:
+> 
+> The issue maybe not reproduced everytime but four fifths chance.
+> 
+> |safe_macros.c:358: BROK: fs_fill.c:67: unlink(mntpoint/thread9/file0) 
+> failed: ENOSPC safe_macros.c:358: BROK: fs_fill.c:67: 
+> unlink(mntpoint/thread4/file0) failed: ENOSPC [ 154.762502] BTRFS 
+> warning (device loop0): could not allocate space for a delete; will 
+> truncate on mount [ 155.691577] BTRFS warning (device loop0): could not 
+> allocate space for a delete; will truncate on mount [ 156.017697] BTRFS 
+> warning (device loop0): could not allocate space for a delete; will 
+> truncate on mount |
+> 
+> 
+>       Analysis:
+> 
+> One new kernel commit contained in v5.2-rc1 introduces the issue.
+> 
+> |commit c8eaeac7b734347c3afba7008b7af62f37b9c140 Author: Josef Bacik 
+> <josef@toxicpanda.com> Date: Wed Apr 10 15:56:10 2019 -0400 btrfs: 
+> reserve delalloc metadata differently ...|
+> 
+> 
+> Anyone's reply will be appreciated.
+> 
+> --Hongzhi
+> 
+> ||
 
-That should work, I see we used that in some tests already.
-
-> 
-> What do you think? Should we mask the EOPNOTSUPP as a TCONF skipping or
-> others?
-> 
-> --
-> Regards,
-> Li Wang
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
