@@ -1,53 +1,50 @@
-From: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date: Wed, 26 Jun 2019 16:17:35 +0800
-Subject: [LTP] [PATCH] runpwtests03: fix for module name retrieval
-Message-ID: <20190626081735.31327-1-po-hsu.lin@canonical.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 26 Jun 2019 04:19:54 -0400 (EDT)
+Subject: [LTP] [PATCH v4 2/2] pkey: add test for memory protection keys
+In-Reply-To: <20190626071538.29486-2-liwang@redhat.com>
+References: <20190626071538.29486-1-liwang@redhat.com>
+ <20190626071538.29486-2-liwang@redhat.com>
+Message-ID: <285629943.30156546.1561537194409.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The -l flag for modprobe has been deprecated in newer packages.
-This will induce some noise during the execution:
-    modprobe: invalid option -- 'l'
 
-And making the "Loading and Unloading of governor kernel modules" test
-not doing module load / unload operations.
+----- Original Message -----
+> +
+> +static void setup(void)
+> +{
+> +	int i, fd;
+> +
+> +	if (access(PATH_VM_NRHPS, F_OK)) {
+> +		tst_res(TINFO, "Huge page is not supported");
+> +		size = getpagesize();
+> +		no_hugepage = 1;
+> +	} else {
+> +		int val;
+> +
+> +		SAFE_FILE_PRINTF(PATH_VM_NRHPS, "%d", 1);
 
-Fix this by using the find command to retrieve module names instead.
+This is still SAFE write, which may trigger TBROK:
 
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
----
- testcases/kernel/power_management/runpwtests03.sh | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+# ./pkey01 
+tst_test.c:1100: INFO: Timeout per run is 0h 05m 00s
+safe_file_ops.c:301: BROK: Failed to close FILE '/proc/sys/vm/nr_hugepages' at pkey01.c:67: EOPNOTSUPP
+safe_macros.c:773: WARN: pkey01.c:91: umount(tmp_pkey) failed: ENOENT
+safe_macros.c:184: WARN: pkey01.c:92: rmdir(tmp_pkey) failed: ENOENT
 
-diff --git a/testcases/kernel/power_management/runpwtests03.sh b/testcases/kernel/power_management/runpwtests03.sh
-index 11197937f..81d44f9b1 100755
---- a/testcases/kernel/power_management/runpwtests03.sh
-+++ b/testcases/kernel/power_management/runpwtests03.sh
-@@ -118,8 +118,8 @@ pwkm_load_unload() {
- 	RC=0
- 	loaded_governor=`cat \
- 		/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
--	for module in `modprobe -l | grep cpufreq_ | \
--		cut -f8 -d"/" | cut -f1 -d"."`
-+	for module in `find /lib/modules/$(uname -r) -name "*cpufreq_*.ko" \
-+		-printf "%f\n" | cut -f1 -d"."`
- 	do
- 		#echo -n "Loading $module ... "
- 		if [ $module != "cpufreq_$loaded_governor" ]; then
-@@ -131,8 +131,8 @@ pwkm_load_unload() {
- 			fi
- 		fi
- 	done
--	for module in `modprobe -l | grep cpufreq_ | \
--		cut -f8 -d"/" | cut -f1 -d"."`
-+	for module in `find /lib/modules/$(uname -r) -name "*cpufreq_*.ko" \
-+		-printf "%f\n" | cut -f1 -d"."`
- 		do
- 		#echo -n "Unloading $module ... "
- 		if [ $module != "cpufreq_$loaded_governor" ]; then
--- 
-2.17.1
+> +
+> +		SAFE_FILE_SCANF(PATH_VM_NRHPS, "%d", &val);
+
+safe_file_ops.c:157: BROK: The FILE '/proc/sys/vm/nr_hugepages' ended prematurely at pkey01.c:69
+
+> +		if (val != 1)
+> +			tst_brk(TBROK, "nr_hugepages = %d, but expect %d",
+> +					val, 1);
+> +
+> +		size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+> +	}
+> +
 
