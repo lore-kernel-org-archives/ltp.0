@@ -1,92 +1,162 @@
 From: Li Wang <liwang@redhat.com>
-Date: Wed, 26 Jun 2019 15:10:22 +0800
-Subject: [LTP] [PATCH] lib: make save_restore '?' prefix ignore also
- errors from open/read
-In-Reply-To: <64e3837429239829860f1df5d8145c12078a799f.1561451809.git.jstancek@redhat.com>
-References: <64e3837429239829860f1df5d8145c12078a799f.1561451809.git.jstancek@redhat.com>
-Message-ID: <CAEemH2cGg7U7QGU_mjNCqF=8xX1Ht-zQO25zCheLL2Y7pvHMFA@mail.gmail.com>
+Date: Wed, 26 Jun 2019 15:15:37 +0800
+Subject: [LTP] [PATCH v4 1/2] pkey: add syscall numbers for pkey
+Message-ID: <20190626071538.29486-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The patch makes sense to me.
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ include/lapi/syscalls/aarch64.in   | 3 +++
+ include/lapi/syscalls/arm.in       | 3 +++
+ include/lapi/syscalls/i386.in      | 3 +++
+ include/lapi/syscalls/ia64.in      | 3 +++
+ include/lapi/syscalls/powerpc.in   | 3 +++
+ include/lapi/syscalls/powerpc64.in | 3 +++
+ include/lapi/syscalls/s390.in      | 3 +++
+ include/lapi/syscalls/s390x.in     | 3 +++
+ include/lapi/syscalls/sparc.in     | 3 +++
+ include/lapi/syscalls/sparc64.in   | 3 +++
+ include/lapi/syscalls/x86_64.in    | 3 +++
+ 11 files changed, 33 insertions(+)
 
-On Tue, Jun 25, 2019 at 5:02 PM Jan Stancek <jstancek@redhat.com> wrote:
-
-> Prefix '?' was meant to silently ignore non-existing paths.
-> However there are some /proc files which exist, but trigger
-> error only after open/read:
->   # ls -la /proc/sys/vm/nr_hugepages
->   -rw-r--r--. 1 root root 0 Jun 25 04:17 /proc/sys/vm/nr_hugepages
->   # cat /proc/sys/vm/nr_hugepages
->   cat: /proc/sys/vm/nr_hugepages: Operation not supported
->
-> This leads to unavoidable TBROK. Extend '?' flag to cover also open/read.
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  doc/test-writing-guidelines.txt | 9 +++++----
->  lib/tst_sys_conf.c              | 6 ++++++
->  2 files changed, 11 insertions(+), 4 deletions(-)
->
-> diff --git a/doc/test-writing-guidelines.txt
-> b/doc/test-writing-guidelines.txt
-> index c6d4e001d72b..d0b7417f2cc8 100644
-> --- a/doc/test-writing-guidelines.txt
-> +++ b/doc/test-writing-guidelines.txt
-> @@ -1515,10 +1515,11 @@ and restored at the end of the test. Only first
-> line of a specified
->  file is saved and restored.
->
->  Pathnames can be optionally prefixed to specify how strictly (during
-> -'store') are handled files that don't exist:
-> -  (no prefix) - test ends with TCONF
-> -  '?'         - test prints info message and continues
-> -  '!'         - test ends with TBROK
-> +'store') are handled errors:
-> +  (no prefix) - test ends with TCONF, if file doesn't exist
-> +  '?'         - test prints info message and continues,
-> +                if file doesn't exist or open/read fails
-> +  '!'         - test ends with TBROK, if file doesn't exist
->
->  'restore' is always strict and will TWARN if it encounters any error.
->
-> diff --git a/lib/tst_sys_conf.c b/lib/tst_sys_conf.c
-> index e767856ec148..bbe469936c99 100644
-> --- a/lib/tst_sys_conf.c
-> +++ b/lib/tst_sys_conf.c
-> @@ -66,6 +66,9 @@ int tst_sys_conf_save(const char *path)
->
->         fp = fopen(path, "r");
->         if (fp == NULL) {
-> +               if (flag == '?')
-> +                       return 1;
-> +
->                 tst_brk(TBROK | TERRNO, "Failed to open FILE '%s' for
-> reading",
->                         path);
->                 return 1;
-> @@ -75,6 +78,9 @@ int tst_sys_conf_save(const char *path)
->         fclose(fp);
->
->         if (ret == NULL) {
-> +               if (flag == '?')
-> +                       return 1;
-> +
->                 tst_brk(TBROK | TERRNO, "Failed to read anything from
-> '%s'",
->                         path);
->         }
-> --
-> 1.8.3.1
->
->
-
+diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
+index ce6080894..7db6e281c 100644
+--- a/include/lapi/syscalls/aarch64.in
++++ b/include/lapi/syscalls/aarch64.in
+@@ -265,5 +265,8 @@ mlock2 284
+ copy_file_range 285
+ preadv2 286
+ pwritev2 287
++pkey_mprotect 288
++pkey_alloc 289
++pkey_free 290
+ pidfd_send_signal 424
+ _sysctl 1078
+diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
+index 33168889f..00e99f2b9 100644
+--- a/include/lapi/syscalls/arm.in
++++ b/include/lapi/syscalls/arm.in
+@@ -349,5 +349,8 @@ mlock2 (__NR_SYSCALL_BASE+390)
+ copy_file_range (__NR_SYSCALL_BASE+391)
+ preadv2 (__NR_SYSCALL_BASE+392)
+ pwritev2 (__NR_SYSCALL_BASE+393)
++pkey_mprotect (__NR_SYSCALL_BASE+394)
++pkey_alloc (__NR_SYSCALL_BASE+395)
++pkey_free (__NR_SYSCALL_BASE+396)
+ statx (__NR_SYSCALL_BASE+397)
+ pidfd_send_signal (__NR_SYSCALL_BASE+424)
+diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
+index 3355b9127..02f3955ba 100644
+--- a/include/lapi/syscalls/i386.in
++++ b/include/lapi/syscalls/i386.in
+@@ -347,5 +347,8 @@ mlock2 376
+ copy_file_range 377
+ preadv2 378
+ pwritev2 379
++pkey_mprotect 380
++pkey_alloc 381
++pkey_free 382
+ statx 383
+ pidfd_send_signal 424
+diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
+index 9ac81e91e..cf9f73e85 100644
+--- a/include/lapi/syscalls/ia64.in
++++ b/include/lapi/syscalls/ia64.in
+@@ -305,4 +305,7 @@ mlock2 1346
+ copy_file_range 1347
+ preadv2 1348
+ pwritev2 1349
++pkey_mprotect 1354
++pkey_alloc 1355
++pkey_free 1356
+ pidfd_send_signal 1448
+diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
+index 488d6dfa9..660165d7a 100644
+--- a/include/lapi/syscalls/powerpc.in
++++ b/include/lapi/syscalls/powerpc.in
+@@ -356,3 +356,6 @@ preadv2 380
+ pwritev2 381
+ statx 383
+ pidfd_send_signal 424
++pkey_mprotect 386
++pkey_alloc 384
++pkey_free 385
+diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
+index 488d6dfa9..660165d7a 100644
+--- a/include/lapi/syscalls/powerpc64.in
++++ b/include/lapi/syscalls/powerpc64.in
+@@ -356,3 +356,6 @@ preadv2 380
+ pwritev2 381
+ statx 383
+ pidfd_send_signal 424
++pkey_mprotect 386
++pkey_alloc 384
++pkey_free 385
+diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
+index 69b49eac0..c304ef4b7 100644
+--- a/include/lapi/syscalls/s390.in
++++ b/include/lapi/syscalls/s390.in
+@@ -338,4 +338,7 @@ mlock2 374
+ copy_file_range 375
+ preadv2 376
+ pwritev2 377
++pkey_mprotect 384
++pkey_alloc 385
++pkey_free 386
+ pidfd_send_signal 424
+diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
+index 685c16f68..7d632d1dc 100644
+--- a/include/lapi/syscalls/s390x.in
++++ b/include/lapi/syscalls/s390x.in
+@@ -337,4 +337,7 @@ mlock2 374
+ copy_file_range 375
+ preadv2 376
+ pwritev2 377
++pkey_mprotect 384
++pkey_alloc 385
++pkey_free 386
+ pidfd_send_signal 424
+diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
+index e74b48170..ab7204663 100644
+--- a/include/lapi/syscalls/sparc.in
++++ b/include/lapi/syscalls/sparc.in
+@@ -343,4 +343,7 @@ mlock2 356
+ copy_file_range 357
+ preadv2 358
+ pwritev2 359
++pkey_mprotect 362
++pkey_alloc 363
++pkey_free 364
+ pidfd_send_signal 424
+diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
+index 577aa9b35..d17dce5cd 100644
+--- a/include/lapi/syscalls/sparc64.in
++++ b/include/lapi/syscalls/sparc64.in
+@@ -319,4 +319,7 @@ mlock2 356
+ copy_file_range 357
+ preadv2 358
+ pwritev2 359
++pkey_mprotect 362
++pkey_alloc 363
++pkey_free 364
+ pidfd_send_signal 424
+diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
+index 99d387277..fdb414c10 100644
+--- a/include/lapi/syscalls/x86_64.in
++++ b/include/lapi/syscalls/x86_64.in
+@@ -314,5 +314,8 @@ mlock2 325
+ copy_file_range 326
+ preadv2 327
+ pwritev2 328
++pkey_mprotect 329
++pkey_alloc 330
++pkey_free 331
+ statx 332
+ pidfd_send_signal 424
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190626/764b0e11/attachment-0001.htm>
+2.20.1
+
