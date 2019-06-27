@@ -1,64 +1,68 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 27 Jun 2019 11:39:44 +0300
-Subject: [LTP] [PATCH] syscalls/copy_file_range02.c: Compatible with new
- and old kernels
-In-Reply-To: <5D147856.5040709@cn.fujitsu.com>
-References: <1559292243-2882-1-git-send-email-huangjh.jy@cn.fujitsu.com>
- <5CF0FEB5.4030700@cn.fujitsu.com>
- <CAEemH2erJkdcKU_qg8RsjWUf7A37wj1QgMv=UZ21xUy=vXq9rg@mail.gmail.com>
- <CAOQ4uxjE6RC_60SR0KZk7dJvU12pxPXEq56-tz840rDCQth1Xg@mail.gmail.com>
- <5D147856.5040709@cn.fujitsu.com>
-Message-ID: <CAOQ4uxjxOWCOBV1OQVg9B5D2eT4jUdQfOAaxTSJgFkqQDUVapg@mail.gmail.com>
+From: Xiao Yang <ice_yangxiao@163.com>
+Date: Thu, 27 Jun 2019 22:24:15 +0800
+Subject: [LTP] [PATCH] runpwtests03: fix for module name retrieval
+In-Reply-To: <20190626081735.31327-1-po-hsu.lin@canonical.com>
+References: <20190626081735.31327-1-po-hsu.lin@canonical.com>
+Message-ID: <394ecb21-4ed5-cc0f-9c07-9dcea295604b@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Jun 27, 2019 at 11:03 AM Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
+On 06/26/2019 04:17 PM, Po-Hsu Lin wrote:
+> The -l flag for modprobe has been deprecated in newer packages.
+> This will induce some noise during the execution:
+>      modprobe: invalid option -- 'l'
 >
-> on 2019/05/31 21:02, Amir Goldstein wrote:
+> And making the "Loading and Unloading of governor kernel modules" test
+> not doing module load / unload operations.
 >
-> > On Fri, May 31, 2019 at 3:03 PM Li Wang<liwang@redhat.com>  wrote:
-> >>
-> >>
-> >> On Fri, May 31, 2019 at 6:15 PM Xiao Yang<yangx.jy@cn.fujitsu.com>  wrote:
-> >>> On 2019/05/31 16:44, Jinhui huang wrote:
-> >>>> On new kernels, copy_file_range() returned EISDIR when copyed contents
-> >>>> to directory, but on old kernels, it returned EBADF, we should accept
-> >>>> EBADF to be compatible with new and old kernels.
-> >>>>
-> >>>> The patch as follows:
-> >>>> commit 11cbfb10775a ("vfs: deny copy_file_range() for non regular files")
-> >>> Hi,
-> >>>
-> >>>  From description of commit, I wonder if we can add more tests for some
-> >>> non regular files(e.g. block, pipe)?
-> >>
-> >> I have no objection on this. But, is there really make sense to test some more non regular files which not being mentioned by Linux Manual Page?
-> >>
-> > FYI, more changes to copy_file_range checks are in the works:
-> > https://lore.kernel.org/linux-fsdevel/20190526061100.21761-1-amir73il@gmail.com/T/#me34d4363449118bd3b2ec8421d282a77e9a7d2d1
+> Fix this by using the find command to retrieve module names instead.
 >
-> Hi Amir
+> Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+> ---
+>   testcases/kernel/power_management/runpwtests03.sh | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
 >
->      Meet again.  We can increase ltp copy_file_range02 coverage include( swapfile ->ETXTBUSY,  immutable file->EPERM) as same as xfstests generic/553[4].
-> Also the two other checks(overlaping and offset wrap).  I am glad to do it.
+> diff --git a/testcases/kernel/power_management/runpwtests03.sh b/testcases/kernel/power_management/runpwtests03.sh
+> index 11197937f..81d44f9b1 100755
+> --- a/testcases/kernel/power_management/runpwtests03.sh
+> +++ b/testcases/kernel/power_management/runpwtests03.sh
+> @@ -118,8 +118,8 @@ pwkm_load_unload() {
+>   	RC=0
+>   	loaded_governor=`cat \
+>   		/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+> -	for module in `modprobe -l | grep cpufreq_ | \
+> -		cut -f8 -d"/" | cut -f1 -d"."`
+> +	for module in `find /lib/modules/$(uname -r) -name "*cpufreq_*.ko" \
+> +		-printf "%f\n" | cut -f1 -d"."`
+Hi,
 
-That would be great!
+We may install compressed kernel modules(e.g. cpufreq_userspace.ko.xz) 
+so we should match
+these different formats.
 
->
-> PS: Why we don't have test for overlaping and offset wrap check on xfstests? Or, I miss it?
+There are still other issues(e.g. test is skipped if CPU_FREQ is built 
+as a module) in the old code.
+We should rewrite it to new API first and fix these issues including 
+invalid "-l" option by the way.
 
-The bounds check test was posted to xfstests:
-https://marc.info/?l=linux-xfs&m=155947929219690&w=2
+Best Regards,
+Xiao Yang
+>   	do
+>   		#echo -n "Loading $module ... "
+>   		if [ $module != "cpufreq_$loaded_governor" ]; then
+> @@ -131,8 +131,8 @@ pwkm_load_unload() {
+>   			fi
+>   		fi
+>   	done
+> -	for module in `modprobe -l | grep cpufreq_ | \
+> -		cut -f8 -d"/" | cut -f1 -d"."`
+> +	for module in `find /lib/modules/$(uname -r) -name "*cpufreq_*.ko" \
+> +		-printf "%f\n" | cut -f1 -d"."`
+>   		do
+>   		#echo -n "Unloading $module ... "
+>   		if [ $module != "cpufreq_$loaded_governor" ]; then
 
-But because the test requires a new feature from xfs_io:
-https://marc.info/?l=linux-xfs&m=156152984109774&w=2
 
-I recommended that xfstests maintainer will hold off merging the test,
-before the
-required change is at least in xfsprogs for-next branch.
-
-Thanks,
-Amir.
