@@ -1,65 +1,75 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 28 Jun 2019 07:09:33 -0400 (EDT)
-Subject: [LTP] Bug Report: diotest4 fails on mips64
-In-Reply-To: <dc4e1e30-face-9039-db90-5a6dae2fc2ea@windriver.com>
-References: <dc4e1e30-face-9039-db90-5a6dae2fc2ea@windriver.com>
-Message-ID: <1731168043.30655111.1561720172996.JavaMail.zimbra@redhat.com>
+From: Caspar Zhang <caspar@linux.alibaba.com>
+Date: Fri, 28 Jun 2019 20:52:05 +0800
+Subject: [LTP] [PATCH 2/3] lib/test.sh: TCONF needs to be counted
+In-Reply-To: <5e8374fa7f4ea9d64cdfc39a2ca449761327c257.1559207183.git.caspar@casparzhang.com>
+References: <f11c83459b71fbf399794fb8363f2b538b0b6346.1559207183.git.caspar@casparzhang.com>
+ <5e8374fa7f4ea9d64cdfc39a2ca449761327c257.1559207183.git.caspar@casparzhang.com>
+Message-ID: <20190628125205.GA48441@linux.alibaba.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Cyril, is it ok to push 2/3 and 3/3 as they've got Li Wang's
+Reviewed-by, or do you have different opinion?
 
+Thanks,
+Caspar
 
------ Original Message -----
-> *Ltp:*
-> 
-> latest master
-> 
-> 
-> *Kernel:*
-> 
-> After v5.1 ARCH=mips64
-> 
-> 
-> *Error info:*
-> 
-> diotest4 10 TBROK : diotest4.c:368: can't mmap file: Invalid argument
-> diotest4 11 TBROK : diotest4.c:368: Remaining cases broken
-> 
-> 
-> I think the first argument of mmap is invalid.
-> 
->  ?? >shm_base = (char *)(((long)sbrk(0) + (shmsz - 1)) & ~(shmsz - 1));
-> 
->  ?? >shm_base = mmap(shm_base, 0x100000, PROT_READ | PROT_WRITE,
+On Thu, May 30, 2019 at 05:09:57PM +0800, Caspar Zhang wrote:
+> TCONF should also be one of exit statuses in a single test, else the
+> output of TST_COUNT in shell tests could be wrong.
+>
+> Wrong:
+> <<<test_output>>>
+> memcg_use_hierarchy_test 1 TINFO: Starting test 1
+> memcg_use_hierarchy_test 1 TINFO: set /dev/memcg/memory.use_hierarchy to 0 failed
+> memcg_use_hierarchy_test 1 TPASS: process 28658 is killed
+> memcg_use_hierarchy_test 2 TINFO: Starting test 2
+> memcg_use_hierarchy_test 2 TINFO: set /dev/memcg/memory.use_hierarchy to 0 failed
+> memcg_use_hierarchy_test 2 TCONF: memory.use_hierarchy already been 1, blame systemd, skip
+> memcg_use_hierarchy_test 2 TINFO: Starting test 3
+> memcg_use_hierarchy_test 2 TINFO: set /dev/memcg/memory.use_hierarchy to 0 failed
+> memcg_use_hierarchy_test 2 TPASS: echo 0 > subgroup/memory.use_hierarchy failed as expected
+> <<<execution_status>>>
+>
+> Right:
+> <<<test_output>>>
+> memcg_use_hierarchy_test 1 TINFO: Starting test 1
+> memcg_use_hierarchy_test 1 TINFO: set /dev/memcg/memory.use_hierarchy to 0 failed
+> memcg_use_hierarchy_test 1 TPASS: process 26825 is killed
+> memcg_use_hierarchy_test 2 TINFO: Starting test 2
+> memcg_use_hierarchy_test 2 TINFO: set /dev/memcg/memory.use_hierarchy to 0 failed
+> memcg_use_hierarchy_test 2 TCONF: memory.use_hierarchy already been 1, blame systemd, skip
+> memcg_use_hierarchy_test 3 TINFO: Starting test 3
+> memcg_use_hierarchy_test 3 TINFO: set /dev/memcg/memory.use_hierarchy to 0 failed
+> memcg_use_hierarchy_test 3 TPASS: echo 0 > subgroup/memory.use_hierarchy failed as expected
+> <<<execution_status>>>
+>
+> Signed-off-by: Caspar Zhang <caspar@linux.alibaba.com>
+> ---
+>  testcases/lib/test.sh | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
+> index 670248ee5..ade8fcdff 100644
+> --- a/testcases/lib/test.sh
+> +++ b/testcases/lib/test.sh
+> @@ -58,8 +58,7 @@ tst_resm()
+>  	echo " $@"
+>
+>  	case "$ret" in
+> -	TPASS|TFAIL)
+> -	TST_COUNT=$((TST_COUNT+1));;
+> +	TPASS|TFAIL|TCONF) TST_COUNT=$((TST_COUNT+1));;
+>  	esac
+>  }
+>
+> --
+> 2.21.0
+>
 
-I don't see any note why that mmap needs to be MAP_FIXED. I'd drop it,
-let kernel pick an address:
-
-diff --git a/testcases/kernel/io/direct_io/diotest4.c b/testcases/kernel/io/direct_io/diotest4.c
-index e4616e400abd..bf200cd41a27 100644
---- a/testcases/kernel/io/direct_io/diotest4.c
-+++ b/testcases/kernel/io/direct_io/diotest4.c
-@@ -352,18 +352,14 @@ int main(int argc, char *argv[])
-        total++;
-
-        /* Test-10: read, write to a mmaped file */
--       shm_base = (char *)(((long)sbrk(0) + (shmsz - 1)) & ~(shmsz - 1));
--       if (shm_base == NULL) {
--               tst_brkm(TBROK, cleanup, "sbrk failed: %s", strerror(errno));
--       }
-        offset = 4096;
-        count = bufsize;
-        if ((fd = open(filename, O_DIRECT | O_RDWR)) < 0) {
-                tst_brkm(TBROK, cleanup, "can't open %s: %s",
-                         filename, strerror(errno));
-        }
--       shm_base = mmap(shm_base, 0x100000, PROT_READ | PROT_WRITE,
--                       MAP_SHARED | MAP_FIXED, fd, 0);
-+       shm_base = mmap(0, 0x100000, PROT_READ | PROT_WRITE,
-+                       MAP_SHARED, fd, 0);
-        if (shm_base == (caddr_t) - 1) {
-                tst_brkm(TBROK, cleanup, "can't mmap file: %s",
-                         strerror(errno));
+--
+        Thanks,
+        Caspar
