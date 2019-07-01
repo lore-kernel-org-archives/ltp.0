@@ -1,162 +1,422 @@
 From: Li Wang <liwang@redhat.com>
-Date: Mon,  1 Jul 2019 16:19:16 +0800
-Subject: [LTP] [PATCH v5 1/2] pkey: add syscall numbers for pkey
-Message-ID: <20190701081917.32051-1-liwang@redhat.com>
+Date: Mon,  1 Jul 2019 16:19:17 +0800
+Subject: [LTP] [PATCH v5 2/2] pkey: add test for memory protection keys
+In-Reply-To: <20190701081917.32051-1-liwang@redhat.com>
+References: <20190701081917.32051-1-liwang@redhat.com>
+Message-ID: <20190701081917.32051-2-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Memory Protection Keys for Userspace (PKU aka PKEYs) is a Skylake-SP
+server feature that provides a mechanism for enforcing page-based
+protections, but without requiring modification of the page tables
+when an application changes protection domains. It works by dedicating
+4 previously ignored bits in each page table entry to a "protection key",
+giving 16 possible keys.
+
+Basic method for PKEYs test:
+  1. test allocates a pkey(e.g. PKEY_DISABLE_ACCESS) via pkey_alloc()
+  2. pkey_mprotect() apply this pkey to a piece of memory buffer
+  3. check if the access right of buffer has been changed and take effect
+  4. remove the access right(pkey) from this buffer via pkey_mprotect()
+  5. check if buffer area can be read or write after removing pkey
+  6. pkey_free() releases the pkey after using it
+
+Looping around this basic test on diffenrent types of memory.
+
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- include/lapi/syscalls/aarch64.in   | 3 +++
- include/lapi/syscalls/arm.in       | 3 +++
- include/lapi/syscalls/i386.in      | 3 +++
- include/lapi/syscalls/ia64.in      | 3 +++
- include/lapi/syscalls/powerpc.in   | 3 +++
- include/lapi/syscalls/powerpc64.in | 3 +++
- include/lapi/syscalls/s390.in      | 3 +++
- include/lapi/syscalls/s390x.in     | 3 +++
- include/lapi/syscalls/sparc.in     | 3 +++
- include/lapi/syscalls/sparc64.in   | 3 +++
- include/lapi/syscalls/x86_64.in    | 3 +++
- 11 files changed, 33 insertions(+)
 
-diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
-index ce6080894..7db6e281c 100644
---- a/include/lapi/syscalls/aarch64.in
-+++ b/include/lapi/syscalls/aarch64.in
-@@ -265,5 +265,8 @@ mlock2 284
- copy_file_range 285
- preadv2 286
- pwritev2 287
-+pkey_mprotect 288
-+pkey_alloc 289
-+pkey_free 290
- pidfd_send_signal 424
- _sysctl 1078
-diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
-index 33168889f..00e99f2b9 100644
---- a/include/lapi/syscalls/arm.in
-+++ b/include/lapi/syscalls/arm.in
-@@ -349,5 +349,8 @@ mlock2 (__NR_SYSCALL_BASE+390)
- copy_file_range (__NR_SYSCALL_BASE+391)
- preadv2 (__NR_SYSCALL_BASE+392)
- pwritev2 (__NR_SYSCALL_BASE+393)
-+pkey_mprotect (__NR_SYSCALL_BASE+394)
-+pkey_alloc (__NR_SYSCALL_BASE+395)
-+pkey_free (__NR_SYSCALL_BASE+396)
- statx (__NR_SYSCALL_BASE+397)
- pidfd_send_signal (__NR_SYSCALL_BASE+424)
-diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
-index 3355b9127..02f3955ba 100644
---- a/include/lapi/syscalls/i386.in
-+++ b/include/lapi/syscalls/i386.in
-@@ -347,5 +347,8 @@ mlock2 376
- copy_file_range 377
- preadv2 378
- pwritev2 379
-+pkey_mprotect 380
-+pkey_alloc 381
-+pkey_free 382
- statx 383
- pidfd_send_signal 424
-diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
-index 9ac81e91e..cf9f73e85 100644
---- a/include/lapi/syscalls/ia64.in
-+++ b/include/lapi/syscalls/ia64.in
-@@ -305,4 +305,7 @@ mlock2 1346
- copy_file_range 1347
- preadv2 1348
- pwritev2 1349
-+pkey_mprotect 1354
-+pkey_alloc 1355
-+pkey_free 1356
- pidfd_send_signal 1448
-diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
-index 488d6dfa9..660165d7a 100644
---- a/include/lapi/syscalls/powerpc.in
-+++ b/include/lapi/syscalls/powerpc.in
-@@ -356,3 +356,6 @@ preadv2 380
- pwritev2 381
- statx 383
- pidfd_send_signal 424
-+pkey_mprotect 386
-+pkey_alloc 384
-+pkey_free 385
-diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
-index 488d6dfa9..660165d7a 100644
---- a/include/lapi/syscalls/powerpc64.in
-+++ b/include/lapi/syscalls/powerpc64.in
-@@ -356,3 +356,6 @@ preadv2 380
- pwritev2 381
- statx 383
- pidfd_send_signal 424
-+pkey_mprotect 386
-+pkey_alloc 384
-+pkey_free 385
-diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
-index 69b49eac0..c304ef4b7 100644
---- a/include/lapi/syscalls/s390.in
-+++ b/include/lapi/syscalls/s390.in
-@@ -338,4 +338,7 @@ mlock2 374
- copy_file_range 375
- preadv2 376
- pwritev2 377
-+pkey_mprotect 384
-+pkey_alloc 385
-+pkey_free 386
- pidfd_send_signal 424
-diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
-index 685c16f68..7d632d1dc 100644
---- a/include/lapi/syscalls/s390x.in
-+++ b/include/lapi/syscalls/s390x.in
-@@ -337,4 +337,7 @@ mlock2 374
- copy_file_range 375
- preadv2 376
- pwritev2 377
-+pkey_mprotect 384
-+pkey_alloc 385
-+pkey_free 386
- pidfd_send_signal 424
-diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
-index e74b48170..ab7204663 100644
---- a/include/lapi/syscalls/sparc.in
-+++ b/include/lapi/syscalls/sparc.in
-@@ -343,4 +343,7 @@ mlock2 356
- copy_file_range 357
- preadv2 358
- pwritev2 359
-+pkey_mprotect 362
-+pkey_alloc 363
-+pkey_free 364
- pidfd_send_signal 424
-diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
-index 577aa9b35..d17dce5cd 100644
---- a/include/lapi/syscalls/sparc64.in
-+++ b/include/lapi/syscalls/sparc64.in
-@@ -319,4 +319,7 @@ mlock2 356
- copy_file_range 357
- preadv2 358
- pwritev2 359
-+pkey_mprotect 362
-+pkey_alloc 363
-+pkey_free 364
- pidfd_send_signal 424
-diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
-index 99d387277..fdb414c10 100644
---- a/include/lapi/syscalls/x86_64.in
-+++ b/include/lapi/syscalls/x86_64.in
-@@ -314,5 +314,8 @@ mlock2 325
- copy_file_range 326
- preadv2 327
- pwritev2 328
-+pkey_mprotect 329
-+pkey_alloc 330
-+pkey_free 331
- statx 332
- pidfd_send_signal 424
+Notes:
+    v4 --> v5
+      * use "/sys/kernel/mm/hugepages/" for huge page detection
+
+ configure.ac                               |   1 +
+ runtest/syscalls                           |   2 +
+ testcases/kernel/syscalls/pkeys/.gitignore |   1 +
+ testcases/kernel/syscalls/pkeys/Makefile   |   8 +
+ testcases/kernel/syscalls/pkeys/pkey.h     |  50 ++++
+ testcases/kernel/syscalls/pkeys/pkey01.c   | 263 +++++++++++++++++++++
+ 6 files changed, 325 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/pkeys/.gitignore
+ create mode 100644 testcases/kernel/syscalls/pkeys/Makefile
+ create mode 100644 testcases/kernel/syscalls/pkeys/pkey.h
+ create mode 100644 testcases/kernel/syscalls/pkeys/pkey01.c
+
+diff --git a/configure.ac b/configure.ac
+index 65fc2a232..5a9b74b0a 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -74,6 +74,7 @@ AC_CHECK_FUNCS([ \
+     pidfd_send_signal \
+     preadv \
+     preadv2 \
++    pkey_mprotect \
+     profil \
+     pwritev \
+     pwritev2 \
+diff --git a/runtest/syscalls b/runtest/syscalls
+index c6a064481..6ea991f12 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -721,6 +721,8 @@ mprotect02 mprotect02
+ mprotect03 mprotect03
+ mprotect04 mprotect04
+ 
++pkey01 pkey01
++
+ mq_notify01 mq_notify01
+ mq_notify02 mq_notify02
+ mq_open01 mq_open01
+diff --git a/testcases/kernel/syscalls/pkeys/.gitignore b/testcases/kernel/syscalls/pkeys/.gitignore
+new file mode 100644
+index 000000000..6fd5addb8
+--- /dev/null
++++ b/testcases/kernel/syscalls/pkeys/.gitignore
+@@ -0,0 +1 @@
++/pkey01
+diff --git a/testcases/kernel/syscalls/pkeys/Makefile b/testcases/kernel/syscalls/pkeys/Makefile
+new file mode 100644
+index 000000000..9ee2c2ea5
+--- /dev/null
++++ b/testcases/kernel/syscalls/pkeys/Makefile
+@@ -0,0 +1,8 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2019 Red Hat, Inc.
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/pkeys/pkey.h b/testcases/kernel/syscalls/pkeys/pkey.h
+new file mode 100644
+index 000000000..d623244eb
+--- /dev/null
++++ b/testcases/kernel/syscalls/pkeys/pkey.h
+@@ -0,0 +1,50 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 Red Hat, Inc.
++ */
++
++#ifndef PKEYS_H
++#define PKEYS_H
++
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++
++#ifndef PKEY_DISABLE_ACCESS
++# define PKEY_DISABLE_ACCESS 0x1
++# define PKEY_DISABLE_WRITE  0x2
++#endif
++
++#ifndef HAVE_PKEY_MPROTECT
++static inline int pkey_mprotect(void *addr, size_t len, int prot, int pkey)
++{
++	return tst_syscall(__NR_pkey_mprotect, addr, len, prot, pkey);
++}
++
++static inline int pkey_alloc(unsigned int flags, unsigned int access_rights)
++{
++	return tst_syscall(__NR_pkey_alloc, flags, access_rights);
++}
++
++static inline int pkey_free(int pkey)
++{
++	return tst_syscall(__NR_pkey_free, pkey);
++}
++#endif /* HAVE_PKEY_MPROTECT */
++
++static inline void check_pkey_support(void)
++{
++	int pkey = pkey_alloc(0, 0);
++
++	if (pkey == -1) {
++		if (errno == ENOSYS)
++			tst_brk(TCONF, "pkey_alloc is not implemented");
++		if (errno == EINVAL)
++			tst_brk(TCONF, "pku is not supported on this CPU");
++		if (errno == ENOSPC)
++			tst_brk(TCONF, "pkeys are not available for test");
++	}
++
++	pkey_free(pkey);
++}
++
++#endif /* PKEYS_H */
+diff --git a/testcases/kernel/syscalls/pkeys/pkey01.c b/testcases/kernel/syscalls/pkeys/pkey01.c
+new file mode 100644
+index 000000000..3b1e60ce6
+--- /dev/null
++++ b/testcases/kernel/syscalls/pkeys/pkey01.c
+@@ -0,0 +1,263 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 Red Hat, Inc.
++ *
++ * Memory Protection Keys for Userspace (PKU aka PKEYs) is a Skylake-SP
++ * server feature that provides a mechanism for enforcing page-based
++ * protections, but without requiring modification of the page tables
++ * when an application changes protection domains. It works by dedicating
++ * 4 previously ignored bits in each page table entry to a "protection key",
++ * giving 16 possible keys.
++ *
++ * Basic method for PKEYs testing:
++ *    1. test allocates a pkey(e.g. PKEY_DISABLE_ACCESS) via pkey_alloc()
++ *    2. pkey_mprotect() apply this pkey to a piece of memory(buffer)
++ *    3. check if access right of the buffer has been changed and take effect
++ *    4. remove the access right(pkey) from this buffer via pkey_mprotect()
++ *    5. check if buffer area can be read or write after removing pkey
++ *    6. pkey_free() releases the pkey after using it
++ *
++ * Looping around this basic test on diffenrent types of memory.
++ */
++
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <unistd.h>
++#include <errno.h>
++#include <stdlib.h>
++#include <sys/syscall.h>
++#include <sys/mman.h>
++#include <sys/wait.h>
++
++#include "pkey.h"
++
++#define TMP_DIR "tmp_pkey"
++#define TEST_FILE TMP_DIR"/testfile"
++#define STR "abcdefghijklmnopqrstuvwxyz12345\n"
++#define PATH_VM_NRHPS "/proc/sys/vm/nr_hugepages"
++
++static int size;
++static int no_hugepage;
++
++static const char * const save_restore[] = {
++	"?/proc/sys/vm/nr_hugepages",
++	NULL,
++};
++
++static struct tcase {
++	unsigned long flags;
++	unsigned long access_rights;
++	char *name;
++} tcases[] = {
++	{0, PKEY_DISABLE_ACCESS, "PKEY_DISABLE_ACCESS"},
++	{0, PKEY_DISABLE_WRITE, "PKEY_DISABLE_WRITE"},
++};
++
++static void setup(void)
++{
++	int i, fd;
++
++	if (access("/sys/kernel/mm/hugepages/", F_OK)) {
++		tst_res(TINFO, "Huge page is not supported");
++		size = getpagesize();
++		no_hugepage = 1;
++	} else {
++		int val;
++		SAFE_FILE_PRINTF(PATH_VM_NRHPS, "%d", 1);
++		SAFE_FILE_SCANF(PATH_VM_NRHPS, "%d", &val);
++		if (val != 1)
++			tst_brk(TBROK, "nr_hugepages = %d, but expect %d",
++					val, 1);
++		size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
++	}
++
++	SAFE_MKDIR(TMP_DIR, 0664);
++	SAFE_MOUNT(TMP_DIR, TMP_DIR, "tmpfs", 0, NULL);
++
++	check_pkey_support();
++
++	fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT, 0664);
++	for (i = 0; i < 128; i++)
++		SAFE_WRITE(1, fd, STR, strlen(STR));
++
++	SAFE_CLOSE(fd);
++}
++
++static void cleanup(void)
++{
++	SAFE_UMOUNT(TMP_DIR);
++	SAFE_RMDIR(TMP_DIR);
++}
++
++static struct mmap_param {
++	int prot;
++	int flags;
++	int fd;
++} mmap_params[] = {
++	{PROT_READ,  MAP_ANONYMOUS | MAP_PRIVATE, -1},
++	{PROT_READ,  MAP_ANONYMOUS | MAP_SHARED, -1},
++	{PROT_READ,  MAP_ANONYMOUS | MAP_PRIVATE | MAP_HUGETLB, -1},
++	{PROT_READ,  MAP_ANONYMOUS | MAP_SHARED  | MAP_HUGETLB, -1},
++	{PROT_READ,  MAP_PRIVATE, 0},
++	{PROT_READ,  MAP_SHARED, 0},
++
++	{PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1},
++	{PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1},
++	{PROT_WRITE, MAP_PRIVATE, 0},
++	{PROT_WRITE, MAP_SHARED, 0},
++	{PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE | MAP_HUGETLB, -1},
++	{PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED  | MAP_HUGETLB, -1},
++
++	{PROT_EXEC,  MAP_ANONYMOUS | MAP_PRIVATE, -1},
++	{PROT_EXEC,  MAP_ANONYMOUS | MAP_SHARED, -1},
++	{PROT_EXEC,  MAP_ANONYMOUS | MAP_PRIVATE | MAP_HUGETLB, -1},
++	{PROT_EXEC,  MAP_ANONYMOUS | MAP_SHARED  | MAP_HUGETLB, -1},
++	{PROT_EXEC,  MAP_PRIVATE, 0},
++	{PROT_EXEC,  MAP_SHARED, 0},
++
++	{PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1},
++	{PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1},
++	{PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE | MAP_HUGETLB, -1},
++	{PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED  | MAP_HUGETLB, -1},
++	{PROT_READ | PROT_WRITE, MAP_PRIVATE, 0},
++	{PROT_READ | PROT_WRITE, MAP_SHARED, 0},
++
++	{PROT_READ | PROT_WRITE | PROT_EXEC, MAP_ANONYMOUS | MAP_PRIVATE, -1},
++	{PROT_READ | PROT_WRITE | PROT_EXEC, MAP_ANONYMOUS | MAP_SHARED, -1},
++	{PROT_READ | PROT_WRITE | PROT_EXEC, MAP_ANONYMOUS | MAP_PRIVATE | MAP_HUGETLB, -1},
++	{PROT_READ | PROT_WRITE | PROT_EXEC, MAP_ANONYMOUS | MAP_SHARED  | MAP_HUGETLB, -1},
++	{PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE, 0},
++	{PROT_READ | PROT_WRITE | PROT_EXEC, MAP_SHARED, 0},
++};
++
++static char *flag_to_str(int flags)
++{
++	switch (flags) {
++	case MAP_PRIVATE:
++		return "MAP_PRIVATE";
++	case MAP_SHARED:
++		return "MAP_SHARED";
++	case MAP_ANONYMOUS | MAP_PRIVATE:
++		return "MAP_ANONYMOUS|MAP_PRIVATE";
++	case MAP_ANONYMOUS | MAP_SHARED:
++		return "MAP_ANONYMOUS|MAP_SHARED";
++	case MAP_ANONYMOUS | MAP_PRIVATE | MAP_HUGETLB:
++		return "MAP_ANONYMOUS|MAP_PRIVATE|MAP_HUGETLB";
++	case MAP_ANONYMOUS | MAP_SHARED  | MAP_HUGETLB:
++		return "MAP_ANONYMOUS|MAP_SHARED|MAP_HUGETLB";
++	default:
++		return "UNKNOWN FLAGS";
++	}
++}
++
++static void pkey_test(struct tcase *tc, struct mmap_param *mpa)
++{
++	pid_t pid;
++	char *buffer;
++	int pkey, status;
++	int fd = mpa->fd;
++
++	if (no_hugepage && (mpa->flags & MAP_HUGETLB)) {
++		tst_res(TINFO, "Skip test on (%s) buffer", flag_to_str(mpa->flags));
++		return;
++	}
++
++	if (fd == 0)
++		fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT, 0664);
++
++	buffer = SAFE_MMAP(NULL, size, mpa->prot, mpa->flags, fd, 0);
++
++	pkey = pkey_alloc(tc->flags, tc->access_rights);
++	if (pkey == -1)
++		tst_brk(TBROK | TERRNO, "pkey_alloc failed");
++
++	tst_res(TINFO, "Set %s on (%s) buffer", tc->name, flag_to_str(mpa->flags));
++	if (pkey_mprotect(buffer, size, mpa->prot, pkey) == -1)
++		tst_brk(TBROK | TERRNO, "pkey_mprotect failed");
++
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		struct rlimit r;
++
++		r.rlim_cur = 1;
++		r.rlim_max = 1;
++		/* Children crash are expected, avoid dumping corefile */
++		SAFE_SETRLIMIT(RLIMIT_CORE, &r);
++
++		switch (tc->access_rights) {
++			case PKEY_DISABLE_ACCESS:
++			tst_res(TFAIL | TERRNO,
++				"Read buffer success, buffer[0] = %d", *buffer);
++		break;
++			case PKEY_DISABLE_WRITE:
++			*buffer = 'a';
++		break;
++		}
++		exit(0);
++	}
++
++	SAFE_WAITPID(pid, &status, 0);
++	if (WIFSIGNALED(status)) {
++		if (WTERMSIG(status) == SIGSEGV) {
++			tst_res(TPASS, "Child ended by %s as expected",
++				tst_strsig(SIGSEGV));
++		} else {
++			tst_res(TFAIL | TERRNO, "Child ended by %s unexpected" ,
++				tst_strsig(WTERMSIG(status)));
++		}
++	} else {
++		tst_res(TFAIL | TERRNO,
++			"Child unexpectedly ended with %d",
++			WEXITSTATUS(status));
++	}
++
++	tst_res(TINFO, "Remove %s from the buffer", tc->name);
++	if (pkey_mprotect(buffer, size, mpa->prot, 0x0) == -1)
++		tst_brk(TBROK | TERRNO, "pkey_mprotect failed");
++
++	switch (mpa->prot) {
++		case PROT_READ:
++		tst_res(TPASS, "Read buffer success, buffer[0] = %d", *buffer);
++	break;
++		case PROT_WRITE:
++		*buffer = 'a';
++	break;
++		case PROT_READ | PROT_WRITE:
++		case PROT_READ | PROT_WRITE | PROT_EXEC:
++		*buffer = 'a';
++		tst_res(TPASS, "Read & Write buffer success, buffer[0] = %d", *buffer);
++	break;
++	}
++
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++
++	SAFE_MUNMAP(buffer, size);
++
++	if (pkey_free(pkey) == -1)
++		tst_brk(TBROK | TERRNO, "pkey_free failed");
++}
++
++static void verify_pkey(unsigned int i)
++{
++	long unsigned int j;
++	struct mmap_param *mpa;
++
++	struct tcase *tc = &tcases[i];
++
++	for (j = 0; j < ARRAY_SIZE(mmap_params); j++) {
++		mpa = &mmap_params[j];
++
++		pkey_test(tc, mpa);
++	}
++}
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.needs_root = 1,
++	.forks_child = 1,
++	.test = verify_pkey,
++	.setup = setup,
++	.cleanup = cleanup,
++	.save_restore = save_restore,
++};
 -- 
 2.20.1
 
