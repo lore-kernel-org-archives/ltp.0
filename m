@@ -1,51 +1,48 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 1 Jul 2019 07:01:36 -0400 (EDT)
-Subject: [LTP] [RFC PATCH] lib: add tst_no_corefile to avoid corefile
- dumping
-In-Reply-To: <20190701100343.3406-1-liwang@redhat.com>
-References: <20190701100343.3406-1-liwang@redhat.com>
-Message-ID: <2137465502.31003797.1561978896804.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon,  1 Jul 2019 13:08:57 +0200
+Subject: [LTP] [COMMITTED] [PATCH] syscalls/acct01: Remove cleanup
+Message-ID: <20190701110857.5895-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+* There is no need to remove files in the temporary directory, it's
+  deleted recursively on test exit anyways
 
+* This fixes issue #540 where the test produced warnings on kernel with
+  BSD_PROCESS_ACCT turned off
 
------ Original Message -----
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Cc: Jan Stancek <jstancek@redhat.com>
-> ---
->  include/tst_safe_macros.h                        | 16 ++++++++++++++++
->  testcases/kernel/security/umip/umip_basic_test.c |  2 ++
->  testcases/kernel/syscalls/ipc/shmat/shmat01.c    | 16 +++-------------
->  3 files changed, 21 insertions(+), 13 deletions(-)
-> 
-> diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-> index 53a888c80..110e2984f 100644
-> --- a/include/tst_safe_macros.h
-> +++ b/include/tst_safe_macros.h
-> @@ -394,6 +394,22 @@ static inline int safe_setrlimit(const char *file, const
-> int lineno,
->  #define SAFE_SETRLIMIT(resource, rlim) \
->  	safe_setrlimit(__FILE__, __LINE__, (resource), (rlim))
->  
-> +/*
-> + * Crash is expected, avoid dumping corefile.
-> + * 1 is a special value, that disables core-to-pipe.
-> + * At the same time it is small enough value for
-> + * core-to-file, so it skips creating cores as well.
-> + */
-> +static inline void tst_no_corefile(void)
-> +{
-> +       struct rlimit r;
-> +
-> +       r.rlim_cur = 1;
-> +       r.rlim_max = 1;
-> +       SAFE_SETRLIMIT(RLIMIT_CORE, &r);
-> +       tst_res(TINFO, "Avoid dumping corefile in following test");
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/acct/acct01.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-I'm fine with helper func. Maybe I'd print also current pid.
-It could be little spammy if there are many children, but we could
-address that later (if needed) with a parameter to control verbosity.
+diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
+index f58e02584..ec570017b 100644
+--- a/testcases/kernel/syscalls/acct/acct01.c
++++ b/testcases/kernel/syscalls/acct/acct01.c
+@@ -91,12 +91,6 @@ static void setup(void)
+ 	memset(nametoolong, 'a', PATH_MAX+1);
+ }
+ 
+-static void cleanup(void)
+-{
+-	SAFE_UNLINK(TEST_TMPFILE);
+-	SAFE_UNLINK(TEST_ELOOP);
+-}
+-
+ static void verify_acct(unsigned int nr)
+ {
+ 	struct test_case *tcase = &tcases[nr];
+@@ -131,6 +125,5 @@ static struct tst_test test = {
+ 	.needs_rofs = 1,
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.setup = setup,
+-	.cleanup = cleanup,
+ 	.test = verify_acct,
+ };
+-- 
+2.19.2
+
