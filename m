@@ -1,93 +1,44 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 1 Jul 2019 15:12:22 +0800
-Subject: [LTP] [PATCH] scenario_groups/default: run the kernel_misc test
- after the cve test
-In-Reply-To: <CAMy_GT96S3dVkevTkE2GUwyz_ugFjb1RsHd_ATARUB-BaYQo6Q@mail.gmail.com>
-References: <20190628103900.10113-1-po-hsu.lin@canonical.com>
- <5D19A7E1.10607@cn.fujitsu.com>
- <CAMy_GT96S3dVkevTkE2GUwyz_ugFjb1RsHd_ATARUB-BaYQo6Q@mail.gmail.com>
-Message-ID: <5D19B256.5080609@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 1 Jul 2019 03:23:26 -0400 (EDT)
+Subject: [LTP] [PATCH v4 2/2] pkey: add test for memory protection keys
+In-Reply-To: <CAEemH2d-Hyhg5Xo+Q66C3MKvMv3pOnXDKtFYkuZpi6ZUEgC2DA@mail.gmail.com>
+References: <20190626071538.29486-1-liwang@redhat.com>
+ <20190626071538.29486-2-liwang@redhat.com>
+ <285629943.30156546.1561537194409.JavaMail.zimbra@redhat.com>
+ <CAEemH2d_7fq2RxEwZEMSUgErM7XG26RTsV1ogLTiLvALc810Gw@mail.gmail.com>
+ <1695359151.30173908.1561543177520.JavaMail.zimbra@redhat.com>
+ <CAEemH2d-Hyhg5Xo+Q66C3MKvMv3pOnXDKtFYkuZpi6ZUEgC2DA@mail.gmail.com>
+Message-ID: <553049750.30838144.1561965806395.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2019/07/01 14:58, Po-Hsu Lin wrote:
-> Hello,
->
-> I am not sure if we can restore the value in /proc/sys/kernel/tainted,
-> which can be changed manually:
->      # cat  /proc/sys/kernel/tainted
->      0
->      # echo 12800>  /proc/sys/kernel/tainted
->      # cat  /proc/sys/kernel/tainted
->      12800
-> But it can't be reset back to 0.
-Hi,
-
-It seems that the value of /proc/sys/kernel/tainted only be increased.
-
-Best Regards,
-Xiao Yang
-> > From the Documentation/admin-guide/tainted-kernels.rst, it states that:
-> "Note the kernel will remain tainted even after you undo what caused the taint
-> (i.e. unload a proprietary kernel module), to indicate the kernel remains not
-> trustworthy."
->
-> Thanks
->
-> On Mon, Jul 1, 2019 at 2:27 PM Xiao Yang<yangx.jy@cn.fujitsu.com>  wrote:
->> Hi,
->>
->> Your patch just workarounds the issue for now, because it still happens
->> if a new test designed to taint
->> kernel is added to the group before cve group in future.
->>
->> Could we save the value of tainted before running block_dev and then
->> restore it after running block_dev?
->>
->> Best Regards,
->> Xiao Yang
->> On 2019/06/28 18:39, Po-Hsu Lin wrote:
->>> The block_dev test in kernel_misc will taint kernel with a warning flag,
->>> this is an expected behaviour.
->>>
->>> However, if you run the cve-2017-17053 after it, as the test is looking
->>> for a warning / died flag for a tainted kernel, it will cause false
->>> alarm with:
->>>     tst_taint.c:88: BROK: Kernel is already tainted: 14849
->>>
->>> The kernel_misc test was executed before the cve test in the default
->>> test plan. Move the kernel_misc test to the end of the list to
->>> workaround this issue.
->>>
->>> Signed-off-by: Po-Hsu Lin<po-hsu.lin@canonical.com>
->>> ---
->>>    scenario_groups/default | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/scenario_groups/default b/scenario_groups/default
->>> index 1f3e5b27f..e5b34782c 100644
->>> --- a/scenario_groups/default
->>> +++ b/scenario_groups/default
->>> @@ -22,7 +22,6 @@ power_management_tests
->>>    hugetlb
->>>    commands
->>>    hyperthreading
->>> -kernel_misc
->>>    fs_ext4
->>>    can
->>>    cpuhotplug
->>> @@ -30,3 +29,4 @@ net.ipv6_lib
->>>    input
->>>    cve
->>>    crypto
->>> +kernel_misc
->>
->>
->
->
 
 
+----- Original Message -----
+> On Wed, Jun 26, 2019 at 5:59 PM Jan Stancek <jstancek@redhat.com> wrote:
+> 
+> >
+> > ...
+> > >
+> > > If a system(e.g PowerKVM guest) configured with NO huge page support,
+> > then
+> > > the file '/proc/sys/vm/nr_hugepages' exist but EOPNOTSUPP to read/write.
+> > In
+> > > this key01, perhaps I shouldn't use the "/proc/.../nr_hugepages" to
+> > detect
+> > > that at the beginning.
+> > >
+> > > Seems the correct way is to use "/sys/kernel/mm/hugepages/" for huge page
+> > > detecting and leave the SAFE_FILE_* still in setup(). Because we need to
+> > > catch the "/proc/.../nr_hugepages" open/close or read/write issue in
+> > > testing.
+> >
+> > That should work, I see we used that in some tests already.
+> >
+> 
+> Thanks, should I format new patch v5? or any more comments?
 
+Yes, please send v5.
