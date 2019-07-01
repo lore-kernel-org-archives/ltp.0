@@ -1,27 +1,42 @@
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Mon, 1 Jul 2019 19:30:50 +0200
-Subject: [LTP] [Kernel BUG?] SMSW operation get success on UMIP KVM guest
-In-Reply-To: <20190701145308.GA19368@ranerica-svr.sc.intel.com>
-References: <CAEemH2cg01cdz=amrCWU00Xof9+cxmfR_DqCBaQe36QoGsakmA@mail.gmail.com>
- <5622c0ac-236f-4e3e-a132-c8d3bd8fadc4@redhat.com>
- <20190701145308.GA19368@ranerica-svr.sc.intel.com>
-Message-ID: <cde7f924-10c9-7ffc-d323-b786240244b3@redhat.com>
+From: Eric Biggers <ebiggers@kernel.org>
+Date: Mon,  1 Jul 2019 14:33:16 -0700
+Subject: [LTP] [PATCH] crypto/pcrypt_aead01: add back deleted file comment
+Message-ID: <20190701213316.120357-1-ebiggers@kernel.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 01/07/19 16:53, Ricardo Neri wrote:
->>
->> (*) before the x86 people jump at me, this won't happen unless you
->> explicitly pass an option to QEMU, such as "-cpu host,+umip". :)  The
->> incorrect emulation of SMSW when CR4.UMIP=1 is why.
-> Paolo, what do you mean by the incorrect emulation of SMSW?
+From: Eric Biggers <ebiggers@google.com>
 
-When KVM tries to emulate UMIP on a system that doesn't have it, SMSW
-won't cause a #GP.  The processor is simply not able to trap to the
-hypervisor on SMSW (unlike SGDT/SIDT/SLDT/STR), so it's impossible to do
-better.
+Add back some useful text that was accidentally deleted by commit
+acc16bcbf12a ("c: Replace GPL verbose text by SPDX license identifier").
 
-Paolo
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ testcases/kernel/crypto/pcrypt_aead01.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/testcases/kernel/crypto/pcrypt_aead01.c b/testcases/kernel/crypto/pcrypt_aead01.c
+index 5d9a123c7..d9c27f69d 100644
+--- a/testcases/kernel/crypto/pcrypt_aead01.c
++++ b/testcases/kernel/crypto/pcrypt_aead01.c
+@@ -6,6 +6,14 @@
+  *
+  * Originally found by syzkaller:
+  * https://groups.google.com/forum/#!topic/syzkaller-bugs/NKn_ivoPOpk
++ *
++ * Test for CVE-2017-5754 - pcrypt mishandles freeing instances.
++ *
++ * The test works by adding and then removing pcrypt-AEAD instances.
++ * See commit d76c68109f37 crypto: pcrypt - fix freeing pcrypt instances.
++ *
++ * If the bug is present then this will probably crash the kernel, but also
++ * sometimes the test simply times out.
+  */
+ 
+ #include <errno.h>
+-- 
+2.22.0.410.gd8fdbe21b5-goog
+
