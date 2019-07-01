@@ -1,48 +1,55 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon,  1 Jul 2019 13:08:57 +0200
-Subject: [LTP] [COMMITTED] [PATCH] syscalls/acct01: Remove cleanup
-Message-ID: <20190701110857.5895-1-chrubis@suse.cz>
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date: Mon,  1 Jul 2019 19:37:05 +0800
+Subject: [LTP] [PATCH] zram/zram_lib.sh: fix local variable assignment
+Message-ID: <20190701113705.2758-1-po-hsu.lin@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-* There is no need to remove files in the temporary directory, it's
-  deleted recursively on test exit anyways
+The compression algorithm was stored into a local variable "algs",
+however the variable name "zram_algs" was used in the for loop later.
 
-* This fixes issue #540 where the test produced warnings on kernel with
-  BSD_PROCESS_ACCT turned off
+Unify them with "zram_algs", and use sed to get rid of the square
+brackets that indicates the compression algorithm currently in use.
+    $ cat /sys/block/zram0/comp_algorithm
+    [lzo] lz4 lz4hc 842 zstd
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Also, the /bin/sh was symbolically link to dash in Ubuntu.
+This is making the one-liner local variable assignment not working [1]:
+    /opt/ltp/testcases/bin/zram01.sh: 102: local: 842: bad variable name
+
+Break it into two lines to solve this issue.
+
+[1] https://wiki.ubuntu.com/DashAsBinSh#local
+
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
 ---
- testcases/kernel/syscalls/acct/acct01.c | 7 -------
- 1 file changed, 7 deletions(-)
+ testcases/kernel/device-drivers/zram/zram_lib.sh | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
-index f58e02584..ec570017b 100644
---- a/testcases/kernel/syscalls/acct/acct01.c
-+++ b/testcases/kernel/syscalls/acct/acct01.c
-@@ -91,12 +91,6 @@ static void setup(void)
- 	memset(nametoolong, 'a', PATH_MAX+1);
- }
+diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
+index 45116af3e..a19d03a01 100755
+--- a/testcases/kernel/device-drivers/zram/zram_lib.sh
++++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
+@@ -98,11 +98,13 @@ zram_compress_alg()
  
--static void cleanup(void)
--{
--	SAFE_UNLINK(TEST_TMPFILE);
--	SAFE_UNLINK(TEST_ELOOP);
--}
--
- static void verify_acct(unsigned int nr)
- {
- 	struct test_case *tcase = &tcases[nr];
-@@ -131,6 +125,5 @@ static struct tst_test test = {
- 	.needs_rofs = 1,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.setup = setup,
--	.cleanup = cleanup,
- 	.test = verify_acct,
- };
+ 	tst_resm TINFO "test that we can set compression algorithm"
+ 
+-	local algs=$(cat /sys/block/zram0/comp_algorithm)
+-	tst_resm TINFO "supported algs: $algs"
++	local zram_algs
++	zram_algs=$(sed 's/[][]//g' /sys/block/zram0/comp_algorithm)
++	tst_resm TINFO "supported algs: $zram_algs"
+ 	local i=0
+ 	for alg in $zram_algs; do
+-		local sys_path="/sys/block/zram${i}/comp_algorithm"
++		local sys_path
++		sys_path="/sys/block/zram${i}/comp_algorithm"
+ 		echo "$alg" >  $sys_path || \
+ 			tst_brkm TFAIL "can't set '$alg' to $sys_path"
+ 		i=$(($i + 1))
 -- 
-2.19.2
+2.17.1
 
