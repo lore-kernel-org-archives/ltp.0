@@ -1,26 +1,23 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 2 Jul 2019 19:19:10 +0200
-Subject: [LTP] [PATCH] scenario_groups/default: run the kernel_misc test
- after the cve test
-In-Reply-To: <CAMy_GT-Snxu5axLR6j=1yeDRNWJavofVAjdJH2FyBfCsnj=Hdw@mail.gmail.com>
-References: <20190628103900.10113-1-po-hsu.lin@canonical.com>
- <5D19A7E1.10607@cn.fujitsu.com> <20190702130513.GB11122@rei>
- <CAMy_GT-Snxu5axLR6j=1yeDRNWJavofVAjdJH2FyBfCsnj=Hdw@mail.gmail.com>
-Message-ID: <20190702171910.GC20468@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 2 Jul 2019 20:56:45 +0200
+Subject: [LTP] [PATCH] crypto/pcrypt_aead01: add back deleted file
+ comment
+In-Reply-To: <20190702094935.GA32529@rei>
+References: <20190701213316.120357-1-ebiggers@kernel.org>
+ <20190702094935.GA32529@rei>
+Message-ID: <20190702185644.GA7389@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> thanks for the review,
-> do you think if we should put a comment (if possible) inside that file
-> to avoid getting re-ordered for some reason in the future?
+Hi Eric,
 
-We cannot, the scenari files are simply read line by line, the format
-does not support comments.
+> Hi!
+> Thanks for catching this, applied.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Sorry for removing it, thanks for a fix!
+
+Kind regards,
+Petr
