@@ -1,42 +1,74 @@
-From: Eric Biggers <ebiggers@kernel.org>
-Date: Mon,  1 Jul 2019 14:33:16 -0700
-Subject: [LTP] [PATCH] crypto/pcrypt_aead01: add back deleted file comment
-Message-ID: <20190701213316.120357-1-ebiggers@kernel.org>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 2 Jul 2019 09:52:39 +0800
+Subject: [LTP] [Kernel BUG?] SMSW operation get success on UMIP KVM guest
+In-Reply-To: <20190701160352.GA19921@ranerica-svr.sc.intel.com>
+References: <CAEemH2cg01cdz=amrCWU00Xof9+cxmfR_DqCBaQe36QoGsakmA@mail.gmail.com>
+ <5622c0ac-236f-4e3e-a132-c8d3bd8fadc4@redhat.com>
+ <CAEemH2fqMpoiBo+asyawHsOWgdXy-ggV0mwQs9A9EJ1kh=uhAA@mail.gmail.com>
+ <20190701160352.GA19921@ranerica-svr.sc.intel.com>
+Message-ID: <CAEemH2fR98TBHaOM37aGmzbgdZ_XPokJeUNN6dU1r=1WhOSmEw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Eric Biggers <ebiggers@google.com>
+On Tue, Jul 2, 2019 at 12:04 AM Ricardo Neri <
+ricardo.neri-calderon@linux.intel.com> wrote:
 
-Add back some useful text that was accidentally deleted by commit
-acc16bcbf12a ("c: Replace GPL verbose text by SPDX license identifier").
+> On Mon, Jul 01, 2019 at 08:57:28PM +0800, Li Wang wrote:
+> > On Mon, Jul 1, 2019 at 8:02 PM Paolo Bonzini <pbonzini@redhat.com>
+> wrote:
+> >
+> > > On 01/07/19 09:50, Li Wang wrote:
+> > > > Hello there,
+> > > >
+> > > > LTP/umip_basic_test get failed on KVM UMIP
+> > > > system(kernel-v5.2-rc4.x86_64). The test is only trying to do
+> > > >      asm volatile("smsw %0\n" : "=m" (val));
+> > > > and expect to get SIGSEGV in this SMSW operation, but it exits with 0
+> > > > unexpectedly.
+> > >
+> > > In addition to what Thomas said, perhaps you are using a host that does
+> > > *not* have UMIP, and configuring KVM to emulate it(*).  In that case,
+> it
+> > > is not possible to intercept SMSW, and therefore it will incorrectly
+> > > succeed.
+> > >
+> >
+> > Right, I checked the host system, and confirmed that CPU doesn't support
+> > UMIP.
+> >
+> > >
+> > > Paolo
+> > >
+> > > (*) before the x86 people jump at me, this won't happen unless you
+> > > explicitly pass an option to QEMU, such as "-cpu host,+umip". :)  The
+> > > incorrect emulation of SMSW when CR4.UMIP=1 is why.
+> > >
+> > Good to know this, is there any document for that declaration? It seems
+> > neither LTP issue nor kernel bug here. But anyway we'd better do
+> something
+> > to avoid the error in the test.
+>
+> The test case already checks for umip in /proc/cpuinfo, right? And in
+> long mode it always expects a SIGSEGV signal. If you did not add -cpu
+> host,+umip,
+> how come umip was present in /proc/cpuinfo?
+>
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- testcases/kernel/crypto/pcrypt_aead01.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Yes, right.
 
-diff --git a/testcases/kernel/crypto/pcrypt_aead01.c b/testcases/kernel/crypto/pcrypt_aead01.c
-index 5d9a123c7..d9c27f69d 100644
---- a/testcases/kernel/crypto/pcrypt_aead01.c
-+++ b/testcases/kernel/crypto/pcrypt_aead01.c
-@@ -6,6 +6,14 @@
-  *
-  * Originally found by syzkaller:
-  * https://groups.google.com/forum/#!topic/syzkaller-bugs/NKn_ivoPOpk
-+ *
-+ * Test for CVE-2017-5754 - pcrypt mishandles freeing instances.
-+ *
-+ * The test works by adding and then removing pcrypt-AEAD instances.
-+ * See commit d76c68109f37 crypto: pcrypt - fix freeing pcrypt instances.
-+ *
-+ * If the bug is present then this will probably crash the kernel, but also
-+ * sometimes the test simply times out.
-  */
- 
- #include <errno.h>
+But the KVM guest is not customized in manual, I reserved that system for
+automation test and did not aware of the '-cpu host,+umip,' parameter until
+Paolo points it out. In the last email, I was hoping to find a way to
+recognize this situation for the LTP test intelligently.
+
+Thank you all for a reply to this.
+
 -- 
-2.22.0.410.gd8fdbe21b5-goog
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190702/e76b4485/attachment.htm>
