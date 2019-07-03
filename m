@@ -1,34 +1,88 @@
-From: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date: Wed,  3 Jul 2019 18:23:00 +0800
-Subject: [LTP] [PATCH 0/3] zram/zram_lib.sh: fix zram_compress_alg() test
- for zram01
-Message-ID: <20190703102303.32166-1-po-hsu.lin@canonical.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 3 Jul 2019 08:53:07 -0400 (EDT)
+Subject: [LTP] Bug Report: diotest4 fails on mips64
+In-Reply-To: <77f916ad-58e3-bf0c-e1e7-da8fc3397ba4@windriver.com>
+References: <dc4e1e30-face-9039-db90-5a6dae2fc2ea@windriver.com>
+ <1731168043.30655111.1561720172996.JavaMail.zimbra@redhat.com>
+ <77f916ad-58e3-bf0c-e1e7-da8fc3397ba4@windriver.com>
+Message-ID: <818477200.31466413.1562158387201.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The zram_compress_alg() test in zram01 is not working properly, this
-patchset will address the following issues:
-  1. One-liner local variable assignment with space-separated value does
-     not work for DASH, which is symbolically linked to /bin/sh on some
-     OS like Ubuntu.
-  2. Inconsistent variable name for compression algorithms, and the
-     algorithm name needs to be sanitized.
-  3. Hard-coded block device numbers to iterate with. If the number of
-     the available zram compression algorithms is larger than the
-     number of block devices, the test will fail.
 
-Po-Hsu Lin (3):
-  zram/zram_lib.sh: fix local variable assignment for DASH
-  zram/zram_lib.sh: fix variable name and algorithm retrieval
-  zram/zram_lib.sh: iterate through all available compression algorithms
-    for all zram block devices
+----- Original Message -----
+> Thanks for your work.
+> 
+> I will backport the patch to my project after merged.
 
- .../kernel/device-drivers/zram/zram_lib.sh    | 22 ++++++++++++-------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+Does it mean, that patch I posted fixes problem for you?
 
--- 
-2.17.1
+Do you have good/bad kernel version? I was looking at recent
+upstream changes, but didn't spot anything that could explain
+that EINVAL.
 
+> 
+> 
+> --Hongzhi
+> 
+> 
+> 
+> On 6/28/19 7:09 PM, Jan Stancek wrote:
+> >
+> > ----- Original Message -----
+> >> *Ltp:*
+> >>
+> >> latest master
+> >>
+> >>
+> >> *Kernel:*
+> >>
+> >> After v5.1 ARCH=mips64
+> >>
+> >>
+> >> *Error info:*
+> >>
+> >> diotest4 10 TBROK : diotest4.c:368: can't mmap file: Invalid argument
+> >> diotest4 11 TBROK : diotest4.c:368: Remaining cases broken
+> >>
+> >>
+> >> I think the first argument of mmap is invalid.
+> >>
+> >>   ?? >shm_base = (char *)(((long)sbrk(0) + (shmsz - 1)) & ~(shmsz - 1));
+> >>
+> >>   ?? >shm_base = mmap(shm_base, 0x100000, PROT_READ | PROT_WRITE,
+> > I don't see any note why that mmap needs to be MAP_FIXED. I'd drop it,
+> > let kernel pick an address:
+> >
+> > diff --git a/testcases/kernel/io/direct_io/diotest4.c
+> > b/testcases/kernel/io/direct_io/diotest4.c
+> > index e4616e400abd..bf200cd41a27 100644
+> > --- a/testcases/kernel/io/direct_io/diotest4.c
+> > +++ b/testcases/kernel/io/direct_io/diotest4.c
+> > @@ -352,18 +352,14 @@ int main(int argc, char *argv[])
+> >          total++;
+> >
+> >          /* Test-10: read, write to a mmaped file */
+> > -       shm_base = (char *)(((long)sbrk(0) + (shmsz - 1)) & ~(shmsz - 1));
+> > -       if (shm_base == NULL) {
+> > -               tst_brkm(TBROK, cleanup, "sbrk failed: %s",
+> > strerror(errno));
+> > -       }
+> >          offset = 4096;
+> >          count = bufsize;
+> >          if ((fd = open(filename, O_DIRECT | O_RDWR)) < 0) {
+> >                  tst_brkm(TBROK, cleanup, "can't open %s: %s",
+> >                           filename, strerror(errno));
+> >          }
+> > -       shm_base = mmap(shm_base, 0x100000, PROT_READ | PROT_WRITE,
+> > -                       MAP_SHARED | MAP_FIXED, fd, 0);
+> > +       shm_base = mmap(0, 0x100000, PROT_READ | PROT_WRITE,
+> > +                       MAP_SHARED, fd, 0);
+> >          if (shm_base == (caddr_t) - 1) {
+> >                  tst_brkm(TBROK, cleanup, "can't mmap file: %s",
+> >                           strerror(errno));
+> >
+> 
