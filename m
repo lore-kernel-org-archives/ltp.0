@@ -1,13 +1,10 @@
-From: Hongzhi, Song <hongzhi.song@windriver.com>
-Date: Thu, 4 Jul 2019 15:44:04 +0800
-Subject: [LTP] Bug Report: diotest4 fails on mips64
-In-Reply-To: <286312662.31605904.1562198532095.JavaMail.zimbra@redhat.com>
-References: <dc4e1e30-face-9039-db90-5a6dae2fc2ea@windriver.com>
- <1731168043.30655111.1561720172996.JavaMail.zimbra@redhat.com>
- <77f916ad-58e3-bf0c-e1e7-da8fc3397ba4@windriver.com>
- <818477200.31466413.1562158387201.JavaMail.zimbra@redhat.com>
- <286312662.31605904.1562198532095.JavaMail.zimbra@redhat.com>
-Message-ID: <faeb7464-f0c8-b97e-3b0b-7f38c2e94b99@windriver.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 4 Jul 2019 04:08:39 -0400 (EDT)
+Subject: [LTP] [PATCH v2] lib: add tst_no_corefile to avoid corefile
+ dumping
+In-Reply-To: <20190703072417.24091-1-liwang@redhat.com>
+References: <20190703072417.24091-1-liwang@redhat.com>
+Message-ID: <2030850327.31633394.1562227719657.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,113 +12,100 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
-On 7/4/19 8:02 AM, Jan Stancek wrote:
->
-> ----- Original Message -----
->> ----- Original Message -----
->>> Thanks for your work.
->>>
->>> I will backport the patch to my project after merged.
->> Does it mean, that patch I posted fixes problem for you?
->>
->> Do you have good/bad kernel version? I was looking at recent
->> upstream changes, but didn't spot anything that could explain
->> that EINVAL.
-> Problem appears to be that "mmap.h" doesn't include "config.h",
-> so MMAP_GRANULARITY ends up being just single page.
+----- Original Message -----
+> If crash is expected in a testcase, we can avoid dumping core file
+> in calling this function.
+> 
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> Cc: Jan Stancek <jstancek@redhat.com>
+> ---
+> 
+> Notes:
+>     v1 --> v2
+>         * add a paramenter to hide the message print
+>         * add notes in test-writing-guidelines.txt
+> 
+>  doc/test-writing-guidelines.txt                | 14 ++++++++++++--
+>  include/tst_safe_macros.h                      | 18 ++++++++++++++++++
+>  .../kernel/security/umip/umip_basic_test.c     |  2 ++
+>  testcases/kernel/syscalls/ipc/shmat/shmat01.c  | 16 +++-------------
+>  4 files changed, 35 insertions(+), 15 deletions(-)
+> 
+> diff --git a/doc/test-writing-guidelines.txt
+> b/doc/test-writing-guidelines.txt
+> index c6d4e001d..1a77db6bf 100644
+> --- a/doc/test-writing-guidelines.txt
+> +++ b/doc/test-writing-guidelines.txt
+> @@ -826,8 +826,8 @@ The 'TST_PROCESS_STATE_WAIT()' waits until process 'pid'
+> is in requested
+>  It's mostly used with state 'S' which means that process is sleeping in
+>  kernel
+>  for example in 'pause()' or any other blocking syscall.
+>  
+> -2.2.10 Signal handlers
+> -^^^^^^^^^^^^^^^^^^^^^^
+> +2.2.10 Signals and signal handlers
+> +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  
+>  If you need to use signal handlers, keep the code short and simple. Don't
+>  forget that the signal handler is called asynchronously and can interrupt
+>  the
+> @@ -859,6 +859,16 @@ type defined in C99 but this one *DOES NOT* imply
+> 'volatile' (it's just a
+>  'typedef' to 'int'). So the correct type for a flag that is changed from a
+>  signal handler is either 'volatile int' or 'volatile sig_atomic_t'.
+>  
+> +If a crash (e.g. triggered by signal SIGSEGV) is expected in testing, you
+> can
+> +avoid dumping core file via calling this below tst_no_corefile() function.
+> +Note that this chanage will only effect on that process with this invoke.
+> And
 
-Sorry, can you tell me the relationship between config.h and 
-MMAP_GRANULARITY ?
+I'd rephrase it to:
 
-I tested several times that including "config.h" indeed fixed the bug.
+   If a crash (e.g. triggered by signal SIGSEGV) is expected in testing, you
+   can avoid creation of core files by calling tst_no_corefile() function.
+   This takes effect for process (and its children) which invoked it, unless
+   they subsequently modify RLIMIT_CORE.
 
+   Note that LTP library will reap any processes that test didn't reap itself,
+   and report any non-zero exit code as failure.
 
->
-> Following fixes it for me on qemu emulated 5kc-malta, running 5.2.0-rc7:
->
-> diff --git a/include/lapi/mmap.h b/include/lapi/mmap.h
-> index 18547c0d4..98b6ade1e 100644
-> --- a/include/lapi/mmap.h
-> +++ b/include/lapi/mmap.h
-> @@ -19,6 +19,8 @@
->   #ifndef LAPI_MMAP_H__
->   #define LAPI_MMAP_H__
->
-> +#include "config.h"
+One note below.
+
+> +the parameter 'verbose' is used as message print option.
 > +
->   #ifndef MAP_HUGETLB
->   # define MAP_HUGETLB 0x40000
->   #endif
->
-> but still, perhaps we should also drop that MAP_FIXED.
+> +[source,c]
+> +-------------------------------------------------------------------------------
+> +void tst_no_corefile(int verbose);
+> +-------------------------------------------------------------------------------
+> +
+>  2.2.11 Kernel Modules
+>  ^^^^^^^^^^^^^^^^^^^^^
+>  
+> diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+> index 53a888c80..c4ddf84ef 100644
+> --- a/include/tst_safe_macros.h
+> +++ b/include/tst_safe_macros.h
+> @@ -394,6 +394,24 @@ static inline int safe_setrlimit(const char *file, const
+> int lineno,
+>  #define SAFE_SETRLIMIT(resource, rlim) \
+>  	safe_setrlimit(__FILE__, __LINE__, (resource), (rlim))
+>  
+> +/*
+> + * Crash is expected, avoid dumping corefile.
+> + * 1 is a special value, that disables core-to-pipe.
+> + * At the same time it is small enough value for
+> + * core-to-file, so it skips creating cores as well.
+> + */
+> +static inline void tst_no_corefile(int verbose)
+> +{
+> +       struct rlimit r;
+> +
+> +       r.rlim_cur = 1;
+> +       r.rlim_max = 1;
+> +       SAFE_SETRLIMIT(RLIMIT_CORE, &r);
 
-
-Agree with it. Could I send the patch with your signed-off?
-
---Hongzhi
-
-
->
->>>
->>> --Hongzhi
->>>
->>>
->>>
->>> On 6/28/19 7:09 PM, Jan Stancek wrote:
->>>> ----- Original Message -----
->>>>> *Ltp:*
->>>>>
->>>>> latest master
->>>>>
->>>>>
->>>>> *Kernel:*
->>>>>
->>>>> After v5.1 ARCH=mips64
->>>>>
->>>>>
->>>>> *Error info:*
->>>>>
->>>>> diotest4 10 TBROK : diotest4.c:368: can't mmap file: Invalid argument
->>>>> diotest4 11 TBROK : diotest4.c:368: Remaining cases broken
->>>>>
->>>>>
->>>>> I think the first argument of mmap is invalid.
->>>>>
->>>>>    ?? >shm_base = (char *)(((long)sbrk(0) + (shmsz - 1)) & ~(shmsz - 1));
->>>>>
->>>>>    ?? >shm_base = mmap(shm_base, 0x100000, PROT_READ | PROT_WRITE,
->>>> I don't see any note why that mmap needs to be MAP_FIXED. I'd drop it,
->>>> let kernel pick an address:
->>>>
->>>> diff --git a/testcases/kernel/io/direct_io/diotest4.c
->>>> b/testcases/kernel/io/direct_io/diotest4.c
->>>> index e4616e400abd..bf200cd41a27 100644
->>>> --- a/testcases/kernel/io/direct_io/diotest4.c
->>>> +++ b/testcases/kernel/io/direct_io/diotest4.c
->>>> @@ -352,18 +352,14 @@ int main(int argc, char *argv[])
->>>>           total++;
->>>>
->>>>           /* Test-10: read, write to a mmaped file */
->>>> -       shm_base = (char *)(((long)sbrk(0) + (shmsz - 1)) & ~(shmsz -
->>>> 1));
->>>> -       if (shm_base == NULL) {
->>>> -               tst_brkm(TBROK, cleanup, "sbrk failed: %s",
->>>> strerror(errno));
->>>> -       }
->>>>           offset = 4096;
->>>>           count = bufsize;
->>>>           if ((fd = open(filename, O_DIRECT | O_RDWR)) < 0) {
->>>>                   tst_brkm(TBROK, cleanup, "can't open %s: %s",
->>>>                            filename, strerror(errno));
->>>>           }
->>>> -       shm_base = mmap(shm_base, 0x100000, PROT_READ | PROT_WRITE,
->>>> -                       MAP_SHARED | MAP_FIXED, fd, 0);
->>>> +       shm_base = mmap(0, 0x100000, PROT_READ | PROT_WRITE,
->>>> +                       MAP_SHARED, fd, 0);
->>>>           if (shm_base == (caddr_t) - 1) {
->>>>                   tst_brkm(TBROK, cleanup, "can't mmap file: %s",
->>>>                            strerror(errno));
->>>>
->> --
->> Mailing list info: https://lists.linux.it/listinfo/ltp
->>
+SAFE_SETRLIMIT is fine if needs_root = 1. But if test runs as unprivileged user
+and RLIMIT_CORE is already 0, unprivileged user won't be able to increase it,
+so we get TBROK here.
