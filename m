@@ -1,88 +1,68 @@
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 4 Jul 2019 11:29:09 +0800
+Date: Thu, 4 Jul 2019 13:48:09 +0800
 Subject: [LTP] [PATCH RFC] move_pages12: handle errno EBUSY for
  madvise(..., MADV_SOFT_OFFLINE)
-In-Reply-To: <5D142EF6.6030402@cn.fujitsu.com>
+In-Reply-To: <20190703131005.GA1712@rei>
 References: <20190607095213.13372-1-liwang@redhat.com>
- <20190610032754.GA7114@hori.linux.bs1.fc.nec.co.jp>
- <5D0C7204.9020704@cn.fujitsu.com>
- <CAEemH2c+CWAOmAH=1WT+GR-iZ=5RoDcCmD=-zBpc63PHg6xXyQ@mail.gmail.com>
- <5D142EF6.6030402@cn.fujitsu.com>
-Message-ID: <CAEemH2dHGvv_fP3AFstX5Corc4D0pK_ULGxANzkf4+biR5WC-A@mail.gmail.com>
+ <20190703131005.GA1712@rei>
+Message-ID: <CAEemH2fGUABOfz=Yq6xONgmHwjaiU6n_q=9EXyZz2EUedpuK8Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
+On Wed, Jul 3, 2019 at 9:10 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-On Thu, Jun 27, 2019 at 10:50 AM Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-wrote:
-
-> ...
->> Hi Li
->>
->> Your patch can handle EBUSY errno correctly for soft offline.
->> But move page  may be killed by SIGBUS because of  MCE  when we soft
->> offline concurrently.
->> That leads to move_page failed with ESRCH.   Also, move page may fails
->> with ENOMEM .
->> Do you notice it ?
->>
+> Hi!
+> > +                     if (ret == EINVAL) {
+> >                               SAFE_KILL(cpid, SIGKILL);
+> >                               SAFE_WAITPID(cpid, &status, 0);
+> >                               SAFE_MUNMAP(addr, tcases[n].tpages * hpsz);
+> >                               tst_res(TCONF,
+> >                                       "madvise() didn't support
+> MADV_SOFT_OFFLINE");
+> >                               return;
+> > +                     } else if (ret == EBUSY) {
+> > +                             SAFE_MUNMAP(addr, tcases[n].tpages * hpsz);
+> > +                             goto out;
 >
-> I didn't get this failure, it seems not related to this patch. Two
-> questions:
+> Shouldn't we continue with the test here rather than exit?
 >
-> 1. which kernel version do you test?
-> 2. can you reproduce this without my patch?
->
-> Hi Li
->
-> I test it on 3.10.0-957.el7.x86_64  kvm(my machine was not support numa
-> and i enable it on kvm. as below:
->  <cpu mode='custom' match='exact' check='full'>
->     <model fallback='forbid'>Penryn</model>
->     <feature policy='require' name='x2apic'/>
->     <feature policy='require' name='hypervisor'/>
->     <numa>
->       <cell id='0' cpus='0' memory='1048576' unit='KiB'/>
->       <cell id='1' cpus='1' memory='1048576' unit='KiB'/>
->     </numa>
->   </cpu>
->
-> Does it only exist on kvm and doesn't  exist on physical machine?  I don't
-> have physical machine that supports numa.
+> I guess that there is no harm in doing a few more iterations if we
+> manage to hit EBUSY, or is there a good reason to exit the test here?
 >
 
-I can reproduce your problem on bare metal too, it seems like you hit the
-bug as the commit 6bc9b56433b (mm: fix race on soft-offlining free huge
-pages) described, which Naoya pointed out before:
+Yes, we can do more iterations then, but it probably makes no sense.
 
-See:
+The reason I guess is that, if we get an EBUSY on the hugepage offline,
+that means the page is already being isolated by move_pages() in the child
+at that moment and we can't really release it. So in the next iteration,
+the mmap() will be failed with ENOMEM(since we only have 1 huge page in
+/proc/.../nr_hugepages).
 
-+               /*
-+                * We set PG_hwpoison only when the migration source
-hugepage
-+                * was successfully dissolved, because otherwise hwpoisoned
-+                * hugepage remains on free hugepage list, then userspace
-will
-+                * find it as SIGBUS by allocation failure. That's not
-expected
-+                * in soft-offlining.
-+                */
-+               ret = dissolve_free_huge_page(page);
-+               if (!ret) {
-+                       if (set_hwpoison_free_buddy_page(page))
-+                               num_poisoned_pages_inc();
-+               }
+To confirm that, I change the code to continue after get EBUSY, but it
+couldn't:
 
-And, this bz still exists in the latest rhel7 kernel, I will open a bug to
-RHEL7 product.
+# ./move_pages12
+tst_test.c:1100: INFO: Timeout per run is 0h 05m 00s
+move_pages12.c:251: INFO: Free RAM 30860672 kB
+move_pages12.c:269: INFO: Increasing 2048kB hugepages pool on node 0 to 4
+move_pages12.c:279: INFO: Increasing 2048kB hugepages pool on node 1 to 5
+move_pages12.c:195: INFO: Allocating and freeing 4 hugepages on node 0
+move_pages12.c:195: INFO: Allocating and freeing 4 hugepages on node 1
+move_pages12.c:185: PASS: Bug not reproduced
+move_pages12.c:146: CONF: Cannot allocate hugepage, memory too fragmented?
+
+>
+> Otherwise the patch looks good.
+>
+
+Thanks for review.
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190704/8774640e/attachment-0001.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190704/599eaa3d/attachment.htm>
