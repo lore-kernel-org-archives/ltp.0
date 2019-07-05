@@ -1,47 +1,57 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 4 Jul 2019 10:51:54 -0400 (EDT)
-Subject: [LTP] [PATCH] direct_io: diotest4: fix mips
- MAP_SHARED/MAP_FIXED mmap
-In-Reply-To: <20190704140849.GB11528@rei.lan>
-References: <47b8b48060353711ff8d3695a7d3702f1aced12a.1562224996.git.jstancek@redhat.com>
- <20190704130119.GA11421@rei.lan>
- <594163584.31676743.1562246342334.JavaMail.zimbra@redhat.com>
- <20190704140849.GB11528@rei.lan>
-Message-ID: <559290240.31688905.1562251914018.JavaMail.zimbra@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 5 Jul 2019 11:26:29 +0800
+Subject: [LTP] [PATCH v2] lib: add tst_no_corefile to avoid corefile
+ dumping
+In-Reply-To: <2030850327.31633394.1562227719657.JavaMail.zimbra@redhat.com>
+References: <20190703072417.24091-1-liwang@redhat.com>
+ <2030850327.31633394.1562227719657.JavaMail.zimbra@redhat.com>
+Message-ID: <CAEemH2dca-3dTXZyng+i060OnC4LoJjy=z9RLzCMUFs9=2K1qA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On Thu, Jul 4, 2019 at 4:08 PM Jan Stancek <jstancek@redhat.com> wrote:
 
+>
+> I'd rephrase it to:
+>
+>    If a crash (e.g. triggered by signal SIGSEGV) is expected in testing,
+> you
+>    can avoid creation of core files by calling tst_no_corefile() function.
+>    This takes effect for process (and its children) which invoked it,
+> unless
+>    they subsequently modify RLIMIT_CORE.
+>
+>    Note that LTP library will reap any processes that test didn't reap
+> itself,
+>    and report any non-zero exit code as failure.
+>
 
------ Original Message -----
-> Hi!
-> > > > diff --git a/include/lapi/mmap.h b/include/lapi/mmap.h
-> > > > index 18547c0d47ed..98b6ade1e2ab 100644
-> > > > --- a/include/lapi/mmap.h
-> > > > +++ b/include/lapi/mmap.h
-> > > > @@ -19,6 +19,8 @@
-> > > >  #ifndef LAPI_MMAP_H__
-> > > >  #define LAPI_MMAP_H__
-> > > >  
-> > > > +#include "config.h"
-> > > > +
-> > > >  #ifndef MAP_HUGETLB
-> > > >  # define MAP_HUGETLB 0x40000
-> > > >  #endif
-> > > 
-> > > Huh, this looks completely unrelevant to the patch itself, or do I miss
-> > > something?
-> > 
-> > This fixes the original problem of bad alignment.
-> > Hunk below improves on it by removing MAP_FIXED altogether.
-> 
-> Ah, that is needed for the HAVE_SYS_SHM_H.
-> 
-> > I could split it into 2 patches, if you prefer that.
-> 
-> Yes please, both are acked, so just push them.
+This looks better, I missed the effect to its children before.
 
-Pushed as 2 patches.
+> > +static inline void tst_no_corefile(int verbose)
+> > +{
+> > +       struct rlimit r;
+> > +
+> > +       r.rlim_cur = 1;
+> > +       r.rlim_max = 1;
+> > +       SAFE_SETRLIMIT(RLIMIT_CORE, &r);
+>
+> SAFE_SETRLIMIT is fine if needs_root = 1. But if test runs as unprivileged
+> user
+> and RLIMIT_CORE is already 0, unprivileged user won't be able to increase
+> it,
+> so we get TBROK here.
+>
+You are right. The SAFE_SETRLIMIT is not good for that achievement. I will
+make use of the original type and do error handle with TWARN slightly. And
+then I think we probably need to move it out form tst_safe_mcro.h.
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190705/75430c48/attachment.htm>
