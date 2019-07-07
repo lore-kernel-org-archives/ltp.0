@@ -1,94 +1,25 @@
 From: Petr Vorel <petr.vorel@gmail.com>
-Date: Sun,  7 Jul 2019 21:00:14 +0200
-Subject: [LTP] [PATCH 3/5] setdomainname01: Convert to new API
+Date: Sun,  7 Jul 2019 21:00:15 +0200
+Subject: [LTP] [PATCH 4/5] setdomainname02: Convert to new API
 In-Reply-To: <20190707190016.27296-1-petr.vorel@gmail.com>
 References: <20190707190016.27296-1-petr.vorel@gmail.com>
-Message-ID: <20190707190016.27296-4-petr.vorel@gmail.com>
+Message-ID: <20190707190016.27296-5-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Functional changes: verify result of setdomainname() with
-getdomainname().
-
 Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
 ---
- .../syscalls/setdomainname/setdomainname.h    |  58 +++++++
- .../syscalls/setdomainname/setdomainname01.c  | 162 +++---------------
- 2 files changed, 82 insertions(+), 138 deletions(-)
- create mode 100644 testcases/kernel/syscalls/setdomainname/setdomainname.h
+ .../syscalls/setdomainname/setdomainname02.c  | 197 ++++--------------
+ 1 file changed, 35 insertions(+), 162 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/setdomainname/setdomainname.h b/testcases/kernel/syscalls/setdomainname/setdomainname.h
-new file mode 100644
-index 000000000..76a72df22
---- /dev/null
-+++ b/testcases/kernel/syscalls/setdomainname/setdomainname.h
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Petr Vorel <petr.vorel@gmail.com>
-+ */
-+
-+#ifndef SETDOMAINNAME_H__
-+#define SETDOMAINNAME_H__
-+
-+#include <string.h>
-+#include "lapi/utsname.h"
-+#include "lapi/syscalls.h"
-+#include "tst_test.h"
-+
-+#define TST_VALID_DOMAIN_NAME "test_dom"
-+
-+static char backup[_UTSNAME_DOMAIN_LENGTH];
-+
-+#define TEST_VARIANTS 2
-+
-+static void setdomainname_info(void)
-+{
-+	switch (tst_variant) {
-+	case 0:
-+		tst_res(TINFO, "Testing libc setdomainname()");
-+		break;
-+	case 1:
-+		tst_res(TINFO, "Testing __NR_setdomainname syscall");
-+		break;
-+	}
-+}
-+
-+static int do_setdomainname(char *new, size_t len)
-+{
-+	switch (tst_variant) {
-+	case 0:
-+		return setdomainname(new, len);
-+	break;
-+	case 1:
-+		return tst_syscall(__NR_setdomainname, new, len);
-+	}
-+
-+	return -1;
-+}
-+
-+static void setup(void)
-+{
-+	setdomainname_info();
-+	if ((getdomainname(backup, sizeof(backup))) < 0)
-+		tst_brk(TBROK | TERRNO, "getdomainname() failed");
-+}
-+
-+static void cleanup(void)
-+{
-+	if ((setdomainname(backup, strlen(backup))) < 0)
-+		tst_res(TWARN | TERRNO, "setdomainname() failed ('%s')", backup);
-+}
-+
-+#endif /* SETDOMAINNAME_H__ */
-diff --git a/testcases/kernel/syscalls/setdomainname/setdomainname01.c b/testcases/kernel/syscalls/setdomainname/setdomainname01.c
-index 7288fca5c..57d58ab42 100644
---- a/testcases/kernel/syscalls/setdomainname/setdomainname01.c
-+++ b/testcases/kernel/syscalls/setdomainname/setdomainname01.c
-@@ -1,149 +1,35 @@
+diff --git a/testcases/kernel/syscalls/setdomainname/setdomainname02.c b/testcases/kernel/syscalls/setdomainname/setdomainname02.c
+index 6af09ca40..875ed0c44 100644
+--- a/testcases/kernel/syscalls/setdomainname/setdomainname02.c
++++ b/testcases/kernel/syscalls/setdomainname/setdomainname02.c
+@@ -1,181 +1,54 @@
 +// SPDX-License-Identifier: GPL-2.0
  /*
 - * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
@@ -101,165 +32,208 @@ index 7288fca5c..57d58ab42 100644
 - * WITHOUT ANY WARRANTY; without even the implied warranty of
 - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 - *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 - *
 + * Copyright (c) Wipro Technologies Ltd, 2002. All Rights Reserved.
 + * Copyright (c) 2019 Petr Vorel <petr.vorel@gmail.com>
 + * Author: Saji Kumar.V.R <saji.kumar@wipro.com>
   */
--/**********************************************************
+- /*******************************************************************
 - *
-- *    TEST IDENTIFIER	: setdomainname01
+- *    TEST IDENTIFIER   : setdomainname02
 - *
-- *    EXECUTED BY	: root / superuser
+- *    EXECUTED BY       : root / superuser
 - *
-- *    TEST TITLE	: Basic test for setdomainame(2)
+- *    TEST TITLE        : test for checking error conditions for setdomainame(2)
 - *
-- *    TEST CASE TOTAL	: 1
+- *    TEST CASE TOTAL   : 3
 - *
-- *    AUTHOR		: Saji Kumar.V.R <saji.kumar@wipro.com>
+- *    AUTHOR            : Saji Kumar.V.R <saji.kumar@wipro.com>
 - *
 - *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
+- *      Uses SIGUSR1 to pause before test if option set.
+- *      (See the parse_opts(3) man page).
 - *
-- *    DESCRIPTION
-- *	This is a Phase I test for the setdomainname(2) system call.
-- *	It is intended to provide a limited exposure of the system call.
+- * DESCRIPTION
+- * 	Verify that,
+- *   1) setdomainname(2) returns -1 and sets errno to EINVAL if the parameter,
+- *	len is less than zero
+- *   2) setdomainname(2) returns -1 and sets errno to EINVAL if value of
+- *	len is greater than the maximum allowed value
+- *   3) setdomainname(2) returns -1 and sets errno to EFAULT for a bad address
+- *	for name
 - *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *	  Save the current domainname.
+- * ALGORITHM
+- * Setup:
+- *   Setup signal handling.
+- *   Pause for SIGUSR1 if option specified.
+- *   Save current domainname
 - *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- * 	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if (system call failed (return=-1)) &
+- *			   (errno set == expected errno)
+- *              Issue sys call fails with expected return value and errno.
+- *   Otherwise,
+- *      Issue sys call returns unexpected value.
 - *
-- * 	Cleanup:
-- *	  Restore old domain name.
-- * 	  Print errno log and/or timing stats if options given
+- *  Cleanup:
+- *        Restore old domain name.
+- *        Print errno log and/or timing stats if options given
+- *  Side Effects :
+- *	 setdomainname() is resetting value to NULL, if an invalid address
+- *	 is given for name. So, to overcome this problem, domainname is
+- *	 resetting to original value as part of cleanup() routine.
 - *
 - * USAGE:  <for command-line>
-- *  setdomainname01  [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
-- *			where,  -c n : Run n copies concurrently.
-- *				-e   : Turn on errno logging.
-- *				-h   : Show help screen
-- *				-f   : Turn off functional testing
-- *				-i n : Execute test n times.
-- *				-I x : Execute test for x seconds.
-- *				-p   : Pause for SIGUSR1 before starting
-- *				-P x : Pause for x seconds between iterations.
-- *				-t   : Turn on syscall timing.
+- *  setdomainname02  [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
+- *		where,  -c n : Run n copies concurrently.
+- *			-e   : Turn on errno logging.
+- *			-h   : Show help screen
+- *			-f   : Turn off functional testing
+- *			-i n : Execute test n times.
+- *			-I x : Execute test for x seconds.
+- *			-p   : Pause for SIGUSR1 before starting
+- *			-P x : Pause for x seconds between iterations.
+- *			-t   : Turn on syscall timing.
 - *
-- ****************************************************************/
+- *********************************************************************/
  
--#include <errno.h>
--#include <string.h>
--#include <sys/utsname.h>
 -#include "test.h"
 +#include "setdomainname.h"
  
--#define MAX_NAME_LEN _UTSNAME_DOMAIN_LENGTH
+-#include <errno.h>
+-#include <sys/utsname.h>
++#define ERRNO_DESC(x) .exp_errno = x, .errno_desc = #x
+ 
+-#define MAX_NAME_LEN _UTSNAME_DOMAIN_LENGTH - 1
++#define MAX_NAME_LENGTH _UTSNAME_DOMAIN_LENGTH - 1
+ 
+-static void cleanup(void);
+-static void setup(void);
 -
--static void setup();
--static void cleanup();
+-char *TCID = "setdomainname02";
+-int TST_TOTAL = 3;
 -
--char *TCID = "setdomainname01";
--int TST_TOTAL = 1;
--
--static char *test_domain_name = "test_dom";
 -static char old_domain_name[MAX_NAME_LEN];
+-static struct test_case_t {
++struct test_case {
+ 	char *desc;
+ 	char *name;
+ 	int len;
+ 	int exp_errno;
+-	char err_desc[10];
+-} test_cases[] = {
+-	{
+-	"test with len = -1", "test_dom", -1, EINVAL, "EINVAL"}, {
+-	"test with len > allowed maximum", "test_dom", MAX_NAME_LEN + 1,
+-		    EINVAL, "EINVAL"}, {
+-"test with name = NULL", NULL, MAX_NAME_LEN, EFAULT, "EFAULT"},};
 -
 -int main(int ac, char **av)
-+static void do_test(void)
++	char *errno_desc;
++} tcases[] = {
++	{ "len == -1", TST_VALID_DOMAIN_NAME, -1, ERRNO_DESC(EINVAL) },
++	{ "len > allowed maximum", TST_VALID_DOMAIN_NAME, MAX_NAME_LENGTH + 1, ERRNO_DESC(EINVAL) },
++	{ "name == NULL", NULL, MAX_NAME_LENGTH, ERRNO_DESC(EFAULT) }
++};
++
++void verify_setdomainname(unsigned int nr)
  {
-+	char *new = TST_VALID_DOMAIN_NAME;
-+	static char tmp[_UTSNAME_DOMAIN_LENGTH];
- 
--	int lc;
+-	int lc, ind;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
--	setup();
-+	TEST(do_setdomainname(new, sizeof(new)));
- 
+-	setup();		/* global setup */
+-
+-	/* The following loop checks looping state if -i option given */
+-
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+	if (TST_RET != 0)
-+		tst_brk(TFAIL | TTERRNO, "setdomainname() failed: %d", TST_ERR);
- 
+-		/* reset tst_count in case we are looping */
 -		tst_count = 0;
++	struct test_case *tcase = &tcases[nr];
+ 
+-		for (ind = 0; ind < TST_TOTAL; ind++) {
++	TEST(do_setdomainname(tcase->name, (size_t) tcase->len));
+ 
+-			/*
+-			 * call the system call with the TEST() macro
+-			 */
+-			TEST(setdomainname(test_cases[ind].name,
+-					   (size_t) test_cases[ind].len));
 -
--		/*
--		 * Call setdomainname(2)
--		 */
--		TEST(setdomainname(test_domain_name, sizeof(test_domain_name)));
--
--		/* check return code */
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL, "setdomainname() Failed, errno = %d :"
--				 " %s", TEST_ERRNO, strerror(TEST_ERRNO));
--		} else {
--			tst_resm(TPASS, "setdomainname() returned %ld, "
--				 "Domain name set to \"%s\"", TEST_RETURN,
--				 test_domain_name);
+-			if ((TEST_RETURN == -1) &&
+-			    (TEST_ERRNO == test_cases[ind].exp_errno)) {
+-				tst_resm(TPASS, "expected failure; Got %s",
+-					 test_cases[ind].err_desc);
+-			} else {
+-				tst_resm(TFAIL, "Call failed to produce "
+-					 "expected error;  Expected errno: %d "
+-					 "Got : %d, %s",
+-					 test_cases[ind].exp_errno,
+-					 TEST_ERRNO, strerror(TEST_ERRNO));
+-			}
 -		}
--
--	}
--
--	/* cleanup and exit */
++	tst_res(TINFO, "testing %s", tcase->desc);
++	if (TST_RET != -1) {
++		tst_res(TFAIL, "unexpected exit code: %ld", TST_RET);
++		return;
+ 	}
+ 
 -	cleanup();
+-
 -	tst_exit();
-+	if (getdomainname(tmp, sizeof(tmp)) != 0)
-+		tst_brk(TFAIL | TERRNO, "getdomainname() failed");
- 
-+	if (strcmp(tmp, new))
-+		tst_res(TFAIL, "getdomainname() returned wrong domainname: '%s'", tmp);
-+	else
-+		tst_res(TPASS, "setdomainname() succeed");
- }
- 
--/* setup() - performs all ONE TIME setup for this test */
+-
+-}
+-
+-/*
+- * setup() - performs all the ONE TIME setup for this test.
+- */
 -void setup(void)
 -{
 -	tst_require_root();
 -
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
--	/* Save current domain name */
--	if ((getdomainname(old_domain_name, sizeof(old_domain_name))) < 0) {
+-	/* Save current domainname */
+-	if ((getdomainname(old_domain_name, MAX_NAME_LEN)) < 0) {
 -		tst_brkm(TBROK, NULL, "getdomainname() failed while"
 -			 " getting current domain name");
--	}
--
++	if (TST_ERR != tcase->exp_errno) {
++		tst_res(TFAIL | TTERRNO, "unexpected errno: %d, expected: %d",
++			TST_ERR, tcase->exp_errno);
++		return;
+ 	}
+ 
 -	TEST_PAUSE;
 -
--}
--
++	tst_res(TPASS | TTERRNO, "expected failure");
+ }
+ 
 -/*
-- *cleanup() -  performs all ONE TIME cleanup for this test at
-- *		completion or premature exit.
+- * cleanup() - performs all the ONE TIME cleanup for this test at completion
+- * 	       or premature exit.
 - */
 -void cleanup(void)
 -{
 -
 -	/* Restore domain name */
--	if ((setdomainname(old_domain_name, strlen(old_domain_name))) < 0) {
+-	if ((setdomainname(old_domain_name, sizeof(old_domain_name)))
+-	    < 0) {
 -		tst_resm(TWARN, "setdomainname() failed while restoring"
 -			 " domainname to \"%s\"", old_domain_name);
 -	}
 -
 -}
 +static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
 +	.needs_root = 1,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = do_test,
++	.test = verify_setdomainname,
 +	.test_variants = TEST_VARIANTS,
 +};
 -- 
