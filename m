@@ -1,186 +1,120 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon,  8 Jul 2019 15:08:40 +0200
-Subject: [LTP] [PATCH v3.1] lib: add tst_no_corefile()
-In-Reply-To: <20190705051603.24599-1-liwang@redhat.com>
-References: <20190705051603.24599-1-liwang@redhat.com>
-Message-ID: <02ade9af1634c4681156dceecfd51721284044e3.1562591065.git.jstancek@redhat.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Mon, 8 Jul 2019 18:17:03 +0300
+Subject: [LTP] [PATCH v2] syscalls/copy_file_range02: increase coverage
+ and remove EXDEV test
+In-Reply-To: <1562359357-24526-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <CAOQ4uxgUfhDL3kE_2xFKTnfs+Pgn5UJ38n2aFxz4XndfUeFX8A@mail.gmail.com>
+ <1562359357-24526-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <CAOQ4uxhHOCb2fB_wSbBz8ekvm4S9_PsAXKD45=+MZNgt+Y-2gQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Li Wang <liwang@redhat.com>
+On Mon, Jul 8, 2019 at 1:46 PM Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
+>
+> Since Amir path for copy_file_range has been merged into linux-xfs,
+> I add test for swapfile, immutable file, bounds in ltp.  Also, add test
+> for block char pipe dev and remove EXDEV test(5.3 will relax the cross-device
+> constraint[2]).  I follow xfstests code[3][4][5] and increase it .
+>
+> [1]https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git/commit/?h=for-next-5.3&id=5dae222a5ff0c269730393018a5539cc970a4726
+> [2]https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git/commit/?h=for-next-5.3&id=96e6e8f4a68df2d94800311163faa67124df24e5
+> [3]https://patchwork.kernel.org/patch/10971759/
+> [4]https://patchwork.kernel.org/patch/10971747/
+> [5]https://patchwork.kernel.org/patch/10961421/
+>
+> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> ---
+>  .../copy_file_range/copy_file_range.h         |  11 +-
+>  .../copy_file_range/copy_file_range02.c       | 139 +++++++++++++++---
+>  2 files changed, 130 insertions(+), 20 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range.h b/testcases/kernel/syscalls/copy_file_range/copy_file_range.h
+> index b6d132978..f9e2565d9 100644
+> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range.h
+> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range.h
+> @@ -9,6 +9,7 @@
+>
+>  #include <stdbool.h>
+>  #include <unistd.h>
+> +#include <sys/sysmacros.h>
+>  #include "lapi/syscalls.h"
+>
+>  #define TEST_VARIANTS  2
+> @@ -18,10 +19,18 @@
+>  #define FILE_DEST_PATH  "file_dest"
+>  #define FILE_RDONL_PATH "file_rdonl"
+>  #define FILE_DIR_PATH  "file_dir"
+> -#define FILE_MNTED_PATH        MNTPOINT"/file_mnted"
+> +#define FILE_IMMUTABLE_PATH "file_immutable"
+> +#define FILE_SWAP_PATH "file_swap"
+> +#define FILE_BLKDEV    "file_blk"
+> +#define FILE_CHRDEV    "file_chr"
+> +#define FILE_FIFO      "file_fifo"
+> +#define FILE_COPY_PATH  "file_copy"
+>
+>  #define CONTENT                "ABCDEFGHIJKLMNOPQRSTUVWXYZ12345\n"
+>  #define CONTSIZE       (sizeof(CONTENT) - 1)
+> +#define MAX_LEN   ((long long)(~0ULL >> 1))
+> +#define MIN_OFF   65537
+> +#define MAX_OFF   (MAX_LEN - MIN_OFF)
 
-Adds a simple helper to avoid corefile dump.
+In the xfstest the value of MAX_OFF is ((1ULL << 63) - MIN_OFF)
+Not sure why it was changed here?
 
-If crash is expected in a testcase, we can avoid dumping core file
-in calling this function.
+>
+[...]
+> +
+>  static void verify_copy_file_range(unsigned int n)
+>  {
+>         struct tcase *tc = &tcases[n];
+> +       if (tc->exp_err == ETXTBSY && chattr_i_nsup) {
 
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Jan Stancek <jstancek@redhat.com>
----
-Li,
+if (tc->copy_to_fd == &fd_immutable && chattr_i_nsup)
 
-I'd like to avoid generating TWARN when user has done nothing wrong.
-What would you tell on this version? Only tst_no_corefile()
-is changed compared to your v3.
+Would have made much more sense to code readers.
 
+> +               tst_res(TCONF, "filesystem doesn't support chattr +i, skip it");
+> +               return;
+> +       }
+> +       if (tc->exp_err == EPERM && swap_nsup) {
 
- doc/test-writing-guidelines.txt                  | 12 +++++++--
- include/tst_coredump.h                           | 18 +++++++++++++
- include/tst_test.h                               |  1 +
- lib/tst_coredump.c                               | 32 ++++++++++++++++++++++++
- testcases/kernel/security/umip/umip_basic_test.c |  2 ++
- testcases/kernel/syscalls/ipc/shmat/shmat01.c    | 16 +++---------
- 6 files changed, 66 insertions(+), 15 deletions(-)
- create mode 100644 include/tst_coredump.h
- create mode 100644 lib/tst_coredump.c
+Same here.
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index 4b1e7d25b53f..d9d25c659b34 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -826,8 +826,8 @@ The 'TST_PROCESS_STATE_WAIT()' waits until process 'pid' is in requested
- It's mostly used with state 'S' which means that process is sleeping in kernel
- for example in 'pause()' or any other blocking syscall.
- 
--2.2.10 Signal handlers
--^^^^^^^^^^^^^^^^^^^^^^
-+2.2.10 Signals and signal handlers
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
- 
- If you need to use signal handlers, keep the code short and simple. Don't
- forget that the signal handler is called asynchronously and can interrupt the
-@@ -859,6 +859,14 @@ type defined in C99 but this one *DOES NOT* imply 'volatile' (it's just a
- 'typedef' to 'int'). So the correct type for a flag that is changed from a
- signal handler is either 'volatile int' or 'volatile sig_atomic_t'.
- 
-+If a crash (e.g. triggered by signal SIGSEGV) is expected in testing, you
-+can avoid creation of core files by calling tst_no_corefile() function.
-+This takes effect for process (and its children) which invoked it, unless
-+they subsequently modify RLIMIT_CORE.
-+
-+Note that LTP library will reap any processes that test didn't reap itself,
-+and report any non-zero exit code as failure.
-+
- 2.2.11 Kernel Modules
- ^^^^^^^^^^^^^^^^^^^^^
- 
-diff --git a/include/tst_coredump.h b/include/tst_coredump.h
-new file mode 100644
-index 000000000000..e1f892544aa8
---- /dev/null
-+++ b/include/tst_coredump.h
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Red Hat, Inc.
-+ */
-+
-+#ifndef TST_COREDUMP__
-+#define TST_COREDUMP__
-+
-+/*
-+ * If crash is expected, avoid dumping corefile.
-+ * 1 is a special value, that disables core-to-pipe.
-+ * At the same time it is small enough value for
-+ * core-to-file, so it skips creating cores as well.
-+ */
-+void tst_no_corefile(int verbose);
-+
-+#endif /* TST_COREDUMP_H */
-+
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 2e8e3635204e..b50e88b60666 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -33,6 +33,7 @@
- #include "tst_get_bad_addr.h"
- #include "tst_path_has_mnt_flags.h"
- #include "tst_sys_conf.h"
-+#include "tst_coredump.h"
- 
- /*
-  * Reports testcase result.
-diff --git a/lib/tst_coredump.c b/lib/tst_coredump.c
-new file mode 100644
-index 000000000000..2cae5771fb8e
---- /dev/null
-+++ b/lib/tst_coredump.c
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Red Hat, Inc.
-+ */
-+
-+#define TST_NO_DEFAULT_MAIN
-+
-+#include <sys/time.h>
-+#include <sys/resource.h>
-+
-+#include "tst_test.h"
-+#include "tst_coredump.h"
-+
-+void tst_no_corefile(int verbose)
-+{
-+	struct rlimit new_r, old_r;
-+
-+	SAFE_GETRLIMIT(RLIMIT_CORE, &old_r);
-+	if (old_r.rlim_max >= 1 || geteuid() == 0) {
-+		/*
-+		 * 1 is a special value, that disables core-to-pipe.
-+		 * At the same time it is small enough value for
-+		 * core-to-file, so it skips creating cores as well.
-+		 */
-+		new_r.rlim_cur = 1;
-+		new_r.rlim_max = 1;
-+		SAFE_SETRLIMIT(RLIMIT_CORE, &new_r);
-+	}
-+
-+	if (verbose)
-+		tst_res(TINFO, "Avoid dumping corefile for process(pid=%d)", getpid());
-+}
-diff --git a/testcases/kernel/security/umip/umip_basic_test.c b/testcases/kernel/security/umip/umip_basic_test.c
-index c34d4a1f618d..37850ef9ff71 100644
---- a/testcases/kernel/security/umip/umip_basic_test.c
-+++ b/testcases/kernel/security/umip/umip_basic_test.c
-@@ -86,6 +86,8 @@ static void verify_umip_instruction(unsigned int n)
- 
- 	pid = SAFE_FORK();
- 	if (pid == 0) {
-+		tst_no_corefile(0);
-+
- 		switch (n) {
- 		case 0:
- 			asm_sgdt();
-diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat01.c b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-index aa9dfd4e5baa..f759147994a2 100644
---- a/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-+++ b/testcases/kernel/syscalls/ipc/shmat/shmat01.c
-@@ -59,19 +59,9 @@ static void *expected_addr(void *in_addr, void *out_addr)
- 
- static void do_child(int *in_addr, int expect_crash)
- {
--	if (expect_crash) {
--		/*
--		 * Crash is expected, avoid dumping corefile.
--		 * 1 is a special value, that disables core-to-pipe.
--		 * At the same time it is small enough value for
--		 * core-to-file, so it skips creating cores as well.
--		*/
--		struct rlimit r;
--
--		r.rlim_cur = 1;
--		r.rlim_max = 1;
--		SAFE_SETRLIMIT(RLIMIT_CORE, &r);
--	}
-+	if (expect_crash)
-+		tst_no_corefile(1);
-+
- 	*in_addr = 10;
- 
- 	exit(0);
--- 
-1.8.3.1
+> +               tst_res(TCONF, "filesystem doesn't support swapfile, skip it");
+> +               return;
+> +       }
+>
+>         TEST(sys_copy_file_range(fd_src, 0, *tc->copy_to_fd,
+> -                               0, CONTSIZE, tc->flags));
+> +                               &tc->dst, tc->len, tc->flags));
+>
+[...]
 
+>
+>  static void setup(void)
+>  {
+>         syscall_info();
+> +       dev_t dev[2];
+> +
+> +       dev[1] = makedev(7, 127);
+
+As I wrote before, while it is probable the loop127 is free it is not safe
+programming to assume it is free, especially not if you are trying to overwrite
+its content!
+I suggest that you alter  find_free_loopdev() to return the free loopdev minor
+(and -1 for no free loopdev) and then you can safely use the minor number
+that find_free_loopdev() returned in this test.
+If there is no free loopdev you can return TCONF.
+
+> +       dev[2] = makedev(1, 3);
+
+What I meant was
+#define FILE_CHRDEV "/dev/null"
+
+Obviously, no need to mknod nor unlink it on cleanup...
+
+Thanks,
+Amir.
