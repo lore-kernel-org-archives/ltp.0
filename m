@@ -1,120 +1,29 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Mon, 8 Jul 2019 18:17:03 +0300
-Subject: [LTP] [PATCH v2] syscalls/copy_file_range02: increase coverage
- and remove EXDEV test
-In-Reply-To: <1562359357-24526-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <CAOQ4uxgUfhDL3kE_2xFKTnfs+Pgn5UJ38n2aFxz4XndfUeFX8A@mail.gmail.com>
- <1562359357-24526-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <CAOQ4uxhHOCb2fB_wSbBz8ekvm4S9_PsAXKD45=+MZNgt+Y-2gQ@mail.gmail.com>
+From: Yixin Zhang <yixin.zhang@intel.com>
+Date: Tue,  9 Jul 2019 10:15:45 +0800
+Subject: [LTP] [PATCH ltp] syscalls/stat: add stat02{,_64} into .gitignore
+Message-ID: <20190709021545.23772-1-yixin.zhang@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Jul 8, 2019 at 1:46 PM Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
->
-> Since Amir path for copy_file_range has been merged into linux-xfs,
-> I add test for swapfile, immutable file, bounds in ltp.  Also, add test
-> for block char pipe dev and remove EXDEV test(5.3 will relax the cross-device
-> constraint[2]).  I follow xfstests code[3][4][5] and increase it .
->
-> [1]https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git/commit/?h=for-next-5.3&id=5dae222a5ff0c269730393018a5539cc970a4726
-> [2]https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git/commit/?h=for-next-5.3&id=96e6e8f4a68df2d94800311163faa67124df24e5
-> [3]https://patchwork.kernel.org/patch/10971759/
-> [4]https://patchwork.kernel.org/patch/10971747/
-> [5]https://patchwork.kernel.org/patch/10961421/
->
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> ---
->  .../copy_file_range/copy_file_range.h         |  11 +-
->  .../copy_file_range/copy_file_range02.c       | 139 +++++++++++++++---
->  2 files changed, 130 insertions(+), 20 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range.h b/testcases/kernel/syscalls/copy_file_range/copy_file_range.h
-> index b6d132978..f9e2565d9 100644
-> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range.h
-> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range.h
-> @@ -9,6 +9,7 @@
->
->  #include <stdbool.h>
->  #include <unistd.h>
-> +#include <sys/sysmacros.h>
->  #include "lapi/syscalls.h"
->
->  #define TEST_VARIANTS  2
-> @@ -18,10 +19,18 @@
->  #define FILE_DEST_PATH  "file_dest"
->  #define FILE_RDONL_PATH "file_rdonl"
->  #define FILE_DIR_PATH  "file_dir"
-> -#define FILE_MNTED_PATH        MNTPOINT"/file_mnted"
-> +#define FILE_IMMUTABLE_PATH "file_immutable"
-> +#define FILE_SWAP_PATH "file_swap"
-> +#define FILE_BLKDEV    "file_blk"
-> +#define FILE_CHRDEV    "file_chr"
-> +#define FILE_FIFO      "file_fifo"
-> +#define FILE_COPY_PATH  "file_copy"
->
->  #define CONTENT                "ABCDEFGHIJKLMNOPQRSTUVWXYZ12345\n"
->  #define CONTSIZE       (sizeof(CONTENT) - 1)
-> +#define MAX_LEN   ((long long)(~0ULL >> 1))
-> +#define MIN_OFF   65537
-> +#define MAX_OFF   (MAX_LEN - MIN_OFF)
+Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+---
+ testcases/kernel/syscalls/stat/.gitignore | 2 ++
+ 1 file changed, 2 insertions(+)
 
-In the xfstest the value of MAX_OFF is ((1ULL << 63) - MIN_OFF)
-Not sure why it was changed here?
+diff --git a/testcases/kernel/syscalls/stat/.gitignore b/testcases/kernel/syscalls/stat/.gitignore
+index 4a8f61858..fa0a4ce9f 100644
+--- a/testcases/kernel/syscalls/stat/.gitignore
++++ b/testcases/kernel/syscalls/stat/.gitignore
+@@ -1,4 +1,6 @@
+ /stat01
+ /stat01_64
++/stat02
++/stat02_64
+ /stat03
+ /stat03_64
+-- 
+2.17.1
 
->
-[...]
-> +
->  static void verify_copy_file_range(unsigned int n)
->  {
->         struct tcase *tc = &tcases[n];
-> +       if (tc->exp_err == ETXTBSY && chattr_i_nsup) {
-
-if (tc->copy_to_fd == &fd_immutable && chattr_i_nsup)
-
-Would have made much more sense to code readers.
-
-> +               tst_res(TCONF, "filesystem doesn't support chattr +i, skip it");
-> +               return;
-> +       }
-> +       if (tc->exp_err == EPERM && swap_nsup) {
-
-Same here.
-
-> +               tst_res(TCONF, "filesystem doesn't support swapfile, skip it");
-> +               return;
-> +       }
->
->         TEST(sys_copy_file_range(fd_src, 0, *tc->copy_to_fd,
-> -                               0, CONTSIZE, tc->flags));
-> +                               &tc->dst, tc->len, tc->flags));
->
-[...]
-
->
->  static void setup(void)
->  {
->         syscall_info();
-> +       dev_t dev[2];
-> +
-> +       dev[1] = makedev(7, 127);
-
-As I wrote before, while it is probable the loop127 is free it is not safe
-programming to assume it is free, especially not if you are trying to overwrite
-its content!
-I suggest that you alter  find_free_loopdev() to return the free loopdev minor
-(and -1 for no free loopdev) and then you can safely use the minor number
-that find_free_loopdev() returned in this test.
-If there is no free loopdev you can return TCONF.
-
-> +       dev[2] = makedev(1, 3);
-
-What I meant was
-#define FILE_CHRDEV "/dev/null"
-
-Obviously, no need to mknod nor unlink it on cleanup...
-
-Thanks,
-Amir.
