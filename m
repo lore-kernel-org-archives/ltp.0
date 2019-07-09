@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 9 Jul 2019 12:24:31 +0200
-Subject: [LTP] [PATCH 1/1] syscalls/ioctl08: Require btrfs
-In-Reply-To: <20190703154709.20863-1-pvorel@suse.cz>
-References: <20190703154709.20863-1-pvorel@suse.cz>
-Message-ID: <20190709102431.GB30251@rei.lan>
+Date: Tue, 9 Jul 2019 12:53:03 +0200
+Subject: [LTP] [PATCH] syscalls/prctl06.c: New test for prctl() with
+ PR_{SET, GET}_NO_NEW_PRIVS
+In-Reply-To: <5D0377BB.1060605@cn.fujitsu.com>
+References: <1557404498-3879-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20190523115236.GD30616@rei.lan> <5D0377BB.1060605@cn.fujitsu.com>
+Message-ID: <20190709105303.GA4914@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,23 +13,11 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> WARNING: failed to open /dev/btrfs-control, skipping device
-> registration: No such file or directory
-> safe_macros.c:757: BROK: tst_test.c:752: mount(/dev/loop0, mnt_point,
-> btrfs, 0, (nil)) failed: ENODEV
-> 
-> Cc: Christian Amann <camann@suse.com>
-> Reported-by: Amir Goldstein <amir73il@gmail.com>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Hi Amir,
-> 
-> thanks a lot for a report and sorry for longer time to reply (vacation).
-> Could you please test it? (I don't have any VM with kernel >= 4.5 && !btrfs).
+Can you pretty please resend the prctl06 v2 patch?
 
-Looks good to me.
-
-Amir have you had a chance to test this patch?
+I can see it in the patchwork at
+http://patchwork.ozlabs.org/patch/1118628/
+but that email haven't made it to my mailbox.
 
 -- 
 Cyril Hrubis
