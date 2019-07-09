@@ -1,118 +1,170 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 9 Jul 2019 17:45:57 +0200
-Subject: [LTP] [PATCH v2] rcu/rcu_torture.sh: Rewrite test
-In-Reply-To: <1559922050-15221-1-git-send-email-ice_yangxiao@163.com>
-References: <7ad6c506-e195-db0d-3b2b-a30b95c42f8a@oracle.com>
- <1559922050-15221-1-git-send-email-ice_yangxiao@163.com>
-Message-ID: <20190709154536.GA8195@rei.lan>
+From: Eric Biggers <ebiggers@kernel.org>
+Date: Tue,  9 Jul 2019 11:42:02 -0700
+Subject: [LTP] [PATCH] crypto/crypto_user02.c: new test that tries to delete
+ larval algorithm
+Message-ID: <20190709184202.25112-1-ebiggers@kernel.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +rcutorture_setup()
-> +{
-> +	# do test by inserting and removing rcutorture module
-> +	# so check if it is built-in, loaded or unbuilt
-> +	modprobe -n --first-time rcutorture >/dev/null 2>&1 || \
-> +		tst_brk TCONF "built-in, loaded or unbuilt rcutorture"
+From: Eric Biggers <ebiggers@google.com>
 
-Wouldn't the --first-time disable the test on subsequent runs? Or do I
-misunderstand how --first-time is supposed to work?
+Test for a bug in the crypto user configuration API (NETLINK_CRYPTO)
+where it incorrectly allowed operating on "larval" algorithms.
 
-Also I guess that some modprobe implementations may not support
---first-time e.g. busybox.
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ runtest/crypto                          |   1 +
+ testcases/kernel/crypto/.gitignore      |   1 +
+ testcases/kernel/crypto/Makefile        |   2 +
+ testcases/kernel/crypto/crypto_user02.c | 108 ++++++++++++++++++++++++
+ 4 files changed, 112 insertions(+)
+ create mode 100644 testcases/kernel/crypto/crypto_user02.c
 
-> +}
->  
-> -trap cleanup INT
-> +rcutorture_test()
-> +{
-> +	local rcu_type=$1
->  
-> -rcu_type="rcu rcu_bh srcu sched"
-> +	tst_res TINFO "${rcu_type}-torture: running ${test_time} sec..."
->  
-> -if tst_kvcmp -lt "3.12"; then
-> -	rcu_type="$rcu_type rcu_sync rcu_expedited rcu_bh_sync rcu_bh_expedited \
-> -	          srcu_sync srcu_expedited sched_sync sched_expedited"
-> +	modprobe rcutorture nfakewriters=${num_writers} \
-> +		torture_type=${rcu_type} >/dev/null 2>&1
-> +	if [ $? -ne 0 ]; then
-> +		dmesg | grep -q "invalid torture type: \"${rcu_type}\"" && \
-> +			tst_brk TCONF "invalid ${rcu_type} type"
->  
-> -	if tst_kvcmp -lt "3.11"; then
-> -		rcu_type="$rcu_type srcu_raw srcu_raw_sync"
-> +		tst_brk TBROK "failed to load module"
->  	fi
-> -fi
-> -
-> -TST_TOTAL=$(echo "$rcu_type" | wc -w)
-> -
-> -est_time=`echo "scale=2; $test_time * $TST_TOTAL / 60 " | bc`
-> -tst_resm TINFO "estimate time $est_time min"
-> -
-> -for type in $rcu_type; do
-> -
-> -	tst_resm TINFO "$type: running $test_time sec..."
-> -
-> -	modprobe rcutorture nfakewriters=$num_writers \
-> -	         stat_interval=60 test_no_idle_hz=1 shuffle_interval=3 \
-> -	         stutter=5 irqreader=1 fqs_duration=0 fqs_holdoff=0 \
-> -	         fqs_stutter=3 test_boost=1 test_boost_interval=7 \
-> -	         test_boost_duration=4 shutdown_secs=0 \
-> -	         stall_cpu=0 stall_cpu_holdoff=10 n_barrier_cbs=0 \
-> -	         onoff_interval=0 onoff_holdoff=0 torture_type=$type \
-> -	         > /dev/null 2>&1 || tst_brkm TBROK "failed to load module"
->  
-> -	sleep $test_time
-> +	sleep ${test_time}
->  
-> -	rmmod rcutorture > /dev/null 2>&1 || \
-> -		tst_brkm TBROK "failed to unload module"
-> +	rmmod rcutorture >/dev/null 2>&1 || \
-> +		tst_brk TBROK "failed to unload module"
-
-This should be modprobe -r, rmmod has been deprecated for quite some
-time.
-
->  	# check module status in dmesg
-> -	result_str=`dmesg | sed -nE '$s/.*End of test: ([A-Z]+):.*/\1/p'`
-> -	if [ "$result_str" = "SUCCESS" ]; then
-> -		tst_resm TPASS "$type: completed"
-> +	local res=$(dmesg | sed -nE "s/.* ${rcu_type}-torture:.* End of test: (.*): .*/\1/p" | tail -n1)
-> +	if [ "$res" = "SUCCESS" ]; then
-> +		tst_res TPASS "${rcu_type}-torture: $res"
->  	else
-> -		tst_resm TFAIL "$type: $result_str, see dmesg"
-> +		tst_res TFAIL "${rcu_type}-torture: $res, see dmesg"
->  	fi
-> -done
-> +}
-> +
-> +do_test()
-> +{
-> +	case $1 in
-> +	1) rcutorture_test rcu;;
-> +	2) rcutorture_test srcu;;
-> +	3) rcutorture_test srcud;;
-> +	4) rcutorture_test tasks;;
-> +	esac
-> +}
->  
-> -tst_exit
-> +tst_run
-> -- 
-> 1.8.3.1
-> 
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/runtest/crypto b/runtest/crypto
+index ad713c5edf..be8bc81d2f 100644
+--- a/runtest/crypto
++++ b/runtest/crypto
+@@ -6,3 +6,4 @@ af_alg05 af_alg05
+ af_alg06 af_alg06
+ pcrypt_aead01 pcrypt_aead01
+ crypto_user01 crypto_user01
++crypto_user02 crypto_user02
+diff --git a/testcases/kernel/crypto/.gitignore b/testcases/kernel/crypto/.gitignore
+index 7340bde293..c5be01180c 100644
+--- a/testcases/kernel/crypto/.gitignore
++++ b/testcases/kernel/crypto/.gitignore
+@@ -6,3 +6,4 @@ af_alg05
+ af_alg06
+ pcrypt_aead01
+ crypto_user01
++crypto_user02
+diff --git a/testcases/kernel/crypto/Makefile b/testcases/kernel/crypto/Makefile
+index 6547e1cb63..7cbdb72d19 100644
+--- a/testcases/kernel/crypto/Makefile
++++ b/testcases/kernel/crypto/Makefile
+@@ -22,3 +22,5 @@ CFLAGS			+= -D_GNU_SOURCE
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+ 
+ af_alg02: CFLAGS += -pthread
++
++crypto_user02: LDLIBS += -lrt
+diff --git a/testcases/kernel/crypto/crypto_user02.c b/testcases/kernel/crypto/crypto_user02.c
+new file mode 100644
+index 0000000000..6090b5a4ea
+--- /dev/null
++++ b/testcases/kernel/crypto/crypto_user02.c
+@@ -0,0 +1,108 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright 2019 Google LLC
++ */
++
++/*
++ * Regression test for kernel commit 21d4120ec6f5 ("crypto: user - prevent
++ * operating on larval algorithms").  See the commit message for a detailed
++ * explanation of the problem.  Basically, this test tries to cause a NULL
++ * pointer dereference in the kernel by abusing the CRYPTO_MSG_DELALG message in
++ * the NETLINK_CRYPTO interface to try to delete a "larval" algorithm, which is
++ * a kernel-internal marker for an algorithm which has been registered but isn't
++ * ready yet (e.g., hasn't completed the in-kernel crypto self-tests yet).
++ *
++ * CRYPTO_MSG_NEWALG will create such a larval algorithm.  However, it waits
++ * (killably) for the larval to mature before returning, and it holds a lock
++ * that prevents CRYPTO_MSG_DELALG from running.  To get around this, this test
++ * sends a fatal signal to the process executing CRYPTO_MSG_NEWALG.
++ */
++
++#include <errno.h>
++#include <stdlib.h>
++#include <sys/wait.h>
++
++#include "tst_test.h"
++#include "tst_crypto.h"
++#include "tst_timer.h"
++
++static struct tst_crypto_session ses = TST_CRYPTO_SESSION_INIT;
++
++static void setup(void)
++{
++	tst_crypto_open(&ses);
++}
++
++static void run(void)
++{
++	struct crypto_user_alg alg = {
++		/*
++		 * Any algorithm instantiated from a template can do here, but
++		 * choose something that's commonly available.
++		 */
++		.cru_driver_name = "hmac(sha256-generic)",
++	};
++	pid_t pid;
++	int status;
++
++	/* Check whether the algorithm is supported before continuing. */
++	TEST(tst_crypto_add_alg(&ses, &alg));
++	if (TST_RET != 0 && TST_RET != -EEXIST) {
++		if (TST_RET == -ENOENT)
++			tst_brk(TCONF, "%s not supported", alg.cru_driver_name);
++
++		tst_brk(TBROK | TRERRNO,
++			"unexpected error checking for algorithm support");
++	}
++
++	tst_res(TINFO,
++		"Starting crypto_user larval deletion test.  May crash buggy kernels.");
++
++	tst_timer_start(CLOCK_MONOTONIC);
++
++	while (!tst_timer_expired_ms(1000)) {
++		pid = SAFE_FORK();
++
++		if (pid == 0) {
++			/* Child process: execute CRYPTO_MSG_NEWALG. */
++			tst_crypto_open(&ses);
++			for (;;) {
++				TEST(tst_crypto_add_alg(&ses, &alg));
++				if (TST_RET && TST_RET != -EEXIST)
++					tst_brk(TBROK | TRERRNO,
++						"unexpected error from tst_crypto_add_alg()");
++			}
++		}
++
++		/*
++		 * Parent process: kill the child process (hopefully while it's
++		 * executing CRYPTO_MSG_NEWALG) and execute CRYPTO_MSG_DELALG.
++		 * Buggy kernels sometimes dereferenced a NULL pointer during
++		 * CRYPTO_MSG_DELALG here.
++		 */
++		usleep(rand() % 5000);
++		kill(pid, SIGKILL);
++		SAFE_WAIT(&status);
++		if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
++			tst_brk(TBROK, "child %s", tst_strstatus(status));
++		TEST(tst_crypto_del_alg(&ses, &alg));
++		if (TST_RET && TST_RET != -ENOENT)
++			tst_brk(TBROK | TRERRNO,
++				"unexpected error from tst_crypto_del_alg()");
++	}
++
++	tst_res(TPASS, "didn't crash");
++}
++
++static void cleanup(void)
++{
++	tst_crypto_close(&ses);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.test_all = run,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.forks_child = 1,
++};
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.22.0
+
