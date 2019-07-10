@@ -1,102 +1,157 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 10 Jul 2019 15:32:15 +0800
-Subject: [LTP] [PATCH v2] syscalls/copy_file_range02: increase coverage
- and remove EXDEV test
-In-Reply-To: <CAOQ4uxhjbaszcCL0=QAncBT3PzqJR_7oyR+_0-zNa-pt6JNQSA@mail.gmail.com>
-References: <CAOQ4uxgUfhDL3kE_2xFKTnfs+Pgn5UJ38n2aFxz4XndfUeFX8A@mail.gmail.com>
- <1562359357-24526-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <CAOQ4uxhHOCb2fB_wSbBz8ekvm4S9_PsAXKD45=+MZNgt+Y-2gQ@mail.gmail.com>
- <5D243AD7.10401@cn.fujitsu.com>
- <CAOQ4uxhjbaszcCL0=QAncBT3PzqJR_7oyR+_0-zNa-pt6JNQSA@mail.gmail.com>
-Message-ID: <5D25947F.8000700@cn.fujitsu.com>
+Date: Wed, 10 Jul 2019 16:22:24 +0800
+Subject: [LTP] [PATCH v3 2/3] syscalls/copy_file_range01: add
+ cross-device test
+In-Reply-To: <CAOQ4uxi-pv_RFVWOMoAPxzvRXh7KUOjs56wtPwoCLiW4GNOj0Q@mail.gmail.com>
+References: <CAOQ4uxhjbaszcCL0=QAncBT3PzqJR_7oyR+_0-zNa-pt6JNQSA@mail.gmail.com>
+ <1562743104-2705-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1562743104-2705-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <CAOQ4uxi-pv_RFVWOMoAPxzvRXh7KUOjs56wtPwoCLiW4GNOj0Q@mail.gmail.com>
+Message-ID: <5D25A040.30105@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-on 2019/07/09 18:06, Amir Goldstein wrote:
+on 2019/07/10 15:50, Amir Goldstein wrote:
 
-> On Tue, Jul 9, 2019 at 9:57 AM Yang Xu<xuyang2018.jy@cn.fujitsu.com>  wrote:
->> on 2019/07/08 23:17, Amir Goldstein wrote:
+> On Wed, Jul 10, 2019 at 10:18 AM Yang Xu<xuyang2018.jy@cn.fujitsu.com>  wrote:
+>> Amir has relaxed cross-device constraint since commit(vfs: allow
+>> copy_file_range to copy across devices), I think we can remove it
+>> in copy_file_range02 and test it in copy_file_range01.
 >>
->>> On Mon, Jul 8, 2019 at 1:46 PM Yang Xu<xuyang2018.jy@cn.fujitsu.com>   wrote:
->>>> Since Amir path for copy_file_range has been merged into linux-xfs,
->>>> I add test for swapfile, immutable file, bounds in ltp.  Also, add test
->>>> for block char pipe dev and remove EXDEV test(5.3 will relax the cross-device
->>>> constraint[2]).  I follow xfstests code[3][4][5] and increase it .
->>>>
->>>> [1]https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git/commit/?h=for-next-5.3&id=5dae222a5ff0c269730393018a5539cc970a4726
->>>> [2]https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git/commit/?h=for-next-5.3&id=96e6e8f4a68df2d94800311163faa67124df24e5
->>>> [3]https://patchwork.kernel.org/patch/10971759/
->>>> [4]https://patchwork.kernel.org/patch/10971747/
->>>> [5]https://patchwork.kernel.org/patch/10961421/
->>>>
->>>> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
->>>> ---
->>>>    .../copy_file_range/copy_file_range.h         |  11 +-
->>>>    .../copy_file_range/copy_file_range02.c       | 139 +++++++++++++++---
->>>>    2 files changed, 130 insertions(+), 20 deletions(-)
->>>>
->>>> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range.h b/testcases/kernel/syscalls/copy_file_range/copy_file_range.h
->>>> index b6d132978..f9e2565d9 100644
->>>> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range.h
->>>> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range.h
->>>> @@ -9,6 +9,7 @@
->>>>
->>>>    #include<stdbool.h>
->>>>    #include<unistd.h>
->>>> +#include<sys/sysmacros.h>
->>>>    #include "lapi/syscalls.h"
->>>>
->>>>    #define TEST_VARIANTS  2
->>>> @@ -18,10 +19,18 @@
->>>>    #define FILE_DEST_PATH  "file_dest"
->>>>    #define FILE_RDONL_PATH "file_rdonl"
->>>>    #define FILE_DIR_PATH  "file_dir"
->>>> -#define FILE_MNTED_PATH        MNTPOINT"/file_mnted"
->>>> +#define FILE_IMMUTABLE_PATH "file_immutable"
->>>> +#define FILE_SWAP_PATH "file_swap"
->>>> +#define FILE_BLKDEV    "file_blk"
->>>> +#define FILE_CHRDEV    "file_chr"
->>>> +#define FILE_FIFO      "file_fifo"
->>>> +#define FILE_COPY_PATH  "file_copy"
->>>>
->>>>    #define CONTENT                "ABCDEFGHIJKLMNOPQRSTUVWXYZ12345\n"
->>>>    #define CONTSIZE       (sizeof(CONTENT) - 1)
->>>> +#define MAX_LEN   ((long long)(~0ULL>>   1))
->>>> +#define MIN_OFF   65537
->>>> +#define MAX_OFF   (MAX_LEN - MIN_OFF)
->>> In the xfstest the value of MAX_OFF is ((1ULL<<   63) - MIN_OFF)
->>> Not sure why it was changed here?
->> Because the LONG LONG max value in kernel linux/limit.h is defined as" #define LLONG_MAX  ((long long)(~0ULL>>   1))".
->> I think it is a common usage.   If you don't like this way, I will use the xfstests vaule.
-> No it makes sense. VFS max size is larger than XFS max size and
-> I think btrfs is limited for the VFS max.
+>> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
+>> ---
+>>   .../copy_file_range/copy_file_range01.c       | 53 +++++++++++++++----
+>>   1 file changed, 42 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
+>> index a5bd5e7f7..aef626fce 100644
+>> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
+>> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
+>> @@ -24,7 +24,17 @@
+>>
+>>   static int page_size;
+>>   static int errcount, numcopies;
+>> -static int fd_in, fd_out;
+>> +static int fd_in, fd_out, cross_sup;
+>> +char FILE_TARGET_PATH[40];
+>> +
+>> +static struct tcase {
+>> +       char    *path;
+>> +       int     flags;
+>> +       char    *message;
+>> +} tcases[] = {
+>> +       {FILE_DEST_PATH,  0, "non cross-device"},
+>> +       {FILE_MNTED_PATH, 1, "cross-device"},
+>> +};
+>>
+>>   static int check_file_content(const char *fname1, const char *fname2,
+>>          loff_t *off1, loff_t *off2, size_t len)
+>> @@ -131,7 +141,7 @@ static void test_one(size_t len, loff_t *off_in, loff_t *off_out)
+>>                  to_copy -= TST_RET;
+>>          } while (to_copy>  0);
+>>
+>> -       ret = check_file_content(FILE_SRC_PATH, FILE_DEST_PATH,
+>> +       ret = check_file_content(FILE_SRC_PATH, FILE_TARGET_PATH,
+>>                  off_in, off_out, len);
+>>          if (ret) {
+>>                  tst_res(TFAIL, "file contents do not match");
+>> @@ -152,7 +162,7 @@ static void test_one(size_t len, loff_t *off_in, loff_t *off_out)
+>>   static void open_files(void)
+>>   {
+>>          fd_in  = SAFE_OPEN(FILE_SRC_PATH, O_RDONLY);
+>> -       fd_out = SAFE_OPEN(FILE_DEST_PATH, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+>> +       fd_out = SAFE_OPEN(FILE_TARGET_PATH, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+>>   }
+>>
+>>   static void close_files(void)
+>> @@ -163,9 +173,18 @@ static void close_files(void)
+>>                  SAFE_CLOSE(fd_in);
+>>   }
+>>
+>> -static void copy_file_range_verify(void)
+>> +static void copy_file_range_verify(unsigned int n)
+>>   {
+>>          int i, j, k;
+>> +       struct tcase *tc =&tcases[n];
+>> +
+>> +       if (tc->flags&&  !cross_sup) {
+>> +               tst_res(TCONF,
+>> +                       "copy_file_range doesn't support cross-device, skip it");
+>> +               return;
+>> +       }
+>> +
+>> +       strcpy(FILE_TARGET_PATH, tc->path);
+>>
+>>          errcount = numcopies = 0;
+>>          size_t len_arr[]        = {11, page_size-1, page_size, page_size+1};
+>> @@ -190,25 +209,33 @@ static void copy_file_range_verify(void)
+>>
+>>          if (errcount == 0)
+>>                  tst_res(TPASS,
+>> -                       "copy_file_range completed all %d copy jobs successfully!",
+>> -                       numcopies);
+>> +                       "%s copy_file_range completed all %d copy jobs successfully!",
+>> +                       tc->message, numcopies);
+>>          else
+>> -               tst_res(TFAIL, "copy_file_range failed %d of %d copy jobs.",
+>> -                               errcount, numcopies);
+>> +               tst_res(TFAIL, "%s copy_file_range failed %d of %d copy jobs.",
+>> +                       tc->message, errcount, numcopies);
+>>   }
+>>
+>>   static void setup(void)
+>>   {
+>> -       int i, fd;
+>> +       int i, fd, fd1;
+>>
+>>          syscall_info();
+>>
+>>          page_size = getpagesize();
+>> -
+>> +       cross_sup = 1;
+>>          fd = SAFE_OPEN(FILE_SRC_PATH, O_RDWR | O_CREAT, 0664);
+>>          /* Writing page_size * 4 of data into test file */
+>>          for (i = 0; i<  (int)(page_size * 4); i++)
+>>                  SAFE_WRITE(1, fd, CONTENT, CONTSIZE);
+>> +
+>> +       fd1 = SAFE_OPEN(FILE_MNTED_PATH, O_RDWR | O_CREAT, 0664);
+>> +       TEST(sys_copy_file_range(fd, 0, fd1, 0, CONTSIZE, 0));
+>> +       if (TST_RET == -1)
+> I would restrict TCONF to errno == EXDEV.
+> Otherwise, a proper test failure is in order IMO.
 >
-> Maybe it is better to define MAX_LFS_FILESIZE if it is not defined
-> in some ltp header file and #define MAX_LEN MAX_LFS_FILESIZE
-> leaving comments where due.
+Yes.  It also fails because of other situations. We should restrict TCONF to TST_ERR==EXDEV.
+
+>> +               cross_sup = 0;
+>> +
+>> +       SAFE_CLOSE(fd1);
+>> +       remove(FILE_MNTED_PATH);
+>>          SAFE_CLOSE(fd);
+>>   }
+>>
+>> @@ -220,7 +247,11 @@ static void cleanup(void)
+>>   static struct tst_test test = {
+>>          .setup = setup,
+>>          .cleanup = cleanup,
+>> +       .tcnt = ARRAY_SIZE(tcases),
+>>          .needs_tmpdir = 1,
+>> -       .test_all = copy_file_range_verify,
+>> +       .mount_device = 1,
+>> +       .mntpoint = MNTPOINT,
+>> +       .all_filesystems = 1,
+>> +       .test = copy_file_range_verify,
+>>          .test_variants = TEST_VARIANTS,
+>>   };
+>> --
+>> 2.18.1
+>>
+>>
+>>
 >
-> Also, I now wonder if running this test on 32bit kernel and with test
-> compiled for 32bit will yield the expected errors?
-Hi Amir
-
-I have sent a v3 patch. I split it into 3 patch.
-lib: alter find_free_loopdev()
-syscalls/copy_file_range01: add cross-device test
-syscalls/copy_file_range02: increase coverage and remove EXDEV test
-
-I don't have 32bit machine or vm.   It takes some time.  Please wait.
-ps: If someone can help to test it, it will be great.
-
-Thanks,
-Yang Xu
-
-> Thanks,
-> Amir.
->
->
+> .
 >
 
 
