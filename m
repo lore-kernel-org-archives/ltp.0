@@ -1,127 +1,118 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 10 Jul 2019 13:32:58 +0800
-Subject: [LTP] [PATCH v2] rcu/rcu_torture.sh: Rewrite test
-In-Reply-To: <20190709154536.GA8195@rei.lan>
-References: <7ad6c506-e195-db0d-3b2b-a30b95c42f8a@oracle.com>
- <1559922050-15221-1-git-send-email-ice_yangxiao@163.com>
- <20190709154536.GA8195@rei.lan>
-Message-ID: <5D25788A.6040506@cn.fujitsu.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 10 Jul 2019 15:18:22 +0800
+Subject: [LTP] [PATCH v3 1/3] lib: alter find_free_loopdev()
+In-Reply-To: <CAOQ4uxhjbaszcCL0=QAncBT3PzqJR_7oyR+_0-zNa-pt6JNQSA@mail.gmail.com>
+References: <CAOQ4uxhjbaszcCL0=QAncBT3PzqJR_7oyR+_0-zNa-pt6JNQSA@mail.gmail.com>
+Message-ID: <1562743104-2705-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2019/07/09 23:45, Cyril Hrubis wrote:
-> Hi!
->> +rcutorture_setup()
->> +{
->> +	# do test by inserting and removing rcutorture module
->> +	# so check if it is built-in, loaded or unbuilt
->> +	modprobe -n --first-time rcutorture>/dev/null 2>&1 || \
->> +		tst_brk TCONF "built-in, loaded or unbuilt rcutorture"
-> Wouldn't the --first-time disable the test on subsequent runs? Or do I
-> misunderstand how --first-time is supposed to work?
-Hi,
-No, -n option doesn't execute any operations.
+Alter find_free_loopdev() to return the free loopdev minor
+(and -1 for no free loopdev) and then WE can safely use the
+minor number that find_free_loopdev() returned in test cases.
 
-We has to build rcutorture as a module if we want to run the test, so I 
-just want to check
-if rcutorture is built as a module instead of built-in or unbuilt by 
---first-time.
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ doc/test-writing-guidelines.txt |  9 +++++++++
+ include/tst_device.h            |  6 ++++++
+ lib/tst_device.c                | 12 ++++++------
+ 3 files changed, 21 insertions(+), 6 deletions(-)
 
-> Also I guess that some modprobe implementations may not support
-> --first-time e.g. busybox.
-Is there any way to check if rcutorture is only built as a module?
->> +}
->>
->> -trap cleanup INT
->> +rcutorture_test()
->> +{
->> +	local rcu_type=$1
->>
->> -rcu_type="rcu rcu_bh srcu sched"
->> +	tst_res TINFO "${rcu_type}-torture: running ${test_time} sec..."
->>
->> -if tst_kvcmp -lt "3.12"; then
->> -	rcu_type="$rcu_type rcu_sync rcu_expedited rcu_bh_sync rcu_bh_expedited \
->> -	          srcu_sync srcu_expedited sched_sync sched_expedited"
->> +	modprobe rcutorture nfakewriters=${num_writers} \
->> +		torture_type=${rcu_type}>/dev/null 2>&1
->> +	if [ $? -ne 0 ]; then
->> +		dmesg | grep -q "invalid torture type: \"${rcu_type}\""&&  \
->> +			tst_brk TCONF "invalid ${rcu_type} type"
->>
->> -	if tst_kvcmp -lt "3.11"; then
->> -		rcu_type="$rcu_type srcu_raw srcu_raw_sync"
->> +		tst_brk TBROK "failed to load module"
->>   	fi
->> -fi
->> -
->> -TST_TOTAL=$(echo "$rcu_type" | wc -w)
->> -
->> -est_time=`echo "scale=2; $test_time * $TST_TOTAL / 60 " | bc`
->> -tst_resm TINFO "estimate time $est_time min"
->> -
->> -for type in $rcu_type; do
->> -
->> -	tst_resm TINFO "$type: running $test_time sec..."
->> -
->> -	modprobe rcutorture nfakewriters=$num_writers \
->> -	         stat_interval=60 test_no_idle_hz=1 shuffle_interval=3 \
->> -	         stutter=5 irqreader=1 fqs_duration=0 fqs_holdoff=0 \
->> -	         fqs_stutter=3 test_boost=1 test_boost_interval=7 \
->> -	         test_boost_duration=4 shutdown_secs=0 \
->> -	         stall_cpu=0 stall_cpu_holdoff=10 n_barrier_cbs=0 \
->> -	         onoff_interval=0 onoff_holdoff=0 torture_type=$type \
->> -	>  /dev/null 2>&1 || tst_brkm TBROK "failed to load module"
->>
->> -	sleep $test_time
->> +	sleep ${test_time}
->>
->> -	rmmod rcutorture>  /dev/null 2>&1 || \
->> -		tst_brkm TBROK "failed to unload module"
->> +	rmmod rcutorture>/dev/null 2>&1 || \
->> +		tst_brk TBROK "failed to unload module"
-> This should be modprobe -r, rmmod has been deprecated for quite some
-> time.
-I will use modprobe -r instead.
-
-Best Regards,
-Xiao Yang
->>   	# check module status in dmesg
->> -	result_str=`dmesg | sed -nE '$s/.*End of test: ([A-Z]+):.*/\1/p'`
->> -	if [ "$result_str" = "SUCCESS" ]; then
->> -		tst_resm TPASS "$type: completed"
->> +	local res=$(dmesg | sed -nE "s/.* ${rcu_type}-torture:.* End of test: (.*): .*/\1/p" | tail -n1)
->> +	if [ "$res" = "SUCCESS" ]; then
->> +		tst_res TPASS "${rcu_type}-torture: $res"
->>   	else
->> -		tst_resm TFAIL "$type: $result_str, see dmesg"
->> +		tst_res TFAIL "${rcu_type}-torture: $res, see dmesg"
->>   	fi
->> -done
->> +}
->> +
->> +do_test()
->> +{
->> +	case $1 in
->> +	1) rcutorture_test rcu;;
->> +	2) rcutorture_test srcu;;
->> +	3) rcutorture_test srcud;;
->> +	4) rcutorture_test tasks;;
->> +	esac
->> +}
->>
->> -tst_exit
->> +tst_run
->> -- 
->> 1.8.3.1
->>
->>
->>
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index c6d4e001d..887801e68 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -1045,6 +1045,15 @@ IMPORTANT: All testcases should use 'tst_umount()' instead of 'umount(2)' to
+ -------------------------------------------------------------------------------
+ #include "tst_test.h"
+ 
++int find_free_loopdev();
++-------------------------------------------------------------------------------
++This function finds a free loopdev for use and returns the free loopdev minor(-1
++for no free loopdev).
++
++[source,c]
++-------------------------------------------------------------------------------
++#include "tst_test.h"
++
+ unsigned long tst_dev_bytes_written(const char *dev);
+ -------------------------------------------------------------------------------
+ 
+diff --git a/include/tst_device.h b/include/tst_device.h
+index 61902b7e0..8953b0828 100644
+--- a/include/tst_device.h
++++ b/include/tst_device.h
+@@ -44,6 +44,12 @@ int tst_umount(const char *path);
+  */
+ int tst_clear_device(const char *dev);
+ 
++/*
++ * Finds a free loop device for use and returns the free loopdev minor(-1 for no
++ * free loopdev).
++ */
++int find_free_loopdev(void);
++
+ /*
+  * Reads test block device stat file and returns the bytes written since the
+  * last call of this function.
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index 65fcc1337..3b87dd1f1 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -68,7 +68,7 @@ static int set_dev_path(int dev)
+ 	return 0;
+ }
+ 
+-static int find_free_loopdev(void)
++int find_free_loopdev(void)
+ {
+ 	int ctl_fd, dev_fd, rc, i;
+ 	struct loop_info loopinfo;
+@@ -82,10 +82,10 @@ static int find_free_loopdev(void)
+ 		if (rc >= 0) {
+ 			set_dev_path(rc);
+ 			tst_resm(TINFO, "Found free device '%s'", dev_path);
+-			return 0;
++			return rc;
+ 		}
+ 		tst_resm(TINFO, "Couldn't find free loop device");
+-		return 1;
++		return -1;
+ 	}
+ 
+ 	switch (errno) {
+@@ -121,7 +121,7 @@ static int find_free_loopdev(void)
+ 				continue;
+ 			tst_resm(TINFO, "Found free device '%s'", dev_path);
+ 			close(dev_fd);
+-			return 0;
++			return i;
+ 		}
+ 
+ 		close(dev_fd);
+@@ -129,7 +129,7 @@ static int find_free_loopdev(void)
+ 
+ 	tst_resm(TINFO, "No free devices found");
+ 
+-	return 1;
++	return -1;
+ }
+ 
+ static int attach_device(const char *dev, const char *file)
+@@ -274,7 +274,7 @@ const char *tst_acquire_device__(unsigned int size)
+ 		return NULL;
+ 	}
+ 
+-	if (find_free_loopdev())
++	if (find_free_loopdev() == -1)
+ 		return NULL;
+ 
+ 	if (attach_device(dev_path, DEV_FILE))
+-- 
+2.18.1
 
 
 
