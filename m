@@ -1,10 +1,12 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 10 Jul 2019 10:47:33 +0300
-Subject: [LTP] [PATCH v3 1/3] lib: alter find_free_loopdev()
-In-Reply-To: <1562743104-2705-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 10 Jul 2019 10:50:51 +0300
+Subject: [LTP] [PATCH v3 2/3] syscalls/copy_file_range01: add
+ cross-device test
+In-Reply-To: <1562743104-2705-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 References: <CAOQ4uxhjbaszcCL0=QAncBT3PzqJR_7oyR+_0-zNa-pt6JNQSA@mail.gmail.com>
  <1562743104-2705-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <CAOQ4uxjrFDJqUaFw=Fb1d_OKyq-qH9SV3ELVHPEDHM1Bak0ZaA@mail.gmail.com>
+ <1562743104-2705-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <CAOQ4uxi-pv_RFVWOMoAPxzvRXh7KUOjs56wtPwoCLiW4GNOj0Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,110 +15,133 @@ To: ltp@lists.linux.it
 
 On Wed, Jul 10, 2019 at 10:18 AM Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
 >
-> Alter find_free_loopdev() to return the free loopdev minor
-> (and -1 for no free loopdev) and then WE can safely use the
-> minor number that find_free_loopdev() returned in test cases.
+> Amir has relaxed cross-device constraint since commit(vfs: allow
+> copy_file_range to copy across devices), I think we can remove it
+> in copy_file_range02 and test it in copy_file_range01.
 >
 > Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-
 > ---
->  doc/test-writing-guidelines.txt |  9 +++++++++
->  include/tst_device.h            |  6 ++++++
->  lib/tst_device.c                | 12 ++++++------
->  3 files changed, 21 insertions(+), 6 deletions(-)
+>  .../copy_file_range/copy_file_range01.c       | 53 +++++++++++++++----
+>  1 file changed, 42 insertions(+), 11 deletions(-)
 >
-> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-> index c6d4e001d..887801e68 100644
-> --- a/doc/test-writing-guidelines.txt
-> +++ b/doc/test-writing-guidelines.txt
-> @@ -1045,6 +1045,15 @@ IMPORTANT: All testcases should use 'tst_umount()' instead of 'umount(2)' to
->  -------------------------------------------------------------------------------
->  #include "tst_test.h"
+> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
+> index a5bd5e7f7..aef626fce 100644
+> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
+> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
+> @@ -24,7 +24,17 @@
 >
-> +int find_free_loopdev();
-> +-------------------------------------------------------------------------------
-> +This function finds a free loopdev for use and returns the free loopdev minor(-1
-> +for no free loopdev).
+>  static int page_size;
+>  static int errcount, numcopies;
+> -static int fd_in, fd_out;
+> +static int fd_in, fd_out, cross_sup;
+> +char FILE_TARGET_PATH[40];
 > +
-> +[source,c]
-> +-------------------------------------------------------------------------------
-> +#include "tst_test.h"
-> +
->  unsigned long tst_dev_bytes_written(const char *dev);
->  -------------------------------------------------------------------------------
+> +static struct tcase {
+> +       char    *path;
+> +       int     flags;
+> +       char    *message;
+> +} tcases[] = {
+> +       {FILE_DEST_PATH,  0, "non cross-device"},
+> +       {FILE_MNTED_PATH, 1, "cross-device"},
+> +};
 >
-> diff --git a/include/tst_device.h b/include/tst_device.h
-> index 61902b7e0..8953b0828 100644
-> --- a/include/tst_device.h
-> +++ b/include/tst_device.h
-> @@ -44,6 +44,12 @@ int tst_umount(const char *path);
->   */
->  int tst_clear_device(const char *dev);
+>  static int check_file_content(const char *fname1, const char *fname2,
+>         loff_t *off1, loff_t *off2, size_t len)
+> @@ -131,7 +141,7 @@ static void test_one(size_t len, loff_t *off_in, loff_t *off_out)
+>                 to_copy -= TST_RET;
+>         } while (to_copy > 0);
 >
-> +/*
-> + * Finds a free loop device for use and returns the free loopdev minor(-1 for no
-> + * free loopdev).
-> + */
-> +int find_free_loopdev(void);
-> +
->  /*
->   * Reads test block device stat file and returns the bytes written since the
->   * last call of this function.
-> diff --git a/lib/tst_device.c b/lib/tst_device.c
-> index 65fcc1337..3b87dd1f1 100644
-> --- a/lib/tst_device.c
-> +++ b/lib/tst_device.c
-> @@ -68,7 +68,7 @@ static int set_dev_path(int dev)
->         return 0;
->  }
->
-> -static int find_free_loopdev(void)
-> +int find_free_loopdev(void)
+> -       ret = check_file_content(FILE_SRC_PATH, FILE_DEST_PATH,
+> +       ret = check_file_content(FILE_SRC_PATH, FILE_TARGET_PATH,
+>                 off_in, off_out, len);
+>         if (ret) {
+>                 tst_res(TFAIL, "file contents do not match");
+> @@ -152,7 +162,7 @@ static void test_one(size_t len, loff_t *off_in, loff_t *off_out)
+>  static void open_files(void)
 >  {
->         int ctl_fd, dev_fd, rc, i;
->         struct loop_info loopinfo;
-> @@ -82,10 +82,10 @@ static int find_free_loopdev(void)
->                 if (rc >= 0) {
->                         set_dev_path(rc);
->                         tst_resm(TINFO, "Found free device '%s'", dev_path);
-> -                       return 0;
-> +                       return rc;
->                 }
->                 tst_resm(TINFO, "Couldn't find free loop device");
-> -               return 1;
-> +               return -1;
->         }
->
->         switch (errno) {
-> @@ -121,7 +121,7 @@ static int find_free_loopdev(void)
->                                 continue;
->                         tst_resm(TINFO, "Found free device '%s'", dev_path);
->                         close(dev_fd);
-> -                       return 0;
-> +                       return i;
->                 }
->
->                 close(dev_fd);
-> @@ -129,7 +129,7 @@ static int find_free_loopdev(void)
->
->         tst_resm(TINFO, "No free devices found");
->
-> -       return 1;
-> +       return -1;
+>         fd_in  = SAFE_OPEN(FILE_SRC_PATH, O_RDONLY);
+> -       fd_out = SAFE_OPEN(FILE_DEST_PATH, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+> +       fd_out = SAFE_OPEN(FILE_TARGET_PATH, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 >  }
 >
->  static int attach_device(const char *dev, const char *file)
-> @@ -274,7 +274,7 @@ const char *tst_acquire_device__(unsigned int size)
->                 return NULL;
->         }
+>  static void close_files(void)
+> @@ -163,9 +173,18 @@ static void close_files(void)
+>                 SAFE_CLOSE(fd_in);
+>  }
 >
-> -       if (find_free_loopdev())
-> +       if (find_free_loopdev() == -1)
->                 return NULL;
+> -static void copy_file_range_verify(void)
+> +static void copy_file_range_verify(unsigned int n)
+>  {
+>         int i, j, k;
+> +       struct tcase *tc = &tcases[n];
+> +
+> +       if (tc->flags && !cross_sup) {
+> +               tst_res(TCONF,
+> +                       "copy_file_range doesn't support cross-device, skip it");
+> +               return;
+> +       }
+> +
+> +       strcpy(FILE_TARGET_PATH, tc->path);
 >
->         if (attach_device(dev_path, DEV_FILE))
+>         errcount = numcopies = 0;
+>         size_t len_arr[]        = {11, page_size-1, page_size, page_size+1};
+> @@ -190,25 +209,33 @@ static void copy_file_range_verify(void)
+>
+>         if (errcount == 0)
+>                 tst_res(TPASS,
+> -                       "copy_file_range completed all %d copy jobs successfully!",
+> -                       numcopies);
+> +                       "%s copy_file_range completed all %d copy jobs successfully!",
+> +                       tc->message, numcopies);
+>         else
+> -               tst_res(TFAIL, "copy_file_range failed %d of %d copy jobs.",
+> -                               errcount, numcopies);
+> +               tst_res(TFAIL, "%s copy_file_range failed %d of %d copy jobs.",
+> +                       tc->message, errcount, numcopies);
+>  }
+>
+>  static void setup(void)
+>  {
+> -       int i, fd;
+> +       int i, fd, fd1;
+>
+>         syscall_info();
+>
+>         page_size = getpagesize();
+> -
+> +       cross_sup = 1;
+>         fd = SAFE_OPEN(FILE_SRC_PATH, O_RDWR | O_CREAT, 0664);
+>         /* Writing page_size * 4 of data into test file */
+>         for (i = 0; i < (int)(page_size * 4); i++)
+>                 SAFE_WRITE(1, fd, CONTENT, CONTSIZE);
+> +
+> +       fd1 = SAFE_OPEN(FILE_MNTED_PATH, O_RDWR | O_CREAT, 0664);
+> +       TEST(sys_copy_file_range(fd, 0, fd1, 0, CONTSIZE, 0));
+> +       if (TST_RET == -1)
+
+I would restrict TCONF to errno == EXDEV.
+Otherwise, a proper test failure is in order IMO.
+
+> +               cross_sup = 0;
+> +
+> +       SAFE_CLOSE(fd1);
+> +       remove(FILE_MNTED_PATH);
+>         SAFE_CLOSE(fd);
+>  }
+>
+> @@ -220,7 +247,11 @@ static void cleanup(void)
+>  static struct tst_test test = {
+>         .setup = setup,
+>         .cleanup = cleanup,
+> +       .tcnt = ARRAY_SIZE(tcases),
+>         .needs_tmpdir = 1,
+> -       .test_all = copy_file_range_verify,
+> +       .mount_device = 1,
+> +       .mntpoint = MNTPOINT,
+> +       .all_filesystems = 1,
+> +       .test = copy_file_range_verify,
+>         .test_variants = TEST_VARIANTS,
+>  };
 > --
 > 2.18.1
 >
