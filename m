@@ -1,64 +1,123 @@
-From: Hongzhi.Song <hongzhi.song@windriver.com>
-Date: Thu, 11 Jul 2019 01:57:37 -0400
-Subject: [LTP] [PATCH] getrlimit03: adjust a bit of code to compatiable with
- mips32
-Message-ID: <1562824657-152321-1-git-send-email-hongzhi.song@windriver.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 11 Jul 2019 08:03:57 +0200
+Subject: [LTP] [PATCH v3] rcu/rcu_torture.sh: Rewrite test
+In-Reply-To: <1562769310-4918-1-git-send-email-ice_yangxiao@163.com>
+References: <1562769310-4918-1-git-send-email-ice_yangxiao@163.com>
+Message-ID: <20190711060357.GA28190@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Error info:
-getrlimit03.c:104: FAIL: __NR_prlimit64(0) had rlim_cur =
-ffffffffffffffff but __NR_getrlimit(0) had rlim_cur = 7fffffff
+Hi Xiao,
 
-According to kernel code: RLIM_INFINITY is set to 0x7fffffffUL
-instead of ULONG_MAX on mips32.
+> 1) Cleanup and convert to new API
+> 2) Update valid rcutorture types(rcu, srcu, srcud, tasks)
 
-/*
- * SuS says limits have to be unsigned.
- * Which makes a ton more sense anyway,
- * but we keep the old value on MIPS32,
- * for compatibility:
- */
+> Note:
+> Exclude valid busted* types(busted, busted_srcud) that check
+> the test itself and expect failures, suggested by:
+> https://www.spinics.net/lists/kernel/msg3045252.html
 
-Adding mips judgement code to fix this.
+> Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
+Acked-by: Petr Vorel <pvorel@suse.cz>
 
-Signed-off-by: Hongzhi.Song <hongzhi.song@windriver.com>
----
- testcases/kernel/syscalls/getrlimit/getrlimit03.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Only few comments below (nits).
 
-diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit03.c b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
-index e4d56c4..1903558 100644
---- a/testcases/kernel/syscalls/getrlimit/getrlimit03.c
-+++ b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
-@@ -61,7 +61,13 @@ struct rlimit_ulong {
- 	unsigned long rlim_cur;
- 	unsigned long rlim_max;
- };
-+#ifdef __mips
-+#ifndef __mips64
-+const unsigned long RLIM_INFINITY_UL = 0x7fffffffUL;
-+#else
- const unsigned long RLIM_INFINITY_UL = ULONG_MAX;
-+#endif
-+#endif
- 
- static int getrlimit_ulong(int resource, struct rlimit_ulong *rlim)
- {
-@@ -101,8 +107,8 @@ static int compare_u64_ulong(int resource, uint64_t val_u64,
- {
- 	if ((val_u64 > RLIM_INFINITY_UL && val_ul != RLIM_INFINITY_UL) ||
- 	    (val_u64 <= RLIM_INFINITY_UL && val_ul != val_u64)) {
--		tst_res(TFAIL, "__NR_prlimit64(%d) had %s = %" PRIx64 " but " __NR_getrlimit_ulong_str "(%d) had %s = %lx",
--			resource, kind, val_u64,
-+		tst_res(TFAIL, "SIGNED_GETRLIMIT = %d __WORDSIZE %d ULONG_MAX = %lu RLIM_INFINITY_UL = %lu __NR_prlimit64(%d) had %s = %" PRIx64 " but " __NR_getrlimit_ulong_str "(%d) had %s = %lx",
-+			SIGNED_GETRLIMIT, __WORDSIZE, ULONG_MAX, RLIM_INFINITY_UL, resource, kind, val_u64,
- 			resource, kind, val_ul);
- 		return -1;
- 	}
--- 
-2.8.1
+>  # default options
+> -test_time=60
+> +test_time=30
+You shortened the test to half, good :).
 
+...
+> +rcutorture_setup()
+> +{
+> +	local module=1
+
+> -	if tst_kvcmp -lt "3.11"; then
+> -		rcu_type="$rcu_type srcu_raw srcu_raw_sync"
+> -	fi
+> -fi
+> +	# check if rcutorture is built as a kernel module by inserting
+> +	# and then removing it
+> +	modprobe rcutorture >/dev/null 2>&1 ||  module=0
+> +	modprobe -r rcutorture >/dev/null 2>&1 || module=0
+
+This can be just module=1 or module= (none value).
+(+ -q is enough instead of redirections). i.e.:
+
+modprobe rcutorture -q || module=
+modprobe -r rcutorture -q || module=
+[ -n "$module" ] && \
+
+(or even [ "$module" ] && \ )
+
+We usually don't use 0 for shell scripts in LTP.
+But that's a nit.
+
+> -TST_TOTAL=$(echo "$rcu_type" | wc -w)
+> +	[ $module -eq 0 ] && \
+> +		tst_brk TCONF "rcutorture is built-in, non-existent or in use"
+> +}
+
+> -est_time=`echo "scale=2; $test_time * $TST_TOTAL / 60 " | bc`
+> -tst_resm TINFO "estimate time $est_time min"
+> +rcutorture_test()
+> +{
+> +	local rcu_type=$1
+
+> -for type in $rcu_type; do
+> +	tst_res TINFO "${rcu_type}-torture: running ${test_time} sec..."
+	tst_res TINFO "${rcu_type}-torture: running $test_time sec..."
+(I prefer using brackets ${foo} only when needed - $foo is more readable).
+
+> -	tst_resm TINFO "$type: running $test_time sec..."
+> +	modprobe rcutorture nfakewriters=${num_writers} \
+> +		torture_type=${rcu_type} >/dev/null 2>&1
+Again, use -q:
+modprobe -q rcutorture nfakewriters=$num_writers torture_type=$rcu_type
+
+> +	if [ $? -ne 0 ]; then
+> +		dmesg | grep -q "invalid torture type: \"${rcu_type}\"" && \
+> +			tst_brk TCONF "invalid ${rcu_type} type"
+and here ${foo} => $foo
+
+> -	modprobe rcutorture nfakewriters=$num_writers \
+> -	         stat_interval=60 test_no_idle_hz=1 shuffle_interval=3 \
+> -	         stutter=5 irqreader=1 fqs_duration=0 fqs_holdoff=0 \
+> -	         fqs_stutter=3 test_boost=1 test_boost_interval=7 \
+> -	         test_boost_duration=4 shutdown_secs=0 \
+> -	         stall_cpu=0 stall_cpu_holdoff=10 n_barrier_cbs=0 \
+> -	         onoff_interval=0 onoff_holdoff=0 torture_type=$type \
+> -	         > /dev/null 2>&1 || tst_brkm TBROK "failed to load module"
+> +		tst_brk TBROK "failed to load module"
+And here. But I'd prefer to keep stderr (in case of failure it's better
+to see immediately what the problem was).
+> +	fi
+
+> -	sleep $test_time
+> +	sleep ${test_time}
+	sleep $test_time
+
+> -	rmmod rcutorture > /dev/null 2>&1 || \
+> -		tst_brkm TBROK "failed to unload module"
+> +	modprobe -r rcutorture >/dev/null 2>&1 || \
+> +		tst_brk TBROK "failed to unload module"
+The same here (here I'd also keep stdout)
+
+>  	# check module status in dmesg
+> -	result_str=`dmesg | sed -nE '$s/.*End of test: ([A-Z]+):.*/\1/p'`
+> -	if [ "$result_str" = "SUCCESS" ]; then
+> -		tst_resm TPASS "$type: completed"
+> +	local res=$(dmesg | sed -nE "s/.* ${rcu_type}-torture:.* End of test: (.*): .*/\1/p" | tail -n1)
+> +	if [ "$res" = "SUCCESS" ]; then
+> +		tst_res TPASS "${rcu_type}-torture: $res"
+>  	else
+> -		tst_resm TFAIL "$type: $result_str, see dmesg"
+> +		tst_res TFAIL "${rcu_type}-torture: $res, see dmesg"
+Maybe print dmesg (for automated tests, when you don't have direct access to
+machine).
+
+Kind regards,
+Petr
