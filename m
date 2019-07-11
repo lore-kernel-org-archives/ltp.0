@@ -1,166 +1,71 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 11 Jul 2019 14:18:59 +0800
-Subject: [LTP] [PATCH v4 2/3] syscalls/copy_file_range01: add
- cross-device test
-In-Reply-To: <139fc7e8-0116-acd2-6041-8e82a6e4f18d@163.com>
-References: <5D25B05A.8000600@cn.fujitsu.com>
- <1562755997-5626-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1562755997-5626-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <139fc7e8-0116-acd2-6041-8e82a6e4f18d@163.com>
-Message-ID: <5D26D4D3.9010009@cn.fujitsu.com>
+From: Hongzhi, Song <hongzhi.song@windriver.com>
+Date: Thu, 11 Jul 2019 14:19:22 +0800
+Subject: [LTP] [PATCH] getrlimit03: adjust a bit of code to compatiable
+ with mips32
+In-Reply-To: <1562824657-152321-1-git-send-email-hongzhi.song@windriver.com>
+References: <1562824657-152321-1-git-send-email-hongzhi.song@windriver.com>
+Message-ID: <feec36ce-028b-50bb-9fde-626eb194dca9@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-on 2019/07/10 23:56, Xiao Yang wrote:
+Commit log is not complete. I will send V2 later.
 
-> On 07/10/2019 06:53 PM, Yang Xu wrote:
->> Amir has relaxed cross-device constraint since commit(vfs: allow
->> copy_file_range to copy across devices), I think we can remove it
->> in copy_file_range02 and test it in copy_file_range01.
->>
->> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
->> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
->> ---
->>   .../copy_file_range/copy_file_range01.c       | 53 +++++++++++++++----
->>   1 file changed, 42 insertions(+), 11 deletions(-)
->>
->> diff --git 
->> a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c 
->> b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
->> index a5bd5e7f7..e1aa06c3e 100644
->> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
->> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
->> @@ -24,7 +24,17 @@
->>     static int page_size;
->>   static int errcount, numcopies;
->> -static int fd_in, fd_out;
->> +static int fd_in, fd_out, cross_sup;
->> +char FILE_TARGET_PATH[40];
->> +
->> +static struct tcase {
->> +    char    *path;
->> +    int     flags;
->> +    char    *message;
->> +} tcases[] = {
->> +    {FILE_DEST_PATH,  0, "non cross-device"},
->> +    {FILE_MNTED_PATH, 1, "cross-device"},
->> +};
->>     static int check_file_content(const char *fname1, const char 
->> *fname2,
->>       loff_t *off1, loff_t *off2, size_t len)
->> @@ -131,7 +141,7 @@ static void test_one(size_t len, loff_t *off_in, 
->> loff_t *off_out)
->>           to_copy -= TST_RET;
->>       } while (to_copy > 0);
->>   -    ret = check_file_content(FILE_SRC_PATH, FILE_DEST_PATH,
->> +    ret = check_file_content(FILE_SRC_PATH, FILE_TARGET_PATH,
->>           off_in, off_out, len);
->>       if (ret) {
->>           tst_res(TFAIL, "file contents do not match");
->> @@ -152,7 +162,7 @@ static void test_one(size_t len, loff_t *off_in, 
->> loff_t *off_out)
->>   static void open_files(void)
->>   {
->>       fd_in  = SAFE_OPEN(FILE_SRC_PATH, O_RDONLY);
->> -    fd_out = SAFE_OPEN(FILE_DEST_PATH, O_CREAT | O_WRONLY | O_TRUNC, 
->> 0644);
->> +    fd_out = SAFE_OPEN(FILE_TARGET_PATH, O_CREAT | O_WRONLY | 
->> O_TRUNC, 0644);
-> Hi,
->
-> Why don't we remove the global FILE_TARGET_PATH by passing tc->path to 
-> open_files()?
-OK. I will remove it and pass tc->path to open_files() ,test_one();
+Please ignore this.
 
->
->>   }
->>     static void close_files(void)
->> @@ -163,9 +173,18 @@ static void close_files(void)
->>           SAFE_CLOSE(fd_in);
->>   }
->>   -static void copy_file_range_verify(void)
->> +static void copy_file_range_verify(unsigned int n)
->>   {
->>       int i, j, k;
->> +    struct tcase *tc = &tcases[n];
->> +
->> +    if (tc->flags && !cross_sup) {
->> +        tst_res(TCONF,
->> +            "copy_file_range doesn't support cross-device, skip it");
->> +        return;
->> +    }
->
-> Perhaps, we can remove the global cross_sup and check of EXDEV in 
-> setup() by passing tc->flag to one_test().
-OK. I will use tc->flag in setup,  flag =2 is equal to TCONF(doesn't support cross-dev).
-
->
->> +
->> +    strcpy(FILE_TARGET_PATH, tc->path);
->>         errcount = numcopies = 0;
->>       size_t len_arr[]    = {11, page_size-1, page_size, page_size+1};
->> @@ -190,25 +209,33 @@ static void copy_file_range_verify(void)
->>         if (errcount == 0)
->>           tst_res(TPASS,
->> -            "copy_file_range completed all %d copy jobs successfully!",
->> -            numcopies);
->> +            "%s copy_file_range completed all %d copy jobs 
->> successfully!",
->> +            tc->message, numcopies);
->>       else
->> -        tst_res(TFAIL, "copy_file_range failed %d of %d copy jobs.",
->> -                errcount, numcopies);
->> +        tst_res(TFAIL, "%s copy_file_range failed %d of %d copy jobs.",
->> +            tc->message, errcount, numcopies);
->>   }
->>     static void setup(void)
->>   {
->> -    int i, fd;
->> +    int i, fd, fd_test;
->>         syscall_info();
->>         page_size = getpagesize();
->> -
->> +    cross_sup = 1;
->>       fd = SAFE_OPEN(FILE_SRC_PATH, O_RDWR | O_CREAT, 0664);
->>       /* Writing page_size * 4 of data into test file */
->>       for (i = 0; i < (int)(page_size * 4); i++)
->>           SAFE_WRITE(1, fd, CONTENT, CONTSIZE);
->> +
->> +    fd_test = SAFE_OPEN(FILE_MNTED_PATH, O_RDWR | O_CREAT, 0664);
->> +    TEST(sys_copy_file_range(fd, 0, fd_test, 0, CONTSIZE, 0));
->> +    if (TST_ERR == EXDEV)
->> +        cross_sup = 0;
->> +
->> +    SAFE_CLOSE(fd_test);
->> +    remove(FILE_MNTED_PATH);
-> Is it necessary to remove it?
->
-I want to test on a clean environment, like FILE_DEST_PATH.
-> Best Regards,
-> Xiao Yang
->>       SAFE_CLOSE(fd);
->>   }
->>   @@ -220,7 +247,11 @@ static void cleanup(void)
->>   static struct tst_test test = {
->>       .setup = setup,
->>       .cleanup = cleanup,
->> +    .tcnt = ARRAY_SIZE(tcases),
->>       .needs_tmpdir = 1,
->> -    .test_all = copy_file_range_verify,
->> +    .mount_device = 1,
->> +    .mntpoint = MNTPOINT,
->> +    .all_filesystems = 1,
->> +    .test = copy_file_range_verify,
->>       .test_variants = TEST_VARIANTS,
->>   };
->
->
->
->
-> .
->
+--Hongzhi
 
 
+On 7/11/19 1:57 PM, Hongzhi.Song wrote:
+> Error info:
+> getrlimit03.c:104: FAIL: __NR_prlimit64(0) had rlim_cur =
+> ffffffffffffffff but __NR_getrlimit(0) had rlim_cur = 7fffffff
+>
+> According to kernel code: RLIM_INFINITY is set to 0x7fffffffUL
+> instead of ULONG_MAX on mips32.
+>
+> /*
+>   * SuS says limits have to be unsigned.
+>   * Which makes a ton more sense anyway,
+>   * but we keep the old value on MIPS32,
+>   * for compatibility:
+>   */
+>
+> Adding mips judgement code to fix this.
+>
+> Signed-off-by: Hongzhi.Song <hongzhi.song@windriver.com>
+> ---
+>   testcases/kernel/syscalls/getrlimit/getrlimit03.c | 10 ++++++++--
+>   1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit03.c b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+> index e4d56c4..1903558 100644
+> --- a/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+> +++ b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+> @@ -61,7 +61,13 @@ struct rlimit_ulong {
+>   	unsigned long rlim_cur;
+>   	unsigned long rlim_max;
+>   };
+> +#ifdef __mips
+> +#ifndef __mips64
+> +const unsigned long RLIM_INFINITY_UL = 0x7fffffffUL;
+> +#else
+>   const unsigned long RLIM_INFINITY_UL = ULONG_MAX;
+> +#endif
+> +#endif
+>   
+>   static int getrlimit_ulong(int resource, struct rlimit_ulong *rlim)
+>   {
+> @@ -101,8 +107,8 @@ static int compare_u64_ulong(int resource, uint64_t val_u64,
+>   {
+>   	if ((val_u64 > RLIM_INFINITY_UL && val_ul != RLIM_INFINITY_UL) ||
+>   	    (val_u64 <= RLIM_INFINITY_UL && val_ul != val_u64)) {
+> -		tst_res(TFAIL, "__NR_prlimit64(%d) had %s = %" PRIx64 " but " __NR_getrlimit_ulong_str "(%d) had %s = %lx",
+> -			resource, kind, val_u64,
+> +		tst_res(TFAIL, "SIGNED_GETRLIMIT = %d __WORDSIZE %d ULONG_MAX = %lu RLIM_INFINITY_UL = %lu __NR_prlimit64(%d) had %s = %" PRIx64 " but " __NR_getrlimit_ulong_str "(%d) had %s = %lx",
+> +			SIGNED_GETRLIMIT, __WORDSIZE, ULONG_MAX, RLIM_INFINITY_UL, resource, kind, val_u64,
+>   			resource, kind, val_ul);
+>   		return -1;
+>   	}
