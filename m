@@ -1,102 +1,64 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 11 Jul 2019 12:00:13 +0800
-Subject: [LTP] [PATCH v4 1/3] lib: alter find_free_loopdev()
-In-Reply-To: <20190710135710.GC5628@rei.lan>
-References: <5D25B05A.8000600@cn.fujitsu.com>
- <1562755997-5626-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190710135710.GC5628@rei.lan>
-Message-ID: <5D26B44D.4010208@cn.fujitsu.com>
+From: Hongzhi.Song <hongzhi.song@windriver.com>
+Date: Thu, 11 Jul 2019 01:57:37 -0400
+Subject: [LTP] [PATCH] getrlimit03: adjust a bit of code to compatiable with
+ mips32
+Message-ID: <1562824657-152321-1-git-send-email-hongzhi.song@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Error info:
+getrlimit03.c:104: FAIL: __NR_prlimit64(0) had rlim_cur =
+ffffffffffffffff but __NR_getrlimit(0) had rlim_cur = 7fffffff
 
-> Hi!
->> Alter find_free_loopdev() to return the free loopdev minor
->> (and -1 for no free loopdev) and then WE can safely use the
->> minor number that find_free_loopdev() returned in test cases.
->>
->> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
->> Reviewed-by: Amir Goldstein<amir73il@gmail.com>
->> ---
->>   doc/test-writing-guidelines.txt |  9 +++++++++
->>   include/tst_device.h            |  6 ++++++
->>   lib/tst_device.c                | 12 ++++++------
->>   3 files changed, 21 insertions(+), 6 deletions(-)
->>
->> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
->> index c6d4e001d..887801e68 100644
->> --- a/doc/test-writing-guidelines.txt
->> +++ b/doc/test-writing-guidelines.txt
->> @@ -1045,6 +1045,15 @@ IMPORTANT: All testcases should use 'tst_umount()' instead of 'umount(2)' to
->>   -------------------------------------------------------------------------------
->>   #include "tst_test.h"
->>
->> +int find_free_loopdev();
-> Once this is exported as public API it should be prefixed with tst_.
->
-OK.
+According to kernel code: RLIM_INFINITY is set to 0x7fffffffUL
+instead of ULONG_MAX on mips32.
 
->> -static int find_free_loopdev(void)
->> +int find_free_loopdev(void)
->>   {
->>   	int ctl_fd, dev_fd, rc, i;
->>   	struct loop_info loopinfo;
->> @@ -82,10 +82,10 @@ static int find_free_loopdev(void)
->>   		if (rc>= 0) {
->>   			set_dev_path(rc);
->>   			tst_resm(TINFO, "Found free device '%s'", dev_path);
->> -			return 0;
->> +			return rc;
->>   		}
->>   		tst_resm(TINFO, "Couldn't find free loop device");
->> -		return 1;
->> +		return -1;
->>   	}
->>
->>   	switch (errno) {
->> @@ -121,7 +121,7 @@ static int find_free_loopdev(void)
->>   				continue;
->>   			tst_resm(TINFO, "Found free device '%s'", dev_path);
->>   			close(dev_fd);
->> -			return 0;
->> +			return i;
->>   		}
->>
->>   		close(dev_fd);
->> @@ -129,7 +129,7 @@ static int find_free_loopdev(void)
->>
->>   	tst_resm(TINFO, "No free devices found");
->>
->> -	return 1;
->> +	return -1;
->>   }
-> This needs more changes than this.
->
-> The problem here is that the function modifies dev_path which is
-> returned by tst_acquire_device() so if you call this function after
-> tst_acquire_device() it will rewrite the dev_path which means that the
-> test would end up with wrong device path in tst_device->dev.
->
-> I guess that the easiest solution would be changing the function to get
-> buffer parameter which, when non-NULL, is filled with the path.
->
-> I.e. the function prototype would became:
->
-> int tst_find_free_loopdev(char *path, size_t path_len);
->
-> And we would pass the dev_path inside of the tst_device.c and NULL from
-> the copy_file_range() tests.
-Hi Cyril
+/*
+ * SuS says limits have to be unsigned.
+ * Which makes a ton more sense anyway,
+ * but we keep the old value on MIPS32,
+ * for compatibility:
+ */
 
-This is a good comment. But I doubt why we don't use a set_devpath_flag todistinguish it.
-Or you have a future plan(in different directory ,/dev,/dev/loop/,/dev/block)?
+Adding mips judgement code to fix this.
 
-Thanks
-Yang Xu
+Signed-off-by: Hongzhi.Song <hongzhi.song@windriver.com>
+---
+ testcases/kernel/syscalls/getrlimit/getrlimit03.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-
-
+diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit03.c b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+index e4d56c4..1903558 100644
+--- a/testcases/kernel/syscalls/getrlimit/getrlimit03.c
++++ b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+@@ -61,7 +61,13 @@ struct rlimit_ulong {
+ 	unsigned long rlim_cur;
+ 	unsigned long rlim_max;
+ };
++#ifdef __mips
++#ifndef __mips64
++const unsigned long RLIM_INFINITY_UL = 0x7fffffffUL;
++#else
+ const unsigned long RLIM_INFINITY_UL = ULONG_MAX;
++#endif
++#endif
+ 
+ static int getrlimit_ulong(int resource, struct rlimit_ulong *rlim)
+ {
+@@ -101,8 +107,8 @@ static int compare_u64_ulong(int resource, uint64_t val_u64,
+ {
+ 	if ((val_u64 > RLIM_INFINITY_UL && val_ul != RLIM_INFINITY_UL) ||
+ 	    (val_u64 <= RLIM_INFINITY_UL && val_ul != val_u64)) {
+-		tst_res(TFAIL, "__NR_prlimit64(%d) had %s = %" PRIx64 " but " __NR_getrlimit_ulong_str "(%d) had %s = %lx",
+-			resource, kind, val_u64,
++		tst_res(TFAIL, "SIGNED_GETRLIMIT = %d __WORDSIZE %d ULONG_MAX = %lu RLIM_INFINITY_UL = %lu __NR_prlimit64(%d) had %s = %" PRIx64 " but " __NR_getrlimit_ulong_str "(%d) had %s = %lx",
++			SIGNED_GETRLIMIT, __WORDSIZE, ULONG_MAX, RLIM_INFINITY_UL, resource, kind, val_u64,
+ 			resource, kind, val_ul);
+ 		return -1;
+ 	}
+-- 
+2.8.1
 
