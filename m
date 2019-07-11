@@ -1,12 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 11 Jul 2019 13:34:05 +0200
-Subject: [LTP] [PATCH RESEND] syscalls/prctl06.c: New test for prctl()
- with PR_{SET, GET}_NO_NEW_PRIVS
-In-Reply-To: <5D26EBEF.3090604@cn.fujitsu.com>
-References: <20190709105303.GA4914@rei.lan>
- <1562366936-26456-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190710105207.GC30934@rei.lan> <5D26EBEF.3090604@cn.fujitsu.com>
-Message-ID: <20190711113405.GA27889@rei.lan>
+Date: Thu, 11 Jul 2019 14:34:42 +0200
+Subject: [LTP] [PATCH v3.1] lib: add tst_no_corefile()
+In-Reply-To: <02ade9af1634c4681156dceecfd51721284044e3.1562591065.git.jstancek@redhat.com>
+References: <20190705051603.24599-1-liwang@redhat.com>
+ <02ade9af1634c4681156dceecfd51721284044e3.1562591065.git.jstancek@redhat.com>
+Message-ID: <20190711123441.GA8709@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,15 +12,31 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > We are executing setuid binary that was created by root here so
-> > shouldn't we just check that getuid() and getgid() returns 0?
-> >
-> I try it.  whether we set or not set new privs, the getuid() or getgid() return nobody in
-> prctl06_execve.  Or, I misunderstand your advise?
+> +void tst_no_corefile(int verbose)
+> +{
+> +	struct rlimit new_r, old_r;
+> +
+> +	SAFE_GETRLIMIT(RLIMIT_CORE, &old_r);
+> +	if (old_r.rlim_max >= 1 || geteuid() == 0) {
+> +		/*
+> +		 * 1 is a special value, that disables core-to-pipe.
+> +		 * At the same time it is small enough value for
+> +		 * core-to-file, so it skips creating cores as well.
+> +		 */
+> +		new_r.rlim_cur = 1;
+> +		new_r.rlim_max = 1;
+> +		SAFE_SETRLIMIT(RLIMIT_CORE, &new_r);
+> +	}
+> +
+> +	if (verbose)
+> +		tst_res(TINFO, "Avoid dumping corefile for process(pid=%d)", getpid());
 
-Looking closely into the manuals the setuid and setgid bits are supposed
-to set the effective ids, so I guess that the geteuid() and getegid()
-will return 0 when the process was executed without the prctl().
+Should we print the message here only
+
+	if (old_r.rlim_max <= 1 || geteuid() == 0)
+
+because otherwise we will print the mesasge even in cases that the
+corefile is not in fact limited.
 
 -- 
 Cyril Hrubis
