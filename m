@@ -1,155 +1,102 @@
-From: Xiao Yang <ice_yangxiao@163.com>
-Date: Wed, 10 Jul 2019 23:56:37 +0800
-Subject: [LTP] [PATCH v4 2/3] syscalls/copy_file_range01: add
- cross-device test
-In-Reply-To: <1562755997-5626-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 11 Jul 2019 12:00:13 +0800
+Subject: [LTP] [PATCH v4 1/3] lib: alter find_free_loopdev()
+In-Reply-To: <20190710135710.GC5628@rei.lan>
 References: <5D25B05A.8000600@cn.fujitsu.com>
  <1562755997-5626-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1562755997-5626-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <139fc7e8-0116-acd2-6041-8e82a6e4f18d@163.com>
+ <20190710135710.GC5628@rei.lan>
+Message-ID: <5D26B44D.4010208@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 07/10/2019 06:53 PM, Yang Xu wrote:
-> Amir has relaxed cross-device constraint since commit(vfs: allow
-> copy_file_range to copy across devices), I think we can remove it
-> in copy_file_range02 and test it in copy_file_range01.
+
+> Hi!
+>> Alter find_free_loopdev() to return the free loopdev minor
+>> (and -1 for no free loopdev) and then WE can safely use the
+>> minor number that find_free_loopdev() returned in test cases.
+>>
+>> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
+>> Reviewed-by: Amir Goldstein<amir73il@gmail.com>
+>> ---
+>>   doc/test-writing-guidelines.txt |  9 +++++++++
+>>   include/tst_device.h            |  6 ++++++
+>>   lib/tst_device.c                | 12 ++++++------
+>>   3 files changed, 21 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+>> index c6d4e001d..887801e68 100644
+>> --- a/doc/test-writing-guidelines.txt
+>> +++ b/doc/test-writing-guidelines.txt
+>> @@ -1045,6 +1045,15 @@ IMPORTANT: All testcases should use 'tst_umount()' instead of 'umount(2)' to
+>>   -------------------------------------------------------------------------------
+>>   #include "tst_test.h"
+>>
+>> +int find_free_loopdev();
+> Once this is exported as public API it should be prefixed with tst_.
 >
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> ---
->   .../copy_file_range/copy_file_range01.c       | 53 +++++++++++++++----
->   1 file changed, 42 insertions(+), 11 deletions(-)
+OK.
+
+>> -static int find_free_loopdev(void)
+>> +int find_free_loopdev(void)
+>>   {
+>>   	int ctl_fd, dev_fd, rc, i;
+>>   	struct loop_info loopinfo;
+>> @@ -82,10 +82,10 @@ static int find_free_loopdev(void)
+>>   		if (rc>= 0) {
+>>   			set_dev_path(rc);
+>>   			tst_resm(TINFO, "Found free device '%s'", dev_path);
+>> -			return 0;
+>> +			return rc;
+>>   		}
+>>   		tst_resm(TINFO, "Couldn't find free loop device");
+>> -		return 1;
+>> +		return -1;
+>>   	}
+>>
+>>   	switch (errno) {
+>> @@ -121,7 +121,7 @@ static int find_free_loopdev(void)
+>>   				continue;
+>>   			tst_resm(TINFO, "Found free device '%s'", dev_path);
+>>   			close(dev_fd);
+>> -			return 0;
+>> +			return i;
+>>   		}
+>>
+>>   		close(dev_fd);
+>> @@ -129,7 +129,7 @@ static int find_free_loopdev(void)
+>>
+>>   	tst_resm(TINFO, "No free devices found");
+>>
+>> -	return 1;
+>> +	return -1;
+>>   }
+> This needs more changes than this.
 >
-> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
-> index a5bd5e7f7..e1aa06c3e 100644
-> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
-> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
-> @@ -24,7 +24,17 @@
->   
->   static int page_size;
->   static int errcount, numcopies;
-> -static int fd_in, fd_out;
-> +static int fd_in, fd_out, cross_sup;
-> +char FILE_TARGET_PATH[40];
-> +
-> +static struct tcase {
-> +	char    *path;
-> +	int     flags;
-> +	char    *message;
-> +} tcases[] = {
-> +	{FILE_DEST_PATH,  0, "non cross-device"},
-> +	{FILE_MNTED_PATH, 1, "cross-device"},
-> +};
->   
->   static int check_file_content(const char *fname1, const char *fname2,
->   	loff_t *off1, loff_t *off2, size_t len)
-> @@ -131,7 +141,7 @@ static void test_one(size_t len, loff_t *off_in, loff_t *off_out)
->   		to_copy -= TST_RET;
->   	} while (to_copy > 0);
->   
-> -	ret = check_file_content(FILE_SRC_PATH, FILE_DEST_PATH,
-> +	ret = check_file_content(FILE_SRC_PATH, FILE_TARGET_PATH,
->   		off_in, off_out, len);
->   	if (ret) {
->   		tst_res(TFAIL, "file contents do not match");
-> @@ -152,7 +162,7 @@ static void test_one(size_t len, loff_t *off_in, loff_t *off_out)
->   static void open_files(void)
->   {
->   	fd_in  = SAFE_OPEN(FILE_SRC_PATH, O_RDONLY);
-> -	fd_out = SAFE_OPEN(FILE_DEST_PATH, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-> +	fd_out = SAFE_OPEN(FILE_TARGET_PATH, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-Hi,
+> The problem here is that the function modifies dev_path which is
+> returned by tst_acquire_device() so if you call this function after
+> tst_acquire_device() it will rewrite the dev_path which means that the
+> test would end up with wrong device path in tst_device->dev.
+>
+> I guess that the easiest solution would be changing the function to get
+> buffer parameter which, when non-NULL, is filled with the path.
+>
+> I.e. the function prototype would became:
+>
+> int tst_find_free_loopdev(char *path, size_t path_len);
+>
+> And we would pass the dev_path inside of the tst_device.c and NULL from
+> the copy_file_range() tests.
+Hi Cyril
 
-Why don't we remove the global FILE_TARGET_PATH by passing tc->path to 
-open_files()?
+This is a good comment. But I doubt why we don't use a set_devpath_flag todistinguish it.
+Or you have a future plan(in different directory ,/dev,/dev/loop/,/dev/block)?
 
->   }
->   
->   static void close_files(void)
-> @@ -163,9 +173,18 @@ static void close_files(void)
->   		SAFE_CLOSE(fd_in);
->   }
->   
-> -static void copy_file_range_verify(void)
-> +static void copy_file_range_verify(unsigned int n)
->   {
->   	int i, j, k;
-> +	struct tcase *tc = &tcases[n];
-> +
-> +	if (tc->flags && !cross_sup) {
-> +		tst_res(TCONF,
-> +			"copy_file_range doesn't support cross-device, skip it");
-> +		return;
-> +	}
+Thanks
+Yang Xu
 
-Perhaps, we can remove the global cross_sup and check of EXDEV in 
-setup() by passing tc->flag to one_test().
 
-> +
-> +	strcpy(FILE_TARGET_PATH, tc->path);
->   
->   	errcount = numcopies = 0;
->   	size_t len_arr[]	= {11, page_size-1, page_size, page_size+1};
-> @@ -190,25 +209,33 @@ static void copy_file_range_verify(void)
->   
->   	if (errcount == 0)
->   		tst_res(TPASS,
-> -			"copy_file_range completed all %d copy jobs successfully!",
-> -			numcopies);
-> +			"%s copy_file_range completed all %d copy jobs successfully!",
-> +			tc->message, numcopies);
->   	else
-> -		tst_res(TFAIL, "copy_file_range failed %d of %d copy jobs.",
-> -				errcount, numcopies);
-> +		tst_res(TFAIL, "%s copy_file_range failed %d of %d copy jobs.",
-> +			tc->message, errcount, numcopies);
->   }
->   
->   static void setup(void)
->   {
-> -	int i, fd;
-> +	int i, fd, fd_test;
->   
->   	syscall_info();
->   
->   	page_size = getpagesize();
-> -
-> +	cross_sup = 1;
->   	fd = SAFE_OPEN(FILE_SRC_PATH, O_RDWR | O_CREAT, 0664);
->   	/* Writing page_size * 4 of data into test file */
->   	for (i = 0; i < (int)(page_size * 4); i++)
->   		SAFE_WRITE(1, fd, CONTENT, CONTSIZE);
-> +
-> +	fd_test = SAFE_OPEN(FILE_MNTED_PATH, O_RDWR | O_CREAT, 0664);
-> +	TEST(sys_copy_file_range(fd, 0, fd_test, 0, CONTSIZE, 0));
-> +	if (TST_ERR == EXDEV)
-> +		cross_sup = 0;
-> +
-> +	SAFE_CLOSE(fd_test);
-> +	remove(FILE_MNTED_PATH);
-Is it necessary to remove it?
-
-Best Regards,
-Xiao Yang
->   	SAFE_CLOSE(fd);
->   }
->   
-> @@ -220,7 +247,11 @@ static void cleanup(void)
->   static struct tst_test test = {
->   	.setup = setup,
->   	.cleanup = cleanup,
-> +	.tcnt = ARRAY_SIZE(tcases),
->   	.needs_tmpdir = 1,
-> -	.test_all = copy_file_range_verify,
-> +	.mount_device = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.all_filesystems = 1,
-> +	.test = copy_file_range_verify,
->   	.test_variants = TEST_VARIANTS,
->   };
 
 
