@@ -1,7 +1,7 @@
 From: Michael Moese <mmoese@suse.de>
-Date: Thu, 11 Jul 2019 15:58:45 +0200
-Subject: [LTP] [PATCH v3] Add a regression test for CVE-2017-1000380
-Message-ID: <20190711135845.14177-1-mmoese@suse.de>
+Date: Thu, 11 Jul 2019 16:10:26 +0200
+Subject: [LTP] [PATCH v4] Add a regression test for CVE-2017-1000380
+Message-ID: <20190711141026.14705-1-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -19,6 +19,11 @@ This patch adds a regression test triggering this race condition.
 
 Signed-off-by: Michael Moese <mmoese@suse.de>
 ---
+Changes to v2:
+ - remove leftover declarion of unused variable in ioctl_thread()
+ - reduced iov_len by 1, so the strlen command hits a valid \0 for sure
+   in any case.
+ - fix whitespace before tab in Makefile
 
 Changes to v1:
  - Initialize buffers in ioctl_thread() outside of the loop
@@ -29,8 +34,8 @@ Changes to v1:
  testcases/kernel/Makefile            |   1 +
  testcases/kernel/sound/.gitignore    |   1 +
  testcases/kernel/sound/Makefile      |  12 +++
- testcases/kernel/sound/snd_timer01.c | 140 +++++++++++++++++++++++++++
- 5 files changed, 155 insertions(+)
+ testcases/kernel/sound/snd_timer01.c | 139 +++++++++++++++++++++++++++
+ 5 files changed, 154 insertions(+)
  create mode 100644 testcases/kernel/sound/.gitignore
  create mode 100644 testcases/kernel/sound/Makefile
  create mode 100644 testcases/kernel/sound/snd_timer01.c
@@ -68,7 +73,7 @@ index 000000000..57eae0593
 +snd_timer
 diff --git a/testcases/kernel/sound/Makefile b/testcases/kernel/sound/Makefile
 new file mode 100644
-index 000000000..5fdc7dd42
+index 000000000..ad1e25c30
 --- /dev/null
 +++ b/testcases/kernel/sound/Makefile
 @@ -0,0 +1,12 @@
@@ -80,16 +85,16 @@ index 000000000..5fdc7dd42
 +
 +CPPFLAGS		+= -D_GNU_SOURCE
 +
-+LDLIBS 			+= -pthread
++LDLIBS			+= -pthread
 +
 +
 +include $(top_srcdir)/include/mk/generic_leaf_target.mk
 diff --git a/testcases/kernel/sound/snd_timer01.c b/testcases/kernel/sound/snd_timer01.c
 new file mode 100644
-index 000000000..80b03022a
+index 000000000..fe2f3ed3f
 --- /dev/null
 +++ b/testcases/kernel/sound/snd_timer01.c
-@@ -0,0 +1,140 @@
+@@ -0,0 +1,139 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +
 +/* Copyright (c) 2019 Michael Moese <mmoese@suse.com>
@@ -131,7 +136,6 @@ index 000000000..80b03022a
 +
 +static void *ioctl_thread(void *unused)
 +{
-+	(void) unused;
 +	int tread_arg = 1;
 +	struct snd_timer_select ts;
 +	struct snd_timer_params tp;
@@ -187,7 +191,7 @@ index 000000000..80b03022a
 +	SAFE_PTHREAD_CREATE(&th, &thread_attr, ioctl_thread, NULL);
 +
 +	iov.iov_base = read_buf;
-+	iov.iov_len = sizeof(read_buf);
++	iov.iov_len = sizeof(read_buf) - 1;
 +
 +	while (tst_fzsync_run_a(&fzsync_pair)) {
 +		nz = 0;
