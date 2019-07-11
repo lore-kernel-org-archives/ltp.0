@@ -1,123 +1,166 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 11 Jul 2019 08:03:57 +0200
-Subject: [LTP] [PATCH v3] rcu/rcu_torture.sh: Rewrite test
-In-Reply-To: <1562769310-4918-1-git-send-email-ice_yangxiao@163.com>
-References: <1562769310-4918-1-git-send-email-ice_yangxiao@163.com>
-Message-ID: <20190711060357.GA28190@dell5510>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 11 Jul 2019 14:18:59 +0800
+Subject: [LTP] [PATCH v4 2/3] syscalls/copy_file_range01: add
+ cross-device test
+In-Reply-To: <139fc7e8-0116-acd2-6041-8e82a6e4f18d@163.com>
+References: <5D25B05A.8000600@cn.fujitsu.com>
+ <1562755997-5626-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1562755997-5626-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <139fc7e8-0116-acd2-6041-8e82a6e4f18d@163.com>
+Message-ID: <5D26D4D3.9010009@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao,
+on 2019/07/10 23:56, Xiao Yang wrote:
 
-> 1) Cleanup and convert to new API
-> 2) Update valid rcutorture types(rcu, srcu, srcud, tasks)
+> On 07/10/2019 06:53 PM, Yang Xu wrote:
+>> Amir has relaxed cross-device constraint since commit(vfs: allow
+>> copy_file_range to copy across devices), I think we can remove it
+>> in copy_file_range02 and test it in copy_file_range01.
+>>
+>> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+>> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+>> ---
+>>   .../copy_file_range/copy_file_range01.c       | 53 +++++++++++++++----
+>>   1 file changed, 42 insertions(+), 11 deletions(-)
+>>
+>> diff --git 
+>> a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c 
+>> b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
+>> index a5bd5e7f7..e1aa06c3e 100644
+>> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
+>> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
+>> @@ -24,7 +24,17 @@
+>>     static int page_size;
+>>   static int errcount, numcopies;
+>> -static int fd_in, fd_out;
+>> +static int fd_in, fd_out, cross_sup;
+>> +char FILE_TARGET_PATH[40];
+>> +
+>> +static struct tcase {
+>> +    char    *path;
+>> +    int     flags;
+>> +    char    *message;
+>> +} tcases[] = {
+>> +    {FILE_DEST_PATH,  0, "non cross-device"},
+>> +    {FILE_MNTED_PATH, 1, "cross-device"},
+>> +};
+>>     static int check_file_content(const char *fname1, const char 
+>> *fname2,
+>>       loff_t *off1, loff_t *off2, size_t len)
+>> @@ -131,7 +141,7 @@ static void test_one(size_t len, loff_t *off_in, 
+>> loff_t *off_out)
+>>           to_copy -= TST_RET;
+>>       } while (to_copy > 0);
+>>   -    ret = check_file_content(FILE_SRC_PATH, FILE_DEST_PATH,
+>> +    ret = check_file_content(FILE_SRC_PATH, FILE_TARGET_PATH,
+>>           off_in, off_out, len);
+>>       if (ret) {
+>>           tst_res(TFAIL, "file contents do not match");
+>> @@ -152,7 +162,7 @@ static void test_one(size_t len, loff_t *off_in, 
+>> loff_t *off_out)
+>>   static void open_files(void)
+>>   {
+>>       fd_in  = SAFE_OPEN(FILE_SRC_PATH, O_RDONLY);
+>> -    fd_out = SAFE_OPEN(FILE_DEST_PATH, O_CREAT | O_WRONLY | O_TRUNC, 
+>> 0644);
+>> +    fd_out = SAFE_OPEN(FILE_TARGET_PATH, O_CREAT | O_WRONLY | 
+>> O_TRUNC, 0644);
+> Hi,
+>
+> Why don't we remove the global FILE_TARGET_PATH by passing tc->path to 
+> open_files()?
+OK. I will remove it and pass tc->path to open_files() ,test_one();
 
-> Note:
-> Exclude valid busted* types(busted, busted_srcud) that check
-> the test itself and expect failures, suggested by:
-> https://www.spinics.net/lists/kernel/msg3045252.html
+>
+>>   }
+>>     static void close_files(void)
+>> @@ -163,9 +173,18 @@ static void close_files(void)
+>>           SAFE_CLOSE(fd_in);
+>>   }
+>>   -static void copy_file_range_verify(void)
+>> +static void copy_file_range_verify(unsigned int n)
+>>   {
+>>       int i, j, k;
+>> +    struct tcase *tc = &tcases[n];
+>> +
+>> +    if (tc->flags && !cross_sup) {
+>> +        tst_res(TCONF,
+>> +            "copy_file_range doesn't support cross-device, skip it");
+>> +        return;
+>> +    }
+>
+> Perhaps, we can remove the global cross_sup and check of EXDEV in 
+> setup() by passing tc->flag to one_test().
+OK. I will use tc->flag in setup,  flag =2 is equal to TCONF(doesn't support cross-dev).
 
-> Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
-Acked-by: Petr Vorel <pvorel@suse.cz>
+>
+>> +
+>> +    strcpy(FILE_TARGET_PATH, tc->path);
+>>         errcount = numcopies = 0;
+>>       size_t len_arr[]    = {11, page_size-1, page_size, page_size+1};
+>> @@ -190,25 +209,33 @@ static void copy_file_range_verify(void)
+>>         if (errcount == 0)
+>>           tst_res(TPASS,
+>> -            "copy_file_range completed all %d copy jobs successfully!",
+>> -            numcopies);
+>> +            "%s copy_file_range completed all %d copy jobs 
+>> successfully!",
+>> +            tc->message, numcopies);
+>>       else
+>> -        tst_res(TFAIL, "copy_file_range failed %d of %d copy jobs.",
+>> -                errcount, numcopies);
+>> +        tst_res(TFAIL, "%s copy_file_range failed %d of %d copy jobs.",
+>> +            tc->message, errcount, numcopies);
+>>   }
+>>     static void setup(void)
+>>   {
+>> -    int i, fd;
+>> +    int i, fd, fd_test;
+>>         syscall_info();
+>>         page_size = getpagesize();
+>> -
+>> +    cross_sup = 1;
+>>       fd = SAFE_OPEN(FILE_SRC_PATH, O_RDWR | O_CREAT, 0664);
+>>       /* Writing page_size * 4 of data into test file */
+>>       for (i = 0; i < (int)(page_size * 4); i++)
+>>           SAFE_WRITE(1, fd, CONTENT, CONTSIZE);
+>> +
+>> +    fd_test = SAFE_OPEN(FILE_MNTED_PATH, O_RDWR | O_CREAT, 0664);
+>> +    TEST(sys_copy_file_range(fd, 0, fd_test, 0, CONTSIZE, 0));
+>> +    if (TST_ERR == EXDEV)
+>> +        cross_sup = 0;
+>> +
+>> +    SAFE_CLOSE(fd_test);
+>> +    remove(FILE_MNTED_PATH);
+> Is it necessary to remove it?
+>
+I want to test on a clean environment, like FILE_DEST_PATH.
+> Best Regards,
+> Xiao Yang
+>>       SAFE_CLOSE(fd);
+>>   }
+>>   @@ -220,7 +247,11 @@ static void cleanup(void)
+>>   static struct tst_test test = {
+>>       .setup = setup,
+>>       .cleanup = cleanup,
+>> +    .tcnt = ARRAY_SIZE(tcases),
+>>       .needs_tmpdir = 1,
+>> -    .test_all = copy_file_range_verify,
+>> +    .mount_device = 1,
+>> +    .mntpoint = MNTPOINT,
+>> +    .all_filesystems = 1,
+>> +    .test = copy_file_range_verify,
+>>       .test_variants = TEST_VARIANTS,
+>>   };
+>
+>
+>
+>
+> .
+>
 
-Only few comments below (nits).
 
->  # default options
-> -test_time=60
-> +test_time=30
-You shortened the test to half, good :).
-
-...
-> +rcutorture_setup()
-> +{
-> +	local module=1
-
-> -	if tst_kvcmp -lt "3.11"; then
-> -		rcu_type="$rcu_type srcu_raw srcu_raw_sync"
-> -	fi
-> -fi
-> +	# check if rcutorture is built as a kernel module by inserting
-> +	# and then removing it
-> +	modprobe rcutorture >/dev/null 2>&1 ||  module=0
-> +	modprobe -r rcutorture >/dev/null 2>&1 || module=0
-
-This can be just module=1 or module= (none value).
-(+ -q is enough instead of redirections). i.e.:
-
-modprobe rcutorture -q || module=
-modprobe -r rcutorture -q || module=
-[ -n "$module" ] && \
-
-(or even [ "$module" ] && \ )
-
-We usually don't use 0 for shell scripts in LTP.
-But that's a nit.
-
-> -TST_TOTAL=$(echo "$rcu_type" | wc -w)
-> +	[ $module -eq 0 ] && \
-> +		tst_brk TCONF "rcutorture is built-in, non-existent or in use"
-> +}
-
-> -est_time=`echo "scale=2; $test_time * $TST_TOTAL / 60 " | bc`
-> -tst_resm TINFO "estimate time $est_time min"
-> +rcutorture_test()
-> +{
-> +	local rcu_type=$1
-
-> -for type in $rcu_type; do
-> +	tst_res TINFO "${rcu_type}-torture: running ${test_time} sec..."
-	tst_res TINFO "${rcu_type}-torture: running $test_time sec..."
-(I prefer using brackets ${foo} only when needed - $foo is more readable).
-
-> -	tst_resm TINFO "$type: running $test_time sec..."
-> +	modprobe rcutorture nfakewriters=${num_writers} \
-> +		torture_type=${rcu_type} >/dev/null 2>&1
-Again, use -q:
-modprobe -q rcutorture nfakewriters=$num_writers torture_type=$rcu_type
-
-> +	if [ $? -ne 0 ]; then
-> +		dmesg | grep -q "invalid torture type: \"${rcu_type}\"" && \
-> +			tst_brk TCONF "invalid ${rcu_type} type"
-and here ${foo} => $foo
-
-> -	modprobe rcutorture nfakewriters=$num_writers \
-> -	         stat_interval=60 test_no_idle_hz=1 shuffle_interval=3 \
-> -	         stutter=5 irqreader=1 fqs_duration=0 fqs_holdoff=0 \
-> -	         fqs_stutter=3 test_boost=1 test_boost_interval=7 \
-> -	         test_boost_duration=4 shutdown_secs=0 \
-> -	         stall_cpu=0 stall_cpu_holdoff=10 n_barrier_cbs=0 \
-> -	         onoff_interval=0 onoff_holdoff=0 torture_type=$type \
-> -	         > /dev/null 2>&1 || tst_brkm TBROK "failed to load module"
-> +		tst_brk TBROK "failed to load module"
-And here. But I'd prefer to keep stderr (in case of failure it's better
-to see immediately what the problem was).
-> +	fi
-
-> -	sleep $test_time
-> +	sleep ${test_time}
-	sleep $test_time
-
-> -	rmmod rcutorture > /dev/null 2>&1 || \
-> -		tst_brkm TBROK "failed to unload module"
-> +	modprobe -r rcutorture >/dev/null 2>&1 || \
-> +		tst_brk TBROK "failed to unload module"
-The same here (here I'd also keep stdout)
-
->  	# check module status in dmesg
-> -	result_str=`dmesg | sed -nE '$s/.*End of test: ([A-Z]+):.*/\1/p'`
-> -	if [ "$result_str" = "SUCCESS" ]; then
-> -		tst_resm TPASS "$type: completed"
-> +	local res=$(dmesg | sed -nE "s/.* ${rcu_type}-torture:.* End of test: (.*): .*/\1/p" | tail -n1)
-> +	if [ "$res" = "SUCCESS" ]; then
-> +		tst_res TPASS "${rcu_type}-torture: $res"
->  	else
-> -		tst_resm TFAIL "$type: $result_str, see dmesg"
-> +		tst_res TFAIL "${rcu_type}-torture: $res, see dmesg"
-Maybe print dmesg (for automated tests, when you don't have direct access to
-machine).
-
-Kind regards,
-Petr
