@@ -1,56 +1,31 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 12 Jul 2019 16:15:29 +0200
-Subject: [LTP] [PATCH 1/2] safe_macros: Add SAFE_STATFS()
-In-Reply-To: <20190712141530.22195-1-chrubis@suse.cz>
-References: <20190712141530.22195-1-chrubis@suse.cz>
-Message-ID: <20190712141530.22195-2-chrubis@suse.cz>
+Date: Fri, 12 Jul 2019 16:15:28 +0200
+Subject: [LTP] [PATCH 0/2] Fix acct failures on nearly full FS.
+Message-ID: <20190712141530.22195-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- include/tst_safe_macros.h | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+Unfortunately it looks like BSD process accounting on Linux is bit of a
+minefield, even when you enable the accounting and everything looks OK
+kernel may still drop the data silently for a couple of reasons. You can
+have a look at kernel/acct.c. This patch disables the test if there is
+no enough disk space because in that case data are silently dropped.
 
-diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index 53a888c80..80c4d9cb9 100644
---- a/include/tst_safe_macros.h
-+++ b/include/tst_safe_macros.h
-@@ -24,6 +24,7 @@
- #include <sys/time.h>
- #include <sys/resource.h>
- #include <sys/stat.h>
-+#include <sys/vfs.h>
- #include <fcntl.h>
- #include <libgen.h>
- #include <signal.h>
-@@ -340,6 +341,23 @@ static inline int safe_lstat(const char *file, const int lineno,
- #define SAFE_LSTAT(path, buf) \
- 	safe_lstat(__FILE__, __LINE__, (path), (buf))
- 
-+static inline int safe_statfs(const char *file, const int lineno,
-+                              const char *path, struct statfs *buf)
-+{
-+	int rval;
-+
-+	rval = statfs(path, buf);
-+
-+	if (rval == -1) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+		         "statfs(%s,%p) failed", path, buf);
-+	}
-+
-+	return rval;
-+}
-+#define SAFE_STATFS(path, buf) \
-+        safe_statfs(__FILE__, __LINE__, (path), (buf))
-+
- static inline off_t safe_lseek(const char *file, const int lineno,
-                                int fd, off_t offset, int whence)
- {
+If there is less than 4% of free space the accounting is silently
+disabled from the start hence the test produces TCONF unless there is at
+least 4.1% of free space now.
+
+Cyril Hrubis (2):
+  safe_macros: Add SAFE_STATFS()
+  syscalls/acct02: Fix failures with nearly full FS
+
+ include/tst_safe_macros.h               | 18 ++++++++++++++++++
+ testcases/kernel/syscalls/acct/acct02.c | 12 ++++++++++++
+ 2 files changed, 30 insertions(+)
+
 -- 
 2.21.0
 
