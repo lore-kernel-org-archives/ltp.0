@@ -1,49 +1,56 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 12 Jul 2019 15:48:33 +0200
-Subject: [LTP] [RFC PATCH 3/3] make: Add
- -Werror-implicit-function-declaration for all targets
-In-Reply-To: <20190411233115.32744-4-pvorel@suse.cz>
-References: <20190411233115.32744-1-pvorel@suse.cz>
- <20190411233115.32744-4-pvorel@suse.cz>
-Message-ID: <20190712134833.GA21258@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 12 Jul 2019 16:15:29 +0200
+Subject: [LTP] [PATCH 1/2] safe_macros: Add SAFE_STATFS()
+In-Reply-To: <20190712141530.22195-1-chrubis@suse.cz>
+References: <20190712141530.22195-1-chrubis@suse.cz>
+Message-ID: <20190712141530.22195-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ include/tst_safe_macros.h | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-> Previously it was passed only to Android build, but it's good to check
-> it for all.
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 53a888c80..80c4d9cb9 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -24,6 +24,7 @@
+ #include <sys/time.h>
+ #include <sys/resource.h>
+ #include <sys/stat.h>
++#include <sys/vfs.h>
+ #include <fcntl.h>
+ #include <libgen.h>
+ #include <signal.h>
+@@ -340,6 +341,23 @@ static inline int safe_lstat(const char *file, const int lineno,
+ #define SAFE_LSTAT(path, buf) \
+ 	safe_lstat(__FILE__, __LINE__, (path), (buf))
+ 
++static inline int safe_statfs(const char *file, const int lineno,
++                              const char *path, struct statfs *buf)
++{
++	int rval;
++
++	rval = statfs(path, buf);
++
++	if (rval == -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++		         "statfs(%s,%p) failed", path, buf);
++	}
++
++	return rval;
++}
++#define SAFE_STATFS(path, buf) \
++        safe_statfs(__FILE__, __LINE__, (path), (buf))
++
+ static inline off_t safe_lseek(const char *file, const int lineno,
+                                int fd, off_t offset, int whence)
+ {
+-- 
+2.21.0
 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Tested in travis:
-> https://travis-ci.org/pevik/ltp/builds/518886113
-> ---
->  include/mk/env_post.mk | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-
-> diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
-> index 913bdf5d1..3ffdd0b7f 100644
-> --- a/include/mk/env_post.mk
-> +++ b/include/mk/env_post.mk
-> @@ -41,11 +41,9 @@ ifeq ($(UCLINUX),1)
->  CPPFLAGS			+= -D__UCLIBC__ -DUCLINUX
->  endif
-
-> -ifeq ($(ANDROID),1)
-> -# There are many undeclared functions, it's best not to accidentally overlook
-> -# them.
->  CFLAGS				+= -Werror-implicit-function-declaration
-
-> +ifeq ($(ANDROID),1)
->  LDFLAGS				+= -L$(top_builddir)/lib/android_libpthread
->  LDFLAGS				+= -L$(top_builddir)/lib/android_librt
->  endif
-
-Ping, please. Drop it or merge?
-
-Kind regards,
-Petr
