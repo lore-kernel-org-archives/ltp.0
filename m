@@ -1,33 +1,70 @@
-From: Li Wang <liwan@redhat.com>
-Date: Mon, 15 Jul 2019 11:01:06 +0800
-Subject: [LTP] [PATCH v3.1] lib: add tst_no_corefile()
-In-Reply-To: <02ade9af1634c4681156dceecfd51721284044e3.1562591065.git.jstancek@redhat.com>
-References: <20190705051603.24599-1-liwang@redhat.com>
- <02ade9af1634c4681156dceecfd51721284044e3.1562591065.git.jstancek@redhat.com>
-Message-ID: <CAEemH2dTzdxABL_W4Y-TuZEdUJ+Nag936+1P_kD6NGLQP0otPQ@mail.gmail.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 15 Jul 2019 16:13:42 +0800
+Subject: [LTP] [PATCH 2/2] syscalls/acct02: Fix failures with nearly
+ full FS
+In-Reply-To: <20190712141530.22195-3-chrubis@suse.cz>
+References: <20190712141530.22195-1-chrubis@suse.cz>
+ <20190712141530.22195-3-chrubis@suse.cz>
+Message-ID: <5D2C35B6.6080606@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Jul 8, 2019 at 9:08 PM Jan Stancek <jstancek@redhat.com> wrote:
 
-> Li,
+> While process accounting is running the kernel checks the percentage of
+> available space on disk. If the accounting is enabled and the free space
+> drops below 2% the accounting is disabled until we reach at least 4% of
+> free space. Which especially means that we have to have more than 4% of
+> free space when we start the accounting because we are starting in
+> disabled state. And when accounting is disabled the data are dropped
+> silently instead of being written to the file, which makes this test
+> fail because we end up with an empty file.
 >
-> I'd like to avoid generating TWARN when user has done nothing wrong.
-> What would you tell on this version? Only tst_no_corefile()
-> is changed compared to your v3.
+> So this patch checks if there is at least 4.1% of free space before we
+> start the test and exit with TCONF otherwise.
 >
+> Signed-off-by: Cyril Hrubis<chrubis@suse.cz>
+> CC: Christian Amann<camann@suse.com>
+> ---
+>   testcases/kernel/syscalls/acct/acct02.c | 12 ++++++++++++
+>   1 file changed, 12 insertions(+)
+>
+> diff --git a/testcases/kernel/syscalls/acct/acct02.c b/testcases/kernel/syscalls/acct/acct02.c
+> index f61faf206..6c375d5cb 100644
+> --- a/testcases/kernel/syscalls/acct/acct02.c
+> +++ b/testcases/kernel/syscalls/acct/acct02.c
+> @@ -146,8 +146,20 @@ static void run(void)
+>
+>   static void setup(void)
+>   {
+> +	struct statfs buf;
+> +
+>   	clock_ticks = SAFE_SYSCONF(_SC_CLK_TCK);
+>
+> +	SAFE_STATFS(".",&buf);
+> +
+> +	float avail = (100.00 * buf.f_bavail) / buf.f_blocks;
 
-Agree on this, TWARN seems unnecessary. Feel free to modify&push v3.1 as
-Cyril suggested.
+Hi Cyril
 
-Thank you, Jan!
+  I met the same problem on last week when I ran acct02 on nearly full FS.  Since kernel/acct.c has defined the RESUME(4) and SUSPEND(2) macro,
+4.1 is enough.  And I think we can leave a simple comment in here for why the limit is 4.1(even though the commit message has the reason).
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190715/f85b4a14/attachment.htm>
+Thanks
+Yang Xu
+
+> +
+> +	if (avail<  4.1) {
+> +		tst_brk(TCONF,
+> +			"Less than 4.1%% (%.2f) of free space on filesystem",
+> +			avail);
+> +	}
+> +
+>   	TEST(acct(NULL));
+>   	if (TST_RET == -1)
+>   		tst_brk(TBROK | TTERRNO,
+
+
+
