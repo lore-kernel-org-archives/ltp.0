@@ -1,31 +1,42 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Mon, 15 Jul 2019 19:27:15 +0800
-Subject: [LTP] [PATCH 2/2] syscalls/acct02: Fix failures with nearly
- full FS
-In-Reply-To: <20190715111950.GA12926@rei>
-References: <20190712141530.22195-1-chrubis@suse.cz>
- <20190712141530.22195-3-chrubis@suse.cz> <5D2C35B6.6080606@cn.fujitsu.com>
- <20190715111950.GA12926@rei>
-Message-ID: <5D2C6313.1080707@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 15 Jul 2019 13:53:38 +0200
+Subject: [LTP] [COMMITTED] [PATCH] syscalls/acct02: Add note about acct()
+ kernel bug
+Message-ID: <20190715115338.15884-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+This test is actually accidental regression test for:
 
-> Hi!
->> I met the same problem on last week when I ran acct02 on nearly full
->> FS.  Since kernel/acct.c has defined the RESUME(4) and SUSPEND(2)
->> macro, 4.1 is enough.  And I think we can leave a simple comment in
->> here for why the limit is 4.1(even though the commit message has the
->> reason).
-> I guess that short comment would help there, if it's OK I will add it
-> before I push the patch.
-Hi
+commit 4d9570158b6260f449e317a5f9ed030c2504a615
+Author: Oleg Nesterov <oleg@redhat.com>
+Date:   Thu Jan 4 16:17:49 2018 -0800
 
-Yes, go ahead.
+    kernel/acct.c: fix the acct->needcheck check in check_free_space()
 
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Christian Amann <camann@suse.com>
+---
+ testcases/kernel/syscalls/acct/acct02.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-
+diff --git a/testcases/kernel/syscalls/acct/acct02.c b/testcases/kernel/syscalls/acct/acct02.c
+index 0b2608c71..c2c20668e 100644
+--- a/testcases/kernel/syscalls/acct/acct02.c
++++ b/testcases/kernel/syscalls/acct/acct02.c
+@@ -16,6 +16,9 @@
+  * that only the command issued by this test gets written into the accounting
+  * file, the contents get parsed until the correct entry is found, or EOF
+  * is reached.
++ *
++ * This is also accidental regression test for:
++ * 4d9570158b626 kernel/acct.c: fix the acct->needcheck check in check_free_space()
+  */
+ 
+ #include <sys/stat.h>
+-- 
+2.21.0
 
