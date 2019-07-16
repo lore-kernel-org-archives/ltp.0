@@ -1,79 +1,77 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 16 Jul 2019 14:01:01 +0800
-Subject: [LTP] [PATCH] cgroup_regression_test.sh: fix test_5 possible
- mount failure because of cgroup hierarchy
-In-Reply-To: <1560250815-2308-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1560250815-2308-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <5D2D681D.1050909@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 16 Jul 2019 03:07:07 -0400 (EDT)
+Subject: [LTP] [PATCH V4] getrlimit03: adjust a bit of code to
+ compatiable with mips32
+In-Reply-To: <1563185037-236824-2-git-send-email-hongzhi.song@windriver.com>
+References: <1563185037-236824-1-git-send-email-hongzhi.song@windriver.com>
+ <1563185037-236824-2-git-send-email-hongzhi.song@windriver.com>
+Message-ID: <1694827109.292834.1563260827076.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi 
 
-Ping.  :-) 
 
-> Currently, if systems doesn't mount subsys1,subsys2 and the hierarchy is not equal to 0, running it
-> reports the following error:
->
-> mount: xxx is already mounted or /tmp/ltp-wPw08anmTI/LTP_cgroup_regression_test.V4jf0qrS7z/cgroup busy
-> cgroup_regression_test 5 TFAIL: mount net_prio and pids failed
->
-> It fails because libcgroup doesn't permmit destroy cgroup subsystem hierarchies.
-> Simple umnout does not destroy the hierarchies. They still live inside kernel!
->
-> When  hierarchy is equal to 0 in /proc/cgroups, we can mount them together on
-> a new mountpoint.
->
-> I add a check for subsystem hierarchy and get subsystem from head.
->
-> Notice:
-> more information about"Bug 612805 - cgroup: mount: none already mounted or /cgroups busy"
->
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+----- Original Message -----
+> Error info:
+> getrlimit03.c:104: FAIL: __NR_prlimit64(0) had rlim_cur =
+> ffffffffffffffff but __NR_getrlimit(0) had rlim_cur = 7fffffff
+> 
+> According to kernel code: [arch/mips/include/uapi/asm/resource.h]
+> RLIM_INFINITY is set to 0x7fffffffUL instead of ULONG_MAX on mips32.
+> 
+>  /*
+>  * SuS says limits have to be unsigned.
+>  * Which makes a ton more sense anyway,
+>  * but we keep the old value on MIPS32,
+>  * for compatibility:
+>  */
+>  #ifndef __mips64
+>  # define RLIM_INFINITY      0x7fffffffUL
+>  #endif
+> 
+> Adding conditional statement about mips to fix this.
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> Signed-off-by: Hongzhi.Song <hongzhi.song@windriver.com>
 > ---
->  .../cgroup/cgroup_regression_test.sh           | 18 +++++++++++++-----
->  1 file changed, 13 insertions(+), 5 deletions(-)
->
-> diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> index e197f5d3f..38cb760c2 100755
-> --- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> +++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
-> @@ -252,8 +252,10 @@ test5()
->  		return
->  	fi
+>  testcases/kernel/syscalls/getrlimit/getrlimit03.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+> b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+> index e4d56c4..03bd821 100644
+> --- a/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+> +++ b/testcases/kernel/syscalls/getrlimit/getrlimit03.c
+> @@ -26,6 +26,7 @@
 >  
-> -	local subsys1=`tail -n 1 /proc/cgroups | awk '{ print $1 }'`
-> -	local subsys2=`tail -n 2 /proc/cgroups | head -1 | awk '{ print $1 }'`
-> +	local subsys1=`head -2 /proc/cgroups | tail -n 1 | awk '{ print $1 }'`
-> +	local subsys1_hierarchy=`head -2 /proc/cgroups | tail -n 1 | awk '{ print $2 }'`
-> +	local subsys2=`head -3 /proc/cgroups | tail -n 1 | awk '{ print $1 }'`
-> +	local subsys2_hierarchy=`head -3 /proc/cgroups | tail -n 1 | awk '{ print $2 }'`
+>  #include "tst_test.h"
+>  #include "lapi/syscalls.h"
+> +#include "lapi/abisize.h"
 >  
->  	# Accounting here for the fact that the chosen subsystems could
->  	# have been already previously mounted at boot time: in such a
-> @@ -267,10 +269,16 @@ test5()
->  	if [ -z "$mounted" ]; then
->  		mntpoint=cgroup
->  		failing=$subsys1
-> -		mount -t cgroup -o $subsys1,$subsys2 xxx $mntpoint/
-> +		mount -t cgroup -o $subsys1,$subsys2 xxx $mntpoint/ 2>/dev/null
-> +		# Even subsystem has not been mounted, it still live in kernel.
-> +		# So we will get EBUSY when both mount subsys1 and subsys2 if
-> +		# hierarchy isn't equal to 0.
->  		if [ $? -ne 0 ]; then
-> -			tst_res TFAIL "mount $subsys1 and $subsys2 failed"
-> -			return
-> +			if [ "$subsys1_hierarchy" = 0 -a "$subsys2_hierarchy" = 0 ]; then
-> +				tst_res TFAIL "mount $subsys1 and $subsys2 failed"
-> +				return
-> +			fi
-> +			failing=$subsys1,$subsys2
->  		fi
->  	else
->  		# Use the pre-esistent mountpoint as $mntpoint and use a
+>  /**
+>   * Linux provides an "old" getrlimit syscall handler that uses signed long,
+> @@ -61,7 +62,12 @@ struct rlimit_ulong {
+>  	unsigned long rlim_cur;
+>  	unsigned long rlim_max;
+>  };
+> -const unsigned long RLIM_INFINITY_UL = ULONG_MAX;
+> +
+> +#if defined(__mips) && defined(TST_ABI32)
 
+I see several tests already use __mips__, why did you go with __mips here?
+Anyway, I'm fine with the patch.
 
-
+> +	const unsigned long RLIM_INFINITY_UL = 0x7fffffffUL;
+> +#else
+> +	const unsigned long RLIM_INFINITY_UL = ULONG_MAX;
+> +#endif
+>  
+>  static int getrlimit_ulong(int resource, struct rlimit_ulong *rlim)
+>  {
+> --
+> 2.8.1
+> 
+> 
