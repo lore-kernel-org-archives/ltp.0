@@ -1,36 +1,42 @@
-From: Xiao Yang <ice_yangxiao@163.com>
-Date: Tue, 16 Jul 2019 22:04:17 +0800
-Subject: [LTP] [PATCH] syscalls/acct02.c: Read threshold from
- /proc/sys/kernel/acct
-In-Reply-To: <20190715160010.GA30303@rei.lan>
-References: <1563203796-22102-1-git-send-email-ice_yangxiao@163.com>
- <20190715160010.GA30303@rei.lan>
-Message-ID: <02b9f80d-05ec-e837-5770-c12f73f6bb0f@163.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 16 Jul 2019 16:16:19 +0200
+Subject: [LTP] [COMMITTED] [PATCH] lapi/securebits.h: Fix.
+Message-ID: <20190716141619.31427-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 07/16/2019 12:00 AM, Cyril Hrubis wrote:
-> Hi!
->> Don't use hardcoded threshold(default 4%) to check free space
->> because it can be changed by writing "/proc/sys/kernel/acct"
->> or using sysctl.
-> Good catch, I missed the sysctl API since I haven't realized that the
-> proc handlers are all stuffed in a different file in kernel/sysctl.c.
->
-> What about we as well temporarily lower the value if needed while the
-> test is running?
-Hi Cyril,
+I managed to break the original file when applying and made the fallback
+definition depend on the existence of the file, which is indeed wrong,
+sorry everyone.
 
-When free space is not enough, test can change the threshold by itself
-or remind user to modify the threshold by sysctl API manually.
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ include/lapi/securebits.h | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Which one do you prefer?
-
-Best Regards,
-Xiao Yang
->
-
+diff --git a/include/lapi/securebits.h b/include/lapi/securebits.h
+index 6207c06cd..2da137c3a 100644
+--- a/include/lapi/securebits.h
++++ b/include/lapi/securebits.h
+@@ -5,9 +5,13 @@
+  */
+ #ifndef LAPI_SECUREBITS_H
+ #define LAPI_SECUREBITS_H
++
+ # ifdef HAVE_LINUX_SECUREBITS_H
+ #  include <linux/securebits.h>
+-# else
++# endif
++
++# ifndef SECBIT_NO_CAP_AMBIENT_RAISE
+ #  define SECBIT_NO_CAP_AMBIENT_RAISE  6
+-# endif /* HAVE_LINUX_SECUREBITS_H*/
++# endif
++
+ #endif /* LAPI_SECUREBITS_H */
+-- 
+2.21.0
 
