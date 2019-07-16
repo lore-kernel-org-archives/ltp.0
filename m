@@ -1,65 +1,38 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 16 Jul 2019 16:32:38 +0200
-Subject: [LTP] [COMMITTED] [PATCH] syscalls/prctl07: Fix build.
-Message-ID: <20190716143238.483-1-chrubis@suse.cz>
+From: Xiao Yang <ice_yangxiao@163.com>
+Date: Tue, 16 Jul 2019 23:37:15 +0800
+Subject: [LTP] [PATCH] syscalls/acct02.c: Read threshold from
+ /proc/sys/kernel/acct
+In-Reply-To: <20190716141739.GA17060@rei>
+References: <1563203796-22102-1-git-send-email-ice_yangxiao@163.com>
+ <20190715160010.GA30303@rei.lan>
+ <02b9f80d-05ec-e837-5770-c12f73f6bb0f@163.com> <20190716141739.GA17060@rei>
+Message-ID: <c5fa26ee-77d1-38c5-5d73-bf81df29fa5f@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Ideally this is last fix for prctl07.
+On 07/16/2019 10:17 PM, Cyril Hrubis wrote:
+> Hi!
+>>> Good catch, I missed the sysctl API since I haven't realized that the
+>>> proc handlers are all stuffed in a different file in kernel/sysctl.c.
+>>>
+>>> What about we as well temporarily lower the value if needed while the
+>>> test is running?
+>> Hi Cyril,
+>>
+>> When free space is not enough, test can change the threshold by itself
+>> or remind user to modify the threshold by sysctl API manually.
+>>
+>> Which one do you prefer?
+> Ideally the test should modify the threshold.
+Hi Cyril,
 
-Since I've changed the check_proc_capamb() to use macro definition
-instead of raw integer value we depend on sys/capability.h being
-included to compile the code.
+OK, I will improve the patch as you suggested. :-)
 
-So this commit changes:
+Best Regards,
+Xiao Yang
+>
 
-The sys/capability.h is included under HAVE_SYS_CAPABILITY_H now and so
-the function is ifdefed out if we don't have that header.
-
-Also it looks like HAVE_LIBCAP is not defined unless libcap supports
-cap_compare() which should be fixed. The check for libcap and
-cap_compare() has to be uncoupled but that has to be done in a sepratate
-patch.
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/syscalls/prctl/prctl07.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/prctl/prctl07.c b/testcases/kernel/syscalls/prctl/prctl07.c
-index 37d77df33..79f7710a8 100644
---- a/testcases/kernel/syscalls/prctl/prctl07.c
-+++ b/testcases/kernel/syscalls/prctl/prctl07.c
-@@ -25,7 +25,7 @@
- #include <sys/prctl.h>
- #include <stdlib.h>
- #include "config.h"
--#ifdef HAVE_LIBCAP
-+#ifdef HAVE_SYS_CAPABILITY_H
- # include <sys/capability.h>
- #endif
- #include "lapi/syscalls.h"
-@@ -35,7 +35,8 @@
- 
- #define PROC_STATUS "/proc/self/status"
- 
--static inline void check_proc_capamb(char *message, int flag)
-+#ifdef HAVE_SYS_CAPABILITY_H
-+static void check_proc_capamb(char *message, int flag)
- {
- 	int cap_num;
- 	char CapAmb[20];
-@@ -62,6 +63,7 @@ static inline void check_proc_capamb(char *message, int flag)
- 			"%s, CapAmb in %s doesn't have CAP_NET_BIND_SERVICE",
- 			message, PROC_STATUS);
- }
-+#endif
- 
- static inline void check_cap_raise(unsigned int cap, char *message, int fail_flag)
- {
--- 
-2.21.0
 
