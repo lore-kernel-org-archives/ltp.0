@@ -1,148 +1,216 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 16 Jul 2019 14:55:24 +0200
-Subject: [LTP] [PATCH v2] syscalls/prctl07: New test for prctl() with
- PR_CAP_AMBIENT
-In-Reply-To: <1562925275-2390-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <20190709112046.GC4914@rei.lan>
- <1562925275-2390-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20190716125524.GA23024@rei>
+From: Xiao Yang <ice_yangxiao@163.com>
+Date: Tue, 16 Jul 2019 21:50:01 +0800
+Subject: [LTP] [PATCH v4] rcu/rcu_torture.sh: Rewrite test
+In-Reply-To: <1562843429-4633-1-git-send-email-ice_yangxiao@163.com>
+References: <1562843429-4633-1-git-send-email-ice_yangxiao@163.com>
+Message-ID: <f6d4dfd5-7f84-8587-049b-2cf2e61fdba7@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with minor changes, thanks.
+Hi all,
 
-The highlights of the changes are:
+I will push it tomorrow if nobody has objection. :-)
 
-* Using proper hexadecimal base when converting CapAmb from string
+Best Regards,
 
-* Adding the CAP_LIB selectively only for prctl07
+Xiao Yang
 
-The rest is more or less cosmetic to avoid warnings on missing libcap
-and such.
+On 07/11/2019 07:10 PM, Xiao Yang wrote:
+> 1) Cleanup and convert to new API
+> 2) Update valid rcutorture types(rcu, srcu, srcud, tasks)
+>
+> Note:
+> Exclude valid busted* types(busted, busted_srcud) that check
+> the test itself and expect failures, suggested by:
+> https://www.spinics.net/lists/kernel/msg3045252.html
+>
+> Reviewed-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> Acked-by: Petr Vorel <pvorel@suse.cz>
+> Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
+> ---
+>   testcases/kernel/device-drivers/rcu/rcu_torture.sh | 140 +++++++++------------
+>   1 file changed, 62 insertions(+), 78 deletions(-)
+>
+> diff --git a/testcases/kernel/device-drivers/rcu/rcu_torture.sh b/testcases/kernel/device-drivers/rcu/rcu_torture.sh
+> index c3739f9..bca1530 100755
+> --- a/testcases/kernel/device-drivers/rcu/rcu_torture.sh
+> +++ b/testcases/kernel/device-drivers/rcu/rcu_torture.sh
+> @@ -1,20 +1,7 @@
+>   #!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+>   # Copyright (c) 2014-2015 Oracle and/or its affiliates. All Rights Reserved.
+> -#
+> -# This program is free software; you can redistribute it and/or
+> -# modify it under the terms of the GNU General Public License as
+> -# published by the Free Software Foundation; either version 2 of
+> -# the License, or (at your option) any later version.
+> -#
+> -# This program is distributed in the hope that it would be useful,
+> -# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> -# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> -# GNU General Public License for more details.
+> -#
+> -# You should have received a copy of the GNU General Public License
+> -# along with this program; if not, write the Free Software Foundation,
+> -# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> -#
+> +# Copyright (C) 2019 Xiao Yang <ice_yangxiao@163.com>
+>   # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+>   #
+>   # One of the possible ways to test RCU is to use rcutorture kernel module.
+> @@ -23,89 +10,86 @@
+>   # dmesg output for module's test results.
+>   # For more information, please read Linux Documentation: RCU/torture.txt
+>   
+> -TCID="rcu_torture"
+> -TST_TOTAL=14
+> -TST_CLEANUP=cleanup
+> +TST_CNT=4
+> +TST_SETUP=rcutorture_setup
+> +TST_TESTFUNC=do_test
+> +TST_NEEDS_ROOT=1
+> +TST_NEEDS_CMDS="modprobe dmesg sed tail"
+> +TST_OPTS="t:w:"
+> +TST_USAGE=rcutorture_usage
+> +TST_PARSE_ARGS=rcutorture_parse_args
+>   
+> -. test.sh
+> +. tst_test.sh
+>   
+>   # default options
+> -test_time=60
+> +test_time=30
+>   num_writers=5
+>   
+> -while getopts :ht:w: opt; do
+> -	case "$opt" in
+> -	h)
+> -		echo "Usage:"
+> -		echo "h        help"
+> -		echo "t x      time in seconds for each test-case"
+> -		echo "w x      number of writers"
+> -		exit 0
+> -	;;
+> -	t) test_time=$OPTARG ;;
+> -	w) num_writers=$OPTARG ;;
+> -	*)
+> -		tst_brkm TBROK "unknown option: $opt"
+> -	;;
+> -	esac
+> -done
+> -
+> -cleanup()
+> +rcutorture_usage()
+>   {
+> -	tst_resm TINFO "cleanup"
+> -	rmmod rcutorture > /dev/null 2>&1
+> +	echo "Usage:"
+> +	echo "-t x    time in seconds for each test-case"
+> +	echo "-w x    number of writers"
+>   }
+>   
+> -tst_require_root
+> -
+> -# check if module is present
+> -modprobe rcutorture > /dev/null 2>&1 || \
+> -	tst_brkm TCONF "Test requires rcutorture module"
+> -rmmod rcutorture > /dev/null 2>&1
+> -
+> -trap cleanup INT
+> -
+> -rcu_type="rcu rcu_bh srcu sched"
+> -
+> -if tst_kvcmp -lt "3.12"; then
+> -	rcu_type="$rcu_type rcu_sync rcu_expedited rcu_bh_sync rcu_bh_expedited \
+> -	          srcu_sync srcu_expedited sched_sync sched_expedited"
+> +rcutorture_parse_args()
+> +{
+> +	case $1 in
+> +	t) test_time=$2 ;;
+> +	w) num_writers=$2 ;;
+> +	esac
+> +}
+>   
+> -	if tst_kvcmp -lt "3.11"; then
+> -		rcu_type="$rcu_type srcu_raw srcu_raw_sync"
+> -	fi
+> -fi
+> +rcutorture_setup()
+> +{
+> +	local module=1
+>   
+> -TST_TOTAL=$(echo "$rcu_type" | wc -w)
+> +	# check if rcutorture is built as a kernel module by inserting
+> +	# and then removing it
+> +	modprobe -q rcutorture ||  module=
+> +	modprobe -qr rcutorture || module=
+>   
+> -est_time=`echo "scale=2; $test_time * $TST_TOTAL / 60 " | bc`
+> -tst_resm TINFO "estimate time $est_time min"
+> +	[ -z "$module" ] && \
+> +		tst_brk TCONF "rcutorture is built-in, non-existent or in use"
+> +}
+>   
+> -for type in $rcu_type; do
+> +rcutorture_test()
+> +{
+> +	local rcu_type=$1
+>   
+> -	tst_resm TINFO "$type: running $test_time sec..."
+> +	tst_res TINFO "$rcu_type-torture: running $test_time sec..."
+>   
+>   	modprobe rcutorture nfakewriters=$num_writers \
+> -	         stat_interval=60 test_no_idle_hz=1 shuffle_interval=3 \
+> -	         stutter=5 irqreader=1 fqs_duration=0 fqs_holdoff=0 \
+> -	         fqs_stutter=3 test_boost=1 test_boost_interval=7 \
+> -	         test_boost_duration=4 shutdown_secs=0 \
+> -	         stall_cpu=0 stall_cpu_holdoff=10 n_barrier_cbs=0 \
+> -	         onoff_interval=0 onoff_holdoff=0 torture_type=$type \
+> -	         > /dev/null 2>&1 || tst_brkm TBROK "failed to load module"
+> +		torture_type=$rcu_type >/dev/null
+> +	if [ $? -ne 0 ]; then
+> +		dmesg | grep -q "invalid torture type: \"$rcu_type\"" && \
+> +			tst_brk TCONF "invalid $rcu_type type"
+> +
+> +		tst_brk TBROK "failed to load module"
+> +	fi
+>   
+>   	sleep $test_time
+>   
+> -	rmmod rcutorture > /dev/null 2>&1 || \
+> -		tst_brkm TBROK "failed to unload module"
+> +	modprobe -r rcutorture >/dev/null || \
+> +		tst_brk TBROK "failed to unload module"
+>   
+>   	# check module status in dmesg
+> -	result_str=`dmesg | sed -nE '$s/.*End of test: ([A-Z]+):.*/\1/p'`
+> -	if [ "$result_str" = "SUCCESS" ]; then
+> -		tst_resm TPASS "$type: completed"
+> +	local res=$(dmesg | sed -nE "s/.* $rcu_type-torture:.* End of test: (.*): .*/\1/p" | tail -n1)
+> +	if [ "$res" = "SUCCESS" ]; then
+> +		tst_res TPASS "$rcu_type-torture: $res"
+>   	else
+> -		tst_resm TFAIL "$type: $result_str, see dmesg"
+> +		tst_res TFAIL "$rcu_type-torture: $res, see dmesg"
+>   	fi
+> -done
+> +}
+> +
+> +do_test()
+> +{
+> +	case $1 in
+> +	1) rcutorture_test rcu;;
+> +	2) rcutorture_test srcu;;
+> +	3) rcutorture_test srcud;;
+> +	4) rcutorture_test tasks;;
+> +	esac
+> +}
+>   
+> -tst_exit
+> +tst_run
 
-diff --git a/testcases/kernel/syscalls/prctl/prctl07.c b/testcases/kernel/syscalls/prctl/prctl07.c
-index bbb9161dd..37d77df33 100644
---- a/testcases/kernel/syscalls/prctl/prctl07.c
-+++ b/testcases/kernel/syscalls/prctl/prctl07.c
-@@ -26,45 +26,44 @@
- #include <stdlib.h>
- #include "config.h"
- #ifdef HAVE_LIBCAP
--#include <sys/capability.h>
-+# include <sys/capability.h>
- #endif
- #include "lapi/syscalls.h"
- #include "lapi/prctl.h"
- #include "lapi/securebits.h"
- #include "tst_test.h"
- 
--static void check_proc_capamb(char *message, int flag)
-+#define PROC_STATUS "/proc/self/status"
-+
-+static inline void check_proc_capamb(char *message, int flag)
- {
--	unsigned int cap_num;
-+	int cap_num;
- 	char CapAmb[20];
--	char path[50];
- 
--	strcpy(path, "/proc/self/status");
--	SAFE_FILE_LINES_SCANF(path, "CapAmb:%s", CapAmb);
--	cap_num = atoi(CapAmb);
-+	SAFE_FILE_LINES_SCANF(PROC_STATUS, "CapAmb:%s", CapAmb);
-+	cap_num = strtol(CapAmb, NULL, 16);
- 	if (flag == 2) {
- 		if (cap_num == 0)
- 			tst_res(TPASS,
- 				"%s, %s CapAmb has been clear as %d",
--				message, path, cap_num);
-+				message, PROC_STATUS, cap_num);
- 		else
- 			tst_res(TFAIL,
- 				"%s, %s CapAmb has been clear expect 0, got %d",
--				message, path, cap_num);
-+				message, PROC_STATUS, cap_num);
- 		return;
- 	}
--	/*1 <<  CAP_NET_BIND_SERVICE*/
--	if (cap_num ==  400)
-+	if (cap_num == (1 << CAP_NET_BIND_SERVICE))
- 		tst_res(flag ? TPASS : TFAIL,
- 			"%s, CapAmb in %s has CAP_NET_BIND_SERVICE",
--			message, path);
-+			message, PROC_STATUS);
- 	else
- 		tst_res(flag ? TFAIL : TPASS,
- 			"%s, CapAmb in %s doesn't have CAP_NET_BIND_SERVICE",
--			message, path);
-+			message, PROC_STATUS);
- }
- 
--static void check_cap_raise(unsigned int cap, char *message, int fail_flag)
-+static inline void check_cap_raise(unsigned int cap, char *message, int fail_flag)
- {
- 	TEST(prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_RAISE, cap, 0, 0, 0));
- 	switch (fail_flag) {
-@@ -84,13 +83,13 @@ static void check_cap_raise(unsigned int cap, char *message, int fail_flag)
- 		tst_res(TPASS,
- 			"PR_CAP_AMBIENT_RAISE failed with EPERM %s", message);
- 	else
--		tst_res(TFAIL | TERRNO,
-+		tst_res(TFAIL | TTERRNO,
- 			"PR_CAP_AMBIENT_RAISE failed %s", message);
- 	break;
- 	}
- }
- 
--static void check_cap_is_set(unsigned int cap, char *message, int val)
-+static inline void check_cap_is_set(unsigned int cap, char *message, int val)
- {
- 	TEST(prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_IS_SET, cap, 0, 0, 0));
- 	if (TST_RET == 1)
-@@ -100,14 +99,14 @@ static void check_cap_is_set(unsigned int cap, char *message, int val)
- 		tst_res(val ? TFAIL : TPASS,
- 			"PR_CAP_AMBIENT_IS_SET %s not in AmbientCap", message);
- 	else
--		tst_res(TFAIL | TERRNO, "PR_CAP_AMBIENT_IS_SET failed");
-+		tst_res(TFAIL | TTERRNO, "PR_CAP_AMBIENT_IS_SET failed");
- }
- 
--static void check_cap_lower(unsigned int cap, char *message)
-+static inline void check_cap_lower(unsigned int cap, char *message)
- {
- 	TEST(prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_LOWER, cap, 0, 0, 0));
- 	if (TST_RET == -1)
--		tst_res(TFAIL | TERRNO,
-+		tst_res(TFAIL | TTERRNO,
- 			"PR_CAP_AMBIENT_LOWER %s failed", message);
- 	else
- 		tst_res(TPASS, "PR_CAP_AMBIENT_LOWER %s succeeded", message);
-@@ -168,7 +167,7 @@ static void verify_prctl(void)
- 
- 	cap_free(caps);
- #else
--	tst_res(TCONF, "System doesn't have POSIX capabilities support");
-+	tst_res(TCONF, "libcap devel files missing during compilation");
- #endif
- }
- 
-diff --git a/testcases/kernel/syscalls/prctl/Makefile b/testcases/kernel/syscalls/prctl/Makefile
-index 1399122e8..cf19507c0 100644
---- a/testcases/kernel/syscalls/prctl/Makefile
-+++ b/testcases/kernel/syscalls/prctl/Makefile
-@@ -20,6 +20,6 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
--LDLIBS += $(CAP_LIBS)
-+prctl07: LDLIBS += $(CAP_LIBS)
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
