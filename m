@@ -1,82 +1,46 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 16 Jul 2019 17:32:12 +0800
-Subject: [LTP] [PATCH v4] syscalls/prctl06: New test for prctl() with
- PR_{SET, GET}_NO_NEW_PRIVS
-In-Reply-To: <20190716090908.GA12815@rei.lan>
-References: <20190715154945.GA28618@rei.lan>
- <1563255457-2336-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190716090908.GA12815@rei.lan>
-Message-ID: <5D2D999C.3010601@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 16 Jul 2019 18:19:27 +0800
+Subject: [LTP] [PATCH v4] Add a regression test for CVE-2017-1000380
+In-Reply-To: <20190711141026.14705-1-mmoese@suse.de>
+References: <20190711141026.14705-1-mmoese@suse.de>
+Message-ID: <CAEemH2cjr23TZUDNLAt2Vvk03W8sHNy+eaJT6YYXSFU+KxmTvQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On Thu, Jul 11, 2019 at 10:10 PM Michael Moese <mmoese@suse.de> wrote:
 
-> Hi!
-> Pushed with two changes, thanks.
->
->
-> diff --git a/testcases/kernel/syscalls/prctl/prctl06.c b/testcases/kernel/syscalls/prctl/prctl06.c
-> index eafbedfef..0e1274a2a 100644
-> --- a/testcases/kernel/syscalls/prctl/prctl06.c
-> +++ b/testcases/kernel/syscalls/prctl/prctl06.c
-> @@ -81,8 +81,8 @@ static void setup(void)
->
->   	SAFE_CP(TESTBIN, TEST_REL_BIN_DIR);
->
-> -	SAFE_CHMOD(BIN_PATH, SUID_MODE);
->   	SAFE_CHOWN(BIN_PATH, 0, 0);
-> +	SAFE_CHMOD(BIN_PATH, SUID_MODE);
->
->   	TEST(prctl(PR_GET_NO_NEW_PRIVS, 0, 0, 0, 0));
->   	if (TST_RET == 0) {
->
-> This is actually important fix, you have to set the SUID bits last since
-> they are cleared if you change owner of the file.
-Hi Cyril
-
-OK. I learn a lot from this case. Thanks for kindly reply.
-
->
-> diff --git a/testcases/kernel/syscalls/prctl/prctl06.h b/testcases/kernel/syscalls/prctl/prctl06.h
-> index 72f9c4e5a..f5c66e809 100644
-> --- a/testcases/kernel/syscalls/prctl/prctl06.h
-> +++ b/testcases/kernel/syscalls/prctl/prctl06.h
-> @@ -25,12 +25,14 @@
->   #define BIN_PATH           MNTPOINT"/"TESTBIN
->   #define SUID_MODE          (S_ISUID|S_ISGID|S_IXUSR|S_IXGRP|S_IXOTH)
->
-> -static int flag = 1;
-> -
->   void check_proc_field(int val, char *name)
->   {
-> +	static int flag = 1;
->   	int field = 0;
->
-> +	if (!flag)
-> +		return;
+> ...
 > +
->   	TEST(FILE_LINES_SCANF(PROC_STATUS, "NoNewPrivs:%d",&field));
->   	if (TST_RET == 1) {
->   		tst_res(TCONF,
-> @@ -57,8 +59,8 @@ void check_no_new_privs(int val, char *name)
->   		tst_res(TFAIL,
->   			"%s prctl(PR_GET_NO_NEW_PRIVS) expected %d got %ld",
->   			name, val, TST_RET);
-> -	if (flag)
-> -		check_proc_field(val, name);
-> +
-> +	check_proc_field(val, name);
->   }
+> +static void setup(void)
+> +{
+> +       tst_fzsync_pair_init(&fzsync_pair);
+> +       tst_taint_init(TST_TAINT_W | TST_TAINT_D);
+> +       snd_fd = SAFE_OPEN("/dev/snd/timer",
+> +                       O_RDONLY|O_CREAT|O_NOCTTY|O_SYNC|O_LARGEFILE, 0);
 >
->   #endif
->
-> This is merely cosmetic and moves the flag to the function so that it's
-> not global.
-Yes. static local variable is better.
 
+Should we check if the file exists before opening it?
 
+Otherwise, snd_timer01 failed as:
 
+# ./snd_timer01
+tst_test.c:1100: INFO: Timeout per run is 0h 05m 00s
+safe_macros.c:225: BROK: snd_timer01.c:73: open(/dev/snd/timer,1052992,00)
+failed: ENOENT
 
+# lsmod |grep -i snd
+
+# grep -i snd /boot/config-4.18.0-107.el8.s390x
+
+# ls /dev/snd/timer
+ls: cannot access '/dev/snd/timer': No such file or directory
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190716/3c171fad/attachment.htm>
