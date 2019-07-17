@@ -1,108 +1,43 @@
-From: Hongzhi, Song <hongzhi.song@windriver.com>
-Date: Wed, 17 Jul 2019 16:34:50 +0800
-Subject: [LTP] Bug Report: Btrfs can't allocate space for delete when block
- size arounds 512M
-Message-ID: <b501bcff-8be0-4303-8789-363fda4658e5@windriver.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 17 Jul 2019 04:36:02 -0400 (EDT)
+Subject: [LTP] [PATCH] getrlimit03: adjust a bit of code to compatiable
+ with mips32
+In-Reply-To: <1563267862-42483-2-git-send-email-hongzhi.song@windriver.com>
+References: <1563267862-42483-1-git-send-email-hongzhi.song@windriver.com>
+ <1563267862-42483-2-git-send-email-hongzhi.song@windriver.com>
+Message-ID: <1984233025.591567.1563352562020.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi friends,
-
-*Description:*
 
 
- ??? One LTP testcase, fs_fill.c, fails on btrfs with kernel error when 
-unlink files on Btrfs device:
+----- Original Message -----
+> Error info:
+> getrlimit03.c:104: FAIL: __NR_prlimit64(0) had rlim_cur =
+> ffffffffffffffff but __NR_getrlimit(0) had rlim_cur = 7fffffff
+> 
+> According to kernel code: [arch/mips/include/uapi/asm/resource.h]
+> RLIM_INFINITY is set to 0x7fffffffUL instead of ULONG_MAX on mips32.
+> 
+>  /*
+>  * SuS says limits have to be unsigned.
+>  * Which makes a ton more sense anyway,
+>  * but we keep the old value on MIPS32,
+>  * for compatibility:
+>  */
+>  #ifndef __mips64
+>  # define RLIM_INFINITY      0x7fffffffUL
+>  #endif
+> 
+> Adding conditional statement about mips to fix this.
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> Signed-off-by: Hongzhi.Song <hongzhi.song@windriver.com>
 
- ??? "BTRFS warning (device loop0): could not allocate space for a 
-delete; will truncate on mount".
+Pushed.
 
-
- ??? I found the loop block device formatted with btrfs roughly rangs 
-from 460M to 560M will cause the error.
-
- ??? 256M and 1G all pass.
-
-
- ??? The fs_fill.c source code:
-
-[https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/fs/fs_fill/fs_fill.c]
-
- ??? The fs_fill.c calls unlink which triggers the error.
-
-[https://github.com/linux-test-project/ltp/blob/e3457e42c1b93f54bb81da746eba314fd34ad40e/testcases/kernel/fs/fs_fill/fs_fill.c#L55]
-
-[https://github.com/linux-test-project/ltp/blob/e3457e42c1b93f54bb81da746eba314fd34ad40e/lib/safe_macros.c#L358]
-
-
-*Error info:*
-
- ??? The issue maybe not reproduced everytime but four fifths chance.
-
- ??? fs_fill.c:53: INFO: Unlinking mntpoint/thread5/file0
- ??? safe_macros.c:360: BROK: fs_fill.c:55: 
-unlink(mntpoint/thread10/file0) failed: ENOSPC
- ??? safe_macros.c:360: BROK: fs_fill.c:55: 
-unlink(mntpoint/thread11/file0) failed: ENOSPC
- ??? [62477.378848] BTRFS warning (device loop0): could not allocate 
-space for a delete; will truncate on mount
- ??? [62477.378905] BTRFS warning (device loop0): could not allocate 
-space for a delete; will truncate on mount
-
-
-
-*Kernel:*
-
- ??? After v5.2-rc1, qemux86-64
-
- ??? # make -j40 ARCH=x86_64 CROSS_COMPILE=x86-64-gcc
- ??? use qemu to bootup kernel
-
-
-*LTP:*
-
- ??? master branch: I tested on 20190625
- ??? Reproduce:
-
- ??? // build Ltp
- ??? # cd Ltp-source
- ??? # ./build.sh
-
- ??? // copy files to qemu
- ??? # cp runltp testcases/kernel/fs/fs_fill/fs_fill to qemu
-
- ??? // login to qemu:
- ??? // adjust block device size to 512M
- ??? # vi runltp
- ??? in function: create_block()
- ??? ??? dd if=/dev/zero of=${TMP}/test.img bs=1024 count=262144
- ??? ??? --->
- ??? ??? dd if=/dev/zero of=${TMP}/test.img bs=1024 count=524288
-
- ??? // execute testcase
- ??? # runltp -f fs -s fs_fill
-
-
-*Analysis:*
-
- ??? One new kernel commit contained in v5.2-rc1 introduces the issue.
-
- ??? commit c8eaeac7b734347c3afba7008b7af62f37b9c140
- ??? Author: Josef Bacik <josef@toxicpanda.com>
- ??? Date:?? Wed Apr 10 15:56:10 2019 -0400
-
- ??? ??? btrfs: reserve delalloc metadata differently
- ?? ?? ? ...
-
-
-Anyone's reply will be appreciated.
-
---Hongzhi
-
-
-
-
-
+Thanks,
+Jan
