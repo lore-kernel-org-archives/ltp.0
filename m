@@ -1,67 +1,59 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 17 Jul 2019 09:10:44 +0300
-Subject: [LTP] [PATCH v4 1/3] lib: alter find_free_loopdev()
-In-Reply-To: <5D2819B8.8050401@cn.fujitsu.com>
-References: <5D25B05A.8000600@cn.fujitsu.com>
- <1562755997-5626-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190710135710.GC5628@rei.lan> <5D26B44D.4010208@cn.fujitsu.com>
- <20190711125108.GB8709@rei> <5D2819B8.8050401@cn.fujitsu.com>
-Message-ID: <CAOQ4uxjwrFRCYe8vT5yJEfDPHjOSB=MD85GeKX5xALyD4SWwnA@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 17 Jul 2019 15:21:09 +0800
+Subject: [LTP] [PATCH] snd_timer: check if file /dev/snd/timer exist before
+ opening
+Message-ID: <20190717072109.7077-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Jul 12, 2019 at 8:26 AM Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
->
->
-> > Hi!
-> >>> This needs more changes than this.
-> >>>
-> >>> The problem here is that the function modifies dev_path which is
-> >>> returned by tst_acquire_device() so if you call this function after
-> >>> tst_acquire_device() it will rewrite the dev_path which means that the
-> >>> test would end up with wrong device path in tst_device->dev.
-> >>>
-> >>> I guess that the easiest solution would be changing the function to get
-> >>> buffer parameter which, when non-NULL, is filled with the path.
-> >>>
-> >>> I.e. the function prototype would became:
-> >>>
-> >>> int tst_find_free_loopdev(char *path, size_t path_len);
-> >>>
-> >>> And we would pass the dev_path inside of the tst_device.c and NULL from
-> >>> the copy_file_range() tests.
-> >> Hi Cyril
-> >>
-> >> This is a good comment. But I doubt why we don't use a set_devpath_flag todistinguish it.
-> >> Or you have a future plan(in different directory ,/dev,/dev/loop/,/dev/block)?
-> > Well you can add a flag to the function but that would be a bad design
-> > as far as I can tell. It would still allowed for a user to modify the
-> > library internal state by calling the tst_find_free_loopdev() with the
-> > flag set.
-> >
-> Hi  Cyril
->
-> Even we use int tst_find_free_loopdev(char *path, size_t path_len), user aslo can modify the internal state.
-> I don't know how to limit it. Can you give some example code? If we set LTP_DEV in *tst_acquire_device__,
-> we can pass dev and len to tst_find_free_loopdev(), but if we not set LTP_DEV, what can pass to tst_free_loopdev()?
->
->
+1. check if /dev/snd/timer exist
 
-I don't understand your concern.
-Attached untested patch which implements Cyril's suggestion.
+2. add tst_fzsync_pair_reset(&fzsync_pair, NULL) to reset variables
+needed by fzsync. Especially for pair->exec_time_start, we use it to
+control the test time in case that the execution loops timed out on
+slow machine.
 
-You may call tst_find_free_loopdev(NULL, 0) to get a free minor number
-without changing lib internal state.
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Michael Moese <mmoese@suse.de>
+---
+ testcases/kernel/sound/snd_timer01.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Thanks,
-Amir.
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: ltp-tst_find_free_loopdev.patch
-Type: text/x-patch
-Size: 2597 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190717/d3591519/attachment-0001.bin>
+diff --git a/testcases/kernel/sound/snd_timer01.c b/testcases/kernel/sound/snd_timer01.c
+index 36f0ce9fd..f62696659 100644
+--- a/testcases/kernel/sound/snd_timer01.c
++++ b/testcases/kernel/sound/snd_timer01.c
+@@ -67,6 +67,9 @@ static void *ioctl_thread(void *unused)
+ 
+ static void setup(void)
+ {
++	if(access("/dev/snd/timer", F_OK))
++		tst_brk(TCONF, "The file '/dev/snd/timer' is not exist");
++
+ 	tst_fzsync_pair_init(&fzsync_pair);
+ 	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
+ 	snd_fd = SAFE_OPEN("/dev/snd/timer",
+@@ -75,7 +78,8 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
+-	SAFE_CLOSE(snd_fd);
++	if (snd_fd > 0)
++		SAFE_CLOSE(snd_fd);
+ }
+ 
+ static void run(void)
+@@ -95,6 +99,7 @@ static void run(void)
+ 	iov.iov_base = read_buf;
+ 	iov.iov_len = sizeof(read_buf) - 1;
+ 
++	tst_fzsync_pair_reset(&fzsync_pair, NULL);
+ 	while (tst_fzsync_run_a(&fzsync_pair)) {
+ 		nz = 0;
+ 		memset(read_buf, 0, sizeof(read_buf));
+-- 
+2.20.1
+
