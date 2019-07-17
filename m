@@ -1,59 +1,38 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 17 Jul 2019 15:21:09 +0800
-Subject: [LTP] [PATCH] snd_timer: check if file /dev/snd/timer exist before
- opening
-Message-ID: <20190717072109.7077-1-liwang@redhat.com>
+From: Li Wang <liwan@redhat.com>
+Date: Wed, 17 Jul 2019 15:47:40 +0800
+Subject: [LTP] [PATCH v3.1] lib: add tst_no_corefile()
+In-Reply-To: <1337100107.32641000.1562849136661.JavaMail.zimbra@redhat.com>
+References: <20190705051603.24599-1-liwang@redhat.com>
+ <02ade9af1634c4681156dceecfd51721284044e3.1562591065.git.jstancek@redhat.com>
+ <20190711123441.GA8709@rei>
+ <1337100107.32641000.1562849136661.JavaMail.zimbra@redhat.com>
+Message-ID: <CAEemH2dviTYAAcsOgotuOG5gicUVVP2g2RE3MomOp5NVG_4U+Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1. check if /dev/snd/timer exist
+Hi Jan,
 
-2. add tst_fzsync_pair_reset(&fzsync_pair, NULL) to reset variables
-needed by fzsync. Especially for pair->exec_time_start, we use it to
-control the test time in case that the execution loops timed out on
-slow machine.
+On Thu, Jul 11, 2019 at 8:45 PM Jan Stancek <jstancek@redhat.com> wrote:
 
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Michael Moese <mmoese@suse.de>
----
- testcases/kernel/sound/snd_timer01.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+> ...
+> >
+> > because otherwise we will print the mesasge even in cases that the
+> > corefile is not in fact limited.
+>
+> Depends on setup of core_pattern, if it's core-to-file it's already
+> limited.
+> If it's core-to-pipe, then it's no limit, so I agree, we can move it above.
+>
+>
+I helped to push the v3.1 base on Cyril's suggestion. Since I'm going to
+apply the pkey testcase. Thanks.
 
-diff --git a/testcases/kernel/sound/snd_timer01.c b/testcases/kernel/sound/snd_timer01.c
-index 36f0ce9fd..f62696659 100644
---- a/testcases/kernel/sound/snd_timer01.c
-+++ b/testcases/kernel/sound/snd_timer01.c
-@@ -67,6 +67,9 @@ static void *ioctl_thread(void *unused)
- 
- static void setup(void)
- {
-+	if(access("/dev/snd/timer", F_OK))
-+		tst_brk(TCONF, "The file '/dev/snd/timer' is not exist");
-+
- 	tst_fzsync_pair_init(&fzsync_pair);
- 	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
- 	snd_fd = SAFE_OPEN("/dev/snd/timer",
-@@ -75,7 +78,8 @@ static void setup(void)
- 
- static void cleanup(void)
- {
--	SAFE_CLOSE(snd_fd);
-+	if (snd_fd > 0)
-+		SAFE_CLOSE(snd_fd);
- }
- 
- static void run(void)
-@@ -95,6 +99,7 @@ static void run(void)
- 	iov.iov_base = read_buf;
- 	iov.iov_len = sizeof(read_buf) - 1;
- 
-+	tst_fzsync_pair_reset(&fzsync_pair, NULL);
- 	while (tst_fzsync_run_a(&fzsync_pair)) {
- 		nz = 0;
- 		memset(read_buf, 0, sizeof(read_buf));
 -- 
-2.20.1
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190717/b8f431f3/attachment.htm>
