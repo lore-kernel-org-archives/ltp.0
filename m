@@ -1,110 +1,93 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 18 Jul 2019 10:39:42 +0200
-Subject: [LTP] [PATCH 1/2] shell: Use $LTP_TIMEOUT_MUL also in retry
- functions
-Message-ID: <20190718083943.7687-1-pvorel@suse.cz>
+Date: Thu, 18 Jul 2019 10:39:43 +0200
+Subject: [LTP] [PATCH 2/2] c: Use $LTP_TIMEOUT_MUL also in retry functions
+In-Reply-To: <20190718083943.7687-1-pvorel@suse.cz>
+References: <20190718083943.7687-1-pvorel@suse.cz>
+Message-ID: <20190718083943.7687-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-in TST_RETRY_FN_EXP_BACKOFF() and thus in TST_RETRY_FUNC() in new shell API.
+in TST_RETRY_FN_EXP_BACKOFF() and thus in TST_RETRY_FUNC() in new C API.
+This sync C API with shell API (added in previous commit).
 
-This function should also address possibility of slow machine.
-
-Because using on 2 places moved the default definition to the beginning
-of the script.
-+ use $((...)) instead of expr.
-+ move expression using $3 after check whether we have enough parameters
-
-+ document LTP_TIMEOUT_MUL environment variable in wiki.
++ mention LTP_TIMEOUT_MUL use in wiki.
++ use SPDX, add copyright
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-Hi,
-
-I can squash these 2 commits.
-
-General question about Test Writing Guidelines in wiki [1]:
-1) we have separate section for C and shell API, which is probably a good
-choice, but we're trying to sync them. That leads to things like retry
-function documented under chapter for shell API (2.3).
-
-+ That page is too long and without table of contents (not easy to
-navigate in it; I tried to add TOC, but without success). Maybe adding
-TOC or split the page to 3: 1) general info 2) C API 3) shell API would
-help. WDYT?
-
-Kind regards,
-Petr
-
-[1] https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
-[2] https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#retry-a-function-in-limited-time
-
- doc/test-writing-guidelines.txt | 2 ++
- testcases/lib/tst_test.sh       | 9 +++++----
- 2 files changed, 7 insertions(+), 4 deletions(-)
+ doc/test-writing-guidelines.txt |  2 ++
+ include/tst_common.h            | 26 +++++++++++---------------
+ 2 files changed, 13 insertions(+), 15 deletions(-)
 
 diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index 869e6ed35..782e14f32 100644
+index 782e14f32..3548d6043 100644
 --- a/doc/test-writing-guidelines.txt
 +++ b/doc/test-writing-guidelines.txt
-@@ -1881,6 +1881,8 @@ simply by setting right '$TST_NEEDS_FOO'.
-                        the test (see below).
- | 'TST_NEEDS_MODULE' | Test module name needed for the test (see below).
- | 'TST_NEEDS_DRIVERS'| Checks kernel drivers support for the test.
-+| 'LTP_TIMEOUT_MUL'  | Multiply timeout (> 1 is useful for slow machines to
-+                       avoid unexpected timeout).
- |=============================================================================
+@@ -2064,6 +2064,8 @@ Sometimes LTP test needs retrying a function for many times to get success.
+ This achievement makes that possible via keeping it retrying if the return
+ value of the function is NOT as we expected. After exceeding a limited time,
+ test will break from the retries immediately.
++NOTE: both 'TST_RETRY_FUNC()' and 'TST_RETRY_FN_EXP_BACKOFF()' use 'LTP_TIMEOUT_MUL'
++environment variable.
  
- Checking for presence of commands
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 31b3a3951..60d765424 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -17,6 +17,8 @@ export TST_ITERATIONS=1
- export TST_TMPDIR_RHOST=0
- export TST_LIB_LOADED=1
+ [source,c]
+ -------------------------------------------------------------------------------
+diff --git a/include/tst_common.h b/include/tst_common.h
+index c21505450..454a166e8 100644
+--- a/include/tst_common.h
++++ b/include/tst_common.h
+@@ -1,21 +1,10 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
++ * Copyright (c) Linux Test Project, 2017-2019
+  * Copyright (c) 2016 Cyril Hrubis <chrubis@suse.cz>
+  * Copyright (c) 2013 Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+  * Copyright (c) 2010 Ngie Cooper <yaneurabeya@gmail.com>
+  * Copyright (c) 2008 Mike Frysinger <vapier@gmail.com>
+- *
+- * This program is free software: you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation, either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+  */
  
-+export LTP_TIMEOUT_MUL=${LTP_TIMEOUT_MUL:-1}
-+
- . tst_ansi_color.sh
- . tst_security.sh
+ #ifndef TST_COMMON_H__
+@@ -51,15 +40,22 @@
  
-@@ -164,12 +166,13 @@ TST_RETRY_FN_EXP_BACKOFF()
- {
- 	local tst_fun="$1"
- 	local tst_exp=$2
--	local tst_sec=$(expr $3 \* 1000000)
- 	local tst_delay=1
-+	local tst_sec
- 
- 	if [ $# -ne 3 ]; then
- 		tst_brk TBROK "TST_RETRY_FN_EXP_BACKOFF expects 3 parameters"
- 	fi
-+	tst_sec=$(($3 * LTP_TIMEOUT_MUL * 1000000))
- 
- 	if ! tst_is_int "$tst_sec"; then
- 		tst_brk TBROK "TST_RETRY_FN_EXP_BACKOFF: tst_sec must be integer ('$tst_sec')"
-@@ -185,7 +188,7 @@ TST_RETRY_FN_EXP_BACKOFF()
- 			tst_sleep ${tst_delay}us
- 			tst_delay=$((tst_delay*2))
- 		else
--			tst_brk TBROK "\"$tst_fun\" timed out"
-+			tst_brk TBROK "\"$tst_fun\" timed out! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1"
- 		fi
- 	done
- 
-@@ -374,8 +377,6 @@ _tst_rescmp()
- 
- _tst_setup_timer()
- {
--	LTP_TIMEOUT_MUL=${LTP_TIMEOUT_MUL:-1}
--
- 	local sec=$((300 * LTP_TIMEOUT_MUL))
- 	local h=$((sec / 3600))
- 	local m=$((sec / 60 % 60))
+ #define TST_RETRY_FN_EXP_BACKOFF(FUNC, ERET, MAX_DELAY)	\
+ ({	int tst_delay_ = 1;						\
++	float m = 1;	\
++	char *mul = getenv("LTP_TIMEOUT_MUL");	\
++	if (mul) {	\
++		m = atof(mul); \
++		if (m < 1) \
++			tst_brk(TBROK, "Invalid timeout multiplier '%s'", mul); \
++	}	\
+ 	for (;;) {							\
+ 		typeof(FUNC) tst_ret_ = FUNC;				\
+ 		if (tst_ret_ == ERET)					\
+ 			break;						\
+-		if (tst_delay_ < MAX_DELAY * 1000000) {			\
++		if (tst_delay_ < MAX_DELAY * m * 1000000) {			\
+ 			usleep(tst_delay_);				\
+ 			tst_delay_ *= 2;				\
+ 		} else {						\
+-			tst_brk(TBROK, #FUNC" timed out");		\
++			tst_brk(TBROK, #FUNC" timed out! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1"); \
+ 		}							\
+ 	}								\
+ 	ERET;								\
 -- 
 2.22.0
 
