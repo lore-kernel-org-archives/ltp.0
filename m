@@ -1,121 +1,142 @@
-From: Hongzhi, Song <hongzhi.song@windriver.com>
-Date: Fri, 19 Jul 2019 09:38:58 +0800
-Subject: [LTP] [PATCH] open_posix_testsuite/mmap24-2: Support mips
-In-Reply-To: <4ebbc29e-d46a-5954-2c2f-903126a48ab7@windriver.com>
-References: <1540348607-217391-1-git-send-email-hongzhi.song@windriver.com>
- <da19c43f-39f7-81b4-7173-18fdec6ea1d9@windriver.com>
- <4ebbc29e-d46a-5954-2c2f-903126a48ab7@windriver.com>
-Message-ID: <489ad5d1-649b-b775-4bff-f7d27aeed248@windriver.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 19 Jul 2019 12:56:15 +0800
+Subject: [LTP] [PATCH 1/2] shell: Use $LTP_TIMEOUT_MUL also in retry
+ functions
+In-Reply-To: <20190718083943.7687-1-pvorel@suse.cz>
+References: <20190718083943.7687-1-pvorel@suse.cz>
+Message-ID: <CAEemH2etXFYC-R1znaKCm_WyQDvAqT0fZafKLJGzTUU6uMEN1A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-ping.
+On Thu, Jul 18, 2019 at 4:39 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-There are some discussion for patch-v1 : 
-https://lists.linux.it/pipermail/ltp/2018-October/009624.html
+> in TST_RETRY_FN_EXP_BACKOFF() and thus in TST_RETRY_FUNC() in new shell
+> API.
+>
+> This function should also address possibility of slow machine.
+>
+> Because using on 2 places moved the default definition to the beginning
+> of the script.
+> + use $((...)) instead of expr.
+> + move expression using $3 after check whether we have enough parameters
+>
+> + document LTP_TIMEOUT_MUL environment variable in wiki.
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Hi,
+>
+> I can squash these 2 commits.
+>
+> General question about Test Writing Guidelines in wiki [1]:
+> 1) we have separate section for C and shell API, which is probably a good
+> choice, but we're trying to sync them. That leads to things like retry
+> function documented under chapter for shell API (2.3).
+>
 
-Thanks
+Thanks for point out this.
 
---Hongzhi
+>
+> + That page is too long and without table of contents (not easy to
+> navigate in it; I tried to add TOC, but without success). Maybe adding
+> TOC or split the page to 3: 1) general info 2) C API 3) shell API would
+> help. WDYT?
+>
+
+Personally, I think adding TOC may be a better choice, since we don't have
+the whole picture for the guidelines and usually hard to navigate in it.
+
+To split the guideline that probably leads to the new LTP-user to read more
+document pages. That's an annoying thing for me at least :).
 
 
-On 11/5/18 9:15 AM, Hongzhi, Song wrote:
-> Kindly ping
 >
-> --Hongzhi
+> Kind regards,
+> Petr
 >
+> [1] https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
+> [2]
+> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#retry-a-function-in-limited-time
 >
-> On 11/01/2018 09:49 AM, Hongzhi, Song wrote:
->> Hi guys,
->>
->> Referring to POSIX spec, the return values, EINVAL and ENOMEM,
->>
->> are all right if MAP_FIXED is set. So I think Mips also keep to POSIX.
->>
->>
->> Please review this patch.
->>
->>
->> --Hongzhi
->>
->>
->> On 10/24/2018 10:36 AM, Hongzhi.Song wrote:
->>> Mips will return EINVAL instead of ENOMEM as expected
->>> if MAP_FIXED is set and the range of [addr + len) exceeds
->>> TASK_SIZE.
->>>
->>> Linux kernel code: arch/mips/mm/mmap.c
->>> if (flags & MAP_FIXED) {
->>> ???? /* Even MAP_FIXED mappings must reside within TASK_SIZE */
->>> ???? if (TASK_SIZE - len < addr)
->>> ???????? return -EINVAL;
->>>
->>> The POSIX specification says:
->>> "If MAP_FIXED is set, mmap() may return MAP_FAILED and set errno to
->>> [EINVAL]."
->>> [http://pubs.opengroup.org/onlinepubs/9699919799/functions/mmap.html]
->>>
->>> So I think the mips kernel remains POSIX compliant.
->>>
->>> Relax the condition and accept both ENOMEM and EINVAL
->>> as expected outcome.
->>>
->>> Signed-off-by: Hongzhi.Song <hongzhi.song@windriver.com>
->>> ---
->>> ? .../open_posix_testsuite/conformance/interfaces/mmap/24-2.c | 10 
->>> +++++-----
->>> ? 1 file changed, 5 insertions(+), 5 deletions(-)
->>>
->>> diff --git 
->>> a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c 
->>> b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
->>> index de51d43..810e5c8 100644
->>> --- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
->>> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
->>> @@ -7,7 +7,7 @@
->>> ?? * source tree.
->>> ?? *
->>> ?? * The mmap() function shall fail if:
->>> - * [ENOMEM] MAP_FIXED was specified,
->>> + * [ENOMEM or EINVAL] MAP_FIXED was specified,
->>> ?? * and the range [addr,addr+len) exceeds that allowed
->>> ?? * for the address space of a process; or, if MAP_FIXED was not 
->>> specified and
->>> ?? * there is insufficient room in the address space to effect the 
->>> mapping.
->>> @@ -15,7 +15,7 @@
->>> ?? * Test Step:
->>> ?? * 1. Map a shared memory object, with size exceeding the value 
->>> get from
->>> ?? *??? rlim_cur of resource RLIMIT_AS, setting MAP_FIXED;
->>> - * 3. Should get ENOMEM.
->>> + * 3. Should get ENOMEM or EINVAL.
->>> ?? */
->>> ? ? #define _XOPEN_SOURCE 600
->>> @@ -93,8 +93,8 @@ int main(void)
->>> ???????????? (unsigned long)len);
->>> ????? pa = mmap(addr, len, PROT_READ | PROT_WRITE, MAP_FIXED | 
->>> MAP_SHARED, fd,
->>> ??????????? 0);
->>> -??? if (pa == MAP_FAILED && errno == ENOMEM) {
->>> -??????? printf("Got ENOMEM: %s\nTest PASSED\n", strerror(errno));
->>> +??? if (pa == MAP_FAILED && (errno == ENOMEM || errno == EINVAL)) {
->>> +??????? printf("Got ENOMEM or EINVAL: %s\nTest PASSED\n", 
->>> strerror(errno));
->>> ????????? exit(PTS_PASS);
->>> ????? }
->>> ? @@ -103,6 +103,6 @@ int main(void)
->>> ????? else
->>> ????????? munmap(pa, len);
->>> ????? close(fd);
->>> -??? printf("Test Fail: Did not get ENOMEM as expected\n");
->>> +??? printf("Test Failed: Did not get ENOMEM or EINVAL as expected\n");
->>> ????? return PTS_FAIL;
->>> ? }
->>
->>
+>  doc/test-writing-guidelines.txt | 2 ++
+>  testcases/lib/tst_test.sh       | 9 +++++----
+>  2 files changed, 7 insertions(+), 4 deletions(-)
 >
+> diff --git a/doc/test-writing-guidelines.txt
+> b/doc/test-writing-guidelines.txt
+> index 869e6ed35..782e14f32 100644
+> --- a/doc/test-writing-guidelines.txt
+> +++ b/doc/test-writing-guidelines.txt
+> @@ -1881,6 +1881,8 @@ simply by setting right '$TST_NEEDS_FOO'.
+>                         the test (see below).
+>  | 'TST_NEEDS_MODULE' | Test module name needed for the test (see below).
+>  | 'TST_NEEDS_DRIVERS'| Checks kernel drivers support for the test.
+> +| 'LTP_TIMEOUT_MUL'  | Multiply timeout (> 1 is useful for slow machines
+> to
+> +                       avoid unexpected timeout).
 >
+>  |=============================================================================
+>
+>  Checking for presence of commands
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index 31b3a3951..60d765424 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -17,6 +17,8 @@ export TST_ITERATIONS=1
+>  export TST_TMPDIR_RHOST=0
+>  export TST_LIB_LOADED=1
+>
+> +export LTP_TIMEOUT_MUL=${LTP_TIMEOUT_MUL:-1}
+> +
+>  . tst_ansi_color.sh
+>  . tst_security.sh
+>
+> @@ -164,12 +166,13 @@ TST_RETRY_FN_EXP_BACKOFF()
+>  {
+>         local tst_fun="$1"
+>         local tst_exp=$2
+> -       local tst_sec=$(expr $3 \* 1000000)
+>         local tst_delay=1
+> +       local tst_sec
+>
+>         if [ $# -ne 3 ]; then
+>                 tst_brk TBROK "TST_RETRY_FN_EXP_BACKOFF expects 3
+> parameters"
+>         fi
+> +       tst_sec=$(($3 * LTP_TIMEOUT_MUL * 1000000))
+
+
+>         if ! tst_is_int "$tst_sec"; then
+>                 tst_brk TBROK "TST_RETRY_FN_EXP_BACKOFF: tst_sec must be
+> integer ('$tst_sec')"
+> @@ -185,7 +188,7 @@ TST_RETRY_FN_EXP_BACKOFF()
+>                         tst_sleep ${tst_delay}us
+>                         tst_delay=$((tst_delay*2))
+>                 else
+> -                       tst_brk TBROK "\"$tst_fun\" timed out"
+> +                       tst_brk TBROK "\"$tst_fun\" timed out! If you are
+> running on slow machine, try exporting LTP_TIMEOUT_MUL > 1"
+>                 fi
+>         done
+>
+> @@ -374,8 +377,6 @@ _tst_rescmp()
+>
+>  _tst_setup_timer()
+>  {
+> -       LTP_TIMEOUT_MUL=${LTP_TIMEOUT_MUL:-1}
+> -
+>         local sec=$((300 * LTP_TIMEOUT_MUL))
+>
+
+Maybe we need to check if the LTP_TIMEOUT_MUL is valid(>1) as what we do
+for C API?
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190719/ef9fca12/attachment-0001.htm>
