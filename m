@@ -1,138 +1,121 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 18 Jul 2019 15:04:28 +0200
-Subject: [LTP] [PATCH v3] timers/timer_create0{2, 3,
- 4}: Ported to new library
-In-Reply-To: <20190718062546.7843-1-camann@suse.com>
-References: <20190718062546.7843-1-camann@suse.com>
-Message-ID: <20190718130428.GA21682@rei.lan>
+From: Hongzhi, Song <hongzhi.song@windriver.com>
+Date: Fri, 19 Jul 2019 09:38:58 +0800
+Subject: [LTP] [PATCH] open_posix_testsuite/mmap24-2: Support mips
+In-Reply-To: <4ebbc29e-d46a-5954-2c2f-903126a48ab7@windriver.com>
+References: <1540348607-217391-1-git-send-email-hongzhi.song@windriver.com>
+ <da19c43f-39f7-81b4-7173-18fdec6ea1d9@windriver.com>
+ <4ebbc29e-d46a-5954-2c2f-903126a48ab7@windriver.com>
+Message-ID: <489ad5d1-649b-b775-4bff-f7d27aeed248@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> -#define CLEANUP cleanup
+ping.
 
-Removing this line breaks the compilation for the timer_delete() tests,
-it should be removed once these are rewritten, (yes there is a CLEANUP()
-function defined in the old library headers which, after this define
-becomes cleanup(), it's a mess we have to get rid off but let's do that
-step by a step).
+There are some discussion for patch-v1 : 
+https://lists.linux.it/pipermail/ltp/2018-October/009624.html
 
-HINT: Do make clean && make in the timers directory after applying this
-      patch.
+Thanks
 
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) Wipro Technologies Ltd, 2003.  All Rights Reserved.
-> + *
-> + * Author: Aniruddha Marathe <aniruddha.marathe@wipro.com>
-> + *
-> + * Ported to new library:
-> + * 07/2019      Christian Amann <camann@suse.com>
-> + */
-> +/*
-> + * Basic error handling test for timer_create(2):
-> + *
-> + *	Passes invalid parameters when calling the syscall and checks
-> + *	if it fails with EFAULT:
-> + *	1) Pass an invalid pointer for the sigevent structure parameter
-> + *	2) Pass an invalid pointer for the timer ID parameter
-> + */
-> +
-> +#include <stdlib.h>
-> +#include <errno.h>
-> +#include <string.h>
-> +#include <time.h>
-> +#include <signal.h>
-> +#include "tst_test.h"
-> +#include "common_timers.h"
-> +
-> +static struct sigevent sig_ev;
-> +static kernel_timer_t  timer_id;
-> +
-> +static struct testcase {
-> +	struct sigevent	*ev_ptr;
-> +	kernel_timer_t	*kt_ptr;
-> +	int		error;
-> +	char		*description;
-> +} tcases[] = {
-> +	{NULL, &timer_id, EFAULT, "invalid sigevent struct"},
-> +	{&sig_ev, NULL, EFAULT, "invalid timer ID"},
-> +};
-> +
-> +static void run(unsigned int n)
-> +{
-> +	unsigned int i;
-> +	struct testcase *tc = &tcases[n];
-> +
-> +	tst_res(TINFO, "Testing for %s.", tc->description);
-> +
-> +	for (i = 0; i < CLOCKS_DEFINED; ++i) {
-> +		clock_t clock = clock_list[i];
-> +
-> +		/* PROCESS_CPUTIME_ID & THREAD_CPUTIME_ID are not supported on
-> +		 * kernel versions lower than 2.6.12
-> +		 */
-> +		if (clock == CLOCK_PROCESS_CPUTIME_ID ||
-> +			clock == CLOCK_THREAD_CPUTIME_ID) {
-> +			if (!have_cputime_timers())
-> +				tc->error = EINVAL;
-> +		}
-> +
-> +		TEST(tst_syscall(__NR_timer_create, clock_list[n], tc->ev_ptr,
-> +			     tc->kt_ptr));
-> +
-> +		if (TST_RET != -1 || TST_ERR != tc->error) {
-> +			if (possibly_unsupported(clock) && TST_ERR == EINVAL) {
-> +				tst_res(TPASS | TTERRNO,
-> +					"%s unsupported, failed as expected",
-> +					get_clock_str(clock));
-> +			} else {
-> +				tst_res(TFAIL | TTERRNO,
-> +					"%s didn't fail as expected (%s) - Got",
-> +					get_clock_str(clock),
-> +					tst_strerrno(tc->error));
-> +			}
-> +			continue;
-> +		}
-> +		tst_res(TPASS, "Timer creation for %s failed as expected: %s",
-> +				get_clock_str(clock), tst_strerrno(tc->error));
-> +	}
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tcases[0].ev_ptr = tst_get_bad_addr(NULL);
-> +	tcases[1].kt_ptr = tst_get_bad_addr(NULL);
+--Hongzhi
 
-Can we rather do:
 
-	for (i = 0; i < ARRAY_SIZE(tcases); i++) {
-		if (!tcases[i].ev_ptr)
-			tcases[i].ev_ptr = tst_get_bad_addr();
-
-		if (!tcases[i].kt_ptr)
-			tcases[i].kt_ptr = tst_get_bad_addr();
-	}
-
-That way we do not depend on the order of the structure.
-
-Also we should probably move these tests to the syscalls/timer_create/
-directory and add them to the syscalls runtest file. But let's do that
-in a separate patch. We may also rename them to 01 and 02 in that patch.
-
-And this test misses EINVAL tests for:
-
-* wrong timer id
-  (we do have MAX_CLOCKS constant in lapi/posix_clocks.h for that)
-
-* wrong content of the sigevent structure
-
-But given that the original test was missing these we may as well do
-that in a follow up patch as well.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+On 11/5/18 9:15 AM, Hongzhi, Song wrote:
+> Kindly ping
+>
+> --Hongzhi
+>
+>
+> On 11/01/2018 09:49 AM, Hongzhi, Song wrote:
+>> Hi guys,
+>>
+>> Referring to POSIX spec, the return values, EINVAL and ENOMEM,
+>>
+>> are all right if MAP_FIXED is set. So I think Mips also keep to POSIX.
+>>
+>>
+>> Please review this patch.
+>>
+>>
+>> --Hongzhi
+>>
+>>
+>> On 10/24/2018 10:36 AM, Hongzhi.Song wrote:
+>>> Mips will return EINVAL instead of ENOMEM as expected
+>>> if MAP_FIXED is set and the range of [addr + len) exceeds
+>>> TASK_SIZE.
+>>>
+>>> Linux kernel code: arch/mips/mm/mmap.c
+>>> if (flags & MAP_FIXED) {
+>>> ???? /* Even MAP_FIXED mappings must reside within TASK_SIZE */
+>>> ???? if (TASK_SIZE - len < addr)
+>>> ???????? return -EINVAL;
+>>>
+>>> The POSIX specification says:
+>>> "If MAP_FIXED is set, mmap() may return MAP_FAILED and set errno to
+>>> [EINVAL]."
+>>> [http://pubs.opengroup.org/onlinepubs/9699919799/functions/mmap.html]
+>>>
+>>> So I think the mips kernel remains POSIX compliant.
+>>>
+>>> Relax the condition and accept both ENOMEM and EINVAL
+>>> as expected outcome.
+>>>
+>>> Signed-off-by: Hongzhi.Song <hongzhi.song@windriver.com>
+>>> ---
+>>> ? .../open_posix_testsuite/conformance/interfaces/mmap/24-2.c | 10 
+>>> +++++-----
+>>> ? 1 file changed, 5 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git 
+>>> a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c 
+>>> b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
+>>> index de51d43..810e5c8 100644
+>>> --- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
+>>> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-2.c
+>>> @@ -7,7 +7,7 @@
+>>> ?? * source tree.
+>>> ?? *
+>>> ?? * The mmap() function shall fail if:
+>>> - * [ENOMEM] MAP_FIXED was specified,
+>>> + * [ENOMEM or EINVAL] MAP_FIXED was specified,
+>>> ?? * and the range [addr,addr+len) exceeds that allowed
+>>> ?? * for the address space of a process; or, if MAP_FIXED was not 
+>>> specified and
+>>> ?? * there is insufficient room in the address space to effect the 
+>>> mapping.
+>>> @@ -15,7 +15,7 @@
+>>> ?? * Test Step:
+>>> ?? * 1. Map a shared memory object, with size exceeding the value 
+>>> get from
+>>> ?? *??? rlim_cur of resource RLIMIT_AS, setting MAP_FIXED;
+>>> - * 3. Should get ENOMEM.
+>>> + * 3. Should get ENOMEM or EINVAL.
+>>> ?? */
+>>> ? ? #define _XOPEN_SOURCE 600
+>>> @@ -93,8 +93,8 @@ int main(void)
+>>> ???????????? (unsigned long)len);
+>>> ????? pa = mmap(addr, len, PROT_READ | PROT_WRITE, MAP_FIXED | 
+>>> MAP_SHARED, fd,
+>>> ??????????? 0);
+>>> -??? if (pa == MAP_FAILED && errno == ENOMEM) {
+>>> -??????? printf("Got ENOMEM: %s\nTest PASSED\n", strerror(errno));
+>>> +??? if (pa == MAP_FAILED && (errno == ENOMEM || errno == EINVAL)) {
+>>> +??????? printf("Got ENOMEM or EINVAL: %s\nTest PASSED\n", 
+>>> strerror(errno));
+>>> ????????? exit(PTS_PASS);
+>>> ????? }
+>>> ? @@ -103,6 +103,6 @@ int main(void)
+>>> ????? else
+>>> ????????? munmap(pa, len);
+>>> ????? close(fd);
+>>> -??? printf("Test Fail: Did not get ENOMEM as expected\n");
+>>> +??? printf("Test Failed: Did not get ENOMEM or EINVAL as expected\n");
+>>> ????? return PTS_FAIL;
+>>> ? }
+>>
+>>
+>
+>
