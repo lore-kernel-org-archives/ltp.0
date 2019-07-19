@@ -1,81 +1,102 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 19 Jul 2019 11:15:19 +0200
-Subject: [LTP] [PATCH 2/2] c: Use $LTP_TIMEOUT_MUL also in retry
- functions
-In-Reply-To: <CAEemH2e6PmPYWWQg+NgSR=6Qc4BZpEswbcc4Y+n3B_pFqnQJDQ@mail.gmail.com>
-References: <20190718083943.7687-1-pvorel@suse.cz>
- <20190718083943.7687-2-pvorel@suse.cz>
- <CAEemH2e6PmPYWWQg+NgSR=6Qc4BZpEswbcc4Y+n3B_pFqnQJDQ@mail.gmail.com>
-Message-ID: <20190719091519.GC30204@dell5510>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 19 Jul 2019 18:48:54 +0800
+Subject: [LTP] [PATCH] m4: remove useless ltp-securebits.m4
+Message-ID: <1563533334-2232-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Since commit fe9d9218c, we have detected linux/securebits.h in
+confiure.ac. one place used the HAVE_SECUREBITS(ltp-securebits.m4 
+defined), it only controls compile. kernel/security/securebits/
+check_keepcaps.c has HAVE_LINUX_SECUREBITS_H check in internal, 
+so removing it is safe.
 
-thanks for your review!
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ configure.ac                       |  1 -
+ include/mk/features.mk.default     |  3 ---
+ include/mk/features.mk.in          |  3 ---
+ m4/ltp-securebits.m4               | 10 ----------
+ testcases/kernel/security/Makefile |  4 ----
+ 5 files changed, 21 deletions(-)
+ delete mode 100644 m4/ltp-securebits.m4
 
-> On Thu, Jul 18, 2019 at 4:40 PM Petr Vorel <pvorel@suse.cz> wrote:
-> >...
-> >  #ifndef TST_COMMON_H__
-> > @@ -51,15 +40,22 @@
+diff --git a/configure.ac b/configure.ac
+index 3dcf282e8..f899d8ebc 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -226,7 +226,6 @@ LTP_CHECK_NOMMU_LINUX
+ LTP_CHECK_PERF_EVENT
+ LTP_CHECK_PRCTL_SUPPORT
+ LTP_CHECK_RLIMIT64
+-LTP_CHECK_SECUREBITS
+ LTP_CHECK_SELINUX
+ LTP_CHECK_SIGNAL
+ LTP_CHECK_STATX
+diff --git a/include/mk/features.mk.default b/include/mk/features.mk.default
+index 94b8b0c54..3a6cc5176 100644
+--- a/include/mk/features.mk.default
++++ b/include/mk/features.mk.default
+@@ -29,9 +29,6 @@ WITH_PYTHON			:= no
+ 
+ # Features knobs
+ 
+-# Is securebits[.h], et all support available?
+-HAVE_SECUREBITS			:= no
+-
+ # Test suite knobs
+ 
+ # Enable testcases/kernel/power_management's compile and install?
+diff --git a/include/mk/features.mk.in b/include/mk/features.mk.in
+index 7536b6f20..8e561b738 100644
+--- a/include/mk/features.mk.in
++++ b/include/mk/features.mk.in
+@@ -29,9 +29,6 @@ WITH_PYTHON			:= @WITH_PYTHON@
+ 
+ # Features knobs
+ 
+-# Is securebits[.h], et all support available?
+-HAVE_SECUREBITS			:= @HAVE_SECUREBITS@
+-
+ # Test suite knobs
+ 
+ # Enable testcases/kernel/power_management's compile and install?
+diff --git a/m4/ltp-securebits.m4 b/m4/ltp-securebits.m4
+deleted file mode 100644
+index 7888e6335..000000000
+--- a/m4/ltp-securebits.m4
++++ /dev/null
+@@ -1,10 +0,0 @@
+-dnl SPDX-License-Identifier: GPL-2.0-or-later
+-dnl Copyright (c) Serge Hallyn (2010)
+-
+-AC_DEFUN([LTP_CHECK_SECUREBITS],[
+-	AC_CHECK_HEADERS(linux/securebits.h,[have_securebits=yes])
+-if test "x$have_securebits" != xyes; then
+-	have_securebits=no
+-fi
+-AC_SUBST(HAVE_SECUREBITS,$have_securebits)
+-])
+diff --git a/testcases/kernel/security/Makefile b/testcases/kernel/security/Makefile
+index 0b4b98b83..eea794aa9 100644
+--- a/testcases/kernel/security/Makefile
++++ b/testcases/kernel/security/Makefile
+@@ -24,10 +24,6 @@ top_srcdir		?= ../../..
+ 
+ include	$(top_srcdir)/include/mk/env_pre.mk
+ 
+-ifneq ($(HAVE_SECUREBITS),yes)
+-FILTER_OUT_DIRS		+= securebits
+-endif
+-
+ OPT_CFLAGS		+= -O
+ DEBUG_LDFLAGS		+= -s
+ 
+-- 
+2.18.1
 
-> >  #define TST_RETRY_FN_EXP_BACKOFF(FUNC, ERET, MAX_DELAY)        \
-> >  ({     int tst_delay_ = 1;                                             \
-> > +       float m = 1;    \
-> > +       char *mul = getenv("LTP_TIMEOUT_MUL");  \
-
-> We also need a prefix/suffix in the variable definition to make sure
-> that it will
-> not alias with anything that has been passed to the FUNC, just like what we do
-> for the tst_delay_.
-
-> e.g. if the FUNC is defined as foo_func(m); the m variable will be aliased and
-> the function will do something very unexpected.
-Good point, I'll fix it in v3.
-
-> > +       if (mul) {      \
-> > +               m = atof(mul); \
-> > +               if (m < 1) \
-> > +                       tst_brk(TBROK, "Invalid timeout multiplier '%s'", mul); \
-
-> If we reverse some code order in tst_set_timeout() function, then here
-> we have no need to check if m < 1 again, since the LTP_TIMEOUT_MUL
-> valid check will be finished in setup() early phase.
-> (This comment is just FYI, and I also think it's OK to check twice.)
-Good point. I'd probably check twice in case the logic changes one day.
-
-> --------------------------------------
-> void tst_set_timeout(int timeout)
-> {
->         float m = 1;
->         char *mul = getenv("LTP_TIMEOUT_MUL");
-
->         if (mul) {
->                 m = atof(mul);
->                 if (m < 1)
->                         tst_brk(TBROK, "Invalid timeout multiplier '%s'", mul);
->         }
-
->         if (timeout == -1) {
->                 tst_res(TINFO, "Timeout per run is disabled");
->                 return;
->         }
-
->         results->timeout = timeout * m + 0.5;
-
->         tst_res(TINFO, "Timeout per run is %uh %02um %02us",
->                 results->timeout/3600, (results->timeout%3600)/60,
->                 results->timeout % 60);
-
->         if (getpid() == lib_pid)
->                 alarm(results->timeout);
->         else
->                 heartbeat();
-> }
 
 
-Kind regards,
-Petr
