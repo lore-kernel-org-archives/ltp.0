@@ -1,75 +1,48 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 19 Jul 2019 13:02:47 +0800
-Subject: [LTP] [PATCH 2/2] c: Use $LTP_TIMEOUT_MUL also in retry
- functions
-In-Reply-To: <20190718083943.7687-2-pvorel@suse.cz>
-References: <20190718083943.7687-1-pvorel@suse.cz>
- <20190718083943.7687-2-pvorel@suse.cz>
-Message-ID: <CAEemH2e6PmPYWWQg+NgSR=6Qc4BZpEswbcc4Y+n3B_pFqnQJDQ@mail.gmail.com>
+From: Hongzhi, Song <hongzhi.song@windriver.com>
+Date: Fri, 19 Jul 2019 16:13:08 +0800
+Subject: [LTP] Question about kernel/syscall/signal/signal06.c
+In-Reply-To: <20190717094614.GA9539@rei>
+References: <56f854e2-9cc6-4725-3182-ff83e106ee23@windriver.com>
+ <20190717094614.GA9539@rei>
+Message-ID: <7d2c4936-2e89-6285-c856-a156d3a76284@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Jul 18, 2019 at 4:40 PM Petr Vorel <pvorel@suse.cz> wrote:
->...
->  #ifndef TST_COMMON_H__
-> @@ -51,15 +40,22 @@
+This case fails when boot qemux86-64 with 1/2 cores.
+
+I find [kernel 5.2-rc1: 0d714dba162] causes the failure by git bisect.
+
+If git checkout a commit before 0d714dba162, the case will pass on the 
+same qemu configuration.
+
+
+--Hongzhi
+
+
+On 7/17/19 5:46 PM, Cyril Hrubis wrote:
+> Hi!
+>> I find signal06 fails on qemux86-64 when qemu has a small number cores,
+>> e.g. "qemu -smp 1/2/4/6".
+>>
+>> ERROR INFO:
+>>
+>> signal06?????? 0?? TINFO?? :?? loop = 23
+>> signal06?????? 1?? TFAIL?? :?? signal06.c:87: Bug Reproduced!
+>>
+>> But if boot qemu with "-smp 16", the case has great chance to pass.
+>>
+>>
+>> I have two questions about this case:
+>>
+>> 1. I don't know why multi-core will affect the case.
+> Have you looked into the code? The test is trying to reproduce a race
+> condition between two threads of course the number of cores does affect
+> the reproducibility.
 >
->  #define TST_RETRY_FN_EXP_BACKOFF(FUNC, ERET, MAX_DELAY)        \
->  ({     int tst_delay_ = 1;                                             \
-> +       float m = 1;    \
-> +       char *mul = getenv("LTP_TIMEOUT_MUL");  \
-
-We also need a prefix/suffix in the variable definition to make sure
-that it will
-not alias with anything that has been passed to the FUNC, just like what we do
-for the tst_delay_.
-
-e.g. if the FUNC is defined as foo_func(m); the m variable will be aliased and
-the function will do something very unexpected.
-
-> +       if (mul) {      \
-> +               m = atof(mul); \
-> +               if (m < 1) \
-> +                       tst_brk(TBROK, "Invalid timeout multiplier '%s'", mul); \
-
-If we reverse some code order in tst_set_timeout() function, then here
-we have no need to check if m < 1 again, since the LTP_TIMEOUT_MUL
-valid check will be finished in setup() early phase.
-(This comment is just FYI, and I also think it's OK to check twice.)
-
---------------------------------------
-void tst_set_timeout(int timeout)
-{
-        float m = 1;
-        char *mul = getenv("LTP_TIMEOUT_MUL");
-
-        if (mul) {
-                m = atof(mul);
-                if (m < 1)
-                        tst_brk(TBROK, "Invalid timeout multiplier '%s'", mul);
-        }
-
-        if (timeout == -1) {
-                tst_res(TINFO, "Timeout per run is disabled");
-                return;
-        }
-
-        results->timeout = timeout * m + 0.5;
-
-        tst_res(TINFO, "Timeout per run is %uh %02um %02us",
-                results->timeout/3600, (results->timeout%3600)/60,
-                results->timeout % 60);
-
-        if (getpid() == lib_pid)
-                alarm(results->timeout);
-        else
-                heartbeat();
-}
-
-
---
-Regards,
-Li Wang
+>> 2. On failure situation, what does break the "while loop" shown in below
+>> code.
+> Bug in a kernel that fails to restore fpu state.
+>
