@@ -1,50 +1,160 @@
-From: Steven Price <steven.price@arm.com>
-Date: Fri, 19 Jul 2019 13:48:17 +0100
-Subject: [LTP] [PATCH] ustat02: Fix EFAULT in 32bit compatibility mode
-Message-ID: <20190719124817.5140-1-steven.price@arm.com>
+From: Hongzhi, Song <hongzhi.song@windriver.com>
+Date: Mon, 22 Jul 2019 09:56:55 +0800
+Subject: [LTP] Question about kernel/syscall/signal/signal06.c
+In-Reply-To: <CAEemH2edg4R-JFM=u_ceLoRcNAMmV=c+hVV6kxoK4g6DOBnGeg@mail.gmail.com>
+References: <56f854e2-9cc6-4725-3182-ff83e106ee23@windriver.com>
+ <20190717094614.GA9539@rei>
+ <7d2c4936-2e89-6285-c856-a156d3a76284@windriver.com>
+ <CAEemH2edg4R-JFM=u_ceLoRcNAMmV=c+hVV6kxoK4g6DOBnGeg@mail.gmail.com>
+Message-ID: <e7d0e66d-f348-9d57-0ea9-dc1fa289942d@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The size of dev_t is larger than 32 bits which causes the dev argument
-to be passed incorrectly. On Arm this means that the EFAULT test case
-actually returns EINVAL because the device number isn't recognised.
 
-Signed-off-by: Steven Price <steven.price@arm.com>
----
-This is the same fix as 989bcfc7544d ("ustat: Fix EFAULT in 32bit
-compatability mode") applied to ustat02. Originally it was justified[1]
-that this doesn't affect ustat02 as the test works on x86, however it
-does affect Arm.
+On 7/19/19 4:44 PM, Li Wang wrote:
+> On Fri, Jul 19, 2019 at 4:14 PM Hongzhi, Song
+> <hongzhi.song@windriver.com> wrote:
+>> This case fails when boot qemux86-64 with 1/2 cores.
+>>
+>> I find [kernel 5.2-rc1: 0d714dba162] causes the failure by git bisect.
 
-I believe this only affects Arm and not x86 because only Arm requires a
-64 bit argument to be aligned in registers. This means the test is
-currently passing the dev number in r2/r3 and leaving junk in r1 which
-is then being treated as the device number.
+Hi Li,Wang
 
-However even on x86 the pointer value is actually the upper bits of
-root_dev rather than the expected (void*)-1.
 
-[1] http://lists.linux.it/pipermail/ltp/2019-February/010752.html
----
- testcases/kernel/syscalls/ustat/ustat02.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sorry for my a bit mistake, the exact tag is [5.1-rc3 : 0d714dba162]
 
-diff --git a/testcases/kernel/syscalls/ustat/ustat02.c b/testcases/kernel/syscalls/ustat/ustat02.c
-index 9bbe4f3f5..1a0e9e059 100644
---- a/testcases/kernel/syscalls/ustat/ustat02.c
-+++ b/testcases/kernel/syscalls/ustat/ustat02.c
-@@ -36,7 +36,7 @@ int TST_TOTAL = ARRAY_SIZE(tc);
- 
- void run(unsigned int test)
- {
--	TEST(tst_syscall(__NR_ustat, *tc[test].dev, tc[test].buf));
-+	TEST(tst_syscall(__NR_ustat, (unsigned int)*tc[test].dev, tc[test].buf));
- 
- 	if ((TST_RET == -1) && (TST_ERR == tc[test].exp_errno))
- 		tst_res(TPASS | TTERRNO, "ustat(2) expected failure");
--- 
-2.20.1
+commit 0d714dba162620fd8b9f5b3104a487e041353c4d
+Author: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date:?? Wed Apr 3 18:41:48 2019 +0200
 
+ ??? x86/fpu: Update xstate's PKRU value on write_pkru()
+
+ ??? During the context switch the xstate is loaded which also includes the
+ ??? PKRU value.
+
+ ??? If xstate is restored on return to userland it is required
+ ??? that the PKRU value in xstate is the same as the one in the CPU.
+
+ ??? Save the PKRU in xstate during modification.
+
+
+>>
+>> If git checkout a commit before 0d714dba162, the case will pass on the
+>> same qemu configuration.
+> It sounds like a new regression on fpu. I will have a try on this test then.
+>
+> @Hongzhi, could you provide more info of your test machine? (e.g.
+> lscpu, uname -r)
+> and test result with 1vcpu, 2vcpus?
+
+
+I tested "-smp 1/2/4" and "-cpu Skylake-Client-IBRS/core2duo", all of 
+them failed.
+
+
+1. This is my qemu boot cmdline:
+
+qemu-system-x86_64 -device 
+virtio-net-pci,netdev=net0,mac=52:54:00:12:35:02 -netdev 
+user,id=net0,hostfwd=tcp::2222-:22,hostfwd=tcp::2323-:23,tftp=images/qemux86-64 
+-drive file=image.rootfs.ext4,if=virtio,format=raw -vga vmware 
+-show-cursor -usb -device usb-tablet -object 
+rng-random,filename=/dev/urandom,id=rng0 -device 
+virtio-rng-pci,rng=rng0? -nographic? -m 256? -cpu Skylake-Client-IBRS 
+-serial mon:stdio -serial null -kernel linux/arch/x86/boot/bzImage 
+-append 'root=/dev/vda rw highres=off console=ttyS0 mem=256M ip=dhcp 
+vga=0 uvesafb.mode_option=640x480-32 oprofile.timer=1 
+uvesafb.task_timeout=-1 '
+
+2. lscpu
+
+root@qemux86-64:~# lscpu
+Architecture:??????????????????? x86_64
+CPU op-mode(s):????????????? 32-bit, 64-bit
+Byte Order:????????????????????? Little Endian
+Address sizes:???????????????? 40 bits physical, 48 bits virtual
+CPU(s):??????????????????????????? 4
+On-line CPU(s) list:?????????? 0
+Thread(s) per core:????????? 1
+Core(s) per socket:????????? 1
+Socket(s):??????????????????????? 1
+Vendor ID:?????????????????????? GenuineIntel
+CPU family:????????????????????? 6
+Model:???????????????????????????? 94
+Model name:?????????????????? Intel Core Processor (Skylake, IBRS)
+Stepping:??????????????????????? 3
+CPU MHz:??????????????????????? 3100.012
+BogoMIPS:?????????????????????? 6200.02
+L1d cache:????????????????????? 32 KiB
+L1i cache:?????????????????????? 32 KiB
+L2 cache:??????????????????????? 4 MiB
+L3 cache:??????????????????????? 16 MiB
+Vulnerability L1tf:??????????? Mitigation; PTE Inversion
+Vulnerability Meltdown:?? Mitigation; PTI
+Vulnerability Spec store bypass: Vulnerable
+Vulnerability Spectre v1:??????? Mitigation; __user pointer sanitization
+Vulnerability Spectre v2:??????? Mitigation; Full generic retpoline, 
+STIBP disab
+ ???????????????????????????????? led, RSB filling
+Flags:?????????????????????????? fpu de pse tsc msr pae mce cx8 apic sep 
+mtrr pg
+ ???????????????????????????????? e mca cmov pat pse36 clflush mmx fxsr 
+sse sse2
+ ???????????????????????????????? syscall nx rdtscp lm constant_tsc 
+rep_good nopl
+ ????????????????????????????????? xtopology cpuid pni pclmulqdq ssse3 
+cx16 sse4_
+ ???????????????????????????????? 1 sse4_2 movbe popcnt aes xsave 
+hypervisor lahf
+ ???????????????????????????????? _lm abm pti fsgsbase bmi1 smep bmi2 
+erms adx sm
+ ???????????????????????????????? ap xsaveopt xgetbv1 arat
+
+
+3.? uname -r
+
+root@qemux86-64:~# uname -r
+5.1.0-rc3-Linux-standard
+
+
+Thanks.
+
+--Hongzhi
+
+
+>
+> [Ccing fpu Dev in this loop]
+>
+>>
+>> --Hongzhi
+>>
+>>
+>> On 7/17/19 5:46 PM, Cyril Hrubis wrote:
+>>> Hi!
+>>>> I find signal06 fails on qemux86-64 when qemu has a small number cores,
+>>>> e.g. "qemu -smp 1/2/4/6".
+>>>>
+>>>> ERROR INFO:
+>>>>
+>>>> signal06?????? 0?? TINFO?? :?? loop = 23
+>>>> signal06?????? 1?? TFAIL?? :?? signal06.c:87: Bug Reproduced!
+>>>>
+>>>> But if boot qemu with "-smp 16", the case has great chance to pass.
+>>>>
+>>>>
+>>>> I have two questions about this case:
+>>>>
+>>>> 1. I don't know why multi-core will affect the case.
+>>> Have you looked into the code? The test is trying to reproduce a race
+>>> condition between two threads of course the number of cores does affect
+>>> the reproducibility.
+>>>
+>>>> 2. On failure situation, what does break the "while loop" shown in below
+>>>> code.
+>>> Bug in a kernel that fails to restore fpu state.
+>>>
+>
+>
