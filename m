@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 22 Jul 2019 14:24:00 +0200
-Subject: [LTP] [PATCH v4] timers/timer_create0{2, 3,
- 4}: Ported to new library
-In-Reply-To: <20190719113721.6285-1-camann@suse.com>
-References: <20190719113721.6285-1-camann@suse.com>
-Message-ID: <20190722122400.GA13282@rei.lan>
+Date: Mon, 22 Jul 2019 14:54:24 +0200
+Subject: [LTP] [PATCH]syscalls/ioctl: bugfix for
+ syscalls/ioctl/ioctl_ns05.c syscalls/ioctl/ioctl_ns06.c
+In-Reply-To: <1563762541-89314-1-git-send-email-songjian15@huawei.com>
+References: <1563762541-89314-1-git-send-email-songjian15@huawei.com>
+Message-ID: <20190722125424.GA17745@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,13 +12,18 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Pushed with changes to the timer_create04.c, thanks.
+> fix ioctl_ns05, ioctl_ns06 timeout.
+> signal() will return 0 if success, so it have no chance to equal
+> nr_wake=1, use another api to to repalce the current api to ensure that
+> nr_wark = 0.
 
-I've changed the timer_create04 not to iterate over all the clock types,
-which does not make much sense for invalid input tests and rather than
-that I've added a few more invalid tests, I've also made sure that the
-we get EINVAL with different parts of the sigev structure filled with
-wrong values instead of memseting it to a constant.
+I do not understand what is the problem here.
+
+What do you mean by "signal() will return 0 if success" ?
+
+The child has to be suspended in the futex until it's woken up so as far
+as I can tell the checkpoint should be able to wake the child a the end
+of the run() function.
 
 -- 
 Cyril Hrubis
