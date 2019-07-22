@@ -1,48 +1,74 @@
-From: Song Jian <songjian15@huawei.com>
-Date: Mon, 22 Jul 2019 10:29:01 +0800
-Subject: [LTP] [PATCH]syscalls/ioctl: bugfix for syscalls/ioctl/ioctl_ns05.c
- syscalls/ioctl/ioctl_ns06.c
-Message-ID: <1563762541-89314-1-git-send-email-songjian15@huawei.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 22 Jul 2019 14:05:23 +0800
+Subject: [LTP] [COMMITTED] [PATCH] syscalls/prctl07: Fix build.
+In-Reply-To: <20190716143238.483-1-chrubis@suse.cz>
+References: <20190716143238.483-1-chrubis@suse.cz>
+Message-ID: <5D355223.5040705@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-fix ioctl_ns05, ioctl_ns06 timeout.
-signal() will return 0 if success, so it have no chance to equal
-nr_wake=1, use another api to to repalce the current api to ensure that
-nr_wark = 0.
 
-Signed-off-by: Song Jian <songjian15@huawei.com>
----
- testcases/kernel/syscalls/ioctl/ioctl_ns05.c | 2 +-
- testcases/kernel/syscalls/ioctl/ioctl_ns06.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+> Ideally this is last fix for prctl07.
+>
+> Since I've changed the check_proc_capamb() to use macro definition
+> instead of raw integer value we depend on sys/capability.h being
+> included to compile the code.
+>
+> So this commit changes:
+>
+> The sys/capability.h is included under HAVE_SYS_CAPABILITY_H now and so
+> the function is ifdefed out if we don't have that header.
+>
+> Also it looks like HAVE_LIBCAP is not defined unless libcap supports
+> cap_compare() which should be fixed. The check for libcap and
+> cap_compare() has to be uncoupled but that has to be done in a sepratate
+> patch.
+Hi Cyril
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns05.c b/testcases/kernel/syscalls/ioctl/ioctl_ns05.c
-index a8dee07..8162012 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_ns05.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ns05.c
-@@ -80,7 +80,7 @@ static void run(void)
- 	SAFE_CLOSE(my_fd);
- 	SAFE_CLOSE(child_fd);
- 	SAFE_CLOSE(parent_fd);
--	TST_CHECKPOINT_WAKE(0);
-+	TST_CHECKPOINT_WAKE2(0, 0);
- }
- static struct tst_test test = {
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ns06.c b/testcases/kernel/syscalls/ioctl/ioctl_ns06.c
-index 805a0a0..d5010d0 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_ns06.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_ns06.c
-@@ -75,7 +75,7 @@ static void run(void)
- 	SAFE_CLOSE(my_fd);
- 	SAFE_CLOSE(parent_fd);
- 	SAFE_CLOSE(child_fd);
--	TST_CHECKPOINT_WAKE(0);
-+	TST_CHECKPOINT_WAKE2(0, 0);
- }
- static struct tst_test test = {
-2.6.2
+     I have a patch for this on 2019.5 [1] but not correct way.  Also, I am going to simpify and remove some m4.
+I will uncouple libcap and cap_compare in ltp-cap.m4.
+
+[1]http://lists.linux.it/pipermail/ltp/2019-May/011925.html
+
+> Signed-off-by: Cyril Hrubis<chrubis@suse.cz>
+> ---
+>   testcases/kernel/syscalls/prctl/prctl07.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/prctl/prctl07.c b/testcases/kernel/syscalls/prctl/prctl07.c
+> index 37d77df33..79f7710a8 100644
+> --- a/testcases/kernel/syscalls/prctl/prctl07.c
+> +++ b/testcases/kernel/syscalls/prctl/prctl07.c
+> @@ -25,7 +25,7 @@
+>   #include<sys/prctl.h>
+>   #include<stdlib.h>
+>   #include "config.h"
+> -#ifdef HAVE_LIBCAP
+> +#ifdef HAVE_SYS_CAPABILITY_H
+>   # include<sys/capability.h>
+>   #endif
+>   #include "lapi/syscalls.h"
+> @@ -35,7 +35,8 @@
+>
+>   #define PROC_STATUS "/proc/self/status"
+>
+> -static inline void check_proc_capamb(char *message, int flag)
+> +#ifdef HAVE_SYS_CAPABILITY_H
+> +static void check_proc_capamb(char *message, int flag)
+>   {
+>   	int cap_num;
+>   	char CapAmb[20];
+> @@ -62,6 +63,7 @@ static inline void check_proc_capamb(char *message, int flag)
+>   			"%s, CapAmb in %s doesn't have CAP_NET_BIND_SERVICE",
+>   			message, PROC_STATUS);
+>   }
+> +#endif
+>
+>   static inline void check_cap_raise(unsigned int cap, char *message, int fail_flag)
+>   {
+
+
 
