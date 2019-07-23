@@ -1,70 +1,44 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 23 Jul 2019 18:52:33 +0800
-Subject: [LTP] [PATCH] setdomainname: use strlen() to get length of
- string
-In-Reply-To: <20190723102826.9679-1-liwang@redhat.com>
-References: <20190723102826.9679-1-liwang@redhat.com>
-Message-ID: <5D36E6F1.7090008@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 23 Jul 2019 13:03:06 +0200
+Subject: [LTP] [PATCH] syscalls/statx01: loosen the stx_blocks check
+In-Reply-To: <20190722194439.161904-1-smuckle@google.com>
+References: <20190722194439.161904-1-smuckle@google.com>
+Message-ID: <20190723110306.GB22630@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2019/07/23 18:28, Li Wang wrote:
-> The sizeof(new) is only to get the size of char *, and it's not corret to pass
-> it as 'len' in setdomainname(). Here replace by strlen() to get the correct number
-> of characters for string.
-Hi Li,
-
-As setdomainname(2) manpage mentions, name does not require a 
-terminating null byte.
-It looks good to me. :-)
-
-Best Regards,
-Xiao Yang
-> On x86_64, we get this failures if the LTP compilied in 32bit.
->
->    -----Error Log-----
->    setdomainname.h:24: INFO: Testing libc setdomainname()
->    setdomainname01.c:24: FAIL: getdomainname() returned wrong domainname: 'test'
->    setdomainname.h:27: INFO: Testing __NR_setdomainname syscall
->    setdomainname01.c:24: FAIL: getdomainname() returned wrong domainname: 'test'
->    -------------------
->
-> Signed-off-by: Li Wang<liwang@redhat.com>
-> Cc: Petr Vorel<pvorel@suse.cz>
+Hi!
+> A filesystem may preallocate blocks (ext4 does this), so even though the
+> contents of the file may fit into a single block, statx may report more
+> than one block. Loosen the test to accommodate this.
+> 
+> Signed-off-by: Steve Muckle <smuckle@google.com>
 > ---
->   testcases/kernel/syscalls/setdomainname/setdomainname01.c | 2 +-
->   testcases/kernel/syscalls/setdomainname/setdomainname03.c | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/setdomainname/setdomainname01.c b/testcases/kernel/syscalls/setdomainname/setdomainname01.c
-> index 57d58ab42..1731af733 100644
-> --- a/testcases/kernel/syscalls/setdomainname/setdomainname01.c
-> +++ b/testcases/kernel/syscalls/setdomainname/setdomainname01.c
-> @@ -12,7 +12,7 @@ static void do_test(void)
->   	char *new = TST_VALID_DOMAIN_NAME;
->   	static char tmp[_UTSNAME_DOMAIN_LENGTH];
->
-> -	TEST(do_setdomainname(new, sizeof(new)));
-> +	TEST(do_setdomainname(new, strlen(new)));
->
->   	if (TST_RET != 0)
->   		tst_brk(TFAIL | TTERRNO, "setdomainname() failed: %d", TST_ERR);
-> diff --git a/testcases/kernel/syscalls/setdomainname/setdomainname03.c b/testcases/kernel/syscalls/setdomainname/setdomainname03.c
-> index e53ea8806..b8d17d8da 100644
-> --- a/testcases/kernel/syscalls/setdomainname/setdomainname03.c
-> +++ b/testcases/kernel/syscalls/setdomainname/setdomainname03.c
-> @@ -16,7 +16,7 @@ static void do_test(void)
->   {
->   	char *new = TST_VALID_DOMAIN_NAME;
->
-> -	TEST(do_setdomainname(new, sizeof(new)));
-> +	TEST(do_setdomainname(new, strlen(new)));
->
->   	if (TST_RET != -1) {
->   		tst_res(TFAIL, "unexpected exit code: %ld", TST_RET);
+>  testcases/kernel/syscalls/statx/statx01.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/syscalls/statx/statx01.c b/testcases/kernel/syscalls/statx/statx01.c
+> index 23ea99b4a..5e705dc7d 100644
+> --- a/testcases/kernel/syscalls/statx/statx01.c
+> +++ b/testcases/kernel/syscalls/statx/statx01.c
+> @@ -92,7 +92,7 @@ static void test_normal_file(void)
+>  			buff.stx_mode, MODE);
+>  
+>  
+> -	if (buff.stx_blocks <= buff.stx_blksize/512)
+> +	if (buff.stx_blocks <= 128)
 
+Why 128?
 
+Can't we rather multiply the buff.stx_blksize/512 by 16?
 
+The filesystem block size is not constant the ppc64le has page size and
+block size 64k,@least for Btrfs, so 128 would be a single block
+there so if we preallocated blocks there this would stil fail.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
