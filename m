@@ -1,35 +1,29 @@
-From: Steve Muckle <smuckle@google.com>
-Date: Mon, 22 Jul 2019 12:44:39 -0700
-Subject: [LTP] [PATCH] syscalls/statx01: loosen the stx_blocks check
-Message-ID: <20190722194439.161904-1-smuckle@google.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 23 Jul 2019 11:14:10 +0800
+Subject: [LTP] [PATCH] ustat02: Fix EFAULT in 32bit compatibility mode
+In-Reply-To: <CAEemH2fv0AXXVKDNWgATCdS2WKufV1YPDsKHhPBZbk1Dxv77LQ@mail.gmail.com>
+References: <20190719124817.5140-1-steven.price@arm.com>
+ <CAEemH2fv0AXXVKDNWgATCdS2WKufV1YPDsKHhPBZbk1Dxv77LQ@mail.gmail.com>
+Message-ID: <CAEemH2d9Jx5G-fF469Ue=cyhpttAEw-u62R-4Nr7Lqva2Fpe3Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-A filesystem may preallocate blocks (ext4 does this), so even though the
-contents of the file may fit into a single block, statx may report more
-than one block. Loosen the test to accommodate this.
+On Mon, Jul 22, 2019 at 5:55 PM Li Wang <liwang@redhat.com> wrote:
+>
+> On Fri, Jul 19, 2019 at 11:19 PM Steven Price <steven.price@arm.com> wrote:
+> >
+> > The size of dev_t is larger than 32 bits which causes the dev argument
+> > to be passed incorrectly. On Arm this means that the EFAULT test case
+> > actually returns EINVAL because the device number isn't recognised.
+> >
+> > Signed-off-by: Steven Price <steven.price@arm.com>
+> Acked-by: Li Wang <liwang@redhat.com>
 
-Signed-off-by: Steve Muckle <smuckle@google.com>
----
- testcases/kernel/syscalls/statx/statx01.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Pushed.
 
-diff --git a/testcases/kernel/syscalls/statx/statx01.c b/testcases/kernel/syscalls/statx/statx01.c
-index 23ea99b4a..5e705dc7d 100644
---- a/testcases/kernel/syscalls/statx/statx01.c
-+++ b/testcases/kernel/syscalls/statx/statx01.c
-@@ -92,7 +92,7 @@ static void test_normal_file(void)
- 			buff.stx_mode, MODE);
- 
- 
--	if (buff.stx_blocks <= buff.stx_blksize/512)
-+	if (buff.stx_blocks <= 128)
- 		tst_res(TPASS, "stx_blocks(%"PRIu64") is valid",
- 			buff.stx_blocks);
- 	else
 -- 
-2.22.0.657.g960e92d24f-goog
-
+Regards,
+Li Wang
