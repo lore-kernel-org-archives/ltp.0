@@ -1,39 +1,59 @@
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 23 Jul 2019 17:48:55 +0800
-Subject: [LTP] [PATCH v2] syscalls/mbind0{2,3,4}: Add basic mbind tests
-In-Reply-To: <20190723093310.GA22630@rei.lan>
-References: <20190722150316.27395-1-chrubis@suse.cz>
- <CAEemH2dapin31=WrPsA97wgX=2d5rzQy8+D7LVta6nr6BwFN5A@mail.gmail.com>
- <20190723093310.GA22630@rei.lan>
-Message-ID: <CAEemH2dNcNmrqgg2o2acOk3=aYg9A4HpPnHGEQfjyORm_98pUw@mail.gmail.com>
+Date: Tue, 23 Jul 2019 18:28:26 +0800
+Subject: [LTP] [PATCH] setdomainname: use strlen() to get length of string
+Message-ID: <20190723102826.9679-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Jul 23, 2019 at 5:33 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+The sizeof(new) is only to get the size of char *, and it's not corret to pass
+it as 'len' in setdomainname(). Here replace by strlen() to get the correct number
+of characters for string.
 
-> > Why not test MPOL_INTERLEAVE for mbind02? I guess it also makes sense
-> > to add here.
->
-> Good catch, we have a bitmask with a single node, so I guess that this
-> would work as well. Have you tested it?
+On x86_64, we get this failures if the LTP compilied in 32bit.
 
-Yes, it works for me.
+  -----Error Log-----
+  setdomainname.h:24: INFO: Testing libc setdomainname()
+  setdomainname01.c:24: FAIL: getdomainname() returned wrong domainname: 'test'
+  setdomainname.h:27: INFO: Testing __NR_setdomainname syscall
+  setdomainname01.c:24: FAIL: getdomainname() returned wrong domainname: 'test'
+  -------------------
 
-> > I remember there are some ppc64le which have non-continuous numa nodes
-> > in hardware configuration. I'm not sure if that special config will
-> > break the mbind04 test, will update details to you after I run this
-> > test on such a system.
->
-> The LTP NUMA library should handle that, the nodes->cnt is the
-> lenght of the NUMA map and the actual node ids are in the nodes->map[]
-> array.
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/kernel/syscalls/setdomainname/setdomainname01.c | 2 +-
+ testcases/kernel/syscalls/setdomainname/setdomainname03.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-You're right, I verified that it doesn't affect by the non-continuous
-node system.
-
+diff --git a/testcases/kernel/syscalls/setdomainname/setdomainname01.c b/testcases/kernel/syscalls/setdomainname/setdomainname01.c
+index 57d58ab42..1731af733 100644
+--- a/testcases/kernel/syscalls/setdomainname/setdomainname01.c
++++ b/testcases/kernel/syscalls/setdomainname/setdomainname01.c
+@@ -12,7 +12,7 @@ static void do_test(void)
+ 	char *new = TST_VALID_DOMAIN_NAME;
+ 	static char tmp[_UTSNAME_DOMAIN_LENGTH];
+ 
+-	TEST(do_setdomainname(new, sizeof(new)));
++	TEST(do_setdomainname(new, strlen(new)));
+ 
+ 	if (TST_RET != 0)
+ 		tst_brk(TFAIL | TTERRNO, "setdomainname() failed: %d", TST_ERR);
+diff --git a/testcases/kernel/syscalls/setdomainname/setdomainname03.c b/testcases/kernel/syscalls/setdomainname/setdomainname03.c
+index e53ea8806..b8d17d8da 100644
+--- a/testcases/kernel/syscalls/setdomainname/setdomainname03.c
++++ b/testcases/kernel/syscalls/setdomainname/setdomainname03.c
+@@ -16,7 +16,7 @@ static void do_test(void)
+ {
+ 	char *new = TST_VALID_DOMAIN_NAME;
+ 
+-	TEST(do_setdomainname(new, sizeof(new)));
++	TEST(do_setdomainname(new, strlen(new)));
+ 
+ 	if (TST_RET != -1) {
+ 		tst_res(TFAIL, "unexpected exit code: %ld", TST_RET);
 -- 
-Regards,
-Li Wang
+2.20.1
+
