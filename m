@@ -1,26 +1,58 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 24 Jul 2019 17:33:57 +0800
-Subject: [LTP] [PATCH RFC] move_pages12: handle errno EBUSY for
- madvise(..., MADV_SOFT_OFFLINE)
-In-Reply-To: <CAEemH2ffEk0QT_LHdo6NEuy2FRkwe4j1rRgf9C0E8HzQE-V_eA@mail.gmail.com>
-References: <20190607095213.13372-1-liwang@redhat.com>
- <20190703131005.GA1712@rei>
- <CAEemH2fGUABOfz=Yq6xONgmHwjaiU6n_q=9EXyZz2EUedpuK8Q@mail.gmail.com>
- <CAEemH2eMA78=5eNwJnZPJ1kw1GZnimSyBsQ+e_wrAu3E+JOoPg@mail.gmail.com>
- <20190710125954.GA5628@rei.lan>
- <CAEemH2ffEk0QT_LHdo6NEuy2FRkwe4j1rRgf9C0E8HzQE-V_eA@mail.gmail.com>
-Message-ID: <CAEemH2eYgUn9LFr2OzX8TsuZ_jDrbOccU56h8FkSYYztB_Y8yA@mail.gmail.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Wed, 24 Jul 2019 11:55:05 +0200
+Subject: [LTP] [PATCH 1/2] Essential headers for BPF map creation
+In-Reply-To: <20190724092715.GB4917@dell5510>
+References: <20190724080328.16145-1-rpalethorpe@suse.com>
+ <20190724080328.16145-2-rpalethorpe@suse.com>
+ <20190724092715.GB4917@dell5510>
+Message-ID: <87h87bdafa.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hello,
 
-Would you mind if I apply this patch? or do you have other thoughts
-besides retry mmap on ENOMEM?
+Petr Vorel <pvorel@suse.cz> writes:
 
--- 
-Regards,
-Li Wang
+> Hi Richie,
+>
+>> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>
+>> ---
+>>  include/lapi/bpf.h               | 242 +++++++++++++++++++++++++++++++
+>>  include/lapi/syscalls/aarch64.in |   1 +
+>>  include/lapi/syscalls/i386.in    |   1 +
+>>  include/lapi/syscalls/s390.in    |   1 +
+>>  include/lapi/syscalls/sparc.in   |   1 +
+>>  include/lapi/syscalls/x86_64.in  |   1 +
+>>  6 files changed, 247 insertions(+)
+>>  create mode 100644 include/lapi/bpf.h
+>
+>> diff --git a/include/lapi/bpf.h b/include/lapi/bpf.h
+>> new file mode 100644
+>> index 000000000..369de0175
+>> --- /dev/null
+>> +++ b/include/lapi/bpf.h
+>> @@ -0,0 +1,242 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * Copyright (c) 2019 Richard Palethorpe <rpalethorpe@suse.com>
+>> + *
+>> + * Essential Extended Berkeley Packet Filter (eBPF) headers
+>> + *
+>> + * Mostly copied/adapted from linux/bpf.h and libbpf so that we can perform
+>> + * some eBPF testing without any external dependencies.
+> Probably the only sane way. But it will be uncomfortable to keep the header
+> updated. Simple copy of include/uapi/linux/bpf.h would be easier
+> (but we'd require to have kernel headers anyway (<linux/types.h> and
+> <linux/bpf_common.h>).
+
+It hasn't been a problem in the past, we just need to add the missing
+parts when adding a new test.
+
+--
+Thank you,
+Richard.
