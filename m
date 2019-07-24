@@ -1,63 +1,142 @@
 From: Steve Muckle <smuckle@google.com>
-Date: Wed, 24 Jul 2019 15:17:44 -0700
-Subject: [LTP] [PATCH] syscalls/statx01: loosen the stx_blocks check
-In-Reply-To: <20190724115735.GC17426@rei.lan>
-References: <20190722194439.161904-1-smuckle@google.com>
- <20190723110306.GB22630@rei.lan>
- <1be1f0b8-170a-ac92-b86f-924e2d7f2295@google.com>
- <20190724115735.GC17426@rei.lan>
-Message-ID: <75ded79c-da38-b648-fcfd-a423cc5f0e89@google.com>
+Date: Wed, 24 Jul 2019 16:52:03 -0700
+Subject: [LTP] [PATCH v3] syscalls/sendmmsg: add new test
+In-Reply-To: <20190724134155.GC19478@rei.lan>
+References: <20190723203133.202257-1-smuckle@google.com>
+ <20190724134155.GC19478@rei.lan>
+Message-ID: <2d8ac294-d537-43d2-eb41-f2fcfed82a2c@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 7/24/19 4:57 AM, Cyril Hrubis wrote:
-> Hi!
->>> Why 128?
->>
->> Was just restoring it to what it was previously.
->>
->>> Can't we rather multiply the buff.stx_blksize/512 by 16?
->>
->> That would work for ext4, but should this be loosened further to give
->> some headroom in case some FS preallocates more? Or is it preferable to
->> keep the test as strict as possible and loosen it when/if failures happen?
+Hi Cyril, thanks for your feedback.
+
+On 7/24/19 6:42 AM, Cyril Hrubis wrote:
+>> diff --git a/configure.ac b/configure.ac
+>> index 3dcf282e8..5e4e7f1f9 100644
+>> --- a/configure.ac
+>> +++ b/configure.ac
+>> @@ -82,9 +82,11 @@ AC_CHECK_FUNCS([ \
+>>       pwritev \
+>>       pwritev2 \
+>>       readlinkat \
+>> +    recvmmsg \
+>>       renameat \
+>>       renameat2 \
+>>       sched_getcpu \
+>> +    sendmmsg \
+>>       sigpending \
+>>       splice \
+>>       stime \
+>> @@ -253,6 +255,7 @@ LTP_CHECK_TIME
+>>   LTP_CHECK_TIMERFD
+>>   test "x$with_tirpc" = xyes && LTP_CHECK_TIRPC
+>>   LTP_CHECK_TPACKET_V3
+>> +LTP_CHECK_MMSGHDR
 > 
-> That is hard to decide. I would go for the lowest limit that works for
-> everybody.
+> This seems to be already there under the # custom functions comment.
+
+Ah yes looks like this got added while I was sitting on the patch, and I 
+failed to notice it when I rebased. Removed.
+
+>> +	addr.sin_family = AF_INET;
+>> +	addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+>> +	addr.sin_port = htons(port);
 > 
-> Also for me ext4 allocates only one block for the file no matter what I
-> do, something has to be tuned differently in your setup.
+> The port returned by TST_GET_UNUSED_PORT() is already in network byte
+> order, we found a bug recently where test was failing randomly since if
+> we attempt to convert the value we may end up with priviledged port
+> number if we are unlucky.
+
+Fixed.
+
 > 
-> Isn't it just a difference in the block size and inode size?
+>> +	SAFE_CONNECT(send_sockfd, (struct sockaddr *) &addr, sizeof(addr));
+>> +
+>> +	memset(msg1, 0, sizeof(msg1));
+>> +	msg1[0].iov_base = "one";
+>> +	msg1[0].iov_len = 3;
+>> +	msg1[1].iov_base = "two";
+>> +	msg1[1].iov_len = 3;
+>> +
+>> +	memset(&msg2, 0, sizeof(msg2));
+>> +	msg2.iov_base = "three";
+>> +	msg2.iov_len = 5;
+>> +
+>> +	memset(msg, 0, sizeof(msg));
+>> +	msg[0].msg_hdr.msg_iov = msg1;
+>> +	msg[0].msg_hdr.msg_iovlen = 2;
+>> +
+>> +	msg[1].msg_hdr.msg_iov = &msg2;
+>> +	msg[1].msg_hdr.msg_iovlen = 1;
+>> +
+>> +	sem_wait(&send_sem);
+>> +
+>> +	while (msgs) {
+>> +		retval = do_sendmmsg(send_sockfd, msg, msgs, 0);
+>> +		if (retval < 0) {
+>> +			/*
+>> +			 * tst_brk is used here so reader is not left waiting
+>> +			 * for data - note timeout for recvmmsg does not work
+>> +			 * as one would expect (see man page)
+>> +			 */
+>> +			tst_brk(TBROK|TTERRNO, "sendmmsg failed");
+>> +			goto out;
+>> +		}
+>> +		msgs -= retval;
+> 
+> Wouldn't this resend the start of the message again if we got
+> interrupted in the middle?
 
-On my platform stx_blocks = 16 (8kb) and stx_blksize = 4096, so two fs 
-blocks are being allocated.
+The failure modes aren't clear to me. Based on the man page for sendmmsg 
+it sounded like it returns the number of messages successfully sent, and 
+I assumed that unsuccessfully sent messages were not partially sent? The 
+sendmsg page says that it only sends messages that can fit atomically in 
+the underlying protocol.
 
-Interestingly, if I create a 256 byte file on this Android platform in 
-/data, it 4kb:
+> I guess that the correct retry would loop over the messages and
+> decrement the iov_len and shift the buffers based on the msg_len.
+> Something as:
+> 
+> retry:
+> 	retval = do_sendmmsg(send_sockfd, msg, msgs, 0);
+> 
+> 	for (i = 0; i < retval; i++) {
+> 		int transmitted = msg[i].msg_len;
+> 		msg[i].msg_len = 0;
+> 		for (j = 0; j < msg[i].msg_iovlen; j++) {
+> 			int len = msg[i].msg_iov[j].msg_iovlen;
+> 
+> 			/* whole buffer send */
+> 			if (transmitted >= len) {
+> 				transmitted -= len;
+> 				msg[i].msg_iov[j].msg_iovlen = 0;
+> 				continue;
+> 			}
+> 
+> 			msg[i].msg_iov[j].msg_iovlen -= transmitted;
+> 			msg[i].msg_iov[j].msg_iov += transmitted;
+> 
+> 			goto retry;
+> 		}
+> 	}
+> 
+> Also I'm pretty sure that we will actually happen to write the whole
+> buffer unless we fill up the kernel buffers, which we hardly will with
+> a few bytes. So maybe we should just send the message here and check
+> that the msg_len are filled correctly in this case.
 
-vsoc_x86:/data # dd if=/dev/zero of=test_file bs=1 count=256
-256+0 records in
-256+0 records out
-256 bytes (256 B) copied, 0.000926 s, 270 K/s
-vsoc_x86:/data # ls -ls test_file
-4 -rw-rw-rw- 1 root root 256 2019-07-24 19:28 test_file
+That works for me, after all if we get unlucky and cannot send the first 
+message in the vector, sendmmsg() returns an error and the test will 
+fail. So retrying on the second message is a bit inconsistent.
 
-However if I go into the directory specified in TMPDIR, it takes 8kb:
+>> +	addr.sin_port = htons(port);
+> 
+> Here as well, the htons() should be dropped.
 
-vsoc_x86:/data/local/tmp # dd if=/dev/zero of=test_file bs=1 count=256
-256+0 records in
-256+0 records out
-256 bytes (256 B) copied, 0.000927 s, 270 K/s
-vsoc_x86:/data/local/tmp # ls -ls
-total 8
-8 -rw-rw-rw- 1 root root 256 2019-07-24 19:30 test_file
+Fixed.
 
-It is also 8kb if I create it in /data/local, but not if I create a 
-directory at /data/testdir and create the file there.
-
-Perhaps the x-attributes are spilling out of the inode in some cases and 
-into a data block? I don't know enough about filesystems to say.
+thanks,
+steve
