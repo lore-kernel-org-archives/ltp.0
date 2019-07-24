@@ -1,49 +1,40 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 24 Jul 2019 11:27:15 +0200
-Subject: [LTP] [PATCH 1/2] Essential headers for BPF map creation
-In-Reply-To: <20190724080328.16145-2-rpalethorpe@suse.com>
-References: <20190724080328.16145-1-rpalethorpe@suse.com>
- <20190724080328.16145-2-rpalethorpe@suse.com>
-Message-ID: <20190724092715.GB4917@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 24 Jul 2019 17:27:04 +0800
+Subject: [LTP] [PATCH v3] syscalls/mbind0{2,3,4}: Add basic mbind tests
+In-Reply-To: <20190723115937.27247-1-chrubis@suse.cz>
+References: <20190723115937.27247-1-chrubis@suse.cz>
+Message-ID: <CAEemH2d2+X=qOvfb-B9r-CKTvOmC=0kuDGqci0XLFc3bM9U_fA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richie,
+Hi Cyril,
 
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+On Tue, Jul 23, 2019 at 7:59 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-> ---
->  include/lapi/bpf.h               | 242 +++++++++++++++++++++++++++++++
->  include/lapi/syscalls/aarch64.in |   1 +
->  include/lapi/syscalls/i386.in    |   1 +
->  include/lapi/syscalls/s390.in    |   1 +
->  include/lapi/syscalls/sparc.in   |   1 +
->  include/lapi/syscalls/x86_64.in  |   1 +
->  6 files changed, 247 insertions(+)
->  create mode 100644 include/lapi/bpf.h
+> +#include "tst_test.h"
+> +#include "tst_numa.h"
+> +
+> +#ifdef HAVE_NUMA_H
 
-> diff --git a/include/lapi/bpf.h b/include/lapi/bpf.h
-> new file mode 100644
-> index 000000000..369de0175
-> --- /dev/null
-> +++ b/include/lapi/bpf.h
-> @@ -0,0 +1,242 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2019 Richard Palethorpe <rpalethorpe@suse.com>
-> + *
-> + * Essential Extended Berkeley Packet Filter (eBPF) headers
-> + *
-> + * Mostly copied/adapted from linux/bpf.h and libbpf so that we can perform
-> + * some eBPF testing without any external dependencies.
-Probably the only sane way. But it will be uncomfortable to keep the header
-updated. Simple copy of include/uapi/linux/bpf.h would be easier
-(but we'd require to have kernel headers anyway (<linux/types.h> and
-<linux/bpf_common.h>).
+HAVE_NUMA_V2 is needed here, to avoid hitting cross-compilation failures.
+    https://travis-ci.com/wangli5665/ltp/builds/120315507
 
-Kind regards,
-Petr
+In case you missed some comments from Petr, plz see:
+    http://lists.linux.it/pipermail/ltp/2019-June/012226.html
+    http://lists.linux.it/pipermail/ltp/2019-June/012227.html
+
+> +
+> +       TEST(mbind(ptr, size, mode, bm->maskp, bm->size + 1, MPOL_MF_STRICT));
+> +
+
+Maybe we also need to move the tst_numa_unmap/numa_free_nodemask to
+here, in case of the mbind02 hit fail and return early.
+
+Besides these tiny issues, patch v3 looks good to me.
+
+--
+Regards,
+Li Wang
