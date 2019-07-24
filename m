@@ -1,40 +1,51 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 24 Jul 2019 17:27:04 +0800
-Subject: [LTP] [PATCH v3] syscalls/mbind0{2,3,4}: Add basic mbind tests
-In-Reply-To: <20190723115937.27247-1-chrubis@suse.cz>
-References: <20190723115937.27247-1-chrubis@suse.cz>
-Message-ID: <CAEemH2d2+X=qOvfb-B9r-CKTvOmC=0kuDGqci0XLFc3bM9U_fA@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 24 Jul 2019 11:30:47 +0200
+Subject: [LTP] [PATCH 0/2] [RFC] BPF testing
+In-Reply-To: <20190724080328.16145-1-rpalethorpe@suse.com>
+References: <20190724080328.16145-1-rpalethorpe@suse.com>
+Message-ID: <20190724093047.GC4917@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Richie,
 
-On Tue, Jul 23, 2019 at 7:59 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+> Hello,
 
-> +#include "tst_test.h"
-> +#include "tst_numa.h"
-> +
-> +#ifdef HAVE_NUMA_H
+> This patch set introduces a very basic test which kicks the tires of the bpf
+> system call. It doesn't actually load a eBPF program, I will create another
+> test for that. However I have some concerns which I will discuss while doing
+> that.
+Good start, great.
 
-HAVE_NUMA_V2 is needed here, to avoid hitting cross-compilation failures.
-    https://travis-ci.com/wangli5665/ltp/builds/120315507
+> There are already extensive BPF tests in the kernel selftests. These appear to
+> be quite complex and test a variety of functionality. They also are far less
+> structured than LTP's modern tests and are tied to the kernel tree which makes
+> using them in QA a pain. There are also some tests in the BCC project, which
+> may test the kernel as a byproduct.
+Yep, this is true for other tests in kselftest tree.
 
-In case you missed some comments from Petr, plz see:
-    http://lists.linux.it/pipermail/ltp/2019-June/012226.html
-    http://lists.linux.it/pipermail/ltp/2019-June/012227.html
+> So there are a number of options which are not necessarily mutually exclusive:
 
-> +
-> +       TEST(mbind(ptr, size, mode, bm->maskp, bm->size + 1, MPOL_MF_STRICT));
-> +
+> 1) Port (some of) the selftests to the LTP.
+> 2) Port the LTP library to the selftests.
+> 3) Focus the LTP's BPF tests on reproducing specific high impact bugs.
 
-Maybe we also need to move the tst_numa_unmap/numa_free_nodemask to
-here, in case of the mbind02 hit fail and return early.
+> This patch set copies in the necessary headers so that we have zero external
+> dependencies.
 
-Besides these tiny issues, patch v3 looks good to me.
+> I will also use raw byte code for the program test which is at
+> least acceptable for trivial programs. So we do not need BCC or Clang/LLVM
+> with eBPF support or matching kernel sources to generate offsets into internal
+> structures.
++1
 
---
-Regards,
-Li Wang
+> For the time being atleast my preference would be for (3) while avoiding
+> taking on any dependencies to ensure those tests are run by users mostly
+> ignorant of BPF, but are still exposed to critical bugs in the BPF stack.
++1
+
+Kind regards,
+Petr
