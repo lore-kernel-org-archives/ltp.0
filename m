@@ -1,59 +1,79 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 25 Jul 2019 13:10:22 +0200
-Subject: [LTP] [PATCH v3 0/5] net/route: rewrite route-change-{dst, gw,
- if} into new API
-Message-ID: <20190725111027.18716-1-pvorel@suse.cz>
+Date: Thu, 25 Jul 2019 13:10:24 +0200
+Subject: [LTP] [PATCH v3 2/5] tst_net.sh: Add -m option to return mask in
+ tst_ipaddr_un()
+In-Reply-To: <20190725111027.18716-1-pvorel@suse.cz>
+References: <20190725111027.18716-1-pvorel@suse.cz>
+Message-ID: <20190725111027.18716-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
++ reformat docs a bit
 
-hope this version could be sufficient enough.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/tst_net.sh | 25 ++++++++++++++-----------
+ 1 file changed, 14 insertions(+), 11 deletions(-)
 
-I've added some support to tst_net.sh for general IP address handling.
-
-I'm thinking about adding support for adding general vlan support to
-tst_net.sh instead of using add_macvlan() (virt_lib.sh, ipsec_lib.sh and dhcp_lib.sh would use it),
-but that would be in separate patchset.
-
-Kind regards,
-Petr
-
-Petr Vorel (5):
-  tst_net.sh: enhance tst_add_ipaddr(), add tst_del_ipaddr()
-  tst_net.sh: Add -m option to return mask in tst_ipaddr_un()
-  network/route: Rewrite route-change-dst into new API
-  network/route: Rewrite route-change-gw into new API
-  network/route: Rewrite route-change-if into new API
-
- runtest/net_stress.route                      |  12 +-
- testcases/lib/tst_net.sh                      |  81 +++--
- .../network/stress/route/00_Descriptions.txt  |  54 +--
- .../network/stress/route/route-change-dst     |  33 ++
- .../network/stress/route/route-change-gw      |  38 ++
- .../network/stress/route/route-change-if      |  87 +++++
- testcases/network/stress/route/route-lib.sh   |  17 +
- .../network/stress/route/route4-change-dst    | 276 ---------------
- .../network/stress/route/route4-change-gw     | 292 ----------------
- .../network/stress/route/route4-change-if     | 324 ------------------
- .../network/stress/route/route6-change-dst    | 272 ---------------
- .../network/stress/route/route6-change-gw     | 292 ----------------
- .../network/stress/route/route6-change-if     | 323 -----------------
- 13 files changed, 249 insertions(+), 1852 deletions(-)
- create mode 100755 testcases/network/stress/route/route-change-dst
- create mode 100755 testcases/network/stress/route/route-change-gw
- create mode 100755 testcases/network/stress/route/route-change-if
- create mode 100644 testcases/network/stress/route/route-lib.sh
- delete mode 100644 testcases/network/stress/route/route4-change-dst
- delete mode 100644 testcases/network/stress/route/route4-change-gw
- delete mode 100644 testcases/network/stress/route/route4-change-if
- delete mode 100644 testcases/network/stress/route/route6-change-dst
- delete mode 100644 testcases/network/stress/route/route6-change-gw
- delete mode 100644 testcases/network/stress/route/route6-change-if
-
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index 54e975473..df91fd772 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -353,22 +353,25 @@ tst_ipaddr()
+ 
+ # Get IP address of unused network, specified either by type and counter
+ # or by net and host.
+-# tst_ipaddr_un [-cCOUNTER] [TYPE]
++# tst_ipaddr_un [-cCOUNTER] [-m] [TYPE]
+ # tst_ipaddr_un NET_ID [HOST_ID]
+-# TYPE: { lhost | rhost }; Default value is 'lhost'.
+-# COUNTER: Integer value for counting HOST_ID and NET_ID. Default is 1.
+-# NET_ID: Integer or hex value of net. For IPv4 is 3rd octet, for IPv6
+-# is 3rd hextet.
+-# HOST_ID: Integer or hex value of host. For IPv4 is 4th octet, for
+-# IPv6 is the last hextet. Default value is 0.
++#
++# OPTIONS
++# -c COUNTER: integer value for counting HOST_ID and NET_ID (default: 1)
++# -m: print also mask
++# TYPE: { lhost | rhost } (default: 'lhost')
++# NET_ID: integer or hex value of net (IPv4: 3rd octet, IPv6: 3rd hextet)
++# HOST_ID: integer or hex value of host (IPv4: 4th octet, IPv6: the last
++# hextet, default: 0)
+ tst_ipaddr_un()
+ {
+-	local counter host_id net_id max_host_id max_net_id tmp type
++	local counter host_id mask max_host_id max_net_id net_id tmp type
+ 	local OPTIND
+ 
+-	while getopts "c:" opt; do
++	while getopts "c:m" opt; do
+ 		case $opt in
+ 			c) counter="$OPTARG";;
++			m) [ "$TST_IPV6" ] && mask="/64" || mask="/24";;
+ 		esac
+ 	done
+ 	shift $(($OPTIND - 1))
+@@ -405,14 +408,14 @@ tst_ipaddr_un()
+ 	host_id=$((host_id % max_net_id))
+ 
+ 	if [ -z "$TST_IPV6" ]; then
+-		echo "${IPV4_NET16_UNUSED}.${net_id}.${host_id}"
++		echo "${IPV4_NET16_UNUSED}.${net_id}.${host_id}${mask}"
+ 		return
+ 	fi
+ 
+ 	[ $host_id -gt 0 ] && host_id="$(printf %x $host_id)" || host_id=
+ 	[ $net_id -gt 0 ] && net_id="$(printf %x $net_id)" || net_id=
+ 	[ "$net_id" ] && net_id=":$net_id"
+-	echo "${IPV6_NET32_UNUSED}${net_id}::${host_id}"
++	echo "${IPV6_NET32_UNUSED}${net_id}::${host_id}${mask}"
+ }
+ 
+ # tst_init_iface [TYPE] [LINK]
 -- 
 2.22.0
 
