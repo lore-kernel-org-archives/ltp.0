@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 25 Jul 2019 15:26:27 +0200
-Subject: [LTP] 56cbb429d9: ltp.fs_fill.fail
-In-Reply-To: <20190725110944.GA22106@shao2-debian>
-References: <20190725110944.GA22106@shao2-debian>
-Message-ID: <20190725132617.GA23135@rei.lan>
+Date: Thu, 25 Jul 2019 15:48:02 +0200
+Subject: [LTP] [PATCH v1] timers/timer_create: Add test for
+ CVE-2017-18344
+In-Reply-To: <20190725115724.30055-1-camann@suse.com>
+References: <20190725115724.30055-1-camann@suse.com>
+Message-ID: <20190725134802.GB23135@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,23 +12,14 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> tst_test.c:1161: INFO: Testing on vfat
-> tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
-> mkfs.vfat: unable to open /dev/loop0: Device or resource busy
-> tst_mkfs.c:101: BROK: mkfs.vfat:1: tst_test.c failed with 741
+> In kernels prior to 4.14.8 (missing commit cef31d9af908)
+> the sigevent.sigev_notify field is not properly checked
+> when creating a timer using timer_create(2).
+> This can be used to read arbitrary kernel memory.
 
-This looks like mkfs.vfat got EBUSY after the loop device was
-succesfully umounted.
-
-We do run the test in a loop for several filesystems and the loop
-generally does:
-
-next:
-	mkfs
-	mount
-	test
-	umount
-	goto next;
+This is fine but I would like to move the timers into the syscalls
+directory before we start to add new testcases. Should I do the move or
+will you send a patch?
 
 -- 
 Cyril Hrubis
