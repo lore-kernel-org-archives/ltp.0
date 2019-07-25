@@ -1,51 +1,27 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 25 Jul 2019 16:45:50 +0200
-Subject: [LTP] [PATCH] tst_timer: fix verification of execution time
-In-Reply-To: <1563992624-4968-3-git-send-email-piotr.krzysztof.gawel@gmail.com>
-References: <1563992624-4968-1-git-send-email-piotr.krzysztof.gawel@gmail.com>
- <1563992624-4968-3-git-send-email-piotr.krzysztof.gawel@gmail.com>
-Message-ID: <20190725144450.GB24513@rei.lan>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 25 Jul 2019 09:32:13 -0700
+Subject: [LTP] 56cbb429d9: ltp.fs_fill.fail
+In-Reply-To: <20190725132617.GA23135@rei.lan>
+References: <20190725110944.GA22106@shao2-debian>
+ <20190725132617.GA23135@rei.lan>
+Message-ID: <CAHk-=wg+yRjY_AUrjbgrN59OeGAWMF_q=-Dqf2cYtVzoY01j7Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Each sample needs to be in range:
->     t < s[i] < t + threshold
-> Thus for i from the interval [d...n]:
->     (n-d)*t < sum(s[d...n]) < (n-d)*(t + threshold)
-> This patch fixes that check.
+On Thu, Jul 25, 2019 at 6:26 AM Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+> This looks like mkfs.vfat got EBUSY after the loop device was
+> succesfully umounted.
 
-As far as I can tell the function compute_treshold() multiplies the
-threshold per call by keep_samples already, so it's a threashold per run
-not a treshold per call, or do I miss something?
+Hmm. Smells like the RCU-delaying got triggered again.
 
-> Signed-off-by: Piotr Gawel <piotr.krzysztof.gawel@gmail.com>
-> ---
->  lib/tst_timer_test.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/lib/tst_timer_test.c b/lib/tst_timer_test.c
-> index f6459e5..4508e29 100644
-> --- a/lib/tst_timer_test.c
-> +++ b/lib/tst_timer_test.c
-> @@ -306,7 +306,7 @@ void do_timer_test(long long usec, unsigned int nsamples)
->  		samples[nsamples-1], samples[0], median,
->  		1.00 * trunc_mean / keep_samples, discard);
->  
-> -	if (trunc_mean > (nsamples - discard) * usec + threshold) {
-> +	if (trunc_mean > keep_samples * (usec + threshold)) {
->  		tst_res(TFAIL, "%s slept for too long", scall);
->  		if (!print_frequency_plot)
-> -- 
-> 2.7.4
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+We have that "synchronize_rcu_expedited()" in namespace_unlock(),
+which is so that everything should be done by the time we return to
+user space.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Al, maybe that RCU synchronization should be after the mntput()s?
+
+               Linus
