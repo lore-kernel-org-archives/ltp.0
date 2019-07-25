@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 25 Jul 2019 15:48:02 +0200
-Subject: [LTP] [PATCH v1] timers/timer_create: Add test for
- CVE-2017-18344
-In-Reply-To: <20190725115724.30055-1-camann@suse.com>
-References: <20190725115724.30055-1-camann@suse.com>
-Message-ID: <20190725134802.GB23135@rei.lan>
+Date: Thu, 25 Jul 2019 16:23:40 +0200
+Subject: [LTP] [PATCH 0/2] [RFC] BPF testing
+In-Reply-To: <20190724080328.16145-1-rpalethorpe@suse.com>
+References: <20190724080328.16145-1-rpalethorpe@suse.com>
+Message-ID: <20190725142315.GC23135@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,14 +11,34 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> In kernels prior to 4.14.8 (missing commit cef31d9af908)
-> the sigevent.sigev_notify field is not properly checked
-> when creating a timer using timer_create(2).
-> This can be used to read arbitrary kernel memory.
+> This patch set introduces a very basic test which kicks the tires of the bpf
+> system call. It doesn't actually load a eBPF program, I will create another
+> test for that. However I have some concerns which I will discuss while doing
+> that.
+> 
+> There are already extensive BPF tests in the kernel selftests. These appear to
+> be quite complex and test a variety of functionality. They also are far less
+> structured than LTP's modern tests and are tied to the kernel tree which makes
+> using them in QA a pain. There are also some tests in the BCC project, which
+> may test the kernel as a byproduct.
+> 
+> So there are a number of options which are not necessarily mutually exclusive:
+> 
+> 1) Port (some of) the selftests to the LTP.
+> 2) Port the LTP library to the selftests.
+> 3) Focus the LTP's BPF tests on reproducing specific high impact bugs.
 
-This is fine but I would like to move the timers into the syscalls
-directory before we start to add new testcases. Should I do the move or
-will you send a patch?
+The option 3 sounds good, just FYI there are CVEs some with POCs for BPF,
+just by googling "ebpf CVE" you got some:
+
+https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16995
+https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-7308
+
+Also cloudfare blog seems to be very relevant:
+
+https://blog.cloudflare.com/ebpf-cant-count/
+
+And there are some test stuffed in linux/samples/bpf/ as well.
 
 -- 
 Cyril Hrubis
