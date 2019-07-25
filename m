@@ -1,27 +1,16 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 25 Jul 2019 09:32:13 -0700
-Subject: [LTP] 56cbb429d9: ltp.fs_fill.fail
-In-Reply-To: <20190725132617.GA23135@rei.lan>
-References: <20190725110944.GA22106@shao2-debian>
- <20190725132617.GA23135@rei.lan>
-Message-ID: <CAHk-=wg+yRjY_AUrjbgrN59OeGAWMF_q=-Dqf2cYtVzoY01j7Q@mail.gmail.com>
+From: piotr.krzysztof.gawel <piotr.krzysztof.gawel@gmail.com>
+Date: Thu, 25 Jul 2019 20:04:24 +0200
+Subject: [LTP] [PATCH] tst_timer: fix verification of execution time
+In-Reply-To: <20190725144450.GB24513@rei.lan>
+Message-ID: <5d39ef2b.1c69fb81.d3010.b8ef@mx.google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Jul 25, 2019 at 6:26 AM Cyril Hrubis <chrubis@suse.cz> wrote:
->
-> This looks like mkfs.vfat got EBUSY after the loop device was
-> succesfully umounted.
-
-Hmm. Smells like the RCU-delaying got triggered again.
-
-We have that "synchronize_rcu_expedited()" in namespace_unlock(),
-which is so that everything should be done by the time we return to
-user space.
-
-Al, maybe that RCU synchronization should be after the mntput()s?
-
-               Linus
+Hi,Oops. I missed that. Please reject this patch.BR, PiotrWys?ano z mojego smartfona Samsung Galaxy.
+-------- Oryginalna wiadomo?? --------Od: Cyril Hrubis <chrubis@suse.cz> Data: 25.07.2019  16:45  (GMT+01:00) Do: Piotr Gawel <piotr.krzysztof.gawel@gmail.com> DW: ltp@lists.linux.it Temat: Re: [LTP] [PATCH] tst_timer: fix verification of execution time Hi!> Each sample needs to be in range:>???? t < s[i] < t + threshold> Thus for i from the interval [d...n]:>???? (n-d)*t < sum(s[d...n]) < (n-d)*(t + threshold)> This patch fixes that check.As far as I can tell the function compute_treshold() multiplies thethreshold per call by keep_samples already, so it's a threashold per runnot a treshold per call, or do I miss something?> Signed-off-by: Piotr Gawel <piotr.krzysztof.gawel@gmail.com>> --->? lib/tst_timer_test.c | 2 +->? 1 file changed, 1 insertion(+), 1 deletion(-)> > diff --git a/lib/tst_timer_test.c b/lib/tst_timer_test.c> index f6459e5..4508e29 100644> --- a/lib/tst_timer_test.c> +++ b/lib/tst_timer_test.c> @@ -306,7 +306,7 @@ void do_timer_test(long long usec, unsigned int nsamples)>? 		samples[nsamples-1], samples[0], median,>? 		1.00 * trunc_mean / keep_samples, discard);>? > -	if (trunc_mean > (nsamples - discard) * usec + threshold) {> +	if (trunc_mean > keep_samples * (usec + threshold)) {>? 		tst_res(TFAIL, "%s slept for too long", scall);>? 		if (!print_frequency_plot)> -- > 2.7.4> > > -- > Mailing list info: https://lists.linux.it/listinfo/ltp-- Cyril Hrubischrubis@suse.cz
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190725/2c4d35e6/attachment.htm>
