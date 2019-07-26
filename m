@@ -1,54 +1,77 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 26 Jul 2019 15:31:24 +0200
-Subject: [LTP] [PATCH v2] move_pages12: handle errno EBUSY for
- madvise(..., MADV_SOFT_OFFLINE)
-In-Reply-To: <CAEemH2c96sB1ZA_vnTxSaBy-v=G_WnR58LX+Wt=Q8=UxO0dNtQ@mail.gmail.com>
-References: <20190725033713.8551-1-liwang@redhat.com>
- <20190726121255.GA28028@rei.lan>
- <CAEemH2c96sB1ZA_vnTxSaBy-v=G_WnR58LX+Wt=Q8=UxO0dNtQ@mail.gmail.com>
-Message-ID: <20190726133124.GC28028@rei.lan>
+From: Khem Raj <raj.khem@gmail.com>
+Date: Fri, 26 Jul 2019 11:25:23 -0700
+Subject: [LTP] [PATCH 1/2] Add configure time check for getdents/getdents64
+ APIs
+Message-ID: <20190726182524.43149-1-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> -----system env-----
-> # uname -r
-> 5.3.0-rc1+
-> 
-> # numactl -H
-> available: 4 nodes (0-3)
-> node 0 cpus: 0 1 2 3 16 17 18 19
-> node 0 size: 32171 MB
-> node 0 free: 25358 MB
-> node 1 cpus: 4 5 6 7 20 21 22 23
-> node 1 size: 16125 MB
-> node 1 free: 5565 MB
-> node 2 cpus: 8 9 10 11 24 25 26 27
-> node 2 size: 96765 MB
-> node 2 free: 90646 MB
-> node 3 cpus: 12 13 14 15 28 29 30 31
-> node 3 size: 64482 MB
-> node 3 free: 60820 MB
-> node distances:
-> node   0   1   2   3
->   0:  10  11  11  11
->   1:  11  10  11  11
->   2:  11  11  10  11
->   3:  11  11  11  10
-> 
-> So, maybe we have to re-evaluate this patch V2 and to figure out why
-> the retry mmap() hitting SIGBUS fails.
+glibc 2.30 has added wrapper for getdents64 this will help in detecting
+right condition to use fallback
 
-One possibility would be that the numa_move_pages() triggers SIGBUS
-while we do the usleep() before we attempt to retry the mmap(). In that
-case the race was present in the test all the time but couldn't be
-triggered because the window where the memory is unmapped was very
-short. If that is the case we should as well set up a handler to SIGBUS
-and ignore it as well.
+Check for getdents API as well while here
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+---
+ configure.ac                                  | 2 ++
+ testcases/kernel/syscalls/getdents/getdents.h | 8 ++++++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+--- a/configure.ac
++++ b/configure.ac
+@@ -65,6 +65,8 @@ AC_CHECK_FUNCS([ \
+     fallocate \
+     fchownat \
+     fstatat \
++    getdents \
++    getdents64 \
+     kcmp \
+     mkdirat \
+     mknodat \
+--- a/testcases/kernel/syscalls/getdents/getdents.h
++++ b/testcases/kernel/syscalls/getdents/getdents.h
+@@ -23,7 +23,7 @@
+ #include <stdint.h>
+ #include "test.h"
+ #include "lapi/syscalls.h"
+-
++#include "config.h"
+ /*
+  * See fs/compat.c struct compat_linux_dirent
+  */
+@@ -34,12 +34,17 @@ struct linux_dirent {
+ 	char            d_name[];
+ };
+ 
++#if HAVE_GETDENTS
++#include <unistd.h>
++#else
+ static inline int
+ getdents(unsigned int fd, struct linux_dirent *dirp, unsigned int size)
+ {
+ 	return ltp_syscall(__NR_getdents, fd, dirp, size);
+ }
+ 
++#endif /* HAVE_GETDENTS */
++
+ struct linux_dirent64 {
+ 	uint64_t	d_ino;
+ 	int64_t		d_off;
+@@ -48,10 +53,13 @@ struct linux_dirent64 {
+ 	char		d_name[];
+ };
+ 
++#if HAVE_GETDENTS64
++#include <unistd.h>
++#else
+ static inline int
+ getdents64(unsigned int fd, struct linux_dirent64 *dirp64, unsigned int size)
+ {
+ 	return ltp_syscall(__NR_getdents64, fd, dirp64, size);
+ }
+-
++#endif /* HAVE_GETDENTS64 */
+ #endif /* GETDENTS_H */
