@@ -1,77 +1,74 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Fri, 26 Jul 2019 11:25:23 -0700
-Subject: [LTP] [PATCH 1/2] Add configure time check for getdents/getdents64
- APIs
-Message-ID: <20190726182524.43149-1-raj.khem@gmail.com>
+Date: Fri, 26 Jul 2019 11:25:24 -0700
+Subject: [LTP] [PATCH 2/2] check for RES_USE_INET6 during configure
+In-Reply-To: <20190726182524.43149-1-raj.khem@gmail.com>
+References: <20190726182524.43149-1-raj.khem@gmail.com>
+Message-ID: <20190726182524.43149-2-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-glibc 2.30 has added wrapper for getdents64 this will help in detecting
-right condition to use fallback
-
-Check for getdents API as well while here
+glibc 2.30 has remove RES_USE_INET6 define which has been on its way out
+since 2.26 release, this check ensures that we detect it before using it
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- configure.ac                                  | 2 ++
- testcases/kernel/syscalls/getdents/getdents.h | 8 ++++++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ configure.ac                                        | 13 +++++++++++++
+ testcases/network/multicast/mc_gethost/mc_gethost.c |  6 ++++++
+ 2 files changed, 19 insertions(+)
 
+diff --git a/configure.ac b/configure.ac
+index 2255b5c181..ed7acccb01 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -65,6 +65,8 @@ AC_CHECK_FUNCS([ \
-     fallocate \
-     fchownat \
-     fstatat \
-+    getdents \
-+    getdents64 \
-     kcmp \
-     mkdirat \
-     mknodat \
---- a/testcases/kernel/syscalls/getdents/getdents.h
-+++ b/testcases/kernel/syscalls/getdents/getdents.h
-@@ -23,7 +23,7 @@
- #include <stdint.h>
- #include "test.h"
- #include "lapi/syscalls.h"
--
+@@ -91,6 +91,19 @@ AC_CHECK_FUNCS([ \
+     vmsplice \
+ ])
+ 
++#check defines
++AC_MSG_CHECKING([for RES_USE_INET6])
++AC_COMPILE_IFELSE( [AC_LANG_PROGRAM([[#include <resolv.h>]],
++  [[char dummy[RES_USE_INET6];]])],
++  [
++    AC_MSG_RESULT([yes])
++    AC_DEFINE_UNQUOTED([HAVE_RES_USE_INET6], 1, [Define to 1 if you have the RES_USE_INET6 macro.])
++  ],
++  [
++    AC_MSG_RESULT([no])
++    AC_DEFINE_UNQUOTED([HAVE_RES_USE_INET6], 0, [Define to 1 if you have the RES_USE_INET6 macro.])
++  ]
++)
+ # Tools knobs
+ 
+ # Expect
+diff --git a/testcases/network/multicast/mc_gethost/mc_gethost.c b/testcases/network/multicast/mc_gethost/mc_gethost.c
+index 9cc15d086b..d1cae5441a 100644
+--- a/testcases/network/multicast/mc_gethost/mc_gethost.c
++++ b/testcases/network/multicast/mc_gethost/mc_gethost.c
+@@ -17,6 +17,8 @@
+ #include <string.h>
+ #include <stdlib.h>
+ 
 +#include "config.h"
- /*
-  * See fs/compat.c struct compat_linux_dirent
-  */
-@@ -34,12 +34,17 @@ struct linux_dirent {
- 	char            d_name[];
- };
- 
-+#if HAVE_GETDENTS
-+#include <unistd.h>
-+#else
- static inline int
- getdents(unsigned int fd, struct linux_dirent *dirp, unsigned int size)
- {
- 	return ltp_syscall(__NR_getdents, fd, dirp, size);
- }
- 
-+#endif /* HAVE_GETDENTS */
 +
- struct linux_dirent64 {
- 	uint64_t	d_ino;
- 	int64_t		d_off;
-@@ -48,10 +53,13 @@ struct linux_dirent64 {
- 	char		d_name[];
- };
- 
-+#if HAVE_GETDENTS64
-+#include <unistd.h>
+ #ifndef LOG_PERROR
+ #define LOG_PERROR 0
+ #endif
+@@ -50,8 +52,12 @@ usage:
+ 		argv++, argc--;
+ 	}
+ 	if (argc >= 1 && !strcmp(*argv, "-6")) {
++#if HAVE_RES_USE_INET6
+ 		af = AF_INET6, size = IN6ADDRSZ;
+ 		_res.options |= RES_USE_INET6;
 +#else
- static inline int
- getdents64(unsigned int fd, struct linux_dirent64 *dirp64, unsigned int size)
- {
- 	return ltp_syscall(__NR_getdents64, fd, dirp64, size);
- }
--
-+#endif /* HAVE_GETDENTS64 */
- #endif /* GETDENTS_H */
++		af = AF_INET, size = INADDRSZ;
++#endif
+ 		argv++, argc--;
+ 	}
+ 	if (argc >= 1 && !strcmp(*argv, "-f")) {
+-- 
+2.22.0
+
