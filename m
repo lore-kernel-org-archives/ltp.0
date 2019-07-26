@@ -1,29 +1,43 @@
-From: Steve Muckle <smuckle@google.com>
-Date: Thu, 25 Jul 2019 16:55:26 -0700
-Subject: [LTP] [PATCH] syscalls/statx01: loosen the stx_blocks check
-In-Reply-To: <20190725124844.GB11617@rei.lan>
-References: <20190722194439.161904-1-smuckle@google.com>
- <20190723110306.GB22630@rei.lan>
- <1be1f0b8-170a-ac92-b86f-924e2d7f2295@google.com>
- <20190724115735.GC17426@rei.lan>
- <75ded79c-da38-b648-fcfd-a423cc5f0e89@google.com>
- <20190725124844.GB11617@rei.lan>
-Message-ID: <e3b3658d-5698-5df5-81c7-d8946457c36a@google.com>
+From: Al Viro <viro@zeniv.linux.org.uk>
+Date: Fri, 26 Jul 2019 01:00:32 +0100
+Subject: [LTP] 56cbb429d9: ltp.fs_fill.fail
+In-Reply-To: <20190725180428.GH1131@ZenIV.linux.org.uk>
+References: <20190725110944.GA22106@shao2-debian>
+ <20190725132617.GA23135@rei.lan>
+ <CAHk-=wg+yRjY_AUrjbgrN59OeGAWMF_q=-Dqf2cYtVzoY01j7Q@mail.gmail.com>
+ <20190725180428.GH1131@ZenIV.linux.org.uk>
+Message-ID: <20190726000032.GK1131@ZenIV.linux.org.uk>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 7/25/19 5:48 AM, Cyril Hrubis wrote:
->> Perhaps the x-attributes are spilling out of the inode in some cases and
->> into a data block? I don't know enough about filesystems to say.
+On Thu, Jul 25, 2019 at 07:04:28PM +0100, Al Viro wrote:
+> On Thu, Jul 25, 2019 at 09:32:13AM -0700, Linus Torvalds wrote:
+> > On Thu, Jul 25, 2019 at 6:26 AM Cyril Hrubis <chrubis@suse.cz> wrote:
+> > >
+> > > This looks like mkfs.vfat got EBUSY after the loop device was
+> > > succesfully umounted.
+> > 
+> > Hmm. Smells like the RCU-delaying got triggered again.
+> > 
+> > We have that "synchronize_rcu_expedited()" in namespace_unlock(),
+> > which is so that everything should be done by the time we return to
+> > user space.
+> > 
+> > Al, maybe that RCU synchronization should be after the mntput()s?
 > 
-> That may be, you can try to list these with getfattr.
+> There are several interesting issues in there, but synchronize_rcu()
+> should be between zeroing ->mnt_ns and dropping the final refs.
+> I'm digging through that crap right now; at least one bug is dealt
+> with by #fixes, but there's more, unfortunately.
 
-This turned out to be because of ext4 per-file encryption which adds 
-another x-attr, possibly causing the allocation of another block for 
-xattrs. This wasn't apparent initially because the encryption xattr is 
-hidden and not reported by getfattr.
+No, it's not synchronize_rcu().  It's a bug dealt with in vfs.git #fixes,
+triggering the struct mount leak in mount_subtree(), which is used
+by btrfs.  Immediately prior to vfat in their list...
 
-I'll send out an updated patch.
+(oh, and AFAICS "more" in the above had been a mismerge in -next, so
+it might really be all there is to it)
+
+Folks, see if vfs.git #fixes solves that one.
