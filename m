@@ -1,74 +1,34 @@
-From: Khem Raj <raj.khem@gmail.com>
-Date: Fri, 26 Jul 2019 11:25:24 -0700
-Subject: [LTP] [PATCH 2/2] check for RES_USE_INET6 during configure
-In-Reply-To: <20190726182524.43149-1-raj.khem@gmail.com>
-References: <20190726182524.43149-1-raj.khem@gmail.com>
-Message-ID: <20190726182524.43149-2-raj.khem@gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 26 Jul 2019 20:50:04 +0200
+Subject: [LTP] [PATCH] syscalls/mprotect04: Fix compilation error for
+ ia64
+In-Reply-To: <20190726124752.GB28028@rei.lan>
+References: <20190726092110.13116-1-pvorel@suse.cz>
+ <1968200096.2791881.1564143777013.JavaMail.zimbra@redhat.com>
+ <20190726122830.GA4254@dell5510> <20190726124752.GB28028@rei.lan>
+Message-ID: <20190726185004.GA12472@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-glibc 2.30 has remove RES_USE_INET6 define which has been on its way out
-since 2.26 release, this check ensures that we detect it before using it
+Hi Cyril,
 
-Signed-off-by: Khem Raj <raj.khem@gmail.com>
----
- configure.ac                                        | 13 +++++++++++++
- testcases/network/multicast/mc_gethost/mc_gethost.c |  6 ++++++
- 2 files changed, 19 insertions(+)
+> Hi!
+> > > Thanks, I missed the ia64-specific code. RHEL dropped support for
+> > > ia64 in RHEL6, and RHEL5 will likely be EOL in ~6 months, so I'm
+> > > fine either way.
+> > Thanks for a quick reply. So it's up to Cyril, whether keep the
+> > support or not.
 
-diff --git a/configure.ac b/configure.ac
-index 2255b5c181..ed7acccb01 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -91,6 +91,19 @@ AC_CHECK_FUNCS([ \
-     vmsplice \
- ])
- 
-+#check defines
-+AC_MSG_CHECKING([for RES_USE_INET6])
-+AC_COMPILE_IFELSE( [AC_LANG_PROGRAM([[#include <resolv.h>]],
-+  [[char dummy[RES_USE_INET6];]])],
-+  [
-+    AC_MSG_RESULT([yes])
-+    AC_DEFINE_UNQUOTED([HAVE_RES_USE_INET6], 1, [Define to 1 if you have the RES_USE_INET6 macro.])
-+  ],
-+  [
-+    AC_MSG_RESULT([no])
-+    AC_DEFINE_UNQUOTED([HAVE_RES_USE_INET6], 0, [Define to 1 if you have the RES_USE_INET6 macro.])
-+  ]
-+)
- # Tools knobs
- 
- # Expect
-diff --git a/testcases/network/multicast/mc_gethost/mc_gethost.c b/testcases/network/multicast/mc_gethost/mc_gethost.c
-index 9cc15d086b..d1cae5441a 100644
---- a/testcases/network/multicast/mc_gethost/mc_gethost.c
-+++ b/testcases/network/multicast/mc_gethost/mc_gethost.c
-@@ -17,6 +17,8 @@
- #include <string.h>
- #include <stdlib.h>
- 
-+#include "config.h"
-+
- #ifndef LOG_PERROR
- #define LOG_PERROR 0
- #endif
-@@ -50,8 +52,12 @@ usage:
- 		argv++, argc--;
- 	}
- 	if (argc >= 1 && !strcmp(*argv, "-6")) {
-+#if HAVE_RES_USE_INET6
- 		af = AF_INET6, size = IN6ADDRSZ;
- 		_res.options |= RES_USE_INET6;
-+#else
-+		af = AF_INET, size = INADDRSZ;
-+#endif
- 		argv++, argc--;
- 	}
- 	if (argc >= 1 && !strcmp(*argv, "-f")) {
--- 
-2.22.0
+> Hmm, the last processors were made in 2017 but looking at TOP500 systems
+> there was peek for itanim in 2004 and there were pretty nonexistent
+> since 2012. Given that officially supported distros are going EOL soon
+> enough I do not think that it makes sense to keep itanium specific code
+> just so that 0.1% of our tests works on these processors.
+Agree. OK, I'll remove ia64 specific code.
 
+
+Kind regards,
+Petr
