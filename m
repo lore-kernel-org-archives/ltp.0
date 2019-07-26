@@ -1,43 +1,34 @@
-From: Al Viro <viro@zeniv.linux.org.uk>
-Date: Fri, 26 Jul 2019 01:00:32 +0100
-Subject: [LTP] 56cbb429d9: ltp.fs_fill.fail
-In-Reply-To: <20190725180428.GH1131@ZenIV.linux.org.uk>
-References: <20190725110944.GA22106@shao2-debian>
- <20190725132617.GA23135@rei.lan>
- <CAHk-=wg+yRjY_AUrjbgrN59OeGAWMF_q=-Dqf2cYtVzoY01j7Q@mail.gmail.com>
- <20190725180428.GH1131@ZenIV.linux.org.uk>
-Message-ID: <20190726000032.GK1131@ZenIV.linux.org.uk>
+From: Steve Muckle <smuckle@google.com>
+Date: Thu, 25 Jul 2019 17:07:27 -0700
+Subject: [LTP] [PATCH v2] syscalls/statx01: loosen the stx_blocks check
+Message-ID: <20190726000727.16842-1-smuckle@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Jul 25, 2019 at 07:04:28PM +0100, Al Viro wrote:
-> On Thu, Jul 25, 2019 at 09:32:13AM -0700, Linus Torvalds wrote:
-> > On Thu, Jul 25, 2019 at 6:26 AM Cyril Hrubis <chrubis@suse.cz> wrote:
-> > >
-> > > This looks like mkfs.vfat got EBUSY after the loop device was
-> > > succesfully umounted.
-> > 
-> > Hmm. Smells like the RCU-delaying got triggered again.
-> > 
-> > We have that "synchronize_rcu_expedited()" in namespace_unlock(),
-> > which is so that everything should be done by the time we return to
-> > user space.
-> > 
-> > Al, maybe that RCU synchronization should be after the mntput()s?
-> 
-> There are several interesting issues in there, but synchronize_rcu()
-> should be between zeroing ->mnt_ns and dropping the final refs.
-> I'm digging through that crap right now; at least one bug is dealt
-> with by #fixes, but there's more, unfortunately.
+Extended attributes may cause an extra block to be allocated for a file.
+Loosen the test to accommodate this.
 
-No, it's not synchronize_rcu().  It's a bug dealt with in vfs.git #fixes,
-triggering the struct mount leak in mount_subtree(), which is used
-by btrfs.  Immediately prior to vfat in their list...
+Signed-off-by: Steve Muckle <smuckle@google.com>
+---
+ testcases/kernel/syscalls/statx/statx01.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-(oh, and AFAICS "more" in the above had been a mismerge in -next, so
-it might really be all there is to it)
+diff --git a/testcases/kernel/syscalls/statx/statx01.c b/testcases/kernel/syscalls/statx/statx01.c
+index 23ea99b4a..c3ba94394 100644
+--- a/testcases/kernel/syscalls/statx/statx01.c
++++ b/testcases/kernel/syscalls/statx/statx01.c
+@@ -92,7 +92,7 @@ static void test_normal_file(void)
+ 			buff.stx_mode, MODE);
+ 
+ 
+-	if (buff.stx_blocks <= buff.stx_blksize/512)
++	if (buff.stx_blocks <= buff.stx_blksize/512 * 2)
+ 		tst_res(TPASS, "stx_blocks(%"PRIu64") is valid",
+ 			buff.stx_blocks);
+ 	else
+-- 
+2.22.0.709.g102302147b-goog
 
-Folks, see if vfs.git #fixes solves that one.
