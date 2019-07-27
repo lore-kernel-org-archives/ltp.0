@@ -1,8 +1,8 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Sat, 27 Jul 2019 15:52:36 +0800
-Subject: [LTP] [PATCH] syscalls/prctl08: New test for prctl() with PR_{SET,
- GET}_TIMERSLACK
-Message-ID: <1564213956-2409-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Date: Sat, 27 Jul 2019 16:27:11 +0800
+Subject: [LTP] [PATCH v2] syscalls/prctl08: New test for prctl() with
+ PR_{SET, GET}_TIMERSLACK
+Message-ID: <1564216031-2973-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,13 +10,17 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+-----
+v1->v2:
+   1)remove useless struct member
+   2)compare time should be (sleep + timer_slack) if time is not enough large
 ---
  include/lapi/prctl.h                       |   5 +
  runtest/syscalls                           |   1 +
  testcases/kernel/syscalls/prctl/.gitignore |   1 +
  testcases/kernel/syscalls/prctl/Makefile   |   1 +
- testcases/kernel/syscalls/prctl/prctl08.c  | 116 +++++++++++++++++++++
- 5 files changed, 124 insertions(+)
+ testcases/kernel/syscalls/prctl/prctl08.c  | 118 +++++++++++++++++++++
+ 5 files changed, 126 insertions(+)
  create mode 100644 testcases/kernel/syscalls/prctl/prctl08.c
 
 diff --git a/include/lapi/prctl.h b/include/lapi/prctl.h
@@ -69,10 +73,10 @@ index cf19507c0..d3c41ff4e 100644
  include $(top_srcdir)/include/mk/generic_leaf_target.mk
 diff --git a/testcases/kernel/syscalls/prctl/prctl08.c b/testcases/kernel/syscalls/prctl/prctl08.c
 new file mode 100644
-index 000000000..ed22571b4
+index 000000000..92b9bfe41
 --- /dev/null
 +++ b/testcases/kernel/syscalls/prctl/prctl08.c
-@@ -0,0 +1,116 @@
+@@ -0,0 +1,118 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
@@ -87,7 +91,7 @@ index 000000000..ed22571b4
 + * 3)The maximum timer slack value is ULONG_MAX. On 32bit machines, it
 + *   is a valid value(about 4s). On 64bit machines, it is about 500 years
 + *   and no person will set this over 4s.  prctl return value is int, so
-+ *   we test the maximum value is INT_MAX.
++ *   we test themaximum value is INT_MAX.
 + * 4)we also check /proc/[pid]/timerslack_ns if it is supported.
 + */
 +
@@ -105,12 +109,11 @@ index 000000000..ed22571b4
 +
 +static struct tcase {
 +	unsigned long setvalue;
-+	unsigned long expvalue;
-+	int flag;
++	unsigned long cmptime;
 +} tcases[] = {
-+	{1, 1, 0},
-+	{70000, 70000, 0},
-+	{INT_MAX, INT_MAX, 1},
++	{1, 50000},
++	{70000, 120000},
++	{INT_MAX, 50000},
 +};
 +
 +static int proc_flag = 1;
@@ -146,7 +149,9 @@ index 000000000..ed22571b4
 +{
 +	struct tcase *tc = &tcases[n];
 +	int pid;
-+	struct timespec timereq = { .tv_sec = tc->flag ? 2 : 0, .tv_nsec = tc->flag ? 0 : 50000 };
++
++	struct timespec timereq = { .tv_sec = 0, .tv_nsec = 50000 };
++	struct timespec timecmp = { .tv_sec = 0, .tv_nsec = tc->cmptime};
 +
 +	TEST(prctl(PR_SET_TIMERSLACK, tc->setvalue));
 +	if (TST_RET == -1) {
@@ -158,18 +163,19 @@ index 000000000..ed22571b4
 +
 +	pid = SAFE_FORK();
 +	if (pid == 0) {
-+		check_get_timerslack("child process", tc->expvalue);
++		check_get_timerslack("child process", tc->setvalue);
 +		/* A value of 0 means using default */
 +		prctl(PR_SET_TIMERSLACK, 0);
-+		check_get_timerslack("After set 0, child process", tc->expvalue);
++		check_get_timerslack("After set 0, child process", tc->setvalue);
 +
 +		tst_timer_start(CLOCK_MONOTONIC);
 +		TEST(nanosleep(&timereq, NULL));
 +		tst_timer_stop();
-+		if (tst_timespec_lt(tst_timer_elapsed(), timereq))
-+			tst_brk(TFAIL, "nanosleep() slept less than timereq");
 +
-+		tst_res(TPASS, "nanosleep() slept more than timereq, %llius",
++		if (tst_timespec_lt(tst_timer_elapsed(), timecmp))
++			tst_brk(TFAIL, "nanosleep() slept less than timecmp");
++
++		tst_res(TPASS, "nanosleep() slept more than timecmp, %llius",
 +				tst_timer_elapsed_us());
 +		exit(0);
 +	}
