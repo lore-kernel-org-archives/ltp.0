@@ -1,33 +1,34 @@
-From: Dave Wysochanski <dwysocha@redhat.com>
-Date: Mon, 29 Jul 2019 09:40:57 -0400
-Subject: [LTP] [SUNRPC] 661ccd4df3: ltp.proc01.fail
-In-Reply-To: <20190729095353.GS22106@shao2-debian>
-References: <20190729095353.GS22106@shao2-debian>
-Message-ID: <ee309a53cd55517886691c36152044a630da391c.camel@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 29 Jul 2019 15:56:55 +0200
+Subject: [LTP] [PATCH v5 2/3] syscalls/copy_file_range01: add
+ cross-device test
+In-Reply-To: <1563356676-2384-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <20190711125108.GB8709@rei>
+ <1563356676-2384-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1563356676-2384-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20190729135627.GA31077@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, 2019-07-29 at 17:53 +0800, kernel test robot wrote:
-> FYI, we noticed the following commit (built with gcc-7):
-> 
-> commit: 661ccd4df38fdcddfeb1f314ac1a1de6c947c3f9 ("[RFC PATCH]
-> SUNRPC: Harden the cache 'channel' interface to only allow legitimate
-> daemons")
-> url: 
-> https://github.com/0day-ci/linux/commits/Dave-Wysochanski/SUNRPC-Harden-the-cache-channel-interface-to-only-allow-legitimate-daemons/20190727-042349
-> base: git://linux-nfs.org/~bfields/linux.git nfsd-next
-> 
+Hi,
+> Amir has relaxed cross-device constraint since kernel commit 5dae222a5(vfs:
+> allow copy_file_range to copy across devices), I think we can test it in
+> copy_file_range01.
 
-This patch is no good and should be NACKd.
+> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-Bruce, Neil please consider alternative patch:
-[RFC PATCH] SUNRPC: Track writers of the 'channel' file to improve cache_listeners_exist
+Whole patchset LGTM, but here we got quite a lot of failures after increasing
+test coverage with .all_filesystems = 1 (which use should be noted in commit
+message):
 
+copy_file_range02.c:120: FAIL: copy_file_range failed unexpectedly; expected EOVERFLOW, but got: EINVAL
+copy_file_range02.c:126: FAIL: copy_file_range returned wrong value: 16
+...
+copy_file_range02.c:126: FAIL: copy_file_range returned wrong value: 16
 
-Thanks.
-
-
-
+Kind regards,
+Petr
