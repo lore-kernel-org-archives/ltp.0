@@ -1,47 +1,64 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 29 Jul 2019 16:10:11 +0200
-Subject: [LTP] [PATCH v6 2/3] syscalls/copy_file_range01: add
- cross-device test
-In-Reply-To: <20190729140043.GB31077@dell5510>
-References: <5D30200B.4050306@cn.fujitsu.com>
- <1564030915-3211-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1564030915-3211-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190729140043.GB31077@dell5510>
-Message-ID: <20190729141011.GA1965@dell5510>
+Date: Mon, 29 Jul 2019 16:19:21 +0200
+Subject: [LTP] [PATCH 1/1] syscalls/ioctl08: Require btrfs
+In-Reply-To: <20190703154709.20863-1-pvorel@suse.cz>
+References: <20190703154709.20863-1-pvorel@suse.cz>
+Message-ID: <20190729141920.GA4040@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Amir,
 
-> > Amir has relaxed cross-device constraint since commit[1], I think we can test it in
-> > copy_file_range01.
-
-> > [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5dae222a5
-
-> > Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> > Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> Now sent to the correct patchset version:
-
-> Whole patchset LGTM, but here we got quite a lot of failures after increasing
-> test coverage with .all_filesystems = 1 (which use should be noted in commit
-> message):
-
-> copy_file_range02.c:120: FAIL: copy_file_range failed unexpectedly; expected EOVERFLOW, but got: EINVAL
-> copy_file_range02.c:126: FAIL: copy_file_range returned wrong value: 16
-> ...
-> copy_file_range02.c:126: FAIL: copy_file_range returned wrong value: 16
-
-Also .mount_device = 1 and .all_filesystems = 1 require
-.needs_root = 1 definition or you get
-
-tst_device.c:97: INFO: Not allowed to open /dev/loop-control. Are you root?: EACCES
-tst_device.c:132: INFO: No free devices found
-tst_device.c:308: BROK: Failed to acquire device
-
-BTW I wonder whether these could be detected automatically.
+> Test requires btrfs otherwise it fails:
+> WARNING: failed to open /dev/btrfs-control, skipping device
+> registration: No such file or directory
+> safe_macros.c:757: BROK: tst_test.c:752: mount(/dev/loop0, mnt_point,
+> btrfs, 0, (nil)) failed: ENODEV
+could you please test it?
 
 Kind regards,
 Petr
+https://patchwork.ozlabs.org/patch/1126923/
+
+> Cc: Christian Amann <camann@suse.com>
+> Reported-by: Amir Goldstein <amir73il@gmail.com>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Hi Amir,
+
+> thanks a lot for a report and sorry for longer time to reply (vacation).
+> Could you please test it? (I don't have any VM with kernel >= 4.5 && !btrfs).
+
+> Kind regards,
+> Petr
+
+>  testcases/kernel/syscalls/ioctl/ioctl08.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+
+> diff --git a/testcases/kernel/syscalls/ioctl/ioctl08.c b/testcases/kernel/syscalls/ioctl/ioctl08.c
+> index 8de80048c..dca898a65 100644
+> --- a/testcases/kernel/syscalls/ioctl/ioctl08.c
+> +++ b/testcases/kernel/syscalls/ioctl/ioctl08.c
+> @@ -112,6 +112,11 @@ static void setup(void)
+>  			sizeof(struct file_dedupe_range_info));
+>  }
+
+> +static const char *const needed_drivers[] = {
+> +	"btrfs",
+> +	NULL,
+> +};
+> +
+>  static struct tst_test test = {
+>  	.test = verify_ioctl,
+>  	.tcnt = ARRAY_SIZE(tcases),
+> @@ -122,6 +127,7 @@ static struct tst_test test = {
+>  	.mount_device = 1,
+>  	.mntpoint = MNTPOINT,
+>  	.dev_fs_type = "btrfs",
+> +	.needs_drivers = needed_drivers,
+>  };
+>  #else
+>  	TST_TEST_TCONF(
