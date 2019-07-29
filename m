@@ -1,64 +1,35 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 29 Jul 2019 16:19:21 +0200
-Subject: [LTP] [PATCH 1/1] syscalls/ioctl08: Require btrfs
-In-Reply-To: <20190703154709.20863-1-pvorel@suse.cz>
-References: <20190703154709.20863-1-pvorel@suse.cz>
-Message-ID: <20190729141920.GA4040@dell5510>
+Date: Mon, 29 Jul 2019 16:32:13 +0200
+Subject: [LTP] [PATCH] syscalls/mprotect04: Fix compilation error for
+ ia64
+In-Reply-To: <20190726185004.GA12472@x230>
+References: <20190726092110.13116-1-pvorel@suse.cz>
+ <1968200096.2791881.1564143777013.JavaMail.zimbra@redhat.com>
+ <20190726122830.GA4254@dell5510> <20190726124752.GB28028@rei.lan>
+ <20190726185004.GA12472@x230>
+Message-ID: <20190729143213.GB4040@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Amir,
+Hi Cyril, Jan,
 
-> Test requires btrfs otherwise it fails:
-> WARNING: failed to open /dev/btrfs-control, skipping device
-> registration: No such file or directory
-> safe_macros.c:757: BROK: tst_test.c:752: mount(/dev/loop0, mnt_point,
-> btrfs, 0, (nil)) failed: ENODEV
-could you please test it?
+> > Hi!
+> > > > Thanks, I missed the ia64-specific code. RHEL dropped support for
+> > > > ia64 in RHEL6, and RHEL5 will likely be EOL in ~6 months, so I'm
+> > > > fine either way.
+> > > Thanks for a quick reply. So it's up to Cyril, whether keep the
+> > > support or not.
+
+> > Hmm, the last processors were made in 2017 but looking at TOP500 systems
+> > there was peek for itanim in 2004 and there were pretty nonexistent
+> > since 2012. Given that officially supported distros are going EOL soon
+> > enough I do not think that it makes sense to keep itanium specific code
+> > just so that 0.1% of our tests works on these processors.
+> Agree. OK, I'll remove ia64 specific code.
+Merged as 5c60b7230. I'm sorry I forget to add your ack.
 
 Kind regards,
 Petr
-https://patchwork.ozlabs.org/patch/1126923/
-
-> Cc: Christian Amann <camann@suse.com>
-> Reported-by: Amir Goldstein <amir73il@gmail.com>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Hi Amir,
-
-> thanks a lot for a report and sorry for longer time to reply (vacation).
-> Could you please test it? (I don't have any VM with kernel >= 4.5 && !btrfs).
-
-> Kind regards,
-> Petr
-
->  testcases/kernel/syscalls/ioctl/ioctl08.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-
-> diff --git a/testcases/kernel/syscalls/ioctl/ioctl08.c b/testcases/kernel/syscalls/ioctl/ioctl08.c
-> index 8de80048c..dca898a65 100644
-> --- a/testcases/kernel/syscalls/ioctl/ioctl08.c
-> +++ b/testcases/kernel/syscalls/ioctl/ioctl08.c
-> @@ -112,6 +112,11 @@ static void setup(void)
->  			sizeof(struct file_dedupe_range_info));
->  }
-
-> +static const char *const needed_drivers[] = {
-> +	"btrfs",
-> +	NULL,
-> +};
-> +
->  static struct tst_test test = {
->  	.test = verify_ioctl,
->  	.tcnt = ARRAY_SIZE(tcases),
-> @@ -122,6 +127,7 @@ static struct tst_test test = {
->  	.mount_device = 1,
->  	.mntpoint = MNTPOINT,
->  	.dev_fs_type = "btrfs",
-> +	.needs_drivers = needed_drivers,
->  };
->  #else
->  	TST_TEST_TCONF(
