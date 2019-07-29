@@ -1,200 +1,125 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Sat, 27 Jul 2019 16:27:11 +0800
-Subject: [LTP] [PATCH v2] syscalls/prctl08: New test for prctl() with
- PR_{SET, GET}_TIMERSLACK
-Message-ID: <1564216031-2973-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 29 Jul 2019 09:27:32 +0800
+Subject: [LTP] [PATCH 2/2] syscalls/nanosleep04: Ported into new library
+In-Reply-To: <1564363652-3975-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1564363652-3975-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1564363652-3975-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
------
-v1->v2:
-   1)remove useless struct member
-   2)compare time should be (sleep + timer_slack) if time is not enough large
----
- include/lapi/prctl.h                       |   5 +
- runtest/syscalls                           |   1 +
- testcases/kernel/syscalls/prctl/.gitignore |   1 +
- testcases/kernel/syscalls/prctl/Makefile   |   1 +
- testcases/kernel/syscalls/prctl/prctl08.c  | 118 +++++++++++++++++++++
- 5 files changed, 126 insertions(+)
- create mode 100644 testcases/kernel/syscalls/prctl/prctl08.c
+Also add EINVAL test when tv_nsec is negative.
 
-diff --git a/include/lapi/prctl.h b/include/lapi/prctl.h
-index 8ee492259..0b4e196c3 100644
---- a/include/lapi/prctl.h
-+++ b/include/lapi/prctl.h
-@@ -19,6 +19,11 @@
- # define PR_SET_SECCOMP  22
- #endif
- 
-+#ifndef PR_SET_TIMERSLACK
-+# define PR_SET_TIMERSLACK 29
-+# define PR_GET_TIMERSLACK 30
-+#endif
-+
- #ifndef PR_SET_CHILD_SUBREAPER
- # define PR_SET_CHILD_SUBREAPER	36
- # define PR_GET_CHILD_SUBREAPER	37
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 0114b002b..48836f422 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -872,6 +872,7 @@ prctl04 prctl04
- prctl05 prctl05
- prctl06 prctl06
- prctl07 prctl07
-+prctl08 prctl08
- 
- pread01 pread01
- pread01_64 pread01_64
-diff --git a/testcases/kernel/syscalls/prctl/.gitignore b/testcases/kernel/syscalls/prctl/.gitignore
-index 2178db366..fe36a8e0f 100644
---- a/testcases/kernel/syscalls/prctl/.gitignore
-+++ b/testcases/kernel/syscalls/prctl/.gitignore
-@@ -6,3 +6,4 @@
- /prctl06
- /prctl06_execve
- /prctl07
-+/prctl08
-diff --git a/testcases/kernel/syscalls/prctl/Makefile b/testcases/kernel/syscalls/prctl/Makefile
-index cf19507c0..d3c41ff4e 100644
---- a/testcases/kernel/syscalls/prctl/Makefile
-+++ b/testcases/kernel/syscalls/prctl/Makefile
-@@ -21,5 +21,6 @@ top_srcdir		?= ../../../..
- include $(top_srcdir)/include/mk/testcases.mk
- 
- prctl07: LDLIBS += $(CAP_LIBS)
-+prctl08: LDLIBS+=-lrt
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/prctl/prctl08.c b/testcases/kernel/syscalls/prctl/prctl08.c
-new file mode 100644
-index 000000000..92b9bfe41
---- /dev/null
-+++ b/testcases/kernel/syscalls/prctl/prctl08.c
-@@ -0,0 +1,118 @@
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ .../kernel/syscalls/nanosleep/nanosleep04.c   | 69 +++++--------------
+ 1 file changed, 17 insertions(+), 52 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/nanosleep/nanosleep04.c b/testcases/kernel/syscalls/nanosleep/nanosleep04.c
+index f5108d026..572738c96 100644
+--- a/testcases/kernel/syscalls/nanosleep/nanosleep04.c
++++ b/testcases/kernel/syscalls/nanosleep/nanosleep04.c
+@@ -1,20 +1,10 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-+ *
-+ * Test PR_GET_TIMERSLACK and PR_SET_TIMERSLACK of prctl(2).
-+ * 1)Each thread has two associated timer slack values: a "default"
-+ *   value, and a "current" value. PR_SET_TIMERSLACK sets the "current"
-+ *   timer slack value for the calling thread.
-+ * 2)When a new thread is created, the two timer slack values are made
-+ *   the same as the "current" value of the creating thread.
-+ * 3)The maximum timer slack value is ULONG_MAX. On 32bit machines, it
-+ *   is a valid value(about 4s). On 64bit machines, it is about 500 years
-+ *   and no person will set this over 4s.  prctl return value is int, so
-+ *   we test themaximum value is INT_MAX.
-+ * 4)we also check /proc/[pid]/timerslack_ns if it is supported.
-+ */
-+
-+#include <sys/prctl.h>
-+#include <string.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <linux/limits.h>
-+#include "lapi/syscalls.h"
-+#include "lapi/prctl.h"
-+#include "tst_timer.h"
+ /*
+  * Copyright (c) International Business Machines  Corp., 2001
+  *  07/2001 Ported by Wayne Boyer
+  *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software Foundation,
+- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Ported to new library:
++ * 07/2019    Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+  */
+ 
+ /*
+@@ -27,60 +17,35 @@
+  */
+ 
+ #include <errno.h>
+-#include <unistd.h>
+-#include <fcntl.h>
+-#include <sys/wait.h>
+ #include <time.h>
+-
+-#include "test.h"
 +#include "tst_test.h"
-+
-+#define PROC_NS_PATH "/proc/self/timerslack_ns"
-+
-+static struct tcase {
-+	unsigned long setvalue;
-+	unsigned long cmptime;
-+} tcases[] = {
-+	{1, 50000},
-+	{70000, 120000},
-+	{INT_MAX, 50000},
-+};
-+
-+static int proc_flag = 1;
-+
-+static void check_proc_ns(char *message, unsigned long value)
-+{
-+	unsigned long proc_value;
-+
-+	SAFE_FILE_SCANF(PROC_NS_PATH, "%lu", &proc_value);
-+	if (proc_value == value)
-+		tst_res(TPASS, "%s %s  got %lu expectedly",
-+				message, PROC_NS_PATH, proc_value);
-+	else
-+		tst_res(TFAIL, "%s %s expected %lu got %lu",
-+				message, PROC_NS_PATH, value, proc_value);
-+}
-+
-+static void check_get_timerslack(char *message, unsigned long value)
-+{
-+	TEST(prctl(PR_GET_TIMERSLACK));
-+	if ((unsigned long)TST_RET == value)
-+		tst_res(TPASS, "%s prctl(PR_GET_TIMERSLACK) got %lu expectedly",
-+				message, value);
-+	else
-+		tst_res(TFAIL, "%s prctl(PR_GET_TIMERSLACK) expected %lu got %lu",
-+				message, value, TST_RET);
-+
-+	if (proc_flag)
-+		check_proc_ns(message, value);
-+}
-+
-+static void verify_prctl(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+	int pid;
-+
-+	struct timespec timereq = { .tv_sec = 0, .tv_nsec = 50000 };
-+	struct timespec timecmp = { .tv_sec = 0, .tv_nsec = tc->cmptime};
-+
-+	TEST(prctl(PR_SET_TIMERSLACK, tc->setvalue));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "prctl(PR_SET_TIMERSLACK, %lu) failed",
-+				tc->setvalue);
-+		return;
-+	}
-+	tst_res(TPASS, "prctl(PR_SET_TIMERSLACK, %lu) success", tc->setvalue);
-+
-+	pid = SAFE_FORK();
-+	if (pid == 0) {
-+		check_get_timerslack("child process", tc->setvalue);
-+		/* A value of 0 means using default */
-+		prctl(PR_SET_TIMERSLACK, 0);
-+		check_get_timerslack("After set 0, child process", tc->setvalue);
-+
-+		tst_timer_start(CLOCK_MONOTONIC);
-+		TEST(nanosleep(&timereq, NULL));
-+		tst_timer_stop();
-+
-+		if (tst_timespec_lt(tst_timer_elapsed(), timecmp))
-+			tst_brk(TFAIL, "nanosleep() slept less than timecmp");
-+
-+		tst_res(TPASS, "nanosleep() slept more than timecmp, %llius",
-+				tst_timer_elapsed_us());
-+		exit(0);
-+	}
-+}
-+
-+static void setup(void)
-+{
-+	if (access(PROC_NS_PATH, F_OK) == -1) {
-+		tst_res(TCONF, "proc doesn't support timerslack_ns interface");
-+		proc_flag = 0;
-+	}
-+}
-+
+ 
+ static struct timespec tcases[] = {
+ 	{.tv_sec = -5, .tv_nsec = 9999},
+ 	{.tv_sec = 0, .tv_nsec = 1000000000},
++	{.tv_sec = 1, .tv_nsec = -100},
+ };
+ 
+-char *TCID = "nanosleep04";
+-int TST_TOTAL = ARRAY_SIZE(tcases);
+-
+-static void setup(void);
+-
+-static void verify_nanosleep(struct timespec *tcase)
++static void verify_nanosleep(unsigned int n)
+ {
+-	TEST(nanosleep(tcase, NULL));
++	TEST(nanosleep(&tcases[n], NULL));
+ 
+-	if (TEST_RETURN != -1) {
+-		tst_resm(TFAIL, "nanosleep() succeded unexpectedly");
++	if (TST_RET != -1) {
++		tst_res(TFAIL, "nanosleep() succeded unexpectedly");
+ 		return;
+ 	}
+ 
+-	if (TEST_ERRNO != EINVAL) {
+-		tst_resm(TFAIL | TTERRNO,
+-		         "nanosleep() expected failure with EINVAL");
++	if (TST_ERR != EINVAL) {
++		tst_res(TFAIL | TTERRNO,
++			"nanosleep() failed,expected EINVAL, got");
+ 		return;
+ 	}
+ 
+-	tst_resm(TPASS, "nanoslep() failed with EINVAL");
+-}
+-
+-int main(int ac, char **av)
+-{
+-	int lc, i;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		for (i = 0; i < TST_TOTAL; i++)
+-			verify_nanosleep(&tcases[i]);
+-	}
+-
+-	tst_exit();
++	tst_res(TPASS, "nanosleep() failed with EINVAL");
+ }
+ 
+-static void setup(void)
+-{
+-	tst_sig(FORK, DEF_HANDLER, NULL);
 +static struct tst_test test = {
-+	.setup = setup,
-+	.test = verify_prctl,
++	.test = verify_nanosleep,
 +	.tcnt = ARRAY_SIZE(tcases),
-+	.forks_child = 1,
 +};
+ 
+-	TEST_PAUSE;
+-}
 -- 
 2.18.1
 
