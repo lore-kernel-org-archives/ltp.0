@@ -1,29 +1,40 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 29 Jul 2019 16:42:46 +0200
-Subject: [LTP] [PATCH v2 1/2] m4: remove some useless m4
-In-Reply-To: <20190729131619.GB27006@rei.lan>
-References: <1b8b7f73-fd31-58d2-5162-3648fa9729a5@163.com>
- <1563789167-2328-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190729122621.GB5872@dell5510> <20190729131619.GB27006@rei.lan>
-Message-ID: <20190729144227.GA8824@dell5510>
+Date: Mon, 29 Jul 2019 16:47:18 +0200
+Subject: [LTP] [PATCH 1/1] syscalls/ustat: Use __kernel_daddr_t instead
+ of daddr_t
+In-Reply-To: <20190718082655.GA24449@rei.lan>
+References: <20190617213138.15896-1-petr.vorel@gmail.com>
+ <20190717173456.GA5272@dell5510> <20190718082655.GA24449@rei.lan>
+Message-ID: <20190729144718.GB8824@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Cyril,
 
-> > > Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> > Acked-by: Petr Vorel <pvorel@suse.cz>
+> > > This fixes build for musl, which does not have <sys/ustat.h> nor
+> > > typedef daddr_t. Musl does not define these as ustat is deprecated
+> > > in favor of statfs() and daddr_t is ancient [1].
 
-> > Although I wonder whether mixing 4 changes (even related to autoconf)
-> > in single commit is a good idea (makes it a bit hard to review).
+> > > Other libc also does not have <sys/ustat.h> (ustat support was removed
+> > > from glibc in 2.28), but they have daddr_t.
 
-> Yes please, at least the SPDX conversion has to be in a separate patch.
-+1
+> > > This brings <linux/types.h> dependency for ustat testing.
 
-BTW m4/ltp-signalfd.m4 would require cleanup as well.
+> > > Typedef is needed as sparc and mips have __kernel_daddr_t long,
+> > > otherwise it's int.
+
+> > > [1] https://www.openwall.com/lists/musl/2019/06/10/1
+
+> I'm always worried when we use types starting with double underscores
+> but let's apply this one, we can always revert it in a case that it
+> breaks build somewhere.
+Thanks, merged.
+
+BTW <linux/types.h> is also checked in m4/ltp-signalfd.m4 so there is duplicity
+in check, but I gave up cleanup it now.
 
 Kind regards,
 Petr
