@@ -1,39 +1,38 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 29 Jul 2019 14:26:21 +0200
-Subject: [LTP] [PATCH v2 1/2] m4: remove some useless m4
-In-Reply-To: <1563789167-2328-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1b8b7f73-fd31-58d2-5162-3648fa9729a5@163.com>
- <1563789167-2328-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20190729122621.GB5872@dell5510>
+Date: Mon, 29 Jul 2019 14:35:57 +0200
+Subject: [LTP] [PATCH v2] syscalls/clock_gettime: Ported
+ clock_gettime03.c to new API
+In-Reply-To: <20190729121719.GA25075@rei.lan>
+References: <20190729120222.4717-1-pvorel@suse.cz>
+ <20190729121719.GA25075@rei.lan>
+Message-ID: <20190729123557.GA9131@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Cyril,
 
-> Since commit fe9d9218c, we have detected linux/securebits.h in
-> confiure.ac. one place used the HAVE_SECUREBITS defined), it only
-> controls compile. kernel/security/securebits/check_keepcaps.c has
-> HAVE_LINUX_SECUREBITS_H check in internal, so removing it is safe.
+> Hi!
+> > NOTE: test is still a mess, even after porting it.
+> > Cleaning it up would probably be its own patch as the best
+> > solution would be to rewrite it from scratch.
 
-> No testcase used these macros defined in ltp/time.m4, and these
-> (CLOCK_MONOTONIC_RAW, CLOCK_REALTIME_COARSE, CLOCK_MONOTONIC_COARSE)
-> have been defined in lapi/posix_clocks.h. Removing it is safe.
+> The patch looks good, acked.
 
-> FS_IOC_GETFLAGS and FS_IOC_SETFLAGS have been defined in lapi/fs.h.
-> setxattr03.c checked this ioctl return value, so removing it is safe.
+> There are couple of things that could be done to make the code cleaner.
+> For instance we should make use of the .restore_wallclock flag in the
+> test structure. But let's do that in a subsequent patches.
++1
 
-> Since commit ef772539, LTP_CHECK_CGROUPSTATS has been removed. But
-> testcase still used it. It looks like a mistakenly deletion. Removing
-> ltp-cgroupstats.m4, check linux/cgroupstats.h in configure.ac.
-
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Acked-by: Petr Vorel <pvorel@suse.cz>
-
-Although I wonder whether mixing 4 changes (even related to autoconf)
-in single commit is a good idea (makes it a bit hard to review).
+> Also I'm not 100% sure that this test belongs under the clock_gettime/
+> directory, we do call clock_gettime() in the main test function but the
+> whole test is about inserting leap second. Maybe we should keep the test
+> under the clock_gettime directory and rename it to leapsec01.c or
+> something like this, but I'm not 100% sure about this.
++1 Before 0051eab23 it was called leapsec_timer.c. I also consider leapsec01.c
+as more descriptive. Anyone else against renaming it?
 
 Kind regards,
 Petr
