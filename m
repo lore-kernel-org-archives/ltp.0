@@ -1,26 +1,33 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 29 Jul 2019 15:16:20 +0200
-Subject: [LTP] [PATCH v2 1/2] m4: remove some useless m4
-In-Reply-To: <20190729122621.GB5872@dell5510>
-References: <1b8b7f73-fd31-58d2-5162-3648fa9729a5@163.com>
- <1563789167-2328-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190729122621.GB5872@dell5510>
-Message-ID: <20190729131619.GB27006@rei.lan>
+From: Dave Wysochanski <dwysocha@redhat.com>
+Date: Mon, 29 Jul 2019 09:40:57 -0400
+Subject: [LTP] [SUNRPC] 661ccd4df3: ltp.proc01.fail
+In-Reply-To: <20190729095353.GS22106@shao2-debian>
+References: <20190729095353.GS22106@shao2-debian>
+Message-ID: <ee309a53cd55517886691c36152044a630da391c.camel@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> Acked-by: Petr Vorel <pvorel@suse.cz>
+On Mon, 2019-07-29 at 17:53 +0800, kernel test robot wrote:
+> FYI, we noticed the following commit (built with gcc-7):
 > 
-> Although I wonder whether mixing 4 changes (even related to autoconf)
-> in single commit is a good idea (makes it a bit hard to review).
+> commit: 661ccd4df38fdcddfeb1f314ac1a1de6c947c3f9 ("[RFC PATCH]
+> SUNRPC: Harden the cache 'channel' interface to only allow legitimate
+> daemons")
+> url: 
+> https://github.com/0day-ci/linux/commits/Dave-Wysochanski/SUNRPC-Harden-the-cache-channel-interface-to-only-allow-legitimate-daemons/20190727-042349
+> base: git://linux-nfs.org/~bfields/linux.git nfsd-next
+> 
 
-Yes please, at least the SPDX conversion has to be in a separate patch.
+This patch is no good and should be NACKd.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Bruce, Neil please consider alternative patch:
+[RFC PATCH] SUNRPC: Track writers of the 'channel' file to improve cache_listeners_exist
+
+
+Thanks.
+
+
+
