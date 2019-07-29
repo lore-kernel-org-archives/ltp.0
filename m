@@ -1,28 +1,25 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 29 Jul 2019 17:47:37 +0800
-Subject: [LTP] [PATCH v2] syscalls/timer_create: Add test for
- CVE-2017-18344
-In-Reply-To: <20190726083701.9682-1-camann@suse.com>
-References: <20190726083701.9682-1-camann@suse.com>
-Message-ID: <CAEemH2caYaXAhHBR8UWHz7v-5kZdCO1mtK1pBrDOBBQHP-Zo4Q@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 29 Jul 2019 11:59:51 +0200
+Subject: [LTP] [PATCH 1/2] Add configure time check for
+ getdents/getdents64 APIs
+In-Reply-To: <20190726182524.43149-1-raj.khem@gmail.com>
+References: <20190726182524.43149-1-raj.khem@gmail.com>
+Message-ID: <20190729095951.GB20376@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Jul 26, 2019 at 4:37 PM Christian Amann <camann@suse.com> wrote:
->
-> In kernels prior to 4.14.8 (missing commit cef31d9af908)
-> the sigevent.sigev_notify field is not properly checked
-> when creating a timer using timer_create(2).
-> This can be used to read arbitrary kernel memory.
->
-> Signed-off-by: Christian Amann <camann@suse.com>
+Hi Khem,
 
-Acked-by: Li Wang <liwang@redhat.com>
+> glibc 2.30 has added wrapper for getdents64 this will help in detecting
+> right condition to use fallback
 
+> Check for getdents API as well while here
 
--- 
-Regards,
-Li Wang
+> Signed-off-by: Khem Raj <raj.khem@gmail.com>
+Merged this patch, thanks!
+
+Kind regards,
+Petr
