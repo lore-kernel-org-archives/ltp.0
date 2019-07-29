@@ -1,40 +1,47 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 29 Jul 2019 16:47:18 +0200
-Subject: [LTP] [PATCH 1/1] syscalls/ustat: Use __kernel_daddr_t instead
- of daddr_t
-In-Reply-To: <20190718082655.GA24449@rei.lan>
-References: <20190617213138.15896-1-petr.vorel@gmail.com>
- <20190717173456.GA5272@dell5510> <20190718082655.GA24449@rei.lan>
-Message-ID: <20190729144718.GB8824@dell5510>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Date: Mon, 29 Jul 2019 16:13:15 +0200
+Subject: [LTP] [can] 60649d4e0a: ltp.can_rcv_own_msgs.fail
+In-Reply-To: <20190729094112.GM22106@shao2-debian>
+References: <20190729094112.GM22106@shao2-debian>
+Message-ID: <786568d6-bd24-327a-8367-319efbe2cccb@hartkopp.net>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hello Marc,
 
-> > > This fixes build for musl, which does not have <sys/ustat.h> nor
-> > > typedef daddr_t. Musl does not define these as ustat is deprecated
-> > > in favor of statfs() and daddr_t is ancient [1].
+On 29/07/2019 11.41, kernel test robot wrote:
+> FYI, we noticed the following commit (built with gcc-7):
+> 
+> commit: 60649d4e0af6c26b6c423dea9c57f39e823fc0c5 ("can: remove obsolete empty ioctl() handler")
+> https://kernel.googlesource.com/pub/scm/linux/kernel/git/next/linux-next.git master
 
-> > > Other libc also does not have <sys/ustat.h> (ustat support was removed
-> > > from glibc in 2.28), but they have daddr_t.
+the kernel test robot is right.
 
-> > > This brings <linux/types.h> dependency for ustat testing.
+The patch ("can: remove obsolete empty ioctl() handler") leads to a 
+return value of -EOPNOTSUPP instead of the former -ENOIOCTLCMD.
 
-> > > Typedef is needed as sparc and mips have __kernel_daddr_t long,
-> > > otherwise it's int.
+As we can see in socket.c ...
 
-> > > [1] https://www.openwall.com/lists/musl/2019/06/10/1
+https://elixir.bootlin.com/linux/v5.3-rc2/source/net/socket.c#L1041
 
-> I'm always worried when we use types starting with double underscores
-> but let's apply this one, we can always revert it in a case that it
-> breaks build somewhere.
-Thanks, merged.
+         /*
+          * If this ioctl is unknown try to hand it down
+          * to the NIC driver.
+          */
+         if (err != -ENOIOCTLCMD)
+                 return err;
 
-BTW <linux/types.h> is also checked in m4/ltp-signalfd.m4 so there is duplicity
-in check, but I gave up cleanup it now.
+... we need to return -ENOIOCTLCMD to pass the SIOCGIFINDEX ioctl to the 
+NIC layer.
 
-Kind regards,
-Petr
+Therefore the entire commit needs to be *reverted* to restore the 
+required functionality.
+
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+
+Many thanks,
+Oliver
