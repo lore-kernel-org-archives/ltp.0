@@ -1,50 +1,53 @@
-From: Mike Kravetz <mike.kravetz@oracle.com>
-Date: Mon, 29 Jul 2019 12:00:41 -0700
-Subject: [LTP] 
- =?utf-8?q?=5BMM_Bug=3F=5D_mmap=28=29_triggers_SIGBUS_while?=
- =?utf-8?b?IGRvaW5nIHRoZeKAiyDigItudW1hX21vdmVfcGFnZXMoKSBmb3Igb2ZmbGlu?=
- =?utf-8?q?ed_hugepage_in_background?=
-In-Reply-To: <CAEemH2dMW6oh6Bbm=yqUADF+mDhuQgFTTGYftB+xAhqqdYV3Ng@mail.gmail.com>
-References: <CAEemH2dMW6oh6Bbm=yqUADF+mDhuQgFTTGYftB+xAhqqdYV3Ng@mail.gmail.com>
-Message-ID: <47999e20-ccbe-deda-c960-473db5b56ea0@oracle.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Tue, 30 Jul 2019 13:18:46 +0800
+Subject: [LTP] [PATCH v2 1/2] m4: remove some useless m4
+In-Reply-To: <20190729144227.GA8824@dell5510>
+References: <1b8b7f73-fd31-58d2-5162-3648fa9729a5@163.com>
+ <1563789167-2328-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20190729122621.GB5872@dell5510> <20190729131619.GB27006@rei.lan>
+ <20190729144227.GA8824@dell5510>
+Message-ID: <5D3FD336.6080409@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 7/28/19 10:17 PM, Li Wang wrote:
-> Hi Naoya and Linux-MMers,
-> 
-> The LTP/move_page12 V2 triggers SIGBUS in the kernel-v5.2.3 testing.
-> https://github.com/wangli5665/ltp/blob/master/testcases/kernel/syscalls/move_pages/move_pages12.c
-> 
-> It seems like the retry mmap() triggers SIGBUS while doing thenuma_move_pages() in background. That is very similar to the kernelbug which was mentioned by commit 6bc9b56433b76e40d(mm: fix race onsoft-offlining ): A race condition between soft offline andhugetlb_fault which causes unexpected process SIGBUS killing.
-> 
-> I'm not sure if that below patch is making sene to memory-failures.c, but after building a new kernel-5.2.3 with this change, the problem can NOT be reproduced. 
-> 
-> Any comments?
 
-Something seems strange.  I can not reproduce with unmodified 5.2.3
+> Hi,
+>
+>>>> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
+>>> Acked-by: Petr Vorel<pvorel@suse.cz>
+>>> Although I wonder whether mixing 4 changes (even related to autoconf)
+>>> in single commit is a good idea (makes it a bit hard to review).
+>> Yes please, at least the SPDX conversion has to be in a separate patch.
+> +1
+>
+> BTW m4/ltp-signalfd.m4 would require cleanup as well.
+Hi Cyril ,Petr
 
-[root@f23d move_pages]# uname -r
-5.2.3
-[root@f23d move_pages]# PATH=$PATH:$PWD ./move_pages12
-tst_test.c:1096: INFO: Timeout per run is 0h 05m 00s
-move_pages12.c:201: INFO: Free RAM 6725424 kB
-move_pages12.c:219: INFO: Increasing 2048kB hugepages pool on node 0 to 4
-move_pages12.c:229: INFO: Increasing 2048kB hugepages pool on node 1 to 4
-move_pages12.c:145: INFO: Allocating and freeing 4 hugepages on node 0
-move_pages12.c:145: INFO: Allocating and freeing 4 hugepages on node 1
-move_pages12.c:135: PASS: Bug not reproduced
+Sorry. This patch looks a little mess.
 
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
+I will split it into five patches, as below:
 
-Also, the soft_offline_huge_page() code should not come into play with
-this specific test.
--- 
-Mike Kravetz
+v3-0001-m4-remove-useless-ltp-securebits.m4.patch
+v3-0002-m4-remove-useless-ltp-time.m4.patch
+v3-0003-m4-remove-useless-ltp-fs_ioc_flags.m4.patch
+V3-0004-m4-remove-useless-ltp-cgroupstats.m4.patch
+v3-0005-m4-clean-up-ltp-signalfd.m4.patch
+
+
+Also, SPDX conversion for setxattr03.c, I will cleanup this case after this patchset merged.
+
+Thanks
+Yang Xu
+
+> Kind regards,
+> Petr
+>
+>
+> .
+>
+
+
+
