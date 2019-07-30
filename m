@@ -1,129 +1,100 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 30 Jul 2019 11:07:54 +0200
-Subject: [LTP] [PATCH v2] syscalls/prctl08: New test for prctl() with
- PR_{SET, GET}_TIMERSLACK
-In-Reply-To: <1564216031-2973-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1564216031-2973-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20190730090754.GA7528@rei.lan>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 30 Jul 2019 18:01:06 +0800
+Subject: [LTP] [PATCH] syslog: fix sporadic failures due to
+ rate-limitting
+In-Reply-To: <6db4a928733290dca3b2e4b4a27f1cb69d805401.1563959090.git.jstancek@redhat.com>
+References: <6db4a928733290dca3b2e4b4a27f1cb69d805401.1563959090.git.jstancek@redhat.com>
+Message-ID: <CAEemH2dqE8Ad_r+vnrd0BnBoyOO9GTLoE20SPSQtV7mbr-Yabg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +static struct tcase {
-> +	unsigned long setvalue;
-> +	unsigned long cmptime;
-> +} tcases[] = {
-> +	{1, 50000},
-> +	{70000, 120000},
-> +	{INT_MAX, 50000},
-> +};
-> +
-> +static int proc_flag = 1;
-> +
-> +static void check_proc_ns(char *message, unsigned long value)
-> +{
-> +	unsigned long proc_value;
-> +
-> +	SAFE_FILE_SCANF(PROC_NS_PATH, "%lu", &proc_value);
-> +	if (proc_value == value)
-> +		tst_res(TPASS, "%s %s  got %lu expectedly",
-> +				message, PROC_NS_PATH, proc_value);
-> +	else
-> +		tst_res(TFAIL, "%s %s expected %lu got %lu",
-> +				message, PROC_NS_PATH, value, proc_value);
-> +}
-> +
-> +static void check_get_timerslack(char *message, unsigned long value)
-> +{
-> +	TEST(prctl(PR_GET_TIMERSLACK));
-> +	if ((unsigned long)TST_RET == value)
-> +		tst_res(TPASS, "%s prctl(PR_GET_TIMERSLACK) got %lu expectedly",
-> +				message, value);
-> +	else
-> +		tst_res(TFAIL, "%s prctl(PR_GET_TIMERSLACK) expected %lu got %lu",
-> +				message, value, TST_RET);
-> +
-> +	if (proc_flag)
-> +		check_proc_ns(message, value);
-> +}
-> +
-> +static void verify_prctl(unsigned int n)
-> +{
-> +	struct tcase *tc = &tcases[n];
-> +	int pid;
-> +
-> +	struct timespec timereq = { .tv_sec = 0, .tv_nsec = 50000 };
-> +	struct timespec timecmp = { .tv_sec = 0, .tv_nsec = tc->cmptime};
-> +
-> +	TEST(prctl(PR_SET_TIMERSLACK, tc->setvalue));
-> +	if (TST_RET == -1) {
-> +		tst_res(TFAIL | TTERRNO, "prctl(PR_SET_TIMERSLACK, %lu) failed",
-> +				tc->setvalue);
-> +		return;
-> +	}
-> +	tst_res(TPASS, "prctl(PR_SET_TIMERSLACK, %lu) success", tc->setvalue);
-> +
-> +	pid = SAFE_FORK();
-> +	if (pid == 0) {
-> +		check_get_timerslack("child process", tc->setvalue);
-> +		/* A value of 0 means using default */
-> +		prctl(PR_SET_TIMERSLACK, 0);
+Hi Jan,
 
-Why do we reset the slack before the measurements?
+On Wed, Jul 24, 2019 at 5:07 PM Jan Stancek <jstancek@redhat.com> wrote:
+>
+> Some distros (Fedora30) do not have rsyslog installed by default.
+> Also some test environments generate a lot of messages before they
+> start syslogs tests.
+>
+> This creates a problem if rsyslog is using imjournal, because by default
+> rate-limitting is enabled. If there is a big backlog of messages
+> prior to running syslog tests, some messages from tests may be dropped.
 
-> +		check_get_timerslack("After set 0, child process", tc->setvalue);
-> +
-> +		tst_timer_start(CLOCK_MONOTONIC);
-> +		TEST(nanosleep(&timereq, NULL));
-> +		tst_timer_stop();
-> +
-> +		if (tst_timespec_lt(tst_timer_elapsed(), timecmp))
-> +			tst_brk(TFAIL, "nanosleep() slept less than timecmp");
+I'm not sure if I understand this situation, from your description, if
+the rsyslog is not installed,
+then the /etc/rsyslog.conf will not exist, so how does the rsyslog
+using imjournal to effect on the test cases? Shouldn't it choose
+syslog or syslog-ng for testing?
 
-I do not get what we are trying to assert here.
+if [ "$SYSLOG_DAEMON" = "syslog" ]; then
+        CONFIG_FILE="/etc/syslog.conf"
+elif [ "$SYSLOG_DAEMON" = "syslog-ng" ]; then
+        CONFIG_FILE="/etc/syslog-ng/syslog-ng.conf"
+elif [ "$SYSLOG_DAEMON" = "rsyslog" ]; then
+        ....
+fi
 
-As far as I understand it the timer slack is a way how to inform kernel
-that it's okay if the timers are slightly less precise. However the
-timer still can fire somewhere between sleep time and sleep time +
-slack, or even maybe later if the system is under load.
+And from my test, if I remove(#rpm -e rsyslog) the rsyslog from
+system, this test will choose to go
+syslog-ng(/etc/syslog-ng/syslog-ng.conf) way to test. unfoutananly
+that always failed as:
 
-BTW we do have a formula that tries to compute maximal time the timers
-should sleep based on timer slack in lib/tst_timer_test.c but even with
-that we have to take more samples and compute truncated mean because
-single short sleep may be delayed unless it's a RT kernel...
+--------------------------
+syslog02    0  TINFO  :  Test if messages of all levels are logged.
+syslog02    0  TINFO  :  For each level, a separate configuration file is
+syslog02    0  TINFO  :  created and that will be used as syslog.conf file.
+syslog02    0  TINFO  :  testing whether messages are logged into log file
+syslog02    0  TINFO  :  Doing level: emerg...
+syslog02    0  TINFO  :  restarting syslog daemon
+Broadcast message from
+systemd-journald@intel-chiefriver-02.khw2.lab.eng.bos.redhat.com (Tue
+2019-07-30 09:42:24 EDT):
+syslogtst[26081]: syslogtst: mail emerg test.
+syslog02    1  TFAIL  :  ltpapicmd.c:188: ***** Level emerg failed *****
+syslog02    0  TINFO  :  Doing level: alert...
+syslog02    0  TINFO  :  restarting syslog daemon
+syslog02    2  TFAIL  :  ltpapicmd.c:188: ***** Level alert failed *****
+syslog02    0  TINFO  :  Doing level: crit...
+syslog02    0  TINFO  :  restarting syslog daemon
+syslog02    3  TFAIL  :  ltpapicmd.c:188: ***** Level crit failed *****
+syslog02    0  TINFO  :  Doing level: err...
+syslog02    0  TINFO  :  restarting syslog daemon
+syslog02    4  TFAIL  :  ltpapicmd.c:188: ***** Level err failed *****
+syslog02    0  TINFO  :  Doing level: warning...
+syslog02    0  TINFO  :  restarting syslog daemon
+syslog02    5  TFAIL  :  ltpapicmd.c:188: ***** Level warning failed *****
+syslog02    0  TINFO  :  Doing level: notice...
+syslog02    0  TINFO  :  restarting syslog daemon
+syslog02    6  TFAIL  :  ltpapicmd.c:188: ***** Level notice failed *****
+syslog02    0  TINFO  :  Doing level: info...
+syslog02    0  TINFO  :  restarting syslog daemon
+syslog02    7  TFAIL  :  ltpapicmd.c:188: ***** Level info failed *****
+syslog02    0  TINFO  :  Doing level: debug...
+syslog02    0  TINFO  :  restarting syslog daemon
+syslog02    8  TFAIL  :  ltpapicmd.c:188: ***** Level debug failed *****
+syslog02    0  TINFO  :  restarting syslog daemon
 
-> +		tst_res(TPASS, "nanosleep() slept more than timecmp, %llius",
-> +				tst_timer_elapsed_us());
-> +		exit(0);
-> +	}
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	if (access(PROC_NS_PATH, F_OK) == -1) {
-> +		tst_res(TCONF, "proc doesn't support timerslack_ns interface");
-> +		proc_flag = 0;
-> +	}
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.test = verify_prctl,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.forks_child = 1,
-> +};
-> -- 
-> 2.18.1
-> 
-> 
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> Easy way to reproduce is to stop rsyslog, delete imjournal.state,
+> run kmsg01 test couple times and then run some syslog test:
+>   Jul 23 15:05:13 ... begin to drop messages due to rate-limiting
+>   Jul 23 15:05:21 ... 47006 messages lost due to rate-limiting
+> Messages make it to systemd journal, but not to log configured in rsyslog.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+I didn't reproduce this problem, if I stop rsyslog(`systemctl stop
+rsyslog`) by manual, the test will enable it automatically:
+
+---------------------
+syslog02    0  TINFO  :  restarting syslog daemon
+...
+syslogtst[26848]: syslogtst: mail emerg test.
+syslog02    1  TPASS  :  ***** Level emerg passed *****
+------------------------
+
+or maybe I missed something?
+
+--
+Regards,
+Li Wang
