@@ -1,173 +1,137 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 30 Jul 2019 13:45:33 +0800
-Subject: [LTP] [PATCH v3 5/5] m4: clean up ltp-signalfd.m4
-In-Reply-To: <1564465533-2475-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <20190729144227.GA8824@dell5510>
- <1564465533-2475-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1564465533-2475-5-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 30 Jul 2019 14:29:09 +0800
+Subject: [LTP] 
+	=?utf-8?q?=5BMM_Bug=3F=5D_mmap=28=29_triggers_SIGBUS_while?=
+	=?utf-8?b?IGRvaW5nIHRoZeKAiyDigItudW1hX21vdmVfcGFnZXMoKSBmb3Igb2Zm?=
+	=?utf-8?q?lined_hugepage_in_background?=
+In-Reply-To: <47999e20-ccbe-deda-c960-473db5b56ea0@oracle.com>
+References: <CAEemH2dMW6oh6Bbm=yqUADF+mDhuQgFTTGYftB+xAhqqdYV3Ng@mail.gmail.com>
+ <47999e20-ccbe-deda-c960-473db5b56ea0@oracle.com>
+Message-ID: <CAEemH2d=vEfppCbCgVoGdHed2kuY3GWnZGhymYT1rnxjoWNdcQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Since patch[1] in 2007.10, the signo had been rename as ssi_signo. The
-code is so old we can remove signo detection.
-Also since patch[2] in 2009.1, the linux/type.h had been include. we can
-remove this detection.
-I don't find "signalfd.h" in /usr/include on different distros, so I think
-we can only use two ways(glibc or tst_syscall) to call it.
+Hi Mike,
 
-[1]:https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=96358de6
-[2]:https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a788fd53
+Thanks for trying this.
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- m4/ltp-signalfd.m4                            | 62 +++----------------
- .../kernel/syscalls/signalfd/signalfd01.c     | 22 ++-----
- 2 files changed, 13 insertions(+), 71 deletions(-)
+On Tue, Jul 30, 2019 at 3:01 AM Mike Kravetz <mike.kravetz@oracle.com>
+wrote:
+>
+> On 7/28/19 10:17 PM, Li Wang wrote:
+> > Hi Naoya and Linux-MMers,
+> >
+> > The LTP/move_page12 V2 triggers SIGBUS in the kernel-v5.2.3 testing.
+> >
+https://github.com/wangli5665/ltp/blob/master/testcases/kernel/syscalls/move_pages/move_pages12.c
+> >
+> > It seems like the retry mmap() triggers SIGBUS while doing
+thenuma_move_pages() in background. That is very similar to the kernelbug
+which was mentioned by commit 6bc9b56433b76e40d(mm: fix race
+onsoft-offlining ): A race condition between soft offline andhugetlb_fault
+which causes unexpected process SIGBUS killing.
+> >
+> > I'm not sure if that below patch is making sene to memory-failures.c,
+but after building a new kernel-5.2.3 with this change, the problem can NOT
+be reproduced.
+> >
+> > Any comments?
+>
+> Something seems strange.  I can not reproduce with unmodified 5.2.3
 
-diff --git a/m4/ltp-signalfd.m4 b/m4/ltp-signalfd.m4
-index a435123ef..5aac395bd 100644
---- a/m4/ltp-signalfd.m4
-+++ b/m4/ltp-signalfd.m4
-@@ -1,65 +1,17 @@
- dnl SPDX-License-Identifier: GPL-2.0-or-later
- dnl Copyright (c) Red Hat Inc., 2008
-+dnl Copyright (c) 2019 Fujitsu Ltd.
- dnl Author: Masatake YAMATO <yamato@redhat.com>
- 
--dnl LTP_CHECK_SYSCALL_SIGNALFD
--dnl --------------------------
--dnl * Checking the existence of the libc wrapper for signalfd.
--dnl   If it exists, a shell variable LTP_SYSCALL_SIGNALFD_FUNCTION is set to "yes".
--dnl
--dnl * Checking the existence of signalfd.h.
--dnl   If it exists, a shell variable LTP_SYSCALL_SIGNALFD_HEADER is set to "yes".
--dnl
--dnl * Checking the prefix used in fileds for signalfd_siginfo structure.
--dnl   If it exists, a shell variable LTP_SYSCALL_SIGNALFD_FIELD_PREFIX is set to "given".
--dnl
--dnl About cpp macros defined in this macro,
--dnl see testcases/kernel/syscalls/signalfd/signalfd01.c of ltp.
--AC_DEFUN([LTP_CHECK_SYSCALL_SIGNALFD],
--[
--_LTP_CHECK_SYSCALL_SIGNALFD_FUNCTION
--_LTP_CHECK_SYSCALL_SIGNALFD_HEADER
-+AC_DEFUN([LTP_CHECK_SYSCALL_SIGNALFD],[
- 
--if test x"$LTP_SYSCALL_SIGNALFD_HEADER" = xyes; then
--   _LTP_CHECK_SYSCALL_SIGNALFD_FIELD_PREFIX
--fi]
--)
--
--dnl _LTP_CHECK_SYSCALL_SIGNALFD_FUNCTION
--dnl ------------------------------------
--AC_DEFUN([_LTP_CHECK_SYSCALL_SIGNALFD_FUNCTION],[
--AC_CHECK_FUNCS(signalfd,[LTP_SYSCALL_SIGNALFD_FUNCTION=yes])])
--
--dnl _LTP_CHECK_SYSCALL_SIGNALFD_HEADER
--dnl ----------------------------------
--AC_DEFUN([_LTP_CHECK_SYSCALL_SIGNALFD_HEADER],
--[
--AC_CHECK_HEADERS([sys/signalfd.h linux/types.h])
--AC_CHECK_HEADERS([linux/signalfd.h signalfd.h],[
--LTP_SYSCALL_SIGNALFD_HEADER=yes],,[
--#ifdef HAVE_LINUX_TYPES_H
--#include <linux/types.h>
--#endif
--]
--)
--]
--)
--
--dnl _LTP_CHECK_SYSCALL_SIGNALFD_FIELD_PREFIX
--dnl ----------------------------------------
--AC_DEFUN([_LTP_CHECK_SYSCALL_SIGNALFD_FIELD_PREFIX],
--[
--AC_CHECK_MEMBERS([struct signalfd_siginfo.ssi_signo, struct signalfd_siginfo.signo],[
--LTP_SYSCALL_SIGNALFD_FIELD_PREFIX=given],,[
-+AC_CHECK_FUNCS(signalfd,,)
-+AC_CHECK_HEADERS([sys/signalfd.h],,)
-+AC_CHECK_HEADERS([linux/signalfd.h],,)
-+AC_CHECK_MEMBERS([struct signalfd_siginfo.ssi_signo],,,[
- #if defined HAVE_SYS_SIGNALFD_H
- #include <sys/signalfd.h>
- #elif defined HAVE_LINUX_SIGNALFD_H
--#ifdef HAVE_LINUX_TYPES_H
--#include <linux/types.h>
--#endif
- #include <linux/signalfd.h>
--#elif defined HAVE_SIGNALFD_H
--#include <signalfd.h>
- #endif])
--]
--)
-+])
-diff --git a/testcases/kernel/syscalls/signalfd/signalfd01.c b/testcases/kernel/syscalls/signalfd/signalfd01.c
-index 72901ff6a..1a62156ff 100644
---- a/testcases/kernel/syscalls/signalfd/signalfd01.c
-+++ b/testcases/kernel/syscalls/signalfd/signalfd01.c
-@@ -56,22 +56,13 @@ int TST_TOTAL = 1;
- #if defined HAVE_SYS_SIGNALFD_H
- #include <sys/signalfd.h>
- #elif defined HAVE_LINUX_SIGNALFD_H
--#if defined HAVE_LINUX_TYPES_H
--#include <linux/types.h>
--#endif
- #include <linux/signalfd.h>
- #define USE_OWNIMPL
--#elif defined HAVE_SIGNALFD_H
--#include <signalfd.h>
- #else
- #define  USE_STUB
- #endif
- 
--#if defined HAVE_STRUCT_SIGNALFD_SIGINFO_SSI_SIGNO
--#define SIGNALFD_PREFIX(FIELD) ssi_##FIELD
--#elif defined HAVE_STRUCT_SIGNALFD_SIGINFO_SIGNO
--#define SIGNALFD_PREFIX(FIELD) FIELD
--#else
-+#ifndef HAVE_STRUCT_SIGNALFD_SIGINFO_SSI_SIGNO
- #define USE_STUB
- #endif
- 
-@@ -170,14 +161,13 @@ int do_test1(uint32_t sig)
- 		goto out;
- 	}
- 
--	if (fdsi.SIGNALFD_PREFIX(signo) == sig) {
-+	if (fdsi.ssi_signo == sig) {
- 		tst_resm(TPASS, "got expected signal");
- 		sfd_for_next = sfd;
- 		goto out;
- 	} else {
- 		tst_resm(TFAIL, "got unexpected signal: signal=%d : %s",
--			 fdsi.SIGNALFD_PREFIX(signo),
--			 strsignal(fdsi.SIGNALFD_PREFIX(signo)));
-+			 fdsi.ssi_signo, strsignal(fdsi.ssi_signo));
- 		sfd_for_next = -1;
- 		close(sfd);
- 		goto out;
-@@ -254,13 +244,13 @@ void do_test2(int fd, uint32_t sig)
- 		goto out;
- 	}
- 
--	if (fdsi.SIGNALFD_PREFIX(signo) == sig) {
-+	if (fdsi.ssi_signo == sig) {
- 		tst_resm(TPASS, "got expected signal");
- 		goto out;
- 	} else {
- 		tst_resm(TFAIL, "got unexpected signal: signal=%d : %s",
--			 fdsi.SIGNALFD_PREFIX(signo),
--			 strsignal(fdsi.SIGNALFD_PREFIX(signo)));
-+			 fdsi.ssi_signo),
-+			 strsignal(fdsi.ssi_signo);
- 		goto out;
- 	}
- 
+It's not 100% reproducible, I tried ten times only hit 4~6 times fail.
+
+Did you try the test case with patch V3(in my branch)?
+https://github.com/wangli5665/ltp/commit/198fca89870c1b807a01b27bb1d2ec6e2af1c7b6
+
+# git clone https://github.com/wangli5665/ltp ltp.wangli --depth=1
+# cd ltp.wangli/; make autotools;
+# ./configure ; make -j24
+# cd testcases/kernel/syscalls/move_pages/
+# ./move_pages12
+tst_test.c:1100: INFO: Timeout per run is 0h 05m 00s
+move_pages12.c:249: INFO: Free RAM 64386300 kB
+move_pages12.c:267: INFO: Increasing 2048kB hugepages pool on node 0 to 4
+move_pages12.c:277: INFO: Increasing 2048kB hugepages pool on node 1 to 4
+move_pages12.c:193: INFO: Allocating and freeing 4 hugepages on node 0
+move_pages12.c:193: INFO: Allocating and freeing 4 hugepages on node 1
+move_pages12.c:183: PASS: Bug not reproduced
+tst_test.c:1145: BROK: Test killed by SIGBUS!
+move_pages12.c:117: FAIL: move_pages failed: ESRCH
+
+# uname -r
+5.2.3
+
+# numactl -H
+available: 4 nodes (0-3)
+node 0 cpus: 0 1 2 3 4 5 6 7 32 33 34 35 36 37 38 39
+node 0 size: 16049 MB
+node 0 free: 15736 MB
+node 1 cpus: 8 9 10 11 12 13 14 15 40 41 42 43 44 45 46 47
+node 1 size: 16123 MB
+node 1 free: 15850 MB
+node 2 cpus: 16 17 18 19 20 21 22 23 48 49 50 51 52 53 54 55
+node 2 size: 16123 MB
+node 2 free: 15989 MB
+node 3 cpus: 24 25 26 27 28 29 30 31 56 57 58 59 60 61 62 63
+node 3 size: 16097 MB
+node 3 free: 15278 MB
+node distances:
+node   0   1   2   3
+  0:  10  20  20  20
+  1:  20  10  20  20
+  2:  20  20  10  20
+  3:  20  20  20  10
+
+> Also, the soft_offline_huge_page() code should not come into play with
+> this specific test.
+
+I got the "soft offline xxx.. hugepage failed to isolate" message from
+soft_offline_huge_page()
+in dmesg log.
+
+=== debug print info ===
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -1701,7 +1701,7 @@ static int soft_offline_huge_page(struct page *page,
+int flags)
+         */
+        put_hwpoison_page(hpage);
+        if (!ret) {
+-               pr_info("soft offline: %#lx hugepage failed to isolate\n",
+pfn);
++               pr_info("liwang -- soft offline: %#lx hugepage failed to
+isolate\n", pfn);
+                return -EBUSY;
+        }
+
+# dmesg
+...
+[ 1068.947205] Soft offlining pfn 0x40b200 at process virtual address
+0x7f9d8d000000
+[ 1068.987054] Soft offlining pfn 0x40ac00 at process virtual address
+0x7f9d8d200000
+[ 1069.048478] Soft offlining pfn 0x40a800 at process virtual address
+0x7f9d8d000000
+[ 1069.087413] Soft offlining pfn 0x40ae00 at process virtual address
+0x7f9d8d200000
+[ 1069.123285] liwang -- soft offline: 0x40ae00 hugepage failed to isolate
+[ 1069.160137] Soft offlining pfn 0x80f800 at process virtual address
+0x7f9d8d000000
+[ 1069.196009] Soft offlining pfn 0x80fe00 at process virtual address
+0x7f9d8d200000
+[ 1069.243436] Soft offlining pfn 0x40a400 at process virtual address
+0x7f9d8d000000
+[ 1069.281301] Soft offlining pfn 0x40a600 at process virtual address
+0x7f9d8d200000
+[ 1069.318171] liwang -- soft offline: 0x40a600 hugepage failed to isolate
+
 -- 
-2.18.1
-
-
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190730/23d7a58b/attachment-0001.htm>
