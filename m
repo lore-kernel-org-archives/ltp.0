@@ -1,9 +1,10 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue, 30 Jul 2019 15:44:54 +0200
-Subject: [LTP] [PATCH v2 1/4] BPF: Essential headers for map creation
-In-Reply-To: <20190724080328.16145-1-rpalethorpe@suse.com>
+Date: Tue, 30 Jul 2019 15:44:56 +0200
+Subject: [LTP] [PATCH v2 3/4] BPF: Essential headers for a basic program
+In-Reply-To: <20190730134457.27845-1-rpalethorpe@suse.com>
 References: <20190724080328.16145-1-rpalethorpe@suse.com>
-Message-ID: <20190730134457.27845-1-rpalethorpe@suse.com>
+ <20190730134457.27845-1-rpalethorpe@suse.com>
+Message-ID: <20190730134457.27845-3-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,329 +13,338 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
-
-V2:
-* Added bpf_prog01 test
-* Removed root check and instead signal TCONF if bpf fails with EPERM
-* Added more headers, including for byte code and old distro's
-
- include/lapi/bpf.h               | 242 +++++++++++++++++++++++++++++++
- include/lapi/syscalls/aarch64.in |   1 +
- include/lapi/syscalls/i386.in    |   1 +
- include/lapi/syscalls/s390.in    |   1 +
- include/lapi/syscalls/sparc.in   |   1 +
- include/lapi/syscalls/x86_64.in  |   1 +
- 6 files changed, 247 insertions(+)
- create mode 100644 include/lapi/bpf.h
+ include/lapi/bpf.h    | 286 +++++++++++++++++++++++++++++++++++++++++-
+ include/lapi/socket.h |   4 +
+ 2 files changed, 289 insertions(+), 1 deletion(-)
 
 diff --git a/include/lapi/bpf.h b/include/lapi/bpf.h
-new file mode 100644
-index 000000000..369de0175
---- /dev/null
+index 369de0175..122eb5469 100644
+--- a/include/lapi/bpf.h
 +++ b/include/lapi/bpf.h
-@@ -0,0 +1,242 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Richard Palethorpe <rpalethorpe@suse.com>
-+ *
-+ * Essential Extended Berkeley Packet Filter (eBPF) headers
-+ *
-+ * Mostly copied/adapted from linux/bpf.h and libbpf so that we can perform
-+ * some eBPF testing without any external dependencies.
+@@ -15,7 +15,57 @@
+ 
+ #include "lapi/syscalls.h"
+ 
+-/* Start copy from linux/bpf.h */
++/* Start copy from linux/bpf_(common).h */
++#define BPF_CLASS(code) ((code) & 0x07)
++#define		BPF_LD		0x00
++#define		BPF_ST		0x02
++#define		BPF_JMP		0x05
++
++#define BPF_SIZE(code)  ((code) & 0x18)
++#define         BPF_DW		0x18	/* double word (64-bit) */
++
++#define BPF_MODE(code)  ((code) & 0xe0)
++#define		BPF_IMM		0x00
++#define		BPF_MEM		0x60
++
++#define BPF_OP(code)    ((code) & 0xf0)
++#define		BPF_ADD		0x00
++
++#define		BPF_JEQ		0x10
++
++#define BPF_SRC(code)   ((code) & 0x08)
++#define		BPF_K		0x00
++#define		BPF_X		0x08
++
++#define BPF_ALU64	0x07	/* alu mode in double word width */
++#define BPF_MOV		0xb0	/* mov reg to reg */
++#define BPF_CALL	0x80	/* function call */
++#define BPF_EXIT	0x90	/* function return */
++
++/* Register numbers */
++enum {
++	BPF_REG_0 = 0,
++	BPF_REG_1,
++	BPF_REG_2,
++	BPF_REG_3,
++	BPF_REG_4,
++	BPF_REG_5,
++	BPF_REG_6,
++	BPF_REG_7,
++	BPF_REG_8,
++	BPF_REG_9,
++	BPF_REG_10,
++	MAX_BPF_REG,
++};
++
++struct bpf_insn {
++	uint8_t	code;		/* opcode */
++	uint8_t	dst_reg:4;	/* dest register */
++	uint8_t	src_reg:4;	/* source register */
++	int16_t	off;		/* signed offset */
++	int32_t	imm;		/* signed immediate constant */
++};
++
+ enum bpf_cmd {
+ 	BPF_MAP_CREATE,
+ 	BPF_MAP_LOOKUP_ELEM,
+@@ -70,6 +120,37 @@ enum bpf_map_type {
+ 	BPF_MAP_TYPE_SK_STORAGE,
+ };
+ 
++enum bpf_prog_type {
++	BPF_PROG_TYPE_UNSPEC,
++	BPF_PROG_TYPE_SOCKET_FILTER,
++	BPF_PROG_TYPE_KPROBE,
++	BPF_PROG_TYPE_SCHED_CLS,
++	BPF_PROG_TYPE_SCHED_ACT,
++	BPF_PROG_TYPE_TRACEPOINT,
++	BPF_PROG_TYPE_XDP,
++	BPF_PROG_TYPE_PERF_EVENT,
++	BPF_PROG_TYPE_CGROUP_SKB,
++	BPF_PROG_TYPE_CGROUP_SOCK,
++	BPF_PROG_TYPE_LWT_IN,
++	BPF_PROG_TYPE_LWT_OUT,
++	BPF_PROG_TYPE_LWT_XMIT,
++	BPF_PROG_TYPE_SOCK_OPS,
++	BPF_PROG_TYPE_SK_SKB,
++	BPF_PROG_TYPE_CGROUP_DEVICE,
++	BPF_PROG_TYPE_SK_MSG,
++	BPF_PROG_TYPE_RAW_TRACEPOINT,
++	BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
++	BPF_PROG_TYPE_LWT_SEG6LOCAL,
++	BPF_PROG_TYPE_LIRC_MODE2,
++	BPF_PROG_TYPE_SK_REUSEPORT,
++	BPF_PROG_TYPE_FLOW_DISSECTOR,
++	BPF_PROG_TYPE_CGROUP_SYSCTL,
++	BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE,
++	BPF_PROG_TYPE_CGROUP_SOCKOPT,
++};
++
++#define BPF_PSEUDO_MAP_FD	1
++
+ #define BPF_OBJ_NAME_LEN 16U
+ 
+ #define BPF_ANY		0 /* create new element or update existing */
+@@ -225,8 +306,211 @@ union bpf_attr {
+ 	} task_fd_query;
+ } __attribute__((aligned(8)));
+ 
++#define __BPF_FUNC_MAPPER(FN)		\
++	FN(unspec),			\
++	FN(map_lookup_elem),		\
++	FN(map_update_elem),		\
++	FN(map_delete_elem),		\
++	FN(probe_read),			\
++	FN(ktime_get_ns),		\
++	FN(trace_printk),		\
++	FN(get_prandom_u32),		\
++	FN(get_smp_processor_id),	\
++	FN(skb_store_bytes),		\
++	FN(l3_csum_replace),		\
++	FN(l4_csum_replace),		\
++	FN(tail_call),			\
++	FN(clone_redirect),		\
++	FN(get_current_pid_tgid),	\
++	FN(get_current_uid_gid),	\
++	FN(get_current_comm),		\
++	FN(get_cgroup_classid),		\
++	FN(skb_vlan_push),		\
++	FN(skb_vlan_pop),		\
++	FN(skb_get_tunnel_key),		\
++	FN(skb_set_tunnel_key),		\
++	FN(perf_event_read),		\
++	FN(redirect),			\
++	FN(get_route_realm),		\
++	FN(perf_event_output),		\
++	FN(skb_load_bytes),		\
++	FN(get_stackid),		\
++	FN(csum_diff),			\
++	FN(skb_get_tunnel_opt),		\
++	FN(skb_set_tunnel_opt),		\
++	FN(skb_change_proto),		\
++	FN(skb_change_type),		\
++	FN(skb_under_cgroup),		\
++	FN(get_hash_recalc),		\
++	FN(get_current_task),		\
++	FN(probe_write_user),		\
++	FN(current_task_under_cgroup),	\
++	FN(skb_change_tail),		\
++	FN(skb_pull_data),		\
++	FN(csum_update),		\
++	FN(set_hash_invalid),		\
++	FN(get_numa_node_id),		\
++	FN(skb_change_head),		\
++	FN(xdp_adjust_head),		\
++	FN(probe_read_str),		\
++	FN(get_socket_cookie),		\
++	FN(get_socket_uid),		\
++	FN(set_hash),			\
++	FN(setsockopt),			\
++	FN(skb_adjust_room),		\
++	FN(redirect_map),		\
++	FN(sk_redirect_map),		\
++	FN(sock_map_update),		\
++	FN(xdp_adjust_meta),		\
++	FN(perf_event_read_value),	\
++	FN(perf_prog_read_value),	\
++	FN(getsockopt),			\
++	FN(override_return),		\
++	FN(sock_ops_cb_flags_set),	\
++	FN(msg_redirect_map),		\
++	FN(msg_apply_bytes),		\
++	FN(msg_cork_bytes),		\
++	FN(msg_pull_data),		\
++	FN(bind),			\
++	FN(xdp_adjust_tail),		\
++	FN(skb_get_xfrm_state),		\
++	FN(get_stack),			\
++	FN(skb_load_bytes_relative),	\
++	FN(fib_lookup),			\
++	FN(sock_hash_update),		\
++	FN(msg_redirect_hash),		\
++	FN(sk_redirect_hash),		\
++	FN(lwt_push_encap),		\
++	FN(lwt_seg6_store_bytes),	\
++	FN(lwt_seg6_adjust_srh),	\
++	FN(lwt_seg6_action),		\
++	FN(rc_repeat),			\
++	FN(rc_keydown),			\
++	FN(skb_cgroup_id),		\
++	FN(get_current_cgroup_id),	\
++	FN(get_local_storage),		\
++	FN(sk_select_reuseport),	\
++	FN(skb_ancestor_cgroup_id),	\
++	FN(sk_lookup_tcp),		\
++	FN(sk_lookup_udp),		\
++	FN(sk_release),			\
++	FN(map_push_elem),		\
++	FN(map_pop_elem),		\
++	FN(map_peek_elem),		\
++	FN(msg_push_data),		\
++	FN(msg_pop_data),		\
++	FN(rc_pointer_rel),		\
++	FN(spin_lock),			\
++	FN(spin_unlock),		\
++	FN(sk_fullsock),		\
++	FN(tcp_sock),			\
++	FN(skb_ecn_set_ce),		\
++	FN(get_listener_sock),		\
++	FN(skc_lookup_tcp),		\
++	FN(tcp_check_syncookie),	\
++	FN(sysctl_get_name),		\
++	FN(sysctl_get_current_value),	\
++	FN(sysctl_get_new_value),	\
++	FN(sysctl_set_new_value),	\
++	FN(strtol),			\
++	FN(strtoul),			\
++	FN(sk_storage_get),		\
++	FN(sk_storage_delete),		\
++	FN(send_signal),
++
++/* integer value in 'imm' field of BPF_CALL instruction selects which helper
++ * function eBPF program intends to call
 + */
-+
-+#ifndef BPF_H
-+# define BPF_H
-+
-+#include <stdint.h>
-+
-+#include "lapi/syscalls.h"
-+
-+/* Start copy from linux/bpf.h */
-+enum bpf_cmd {
-+	BPF_MAP_CREATE,
-+	BPF_MAP_LOOKUP_ELEM,
-+	BPF_MAP_UPDATE_ELEM,
-+	BPF_MAP_DELETE_ELEM,
-+	BPF_MAP_GET_NEXT_KEY,
-+	BPF_PROG_LOAD,
-+	BPF_OBJ_PIN,
-+	BPF_OBJ_GET,
-+	BPF_PROG_ATTACH,
-+	BPF_PROG_DETACH,
-+	BPF_PROG_TEST_RUN,
-+	BPF_PROG_GET_NEXT_ID,
-+	BPF_MAP_GET_NEXT_ID,
-+	BPF_PROG_GET_FD_BY_ID,
-+	BPF_MAP_GET_FD_BY_ID,
-+	BPF_OBJ_GET_INFO_BY_FD,
-+	BPF_PROG_QUERY,
-+	BPF_RAW_TRACEPOINT_OPEN,
-+	BPF_BTF_LOAD,
-+	BPF_BTF_GET_FD_BY_ID,
-+	BPF_TASK_FD_QUERY,
-+	BPF_MAP_LOOKUP_AND_DELETE_ELEM,
-+	BPF_MAP_FREEZE,
++#define __BPF_ENUM_FN(x) BPF_FUNC_ ## x
++enum bpf_func_id {
++	__BPF_FUNC_MAPPER(__BPF_ENUM_FN)
++	__BPF_FUNC_MAX_ID,
 +};
++#undef __BPF_ENUM_FN
 +
-+enum bpf_map_type {
-+	BPF_MAP_TYPE_UNSPEC,
-+	BPF_MAP_TYPE_HASH,
-+	BPF_MAP_TYPE_ARRAY,
-+	BPF_MAP_TYPE_PROG_ARRAY,
-+	BPF_MAP_TYPE_PERF_EVENT_ARRAY,
-+	BPF_MAP_TYPE_PERCPU_HASH,
-+	BPF_MAP_TYPE_PERCPU_ARRAY,
-+	BPF_MAP_TYPE_STACK_TRACE,
-+	BPF_MAP_TYPE_CGROUP_ARRAY,
-+	BPF_MAP_TYPE_LRU_HASH,
-+	BPF_MAP_TYPE_LRU_PERCPU_HASH,
-+	BPF_MAP_TYPE_LPM_TRIE,
-+	BPF_MAP_TYPE_ARRAY_OF_MAPS,
-+	BPF_MAP_TYPE_HASH_OF_MAPS,
-+	BPF_MAP_TYPE_DEVMAP,
-+	BPF_MAP_TYPE_SOCKMAP,
-+	BPF_MAP_TYPE_CPUMAP,
-+	BPF_MAP_TYPE_XSKMAP,
-+	BPF_MAP_TYPE_SOCKHASH,
-+	BPF_MAP_TYPE_CGROUP_STORAGE,
-+	BPF_MAP_TYPE_REUSEPORT_SOCKARRAY,
-+	BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE,
-+	BPF_MAP_TYPE_QUEUE,
-+	BPF_MAP_TYPE_STACK,
-+	BPF_MAP_TYPE_SK_STORAGE,
-+};
+ /* End copy from linux/bpf.h */
+ 
++/* Start copy from tools/include/filter.h */
 +
-+#define BPF_OBJ_NAME_LEN 16U
++#define BPF_ALU64_IMM(OP, DST, IMM)				\
++	((struct bpf_insn) {					\
++		.code  = BPF_ALU64 | BPF_OP(OP) | BPF_K,	\
++		.dst_reg = DST,					\
++		.src_reg = 0,					\
++		.off   = 0,					\
++		.imm   = IMM })
 +
-+#define BPF_ANY		0 /* create new element or update existing */
-+#define BPF_NOEXIST	1 /* create new element if it didn't exist */
-+#define BPF_EXIST	2 /* update existing element */
-+#define BPF_F_LOCK	4 /* spin_lock-ed map_lookup/map_update */
++#define BPF_MOV64_REG(DST, SRC)					\
++	((struct bpf_insn) {					\
++		.code  = BPF_ALU64 | BPF_MOV | BPF_X,		\
++		.dst_reg = DST,					\
++		.src_reg = SRC,					\
++		.off   = 0,					\
++		.imm   = 0 })
 +
-+#define aligned_uint64_t uint64_t __attribute__((aligned(8)))
++#define BPF_LD_IMM64(DST, IMM)					\
++	BPF_LD_IMM64_RAW(DST, 0, IMM)
 +
-+union bpf_attr {
-+	struct { /* anonymous struct used by BPF_MAP_CREATE command */
-+		uint32_t	map_type;	/* one of enum bpf_map_type */
-+		uint32_t	key_size;	/* size of key in bytes */
-+		uint32_t	value_size;	/* size of value in bytes */
-+		uint32_t	max_entries;	/* max number of entries in a map */
-+		uint32_t	map_flags;	/* BPF_MAP_CREATE related
-+					 * flags defined above.
-+					 */
-+		uint32_t	inner_map_fd;	/* fd pointing to the inner map */
-+		uint32_t	numa_node;	/* numa node (effective only if
-+					 * BPF_F_NUMA_NODE is set).
-+					 */
-+		char	map_name[BPF_OBJ_NAME_LEN];
-+		uint32_t	map_ifindex;	/* ifindex of netdev to create on */
-+		uint32_t	btf_fd;		/* fd pointing to a BTF type data */
-+		uint32_t	btf_key_type_id;	/* BTF type_id of the key */
-+		uint32_t	btf_value_type_id;	/* BTF type_id of the value */
-+	};
++#define BPF_LD_IMM64_RAW(DST, SRC, IMM)				\
++	((struct bpf_insn) {					\
++		.code  = BPF_LD | BPF_DW | BPF_IMM,		\
++		.dst_reg = DST,					\
++		.src_reg = SRC,					\
++		.off   = 0,					\
++		.imm   = (uint32_t) (IMM) }),			\
++	((struct bpf_insn) {					\
++		.code  = 0, /* zero is reserved opcode */	\
++		.dst_reg = 0,					\
++		.src_reg = 0,					\
++		.off   = 0,					\
++		.imm   = ((uint64_t) (IMM)) >> 32 })
 +
-+	struct { /* anonymous struct used by BPF_MAP_*_ELEM commands */
-+		uint32_t		map_fd;
-+		aligned_uint64_t	key;
-+		union {
-+			aligned_uint64_t value;
-+			aligned_uint64_t next_key;
-+		};
-+		uint64_t		flags;
-+	};
++/* pseudo BPF_LD_IMM64 insn used to refer to process-local map_fd */
++#define BPF_LD_MAP_FD(DST, MAP_FD)				\
++	BPF_LD_IMM64_RAW(DST, BPF_PSEUDO_MAP_FD, MAP_FD)
 +
-+	struct { /* anonymous struct used by BPF_PROG_LOAD command */
-+		uint32_t		prog_type;	/* one of enum bpf_prog_type */
-+		uint32_t		insn_cnt;
-+		aligned_uint64_t	insns;
-+		aligned_uint64_t	license;
-+		uint32_t		log_level;	/* verbosity level of verifier */
-+		uint32_t		log_size;	/* size of user buffer */
-+		aligned_uint64_t	log_buf;	/* user supplied buffer */
-+		uint32_t		kern_version;	/* not used */
-+		uint32_t		prog_flags;
-+		char		prog_name[BPF_OBJ_NAME_LEN];
-+		uint32_t		prog_ifindex;	/* ifindex of netdev to prep for */
-+		/* For some prog types expected attach type must be known at
-+		 * load time to verify attach type specific parts of prog
-+		 * (context accesses, allowed helpers, etc).
-+		 */
-+		uint32_t		expected_attach_type;
-+		uint32_t		prog_btf_fd;	/* fd pointing to BTF type data */
-+		uint32_t		func_info_rec_size;	/* userspace bpf_func_info size */
-+		aligned_uint64_t	func_info;	/* func info */
-+		uint32_t		func_info_cnt;	/* number of bpf_func_info records */
-+		uint32_t		line_info_rec_size;	/* userspace bpf_line_info size */
-+		aligned_uint64_t	line_info;	/* line info */
-+		uint32_t		line_info_cnt;	/* number of bpf_line_info records */
-+	};
++#define BPF_ST_MEM(SIZE, DST, OFF, IMM)				\
++	((struct bpf_insn) {					\
++		.code  = BPF_ST | BPF_SIZE(SIZE) | BPF_MEM,	\
++		.dst_reg = DST,					\
++		.src_reg = 0,					\
++		.off   = OFF,					\
++		.imm   = IMM })
 +
-+	struct { /* anonymous struct used by BPF_OBJ_* commands */
-+		aligned_uint64_t	pathname;
-+		uint32_t		bpf_fd;
-+		uint32_t		file_flags;
-+	};
++#define BPF_JMP_IMM(OP, DST, IMM, OFF)				\
++	((struct bpf_insn) {					\
++		.code  = BPF_JMP | BPF_OP(OP) | BPF_K,		\
++		.dst_reg = DST,					\
++		.src_reg = 0,					\
++		.off   = OFF,					\
++		.imm   = IMM })
 +
-+	struct { /* anonymous struct used by BPF_PROG_ATTACH/DETACH commands */
-+		uint32_t		target_fd;	/* container object to attach to */
-+		uint32_t		attach_bpf_fd;	/* eBPF program to attach */
-+		uint32_t		attach_type;
-+		uint32_t		attach_flags;
-+	};
++#define BPF_MOV64_IMM(DST, IMM)					\
++	((struct bpf_insn) {					\
++		.code  = BPF_ALU64 | BPF_MOV | BPF_K,		\
++		.dst_reg = DST,					\
++		.src_reg = 0,					\
++		.off   = 0,					\
++		.imm   = IMM })
 +
-+	struct { /* anonymous struct used by BPF_PROG_TEST_RUN command */
-+		uint32_t		prog_fd;
-+		uint32_t		retval;
-+		uint32_t		data_size_in;	/* input: len of data_in */
-+		uint32_t		data_size_out;	/* input/output: len of data_out
-+						 *   returns ENOSPC if data_out
-+						 *   is too small.
-+						 */
-+		aligned_uint64_t	data_in;
-+		aligned_uint64_t	data_out;
-+		uint32_t		repeat;
-+		uint32_t		duration;
-+		uint32_t		ctx_size_in;	/* input: len of ctx_in */
-+		uint32_t		ctx_size_out;	/* input/output: len of ctx_out
-+						 *   returns ENOSPC if ctx_out
-+						 *   is too small.
-+						 */
-+		aligned_uint64_t	ctx_in;
-+		aligned_uint64_t	ctx_out;
-+	} test;
++#define BPF_EMIT_CALL(FUNC)					\
++	((struct bpf_insn) {					\
++		.code  = BPF_JMP | BPF_CALL,			\
++		.dst_reg = 0,					\
++		.src_reg = 0,					\
++		.off   = 0,					\
++		.imm   = ((FUNC) - BPF_FUNC_unspec) })
 +
-+	struct { /* anonymous struct used by BPF_*_GET_*_ID */
-+		union {
-+			uint32_t		start_id;
-+			uint32_t		prog_id;
-+			uint32_t		map_id;
-+			uint32_t		btf_id;
-+		};
-+		uint32_t		next_id;
-+		uint32_t		open_flags;
-+	};
++#define BPF_EXIT_INSN()						\
++	((struct bpf_insn) {					\
++		.code  = BPF_JMP | BPF_EXIT,			\
++		.dst_reg = 0,					\
++		.src_reg = 0,					\
++		.off   = 0,					\
++		.imm   = 0 })
 +
-+	struct { /* anonymous struct used by BPF_OBJ_GET_INFO_BY_FD */
-+		uint32_t		bpf_fd;
-+		uint32_t		info_len;
-+		aligned_uint64_t	info;
-+	} info;
++/* End copy from tools/include/filter.h */
 +
-+	struct { /* anonymous struct used by BPF_PROG_QUERY command */
-+		uint32_t		target_fd;	/* container object to query */
-+		uint32_t		attach_type;
-+		uint32_t		query_flags;
-+		uint32_t		attach_flags;
-+		aligned_uint64_t	prog_ids;
-+		uint32_t		prog_cnt;
-+	} query;
+ /* Start copy from tools/lib/bpf  */
+ inline uint64_t ptr_to_u64(const void *ptr)
+ {
+diff --git a/include/lapi/socket.h b/include/lapi/socket.h
+index 2605443e8..299a4f27a 100644
+--- a/include/lapi/socket.h
++++ b/include/lapi/socket.h
+@@ -37,6 +37,10 @@
+ # define SO_BUSY_POLL	46
+ #endif
+ 
++#ifndef SO_ATTACH_BPF
++# define SO_ATTACH_BPF  50
++#endif
 +
-+	struct {
-+		uint64_t name;
-+		uint32_t prog_fd;
-+	} raw_tracepoint;
-+
-+	struct { /* anonymous struct for BPF_BTF_LOAD */
-+		aligned_uint64_t	btf;
-+		aligned_uint64_t	btf_log_buf;
-+		uint32_t		btf_size;
-+		uint32_t		btf_log_size;
-+		uint32_t		btf_log_level;
-+	};
-+
-+	struct {
-+		uint32_t		pid;		/* input: pid */
-+		uint32_t		fd;		/* input: fd */
-+		uint32_t		flags;		/* input: flags */
-+		uint32_t		buf_len;	/* input/output: buf len */
-+		aligned_uint64_t	buf;		/* input/output:
-+						 *   tp_name for tracepoint
-+						 *   symbol for kprobe
-+						 *   filename for uprobe
-+						 */
-+		uint32_t		prog_id;	/* output: prod_id */
-+		uint32_t		fd_type;	/* output: BPF_FD_TYPE_* */
-+		uint64_t		probe_offset;	/* output: probe_offset */
-+		uint64_t		probe_addr;	/* output: probe_addr */
-+	} task_fd_query;
-+} __attribute__((aligned(8)));
-+
-+/* End copy from linux/bpf.h */
-+
-+/* Start copy from tools/lib/bpf  */
-+inline uint64_t ptr_to_u64(const void *ptr)
-+{
-+	return (uint64_t) (unsigned long) ptr;
-+}
-+
-+inline int bpf(enum bpf_cmd cmd, union bpf_attr *attr, unsigned int size)
-+{
-+	return tst_syscall(__NR_bpf, cmd, attr, size);
-+}
-+/* End copy from tools/lib/bpf */
-+
-+#endif	/* BPF_H */
-diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
-index 7db6e281c..0e00641bc 100644
---- a/include/lapi/syscalls/aarch64.in
-+++ b/include/lapi/syscalls/aarch64.in
-@@ -258,6 +258,7 @@ process_vm_writev 271
- kcmp 272
- getrandom 278
- memfd_create 279
-+bpf 280
- userfaultfd 282
- membarrier 283
- execveat 281
-diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
-index 02f3955ba..87ab46933 100644
---- a/include/lapi/syscalls/i386.in
-+++ b/include/lapi/syscalls/i386.in
-@@ -340,6 +340,7 @@ sched_getattr 352
- renameat2 354
- getrandom 355
- memfd_create 356
-+bpf 357
- execveat 358
- userfaultfd 374
- membarrier 375
-diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
-index c304ef4b7..d3f7eb1f6 100644
---- a/include/lapi/syscalls/s390.in
-+++ b/include/lapi/syscalls/s390.in
-@@ -331,6 +331,7 @@ sched_getattr 346
- renameat2 347
- getrandom 349
- memfd_create 350
-+bpf 351
- userfaultfd 355
- membarrier 356
- execveat 354
-diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
-index ab7204663..94a672428 100644
---- a/include/lapi/syscalls/sparc.in
-+++ b/include/lapi/syscalls/sparc.in
-@@ -336,6 +336,7 @@ kcmp 341
- renameat2 345
- getrandom 347
- memfd_create 348
-+bpf 349
- membarrier 351
- userfaultfd 352
- execveat 350
-diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
-index fdb414c10..b1cbd4f2f 100644
---- a/include/lapi/syscalls/x86_64.in
-+++ b/include/lapi/syscalls/x86_64.in
-@@ -307,6 +307,7 @@ sched_getattr 315
- renameat2 316
- getrandom 318
- memfd_create 319
-+bpf 321
- execveat 322
- userfaultfd 323
- membarrier 324
+ #ifndef SO_ZEROCOPY
+ # define SO_ZEROCOPY	60
+ #endif
 -- 
 2.22.0
 
