@@ -1,103 +1,57 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 30 Jul 2019 13:45:29 +0800
-Subject: [LTP] [PATCH v3 1/5] m4: remove useless ltp-securebits.m4
-In-Reply-To: <20190729144227.GA8824@dell5510>
+Date: Tue, 30 Jul 2019 13:45:30 +0800
+Subject: [LTP] [PATCH v3 2/5] m4: remove useless ltp-time.m4
+In-Reply-To: <1564465533-2475-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 References: <20190729144227.GA8824@dell5510>
-Message-ID: <1564465533-2475-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1564465533-2475-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1564465533-2475-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Since commit fe9d9218c, we have detected linux/securebits.h in
-confiure.ac. one place used the HAVE_SECUREBITS(ltp-securebits.m4
-defined), it only controls compile. kernel/security/securebits/
-check_keepcaps.c has HAVE_LINUX_SECUREBITS_H check in internal,
-so removing it is safe.
+No testcase used these macros defined in ltp-time.m4, and these
+(CLOCK_MONOTONIC_RAW, CLOCK_REALTIME_COARSE, CLOCK_MONOTONIC_COARSE)
+have been defined in lapi/posix_clocks.h. Removing it is safe.
 
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Reviewed-by: Xiao Yang <ice_yangxiao@163.com>
 ---
- configure.ac                       |  1 -
- include/mk/features.mk.default     |  3 ---
- include/mk/features.mk.in          |  3 ---
- m4/ltp-securebits.m4               | 10 ----------
- testcases/kernel/security/Makefile |  4 ----
- 5 files changed, 21 deletions(-)
- delete mode 100644 m4/ltp-securebits.m4
+ configure.ac   |  1 -
+ m4/ltp-time.m4 | 12 ------------
+ 2 files changed, 13 deletions(-)
+ delete mode 100644 m4/ltp-time.m4
 
 diff --git a/configure.ac b/configure.ac
-index 298d90835..640ba0cba 100644
+index 640ba0cba..b0eddcbf8 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -231,7 +231,6 @@ LTP_CHECK_NOMMU_LINUX
- LTP_CHECK_PERF_EVENT
- LTP_CHECK_PRCTL_SUPPORT
- LTP_CHECK_RLIMIT64
--LTP_CHECK_SECUREBITS
- LTP_CHECK_SELINUX
- LTP_CHECK_SIGNAL
- LTP_CHECK_STATX
-diff --git a/include/mk/features.mk.default b/include/mk/features.mk.default
-index 94b8b0c54..3a6cc5176 100644
---- a/include/mk/features.mk.default
-+++ b/include/mk/features.mk.default
-@@ -29,9 +29,6 @@ WITH_PYTHON			:= no
- 
- # Features knobs
- 
--# Is securebits[.h], et all support available?
--HAVE_SECUREBITS			:= no
--
- # Test suite knobs
- 
- # Enable testcases/kernel/power_management's compile and install?
-diff --git a/include/mk/features.mk.in b/include/mk/features.mk.in
-index 7536b6f20..8e561b738 100644
---- a/include/mk/features.mk.in
-+++ b/include/mk/features.mk.in
-@@ -29,9 +29,6 @@ WITH_PYTHON			:= @WITH_PYTHON@
- 
- # Features knobs
- 
--# Is securebits[.h], et all support available?
--HAVE_SECUREBITS			:= @HAVE_SECUREBITS@
--
- # Test suite knobs
- 
- # Enable testcases/kernel/power_management's compile and install?
-diff --git a/m4/ltp-securebits.m4 b/m4/ltp-securebits.m4
+@@ -253,7 +253,6 @@ LTP_CHECK_SYSCALL_QUOTACTL
+ LTP_CHECK_SYSCALL_SIGNALFD
+ LTP_CHECK_SYSCALL_UTIMENSAT
+ LTP_CHECK_TASKSTATS
+-LTP_CHECK_TIME
+ LTP_CHECK_TIMERFD
+ test "x$with_tirpc" = xyes && LTP_CHECK_TIRPC
+ LTP_CHECK_TPACKET_V3
+diff --git a/m4/ltp-time.m4 b/m4/ltp-time.m4
 deleted file mode 100644
-index 7888e6335..000000000
---- a/m4/ltp-securebits.m4
+index 205ba6d5a..000000000
+--- a/m4/ltp-time.m4
 +++ /dev/null
-@@ -1,10 +0,0 @@
+@@ -1,12 +0,0 @@
 -dnl SPDX-License-Identifier: GPL-2.0-or-later
--dnl Copyright (c) Serge Hallyn (2010)
+-dnl Author: Ngie Cooper <yaneurabeya@gmail.com>
 -
--AC_DEFUN([LTP_CHECK_SECUREBITS],[
--	AC_CHECK_HEADERS(linux/securebits.h,[have_securebits=yes])
--if test "x$have_securebits" != xyes; then
--	have_securebits=no
--fi
--AC_SUBST(HAVE_SECUREBITS,$have_securebits)
+-dnl For all directly related time syscalls
+-AC_DEFUN([LTP_CHECK_TIME],[
+-	AC_CHECK_DECLS([CLOCK_MONOTONIC_RAW, CLOCK_REALTIME_COARSE, CLOCK_MONOTONIC_COARSE],,,[
+-#ifndef _GNU_SOURCE
+-#define _GNU_SOURCE
+-#endif
+-#include <time.h>
 -])
-diff --git a/testcases/kernel/security/Makefile b/testcases/kernel/security/Makefile
-index 0b4b98b83..eea794aa9 100644
---- a/testcases/kernel/security/Makefile
-+++ b/testcases/kernel/security/Makefile
-@@ -24,10 +24,6 @@ top_srcdir		?= ../../..
- 
- include	$(top_srcdir)/include/mk/env_pre.mk
- 
--ifneq ($(HAVE_SECUREBITS),yes)
--FILTER_OUT_DIRS		+= securebits
--endif
--
- OPT_CFLAGS		+= -O
- DEBUG_LDFLAGS		+= -s
- 
+-])
 -- 
 2.18.1
 
