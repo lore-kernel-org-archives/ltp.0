@@ -1,10 +1,10 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue, 30 Jul 2019 15:44:55 +0200
-Subject: [LTP] [PATCH v2 2/4] BPF: Sanity check creating and updating maps
+Date: Tue, 30 Jul 2019 15:44:57 +0200
+Subject: [LTP] [PATCH v2 4/4] BPF: Sanity check creating a program
 In-Reply-To: <20190730134457.27845-1-rpalethorpe@suse.com>
 References: <20190724080328.16145-1-rpalethorpe@suse.com>
  <20190730134457.27845-1-rpalethorpe@suse.com>
-Message-ID: <20190730134457.27845-2-rpalethorpe@suse.com>
+Message-ID: <20190730134457.27845-4-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,108 +13,128 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- runtest/syscalls                          |   2 +
- testcases/kernel/syscalls/bpf/.gitignore  |   1 +
- testcases/kernel/syscalls/bpf/Makefile    |  10 ++
- testcases/kernel/syscalls/bpf/bpf_map01.c | 143 ++++++++++++++++++++++
- 4 files changed, 156 insertions(+)
- create mode 100644 testcases/kernel/syscalls/bpf/.gitignore
- create mode 100644 testcases/kernel/syscalls/bpf/Makefile
- create mode 100644 testcases/kernel/syscalls/bpf/bpf_map01.c
+ runtest/syscalls                           |   1 +
+ testcases/kernel/syscalls/bpf/.gitignore   |   1 +
+ testcases/kernel/syscalls/bpf/bpf_prog01.c | 138 +++++++++++++++++++++
+ 3 files changed, 140 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/bpf/bpf_prog01.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 67dfed661..46880ee1d 100644
+index 46880ee1d..678a601d3 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -32,6 +32,8 @@ bind01 bind01
- bind02 bind02
+@@ -33,6 +33,7 @@ bind02 bind02
  bind03 bind03
  
-+bpf_map01 bpf_map01
-+
+ bpf_map01 bpf_map01
++bpf_prog01 bpf_prog01
+ 
  brk01 brk01
  
- capget01 capget01
 diff --git a/testcases/kernel/syscalls/bpf/.gitignore b/testcases/kernel/syscalls/bpf/.gitignore
-new file mode 100644
-index 000000000..f33532484
---- /dev/null
+index f33532484..7eb5f7c92 100644
+--- a/testcases/kernel/syscalls/bpf/.gitignore
 +++ b/testcases/kernel/syscalls/bpf/.gitignore
-@@ -0,0 +1 @@
-+bpf_map01
-diff --git a/testcases/kernel/syscalls/bpf/Makefile b/testcases/kernel/syscalls/bpf/Makefile
+@@ -1 +1,2 @@
+ bpf_map01
++bpf_prog01
+diff --git a/testcases/kernel/syscalls/bpf/bpf_prog01.c b/testcases/kernel/syscalls/bpf/bpf_prog01.c
 new file mode 100644
-index 000000000..990c8c83c
+index 000000000..faccd2219
 --- /dev/null
-+++ b/testcases/kernel/syscalls/bpf/Makefile
-@@ -0,0 +1,10 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2019 Linux Test Project
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+CFLAGS			+= -D_GNU_SOURCE
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/bpf/bpf_map01.c b/testcases/kernel/syscalls/bpf/bpf_map01.c
-new file mode 100644
-index 000000000..fd0ec2c7c
---- /dev/null
-+++ b/testcases/kernel/syscalls/bpf/bpf_map01.c
-@@ -0,0 +1,143 @@
++++ b/testcases/kernel/syscalls/bpf/bpf_prog01.c
+@@ -0,0 +1,138 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2019 Richard Palethorpe <rpalethorpe@suse.com>
 + *
 + * Trivial Extended Berkeley Packet Filter (eBPF) test.
 + *
-+ * Sanity check creating and updating maps.
++ * Sanity check loading and running bytecode.
++ *
++ * Test flow:
++ * 1. Create array map
++ * 2. Load eBPF program
++ * 3. Attach program to socket
++ * 4. Send packet on socket
++ * 5. This should trigger eBPF program which writes to array map
++ * 6. Verify array map was written to
 + */
 +
 +#include <limits.h>
 +#include <string.h>
++#include <stdio.h>
 +
 +#include "config.h"
 +#include "tst_test.h"
++#include "lapi/socket.h"
 +#include "lapi/bpf.h"
 +
-+#define KEY_SZ 8
-+#define VAL_SZ 1024
++static int map_fd, prog_fd;
++static int sk[2];
 +
-+struct map_type {
-+	uint32_t id;
-+	char *name;
-+};
-+
-+static const struct map_type map_types[] = {
-+	{BPF_MAP_TYPE_HASH, "hash"},
-+	{BPF_MAP_TYPE_ARRAY, "array"}
-+};
-+
-+static void *key;
-+static void *val0;
-+static void *val1;
-+
-+static void setup(void)
++/*
++ * r0 - r10 = registers 0 to 10
++ * r0 = return code
++ * fp/r10 = stack frame pointer
++ */
++int load_prog(int fd)
 +{
-+	key = SAFE_MALLOC(KEY_SZ);
-+	memset(key, 0, (size_t) KEY_SZ);
-+	val0 = SAFE_MALLOC(VAL_SZ);
-+	val1 = SAFE_MALLOC(VAL_SZ);
-+	memset(val1, 0, (size_t) VAL_SZ);
++	char log_buf[BUFSIZ] = { 0 };
++	struct bpf_insn prog[] = {
++		/* Load the map FD into r1*/
++		BPF_LD_MAP_FD(BPF_REG_1, fd),
++		/* Put (key = 0) on stack and key ptr into r2 */
++		BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),   /* r2 = fp */
++		BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),  /* r2 = r2 - 8 */
++		BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 0),    /* *r2 = 0 */
++		/* r0 = bpf_map_lookup_elem(r1, r2) */
++		BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
++		/* if r0 == 0 goto exit */
++		BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 3),
++		/* Set map[0] = 1 */
++		BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),     /* r1 = r0 */
++		BPF_ST_MEM(BPF_DW, BPF_REG_1, 0, 1),     /* *r1 = 1 */
++		BPF_MOV64_IMM(BPF_REG_0, 0),             /* r0 = 0 */
++		BPF_EXIT_INSN(),		         /* return r0 */
++	};
++	union bpf_attr attr = { 0 };
++
++	attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
++	attr.insns = ptr_to_u64(prog);
++	attr.insn_cnt = ARRAY_SIZE(prog);
++	attr.license = ptr_to_u64("GPL");
++	attr.log_buf = ptr_to_u64(log_buf);
++	attr.log_size = sizeof(log_buf);
++	attr.log_level = 1;
++
++	TEST(bpf(BPF_PROG_LOAD, &attr, sizeof(attr)));
++	if (TST_RET == -1) {
++		if (log_buf[0] != 0) {
++			tst_brk(TFAIL | TTERRNO,
++				"Failed verification: %s",
++				log_buf);
++		} else {
++			tst_brk(TFAIL | TTERRNO, "Failed to load program");
++		}
++	} else {
++		tst_res(TPASS, "Loaded program");
++	}
++
++	return TST_RET;
 +}
 +
-+void run(unsigned int n)
++void run(void)
 +{
-+	int fd, i;
++	uint32_t key = 0;
++	uint64_t val;
++	char buf[5];
 +	union bpf_attr attr;
 +
 +	memset(&attr, 0, sizeof(attr));
-+	attr.map_type = map_types[n].id;
-+	attr.key_size = n == 0 ? KEY_SZ : 4;
-+	attr.value_size = VAL_SZ;
++	attr.map_type = BPF_MAP_TYPE_ARRAY;
++	attr.key_size = 4;
++	attr.value_size = 8;
 +	attr.max_entries = 1;
 +
 +	TEST(bpf(BPF_MAP_CREATE, &attr, sizeof(attr)));
@@ -123,88 +143,43 @@ index 000000000..fd0ec2c7c
 +			tst_brk(TCONF | TTERRNO,
 +				"bpf() requires CAP_SYS_ADMIN on this system");
 +		} else {
-+			tst_brk(TFAIL | TTERRNO, "Failed to create %s map",
-+				map_types[n].name);
++			tst_brk(TBROK | TTERRNO, "Failed to create array map");
 +		}
 +	}
-+	tst_res(TPASS, "Created %s map", map_types[n].name);
-+	fd = TST_RET;
++	map_fd = TST_RET;
 +
-+	if (n == 0)
-+		memcpy(key, "12345678", KEY_SZ);
-+	else
-+		memset(key, 0, 4);
++	prog_fd = load_prog(map_fd);
 +
-+	memset(&attr, 0, sizeof(attr));
-+	attr.map_fd = fd;
-+	attr.key = ptr_to_u64(key);
-+	attr.value = ptr_to_u64(val1);
++	SAFE_SOCKETPAIR(AF_UNIX, SOCK_DGRAM, 0, sk);
++	SAFE_SETSOCKOPT(sk[1], SOL_SOCKET, SO_ATTACH_BPF,
++			&prog_fd, sizeof(prog_fd));
 +
-+	TEST(bpf(BPF_MAP_LOOKUP_ELEM, &attr, sizeof(attr)));
-+	if (n == 0) {
-+		if (TST_RET != -1 || TST_ERR != ENOENT) {
-+			tst_res(TFAIL | TTERRNO,
-+				"Empty hash map lookup should fail with ENOENT");
-+		} else {
-+			tst_res(TPASS | TTERRNO, "Empty hash map lookup");
-+		}
-+	} else if (TST_RET != -1) {
-+		for (i = 0;;) {
-+			if (*(char *) val1 != 0) {
-+				tst_res(TFAIL,
-+					"Preallocated array map val not zero");
-+			} else if (++i >= VAL_SZ) {
-+				tst_res(TPASS,
-+					"Preallocated array map lookup");
-+				break;
-+			}
-+		}
-+	} else {
-+		tst_res(TFAIL | TERRNO, "Prellocated array map lookup");
-+	}
++	SAFE_WRITE(1, sk[0], "Ahoj!", sizeof(buf));
 +
 +	memset(&attr, 0, sizeof(attr));
-+	attr.map_fd = fd;
-+	attr.key = ptr_to_u64(key);
-+	attr.value = ptr_to_u64(val0);
-+	attr.flags = BPF_ANY;
-+
-+	TEST(bpf(BPF_MAP_UPDATE_ELEM, &attr, sizeof(attr)));
-+	if (TST_RET == -1) {
-+		tst_brk(TFAIL | TTERRNO,
-+			"Update %s map element",
-+			map_types[n].name);
-+	} else {
-+		tst_res(TPASS,
-+			"Update %s map element",
-+			map_types[n].name);
-+	}
-+
-+	memset(&attr, 0, sizeof(attr));
-+	attr.map_fd = fd;
-+	attr.key = ptr_to_u64(key);
-+	attr.value = ptr_to_u64(val1);
++	attr.map_fd = map_fd;
++	attr.key = ptr_to_u64(&key);
++	attr.value = ptr_to_u64(&val);
 +
 +	TEST(bpf(BPF_MAP_LOOKUP_ELEM, &attr, sizeof(attr)));
 +	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO,
-+			"%s map lookup missing",
-+			map_types[n].name);
-+	} else if (memcmp(val0, val1, (size_t) VAL_SZ)) {
++		tst_res(TFAIL | TTERRNO, "array map lookup");
++	} else if (val != 1) {
 +		tst_res(TFAIL,
-+			"%s map lookup returned different value",
-+			map_types[n].name);
-+	} else {
-+		tst_res(TPASS, "%s map lookup", map_types[n].name);
++			"val = %lu, but should be val = 1",
++			val);
++        } else {
++	        tst_res(TPASS, "val = 1");
 +	}
 +
-+	SAFE_CLOSE(fd);
++	SAFE_CLOSE(prog_fd);
++	SAFE_CLOSE(map_fd);
++	SAFE_CLOSE(sk[0]);
++	SAFE_CLOSE(sk[1]);
 +}
 +
 +static struct tst_test test = {
-+	.tcnt = 2,
-+	.setup = setup,
-+	.test = run,
++	.test_all = run,
 +	.min_kver = "3.18",
 +};
 -- 
