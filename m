@@ -1,65 +1,72 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 30 Jul 2019 14:38:47 +0800
-Subject: [LTP] 
-	=?utf-8?q?=5BMM_Bug=3F=5D_mmap=28=29_triggers_SIGBUS_while?=
-	=?utf-8?b?IGRvaW5nIHRoZeKAiyDigItudW1hX21vdmVfcGFnZXMoKSBmb3Igb2Zm?=
-	=?utf-8?q?lined_hugepage_in_background?=
-In-Reply-To: <47999e20-ccbe-deda-c960-473db5b56ea0@oracle.com>
-References: <CAEemH2dMW6oh6Bbm=yqUADF+mDhuQgFTTGYftB+xAhqqdYV3Ng@mail.gmail.com>
- <47999e20-ccbe-deda-c960-473db5b56ea0@oracle.com>
-Message-ID: <CAEemH2eEMS7xrYwTjK8sbNg7OvC7ogRGs24TN8xkkwV1PD4amg@mail.gmail.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Tue, 30 Jul 2019 16:31:34 +0800
+Subject: [LTP] [PATCH v6 2/3] syscalls/copy_file_range01: add
+ cross-device test
+In-Reply-To: <20190729141011.GA1965@dell5510>
+References: <5D30200B.4050306@cn.fujitsu.com>
+ <1564030915-3211-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1564030915-3211-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20190729140043.GB31077@dell5510> <20190729141011.GA1965@dell5510>
+Message-ID: <5D400066.2090204@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Jul 30, 2019 at 3:01 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-...
-> Something seems strange.  I can not reproduce with unmodified 5.2.3
+
+> Hi,
 >
-> [root@f23d move_pages]# uname -r
-> 5.2.3
-> [root@f23d move_pages]# PATH=$PATH:$PWD ./move_pages12
-> tst_test.c:1096: INFO: Timeout per run is 0h 05m 00s
-> move_pages12.c:201: INFO: Free RAM 6725424 kB
-> move_pages12.c:219: INFO: Increasing 2048kB hugepages pool on node 0 to 4
-> move_pages12.c:229: INFO: Increasing 2048kB hugepages pool on node 1 to 4
-> move_pages12.c:145: INFO: Allocating and freeing 4 hugepages on node 0
-> move_pages12.c:145: INFO: Allocating and freeing 4 hugepages on node 1
-> move_pages12.c:135: PASS: Bug not reproduced
+>>> Amir has relaxed cross-device constraint since commit[1], I think we can test it in
+>>> copy_file_range01.
+>>> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5dae222a5
+>>> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
+>>> Reviewed-by: Amir Goldstein<amir73il@gmail.com>
+>> Now sent to the correct patchset version:
+>> Whole patchset LGTM, but here we got quite a lot of failures after increasing
+>> test coverage with .all_filesystems = 1 (which use should be noted in commit
+>> message):
+>> copy_file_range02.c:120: FAIL: copy_file_range failed unexpectedly; expected EOVERFLOW, but got: EINVAL
+>> copy_file_range02.c:126: FAIL: copy_file_range returned wrong value: 16
+>> ...
+>> copy_file_range02.c:126: FAIL: copy_file_range returned wrong value: 16
+Hi Petr
+can you give more information? such as distros, filesystem, envrionment,  do you get 16(EBUSY) on all filesystems?
+Because on my machine, I get the following result on 4.18.0-80.el8.x86_64(I test on vfat, extN,xfs,btrfs).
+
+copy_file_range02.c:118: PASS: copy_file_range failed as expected: EBADF
+copy_file_range02.c:118: PASS: copy_file_range failed as expected: EISDIR
+copy_file_range02.c:118: PASS: copy_file_range failed as expected: EBADF
+copy_file_range02.c:118: PASS: copy_file_range failed as expected: EBADF
+copy_file_range02.c:118: PASS: copy_file_range failed as expected: EINVAL
+copy_file_range02.c:127: FAIL: copy_file_range returned wrong value: 32
+copy_file_range02.c:127: FAIL: copy_file_range returned wrong value: 0
+copy_file_range02.c:127: FAIL: copy_file_range returned wrong value: 0
+copy_file_range02.c:118: PASS: copy_file_range failed as expected: EINVAL
+copy_file_range02.c:118: PASS: copy_file_range failed as expected: EINVAL
+copy_file_range02.c:118: PASS: copy_file_range failed as expected: EINVAL
+copy_file_range02.c:122: FAIL: copy_file_range failed unexpectedly; expected EOVERFLOW, but got: EINVAL
+copy_file_range02.c:127: FAIL: copy_file_range returned wrong value: 0
+
+
+> Also .mount_device = 1 and .all_filesystems = 1 require
+> .needs_root = 1 definition or you get
 >
-> Summary:
-> passed   1
-> failed   0
-> skipped  0
-> warnings 0
+> tst_device.c:97: INFO: Not allowed to open /dev/loop-control. Are you root?: EACCES
+> tst_device.c:132: INFO: No free devices found
+> tst_device.c:308: BROK: Failed to acquire device
+>
+> BTW I wonder whether these could be detected automatically.
+Here needs root because /dev/loop-control needs it.  But it doesn't represent mount_device and all_filesystems
+  need root.
+Or, I misunderstand your idea?
 
-FYI:
-
-And, from your test log, it looks like you were running an old LTP
-version, the test#2 was added in move_page12 in the latest master
-branch.
-
-So, the completely test log should be included two-part:
-
-# ./move_pages12
-tst_test.c:1100: INFO: Timeout per run is 0h 05m 00s
-move_pages12.c:252: INFO: Free RAM 63759028 kB
-move_pages12.c:270: INFO: Increasing 2048kB hugepages pool on node 0 to 4
-move_pages12.c:280: INFO: Increasing 2048kB hugepages pool on node 1 to 6
-move_pages12.c:196: INFO: Allocating and freeing 4 hugepages on node 0
-move_pages12.c:196: INFO: Allocating and freeing 4 hugepages on node 1
-move_pages12.c:186: PASS: Bug not reproduced
-move_pages12.c:186: PASS: Bug not reproduced
-
-Summary:
-passed   2
-failed   0
-skipped  0
-warnings 0
+> Kind regards,
+> Petr
+>
+>
+> .
+>
 
 
--- 
-Regards,
-Li Wang
+
