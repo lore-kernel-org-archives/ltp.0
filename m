@@ -1,33 +1,22 @@
-From: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date: Wed, 31 Jul 2019 15:50:51 +0800
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 31 Jul 2019 16:13:18 +0800
 Subject: [LTP] [PATCH] scenario_groups/default: remove the timers test
-Message-ID: <20190731075051.5830-1-po-hsu.lin@canonical.com>
+In-Reply-To: <20190731075051.5830-1-po-hsu.lin@canonical.com>
+References: <20190731075051.5830-1-po-hsu.lin@canonical.com>
+Message-ID: <CAEemH2fkeu4uzA3zzbU0-i4vN2iW-mOi3dPC=TVRLvG9skNwPA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The timers tests were merged into syscalls in commit 0051eab2,
-remove the no-longer-exists timers from default test plan.
+On Wed, Jul 31, 2019 at 3:51 PM Po-Hsu Lin <po-hsu.lin@canonical.com> wrote:
+>
+> The timers tests were merged into syscalls in commit 0051eab2,
+> remove the no-longer-exists timers from default test plan.
 
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
----
- scenario_groups/default | 1 -
- 1 file changed, 1 deletion(-)
+Good catch. Pushed.
 
-diff --git a/scenario_groups/default b/scenario_groups/default
-index e5b34782c..093f5f706 100644
---- a/scenario_groups/default
-+++ b/scenario_groups/default
-@@ -17,7 +17,6 @@ filecaps
- cap_bounds
- fcntl-locktests
- connectors
--timers
- power_management_tests
- hugetlb
- commands
 -- 
-2.17.1
-
+Regards,
+Li Wang
