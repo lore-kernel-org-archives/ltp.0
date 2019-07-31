@@ -1,9 +1,9 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 31 Jul 2019 14:24:06 +0800
-Subject: [LTP] [PATCH v2] syscalls/nanosleep03: remove duplicated nanosleep03
+Date: Wed, 31 Jul 2019 14:32:40 +0800
+Subject: [LTP] [PATCH v3] syscalls/nanosleep03: remove duplicated nanosleep03
 In-Reply-To: <20190730112120.GA10214@rei.lan>
 References: <20190730112120.GA10214@rei.lan>
-Message-ID: <1564554246-2265-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1564554760-2524-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,6 +15,10 @@ test EINTR when it is interrupted by a signal handler
 2)nanosleep01:Replace GPL verbose text by SPDX license identifier
 
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+------
+v2->v3:
+fix some typos
+------
 ---
  runtest/syscalls                              |   1 -
  .../kernel/syscalls/nanosleep/.gitignore      |   1 -
@@ -81,7 +85,7 @@ index 96e1cf1b4..567be8c10 100644
  
  int sample_fn(int clk_id, long long usec)
 diff --git a/testcases/kernel/syscalls/nanosleep/nanosleep02.c b/testcases/kernel/syscalls/nanosleep/nanosleep02.c
-index 8bd2c44c4..cf7849ca5 100644
+index 8bd2c44c4..7176f9373 100644
 --- a/testcases/kernel/syscalls/nanosleep/nanosleep02.c
 +++ b/testcases/kernel/syscalls/nanosleep/nanosleep02.c
 @@ -10,6 +10,9 @@
@@ -110,11 +114,11 @@ index 8bd2c44c4..cf7849ca5 100644
 +	}
 +	if (TST_ERR != EINTR) {
 +		tst_res(TFAIL | TTERRNO,
-+			"nanosleep() failed, expected EINTT, got");
++			"nanosleep() failed, expected EINTR, got");
 +		return;
 +	}
 +
-+	tst_res(TPASS, "nanosleep() returned -1, set errno to EINTER");
++	tst_res(TPASS, "nanosleep() returned -1, set errno to EINTR");
  
  	if (tst_timespec_lt(timereq, tst_timer_elapsed()))
  		tst_brk(TFAIL, "nanosleep() slept more than timereq");
