@@ -1,11 +1,11 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 31 Jul 2019 14:48:17 +0200
-Subject: [LTP] [PATCH v7 1/3] lib: alter find_free_loopdev()
-In-Reply-To: <20190731122853.GA30487@rei.lan>
-References: <20190730110555.GB7528@rei.lan>
- <1564569629-2358-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190731120503.GC22537@dell5510> <20190731122853.GA30487@rei.lan>
-Message-ID: <20190731124816.GG22537@dell5510>
+Date: Wed, 31 Jul 2019 14:54:16 +0200
+Subject: [LTP] [PATCH v2] syscalls/clock_gettime: Ported
+ clock_gettime03.c to new API
+In-Reply-To: <20190729123557.GA9131@dell5510>
+References: <20190729120222.4717-1-pvorel@suse.cz>
+ <20190729121719.GA25075@rei.lan> <20190729123557.GA9131@dell5510>
+Message-ID: <20190731125416.GA29215@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,17 +14,26 @@ To: ltp@lists.linux.it
 
 Hi,
 
-> > > -			return 0;
-> > > +			if (path != NULL)
-> > > +				strncpy(path, buf, path_len);
-> > Is it safe to assume that path_len is *always* < 1024 (size of buf)?
+> > > NOTE: test is still a mess, even after porting it.
+> > > Cleaning it up would probably be its own patch as the best
+> > > solution would be to rewrite it from scratch.
 
-> strncpy() is tricky that it may not null-terminate the string if the
-> source is too long, I would have just added path[path_len-1] = 0 after
-> the strncpy() here.
-I was thinking about it as well.
-I suggest to merge it with this change (+ tiny change I proposed in docs).
+> > The patch looks good, acked.
 
+> > There are couple of things that could be done to make the code cleaner.
+> > For instance we should make use of the .restore_wallclock flag in the
+> > test structure. But let's do that in a subsequent patches.
+> +1
+
+> > Also I'm not 100% sure that this test belongs under the clock_gettime/
+> > directory, we do call clock_gettime() in the main test function but the
+> > whole test is about inserting leap second. Maybe we should keep the test
+> > under the clock_gettime directory and rename it to leapsec01.c or
+> > something like this, but I'm not 100% sure about this.
+> +1 Before 0051eab23 it was called leapsec_timer.c. I also consider leapsec01.c
+> as more descriptive. Anyone else against renaming it?
+
+Merged.
 
 Kind regards,
 Petr
