@@ -1,27 +1,34 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 31 Jul 2019 22:51:31 +0200
-Subject: [LTP] [PATCH 1/1] syscalls/ioctl08: Require btrfs
-In-Reply-To: <20190729141920.GA4040@dell5510>
-References: <20190703154709.20863-1-pvorel@suse.cz>
- <20190729141920.GA4040@dell5510>
-Message-ID: <20190731205131.GA26660@dell5510>
+Date: Wed, 31 Jul 2019 23:06:04 +0200
+Subject: [LTP] [PATCH v7 1/3] lib: alter find_free_loopdev()
+In-Reply-To: <20190731132558.GB30487@rei.lan>
+References: <20190730110555.GB7528@rei.lan>
+ <1564569629-2358-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20190731120503.GC22537@dell5510> <20190731122853.GA30487@rei.lan>
+ <20190731124816.GG22537@dell5510> <20190731132558.GB30487@rei.lan>
+Message-ID: <20190731210604.GA26954@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Amir,
+Hi,
 
-> > Test requires btrfs otherwise it fails:
-> > WARNING: failed to open /dev/btrfs-control, skipping device
-> > registration: No such file or directory
-> > safe_macros.c:757: BROK: tst_test.c:752: mount(/dev/loop0, mnt_point,
-> > btrfs, 0, (nil)) failed: ENODEV
-> could you please test it?
+> Hi!
+> > > > > -			return 0;
+> > > > > +			if (path != NULL)
+> > > > > +				strncpy(path, buf, path_len);
+> > > > Is it safe to assume that path_len is *always* < 1024 (size of buf)?
 
-I tested it on kernel without btrfs and it works as expected, thus pushed.
-Thanks again for your report.
+> > > strncpy() is tricky that it may not null-terminate the string if the
+> > > source is too long, I would have just added path[path_len-1] = 0 after
+> > > the strncpy() here.
+> > I was thinking about it as well.
+> > I suggest to merge it with this change (+ tiny change I proposed in docs).
+
+> I'm okay with that.
+Merged into master with these changes and slightly changed commit messages.
 
 Kind regards,
 Petr
