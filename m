@@ -1,187 +1,142 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  1 Aug 2019 11:26:13 +0200
-Subject: [LTP] [RFC PATCH 6/9] syscalls/adjtimex: Make use of guarded
+Date: Thu,  1 Aug 2019 11:26:16 +0200
+Subject: [LTP] [RFC PATCH 9/9] syscalls/sendmmsg01: Make use of guarded
  buffers.
 In-Reply-To: <20190801092616.30553-1-chrubis@suse.cz>
 References: <20190801092616.30553-1-chrubis@suse.cz>
-Message-ID: <20190801092616.30553-7-chrubis@suse.cz>
+Message-ID: <20190801092616.30553-10-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+We also send one more byte in the second buffer in an attempt to trick
+the kernel to write after the second iovec used for receive. Note that
+because this is UDP connection this byte is then discarded in kernel and
+we don't have to anything even when the test is running in a loop with
+the -i parameter.
+
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- .../kernel/syscalls/adjtimex/adjtimex01.c     | 23 ++++++-----
- .../kernel/syscalls/adjtimex/adjtimex02.c     | 39 +++++++++++--------
- 2 files changed, 36 insertions(+), 26 deletions(-)
+ .../kernel/syscalls/sendmmsg/sendmmsg01.c     | 68 +++++++++----------
+ 1 file changed, 33 insertions(+), 35 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/adjtimex/adjtimex01.c b/testcases/kernel/syscalls/adjtimex/adjtimex01.c
-index 51d75f3e0..60b3544a8 100644
---- a/testcases/kernel/syscalls/adjtimex/adjtimex01.c
-+++ b/testcases/kernel/syscalls/adjtimex/adjtimex01.c
-@@ -12,14 +12,14 @@
- #define SET_MODE (ADJ_OFFSET | ADJ_FREQUENCY | ADJ_MAXERROR | ADJ_ESTERROR | \
- 	ADJ_STATUS | ADJ_TIMECONST | ADJ_TICK)
+diff --git a/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c b/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c
+index 7411467ee..37084102e 100644
+--- a/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c
++++ b/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c
+@@ -22,35 +22,27 @@
  
--static struct timex tim_save;
--static struct timex buff;
-+static struct timex *tim_save;
-+static struct timex *buf;
+ static int send_sockfd;
+ static int receive_sockfd;
+-static struct mmsghdr msg[VLEN];
+-static struct iovec msg1[2], msg2;
++static struct mmsghdr *snd_msg, *rcv_msg;
++static struct iovec *snd1, *snd2, *rcv1, *rcv2;
  
- void verify_adjtimex(void)
+ static void run(void)
  {
--	buff = tim_save;
--	buff.modes = SET_MODE;
--	TEST(adjtimex(&buff));
-+	*buf = *tim_save;
-+	buf->modes = SET_MODE;
-+	TEST(adjtimex(buf));
- 	if ((TST_RET >= TIME_OK) && (TST_RET <= TIME_ERROR)) {
- 		tst_res(TPASS, "adjtimex() with mode 0x%x ", SET_MODE);
- 	} else {
-@@ -27,8 +27,8 @@ void verify_adjtimex(void)
- 				SET_MODE);
- 	}
+-	struct mmsghdr msgs_in[VLEN];
+-	struct iovec iovecs[VLEN];
+-	char bufs[VLEN][BUFSIZE+1];
+ 	struct timespec timeout;
+-	int i, retval;
++	int retval;
  
--	buff.modes = ADJ_OFFSET_SINGLESHOT;
--	TEST(adjtimex(&buff));
-+	buf->modes = ADJ_OFFSET_SINGLESHOT;
-+	TEST(adjtimex(buf));
- 	if ((TST_RET >= TIME_OK) && (TST_RET <= TIME_ERROR)) {
- 		tst_res(TPASS, "adjtimex() with mode 0x%x ",
- 				ADJ_OFFSET_SINGLESHOT);
-@@ -41,10 +41,10 @@ void verify_adjtimex(void)
- 
- static void setup(void)
- {
--	tim_save.modes = 0;
-+	tim_save->modes = 0;
- 
- 	/* Save current parameters */
--	if ((adjtimex(&tim_save)) == -1) {
-+	if ((adjtimex(tim_save)) == -1) {
- 		tst_brk(TBROK | TERRNO,
- 			"adjtimex(): failed to save current params");
- 	}
-@@ -54,4 +54,9 @@ static struct tst_test test = {
- 	.needs_root = 1,
- 	.setup = setup,
- 	.test_all = verify_adjtimex,
-+	.bufs = (struct tst_buffers []) {
-+		{&buf, .size = sizeof(*buf)},
-+		{&tim_save, .size = sizeof(*tim_save)},
-+		{},
-+	}
- };
-diff --git a/testcases/kernel/syscalls/adjtimex/adjtimex02.c b/testcases/kernel/syscalls/adjtimex/adjtimex02.c
-index 2c0031992..19ee97158 100644
---- a/testcases/kernel/syscalls/adjtimex/adjtimex02.c
-+++ b/testcases/kernel/syscalls/adjtimex/adjtimex02.c
-@@ -16,14 +16,14 @@
- 
- static int hz;			/* HZ from sysconf */
- 
--static struct timex tim_save;
--static struct timex buff;
-+static struct timex *tim_save;
-+static struct timex *buf;
- 
- static struct passwd *ltpuser;
- 
- static void verify_adjtimex(unsigned int nr)
- {
--	struct timex *buffp;
-+	struct timex *bufp;
- 	int expected_errno = 0;
- 
- 	/*
-@@ -39,20 +39,20 @@ static void verify_adjtimex(unsigned int nr)
+-	retval = do_sendmmsg(send_sockfd, msg, VLEN, 0);
+-	if (retval < 0 || msg[0].msg_len != 6 || msg[1].msg_len != 5) {
++	retval = do_sendmmsg(send_sockfd, snd_msg, VLEN, 0);
++	if (retval < 0 || snd_msg[0].msg_len != 6 || snd_msg[1].msg_len != 6) {
+ 		tst_res(TFAIL|TTERRNO, "sendmmsg failed");
  		return;
  	}
  
--	buff = tim_save;
--	buff.modes = SET_MODE;
--	buffp = &buff;
-+	*buf = *tim_save;
-+	buf->modes = SET_MODE;
-+	bufp = buf;
- 	switch (nr) {
- 	case 0:
--		buffp = (struct timex *)-1;
-+		bufp = (struct timex *)-1;
- 		expected_errno = EFAULT;
- 		break;
- 	case 1:
--		buff.tick = 900000 / hz - 1;
-+		buf->tick = 900000 / hz - 1;
- 		expected_errno = EINVAL;
- 		break;
- 	case 2:
--		buff.tick = 1100000 / hz + 1;
-+		buf->tick = 1100000 / hz + 1;
- 		expected_errno = EINVAL;
- 		break;
- 	case 3:
-@@ -62,18 +62,18 @@ static void verify_adjtimex(unsigned int nr)
- 		expected_errno = EPERM;
- 		break;
- 	case 4:
--		buff.offset = 512000L + 1;
-+		buf->offset = 512000L + 1;
- 		expected_errno = EINVAL;
- 		break;
- 	case 5:
--		buff.offset = (-1) * (512000L) - 1;
-+		buf->offset = (-1) * (512000L) - 1;
- 		expected_errno = EINVAL;
- 		break;
- 	default:
- 		tst_brk(TFAIL, "Invalid test case %u ", nr);
+-	memset(msgs_in, 0, sizeof(msgs_in));
+-	for (i = 0; i < VLEN; i++) {
+-		iovecs[i].iov_base = bufs[i];
+-		iovecs[i].iov_len = BUFSIZE;
+-		msgs_in[i].msg_hdr.msg_iov = &iovecs[i];
+-		msgs_in[i].msg_hdr.msg_iovlen = 1;
+-	}
++	memset(rcv1->iov_base, 0, rcv1->iov_len);
++	memset(rcv2->iov_base, 0, rcv2->iov_len);
+ 
+ 	timeout.tv_sec = 1;
+ 	timeout.tv_nsec = 0;
+ 
+-	retval = do_recvmmsg(receive_sockfd, msgs_in, VLEN, 0, &timeout);
++	retval = do_recvmmsg(receive_sockfd, rcv_msg, VLEN, 0, &timeout);
+ 
+ 	if (retval == -1) {
+ 		tst_res(TFAIL | TTERRNO, "recvmmsg failed");
+@@ -62,14 +54,12 @@ static void run(void)
+ 		return;
  	}
  
--	TEST(adjtimex(buffp));
-+	TEST(adjtimex(bufp));
- 	if ((TST_RET == -1) && (TST_ERR == expected_errno)) {
- 		tst_res(TPASS | TTERRNO,
- 				"adjtimex() error %u ", expected_errno);
-@@ -90,23 +90,23 @@ static void verify_adjtimex(unsigned int nr)
+-	bufs[0][msgs_in[0].msg_len] = 0;
+-	if (strcmp(bufs[0], "onetwo"))
++	if (memcmp(rcv1->iov_base, "onetwo", 6))
+ 		tst_res(TFAIL, "Error in first received message");
+ 	else
+ 		tst_res(TPASS, "First message received successfully");
  
- static void setup(void)
- {
--	tim_save.modes = 0;
-+	tim_save->modes = 0;
+-	bufs[1][msgs_in[1].msg_len] = 0;
+-	if (strcmp(bufs[1], "three"))
++	if (memcmp(rcv2->iov_base, "three", 5))
+ 		tst_res(TFAIL, "Error in second received message");
+ 	else
+ 		tst_res(TPASS, "Second message received successfully");
+@@ -88,24 +78,23 @@ static void setup(void)
+ 	addr.sin_port = port;
  
- 	/* set the HZ from sysconf */
- 	hz = SAFE_SYSCONF(_SC_CLK_TCK);
+ 	SAFE_BIND(receive_sockfd, (struct sockaddr *)&addr, sizeof(addr));
+-	SAFE_CONNECT(send_sockfd, (struct sockaddr *) &addr, sizeof(addr));
+-
+-	memset(msg1, 0, sizeof(msg1));
+-	msg1[0].iov_base = "one";
+-	msg1[0].iov_len = 3;
+-	msg1[1].iov_base = "two";
+-	msg1[1].iov_len = 3;
++	SAFE_CONNECT(send_sockfd, (struct sockaddr *)&addr, sizeof(addr));
  
- 	/* Save current parameters */
--	if ((adjtimex(&tim_save)) == -1)
-+	if ((adjtimex(tim_save)) == -1)
- 		tst_brk(TBROK | TERRNO,
--				"adjtimex(): failed to save current params");
-+			"adjtimex(): failed to save current params");
+-	memset(&msg2, 0, sizeof(msg2));
+-	msg2.iov_base = "three";
+-	msg2.iov_len = 5;
++	memcpy(snd1[0].iov_base, "one", snd1[0].iov_len);
++	memcpy(snd1[1].iov_base, "two", snd1[1].iov_len);
++	memcpy(snd2->iov_base, "three3", snd2->iov_len);
+ 
+-	memset(msg, 0, sizeof(msg));
+-	msg[0].msg_hdr.msg_iov = msg1;
+-	msg[0].msg_hdr.msg_iovlen = 2;
++	memset(snd_msg, 0, VLEN * sizeof(*snd_msg));
++	snd_msg[0].msg_hdr.msg_iov = snd1;
++	snd_msg[0].msg_hdr.msg_iovlen = 2;
++	snd_msg[1].msg_hdr.msg_iov = snd2;
++	snd_msg[1].msg_hdr.msg_iovlen = 1;
+ 
+-	msg[1].msg_hdr.msg_iov = &msg2;
+-	msg[1].msg_hdr.msg_iovlen = 1;
++	memset(rcv_msg, 0, VLEN * sizeof(*rcv_msg));
++	rcv_msg[0].msg_hdr.msg_iov = rcv1;
++	rcv_msg[0].msg_hdr.msg_iovlen = 1;
++	rcv_msg[1].msg_hdr.msg_iov = rcv2;
++	rcv_msg[1].msg_hdr.msg_iovlen = 1;
+ 
+ 	test_info();
  }
- 
- static void cleanup(void)
- {
--	tim_save.modes = SET_MODE;
-+	tim_save->modes = SET_MODE;
- 
- 	/* Restore saved parameters */
--	if ((adjtimex(&tim_save)) == -1)
-+	if ((adjtimex(tim_save)) == -1)
- 		tst_res(TWARN, "Failed to restore saved parameters");
- }
- 
-@@ -116,4 +116,9 @@ static struct tst_test test = {
+@@ -123,4 +112,13 @@ static struct tst_test test = {
  	.setup = setup,
  	.cleanup = cleanup,
- 	.test = verify_adjtimex,
+ 	.test_variants = TEST_VARIANTS,
 +	.bufs = (struct tst_buffers []) {
-+		{&buf, .size = sizeof(*buf)},
-+		{&tim_save, .size = sizeof(*tim_save)},
++		{&snd1, .iov_sizes = (int[]){3, 3, -1}},
++		{&snd2, .iov_sizes = (int[]){6, -1}},
++		{&rcv1, .iov_sizes = (int[]){6, -1}},
++		{&rcv2, .iov_sizes = (int[]){5, -1}},
++		{&snd_msg, .size = VLEN * sizeof(*snd_msg)},
++		{&rcv_msg, .size = VLEN * sizeof(*rcv_msg)},
 +		{},
 +	}
  };
