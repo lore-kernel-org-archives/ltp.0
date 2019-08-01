@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  1 Aug 2019 11:26:15 +0200
-Subject: [LTP] [RFC PATCH 8/9] syscalls/clock_settime01: Make use of guarded
+Date: Thu,  1 Aug 2019 11:26:12 +0200
+Subject: [LTP] [RFC PATCH 5/9] syscalls/add_key04: Make use of guarded
  buffers.
 In-Reply-To: <20190801092616.30553-1-chrubis@suse.cz>
 References: <20190801092616.30553-1-chrubis@suse.cz>
-Message-ID: <20190801092616.30553-9-chrubis@suse.cz>
+Message-ID: <20190801092616.30553-6-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,76 +13,54 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- .../syscalls/clock_settime/clock_settime01.c  | 29 ++++++++++++-------
- 1 file changed, 18 insertions(+), 11 deletions(-)
+ testcases/kernel/syscalls/add_key/add_key04.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime01.c b/testcases/kernel/syscalls/clock_settime/clock_settime01.c
-index c68fe59a1..62d349154 100644
---- a/testcases/kernel/syscalls/clock_settime/clock_settime01.c
-+++ b/testcases/kernel/syscalls/clock_settime/clock_settime01.c
-@@ -23,23 +23,24 @@
- #define DELTA_US (long long) (DELTA_SEC * 1000000)
- #define DELTA_EPS (long long) (DELTA_US * 0.1)
+diff --git a/testcases/kernel/syscalls/add_key/add_key04.c b/testcases/kernel/syscalls/add_key/add_key04.c
+index 28cc91f72..12a169eda 100644
+--- a/testcases/kernel/syscalls/add_key/add_key04.c
++++ b/testcases/kernel/syscalls/add_key/add_key04.c
+@@ -32,6 +32,10 @@
  
-+static struct timespec *begin, *change, *end;
+ #define ASSOC_ARRAY_FAN_OUT 16
+ 
++#define PAYLOAD "payload"
 +
- static void verify_clock_settime(void)
++static char *payload;
++
+ static void do_test(void)
  {
- 	long long elapsed;
--	struct timespec begin, change, end;
+ 	int status;
+@@ -42,7 +46,6 @@ static void do_test(void)
  
- 	/* test 01: move forward */
+ 	if (SAFE_FORK() == 0) {
+ 		char description[32];
+-		const char payload[] = "payload";
+ 		int i;
  
--	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &begin);
-+	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, begin);
+ 		for (i = 0; i < ASSOC_ARRAY_FAN_OUT; i++) {
+@@ -55,7 +58,7 @@ static void do_test(void)
+ 			}
+ 		}
  
--	change = tst_timespec_add_us(begin, DELTA_US);
-+	*change = tst_timespec_add_us(*begin, DELTA_US);
+-		TEST(add_key("user", "userkey", payload, sizeof(payload),
++		TEST(add_key("user", "userkey", payload, sizeof(PAYLOAD),
+ 			     KEY_SPEC_SESSION_KEYRING));
+ 		if (TST_RET < 0)
+ 			tst_brk(TBROK | TTERRNO, "unable to create user key");
+@@ -72,7 +75,13 @@ static void do_test(void)
+ 		tst_brk(TBROK, "Child %s", tst_strstatus(status));
+ }
  
--	if (clock_settime(CLOCK_REALTIME, &change) != 0)
-+	if (clock_settime(CLOCK_REALTIME, change) != 0)
- 		tst_brk(TBROK | TTERRNO, "could not set realtime change");
- 
--	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &end);
-+	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, end);
- 
--	elapsed = tst_timespec_diff_us(end, begin);
-+	elapsed = tst_timespec_diff_us(*end, *begin);
- 
- 	if (elapsed >= DELTA_US && elapsed < (DELTA_US + DELTA_EPS))
- 		tst_res(TPASS, "clock_settime(2): was able to advance time");
-@@ -48,16 +49,16 @@ static void verify_clock_settime(void)
- 
- 	/* test 02: move backward */
- 
--	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &begin);
-+	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, begin);
- 
--	change = tst_timespec_sub_us(begin, DELTA_US);
-+	*change = tst_timespec_sub_us(*begin, DELTA_US);
- 
--	if (clock_settime(CLOCK_REALTIME, &change) != 0)
-+	if (clock_settime(CLOCK_REALTIME, change) != 0)
- 		tst_brk(TBROK | TTERRNO, "could not set realtime change");
- 
--	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &end);
-+	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, end);
- 
--	elapsed = tst_timespec_diff_us(end, begin);
-+	elapsed = tst_timespec_diff_us(*end, *begin);
- 
- 	if (~(elapsed) <= DELTA_US && ~(elapsed) > (DELTA_US - DELTA_EPS))
- 		tst_res(TPASS, "clock_settime(2): was able to recede time");
-@@ -69,4 +70,10 @@ static struct tst_test test = {
- 	.test_all = verify_clock_settime,
- 	.needs_root = 1,
- 	.restore_wallclock = 1,
-+	.bufs = (struct tst_buffers []) {
-+		{&begin, .size = sizeof(*begin)},
-+		{&change, .size = sizeof(*change)},
-+		{&end, .size = sizeof(*end)},
-+		{},
-+	}
++static void setup(void)
++{
++	payload = tst_strdup(PAYLOAD);
++}
++
+ static struct tst_test test = {
++	.setup = setup,
+ 	.test_all = do_test,
+ 	.forks_child = 1,
  };
 -- 
 2.21.0
