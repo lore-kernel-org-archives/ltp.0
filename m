@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  1 Aug 2019 11:26:10 +0200
-Subject: [LTP] [RFC PATCH 3/9] syscalls/preadv01: Make use of guarded
+Date: Thu,  1 Aug 2019 11:26:11 +0200
+Subject: [LTP] [RFC PATCH 4/9] syscalls/accept4_01: Make use of guarded
  buffers.
 In-Reply-To: <20190801092616.30553-1-chrubis@suse.cz>
 References: <20190801092616.30553-1-chrubis@suse.cz>
-Message-ID: <20190801092616.30553-4-chrubis@suse.cz>
+Message-ID: <20190801092616.30553-5-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,33 +13,67 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/preadv/preadv01.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ .../kernel/syscalls/accept4/accept4_01.c      | 24 +++++++++++--------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/preadv/preadv01.c b/testcases/kernel/syscalls/preadv/preadv01.c
-index 2452f216a..95431bc60 100644
---- a/testcases/kernel/syscalls/preadv/preadv01.c
-+++ b/testcases/kernel/syscalls/preadv/preadv01.c
-@@ -24,12 +24,8 @@
- #define CHUNK           64
+diff --git a/testcases/kernel/syscalls/accept4/accept4_01.c b/testcases/kernel/syscalls/accept4/accept4_01.c
+index dd289cf6d..29e18f27d 100644
+--- a/testcases/kernel/syscalls/accept4/accept4_01.c
++++ b/testcases/kernel/syscalls/accept4/accept4_01.c
+@@ -35,7 +35,7 @@
+ #define USE_SOCKETCALL 1
+ #endif
  
- static int fd;
--static char buf[CHUNK];
+-static struct sockaddr_in conn_addr;
++static struct sockaddr_in *conn_addr, *accept_addr;
+ static int listening_fd;
  
--static struct iovec rd_iovec[] = {
--	{buf, CHUNK},
--	{NULL, 0},
--};
-+static struct iovec *rd_iovec;
+ #if !(__GLIBC_PREREQ(2, 10))
+@@ -80,10 +80,10 @@ static int create_listening_socket(void)
  
- static struct tcase {
- 	int count;
-@@ -111,4 +107,8 @@ static struct tst_test test = {
- 	.test = verify_preadv,
- 	.min_kver = "2.6.30",
- 	.needs_tmpdir = 1,
+ static void setup(void)
+ {
+-	memset(&conn_addr, 0, sizeof(struct sockaddr_in));
+-	conn_addr.sin_family = AF_INET;
+-	conn_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+-	conn_addr.sin_port = htons(PORT_NUM);
++	memset(conn_addr, 0, sizeof(*conn_addr));
++	conn_addr->sin_family = AF_INET;
++	conn_addr->sin_addr.s_addr = htonl(INADDR_LOOPBACK);
++	conn_addr->sin_port = htons(PORT_NUM);
+ 
+ 	listening_fd = create_listening_socket();
+ }
+@@ -108,18 +108,17 @@ static void verify_accept4(unsigned int nr)
+ 	struct test_case *tcase = &tcases[nr];
+ 	int connfd, acceptfd;
+ 	int fdf, flf, fdf_pass, flf_pass, fd_cloexec, fd_nonblock;
+-	struct sockaddr_in claddr;
+ 	socklen_t addrlen;
+ 
+ 	connfd = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
+-	SAFE_CONNECT(connfd, (struct sockaddr *)&conn_addr, sizeof(conn_addr));
+-	addrlen = sizeof(claddr);
++	SAFE_CONNECT(connfd, (struct sockaddr *)conn_addr, sizeof(*conn_addr));
++	addrlen = sizeof(*accept_addr);
+ 
+ #if !(__GLIBC_PREREQ(2, 10))
+-	TEST(accept4_01(listening_fd, (struct sockaddr *)&claddr, &addrlen,
++	TEST(accept4_01(listening_fd, (struct sockaddr *)accept_addr, &addrlen,
+ 				tcase->cloexec | tcase->nonblock));
+ #else
+-	TEST(accept4(listening_fd, (struct sockaddr *)&claddr, &addrlen,
++	TEST(accept4(listening_fd, (struct sockaddr *)accept_addr, &addrlen,
+ 				tcase->cloexec | tcase->nonblock));
+ #endif
+ 	if (TST_RET == -1) {
+@@ -163,4 +162,9 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.test = verify_accept4,
 +	.bufs = (struct tst_buffers []) {
-+		{&rd_iovec, .iov_sizes = (int[]){CHUNK, 0, -1}},
++		{&conn_addr, .size = sizeof(*conn_addr)},
++		{&accept_addr, .size = sizeof(*accept_addr)},
 +		{},
 +	}
  };
