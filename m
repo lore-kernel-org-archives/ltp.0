@@ -1,10 +1,10 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 1 Aug 2019 06:39:42 -0400 (EDT)
-Subject: [LTP] [RFC PATCH 1/9] lib: Add support for guarded buffers
-In-Reply-To: <20190801092616.30553-2-chrubis@suse.cz>
+Date: Thu, 1 Aug 2019 06:43:10 -0400 (EDT)
+Subject: [LTP] [RFC PATCH 2/9] lib: Add a canary for guarded buffers
+In-Reply-To: <20190801092616.30553-3-chrubis@suse.cz>
 References: <20190801092616.30553-1-chrubis@suse.cz>
- <20190801092616.30553-2-chrubis@suse.cz>
-Message-ID: <1879623564.3992300.1564655982672.JavaMail.zimbra@redhat.com>
+ <20190801092616.30553-3-chrubis@suse.cz>
+Message-ID: <1516778317.3992530.1564656190448.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,16 +12,28 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
------ Original Message -----
-> This commit adds a support for guarder buffers. Guarded buffer is a
-> buffer allocated so that there is PROT_NONE page immediatelly after the
-> end of the buffer i.e. any access after the buffer generates
-> SEGFAULT/EFAULT etc.
-> 
-> The library is hooked into the tst_test structure so that all you need
-> is to fill up an NULL terminated array of buffer pointers and sizes to
-> get the respective buffers allocated. The library supports allocating
-> memory in test runtime as well as well as allocating more complex
-> buffers, which currently are iovec vectors.
 
-Runtime alloc in loop could be an issue, do we need also runtime free?
+----- Original Message -----
+> In a case that the buffer size is not a multiple of a page size there is
+> unused space before the start of the buffer. Let's fill that with
+> center mirrored random bytes and check that the buffer wasn't modified
+> before we unmap it.
+> 
+>  void *tst_alloc(size_t size)
+>  {
+>  	size_t page_size = getpagesize();
+> @@ -34,9 +61,13 @@ void *tst_alloc(size_t size)
+>  	maps = map;
+>  
+>  	if (size % page_size)
+> -		ret += page_size - (size % page_size);
+> +		map->buf_shift = page_size - (size % page_size);
+> +	else
+> +		map->buf_shift = 0;
+> +
+> +	setup_canary(map);
+>  
+> -	return ret;
+> +	return ret + map->buf_shift;
+
+My concern here is alignment.
