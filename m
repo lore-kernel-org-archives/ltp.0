@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  1 Aug 2019 11:26:12 +0200
-Subject: [LTP] [RFC PATCH 5/9] syscalls/add_key04: Make use of guarded
+Date: Thu,  1 Aug 2019 11:26:14 +0200
+Subject: [LTP] [RFC PATCH 7/9] syscalls/clock_getres01: Make use of guarded
  buffers.
 In-Reply-To: <20190801092616.30553-1-chrubis@suse.cz>
 References: <20190801092616.30553-1-chrubis@suse.cz>
-Message-ID: <20190801092616.30553-6-chrubis@suse.cz>
+Message-ID: <20190801092616.30553-8-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,54 +13,54 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/add_key/add_key04.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ .../kernel/syscalls/clock_getres/clock_getres01.c    | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/add_key/add_key04.c b/testcases/kernel/syscalls/add_key/add_key04.c
-index 28cc91f72..12a169eda 100644
---- a/testcases/kernel/syscalls/add_key/add_key04.c
-+++ b/testcases/kernel/syscalls/add_key/add_key04.c
-@@ -32,6 +32,10 @@
+diff --git a/testcases/kernel/syscalls/clock_getres/clock_getres01.c b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
+index 15f323108..e39f2909b 100644
+--- a/testcases/kernel/syscalls/clock_getres/clock_getres01.c
++++ b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
+@@ -15,12 +15,12 @@
+ #include "tst_test.h"
+ #include "lapi/posix_clocks.h"
  
- #define ASSOC_ARRAY_FAN_OUT 16
+-static struct timespec res;
++static struct timespec *res, *null;
  
-+#define PAYLOAD "payload"
-+
-+static char *payload;
-+
- static void do_test(void)
+ static struct test_case {
+ 	char *name;
+ 	clockid_t clk_id;
+-	struct timespec *res;
++	struct timespec **res;
+ 	int ret;
+ 	int err;
+ } tcase[] = {
+@@ -28,7 +28,7 @@ static struct test_case {
+ 	{"MONOTONIC", CLOCK_MONOTONIC, &res, 0, 0},
+ 	{"PROCESS_CPUTIME_ID", CLOCK_PROCESS_CPUTIME_ID, &res, 0, 0},
+ 	{"THREAD_CPUTIME_ID", CLOCK_THREAD_CPUTIME_ID, &res, 0, 0},
+-	{"REALTIME", CLOCK_REALTIME, NULL, 0, 0},
++	{"REALTIME", CLOCK_REALTIME, &null, 0, 0},
+ 	{"CLOCK_MONOTONIC_RAW", CLOCK_MONOTONIC_RAW, &res, 0, 0,},
+ 	{"CLOCK_REALTIME_COARSE", CLOCK_REALTIME_COARSE, &res, 0, 0,},
+ 	{"CLOCK_MONOTONIC_COARSE", CLOCK_MONOTONIC_COARSE, &res, 0, 0,},
+@@ -40,7 +40,7 @@ static struct test_case {
+ 
+ static void do_test(unsigned int i)
  {
- 	int status;
-@@ -42,7 +46,6 @@ static void do_test(void)
+-	TEST(clock_getres(tcase[i].clk_id, tcase[i].res));
++	TEST(clock_getres(tcase[i].clk_id, *tcase[i].res));
  
- 	if (SAFE_FORK() == 0) {
- 		char description[32];
--		const char payload[] = "payload";
- 		int i;
- 
- 		for (i = 0; i < ASSOC_ARRAY_FAN_OUT; i++) {
-@@ -55,7 +58,7 @@ static void do_test(void)
- 			}
- 		}
- 
--		TEST(add_key("user", "userkey", payload, sizeof(payload),
-+		TEST(add_key("user", "userkey", payload, sizeof(PAYLOAD),
- 			     KEY_SPEC_SESSION_KEYRING));
- 		if (TST_RET < 0)
- 			tst_brk(TBROK | TTERRNO, "unable to create user key");
-@@ -72,7 +75,13 @@ static void do_test(void)
- 		tst_brk(TBROK, "Child %s", tst_strstatus(status));
- }
- 
-+static void setup(void)
-+{
-+	payload = tst_strdup(PAYLOAD);
-+}
-+
+ 	if (TST_RET != tcase[i].ret) {
+ 		if (TST_ERR == EINVAL) {
+@@ -65,4 +65,8 @@ static void do_test(unsigned int i)
  static struct tst_test test = {
-+	.setup = setup,
- 	.test_all = do_test,
- 	.forks_child = 1,
+ 	.test = do_test,
+ 	.tcnt = ARRAY_SIZE(tcase),
++	.bufs = (struct tst_buffers []) {
++		{&res, .size = sizeof(*res)},
++		{},
++	}
  };
 -- 
 2.21.0
