@@ -1,49 +1,39 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 2 Aug 2019 15:27:48 +0200
-Subject: [LTP] [RFC PATCH 3/3] make: Add
- -Werror-implicit-function-declaration for all targets
-In-Reply-To: <20190802130301.GC27727@rei>
-References: <20190411233115.32744-1-pvorel@suse.cz>
- <20190411233115.32744-4-pvorel@suse.cz>
- <20190712134833.GA21258@dell5510> <20190802130301.GC27727@rei>
-Message-ID: <20190802132748.GA4749@dell5510>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Fri, 02 Aug 2019 15:57:45 +0200
+Subject: [LTP] [RFC PATCH 1/9] lib: Add support for guarded buffers
+In-Reply-To: <1879623564.3992300.1564655982672.JavaMail.zimbra@redhat.com>
+References: <20190801092616.30553-1-chrubis@suse.cz>
+ <20190801092616.30553-2-chrubis@suse.cz>
+ <1879623564.3992300.1564655982672.JavaMail.zimbra@redhat.com>
+Message-ID: <87a7crd606.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hello,
 
-> Hi!
-> > > diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
-> > > index 913bdf5d1..3ffdd0b7f 100644
-> > > --- a/include/mk/env_post.mk
-> > > +++ b/include/mk/env_post.mk
-> > > @@ -41,11 +41,9 @@ ifeq ($(UCLINUX),1)
-> > >  CPPFLAGS			+= -D__UCLIBC__ -DUCLINUX
-> > >  endif
+Jan Stancek <jstancek@redhat.com> writes:
 
-> > > -ifeq ($(ANDROID),1)
-> > > -# There are many undeclared functions, it's best not to accidentally overlook
-> > > -# them.
-> > >  CFLAGS				+= -Werror-implicit-function-declaration
+> ----- Original Message -----
+>> This commit adds a support for guarder buffers. Guarded buffer is a
+>> buffer allocated so that there is PROT_NONE page immediatelly after the
+>> end of the buffer i.e. any access after the buffer generates
+>> SEGFAULT/EFAULT etc.
+>> 
+>> The library is hooked into the tst_test structure so that all you need
+>> is to fill up an NULL terminated array of buffer pointers and sizes to
+>> get the respective buffers allocated. The library supports allocating
+>> memory in test runtime as well as well as allocating more complex
+>> buffers, which currently are iovec vectors.
+>
+> Runtime alloc in loop could be an issue, do we need also runtime free?
 
-> > > +ifeq ($(ANDROID),1)
-> > >  LDFLAGS				+= -L$(top_builddir)/lib/android_libpthread
-> > >  LDFLAGS				+= -L$(top_builddir)/lib/android_librt
-> > >  endif
+I think tst_alloc needs a bit more documentation at the least. If we
+have runtime free then we need to figure out which map the address
+belongs to or what its offset is (if any).
 
-> > Ping, please. Drop it or merge?
-
-> My opinion on Werror flags is that they should be on for development but
-> disabled for releases and production. The question is how to implement
-> something like this.
-
-> On the other hand we do have a CI so most problems would be caught
-> there...
-Good point. I'll post a new patch remove it here and add it for travis.
-It will be therefore disabled for Android, hope it's ok.
-
-Kind regards,
-Petr
+-- 
+Thank you,
+Richard.
