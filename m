@@ -1,83 +1,70 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 2 Aug 2019 18:12:58 +0800
-Subject: [LTP] [PATCH] cgroup_regression_test.sh: fix test_5 possible
- mount failure because of cgroup hierarchy
-In-Reply-To: <5D2D681D.1050909@cn.fujitsu.com>
-References: <1560250815-2308-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <5D2D681D.1050909@cn.fujitsu.com>
-Message-ID: <5D440CAA.9080701@cn.fujitsu.com>
+Date: Fri, 2 Aug 2019 18:34:41 +0800
+Subject: [LTP] [PATCH] syscalls/statx04: use stx_attributes_mask before test
+Message-ID: <1564742081-2234-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+stx_attributes_mask shows what's supported in stx_attributes.
+we should check four attrbutes whether supports on tested filesystem
+and report the non-supported attributes  before test.
 
-Hi
-Ping. :-)
-> Hi 
->
-> Ping.  :-) 
->
->> Currently, if systems doesn't mount subsys1,subsys2 and the hierarchy is not equal to 0, running it
->> reports the following error:
->>
->> mount: xxx is already mounted or /tmp/ltp-wPw08anmTI/LTP_cgroup_regression_test.V4jf0qrS7z/cgroup busy
->> cgroup_regression_test 5 TFAIL: mount net_prio and pids failed
->>
->> It fails because libcgroup doesn't permmit destroy cgroup subsystem hierarchies.
->> Simple umnout does not destroy the hierarchies. They still live inside kernel!
->>
->> When  hierarchy is equal to 0 in /proc/cgroups, we can mount them together on
->> a new mountpoint.
->>
->> I add a check for subsystem hierarchy and get subsystem from head.
->>
->> Notice:
->> more information about"Bug 612805 - cgroup: mount: none already mounted or /cgroups busy"
->>
->> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
->> ---
->>  .../cgroup/cgroup_regression_test.sh           | 18 +++++++++++++-----
->>  1 file changed, 13 insertions(+), 5 deletions(-)
->>
->> diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
->> index e197f5d3f..38cb760c2 100755
->> --- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
->> +++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
->> @@ -252,8 +252,10 @@ test5()
->>  		return
->>  	fi
->>  
->> -	local subsys1=`tail -n 1 /proc/cgroups | awk '{ print $1 }'`
->> -	local subsys2=`tail -n 2 /proc/cgroups | head -1 | awk '{ print $1 }'`
->> +	local subsys1=`head -2 /proc/cgroups | tail -n 1 | awk '{ print $1 }'`
->> +	local subsys1_hierarchy=`head -2 /proc/cgroups | tail -n 1 | awk '{ print $2 }'`
->> +	local subsys2=`head -3 /proc/cgroups | tail -n 1 | awk '{ print $1 }'`
->> +	local subsys2_hierarchy=`head -3 /proc/cgroups | tail -n 1 | awk '{ print $2 }'`
->>  
->>  	# Accounting here for the fact that the chosen subsystems could
->>  	# have been already previously mounted at boot time: in such a
->> @@ -267,10 +269,16 @@ test5()
->>  	if [ -z "$mounted" ]; then
->>  		mntpoint=cgroup
->>  		failing=$subsys1
->> -		mount -t cgroup -o $subsys1,$subsys2 xxx $mntpoint/
->> +		mount -t cgroup -o $subsys1,$subsys2 xxx $mntpoint/ 2>/dev/null
->> +		# Even subsystem has not been mounted, it still live in kernel.
->> +		# So we will get EBUSY when both mount subsys1 and subsys2 if
->> +		# hierarchy isn't equal to 0.
->>  		if [ $? -ne 0 ]; then
->> -			tst_res TFAIL "mount $subsys1 and $subsys2 failed"
->> -			return
->> +			if [ "$subsys1_hierarchy" = 0 -a "$subsys2_hierarchy" = 0 ]; then
->> +				tst_res TFAIL "mount $subsys1 and $subsys2 failed"
->> +				return
->> +			fi
->> +			failing=$subsys1,$subsys2
->>  		fi
->>  	else
->>  		# Use the pre-esistent mountpoint as $mntpoint and use a
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/statx/statx04.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/statx/statx04.c b/testcases/kernel/syscalls/statx/statx04.c
+index 71de734f5..e4b198c07 100644
+--- a/testcases/kernel/syscalls/statx/statx04.c
++++ b/testcases/kernel/syscalls/statx/statx04.c
+@@ -138,23 +138,37 @@ static void caid_flags_setup(void)
+ 	attr |= FS_COMPR_FL | FS_APPEND_FL | FS_IMMUTABLE_FL | FS_NODUMP_FL;
+ 
+ 	ret = ioctl(fd, FS_IOC_SETFLAGS, &attr);
+-	if (ret < 0) {
+-		if (errno == EOPNOTSUPP)
+-			tst_brk(TCONF, "Flags not supported");
++	if (ret < 0)
+ 		tst_brk(TBROK | TERRNO, "ioctl(%i, FS_IOC_SETFLAGS, %i)", fd, attr);
+-	}
+ 
+ 	clear_flags = 1;
+ }
+ 
+ static void setup(void)
+ {
++	struct statx buf;
++
+ 	SAFE_MKDIR(TESTDIR_FLAGGED, 0777);
+ 	SAFE_MKDIR(TESTDIR_UNFLAGGED, 0777);
+ 
+ 	if (!strcmp(tst_device->fs_type, "btrfs") && tst_kvercmp(4, 13, 0) < 0)
+ 		tst_brk(TCONF, "Btrfs statx() supported since 4.13");
+ 
++	TEST(statx(AT_FDCWD, TESTDIR_FLAGGED, 0, 0, &buf));
++	if (TST_RET == -1)
++		tst_brk(TFAIL | TTERRNO,
++			"sys_statx(AT_FDCWD, %s, 0, 0, &buf)", TESTDIR_FLAGGED);
++
++	/* Mask to show which attributes are supported on filesystem. */
++	if ((buf.stx_attributes_mask & FS_COMPR_FL) == 0)
++		tst_brk(TCONF, "filesystem doesn't support FS_COMPR_FL");
++	if ((buf.stx_attributes_mask & FS_APPEND_FL) == 0)
++		tst_brk(TCONF, "filesystem doesn't support FS_APPEND_FL");
++	if ((buf.stx_attributes_mask & FS_IMMUTABLE_FL) == 0)
++		tst_brk(TCONF, "filesystem doesn't support FS_IMMUTABLE_FL");
++	if ((buf.stx_attributes_mask & FS_NODUMP_FL) == 0)
++		tst_brk(TCONF, "filesystem doesn't support FS_NODUMP_FL");
++
+ 	caid_flags_setup();
+ }
+ 
+-- 
+2.18.1
 
 
 
