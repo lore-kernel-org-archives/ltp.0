@@ -1,63 +1,58 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 1 Aug 2019 12:32:52 -0400 (EDT)
-Subject: [LTP] [RFC PATCH 2/9] lib: Add a canary for guarded buffers
-In-Reply-To: <20190801115418.GB23916@rei>
-References: <20190801092616.30553-1-chrubis@suse.cz>
- <20190801092616.30553-3-chrubis@suse.cz>
- <1516778317.3992530.1564656190448.JavaMail.zimbra@redhat.com>
- <20190801115418.GB23916@rei>
-Message-ID: <1801920982.4081964.1564677172725.JavaMail.zimbra@redhat.com>
+From: Mike Kravetz <mike.kravetz@oracle.com>
+Date: Thu, 1 Aug 2019 17:19:41 -0700
+Subject: [LTP] 
+ =?utf-8?q?=5BMM_Bug=3F=5D_mmap=28=29_triggers_SIGBUS_while?=
+ =?utf-8?b?IGRvaW5nIHRoZeKAiyDigItudW1hX21vdmVfcGFnZXMoKSBmb3Igb2ZmbGlu?=
+ =?utf-8?q?ed_hugepage_in_background?=
+In-Reply-To: <a65e748b-7297-8547-c18d-9fb07202d5a0@oracle.com>
+References: <CAEemH2dMW6oh6Bbm=yqUADF+mDhuQgFTTGYftB+xAhqqdYV3Ng@mail.gmail.com>
+ <47999e20-ccbe-deda-c960-473db5b56ea0@oracle.com>
+ <CAEemH2d=vEfppCbCgVoGdHed2kuY3GWnZGhymYT1rnxjoWNdcQ@mail.gmail.com>
+ <a65e748b-7297-8547-c18d-9fb07202d5a0@oracle.com>
+Message-ID: <27a48931-aff6-d001-de78-4f7bef584c32@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On 7/30/19 5:44 PM, Mike Kravetz wrote:
+> A SIGBUS is the normal behavior for a hugetlb page fault failure due to
+> lack of huge pages.  Ugly, but that is the design.  I do not believe this
+> test should not be experiencing this due to reservations taken at mmap
+> time.  However, the test is combining faults, soft offline and page
+> migrations, so the there are lots of moving parts.
+> 
+> I'll continue to investigate.
 
+There appears to be a race with hugetlb_fault and try_to_unmap_one of
+the migration path.
 
------ Original Message -----
-> Hi!
-> > > In a case that the buffer size is not a multiple of a page size there is
-> > > unused space before the start of the buffer. Let's fill that with
-> > > center mirrored random bytes and check that the buffer wasn't modified
-> > > before we unmap it.
-> > > 
-> > >  void *tst_alloc(size_t size)
-> > >  {
-> > >  	size_t page_size = getpagesize();
-> > > @@ -34,9 +61,13 @@ void *tst_alloc(size_t size)
-> > >  	maps = map;
-> > >  
-> > >  	if (size % page_size)
-> > > -		ret += page_size - (size % page_size);
-> > > +		map->buf_shift = page_size - (size % page_size);
-> > > +	else
-> > > +		map->buf_shift = 0;
-> > > +
-> > > +	setup_canary(map);
-> > >  
-> > > -	return ret;
-> > > +	return ret + map->buf_shift;
-> > 
-> > My concern here is alignment.
-> 
-> I'm aware of that. My reasoning here is that:
-> 
-> * The end of the page is aligned by definition to 2^page_order
-> 
-> * Any primitive types such as integer, etc. are hence aligned
-> 
-> * Structures are padded so that the total size is multiple of
->   the largest alignment required (because otherwise arrays of
->   structures would end up causing unaligned access as well).
-> 
-> That leaves out things such as buffers for direct I/O, the only way to
-> allocate aligned buffers there is to make the size to be multiple of
-> the block size.
+Can you try this patch in your environment?  I am not sure if it will
+be the final fix, but just wanted to see if it addresses issue for you.
 
-I don't have concrete example at hand, but I foggily recall
-s390 issue from couple years back, where it didn't like odd addresses.
-Can't recall if it was data or code pointer.
-
-Could we apply/enforce some minimum alignment, similar to what glibc
-does for malloc?
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index ede7e7f5d1ab..f3156c5432e3 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3856,6 +3856,20 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
+ 
+ 		page = alloc_huge_page(vma, haddr, 0);
+ 		if (IS_ERR(page)) {
++			/*
++			 * We could race with page migration (try_to_unmap_one)
++			 * which is modifying page table with lock.  However,
++			 * we are not holding lock here.  Before returning
++			 * error that will SIGBUS caller, get ptl and make
++			 * sure there really is no entry.
++			 */
++			ptl = huge_pte_lock(h, mm, ptep);
++			if (!huge_pte_none(huge_ptep_get(ptep))) {
++				ret = 0;
++				spin_unlock(ptl);
++				goto out;
++			}
++			spin_unlock(ptl);
+ 			ret = vmf_error(PTR_ERR(page));
+ 			goto out;
+ 		}
