@@ -1,124 +1,66 @@
-From: Hongzhi, Song <hongzhi.song@windriver.com>
-Date: Fri, 2 Aug 2019 11:11:50 +0800
-Subject: [LTP] Bug Report: Btrfs prompts "can't allocate space for
- delete" when block size arounds 512M
-In-Reply-To: <b501bcff-8be0-4303-8789-363fda4658e5@windriver.com>
-References: <b501bcff-8be0-4303-8789-363fda4658e5@windriver.com>
-Message-ID: <f6795b4b-d70e-491e-e7ce-d235ca1b95ff@windriver.com>
+From: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+Date: Fri, 2 Aug 2019 03:48:26 +0000
+Subject: [LTP] 
+ =?utf-8?q?=5BMM_Bug=3F=5D_mmap=28=29_triggers_SIGBUS_while?=
+ =?utf-8?b?IGRvaW5nIHRoZeKAiyDigItudW1hX21vdmVfcGFnZXMoKSBmb3Igb2ZmbGlu?=
+ =?utf-8?q?ed_hugepage_in_background?=
+In-Reply-To: <CAEemH2dMW6oh6Bbm=yqUADF+mDhuQgFTTGYftB+xAhqqdYV3Ng@mail.gmail.com>
+References: <CAEemH2dMW6oh6Bbm=yqUADF+mDhuQgFTTGYftB+xAhqqdYV3Ng@mail.gmail.com>
+Message-ID: <20190802034825.GA20130@hori.linux.bs1.fc.nec.co.jp>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add linux-kernel@vger.kernel.org.
+On Mon, Jul 29, 2019 at 01:17:27PM +0800, Li Wang wrote:
+> Hi Naoya and Linux-MMers,
+> 
+> The LTP/move_page12 V2 triggers SIGBUS in the kernel-v5.2.3 testing.
+> https://github.com/wangli5665/ltp/blob/master/testcases/kernel/syscalls/
+> move_pages/move_pages12.c
+> 
+> It seems like the retry mmap() triggers SIGBUS while doing the numa_move_pages
+> () in background. That is very similar to the kernel bug which was mentioned by
+> commit 6bc9b56433b76e40d(mm: fix race on soft-offlining ): A race condition
+> between soft offline and hugetlb_fault which causes unexpected process SIGBUS
+> killing.
+> 
+> I'm not sure if that below patch is making sene to memory-failures.c, but after
+> building a new kernel-5.2.3 with this change, the problem can NOT be reproduced
+> . 
+> 
+> Any comments?
+> 
+> ----------------------------------
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -1695,15 +1695,16 @@ static int soft_offline_huge_page(struct page *page,
+> int flags)
+>         unlock_page(hpage);
+> 
+>         ret = isolate_huge_page(hpage, &pagelist);
+> +       if (!ret) {
+> +               pr_info("soft offline: %#lx hugepage failed to isolate\n",
+> pfn);
+> +               return -EBUSY;
+> +       }
+> +
+>         /*
+>          * get_any_page() and isolate_huge_page() takes a refcount each,
+>          * so need to drop one here.
+>          */
+>         put_hwpoison_page(hpage);
+> -       if (!ret) {
+> -               pr_info("soft offline: %#lx hugepage failed to isolate\n",
+> pfn);
+> -               return -EBUSY;
+> -       }
 
-Ping...
+Sorry for my late response.
 
+This change skips put_hwpoison_page() in failure path, so soft_offline_page()
+should return without releasing hpage's refcount taken by get_any_page(),
+maybe which is not what we want.
 
-Thanks,
-
---Hongzhi
-
-
-On 7/17/19 4:34 PM, Hongzhi, Song wrote:
-> Hi friends,
->
-> *Description:*
->
->
-> ??? One LTP testcase, fs_fill.c, fails on btrfs with kernel error when 
-> unlink files on Btrfs device:
->
-> ??? "BTRFS warning (device loop0): could not allocate space for a 
-> delete; will truncate on mount".
->
->
-> ??? I found the loop block device formatted with btrfs roughly rangs 
-> from 460M to 560M will cause the error.
->
-> ??? 256M and 1G all pass.
->
->
-> ??? The fs_fill.c source code:
->
-> [https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/fs/fs_fill/fs_fill.c] 
->
->
-> ??? The fs_fill.c calls unlink which triggers the error.
->
-> [https://github.com/linux-test-project/ltp/blob/e3457e42c1b93f54bb81da746eba314fd34ad40e/testcases/kernel/fs/fs_fill/fs_fill.c#L55] 
->
->
-> [https://github.com/linux-test-project/ltp/blob/e3457e42c1b93f54bb81da746eba314fd34ad40e/lib/safe_macros.c#L358] 
->
->
->
-> *Error info:*
->
-> ??? The issue maybe not reproduced everytime but four fifths chance.
->
-> ??? fs_fill.c:53: INFO: Unlinking mntpoint/thread5/file0
-> ??? safe_macros.c:360: BROK: fs_fill.c:55: 
-> unlink(mntpoint/thread10/file0) failed: ENOSPC
-> ??? safe_macros.c:360: BROK: fs_fill.c:55: 
-> unlink(mntpoint/thread11/file0) failed: ENOSPC
-> ??? [62477.378848] BTRFS warning (device loop0): could not allocate 
-> space for a delete; will truncate on mount
-> ??? [62477.378905] BTRFS warning (device loop0): could not allocate 
-> space for a delete; will truncate on mount
->
->
->
-> *Kernel:*
->
-> ??? After v5.2-rc1, qemux86-64
->
-> ??? # make -j40 ARCH=x86_64 CROSS_COMPILE=x86-64-gcc
-> ??? use qemu to bootup kernel
->
->
-> *LTP:*
->
-> ??? master branch: I tested on 20190625
-> ??? Reproduce:
->
-> ??? // build Ltp
-> ??? # cd Ltp-source
-> ??? # ./build.sh
->
-> ??? // copy files to qemu
-> ??? # cp runltp testcases/kernel/fs/fs_fill/fs_fill to qemu
->
-> ??? // login to qemu:
-> ??? // adjust block device size to 512M
-> ??? # vi runltp
-> ??? in function: create_block()
-> ??? ??? dd if=/dev/zero of=${TMP}/test.img bs=1024 count=262144
-> ??? ??? --->
-> ??? ??? dd if=/dev/zero of=${TMP}/test.img bs=1024 count=524288
->
-> ??? // execute testcase
-> ??? # runltp -f fs -s fs_fill
->
->
-> *Analysis:*
->
-> ??? One new kernel commit contained in v5.2-rc1 introduces the issue.
->
-> ??? commit c8eaeac7b734347c3afba7008b7af62f37b9c140
-> ??? Author: Josef Bacik <josef@toxicpanda.com>
-> ??? Date:?? Wed Apr 10 15:56:10 2019 -0400
->
-> ??? ??? btrfs: reserve delalloc metadata differently
-> ?? ?? ? ...
->
->
-> Anyone's reply will be appreciated.
->
-> --Hongzhi
->
->
->
->
->
+- Naoya
