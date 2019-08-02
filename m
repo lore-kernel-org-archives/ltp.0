@@ -1,20 +1,28 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 2 Aug 2019 17:08:08 +0200
-Subject: [LTP] [PATCH v2 0/4] Move -Werror-implicit-function-declaration
- to
-In-Reply-To: <20190802150445.10984-1-pvorel@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 2 Aug 2019 17:14:01 +0200
+Subject: [LTP] [PATCH v2 2/4] utils/ffsb: Add missing fhstat() signature
+ + includes
+In-Reply-To: <20190802150445.10984-3-pvorel@suse.cz>
 References: <20190802150445.10984-1-pvorel@suse.cz>
-Message-ID: <20190802150808.GA11468@dell5510>
+ <20190802150445.10984-3-pvorel@suse.cz>
+Message-ID: <20190802151401.GA24157@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> To be hones I'd rather delete this The Flexible Filesystem Benchmark
+> (FFSB) (in utils/ffsb-6.0-rc2). Does anyone uses it?
+> If kept, I'd prefer to have it as a separate project in [1]
 
-sorry, wrapped subject. It should have been
-Move -Werror-implicit-function-declaration to Travis CI (from Makefile)
+It's a dependency because the ext4-new-features tests use it.
 
-Kind regards,
-Petr
+But these tests already check for ffsb so we may as well remove it from
+LTP and either maintain it in a separate repo or point out our users to
+the fork.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
