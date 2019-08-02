@@ -1,45 +1,25 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 02 Aug 2019 16:03:02 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 2 Aug 2019 16:20:13 +0200
 Subject: [LTP] [RFC PATCH 1/9] lib: Add support for guarded buffers
-In-Reply-To: <20190801114522.GA23916@rei>
+In-Reply-To: <20190801092616.30553-2-chrubis@suse.cz>
 References: <20190801092616.30553-1-chrubis@suse.cz>
  <20190801092616.30553-2-chrubis@suse.cz>
- <1879623564.3992300.1564655982672.JavaMail.zimbra@redhat.com>
- <20190801114522.GA23916@rei>
-Message-ID: <878ssbd5rd.fsf@rpws.prws.suse.cz>
+Message-ID: <20190802142013.GB17684@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi!
+> diff --git a/testcases/kernel/syscalls/accept/accept02.c b/testcases/kernel/syscalls/accept/accept02.c
+> index df048ede4..1a0f625c9 100644
+> --- a/testcases/kernel/syscalls/accept/accept02.c
+> +++ b/testcases/kernel/syscalls/accept/accept02.c
 
-Cyril Hrubis <chrubis@suse.cz> writes:
-
-> Hi!
->> > This commit adds a support for guarder buffers. Guarded buffer is a
->> > buffer allocated so that there is PROT_NONE page immediatelly after the
->> > end of the buffer i.e. any access after the buffer generates
->> > SEGFAULT/EFAULT etc.
->> > 
->> > The library is hooked into the tst_test structure so that all you need
->> > is to fill up an NULL terminated array of buffer pointers and sizes to
->> > get the respective buffers allocated. The library supports allocating
->> > memory in test runtime as well as well as allocating more complex
->> > buffers, which currently are iovec vectors.
->> 
->> Runtime alloc in loop could be an issue, do we need also runtime free?
->
-> We can easily add it if we find it useful, so far all the usecases
-> were either already allocating buffers in setup or converted to do so.
-
-I am just starting to convert one of the bpf tests and I am considering
-just wrapping the systemcall or creating some helper func which takes
-whatever buffer is supplied and copy it to a new gaurded buffer. It is
-maybe not efficient with large buffer sizes, but in most cases I don't
-think it would matter too much.
+Sigh looks like I've added this test conversion to this patch as a
+mistake, I will move it to a separate patch in v2.
 
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
