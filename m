@@ -1,467 +1,103 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Sun,  4 Aug 2019 02:25:30 +0200
-Subject: [LTP] [PATCH v3] syscalls/ioprio: Add test cases for I/O priority
-Message-ID: <20190804002530.31761-1-linus.walleij@linaro.org>
+From: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+Date: Mon, 5 Aug 2019 00:40:42 +0000
+Subject: [LTP] 
+ =?utf-8?q?=5BMM_Bug=3F=5D_mmap=28=29_triggers_SIGBUS_while?=
+ =?utf-8?b?IGRvaW5nIHRoZeKAiyDigItudW1hX21vdmVfcGFnZXMoKSBmb3Igb2ZmbGlu?=
+ =?utf-8?q?ed_hugepage_in_background?=
+In-Reply-To: <54a5c9f5-eade-0d8f-24f9-bff6f19d4905@oracle.com>
+References: <CAEemH2dMW6oh6Bbm=yqUADF+mDhuQgFTTGYftB+xAhqqdYV3Ng@mail.gmail.com>
+ <47999e20-ccbe-deda-c960-473db5b56ea0@oracle.com>
+ <CAEemH2d=vEfppCbCgVoGdHed2kuY3GWnZGhymYT1rnxjoWNdcQ@mail.gmail.com>
+ <a65e748b-7297-8547-c18d-9fb07202d5a0@oracle.com>
+ <27a48931-aff6-d001-de78-4f7bef584c32@oracle.com>
+ <20190802041557.GA16274@hori.linux.bs1.fc.nec.co.jp>
+ <54a5c9f5-eade-0d8f-24f9-bff6f19d4905@oracle.com>
+Message-ID: <20190805004042.GA16862@hori.linux.bs1.fc.nec.co.jp>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The ioprio_get/ioprio_set syscalls are used primarily by the
-userspace tool "ionice" to set priority of a process, user or
-process group toward the I/O (block layer) scheduler.
+On Fri, Aug 02, 2019 at 10:42:33AM -0700, Mike Kravetz wrote:
+> On 8/1/19 9:15 PM, Naoya Horiguchi wrote:
+> > On Thu, Aug 01, 2019 at 05:19:41PM -0700, Mike Kravetz wrote:
+> >> There appears to be a race with hugetlb_fault and try_to_unmap_one of
+> >> the migration path.
+> >>
+> >> Can you try this patch in your environment?  I am not sure if it will
+> >> be the final fix, but just wanted to see if it addresses issue for you.
+> >>
+> >> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> >> index ede7e7f5d1ab..f3156c5432e3 100644
+> >> --- a/mm/hugetlb.c
+> >> +++ b/mm/hugetlb.c
+> >> @@ -3856,6 +3856,20 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
+> >>  
+> >>  		page = alloc_huge_page(vma, haddr, 0);
+> >>  		if (IS_ERR(page)) {
+> >> +			/*
+> >> +			 * We could race with page migration (try_to_unmap_one)
+> >> +			 * which is modifying page table with lock.  However,
+> >> +			 * we are not holding lock here.  Before returning
+> >> +			 * error that will SIGBUS caller, get ptl and make
+> >> +			 * sure there really is no entry.
+> >> +			 */
+> >> +			ptl = huge_pte_lock(h, mm, ptep);
+> >> +			if (!huge_pte_none(huge_ptep_get(ptep))) {
+> >> +				ret = 0;
+> >> +				spin_unlock(ptl);
+> >> +				goto out;
+> >> +			}
+> >> +			spin_unlock(ptl);
+> > 
+> > Thanks you for investigation, Mike.
+> > I tried this change and found no SIGBUS, so it works well.
+> > 
+> > I'm still not clear about how !huge_pte_none() becomes true here,
+> > because we enter hugetlb_no_page() only when huge_pte_none() is non-null
+> > and (racy) try_to_unmap_one() from page migration should convert the
+> > huge_pte into a migration entry, not null.
+> 
+> Thanks for taking a look Naoya.
+> 
+> In try_to_unmap_one(), there is this code block:
+> 
+> 		/* Nuke the page table entry. */
+> 		flush_cache_page(vma, address, pte_pfn(*pvmw.pte));
+> 		if (should_defer_flush(mm, flags)) {
+> 			/*
+> 			 * We clear the PTE but do not flush so potentially
+> 			 * a remote CPU could still be writing to the page.
+> 			 * If the entry was previously clean then the
+> 			 * architecture must guarantee that a clear->dirty
+> 			 * transition on a cached TLB entry is written through
+> 			 * and traps if the PTE is unmapped.
+> 			 */
+> 			pteval = ptep_get_and_clear(mm, address, pvmw.pte);
+> 
+> 			set_tlb_ubc_flush_pending(mm, pte_dirty(pteval));
+> 		} else {
+> 			pteval = ptep_clear_flush(vma, address, pvmw.pte);
+> 		}
+> 
+> That happens before setting the migration entry.  Therefore, for a period
+> of time the pte is NULL (huge_pte_none() returns true).
+> 
+> try_to_unmap_one holds the page table lock, but hugetlb_fault does not take
+> the lock to 'optimistically' check huge_pte_none().  When huge_pte_none
+> returns true, it calls hugetlb_no_page which is where we try to allocate
+> a page and fails.
+> 
+> Does that make sense, or am I missing something?
 
-This adds a simple iprio_get test and two more verbose tests
-for ioprio_set.
+Make sense to me, thanks.
 
-Cc: Anders Roxell <anders.roxell@linaro.org>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Cyril Hrubis <chrubis@suse.cz>
-Cc: Christian Amann <camann@suse.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-ChangeLog v2->v3:
-- Add testcases to runtest/syscalls
-- Add an info blurb to each test file
-- Move syscall wrappers into ioprio.h
-- Add helper to check that class is in range and use that
-  consistently in the test cases
-- Check the new priorities for validity when we bump the prio
-  +1 and -2.
-- Factor prio/class check function into the header as well
-  and use the same in both setting tests
-- Don't get the current prio before looping over all 8
-  prios in ioprio_set02
-- Break out the negative tests from ioprio_set02 to ioprio_set03
-- Also check that the negative tests return EINVAL
-- Diet down includes
-- Use tst_syscall()
-- Drop .min_kver since we use tst_syscall() to determine if
-  the syscall is there
-- Fixed relevant checkpatch warnings, left 80 col warnings
-  as these are non-compulsory
-ChangeLog v1->v2:
-- Use the new test fixture "tst_test.h"
-- Fix up legalese in the Makefile to a simple SPDX tag.
-- Test from v2.6.13 when the syscall was introduced
----
- runtest/syscalls                              |  5 +
- testcases/kernel/syscalls/ioprio/.gitignore   |  4 +
- testcases/kernel/syscalls/ioprio/Makefile     |  6 ++
- testcases/kernel/syscalls/ioprio/ioprio.h     | 91 +++++++++++++++++++
- .../kernel/syscalls/ioprio/ioprio_get01.c     | 47 ++++++++++
- .../kernel/syscalls/ioprio/ioprio_set01.c     | 67 ++++++++++++++
- .../kernel/syscalls/ioprio/ioprio_set02.c     | 67 ++++++++++++++
- .../kernel/syscalls/ioprio/ioprio_set03.c     | 59 ++++++++++++
- 8 files changed, 346 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ioprio/.gitignore
- create mode 100644 testcases/kernel/syscalls/ioprio/Makefile
- create mode 100644 testcases/kernel/syscalls/ioprio/ioprio.h
- create mode 100644 testcases/kernel/syscalls/ioprio/ioprio_get01.c
- create mode 100644 testcases/kernel/syscalls/ioprio/ioprio_set01.c
- create mode 100644 testcases/kernel/syscalls/ioprio/ioprio_set02.c
- create mode 100644 testcases/kernel/syscalls/ioprio/ioprio_set03.c
+> 
+> The patch checks for this specific condition: someone changing the pte
+> from NULL to non-NULL while holding the lock.  I am not sure if this is
+> the best way to fix.  But, it may be the easiest.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 42c20042376a..700471a2cf07 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -542,6 +542,11 @@ ioperm02 ioperm02
- iopl01 iopl01
- iopl02 iopl02
- 
-+ioprio_get01 ioprio_get01
-+ioprio_set01 ioprio_set01
-+ioprio_set02 ioprio_set02
-+ioprio_set03 ioprio_set03
-+
- io_cancel01 io_cancel01
- io_destroy01 io_destroy01
- io_getevents01 io_getevents01
-diff --git a/testcases/kernel/syscalls/ioprio/.gitignore b/testcases/kernel/syscalls/ioprio/.gitignore
-new file mode 100644
-index 000000000000..373079bf2219
---- /dev/null
-+++ b/testcases/kernel/syscalls/ioprio/.gitignore
-@@ -0,0 +1,4 @@
-+ioprio_get01
-+ioprio_set01
-+ioprio_set02
-+ioprio_set03
-diff --git a/testcases/kernel/syscalls/ioprio/Makefile b/testcases/kernel/syscalls/ioprio/Makefile
-new file mode 100644
-index 000000000000..5ea7d67db123
---- /dev/null
-+++ b/testcases/kernel/syscalls/ioprio/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/ioprio/ioprio.h b/testcases/kernel/syscalls/ioprio/ioprio.h
-new file mode 100644
-index 000000000000..be7fc5fbcf10
---- /dev/null
-+++ b/testcases/kernel/syscalls/ioprio/ioprio.h
-@@ -0,0 +1,91 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Copyright (c) 2019 Linus Walleij <linus.walleij@linaro.org>
-+ */
-+
-+#ifndef LTP_IOPRIO_H
-+#define LTP_IOPRIO_H
-+
-+enum {
-+	IOPRIO_CLASS_NONE = 0,
-+	IOPRIO_CLASS_RT,
-+	IOPRIO_CLASS_BE,
-+	IOPRIO_CLASS_IDLE,
-+};
-+
-+enum {
-+	IOPRIO_WHO_PROCESS = 1,
-+	IOPRIO_WHO_PGRP,
-+	IOPRIO_WHO_USER,
-+};
-+
-+#define IOPRIO_CLASS_SHIFT	(13)
-+#define IOPRIO_PRIO_MASK	((1UL << IOPRIO_CLASS_SHIFT) - 1)
-+
-+#define IOPRIO_PRIO_CLASS(data)	((data) >> IOPRIO_CLASS_SHIFT)
-+#define IOPRIO_PRIO_LEVEL(data)	((data) & IOPRIO_PRIO_MASK)
-+#define IOPRIO_PRIO_VALUE(class, data)	(((class) << IOPRIO_CLASS_SHIFT) | data)
-+
-+static const char * const to_class_str[] = {
-+	[IOPRIO_CLASS_NONE] = "NONE",
-+	[IOPRIO_CLASS_RT]   = "REALTIME",
-+	[IOPRIO_CLASS_BE]   = "BEST-EFFORT",
-+	[IOPRIO_CLASS_IDLE] = "IDLE"
-+};
-+
-+static inline int ioprio_get(int which, int who)
-+{
-+	return tst_syscall(__NR_ioprio_get, which, who);
-+}
-+
-+static inline int ioprio_set(int which, int who, int ioprio)
-+{
-+	return tst_syscall(__NR_ioprio_set, which, who, ioprio);
-+}
-+
-+/* Priority range from 0 (highest) to 7 (lowest) */
-+static inline int prio_in_range(int prio)
-+{
-+	if ((prio < 0) || (prio > 7))
-+		return 0;
-+	return 1;
-+}
-+
-+/* Priority range from 0 to 3 using the enum */
-+static inline int class_in_range(int class)
-+{
-+	if ((class < IOPRIO_CLASS_NONE) || (class > IOPRIO_CLASS_IDLE))
-+		return 0;
-+	return 1;
-+}
-+
-+static inline void ioprio_check_setting(int class, int prio, int report)
-+{
-+	int res;
-+	int newclass, newprio;
-+
-+	res = ioprio_get(IOPRIO_WHO_PROCESS, 0);
-+	if (res == -1) {
-+		tst_res(TFAIL | TTERRNO,
-+			 "reading back prio failed");
-+		return;
-+	}
-+
-+	newclass = IOPRIO_PRIO_CLASS(res);
-+	newprio = IOPRIO_PRIO_LEVEL(res);
-+	if (newclass != class)
-+		tst_res(TFAIL,
-+			"wrong class after setting, expected %s got %s",
-+			to_class_str[class],
-+			to_class_str[newclass]);
-+	else if (newprio != prio)
-+		tst_res(TFAIL,
-+			"wrong prio after setting, expected %d got %d",
-+			prio, newprio);
-+	else if (report)
-+		tst_res(TPASS, "ioprio_set new class %s, new prio %d",
-+			to_class_str[newclass],
-+			newprio);
-+}
-+
-+#endif
-diff --git a/testcases/kernel/syscalls/ioprio/ioprio_get01.c b/testcases/kernel/syscalls/ioprio/ioprio_get01.c
-new file mode 100644
-index 000000000000..e0acf1670fc9
---- /dev/null
-+++ b/testcases/kernel/syscalls/ioprio/ioprio_get01.c
-@@ -0,0 +1,47 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Linus Walleij <linus.walleij@linaro.org>
-+ *
-+ * Description:
-+ * Basic ioprio_get() test. Gets the current process I/O priority and
-+ * checks that the values are sane.
-+ */
-+#include <sys/types.h>
-+#include <sys/syscall.h>
-+
-+#include "tst_test.h"
-+#include "lapi/syscalls.h"
-+#include "ioprio.h"
-+
-+static void run(void)
-+{
-+	int prio, class;
-+
-+	/* Get the I/O priority for the current process */
-+	TEST(ioprio_get(IOPRIO_WHO_PROCESS, 0));
-+
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "ioprio_get failed");
-+		return;
-+	}
-+
-+	class = IOPRIO_PRIO_CLASS(TST_RET);
-+	prio = IOPRIO_PRIO_LEVEL(TST_RET);
-+
-+	if (!prio_in_range(prio)) {
-+		tst_res(TFAIL, "ioprio out of range (%d)", prio);
-+		return;
-+	}
-+
-+	if (!class_in_range(class)) {
-+		tst_res(TFAIL, "ioprio class of range (%d)", class);
-+		return;
-+	}
-+
-+	tst_res(TPASS, "ioprio_get returned class %s prio %d",
-+		to_class_str[class], prio);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+};
-diff --git a/testcases/kernel/syscalls/ioprio/ioprio_set01.c b/testcases/kernel/syscalls/ioprio/ioprio_set01.c
-new file mode 100644
-index 000000000000..07fe53caa3d6
---- /dev/null
-+++ b/testcases/kernel/syscalls/ioprio/ioprio_set01.c
-@@ -0,0 +1,67 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Linus Walleij <linus.walleij@linaro.org>
-+ *
-+ * Description:
-+ * Basic ioprio_set() test. Gets the current process I/O priority and
-+ * bumps it up one notch, then down two notches and checks that the
-+ * new priority is reported back correctly.
-+ */
-+#include <sys/types.h>
-+#include <sys/syscall.h>
-+
-+#include "tst_test.h"
-+#include "lapi/syscalls.h"
-+#include "ioprio.h"
-+
-+static void run(void)
-+{
-+	int class, prio;
-+
-+	/* Get the I/O priority for the current process */
-+	TEST(ioprio_get(IOPRIO_WHO_PROCESS, 0));
-+
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "ioprio_get failed");
-+		/* Try to continue anyway */
-+		class = IOPRIO_CLASS_NONE;
-+		prio = 4;
-+	} else {
-+		class = IOPRIO_PRIO_CLASS(TST_RET);
-+		prio = IOPRIO_PRIO_LEVEL(TST_RET);
-+		tst_res(TPASS, "ioprio_get returned class %s prio %d",
-+			 to_class_str[class], prio);
-+	}
-+
-+	/* Bump prio to what it was + 1 */
-+	class = IOPRIO_CLASS_BE;
-+	if (!prio_in_range(prio + 1)) {
-+		tst_res(TFAIL, "ioprio increase out of range (%d)", prio + 1);
-+		return;
-+	}
-+	prio++;
-+
-+	TEST(ioprio_set(IOPRIO_WHO_PROCESS, 0,
-+			IOPRIO_PRIO_VALUE(class, prio)));
-+	if (TST_RET == -1)
-+		tst_res(TFAIL | TTERRNO, "ioprio_set failed");
-+	else
-+		ioprio_check_setting(class, prio, 1);
-+
-+	/* Bump prio down two notches */
-+	if (!prio_in_range(prio - 2)) {
-+		tst_res(TFAIL, "ioprio increase out of range (%d)", prio - 2);
-+		return;
-+	}
-+	prio -= 2;
-+	TEST(ioprio_set(IOPRIO_WHO_PROCESS, 0,
-+			IOPRIO_PRIO_VALUE(class, prio)));
-+	if (TST_RET == -1)
-+		tst_res(TFAIL | TTERRNO, "ioprio_set failed");
-+	else
-+		ioprio_check_setting(class, prio, 1);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+};
-diff --git a/testcases/kernel/syscalls/ioprio/ioprio_set02.c b/testcases/kernel/syscalls/ioprio/ioprio_set02.c
-new file mode 100644
-index 000000000000..5cdc6f0dbb1b
---- /dev/null
-+++ b/testcases/kernel/syscalls/ioprio/ioprio_set02.c
-@@ -0,0 +1,67 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Linus Walleij <linus.walleij@linaro.org>
-+ *
-+ * Description:
-+ * Extended ioprio_set() test. Gets the current process I/O priority and
-+ * tests to set all 8 priority levels for best effort prioritym then
-+ * switches to test all 8 priority levels for idle priority. Also test
-+ * some non-working priorities to make sure they don't work.
-+ */
-+#include <sys/types.h>
-+#include <sys/syscall.h>
-+
-+#include "tst_test.h"
-+#include "lapi/syscalls.h"
-+#include "ioprio.h"
-+
-+static void run(void)
-+{
-+	int class, prio;
-+	int fail_in_loop;
-+
-+	/* Bump to best effort scheduling, all 8 priorities */
-+	class = IOPRIO_CLASS_BE;
-+
-+	fail_in_loop = 0;
-+	for (prio = 0; prio < 8; prio++) {
-+		TEST(ioprio_set(IOPRIO_WHO_PROCESS, 0,
-+				IOPRIO_PRIO_VALUE(class, prio)));
-+		if (TST_RET == -1) {
-+			tst_res(TFAIL | TTERRNO, "ioprio_set IOPRIO_CLASS_BE prio %d failed", prio);
-+			fail_in_loop = 1;
-+		}
-+	}
-+	if (!fail_in_loop)
-+		tst_res(TPASS, "tested all 8 prios in class %s",
-+			 to_class_str[class]);
-+
-+	/* Bump down to idle scheduling */
-+	class = IOPRIO_CLASS_IDLE;
-+
-+	fail_in_loop = 0;
-+	for (prio = 0; prio < 8; prio++) {
-+		TEST(ioprio_set(IOPRIO_WHO_PROCESS, 0,
-+				IOPRIO_PRIO_VALUE(class, prio)));
-+		if (TST_RET == -1) {
-+			tst_res(TFAIL | TTERRNO, "ioprio_set IOPRIO_CLASS_IDLE failed");
-+			fail_in_loop = 1;
-+		}
-+	}
-+	if (!fail_in_loop)
-+		tst_res(TPASS, "tested all 8 prios in class %s",
-+			 to_class_str[class]);
-+
-+	/* Test NONE scheduling */
-+	class = IOPRIO_CLASS_NONE;
-+	TEST(ioprio_set(IOPRIO_WHO_PROCESS, 0,
-+			IOPRIO_PRIO_VALUE(class, 0)));
-+	if (TST_RET == -1)
-+		tst_res(TFAIL | TTERRNO, "ioprio_set IOPRIO_CLASS_NONE failed");
-+	else
-+		ioprio_check_setting(class, 0, 1);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+};
-diff --git a/testcases/kernel/syscalls/ioprio/ioprio_set03.c b/testcases/kernel/syscalls/ioprio/ioprio_set03.c
-new file mode 100644
-index 000000000000..1e3ac291c004
---- /dev/null
-+++ b/testcases/kernel/syscalls/ioprio/ioprio_set03.c
-@@ -0,0 +1,59 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Linus Walleij <linus.walleij@linaro.org>
-+ *
-+ * Description:
-+ * Negative ioprio_set() test. Test some non-working priorities to make
-+ * sure they don't work.
-+ */
-+#include <sys/types.h>
-+#include <sys/syscall.h>
-+
-+#include "tst_test.h"
-+#include "lapi/syscalls.h"
-+#include "ioprio.h"
-+
-+static void run(void)
-+{
-+	int class;
-+
-+	class = IOPRIO_CLASS_BE;
-+
-+	/* Test to fail with prio 8, first set prio 4 */
-+	ioprio_set(IOPRIO_WHO_PROCESS, 0,
-+		   IOPRIO_PRIO_VALUE(class, 4));
-+	TEST(ioprio_set(IOPRIO_WHO_PROCESS, 0,
-+			IOPRIO_PRIO_VALUE(class, 8)));
-+	if (TST_RET == -1) {
-+		ioprio_check_setting(class, 4, 1);
-+		if (errno == EINVAL)
-+			tst_res(TPASS, "return EINVAL %d",
-+				errno);
-+		else
-+			tst_res(TFAIL, "ioprio_set returns wrong errno %d",
-+				errno);
-+	} else {
-+		tst_res(TFAIL, "ioprio_set IOPRIO_CLASS_BE prio 8 should not work");
-+	}
-+
-+	/* Any other prio than 0 should not work with NONE */
-+	class = IOPRIO_CLASS_NONE;
-+	TEST(ioprio_set(IOPRIO_WHO_PROCESS, 0,
-+			IOPRIO_PRIO_VALUE(class, 4)));
-+	if (TST_RET == -1) {
-+		tst_res(TPASS, "tested illegal priority with class %s",
-+			 to_class_str[class]);
-+		if (errno == EINVAL)
-+			tst_res(TPASS, "return EINVAL %d",
-+				errno);
-+		else
-+			tst_res(TFAIL, "ioprio_set returns wrong errno %d",
-+				errno);
-+	} else {
-+		tst_res(TFAIL, "ioprio_set IOPRIO_CLASS_NONE should fail");
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+};
--- 
-2.21.0
+Yes, I think so.
 
+- Naoya
