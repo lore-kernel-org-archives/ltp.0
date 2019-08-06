@@ -1,543 +1,335 @@
-From: camann <camann@suse.de>
-Date: Tue, 06 Aug 2019 11:31:42 +0200
-Subject: [LTP] [PATCH v3] syscalls/ioprio: Add test cases for I/O
- priority
-In-Reply-To: <20190804002530.31761-1-linus.walleij@linaro.org>
-References: <20190804002530.31761-1-linus.walleij@linaro.org>
-Message-ID: <d1b8f8f581d7b278b220468a68584c5b@suse.de>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Tue,  6 Aug 2019 11:47:49 +0200
+Subject: [LTP] [PATCH v3 1/4] BPF: Essential headers for map creation
+In-Reply-To: <20190806094752.9794-1-rpalethorpe@suse.com>
+References: <20190801092616.30553-1-chrubis@suse.cz>
+ <20190806094752.9794-1-rpalethorpe@suse.com>
+Message-ID: <20190806094752.9794-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ include/lapi/bpf.h               | 242 +++++++++++++++++++++++++++++++
+ include/lapi/syscalls/aarch64.in |   1 +
+ include/lapi/syscalls/i386.in    |   1 +
+ include/lapi/syscalls/s390.in    |   1 +
+ include/lapi/syscalls/sparc.in   |   1 +
+ include/lapi/syscalls/x86_64.in  |   1 +
+ 6 files changed, 247 insertions(+)
+ create mode 100644 include/lapi/bpf.h
 
-Thanks for your contribution!
-This looks good to me, just some improvements down below:
-
-On 2019-08-04 02:25, Linus Walleij wrote:
-> The ioprio_get/ioprio_set syscalls are used primarily by the
-> userspace tool "ionice" to set priority of a process, user or
-> process group toward the I/O (block layer) scheduler.
-> 
-> This adds a simple iprio_get test and two more verbose tests
-> for ioprio_set.
-> 
-> Cc: Anders Roxell <anders.roxell@linaro.org>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: Cyril Hrubis <chrubis@suse.cz>
-> Cc: Christian Amann <camann@suse.com>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> ChangeLog v2->v3:
-> - Add testcases to runtest/syscalls
-> - Add an info blurb to each test file
-> - Move syscall wrappers into ioprio.h
-> - Add helper to check that class is in range and use that
->   consistently in the test cases
-> - Check the new priorities for validity when we bump the prio
->   +1 and -2.
-> - Factor prio/class check function into the header as well
->   and use the same in both setting tests
-> - Don't get the current prio before looping over all 8
->   prios in ioprio_set02
-> - Break out the negative tests from ioprio_set02 to ioprio_set03
-> - Also check that the negative tests return EINVAL
-> - Diet down includes
-> - Use tst_syscall()
-> - Drop .min_kver since we use tst_syscall() to determine if
->   the syscall is there
-> - Fixed relevant checkpatch warnings, left 80 col warnings
->   as these are non-compulsory
-> ChangeLog v1->v2:
-> - Use the new test fixture "tst_test.h"
-> - Fix up legalese in the Makefile to a simple SPDX tag.
-> - Test from v2.6.13 when the syscall was introduced
-> ---
->  runtest/syscalls                              |  5 +
->  testcases/kernel/syscalls/ioprio/.gitignore   |  4 +
->  testcases/kernel/syscalls/ioprio/Makefile     |  6 ++
->  testcases/kernel/syscalls/ioprio/ioprio.h     | 91 +++++++++++++++++++
->  .../kernel/syscalls/ioprio/ioprio_get01.c     | 47 ++++++++++
->  .../kernel/syscalls/ioprio/ioprio_set01.c     | 67 ++++++++++++++
->  .../kernel/syscalls/ioprio/ioprio_set02.c     | 67 ++++++++++++++
->  .../kernel/syscalls/ioprio/ioprio_set03.c     | 59 ++++++++++++
->  8 files changed, 346 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/ioprio/.gitignore
->  create mode 100644 testcases/kernel/syscalls/ioprio/Makefile
->  create mode 100644 testcases/kernel/syscalls/ioprio/ioprio.h
->  create mode 100644 testcases/kernel/syscalls/ioprio/ioprio_get01.c
->  create mode 100644 testcases/kernel/syscalls/ioprio/ioprio_set01.c
->  create mode 100644 testcases/kernel/syscalls/ioprio/ioprio_set02.c
->  create mode 100644 testcases/kernel/syscalls/ioprio/ioprio_set03.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 42c20042376a..700471a2cf07 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -542,6 +542,11 @@ ioperm02 ioperm02
->  iopl01 iopl01
->  iopl02 iopl02
-> 
-> +ioprio_get01 ioprio_get01
-> +ioprio_set01 ioprio_set01
-> +ioprio_set02 ioprio_set02
-> +ioprio_set03 ioprio_set03
-> +
->  io_cancel01 io_cancel01
->  io_destroy01 io_destroy01
->  io_getevents01 io_getevents01
-> diff --git a/testcases/kernel/syscalls/ioprio/.gitignore
-> b/testcases/kernel/syscalls/ioprio/.gitignore
-> new file mode 100644
-> index 000000000000..373079bf2219
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/ioprio/.gitignore
-> @@ -0,0 +1,4 @@
-> +ioprio_get01
-> +ioprio_set01
-> +ioprio_set02
-> +ioprio_set03
-> diff --git a/testcases/kernel/syscalls/ioprio/Makefile
-> b/testcases/kernel/syscalls/ioprio/Makefile
-> new file mode 100644
-> index 000000000000..5ea7d67db123
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/ioprio/Makefile
-> @@ -0,0 +1,6 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +top_srcdir		?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/ioprio/ioprio.h
-> b/testcases/kernel/syscalls/ioprio/ioprio.h
-> new file mode 100644
-> index 000000000000..be7fc5fbcf10
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/ioprio/ioprio.h
-> @@ -0,0 +1,91 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * Copyright (c) 2019 Linus Walleij <linus.walleij@linaro.org>
-> + */
-> +
-> +#ifndef LTP_IOPRIO_H
-> +#define LTP_IOPRIO_H
-> +
-> +enum {
-> +	IOPRIO_CLASS_NONE = 0,
-> +	IOPRIO_CLASS_RT,
-> +	IOPRIO_CLASS_BE,
-> +	IOPRIO_CLASS_IDLE,
-> +};
-> +
-> +enum {
-> +	IOPRIO_WHO_PROCESS = 1,
-> +	IOPRIO_WHO_PGRP,
-> +	IOPRIO_WHO_USER,
-> +};
-> +
-> +#define IOPRIO_CLASS_SHIFT	(13)
-> +#define IOPRIO_PRIO_MASK	((1UL << IOPRIO_CLASS_SHIFT) - 1)
-> +
-> +#define IOPRIO_PRIO_CLASS(data)	((data) >> IOPRIO_CLASS_SHIFT)
-> +#define IOPRIO_PRIO_LEVEL(data)	((data) & IOPRIO_PRIO_MASK)
-> +#define IOPRIO_PRIO_VALUE(class, data)	(((class) << 
-> IOPRIO_CLASS_SHIFT) | data)
-> +
-> +static const char * const to_class_str[] = {
-> +	[IOPRIO_CLASS_NONE] = "NONE",
-> +	[IOPRIO_CLASS_RT]   = "REALTIME",
-> +	[IOPRIO_CLASS_BE]   = "BEST-EFFORT",
-> +	[IOPRIO_CLASS_IDLE] = "IDLE"
-> +};
-> +
-> +static inline int ioprio_get(int which, int who)
-
-These function names should probably be changed to something like 
-"sys_ioprio_{get,set}" in order to avoid using the same names as glibc 
-(if these calls ever get added).
-
-> +{
-> +	return tst_syscall(__NR_ioprio_get, which, who);
-> +}
-> +
-> +static inline int ioprio_set(int which, int who, int ioprio)
-> +{
-> +	return tst_syscall(__NR_ioprio_set, which, who, ioprio);
-> +}
-> +
-> +/* Priority range from 0 (highest) to 7 (lowest) */
-> +static inline int prio_in_range(int prio)
-> +{
-> +	if ((prio < 0) || (prio > 7))
-> +		return 0;
-> +	return 1;
-> +}
-> +
-> +/* Priority range from 0 to 3 using the enum */
-> +static inline int class_in_range(int class)
-> +{
-> +	if ((class < IOPRIO_CLASS_NONE) || (class > IOPRIO_CLASS_IDLE))
-> +		return 0;
-> +	return 1;
-> +}
-> +
-> +static inline void ioprio_check_setting(int class, int prio, int 
-> report)
-> +{
-> +	int res;
-> +	int newclass, newprio;
-> +
-> +	res = ioprio_get(IOPRIO_WHO_PROCESS, 0);
-> +	if (res == -1) {
-> +		tst_res(TFAIL | TTERRNO,
-> +			 "reading back prio failed");
-> +		return;
-> +	}
-> +
-> +	newclass = IOPRIO_PRIO_CLASS(res);
-> +	newprio = IOPRIO_PRIO_LEVEL(res);
-> +	if (newclass != class)
-> +		tst_res(TFAIL,
-> +			"wrong class after setting, expected %s got %s",
-> +			to_class_str[class],
-> +			to_class_str[newclass]);
-> +	else if (newprio != prio)
-> +		tst_res(TFAIL,
-> +			"wrong prio after setting, expected %d got %d",
-> +			prio, newprio);
-> +	else if (report)
-> +		tst_res(TPASS, "ioprio_set new class %s, new prio %d",
-> +			to_class_str[newclass],
-> +			newprio);
-
-Maybe you could return 1/0 depending on success and than handle the 
-output in the corresponding test case
-(maybe not, let's see what others think)
-
-> +}
-> +
-> +#endif
-> diff --git a/testcases/kernel/syscalls/ioprio/ioprio_get01.c
-> b/testcases/kernel/syscalls/ioprio/ioprio_get01.c
-> new file mode 100644
-> index 000000000000..e0acf1670fc9
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/ioprio/ioprio_get01.c
-> @@ -0,0 +1,47 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2019 Linus Walleij <linus.walleij@linaro.org>
-> + *
-> + * Description:
-> + * Basic ioprio_get() test. Gets the current process I/O priority and
-> + * checks that the values are sane.
-> + */
-> +#include <sys/types.h>
-> +#include <sys/syscall.h>
-> +
-> +#include "tst_test.h"
-> +#include "lapi/syscalls.h"
-> +#include "ioprio.h"
-> +
-> +static void run(void)
-> +{
-> +	int prio, class;
-> +
-> +	/* Get the I/O priority for the current process */
-> +	TEST(ioprio_get(IOPRIO_WHO_PROCESS, 0));
-> +
-> +	if (TST_RET == -1) {
-> +		tst_res(TFAIL | TTERRNO, "ioprio_get failed");
-> +		return;
-> +	}
-> +
-> +	class = IOPRIO_PRIO_CLASS(TST_RET);
-> +	prio = IOPRIO_PRIO_LEVEL(TST_RET);
-> +
-> +	if (!prio_in_range(prio)) {
-> +		tst_res(TFAIL, "ioprio out of range (%d)", prio);
-> +		return;
-> +	}
-> +
-> +	if (!class_in_range(class)) {
-> +		tst_res(TFAIL, "ioprio class of range (%d)", class);
-> +		return;
-> +	}
-> +
-> +	tst_res(TPASS, "ioprio_get returned class %s prio %d",
-> +		to_class_str[class], prio);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +};
-> diff --git a/testcases/kernel/syscalls/ioprio/ioprio_set01.c
-> b/testcases/kernel/syscalls/ioprio/ioprio_set01.c
-> new file mode 100644
-> index 000000000000..07fe53caa3d6
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/ioprio/ioprio_set01.c
-> @@ -0,0 +1,67 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2019 Linus Walleij <linus.walleij@linaro.org>
-> + *
-> + * Description:
-> + * Basic ioprio_set() test. Gets the current process I/O priority and
-> + * bumps it up one notch, then down two notches and checks that the
-> + * new priority is reported back correctly.
-> + */
-> +#include <sys/types.h>
-> +#include <sys/syscall.h>
-> +
-> +#include "tst_test.h"
-> +#include "lapi/syscalls.h"
-> +#include "ioprio.h"
-> +
-> +static void run(void)
-> +{
-> +	int class, prio;
-> +
-> +	/* Get the I/O priority for the current process */
-> +	TEST(ioprio_get(IOPRIO_WHO_PROCESS, 0));
-> +
-> +	if (TST_RET == -1) {
-> +		tst_res(TFAIL | TTERRNO, "ioprio_get failed");
-> +		/* Try to continue anyway */
-
-Maybe this should end here with tst_brk(TBROK), because if this fails it 
-would probably be better to abort.
-
-> +		class = IOPRIO_CLASS_NONE;
-> +		prio = 4;
-> +	} else {
-> +		class = IOPRIO_PRIO_CLASS(TST_RET);
-> +		prio = IOPRIO_PRIO_LEVEL(TST_RET);
-> +		tst_res(TPASS, "ioprio_get returned class %s prio %d",
-> +			 to_class_str[class], prio);
-
-'TINFO' is a better choice here, nothing test-worthy was accomplished, 
-so far.
-
-> +	}
-> +
-> +	/* Bump prio to what it was + 1 */
-> +	class = IOPRIO_CLASS_BE;
-> +	if (!prio_in_range(prio + 1)) {
-> +		tst_res(TFAIL, "ioprio increase out of range (%d)", prio + 1);
-> +		return;
-> +	}
-> +	prio++;
-
-The actual priority does not matter here, so it would be a good idea to 
-so something like this:
-
-- "#define NUM_PROIOS (8)" in the header file
-- set the priority to (prio + 1) % NUM_PRIOS
-
-That way it is guaranteed to be a valid number and no more checks are 
-needed.
-
-
-> +
-> +	TEST(ioprio_set(IOPRIO_WHO_PROCESS, 0,
-> +			IOPRIO_PRIO_VALUE(class, prio)));
-> +	if (TST_RET == -1)
-> +		tst_res(TFAIL | TTERRNO, "ioprio_set failed");
-> +	else
-> +		ioprio_check_setting(class, prio, 1);
-> +
-> +	/* Bump prio down two notches */
-> +	if (!prio_in_range(prio - 2)) {
-> +		tst_res(TFAIL, "ioprio increase out of range (%d)", prio - 2);
-> +		return;
-> +	}
-> +	prio -= 2;
-
-same here^
-
-> +	TEST(ioprio_set(IOPRIO_WHO_PROCESS, 0,
-> +			IOPRIO_PRIO_VALUE(class, prio)));
-> +	if (TST_RET == -1)
-> +		tst_res(TFAIL | TTERRNO, "ioprio_set failed");
-> +	else
-> +		ioprio_check_setting(class, prio, 1);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +};
-> diff --git a/testcases/kernel/syscalls/ioprio/ioprio_set02.c
-> b/testcases/kernel/syscalls/ioprio/ioprio_set02.c
-> new file mode 100644
-> index 000000000000..5cdc6f0dbb1b
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/ioprio/ioprio_set02.c
-> @@ -0,0 +1,67 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2019 Linus Walleij <linus.walleij@linaro.org>
-> + *
-> + * Description:
-> + * Extended ioprio_set() test. Gets the current process I/O priority 
-> and
-> + * tests to set all 8 priority levels for best effort prioritym then
-> + * switches to test all 8 priority levels for idle priority. Also test
-> + * some non-working priorities to make sure they don't work.
-> + */
-> +#include <sys/types.h>
-> +#include <sys/syscall.h>
-> +
-> +#include "tst_test.h"
-> +#include "lapi/syscalls.h"
-> +#include "ioprio.h"
-> +
-> +static void run(void)
-> +{
-> +	int class, prio;
-> +	int fail_in_loop;
-> +
-> +	/* Bump to best effort scheduling, all 8 priorities */
-> +	class = IOPRIO_CLASS_BE;
-> +
-> +	fail_in_loop = 0;
-> +	for (prio = 0; prio < 8; prio++) {
-
-again, using a defined number for number-of-priorities could help to 
-remove the magic number 8.
-
-> +		TEST(ioprio_set(IOPRIO_WHO_PROCESS, 0,
-> +				IOPRIO_PRIO_VALUE(class, prio)));
-> +		if (TST_RET == -1) {
-> +			tst_res(TFAIL | TTERRNO, "ioprio_set IOPRIO_CLASS_BE prio %d 
-> failed", prio);
-> +			fail_in_loop = 1;
-> +		}
-> +	}
-> +	if (!fail_in_loop)
-> +		tst_res(TPASS, "tested all 8 prios in class %s",
-> +			 to_class_str[class]);
-> +
-> +	/* Bump down to idle scheduling */
-> +	class = IOPRIO_CLASS_IDLE;
-> +
-> +	fail_in_loop = 0;
-> +	for (prio = 0; prio < 8; prio++) {
-> +		TEST(ioprio_set(IOPRIO_WHO_PROCESS, 0,
-> +				IOPRIO_PRIO_VALUE(class, prio)));
-> +		if (TST_RET == -1) {
-> +			tst_res(TFAIL | TTERRNO, "ioprio_set IOPRIO_CLASS_IDLE failed");
-
-Is there a reason why the priority is not printed here? If not, please 
-add this.
-
-> +			fail_in_loop = 1;
-> +		}
-> +	}
-> +	if (!fail_in_loop)
-> +		tst_res(TPASS, "tested all 8 prios in class %s",
-> +			 to_class_str[class]);
-> +
-> +	/* Test NONE scheduling */
-> +	class = IOPRIO_CLASS_NONE;
-> +	TEST(ioprio_set(IOPRIO_WHO_PROCESS, 0,
-> +			IOPRIO_PRIO_VALUE(class, 0)));
-> +	if (TST_RET == -1)
-> +		tst_res(TFAIL | TTERRNO, "ioprio_set IOPRIO_CLASS_NONE failed");
-> +	else
-> +		ioprio_check_setting(class, 0, 1);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +};
-> diff --git a/testcases/kernel/syscalls/ioprio/ioprio_set03.c
-> b/testcases/kernel/syscalls/ioprio/ioprio_set03.c
-> new file mode 100644
-> index 000000000000..1e3ac291c004
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/ioprio/ioprio_set03.c
-> @@ -0,0 +1,59 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2019 Linus Walleij <linus.walleij@linaro.org>
-> + *
-> + * Description:
-> + * Negative ioprio_set() test. Test some non-working priorities to 
-> make
-> + * sure they don't work.
-> + */
-> +#include <sys/types.h>
-> +#include <sys/syscall.h>
-> +
-> +#include "tst_test.h"
-> +#include "lapi/syscalls.h"
-> +#include "ioprio.h"
-> +
-> +static void run(void)
-> +{
-> +	int class;
-
-adding a variable "prio" would increase readability further down.
-
-> +
-> +	class = IOPRIO_CLASS_BE;
-> +
-> +	/* Test to fail with prio 8, first set prio 4 */
-> +	ioprio_set(IOPRIO_WHO_PROCESS, 0,
-> +		   IOPRIO_PRIO_VALUE(class, 4));
-> +	TEST(ioprio_set(IOPRIO_WHO_PROCESS, 0,
-> +			IOPRIO_PRIO_VALUE(class, 8)));
-> +	if (TST_RET == -1) {
-> +		ioprio_check_setting(class, 4, 1);
-> +		if (errno == EINVAL)
-> +			tst_res(TPASS, "return EINVAL %d",
-
-I would replace this line with something like "tst_res(TPASS | TTERRNO, 
-"Returned correct error for wrong prio");"
-
-> +				errno);
-
-In ltp you would usually use "TST_ERR" instead of "errno"
-
-> +		else
-> +			tst_res(TFAIL, "ioprio_set returns wrong errno %d",
-> +				errno);
-> +	} else {
-> +		tst_res(TFAIL, "ioprio_set IOPRIO_CLASS_BE prio 8 should not work");
-> +	}
-> +
-> +	/* Any other prio than 0 should not work with NONE */
-> +	class = IOPRIO_CLASS_NONE;
-> +	TEST(ioprio_set(IOPRIO_WHO_PROCESS, 0,
-> +			IOPRIO_PRIO_VALUE(class, 4)));
-> +	if (TST_RET == -1) {
-> +		tst_res(TPASS, "tested illegal priority with class %s",
-> +			 to_class_str[class]);
-
-Using TINFO instead of TPASS makes more sense because you give a 
-PASS/FAIL message a few lines further down
-
-> +		if (errno == EINVAL)
-> +			tst_res(TPASS, "return EINVAL %d",
-> +				errno);
-
-Same as above^
-
-> +		else
-> +			tst_res(TFAIL, "ioprio_set returns wrong errno %d",
-> +				errno);
-> +	} else {
-> +		tst_res(TFAIL, "ioprio_set IOPRIO_CLASS_NONE should fail");
-> +	}
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +};
+diff --git a/include/lapi/bpf.h b/include/lapi/bpf.h
+new file mode 100644
+index 000000000..369de0175
+--- /dev/null
++++ b/include/lapi/bpf.h
+@@ -0,0 +1,242 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 Richard Palethorpe <rpalethorpe@suse.com>
++ *
++ * Essential Extended Berkeley Packet Filter (eBPF) headers
++ *
++ * Mostly copied/adapted from linux/bpf.h and libbpf so that we can perform
++ * some eBPF testing without any external dependencies.
++ */
++
++#ifndef BPF_H
++# define BPF_H
++
++#include <stdint.h>
++
++#include "lapi/syscalls.h"
++
++/* Start copy from linux/bpf.h */
++enum bpf_cmd {
++	BPF_MAP_CREATE,
++	BPF_MAP_LOOKUP_ELEM,
++	BPF_MAP_UPDATE_ELEM,
++	BPF_MAP_DELETE_ELEM,
++	BPF_MAP_GET_NEXT_KEY,
++	BPF_PROG_LOAD,
++	BPF_OBJ_PIN,
++	BPF_OBJ_GET,
++	BPF_PROG_ATTACH,
++	BPF_PROG_DETACH,
++	BPF_PROG_TEST_RUN,
++	BPF_PROG_GET_NEXT_ID,
++	BPF_MAP_GET_NEXT_ID,
++	BPF_PROG_GET_FD_BY_ID,
++	BPF_MAP_GET_FD_BY_ID,
++	BPF_OBJ_GET_INFO_BY_FD,
++	BPF_PROG_QUERY,
++	BPF_RAW_TRACEPOINT_OPEN,
++	BPF_BTF_LOAD,
++	BPF_BTF_GET_FD_BY_ID,
++	BPF_TASK_FD_QUERY,
++	BPF_MAP_LOOKUP_AND_DELETE_ELEM,
++	BPF_MAP_FREEZE,
++};
++
++enum bpf_map_type {
++	BPF_MAP_TYPE_UNSPEC,
++	BPF_MAP_TYPE_HASH,
++	BPF_MAP_TYPE_ARRAY,
++	BPF_MAP_TYPE_PROG_ARRAY,
++	BPF_MAP_TYPE_PERF_EVENT_ARRAY,
++	BPF_MAP_TYPE_PERCPU_HASH,
++	BPF_MAP_TYPE_PERCPU_ARRAY,
++	BPF_MAP_TYPE_STACK_TRACE,
++	BPF_MAP_TYPE_CGROUP_ARRAY,
++	BPF_MAP_TYPE_LRU_HASH,
++	BPF_MAP_TYPE_LRU_PERCPU_HASH,
++	BPF_MAP_TYPE_LPM_TRIE,
++	BPF_MAP_TYPE_ARRAY_OF_MAPS,
++	BPF_MAP_TYPE_HASH_OF_MAPS,
++	BPF_MAP_TYPE_DEVMAP,
++	BPF_MAP_TYPE_SOCKMAP,
++	BPF_MAP_TYPE_CPUMAP,
++	BPF_MAP_TYPE_XSKMAP,
++	BPF_MAP_TYPE_SOCKHASH,
++	BPF_MAP_TYPE_CGROUP_STORAGE,
++	BPF_MAP_TYPE_REUSEPORT_SOCKARRAY,
++	BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE,
++	BPF_MAP_TYPE_QUEUE,
++	BPF_MAP_TYPE_STACK,
++	BPF_MAP_TYPE_SK_STORAGE,
++};
++
++#define BPF_OBJ_NAME_LEN 16U
++
++#define BPF_ANY		0 /* create new element or update existing */
++#define BPF_NOEXIST	1 /* create new element if it didn't exist */
++#define BPF_EXIST	2 /* update existing element */
++#define BPF_F_LOCK	4 /* spin_lock-ed map_lookup/map_update */
++
++#define aligned_uint64_t uint64_t __attribute__((aligned(8)))
++
++union bpf_attr {
++	struct { /* anonymous struct used by BPF_MAP_CREATE command */
++		uint32_t	map_type;	/* one of enum bpf_map_type */
++		uint32_t	key_size;	/* size of key in bytes */
++		uint32_t	value_size;	/* size of value in bytes */
++		uint32_t	max_entries;	/* max number of entries in a map */
++		uint32_t	map_flags;	/* BPF_MAP_CREATE related
++					 * flags defined above.
++					 */
++		uint32_t	inner_map_fd;	/* fd pointing to the inner map */
++		uint32_t	numa_node;	/* numa node (effective only if
++					 * BPF_F_NUMA_NODE is set).
++					 */
++		char	map_name[BPF_OBJ_NAME_LEN];
++		uint32_t	map_ifindex;	/* ifindex of netdev to create on */
++		uint32_t	btf_fd;		/* fd pointing to a BTF type data */
++		uint32_t	btf_key_type_id;	/* BTF type_id of the key */
++		uint32_t	btf_value_type_id;	/* BTF type_id of the value */
++	};
++
++	struct { /* anonymous struct used by BPF_MAP_*_ELEM commands */
++		uint32_t		map_fd;
++		aligned_uint64_t	key;
++		union {
++			aligned_uint64_t value;
++			aligned_uint64_t next_key;
++		};
++		uint64_t		flags;
++	};
++
++	struct { /* anonymous struct used by BPF_PROG_LOAD command */
++		uint32_t		prog_type;	/* one of enum bpf_prog_type */
++		uint32_t		insn_cnt;
++		aligned_uint64_t	insns;
++		aligned_uint64_t	license;
++		uint32_t		log_level;	/* verbosity level of verifier */
++		uint32_t		log_size;	/* size of user buffer */
++		aligned_uint64_t	log_buf;	/* user supplied buffer */
++		uint32_t		kern_version;	/* not used */
++		uint32_t		prog_flags;
++		char		prog_name[BPF_OBJ_NAME_LEN];
++		uint32_t		prog_ifindex;	/* ifindex of netdev to prep for */
++		/* For some prog types expected attach type must be known at
++		 * load time to verify attach type specific parts of prog
++		 * (context accesses, allowed helpers, etc).
++		 */
++		uint32_t		expected_attach_type;
++		uint32_t		prog_btf_fd;	/* fd pointing to BTF type data */
++		uint32_t		func_info_rec_size;	/* userspace bpf_func_info size */
++		aligned_uint64_t	func_info;	/* func info */
++		uint32_t		func_info_cnt;	/* number of bpf_func_info records */
++		uint32_t		line_info_rec_size;	/* userspace bpf_line_info size */
++		aligned_uint64_t	line_info;	/* line info */
++		uint32_t		line_info_cnt;	/* number of bpf_line_info records */
++	};
++
++	struct { /* anonymous struct used by BPF_OBJ_* commands */
++		aligned_uint64_t	pathname;
++		uint32_t		bpf_fd;
++		uint32_t		file_flags;
++	};
++
++	struct { /* anonymous struct used by BPF_PROG_ATTACH/DETACH commands */
++		uint32_t		target_fd;	/* container object to attach to */
++		uint32_t		attach_bpf_fd;	/* eBPF program to attach */
++		uint32_t		attach_type;
++		uint32_t		attach_flags;
++	};
++
++	struct { /* anonymous struct used by BPF_PROG_TEST_RUN command */
++		uint32_t		prog_fd;
++		uint32_t		retval;
++		uint32_t		data_size_in;	/* input: len of data_in */
++		uint32_t		data_size_out;	/* input/output: len of data_out
++						 *   returns ENOSPC if data_out
++						 *   is too small.
++						 */
++		aligned_uint64_t	data_in;
++		aligned_uint64_t	data_out;
++		uint32_t		repeat;
++		uint32_t		duration;
++		uint32_t		ctx_size_in;	/* input: len of ctx_in */
++		uint32_t		ctx_size_out;	/* input/output: len of ctx_out
++						 *   returns ENOSPC if ctx_out
++						 *   is too small.
++						 */
++		aligned_uint64_t	ctx_in;
++		aligned_uint64_t	ctx_out;
++	} test;
++
++	struct { /* anonymous struct used by BPF_*_GET_*_ID */
++		union {
++			uint32_t		start_id;
++			uint32_t		prog_id;
++			uint32_t		map_id;
++			uint32_t		btf_id;
++		};
++		uint32_t		next_id;
++		uint32_t		open_flags;
++	};
++
++	struct { /* anonymous struct used by BPF_OBJ_GET_INFO_BY_FD */
++		uint32_t		bpf_fd;
++		uint32_t		info_len;
++		aligned_uint64_t	info;
++	} info;
++
++	struct { /* anonymous struct used by BPF_PROG_QUERY command */
++		uint32_t		target_fd;	/* container object to query */
++		uint32_t		attach_type;
++		uint32_t		query_flags;
++		uint32_t		attach_flags;
++		aligned_uint64_t	prog_ids;
++		uint32_t		prog_cnt;
++	} query;
++
++	struct {
++		uint64_t name;
++		uint32_t prog_fd;
++	} raw_tracepoint;
++
++	struct { /* anonymous struct for BPF_BTF_LOAD */
++		aligned_uint64_t	btf;
++		aligned_uint64_t	btf_log_buf;
++		uint32_t		btf_size;
++		uint32_t		btf_log_size;
++		uint32_t		btf_log_level;
++	};
++
++	struct {
++		uint32_t		pid;		/* input: pid */
++		uint32_t		fd;		/* input: fd */
++		uint32_t		flags;		/* input: flags */
++		uint32_t		buf_len;	/* input/output: buf len */
++		aligned_uint64_t	buf;		/* input/output:
++						 *   tp_name for tracepoint
++						 *   symbol for kprobe
++						 *   filename for uprobe
++						 */
++		uint32_t		prog_id;	/* output: prod_id */
++		uint32_t		fd_type;	/* output: BPF_FD_TYPE_* */
++		uint64_t		probe_offset;	/* output: probe_offset */
++		uint64_t		probe_addr;	/* output: probe_addr */
++	} task_fd_query;
++} __attribute__((aligned(8)));
++
++/* End copy from linux/bpf.h */
++
++/* Start copy from tools/lib/bpf  */
++inline uint64_t ptr_to_u64(const void *ptr)
++{
++	return (uint64_t) (unsigned long) ptr;
++}
++
++inline int bpf(enum bpf_cmd cmd, union bpf_attr *attr, unsigned int size)
++{
++	return tst_syscall(__NR_bpf, cmd, attr, size);
++}
++/* End copy from tools/lib/bpf */
++
++#endif	/* BPF_H */
+diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
+index 7db6e281c..0e00641bc 100644
+--- a/include/lapi/syscalls/aarch64.in
++++ b/include/lapi/syscalls/aarch64.in
+@@ -258,6 +258,7 @@ process_vm_writev 271
+ kcmp 272
+ getrandom 278
+ memfd_create 279
++bpf 280
+ userfaultfd 282
+ membarrier 283
+ execveat 281
+diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
+index 02f3955ba..87ab46933 100644
+--- a/include/lapi/syscalls/i386.in
++++ b/include/lapi/syscalls/i386.in
+@@ -340,6 +340,7 @@ sched_getattr 352
+ renameat2 354
+ getrandom 355
+ memfd_create 356
++bpf 357
+ execveat 358
+ userfaultfd 374
+ membarrier 375
+diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
+index c304ef4b7..d3f7eb1f6 100644
+--- a/include/lapi/syscalls/s390.in
++++ b/include/lapi/syscalls/s390.in
+@@ -331,6 +331,7 @@ sched_getattr 346
+ renameat2 347
+ getrandom 349
+ memfd_create 350
++bpf 351
+ userfaultfd 355
+ membarrier 356
+ execveat 354
+diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
+index ab7204663..94a672428 100644
+--- a/include/lapi/syscalls/sparc.in
++++ b/include/lapi/syscalls/sparc.in
+@@ -336,6 +336,7 @@ kcmp 341
+ renameat2 345
+ getrandom 347
+ memfd_create 348
++bpf 349
+ membarrier 351
+ userfaultfd 352
+ execveat 350
+diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
+index fdb414c10..b1cbd4f2f 100644
+--- a/include/lapi/syscalls/x86_64.in
++++ b/include/lapi/syscalls/x86_64.in
+@@ -307,6 +307,7 @@ sched_getattr 315
+ renameat2 316
+ getrandom 318
+ memfd_create 319
++bpf 321
+ execveat 322
+ userfaultfd 323
+ membarrier 324
+-- 
+2.22.0
 
