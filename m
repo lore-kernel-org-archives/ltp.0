@@ -1,106 +1,286 @@
-From: Murphy Zhou <jencce.kernel@gmail.com>
-Date: Tue, 6 Aug 2019 17:29:09 +0800
-Subject: [LTP] [PATCH v7 3/3] syscalls/copy_file_range02: increase
- coverage and remove EXDEV test
-In-Reply-To: <5D49200D.9000201@cn.fujitsu.com>
-References: <20190730110555.GB7528@rei.lan>
- <1564569629-2358-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1564569629-2358-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190805065832.ti6vpoviykfaxcj7@XZHOUW.usersys.redhat.com>
- <5D47D6B9.9090306@cn.fujitsu.com>
- <20190805102211.pvyufepn6xywi7vm@XZHOUW.usersys.redhat.com>
- <5D480C6F.7070108@cn.fujitsu.com> <5D49200D.9000201@cn.fujitsu.com>
-Message-ID: <20190806092909.nd5cch7az6bpg56u@XZHOUW.usersys.redhat.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Tue, 6 Aug 2019 17:29:28 +0800
+Subject: [LTP] [PATCH v3] syscalls/nanosleep03: remove duplicated
+ nanosleep03
+In-Reply-To: <1564554760-2524-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <20190730112120.GA10214@rei.lan>
+ <1564554760-2524-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <5D494878.6090006@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Aug 06, 2019 at 02:37:01PM +0800, Yang Xu wrote:
-> on 2019/08/05 19:01, Yang Xu wrote:
-> 
-> > on 2019/08/05 18:22, Murphy Zhou  wrote:
-> > > All of them, ext234 xfs and vfat. 64bit
-> > > 
-> > > copy_file_range02.c:127: FAIL: copy_file_range returned wrong value: 32
-> > > 
-> > > [root@8u ltp (master)]# gcc -v
-> > > Using built-in specs.
-> > > COLLECT_GCC=gcc
-> > > COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-redhat-linux/8/lto-wrapper
-> > > OFFLOAD_TARGET_NAMES=nvptx-none
-> > > OFFLOAD_TARGET_DEFAULT=1
-> > > Target: x86_64-redhat-linux
-> > > Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,fortran,lto --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla  --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --with-isl --disable-libmpx --enable-offload-targets=nvptx-none --without-cuda-driver --enable-gnu-indirect-function --enable-cet --with-tune=generic --with-arch_32=x86-64 --build=x86_64-redhat-linux
-> > > Thread model: posix
-> > > gcc version 8.3.1 20190507 (Red Hat 8.3.1-4) (GCC)
-> > > [root@8u ltp (master)]# rpm -qv glibc
-> > > glibc-2.28-72.el8.x86_64
-> > > [root@8u ltp (master)]# mke2fs -V
-> > > mke2fs 1.44.6 (5-Mar-2019)
-> > > 	Using EXT2FS Library version 1.44.6
-> > > [root@8u ltp (master)]# mkfs.xfs -V
-> > > mkfs.xfs version 5.2.0-rc0
-> > > [root@8u ltp (master)]#
-> > > 
-> > > Looks like the copy succeeded at that offset.
-> > Hi Murphy
-> > Today, I use theLinux 5.3-rc3 ,  ext234 xfs and vfat 64bit all pass. This case use glibc and tst_syscall, they all failed?
-> > 
-> > my environment as below:
-> > # gcc -v
-> > gcc version 8.2.1 20180905 (8.2.1-3) (GCC)
-> > 
-> > #glibc -v
-> > glibc-2.28-18.el8.x86_64
-> > 
-> > #mke2fs  -V
-> > mke2fs 1.44.4 (18-Aug-2018)
-> >          Using EXT2FS Library version 1.44.4
-> > 
-> > #mkfs.xfs -V
-> > mkfs.xfs version 5.2.0-rc0
-> > 
-> > I will use your environment to reproduce this problem. Please wait.
-> Hi Murphy
-> 
-> Test 13) still passes on my environment. mke2fs and mkfs.xfs version should not affetc all filesystem results, I think them can be excluded.
-> I update my gcc version to 8.3.1 20190507 ,glibc updates to  glibc-2.28-66.el8.x86_64(I don't have glibc-2.28-72.el8.x86_64, if you failed
-> on both glibc and syscall, I think this fail is no related with glibc).
-> 
-> Can you print more informatin when you run this case, as below:
-> 
-> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-> index 26bfa008a..e4a7fd246 100644
-> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-> @@ -109,6 +109,8 @@ static void verify_copy_file_range(unsigned int n)
->                 tst_res(TCONF, "filesystem doesn't have free loopdev, skip it");
->                 return;
->         }
-> +       if (tc->exp_err == EFBIG)
-> +               tst_res(TINFO, "tc->dst %ld  tc->len %ld", tc->dst, tc->len);
->         TEST(sys_copy_file_range(fd_src, 0, *tc->copy_to_fd,
->                                 &tc->dst, tc->len, tc->flags));
-> 
-> copy_file_range02.c:120: PASS: copy_file_range failed as expected: EOVERFLOW
-> copy_file_range02.c:113: INFO: tc->dst 9223372036854710270  tc->len 65537
-> copy_file_range02.c:120: PASS: copy_file_range failed as expected: EFBIG
+Hi Cyril
+This is a simple merge. I guess you forgot it.:-)
 
-That's odd..
+> 1) remove duplicated nanosleep03, because nanosleep02 also
+> test EINTR when it is interrupted by a signal handler
+> 2)nanosleep01:Replace GPL verbose text by SPDX license identifier
+>
+> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> ------
+> v2->v3:
+> fix some typos
+> ------
+> ---
+>  runtest/syscalls                              |   1 -
+>  .../kernel/syscalls/nanosleep/.gitignore      |   1 -
+>  .../kernel/syscalls/nanosleep/nanosleep01.c   |  16 +-
+>  .../kernel/syscalls/nanosleep/nanosleep02.c   |  20 ++-
+>  .../kernel/syscalls/nanosleep/nanosleep03.c   | 148 ------------------
+>  5 files changed, 17 insertions(+), 169 deletions(-)
+>  delete mode 100644 testcases/kernel/syscalls/nanosleep/nanosleep03.c
+>
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index da5924716..1c858d53e 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -785,7 +785,6 @@ munmap03 munmap03
+>  
+>  nanosleep01 nanosleep01
+>  nanosleep02 nanosleep02
+> -nanosleep03 nanosleep03
+>  nanosleep04 nanosleep04
+>  
+>  nftw01 nftw01
+> diff --git a/testcases/kernel/syscalls/nanosleep/.gitignore b/testcases/kernel/syscalls/nanosleep/.gitignore
+> index 11ed6bbcb..9bf03ea97 100644
+> --- a/testcases/kernel/syscalls/nanosleep/.gitignore
+> +++ b/testcases/kernel/syscalls/nanosleep/.gitignore
+> @@ -1,4 +1,3 @@
+>  /nanosleep01
+>  /nanosleep02
+> -/nanosleep03
+>  /nanosleep04
+> diff --git a/testcases/kernel/syscalls/nanosleep/nanosleep01.c b/testcases/kernel/syscalls/nanosleep/nanosleep01.c
+> index 96e1cf1b4..567be8c10 100644
+> --- a/testcases/kernel/syscalls/nanosleep/nanosleep01.c
+> +++ b/testcases/kernel/syscalls/nanosleep/nanosleep01.c
+> @@ -1,21 +1,8 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+>   * Copyright (c) International Business Machines  Corp., 2001
+>   *  07/2001 Ported by Wayne Boyer
+>   * Copyright (C) 2015-2017 Cyril Hrubis <chrubis@suse.cz>
+> - *
+> - * This program is free software;  you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License as published by
+> - * the Free Software Foundation; either version 2 of the License, or
+> - * (at your option) any later version.
+> - *
+> - * This program is distributed in the hope that it will be useful,
+> - * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - * the GNU General Public License for more details.
+> - *
+> - * You should have received a copy of the GNU General Public License
+> - * along with this program;  if not, write to the Free Software Foundation,
+> - * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+>   */
+>  
+>  /*
+> @@ -25,7 +12,6 @@
+>   */
+>  
+>  #include <errno.h>
+> -
+>  #include "tst_timer_test.h"
+>  
+>  int sample_fn(int clk_id, long long usec)
+> diff --git a/testcases/kernel/syscalls/nanosleep/nanosleep02.c b/testcases/kernel/syscalls/nanosleep/nanosleep02.c
+> index 8bd2c44c4..7176f9373 100644
+> --- a/testcases/kernel/syscalls/nanosleep/nanosleep02.c
+> +++ b/testcases/kernel/syscalls/nanosleep/nanosleep02.c
+> @@ -10,6 +10,9 @@
+>   *  Verify that nanosleep() will be successful to suspend the execution
+>   *  of a process, returns after the receipt of a signal and writes the
+>   *  remaining sleep time into the structure.
+> + *
+> + *  This test also verifies that if the call is interrupted by a signal
+> + *  handler, nanosleep() returns -1, sets errno to EINTR.
+>   */
+>  
+>  #include <errno.h>
+> @@ -39,10 +42,19 @@ static void do_child(void)
+>  	TEST(nanosleep(&timereq, &timerem));
+>  	tst_timer_stop();
+>  
+> -	if (!TST_RET)
+> -		tst_brk(TBROK, "nanosleep was not interrupted");
+> -	if (TST_ERR != EINTR)
+> -		tst_brk(TBROK | TTERRNO, "nanosleep() failed");
+> +	if (TST_RET != -1) {
+> +		tst_res(TFAIL,
+> +			"nanosleep was not interrupted, returned %ld ,expected -1",
+> +			TST_RET);
+> +		return;
+> +	}
+> +	if (TST_ERR != EINTR) {
+> +		tst_res(TFAIL | TTERRNO,
+> +			"nanosleep() failed, expected EINTR, got");
+> +		return;
+> +	}
+> +
+> +	tst_res(TPASS, "nanosleep() returned -1, set errno to EINTR");
+>  
+>  	if (tst_timespec_lt(timereq, tst_timer_elapsed()))
+>  		tst_brk(TFAIL, "nanosleep() slept more than timereq");
+> diff --git a/testcases/kernel/syscalls/nanosleep/nanosleep03.c b/testcases/kernel/syscalls/nanosleep/nanosleep03.c
+> deleted file mode 100644
+> index 456e140e9..000000000
+> --- a/testcases/kernel/syscalls/nanosleep/nanosleep03.c
+> +++ /dev/null
+> @@ -1,148 +0,0 @@
+> -/*
+> - * Copyright (c) International Business Machines  Corp., 2001
+> - *  07/2001 Ported by Wayne Boyer
+> - *
+> - * This program is free software;  you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License as published by
+> - * the Free Software Foundation; either version 2 of the License, or
+> - * (at your option) any later version.
+> - *
+> - * This program is distributed in the hope that it will be useful,
+> - * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - * the GNU General Public License for more details.
+> - *
+> - * You should have received a copy of the GNU General Public License
+> - * along with this program;  if not, write to the Free Software Foundation,
+> - * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> - */
+> -
+> -/*
+> - * Test Description:
+> - *  Verify that nanosleep() will fail to suspend the execution
+> - *  of a process for a specified time if interrupted by a non-blocked signal.
+> - *
+> - * Expected Result:
+> - *  nanosleep() should return with -1 value and sets errno to EINTR.
+> - */
+> -
+> -#include <errno.h>
+> -#include <unistd.h>
+> -#include <fcntl.h>
+> -#include <time.h>
+> -#include <sys/wait.h>
+> -
+> -#include "test.h"
+> -#include "safe_macros.h"
+> -
+> -char *TCID = "nanosleep03";
+> -int TST_TOTAL = 1;
+> -
+> -static void do_child(void);
+> -static void setup(void);
+> -static void sig_handler();
+> -
+> -int main(int ac, char **av)
+> -{
+> -	int lc;
+> -	pid_t cpid;
+> -	int status;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -#ifdef UCLINUX
+> -	maybe_run_child(&do_child, "dddd", &timereq.tv_sec, &timereq.tv_nsec,
+> -			&timerem.tv_sec, &timerem.tv_nsec);
+> -#endif
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> -
+> -		/*
+> -		 * Creat a child process and suspend its
+> -		 * execution using nanosleep()
+> -		 */
+> -		if ((cpid = FORK_OR_VFORK()) == -1)
+> -			tst_brkm(TBROK, NULL, "fork() failed");
+> -
+> -		if (cpid == 0) {
+> -#ifdef UCLINUX
+> -			if (self_exec(av[0], "dddd",
+> -				      timereq.tv_sec, timereq.tv_nsec,
+> -				      timerem.tv_sec, timerem.tv_nsec) < 0) {
+> -				tst_brkm(TBROK, NULL, "self_exec failed");
+> -			}
+> -#else
+> -			do_child();
+> -#endif
+> -		}
+> -
+> -		sleep(1);
+> -
+> -		/* Now send signal to child */
+> -		SAFE_KILL(NULL, cpid, SIGINT);
+> -
+> -		/* Wait for child to execute */
+> -		wait(&status);
+> -		if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
+> -			tst_resm(TPASS, "nanosleep() failed, interrupted"
+> -				 " by signal (%d) as expected", EINTR);
+> -		} else {
+> -			tst_resm(TFAIL, "child process exited abnormally; "
+> -				 "status = %d", status);
+> -		}
+> -	}
+> -
+> -	tst_exit();
+> -}
+> -
+> -static void do_child(void)
+> -{
+> -	struct timespec timereq = {.tv_sec = 5, .tv_nsec = 9999};
+> -	struct timespec timerem;
+> -
+> -	/*
+> -	 * Call nanosleep() to suspend child process
+> -	 * for specified time 'tv_sec'.
+> -	 * Call should return before suspending execution
+> -	 * for the specified time due to receipt of signal
+> -	 * from Parent.
+> -	 */
+> -	TEST(nanosleep(&timereq, &timerem));
+> -
+> -	if (TEST_RETURN == -1) {
+> -
+> -		/* Check for expected errno is set */
+> -		if (TEST_ERRNO != EINTR) {
+> -			tst_resm(TFAIL | TTERRNO,
+> -				 "nanosleep() failed; expected errno: %d",
+> -				 EINTR);
+> -			exit(1);
+> -		}
+> -	} else {
+> -		tst_resm(TFAIL, "nanosleep() returns %ld, "
+> -			 "expected -1, errno:%d", TEST_RETURN, EINTR);
+> -		exit(1);
+> -	}
+> -
+> -	exit(0);
+> -}
+> -
+> -static void setup(void)
+> -{
+> -	tst_sig(FORK, DEF_HANDLER, NULL);
+> -
+> -	TEST_PAUSE;
+> -
+> -	if (signal(SIGINT, sig_handler) == SIG_ERR) {
+> -		tst_brkm(TBROK, NULL,
+> -			 "signal() fails to setup signal handler");
+> -	}
+> -
+> -}
+> -
+> -static void sig_handler(void)
+> -{
+> -}
 
-copy_file_range02.c:112: INFO: 12: tc->dst 9223372036854710270, tc->len 65537
-copy_file_range02.c:128: FAIL: copy_file_range returned wrong value: 32
 
-> 
-> 
-> 
-> > Thanks
-> > Yang Xu
-> > 
-> > 
-> > 
-> 
-> 
-> 
+
