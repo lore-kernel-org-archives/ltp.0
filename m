@@ -1,45 +1,70 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 6 Aug 2019 18:27:03 +0200
-Subject: [LTP] [PATCH v7 3/3] syscalls/copy_file_range02: increase
- coverage and remove EXDEV test
-In-Reply-To: <20190805102211.pvyufepn6xywi7vm@XZHOUW.usersys.redhat.com>
-References: <20190730110555.GB7528@rei.lan>
- <1564569629-2358-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1564569629-2358-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190805065832.ti6vpoviykfaxcj7@XZHOUW.usersys.redhat.com>
- <5D47D6B9.9090306@cn.fujitsu.com>
- <20190805102211.pvyufepn6xywi7vm@XZHOUW.usersys.redhat.com>
-Message-ID: <20190806162703.GA1333@dell5510>
+Date: Tue,  6 Aug 2019 18:45:23 +0200
+Subject: [LTP] [PATCH v3 4/4] build: Move
+ -Werror-implicit-function-declaration from make to build.sh
+Message-ID: <20190806164523.557-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Murphy,
+Previously it was passed only to Android build. Generally Werror flags
+should be on for development but disabled for releases and production.
+We don't have any configure flag stating development build, so using it
+in build.sh should be sufficient as it can be used in both Travis CI
+builds and local development.
 
-> On Mon, Aug 05, 2019 at 03:11:53PM +0800, Yang Xu wrote:
-> > on 2019/08/05 14:58, Murphy Zhou  wrote:
++ respect CC variable in build.sh (for these lazy to pass it via -c flag)
 
-> > > > + * 13) Try to copy contents to a file with target file range
-> > > > >  + *     beyond maximum supported file size ->EFBIG
-> > > Test 13) fails on latest Linus tree. Is there any report or working on this?
-> > Hi Murphy
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Change v2->v3:
+* move flag to build.sh, so it can be reused for local development
+* respect CC
 
-> >    Test 13)  passed on my system(64bit, 5.2.0+, ext4,vfat,btrfs,xfs ).
-> >    Do you provide more infomation(filesystem, 32bit or 64bit)?
+ build.sh               | 4 +++-
+ include/mk/env_post.mk | 4 ----
+ 2 files changed, 3 insertions(+), 5 deletions(-)
 
-> All of them, ext234 xfs and vfat. 64bit
-Hi, I can confirm that. Also fails on btrfs.
+diff --git a/build.sh b/build.sh
+index 3da2adf55..78845bf95 100755
+--- a/build.sh
++++ b/build.sh
+@@ -9,6 +9,9 @@
+ 
+ set -e
+ 
++CFLAGS="${CFLAGS:--Werror-implicit-function-declaration}"
++CC="${CC:-gcc}"
++
+ DEFAULT_PREFIX="$HOME/ltp-install"
+ DEFAULT_BUILD="native"
+ DEFAULT_TREE="in"
+@@ -16,7 +19,6 @@ CONFIGURE_OPTS_IN_TREE="--with-open-posix-testsuite --with-realtime-testsuite"
+ # TODO: open posix testsuite is currently broken in out-tree-build. Enable it once it's fixed.
+ CONFIGURE_OPTS_OUT_TREE="--with-realtime-testsuite"
+ MAKE_OPTS="-j$(getconf _NPROCESSORS_ONLN)"
+-CC=gcc
+ 
+ build_32()
+ {
+diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
+index 913bdf5d1..f4169ad66 100644
+--- a/include/mk/env_post.mk
++++ b/include/mk/env_post.mk
+@@ -42,10 +42,6 @@ CPPFLAGS			+= -D__UCLIBC__ -DUCLINUX
+ endif
+ 
+ ifeq ($(ANDROID),1)
+-# There are many undeclared functions, it's best not to accidentally overlook
+-# them.
+-CFLAGS				+= -Werror-implicit-function-declaration
+-
+ LDFLAGS				+= -L$(top_builddir)/lib/android_libpthread
+ LDFLAGS				+= -L$(top_builddir)/lib/android_librt
+ endif
+-- 
+2.22.0
 
-> copy_file_range02.c:127: FAIL: copy_file_range returned wrong value: 32
-I got this one as well. I tested it today again with 5.3.0-rc3+ 0eb0ce0 ("Merge
-tag 'spi-fix-v5.3-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi")
-and got this error:
-
-copy_file_range02.c:130: FAIL: copy_file_range failed unexpectedly; expected EFBIG, but got: EINVAL
-
-But that is caused by tmpfs used as TMPDIR, going to send a patch fixing it.
-
-Kind regards,
-Petr
