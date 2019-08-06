@@ -1,37 +1,35 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue,  6 Aug 2019 13:10:55 +0200
-Subject: [LTP] [PATCH 1/2] clock_getres01: pass non-NULL res as parameter
-Message-ID: <76fa74b68aa0794f58e01d5794fffa3a02df0203.1565089789.git.jstancek@redhat.com>
+Date: Tue, 6 Aug 2019 07:17:05 -0400 (EDT)
+Subject: [LTP] [PATCH] syslog: fix sporadic failures due to
+ rate-limitting
+In-Reply-To: <CAEemH2cDDgKrhxDwNgUq_yg_=v0YKXhHWBVugfg4Wy6UKOuNcA@mail.gmail.com>
+References: <6db4a928733290dca3b2e4b4a27f1cb69d805401.1563959090.git.jstancek@redhat.com>
+ <CAEemH2dqE8Ad_r+vnrd0BnBoyOO9GTLoE20SPSQtV7mbr-Yabg@mail.gmail.com>
+ <1049532097.3289438.1564481693647.JavaMail.zimbra@redhat.com>
+ <CAEemH2cDDgKrhxDwNgUq_yg_=v0YKXhHWBVugfg4Wy6UKOuNcA@mail.gmail.com>
+Message-ID: <23449784.4890660.1565090225268.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Since commit a9446a906f52 ("lib/vdso/32: Remove inconsistent NULL pointer checks")
-VDSO treats NULL parameter differently than in syscall.
 
-Pass valid pointer. Subsequent patch will add test variants that test NULL
-res parameter using syscall.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/clock_getres/clock_getres01.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+----- Original Message -----
+> Hi Jan,
+> 
+> > Have you followed all the steps?
+> > - stop rsyslog
+> > - delete imjournal.state
+> > - run kmsg01 couple times
+> > - run syslog01
+> 
+> Finally, I run more times for ksm01 to make a large backlog of
+> messages then reproduced it. After applying your patch, the problem
+> does not appear anymore.  So, ACK for this patch.
 
-diff --git a/testcases/kernel/syscalls/clock_getres/clock_getres01.c b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-index 15f32310839a..6b556965530e 100644
---- a/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-+++ b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-@@ -28,7 +28,7 @@ static struct test_case {
- 	{"MONOTONIC", CLOCK_MONOTONIC, &res, 0, 0},
- 	{"PROCESS_CPUTIME_ID", CLOCK_PROCESS_CPUTIME_ID, &res, 0, 0},
- 	{"THREAD_CPUTIME_ID", CLOCK_THREAD_CPUTIME_ID, &res, 0, 0},
--	{"REALTIME", CLOCK_REALTIME, NULL, 0, 0},
-+	{"REALTIME", CLOCK_REALTIME, &res, 0, 0},
- 	{"CLOCK_MONOTONIC_RAW", CLOCK_MONOTONIC_RAW, &res, 0, 0,},
- 	{"CLOCK_REALTIME_COARSE", CLOCK_REALTIME_COARSE, &res, 0, 0,},
- 	{"CLOCK_MONOTONIC_COARSE", CLOCK_MONOTONIC_COARSE, &res, 0, 0,},
--- 
-1.8.3.1
+Pushed.
 
+Thanks,
+Jan
