@@ -1,59 +1,101 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 7 Aug 2019 16:16:28 +0800
-Subject: [LTP] [PATCH 1/2] clock_getres01: pass non-NULL res as parameter
-In-Reply-To: <76fa74b68aa0794f58e01d5794fffa3a02df0203.1565089789.git.jstancek@redhat.com>
-References: <76fa74b68aa0794f58e01d5794fffa3a02df0203.1565089789.git.jstancek@redhat.com>
-Message-ID: <CAEemH2e+qQuEXht_JPQdx+LrG7V3FWRZG6rPO8LGOcNVorC71Q@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed,  7 Aug 2019 11:41:19 +0200
+Subject: [LTP] [PATCH] syscalls/copy_file_range02: Fix #12 when TMPDIR is on
+ tmpfs or ext[234]
+Message-ID: <20190807094119.10834-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
+Recent fix 96e6e8f4a68d ("vfs: add missing checks to copy_file_range")
+in kernel v5.3-rc1 changed errno for ext[234] and tmpfs to EINVAL.
 
-On Tue, Aug 6, 2019 at 7:11 PM Jan Stancek <jstancek@redhat.com> wrote:
->
-> Since commit a9446a906f52 ("lib/vdso/32: Remove inconsistent NULL pointer checks")
-> VDSO treats NULL parameter differently than in syscall.
->
-> Pass valid pointer. Subsequent patch will add test variants that test NULL
-> res parameter using syscall.
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  testcases/kernel/syscalls/clock_getres/clock_getres01.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/testcases/kernel/syscalls/clock_getres/clock_getres01.c b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-> index 15f32310839a..6b556965530e 100644
-> --- a/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-> +++ b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-> @@ -28,7 +28,7 @@ static struct test_case {
->         {"MONOTONIC", CLOCK_MONOTONIC, &res, 0, 0},
->         {"PROCESS_CPUTIME_ID", CLOCK_PROCESS_CPUTIME_ID, &res, 0, 0},
->         {"THREAD_CPUTIME_ID", CLOCK_THREAD_CPUTIME_ID, &res, 0, 0},
-> -       {"REALTIME", CLOCK_REALTIME, NULL, 0, 0},
-> +       {"REALTIME", CLOCK_REALTIME, &res, 0, 0},
++ fix typo from 0242a9a29
 
-If we change NULL to &res, it will be a duplicate of the first case.
-So my suggest here is to remove it directly, since patch2/2 has
-already added variants to test NULL via syscall.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Hi all,
 
-Otherwise, the patchset looks good.
+Amir, Darrick, am I right that it's not a problem that errno changed
+recently, is it? There have been more errno changes due several fixes in
+copy_file_range() in the past. I've seen this approach several times in
+other subsystems (e.g. network). Hope userspace not often check for
+particular error.
 
->         {"CLOCK_MONOTONIC_RAW", CLOCK_MONOTONIC_RAW, &res, 0, 0,},
->         {"CLOCK_REALTIME_COARSE", CLOCK_REALTIME_COARSE, &res, 0, 0,},
->         {"CLOCK_MONOTONIC_COARSE", CLOCK_MONOTONIC_COARSE, &res, 0, 0,},
-> --
-> 1.8.3.1
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+Cyril, Jan, Li, still not sure what the policy about errno is (see
+Cyril's statements in recent discussion about it in Jinhui's patch [1]
+[2]). With these frequent changes we should IMHO check for all possible
+variants (EXDEV, EFBIG, EINVAL).
 
+Or should we investigate all fixes and keep errors which highlight
+important fix was not backported (to both stable and LTS/enterprise
+distros kernels?). That'd be weird but approach practical :).
 
+Anyway, we should define and write down LTP policy / rules about it.
 
+Kind regards,
+Petr
+
+[1] https://patchwork.ozlabs.org/patch/1108229/#2182801
+[2] https://patchwork.ozlabs.org/patch/1108229/#2182837
+
+ .../copy_file_range/copy_file_range02.c       | 20 +++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+index 9004c4a40..b113e44b5 100644
+--- a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
++++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+@@ -49,6 +49,7 @@ static int fd_blkdev;
+ static int fd_chrdev;
+ static int fd_fifo;
+ static int fd_copy;
++static int fd_copy2;
+ 
+ static int chattr_i_nsup;
+ static int swap_nsup;
+@@ -73,8 +74,8 @@ static struct tcase {
+ 	{&fd_blkdev,    0,   EINVAL,     0,     CONTSIZE, "block device"},
+ 	{&fd_chrdev,    0,   EINVAL,     0,     CONTSIZE, "char device"},
+ 	{&fd_fifo,      0,   EINVAL,     0,     CONTSIZE, "fifo"},
+-	{&fd_copy,      0,   EOVERFLOW,  MAX_OFF, ULLONG_MAX, "max length lenght"},
+-	{&fd_copy,      0,   EFBIG,      MAX_OFF, MIN_OFF, "max file size"},
++	{&fd_copy,      0,   EOVERFLOW,  MAX_OFF, ULLONG_MAX, "max length"},
++	{&fd_copy2,     0,   EFBIG,      MAX_OFF, MIN_OFF, "max file size"},
+ };
+ 
+ static int run_command(char *command, char *option, char *file)
+@@ -100,6 +101,7 @@ static void verify_copy_file_range(unsigned int n)
+ 	struct tcase *tc = &tcases[n];
+ 	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+ 
++
+ 	if (tc->copy_to_fd == &fd_immutable && chattr_i_nsup) {
+ 		tst_res(TCONF, "filesystem doesn't support chattr +i, skip it");
+ 		return;
+@@ -112,6 +114,20 @@ static void verify_copy_file_range(unsigned int n)
+ 		tst_res(TCONF, "filesystem doesn't have free loopdev, skip it");
+ 		return;
+ 	}
++
++	if (tc->copy_to_fd == &fd_copy2) {
++		long fs_type = tst_fs_type(".");
++		switch (fs_type) {
++		case TST_TMPFS_MAGIC:
++		case TST_EXT234_MAGIC:
++		default:
++			tc->exp_err = EINVAL;
++			tst_res(TINFO, "%s filesystem, changing expecting errno to %d",
++					tst_fs_type_name(fs_type), tc->exp_err);
++			break;
++		}
++	}
++
+ 	TEST(sys_copy_file_range(fd_src, 0, *tc->copy_to_fd,
+ 				&tc->dst, tc->len, tc->flags));
+ 
 -- 
-Regards,
-Li Wang
+2.22.0
+
