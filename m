@@ -1,67 +1,115 @@
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Date: Wed, 7 Aug 2019 12:15:43 +0200
-Subject: [LTP] Question about kernel/syscall/signal/signal06.c
-In-Reply-To: <e7d0e66d-f348-9d57-0ea9-dc1fa289942d@windriver.com>
-References: <56f854e2-9cc6-4725-3182-ff83e106ee23@windriver.com>
- <20190717094614.GA9539@rei>
- <7d2c4936-2e89-6285-c856-a156d3a76284@windriver.com>
- <CAEemH2edg4R-JFM=u_ceLoRcNAMmV=c+hVV6kxoK4g6DOBnGeg@mail.gmail.com>
- <e7d0e66d-f348-9d57-0ea9-dc1fa289942d@windriver.com>
-Message-ID: <20190807101542.bshdy6bqxjkiaeou@linutronix.de>
+From: Darrick J. Wong <darrick.wong@oracle.com>
+Date: Wed, 7 Aug 2019 07:48:24 -0700
+Subject: [LTP] [PATCH] syscalls/copy_file_range02: Fix #12 when TMPDIR
+ is on tmpfs or ext[234]
+In-Reply-To: <20190807094119.10834-1-pvorel@suse.cz>
+References: <20190807094119.10834-1-pvorel@suse.cz>
+Message-ID: <20190807144824.GO7138@magnolia>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-I just woke up from hibernation and assume that this has not been
-handled yet so?
+On Wed, Aug 07, 2019 at 11:41:19AM +0200, Petr Vorel wrote:
+> Recent fix 96e6e8f4a68d ("vfs: add missing checks to copy_file_range")
+> in kernel v5.3-rc1 changed errno for ext[234] and tmpfs to EINVAL.
+> 
+> + fix typo from 0242a9a29
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Hi all,
+> 
+> Amir, Darrick, am I right that it's not a problem that errno changed
+> recently, is it? There have been more errno changes due several fixes in
+> copy_file_range() in the past. I've seen this approach several times in
+> other subsystems (e.g. network). Hope userspace not often check for
+> particular error.
 
-On 2019-07-22 09:56:55 [+0800], Hongzhi, Song wrote:
-> 
-> On 7/19/19 4:44 PM, Li Wang wrote:
-> > On Fri, Jul 19, 2019 at 4:14 PM Hongzhi, Song
-> > <hongzhi.song@windriver.com> wrote:
-> > > This case fails when boot qemux86-64 with 1/2 cores.
-> > > 
-> > > I find [kernel 5.2-rc1: 0d714dba162] causes the failure by git bisect.
-> 
-> Hi Li,Wang
-> 
-> 
-> Sorry for my a bit mistake, the exact tag is [5.1-rc3 : 0d714dba162]
-> 
-> commit 0d714dba162620fd8b9f5b3104a487e041353c4d
-> Author: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Date:?? Wed Apr 3 18:41:48 2019 +0200
-> 
-> ??? x86/fpu: Update xstate's PKRU value on write_pkru()
-> 
-> ??? During the context switch the xstate is loaded which also includes the
-> ??? PKRU value.
-> 
-> ??? If xstate is restored on return to userland it is required
-> ??? that the PKRU value in xstate is the same as the one in the CPU.
-> 
-> ??? Save the PKRU in xstate during modification.
+Same here.  I think EXDEV is the only errno that can be worked around in
+userspace (with a classic read-write loop).
 
-So this commit is about PKRU handling and I miss PKU bits in your lscpu
-output. So I assume this commit is not related but the FPU rework in
-general.
+> Cyril, Jan, Li, still not sure what the policy about errno is (see
+> Cyril's statements in recent discussion about it in Jinhui's patch [1]
+> [2]). With these frequent changes we should IMHO check for all possible
+> variants (EXDEV, EFBIG, EINVAL).
 
-> 3.? uname -r
+I for one hope we're done messing with the (bad input) -> errno mappings.
+
+> Or should we investigate all fixes and keep errors which highlight
+> important fix was not backported (to both stable and LTS/enterprise
+> distros kernels?). That'd be weird but approach practical :).
+
+copy_file_range was kinda broken before 5.3 if you were using it on a
+disk filesystem, so I'd hope the LTS folks would backport them (or turn
+c_f_r off).
+
+--D
+
+> Anyway, we should define and write down LTP policy / rules about it.
 > 
-> root@qemux86-64:~# uname -r
-> 5.1.0-rc3-Linux-standard
-
-This is information is confusing. I can reproduce a test case failure in
-0d714dba162 but it passes with latest supported kernel.
-Please let me know if this problem still exists with 5.3-rc3 or 5.2.7. I
-can't reproduce it on any of those kernels.
-5.1 is EOL and the commit in question was merged into 5.2-rc1.
-
-> Thanks.
+> Kind regards,
+> Petr
 > 
-> --Hongzhi
-
-Sebastian
+> [1] https://patchwork.ozlabs.org/patch/1108229/#2182801
+> [2] https://patchwork.ozlabs.org/patch/1108229/#2182837
+> 
+>  .../copy_file_range/copy_file_range02.c       | 20 +++++++++++++++++--
+>  1 file changed, 18 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+> index 9004c4a40..b113e44b5 100644
+> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+> @@ -49,6 +49,7 @@ static int fd_blkdev;
+>  static int fd_chrdev;
+>  static int fd_fifo;
+>  static int fd_copy;
+> +static int fd_copy2;
+>  
+>  static int chattr_i_nsup;
+>  static int swap_nsup;
+> @@ -73,8 +74,8 @@ static struct tcase {
+>  	{&fd_blkdev,    0,   EINVAL,     0,     CONTSIZE, "block device"},
+>  	{&fd_chrdev,    0,   EINVAL,     0,     CONTSIZE, "char device"},
+>  	{&fd_fifo,      0,   EINVAL,     0,     CONTSIZE, "fifo"},
+> -	{&fd_copy,      0,   EOVERFLOW,  MAX_OFF, ULLONG_MAX, "max length lenght"},
+> -	{&fd_copy,      0,   EFBIG,      MAX_OFF, MIN_OFF, "max file size"},
+> +	{&fd_copy,      0,   EOVERFLOW,  MAX_OFF, ULLONG_MAX, "max length"},
+> +	{&fd_copy2,     0,   EFBIG,      MAX_OFF, MIN_OFF, "max file size"},
+>  };
+>  
+>  static int run_command(char *command, char *option, char *file)
+> @@ -100,6 +101,7 @@ static void verify_copy_file_range(unsigned int n)
+>  	struct tcase *tc = &tcases[n];
+>  	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+>  
+> +
+>  	if (tc->copy_to_fd == &fd_immutable && chattr_i_nsup) {
+>  		tst_res(TCONF, "filesystem doesn't support chattr +i, skip it");
+>  		return;
+> @@ -112,6 +114,20 @@ static void verify_copy_file_range(unsigned int n)
+>  		tst_res(TCONF, "filesystem doesn't have free loopdev, skip it");
+>  		return;
+>  	}
+> +
+> +	if (tc->copy_to_fd == &fd_copy2) {
+> +		long fs_type = tst_fs_type(".");
+> +		switch (fs_type) {
+> +		case TST_TMPFS_MAGIC:
+> +		case TST_EXT234_MAGIC:
+> +		default:
+> +			tc->exp_err = EINVAL;
+> +			tst_res(TINFO, "%s filesystem, changing expecting errno to %d",
+> +					tst_fs_type_name(fs_type), tc->exp_err);
+> +			break;
+> +		}
+> +	}
+> +
+>  	TEST(sys_copy_file_range(fd_src, 0, *tc->copy_to_fd,
+>  				&tc->dst, tc->len, tc->flags));
+>  
+> -- 
+> 2.22.0
+> 
