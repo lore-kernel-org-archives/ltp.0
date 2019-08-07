@@ -1,185 +1,151 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 6 Aug 2019 21:55:02 +0200
-Subject: [LTP] [PATCH v3 4/5] network/route: Rewrite route-change-gw
- into new API
-In-Reply-To: <89188a02-2213-bea7-5273-d0077de5878e@oracle.com>
-References: <20190725111027.18716-1-pvorel@suse.cz>
- <20190725111027.18716-5-pvorel@suse.cz>
- <89188a02-2213-bea7-5273-d0077de5878e@oracle.com>
-Message-ID: <20190806195502.GA11768@dell5510>
+From: Mike Kravetz <mike.kravetz@oracle.com>
+Date: Tue, 6 Aug 2019 17:07:25 -0700
+Subject: [LTP] 
+ =?utf-8?q?=5BMM_Bug=3F=5D_mmap=28=29_triggers_SIGBUS_while?=
+ =?utf-8?b?IGRvaW5nIHRoZeKAiyDigItudW1hX21vdmVfcGFnZXMoKSBmb3Igb2ZmbGlu?=
+ =?utf-8?q?ed_hugepage_in_background?=
+In-Reply-To: <7d78f6b9-afb8-79d1-003e-56de58fded00@oracle.com>
+References: <CAEemH2dMW6oh6Bbm=yqUADF+mDhuQgFTTGYftB+xAhqqdYV3Ng@mail.gmail.com>
+ <47999e20-ccbe-deda-c960-473db5b56ea0@oracle.com>
+ <CAEemH2d=vEfppCbCgVoGdHed2kuY3GWnZGhymYT1rnxjoWNdcQ@mail.gmail.com>
+ <a65e748b-7297-8547-c18d-9fb07202d5a0@oracle.com>
+ <27a48931-aff6-d001-de78-4f7bef584c32@oracle.com>
+ <20190802041557.GA16274@hori.linux.bs1.fc.nec.co.jp>
+ <54a5c9f5-eade-0d8f-24f9-bff6f19d4905@oracle.com>
+ <20190805085740.GC7597@dhcp22.suse.cz>
+ <7d78f6b9-afb8-79d1-003e-56de58fded00@oracle.com>
+Message-ID: <3c104b29-ffe2-07cb-440e-cb88d8e11acb@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+On 8/5/19 10:36 AM, Mike Kravetz wrote:
+>>>>> Can you try this patch in your environment?  I am not sure if it will
+>>>>> be the final fix, but just wanted to see if it addresses issue for you.
+>>>>>
+>>>>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>>>>> index ede7e7f5d1ab..f3156c5432e3 100644
+>>>>> --- a/mm/hugetlb.c
+>>>>> +++ b/mm/hugetlb.c
+>>>>> @@ -3856,6 +3856,20 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
+>>>>>  
+>>>>>  		page = alloc_huge_page(vma, haddr, 0);
+>>>>>  		if (IS_ERR(page)) {
+>>>>> +			/*
+>>>>> +			 * We could race with page migration (try_to_unmap_one)
+>>>>> +			 * which is modifying page table with lock.  However,
+>>>>> +			 * we are not holding lock here.  Before returning
+>>>>> +			 * error that will SIGBUS caller, get ptl and make
+>>>>> +			 * sure there really is no entry.
+>>>>> +			 */
+>>>>> +			ptl = huge_pte_lock(h, mm, ptep);
+>>>>> +			if (!huge_pte_none(huge_ptep_get(ptep))) {
+>>>>> +				ret = 0;
+>>>>> +				spin_unlock(ptl);
+>>>>> +				goto out;
+>>>>> +			}
+>>>>> +			spin_unlock(ptl);
+>>>>
+>>>> Thanks you for investigation, Mike.
+>>>> I tried this change and found no SIGBUS, so it works well.
 
-> Hi Petr,
-> On 7/25/19 2:10 PM, Petr Vorel wrote:
-> > * Drop route command (use just ip command), support both IPv4 and IPv6
-> > * Use unused network range to avoid clash with real network
-> > * Add verification with ping (previous version sent UDP datagram with
-> > ns-udpsender, but didn't verify receiving it on rhost and didn't setup
-> > rhost ip at all)
+Here is another way to address the issue.  Take the hugetlb fault mutex in
+the migration code when modifying the page tables.  IIUC, the fault mutex
+was introduced to prevent this same issue when there were two page faults
+on the same page (and we were unable to allocate an 'extra' page).  The
+downside to such an approach is that we add more hugetlbfs specific code
+to try_to_unmap_one.
 
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-> >  runtest/net_stress.route                      |   4 +-
-> >  .../network/stress/route/00_Descriptions.txt  |  18 +-
-> >  .../network/stress/route/route-change-gw      |  38 +++
-> >  .../network/stress/route/route4-change-gw     | 292 ------------------
-> >  .../network/stress/route/route6-change-gw     | 292 ------------------
-> >  5 files changed, 43 insertions(+), 601 deletions(-)
-> >  create mode 100755 testcases/network/stress/route/route-change-gw
-> >  delete mode 100644 testcases/network/stress/route/route4-change-gw
-> >  delete mode 100644 testcases/network/stress/route/route6-change-gw
-
-> > ...
-> > +
-> > +# Change route gateway
-> > +# lhost: 10.23.x.2, gw (on rhost): 10.23.x.1, rhost: 10.23.0.1
-> > +
-> > +TST_TESTFUNC="test_gw"
-> > +. route-lib.sh
-> > +
-> > +setup()
-> > +{
-> > +	tst_res TINFO "change IPv$TST_IPVER route gateway $NS_TIMES times"
-> > +
-> > +	rt="$(tst_ipaddr_un -m 0 0)"
-> > +	lhost="$(tst_ipaddr_un 1 1)"
-> > +	rhost="$(tst_ipaddr_un 0 1)"
-> > +	tst_add_ipaddr -s -a $lhost
-> > +	tst_add_ipaddr -s -a $rhost rhost
-> > +}
-> > +
-> > +test_gw()
-> > +{
-> > +	local gw="$(tst_ipaddr_un 1 $(($1 + 1)))"
-
-> We should keep $(($1 + 1)) within the valid range except already added IP address
-> ($lhost), i.e. for IPv4 the range is 2..254 for host id:
-
->     local gw="$(tst_ipaddr_un 1 $(($1 % 253 + 2)))"
-
-> Either we could limit the value here or in the tst_ipaddr_un(). Looks like
-> route-change-if needs a similar fix for net id?
-Good point (sorry to keep octet/hextet overflow related errors).
-Although it'd be simpler to fix it in the code, I'd prefer to have this support
-in tst_ipaddr_un(). Diff below adds -l MIN_HOST_ID (I'll post it as a part of v3),
-do we want to lower also max host id?
-
-
-> > +	local iface="$(tst_iface)"
-> > +
-> > +	tst_res TINFO "testing route over gateway '$gw'"
-> > +
-> > +	tst_add_ipaddr -s -a $gw rhost
-> > +	ROD ip route replace $rt dev $iface via $gw
-
-> May be it would be cleaner to use "add" instead of "replace" since we remove it
-> and it shouldn't exist before a test start.
-
-> > +	EXPECT_PASS ping$TST_IPV6 -c1 -I $lhost $rhost
-
-> It is better to redirect stdout to null:
-
-> EXPECT_PASS ping$TST_IPV6 -c1 -I $lhost $rhost \>/dev/null
-
-> The same for *-if and *-dst.
-
-Agree with all you pointed out.
-
-> The rest in the patch-set looks good to me.
-
-
-Kind regards,
-Petr
-
-commit 3a3ed9bc93c18d899a81b0f592eec4d4402984b1
-Author: Petr Vorel <pvorel@suse.cz>
-Date:   2019-08-06 16:58:28 +0200
-
-    net/tst_ipaddr_un: Add -l MIN_HOST_ID support
-    
-    Signed-off-by: Petr Vorel <pvorel@suse.cz>
-
-diff --git testcases/lib/tst_net.sh testcases/lib/tst_net.sh
-index 714298797..50d64efca 100644
---- testcases/lib/tst_net.sh
-+++ testcases/lib/tst_net.sh
-@@ -361,11 +361,13 @@ tst_ipaddr()
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index edf476c8cfb9..df0e74f9962e 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -485,6 +485,17 @@ static inline int hstate_index(struct hstate *h)
+ 	return h - hstates;
+ }
  
- # Get IP address of unused network, specified either by type and counter
- # or by net and host.
--# tst_ipaddr_un [-cCOUNTER] [-m] [TYPE]
--# tst_ipaddr_un [-m] NET_ID [HOST_ID]
-+# tst_ipaddr_un [-c COUNTER] [-l MIN_HOST_ID] [-m] [TYPE]
-+# tst_ipaddr_un [-l MIN_HOST_ID] [-m] NET_ID [HOST_ID]
- #
- # OPTIONS
- # -c COUNTER: integer value for counting HOST_ID and NET_ID (default: 1)
-+# -l MIN_HOST_ID: min HOST_ID allowed minimal HOST_ID (useful for loop which
-+# overflow max HOST_ID)
- # -m: print also mask
- # TYPE: { lhost | rhost } (default: 'lhost')
- # NET_ID: integer or hex value of net (IPv4: 3rd octet, IPv6: 3rd hextet)
-@@ -373,30 +375,39 @@ tst_ipaddr()
- # hextet, default: 0)
- tst_ipaddr_un()
- {
--	local counter host_id lower mask max_host_id max_net_id net_id tmp type
-+	local counter host_id mask max_host_id max_net_id min_host_id net_id tmp type
- 	local OPTIND
- 
--	while getopts "c:m" opt; do
-+	[ "$TST_IPV6" ] && max_net_id=65535 || max_net_id=255
-+	max_host_id=$((max_net_id - 1))
++/*
++ * Convert the address within this vma to the page offset within
++ * the mapping, in pagecache page units; huge pages here.
++ */
++static inline pgoff_t vma_hugecache_offset(struct hstate *h,
++			struct vm_area_struct *vma, unsigned long address)
++{
++	return ((address - vma->vm_start) >> huge_page_shift(h)) +
++		(vma->vm_pgoff >> huge_page_order(h));
++}
 +
-+	while getopts "c:l:m" opt; do
- 		case $opt in
- 			c) counter="$OPTARG";;
--			l) lower="$OPTARG";;
-+			l)
-+				min_host_id="$OPTARG"
-+				if ! tst_is_int "$min_host_id"; then
-+					tst_brk TBROK "tst_ipaddr_un: -l must be integer ($min_host_id)"
-+				fi
-+				if [ $min_host_id -ge $max_host_id ]; then
-+					tst_brk TBROK "tst_ipaddr_un: -l must be >= $max_host_id ($min_host_id)"
-+				fi
-+				;;
- 			m) [ "$TST_IPV6" ] && mask="/64" || mask="/24";;
- 		esac
- 	done
- 	shift $(($OPTIND - 1))
+ pgoff_t __basepage_index(struct page *page);
  
--	[ "$TST_IPV6" ] && max_net_id=65535 || max_net_id=255
+ /* Return page->index in PAGE_SIZE units */
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index ede7e7f5d1ab..959aed5b7969 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -615,17 +615,6 @@ static long region_count(struct resv_map *resv, long f, long t)
+ 	return chg;
+ }
+ 
+-/*
+- * Convert the address within this vma to the page offset within
+- * the mapping, in pagecache page units; huge pages here.
+- */
+-static pgoff_t vma_hugecache_offset(struct hstate *h,
+-			struct vm_area_struct *vma, unsigned long address)
+-{
+-	return ((address - vma->vm_start) >> huge_page_shift(h)) +
+-			(vma->vm_pgoff >> huge_page_order(h));
+-}
 -
- 	# counter
- 	if [ $# -eq 0 -o "$1" = "lhost" -o "$1" = "rhost" ]; then
- 		[ -z "$counter" ] && counter=1
- 		[ $counter -lt 1 ] && counter=1
- 		type="${1:-lhost}"
--		max_host_id=$((max_net_id - 1))
- 		tmp=$((counter * 2))
- 		[ "$type" = "rhost" ] && tmp=$((tmp - 1))
+ pgoff_t linear_hugepage_index(struct vm_area_struct *vma,
+ 				     unsigned long address)
+ {
+diff --git a/mm/rmap.c b/mm/rmap.c
+index e5dfe2ae6b0d..f8c95482c23e 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1350,6 +1350,7 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
+ 	bool ret = true;
+ 	struct mmu_notifier_range range;
+ 	enum ttu_flags flags = (enum ttu_flags)arg;
++	u32 hugetlb_hash = 0;
  
- 		host_id=$((tmp % max_host_id))
+ 	/* munlock has nothing to gain from examining un-locked vmas */
+ 	if ((flags & TTU_MUNLOCK) && !(vma->vm_flags & VM_LOCKED))
+@@ -1377,6 +1378,19 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
+ 				min(vma->vm_end, address +
+ 				    (PAGE_SIZE << compound_order(page))));
+ 	if (PageHuge(page)) {
++		struct hstate *h = hstate_vma(vma);
 +
- 		net_id=$((tmp / max_host_id))
++		/*
++		 * Take the hugetlb fault mutex so that we do not race with
++		 * page faults while modifying page table.  Mutex must be
++		 * acquired before ptl below.
++		 */
++		hugetlb_hash = hugetlb_fault_mutex_hash(h,
++					vma->vm_file->f_mapping,
++					vma_hugecache_offset(h, vma, address),
++					address);
++		mutex_lock(&hugetlb_fault_mutex_table[hugetlb_hash]);
++
+ 		/*
+ 		 * If sharing is possible, start and end will be adjusted
+ 		 * accordingly.
+@@ -1659,6 +1673,8 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
+ 	}
  
- 		if [ $host_id -eq 0 ]; then
-@@ -415,7 +426,11 @@ tst_ipaddr_un()
- 	fi
+ 	mmu_notifier_invalidate_range_end(&range);
++	if (PageHuge(page))
++		mutex_unlock(&hugetlb_fault_mutex_table[hugetlb_hash]);
  
- 	net_id=$((net_id % max_net_id))
-+	if [ "$min_host_id" ]; then
-+		host_id=$(( host_id % (max_host_id - min_host_id + 1) + min_host_id ))
-+	else
- 		host_id=$((host_id % max_net_id))
-+	fi
- 
- 	if [ -z "$TST_IPV6" ]; then
- 		echo "${IPV4_NET16_UNUSED}.${net_id}.${host_id}${mask}"
+ 	return ret;
+ }
+
+
+Michal, Naoya any preferences on how this should be fixed?  I'll send a
+proper patch if we agree on an approach.
+-- 
+Mike Kravetz
