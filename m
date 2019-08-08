@@ -1,41 +1,107 @@
-From: Mike Kravetz <mike.kravetz@oracle.com>
-Date: Wed, 7 Aug 2019 19:44:47 -0700
-Subject: [LTP] [PATCH] hugetlbfs: fix hugetlb page migration/fault race
- causing SIGBUS
-In-Reply-To: <f7a64f0a-1ae0-4582-a293-b608bc8fed36.xishi.qiuxishi@alibaba-inc.com>
-References: <f7a64f0a-1ae0-4582-a293-b608bc8fed36.xishi.qiuxishi@alibaba-inc.com>
-Message-ID: <5f072c20-2396-48ee-700a-ea7eafc20328@oracle.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 8 Aug 2019 11:11:43 +0800
+Subject: [LTP] [PATCH v7 3/3] syscalls/copy_file_range02: increase
+ coverage and remove EXDEV test
+In-Reply-To: <20190807101742.mt6tgowsh4xw5hyt@XZHOUW.usersys.redhat.com>
+References: <20190730110555.GB7528@rei.lan>
+ <1564569629-2358-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1564569629-2358-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20190805065832.ti6vpoviykfaxcj7@XZHOUW.usersys.redhat.com>
+ <5D47D6B9.9090306@cn.fujitsu.com>
+ <20190805102211.pvyufepn6xywi7vm@XZHOUW.usersys.redhat.com>
+ <20190806162703.GA1333@dell5510>
+ <20190807101742.mt6tgowsh4xw5hyt@XZHOUW.usersys.redhat.com>
+Message-ID: <5D4B92EF.4090800@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 8/7/19 7:24 PM, ???(??) wrote:
-> Hi Mike,
-> 
-> Do you mean the similar race is like the following?
-> 
-> migration clearing the pte
->   page fault(before we return error, and now we return 0, then try page fault again, right?)
->     migration writing a migration entry
+on 2019/08/07 18:17, Murphy Zhou wrote:
 
-Yes, something like the that.  The change is to takes the page table lock
-to examine the pte before returning.  If the pte is clear when examined
-while holding the lock, an error will be returned as before.  If not clear,
-then we return zero and try again.
+> And I have a question about LTP itself.
+>
+> If we run the testcase directly like:
+> 	 ./testcases/kernel/syscalls/copy_file_range/copy_file_range02
+>
+> to test all_filesystems, for every filesystem, we mkfs and mount it in
+> .mntpoint, but we do not chdir to .mntpoint. So we are running tests in 
+> the same tmpdir, fs type of which does not change while looping
+> all_filesystems.  Only the .mntpoint in tmpdir has different fs type in
+> each loop.
+>
+> Now we are using this to test cross-device copy in copy_file_range01.c,
+> but in copy_file_range02.c, we are not using .mntpint at all, all the
+> tests in the all_filesystems loop are running in the same tmpdir. In other
+> words, we are NOT testing all filesystems.
+>
+> Is this expected?
+ I removed the mnted test for cross-device copy_file_range in copy_file_range02.c.
+And I ignore the non-used mntpoint. IMO, we can directly use the FILE_MNTED to test EFBIG on all filesystems, 
 
-This change adds code which is very much like this check further in
-the routine hugetlb_no_page():
+as below:
+diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+index 26bfa008a..67974ffa2 100644
+--- a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
++++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+@@ -49,6 +49,7 @@ static int fd_blkdev;
+ static int fd_chrdev;
+ static int fd_fifo;
+ static int fd_copy;
++static int fd_mnted;
 
-	ptl = huge_pte_lock(h, mm, ptep);
-	size = i_size_read(mapping->host) >> huge_page_shift(h);
-	if (idx >= size)
-		goto backout;
+ static int chattr_i_nsup;
+ static int swap_nsup;
 
-	ret = 0;
-	if (!huge_pte_none(huge_ptep_get(ptep)))
-		goto backout;
+@@ -73,7 +74,7 @@ static struct tcase {
+        {&fd_chrdev,    0,   EINVAL,     0,     CONTSIZE},
+        {&fd_fifo,      0,   EINVAL,     0,     CONTSIZE},
+        {&fd_copy,      0,   EOVERFLOW,  MAX_OFF, ULLONG_MAX},
+-       {&fd_copy,      0,   EFBIG,      MAX_OFF, MIN_OFF},
++       {&fd_mnted,      0,   EFBIG,      MAX_OFF, MIN_OFF},
+ };
 
--- 
-Mike Kravetz
+ static int run_command(char *command, char *option, char *file)
+@@ -117,7 +118,10 @@ static void verify_copy_file_range(unsigned int n)
+                        tst_res(TPASS | TTERRNO,
+                                        "copy_file_range failed as expected");
+                } else {
+-                       tst_res(TFAIL | TTERRNO,
++                       if (tc->exp_err == EFBIG && TST_ERR == EXDEV)
++                               tst_res(TCONF, "copy_file_range doesn't support cross-device,skip it");
++                       else
++                               tst_res(TFAIL | TTERRNO,
+                                "copy_file_range failed unexpectedly; expected %s, but got",
+                                tst_strerrno(tc->exp_err));
+                        return;
+
+@@ -152,6 +156,8 @@ static void cleanup(void)
+                SAFE_CLOSE(fd_dup);
+        if (fd_copy > 0)
+                SAFE_CLOSE(fd_copy);
++       if (fd_mnted > 0)
++               SAFE_CLOSE(fd_mnted);
+        SAFE_UNLINK(FILE_FIFO);
+ }
+
+@@ -194,6 +200,7 @@ static void setup(void)
+
+        fd_copy = SAFE_OPEN(FILE_COPY_PATH, O_RDWR | O_CREAT | O_TRUNC, 0664);
+        chattr_i_nsup = run_command("chattr", "+i", FILE_IMMUTABLE_PATH);
++       fd_mnted  = SAFE_OPEN(FILE_MNTED_PATH, O_RDWR | O_CREAT, 0664);
+
+        if (!tst_fs_has_free(".", sysconf(_SC_PAGESIZE) * 10, TST_BYTES)) {
+                tst_res(TCONF, "Insufficient disk space to create swap file");
+                swap_nsup = 3;
+
+test12) succeed on extN, failed on both btrfs and xfs, we need to detect filesystem type to handle. Or, I think we 
+can set a limit on filesize because this kind of user scene is a bit more than the first one , the EFBIG error can be 
+received easily (Also, we don't need  mnt_device mntpoint all_filesystem if so).
+What do you think about it?
+
+> I commented out testcases in copy_file_range02.c other then #12, and add
+> some nasty debug info:
+
+
+
