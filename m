@@ -1,56 +1,46 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 08 Aug 2019 17:41:52 +0200
-Subject: [LTP] [RFC PATCH 1/9] lib: Add support for guarded buffers
-In-Reply-To: <20190808090635.GA11500@rei.lan>
-References: <20190801092616.30553-1-chrubis@suse.cz>
- <20190801092616.30553-2-chrubis@suse.cz> <871rxyd5tc.fsf@rpws.prws.suse.cz>
- <20190808090635.GA11500@rei.lan>
-Message-ID: <87zhkjbr5r.fsf@rpws.prws.suse.cz>
+From: Mike Kravetz <mike.kravetz@oracle.com>
+Date: Thu, 8 Aug 2019 09:55:45 -0700
+Subject: [LTP] [PATCH] hugetlbfs: fix hugetlb page migration/fault race
+ causing SIGBUS
+In-Reply-To: <20190808074736.GJ11812@dhcp22.suse.cz>
+References: <20190808000533.7701-1-mike.kravetz@oracle.com>
+ <20190808074607.GI11812@dhcp22.suse.cz>
+ <20190808074736.GJ11812@dhcp22.suse.cz>
+Message-ID: <416ee59e-9ae8-f72d-1b26-4d3d31501330@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+On 8/8/19 12:47 AM, Michal Hocko wrote:
+> On Thu 08-08-19 09:46:07, Michal Hocko wrote:
+>> On Wed 07-08-19 17:05:33, Mike Kravetz wrote:
+>>> Li Wang discovered that LTP/move_page12 V2 sometimes triggers SIGBUS
+>>> in the kernel-v5.2.3 testing.  This is caused by a race between hugetlb
+>>> page migration and page fault.
+<snip>
+>>> Reported-by: Li Wang <liwang@redhat.com>
+>>> Fixes: 290408d4a250 ("hugetlb: hugepage migration core")
+>>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+>>> Tested-by: Li Wang <liwang@redhat.com>
+>>
+>> Acked-by: Michal Hocko <mhocko@suse.com>
+> 
+> Btw. is this worth marking for stable? I haven't seen it triggering
+> anywhere but artificial tests. On the other hand the patch is quite
+> straightforward so it shouldn't hurt in general.
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+I don't think this really is material for stable.  I added the tag as the
+stable AI logic seems to pick up patches whether marked for stable or not.
+For example, here is one I explicitly said did not need to go to stable.
 
-> Hi!
->> > +void tst_free_all(void)
->> > +{
->> > +	struct map *i = maps;
->> > +
->> > +	while (i) {
->> > +		struct map *j = i;
->> > +		tst_res(TINFO, "Freeing %p %zu", i->addr, i->size);
->> 
->> This seems like debug info to me. Not really useful most of the time.
->
-> Yes, this is a leftover.
->
-> I do wonder if we should print a message first time the tst_alloc() is
-> called so that it's clear that the test is using guarded buffers.
+https://lkml.org/lkml/2019/6/1/165
 
-Maybe some summary info.
+Ironic to find that commit message in a stable backport.
 
->
->> > +		SAFE_MUNMAP(i->addr, i->size);
->> > +		i = i->next;
->> > +		free(j);
->> > +	}
->> > +
->> > +	maps = NULL;
->> > +}
->> 
->> -- 
->> Thank you,
->> Richard.
->> 
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
+I'm happy to drop the Fixes tag.
 
-
+Andrew, can you drop the tag?  Or would you like me to resend?
 -- 
-Thank you,
-Richard.
+Mike Kravetz
