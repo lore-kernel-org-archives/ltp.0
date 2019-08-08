@@ -1,94 +1,83 @@
-From: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
-Date: Thu, 8 Aug 2019 03:36:22 +0000
-Subject: [LTP] [PATCH] hugetlbfs: fix hugetlb page migration/fault race
- causing SIGBUS
-In-Reply-To: <20190808000533.7701-1-mike.kravetz@oracle.com>
-References: <20190808000533.7701-1-mike.kravetz@oracle.com>
-Message-ID: <20190808033622.GA28751@hori.linux.bs1.fc.nec.co.jp>
+From: Murphy Zhou <jencce.kernel@gmail.com>
+Date: Thu, 8 Aug 2019 11:46:21 +0800
+Subject: [LTP] [PATCH v7 3/3] syscalls/copy_file_range02: increase
+ coverage and remove EXDEV test
+In-Reply-To: <20190807121212.GM7777@dread.disaster.area>
+References: <20190730110555.GB7528@rei.lan>
+ <1564569629-2358-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1564569629-2358-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20190805065832.ti6vpoviykfaxcj7@XZHOUW.usersys.redhat.com>
+ <5D47D6B9.9090306@cn.fujitsu.com>
+ <20190805102211.pvyufepn6xywi7vm@XZHOUW.usersys.redhat.com>
+ <20190806162703.GA1333@dell5510>
+ <20190807101742.mt6tgowsh4xw5hyt@XZHOUW.usersys.redhat.com>
+ <20190807121212.GM7777@dread.disaster.area>
+Message-ID: <20190808034621.e7pqwazdqtsed2ew@XZHOUW.usersys.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Aug 07, 2019 at 05:05:33PM -0700, Mike Kravetz wrote:
-> Li Wang discovered that LTP/move_page12 V2 sometimes triggers SIGBUS
-> in the kernel-v5.2.3 testing.  This is caused by a race between hugetlb
-> page migration and page fault.
+On Wed, Aug 07, 2019 at 10:12:12PM +1000, Dave Chinner wrote:
+> On Wed, Aug 07, 2019 at 06:17:42PM +0800, Murphy Zhou wrote:
+> > ccing linux-xfs@vger.kernel.org
+> > 
+> > Hi,
+> > 
+> > Tracked down this to be a xfs specific issue:
+> > 
+> > If we call copy_file_range with a large offset like this:
+> > 
+> > 	loff_t off = 9223372036854710270; // 2 ** 63
+> > 	ret = copy_file_range(fd_in, 0, fd_out, &off, 65537, 0);
 > 
-> If a hugetlb page can not be allocated to satisfy a page fault, the task
-> is sent SIGBUS.  This is normal hugetlbfs behavior.  A hugetlb fault
-> mutex exists to prevent two tasks from trying to instantiate the same
-> page.  This protects against the situation where there is only one
-> hugetlb page, and both tasks would try to allocate.  Without the mutex,
-> one would fail and SIGBUS even though the other fault would be successful.
-> 
-> There is a similar race between hugetlb page migration and fault.
-> Migration code will allocate a page for the target of the migration.
-> It will then unmap the original page from all page tables.  It does
-> this unmap by first clearing the pte and then writing a migration
-> entry.  The page table lock is held for the duration of this clear and
-> write operation.  However, the beginnings of the hugetlb page fault
-> code optimistically checks the pte without taking the page table lock.
-> If clear (as it can be during the migration unmap operation), a hugetlb
-> page allocation is attempted to satisfy the fault.  Note that the page
-> which will eventually satisfy this fault was already allocated by the
-> migration code.  However, the allocation within the fault path could
-> fail which would result in the task incorrectly being sent SIGBUS.
-> 
-> Ideally, we could take the hugetlb fault mutex in the migration code
-> when modifying the page tables.  However, locks must be taken in the
-> order of hugetlb fault mutex, page lock, page table lock.  This would
-> require significant rework of the migration code.  Instead, the issue
-> is addressed in the hugetlb fault code.  After failing to allocate a
-> huge page, take the page table lock and check for huge_pte_none before
-> returning an error.  This is the same check that must be made further
-> in the code even if page allocation is successful.
-> 
-> Reported-by: Li Wang <liwang@redhat.com>
-> Fixes: 290408d4a250 ("hugetlb: hugepage migration core")
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> Tested-by: Li Wang <liwang@redhat.com>
+> That's not 2**63:
 
-Thanks for the work and nice description.
+Ya! I was looking too roughly.
 
-Reviewed-by: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
-
-> ---
->  mm/hugetlb.c | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
 > 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index ede7e7f5d1ab..6d7296dd11b8 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -3856,6 +3856,25 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
->  
->  		page = alloc_huge_page(vma, haddr, 0);
->  		if (IS_ERR(page)) {
-> +			/*
-> +			 * Returning error will result in faulting task being
-> +			 * sent SIGBUS.  The hugetlb fault mutex prevents two
-> +			 * tasks from racing to fault in the same page which
-> +			 * could result in false unable to allocate errors.
-> +			 * Page migration does not take the fault mutex, but
-> +			 * does a clear then write of pte's under page table
-> +			 * lock.  Page fault code could race with migration,
-> +			 * notice the clear pte and try to allocate a page
-> +			 * here.  Before returning error, get ptl and make
-> +			 * sure there really is no pte entry.
-> +			 */
-> +			ptl = huge_pte_lock(h, mm, ptep);
-> +			if (!huge_pte_none(huge_ptep_get(ptep))) {
-> +				ret = 0;
-> +				spin_unlock(ptl);
-> +				goto out;
-> +			}
-> +			spin_unlock(ptl);
->  			ret = vmf_error(PTR_ERR(page));
->  			goto out;
->  		}
+> $ echo $((9223372036854710270 + 65537))
+> 9223372036854775807
+> 
+> $ echo $((2**63 - 1))
+> 9223372036854775807
+> 
+> i.e. it's LLONG_MAX, not an overflow. XFS sets sb->s_maxbytes in
+> xfs_max_file_offset to:
+> 
+> 	(1 << BITS_PER_LONG - 1) - 1 = 2**63 - 1 = LLONG_MAX.
+> 
+> So no matter how we look at it, this operation should not return
+> EFBIG on XFS.
+> 
+> > (test programme cfrbig.c attached)
+> > 
+> > xfs has it done successfully, while ext4 returns EFBIG.
+> 
+> ext4 has a max file size of 2**32 * blocksize, so it doesn't support
+> files larger than 16TB. So it will give EFBIG on this test.
+> 
+> /me compiles and runs the test program on his workstation:
+> 
+> $ ls -l foobar
+> -rw------- 1 dave dave 10737418240 Apr 12 14:46 foobar
+> $ ./a.out foobar bar
+> ret 65537
+> $ ls -l bar
+> -rw-r--r-- 1 dave dave 9223372036854775807 Aug  7 22:11 bar
+> $
+> 
+> That looks like a successful copy to me, not EINVAL or EFBIG...
+
+Thanks Dave for the confirmation! This testcase needs some fix.
+
+Murphy
+
+> 
+> Cheers,
+> 
+> Dave.
 > -- 
-> 2.20.1
-> 
-> 
+> Dave Chinner
+> david@fromorbit.com
