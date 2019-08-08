@@ -1,107 +1,94 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 8 Aug 2019 11:11:43 +0800
-Subject: [LTP] [PATCH v7 3/3] syscalls/copy_file_range02: increase
- coverage and remove EXDEV test
-In-Reply-To: <20190807101742.mt6tgowsh4xw5hyt@XZHOUW.usersys.redhat.com>
-References: <20190730110555.GB7528@rei.lan>
- <1564569629-2358-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1564569629-2358-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190805065832.ti6vpoviykfaxcj7@XZHOUW.usersys.redhat.com>
- <5D47D6B9.9090306@cn.fujitsu.com>
- <20190805102211.pvyufepn6xywi7vm@XZHOUW.usersys.redhat.com>
- <20190806162703.GA1333@dell5510>
- <20190807101742.mt6tgowsh4xw5hyt@XZHOUW.usersys.redhat.com>
-Message-ID: <5D4B92EF.4090800@cn.fujitsu.com>
+From: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+Date: Thu, 8 Aug 2019 03:36:22 +0000
+Subject: [LTP] [PATCH] hugetlbfs: fix hugetlb page migration/fault race
+ causing SIGBUS
+In-Reply-To: <20190808000533.7701-1-mike.kravetz@oracle.com>
+References: <20190808000533.7701-1-mike.kravetz@oracle.com>
+Message-ID: <20190808033622.GA28751@hori.linux.bs1.fc.nec.co.jp>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-on 2019/08/07 18:17, Murphy Zhou wrote:
+On Wed, Aug 07, 2019 at 05:05:33PM -0700, Mike Kravetz wrote:
+> Li Wang discovered that LTP/move_page12 V2 sometimes triggers SIGBUS
+> in the kernel-v5.2.3 testing.  This is caused by a race between hugetlb
+> page migration and page fault.
+> 
+> If a hugetlb page can not be allocated to satisfy a page fault, the task
+> is sent SIGBUS.  This is normal hugetlbfs behavior.  A hugetlb fault
+> mutex exists to prevent two tasks from trying to instantiate the same
+> page.  This protects against the situation where there is only one
+> hugetlb page, and both tasks would try to allocate.  Without the mutex,
+> one would fail and SIGBUS even though the other fault would be successful.
+> 
+> There is a similar race between hugetlb page migration and fault.
+> Migration code will allocate a page for the target of the migration.
+> It will then unmap the original page from all page tables.  It does
+> this unmap by first clearing the pte and then writing a migration
+> entry.  The page table lock is held for the duration of this clear and
+> write operation.  However, the beginnings of the hugetlb page fault
+> code optimistically checks the pte without taking the page table lock.
+> If clear (as it can be during the migration unmap operation), a hugetlb
+> page allocation is attempted to satisfy the fault.  Note that the page
+> which will eventually satisfy this fault was already allocated by the
+> migration code.  However, the allocation within the fault path could
+> fail which would result in the task incorrectly being sent SIGBUS.
+> 
+> Ideally, we could take the hugetlb fault mutex in the migration code
+> when modifying the page tables.  However, locks must be taken in the
+> order of hugetlb fault mutex, page lock, page table lock.  This would
+> require significant rework of the migration code.  Instead, the issue
+> is addressed in the hugetlb fault code.  After failing to allocate a
+> huge page, take the page table lock and check for huge_pte_none before
+> returning an error.  This is the same check that must be made further
+> in the code even if page allocation is successful.
+> 
+> Reported-by: Li Wang <liwang@redhat.com>
+> Fixes: 290408d4a250 ("hugetlb: hugepage migration core")
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Tested-by: Li Wang <liwang@redhat.com>
 
-> And I have a question about LTP itself.
->
-> If we run the testcase directly like:
-> 	 ./testcases/kernel/syscalls/copy_file_range/copy_file_range02
->
-> to test all_filesystems, for every filesystem, we mkfs and mount it in
-> .mntpoint, but we do not chdir to .mntpoint. So we are running tests in 
-> the same tmpdir, fs type of which does not change while looping
-> all_filesystems.  Only the .mntpoint in tmpdir has different fs type in
-> each loop.
->
-> Now we are using this to test cross-device copy in copy_file_range01.c,
-> but in copy_file_range02.c, we are not using .mntpint at all, all the
-> tests in the all_filesystems loop are running in the same tmpdir. In other
-> words, we are NOT testing all filesystems.
->
-> Is this expected?
- I removed the mnted test for cross-device copy_file_range in copy_file_range02.c.
-And I ignore the non-used mntpoint. IMO, we can directly use the FILE_MNTED to test EFBIG on all filesystems, 
+Thanks for the work and nice description.
 
-as below:
-diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-index 26bfa008a..67974ffa2 100644
---- a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-+++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-@@ -49,6 +49,7 @@ static int fd_blkdev;
- static int fd_chrdev;
- static int fd_fifo;
- static int fd_copy;
-+static int fd_mnted;
+Reviewed-by: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
 
- static int chattr_i_nsup;
- static int swap_nsup;
-
-@@ -73,7 +74,7 @@ static struct tcase {
-        {&fd_chrdev,    0,   EINVAL,     0,     CONTSIZE},
-        {&fd_fifo,      0,   EINVAL,     0,     CONTSIZE},
-        {&fd_copy,      0,   EOVERFLOW,  MAX_OFF, ULLONG_MAX},
--       {&fd_copy,      0,   EFBIG,      MAX_OFF, MIN_OFF},
-+       {&fd_mnted,      0,   EFBIG,      MAX_OFF, MIN_OFF},
- };
-
- static int run_command(char *command, char *option, char *file)
-@@ -117,7 +118,10 @@ static void verify_copy_file_range(unsigned int n)
-                        tst_res(TPASS | TTERRNO,
-                                        "copy_file_range failed as expected");
-                } else {
--                       tst_res(TFAIL | TTERRNO,
-+                       if (tc->exp_err == EFBIG && TST_ERR == EXDEV)
-+                               tst_res(TCONF, "copy_file_range doesn't support cross-device,skip it");
-+                       else
-+                               tst_res(TFAIL | TTERRNO,
-                                "copy_file_range failed unexpectedly; expected %s, but got",
-                                tst_strerrno(tc->exp_err));
-                        return;
-
-@@ -152,6 +156,8 @@ static void cleanup(void)
-                SAFE_CLOSE(fd_dup);
-        if (fd_copy > 0)
-                SAFE_CLOSE(fd_copy);
-+       if (fd_mnted > 0)
-+               SAFE_CLOSE(fd_mnted);
-        SAFE_UNLINK(FILE_FIFO);
- }
-
-@@ -194,6 +200,7 @@ static void setup(void)
-
-        fd_copy = SAFE_OPEN(FILE_COPY_PATH, O_RDWR | O_CREAT | O_TRUNC, 0664);
-        chattr_i_nsup = run_command("chattr", "+i", FILE_IMMUTABLE_PATH);
-+       fd_mnted  = SAFE_OPEN(FILE_MNTED_PATH, O_RDWR | O_CREAT, 0664);
-
-        if (!tst_fs_has_free(".", sysconf(_SC_PAGESIZE) * 10, TST_BYTES)) {
-                tst_res(TCONF, "Insufficient disk space to create swap file");
-                swap_nsup = 3;
-
-test12) succeed on extN, failed on both btrfs and xfs, we need to detect filesystem type to handle. Or, I think we 
-can set a limit on filesize because this kind of user scene is a bit more than the first one , the EFBIG error can be 
-received easily (Also, we don't need  mnt_device mntpoint all_filesystem if so).
-What do you think about it?
-
-> I commented out testcases in copy_file_range02.c other then #12, and add
-> some nasty debug info:
-
-
-
+> ---
+>  mm/hugetlb.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index ede7e7f5d1ab..6d7296dd11b8 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -3856,6 +3856,25 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
+>  
+>  		page = alloc_huge_page(vma, haddr, 0);
+>  		if (IS_ERR(page)) {
+> +			/*
+> +			 * Returning error will result in faulting task being
+> +			 * sent SIGBUS.  The hugetlb fault mutex prevents two
+> +			 * tasks from racing to fault in the same page which
+> +			 * could result in false unable to allocate errors.
+> +			 * Page migration does not take the fault mutex, but
+> +			 * does a clear then write of pte's under page table
+> +			 * lock.  Page fault code could race with migration,
+> +			 * notice the clear pte and try to allocate a page
+> +			 * here.  Before returning error, get ptl and make
+> +			 * sure there really is no pte entry.
+> +			 */
+> +			ptl = huge_pte_lock(h, mm, ptep);
+> +			if (!huge_pte_none(huge_ptep_get(ptep))) {
+> +				ret = 0;
+> +				spin_unlock(ptl);
+> +				goto out;
+> +			}
+> +			spin_unlock(ptl);
+>  			ret = vmf_error(PTR_ERR(page));
+>  			goto out;
+>  		}
+> -- 
+> 2.20.1
+> 
+> 
