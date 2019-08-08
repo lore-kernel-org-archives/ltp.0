@@ -1,55 +1,96 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 8 Aug 2019 15:04:46 +0800
-Subject: [LTP] [PATCH] syscalls/copy_file_range02: Fix #12 when TMPDIR
- is on tmpfs or ext[234]
-In-Reply-To: <20190807094119.10834-1-pvorel@suse.cz>
-References: <20190807094119.10834-1-pvorel@suse.cz>
-Message-ID: <CAEemH2cM7mhkYBvTTFC4UhjnYxG0D_e-nkCmSF2U8pB61UT0bw@mail.gmail.com>
+From: Michal Hocko <mhocko@kernel.org>
+Date: Thu, 8 Aug 2019 09:46:07 +0200
+Subject: [LTP] [PATCH] hugetlbfs: fix hugetlb page migration/fault race
+ causing SIGBUS
+In-Reply-To: <20190808000533.7701-1-mike.kravetz@oracle.com>
+References: <20190808000533.7701-1-mike.kravetz@oracle.com>
+Message-ID: <20190808074607.GI11812@dhcp22.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+On Wed 07-08-19 17:05:33, Mike Kravetz wrote:
+> Li Wang discovered that LTP/move_page12 V2 sometimes triggers SIGBUS
+> in the kernel-v5.2.3 testing.  This is caused by a race between hugetlb
+> page migration and page fault.
+> 
+> If a hugetlb page can not be allocated to satisfy a page fault, the task
+> is sent SIGBUS.  This is normal hugetlbfs behavior.  A hugetlb fault
+> mutex exists to prevent two tasks from trying to instantiate the same
+> page.  This protects against the situation where there is only one
+> hugetlb page, and both tasks would try to allocate.  Without the mutex,
+> one would fail and SIGBUS even though the other fault would be successful.
+> 
+> There is a similar race between hugetlb page migration and fault.
+> Migration code will allocate a page for the target of the migration.
+> It will then unmap the original page from all page tables.  It does
+> this unmap by first clearing the pte and then writing a migration
+> entry.  The page table lock is held for the duration of this clear and
+> write operation.  However, the beginnings of the hugetlb page fault
+> code optimistically checks the pte without taking the page table lock.
+> If clear (as it can be during the migration unmap operation), a hugetlb
+> page allocation is attempted to satisfy the fault.  Note that the page
+> which will eventually satisfy this fault was already allocated by the
+> migration code.  However, the allocation within the fault path could
+> fail which would result in the task incorrectly being sent SIGBUS.
+> 
+> Ideally, we could take the hugetlb fault mutex in the migration code
+> when modifying the page tables.  However, locks must be taken in the
+> order of hugetlb fault mutex, page lock, page table lock.  This would
+> require significant rework of the migration code.  Instead, the issue
+> is addressed in the hugetlb fault code.  After failing to allocate a
+> huge page, take the page table lock and check for huge_pte_none before
+> returning an error.  This is the same check that must be made further
+> in the code even if page allocation is successful.
+> 
+> Reported-by: Li Wang <liwang@redhat.com>
+> Fixes: 290408d4a250 ("hugetlb: hugepage migration core")
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Tested-by: Li Wang <liwang@redhat.com>
 
-Thanks for highlight this.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-> Cyril, Jan, Li, still not sure what the policy about errno is (see
-> Cyril's statements in recent discussion about it in Jinhui's patch [1]
-> [2]). With these frequent changes we should IMHO check for all possible
-> variants (EXDEV, EFBIG, EINVAL).
->
-> Or should we investigate all fixes and keep errors which highlight
-> important fix was not backported (to both stable and LTS/enterprise
-> distros kernels?). That'd be weird but approach practical :).
+Thanks!
 
-That sounds not very realistic. We can't satisfy all distributions for
-errno checking, because we don't know when/wheather it backports the
-patch.
-
->
-> Anyway, we should define and write down LTP policy / rules about it.
-
-I think we might have these ways of choosing:
-
-1. Only align with the latest kernel behavior
-    e.g limit the latest kernel version and verify that valid errno
-The disadvantage of this is only tested on a small kernel range.
-
-2. Guarded by kernel version check as Cyril suggests in [1]
-    e.g  kernel >= 4.10; Check errno == EBADF
-           kernel < 4.10; Check errno == EISDIR
-           ....
-The disadvantage is that the test result is affected by LTS with a
-backport-patch.
-
-3. Regards all acceptable errnos as valid on any kernel version
-    e.g  whatever errno get any of them EXDEV, EFBIG, EINVAL, regard valid
-This sounds obviously awful.
-
-Or, anything else?
+> ---
+>  mm/hugetlb.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index ede7e7f5d1ab..6d7296dd11b8 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -3856,6 +3856,25 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
+>  
+>  		page = alloc_huge_page(vma, haddr, 0);
+>  		if (IS_ERR(page)) {
+> +			/*
+> +			 * Returning error will result in faulting task being
+> +			 * sent SIGBUS.  The hugetlb fault mutex prevents two
+> +			 * tasks from racing to fault in the same page which
+> +			 * could result in false unable to allocate errors.
+> +			 * Page migration does not take the fault mutex, but
+> +			 * does a clear then write of pte's under page table
+> +			 * lock.  Page fault code could race with migration,
+> +			 * notice the clear pte and try to allocate a page
+> +			 * here.  Before returning error, get ptl and make
+> +			 * sure there really is no pte entry.
+> +			 */
+> +			ptl = huge_pte_lock(h, mm, ptep);
+> +			if (!huge_pte_none(huge_ptep_get(ptep))) {
+> +				ret = 0;
+> +				spin_unlock(ptl);
+> +				goto out;
+> +			}
+> +			spin_unlock(ptl);
+>  			ret = vmf_error(PTR_ERR(page));
+>  			goto out;
+>  		}
+> -- 
+> 2.20.1
 
 -- 
-Regards,
-Li Wang
+Michal Hocko
+SUSE Labs
