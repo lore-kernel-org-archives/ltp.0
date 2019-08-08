@@ -1,115 +1,101 @@
-From: Darrick J. Wong <darrick.wong@oracle.com>
-Date: Wed, 7 Aug 2019 07:48:24 -0700
-Subject: [LTP] [PATCH] syscalls/copy_file_range02: Fix #12 when TMPDIR
- is on tmpfs or ext[234]
-In-Reply-To: <20190807094119.10834-1-pvorel@suse.cz>
-References: <20190807094119.10834-1-pvorel@suse.cz>
-Message-ID: <20190807144824.GO7138@magnolia>
+From: =?unknown-8bit?b?6KOY56iA55+z56iA55+z?= <xishi.qiuxishi@alibaba-inc.com>
+Date: Thu, 08 Aug 2019 10:24:33 +0800
+Subject: [LTP] 
+ =?utf-8?q?=5BPATCH=5D_hugetlbfs=3A_fix_hugetlb_page_migrat?=
+ =?utf-8?q?ion/fault_race_causing_SIGBUS?=
+Message-ID: <f7a64f0a-1ae0-4582-a293-b608bc8fed36.xishi.qiuxishi@alibaba-inc.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Aug 07, 2019 at 11:41:19AM +0200, Petr Vorel wrote:
-> Recent fix 96e6e8f4a68d ("vfs: add missing checks to copy_file_range")
-> in kernel v5.3-rc1 changed errno for ext[234] and tmpfs to EINVAL.
-> 
-> + fix typo from 0242a9a29
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Hi all,
-> 
-> Amir, Darrick, am I right that it's not a problem that errno changed
-> recently, is it? There have been more errno changes due several fixes in
-> copy_file_range() in the past. I've seen this approach several times in
-> other subsystems (e.g. network). Hope userspace not often check for
-> particular error.
+Hi Mike,
 
-Same here.  I think EXDEV is the only errno that can be worked around in
-userspace (with a classic read-write loop).
+Do you mean the similar race is like the following?
 
-> Cyril, Jan, Li, still not sure what the policy about errno is (see
-> Cyril's statements in recent discussion about it in Jinhui's patch [1]
-> [2]). With these frequent changes we should IMHO check for all possible
-> variants (EXDEV, EFBIG, EINVAL).
+migration clearing the pte
+  page fault(before we return error, and now we return 0, then try page fault again, right?)
+    migration writing a migration entry
 
-I for one hope we're done messing with the (bad input) -> errno mappings.
+Thanks,
+Xishi Qiu
 
-> Or should we investigate all fixes and keep errors which highlight
-> important fix was not backported (to both stable and LTS/enterprise
-> distros kernels?). That'd be weird but approach practical :).
 
-copy_file_range was kinda broken before 5.3 if you were using it on a
-disk filesystem, so I'd hope the LTS folks would backport them (or turn
-c_f_r off).
+Li Wang discovered that LTP/move_page12 V2 sometimes triggers SIGBUS
+in the kernel-v5.2.3 testing.  This is caused by a race between hugetlb
+page migration and page fault.
 
---D
+If a hugetlb page can not be allocated to satisfy a page fault, the task
+is sent SIGBUS.  This is normal hugetlbfs behavior.  A hugetlb fault
+mutex exists to prevent two tasks from trying to instantiate the same
+page.  This protects against the situation where there is only one
+hugetlb page, and both tasks would try to allocate.  Without the mutex,
+one would fail and SIGBUS even though the other fault would be successful.
 
-> Anyway, we should define and write down LTP policy / rules about it.
-> 
-> Kind regards,
-> Petr
-> 
-> [1] https://patchwork.ozlabs.org/patch/1108229/#2182801
-> [2] https://patchwork.ozlabs.org/patch/1108229/#2182837
-> 
->  .../copy_file_range/copy_file_range02.c       | 20 +++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-> index 9004c4a40..b113e44b5 100644
-> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-> @@ -49,6 +49,7 @@ static int fd_blkdev;
->  static int fd_chrdev;
->  static int fd_fifo;
->  static int fd_copy;
-> +static int fd_copy2;
->  
->  static int chattr_i_nsup;
->  static int swap_nsup;
-> @@ -73,8 +74,8 @@ static struct tcase {
->  	{&fd_blkdev,    0,   EINVAL,     0,     CONTSIZE, "block device"},
->  	{&fd_chrdev,    0,   EINVAL,     0,     CONTSIZE, "char device"},
->  	{&fd_fifo,      0,   EINVAL,     0,     CONTSIZE, "fifo"},
-> -	{&fd_copy,      0,   EOVERFLOW,  MAX_OFF, ULLONG_MAX, "max length lenght"},
-> -	{&fd_copy,      0,   EFBIG,      MAX_OFF, MIN_OFF, "max file size"},
-> +	{&fd_copy,      0,   EOVERFLOW,  MAX_OFF, ULLONG_MAX, "max length"},
-> +	{&fd_copy2,     0,   EFBIG,      MAX_OFF, MIN_OFF, "max file size"},
->  };
->  
->  static int run_command(char *command, char *option, char *file)
-> @@ -100,6 +101,7 @@ static void verify_copy_file_range(unsigned int n)
->  	struct tcase *tc = &tcases[n];
->  	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
->  
-> +
->  	if (tc->copy_to_fd == &fd_immutable && chattr_i_nsup) {
->  		tst_res(TCONF, "filesystem doesn't support chattr +i, skip it");
->  		return;
-> @@ -112,6 +114,20 @@ static void verify_copy_file_range(unsigned int n)
->  		tst_res(TCONF, "filesystem doesn't have free loopdev, skip it");
->  		return;
->  	}
-> +
-> +	if (tc->copy_to_fd == &fd_copy2) {
-> +		long fs_type = tst_fs_type(".");
-> +		switch (fs_type) {
-> +		case TST_TMPFS_MAGIC:
-> +		case TST_EXT234_MAGIC:
-> +		default:
-> +			tc->exp_err = EINVAL;
-> +			tst_res(TINFO, "%s filesystem, changing expecting errno to %d",
-> +					tst_fs_type_name(fs_type), tc->exp_err);
-> +			break;
-> +		}
-> +	}
-> +
->  	TEST(sys_copy_file_range(fd_src, 0, *tc->copy_to_fd,
->  				&tc->dst, tc->len, tc->flags));
->  
-> -- 
-> 2.22.0
-> 
+There is a similar race between hugetlb page migration and fault.
+Migration code will allocate a page for the target of the migration.
+It will then unmap the original page from all page tables.  It does
+this unmap by first clearing the pte and then writing a migration
+entry.  The page table lock is held for the duration of this clear and
+write operation.  However, the beginnings of the hugetlb page fault
+code optimistically checks the pte without taking the page table lock.
+If clear (as it can be during the migration unmap operation), a hugetlb
+page allocation is attempted to satisfy the fault.  Note that the page
+which will eventually satisfy this fault was already allocated by the
+migration code.  However, the allocation within the fault path could
+fail which would result in the task incorrectly being sent SIGBUS.
+
+Ideally, we could take the hugetlb fault mutex in the migration code
+when modifying the page tables.  However, locks must be taken in the
+order of hugetlb fault mutex, page lock, page table lock.  This would
+require significant rework of the migration code.  Instead, the issue
+is addressed in the hugetlb fault code.  After failing to allocate a
+huge page, take the page table lock and check for huge_pte_none before
+returning an error.  This is the same check that must be made further
+in the code even if page allocation is successful.
+
+Reported-by: Li Wang <liwang@redhat.com>
+Fixes: 290408d4a250 ("hugetlb: hugepage migration core")
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Tested-by: Li Wang <liwang@redhat.com>
+---
+ mm/hugetlb.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index ede7e7f5d1ab..6d7296dd11b8 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3856,6 +3856,25 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
+
+   page = alloc_huge_page(vma, haddr, 0);
+   if (IS_ERR(page)) {
++   /*
++    * Returning error will result in faulting task being
++    * sent SIGBUS.  The hugetlb fault mutex prevents two
++    * tasks from racing to fault in the same page which
++    * could result in false unable to allocate errors.
++    * Page migration does not take the fault mutex, but
++    * does a clear then write of pte's under page table
++    * lock.  Page fault code could race with migration,
++    * notice the clear pte and try to allocate a page
++    * here.  Before returning error, get ptl and make
++    * sure there really is no pte entry.
++    */
++   ptl = huge_pte_lock(h, mm, ptep);
++   if (!huge_pte_none(huge_ptep_get(ptep))) {
++    ret = 0;
++    spin_unlock(ptl);
++    goto out;
++   }
++   spin_unlock(ptl);
+    ret = vmf_error(PTR_ERR(page));
+    goto out;
+   }
+-- 
+2.20.1
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190808/c1fb00e9/attachment-0001.htm>
