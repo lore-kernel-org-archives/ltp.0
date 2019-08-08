@@ -1,26 +1,40 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 8 Aug 2019 17:13:44 +0800
-Subject: [LTP] [RFC PATCH 1/9] lib: Add support for guarded buffers
-In-Reply-To: <20190808090635.GA11500@rei.lan>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 8 Aug 2019 11:27:32 +0200
+Subject: [LTP] [RFC PATCH 2/9] lib: Add a canary for guarded buffers
+In-Reply-To: <CAEemH2d8dEe0km7FA43S2eQYHE00m9advsAbUbmFfixcV0-qhw@mail.gmail.com>
 References: <20190801092616.30553-1-chrubis@suse.cz>
- <20190801092616.30553-2-chrubis@suse.cz>
- <871rxyd5tc.fsf@rpws.prws.suse.cz> <20190808090635.GA11500@rei.lan>
-Message-ID: <CAEemH2fWSxuXegxGiKRWzpHLHQdgxTe_nHW+-0ezusJKNp4T7A@mail.gmail.com>
+ <20190801092616.30553-3-chrubis@suse.cz>
+ <CAEemH2d8dEe0km7FA43S2eQYHE00m9advsAbUbmFfixcV0-qhw@mail.gmail.com>
+Message-ID: <20190808092732.GB11500@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> > This seems like debug info to me. Not really useful most of the time.
->
-> Yes, this is a leftover.
->
-> I do wonder if we should print a message first time the tst_alloc() is
-> called so that it's clear that the test is using guarded buffers.
+Hi!
+> > +static void check_canary(struct map *map)
+> > +{
+> > +       size_t i;
+> > +       char *buf = map->addr;
+> > +
+> > +       for (i = 0; i < map->buf_shift/2; i++) {
+> > +               if (buf[map->buf_shift - i - 1] != buf[i]) {
+> > +                       tst_res(TWARN,
+> > +                               "pid %i: buffer modified before address %p %zu",
+> > +                               (char*)map->addr + map->buf_shift, i);
+> 
+> Here you probably missed the getpid() for printing %i match :).
 
-Sounds necessary. Or should we need a way for silent using?
+Ah, right, I guess that this is unfinished last minute modification.
+
+Actually as it is the canaries are checked only for the main library pid
+becuase the tst_free_all() is hooked up in the do_test_cleanup().
+
+I guess that we should call it in the run_tests() function before we
+call exit(0) for the child processes as well as in the tst_vbrk_() and
+after that changes printing pid in the warning makes sense.
 
 -- 
-Regards,
-Li Wang
+Cyril Hrubis
+chrubis@suse.cz
