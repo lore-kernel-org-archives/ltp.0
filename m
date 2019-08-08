@@ -1,125 +1,162 @@
-From: Murphy Zhou <jencce.kernel@gmail.com>
-Date: Thu, 8 Aug 2019 11:57:30 +0800
-Subject: [LTP] [PATCH v7 3/3] syscalls/copy_file_range02: increase
- coverage and remove EXDEV test
-In-Reply-To: <5D4B92EF.4090800@cn.fujitsu.com>
-References: <20190730110555.GB7528@rei.lan>
- <1564569629-2358-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1564569629-2358-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190805065832.ti6vpoviykfaxcj7@XZHOUW.usersys.redhat.com>
- <5D47D6B9.9090306@cn.fujitsu.com>
- <20190805102211.pvyufepn6xywi7vm@XZHOUW.usersys.redhat.com>
- <20190806162703.GA1333@dell5510>
- <20190807101742.mt6tgowsh4xw5hyt@XZHOUW.usersys.redhat.com>
- <5D4B92EF.4090800@cn.fujitsu.com>
-Message-ID: <20190808035730.3kzors4trok6amtr@XZHOUW.usersys.redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu,  8 Aug 2019 13:45:13 +0800
+Subject: [LTP] [PATCH v3] move_pages12: handle errno EBUSY for madvise(...,
+ MADV_SOFT_OFFLINE)
+Message-ID: <20190808054513.31041-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Aug 08, 2019 at 11:11:43AM +0800, Yang Xu wrote:
-> on 2019/08/07 18:17, Murphy Zhou wrote:
-> 
-> > And I have a question about LTP itself.
-> >
-> > If we run the testcase directly like:
-> > 	 ./testcases/kernel/syscalls/copy_file_range/copy_file_range02
-> >
-> > to test all_filesystems, for every filesystem, we mkfs and mount it in
-> > .mntpoint, but we do not chdir to .mntpoint. So we are running tests in 
-> > the same tmpdir, fs type of which does not change while looping
-> > all_filesystems.  Only the .mntpoint in tmpdir has different fs type in
-> > each loop.
-> >
-> > Now we are using this to test cross-device copy in copy_file_range01.c,
-> > but in copy_file_range02.c, we are not using .mntpint at all, all the
-> > tests in the all_filesystems loop are running in the same tmpdir. In other
-> > words, we are NOT testing all filesystems.
-> >
-> > Is this expected?
->  I removed the mnted test for cross-device copy_file_range in copy_file_range02.c.
-> And I ignore the non-used mntpoint. IMO, we can directly use the FILE_MNTED to test EFBIG on all filesystems, 
+The test#2 is going to simulate the race condition, where move_pages()
+and soft offline are called on a single hugetlb page concurrently. But,
+it return EBUSY and report FAIL in soft-offline a moving hugepage as a
+result sometimes.
 
-If mntpoint is not used, it makes absolutely NO sense to test all_filesystems.
+The root cause seems a call to page_huge_active return false, then the
+soft offline action will failed to isolate hugepage with EBUSY return as
+below call trace:
 
-Because in the all_filesystems loop, various supported filesystems are
-created and mounted in mntpoint.
+In Parent:
+  madvise(..., MADV_SOFT_OFFLINE)
+  ...
+    soft_offline_page
+      soft_offline_in_use_page
+        soft_offline_huge_page
+          isolate_huge_page
+            page_huge_active
+             # return false at here
 
-And the copy_file_range tests happens outside of mntpoint. It just repeats
-the same test several times in the same tmpdir, fs type of which depends
-on /tmp configuration.
+In Child:
+  move_pages()
+  ...
+    do_move_pages
+      do_move_pages_to_node
+        add_page_for_migration
+          isolate_huge_page
+            # it has already isolated the hugepage
 
-When the log prints "testing ext2", it's not the truth.
+In this patch, I simply regard the returned EBUSY as a normal situation and
+mask it in error handler. Because move_pages is calling add_page_for_migration
+to isolate hugepage before do migration, so that's very possible to hit the
+collision and return EBUSY on the same page.
 
-EFBIG is another issue.
+Error log:
+----------
+move_pages12.c:235: INFO: Free RAM 8386256 kB
+move_pages12.c:253: INFO: Increasing 2048kB hugepages pool on node 0 to 4
+move_pages12.c:263: INFO: Increasing 2048kB hugepages pool on node 1 to 6
+move_pages12.c:179: INFO: Allocating and freeing 4 hugepages on node 0
+move_pages12.c:179: INFO: Allocating and freeing 4 hugepages on node 1
+move_pages12.c:169: PASS: Bug not reproduced
+move_pages12.c:81: FAIL: madvise failed: SUCCESS
+move_pages12.c:81: FAIL: madvise failed: SUCCESS
+move_pages12.c:143: BROK: mmap((nil),4194304,3,262178,-1,0) failed: ENOMEM
+move_pages12.c:114: FAIL: move_pages failed: EINVAL
 
-Thanks,
-Murphy
-> 
-> as below:
-> diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-> index 26bfa008a..67974ffa2 100644
-> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-> @@ -49,6 +49,7 @@ static int fd_blkdev;
->  static int fd_chrdev;
->  static int fd_fifo;
->  static int fd_copy;
-> +static int fd_mnted;
-> 
->  static int chattr_i_nsup;
->  static int swap_nsup;
-> 
-> @@ -73,7 +74,7 @@ static struct tcase {
->         {&fd_chrdev,    0,   EINVAL,     0,     CONTSIZE},
->         {&fd_fifo,      0,   EINVAL,     0,     CONTSIZE},
->         {&fd_copy,      0,   EOVERFLOW,  MAX_OFF, ULLONG_MAX},
-> -       {&fd_copy,      0,   EFBIG,      MAX_OFF, MIN_OFF},
-> +       {&fd_mnted,      0,   EFBIG,      MAX_OFF, MIN_OFF},
->  };
-> 
->  static int run_command(char *command, char *option, char *file)
-> @@ -117,7 +118,10 @@ static void verify_copy_file_range(unsigned int n)
->                         tst_res(TPASS | TTERRNO,
->                                         "copy_file_range failed as expected");
->                 } else {
-> -                       tst_res(TFAIL | TTERRNO,
-> +                       if (tc->exp_err == EFBIG && TST_ERR == EXDEV)
-> +                               tst_res(TCONF, "copy_file_range doesn't support cross-device,skip it");
-> +                       else
-> +                               tst_res(TFAIL | TTERRNO,
->                                 "copy_file_range failed unexpectedly; expected %s, but got",
->                                 tst_strerrno(tc->exp_err));
->                         return;
-> 
-> @@ -152,6 +156,8 @@ static void cleanup(void)
->                 SAFE_CLOSE(fd_dup);
->         if (fd_copy > 0)
->                 SAFE_CLOSE(fd_copy);
-> +       if (fd_mnted > 0)
-> +               SAFE_CLOSE(fd_mnted);
->         SAFE_UNLINK(FILE_FIFO);
->  }
-> 
-> @@ -194,6 +200,7 @@ static void setup(void)
-> 
->         fd_copy = SAFE_OPEN(FILE_COPY_PATH, O_RDWR | O_CREAT | O_TRUNC, 0664);
->         chattr_i_nsup = run_command("chattr", "+i", FILE_IMMUTABLE_PATH);
-> +       fd_mnted  = SAFE_OPEN(FILE_MNTED_PATH, O_RDWR | O_CREAT, 0664);
-> 
->         if (!tst_fs_has_free(".", sysconf(_SC_PAGESIZE) * 10, TST_BYTES)) {
->                 tst_res(TCONF, "Insufficient disk space to create swap file");
->                 swap_nsup = 3;
-> 
-> test12) succeed on extN, failed on both btrfs and xfs, we need to detect filesystem type to handle. Or, I think we 
-> can set a limit on filesize because this kind of user scene is a bit more than the first one , the EFBIG error can be 
-> received easily (Also, we don't need  mnt_device mntpoint all_filesystem if so).
-> What do you think about it?
-> 
-> > I commented out testcases in copy_file_range02.c other then #12, and add
-> > some nasty debug info:
-> 
-> 
-> 
+Dmesg:
+------
+[165435.492170] soft offline: 0x61c00 hugepage failed to isolate
+[165435.590252] soft offline: 0x61c00 hugepage failed to isolate
+[165435.725493] soft offline: 0x61400 hugepage failed to isolate
+
+Other two fixes in this patch:
+ * use TERRNO(but not TTERRNO) to catch madvise(..., MADV_SOFT_OFFLINE) errno
+ * retry mmap when hugepage allocating failed with ENOMEM
+ * retry numa_move_pages when hitting ENOMEM
+
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+Cc: Cyril Hrubis <chrubis@suse.cz>
+---
+
+Notes:
+    Hi Cyril,
+    
+    Since the SIGBUS problem has been marked as mainline kernel issue, and
+    Mike has worked out a patch[1] to LKML for solving that. So we have no
+    necessary to mask the SIGBUS again for move_page12. Here I take your
+    suggest to retry mmap while hitting ENOMEM in the test looping.
+    
+    And, after the patch[1] merging in linus kernel. I'll help to note the
+    SIGBUS issue/patch in test#2 code comments via a seperate patch.
+    
+    [1] https://lkml.org/lkml/2019/8/7/941
+
+ .../kernel/syscalls/move_pages/move_pages12.c | 30 ++++++++++++++-----
+ 1 file changed, 22 insertions(+), 8 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/move_pages/move_pages12.c b/testcases/kernel/syscalls/move_pages/move_pages12.c
+index 964b712fb..5d7afad8e 100644
+--- a/testcases/kernel/syscalls/move_pages/move_pages12.c
++++ b/testcases/kernel/syscalls/move_pages/move_pages12.c
+@@ -77,8 +77,8 @@ static void *addr;
+ static int do_soft_offline(int tpgs)
+ {
+ 	if (madvise(addr, tpgs * hpsz, MADV_SOFT_OFFLINE) == -1) {
+-		if (errno != EINVAL)
+-			tst_res(TFAIL | TTERRNO, "madvise failed");
++		if (errno != EINVAL && errno != EBUSY)
++			tst_res(TFAIL | TERRNO, "madvise failed");
+ 		return errno;
+ 	}
+ 	return 0;
+@@ -111,6 +111,9 @@ static void do_child(int tpgs)
+ 		TEST(numa_move_pages(ppid, test_pages,
+ 			pages, nodes, status, MPOL_MF_MOVE_ALL));
+ 		if (TST_RET < 0) {
++			if (errno == ENOMEM)
++				continue;
++
+ 			tst_res(TFAIL | TTERRNO, "move_pages failed");
+ 			break;
+ 		}
+@@ -121,7 +124,8 @@ static void do_child(int tpgs)
+ 
+ static void do_test(unsigned int n)
+ {
+-	int i;
++	int i, ret;
++	void *ptr;
+ 	pid_t cpid = -1;
+ 	int status;
+ 	unsigned int twenty_percent = (tst_timeout_remaining() / 5);
+@@ -136,18 +140,28 @@ static void do_test(unsigned int n)
+ 		do_child(tcases[n].tpages);
+ 
+ 	for (i = 0; i < LOOPS; i++) {
+-		void *ptr;
++		ptr = mmap(NULL, tcases[n].tpages * hpsz,
++				PROT_READ | PROT_WRITE,
++				MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB, -1, 0);
++		if (ptr == MAP_FAILED) {
++			if (i == 0)
++				tst_brk(TBROK | TERRNO, "Cannot allocate hugepage");
++
++			if (errno == ENOMEM) {
++				usleep(1000);
++				continue;
++			}
++		}
+ 
+-		ptr = SAFE_MMAP(NULL, tcases[n].tpages * hpsz,
+-			PROT_READ | PROT_WRITE,
+-			MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB, -1, 0);
+ 		if (ptr != addr)
+ 			tst_brk(TBROK, "Failed to mmap@desired addr");
+ 
+ 		memset(addr, 0, tcases[n].tpages * hpsz);
+ 
+ 		if (tcases[n].offline) {
+-			if (do_soft_offline(tcases[n].tpages) == EINVAL) {
++			ret = do_soft_offline(tcases[n].tpages);
++
++			if (ret == EINVAL) {
+ 				SAFE_KILL(cpid, SIGKILL);
+ 				SAFE_WAITPID(cpid, &status, 0);
+ 				SAFE_MUNMAP(addr, tcases[n].tpages * hpsz);
+-- 
+2.20.1
+
