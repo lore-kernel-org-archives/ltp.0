@@ -1,37 +1,231 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Fri,  9 Aug 2019 16:31:35 +0200
-Subject: [LTP] [PATCH v2 1/2] clock_getres01: drop case which is passing
- NULL res parameter
-Message-ID: <ee463189a82212a10c1ac06229dc0a418e18305b.1565361031.git.jstancek@redhat.com>
+Date: Fri, 9 Aug 2019 10:42:18 -0400 (EDT)
+Subject: [LTP] [RFC PATCH 1/1] capability: Introduce capability API
+In-Reply-To: <20190809122741.GC32115@rei.lan>
+References: <20190808153825.18363-1-rpalethorpe@suse.com>
+ <20190808153825.18363-2-rpalethorpe@suse.com>
+ <20190809122741.GC32115@rei.lan>
+Message-ID: <1048151188.5768032.1565361738465.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Since commit a9446a906f52 ("lib/vdso/32: Remove inconsistent NULL pointer checks")
-VDSO treats NULL parameter differently than in syscall.
 
-Drop NULL parameter, subsequent patch will add test variants that test NULL
-res parameter using syscall.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/clock_getres/clock_getres01.c | 1 -
- 1 file changed, 1 deletion(-)
+----- Original Message -----
+> Hi!
+> >  include/tst_capability.h | 56 +++++++++++++++++++++++++++++
+> >  include/tst_test.h       |  6 ++++
+> >  lib/tst_capability.c     | 78 ++++++++++++++++++++++++++++++++++++++++
+> >  lib/tst_test.c           |  3 ++
+> >  4 files changed, 143 insertions(+)
+> >  create mode 100644 include/tst_capability.h
+> >  create mode 100644 lib/tst_capability.c
+> 
+> This is missing a documentation in the test-writing-guidelines I do
+> expect that you will add that later on.
+> 
+> > diff --git a/include/tst_capability.h b/include/tst_capability.h
+> > new file mode 100644
+> > index 000000000..6342b667e
+> > --- /dev/null
+> > +++ b/include/tst_capability.h
+> > @@ -0,0 +1,56 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> > +/*
+> > + * Copyright (c) 2019 Richard Palethorpe <rpalethorpe@suse.com>
+> > + */
+> > +/**
+> > + * @file tst_capability.h
+> > + *
+> > + * Limited capability operations without libcap.
+> > + */
+> > +
+> > +#include <stdint.h>
+> > +
+> > +#include "lapi/syscalls.h"
+>                ^
+> 	       What is this needed for here?
+> 
+> > +#ifndef TST_CAPABILITY_H
+> > +#define TST_CAPABILITY_H
+> > +
+> > +#ifndef CAP_SYS_ADMIN
+> > +# define CAP_SYS_ADMIN        21
+> > +#endif
+> >
+> > +#ifndef CAP_TO_MASK
+> > +# define CAP_TO_MASK(x)      (1 << ((x) & 31))
+> > +#endif
+> 
+> These bits should probably go to lapi/capability.h
+> 
+> > +#define TST_DROP 1
+> > +#define TST_REQUIRE 1 << 1
+> 
+> Maybe these should be TST_CAP_DROP and TST_CAP_REQ
+> 
+> > +#define TST_CAP(action, capability) {action, capability, #capability}
+> > +
+> > +struct tst_cap_user_header {
+> > +	uint32_t version;
+> > +	int pid;
+> > +};
+> > +
+> > +struct tst_cap_user_data {
+> > +	uint32_t effective;
+> > +	uint32_t permitted;
+> > +	uint32_t inheritable;
+> > +};
+> 
+> This two should probably go to lapi as well.
+> 
+> > +struct tst_cap {
+> > +	uint32_t action;
+> > +	uint32_t id;
+> > +	char *name;
+> > +};
+> 
+> I wonder if we should build a table of capability names for translation
+> just as we do errnos and signals instead of storing the name here. But I
+> guess that unless we will need a function to translate capabilitities
+> into strings on runtime this approach is simpler.
+> 
+> > +int tst_capget(struct tst_cap_user_header *hdr,
+> > +	       struct tst_cap_user_data *data);
+> > +int tst_capset(struct tst_cap_user_header *hdr,
+> > +	       const struct tst_cap_user_data *data);
+> > +
+> > +void tst_cap_action(struct tst_cap *cap);
+> > +void tst_cap_setup(struct tst_cap *cap);
+> > +
+> > +#endif
+> > diff --git a/include/tst_test.h b/include/tst_test.h
+> > index cdeaf6ad0..84acf2c59 100644
+> > --- a/include/tst_test.h
+> > +++ b/include/tst_test.h
+> > @@ -36,6 +36,7 @@
+> >  #include "tst_sys_conf.h"
+> >  #include "tst_coredump.h"
+> >  #include "tst_buffers.h"
+> > +#include "tst_capability.h"
+> >  
+> >  /*
+> >   * Reports testcase result.
+> > @@ -206,6 +207,11 @@ struct tst_test {
+> >  	 * NULL-terminated array to be allocated buffers.
+> >  	 */
+> >  	struct tst_buffers *bufs;
+> > +
+> > +	/*
+> > +	 * NULL-terminated array of capability settings
+> > +	 */
+> > +	struct tst_cap *caps;
+> >  };
+> >  
+> >  /*
+> > diff --git a/lib/tst_capability.c b/lib/tst_capability.c
+> > new file mode 100644
+> > index 000000000..d229491ae
+> > --- /dev/null
+> > +++ b/lib/tst_capability.c
+> > @@ -0,0 +1,78 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> > +/*
+> > + * Copyright (c) 2019 Richard Palethorpe <rpalethorpe@suse.com>
+> > + */
+> > +
+> > +#define TST_NO_DEFAULT_MAIN
+> > +#include "tst_test.h"
+> > +#include "tst_capability.h"
+> > +
+> > +int tst_capget(struct tst_cap_user_header *hdr,
+> > +	       struct tst_cap_user_data *data)
+> > +{
+> > +	return tst_syscall(__NR_capget, hdr, data);
+> > +}
+> > +
+> > +int tst_capset(struct tst_cap_user_header *hdr,
+> > +	       const struct tst_cap_user_data *data)
+> > +{
+> > +	return tst_syscall(__NR_capset, hdr, data);
+> > +}
+> > +
+> > +void tst_cap_action(struct tst_cap *cap)
+> > +{
+> > +	struct tst_cap_user_header hdr = {
+> > +		.version = 0x20080522,
+> > +		.pid = tst_syscall(__NR_gettid),
+> > +	};
+> > +	struct tst_cap_user_data cur = { 0 };
+> > +	struct tst_cap_user_data new = { 0 };
+> > +	uint32_t mask = CAP_TO_MASK(cap->id);
+> > +	uint32_t act = cap->action;
+> > +
+> > +	if (tst_capget(&hdr, &cur))
+> > +		tst_brk(TBROK | TTERRNO, "tst_capget()");
+> > +
+> > +	new = cur;
+> > +
+> > +	switch (act) {
+> > +	case TST_DROP:
+> > +		if (cur.effective & mask) {
+> > +			tst_res(TINFO, "Dropping %s(%d)",
+> > +				cap->name, cap->id);
+> > +			new.effective &= ~mask;
+> > +			new.permitted &= ~mask;
+> > +			new.inheritable &= ~mask;
+> > +		}
+> > +		break;
+> > +	case TST_REQUIRE:
+> > +		if (cur.permitted ^ mask) {
+> > +			tst_brk(TCONF, "Need %s(%d)",
+> > +				cap->name, cap->id);
+> > +		} else if (cur.effective ^ mask) {
+> > +			tst_res(TINFO, "Permitting %s(%d)",
+> > +				cap->name, cap->id);
+> > +			new.effective |= mask;
+> > +			new.inheritable |= mask;
+> > +		}
+> > +		break;
+> > +	default:
+> > +		tst_brk(TBROK, "Unrecognised action %d", cap->action);
+> > +	}
+> > +
+> > +	if (cur.effective != new.effective) {
+> > +		if (tst_capset(&hdr, &new))
+> > +			tst_brk(TBROK | TERRNO, "tst_capset(%s)", cap->name);
+> > +	} else {
+> > +		tst_res(TINFO, "No capability changes needed");
+> > +	}
+> > +}
+> > +
+> > +void tst_cap_setup(struct tst_cap *caps)
+> > +{
+> > +	struct tst_cap *cap;
+> > +
+> > +	for (cap = caps; cap->action; cap++) {
+> > +		tst_cap_action(cap);
+> > +	}
+> 
+> No need for the curly braces here :-).
+> 
+> > +}
+> > diff --git a/lib/tst_test.c b/lib/tst_test.c
+> > index 8dc71dbb3..62e54d071 100644
+> > --- a/lib/tst_test.c
+> > +++ b/lib/tst_test.c
+> > @@ -893,6 +893,9 @@ static void do_test_setup(void)
+> >  
+> >  	if (main_pid != getpid())
+> >  		tst_brk(TBROK, "Runaway child in setup()!");
+> > +
+> > +	if (tst_test->caps)
+> > +		tst_cap_setup(tst_test->caps);
+> >  }
+> 
+> Other than the minor things and missing docs this patch looks good to me.
 
-diff --git a/testcases/kernel/syscalls/clock_getres/clock_getres01.c b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-index 15f32310839a..df3e84271ad9 100644
---- a/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-+++ b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-@@ -28,7 +28,6 @@ static struct test_case {
- 	{"MONOTONIC", CLOCK_MONOTONIC, &res, 0, 0},
- 	{"PROCESS_CPUTIME_ID", CLOCK_PROCESS_CPUTIME_ID, &res, 0, 0},
- 	{"THREAD_CPUTIME_ID", CLOCK_THREAD_CPUTIME_ID, &res, 0, 0},
--	{"REALTIME", CLOCK_REALTIME, NULL, 0, 0},
- 	{"CLOCK_MONOTONIC_RAW", CLOCK_MONOTONIC_RAW, &res, 0, 0,},
- 	{"CLOCK_REALTIME_COARSE", CLOCK_REALTIME_COARSE, &res, 0, 0,},
- 	{"CLOCK_MONOTONIC_COARSE", CLOCK_MONOTONIC_COARSE, &res, 0, 0,},
--- 
-1.8.3.1
-
++1, but please rebase it on latest master.
