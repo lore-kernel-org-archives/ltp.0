@@ -1,50 +1,54 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri,  9 Aug 2019 09:52:44 +0200
-Subject: [LTP] [PATCH] tst_test.sh: Reduce false positives in reserved
- variable warnings
-Message-ID: <20190809075244.17950-1-pvorel@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 9 Aug 2019 11:33:54 +0200
+Subject: [LTP] [PATCH v3 4/4] build: Move
+ -Werror-implicit-function-declaration from make to build.sh
+In-Reply-To: <20190806164523.557-1-pvorel@suse.cz>
+References: <20190806164523.557-1-pvorel@suse.cz>
+Message-ID: <20190809093354.GA13178@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-"Reserved variable TST_FOO used!" and "Private variable or function
-_tst_foo used!" reports some false positive.
+Hi!
+> Previously it was passed only to Android build. Generally Werror flags
+> should be on for development but disabled for releases and production.
+> We don't have any configure flag stating development build, so using it
+> in build.sh should be sufficient as it can be used in both Travis CI
+> builds and local development.
+> 
+> + respect CC variable in build.sh (for these lazy to pass it via -c flag)
+> 
+> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Change v2->v3:
+> * move flag to build.sh, so it can be reused for local development
+> * respect CC
+> 
+>  build.sh               | 4 +++-
+>  include/mk/env_post.mk | 4 ----
+>  2 files changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/build.sh b/build.sh
+> index 3da2adf55..78845bf95 100755
+> --- a/build.sh
+> +++ b/build.sh
+> @@ -9,6 +9,9 @@
+>  
+>  set -e
+>  
+> +CFLAGS="${CFLAGS:--Werror-implicit-function-declaration}"
 
-Filter out commented code and variables and functions not starting with
-searched prefix (foo_tst_bar() or $foo_tst_bar).
+Shouldn't this be -Werror=implicit-function-declaration ?
 
-NOTE: There are still some false positives (e.g. echo "echo
-TST_SHOULD_NOT_BE_FOUND"), but let's not complicate the regexp too much.
+Hmm, looks like both variants actually work, but the gcc manual speaks
+only about -Werror= one.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/lib/tst_test.sh | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 31b3a3951..f779cc471 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -402,7 +402,7 @@ tst_run()
- 	local _tst_name
- 
- 	if [ -n "$TST_TEST_PATH" ]; then
--		for _tst_i in $(grep TST_ "$TST_TEST_PATH" | sed 's/.*TST_//; s/[="} \t\/:`].*//'); do
-+		for _tst_i in $(grep '^[^#]*\bTST_' "$TST_TEST_PATH" | sed 's/.*TST_//; s/[="} \t\/:`].*//'); do
- 			case "$_tst_i" in
- 			DISABLE_APPARMOR|DISABLE_SELINUX);;
- 			SETUP|CLEANUP|TESTFUNC|ID|CNT|MIN_KVER);;
-@@ -417,7 +417,7 @@ tst_run()
- 			esac
- 		done
- 
--		for _tst_i in $(grep _tst_ "$TST_TEST_PATH" | sed 's/.*_tst_//; s/[="} \t\/:`].*//'); do
-+		for _tst_i in $(grep '^[^#]*\b_tst_' "$TST_TEST_PATH" | sed 's/.*_tst_//; s/[="} \t\/:`].*//'); do
- 			tst_res TWARN "Private variable or function _tst_$_tst_i used!"
- 		done
- 	fi
+Otherwise it looks good, acked.
+
 -- 
-2.22.0
-
+Cyril Hrubis
+chrubis@suse.cz
