@@ -1,55 +1,37 @@
 From: Yixin Zhang <yixin.zhang@intel.com>
-Date: Fri,  9 Aug 2019 14:19:58 +0800
-Subject: [LTP] [PATCH ltp 3/5] runtest/ltp-aiodio.part4: rename
- aiodio_append tests to avoid duplication
+Date: Fri,  9 Aug 2019 14:19:59 +0800
+Subject: [LTP] [PATCH ltp 4/5] runtest/crashme: rename mem01 to avoid
+ duplication
 In-Reply-To: <20190809062000.8671-1-yixin.zhang@intel.com>
 References: <20190809062000.8671-1-yixin.zhang@intel.com>
-Message-ID: <20190809062000.8671-3-yixin.zhang@intel.com>
+Message-ID: <20190809062000.8671-4-yixin.zhang@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The name AD00{1..9} is already used in ltp-aiodio.part1, change them to
-ADA00{1..9}.
+mem01 is already in runtest file mm. Rename the test to mem01_crashme
+here.
 
 Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
 ---
- runtest/ltp-aiodio.part4 | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ runtest/crashme | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/runtest/ltp-aiodio.part4 b/runtest/ltp-aiodio.part4
-index bb8abfdf1..1c845cd7d 100644
---- a/runtest/ltp-aiodio.part4
-+++ b/runtest/ltp-aiodio.part4
-@@ -34,16 +34,16 @@ DIO07 dio_sparse
- DIO08 dio_sparse
- DIO09 dio_sparse
- #Running aiodio_append
--AD000 aiodio_append $TMPDIR/aiodio.$$/file2
--AD001 aiodio_append $TMPDIR/aiodio.$$/file2
--AD002 aiodio_append $TMPDIR/aiodio.$$/file2
--AD003 aiodio_append $TMPDIR/aiodio.$$/file2
--AD004 aiodio_append $TMPDIR/aiodio.$$/file2
--AD005 aiodio_append $TMPDIR/aiodio.$$/file2
--AD006 aiodio_append $TMPDIR/aiodio.$$/file2
--AD007 aiodio_append $TMPDIR/aiodio.$$/file2
--AD008 aiodio_append $TMPDIR/aiodio.$$/file2
--AD009 aiodio_append $TMPDIR/aiodio.$$/file2
-+ADA000 aiodio_append $TMPDIR/aiodio.$$/file2
-+ADA001 aiodio_append $TMPDIR/aiodio.$$/file2
-+ADA002 aiodio_append $TMPDIR/aiodio.$$/file2
-+ADA003 aiodio_append $TMPDIR/aiodio.$$/file2
-+ADA004 aiodio_append $TMPDIR/aiodio.$$/file2
-+ADA005 aiodio_append $TMPDIR/aiodio.$$/file2
-+ADA006 aiodio_append $TMPDIR/aiodio.$$/file2
-+ADA007 aiodio_append $TMPDIR/aiodio.$$/file2
-+ADA008 aiodio_append $TMPDIR/aiodio.$$/file2
-+ADA009 aiodio_append $TMPDIR/aiodio.$$/file2
- #Running dio_append
- ADI000 dio_append
- ADI001 dio_append
+diff --git a/runtest/crashme b/runtest/crashme
+index a4c5b41cc..e853663e6 100644
+--- a/runtest/crashme
++++ b/runtest/crashme
+@@ -10,7 +10,7 @@ crash01 crash01
+ crash02 crash02
+ # Generate random syscalls and execute them, less probability
+ # to hose your system, but still.
+-mem01 mem01 -r
++mem01_crashme mem01 -r
+ # Memory eater. Loves to be run in parallel with other programs.
+ # May panic on buggy systems if the OOM killer was not fast enough :-)
+ fork12 fork12
 -- 
 2.17.1
 
