@@ -1,145 +1,87 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 12 Aug 2019 16:39:41 +0200
-Subject: [LTP] [PATCH v2 11/11] syscalls/sendmmsg01: Make use of guarded
- buffers.
-In-Reply-To: <20190812143941.8119-1-chrubis@suse.cz>
-References: <20190812143941.8119-1-chrubis@suse.cz>
-Message-ID: <20190812143941.8119-12-chrubis@suse.cz>
+From: Sasha Levin <sashal@kernel.org>
+Date: Mon, 12 Aug 2019 11:33:26 -0400
+Subject: [LTP] [PATCH] hugetlbfs: fix hugetlb page migration/fault race
+ causing SIGBUS
+In-Reply-To: <20190812132226.GI5117@dhcp22.suse.cz>
+References: <20190808074736.GJ11812@dhcp22.suse.cz>
+ <416ee59e-9ae8-f72d-1b26-4d3d31501330@oracle.com>
+ <20190808185313.GG18351@dhcp22.suse.cz>
+ <20190808163928.118f8da4f4289f7c51b8ffd4@linux-foundation.org>
+ <20190809064633.GK18351@dhcp22.suse.cz>
+ <20190809151718.d285cd1f6d0f1cf02cb93dc8@linux-foundation.org>
+ <20190811234614.GZ17747@sasha-vm>
+ <20190812084524.GC5117@dhcp22.suse.cz>
+ <39b59001-55c1-a98b-75df-3a5dcec74504@suse.cz>
+ <20190812132226.GI5117@dhcp22.suse.cz>
+Message-ID: <20190812153326.GB17747@sasha-vm>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We also send one more byte in the second buffer in an attempt to trick
-the kernel to write after the second iovec used for receive. Note that
-because this is UDP connection this byte is then discarded in kernel and
-we don't have to anything even when the test is running in a loop with
-the -i parameter.
+On Mon, Aug 12, 2019 at 03:22:26PM +0200, Michal Hocko wrote:
+>On Mon 12-08-19 15:14:12, Vlastimil Babka wrote:
+>> On 8/12/19 10:45 AM, Michal Hocko wrote:
+>> > On Sun 11-08-19 19:46:14, Sasha Levin wrote:
+>> >> On Fri, Aug 09, 2019 at 03:17:18PM -0700, Andrew Morton wrote:
+>> >>> On Fri, 9 Aug 2019 08:46:33 +0200 Michal Hocko <mhocko@kernel.org> wrote:
+>> >>>
+>> >>> It should work if we ask stable trees maintainers not to backport
+>> >>> such patches.
+>> >>>
+>> >>> Sasha, please don't backport patches which are marked Fixes-no-stable:
+>> >>> and which lack a cc:stable tag.
+>> >>
+>> >> I'll add it to my filter, thank you!
+>> >
+>> > I would really prefer to stick with Fixes: tag and stable only picking
+>> > up cc: stable patches. I really hate to see workarounds for sensible
+>> > workflows (marking the Fixes) just because we are trying to hide
+>> > something from stable maintainers. Seriously, if stable maintainers have
+>> > a different idea about what should be backported, it is their call. They
+>> > are the ones to deal with regressions and the backporting effort in
+>> > those cases of disagreement.
+>>
+>> +1 on not replacing Fixes: tag with some other name, as there might be
+>> automation (not just at SUSE) relying on it.
+>> As a compromise, we can use something else to convey the "maintainers
+>> really don't recommend a stable backport", that Sasha can add to his filter.
+>> Perhaps counter-intuitively, but it could even look like this:
+>> Cc: stable@vger.kernel.org # not recommended at all by maintainer
+>
+>I thought that absence of the Cc is the indication :P. Anyway, I really
+>do not understand why should we bother, really. I have tried to explain
+>that stable maintainers should follow Cc: stable because we bother to
+>consider that part and we are quite good at not forgetting (Thanks
+>Andrew for persistence). Sasha has told me that MM will be blacklisted
+>from automagic selection procedure.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- .../kernel/syscalls/sendmmsg/sendmmsg01.c     | 68 +++++++++----------
- 1 file changed, 33 insertions(+), 35 deletions(-)
+I'll add mm/ to the ignore list for AUTOSEL patches.
 
-diff --git a/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c b/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c
-index 7411467ee..37084102e 100644
---- a/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c
-+++ b/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c
-@@ -22,35 +22,27 @@
- 
- static int send_sockfd;
- static int receive_sockfd;
--static struct mmsghdr msg[VLEN];
--static struct iovec msg1[2], msg2;
-+static struct mmsghdr *snd_msg, *rcv_msg;
-+static struct iovec *snd1, *snd2, *rcv1, *rcv2;
- 
- static void run(void)
- {
--	struct mmsghdr msgs_in[VLEN];
--	struct iovec iovecs[VLEN];
--	char bufs[VLEN][BUFSIZE+1];
- 	struct timespec timeout;
--	int i, retval;
-+	int retval;
- 
--	retval = do_sendmmsg(send_sockfd, msg, VLEN, 0);
--	if (retval < 0 || msg[0].msg_len != 6 || msg[1].msg_len != 5) {
-+	retval = do_sendmmsg(send_sockfd, snd_msg, VLEN, 0);
-+	if (retval < 0 || snd_msg[0].msg_len != 6 || snd_msg[1].msg_len != 6) {
- 		tst_res(TFAIL|TTERRNO, "sendmmsg failed");
- 		return;
- 	}
- 
--	memset(msgs_in, 0, sizeof(msgs_in));
--	for (i = 0; i < VLEN; i++) {
--		iovecs[i].iov_base = bufs[i];
--		iovecs[i].iov_len = BUFSIZE;
--		msgs_in[i].msg_hdr.msg_iov = &iovecs[i];
--		msgs_in[i].msg_hdr.msg_iovlen = 1;
--	}
-+	memset(rcv1->iov_base, 0, rcv1->iov_len);
-+	memset(rcv2->iov_base, 0, rcv2->iov_len);
- 
- 	timeout.tv_sec = 1;
- 	timeout.tv_nsec = 0;
- 
--	retval = do_recvmmsg(receive_sockfd, msgs_in, VLEN, 0, &timeout);
-+	retval = do_recvmmsg(receive_sockfd, rcv_msg, VLEN, 0, &timeout);
- 
- 	if (retval == -1) {
- 		tst_res(TFAIL | TTERRNO, "recvmmsg failed");
-@@ -62,14 +54,12 @@ static void run(void)
- 		return;
- 	}
- 
--	bufs[0][msgs_in[0].msg_len] = 0;
--	if (strcmp(bufs[0], "onetwo"))
-+	if (memcmp(rcv1->iov_base, "onetwo", 6))
- 		tst_res(TFAIL, "Error in first received message");
- 	else
- 		tst_res(TPASS, "First message received successfully");
- 
--	bufs[1][msgs_in[1].msg_len] = 0;
--	if (strcmp(bufs[1], "three"))
-+	if (memcmp(rcv2->iov_base, "three", 5))
- 		tst_res(TFAIL, "Error in second received message");
- 	else
- 		tst_res(TPASS, "Second message received successfully");
-@@ -88,24 +78,23 @@ static void setup(void)
- 	addr.sin_port = port;
- 
- 	SAFE_BIND(receive_sockfd, (struct sockaddr *)&addr, sizeof(addr));
--	SAFE_CONNECT(send_sockfd, (struct sockaddr *) &addr, sizeof(addr));
--
--	memset(msg1, 0, sizeof(msg1));
--	msg1[0].iov_base = "one";
--	msg1[0].iov_len = 3;
--	msg1[1].iov_base = "two";
--	msg1[1].iov_len = 3;
-+	SAFE_CONNECT(send_sockfd, (struct sockaddr *)&addr, sizeof(addr));
- 
--	memset(&msg2, 0, sizeof(msg2));
--	msg2.iov_base = "three";
--	msg2.iov_len = 5;
-+	memcpy(snd1[0].iov_base, "one", snd1[0].iov_len);
-+	memcpy(snd1[1].iov_base, "two", snd1[1].iov_len);
-+	memcpy(snd2->iov_base, "three3", snd2->iov_len);
- 
--	memset(msg, 0, sizeof(msg));
--	msg[0].msg_hdr.msg_iov = msg1;
--	msg[0].msg_hdr.msg_iovlen = 2;
-+	memset(snd_msg, 0, VLEN * sizeof(*snd_msg));
-+	snd_msg[0].msg_hdr.msg_iov = snd1;
-+	snd_msg[0].msg_hdr.msg_iovlen = 2;
-+	snd_msg[1].msg_hdr.msg_iov = snd2;
-+	snd_msg[1].msg_hdr.msg_iovlen = 1;
- 
--	msg[1].msg_hdr.msg_iov = &msg2;
--	msg[1].msg_hdr.msg_iovlen = 1;
-+	memset(rcv_msg, 0, VLEN * sizeof(*rcv_msg));
-+	rcv_msg[0].msg_hdr.msg_iov = rcv1;
-+	rcv_msg[0].msg_hdr.msg_iovlen = 1;
-+	rcv_msg[1].msg_hdr.msg_iov = rcv2;
-+	rcv_msg[1].msg_hdr.msg_iovlen = 1;
- 
- 	test_info();
- }
-@@ -123,4 +112,13 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.test_variants = TEST_VARIANTS,
-+	.bufs = (struct tst_buffers []) {
-+		{&snd1, .iov_sizes = (int[]){3, 3, -1}},
-+		{&snd2, .iov_sizes = (int[]){6, -1}},
-+		{&rcv1, .iov_sizes = (int[]){6, -1}},
-+		{&rcv2, .iov_sizes = (int[]){5, -1}},
-+		{&snd_msg, .size = VLEN * sizeof(*snd_msg)},
-+		{&rcv_msg, .size = VLEN * sizeof(*rcv_msg)},
-+		{},
-+	}
- };
--- 
-2.21.0
+>I really do not know much more we can do and I really have strong doubts
+>we should care at all. What is the worst that can happen? A potentially
+>dangerous commit gets to the stable tree and that blows up? That is
+>something that is something inherent when relying on AI and
+>aplies-it-must-be-ok workflow.
 
+The issue I see here is that there's no way to validate the patches that
+go in mm/. I'd happily run whatever test suite you use to validate these
+patches, but it doesn't exist.
+
+I can run xfstests for fs/, I can run blktests for block/, I can run
+kselftests for quite a few other subsystems in the kernel. What can I
+run for mm?
+
+I'd be happy to run whatever validation/regression suite for mm/ you
+would suggest.
+
+I've heard the "every patch is a snowflake" story quite a few times, and
+I understand that most mm/ patches are complex, but we agree that
+manually testing every patch isn't scalable, right? Even for patches
+that mm/ tags for stable, are they actually tested on every stable tree?
+How is it different from the "aplies-it-must-be-ok workflow"?
+
+--
+Thanks,
+Sasha
