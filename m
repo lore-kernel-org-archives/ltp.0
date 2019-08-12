@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 12 Aug 2019 16:39:39 +0200
-Subject: [LTP] [PATCH v2 09/11] syscalls/clock_getres01: Make use of guarded
- buffers.
+Date: Mon, 12 Aug 2019 16:39:40 +0200
+Subject: [LTP] [PATCH v2 10/11] syscalls/clock_settime01: Make use of
+ guarded buffers.
 In-Reply-To: <20190812143941.8119-1-chrubis@suse.cz>
 References: <20190812143941.8119-1-chrubis@suse.cz>
-Message-ID: <20190812143941.8119-10-chrubis@suse.cz>
+Message-ID: <20190812143941.8119-11-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,52 +13,74 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- .../kernel/syscalls/clock_getres/clock_getres01.c    | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ .../syscalls/clock_settime/clock_settime01.c  | 29 ++++++++++++-------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/clock_getres/clock_getres01.c b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-index 15f323108..e39f2909b 100644
---- a/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-+++ b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-@@ -15,12 +15,12 @@
- #include "tst_test.h"
- #include "lapi/posix_clocks.h"
+diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime01.c b/testcases/kernel/syscalls/clock_settime/clock_settime01.c
+index c68fe59a1..62d349154 100644
+--- a/testcases/kernel/syscalls/clock_settime/clock_settime01.c
++++ b/testcases/kernel/syscalls/clock_settime/clock_settime01.c
+@@ -23,23 +23,24 @@
+ #define DELTA_US (long long) (DELTA_SEC * 1000000)
+ #define DELTA_EPS (long long) (DELTA_US * 0.1)
  
--static struct timespec res;
-+static struct timespec *res, *null;
- 
- static struct test_case {
- 	char *name;
- 	clockid_t clk_id;
--	struct timespec *res;
-+	struct timespec **res;
- 	int ret;
- 	int err;
- } tcase[] = {
-@@ -28,7 +28,7 @@ static struct test_case {
- 	{"MONOTONIC", CLOCK_MONOTONIC, &res, 0, 0},
- 	{"PROCESS_CPUTIME_ID", CLOCK_PROCESS_CPUTIME_ID, &res, 0, 0},
- 	{"THREAD_CPUTIME_ID", CLOCK_THREAD_CPUTIME_ID, &res, 0, 0},
--	{"REALTIME", CLOCK_REALTIME, NULL, 0, 0},
-+	{"REALTIME", CLOCK_REALTIME, &null, 0, 0},
- 	{"CLOCK_MONOTONIC_RAW", CLOCK_MONOTONIC_RAW, &res, 0, 0,},
- 	{"CLOCK_REALTIME_COARSE", CLOCK_REALTIME_COARSE, &res, 0, 0,},
- 	{"CLOCK_MONOTONIC_COARSE", CLOCK_MONOTONIC_COARSE, &res, 0, 0,},
-@@ -40,7 +40,7 @@ static struct test_case {
- 
- static void do_test(unsigned int i)
++static struct timespec *begin, *change, *end;
++
+ static void verify_clock_settime(void)
  {
--	TEST(clock_getres(tcase[i].clk_id, tcase[i].res));
-+	TEST(clock_getres(tcase[i].clk_id, *tcase[i].res));
+ 	long long elapsed;
+-	struct timespec begin, change, end;
  
- 	if (TST_RET != tcase[i].ret) {
- 		if (TST_ERR == EINVAL) {
-@@ -65,4 +65,8 @@ static void do_test(unsigned int i)
- static struct tst_test test = {
- 	.test = do_test,
- 	.tcnt = ARRAY_SIZE(tcase),
+ 	/* test 01: move forward */
+ 
+-	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &begin);
++	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, begin);
+ 
+-	change = tst_timespec_add_us(begin, DELTA_US);
++	*change = tst_timespec_add_us(*begin, DELTA_US);
+ 
+-	if (clock_settime(CLOCK_REALTIME, &change) != 0)
++	if (clock_settime(CLOCK_REALTIME, change) != 0)
+ 		tst_brk(TBROK | TTERRNO, "could not set realtime change");
+ 
+-	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &end);
++	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, end);
+ 
+-	elapsed = tst_timespec_diff_us(end, begin);
++	elapsed = tst_timespec_diff_us(*end, *begin);
+ 
+ 	if (elapsed >= DELTA_US && elapsed < (DELTA_US + DELTA_EPS))
+ 		tst_res(TPASS, "clock_settime(2): was able to advance time");
+@@ -48,16 +49,16 @@ static void verify_clock_settime(void)
+ 
+ 	/* test 02: move backward */
+ 
+-	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &begin);
++	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, begin);
+ 
+-	change = tst_timespec_sub_us(begin, DELTA_US);
++	*change = tst_timespec_sub_us(*begin, DELTA_US);
+ 
+-	if (clock_settime(CLOCK_REALTIME, &change) != 0)
++	if (clock_settime(CLOCK_REALTIME, change) != 0)
+ 		tst_brk(TBROK | TTERRNO, "could not set realtime change");
+ 
+-	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &end);
++	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, end);
+ 
+-	elapsed = tst_timespec_diff_us(end, begin);
++	elapsed = tst_timespec_diff_us(*end, *begin);
+ 
+ 	if (~(elapsed) <= DELTA_US && ~(elapsed) > (DELTA_US - DELTA_EPS))
+ 		tst_res(TPASS, "clock_settime(2): was able to recede time");
+@@ -69,4 +70,10 @@ static struct tst_test test = {
+ 	.test_all = verify_clock_settime,
+ 	.needs_root = 1,
+ 	.restore_wallclock = 1,
 +	.bufs = (struct tst_buffers []) {
-+		{&res, .size = sizeof(*res)},
++		{&begin, .size = sizeof(*begin)},
++		{&change, .size = sizeof(*change)},
++		{&end, .size = sizeof(*end)},
 +		{},
 +	}
  };
