@@ -1,46 +1,27 @@
-From: Sasha Levin <sashal@kernel.org>
-Date: Sun, 11 Aug 2019 19:46:14 -0400
-Subject: [LTP] [PATCH] hugetlbfs: fix hugetlb page migration/fault race
- causing SIGBUS
-In-Reply-To: <20190809151718.d285cd1f6d0f1cf02cb93dc8@linux-foundation.org>
-References: <20190808000533.7701-1-mike.kravetz@oracle.com>
- <20190808074607.GI11812@dhcp22.suse.cz>
- <20190808074736.GJ11812@dhcp22.suse.cz>
- <416ee59e-9ae8-f72d-1b26-4d3d31501330@oracle.com>
- <20190808185313.GG18351@dhcp22.suse.cz>
- <20190808163928.118f8da4f4289f7c51b8ffd4@linux-foundation.org>
- <20190809064633.GK18351@dhcp22.suse.cz>
- <20190809151718.d285cd1f6d0f1cf02cb93dc8@linux-foundation.org>
-Message-ID: <20190811234614.GZ17747@sasha-vm>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 12 Aug 2019 12:52:29 +0800
+Subject: [LTP] [PATCH v2 1/2] clock_getres01: drop case which is passing
+ NULL res parameter
+In-Reply-To: <ee463189a82212a10c1ac06229dc0a418e18305b.1565361031.git.jstancek@redhat.com>
+References: <ee463189a82212a10c1ac06229dc0a418e18305b.1565361031.git.jstancek@redhat.com>
+Message-ID: <CAEemH2edRKv02Hu=LzBe06Op=NCnYpweJKQNxJ4pxoN4cp8iPw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Aug 09, 2019 at 03:17:18PM -0700, Andrew Morton wrote:
->On Fri, 9 Aug 2019 08:46:33 +0200 Michal Hocko <mhocko@kernel.org> wrote:
+On Fri, Aug 9, 2019 at 10:32 PM Jan Stancek <jstancek@redhat.com> wrote:
 >
->> > Maybe we should introduce the Fixes-no-stable: tag.  That should get
->> > their attention.
->>
->> No please, Fixes shouldn't be really tight to any stable tree rules. It
->> is a very useful indication of which commit has introduced bug/problem
->> or whatever that the patch follows up to. We in Suse are using this tag
->> to evaluate potential fixes as the stable is not reliable. We could live
->> with Fixes-no-stable or whatever other name but does it really makes
->> sense to complicate the existing state when stable maintainers are doing
->> whatever they want anyway? Does a tag like that force AI from selecting
->> a patch? I am not really convinced.
+> Since commit a9446a906f52 ("lib/vdso/32: Remove inconsistent NULL pointer checks")
+> VDSO treats NULL parameter differently than in syscall.
 >
->It should work if we ask stable trees maintainers not to backport
->such patches.
+> Drop NULL parameter, subsequent patch will add test variants that test NULL
+> res parameter using syscall.
 >
->Sasha, please don't backport patches which are marked Fixes-no-stable:
->and which lack a cc:stable tag.
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Acked-by: Li Wang <liwang@redhat.com>
 
-I'll add it to my filter, thank you!
-
---
-Thanks,
-Sasha
+-- 
+Regards,
+Li Wang
