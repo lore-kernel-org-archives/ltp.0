@@ -1,25 +1,33 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 12 Aug 2019 12:52:44 +0800
-Subject: [LTP] [PATCH v2 2/2] clock_getres01: add test variants
-In-Reply-To: <e4c5428276c9a85efc6bddaa2d82e2aed5806108.1565361031.git.jstancek@redhat.com>
-References: <ee463189a82212a10c1ac06229dc0a418e18305b.1565361031.git.jstancek@redhat.com>
- <e4c5428276c9a85efc6bddaa2d82e2aed5806108.1565361031.git.jstancek@redhat.com>
-Message-ID: <CAEemH2dhCdL5uUYxaf9_sYWqf=q+VqgmZofE0AfDm8DuXaO-ng@mail.gmail.com>
+From: Yixin Zhang <yixin.zhang@intel.com>
+Date: Mon, 12 Aug 2019 15:24:31 +0800
+Subject: [LTP] [PATCH ltp] runtest/fs: remove non-acsii char from comment
+Message-ID: <20190812072431.24378-1-yixin.zhang@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Aug 9, 2019 at 10:32 PM Jan Stancek <jstancek@redhat.com> wrote:
->
-> 0 - default, could be either VDSO or syscall
-> 1 - syscall with valid res parameter
-> 2 - syscall with NULL res parameter
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-Acked-by: Li Wang <liwang@redhat.com>
+Remove non-acsii char <C2><B4> from comment
 
+Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
+---
+ runtest/fs | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/runtest/fs b/runtest/fs
+index ef2e848b9..07d6e2b67 100644
+--- a/runtest/fs
++++ b/runtest/fs
+@@ -66,7 +66,7 @@ fs_di fs_di -d $TMPDIR
+ 
+ # Read every file in /proc. Not likely to crash, but does enough
+ # to disturb the kernel. A good kernel latency killer too.
+-# Was not sure why it should reside in runtest/crashme and won?t get tested ever
++# Was not sure why it should reside in runtest/crashme and won't get tested ever
+ proc01 proc01 -m 128
+ 
+ read_all_dev read_all -d /dev -p -q -r 10
 -- 
-Regards,
-Li Wang
+2.17.1
+
