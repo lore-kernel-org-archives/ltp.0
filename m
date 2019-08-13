@@ -1,45 +1,44 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 13 Aug 2019 09:39:16 -0400 (EDT)
-Subject: [LTP] [PATCH v2 1/2] clock_getres01: drop case which is passing
- NULL res parameter
-In-Reply-To: <20190813131302.GA18888@rei.lan>
-References: <ee463189a82212a10c1ac06229dc0a418e18305b.1565361031.git.jstancek@redhat.com>
- <20190813121202.GB16005@rei.lan>
- <6520324.6276380.1565699170263.JavaMail.zimbra@redhat.com>
- <20190813131302.GA18888@rei.lan>
-Message-ID: <1087979527.6295007.1565703556506.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 13 Aug 2019 16:20:38 +0200
+Subject: [LTP] [PATCH v2 1/3] syscalls/ftruncate: Rewrite ftruncate01
+ and merge ftruncate02
+In-Reply-To: <1564645349-10859-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+References: <1564395109-7165-3-git-send-email-huangjh.jy@cn.fujitsu.com>
+ <1564645349-10859-1-git-send-email-huangjh.jy@cn.fujitsu.com>
+Message-ID: <20190813142038.GA23369@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+Pushed with a minor change, thanks.
 
+> +	SAFE_FSTAT(fd, &stat_buf);
+> +	file_length = stat_buf.st_size;
+>  
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> +	if (file_length != trunc_len) {
+> +		tst_brk(TBROK, "ftruncate() got incorrected size: %d",
+> +			file_length);
 
------ Original Message -----
-> Hi!
-> > > Shouldn't we keep the REALTIME clock here and pass the &res here
-> > > instead?
-> > 
-> > Test already has that as 1st entry in tcase array:
-> >    {"REALTIME", CLOCK_REALTIME, &res, 0, 0},
-> 
-> Missed that, sorry.
+Changed this to tst_res(TFAIL, ...) followed by return, since this is by
+no means TBROK.
 
-Me as well in v1 :-)
+> +	}
+>  
+> -	TEST_PAUSE;
+> +	SAFE_LSEEK(fd, offset, SEEK_SET);
+> +	SAFE_READ(0, fd, buf, sizeof(buf));
+>  
+> -	tst_tmpdir();
+> +	for (i = 0; i < TRUNC_LEN1; i++) {
+> +		if (buf[i] != data)
+> +			tst_brk(TBROK, "ftruncate() got incorrect data");
 
-> 
-> > > Can we please print which variant we are about to test from the test
-> > > setup() as well?
-> > 
-> > Sure, I'll add that.
-> 
-> Consider the patch acked then.
+And here as well.
 
-Both pushed.
-
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
