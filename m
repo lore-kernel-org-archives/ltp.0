@@ -1,91 +1,97 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 14 Aug 2019 14:54:21 +0300
-Subject: [LTP] [PATCH 1/1] zram01: Improve error detection
-In-Reply-To: <20190812073837.18016-1-pvorel@suse.cz>
-References: <20190812073837.18016-1-pvorel@suse.cz>
-Message-ID: <9f601d2c-e0cd-8d9d-d47d-123bc42fbe67@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 14 Aug 2019 14:13:28 +0200
+Subject: [LTP] [PATCH] syscalls/shmat03: Remove it from runtest/cve
+Message-ID: <20190814121328.22999-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
-On 12.08.2019 10:38, Petr Vorel wrote:
-> * print dd stderr, if any
-> * TBROK when detected size is 0
-> * TBROK if actually used memory is 0, this fixes division by 0:
-> 
-> Sometimes free reports no memory use by zram, which leads to division by 0:
-> zram01 8 TINFO: zram used 0M, zram disk sizes 104857600M
-> /opt/ltp/testcases/bin/zram01.sh: line 87: 100 * 104857600 / 0: division by 0 (error token is "0")
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Not sure what is a small memory which should be detected. 100 KB?
-> Maybe we could TBROK on 0 and TWARN on some small value.
-> 
-> I found this problem on ppc64le, but I can reproduce it on intel VM.
-> zram driver gets into some broken state, so next run of this test it
-> does not work at all:
-> can't set 'lzo' to /sys/block/zram0/comp_algorithm
-> 
-> after reboot it's shows it's no space error, but test works (huh):
-> zram01 7 TINFO: fill zram0...
-> zram01 7 TWARN: dd error: dd: error writing 'zram0/file': No space left on device
-> zram01 7 TINFO: zram0 can be filled with '20628' KB
-> zram01 7 TINFO: fill zram1...
-> zram01 7 TWARN: dd error: dd: error writing 'zram1/file': No space left on device
-> zram01 7 TINFO: zram1 can be filled with '20140' KB
-> zram01 7 TINFO: fill zram2...
-> zram01 7 TWARN: dd error: dd: error writing 'zram2/file': No space left on device
-> zram01 7 TINFO: zram2 can be filled with '24724' KB
-> zram01 7 TINFO: fill zram3...
-> zram01 7 TWARN: dd error: dd: error writing 'zram3/file': No space left on device
-> zram01 7 TINFO: zram3 can be filled with '24724' KB
-> zram01 7 TINFO: zram used 92M, zram disk sizes 104857600M
-> zram01 7 TPASS: compression ratio: 1139756.52:1
-> zram01 8 TINFO: zram cleanup
-> 
-> Thus there are error messages from zram_cleanup. Do we want to suppress
-> them? (I'd keep it).
-> sh: echo: I/O error
+The original POC[1] and CVE-2017-5669 are not tested by this test
+anymore as it turned out that the CVE was bogus.
 
-Such TWARNs can be misleading, the test is writing until this error,
-so this is part of the normal test run...
+And the test became regression test for:
 
-> 
-> Kind regards,
-> Petr
-> ---
->  testcases/kernel/device-drivers/zram/zram01.sh | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
-> index b3ed5170d..a06c0dc17 100755
-> --- a/testcases/kernel/device-drivers/zram/zram01.sh
-> +++ b/testcases/kernel/device-drivers/zram/zram01.sh
-> @@ -67,9 +67,11 @@ zram_fill_fs()
->  		while true; do
->  			dd conv=notrunc if=/dev/zero of=zram${i}/file \
->  				oflag=append count=1 bs=1024 status=none \
-> -				> /dev/null 2>&1 || break
-> +				2>err.txt || break
->  			b=$(($b + 1))
->  		done
-> +		[ -s err.txt ] && tst_resm TWARN "dd error: $(cat err.txt)"
-> +		[ $b -eq 0 ] && tst_brkm TBROK "cannot fill zram"
->  		tst_resm TINFO "zram$i can be filled with '$b' KB"
->  	done
->  
-> @@ -82,6 +84,8 @@ zram_fill_fs()
->  		total_size=$(($total_size + $s))
->  	done
->  
-> +	[ $used_mem -eq 0 ] && tst_brkm TBROK "no memory used by zram"
-> +
->  	tst_resm TINFO "zram used ${used_mem}M, zram disk sizes ${total_size}M"
->  
->  	local v=$((100 * $total_size / $used_mem))
-> 
+commit 8f89c007b6dec16a1793cb88de88fcc02117bbbc
+Author: Davidlohr Bueso <dave@stgolabs.net>
+Date:   Fri May 25 14:47:30 2018 -0700
+
+    ipc/shm: fix shmat() nil address after round-down when remapping
+
+Hence we will keep the test but remove it from the CVE runtest file and adjust
+the top level comment in the test code.
+
+[1] https://bugzilla.kernel.org/attachment.cgi?id=252511
+    from https://bugzilla.kernel.org/show_bug.cgi?id=192931
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+CC: Davidlohr Bueso <dave@stgolabs.net>
+---
+ runtest/cve                                   |  1 -
+ testcases/kernel/syscalls/ipc/shmat/shmat03.c | 32 ++++++++++---------
+ 2 files changed, 17 insertions(+), 16 deletions(-)
+
+diff --git a/runtest/cve b/runtest/cve
+index 33c9196e0..acbbbe5f5 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -16,7 +16,6 @@ cve-2016-9604 keyctl08
+ cve-2016-10044 cve-2016-10044
+ cve-2017-2618 cve-2017-2618
+ cve-2017-2671 cve-2017-2671
+-cve-2017-5669 shmat03
+ cve-2017-6951 request_key05
+ cve-2017-7308 setsockopt02
+ cve-2017-7472 keyctl04
+diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat03.c b/testcases/kernel/syscalls/ipc/shmat/shmat03.c
+index 13ea39c63..18d3db028 100644
+--- a/testcases/kernel/syscalls/ipc/shmat/shmat03.c
++++ b/testcases/kernel/syscalls/ipc/shmat/shmat03.c
+@@ -4,26 +4,28 @@
+  * Copyright (c) 2017 Fujitsu Ltd. (Xiao Yang <yangx.jy@cn.fujitsu.com>)
+  */
+ /*
+- * Test for CVE-2017-5669 which allows us to map the nil page using shmat.
++ * Originated as a test for CVE-2017-5669 but as it turns out the CVE was bogus
++ * to begin with and the test was changed into a regression test for commit:
+  *
+- * When the bug is present shmat(..., (void *)1, SHM_RND) will round address
+- * 0x1 down to zero and give us the (nil/null) page. With the current bug fix
+- * in place, shmat it will return EINVAL instead. We also check to see if the
+- * returned address is outside the nil page in case an alternative fix has
+- * been applied.
++ * commit 8f89c007b6dec16a1793cb88de88fcc02117bbbc
++ * Author: Davidlohr Bueso <dave@stgolabs.net>
++ * Date:   Fri May 25 14:47:30 2018 -0700
+  *
+- * In any case we manage to map some memory we also try to write to it. This
+- * is just to see if we get an access error or some other unexpected behaviour.
++ *  ipc/shm: fix shmat() nil address after round-down when remapping
+  *
+- * See commit 95e91b831f (ipc/shm: Fix shmat mmap nil-page protection)
++ * Which makes sure that SHM_REMAP forbids NULL address consistently for
++ * SHM_RND as well.
+  *
+- * The commit above disallowed SHM_RND maps to zero (and rounded) entirely and
+- * that broke userland for cases like Xorg. New behavior disallows REMAPs to
+- * lower addresses (0<=PAGESIZE).
++ * The timeline went as:
+  *
+- * See commit a73ab244f0da (Revert "ipc/shm: Fix shmat mmap nil-page protect...)
+- * See commit 8f89c007b6de (ipc/shm: fix shmat() nil address after round-dow...)
+- * See https://github.com/linux-test-project/ltp/issues/319
++ * 95e91b831f (ipc/shm: Fix shmat mmap nil-page protection)
++ * a73ab244f0da (Revert "ipc/shm: Fix shmat mmap nil-page protect...)
++ * 8f89c007b6de (ipc/shm: fix shmat() nil address after round-dow...)
++ *
++ * The original commit disallowed SHM_RND maps to zero (and rounded) entirely
++ * and that broke userland for cases like Xorg.
++ *
++ * See also https://github.com/linux-test-project/ltp/issues/319
+  *
+  * This test needs root permissions or else security_mmap_addr(), from
+  * get_unmapped_area(), will cause permission errors when trying to mmap lower
+-- 
+2.21.0
 
