@@ -1,97 +1,69 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 14 Aug 2019 14:13:28 +0200
-Subject: [LTP] [PATCH] syscalls/shmat03: Remove it from runtest/cve
-Message-ID: <20190814121328.22999-1-chrubis@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 15 Aug 2019 07:58:36 +0200
+Subject: [LTP] [PATCH v3] zram01: Improve error detection
+Message-ID: <20190815055836.13634-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The original POC[1] and CVE-2017-5669 are not tested by this test
-anymore as it turned out that the CVE was bogus.
+* TBROK when detected size is 0 (+ print dd stderr, if any)
+* TBROK if actually used memory is 0, this fixes division by 0:
 
-And the test became regression test for:
+Sometimes free reports no memory use by zram, which leads to division by 0:
+zram01 8 TINFO: zram used 0M, zram disk sizes 104857600M
+/opt/ltp/testcases/bin/zram01.sh: line 87: 100 * 104857600 / 0: division by 0 (error token is "0")
 
-commit 8f89c007b6dec16a1793cb88de88fcc02117bbbc
-Author: Davidlohr Bueso <dave@stgolabs.net>
-Date:   Fri May 25 14:47:30 2018 -0700
-
-    ipc/shm: fix shmat() nil address after round-down when remapping
-
-Hence we will keep the test but remove it from the CVE runtest file and adjust
-the top level comment in the test code.
-
-[1] https://bugzilla.kernel.org/attachment.cgi?id=252511
-    from https://bugzilla.kernel.org/show_bug.cgi?id=192931
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-CC: Davidlohr Bueso <dave@stgolabs.net>
+Suggested-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- runtest/cve                                   |  1 -
- testcases/kernel/syscalls/ipc/shmat/shmat03.c | 32 ++++++++++---------
- 2 files changed, 17 insertions(+), 16 deletions(-)
+Hi Alexey,
 
-diff --git a/runtest/cve b/runtest/cve
-index 33c9196e0..acbbbe5f5 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -16,7 +16,6 @@ cve-2016-9604 keyctl08
- cve-2016-10044 cve-2016-10044
- cve-2017-2618 cve-2017-2618
- cve-2017-2671 cve-2017-2671
--cve-2017-5669 shmat03
- cve-2017-6951 request_key05
- cve-2017-7308 setsockopt02
- cve-2017-7472 keyctl04
-diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat03.c b/testcases/kernel/syscalls/ipc/shmat/shmat03.c
-index 13ea39c63..18d3db028 100644
---- a/testcases/kernel/syscalls/ipc/shmat/shmat03.c
-+++ b/testcases/kernel/syscalls/ipc/shmat/shmat03.c
-@@ -4,26 +4,28 @@
-  * Copyright (c) 2017 Fujitsu Ltd. (Xiao Yang <yangx.jy@cn.fujitsu.com>)
-  */
- /*
-- * Test for CVE-2017-5669 which allows us to map the nil page using shmat.
-+ * Originated as a test for CVE-2017-5669 but as it turns out the CVE was bogus
-+ * to begin with and the test was changed into a regression test for commit:
-  *
-- * When the bug is present shmat(..., (void *)1, SHM_RND) will round address
-- * 0x1 down to zero and give us the (nil/null) page. With the current bug fix
-- * in place, shmat it will return EINVAL instead. We also check to see if the
-- * returned address is outside the nil page in case an alternative fix has
-- * been applied.
-+ * commit 8f89c007b6dec16a1793cb88de88fcc02117bbbc
-+ * Author: Davidlohr Bueso <dave@stgolabs.net>
-+ * Date:   Fri May 25 14:47:30 2018 -0700
-  *
-- * In any case we manage to map some memory we also try to write to it. This
-- * is just to see if we get an access error or some other unexpected behaviour.
-+ *  ipc/shm: fix shmat() nil address after round-down when remapping
-  *
-- * See commit 95e91b831f (ipc/shm: Fix shmat mmap nil-page protection)
-+ * Which makes sure that SHM_REMAP forbids NULL address consistently for
-+ * SHM_RND as well.
-  *
-- * The commit above disallowed SHM_RND maps to zero (and rounded) entirely and
-- * that broke userland for cases like Xorg. New behavior disallows REMAPs to
-- * lower addresses (0<=PAGESIZE).
-+ * The timeline went as:
-  *
-- * See commit a73ab244f0da (Revert "ipc/shm: Fix shmat mmap nil-page protect...)
-- * See commit 8f89c007b6de (ipc/shm: fix shmat() nil address after round-dow...)
-- * See https://github.com/linux-test-project/ltp/issues/319
-+ * 95e91b831f (ipc/shm: Fix shmat mmap nil-page protection)
-+ * a73ab244f0da (Revert "ipc/shm: Fix shmat mmap nil-page protect...)
-+ * 8f89c007b6de (ipc/shm: fix shmat() nil address after round-dow...)
-+ *
-+ * The original commit disallowed SHM_RND maps to zero (and rounded) entirely
-+ * and that broke userland for cases like Xorg.
-+ *
-+ * See also https://github.com/linux-test-project/ltp/issues/319
-  *
-  * This test needs root permissions or else security_mmap_addr(), from
-  * get_unmapped_area(), will cause permission errors when trying to mmap lower
+feel free to send your fix if this is not what you meant.
+
+Kind regards,
+Petr
+
+Changes v2->v3:
+* print last dd error (if any) only when $b -eq 0
+
+Changes v2->v3:
+* add TBROK when $b -eq 0
+* print last dd error, if any
+---
+
+ testcases/kernel/device-drivers/zram/zram01.sh | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
+index b3ed5170d..c0d46ed75 100755
+--- a/testcases/kernel/device-drivers/zram/zram01.sh
++++ b/testcases/kernel/device-drivers/zram/zram01.sh
+@@ -67,9 +67,13 @@ zram_fill_fs()
+ 		while true; do
+ 			dd conv=notrunc if=/dev/zero of=zram${i}/file \
+ 				oflag=append count=1 bs=1024 status=none \
+-				> /dev/null 2>&1 || break
++				2>err.txt || break
+ 			b=$(($b + 1))
+ 		done
++		if [ $b -eq 0 ]; then
++			[ -s err.txt ] && tst_resm TWARN "dd error: $(cat err.txt)"
++			tst_brkm TBROK "cannot fill zram"
++		fi
+ 		tst_resm TINFO "zram$i can be filled with '$b' KB"
+ 	done
+ 
+@@ -82,6 +86,8 @@ zram_fill_fs()
+ 		total_size=$(($total_size + $s))
+ 	done
+ 
++	[ $used_mem -eq 0 ] && tst_brkm TBROK "no memory used by zram"
++
+ 	tst_resm TINFO "zram used ${used_mem}M, zram disk sizes ${total_size}M"
+ 
+ 	local v=$((100 * $total_size / $used_mem))
 -- 
-2.21.0
+2.22.0
 
